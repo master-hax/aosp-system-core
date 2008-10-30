@@ -291,4 +291,61 @@
  */
 #define HAVE_WRITEV 1
 
+
+/*
+ * Defines depending on specific architecture version various features.
+ * These are mostly used in optimised ASM files to select the correct 
+ * instruction. These defines are also set as Makefile environment 
+ * variables to allow users to do coarse grained selection of different 
+ * modules basic on architecture capabilties.
+ */
+#if defined(__ARM_ARCH_V5__)
+
+/*
+ * Define if the processor has half-word multiplication instructions
+ * E.g: smul<x><y>
+ */
+#define HAVE_HALFWORD_MULTIPLY 1
+
+/*
+ * Define if the processor has the clz instruction
+ */
+#define HAVE_CLZ 1
+
+#endif
+
+#if defined(__ARM_ARCH_V5T__)
+
+/*
+ * Define if the architecture supports setting the thumb/arm bit
+ * on a 'pc' assignment (e.g: mov pc, lr).
+ */
+#define HAVE_FAST_INTERWORKING 1
+
+#endif
+
+#if defined(__ARM_ARCH_V5TE__)
+
+/*
+ * Define if the architecture has double load/store instructions.
+ * E.g: ldrd/strd
+ */
+#define HAVE_64BIT_DATA 1
+
+/*
+ * Define if the architecture has the preload instruction.
+ */
+#define HAVE_PLD 1
+
+#endif
+
+#if defined(__ARM_ARCH_V5T__) || defined(__ARM_ARCH_4T__)
+
+/*
+ * Definite if the architecture supports the THUMB instruction set.
+ */
+#define HAVE_THUMB_SUPPORT 1
+
+#endif
+
 #endif /* _ANDROID_CONFIG_H */
