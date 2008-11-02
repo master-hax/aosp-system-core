@@ -36,7 +36,15 @@
 
     // red
     mov     lr, \DREG, lsr #(\OFFSET + 6 + 5)
+#ifndef __ARM_ARCH_4T__
     smulbb  lr, r7, lr
+#else
+    lsl     lr, lr, #16
+    lsr     lr, lr, #16
+    lsl     r6, r7, #16
+    lsr     r6, r6, #16
+    mul     lr, r6, lr
+#endif
     mov     r6, \SRC, lsr #3
     and     r6, r6, #0x1F
     add     lr, r6, lr, lsr #8
@@ -44,7 +52,14 @@
 
         // green
         and     r6, \DREG, #(0x3F<<(\OFFSET + 5))
+#ifndef __ARM_ARCH_4T__
         smulbt  r6, r7, r6
+#else
+        lsr     r6, r6, #16
+        lsl     lr, r7, #16
+        lsr     lr, lr, #16
+        mul     r6, lr, r6
+#endif
         mov     lr, \SRC, lsr #(8+2)
         and     lr, lr, #0x3F
         add     r6, lr, r6, lsr #(5+8)
@@ -52,7 +67,14 @@
 
             // blue
             and     lr, \DREG, #(0x1F << \OFFSET)
+#ifndef __ARM_ARCH_4T__
             smulbt  lr, r7, lr
+#else
+            lsr     lr, lr, #16
+            lsl     r6, r7, #16
+            lsr     r6, r6, #16
+            mul     lr, r6, lr
+#endif
             mov     r6, \SRC, lsr #(8+8+3)
             and     r6, r6, #0x1F
             add     lr, r6, lr, lsr #8
@@ -63,7 +85,15 @@
     // red
     mov     lr, \DREG, lsr #(6+5)
     and     lr, lr, #0x1F
+#ifndef __ARM_ARCH_4T__
     smulbb  lr, r7, lr
+#else
+    lsl     lr, lr, #16
+    lsr     lr, lr, #16
+    lsl     r6, r7, #16
+    lsr     r6, r6, #16
+    mul     lr, r6, lr
+#endif
     mov     r6, \SRC, lsr #3
     and     r6, r6, #0x1F
     add     lr, r6, lr, lsr #8
@@ -71,7 +101,15 @@
 
         // green
         and     r6, \DREG, #(0x3F<<5)
+#ifndef __ARM_ARCH_4T__
         smulbb  r6, r7, r6
+#else
+        lsl     r6, r6, #16
+        lsr     r6, r6, #16
+        lsl     lr, r7, #16
+        lsr     lr, lr, #16
+        mul     r6, lr, r6
+#endif
         mov     lr, \SRC, lsr #(8+2)
         and     lr, lr, #0x3F
         add     r6, lr, r6, lsr #(5+8)
@@ -79,7 +117,15 @@
 
             // blue
             and     lr, \DREG, #0x1F
+#ifndef __ARM_ARCH_4T__
             smulbb  lr, r7, lr
+#else
+            lsl     lr, lr, #16
+            lsr     lr, lr, #16
+            lsl     r6, r7, #16
+            lsr     r6, r6, #16
+            mul     lr, r6, lr
+#endif
             mov     r6, \SRC, lsr #(8+8+3)
             and     r6, r6, #0x1F
             add     lr, r6, lr, lsr #8
@@ -108,8 +154,10 @@
 scanline_t32cb16blend_arm:
     stmfd	sp!, {r4-r7, lr}
 
+#ifndef __ARM_ARCH_4T__
     pld     [r0]
     pld     [r1]
+#endif
 
     // align DST to 32 bits
     tst     r0, #0x3
@@ -131,7 +179,9 @@ aligned:
     // The main loop is unrolled twice and process 4 pixels
 8:  ldmia   r1!, {r4, r5}
     // stream the source
+#ifndef __ARM_ARCH_4T__
     pld     [r1, #32]
+#endif
     add     r0, r0, #4
     // it's all zero, skip this pixel
     orrs    r3, r4, r5
@@ -140,7 +190,9 @@ aligned:
     // load the destination
     ldr     r3, [r0, #-4]
     // stream the destination
+#ifndef __ARM_ARCH_4T__
     pld     [r0, #32]
+#endif
     pixel   r3, r4, r12, 0
     pixel   r3, r5, r12, 16
     // effectively, we're getting write-combining by virtue of the
@@ -169,3 +221,4 @@ aligned:
     ldmlofd sp!, {r4-r7, lr}        // return
     bxlo    lr
     b       last
+

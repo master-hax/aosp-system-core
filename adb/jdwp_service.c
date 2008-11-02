@@ -319,7 +319,10 @@ jdwp_process_event( int  socket, unsigned  events, void*  _proc )
             struct msghdr    msg;
             struct iovec     iov;
             char             dummy = '!';
-            char             buffer[sizeof(struct cmsghdr) + sizeof(int)];
+            union {
+                struct cmsghdr cm;
+                char buffer[CMSG_SPACE(sizeof(int))];
+            } cm_un;
 
             iov.iov_base       = &dummy;
             iov.iov_len        = 1;
@@ -328,8 +331,8 @@ jdwp_process_event( int  socket, unsigned  events, void*  _proc )
             msg.msg_iov        = &iov;
             msg.msg_iovlen     = 1;
             msg.msg_flags      = 0;
-            msg.msg_control    = buffer;
-            msg.msg_controllen = sizeof(buffer);
+            msg.msg_control    = cm_un.buffer;
+            msg.msg_controllen = sizeof(cm_un.buffer);
 
             cmsg = CMSG_FIRSTHDR(&msg);
             cmsg->cmsg_len   = msg.msg_controllen;

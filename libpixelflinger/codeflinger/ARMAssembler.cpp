@@ -364,64 +364,211 @@ void ARMAssembler::SWI(int cc, uint32_t comment) {
 
 // DSP instructions...
 void ARMAssembler::PLD(int Rn, uint32_t offset) {
+#ifndef __ARM_ARCH_4T__
     LOG_ALWAYS_FATAL_IF(!((offset&(1<<24)) && !(offset&(1<<21))),
                         "PLD only P=1, W=0");
     *mPC++ = 0xF550F000 | (Rn<<16) | offset;
+#else
+    // This is a helper instruction that doesn't need to be issued.
+#endif
 }
 
 void ARMAssembler::CLZ(int cc, int Rd, int Rm)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x16F0F10| (Rd<<12) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::QADD(int cc,  int Rd, int Rm, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1000050 | (Rn<<16) | (Rd<<12) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::QDADD(int cc,  int Rd, int Rm, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1400050 | (Rn<<16) | (Rd<<12) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::QSUB(int cc,  int Rd, int Rm, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1200050 | (Rn<<16) | (Rd<<12) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::QDSUB(int cc,  int Rd, int Rm, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1600050 | (Rn<<16) | (Rd<<12) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::SMUL(int cc, int xy,
                 int Rd, int Rm, int Rs)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1600080 | (Rd<<16) | (Rs<<8) | (xy<<4) | Rm;
+#else
+    int touched = (((1<<Rm) | (1<<Rs)) & ~(1<<Rd));
+    uint32_t* ccPC = mPC;
+    if (cc != AL) MOV(AL, 0, R0, R0); // NOP
+    STM(AL, DB, SP, 1, touched);
+    switch (xy) {
+    case 0:		// xyBB
+	MOV(AL, 0, Rm, reg_imm(Rm, LSL, 16));
+	MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+	MOV(AL, 0, Rs, reg_imm(Rs, LSL, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 2:		// xyTB
+        MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+	MOV(AL, 0, Rs, reg_imm(Rs, LSL, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 4:		// xyBT
+	MOV(AL, 0, Rm, reg_imm(Rm, LSL, 16));
+	MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 6:		// xyTT
+        MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    };
+    MUL(AL, 0, Rd, Rm, Rs);
+    LDM(AL, IA, SP, 1, touched);
+    if (cc != AL) {
+	uint32_t* pc = mPC;
+	pc = mPC;
+	mPC = ccPC;
+	B(cc^1, pc);
+	mPC = pc;
+    }
+#endif
 }
 
 void ARMAssembler::SMULW(int cc, int y,
                 int Rd, int Rm, int Rs)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x12000A0 | (Rd<<16) | (Rs<<8) | (y<<4) | Rm;
+#else
+    int Rt1 = (Rd == Rm) ? Rs : Rm;
+    int Rt2 = (Rt1 == Rs) ? LR : Rs;
+    int touched = (((1<<Rm) | (1<<Rs) | (1<<Rt2)) & ~(1<<Rd));
+    uint32_t* ccPC = mPC;
+    if (cc != AL) MOV(AL, 0, R0, R0); // NOP
+    STM(AL, DB, SP, 1, touched);
+    switch (y) {
+    case 0:		// yB
+	MOV(AL, 0, Rs, reg_imm(Rs, LSL, 16));
+	MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 4:		// yT
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    };
+    UMULL(AL, 0, Rt1, Rt2, Rm, Rs);
+    MOV(AL, 0, Rd, reg_imm(Rt1, LSR, 16));
+    MOV(AL, 0, Rt1, reg_imm(Rt2, LSL, 16));
+    ORR(AL, 0, Rd, Rd, Rt1);
+    LDM(AL, IA, SP, 1, touched);
+    if (cc != AL) {
+	uint32_t* pc = mPC;
+	pc = mPC;
+	mPC = ccPC;
+	B(cc^1, pc);
+	mPC = pc;
+    }
+#endif
 }
 
 void ARMAssembler::SMLA(int cc, int xy,
                 int Rd, int Rm, int Rs, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1000080 | (Rd<<16) | (Rn<<12) | (Rs<<8) | (xy<<4) | Rm;
+#else
+    int touched = (((1<<Rm) | (1<<Rs)) & ~(1<<Rd));
+    int Rt = (Rd == Rm) ? Rs : Rm;
+    uint32_t* ccPC = mPC;
+    if (cc != AL) MOV(AL, 0, R0, R0); // NOP
+    STM(AL, DB, SP, 1, touched);
+    switch (xy) {
+    case 0:		// xyBB
+	MOV(AL, 0, Rm, reg_imm(Rm, LSL, 16));
+	MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+	MOV(AL, 0, Rs, reg_imm(Rs, LSL, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 2:		// xyTB
+        MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+	MOV(AL, 0, Rs, reg_imm(Rs, LSL, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 4:		// xyBT
+	MOV(AL, 0, Rm, reg_imm(Rm, LSL, 16));
+	MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    case 6:		// xyTT
+        MOV(AL, 0, Rm, reg_imm(Rm, ASR, 16));
+        MOV(AL, 0, Rs, reg_imm(Rs, ASR, 16));
+	break;
+    };
+    MUL(AL, 0, Rt, Rm, Rs);
+    ADD(AL, 0, Rd, Rt, Rn);
+    LDM(AL, IA, SP, 1, touched);
+    if (cc != AL) {
+	uint32_t* pc = mPC;
+	pc = mPC;
+	mPC = ccPC;
+	B(cc^1, pc);
+	mPC = pc;
+    }
+#endif
 }
 
 void ARMAssembler::SMLAL(int cc, int xy,
                 int RdHi, int RdLo, int Rs, int Rm)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1400080 | (RdHi<<16) | (RdLo<<12) | (Rs<<8) | (xy<<4) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 void ARMAssembler::SMLAW(int cc, int y,
                 int Rd, int Rm, int Rs, int Rn)
 {
+#ifndef __ARM_ARCH_4T__
     *mPC++ = (cc<<28) | 0x1200080 | (Rd<<16) | (Rn<<12) | (Rs<<8) | (y<<4) | Rm;
+#else
+    // This instruction not used?
+    LOG_ALWAYS_FATAL("Instruction not implemented!!!");
+#endif
 }
 
 }; // namespace android

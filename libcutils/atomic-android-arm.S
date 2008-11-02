@@ -59,8 +59,9 @@ android_atomic_write:
 1: @ android_atomic_write
     ldr     r0, [r2]
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #4
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    mov     lr, pc
+    bx      r3
     bcc     1b
     ldmia   sp!, {r4, lr}
     bx      lr
@@ -78,9 +79,10 @@ android_atomic_inc:
 1: @ android_atomic_inc
     ldr     r0, [r2]
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #4
     add     r1, r0, #1
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    mov     lr, pc
+    bx      r3
     bcc     1b
     sub     r0, r1, #1
     ldmia   sp!, {r4, lr}
@@ -99,9 +101,10 @@ android_atomic_dec:
 1: @ android_atomic_dec
     ldr     r0, [r2]
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #4
     sub     r1, r0, #1
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    mov     lr, pc
+    bx      r3
     bcc     1b
     add     r0, r1, #1
     ldmia   sp!, {r4, lr}
@@ -121,9 +124,10 @@ android_atomic_add:
 1: @ android_atomic_add
     ldr     r0, [r2]
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #4
     add     r1, r0, r4
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    mov     lr, pc
+    bx      r3
     bcc     1b
     sub     r0, r1, r4
     ldmia   sp!, {r4, lr}
@@ -144,10 +148,11 @@ android_atomic_and:
 1: @ android_atomic_and
     ldr     r0, [r2]            /* r0 = address[0] */
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #8
     mov     r5, r0              /* r5 = save address[0] */
     and     r1, r0, r4          /* r1 = new value */
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)  /* call cmpxchg() */
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)  /* call cmpxchg() */
+    mov     lr, pc
+    bx      r3
     bcc     1b
     mov     r0, r5
     ldmia   sp!, {r4, r5, lr}
@@ -167,10 +172,11 @@ android_atomic_or:
 1: @ android_atomic_or
     ldr     r0, [r2]            /* r0 = address[0] */
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #8
     mov     r5, r0              /* r5 = save address[0] */
     orr     r1, r0, r4          /* r1 = new value */
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)  /* call cmpxchg() */
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)  /* call cmpxchg() */
+    mov     lr, pc
+    bx      r3
     bcc     1b
     mov     r0, r5
     ldmia   sp!, {r4, r5, lr}
@@ -202,9 +208,10 @@ android_atomic_cmpxchg:
     mov     r4, r0          /* r4 = save oldvalue */
 1: @ android_atomic_cmpxchg
     mov     r3, #kernel_atomic_base
-    add     lr, pc, #4
     mov     r0, r4          /* r0 = oldvalue */
-    add     pc, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    add     r3, r3, #(kernel_cmpxchg - kernel_atomic_base)
+    mov     lr, pc
+    bx      r3
     bcs     2f              /* swap was made. we're good, return. */
     ldr     r3, [r2]        /* swap not made, see if it's because *ptr!=oldvalue */
     cmp     r3, r4

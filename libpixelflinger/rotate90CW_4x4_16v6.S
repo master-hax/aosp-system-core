@@ -59,4 +59,10 @@ rotate90CW_4x4_16v6:
     pkhtb   r11, r3, r5, asr #16
     strd    r10, r11, [r0]
 
+#ifndef __ARM_ARCH_4__
     ldmfd   sp!, {r4,r5, r6,r7, r8,r9, r10,r11, pc}
+#else
+    ldmfd   sp!, {r4,r5, r6,r7, r8,r9, r10,r11, lr}
+    bx      lr
+#endif
+

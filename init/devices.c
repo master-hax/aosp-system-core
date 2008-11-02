@@ -112,6 +112,7 @@ static struct perms_ devperms[] = {
     { "/dev/pmem_camera",   0660,   AID_SYSTEM,     AID_CAMERA,     1 },
     { "/dev/oncrpc/",       0660,   AID_ROOT,       AID_SYSTEM,     1 },
     { "/dev/adsp/",         0660,   AID_SYSTEM,     AID_AUDIO,      1 },
+    { "/dev/snd/",          0660,   AID_SYSTEM,     AID_AUDIO,      1 },
     { "/dev/mt9t013",       0660,   AID_SYSTEM,     AID_SYSTEM,     0 },
     { "/dev/akm8976_daemon",0640,   AID_COMPASS,    AID_SYSTEM,     0 },
     { "/dev/akm8976_aot",   0640,   AID_COMPASS,    AID_SYSTEM,     0 },
@@ -368,7 +369,7 @@ static void handle_device_event(struct uevent *uevent)
     } else {
         block = 0;
             /* this should probably be configurable somehow */
-        if(!strncmp(uevent->path, "/class/graphics/", 16)) {
+        if(!strcmp(uevent->subsystem, "graphics")) {
             base = "/dev/graphics/";
             mkdir(base, 0755);
         } else if (!strncmp(uevent->path, "/class/oncrpc/", 14)) {
@@ -377,13 +378,16 @@ static void handle_device_event(struct uevent *uevent)
         } else if (!strncmp(uevent->path, "/class/adsp/", 12)) {
             base = "/dev/adsp/";
             mkdir(base, 0755);
-      } else if(!strncmp(uevent->path, "/class/input/", 13)) {
+        } else if(!strcmp(uevent->subsystem, "input")) {
             base = "/dev/input/";
             mkdir(base, 0755);
-        } else if(!strncmp(uevent->path, "/class/mtd/", 11)) {
+        } else if(!strcmp(uevent->subsystem, "mtd")) {
             base = "/dev/mtd/";
             mkdir(base, 0755);
-        } else if(!strncmp(uevent->path, "/class/misc/", 12) &&
+        } else if(!strcmp(uevent->subsystem, "sound")) {
+            base = "/dev/snd/";
+            mkdir(base, 0755);
+        } else if(!strcmp(uevent->subsystem, "misc") &&
                     !strncmp(name, "log_", 4)) {
             base = "/dev/log/";
             mkdir(base, 0755);
