@@ -23,7 +23,18 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#if !defined(HAVE_NO_ALLOCA_H)
 #include <alloca.h>
+/* XXX: alloca() is not used in this file.
+ *     This include is superfluous. Do not know, if there is any 
+ *     reason to keep it here.
+ */
+#else
+/* 
+ * NOTE: FreeBSD and some BSD based OSs declare alloca() in stdlib.h 
+ *       There is no need in alloca.h header anyway.
+ */
+#endif
 #include <assert.h>
 #include <arpa/inet.h>
 
