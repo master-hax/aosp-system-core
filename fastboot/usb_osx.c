@@ -461,7 +461,7 @@ int usb_close(usb_handle *h) {
     return 0;
 }
 
-int usb_read(usb_handle *h, void *data, int len) {
+int usb_read(usb_handle *h, void *data, size_t len) {
     IOReturn result;
     UInt32 numBytes = len;
 
@@ -495,7 +495,7 @@ int usb_read(usb_handle *h, void *data, int len) {
     return -1;
 }
 
-int usb_write(usb_handle *h, const void *data, int len) {
+int usb_write(usb_handle *h, const void *data, size_t len) {
     IOReturn result;
 
     if (len == 0) {

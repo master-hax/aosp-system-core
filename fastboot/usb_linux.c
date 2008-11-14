@@ -69,25 +69,30 @@ struct usb_handle
 
 static inline int badname(const char *name)
 {
-    while(*name) {
-        if(!isdigit(*name++)) return 1;
+    while (*name) {
+        if (isdigit(*name++) == 0)
+	    return 1;
     }
     return 0;
 }
 
-static int check(void *_desc, int len, unsigned type, int size)
+static int check(void *_desc, size_t len, unsigned type, size_t size)
 {
     unsigned char *desc = _desc;
     
-    if(len < size) return -1;
-    if(desc[0] < size) return -1;
-    if(desc[0] > len) return -1;
-    if(desc[1] != type) return -1;
+    if (len < size)
+	return -1;
+    if (desc[0] < size)
+	return -1;
+    if (desc[0] > len)
+	return -1;
+    if (desc[1] != type)
+	return -1;
     
     return 0;
 }
 
-static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback,
+static int filter_usb_device(int fd, char *ptr, size_t len, ifc_match_func callback,
                              int *ept_in_id, int *ept_out_id, int *ifc_id)
 {
     struct usb_device_descriptor *dev;
@@ -100,15 +105,15 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
     unsigned i;
     unsigned e;
     
-    if(check(ptr, len, USB_DT_DEVICE, USB_DT_DEVICE_SIZE))
+    if (check(ptr, len, USB_DT_DEVICE, USB_DT_DEVICE_SIZE))
         return -1;
-    dev = (void*) ptr;
+    dev = (void *) ptr;
     len -= dev->bLength;
     ptr += dev->bLength;
     
-    if(check(ptr, len, USB_DT_CONFIG, USB_DT_CONFIG_SIZE))
+    if (check(ptr, len, USB_DT_CONFIG, USB_DT_CONFIG_SIZE))
         return -1;
-    cfg = (void*) ptr;
+    cfg = (void *) ptr;
     len -= cfg->bLength;
     ptr += cfg->bLength;
     
@@ -119,15 +124,15 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
     info.dev_protocol = dev->bDeviceProtocol;
 
     // read device serial number (if there is one)
-    info.serial_number[0] = 0;
-    if (dev->iSerialNumber) {
+    info.serial_number[0] = '\0';
+    if (dev->iSerialNumber != 0) {
         struct usbdevfs_ctrltransfer  ctrl;
         __u16 buffer[128];
         int result;
 
         memset(buffer, 0, sizeof(buffer));
 
-        ctrl.bRequestType = USB_DIR_IN|USB_TYPE_STANDARD|USB_RECIP_DEVICE;
+        ctrl.bRequestType = USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_DEVICE;
         ctrl.bRequest = USB_REQ_GET_DESCRIPTOR;
         ctrl.wValue = (USB_DT_STRING << 8) | dev->iSerialNumber;
         ctrl.wIndex = 0;
@@ -141,14 +146,14 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
             result /= 2;
             for (i = 1; i < result; i++)
                 info.serial_number[i - 1] = buffer[i];
-            info.serial_number[i - 1] = 0;
+            info.serial_number[i - 1] = '\0';
         }
     }
 
-    for(i = 0; i < cfg->bNumInterfaces; i++) {
-        if(check(ptr, len, USB_DT_INTERFACE, USB_DT_INTERFACE_SIZE))
+    for (i = 0; i < cfg->bNumInterfaces; i++) {
+        if (check(ptr, len, USB_DT_INTERFACE, USB_DT_INTERFACE_SIZE))
             return -1;
-        ifc = (void*) ptr;
+        ifc = (void *) ptr;
         len -= ifc->bLength;
         ptr += ifc->bLength;
         
@@ -158,17 +163,17 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
         info.ifc_subclass = ifc->bInterfaceSubClass;
         info.ifc_protocol = ifc->bInterfaceProtocol;
         
-        for(e = 0; e < ifc->bNumEndpoints; e++) {
-            if(check(ptr, len, USB_DT_ENDPOINT, USB_DT_ENDPOINT_SIZE))
+        for (e = 0; e < ifc->bNumEndpoints; e++) {
+            if (check(ptr, len, USB_DT_ENDPOINT, USB_DT_ENDPOINT_SIZE))
                 return -1;
-            ept = (void*) ptr;
+            ept = (void *) ptr;
             len -= ept->bLength;
             ptr += ept->bLength;
     
-            if((ept->bmAttributes & 0x03) != 0x02)
+            if ((ept->bmAttributes & 0x03) != 0x02)
                 continue;
             
-            if(ept->bEndpointAddress & 0x80) {
+            if (ept->bEndpointAddress & 0x80) {
                 in = ept->bEndpointAddress;
             } else {
                 out = ept->bEndpointAddress;
@@ -178,7 +183,7 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
         info.has_bulk_in = (in != -1);
         info.has_bulk_out = (out != -1);
         
-        if(callback(&info) == 0) {
+        if (callback(&info) == 0) {
             *ept_in_id = in;
             *ept_out_id = out;
             *ifc_id = ifc->bInterfaceNumber;
@@ -191,50 +196,57 @@ static int filter_usb_device(int fd, char *ptr, int len, ifc_match_func callback
 
 static usb_handle *find_usb_device(const char *base, ifc_match_func callback)
 {
-    usb_handle *usb = 0;
+    usb_handle *usb = NULL;
     char busname[64], devname[64];
     char desc[1024];
-    int n, in, out, ifc;
+    ssize_t n;
+    int in, out, ifc;
     
     DIR *busdir, *devdir;
     struct dirent *de;
     int fd;
     
     busdir = opendir(base);
-    if(busdir == 0) return 0;
+    if (busdir == NULL)
+	return NULL;
 
-    while((de = readdir(busdir)) && (usb == 0)) {
-        if(badname(de->d_name)) continue;
+    while ((de = readdir(busdir)) && (usb == NULL)) {
+        if (badname(de->d_name) != 0)
+	    continue;
         
-        sprintf(busname, "%s/%s", base, de->d_name);
+        snprintf(busname, 64, "%s/%s", base, de->d_name);
         devdir = opendir(busname);
-        if(devdir == 0) continue;
+        if(devdir == NULL)
+	    continue;
         
 //        DBG("[ scanning %s ]\n", busname);
-        while((de = readdir(devdir)) && (usb == 0)) {
+        while ((de = readdir(devdir)) && (usb == NULL)) {
             
-            if(badname(de->d_name)) continue;
-            sprintf(devname, "%s/%s", busname, de->d_name);
+            if (badname(de->d_name))
+		continue;
+		
+            snprintf(devname, 64, "%s/%s", busname, de->d_name);
 
 //            DBG("[ scanning %s ]\n", devname);
-            if((fd = open(devname, O_RDWR)) < 0) {
+            if ((fd = open(devname, O_RDWR)) < 0) {
                 continue;
             }
 
             n = read(fd, desc, sizeof(desc));
             
-            if(filter_usb_device(fd, desc, n, callback, &in, &out, &ifc) == 0){
+            if (filter_usb_device(fd, desc, n, callback, &in, &out, &ifc) == 0){
+		int result;
                 usb = calloc(1, sizeof(usb_handle));
                 strcpy(usb->fname, devname);
                 usb->ep_in = in;
                 usb->ep_out = out;
                 usb->desc = fd;
 
-                n = ioctl(fd, USBDEVFS_CLAIMINTERFACE, &ifc);
-                if(n != 0) {
+                result = ioctl(fd, USBDEVFS_CLAIMINTERFACE, &ifc);
+                if (result != 0) {
                     close(fd);
                     free(usb);
-                    usb = 0;
+                    usb = NULL;
                     continue;
                 }
             } else {
@@ -248,25 +260,26 @@ static usb_handle *find_usb_device(const char *base, ifc_match_func callback)
     return usb;
 }
 
-int usb_write(usb_handle *h, const void *_data, int len)
+int usb_write(usb_handle *h, const void *_data, size_t _len)
 {
     unsigned char *data = (unsigned char*) _data;
-    unsigned count = 0;
+    unsigned int count = 0;
     struct usbdevfs_bulktransfer bulk;
     int n;
+    unsigned int len = _len;
 
-    if(h->ep_out == 0) {
+    if (h->ep_out == 0) {
         return -1;
     }
     
-    if(len == 0) {
+    if (len == 0) {
         bulk.ep = h->ep_out;
         bulk.len = 0;
         bulk.data = data;
         bulk.timeout = 0;
         
         n = ioctl(h->desc, USBDEVFS_BULK, &bulk);
-        if(n != 0) {
+        if (n != 0) {
             fprintf(stderr,"ERROR: n = %d, errno = %d (%s)\n",
                     n, errno, strerror(errno));
             return -1;
@@ -274,8 +287,8 @@ int usb_write(usb_handle *h, const void *_data, int len)
         return 0;
     }
     
-    while(len > 0) {
-        int xfer;
+    while (len > 0) {
+        unsigned int xfer;
         xfer = (len > 4096) ? 4096 : len;
         
         bulk.ep = h->ep_out;
@@ -284,7 +297,7 @@ int usb_write(usb_handle *h, const void *_data, int len)
         bulk.timeout = 0;
         
         n = ioctl(h->desc, USBDEVFS_BULK, &bulk);
-        if(n != xfer) {
+        if (n != xfer) {
             DBG("ERROR: n = %d, errno = %d (%s)\n",
                 n, errno, strerror(errno));
             return -1;
@@ -298,30 +311,31 @@ int usb_write(usb_handle *h, const void *_data, int len)
     return count;
 }
 
-int usb_read(usb_handle *h, void *_data, int len)
+int usb_read(usb_handle *h, void *_data, size_t _len)
 {
-    unsigned char *data = (unsigned char*) _data;
-    unsigned count = 0;
+    unsigned char *data = (unsigned char *) _data;
+    unsigned int count = 0;
     struct usbdevfs_bulktransfer bulk;
     int n;
+    unsigned int len = _len;
 
     if(h->ep_in == 0) {
         return -1;
     }
     
     while(len > 0) {
-        int xfer = (len > 4096) ? 4096 : len;
+        unsigned int xfer = (len > 4096) ? 4096 : len;
         
         bulk.ep = h->ep_in;
         bulk.len = xfer;
         bulk.data = data;
         bulk.timeout = 0;
         
-        DBG("[ usb read %d fd = %d], fname=%s\n", xfer, h->desc, h->fname);
+        DBG("[ usb read %u fd = %d], fname=%s\n", xfer, h->desc, h->fname);
         n = ioctl(h->desc, USBDEVFS_BULK, &bulk);
-        DBG("[ usb read %d ] = %d, fname=%s\n", xfer, n, h->fname);
+        DBG("[ usb read %u ] = %d, fname=%s\n", xfer, n, h->fname);
 
-        if(n < 0) {
+        if (n < 0) {
             DBG1("ERROR: n = %d, errno = %d (%s)\n",
                 n, errno, strerror(errno));
             return -1;
@@ -331,7 +345,7 @@ int usb_read(usb_handle *h, void *_data, int len)
         len -= n;
         data += n;
         
-        if(n < xfer) {
+        if (n < xfer) {
             break;
         }
     }
@@ -345,19 +359,20 @@ void usb_kick(usb_handle *h)
 
     fd = h->desc;
     h->desc = -1;
-    if(fd >= 0) {
+    if (fd >= 0) {
         close(fd);
         DBG("[ usb closed %d ]\n", fd);
     }
 }
 
+/* XXX: duplicates usb_kick() */
 int usb_close(usb_handle *h)
 {
     int fd;
     
     fd = h->desc;
     h->desc = -1;
-    if(fd >= 0) {
+    if (fd >= 0) {
         close(fd);
         DBG("[ usb closed %d ]\n", fd);
     }
@@ -369,5 +384,3 @@ usb_handle *usb_open(ifc_match_func callback)
 {
     return find_usb_device("/dev/bus/usb", callback);
 }
-
-

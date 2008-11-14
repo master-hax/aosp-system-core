@@ -33,66 +33,69 @@
 
 #include "fastboot.h"
 
-static char ERROR[128];
+static char ERROR[MAX_ERROR_STRLEN];
 
 char *fb_get_error(void)
 {
     return ERROR;
 }
 
-static int check_response(usb_handle *usb, unsigned size, 
-                          unsigned data_okay, char *response)
+static int check_response(usb_handle *usb, size_t size, 
+                          unsigned data_okay, char *response, size_t maxLen)
 {
-    unsigned char status[65];
+    unsigned char status[65] = {0};
     int r;
 
-    for(;;) {
+    for (;;) {
         r = usb_read(usb, status, 64);
-        if(r < 0) {
-            sprintf(ERROR, "status read failed (%s)", strerror(errno));
+        if (r < 0) {
+            snprintf(ERROR, MAX_ERROR_STRLEN, "status read failed (%s)",
+		strerror(errno));
+		
             usb_close(usb);
             return -1;
         }
-        status[r] = 0;
+        status[r] = '\0';
 
-        if(r < 4) {
-            sprintf(ERROR, "status malformed (%d bytes)", r);
+        if (r < 4) {
+            snprintf(ERROR, MAX_ERROR_STRLEN, "status malformed (%d bytes)", r);
             usb_close(usb);
             return -1;
         }
 
-        if(!memcmp(status, "INFO", 4)) {
+        if (memcmp(status, "INFO", 4) == 0) {
             fprintf(stderr,"%s\n", status);
             continue;
         }
 
-        if(!memcmp(status, "OKAY", 4)) {
-            if(response) {
-                strcpy(response, (char*) status + 4);
+        if (memcmp(status, "OKAY", 4) == 0) {
+            if (response != NULL) {
+                strncpy(response, (char*) status + 4, maxLen);
             }
             return 0;
         }
 
-        if(!memcmp(status, "FAIL", 4)) {
-            if(r > 4) {
-                sprintf(ERROR, "remote: %s", status + 4);
+        if (memcmp(status, "FAIL", 4) == 0) {
+            if (r > 4) {
+                snprintf(ERROR, MAX_ERROR_STRLEN, "remote: %s", status + 4);
             } else {
-                strcpy(ERROR, "remote failure");
+                strncpy(ERROR, "remote failure", MAX_ERROR_STRLEN);
             }
             return -1;
         }
 
-        if(!memcmp(status, "DATA", 4) && data_okay){
-            unsigned dsize = strtoul((char*) status + 4, 0, 16);
-            if(dsize > size) {
-                strcpy(ERROR, "data size too large");
+        if ((memcmp(status, "DATA", 4) == 0) && (data_okay != 0)){
+            unsigned long dsize = strtoul((char *) status + 4, 0, 16);
+            if (dsize > size) {
+                strncpy(ERROR, "data size too large", MAX_ERROR_STRLEN);
                 usb_close(usb);
                 return -1;
             }
+	    /* XXX: returning unsigned value */
             return dsize;
         }
 
-        strcpy(ERROR,"unknown status code");
+        strncpy(ERROR, "unknown status code", MAX_ERROR_STRLEN);
         usb_close(usb);
         break;
     }
@@ -101,53 +104,58 @@ static int check_response(usb_handle *usb, unsigned size,
 }
 
 static int _command_send(usb_handle *usb, const char *cmd,
-                         const void *data, unsigned size,
-                         char *response)
+                         const void *data, size_t size,
+                         char *response, size_t maxLen)
 {
-    int cmdsize = strlen(cmd);
+    size_t cmdsize = strlen(cmd);
     int r;
     
-    if(response) {
-        response[0] = 0;
+    if (response != NULL) {
+        response[0] = '\0';
     }
 
-    if(cmdsize > 64) {
-        sprintf(ERROR,"command too large");
+    /* XXX: magic 64 */
+    if (cmdsize > 64) {
+        snprintf(ERROR, MAX_ERROR_STRLEN, "command too large");
         return -1;
     }
 
-    if(usb_write(usb, cmd, cmdsize) != cmdsize) {
-        sprintf(ERROR,"command write failed (%s)", strerror(errno));
+    if (usb_write(usb, cmd, cmdsize) != cmdsize) {
+        snprintf(ERROR, MAX_ERROR_STRLEN, "command write failed (%s)",
+	    strerror(errno));
+	    
         usb_close(usb);
         return -1;
     }
 
-    if(data == 0) {
-        return check_response(usb, size, 0, response);
+    if (data == NULL) {
+        return check_response(usb, size, 0, response, maxLen);
     }
 
-    r = check_response(usb, size, 1, 0);
-    if(r < 0) {
+    r = check_response(usb, size, 1, NULL, 0);
+    if (r < 0) {
         return -1;
     }
-    size = r;
+    size = (size_t)r;
 
-    if(size) {
+    if (size != 0) {
         r = usb_write(usb, data, size);
-        if(r < 0) {
-            sprintf(ERROR, "data transfer failure (%s)", strerror(errno));
+        if (r < 0) {
+            snprintf(ERROR, MAX_ERROR_STRLEN, "data transfer failure (%s)",
+		strerror(errno));
+		
             usb_close(usb);
             return -1;
         }
-        if(r != ((int) size)) {
-            sprintf(ERROR, "data transfer failure (short transfer)");
+        if (r != ((int) size)) {
+            snprintf(ERROR, MAX_ERROR_STRLEN, "data transfer failure (short transfer)");
             usb_close(usb);
             return -1;
         }
     }
     
-    r = check_response(usb, 0, 0, 0);
-    if(r < 0) {
+    r = check_response(usb, 0, 0, NULL, 0);
+    if (r < 0) {
         return -1;
     } else {
         return size;
@@ -156,23 +164,24 @@ static int _command_send(usb_handle *usb, const char *cmd,
 
 int fb_command(usb_handle *usb, const char *cmd)
 {
-    return _command_send(usb, cmd, 0, 0, 0);
+    return _command_send(usb, cmd, NULL, 0, NULL, 0);
 }
 
-int fb_command_response(usb_handle *usb, const char *cmd, char *response)
+int fb_command_response(usb_handle *usb, const char *cmd, char *response,
+    size_t maxLen)
 {
-    return _command_send(usb, cmd, 0, 0, response);
+    return _command_send(usb, cmd, NULL, 0, response, maxLen);
 }
 
-int fb_download_data(usb_handle *usb, const void *data, unsigned size)
+int fb_download_data(usb_handle *usb, const void *data, size_t size)
 {
     char cmd[64];
     int r;
     
-    sprintf(cmd, "download:%08x", size);
-    r = _command_send(usb, cmd, data, size, 0);
+    snprintf(cmd, 64, "download:%08x", size);
+    r = _command_send(usb, cmd, data, size, NULL, 0);
     
-    if(r < 0) {
+    if (r < 0) {
         return -1;
     } else {
         return 0;

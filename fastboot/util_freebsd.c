@@ -26,24 +26,41 @@
  * SUCH DAMAGE.
  */
 
-#include <utils/executablepath.h>
-#import <Carbon/Carbon.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <limits.h>
 
-void get_my_path(char *s, size_t maxLen)
+void
+get_my_path(char *path, size_t maxLen)
 {
-    char *x = NULL;
-    ProcessSerialNumber psn;
-    CFDictionaryRef dict;
-    
-    GetCurrentProcess(&psn);
-    dict = ProcessInformationCopyDictionary(&psn, 0xffffffff);
-    CFStringRef value = (CFStringRef)CFDictionaryGetValue(dict,
-                CFSTR("CFBundleExecutable"));
+        char proc[64] = {0};
+	char *x = NULL;
+
+	if (path == NULL)
+	        return;
+
+        /* make sure we never will return void data */
+	path[0] = '\0';
+
+        if (maxLen < 1)
+		return;
+	
+	snprintf(proc, 64, "/proc/%d/file", getpid());
+	
+        int err = readlink(proc, path, maxLen - 1);
+
+        if (err <= 0) {
+		path[0] = '\0';
+        } else {
+    		path[err] = '\0';
 		
-    CFStringGetCString(value, s, maxLen, kCFStringEncodingUTF8);
-    x = strrchr(s, '/');
-    
-    if (x != NULL)
-	x[1] = '\0';
+    		x = strrchr(path, '/');
+	
+    		if (x != NULL)
+		        x[1] = '\0';
+	}
 }
