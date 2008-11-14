@@ -26,40 +26,41 @@
  * SUCH DAMAGE.
  */
 
-/* NOTE: dev/usb/usb.h on FreeBSD uses _USB_H_ for armour header */
-#ifndef _ANDROID_USB_H_
-#define _ANDROID_USB_H_
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <limits.h>
 
-typedef struct usb_handle usb_handle;
-
-typedef struct usb_ifc_info usb_ifc_info;
-
-struct usb_ifc_info
+void
+get_my_path(char *path, size_t maxLen)
 {
-        /* from device descriptor */
-    unsigned short dev_vendor;
-    unsigned short dev_product;
+        char proc[64] = {0};
+	char *x = NULL;
 
-    unsigned char dev_class;
-    unsigned char dev_subclass;
-    unsigned char dev_protocol;
-    
-    unsigned char ifc_class;
-    unsigned char ifc_subclass;
-    unsigned char ifc_protocol;
+	if (path == NULL)
+	        return;
 
-    unsigned char has_bulk_in;
-    unsigned char has_bulk_out;
-    
-    char serial_number[256];
-};
-  
-typedef int (*ifc_match_func)(usb_ifc_info *ifc);
+        /* make sure we never will return void data */
+	path[0] = '\0';
 
-usb_handle *usb_open(ifc_match_func callback);
-int usb_close(usb_handle *h);
-int usb_read(usb_handle *h, void *_data, size_t len);
-int usb_write(usb_handle *h, const void *_data, size_t len);
+        if (maxLen < 1)
+		return;
+	
+	snprintf(proc, 64, "/proc/%d/file", getpid());
+	
+        int err = readlink(proc, path, maxLen - 1);
 
-
-#endif
+        if (err <= 0) {
+		path[0] = '\0';
+        } else {
+    		path[err] = '\0';
+		
+    		x = strrchr(path, '/');
+	
+    		if (x != NULL)
+		        x[1] = '\0';
+	}
+}

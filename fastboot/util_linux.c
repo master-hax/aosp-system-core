@@ -34,19 +34,21 @@
 #include <unistd.h>
 #include <limits.h>
 
-void get_my_path(char *path)
+void get_my_path(char *path, size_t maxLen)
 {
-    char proc[64];
-    char *x;
+    char proc[64] = {0};
+    char *x = NULL;
     
-    sprintf(proc, "/proc/%d/exe", getpid());
-    int err = readlink(proc, path, PATH_MAX - 1);
+    snprintf(proc, 64, "/proc/%d/exe", getpid());
+    int err = readlink(proc, path, maxLen - 1);
 
-    if(err <= 0) {
-        path[0] = 0;
+    if (err <= 0) {
+        path[0] = '\0';
     } else {
-        path[err] = 0;
+        path[err] = '\0';
         x = strrchr(path,'/');
-        if(x) x[1] = 0;
+        
+	if (x != NULL)
+	    x[1] = '\0';
     }
 }

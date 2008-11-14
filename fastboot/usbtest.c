@@ -35,8 +35,9 @@
 
 #include "usb.h"
 
-static unsigned arg_size = 4096;
-static unsigned arg_count = 4096;
+#define USBIO_BUF_SIZE 4096
+static size_t arg_size = USBIO_BUF_SIZE;
+static unsigned arg_count = USBIO_BUF_SIZE;
 
 long long NOW(void) 
 {
@@ -54,72 +55,90 @@ int printifc(usb_ifc_info *info)
            info->dev_vendor, info->dev_product);
     printf("ifc: csp=%02x/%02x/%02x%s%s\n",
            info->ifc_class, info->ifc_subclass, info->ifc_protocol,
-           info->has_bulk_in ? " in" : "",
-           info->has_bulk_out ? " out" : "");
+           info->has_bulk_in != 0 ? " in" : "",
+           info->has_bulk_out != 0 ? " out" : "");
     return -1;
 }
 
 int match_null(usb_ifc_info *info)
 {
-    if(info->dev_vendor != 0x18d1) return -1;
-    if(info->ifc_class != 0xff) return -1;
-    if(info->ifc_subclass != 0xfe) return -1;
-    if(info->ifc_protocol != 0x01) return -1;
+    if (info->dev_vendor != 0x18d1)
+	return -1;
+    if (info->ifc_class != 0xff)
+	return -1;
+    if (info->ifc_subclass != 0xfe)
+        return -1;
+    if (info->ifc_protocol != 0x01)
+	return -1;
+	
     return 0;
 }
 
 int match_zero(usb_ifc_info *info)
 {
-    if(info->dev_vendor != 0x18d1) return -1;
-    if(info->ifc_class != 0xff) return -1;
-    if(info->ifc_subclass != 0xfe) return -1;
-    if(info->ifc_protocol != 0x02) return -1;
+    if (info->dev_vendor != 0x18d1)
+	return -1;
+    if (info->ifc_class != 0xff)
+	return -1;
+    if (info->ifc_subclass != 0xfe)
+	return -1;
+    if (info->ifc_protocol != 0x02)
+	return -1;
     return 0;
 }
 
 int match_loop(usb_ifc_info *info)
 {
-    if(info->dev_vendor != 0x18d1) return -1;
-    if(info->ifc_class != 0xff) return -1;
-    if(info->ifc_subclass != 0xfe) return -1;
-    if(info->ifc_protocol != 0x03) return -1;
+    if (info->dev_vendor != 0x18d1)
+	return -1;
+    if (info->ifc_class != 0xff)
+	return -1;
+    if (info->ifc_subclass != 0xfe)
+	return -1;
+    if (info->ifc_protocol != 0x03)
+	return -1;
     return 0;
 }
 
 int test_null(usb_handle *usb)
 {
-    int i;
-    unsigned char buf[4096];
-    memset(buf, 0xee, 4096);
+    unsigned i;
+    unsigned char buf[USBIO_BUF_SIZE];
+    memset(buf, 0xee, USBIO_BUF_SIZE);
     long long t0, t1;
 
     t0 = NOW();
-    for(i = 0; i < arg_count; i++) {
-        if(usb_write(usb, buf, arg_size) != arg_size) {
-            fprintf(stderr,"write failed (%s)\n", strerror(errno));
+    
+    size_t size_to_write = arg_size < USBIO_BUF_SIZE ? arg_size : USBIO_BUF_SIZE;
+    
+    for (i = 0; i < arg_count; i++) {
+        if (usb_write(usb, buf, size_to_write) != size_to_write) {
+            fprintf(stderr, "write failed (%s)\n", strerror(errno));
             return -1;
         }
     }
     t1 = NOW();
-    fprintf(stderr,"%d bytes in %lld uS\n", arg_count * arg_size, (t1 - t0));
+    fprintf(stderr,"%lu bytes in %lld uS\n", arg_count * arg_size, (t1 - t0));
     return 0;
 }
 
 int test_zero(usb_handle *usb)
 {
-    int i;
-    unsigned char buf[4096];
+    unsigned i;
+    unsigned char buf[USBIO_BUF_SIZE];
     long long t0, t1;
     
     t0 = NOW();
-    for(i = 0; i < arg_count; i++) {
-        if(usb_read(usb, buf, arg_size) != arg_size) {
-            fprintf(stderr,"read failed (%s)\n", strerror(errno));
+    size_t size_to_read = arg_size < USBIO_BUF_SIZE ? arg_size : USBIO_BUF_SIZE;
+    
+    for (i = 0; i < arg_count; i++) {
+        if (usb_read(usb, buf, size_to_read) != size_to_read) {
+            fprintf(stderr, "read failed (%s)\n", strerror(errno));
             return -1;
         }
     }
     t1 = NOW();
-    fprintf(stderr,"%d bytes in %lld uS\n", arg_count * arg_size, (t1 - t0));
+    fprintf(stderr, "%lu bytes in %lld uS\n", arg_count * arg_size, (t1 - t0));
     return 0;
 }
 
@@ -141,34 +160,34 @@ int usage(void)
 {
     int i;
 
-    fprintf(stderr,"usage: usbtest <testname>\n\navailable tests:\n");
-    for(i = 0; tests[i].cmd; i++) {
-        fprintf(stderr," %-8s %s\n", tests[i].cmd, tests[i].help);
+    fprintf(stderr, "usage: usbtest <testname>\n\navailable tests:\n");
+    for (i = 0; tests[i].cmd; i++) {
+        fprintf(stderr, " %-8s %s\n", tests[i].cmd, tests[i].help);
     }
     return -1;
 }
 
 int process_args(int argc, char **argv)
 {
-    while(argc-- > 0) {
+    while (argc-- > 0) {
         char *arg = *argv++;
-        if(!strncmp(arg,"count=",6)) {
+        if (!strncmp(arg,"count=", 6)) {
             arg_count = atoi(arg + 6);
-        } else if(!strncmp(arg,"size=",5)) {
-            arg_size = atoi(arg + 5);
+        } else if (!strncmp(arg,"size=", 5)) {
+            arg_size = atol(arg + 5);
         } else {
-            fprintf(stderr,"unknown argument: %s\n", arg);
+            fprintf(stderr, "unknown argument: %s\n", arg);
             return -1;
         }
     }
 
-    if(arg_count == 0) {
-        fprintf(stderr,"count may not be zero\n");
+    if (arg_count == 0) {
+        fprintf(stderr, "count may not be zero\n");
         return -1;
     }
 
-    if(arg_size > 4096) {
-        fprintf(stderr,"size may not be greater than 4096\n");
+    if (arg_size > USBIO_BUF_SIZE) {
+        fprintf(stderr, "size may not be greater than 4096\n");
         return -1;
     }
 
@@ -180,28 +199,28 @@ int main(int argc, char **argv)
     usb_handle *usb;
     int i;
     
-    if(argc < 2)
+    if (argc < 2)
         return usage();
 
-    if(argc > 2) {
+    if (argc > 2) {
         if(process_args(argc - 2, argv + 2)) 
             return -1;
     }
 
-    for(i = 0; tests[i].cmd; i++) {
+    for (i = 0; tests[i].cmd; i++) {
         if(!strcmp(argv[1], tests[i].cmd)) {
             usb = usb_open(tests[i].match);
-            if(tests[i].test) {
-                if(usb == 0) {
-                    fprintf(stderr,"usbtest: %s: could not find interface\n",
+            if (tests[i].test) {
+                if (usb == NULL) {
+                    fprintf(stderr, "usbtest: %s: could not find interface\n",
                             tests[i].cmd);
                     return -1;
                 }
-                if(tests[i].test(usb)) {
-                    fprintf(stderr,"usbtest: %s: FAIL\n", tests[i].cmd);
+                if (tests[i].test(usb)) {
+                    fprintf(stderr, "usbtest: %s: FAIL\n", tests[i].cmd);
                     return -1;
                 } else {
-                    fprintf(stderr,"usbtest: %s: OKAY\n", tests[i].cmd);
+                    fprintf(stderr, "usbtest: %s: OKAY\n", tests[i].cmd);
                 }
             }
             return 0;

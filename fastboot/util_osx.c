@@ -29,18 +29,20 @@
 #import <Carbon/Carbon.h>
 #include <unistd.h>
 
-void get_my_path(char s[PATH_MAX])
+void get_my_path(char *s, size_t maxLen)
 {
-    char *x;
+    char *x = NULL;
     ProcessSerialNumber psn;
-    GetCurrentProcess(&psn);
     CFDictionaryRef dict;
+    
+    GetCurrentProcess(&psn);
     dict = ProcessInformationCopyDictionary(&psn, 0xffffffff);
     CFStringRef value = (CFStringRef)CFDictionaryGetValue(dict,
                 CFSTR("CFBundleExecutable"));
-    CFStringGetCString(value, s, PATH_MAX - 1, kCFStringEncodingUTF8);
+		
+    CFStringGetCString(value, s, maxLen, kCFStringEncodingUTF8);
     x = strrchr(s, '/');
-    if(x) x[1] = 0;
+    
+    if (x != NULL)
+	x[1] = '\0';
 }
-
-

@@ -30,23 +30,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <bootimg.h>
+#include "fastboot.h"
 
 void bootimg_set_cmdline(boot_img_hdr *h, const char *cmdline)
 {
-    strcpy((char*) h->cmdline, cmdline);
+    strcpy(h->cmdline, cmdline);
 }
 
-boot_img_hdr *mkbootimg(void *kernel, unsigned kernel_size,
-                        void *ramdisk, unsigned ramdisk_size,
-                        void *second, unsigned second_size,
-                        unsigned page_size, unsigned base,
-                        unsigned *bootimg_size)
+boot_img_hdr *mkbootimg(void *kernel, size_t kernel_size,
+                        void *ramdisk, size_t ramdisk_size,
+                        void *second, size_t second_size,
+                        size_t page_size, size_t base,
+                        size_t *bootimg_size)
 {
-    unsigned kernel_actual;
-    unsigned ramdisk_actual;
-    unsigned second_actual;
-    unsigned page_mask;
+    size_t kernel_actual;
+    size_t ramdisk_actual;
+    size_t second_actual;
+    size_t page_mask;
     boot_img_hdr *hdr;
     
     page_mask = page_size - 1;
@@ -59,7 +59,7 @@ boot_img_hdr *mkbootimg(void *kernel, unsigned kernel_size,
     
     hdr = calloc(*bootimg_size, 1);
     
-    if(hdr == 0) {
+    if (hdr == NULL) {
         return hdr;
     }
 
