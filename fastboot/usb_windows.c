@@ -58,7 +58,7 @@ struct usb_handle {
     ADBAPIHANDLE  adb_write_pipe;
     
     /// Interface name
-    char*         interface_name;
+    char          *interface_name;
 };
 
 /// Class ID assigned to the device by androidusb.sys
@@ -66,30 +66,30 @@ static const GUID usb_class_id = ANDROID_USB_CLASS_ID;
 
 
 /// Checks if interface (device) matches certain criteria
-int recognized_device(usb_handle* handle, ifc_match_func callback);
+int recognized_device(usb_handle *handle, ifc_match_func callback);
 
 /// Opens usb interface (device) by interface (device) name.
-usb_handle* do_usb_open(const wchar_t* interface_name);
+usb_handle *do_usb_open(const wchar_t *interface_name);
 
 /// Writes data to the opened usb handle
-int usb_write(usb_handle* handle, const void* data, int len);
+int usb_write(usb_handle *handle, const void *data, int len);
 
 /// Reads data using the opened usb handle
-int usb_read(usb_handle *handle, void* data, int len);
+int usb_read(usb_handle *handle, void *data, int len);
 
 /// Cleans up opened usb handle
-void usb_cleanup_handle(usb_handle* handle);
+void usb_cleanup_handle(usb_handle *handle);
 
 /// Cleans up (but don't close) opened usb handle
-void usb_kick(usb_handle* handle);
+void usb_kick(usb_handle *handle);
 
 /// Closes opened usb handle
-int usb_close(usb_handle* handle);
+int usb_close(usb_handle *handle);
 
 
-usb_handle* do_usb_open(const wchar_t* interface_name) {
+usb_handle *do_usb_open(const wchar_t *interface_name) {
     // Allocate our handle
-    usb_handle* ret = (usb_handle*)malloc(sizeof(usb_handle));
+    usb_handle *ret = (usb_handle *)malloc(sizeof(usb_handle));
     if (NULL == ret)
         return NULL;
 
@@ -150,7 +150,7 @@ usb_handle* do_usb_open(const wchar_t* interface_name) {
     return NULL;
 }
 
-int usb_write(usb_handle* handle, const void* data, int len) {
+int usb_write(usb_handle* handle, const void* data, size_t len) {
     unsigned long time_out = 500 + len * 8;
     unsigned long written = 0;
     unsigned count = 0;
@@ -192,24 +192,24 @@ int usb_write(usb_handle* handle, const void* data, int len) {
     return -1;
 }
 
-int usb_read(usb_handle *handle, void* data, int len) {
+int usb_read(usb_handle *handle, void *data, size_t len) {
     unsigned long time_out = 500 + len * 8;
     unsigned long read = 0;
     int ret;
 
-    DBG("usb_read %d\n", len);
+    DBG("usb_read %lu\n", len);
     if (NULL != handle) {
         while (1) {
             int xfer = (len > 4096) ? 4096 : len;
 
 	        ret = AdbReadEndpointSync(handle->adb_read_pipe,
-	                              (void*)data,
+	                              (void *)data,
 	                              (unsigned long)xfer,
 	                              &read,
 	                              time_out);
             errno = GetLastError();
-            DBG("usb_read got: %ld, expected: %d, errno: %d\n", read, xfer, errno);
-            if (ret) {
+            DBG("usb_read got: %lu, expected: %d, errno: %d\n", read, xfer, errno);
+            if (ret > 0) {
                 return read;
             } else if (errno != ERROR_SEM_TIMEOUT) {
                 // assume ERROR_INVALID_HANDLE indicates we are disconnected
@@ -229,7 +229,7 @@ int usb_read(usb_handle *handle, void* data, int len) {
     return -1;
 }
 
-void usb_cleanup_handle(usb_handle* handle) {
+void usb_cleanup_handle(usb_handle *handle) {
     if (NULL != handle) {
         if (NULL != handle->interface_name)
             free(handle->interface_name);
@@ -247,7 +247,7 @@ void usb_cleanup_handle(usb_handle* handle) {
     }
 }
 
-void usb_kick(usb_handle* handle) {
+void usb_kick(usb_handle *handle) {
     if (NULL != handle) {
         usb_cleanup_handle(handle);
     } else {
@@ -268,7 +268,7 @@ int usb_close(usb_handle* handle) {
     return 0;
 }
 
-int recognized_device(usb_handle* handle, ifc_match_func callback) {
+int recognized_device(usb_handle *handle, ifc_match_func callback) {
     struct usb_ifc_info info;
     USB_DEVICE_DESCRIPTOR device_desc;
     USB_INTERFACE_DESCRIPTOR interf_desc;
@@ -306,7 +306,7 @@ int recognized_device(usb_handle* handle, ifc_match_func callback) {
     unsigned long serial_number_len = sizeof(info.serial_number);
     if (!AdbGetSerialNumber(handle->adb_interface, info.serial_number,
                     &serial_number_len, true)) {
-        info.serial_number[0] = 0;
+        info.serial_number[0] = '\0';
     }
 
     if (callback(&info) == 0) {
@@ -317,12 +317,12 @@ int recognized_device(usb_handle* handle, ifc_match_func callback) {
 }
 
 static usb_handle *find_usb_device(ifc_match_func callback) {
-	usb_handle* handle = NULL;
+	usb_handle *handle = NULL;
     char entry_buffer[2048];
     char interf_name[2048];
-    AdbInterfaceInfo* next_interface = (AdbInterfaceInfo*)(&entry_buffer[0]);
-    unsigned long entry_buffer_size = sizeof(entry_buffer);
-    char* copy_name;
+    AdbInterfaceInfo *next_interface = (AdbInterfaceInfo *)(&entry_buffer[0]);
+    size_t  entry_buffer_size = sizeof(entry_buffer);
+    char *copy_name;
 
     // Enumerate all present and active interfaces.
     ADBAPIHANDLE enum_handle =
@@ -335,8 +335,8 @@ static usb_handle *find_usb_device(ifc_match_func callback) {
         // TODO(vchtchetkine): FIXME - temp hack converting wchar_t into char.
         // It would be better to change AdbNextInterface so it will return
         // interface name as single char string.
-        const wchar_t* wchar_name = next_interface->device_name;
-        for(copy_name = interf_name;
+        const wchar_t *wchar_name = next_interface->device_name;
+        for (copy_name = interf_name;
                 L'\0' != *wchar_name;
                 wchar_name++, copy_name++) {
             *copy_name = (char)(*wchar_name);
@@ -346,7 +346,7 @@ static usb_handle *find_usb_device(ifc_match_func callback) {
         handle = do_usb_open(next_interface->device_name);
         if (NULL != handle) {
             // Lets see if this interface (device) belongs to us
-            if (recognized_device(handle, callback)) {
+            if (recognized_device(handle, callback) != 0) {
                 // found it!
                 break;
             } else {

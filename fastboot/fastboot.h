@@ -29,29 +29,50 @@
 #ifndef _FASTBOOT_H_
 #define _FASTBOOT_H_
 
+#include <bootimg.h>
 #include "usb.h"
 
 /* protocol.c - fastboot protocol */
 int fb_command(usb_handle *usb, const char *cmd);
-int fb_command_response(usb_handle *usb, const char *cmd, char *response);
-int fb_download_data(usb_handle *usb, const void *data, unsigned size);
+int fb_command_response(usb_handle *usb, const char *cmd, char *response, size_t maxLen);
+int fb_download_data(usb_handle *usb, const void *data, size_t size);
 char *fb_get_error(void);
 
 #define FB_COMMAND_SZ 64
 #define FB_RESPONSE_SZ 64
 
 /* engine.c - high level command queue engine */
-void fb_queue_flash(const char *ptn, void *data, unsigned sz);;
+void fb_queue_flash(const char *ptn, void *data, size_t sz);;
 void fb_queue_erase(const char *ptn);
-void fb_queue_require(const char *var, int invert, unsigned nvalues, const char **value);
+void fb_queue_require(const char *var, int invert, size_t nvalues, const char **value);
 void fb_queue_display(const char *var, const char *prettyname);
 void fb_queue_reboot(void);
 void fb_queue_command(const char *cmd, const char *msg);
-void fb_queue_download(const char *name, void *data, unsigned size);
+void fb_queue_download(const char *name, void *data, size_t size);
 void fb_queue_notice(const char *notice);
 void fb_execute_queue(usb_handle *usb);
 
 /* util stuff */
 void die(const char *fmt, ...);
 
+/* maximum number of require/reject options */
+#define MAX_OPTIONS 32
+
+/* XXX: both macro below have side effects, cause argv && argc
+ *      are not parameters of macro
+ */
+#define skip(n) do { argc -= (n); argv += (n); } while (0)
+#define require(n) do { if (argc < (n)) usage(); } while (0)
+
+/* defined in bootimg.c */
+boot_img_hdr *mkbootimg(void *kernel, size_t kernel_size,
+                        void *ramdisk, size_t ramdisk_size,
+			void *second, size_t second_size,
+			size_t page_size, size_t *bootimg_size);
+			
+void bootimg_set_cmdline(boot_img_hdr *h, const char *cmdline);
+
+/* max error length in chars, see: protocol.c */							
+#define MAX_ERROR_STRLEN 128
+		
 #endif

@@ -36,19 +36,23 @@
 
 #include <windows.h>
 
-void get_my_path(char exe[PATH_MAX])
+void get_my_path(char *exe, size_t maxLen)
 {
-	char*  r;
+	char*  r = NULL;
 
-	GetModuleFileName( NULL, exe, PATH_MAX-1 );
-	exe[PATH_MAX-1] = 0;
-	r = strrchr( exe, '\\' );
-	if (r)
-		*r = 0;
+	/* XXX: should be GetModuleFileNameA */
+	if (GetModuleFileName( NULL, exe, maxLen ) > 0) {
+	    r = strrchr( exe, '\\' );
+	
+	    if (r != NULL)
+		r[1] = '\0';
+	} else {
+	    exe[0] = '\0';
+	}
 }
 
 
-void *load_file(const char *fn, unsigned *_sz)
+void *load_file(const char *fn, size_t *_sz)
 {
     HANDLE    file;
     char     *data;
@@ -69,9 +73,9 @@ void *load_file(const char *fn, unsigned *_sz)
     data      = NULL;
 
     if (file_size > 0) {
-        data = (char*) malloc( file_size );
+        data = (char *) malloc( file_size );
         if (data == NULL) {
-            fprintf(stderr, "load_file: could not allocate %ld bytes\n", file_size );
+            fprintf(stderr, "load_file: could not allocate %lu bytes\n", file_size );
             file_size = 0;
         } else {
             DWORD  out_bytes;
@@ -79,7 +83,7 @@ void *load_file(const char *fn, unsigned *_sz)
             if ( !ReadFile( file, data, file_size, &out_bytes, NULL ) ||
                  out_bytes != file_size )
             {
-                fprintf(stderr, "load_file: could not read %ld bytes from '%s'\n", file_size, fn);
+                fprintf(stderr, "load_file: could not read %lu bytes from '%s'\n", file_size, fn);
                 free(data);
                 data      = NULL;
                 file_size = 0;
@@ -88,6 +92,6 @@ void *load_file(const char *fn, unsigned *_sz)
     }
     CloseHandle( file );
 
-    *_sz = (unsigned) file_size;
+    *_sz = (size_t) file_size;
     return  data;
 }

@@ -26,8 +26,9 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _USB_H_
-#define _USB_H_
+/* NOTE: dev/usb/usb.h on FreeBSD uses _USB_H_ for armour header */
+#ifndef _ANDROID_USB_H_
+#define _ANDROID_USB_H_
 
 typedef struct usb_handle usb_handle;
 
@@ -57,8 +58,8 @@ typedef int (*ifc_match_func)(usb_ifc_info *ifc);
 
 usb_handle *usb_open(ifc_match_func callback);
 int usb_close(usb_handle *h);
-int usb_read(usb_handle *h, void *_data, int len);
-int usb_write(usb_handle *h, const void *_data, int len);
+int usb_read(usb_handle *h, void *_data, size_t len);
+int usb_write(usb_handle *h, const void *_data, size_t len);
 
 
 #endif
