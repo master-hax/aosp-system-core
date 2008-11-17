@@ -436,6 +436,33 @@ int do_sysclktz(int nargs, char **args)
     return 0;
 }
 
+int do_usleep(int nargs, char **args)
+{
+    int usecs, diff;
+    struct timeval left, now, then;
+
+    usecs = strtoul(args[1], NULL, 0);
+
+    left.tv_sec = usecs / 1000000;
+    left.tv_usec = usecs % 1000000;
+
+    gettimeofday(&now, NULL);
+    timeradd(&now, &left, &then);
+
+    while (left.tv_sec > 0 || (left.tv_sec == 0 && left.tv_usec > 0)) {
+        if (left.tv_sec == 0) {
+            usleep(left.tv_usec);
+        } else {
+            sleep(left.tv_sec);
+        }
+
+        gettimeofday(&now, NULL);
+        timersub(&then, &now, &left);
+    }
+
+    return 0;
+}
+
 int do_write(int nargs, char **args)
 {
     return write_file(args[1], args[2]);

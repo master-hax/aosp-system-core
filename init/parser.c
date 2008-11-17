@@ -194,6 +194,7 @@ int lookup_keyword(const char *s)
         break;
     case 'u':
         if (!strcmp(s, "ser")) return K_user;
+        if (!strcmp(s, "sleep")) return K_usleep;
         break;
     case 'w':
         if (!strcmp(s, "rite")) return K_write;

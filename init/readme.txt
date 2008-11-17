@@ -207,6 +207,9 @@ trigger <event>
    Trigger an event.  Used to queue an action from another
    action.
 
+usleep <usecs>
+   Sleep and block for <usecs> microseconds.
+
 write <path> <string> [ <string> ]*
    Open the file at <path> and write one or more strings
    to it with write(2)
