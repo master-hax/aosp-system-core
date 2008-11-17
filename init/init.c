@@ -70,8 +70,6 @@ static char hardware[32];
 static unsigned revision = 0;
 static char qemu[32];
 
-static void drain_action_queue(void);
-
 static void notify_service_state(const char *name, const char *state)
 {
     char pname[PROP_NAME_MAX];
@@ -629,7 +627,7 @@ static void get_hardware_name(void)
     }
 }
 
-static void drain_action_queue(void)
+void drain_action_queue(void)
 {
     struct listnode *node;
     struct command *cmd;
