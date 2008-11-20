@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <sys/mount.h>
 #include <sys/resource.h>
+#include <linux/loop.h>
 
 #include "init.h"
 #include "keywords.h"
@@ -234,7 +235,9 @@ int do_mount(int nargs, char **args)
     char *source;
     char *options = NULL;
     unsigned flags = 0;
-    int n, i;
+    int n, i, ret;
+    int mode, loop, fd;
+    struct loop_info info;
 
     for (n = 4; n < nargs; n++) {
         for (i = 0; mount_flags[i].name; i++) {
@@ -255,6 +258,31 @@ int do_mount(int nargs, char **args)
         if (n >= 0) {
             sprintf(tmp, "/dev/block/mtdblock%d", n);
             source = tmp;
+        }
+    } else if (!strncmp(source, "loop@", 5)) {
+        mode = (flags & MS_RDONLY) ? O_RDONLY : O_RDWR;
+        fd = open(source + 5, mode);
+        if (fd != -1) {
+            for (n = 0; ; n++) {
+                sprintf(tmp, "/dev/block/loop%d", n);
+                loop = open(tmp, mode);
+                if (loop == -1)
+                    break;
+
+                if (
+                    ioctl(loop, LOOP_GET_STATUS, &info) == -1 &&
+                    errno == ENXIO &&
+                    ioctl(loop, LOOP_SET_FD, fd) != -1
+                ) {
+                    source = tmp;
+                    close(loop);
+                    break;
+                }
+
+                close(loop);
+            }
+
+            close(fd);
         }
     }
     return mount(source, args[3], args[1], flags, options);
