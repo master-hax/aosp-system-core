@@ -44,6 +44,9 @@
 #include "init.h"
 #include "property_service.h"
 
+#include "pthread.h"
+static int uevent_devfd;
+
 #ifndef BOOTCHART
 # define  BOOTCHART  0
 #endif
@@ -667,6 +670,35 @@ void open_devnull_stdio(void)
     exit(1);
 }
 
+void *uevent_thread(void* arg)
+{
+    struct pollfd ufds;
+ 
+    if (uevent_devfd <= 0)
+        return NULL;
+
+    ufds.fd = uevent_devfd;
+    ufds.events = POLLIN;
+ 
+    for(;;) {
+        int nr, timeout = -1;
+
+        ufds.revents = 0;
+
+        nr = poll(&ufds, 1, timeout);
+        if (nr <= 0)
+            continue;
+
+        if (ufds.revents & POLLIN)
+            handle_device_fd(uevent_devfd);
+   }
+
+    return NULL;
+}
+
+#define PROP_FB 0
+#define SIG_FB 1
+
 int main(int argc, char **argv)
 {
     int device_fd = -1;
@@ -676,8 +708,10 @@ int main(int argc, char **argv)
     int fd;
     struct sigaction act;
     char tmp[PROP_VALUE_MAX];
-    struct pollfd ufds[4];
+    struct pollfd ufds[2];
     char *tmpdev;
+
+    pthread_t t;
 
     act.sa_handler = sigchld_handler;
     act.sa_flags = SA_NOCLDSTOP;
@@ -728,6 +762,8 @@ int main(int argc, char **argv)
 
     INFO("device init\n");
     device_fd = device_init();
+
+    uevent_devfd = device_fd;
 
     property_init();
 
@@ -814,6 +850,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    pthread_create(&t, NULL, uevent_thread, NULL);
+
     /* execute all the boot actions to get us started */
     action_for_each_trigger("early-boot", action_add_queue_tail);
     action_for_each_trigger("boot", action_add_queue_tail);
@@ -826,12 +864,10 @@ int main(int argc, char **argv)
         /* enable property triggers */   
     property_triggers_enabled = 1;     
 
-    ufds[0].fd = device_fd;
-    ufds[0].events = POLLIN;
-    ufds[1].fd = property_set_fd;
-    ufds[1].events = POLLIN;
-    ufds[2].fd = signal_recv_fd;
-    ufds[2].events = POLLIN;
+    ufds[PROP_FB].fd = property_set_fd;
+    ufds[PROP_FB].events = POLLIN;
+    ufds[SIG_FB].fd = signal_recv_fd;
+    ufds[SIG_FB].events = POLLIN;
 
 #if BOOTCHART
     if (bootchart_init() < 0)
@@ -845,9 +881,8 @@ int main(int argc, char **argv)
     for(;;) {
         int nr, timeout = -1;
 
-        ufds[0].revents = 0;
-        ufds[1].revents = 0;
-        ufds[2].revents = 0;
+        ufds[PROP_FB].revents = 0;
+        ufds[SIG_FB].revents = 0;
 
         drain_action_queue();
         restart_processes();
@@ -868,11 +903,11 @@ int main(int argc, char **argv)
             }
         }
 #endif
-        nr = poll(ufds, 3, timeout);
+        nr = poll(ufds, 2, timeout);
         if (nr <= 0)
             continue;
 
-        if (ufds[2].revents == POLLIN) {
+        if (ufds[SIG_FB].revents & POLLIN) {
             /* we got a SIGCHLD - reap and restart as needed */
             read(signal_recv_fd, tmp, sizeof(tmp));
             while (!wait_for_one_process(0))
@@ -880,10 +915,7 @@ int main(int argc, char **argv)
             continue;
         }
 
-        if (ufds[0].revents == POLLIN)
-            handle_device_fd(device_fd);
-
-        if (ufds[1].revents == POLLIN)
+        if (ufds[PROP_FB].revents & POLLIN)
             handle_property_set_fd(property_set_fd);
     }
 
