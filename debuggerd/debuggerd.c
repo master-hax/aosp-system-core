@@ -63,14 +63,16 @@ void _LOG(int tfd, bool in_tombstone_only, const char *fmt, ...)
     va_start(ap, fmt);
 
     if (tfd >= 0) {
-        int len;
+        size_t len;
         vsnprintf(buf, sizeof(buf), fmt, ap);
         len = strlen(buf);
-        if(tfd >= 0) write(tfd, buf, len);
+        write(tfd, buf, len);
     }
-
+    
     if (!in_tombstone_only)
         __android_log_vprint(ANDROID_LOG_INFO, "DEBUG", fmt, ap);
+	
+    va_end(ap);
 }
 
 #define LOG(fmt...) _LOG(-1, 0, fmt)
@@ -87,24 +89,27 @@ void _LOG(int tfd, bool in_tombstone_only, const char *fmt, ...)
 mapinfo *parse_maps_line(char *line)
 {
     mapinfo *mi;
-    int len = strlen(line);
+    size_t len = strlen(line);
 
-    if(len < 1) return 0;
-    line[--len] = 0;
+    if (len < 1) return NULL;
+    line[--len] = '\0';
     
-    if(len < 50) return 0;
-    if(line[20] != 'x') return 0;
+    if (len < 50) return NULL;
+    if (line[20] != 'x') return NULL;
 
     mi = malloc(sizeof(mapinfo) + (len - 47));
-    if(mi == 0) return 0;
+    if (mi == NULL) return NULL;
     
-    mi->start = strtoul(line, 0, 16);
-    mi->end = strtoul(line + 9, 0, 16);
+    mi->start = strtoul(line, NULL, 16);
+    mi->end = strtoul(line + 9, NULL, 16);
     /* To be filled in parse_exidx_info if the mapped section starts with 
      * elf_header
      */
     mi->exidx_start = mi->exidx_end = 0;
-    mi->next = 0;
+    mi->next = NULL;
+    
+    /* allocating memory for name + 1 for zero */
+    mi->name = malloc(len - 49 + 1);
     strcpy(mi->name, line + 49);
 
     return mi;
@@ -129,7 +134,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
     int sp_depth;
     bool only_in_tombstone = !at_fault;
 
-    if(ptrace(PTRACE_GETREGS, pid, 0, &r)) return;
+    if (ptrace(PTRACE_GETREGS, pid, NULL, &r)) return;
     sp = r.ARM_sp;
     pc = r.ARM_pc;
 
@@ -140,7 +145,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
         pc = r.ARM_lr;
     }
 
-    _LOG(tfd, true, "code%s:\n", frame0_pc_sane ? "" : " (around frame #01)");
+    _LOG(tfd, true, "code%s:\n", frame0_pc_sane != 0 ? "" : " (around frame #01)");
 
     end = p = pc & ~3;
     p -= 16;
@@ -194,7 +199,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
          char level[16];
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
          if (p == sp_list[sp_depth]) {
-             sprintf(level, "#%02d", sp_depth++);
+             snprintf(level, sizeof(level), "#%02d", sp_depth++);
              prompt = level;
          }
          else {
@@ -211,7 +216,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
     }
     /* print another 64-byte of stack data after the last frame */
 
-    end = p+64;
+    end = p + 64;
     while (p <= end) {
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
          _LOG(tfd, (sp_depth > 2) || only_in_tombstone, 
@@ -226,7 +231,7 @@ void dump_pc_and_lr(int tfd, int pid, mapinfo *map, int unwound_level,
 {
     struct pt_regs r;
 
-    if(ptrace(PTRACE_GETREGS, pid, 0, &r)) {
+    if (ptrace(PTRACE_GETREGS, pid, NULL, &r)) {
         _LOG(tfd, !at_fault, "tid %d not responding!\n", pid);
         return;
     }
@@ -244,7 +249,7 @@ void dump_registers(int tfd, int pid, bool at_fault)
     struct pt_regs r;
     bool only_in_tombstone = !at_fault;
 
-    if(ptrace(PTRACE_GETREGS, pid, 0, &r)) {
+    if (ptrace(PTRACE_GETREGS, pid, NULL, &r)) {
         _LOG(tfd, only_in_tombstone, 
              "cannot get registers: %s\n", strerror(errno));
         return;
@@ -263,7 +268,7 @@ void dump_registers(int tfd, int pid, bool at_fault)
 
 const char *get_signame(int sig)
 {
-    switch(sig) {
+    switch (sig) {
     case SIGILL:     return "SIGILL";
     case SIGABRT:    return "SIGABRT";
     case SIGBUS:     return "SIGBUS";
@@ -279,7 +284,7 @@ void dump_fault_addr(int tfd, int pid, int sig)
     siginfo_t si;
     
     memset(&si, 0, sizeof(si));
-    if(ptrace(PTRACE_GETSIGINFO, pid, 0, &si)){
+    if (ptrace(PTRACE_GETSIGINFO, pid, NULL, &si)){
         _LOG(tfd, false, "cannot get siginfo: %s\n", strerror(errno));
     } else {
         _LOG(tfd, false, "signal %d (%s), fault addr %08x\n",
@@ -290,13 +295,13 @@ void dump_fault_addr(int tfd, int pid, int sig)
 void dump_crash_banner(int tfd, unsigned pid, unsigned tid, int sig)
 {
     char data[1024];
-    char *x = 0;
+    char *x = NULL;
     FILE *fp;
     
-    sprintf(data, "/proc/%d/cmdline", pid);
+    snprintf(data, sizeof(data), "/proc/%d/cmdline", pid);
     fp = fopen(data, "r");
-    if(fp) {
-        x = fgets(data, 1024, fp);
+    if (fp != NULL) {
+        x = fgets(data, sizeof(data), fp);
         fclose(fp);
     }
     
@@ -304,12 +309,13 @@ void dump_crash_banner(int tfd, unsigned pid, unsigned tid, int sig)
          "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     dump_build_info(tfd);
     _LOG(tfd, false, "pid: %d, tid: %d  >>> %s <<<\n",
-         pid, tid, x ? x : "UNKNOWN");
+         pid, tid, x != NULL ? x : "UNKNOWN");
     
-    if(sig) dump_fault_addr(tfd, tid, sig);
+    if (sig) dump_fault_addr(tfd, tid, sig);
 }
 
-static void parse_exidx_info(mapinfo *milist, pid_t pid)
+static
+void parse_exidx_info(mapinfo *milist, pid_t pid)
 {
     mapinfo *mi;
     for (mi = milist; mi != NULL; mi = mi->next) {
@@ -330,7 +336,7 @@ static void parse_exidx_info(mapinfo *milist, pid_t pid)
             ptr = (Elf32_Phdr *) (mi->start + ehdr.e_phoff);
             for (i = 0; i < ehdr.e_phnum; i++) {
                 /* Parse the program header */
-                get_remote_struct(pid, (void *) ptr+i, &phdr, 
+                get_remote_struct(pid, (void *) ptr + i, &phdr, 
                                   sizeof(Elf32_Phdr));
                 /* Found a EXIDX segment? */
                 if (phdr.p_type == PT_ARM_EXIDX) {
@@ -347,7 +353,7 @@ void dump_crash_report(int tfd, unsigned pid, unsigned tid, bool at_fault)
 {
     char data[1024];
     FILE *fp;
-    mapinfo *milist = 0;
+    mapinfo *milist = NULL;
     unsigned int sp_list[STACK_CONTENT_DEPTH];
     int stack_depth;
     int frame0_pc_sane = 1;
@@ -363,12 +369,13 @@ void dump_crash_report(int tfd, unsigned pid, unsigned tid, bool at_fault)
     /* Clear stack pointer records */
     memset(sp_list, 0, sizeof(sp_list));
 
-    sprintf(data, "/proc/%d/maps", pid);
+    snprintf(data, sizeof(data), "/proc/%d/maps", pid);
     fp = fopen(data, "r");
-    if(fp) {
-        while(fgets(data, 1024, fp)) {
+    if (fp != NULL) {
+        while (fgets(data, sizeof(data), fp)) {
             mapinfo *mi = parse_maps_line(data);
-            if(mi) {
+            
+	    if (mi != NULL) {
                 mi->next = milist;
                 milist = mi;
             }
@@ -394,8 +401,9 @@ void dump_crash_report(int tfd, unsigned pid, unsigned tid, bool at_fault)
     dump_stack_and_code(tfd, tid, milist, stack_depth, sp_list, frame0_pc_sane,
                         at_fault);
 
-    while(milist) {
+    while (milist != NULL) {
         mapinfo *next = milist->next;
+	free(milist->name);
         free(milist);
         milist = next;
     }
@@ -412,19 +420,19 @@ void start_gdbserver_vs(int pid, int port)
     char pidspec[16];
     
     p = fork();
-    if(p < 0) {
+    if (p < 0) {
         LOG("could not fork()\n");
         return;
     }
 
-    if(p == 0) {
-        sprintf(commspec, ":%d", port);
-        sprintf(pidspec, "%d", pid);
+    if (p == 0) {
+        snprintf(commspec, sizeof(commspec), ":%d", port);
+        snprintf(pidspec, sizeof(pidspec), "%d", pid);
         args[0] = "/system/bin/gdbserver";
         args[1] = commspec;
         args[2] = "--attach";
         args[3] = pidspec;
-        args[4] = 0;
+        args[4] = NULL;
         exit(execv(args[0], args));
     } else {
         LOG("gdbserver pid=%d port=%d targetpid=%d\n",
@@ -437,7 +445,7 @@ void start_gdbserver_vs(int pid, int port)
 
 #define MAX_TOMBSTONES	10
 
-#define typecheck(x,y) {    \
+#define typecheck(x, y) {    \
     typeof(x) __dummy1;     \
     typeof(y) __dummy2;     \
     (void)(&__dummy1 == &__dummy2); }
@@ -449,7 +457,8 @@ void start_gdbserver_vs(int pid, int port)
  * form tombstone_XX where XX is 00 to MAX_TOMBSTONES-1, inclusive. If no
  * file is available, we reuse the least-recently-modified file.
  */
-static int find_and_open_tombstone(void)
+static
+int find_and_open_tombstone(void)
 {
     unsigned long mtime = ULONG_MAX;
     struct stat sb;
@@ -490,17 +499,20 @@ static int find_and_open_tombstone(void)
     /* we didn't find an available file, so we clobber the oldest one */
     snprintf(path, sizeof(path), TOMBSTONE_DIR"/tombstone_%02d", oldest);
     fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0600);
-    fchown(fd, AID_SYSTEM, AID_SYSTEM);
+    
+    if (fd >= 0)
+        fchown(fd, AID_SYSTEM, AID_SYSTEM);
 
     return fd;
 }
 
 /* Return true if some thread is not detached cleanly */
-static bool dump_sibling_thread_report(int tfd, unsigned pid, unsigned tid)
+static
+bool dump_sibling_thread_report(int tfd, unsigned pid, unsigned tid)
 {
     char task_path[1024];
 
-    sprintf(task_path, "/proc/%d/task", pid);
+    snprintf(task_path, sizeof(task_path), "/proc/%d/task", pid);
     DIR *d;
     struct dirent *de;
     int need_cleanup = 0;
@@ -522,25 +534,29 @@ static bool dump_sibling_thread_report(int tfd, unsigned pid, unsigned tid)
             continue;
 
         /* Skip this thread if cannot ptrace it */
-        if (ptrace(PTRACE_ATTACH, new_tid, 0, 0) < 0)
+        if (ptrace(PTRACE_ATTACH, new_tid, NULL, 0) < 0)
             continue;
 
         dump_crash_report(tfd, pid, new_tid, false);
-        need_cleanup |= ptrace(PTRACE_DETACH, new_tid, 0, 0);
+        need_cleanup |= ptrace(PTRACE_DETACH, new_tid, NULL, 0);
     }
     closedir(d);
     return need_cleanup != 0;
 }
 
 /* Return true if some thread is not detached cleanly */
-static bool engrave_tombstone(unsigned pid, unsigned tid, int debug_uid, 
-                              int signal)
+static
+bool engrave_tombstone(unsigned pid, unsigned tid, int debug_uid, 
+                       int signal)
 {
     int fd;
     bool need_cleanup = false;
 
-    mkdir(TOMBSTONE_DIR, 0755);
-    chown(TOMBSTONE_DIR, AID_SYSTEM, AID_SYSTEM);
+    if (mkdir(TOMBSTONE_DIR, 0755) < 0)
+	return need_cleanup;
+	
+    if (chown(TOMBSTONE_DIR, AID_SYSTEM, AID_SYSTEM) < 0)
+	return need_cleanup;
 
     fd = find_and_open_tombstone();
     if (fd < 0)
@@ -560,16 +576,16 @@ static bool engrave_tombstone(unsigned pid, unsigned tid, int debug_uid,
     return need_cleanup;
 }
 
-static int
-write_string(const char* file, const char* string)
+static
+int write_string(const char *file, const char *string)
 {
-    int len;
+    size_t len;
     int fd;
     ssize_t amt;
     fd = open(file, O_RDWR);
-    len = strlen(string);
     if (fd < 0)
         return -errno;
+    len = strlen(string);
     amt = write(fd, string, len);
     close(fd);
     return amt >= 0 ? 0 : -errno;
@@ -607,10 +623,12 @@ void disable_debug_led(void)
 
 extern int init_getevent();
 extern void uninit_getevent();
-extern int get_event(struct input_event* event, int timeout);
+extern int get_event(struct input_event *event, int timeout);
 
-static void wait_for_user_action(unsigned tid, struct ucred* cr)
+static
+void wait_for_user_action(unsigned tid, struct ucred *cr)
 {
+    /* XXX: any reason to exist for next line ? */
     (void)tid;
     /* First log a helpful message */
     LOG(    "********************************************************\n"
@@ -626,12 +644,13 @@ static void wait_for_user_action(unsigned tid, struct ucred* cr)
     if (init_getevent() == 0) {
         int ms = 1200 / 10;
         int dit = 1;
-        int dah = 3*dit;
+        int dah = 3 * dit;
         int _       = -dit;
-        int ___     = 3*_;
-        int _______ = 7*_;
-        const signed char codes[] = {
-           dit,_,dit,_,dit,___,dah,_,dah,_,dah,___,dit,_,dit,_,dit,_______
+        int ___     = 3 * _;
+        int _______ = 7 * _;
+        const int codes[] = {
+           dit, _, dit, _, dit, ___, dah, _, dah, _, dah, ___, dit, _, dit, _,
+           dit, _______
         };
         size_t s = 0;
         struct input_event e;
@@ -639,13 +658,13 @@ static void wait_for_user_action(unsigned tid, struct ucred* cr)
         init_debug_led();
         enable_debug_led();
         do {
-            int timeout = abs((int)(codes[s])) * ms;
+            int timeout = abs(codes[s]) * ms;
             int res = get_event(&e, timeout);
             if (res == 0) {
-                if (e.type==EV_KEY && e.code==KEY_HOME && e.value==0)
+                if (e.type == EV_KEY && e.code == KEY_HOME && e.value == 0)
                     home = 1;
             } else if (res == 1) {
-                if (++s >= sizeof(codes)/sizeof(*codes))
+                if (++s >= sizeof(codes) / sizeof(*codes))
                     s = 0;
                 if (codes[s] > 0) {
                     enable_debug_led();
@@ -653,7 +672,7 @@ static void wait_for_user_action(unsigned tid, struct ucred* cr)
                     disable_debug_led();
                 }
             }
-        } while (!home); 
+        } while (home == 0); 
         uninit_getevent();
     }
 
@@ -661,16 +680,18 @@ static void wait_for_user_action(unsigned tid, struct ucred* cr)
     disable_debug_led();
     
     /* close filedescriptor */
-    LOG("debuggerd resuming process %d", cr->pid);
- }
+    LOG("debuggerd resuming process %d\n", cr->pid);
+}
 
-static void handle_crashing_process(int fd)
+static
+void handle_crashing_process(int fd)
 {
     char buf[64];
     struct stat s;
     unsigned tid;
     struct ucred cr;
-    int n, len, status; 
+    int n, status; 
+    socklen_t len;
     int tid_attach_status = -1;
     unsigned retry = 30;
     bool need_cleanup = false;
@@ -683,17 +704,17 @@ static void handle_crashing_process(int fd)
     
     len = sizeof(cr);
     n = getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len);
-    if(n != 0) {
+    if (n != 0) {
         LOG("cannot get credentials\n");
         goto done;
     }
 
     XLOG("reading tid\n");    
     fcntl(fd, F_SETFL, O_NONBLOCK);
-    while((n = read(fd, &tid, sizeof(unsigned))) != sizeof(unsigned)) {
-        if(errno == EINTR) continue;
-        if(errno == EWOULDBLOCK) {
-            if(retry-- > 0) {
+    while ((n = read(fd, &tid, sizeof(unsigned))) != sizeof(unsigned)) {
+        if (errno == EINTR) continue;
+        if (errno == EWOULDBLOCK) {
+            if (retry-- > 0) {
                 usleep(100 * 1000);
                 continue;
             }
@@ -704,8 +725,8 @@ static void handle_crashing_process(int fd)
         goto done;
     }
 
-    sprintf(buf,"/proc/%d/task/%d", cr.pid, tid);
-    if(stat(buf, &s)) {
+    snprintf(buf, sizeof(buf), "/proc/%d/task/%d", cr.pid, tid);
+    if (stat(buf, &s)) {
         LOG("tid %d does not exist in pid %d. ignorning debug request\n",
             tid, cr.pid);
         close(fd);
@@ -714,8 +735,8 @@ static void handle_crashing_process(int fd)
     
     XLOG("BOOM: pid=%d uid=%d gid=%d tid=%d\n", cr.pid, cr.uid, cr.gid, tid);
 
-    tid_attach_status = ptrace(PTRACE_ATTACH, tid, 0, 0);
-    if(tid_attach_status < 0) {
+    tid_attach_status = ptrace(PTRACE_ATTACH, tid, NULL, NULL);
+    if (tid_attach_status < 0) {
         LOG("ptrace attach failed: %s\n", strerror(errno));
         goto done;
     }
@@ -723,24 +744,24 @@ static void handle_crashing_process(int fd)
     close(fd);
     fd = -1;
 
-    for(;;) {
+    for (;;) {
         n = waitpid(tid, &status, __WALL);
         
-        if(n < 0) {
-            if(errno == EAGAIN) continue;
+        if (n < 0) {
+            if( errno == EAGAIN) continue;
             LOG("waitpid failed: %s\n", strerror(errno));
             goto done;
         }
 
         XLOG("waitpid: n=%d status=%08x\n", n, status);
 
-        if(WIFSTOPPED(status)){
+        if (WIFSTOPPED(status)){
             n = WSTOPSIG(status);
-            switch(n) {
+            switch (n) {
             case SIGSTOP:
                 XLOG("stopped -- continuing\n");
-                n = ptrace(PTRACE_CONT, tid, 0, 0);
-                if(n) {
+                n = ptrace(PTRACE_CONT, tid, NULL, NULL);
+                if (n < 0) {
                     LOG("ptrace failed: %s\n", strerror(errno));
                     goto done;
                 }
@@ -781,7 +802,7 @@ done:
     if (tid_attach_status == 0) {
         int detach_status;
         /* detach so we can attach gdbserver */
-        detach_status = ptrace(PTRACE_DETACH, tid, 0, 0);
+        detach_status = ptrace(PTRACE_DETACH, tid, NULL, NULL);
         need_cleanup |= (detach_status != 0);
     }
 
@@ -804,7 +825,7 @@ done:
         kill(getpid(), SIGKILL);
     }
 
-    if(fd != -1) close(fd);
+    if (fd != -1) close(fd);
 }
 
 int main(int argc, char **argv)
@@ -816,7 +837,7 @@ int main(int argc, char **argv)
     
     logsocket = socket_local_client("logd", 
             ANDROID_SOCKET_NAMESPACE_ABSTRACT, SOCK_DGRAM);
-    if(logsocket < 0) {
+    if (logsocket < 0) {
         logsocket = -1;
     } else {
         fcntl(logsocket, F_SETFD, FD_CLOEXEC);
@@ -826,23 +847,23 @@ int main(int argc, char **argv)
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask,SIGCHLD);
     act.sa_flags = SA_NOCLDWAIT;
-    sigaction(SIGCHLD, &act, 0);
+    sigaction(SIGCHLD, &act, NULL);
     
     s = socket_local_server("android:debuggerd", 
             ANDROID_SOCKET_NAMESPACE_ABSTRACT, SOCK_STREAM);
-    if(s < 0) return -1;
+    if (s < 0) return -1;
     fcntl(s, F_SETFD, FD_CLOEXEC);
 
     LOG("debuggerd: " __DATE__ " " __TIME__ "\n");
     
-    for(;;) {
+    for (;;) {
         struct sockaddr addr;
         socklen_t alen;
         int fd;
         
         alen = sizeof(addr);
         fd = accept(s, &addr, &alen);
-        if(fd < 0) continue;
+        if (fd < 0) continue;
         
         fcntl(fd, F_SETFD, FD_CLOEXEC);
 

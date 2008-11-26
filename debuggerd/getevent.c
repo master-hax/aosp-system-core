@@ -32,10 +32,10 @@ static int open_device(const char *device)
         return -1;
     }
     
-    if(ioctl(fd, EVIOCGVERSION, &version)) {
+    if(ioctl(fd, EVIOCGVERSION, &version) == -1) {
         return -1;
     }
-    if(ioctl(fd, EVIOCGID, &id)) {
+    if(ioctl(fd, EVIOCGID, &id) == -1) {
         return -1;
     }
     name[sizeof(name) - 1] = '\0';
@@ -56,13 +56,13 @@ static int open_device(const char *device)
 
     new_ufds = realloc(ufds, sizeof(ufds[0]) * (nfds + 1));
     if(new_ufds == NULL) {
-        fprintf(stderr, "out of memory\n");
+        fprintf(stderr, "open_device(): failed to allocate memory for ufds\n");
         return -1;
     }
     ufds = new_ufds;
     new_device_names = realloc(device_names, sizeof(device_names[0]) * (nfds + 1));
     if(new_device_names == NULL) {
-        fprintf(stderr, "out of memory\n");
+        fprintf(stderr, "open_device(): failed to allocate memory for device names\n");
         return -1;
     }
     device_names = new_device_names;
@@ -109,15 +109,16 @@ static int read_notify(const char *dirname, int nfd)
     }
     //printf("got %d bytes of event information\n", res);
 
-    strcpy(devname, dirname);
-    filename = devname + strlen(devname);
+    strncpy(devname, dirname, PATH_MAX);
+    size_t devlen = strlen(devname);
+    filename = devname + devlen;
     *filename++ = '/';
 
     while(res >= (int)sizeof(*event)) {
         event = (struct inotify_event *)(event_buf + event_pos);
         //printf("%d: %08x \"%s\"\n", event->wd, event->mask, event->len ? event->name : "");
-        if(event->len) {
-            strcpy(filename, event->name);
+        if(event->len > 0) {
+            strncpy(filename, event->name, PATH_MAX - devlen - 1);
             if(event->mask & IN_CREATE) {
                 open_device(devname);
             }
@@ -141,15 +142,16 @@ static int scan_dir(const char *dirname)
     dir = opendir(dirname);
     if(dir == NULL)
         return -1;
-    strcpy(devname, dirname);
-    filename = devname + strlen(devname);
+    strncpy(devname, dirname, PATH_MAX);
+    size_t devlen = strlen(devname);
+    filename = devname + devlen;
     *filename++ = '/';
     while((de = readdir(dir))) {
         if(de->d_name[0] == '.' &&
            (de->d_name[1] == '\0' ||
             (de->d_name[1] == '.' && de->d_name[2] == '\0')))
             continue;
-        strcpy(filename, de->d_name);
+        strncpy(filename, de->d_name, PATH_MAX - devlen - 1);
         open_device(devname);
     }
     closedir(dir);
@@ -207,7 +209,7 @@ int get_event(struct input_event* event, int timeout)
                 if(ufds[i].revents & POLLIN) {
                     res = read(ufds[i].fd, event, sizeof(*event));
                     if(res < (int)sizeof(event)) {
-                        fprintf(stderr, "could not get event\n");
+                        fprintf(stderr, "get_event(): could not read event\n");
                         return -1;
                     }
                     return 0;
