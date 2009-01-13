@@ -18,6 +18,7 @@
 #include <sys/ptrace.h>
 #include <sys/exec_elf.h>
 #include <assert.h>
+#include <string.h>
 #include <errno.h>
 
 #include "utility.h"
@@ -66,10 +67,19 @@ const char *map_to_name(mapinfo *mi, unsigned pc, const char *def)
 }
 
 /* Find the containing map info for the pc */
-const mapinfo *pc_to_mapinfo(mapinfo *mi, unsigned pc)
+const mapinfo *pc_to_mapinfo(mapinfo *mi, unsigned pc, unsigned *rel_pc)
 {
+<<<<<<< HEAD   (fbbb2f Merge commit 'korg/master' into freebsd-port)
     while (mi != NULL) {
         if ((pc >= mi->start) && (pc < mi->end)) {
+=======
+    while(mi) {
+        if((pc >= mi->start) && (pc < mi->end)){
+            // Only calculate the relative offset for shared libraries
+            if (strstr(mi->name, ".so")) {
+                *rel_pc = pc - mi->start;
+            }
+>>>>>>> BRANCH (038862 Merge branch 'cupcake')
             return mi;
         }
         mi = mi->next;

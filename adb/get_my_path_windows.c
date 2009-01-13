@@ -20,8 +20,13 @@
 
 void get_my_path(char *exe, size_t maxLen)
 {
+<<<<<<< HEAD   (fbbb2f Merge commit 'korg/master' into freebsd-port)
 	char  *r;
+=======
+    char*  r;
+>>>>>>> BRANCH (038862 Merge branch 'cupcake')
 
+<<<<<<< HEAD   (fbbb2f Merge commit 'korg/master' into freebsd-port)
 	/* XXX: should be GetModuleFileNameA */
 	if (GetModuleFileName(NULL, exe, maxLen) > 0) {
 	    r = strrchr(exe, '\\');
@@ -30,5 +35,12 @@ void get_my_path(char *exe, size_t maxLen)
 	} else {
 	    exe[0] = '\0';
 	}
+=======
+    GetModuleFileName( NULL, exe, PATH_MAX-1 );
+    exe[PATH_MAX-1] = 0;
+    r = strrchr( exe, '\\' );
+    if (r)
+        *r = 0;
+>>>>>>> BRANCH (038862 Merge branch 'cupcake')
 }
 

@@ -48,6 +48,12 @@
 #define HAVE_FUTEX
 
 /*
+ * Define if we already have the futex wrapper functions defined. Yes if
+ * compiling against bionic.
+ */
+#define HAVE_FUTEX_WRAPPERS 1
+
+/*
  * Process creation model.  Choose one:
  *
  * HAVE_FORKEXEC - use fork() and exec()
@@ -240,6 +246,11 @@
  * What CPU architecture does this platform use?
  */
 #define ARCH_ARM
+
+/*
+ * Define if the size of enums is as short as possible,
+ */
+/* #define HAVE_SHORT_ENUMS */
 
 /*
  * sprintf() format string for shared library naming.
