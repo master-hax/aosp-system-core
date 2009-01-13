@@ -422,6 +422,11 @@ int do_sysclktz(int nargs, char **args)
     return 0;
 }
 
+int do_unlink(int nargs, char **args)
+{
+    return unlink(args[1]);
+}
+
 int do_write(int nargs, char **args)
 {
     return write_file(args[1], args[2]);
