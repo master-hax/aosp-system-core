@@ -144,7 +144,6 @@ void help()
         "  adb start-server             - ensure that there is a server running\n"
         "  adb kill-server              - kill the server if it is running\n"
         "  adb get-state                - prints: offline | bootloader | device\n"
-        "  adb get-product              - prints: <product-id>\n"
         "  adb get-serialno             - prints: <serial-number>\n"
         "  adb status-window            - continuously print device status for a specified device\n"
         "  adb remount                  - remounts the /system partition on the device read-write\n"
@@ -296,8 +295,8 @@ static void *stdin_read_thread(void *x)
                             buf_ptr[cmdlen] = '\0';
                             if( (item = shListFindItem( &history, (void *)buf_ptr, shItemCmp )) == NULL ) {
                                 shListInsFirstItem( &history, (void *)buf_ptr );
-				item = &history;
-			    }
+                                item = &history;
+                            }
                         }
                     }
                     cmdlen = 0;
@@ -322,8 +321,8 @@ static void *stdin_read_thread(void *x)
                 default:
 #ifdef SH_HISTORY
                     if( buf[n] == SH_DEL_CHAR ) {
-			if( cmdlen > 0 )
-                    	    cmdlen--;
+                        if( cmdlen > 0 )
+                            cmdlen--;
                     }
                     else {
                         realbuf[cmdlen] = buf[n];
@@ -377,82 +376,6 @@ int interactive_shell(void)
 }
 
 
-
-int adb_download_buffer(const char *service, const void* data, int sz,
-                        unsigned progress)
-{
-    char buf[4096];
-    unsigned total;
-    int fd;
-    const unsigned char *ptr;
-
-    snprintf(buf, sizeof buf, "%s:%d", service, sz);
-    fd = adb_connect(buf);
-    if(fd < 0) {
-        fprintf(stderr,"error: %s\n", adb_error());
-        return -1;
-    }
-
-    adb_socket_setbufsize(fd, CHUNK_SIZE);
-
-    total = sz;
-    ptr = data;
-
-    if(progress) {
-        char *x = strrchr(service, ':');
-        if(x) service = x + 1;
-    }
-
-    while(sz > 0) {
-        unsigned xfer = (sz > CHUNK_SIZE) ? CHUNK_SIZE : sz;
-        if(writex(fd, ptr, xfer)) {
-            adb_status(fd);
-            fprintf(stderr,"* failed to write data '%s' *\n", adb_error());
-            return -1;
-        }
-        sz -= xfer;
-        ptr += xfer;
-        if(progress) {
-            int percent = 100 - (int)(100.0 * ((float)sz / (float)total));
-            printf("sending: '%s' %4d%%    \r", service, percent);
-            fflush(stdout);
-        }
-    }
-    if(progress) {
-        printf("\n");
-    }
-
-    if(readx(fd, buf, 4)){
-        fprintf(stderr,"* error reading response *\n");
-        adb_close(fd);
-        return -1;
-    }
-    if(memcmp(buf, "OKAY", 4)) {
-        buf[4] = 0;
-        fprintf(stderr,"* error response '%s' *\n", buf);
-        adb_close(fd);
-        return -1;
-    }
-
-    adb_close(fd);
-    return 0;
-}
-
-
-int adb_download(const char *service, const char *fn, unsigned progress)
-{
-    void *data;
-    unsigned sz;
-
-    data = load_file(fn, &sz);
-    if(data == 0) {
-        fprintf(stderr,"* cannot read '%s' *\n", service);
-        return -1;
-    }
-
-    return adb_download_buffer(service, data, sz, progress);
-}
-
 static void format_host_command(char* buffer, size_t  buflen, const char* command, transport_type ttype, const char* serial)
 {
     if (serial) {
@@ -478,7 +401,7 @@ static void status_window(transport_type ttype, const char* serial)
 #ifdef _WIN32
     /* XXX: TODO */
 #else
-	int  fd;
+    int  fd;
     fd = unix_open("/dev/null", O_WRONLY);
     dup2(fd, 2);
     adb_close(fd);
@@ -512,7 +435,7 @@ static void status_window(transport_type ttype, const char* serial)
     }
 }
 
-/** duplicate string and quote all \ " ( ) chars */
+/** duplicate string and quote all \ " ( ) chars + space character. */
 static char *
 dupAndQuote(const char *s)
 {
@@ -527,7 +450,7 @@ dupAndQuote(const char *s)
 
     for( ;*ts != '\0'; ts++) {
         alloc_len++;
-        if (*ts == '"' || *ts == '\\') {
+        if (*ts == ' ' || *ts == '"' || *ts == '\\' || *ts == '(' || *ts == ')') {
             alloc_len++;
         }
     }
@@ -538,7 +461,7 @@ dupAndQuote(const char *s)
     dest = ret;
 
     for ( ;*ts != '\0'; ts++) {
-        if (*ts == '"' || *ts == '\\' || *ts == '(' || *ts == ')') {
+        if (*ts == ' ' || *ts == '"' || *ts == '\\' || *ts == '(' || *ts == ')') {
             *dest++ = '\\';
         }
 
@@ -561,7 +484,7 @@ int ppp(int argc, char **argv)
 {
 #ifdef HAVE_WIN32_PROC
     fprintf(stderr, "error: adb %s not implemented on Win32\n", argv[0]);
-	return -1;
+    return -1;
 #else
     char *adb_service_name;
     pid_t pid;
@@ -657,8 +580,8 @@ static int logcat(transport_type transport, char* serial, int argc, char **argv)
     quoted_log_tags = dupAndQuote(log_tags == NULL ? "" : log_tags);
 
     snprintf(buf, sizeof(buf),
-            "shell:export ANDROID_LOG_TAGS=\"\%s\" ; exec logcat",
-	    quoted_log_tags);
+        "shell:export ANDROID_LOG_TAGS=\"\%s\" ; exec logcat",
+        quoted_log_tags);
 
     free(quoted_log_tags);
 
@@ -676,13 +599,6 @@ static int logcat(transport_type transport, char* serial, int argc, char **argv)
 
     send_shellcommand(transport, serial, buf);
     return 0;
-}
-
-int adb_download_data(const char *what, const void* data, int sz, unsigned progress)
-{
-    char service[4096];
-    snprintf(service, sizeof service, "bootloader:flash:%s", what);
-    return adb_download_buffer(service, data, sz, 1);
 }
 
 #define SENTINEL_FILE "config" OS_PATH_SEPARATOR_STR "envsetup.make"
@@ -847,7 +763,7 @@ int adb_commandline(int argc, char **argv)
     if (gProductOutPath == NULL || gProductOutPath[0] == '\0') {
         gProductOutPath = NULL;
     }
-    // TODO: also try TARGET_PRODUCT as a hint
+    // TODO: also try TARGET_PRODUCT/TARGET_DEVICE as a hint
 
         /* modifiers and flags */
     while(argc > 0) {
@@ -977,32 +893,6 @@ top:
         }
     }
 
-    if(!strcmp(argv[0], "debug")) {
-        int fd = adb_connect("bootdebug:");
-        if(fd >= 0) {
-            read_and_dump(fd);
-            adb_close(fd);
-            return 0;
-        }
-        fprintf(stderr,"error: %s\n", adb_error());
-        return 1;
-    }
-
-    if(!strcmp(argv[0], "bl")) {
-        int fd;
-        if(argc != 2) return usage();
-        snprintf(buf, sizeof buf, "bootloader:%s", argv[1]);
-        fd = adb_connect(buf);
-        if(fd >= 0) {
-            read_and_dump(fd);
-            adb_close(fd);
-            return 0;
-        } else {
-            fprintf(stderr,"* command failed: %s *\n", adb_error());
-        }
-        return 1;
-    }
-
     if(!strcmp(argv[0], "kill-server")) {
         int fd;
         fd = _adb_connect("host:kill");
@@ -1024,27 +914,6 @@ top:
         return 1;
     }
 
-    /* adb_download() commands */
-
-    if(!strcmp(argv[0], "send")) {
-        if(argc != 3) return usage();
-        snprintf(buf, sizeof buf, "bootloader:send:%s", argv[1]);
-        if(adb_download(buf, argv[2], 1)) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    if(!strcmp(argv[0], "recover")) {
-        if(argc != 2) return usage();
-        if(adb_download("recover", argv[1], 1)) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
     if(!strcmp(argv[0], "bugreport")) {
         if (argc != 1) {
             return 1;
@@ -1057,9 +926,7 @@ top:
 
     if(!strncmp(argv[0], "wait-for-", strlen("wait-for-"))) {
         char* service = argv[0];
-        if (!strncmp(service, "wait-for-bootloader", strlen("wait-for-bootloader"))) {
-            fprintf(stderr,"WAIT FOR BOOTLOADER\n");
-        } else if (!strncmp(service, "wait-for-device", strlen("wait-for-device"))) {
+        if (!strncmp(service, "wait-for-device", strlen("wait-for-device"))) {
             if (ttype == kTransportUsb) {
                 service = "wait-for-usb";
             } else if (ttype == kTransportLocal) {
@@ -1077,15 +944,15 @@ top:
             return 1;
         }
 
-		/* Allow a command to be run after wait-for-device,
-		 * e.g. 'adb wait-for-device shell'.
-		 */
-		if(argc > 1) {
-			argc--;
-			argv++;
-			goto top;
-		}
-		return 0;
+        /* Allow a command to be run after wait-for-device,
+            * e.g. 'adb wait-for-device shell'.
+            */
+        if(argc > 1) {
+            argc--;
+            argv++;
+            goto top;
+        }
+        return 0;
     }
 
     if(!strcmp(argv[0], "forward")) {
@@ -1157,7 +1024,6 @@ top:
     /* passthrough commands */
 
     if(!strcmp(argv[0],"get-state") ||
-        !strcmp(argv[0],"get-product") ||
         !strcmp(argv[0],"get-serialno"))
     {
         char *tmp;
@@ -1299,7 +1165,7 @@ static int pm_command(transport_type transport, char* serial,
     while(argc-- > 0) {
         char *quoted;
 
-        quoted = dupAndQuote (*argv++);
+        quoted = dupAndQuote(*argv++);
 
         strncat(buf, " ", sizeof(buf)-1);
         strncat(buf, quoted, sizeof(buf)-1);
@@ -1312,6 +1178,18 @@ static int pm_command(transport_type transport, char* serial,
 
 int uninstall_app(transport_type transport, char* serial, int argc, char** argv)
 {
+    /* if the user choose the -k option, we refuse to do it until devices are
+       out with the option to uninstall the remaining data somehow (adb/ui) */
+    if (argc == 3 && strcmp(argv[1], "-k") == 0)
+    {
+        printf(
+            "The -k option uninstalls the application while retaining the data/cache.\n"
+            "At the moment, there is no way to remove the remaining data.\n"
+            "You will have to reinstall the application with the same signature, and fully uninstall it.\n"
+            "If you truly wish to continue, execute 'adb shell pm uninstall -k %s'\n", argv[2]);
+        return -1;
+    }
+
     /* 'adb uninstall' takes the same arguments as 'pm uninstall' on device */
     return pm_command(transport, serial, argc, argv);
 }

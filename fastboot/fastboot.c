@@ -47,6 +47,7 @@ static const char *serial = NULL;
 static const char *product = NULL;
 static const char *cmdline = NULL;
 static int wipe_data = 0;
+static unsigned short vendor_id = 0;
 
 void die(const char *fmt, ...)
 {
@@ -150,17 +151,18 @@ oops:
 
 int match_fastboot(usb_ifc_info *info)
 {
-    if ((info->dev_vendor != 0x18d1) &&
-        (info->dev_vendor != 0x0bb4))
+    if (!(vendor_id && (info->dev_vendor == vendor_id)) &&
+       (info->dev_vendor != 0x18d1) &&
+       (info->dev_vendor != 0x0bb4))
     {
-	return -1;
+        return -1;
     }
     if (info->ifc_class != 0xff)
-	return -1;
+        return -1;
     if (info->ifc_subclass != 0x42)
-	return -1;
+        return -1;
     if (info->ifc_protocol != 0x03)
-	return -1;
+        return -1;
     // require matching serial number if a serial number is specified
     // at the command line with the -s option.
     if (serial && strcmp(serial, info->serial_number))
@@ -233,6 +235,7 @@ void usage(void)
             "  -s <serial number>                       specify device serial number\n"
             "  -p <product>                             specify product name\n"
             "  -c <cmdline>                             override kernel commandline\n"
+            "  -i <vendor id>                           specify a custom USB vendor id\n"
         );
 	
     exit(1);
@@ -657,7 +660,17 @@ int main(int argc, char **argv)
             require(2);
             cmdline = argv[1];
             skip(2);
-        } else if (!strcmp(*argv, "getvar")) {
+        } else if (!strcmp(*argv, "-i")) {
+            char *endptr = NULL;
+            unsigned long val;
+
+            require(2);
+            val = strtoul(argv[1], &endptr, 0);
+            if (!endptr || *endptr != '\0' || (val & ~0xffff))
+                die("invalid vendor id '%s'", argv[1]);
+            vendor_id = (unsigned short)val;
+            skip(2);
+        } else if(!strcmp(*argv, "getvar")) {
             require(2);
             fb_queue_display(argv[1], argv[1]);
             skip(2);
