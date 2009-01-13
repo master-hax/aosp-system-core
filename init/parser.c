@@ -193,6 +193,7 @@ int lookup_keyword(const char *s)
         if (!strcmp(s, "rigger")) return K_trigger;
         break;
     case 'u':
+        if (!strcmp(s, "nlink")) return K_unlink;
         if (!strcmp(s, "ser")) return K_user;
         break;
     case 'w':
