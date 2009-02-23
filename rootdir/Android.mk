@@ -6,8 +6,12 @@ include $(CLEAR_VARS)
 copy_from := \
 	etc/mountd.conf \
 	etc/dbus.conf \
-	etc/init.goldfish.sh \
 	etc/hosts
+ifneq ($(TARGET_ARCH),x86)
+copy_from += etc/init.goldfish.sh
+else
+copy_from += etc/init.x86_generic.sh
+endif
 
 dont_copy := \
 	etc/init.gprs-pppd \
@@ -29,15 +33,27 @@ ALL_PREBUILT += $(copy_to)
 
 # Only copy init.rc if the target doesn't have its own.
 ifneq ($(TARGET_PROVIDES_INIT_RC),true)
+ifneq ($(TARGET_ARCH),x86)
 file := $(TARGET_ROOT_OUT)/init.rc
 $(file) : $(LOCAL_PATH)/init.rc | $(ACP)
 	$(transform-prebuilt-to-target)
+else #ifneq ($(TARGET_ARCH),x86)
+file := $(TARGET_ROOT_OUT)/init.rc
+$(file) : $(LOCAL_PATH)/init.x86.rc | $(ACP)
+	$(transform-prebuilt-to-target)
+endif
 ALL_PREBUILT += $(file)
 endif
 
+ifneq ($(TARGET_ARCH),x86)
 file := $(TARGET_ROOT_OUT)/init.goldfish.rc
 $(file) : $(LOCAL_PATH)/etc/init.goldfish.rc | $(ACP)
 	$(transform-prebuilt-to-target)
+else #ifneq ($(TARGET_ARCH),x86)
+file := $(TARGET_ROOT_OUT)/init.x86_generic.rc
+$(file) : $(LOCAL_PATH)/etc/init.x86_generic.rc | $(ACP)
+	$(transform-prebuilt-to-target)
+endif
 ALL_PREBUILT += $(file)
 	
 
