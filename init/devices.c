@@ -123,14 +123,22 @@ static struct perms_ devperms[] = {
     { "/dev/msm_pcm_ctl",   0660,   AID_SYSTEM,     AID_AUDIO,      1 },
     { "/dev/msm_snd",       0660,   AID_SYSTEM,     AID_AUDIO,      1 },
     { "/dev/msm_mp3",       0660,   AID_SYSTEM,     AID_AUDIO,      1 },
+<<<<<<< HEAD:init/devices.c
     { "/dev/msm_snd",       0660,   AID_SYSTEM,     AID_AUDIO,      1 },
+=======
+    { "/dev/msm_audpre",    0660,   AID_SYSTEM,     AID_AUDIO,      0 },
+    { "/dev/htc-acoustic",  0660,   AID_SYSTEM,     AID_AUDIO,      0 },
+>>>>>>> remotes/korg/cupcake:init/devices.c
     { "/dev/smd0",          0640,   AID_RADIO,      AID_RADIO,      0 },
     { "/dev/qmi",           0640,   AID_RADIO,      AID_RADIO,      0 },
     { "/dev/qmi0",          0640,   AID_RADIO,      AID_RADIO,      0 },
     { "/dev/qmi1",          0640,   AID_RADIO,      AID_RADIO,      0 },
     { "/dev/qmi2",          0640,   AID_RADIO,      AID_RADIO,      0 },
+<<<<<<< HEAD:init/devices.c
     { "/dev/htc-acoustic",  0640,   AID_RADIO,      AID_RADIO,      0 },
     { "/dev/snd/",          0664,   AID_SYSTEM,     AID_AUDIO,      1 },
+=======
+>>>>>>> remotes/korg/cupcake:init/devices.c
     { NULL, 0, 0, 0, 0 },
 };
 
