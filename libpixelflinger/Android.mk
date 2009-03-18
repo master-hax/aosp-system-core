@@ -48,9 +48,7 @@ ifeq ($(TARGET_ARCH),arm)
 PIXELFLINGER_CFLAGS += -fstrict-aliasing -fomit-frame-pointer
 endif
 
-LOCAL_SHARED_LIBRARIES := \
-	libhardware_legacy	\
-	libcutils
+LOCAL_SHARED_LIBRARIES := libcutils
 
 ifneq ($(TARGET_ARCH),arm)
 # Required to define logging functions on the simulator.
@@ -66,6 +64,7 @@ endif
 LOCAL_MODULE:= libpixelflinger
 LOCAL_SRC_FILES := $(PIXELFLINGER_SRC_FILES)
 LOCAL_CFLAGS := $(PIXELFLINGER_CFLAGS)
+<<<<<<< HEAD   (4a4c9f Merge branch 'cupcake')
 
 ifneq ($(BUILD_TINY_ANDROID),true)
 # this is for some qemu-tracing cruft, which
@@ -76,6 +75,14 @@ LOCAL_SHARED_LIBRARIES += libhardware
 LOCAL_CFLAGS += -DWITH_LIB_HARDWARE
 endif
 
+=======
+ifneq ($(BUILD_TINY_ANDROID),true)
+# Really this should go away entirely or at least not depend on
+# libhardware, but this at least gets us built.
+LOCAL_SHARED_LIBRARIES += libhardware_legacy
+LOCAL_CFLAGS += -DWITH_LIB_HARDWARE
+endif
+>>>>>>> BRANCH (e037fd auto import from //branches/cupcake_rel/...@138607)
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_WHOLE_STATIC_LIBRARIES := libpixelflinger_armv6
 endif
