@@ -13,6 +13,10 @@
 
 #include <cutils/ashmem.h>
 
+/* ALSO defined in dalvik/vm/alloc/HeapSource.c
+ */
+#define COPY_SHARED_HEAP 0
+
 /* It's a pain getting the mallinfo stuff to work
  * with Linux, OSX, and klibc, so just turn it off
  * for now.
@@ -90,6 +94,10 @@ struct mspace_contig_state {
   char *brk;
   char *top;
   mspace m;
+#ifdef COPY_SHARED_HEAP
+  char *copy;
+  size_t len;
+#endif
 };
 
 static void *contiguous_mspace_morecore(mstate m, ssize_t nb) {
@@ -134,9 +142,38 @@ assert(nb >= 0);  //xxx deal with the trim case
   return oldbrk;
 }
 
+void * create_contiguous_memory_with_name(size_t capacity, char const * name) {
+  void *base;
+  int fd;
+  unsigned int pagesize;
+  pagesize = PAGESIZE;
+
+  assert(name != 0);
+  assert((capacity & (pagesize-1)) == 0);
+  fd = ashmem_create_region(name, capacity);
+  if (fd < 0)
+    return (void *)0;
+
+  base = mmap(NULL, capacity, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+  close(fd);
+  if (base == MAP_FAILED)
+    return (void *)0;
+
+  /* Make sure that base is at the beginning of a page.
+   */
+  assert(((uintptr_t)base & (pagesize-1)) == 0);
+  return base;
+}
+
+size_t destroy_contiguous_memory(char * base, size_t length) {
+  if (munmap((char *)base, length) != 0)
+    return length;
+  return 0;
+}
+
 mspace create_contiguous_mspace_with_name(size_t starting_capacity,
     size_t max_capacity, int locked, char const * name) {
-  int fd, ret;
+  int ret;
   struct mspace_contig_state *cs;
   char buf[ASHMEM_NAME_LEN] = "mspace";
   void *base;
@@ -160,13 +197,8 @@ mspace create_contiguous_mspace_with_name(size_t starting_capacity,
 
   if (name)
     snprintf(buf, sizeof(buf), "mspace/%s", name);
-  fd = ashmem_create_region(buf, max_capacity);
-  if (fd < 0)
-    return (mspace)0;
-
-  base = mmap(NULL, max_capacity, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-  close(fd);
-  if (base == MAP_FAILED)
+  base = create_contiguous_memory_with_name(max_capacity, buf);
+  if (base == 0)
     return (mspace)0;
 
   /* Make sure that base is at the beginning of a page.
@@ -222,6 +254,59 @@ mspace create_contiguous_mspace(size_t starting_capacity,
       max_capacity, locked, NULL);
 }
 
+#ifdef COPY_SHARED_HEAP
+/* Pickle the given mspace's data.
+ */
+int copy_contiguous_mspace_data(mspace msp) {
+  mstate ms = (mstate)msp;
+
+  if (ok_magic(ms)) {
+    struct mspace_contig_state *cs;
+    size_t length;
+    size_t length_aligned;
+    const unsigned int pagesize = PAGESIZE;
+    void *base;
+
+    cs = (struct mspace_contig_state *)((uintptr_t)ms & ~(pagesize-1));
+    assert(cs->magic == CONTIG_STATE_MAGIC);
+    assert(cs->m == ms);
+
+    length = cs->brk - (char *)cs;
+    length_aligned = (size_t)ALIGN_UP(length, pagesize);
+    base = create_contiguous_memory_with_name(length_aligned,
+                                              "dalvik-heap/copy");
+    if (base == 0)
+      return 0;
+    memcpy(base, cs, length);
+
+    cs->copy = base;
+    cs->len = length_aligned;
+    return 1;
+  }
+  else {
+    USAGE_ERROR_ACTION(ms, ms);
+  }
+  return 0;
+}
+
+void * chunkptr_in_copy(mspace source_ms, const void * chunkptr) {
+  mstate source = (mstate)source_ms;
+  if (ok_magic(source)) {
+    struct mspace_contig_state *cs;
+    const unsigned int pagesize = PAGESIZE;
+    cs = (struct mspace_contig_state *)((uintptr_t)source & ~(pagesize-1));
+    assert(cs->magic == CONTIG_STATE_MAGIC);
+    assert(cs->m == ms);
+    /* assert chunkptr is in source_ms? */
+    return ((char *)chunkptr - (char *)cs) + cs->copy;
+  }
+  else {
+    USAGE_ERROR_ACTION(source_ms, source_ms);
+  }
+  return 0;
+}
+#endif
+
 size_t destroy_contiguous_mspace(mspace msp) {
   mstate ms = (mstate)msp;
 
@@ -229,14 +314,25 @@ size_t destroy_contiguous_mspace(mspace msp) {
     struct mspace_contig_state *cs;
     size_t length;
     const unsigned int pagesize = PAGESIZE;
+    size_t ret;
 
     cs = (struct mspace_contig_state *)((uintptr_t)ms & ~(pagesize-1));
     assert(cs->magic == CONTIG_STATE_MAGIC);
     assert(cs->m == ms);
 
+#ifdef COPY_SHARED_HEAP
+    if (cs->copy) {
+      destroy_contiguous_memory(cs->copy, cs->len);
+      /* fail silently. */
+      cs->copy = 0;
+      cs->len = 0;
+    }
+#endif
+
     length = cs->top - (char *)cs;
-    if (munmap((char *)cs, length) != 0)
-      return length;
+    ret = destroy_contiguous_memory((char *)cs, length);
+    if (ret != 0)
+      return ret;
   }
   else {
     USAGE_ERROR_ACTION(ms, ms);
