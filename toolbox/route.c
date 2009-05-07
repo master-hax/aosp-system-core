@@ -66,7 +66,7 @@ int route_main(int argc, char *argv[])
 				rt.rt_dst.sa_family = AF_INET;	
 				if(!strcmp(argv[0], "dev")) {
 				  EXPECT_NEXT(argc, argv);
-				  rt.rt_flags = RTF_UP | RTF_HOST;
+				  rt.rt_flags = RTF_UP;
 				  rt.rt_dev = argv[0];
 				  if (ioctl(s, SIOCADDRT, &rt) < 0) die("SIOCADDRT");
 				}else if(!strcmp(argv[0], "gw")) {
