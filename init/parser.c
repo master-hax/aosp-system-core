@@ -536,7 +536,7 @@ void queue_all_property_triggers()
             const char* name = act->name + strlen("property:");
             const char* equals = strchr(name, '=');
             if (equals) {
-                char* prop_name[PROP_NAME_MAX + 1];
+                char prop_name[PROP_NAME_MAX + 1];
                 const char* value;
                 int length = equals - name;
                 if (length > PROP_NAME_MAX) {
