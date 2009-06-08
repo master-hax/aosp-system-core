@@ -153,6 +153,7 @@ int match_fastboot(usb_ifc_info *info)
 {
     if (!(vendor_id && (info->dev_vendor == vendor_id)) &&
        (info->dev_vendor != 0x18d1) &&
+<<<<<<< HEAD   (9603f8 Merge commit 'korg/master' into freebsd-port)
        (info->dev_vendor != 0x0bb4))
     {
         return -1;
@@ -163,6 +164,13 @@ int match_fastboot(usb_ifc_info *info)
         return -1;
     if (info->ifc_protocol != 0x03)
         return -1;
+=======
+       (info->dev_vendor != 0x0451) &&
+       (info->dev_vendor != 0x0bb4)) return -1;
+    if(info->ifc_class != 0xff) return -1;
+    if(info->ifc_subclass != 0x42) return -1;
+    if(info->ifc_protocol != 0x03) return -1;
+>>>>>>> BRANCH (fa5bf9 Fix bug where ECONNABORTED would have always occured on asoc)
     // require matching serial number if a serial number is specified
     // at the command line with the -s option.
     if (serial && strcmp(serial, info->serial_number))
@@ -220,7 +228,7 @@ void usage(void)
             "\n"
             "commands:\n"
             "  update <filename>                        reflash device from update.zip\n"
-            "  flashall                                 'flash boot' + 'flash system'\n"
+            "  flashall                                 flash boot + recovery + system\n"
             "  flash <partition> [ <filename> ]         write a file to a flash partition\n"
             "  erase <partition>                        erase a flash partition\n"
             "  getvar <variable>                        display a bootloader variable\n"
@@ -697,9 +705,18 @@ int main(int argc, char **argv)
         } else if (!strcmp(*argv, "reboot-bootloader")) {
             wants_reboot_bootloader = 1;
             skip(1);
+<<<<<<< HEAD   (9603f8 Merge commit 'korg/master' into freebsd-port)
         } else if (!strcmp(*argv, "boot")) {
             char *kname = NULL;
             char *rname = NULL;
+=======
+        } else if (!strcmp(*argv, "continue")) {
+            fb_queue_command("continue", "resuming boot");
+            skip(1);
+        } else if(!strcmp(*argv, "boot")) {
+            char *kname = 0;
+            char *rname = 0;
+>>>>>>> BRANCH (fa5bf9 Fix bug where ECONNABORTED would have always occured on asoc)
             skip(1);
 	    
             if (argc > 0) {
