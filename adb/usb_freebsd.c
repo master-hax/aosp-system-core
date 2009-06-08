@@ -52,7 +52,7 @@
  *   working, but there is no guarantee that related code contains no
  *   error. code logics was based on usb_osx.c && usb_linux.c with
  *   some peeping to libusb.
-  */
+ */
 static adb_mutex_t usb_lock = ADB_MUTEX_INITIALIZER;
 
 struct usb_handle

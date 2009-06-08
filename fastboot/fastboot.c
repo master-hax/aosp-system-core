@@ -220,7 +220,7 @@ void usage(void)
             "\n"
             "commands:\n"
             "  update <filename>                        reflash device from update.zip\n"
-            "  flashall                                 'flash boot' + 'flash system'\n"
+            "  flashall                                 flash boot + recovery + system\n"
             "  flash <partition> [ <filename> ]         write a file to a flash partition\n"
             "  erase <partition>                        erase a flash partition\n"
             "  getvar <variable>                        display a bootloader variable\n"
@@ -697,7 +697,10 @@ int main(int argc, char **argv)
         } else if (!strcmp(*argv, "reboot-bootloader")) {
             wants_reboot_bootloader = 1;
             skip(1);
-        } else if (!strcmp(*argv, "boot")) {
+        } else if (!strcmp(*argv, "continue")) {
+            fb_queue_command("continue", "resuming boot");
+            skip(1);
+        } else if(!strcmp(*argv, "boot")) {
             char *kname = NULL;
             char *rname = NULL;
             skip(1);
