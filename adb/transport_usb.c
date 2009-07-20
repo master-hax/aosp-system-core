@@ -131,6 +131,8 @@ int is_adb_interface(int vid, int pid, int usb_class, int usb_subclass, int usb_
             /* might support adb */
     } else if (vid == VENDOR_ID_HTC) {
             /* might support adb */
+    } else if (vid == VENDOR_ID_SAMSUNG) {
+            /* might support adb */
     } else {
             /* not supported */
         return 0;

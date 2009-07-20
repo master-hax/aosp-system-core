@@ -318,8 +318,9 @@ static int find_usb_device(const char *base,
                     found_device = 1;
                     break;
                 } else {
-                        // skip to next interface
-                    bufptr += (interface->bNumEndpoints * USB_DT_ENDPOINT_SIZE);
+										// seek next config descriptor
+										if (i < interfaces-1)
+											while (bufptr[1] != USB_DT_INTERFACE) bufptr += bufptr[0];
                 }
             } // end of for
 

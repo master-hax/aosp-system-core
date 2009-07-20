@@ -361,6 +361,8 @@ typedef enum {
 #define VENDOR_ID_GOOGLE        0x18d1
 // HTC's USB Vendor ID
 #define VENDOR_ID_HTC           0x0bb4
+// Samsung's USB Vendor ID
+#define VENDOR_ID_SAMSUNG       0x04e8
 
 // products for VENDOR_ID_GOOGLE
 #define PRODUCT_ID_SOONER       0xd00d  // Sooner bootloader
@@ -369,6 +371,9 @@ typedef enum {
 // products for VENDOR_ID_HTC
 #define PRODUCT_ID_DREAM        0x0c01  // Dream bootloader
 #define PRODUCT_ID_DREAM_COMP   0x0c02  // Dream composite device
+
+// products for VENDOR_ID_SAMSUNG
+#define PRODUCT_ID_GALAXY_COMP  0x6640  // Galaxy composite device
 
 void local_init();
 int  local_connect(int  port);
