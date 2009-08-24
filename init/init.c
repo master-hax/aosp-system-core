@@ -59,6 +59,7 @@ static char baseband[32];
 static char carrier[32];
 static char bootloader[32];
 static char hardware[32];
+static char bootmedia[32] = "sdcard";
 static unsigned revision = 0;
 static char qemu[32];
 static struct input_keychord *keychords = 0;
@@ -577,6 +578,8 @@ static void import_kernel_nv(char *name, int in_qemu)
             strlcpy(bootloader, value, sizeof(bootloader));
         } else if (!strcmp(name,"androidboot.hardware")) {
             strlcpy(hardware, value, sizeof(hardware));
+        } else if (!strcmp(name,"androidboot.bootmedia")) {
+            strlcpy(bootmedia, value, sizeof(bootmedia));
         } else {
             qemu_cmdline(name, value);
         }
@@ -834,11 +837,16 @@ int main(int argc, char **argv)
     log_init();
     
     INFO("reading config file\n");
-    parse_config_file("/init.rc");
 
     /* pull the kernel commandline and ramdisk properties file in */
     qemu_init();
     import_kernel_cmdline(0);
+
+    /* parse bootmedia file first */
+    snprintf(tmp, sizeof(tmp), "/init.%s.rc", bootmedia);
+    parse_config_file(tmp);
+
+    parse_config_file("/init.rc");
 
     get_hardware_name();
     snprintf(tmp, sizeof(tmp), "/init.%s.rc", hardware);
