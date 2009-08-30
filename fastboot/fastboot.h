@@ -68,7 +68,8 @@ void die(const char *fmt, ...);
 boot_img_hdr *mkbootimg(void *kernel, size_t kernel_size,
                         void *ramdisk, size_t ramdisk_size,
 			void *second, size_t second_size,
-			size_t page_size, size_t *bootimg_size);
+			size_t page_size, size_t base,
+			size_t *bootimg_size);
 			
 void bootimg_set_cmdline(boot_img_hdr *h, const char *cmdline);
 
