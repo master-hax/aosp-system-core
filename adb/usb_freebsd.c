@@ -426,7 +426,7 @@ register_device(struct usb_handle *uh, int interface,  const char *serial)
     
         adb_mutex_unlock(&usb_lock);
 
-        register_usb_transport(usb, serial);
+        register_usb_transport(usb, serial, 1);
     
         return (1);
 
