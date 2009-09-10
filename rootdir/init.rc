@@ -270,7 +270,7 @@ service hcid /system/bin/hcid -s -n -f /etc/bluez/hcid.conf
     socket dbus_bluetooth stream 660 bluetooth bluetooth
     # init.rc does not yet support applying capabilities, so run as root and
     # let hcid drop uid to bluetooth with the right linux capabilities
-    group bluetooth net_bt_admin misc
+    group bluetooth net_bt_admin misc input
     disabled
 
 service hfag /system/bin/sdptool add --channel=10 HFAG
