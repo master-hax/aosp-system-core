@@ -40,6 +40,9 @@ PIXELFLINGER_SRC_FILES:= \
 	buffer.cpp
 
 ifeq ($(TARGET_ARCH),arm)
+ifeq ($(ARCH_ARM_HAVE_NEON),true)
+PIXELFLINGER_SRC_FILES += t32cb16blend_neon.S
+else
 PIXELFLINGER_SRC_FILES += t32cb16blend.S
 endif
 
