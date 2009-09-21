@@ -43,6 +43,8 @@
 #define VENDOR_ID_SAMSUNG       0x04e8
 // Motorola's USB Vendor ID
 #define VENDOR_ID_MOTOROLA      0x22b8
+// Acer's USB Vendor ID
+#define VENDOR_ID_ACER          0x0502
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
@@ -50,6 +52,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_HTC,
     VENDOR_ID_SAMSUNG,
     VENDOR_ID_MOTOROLA,
+    VENDOR_ID_ACER,
 };
 
 #define BUILT_IN_VENDOR_COUNT    (sizeof(builtInVendorIds)/sizeof(builtInVendorIds[0]))
