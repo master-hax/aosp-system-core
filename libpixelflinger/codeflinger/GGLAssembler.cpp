@@ -30,8 +30,13 @@ namespace android {
 
 // ----------------------------------------------------------------------------
 
+#ifdef ARCH_ARM
 GGLAssembler::GGLAssembler(ARMAssemblerInterface* target)
     : ARMAssemblerProxy(target), RegisterAllocator(), mOptLevel(7)
+#elif defined(ARCH_SH)
+GGLAssembler::GGLAssembler(SHAssemblerInterface* target)
+    : SHAssemblerProxy(target), RegisterAllocator(), mOptLevel(7)
+#endif
 {
 }
 
@@ -41,17 +46,29 @@ GGLAssembler::~GGLAssembler()
 
 void GGLAssembler::prolog()
 {
+#ifdef ARCH_ARM
     ARMAssemblerProxy::prolog();
+#elif defined(ARCH_SH)
+    SHAssemblerProxy::prolog();
+#endif
 }
 
 void GGLAssembler::epilog(uint32_t touched)
 {
+#ifdef ARCH_ARM
     ARMAssemblerProxy::epilog(touched);
+#elif defined(ARCH_SH)
+    SHAssemblerProxy::epilog(touched);
+#endif
 }
 
 void GGLAssembler::reset(int opt_level)
 {
+#ifdef ARCH_ARM
     ARMAssemblerProxy::reset();
+#elif defined(ARCH_SH)
+    SHAssemblerProxy::reset();
+#endif
     RegisterAllocator::reset();
     mOptLevel = opt_level;
 }
@@ -71,8 +88,13 @@ int GGLAssembler::scanline(const needs_t& needs, context_t const* c)
     }
     
     // XXX: in theory, pcForLabel is not valid before generate()
+#ifdef ARCH_ARM
     uint32_t* fragment_start_pc = pcForLabel("fragment_loop");
     uint32_t* fragment_end_pc = pcForLabel("epilog");
+#elif defined(ARCH_SH)
+    uint16_t* fragment_start_pc = pcForLabel("fragment_loop");
+    uint16_t* fragment_end_pc = pcForLabel("epilog");
+#endif
     const int per_fragment_ops = int(fragment_end_pc - fragment_start_pc);
     
     // build a name for our pipeline
@@ -105,7 +127,11 @@ int GGLAssembler::scanline_core(const needs_t& needs, context_t const* c)
     mSmooth    = GGL_READ_NEEDS(SHADE, needs.n) != 0;
     mBuilderContext.needs = needs;
     mBuilderContext.c = c;
+#ifdef ARCH_ARM
     mBuilderContext.Rctx = reserveReg(R0); // context always in R0
+#elif defined(ARCH_SH)
+    mBuilderContext.Rctx = reserveReg(R4); // context always in R4 : 1st arg
+#endif
     mCbFormat = c->formats[ GGL_READ_NEEDS(CB_FORMAT, needs.n) ];
 
     // ------------------------------------------------------------------------
@@ -204,12 +230,25 @@ int GGLAssembler::scanline_core(const needs_t& needs, context_t const* c)
 
         if (mDithering) {
             // update the dither index.
+#ifdef ARCH_ARM
             MOV(AL, 0, parts.count.reg,
                     reg_imm(parts.count.reg, ROR, GGL_DITHER_ORDER_SHIFT));
             ADD(AL, 0, parts.count.reg, parts.count.reg,
                     imm( 1 << (32 - GGL_DITHER_ORDER_SHIFT)));
             MOV(AL, 0, parts.count.reg,
                     reg_imm(parts.count.reg, ROR, 32 - GGL_DITHER_ORDER_SHIFT));
+#elif defined(ARCH_SH)
+            int Rn = regs.obtain();
+            // rotated to throw away over flow carry?
+            ROTR(GGL_DITHER_ORDER_SHIFT, parts.count.reg);
+
+            IMM(1, Rn);
+            SHLL(32 - GGL_DITHER_ORDER_SHIFT, Rn);
+            ADD(Rn, parts.count.reg);
+            // less insts than ROTR
+            ROTL(GGL_DITHER_ORDER_SHIFT, parts.count.reg);
+            regs.recycle(Rn);
+#endif
         }
 
         // XXX: could we do an early alpha-test here in some cases?
@@ -259,10 +298,27 @@ int GGLAssembler::scanline_core(const needs_t& needs, context_t const* c)
                 const int ctxtReg = mBuilderContext.Rctx;
                 const int mask = GGL_DITHER_SIZE-1;
                 parts.dither = reg_t(regs.obtain());
+#ifdef ARCH_ARM
                 AND(AL, 0, parts.dither.reg, parts.count.reg, imm(mask));
                 ADD(AL, 0, parts.dither.reg, parts.dither.reg, ctxtReg);
                 LDRB(AL, parts.dither.reg, parts.dither.reg,
                         immed12_pre(GGL_OFFSETOF(ditherMatrix)));
+#elif defined(ARCH_SH)
+                {
+                    Scratch scratches(registerFile());
+                    int Rn = scratches.obtain();
+                    IMM32(mask, Rn);
+                    AND(parts.count.reg, Rn);
+                    MOV(Rn, parts.dither.reg);
+
+                    ADD(ctxtReg, parts.dither.reg);
+
+                    IMM16(GGL_OFFSETOF(ditherMatrix), Rn);
+                    ADD(Rn, parts.dither.reg);
+                    MOV_LD_B(parts.dither.reg, parts.dither.reg); // sign extended
+                    EXTU_B(parts.dither.reg, parts.dither.reg);
+                }
+#endif
             }
         
             // allocate a register for the resulting pixel
@@ -318,8 +374,23 @@ int GGLAssembler::scanline_core(const needs_t& needs, context_t const* c)
     // update iterated fog
     build_iterate_f(parts);
 
+#ifdef ARCH_ARM
     SUB(AL, S, parts.count.reg, parts.count.reg, imm(1<<16));
     B(PL, "fragment_loop");
+#elif defined(ARCH_SH)
+    {
+        IMM(1, R0);
+        SHLL16(R0);
+        SUB(R0, parts.count.reg);
+        /* pay attention that ARM condition code 'PL' includes zero. */
+        CMP(PZ, parts.count.reg);
+        BF("f_loop_1");
+        BRA("fragment_loop");
+        NOP();  // Delay Slot
+
+        label("f_loop_1");
+    }
+#endif
     label("epilog");
     epilog(registerFile().touched());
 
@@ -332,11 +403,32 @@ int GGLAssembler::scanline_core(const needs_t& needs, context_t const* c)
         build_smooth_shade(parts);
         build_iterate_z(parts);
         build_iterate_f(parts);
+#ifdef ARCH_ARM
         if (!mAllMasked) {
             ADD(AL, 0, parts.cbPtr.reg, parts.cbPtr.reg, imm(parts.cbPtr.size>>3));
         }
         SUB(AL, S, parts.count.reg, parts.count.reg, imm(1<<16));
         B(PL, "fragment_loop");
+#elif defined(ARCH_SH)
+        {
+            Scratch scratches(registerFile());
+            int Rn = scratches.obtain();
+            if (!mAllMasked) {
+                IMM32(parts.cbPtr.size>>3, Rn);
+                ADD(Rn, parts.cbPtr.reg);
+            }
+            IMM(1, Rn);
+            SHLL16(Rn);
+            SUB(Rn, parts.count.reg);
+            /* pay attention that ARM condition code 'PL' includes zero. */
+            CMP(PZ, parts.count.reg);
+            BF("f_loop_2");
+            BRA("fragment_loop");
+            NOP();  // Delay Slot
+
+            label("f_loop_2");
+        }
+#endif
         epilog(registerFile().touched());
     }
 
@@ -361,8 +453,13 @@ void GGLAssembler::build_scanline_prolog(
     CONTEXT_LOAD(Ry, iterators.y);
 
     // parts.count = iterators.xr - Rx
+#ifdef ARCH_ARM
     SUB(AL, 0, parts.count.reg, parts.count.reg, Rx);
     SUB(AL, 0, parts.count.reg, parts.count.reg, imm(1));
+#elif defined(ARCH_SH)
+    SUB(Rx, parts.count.reg);
+    DT(parts.count.reg);
+#endif
 
     if (mDithering) {
         // parts.count.reg = 0xNNNNXXDD
@@ -372,14 +469,32 @@ void GGLAssembler::build_scanline_prolog(
         Scratch scratches(registerFile());
         int tx = scratches.obtain();
         int ty = scratches.obtain();
+#ifdef ARCH_ARM
         AND(AL, 0, tx, Rx, imm(GGL_DITHER_MASK));
         AND(AL, 0, ty, Ry, imm(GGL_DITHER_MASK));
         ADD(AL, 0, tx, tx, reg_imm(ty, LSL, GGL_DITHER_ORDER_SHIFT));
         ORR(AL, 0, parts.count.reg, tx, reg_imm(parts.count.reg, LSL, 16));
+#elif defined(ARCH_SH)
+        IMM32(GGL_DITHER_MASK, tx);
+        AND(Rx, tx);
+
+        IMM32(GGL_DITHER_MASK, ty);
+        AND(Ry, ty);
+
+        SHLL(GGL_DITHER_ORDER_SHIFT, ty);
+        ADD(ty, tx);
+
+        SHLL16(parts.count.reg);
+        OR(tx, parts.count.reg);
+#endif
     } else {
         // parts.count.reg = 0xNNNN0000
         // NNNN = count-1
+#ifdef ARCH_ARM
         MOV(AL, 0, parts.count.reg, reg_imm(parts.count.reg, LSL, 16));
+#elif defined(ARCH_SH)
+        SHLL16(parts.count.reg);
+#endif
     }
 
     if (!mAllMasked) {
@@ -390,7 +505,13 @@ void GGLAssembler::build_scanline_prolog(
         parts.cbPtr.setTo(obtainReg(), cb_bits);
         CONTEXT_LOAD(Rs, state.buffers.color.stride);
         CONTEXT_LOAD(parts.cbPtr.reg, state.buffers.color.data);
+#ifdef ARCH_ARM
         SMLABB(AL, Rs, Ry, Rs, Rx);  // Rs = Rx + Ry*Rs
+#elif defined(ARCH_SH)
+        MULS(Ry, Rs);
+        STS_MACL(Rs);
+        ADD(Rx, Rs);
+#endif
         base_offset(parts.cbPtr, parts.cbPtr, Rs);
         scratches.recycle(Rs);
     }
@@ -405,7 +526,14 @@ void GGLAssembler::build_scanline_prolog(
         int f = ydfdy;
         CONTEXT_LOAD(dfdx,  generated_vars.dfdx);
         CONTEXT_LOAD(ydfdy, iterators.ydfdy);
+#ifdef ARCH_ARM
         MLA(AL, 0, f, Rx, dfdx, ydfdy);
+#elif defined(ARCH_SH)
+        DMULS(dfdx, Rx);
+        STS_MACL(R0);
+        ADD(ydfdy, R0); // f = ydfdy
+        MOV(R0, f);
+#endif
         CONTEXT_STORE(f, generated_vars.f);
     }
 
@@ -418,7 +546,14 @@ void GGLAssembler::build_scanline_prolog(
         int ydzdy = parts.z.reg;
         CONTEXT_LOAD(dzdx,  generated_vars.dzdx);   // 1.31 fixed-point
         CONTEXT_LOAD(ydzdy, iterators.ydzdy);       // 1.31 fixed-point
+#ifdef ARCH_ARM
         MLA(AL, 0, parts.z.reg, Rx, dzdx, ydzdy);
+#elif defined(ARCH_SH)
+        DMULS(dzdx, Rx);
+        STS_MACL(R0);
+        ADD(ydzdy, R0);
+        MOV(R0, parts.z.reg);   // ydzdy = parts.z.reg
+#endif
 
         // we're going to index zbase of parts.count
         // zbase = base + (xl-count + stride*y)*2
@@ -426,10 +561,24 @@ void GGLAssembler::build_scanline_prolog(
         int zbase = scratches.obtain();
         CONTEXT_LOAD(Rs, state.buffers.depth.stride);
         CONTEXT_LOAD(zbase, state.buffers.depth.data);
+#ifdef ARCH_ARM
         SMLABB(AL, Rs, Ry, Rs, Rx);
         ADD(AL, 0, Rs, Rs, reg_imm(parts.count.reg, LSR, 16));
         ADD(AL, 0, zbase, zbase, reg_imm(Rs, LSL, 1));
         CONTEXT_STORE(zbase, generated_vars.zbase);
+#elif defined(ARCH_SH)
+        MULS(Ry, Rs);
+        STS_MACL(Rs);
+        ADD(Rx, Rs);
+
+        MOV(parts.count.reg, R0);
+        SHLR16(R0);
+        ADD(R0, Rs);
+
+        SHLL1(Rs);
+        ADD(Rs, zbase);
+        CONTEXT_STORE(zbase, generated_vars.zbase);
+#endif
     }
 
     // init texture coordinates
@@ -443,7 +592,12 @@ void GGLAssembler::build_scanline_prolog(
     if (mAA) {
         parts.covPtr.setTo(obtainReg(), 16);
         CONTEXT_LOAD(parts.covPtr.reg, state.buffers.coverage);
+#ifdef ARCH_ARM
         ADD(AL, 0, parts.covPtr.reg, parts.covPtr.reg, reg_imm(Rx, LSL, 1));
+#elif defined(ARCH_SH)
+        SHLL1(Rx); // breaks contents in Rx.
+        ADD(Rx, parts.covPtr.reg);
+#endif
     }
 }
 
@@ -550,7 +704,12 @@ void GGLAssembler::build_incoming_component(
             if (fragment.l) {
                 component_t incoming(fragment);
                 modify(fragment, regs);
+#ifdef ARCH_ARM
                 MOV(AL, 0, fragment.reg, reg_imm(incoming.reg, LSR, incoming.l));
+#elif defined(ARCH_SH)
+                MOV(incoming.reg, fragment.reg);
+                SHLR(incoming.l, fragment.reg);
+#endif
                 fragment.h -= fragment.l;
                 fragment.l = 0;
             }
@@ -569,8 +728,12 @@ void GGLAssembler::build_incoming_component(
                     mAlphaSource.setTo(fragment.reg,
                             fragment.size(), fragment.flags);
                     if (shift) {
+#ifdef ARCH_ARM
                         MOV(AL, 0, mAlphaSource.reg,
                             reg_imm(mAlphaSource.reg, LSR, shift));
+#elif defined(ARCH_SH)
+                        SHLR(shift, mAlphaSource.reg);
+#endif
                     }
                 } else {
                     // XXX: it would better to do this in build_blend_factor()
@@ -578,10 +741,19 @@ void GGLAssembler::build_incoming_component(
                     mAlphaSource.setTo(regs.obtain(),
                             fragment.size(), CORRUPTIBLE);
                     if (shift) {
+#ifdef ARCH_ARM
                         MOV(AL, 0, mAlphaSource.reg,
                             reg_imm(fragment.reg, LSR, shift));
+#elif defined(ARCH_SH)
+                        MOV(fragment.reg, mAlphaSource.reg);
+                        SHLR(shift, fragment.reg);
+#endif
                     } else {
+#ifdef ARCH_ARM
                         MOV(AL, 0, mAlphaSource.reg, fragment.reg);
+#elif defined(ARCH_SH)
+                        MOV(fragment.reg, mAlphaSource.reg);
+#endif
                     }
                 }
                 mAlphaSource.s -= shift;
@@ -648,7 +820,11 @@ void GGLAssembler::build_smooth_shade(const fragment_parts_t& parts)
             }
             
             if (mSmooth) {
+#ifdef ARCH_ARM
                 ADD(AL, 0, c, c, dx);
+#elif defined(ARCH_SH)
+                ADD(dx, c);
+#endif
             }
             
             if (reload & 1) {
@@ -677,6 +853,7 @@ void GGLAssembler::build_coverage_application(component_t& fragment,
 
         Scratch scratches(registerFile());
         int cf = scratches.obtain();
+#ifdef ARCH_ARM
         LDRH(AL, cf, parts.covPtr.reg, immed8_post(2));
         if (fragment.h > 31) {
             fragment.h--;
@@ -685,6 +862,21 @@ void GGLAssembler::build_coverage_application(component_t& fragment,
             MOV(AL, 0, fragment.reg, reg_imm(incoming.reg, LSL, 1));
             SMULWB(AL, fragment.reg, fragment.reg, cf);
         }
+#elif defined(ARCH_SH)
+        MOV_LD_W(parts.covPtr.reg, cf);   // sign extension
+        ADD_IMM(2, parts.covPtr.reg);
+        SHLL16(cf);
+        if (fragment.h > 31) {
+            fragment.h--;
+            DMULS(incoming.reg, cf);
+            STS_MACH(fragment.reg);
+        } else {
+            MOV(incoming.reg, R0);
+            SHLL1(R0);
+            DMULS(R0, cf);
+            STS_MACH(fragment.reg);
+        }
+#endif
     }
 }
 
@@ -699,6 +891,7 @@ void GGLAssembler::build_alpha_test(component_t& fragment,
         int ref = scratches.obtain();
         const int shift = GGL_COLOR_BITS-fragment.size();
         CONTEXT_LOAD(ref, state.alpha_test.ref);
+#ifdef ARCH_ARM
         if (shift) CMP(AL, fragment.reg, reg_imm(ref, LSR, shift));
         else       CMP(AL, fragment.reg, ref);
         int cc = NV;
@@ -712,6 +905,30 @@ void GGLAssembler::build_alpha_test(component_t& fragment,
         case GGL_GEQUAL:    cc = HS;    break;
         }
         B(cc^1, "discard_after_textures");
+#elif defined(ARCH_SH)
+        if (shift) {
+            SHLR(shift, ref);
+        }
+        int cc = NO_CMP;
+        int invert = 0;
+        switch (mAlphaTest) {
+        case GGL_NEVER:     cc = NO_CMP;                break;
+        case GGL_LESS:      cc = GE;      invert = 1;   break;
+        case GGL_EQUAL:     cc = EQ;                    break;
+        case GGL_LEQUAL:    cc = GT;      invert = 1;   break;
+        case GGL_GREATER:   cc = GT;                    break;
+        case GGL_NOTEQUAL:  cc = EQ;      invert = 1;   break;
+        case GGL_GEQUAL:    cc = GE;                    break;
+        }
+        if (cc == NO_CMP) {
+            BRA("discard_after_textures");
+            NOP();  // Delay Slot
+        } else {
+            CMP(cc, fragment.reg, ref);
+            invert ? BF("discard_after_textures")
+                   : BT("discard_after_textures");
+        }
+#endif
     }
 }
 
@@ -726,6 +943,7 @@ void GGLAssembler::build_depth_test(
     Scratch scratches(registerFile());
 
     if (mDepthTest != GGL_ALWAYS || zmask) {
+#ifdef ARCH_ARM
         int cc=AL, ic=AL;
         switch (mDepthTest) {
         case GGL_LESS:      ic = HI;    break;
@@ -748,6 +966,45 @@ void GGLAssembler::build_depth_test(
         
         // inverse the condition
         cc = ic^1;
+
+#elif defined(ARCH_SH)
+        int cc = NO_CMP;
+        int invert = 0;
+        switch (mDepthTest) {
+        case GGL_LESS:      cc = HS;    invert = 1;  break;
+                // ARM :
+                //       cc = LS  B()      if (depth <= (z >> 16))
+                //       ic = HI  STRH()   if (depth > (z >> 16))
+        case GGL_EQUAL:     cc = EQ;                 break;
+                // ARM :
+                //       cc = EQ  B()      if (depth == (z >> 16))
+                //       ic = NE  STRH()   if (depth != (z >> 16))
+        case GGL_LEQUAL:    cc = GT;    invert = 1;  break;
+                // ARM :
+                //       cc = LO  B()      if (depth < (z >> 16))
+                //       ic = HS  STRH()   if (depth >= (z >> 16))
+        case GGL_GREATER:   cc = GT;                 break;
+                // ARM :
+                //       cc = GE  B()      if (depth >= (z >> 16))  (signed)
+                //       ic = LT  STRH()   if (depth < (z >> 16))   (signed)
+        case GGL_NOTEQUAL:  cc = EQ;    invert = 1;  break;
+                // ARM :
+                //       cc = EQ  B()      if (depth == (z >> 16))
+                //       ic = NE  STRH()   if (depth != (z >> 16))
+        case GGL_GEQUAL:    cc = GE;                 break;
+        case GGL_NEVER:
+            // this never happens, because it's taken care of when
+            // computing the needs. but we keep it for completness.
+            comment("Depth Test (NEVER)");
+            BRA("discard_before_textures");
+            NOP();  // Delay Slot
+            return;
+        case GGL_ALWAYS:
+            // we're here because zmask is enabled
+            mask &= ~Z_TEST;    // test always passes.
+            break;
+        }
+#endif
         
         if ((mask & Z_WRITE) && !zmask) {
             mask &= ~Z_WRITE;
@@ -763,9 +1020,19 @@ void GGLAssembler::build_depth_test(
         int z = parts.z.reg;
         
         CONTEXT_LOAD(zbase, generated_vars.zbase);  // stall
+#ifdef ARCH_ARM
         SUB(AL, 0, zbase, zbase, reg_imm(parts.count.reg, LSR, 15));
+#elif defined(ARCH_SH)
+        int Rn = scratches.obtain(); /* no need to recycle()? */
+        MOV(parts.count.reg, Rn);
+        IMM(-15, R0);
+        SHLD(R0, Rn);
+        SUB(Rn, zbase);
+        scratches.recycle(Rn);
+#endif
             // above does zbase = zbase + ((count >> 16) << 1)
 
+#ifdef ARCH_ARM
         if (mask & Z_TEST) {
             LDRH(AL, depth, zbase);  // stall
             CMP(AL, depth, reg_imm(z, LSR, 16));
@@ -779,6 +1046,36 @@ void GGLAssembler::build_depth_test(
             MOV(AL, 0, depth, reg_imm(z, LSR, 16));
             STRH(ic, depth, zbase);
         }
+#elif defined(ARCH_SH)
+        if (mask & Z_TEST) {
+            MOV_LD_W(zbase, depth);   // sign extension
+            EXTU_W(depth, depth);
+            if (cc == NO_CMP) {
+                BRA("discard_before_textures");
+                NOP();  // Delay Slot
+            } else {
+                MOV(z, R0); // obtained before
+                SHLR16(R0);
+                CMP(cc, depth, R0);  // modifies T bit
+                invert ? BT("discard_before_textures")
+                       : BF("discard_before_textures");
+            }
+        }
+        if (mask & Z_WRITE) {
+            if (mask == Z_WRITE) {
+                MOV(z, depth);
+                SHLR16(depth);
+                MOV_ST_W(depth, zbase);
+            } else {
+                const char* local_label = genLabel();
+                (!invert) ? BF(local_label) : BT(local_label);
+                MOV(z, depth);
+                SHLR16(depth);
+                MOV_ST_W(depth, zbase);
+                label(local_label);
+            }
+        }
+#endif
     }
 }
 
@@ -789,7 +1086,11 @@ void GGLAssembler::build_iterate_z(const fragment_parts_t& parts)
         Scratch scratches(registerFile());
         int dzdx = scratches.obtain();
         CONTEXT_LOAD(dzdx, generated_vars.dzdx);    // stall
-        ADD(AL, 0, parts.z.reg, parts.z.reg, dzdx); 
+#ifdef ARCH_ARM
+        ADD(AL, 0, parts.z.reg, parts.z.reg, dzdx);
+#elif defined(ARCH_SH)
+        ADD(dzdx, parts.z.reg);
+#endif
     }
 }
 
@@ -802,7 +1103,11 @@ void GGLAssembler::build_iterate_f(const fragment_parts_t& parts)
         int f = scratches.obtain();
         CONTEXT_LOAD(f,     generated_vars.f);
         CONTEXT_LOAD(dfdx,  generated_vars.dfdx);   // stall
+#ifdef ARCH_ARM
         ADD(AL, 0, f, f, dfdx);
+#elif defined(ARCH_SH)
+        ADD(dfdx, f);
+#endif
         CONTEXT_STORE(f,    generated_vars.f);
     }
 }
@@ -825,6 +1130,7 @@ void GGLAssembler::build_logic_op(pixel_t& pixel, Scratch& regs)
     }
     
     pixel_t d(mDstPixel);
+#ifdef ARCH_ARM
     switch(opcode) {
     case GGL_CLEAR:         MOV(AL, 0, pixel.reg, imm(0));          break;
     case GGL_AND:           AND(AL, 0, pixel.reg, s.reg, d.reg);    break;
@@ -850,6 +1156,40 @@ void GGLAssembler::build_logic_op(pixel_t& pixel, Scratch& regs)
                             MVN(AL, 0, pixel.reg, pixel.reg);       break;
     case GGL_SET:           MVN(AL, 0, pixel.reg, imm(0));          break;
     };        
+#elif defined(ARCH_SH)
+    switch(opcode) {
+    case GGL_CLEAR:         IMM(0, pixel.reg);                      break;
+    case GGL_AND:           MOV(d.reg, pixel.reg);
+                            AND(s.reg, pixel.reg);                  break;
+    case GGL_AND_REVERSE:   NOT(d.reg, pixel.reg);
+                            AND(s.reg, pixel.reg);                  break;
+    case GGL_COPY:                                                  break;
+    case GGL_AND_INVERTED:  NOT(s.reg, pixel.reg);
+                            AND(d.reg, pixel.reg);                  break;
+    case GGL_NOOP:          MOV(d.reg, pixel.reg);                  break;
+    case GGL_XOR:           MOV(d.reg, pixel.reg);
+                            XOR(s.reg, pixel.reg);                  break;
+    case GGL_OR:            MOV(d.reg, pixel.reg);
+                            OR(s.reg, pixel.reg);                   break;
+    case GGL_NOR:           MOV(d.reg, pixel.reg);
+                            OR(s.reg, pixel.reg);
+                            NOT(pixel.reg, pixel.reg);              break;
+    case GGL_EQUIV:         MOV(d.reg, pixel.reg);
+                            XOR(s.reg, pixel.reg);
+                            NOT(pixel.reg, pixel.reg);              break;
+    case GGL_INVERT:        NOT(d.reg, pixel.reg);                  break;
+    case GGL_OR_REVERSE:    NOT(d.reg, pixel.reg);
+                            OR(s.reg, pixel.reg);                   break;
+    case GGL_COPY_INVERTED: NOT(s.reg, pixel.reg);                  break;
+    case GGL_OR_INVERTED:   NOT(s.reg, pixel.reg);
+                            OR(d.reg, pixel.reg);                   break;
+    case GGL_NAND:          MOV(s.reg, pixel.reg);
+                            AND(d.reg, pixel.reg);
+                            NOT(pixel.reg, pixel.reg);              break;
+    case GGL_SET:           IMM(0, pixel.reg);
+                            NOT(pixel.reg, pixel.reg);              break;
+    };
+#endif
 }
 
 // ---------------------------------------------------------------------------
@@ -885,11 +1225,17 @@ void GGLAssembler::build_and_immediate(int d, int s, uint32_t mask, int bits)
     mask &= size;
 
     if (mask == size) {
+#ifdef ARCH_ARM
         if (d != s)
             MOV( AL, 0, d, s);
+#elif defined(ARCH_SH)
+        if (d != s)
+            MOV(s, d);
+#endif
         return;
     }
     
+#ifdef ARCH_ARM
     int negative_logic = !isValidImmediate(mask);
     if (negative_logic) {
         mask = ~mask & size;
@@ -914,7 +1260,28 @@ void GGLAssembler::build_and_immediate(int d, int s, uint32_t mask, int bits)
     } else {
         MOV( AL, 0, d, imm(0));
     }
-}		
+#elif defined(ARCH_SH)
+    uint32_t imm;
+    int shift = 24;
+
+    imm = mask >> shift;
+    IMM(imm, R0);
+
+    while (shift) {
+        shift -= 8;
+        imm = (mask >> shift) & 0xFF;
+        SHLL8(R0);
+        if (imm)
+            OR_IMM(imm);
+    }
+    if (d == s)
+        AND(R0, d);
+    else {
+        AND(R0, s);
+        MOV(s, d);
+    }
+#endif
+}
 
 void GGLAssembler::build_masking(pixel_t& pixel, Scratch& regs)
 {
@@ -964,10 +1331,20 @@ void GGLAssembler::build_masking(pixel_t& pixel, Scratch& regs)
         if (s.reg == pixel.reg) {
             // ugh. this in in fact a nop
         } else {
+#ifdef ARCH_ARM
             MOV(AL, 0, pixel.reg, fb.reg);
+#elif defined(ARCH_SH)
+            MOV(fb.reg, pixel.reg);
+#endif
         }
     } else {
+#ifdef ARCH_ARM
         ORR(AL, 0, pixel.reg, s.reg, fb.reg);
+#elif defined(ARCH_SH)
+        MOV(fb.reg, R0);
+        OR(s.reg, R0);
+        MOV(R0, pixel.reg);
+#endif
     }
 }
 
@@ -978,9 +1355,17 @@ void GGLAssembler::base_offset(
 {
     switch (b.size) {
     case 32:
+#ifdef ARCH_ARM
         ADD(AL, 0, d.reg, b.reg, reg_imm(o.reg, LSL, 2));
+#elif defined(ARCH_SH)
+        MOV(o.reg, R0);
+        SHLL2(R0);
+        ADD(b.reg, R0);
+        MOV(R0, d.reg);
+#endif
         break;
     case 24:
+#ifdef ARCH_ARM
         if (d.reg == b.reg) {
             ADD(AL, 0, d.reg, b.reg, reg_imm(o.reg, LSL, 1));
             ADD(AL, 0, d.reg, d.reg, o.reg);
@@ -988,12 +1373,38 @@ void GGLAssembler::base_offset(
             ADD(AL, 0, d.reg, o.reg, reg_imm(o.reg, LSL, 1));
             ADD(AL, 0, d.reg, d.reg, b.reg);
         }
+#elif defined(ARCH_SH)
+        MOV(o.reg, R0);
+        SHLL1(R0);
+        if (d.reg == b.reg) {
+            ADD(b.reg, R0);
+            MOV(R0, d.reg);
+            ADD(o.reg, d.reg);
+        } else {
+            ADD(o.reg, R0);
+            MOV(R0, d.reg);
+            MOV(b.reg, d.reg);
+        }
+#endif
         break;
     case 16:
+#ifdef ARCH_ARM
         ADD(AL, 0, d.reg, b.reg, reg_imm(o.reg, LSL, 1));
+#elif defined(ARCH_SH)
+        MOV(o.reg, R0);
+        SHLL1(R0);
+        ADD(b.reg, R0);
+        MOV(R0, d.reg);
+#endif
         break;
     case 8:
+#ifdef ARCH_ARM
         ADD(AL, 0, d.reg, b.reg, o.reg);
+#elif defined(ARCH_SH)
+        MOV(o.reg, R0);
+        ADD(b.reg, R0);
+        MOV(R0, d.reg);
+#endif
         break;
     }
 }
@@ -1032,8 +1443,13 @@ RegisterAllocator::RegisterFile& RegisterAllocator::registerFile()
 RegisterAllocator::RegisterFile::RegisterFile()
     : mRegs(0), mTouched(0), mStatus(0)
 {
+#ifdef ARCH_ARM
     reserve(ARMAssemblerInterface::SP);
     reserve(ARMAssemblerInterface::PC);
+#elif defined(ARCH_SH)
+    reserve(SHAssemblerInterface::R0);
+    reserve(SHAssemblerInterface::SP);
+#endif
 }
 
 RegisterAllocator::RegisterFile::RegisterFile(const RegisterFile& rhs)
@@ -1053,8 +1469,13 @@ bool RegisterAllocator::RegisterFile::operator == (const RegisterFile& rhs) cons
 void RegisterAllocator::RegisterFile::reset()
 {
     mRegs = mTouched = mStatus = 0;
+#ifdef ARCH_ARM
     reserve(ARMAssemblerInterface::SP);
     reserve(ARMAssemblerInterface::PC);
+#elif defined(ARCH_SH)
+    reserve(SHAssemblerInterface::R0);
+    reserve(SHAssemblerInterface::SP);
+#endif
 }
 
 int RegisterAllocator::RegisterFile::reserve(int reg)
@@ -1081,10 +1502,15 @@ int RegisterAllocator::RegisterFile::isUsed(int reg) const
 
 int RegisterAllocator::RegisterFile::obtain()
 {
+#ifdef ARCH_ARM
     const char priorityList[14] = {  0,  1, 2, 3, 
                                     12, 14, 4, 5, 
                                      6,  7, 8, 9,
                                     10, 11 };
+#elif defined(ARCH_SH)
+    const char priorityList[15] = {  0,  1,  2,  3,  4,  5,  6,  7,
+                                     8,  9, 10, 11, 12, 13, 14 };
+#endif
     const int nbreg = sizeof(priorityList);
     int i, r;
     for (i=0 ; i<nbreg ; i++) {
@@ -1100,7 +1526,11 @@ int RegisterAllocator::RegisterFile::obtain()
         mStatus |= OUT_OF_REGISTERS;
         // we return SP so we can more easily debug things
         // the code will never be run anyway.
-        return ARMAssemblerInterface::SP; 
+#ifdef ARCH_ARM
+        return ARMAssemblerInterface::SP;
+#elif defined(ARCH_SH)
+        return SHAssemblerInterface::SP;
+#endif
     }
     reserve(r);
     return r;

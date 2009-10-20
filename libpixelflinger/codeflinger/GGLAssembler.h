@@ -24,18 +24,33 @@
 
 #include <private/pixelflinger/ggl_context.h>
 
+#ifdef ARCH_ARM
 #include "codeflinger/ARMAssemblerProxy.h"
+#elif defined(ARCH_SH)
+#include "codeflinger/SHAssemblerProxy.h"
+#endif
 
 
 namespace android {
 
 // ----------------------------------------------------------------------------
 
+#ifdef ARCH_ARM
 #define CONTEXT_LOAD(REG, FIELD) \
     LDR(AL, REG, mBuilderContext.Rctx, immed12_pre(GGL_OFFSETOF(FIELD)))
 
 #define CONTEXT_STORE(REG, FIELD) \
     STR(AL, REG, mBuilderContext.Rctx, immed12_pre(GGL_OFFSETOF(FIELD)))
+#elif defined(ARCH_SH)
+#define CONTEXT_LOAD(REG, FIELD) {              \
+    IMM16(GGL_OFFSETOF(FIELD), R0);             \
+    MOV_LD_L_R0(mBuilderContext.Rctx, REG);     \
+}
+#define CONTEXT_STORE(REG, FIELD) {             \
+    IMM16(GGL_OFFSETOF(FIELD), R0);             \
+    MOV_ST_L_R0(REG, mBuilderContext.Rctx);     \
+}
+#endif
 
 
 class RegisterAllocator
@@ -120,7 +135,11 @@ public:
     class Spill
     {
     public:
+#ifdef ARCH_ARM
         Spill(RegisterFile& regFile, ARMAssemblerInterface& gen, uint32_t reglist)
+#elif defined(ARCH_SH)
+        Spill(RegisterFile& regFile, SHAssemblerInterface& gen, uint32_t reglist)
+#endif
             : mRegFile(regFile), mGen(gen), mRegList(reglist), mCount(0)
         {
             if (reglist) {
@@ -129,30 +148,42 @@ public:
                     count++;
                     reglist &= ~(1 << (31 - __builtin_clz(reglist)));
                 }
+#ifdef ARCH_ARM
                 if (count == 1) {
                     int reg = 31 - __builtin_clz(mRegList);
                     mGen.STR(mGen.AL, reg, mGen.SP, mGen.immed12_pre(-4, 1));
                 } else {
                     mGen.STM(mGen.AL, mGen.DB, mGen.SP, 1, mRegList);
                 }
+#elif defined(ARCH_SH)
+                mGen.PUSH_REGS(mRegList);
+#endif
                 mRegFile.recycleSeveral(mRegList);
                 mCount = count;
             }
         }
         ~Spill() {
             if (mRegList) {
+#ifdef ARCH_ARM
                 if (mCount == 1) {
                     int reg = 31 - __builtin_clz(mRegList);
                     mGen.LDR(mGen.AL, reg, mGen.SP, mGen.immed12_post(4));
                 } else {
                     mGen.LDM(mGen.AL, mGen.IA, mGen.SP, 1, mRegList);
                 }
+#elif defined(ARCH_SH)
+                mGen.POP_REGS(mRegList);
+#endif
                 mRegFile.reserveSeveral(mRegList);
             }
         }
     private:
         RegisterFile&           mRegFile;
+#ifdef ARCH_ARM
         ARMAssemblerInterface&  mGen;
+#elif defined(ARCH_SH)
+        SHAssemblerInterface&   mGen;
+#endif
         uint32_t                mRegList;
         int                     mCount;
     };
@@ -163,11 +194,19 @@ private:
 
 // ----------------------------------------------------------------------------
 
+#ifdef ARCH_ARM
 class GGLAssembler : public ARMAssemblerProxy, public RegisterAllocator
+#elif defined(ARCH_SH)
+class GGLAssembler : public SHAssemblerProxy, public RegisterAllocator
+#endif
 {
 public:
 
+#ifdef ARCH_ARM
                     GGLAssembler(ARMAssemblerInterface* target);
+#elif defined(ARCH_SH)
+                    GGLAssembler(SHAssemblerInterface* target);
+#endif
         virtual     ~GGLAssembler();
 
     uint32_t*   base() const { return 0; } // XXX

@@ -31,7 +31,11 @@
 
 #include "codeflinger/CodeCache.h"
 #include "codeflinger/GGLAssembler.h"
+#ifdef ARCH_ARM
 #include "codeflinger/ARMAssembler.h"
+#elif defined(ARCH_SH)
+#include "codeflinger/SHAssembler.h"
+#endif
 //#include "codeflinger/ARMAssemblerOptimizer.h"
 
 // ----------------------------------------------------------------------------
@@ -53,6 +57,12 @@
 #   define ANDROID_ARM_CODEGEN  1
 #else
 #   define ANDROID_ARM_CODEGEN  0
+#endif
+
+#if defined(ARCH_SH)
+#   define ANDROID_SH_CODEGEN   1
+#else
+#   define ANDROID_SH_CODEGEN   0
 #endif
 
 #define DEBUG__CODEGEN_ONLY     0
@@ -92,6 +102,7 @@ static void rect_generic(context_t* c, size_t yc);
 static void rect_memcpy(context_t* c, size_t yc);
 
 extern "C" void scanline_t32cb16blend_arm(uint16_t*, uint32_t*, size_t);
+extern "C" void scanline_t32cb16blend_sh(uint16_t*, uint32_t*, size_t);
 extern "C" void scanline_t32cb16_arm(uint16_t *dst, uint32_t *src, size_t ct);
 
 // ----------------------------------------------------------------------------
@@ -148,7 +159,7 @@ static  const needs_filter_t fill16noblend = {
 
 // ----------------------------------------------------------------------------
 
-#if ANDROID_ARM_CODEGEN
+#if ANDROID_ARM_CODEGEN || ANDROID_SH_CODEGEN
 static CodeCache gCodeCache(12 * 1024);
 
 class ScanlineAssembly : public Assembly {
@@ -173,7 +184,7 @@ void ggl_uninit_scanline(context_t* c)
 {
     if (c->state.buffers.coverage)
         free(c->state.buffers.coverage);
-#if ANDROID_ARM_CODEGEN
+#if ANDROID_ARM_CODEGEN || ANDROID_SH_CODEGEN
     if (c->scanline_as)
         c->scanline_as->decStrong(c);
 #endif
@@ -242,7 +253,7 @@ static void pick_scanline(context_t* c)
     c->init_y = init_y;
     c->step_y = step_y__generic;
 
-#if ANDROID_ARM_CODEGEN
+#if ANDROID_ARM_CODEGEN || ANDROID_SH_CODEGEN
     // we're going to have to generate some code...
     // here, generate code for our pixel pipeline
     const AssemblyKey<needs_t> key(c->state.needs);
@@ -252,7 +263,11 @@ static void pick_scanline(context_t* c)
         sp<ScanlineAssembly> a = new ScanlineAssembly(c->state.needs, 
                 ASSEMBLY_SCRATCH_SIZE);
         // initialize our assembler
+#if ANDROID_ARM_CODEGEN
         GGLAssembler assembler( new ARMAssembler(a) );
+#elif ANDROID_SH_CODEGEN
+        GGLAssembler assembler( new SHAssembler(a) );
+#endif
         //GGLAssembler assembler(
         //        new ARMAssemblerOptimizer(new ARMAssembler(a)) );
         // generate the scanline code for the given needs
@@ -308,7 +323,8 @@ static void blend_factor(context_t* c, pixel_t* r, uint32_t factor,
         const pixel_t* src, const pixel_t* dst);
 static void rescale(uint32_t& u, uint8_t& su, uint32_t& v, uint8_t& sv);
 
-#if ANDROID_ARM_CODEGEN && (ANDROID_CODEGEN == ANDROID_CODEGEN_GENERATED)
+#if (ANDROID_ARM_CODEGEN || ANDROID_SH_CODEGEN) && \
+        (ANDROID_CODEGEN == ANDROID_CODEGEN_GENERATED)
 
 // no need to compile the generic-pipeline, it can't be reached
 void scanline(context_t*)
@@ -783,7 +799,7 @@ discard:
 	}
 }
 
-#endif // ANDROID_ARM_CODEGEN && (ANDROID_CODEGEN == ANDROID_CODEGEN_GENERATED)
+#endif // ANDROID_*_CODEGEN && (ANDROID_CODEGEN == ANDROID_CODEGEN_GENERATED)
 
 // ----------------------------------------------------------------------------
 #if 0
@@ -1323,6 +1339,8 @@ void scanline_t32cb16blend(context_t* c)
 
 #if ((ANDROID_CODEGEN >= ANDROID_CODEGEN_ASM) && defined(__arm__))
     scanline_t32cb16blend_arm(dst, src, ct);
+#elif ((ANDROID_CODEGEN >= ANDROID_CODEGEN_SH) && defined(ARCH_SH))
+    scanline_t32cb16blend_sh(dst, src, ct);
 #else
     while (ct--) {
         uint32_t s = *src++;
@@ -1474,7 +1492,7 @@ void rect_memcpy(context_t* c, size_t yc)
 using namespace android;
 extern "C" void ggl_test_codegen(uint32_t n, uint32_t p, uint32_t t0, uint32_t t1)
 {
-#if ANDROID_ARM_CODEGEN
+#if ANDROID_ARM_CODEGEN || ANDROID_SH_CODEGEN
     GGLContext* c;
     gglInit(&c);
     needs_t needs;
@@ -1483,14 +1501,18 @@ extern "C" void ggl_test_codegen(uint32_t n, uint32_t p, uint32_t t0, uint32_t t
     needs.t[0] = t0;
     needs.t[1] = t1;
     sp<ScanlineAssembly> a(new ScanlineAssembly(needs, ASSEMBLY_SCRATCH_SIZE));
+#if ANDROID_ARM_CODEGEN
     GGLAssembler assembler( new ARMAssembler(a) );
+#elif ANDROID_SH_CODEGEN
+    GGLAssembler assembler( new SHAssembler(a) );
+#endif
     int err = assembler.scanline(needs, (context_t*)c);
     if (err != 0) {
         printf("error %08x (%s)\n", err, strerror(-err));
     }
     gglUninit(c);
 #else
-    printf("This test runs only on ARM\n");
+    printf("This test runs only on ARM or SH\n");
 #endif
 }
 

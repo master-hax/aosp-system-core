@@ -88,7 +88,13 @@ void GGLAssembler::init_iterated_color(fragment_parts_t& parts, const reg_t& x)
                 parts.argb_dx[i].reg = (parts.reload & 2) ? t1 : obtainReg();
                 const int dvdx = parts.argb_dx[i].reg;
                 CONTEXT_LOAD(dvdx, generated_vars.argb[i].dx);
+#ifdef ARCH_ARM
                 MLA(AL, 0, c, x.reg, dvdx, c);
+#elif defined(ARCH_SH)
+                DMULS(dvdx, x.reg);
+                STS_MACL(R0);
+                ADD(R0, c);
+#endif
                 
                 // adjust the color iterator to make sure it won't overflow
                 if (!mAA) {
@@ -96,10 +102,32 @@ void GGLAssembler::init_iterated_color(fragment_parts_t& parts, const reg_t& x)
                     // because we will (have to) clamp the components
                     // anyway.
                     int end = scratches.obtain();
+#ifdef ARCH_ARM
                     MOV(AL, 0, end, reg_imm(parts.count.reg, LSR, 16));
                     MLA(AL, 1, end, dvdx, end, c);
                     SUB(MI, 0, c, c, end);
                     BIC(AL, 0, c, c, reg_imm(c, ASR, 31)); 
+#elif defined(ARCH_SH)
+                    MOV(parts.count.reg, end);
+                    SHLR16(end);
+
+                    DMULS(dvdx, end);
+                    STS_MACL(end);
+                    ADD(c, end);
+
+                    const char * label1 = genLabel();
+                    const char * label2 = genLabel();
+                    CMP(PZ, end);
+                    BT(label1);
+                    SUB(end, c);
+
+                    label(label1);
+                    CMP(PZ, c);
+                    BT(label2);
+                    IMM(0, c);
+
+                    label(label2);
+#endif
                     scratches.recycle(end);
                 }
             }
@@ -156,11 +184,21 @@ void GGLAssembler::init_iterated_color(fragment_parts_t& parts, const reg_t& x)
                 } else {
                     CONTEXT_LOAD(parts.iterated.reg, packed);
                     if (mCbFormat.size == 1) {
+#ifdef ARCH_ARM
                         AND(AL, 0, parts.iterated.reg,
                                 parts.iterated.reg, imm(0xFF));
+#elif defined(ARCH_SH)
+                        IMM(0xFF, R0);
+                        EXTU_B(R0, R0);
+                        AND(R0, parts.iterated.reg);
+#endif
                     } else if (mCbFormat.size == 2) {
+#ifdef ARCH_ARM
                         MOV(AL, 0, parts.iterated.reg,
                                 reg_imm(parts.iterated.reg, LSR, 16));
+#elif defined(ARCH_SH)
+                        SHLR16(parts.iterated.reg);
+#endif
                     }
                 }
 
@@ -200,7 +238,11 @@ void GGLAssembler::build_iterated_color(
             int dx = scratches.obtain();
             CONTEXT_LOAD(fragment.reg, generated_vars.argb[component].c);
             CONTEXT_LOAD(dx, generated_vars.argb[component].dx);
+#ifdef ARCH_ARM
             ADD(AL, 0, dx, fragment.reg, dx);
+#elif defined(ARCH_SH)
+            ADD(fragment.reg, dx);
+#endif
             CONTEXT_STORE(dx, generated_vars.argb[component].c);
         } else if (parts.reload & 1) {
             CONTEXT_LOAD(fragment.reg, generated_vars.argb[component].c);
@@ -217,8 +259,17 @@ void GGLAssembler::build_iterated_color(
             // the iterators because there is always an extra pixel on the
             // edges, which most of the time will cause an overflow
             // (since technically its outside of the domain).
+#ifdef ARCH_ARM
             BIC(AL, 0, fragment.reg, fragment.reg,
                     reg_imm(fragment.reg, ASR, 31));
+#elif defined(ARCH_SH)
+            const char * local_label = genLabel();
+            CMP(PZ, fragment.reg);
+            BT(local_label);
+            IMM(0, fragment.reg);
+
+            label(local_label);
+#endif
             component_sat(fragment);
         }
     }
@@ -347,12 +398,34 @@ void GGLAssembler::init_textures(
             pointer_t& txPtr = coords[i].ptr;
             txPtr.setTo(obtainReg(), tmu.bits);
             CONTEXT_LOAD(txPtr.reg, state.texture[i].iterators.ydsdy);
+#ifdef ARCH_ARM
             ADD(AL, 0, Rx, Rx, reg_imm(txPtr.reg, ASR, 16));    // x += (s>>16)
+#elif defined(ARCH_SH)
+            // x += (s>>16)
+            MOV(txPtr.reg, R0);
+            SHLR16(R0);
+            EXTS_W(R0, R0);
+            ADD(R0, Rx);
+#endif
             CONTEXT_LOAD(txPtr.reg, state.texture[i].iterators.ydtdy);
+#ifdef ARCH_ARM
             ADD(AL, 0, Ry, Ry, reg_imm(txPtr.reg, ASR, 16));    // y += (t>>16)
+#elif defined(ARCH_SH)
+            MOV(txPtr.reg, R0);
+            SHLR16(R0);
+            EXTS_W(R0, R0);
+            ADD(R0, Ry);
+#endif
             // merge base & offset
             CONTEXT_LOAD(txPtr.reg, generated_vars.texture[i].stride);
+#ifdef ARCH_ARM
             SMLABB(AL, Rx, Ry, txPtr.reg, Rx);               // x+y*stride
+#elif defined(ARCH_SH)
+            // x+y*stride
+            MULS(Ry, txPtr.reg);
+            STS_MACL(R0);
+            ADD(R0, Rx);
+#endif
             CONTEXT_LOAD(txPtr.reg, generated_vars.texture[i].data);
             base_offset(txPtr, txPtr, Rx);
         } else {
@@ -376,8 +449,18 @@ void GGLAssembler::init_textures(
                 CONTEXT_LOAD(ydsdy, state.texture[i].iterators.ydsdy);
                 CONTEXT_LOAD(t.reg, generated_vars.texture[i].dtdx);
                 CONTEXT_LOAD(ydtdy, state.texture[i].iterators.ydtdy);
+#ifdef ARCH_ARM
                 MLA(AL, 0, s.reg, Rx, s.reg, ydsdy);
                 MLA(AL, 0, t.reg, Rx, t.reg, ydtdy);
+#elif defined(ARCH_SH)
+                DMULS(Rx, s.reg);
+                STS_MACL(s.reg);
+                ADD(ydsdy, s.reg);
+
+                DMULS(Rx, t.reg);
+                STS_MACL(t.reg);
+                ADD(ydtdy, t.reg);
+#endif
             }
             
             if ((mOptLevel&1)==0) {
@@ -507,6 +590,7 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                 U = scratches.obtain();
                 V = scratches.obtain();
 
+#ifdef ARCH_ARM
                 // sample the texel center
                 SUB(AL, 0, u, u, imm(1<<(FRAC_BITS-1)));
                 SUB(AL, 0, v, v, imm(1<<(FRAC_BITS-1)));
@@ -518,11 +602,33 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                 // compute width-1 and height-1
                 SUB(AL, 0, width,  width,  imm(1));
                 SUB(AL, 0, height, height, imm(1));
+#elif defined(ARCH_SH)
+                int Rn = scratches.obtain();
+
+                // sample the texel center
+                IMM32(1<<(FRAC_BITS-1), Rn);
+                SUB(Rn, u);
+                SUB(Rn, v);
+
+                // get the fractionnal part of U,V
+                IMM32((1<<FRAC_BITS)-1, Rn);
+                MOV(u, U);
+                MOV(v, V);
+                AND(Rn, U);
+                AND(Rn, V);
+
+                // compute width-1 and height-1
+                DT(width);
+                DT(height);
+
+                scratches.recycle(Rn);
+#endif
 
                 // get the integer part of U,V and clamp/wrap
                 // and compute offset to the next texel
                 if (tmu.swrap == GGL_NEEDS_WRAP_REPEAT) {
                     // u has already been REPEATed
+#ifdef ARCH_ARM
                     MOV(AL, 1, u, reg_imm(u, ASR, FRAC_BITS));
                     MOV(MI, 0, u, width);                    
                     CMP(AL, u, width);
@@ -530,6 +636,30 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                     if (shift)
                         MOV(GE, 0, width, reg_imm(width, LSL, shift));
                     RSB(GE, 0, width, width, imm(0));
+#elif defined(ARCH_SH)
+                    const char * label1 = genLabel();
+                    const char * label2 = genLabel();
+                    const char * label3 = genLabel();
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, u);
+                    CMP(PZ, u);
+                    BT(label1);
+                    MOV(width, u);
+
+                    label(label1);
+                    CMP(GE, width, u);      // GE: u >= width  1 -> T
+                    BF(label2);
+                    if (shift)
+                        SHLL(shift, width); // GE: width = width << shift
+                    BRA(label3);
+                    NEG(width, width);      // Delay Slot
+
+                    label(label2);
+                    IMM(1, width);          // width = (1 << shift);
+                    SHLL(shift, width);
+
+                    label(label3);          // width set
+#endif
                 } else {
                     // u has not been CLAMPed yet
                     // algorithm:
@@ -544,6 +674,7 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                     //      width = 0
                     // generated_vars.rt = width
                     
+#ifdef ARCH_ARM
                     CMP(AL, width, reg_imm(u, ASR, FRAC_BITS));
                     MOV(LE, 0, u, reg_imm(width, LSL, FRAC_BITS));
                     MOV(LE, 0, width, imm(0));
@@ -551,6 +682,38 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                     MOV(AL, 1, u, reg_imm(u, ASR, FRAC_BITS));
                     MOV(MI, 0, u, imm(0));
                     MOV(MI, 0, width, imm(0));
+#elif defined(ARCH_SH)
+                    const char * label1 = genLabel();
+                    const char * label2 = genLabel();
+                    const char * label3 = genLabel();
+                    int Rn = scratches.obtain();
+                    MOV(u, Rn);
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, Rn);
+                    CMP(GE, width, Rn);
+                    scratches.recycle(Rn);
+                    BF(label1);
+
+                    MOV(width, u);
+                    SHLL(FRAC_BITS, u);
+                    BRA(label2);
+                    IMM(0, width);      // Delay Slot
+
+                    label(label1);
+                    IMM(1, width);
+                    SHLL(shift, width);
+
+                    label(label2);
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, u);
+                    CMP(PZ, u);
+                    BT(label3);
+
+                    IMM(0, u);
+                    IMM(0, width);
+
+                    label(label3);
+#endif
                 }
                 CONTEXT_STORE(width, generated_vars.rt);
 
@@ -558,6 +721,7 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                 CONTEXT_LOAD(stride, generated_vars.texture[i].stride);
                 if (tmu.twrap == GGL_NEEDS_WRAP_REPEAT) {
                     // v has already been REPEATed
+#ifdef ARCH_ARM
                     MOV(AL, 1, v, reg_imm(v, ASR, FRAC_BITS));
                     MOV(MI, 0, v, height);
                     CMP(AL, v, height);
@@ -566,8 +730,40 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                         MOV(GE, 0, height, reg_imm(height, LSL, shift));
                     RSB(GE, 0, height, height, imm(0));
                     MUL(AL, 0, height, stride, height);
+#elif defined(ARCH_SH)
+                    const char * label1 = genLabel();
+                    const char * label2 = genLabel();
+                    const char * label3 = genLabel();
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, v);
+                    CMP(PZ, v);
+                    BT(label1);
+
+                    MOV(height, v);
+
+                    label(label1);
+                    // if (v < height)
+                    //    height = 1 << shift;
+                    // (shift) else
+                    //       height = height << shift
+                    CMP(GE, height, v); // GE: v >= height  1 -> T
+                    BF(label2);
+                    if (shift)
+                        SHLL(shift, height);
+                    BRA(label3);
+                    NEG(height, height);    // Delay Slot
+
+                    label(label2);
+                    IMM(1, height);
+                    SHLL(shift, height);
+
+                    label(label3);
+                    DMULS(stride, height);
+                    STS_MACL(height);
+#endif
                 } else {
                     // u has not been CLAMPed yet
+#ifdef ARCH_ARM
                     CMP(AL, height, reg_imm(v, ASR, FRAC_BITS));
                     MOV(LE, 0, v, reg_imm(height, LSL, FRAC_BITS));
                     MOV(LE, 0, height, imm(0));
@@ -579,6 +775,50 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
                     MOV(AL, 1, v, reg_imm(v, ASR, FRAC_BITS));
                     MOV(MI, 0, v, imm(0));
                     MOV(MI, 0, height, imm(0));
+#elif defined(ARCH_SH)
+                    const char * label1 = genLabel();
+                    const char * label2 = genLabel();
+                    const char * label3 = genLabel();
+                    // if (height <= v >> FRAC_BITS){
+                    //   v = height << FRAC_BITS
+                    //   height = 0;
+                    // } else {
+                    //    (shift)  height = stride << shift;
+                    //    (!shift)  height = stride;
+                    // }
+                    // v = v >> FRAC_BITS;
+                    // if (v < 0) {
+                    //   v = 0;
+                    //   height = 0;
+                    // }
+                    int Rn = scratches.obtain();
+                    MOV(v, Rn);
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, Rn);
+                    CMP(GT, height, Rn);
+                    scratches.recycle(Rn);
+                    BF(label1); /* ? */
+
+                    MOV(height, v);
+                    SHLL(FRAC_BITS, v);
+                    BRA(label2);
+                    IMM(0, height);     // Delay Slot
+
+                    label(label1);
+                    MOV(stride, height);
+                    SHLL(shift, height);
+
+                    label(label2);
+                    IMM(-FRAC_BITS, R0);
+                    SHAD(R0, v);
+                    CMP(PZ, v);
+                    BT(label3);
+
+                    IMM(0, v);
+                    IMM(0, height);
+
+                    label(label3);
+#endif
                 }
                 CONTEXT_STORE(height, generated_vars.lb);
             }
@@ -592,8 +832,13 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
             int dtdx = scratches.obtain();
             CONTEXT_LOAD(dsdx, generated_vars.texture[i].dsdx);
             CONTEXT_LOAD(dtdx, generated_vars.texture[i].dtdx);
+#ifdef ARCH_ARM
             ADD(AL, 0, s.reg, s.reg, dsdx);
             ADD(AL, 0, t.reg, t.reg, dtdx);
+#elif defined(ARCH_SH)
+            ADD(dsdx, s.reg);
+            ADD(dtdx, t.reg);
+#endif
             if ((mOptLevel&1)==0) {
                 CONTEXT_STORE(s.reg, generated_vars.texture[i].spill[0]);
                 CONTEXT_STORE(t.reg, generated_vars.texture[i].spill[1]);
@@ -610,7 +855,13 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
             int stride = scratches.obtain();
             CONTEXT_LOAD(stride,    generated_vars.texture[i].stride);
             CONTEXT_LOAD(txPtr.reg, generated_vars.texture[i].data);
+#ifdef ARCH_ARM
             SMLABB(AL, u, v, stride, u);    // u+v*stride 
+#elif defined(ARCH_SH)
+            MULS(stride, v);
+            STS_MACL(R0);
+            ADD(R0, u);
+#endif
             base_offset(txPtr, txPtr, u);
 
             // load texel
@@ -648,7 +899,14 @@ void GGLAssembler::build_iterate_texture_coordinates(
             (tmu.twrap == GGL_NEEDS_WRAP_11))
         { // 1:1 textures
             const pointer_t& txPtr = parts.coords[i].ptr;
+#ifdef ARCH_ARM
             ADD(AL, 0, txPtr.reg, txPtr.reg, imm(txPtr.size>>3));
+#elif defined(ARCH_SH)
+            Scratch scratches(registerFile());
+            int Rn = scratches.obtain();
+            IMM32(txPtr.size>>3, Rn);
+            ADD(Rn, txPtr.reg);
+#endif
         } else {
             Scratch scratches(registerFile());
             int s = parts.coords[i].s.reg;
@@ -663,8 +921,13 @@ void GGLAssembler::build_iterate_texture_coordinates(
             int dtdx = scratches.obtain();
             CONTEXT_LOAD(dsdx, generated_vars.texture[i].dsdx);
             CONTEXT_LOAD(dtdx, generated_vars.texture[i].dtdx);
+#ifdef ARCH_ARM
             ADD(AL, 0, s, s, dsdx);
             ADD(AL, 0, t, t, dtdx);
+#elif defined(ARCH_SH)
+            ADD(dsdx, s);
+            ADD(dtdx, t);
+#endif
             if ((mOptLevel&1)==0) {
                 CONTEXT_STORE(s, generated_vars.texture[i].spill[0]);
                 CONTEXT_STORE(t, generated_vars.texture[i].spill[1]);
@@ -685,7 +948,12 @@ void GGLAssembler::filter8(
         // this is a packed format, and we don't support
         // linear filtering (it's probably RGB 332)
         // Should not happen with OpenGL|ES
+#ifdef ARCH_ARM
         LDRB(AL, texel.reg, txPtr.reg);
+#elif defined(ARCH_SH)
+        MOV_LD_B(txPtr.reg, texel.reg); // sign extended
+        EXTU_B(texel.reg, texel.reg);   // cut sign bits
+#endif
         return;
     }
 
@@ -706,6 +974,7 @@ void GGLAssembler::filter8(
     CONTEXT_LOAD(lb, generated_vars.lb);
 
     int offset = pixel;
+#ifdef ARCH_ARM
     ADD(AL, 0, offset, lb, rt);
     LDRB(AL, pixel, txPtr.reg, reg_scale_pre(offset));
     SMULBB(AL, u, U, V);
@@ -729,6 +998,68 @@ void GGLAssembler::filter8(
     LDRB(AL, pixel, txPtr.reg, reg_scale_pre(rt));
     SUB(AL, 0, u, k, u);
     SMLABB(AL, texel.reg, pixel, u, d);
+#elif defined(ARCH_SH)
+    MOV(rt, offset);
+    ADD(lb, offset);
+
+    MOV(offset, R0);
+    MOV_LD_B_R0(txPtr.reg, pixel);  // sign extended
+    EXTU_B(pixel, pixel);           // cut sign bits
+
+    MULS(V, U);
+    STS_MACL(d);
+
+    MULS(pixel, d);
+    STS_MACL(d);
+    IMM32(1<<(FRAC_BITS*2), k);
+    SUB(u, k);
+
+    // LB -> (1-U) * V
+    IMM32(1<<FRAC_BITS, u);
+    SUB(u, U);
+    NEG(U, U);
+
+    MOV(lb, R0);
+    MOV_LD_B_R0(txPtr.reg, pixel);  // sign extended
+    EXTU_B(pixel, pixel);           // cut sign bits
+
+    MULS(V, U);
+    STS_MACL(R0);
+
+    MULS(pixel, R0);
+    STS_MACL(R0);
+
+    ADD(R0, d);
+    SUB(u, k);
+
+    // LT -> (1-U)*(1-V)
+    IMM32(1<<FRAC_BITS, u);
+    SUB(u, V);
+    NEG(V, V);
+
+    MOV_LD_B(txPtr.reg, pixel); // sign extended
+    EXTU_B(pixel, pixel);       // cut sign bits
+
+    MULS(V, U);
+    STS_MACL(R0);
+
+    MULS(pixel, R0);
+    STS_MACL(R0);
+
+    ADD(R0, d);
+
+    // RT -> U*(1-V)
+    MOV(rt, R0);
+    MOV_LD_B_R0(txPtr.reg, pixel); // sign extended
+    EXTU_B(pixel, pixel);       // cut sign bits
+
+    SUB(k, u);
+    NEG(u, u);
+
+    MULS(pixel, u);
+    STS_MACL(texel.reg);
+    ADD(d, texel.reg);
+#endif
     
     for (int i=0 ; i<4 ; i++) {
         if (!texel.format.c[i].h) continue;
@@ -776,7 +1107,12 @@ void GGLAssembler::filter16(
         default:
             // unsupported format, do something sensical...
             LOGE("Unsupported 16-bits texture format (%d)", tmu.format_idx);
+#ifdef ARCH_ARM
             LDRH(AL, texel.reg, txPtr.reg);
+#elif defined(ARCH_SH)
+            MOV_LD_W(txPtr.reg, texel.reg); // sign extended
+            EXTU_W(texel.reg, texel.reg);   // cut sign bits
+#endif
             return;
     }
 
@@ -807,12 +1143,30 @@ void GGLAssembler::filter16(
     int offset = pixel;
     CONTEXT_LOAD(offset, generated_vars.rt);
     CONTEXT_LOAD(u, generated_vars.lb);
+#ifdef ARCH_ARM
     ADD(AL, 0, offset, offset, u);
 
     LDRH(AL, pixel, txPtr.reg, reg_pre(offset));
     SMULBB(AL, u, U, V);
     ORR(AL, 0, pixel, pixel, reg_imm(pixel, LSL, shift));
+#elif defined(ARCH_SH)
+    int Rn = scratches.obtain();
+    ADD(u, offset);
+
+    MOV(offset, R0);
+    MOV_LD_W_R0(txPtr.reg, pixel); // sign extended
+    EXTU_W(pixel, pixel);       // cut sign bits
+
+    MOV(pixel, Rn);
+    SHLL(shift, Rn);
+    OR(Rn, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+    scratches.recycle(Rn);
+#endif
     build_and_immediate(pixel, pixel, mask, 32);
+#ifdef ARCH_ARM
     if (adjust) {
         if (round)
             ADD(AL, 0, u, u, imm(1<<(adjust-1)));
@@ -820,14 +1174,50 @@ void GGLAssembler::filter16(
     }
     MUL(AL, 0, d, pixel, u);
     RSB(AL, 0, k, u, imm(1<<prec));
+#elif defined(ARCH_SH)
+    Rn = scratches.obtain();
+    if (adjust) {
+        if (round) {
+            IMM32(1 << (adjust-1), Rn);
+            ADD(Rn, u);
+        }
+        SHLR(adjust, u);
+    }
+    DMULS(pixel, u);
+    STS_MACL(d);
+
+    IMM32(1 << prec, k);
+    SUB(u, k);
+    scratches.recycle(Rn);
+#endif
     
     // LB -> (1-U) * V
     CONTEXT_LOAD(offset, generated_vars.lb);
+#ifdef ARCH_ARM
     RSB(AL, 0, U, U, imm(1<<FRAC_BITS));
     LDRH(AL, pixel, txPtr.reg, reg_pre(offset));
     SMULBB(AL, u, U, V);
     ORR(AL, 0, pixel, pixel, reg_imm(pixel, LSL, shift));
+#elif defined(ARCH_SH)
+    Rn = scratches.obtain();
+    MOV(U, Rn);
+    IMM32(1<<FRAC_BITS, U);
+    SUB(Rn, U);
+
+    MOV(offset, R0);
+    MOV_LD_W_R0(txPtr.reg, pixel); // sign extended
+    EXTU_W(pixel, pixel);       // cut sign bits
+
+    MOV(pixel, Rn);
+    SHLL(shift, Rn);
+    OR(Rn, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+    scratches.recycle(Rn);
+#endif
     build_and_immediate(pixel, pixel, mask, 32);
+#ifdef ARCH_ARM
     if (adjust) {
         if (round)
             ADD(AL, 0, u, u, imm(1<<(adjust-1)));
@@ -835,27 +1225,94 @@ void GGLAssembler::filter16(
     }
     MLA(AL, 0, d, pixel, u, d);
     SUB(AL, 0, k, k, u);
+#elif defined(ARCH_SH)
+    Rn = scratches.obtain();
+    if (adjust) {
+        if (round) {
+            IMM32(1<<(adjust-1), Rn);
+            ADD(Rn, u);
+        }
+        SHLR(adjust, u);
+    }
+    DMULS(pixel, u);
+    STS_MACL(R0);
+    ADD(R0, d);
+    SUB(u, k);
+#endif
     
     // LT -> (1-U)*(1-V)
+#ifdef ARCH_ARM
     RSB(AL, 0, V, V, imm(1<<FRAC_BITS));
     LDRH(AL, pixel, txPtr.reg);
     SMULBB(AL, u, U, V);
     ORR(AL, 0, pixel, pixel, reg_imm(pixel, LSL, shift));
+#elif defined(ARCH_SH)
+    MOV(V, Rn);
+    IMM32(1<<FRAC_BITS, V);
+    SUB(Rn, V);
+
+    MOV_LD_W(txPtr.reg, pixel); // sign extended
+    EXTU_W(pixel, pixel);       // cut sign bits
+
+    MOV(pixel, Rn);
+    SHLL(shift, Rn);
+    OR(Rn, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+    scratches.recycle(Rn);
+#endif
     build_and_immediate(pixel, pixel, mask, 32);
+#ifdef ARCH_ARM
     if (adjust) {
         if (round)
             ADD(AL, 0, u, u, imm(1<<(adjust-1)));
         MOV(AL, 0, u, reg_imm(u, LSR, adjust));
     }
     MLA(AL, 0, d, pixel, u, d);
+#elif defined(ARCH_SH)
+    Rn = scratches.obtain();
+    if (adjust) {
+        if (round) {
+            IMM32(1<<(adjust-1), Rn);
+            ADD(Rn, u);
+        }
+        SHLR(adjust, u);
+    }
+    DMULS(u, pixel);
+    STS_MACL(R0);
+    ADD(R0, d);
+    scratches.recycle(Rn);
+#endif
 
     // RT -> U*(1-V)            
     CONTEXT_LOAD(offset, generated_vars.rt);
+#ifdef ARCH_ARM
     LDRH(AL, pixel, txPtr.reg, reg_pre(offset));
     SUB(AL, 0, u, k, u);
     ORR(AL, 0, pixel, pixel, reg_imm(pixel, LSL, shift));
     build_and_immediate(pixel, pixel, mask, 32);
     MLA(AL, 0, texel.reg, pixel, u, d);
+#elif defined(ARCH_SH)
+    Rn = scratches.obtain();
+    MOV(offset, R0);
+    MOV_LD_W_R0(txPtr.reg, pixel); // sign extended
+    EXTU_W(pixel, pixel);       // cut sign bits
+
+    SUB(k, u);
+    NEG(u, u);
+
+    MOV(pixel, Rn);
+    SHLL(shift, Rn);
+    OR(Rn, pixel);
+    scratches.recycle(Rn);
+
+    build_and_immediate(pixel, pixel, mask, 32);
+
+    DMULS(u, pixel);
+    STS_MACL(texel.reg);
+    ADD(d, texel.reg);
+#endif
 }
 
 void GGLAssembler::filter24(
@@ -890,15 +1347,27 @@ void GGLAssembler::filter32(
     int dl   = scratches.obtain();
     int mask = scratches.obtain();
 
+#ifdef ARCH_ARM
     MOV(AL, 0, mask, imm(0xFF));
     ORR(AL, 0, mask, mask, imm(0xFF0000));
+#elif defined(ARCH_SH)
+    IMM(0xFF, mask);
+    EXTU_B(mask, mask);
+    SWAP_W(mask, R0);
+    OR(R0, mask);
+#endif
 
     // RB -> U * V
     int offset = pixel;
     CONTEXT_LOAD(offset, generated_vars.rt);
     CONTEXT_LOAD(u, generated_vars.lb);
+#ifdef ARCH_ARM
     ADD(AL, 0, offset, offset, u);
+#elif defined(ARCH_SH)
+    ADD(u, offset);
+#endif
 
+#ifdef ARCH_ARM
     LDR(AL, pixel, txPtr.reg, reg_scale_pre(offset));
     SMULBB(AL, u, U, V);
     AND(AL, 0, temp, mask, pixel);
@@ -911,9 +1380,40 @@ void GGLAssembler::filter32(
     AND(AL, 0, temp, mask, reg_imm(pixel, LSR, 8));
     MUL(AL, 0, dl, temp, u);
     RSB(AL, 0, k, u, imm(0x100));
+#elif defined(ARCH_SH)
+    MOV(offset, R0);
+    MOV_LD_L_R0(txPtr.reg, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+
+    MOV(mask, temp);
+    AND(pixel, temp);
+    if (adjust) {
+        if (round) {
+            IMM32(1<<(adjust-1),dh);
+            ADD(dh, u);
+        }
+        SHLR(adjust, u);
+    }
+    DMULS(u, temp);
+    STS_MACL(dh);
+
+    MOV(pixel, temp);
+    SHLR8(temp);
+    AND(mask, temp);
+
+    DMULS(u, temp);
+    STS_MACL(dl);
+
+    IMM(1, k);
+    SHLL8(k);
+    SUB(u, k);
+#endif
 
     // LB -> (1-U) * V
     CONTEXT_LOAD(offset, generated_vars.lb);
+#ifdef ARCH_ARM
     RSB(AL, 0, U, U, imm(1<<FRAC_BITS));
     LDR(AL, pixel, txPtr.reg, reg_scale_pre(offset));
     SMULBB(AL, u, U, V);
@@ -927,8 +1427,43 @@ void GGLAssembler::filter32(
     AND(AL, 0, temp, mask, reg_imm(pixel, LSR, 8));
     MLA(AL, 0, dl, temp, u, dl);
     SUB(AL, 0, k, k, u);
+#elif defined(ARCH_SH)
+    MOV(U, pixel);     // use 'pixel' as work register
+    IMM32(1<<FRAC_BITS, U);
+    SUB(pixel, U);
+
+    MOV(offset, R0);
+    MOV_LD_L_R0(txPtr.reg, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+    if (adjust) {
+        if (round) {
+            IMM32(1<<(adjust-1), temp);
+            ADD(temp, u);
+        }
+        SHLR(adjust, u);
+    }
+    MOV(mask, temp);
+    AND(pixel, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+    ADD(temp, dh);
+
+    MOV(pixel, temp);
+    SHLR8(temp);
+    AND(mask, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+
+    ADD(temp, dl);
+    SUB(u, k);
+#endif
 
     // LT -> (1-U)*(1-V)
+#ifdef ARCH_ARM
     RSB(AL, 0, V, V, imm(1<<FRAC_BITS));
     LDR(AL, pixel, txPtr.reg);
     SMULBB(AL, u, U, V);
@@ -941,9 +1476,40 @@ void GGLAssembler::filter32(
     MLA(AL, 0, dh, temp, u, dh);    
     AND(AL, 0, temp, mask, reg_imm(pixel, LSR, 8));
     MLA(AL, 0, dl, temp, u, dl);
+#elif defined(ARCH_SH)
+    MOV(V, temp);
+    IMM32(1<<FRAC_BITS, V); // utilize u as work
+    SUB(temp, V);
+    MOV_LD_L(txPtr.reg, pixel);
+
+    MULS(V, U);
+    STS_MACL(u);
+    if (adjust) {
+        if (round) {
+            IMM32(1<<(adjust-1), temp);
+            ADD(temp, u);
+        }
+        SHLR(adjust, u);
+    }
+    MOV(mask, temp);
+    AND(pixel, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+    ADD(temp, dh);
+
+    MOV(pixel, temp);
+    SHLR8(temp);
+    AND(mask, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+    ADD(temp, dl);
+#endif
 
     // RT -> U*(1-V)            
     CONTEXT_LOAD(offset, generated_vars.rt);
+#ifdef ARCH_ARM
     LDR(AL, pixel, txPtr.reg, reg_scale_pre(offset));
     SUB(AL, 0, u, k, u);
     AND(AL, 0, temp, mask, pixel);
@@ -954,6 +1520,38 @@ void GGLAssembler::filter32(
     AND(AL, 0, dh, mask, reg_imm(dh, LSR, 8));
     AND(AL, 0, dl, dl, reg_imm(mask, LSL, 8));
     ORR(AL, 0, texel.reg, dh, dl);
+#elif defined(ARCH_SH)
+    MOV(offset, R0);
+    MOV_LD_L_R0(txPtr.reg, pixel);
+
+    SUB(k, u);
+    NEG(u, u);
+
+    MOV(mask, temp);
+    AND(pixel, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+    ADD(temp, dh);
+
+    MOV(pixel, temp);
+    SHLR8(temp);
+    AND(mask, temp);
+
+    DMULS(u, temp);
+    STS_MACL(temp);
+    ADD(temp, dl);
+
+    SHLR8(dh);
+    AND(mask, dh);
+
+    MOV(mask, temp);
+    SHLL8(temp);
+    AND(temp, dl);
+
+    MOV(dl, texel.reg);
+    OR(dh, texel.reg);
+#endif
 }
 
 void GGLAssembler::build_texture_environment(
@@ -1028,18 +1626,55 @@ void GGLAssembler::wrapping(
         // its full precision)
         // UMULL(AL, 0, size, d, c, size);
         // note: we can't use SMULTB because it's signed.
+#ifdef ARCH_ARM
         MOV(AL, 0, d, reg_imm(c, LSR, 16-tx_linear));
         SMULWB(AL, d, d, size);
+#elif defined(ARCH_SH)
+        // right shift (16-txlinear)
+        // = right shift (16) and left shift (txlinear)
+        MOV(c, d);
+        SHLR(16-tx_linear, d);
+
+        MOV(size, R0);
+        SHLL16(R0);
+        DMULS(R0, d);
+        STS_MACH(d);
+#endif
     } else if (tx_wrap == GGL_NEEDS_WRAP_CLAMP_TO_EDGE) {
         if (tx_linear) {
             // 1 cycle
+#ifdef ARCH_ARM
             MOV(AL, 0, d, reg_imm(coord, ASR, 16-tx_linear));
+#elif defined(ARCH_SH)
+            MOV(coord, d);
+            IMM(-(16-tx_linear), R0);
+            SHAD(R0, d);
+#endif
         } else {
             // 4 cycles (common case)
+#ifdef ARCH_ARM
             MOV(AL, 0, d, reg_imm(coord, ASR, 16));
             BIC(AL, 0, d, d, reg_imm(d, ASR, 31));
             CMP(AL, d, size);
             SUB(GE, 0, d, size, imm(1));
+#elif defined(ARCH_SH)
+            MOV(coord, d);
+            SHLR16(d);
+            EXTS_W(d, d);
+
+            CMP(PZ, d);
+            const char* label1 = genLabel();
+            const char* label2 = genLabel();
+            BT(label1);
+            IMM(0, d);
+
+            label(label1);
+            CMP(GE, size, d);
+            BF(label2);
+            MOV(size, d);
+            ADD_IMM(-1, d);
+            label(label2);
+#endif
         }
     }
 }
@@ -1051,6 +1686,7 @@ void GGLAssembler::modulate(
         const component_t& incoming,
         const pixel_t& incomingTexel, int component)
 {
+    comment("modulate");
     Scratch locals(registerFile());
     integer_t texel(locals.obtain(), 32, CORRUPTIBLE);            
     extract(texel, incomingTexel, component);
@@ -1065,14 +1701,33 @@ void GGLAssembler::modulate(
     if (Nt == 1) {
         // texel acts as a bit-mask
         // dest = incoming & ((texel << incoming.h)-texel)
+#ifdef ARCH_ARM
         RSB(AL, 0, dest.reg, texel.reg, reg_imm(texel.reg, LSL, incoming.h));
         AND(AL, 0, dest.reg, dest.reg, incoming.reg);
+#elif defined(ARCH_SH)
+        int Rn = locals.obtain();
+        MOV(texel.reg, Rn);
+        SHLL(incoming.h, Rn);
+        SUB(texel.reg, Rn);
+        MOV(Rn, dest.reg);
+
+        AND(incoming.reg, dest.reg);
+        locals.recycle(Rn);
+#endif
         dest.l = incoming.l;
         dest.h = incoming.h;
         dest.flags |= (incoming.flags & CLEAR_LO);
     } else if (Ni == 1) {
+#ifdef ARCH_ARM
         MOV(AL, 0, dest.reg, reg_imm(incoming.reg, LSL, 31-incoming.h));
         AND(AL, 0, dest.reg, texel.reg, reg_imm(dest.reg, ASR, 31));
+#elif defined(ARCH_SH)
+        MOV(incoming.reg, dest.reg);
+        SHLL(31-incoming.h, dest.reg);
+        IMM(-31, R0);
+        SHAD(R0, dest.reg);
+        AND(texel.reg, dest.reg);
+#endif
         dest.l = 0;
         dest.h = Nt;
     } else {
@@ -1092,22 +1747,47 @@ void GGLAssembler::modulate(
                 // XXX: we should be able to avoid this shift
                 // when shift==16 && Nt<16 && Ni<16, in which
                 // we could use SMULBT below.
+#ifdef ARCH_ARM
                 MOV(AL, 0, dest.reg, reg_imm(inReg, LSR, shift));
+#elif defined(ARCH_SH)
+                MOV(inReg, dest.reg);
+                SHLR(shift, dest.reg);
+#endif
                 inReg = dest.reg;
                 shift = 0;
             }
             // operation:           (Cf*Ct)/((1<<Ni)-1)
             // approximated with:   Cf*(Ct + Ct>>(Ni-1))>>Ni
             // this operation doesn't change texel's size
+#ifdef ARCH_ARM
             ADD(AL, 0, dest.reg, inReg, reg_imm(inReg, LSR, Ni-1));
             if (Nt<16 && Ni<16) SMULBB(AL, dest.reg, texel.reg, dest.reg);
             else                MUL(AL, 0, dest.reg, texel.reg, dest.reg);
+#elif defined(ARCH_SH)
+            int Rn = locals.obtain();
+            MOV(inReg, Rn);
+            SHLR(Ni-1, Rn);
+            ADD(inReg, Rn);
+            if (Nt<16 && Ni<16) {
+                MULS(texel.reg, Rn);
+                STS_MACL(dest.reg);
+            } else {
+                DMULS(texel.reg, Rn);
+                STS_MACL(dest.reg);
+            }
+            locals.recycle(Rn);
+#endif
             dest.l = Ni;
             dest.h = Nt + Ni;            
         } else {
             if (shift && (shift != 16)) {
                 // if shift==16, we can use 16-bits mul instructions later
+#ifdef ARCH_ARM
                 MOV(AL, 0, dest.reg, reg_imm(inReg, LSR, shift));
+#elif defined(ARCH_SH)
+                MOV(inReg, dest.reg);
+                SHLR(shift, dest.reg);
+#endif
                 inReg = dest.reg;
                 shift = 0;
             }
@@ -1118,11 +1798,33 @@ void GGLAssembler::modulate(
             int t = (texel.flags & CORRUPTIBLE) ? texel.reg : dest.reg;
             if (t == inReg)
                 t = scratches.obtain();
+#ifdef ARCH_ARM
             ADD(AL, 0, t, texel.reg, reg_imm(texel.reg, LSR, Nt-1));
             if (Nt<16 && Ni<16) {
                 if (shift==16)  SMULBT(AL, dest.reg, t, inReg);
                 else            SMULBB(AL, dest.reg, t, inReg);
             } else              MUL(AL, 0, dest.reg, t, inReg);
+#elif defined(ARCH_SH)
+            int Rn = locals.obtain();
+            MOV(texel.reg, Rn);
+            SHLR(Nt-1, Rn);
+            ADD(texel.reg, Rn);
+            MOV(Rn, t);
+            if (Nt<16 && Ni<16) {
+                if (shift==16) {
+                    MOV(inReg, Rn);
+                    SHLR16(Rn);
+                    MULS(t, Rn);
+                    STS_MACL(dest.reg);
+                } else {
+                    MULS(t, inReg);
+                    STS_MACL(dest.reg);
+                }
+            } else {
+                DMULS(t, inReg);
+                STS_MACL(dest.reg);
+            }
+#endif
             dest.l = Nt;
             dest.h = Nt + Ni;
         }
@@ -1159,11 +1861,20 @@ void GGLAssembler::decal(
     }
     integer_t incomingNorm(incoming.reg, Ni, incoming.flags);
     if (shift) {
+#ifdef ARCH_ARM
         MOV(AL, 0, dest.reg, reg_imm(incomingNorm.reg, LSR, shift));
+#elif defined(ARCH_SH)
+        MOV(incomingNorm.reg, dest.reg);
+        SHLR(shift, dest.reg);
+#endif
         incomingNorm.reg = dest.reg;
         incomingNorm.flags |= CORRUPTIBLE;
     }
+#ifdef ARCH_ARM
     ADD(AL, 0, factor.reg, factor.reg, reg_imm(factor.reg, LSR, factor.s-1));
+#elif defined(ARCH_SH)
+    SHLR(factor.s-1, factor.reg);
+#endif
     build_blendOneMinusFF(dest, factor, incomingNorm, texel);
 }
 
@@ -1184,8 +1895,14 @@ void GGLAssembler::blend(
     Scratch locals(registerFile());
     integer_t color(locals.obtain(), 8, CORRUPTIBLE);            
     integer_t factor(locals.obtain(), 32, CORRUPTIBLE);
+#ifdef ARCH_ARM
     LDRB(AL, color.reg, mBuilderContext.Rctx,
             immed12_pre(GGL_OFFSETOF(state.texture[tmu].env_color[component])));
+#elif defined(ARCH_SH)
+    IMM16(GGL_OFFSETOF(state.texture[tmu].env_color[component]), R0);
+    MOV_LD_B_R0(mBuilderContext.Rctx, color.reg); // sign extended
+    EXTU_B(color.reg, color.reg);   // cut sign bits
+#endif
     extract(factor, incomingTexel, component);
 
     // no need to keep more than 8-bits for blend 
@@ -1197,11 +1914,24 @@ void GGLAssembler::blend(
     }
     integer_t incomingNorm(incoming.reg, Ni, incoming.flags);
     if (shift) {
+#ifdef ARCH_ARM
         MOV(AL, 0, dest.reg, reg_imm(incomingNorm.reg, LSR, shift));
+#elif defined(ARCH_SH)
+        MOV(incomingNorm.reg, dest.reg);
+        SHLR(shift, dest.reg);
+#endif
         incomingNorm.reg = dest.reg;
         incomingNorm.flags |= CORRUPTIBLE;
     }
+#ifdef ARCH_ARM
     ADD(AL, 0, factor.reg, factor.reg, reg_imm(factor.reg, LSR, factor.s-1));
+#elif defined(ARCH_SH)
+    int Rn = locals.obtain();
+    MOV(factor.reg, Rn);
+    SHLR(factor.s-1, Rn);
+    ADD(Rn, factor.reg);
+    locals.recycle(Rn);
+#endif
     build_blendOneMinusFF(dest, factor, incomingNorm, color);
 }
 
@@ -1234,12 +1964,23 @@ void GGLAssembler::add(
         }
     }
 
+#ifdef ARCH_ARM
     if (incomingTemp.l) {
         ADD(AL, 0, dest.reg, texel.reg,
                 reg_imm(incomingTemp.reg, LSR, incomingTemp.l));
     } else {
         ADD(AL, 0, dest.reg, texel.reg, incomingTemp.reg);
     }
+#elif defined(ARCH_SH)
+    Scratch scratches(registerFile());
+    int Rn = scratches.obtain();
+    MOV(incomingTemp.reg, Rn);
+    if (incomingTemp.l)
+        SHLR(incomingTemp.l, Rn);
+    ADD(texel.reg, Rn);
+    MOV(Rn, dest.reg);
+    scratches.recycle(Rn);
+#endif
     dest.l = 0;
     dest.h = texel.size();
     component_sat(dest);
