@@ -24,6 +24,11 @@ ifeq ($(HOST_OS),linux)
   LOCAL_SRC_FILES += usb_linux.c util_linux.c
 endif
 
+ifeq ($(HOST_OS),freebsd)
+  LOCAL_SRC_FILES += usb_freebsd.c util_freebsd.c
+  LOCAL_LDLIBS += -lpthread
+endif
+
 ifeq ($(HOST_OS),darwin)
   LOCAL_SRC_FILES += usb_osx.c util_osx.c
   LOCAL_LDLIBS += -lpthread -framework CoreFoundation -framework IOKit \

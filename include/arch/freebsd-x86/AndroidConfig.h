@@ -314,4 +314,8 @@
 #define CLOCK_PROCESS_CPUTIME_ID CLOCK_PROF
 #endif
 
+#define ENODATA 93
+#include <errno.h>
+#define ETIME ETIMEDOUT
+
 #endif /*_ANDROID_CONFIG_H*/
