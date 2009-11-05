@@ -36,6 +36,17 @@
 #include <sys/ptrace.h>
 #include <unwind.h>
 #include "utility.h"
+#include <assert.h>
+
+#include "symbol_table.h"
+
+typedef struct {
+    const mapinfo *mi;
+    SymbolTable *table;
+} SymbolTableEntry;
+
+/* The array of symbol tables for stacktraces */
+SymbolTableEntry symbol_table_list[STACK_CONTENT_DEPTH];
 
 typedef struct _ZSt9type_info type_info; /* This names C++ type_info type */
 
@@ -451,9 +462,37 @@ static _Unwind_Reason_Code log_function(_Unwind_Context *context, pid_t pid,
     rel_pc = pc;
     mi = pc_to_mapinfo(map, pc, &rel_pc);
 
-    _LOG(tfd, only_in_tombstone, 
-         "         #%02d  pc %08x  %s\n", stack_level, rel_pc, 
-         mi ? mi->name : "");
+    /*
+     * We only open the symbol table once for the same library. Once opened, the pointer
+     * to the symbol table is stored in an array as well as the corresponding mapinfo pointer.
+     */
+    SymbolTable* table = 0;
+    const Symbol* symbol = 0;
+    int i = 0;
+
+    if (mi != 0) {
+        // Try to find an opened symbol table
+        for (i = 0; i < STACK_CONTENT_DEPTH && symbol_table_list[i].mi != 0; i++) {
+            if (symbol_table_list[i].mi == mi && symbol_table_list[i].table != 0) {
+                table = symbol_table_list[i].table;
+            }
+        }
+
+        // Library never opened. Open the symbol table and save it to the table list
+        if (table == 0) {
+            assert(i < STACK_CONTENT_DEPTH);
+            table = symbol_table_create(mi->name);
+            symbol_table_list[i].table = table;
+            symbol_table_list[i].mi = mi;
+        }
+
+        if (table)
+            symbol = symbol_table_lookup(table, rel_pc);
+    }
+
+    _LOG(tfd, only_in_tombstone,
+         "         #%02d  pc %08x rel_pc %08x  %s(%s)\n", stack_level, pc, rel_pc,
+         mi ? mi->name : "", symbol ? symbol->name : "??");
 
     return _URC_NO_REASON;
 }
@@ -548,6 +587,15 @@ int unwind_backtrace_with_ptrace(int tfd, pid_t pid, mapinfo *map,
      */
     } while (code != _URC_END_OF_STACK && code != _URC_FAILURE && 
              stack_level < STACK_CONTENT_DEPTH);
+
+    // Clear the symbol table list
+    for (i = 0; i < STACK_CONTENT_DEPTH; i++) {
+        if (symbol_table_list[i].table)
+            symbol_table_free(symbol_table_list[i].table);
+        symbol_table_list[i].mi = 0;
+        symbol_table_list[i].table = 0;
+    }
+
     return stack_level;
 }
 

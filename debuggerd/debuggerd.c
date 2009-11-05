@@ -55,7 +55,7 @@ static int logsocket = -1;
 /* Log information onto the tombstone */
 void _LOG(int tfd, bool in_tombstone_only, const char *fmt, ...)
 {
-    char buf[128];
+    char buf[512];
 
     va_list ap;
     va_start(ap, fmt);
