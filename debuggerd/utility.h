@@ -25,6 +25,8 @@
 #define PT_ARM_EXIDX    0x70000001      /* .ARM.exidx segment */
 #endif
 
+#include "symbol_table.h"
+
 #define STACK_CONTENT_DEPTH 32
 
 typedef struct mapinfo {
@@ -35,6 +37,11 @@ typedef struct mapinfo {
     unsigned exidx_end;
     char name[];
 } mapinfo;
+
+typedef struct {
+    const mapinfo *mi;
+    SymbolTable *table;
+} SymbolTableEntry;
 
 /* Get a word from pid using ptrace. The result is the return value. */
 extern int get_remote_word(int pid, void *src);
