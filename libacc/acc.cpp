@@ -432,13 +432,13 @@ class Compiler : public ErrorSink {
          * et is ET_RVALUE for things like string constants, ET_LVALUE for
          * variables.
          */
-        virtual void leaR0(int ea, Type* pPointerType, ExpressionType et) = 0;
+        virtual void leaR0(intptr_t ea, Type* pPointerType, ExpressionType et) = 0;
 
         /* Load the pc-relative address of a forward-referenced variable to R0.
          * Return the address of the 4-byte constant so that it can be filled
          * in later.
          */
-        virtual int leaForward(int ea, Type* pPointerType) = 0;
+        virtual int leaForward(intptr_t ea, Type* pPointerType) = 0;
 
         /**
          * Convert R0 to the given type.
@@ -1711,7 +1711,7 @@ class Compiler : public ErrorSink {
             setR0Type(pNewType);
         }
 
-        virtual void leaR0(int ea, Type* pPointerType, ExpressionType et) {
+        virtual void leaR0(intptr_t ea, Type* pPointerType, ExpressionType et) {
             if (ea > -LOCAL && ea < LOCAL) {
                 // Local, fp relative
 
@@ -1737,11 +1737,11 @@ class Compiler : public ErrorSink {
             setR0Type(pPointerType, et);
         }
 
-        virtual int leaForward(int ea, Type* pPointerType) {
+        virtual int leaForward(intptr_t ea, Type* pPointerType) {
             setR0Type(pPointerType);
             int result = ea;
-            int pc = getPC();
-            int offset = 0;
+            intptr_t pc = getPC();
+            intptr_t offset = 0;
             if (ea) {
                 offset = (pc - ea - 8) >> 2;
                 if ((offset & 0xffff) != offset) {
@@ -2020,10 +2020,10 @@ class Compiler : public ErrorSink {
         }
 
         /* output a symbol and patch all calls to it */
-        virtual void resolveForward(int t) {
+        virtual void resolveForward(intptr_t t) {
             if (t) {
-                int pc = getPC();
-                *(int *) t = pc;
+                intptr_t pc = getPC();
+                *(intptr_t *) t = pc;
             }
         }
 
@@ -4554,7 +4554,7 @@ class Compiler : public ErrorSink {
 
     bool acceptStringLiteral() {
         if (tok == '"') {
-            pGen->leaR0((int) glo, mkpCharPtr, ET_RVALUE);
+            pGen->leaR0((intptr_t) glo, mkpCharPtr, ET_RVALUE);
             // This while loop merges multiple adjacent string constants.
             while (tok == '"') {
                 while (ch != '"' && ch != EOF) {
@@ -4634,13 +4634,13 @@ class Compiler : public ErrorSink {
                 // Align to 4-byte boundary
                 glo = (char*) (((intptr_t) glo + 3) & -4);
                 * (float*) glo = (float) ad;
-                pGen->loadFloat((int) glo, mkpFloat);
+                pGen->loadFloat((intptr_t) glo, mkpFloat);
                 glo += 4;
             } else if (t == TOK_NUM_DOUBLE) {
                 // Align to 8-byte boundary
                 glo = (char*) (((intptr_t) glo + 7) & -8);
                 * (double*) glo = ad;
-                pGen->loadFloat((int) glo, mkpDouble);
+                pGen->loadFloat((intptr_t) glo, mkpDouble);
                 glo += 8;
             } else if (c == 2) {
                 /* -, +, !, ~ */
@@ -4728,7 +4728,7 @@ class Compiler : public ErrorSink {
                     pGen->leaR0(n, pVal, et);
                 } else {
                     pVI->pForward = (void*) pGen->leaForward(
-                            (int) pVI->pForward, pVal);
+                            (intptr_t) pVI->pForward, pVal);
                 }
             }
         }
@@ -5737,7 +5737,7 @@ class Compiler : public ErrorSink {
                     mpCurrentSymbolStack = &mLocals;
                     if (name) {
                         /* patch forward references */
-                        pGen->resolveForward((int) name->pForward);
+                        pGen->resolveForward((intptr_t) name->pForward);
                         /* put function address */
                         name->pAddress = (void*) pCodeBuf->getPC();
                     }
