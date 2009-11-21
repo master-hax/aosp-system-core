@@ -21,7 +21,10 @@ LOCAL_SRC_FILES := acc.cpp
 LOCAL_CFLAGS := -O0 -g
 
 LOCAL_STATIC_LIBRARIES := libcutils
+
+ifneq ($(HOST_OS),freebsd)
 LOCAL_LDLIBS := -ldl
+endif
 
 include $(BUILD_HOST_SHARED_LIBRARY)
 
