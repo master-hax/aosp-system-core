@@ -1,6 +1,12 @@
 #!/system/bin/sh
 
-ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
+my_ip=`getprop ro.kernel.android.my_ip`
+case "$my_ip" in
+    "") ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
+    ;;
+    *) ifconfig eth0 "$my_ip" netmask 255.255.255.0 up
+    ;;
+esac
 route add default gw 10.0.2.2 dev eth0
 
 qemud=`getprop ro.kernel.android.qemud`
