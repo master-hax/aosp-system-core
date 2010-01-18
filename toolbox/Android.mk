@@ -51,6 +51,8 @@ TOOLS := \
 	iftop \
 	id \
 	uptime \
+	sender \
+	listener \
 	vmstat
 
 LOCAL_SRC_FILES:= \
