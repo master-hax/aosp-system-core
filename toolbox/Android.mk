@@ -50,6 +50,8 @@ TOOLS := \
 	top \
 	iftop \
 	id \
+	sender \
+	listener \
 	vmstat
 
 LOCAL_SRC_FILES:= \
