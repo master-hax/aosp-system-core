@@ -23,6 +23,7 @@ LOCAL_C_INCLUDES:=	$(LOCAL_PATH)/mksh
 # from Makefrag.inc: CFLAGS, CPPFLAGS
 LOCAL_CFLAGS:=		-fno-strict-aliasing -fstack-protector-all -fwrapv \
 			-Wall -Wextra \
+			-DNO_STRTOD \
 			-DMKSH_ASSUME_UTF8=0 -DMKSH_NOPWNAM \
 			-D_GNU_SOURCE \
 			-DHAVE_ATTRIBUTE_BOUNDED=0 -DHAVE_ATTRIBUTE_FORMAT=1 \
