@@ -74,6 +74,8 @@ addvar LIBS $_platpath/usr/lib/crtend_android.o
 addvar CPPFLAGS -DMKSH_ASSUME_UTF8=0
 # Add printf as a builtin, like other shells do (optional)
 USE_PRINTF_BUILTIN=1; export USE_PRINTF_BUILTIN		# disable for mksh-small
+# Disable printf’s floating point stuff
+addvar CPPFLAGS -DNO_STRTOD				# disable for mksh-small
 # No getpwnam() calls (affects "cd ~username/" only)
 addvar CPPFLAGS -DMKSH_NOPWNAM				# disable for mksh-small
 # Compile an extra small mksh (optional)
