@@ -3,6 +3,16 @@
 ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
 route add default gw 10.0.2.2 dev eth0
 
+my_ip=`getprop ro.kernel.android.my_ip`
+case "$my_ip" in
+    "")
+    ;;
+    *) ifconfig eth1 "$my_ip" netmask 255.255.255.0 up
+    route add -net 224.0.0.0 netmask 240.0.0.0 dev eth1
+    ;;
+esac
+
+
 qemud=`getprop ro.kernel.android.qemud`
 case "$qemud" in
     "")
