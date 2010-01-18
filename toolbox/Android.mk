@@ -53,7 +53,9 @@ TOOLS := \
 	uptime \
 	vmstat \
 	nandread \
-        ionice
+	ionice \
+	sender \
+	listener
 
 LOCAL_SRC_FILES:= \
 	toolbox.c \
