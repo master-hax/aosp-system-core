@@ -219,11 +219,14 @@ static char *get_uevent_param(struct uevent *event, char *param_name)
 {
     int i;
 
-    for (i = 0; i < UEVENT_PARAMS_MAX; i++) {
-        if (!event->param[i])
-            break;
-        if (!strncmp(event->param[i], param_name, strlen(param_name)))
-            return &event->param[i][strlen(param_name) + 1];
+    for (i = 0; event->param[i] && i < UEVENT_PARAMS_MAX; ++i) {
+        char *buf = strchr(event->param[i], '=');
+        if (buf) {
+            int len = buf - event->param[i];
+            if (!strncmp(event->param[i], param_name, len)
+                    && param_name[len] == '\0')
+                return ++buf;
+        }
     }
 
     LOGE("get_uevent_param(): No parameter '%s' found", param_name);
