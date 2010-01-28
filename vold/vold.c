@@ -184,7 +184,7 @@ int main(int argc, char **argv)
             }
         }
 
-        if (FD_ISSET(fw_sock, &read_fds)) {
+        if ((fw_sock != -1) && FD_ISSET(fw_sock, &read_fds)) {
             if ((rc = process_framework_command(fw_sock)) < 0) {
                 if (rc == -ECONNRESET) {
                     LOGE("Framework disconnected");
