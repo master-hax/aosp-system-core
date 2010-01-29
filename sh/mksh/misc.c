@@ -2,7 +2,7 @@
 /*	$OpenBSD: path.c,v 1.12 2005/03/30 17:16:37 deraadt Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -29,7 +29,7 @@
 #include <grp.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.135 2010/01/01 18:02:00 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.138 2010/01/29 09:34:29 tg Exp $");
 
 unsigned char chtypes[UCHAR_MAX + 1];	/* type bits for unsigned char */
 
@@ -232,8 +232,9 @@ change_flag(enum sh_flag f, int what, unsigned int newval)
 		setegid(kshegid = kshgid = getgid());
 		setgid(kshegid);
 #endif
-	} else if (f == FSH && newval) {
-		Flag(FBRACEEXPAND) = 0;
+	} else if ((f == FPOSIX || f == FSH) && newval) {
+		Flag(FPOSIX) = Flag(FSH) = Flag(FBRACEEXPAND) = 0;
+		Flag(f) = (unsigned char)newval;
 	}
 	/* Changing interactive flag? */
 	if (f == FTALKING) {
@@ -550,8 +551,10 @@ has_globbing(const char *xp, const char *xpe)
 			} else if (nest)
 				nest--;
 		}
-		/* else must be a MAGIC-MAGIC, or MAGIC-!, MAGIC--, MAGIC-]
-			 MAGIC-{, MAGIC-,, MAGIC-} */
+		/*
+		 * else must be a MAGIC-MAGIC, or MAGIC-!,
+		 * MAGIC--, MAGIC-], MAGIC-{, MAGIC-, MAGIC-}
+		 */
 	}
 	return (saw_glob && !in_bracket && !nest);
 }

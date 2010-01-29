@@ -1,7 +1,7 @@
 /*	$OpenBSD: var.c,v 1.34 2007/10/15 02:16:35 deraadt Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/var.c,v 1.100 2009/12/05 17:43:50 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/var.c,v 1.104 2010/01/28 20:26:52 tg Exp $");
 
 /*
  * Variables
@@ -674,14 +674,15 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	struct tbl *vpbase, *t;
 	char *tvar;
 	const char *val;
+	int len;
 
 	/* check for valid variable name, search for value */
 	val = skip_varname(var, false);
 	if (val == var)
 		return (NULL);
+	mkssert(var != NULL);
+	mkssert(*var != 0);
 	if (*val == '[') {
-		int len;
-
 		if (set_refflag)
 			errorf("%s: reference variable cannot be an array",
 			    var);
@@ -710,6 +711,11 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 			return (NULL);
 		strdupx(tvar, var, ATEMP);
 		val = NULL;
+		/* handle foo[*] ⇒ foo (whole array) mapping for R39b */
+		len = strlen(tvar);
+		if (len > 3 && tvar[len-3] == '[' && tvar[len-2] == '*' &&
+		    tvar[len-1] == ']')
+			tvar[len-3] = '\0';
 	}
 
 	/* Prevent typeset from creating a local PATH/ENV/SHELL */
@@ -754,12 +760,13 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 
 	/* most calls are with set/clr == 0 */
 	if (set | clr) {
-		int ok = 1;
+		bool ok = true;
+
 		/* XXX if x[0] isn't set, there will be problems: need to have
 		 * one copy of attributes for arrays...
 		 */
 		for (t = vpbase; t; t = t->u.array) {
-			int fake_assign;
+			bool fake_assign;
 			char *s = NULL;
 			char *free_me = NULL;
 
@@ -796,7 +803,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 					 * zap contents of variable, but keep
 					 * the flag settings.
 					 */
-					ok = 0;
+					ok = false;
 					if (t->flag & INTEGER)
 						t->flag &= ~ISSET;
 					else {
@@ -834,15 +841,17 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	return (vp);
 }
 
-/* Unset a variable. array_ref is set if there was an array reference in
- * the name lookup (eg, x[2]).
+/**
+ * Unset a variable. The flags can be:
+ * |1	= tear down entire array
+ * |2	= keep attributes, only unset content
  */
 void
-unset(struct tbl *vp, int array_ref)
+unset(struct tbl *vp, int flags)
 {
 	if (vp->flag & ALLOC)
 		afree(vp->val.s, vp->areap);
-	if ((vp->flag & ARRAY) && !array_ref) {
+	if ((vp->flag & ARRAY) && (flags & 1)) {
 		struct tbl *a, *tmp;
 
 		/* Free up entire array */
@@ -855,8 +864,12 @@ unset(struct tbl *vp, int array_ref)
 		}
 		vp->u.array = NULL;
 	}
+	if (flags & 2) {
+		vp->flag &= ~(ALLOC|ISSET);
+		return;
+	}
 	/* If foo[0] is being unset, the remainder of the array is kept... */
-	vp->flag &= SPECIAL | (array_ref ? ARRAY|DEFINED : 0);
+	vp->flag &= SPECIAL | ((flags & 1) ? 0 : ARRAY|DEFINED);
 	if (vp->flag & SPECIAL)
 		unsetspec(vp);	/* responsible for 'unspecial'ing var */
 }
@@ -1293,10 +1306,6 @@ arraysearch(struct tbl *vp, uint32_t val)
 	new->areap = vp->areap;
 	new->u2.field = vp->u2.field;
 	new->ua.index = val;
-#ifdef notyet_ktremove
-	/* XXX array indices must not be ktdelete'd, for now */
-	new->tablep = NULL;
-#endif
 
 	if (curr != new) {		/* not reusing old array entry */
 		prev->u.array = new;
@@ -1363,7 +1372,7 @@ set_array(const char *var, bool reset, const char **vals)
 	/* This code is quite non-optimal */
 	if (reset)
 		/* trash existing values and attributes */
-		unset(vp, 0);
+		unset(vp, 1);
 	/* todo: would be nice for assignment to completely succeed or
 	 * completely fail. Only really effects integer arrays:
 	 * evaluation of some of vals[] may fail...
@@ -1400,10 +1409,6 @@ set_array(const char *var, bool reset, const char **vals)
 
 		vq = arraysearch(vp, j);
 		/* would be nice to deal with errors here... (see above) */
-#if 0
-		shprintf("setting '%s'[%lu]='%s'  <- '%s'\n",
-		    vp->name, (unsigned long)j, ccp, vals[i]);
-#endif
 		setstr(vq, ccp, KSH_RETURN_ERROR);
 		i++;
 #ifndef MKSH_SMALL
