@@ -4,7 +4,7 @@
 /*	$OpenBSD: c_ulimit.c,v 1.17 2008/03/21 12:51:19 millert Exp $	*/
 
 /*-
- * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Copyright (c) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -25,7 +25,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/funcs.c,v 1.147 2009/12/12 22:27:07 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/funcs.c,v 1.150 2010/01/28 15:18:48 tg Exp $");
 
 #if HAVE_KILLPG
 /*
@@ -539,7 +539,7 @@ c_print(const char **wp)
 	if (wp[0][0] == 'e') {
 		/* echo builtin */
 		wp++;
-		if (Flag(FSH)) {
+		if (Flag(FPOSIX) || Flag(FSH)) {
 			/* Debian Policy 10.4 compliant "echo" builtin */
 			if (*wp && !strcmp(*wp, "-n")) {
 				/* we recognise "-n" only as the first arg */
@@ -1666,7 +1666,7 @@ c_getopts(const char **wp)
 	if (voptarg->flag & INTEGER)
 	    typeset("OPTARG", 0, INTEGER, 0, 0);
 	if (user_opt.optarg == NULL)
-		unset(voptarg, 0);
+		unset(voptarg, 1);
 	else
 		/* This can't fail (have cleared readonly/integer) */
 		setstr(voptarg, user_opt.optarg, KSH_RETURN_ERROR);
@@ -2372,8 +2372,9 @@ c_set(const char **wp)
 	 * which assumes the exit value set will be that of the $()
 	 * (subst_exstat is cleared in execute() so that it will be 0
 	 * if there are no command substitutions).
+	 * Switched ksh (!posix !sh) to POSIX in mksh R39b.
 	 */
-	return (Flag(FSH) ? 0 : subst_exstat);
+	return (Flag(FSH) ? subst_exstat : 0);
 }
 
 int
@@ -2397,13 +2398,27 @@ c_unset(const char **wp)
 	wp += builtin_opt.optind;
 	for (; (id = *wp) != NULL; wp++)
 		if (unset_var) {	/* unset variable */
-			struct tbl *vp = global(id);
+			struct tbl *vp;
+			char *cp = NULL;
+			size_t n;
+
+			n = strlen(id);
+			if (n > 3 && id[n-3] == '[' && id[n-2] == '*' &&
+			    id[n-1] == ']') {
+				strndupx(cp, id, n - 3, ATEMP);
+				id = cp;
+				optc = 3;
+			} else
+				optc = vstrchr(id, '[') ? 0 : 1;
+
+			vp = global(id);
+			afree(cp, ATEMP);
 
 			if ((vp->flag&RDONLY)) {
 				bi_errorf("%s is read only", vp->name);
 				return (1);
 			}
-			unset(vp, vstrchr(id, '[') ? 1 : 0);
+			unset(vp, optc);
 		} else			/* unset function */
 			define(id, NULL);
 	return (0);
@@ -2558,8 +2573,12 @@ c_exec(const char **wp MKSH_A_UNUSED)
 		for (i = 0; i < NUFILE; i++) {
 			if (e->savefd[i] > 0)
 				close(e->savefd[i]);
-			/* For ksh (but not sh), keep anything > 2 private */
-			if (!Flag(FSH) && i > 2 && e->savefd[i])
+			/*
+			 * keep all file descriptors > 2 private for ksh,
+			 * but not for POSIX or legacy/kludge sh
+			 */
+			if (!Flag(FPOSIX) && !Flag(FSH) && i > 2 &&
+			    e->savefd[i])
 				fcntl(i, F_SETFD, FD_CLOEXEC);
 		}
 		e->savefd = NULL;
@@ -2647,10 +2666,6 @@ c_mknod(const char **wp)
 		umask(oldmode);
 	return (rv);
  c_mknod_usage:
-#if 0
-	/* XXX doesn't help */
-	builtin_argv0 = NULL;
-#endif
 	bi_errorf("usage: mknod [-m mode] name [b | c] major minor");
 	bi_errorf("usage: mknod [-m mode] name p");
 	return (1);

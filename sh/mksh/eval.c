@@ -1,7 +1,7 @@
 /*	$OpenBSD: eval.c,v 1.34 2009/01/29 23:27:26 jaredy Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/eval.c,v 1.80 2010/01/01 17:44:07 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/eval.c,v 1.82 2010/01/29 09:34:27 tg Exp $");
 
 /*
  * string expansion
@@ -551,7 +551,7 @@ expand(const char *cp,	/* input word */
 					case '?':
 						f &= ~DOBLANK;
 						f |= DOTEMP_;
-						/* FALLTHRU */
+						/* FALLTHROUGH */
 					default:
 						/* Enable tilde expansion */
 						tilde_ok = 1;

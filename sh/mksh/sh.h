@@ -1,4 +1,4 @@
-/*	$OpenBSD: sh.h,v 1.29 2005/12/11 18:53:51 deraadt Exp $	*/
+/*	$OpenBSD: sh.h,v 1.30 2010/01/04 18:07:11 deraadt Exp $	*/
 /*	$OpenBSD: shf.h,v 1.6 2005/12/11 18:53:51 deraadt Exp $	*/
 /*	$OpenBSD: table.h,v 1.7 2005/12/11 20:31:21 otto Exp $	*/
 /*	$OpenBSD: tree.h,v 1.10 2005/03/28 21:28:22 deraadt Exp $	*/
@@ -123,7 +123,9 @@
 #define MKSH_A_USED		/* nothing */
 #endif
 
-#if (defined(MirBSD) && (MirBSD >= 0x09A1))
+#if defined(MirBSD) && (MirBSD >= 0x09A1) && \
+    defined(__ELF__) && defined(__GNUC__) && \
+    !defined(__llvm__) && !defined(__NWCC__)
 /*
  * We got usable __IDSTRING __COPYRIGHT __RCSID __SCCSID macros
  * which work for all cases; no need to redefine them using the
@@ -148,9 +150,9 @@
 #endif
 
 #ifdef EXTERN
-__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.373 2010/01/08 22:21:06 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.380 2010/01/29 09:34:30 tg Exp $");
 #endif
-#define MKSH_VERSION "R39 2010/01/08"
+#define MKSH_VERSION "R39 2010/01/29"
 
 #ifndef MKSH_INCLUDES_ONLY
 
@@ -795,9 +797,11 @@ EXTERN mksh_ari_t x_lins I__(-1);	/* tty lines */
 int shf_getc(struct shf *);
 int shf_putc(int, struct shf *);
 #else
-#define shf_getc(shf) ((shf)->rnleft > 0 ? (shf)->rnleft--, *(shf)->rp++ : \
-			shf_getchar(shf))
-#define shf_putc(c, shf)	((shf)->wnleft == 0 ? shf_putchar((c), (shf)) : \
+#define shf_getc(shf)		((shf)->rnleft > 0 ? \
+				    (shf)->rnleft--, *(shf)->rp++ : \
+				    shf_getchar(shf))
+#define shf_putc(c, shf)	((shf)->wnleft == 0 ? \
+				    shf_putchar((c), (shf)) : \
 				    ((shf)->wnleft--, *(shf)->wp++ = (c)))
 #endif
 #define shf_eof(shf)		((shf)->flags & SHF_EOF)
@@ -863,9 +867,6 @@ struct tbl {			/* table item */
 		struct tbl *array;	/* array values */
 		const char *fpath;	/* temporary path to undef function */
 	} u;
-#ifdef notyet_ktremove
-	struct table *tablep;	/* table we're ktenter'd in */
-#endif
 	union {
 		int field;	/* field with for -L/-R/-Z */
 		int errno_;	/* CEXEC/CTALIAS */
@@ -1435,6 +1436,9 @@ void hist_init(Source *);
 void hist_finish(void);
 #endif
 void histsave(int *, const char *, bool, bool);
+#if !defined(MKSH_SMALL) && HAVE_PERSISTENT_HISTORY
+bool histsync(void);
+#endif
 int c_fc(const char **);
 void sethistsize(int);
 #if HAVE_PERSISTENT_HISTORY
@@ -1444,7 +1448,7 @@ char **histpos(void);
 int histnum(int);
 int findhist(int, int, const char *, int);
 int findhistrel(const char *);
-char **hist_get_newest(int);
+char **hist_get_newest(bool);
 void inittraps(void);
 void alarm_init(void);
 Trap *gettrap(const char *, int);
@@ -1541,7 +1545,6 @@ void ktinit(struct table *, Area *, size_t);
 struct tbl *ktsearch(struct table *, const char *, uint32_t);
 struct tbl *ktenter(struct table *, const char *, uint32_t);
 #define ktdelete(p)	do { p->flag = 0; } while (/* CONSTCOND */ 0)
-void ktremove(struct tbl *);
 void ktwalk(struct tstate *, struct table *);
 struct tbl *ktnext(struct tstate *);
 struct tbl **ktsort(struct table *);
@@ -1623,7 +1626,8 @@ char *str_val(struct tbl *);
 int setstr(struct tbl *, const char *, int);
 struct tbl *setint_v(struct tbl *, struct tbl *, bool);
 void setint(struct tbl *, mksh_ari_t);
-struct tbl *typeset(const char *, Tflag, Tflag, int, int);
+struct tbl *typeset(const char *, Tflag, Tflag, int, int)
+    MKSH_A_NONNULL((nonnull (1)));
 void unset(struct tbl *, int);
 const char *skip_varname(const char *, int);
 const char *skip_wdvarname(const char *, int);

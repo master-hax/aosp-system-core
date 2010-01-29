@@ -4,7 +4,7 @@
 /*	$OpenBSD: table.c,v 1.13 2009/01/17 22:06:44 millert Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -33,7 +33,7 @@
 #include <locale.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/main.c,v 1.158 2010/01/01 17:44:08 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/main.c,v 1.162 2010/01/29 09:34:29 tg Exp $");
 
 extern char **environ;
 
@@ -322,7 +322,7 @@ mksh_init(int argc, const char *argv[])
 		if (!(s->start = s->str = argv[argi++]))
 			errorf("-c requires an argument");
 #ifdef MKSH_MIDNIGHTBSD01ASH_COMPAT
-		/* compatibility to MidnightBSD 0.1 /bin/sh (not desired) */
+		/* compatibility to MidnightBSD 0.1 /bin/sh (kludge) */
 		if (Flag(FSH) && argv[argi] && !strcmp(argv[argi], "--"))
 			++argi;
 #endif
@@ -505,7 +505,7 @@ include(const char *name, int argc, const char **argv, int intr_ok)
 			 */
 			if (intr_ok && (exstat - 128) != SIGTERM)
 				return (1);
-			/* FALLTHRU */
+			/* FALLTHROUGH */
 		case LEXIT:
 		case LLEAVE:
 		case LSHELL:
@@ -585,7 +585,7 @@ shell(Source * volatile s, volatile int toplevel)
 				s->start = s->str = null;
 				break;
 			}
-			/* FALLTHRU */
+			/* FALLTHROUGH */
 		case LEXIT:
 		case LLEAVE:
 		case LRETURN:
@@ -672,7 +672,7 @@ unwind(int i)
 		case E_NONE:
 			if (i == LINTR)
 				e->flags |= EF_FAKE_SIGDIE;
-			/* FALLTHRU */
+			/* FALLTHROUGH */
 		default:
 			quitenv(NULL);
 		}
@@ -1416,9 +1416,6 @@ ktenter(struct table *tp, const char *n, uint32_t h)
 	p->flag = 0;
 	p->type = 0;
 	p->areap = tp->areap;
-#ifdef notyet_ktremove
-	p->tablep = tp;
-#endif
 	p->ua.hval = h;
 	p->u2.field = 0;
 	p->u.array = NULL;
@@ -1429,28 +1426,6 @@ ktenter(struct table *tp, const char *n, uint32_t h)
 	*pp = p;
 	return (p);
 }
-
-#ifdef notyet_ktremove
-void
-ktremove(struct tbl *p)
-{
-	struct tbl **pp;
-
-	if (p->tablep && p->tablep->size && ktscan(p->tablep, p->name,
-	    p->ua.hval, &pp) == p) {
-		/* ktremove p */
-wontwork("cannot use NULL here, see r1.143 commit message");
-		*pp = NULL;
-		p->tablep->nfree++;
-		/* get rid of p */
-wontwork("need to check FINUSE, see texpand");
-		afree(p, p->areap);
-	} else {
-		/* mark p as free for garbage collection via texpand */
-		p->flag = 0;
-	}
-}
-#endif
 
 void
 ktwalk(struct tstate *ts, struct table *tp)
