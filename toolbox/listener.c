@@ -5,6 +5,8 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 
 #define HELLO_PORT 12345
@@ -63,6 +65,9 @@ int listener_main(int argc, char *argv[])
 	       perror("recvfrom");
 	       exit(1);
 	  }
-	  puts(msgbuf);
+	  if (write(1, msgbuf, nbytes) < 0) {
+	      perror("write");
+	      exit(1);
+	  }
      }
 }

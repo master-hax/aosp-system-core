@@ -5,6 +5,8 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 
 #define HELLO_PORT 12345
@@ -15,7 +17,7 @@ int sender_main(int argc, char *argv[])
     struct sockaddr_in addr;
     int fd, cnt;
     struct ip_mreq mreq;
-    char *message="Hello, World!";
+    char *message="Hello, World!\n";
 
     /* create what looks like an ordinary UDP socket */
     if ((fd=socket(AF_INET,SOCK_DGRAM,0)) < 0) {
@@ -31,7 +33,7 @@ int sender_main(int argc, char *argv[])
 
     /* now just sendto() our destination! */
     while (1) {
-        if (sendto(fd,message,strlen(message)+1,0,(struct sockaddr *) &addr,
+        if (sendto(fd,message,strlen(message),0,(struct sockaddr *) &addr,
                     sizeof(addr)) < 0) {
             perror("sendto");
             exit(1);
