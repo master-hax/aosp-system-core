@@ -579,9 +579,9 @@ static void register_device(const char *dev_name,
         if(n != 0) goto fail;
     }
 
-        /* read the device's serial number */
-    serial[0] = 0;
+    /* read the device's serial number */
     memset(serial, 0, sizeof(serial));
+    // serial_index indicates whether the device has a serial number.
     if (serial_index) {
         struct usbdevfs_ctrltransfer  ctrl;
         __u16 buffer[128];
@@ -626,7 +626,15 @@ static void register_device(const char *dev_name,
                 break;
             }
         }
-    }
+    } else {
+    	// The device has no serial number - we'll have to make something up.
+    	// We shall just use the dev name (e.g. /dev/bus/usb/...)
+    	// This isn't ideal because it changes when you unplug the device,
+    	// but otherwise it wouldn't work at all so this is an improvement.
+    	
+		snprintf(serial, sizeof(serial), "noserial-%s", dev_name);
+	}
+
 
         /* add to the end of the active handles */
     adb_mutex_lock(&usb_lock);
