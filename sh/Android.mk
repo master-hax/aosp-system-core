@@ -21,7 +21,7 @@ LOCAL_SYSTEM_SHARED_LIBRARIES:= libc
 
 LOCAL_C_INCLUDES:=	$(LOCAL_PATH)/mksh
 # from Makefrag.inc: CFLAGS, CPPFLAGS
-LOCAL_CFLAGS:=		-fno-strict-aliasing -fstack-protector-all -fwrapv \
+LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
 			-Wall -Wextra \
 			-DNO_STRTOD \
 			-DMKSH_ASSUME_UTF8=0 -DMKSH_NOPWNAM \
@@ -69,7 +69,7 @@ LOCAL_SYSTEM_SHARED_LIBRARIES:= libc
 
 LOCAL_C_INCLUDES:=	$(LOCAL_PATH)/mksh
 # from Makefrag.inc: CFLAGS, CPPFLAGS
-LOCAL_CFLAGS:=		-fno-strict-aliasing -fstack-protector-all -fwrapv \
+LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
 			-Wall -Wextra \
 			-DMKSH_ASSUME_UTF8=0 -DMKSH_SMALL -DMKSH_NO_LIMITS \
 			-fno-inline -D_GNU_SOURCE \

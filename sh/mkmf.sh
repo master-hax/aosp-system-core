@@ -50,7 +50,7 @@ CC=$_gccpath/arm-eabi-gcc
 addvar CPPFLAGS -I$_platpath/usr/include
 addvar CFLAGS -march=armv5te -mtune=xscale -msoft-float -fpic \
     -mthumb-interwork -ffunction-sections -funwind-tables \
-    -fstack-protector -fno-short-enums
+    -fno-short-enums #-fstack-protector see below for Android-x86 note
 addvar CPPFLAGS -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ \
     -D__ARM_ARCH_5TE__
 addvar CFLAGS -mthumb -Os -fomit-frame-pointer -fno-strict-aliasing \
@@ -89,6 +89,9 @@ TARGET_OS=Linux
 HAVE_CAN_STDG99=0
 HAVE_CAN_STDC99=0
 export HAVE_CAN_STDG99 HAVE_CAN_STDC99
+
+# Android-x86 does not have helper functions for ProPolice SSP
+HAVE_CAN_FSTACKPROTECTORALL=0; export HAVE_CAN_FSTACKPROTECTORALL
 
 # Android-current has sys_signame[] but NDK 1.5 doesn’t,
 # so override (comment this out if building for 1.[56])
