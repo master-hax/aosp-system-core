@@ -51,15 +51,16 @@ LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
 
 include $(BUILD_EXECUTABLE)
 
-SYMLINK := $(TARGET_OUT)/bin/mksh
-$(SYMLINK): LOCAL_MODULE := $(LOCAL_MODULE)
-$(SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@echo "Symlink: $@ -> $(LOCAL_MODULE)"
-	@rm -rf $@
-	$(hide) ln -sf $(LOCAL_MODULE) $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINK)
-ALL_MODULES.$(LOCAL_MODULE).INSTALLED += $(SYMLINK)
+# this should create a /system/bin/mksh@ -> sh symlink, but doesn’t WFM
+#SYMLINK := $(TARGET_OUT)/bin/mksh
+#$(SYMLINK): LOCAL_MODULE := $(LOCAL_MODULE)
+#$(SYMLINK): $(LOCAL_INSTALLED_MODULE)
+#	@echo "Symlink: $@ -> $(LOCAL_MODULE)"
+#	@rm -rf $@
+#	$(hide) ln -sf $(LOCAL_MODULE) $@
+#
+#ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINK)
+#ALL_MODULES.$(LOCAL_MODULE).INSTALLED += $(SYMLINK)
 
 ifeq (0,1)
 ### build mksh-small
