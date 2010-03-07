@@ -592,11 +592,11 @@ static void register_device(const char *dev_name,
         memset(languages, 0, sizeof(languages));
         memset(&ctrl, 0, sizeof(ctrl));
 
-            // read list of supported languages
+        // Read list of supported languages (as in, English etc.) See sections 9.4.3 and 9.6.7 in the USB 2 spec.
         ctrl.bRequestType = USB_DIR_IN|USB_TYPE_STANDARD|USB_RECIP_DEVICE;
         ctrl.bRequest = USB_REQ_GET_DESCRIPTOR;
-        ctrl.wValue = (USB_DT_STRING << 8) | 0;
-        ctrl.wIndex = 0;
+        ctrl.wValue = (USB_DT_STRING << 8) | 0; // Get the first string descriptor.
+        ctrl.wIndex = 0; // The language for this descriptor; 0 means we want a list of supported languages.
         ctrl.wLength = sizeof(languages);
         ctrl.data = languages;
 
@@ -604,6 +604,8 @@ static void register_device(const char *dev_name,
         if (result > 0)
             languageCount = (result - 2) / 2;
 
+		// Go through each supported language and request the serial number string descriptor.
+		// We start at 1 because the first two bytes of the response are the size and type of this descriptor.
         for (i = 1; i <= languageCount; i++) {
             memset(buffer, 0, sizeof(buffer));
             memset(&ctrl, 0, sizeof(ctrl));
@@ -615,6 +617,7 @@ static void register_device(const char *dev_name,
             ctrl.wLength = sizeof(buffer);
             ctrl.data = buffer;
 
+            // Get the serial number string descriptor for this language.
             result = ioctl(usb->desc, USBDEVFS_CONTROL, &ctrl);
             if (result > 0) {
                 int i;
@@ -623,7 +626,7 @@ static void register_device(const char *dev_name,
                 for (i = 1; i < result; i++)
                     serial[i - 1] = buffer[i];
                 serial[i - 1] = 0;
-                break;
+                break; // Use the first language that returns a string.
             }
         }
     } else {
@@ -631,12 +634,13 @@ static void register_device(const char *dev_name,
     	// We shall just use the dev name (e.g. /dev/bus/usb/...)
     	// This isn't ideal because it changes when you unplug the device,
     	// but otherwise it wouldn't work at all so this is an improvement.
+    	// TODO: Fix for Windows and OSX too.
     	
 		snprintf(serial, sizeof(serial), "noserial-%s", dev_name);
 	}
 
 
-        /* add to the end of the active handles */
+    /* add to the end of the active handles */
     adb_mutex_lock(&usb_lock);
     usb->next = &handle_list;
     usb->prev = handle_list.prev;

@@ -496,6 +496,7 @@ void find_devices() {
             }
           } else {
             D("cannot get serial number\n");
+            // TODO: This should not fail. Some devices don't have serial numbers - see usb_linux.c.            
             usb_cleanup_handle(handle);
             free(handle);
           }

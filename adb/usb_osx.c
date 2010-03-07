@@ -194,54 +194,64 @@ AndroidInterfaceAdded(void *refCon, io_iterator_t iterator)
         kr = (*dev)->GetDeviceProduct(dev, &product);
         kr = (*dev)->USBGetSerialNumberStringIndex(dev, &serialIndex);
 
-	if (serialIndex > 0) {
-		IOUSBDevRequest req;
-		UInt16          buffer[256];
-		UInt16          languages[128];
+		if (serialIndex > 0) {
+			IOUSBDevRequest req;
+			UInt16          buffer[256];
+			UInt16          languages[128];
 
-		memset(languages, 0, sizeof(languages));
+			memset(languages, 0, sizeof(languages));
 
-		req.bmRequestType =
-			USBmakebmRequestType(kUSBIn, kUSBStandard, kUSBDevice);
-		req.bRequest = kUSBRqGetDescriptor;
-		req.wValue = (kUSBStringDesc << 8) | 0;
-		req.wIndex = 0;
-		req.pData = languages;
-		req.wLength = sizeof(languages);
-		kr = (*dev)->DeviceRequest(dev, &req);
+			req.bmRequestType =
+				USBmakebmRequestType(kUSBIn, kUSBStandard, kUSBDevice);
+			req.bRequest = kUSBRqGetDescriptor;
+			req.wValue = (kUSBStringDesc << 8) | 0;
+			req.wIndex = 0;
+			req.pData = languages;
+			req.wLength = sizeof(languages);
+			kr = (*dev)->DeviceRequest(dev, &req);
 
-		if (kr == kIOReturnSuccess && req.wLenDone > 0) {
+			if (kr == kIOReturnSuccess && req.wLenDone > 0) {
 
-			int langCount = (req.wLenDone - 2) / 2, lang;
+				int langCount = (req.wLenDone - 2) / 2, lang;
 
-			for (lang = 1; lang <= langCount; lang++) {
+				for (lang = 1; lang <= langCount; lang++) {
 
-                                memset(buffer, 0, sizeof(buffer));
-                                memset(&req, 0, sizeof(req));
+		                            memset(buffer, 0, sizeof(buffer));
+		                            memset(&req, 0, sizeof(req));
 
-				req.bmRequestType =
-					USBmakebmRequestType(kUSBIn, kUSBStandard, kUSBDevice);
-				req.bRequest = kUSBRqGetDescriptor;
-				req.wValue = (kUSBStringDesc << 8) | serialIndex;
-				req.wIndex = languages[lang];
-				req.pData = buffer;
-				req.wLength = sizeof(buffer);
-				kr = (*dev)->DeviceRequest(dev, &req);
+					req.bmRequestType =
+						USBmakebmRequestType(kUSBIn, kUSBStandard, kUSBDevice);
+					req.bRequest = kUSBRqGetDescriptor;
+					req.wValue = (kUSBStringDesc << 8) | serialIndex;
+					req.wIndex = languages[lang];
+					req.pData = buffer;
+					req.wLength = sizeof(buffer);
+					kr = (*dev)->DeviceRequest(dev, &req);
 
-				if (kr == kIOReturnSuccess && req.wLenDone > 0) {
-					int i, count;
+					if (kr == kIOReturnSuccess && req.wLenDone > 0) {
+						int i, count;
 
-					// skip first word, and copy the rest to the serial string,
-					// changing shorts to bytes.
-					count = (req.wLenDone - 1) / 2;
-					for (i = 0; i < count; i++)
-						serial[i] = buffer[i + 1];
-					serial[i] = 0;
-                                        break;
+						// skip first word, and copy the rest to the serial string,
+						// changing shorts to bytes.
+						count = (req.wLenDone - 1) / 2;
+						for (i = 0; i < count; i++)
+							serial[i] = buffer[i + 1];
+						serial[i] = 0;
+		                                    break;
+					}
 				}
 			}
+		} else {
+			// The device has no serial number - we'll have to make something up.
+			// Unfortunately I don't have access to OSX but something like the following
+			// should work:
+			
+//			snprintf(serial, sizeof(serial), "noserial-%d", rand());
+
+			// TODO: Someone with OSX needs to replace rand() with something slightly meaningful
+			// (I used the device name (/dev/usb/...) on Linux).
 		}
-	}
+		
         (*dev)->Release(dev);
 
         DBG("INFO: Found vid=%04x pid=%04x serial=%s\n", vendor, product,
