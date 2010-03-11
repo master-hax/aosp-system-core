@@ -26,6 +26,8 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -49,6 +51,35 @@ struct fbinfo {
     unsigned int alpha_length;
 } __attribute__((packed));
 
+/* Name of external screenshot grabber tool */
+#define SCREENSHOT_COMMAND "screencap"
+
+static int run_screenshot(int fd)
+{
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if(pid < 0) {
+        /* fork() failed */
+        return 0;
+    } else if(pid == 0) {
+        /* In the child process */
+        dup2(fd, STDOUT_FILENO);
+        execlp(SCREENSHOT_COMMAND, SCREENSHOT_COMMAND, NULL);
+        /* exec() failed */
+        exit(-1);
+    }
+
+    waitpid(pid, &status, 0);
+
+    if(WIFEXITED(status) && (WEXITSTATUS(status) == 0)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void framebuffer_service(int fd, void *cookie)
 {
     struct fb_var_screeninfo vinfo;
@@ -57,6 +88,21 @@ void framebuffer_service(int fd, void *cookie)
 
     struct fbinfo fbinfo;
     unsigned i, bytespp;
+
+    /* First we try to grab a screenshot via the external "screenshot"
+     * command, which attempts to contact the SurfaceFlinger to
+     * retrieve an accurate image of the screen. This is needed
+     * because on some platforms the contents of /dev/graphics/fb0
+     * don't always match what's visible on the screen. */
+
+    if(run_screenshot(fd)) {
+        /* The 'screenshot' command succeeded */
+        close(fd);
+        return;
+    }
+
+    /* The 'screenshot' command failed for some reason. Fall back on
+     * reading the frame buffer directly. */
 
     fb = open("/dev/graphics/fb0", O_RDONLY);
     if(fb < 0) goto done;
