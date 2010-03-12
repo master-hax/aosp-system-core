@@ -304,7 +304,7 @@ blkdev_t *blkdev_lookup_by_devno(int maj, int min)
  */
 int blkdev_get_num_pending_partitions(blkdev_t *blk)
 {
-    struct blkdev_list *list_scan = list_root;
+    struct blkdev_list *list_scan = blk->media->devs;
     int num = blk->nr_parts;
 
     if (blk->type != blkdev_disk)
@@ -312,9 +312,6 @@ int blkdev_get_num_pending_partitions(blkdev_t *blk)
 
     while (list_scan) {
         if (list_scan->dev->type != blkdev_partition)
-            goto next;
-
-        if (list_scan->dev->major != blk->major)
             goto next;
 
         if (list_scan->dev->nr_sec != 0xffffffff &&
