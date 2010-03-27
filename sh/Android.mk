@@ -16,6 +16,7 @@ LOCAL_SYSTEM_SHARED_LIBRARIES:= libc
 LOCAL_C_INCLUDES:=	$(LOCAL_PATH)/mksh
 # from Makefrag.inc: CFLAGS, CPPFLAGS
 LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
+			-DMKSH_DEFAULT_EXECSHELL=\"/system/bin/sh\" \
 			-Wall -Wextra \
 			-DMKSH_ASSUME_UTF8=0 -DNO_STRTOD -DMKSH_NOPWNAM \
 			-D_GNU_SOURCE \
