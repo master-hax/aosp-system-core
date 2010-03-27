@@ -23,8 +23,7 @@ are covered by The MirOS Licence:
  */
 
 
-printf.c (part of the mksh binary but not of the mksh-small binary) is
-covered by the BSD licence:
+printf.c is covered by the BSD licence:
 
 /*
  * Copyright (c) 1989 The Regents of the University of California.

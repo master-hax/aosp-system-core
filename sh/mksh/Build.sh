@@ -1,5 +1,5 @@
 #!/bin/sh
-srcversion='$MirOS: src/bin/mksh/Build.sh,v 1.443 2010/02/23 22:02:35 tg Exp $'
+srcversion='$MirOS: src/bin/mksh/Build.sh,v 1.449 2010/03/27 20:36:25 tg Exp $'
 #-
 # Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #	Thorsten Glaser <tg@mirbsd.org>
@@ -28,7 +28,7 @@ srcversion='$MirOS: src/bin/mksh/Build.sh,v 1.443 2010/02/23 22:02:35 tg Exp $'
 # CPPFLAGS recognised:	MKSH_ASSUME_UTF8 MKSH_BINSHREDUCED MKSH_CLS_STRING
 #			MKSH_CONSERVATIVE_FDS MKSH_MIDNIGHTBSD01ASH_COMPAT
 #			MKSH_NOPWNAM MKSH_NO_LIMITS MKSH_SMALL MKSH_S_NOVI
-#			MKSH_UNEMPLOYED
+#			MKSH_UNEMPLOYED MKSH_DEFAULT_EXECSHELL MKSHRC_PATH
 
 LC_ALL=C
 export LC_ALL
@@ -286,6 +286,7 @@ rmf a.exe* a.out* conftest.c *core lft mksh* no *.o \
     signames.inc stdint.h test.sh x vv.out
 
 curdir=`pwd` srcdir=`dirname "$0"` check_categories=
+test -n "$dirname" || dirname=.
 
 e=echo
 r=0
@@ -360,7 +361,7 @@ AIX)
 	CPPFLAGS="$CPPFLAGS -D_ALL_SOURCE"
 	: ${HAVE_SETLOCALE_CTYPE=0}
 	;;
-BeOS|Haiku)
+BeOS)
 	oswarn=' and will currently not work'
 	;;
 BSD/OS)
@@ -381,6 +382,9 @@ GNU)
 	;;
 GNU/kFreeBSD)
 	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+	;;
+Haiku)
+	CPPFLAGS="$CPPFLAGS -DMKSH_ASSUME_UTF8"
 	;;
 HP-UX)
 	;;
@@ -996,6 +1000,7 @@ if ac_ifcpp 'ifdef MKSH_SMALL' isset_MKSH_SMALL '' \
 	esac
 
 	: ${HAVE_MKNOD=0}
+	: ${HAVE_NICE=0}
 	: ${HAVE_REVOKE=0}
 	: ${HAVE_PERSISTENT_HISTORY=0}
 	check_categories=$check_categories,smksh
@@ -1363,7 +1368,7 @@ ac_cppflags
 test 0 = $HAVE_SYS_SIGNAME && if ac_testinit cpp_dd '' \
     'checking if the C Preprocessor supports -dD'; then
 	echo '#define foo bar' >conftest.c
-	vv ']' "$CPP $CFLAGS $CPPFLAGS $LDFLAGS $NOWARN -dD conftest.c $LIBS >x"
+	vv ']' "$CPP $CFLAGS $CPPFLAGS $NOWARN -dD conftest.c >x"
 	grep '#define foo bar' x >/dev/null 2>&1 && fv=1
 	rmf conftest.c x vv.out
 	ac_testdone
@@ -1397,7 +1402,7 @@ if test 0 = $HAVE_SYS_SIGNAME; then
 #endif
 #endif
 mksh_cfg: NSIG' >conftest.c
-	NSIG=`vq "$CPP $CFLAGS $CPPFLAGS $LDFLAGS $NOWARN conftest.c $LIBS" | \
+	NSIG=`vq "$CPP $CFLAGS $CPPFLAGS $NOWARN conftest.c" | \
 	    grep mksh_cfg: | sed 's/^mksh_cfg:[	 ]*\([0-9x ()+-]*\).*$/\1/'`
 	case $NSIG in
 	*[\ \(\)+-]*) NSIG=`awk "BEGIN { print $NSIG }"` ;;
@@ -1410,14 +1415,14 @@ mksh_cfg: NSIG' >conftest.c
 	sigs="$sigs KILL LOST PIPE PROF PWR QUIT RESV SAK SEGV STOP SYS TERM"
 	sigs="$sigs TRAP TSTP TTIN TTOU URG USR1 USR2 VTALRM WINCH XCPU XFSZ"
 	test 1 = $HAVE_CPP_DD && test $NSIG -gt 1 && sigs="$sigs "`vq \
-	    "$CPP $CFLAGS $CPPFLAGS $LDFLAGS $NOWARN -dD conftest.c $LIBS" | \
+	    "$CPP $CFLAGS $CPPFLAGS $NOWARN -dD conftest.c" | \
 	    grep '[	 ]SIG[A-Z0-9]*[	 ]' | \
 	    sed 's/^\(.*[	 ]SIG\)\([A-Z0-9]*\)\([	 ].*\)$/\2/' | sort`
 	test $NSIG -gt 1 || sigs=
 	for name in $sigs; do
 		echo '#include <signal.h>' >conftest.c
 		echo mksh_cfg: SIG$name >>conftest.c
-		vq "$CPP $CFLAGS $CPPFLAGS $LDFLAGS $NOWARN conftest.c $LIBS" | \
+		vq "$CPP $CFLAGS $CPPFLAGS $NOWARN conftest.c" | \
 		    grep mksh_cfg: | \
 		    sed 's/^mksh_cfg:[	 ]*\([0-9x]*\).*$/\1:'$name/
 	done | grep -v '^:' | while IFS=: read nr name; do

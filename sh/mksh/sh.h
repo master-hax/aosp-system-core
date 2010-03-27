@@ -150,9 +150,9 @@
 #endif
 
 #ifdef EXTERN
-__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.383 2010/02/25 20:18:17 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.386 2010/03/27 16:53:17 tg Exp $");
 #endif
-#define MKSH_VERSION "R39 2010/02/25"
+#define MKSH_VERSION "R39 2010/03/27"
 
 #ifndef MKSH_INCLUDES_ONLY
 
@@ -249,10 +249,6 @@ typedef int bool;
 #endif
 #ifndef DEFFILEMODE
 #define DEFFILEMODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
-#endif
-
-#if !defined(RLIMIT_VMEM) && defined(RLIMIT_AS)
-#define RLIMIT_VMEM	RLIMIT_AS
 #endif
 
 #if !defined(MAP_FAILED)

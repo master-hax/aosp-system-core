@@ -1,5 +1,5 @@
-.\" $MirOS: src/bin/mksh/mksh.1,v 1.217 2010/02/25 21:05:00 tg Exp $
-.\" $OpenBSD: ksh.1,v 1.130 2010/02/25 13:45:54 schwarze Exp $
+.\" $MirOS: src/bin/mksh/mksh.1,v 1.222 2010/03/27 20:36:26 tg Exp $
+.\" $OpenBSD: ksh.1,v 1.131 2010/02/26 03:32:39 william Exp $
 .\"-
 .\" Copyright © 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 .\"	Thorsten Glaser <tg@mirbsd.org>
@@ -71,7 +71,7 @@
 .\" with -mandoc, it might implement .Mx itself, but we want to
 .\" use our own definition. And .Dd must come *first*, always.
 .\"
-.Dd $Mdocdate: February 25 2010 $
+.Dd $Mdocdate: March 27 2010 $
 .\"
 .\" Check which macro package we use
 .\"
@@ -1460,7 +1460,7 @@ The width
 .Pq in screen columns
 of the string value of parameter
 .Ar name ,
-or -1 if
+or \-1 if
 .Pf ${ Ns Ar name Ns }
 contains a control character.
 .Pp
@@ -4541,7 +4541,7 @@ unless they are also given on the same command line.
 .Pp
 .It Xo
 .Ic ulimit
-.Op Fl acdfHLlmnpSsTtvw
+.Op Fl aBCcdefHiLlMmnOPpqrSsTtVvw
 .Op Ar value
 .Xc
 Display or set process limits.
@@ -4564,6 +4564,13 @@ limit.
 Display all limits; unless
 .Fl H
 is used, soft limits are displayed.
+.It Fl B Ar n
+Set the socket buffer size to
+.Ar n
+kibibytes.
+.It Fl C Ar n
+Set the number of cached threads to
+.Ar n .
 .It Fl c Ar n
 Impose a size limit of
 .Ar n
@@ -4572,6 +4579,9 @@ blocks on the size of core dumps.
 Impose a size limit of
 .Ar n
 kibibytes on the size of the data area.
+.It Fl e Ar n
+Set the maximum niceness to
+.Ar n .
 .It Fl f Ar n
 Impose a size limit of
 .Ar n
@@ -4579,12 +4589,19 @@ blocks on files written by the shell and its child processes (files of any
 size may be read).
 .It Fl H
 Set the hard limit only (the default is to set both hard and soft limits).
+.It Fl i Ar n
+Set the number of pending signals to
+.Ar n .
 .It Fl L Ar n
 Control flocks; documentation is missing.
 .It Fl l Ar n
 Impose a limit of
 .Ar n
 kibibytes on the amount of locked (wired) physical memory.
+.It Fl M Ar n
+Set the AIO locked memory to
+.Ar n
+kibibytes.
 .It Fl m Ar n
 Impose a limit of
 .Ar n
@@ -4593,10 +4610,25 @@ kibibytes on the amount of physical memory used.
 Impose a limit of
 .Ar n
 file descriptors that can be open at once.
+.It Fl O Ar n
+Set the number of AIO operations to
+.Ar n .
+.It Fl P Ar n
+Limit the number of threads per process to
+.Ar n .
 .It Fl p Ar n
 Impose a limit of
 .Ar n
 processes that can be run by the user at any one time.
+.It Fl q Ar n
+Limit the size of
+.Px
+message queues to
+.Ar n
+bytes.
+.It Fl r Ar n
+Set the maximum real-time priority to
+.Ar n .
 .It Fl S
 Set the soft limit only (the default is to set both hard and soft limits).
 .It Fl s Ar n
@@ -4611,6 +4643,9 @@ real seconds to be used by each process.
 Impose a time limit of
 .Ar n
 CPU seconds spent in user mode to be used by each process.
+.It Fl V Ar n
+Set the number of vnode monitors on Haiku to
+.Ar n .
 .It Fl v Ar n
 Impose a limit of
 .Ar n
@@ -5855,6 +5890,7 @@ User's startup script (interactive shells).
 Used only if
 .Ev ENV
 is unset or empty.
+The location can be changed at compile time (for embedded systems).
 .It Pa \*(TI/.profile
 User's login profile.
 .It Pa /etc/profile
@@ -5999,7 +6035,7 @@ foo \*(Ba bar \*(Ba read baz    # will not change $baz
 .Ed
 .Pp
 This document attempts to describe
-.Nm mksh\ R39c
+.Nm mksh\ R39d
 and up,
 compiled without any options impacting functionality, such as
 .Dv MKSH_SMALL ,
