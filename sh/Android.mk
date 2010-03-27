@@ -2,6 +2,15 @@ LOCAL_PATH:=		$(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE:=		mkshrc
+LOCAL_MODULE_TAGS:=	user
+LOCAL_MODULE_CLASS:=	ETC
+LOCAL_MODULE_PATH:=	$(TARGET_OUT)/etc
+LOCAL_SRC_FILES:=	$(LOCAL_MODULE)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+
 # mksh source files
 LOCAL_SRC_FILES:=	mksh/lalloc.c mksh/edit.c mksh/eval.c mksh/exec.c \
 			mksh/expr.c mksh/funcs.c mksh/histrap.c mksh/jobs.c \
@@ -17,6 +26,7 @@ LOCAL_C_INCLUDES:=	$(LOCAL_PATH)/mksh
 # from Makefrag.inc: CFLAGS, CPPFLAGS
 LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
 			-DMKSH_DEFAULT_EXECSHELL=\"/system/bin/sh\" \
+			-DMKSHRC_PATH=\"/system/etc/mkshrc\" \
 			-Wall -Wextra \
 			-DMKSH_ASSUME_UTF8=0 -DNO_STRTOD -DMKSH_NOPWNAM \
 			-D_GNU_SOURCE \
