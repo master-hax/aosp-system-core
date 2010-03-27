@@ -97,6 +97,9 @@ HAVE_CAN_FSTACKPROTECTORALL=0; export HAVE_CAN_FSTACKPROTECTORALL
 # so override (comment this out if building for 1.[56])
 HAVE_SYS_SIGNAME=1; export HAVE_SYS_SIGNAME
 
+# disable the mknod(8) built-in to get rid of needing setmode.c
+HAVE_MKNOD=0; export HAVE_MKNOD=0
+
 # ... and run it!
 export CC CPPFLAGS CFLAGS LDFLAGS LIBS TARGET_OS
 sh ../mksh/Build.sh -M

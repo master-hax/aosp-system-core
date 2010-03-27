@@ -7,8 +7,6 @@ LOCAL_SRC_FILES:=	mksh/lalloc.c mksh/edit.c mksh/eval.c mksh/exec.c \
 			mksh/expr.c mksh/funcs.c mksh/histrap.c mksh/jobs.c \
 			mksh/lex.c mksh/main.c mksh/misc.c mksh/shf.c \
 			mksh/syn.c mksh/tree.c mksh/var.c
-# mksh "compat" source files
-LOCAL_SRC_FILES+=	mksh/setmode.c
 # add-on source files
 LOCAL_SRC_FILES+=	arc4rootdom.c printf.c
 
@@ -37,10 +35,10 @@ LOCAL_CFLAGS:=		-fno-strict-aliasing -fwrapv \
 			-DHAVE_RLIM_T=0 -DHAVE_SIG_T=1 -DHAVE_SYS_SIGNAME=1 \
 			-DHAVE_SYS_SIGLIST=1 -DHAVE_STRSIGNAL=0 \
 			-DHAVE_ARC4RANDOM=1 -DHAVE_ARC4RANDOM_PUSHB=1 \
-			-DHAVE_GETRUSAGE=1 -DHAVE_KILLPG=0 -DHAVE_MKNOD=1 \
+			-DHAVE_GETRUSAGE=1 -DHAVE_KILLPG=0 -DHAVE_MKNOD=0 \
 			-DHAVE_MKSTEMP=1 -DHAVE_NICE=1 -DHAVE_REVOKE=0 \
 			-DHAVE_SETLOCALE_CTYPE=0 -DHAVE_LANGINFO_CODESET=0 \
-			-DHAVE_SETMODE=0 -DHAVE_SETRESUGID=1 \
+			-DHAVE_SETMODE=1 -DHAVE_SETRESUGID=1 \
 			-DHAVE_SETGROUPS=1 -DHAVE_STRCASESTR=1 \
 			-DHAVE_STRLCPY=1 -DHAVE_ARC4RANDOM_DECL=1 \
 			-DHAVE_ARC4RANDOM_PUSHB_DECL=0 -DHAVE_FLOCK_DECL=1 \
