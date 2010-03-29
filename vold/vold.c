@@ -220,7 +220,6 @@ int send_msg(char* message)
 
 int send_msg_with_data(char *message, char *data)
 {
-    int result = -1;
 
     char* buffer = (char *)alloca(strlen(message) + strlen(data) + 1);
     if (!buffer) {
