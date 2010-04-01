@@ -40,10 +40,9 @@ PIXELFLINGER_SRC_FILES:= \
 	buffer.cpp
 
 ifeq ($(TARGET_ARCH),arm)
-ifeq ($(TARGET_ARCH_VERSION),armv7-a)
-#We may have Neon available, but include both versions in case we don't
+ifeq ($(ARCH_ARM_HAVE_NEON),true)
 PIXELFLINGER_SRC_FILES += t32cb16blend_neon.S
-endif
+else
 PIXELFLINGER_SRC_FILES += t32cb16blend.S
 endif
 
