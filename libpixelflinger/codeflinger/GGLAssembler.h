@@ -70,7 +70,7 @@ public:
                 void        recycleSeveral(uint32_t regMask);
 
                 int         obtain();
-        inline  int         isUsed(int reg) const;
+                int         isUsed(int reg) const;
 
                 bool        hasFreeRegs() const;
                 int         countFreeRegs() const;                

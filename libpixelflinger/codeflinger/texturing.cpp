@@ -883,6 +883,39 @@ void GGLAssembler::filter32(
     const int round  = 0;
     const int prescale = 16 - adjust;
 
+    // Trying to spill some register
+    // Sometimes we run out of 3 to 4 registers
+    // r0 is used by CONTEXT_LOAD
+    // r4, r5, r12, r14 cant be used for unknow reason
+    const char priority_list[] = {
+         1, 2, 3,
+         6,  7, 8, 9,
+        10, 11,
+    };
+    const int nbreg = sizeof(priority_list)/sizeof(priority_list[0]);
+    int free_regs = registerFile().countFreeRegs();
+    int need_regs = 8 - free_regs;
+    uint32_t spill_list = 0;
+    int i;
+
+    if (need_regs)
+        comment("Spill some registers");
+
+    for (i = 0; i < nbreg && need_regs; i++) {
+        int r = priority_list[i];
+        if (r != texel.reg &&
+            r != txPtr.reg &&
+            r != U &&
+            r != V &&
+            registerFile().isUsed(r)) {
+            spill_list |= (1<<r);
+            need_regs--;
+        }
+    }
+    Spill spill(registerFile(), *this, spill_list);
+
+    comment("filter32");
+
     Scratch scratches(registerFile());
     
     int pixel= scratches.obtain();
