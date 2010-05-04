@@ -154,6 +154,7 @@ void help()
         "  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program\n"
         "  adb reboot-bootloader        - reboots the device into the bootloader\n"
         "  adb root                     - restarts the adbd daemon with root permissions\n"
+        "  adb screenshot [<filename>]  - take a PNG screenshot of current device framebuffer\n"
         "  adb usb                      - restarts the adbd daemon listening on USB\n"
         "  adb tcpip <port>             - restarts the adbd daemon listening on TCP on the specified port"
         "\n"
@@ -895,6 +896,10 @@ top:
 
     if (!strcmp(argv[0], "emu")) {
         return adb_send_emulator_command(argc, argv);
+    }
+
+    if(!strcmp(argv[0], "screenshot")) {
+        return adb_screenshot(--argc, ++argv);
     }
 
     if(!strcmp(argv[0], "shell")) {

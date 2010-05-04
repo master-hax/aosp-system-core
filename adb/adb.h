@@ -385,6 +385,10 @@ int is_adb_interface(int vid, int pid, int usb_class, int usb_subclass, int usb_
 unsigned host_to_le32(unsigned n);
 int adb_commandline(int argc, char **argv);
 
+#if ADB_HOST
+int adb_screenshot(int argc, char **argv);
+#endif
+
 int connection_state(atransport *t);
 
 #define CS_ANY       -1

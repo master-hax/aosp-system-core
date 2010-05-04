@@ -16,19 +16,19 @@ EXTRA_SRCS :=
 ifeq ($(HOST_OS),linux)
   USB_SRCS := usb_linux.c
   EXTRA_SRCS := get_my_path_linux.c
-  LOCAL_LDLIBS += -lrt -lncurses -lpthread
+  LOCAL_LDLIBS += -lrt -lncurses -lpthread -lz
 endif
 
 ifeq ($(HOST_OS),darwin)
   USB_SRCS := usb_osx.c
   EXTRA_SRCS := get_my_path_darwin.c
-  LOCAL_LDLIBS += -lpthread -framework CoreFoundation -framework IOKit -framework Carbon
+  LOCAL_LDLIBS += -lpthread -lz -framework CoreFoundation -framework IOKit -framework Carbon
 endif
 
 ifeq ($(HOST_OS),freebsd)
   USB_SRCS := usb_libusb.c
   EXTRA_SRCS := get_my_path_freebsd.c
-  LOCAL_LDLIBS += -lpthread -lusb
+  LOCAL_LDLIBS += -lpthread -lusb -lz
 endif
 
 ifeq ($(HOST_OS),windows)
@@ -37,7 +37,7 @@ ifeq ($(HOST_OS),windows)
   EXTRA_STATIC_LIBS := AdbWinApi
   LOCAL_C_INCLUDES += /usr/include/w32api/ddk development/host/windows/usb/api/
   ifneq ($(strip $(USE_CYGWIN)),)
-    LOCAL_LDLIBS += -lpthread
+    LOCAL_LDLIBS += -lpthread -lz
   else
     LOCAL_LDLIBS += -lws2_32
     USE_SYSDEPS_WIN32 := 1
@@ -54,6 +54,7 @@ LOCAL_SRC_FILES := \
 	adb_client.c \
 	sockets.c \
 	services.c \
+	screenshot.c \
 	file_sync_client.c \
 	$(EXTRA_SRCS) \
 	$(USB_SRCS) \
@@ -72,7 +73,9 @@ LOCAL_CFLAGS += -O2 -g -DADB_HOST=1  -Wall -Wno-unused-parameter
 LOCAL_CFLAGS += -D_XOPEN_SOURCE -D_GNU_SOURCE -DSH_HISTORY
 LOCAL_MODULE := adb
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz $(EXTRA_STATIC_LIBS)
+LOCAL_C_INCLUDES += external/libpng external/zlib
+
+LOCAL_STATIC_LIBRARIES := libzipfile libunz libpng libz $(EXTRA_STATIC_LIBS)
 ifeq ($(USE_SYSDEPS_WIN32),)
 	LOCAL_STATIC_LIBRARIES += libcutils
 endif

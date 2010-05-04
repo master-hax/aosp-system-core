@@ -22,6 +22,7 @@
 
 #include "fdevent.h"
 #include "adb.h"
+#include "framebuffer.h"
 
 #include <linux/fb.h>
 #include <sys/ioctl.h>
@@ -30,24 +31,6 @@
 /* TODO:
 ** - sync with vsync to avoid tearing
 */
-/* This version number defines the format of the fbinfo struct.
-   It must match versioning in ddms where this data is consumed. */
-#define DDMS_RAWIMAGE_VERSION 1
-struct fbinfo {
-    unsigned int version;
-    unsigned int bpp;
-    unsigned int size;
-    unsigned int width;
-    unsigned int height;
-    unsigned int red_offset;
-    unsigned int red_length;
-    unsigned int blue_offset;
-    unsigned int blue_length;
-    unsigned int green_offset;
-    unsigned int green_length;
-    unsigned int alpha_offset;
-    unsigned int alpha_length;
-} __attribute__((packed));
 
 void framebuffer_service(int fd, void *cookie)
 {
