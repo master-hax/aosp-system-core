@@ -18,9 +18,6 @@ endif
 
 include $(CLEAR_VARS)
 PIXELFLINGER_SRC_FILES:= \
-    codeflinger/ARMAssemblerInterface.cpp \
-    codeflinger/ARMAssemblerProxy.cpp \
-    codeflinger/ARMAssembler.cpp \
     codeflinger/CodeCache.cpp \
     codeflinger/GGLAssembler.cpp \
     codeflinger/load_store.cpp \
@@ -40,6 +37,10 @@ PIXELFLINGER_SRC_FILES:= \
 	buffer.cpp
 
 ifeq ($(TARGET_ARCH),arm)
+PIXELFLINGER_SRC_FILES += \
+    codeflinger/ARMAssemblerInterface.cpp \
+    codeflinger/ARMAssemblerProxy.cpp \
+    codeflinger/ARMAssembler.cpp
 ifeq ($(TARGET_ARCH_VERSION),armv7-a)
 PIXELFLINGER_SRC_FILES += col32cb16blend_neon.S
 PIXELFLINGER_SRC_FILES += col32cb16blend.S
@@ -47,6 +48,14 @@ else
 PIXELFLINGER_SRC_FILES += t32cb16blend.S
 PIXELFLINGER_SRC_FILES += col32cb16blend.S
 endif
+endif
+
+ifeq ($(TARGET_ARCH),sh)
+PIXELFLINGER_SRC_FILES += \
+    codeflinger/SHAssemblerInterface.cpp \
+    codeflinger/SHAssemblerProxy.cpp \
+    codeflinger/SHAssembler.cpp \
+    t32cb16blend_sh.S
 endif
 
 ifeq ($(TARGET_ARCH),arm)

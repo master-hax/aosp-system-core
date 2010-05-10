@@ -139,6 +139,15 @@ int CodeCache::cache(  const AssemblyKeyBase& keyBase,
         err = cacheflush(base, curr, 0);
         LOGE_IF(err, "__ARM_NR_cacheflush error %s\n",
                 strerror(errno));
+#elif defined(ARCH_SH)
+        long base = long(assembly->base());
+        long curr = base + long(assembly->size());
+        const long stride = 8;
+        while (base < curr) {
+            asm volatile("ocbp @%0" :: "r"(base));
+            base += stride;
+        }
+        err = 0; // instead of cacheflush() return value
 #endif
     }
 

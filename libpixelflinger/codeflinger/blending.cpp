@@ -44,17 +44,43 @@ void GGLAssembler::build_fog(
         }
 
         integer_t fogColor(scratches.obtain(), 8, CORRUPTIBLE); 
+#ifdef ARCH_ARM
         LDRB(AL, fogColor.reg, mBuilderContext.Rctx,
                 immed12_pre(GGL_OFFSETOF(state.fog.color[component])));
+#elif defined(ARCH_SH)
+        IMM16(GGL_OFFSETOF(state.fog.color[component]), R0);
+        MOV_LD_B_R0(mBuilderContext.Rctx, fogColor.reg); // sign extended
+        EXTU_B(fogColor.reg, fogColor.reg); // cut sign bits
+#endif
 
         integer_t factor(scratches.obtain(), 16, CORRUPTIBLE);
         CONTEXT_LOAD(factor.reg, generated_vars.f);
 
         // clamp fog factor (TODO: see if there is a way to guarantee
         // we won't overflow, when setting the iterators)
+#ifdef ARCH_ARM
         BIC(AL, 0, factor.reg, factor.reg, reg_imm(factor.reg, ASR, 31));
         CMP(AL, factor.reg, imm( 0x10000 ));
         MOV(HS, 0, factor.reg, imm( 0x10000 ));
+#elif defined(ARCH_SH)
+        int Rn = scratches.obtain();
+        const char * label1 = genLabel();
+        const char * label2 = genLabel();
+        CMP(PZ, factor.reg);
+        BT(label1);
+        BRA(label2);
+        IMM(0, factor.reg);     // Delay Slot
+
+        label(label1);
+        IMM(1, Rn);
+        SHLL16(Rn);
+        CMP(GE, Rn, factor.reg); /* if factor.reg >= Rn 1 ->T */
+        BF(label2);
+        MOV(Rn, factor.reg);
+
+        label(label2);
+        scratches.recycle(Rn);
+#endif
 
         build_blendFOneMinusF(temp, factor, fragment, fogColor);
     }
@@ -135,7 +161,11 @@ void GGLAssembler::build_blending(
 
     // convert input fragment to integer_t
     if (temp.l && (temp.flags & CORRUPTIBLE)) {
+#ifdef ARCH_ARM
         MOV(AL, 0, temp.reg, reg_imm(temp.reg, LSR, temp.l));
+#elif defined(ARCH_SH)
+        SHLR(temp.l, temp.reg);
+#endif
         temp.h -= temp.l;
         temp.l = 0;
     }
@@ -145,7 +175,12 @@ void GGLAssembler::build_blending(
     if (temp.l) {
         // here we know temp is not CORRUPTIBLE
         fragment.reg = scratches.obtain();
+#ifdef ARCH_ARM
         MOV(AL, 0, fragment.reg, reg_imm(temp.reg, LSR, temp.l));
+#elif defined(ARCH_SH)
+        MOV(temp.reg, fragment.reg);
+        SHLR(temp.l, fragment.reg);
+#endif
         fragment.flags |= CORRUPTIBLE;
     }
 
@@ -295,7 +330,16 @@ void GGLAssembler::build_blend_factor(
                 // (1-factor)
                 factor = mAlphaSource;
                 factor.flags &= ~CORRUPTIBLE;           
+#ifdef ARCH_ARM
                 RSB(AL, 0, factor.reg, factor.reg, imm((1<<factor.s)));
+#elif defined(ARCH_SH)
+                int Rn = scratches.obtain();
+                IMM(1, Rn);
+                SHLL(factor.s, Rn);
+                SUB(factor.reg, Rn);
+                MOV(Rn, factor.reg);
+                scratches.recycle(Rn);
+#endif
                 mBlendFactorCached = f;
                 return;
             }                
@@ -324,30 +368,72 @@ void GGLAssembler::build_blend_factor(
 
     // XXX: doesn't work if size==1
 
+#if defined(ARCH_SH)
+     int Rn;
+#endif
     switch(f) {
     case GGL_ONE_MINUS_DST_COLOR:
     case GGL_DST_COLOR:
         factor.s = fb.s;
+#ifdef ARCH_ARM
         ADD(AL, 0, factor.reg, fb.reg, reg_imm(fb.reg, LSR, fb.s-1));
+#elif defined(ARCH_SH)
+        comment("GGL_*_DST_COLOR");
+        Rn = scratches.obtain();
+        MOV(fb.reg, Rn);
+        SHLR(fb.s-1, Rn);
+        MOV(fb.reg, factor.reg);
+        ADD(Rn, factor.reg);
+        scratches.recycle(Rn);
+#endif
         break;
     case GGL_ONE_MINUS_SRC_COLOR:
     case GGL_SRC_COLOR:
         factor.s = fragment.s;
+#ifdef ARCH_ARM
         ADD(AL, 0, factor.reg, fragment.reg,
             reg_imm(fragment.reg, LSR, fragment.s-1));
+#elif defined(ARCH_SH)
+        comment("GGL_*_SRC_COLOR");
+        Rn = scratches.obtain();
+        MOV(fragment.reg, Rn);
+        SHLR(fragment.s-1, Rn);
+        MOV(fragment.reg, factor.reg);
+        ADD(Rn, factor.reg);
+        scratches.recycle(Rn);
+#endif
         break;
     case GGL_ONE_MINUS_SRC_ALPHA:
     case GGL_SRC_ALPHA:
         factor.s = src_alpha.s;
+#ifdef ARCH_ARM
         ADD(AL, 0, factor.reg, src_alpha.reg,
                 reg_imm(src_alpha.reg, LSR, src_alpha.s-1));
+#elif defined(ARCH_SH)
+        comment("GGL_*_SRC_ALPHA");
+        Rn = scratches.obtain();
+        MOV(src_alpha.reg, Rn);
+        SHLR(src_alpha.s-1, Rn);
+        MOV(src_alpha.reg, factor.reg);
+        ADD(Rn, factor.reg);
+        scratches.recycle(Rn);
+#endif
         break;
     case GGL_ONE_MINUS_DST_ALPHA:
     case GGL_DST_ALPHA:
         // XXX: should be precomputed
         extract(factor, dst_pixel, GGLFormat::ALPHA);
+#ifdef ARCH_ARM
         ADD(AL, 0, factor.reg, factor.reg,
                 reg_imm(factor.reg, LSR, factor.s-1));
+#elif defined(ARCH_SH)
+        comment("GGL_*_DST_ALPHA");
+        Rn = scratches.obtain();
+        MOV(factor.reg, Rn);
+        SHLR(factor.s-1, Rn);
+        ADD(Rn, factor.reg);
+        scratches.recycle(Rn);
+#endif
         break;
     case GGL_SRC_ALPHA_SATURATE:
         // XXX: should be precomputed
@@ -362,13 +448,27 @@ void GGLAssembler::build_blend_factor(
     case GGL_ONE_MINUS_SRC_COLOR:
     case GGL_ONE_MINUS_DST_ALPHA:
     case GGL_ONE_MINUS_SRC_ALPHA:
+#ifdef ARCH_ARM
         RSB(AL, 0, factor.reg, factor.reg, imm((1<<factor.s)));
+#elif defined(ARCH_SH)
+        comment("GGL_ONE_MINUS_*");
+        Rn = scratches.obtain();
+        IMM(1, Rn);
+        SHLL(factor.s, Rn);
+        SUB(factor.reg, Rn);
+        MOV(Rn, factor.reg);
+        scratches.recycle(Rn);
+#endif
     }
     
     // don't need more than 8-bits for the blend factor
     // and this will prevent overflows in the multiplies later
     if (factor.s > 8) {
+#ifdef ARCH_ARM
         MOV(AL, 0, factor.reg, reg_imm(factor.reg, LSR, factor.s-8));
+#elif defined(ARCH_SH)
+        SHLR(factor.s-8, factor.reg);
+#endif
         factor.s = 8;
     }
 }
@@ -444,9 +544,22 @@ void GGLAssembler::build_blendFOneMinusF(
     integer_t diff(fragment.flags & CORRUPTIBLE ?
             fragment.reg : scratches.obtain(), fb.size(), CORRUPTIBLE);
     const int shift = fragment.size() - fb.size();
+#ifdef ARCH_ARM
     if (shift>0)        RSB(AL, 0, diff.reg, fb.reg, reg_imm(fragment.reg, LSR, shift));
     else if (shift<0)   RSB(AL, 0, diff.reg, fb.reg, reg_imm(fragment.reg, LSL,-shift));
     else                RSB(AL, 0, diff.reg, fb.reg, fragment.reg);
+#elif defined(ARCH_SH)
+    int Rn = scratches.obtain();
+    MOV(fragment.reg, Rn);
+    if (shift>0) {
+        SHLR(shift, Rn);
+    } else if (shift<0) {
+        SHLL(-shift, Rn);
+    }
+    SUB(fb.reg, Rn);
+    MOV(Rn, diff.reg);
+    scratches.recycle(Rn);
+#endif
     mul_factor_add(temp, diff, factor, component_t(fb));
 }
 
@@ -462,9 +575,19 @@ void GGLAssembler::build_blendOneMinusFF(
     integer_t diff(fb.flags & CORRUPTIBLE ?
             fb.reg : scratches.obtain(), fb.size(), CORRUPTIBLE);
     const int shift = fragment.size() - fb.size();
+#ifdef ARCH_ARM
     if (shift>0)        SUB(AL, 0, diff.reg, fb.reg, reg_imm(fragment.reg, LSR, shift));
     else if (shift<0)   SUB(AL, 0, diff.reg, fb.reg, reg_imm(fragment.reg, LSL,-shift));
     else                SUB(AL, 0, diff.reg, fb.reg, fragment.reg);
+#elif defined(ARCH_SH)
+    int Rn = scratches.obtain();
+    MOV(fragment.reg, Rn);
+    if (shift>0)        SHLR(shift, Rn);
+    else if (shift<0)    SHLL(-shift, Rn);
+    MOV(fb.reg, diff.reg);
+    SUB(Rn, diff.reg);
+    scratches.recycle(Rn);
+#endif
     mul_factor_add(temp, diff, factor, component_t(fragment));
 }
 
@@ -541,16 +664,65 @@ void GGLAssembler::mul_factor(  component_t& d,
     int vreg = v.reg;
     int freg = f.reg;
     if (vshift) {
+#ifdef ARCH_ARM
         MOV(AL, 0, d.reg, reg_imm(vreg, LSR, vshift));
+#elif defined(ARCH_SH)
+        MOV(vreg, d.reg);
+        SHLR(vshift, d.reg);
+#endif
         vreg = d.reg;
     }
     if (fshift) {
+#ifdef ARCH_ARM
         MOV(AL, 0, d.reg, reg_imm(vreg, LSR, fshift));
+#elif defined(ARCH_SH)
+        MOV(vreg, d.reg);
+        SHLR(fshift, d.reg);
+#endif
         freg = d.reg;
     }
+#ifdef ARCH_ARM
     if (smulw)  SMULW(AL, xy, d.reg, vreg, freg);
     else        SMUL(AL, xy, d.reg, vreg, freg);
-
+#elif defined(ARCH_SH)
+    if (smulw) {
+        // y is always B
+        MOV(freg, R0);
+        SHLL16(R0);
+        DMULS(vreg, R0);
+        STS_MACH(d.reg);
+    } else {
+        switch (xy) {
+        case xyBB:
+            MULS(freg, vreg);
+            STS_MACL(d.reg);
+            break;
+        case xyTB:
+            MOV(vreg, R0);
+            SHLR16(R0);
+            MULS(freg, R0);
+            STS_MACL(d.reg);
+            break;
+        case xyBT:
+            MOV(freg, R0);
+            SHLR16(R0);
+            MULS(vreg, R0);
+            STS_MACL(d.reg);
+            break;
+        case xyTT:
+            Scratch scratches(registerFile());
+            int Rn = scratches.obtain();
+            MOV(freg, Rn);
+            SHLR16(Rn);
+            MOV(vreg, R0);
+            SHLR16(R0);
+            MULS(R0, Rn);
+            STS_MACL(d.reg);
+            scratches.recycle(Rn);
+            break;
+        }
+    }
+#endif
 
     d.h = ms;
     if (mDithering) {
@@ -601,8 +773,19 @@ void GGLAssembler::mul_factor_add(  component_t& d,
     }
 
     if (ms == as) {
+#ifdef ARCH_ARM
         if (vs<16 && fs<16) SMLABB(AL, d.reg, v.reg, f.reg, add.reg);
         else                MLA(AL, 0, d.reg, v.reg, f.reg, add.reg);
+#elif defined(ARCH_SH)
+        if (vs<16 && fs<16) {
+            MULS(f.reg, v.reg);
+            STS_MACL(d.reg);
+        } else {
+            DMULS(f.reg, v.reg);
+            STS_MACL(d.reg);
+        }
+        ADD(add.reg, d.reg);
+#endif
     } else {
         int temp = d.reg;
         if (temp == add.reg) {
@@ -612,14 +795,42 @@ void GGLAssembler::mul_factor_add(  component_t& d,
             else                            temp = scratches.obtain();
         }
 
+#ifdef ARCH_ARM
         if (vs<16 && fs<16) SMULBB(AL, temp, v.reg, f.reg);
         else                MUL(AL, 0, temp, v.reg, f.reg);
+#elif defined(ARCH_SH)
+        if (vs<16 && fs<16) {
+            MULS(v.reg, f.reg);
+            STS_MACL(temp);
+        } else {
+            DMULS(v.reg, f.reg);
+            STS_MACL(temp);
+        }
+#endif
 
         if (ms>as) {
+#ifdef ARCH_ARM
             ADD(AL, 0, d.reg, temp, reg_imm(add.reg, LSL, ms-as));
+#elif defined(ARCH_SH)
+            int Rn = scratches.obtain();
+            MOV(add.reg, Rn);
+            SHLL(ms-as, Rn);
+            ADD(temp, Rn);
+            MOV(Rn, d.reg);
+            scratches.recycle(Rn);
+#endif
         } else if (ms<as) {
             // not sure if we should expand the mul instead?
+#ifdef ARCH_ARM
             ADD(AL, 0, d.reg, temp, reg_imm(add.reg, LSR, as-ms));
+#elif defined(ARCH_SH)
+            int Rn = scratches.obtain();
+            MOV(add.reg, Rn);
+            SHLR(as-ms, Rn);
+            ADD(temp, Rn);
+            MOV(Rn, d.reg);
+            scratches.recycle(Rn);
+#endif
         }
     }
 
@@ -638,9 +849,25 @@ void GGLAssembler::component_add(component_t& d,
     // here we're guaranteed that fragment.size() >= fb.size()
     const int shift = src.size() - dst.size();
     if (!shift) {
+#ifdef ARCH_ARM
         ADD(AL, 0, d.reg, src.reg, dst.reg);
+#elif defined(ARCH_SH)
+        MOV(dst.reg, R0);
+        ADD(src.reg, R0);
+        MOV(R0, d.reg);
+#endif
     } else {
+#ifdef ARCH_ARM
         ADD(AL, 0, d.reg, src.reg, reg_imm(dst.reg, LSL, shift));
+#elif defined(ARCH_SH)
+        Scratch scratches(registerFile());
+        int Rn = scratches.obtain();
+        MOV(dst.reg, Rn);
+        SHLL(shift, Rn);
+        ADD(src.reg, Rn);
+        MOV(Rn, d.reg);
+        scratches.recycle(Rn);
+#endif
     }
 
     d.h = src.size();
@@ -655,6 +882,7 @@ void GGLAssembler::component_add(component_t& d,
 void GGLAssembler::component_sat(const component_t& v)
 {
     const int one = ((1<<v.size())-1)<<v.l;
+#ifdef ARCH_ARM
     CMP(AL, v.reg, imm( 1<<v.h ));
     if (isValidImmediate(one)) {
         MOV(HS, 0, v.reg, imm( one ));
@@ -664,6 +892,23 @@ void GGLAssembler::component_sat(const component_t& v)
         MOV(HS, 0, v.reg, imm( 1<<v.h ));
         SUB(HS, 0, v.reg, v.reg, imm( 1<<v.l ));
     }
+#elif defined(ARCH_SH)
+    Scratch scratches(registerFile());
+    int Rn = scratches.obtain();
+    const char * local_label = genLabel();
+    IMM(1, Rn);
+    SHLL(v.h, Rn);
+    CMP(GE, Rn, v.reg); /* if (v.reg >= 1 << v.h ) 1 -> T */
+    BF(local_label);
+
+    MOV(Rn, v.reg);
+    IMM(1, Rn);
+    SHLL(v.l, Rn);
+    SUB(Rn, v.reg);
+    scratches.recycle(Rn);
+
+    label(local_label);
+#endif
 }
 
 // ----------------------------------------------------------------------------
