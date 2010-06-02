@@ -1628,10 +1628,7 @@ setprompt(int which)
 #ifdef WITH_HISTORY
 	if (!el)
 #endif
-#ifdef WITH_LINENOISE
-#else
 		out2str(getprompt(NULL));
-#endif
 }
 
 /*

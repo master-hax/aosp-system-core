@@ -31,11 +31,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_MODULE:= sh
 
-LOCAL_CFLAGS += -DSHELL -DWITH_LINENOISE
-
-LOCAL_STATIC_LIBRARIES := liblinenoise
-
-LOCAL_C_INCLUDES += system/core/liblinenoise
+LOCAL_CFLAGS += -DSHELL
 
 make_ash_files: PRIVATE_SRC_FILES := $(SRC_FILES)
 make_ash_files: PRIVATE_CFLAGS := $(LOCAL_CFLAGS)
