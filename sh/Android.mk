@@ -1,3 +1,5 @@
+ifeq ($(TARGET_SHELL),ash)
+
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -51,3 +53,5 @@ make_ash_files:
 	sh ./mkinit.sh $(PRIVATE_SRC_FILES) 
 
 include $(BUILD_EXECUTABLE)
+
+endif	# $(TARGET_SHELL) == ash
