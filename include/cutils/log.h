@@ -28,6 +28,8 @@
 #ifndef _LIBS_CUTILS_LOG_H
 #define _LIBS_CUTILS_LOG_H
 
+// THIS IS BOGUS, JUST A TEST
+
 #include <stdio.h>
 #include <time.h>
 #include <sys/types.h>
