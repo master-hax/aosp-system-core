@@ -145,6 +145,7 @@ void help()
         "  adb get-state                - prints: offline | bootloader | device\n"
         "  adb get-serialno             - prints: <serial-number>\n"
         "  adb status-window            - continuously print device status for a specified device\n"
+        "  adb test                     - Runs a boot/mount test on the specified device\n"
         "  adb remount                  - remounts the /system partition on the device read-write\n"
         "  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program\n"
         "  adb reboot-bootloader        - reboots the device into the bootloader\n"
@@ -868,6 +869,7 @@ top:
     }
 
     if(!strcmp(argv[0], "remount") || !strcmp(argv[0], "reboot")
+            || !strcmp(argv[0], "test")
             || !strcmp(argv[0], "reboot-bootloader")
             || !strcmp(argv[0], "tcpip") || !strcmp(argv[0], "usb")
             || !strcmp(argv[0], "root")) {

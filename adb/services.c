@@ -387,6 +387,8 @@ int service_to_fd(const char *name)
         ret = create_service_thread(file_sync_service, NULL);
     } else if(!strncmp(name, "remount:", 8)) {
         ret = create_service_thread(remount_service, NULL);
+    } else if(!strncmp(name, "test:", 5)) {
+        ret = create_service_thread(test_service, NULL);
     } else if(!strncmp(name, "reboot:", 7)) {
         void* arg = strdup(name + 7);
         if(arg == 0) return -1;

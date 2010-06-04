@@ -118,6 +118,7 @@ LOCAL_SRC_FILES := \
 	jdwp_service.c \
 	framebuffer_service.c \
 	remount_service.c \
+	test_service.c \
 	usb_linux_client.c \
 	log_service.c \
 	utils.c
