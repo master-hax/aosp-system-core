@@ -1,6 +1,15 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
+LOCAL_MODULE:= ash
+
+# if TARGET_SHELL=ash, build and install, otherwise build only
+ifeq ($(TARGET_SHELL),ash)
+LOCAL_MODULE_TAGS:= user
+else
+LOCAL_MODULE_TAGS:= optional
+endif
+
 LOCAL_SRC_FILES:= \
 	alias.c \
 	arith.c \
@@ -29,8 +38,6 @@ LOCAL_SRC_FILES:= \
 	bltin/echo.c \
 	init.c
 
-LOCAL_MODULE:= sh
-
 LOCAL_CFLAGS += -DSHELL -DWITH_LINENOISE
 
 LOCAL_STATIC_LIBRARIES := liblinenoise
@@ -51,3 +58,18 @@ make_ash_files:
 	sh ./mkinit.sh $(PRIVATE_SRC_FILES) 
 
 include $(BUILD_EXECUTABLE)
+
+
+# only if TARGET_SHELL=ash: symlink /system/bin/sh → ash
+
+ifeq ($(TARGET_SHELL),ash)
+SYMLINK := $(TARGET_OUT)/bin/sh
+$(SYMLINK): LOCAL_MODULE := $(LOCAL_MODULE)
+$(SYMLINK): $(LOCAL_INSTALLED_MODULE)
+	@echo "Symlink: $@ -> $(LOCAL_MODULE)"
+	@rm -rf $@
+	$(hide) ln -sf $(LOCAL_MODULE) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINK)
+ALL_MODULES.$(LOCAL_MODULE).INSTALLED += $(SYMLINK)
+endif
