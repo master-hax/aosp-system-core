@@ -366,7 +366,7 @@ static void local_socket_event_func(int fd, unsigned ev, void *_s)
 asocket *create_local_socket(int fd)
 {
     asocket *s = calloc(1, sizeof(asocket));
-    if(s == 0) fatal("cannot allocate socket");
+    if (s == NULL) fatal("cannot allocate socket");
     install_local_socket(s);
     s->fd = fd;
     s->enqueue = local_socket_enqueue;
@@ -479,10 +479,12 @@ static void remote_socket_disconnect(void*  _s, atransport*  t)
 
 asocket *create_remote_socket(unsigned id, atransport *t)
 {
+    adisconnect*  dis;
     asocket *s = calloc(1, sizeof(aremotesocket));
-    adisconnect*  dis = &((aremotesocket*)s)->disconnect;
 
-    if(s == 0) fatal("cannot allocate socket");
+    if (s == NULL) fatal("cannot allocate socket");
+    dis = &((aremotesocket*)s)->disconnect;
+
     s->id = id;
     s->enqueue = remote_socket_enqueue;
     s->ready = remote_socket_ready;
@@ -761,7 +763,7 @@ asocket *create_smart_socket(void (*action_cb)(asocket *s, const char *act))
 {
     D("Creating smart socket \n");
     asocket *s = calloc(1, sizeof(asocket));
-    if(s == 0) fatal("cannot allocate socket");
+    if (s == NULL) fatal("cannot allocate socket");
     s->id = 0;
     s->enqueue = smart_socket_enqueue;
     s->ready = smart_socket_ready;
