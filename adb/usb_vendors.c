@@ -55,6 +55,8 @@
 #define VENDOR_ID_DELL          0x413c
 // Garmin-Asus's USB Vendor ID
 #define VENDOR_ID_GARMIN_ASUS   0x091E
+// Qualcomm's USB Vendor ID
+#define VENDOR_ID_QUALCOMM      0x05c6
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
@@ -68,6 +70,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_SONY_ERICSSON,
     VENDOR_ID_DELL,
     VENDOR_ID_GARMIN_ASUS,
+    VENDOR_ID_QUALCOMM,
 };
 
 #define BUILT_IN_VENDOR_COUNT    (sizeof(builtInVendorIds)/sizeof(builtInVendorIds[0]))
