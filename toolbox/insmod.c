@@ -76,8 +76,8 @@ int insmod_main(int argc, char **argv)
 			len = min(strlen(argv[i]), end - ptr);
 			memcpy(ptr, argv[i], len);
 			ptr += len;
-			*ptr++ = ' ';
-			*ptr++ = '\0';
+			*ptr = ' ';
+			*++ptr = '\0';
 		}
 		*(ptr - 1) = '\0';
 	}
