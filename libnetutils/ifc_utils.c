@@ -31,6 +31,7 @@
 #include <linux/if_arp.h>
 #include <linux/sockios.h>
 #include <linux/route.h>
+#include <linux/ipv6_route.h>
 #include <linux/wireless.h>
 
 #ifdef ANDROID
@@ -44,7 +45,13 @@
 #define LOGW printf
 #endif
 
+#define IPv6_ADDR_LEN 128
+#define IPv6_HOST_METRIC 1
+#define IPv4 4
+#define IPv6 6
+
 static int ifc_ctl_sock = -1;
+static int ifc_ctl_sock6 = -1;
 void printerr(char *fmt, ...);
 
 static const char *ipaddr_to_string(in_addr_t addr)
@@ -448,4 +455,147 @@ ifc_configure(const char *ifname,
     property_set(dns_prop_name, dns2 ? ipaddr_to_string(dns2) : "");
 
     return 0;
+}
+
+
+int ifc_init6(void)
+{
+    if (ifc_ctl_sock6 == -1) {
+        ifc_ctl_sock6 = socket(AF_INET6, SOCK_DGRAM, 0);
+        if (ifc_ctl_sock6 < 0) {
+            printerr("socket() failed: %s\n", strerror(errno));
+        }
+    }
+    return ifc_ctl_sock6 < 0 ? -1 : 0;
+}
+
+void ifc_close6(void)
+{
+    if (ifc_ctl_sock6 != -1) {
+        (void)close(ifc_ctl_sock6);
+        ifc_ctl_sock6 = -1;
+    }
+}
+
+static void init_in6_addr(struct in6_addr *in6_a, const char *ipv6_addr)
+{
+    int ret = inet_pton(AF_INET6, ipv6_addr, in6_a);
+
+    if (ret <= 0) {
+        if (ret == 0) {
+            printerr("inet_pton() failed, Address not in presentation format: %s\n", ipv6_addr);
+        } else {
+            printerr("inet_pton() failed: %s\n", strerror(errno));
+        }
+    }
+}
+
+int ifc_add_ipv6_host_route(const char *name, const char *ipv6_addr)
+{
+    struct in6_rtmsg rtmsg;
+    int result;
+    int ifindex;
+
+    memset(&rtmsg, 0, sizeof(rtmsg));
+
+    rtmsg.rtmsg_flags = RTF_UP | RTF_HOST;
+    ifindex = if_nametoindex(name);
+    if (ifindex == 0) {
+        printerr("if_nametoindex() failed: interface %s\n", name);
+        return -1;
+    }
+    rtmsg.rtmsg_ifindex = ifindex;
+    rtmsg.rtmsg_dst_len = IPv6_ADDR_LEN;
+    rtmsg.rtmsg_metric = IPv6_HOST_METRIC;
+    init_in6_addr(&rtmsg.rtmsg_dst, ipv6_addr);
+
+    ifc_init6();
+    result = ioctl(ifc_ctl_sock6, SIOCADDRT, &rtmsg);
+    if (result < 0 && errno == EEXIST) {
+        result = 0;
+    }
+    ifc_close6();
+    return result;
+}
+
+int ifc_add_route_to_host(const char *name, int addr_type, const char *addr)
+{
+    int ret = 0;
+    int s;
+    struct in_addr ina;
+
+    if (addr_type == IPv6) {
+        ret = ifc_add_ipv6_host_route(name, addr);
+    } else if (addr_type == IPv4) {
+        s = inet_aton(addr, &ina);
+        if (s <= 0) {
+            if (s == 0) {
+                printerr("inet_aton failed: Address not in presentation format\n");
+            } else {
+                printerr("inet_aton() failed: %s\n", strerror(errno));
+            }
+            ret = -1;
+        } else {
+            ret = ifc_add_host_route(name, ina.s_addr);
+        }
+    } else {
+        printerr("ifc_add_ipv6_host_route: invalid addr_type %d\n", addr_type);
+        ret = -1;
+    }
+
+    return ret;
+}
+
+int ifc_create_default_ipv6_route(const char *name, const char *ipv6_addr)
+{
+   struct in6_rtmsg rtmsg;
+   int result;
+   int ifindex;
+
+   memset(&rtmsg, 0, sizeof(rtmsg));
+
+   rtmsg.rtmsg_flags = RTF_UP | RTF_GATEWAY;
+   ifindex = if_nametoindex(name);
+   if (ifindex == 0) {
+       printf("if_nametoindex() failed: interface %s\n", name);
+       return -1;
+   }
+   rtmsg.rtmsg_ifindex = ifindex;
+   init_in6_addr(&rtmsg.rtmsg_gateway, ipv6_addr);
+
+   ifc_init6();
+   result = ioctl(ifc_ctl_sock6, SIOCADDRT, &rtmsg);
+   if (result < 0) {
+       printf("Failed to add %s as default route for %s: %s\n", ipv6_addr, name, strerror(errno));
+   }
+   ifc_close6();
+   return result;
+}
+
+int ifc_add_default_route(const char *name, int addr_type, const char *addr)
+{
+    int ret = 0;
+    int s;
+    struct in_addr ina;
+
+    if (addr_type == IPv6) {
+        ret = ifc_create_default_ipv6_route(name, addr);
+    } else if (addr_type == IPv4) {
+        s = inet_aton(addr, &ina);
+        if (s <= 0) {
+            if (s == 0) {
+                printerr("inet_aton failed: Address not in presentation format\n");
+            } else {
+                printerr("inet_aton() failed: %s\n", strerror(errno));
+            }
+            ret = -1;
+        } else {
+            ret = ifc_set_default_route(name, ina.s_addr);
+        }
+    } else {
+        printerr("ifc_add_default_route: invalid addr_type %d\n", addr_type);
+        ret = -1;
+    }
+
+    return ret;
 }

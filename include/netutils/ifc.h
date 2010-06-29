@@ -41,6 +41,7 @@ extern int ifc_set_mask(const char *name, in_addr_t mask);
 extern int ifc_set_hwaddr(const char *name, const void *ptr);
 
 extern int ifc_add_host_route(const char *name, in_addr_t addr);
+extern int ifc_add_route_to_host(const char *ifname, int addrType, const char *addr);
 extern int ifc_remove_host_routes(const char *name);
 extern int ifc_get_default_route(const char *ifname);
 extern int ifc_set_default_route(const char *ifname, in_addr_t gateway);
