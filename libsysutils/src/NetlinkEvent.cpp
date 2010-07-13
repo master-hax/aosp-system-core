@@ -93,13 +93,12 @@ bool NetlinkEvent::decode(char *buffer, int size) {
 }
 
 const char *NetlinkEvent::findParam(const char *paramName) {
-    int i;
-
-    for (i = 0; i < NL_PARAMS_MAX; i++) {
-        if (!mParams[i])
-            break;
-        if (!strncmp(mParams[i], paramName, strlen(paramName)))
-            return &mParams[i][strlen(paramName) + 1];
+    for (int i = 0; mParams[i] && i < NL_PARAMS_MAX; ++i) {
+        if (const char *ptr = strchr(mParams[i], '=')) {
+            int len = ptr - mParams[i];
+            if (!paramName[len] && !strncmp(mParams[i], paramName, len))
+                return ++ptr;
+       }
     }
 
     SLOGE("NetlinkEvent::FindParam(): Parameter '%s' not found", paramName);
