@@ -237,7 +237,6 @@ int next_token(struct parse_state *state)
             continue;
         case '#':
             while (*x && (*x != '\n')) x++;
-            state->line++;
             state->ptr = x;
             return T_NEWLINE;
         default:
@@ -262,6 +261,7 @@ textresume:
             x++;
             goto textdone;
         case '\n':
+            state->line++;
             state->nexttoken = T_NEWLINE;
             x++;
             goto textdone;
