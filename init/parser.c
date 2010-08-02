@@ -237,7 +237,6 @@ int next_token(struct parse_state *state)
             continue;
         case '#':
             while (*x && (*x != '\n')) x++;
-            state->line++;
             state->ptr = x;
             return T_NEWLINE;
         default:
@@ -262,6 +261,7 @@ textresume:
             x++;
             goto textdone;
         case '\n':
+            state->line++;
             state->nexttoken = T_NEWLINE;
             x++;
             goto textdone;
@@ -366,7 +366,7 @@ static void parse_config(const char *fn, char *s)
 
     nargs = 0;
     state.filename = fn;
-    state.line = 1;
+    state.line = 0;
     state.ptr = s;
     state.nexttoken = 0;
     state.parse_line = parse_line_no_op;
