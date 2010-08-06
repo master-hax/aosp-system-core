@@ -1,6 +1,7 @@
 /* tools/mkbootimg/mkbootimg.c
 **
 ** Copyright 2007, The Android Open Source Project
+** Copyright (c) 2009, Code Aurora Forum. All rights reserved.
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -64,19 +65,20 @@ int usage(void)
             "       [ --cmdline <kernel-commandline> ]\n"
             "       [ --board <boardname> ]\n"
             "       [ --base <address> ]\n"
+            "       [ --pagesize <size> ]\n"
             "       -o|--output <filename>\n"
             );
     return 1;
 }
 
 
-
-static unsigned char padding[2048] = { 0, };
+#define PADDING_BUFFER_SIZE 2048
+static unsigned char padding[PADDING_BUFFER_SIZE] = { 0, };
 
 int write_padding(int fd, unsigned pagesize, unsigned itemsize)
 {
     unsigned pagemask = pagesize - 1;
-    unsigned count;
+    unsigned count, writesize;
 
     if((itemsize & pagemask) == 0) {
         return 0;
@@ -84,11 +86,20 @@ int write_padding(int fd, unsigned pagesize, unsigned itemsize)
 
     count = pagesize - (itemsize & pagemask);
 
-    if(write(fd, padding, count) != count) {
-        return -1;
-    } else {
-        return 0;
+    while (count != 0) {
+        if (count > PADDING_BUFFER_SIZE) {
+            writesize = PADDING_BUFFER_SIZE;
+        } else {
+            writesize = count;
+        }
+
+        if(write(fd, padding, writesize) != writesize) {
+            return -1;
+        }
+        count -= writesize;
     }
+
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -146,6 +157,9 @@ int main(int argc, char **argv)
             hdr.ramdisk_addr = base + 0x01000000;
             hdr.second_addr =  base + 0x00F00000;
             hdr.tags_addr =    base + 0x00000100;
+        } else if(!strcmp(arg, "--pagesize")) {
+            pagesize = strtoul(val, 0, 0);
+            hdr.page_size = pagesize;
         } else if(!strcmp(arg, "--board")) {
             board = val;
         } else {
