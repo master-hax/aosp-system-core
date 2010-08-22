@@ -129,6 +129,23 @@ mk_pri_pentry(struct disk_info *dinfo, struct part_info *pinfo, int pnum,
     return item;
 }
 
+static struct write_list *mk_mbr_sig()
+{
+    struct write_list *item;
+
+    if (!(item = alloc_wl(2))) {
+        LOGE("Unable to allocate memory for mbr sig.");
+        return NULL;
+    }
+
+    item->offset = 510;
+    item->data[0] = 0x55;
+    item->data[1] = 0xaa;
+    LOGI("Preparing mbr sig done");
+
+    return item;
+}
+
 
 /* This function configures an extended boot record at the beginning of an
  * extended partition. This creates a logical partition and a pointer to
@@ -275,6 +292,11 @@ config_mbr(struct disk_info *dinfo)
         }
         wlist_add(&wr_list, temp_wr);
     }
+    if (!(temp_wr = mk_mbr_sig())) {
+        LOGE("Cannot create mbr sig");
+        goto fail;
+    }
+    wlist_add(&wr_list, temp_wr);
 
     return wr_list;
 
