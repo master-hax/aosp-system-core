@@ -141,9 +141,7 @@
 #undef __SCCSID
 #define __IDSTRING_CONCAT(l,p)		__LINTED__ ## l ## _ ## p
 #define __IDSTRING_EXPAND(l,p)		__IDSTRING_CONCAT(l,p)
-#define __IDSTRING(prefix, string)				\
-	static const char __IDSTRING_EXPAND(__LINE__,prefix) []	\
-	    MKSH_A_USED = "@(""#)" #prefix ": " string
+#define __IDSTRING(prefix, string)	/* nothing */
 #define __COPYRIGHT(x)		__IDSTRING(copyright,x)
 #define __RCSID(x)		__IDSTRING(rcsid,x)
 #define __SCCSID(x)		__IDSTRING(sccsid,x)

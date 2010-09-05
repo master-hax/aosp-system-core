@@ -330,12 +330,6 @@ parse_args(const char **argv,
 				break;
 			}
 			i = option(go.optarg);
-			if ((enum sh_flag)i == FARC4RANDOM) {
-				warningf(true, "Do not use set ±o arc4random,"
-				    " it will be removed in the next version"
-				    " of mksh!");
-				return (0);
-			}
 			if ((i != (size_t)-1) && set == Flag(i))
 				/* Don't check the context if the flag
 				 * isn't changing - makes "set -o interactive"
