@@ -1,4 +1,4 @@
-This is mksh from AnonCVS on 2010-08-24 with the
+This is mksh from AnonCVS on 2010-09-05 with the
 following files removed:
 • Makefile
   (not part of regular mksh releases anyway)

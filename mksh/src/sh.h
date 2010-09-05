@@ -150,9 +150,9 @@
 #endif
 
 #ifdef EXTERN
-__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.405 2010/08/24 15:19:54 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/sh.h,v 1.412 2010/09/05 19:51:35 tg Exp $");
 #endif
-#define MKSH_VERSION "R39 2010/08/24"
+#define MKSH_VERSION "R39 2010/09/05"
 
 #ifndef MKSH_INCLUDES_ONLY
 
@@ -633,6 +633,16 @@ EXTERN const char r_fc_e_[] I__("r=fc -e -");
 EXTERN const char T_local_typeset[] I__("local=typeset");
 #define T__typeset	(T_local_typeset + 5)	/* "=typeset" */
 #define T_typeset	(T_local_typeset + 6)	/* "typeset" */
+EXTERN const char T_palias[] I__("+alias");
+#define T_alias		(T_palias + 1)		/* "alias" */
+EXTERN const char T_punalias[] I__("+unalias");
+#define T_unalias	(T_punalias + 1)	/* "unalias" */
+EXTERN const char T_sgset[] I__("*=set");
+#define T_set		(T_sgset + 2)		/* "set" */
+EXTERN const char T_gbuiltin[] I__("=builtin");
+#define T_builtin	(T_gbuiltin + 1)	/* "builtin" */
+EXTERN const char T__function[] I__(" function");
+#define T_function	(T__function + 1)	/* "function" */
 
 enum temp_type {
 	TT_HEREDOC_EXP,	/* expanded heredoc */
@@ -655,7 +665,7 @@ struct temp {
 #define shl_spare	(&shf_iob[0])	/* for c_read()/c_print() */
 #define shl_stdout	(&shf_iob[1])
 #define shl_out		(&shf_iob[2])
-EXTERN int shl_stdout_ok;
+EXTERN bool shl_stdout_ok;
 
 /*
  * trap handlers
@@ -698,7 +708,7 @@ typedef struct trap {
 
 EXTERN volatile sig_atomic_t trap;	/* traps pending? */
 EXTERN volatile sig_atomic_t intrsig;	/* pending trap interrupts command */
-EXTERN volatile sig_atomic_t fatal_trap;/* received a fatal signal */
+EXTERN volatile sig_atomic_t fatal_trap; /* received a fatal signal */
 extern	Trap	sigtraps[NSIG+1];
 
 /* got_winch = 1 when we need to re-adjust the window size */
@@ -759,13 +769,13 @@ EXTERN int ifs0 I__(' ');	/* for "$*" */
 #define GI_MINUSMINUS	BIT(2)	/* arguments were ended with -- */
 
 typedef struct {
-	const char	*optarg;
-	int		optind;
-	int		uoptind;/* what user sees in $OPTIND */
-	int		flags;	/* see GF_* */
-	int		info;	/* see GI_* */
-	unsigned int	p;	/* 0 or index into argv[optind - 1] */
-	char		buf[2];	/* for bad option OPTARG value */
+	const char *optarg;
+	int optind;
+	int uoptind;		/* what user sees in $OPTIND */
+	int flags;		/* see GF_* */
+	int info;		/* see GI_* */
+	unsigned int p;		/* 0 or index into argv[optind - 1] */
+	char buf[2];		/* for bad option OPTARG value */
 } Getopt;
 
 EXTERN Getopt builtin_opt;	/* for shell builtin commands */
@@ -896,7 +906,7 @@ struct tbl {			/* table item */
 		char *s;		/* string */
 		mksh_ari_t i;		/* integer */
 		mksh_uari_t u;		/* unsigned integer */
-		int (*f)(const char **);/* int function */
+		int (*f)(const char **); /* int function */
 		struct op *t;		/* "function" tree */
 	} val;			/* value */
 	union {
@@ -1115,11 +1125,11 @@ struct op {
  * IO redirection
  */
 struct ioword {
-	int	unit;	/* unit affected */
-	int	flag;	/* action (below) */
-	char	*name;	/* file name (unused if heredoc) */
-	char	*delim;	/* delimiter for <<,<<- */
-	char	*heredoc;/* content of heredoc */
+	int	unit;		/* unit affected */
+	int	flag;		/* action (below) */
+	char	*name;		/* file name (unused if heredoc) */
+	char	*delim;		/* delimiter for <<,<<- */
+	char	*heredoc;	/* content of heredoc */
 };
 
 /* ioword.flag - type of redirection */
@@ -1465,13 +1475,15 @@ int c_times(const char **);
 int timex(struct op *, int, volatile int *);
 void timex_hook(struct op *, char ** volatile *);
 int c_exec(const char **);
-int c_builtin(const char **);
+/* dummy function (just need pointer value), special case in comexec() */
+#define c_builtin shcomexec
 int c_test(const char **);
 #if HAVE_MKNOD
 int c_mknod(const char **);
 #endif
 int c_realpath(const char **);
 int c_rename(const char **);
+int c_cat(const char **);
 /* histrap.c */
 void init_histvec(void);
 void hist_init(Source *);
@@ -1611,7 +1623,7 @@ void print_columns(struct shf *, int,
     char *(*)(char *, int, int, const void *),
     const void *, int, int, bool);
 void strip_nuls(char *, int);
-int blocking_read(int, char *, int)
+ssize_t blocking_read(int, char *, size_t)
     MKSH_A_BOUNDED(buffer, 2, 3);
 int reset_nonblock(int);
 char *ksh_get_wd(size_t *);
@@ -1659,6 +1671,7 @@ char *wdcopy(const char *, Area *);
 const char *wdscan(const char *, int);
 char *wdstrip(const char *, bool, bool);
 void tfree(struct op *, Area *);
+int fpFUNCTf(struct shf *, int, bool, const char *, struct op *);
 /* var.c */
 void newblock(void);
 void popblock(void);
@@ -1718,15 +1731,15 @@ typedef enum Test_meta Test_meta;
 
 typedef struct test_env {
 	union {
-		const char **wp;/* used by ptest_* */
-		XPtrV *av;	/* used by dbtestp_* */
+		const char **wp;	/* used by ptest_* */
+		XPtrV *av;		/* used by dbtestp_* */
 	} pos;
-	const char **wp_end;	/* used by ptest_* */
+	const char **wp_end;		/* used by ptest_* */
 	Test_op (*isa)(struct test_env *, Test_meta);
 	const char *(*getopnd) (struct test_env *, Test_op, bool);
 	int (*eval)(struct test_env *, Test_op, const char *, const char *, bool);
 	void (*error)(struct test_env *, int, const char *);
-	int flags;		/* TEF_* */
+	int flags;			/* TEF_* */
 } Test_env;
 
 extern const char *const dbtest_tokens[];
