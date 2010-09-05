@@ -19,6 +19,21 @@ alias la='l -a'
 alias ll='l -l'
 alias lo='l -a -l'
 
+function more {
+	typeset line llen curlin=0
+
+	cat "$@" | while IFS= read -r line; do
+		(( llen = ${%line} == -1 ? ${#line} : ${%line} ))
+		(( llen = (llen + COLUMNS - 1) / COLUMNS ))
+		if (( (curlin += llen) >= LINES )); then
+			print -n -- '\033[7m--more--\033[0m'
+			read -u1 x
+			curlin=$llen
+		fi
+		print -r -- "$line"
+	done
+}
+
 for p in ~/.bin; do
 	[[ -d $p/. ]] || continue
 	[[ :$PATH: = *:$p:* ]] || PATH=$p:$PATH
