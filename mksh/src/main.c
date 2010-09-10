@@ -73,10 +73,12 @@ static const char *initcoms[] = {
 	T_local_typeset,
 	"hash=alias -t",	/* not "alias -t --": hash -r needs to work */
 	"type=whence -v",
+#ifndef ANDROID
 #ifndef MKSH_UNEMPLOYED
 	"stop=kill -STOP",
 	"suspend=kill -STOP $$",
-#endif
+#endif // MKSH_UNEMPLOYED
+#endif // ANDROID
 	"autoload=typeset -fu",
 	"functions=typeset -f",
 	"history=fc -l",
