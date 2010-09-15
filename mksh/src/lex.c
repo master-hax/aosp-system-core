@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/lex.c,v 1.118 2010/07/25 11:35:41 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/lex.c,v 1.121 2010/09/14 21:26:14 tg Exp $");
 
 /*
  * states while lexing word
@@ -944,7 +944,7 @@ yylex(int cf)
 
 #ifndef MKSH_SMALL
 	if (state == SLETARRAY && statep->ls_sletarray.nparen != -1)
-		yyerror("%s: ')' missing\n", T_synerr);
+		yyerror("%s: %s\n", T_synerr, "missing )");
 #endif
 
 	/* This done to avoid tests for SHEREDELIM wherever SBASE tested */
@@ -1207,7 +1207,8 @@ readhere(struct ioword *iop)
 		ungetsc(c);
 		while ((c = getsc()) != '\n') {
 			if (c == 0)
-				yyerror("here document '%s' unclosed\n", eof);
+				yyerror("%s '%s' unclosed\n", "here document",
+				    eof);
 			Xcheck(xs, xp);
 			Xput(xs, xp, c);
 		}
@@ -1445,7 +1446,7 @@ getsc_line(Source *s)
 		int linelen;
 
 		linelen = Xlength(s->xs, xp);
-		XcheckN(s->xs, xp, fc_e_n + /* NUL */ 1);
+		XcheckN(s->xs, xp, Tn_fc_e_ + /* NUL */ 1);
 		/* reload after potential realloc */
 		cp = Xstring(s->xs, xp);
 		/* change initial '!' into space */
@@ -1453,10 +1454,10 @@ getsc_line(Source *s)
 		/* NUL terminate the current string */
 		*xp = '\0';
 		/* move the actual string forward */
-		memmove(cp + fc_e_n, cp, linelen + /* NUL */ 1);
-		xp += fc_e_n;
+		memmove(cp + Tn_fc_e_, cp, linelen + /* NUL */ 1);
+		xp += Tn_fc_e_;
 		/* prepend it with "fc -e -" */
-		memcpy(cp, fc_e_, fc_e_n);
+		memcpy(cp, T_fc_e_, Tn_fc_e_);
 	}
 #endif
 	s->start = s->str = cp;
@@ -1748,7 +1749,7 @@ getsc_bn(void)
 static Lex_state *
 push_state_(State_info *si, Lex_state *old_end)
 {
-	Lex_state *news = alloc(STATE_BSIZE * sizeof(Lex_state), ATEMP);
+	Lex_state *news = alloc2(STATE_BSIZE, sizeof(Lex_state), ATEMP);
 
 	news[0].ls_info.base = old_end;
 	si->base = &news[0];

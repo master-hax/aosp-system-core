@@ -33,7 +33,7 @@
 #include <locale.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/main.c,v 1.167 2010/07/04 17:45:15 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/main.c,v 1.172 2010/09/14 21:26:14 tg Exp $");
 
 extern char **environ;
 
@@ -68,12 +68,15 @@ static const char *initcoms[] = {
 	T_typeset, "-x", "HOME", "PATH", "RANDOM", "SHELL", NULL,
 	T_typeset, "-i10", "COLUMNS", "LINES", "OPTIND", "PGRP", "PPID",
 	    "RANDOM", "SECONDS", "TMOUT", "USER_ID", NULL,
-	"alias",
+	T_alias,
 	"integer=typeset -i",
 	T_local_typeset,
 	"hash=alias -t",	/* not "alias -t --": hash -r needs to work */
 	"type=whence -v",
 #ifndef MKSH_UNEMPLOYED
+#ifndef ANDROID
+	"stop=kill -STOP",
+#endif
 	"suspend=kill -STOP $$",
 #endif
 	"autoload=typeset -fu",
@@ -81,12 +84,12 @@ static const char *initcoms[] = {
 	"history=fc -l",
 	"nameref=typeset -n",
 	"nohup=nohup ",
-	r_fc_e_,
+	T_r_fc_e_,
 	"source=PATH=$PATH:. command .",
 	"login=exec login",
 	NULL,
 	 /* this is what AT&T ksh seems to track, with the addition of emacs */
-	"alias", "-tU",
+	T_alias, "-tU",
 	"cat", "cc", "chmod", "cp", "date", "ed", "emacs", "grep", "ls",
 	"make", "mv", "pr", "rm", "sed", "sh", "vi", "who", NULL,
 	NULL
@@ -116,7 +119,7 @@ mksh_init(int argc, const char *argv[])
 	struct tbl *vp;
 	struct stat s_stdin;
 #if !defined(_PATH_DEFPATH) && defined(_CS_PATH)
-	size_t k;
+	ssize_t k;
 	char *cp;
 #endif
 
@@ -178,7 +181,7 @@ mksh_init(int argc, const char *argv[])
 	def_path = _PATH_DEFPATH;
 #else
 #ifdef _CS_PATH
-	if ((k = confstr(_CS_PATH, NULL, 0)) != (size_t)-1 && k > 0 &&
+	if ((k = confstr(_CS_PATH, NULL, 0)) > 0 &&
 	    confstr(_CS_PATH, cp = alloc(k + 1, APERM), k + 1) == k + 1)
 		def_path = cp;
 	else
@@ -322,7 +325,7 @@ mksh_init(int argc, const char *argv[])
 	if (Flag(FCOMMAND)) {
 		s = pushs(SSTRING, ATEMP);
 		if (!(s->start = s->str = argv[argi++]))
-			errorf("-c requires an argument");
+			errorf("%s %s", "-c", "requires an argument");
 #ifdef MKSH_MIDNIGHTBSD01ASH_COMPAT
 		/* compatibility to MidnightBSD 0.1 /bin/sh (kludge) */
 		if (Flag(FSH) && argv[argi] && !strcmp(argv[argi], "--"))
@@ -336,7 +339,7 @@ mksh_init(int argc, const char *argv[])
 		s->u.shf = shf_open(s->file, O_RDONLY, 0,
 		    SHF_MAPHI | SHF_CLEXEC);
 		if (s->u.shf == NULL) {
-			shl_stdout_ok = 0;
+			shl_stdout_ok = false;
 			warningf(true, "%s: %s", s->file, strerror(errno));
 			/* mandated by SUSv4 */
 			exstat = 127;
@@ -423,7 +426,7 @@ mksh_init(int argc, const char *argv[])
 	 * user will know why things broke.
 	 */
 	if (!current_wd[0] && Flag(FTALKING))
-		warningf(false, "Cannot determine current working directory");
+		warningf(false, "can't determine current directory");
 
 	if (Flag(FLOGIN)) {
 		include(KSH_SYSTEM_PROFILE, 0, NULL, 1);
@@ -474,7 +477,7 @@ main(int argc, const char *argv[])
 	if ((s = mksh_init(argc, argv))) {
 		/* put more entropy into the LCG */
 		change_random(s, sizeof(*s));
-		/* doesn’t return */
+		/* doesn't return */
 		shell(s, true);
 	}
 	return (1);
@@ -525,7 +528,7 @@ include(const char *name, int argc, const char **argv, int intr_ok)
 			unwind(i);
 			/* NOTREACHED */
 		default:
-			internal_errorf("include: %d", i);
+			internal_errorf("%s %d", "include", i);
 			/* NOTREACHED */
 		}
 	}
@@ -611,7 +614,7 @@ shell(Source * volatile s, volatile int toplevel)
 		default:
 			source = old_source;
 			quitenv(NULL);
-			internal_errorf("shell: %d", i);
+			internal_errorf("%s %d", "shell", i);
 			/* NOTREACHED */
 		}
 	}
@@ -632,7 +635,7 @@ shell(Source * volatile s, volatile int toplevel)
 		t = compile(s);
 		if (t != NULL && t->type == TEOF) {
 			if (wastty && Flag(FIGNOREEOF) && --attempts > 0) {
-				shellf("Use 'exit' to leave ksh\n");
+				shellf("Use 'exit' to leave mksh\n");
 				s->type = SSTDIN;
 			} else if (wastty && !really_exit &&
 			    j_stopped_running()) {
@@ -856,8 +859,8 @@ tty_init(bool init_ttystate, bool need_tty)
 	if ((tfd = open("/dev/tty", O_RDWR, 0)) < 0) {
 		tty_devtty = 0;
 		if (need_tty)
-			warningf(false,
-			    "No controlling tty (open /dev/tty: %s)",
+			warningf(false, "%s: %s %s: %s",
+			    "No controlling tty", "open", "/dev/tty",
 			    strerror(errno));
 	}
 	if (tfd < 0) {
@@ -868,20 +871,18 @@ tty_init(bool init_ttystate, bool need_tty)
 			tfd = 2;
 		else {
 			if (need_tty)
-				warningf(false,
-				    "Can't find tty file descriptor");
+				warningf(false, "can't find tty fd");
 			return;
 		}
 	}
 	if ((tty_fd = fcntl(tfd, F_DUPFD, FDBASE)) < 0) {
 		if (need_tty)
-			warningf(false, "j_ttyinit: dup of tty fd failed: %s",
-			    strerror(errno));
+			warningf(false, "%s: %s %s: %s", "j_ttyinit",
+			    "dup of tty fd", "failed", strerror(errno));
 	} else if (fcntl(tty_fd, F_SETFD, FD_CLOEXEC) < 0) {
 		if (need_tty)
-			warningf(false,
-			    "j_ttyinit: can't set close-on-exec flag: %s",
-			    strerror(errno));
+			warningf(false, "%s: %s: %s", "j_ttyinit",
+			    "can't set close-on-exec flag", strerror(errno));
 		close(tty_fd);
 		tty_fd = -1;
 	} else if (init_ttystate)
@@ -905,7 +906,7 @@ errorf(const char *fmt, ...)
 {
 	va_list va;
 
-	shl_stdout_ok = 0;	/* debugging: note that stdout not valid */
+	shl_stdout_ok = false;	/* debugging: note that stdout not valid */
 	exstat = 1;
 	if (*fmt != 1) {
 		error_prefix(true);
@@ -940,7 +941,7 @@ bi_errorf(const char *fmt, ...)
 {
 	va_list va;
 
-	shl_stdout_ok = 0;	/* debugging: note that stdout not valid */
+	shl_stdout_ok = false;	/* debugging: note that stdout not valid */
 	exstat = 1;
 	if (*fmt != 1) {
 		error_prefix(true);
@@ -1265,6 +1266,7 @@ maketemp(Area *ap, Temp_type type, struct temp **tlist)
 	pathname = tempnam(dir, "mksh.");
 	len = ((pathname == NULL) ? 0 : strlen(pathname)) + 1;
 #endif
+	/* reasonably sure that this will not overflow */
 	tp = alloc(sizeof(struct temp) + len, ap);
 	tp->name = (char *)&tp[1];
 #if !HAVE_MKSTEMP
@@ -1279,7 +1281,7 @@ maketemp(Area *ap, Temp_type type, struct temp **tlist)
 	tp->shf = NULL;
 	tp->type = type;
 #if HAVE_MKSTEMP
-	shf_snprintf(pathname, len, "%s/mksh.XXXXXXXXXX", dir);
+	shf_snprintf(pathname, len, "%s%s", dir, "/mksh.XXXXXXXXXX");
 	if ((fd = mkstemp(pathname)) >= 0)
 #else
 	if (tp->name[0] && (fd = open(tp->name, O_CREAT | O_RDWR, 0600)) >= 0)
@@ -1312,7 +1314,7 @@ texpand(struct table *tp, size_t nsize)
 	struct tbl *tblp, **pp;
 	struct tbl **ntblp, **otblp = tp->tbls;
 
-	ntblp = alloc(nsize * sizeof(struct tbl *), tp->areap);
+	ntblp = alloc2(nsize, sizeof(struct tbl *), tp->areap);
 	for (i = 0; i < nsize; i++)
 		ntblp[i] = NULL;
 	tp->size = nsize;
@@ -1391,7 +1393,7 @@ struct tbl *
 ktenter(struct table *tp, const char *n, uint32_t h)
 {
 	struct tbl **pp, *p;
-	int len;
+	size_t len;
 
 	if (tp->size == 0)
 		texpand(tp, INIT_TBLS);
@@ -1406,8 +1408,9 @@ ktenter(struct table *tp, const char *n, uint32_t h)
 	}
 
 	/* create new tbl entry */
-	len = strlen(n) + 1;
-	p = alloc(offsetof(struct tbl, name[0]) + len, tp->areap);
+	len = strlen(n);
+	checkoktoadd(len, offsetof(struct tbl, name[0]) + 1);
+	p = alloc(offsetof(struct tbl, name[0]) + ++len, tp->areap);
 	p->flag = 0;
 	p->type = 0;
 	p->areap = tp->areap;
@@ -1455,7 +1458,8 @@ ktsort(struct table *tp)
 	size_t i;
 	struct tbl **p, **sp, **dp;
 
-	p = alloc((tp->size + 1) * sizeof(struct tbl *), ATEMP);
+	/* tp->size + 1 will not overflow */
+	p = alloc2(tp->size + 1, sizeof(struct tbl *), ATEMP);
 	sp = tp->tbls;		/* source */
 	dp = p;			/* dest */
 	i = (size_t)tp->size;
