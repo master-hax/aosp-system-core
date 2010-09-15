@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/tree.c,v 1.30 2010/02/25 20:18:19 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/tree.c,v 1.32 2010/09/14 21:26:19 tg Exp $");
 
 #define INDENT	4
 
@@ -164,12 +164,10 @@ ptree(struct op *t, int indent, struct shf *shf)
 		fptreef(shf, indent, "%T& ", t->left);
 		break;
 	case TFUNCT:
-		fptreef(shf, indent,
-		    t->u.ksh_func ? "function %s %T" : "%s() %T",
-		    t->str, t->left);
+		fpFUNCTf(shf, indent, t->u.ksh_func, t->str, t->left);
 		break;
 	case TTIME:
-		fptreef(shf, indent, "time %T", t->left);
+		fptreef(shf, indent, "%s %T", "time", t->left);
 		break;
 	default:
 		shf_puts("<botch>", shf);
@@ -456,7 +454,7 @@ tcopy(struct op *t, Area *ap)
 	else {
 		for (tw = (const char **)t->vars; *tw++ != NULL; )
 			;
-		rw = r->vars = alloc((tw - (const char **)t->vars + 1) *
+		rw = r->vars = alloc2(tw - (const char **)t->vars + 1,
 		    sizeof(*tw), ap);
 		for (tw = (const char **)t->vars; *tw != NULL; )
 			*rw++ = wdcopy(*tw++, ap);
@@ -468,7 +466,7 @@ tcopy(struct op *t, Area *ap)
 	else {
 		for (tw = t->args; *tw++ != NULL; )
 			;
-		r->args = (const char **)(rw = alloc((tw - t->args + 1) *
+		r->args = (const char **)(rw = alloc2(tw - t->args + 1,
 		    sizeof(*tw), ap));
 		for (tw = t->args; *tw != NULL; )
 			*rw++ = wdcopy(*tw++, ap);
@@ -638,7 +636,7 @@ iocopy(struct ioword **iow, Area *ap)
 
 	for (ior = iow; *ior++ != NULL; )
 		;
-	ior = alloc((ior - iow + 1) * sizeof(struct ioword *), ap);
+	ior = alloc2(ior - iow + 1, sizeof(struct ioword *), ap);
 
 	for (i = 0; iow[i] != NULL; i++) {
 		struct ioword *p, *q;
@@ -713,4 +711,13 @@ iofree(struct ioword **iow, Area *ap)
 		afree(p, ap);
 	}
 	afree(iow, ap);
+}
+
+int
+fpFUNCTf(struct shf *shf, int i, bool isksh, const char *k, struct op *v)
+{
+	if (isksh)
+		return (fptreef(shf, i, "%s %s %T", T_function, k, v));
+	else
+		return (fptreef(shf, i, "%s() %T", k, v));
 }

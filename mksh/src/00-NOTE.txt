@@ -1,4 +1,4 @@
-This is mksh from AnonCVS on 2010-08-24 with the
+This is mksh from AnonCVS on 2010-09-15 with the
 following files removed:
 • Makefile
   (not part of regular mksh releases anyway)
@@ -17,6 +17,5 @@ online at https://www.mirbsd.org/man1/mksh (HTML).
 
 The following changes are done to code in this subdirectory
 at the moment:
-• check.t main.sh: remove the 'stop' alias to 'kill -STOP'
-  since Android has a built in stop command that the alias
-  overrides, causing problems with testing tools
+• check.t: synchronise list of builtins for Android where
+  the stop builtin is disabled

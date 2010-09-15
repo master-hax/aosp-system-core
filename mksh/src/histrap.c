@@ -26,7 +26,7 @@
 #include <sys/file.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/histrap.c,v 1.98 2010/07/24 17:08:29 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/histrap.c,v 1.102 2010/09/14 21:26:13 tg Exp $");
 
 /*-
  * MirOS: This is the default mapping type, and need not be specified.
@@ -79,7 +79,7 @@ c_fc(const char **wp)
 	char **hfirst, **hlast, **hp;
 
 	if (!Flag(FTALKING_I)) {
-		bi_errorf("history functions not available");
+		bi_errorf("history %ss not available", T_function);
 		return (1);
 	}
 
@@ -92,6 +92,8 @@ c_fc(const char **wp)
 				sflag = true;
 			else {
 				size_t len = strlen(p);
+
+				/* almost certainly not overflowing */
 				editor = alloc(len + 4, ATEMP);
 				memcpy(editor, p, len);
 				memcpy(editor + len, " $_", 4);
@@ -230,15 +232,16 @@ c_fc(const char **wp)
 
 	tf = maketemp(ATEMP, TT_HIST_EDIT, &e->temps);
 	if (!(shf = tf->shf)) {
-		bi_errorf("cannot create temp file %s - %s",
-		    tf->name, strerror(errno));
+		bi_errorf("can't %s temporary file %s: %s",
+		    "create", tf->name, strerror(errno));
 		return (1);
 	}
 	for (hp = rflag ? hlast : hfirst;
 	    hp >= hfirst && hp <= hlast; hp += rflag ? -1 : 1)
 		shf_fprintf(shf, "%s\n", *hp);
 	if (shf_close(shf) == EOF) {
-		bi_errorf("error writing temporary file - %s", strerror(errno));
+		bi_errorf("can't %s temporary file %s: %s",
+		    "write", tf->name, strerror(errno));
 		return (1);
 	}
 
@@ -263,11 +266,22 @@ c_fc(const char **wp)
 		int n;
 
 		if (!(shf = shf_open(tf->name, O_RDONLY, 0, 0))) {
-			bi_errorf("cannot open temp file %s", tf->name);
+			bi_errorf("can't %s temporary file %s: %s",
+			    "open", tf->name, strerror(errno));
 			return (1);
 		}
 
-		n = stat(tf->name, &statb) < 0 ? 128 : statb.st_size + 1;
+		if (stat(tf->name, &statb) < 0)
+			n = 128;
+		else {
+			if (notoktoadd(statb.st_size, 1 + X_EXTRA)) {
+				bi_errorf(T_intovfl,
+				    (unsigned long)statb.st_size, '+',
+				    1UL + X_EXTRA);
+				goto errout;
+			}
+			n = statb.st_size + 1;
+		}
 		Xinit(xs, xp, n, hist_source->areap);
 		while ((n = shf_read(xp, Xnleft(xs, xp), shf)) > 0) {
 			xp += n;
@@ -275,8 +289,9 @@ c_fc(const char **wp)
 				XcheckN(xs, xp, Xlength(xs, xp));
 		}
 		if (n < 0) {
-			bi_errorf("error reading temp file %s - %s",
-			    tf->name, strerror(shf_errno(shf)));
+			bi_errorf("can't %s temporary file %s: %s",
+			    "read", tf->name, strerror(shf_errno(shf)));
+ errout:
 			shf_close(shf);
 			return (1);
 		}
@@ -305,8 +320,10 @@ hist_execute(char *cmd)
 		}
 		histsave(&hist_source->line, p, true, true);
 
-		shellf("%s\n", p); /* POSIX doesn't say this is done... */
-		if (q)		/* restore \n (trailing \n not restored) */
+		/* POSIX doesn't say this is done... */
+		shellf("%s\n", p);
+		if (q)
+			/* restore \n (trailing \n not restored) */
 			q[-1] = '\n';
 	}
 
@@ -352,7 +369,7 @@ hist_replace(char **hp, const char *pat, const char *rep, bool globr)
 			xp += rep_len;
 		}
 		if (!any_subst) {
-			bi_errorf("substitution failed");
+			bi_errorf("bad substitution");
 			return (1);
 		}
 		len = strlen(s) + 1;
@@ -380,18 +397,18 @@ hist_get(const char *str, bool approx, bool allow_cur)
 			if (approx)
 				hp = hist_get_oldest();
 			else {
-				bi_errorf("%s: not in history", str);
+				bi_errorf("%s: %s", str, "not in history");
 				hp = NULL;
 			}
 		} else if ((ptrdiff_t)hp > (ptrdiff_t)histptr) {
 			if (approx)
 				hp = hist_get_newest(allow_cur);
 			else {
-				bi_errorf("%s: not in history", str);
+				bi_errorf("%s: %s", str, "not in history");
 				hp = NULL;
 			}
 		} else if (!allow_cur && hp == histptr) {
-			bi_errorf("%s: invalid range", str);
+			bi_errorf("%s: %s", str, "invalid range");
 			hp = NULL;
 		}
 	} else {
@@ -399,7 +416,7 @@ hist_get(const char *str, bool approx, bool allow_cur)
 
 		/* the -1 is to avoid the current fc command */
 		if ((n = findhist(histptr - history - 1, 0, str, anchored)) < 0)
-			bi_errorf("%s: not in history", str);
+			bi_errorf("%s: %s", str, "not in history");
 		else
 			hp = &history[n];
 	}
@@ -528,7 +545,7 @@ sethistsize(int n)
 			cursize = n;
 		}
 
-		history = aresize(history, n * sizeof(char *), APERM);
+		history = aresize2(history, n, sizeof(char *), APERM);
 
 		histsize = n;
 		histptr = history + cursize;
@@ -579,7 +596,7 @@ init_histvec(void)
 {
 	if (history == (char **)NULL) {
 		histsize = HISTORYSIZE;
-		history = alloc(histsize * sizeof(char *), APERM);
+		history = alloc2(histsize, sizeof(char *), APERM);
 		histptr = history - 1;
 	}
 }
@@ -746,8 +763,9 @@ hist_init(Source *s)
 				hist_finish();
 				if (rv) {
  hiniterr:
-					bi_errorf("cannot unlink HISTFILE %s"
-					    " - %s", hname, strerror(errno));
+					bi_errorf("can't %s %s: %s",
+					    "unlink HISTFILE", hname,
+					    strerror(errno));
 					hsize = 0;
 					return;
 				}
@@ -1085,7 +1103,8 @@ inittraps(void)
 #endif
 			if ((sigtraps[i].mess == NULL) ||
 			    (sigtraps[i].mess[0] == '\0'))
-				sigtraps[i].mess = shf_smprintf("Signal %d", i);
+				sigtraps[i].mess = shf_smprintf("%s %d",
+				    "Signal", i);
 		}
 	}
 	sigtraps[SIGEXIT_].name = "EXIT";	/* our name for signal 0 */
@@ -1096,7 +1115,7 @@ inittraps(void)
 
 	sigtraps[SIGINT].flags |= TF_DFL_INTR | TF_TTY_INTR;
 	sigtraps[SIGQUIT].flags |= TF_DFL_INTR | TF_TTY_INTR;
-	sigtraps[SIGTERM].flags |= TF_DFL_INTR;/* not fatal for interactive */
+	sigtraps[SIGTERM].flags |= TF_DFL_INTR; /* not fatal for interactive */
 	sigtraps[SIGHUP].flags |= TF_FATAL;
 	sigtraps[SIGCHLD].flags |= TF_SHELL_USES;
 

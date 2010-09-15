@@ -25,7 +25,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/funcs.c,v 1.157 2010/08/24 14:42:01 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/funcs.c,v 1.162 2010/09/14 21:26:12 tg Exp $");
 
 #if HAVE_KILLPG
 /*
@@ -59,14 +59,14 @@ const struct builtin mkshbuiltins[] = {
 	{"*=:", c_label},
 	{"[", c_test},
 	{"*=break", c_brkcont},
-	{"=builtin", c_builtin},
+	{T_gbuiltin, c_builtin},
 	{"*=continue", c_brkcont},
 	{"*=eval", c_eval},
 	{"*=exec", c_exec},
 	{"*=exit", c_exitreturn},
 	{"+false", c_label},
 	{"*=return", c_exitreturn},
-	{"*=set", c_set},
+	{T_sgset, c_set},
 	{"*=shift", c_shift},
 	{"=times", c_times},
 	{"*=trap", c_trap},
@@ -77,7 +77,7 @@ const struct builtin mkshbuiltins[] = {
 	{"ulimit", c_ulimit},
 	{"+umask", c_umask},
 	{"*=unset", c_unset},
-	{"+alias", c_alias},	/* no =: AT&T manual wrong */
+	{T_palias, c_alias},	/* no =: AT&T manual wrong */
 	{"+cd", c_cd},
 	{"chdir", c_cd},	/* dash compatibility hack */
 	{"+command", c_command},
@@ -95,13 +95,14 @@ const struct builtin mkshbuiltins[] = {
 	{"pwd", c_pwd},
 	{"*=readonly", c_typeset},
 	{T__typeset, c_typeset},
-	{"+unalias", c_unalias},
+	{T_punalias, c_unalias},
 	{"whence", c_whence},
 #ifndef MKSH_UNEMPLOYED
 	{"+bg", c_fgbg},
 	{"+fg", c_fgbg},
 #endif
 	{"bind", c_bind},
+	{"cat", c_cat},
 #if HAVE_MKNOD
 	{"mknod", c_mknod},
 #endif
@@ -203,10 +204,11 @@ do_realpath(const char *upath)
 		/* upath is a relative pathname, prepend cwd */
 		if ((tp = ksh_get_wd(NULL)) == NULL || tp[0] != '/')
 			return (NULL);
-		ipath = shf_smprintf("%s/%s", tp, upath);
+		ipath = shf_smprintf("%s%s%s", tp, "/", upath);
 		afree(tp, ATEMP);
 	}
 
+	/* ipath and upath are in memory at the same time -> unchecked */
 	Xinit(xs, xp, strlen(ip = ipath) + 1, ATEMP);
 
 	while (*ip) {
@@ -276,8 +278,15 @@ do_realpath(const char *upath)
 			}
 
 			/* get symlink(7) target */
-			if (pathcnd)
+			if (pathcnd) {
+#ifdef NO_PATH_MAX
+				if (notoktoadd(pathlen, 1)) {
+					errno = ENAMETOOLONG;
+					goto notfound;
+				}
+#endif
 				ldest = aresize(ldest, pathlen + 1, ATEMP);
+			}
 			llen = readlink(Xstring(xs, xp), ldest, pathlen);
 			if (llen < 0)
 				/* oops... */
@@ -396,11 +405,11 @@ c_cd(const char **wp)
 		}
 	} else if (!wp[2]) {
 		/* Two arguments - substitute arg1 in PWD for arg2 */
-		int ilen, olen, nlen, elen;
+		size_t ilen, olen, nlen, elen;
 		char *cp;
 
 		if (!current_wd[0]) {
-			bi_errorf("don't know current directory");
+			bi_errorf("can't determine current directory");
 			return (1);
 		}
 		/* substitute arg1 for arg2 in current path.
@@ -412,6 +421,12 @@ c_cd(const char **wp)
 			bi_errorf("bad substitution");
 			return (1);
 		}
+		/*-
+		 * ilen = part of current_wd before wp[0]
+		 * elen = part of current_wd after wp[0]
+		 * because current_wd and wp[1] need to be in memory at the
+		 * same time beforehand the addition can stay unchecked
+		 */
 		ilen = cp - current_wd;
 		olen = strlen(wp[0]);
 		nlen = strlen(wp[1]);
@@ -446,9 +461,9 @@ c_cd(const char **wp)
 
 	if (rv < 0) {
 		if (cdnode)
-			bi_errorf("%s: bad directory", dir);
+			bi_errorf("%s: %s", dir, "bad directory");
 		else
-			bi_errorf("%s - %s", tryp, strerror(errno));
+			bi_errorf("%s: %s", tryp, strerror(errno));
 		afree(allocd, ATEMP);
 		return (1);
 	}
@@ -520,7 +535,8 @@ c_pwd(const char **wp)
 	if (p && access(p, R_OK) < 0)
 		p = NULL;
 	if (!p && !(p = allocd = ksh_get_wd(NULL))) {
-		bi_errorf("can't get current directory - %s", strerror(errno));
+		bi_errorf("%s: %s", "can't determine current directory",
+		    strerror(errno));
 		return (1);
 	}
 	shprintf("%s\n", p);
@@ -612,7 +628,7 @@ c_print(const char **wp)
 				break;
 			case 'p':
 				if ((fd = coproc_getfd(W_OK, &emsg)) < 0) {
-					bi_errorf("-p: %s", emsg);
+					bi_errorf("%s: %s", "-p", emsg);
 					return (1);
 				}
 				break;
@@ -626,7 +642,7 @@ c_print(const char **wp)
 				if (!*(s = builtin_opt.optarg))
 					fd = 0;
 				else if ((fd = check_fd(s, W_OK, &emsg)) < 0) {
-					bi_errorf("-u: %s: %s", s, emsg);
+					bi_errorf("%s: %s: %s", "-u", s, emsg);
 					return (1);
 				}
 				break;
@@ -795,22 +811,32 @@ c_whence(const char **wp)
 		if (vflag || (tp->type != CALIAS && tp->type != CEXEC &&
 		    tp->type != CTALIAS))
 			shf_puts(id, shl_stdout);
+		if (vflag)
+			switch (tp->type) {
+			case CKEYWD:
+			case CALIAS:
+			case CFUNC:
+			case CSHELL:
+				shf_puts(" is a", shl_stdout);
+				break;
+			}
+
 		switch (tp->type) {
 		case CKEYWD:
 			if (vflag)
-				shf_puts(" is a reserved word", shl_stdout);
+				shf_puts(" reserved word", shl_stdout);
 			break;
 		case CALIAS:
 			if (vflag)
-				shprintf(" is an %salias for ",
-				    (tp->flag & EXPORT) ? "exported " : null);
+				shprintf("n %s%s for ",
+				    (tp->flag & EXPORT) ? "exported " : null,
+				    T_alias);
 			if (!iam_whence && !vflag)
-				shprintf("alias %s=", id);
+				shprintf("%s %s=", T_alias, id);
 			print_value_quoted(tp->val.s);
 			break;
 		case CFUNC:
 			if (vflag) {
-				shf_puts(" is a", shl_stdout);
 				if (tp->flag & EXPORT)
 					shf_puts("n exported", shl_stdout);
 				if (tp->flag & TRACE)
@@ -821,13 +847,14 @@ c_whence(const char **wp)
 						shprintf(" (autoload from %s)",
 						    tp->u.fpath);
 				}
-				shf_puts(" function", shl_stdout);
+				shf_puts(T__function, shl_stdout);
 			}
 			break;
 		case CSHELL:
 			if (vflag)
-				shprintf(" is a%s shell builtin",
-				    (tp->flag & SPEC_BI) ? " special" : null);
+				shprintf("%s %s %s",
+				    (tp->flag & SPEC_BI) ? " special" : null,
+				    "shell", T_builtin);
 			break;
 		case CTALIAS:
 		case CEXEC:
@@ -835,14 +862,15 @@ c_whence(const char **wp)
 				if (vflag) {
 					shf_puts(" is ", shl_stdout);
 					if (tp->type == CTALIAS)
-						shprintf("a tracked %salias for ",
+						shprintf("a tracked %s%s for ",
 						    (tp->flag & EXPORT) ?
-						    "exported " : null);
+						    "exported " : null,
+						    T_alias);
 				}
 				shf_puts(tp->val.s, shl_stdout);
 			} else {
 				if (vflag)
-					shf_puts(" not found", shl_stdout);
+					shprintf(" %s\n", "not found");
 				rv = 1;
 			}
 			break;
@@ -1044,13 +1072,13 @@ c_typeset(const char **wp)
 				if (fset | fclr) {
 					f->flag |= fset;
 					f->flag &= ~fclr;
-				} else
-					fptreef(shl_stdout, 0,
-					    f->flag & FKSH ?
-					    "function %s %T\n" :
-					    "%s() %T\n", wp[i], f->val.t);
+				} else {
+					fpFUNCTf(shl_stdout, 0, f->flag & FKSH,
+					    wp[i], f->val.t);
+					shf_putc('\n', shl_stdout);
+				}
 			} else if (!typeset(wp[i], fset, fclr, field, base)) {
-				bi_errorf("%s: not identifier", wp[i]);
+				bi_errorf("%s: %s", wp[i], "not identifier");
 				set_refflag = 0;
 				return (1);
 			}
@@ -1067,11 +1095,12 @@ c_typeset(const char **wp)
 				if (flag && (vp->flag & flag) == 0)
 					continue;
 				if (thing == '-')
-					fptreef(shl_stdout, 0, vp->flag & FKSH ?
-					    "function %s %T\n" : "%s() %T\n",
+					fpFUNCTf(shl_stdout, 0,
+					    vp->flag & FKSH,
 					    vp->name, vp->val.t);
 				else
-					shprintf("%s\n", vp->name);
+					shf_puts(vp->name, shl_stdout);
+				shf_putc('\n', shl_stdout);
 			}
 		}
 	} else {
@@ -1119,27 +1148,27 @@ c_typeset(const char **wp)
 						 */
 						shf_puts("typeset ", shl_stdout);
 						if (((vp->flag&(ARRAY|ASSOC))==ASSOC))
-							shf_puts("-n ", shl_stdout);
+							shprintf("%s ", "-n");
 						if ((vp->flag&INTEGER))
-							shf_puts("-i ", shl_stdout);
+							shprintf("%s ", "-i");
 						if ((vp->flag&EXPORT))
-							shf_puts("-x ", shl_stdout);
+							shprintf("%s ", "-x");
 						if ((vp->flag&RDONLY))
-							shf_puts("-r ", shl_stdout);
+							shprintf("%s ", "-r");
 						if ((vp->flag&TRACE))
-							shf_puts("-t ", shl_stdout);
+							shprintf("%s ", "-t");
 						if ((vp->flag&LJUST))
 							shprintf("-L%d ", vp->u2.field);
 						if ((vp->flag&RJUST))
 							shprintf("-R%d ", vp->u2.field);
 						if ((vp->flag&ZEROFIL))
-							shf_puts("-Z ", shl_stdout);
+							shprintf("%s ", "-Z");
 						if ((vp->flag&LCASEV))
-							shf_puts("-l ", shl_stdout);
+							shprintf("%s ", "-l");
 						if ((vp->flag&UCASEV_AL))
-							shf_puts("-u ", shl_stdout);
+							shprintf("%s ", "-u");
 						if ((vp->flag&INT_U))
-							shf_puts("-U ", shl_stdout);
+							shprintf("%s ", "-U");
 						shf_puts(vp->name, shl_stdout);
 						if (pflag) {
 							char *s = str_val(vp);
@@ -1258,12 +1287,12 @@ c_alias(const char **wp)
 	/* "hash -r" means reset all the tracked aliases.. */
 	if (rflag) {
 		static const char *args[] = {
-			"unalias", "-ta", NULL
+			T_unalias, "-ta", NULL
 		};
 
 		if (!tflag || *wp) {
-			shf_puts("alias: -r flag can only be used with -t"
-			    " and without arguments\n", shl_stdout);
+			shprintf("%s: -r flag can only be used with -t"
+			    " and without arguments\n", T_alias);
 			return (1);
 		}
 		ksh_getopt_reset(&builtin_opt, GF_ERROR);
@@ -1276,7 +1305,7 @@ c_alias(const char **wp)
 		for (p = ktsort(t); (ap = *p++) != NULL; )
 			if ((ap->flag & (ISSET|xflag)) == (ISSET|xflag)) {
 				if (pflag)
-					shf_puts("alias ", shl_stdout);
+					shprintf("%s ", T_alias);
 				shf_puts(ap->name, shl_stdout);
 				if (prefix != '+') {
 					shf_putc('=', shl_stdout);
@@ -1301,7 +1330,7 @@ c_alias(const char **wp)
 			ap = ktsearch(t, alias, h);
 			if (ap != NULL && (ap->flag&ISSET)) {
 				if (pflag)
-					shf_puts("alias ", shl_stdout);
+					shprintf("%s ", T_alias);
 				shf_puts(ap->name, shl_stdout);
 				if (prefix != '+') {
 					shf_putc('=', shl_stdout);
@@ -1309,7 +1338,8 @@ c_alias(const char **wp)
 				}
 				shf_putc('\n', shl_stdout);
 			} else {
-				shprintf("%s alias not found\n", alias);
+				shprintf("%s %s %s\n", alias, T_alias,
+				    "not found");
 				rv = 1;
 			}
 			continue;
@@ -1582,8 +1612,8 @@ c_kill(const char **wp)
 			if (j_kill(p, sig))
 				rv = 1;
 		} else if (!getn(p, &n)) {
-			bi_errorf("%s: arguments must be jobs or process IDs",
-			    p);
+			bi_errorf("%s: %s", p,
+			    "arguments must be jobs or process IDs");
 			rv = 1;
 		} else {
 			if (mksh_kill(n, sig) < 0) {
@@ -1618,22 +1648,22 @@ c_getopts(const char **wp)
 
 	opts = *wp++;
 	if (!opts) {
-		bi_errorf("missing options argument");
+		bi_errorf("missing %s argument", "options");
 		return (1);
 	}
 
 	var = *wp++;
 	if (!var) {
-		bi_errorf("missing name argument");
+		bi_errorf("missing %s argument", "name");
 		return (1);
 	}
 	if (!*var || *skip_varname(var, true)) {
-		bi_errorf("%s: is not an identifier", var);
+		bi_errorf("%s: %s", var, "is not an identifier");
 		return (1);
 	}
 
 	if (e->loc->next == NULL) {
-		internal_warningf("c_getopts: no argv");
+		internal_warningf("%s: %s", "c_getopts", "no argv");
 		return (1);
 	}
 	/* Which arguments are we parsing... */
@@ -1776,7 +1806,7 @@ c_shift(const char **wp)
 	} else
 		n = 1;
 	if (n < 0) {
-		bi_errorf("%s: bad number", arg);
+		bi_errorf("%s: %s", arg, "bad number");
 		return (1);
 	}
 	if (l->argc < n) {
@@ -1994,7 +2024,7 @@ c_read(const char **wp)
 		switch (optc) {
 		case 'p':
 			if ((fd = coproc_getfd(R_OK, &emsg)) < 0) {
-				bi_errorf("-p: %s", emsg);
+				bi_errorf("%s: %s", "-p", emsg);
 				return (1);
 			}
 			break;
@@ -2008,7 +2038,7 @@ c_read(const char **wp)
 			if (!*(cp = builtin_opt.optarg))
 				fd = 0;
 			else if ((fd = check_fd(cp, R_OK, &emsg)) < 0) {
-				bi_errorf("-u: %s: %s", cp, emsg);
+				bi_errorf("%s: %s: %s", "-u", cp, emsg);
 				return (1);
 			}
 			break;
@@ -2035,7 +2065,7 @@ c_read(const char **wp)
 			 * (it also doesn't check the interactive flag,
 			 * as is indicated in the Kornshell book).
 			 */
-			shellf("%s", cp+1);
+			shf_puts(cp + 1, shl_out);
 		}
 	}
 
@@ -2122,7 +2152,7 @@ c_read(const char **wp)
 		/* Must be done before setting export. */
 		if (vp->flag & RDONLY) {
 			shf_flush(shf);
-			bi_errorf("%s is read only", *wp);
+			bi_errorf("%s: %s", *wp, "is read only");
 			afree(wpalloc, ATEMP);
 			return (1);
 		}
@@ -2239,7 +2269,7 @@ c_trap(const char **wp)
 	while (*wp != NULL) {
 		p = gettrap(*wp++, true);
 		if (p == NULL) {
-			bi_errorf("bad signal %s", wp[-1]);
+			bi_errorf("bad signal '%s'", wp[-1]);
 			return (1);
 		}
 		settrap(p, s);
@@ -2260,7 +2290,7 @@ c_exitreturn(const char **wp)
 	if (arg) {
 		if (!getn(arg, &n)) {
 			exstat = 1;
-			warningf(true, "%s: bad number", arg);
+			warningf(true, "%s: %s", arg, "bad number");
 		} else
 			exstat = n;
 	}
@@ -2305,7 +2335,7 @@ c_brkcont(const char **wp)
 	quit = n;
 	if (quit <= 0) {
 		/* AT&T ksh does this for non-interactive shells only - weird */
-		bi_errorf("%s: bad value", arg);
+		bi_errorf("%s: %s", arg, "bad value");
 		return (1);
 	}
 
@@ -2324,7 +2354,7 @@ c_brkcont(const char **wp)
 		 * scripts, but don't generate an error (ie, keep going).
 		 */
 		if (n == quit) {
-			warningf(true, "%s: cannot %s", wp[0], wp[0]);
+			warningf(true, "%s: %s %s", wp[0], "can't", wp[0]);
 			return (0);
 		}
 		/* POSIX says if n is too big, the last enclosing loop
@@ -2350,7 +2380,7 @@ c_set(const char **wp)
 	const char **owp;
 
 	if (wp[1] == NULL) {
-		static const char *args[] = { "set", "-", NULL };
+		static const char *args[] = { T_set, "-", NULL };
 		return (c_typeset(args));
 	}
 
@@ -2365,7 +2395,7 @@ c_set(const char **wp)
 		while (*++wp != NULL)
 			strdupx(*wp, *wp, &l->area);
 		l->argc = wp - owp - 1;
-		l->argv = alloc((l->argc + 2) * sizeof(char *), &l->area);
+		l->argv = alloc2(l->argc + 2, sizeof(char *), &l->area);
 		for (wp = l->argv; (*wp++ = *owp++) != NULL; )
 			;
 	}
@@ -2419,7 +2449,7 @@ c_unset(const char **wp)
 			afree(cp, ATEMP);
 
 			if ((vp->flag&RDONLY)) {
-				bi_errorf("%s is read only", vp->name);
+				bi_errorf("%s: %s", vp->name, "is read only");
 				return (1);
 			}
 			unset(vp, optc);
@@ -2549,10 +2579,11 @@ timex_hook(struct op *t, char **volatile *app)
 			t->str[0] |= TF_POSIX;
 			break;
 		case '?':
-			errorf("time: -%s unknown option", opt.optarg);
+			errorf("time: -%s %s", opt.optarg,
+			    "unknown option");
 		case ':':
-			errorf("time: -%s requires an argument",
-			    opt.optarg);
+			errorf("time: -%s %s", opt.optarg,
+			    "requires an argument");
 		}
 	/* Copy command words down over options. */
 	if (opt.optind != 0) {
@@ -2640,28 +2671,28 @@ c_mknod(const char **wp)
 
 		majnum = strtoul(argv[2], &c, 0);
 		if ((c == argv[2]) || (*c != '\0')) {
-			bi_errorf("non-numeric device major '%s'", argv[2]);
+			bi_errorf("non-numeric %s %s '%s'", "device", "major", argv[2]);
 			goto c_mknod_err;
 		}
 		minnum = strtoul(argv[3], &c, 0);
 		if ((c == argv[3]) || (*c != '\0')) {
-			bi_errorf("non-numeric device minor '%s'", argv[3]);
+			bi_errorf("non-numeric %s %s '%s'", "device", "minor", argv[3]);
 			goto c_mknod_err;
 		}
 		dv = makedev(majnum, minnum);
 		if ((unsigned long)(major(dv)) != majnum) {
-			bi_errorf("device major too large: %lu", majnum);
+			bi_errorf("%s %s too large: %lu", "device", "major", majnum);
 			goto c_mknod_err;
 		}
 		if ((unsigned long)(minor(dv)) != minnum) {
-			bi_errorf("device minor too large: %lu", minnum);
+			bi_errorf("%s %s too large: %lu", "device", "minor", minnum);
 			goto c_mknod_err;
 		}
 		if (mknod(argv[0], mode, dv))
 			goto c_mknod_failed;
 	} else if (mkfifo(argv[0], mode)) {
  c_mknod_failed:
-		bi_errorf("%s: %s", *wp, strerror(errno));
+		bi_errorf("%s: %s", argv[0], strerror(errno));
  c_mknod_err:
 		rv = 1;
 	}
@@ -2670,18 +2701,11 @@ c_mknod(const char **wp)
 		umask(oldmode);
 	return (rv);
  c_mknod_usage:
-	bi_errorf("usage: mknod [-m mode] name b|c major minor");
-	bi_errorf("usage: mknod [-m mode] name p");
+	bi_errorf("%s: %s", "usage", "mknod [-m mode] name b|c major minor");
+	bi_errorf("%s: %s", "usage", "mknod [-m mode] name p");
 	return (1);
 }
 #endif
-
-/* dummy function, special case in comexec() */
-int
-c_builtin(const char **wp MKSH_A_UNUSED)
-{
-	return (0);
-}
 
 /* test(1) accepts the following grammar:
 	oexpr	::= aexpr | aexpr "-o" oexpr ;
@@ -3020,7 +3044,7 @@ test_primary(Test_env *te, bool do_eval)
 		if (te->flags & TEF_ERROR)
 			return (0);
 		if (!(*te->isa)(te, TM_CPAREN)) {
-			(*te->error)(te, 0, "missing closing paren");
+			(*te->error)(te, 0, "missing )");
 			return (0);
 		}
 		return (rv);
@@ -3280,7 +3304,8 @@ c_ulimit(const char **wp)
 			all = true;
 			break;
 		case '?':
-			bi_errorf("usage: ulimit [-acdfHLlmnpSsTtvw] [value]");
+			bi_errorf("%s: %s", "usage",
+			    "ulimit [-acdfHLlmnpSsTtvw] [value]");
 			return (1);
 		default:
 			what = optc;
@@ -3336,7 +3361,7 @@ set_ulimit(const struct limits *l, const char *v, int how)
 	}
 
 	if (getrlimit(l->resource, &limit) < 0) {
-		/* some cannot be read, e.g. Linux RLIMIT_LOCKS */
+		/* some can't be read, e.g. Linux RLIMIT_LOCKS */
 		limit.rlim_cur = RLIM_INFINITY;
 		limit.rlim_max = RLIM_INFINITY;
 	}
@@ -3379,15 +3404,20 @@ c_rename(const char **wp)
 {
 	int rv = 1;
 
-	if (wp == NULL		/* argv */ ||
-	    wp[0] == NULL	/* name of builtin */ ||
-	    wp[1] == NULL	/* first argument */ ||
-	    wp[2] == NULL	/* second argument */ ||
-	    wp[3] != NULL	/* no further args please */)
+	/* skip argv[0] */
+	++wp;
+	if (wp[0] && !strcmp(wp[0], "--"))
+		/* skip "--" (options separator) */
+		++wp;
+
+	/* check for exactly two arguments */
+	if (wp[0] == NULL	/* first argument */ ||
+	    wp[1] == NULL	/* second argument */ ||
+	    wp[2] != NULL	/* no further args please */)
 		bi_errorf(T_synerr);
-	else if ((rv = rename(wp[1], wp[2])) != 0) {
+	else if ((rv = rename(wp[0], wp[1])) != 0) {
 		rv = errno;
-		bi_errorf("failed: %s", strerror(rv));
+		bi_errorf("%s: %s", "failed", strerror(rv));
 	}
 
 	return (rv);
@@ -3399,31 +3429,101 @@ c_realpath(const char **wp)
 	int rv = 1;
 	char *buf;
 
-	if (wp != NULL && wp[0] != NULL && wp[1] != NULL) {
-		if (strcmp(wp[1], "--")) {
-			if (wp[2] == NULL) {
-				wp += 1;
-				rv = 0;
-			}
-		} else {
-			if (wp[2] != NULL && wp[3] == NULL) {
-				wp += 2;
-				rv = 0;
-			}
-		}
-	}
+	/* skip argv[0] */
+	++wp;
+	if (wp[0] && !strcmp(wp[0], "--"))
+		/* skip "--" (options separator) */
+		++wp;
 
-	if (rv)
+	/* check for exactly one argument */
+	if (wp[0] == NULL || wp[1] != NULL)
 		bi_errorf(T_synerr);
-	else if ((buf = do_realpath(*wp)) == NULL) {
+	else if ((buf = do_realpath(wp[0])) == NULL) {
 		rv = errno;
-		bi_errorf("%s: %s", *wp, strerror(rv));
+		bi_errorf("%s: %s", wp[0], strerror(rv));
 		if ((unsigned int)rv > 255)
 			rv = 255;
 	} else {
 		shprintf("%s\n", buf);
 		afree(buf, ATEMP);
+		rv = 0;
 	}
 
+	return (rv);
+}
+
+int
+c_cat(const char **wp)
+{
+	int fd = STDIN_FILENO, rv = 0;
+	ssize_t n, w;
+	const char *fn = "<stdin>";
+	char *buf, *cp;
+#define MKSH_CAT_BUFSIZ 4096
+
+	/* XXX uses malloc instead of lalloc (for alignment/speed) */
+	if ((buf = malloc(MKSH_CAT_BUFSIZ)) == NULL) {
+		bi_errorf("can't allocate %lu data bytes",
+		    (unsigned long)MKSH_CAT_BUFSIZ);
+		return (1);
+	}
+
+	/* skip argv[0] */
+	++wp;
+	if (wp[0] && !strcmp(wp[0], "--"))
+		/* skip "--" (options separator) */
+		++wp;
+
+	do {
+		if (*wp) {
+			fn = *wp++;
+			if (fn[0] == '-' && fn[1] == '\0')
+				fd = STDIN_FILENO;
+			else if ((fd = open(fn, O_RDONLY)) < 0) {
+				rv = errno;
+				bi_errorf("%s: %s", fn, strerror(rv));
+				rv = 1;
+				continue;
+			}
+		}
+		while (1) {
+			n = blocking_read(fd, (cp = buf), MKSH_CAT_BUFSIZ);
+			if (n == -1) {
+				if (errno == EINTR)
+					/* interrupted, try again */
+					continue;
+				/* an error occured during reading */
+				rv = errno;
+				bi_errorf("%s: %s", fn, strerror(rv));
+				rv = 1;
+				break;
+			} else if (n == 0)
+				/* end of file reached */
+				break;
+			while (n) {
+				w = write(STDOUT_FILENO, cp, n);
+				if (w == -1) {
+					if (errno == EINTR)
+						/* interrupted, try again */
+						continue;
+					/* an error occured during writing */
+					rv = errno;
+					bi_errorf("%s: %s", "<stdout>",
+					    strerror(rv));
+					rv = 1;
+					if (fd != STDIN_FILENO)
+						close(fd);
+					goto out;
+				}
+				n -= w;
+				cp += w;
+			}
+		}
+		if (fd != STDIN_FILENO)
+			close(fd);
+	} while (*wp);
+
+ out:
+	free(buf);
 	return (rv);
 }

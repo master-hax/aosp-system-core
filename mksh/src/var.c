@@ -26,7 +26,7 @@
 #include <sys/sysctl.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/var.c,v 1.110 2010/07/25 11:35:43 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/var.c,v 1.113 2010/09/14 21:26:19 tg Exp $");
 
 /*
  * Variables
@@ -393,7 +393,7 @@ intval(struct tbl *vp)
 	base = getint(vp, &num, false);
 	if (base == -1)
 		/* XXX check calls - is error here ok by POSIX? */
-		errorf("%s: bad number", str_val(vp));
+		errorf("%s: %s", str_val(vp), "bad number");
 	return (num);
 }
 
@@ -406,7 +406,7 @@ setstr(struct tbl *vq, const char *s, int error_ok)
 
 	error_ok &= ~0x4;
 	if ((vq->flag & RDONLY) && !no_ro_check) {
-		warningf(true, "%s: is read only", vq->name);
+		warningf(true, "%s: %s", vq->name, "is read only");
 		if (!error_ok)
 			errorfz();
 		return (0);
@@ -649,10 +649,13 @@ exportprep(struct tbl *vp, const char *val)
 {
 	char *xp;
 	char *op = (vp->flag&ALLOC) ? vp->val.s : NULL;
-	int namelen = strlen(vp->name);
-	int vallen = strlen(val) + 1;
+	size_t namelen, vallen;
+
+	namelen = strlen(vp->name);
+	vallen = strlen(val) + 1;
 
 	vp->flag |= ALLOC;
+	/* since name+val are both in memory this can go unchecked */
 	xp = alloc(namelen + 1 + vallen, vp->areap);
 	memcpy(vp->val.s = xp, vp->name, namelen);
 	xp += namelen;
@@ -685,8 +688,8 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	mkssert(*var != 0);
 	if (*val == '[') {
 		if (set_refflag)
-			errorf("%s: reference variable cannot be an array",
-			    var);
+			errorf("%s: %s", var,
+			    "reference variable can't be an array");
 		len = array_ref_len(val);
 		if (len == 0)
 			return (NULL);
@@ -712,7 +715,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 			return (NULL);
 		strdupx(tvar, var, ATEMP);
 		val = NULL;
-		/* handle foo[*] ⇒ foo (whole array) mapping for R39b */
+		/* handle foo[*] => foo (whole array) mapping for R39b */
 		len = strlen(tvar);
 		if (len > 3 && tvar[len-3] == '[' && tvar[len-2] == '*' &&
 		    tvar[len-1] == ']')
@@ -722,7 +725,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	/* Prevent typeset from creating a local PATH/ENV/SHELL */
 	if (Flag(FRESTRICTED) && (strcmp(tvar, "PATH") == 0 ||
 	    strcmp(tvar, "ENV") == 0 || strcmp(tvar, "SHELL") == 0))
-		errorf("%s: restricted", tvar);
+		errorf("%s: %s", tvar, "restricted");
 
 	vp = (set&LOCAL) ? local(tvar, (set & LOCAL_COPY) ? true : false) :
 	    global(tvar);
@@ -756,7 +759,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	if ((vpbase->flag&RDONLY) &&
 	    (val || clr || (set & ~EXPORT)))
 		/* XXX check calls - is error here ok by POSIX? */
-		errorf("%s: is read only", tvar);
+		errorf("%s: %s", tvar, "is read only");
 	afree(tvar, ATEMP);
 
 	/* most calls are with set/clr == 0 */
@@ -1051,7 +1054,7 @@ change_random(const void *vp, size_t n)
 	h = oaathash_update(h, k, sizeof(k));
 	kshstate_v.lcg_state_ = oaathash_finalise(h);
 #elif defined(MKSH_A4PB)
-	/* forced by the user to use arc4random_pushb(3) • Cygwin? */
+	/* forced by the user to use arc4random_pushb(3) - Cygwin? */
 	{
 		uint32_t prv;
 
@@ -1317,9 +1320,10 @@ arraysearch(struct tbl *vp, uint32_t val)
 		news = curr;
 	} else
 		news = NULL;
-	len = strlen(vp->name) + 1;
 	if (!news) {
-		news = alloc(offsetof(struct tbl, name[0]) + len, vp->areap);
+		len = strlen(vp->name);
+		checkoktoadd(len, 1 + offsetof(struct tbl, name[0]));
+		news = alloc(offsetof(struct tbl, name[0]) + ++len, vp->areap);
 		memcpy(news->name, vp->name, len);
 	}
 	news->flag = (vp->flag & ~(ALLOC|DEFINED|ISSET|SPECIAL)) | AINDEX;
@@ -1389,7 +1393,7 @@ set_array(const char *var, bool reset, const char **vals)
 
 	/* Note: AT&T ksh allows set -A but not set +A of a read-only var */
 	if ((vp->flag&RDONLY))
-		errorf("%s: is read only", var);
+		errorf("%s: %s", var, "is read only");
 	/* This code is quite non-optimal */
 	if (reset)
 		/* trash existing values and attributes */

@@ -45,8 +45,6 @@ LIBS=
 CC=$aospdir/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-gcc
 addvar CPPFLAGS -I$aospdir/system/core/include \
     -I$aospdir/hardware/libhardware/include \
-    -I$aospdir/system/core/include \
-    -I$aospdir/hardware/libhardware/include \
     -I$aospdir/hardware/libhardware_legacy/include \
     -I$aospdir/hardware/ril/include \
     -I$aospdir/dalvik/libnativehelper/include \
@@ -86,7 +84,9 @@ addvar LIBS -L$aospdir/out/target/product/generic/obj/lib \
 
 ### Override flags
 # We don’t even *support* UTF-8 by default ☹
-addvar CPPFLAGS -DMKSH_ASSUME_UTF8=0
+# but still enable it because 8-bit seems to be merely
+# completely ignored and adb shell might do it
+addvar CPPFLAGS -DMKSH_ASSUME_UTF8
 # No getpwnam() calls (affects "cd ~username/" only)
 addvar CPPFLAGS -DMKSH_NOPWNAM
 # Compile an extra small mksh (optional)
