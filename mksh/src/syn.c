@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/syn.c,v 1.49 2010/07/17 22:09:39 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/syn.c,v 1.52 2010/09/14 21:26:18 tg Exp $");
 
 struct nesting_state {
 	int start_token;	/* token than began nesting (eg, FOR) */
@@ -181,7 +181,7 @@ synio(int cf)
 		if (*ident != 0) /* unquoted */
 			iop->flag |= IOEVAL;
 		if (herep > &heres[HERES - 1])
-			yyerror("too many <<s\n");
+			yyerror("too many %ss\n", "<<");
 		*herep++ = iop;
 	} else
 		iop->name = yylval.cp;
@@ -231,7 +231,8 @@ get_command(int cf)
 	XPtrV args, vars;
 	struct nesting_state old_nesting;
 
-	iops = alloc((NUFILE + 1) * sizeof(struct ioword *), ATEMP);
+	/* NUFILE is small enough to leave this addition unchecked */
+	iops = alloc2((NUFILE + 1), sizeof(struct ioword *), ATEMP);
 	XPinit(args, 16);
 	XPinit(vars, 16);
 
@@ -257,7 +258,8 @@ get_command(int cf)
 			case REDIR:
 				while ((iop = synio(cf)) != NULL) {
 					if (iopn >= NUFILE)
-						yyerror("too many redirections\n");
+						yyerror("too many %ss\n",
+						    "redirection");
 					iops[iopn++] = iop;
 				}
 				break;
@@ -403,8 +405,8 @@ get_command(int cf)
 		t = newtp((c == FOR) ? TFOR : TSELECT);
 		musthave(LWORD, ARRAYVAR);
 		if (!is_wdvarname(yylval.cp, true))
-			yyerror("%s: bad identifier\n",
-			    c == FOR ? "for" : "select");
+			yyerror("%s: %s\n", c == FOR ? "for" : "select",
+			    "bad identifier");
 		strdupx(t->str, ident, ATEMP);
 		nesting_push(&old_nesting, c);
 		t->vars = wordlist();
@@ -466,7 +468,7 @@ get_command(int cf)
 
 	while ((iop = synio(syniocf)) != NULL) {
 		if (iopn >= NUFILE)
-			yyerror("too many redirections\n");
+			yyerror("too many %ss\n", "redirection");
 		iops[iopn++] = iop;
 	}
 
@@ -475,7 +477,7 @@ get_command(int cf)
 		t->ioact = NULL;
 	} else {
 		iops[iopn++] = NULL;
-		iops = aresize(iops, iopn * sizeof(struct ioword *), ATEMP);
+		iops = aresize2(iops, iopn, sizeof(struct ioword *), ATEMP);
 		t->ioact = iops;
 	}
 
@@ -622,7 +624,7 @@ function_body(char *name,
 	 */
 	for (p = sname; *p; p++)
 		if (ctype(*p, C_QUOTE))
-			yyerror("%s: invalid function name\n", sname);
+			yyerror("%s: %s\n", sname, "invalid function name");
 
 	/* Note that POSIX allows only compound statements after foo(), sh and
 	 * AT&T ksh allow any command, go with the later since it shouldn't
@@ -655,12 +657,13 @@ function_body(char *name,
 	if ((t->left = get_command(CONTIN)) == NULL) {
 		char *tv;
 		/*
-		 * Probably something like foo() followed by eof or ;.
+		 * Probably something like foo() followed by EOF or ';'.
 		 * This is accepted by sh and ksh88.
 		 * To make "typeset -f foo" work reliably (so its output can
 		 * be used as input), we pretend there is a colon here.
 		 */
 		t->left = newtp(TCOM);
+		/* (2 * sizeof(char *)) is small enough */
 		t->left->args = alloc(2 * sizeof(char *), ATEMP);
 		t->left->args[0] = tv = alloc(3, ATEMP);
 		tv[0] = CHAR;
@@ -739,7 +742,7 @@ const struct tokeninfo {
 	{ "do",		DO,	true },
 	{ "done",	DONE,	true },
 	{ "in",		IN,	true },
-	{ "function",	FUNCTION, true },
+	{ T_function,	FUNCTION, true },
 	{ "time",	TIME,	true },
 	{ "{",		'{',	true },
 	{ "}",		'}',	true },
@@ -796,7 +799,7 @@ syntaxerr(const char *what)
 			goto Again;
 		}
 		/* don't quote the EOF */
-		yyerror("%s: unexpected EOF\n", T_synerr);
+		yyerror("%s: %s %s\n", T_synerr, "unexpected", "EOF");
 		/* NOTREACHED */
 
 	case LWORD:
@@ -882,7 +885,7 @@ assign_command(char *s)
 {
 	if (!*s)
 		return (0);
-	return ((strcmp(s, "alias") == 0) ||
+	return ((strcmp(s, T_alias) == 0) ||
 	    (strcmp(s, "export") == 0) ||
 	    (strcmp(s, "readonly") == 0) ||
 	    (strcmp(s, T_typeset) == 0));

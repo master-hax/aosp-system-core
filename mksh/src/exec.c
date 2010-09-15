@@ -22,7 +22,7 @@
 
 #include "sh.h"
 
-__RCSID("$MirOS: src/bin/mksh/exec.c,v 1.75 2010/07/17 22:09:34 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/exec.c,v 1.83 2010/09/15 21:08:17 tg Exp $");
 
 #ifndef MKSH_DEFAULT_EXECSHELL
 #define MKSH_DEFAULT_EXECSHELL	"/bin/sh"
@@ -88,8 +88,8 @@ execute(struct op *volatile t,
 			timex_hook(t, &up);
 		ap = (const char **)up;
 		if (Flag(FXTRACE) && ap[0]) {
-			shf_fprintf(shl_out, "%s",
-				substitute(str_val(global("PS4")), 0));
+			shf_puts(substitute(str_val(global("PS4")), 0),
+			    shl_out);
 			for (i = 0; ap[i]; i++)
 				shf_fprintf(shl_out, "%s%c", ap[i],
 				    ap[i + 1] ? ' ' : '\n');
@@ -101,7 +101,7 @@ execute(struct op *volatile t,
 	flags &= ~XTIME;
 
 	if (t->ioact != NULL || t->type == TPIPE || t->type == TCOPROC) {
-		e->savefd = alloc(NUFILE * sizeof(short), ATEMP);
+		e->savefd = alloc2(NUFILE, sizeof(short), ATEMP);
 		/* initialise to not redirected */
 		memset(e->savefd, 0, NUFILE * sizeof(short));
 	}
@@ -441,15 +441,16 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 	 */
 	keepasn_ok = 1;
 	while (tp && tp->type == CSHELL) {
-		fcflags = FC_BI|FC_FUNC|FC_PATH;/* undo effects of command */
+		/* undo effects of command */
+		fcflags = FC_BI|FC_FUNC|FC_PATH;
 		if (tp->val.f == c_builtin) {
-			if ((cp = *++ap) == NULL) {
+			if ((cp = *++ap) == NULL ||
+			    (!strcmp(cp, "--") && (cp = *++ap) == NULL)) {
 				tp = NULL;
 				break;
 			}
-			tp = findcom(cp, FC_BI);
-			if (tp == NULL)
-				errorf("builtin: %s: not a builtin", cp);
+			if ((tp = findcom(cp, FC_BI)) == NULL)
+				errorf("%s: %s: %s", T_builtin, cp, "not a builtin");
 			continue;
 		} else if (tp->val.f == c_exec) {
 			if (ap[1] == NULL)
@@ -471,8 +472,8 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 			fcflags = FC_BI|FC_PATH;
 			if (saw_p) {
 				if (Flag(FRESTRICTED)) {
-					warningf(true,
-					    "command -p: restricted");
+					warningf(true, "%s: %s",
+					    "command -p", "restricted");
 					rv = 1;
 					goto Leave;
 				}
@@ -488,6 +489,21 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 				subst_exstat = 0;
 				break;
 			}
+		} else if (tp->val.f == c_cat) {
+			/*
+			 * if we have any flags, do not use the builtin
+			 * in theory, we could allow -u, but that would
+			 * mean to use ksh_getopt here and possibly ad-
+			 * ded complexity and more code and isn't worth
+			 */
+			if (ap[1] && ap[1][0] == '-' && ap[1][1] != '\0' &&
+			    /* argument, begins with -, is not - or -- */
+			    (ap[1][1] != '-' || ap[1][2] != '\0'))
+				/* don't look for builtins or functions */
+				fcflags = FC_PATH;
+			else
+				/* go on, use the builtin */
+				break;
 		} else
 			break;
 		tp = findcom(ap[0], fcflags & (FC_BI|FC_FUNC));
@@ -518,8 +534,8 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 
 		if (Flag(FXTRACE)) {
 			if (i == 0)
-				shf_fprintf(shl_out, "%s",
-					substitute(str_val(global("PS4")), 0));
+				shf_puts(substitute(str_val(global("PS4")), 0),
+				    shl_out);
 			shf_fprintf(shl_out, "%s%c", cp,
 			    t->vars[i + 1] ? ' ' : '\n');
 			if (!t->vars[i + 1])
@@ -535,7 +551,7 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 		goto Leave;
 	} else if (!tp) {
 		if (Flag(FRESTRICTED) && vstrchr(cp, '/')) {
-			warningf(true, "%s: restricted", cp);
+			warningf(true, "%s: %s", cp, "restricted");
 			rv = 1;
 			goto Leave;
 		}
@@ -557,32 +573,31 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 
 			if (!tp->u.fpath) {
 				if (tp->u2.errno_) {
-					warningf(true,
-					    "%s: can't find function "
-					    "definition file - %s",
-					    cp, strerror(tp->u2.errno_));
+					warningf(true, "%s: %s %s: %s", cp,
+					    "can't find",
+					    "function definition file",
+					    strerror(tp->u2.errno_));
 					rv = 126;
 				} else {
-					warningf(true,
-					    "%s: can't find function "
-					    "definition file", cp);
+					warningf(true, "%s: %s %s", cp,
+					    "can't find",
+					    "function definition file");
 					rv = 127;
 				}
 				break;
 			}
 			if (include(tp->u.fpath, 0, NULL, 0) < 0) {
 				rv = errno;
-				warningf(true,
-				    "%s: can't open function definition file %s - %s",
-				    cp, tp->u.fpath, strerror(rv));
+				warningf(true, "%s: %s %s %s: %s", cp,
+				    "can't open", "function definition file",
+				    tp->u.fpath, strerror(rv));
 				rv = 127;
 				break;
 			}
 			if (!(ftp = findfunc(cp, hash(cp), false)) ||
 			    !(ftp->flag & ISSET)) {
-				warningf(true,
-				    "%s: function not defined by %s",
-				    cp, tp->u.fpath);
+				warningf(true, "%s: %s %s", cp,
+				    "function not defined by", tp->u.fpath);
 				rv = 127;
 				break;
 			}
@@ -651,7 +666,7 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 			/* NOTREACHED */
 		default:
 			quitenv(NULL);
-			internal_errorf("CFUNC %d", i);
+			internal_errorf("%s %d", "CFUNC", i);
 		}
 		break;
 	}
@@ -665,11 +680,11 @@ comexec(struct op *t, struct tbl *volatile tp, const char **ap,
 			 * useful error message and set the exit status to 126.
 			 */
 			if (tp->u2.errno_) {
-				warningf(true, "%s: cannot execute - %s", cp,
-				    strerror(tp->u2.errno_));
+				warningf(true, "%s: %s: %s", cp,
+				    "can't execute", strerror(tp->u2.errno_));
 				rv = 126;	/* POSIX */
 			} else {
-				warningf(true, "%s: not found", cp);
+				warningf(true, "%s: %s", cp, "not found");
 				rv = 127;
 			}
 			break;
@@ -806,7 +821,7 @@ shcomexec(const char **wp)
 
 	tp = ktsearch(&builtins, *wp, hash(*wp));
 	if (tp == NULL)
-		internal_errorf("shcomexec: %s", *wp);
+		internal_errorf("%s: %s", "shcomexec", *wp);
 	return (call_builtin(tp, wp));
 }
 
@@ -1094,11 +1109,11 @@ call_builtin(struct tbl *tp, const char **wp)
 	builtin_argv0 = wp[0];
 	builtin_flag = tp->flag;
 	shf_reopen(1, SHF_WR, shl_stdout);
-	shl_stdout_ok = 1;
+	shl_stdout_ok = true;
 	ksh_getopt_reset(&builtin_opt, GF_ERROR);
 	rv = (*tp->val.f)(wp);
 	shf_flush(shl_stdout);
-	shl_stdout_ok = 0;
+	shl_stdout_ok = false;
 	builtin_flag = 0;
 	builtin_argv0 = NULL;
 	return (rv);
@@ -1182,7 +1197,7 @@ iosetup(struct ioword *iop, struct tbl *tp)
 
 	if (do_open) {
 		if (Flag(FRESTRICTED) && (flags & O_CREAT)) {
-			warningf(true, "%s: restricted", cp);
+			warningf(true, "%s: %s", cp, "restricted");
 			return (-1);
 		}
 		u = open(cp, flags, 0666);
@@ -1191,7 +1206,7 @@ iosetup(struct ioword *iop, struct tbl *tp)
 		/* herein() may already have printed message */
 		if (u == -1) {
 			u = errno;
-			warningf(true, "cannot %s %s: %s",
+			warningf(true, "can't %s %s: %s",
 			    iotype == IODUP ? "dup" :
 			    (iotype == IOREAD || iotype == IOHERE) ?
 			    "open" : "create", cp, strerror(u));
@@ -1220,8 +1235,8 @@ iosetup(struct ioword *iop, struct tbl *tp)
 			int ev;
 
 			ev = errno;
-			warningf(true,
-			    "could not finish (dup) redirection %s: %s",
+			warningf(true, "%s %s %s",
+			    "can't finish (dup) redirection",
 			    snptreef(NULL, 32, "%R", &iotmp),
 			    strerror(ev));
 			if (iotype != IODUP)
@@ -1260,7 +1275,7 @@ herein(const char *content, int sub)
 
 	/* ksh -c 'cat << EOF' can cause this... */
 	if (content == NULL) {
-		warningf(true, "here document missing");
+		warningf(true, "%s missing", "here document");
 		return (-2); /* special to iosetup(): don't print error */
 	}
 
@@ -1293,7 +1308,7 @@ herein(const char *content, int sub)
 		s->start = s->str = content;
 		source = s;
 		if (yylex(ONEWORD|HEREDOC) != LWORD)
-			internal_errorf("herein: yylex");
+			internal_errorf("%s: %s", "herein", "yylex");
 		source = osource;
 		shf_puts(evalstr(yylval.cp, 0), shf);
 	} else
@@ -1304,9 +1319,7 @@ herein(const char *content, int sub)
 	if (shf_close(shf) == EOF) {
 		i = errno;
 		close(fd);
-		fd = errno;
-		warningf(true, "error writing %s: %s, %s", h->name,
-		    strerror(i), strerror(fd));
+		warningf(true, "%s: %s: %s", "write", h->name, strerror(i));
 		return (-2);	/* special to iosetup(): don't print error */
 	}
 
@@ -1417,7 +1430,7 @@ static char *plain_fmt_entry(char *, int, int, const void *);
 static char *
 plain_fmt_entry(char *buf, int buflen, int i, const void *arg)
 {
-	shf_snprintf(buf, buflen, "%s", ((const char * const *)arg)[i]);
+	strlcpy(buf, ((const char * const *)arg)[i], buflen);
 	return (buf);
 }
 

@@ -29,7 +29,7 @@
 #include <grp.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.141 2010/07/17 22:09:36 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.147 2010/09/14 21:26:15 tg Exp $");
 
 unsigned char chtypes[UCHAR_MAX + 1];	/* type bits for unsigned char */
 
@@ -43,6 +43,25 @@ static int do_gmatch(const unsigned char *, const unsigned char *,
 static const unsigned char *cclass(const unsigned char *, int);
 #ifdef TIOCSCTTY
 static void chvt(const char *);
+#endif
+
+#ifdef SETUID_CAN_FAIL_WITH_EAGAIN
+/* we don't need to check for other codes, EPERM won't happen */
+#define DO_SETUID(func, argvec) do {					\
+	bool messaged = false;						\
+									\
+	while (/* CONSTCOND */ 1)					\
+		if (!(func argvec) || errno != EAGAIN)			\
+			break;						\
+		else if (!messaged) {					\
+			warningf(true, "%s failed with EAGAIN,"		\
+			    " probably due to a too low process"	\
+			    " limit; retrying infinitely", #func);	\
+			messaged = true;				\
+		}							\
+} while (/* CONSTCOND */ 0)
+#else
+#define DO_SETUID(func, argvec) func argvec
 #endif
 
 /*
@@ -82,12 +101,15 @@ initctypes(void)
 
 /* called from XcheckN() to grow buffer */
 char *
-Xcheck_grow_(XString *xsp, const char *xp, unsigned int more)
+Xcheck_grow_(XString *xsp, const char *xp, size_t more)
 {
 	const char *old_beg = xsp->beg;
 
-	xsp->len += more > xsp->len ? more : xsp->len;
-	xsp->beg = aresize(xsp->beg, xsp->len + 8, xsp->areap);
+	if (more < xsp->len)
+		more = xsp->len;
+	/* (xsp->len + X_EXTRA) never overflows */
+	checkoktoadd(more, xsp->len + X_EXTRA);
+	xsp->beg = aresize(xsp->beg, (xsp->len += more) + X_EXTRA, xsp->areap);
 	xsp->end = xsp->beg + xsp->len;
 	return (xsp->beg + (xp - old_beg));
 }
@@ -167,11 +189,12 @@ printoptions(bool verbose)
 		print_columns(shl_stdout, n, options_fmt_entry, &oi,
 		    octs + 4, oi.opt_width + 4, true);
 	} else {
-		/* short version á la AT&T ksh93 */
-		shf_puts("set", shl_stdout);
+		/* short version like AT&T ksh93 */
+		shf_puts(T_set, shl_stdout);
 		while (i < (int)NELEM(options)) {
 			if (Flag(i) && options[i].name)
-				shprintf(" -o %s", options[i].name);
+				shprintf("%s %s %s", null, "-o",
+				    options[i].name);
 			++i;
 		}
 		shf_putc('\n', shl_stdout);
@@ -221,14 +244,16 @@ change_flag(enum sh_flag f, int what, unsigned int newval)
 #if HAVE_SETRESUGID
 		gid_t kshegid = getgid();
 
-		setresgid(kshegid, kshegid, kshegid);
+		DO_SETUID(setresgid, (kshegid, kshegid, kshegid));
 #if HAVE_SETGROUPS
+		/* setgroups doesn't EAGAIN on Linux */
 		setgroups(1, &kshegid);
 #endif
-		setresuid(ksheuid, ksheuid, ksheuid);
+		DO_SETUID(setresuid, (ksheuid, ksheuid, ksheuid));
 #else
+		/* seteuid, setegid, setgid don't EAGAIN on Linux */
 		seteuid(ksheuid = kshuid = getuid());
-		setuid(ksheuid);
+		DO_SETUID(setuid, (ksheuid));
 		setegid(kshegid = kshgid = getgid());
 		setgid(kshegid);
 #endif
@@ -329,12 +354,14 @@ parse_args(const char **argv,
 				break;
 			}
 			i = option(go.optarg);
+#ifndef MKSH_NO_DEPRECATED_WARNING
 			if ((enum sh_flag)i == FARC4RANDOM) {
 				warningf(true, "Do not use set ±o arc4random,"
 				    " it will be removed in the next version"
 				    " of mksh!");
 				return (0);
 			}
+#endif
 			if ((i != (size_t)-1) && set == Flag(i))
 				/* Don't check the context if the flag
 				 * isn't changing - makes "set -o interactive"
@@ -345,7 +372,7 @@ parse_args(const char **argv,
 			else if ((i != (size_t)-1) && (options[i].flags & what))
 				change_flag((enum sh_flag)i, what, set);
 			else {
-				bi_errorf("%s: bad option", go.optarg);
+				bi_errorf("%s: %s", go.optarg, "bad option");
 				return (-1);
 			}
 			break;
@@ -399,7 +426,7 @@ parse_args(const char **argv,
 		    argv[go.optind]);
 
 	if (arrayset && (!*array || *skip_varname(array, false))) {
-		bi_errorf("%s: is not an identifier", array);
+		bi_errorf("%s: %s", array, "is not an identifier");
 		return (-1);
 	}
 	if (sortargs) {
@@ -456,7 +483,7 @@ bi_getn(const char *as, int *ai)
 	int rv;
 
 	if (!(rv = getn(as, ai)))
-		bi_errorf("%s: bad number", as);
+		bi_errorf("%s: %s", as, "bad number");
 	return (rv);
 }
 
@@ -705,9 +732,11 @@ cclass(const unsigned char *p, int sub)
 		if (ISMAGIC(c)) {
 			c = *p++;
 			if ((c & 0x80) && !ISMAGIC(c)) {
-				c &= 0x7f;/* extended pattern matching: *+?@! */
+				/* extended pattern matching: *+?@! */
+				c &= 0x7F;
 				/* XXX the ( char isn't handled as part of [] */
-				if (c == ' ') /* simile for @: plain (..) */
+				if (c == ' ')
+					/* simile for @: plain (..) */
 					c = '(' /*)*/;
 			}
 		}
@@ -830,9 +859,10 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 			go->buf[0] = c;
 			go->optarg = go->buf;
 		} else {
-			warningf(true, "%s%s-%c: unknown option",
+			warningf(true, "%s%s-%c: %s",
 			    (go->flags & GF_NONAME) ? "" : argv[0],
-			    (go->flags & GF_NONAME) ? "" : ": ", c);
+			    (go->flags & GF_NONAME) ? "" : ": ", c,
+			    "unknown option");
 			if (go->flags & GF_ERROR)
 				bi_errorfz();
 		}
@@ -856,9 +886,10 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 				go->optarg = go->buf;
 				return (':');
 			}
-			warningf(true, "%s%s-'%c' requires argument",
+			warningf(true, "%s%s-%c: %s",
 			    (go->flags & GF_NONAME) ? "" : argv[0],
-			    (go->flags & GF_NONAME) ? "" : ": ", c);
+			    (go->flags & GF_NONAME) ? "" : ": ", c,
+			    "requires an argument");
 			if (go->flags & GF_ERROR)
 				bi_errorfz();
 			return ('?');
@@ -1019,19 +1050,20 @@ strip_nuls(char *buf, int nbytes)
 	}
 }
 
-/* Like read(2), but if read fails due to non-blocking flag, resets flag
- * and restarts read.
+/*
+ * Like read(2), but if read fails due to non-blocking flag,
+ * resets flag and restarts read.
  */
-int
-blocking_read(int fd, char *buf, int nbytes)
+ssize_t
+blocking_read(int fd, char *buf, size_t nbytes)
 {
-	int ret;
-	int tried_reset = 0;
+	ssize_t ret;
+	bool tried_reset = false;
 
 	while ((ret = read(fd, buf, nbytes)) < 0) {
 		if (!tried_reset && errno == EAGAIN) {
 			if (reset_nonblock(fd) > 0) {
-				tried_reset = 1;
+				tried_reset = true;
 				continue;
 			}
 			errno = EAGAIN;
@@ -1041,7 +1073,8 @@ blocking_read(int fd, char *buf, int nbytes)
 	return (ret);
 }
 
-/* Reset the non-blocking flag on the specified file descriptor.
+/*
+ * Reset the non-blocking flag on the specified file descriptor.
  * Returns -1 if there was an error, 0 if non-blocking wasn't set,
  * 1 if it was.
  */
@@ -1285,42 +1318,44 @@ chvt(const char *fn)
 			if (stat(dv, &sb)) {
 				strlcpy(dv + 8, fn, sizeof(dv) - 8);
 				if (stat(dv, &sb))
-					errorf("chvt: can't find tty %s", fn);
+					errorf("%s: %s %s", "chvt",
+					    "can't find tty", fn);
 			}
 			fn = dv;
 		}
 		if (!(sb.st_mode & S_IFCHR))
-			errorf("chvt: not a char device: %s", fn);
+			errorf("%s %s %s", "chvt: not a char", "device", fn);
 		if ((sb.st_uid != 0) && chown(fn, 0, 0))
-			warningf(false, "chvt: cannot chown root %s", fn);
+			warningf(false, "%s: %s %s", "chvt", "can't chown root", fn);
 		if (((sb.st_mode & 07777) != 0600) && chmod(fn, (mode_t)0600))
-			warningf(false, "chvt: cannot chmod 0600 %s", fn);
+			warningf(false, "%s: %s %s", "chvt", "can't chmod 0600", fn);
 #if HAVE_REVOKE
 		if (revoke(fn))
 #endif
-			warningf(false, "chvt: cannot revoke %s, new shell is"
-			    " potentially insecure", fn);
+			warningf(false, "%s: %s %s", "chvt",
+			    "new shell is potentially insecure, can't revoke",
+			    fn);
 	}
 	if ((fd = open(fn, O_RDWR)) == -1) {
 		sleep(1);
 		if ((fd = open(fn, O_RDWR)) == -1)
-			errorf("chvt: cannot open %s", fn);
+			errorf("%s: %s %s", "chvt", "can't open", fn);
 	}
 	switch (fork()) {
 	case -1:
-		errorf("chvt: %s failed", "fork");
+		errorf("%s: %s %s", "chvt", "fork", "failed");
 	case 0:
 		break;
 	default:
 		exit(0);
 	}
 	if (setsid() == -1)
-		errorf("chvt: %s failed", "setsid");
+		errorf("%s: %s %s", "chvt", "setsid", "failed");
 	if (fn != dv + 1) {
 		if (ioctl(fd, TIOCSCTTY, NULL) == -1)
-			errorf("chvt: %s failed", "TIOCSCTTY");
+			errorf("%s: %s %s", "chvt", "TIOCSCTTY", "failed");
 		if (tcflush(fd, TCIOFLUSH))
-			errorf("chvt: %s failed", "TCIOFLUSH");
+			errorf("%s: %s %s", "chvt", "TCIOFLUSH", "failed");
 	}
 	ksh_dup2(fd, 0, false);
 	ksh_dup2(fd, 1, false);
