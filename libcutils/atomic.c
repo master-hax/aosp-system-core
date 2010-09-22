@@ -249,6 +249,83 @@ int64_t android_quasiatomic_read_64(volatile int64_t* addr) {
 #elif __sh__
 // implementation for SuperH is in atomic-android-sh.c.
 
+#elif __powerpc__
+
+void android_atomic_write(int32_t value, volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, value, addr));
+}
+
+int32_t android_atomic_inc(volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, oldValue+1, addr));
+    return oldValue;
+}
+
+int32_t android_atomic_dec(volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, oldValue-1, addr));
+    return oldValue;
+}
+
+int32_t android_atomic_add(int32_t value, volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, oldValue+value, addr));
+    return oldValue;
+}
+
+int32_t android_atomic_and(int32_t value, volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, oldValue&value, addr));
+    return oldValue;
+}
+
+int32_t android_atomic_or(int32_t value, volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, oldValue|value, addr));
+    return oldValue;
+}
+
+int32_t android_atomic_swap(int32_t value, volatile int32_t* addr) {
+    int32_t oldValue;
+    do {
+        oldValue = *addr;
+    } while (android_atomic_cmpxchg(oldValue, value, addr));
+    return oldValue;
+}
+
+int android_atomic_cmpxchg(int32_t oldvalue, int32_t newvalue, volatile int32_t* addr) {
+    int32_t v;
+    asm volatile
+    (
+     "1: lwarx %0,0,%1;"
+     "cmpw %0,%3;"
+     "bne- 1f;"
+     "stwcx. %2,0,%1;"
+     "bne- 1b;"
+     "isync;"
+     "1:"
+     : "=&r"(v)
+     : "r"(addr),"r"(newvalue),"r"(oldvalue)
+     : "cc","memory"
+    );
+    return v != oldvalue;
+}
+
+#define NEED_QUASIATOMICS 1
+
 #else
 
 #error "Unsupported atomic operations for this platform"
