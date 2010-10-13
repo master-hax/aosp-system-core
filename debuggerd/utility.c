@@ -72,8 +72,9 @@ const mapinfo *pc_to_mapinfo(mapinfo *mi, unsigned pc, unsigned *rel_pc)
     while(mi) {
         if((pc >= mi->start) && (pc < mi->end)){
             // Only calculate the relative offset for shared libraries
+            *rel_pc = pc;
             if (strstr(mi->name, ".so")) {
-                *rel_pc = pc - mi->start;
+                *rel_pc -= mi->start;
             }
             return mi;
         }
