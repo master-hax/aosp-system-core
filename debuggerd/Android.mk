@@ -1,7 +1,5 @@
 # Copyright 2005 The Android Open Source Project
 
-ifeq ($(TARGET_ARCH),arm)
-
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -49,5 +47,3 @@ LOCAL_MODULE_TAGS := eng
 LOCAL_SHARED_LIBRARIES := libcutils libc
 include $(BUILD_EXECUTABLE)
 endif # ARCH_ARM_HAVE_VFP == true
-
-endif # TARGET_ARCH == arm
