@@ -231,6 +231,7 @@ static void show_help(const char *cmd)
                     "                  allowed and results are interleaved. The default is\n"
                     "                  -b main -b system -b crash.\n"
                     "  -B              output the log in binary.\n"
+                    "  -C              colored output\n"
                     "  -S              output statistics.\n"
                     "  -G <size>       set size of log ring buffer, may suffix with K or M.\n"
                     "  -p              print prune white and ~black list. Service is specified as\n"
@@ -279,6 +280,11 @@ static int setLogFormat(const char * formatString)
     android_log_setPrintFormat(g_logformat, format);
 
     return 0;
+}
+
+static void setColoredOutput()
+{
+    android_log_setColoredOutput(g_logformat);
 }
 
 static const char multipliers[][2] = {
@@ -336,7 +342,7 @@ int main(int argc, char **argv)
     for (;;) {
         int ret;
 
-        ret = getopt(argc, argv, "cdt:T:gG:sQf:r::n:v:b:BSpP:");
+        ret = getopt(argc, argv, "cdt:T:gG:sQf:r::n:v:b:BCSpP:");
 
         if (ret < 0) {
             break;
@@ -391,6 +397,10 @@ int main(int argc, char **argv)
 
             case 'g':
                 getLogSize = 1;
+            break;
+
+            case 'C':
+                setColoredOutput();
             break;
 
             case 'G': {
