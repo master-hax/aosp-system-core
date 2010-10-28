@@ -60,10 +60,11 @@ static const struct mount_opts options[] = {
 static void add_extra_option(struct extra_opts *extra, char *s)
 {
 	int len = strlen(s);
-	int newlen = extra->used_size + len;
+	int newlen;
 
 	if (extra->str)
 	       len++;			/* +1 for ',' */
+	newlen = extra->used_size + len;
 
 	if (newlen >= extra->alloc_size) {
 		char *new;
