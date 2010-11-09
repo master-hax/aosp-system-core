@@ -64,6 +64,7 @@ int usage(void)
             "       [ --cmdline <kernel-commandline> ]\n"
             "       [ --board <boardname> ]\n"
             "       [ --base <address> ]\n"
+            "       [ --pagesize <size> ]\n"
             "       -o|--output <filename>\n"
             );
     return 1;
@@ -71,7 +72,7 @@ int usage(void)
 
 
 
-static unsigned char padding[2048] = { 0, };
+static unsigned char *padding;
 
 int write_padding(int fd, unsigned pagesize, unsigned itemsize)
 {
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
     char *cmdline = "";
     char *bootimg = 0;
     char *board = "";
-    unsigned pagesize = 2048;
+    unsigned pagesize = 2048; // Default page size
     int fd;
     SHA_CTX ctx;
     uint8_t* sha;
@@ -119,8 +120,6 @@ int main(int argc, char **argv)
     hdr.ramdisk_addr = 0x11000000;
     hdr.second_addr =  0x10F00000;
     hdr.tags_addr =    0x10000100;
-
-    hdr.page_size = pagesize;
 
     while(argc > 0){
         char *arg = argv[0];
@@ -148,9 +147,20 @@ int main(int argc, char **argv)
             hdr.tags_addr =    base + 0x00000100;
         } else if(!strcmp(arg, "--board")) {
             board = val;
+        } else if(!strcmp(arg, "--pagesize")) {
+            pagesize = strtoul(val, NULL, 0);
         } else {
             return usage();
         }
+    }
+
+    hdr.page_size = pagesize;
+
+    // Allocate a zero filled buffer for the padding
+    padding = calloc(pagesize, 1);
+    if(padding == NULL) {
+        fprintf(stderr,"error: failed to allocate a %u bytes buffer for padding\n", pagesize);
+        return 1;
     }
 
     if(bootimg == 0) {
