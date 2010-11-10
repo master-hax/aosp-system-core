@@ -425,13 +425,13 @@ newfs_msdos_main(int argc, char *argv[])
 	    bpb.bsec -= delta;
 	}
 	if (bpb.spc == 0) {	/* set defaults */
-	    if (bpb.bsec <= 6000)	/* about 3MB -> 512 bytes */
+	    if (bpb.bsec <= 19) /* 256MB -> 512 bytes */
 		bpb.spc = 1;
-	    else if (bpb.bsec <= (1<<17)) /* 64M -> 4k */
+	    else if (bpb.bsec <= (1<<24)) /* 8G -> 4k */
 		bpb.spc = 8;
-	    else if (bpb.bsec <= (1<<19)) /* 256M -> 8k */
+	    else if (bpb.bsec <= (1<<25)) /* 16G -> 16k */
 		bpb.spc = 16;
-	    else if (bpb.bsec <= (1<<21)) /* 1G -> 16k */
+	    else if (bpb.bsec <= (1<<26)) /* 32G -> 16k */
 		bpb.spc = 32;
 	    else
 		bpb.spc = 64;		/* otherwise 32k */
