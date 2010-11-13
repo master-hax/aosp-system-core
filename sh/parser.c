@@ -42,6 +42,9 @@ __RCSID("$NetBSD: parser.c,v 1.57 2004/06/27 10:27:57 dsl Exp $");
 #endif /* not lint */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <pwd.h>
 
 #include "shell.h"
 #include "parser.h"
@@ -117,6 +120,7 @@ STATIC int noexpand(char *);
 STATIC void synexpect(int) __attribute__((__noreturn__));
 STATIC void synerror(const char *) __attribute__((__noreturn__));
 STATIC void setprompt(int);
+STATIC const char *expandps1(void);
 
 
 /*
@@ -1645,10 +1649,47 @@ getprompt(void *unused)
 	case 0:
 		return "";
 	case 1:
-		return ps1val();
+		return expandps1();
 	case 2:
 		return ps2val();
 	default:
 		return "<internal prompt error>";
 	}
+}
+
+#define MAXPROMPTTEXT 256
+
+STATIC const char *
+expandps1(void)
+{
+	/* Support a limited set of common expanded prompts */
+
+	static char prompt[MAXPROMPTTEXT];
+	const char *ps1;
+
+	if (equal(ps1val(), PS1_USER_AT_HOST_PWD)) {
+		/* $USER@$HOSTNAME:$PWD prompt */
+		struct passwd *pw = getpwuid(geteuid());
+		const char *host = bltinlookup("HOSTNAME", 1);
+		if (!host)
+			host = "(unknown)";
+		const char *pwd = bltinlookup("PWD", 1);
+		char promptchar = geteuid() ? '$' : '#';
+		if (pw) {
+			snprintf(prompt, sizeof(prompt), "%s@%s:%s%c ",
+					pw->pw_name, host, pwd, promptchar);
+		} else {
+			snprintf(prompt, sizeof(prompt), "%u@%s:%s%c ",
+					geteuid(), host, pwd, promptchar);
+		}
+		ps1 = prompt;
+	} else if (equal(ps1val(), PS1_LEGACY)) {
+		/* Legacy ash prompt */
+		char promptchar = geteuid() ? '$' : '#';
+		snprintf(prompt, MAXPROMPTTEXT, "%c ", promptchar);
+		ps1 = prompt;
+	} else {
+		ps1 = ps1val();
+	}
+	return ps1;
 }

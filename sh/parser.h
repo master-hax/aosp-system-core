@@ -65,6 +65,10 @@
 #define VSTRIMRIGHTMAX 	0x9		/* ${var%%pattern} */
 #define VSLENGTH	0xa		/* ${#var} */
 
+/* supported PS1 strings */
+#define PS1_USER_AT_HOST_PWD	"\\u@\\h:\\w\\$ "
+#define PS1_LEGACY		"\\$ "
+#define PS1_DEFAULT		PS1_USER_AT_HOST_PWD
 
 /*
  * NEOF is returned by parsecmd when it encounters an end of file.  It
