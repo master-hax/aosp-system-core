@@ -232,6 +232,7 @@ void usage(void)
             "  -i <vendor id>                           specify a custom USB vendor id\n"
             "  -b <base_addr>                           specify a custom kernel base address\n"
             "  -n <page size>                           specify the nand page size. default: 2048\n"
+            "  -m <download size>                       specify the max download size in MB before using multiflash. default: 2048MB\n"
         );
     exit(1);
 }
@@ -550,7 +551,7 @@ int main(int argc, char **argv)
     void *data;
     unsigned sz;
     unsigned page_size = 2048;
-
+    unsigned MaxDownloadSize = 0xFFFFFFFF;
     skip(1);
     if (argc == 0) {
         usage();
@@ -576,6 +577,10 @@ int main(int argc, char **argv)
             require(2);
             page_size = (unsigned)strtoul(argv[1], NULL, 0);
             if (!page_size) die("invalid page size");
+            skip(2);
+        } else if(!strcmp(*argv, "-m")) {
+            require(2);
+            MaxDownloadSize = (unsigned)(strtoul(argv[1], NULL, 0))*1024*1024;
             skip(2);
         } else if(!strcmp(*argv, "-s")) {
             require(2);
@@ -654,7 +659,18 @@ int main(int argc, char **argv)
             if (fname == 0) die("cannot determine image filename for '%s'", pname);
             data = load_file(fname, &sz);
             if (data == 0) die("cannot load '%s'\n", fname);
-            fb_queue_flash(pname, data, sz);
+            if (sz<MaxDownloadSize)
+                fb_queue_flash(pname, data, sz);
+            else {
+              int end;
+              unsigned flash_sz;
+              while(sz)
+              {
+                 flash_sz = ((end = (sz <= MaxDownloadSize)) ? sz : MaxDownloadSize);
+                 fb_queue_multiflash(pname, data, flash_sz, end);
+                 data += flash_sz;
+                 sz -= flash_sz;
+               } }
         } else if(!strcmp(*argv, "flash:raw")) {
             char *pname = argv[1];
             char *kname = argv[2];

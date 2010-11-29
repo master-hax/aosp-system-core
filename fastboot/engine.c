@@ -139,6 +139,19 @@ void fb_queue_flash(const char *ptn, void *data, unsigned sz)
     a->msg = mkmsg("writing '%s'", ptn);
 }
 
+void fb_queue_multiflash(const char *ptn, void *data, unsigned sz, int end)
+{
+    Action *a;
+
+    a = queue_action(OP_DOWNLOAD, "");
+    a->data = data;
+    a->size = sz;
+    a->msg = mkmsg("sending '%s' (%d KB)", ptn, sz / 1024);
+
+    a = queue_action(OP_COMMAND, "multiflash:%1d:%s", end, ptn);
+    a->msg = mkmsg("writing '%s'", ptn);
+}
+
 static int match(char *str, const char **value, unsigned count)
 {
     const char *val;
