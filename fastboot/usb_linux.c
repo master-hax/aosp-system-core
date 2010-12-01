@@ -198,8 +198,13 @@ static int filter_usb_device(int fd, char *ptr, int len, int writable,
     }
 
     for(i = 0; i < cfg->bNumInterfaces; i++) {
-        if(check(ptr, len, USB_DT_INTERFACE, USB_DT_INTERFACE_SIZE))
-            return -1;
+        if(check(ptr, len, USB_DT_INTERFACE, USB_DT_INTERFACE_SIZE)) {
+            len -= ptr[0];
+            ptr += ptr[0];
+            i--;
+            continue;
+        }
+
         ifc = (void*) ptr;
         len -= ifc->bLength;
         ptr += ifc->bLength;
@@ -211,8 +216,13 @@ static int filter_usb_device(int fd, char *ptr, int len, int writable,
         info.ifc_protocol = ifc->bInterfaceProtocol;
 
         for(e = 0; e < ifc->bNumEndpoints; e++) {
-            if(check(ptr, len, USB_DT_ENDPOINT, USB_DT_ENDPOINT_SIZE))
-                return -1;
+            if(check(ptr, len, USB_DT_ENDPOINT, USB_DT_ENDPOINT_SIZE)) {
+            len -= ptr[0];
+            ptr += ptr[0];
+            e--;
+            continue;
+        }
+
             ept = (void*) ptr;
             len -= ept->bLength;
             ptr += ept->bLength;
