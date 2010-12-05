@@ -242,9 +242,16 @@ int main(int argc, char **argv)
         if(write_padding(fd, pagesize, hdr.ramdisk_size)) goto fail;
     }
 
+    if (kernel_data) free(kernel_data);
+    if (ramdisk_data) free(ramdisk_data);
+    if (second_data) free(second_data);
+
     return 0;
 
 fail:
+    if (kernel_data) free(kernel_data);
+    if (ramdisk_data) free(ramdisk_data);
+    if (second_data) free(second_data);
     unlink(bootimg);
     close(fd);
     fprintf(stderr,"error: failed writing '%s': %s\n", bootimg,
