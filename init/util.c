@@ -417,7 +417,7 @@ void get_hardware_name(char *hardware, unsigned int *revision)
 {
     char data[1024];
     int fd, n;
-    char *x, *hw, *rev;
+    char *x;
 
     /* Hardware string was provided on kernel command line */
     if (hardware[0])
@@ -431,28 +431,17 @@ void get_hardware_name(char *hardware, unsigned int *revision)
     if (n < 0) return;
 
     data[n] = 0;
-    hw = strstr(data, "\nHardware");
-    rev = strstr(data, "\nRevision");
 
-    if (hw) {
-        x = strstr(hw, ": ");
-        if (x) {
-            x += 2;
-            n = 0;
-            while (*x && *x != '\n') {
-                if (!isspace(*x))
-                    hardware[n++] = tolower(*x);
-                x++;
-                if (n == 31) break;
-            }
-            hardware[n] = 0;
-        }
+    x = strstr(data, "\nHardware\t: ");
+    if (x) {
+        x += 12;
+        for (n = 0; n < 31 && *x && *x != '\n'; ++n, ++x)
+            hardware[n] = (isspace(*x) ? '_' : tolower(*x));
+        hardware[n] = 0;
     }
 
-    if (rev) {
-        x = strstr(rev, ": ");
-        if (x) {
-            *revision = strtoul(x + 2, 0, 16);
-        }
+    x = strstr(data, "\nRevision\t: ");
+    if (x) {
+        *revision = strtoul(x + 12, 0, 16);
     }
 }
