@@ -162,10 +162,49 @@ int dhcp_do_request(const char *interface,
     }
 
     /* Wait for the daemon to return a result */
-    if (wait_for_property(result_prop_name, NULL, 30) < 0) {
+    if (wait_for_property(result_prop_name, NULL, 45) < 0) {
         snprintf(errmsg, sizeof(errmsg), "%s", "Timed out waiting for DHCP to finish");
         return -1;
     }
+
+    if (!property_get(result_prop_name, prop_value, NULL)) {
+        /* shouldn't ever happen, given the success of wait_for_property() */
+        snprintf(errmsg, sizeof(errmsg), "%s", "DHCP result property was not set");
+        return -1;
+    }
+    if (strcmp(prop_value, "ok") == 0) {
+        char dns_prop_name[PROPERTY_KEY_MAX];
+        fill_ip_info(interface, ipaddr, gateway, mask, dns1, dns2, server, lease);
+        /* copy the dhcp.XXX.dns properties to net.XXX.dns */
+        snprintf(dns_prop_name, sizeof(dns_prop_name), "net.%s.dns1", interface);
+        property_set(dns_prop_name, *dns1 ? ipaddr_to_string(*dns1) : "");
+        snprintf(dns_prop_name, sizeof(dns_prop_name), "net.%s.dns2", interface);
+        property_set(dns_prop_name, *dns2 ? ipaddr_to_string(*dns2) : "");
+        return 0;
+    } else {
+        snprintf(errmsg, sizeof(errmsg), "DHCP result was %s", prop_value);
+        return -1;
+    }
+}
+
+/*
+ * Read back DHCP properties.
+ */
+int dhcp_do_populate(const char *interface,
+                     in_addr_t *ipaddr,
+                     in_addr_t *gateway,
+                     in_addr_t *mask,
+                     in_addr_t *dns1,
+                     in_addr_t *dns2,
+                     in_addr_t *server,
+                     uint32_t  *lease)
+{
+    char result_prop_name[PROPERTY_KEY_MAX];
+    char prop_value[PROPERTY_VALUE_MAX] = {'\0'};
+
+    snprintf(result_prop_name, sizeof(result_prop_name), "%s.%s.result",
+            DHCP_PROP_NAME_PREFIX,
+            interface);
 
     if (!property_get(result_prop_name, prop_value, NULL)) {
         /* shouldn't ever happen, given the success of wait_for_property() */
