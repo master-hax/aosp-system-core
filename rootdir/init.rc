@@ -20,8 +20,8 @@ loglevel 3
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/core-junit.jar
 
 # Backward compatibility
-    symlink /system/etc /etc
-    symlink /sys/kernel/debug /d
+    symlink system/etc /etc
+    symlink sys/kernel/debug /d
 
 # Right now vendor lives on the same filesystem as system,
 # but someday that may change.
@@ -37,7 +37,7 @@ loglevel 3
     mkdir /acct/uid
 
 # Backwards Compat - XXX: Going away in G*
-    symlink /mnt/sdcard /sdcard
+    symlink mnt/sdcard /sdcard
 
     mkdir /system
     mkdir /data 0771 system system
