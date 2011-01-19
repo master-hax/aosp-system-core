@@ -4,6 +4,7 @@
 */
 
 #include <stdio.h>
+#include <pthread.h>
 
 #ifndef lint
 #ifndef NOID
@@ -226,7 +227,10 @@ static struct state	gmtmem;
 #define gmtptr		(&gmtmem)
 #endif /* State Farm */
 
+static pthread_mutex_t tzload_lock = PTHREAD_MUTEX_INITIALIZER;
+
 #define CACHE_COUNT 4
+/* these are protected by the tzload_lock */
 static char * g_cacheNames[CACHE_COUNT] = {0,0};
 static struct state	g_cacheStates[CACHE_COUNT];
 static int g_lastCache = 0;
@@ -239,7 +243,6 @@ unsigned char g_utcSet = 0;
 #endif /* !defined TZ_STRLEN_MAX */
 
 static char		lcl_TZname[TZ_STRLEN_MAX + 1];
-static int		lcl_is_set;
 static int		gmt_is_set;
 
 char *			tzname[2] = {
@@ -310,6 +313,7 @@ static int toint(unsigned char *s) {
 static int
 tzload(const char *name, struct state * const sp, const int doextend)
 {
+    pthread_mutex_lock(&tzload_lock);
     if (name) {
         int i, err;
         if (0 == strcmp(name, "UTC")) {
@@ -319,12 +323,14 @@ tzload(const char *name, struct state * const sp, const int doextend)
             }
             //printf("tzload: utc\n");
             *sp = g_utc;
+            pthread_mutex_unlock(&tzload_lock);
             return 0;
         }
         for (i=0; i<CACHE_COUNT; i++) {
             if (g_cacheNames[i] && 0 == strcmp(name, g_cacheNames[i])) {
                 *sp = g_cacheStates[i];
                 //printf("tzload: hit: %s\n", name);
+                pthread_mutex_unlock(&tzload_lock);
                 return 0;
             }
         }
@@ -341,12 +347,15 @@ tzload(const char *name, struct state * const sp, const int doextend)
         if (err == 0) {
             g_cacheNames[i] = strdup(name);
             *sp = g_cacheStates[i];
+            pthread_mutex_unlock(&tzload_lock);
             return 0;
         } else {
             g_cacheNames[i] = NULL;
+            pthread_mutex_unlock(&tzload_lock);
             return err;
         }
     }
+    pthread_mutex_unlock(&tzload_lock);
     return tzload_uncached(name, sp, doextend);
 }
 
