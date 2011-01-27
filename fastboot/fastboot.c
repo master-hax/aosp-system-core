@@ -235,6 +235,7 @@ void usage(void)
             "  -i <vendor id>                           specify a custom USB vendor id\n"
             "  -b <base_addr>                           specify a custom kernel base address\n"
             "  -n <page size>                           specify the nand page size. default: 2048\n"
+            "  -m <buffer size>                         specify buffer size(MB) and do multiflash. default: 128\n"
         );
     exit(1);
 }
@@ -550,9 +551,11 @@ int main(int argc, char **argv)
     int wants_wipe = 0;
     int wants_reboot = 0;
     int wants_reboot_bootloader = 0;
+    int wants_multiflash = 0;
     void *data;
     unsigned sz;
     unsigned page_size = 2048;
+    unsigned buffer_size = 0;
 
     skip(1);
     if (argc == 0) {
@@ -602,6 +605,18 @@ int main(int argc, char **argv)
                 die("invalid vendor id '%s'", argv[1]);
             vendor_id = (unsigned short)val;
             skip(2);
+        } else if(!strcmp(*argv, "-m")) {
+            wants_multiflash = 1;
+            if (!strcmp(argv[1], "flash")) {
+                buffer_size = FB_BUFFER_SZ;
+                skip(1);
+            } else {
+                require(2);
+                buffer_size = strtoul(argv[1], NULL, 0);
+                if (!buffer_size) die("invalid buffer size for multiflash");
+                buffer_size *= 1024 * 1024;
+                skip(2);
+            }
         } else if(!strcmp(*argv, "getvar")) {
             require(2);
             fb_queue_display(argv[1], argv[1]);
@@ -657,7 +672,18 @@ int main(int argc, char **argv)
             if (fname == 0) die("cannot determine image filename for '%s'", pname);
             data = load_file(fname, &sz);
             if (data == 0) die("cannot load '%s'\n", fname);
-            fb_queue_flash(pname, data, sz);
+            if(wants_multiflash == 0) {
+                fb_queue_flash(pname, data, sz);
+            } else {
+                int end;
+                unsigned flash_sz;
+                while(sz) {
+                    flash_sz = ((end = (sz <= buffer_size)) ? sz : buffer_size);
+                    fb_queue_multiflash(pname, data, flash_sz, end);
+                    data = (void *)((char *)data + flash_sz);
+                    sz -= flash_sz;
+                }
+            }
         } else if(!strcmp(*argv, "flash:raw")) {
             char *pname = argv[1];
             char *kname = argv[2];

@@ -39,9 +39,11 @@ char *fb_get_error(void);
 
 #define FB_COMMAND_SZ 64
 #define FB_RESPONSE_SZ 64
+#define FB_BUFFER_SZ (128 * 1024 * 1024)
 
 /* engine.c - high level command queue engine */
 void fb_queue_flash(const char *ptn, void *data, unsigned sz);;
+void fb_queue_multiflash(const char *ptn, void *data, unsigned sz, int end);
 void fb_queue_erase(const char *ptn);
 void fb_queue_require(const char *var, int invert, unsigned nvalues, const char **value);
 void fb_queue_display(const char *var, const char *prettyname);
