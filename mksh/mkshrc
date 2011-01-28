@@ -4,7 +4,7 @@
 #-
 # Minimal /system/etc/mkshrc for Android
 
-: ${TERM:=vt100} ${HOME:=/data} ${MKSH:=/system/bin/sh} ${HOSTNAME:=android}
+: ${TERM:=vt100} ${HOME:=/data} ${MKSH:=/system/bin/sh} ${HOSTNAME:=`getprop ro.product.device`}
 : ${SHELL:=$MKSH} ${USER:=$(typeset x=$(id); x=${x#*\(}; print -r -- ${x%%\)*})}
 if (( USER_ID )); then PS1='$'; else PS1='#'; fi
 function precmd {
@@ -12,7 +12,7 @@ function precmd {
 
 	(( e )) && print -n "$e|"
 }
-PS1='$(precmd)$USER@$HOSTNAME:${PWD:-?} '"$PS1 "
+PS1='$(precmd)$USER@$HOSTNAME:${PWD:-?}'"$PS1 "
 export HOME HOSTNAME MKSH PS1 SHELL TERM USER
 alias l='ls'
 alias la='l -a'
