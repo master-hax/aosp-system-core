@@ -99,7 +99,13 @@ signame_to_signum(const char *p)
 	if (strncasecmp(p, "sig", 3) == 0)
 		p += 3;
 
-	for (i = 0; i < NSIG; ++i)
+	/*
+	 * The "EXIT" that has signo 0 is handled separately at the
+	 * statements above. Hence parsing ought to start at index 1
+	 * instead for 0 due to that the vector "sys_signame" has
+	 * NULL value at the index 0.
+	 */
+	for (i = 1; i < NSIG; ++i)
 		if (strcasecmp (p, sys_signame[i]) == 0)
 			return i;
 	return -1;
