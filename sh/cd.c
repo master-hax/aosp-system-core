@@ -328,6 +328,15 @@ pwdcmd(int argc, char **argv)
 
 
 
+void
+initpwd(void)
+{
+	getpwd(1);
+	if (curdir)
+		setvar("PWD", curdir, VEXPORT);
+	else
+		sh_warnx("Cannot determine current working directory");
+}
 
 #define MAXPWD 256
 

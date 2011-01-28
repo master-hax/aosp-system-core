@@ -30,6 +30,7 @@
  *
  */
 
+void	initpwd(void);
 void	getpwd(int);
 int	cdcmd(int, char **);
 int	pwdcmd(int, char **);

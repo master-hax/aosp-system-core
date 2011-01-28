@@ -170,6 +170,7 @@ main(int argc, char **argv)
 	rootpid = getpid();
 	rootshell = 1;
 	init();
+	initpwd();
 	setstackmark(&smark);
 	procargs(argc, argv);
 	if (argv[0] && argv[0][0] == '-') {
