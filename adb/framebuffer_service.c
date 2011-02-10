@@ -26,6 +26,7 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/endian.h>
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -49,6 +50,27 @@ struct fbinfo {
     unsigned int alpha_length;
 } __attribute__((packed));
 
+void htole_buf(char* buf, size_t len, int bytespp){
+    unsigned int i;
+
+    /* 
+     * the ddms library now only accepts 16 bits and 32 bits mode
+     * see the implementation RawImage.getARGB()
+     */
+
+    if ( bytespp == 2 ) {
+      for (i=0; i<len; i+=bytespp){ 
+        uint16_t *p = (uint16_t*)(buf+i);
+        *p = htole16(*p);
+      }
+    } else if (bytespp == 4 ){
+      for (i=0; i<len; i+=bytespp) {
+        uint32_t *p = (uint32_t*)(buf+i);
+        *p = htole32(*p);
+      }
+    }
+}
+
 void framebuffer_service(int fd, void *cookie)
 {
     struct fb_var_screeninfo vinfo;
@@ -66,19 +88,19 @@ void framebuffer_service(int fd, void *cookie)
 
     bytespp = vinfo.bits_per_pixel / 8;
 
-    fbinfo.version = DDMS_RAWIMAGE_VERSION;
-    fbinfo.bpp = vinfo.bits_per_pixel;
-    fbinfo.size = vinfo.xres * vinfo.yres * bytespp;
-    fbinfo.width = vinfo.xres;
-    fbinfo.height = vinfo.yres;
-    fbinfo.red_offset = vinfo.red.offset;
-    fbinfo.red_length = vinfo.red.length;
-    fbinfo.green_offset = vinfo.green.offset;
-    fbinfo.green_length = vinfo.green.length;
-    fbinfo.blue_offset = vinfo.blue.offset;
-    fbinfo.blue_length = vinfo.blue.length;
-    fbinfo.alpha_offset = vinfo.transp.offset;
-    fbinfo.alpha_length = vinfo.transp.length;
+    fbinfo.version = htole32(DDMS_RAWIMAGE_VERSION);
+    fbinfo.bpp = htole32(vinfo.bits_per_pixel);
+    fbinfo.size = htole32(vinfo.xres * vinfo.yres * bytespp);
+    fbinfo.width = htole32(vinfo.xres);
+    fbinfo.height = htole32(vinfo.yres);
+    fbinfo.red_offset = htole32(vinfo.red.offset);
+    fbinfo.red_length = htole32(vinfo.red.length);
+    fbinfo.green_offset = htole32(vinfo.green.offset);
+    fbinfo.green_length = htole32(vinfo.green.length);
+    fbinfo.blue_offset = htole32(vinfo.blue.offset);
+    fbinfo.blue_length = htole32(vinfo.blue.length);
+    fbinfo.alpha_offset = htole32(vinfo.transp.offset);
+    fbinfo.alpha_length = htole32(vinfo.transp.length);
 
     /* HACK: for several of our 3d cores a specific alignment
      * is required so the start of the fb may not be an integer number of lines
@@ -94,10 +116,12 @@ void framebuffer_service(int fd, void *cookie)
     lseek(fb, offset, SEEK_SET);
     for(i = 0; i < fbinfo.size; i += 256) {
       if(readx(fb, &x, 256)) goto done;
+      htole_buf(x, 256, bytespp);
       if(writex(fd, &x, 256)) goto done;
     }
 
     if(readx(fb, &x, fbinfo.size % 256)) goto done;
+    htole_buf(x, fbinfo.size%256, bytespp);
     if(writex(fd, &x, fbinfo.size % 256)) goto done;
 
 done:
