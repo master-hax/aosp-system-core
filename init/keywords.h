@@ -15,6 +15,7 @@ int do_mkdir(int nargs, char **args);
 int do_mount(int nargs, char **args);
 int do_restart(int nargs, char **args);
 int do_setkey(int nargs, char **args);
+int do_setkeycode(int nargs, char **args);
 int do_setprop(int nargs, char **args);
 int do_setrlimit(int nargs, char **args);
 int do_start(int nargs, char **args);
@@ -60,6 +61,7 @@ enum {
     KEYWORD(service,     SECTION, 0, 0)
     KEYWORD(setenv,      OPTION,  2, 0)
     KEYWORD(setkey,      COMMAND, 0, do_setkey)
+    KEYWORD(setkeycode,  COMMAND, 2, do_setkeycode)
     KEYWORD(setprop,     COMMAND, 2, do_setprop)
     KEYWORD(setrlimit,   COMMAND, 3, do_setrlimit)
     KEYWORD(socket,      OPTION,  0, 0)
