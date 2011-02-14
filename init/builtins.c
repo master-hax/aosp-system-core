@@ -85,7 +85,7 @@ static int insmod(const char *filename, char *options)
     return ret;
 }
 
-static int setkey(struct kbentry *kbe)
+static int kbioctl(int cmd, void *data)
 {
     int fd, ret;
 
@@ -93,10 +93,20 @@ static int setkey(struct kbentry *kbe)
     if (fd < 0)
         return -1;
 
-    ret = ioctl(fd, KDSKBENT, kbe);
+    ret = ioctl(fd, cmd, data);
 
     close(fd);
     return ret;
+}
+
+static int setkey(struct kbentry *kbe)
+{
+    return kbioctl(KDSKBENT, kbe);
+}
+
+static int setkeycode(struct kbkeycode *kbk)
+{
+    return kbioctl(KDSETKEYCODE, kbk);
 }
 
 static int __ifupdown(const char *interface, int up)
@@ -374,6 +384,25 @@ int do_setkey(int nargs, char **args)
     kbe.kb_index = strtoul(args[2], 0, 0);
     kbe.kb_value = strtoul(args[3], 0, 0);
     return setkey(&kbe);
+}
+
+int do_setkeycode(int nargs, char **args)
+{
+    struct kbkeycode kbk;
+    unsigned int sc, kc;
+    sc = strtoul(args[1], 0, 0);
+    if (sc > 127) {
+        sc -= 0xe000;
+        sc += 128;
+    }
+    kc = strtoul(args[2], 0, 0);
+    if (sc > 255 || kc > 127) {
+        ERROR("SCANCODE or KEYCODE out of range");
+        return -1;
+    }
+    kbk.scancode = sc;
+    kbk.keycode = kc;
+    return setkeycode(&kbk);
 }
 
 int do_setprop(int nargs, char **args)
