@@ -7,6 +7,11 @@ copy_from := \
 	etc/dbus.conf \
 	etc/hosts
 
+# create /system/overlay (for inotify/FileObserver to watch); the hidden
+# .dummy file is necessary to create the directory but will not be
+# copied to target
+copy_from += overlay/.dummy
+
 ifeq ($(TARGET_PRODUCT),full)
 copy_from += etc/vold.fstab
 endif
