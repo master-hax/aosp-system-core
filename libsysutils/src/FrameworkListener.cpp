@@ -30,7 +30,7 @@ FrameworkListener::FrameworkListener(const char *socketName) :
 }
 
 bool FrameworkListener::onDataAvailable(SocketClient *c) {
-    char buffer[255];
+    char buffer[1024];
     int len;
 
     if ((len = read(c->getSocket(), buffer, sizeof(buffer) -1)) < 0) {
@@ -59,7 +59,7 @@ void FrameworkListener::dispatchCommand(SocketClient *cli, char *data) {
     FrameworkCommandCollection::iterator i;
     int argc = 0;
     char *argv[FrameworkListener::CMD_ARGS_MAX];
-    char tmp[255];
+    char tmp[1024];
     char *p = data;
     char *q = tmp;
     bool esc = false;
@@ -133,7 +133,6 @@ void FrameworkListener::dispatchCommand(SocketClient *cli, char *data) {
             goto out;
         }
     }
-
     cli->sendMsg(500, "Command not recognized", false);
 out:
     int j;
