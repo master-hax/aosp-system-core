@@ -38,7 +38,11 @@ extern "C" {
 /* Known (rather, used by us) partition types */
 #define PC_PART_TYPE_LINUX           0x83
 #define PC_PART_TYPE_EXTENDED        0x05
-#define PC_PART_TYPE_FAT32           0x0c
+#define PC_PART_TYPE_FAT12_32MB      0x01    /* 0MB  - 32MB */
+#define PC_PART_TYPE_FAT12_64MB      0x04    /* 32MB - 64MB */
+#define PC_PART_TYPE_FAT16           0x06    /* 64MB - 2GB  */
+#define PC_PART_TYPE_FAT32_8GB       0x0b    /* 2GB  - 8GB  */
+#define PC_PART_TYPE_FAT32           0x0c    /* 8GB  -      */
 
 #define PC_NUM_BOOT_RECORD_PARTS     4
 
