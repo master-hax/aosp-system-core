@@ -641,11 +641,13 @@ static int bootchart_init_action(int nargs, char **args)
     bootchart_count = bootchart_init();
     if (bootchart_count < 0) {
         ERROR("bootcharting init failure\n");
+	return -1;
     } else if (bootchart_count > 0) {
         NOTICE("bootcharting started (period=%d ms)\n", bootchart_count*BOOTCHART_POLLING_MS);
     } else {
         NOTICE("bootcharting ignored\n");
     }
+return 0;
 }
 #endif
 
