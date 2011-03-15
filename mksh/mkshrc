@@ -1,4 +1,4 @@
-# Copyright (c) 2010
+# Copyright (c) 2010, 2011
 #	Thorsten Glaser <t.glaser@tarent.de>
 # This file is provided under the same terms as mksh.
 #-
@@ -13,11 +13,28 @@ function precmd {
 	(( e )) && print -n "$e|"
 }
 PS1='$(precmd)$USER@$HOSTNAME:${PWD:-?} '"$PS1 "
-export HOME HOSTNAME MKSH PS1 SHELL TERM USER
+export HOME HOSTNAME MKSH SHELL TERM USER
 alias l='ls'
 alias la='l -a'
 alias ll='l -l'
 alias lo='l -a -l'
+
+function more {
+	typeset dummy line llen curlin=0
+
+	cat "$@" | while IFS= read -r line; do
+		llen=${%line}
+		(( llen == -1 )) && llen=${#line}
+		(( llen = llen ? (llen + COLUMNS - 1) / COLUMNS : 1 ))
+		if (( (curlin += llen) >= LINES )); then
+			print -n -- '\033[7m--more--\033[0m'
+			read -u1 dummy
+			[[ $dummy = [Qq]* ]] && return 0
+			curlin=$llen
+		fi
+		print -r -- "$line"
+	done
+}
 
 for p in ~/.bin; do
 	[[ -d $p/. ]] || continue
