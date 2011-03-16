@@ -15,4 +15,6 @@ online at https://www.mirbsd.org/man1/mksh (HTML).
 
 The following changes are done to code in this subdirectory
 at the moment:
+• main.c: add lsmod = cat /proc/modules alias
 • check.t: sync list of built-in aliases
+• check.t sh.h: append " Android" to the version number

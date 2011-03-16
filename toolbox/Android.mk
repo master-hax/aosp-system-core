@@ -1,16 +1,13 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-TOOLS := \
+TOOLS_ALWAYS := \
 	ls \
 	mount \
-	cat \
 	ps \
-	kill \
 	ln \
 	insmod \
 	rmmod \
-	lsmod \
 	ifconfig \
 	setconsole \
 	rm \
@@ -36,7 +33,6 @@ TOOLS := \
 	setprop \
 	watchprops \
 	log \
-	sleep \
 	renice \
 	printenv \
 	smd \
@@ -55,6 +51,21 @@ TOOLS := \
 	nandread \
 	ionice \
 	lsof
+
+# - printenv cannot be mksh "set" because "printenv foo bar" differs
+# - mv cannot be mksh "rename" since it doesn't check whether the
+#   destination is a directory, and does only one file
+# - cat can be mksh "cat" despite not having any options, because
+#   Android has never really had a "cat" command, so nothing uses it
+# - lsmod just calls cat, we've just patched it as alias into mksh
+TOOLS_notash :=
+TOOLS_notmksh := \
+	cat \
+	kill \
+	lsmod \
+	sleep \
+
+TOOLS := $(TOOLS_ALWAYS) $(TOOLS_not$(TARGET_SHELL))
 
 LOCAL_SRC_FILES:= \
 	toolbox.c \
@@ -79,7 +90,7 @@ $(TOOLS_H):
 
 # Make #!/system/bin/toolbox launchers for each tool.
 #
-SYMLINKS := $(addprefix $(TARGET_OUT)/bin/,$(TOOLS))
+SYMLINKS := $(addprefix $(TARGET_OUT)/bin/,$(TOOLS_ALWAYS))
 $(SYMLINKS): TOOLBOX_BINARY := $(LOCAL_MODULE)
 $(SYMLINKS): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
 	@echo "Symlink: $@ -> $(TOOLBOX_BINARY)"
@@ -87,7 +98,18 @@ $(SYMLINKS): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
 	@rm -rf $@
 	$(hide) ln -sf $(TOOLBOX_BINARY) $@
 
-ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINKS)
+SYMLINKTARGET_ash := $(LOCAL_MODULE)
+SYMLINKTARGET_mksh := mksh
+
+SYMLINKS_MKSH := $(addprefix $(TARGET_OUT)/bin/,$(TOOLS_notmksh))
+$(SYMLINKS_MKSH): TOOLBOX_BINARY := $(SYMLINKTARGET_$(TARGET_SHELL))
+$(SYMLINKS_MKSH): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
+	@echo "Symlink: $@ -> $(TOOLBOX_BINARY)"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf $(TOOLBOX_BINARY) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINKS) $(SYMLINKS_MKSH)
 
 # We need this so that the installed files could be picked up based on the
 # local module name
