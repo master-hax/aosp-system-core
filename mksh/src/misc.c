@@ -2,7 +2,7 @@
 /*	$OpenBSD: path.c,v 1.12 2005/03/30 17:16:37 deraadt Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -29,20 +29,27 @@
 #include <grp.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.141 2010/07/17 22:09:36 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/misc.c,v 1.154 2011/03/13 01:20:21 tg Exp $");
 
-unsigned char chtypes[UCHAR_MAX + 1];	/* type bits for unsigned char */
-
-#if !HAVE_SETRESUGID
-uid_t kshuid;
-gid_t kshgid, kshegid;
-#endif
+/* type bits for unsigned char */
+unsigned char chtypes[UCHAR_MAX + 1];
 
 static int do_gmatch(const unsigned char *, const unsigned char *,
     const unsigned char *, const unsigned char *);
 static const unsigned char *cclass(const unsigned char *, int);
 #ifdef TIOCSCTTY
 static void chvt(const char *);
+#endif
+
+#ifdef SETUID_CAN_FAIL_WITH_EAGAIN
+/* we don't need to check for other codes, EPERM won't happen */
+#define DO_SETUID(func, argvec) do {					\
+	if ((func argvec) && errno == EAGAIN)				\
+		errorf("%s failed with EAGAIN, probably due to a"	\
+		    " too low process limit; aborting", #func);		\
+} while (/* CONSTCOND */ 0)
+#else
+#define DO_SETUID(func, argvec) func argvec
 #endif
 
 /*
@@ -56,7 +63,8 @@ setctypes(const char *s, int t)
 	if (t & C_IFS) {
 		for (i = 0; i < UCHAR_MAX + 1; i++)
 			chtypes[i] &= ~C_IFS;
-		chtypes[0] |= C_IFS; /* include \0 in C_IFS */
+		/* include \0 in C_IFS */
+		chtypes[0] |= C_IFS;
 	}
 	while (*s != 0)
 		chtypes[(unsigned char)*s++] |= t;
@@ -73,7 +81,8 @@ initctypes(void)
 		chtypes[c] |= C_ALPHA;
 	chtypes['_'] |= C_ALPHA;
 	setctypes("0123456789", C_DIGIT);
-	setctypes(" \t\n|&;<>()", C_LEX1); /* \0 added automatically */
+	/* \0 added automatically */
+	setctypes(" \t\n|&;<>()", C_LEX1);
 	setctypes("*@#!$-?", C_VAR1);
 	setctypes(" \t\n", C_IFSWS);
 	setctypes("=-+?", C_SUBOP1);
@@ -82,12 +91,15 @@ initctypes(void)
 
 /* called from XcheckN() to grow buffer */
 char *
-Xcheck_grow_(XString *xsp, const char *xp, unsigned int more)
+Xcheck_grow_(XString *xsp, const char *xp, size_t more)
 {
 	const char *old_beg = xsp->beg;
 
-	xsp->len += more > xsp->len ? more : xsp->len;
-	xsp->beg = aresize(xsp->beg, xsp->len + 8, xsp->areap);
+	if (more < xsp->len)
+		more = xsp->len;
+	/* (xsp->len + X_EXTRA) never overflows */
+	checkoktoadd(more, xsp->len + X_EXTRA);
+	xsp->beg = aresize(xsp->beg, (xsp->len += more) + X_EXTRA, xsp->areap);
 	xsp->end = xsp->beg + xsp->len;
 	return (xsp->beg + (xp - old_beg));
 }
@@ -167,11 +179,12 @@ printoptions(bool verbose)
 		print_columns(shl_stdout, n, options_fmt_entry, &oi,
 		    octs + 4, oi.opt_width + 4, true);
 	} else {
-		/* short version á la AT&T ksh93 */
-		shf_puts("set", shl_stdout);
+		/* short version like AT&T ksh93 */
+		shf_puts(T_set, shl_stdout);
 		while (i < (int)NELEM(options)) {
 			if (Flag(i) && options[i].name)
-				shprintf(" -o %s", options[i].name);
+				shprintf("%s %s %s", null, "-o",
+				    options[i].name);
 			++i;
 		}
 		shf_putc('\n', shl_stdout);
@@ -199,7 +212,8 @@ change_flag(enum sh_flag f, int what, unsigned int newval)
 	unsigned char oldval;
 
 	oldval = Flag(f);
-	Flag(f) = newval ? 1 : 0;	/* needed for tristates */
+	/* needed for tristates */
+	Flag(f) = newval ? 1 : 0;
 #ifndef MKSH_UNEMPLOYED
 	if (f == FMONITOR) {
 		if (what != OF_CMDLINE && newval != oldval)
@@ -218,18 +232,21 @@ change_flag(enum sh_flag f, int what, unsigned int newval)
 		Flag(f) = (unsigned char)newval;
 	} else if (f == FPRIVILEGED && oldval && !newval) {
 		/* Turning off -p? */
-#if HAVE_SETRESUGID
-		gid_t kshegid = getgid();
 
-		setresgid(kshegid, kshegid, kshegid);
+		/*XXX this can probably be optimised */
+		kshegid = kshgid = getgid();
+#if HAVE_SETRESUGID
+		DO_SETUID(setresgid, (kshegid, kshegid, kshegid));
 #if HAVE_SETGROUPS
+		/* setgroups doesn't EAGAIN on Linux */
 		setgroups(1, &kshegid);
 #endif
-		setresuid(ksheuid, ksheuid, ksheuid);
+		DO_SETUID(setresuid, (ksheuid, ksheuid, ksheuid));
 #else
+		/* seteuid, setegid, setgid don't EAGAIN on Linux */
 		seteuid(ksheuid = kshuid = getuid());
-		setuid(ksheuid);
-		setegid(kshegid = kshgid = getgid());
+		DO_SETUID(setuid, (ksheuid));
+		setegid(kshegid);
 		setgid(kshegid);
 #endif
 	} else if ((f == FPOSIX || f == FSH) && newval) {
@@ -243,12 +260,14 @@ change_flag(enum sh_flag f, int what, unsigned int newval)
 	}
 }
 
-/* Parse command line & set command arguments. Returns the index of
+/*
+ * Parse command line and set command arguments. Returns the index of
  * non-option arguments, -1 if there is an error.
  */
 int
 parse_args(const char **argv,
-    int what,			/* OF_CMDLINE or OF_SET */
+    /* OF_CMDLINE or OF_SET */
+    int what,
     bool *setargsp)
 {
 	static char cmd_opts[NELEM(options) + 5]; /* o:T:\0 */
@@ -291,7 +310,8 @@ parse_args(const char **argv,
 
 	if (what == OF_CMDLINE) {
 		const char *p = argv[0], *q;
-		/* Set FLOGIN before parsing options so user can clear
+		/*
+		 * Set FLOGIN before parsing options so user can clear
 		 * flag using +l.
 		 */
 		if (*p != '-')
@@ -319,7 +339,8 @@ parse_args(const char **argv,
 			if (what == OF_FIRSTTIME)
 				break;
 			if (go.optarg == NULL) {
-				/* lone -o: print options
+				/*
+				 * lone -o: print options
 				 *
 				 * Note that on the command line, -o requires
 				 * an option (ie, can't get here if what is
@@ -329,14 +350,17 @@ parse_args(const char **argv,
 				break;
 			}
 			i = option(go.optarg);
+#ifndef MKSH_NO_DEPRECATED_WARNING
 			if ((enum sh_flag)i == FARC4RANDOM) {
 				warningf(true, "Do not use set ±o arc4random,"
 				    " it will be removed in the next version"
 				    " of mksh!");
 				return (0);
 			}
+#endif
 			if ((i != (size_t)-1) && set == Flag(i))
-				/* Don't check the context if the flag
+				/*
+				 * Don't check the context if the flag
 				 * isn't changing - makes "set -o interactive"
 				 * work if you're already interactive. Needed
 				 * if the output of "set +o" is to be used.
@@ -345,7 +369,7 @@ parse_args(const char **argv,
 			else if ((i != (size_t)-1) && (options[i].flags & what))
 				change_flag((enum sh_flag)i, what, set);
 			else {
-				bi_errorf("%s: bad option", go.optarg);
+				bi_errorf("%s: %s", go.optarg, "bad option");
 				return (-1);
 			}
 			break;
@@ -399,7 +423,7 @@ parse_args(const char **argv,
 		    argv[go.optind]);
 
 	if (arrayset && (!*array || *skip_varname(array, false))) {
-		bi_errorf("%s: is not an identifier", array);
+		bi_errorf("%s: %s", array, "is not an identifier");
 		return (-1);
 	}
 	if (sortargs) {
@@ -409,7 +433,7 @@ parse_args(const char **argv,
 		    xstrcmp);
 	}
 	if (arrayset)
-		go.optind += set_array(array, arrayset > 0 ? true : false,
+		go.optind += set_array(array, tobool(arrayset > 0),
 		    argv + go.optind);
 
 	return (go.optind);
@@ -456,7 +480,7 @@ bi_getn(const char *as, int *ai)
 	int rv;
 
 	if (!(rv = getn(as, ai)))
-		bi_errorf("%s: bad number", as);
+		bi_errorf("%s: %s", as, "bad number");
 	return (rv);
 }
 
@@ -480,7 +504,8 @@ gmatchx(const char *s, const char *p, bool isfile)
 
 	se = s + strlen(s);
 	pe = p + strlen(p);
-	/* isfile is false iff no syntax check has been done on
+	/*
+	 * isfile is false iff no syntax check has been done on
 	 * the pattern. If check fails, just to a strcmp().
 	 */
 	if (!isfile && !has_globbing(p, pe)) {
@@ -494,7 +519,8 @@ gmatchx(const char *s, const char *p, bool isfile)
 	    (const unsigned char *) p, (const unsigned char *) pe));
 }
 
-/* Returns if p is a syntacticly correct globbing pattern, false
+/**
+ * Returns if p is a syntacticly correct globbing pattern, false
  * if it contains no pattern characters or if there is a syntax error.
  * Syntax errors are:
  *	- [ with no closing ]
@@ -502,14 +528,14 @@ gmatchx(const char *s, const char *p, bool isfile)
  *	- [...] and *(...) not nested (eg, [a$(b|]c), *(a[b|c]d))
  */
 /*XXX
-- if no magic,
-	if dest given, copy to dst
-	return ?
-- if magic && (no globbing || syntax error)
-	debunk to dst
-	return ?
-- return ?
-*/
+ * - if no magic,
+ *	if dest given, copy to dst
+ *	return ?
+ * - if magic && (no globbing || syntax error)
+ *	debunk to dst
+ *	return ?
+ * - return ?
+ */
 int
 has_globbing(const char *xp, const char *xpe)
 {
@@ -517,42 +543,46 @@ has_globbing(const char *xp, const char *xpe)
 	const unsigned char *pe = (const unsigned char *) xpe;
 	int c;
 	int nest = 0, bnest = 0;
-	int saw_glob = 0;
-	int in_bracket = 0; /* inside [...] */
+	bool saw_glob = false;
+	/* inside [...] */
+	bool in_bracket = false;
 
 	for (; p < pe; p++) {
 		if (!ISMAGIC(*p))
 			continue;
 		if ((c = *++p) == '*' || c == '?')
-			saw_glob = 1;
+			saw_glob = true;
 		else if (c == '[') {
 			if (!in_bracket) {
-				saw_glob = 1;
-				in_bracket = 1;
+				saw_glob = true;
+				in_bracket = true;
 				if (ISMAGIC(p[1]) && p[2] == NOT)
 					p += 2;
 				if (ISMAGIC(p[1]) && p[2] == ']')
 					p += 2;
 			}
-			/* XXX Do we need to check ranges here? POSIX Q */
+			/*XXX Do we need to check ranges here? POSIX Q */
 		} else if (c == ']') {
 			if (in_bracket) {
-				if (bnest)		/* [a*(b]) */
+				if (bnest)
+					/* [a*(b]) */
 					return (0);
-				in_bracket = 0;
+				in_bracket = false;
 			}
 		} else if ((c & 0x80) && vstrchr("*+?@! ", c & 0x7f)) {
-			saw_glob = 1;
+			saw_glob = true;
 			if (in_bracket)
 				bnest++;
 			else
 				nest++;
 		} else if (c == '|') {
-			if (in_bracket && !bnest)	/* *(a[foo|bar]) */
+			if (in_bracket && !bnest)
+				/* *(a[foo|bar]) */
 				return (0);
 		} else if (c == /*(*/ ')') {
 			if (in_bracket) {
-				if (!bnest--)		/* *(a[b)c] */
+				if (!bnest--)
+					/* *(a[b)c] */
 					return (0);
 			} else if (nest)
 				nest--;
@@ -614,8 +644,11 @@ do_gmatch(const unsigned char *s, const unsigned char *se,
 		 * [*+?@!](pattern|pattern|..)
 		 * This is also needed for ${..%..}, etc.
 		 */
-		case 0x80|'+': /* matches one or more times */
-		case 0x80|'*': /* matches zero or more times */
+
+		/* matches one or more times */
+		case 0x80|'+':
+		/* matches zero or more times */
+		case 0x80|'*':
 			if (!(prest = pat_scan(p, pe, 0)))
 				return (0);
 			s--;
@@ -637,9 +670,12 @@ do_gmatch(const unsigned char *s, const unsigned char *se,
 			}
 			return (0);
 
-		case 0x80|'?': /* matches zero or once */
-		case 0x80|'@': /* matches one of the patterns */
-		case 0x80|' ': /* simile for @ */
+		/* matches zero or once */
+		case 0x80|'?':
+		/* matches one of the patterns */
+		case 0x80|'@':
+		/* simile for @ */
+		case 0x80|' ':
 			if (!(prest = pat_scan(p, pe, 0)))
 				return (0);
 			s--;
@@ -660,7 +696,8 @@ do_gmatch(const unsigned char *s, const unsigned char *se,
 			}
 			return (0);
 
-		case 0x80|'!': /* matches none of the patterns */
+		/* matches none of the patterns */
+		case 0x80|'!':
 			if (!(prest = pat_scan(p, pe, 0)))
 				return (0);
 			s--;
@@ -705,9 +742,11 @@ cclass(const unsigned char *p, int sub)
 		if (ISMAGIC(c)) {
 			c = *p++;
 			if ((c & 0x80) && !ISMAGIC(c)) {
-				c &= 0x7f;/* extended pattern matching: *+?@! */
+				/* extended pattern matching: *+?@! */
+				c &= 0x7F;
 				/* XXX the ( char isn't handled as part of [] */
-				if (c == ' ') /* simile for @: plain (..) */
+				if (c == ' ')
+					/* simile for @: plain (..) */
 					c = '(' /*)*/;
 			}
 		}
@@ -716,7 +755,8 @@ cclass(const unsigned char *p, int sub)
 			return (sub == '[' ? orig_p : NULL);
 		if (ISMAGIC(p[0]) && p[1] == '-' &&
 		    (!ISMAGIC(p[2]) || p[3] != ']')) {
-			p += 2; /* MAGIC- */
+			/* MAGIC- */
+			p += 2;
 			d = *p++;
 			if (ISMAGIC(d)) {
 				d = *p++;
@@ -772,7 +812,8 @@ ksh_getopt_reset(Getopt *go, int flags)
 }
 
 
-/* getopt() used for shell built-in commands, the getopts command, and
+/**
+ * getopt() used for shell built-in commands, the getopts command, and
  * command line options.
  * A leading ':' in options means don't print errors, instead return '?'
  * or ':' and set go->optarg to the offending option character.
@@ -813,7 +854,8 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 			return (-1);
 		}
 		if (arg == NULL ||
-		    ((flag != '-' ) && /* neither a - nor a + (if + allowed) */
+		    ((flag != '-' ) &&
+		    /* neither a - nor a + (if + allowed) */
 		    (!(go->flags & GF_PLUSOPT) || flag != '+')) ||
 		    (c = arg[1]) == '\0') {
 			go->p = 0;
@@ -830,15 +872,17 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 			go->buf[0] = c;
 			go->optarg = go->buf;
 		} else {
-			warningf(true, "%s%s-%c: unknown option",
+			warningf(true, "%s%s-%c: %s",
 			    (go->flags & GF_NONAME) ? "" : argv[0],
-			    (go->flags & GF_NONAME) ? "" : ": ", c);
+			    (go->flags & GF_NONAME) ? "" : ": ", c,
+			    "unknown option");
 			if (go->flags & GF_ERROR)
 				bi_errorfz();
 		}
 		return ('?');
 	}
-	/* : means argument must be present, may be part of option argument
+	/**
+	 * : means argument must be present, may be part of option argument
 	 *   or the next argument
 	 * ; same as : but argument may be missing
 	 * , means argument is part of option argument, and may be null.
@@ -856,9 +900,10 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 				go->optarg = go->buf;
 				return (':');
 			}
-			warningf(true, "%s%s-'%c' requires argument",
+			warningf(true, "%s%s-%c: %s",
 			    (go->flags & GF_NONAME) ? "" : argv[0],
-			    (go->flags & GF_NONAME) ? "" : ": ", c);
+			    (go->flags & GF_NONAME) ? "" : ": ", c,
+			    "requires an argument");
 			if (go->flags & GF_ERROR)
 				bi_errorfz();
 			return ('?');
@@ -869,7 +914,8 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 		go->optarg = argv[go->optind - 1] + go->p;
 		go->p = 0;
 	} else if (*o == '#') {
-		/* argument is optional and may be attached or unattached
+		/*
+		 * argument is optional and may be attached or unattached
 		 * but must start with a digit. optarg is set to 0 if the
 		 * argument is missing.
 		 */
@@ -890,7 +936,8 @@ ksh_getopt(const char **argv, Getopt *go, const char *optionsp)
 	return (c);
 }
 
-/* print variable/alias value using necessary quotes
+/*
+ * print variable/alias value using necessary quotes
  * (POSIX says they should be suitable for re-entry...)
  * No trailing newline is printed.
  */
@@ -898,25 +945,33 @@ void
 print_value_quoted(const char *s)
 {
 	const char *p;
-	int inquote = 0;
+	bool inquote = false;
 
-	/* Test if any quotes are needed */
+	/* first, check whether any quotes are needed */
 	for (p = s; *p; p++)
 		if (ctype(*p, C_QUOTE))
 			break;
 	if (!*p) {
+		/* nope, use the shortcut */
 		shf_puts(s, shl_stdout);
 		return;
 	}
+
+	/* quote via state machine */
 	for (p = s; *p; p++) {
 		if (*p == '\'') {
-			if (inquote)
+			/*
+			 * multiple '''s or any ' at beginning of string
+			 * look nicer this way than when simply substituting
+			 */
+			if (inquote) {
 				shf_putc('\'', shl_stdout);
+				inquote = false;
+			}
 			shf_putc('\\', shl_stdout);
-			inquote = 0;
 		} else if (!inquote) {
 			shf_putc('\'', shl_stdout);
-			inquote = 1;
+			inquote = true;
 		}
 		shf_putc(*p, shl_stdout);
 	}
@@ -998,8 +1053,9 @@ strip_nuls(char *buf, int nbytes)
 {
 	char *dst;
 
-	/* nbytes check because some systems (older FreeBSDs) have a buggy
-	 * memchr()
+	/*
+	 * nbytes check because some systems (older FreeBSDs) have a
+	 * buggy memchr()
 	 */
 	if (nbytes && (dst = memchr(buf, '\0', nbytes))) {
 		char *end = buf + nbytes;
@@ -1019,19 +1075,20 @@ strip_nuls(char *buf, int nbytes)
 	}
 }
 
-/* Like read(2), but if read fails due to non-blocking flag, resets flag
- * and restarts read.
+/*
+ * Like read(2), but if read fails due to non-blocking flag,
+ * resets flag and restarts read.
  */
-int
-blocking_read(int fd, char *buf, int nbytes)
+ssize_t
+blocking_read(int fd, char *buf, size_t nbytes)
 {
-	int ret;
-	int tried_reset = 0;
+	ssize_t ret;
+	bool tried_reset = false;
 
 	while ((ret = read(fd, buf, nbytes)) < 0) {
 		if (!tried_reset && errno == EAGAIN) {
 			if (reset_nonblock(fd) > 0) {
-				tried_reset = 1;
+				tried_reset = true;
 				continue;
 			}
 			errno = EAGAIN;
@@ -1041,7 +1098,8 @@ blocking_read(int fd, char *buf, int nbytes)
 	return (ret);
 }
 
-/* Reset the non-blocking flag on the specified file descriptor.
+/*
+ * Reset the non-blocking flag on the specified file descriptor.
  * Returns -1 if there was an error, 0 if non-blocking wasn't set,
  * 1 if it was.
  */
@@ -1072,7 +1130,7 @@ ksh_get_wd(size_t *dlen)
 	if ((b = get_current_dir_name())) {
 		len = strlen(b) + 1;
 		strndupx(ret, b, len - 1, ATEMP);
-		free(b);
+		free_gnu_gcdn(b);
 	} else
 		ret = NULL;
 #else
@@ -1087,7 +1145,7 @@ ksh_get_wd(size_t *dlen)
 	return (ret);
 }
 
-/*
+/**
  *	Makes a filename into result using the following algorithm.
  *	- make result NULL
  *	- if file starts with '/', append file to result & set cdpathp to NULL
@@ -1104,7 +1162,8 @@ ksh_get_wd(size_t *dlen)
  */
 int
 make_path(const char *cwd, const char *file,
-    char **cdpathp,		/* & of : separated list */
+    /* & of : separated list */
+    char **cdpathp,
     XString *xsp,
     int *phys_pathp)
 {
@@ -1189,7 +1248,8 @@ simplify_path(char *pathl)
 	if ((isrooted = pathl[0] == '/'))
 		very_start++;
 
-	/* Before			After
+	/*-
+	 * Before			After
 	 * /foo/			/foo
 	 * /foo/../../bar		/bar
 	 * /foo/./blah/..		/foo
@@ -1272,9 +1332,6 @@ chvt(const char *fn)
 	struct stat sb;
 	int fd;
 
-	/* for entropy */
-	kshstate_f.h = evilhash(fn);
-
 	if (*fn == '-') {
 		memcpy(dv, "-/dev/null", sizeof("-/dev/null"));
 		fn = dv + 1;
@@ -1285,48 +1342,58 @@ chvt(const char *fn)
 			if (stat(dv, &sb)) {
 				strlcpy(dv + 8, fn, sizeof(dv) - 8);
 				if (stat(dv, &sb))
-					errorf("chvt: can't find tty %s", fn);
+					errorf("%s: %s %s", "chvt",
+					    "can't find tty", fn);
 			}
 			fn = dv;
 		}
 		if (!(sb.st_mode & S_IFCHR))
-			errorf("chvt: not a char device: %s", fn);
+			errorf("%s %s %s", "chvt: not a char", "device", fn);
 		if ((sb.st_uid != 0) && chown(fn, 0, 0))
-			warningf(false, "chvt: cannot chown root %s", fn);
+			warningf(false, "%s: %s %s", "chvt", "can't chown root", fn);
 		if (((sb.st_mode & 07777) != 0600) && chmod(fn, (mode_t)0600))
-			warningf(false, "chvt: cannot chmod 0600 %s", fn);
+			warningf(false, "%s: %s %s", "chvt", "can't chmod 0600", fn);
 #if HAVE_REVOKE
 		if (revoke(fn))
 #endif
-			warningf(false, "chvt: cannot revoke %s, new shell is"
-			    " potentially insecure", fn);
+			warningf(false, "%s: %s %s", "chvt",
+			    "new shell is potentially insecure, can't revoke",
+			    fn);
 	}
 	if ((fd = open(fn, O_RDWR)) == -1) {
 		sleep(1);
 		if ((fd = open(fn, O_RDWR)) == -1)
-			errorf("chvt: cannot open %s", fn);
+			errorf("%s: %s %s", "chvt", "can't open", fn);
 	}
 	switch (fork()) {
 	case -1:
-		errorf("chvt: %s failed", "fork");
+		errorf("%s: %s %s", "chvt", "fork", "failed");
 	case 0:
 		break;
 	default:
 		exit(0);
 	}
 	if (setsid() == -1)
-		errorf("chvt: %s failed", "setsid");
+		errorf("%s: %s %s", "chvt", "setsid", "failed");
 	if (fn != dv + 1) {
 		if (ioctl(fd, TIOCSCTTY, NULL) == -1)
-			errorf("chvt: %s failed", "TIOCSCTTY");
+			errorf("%s: %s %s", "chvt", "TIOCSCTTY", "failed");
 		if (tcflush(fd, TCIOFLUSH))
-			errorf("chvt: %s failed", "TCIOFLUSH");
+			errorf("%s: %s %s", "chvt", "TCIOFLUSH", "failed");
 	}
 	ksh_dup2(fd, 0, false);
 	ksh_dup2(fd, 1, false);
 	ksh_dup2(fd, 2, false);
 	if (fd > 2)
 		close(fd);
+	{
+		register uint32_t h;
+
+		oaat1_init_impl(h);
+		oaat1_addmem_impl(h, &rndsetupstate, sizeof(rndsetupstate));
+		oaat1_fini_impl(h);
+		rndset((long)h);
+	}
 	chvt_reinit();
 }
 #endif
@@ -1527,15 +1594,15 @@ unbksl(bool cstyle, int (*fg)(void), void (*fp)(int))
 		break;
 	case 'U':
 		i = 8;
-		if (0)
+		if (/* CONSTCOND */ 0)
 		/* FALLTHROUGH */
 	case 'u':
 		i = 4;
-		if (0)
+		if (/* CONSTCOND */ 0)
 		/* FALLTHROUGH */
 	case 'x':
 		i = cstyle ? -1 : 2;
-		/*
+		/**
 		 * x:	look for a hexadecimal number with up to
 		 *	two (C style: arbitrary) digits; convert
 		 *	to raw octet (C style: Unicode if >0xFF)

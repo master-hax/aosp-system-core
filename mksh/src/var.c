@@ -1,7 +1,7 @@
 /*	$OpenBSD: var.c,v 1.34 2007/10/15 02:16:35 deraadt Exp $	*/
 
 /*-
- * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
  *	Thorsten Glaser <tg@mirbsd.org>
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -26,7 +26,7 @@
 #include <sys/sysctl.h>
 #endif
 
-__RCSID("$MirOS: src/bin/mksh/var.c,v 1.110 2010/07/25 11:35:43 tg Exp $");
+__RCSID("$MirOS: src/bin/mksh/var.c,v 1.118 2011/03/13 01:20:25 tg Exp $");
 
 /*
  * Variables
@@ -39,6 +39,8 @@ __RCSID("$MirOS: src/bin/mksh/var.c,v 1.110 2010/07/25 11:35:43 tg Exp $");
  */
 static struct tbl vtemp;
 static struct table specials;
+static uint32_t lcg_state = 5381;
+
 static char *formatstr(struct tbl *, const char *);
 static void exportprep(struct tbl *, const char *);
 static int special(const char *);
@@ -50,9 +52,6 @@ static int getint(struct tbl *, mksh_ari_t *, bool);
 static mksh_ari_t intval(struct tbl *);
 static struct tbl *arraysearch(struct tbl *, uint32_t);
 static const char *array_index_calc(const char *, bool *, uint32_t *);
-static uint32_t oaathash_update(register uint32_t, register const uint8_t *,
-    register size_t);
-static uint32_t oaathash_finalise(register uint32_t);
 
 uint8_t set_refflag = 0;
 
@@ -393,7 +392,7 @@ intval(struct tbl *vp)
 	base = getint(vp, &num, false);
 	if (base == -1)
 		/* XXX check calls - is error here ok by POSIX? */
-		errorf("%s: bad number", str_val(vp));
+		errorf("%s: %s", str_val(vp), "bad number");
 	return (num);
 }
 
@@ -406,7 +405,7 @@ setstr(struct tbl *vq, const char *s, int error_ok)
 
 	error_ok &= ~0x4;
 	if ((vq->flag & RDONLY) && !no_ro_check) {
-		warningf(true, "%s: is read only", vq->name);
+		warningf(true, "%s: %s", vq->name, "is read only");
 		if (!error_ok)
 			errorfz();
 		return (0);
@@ -649,10 +648,13 @@ exportprep(struct tbl *vp, const char *val)
 {
 	char *xp;
 	char *op = (vp->flag&ALLOC) ? vp->val.s : NULL;
-	int namelen = strlen(vp->name);
-	int vallen = strlen(val) + 1;
+	size_t namelen, vallen;
+
+	namelen = strlen(vp->name);
+	vallen = strlen(val) + 1;
 
 	vp->flag |= ALLOC;
+	/* since name+val are both in memory this can go unchecked */
 	xp = alloc(namelen + 1 + vallen, vp->areap);
 	memcpy(vp->val.s = xp, vp->name, namelen);
 	xp += namelen;
@@ -685,8 +687,8 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	mkssert(*var != 0);
 	if (*val == '[') {
 		if (set_refflag)
-			errorf("%s: reference variable cannot be an array",
-			    var);
+			errorf("%s: %s", var,
+			    "reference variable can't be an array");
 		len = array_ref_len(val);
 		if (len == 0)
 			return (NULL);
@@ -712,7 +714,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 			return (NULL);
 		strdupx(tvar, var, ATEMP);
 		val = NULL;
-		/* handle foo[*] ⇒ foo (whole array) mapping for R39b */
+		/* handle foo[*] => foo (whole array) mapping for R39b */
 		len = strlen(tvar);
 		if (len > 3 && tvar[len-3] == '[' && tvar[len-2] == '*' &&
 		    tvar[len-1] == ']')
@@ -722,9 +724,9 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	/* Prevent typeset from creating a local PATH/ENV/SHELL */
 	if (Flag(FRESTRICTED) && (strcmp(tvar, "PATH") == 0 ||
 	    strcmp(tvar, "ENV") == 0 || strcmp(tvar, "SHELL") == 0))
-		errorf("%s: restricted", tvar);
+		errorf("%s: %s", tvar, "restricted");
 
-	vp = (set&LOCAL) ? local(tvar, (set & LOCAL_COPY) ? true : false) :
+	vp = (set&LOCAL) ? local(tvar, tobool(set & LOCAL_COPY)) :
 	    global(tvar);
 	if (set_refflag == 2 && (vp->flag & (ARRAY|ASSOC)) == ASSOC)
 		vp->flag &= ~ASSOC;
@@ -756,7 +758,7 @@ typeset(const char *var, Tflag set, Tflag clr, int field, int base)
 	if ((vpbase->flag&RDONLY) &&
 	    (val || clr || (set & ~EXPORT)))
 		/* XXX check calls - is error here ok by POSIX? */
-		errorf("%s: is read only", tvar);
+		errorf("%s: %s", tvar, "is read only");
 	afree(tvar, ATEMP);
 
 	/* most calls are with set/clr == 0 */
@@ -908,7 +910,7 @@ skip_wdvarname(const char *s,
 			char c;
 			int depth = 0;
 
-			while (1) {
+			while (/* CONSTCOND */ 1) {
 				if (p[0] != CHAR)
 					break;
 				c = p[1];
@@ -983,86 +985,6 @@ makenv(void)
 	return ((char **)XPclose(denv));
 }
 
-/* Bob Jenkins' one-at-a-time hash */
-static uint32_t
-oaathash_update(register uint32_t h, register const uint8_t *cp,
-    register size_t n)
-{
-	while (n--) {
-		h += *cp++;
-		h += h << 10;
-		h ^= h >> 6;
-	}
-
-	return (h);
-}
-
-static uint32_t
-oaathash_finalise(register uint32_t h)
-{
-	h += h << 3;
-	h ^= h >> 11;
-	h += h << 15;
-
-	return (h);
-}
-
-uint32_t
-oaathash_full(register const uint8_t *bp)
-{
-	register uint32_t h = 0;
-	register uint8_t c;
-
-	while ((c = *bp++)) {
-		h += c;
-		h += h << 10;
-		h ^= h >> 6;
-	}
-
-	return (oaathash_finalise(h));
-}
-
-void
-change_random(const void *vp, size_t n)
-{
-	register uint32_t h = 0x100;
-#if defined(__OpenBSD__)
-	int mib[2];
-	uint8_t k[3];
-	size_t klen;
-#endif
-
-	kshstate_v.cr_dp = vp;
-	kshstate_v.cr_dsz = n;
-	gettimeofday(&kshstate_v.cr_tv, NULL);
-	h = oaathash_update(oaathash_update(h, (void *)&kshstate_v,
-	    sizeof(kshstate_v)), vp, n);
-	kshstate_v.lcg_state_ = oaathash_finalise(h);
-
-#if defined(__OpenBSD__)
-	/* OpenBSD, MirBSD: proper kernel entropy comes at zero cost */
-
-	mib[0] = CTL_KERN;
-	mib[1] = KERN_ARND;
-	klen = sizeof(k);
-	sysctl(mib, 2, k, &klen, &kshstate_v.lcg_state_,
-	    sizeof(kshstate_v.lcg_state_));
-	/* we ignore failures and take in k anyway */
-	h = oaathash_update(h, k, sizeof(k));
-	kshstate_v.lcg_state_ = oaathash_finalise(h);
-#elif defined(MKSH_A4PB)
-	/* forced by the user to use arc4random_pushb(3) • Cygwin? */
-	{
-		uint32_t prv;
-
-		prv = arc4random_pushb(&kshstate_v.lcg_state_,
-		    sizeof(kshstate_v.lcg_state_));
-		h = oaathash_update(h, &prv, sizeof(prv));
-	}
-	kshstate_v.lcg_state_ = oaathash_finalise(h);
-#endif
-}
-
 /*
  * handle special variables with side effects - PATH, SECONDS.
  */
@@ -1117,8 +1039,7 @@ getspec(struct tbl *vp)
 		 * this is the same Linear Congruential PRNG as Borland
 		 * C/C++ allegedly uses in its built-in rand() function
 		 */
-		i = ((kshstate_v.lcg_state_ =
-		    22695477 * kshstate_v.lcg_state_ + 1) >> 16) & 0x7FFF;
+		i = ((lcg_state = 22695477 * lcg_state + 1) >> 16) & 0x7FFF;
 		break;
 	case V_HISTSIZE:
 		i = histsize;
@@ -1163,7 +1084,8 @@ setspec(struct tbl *vp)
 			afree(path, APERM);
 		s = str_val(vp);
 		strdupx(path, s, APERM);
-		flushcom(1);	/* clear tracked aliases */
+		/* clear tracked aliases */
+		flushcom(true);
 		return;
 	case V_IFS:
 		setctypes(s = str_val(vp), C_IFS);
@@ -1185,17 +1107,17 @@ setspec(struct tbl *vp)
 			    stat(s, &statb) == 0 && S_ISDIR(statb.st_mode))
 				strdupx(tmpdir, s, APERM);
 		}
-		break;
+		return;
 #if HAVE_PERSISTENT_HISTORY
 	case V_HISTFILE:
 		sethistfile(str_val(vp));
-		break;
+		return;
 #endif
 	case V_TMOUT:
 		/* AT&T ksh seems to do this (only listen if integer) */
 		if (vp->flag & INTEGER)
 			ksh_tmout = vp->val.i >= 0 ? vp->val.i : 0;
-		break;
+		return;
 
 	/* common sub-cases */
 	case V_OPTIND:
@@ -1236,7 +1158,7 @@ setspec(struct tbl *vp)
 		 * mksh R39d+ no longer has the traditional repeatability
 		 * of $RANDOM sequences, but always retains state
 		 */
-		change_random(&i, sizeof(i));
+		rndset((long)i);
 		break;
 	case V_SECONDS:
 		{
@@ -1261,7 +1183,8 @@ unsetspec(struct tbl *vp)
 		if (path)
 			afree(path, APERM);
 		strdupx(path, def_path, APERM);
-		flushcom(1);	/* clear tracked aliases */
+		/* clear tracked aliases */
+		flushcom(true);
 		break;
 	case V_IFS:
 		setctypes(" \t\n", C_IFS);
@@ -1317,9 +1240,10 @@ arraysearch(struct tbl *vp, uint32_t val)
 		news = curr;
 	} else
 		news = NULL;
-	len = strlen(vp->name) + 1;
 	if (!news) {
-		news = alloc(offsetof(struct tbl, name[0]) + len, vp->areap);
+		len = strlen(vp->name);
+		checkoktoadd(len, 1 + offsetof(struct tbl, name[0]));
+		news = alloc(offsetof(struct tbl, name[0]) + ++len, vp->areap);
 		memcpy(news->name, vp->name, len);
 	}
 	news->flag = (vp->flag & ~(ALLOC|DEFINED|ISSET|SPECIAL)) | AINDEX;
@@ -1389,7 +1313,7 @@ set_array(const char *var, bool reset, const char **vals)
 
 	/* Note: AT&T ksh allows set -A but not set +A of a read-only var */
 	if ((vp->flag&RDONLY))
-		errorf("%s: is read only", var);
+		errorf("%s: %s", var, "is read only");
 	/* This code is quite non-optimal */
 	if (reset)
 		/* trash existing values and attributes */
@@ -1479,12 +1403,42 @@ change_winsz(void)
 }
 
 uint32_t
-evilhash(const char *s)
+hash(const void *s)
 {
-	register uint32_t h = 0x100;
+	register uint32_t h;
 
-	h = oaathash_update(h, (void *)&kshstate_f, sizeof(kshstate_f));
-	kshstate_f.h = oaathash_full((const uint8_t *)s);
-	return (oaathash_finalise(oaathash_update(h,
-	    (void *)&kshstate_f.h, sizeof(kshstate_f.h))));
+	oaat1_init_impl(h);
+	oaat1_addstr_impl(h, s);
+	oaat1_fini_impl(h);
+	return (h);
+}
+
+void
+rndset(long v)
+{
+	register uint32_t h;
+
+	oaat1_init_impl(h);
+	oaat1_addmem_impl(h, &lcg_state, sizeof(lcg_state));
+	oaat1_addmem_impl(h, &v, sizeof(v));
+
+#if defined(arc4random_pushb_fast) || defined(MKSH_A4PB)
+	/*
+	 * either we have very chap entropy get and push available,
+	 * with malloc() pulling in this code already anyway, or the
+	 * user requested us to use the old functions
+	 */
+	lcg_state = h;
+	oaat1_fini_impl(lcg_state);
+#if defined(arc4random_pushb_fast)
+	arc4random_pushb_fast(&lcg_state, sizeof(lcg_state));
+	lcg_state = arc4random();
+#else
+	lcg_state = arc4random_pushb(&lcg_state, sizeof(lcg_state));
+#endif
+	oaat1_addmem_impl(h, &lcg_state, sizeof(lcg_state));
+#endif
+
+	oaat1_fini_impl(h);
+	lcg_state = h;
 }

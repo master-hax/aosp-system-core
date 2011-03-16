@@ -1,9 +1,9 @@
-# $MirOS: src/bin/mksh/check.t,v 1.388 2010/08/24 15:47:44 tg Exp $
+# $MirOS: src/bin/mksh/check.t,v 1.429 2011/03/16 20:56:30 tg Exp $
 # $OpenBSD: bksl-nl.t,v 1.2 2001/01/28 23:04:56 niklas Exp $
 # $OpenBSD: history.t,v 1.5 2001/01/28 23:04:56 niklas Exp $
 # $OpenBSD: read.t,v 1.3 2003/03/10 03:48:16 david Exp $
 #-
-# Copyright © 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+# Copyright © 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
 #	Thorsten Glaser <tg@mirbsd.org>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -25,7 +25,7 @@
 # http://www.research.att.com/~gsf/public/ifs.sh
 
 expected-stdout:
-	@(#)MIRBSD KSH R39 2010/08/24
+	@(#)MIRBSD KSH R39 2011/03/16
 description:
 	Check version of shell.
 stdin:
@@ -64,6 +64,16 @@ description:
 category: disabled
 stdin:
 	set
+---
+name: selftest-direct-builtin-call
+description:
+	Check that direct builtin calls work
+stdin:
+	ln -s "$__progname" cat
+	ln -s "$__progname" echo
+	./echo -c 'echo  foo' | ./cat -u
+expected-stdout:
+	-c echo  foo
 ---
 name: alias-1
 description:
@@ -346,7 +356,7 @@ expected-stdout:
 ---
 name: bksl-nl-ign-1
 description:
-	Check that \newline is not collasped after #
+	Check that \newline is not collapsed after #
 stdin:
 	echo hi #there \
 	echo folks
@@ -356,7 +366,7 @@ expected-stdout:
 ---
 name: bksl-nl-ign-2
 description:
-	Check that \newline is not collasped inside single quotes
+	Check that \newline is not collapsed inside single quotes
 stdin:
 	echo 'hi \
 	there'
@@ -368,7 +378,7 @@ expected-stdout:
 ---
 name: bksl-nl-ign-3
 description:
-	Check that \newline is not collasped inside single quotes
+	Check that \newline is not collapsed inside single quotes
 stdin:
 	cat << \EOF
 	hi \
@@ -418,7 +428,7 @@ expected-stdout:
 #
 name: bksl-nl-1
 description:
-	Check that \newline is collasped before, in the middle of, and
+	Check that \newline is collapsed before, in the middle of, and
 	after words
 stdin:
 	 	 	\
@@ -430,7 +440,7 @@ expected-stdout:
 ---
 name: bksl-nl-2
 description:
-	Check that \newline is collasped in $ sequences
+	Check that \newline is collapsed in $ sequences
 	(ksh93 fails this)
 stdin:
 	a=12
@@ -454,7 +464,7 @@ expected-stdout:
 ---
 name: bksl-nl-3
 description:
-	Check that \newline is collasped in $(..) and `...` sequences
+	Check that \newline is collapsed in $(..) and `...` sequences
 	(ksh93 fails this)
 stdin:
 	echo $\
@@ -479,7 +489,7 @@ expected-stdout:
 ---
 name: bksl-nl-4
 description:
-	Check that \newline is collasped in $((..)) sequences
+	Check that \newline is collapsed in $((..)) sequences
 	(ksh93 fails this)
 stdin:
 	echo $\
@@ -501,7 +511,7 @@ expected-stdout:
 ---
 name: bksl-nl-5
 description:
-	Check that \newline is collasped in double quoted strings
+	Check that \newline is collapsed in double quoted strings
 stdin:
 	echo "\
 	hi"
@@ -516,7 +526,7 @@ expected-stdout:
 ---
 name: bksl-nl-6
 description:
-	Check that \newline is collasped in here document delimiters
+	Check that \newline is collapsed in here document delimiters
 	(ksh93 fails second part of this)
 stdin:
 	a=12
@@ -539,7 +549,7 @@ expected-stdout:
 ---
 name: bksl-nl-7
 description:
-	Check that \newline is collasped in double-quoted here-document
+	Check that \newline is collapsed in double-quoted here-document
 	delimiter.
 stdin:
 	a=12
@@ -558,7 +568,7 @@ expected-stdout:
 ---
 name: bksl-nl-8
 description:
-	Check that \newline is collasped in various 2+ character tokens
+	Check that \newline is collapsed in various 2+ character tokens
 	delimiter.
 	(ksh93 fails this)
 stdin:
@@ -1360,6 +1370,28 @@ expected-stdout:
 	9 EQAL brac foo x c x} baz
 	9 QSTN brac foo x c x} baz
 ---
+name: expand-threecolons-dblq
+description:
+	Check for a particular thing that used to segfault
+stdin:
+	TEST=1234
+	echo "${TEST:1:2:3}"
+	echo $? but still living
+expected-stderr-pattern:
+	/bad substitution/
+expected-exit: 1
+---
+name: expand-threecolons-unq
+description:
+	Check for a particular thing that used to not error out
+stdin:
+	TEST=1234
+	echo ${TEST:1:2:3}
+	echo $? but still living
+expected-stderr-pattern:
+	/bad substitution/
+expected-exit: 1
+---
 name: eglob-bad-1
 description:
 	Check that globbing isn't done when glob has syntax error
@@ -1742,6 +1774,8 @@ expected-stdout:
 name: glob-bad-2
 description:
 	Check that symbolic links aren't stat()'d
+# breaks on FreeMiNT (cannot unlink dangling symlinks)
+category: !os:mint
 file-setup: dir 755 "dir"
 file-setup: symlink 644 "dir/abc"
 	non-existent-file
@@ -2007,6 +2041,45 @@ stdin:
 expected-stdout:
 	one
 ---
+name: heredoc-10
+description:
+	Check direct here document assignment
+stdin:
+	x=u
+	va=<<EOF
+	=a $x \x40=
+	EOF
+	vb=<<'EOF'
+	=b $x \x40=
+	EOF
+	function foo {
+		vc=<<-EOF
+			=c $x \x40=
+		EOF
+	}
+	typeset -f foo
+	foo
+	# rather nonsensical, but…
+	vd=<<<"=d $x \x40="
+	ve=<<<'=e $x \x40='
+	vf=<<<$'=f $x \x40='
+	# now check
+	print -r -- "| va={$va} vb={$vb} vc={$vc} vd={$vd} ve={$ve} vf={$vf} |"
+expected-stdout:
+	function foo {
+		vc= <<-EOF 
+	=c $x \x40=
+	EOF
+	
+	} 
+	| va={=a u \x40=
+	} vb={=b $x \x40=
+	} vc={=c u \x40=
+	} vd={=d u \x40=
+	} ve={=e $x \x40=
+	} vf={=f $x @=
+	} |
+---
 name: heredoc-quoting-unsubst
 description:
 	Check for correct handling of quoted characters in
@@ -2268,7 +2341,7 @@ expected-stdout:
 	hi
 	1	echo hi
 expected-stderr-pattern:
-	/(.*cannot unlink HISTFILE.*\n)?X*$/
+	/(.*can't unlink HISTFILE.*\n)?X*$/
 ---
 name: history-e-minus-1
 description:
@@ -2943,23 +3016,6 @@ stdin:
 expected-stdout:
 	 <:>
 ---
-name: IFS-space-colon-3
-description:
-	Simple test, IFS=<white-space>:
-	pdksh fails both of these tests
-	not sure whether #2 is correct
-stdin:
-	showargs() { for i; do echo -n " <$i>"; done; echo; }
-	IFS="$IFS:"
-	x=
-	set --
-	showargs "$x$@" 1
-	showargs "$@$x" 2
-expected-fail: yes
-expected-stdout:
-	 <> <1>
-	 <> <2>
----
 name: IFS-space-colon-4
 description:
 	Simple test, IFS=<white-space>:
@@ -3346,6 +3402,26 @@ expected-stdout:
 	line <6>
 expected-exit: 1
 ---
+name: unknown-trap
+description:
+	Ensure unknown traps are not a syntax error
+stdin:
+	(
+	trap "echo trap 1 executed" UNKNOWNSIGNAL || echo "foo"
+	echo =1
+	trap "echo trap 2 executed" UNKNOWNSIGNAL EXIT 999999 FNORD
+	echo = $?
+	) 2>&1 | sed "s^${__progname}: <stdin>\[[0-9]*]PROG"
+expected-stdout:
+	PROG: trap: bad signal 'UNKNOWNSIGNAL'
+	foo
+	=1
+	PROG: trap: bad signal 'UNKNOWNSIGNAL'
+	PROG: trap: bad signal '999999'
+	PROG: trap: bad signal 'FNORD'
+	= 3
+	trap 2 executed
+---
 name: read-IFS-1
 description:
 	Simple test, default IFS
@@ -3371,6 +3447,46 @@ stdin:
 	echo "[$REPLY]";
 expected-stdout:
 	[abc]
+---
+name: read-regress-1
+description:
+	Check a regression of read
+file-setup: file 644 "foo"
+	foo bar
+	baz
+	blah
+stdin:
+	while read a b c; do
+		read d
+		break
+	done <foo
+	echo "<$a|$b|$c><$d>"
+expected-stdout:
+	<foo|bar|><baz>
+---
+name: read-delim-1
+description:
+	Check read with delimiters
+stdin:
+	emit() {
+		printf 'foo bar\tbaz\nblah \0blub\tblech\nmyok meck \0'
+	}
+	emit | while IFS= read -d "" foo; do print -r -- "<$foo>"; done
+	emit | while read -d "" foo; do print -r -- "<$foo>"; done
+	emit | while read -d "eh?" foo; do print -r -- "<$foo>"; done
+expected-stdout:
+	<foo bar	baz
+	blah >
+	<blub	blech
+	myok meck >
+	<foo bar	baz
+	blah>
+	<blub	blech
+	myok meck>
+	<foo bar	baz
+	blah blub	bl>
+	<ch
+	myok m>
 ---
 name: regression-1
 description:
@@ -3782,6 +3898,9 @@ name: regression-33
 description:
 	Does umask print a leading 0 when umask is 3 digits?
 stdin:
+	# on MiNT, the first umask call seems to fail
+	umask 022
+	# now, the test proper
 	umask 222
 	umask
 expected-stdout:
@@ -4369,6 +4488,19 @@ stdin:
 		time
 	}
 ---
+name: regression-65
+description:
+	check for a regression with sleep builtin and signal mask
+category: !nojsig
+time-limit: 3
+stdin:
+	sleep 1
+	echo blub |&
+	while read -p line; do :; done
+	echo ok
+expected-stdout:
+	ok
+---
 name: syntax-1
 description:
 	Check that lone ampersand is a syntax error
@@ -4845,6 +4977,16 @@ expected-stdout:
 	E 0
 	F 0
 ---
+name: exit-trap-1
+description:
+	Check that "exit" with no arguments behaves SUSv4 conformant.
+stdin:
+	trap 'echo hi; exit' EXIT
+	exit 9
+expected-stdout:
+	hi
+expected-exit: 9
+---
 name: test-stlt-1
 description:
 	Check that test also can handle string1 < string2 etc.
@@ -5104,6 +5246,7 @@ expected-stdout:
 name: pipeline-2
 description:
 	check that co-processes work with TCOMs, TPIPEs and TPARENs
+category: !nojsig
 stdin:
 	"$__progname" -c 'i=100; echo hi |& while read -p line; do echo "$((i++)) $line"; done'
 	"$__progname" -c 'i=200; echo hi | cat |& while read -p line; do echo "$((i++)) $line"; done'
@@ -5112,6 +5255,28 @@ expected-stdout:
 	100 hi
 	200 hi
 	300 hi
+---
+name: pipeline-3
+description:
+	Check that PIPESTATUS does what it's supposed to
+stdin:
+	echo 1 $PIPESTATUS .
+	echo 2 ${PIPESTATUS[0]} .
+	echo 3 ${PIPESTATUS[1]} .
+	(echo x; exit 12) | (cat; exit 23) | (cat; exit 42)
+	echo 5 $? , $PIPESTATUS , ${PIPESTATUS[0]} , ${PIPESTATUS[1]} , ${PIPESTATUS[2]} , ${PIPESTATUS[3]} .
+	echo 6 ${PIPESTATUS[0]} .
+	set | fgrep PIPESTATUS
+	echo 8 $(set | fgrep PIPESTATUS) .
+expected-stdout:
+	1 0 .
+	2 0 .
+	3 .
+	x
+	5 42 , 12 , 12 , 23 , 42 , .
+	6 0 .
+	PIPESTATUS[0]=0
+	8 PIPESTATUS[0]=0 PIPESTATUS[1]=0 .
 ---
 name: persist-history-1
 description:
@@ -5208,7 +5373,7 @@ expected-stdout:
 	mit
 	ohne
 	=
-	﻿: mit
+	﻿: ohne
 ---
 name: utf8bom-2
 description:
@@ -5239,12 +5404,17 @@ expected-stderr-pattern:
 name: utf8bom-3
 description:
 	Reading the UTF-8 BOM should enable the utf8-mode flag
+	(temporarily for COMSUBs)
 stdin:
 	"$__progname" -c ':; if [[ $- = *U* ]]; then echo 1 on; else echo 1 off; fi'
 	"$__progname" -c '﻿:; if [[ $- = *U* ]]; then echo 2 on; else echo 2 off; fi'
+	"$__progname" -c 'if [[ $- = *U* ]]; then echo 3 on; else echo 3 off; fi; x=$(﻿:; if [[ $- = *U* ]]; then echo 4 on; else echo 4 off; fi); echo $x; if [[ $- = *U* ]]; then echo 5 on; else echo 5 off; fi'
 expected-stdout:
 	1 off
 	2 on
+	3 off
+	4 on
+	5 off
 ---
 name: utf8opt-1a
 description:
@@ -5335,7 +5505,7 @@ expected-stdout:
 name: aliases-1
 description:
 	Check if built-in shell aliases are okay
-category: !arge
+category: !android,!arge
 stdin:
 	alias
 	typeset -f
@@ -5351,13 +5521,14 @@ expected-stdout:
 	nohup='nohup '
 	r='fc -e -'
 	source='PATH=$PATH:. command .'
+	stop='kill -STOP'
 	suspend='kill -STOP $$'
 	type='whence -v'
 ---
 name: aliases-1-hartz4
 description:
 	Check if built-in shell aliases are okay
-category: arge
+category: android,arge
 stdin:
 	alias
 	typeset -f
@@ -5391,7 +5562,6 @@ name: aliases-3a
 description:
 	Check if running as sh disables built-in aliases (except a few)
 category: disabled
-arguments: !-o!sh!
 stdin:
 	cp "$__progname" sh
 	./sh -c 'alias; typeset -f'
@@ -5403,7 +5573,7 @@ expected-stdout:
 name: aliases-2b
 description:
 	Check if “set -o sh” does not influence built-in aliases
-category: !arge
+category: !android,!arge
 arguments: !-o!sh!
 stdin:
 	alias
@@ -5420,14 +5590,14 @@ expected-stdout:
 	nohup='nohup '
 	r='fc -e -'
 	source='PATH=$PATH:. command .'
+	stop='kill -STOP'
 	suspend='kill -STOP $$'
 	type='whence -v'
 ---
 name: aliases-3b
 description:
 	Check if running as sh does not influence built-in aliases
-category: !arge
-arguments: !-o!sh!
+category: !android,!arge
 stdin:
 	cp "$__progname" sh
 	./sh -c 'alias; typeset -f'
@@ -5444,13 +5614,14 @@ expected-stdout:
 	nohup='nohup '
 	r='fc -e -'
 	source='PATH=$PATH:. command .'
+	stop='kill -STOP'
 	suspend='kill -STOP $$'
 	type='whence -v'
 ---
 name: aliases-2b-hartz4
 description:
 	Check if “set -o sh” does not influence built-in aliases
-category: arge
+category: android,arge
 arguments: !-o!sh!
 stdin:
 	alias
@@ -5472,8 +5643,7 @@ expected-stdout:
 name: aliases-3b-hartz4
 description:
 	Check if running as sh does not influence built-in aliases
-category: arge
-arguments: !-o!sh!
+category: android,arge
 stdin:
 	cp "$__progname" sh
 	./sh -c 'alias; typeset -f'
@@ -5865,6 +6035,16 @@ expected-stdout:
 	c we
 	d we
 ---
+name: varexpand-special-hash
+description:
+	Check special ${var@x} expansion for x=hash
+stdin:
+	typeset -i8 foo=10
+	bar=baz
+	print ${bar@#} ${baz@#} .
+expected-stdout:
+	57F1BA9A 04808901 .
+---
 name: varexpand-null-1
 description:
 	Ensure empty strings expand emptily
@@ -5970,6 +6150,22 @@ expected-stdout:
 	000000A0  0B 5C 77 5C 79 5C 7A 5C - 7B 5C 7C 5C 7D 5C 7E 20  |.\w\y\z\{\|\}\~ |
 	000000B0  E2 82 AC 64 20 EF BF BD - 20 12 33 20 78 20 53 20  |...d ... .3 x S |
 	000000C0  53 34 0A                -                          |S4.|
+---
+name: dollar-doublequoted-strings
+description:
+	Check that a $ preceding "…" is ignored
+stdin:
+	echo $"Localise me!"
+	cat <<<$"Me too!"
+	V=X
+	aol=aol
+	cat <<-$"aol"
+		I do not take a $V for a V!
+	aol
+expected-stdout:
+	Localise me!
+	Me too!
+	I do not take a $V for a V!
 ---
 name: dollar-quoted-strings
 description:
@@ -6555,7 +6751,7 @@ stdin:
 expected-stdout:
 	===
 	mir
-expected-stderr-pattern: /.*: cannot (create|overwrite) .*/
+expected-stderr-pattern: /.*: can't (create|overwrite) .*/
 ---
 name: bashiop-3b
 description:
@@ -6742,28 +6938,61 @@ stdin:
 expected-stdout:
 	Fowl
 ---
-name: comsub-1
+name: comsub-1a
 description:
-	COMSUB are currently parsed by hacking lex.c instead of
-	recursively (see regression-6): matching parenthesēs bug
-	Fails on: pdksh mksh bash2 bash3 zsh
-	Passes on: bash4 ksh93
-expected-fail: yes
+	COMSUB are now parsed recursively, so this works
+	see also regression-6: matching parenthesēs bug
+	Fails on: pdksh bash2 bash3 zsh
+	Passes on: bash4 ksh93 mksh(20110313+)
 stdin:
 	echo $(case 1 in (1) echo yes;; (2) echo no;; esac)
 	echo $(case 1 in 1) echo yes;; 2) echo no;; esac)
+	TEST=1234; echo ${TEST: $(case 1 in (1) echo 1;; (*) echo 2;; esac)}
+	TEST=5678; echo ${TEST: $(case 1 in 1) echo 1;; *) echo 2;; esac)}
 expected-stdout:
 	yes
 	yes
+	234
+	678
+---
+name: comsub-1b
+description:
+	COMSUB are now parsed recursively, so this works
+	Fails on GNU bash even, ksh93 passes
+stdin:
+	echo $(($(case 1 in (1) echo 1;; (*) echo 2;; esac)+10))
+	echo $(($(case 1 in 1) echo 1;; *) echo 2;; esac)+20))
+	(( a = $(case 1 in (1) echo 1;; (*) echo 2;; esac) )); echo $a.
+	(( a = $(case 1 in 1) echo 1;; *) echo 2;; esac) )); echo $a.
+expected-stdout:
+	11
+	21
+	1.
+	1.
+---
+name: comsub-1c
+description:
+	COMSUB are now parsed recursively, so this works (ksh93, mksh)
+	First test passes on bash4, second fails there
+category: !smksh
+stdin:
+	a=($(case 1 in (1) echo 1;; (*) echo 2;; esac)); echo ${a[0]}.
+	a=($(case 1 in 1) echo 1;; *) echo 2;; esac)); echo ${a[0]}.
+	a=($(($(case 1 in (1) echo 1;; (*) echo 2;; esac)+10))); echo ${a[0]}.
+	a=($(($(case 1 in 1) echo 1;; *) echo 2;; esac)+20))); echo ${a[0]}.
+expected-stdout:
+	1.
+	1.
+	11.
+	21.
 ---
 name: comsub-2
 description:
 	RedHat BZ#496791 – another case of missing recursion
 	in parsing COMSUB expressions
-	Fails on: pdksh mksh bash2 bash3¹ bash4¹ zsh
-	Passes on: ksh93
+	Fails on: pdksh bash2 bash3¹ bash4¹ zsh
+	Passes on: ksh93 mksh(20110305+)
 	① bash[34] seem to choke on comment ending with backslash-newline
-expected-fail: yes
 stdin:
 	# a comment with " ' \
 	x=$(
@@ -6773,6 +7002,688 @@ stdin:
 	echo $x
 expected-stdout:
 	yes
+---
+name: comsub-3
+description:
+	Extended test for COMSUB explaining why a recursive parser
+	is a must (a non-recursive parser cannot pass all three of
+	these test cases, especially the ‘#’ is difficult)
+stdin:
+	echo $(typeset -i10 x=16#20; echo $x)
+	echo $(typeset -Uui16 x=16#$(id -u)
+	) .
+	echo $(c=1; d=1
+	typeset -Uui16 a=36#foo; c=2
+	typeset -Uui16 b=36 #foo; d=2
+	echo $a $b $c $d)
+expected-stdout:
+	32
+	.
+	16#4F68 16#24 2 1
+---
+name: comsub-torture
+description:
+	Check the tree dump functions work correctly
+stdin:
+	if [[ -z $__progname ]]; then echo >&2 call me with __progname; exit 1; fi
+	while IFS= read -r line; do
+		if [[ $line = '#1' ]]; then
+			lastf=0
+			continue
+		elif [[ $line = EOFN* ]]; then
+			fbody=$fbody$'\n'$line
+			continue
+		elif [[ $line != '#'* ]]; then
+			fbody=$fbody$'\n\t'$line
+			continue
+		fi
+		if (( lastf )); then
+			x="inline_${nextf}() {"$fbody$'\n}\n'
+			print -nr -- "$x"
+			print -r -- "${x}typeset -f inline_$nextf" | $__progname
+			x="function comsub_$nextf { x=\$("$fbody$'\n); }\n'
+			print -nr -- "$x"
+			print -r -- "${x}typeset -f comsub_$nextf" | $__progname
+			x="function reread_$nextf { x=\$(("$fbody$'\n)|tr u x); }\n'
+			print -nr -- "$x"
+			print -r -- "${x}typeset -f reread_$nextf" | $__progname
+		fi
+		lastf=1
+		fbody=
+		nextf=${line#?}
+	done <<'EOD'
+	#1
+	#TCOM
+	vara=1  varb='2  3'  cmd  arg1  $arg2  "$arg3  4"
+	#TPAREN_TPIPE_TLIST
+	(echo $foo  |  tr -dc 0-9; echo)
+	#TAND_TOR
+	cmd  &&  echo ja  ||  echo nein
+	#TSELECT
+	select  file  in  *;  do  echo  "<$file>" ;  break ;  done
+	#TFOR_TTIME
+	for  i  in  {1,2,3}  ;  do  time  echo  $i ;  done
+	#TCASE
+	case  $foo  in  1)  echo eins;; 2) echo zwei  ;; *) echo kann net bis drei zählen;;  esac
+	#TIF_TBANG_TDBRACKET_TELIF
+	if  !  [[  1  =  1  ]]  ;  then  echo eins;  elif [[ 1 = 2 ]]; then echo zwei  ;else echo drei; fi
+	#TWHILE
+	i=1; while (( i < 10 )); do echo $i; let ++i; done
+	#TUNTIL
+	i=10; until  (( !--i )) ; do echo $i; done
+	#TCOPROC
+	cat  *  |&  ls
+	#TFUNCT_TBRACE_TASYNC
+	function  korn  {  echo eins; echo zwei ;  }
+	bourne  ()  {  logger *  &  }
+	#IOREAD_IOCAT
+	tr  x  u  0<foo  >>bar
+	#IOWRITE_IOCLOB_IOHERE_noIOSKIP
+	cat  >|bar  <<'EOFN'
+	foo
+	EOFN
+	#IOWRITE_noIOCLOB_IOHERE_IOSKIP
+	cat  1>bar  <<-EOFI
+	foo
+	EOFI
+	#IORDWR_IODUP
+	sh  1<>/dev/console  0<&1  2>&1
+	#COMSUB_EXPRSUB
+	echo $(true) $((1+ 2))
+	#QCHAR_OQUOTE_CQUOTE
+	echo fo\ob\"a\`r\'b\$az
+	echo "fo\ob\"a\`r\'b\$az"
+	echo 'fo\ob\"a\`r'\''b\$az'
+	#OSUBST_CSUBST_OPAT_SPAT_CPAT
+	[[ ${foo#blub} = @(bar|baz) ]]
+	#heredoc_closed
+	x=$(cat <<EOFN
+	note there must be no space between EOFN and )
+	EOFN); echo $x
+	#heredoc_space
+	x=$(cat <<EOFN\ 
+	note the space between EOFN and ) is actually part of the here document marker
+	EOFN ); echo $x
+	#patch_motd
+	x=$(sysctl -n kern.version | sed 1q)
+	[[ -s /etc/motd && "$([[ "$(head -1 /etc/motd)" != $x ]] && \
+	    ed -s /etc/motd 2>&1 <<-EOF
+		1,/^\$/d
+		0a
+			$x
+	
+		.
+		wq
+	EOF)" = @(?) ]] && rm -f /etc/motd
+	if [[ ! -s /etc/motd ]]; then
+		install -c -o root -g wheel -m 664 /dev/null /etc/motd
+		print -- "$x\n" >/etc/motd
+	fi
+	#0
+	EOD
+expected-stdout:
+	inline_TCOM() {
+		vara=1  varb='2  3'  cmd  arg1  $arg2  "$arg3  4"
+	}
+	inline_TCOM() {
+		vara=1 varb="2  3" cmd arg1 $arg2 "$arg3  4" 
+	} 
+	function comsub_TCOM { x=$(
+		vara=1  varb='2  3'  cmd  arg1  $arg2  "$arg3  4"
+	); }
+	function comsub_TCOM {
+		x=$(vara=1 varb="2  3" cmd arg1 $arg2 "$arg3  4" ) 
+	} 
+	function reread_TCOM { x=$((
+		vara=1  varb='2  3'  cmd  arg1  $arg2  "$arg3  4"
+	)|tr u x); }
+	function reread_TCOM {
+		x=$(( vara=1 varb="2  3" cmd arg1 $arg2 "$arg3  4" ) | tr u x ) 
+	} 
+	inline_TPAREN_TPIPE_TLIST() {
+		(echo $foo  |  tr -dc 0-9; echo)
+	}
+	inline_TPAREN_TPIPE_TLIST() {
+		( echo $foo | tr -dc 0-9 
+		  echo ) 
+	} 
+	function comsub_TPAREN_TPIPE_TLIST { x=$(
+		(echo $foo  |  tr -dc 0-9; echo)
+	); }
+	function comsub_TPAREN_TPIPE_TLIST {
+		x=$(( echo $foo | tr -dc 0-9 ; echo ) ) 
+	} 
+	function reread_TPAREN_TPIPE_TLIST { x=$((
+		(echo $foo  |  tr -dc 0-9; echo)
+	)|tr u x); }
+	function reread_TPAREN_TPIPE_TLIST {
+		x=$(( ( echo $foo | tr -dc 0-9 ; echo ) ) | tr u x ) 
+	} 
+	inline_TAND_TOR() {
+		cmd  &&  echo ja  ||  echo nein
+	}
+	inline_TAND_TOR() {
+		cmd && echo ja || echo nein 
+	} 
+	function comsub_TAND_TOR { x=$(
+		cmd  &&  echo ja  ||  echo nein
+	); }
+	function comsub_TAND_TOR {
+		x=$(cmd && echo ja || echo nein ) 
+	} 
+	function reread_TAND_TOR { x=$((
+		cmd  &&  echo ja  ||  echo nein
+	)|tr u x); }
+	function reread_TAND_TOR {
+		x=$(( cmd && echo ja || echo nein ) | tr u x ) 
+	} 
+	inline_TSELECT() {
+		select  file  in  *;  do  echo  "<$file>" ;  break ;  done
+	}
+	inline_TSELECT() {
+		select file in * 
+		do
+			echo "<$file>" 
+			break 
+		done 
+	} 
+	function comsub_TSELECT { x=$(
+		select  file  in  *;  do  echo  "<$file>" ;  break ;  done
+	); }
+	function comsub_TSELECT {
+		x=$(select file in * ; do echo "<$file>" ; break ; done ) 
+	} 
+	function reread_TSELECT { x=$((
+		select  file  in  *;  do  echo  "<$file>" ;  break ;  done
+	)|tr u x); }
+	function reread_TSELECT {
+		x=$(( select file in * ; do echo "<$file>" ; break ; done ) | tr u x ) 
+	} 
+	inline_TFOR_TTIME() {
+		for  i  in  {1,2,3}  ;  do  time  echo  $i ;  done
+	}
+	inline_TFOR_TTIME() {
+		for i in {1,2,3} 
+		do
+			time echo $i 
+		done 
+	} 
+	function comsub_TFOR_TTIME { x=$(
+		for  i  in  {1,2,3}  ;  do  time  echo  $i ;  done
+	); }
+	function comsub_TFOR_TTIME {
+		x=$(for i in {1,2,3} ; do time echo $i ; done ) 
+	} 
+	function reread_TFOR_TTIME { x=$((
+		for  i  in  {1,2,3}  ;  do  time  echo  $i ;  done
+	)|tr u x); }
+	function reread_TFOR_TTIME {
+		x=$(( for i in {1,2,3} ; do time echo $i ; done ) | tr u x ) 
+	} 
+	inline_TCASE() {
+		case  $foo  in  1)  echo eins;; 2) echo zwei  ;; *) echo kann net bis drei zählen;;  esac
+	}
+	inline_TCASE() {
+		case $foo in
+		(1)
+			echo eins 
+			;;
+		(2)
+			echo zwei 
+			;;
+		(*)
+			echo kann net bis drei zählen 
+			;;
+		esac 
+	} 
+	function comsub_TCASE { x=$(
+		case  $foo  in  1)  echo eins;; 2) echo zwei  ;; *) echo kann net bis drei zählen;;  esac
+	); }
+	function comsub_TCASE {
+		x=$(case $foo in (1) echo eins  ;; (2) echo zwei  ;; (*) echo kann net bis drei zählen  ;; esac ) 
+	} 
+	function reread_TCASE { x=$((
+		case  $foo  in  1)  echo eins;; 2) echo zwei  ;; *) echo kann net bis drei zählen;;  esac
+	)|tr u x); }
+	function reread_TCASE {
+		x=$(( case $foo in (1) echo eins  ;; (2) echo zwei  ;; (*) echo kann net bis drei zählen  ;; esac ) | tr u x ) 
+	} 
+	inline_TIF_TBANG_TDBRACKET_TELIF() {
+		if  !  [[  1  =  1  ]]  ;  then  echo eins;  elif [[ 1 = 2 ]]; then echo zwei  ;else echo drei; fi
+	}
+	inline_TIF_TBANG_TDBRACKET_TELIF() {
+		if ! [[ 1 = 1 ]] 
+		then
+			echo eins 
+		elif [[ 1 = 2 ]] 
+		then
+			echo zwei 
+		else
+			echo drei 
+		fi 
+	} 
+	function comsub_TIF_TBANG_TDBRACKET_TELIF { x=$(
+		if  !  [[  1  =  1  ]]  ;  then  echo eins;  elif [[ 1 = 2 ]]; then echo zwei  ;else echo drei; fi
+	); }
+	function comsub_TIF_TBANG_TDBRACKET_TELIF {
+		x=$(if ! [[ 1 = 1 ]] ; then echo eins ; elif [[ 1 = 2 ]] ; then echo zwei ; else echo drei ; fi ) 
+	} 
+	function reread_TIF_TBANG_TDBRACKET_TELIF { x=$((
+		if  !  [[  1  =  1  ]]  ;  then  echo eins;  elif [[ 1 = 2 ]]; then echo zwei  ;else echo drei; fi
+	)|tr u x); }
+	function reread_TIF_TBANG_TDBRACKET_TELIF {
+		x=$(( if ! [[ 1 = 1 ]] ; then echo eins ; elif [[ 1 = 2 ]] ; then echo zwei ; else echo drei ; fi ) | tr u x ) 
+	} 
+	inline_TWHILE() {
+		i=1; while (( i < 10 )); do echo $i; let ++i; done
+	}
+	inline_TWHILE() {
+		i=1 
+		while let " i < 10 " 
+		do
+			echo $i 
+			let ++i 
+		done 
+	} 
+	function comsub_TWHILE { x=$(
+		i=1; while (( i < 10 )); do echo $i; let ++i; done
+	); }
+	function comsub_TWHILE {
+		x=$(i=1 ; while let " i < 10 " ; do echo $i ; let ++i ; done ) 
+	} 
+	function reread_TWHILE { x=$((
+		i=1; while (( i < 10 )); do echo $i; let ++i; done
+	)|tr u x); }
+	function reread_TWHILE {
+		x=$(( i=1 ; while let " i < 10 " ; do echo $i ; let ++i ; done ) | tr u x ) 
+	} 
+	inline_TUNTIL() {
+		i=10; until  (( !--i )) ; do echo $i; done
+	}
+	inline_TUNTIL() {
+		i=10 
+		until let " !--i " 
+		do
+			echo $i 
+		done 
+	} 
+	function comsub_TUNTIL { x=$(
+		i=10; until  (( !--i )) ; do echo $i; done
+	); }
+	function comsub_TUNTIL {
+		x=$(i=10 ; until let " !--i " ; do echo $i ; done ) 
+	} 
+	function reread_TUNTIL { x=$((
+		i=10; until  (( !--i )) ; do echo $i; done
+	)|tr u x); }
+	function reread_TUNTIL {
+		x=$(( i=10 ; until let " !--i " ; do echo $i ; done ) | tr u x ) 
+	} 
+	inline_TCOPROC() {
+		cat  *  |&  ls
+	}
+	inline_TCOPROC() {
+		cat * |& 
+		ls 
+	} 
+	function comsub_TCOPROC { x=$(
+		cat  *  |&  ls
+	); }
+	function comsub_TCOPROC {
+		x=$(cat * |&  ls ) 
+	} 
+	function reread_TCOPROC { x=$((
+		cat  *  |&  ls
+	)|tr u x); }
+	function reread_TCOPROC {
+		x=$(( cat * |&  ls ) | tr u x ) 
+	} 
+	inline_TFUNCT_TBRACE_TASYNC() {
+		function  korn  {  echo eins; echo zwei ;  }
+		bourne  ()  {  logger *  &  }
+	}
+	inline_TFUNCT_TBRACE_TASYNC() {
+		function korn {
+			echo eins 
+			echo zwei 
+		} 
+		bourne() {
+			logger * & 
+		} 
+	} 
+	function comsub_TFUNCT_TBRACE_TASYNC { x=$(
+		function  korn  {  echo eins; echo zwei ;  }
+		bourne  ()  {  logger *  &  }
+	); }
+	function comsub_TFUNCT_TBRACE_TASYNC {
+		x=$(function korn { echo eins ; echo zwei ; } ; bourne() { logger * &  } ) 
+	} 
+	function reread_TFUNCT_TBRACE_TASYNC { x=$((
+		function  korn  {  echo eins; echo zwei ;  }
+		bourne  ()  {  logger *  &  }
+	)|tr u x); }
+	function reread_TFUNCT_TBRACE_TASYNC {
+		x=$(( function korn { echo eins ; echo zwei ; } ; bourne() { logger * &  } ) | tr u x ) 
+	} 
+	inline_IOREAD_IOCAT() {
+		tr  x  u  0<foo  >>bar
+	}
+	inline_IOREAD_IOCAT() {
+		tr x u <foo >>bar 
+	} 
+	function comsub_IOREAD_IOCAT { x=$(
+		tr  x  u  0<foo  >>bar
+	); }
+	function comsub_IOREAD_IOCAT {
+		x=$(tr x u <foo >>bar ) 
+	} 
+	function reread_IOREAD_IOCAT { x=$((
+		tr  x  u  0<foo  >>bar
+	)|tr u x); }
+	function reread_IOREAD_IOCAT {
+		x=$(( tr x u <foo >>bar ) | tr u x ) 
+	} 
+	inline_IOWRITE_IOCLOB_IOHERE_noIOSKIP() {
+		cat  >|bar  <<'EOFN'
+		foo
+	EOFN
+	}
+	inline_IOWRITE_IOCLOB_IOHERE_noIOSKIP() {
+		cat >|bar <<"EOFN" 
+		foo
+	EOFN
+	
+	} 
+	function comsub_IOWRITE_IOCLOB_IOHERE_noIOSKIP { x=$(
+		cat  >|bar  <<'EOFN'
+		foo
+	EOFN
+	); }
+	function comsub_IOWRITE_IOCLOB_IOHERE_noIOSKIP {
+		x=$(cat >|bar <<"EOFN" 
+		foo
+	EOFN
+	) 
+	} 
+	function reread_IOWRITE_IOCLOB_IOHERE_noIOSKIP { x=$((
+		cat  >|bar  <<'EOFN'
+		foo
+	EOFN
+	)|tr u x); }
+	function reread_IOWRITE_IOCLOB_IOHERE_noIOSKIP {
+		x=$(( cat >|bar <<"EOFN" 
+		foo
+	EOFN
+	) | tr u x ) 
+	} 
+	inline_IOWRITE_noIOCLOB_IOHERE_IOSKIP() {
+		cat  1>bar  <<-EOFI
+		foo
+		EOFI
+	}
+	inline_IOWRITE_noIOCLOB_IOHERE_IOSKIP() {
+		cat >bar <<-EOFI 
+	foo
+	EOFI
+	
+	} 
+	function comsub_IOWRITE_noIOCLOB_IOHERE_IOSKIP { x=$(
+		cat  1>bar  <<-EOFI
+		foo
+		EOFI
+	); }
+	function comsub_IOWRITE_noIOCLOB_IOHERE_IOSKIP {
+		x=$(cat >bar <<-EOFI 
+	foo
+	EOFI
+	) 
+	} 
+	function reread_IOWRITE_noIOCLOB_IOHERE_IOSKIP { x=$((
+		cat  1>bar  <<-EOFI
+		foo
+		EOFI
+	)|tr u x); }
+	function reread_IOWRITE_noIOCLOB_IOHERE_IOSKIP {
+		x=$(( cat >bar <<-EOFI 
+	foo
+	EOFI
+	) | tr u x ) 
+	} 
+	inline_IORDWR_IODUP() {
+		sh  1<>/dev/console  0<&1  2>&1
+	}
+	inline_IORDWR_IODUP() {
+		sh 1<>/dev/console <&1 2>&1 
+	} 
+	function comsub_IORDWR_IODUP { x=$(
+		sh  1<>/dev/console  0<&1  2>&1
+	); }
+	function comsub_IORDWR_IODUP {
+		x=$(sh 1<>/dev/console <&1 2>&1 ) 
+	} 
+	function reread_IORDWR_IODUP { x=$((
+		sh  1<>/dev/console  0<&1  2>&1
+	)|tr u x); }
+	function reread_IORDWR_IODUP {
+		x=$(( sh 1<>/dev/console <&1 2>&1 ) | tr u x ) 
+	} 
+	inline_COMSUB_EXPRSUB() {
+		echo $(true) $((1+ 2))
+	}
+	inline_COMSUB_EXPRSUB() {
+		echo $(true ) $((1+ 2)) 
+	} 
+	function comsub_COMSUB_EXPRSUB { x=$(
+		echo $(true) $((1+ 2))
+	); }
+	function comsub_COMSUB_EXPRSUB {
+		x=$(echo $(true ) $((1+ 2)) ) 
+	} 
+	function reread_COMSUB_EXPRSUB { x=$((
+		echo $(true) $((1+ 2))
+	)|tr u x); }
+	function reread_COMSUB_EXPRSUB {
+		x=$(( echo $(true ) $((1+ 2)) ) | tr u x ) 
+	} 
+	inline_QCHAR_OQUOTE_CQUOTE() {
+		echo fo\ob\"a\`r\'b\$az
+		echo "fo\ob\"a\`r\'b\$az"
+		echo 'fo\ob\"a\`r'\''b\$az'
+	}
+	inline_QCHAR_OQUOTE_CQUOTE() {
+		echo fo\ob\"a\`r\'b\$az 
+		echo "fo\ob\"a\`r\'b\$az" 
+		echo "fo\\ob\\\"a\\\`r"\'"b\\\$az" 
+	} 
+	function comsub_QCHAR_OQUOTE_CQUOTE { x=$(
+		echo fo\ob\"a\`r\'b\$az
+		echo "fo\ob\"a\`r\'b\$az"
+		echo 'fo\ob\"a\`r'\''b\$az'
+	); }
+	function comsub_QCHAR_OQUOTE_CQUOTE {
+		x=$(echo fo\ob\"a\`r\'b\$az ; echo "fo\ob\"a\`r\'b\$az" ; echo "fo\\ob\\\"a\\\`r"\'"b\\\$az" ) 
+	} 
+	function reread_QCHAR_OQUOTE_CQUOTE { x=$((
+		echo fo\ob\"a\`r\'b\$az
+		echo "fo\ob\"a\`r\'b\$az"
+		echo 'fo\ob\"a\`r'\''b\$az'
+	)|tr u x); }
+	function reread_QCHAR_OQUOTE_CQUOTE {
+		x=$(( echo fo\ob\"a\`r\'b\$az ; echo "fo\ob\"a\`r\'b\$az" ; echo "fo\\ob\\\"a\\\`r"\'"b\\\$az" ) | tr u x ) 
+	} 
+	inline_OSUBST_CSUBST_OPAT_SPAT_CPAT() {
+		[[ ${foo#blub} = @(bar|baz) ]]
+	}
+	inline_OSUBST_CSUBST_OPAT_SPAT_CPAT() {
+		[[ ${foo#blub} = @(bar|baz) ]] 
+	} 
+	function comsub_OSUBST_CSUBST_OPAT_SPAT_CPAT { x=$(
+		[[ ${foo#blub} = @(bar|baz) ]]
+	); }
+	function comsub_OSUBST_CSUBST_OPAT_SPAT_CPAT {
+		x=$([[ ${foo#blub} = @(bar|baz) ]] ) 
+	} 
+	function reread_OSUBST_CSUBST_OPAT_SPAT_CPAT { x=$((
+		[[ ${foo#blub} = @(bar|baz) ]]
+	)|tr u x); }
+	function reread_OSUBST_CSUBST_OPAT_SPAT_CPAT {
+		x=$(( [[ ${foo#blub} = @(bar|baz) ]] ) | tr u x ) 
+	} 
+	inline_heredoc_closed() {
+		x=$(cat <<EOFN
+		note there must be no space between EOFN and )
+	EOFN); echo $x
+	}
+	inline_heredoc_closed() {
+		x=$(cat <<EOFN 
+		note there must be no space between EOFN and )
+	EOFN
+	) 
+		echo $x 
+	} 
+	function comsub_heredoc_closed { x=$(
+		x=$(cat <<EOFN
+		note there must be no space between EOFN and )
+	EOFN); echo $x
+	); }
+	function comsub_heredoc_closed {
+		x=$(x=$(cat <<EOFN 
+		note there must be no space between EOFN and )
+	EOFN
+	) ; echo $x ) 
+	} 
+	function reread_heredoc_closed { x=$((
+		x=$(cat <<EOFN
+		note there must be no space between EOFN and )
+	EOFN); echo $x
+	)|tr u x); }
+	function reread_heredoc_closed {
+		x=$(( x=$(cat <<EOFN 
+		note there must be no space between EOFN and )
+	EOFN
+	) ; echo $x ) | tr u x ) 
+	} 
+	inline_heredoc_space() {
+		x=$(cat <<EOFN\ 
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN ); echo $x
+	}
+	inline_heredoc_space() {
+		x=$(cat <<EOFN\  
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN 
+	) 
+		echo $x 
+	} 
+	function comsub_heredoc_space { x=$(
+		x=$(cat <<EOFN\ 
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN ); echo $x
+	); }
+	function comsub_heredoc_space {
+		x=$(x=$(cat <<EOFN\  
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN 
+	) ; echo $x ) 
+	} 
+	function reread_heredoc_space { x=$((
+		x=$(cat <<EOFN\ 
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN ); echo $x
+	)|tr u x); }
+	function reread_heredoc_space {
+		x=$(( x=$(cat <<EOFN\  
+		note the space between EOFN and ) is actually part of the here document marker
+	EOFN 
+	) ; echo $x ) | tr u x ) 
+	} 
+	inline_patch_motd() {
+		x=$(sysctl -n kern.version | sed 1q)
+		[[ -s /etc/motd && "$([[ "$(head -1 /etc/motd)" != $x ]] && \
+		    ed -s /etc/motd 2>&1 <<-EOF
+			1,/^\$/d
+			0a
+				$x
+		
+			.
+			wq
+		EOF)" = @(?) ]] && rm -f /etc/motd
+		if [[ ! -s /etc/motd ]]; then
+			install -c -o root -g wheel -m 664 /dev/null /etc/motd
+			print -- "$x\n" >/etc/motd
+		fi
+	}
+	inline_patch_motd() {
+		x=$(sysctl -n kern.version | sed 1q ) 
+		[[ -s /etc/motd && "$([[ "$(head -1 /etc/motd )" != $x ]] && ed -s /etc/motd 2>&1 <<-EOF 
+	1,/^\$/d
+	0a
+	$x
+	
+	.
+	wq
+	EOF
+	)" = @(?) ]] && rm -f /etc/motd 
+		if [[ ! -s /etc/motd ]] 
+		then
+			install -c -o root -g wheel -m 664 /dev/null /etc/motd 
+			print -- "$x\n" >/etc/motd 
+		fi 
+	} 
+	function comsub_patch_motd { x=$(
+		x=$(sysctl -n kern.version | sed 1q)
+		[[ -s /etc/motd && "$([[ "$(head -1 /etc/motd)" != $x ]] && \
+		    ed -s /etc/motd 2>&1 <<-EOF
+			1,/^\$/d
+			0a
+				$x
+		
+			.
+			wq
+		EOF)" = @(?) ]] && rm -f /etc/motd
+		if [[ ! -s /etc/motd ]]; then
+			install -c -o root -g wheel -m 664 /dev/null /etc/motd
+			print -- "$x\n" >/etc/motd
+		fi
+	); }
+	function comsub_patch_motd {
+		x=$(x=$(sysctl -n kern.version | sed 1q ) ; [[ -s /etc/motd && "$([[ "$(head -1 /etc/motd )" != $x ]] && ed -s /etc/motd 2>&1 <<-EOF 
+	1,/^\$/d
+	0a
+	$x
+	
+	.
+	wq
+	EOF
+	)" = @(?) ]] && rm -f /etc/motd ; if [[ ! -s /etc/motd ]] ; then install -c -o root -g wheel -m 664 /dev/null /etc/motd ; print -- "$x\n" >/etc/motd ; fi ) 
+	} 
+	function reread_patch_motd { x=$((
+		x=$(sysctl -n kern.version | sed 1q)
+		[[ -s /etc/motd && "$([[ "$(head -1 /etc/motd)" != $x ]] && \
+		    ed -s /etc/motd 2>&1 <<-EOF
+			1,/^\$/d
+			0a
+				$x
+		
+			.
+			wq
+		EOF)" = @(?) ]] && rm -f /etc/motd
+		if [[ ! -s /etc/motd ]]; then
+			install -c -o root -g wheel -m 664 /dev/null /etc/motd
+			print -- "$x\n" >/etc/motd
+		fi
+	)|tr u x); }
+	function reread_patch_motd {
+		x=$(( x=$(sysctl -n kern.version | sed 1q ) ; [[ -s /etc/motd && "$([[ "$(head -1 /etc/motd )" != $x ]] && ed -s /etc/motd 2>&1 <<-EOF 
+	1,/^\$/d
+	0a
+	$x
+	
+	.
+	wq
+	EOF
+	)" = @(?) ]] && rm -f /etc/motd ; if [[ ! -s /etc/motd ]] ; then install -c -o root -g wheel -m 664 /dev/null /etc/motd ; print -- "$x\n" >/etc/motd ; fi ) | tr u x ) 
+	} 
 ---
 name: test-stnze-1
 description:
@@ -7156,7 +8067,7 @@ name: better-parens-1a
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	if ( (echo fubar) | tr u x); then
+	if ( (echo fubar)|tr u x); then
 		echo ja
 	else
 		echo nein
@@ -7169,7 +8080,15 @@ name: better-parens-1b
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	echo $( (echo fubar) | tr u x) $?
+	echo $( (echo fubar)|tr u x) $?
+expected-stdout:
+	fxbar 0
+---
+name: better-parens-1c
+description:
+	Check support for ((…)) and $((…)) vs (…) and $(…)
+stdin:
+	x=$( (echo fubar)|tr u x); echo $x $?
 expected-stdout:
 	fxbar 0
 ---
@@ -7177,7 +8096,7 @@ name: better-parens-2a
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	if ((echo fubar) | tr u x); then
+	if ((echo fubar)|tr u x); then
 		echo ja
 	else
 		echo nein
@@ -7190,7 +8109,15 @@ name: better-parens-2b
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	echo $((echo fubar) | tr u x) $?
+	echo $((echo fubar)|tr u x) $?
+expected-stdout:
+	fxbar 0
+---
+name: better-parens-2c
+description:
+	Check support for ((…)) and $((…)) vs (…) and $(…)
+stdin:
+	x=$((echo fubar)|tr u x); echo $x $?
 expected-stdout:
 	fxbar 0
 ---
@@ -7198,7 +8125,7 @@ name: better-parens-3a
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	if ( (echo fubar) | (tr u x)); then
+	if ( (echo fubar)|(tr u x)); then
 		echo ja
 	else
 		echo nein
@@ -7211,7 +8138,15 @@ name: better-parens-3b
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	echo $( (echo fubar) | (tr u x)) $?
+	echo $( (echo fubar)|(tr u x)) $?
+expected-stdout:
+	fxbar 0
+---
+name: better-parens-3c
+description:
+	Check support for ((…)) and $((…)) vs (…) and $(…)
+stdin:
+	x=$( (echo fubar)|(tr u x)); echo $x $?
 expected-stdout:
 	fxbar 0
 ---
@@ -7219,7 +8154,7 @@ name: better-parens-4a
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	if ((echo fubar) | (tr u x)); then
+	if ((echo fubar)|(tr u x)); then
 		echo ja
 	else
 		echo nein
@@ -7232,7 +8167,15 @@ name: better-parens-4b
 description:
 	Check support for ((…)) and $((…)) vs (…) and $(…)
 stdin:
-	echo $((echo fubar) | (tr u x)) $?
+	echo $((echo fubar)|(tr u x)) $?
+expected-stdout:
+	fxbar 0
+---
+name: better-parens-4c
+description:
+	Check support for ((…)) and $((…)) vs (…) and $(…)
+stdin:
+	x=$((echo fubar)|(tr u x)); echo $x $?
 expected-stdout:
 	fxbar 0
 ---
