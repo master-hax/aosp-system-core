@@ -76,6 +76,9 @@ static const char *initcoms[] = {
 	"stop=kill -STOP",
 	"suspend=kill -STOP $$",
 #endif
+#if defined(ANDROID)
+	"lsmod=cat /proc/modules",
+#endif
 	"autoload=typeset -fu",
 	"functions=typeset -f",
 	"history=fc -l",

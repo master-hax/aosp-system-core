@@ -25,7 +25,7 @@
 # http://www.research.att.com/~gsf/public/ifs.sh
 
 expected-stdout:
-	@(#)MIRBSD KSH R39 2011/03/13
+	@(#)MIRBSD KSH R39 2011/03/13 Android
 description:
 	Check version of shell.
 stdin:
@@ -5517,6 +5517,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'
@@ -5538,6 +5539,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'
@@ -5585,6 +5587,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'
@@ -5608,6 +5611,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'
@@ -5630,6 +5634,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'
@@ -5653,6 +5658,7 @@ expected-stdout:
 	integer='typeset -i'
 	local=typeset
 	login='exec login'
+	lsmod='cat /proc/modules'
 	nameref='typeset -n'
 	nohup='nohup '
 	r='fc -e -'

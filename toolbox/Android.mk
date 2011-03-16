@@ -1,16 +1,13 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-TOOLS := \
+TOOLS_ALWAYS := \
 	ls \
 	mount \
-	cat \
 	ps \
-	kill \
 	ln \
 	insmod \
 	rmmod \
-	lsmod \
 	ifconfig \
 	setconsole \
 	rm \
@@ -36,7 +33,6 @@ TOOLS := \
 	setprop \
 	watchprops \
 	log \
-	sleep \
 	renice \
 	printenv \
 	smd \
@@ -55,6 +51,24 @@ TOOLS := \
 	nandread \
 	ionice \
 	lsof
+
+# - printenv cannot be mksh "set" because "printenv foo bar" differs
+# - mv cannot be mksh "rename" since it doesn't check whether the
+#   destination is a directory, and does only one file
+# - cat can be mksh "cat" despite not having any options, because
+#   Android has never really had a "cat" command, so nothing uses it
+# - lsmod just calls cat, we've just patched it as alias into mksh
+TOOLS_MKSH := \
+	cat \
+	kill \
+	lsmod \
+	sleep \
+
+ifeq ($(TARGET_SHELL),mksh)
+TOOLS := $(TOOLS_ALWAYS)
+else
+TOOLS := $(TOOLS_ALWAYS) $(TOOLS_MKSH)
+endif
 
 LOCAL_SRC_FILES:= \
 	toolbox.c \
@@ -86,6 +100,16 @@ $(SYMLINKS): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
 	@mkdir -p $(dir $@)
 	@rm -rf $@
 	$(hide) ln -sf $(TOOLBOX_BINARY) $@
+
+ifeq ($(TARGET_SHELL),mksh)
+SYMLINKS_MKSH := $(addprefix $(TARGET_OUT)/bin/,$(TOOLS_MKSH))
+$(SYMLINKS_MKSH): TOOLBOX_BINARY := $(TARGET_SHELL)
+$(SYMLINKS_MKSH): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
+	@echo "Symlink: $@ -> $(TOOLBOX_BINARY)"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf $(TOOLBOX_BINARY) $@
+endif
 
 ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINKS)
 
