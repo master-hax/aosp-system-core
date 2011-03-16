@@ -1,4 +1,4 @@
-This is mksh from AnonCVS on 2010-08-24 with the
+This is mksh from AnonCVS on 2011-03-16 with the
 following files removed:
 • Makefile
   (not part of regular mksh releases anyway)
@@ -6,8 +6,6 @@ following files removed:
   (not needed, we use our own for Android)
 • mksh.1
   (manpage; also available from the web)
-• setmode.c
-  (not needed, we don’t use the mknod builtin)
 • strlcpy.c
   (not needed, bionic provides this)
 
@@ -17,6 +15,4 @@ online at https://www.mirbsd.org/man1/mksh (HTML).
 
 The following changes are done to code in this subdirectory
 at the moment:
-• check.t main.sh: remove the 'stop' alias to 'kill -STOP'
-  since Android has a built in stop command that the alias
-  overrides, causing problems with testing tools
+• check.t: sync list of built-in aliases
