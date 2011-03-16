@@ -1,7 +1,11 @@
 #!/system/bin/sh
 
-ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
-route add default gw 10.0.2.2 dev eth0
+# Apparantly, when VBox networking is set to "Host Only Adapter", it gets
+# assigned a fixed IP 192.168.56.101. Replacing it with the commented lines
+# will break stuff (ADB in particular).
+#ifconfig eth0 10.0.2.15 netmask 255.255.255.0 up
+# route add default gw 10.0.2.2 dev eth0
+ifconfig eth0 192.168.56.101 netmask 255.255.255.0 up
 
 qemud=`getprop ro.kernel.android.qemud`
 case "$qemud" in

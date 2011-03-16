@@ -65,6 +65,14 @@ $(file) : $(LOCAL_PATH)/etc/ueventd.goldfish.rc | $(ACP)
 ALL_PREBUILT += $(file)
 $(INSTALLED_RAMDISK_TARGET): $(file)
 
+ifeq ($(TARGET_PRODUCT),vbox_x86)
+file := $(TARGET_ROOT_OUT)/init.vbox_x86.rc
+$(file) : $(LOCAL_PATH)/etc/init.vbox_x86.rc | $(ACP)
+	$(transform-prebuilt-to-target)
+ALL_PREBUILT += $(file)
+$(INSTALLED_RAMDISK_TARGET): $(file)
+endif
+
 # create some directories (some are mount points)
 DIRS := $(addprefix $(TARGET_ROOT_OUT)/, \
 		sbin \
