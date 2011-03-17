@@ -7,6 +7,9 @@ copy_from := \
 	etc/dbus.conf \
 	etc/hosts
 
+# create /vendor/overlay/framework
+copy_from += vendor/overlay/framework/.dummy
+
 ifeq ($(TARGET_PRODUCT),full)
 copy_from += etc/vold.fstab
 endif
