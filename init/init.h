@@ -20,6 +20,7 @@
 #include "list.h"
 
 #include <sys/stat.h>
+#include <linux/sem.h>
 
 void handle_control_message(const char *msg, const char *arg);
 
@@ -109,6 +110,39 @@ struct service {
     /* "MUST BE AT THE END OF THE STRUCT" */
     char *args[1];
 }; /*     ^-------'args' MUST be at the end of this struct! */
+
+#ifdef MULTITHREAD
+struct _work
+    {
+       pthread_t   id;
+            uint   flag;
+            uint   fmask;
+            uint*  op;
+#define WFL_SYNC 0x01
+#define WFL_W4A  0x02
+            uint*  flags;
+            uint   next;
+            uint   own;
+  struct command*  cmd;
+             int  sem_id;
+    };
+
+#define INIT_WORK(fl,fm,pop,pfl,nxt,ownv,pcmd,semid)   { .id      = 0x00, \
+                                                         .flag    = fl,   \
+                                                         .fmask   = fm,   \
+                                                         .op      = pop,  \
+                                                         .flags   = pfl,  \
+                                                         .next    = nxt,  \
+                                                         .own     = ownv, \
+                                                         .cmd     = pcmd, \
+						         .sem_id  = semid   }
+
+extern pthread_mutex_t exec_mutex;
+extern pthread_cond_t  exec_cond;
+extern uint exec_flags;
+extern uint exec_mask;
+
+#endif
 
 void notify_service_state(const char *name, const char *state);
 

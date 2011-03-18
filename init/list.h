@@ -42,6 +42,18 @@ void list_init(struct listnode *list);
 void list_add_tail(struct listnode *list, struct listnode *item);
 void list_remove(struct listnode *item);
 
+#ifdef MULTITHREAD
+#include <pthread.h>
+static
+__inline__
+void list_add_tail_m(struct listnode *list, struct listnode *item, pthread_mutex_t* mutex) 
+{
+    pthread_mutex_lock(mutex);
+    list_add_tail(list,item);
+    pthread_mutex_unlock(mutex);
+}
+#endif
+
 #define list_empty(list) ((list) == (list)->next)
 #define list_head(list) ((list)->next)
 #define list_tail(list) ((list)->prev)

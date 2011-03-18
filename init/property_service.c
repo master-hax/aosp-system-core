@@ -523,6 +523,7 @@ void start_property_service(void)
     load_persistent_properties();
 
     fd = create_socket(PROP_SERVICE_NAME, SOCK_STREAM, 0666, 0, 0);
+
     if(fd < 0) return;
     fcntl(fd, F_SETFD, FD_CLOEXEC);
     fcntl(fd, F_SETFL, O_NONBLOCK);

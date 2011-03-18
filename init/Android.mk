@@ -17,6 +17,11 @@ LOCAL_SRC_FILES:= \
 	ueventd.c \
 	ueventd_parser.c
 
+ifeq ($(strip $(INIT_MULTITHREADED)),true)
+LOCAL_CFLAGS += -DMULTITHREAD
+LOCAL_SRC_FILES += addons.c
+endif
+
 ifeq ($(strip $(INIT_BOOTCHART)),true)
 LOCAL_SRC_FILES += bootchart.c
 LOCAL_CFLAGS    += -DBOOTCHART=1

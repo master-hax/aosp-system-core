@@ -51,6 +51,13 @@
 #include "init_parser.h"
 #include "util.h"
 #include "ueventd.h"
+#include "addons.h"
+#include "errno.h"
+
+
+
+//#define UPTIME_DEBUG
+//#define DDEBUD
 
 static int property_triggers_enabled = 0;
 
@@ -71,6 +78,15 @@ static char qemu[32];
 static struct action *cur_action = NULL;
 static struct command *cur_command = NULL;
 static struct listnode *command_queue = NULL;
+
+#ifdef MULTITHREAD
+#include <pthread.h>
+#include <semaphore.h>
+pthread_mutex_t exec_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  exec_cond  = PTHREAD_COND_INITIALIZER;
+uint exec_flags = WFL_SYNC;
+uint exec_op    = 0;
+#endif
 
 void notify_service_state(const char *name, const char *state)
 {
@@ -621,7 +637,7 @@ static int check_startup_action(int nargs, char **args)
     /* make sure we actually have all the pieces we need */
     if ((get_property_set_fd() < 0) ||
         (get_signal_fd() < 0)) {
-        ERROR("init startup failure\n");
+        ERROR("init startup failure %d : %d\n",get_property_set_fd(),get_signal_fd());
         exit(1);
     }
     return 0;
@@ -634,6 +650,116 @@ static int queue_property_triggers_action(int nargs, char **args)
     property_triggers_enabled = 1;
     return 0;
 }
+
+#ifdef MULTITHREAD
+
+static
+struct command *getNextCommand( void )
+{
+    struct command* res = NULL;
+    pthread_mutex_lock(&exec_mutex);
+    if (! cur_command )
+        goto exit;
+
+    if (is_last_command(cur_action, cur_command))
+     {
+      if (!(cur_action = action_remove_queue_head()))
+       {
+         cur_command = NULL;
+         goto exit;
+       }
+      else
+         cur_command = get_first_command(cur_action);  }
+    else
+      cur_command = get_next_command(cur_action, cur_command);
+
+exit:
+    res = cur_command;
+    pthread_mutex_unlock(&exec_mutex);
+    return res;
+}
+
+__inline__
+static void barWait4All( struct _work* w, int lock )
+{
+    if( lock )
+      {
+       pthread_mutex_lock(&exec_mutex);
+       while ( (*(w->flags) & w->fmask) ^ w->fmask )
+          pthread_cond_wait(&exec_cond,&exec_mutex);
+       pthread_mutex_unlock(&exec_mutex); } else
+       while ( (*(w->flags) & w->fmask) ^ w->fmask ) pthread_cond_wait(&exec_cond,&exec_mutex);
+}
+
+__inline__
+static void barWait( struct _work* w )
+{
+    pthread_mutex_lock(&exec_mutex);
+    if ( *(w->flags) & WFL_W4A )
+     {
+      barWait4All(w,0);
+      *(w->flags)&=~WFL_W4A;
+     }
+    if ( *(w->flags) & WFL_SYNC )
+      while( *(w->op) ^ w->own ) pthread_cond_wait(&exec_cond, &exec_mutex);
+
+    *(w->flags) &= ~w->flag;
+     pthread_mutex_unlock(&exec_mutex);
+}
+
+__inline__
+static void barPost( struct _work* w )
+{
+    pthread_mutex_lock(&exec_mutex);
+    *(w->op)     = w->next;
+    *(w->flags) |= w->flag;
+    pthread_cond_broadcast(&exec_cond);
+    pthread_mutex_unlock(&exec_mutex);
+}
+
+static void *thr_cmdExec( void* arg )
+{
+    struct _work* work = arg;
+    struct sembuf sb = {0,-1,0};
+    while( work->cmd )
+     {
+      barWait(work);
+#if 0
+     ERROR("thr:%lu - 1\n",work->id);
+#endif
+      work->cmd->func(work->cmd->nargs, work->cmd->args);
+      barPost(work);
+      work->cmd = getNextCommand();
+     }
+    sem_op(work->sem_id,&sb,1);
+    return NULL;
+}
+
+static int procActionQuerry( int flags )
+{
+    int sem_id = sem_get(IPC_PRIVATE,1,IPC_CREAT);
+    struct action* stub_a  = cur_action  = action_remove_queue_head();
+    struct _work works[] = {
+    INIT_WORK(1<<16,3<<16,&exec_op,&exec_flags,1,0,(cur_command=get_first_command(cur_action)), sem_id),
+    INIT_WORK(2<<16,3<<16,&exec_op,&exec_flags,0,1,getNextCommand(), sem_id) };
+    pthread_attr_t attr;
+    struct sembuf sb = {0,0,0};
+
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+    cpu_set_t set = {.__bits={0xFFFF}};
+    sched_setaffinity(0,sizeof set, &set);
+
+    sem_set(sem_id,0,2);
+    pthread_create(&works[0].id, &attr, thr_cmdExec,&works[0]);
+    pthread_create(&works[1].id, &attr, thr_cmdExec,&works[1]);
+    sem_op(sem_id, &sb, 1);
+
+    return 0;
+}
+
+#endif //~MULTITHREAD
 
 #if BOOTCHART
 static int bootchart_init_action(int nargs, char **args)
@@ -661,6 +787,16 @@ int main(int argc, char **argv)
     int property_set_fd_init = 0;
     int signal_fd_init = 0;
     int keychord_fd_init = 0;
+    const char* fna[] ={"init.rc",tmp};
+    char*  perf = "performance";
+
+#ifdef UPTIME_DEBUG
+    char tval[32];
+    struct timespec tv;
+    int     fd,fdut;
+    clock_gettime(CLOCK_MONOTONIC,&tv);
+    sprintf(tval,"%lu:%lu\n", tv.tv_sec, tv.tv_nsec);
+#endif
 
     if (!strcmp(basename(argv[0]), "ueventd"))
         return ueventd_main(argc, argv);
@@ -691,16 +827,20 @@ int main(int argc, char **argv)
          */
     open_devnull_stdio();
     log_init();
-    
-    INFO("reading config file\n");
-    init_parse_config_file("/init.rc");
-
-    /* pull the kernel commandline and ramdisk properties file in */
-    import_kernel_cmdline(0);
 
     get_hardware_name(hardware, &revision);
     snprintf(tmp, sizeof(tmp), "/init.%s.rc", hardware);
+
+    INFO("reading config file\n");
+#ifndef MULTITHREAD
+    init_parse_config_file("/init.rc");
+    /* pull the kernel commandline and ramdisk properties file in */
     init_parse_config_file(tmp);
+#else
+    init_parse_config_files(2,fna);
+#endif
+
+    import_kernel_cmdline(0);
 
     action_for_each_trigger("early-init", action_add_queue_tail);
 
@@ -710,14 +850,14 @@ int main(int argc, char **argv)
     queue_builtin_action(console_init_action, "console_init");
     queue_builtin_action(set_init_properties_action, "set_init_properties");
 
-        /* execute all the boot actions to get us started */
+    /* execute all the boot actions to get us started */
     action_for_each_trigger("init", action_add_queue_tail);
     action_for_each_trigger("early-fs", action_add_queue_tail);
     action_for_each_trigger("fs", action_add_queue_tail);
     action_for_each_trigger("post-fs", action_add_queue_tail);
 
-    queue_builtin_action(property_service_init_action, "property_service_init");
     queue_builtin_action(signal_init_action, "signal_init");
+    queue_builtin_action(property_service_init_action, "property_service_init");
     queue_builtin_action(check_startup_action, "check_startup");
 
     /* execute all the boot actions to get us started */
@@ -732,11 +872,26 @@ int main(int argc, char **argv)
     queue_builtin_action(bootchart_init_action, "bootchart_init");
 #endif
 
+#ifdef MULTITHREAD
+    procActionQuerry(0);
+#endif
+
+#ifdef UPTIME_DEBUG
+    fdut = open("/dev/ut",O_RDWR|O_CREAT);
+    write(fdut,tval,strlen(tval)+1);
+    clock_gettime(CLOCK_MONOTONIC,&tv);
+    sprintf(tval,"for -> %lu:%lu\n",tv.tv_sec,tv.tv_nsec);
+    write(fdut,tval,strlen(tval)+1);
+    close(fdut);
+#endif
+
     for(;;) {
         int nr, i, timeout = -1;
 
-        execute_one_command();
-        restart_processes();
+#ifndef MULTITHREAD
+       execute_one_command();
+#endif
+       restart_processes();
 
         if (!property_set_fd_init && get_property_set_fd() > 0) {
             ufds[fd_count].fd = get_property_set_fd();

@@ -30,6 +30,7 @@
 #include "list.h"
 #include "property_service.h"
 #include "util.h"
+#include "addons.h"
 
 #include <cutils/iosched_policy.h>
 
@@ -39,6 +40,16 @@
 static list_declare(service_list);
 static list_declare(action_list);
 static list_declare(action_queue);
+
+static list_declare(action_dqueue);
+
+#ifdef  MULTITHREAD
+
+#include <pthread.h>
+static pthread_mutex_t mutex_sl = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_al = PTHREAD_MUTEX_INITIALIZER;
+
+#endif
 
 static void *parse_service(struct parse_state *state, int nargs, char **args);
 static void parse_line_service(struct parse_state *state, int nargs, char **args);
@@ -136,7 +147,10 @@ int lookup_keyword(const char *s)
         if (!strcmp(s, "top")) return K_stop;
         if (!strcmp(s, "ymlink")) return K_symlink;
         if (!strcmp(s, "ysclktz")) return K_sysclktz;
-        break;
+#ifdef MULTITHREAD
+	if (!strcmp(s, "ync")) return K_sync;
+#endif
+	break;
     case 't':
         if (!strcmp(s, "rigger")) return K_trigger;
         break;
@@ -217,6 +231,63 @@ static void parse_config(const char *fn, char *s)
         }
     }
 }
+
+#ifdef MULTITHREAD
+
+struct parse_args
+    {
+       pthread_t  self;
+     const char*  fname;
+            int   sem_id;
+    };
+
+static void *tf_parseConfig( void* arg )
+{
+    struct parse_args* _a = arg;
+    struct sembuf sb = {0,-1,0};
+    init_parse_config_file(_a->fname);
+    sem_op(_a->sem_id,&sb,1);
+    return NULL;
+}
+
+int init_parse_config_files( uint n, const char* fna[] )
+{
+    pthread_attr_t attr;
+    int sem_id = sem_get(IPC_PRIVATE,1,IPC_CREAT);
+    struct sembuf sb = {0,0,0};
+    struct parse_args args[n];
+    if(n > 1) {
+       pthread_attr_init(&attr);
+       pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+       sem_set(sem_id,0,n); }
+
+    if (sem_id == -1 ) return -1;
+
+    switch (n)
+     {
+      case 0:
+        return -1;
+      case 1:
+        return init_parse_config_file(fna[0]);
+      case 2:
+        args[0].fname = fna[0];
+        args[1].fname = fna[1];
+        args[0].sem_id = args[1].sem_id = sem_id;
+        if ( pthread_create(&args[0].self,&attr,tf_parseConfig,(void*)&args[0]) || \
+             pthread_create(&args[1].self,&attr,tf_parseConfig,(void*)&args[1]) ) return -1;
+        break;
+     dafault:
+       while(--n)
+        {
+         args[n].fname = fna[n];
+         pthread_create(&args[n].self,&attr,tf_parseConfig,(void*)&args[n]);
+        }
+     }
+  sem_op(sem_id,&sb,1);
+return 0;
+}
+
+#endif
 
 int init_parse_config_file(const char *fn)
 {
@@ -453,7 +524,12 @@ static void *parse_service(struct parse_state *state, int nargs, char **args)
     svc->nargs = nargs;
     svc->onrestart.name = "onrestart";
     list_init(&svc->onrestart.commands);
+
+#ifndef MULTITHREAD
     list_add_tail(&service_list, &svc->slist);
+#else
+    list_add_tail_m(&service_list, &svc->slist, &mutex_sl);
+#endif
     return svc;
 }
 
@@ -635,7 +711,12 @@ static void *parse_action(struct parse_state *state, int nargs, char **args)
     act = calloc(1, sizeof(*act));
     act->name = args[1];
     list_init(&act->commands);
-    list_add_tail(&action_list, &act->alist);
+
+#ifndef MULTITHREAD
+list_add_tail(&action_list, &act->alist);
+#else
+list_add_tail_m(&action_list, &act->alist, &mutex_al);
+#endif
         /* XXX add to hash */
     return act;
 }

@@ -200,6 +200,11 @@ stop <service>
 symlink <target> <path>
    Create a symbolic link at <path> with the value <target>
 
+sync <on|off>
+   Disable or enable synchonization in multithreading mode.
+   off - disable interthread synchronization and allow the multithreadind feture;
+   on  - enable sync.
+   
 sysclktz <mins_west_of_gmt>
    Set the system clock base (0 if system clock ticks in GMT)
 

@@ -565,3 +565,15 @@ int do_wait(int nargs, char **args)
     }
     return -1;
 }
+
+#ifdef MULTITHREAD
+int do_sync(int nargs, char ** args)
+{
+    uint oldv = exec_flags;
+    pthread_mutex_lock(&exec_mutex);
+    exec_flags = ((strcmp(args[1],"on"))?(exec_flags&~WFL_SYNC):(exec_flags|WFL_SYNC));
+    if ( exec_flags&WFL_SYNC && (exec_flags^oldv) ) exec_flags |= WFL_W4A;
+    pthread_mutex_unlock(&exec_mutex);
+    return 0;
+}
+#endif

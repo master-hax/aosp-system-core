@@ -79,7 +79,7 @@ void log_write(int level, const char *fmt, ...)
  */
 static unsigned int android_name_to_id(const char *name)
 {
-    struct android_id_info *info = android_ids;
+    struct android_id_info *info = (struct android_id_info*) android_ids;
     unsigned int n;
 
     for (n = 0; n < android_id_count; n++) {

@@ -32,4 +32,8 @@ void queue_builtin_action(int (*func)(int nargs, char **args), char *name);
 
 int init_parse_config_file(const char *fn);
 
+#ifdef MULTITHREAD
+int init_parse_config_files(uint n, const char* fna[]);
+#endif
+
 #endif
