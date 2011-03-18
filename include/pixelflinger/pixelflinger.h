@@ -190,8 +190,7 @@ typedef struct {
     GGLuint     height;     // height in pixels
     GGLint      stride;     // stride in pixels
     GGLubyte*   data;       // pointer to the bits
-    GGLubyte    format;     // pixel format
-    GGLubyte    rfu[3];     // must be zero
+    GGLuint     format;     // pixel format
     // these values are dependent on the used format
     union {
         GGLint  compressedFormat;
