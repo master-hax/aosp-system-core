@@ -31,6 +31,47 @@
 static char hardware[32];
 static unsigned revision = 0;
 
+static void import_kernel_nv(char *name)
+{
+    char *value = strchr(name, '=');
+
+    if (value == 0) return;
+    *value++ = 0;
+    if (*name == 0) return;
+
+    if (!strcmp(name,"androidboot.hardware"))
+        strlcpy(hardware, value, sizeof(hardware));
+}
+
+static void import_kernel_cmdline(void)
+{
+    char cmdline[1024];
+    char *ptr;
+    int fd;
+
+    fd = open("/proc/cmdline", O_RDONLY);
+    if (fd >= 0) {
+        int n = read(fd, cmdline, 1023);
+        if (n < 0) n = 0;
+
+        /* get rid of trailing newline, it happens */
+        if (n > 0 && cmdline[n-1] == '\n') n--;
+
+        cmdline[n] = 0;
+        close(fd);
+    } else {
+        cmdline[0] = 0;
+    }
+
+    ptr = cmdline;
+    while (ptr && *ptr) {
+        char *x = strchr(ptr, ' ');
+        if (x != 0) *x++ = 0;
+        import_kernel_nv(ptr);
+        ptr = x;
+    }
+}
+
 int ueventd_main(int argc, char **argv)
 {
     struct pollfd ufd;
@@ -41,6 +82,12 @@ int ueventd_main(int argc, char **argv)
     log_init();
 
     INFO("starting ueventd\n");
+
+    /* Since we cannot talk to the property service as
+     * this is the init program instead of a stand-alone
+     * executable, we have to pull the kernel commandline
+     * file in to look for hardware name. */
+    import_kernel_cmdline();
 
     get_hardware_name(hardware, &revision);
 
