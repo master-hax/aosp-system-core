@@ -185,5 +185,8 @@
 70200 aggregation (aggregation time|2|3)
 70201 aggregation_test (field1|1|2),(field2|1|2),(field3|1|2),(field4|1|2),(field5|1|2)
 
+# To get early indication of ANR
+80000 waiting_time_anr     (focusedapp|3),(focusedwin|3),(no_items|1|1),(values_per_item|1|1),(data|4)
+
 # NOTE - the range 1000000-2000000 is reserved for partners and others who
 # want to define their own log tags without conflicting with the core platform.
