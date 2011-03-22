@@ -26,14 +26,14 @@ void handle_control_message(const char *msg, const char *arg);
 
 struct command
 {
-        /* list of commands in an action */
+    /* list of commands in an action */
     struct listnode clist;
 
     int (*func)(int nargs, char **args);
     int nargs;
     char *args[1];
 };
-    
+
 struct action {
         /* node in list of all actions */
     struct listnode alist;
@@ -70,6 +70,8 @@ struct svcenvinfo {
 #define SVC_RESTARTING  0x08  /* waiting to restart */
 #define SVC_CONSOLE     0x10  /* requires console */
 #define SVC_CRITICAL    0x20  /* will reboot into recovery if keeps crashing */
+#define SVC_DELAYED     0x40
+#define SVC_VIRTUAL     0x80
 
 #define NR_SVC_SUPP_GIDS 12    /* twelve supplementary groups */
 
@@ -84,10 +86,12 @@ struct service {
 
     unsigned flags;
     pid_t pid;
+
+    time_t delay;
     time_t time_started;    /* time of last start */
     time_t time_crashed;    /* first crash within inspection window */
     int nr_crashed;         /* number of times crashed within window */
-    
+
     uid_t uid;
     gid_t gid;
     gid_t supp_gids[NR_SVC_SUPP_GIDS];
@@ -97,7 +101,8 @@ struct service {
     struct svcenvinfo *envvars;
 
     struct action onrestart;  /* Actions to execute on restart. */
-    
+    struct action onlaunch;
+
     /* keycodes for triggering this service via /dev/keychord */
     int *keycodes;
     int nkeycodes;

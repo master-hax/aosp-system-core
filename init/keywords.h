@@ -31,6 +31,7 @@ int do_wait(int nargs, char **args);
 #ifdef MULTITHREAD
 int do_sync(int nargs, char **args);
 #endif
+int do_exec_trig(int nargs, char **args);
 #define __MAKE_KEYWORD_ENUM__
 #define KEYWORD(symbol, flags, nargs, func) K_##symbol,
 enum {
@@ -80,8 +81,11 @@ enum {
     KEYWORD(loglevel,    COMMAND, 1, do_loglevel)
     KEYWORD(ioprio,      OPTION,  0, 0)
 #ifdef MULTITHREAD
-    KEYWORD(sync, 	     COMMAND, 1, do_sync)
+    KEYWORD(sync,        COMMAND, 1, do_sync)
 #endif
+    KEYWORD(delayed,     OPTION,  1, 0)
+    KEYWORD(onlaunch,    OPTION,  0, 0)
+    KEYWORD(exec_trig,   COMMAND, 1, do_exec_trig)
 #ifdef __MAKE_KEYWORD_ENUM__
     KEYWORD_COUNT,
 };

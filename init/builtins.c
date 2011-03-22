@@ -167,6 +167,23 @@ int do_domainname(int nargs, char **args)
     return write_file("/proc/sys/kernel/domainname", args[1]);
 }
 
+void exec_action(struct action* act)
+{
+ struct listnode* node;
+ struct command* cmd;
+ if(list_empty(&act->commands)) return;
+ list_for_each(node,&act->commands) {
+   cmd = node_to_item(node, struct command, clist);
+   cmd->func(cmd->nargs,cmd->args); }
+}
+
+int do_exec_trig(int nargs, char **args)
+{
+ERROR("Do exec_trig\n");
+action_for_each_trigger(args[1],exec_action);
+  return 0;
+}
+
 int do_exec(int nargs, char **args)
 {
     return -1;

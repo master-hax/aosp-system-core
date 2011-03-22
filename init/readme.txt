@@ -53,6 +53,15 @@ service <name> <pathname> [ <argument> ]*
    <option>
    ...
 
+or, if virtual service needed
+
+service virtual
+   <option>
+   <option>
+   ...
+
+Virtual service designed for do fork from init process and do some commands in
+backgrounds, e.g. drivers and modules load.
 
 Options
 -------
@@ -99,6 +108,15 @@ class <name>
 
 onrestart
     Execute a Command (see below) when service restarts.
+
+onlaunch
+    Execute a Command before service launch. For virtual services only.
+
+exec_trig <name>
+    Execute section <name> from config files.
+
+delay <sec>
+    Delay timeout before service start
 
 Triggers
 --------

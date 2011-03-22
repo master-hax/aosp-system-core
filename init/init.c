@@ -189,7 +189,7 @@ void service_start(struct service *svc, const char *dynamic_args)
         return;
     }
 
-    if (stat(svc->args[0], &s) != 0) {
+    if (stat( svc->args[0], &s) && !(svc->flags & SVC_VIRTUAL) ) {
         ERROR("cannot find '%s', disabling '%s'\n", svc->args[0], svc->name);
         svc->flags |= SVC_DISABLED;
         return;
@@ -268,6 +268,17 @@ void service_start(struct service *svc, const char *dynamic_args)
             setuid(svc->uid);
         }
 
+        if ( svc->flags & SVC_DELAYED ) sleep(svc->delay);
+
+        if ( svc->flags & SVC_VIRTUAL ) {
+         struct listnode* node;
+         struct command* cmd;
+         if (list_empty(&svc->onlaunch.commands)) _exit(127);
+         list_for_each(node, &svc->onlaunch.commands) {
+          cmd = node_to_item(node,struct command, clist);
+          cmd->func(cmd->nargs,cmd->args); }
+         _exit(127);
+        } else
         if (!dynamic_args) {
             if (execve(svc->args[0], (char**) svc->args, (char**) ENV) < 0) {
                 ERROR("cannot execve('%s'): %s\n", svc->args[0], strerror(errno));
@@ -637,7 +648,7 @@ static int check_startup_action(int nargs, char **args)
     /* make sure we actually have all the pieces we need */
     if ((get_property_set_fd() < 0) ||
         (get_signal_fd() < 0)) {
-        ERROR("init startup failure %d : %d\n",get_property_set_fd(),get_signal_fd());
+        ERROR("init startup failure %d : %d 0x%04x f\n", get_property_set_fd(),get_signal_fd(),exec_flags);
         exit(1);
     }
     return 0;
@@ -704,7 +715,7 @@ static void barWait( struct _work* w )
       while( *(w->op) ^ w->own ) pthread_cond_wait(&exec_cond, &exec_mutex);
 
     *(w->flags) &= ~w->flag;
-     pthread_mutex_unlock(&exec_mutex);
+    pthread_mutex_unlock(&exec_mutex);
 }
 
 __inline__
@@ -721,16 +732,11 @@ static void *thr_cmdExec( void* arg )
 {
     struct _work* work = arg;
     struct sembuf sb = {0,-1,0};
-    while( work->cmd )
-     {
+    while( work->cmd ) {
       barWait(work);
-#if 0
-     ERROR("thr:%lu - 1\n",work->id);
-#endif
       work->cmd->func(work->cmd->nargs, work->cmd->args);
-      barPost(work);
       work->cmd = getNextCommand();
-     }
+      barPost(work);   }
     sem_op(work->sem_id,&sb,1);
     return NULL;
 }

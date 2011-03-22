@@ -101,10 +101,12 @@ int lookup_keyword(const char *s)
     case 'd':
         if (!strcmp(s, "isabled")) return K_disabled;
         if (!strcmp(s, "omainname")) return K_domainname;
+        if (!strcmp(s, "elay")) return K_delayed;
         break;
     case 'e':
         if (!strcmp(s, "xec")) return K_exec;
         if (!strcmp(s, "xport")) return K_export;
+	if (!strcmp(s, "xec_trig")) return K_exec_trig;
         break;
     case 'g':
         if (!strcmp(s, "roup")) return K_group;
@@ -132,6 +134,7 @@ int lookup_keyword(const char *s)
         if (!strcmp(s, "n")) return K_on;
         if (!strcmp(s, "neshot")) return K_oneshot;
         if (!strcmp(s, "nrestart")) return K_onrestart;
+        if (!strcmp(s, "nlaunch")) return K_onlaunch;
         break;
     case 'r':
         if (!strcmp(s, "estart")) return K_restart;
@@ -495,21 +498,25 @@ int action_queue_empty()
 
 static void *parse_service(struct parse_state *state, int nargs, char **args)
 {
-    struct service *svc;
+    struct service *svc = NULL;
+    int virtual = 0;
+
     if (nargs < 3) {
-        parse_error(state, "services must have a name and a program\n");
-        return 0;
+        if ( !strcmp(args[1],"virtual") )
+            virtual = 1;
+        else {
+            parse_error(state, "services must have a name and a program\n");
+            return 0; }
     }
+
     if (!valid_name(args[1])) {
         parse_error(state, "invalid service name '%s'\n", args[1]);
         return 0;
     }
 
-    svc = service_find_by_name(args[1]);
-    if (svc) {
+    if ( !virtual && service_find_by_name(args[1]) ) {
         parse_error(state, "ignored duplicate definition of service '%s'\n", args[1]);
-        return 0;
-    }
+        return 0; }
 
     nargs -= 2;
     svc = calloc(1, sizeof(*svc) + sizeof(char*) * nargs);
@@ -517,13 +524,18 @@ static void *parse_service(struct parse_state *state, int nargs, char **args)
         parse_error(state, "out of memory\n");
         return 0;
     }
-    svc->name = args[1];
+
+    svc->name      = args[1];
     svc->classname = "default";
+    svc->flags     = virtual?(SVC_VIRTUAL | SVC_ONESHOT):0;
+
     memcpy(svc->args, args + 2, sizeof(char*) * nargs);
     svc->args[nargs] = 0;
     svc->nargs = nargs;
     svc->onrestart.name = "onrestart";
     list_init(&svc->onrestart.commands);
+    svc->onlaunch.name  = "onlaunch";
+    list_init(&svc->onlaunch.commands);
 
 #ifndef MULTITHREAD
     list_add_tail(&service_list, &svc->slist);
@@ -617,6 +629,7 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
     case K_oneshot:
         svc->flags |= SVC_ONESHOT;
         break;
+    case K_onlaunch:
     case K_onrestart:
         nargs--;
         args++;
@@ -636,7 +649,7 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
         cmd->func = kw_func(kw);
         cmd->nargs = nargs;
         memcpy(cmd->args, args, sizeof(char*) * nargs);
-        list_add_tail(&svc->onrestart.commands, &cmd->clist);
+        list_add_tail(((kw^K_onrestart)?&svc->onlaunch.commands:&svc->onrestart.commands), &cmd->clist);
         break;
     case K_critical:
         svc->flags |= SVC_CRITICAL;
@@ -691,6 +704,13 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
         } else {
             svc->uid = decode_uid(args[1]);
         }
+        break;
+    case K_delayed:
+        if ( nargs ^ 2 )
+          parse_error(state, "delayed  option requires a number of seconds\n");
+        else {
+          svc->delay  = atol(args[1]);
+          svc->flags |= SVC_DELAYED; }
         break;
     default:
         parse_error(state, "invalid option '%s'\n", args[0]);
