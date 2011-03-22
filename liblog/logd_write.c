@@ -33,6 +33,7 @@
 
 #if FAKE_LOG_DEVICE
 // This will be defined when building for the host.
+#include "fake_log_device.h"
 #define log_open(pathname, flags) fakeLogOpen(pathname, flags)
 #define log_writev(filedes, vector, count) fakeLogWritev(filedes, vector, count)
 #define log_close(filedes) fakeLogClose(filedes)
