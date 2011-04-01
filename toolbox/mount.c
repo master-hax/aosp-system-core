@@ -62,8 +62,10 @@ static void add_extra_option(struct extra_opts *extra, char *s)
 	int len = strlen(s);
 	int newlen = extra->used_size + len;
 
-	if (extra->str)
+	if (extra->str) {
 	       len++;			/* +1 for ',' */
+	       newlen++;
+	}
 
 	if (newlen >= extra->alloc_size) {
 		char *new;
