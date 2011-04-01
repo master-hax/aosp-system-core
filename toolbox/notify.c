@@ -101,14 +101,15 @@ int notify_main(int argc, char *argv[])
 			else if(verbose >= 1)
 		        printf("%d: %08x \"%s\"\n", event->wd, event->mask, event->len ? event->name : "");
 			if(print_files && (event->mask & IN_MODIFY)) {
-				char filename[512];
+				char filename[PATH_MAX];
 				ssize_t read_len;
 				char *display_name;
 				int buflen;
-				strcpy(filename, file_names[event->wd + id_offset]);
+				strncpy(filename, file_names[event->wd + id_offset], sizeof(filename) - 1);
+				filename[sizeof(filename) - 1] = 0;
 				if(event->len) {
-					strcat(filename, "/");
-					strcat(filename, event->name);
+					strncat(filename, "/", sizeof(filename) - strlen(filename) - 1);
+					strncat(filename, event->name, sizeof(filename) - strlen(filename) - 1);
 				}
 				ffd = open(filename, O_RDONLY);
 				display_name = (verbose >= 2 || event->len == 0) ? filename : event->name;
