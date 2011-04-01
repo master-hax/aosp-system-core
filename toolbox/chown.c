@@ -23,7 +23,8 @@ int chown_main(int argc, char **argv)
     // if a group id specified.
     char user[32];
     char *group = NULL;
-    strncpy(user, argv[1], sizeof(user));
+    strncpy(user, argv[1], sizeof(user) - 1);
+    user[sizeof(user) - 1] = 0;
     if ((group = strchr(user, '.')) != NULL) {
         *group++ = '\0';
     }

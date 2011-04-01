@@ -227,7 +227,8 @@ void fuse_init(struct fuse *fuse, int fd, const char *path)
     fuse->root.all = 0;
     fuse->root.refcount = 2;
 
-    strcpy(fuse->root.name, path);
+    strncpy(fuse->root.name, path, sizeof(fuse->rootpath) - 1);
+    fuse->root.name[sizeof(fuse->rootpath) - 1] = 0;
     fuse->root.namelen = strlen(fuse->root.name);
 }
 
