@@ -216,11 +216,22 @@ config_mbr(struct disk_info *dinfo)
     uint32_t ext_lba = 0;
     struct write_list *wr_list = NULL;
     struct write_list *temp_wr = NULL;
+    uint16_t mbr_sig = PC_BIOS_BOOT_SIG;
     int cnt = 0;
     int extended = 0;
 
     if (!dinfo->part_lst)
         return NULL;
+
+    /* Write/rewrite master boot record signature */
+    if (!(temp_wr = alloc_wl(sizeof(mbr_sig)))) {
+            LOGE("Unable to allocate memory for MBR signature.");
+            goto fail;
+    }
+
+    temp_wr->offset = 510;
+    memcpy(temp_wr->data, &mbr_sig, sizeof(mbr_sig));
+    wlist_add(&wr_list, temp_wr);
 
     for (cnt = 0; cnt < dinfo->num_parts; ++cnt) {
         pinfo = &dinfo->part_lst[cnt];
