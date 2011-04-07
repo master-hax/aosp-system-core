@@ -52,14 +52,22 @@ struct fbinfo {
 void framebuffer_service(int fd, void *cookie)
 {
     struct fb_var_screeninfo vinfo;
+    struct fb_fix_screeninfo finfo;
     int fb, offset;
-    char x[256];
+    char *x = NULL;
 
     struct fbinfo fbinfo;
     unsigned i, bytespp;
+    unsigned int fb_aligned_size;
+    unsigned int fb_line_length;
+    unsigned int fb_line_length_aligned;
 
     fb = open("/dev/graphics/fb0", O_RDONLY);
     if(fb < 0) goto done;
+
+    /* Read fix screen info to take care of the case
+     * when the line_length is aligned */
+    if(ioctl(fb, FBIOGET_FSCREENINFO, &finfo) < 0) goto done;
 
     if(ioctl(fb, FBIOGET_VSCREENINFO, &vinfo) < 0) goto done;
     fcntl(fb, F_SETFD, FD_CLOEXEC);
@@ -80,6 +88,15 @@ void framebuffer_service(int fd, void *cookie)
     fbinfo.alpha_offset = vinfo.transp.offset;
     fbinfo.alpha_length = vinfo.transp.length;
 
+     x = (char*)malloc(finfo.line_length);
+     if (x == NULL) goto done;
+
+     /* Line length without possible extra bytes for alignment */
+     fb_line_length = vinfo.xres * bytespp;
+
+     /* Aligned line length due to hardware requirement */
+     fb_line_length_aligned = finfo.line_length;
+
     /* HACK: for several of our 3d cores a specific alignment
      * is required so the start of the fb may not be an integer number of lines
      * from the base.  As a result we are storing the additional offset in
@@ -87,20 +104,23 @@ void framebuffer_service(int fd, void *cookie)
      * to each line, not just once at the beginning */
     offset = vinfo.xoffset * bytespp;
 
-    offset += vinfo.xres * vinfo.yoffset * bytespp;
+    /* Take line alignment into account when calculating offset */
+    offset += fb_line_length_aligned * vinfo.yoffset;
 
     if(writex(fd, &fbinfo, sizeof(fbinfo))) goto done;
 
     lseek(fb, offset, SEEK_SET);
-    for(i = 0; i < fbinfo.size; i += 256) {
-      if(readx(fb, &x, 256)) goto done;
-      if(writex(fd, &x, 256)) goto done;
-    }
+    fb_aligned_size = finfo.line_length*vinfo.yres;
 
-    if(readx(fb, &x, fbinfo.size % 256)) goto done;
-    if(writex(fd, &x, fbinfo.size % 256)) goto done;
+    for(i = 0; i < fb_aligned_size; i += fb_line_length_aligned) {
+      /* Read one line including alignment bytes */
+      if(readx(fb, x, fb_line_length_aligned)) goto done;
+      /* Write one line, but skip extra bytes added for alignment */
+      if(writex(fd, x, fb_line_length)) goto done;
+    }
 
 done:
     if(fb >= 0) close(fb);
     close(fd);
+    free(x);
 }
