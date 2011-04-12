@@ -664,7 +664,12 @@ static void parse_line_action(struct parse_state* state, int nargs, char **args)
             n > 2 ? "arguments" : "argument");
         return;
     }
-    cmd = malloc(sizeof(*cmd) + sizeof(char*) * nargs);
+    cmd = calloc(1, sizeof(*cmd) + sizeof(char*) * (nargs + 1));
+    if (!cmd) {
+        parse_error(state, "malloc failed\n");
+        return;
+    }
+
     cmd->func = kw_func(kw);
     cmd->nargs = nargs;
     memcpy(cmd->args, args, sizeof(char*) * nargs);
