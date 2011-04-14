@@ -85,7 +85,7 @@ static int insmod(const char *filename, char *options)
     return ret;
 }
 
-static int setkey(struct kbentry *kbe)
+static int kbioctl(int cmd, void *data)
 {
     int fd, ret;
 
@@ -93,7 +93,7 @@ static int setkey(struct kbentry *kbe)
     if (fd < 0)
         return -1;
 
-    ret = ioctl(fd, KDSKBENT, kbe);
+    ret = ioctl(fd, cmd, data);
 
     close(fd);
     return ret;
@@ -373,7 +373,23 @@ int do_setkey(int nargs, char **args)
     kbe.kb_table = strtoul(args[1], 0, 0);
     kbe.kb_index = strtoul(args[2], 0, 0);
     kbe.kb_value = strtoul(args[3], 0, 0);
-    return setkey(&kbe);
+    return kbioctl(KDSKBENT, &kbe);
+}
+
+int do_setkeycode(int nargs, char **args)
+{
+    struct kbkeycode kbk;
+    unsigned int sc, kc;
+    sc = strtoul(args[1], 0, 0);
+    if (sc >= 0xe000) {
+        sc -= 0xe000;
+        sc += 128;
+    }
+    kc = strtoul(args[2], 0, 0);
+    kbk.scancode = sc;
+    kbk.keycode = kc;
+    /* sc, kc may be out of range, but we leave the testing to the kernel */
+    return kbioctl(KDSETKEYCODE, &kbk);
 }
 
 int do_setprop(int nargs, char **args)
