@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <linux/capability.h>
 
 /* for ANDROID_SOCKET_* */
 #include <cutils/sockets.h>
@@ -455,4 +456,41 @@ void get_hardware_name(char *hardware, unsigned int *revision)
             *revision = strtoul(x + 2, 0, 16);
         }
     }
+}
+
+uint32_t decode_capability(const char *s)
+{
+    if (!strcmp(s, "CHOWN")) return 1 << CAP_CHOWN;
+    if (!strcmp(s, "DAC_OVERRIDE")) return 1 << CAP_DAC_OVERRIDE;
+    if (!strcmp(s, "DAC_READ_SEARCH")) return 1 << CAP_DAC_READ_SEARCH;
+    if (!strcmp(s, "FOWNER")) return 1 << CAP_FOWNER;
+    if (!strcmp(s, "FSETID")) return 1 << CAP_FSETID;
+    if (!strcmp(s, "FS_MASK")) return 1 << CAP_FS_MASK;
+    if (!strcmp(s, "KILL")) return 1 << CAP_KILL;
+    if (!strcmp(s, "SETGID")) return 1 << CAP_SETGID;
+    if (!strcmp(s, "SETUID")) return 1 << CAP_SETUID;
+    if (!strcmp(s, "SETPCAP")) return 1 << CAP_SETPCAP;
+    if (!strcmp(s, "LINUX_IMMUTABLE")) return 1 << CAP_LINUX_IMMUTABLE;
+    if (!strcmp(s, "NET_BIND_SERVICE")) return 1 << CAP_NET_BIND_SERVICE;
+    if (!strcmp(s, "NET_BROADCAST")) return 1 << CAP_NET_BROADCAST;
+    if (!strcmp(s, "NET_ADMIN")) return 1 << CAP_NET_ADMIN;
+    if (!strcmp(s, "NET_RAW")) return 1 << CAP_NET_RAW;
+    if (!strcmp(s, "IPC_LOCK")) return 1 << CAP_IPC_LOCK;
+    if (!strcmp(s, "IPC_OWNER")) return 1 << CAP_IPC_OWNER;
+    if (!strcmp(s, "SYS_MODULE")) return 1 << CAP_SYS_MODULE;
+    if (!strcmp(s, "SYS_RAWIO")) return 1 << CAP_SYS_RAWIO;
+    if (!strcmp(s, "SYS_CHROOT")) return 1 << CAP_SYS_CHROOT;
+    if (!strcmp(s, "SYS_PTRACE")) return 1 << CAP_SYS_PTRACE;
+    if (!strcmp(s, "SYS_PACCT")) return 1 << CAP_SYS_PACCT;
+    if (!strcmp(s, "SYS_ADMIN")) return 1 << CAP_SYS_ADMIN;
+    if (!strcmp(s, "SYS_BOOT")) return 1 << CAP_SYS_BOOT;
+    if (!strcmp(s, "SYS_NICE")) return 1 << CAP_SYS_NICE;
+    if (!strcmp(s, "SYS_RESOURCE")) return 1 << CAP_SYS_RESOURCE;
+    if (!strcmp(s, "SYS_TIME")) return 1 << CAP_SYS_TIME;
+    if (!strcmp(s, "SYS_TTY_CONFIG")) return 1 << CAP_SYS_TTY_CONFIG;
+    if (!strcmp(s, "MKNOD")) return 1 << CAP_MKNOD;
+    if (!strcmp(s, "LEASE")) return 1 << CAP_LEASE;
+    if (!strcmp(s, "AUDIT_WRITE")) return 1 << CAP_AUDIT_WRITE;
+    if (!strcmp(s, "AUDIT_CONTROL")) return 1 << CAP_AUDIT_CONTROL;
+    return 0;
 }

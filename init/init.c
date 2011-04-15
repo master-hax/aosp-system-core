@@ -32,6 +32,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <libgen.h>
+#include <sys/prctl.h>
+#include <linux/capability.h>
 
 #include <cutils/sockets.h>
 #include <cutils/iosched_policy.h>
@@ -143,6 +145,25 @@ static void publish_socket(const char *name, int fd)
     fcntl(fd, F_SETFD, 0);
 }
 
+static void set_capabilities(struct service *svc)
+{
+    struct __user_cap_header_struct header;
+    struct __user_cap_data_struct data;
+
+    header.version = _LINUX_CAPABILITY_VERSION;
+    header.pid = getpid();
+    data.effective = data.permitted = data.inheritable = 0;
+
+    if (capget(&header, &data)) {
+        ERROR("capget failed for '%s': %s\n", svc->name, strerror(errno));
+    } else {
+        data.inheritable = svc->capabilities;
+        if (capset(&header, &data)) {
+            ERROR("capset failed for '%s': %s\n", svc->name, strerror(errno));
+        }
+    }
+}
+
 void service_start(struct service *svc, const char *dynamic_args)
 {
     struct stat s;
@@ -241,15 +262,30 @@ void service_start(struct service *svc, const char *dynamic_args)
 
         setpgid(0, getpid());
 
-    /* as requested, set our gid, supplemental gids, and uid */
+        /* as requested, set our gid, supplemental gids, and uid */
         if (svc->gid) {
-            setgid(svc->gid);
+            if (setgid(svc->gid)) {
+                ERROR("setgid(%d) failed for '%s': %s\n", svc->gid, svc->name, strerror(errno));
+            }
         }
         if (svc->nr_supp_gids) {
-            setgroups(svc->nr_supp_gids, svc->supp_gids);
+            if (setgroups(svc->nr_supp_gids, svc->supp_gids)) {
+                ERROR("setgid(%d) failed for '%s': %s\n", svc->gid, svc->name, strerror(errno));
+            }
         }
         if (svc->uid) {
-            setuid(svc->uid);
+            if (svc->capabilities) {
+                ERROR("warning: service '%s' non-root user ignored as capabilities are specified\n",
+                      svc->name);
+            } else {
+                if (setuid(svc->uid)) {
+                    ERROR("setuid(%d) failed for '%s': %s\n", svc->uid, svc->name, strerror(errno));
+                }
+            }
+        }
+
+        if (svc->capabilities) {
+            set_capabilities(svc);
         }
 
         if (!dynamic_args) {
