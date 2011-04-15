@@ -295,24 +295,13 @@ uint32_t expand(uint32_t v, int sbits, int dbits)
         if (sbits==1) {
             v = (v<<dbits) - v;
         } else {
-            if (dbits % sbits) {
-                v <<= (dbits-sbits);
+            v <<= (dbits-sbits);
+            dbits -= sbits;
+            do {
+                v |= v>>sbits;
                 dbits -= sbits;
-                do {
-                    v |= v>>sbits;
-                    dbits -= sbits;
-                    sbits *= 2;
-                } while (dbits>0);
-            } else {
-                dbits -= sbits;
-                do {
-                    v |= v<<sbits;
-                    dbits -= sbits;
-                    if (sbits*2 < dbits) {
-                        sbits *= 2;
-                    }
-                } while (dbits > 0);
-            }
+                sbits *= 2;
+            } while (dbits>0);
         }
     }
 	return v;
