@@ -38,4 +38,5 @@ void remove_link(const char *oldpath, const char *newpath);
 int wait_for_file(const char *filename, int timeout);
 void open_devnull_stdio(void);
 void get_hardware_name(char *hardware, unsigned int *revision);
+uint32_t decode_capability(const char *name);
 #endif
