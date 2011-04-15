@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <linux/capability.h>
 
 /* for ANDROID_SOCKET_* */
 #include <cutils/sockets.h>
@@ -455,4 +456,41 @@ void get_hardware_name(char *hardware, unsigned int *revision)
             *revision = strtoul(x + 2, 0, 16);
         }
     }
+}
+
+uint64_t decode_capability(const char *s)
+{
+    if (!strcmp(s, "CHOWN")) return CAP_CHOWN;
+    if (!strcmp(s, "DAC_OVERRIDE")) return CAP_DAC_OVERRIDE;
+    if (!strcmp(s, "DAC_READ_SEARCH")) return CAP_DAC_READ_SEARCH;
+    if (!strcmp(s, "FOWNER")) return CAP_FOWNER;
+    if (!strcmp(s, "FSETID")) return CAP_FSETID;
+    if (!strcmp(s, "FS_MASK")) return CAP_FS_MASK;
+    if (!strcmp(s, "KILL")) return CAP_KILL;
+    if (!strcmp(s, "SETGID")) return CAP_SETGID;
+    if (!strcmp(s, "SETUID")) return CAP_SETUID;
+    if (!strcmp(s, "SETPCAP")) return CAP_SETPCAP;
+    if (!strcmp(s, "LINUX_IMMUTABLE")) return CAP_LINUX_IMMUTABLE;
+    if (!strcmp(s, "NET_BIND_SERVICE")) return CAP_NET_BIND_SERVICE;
+    if (!strcmp(s, "NET_BROADCAST")) return CAP_NET_BROADCAST;
+    if (!strcmp(s, "NET_ADMIN")) return CAP_NET_ADMIN;
+    if (!strcmp(s, "NET_RAW")) return CAP_NET_RAW;
+    if (!strcmp(s, "IPC_LOCK")) return CAP_IPC_LOCK;
+    if (!strcmp(s, "IPC_OWNER")) return CAP_IPC_OWNER;
+    if (!strcmp(s, "SYS_MODULE")) return CAP_SYS_MODULE;
+    if (!strcmp(s, "SYS_RAWIO")) return CAP_SYS_RAWIO;
+    if (!strcmp(s, "SYS_CHROOT")) return CAP_SYS_CHROOT;
+    if (!strcmp(s, "SYS_PTRACE")) return CAP_SYS_PTRACE;
+    if (!strcmp(s, "SYS_PACCT")) return CAP_SYS_PACCT;
+    if (!strcmp(s, "SYS_ADMIN")) return CAP_SYS_ADMIN;
+    if (!strcmp(s, "SYS_BOOT")) return CAP_SYS_BOOT;
+    if (!strcmp(s, "SYS_NICE")) return CAP_SYS_NICE;
+    if (!strcmp(s, "SYS_RESOURCE")) return CAP_SYS_RESOURCE;
+    if (!strcmp(s, "SYS_TIME")) return CAP_SYS_TIME;
+    if (!strcmp(s, "SYS_TTY_CONFIG")) return CAP_SYS_TTY_CONFIG;
+    if (!strcmp(s, "MKNOD")) return CAP_MKNOD;
+    if (!strcmp(s, "LEASE")) return CAP_LEASE;
+    if (!strcmp(s, "AUDIT_WRITE")) return CAP_AUDIT_WRITE;
+    if (!strcmp(s, "AUDIT_CONTROL")) return CAP_AUDIT_CONTROL;
+    return 0;
 }

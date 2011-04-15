@@ -472,6 +472,13 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
     kw = lookup_keyword(args[0]);
     switch (kw) {
     case K_capability:
+        if (nargs < 2) {
+            parse_error(state, "capability option requires at least one capability name\n");
+        } else {
+            for (i = 1; i < nargs; i++) {
+                svc->capabilities |= decode_capability(args[i]);
+            }
+        }
         break;
     case K_class:
         if (nargs != 2) {

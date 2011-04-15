@@ -92,6 +92,8 @@ struct service {
     gid_t supp_gids[NR_SVC_SUPP_GIDS];
     size_t nr_supp_gids;
 
+    uint64_t capabilities;
+
     struct socketinfo *sockets;
     struct svcenvinfo *envvars;
 

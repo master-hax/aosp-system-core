@@ -78,9 +78,16 @@ socket <name> <type> <perm> [ <user> [ <group> ] ]
 user <username>
    Change to username before exec'ing this service.
    Currently defaults to root.  (??? probably should default to nobody)
-   Currently, if your process requires linux capabilities then you cannot use
-   this command. You must instead request the capabilities in-process while
-   still root, and then drop to your desired uid.
+
+capability <capability> [ <capability> ]*
+   Grand the service the given capabilities.
+   Supported capabilities are:
+      CHOWN, DAC_OVERRIDE, DAC_READ_SEARCH, FOWNER, FSETID, FS_MASK, KILL,
+      SETGID, SETUID, SETPCAP, LINUX_IMMUTABLE, NET_BIND_SERVICE,
+      NET_BROADCAST, NET_ADMIN, NET_RAW, IPC_LOCK, IPC_OWNER, SYS_MODULE,
+      SYS_RAWIO, SYS_CHROOT, SYS_PTRACE, SYS_PACCT, SYS_ADMIN, SYS_BOOT,
+      SYS_NICE, SYS_RESOURCE, SYS_TIME, SYS_TTY_CONFIG, MKNOD, LEASE,
+      AUDIT_WRITE, AUDIT_CONTROL
 
 group <groupname> [ <groupname> ]*
    Change to groupname before exec'ing this service.  Additional

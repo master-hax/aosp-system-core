@@ -32,6 +32,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <libgen.h>
+#include <sys/prctl.h>
+#include <linux/capability.h>
 
 #include <cutils/sockets.h>
 #include <cutils/iosched_policy.h>
@@ -143,6 +145,28 @@ static void publish_socket(const char *name, int fd)
     fcntl(fd, F_SETFD, 0);
 }
 
+static void add_capability(struct service *svc, int set_permitted)
+{
+    struct __user_cap_header_struct header;
+    struct __user_cap_data_struct data;
+
+    header.version = _LINUX_CAPABILITY_VERSION;
+    header.pid = getpid();
+
+    if (capget(&header, &data) != 0) {
+        ERROR("capget failed for '%s'\n", svc->name);
+    } else {
+        if(set_permitted) {
+            data.effective = data.permitted = data.inheritable = 0;
+            data.permitted |= svc->capabilities;
+        }
+        data.effective |= svc->capabilities;
+        if(capset(&header, &data) != 0) {
+            ERROR("capset failed for '%s'\n", svc->name);
+        }
+    }
+}
+
 void service_start(struct service *svc, const char *dynamic_args)
 {
     struct stat s;
@@ -223,6 +247,15 @@ void service_start(struct service *svc, const char *dynamic_args)
             }
         }
 
+        if(svc->capabilities && svc->uid) {
+            /* indicate that we are capability aware and
+               want to keep capabilities over a change of uid*/
+            if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) < 0) {
+                ERROR("prctl PR_SET_KEEPCAPS failed for service '%s'\n", svc->name);
+            }
+            add_capability(svc, 1);
+        }
+
         if (needs_console) {
             setsid();
             open_console();
@@ -250,6 +283,10 @@ void service_start(struct service *svc, const char *dynamic_args)
         }
         if (svc->uid) {
             setuid(svc->uid);
+        }
+
+        if(svc->capabilities && svc->uid) {
+            add_capability(svc, 0);
         }
 
         if (!dynamic_args) {
