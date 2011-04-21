@@ -548,11 +548,10 @@ showjobs(struct output *out, int mode)
 	 * Check if we are not in our foreground group, and if not
 	 * put us in it.
 	 */
-	if (mflag && gotpid != -1 && tcgetpgrp(ttyfd) != getpid()) {
-		if (tcsetpgrp(ttyfd, getpid()) == -1)
-			error("Cannot set tty process group (%s) at %d",
-			    strerror(errno), __LINE__);
-		TRACE(("repaired tty process group\n"));
+	if (mflag && gotpid != -1) {
+		pid_t pid = getpid();
+		if (tcgetpgrp(ttyfd) != pid && tcsetpgrp(ttyfd, pid) != -1)
+			TRACE(("repaired tty process group\n"));
 		silent = 1;
 	}
 #endif
