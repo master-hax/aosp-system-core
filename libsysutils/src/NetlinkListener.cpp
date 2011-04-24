@@ -19,6 +19,8 @@
 #include <sys/socket.h>
 #include <string.h>
 
+#include <linux/netlink.h>
+
 #define LOG_TAG "NetlinkListener"
 #include <cutils/log.h>
 
@@ -32,10 +34,18 @@ NetlinkListener::NetlinkListener(int socket) :
 bool NetlinkListener::onDataAvailable(SocketClient *cli)
 {
     int socket = cli->getSocket();
+    struct sockaddr_nl addr;
+    socklen_t addr_len = sizeof(addr);
     int count;
 
-    if ((count = recv(socket, mBuffer, sizeof(mBuffer), 0)) < 0) {
+    if ((count = recvfrom(socket, mBuffer, sizeof(mBuffer), 0,
+                          (struct sockaddr *)&addr, &addr_len)) < 0) {
         SLOGE("recv failed (%s)", strerror(errno));
+        return false;
+    }
+
+    if (addr.nl_pid != 0 && addr.nl_groups == 0) {
+        SLOGW("forged uevent message from pid %d ignored", addr.nl_pid);
         return false;
     }
 
