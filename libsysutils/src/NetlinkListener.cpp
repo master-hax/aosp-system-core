@@ -21,6 +21,7 @@
 
 #define LOG_TAG "NetlinkListener"
 #include <cutils/log.h>
+#include <cutils/uevent.h>
 
 #include <sysutils/NetlinkListener.h>
 #include <sysutils/NetlinkEvent.h>
@@ -34,9 +35,15 @@ bool NetlinkListener::onDataAvailable(SocketClient *cli)
     int socket = cli->getSocket();
     int count;
 
-    if ((count = recv(socket, mBuffer, sizeof(mBuffer), 0)) < 0) {
+    if ((count = uevent_checked_recv(socket, mBuffer, sizeof(mBuffer))) < 0) {
         SLOGE("recv failed (%s)", strerror(errno));
         return false;
+    }
+
+    if (count == 0) {
+        /* uevent_checked_recv returns 0 on a forged message */
+        SLOGE("ignoring forged message");
+        return true;
     }
 
     NetlinkEvent *evt = new NetlinkEvent();
