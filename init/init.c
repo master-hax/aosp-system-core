@@ -438,11 +438,48 @@ static void sigchld_handler(int s)
     write(signal_fd, &s, 1);
 }
 
+static void stop_system()
+{
+    struct service *svc;
+
+    svc = service_find_by_name("servicemanager");
+    service_stop(svc);
+    usleep(50000);
+    service_for_each(service_stop);
+    usleep(10000);
+    sync();
+    umount2("/data", MNT_FORCE);
+}
+
+static void do_shutdown()
+{
+    stop_system();
+    reboot(RB_POWER_OFF);
+}
+
+static void do_reboot(const char *arg)
+{
+    stop_system();
+    if (arg && *arg)
+        __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2,
+            LINUX_REBOOT_CMD_RESTART2, (void *)arg);
+    else
+        reboot(RB_AUTOBOOT);
+}
+
 static void msg_start(const char *name)
 {
     struct service *svc;
     char *tmp = NULL;
     char *args = NULL;
+
+    /* No return from these cases */
+    if (!strcmp(name, "shutdown"))
+        do_shutdown();
+    else if (!strncmp(name, "reboot:", 7))
+        do_reboot(name+7);
+    else if (!strcmp(name, "reboot"))
+        do_reboot(NULL);
 
     if (!strchr(name, ':'))
         svc = service_find_by_name(name);
