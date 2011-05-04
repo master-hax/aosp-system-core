@@ -59,6 +59,7 @@
 #define AID_RFU1          1023  /* RFU */
 #define AID_RFU2          1024  /* RFU */
 #define AID_NFC           1025  /* nfc subsystem */
+#define AID_SMARTCARD     1028  /* smart card subsystem */
 
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
@@ -111,6 +112,7 @@ static const struct android_id_info android_ids[] = {
     { "sdcard_rw", AID_SDCARD_RW, },
     { "vpn",       AID_VPN, },
     { "keystore",  AID_KEYSTORE, },
+    { "smartcard", AID_SMARTCARD, },
     { "usb",       AID_USB, },
     { "gps",       AID_GPS, },
     { "inet",      AID_INET, },
