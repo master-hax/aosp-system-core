@@ -1,8 +1,11 @@
+#include <machine/cpu-features.h>
+
     .text
     .align 2
     .global crash
     .type crash, %function
 crash:
+#if __ARM_ARCH__ >= 7
     fconstd   d0, #0
     fconstd   d1, #1
     fconstd   d2, #2
@@ -37,6 +40,7 @@ crash:
     fconstd   d30, #30
     fconstd   d31, #31
 #endif
+#endif  /* __ARM_ARCH__ */
     mov       r0, #0
     str       r0, [r0]
     bx        lr
