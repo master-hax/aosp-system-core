@@ -545,6 +545,21 @@ int do_oem_command(int argc, char **argv)
     return 0;
 }
 
+static unsigned query_max_download_sz(void)
+{
+    char resp[FB_RESPONSE_SZ+1];
+    int status;
+    int size = 0;
+
+    resp[FB_RESPONSE_SZ] = 0;
+    usb = open_device();
+    status = fb_command_response(usb, "getvar:max-download-size", resp);
+    if(!status) {
+        size = strtoul(resp, NULL, 0);
+    }
+    return size;
+}
+
 int main(int argc, char **argv)
 {
     int wants_wipe = 0;
@@ -646,6 +661,7 @@ int main(int argc, char **argv)
         } else if(!strcmp(*argv, "flash")) {
             char *pname = argv[1];
             char *fname = 0;
+            unsigned max_download_sz = 0;
             require(2);
             if (argc > 2) {
                 fname = argv[2];
@@ -657,7 +673,19 @@ int main(int argc, char **argv)
             if (fname == 0) die("cannot determine image filename for '%s'", pname);
             data = load_file(fname, &sz);
             if (data == 0) die("cannot load '%s'\n", fname);
-            fb_queue_flash(pname, data, sz);
+            max_download_sz = query_max_download_sz();
+            if(!max_download_sz || sz <= max_download_sz) {
+                fb_queue_flash(pname, data, sz);
+            } else {
+                int end;
+                unsigned flash_sz;
+                while(sz) {
+                    flash_sz = ((end = (sz <= max_download_sz)) ? sz : max_download_sz);
+                    fb_queue_multiflash(pname, data, flash_sz, end);
+                    data = (void *)((char *)data + flash_sz);
+                    sz -= flash_sz;
+                }
+            }
         } else if(!strcmp(*argv, "flash:raw")) {
             char *pname = argv[1];
             char *kname = argv[2];
