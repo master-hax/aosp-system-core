@@ -98,7 +98,7 @@ static int have_console;
 static char *console_name = "/dev/console";
 static time_t process_needs_restart;
 
-static const char *ENV[32];
+char *ENV[32];
 
 /* add_environment - add "key=value" to the current environment */
 int add_environment(const char *key, const char *val)
@@ -404,6 +404,54 @@ void service_reset(struct service *svc)
 void service_stop(struct service *svc)
 {
     service_stop_or_reset(svc, SVC_DISABLED);
+}
+
+int exec_program(int nargs, char **args)
+{
+    pid_t pid;
+    pid_t deadpid;
+    int status;
+
+    pid = fork();
+
+    if (pid == 0) {
+        if (execve(args[0], &args[0], ENV))
+            ERROR("cannot execve('%s'): %s\n", args[0], strerror(errno));
+        _exit(127);
+    }
+
+    if (pid < 0) {
+        ERROR("failed to start '%s'\n", args[0]);
+        return -errno;
+    }
+
+    do
+    {
+        deadpid = wait(&status);
+        if (deadpid < 0)
+        {
+            ERROR("failed to wait for '%s' (pid %d): %s\n", args[0], pid, strerror(errno));
+            return -errno;
+        }
+    } while (deadpid != pid);
+
+    if (WIFEXITED(status) && WEXITSTATUS(status))
+    {
+        ERROR("%s terminated with status %d.\n", args[0], WEXITSTATUS(status));
+        return -1;
+    }
+    else if (WIFSIGNALED(status))
+    {
+        ERROR("%s was killed by signal %d\n", args[0], WTERMSIG(status));
+        return -1;
+    }
+    else if (WIFSTOPPED(status))
+    {
+        ERROR("%s was stopped by signal %d\n", args[0], WSTOPSIG(status));
+        return -1;
+    }
+
+    return 0;
 }
 
 void property_changed(const char *name, const char *value)

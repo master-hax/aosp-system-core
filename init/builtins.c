@@ -182,7 +182,11 @@ int do_domainname(int nargs, char **args)
 
 int do_exec(int nargs, char **args)
 {
-    return -1;
+    int ret;
+
+    ret = exec_program(nargs - 1, &args[1]);
+
+    return ret;
 }
 
 int do_export(int nargs, char **args)
