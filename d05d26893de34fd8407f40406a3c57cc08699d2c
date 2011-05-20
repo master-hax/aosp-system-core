@@ -1,0 +1,8 @@
+Change-Id: Id05d26893de34fd8407f40406a3c57cc08699d2c
+Code-Review+2: Andy McFadden <fadden@android.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Tue, 22 Jun 2010 15:15:22 -0700
+Reviewed-on: https://review.source.android.com/15389
+Project: platform/system/core
+Branch: refs/heads/master

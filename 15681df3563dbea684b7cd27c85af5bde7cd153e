@@ -1,0 +1,8 @@
+Change-Id: I05a6b2433d025108da49be5abc06c324cb924395
+Code-Review+2: David Turner <digit@android.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Submitted-by: David Turner <digit@android.com>
+Submitted-at: Thu, 27 Aug 2009 14:26:30 -0700
+Reviewed-on: https://review.source.android.com/3092
+Project: platform/system/core
+Branch: refs/heads/master

@@ -1,0 +1,9 @@
+Change-Id: I7acf3386cca6dcfc22cfe45113cc5839502ad811
+Code-Review+1: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+2: Mike Lockwood <lockwood%android.com@gtempaccount.com>
+Submitted-by: Mike Lockwood <lockwood%android.com@gtempaccount.com>
+Submitted-at: Wed, 26 Aug 2009 08:07:32 -0700
+Reviewed-on: https://review.source.android.com/11376
+Project: platform/system/core
+Branch: refs/heads/master

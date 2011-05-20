@@ -1,0 +1,8 @@
+Change-Id: Ie25ff1c682ae5cc87af5e76de7e31a2702b620f3
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+2: San Mehat <san@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Tue, 03 Nov 2009 11:57:08 -0700
+Reviewed-on: https://review.source.android.com/12452
+Project: platform/system/core
+Branch: refs/heads/master

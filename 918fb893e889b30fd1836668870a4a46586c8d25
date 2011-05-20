@@ -1,0 +1,10 @@
+Code-Review+1: Christian Bejram <christian.bejram@stericsson.com>
+Code-Review+1: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+2: Mike Lockwood <lockwood%android.com@gtempaccount.com>
+Code-Review+1: Jay Freeman (saurik) <legacy@saurik.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Fri, 16 Jul 2010 07:26:05 -0700
+Reviewed-on: https://review.source.android.com/14339
+Project: platform/system/core
+Branch: refs/heads/master

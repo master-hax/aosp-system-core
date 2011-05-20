@@ -1,0 +1,8 @@
+Change-Id: I5675cf3ae8c1552f89aac013f0994c0336ee68af
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+2: Brian Swetland <swetland@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Thu, 27 Aug 2009 07:36:36 -0700
+Reviewed-on: https://review.source.android.com/2903
+Project: platform/system/core
+Branch: refs/heads/master

@@ -1,0 +1,9 @@
+Code-Review+2: Christopher Tate <ctate@android.com>
+Code-Review+1: Dan Bornstein <danfuzz@android.com>
+Code-Review+1: Raphaël Moll <ralf@android.com>
+Verified+1: Raphaël Moll <ralf@android.com>
+Submitted-by: Raphaël Moll <ralf@android.com>
+Submitted-at: Tue, 07 Sep 2010 13:03:49 -0700
+Reviewed-on: https://review.source.android.com/16956
+Project: platform/system/core
+Branch: refs/heads/master
