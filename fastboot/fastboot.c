@@ -350,6 +350,8 @@ static int setup_requirement_line(char *name)
     } else if (!strncmp(name, "require ", 8)) {
         name += 8;
         invert = 0;
+    } else if (!strncmp(name, "prefer ", 7)) {
+        return 0;
     }
 
     x = strchr(name, '=');
