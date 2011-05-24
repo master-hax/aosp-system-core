@@ -16,15 +16,15 @@ PIXELFLINGER_SRC_FILES:= \
 	codeflinger/texturing.cpp \
 	codeflinger/tinyutils/SharedBuffer.cpp \
 	codeflinger/tinyutils/VectorImpl.cpp \
-	fixed.cpp.arm \
-	picker.cpp.arm \
-	pixelflinger.cpp.arm \
-	trap.cpp.arm \
-	scanline.cpp.arm \
+	fixed.cpp \
+	picker.cpp \
+	pixelflinger.cpp \
+	trap.cpp \
+	scanline.cpp \
 	format.cpp \
 	clear.cpp \
 	raster.cpp \
-	buffer.cpp
+	buffer.cpp \
 
 PIXELFLINGER_CFLAGS := -fstrict-aliasing -fomit-frame-pointer
 
@@ -38,6 +38,8 @@ ifeq ($(ARCH_ARM_HAVE_NEON),true)
 PIXELFLINGER_SRC_FILES_arm += col32cb16blend_neon.S
 endif
 
+PIXELFLINGER_STATIC_LIBRARIES := libenc
+
 PIXELFLINGER_SRC_FILES_arm64 := \
 	codeflinger/Arm64Assembler.cpp \
 	codeflinger/Arm64Disassembler.cpp \
@@ -49,6 +51,13 @@ PIXELFLINGER_SRC_FILES_mips := \
 	codeflinger/mips_disassem.c \
 	arch-mips/t32cb16blend.S \
 
+PIXELFLINGER_SRC_FILES_x86 := \
+	codeflinger/x86/load_store.cpp \
+	codeflinger/x86/blending.cpp \
+	codeflinger/x86/texturing.cpp \
+	codeflinger/x86/X86Assembler.cpp \
+	codeflinger/x86/GGLX86Assembler.cpp \
+
 #
 # Shared library
 #
@@ -58,8 +67,11 @@ LOCAL_SRC_FILES := $(PIXELFLINGER_SRC_FILES)
 LOCAL_SRC_FILES_arm := $(PIXELFLINGER_SRC_FILES_arm)
 LOCAL_SRC_FILES_arm64 := $(PIXELFLINGER_SRC_FILES_arm64)
 LOCAL_SRC_FILES_mips := $(PIXELFLINGER_SRC_FILES_mips)
+LOCAL_SRC_FILES_x86 := $(PIXELFLINGER_SRC_FILES_x86)
 LOCAL_CFLAGS := $(PIXELFLINGER_CFLAGS)
 LOCAL_SHARED_LIBRARIES := libcutils liblog
+LOCAL_STATIC_LIBRARIES_x86 := $(PIXELFLINGER_STATIC_LIBRARIES)
+LOCAL_C_INCLUDES := $(TOP)/dalvik/vm/compiler/codegen/x86/libenc
 
 ifneq ($(BUILD_TINY_ANDROID),true)
 # Really this should go away entirely or at least not depend on
@@ -79,7 +91,10 @@ LOCAL_SRC_FILES := $(PIXELFLINGER_SRC_FILES)
 LOCAL_SRC_FILES_arm := $(PIXELFLINGER_SRC_FILES_arm)
 LOCAL_SRC_FILES_arm64 := $(PIXELFLINGER_SRC_FILES_arm64)
 LOCAL_SRC_FILES_mips := $(PIXELFLINGER_SRC_FILES_mips)
+LOCAL_SRC_FILES_x86 := $(PIXELFLINGER_SRC_FILES_x86)
 LOCAL_CFLAGS := $(PIXELFLINGER_CFLAGS)
+LOCAL_STATIC_LIBRARIES_x86 := $(PIXELFLINGER_STATIC_LIBRARIES)
+LOCAL_C_INCLUDES := $(TOP)/dalvik/vm/compiler/codegen/x86/libenc
 include $(BUILD_STATIC_LIBRARY)
 
 
