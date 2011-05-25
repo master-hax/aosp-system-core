@@ -44,7 +44,9 @@
 #define PACKAGES_LIST_FILE  "/data/system/packages.list"
 
 /* This should be large enough to hold the content of the package database file */
+#ifndef PACKAGES_LIST_BUFFER_SIZE
 #define PACKAGES_LIST_BUFFER_SIZE  65536
+#endif
 
 /* Copy 'srclen' string bytes from 'src' into buffer 'dst' of size 'dstlen'
  * This function always zero-terminate the destination buffer unless
