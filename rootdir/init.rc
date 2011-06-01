@@ -181,6 +181,10 @@ on post-fs
     chown drm drm /data/drm
     chmod 0774 /data/drm
 
+    # change permissions so only smart card subsystem can access ASSD
+    chmod 0660 /dev/assd
+    chown smartcard smartcard /dev/assd
+
 on boot
 # basic network init
     ifup lo
