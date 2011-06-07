@@ -53,7 +53,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
                          int unwind_depth, unsigned int sp_list[],
                          bool at_fault)
 {
-    unsigned int sp, pc, p, end, data;
+    unsigned int sp, pc, p, q, end, data;
     struct pt_regs r;
     int sp_depth;
     bool only_in_tombstone = !at_fault;
@@ -77,6 +77,8 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
     while (p <= end) {
         int i;
 
+        // store p to q for overflow detection
+        q = p;
         sprintf(code_buffer, "%08x ", p);
         for (i = 0; i < 4; i++) {
             data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
@@ -84,6 +86,11 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
             p += 4;
         }
         _LOG(tfd, only_in_tombstone, "%s\n", code_buffer);
+        // if advanced pointer is smaller then the original one
+        // the unsiged integer is overflow.
+        if (p < q) {
+            break;
+        }
     }
 
     if ((unsigned) r.ARM_lr != pc) {
@@ -101,6 +108,8 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
         while (p <= end) {
             int i;
 
+            // store p to q for overflow detection
+            q = p;
             sprintf(code_buffer, "%08x ", p);
             for (i = 0; i < 4; i++) {
                 data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
@@ -108,6 +117,11 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
                 p += 4;
             }
             _LOG(tfd, only_in_tombstone, "%s\n", code_buffer);
+            // if advanced pointer is smaller then the original one
+            // the unsiged integer is overflow.
+            if (p < q) {
+                break;
+            }
         }
     }
 
@@ -141,6 +155,9 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
     while (p <= end) {
          char *prompt;
          char level[16];
+
+         // store p to q for overflow detection
+         q = p;
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
          if (p == sp_list[sp_depth]) {
              sprintf(level, "#%02d", sp_depth++);
@@ -157,16 +174,29 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
               "%s %08x  %08x  %s\n", prompt, p, data,
               map_to_name(map, data, ""));
          p += 4;
+         // if advanced pointer is smaller then the original one
+         // the unsiged integer is overflow.
+         if (p < q) {
+             break;
+         }
     }
     /* print another 64-byte of stack data after the last frame */
 
     end = p+64;
     while (p <= end) {
+         // store p to q for overflow detection
+         q = p;
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
          _LOG(tfd, (sp_depth > 2) || only_in_tombstone,
               "    %08x  %08x  %s\n", p, data,
               map_to_name(map, data, ""));
          p += 4;
+         // if advanced pointer is smaller then the original one
+         // the unsiged integer is overflow.
+         if (p < q) {
+             break;
+         }
+
     }
 }
 
