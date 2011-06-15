@@ -87,7 +87,8 @@
 #define VENDOR_ID_PHILIPS       0x0471
 // Texas Instruments's USB Vendor ID
 #define VENDOR_ID_TI            0x0451
-
+// Cambridge Silicon Radio's USB Vendor ID
+#define VENDOR_ID_CSR           0x0a12
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
@@ -117,6 +118,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_ASUS,
     VENDOR_ID_PHILIPS,
     VENDOR_ID_TI,
+    VENDOR_ID_CSR,
 };
 
 #define BUILT_IN_VENDOR_COUNT    (sizeof(builtInVendorIds)/sizeof(builtInVendorIds[0]))
