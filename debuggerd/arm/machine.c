@@ -74,7 +74,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
      *  00008d34   fffffcd0 4c0eb530 b0934a0e 1c05447c
      *  00008d44   f7ff18a0 490ced94 68035860 d0012b00
      */
-    while (p <= end) {
+    while ((p <= end) && (p != NULL)) {
         int i;
 
         sprintf(code_buffer, "%08x ", p);
@@ -98,7 +98,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
          *  00008d34   fffffcd0 4c0eb530 b0934a0e 1c05447c
          *  00008d44   f7ff18a0 490ced94 68035860 d0012b00
          */
-        while (p <= end) {
+        while ((p <= end) && (p != NULL)) {
             int i;
 
             sprintf(code_buffer, "%08x ", p);
@@ -138,7 +138,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
         sp_depth = 0;
     }
 
-    while (p <= end) {
+    while ((p <= end) && (p != NULL)) {
          char *prompt;
          char level[16];
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
@@ -161,7 +161,7 @@ void dump_stack_and_code(int tfd, int pid, mapinfo *map,
     /* print another 64-byte of stack data after the last frame */
 
     end = p+64;
-    while (p <= end) {
+    while ((p <= end) && (p != NULL)) {
          data = ptrace(PTRACE_PEEKTEXT, pid, (void*)p, NULL);
          _LOG(tfd, (sp_depth > 2) || only_in_tombstone,
               "    %08x  %08x  %s\n", p, data,
