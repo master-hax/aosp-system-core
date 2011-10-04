@@ -40,7 +40,7 @@ void android_memset16(void *_ptr, unsigned short val, unsigned count)
 #endif
 
 struct FB {
-    unsigned short *bits;
+    unsigned char *bits;
     unsigned size;
     int fd;
     struct fb_fix_screeninfo fi;
@@ -49,7 +49,39 @@ struct FB {
 
 #define fb_width(fb) ((fb)->vi.xres)
 #define fb_height(fb) ((fb)->vi.yres)
-#define fb_size(fb) ((fb)->vi.xres * (fb)->vi.yres * 2)
+#define fb_bytes_pixel(fb) ((fb)->vi.bits_per_pixel >> 3)
+#define fb_size(fb) ((fb)->fi.line_length * fb_height(fb))
+#define fb_stride(fb) ((fb)->fi.line_length / fb_bytes_pixel(fb))
+
+static inline uint8_t getbits(uint16_t bits, int start, int size)
+{
+    return (bits & (((1 << size) - 1) << start)) >> start;
+}
+
+/* Fill in bottom bits with a repeat of the high bits,
+ * instead of just 0 */
+static inline uint8_t five_to_eight(uint8_t x)
+{
+    return (x << 3) | (x >> 2);
+}
+
+static inline uint8_t six_to_eight(uint8_t x)
+{
+    return (x << 2) | (x >> 4);
+}
+
+static inline uint32_t conv565_8888(uint16_t pix)
+{
+    int red, green, blue;
+
+    red = getbits(pix, 11, 5);
+    green = getbits(pix, 5, 6);
+    blue = getbits(pix, 0, 5);
+
+    return (five_to_eight(red) << 16) +
+        (six_to_eight(green) << 8) +
+        five_to_eight(blue);
+}
 
 static int fb_open(struct FB *fb)
 {
@@ -106,8 +138,9 @@ int load_565rle_image(char *fn)
 {
     struct FB fb;
     struct stat s;
-    unsigned short *data, *bits, *ptr;
-    unsigned count, max;
+    unsigned short *data, *ptr;
+    uint8_t *bits;
+    unsigned count, max, padding, hloc;
     int fd;
 
     if (vt_set_mode(1)) 
@@ -129,18 +162,44 @@ int load_565rle_image(char *fn)
 
     if (fb_open(&fb))
         goto fail_unmap_data;
-
     max = fb_width(&fb) * fb_height(&fb);
     ptr = data;
     count = s.st_size;
     bits = fb.bits;
+    padding = fb_stride(&fb) - fb_width(&fb);
+    hloc = 0;
+
     while (count > 3) {
         unsigned n = ptr[0];
         if (n > max)
             break;
-        android_memset16(bits, ptr[1], n << 1);
-        bits += n;
         max -= n;
+
+        while (n) {
+            unsigned remaining_pixels = fb_width(&fb) - hloc;
+            unsigned pix_to_write = (remaining_pixels < n) ? remaining_pixels : n;
+            switch (fb_bytes_pixel(&fb)) {
+            case 2:
+                android_memset16((uint16_t *)bits, ptr[1], pix_to_write << 1);
+                break;
+            case 4:
+                android_memset32((uint32_t *)bits, conv565_8888(ptr[1]),
+                        pix_to_write << 2);
+                break;
+            }
+            bits += pix_to_write * fb_bytes_pixel(&fb);
+
+            if (pix_to_write != n) {
+                /* Wrapping around, skipping any padding */
+                bits += padding * fb_bytes_pixel(&fb);
+                n -= pix_to_write;
+                hloc = 0;
+            } else {
+                hloc += pix_to_write;
+                break;
+            }
+        }
+
         ptr += 2;
         count -= 4;
     }
