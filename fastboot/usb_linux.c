@@ -206,7 +206,7 @@ static usb_handle *find_usb_device(const char *base, ifc_match_func callback)
 {
     usb_handle *usb = 0;
     char busname[64], devname[64];
-    char desc[1024];
+    char desc[4096];
     int n, in, out, ifc;
 
     DIR *busdir, *devdir;
