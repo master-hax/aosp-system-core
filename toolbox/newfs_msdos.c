@@ -103,6 +103,9 @@ static const char rcsid[] =
 #define argto4(arg, lo, msg)  argtou(arg, lo, 0xffffffff, msg)
 #define argtox(arg, lo, msg)  argtou(arg, lo, UINT_MAX, msg)
 
+#define NEWFS_DIV_ROUND_UP(x, y) (((x) + (y) - 1)/(y))
+#define NEWFS_ALIGN(x, y) ((y) * NEWFS_DIV_ROUND_UP((x), (y)))
+
 struct bs {
     u_int8_t jmp[3];		/* bootstrap entry point */
     u_int8_t oem[8];		/* OEM name and version */
@@ -553,6 +556,7 @@ newfs_msdos_main(int argc, char *argv[])
 	bpb.res = fat == 32 ? MAX(x, MAX(16384 / bpb.bps, 4)) : x;
     else if (bpb.res < x)
 	errx(1, "too few reserved sectors");
+    bpb.res = NEWFS_ALIGN(bpb.res, 2);
     if (fat != 32 && !bpb.rde)
 	bpb.rde = DEFRDE;
     rds = howmany(bpb.rde, bpb.bps / sizeof(struct de));
@@ -576,6 +580,7 @@ newfs_msdos_main(int argc, char *argv[])
 	(bpb.spc * bpb.bps * NPB + fat / BPN * bpb.nft);
     x2 = howmany((RESFTE + MIN(x, maxcls(fat))) * (fat / BPN),
 		 bpb.bps * NPB);
+    x2 = NEWFS_ALIGN(bpb.res / 2 + x2, 16);
     if (!bpb.bspf) {
 	bpb.bspf = x2;
 	x1 += (bpb.bspf - 1) * bpb.nft;
