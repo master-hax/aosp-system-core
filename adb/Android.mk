@@ -96,6 +96,7 @@ endif
 # =========================================================
 
 BUILD_ADBD := true
+USE_USB_FUNCFS := false
 
 # build adbd for the Linux simulator build
 # so we can use it to test the adb USB gadget driver on x86
@@ -106,6 +107,11 @@ BUILD_ADBD := true
 
 ifeq ($(BUILD_ADBD),true)
 include $(CLEAR_VARS)
+
+USB_LINUX_CLIENT := usb_linux_client.c
+ifeq ($(USE_USB_FUNCFS),true)
+USB_LINUX_CLIENT := usb_funcfs_linux_client.c
+endif
 
 LOCAL_SRC_FILES := \
 	adb.c \
@@ -120,12 +126,15 @@ LOCAL_SRC_FILES := \
 	jdwp_service.c \
 	framebuffer_service.c \
 	remount_service.c \
-	usb_linux_client.c \
+	$(USB_LINUX_CLIENT) \
 	log_service.c \
 	utils.c
 
 LOCAL_CFLAGS := -O2 -g -DADB_HOST=0 -Wall -Wno-unused-parameter
 LOCAL_CFLAGS += -D_XOPEN_SOURCE -D_GNU_SOURCE
+ifeq ($(USE_USB_FUNCFS),true)
+LOCAL_CFLAGS += -DUSE_USB_FUNCFS=1
+endif
 
 # TODO: This should probably be board specific, whether or not the kernel has
 # the gadget driver; rather than relying on the architecture type.
