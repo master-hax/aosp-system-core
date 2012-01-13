@@ -55,7 +55,16 @@ TOOLS := \
 	nandread \
 	ionice \
 	touch \
-	lsof
+	lsof \
+	getenforce \
+	setenforce \
+	chcon \
+	restorecon \
+	runcon \
+	getsebool \
+	setsebool \
+	load_policy \
+	secheckaccess
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 TOOLS += r
@@ -66,7 +75,7 @@ LOCAL_SRC_FILES:= \
 	toolbox.c \
 	$(patsubst %,%.c,$(TOOLS))
 
-LOCAL_SHARED_LIBRARIES := libcutils libc libusbhost
+LOCAL_SHARED_LIBRARIES := libselinux libcutils libc libusbhost
 
 LOCAL_MODULE:= toolbox
 

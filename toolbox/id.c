@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <grp.h>
+#include <selinux/selinux.h>
 
 static void print_uid(uid_t uid)
 {
@@ -30,11 +31,12 @@ int id_main(int argc, char **argv)
 {
     gid_t list[64];
     int n, max;
+    char *secctx;
 
     max = getgroups(64, list);
     if (max < 0) max = 0;
 
-    printf("uid=");
+    printf(" uid=");
     print_uid(getuid());
     printf(" gid=");
     print_gid(getgid());
@@ -45,6 +47,10 @@ int id_main(int argc, char **argv)
             printf(",");
             print_gid(list[n]);
         }
+    }
+    if (getcon(&secctx) == 0) {
+        printf(" context=%s", secctx);
+	free(secctx);
     }
     printf("\n");
     return 0;
