@@ -327,7 +327,7 @@ skipping:	  if (evalskip == SKIPCONT && --skipcount <= 0) {
 				evalskip = 0;
 			break;
 		}
-		if (n->type == NWHILE) {
+		if (n->type == NUNTIL) {
 			if (exitstatus != 0)
 				break;
 		} else {
