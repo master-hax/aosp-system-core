@@ -13,6 +13,9 @@
 
 #include <cutils/sched_policy.h>
 
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+#endif
 
 static char *nexttoksep(char **strp, char *sep)
 {
@@ -29,12 +32,19 @@ static char *nexttok(char **strp)
 #define SHOW_POLICY 4
 #define SHOW_CPU  8
 
+#ifdef HAVE_SELINUX
+#define SHOW_MACLABEL 16
+#endif
+
 static int display_flags = 0;
 
 static int ps_line(int pid, int tid, char *namefilter)
 {
     char statline[1024];
     char cmdline[1024];
+#ifdef HAVE_SELINUX
+    char macline[1024];
+#endif
     char user[32];
     struct stat stats;
     int fd, r;
@@ -51,9 +61,15 @@ static int ps_line(int pid, int tid, char *namefilter)
     if(tid) {
         sprintf(statline, "/proc/%d/task/%d/stat", pid, tid);
         cmdline[0] = 0;
+#ifdef HAVE_SELINUX
+        sprintf(macline, "/proc/%d/task/%d/attr/current", pid, tid);
+#endif
     } else {
         sprintf(statline, "/proc/%d/stat", pid);
-        sprintf(cmdline, "/proc/%d/cmdline", pid);    
+        sprintf(cmdline, "/proc/%d/cmdline", pid);
+#ifdef HAVE_SELINUX
+        sprintf(macline, "/proc/%d/attr/current", pid);
+#endif
         fd = open(cmdline, O_RDONLY);
         if(fd == 0) {
             r = 0;
@@ -142,6 +158,21 @@ static int ps_line(int pid, int tid, char *namefilter)
     }
     
     if(!namefilter || !strncmp(name, namefilter, strlen(namefilter))) {
+#ifdef HAVE_SELINUX
+        if (display_flags&SHOW_MACLABEL) {
+            fd = open(macline, O_RDONLY);
+            strcpy(macline, "-");
+            if (fd >= 0) {
+                r = read(fd, macline, 1023);
+                close(fd);
+                if (r > 0)
+                    macline[r] = 0;
+            }
+            printf("%-30s %-9s %-5d %-5d %s\n", macline, user, pid, ppid, cmdline[0] ? cmdline : name);
+            return 0;
+        }
+#endif
+
         printf("%-9s %-5d %-5d %-6d %-5d", user, pid, ppid, vss / 1024, rss * 4);
         if (display_flags & SHOW_CPU)
             printf(" %-2d", psr);
@@ -206,6 +237,10 @@ int ps_main(int argc, char **argv)
             threads = 1;
         } else if(!strcmp(argv[1],"-x")) {
             display_flags |= SHOW_TIME;
+#ifdef HAVE_SELINUX
+        } else if(!strcmp(argv[1],"-Z")) {
+            display_flags |= SHOW_MACLABEL;
+#endif
         } else if(!strcmp(argv[1],"-P")) {
             display_flags |= SHOW_POLICY;
         } else if(!strcmp(argv[1],"-p")) {
@@ -221,10 +256,18 @@ int ps_main(int argc, char **argv)
         argv++;
     }
 
-    printf("USER     PID   PPID  VSIZE  RSS   %s%s %s WCHAN    PC         NAME\n",
-           (display_flags&SHOW_CPU)?"CPU ":"",
-           (display_flags&SHOW_PRIO)?"PRIO  NICE  RTPRI SCHED ":"",
-           (display_flags&SHOW_POLICY)?"PCY " : "");
+#ifdef HAVE_SELINUX
+    if (display_flags&SHOW_MACLABEL) {
+        printf("LABEL                          USER     PID   PPID  NAME\n");
+    } else {
+#endif
+        printf("USER     PID   PPID  VSIZE  RSS   %s%s %s WCHAN    PC         NAME\n",
+               (display_flags&SHOW_CPU)?"CPU ":"",
+               (display_flags&SHOW_PRIO)?"PRIO  NICE  RTPRI SCHED ":"",
+               (display_flags&SHOW_POLICY)?"PCY " : "");
+#ifdef HAVE_SELINUX
+    }
+#endif
     while((de = readdir(d)) != 0){
         if(isdigit(de->d_name[0])){
             int pid = atoi(de->d_name);
