@@ -1,0 +1,10 @@
+Change-Id: Iec4db51f88401ecf09769511e3c9deb58d721184
+Code-Review+1: Ficus Kirkpatrick <ficus@android.com>
+Code-Review+1: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+2: Brian Swetland <swetland@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Fri, 13 Jan 2012 07:47:25 -0800
+Reviewed-on: https://android-review.googlesource.com/30951
+Project: platform/system/core
+Branch: refs/heads/master
