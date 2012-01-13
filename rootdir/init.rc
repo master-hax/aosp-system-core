@@ -4,10 +4,18 @@ on early-init
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
 
+    setcon u:r:init:s0
+    restorecon /dev
+    restorecon /dev/socket
     start ueventd
 
 # create mountpoints
     mkdir /mnt 0775 root system
+
+    # Allow settings daemon to setenforce and set booleans
+    chown system system /selinux/enforce
+    chown -R system system /selinux/booleans
+    chown system system /selinux/commit_pending_bools
 
 on init
 
@@ -109,10 +117,12 @@ on post-fs
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
     chmod 0770 /cache
+    restorecon /cache
 
     # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
+    restorecon /cache/recovery
 
     #change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
@@ -131,6 +141,7 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    restorecon /data
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
@@ -151,23 +162,34 @@ on post-fs-data
     # create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
+    restorecon /data/misc/bluetoothd
     mkdir /data/misc/bluetooth 0770 system system
+    restorecon /data/misc/bluetooth
     mkdir /data/misc/keystore 0700 keystore keystore
+    restorecon /data/misc/keystore
     mkdir /data/misc/keychain 0771 system system
+    restorecon /data/misc/keychain
     mkdir /data/misc/vpn 0770 system vpn
+    restorecon /data/misc/vpn
     mkdir /data/misc/systemkeys 0700 system system
+    restorecon /data/misc/systemkeys
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
+    restorecon /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
+    restorecon /data/local
     mkdir /data/local/tmp 0771 shell shell
+    restorecon /data/local/tmp
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
+    restorecon /data/app
     mkdir /data/property 0700 root root
 
     # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
+    restorecon /data/dalvik-cache
 
     # create resource-cache and double-check the perms
     mkdir /data/resource-cache 0771 system system
@@ -190,6 +212,9 @@ on post-fs-data
     chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun/file
     chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
     chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
+
+    mkdir /data/tombstones
+    restorecon /data/tombstones
 
 on boot
 # basic network init
@@ -343,6 +368,7 @@ on property:persist.sys.usb.config=*
 service ueventd /sbin/ueventd
     class core
     critical
+    seclabel u:r:ueventd:s0
 
 service console /system/bin/sh
     class core
@@ -358,6 +384,7 @@ on property:ro.debuggable=1
 service adbd /sbin/adbd
     class core
     disabled
+    seclabel u:r:adbd:s0
 
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
