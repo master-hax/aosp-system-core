@@ -6,52 +6,20 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 #include <unistd.h>
 
 extern int init_module(void *, unsigned long, const char *);
 
-static void *read_file(const char *filename, ssize_t *_size)
-{
-	int ret, fd;
-	struct stat sb;
-	ssize_t size;
-	void *buffer = NULL;
-
-	/* open the file */
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		return NULL;
-
-	/* find out how big it is */
-	if (fstat(fd, &sb) < 0)
-		goto bail;
-	size = sb.st_size;
-
-	/* allocate memory for it to be read into */
-	buffer = malloc(size);
-	if (!buffer)
-		goto bail;
-
-	/* slurp it into our buffer */
-	ret = read(fd, buffer, size);
-	if (ret != size)
-		goto bail;
-
-	/* let the caller know how big it is */
-	*_size = size;
-
-bail:
-	close(fd);
-	return buffer;
-}
-
 #define min(x,y) ((x) < (y) ? (x) : (y))
 int insmod_main(int argc, char **argv)
 {
+	int fd;
+	off_t len;
 	void *file;
 	ssize_t size = 0;
 	char opts[1024];
-	int ret;
+	int ret = -1;
 
 	/* make sure we've got an argument */
 	if (argc < 2) {
@@ -60,11 +28,14 @@ int insmod_main(int argc, char **argv)
 	}
 
 	/* read the file into memory */
-	file = read_file(argv[1], &size);
-	if (!file) {
+	if (((fd = open(argv[1], O_RDONLY)) == -1) ||
+	    ((len = lseek(fd, 0, SEEK_END)) == -1)) {
 		fprintf(stderr, "insmod: can't open '%s'\n", argv[1]);
-		return -1;
+		goto bail;
 	}
+	size = (len + 4095) & ~4095;
+	file = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+	if (file == MAP_FAILED) goto bail;
 
 	opts[0] = '\0';
 	if (argc > 2) {
@@ -73,7 +44,7 @@ int insmod_main(int argc, char **argv)
 		char *ptr = opts;
 
 		for (i = 2; (i < argc) && (ptr < end); i++) {
-			len = min(strlen(argv[i]), end - ptr);
+			len = min(strlen(argv[i]), (size_t)(end - ptr));
 			memcpy(ptr, argv[i], len);
 			ptr += len;
 			*ptr++ = ' ';
@@ -82,16 +53,17 @@ int insmod_main(int argc, char **argv)
 	}
 
 	/* pass it to the kernel */
-	ret = init_module(file, size, opts);
+	ret = init_module(file, len, opts);
 	if (ret != 0) {
 		fprintf(stderr,
                 "insmod: init_module '%s' failed (%s)\n",
                 argv[1], strerror(errno));
 	}
 
-	/* free the file buffer */
-	free(file);
-
+	/* unmap and close */
+	munmap(file, size);
+bail:
+	if (fd) close(fd);
 	return ret;
 }
 
