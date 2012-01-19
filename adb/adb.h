@@ -440,6 +440,12 @@ extern int SHELL_EXIT_NOTIFY_FD;
 
 #define CHUNK_SIZE (64*1024)
 
+#if !ADB_HOST
+#ifdef USE_USB_FUNCFS
+#define USB_FUNCFS_ROOT "/dev/usbgadget/adb"
+#endif
+#endif
+
 int sendfailmsg(int fd, const char *reason);
 int handle_host_request(char *service, transport_type ttype, char* serial, int reply_fd, asocket *s);
 
