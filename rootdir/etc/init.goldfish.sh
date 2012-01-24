@@ -21,6 +21,12 @@ route add default gw 10.0.2.2 dev eth0
 # The following detects the latter case and sets up the
 # system for it.
 #
+dsds=`getprop persist.dsds.enabled`
+case "$dsds" in
+    "true")
+    start ril-daemon1
+esac
+
 qemud=`getprop ro.kernel.android.qemud`
 case "$qemud" in
     "")
@@ -31,6 +37,10 @@ case "$qemud" in
         # telephony is entirely emulated in Java
         setprop ro.radio.noril yes
         stop ril-daemon
+        case "$dsds" in
+            "true")
+            stop ril-daemon1
+        esac
         ;;
     esac
     ;;
