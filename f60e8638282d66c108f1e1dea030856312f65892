@@ -1,0 +1,11 @@
+Change-Id: If60e8638282d66c108f1e1dea030856312f65892
+Code-Review+2: Dima Zavin <dima@android.com>
+Code-Review+1: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+1: Bruce Beare <bruce.j.beare@intel.com>
+Code-Review+1: Mark D Horn <mark.d.horn@intel.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Tue, 24 Jan 2012 07:50:11 -0800
+Reviewed-on: https://android-review.googlesource.com/31109
+Project: platform/system/core
+Branch: refs/heads/master
