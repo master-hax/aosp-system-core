@@ -43,6 +43,11 @@ ifeq ($(TARGET_ARCH),arm)
 PIXELFLINGER_CFLAGS += -fstrict-aliasing -fomit-frame-pointer
 endif
 
+ifeq ($(TARGET_ARCH),mips)
+PIXELFLINGER_SRC_FILES += codeflinger/MIPSAssembler.cpp
+PIXELFLINGER_SRC_FILES += codeflinger/mips_disassem.c
+endif
+
 LOCAL_SHARED_LIBRARIES := libcutils
 
 ifneq ($(TARGET_ARCH),arm)
