@@ -32,6 +32,7 @@
 #include <linux/loop.h>
 #include <cutils/partition_utils.h>
 #include <sys/system_properties.h>
+#include <fts.h>
 
 #include "init.h"
 #include "keywords.h"
@@ -622,6 +623,46 @@ int do_chown(int nargs, char **args) {
     } else if (nargs == 4) {
         if (chown(args[3], decode_uid(args[1]), decode_uid(args[2])))
             return -errno;
+    } else if (nargs == 5) {
+        int ret = 0;
+        int ftsflags = FTS_PHYSICAL;
+        FTS *fts;
+        FTSENT *ftsent;
+        char *options = args[1];
+        uid_t uid = decode_uid(args[2]);
+        uid_t gid = decode_uid(args[3]);
+        char **path_argv = &args[4];
+        if (strcmp(options, "-R")) {
+            ERROR("do_chown: Invalid argument: %s\n", args[1]);
+            return -EINVAL;
+        }
+        fts = fts_open(path_argv, ftsflags, NULL);
+        if (!fts) {
+            ERROR("do_chown: Error traversing hierarchy starting at %s\n", path_argv[0]);
+            return -errno;
+        }
+        while ((ftsent = fts_read(fts))) {
+            switch (ftsent->fts_info) {
+            case FTS_DP:
+            case FTS_SL:
+                break;
+            case FTS_DNR:
+            case FTS_ERR:
+            case FTS_NS:
+                ERROR("do_chown: Could not access %s\n", ftsent->fts_path);
+                fts_set(fts, ftsent, FTS_SKIP);
+                ret = -errno;
+                break;
+            default:
+                if (chown(ftsent->fts_accpath, uid, gid)) {
+                    ret = -errno;
+                    fts_set(fts, ftsent, FTS_SKIP);
+                }
+                break;
+            }
+        }
+        if (ret)
+            return ret;
     } else {
         return -1;
     }
