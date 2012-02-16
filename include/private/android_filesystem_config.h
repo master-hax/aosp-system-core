@@ -61,6 +61,7 @@
 #define AID_UNUSED2       1025  /* deprecated, DO NOT USE */
 #define AID_DRMRPC        1026  /* group for drm rpc */
 #define AID_NFC           1027  /* nfc subsystem */
+#define AID_CLATD         1028  /* clat part of nat464 */
 
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
@@ -127,6 +128,7 @@ static const struct android_id_info android_ids[] = {
     { "net_bw_acct", AID_NET_BW_ACCT, },
     { "misc",      AID_MISC, },
     { "nobody",    AID_NOBODY, },
+    { "clatd",     AID_CLATD, },
 };
 
 #define android_id_count \
