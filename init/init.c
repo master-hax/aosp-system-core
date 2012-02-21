@@ -236,6 +236,8 @@ void service_start(struct service *svc, const char *dynamic_args)
     if (pid == 0) {
         struct socketinfo *si;
         struct svcenvinfo *ei;
+        struct rlimitinfo *ri;
+        struct rlimit limit;
         char tmp[32];
         int fd, sz;
 
@@ -251,6 +253,14 @@ void service_start(struct service *svc, const char *dynamic_args)
 #ifdef HAVE_SELINUX
         setsockcreatecon(scon);
 #endif
+
+        for (ri = svc->rlimits; ri; ri = ri->next) {
+            limit.rlim_cur = ri->rlim_cur;
+            limit.rlim_max = ri->rlim_max;
+            if (setrlimit(ri->resource, &limit)) {
+                ERROR("Failed to set rlimit of type %d: %s", ri->resource, strerror(errno));
+            }
+        }
 
         for (si = svc->sockets; si; si = si->next) {
             int socket_type = (

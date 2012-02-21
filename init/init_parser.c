@@ -23,6 +23,8 @@
 #include <stddef.h>
 #include <ctype.h>
 
+#include <sys/resource.h>
+
 #include "init.h"
 #include "parser.h"
 #include "init_parser.h"
@@ -132,6 +134,7 @@ int lookup_keyword(const char *s)
     case 'r':
         if (!strcmp(s, "estart")) return K_restart;
         if (!strcmp(s, "estorecon")) return K_restorecon;
+        if (!strcmp(s, "limit")) return K_rlimit;
         if (!strcmp(s, "mdir")) return K_rmdir;
         if (!strcmp(s, "m")) return K_rm;
         break;
@@ -743,6 +746,31 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
         memcpy(cmd->args, args, sizeof(char*) * nargs);
         list_add_tail(&svc->onrestart.commands, &cmd->clist);
         break;
+    case K_rlimit: { /* resource, rlim_cur, rlim_max */
+        struct rlimitinfo *ri;
+        if (nargs != 4) {
+            parse_error(state, "rlimit option requires resource, rlim_cur, rlim_max arguments\n");
+            break;
+        }
+
+        ri = calloc(1, sizeof(*ri));
+        if (!ri) {
+            parse_error(state, "out of memory\n");
+            break;
+        }
+        ri->resource = decode_resource(args[1]);
+        if (ri->resource == RLIM_NLIMITS) {
+            parse_error(state, "Invalid resource '%s'\n", args[1]);
+            free(ri);
+            break;
+        }
+        ri->rlim_cur = atoi(args[2]);
+        ri->rlim_max = atoi(args[3]);
+
+        ri->next = svc->rlimits;
+        svc->rlimits = ri;
+        break;
+    }
     case K_critical:
         svc->flags |= SVC_CRITICAL;
         break;

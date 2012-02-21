@@ -63,6 +63,13 @@ struct svcenvinfo {
     const char *value;
 };
 
+struct rlimitinfo {
+    struct rlimitinfo *next;
+    int resource;
+    int rlim_cur;
+    int rlim_max;
+};
+
 #define SVC_DISABLED    0x01  /* do not autostart with class */
 #define SVC_ONESHOT     0x02  /* do not restart on exit */
 #define SVC_RUNNING     0x04  /* currently active */
@@ -99,6 +106,7 @@ struct service {
     char *seclabel;
 #endif
 
+    struct rlimitinfo *rlimits;
     struct socketinfo *sockets;
     struct svcenvinfo *envvars;
 
