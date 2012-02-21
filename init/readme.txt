@@ -100,6 +100,12 @@ class <name>
 onrestart
     Execute a Command (see below) when service restarts.
 
+rlimit <resource> <rlim_cur> <rlim_max>
+   Set an rlimit for this service.
+   Supported resources are:
+      CPU, FSIZE, DATA, STACK, CORE, RSS, NPROC, NOFILE, MEMLOCK,
+      AS, LOCKS, SIGPENDING, MSGQUEUE, NICE, RTPRIO, RTTIME
+
 Triggers
 --------
    Triggers are strings which can be used to match certain kinds

@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/resource.h>
 
 /* for ANDROID_SOCKET_* */
 #include <cutils/sockets.h>
@@ -450,4 +451,25 @@ void import_kernel_cmdline(int in_qemu,
         import_kernel_nv(ptr, in_qemu);
         ptr = x;
     }
+}
+
+uint64_t decode_resource(const char *s)
+{
+    if (!strcmp(s, "CPU")) return RLIMIT_CPU;
+    if (!strcmp(s, "FSIZE")) return RLIMIT_FSIZE;
+    if (!strcmp(s, "DATA")) return RLIMIT_DATA;
+    if (!strcmp(s, "STACK")) return RLIMIT_STACK;
+    if (!strcmp(s, "CORE")) return RLIMIT_CORE;
+    if (!strcmp(s, "RSS")) return RLIMIT_RSS;
+    if (!strcmp(s, "NPROC")) return RLIMIT_NPROC;
+    if (!strcmp(s, "NOFILE")) return RLIMIT_NOFILE;
+    if (!strcmp(s, "MEMLOCK")) return RLIMIT_MEMLOCK;
+    if (!strcmp(s, "AS")) return RLIMIT_AS;
+    if (!strcmp(s, "LOCKS")) return RLIMIT_LOCKS;
+    if (!strcmp(s, "SIGPENDING")) return RLIMIT_SIGPENDING;
+    if (!strcmp(s, "MSGQUEUE")) return RLIMIT_MSGQUEUE;
+    if (!strcmp(s, "NICE")) return RLIMIT_NICE;
+    if (!strcmp(s, "RTPRIO")) return RLIMIT_RTPRIO;
+    if (!strcmp(s, "RTTIME")) return RLIMIT_RTTIME;
+    return RLIM_NLIMITS;
 }
