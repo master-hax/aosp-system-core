@@ -100,6 +100,12 @@ class <name>
 onrestart
     Execute a Command (see below) when service restarts.
 
+rlimit <resource> <rlim_cur> <rlim_max>
+   Set an rlimit for this service.
+   resource can either be a numeric value or one of:
+      CPU, FSIZE, DATA, STACK, CORE, RSS, NPROC, NOFILE, MEMLOCK,
+      AS, LOCKS, SIGPENDING, MSGQUEUE, NICE, RTPRIO, RTTIME
+
 Triggers
 --------
    Triggers are strings which can be used to match certain kinds
@@ -190,6 +196,9 @@ setprop <name> <value>
 
 setrlimit <resource> <cur> <max>
    Set the rlimit for a resource.
+   resource can either be a numeric value or one of:
+      CPU, FSIZE, DATA, STACK, CORE, RSS, NPROC, NOFILE, MEMLOCK,
+      AS, LOCKS, SIGPENDING, MSGQUEUE, NICE, RTPRIO, RTTIME
 
 start <service>
    Start a service running if it is not already running.

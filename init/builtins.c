@@ -551,10 +551,16 @@ int do_setrlimit(int nargs, char **args)
 {
     struct rlimit limit;
     int resource;
-    resource = atoi(args[1]);
+    resource = resource_name_to_id(args[1]);
     limit.rlim_cur = atoi(args[2]);
     limit.rlim_max = atoi(args[3]);
-    return setrlimit(resource, &limit);
+
+    if (setrlimit(resource, &limit) < 0) {
+        ERROR("Failed to set resource limit %s to cur: %lu max: %lu\n",
+              resource_id_to_name(resource), limit.rlim_cur, limit.rlim_max);
+        return -errno;
+    }
+    return 0;
 }
 
 int do_start(int nargs, char **args)

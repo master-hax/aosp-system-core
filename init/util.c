@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/resource.h>
 
 /* for ANDROID_SOCKET_* */
 #include <cutils/sockets.h>
@@ -462,4 +463,63 @@ void import_kernel_cmdline(int in_qemu,
         import_kernel_nv(ptr, in_qemu);
         ptr = x;
     }
+}
+
+static const char *rlimit_resources[RLIM_NLIMITS] = {
+    [RLIMIT_CPU]        = "CPU",
+    [RLIMIT_FSIZE]      = "FSIZE",
+    [RLIMIT_DATA]       = "DATA",
+    [RLIMIT_STACK]      = "STACK",
+    [RLIMIT_CORE]       = "CORE",
+    [RLIMIT_RSS]        = "RSS",
+    [RLIMIT_NPROC]      = "NPROC",
+    [RLIMIT_NOFILE]     = "NOFILE",
+    [RLIMIT_MEMLOCK]    = "MEMLOCK",
+    [RLIMIT_AS]         = "AS",
+    [RLIMIT_LOCKS]      = "LOCKS",
+    [RLIMIT_SIGPENDING] = "SIGPENDING",
+    [RLIMIT_MSGQUEUE]   = "MSGQUEUE",
+    [RLIMIT_NICE]       = "NICE",
+    [RLIMIT_RTPRIO]     = "RTPRIO",
+    [RLIMIT_RTTIME]     = "RTTIME",
+};
+
+/*
+ * resource_name_to_id - decodes the given string and returns a resource id.
+ * The name is the resource either in numeric or name representation.
+ * Returns -1 on error.
+ */
+int resource_name_to_id(const char *name)
+{
+    int res;
+
+    if (!name || *name == '\0')
+        return -1;
+
+    if (isalpha(name[0])) {
+        for (res = 0; res < RLIM_NLIMITS; res++) {
+            if (strcmp(rlimit_resources[res], name) == 0)
+                return res;
+        }
+        return -1;
+    }
+
+    errno = 0;
+    res = strtoul(name, 0, 0);
+    if (errno)
+        return -1;
+
+    return res;
+}
+
+/*
+ * resource_id_to_name - convert the given id to string representation.
+ * Returns "unkown" if the value is outside the defined range.
+ */
+const char *resource_id_to_name(const int id)
+{
+    if (id < 0 || id >= RLIM_NLIMITS || rlimit_resources[id] == NULL)
+        return "unknown";
+    else
+        return rlimit_resources[id];
 }
