@@ -151,7 +151,7 @@ chdir <directory>
 chmod <octal-mode> <path>
    Change file access permissions.
 
-chown <R> <owner> <group> <path>
+chown [-R] <owner> <group> <path>
    Change file owner and group. "-R" is for recursive chown.
 
 chroot <directory>

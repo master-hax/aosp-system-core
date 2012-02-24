@@ -714,13 +714,17 @@ int do_chown(int nargs, char **args) {
         int ftsflags = FTS_PHYSICAL;
         FTS *fts;
         FTSENT *ftsent;
-        if (strcmp(args[1],"-R")) {
-            ERROR("do_chown: Invalid argument: %s\n",args[1]);
+        char *options = args[1];
+        uid_t uid = decode_uid(args[2]);
+        uid_t gid = decode_uid(args[3]);
+        char **path_argv = &args[4];
+        if (strcmp(options, "-R")) {
+            ERROR("do_chown: Invalid argument: %s\n", args[1]);
             return -EINVAL;
         }
-        fts = fts_open(&args[4], ftsflags, NULL);
+        fts = fts_open(path_argv, ftsflags, NULL);
         if (!fts) {
-            ERROR("do_chown: Error traversing hierarchy starting at %s\n",args[4]);
+            ERROR("do_chown: Error traversing hierarchy starting at %s\n", path_argv[0]);
             return -errno;
         }
         while ((ftsent = fts_read(fts))) {
@@ -736,7 +740,7 @@ int do_chown(int nargs, char **args) {
                 ret = -errno;
                 break;
             default:
-                if (chown(ftsent->fts_accpath, decode_uid(args[2]), decode_uid(args[3]))) {
+                if (chown(ftsent->fts_accpath, uid, gid)) {
                     ret = -errno;
                     fts_set(fts, ftsent, FTS_SKIP);
                 }
