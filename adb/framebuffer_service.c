@@ -26,6 +26,8 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -57,6 +59,7 @@ void framebuffer_service(int fd, void *cookie)
     int fd_screencap;
     int w, h, f;
     int fds[2];
+    int status;
 
     if (pipe(fds) < 0) goto done;
 
@@ -167,6 +170,8 @@ void framebuffer_service(int fd, void *cookie)
     }
     if(readx(fd_screencap, buf, fbinfo.size % sizeof(buf))) goto done;
     if(writex(fd, buf, fbinfo.size % sizeof(buf))) goto done;
+
+    waitpid(pid, &status, 0);
 
 done:
     close(fds[0]);
