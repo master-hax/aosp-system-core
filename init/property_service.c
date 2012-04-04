@@ -280,11 +280,11 @@ static int check_control_perms(const char *name, unsigned int uid, unsigned int 
 static int check_perms(const char *name, unsigned int uid, unsigned int gid, char *sctx)
 {
     int i;
-    if (uid == 0)
-        return check_mac_perms(name, sctx);
-
     if(!strncmp(name, "ro.", 3))
         name +=3;
+
+    if (uid == 0)
+        return check_mac_perms(name, sctx);
 
     for (i = 0; property_perms[i].prefix; i++) {
         if (strncmp(property_perms[i].prefix, name,
