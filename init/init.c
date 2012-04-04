@@ -61,6 +61,7 @@
 
 #ifdef HAVE_SELINUX
 struct selabel_handle *sehandle;
+struct selabel_handle *sehandle_prop;
 #endif
 
 static int property_triggers_enabled = 0;
@@ -778,23 +779,7 @@ int selinux_load_policy_files(void)
     void *map;
 
     sehandle = NULL;
-    if (!selinux_enabled) {
-        INFO("SELinux:  Disabled by command line option\n");
-        return;
-    }
-
-    mkdir(SELINUXMNT, 0755);
-    if (mount("selinuxfs", SELINUXMNT, "selinuxfs", 0, NULL)) {
-        if (errno == ENODEV) {
-            /* SELinux not enabled in kernel */
-            return;
-        }
-        ERROR("SELinux:  Could not mount selinuxfs:  %s\n",
-              strerror(errno));
-        return;
-    }
-    set_selinuxmnt(SELINUXMNT);
-
+    sehandle_prop = NULL;
     vers = security_policyvers();
     if (vers <= 0) {
         ERROR("SELinux:  Unable to read policy version\n");
@@ -861,7 +846,7 @@ int selinux_load_policy_files(void)
               strerror(errno));
         return -1;
     }
-    INFO("SELinux: Loaded file contexts from %s\n", seopts_file[i - 1].value);
+    INFO("SELinux: Loaded file contexts from %s\n", seopts[i - 1].value);
 
     i = 0;
     while ((sehandle_prop == NULL) && seopts_prop[i].value) {
@@ -912,6 +897,13 @@ void selinux_load_policy(void)
     INFO("SELinux: Loaded file contexts from %s\n", seopts[0].value);
     return;
 }
+
+int audit_callback(void *data, security_class_t cls, char *buf, size_t len)
+{
+    snprintf(buf, len, "property=%s", !data ? "NULL" : (char *)data);
+    return 0;
+}
+
 #endif
 
 int main(int argc, char **argv)
@@ -965,6 +957,13 @@ int main(int argc, char **argv)
     process_kernel_cmdline();
 
 #ifdef HAVE_SELINUX
+    union selinux_callback cb;
+    cb.func_log = klog_write;
+    selinux_set_callback(SELINUX_CB_LOG, cb);
+
+    cb.func_audit = audit_callback;
+    selinux_set_callback(SELINUX_CB_AUDIT, cb);
+
     INFO("loading selinux policy\n");
     selinux_load_policy();
 #endif
