@@ -125,6 +125,8 @@
 #define VENDOR_ID_INQ_MOBILE    0x2314
 // Sony's USB Vendor ID
 #define VENDOR_ID_SONY          0x054C
+// Lab126's USB Vendor ID
+#define VENDOR_ID_LAB126        0x1949
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
