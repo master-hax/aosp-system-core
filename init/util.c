@@ -309,7 +309,7 @@ void sanitize(char *s)
 {
     if (!s)
         return;
-    while (isalnum(*s))
+    while (isalnum(*s) || *s == '_')
         s++;
     *s = 0;
 }
