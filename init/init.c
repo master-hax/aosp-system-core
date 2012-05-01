@@ -757,18 +757,105 @@ static int bootchart_init_action(int nargs, char **args)
 #endif
 
 #ifdef HAVE_SELINUX
-void selinux_load_policy(void)
+int selinux_load_policy_files(void)
 {
-    const char path_prefix[] = "/sepolicy";
+    char const * const path_prefix[] = {
+        "/data/system/sepolicy",
+        "/sepolicy",
+        0
+    };
     struct selinux_opt seopts[] = {
-        { SELABEL_OPT_PATH, "/file_contexts" }
+        { SELABEL_OPT_PATH, "/data/system/file_contexts" },
+        { SELABEL_OPT_PATH, "/file_contexts" },
+        { 0, NULL }
     };
     char path[PATH_MAX];
-    int fd, rc, vers;
+    int fd = -1, rc, vers;
     struct stat sb;
     void *map;
+    int i = 0;
 
     sehandle = NULL;
+    vers = security_policyvers();
+    if (vers <= 0) {
+        ERROR("SELinux:  Unable to read policy version\n");
+        return -1;
+    }
+    INFO("SELinux:  Maximum supported policy version:  %d\n", vers);
+
+    while (fd < 0 && path_prefix[i]) {
+        snprintf(path, sizeof(path), "%s.%d",
+                 path_prefix[i], vers);
+        fd = open(path, O_RDONLY);
+
+        int max_vers = vers;
+        while (fd < 0 && errno == ENOENT && --max_vers) {
+            snprintf(path, sizeof(path), "%s.%d",
+                     path_prefix[i], max_vers);
+            fd = open(path, O_RDONLY);
+        }
+        i++;
+    }
+    if (fd < 0) {
+        ERROR("SELinux:  Could not open %s:  %s\n",
+              path, strerror(errno));
+        return -1;
+    }
+    if (fstat(fd, &sb) < 0) {
+        ERROR("SELinux:  Could not stat %s:  %s\n",
+              path, strerror(errno));
+        return -1;
+    }
+    map = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (map == MAP_FAILED) {
+        ERROR("SELinux:  Could not map %s:  %s\n",
+              path, strerror(errno));
+        return -1;
+    }
+
+    rc = security_load_policy(map, sb.st_size);
+    if (rc < 0) {
+        ERROR("SELinux:  Could not load policy:  %s\n",
+              strerror(errno));
+        return -1;
+    }
+
+    rc = security_setenforce(selinux_enforcing);
+    if (rc < 0) {
+        ERROR("SELinux:  Could not set enforcing mode to %s:  %s\n",
+              selinux_enforcing ? "enforcing" : "permissive", strerror(errno));
+        return -1;
+    }
+
+    munmap(map, sb.st_size);
+    close(fd);
+    INFO("SELinux: Loaded policy from %s\n", path);
+
+    i = 0;
+    while ((sehandle == NULL) && seopts[i].value) {
+        sehandle = selabel_open(SELABEL_CTX_FILE, &seopts[i], 1);
+        i++;
+    }
+
+    if (!sehandle) {
+        ERROR("SELinux:  Could not load file_contexts:  %s\n",
+              strerror(errno));
+        return -1;
+    }
+    INFO("SELinux: Loaded file contexts from %s\n", seopts[i - 1].value);
+    return 0;
+}
+
+int selinux_reload_policy(void)
+{
+    if (!selinux_enabled) {
+      return -1;
+    }
+    return selinux_load_policy_files();
+}
+
+void selinux_load_policy(void)
+{
     if (!selinux_enabled) {
         INFO("SELinux:  Disabled by command line option\n");
         return;
@@ -786,64 +873,7 @@ void selinux_load_policy(void)
     }
     set_selinuxmnt(SELINUXMNT);
 
-    vers = security_policyvers();
-    if (vers <= 0) {
-        ERROR("SELinux:  Unable to read policy version\n");
-        return;
-    }
-    INFO("SELinux:  Maximum supported policy version:  %d\n", vers);
-
-    snprintf(path, sizeof(path), "%s.%d",
-             path_prefix, vers);
-    fd = open(path, O_RDONLY);
-    while (fd < 0 && errno == ENOENT && --vers) {
-        snprintf(path, sizeof(path), "%s.%d",
-                 path_prefix, vers);
-        fd = open(path, O_RDONLY);
-    }
-    if (fd < 0) {
-        ERROR("SELinux:  Could not open %s:  %s\n",
-              path, strerror(errno));
-        return;
-    }
-    if (fstat(fd, &sb) < 0) {
-        ERROR("SELinux:  Could not stat %s:  %s\n",
-              path, strerror(errno));
-        return;
-    }
-    map = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    if (map == MAP_FAILED) {
-        ERROR("SELinux:  Could not map %s:  %s\n",
-              path, strerror(errno));
-        return;
-    }
-
-    rc = security_load_policy(map, sb.st_size);
-    if (rc < 0) {
-        ERROR("SELinux:  Could not load policy:  %s\n",
-              strerror(errno));
-        return;
-    }
-
-    rc = security_setenforce(selinux_enforcing);
-    if (rc < 0) {
-        ERROR("SELinux:  Could not set enforcing mode to %s:  %s\n",
-              selinux_enforcing ? "enforcing" : "permissive", strerror(errno));
-        return;
-    }
-
-    munmap(map, sb.st_size);
-    close(fd);
-    INFO("SELinux: Loaded policy from %s\n", path);
-
-    sehandle = selabel_open(SELABEL_CTX_FILE, seopts, 1);
-    if (!sehandle) {
-        ERROR("SELinux:  Could not load file_contexts:  %s\n",
-              strerror(errno));
-        return;
-    }
-    INFO("SELinux: Loaded file contexts from %s\n", seopts[0].value);
-    return;
+    selinux_load_policy_files();
 }
 #endif
 
