@@ -7,8 +7,7 @@
 #include <fts.h>
 #include <selinux/selinux.h>
 #include <selinux/label.h>
-
-#define FCPATH "/file_contexts"
+#include <selinux/android.h>
 
 static struct selabel_handle *sehandle;
 static const char *progname;
@@ -55,9 +54,13 @@ static int restore(const char *pathname, const struct stat *sb)
 int restorecon_main(int argc, char **argv)
 {
     struct selinux_opt seopts[] = {
-        { SELABEL_OPT_PATH, FCPATH }
+        { SELABEL_OPT_PATH, "/data/system/file_contexts" },
+        { SELABEL_OPT_PATH, "/file_contexts" },
+        { 0, NULL }
     };
+
     int ch, recurse = 0, ftsflags = FTS_PHYSICAL;
+    int i = 0;
 
     progname = argv[0];
 
@@ -68,6 +71,7 @@ int restorecon_main(int argc, char **argv)
         switch (ch) {
         case 'f':
             seopts[0].value = optarg;
+            seopts[1].value = NULL;
             break;
         case 'n':
             nochange = 1;
@@ -89,9 +93,10 @@ int restorecon_main(int argc, char **argv)
     if (!argc)
         usage();
 
-    sehandle = selabel_open(SELABEL_CTX_FILE, seopts, 1);
+    sehandle = selinux_android_file_context_handle();
+
     if (!sehandle) {
-        fprintf(stderr, "Could not load file contexts from %s:  %s\n", seopts[0].value,
+        fprintf(stderr, "Could not load file_contexts:  %s\n",
                 strerror(errno));
         return -1;
     }
