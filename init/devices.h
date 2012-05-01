@@ -25,4 +25,10 @@ extern int add_dev_perms(const char *name, const char *attr,
                          mode_t perm, unsigned int uid,
                          unsigned int gid, unsigned short prefix);
 int get_device_fd();
+
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+extern const struct selinux_opt seopts_file[];
+#endif
+
 #endif	/* _INIT_DEVICES_H */

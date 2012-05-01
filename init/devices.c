@@ -891,18 +891,27 @@ static void coldboot(const char *path)
     }
 }
 
+#ifdef HAVE_SELINUX
+const struct selinux_opt seopts_file[] = {
+        { SELABEL_OPT_PATH, "/data/system/file_contexts" },
+        { SELABEL_OPT_PATH, "/file_contexts" },
+        { 0, NULL }
+};
+#endif
+
 void device_init(void)
 {
     suseconds_t t0, t1;
     struct stat info;
-    int fd;
+    int fd, i = 0;
 #ifdef HAVE_SELINUX
-    struct selinux_opt seopts[] = {
-        { SELABEL_OPT_PATH, "/file_contexts" }
-    };
-
-    if (is_selinux_enabled() > 0)
-        sehandle = selabel_open(SELABEL_CTX_FILE, seopts, 1);
+    sehandle = NULL;
+    if (is_selinux_enabled() > 0) {
+        while ((sehandle == NULL) && seopts_file[i].value) {
+            sehandle = selabel_open(SELABEL_CTX_FILE, &seopts_file[i], 1);
+            i++;
+        }
+    }
 #endif
     /* is 64K enough? udev uses 16MB! */
     device_fd = uevent_open_socket(64*1024, true);

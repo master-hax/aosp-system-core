@@ -344,6 +344,10 @@ service ueventd /sbin/ueventd
     class core
     critical
 
+on property:selinux.loadpolicy=1
+    restart ueventd
+    restart installd
+
 service console /system/bin/sh
     class core
     console
