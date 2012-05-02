@@ -1,0 +1,12 @@
+Code-Review+2: Dima Zavin <dima@android.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Code-Review+1: Xavier Ducrohet <xav@android.com>
+Verified+1: Xavier Ducrohet <xav@android.com>
+Code-Review+1: Mike Lockwood <lockwood@google.com>
+Code-Review+1: Andrew Hsieh <andrewhsieh@google.com>
+Code-Review+1: Hash Code <hashcode0f@gmail.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Wed, 02 May 2012 09:07:24 -0700
+Reviewed-on: https://android-review.googlesource.com/35251
+Project: platform/system/core
+Branch: refs/heads/master
