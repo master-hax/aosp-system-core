@@ -80,7 +80,7 @@ static Action *action_last = 0;
 
 
 
-int fb_getvar(struct usb_handle *usb, char *response, const char *fmt, ...)
+int fb_getvar(transport_t *trans, char *response, const char *fmt, ...)
 {
     char cmd[CMD_SIZE] = "getvar:";
     int getvar_len = strlen(cmd);
@@ -91,7 +91,7 @@ int fb_getvar(struct usb_handle *usb, char *response, const char *fmt, ...)
     vsnprintf(cmd + getvar_len, sizeof(cmd) - getvar_len, fmt, args);
     va_end(args);
     cmd[CMD_SIZE - 1] = '\0';
-    return fb_command_response(usb, cmd, response);
+    return fb_command_response(trans, cmd, response);
 }
 
 
@@ -102,7 +102,7 @@ int fb_getvar(struct usb_handle *usb, char *response, const char *fmt, ...)
  * Not all devices report the filesystem type, so don't report any errors,
  * just return false.
  */
-int fb_format_supported(usb_handle *usb, const char *partition, const char *type_override)
+int fb_format_supported(transport_t *trans, const char *partition, const char *type_override)
 {
     char fs_type[FB_RESPONSE_SZ + 1] = {0,};
     int status;
@@ -111,7 +111,7 @@ int fb_format_supported(usb_handle *usb, const char *partition, const char *type
     if (type_override) {
         return !!fs_get_generator(type_override);
     }
-    status = fb_getvar(usb, fs_type, "partition-type:%s", partition);
+    status = fb_getvar(trans, fs_type, "partition-type:%s", partition);
     if (status) {
         return 0;
     }
@@ -363,7 +363,7 @@ void fb_queue_wait_for_disconnect(void)
     queue_action(OP_WAIT_FOR_DISCONNECT, "");
 }
 
-int fb_execute_queue(usb_handle *usb)
+int fb_execute_queue(transport_t *transport)
 {
     Action *a;
     char resp[FB_RESPONSE_SZ+1];
@@ -383,25 +383,23 @@ int fb_execute_queue(usb_handle *usb)
             fprintf(stderr,"%s...\n",a->msg);
         }
         if (a->op == OP_DOWNLOAD) {
-            status = fb_download_data(usb, a->data, a->size);
+            status = fb_download_data(transport, a->data, a->size);
             status = a->func(a, status, status ? fb_get_error() : "");
             if (status) break;
         } else if (a->op == OP_COMMAND) {
-            status = fb_command(usb, a->cmd);
+            status = fb_command(transport, a->cmd);
             status = a->func(a, status, status ? fb_get_error() : "");
             if (status) break;
         } else if (a->op == OP_QUERY) {
-            status = fb_command_response(usb, a->cmd, resp);
+            status = fb_command_response(transport, a->cmd, resp);
             status = a->func(a, status, status ? fb_get_error() : resp);
             if (status) break;
         } else if (a->op == OP_NOTICE) {
             fprintf(stderr,"%s\n",(char*)a->data);
         } else if (a->op == OP_DOWNLOAD_SPARSE) {
-            status = fb_download_data_sparse(usb, a->data);
+            status = fb_download_data_sparse(transport, a->data);
             status = a->func(a, status, status ? fb_get_error() : "");
             if (status) break;
-        } else if (a->op == OP_WAIT_FOR_DISCONNECT) {
-            usb_wait_for_disconnect(usb);
         } else {
             die("bogus action");
         }

@@ -68,10 +68,11 @@ boot_img_hdr *mkbootimg(void *kernel, unsigned kernel_size, unsigned kernel_offs
                         unsigned page_size, unsigned base, unsigned tags_offset,
                         unsigned *bootimg_size);
 
-static usb_handle *usb = 0;
+static transport_t transport;
 static const char *serial = 0;
 static const char *product = 0;
 static const char *cmdline = 0;
+static const char *host = 0;
 static int wipe_data = 0;
 static unsigned short vendor_id = 0;
 static int long_listing = 0;
@@ -274,6 +275,14 @@ usb_handle *open_device(void)
     }
 }
 
+tcp_handle *open_device_tcp(void)
+{
+    static tcp_handle *tcp = 0;
+    if(tcp) return tcp;
+    tcp = tcp_open(host);
+    return tcp;
+}
+
 void list_devices(void) {
     // We don't actually open a USB device here,
     // just getting our callback called so we can
@@ -322,6 +331,7 @@ void usage(void)
             "                                           default: 2048\n"
             "  -S <size>[K|M|G]                         automatically sparse files greater\n"
             "                                           than size.  0 to disable\n"
+            "  -t <host>                                connect to remote fastboot on host\n"
         );
 }
 
@@ -570,11 +580,11 @@ static struct sparse_file **load_sparse_files(int fd, int max_size)
     return out_s;
 }
 
-static int64_t get_target_sparse_limit(struct usb_handle *usb)
+static int64_t get_target_sparse_limit(transport_t *trans)
 {
     int64_t limit = 0;
     char response[FB_RESPONSE_SZ + 1];
-    int status = fb_getvar(usb, response, "max-download-size");
+    int status = fb_getvar(trans, response, "max-download-size");
 
     if (!status) {
         limit = strtoul(response, NULL, 0);
@@ -587,7 +597,7 @@ static int64_t get_target_sparse_limit(struct usb_handle *usb)
     return limit;
 }
 
-static int64_t get_sparse_limit(struct usb_handle *usb, int64_t size)
+static int64_t get_sparse_limit(transport_t *trans, int64_t size)
 {
     int64_t limit;
 
@@ -597,7 +607,7 @@ static int64_t get_sparse_limit(struct usb_handle *usb, int64_t size)
         limit = sparse_limit;
     } else {
         if (target_sparse_limit == -1) {
-            target_sparse_limit = get_target_sparse_limit(usb);
+            target_sparse_limit = get_target_sparse_limit(trans);
         }
         if (target_sparse_limit > 0) {
             limit = target_sparse_limit;
@@ -622,10 +632,10 @@ static int needs_erase(const char *part)
     /* The function fb_format_supported() currently returns the value
      * we want, so just call it.
      */
-     return fb_format_supported(usb, part, NULL);
+     return fb_format_supported(&transport, part, NULL);
 }
 
-static int load_buf_fd(usb_handle *usb, int fd,
+static int load_buf_fd(transport_t *trans, int fd,
         struct fastboot_buffer *buf)
 {
     int64_t sz64;
@@ -639,7 +649,7 @@ static int load_buf_fd(usb_handle *usb, int fd,
     }
 
     lseek(fd, 0, SEEK_SET);
-    limit = get_sparse_limit(usb, sz64);
+    limit = get_sparse_limit(trans, sz64);
     if (limit) {
         struct sparse_file **s = load_sparse_files(fd, limit);
         if (s == NULL) {
@@ -659,7 +669,7 @@ static int load_buf_fd(usb_handle *usb, int fd,
     return 0;
 }
 
-static int load_buf(usb_handle *usb, const char *fname,
+static int load_buf(transport_t *trans, const char *fname,
         struct fastboot_buffer *buf)
 {
     int fd;
@@ -669,7 +679,7 @@ static int load_buf(usb_handle *usb, const char *fname,
         return -1;
     }
 
-    return load_buf_fd(usb, fd, buf);
+    return load_buf_fd(trans, fd, buf);
 }
 
 static void flash_buf(const char *pname, struct fastboot_buffer *buf)
@@ -692,11 +702,11 @@ static void flash_buf(const char *pname, struct fastboot_buffer *buf)
     }
 }
 
-void do_flash(usb_handle *usb, const char *pname, const char *fname)
+void do_flash(transport_t *trans, const char *pname, const char *fname)
 {
     struct fastboot_buffer buf;
 
-    if (load_buf(usb, fname, &buf)) {
+    if (load_buf(trans, fname, &buf)) {
         die("cannot load '%s'", fname);
     }
     flash_buf(pname, &buf);
@@ -712,7 +722,7 @@ void do_update_signature(zipfile_t zip, char *fn)
     fb_queue_command("signature", "installing signature");
 }
 
-void do_update(usb_handle *usb, char *fn, int erase_first)
+void do_update(transport_t *trans, char *fn, int erase_first)
 {
     void *zdata;
     unsigned zsize;
@@ -758,7 +768,7 @@ void do_update(usb_handle *usb, char *fn, int erase_first)
                 continue;
             die("update package missing %s", images[i].img_name);
         }
-        rc = load_buf_fd(usb, fd, &buf);
+        rc = load_buf_fd(trans, fd, &buf);
         if (rc) die("cannot load %s from flash", images[i].img_name);
         do_update_signature(zip, images[i].sig_name);
         if (erase_first && needs_erase(images[i].part_name)) {
@@ -790,7 +800,7 @@ void do_send_signature(char *fn)
     fb_queue_command("signature", "installing signature");
 }
 
-void do_flashall(usb_handle *usb, int erase_first)
+void do_flashall(transport_t *trans, int erase_first)
 {
     char *fname;
     void *data;
@@ -810,7 +820,7 @@ void do_flashall(usb_handle *usb, int erase_first)
 
     for (i = 0; i < ARRAY_SIZE(images); i++) {
         fname = find_item(images[i].part_name, product);
-        if (load_buf(usb, fname, &buf)) {
+        if (load_buf(trans, fname, &buf)) {
             if (images[i].is_optional)
                 continue;
             die("could not load %s\n", images[i].img_name);
@@ -997,7 +1007,7 @@ int main(int argc, char **argv)
 
     while (1) {
         int option_index = 0;
-        c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:h", longopts, NULL);
+        c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:ht:", longopts, NULL);
         if (c < 0) {
             break;
         }
@@ -1056,6 +1066,9 @@ int main(int argc, char **argv)
         case 'w':
             wants_wipe = 1;
             break;
+        case 't':
+            host = optarg;
+            break;
         case '?':
             return 1;
         default:
@@ -1082,7 +1095,17 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    usb = open_device();
+    if(host) {
+        transport.userdata = open_device_tcp();
+        transport.close = tcp_close;
+        transport.read = tcp_read;
+        transport.write = tcp_write;
+    } else {
+        transport.userdata = open_device();
+        transport.close = usb_close;
+        transport.read = usb_read;
+        transport.write = usb_write;
+    }
 
     while (argc > 0) {
         if(!strcmp(*argv, "getvar")) {
@@ -1092,7 +1115,7 @@ int main(int argc, char **argv)
         } else if(!strcmp(*argv, "erase")) {
             require(2);
 
-            if (fb_format_supported(usb, argv[1], NULL)) {
+            if (fb_format_supported(&transport, argv[1], NULL)) {
                 fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
             }
 
@@ -1177,7 +1200,7 @@ int main(int argc, char **argv)
             if (erase_first && needs_erase(pname)) {
                 fb_queue_erase(pname);
             }
-            do_flash(usb, pname, fname);
+            do_flash(&transport, pname, fname);
         } else if(!strcmp(*argv, "flash:raw")) {
             char *pname = argv[1];
             char *kname = argv[2];
@@ -1194,14 +1217,14 @@ int main(int argc, char **argv)
             fb_queue_flash(pname, data, sz);
         } else if(!strcmp(*argv, "flashall")) {
             skip(1);
-            do_flashall(usb, erase_first);
+            do_flashall(&transport, erase_first);
             wants_reboot = 1;
         } else if(!strcmp(*argv, "update")) {
             if (argc > 1) {
-                do_update(usb, argv[1], erase_first);
+                do_update(&transport, argv[1], erase_first);
                 skip(2);
             } else {
-                do_update(usb, "update.zip", erase_first);
+                do_update(&transport, "update.zip", erase_first);
                 skip(1);
             }
             wants_reboot = 1;
@@ -1229,6 +1252,6 @@ int main(int argc, char **argv)
     if (fb_queue_is_empty())
         return 0;
 
-    status = fb_execute_queue(usb);
+    status = fb_execute_queue(&transport);
     return (status) ? 1 : 0;
 }
