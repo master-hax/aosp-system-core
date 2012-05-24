@@ -54,6 +54,8 @@ static void parse_line_action(struct parse_state *state, int nargs, char **args)
 #define SECTION 0x01
 #define COMMAND 0x02
 #define OPTION  0x04
+#define ACTION_STRING_DEVICE_ADDED "device-added-"
+#define ACTION_STRING_DEVICE_REMOVED "device-removed-"
 
 #include "keywords.h"
 
@@ -558,6 +560,51 @@ void queue_all_property_triggers()
                         action_add_queue_tail(act);
                     }
                 }
+            }
+        }
+    }
+}
+
+void queue_device_added_removed_triggers(const char *name, bool dev_added)
+{
+    struct listnode *node;
+    struct action *act;
+    char *action_str;
+
+    INFO("queue_device_added_removed_triggers:%s", name);
+    action_str = dev_added ? ACTION_STRING_DEVICE_ADDED : ACTION_STRING_DEVICE_REMOVED;
+    list_for_each(node, &action_list) {
+        act = node_to_item(node, struct action, alist);
+        if (!strncmp(act->name, action_str, strlen(action_str))) {
+            const char *test = act->name + strlen(action_str);
+            int len1 = strlen(test);
+            int len2 = strlen(name);
+            int len = len1 > len2 ? len2 : len1;
+            /* Last few bytes of PCI and USB enumerated devices are variable
+             based on the order of probe. So the idea is that in the init
+             script you can add a fixed part only and still get a match.
+             So comparing only with smaller of device name or trigger name.*/
+            if (!strncmp(name, test, len)) {
+                action_add_queue_tail(act);
+            }
+        }
+    }
+}
+
+void queue_all_device_triggers()
+{
+    struct listnode *node;
+    struct action *act;
+    int r;
+
+    INFO("queue_all_device_triggers");
+    list_for_each(node, &action_list) {
+        act = node_to_item(node, struct action, alist);
+        if (!strncmp(act->name, ACTION_STRING_DEVICE_ADDED, strlen(ACTION_STRING_DEVICE_ADDED))) {
+            const char *test = act->name + strlen(ACTION_STRING_DEVICE_ADDED);
+            INFO("test:%s", test);
+            if ((r = access(test, R_OK)) == 0) {
+               action_add_queue_tail(act);
             }
         }
     }

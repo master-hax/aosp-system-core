@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
+#include <sys/system_properties.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -498,6 +498,7 @@ static void handle_device(const char *action, const char *devpath,
 
     if(!strcmp(action, "add")) {
         make_device(devpath, path, block, major, minor);
+        __system_property_set("ctl.dev_added",devpath);
         if (links) {
             for (i = 0; links[i]; i++)
                 make_link(devpath, links[i]);
@@ -509,6 +510,7 @@ static void handle_device(const char *action, const char *devpath,
             for (i = 0; links[i]; i++)
                 remove_link(devpath, links[i]);
         }
+        __system_property_set("ctl.dev_removed",devpath);
         unlink(devpath);
     }
 

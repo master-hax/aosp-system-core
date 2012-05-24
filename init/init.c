@@ -474,6 +474,16 @@ static void msg_stop(const char *name)
     }
 }
 
+static void handle_dev_add_msg(const char *name)
+{
+    queue_device_added_removed_triggers(name, true);
+}
+
+static void handle_dev_rem_msg(const char *name)
+{
+    queue_device_added_removed_triggers(name, false);
+}
+
 void handle_control_message(const char *msg, const char *arg)
 {
     if (!strcmp(msg,"start")) {
@@ -483,6 +493,10 @@ void handle_control_message(const char *msg, const char *arg)
     } else if (!strcmp(msg,"restart")) {
         msg_stop(arg);
         msg_start(arg);
+    } else if (!strcmp(msg,"dev_added")) {
+        handle_dev_add_msg(arg);
+    } else if (!strcmp(msg,"dev_removed")) {
+       handle_dev_rem_msg(arg);
     } else {
         ERROR("unknown control msg '%s'\n", msg);
     }
@@ -741,6 +755,12 @@ static int queue_property_triggers_action(int nargs, char **args)
     return 0;
 }
 
+static int queue_device_triggers_action(int nargs, char **args)
+{
+    queue_all_device_triggers();
+    return 0;
+}
+
 #if BOOTCHART
 static int bootchart_init_action(int nargs, char **args)
 {
@@ -942,6 +962,10 @@ int main(int argc, char **argv)
 
         /* run all property triggers based on current state of the properties */
     queue_builtin_action(queue_property_triggers_action, "queue_property_triggers");
+
+    /* run all device triggers based on current state of device nodes in /dev */
+    queue_builtin_action(queue_device_triggers_action, "queue_device_triggers");
+
 
 
 #if BOOTCHART
