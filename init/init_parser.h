@@ -17,6 +17,8 @@
 #ifndef _INIT_INIT_PARSER_H_
 #define _INIT_INIT_PARSER_H_
 
+#include <stdbool.h>
+
 #define INIT_PARSER_MAXARGS 64
 
 struct action;
@@ -29,7 +31,8 @@ int action_queue_empty(void);
 void queue_property_triggers(const char *name, const char *value);
 void queue_all_property_triggers();
 void queue_builtin_action(int (*func)(int nargs, char **args), char *name);
-
+void queue_device_added_removed_triggers(const char *name, bool dev_added);
+void queue_all_device_triggers();
 int init_parse_config_file(const char *fn);
 int expand_props(char *dst, const char *src, int len);
 
