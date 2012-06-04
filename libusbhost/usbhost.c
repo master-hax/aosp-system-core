@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stddef.h>
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -142,6 +143,7 @@ void usb_host_run(struct usb_host_context *context,
     char event_buf[512];
     char path[100];
     int i, ret, done = 0;
+    int j, event_size = 0;
     int wd, wds[10];
     int wd_count = sizeof(wds) / sizeof(wds[0]);
 
@@ -188,13 +190,20 @@ void usb_host_run(struct usb_host_context *context,
             } else {
                 for (i = 1; i < wd_count && !done; i++) {
                     if (wd == wds[i]) {
-                        snprintf(path, sizeof(path), "%s/%03d/%s", USB_FS_DIR, i, event->name);
-                        if (event->mask == IN_CREATE) {
-                            D("new device %s\n", path);
-                            done = added_cb(path, client_data);
-                        } else if (event->mask == IN_DELETE) {
-                            D("gone device %s\n", path);
-                            done = removed_cb(path, client_data);
+                        j = 0;
+                        while ( j < ret ) {
+                            /*Parse events*/
+                            event = (struct inotify_event *)&event_buf[j];
+                            event_size = offsetof (struct inotify_event, name) + event->len;
+                            j += event_size;
+                            snprintf(path, sizeof(path), "%s/%03d/%s", USB_FS_DIR, i, event->name);
+                            if (event->mask == IN_CREATE) {
+                                D("new device %s\n", path);
+                                done = added_cb(path, client_data);
+                            } else if (event->mask == IN_DELETE) {
+                                D("gone device %s\n", path);
+                                done = removed_cb(path, client_data);
+                            }
                         }
                     }
                 }
