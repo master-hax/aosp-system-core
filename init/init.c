@@ -758,12 +758,20 @@ static int bootchart_init_action(int nargs, char **args)
 #endif
 
 #ifdef HAVE_SELINUX
-void selinux_load_policy(void)
+static const char *const sepolicy_prefix[] = {
+        "/data/system/sepolicy",
+        "/sepolicy",
+        0
+};
+
+static const struct selinux_opt seopts_prop[] = {
+        { SELABEL_OPT_PATH, "/data/system/property_contexts" },
+        { SELABEL_OPT_PATH, "/property_contexts" },
+        { 0, NULL }
+};
+
+int selinux_load_policy_files(void)
 {
-    const char path_prefix[] = "/sepolicy";
-    struct selinux_opt seopts[] = {
-        { SELABEL_OPT_PATH, "/file_contexts" }
-    };
     char path[PATH_MAX];
     int fd, rc, vers;
     struct stat sb;
@@ -794,12 +802,15 @@ void selinux_load_policy(void)
     }
     INFO("SELinux:  Maximum supported policy version:  %d\n", vers);
 
-    snprintf(path, sizeof(path), "%s.%d",
-             path_prefix, vers);
-    fd = open(path, O_RDONLY);
-    while (fd < 0 && errno == ENOENT && --vers) {
+    while (fd < 0 && sepolicy_prefix[i]) {
+      snprintf(path, sizeof(path), "%s.%d",
+               sepolicy_prefix[i], vers);
+      fd = open(path, O_RDONLY);
+
+      int max_vers = vers;
+      while (fd < 0 && errno == ENOENT && --max_vers) {
         snprintf(path, sizeof(path), "%s.%d",
-                 path_prefix, vers);
+                 sepolicy_prefix[i], max_vers);
         fd = open(path, O_RDONLY);
     }
     if (fd < 0) {
@@ -810,36 +821,91 @@ void selinux_load_policy(void)
     if (fstat(fd, &sb) < 0) {
         ERROR("SELinux:  Could not stat %s:  %s\n",
               path, strerror(errno));
-        return;
+        close(fd);
+        return -1;
     }
     map = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
     if (map == MAP_FAILED) {
         ERROR("SELinux:  Could not map %s:  %s\n",
               path, strerror(errno));
-        return;
+        close(fd);
+        return -1;
     }
 
     rc = security_load_policy(map, sb.st_size);
     if (rc < 0) {
         ERROR("SELinux:  Could not load policy:  %s\n",
               strerror(errno));
-        return;
+        goto err;
     }
 
     rc = security_setenforce(selinux_enforcing);
     if (rc < 0) {
         ERROR("SELinux:  Could not set enforcing mode to %s:  %s\n",
               selinux_enforcing ? "enforcing" : "permissive", strerror(errno));
-        return;
+        goto err;
     }
 
     munmap(map, sb.st_size);
     close(fd);
     INFO("SELinux: Loaded policy from %s\n", path);
 
-    sehandle = selabel_open(SELABEL_CTX_FILE, seopts, 1);
+    i = 0;
+    while ((sehandle == NULL) && seopts_file[i].value) {
+        sehandle = selabel_open(SELABEL_CTX_FILE, &seopts_file[i], 1);
+        i++;
+    }
+
     if (!sehandle) {
         ERROR("SELinux:  Could not load file_contexts:  %s\n",
+              strerror(errno));
+        return -1;
+    }
+    INFO("SELinux: Loaded file contexts from %s\n", seopts_file[i - 1].value);
+
+    i = 0;
+    while ((sehandle_prop == NULL) && seopts_prop[i].value) {
+        sehandle_prop = selabel_open(SELABEL_CTX_ANDROID_PROP, &seopts_prop[i], 1);
+        i++;
+    }
+
+    if (!sehandle_prop) {
+        ERROR("SELinux:  Could not load property_contexts:  %s\n",
+              strerror(errno));
+        return -1;
+    }
+    INFO("SELinux: Loaded property contexts from %s\n", seopts_prop[i - 1].value);
+    return 0;
+
+err:
+    munmap(map, sb.st_size);
+    close(fd);
+    return -1;
+}
+
+int selinux_reload_policy(void)
+{
+    if (!selinux_enabled) {
+      return -1;
+    }
+    return selinux_load_policy_files();
+}
+
+
+void selinux_load_policy(void)
+{
+    if (!selinux_enabled) {
+        INFO("SELinux:  Disabled by command line option\n");
+        return;
+    }
+
+    mkdir(SELINUXMNT, 0755);
+    if (mount("selinuxfs", SELINUXMNT, "selinuxfs", 0, NULL)) {
+        if (errno == ENODEV) {
+            /* SELinux not enabled in kernel */
+            return;
+        }
+        ERROR("SELinux:  Could not mount selinuxfs:  %s\n",
               strerror(errno));
         return;
     }
