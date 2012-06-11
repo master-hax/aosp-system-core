@@ -290,12 +290,12 @@ int mkdir_recursive(const char *pathname, mode_t mode)
         memcpy(buf, pathname, width);
         buf[width] = 0;
         if (stat(buf, &info) != 0) {
-            ret = mkdir(buf, mode);
+            ret = make_dir(buf, mode);
             if (ret && errno != EEXIST)
                 return ret;
         }
     }
-    ret = mkdir(pathname, mode);
+    ret = make_dir(pathname, mode);
     if (ret && errno != EEXIST)
         return ret;
     return 0;
@@ -450,4 +450,30 @@ void import_kernel_cmdline(int in_qemu,
         import_kernel_nv(ptr, in_qemu);
         ptr = x;
     }
+}
+
+int make_dir(const char *path, mode_t mode)
+{
+    int rc;
+
+#ifdef HAVE_SELINUX
+    char *secontext = NULL;
+
+    if (sehandle) {
+        selabel_lookup(sehandle, &secontext, path, mode);
+        setfscreatecon(secontext);
+    }
+#endif
+
+    rc = mkdir(path, mode);
+
+#ifdef HAVE_SELINUX
+    if (secontext) {
+        int save_errno = errno;
+        freecon(secontext);
+        setfscreatecon(NULL);
+        errno = save_errno;
+    }
+#endif
+    return rc;
 }
