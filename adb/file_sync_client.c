@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
+#include <utime.h>
 #include <dirent.h>
 #include <limits.h>
 #include <sys/types.h>
@@ -182,7 +183,8 @@ static int sync_finish_readtime(int fd, unsigned int *timestamp,
     return 0;
 }
 
-int sync_readmode(int fd, const char *path, unsigned *mode)
+int sync_readmodetime(int fd, const char *path, unsigned *mode,
+                      unsigned *timestamp)
 {
     syncmsg msg;
     int len = strlen(path);
@@ -204,6 +206,7 @@ int sync_readmode(int fd, const char *path, unsigned *mode)
     }
 
     *mode = ltohl(msg.stat.mode);
+    *timestamp = ltohl(msg.stat.time);
     return 0;
 }
 
@@ -233,7 +236,7 @@ static int write_data_file(int fd, const char *path, syncsendbuf *sbuf)
         }
 
         sbuf->size = htoll(ret);
-        if(writex(fd, sbuf, sizeof(unsigned) * 2 + ret)){
+        if(writex(fd, sbuf, sizeof(unsigned) * 2 + ret)) {
             err = -1;
             break;
         }
@@ -258,7 +261,7 @@ static int write_data_buffer(int fd, char* file_buffer, int size, syncsendbuf *s
 
         memcpy(sbuf->data, &file_buffer[total], count);
         sbuf->size = htoll(count);
-        if(writex(fd, sbuf, sizeof(unsigned) * 2 + count)){
+        if(writex(fd, sbuf, sizeof(unsigned) * 2 + count)) {
             err = -1;
             break;
         }
@@ -438,7 +441,7 @@ static int mkdirs(char *name)
     return 0;
 }
 
-int sync_recv(int fd, const char *rpath, const char *lpath)
+int sync_recv(int fd, const char *rpath, const char *lpath, unsigned timestamp)
 {
     syncmsg msg;
     int len;
@@ -505,6 +508,12 @@ int sync_recv(int fd, const char *rpath, const char *lpath)
     }
 
     adb_close(lfd);
+
+    // update mtime
+    struct utimbuf u;
+    u.actime = timestamp;
+    u.modtime = timestamp;
+    utime(lpath, &u);
     return 0;
 
 remote_error:
@@ -721,7 +730,7 @@ static int copy_local_dir_remote(int fd, const char *lpath, const char *rpath, i
         if(ci->flag == 0) {
             fprintf(stderr,"%spush: %s -> %s\n", listonly ? "would " : "", ci->src, ci->dst);
             if(!listonly &&
-               sync_send(fd, ci->src, ci->dst, ci->time, ci->mode, 0 /* no verify APK */)){
+               sync_send(fd, ci->src, ci->dst, ci->time, ci->mode, 0 /* no verify APK */)) {
                 return 1;
             }
             pushed++;
@@ -743,6 +752,7 @@ int do_sync_push(const char *lpath, const char *rpath, int verifyApk)
 {
     struct stat st;
     unsigned mode;
+    unsigned timestamp;
     int fd;
 
     fd = adb_connect("sync:");
@@ -766,7 +776,7 @@ int do_sync_push(const char *lpath, const char *rpath, int verifyApk)
             sync_quit(fd);
         }
     } else {
-        if(sync_readmode(fd, rpath, &mode)) {
+        if(sync_readmodetime(fd, rpath, &mode, &timestamp)) {
             return 1;
         }
         if((mode != 0) && S_ISDIR(mode)) {
@@ -899,31 +909,29 @@ static int copy_remote_dir_local(int fd, const char *rpath, const char *lpath,
         return -1;
     }
 
-#if 0
     if (checktimestamps) {
         for (ci = filelist; ci != 0; ci = ci->next) {
-            if (sync_start_readtime(fd, ci->dst)) {
-                return 1;
+            struct stat st;
+            if (stat(ci->dst, &st)) {
+                // continue to next file if file not exist
+                continue;
             }
-        }
-        for (ci = filelist; ci != 0; ci = ci->next) {
-            unsigned int timestamp, mode, size;
-            if (sync_finish_readtime(fd, &timestamp, &mode, &size))
-                return 1;
-            if (size == ci->size) {
+
+            if (st.st_size == ci->size) {
                 /* for links, we cannot update the atime/mtime */
-                if ((S_ISREG(ci->mode & mode) && timestamp == ci->time) ||
-                    (S_ISLNK(ci->mode & mode) && timestamp >= ci->time))
+                if ((S_ISREG(ci->mode & st.st_mode) && (unsigned)st.st_mtime == ci->time) ||
+                    (S_ISLNK(ci->mode & st.st_mode) && (unsigned)st.st_mtime >= ci->time)) {
                     ci->flag = 1;
+                }
             }
         }
     }
-#endif
+
     for (ci = filelist; ci != 0; ci = next) {
         next = ci->next;
         if (ci->flag == 0) {
             fprintf(stderr, "pull: %s -> %s\n", ci->src, ci->dst);
-            if (sync_recv(fd, ci->src, ci->dst)) {
+            if (sync_recv(fd, ci->src, ci->dst, ci->time)) {
                 return 1;
             }
             pulled++;
@@ -943,6 +951,7 @@ static int copy_remote_dir_local(int fd, const char *rpath, const char *lpath,
 int do_sync_pull(const char *rpath, const char *lpath)
 {
     unsigned mode;
+    unsigned timestamp;
     struct stat st;
 
     int fd;
@@ -953,7 +962,7 @@ int do_sync_pull(const char *rpath, const char *lpath)
         return 1;
     }
 
-    if(sync_readmode(fd, rpath, &mode)) {
+    if(sync_readmodetime(fd, rpath, &mode, &timestamp)) {
         return 1;
     }
     if(mode == 0) {
@@ -981,7 +990,7 @@ int do_sync_pull(const char *rpath, const char *lpath)
             }
         }
         BEGIN();
-        if(sync_recv(fd, rpath, lpath)) {
+        if(sync_recv(fd, rpath, lpath, timestamp)) {
             return 1;
         } else {
             END();
@@ -990,7 +999,7 @@ int do_sync_pull(const char *rpath, const char *lpath)
         }
     } else if(S_ISDIR(mode)) {
         BEGIN();
-        if (copy_remote_dir_local(fd, rpath, lpath, 0)) {
+        if (copy_remote_dir_local(fd, rpath, lpath, 1)) {
             return 1;
         } else {
             END();
@@ -1014,7 +1023,7 @@ int do_sync_sync(const char *lpath, const char *rpath, int listonly)
     }
 
     BEGIN();
-    if(copy_local_dir_remote(fd, lpath, rpath, 1, listonly)){
+    if(copy_local_dir_remote(fd, lpath, rpath, 1, listonly)) {
         return 1;
     } else {
         END();
