@@ -899,26 +899,23 @@ static int copy_remote_dir_local(int fd, const char *rpath, const char *lpath,
         return -1;
     }
 
-#if 0
     if (checktimestamps) {
         for (ci = filelist; ci != 0; ci = ci->next) {
-            if (sync_start_readtime(fd, ci->dst)) {
-                return 1;
+            struct stat st;
+            if (stat(ci->dst, &st)){
+                // continue to next file if file not exist
+                continue;
             }
-        }
-        for (ci = filelist; ci != 0; ci = ci->next) {
-            unsigned int timestamp, mode, size;
-            if (sync_finish_readtime(fd, &timestamp, &mode, &size))
-                return 1;
-            if (size == ci->size) {
+
+            if (st.st_size == ci->size) {
                 /* for links, we cannot update the atime/mtime */
-                if ((S_ISREG(ci->mode & mode) && timestamp == ci->time) ||
-                    (S_ISLNK(ci->mode & mode) && timestamp >= ci->time))
+                if ((S_ISREG(ci->mode & st.st_mode) && st.st_mtime == ci->time) ||
+                    (S_ISLNK(ci->mode & st.st_mode) && st.st_mtime >= ci->time))
                     ci->flag = 1;
             }
         }
     }
-#endif
+
     for (ci = filelist; ci != 0; ci = next) {
         next = ci->next;
         if (ci->flag == 0) {
@@ -990,7 +987,7 @@ int do_sync_pull(const char *rpath, const char *lpath)
         }
     } else if(S_ISDIR(mode)) {
         BEGIN();
-        if (copy_remote_dir_local(fd, rpath, lpath, 0)) {
+        if (copy_remote_dir_local(fd, rpath, lpath, 1)) {
             return 1;
         } else {
             END();
