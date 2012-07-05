@@ -61,6 +61,7 @@
 
 #ifdef HAVE_SELINUX
 struct selabel_handle *sehandle;
+struct selabel_handle *sehandle_prop;
 #endif
 
 static int property_triggers_enabled = 0;
@@ -764,6 +765,12 @@ static const char *const sepolicy_prefix[] = {
         0
 };
 
+static const struct selinux_opt seopts_prop[] = {
+  { SELABEL_OPT_PATH, "/data/system/property_contexts" },
+  { SELABEL_OPT_PATH, "/property_contexts" },
+  { 0, NULL }
+};
+
 int selinux_load_policy_files(void)
 {
     char path[PATH_MAX];
@@ -773,6 +780,7 @@ int selinux_load_policy_files(void)
     int i = 0;
 
     sehandle = NULL;
+    sehandle_prop = NULL;
     vers = security_policyvers();
     if (vers <= 0) {
         ERROR("SELinux:  Unable to read policy version\n");
@@ -842,6 +850,19 @@ int selinux_load_policy_files(void)
         return -1;
     }
     INFO("SELinux: Loaded file contexts from %s\n", seopts_file[i - 1].value);
+
+    i = 0;
+    while ((sehandle_prop == NULL) && seopts_prop[i].value) {
+        sehandle_prop = selabel_open(SELABEL_CTX_ANDROID_PROP, &seopts_prop[i], 1);
+        i++;
+    }
+
+    if (!sehandle_prop) {
+        ERROR("SELinux:  Could not load property_contexts:  %s\n",
+              strerror(errno));
+        return -1;
+    }
+    INFO("SELinux: Loaded property contexts from %s\n", seopts_prop[i - 1].value);
     return 0;
 
 err:
@@ -879,6 +900,13 @@ void selinux_load_policy(void)
 
     selinux_load_policy_files();
 }
+
+int audit_callback(void *data, security_class_t cls, char *buf, size_t len)
+{
+    snprintf(buf, len, "property=%s", !data ? "NULL" : (char *)data);
+    return 0;
+}
+
 #endif
 
 int main(int argc, char **argv)
@@ -932,6 +960,13 @@ int main(int argc, char **argv)
     process_kernel_cmdline();
 
 #ifdef HAVE_SELINUX
+    union selinux_callback cb;
+    cb.func_log = klog_write;
+    selinux_set_callback(SELINUX_CB_LOG, cb);
+
+    cb.func_audit = audit_callback;
+    selinux_set_callback(SELINUX_CB_AUDIT, cb);
+
     INFO("loading selinux policy\n");
     selinux_load_policy();
 #endif
