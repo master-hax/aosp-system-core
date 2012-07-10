@@ -62,12 +62,19 @@
 #include <sys/exec_elf.h>
 #include <cutils/log.h>
 
+/* NOTE: ucontext_t declarations might be added to Bionic in the future.
+ * Avoid naming conflicts. */
+#undef ucontext_t
+#undef ucontext
+#define ucontext_t  corkscrew_ucontext_t
+#define ucontext    corkscrew_ucontext
+
 /* Machine context at the time a signal was raised. */
 typedef struct ucontext {
     uint32_t uc_flags;
     struct ucontext* uc_link;
     stack_t uc_stack;
-    struct sigcontext {
+    struct {
         uint32_t trap_no;
         uint32_t error_code;
         uint32_t oldmask;
