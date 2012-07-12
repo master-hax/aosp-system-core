@@ -21,6 +21,9 @@
 
 #include "sysdeps.h"
 #include <sys/types.h>
+#if !ADB_HOST
+#include <hardware_legacy/power.h>
+#endif
 
 #define  TRACE_TAG  TRACE_TRANSPORT
 #include "adb.h"
@@ -176,6 +179,9 @@ static void *server_socket_thread(void * arg)
         fd = adb_socket_accept(serverfd, &addr, &alen);
         if(fd >= 0) {
             D("server: new connection on fd %d\n", fd);
+#if !ADB_HOST
+            acquire_wake_lock(PARTIAL_WAKE_LOCK, "adb");
+#endif
             close_on_exec(fd);
             disable_tcp_nagle(fd);
             register_socket_transport(fd, "host", port, 1);
@@ -353,6 +359,9 @@ static void remote_kick(atransport *t)
 
 static void remote_close(atransport *t)
 {
+#if !ADB_HOST
+    release_wake_lock("adb");
+#endif
     adb_close(t->fd);
 }
 
