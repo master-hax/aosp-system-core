@@ -26,6 +26,8 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -57,6 +59,8 @@ void framebuffer_service(int fd, void *cookie)
     int fd_screencap;
     int w, h, f;
     int fds[2];
+    int childExitCode = 0;
+    int ret = 0;
 
     if (pipe(fds) < 0) goto done;
 
@@ -169,7 +173,14 @@ void framebuffer_service(int fd, void *cookie)
     if(writex(fd, buf, fbinfo.size % sizeof(buf))) goto done;
 
 done:
+    ret = waitpid(pid, &childExitCode, 0);
+    if (ret < 0) {
+        printf("Error waiting for child: ret %d exitcode %d\n", ret,
+            childExitCode);
+    }
+
     close(fds[0]);
     close(fds[1]);
     close(fd);
 }
+
