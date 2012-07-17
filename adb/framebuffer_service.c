@@ -26,6 +26,9 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -169,6 +172,12 @@ void framebuffer_service(int fd, void *cookie)
     if(writex(fd, buf, fbinfo.size % sizeof(buf))) goto done;
 
 done:
+    while (waitpid(pid, NULL, 0) == -1) {
+        if (errno != EINTR) {
+            break;
+        }
+    }
+
     close(fds[0]);
     close(fds[1]);
     close(fd);
