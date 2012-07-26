@@ -99,7 +99,7 @@ static int g_devCount = 0;
 
 static EventTagMap* g_eventTagMap = NULL;
 
-static int openLogFile (const char *pathname)
+static int openLogFile (const char *pathname __attribute__((unused)))
 {
     return open(g_outputFileName, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
 }
