@@ -971,9 +971,9 @@ int main(int argc, char **argv)
         char* arg = argv[i];
         if (!path)
             path = arg;
-        else if (uid == -1)
+        else if (uid == (unsigned)-1)
             uid = strtoul(arg, 0, 10);
-        else if (gid == -1)
+        else if (gid == (unsigned)-1)
             gid = strtoul(arg, 0, 10);
         else {
             ERROR("too many arguments\n");
