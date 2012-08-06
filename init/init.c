@@ -563,16 +563,11 @@ static int console_init_action(int nargs, char **args)
         console_name = strdup(tmp);
     }
 
-    fd = open(console_name, O_RDWR);
-    if (fd >= 0)
+    fd = open(console_name, O_WRONLY);
+    if (fd >= 0) {
         have_console = 1;
-    close(fd);
-
-    if( load_565rle_image(INIT_IMAGE_FILE) ) {
-        fd = open("/dev/tty0", O_WRONLY);
-        if (fd >= 0) {
-            const char *msg;
-                msg = "\n"
+        const char *msg;
+        msg = "\n"
             "\n"
             "\n"
             "\n"
@@ -587,9 +582,8 @@ static int console_init_action(int nargs, char **args)
             "\n"
             "\n"
             "             A N D R O I D ";
-            write(fd, msg, strlen(msg));
-            close(fd);
-        }
+        write(fd, msg, strlen(msg));
+        close(fd);
     }
     return 0;
 }

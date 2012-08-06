@@ -132,10 +132,6 @@ void service_reset(struct service *svc);
 void service_start(struct service *svc, const char *dynamic_args);
 void property_changed(const char *name, const char *value);
 
-#define INIT_IMAGE_FILE	"/initlogo.rle"
-
-int load_565rle_image( char *file_name );
-
 #ifdef HAVE_SELINUX
 extern struct selabel_handle *sehandle;
 #endif
