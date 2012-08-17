@@ -40,6 +40,10 @@ LOCAL_C_INCLUDES += external/libselinux/include
 LOCAL_CFLAGS += -DHAVE_SELINUX
 endif
 
+ifeq ($(NEEDS_EXEC_SUPPORT),true)
+LOCAL_CFLAGS += -DNEEDS_EXEC_SUPPORT
+endif
+
 include $(BUILD_EXECUTABLE)
 
 # Make a symlink from /sbin/ueventd to /init
