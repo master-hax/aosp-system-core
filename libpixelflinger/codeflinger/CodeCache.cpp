@@ -63,12 +63,7 @@ static void heap_error(const char* msg, const char* function, void* p);
 #define USAGE_ERROR_ACTION(m,p) \
     heap_error("ARGUMENT IS INVALID HEAP ADDRESS", __FUNCTION__, p)
 
-
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#pragma GCC diagnostic ignored "-Wempty-body"
 #include "../../../../bionic/libc/upstream-dlmalloc/malloc.c"
-#pragma GCC diagnostic warning "-Wstrict-aliasing"
-#pragma GCC diagnostic warning "-Wempty-body"
 
 static void heap_error(const char* msg, const char* function, void* p) {
     ALOG(LOG_FATAL, LOG_TAG, "@@@ ABORTING: CODE FLINGER: %s IN %s addr=%p",
