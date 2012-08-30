@@ -91,7 +91,8 @@ static int fill_ip_info(const char *interface,
                      char *dns2,
                      char *server,
                      uint32_t *lease,
-                     char *vendorInfo)
+                     char *vendorInfo,
+                     char *domain)
 {
     char prop_name[PROPERTY_KEY_MAX];
     char prop_value[PROPERTY_VALUE_MAX];
@@ -152,6 +153,10 @@ static int fill_ip_info(const char *interface,
             p2p_interface);
     property_get(prop_name, vendorInfo, NULL);
 
+    snprintf(prop_name, sizeof(prop_name), "%s.%s.domain", DHCP_PROP_NAME_PREFIX,
+            p2p_interface);
+    property_get(prop_name, domain, NULL);
+
     return 0;
 }
 
@@ -180,7 +185,8 @@ int dhcp_do_request(const char *interface,
                     char *dns2,
                     char *server,
                     uint32_t *lease,
-                    char *vendorInfo)
+                    char *vendorInfo,
+                    char *domain)
 {
     char result_prop_name[PROPERTY_KEY_MAX];
     char daemon_prop_name[PROPERTY_KEY_MAX];
@@ -231,7 +237,7 @@ int dhcp_do_request(const char *interface,
     if (strcmp(prop_value, "ok") == 0) {
         char dns_prop_name[PROPERTY_KEY_MAX];
         if (fill_ip_info(interface, ipaddr, gateway, prefixLength,
-                dns1, dns2, server, lease, vendorInfo) == -1) {
+                dns1, dns2, server, lease, vendorInfo, domain) == -1) {
             return -1;
         }
 
@@ -329,7 +335,8 @@ int dhcp_do_request_renew(const char *interface,
                     char *dns2,
                     char *server,
                     uint32_t *lease,
-                    char *vendorInfo)
+                    char *vendorInfo,
+                    char *domain)
 {
     char result_prop_name[PROPERTY_KEY_MAX];
     char prop_value[PROPERTY_VALUE_MAX] = {'\0'};
@@ -366,7 +373,7 @@ int dhcp_do_request_renew(const char *interface,
     }
     if (strcmp(prop_value, "ok") == 0) {
         fill_ip_info(interface, ipaddr, gateway, prefixLength,
-                dns1, dns2, server, lease, vendorInfo);
+                dns1, dns2, server, lease, vendorInfo, domain);
         return 0;
     } else {
         snprintf(errmsg, sizeof(errmsg), "DHCP Renew result was %s", prop_value);
