@@ -358,6 +358,10 @@ enum {
                                AUDIO_DEVICE_IN_USB_DEVICE |
                                AUDIO_DEVICE_IN_DEFAULT),
     AUDIO_DEVICE_IN_ALL_SCO = AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET,
+    //devices not supported for codec offload
+    AUDIO_DEVICE_OUT_NON_OFFLOAD = (AUDIO_DEVICE_OUT_ALL & ~(AUDIO_DEVICE_OUT_SPEAKER |
+                                 AUDIO_DEVICE_OUT_WIRED_HEADSET |
+                                 AUDIO_DEVICE_OUT_WIRED_HEADPHONE)),
 };
 
 typedef uint32_t audio_devices_t;
@@ -382,7 +386,8 @@ typedef enum {
                                         // controls related to voice calls.
     AUDIO_OUTPUT_FLAG_FAST = 0x4,       // output supports "fast tracks",
                                         // defined elsewhere
-    AUDIO_OUTPUT_FLAG_DEEP_BUFFER = 0x8 // use deep audio buffers
+    AUDIO_OUTPUT_FLAG_DEEP_BUFFER = 0x8, // use deep audio buffers
+    AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD = 0x10 // Use compress offload in DOT
 } audio_output_flags_t;
 
 static inline bool audio_is_output_device(audio_devices_t device)
