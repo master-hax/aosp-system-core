@@ -1,6 +1,7 @@
 ## Permissions to allow system-wide tracing to the kernel trace buffer.
 ##
-on boot
+on property:ro.debuggable=1
+    mount debugfs debugfs /sys/kernel/debug
 
 # Allow writing to the kernel trace log.
     chmod 0222 /sys/kernel/debug/tracing/trace_marker
