@@ -21,7 +21,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/input.h>
-#include <linux/netlink.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +32,8 @@
 #include <sys/un.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <linux/netlink.h> // Must come after <sys/socket.h>.
 
 #include <cutils/android_reboot.h>
 #include <cutils/klog.h>

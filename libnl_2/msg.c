@@ -18,7 +18,8 @@
 
 #include <malloc.h>
 #include <unistd.h>
-#include <linux/netlink.h>
+#include <sys/socket.h>
+#include <linux/netlink.h> // Must come after <sys/socket.h>.
 #include "netlink-types.h"
 
 /* Allocate a new netlink message with the default maximum payload size. */
