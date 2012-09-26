@@ -23,5 +23,6 @@ int fs_mgr_do_tmpfs_mount(char *n_name);
 int fs_mgr_unmount_all(char *fstab_file);
 int fs_mgr_get_crypt_info(char *fstab_file, char *key_loc, char *real_blk_dev, int size);
 
+void check_fs(char *blk_dev, char *type, char* target);
 #endif /* __CORE_FS_MGR_H */
 

@@ -366,9 +366,13 @@ int do_mount(int nargs, char **args)
     unsigned flags = 0;
     int n, i;
     int wait = 0;
+    int check = 1;
 
     for (n = 4; n < nargs; n++) {
         for (i = 0; mount_flags[i].name; i++) {
+            if (!strcmp(args[n], "remount")) {
+                check = 0;
+            }
             if (!strcmp(args[n], mount_flags[i].name)) {
                 flags |= mount_flags[i].flag;
                 break;
@@ -378,6 +382,8 @@ int do_mount(int nargs, char **args)
         if (!mount_flags[i].name) {
             if (!strcmp(args[n], "wait"))
                 wait = 1;
+            else if (!strcmp(args[n], "nocheck"))
+                check = 0;
             /* if our last argument isn't a flag, wolf it up as an option string */
             else if (n + 1 == nargs)
                 options = args[n];
@@ -398,6 +404,8 @@ int do_mount(int nargs, char **args)
 
         if (wait)
             wait_for_file(tmp, COMMAND_RETRY_TIMEOUT);
+        if (check)
+            check_fs(tmp, system, target);
         if (mount(tmp, target, system, flags, options) < 0) {
             return -1;
         }
@@ -446,6 +454,8 @@ int do_mount(int nargs, char **args)
     } else {
         if (wait)
             wait_for_file(source, COMMAND_RETRY_TIMEOUT);
+        if (check)
+            check_fs(source, system, target);
         if (mount(source, target, system, flags, options) < 0) {
             return -1;
         }
