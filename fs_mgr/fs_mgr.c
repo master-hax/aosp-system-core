@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/* TO DO:
- *   1. Re-direct fsck output to the kernel log?
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,6 +38,19 @@
 #define KEY_IN_FOOTER  "footer"
 
 #define E2FSCK_BIN      "/system/bin/e2fsck"
+#define E2FSCK_STATIC_BIN "/sbin/e2fsck_static"
+#define E2FSCK_FLAGS    "-y"
+
+#define FSCK_LOG_PATH   "/dev/.fsck"
+#ifndef LOG_MARK
+#define LOG_MARK        "FSCK"
+#endif
+
+/* CLOCK_DIFF calculates time difference between two timespec variables,
+ * returning the time difference in micro seconds.
+ */
+#define CLOCK_DIFF(now,then) (int64_t)(((now.tv_sec - then.tv_sec) * (double)CLOCKS_PER_SEC) +\
+                       (((now.tv_nsec - then.tv_nsec) * (double)CLOCKS_PER_SEC) / 1e9))
 
 struct flag_list {
     const char *name;
@@ -364,52 +372,71 @@ static void free_fstab(struct fstab_rec *fstab)
     free(fstab);
 }
 
-static void check_fs(char *blk_dev, char *type, char *target)
+/* Create and get a filedescriptor for logging,
+ * FSCK_LOG_PATH controls where the output is redirected.
+ * If the FSCK_LOG_PATH does not exist dump it to /dev/null.
+ * The FSCK_LOG_PATH may point to a character device like
+ * console or uart. Or it may point to an existing
+ * file or directory. If needed to create regular
+ * file, fsname is the name of the file.
+ */
+static int getlog_fd(const char* const fsname)
 {
-    pid_t pid;
-    int status;
-    int ret;
-    long tmpmnt_flags = MS_NOATIME | MS_NOEXEC | MS_NOSUID;
-    char *tmpmnt_opts = "nomblk_io_submit,errors=remount-ro";
+    int log_fd = -1;
+    int link_sres, target_sres;
+    char logfile_name[PATH_MAX] = { '\0' };
+    struct stat link_sbuf, target_sbuf;
 
-    /* Check for the types of filesystems we know how to check */
-    if (!strcmp(type, "ext2") || !strcmp(type, "ext3") || !strcmp(type, "ext4")) {
-        /*
-         * First try to mount and unmount the filesystem.  We do this because
-         * the kernel is more efficient than e2fsck in running the journal and
-         * processing orphaned inodes, and on at least one device with a
-         * performance issue in the emmc firmware, it can take e2fsck 2.5 minutes
-         * to do what the kernel does in about a second.
-         *
-         * After mounting and unmounting the filesystem, run e2fsck, and if an
-         * error is recorded in the filesystem superblock, e2fsck will do a full
-         * check.  Otherwise, it does nothing.  If the kernel cannot mount the
-         * filesytsem due to an error, e2fsck is still run to do a full check
-         * fix the filesystem.
-         */
-        ret = mount(blk_dev, target, type, tmpmnt_flags, tmpmnt_opts);
-        if (! ret) {
-            umount(target);
+    link_sres = lstat(FSCK_LOG_PATH, &link_sbuf);
+    if (link_sres >= 0) {
+        if (S_ISLNK(link_sbuf.st_mode)) {
+            char buf[PATH_MAX] = { '\0' };
+            ssize_t len;
+
+            len = readlink(FSCK_LOG_PATH, buf, sizeof(buf) - 1);
+            /* readlink should not fail. It is a valid link,
+             * but if it does; give up.
+             */
+            if (len < 0)
+                return -1;
+            buf[len] = '\0';
+            target_sres = stat(buf, &target_sbuf);
+
+            if (target_sres == -1) {
+                /* The 777 permission probably needed to be handled by a non privileged
+                 * user that reads or process the log with an id we cant know at this time.
+                 * Beware if this logs points to ramfs it is a good idea to remove it
+                 * when not needed to free memory resurces. And on persistent storage
+                 * be aware that it might need to be freed at some point.
+                 */
+                mkdir(buf, 0777);
+                target_sres = stat(buf, &target_sbuf);
+                if (target_sres == -1) {
+                    target_sbuf.st_mode = 0;
+                }
+            }
+            if (S_ISDIR(target_sbuf.st_mode) || (target_sbuf.st_mode == 0)) {
+                snprintf(logfile_name, sizeof(logfile_name), "%s/%s", buf, fsname);
+            } else if (S_ISREG(target_sbuf.st_mode) || S_ISCHR(target_sbuf.st_mode)) {
+                strncpy(logfile_name, buf, sizeof(logfile_name));
+            }
+        } else if (S_ISDIR(link_sbuf.st_mode)) {
+            snprintf(logfile_name, sizeof(logfile_name), "%s/%s", FSCK_LOG_PATH, fsname);
+        } else if (S_ISREG(link_sbuf.st_mode) || S_ISCHR(link_sbuf.st_mode)) {
+            strncpy(logfile_name, FSCK_LOG_PATH, sizeof(logfile_name));
         }
+        log_fd = open(logfile_name, O_WRONLY | O_CREAT | O_APPEND, 0666);
+    }
 
-        INFO("Running %s on %s\n", E2FSCK_BIN, blk_dev);
-        pid = fork();
-        if (pid > 0) {
-            /* Parent, wait for the child to return */
-            waitpid(pid, &status, 0);
-        } else if (pid == 0) {
-            /* child, run checker */
-            execlp(E2FSCK_BIN, E2FSCK_BIN, "-y", blk_dev, (char *)NULL);
-
-            /* Only gets here on error */
-            ERROR("Cannot run fs_mgr binary %s\n", E2FSCK_BIN);
-        } else {
-            /* No need to check for error in fork, we can't really handle it now */
-            ERROR("Fork failed trying to run %s\n", E2FSCK_BIN);
+    if (log_fd == -1) {
+        log_fd = open("/dev/null", O_WRONLY);
+        if (log_fd == -1) {
+            ERROR("Can not open /dev/null %d", errno);
+            log_fd = STDERR_FILENO;
         }
     }
 
-    return;
+    return log_fd;
 }
 
 static void remove_trailing_slashes(char *n)
@@ -441,6 +468,75 @@ static int fs_match(char *in1, char *in2)
     free(n2);
 
     return ret;
+}
+
+void check_fs(char *blk_dev, char *type, char *target)
+{
+    pid_t pid;
+    int status;
+    int log_fd;
+    struct timespec start, stop;
+    log_fd = getlog_fd(basename(blk_dev));
+    int ret;
+    long tmpmnt_flags = MS_NOATIME | MS_NOEXEC | MS_NOSUID;
+    char *tmpmnt_opts = "nomblk_io_submit,errors=remount-ro";
+
+    /* Check for the types of filesystems we know how to check */
+    if (!strcmp(type, "ext2") || !strcmp(type, "ext3") || !strcmp(type, "ext4")) {
+        /*
+         * First try to mount and unmount the filesystem.  We do this because
+         * the kernel is more efficient than e2fsck in running the journal and
+         * processing orphaned inodes, and on at least one device with a
+         * performance issue in the emmc firmware, it can take e2fsck 2.5 minutes
+         * to do what the kernel does in about a second.
+         *
+         * After mounting and unmounting the filesystem, run e2fsck, and if an
+         * error is recorded in the filesystem superblock, e2fsck will do a full
+         * check.  Otherwise, it does nothing.  If the kernel cannot mount the
+         * filesytsem due to an error, e2fsck is still run to do a full check
+         * fix the filesystem.
+         */
+        ret = mount(blk_dev, target, type, tmpmnt_flags, tmpmnt_opts);
+        if (! ret) {
+            umount(target);
+        }
+
+        INFO("Running %s on %s\n", E2FSCK_BIN, blk_dev);
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        pid = fork();
+        if (pid > 0) {
+            /* Parent, wait for the child to return */
+            ssize_t len;
+            char buf[1024];
+            waitpid(pid, &status, 0);
+            clock_gettime(CLOCK_MONOTONIC, &stop);
+            lseek(log_fd, 0, SEEK_END);
+            len = snprintf(buf, sizeof(buf), "%s: Total check time:%lld us code:%d\n",
+                    LOG_MARK, CLOCK_DIFF(stop, start), status);
+            write(log_fd, buf, len);
+        } else if (pid == 0) {
+            /* child, run checker */
+            dup2(log_fd, STDOUT_FILENO);
+            dup2(log_fd, STDERR_FILENO);
+            /* If there is a static version and it is in rootfs we can use it
+             * to check system partition (where the dynamic version of fsck is stored).
+             */
+            execlp(E2FSCK_STATIC_BIN, E2FSCK_STATIC_BIN, E2FSCK_FLAGS, blk_dev, (char *)NULL);
+            /* Will not return if the binary is ready. If failing
+             * give the dynamic version one chance.
+             */
+            execlp(E2FSCK_BIN, E2FSCK_BIN, E2FSCK_FLAGS, blk_dev, (char *)NULL);
+
+            /* Only gets here on error */
+            ERROR("Cannot run fs_mgr binary %s nor %s\n", E2FSCK_BIN, E2FSCK_STATIC_BIN);
+        } else {
+            /* No need to check for error in fork, we can't really handle it now */
+            ERROR("Fork failed trying to run fsck on %s\n", blk_dev);
+        }
+    }
+    close(log_fd);
+
+    return;
 }
 
 int fs_mgr_mount_all(char *fstab_file)
