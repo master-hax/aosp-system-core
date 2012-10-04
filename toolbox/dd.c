@@ -95,7 +95,6 @@ extern const u_char	*ctab;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define DEFFILEMODE (S_IRUSR | S_IWUSR)
 
 static void dd_close(void);
 static void dd_in(void);
