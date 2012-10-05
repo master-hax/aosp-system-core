@@ -774,6 +774,8 @@ int launch_server(int server_port)
     }
 
     SetHandleInformation( pipe_read, HANDLE_FLAG_INHERIT, 0 );
+    SetHandleInformation( GetStdHandle( STD_OUTPUT_HANDLE ),
+                          HANDLE_FLAG_INHERIT, 0 );
 
     ZeroMemory( &startup, sizeof(startup) );
     startup.cb = sizeof(startup);
