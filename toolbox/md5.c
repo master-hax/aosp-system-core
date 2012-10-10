@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <md5.h>
+#include <bionic/md5.h>
 
 /* When this was written, bionic's md5.h did not define this. */
 #ifndef MD5_DIGEST_LENGTH
