@@ -613,6 +613,7 @@ void start_property_service(void)
 
     load_properties_from_file(PROP_PATH_SYSTEM_BUILD);
     load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT);
+    load_properties_from_file(PROP_PATH_FACTORY);
     load_override_properties();
     /* Read persistent properties after all default values have been loaded. */
     load_persistent_properties();
