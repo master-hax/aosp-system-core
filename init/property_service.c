@@ -469,7 +469,7 @@ void get_property_workspace(int *fd, int *sz)
     *sz = pa_workspace.size;
 }
 
-static void load_properties(char *data)
+static void load_properties(char *data, bool ro_only)
 {
     char *key, *value, *eol, *sol, *tmp;
 
@@ -488,6 +488,9 @@ static void load_properties(char *data)
         tmp = value - 2;
         while((tmp > key) && isspace(*tmp)) *tmp-- = 0;
 
+        if (ro_only && strncmp(key, "ro.", 3))
+            continue;
+
         while(isspace(*value)) value++;
         tmp = eol - 2;
         while((tmp > value) && isspace(*tmp)) *tmp-- = 0;
@@ -496,7 +499,7 @@ static void load_properties(char *data)
     }
 }
 
-static void load_properties_from_file(const char *fn)
+static void load_properties_from_file(const char *fn, bool ro_only)
 {
     char *data;
     unsigned sz;
@@ -504,7 +507,7 @@ static void load_properties_from_file(const char *fn)
     data = read_file(fn, &sz);
 
     if(data != 0) {
-        load_properties(data);
+        load_properties(data, ro_only);
         free(data);
     }
 }
@@ -577,7 +580,7 @@ void property_init(void)
 
 void property_load_boot_defaults(void)
 {
-    load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT);
+    load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, false);
 }
 
 int properties_inited(void)
@@ -589,7 +592,7 @@ static void load_override_properties() {
 #ifdef ALLOW_LOCAL_PROP_OVERRIDE
     const char *debuggable = property_get("ro.debuggable");
     if (debuggable && (strcmp(debuggable, "1") == 0)) {
-        load_properties_from_file(PROP_PATH_LOCAL_OVERRIDE);
+        load_properties_from_file(PROP_PATH_LOCAL_OVERRIDE, false);
     }
 #endif /* ALLOW_LOCAL_PROP_OVERRIDE */
 }
@@ -611,8 +614,9 @@ void start_property_service(void)
 {
     int fd;
 
-    load_properties_from_file(PROP_PATH_SYSTEM_BUILD);
-    load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT);
+    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, false);
+    load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT, false);
+    load_properties_from_file(PROP_PATH_FACTORY, true);
     load_override_properties();
     /* Read persistent properties after all default values have been loaded. */
     load_persistent_properties();
