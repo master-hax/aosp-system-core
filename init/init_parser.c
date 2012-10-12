@@ -131,6 +131,7 @@ int lookup_keyword(const char *s)
         if (!strcmp(s, "nrestart")) return K_onrestart;
         break;
     case 'r':
+        if (!strcmp(s, "eadprops")) return K_readprops;
         if (!strcmp(s, "estart")) return K_restart;
         if (!strcmp(s, "estorecon")) return K_restorecon;
         if (!strcmp(s, "mdir")) return K_rmdir;

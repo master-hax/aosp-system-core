@@ -806,3 +806,12 @@ int do_wait(int nargs, char **args)
     } else
         return -1;
 }
+
+int do_readprops(int nargs, char **args)
+{
+    if (nargs == 2) {
+        return load_properties_from_file(args[1]);
+    }
+    return -1;
+}
+

@@ -22,6 +22,7 @@
 extern void handle_property_set_fd(void);
 extern void property_init(void);
 extern void property_load_boot_defaults(void);
+extern int load_properties_from_file(const char *fn);
 extern void load_persist_props(void);
 extern void start_property_service(void);
 void get_property_workspace(int *fd, int *sz);

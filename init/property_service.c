@@ -496,17 +496,19 @@ static void load_properties(char *data)
     }
 }
 
-static void load_properties_from_file(const char *fn)
+int load_properties_from_file(const char *fn)
 {
     char *data;
     unsigned sz;
 
     data = read_file(fn, &sz);
 
-    if(data != 0) {
-        load_properties(data);
-        free(data);
-    }
+    if (data == NULL)
+        return -1;
+
+    load_properties(data);
+    free(data);
+    return 0;
 }
 
 static void load_persistent_properties()
