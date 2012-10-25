@@ -53,7 +53,10 @@ void get_p2p_interface_replacement(const char *interface, char *p2p_interface) {
     if (strncmp(interface, "p2p",3) == 0) {
         strncpy(p2p_interface, "p2p", MAX_INTERFACE_LENGTH);
     } else {
-        strncpy(p2p_interface, interface, MAX_INTERFACE_LENGTH);
+        char *first_token = NULL;
+        first_token=strtok(interface,":");
+        if(first_token)
+            snprintf(p2p_interface, MAX_INTERFACE_LENGTH, "%s", first_token);
     }
 }
 
