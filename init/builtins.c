@@ -575,16 +575,8 @@ int do_setprop(int nargs, char **args)
 {
     const char *name = args[1];
     const char *value = args[2];
-    char prop_val[PROP_VALUE_MAX];
-    int ret;
 
-    ret = expand_props(prop_val, value, sizeof(prop_val));
-    if (ret) {
-        ERROR("cannot expand '%s' while assigning to '%s'\n", value, name);
-        return -EINVAL;
-    }
-    property_set(name, prop_val);
-    return 0;
+    return property_set(name, value);
 }
 
 int do_setrlimit(int nargs, char **args)
@@ -629,17 +621,11 @@ int do_restart(int nargs, char **args)
 
 int do_powerctl(int nargs, char **args)
 {
-    char command[PROP_VALUE_MAX];
+    char *command = args[1];
     int res;
     int len = 0;
     int cmd = 0;
     char *reboot_target;
-
-    res = expand_props(command, args[1], sizeof(command));
-    if (res) {
-        ERROR("powerctl: cannot expand '%s'\n", args[1]);
-        return -EINVAL;
-    }
 
     if (strncmp(command, "shutdown", 8) == 0) {
         cmd = ANDROID_RB_POWEROFF;
@@ -703,15 +689,8 @@ int do_write(int nargs, char **args)
 {
     const char *path = args[1];
     const char *value = args[2];
-    char prop_val[PROP_VALUE_MAX];
-    int ret;
 
-    ret = expand_props(prop_val, value, sizeof(prop_val));
-    if (ret) {
-        ERROR("cannot expand '%s' while writing to '%s'\n", value, path);
-        return -EINVAL;
-    }
-    return write_file(path, prop_val);
+    return write_file(path, value);
 }
 
 int do_copy(int nargs, char **args)
@@ -863,16 +842,14 @@ int do_setsebool(int nargs, char **args) {
 
 int do_loglevel(int nargs, char **args) {
     int log_level;
-    char log_level_str[PROP_VALUE_MAX] = "";
+    const char *log_level_str;
+
     if (nargs != 2) {
         ERROR("loglevel: missing argument\n");
         return -EINVAL;
     }
 
-    if (expand_props(log_level_str, args[1], sizeof(log_level_str))) {
-        ERROR("loglevel: cannot expand '%s'\n", args[1]);
-        return -EINVAL;
-    }
+    log_level_str = args[1];
     log_level = atoi(log_level_str);
     if (log_level < KLOG_ERROR_LEVEL || log_level > KLOG_DEBUG_LEVEL) {
         ERROR("loglevel: invalid log level'%d'\n", log_level);

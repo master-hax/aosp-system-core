@@ -316,28 +316,42 @@ void service_start(struct service *svc, const char *dynamic_args)
             }
         }
 
-        if (!dynamic_args) {
-            if (execve(svc->args[0], (char**) svc->args, (char**) ENV) < 0) {
-                ERROR("cannot execve('%s'): %s\n", svc->args[0], strerror(errno));
+        char *arg_ptrs[INIT_PARSER_MAXARGS+1];
+        int arg_idx = svc->nargs;
+        int i;
+
+        for (i = 0; i < svc->nargs; i++) {
+            arg_ptrs[i] = expand_references(svc->args[i]);
+            if (!arg_ptrs[i]) {
+                ERROR("cannot expand_references('%s')\n", svc->args[i]);
+                _exit(127);
             }
-        } else {
-            char *arg_ptrs[INIT_PARSER_MAXARGS+1];
-            int arg_idx = svc->nargs;
+        }
+        if (dynamic_args) {
             char *tmp = strdup(dynamic_args);
             char *next = tmp;
             char *bword;
 
-            /* Copy the static arguments */
-            memcpy(arg_ptrs, svc->args, (svc->nargs * sizeof(char *)));
-
-            while((bword = strsep(&next, " "))) {
-                arg_ptrs[arg_idx++] = bword;
-                if (arg_idx == INIT_PARSER_MAXARGS)
-                    break;
+            if (!tmp) {
+                ERROR("strdup: %s\n", strerror(errno));
+                _exit(127);
             }
-            arg_ptrs[arg_idx] = '\0';
-            execve(svc->args[0], (char**) arg_ptrs, (char**) ENV);
+            while((bword = strsep(&next, " ")) && arg_idx < INIT_PARSER_MAXARGS) {
+                arg_ptrs[arg_idx] = expand_references(bword);
+                if (!arg_ptrs[arg_idx]) {
+                    ERROR("Unable to start service %s: failed to process arguments\n",
+                            svc->name);
+                    _exit(127);
+                }
+                arg_idx++;
+            }
+            if (arg_idx == INIT_PARSER_MAXARGS && strsep(&next, " ")) {
+                NOTICE("Too many dynamic arguments provided while starting the service '%s'\n", svc->name);
+            }
         }
+        arg_ptrs[arg_idx] = NULL;
+        execve(svc->args[0], (char**) arg_ptrs, (char**) ENV);
+        ERROR("cannot execve('%s'): %s\n", svc->args[0], strerror(errno));
         _exit(127);
     }
 
@@ -528,8 +542,8 @@ static int is_last_command(struct action *act, struct command *cmd)
 
 void execute_one_command(void)
 {
-    int ret, i;
-    char cmd_str[256] = "";
+    int ret, i, j;
+    char cmd_str[256] = "", **args;
 
     if (!cur_action || !cur_command || is_last_command(cur_action, cur_command)) {
         cur_action = action_remove_queue_head();
@@ -545,7 +559,21 @@ void execute_one_command(void)
     if (!cur_command)
         return;
 
-    ret = cur_command->func(cur_command->nargs, cur_command->args);
+    args = malloc(cur_command->nargs * sizeof(char *));
+    if (!args) {
+        ERROR("Out of memory while executing command '%s'\n", cur_command->args[0]);
+        return;
+    }
+    memset(args, 0, cur_command->nargs * sizeof(char *));
+
+    args[0] = cur_command->args[0];
+    for (j = 1; j < cur_command->nargs; j++) {
+        args[j] = expand_references(cur_command->args[j]);
+        if (!args[j])
+            goto out;
+    }
+
+    ret = cur_command->func(cur_command->nargs, args);
     if (klog_get_level() >= KLOG_INFO_LEVEL) {
         for (i = 0; i < cur_command->nargs; i++) {
             strlcat(cmd_str, cur_command->args[i], sizeof(cmd_str));
@@ -557,6 +585,13 @@ void execute_one_command(void)
              cmd_str, cur_action ? cur_action->name : "", ret, cur_command->filename,
              cur_command->line);
     }
+
+out:
+    for (i = 1; i < j; i++) {
+        if (args[i])
+            free(args[i]);
+    }
+    free(args);
 }
 
 static int wait_for_coldboot_done_action(int nargs, char **args)
