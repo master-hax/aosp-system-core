@@ -1,0 +1,8 @@
+Code-Review+2: Colin Cross <ccross@android.com>
+Code-Review+1: Brian Carlstrom <bdc@google.com>
+Verified+1: Rick Deckard <deckard@android.com>
+Submitted-by: Elliott Hughes <enh@google.com>
+Submitted-at: Tue, 30 Oct 2012 15:53:18 -0700
+Reviewed-on: https://android-review.googlesource.com/45613
+Project: platform/system/core
+Branch: refs/heads/master
