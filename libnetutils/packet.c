@@ -229,6 +229,8 @@ int receive_packet(int s, struct dhcp_msg *msg)
     temp = packet.udp.check;
     packet.udp.check = 0;
     sum = finish_sum(checksum(&packet, nread, 0));
+    if (!sum)
+      sum = finish_sum(sum);
     packet.udp.check = temp;
     if (temp != sum) {
         ALOGW("UDP header checksum failure (0x%x should be 0x%x)", sum, temp);
