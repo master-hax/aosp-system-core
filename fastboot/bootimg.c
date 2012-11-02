@@ -69,7 +69,7 @@ boot_img_hdr *mkbootimg(void *kernel, unsigned kernel_size,
     hdr->ramdisk_size = ramdisk_size;
     hdr->second_size =  second_size;
     hdr->kernel_addr =  base + 0x00008000;
-    hdr->ramdisk_addr = base + 0x01000000;
+    hdr->ramdisk_addr = base + 0x02000000;
     hdr->second_addr =  base + 0x00F00000;
     hdr->tags_addr =    base + 0x00000100;
     hdr->page_size =    page_size;
