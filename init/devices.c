@@ -37,6 +37,7 @@
 #include <private/android_filesystem_config.h>
 #include <sys/time.h>
 #include <asm/page.h>
+#include <sys/system_properties.h>
 #include <sys/wait.h>
 
 #include <cutils/list.h>
@@ -476,6 +477,31 @@ static char **parse_platform_block_device(struct uevent *uevent)
     return links;
 }
 
+static char **parse_gpt_block_device(struct uevent *uevent)
+{
+    char prefix[PROP_VALUE_MAX];
+    int len;
+    char **links;
+
+    if (!uevent->partition_name)
+        return NULL;
+
+    len = __system_property_get("ro.boot.install_id", prefix);
+    if (!len || strncmp(prefix, uevent->partition_name, len))
+        return NULL;
+
+    links = calloc(2, sizeof(char *));
+    if (!links)
+        return NULL;
+
+    if (asprintf(&links[0], "/dev/block/by-name/%s",
+                uevent->partition_name + len) < 0) {
+        free(links);
+        return NULL;
+    }
+    return links;
+}
+
 static void handle_device(const char *action, const char *devpath,
         const char *path, int block, int major, int minor, char **links)
 {
@@ -549,7 +575,8 @@ static void handle_block_device_event(struct uevent *uevent)
     snprintf(devpath, sizeof(devpath), "%s%s", base, name);
     make_dir(base, 0755);
 
-    if (!strncmp(uevent->path, "/devices/", 9))
+    links = parse_gpt_block_device(uevent);
+    if (!links && !strncmp(uevent->path, "/devices/", 9))
         links = parse_platform_block_device(uevent);
 
     handle_device(uevent->action, devpath, uevent->path, 1,
