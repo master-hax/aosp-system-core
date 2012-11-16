@@ -17,7 +17,9 @@
 #ifndef _INIT_UEVENTD_PARSER_H_
 #define _INIT_UEVENTD_PARSER_H_
 
-#define UEVENTD_PARSER_MAXARGS 5
+#define UEVENTD_PARSER_MAXARGS 6
+#define TRIGGER_PREFIX "trigger:"
+#define TRIGGER_PREFIX_STRLEN (sizeof(TRIGGER_PREFIX)-1)
 
 int ueventd_parse_config_file(const char *fn);
 void set_device_permission(int nargs, char **args);

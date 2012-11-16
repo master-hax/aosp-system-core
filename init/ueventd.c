@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <errno.h>
 #include <poll.h>
 #include <fcntl.h>
 #include <string.h>
@@ -21,6 +22,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <signal.h>
+#include <sys/system_properties.h>
 
 #include <private/android_filesystem_config.h>
 
@@ -29,6 +31,9 @@
 #include "util.h"
 #include "devices.h"
 #include "ueventd_parser.h"
+#include <cutils/list.h>
+
+extern struct listnode properties;
 
 static char hardware[32];
 static unsigned revision = 0;
@@ -52,6 +57,7 @@ int ueventd_main(int argc, char **argv)
     struct pollfd ufd;
     int nr;
     char tmp[32];
+    int prop_fd_open = 0;
 
     /*
      * init sets the umask to 077 for forked processes. We need to
@@ -95,7 +101,30 @@ int ueventd_main(int argc, char **argv)
         if (nr <= 0)
             continue;
         if (ufd.revents == POLLIN)
-               handle_device_fd();
+            handle_device_fd();
+        {
+            struct listnode *node;
+            struct listnode *next;
+            list_for_each_safe(node, next, &properties) {
+                struct property *dp = &(node_to_item(node, struct prop_node,
+                                                     plist))->property;
+                INFO("__system_property_set(%s, %s)\n", dp->name, dp->value);
+                {
+                    int rv = __system_property_set(dp->name, dp->value);
+                    if (rv)
+                        if (prop_fd_open) {
+                            ERROR("__system_property_set(%s, %s) returned %d."
+                                  " errno=%d.\n",
+                                  dp->name, dp->value, rv, errno);
+                        }
+                    else {
+                        prop_fd_open = 1;
+                        list_remove(node);
+                        del_property(node);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -112,10 +141,10 @@ void set_device_permission(int nargs, char **args)
 {
     char *name;
     char *attr = 0;
+    char *prop = 0;
     mode_t perm;
     uid_t uid;
     gid_t gid;
-    int prefix = 0;
     char *endptr;
     int ret;
     char *tmp = 0;
@@ -127,6 +156,13 @@ void set_device_permission(int nargs, char **args)
         return;
 
     name = args[0];
+
+    if (!strncmp(name,"/sys/", 5) && !strncmp(args[nargs-1], TRIGGER_PREFIX,
+                                              TRIGGER_PREFIX_STRLEN)) {
+      INFO("/sys/ trigger rule %s ... %s\n",args[0],args[nargs-1]);
+      prop = &args[nargs-1][TRIGGER_PREFIX_STRLEN];
+      nargs--;
+    }
 
     if (!strncmp(name,"/sys/", 5) && (nargs == 5)) {
         INFO("/sys/ rule %s %s\n",args[0],args[1]);
@@ -146,12 +182,6 @@ void set_device_permission(int nargs, char **args)
         if (n >= 0)
             asprintf(&tmp, "/dev/mtd/mtd%d", n);
         name = tmp;
-    } else {
-        int len = strlen(name);
-        if (name[len - 1] == '*') {
-            prefix = 1;
-            name[len - 1] = '\0';
-        }
     }
 
     perm = strtol(args[1], &endptr, 8);
@@ -177,6 +207,6 @@ void set_device_permission(int nargs, char **args)
     }
     gid = ret;
 
-    add_dev_perms(name, attr, perm, uid, gid, prefix);
+    add_dev_perms(name, attr, perm, uid, gid, prop);
     free(tmp);
 }
