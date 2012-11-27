@@ -48,6 +48,13 @@
 
 #include <private/android_filesystem_config.h>
 
+enum builtin_cmds {
+    DO_CHOWN,
+    DO_CHMOD,
+};
+
+#define MAX_RECUR_DEPTH 15
+
 void add_environment(const char *name, const char *value);
 
 extern int init_module(void *, unsigned long, const char *);
@@ -86,17 +93,24 @@ static int _open(const char *path)
     return fd;
 }
 
-static int _chown(const char *path, unsigned int uid, unsigned int gid)
+/* chown or chmod for one item (file, directory, etc.) */
+static int __chown_chmod_one(enum builtin_cmds action, const char *path,
+                             unsigned int uid, unsigned int gid, mode_t mode)
 {
     int fd;
-    int ret;
+    int ret = -1;
 
     fd = _open(path);
     if (fd < 0) {
         return -1;
     }
 
-    ret = fchown(fd, uid, gid);
+    if (action == DO_CHOWN) {
+        ret = fchown(fd, uid, gid);
+    } else if (action == DO_CHMOD) {
+        ret = fchmod(fd, mode);
+    }
+
     if (ret < 0) {
         int errno_copy = errno;
         close(fd);
@@ -106,30 +120,135 @@ static int _chown(const char *path, unsigned int uid, unsigned int gid)
 
     close(fd);
 
-    return 0;
+    return ret;
+}
+
+/* do chown or chmod recursively with pattern matching */
+static int __chown_chmod_recur(enum builtin_cmds action, const char *matching_path,
+                               unsigned int uid, unsigned int gid, mode_t mode,
+                               const char *cur_path, int depth)
+{
+    DIR* dirp;
+    struct dirent *de;
+    char* child_path = NULL;
+    int len;
+    int ret = 0;
+
+    if (!matching_path) {
+        return -1;
+    }
+    if (!cur_path) {
+        return -1;
+    }
+    if (depth > MAX_RECUR_DEPTH) {
+        /* prevent this from doing infinitely recurison */
+        return 0;
+    }
+
+    dirp = opendir(cur_path);
+    if (dirp) {
+        while ((de = readdir(dirp))) {
+            if ((de->d_type == DT_DIR) &&
+                (de->d_name[0] == '.') &&
+                ((de->d_name[1] == '\0') ||
+                 ((de->d_name[1] == '.') && (de->d_name[2] == '\0')))) {
+                /* ignore directories "." and ".." */
+                continue;
+            }
+
+            /* prepare path */
+            len = asprintf(&child_path, "%s/%s", cur_path, de->d_name);
+
+            if (len != -1) {
+                if (de->d_type == DT_DIR) {
+                    /* recurse into lowering level directory */
+                    ret += __chown_chmod_recur(action, matching_path,
+                                               uid, gid, mode, child_path,
+                                               (depth + 1));
+                } else {
+                    if (fnmatch(matching_path, child_path, FNM_PATHNAME) == 0) {
+                        /* FNM_PATHNAME: need to have the same number of '/' */
+                        ret += __chown_chmod_one(action, child_path,
+                                                 uid, gid, mode);
+                    }
+                }
+
+                free(child_path);
+                child_path = NULL;
+            } else {
+                /* failed to allocate space for child_path, */
+                /* count as one failure.                    */
+                ret += -1;
+            }
+        }
+
+        closedir(dirp);
+    }
+
+    return ret;
+}
+
+static int __chown_chmod(unsigned int action, const char *path,
+                         unsigned int uid, unsigned int gid, mode_t mode)
+{
+    char* leading_path = NULL;
+    char* tmp = NULL;
+    int do_wildcard = 0;
+    int len;
+    int ret;
+
+    if (!path) {
+        return -1;
+    }
+
+    /* need wildcard matching? */
+    tmp = strchr(path, '*');
+    if (tmp) {
+        /* this block shorten the path for matching purpose */
+
+        leading_path = strdup(path);
+        if (!leading_path) {
+            return -1;
+        }
+
+        do_wildcard = 1;
+
+        /* get path before '*' */
+        tmp = strchr(leading_path, '*');
+        if (tmp) {
+            *tmp = '\0';
+        }
+
+        /* remove up to and including the last '/' */
+        tmp = strrchr(leading_path, '/');
+        if (tmp) {
+            *tmp = '\0';
+            do_wildcard = 1;
+        }
+    }
+
+    if (do_wildcard) {
+        ret = __chown_chmod_recur(action, path,
+                                   uid, gid, mode, leading_path, 0);
+
+        if (leading_path) {
+            free(leading_path);
+        }
+
+        return ret;
+    } else {
+        return __chown_chmod_one(action, path, uid, gid, mode);
+    }
+}
+
+static int _chown(const char *path, unsigned int uid, unsigned int gid)
+{
+    return __chown_chmod(DO_CHOWN, path, uid, gid, 0);
 }
 
 static int _chmod(const char *path, mode_t mode)
 {
-    int fd;
-    int ret;
-
-    fd = _open(path);
-    if (fd < 0) {
-        return -1;
-    }
-
-    ret = fchmod(fd, mode);
-    if (ret < 0) {
-        int errno_copy = errno;
-        close(fd);
-        errno = errno_copy;
-        return -1;
-    }
-
-    close(fd);
-
-    return 0;
+    return __chown_chmod(DO_CHMOD, path, -1, -1, mode);
 }
 
 static int insmod(const char *filename, char *options)
