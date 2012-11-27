@@ -1,0 +1,11 @@
+Code-Review+2: Dima Zavin <dima@android.com>
+Code-Review+1: Kenny Root <kroot@android.com>
+Verified+1: Rick Deckard <deckard@android.com>
+Code-Review+1: Stephen Smalley <sds@tycho.nsa.gov>
+Code-Review+1: Joshua Brindle <jbrindle@tresys.com>
+Code-Review+1: Robert Craig <robertpcraig@gmail.com>
+Submitted-by: Kenny Root <kroot@android.com>
+Submitted-at: Tue, 27 Nov 2012 11:20:37 -0800
+Reviewed-on: https://android-review.googlesource.com/45992
+Project: platform/system/core
+Branch: refs/heads/master
