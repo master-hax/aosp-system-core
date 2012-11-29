@@ -913,6 +913,7 @@ int launch_server(int server_port)
     /* message since the pipe handles must be inheritable, we use a     */
     /* security attribute                                               */
     HANDLE                pipe_read, pipe_write;
+    HANDLE                stdout_handle, stderr_handle;
     SECURITY_ATTRIBUTES   sa;
     STARTUPINFO           startup;
     PROCESS_INFORMATION   pinfo;
@@ -931,6 +932,19 @@ int launch_server(int server_port)
     }
 
     SetHandleInformation( pipe_read, HANDLE_FLAG_INHERIT, 0 );
+
+    /* If these handles are inherited by the adb server then any reads will not
+     * finish - the proper fix is to use PROC_THREAD_ATTRIBUTE_HANDLE_LIST but
+     * this only works for Windows Vista and above:
+     * http://blogs.msdn.com/b/oldnewthing/archive/2011/12/16/10248328.aspx */
+    stdout_handle = GetStdHandle( STD_OUTPUT_HANDLE );
+    stderr_handle = GetStdHandle( STD_ERROR_HANDLE );
+    if (stdout_handle != INVALID_HANDLE_VALUE) {
+        SetHandleInformation( stdout_handle, HANDLE_FLAG_INHERIT, 0 );
+    }
+    if (stderr_handle != INVALID_HANDLE_VALUE) {
+        SetHandleInformation( stderr_handle, HANDLE_FLAG_INHERIT, 0 );
+    }
 
     ZeroMemory( &startup, sizeof(startup) );
     startup.cb = sizeof(startup);
