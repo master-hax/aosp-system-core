@@ -332,20 +332,18 @@ void make_link(const char *oldpath, const char *newpath)
     if (ret)
         ERROR("Failed to create directory %s: %s (%d)\n", buf, strerror(errno), errno);
 
-    ret = symlink(oldpath, newpath);
+    ret = link(oldpath, newpath);
     if (ret && errno != EEXIST)
-        ERROR("Failed to symlink %s to %s: %s (%d)\n", oldpath, newpath, strerror(errno), errno);
+        ERROR("Failed to link %s to %s: %s (%d)\n", oldpath, newpath, strerror(errno), errno);
 }
 
 void remove_link(const char *oldpath, const char *newpath)
 {
-    char path[256];
-    ssize_t ret;
-    ret = readlink(newpath, path, sizeof(path) - 1);
-    if (ret <= 0)
+    struct stat osb, nsb;
+    if (stat(oldpath, &osb) || stat(newpath, &nsb))
         return;
-    path[ret] = 0;
-    if (!strcmp(path, oldpath))
+
+    if (osb.st_ino == nsb.st_ino && osb.st_dev == nsb.st_dev)
         unlink(newpath);
 }
 
