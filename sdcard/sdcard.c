@@ -1335,6 +1335,7 @@ static int handle_opendir(struct fuse* fuse, struct fuse_handler* handler,
     struct fuse_open_out out;
     struct dirhandle *h;
 
+    memset(&out, 0, sizeof(out));
     pthread_mutex_lock(&fuse->lock);
     node = lookup_node_and_path_by_id_locked(fuse, hdr->nodeid, path, sizeof(path));
     TRACE("[%d] OPENDIR @ %llx (%s)\n", handler->token,
