@@ -237,6 +237,15 @@ static void find_usb_device(const char *base,
                             // looks like ADB...
                         ep1 = (struct usb_endpoint_descriptor *)bufptr;
                         bufptr += USB_DT_ENDPOINT_SIZE;
+                        /* USB3.0 endpoint companion descriptor:
+                         * set USB_DT_SS_ENDPOINT_COMP and
+                         * USB_DT_SS_EP_COMP_SIZE as fixed value for now,
+                         * as Android header file has not been updated yet.
+                         */
+                        if (bufptr[0] == 0x06 &&
+                            bufptr[1] == 0x30)
+                            bufptr += 6;
+
                         ep2 = (struct usb_endpoint_descriptor *)bufptr;
                         bufptr += USB_DT_ENDPOINT_SIZE;
 
