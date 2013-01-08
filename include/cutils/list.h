@@ -41,6 +41,11 @@ struct listnode
 #define list_for_each(node, list) \
     for (node = (list)->next; node != (list); node = node->next)
 
+#define list_for_each_safe(entry, temp, head) \
+    for (entry = (head)->next, temp = (entry)->next; \
+        entry != head; \
+        entry = temp, temp = entry->next)
+
 #define list_for_each_reverse(node, list) \
     for (node = (list)->prev; node != (list); node = node->prev)
 

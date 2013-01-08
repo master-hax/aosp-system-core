@@ -19,10 +19,24 @@
 
 #include <sys/stat.h>
 
+#include <cutils/list.h>
+
+extern struct listnode pending_properties;
 extern void handle_device_fd();
 extern void device_init(void);
 extern int add_dev_perms(const char *name, const char *attr,
                          mode_t perm, unsigned int uid,
-                         unsigned int gid, unsigned short prefix);
+                         unsigned int gid, const char *prop);
+struct property {
+    char *name;
+    char *value;
+};
+
+struct prop_node {
+    struct property property;
+    struct listnode plist;
+};
+
+extern void free_property_node(struct prop_node *pnode);
 int get_device_fd();
 #endif	/* _INIT_DEVICES_H */
