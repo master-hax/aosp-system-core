@@ -105,6 +105,7 @@ struct {
     unsigned int gid;
 } control_perms[] = {
     { "dumpstate",AID_SHELL, AID_LOG },
+    { "bugreport",AID_LOG, 0 },
     { "ril-daemon",AID_RADIO, AID_RADIO },
      {NULL, 0, 0 }
 };
