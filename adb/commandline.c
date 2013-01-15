@@ -200,6 +200,8 @@ void help()
         "                                 1 or all, adb, sockets, packets, rwx, usb, sync, sysdeps, transport, jdwp\n"
         "  ANDROID_SERIAL               - The serial number to connect to. -s takes priority over this if given.\n"
         "  ANDROID_LOG_TAGS             - When used with the logcat option, only these debug tags are printed.\n"
+	"  ADB_NOUSB=y                  - Disables background scanning of USB devices. Only network based connections will be allowed.\n"
+	"  ADB_USB_BLACKLIST            - A comman separated list of USB devices to not scan. ie '/dev/bus/usb/002/003'.\n"
         );
 }
 

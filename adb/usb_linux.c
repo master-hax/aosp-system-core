@@ -99,6 +99,15 @@ static int known_device(const char *dev_name)
     return 0;
 }
 
+static int black_listed_device(const char *dev_name, const char **black_list)
+{
+    const char **ptr = black_list;
+    while(*ptr)
+        if(!strcmp(dev_name, *ptr++))
+	    return 1;
+    return 0;
+}
+
 static void kick_disconnected_devices()
 {
     usb_handle *usb;
@@ -128,7 +137,7 @@ static inline int badname(const char *name)
     return 0;
 }
 
-static void find_usb_device(const char *base,
+static void find_usb_device(const char *base, const char **black_listed_devices,
         void (*register_device_callback)
                 (const char *, const char *, unsigned char, unsigned char, int, int, unsigned))
 {
@@ -163,11 +172,15 @@ static void find_usb_device(const char *base,
 
             if(badname(de->d_name)) continue;
             snprintf(devname, sizeof devname, "%s/%s", busname, de->d_name);
-
             if(known_device(devname)) {
                 DBGX("skipping %s\n", devname);
                 continue;
             }
+            if(black_listed_device(devname, black_listed_devices)) {
+                DBGX("black listed %s\n", devname);
+                continue;
+            }
+
 
 //            DBGX("[ scanning %s ]\n", devname);
             if((fd = unix_open(devname, O_RDONLY)) < 0) {
@@ -681,12 +694,13 @@ fail:
     free(usb);
 }
 
-void* device_poll_thread(void* unused)
+void* device_poll_thread(void *data)
 {
+    const char **black_listed_devices = (const char**)data;
     D("Created device thread\n");
     for(;;) {
             /* XXX use inotify */
-        find_usb_device("/dev/bus/usb", register_device);
+        find_usb_device("/dev/bus/usb", black_listed_devices, register_device);
         kick_disconnected_devices();
         sleep(1);
     }
@@ -698,7 +712,7 @@ static void sigalrm_handler(int signo)
     // don't need to do anything here
 }
 
-void usb_init()
+void usb_init(const char **black_listed_devices)
 {
     adb_thread_t tid;
     struct sigaction    actions;
@@ -709,7 +723,7 @@ void usb_init()
     actions.sa_handler = sigalrm_handler;
     sigaction(SIGALRM,& actions, NULL);
 
-    if(adb_thread_create(&tid, device_poll_thread, NULL)){
+    if(adb_thread_create(&tid, device_poll_thread, (void*)black_listed_devices)){
         fatal_errno("cannot create input thread");
     }
 }
