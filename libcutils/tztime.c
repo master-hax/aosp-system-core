@@ -4,6 +4,7 @@
 */
 
 #include <stdio.h>
+#include <arpa/inet.h> // For ntohl(3).
 
 #ifndef lint
 #ifndef NOID
@@ -35,12 +36,6 @@ static char	elsieid[] = "@(#)localtime.c	8.3";
 #ifndef TZ_ABBR_ERR_CHAR
 #define TZ_ABBR_ERR_CHAR	'_'
 #endif /* !defined TZ_ABBR_ERR_CHAR */
-
-#define INDEXFILE "/system/usr/share/zoneinfo/zoneinfo.idx"
-#define DATAFILE "/system/usr/share/zoneinfo/zoneinfo.dat"
-#define NAMELEN 40
-#define INTLEN 4
-#define READLEN (NAMELEN + 3 * INTLEN)
 
 /*
 ** SunOS 4.1.1 headers lack O_BINARY.
@@ -169,6 +164,7 @@ struct rule {
 ** Prototypes for static functions.
 */
 
+static int __bionic_open_tzdata(const char*, int*);
 static long		detzcode P((const char * codep));
 static time_t		detzcode64 P((const char * codep));
 static int		differ_by_repeat P((time_t t1, time_t t0));
@@ -404,41 +400,11 @@ register const int		doextend;
 		if (doaccess && access(name, R_OK) != 0)
 			return -1;
 		if ((fid = open(name, OPEN_MODE)) == -1) {
-            char buf[READLEN];
-            char name[NAMELEN + 1];
-            int fidix = open(INDEXFILE, OPEN_MODE);
-            int off = -1;
-
-            if (fidix < 0) {
-                return -1;
-            }
-
-            while (read(fidix, buf, sizeof(buf)) == sizeof(buf)) {
-                memcpy(name, buf, NAMELEN);
-                name[NAMELEN] = '\0';
-
-                if (strcmp(name, origname) == 0) {
-                    off = toint((unsigned char *) buf + NAMELEN);
-                    toread = toint((unsigned char *) buf + NAMELEN + INTLEN);
-                    break;
-                }
-            }
-
-            close(fidix);
-
-            if (off < 0)
-                return -1;
-
-            fid = open(DATAFILE, OPEN_MODE);
-
-            if (fid < 0) {
-                return -1;
-            }
-
-            if (lseek(fid, off, SEEK_SET) < 0) {
-                return -1;
-            }
-        }
+			fid = __bionic_open_tzdata(origname, &toread);
+			if (fid < 0) {
+				return -1;
+			}
+		}
 	}
 	nread = read(fid, u.buf, toread);
 	if (close(fid) < 0 || nread <= 0)
@@ -1947,4 +1913,90 @@ mktime_tz(struct tm * const	tmp, char const * tz)
         gmtload(&st);
     }
 	return time1(tmp, localsub, 0L, &st);
+}
+
+static int __bionic_open_tzdata_path(const char* path, const char* olson_id, int* data_size)
+{
+	int fd = open(path, OPEN_MODE);
+	if (fd == -1) {
+		return -2; // Distinguish failure to find any data from failure to find a specific id.
+	}
+
+	// byte[12] tzdata_version  -- "tzdata2012f\0"
+	// int index_offset
+	// int data_offset
+	// int zonetab_offset
+	struct bionic_tzdata_header {
+		char tzdata_version[12];
+		int32_t index_offset;
+		int32_t data_offset;
+		int32_t zonetab_offset;
+	} header;
+	if (read(fd, &header, sizeof(header)) != sizeof(header)) {
+		//fprintf(stderr, "%s: could not read header: %s\n", __FUNCTION__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+
+	if (strncmp(header.tzdata_version, "tzdata", 6) != 0 || header.tzdata_version[11] != 0) {
+		//fprintf(stderr, "%s: bad magic: %s\n", __FUNCTION__, header.tzdata_version);
+		close(fd);
+		return -1;
+	}
+
+#if 0
+	fprintf(stderr, "version: %s\n", header.tzdata_version);
+	fprintf(stderr, "index_offset = %d\n", ntohl(header.index_offset));
+	fprintf(stderr, "data_offset = %d\n", ntohl(header.data_offset));
+	fprintf(stderr, "zonetab_offset = %d\n", ntohl(header.zonetab_offset));
+#endif
+
+	if (lseek(fd, ntohl(header.index_offset), SEEK_SET) == -1) {
+		//fprintf(stderr, "%s: couldn't seek to index: %s\n", __FUNCTION__, strerror(errno));
+		close(fd);
+		return -1;
+	}
+
+	off_t specific_zone_offset = -1;
+
+	static const size_t NAME_LENGTH = 40;
+	unsigned char buf[NAME_LENGTH + 3 * sizeof(int32_t)];
+	while (read(fd, buf, sizeof(buf)) == (ssize_t) sizeof(buf)) {
+		char this_id[NAME_LENGTH + 1];
+		memcpy(this_id, buf, NAME_LENGTH);
+		this_id[NAME_LENGTH] = '\0';
+
+		if (strcmp(this_id, olson_id) == 0) {
+			specific_zone_offset = toint(buf + NAME_LENGTH) + ntohl(header.data_offset);
+			*data_size = toint(buf + NAME_LENGTH + sizeof(int32_t));
+			break;
+		}
+	}
+
+	if (specific_zone_offset == -1) {
+		close(fd);
+		return -1;
+	}
+
+	if (lseek(fd, specific_zone_offset, SEEK_SET) == -1) {
+		//fprintf(stderr, "%s: could not seek to %ld: %s\n", __FUNCTION__, specific_zone_offset, strerror(errno));
+		close(fd);
+		return -1;
+	}
+
+	return fd;
+}
+
+static int __bionic_open_tzdata(const char* olson_id, int* data_size)
+{
+	int fd = __bionic_open_tzdata_path("/data/misc/zoneinfo/tzdata", olson_id, data_size);
+	if (fd < 0) {
+		fd = __bionic_open_tzdata_path("/system/usr/share/zoneinfo/tzdata", olson_id, data_size);
+		if (fd == -2) {
+			// The first thing that 'recovery' does is try to format the current time. It doesn't have
+			// any tzdata available, so we must not abort here --- doing so breaks the recovery image!
+			fprintf(stderr, "%s: couldn't find any tzdata when looking for %s!\n", __FUNCTION__, olson_id);
+		}
+	}
+	return fd;
 }
