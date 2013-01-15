@@ -1164,6 +1164,36 @@ static int should_drop_privileges() {
 #endif /* ALLOW_ADBD_ROOT */
 }
 #endif /* !ADB_HOST */
+/* allows ADB to not check certain USB devices that are known to not function
+ * well with the usb find_devices logic.
+ * Returns a null-terminated array of strings
+ */
+static const char** build_usb_black_list()
+{
+    char *list = getenv("ADB_USB_BLACKLIST");
+    char *token;
+    char *search = ",";
+    int count = 0;
+    const char **retval;
+
+    if(!list)
+        return calloc(1, 1); //return 0 length array of strings
+
+    token = strtok(list, search);
+    while(token) {
+        count++;
+        token = strtok(NULL, search);
+    }
+
+    retval = calloc(sizeof(char*), count+1);
+    while(count--) {
+        retval[count] = list;
+	while(count && *list != '\0' ) list++;
+	list++;
+    }
+
+    return retval;
+}
 
 int adb_main(int is_daemon, int server_port)
 {
@@ -1186,8 +1216,10 @@ int adb_main(int is_daemon, int server_port)
 
 #if ADB_HOST
     HOST = 1;
-    usb_vendors_init();
-    usb_init();
+    if(!getenv("ADB_NOUSB")) {
+        usb_vendors_init();
+        usb_init(build_usb_black_list());
+    }
     local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
     adb_auth_init();
 
