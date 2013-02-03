@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include <linux/kdev_t.h>
 #include <linux/usbdevice_fs.h>
 #include <linux/version.h>
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 20)
@@ -99,6 +100,37 @@ static int known_device(const char *dev_name)
     return 0;
 }
 
+static int device_on(const char *dev_name)
+{
+	struct stat st;
+	FILE *fp;
+	char path[64], devpath[16];
+	int busnum, len;
+
+	if( stat(dev_name, &st) != 0 )
+		return 1; /* assuming on is least harmful */
+
+	snprintf(path, sizeof(path), "/sys/dev/char/%lld:%lld/busnum", MAJOR(st.st_rdev), MINOR(st.st_rdev));
+	if( (fp = fopen(path, "r")) == NULL )
+		return 1; /* assuming on is least harmful */
+	fscanf(fp, "%d", &busnum);
+	fclose(fp);
+
+	snprintf(path, sizeof(path), "/sys/dev/char/%lld:%lld/devpath", MAJOR(st.st_rdev), MINOR(st.st_rdev));
+	if( (fp = fopen(path, "r")) == NULL )
+		return 1; /* assuming on is least harmful */
+	fgets(devpath, sizeof(devpath), fp);
+	fclose(fp);
+
+	/* devpath may include a \n, so strip that if needed */
+	len = snprintf(path, sizeof(path), "/sys/bus/usb/drivers/usb/%d-%s", busnum, devpath);
+	if(path[len-1] == '\n')
+		path[len-1] = '\0';
+
+	/* if this path exists, the device is on */
+	return (stat(path, &st) == 0);
+}
+
 static void kick_disconnected_devices()
 {
     usb_handle *usb;
@@ -166,6 +198,10 @@ static void find_usb_device(const char *base,
 
             if(known_device(devname)) {
                 DBGX("skipping %s\n", devname);
+                continue;
+            }
+            if(!device_on(devname)) {
+                DBGX("device not powered on %s\n", devname);
                 continue;
             }
 
