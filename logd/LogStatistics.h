@@ -166,6 +166,7 @@ public:
 
     // helper
     static const char *pid_to_name(pid_t pid);
+    uid_t pid_to_uid(pid_t pid);
 };
 
 #endif // _LOGD_LOG_STATISTICS_H__
