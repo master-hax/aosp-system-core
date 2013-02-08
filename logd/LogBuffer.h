@@ -77,6 +77,9 @@ public:
     void formatPrune(char **strp) { mPrune.format(strp); }
 #endif
 
+    uid_t pid_to_uid(pid_t pid) { return stats.pid_to_uid(pid); }
+    const char *pid_to_name(pid_t pid) { return stats.pid_to_name(pid); }
+
 private:
     void maybePrune(log_id_t id);
     void prune(log_id_t id, unsigned long pruneRows);

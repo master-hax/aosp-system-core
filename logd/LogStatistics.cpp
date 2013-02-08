@@ -909,3 +909,20 @@ const char *LogStatistics::pid_to_name(pid_t pid) {
     }
     return retval;
 }
+
+uid_t LogStatistics::pid_to_uid(pid_t pid) {
+    log_id_for_each(i) {
+        LidStatistics &l = id(i);
+        UidStatisticsCollection::iterator iu;
+        for (iu = l.begin(); iu != l.end(); ++iu) {
+            UidStatistics &u = *(*iu);
+            PidStatisticsCollection::iterator ip;
+            for (ip = u.begin(); ip != u.end(); ++ip) {
+                if ((*ip)->getPid() == pid) {
+                    return u.getUid();
+                }
+            }
+        }
+    }
+    return getuid(); // associate this with the logger
+}
