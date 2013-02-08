@@ -63,6 +63,7 @@
 #define AID_NFC           1027  /* nfc subsystem */
 #define AID_SDCARD_R      1028  /* external storage read access */
 #define AID_CLAT          1029  /* clat part of nat464 */
+#define AID_AUDIT         1030  /* audit daemon */
 
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
@@ -141,6 +142,7 @@ static const struct android_id_info android_ids[] = {
     { "misc",      AID_MISC, },
     { "nobody",    AID_NOBODY, },
     { "clat",      AID_CLAT, },
+    { "audit",     AID_AUDIT, },
 };
 
 #define android_id_count \
