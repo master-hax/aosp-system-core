@@ -207,9 +207,9 @@ static const struct fs_path_config android_files[] = {
     { 00644, AID_MEDIA_RW,  AID_MEDIA_RW,  0, "data/media/*" },
     { 00644, AID_SYSTEM,    AID_SYSTEM,    0, "data/app-private/*" },
     { 00644, AID_APP,       AID_APP,       0, "data/data/*" },
-        /* the following two files are INTENTIONALLY set-gid and not set-uid.
+    { 00755, AID_ROOT,      AID_ROOT,      (1 << CAP_NET_RAW), "system/bin/ping" },
+        /* the following file is INTENTIONALLY set-gid and not set-uid.
          * Do not change. */
-    { 02755, AID_ROOT,      AID_NET_RAW,   0, "system/bin/ping" },
     { 02750, AID_ROOT,      AID_INET,      0, "system/bin/netcfg" },
     	/* the following five files are INTENTIONALLY set-uid, but they
 	 * are NOT included on user builds. */
