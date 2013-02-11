@@ -27,6 +27,46 @@
 #include <sys/types.h>
 #include <stdint.h>
 
+/*
+ * Standard capabilities, taken from linux/capability.h
+ */
+#define CAP_CHOWN 0
+#define CAP_DAC_OVERRIDE 1
+#define CAP_DAC_READ_SEARCH 2
+#define CAP_FOWNER 3
+#define CAP_FSETID 4
+#define CAP_KILL 5
+#define CAP_SETGID 6
+#define CAP_SETUID 7
+#define CAP_SETPCAP 8
+#define CAP_LINUX_IMMUTABLE 9
+#define CAP_NET_BIND_SERVICE 10
+#define CAP_NET_BROADCAST 11
+#define CAP_NET_ADMIN 12
+#define CAP_NET_RAW 13
+#define CAP_IPC_LOCK 14
+#define CAP_IPC_OWNER 15
+#define CAP_SYS_MODULE 16
+#define CAP_SYS_RAWIO 17
+#define CAP_SYS_CHROOT 18
+#define CAP_SYS_PTRACE 19
+#define CAP_SYS_PACCT 20
+#define CAP_SYS_ADMIN 21
+#define CAP_SYS_BOOT 22
+#define CAP_SYS_NICE 23
+#define CAP_SYS_RESOURCE 24
+#define CAP_SYS_TIME 25
+#define CAP_SYS_TTY_CONFIG 26
+#define CAP_MKNOD 27
+#define CAP_LEASE 28
+#define CAP_AUDIT_WRITE 29
+#define CAP_AUDIT_CONTROL 30
+#define CAP_SETFCAP 31
+#define CAP_MAC_OVERRIDE 32
+#define CAP_MAC_ADMIN 33
+#define CAP_SYSLOG 34
+#define CAP_WAKE_ALARM 35
+
 /* This is the master Users and Groups config for the platform.
 ** DO NOT EVER RENUMBER.
 */
@@ -206,21 +246,24 @@ static const struct fs_path_config android_files[] = {
     { 00644, AID_MEDIA_RW,  AID_MEDIA_RW,  0, "data/media/*" },
     { 00644, AID_SYSTEM,    AID_SYSTEM,    0, "data/app-private/*" },
     { 00644, AID_APP,       AID_APP,       0, "data/data/*" },
-        /* the following two files are INTENTIONALLY set-gid and not set-uid.
-         * Do not change. */
-    { 02755, AID_ROOT,      AID_NET_RAW,   0, "system/bin/ping" },
+    { 00755, AID_ROOT,      AID_ROOT,      0, "system/bin/ping" },
+
+    /* the following file is INTENTIONALLY set-gid and not set-uid.
+     * Do not change. */
     { 02750, AID_ROOT,      AID_INET,      0, "system/bin/netcfg" },
-    	/* the following five files are INTENTIONALLY set-uid, but they
-	 * are NOT included on user builds. */
+
+    /* the following five files are INTENTIONALLY set-uid, but they
+     * are NOT included on user builds. */
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/su" },
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/librank" },
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/procrank" },
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/procmem" },
     { 06755, AID_ROOT,      AID_ROOT,      0, "system/xbin/tcpdump" },
     { 04770, AID_ROOT,      AID_RADIO,     0, "system/bin/pppd-ril" },
-		/* the following file is INTENTIONALLY set-uid, and IS included
-		 * in user builds. */
-    { 06750, AID_ROOT,      AID_SHELL,     0, "system/bin/run-as" },
+
+    /* the following file has enhanced capabilities and IS included in user builds. */
+    { 00750, AID_ROOT,      AID_SHELL,     (1 << CAP_SETUID) | (1 << CAP_SETGID), "system/bin/run-as" },
+
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/*" },
     { 00755, AID_ROOT,      AID_ROOT,      0, "system/lib/valgrind/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/xbin/*" },
