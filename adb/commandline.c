@@ -220,6 +220,7 @@ static void stdin_raw_init(int fd)
     if(tcgetattr(fd, &tio_save)) return;
 
     tio.c_lflag = 0; /* disable CANON, ECHO*, etc */
+    tio.c_iflag &= ~(INLCR|IGNCR|ICRNL); /* disable all CR/LF mangling */
 
         /* no timeout but request at least one character per read */
     tio.c_cc[VTIME] = 0;
