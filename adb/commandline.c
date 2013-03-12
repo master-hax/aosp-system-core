@@ -236,10 +236,11 @@ static void stdin_raw_restore(int fd)
 }
 #endif
 
-static void read_and_dump(int fd)
+static int read_and_dump(int fd)
 {
     char buf[4096];
     int len;
+    int ret_code = -1;
 
     while(fd >= 0) {
         D("read_and_dump(): pre adb_read(fd=%d)\n", fd);
@@ -253,9 +254,31 @@ static void read_and_dump(int fd)
             if(errno == EINTR) continue;
             break;
         }
-        fwrite(buf, 1, len, stdout);
+
+        char* stop_delimiter = memchr(buf, 0x03 /*stop of text*/, len);
+
+        if (!IS_EXTENSION_SUPPORTED(__extension_supported, ENABLE_RET_CODE_EXTENSION)) {
+            // if device daemon doesn't support protocol extensions - disable protocol extensions processing
+            stop_delimiter = NULL;
+        }
+
+        fwrite(buf, 1, stop_delimiter ? stop_delimiter - buf : len, stdout);
         fflush(stdout);
+
+        if (stop_delimiter) {
+            // We intend to interpret last sizeof(int) bytes after 0x03 (text stop) like application return code
+            if (buf + len == stop_delimiter) {
+                if(readx(fd, &ret_code, sizeof(ret_code))){
+                    fprintf(stderr,"* error reading return code *\n");
+                    exit (-1);
+                }
+            } else {
+                memcpy(&ret_code, stop_delimiter + 1, sizeof(int));
+            }
+            return ret_code;
+        }
     }
+    return 0;
 }
 
 static void copy_to_file(int inFd, int outFd) {
@@ -344,8 +367,12 @@ int interactive_shell(void)
     adb_thread_t thr;
     int fdi, fd;
     int *fds;
+    int r;
+    char shell_service[100];
+    sprintf(shell_service, "shell:");
+    append_extension_to_service(shell_service);
 
-    fd = adb_connect("shell:");
+    fd = adb_connect(shell_service);
     if(fd < 0) {
         fprintf(stderr,"error: %s\n", adb_error());
         return 1;
@@ -360,11 +387,11 @@ int interactive_shell(void)
     stdin_raw_init(fdi);
 #endif
     adb_thread_create(&thr, stdin_read_thread, fds);
-    read_and_dump(fd);
+    r = read_and_dump(fd);
 #ifdef HAVE_TERMIO_H
     stdin_raw_restore(fdi);
 #endif
-    return 0;
+    return r;
 }
 
 
@@ -1137,6 +1164,8 @@ top:
             fflush(stdout);
         }
 
+        check_daemon_extensions();
+
         if(argc < 2) {
             D("starting interactive shell\n");
             r = interactive_shell();
@@ -1148,6 +1177,7 @@ top:
         }
 
         snprintf(buf, sizeof buf, "shell:%s", argv[1]);
+
         argc -= 2;
         argv += 2;
         while(argc-- > 0) {
@@ -1162,15 +1192,16 @@ top:
                 strcat(buf, "\"");
         }
 
+        append_extension_to_service(buf);
+
         for(;;) {
             D("interactive shell loop. buff=%s\n", buf);
             fd = adb_connect(buf);
             if(fd >= 0) {
                 D("about to read_and_dump(fd=%d)\n", fd);
-                read_and_dump(fd);
+                r = read_and_dump(fd);
                 D("read_and_dump() done.\n");
                 adb_close(fd);
-                r = 0;
             } else {
                 fprintf(stderr,"error: %s\n", adb_error());
                 r = -1;

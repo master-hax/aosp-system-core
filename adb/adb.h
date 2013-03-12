@@ -33,10 +33,42 @@
 
 #define A_VERSION 0x01000000        // ADB protocol version
 
-#define ADB_VERSION_MAJOR 1         // Used for help/version information
-#define ADB_VERSION_MINOR 0         // Used for help/version information
+/**********************************************************************
+How 'extensions' work:
+- adb client(on host) requests supported extensions from
+  adbd (on device). Modern adbd sends supported extensions,
+  whereas old adbd returns error (meaning no extensions supported).
+- if adbd supports extensions then adb client append extensions
+  keyword and desired extensions list to the requested command.
+  - Modern adbd parses extensions and acts accordingly supplying
+    extensions data.
+  - Modern adb client is reading adbd stream with extensions data.
+**********************************************************************/
 
-#define ADB_SERVER_VERSION    31    // Increment this when we want to force users to start a new adb server
+extern int __extension_supported;
+#define IS_EXTENSION_SUPPORTED(extension, mask) ((extension) & (mask))
+
+
+/**********************************************************************
+How 'return code' extension works:
+- adbd appends marker char (0x03 - ASCII 'End of text') and return
+  code after subprocess' stdout end.
+  - adb client outputs stream and waiting for marker char. adb client
+    interprets last chars like subprocess' return code.
+- Note:
+  - adb client will wait for marker char only if adbd supports it and
+    responded to client earlier that adbd supports it.
+  - adbd will output marker char and return code only if adb client
+    requested it explicitly (via extensions).
+**********************************************************************/
+
+#define ENABLE_RET_CODE_EXTENSION (1 << 0)
+
+
+#define ADB_VERSION_MAJOR 1         // Used for help/version information
+#define ADB_VERSION_MINOR 1         // Used for help/version information
+
+#define ADB_SERVER_VERSION    32    // Increment this when we want to force users to start a new adb server
 
 typedef struct amessage amessage;
 typedef struct apacket apacket;

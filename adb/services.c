@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 #include "sysdeps.h"
 
@@ -227,6 +228,20 @@ done:
 }
 #endif
 
+static void enable_extensions_service(int fd, void *cookie)
+{
+    int services_from_client;
+    if (readx(fd, &services_from_client, sizeof(services_from_client)))
+        goto close;
+
+    services_from_client &= ENABLE_RET_CODE_EXTENSION;
+
+    writex(fd, &services_from_client, sizeof(services_from_client));
+
+close:
+    adb_close(fd);
+}
+
 static int create_service_thread(void (*func)(int, void *), void *cookie)
 {
     stinfo *sti;
@@ -257,7 +272,7 @@ static int create_service_thread(void (*func)(int, void *), void *cookie)
 }
 
 #if !ADB_HOST
-static int create_subprocess(const char *cmd, const char *arg0, const char *arg1, pid_t *pid)
+static int create_subprocess(const char *cmd, const char *arg0, const char *arg1, pid_t *pid, int *pts)
 {
 #ifdef HAVE_WIN32_PROC
     D("create_subprocess(cmd=%s, arg0=%s, arg1=%s)\n", cmd, arg0, arg1);
@@ -281,6 +296,14 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
         return -1;
     }
 
+    // we open slave terminate for return code writing on child process finish
+    // *pts will not became controlling terminal because O_NOCTTY flag is setted
+    *pts = unix_open(devname, O_RDWR | O_NOCTTY);
+    if(*pts < 0) {
+        fprintf(stderr, "failed to open pseudo-term slave: %s\n", devname);
+        exit(-1);
+    }
+
     *pid = fork();
     if(*pid < 0) {
         printf("- fork failed: %s -\n", strerror(errno));
@@ -289,21 +312,16 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
     }
 
     if(*pid == 0){
-        int pts;
-
         setsid();
 
-        pts = unix_open(devname, O_RDWR);
-        if(pts < 0) {
-            fprintf(stderr, "child failed to open pseudo-term slave: %s\n", devname);
-            exit(-1);
-        }
+        // *pts becames process's controlling terminal. It's important for shell
+        ioctl(*pts, TIOCSCTTY, 1);
 
-        dup2(pts, 0);
-        dup2(pts, 1);
-        dup2(pts, 2);
+        dup2(*pts, 0);
+        dup2(*pts, 1);
+        dup2(*pts, 2);
 
-        adb_close(pts);
+        adb_close(*pts);
         adb_close(ptm);
 
         // set OOM adjustment to zero
@@ -338,15 +356,22 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
 #endif
 
 #if !ADB_HOST
+
+typedef struct {
+    pid_t pid;
+    int pts;
+    int need_write_ret_code;
+} waiter_param;
+
 static void subproc_waiter_service(int fd, void *cookie)
 {
-    pid_t pid = (pid_t)cookie;
+    waiter_param *param = (waiter_param*) cookie;
+    int status;
 
-    D("entered. fd=%d of pid=%d\n", fd, pid);
+    D("entered. fd=%d of pid=%d\n", fd, param->pid);
     for (;;) {
-        int status;
-        pid_t p = waitpid(pid, &status, 0);
-        if (p == pid) {
+        pid_t p = waitpid(param->pid, &status, 0);
+        if (p == param->pid) {
             D("fd=%d, post waitpid(pid=%d) status=%04x\n", fd, p, status);
             if (WIFSIGNALED(status)) {
                 D("*** Killed by signal %d\n", WTERMSIG(status));
@@ -358,47 +383,80 @@ static void subproc_waiter_service(int fd, void *cookie)
                 D("*** Exit code %d\n", WEXITSTATUS(status));
                 break;
             }
-         }
+        }
     }
-    D("shell exited fd=%d of pid=%d err=%d\n", fd, pid, errno);
+    int ret_code = WEXITSTATUS(status);
+    D("process with pid=%d finished with ret_code=%d\n", param->pid, ret_code);
     if (SHELL_EXIT_NOTIFY_FD >=0) {
-      int res;
-      res = writex(SHELL_EXIT_NOTIFY_FD, &fd, sizeof(fd));
-      D("notified shell exit via fd=%d for pid=%d res=%d errno=%d\n",
-        SHELL_EXIT_NOTIFY_FD, pid, res, errno);
+        int res;
+
+        if (param->need_write_ret_code) {
+            // we will send to remote terminal 0x03 - ASCII 'End of text'.
+            // after it we will send child process return code.
+            char chunk_ret_code[1 + sizeof(ret_code)] = {0x03}; // set first array item value to 0x03
+            // copy return value to array staring from 2 item
+            memcpy(chunk_ret_code + 1, &ret_code, sizeof(ret_code));
+
+            res = adb_write(param->pts, &chunk_ret_code, sizeof(chunk_ret_code));
+            D("writed process with pid=%d ret_code=%d via fd=%d res=%d errno=%d\n",
+              ret_code, param->pts, param->pid, res, errno);
+        }
+
+        res = writex(SHELL_EXIT_NOTIFY_FD, &fd, sizeof(fd));
+        D("notified shell exit via fd=%d for pid=%d res=%d errno=%d\n",
+          SHELL_EXIT_NOTIFY_FD, param->pid, res, errno);
     }
+    adb_close(param->pts);
+    free(param);
 }
 
-static int create_subproc_thread(const char *name)
+static int create_subproc_thread(const char *name, int extensions)
 {
     stinfo *sti;
     adb_thread_t t;
     int ret_fd;
-    pid_t pid;
+    waiter_param *param = malloc(sizeof(*param));
+    if(param == 0) fatal("cannot allocate waiter_param");
+    param->need_write_ret_code = IS_EXTENSION_SUPPORTED(extensions, ENABLE_RET_CODE_EXTENSION);
+
     if(name) {
-        ret_fd = create_subprocess(SHELL_COMMAND, "-c", name, &pid);
+        ret_fd = create_subprocess(SHELL_COMMAND, "-c", name, &param->pid, &param->pts);
     } else {
-        ret_fd = create_subprocess(SHELL_COMMAND, "-", 0, &pid);
+        ret_fd = create_subprocess(SHELL_COMMAND, "-", 0, &param->pid, &param->pts);
     }
-    D("create_subprocess() ret_fd=%d pid=%d\n", ret_fd, pid);
+    D("create_subprocess() ret_fd=%d pid=%d\n", ret_fd, param->pid);
 
     sti = malloc(sizeof(stinfo));
     if(sti == 0) fatal("cannot allocate stinfo");
     sti->func = subproc_waiter_service;
-    sti->cookie = (void*)pid;
+    sti->cookie = (void*)param;
     sti->fd = ret_fd;
 
     if(adb_thread_create( &t, service_bootstrap_func, sti)){
+        if (param->pts != -1)
+            adb_close(param->pts);
+        free(param);
         free(sti);
         adb_close(ret_fd);
         printf("cannot create service thread\n");
         return -1;
     }
 
-    D("service thread started, fd=%d pid=%d\n",ret_fd, pid);
+    D("service thread started, fd=%d pid=%d\n",ret_fd, param->pid);
     return ret_fd;
 }
 #endif
+
+int get_extensions_from_service_and_remove_it(char* service) {
+    int result;
+    char* extensions_pos;
+    if (extensions_pos = strstr(service, ":extensions:")) {
+        if (!sscanf(extensions_pos, ":extensions:%d", &result))
+            result = 0;
+        *extensions_pos = 0;
+    }
+    return result;
+}
 
 int service_to_fd(const char *name)
 {
@@ -451,10 +509,11 @@ int service_to_fd(const char *name)
     } else if (!strncmp(name, "log:", 4)) {
         ret = create_service_thread(log_service, get_log_file_path(name + 4));
     } else if(!HOST && !strncmp(name, "shell:", 6)) {
+        int extensions = get_extensions_from_service_and_remove_it(name);
         if(name[6]) {
-            ret = create_subproc_thread(name + 6);
+            ret = create_subproc_thread(name + 6, extensions);
         } else {
-            ret = create_subproc_thread(0);
+            ret = create_subproc_thread(0, extensions);
         }
     } else if(!strncmp(name, "sync:", 5)) {
         ret = create_service_thread(file_sync_service, NULL);
@@ -485,6 +544,8 @@ int service_to_fd(const char *name)
     } else if(!strncmp(name, "echo:", 5)){
         ret = create_service_thread(echo_service, 0);
 #endif
+    } else if (!strncmp(name, "extensions:", 11)) {
+      ret = create_service_thread(enable_extensions_service, 0);
     }
     if (ret >= 0) {
         close_on_exec(ret);

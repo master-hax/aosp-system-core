@@ -48,6 +48,7 @@ ADB_MUTEX_DEFINE( D_lock );
 
 int HOST = 0;
 int gListenAll = 0;
+int __extension_supported = 0;
 
 static int auth_enabled = 0;
 

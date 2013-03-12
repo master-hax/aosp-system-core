@@ -216,6 +216,34 @@ int _adb_connect(const char *service)
     return fd;
 }
 
+void append_extension_to_service(char* service){
+    int enabled_options = 0;
+
+    if (IS_EXTENSION_SUPPORTED(__extension_supported, ENABLE_RET_CODE_EXTENSION))
+        enabled_options |= ENABLE_RET_CODE_EXTENSION;
+
+    if (enabled_options){
+        int text_len = strlen(service);
+        sprintf(service + text_len, ":extensions:%d", enabled_options);
+    }
+}
+
+void check_daemon_extensions() {
+    int fd = _adb_connect("extensions:");
+    if (fd > 0) {
+        __extension_supported = ENABLE_RET_CODE_EXTENSION /*'bitwise or' with other extensions in future*/;
+
+        if (!writex(fd, &__extension_supported, sizeof(__extension_supported))) {
+            if (readx(fd, &__extension_supported, sizeof(__extension_supported))) {
+                __extension_supported = 0;
+            }
+        }
+        adb_close(fd);
+    } else {
+        __extension_supported = 0;
+    }
+}
+
 int adb_connect(const char *service)
 {
     // first query the adb server's version
