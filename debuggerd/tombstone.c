@@ -649,6 +649,7 @@ static bool dump_crash(log_t* log, pid_t pid, pid_t tid, int signal,
     }
 
     free_ptrace_context(context);
+    free(context);
 
     if (want_logs) {
         dump_logs(log, pid, false);

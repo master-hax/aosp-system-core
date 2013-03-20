@@ -145,4 +145,5 @@ void dump_backtrace(int fd, pid_t pid, pid_t tid, bool* detach_failed,
 
     dump_process_footer(&log, pid);
     free_ptrace_context(context);
+    free(context);
 }
