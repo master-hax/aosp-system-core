@@ -228,7 +228,7 @@ static const struct fs_path_config android_files[] = {
     { 04770, AID_ROOT,      AID_RADIO,     0, "system/bin/pppd-ril" },
 
     /* the following file has enhanced capabilities and IS included in user builds. */
-    { 00750, AID_ROOT,      AID_SHELL,     (1 << CAP_SETUID) | (1 << CAP_SETGID), "system/bin/run-as" },
+    { 00750, AID_ROOT,      AID_SHELL,     (1 << CAP_SETUID) | (1 << CAP_SETGID) | (1 << CAP_DAC_READ_SEARCH) , "system/bin/run-as" },
 
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/*" },
     { 00755, AID_ROOT,      AID_ROOT,      0, "system/lib/valgrind/*" },
