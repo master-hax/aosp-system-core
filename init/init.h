@@ -132,6 +132,10 @@ void service_restart(struct service *svc);
 void service_start(struct service *svc, const char *dynamic_args);
 void property_changed(const char *name, const char *value);
 
+int exec_still_running();
+int get_exec_pid();
+void set_exec_pid(int pid);
+
 #define INIT_IMAGE_FILE	"/initlogo.rle"
 
 int load_565rle_image( char *file_name );

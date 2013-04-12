@@ -550,6 +550,20 @@ void execute_one_command(void)
     INFO("command '%s' r=%d\n", cur_command->args[0], ret);
 }
 
+// SDG Addition Begin
+static int enable_branding(int nargs, char **args)
+{
+    set_branding_mode(1);
+    return 0;
+}
+
+static int disable_branding(int nargs, char **args)
+{
+    set_branding_mode(0);
+    return 0;
+}
+// SDG Addition End
+
 static int wait_for_coldboot_done_action(int nargs, char **args)
 {
     int ret;
@@ -1064,6 +1078,13 @@ int main(int argc, char **argv)
     queue_builtin_action(signal_init_action, "signal_init");
     queue_builtin_action(check_startup_action, "check_startup");
 
+    // SDG Addition Begin
+    /* allow read-only properties to be changed for branding purposes */
+    queue_builtin_action(enable_branding, "enable_branding");
+    action_for_each_trigger("branding", action_add_queue_tail);
+    queue_builtin_action(disable_branding, "disable_branding");
+    // SDG Addition End
+
     if (is_charger) {
         action_for_each_trigger("charger", action_add_queue_tail);
     } else {
@@ -1082,8 +1103,11 @@ int main(int argc, char **argv)
     for(;;) {
         int nr, i, timeout = -1;
 
-        execute_one_command();
-        restart_processes();
+        // if last "exec" is still running, don't run any new commands
+        if (!exec_still_running()) {
+            execute_one_command();
+            restart_processes();
+        }
 
         if (!property_set_fd_init && get_property_set_fd() > 0) {
             ufds[fd_count].fd = get_property_set_fd();

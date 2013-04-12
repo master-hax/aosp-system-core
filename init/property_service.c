@@ -24,6 +24,8 @@
 #include <dirent.h>
 #include <limits.h>
 #include <errno.h>
+// SDG Addition
+#include <log.h>
 
 #include <cutils/misc.h>
 #include <cutils/sockets.h>
@@ -115,6 +117,14 @@ typedef struct {
     size_t size;
     int fd;
 } workspace;
+
+// SDG Addition Begin
+static int branding_mode_enabled = 0;
+
+void set_branding_mode(int enabled) {
+    branding_mode_enabled = enabled;
+}
+// SDG Addition End
 
 static int init_workspace(workspace *w, size_t size)
 {
@@ -318,7 +328,11 @@ int property_set(const char *name, const char *value)
     pi = (prop_info*) __system_property_find(name);
 
     if(pi != 0) {
-        /* ro.* properties may NEVER be modified once set */
+        // SDG Addition Begin
+        // ro.* properties may not be modified once set,
+        // unless we are in branding mode
+        if(!branding_mode_enabled)
+        // SDG Addition End
         if(!strncmp(name, "ro.", 3)) return -1;
 
         __system_property_update(pi, value, valuelen);

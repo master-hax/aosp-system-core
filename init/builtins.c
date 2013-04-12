@@ -238,7 +238,35 @@ int do_domainname(int nargs, char **args)
     return write_file("/proc/sys/kernel/domainname", args[1]);
 }
 
-/*exec <path> <arg1> <arg2> ... */
+static int exec_pid = 0;
+
+int get_exec_pid()
+{
+    return exec_pid;
+}
+
+void set_exec_pid(int pid)
+{
+    exec_pid = pid;
+}
+
+int exec_still_running()
+{
+    wait_for_one_process(0);
+    return exec_pid != 0;
+}
+
+/*
+ *  Run an executable in the background.
+ *
+ *  We run the process in the background to avoid deadlock.  The program may
+ *  set many properties, and each property_set() call sends a message to
+ *  init's socket.  If we are not running our process in the background,
+ *  then init will be waiting for us, and won't be able to handle the
+ *  incoming messages.  If our program sets enough properties, then the
+ *  socket buffer will fill up, and there will be deadlock.  Therefore,
+ *  we need to run this process in the background.
+ */
 #define MAX_PARAMETERS 64
 int do_exec(int nargs, char **args)
 {
@@ -267,11 +295,7 @@ int do_exec(int nargs, char **args)
     }
     else
     {
-        waitpid(pid, &status, 0);
-        if (WEXITSTATUS(status) != 0) {
-            ERROR("exec: pid %1d exited with return code %d: %s", (int)pid, WEXITSTATUS(status), strerror(status));
-        }
-        
+        exec_pid = pid;
     }
     return 0;
 }

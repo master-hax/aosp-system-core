@@ -41,7 +41,7 @@ static void sigchld_handler(int s)
 #define CRITICAL_CRASH_THRESHOLD    4       /* if we crash >4 times ... */
 #define CRITICAL_CRASH_WINDOW       (4*60)  /* ... in 4 minutes, goto recovery*/
 
-static int wait_for_one_process(int block)
+int wait_for_one_process(int block)
 {
     pid_t pid;
     int status;
@@ -57,7 +57,10 @@ static int wait_for_one_process(int block)
 
     svc = service_find_by_pid(pid);
     if (!svc) {
-        ERROR("untracked pid %d exited\n", pid);
+        if (pid == get_exec_pid()) {
+            set_exec_pid(0);
+        }
+        else ERROR("untracked pid %d exited\n", pid);
         return 0;
     }
 
