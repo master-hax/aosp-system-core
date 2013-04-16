@@ -818,6 +818,11 @@ void handle_device_fd()
         struct uevent uevent;
         parse_event(msg, &uevent);
 
+        if (sehandle && selinux_status_updated() > 0) {
+            selabel_close(sehandle);
+            sehandle = selinux_android_file_context_handle();
+        }
+
         handle_device_event(&uevent);
         handle_firmware_event(&uevent);
     }
@@ -884,6 +889,7 @@ void device_init(void)
     sehandle = NULL;
     if (is_selinux_enabled() > 0) {
         sehandle = selinux_android_file_context_handle();
+        selinux_status_open(1);
     }
 
     /* is 256K enough? udev uses 16MB! */
