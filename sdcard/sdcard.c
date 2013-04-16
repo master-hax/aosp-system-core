@@ -1340,6 +1340,26 @@ static int handle_fsync(struct fuse* fuse, struct fuse_handler* handler,
     return 0;
 }
 
+static int handle_fsyncdir(struct fuse* fuse, struct fuse_handler* handler,
+        const struct fuse_in_header* hdr, const struct fuse_fsync_in* req)
+{
+    int res, fd;
+    int is_data_sync = req->fsync_flags & 1;
+    struct dirhandle *dh = id_to_ptr(req->fh);
+
+    TRACE("[%d] FSYNCDIR %p(%d) is_data_sync=%d\n", handler->token,
+            dh, dh->d, is_data_sync);
+    fd = dirfd(dh->d);
+    if (fd < 0) {
+        return -errno;
+    }
+    res = is_data_sync ? fdatasync(fd) : fsync(fd);
+    if (res < 0) {
+        return -errno;
+    }
+    return 0;
+}
+
 static int handle_flush(struct fuse* fuse, struct fuse_handler* handler,
         const struct fuse_in_header* hdr)
 {
@@ -1548,10 +1568,14 @@ static int handle_fuse_request(struct fuse *fuse, struct fuse_handler* handler,
         return handle_release(fuse, handler, hdr, req);
     }
 
-    case FUSE_FSYNC:
-    case FUSE_FSYNCDIR: {
+    case FUSE_FSYNC: {
         const struct fuse_fsync_in *req = data;
         return handle_fsync(fuse, handler, hdr, req);
+    }
+
+    case FUSE_FSYNCDIR: {
+        const struct fuse_fsync_in *req = data;
+        return handle_fsyncdir(fuse, handler, hdr, req);
     }
 
 //    case FUSE_SETXATTR:
