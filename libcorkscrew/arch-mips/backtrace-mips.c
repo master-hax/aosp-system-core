@@ -61,7 +61,7 @@ typedef struct {
     uint32_t pc;
 } unwind_state_t;
 
-uintptr_t rewind_pc_arch(const memory_t* memory, uintptr_t pc) {
+uintptr_t rewind_pc_arch(const memory_t* memory __attribute__((unused)), uintptr_t pc) {
     if (pc == 0)
         return pc;
     if ((pc & 1) == 0)
@@ -70,7 +70,7 @@ uintptr_t rewind_pc_arch(const memory_t* memory, uintptr_t pc) {
 }
 
 static ssize_t unwind_backtrace_common(const memory_t* memory,
-        const map_info_t* map_info_list,
+        const map_info_t* map_info_list __attribute__((unused)),
         unwind_state_t* state, backtrace_frame_t* backtrace,
         size_t ignore_depth, size_t max_depth) {
     size_t ignored_frames = 0;
@@ -153,7 +153,7 @@ static ssize_t unwind_backtrace_common(const memory_t* memory,
     return returned_frames;
 }
 
-ssize_t unwind_backtrace_signal_arch(siginfo_t* siginfo, void* sigcontext,
+ssize_t unwind_backtrace_signal_arch(siginfo_t* siginfo __attribute__((unused)), void* sigcontext,
         const map_info_t* map_info_list,
         backtrace_frame_t* backtrace, size_t ignore_depth, size_t max_depth) {
     const ucontext_t* uc = (const ucontext_t*)sigcontext;

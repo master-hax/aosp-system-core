@@ -552,7 +552,7 @@ static ssize_t unwind_backtrace_common(const memory_t* memory,
     return returned_frames;
 }
 
-ssize_t unwind_backtrace_signal_arch(siginfo_t* siginfo, void* sigcontext,
+ssize_t unwind_backtrace_signal_arch(siginfo_t* siginfo __attribute__((unused)), void* sigcontext,
         const map_info_t* map_info_list,
         backtrace_frame_t* backtrace, size_t ignore_depth, size_t max_depth) {
     const ucontext_t* uc = (const ucontext_t*)sigcontext;
