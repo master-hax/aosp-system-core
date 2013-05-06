@@ -47,6 +47,24 @@ typedef struct atransport atransport;
 typedef struct adisconnect  adisconnect;
 typedef struct usb_handle usb_handle;
 
+#if ADB_HOST
+/* Structure that binds reconnection threads to
+** the serial data so we can track subsequent
+** connect/disconnect calls and stop reconnecting */
+
+#define HOSTLEN 30
+
+typedef struct reconnector reconnector;
+struct reconnector
+{
+    reconnector *next;
+    reconnector *prev;
+    adb_thread_t reconnect_thread;
+    int reconnect_bail;
+    char serial[HOSTLEN];
+};
+#endif
+
 struct amessage {
     unsigned command;       /* command identifier constant      */
     unsigned arg0;          /* first argument                   */
@@ -314,6 +332,8 @@ atransport* find_emulator_transport_by_adb_port(int adb_port);
 int service_to_fd(const char *name);
 #if ADB_HOST
 asocket *host_service_to_socket(const char*  name, const char *serial);
+void reconnect_device(reconnector *recon);
+reconnector *find_reconnector(char *serial);
 #endif
 
 #if !ADB_HOST

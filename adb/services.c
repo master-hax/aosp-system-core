@@ -339,7 +339,10 @@ int service_to_fd(const char *name)
         if(name == 0) {
             ret = socket_loopback_client(port, SOCK_STREAM);
             if (ret >= 0)
+            {
                 disable_tcp_nagle(ret);
+                enable_keepalive(ret);
+            }
         } else {
 #if ADB_HOST
             ret = socket_network_client(name + 1, port, SOCK_STREAM);
@@ -434,7 +437,7 @@ static void wait_for_state(int fd, void* cookie)
     D("wait_for_state is done\n");
 }
 
-static void connect_device(char* host, char* buffer, int buffer_size)
+static int connect_device(char* host, char* buffer, int buffer_size)
 {
     int port, fd;
     char* portstr = strchr(host, ':');
@@ -446,13 +449,13 @@ static void connect_device(char* host, char* buffer, int buffer_size)
     if (portstr) {
         if (portstr - host >= (ptrdiff_t)sizeof(hostbuf)) {
             snprintf(buffer, buffer_size, "bad host name %s", host);
-            return;
+            return 0;
         }
         // zero terminate the host at the point we found the colon
         hostbuf[portstr - host] = 0;
         if (sscanf(portstr + 1, "%d", &port) == 0) {
             snprintf(buffer, buffer_size, "bad port number %s", portstr);
-            return;
+            return 0;
         }
     } else {
         port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
@@ -463,20 +466,22 @@ static void connect_device(char* host, char* buffer, int buffer_size)
     fd = socket_network_client(hostbuf, port, SOCK_STREAM);
     if (fd < 0) {
         snprintf(buffer, buffer_size, "unable to connect to %s:%d", host, port);
-        return;
+        return 0;
     }
 
     D("client: connected on remote on fd %d\n", fd);
     close_on_exec(fd);
     disable_tcp_nagle(fd);
-
+    enable_keepalive(fd);
     ret = register_socket_transport(fd, serial, port, 0);
     if (ret < 0) {
         adb_close(fd);
         snprintf(buffer, buffer_size, "already connected to %s", serial);
+        return 0;
     } else {
         snprintf(buffer, buffer_size, "connected to %s", serial);
     }
+    return 1;
 }
 
 void connect_emulator(char* port_spec, char* buffer, int buffer_size)
@@ -540,6 +545,14 @@ static void connect_service(int fd, void* cookie)
     char resp[4096];
     char *host = cookie;
 
+    reconnector *recon;
+    recon = find_reconnector(host);
+    /* if we're already reconnecting, skip the connection and just
+    keep reconnecting */
+    if (recon) {
+        sendfailmsg(fd, "already reconnecting");
+        return 0;
+    }
     if (!strncmp(host, "emu:", 4)) {
         connect_emulator(host + 4, buf, sizeof(buf));
     } else {
@@ -554,6 +567,42 @@ static void connect_service(int fd, void* cookie)
 #endif
 
 #if ADB_HOST
+
+#define ERRLEN 100
+char errbuf[ERRLEN];
+
+static void *reconnect_thread(void *vrecon)
+{
+    reconnector *recon = vrecon;
+    while (1) {
+        sleep(2);
+        if (recon->reconnect_bail) {
+            D("reconnect bail\n");
+            break;
+        }
+        D("trying to reconnect to %s\n", recon->serial);
+        errbuf[0] = '\0';
+        if (connect_device(recon->serial, errbuf, ERRLEN) > 0) {
+            D("reconnect success: %s\n", errbuf);
+            break;
+        } else {
+            D("reconnect failed: %s\n", errbuf);
+        }
+    }
+
+    D("exiting reconnect thread\n");
+    remove_reconnector(recon);
+    return 0;
+}
+
+void reconnect_device(reconnector *recon)
+{
+    recon->reconnect_bail = 0;
+    D("creating reconnect thread\n");
+    adb_thread_create(&recon->reconnect_thread, reconnect_thread, recon);
+}
+
+
 asocket*  host_service_to_socket(const char*  name, const char *serial)
 {
     if (!strcmp(name,"track-devices")) {
