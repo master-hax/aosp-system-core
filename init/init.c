@@ -205,15 +205,25 @@ void service_start(struct service *svc, const char *dynamic_args)
             }
         } else {
             char *mycon = NULL, *fcon = NULL;
+            const char *exe = svc->args[0];
 
-            INFO("computing context for service '%s'\n", svc->args[0]);
+            if (!strcmp(svc->args[0], LOGWRAPPER_PATH)) {
+                for (n = 1; svc->args[n]; n++) {
+                    if (*(svc->args[n]) != '-')
+                        break;
+                }
+                if (svc->args[n])
+                    exe = svc->args[n];
+            }
+
+            INFO("computing context for service '%s'\n", exe);
             rc = getcon(&mycon);
             if (rc < 0) {
                 ERROR("could not get context while starting '%s'\n", svc->name);
                 return;
             }
 
-            rc = getfilecon(svc->args[0], &fcon);
+            rc = getfilecon(exe, &fcon);
             if (rc < 0) {
                 ERROR("could not get context while starting '%s'\n", svc->name);
                 freecon(mycon);
