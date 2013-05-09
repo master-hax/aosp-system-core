@@ -75,6 +75,18 @@ int autosuspend_enable(void)
         return 0;
     }
 
+    if (NULL == autosuspend_ops)
+    {
+        ALOGE("autosuspend_enable called with autosuspend_ops == NULL\n");
+        return -1;
+    }
+
+    if (NULL == autosuspend_ops->enable)
+    {
+        ALOGE("autosuspend_enable called with autosuspend_ops->enable == NULL\n");
+        return -1;
+    }
+
     ret = autosuspend_ops->enable();
     if (ret) {
         return ret;
@@ -97,6 +109,18 @@ int autosuspend_disable(void)
 
     if (!autosuspend_enabled) {
         return 0;
+    }
+
+    if (NULL == autosuspend_ops)
+    {
+        ALOGE("autosuspend_disable called with autosuspend_ops == NULL\n");
+        return -1;
+    }
+
+    if (NULL == autosuspend_ops->disable)
+    {
+        ALOGE("autosuspend_disable called with autosuspend_ops->disable == NULL\n");
+        return -1;
     }
 
     ret = autosuspend_ops->disable();
