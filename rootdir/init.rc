@@ -392,7 +392,6 @@ service ueventd /sbin/ueventd
     seclabel u:r:ueventd:s0
 
 on property:selinux.reload_policy=1
-    restart ueventd
     restart installd
 
 service console /system/bin/sh

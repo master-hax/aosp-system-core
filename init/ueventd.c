@@ -22,6 +22,9 @@
 #include <ctype.h>
 #include <signal.h>
 
+#include <selinux/selinux.h>
+#include <selinux/avc.h>
+
 #include <private/android_filesystem_config.h>
 
 #include "ueventd.h"
@@ -49,7 +52,8 @@ static void import_kernel_nv(char *name, int in_qemu)
 
 int ueventd_main(int argc, char **argv)
 {
-    struct pollfd ufd;
+    struct pollfd ufd[2];
+    nfds_t nfds;
     int nr;
     char tmp[32];
 
@@ -86,15 +90,31 @@ int ueventd_main(int argc, char **argv)
 
     device_init();
 
-    ufd.events = POLLIN;
-    ufd.fd = get_device_fd();
+    ufd[0].events = POLLIN;
+    ufd[0].fd = get_device_fd();
+    nfds = 1;
+    if (is_selinux_enabled() > 0) {
+        if (avc_netlink_open(0) < 0)
+            ERROR("avc_netlink_open");
+        else {
+            union selinux_callback cb;
+            cb.func_policyload = device_selinux_reload;
+            selinux_set_callback(SELINUX_CB_POLICYLOAD, cb);
+            ufd[1].events = POLLIN;
+            ufd[1].fd = avc_netlink_acquire_fd();
+            nfds = 2;
+        }
+    }
 
     while(1) {
-        ufd.revents = 0;
-        nr = poll(&ufd, 1, -1);
+        ufd[0].revents = 0;
+        ufd[1].revents = 0;
+        nr = poll(ufd, nfds, -1);
         if (nr <= 0)
             continue;
-        if (ufd.revents == POLLIN)
+        if (ufd[1].revents == POLLIN)
+            avc_netlink_check_nb();
+        if (ufd[0].revents == POLLIN)
                handle_device_fd();
     }
 }

@@ -921,3 +921,14 @@ int get_device_fd()
 {
     return device_fd;
 }
+
+int device_selinux_reload(int seqno)
+{
+    struct selabel_handle *sehandle2;
+    sehandle2 = selinux_android_file_context_handle();
+    if (sehandle2) {
+        selabel_close(sehandle);
+        sehandle = sehandle2;
+    }
+    return 0;
+}
