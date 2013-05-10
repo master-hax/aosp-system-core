@@ -92,8 +92,13 @@ seclabel <securitycontext>
   Change to securitycontext before exec'ing this service.
   Primarily for use by services run from the rootfs, e.g. ueventd, adbd.
   Services on the system partition can instead use policy-defined transitions
-  based on their file security context.
+  based on their file security context. This overrides ctx_compute.
   If not specified and no transition is defined in policy, defaults to the init context.
+
+ctx_compute <pathname>
+  Specifies the pathname to be used for extraction of the execuatble's file_context.
+  Useful if your service is being exec'd by a different executable. For instance,
+  when you execute your service with logwrapper.
 
 oneshot
    Do not restart the service when it exits.

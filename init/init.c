@@ -205,15 +205,16 @@ void service_start(struct service *svc, const char *dynamic_args)
             }
         } else {
             char *mycon = NULL, *fcon = NULL;
+            char *service_fpath = svc->ctx_compute ? svc->ctx_compute : svc->args[0];
 
-            INFO("computing context for service '%s'\n", svc->args[0]);
+            INFO("computing context for service '%s'\n", service_fpath);
             rc = getcon(&mycon);
             if (rc < 0) {
                 ERROR("could not get context while starting '%s'\n", svc->name);
                 return;
             }
 
-            rc = getfilecon(svc->args[0], &fcon);
+            rc = getfilecon(service_fpath, &fcon);
             if (rc < 0) {
                 ERROR("could not get context while starting '%s'\n", svc->name);
                 freecon(mycon);

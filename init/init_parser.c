@@ -92,6 +92,7 @@ int lookup_keyword(const char *s)
         if (!strcmp(s, "hown")) return K_chown;
         if (!strcmp(s, "hmod")) return K_chmod;
         if (!strcmp(s, "ritical")) return K_critical;
+        if (!strcmp(s, "tx_compute")) return K_ctx_compute;
         break;
     case 'd':
         if (!strcmp(s, "isabled")) return K_disabled;
@@ -803,6 +804,14 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
             parse_error(state, "seclabel option requires a label string\n");
         } else {
             svc->seclabel = args[1];
+        }
+        break;
+    case K_ctx_compute:
+        if(nargs !=2 ) {
+            parse_error(state, "ctx_compute option requires an argument index\n");
+        }
+        else {
+            svc->ctx_compute = args[1];
         }
         break;
 
