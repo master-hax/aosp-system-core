@@ -96,7 +96,7 @@ struct service {
     size_t nr_supp_gids;
 
     char *seclabel;
-
+    char *ctx_compute;
     struct socketinfo *sockets;
     struct svcenvinfo *envvars;
 

@@ -49,6 +49,7 @@ enum {
     KEYWORD(class_stop,  COMMAND, 1, do_class_stop)
     KEYWORD(class_reset, COMMAND, 1, do_class_reset)
     KEYWORD(console,     OPTION,  0, 0)
+    KEYWORD(ctx_compute, OPTION,  0, 0)
     KEYWORD(critical,    OPTION,  0, 0)
     KEYWORD(disabled,    OPTION,  0, 0)
     KEYWORD(domainname,  COMMAND, 1, do_domainname)
