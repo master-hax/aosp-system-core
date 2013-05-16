@@ -108,4 +108,19 @@ extern int  audit_get_reply(int fd, struct audit_reply *rep, reply_t block,
  */
 extern int  audit_set_pid(int fd, uint32_t pid, rep_wait_t wmode);
 
+/**
+ * Tells the audit subsystem whether or not to send the logs to kmsg
+ * even if a userspace audit daemon is registered.
+ * @param fd
+ *  The fd returned by a call to audit_open()
+ * @param enabled
+ *  One of AUDIT_LOGSPLIT_OFF or AUDIT_LOGSPLIT_ON, to turn off or on the
+ *  logspliting respectively.
+ * @param wmode
+ *  Whether or not to block on the underlying socket io calls.
+ * @return
+ *  This function returns 0 on success, -errno on error.
+ */
+extern int audit_set_logsplit(int fd, int enabled, rep_wait_t wmode);
+
 #endif

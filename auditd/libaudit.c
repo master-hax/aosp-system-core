@@ -329,3 +329,32 @@ void audit_close(int fd)
     }
     return;
 }
+
+int audit_set_logsplit(int fd, int enabled,rep_wait_t wmode)
+{
+    int rc;
+    struct audit_reply rep;
+    struct audit_logsplit_status status;
+
+    memset(&status, 0, sizeof(status));
+
+    if(enabled != AUDIT_LOGSPLIT_OFF &&
+            enabled != AUDIT_LOGSPLIT_ON) {
+        SLOGE("Invalid logsplit option of: %x\n", enabled);
+        return -EINVAL;
+    }
+
+    status.enabled = enabled;
+
+    rc = audit_send(fd, AUDIT_LOGSPLIT_SET, &status, sizeof(status));
+    if (rc < 0) {
+        SLOGE("Could net set splitlog for audit events, error: %s", strerror(-rc));
+        return rc;
+    }
+
+    if (wmode != WAIT_NO) {
+        audit_get_reply(fd, &rep, GET_REPLY_NONBLOCKING, 0);
+    }
+
+    return 0;
+}

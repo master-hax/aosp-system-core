@@ -178,6 +178,14 @@ int main(int argc, char *argv[])
         goto err;
     }
 
+    rc = audit_set_logsplit(audit_fd, AUDIT_LOGSPLIT_ON, WAIT_NO);
+    if(rc) {
+        SLOGE("Could not enable logsplitting, perhaps kernel does not support it: %s", strerror(-rc));
+    }
+    else {
+        SLOGI("Logsplitting enabled");
+    }
+
     if (audit_set_pid(audit_fd, getpid(), WAIT_YES) < 0) {
         rc = errno;
         SLOGE("Failed on audit_set_pid with error: %s", strerror(errno));
