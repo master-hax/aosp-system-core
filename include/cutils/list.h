@@ -45,6 +45,7 @@ struct listnode
     for (node = (list)->prev; node != (list); node = node->prev)
 
 void list_init(struct listnode *list);
+int node_in_list(struct listnode *head, struct listnode *item);
 void list_add_tail(struct listnode *list, struct listnode *item);
 void list_remove(struct listnode *item);
 

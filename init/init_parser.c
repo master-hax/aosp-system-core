@@ -583,7 +583,18 @@ void queue_builtin_action(int (*func)(int nargs, char **args), char *name)
 
 void action_add_queue_tail(struct action *act)
 {
-    list_add_tail(&action_queue, &act->qlist);
+    /*
+     * Make sure not insert same node twice
+     * Which will make the queue as below:
+     * Head->next = Tail
+     * Head->prev = Tail
+     * Tail->next = Tail
+     * Tail->prev = Tail
+     * For the above case, action_remove_queue_head
+     * can not remove the head
+     */
+    if (!node_in_list(&action_queue, &act->qlist))
+        list_add_tail(&action_queue, &act->qlist);
 }
 
 struct action *action_remove_queue_head(void)

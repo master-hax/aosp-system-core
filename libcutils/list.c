@@ -22,6 +22,23 @@ void list_init(struct listnode *node)
     node->prev = node;
 }
 
+int node_in_list(struct listnode *head, struct listnode *item)
+{
+    struct listnode *temp = head;
+
+    if ( !head || !item)
+        return 0;
+
+    do {
+        if (temp == item)
+            return 1;
+        temp = temp->next;
+    }
+    while (temp != head);
+
+    return 0;
+}
+
 void list_add_tail(struct listnode *head, struct listnode *item)
 {
     item->next = head;
