@@ -24,7 +24,7 @@
 #include <utime.h>
 
 #include <errno.h>
-
+#include <private/android_filesystem_config.h>
 #include "sysdeps.h"
 
 #define TRACE_TAG  TRACE_SYNC
@@ -35,14 +35,18 @@ static int mkdirs(char *name)
 {
     int ret;
     char *x = name + 1;
+    unsigned uid, gid;
+    uint64_t cap;
+    mode_t mode = 0;
 
     if(name[0] != '/') return -1;
 
+    fs_config(x, 1, &uid, &gid, (unsigned *)&mode, &cap);
     for(;;) {
         x = adb_dirstart(x);
         if(x == 0) return 0;
         *x = 0;
-        ret = adb_mkdir(name, 0775);
+        ret = adb_mkdir(name, mode);
         if((ret < 0) && (errno != EEXIST)) {
             D("mkdir(\"%s\") -> %s\n", name, strerror(errno));
             *x = '/';
@@ -306,10 +310,14 @@ static int do_send(int s, char *path, char *buffer)
 #else
     {
 #endif
-        /* copy user permission bits to "group" and "other" permissions */
-        mode |= ((mode >> 3) & 0070);
-        mode |= ((mode >> 3) & 0007);
+        unsigned uid, gid;
+        uint64_t cap;
 
+        tmp = path;
+        if(*tmp == '/') {
+            tmp++;
+        }
+        fs_config(tmp, 0, &uid, &gid, (unsigned *) &mode, &cap);
         ret = handle_send_file(s, path, mode, buffer);
     }
 
