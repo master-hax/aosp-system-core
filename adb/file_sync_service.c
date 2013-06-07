@@ -22,32 +22,48 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <utime.h>
+#include <unistd.h>
 
 #include <errno.h>
-
+#include <private/android_filesystem_config.h>
+#include <selinux/android.h>
 #include "sysdeps.h"
 
 #define TRACE_TAG  TRACE_SYNC
 #include "adb.h"
 #include "file_sync_service.h"
 
+static bool is_on_system(const char *name) {
+    const char *SYSTEM = "/system/";
+    return (strncmp(SYSTEM, name, strlen(SYSTEM)) == 0);
+}
+
 static int mkdirs(char *name)
 {
     int ret;
     char *x = name + 1;
+    unsigned uid = 0;
+    unsigned gid = 0;
+    unsigned mode = 0775;
+    uint64_t cap = 0;
+    const char *SYSTEM = "/system/";
 
     if(name[0] != '/') return -1;
 
+    if (is_on_system(name)) {
+        fs_config(x, 1, &uid, &gid, &mode, &cap);
+    }
     for(;;) {
         x = adb_dirstart(x);
         if(x == 0) return 0;
         *x = 0;
-        ret = adb_mkdir(name, 0775);
+        ret = adb_mkdir(name, mode);
         if((ret < 0) && (errno != EEXIST)) {
             D("mkdir(\"%s\") -> %s\n", name, strerror(errno));
             *x = '/';
             return ret;
         }
+        selinux_android_restorecon(name);
         *x++ = '/';
     }
     return 0;
@@ -149,7 +165,8 @@ static int fail_errno(int s)
     return fail_message(s, strerror(errno));
 }
 
-static int handle_send_file(int s, char *path, mode_t mode, char *buffer)
+static int handle_send_file(int s, char *path, unsigned uid, unsigned gid,
+        mode_t mode, char *buffer)
 {
     syncmsg msg;
     unsigned int timestamp = 0;
@@ -167,6 +184,11 @@ static int handle_send_file(int s, char *path, mode_t mode, char *buffer)
         if(fail_errno(s))
             return -1;
         fd = -1;
+    } else {
+        if(fchown(fd, uid, gid) != 0) {
+            fail_errno(s);
+            errno = 0;
+        }
     }
 
     for(;;) {
@@ -206,6 +228,7 @@ static int handle_send_file(int s, char *path, mode_t mode, char *buffer)
     if(fd >= 0) {
         struct utimbuf u;
         adb_close(fd);
+        selinux_android_restorecon(path);
         u.actime = timestamp;
         u.modtime = timestamp;
         utime(path, &u);
@@ -277,7 +300,7 @@ static int handle_send_link(int s, char *path, char *buffer)
 static int do_send(int s, char *path, char *buffer)
 {
     char *tmp;
-    mode_t mode;
+    unsigned mode;
     int is_link, ret;
 
     tmp = strrchr(path,',');
@@ -288,7 +311,7 @@ static int do_send(int s, char *path, char *buffer)
 #ifndef HAVE_SYMLINKS
         is_link = 0;
 #else
-        is_link = S_ISLNK(mode);
+        is_link = S_ISLNK((mode_t) mode);
 #endif
         mode &= 0777;
     }
@@ -311,7 +334,18 @@ static int do_send(int s, char *path, char *buffer)
         mode |= ((mode >> 3) & 0070);
         mode |= ((mode >> 3) & 0007);
 
-        ret = handle_send_file(s, path, mode, buffer);
+        unsigned uid = 0;
+        unsigned gid = 0;
+        uint64_t cap = 0;
+
+        tmp = path;
+        if(*tmp == '/') {
+            tmp++;
+        }
+        if (is_on_system(path)) {
+            fs_config(tmp, 0, &uid, &gid, &mode, &cap);
+        }
+        ret = handle_send_file(s, path, uid, gid, mode, buffer);
     }
 
     return ret;
