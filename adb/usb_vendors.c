@@ -143,7 +143,8 @@
 #define VENDOR_ID_BYD           0x19D1
 // OUYA's USB Vendor ID
 #define VENDOR_ID_OUYA          0x2836
-
+// Qisda's USB Vendor ID
+#define VENDOR_ID_QISDA         0x1D45
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
@@ -201,6 +202,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_XIAOMI,
     VENDOR_ID_BYD,
     VENDOR_ID_OUYA,
+    VENDOR_ID_QISDA,
 };
 
 #define BUILT_IN_VENDOR_COUNT    (sizeof(builtInVendorIds)/sizeof(builtInVendorIds[0]))
