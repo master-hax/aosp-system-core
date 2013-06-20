@@ -36,27 +36,6 @@
  */
 int socket_network_client(const char *host, int port, int type)
 {
-    struct hostent *hp;
-    struct sockaddr_in addr;
-    int s;
-
-    hp = gethostbyname(host);
-    if(hp == 0) return -1;
-    
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = hp->h_addrtype;
-    addr.sin_port = htons(port);
-    memcpy(&addr.sin_addr, hp->h_addr, hp->h_length);
-
-    s = socket(hp->h_addrtype, type, 0);
-    if(s < 0) return -1;
-
-    if(connect(s, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
-        close(s);
-        return -1;
-    }
-
-    return s;
-
+    return socket_network_client_timeout(host, port, type, 0);
 }
 
