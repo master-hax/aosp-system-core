@@ -230,7 +230,12 @@ enum {
      * Boolean that indicates whether the consumer is running more than
      * one buffer behind the producer.
      */
-    NATIVE_WINDOW_CONSUMER_RUNNING_BEHIND = 9
+    NATIVE_WINDOW_CONSUMER_RUNNING_BEHIND = 9,
+
+    /*
+     * The number of frames been dropped in Surface
+     */
+    NATIVE_WINDOW_GET_FRAME_LOST = 10,
 };
 
 /* Valid operations for the (*perform)() hook.
