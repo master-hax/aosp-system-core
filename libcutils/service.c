@@ -26,14 +26,14 @@
 
 #include "cutils/service.h"
 
-#define USEC_PER_MSEC 1000
+#define USEC_PER_MSEC 1000UL
 #define POLL_PERIOD_USEC (100 * USEC_PER_MSEC)
 
-#define START_PROPERTY_NAME    "ctl.start"
-#define STOP_PROPERTY_NAME     "ctl.stop"
-#define STATUS_PROPERTY_PREFIX "init.svc."
-#define STARTED_RESULT_VALUE   "running"
-#define STOPPED_RESULT_VALUE   "stopped"
+#define SERVICE_CMD_START              "ctl.start"
+#define SERVICE_CMD_STOP               "ctl.stop"
+#define SERVICE_STATUS_PROPERTY_PREFIX "init.svc."
+#define SERVICE_STATUS_RUNNING         "running"
+#define SERVICE_STATUS_STOPPED         "stopped"
 
 typedef bool (*predicate_t)(const char *service_name);
 
@@ -47,20 +47,24 @@ bool service_start(const char *service_name, const char *args,
         unsigned long timeout_ms) {
     char start_command[PROPERTY_VALUE_MAX];
     const size_t len = sizeof(start_command);
+    size_t ret;
 
     if (args != NULL)
-        snprintf(start_command, len, "%s:%s", service_name, args);
+        ret = snprintf(start_command, len, "%s:%s", service_name, args);
     else
-        strlcpy(start_command, service_name, len);
+        ret = strlcpy(start_command, service_name, len);
 
-    property_set(START_PROPERTY_NAME, start_command);
+    if (ret >= len)
+        return false;
+
+    property_set(SERVICE_CMD_START, start_command);
 
     return service_wait_for_predicate(service_name, service_is_running,
             timeout_ms);
 }
 
 bool service_stop(const char *service_name, unsigned long timeout_ms) {
-    property_set(STOP_PROPERTY_NAME, service_name);
+    property_set(SERVICE_CMD_STOP, service_name);
 
     return service_wait_for_predicate(service_name, service_is_stopped,
             timeout_ms);
@@ -70,14 +74,14 @@ bool service_is_running(const char *service_name) {
     char status[PROPERTY_VALUE_MAX];
 
     return service_get_status(service_name, status, sizeof(status)) &&
-            !strcmp(status, STARTED_RESULT_VALUE);
+            !strcmp(status, SERVICE_STATUS_RUNNING);
 }
 
 bool service_is_stopped(const char *service_name) {
     char status[PROPERTY_VALUE_MAX];
 
     return service_get_status(service_name, status, sizeof(status)) &&
-            !strcmp(status, STOPPED_RESULT_VALUE);
+            !strcmp(status, SERVICE_STATUS_STOPPED);
 }
 
 static bool service_wait_for_predicate(const char *service_name,
@@ -106,13 +110,14 @@ static bool service_get_status(const char *service_name, char status[],
     char status_property_name[PROPERTY_KEY_MAX];
     char status_value[PROPERTY_VALUE_MAX];
 
-    snprintf(status_property_name, sizeof(status_property_name), "%s%s",
-            STATUS_PROPERTY_PREFIX, service_name);
+    int len = snprintf(status_property_name, sizeof(status_property_name),
+            "%s%s", SERVICE_STATUS_PROPERTY_PREFIX, service_name);
 
-    if (property_get(status_property_name, status_value, NULL)) {
-        strlcpy(status, status_value, length);
-        return true;
-    }
+    if (len >= sizeof(status_property_name))
+        return false;
+
+    if (property_get(status_property_name, status_value, NULL))
+        return strlcpy(status, status_value, length) < length;
 
     return false;
 }
