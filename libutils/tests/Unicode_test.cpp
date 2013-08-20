@@ -112,4 +112,44 @@ TEST_F(UnicodeTest, UTF8toUTF16Normal) {
             << "should be NULL terminated";
 }
 
+TEST_F(UnicodeTest, UTF16toUTF8Bounds) {
+     uint16_t invalid[] = {
+      0xd97f, 0x007a
+    };
+    const int len = 10;
+    char output1[len];
+    char output2[len];
+    ssize_t outlen = 0;
+    ssize_t measured = utf16_to_utf8_length(invalid, 2);
+
+    if (measured >= 0) {
+        memset(output1, 0x55, sizeof(output1));
+        memset(output2, 0xAA, sizeof(output2));
+
+        utf16_to_utf8(invalid, 2, output1);
+        utf16_to_utf8(invalid, 2, output2);
+
+        // output1 and output2 will be equal for all
+        // positions utf16_to_utf8 has written to
+
+        ssize_t written = 0;
+        for (int i = 0; i < len; i++) {
+            if (output1[i] == output2[i])
+              written++;
+        }
+
+        EXPECT_EQ(measured+1, written)
+                << "utf16_to_utf8 should write exactly measured+1 bytes";
+    }
+}
+
+TEST_F(UnicodeTest, UTF16toUTF8InvalidSurrogate) {
+     uint16_t invalid[] = {
+      0xd97f, 0x007a
+    };
+    ssize_t measured = utf16_to_utf8_length(invalid, 2);
+    EXPECT_EQ(-1, measured)
+            << "Measured invalid UTF-16 should return -1";
+}
+
 }

@@ -412,11 +412,16 @@ ssize_t utf16_to_utf8_length(const char16_t *src, size_t src_len)
     size_t ret = 0;
     const char16_t* const end = src + src_len;
     while (src < end) {
-        if ((*src & 0xFC00) == 0xD800 && (src + 1) < end
-                && (*++src & 0xFC00) == 0xDC00) {
-            // surrogate pairs are always 4 bytes.
-            ret += 4;
-            src++;
+
+        if ((*src & 0xFC00) == 0xD800) {
+            if ((src + 1) < end && (*++src & 0xFC00) == 0xDC00) {
+                // surrogate pairs are always 4 bytes.
+                ret += 4;
+                src++;
+            } else {
+                // invalid surrogate pair
+                return -1;
+            }
         } else {
             ret += utf32_codepoint_utf8_length((char32_t) *src++);
         }

@@ -103,7 +103,8 @@ int32_t utf32_from_utf8_at(const char *src, size_t src_len, size_t index, size_t
 
 
 /**
- * Returns the UTF-8 length of UTF-16 string "src".
+ * Returns the UTF-8 length of UTF-16 string "src". If the string is invalid
+ * such as containing invalid surrogate pairs, -1 will be returned.
  */
 ssize_t utf16_to_utf8_length(const char16_t *src, size_t src_len);
 
