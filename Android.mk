@@ -15,4 +15,6 @@
 #
 LOCAL_PATH := $(my-dir)
 
+# test ignore
+
 include $(call first-makefiles-under,$(LOCAL_PATH))
