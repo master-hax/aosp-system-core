@@ -22,4 +22,7 @@
 int ueventd_parse_config_file(const char *fn);
 void set_device_permission(int nargs, char **args);
 
+void set_inet_args(int nargs, char **args);
+void set_dev_args(int nargs, char **args);
+
 #endif

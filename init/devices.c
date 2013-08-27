@@ -21,6 +21,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <linux/sockios.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -56,18 +60,6 @@ extern struct selabel_handle *sehandle;
 
 static int device_fd = -1;
 
-struct uevent {
-    const char *action;
-    const char *path;
-    const char *subsystem;
-    const char *firmware;
-    const char *partition_name;
-    const char *device_name;
-    int partition_num;
-    int major;
-    int minor;
-};
-
 struct perms_ {
     char *name;
     char *attr;
@@ -75,6 +67,19 @@ struct perms_ {
     unsigned int uid;
     unsigned int gid;
     unsigned short prefix;
+};
+
+struct inet_name_ {
+    char *net_link;
+    char *if_name;
+    char *target_name;
+};
+
+struct dev_name_ {
+    unsigned int vid;
+    unsigned int pid;
+    char *dev_if_name;
+    char *dev_target_name;
 };
 
 struct perm_node {
@@ -89,8 +94,21 @@ struct platform_node {
     struct listnode list;
 };
 
+
+struct inet_node {
+    struct inet_name_ inet_rename;
+    struct listnode plist;
+};
+
+struct dev_node {
+    struct dev_name_ dev_rename;
+    struct listnode plist;
+};
+
 static list_declare(sys_perms);
 static list_declare(dev_perms);
+static list_declare(dev_names);
+static list_declare(inet_names);
 static list_declare(platform_names);
 
 int add_dev_perms(const char *name, const char *attr,
@@ -121,6 +139,264 @@ int add_dev_perms(const char *name, const char *attr,
         list_add_tail(&dev_perms, &node->plist);
 
     return 0;
+}
+
+int add_inet_args(char *net_link, char *if_name, char *target_name)
+{
+    struct inet_node *node = calloc(1, sizeof(*node));
+
+    NOTICE("%s: Net link:%s, If name:%s, New inet name:%s",
+          __func__, net_link, if_name, target_name);
+
+    if (!node)
+        goto Error;
+
+    node->inet_rename.net_link = strdup(net_link);
+    if (!node->inet_rename.net_link)
+        goto Error;
+
+    node->inet_rename.if_name = strdup(if_name);
+    if (!node->inet_rename.if_name)
+        goto Error;
+
+    node->inet_rename.target_name = strdup(target_name);
+    if (!node->inet_rename.target_name)
+        goto Error;
+
+    list_add_tail(&inet_names, &node->plist);
+    return 0;
+
+Error:
+    if (node) {
+        free(node->inet_rename.net_link);
+        free(node->inet_rename.if_name);
+        free(node);
+    }
+    return -ENOMEM;
+}
+
+static char *get_inet_name(const char *inet_name, struct uevent *uevent)
+{
+    struct listnode *node;
+    struct inet_node *inetnode;
+    struct inet_name_ *names;
+    /* Path to inet address */
+    char address_path[MAX_DEV_PATH];
+    /* inet address */
+    char *address = NULL;
+    /* To avoid unnecessary addr checking */
+    bool addr_check = false;
+    unsigned int sz = 0;
+    int fd = 0;
+    int lennetlink=0;
+
+    if (!inet_name) {
+        ERROR("%s:ERROR network interface name is NULL.", __func__);
+        return NULL;
+    }
+    NOTICE("%s:Checking inet:%s", __func__, inet_name);
+
+    if (!uevent || !uevent->path) {
+        ERROR("%s:ERROR Uevent is NULL.", __func__);
+        return NULL;
+    }
+
+    list_for_each(node, &inet_names) {
+        inetnode = node_to_item(node, struct inet_node, plist);
+        names = &inetnode->inet_rename;
+
+        /* Check inet name with target name */
+        if (!strcmp(inet_name, names->target_name)) {
+            ERROR("%s:Original inet name:%s is the same as target...skip...",
+                  __func__, inet_name);
+            /* No need to continue parsing as target is same as original */
+            continue;
+        }
+
+        /* Check inetnode's inet name */
+        if (!strcmp(inet_name, names->if_name)) {
+            NOTICE("%s:RULE ==> [%s, %s] Target:%s",
+                   __func__, names->net_link,
+                   names->if_name, names->target_name);
+            /* Check wildcard */
+            if (strncmp(names->net_link, "*", 1)) {
+                /* Retrieve inet address */
+                if (!addr_check) {
+                    snprintf(address_path, sizeof(address_path),
+                             "/sys%s/address", uevent->path);
+                    NOTICE("%s: Read net link addr at:%s",
+                          __func__, address_path);
+                    address = read_file(address_path, &sz);
+                    addr_check = true;
+                }
+                if (address) {
+                    lennetlink = strlen(names->net_link);
+                    if (!strncmp(names->net_link, address, lennetlink)) {
+                        NOTICE("%s: %s net_link addr FOUND",
+                              __func__, address);
+                        return names->target_name;
+                    } else {
+                        ERROR("%s: %s net_link addr NOT FOUND",
+                              __func__, names->net_link);
+                    }
+                } else {
+                    ERROR("%s: ERROR: Net link addr is NULL for inet name:%s",
+                          __func__, inet_name);
+                }
+            }
+            else {
+                NOTICE("%s:WILDCARD (*) FOR net_link", __func__);
+                return names->target_name;
+            }
+        }
+    }
+    return NULL;
+}
+
+int add_dev_args(unsigned int vid, unsigned int pid, char *dev_name, char *target_name)
+{
+    struct dev_node *node = calloc(1, sizeof(*node));
+
+    NOTICE("%s: Vendor Id:%d, Product Id:%d, Device name:%s, New name:%s",
+          __func__, vid, pid, dev_name, target_name);
+
+    if (!node)
+        goto Error;
+
+    node->dev_rename.dev_if_name = strdup(dev_name);
+    if (!node->dev_rename.dev_if_name)
+        goto Error;
+
+    node->dev_rename.dev_target_name = strdup(target_name);
+    if (!node->dev_rename.dev_target_name)
+        goto Error;
+
+    node->dev_rename.vid = vid;
+    node->dev_rename.pid = pid;
+
+    list_add_tail(&dev_names, &node->plist);
+    return 0;
+
+Error:
+    if (node) {
+        free(node->dev_rename.dev_if_name);
+        free(node);
+    }
+    return -ENOMEM;
+}
+
+static char *get_dev_name(const char *path, struct uevent *uevent)
+{
+    struct listnode *node;
+    struct dev_node *devnode;
+    struct dev_name_ *names;
+    unsigned int vid = 0;
+    unsigned int pid = 0;
+    char dev_path[128];
+    char path_ids[MAX_DEV_PATH];
+    unsigned int sz = 0;
+    bool modalias_check = false;
+    const char *modalias = NULL;
+    char* data = NULL;
+
+    if ((!uevent) || (!uevent->path))
+        return path;
+
+    if (uevent->modalias) {
+            NOTICE("%s:Found Modalias:%s for Dev:%s",
+              __func__, uevent->modalias, path);
+            modalias = uevent->modalias;
+    }
+
+    list_for_each(node, &dev_names) {
+        devnode = node_to_item(node, struct dev_node, plist);
+        names = &devnode->dev_rename;
+
+        /* Find out associated device */
+        snprintf(dev_path, sizeof(dev_path),"/dev/%s", names->dev_if_name);
+        if (strcmp(path, dev_path))
+                continue;
+
+        /* Check dev name with target name */
+        if (!strcmp(dev_path, names->dev_target_name)) {
+            ERROR("%s:Dev name:%s is the same as target name...skip...",
+                  __func__, dev_path);
+            /* No need to continue parsing as target is same as original */
+            continue;
+        }
+
+        NOTICE("%s:Checking %s, looking for vid:%d, pid:%d...",
+              __func__, dev_path, names->vid, names->pid);
+
+        /* Retrieve device info */
+        if (!modalias_check) {
+            if (!modalias) {
+                /* Modalias not available in uevent */
+                NOTICE("%s:Retrieve Modalias from sysfs for dev:%s",
+                       __func__, path);
+                snprintf(path_ids, sizeof(path_ids),
+                         "/sys%s/device/modalias", uevent->path);
+                NOTICE("%s:Modalias sysfs path:%s", __func__, path_ids);
+                modalias = read_file(path_ids, &sz);
+                if (sz == 0) {
+                    ERROR("%s: ERROR reading modalias file, err:%d",
+                          __func__, errno);
+                    /* Not a problem if wildcard selected for vid and pid */
+                } else {
+                    NOTICE("%s:Found Modalias:%s, sz:%d",
+                          __func__, modalias, sz);
+                }
+            }
+
+            if (modalias) {
+                /* Retrieve Vendor and Product Ids */
+                data = strchr(modalias, 'v');
+                if (data) {
+                    sscanf(data,"v%dp%d", &vid, &pid);
+                }
+                else {
+                    ERROR("%s:Cannot find Vendor ID in %s",
+                          __func__, modalias);
+                    modalias = NULL;
+                }
+            }
+            modalias_check = true;
+        }
+
+        /* names->vid == 0 means wildcard */
+        if (names->vid) {
+            /* Search for Vendor Id */
+            if (modalias) {
+                if (names->vid != vid) {
+                    ERROR("%s:WRONG ID VENDOR: vid:%d vs %d",
+                          __func__, names->vid, vid);
+                    continue;
+                }
+            } else {
+                ERROR("%s:No correct Modalias FOUND!\n", __func__);
+                continue;
+            }
+        }
+        /* names->pid == 0 means wildcard */
+        if (names->pid) {
+            /* Search for Product Id */
+            if (modalias) {
+                if (names->pid != pid) {
+                    ERROR("%s:WRONG ID PRODUCT: pid:%d vs %d",
+                          __func__, names->pid, pid);
+                    continue;
+                }
+            } else {
+                ERROR("%s:No correct Modalias FOUND!\n", __func__);
+                continue;
+            }
+        }
+        NOTICE("%s:RENAMING DEVICE %s [vid:%d, pid:%d, New dev name:%s]",
+              __func__, path, vid, pid, names->dev_target_name);
+        return names->dev_target_name;
+    }
+
+    return path;
 }
 
 void fixup_sys_perms(const char *upath)
@@ -203,11 +479,15 @@ static void make_device(struct uevent *uevent,
     mode_t mode;
     dev_t dev;
     char *secontext = NULL;
+    char *dev_name = NULL;
 
     mode = get_device_perm(path, &uid, &gid) | (block ? S_IFBLK : S_IFCHR);
 
+    /* Check if dev name must be updated */
+    dev_name = get_dev_name(path, uevent);
+
     if (sehandle) {
-        selabel_lookup(sehandle, &secontext, path, mode);
+        selabel_lookup(sehandle, &secontext, dev_name, mode);
         setfscreatecon(secontext);
     }
 
@@ -218,8 +498,10 @@ static void make_device(struct uevent *uevent,
      * racy. Fixing the gid race at least fixed the issue with system_server
      * opening dynamic input devices under the AID_INPUT gid. */
     setegid(gid);
-    mknod(path, mode, dev);
-    chown(path, uid, -1);
+
+    mknod(dev_name, mode, dev);
+    chown(dev_name, uid, -1);
+
     setegid(AID_ROOT);
 
     if (secontext) {
@@ -664,6 +946,67 @@ static void handle_device_event(struct uevent *uevent)
     }
 }
 
+static void handle_inet_event(struct uevent *uevent)
+{
+    char *inet_name = NULL;
+    char *name = NULL;
+    struct ifreq ifr;
+    int fd;
+    int err=0;
+
+    if (!uevent) {
+        ERROR("%s:ERROR Uevent is NULL", __func__);
+        return;
+    }
+
+    if(!strncmp(uevent->subsystem, "net", 3))
+    {
+        NOTICE("%s: FOUND NET SUBSYSTEM, Path:%s",
+               __func__, uevent->path);
+        NOTICE("%s: FOUND NET SUBSYSTEM, Action:%s",
+               __func__, uevent->action);
+        NOTICE("%s: FOUND NET SUBSYSTEM, Major:%d, Minor:%d",
+               __func__, uevent->major, uevent->minor);
+
+        if (!strcmp(uevent->action,"add")) {
+            /* do we have a name? */
+            name = strrchr(uevent->path, '/');
+            if(!name) {
+                ERROR("%s:ERROR NO INET NAME.", __func__);
+                return;
+            }
+            name++;
+
+            /* Check if inet name must be updated */
+            inet_name = get_inet_name(name, uevent);
+            if (inet_name) {
+                /* Rename Net Interface */
+                NOTICE("%s:Renaming %s net interface with new name:%s",
+                       __func__, name, inet_name);
+                if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+                    ERROR("%s:ERROR socket(PF_INET, SOCK_DGRAM, 0)",
+                          __func__);
+                    return;
+                }
+
+                strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name));
+                strncpy(ifr.ifr_newname, inet_name, sizeof(ifr.ifr_newname));
+                NOTICE("%s:Calling IOTCL SIOCSIFNAME, %s ==> %s",
+                       __func__, ifr.ifr_name, ifr.ifr_newname);
+                if ((err = ioctl(fd, SIOCSIFNAME, &ifr))==-1) {
+                    ERROR("%s:ERROR ioctl(SIOCSIFNAME), err:0x%X",
+                          __func__, errno);
+                    return;
+                }
+                NOTICE("%s:RENAMING SUCCESS !", __func__);
+            } else {
+                ERROR("%s:No Renaming for %s net interface",
+                      __func__, name);
+            }
+        }
+    }
+}
+
 static int load_firmware(int fw_fd, int loading_fd, int data_fd)
 {
     struct stat st;
@@ -804,6 +1147,8 @@ static void handle_firmware_event(struct uevent *uevent)
 {
     pid_t pid;
     int ret;
+
+    handle_inet_event(uevent);
 
     if(strcmp(uevent->subsystem, "firmware"))
         return;

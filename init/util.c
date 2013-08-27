@@ -152,6 +152,7 @@ void *read_file(const char *fn, unsigned *_sz)
     int sz;
     int fd;
     struct stat sb;
+    int nb_read = 0;
 
     data = 0;
     fd = open(fn, O_RDONLY);
@@ -176,16 +177,22 @@ void *read_file(const char *fn, unsigned *_sz)
     data = (char*) malloc(sz + 2);
     if(data == 0) goto oops;
 
-    if(read(fd, data, sz) != sz) goto oops;
+    nb_read = read(fd, data, sz);
+    if ((nb_read == 0) || (nb_read > sz)) goto oops;
+
     close(fd);
-    data[sz] = '\n';
-    data[sz+1] = 0;
-    if(_sz) *_sz = sz;
+    data[nb_read] = '\n';
+    data[nb_read+1] = '\0';
+    if(_sz) *_sz = nb_read;
+
+    NOTICE("%s: RETURNING (len:%d):%s\n",
+          __func__, nb_read, data);
     return data;
 
 oops:
     close(fd);
     if(data != 0) free(data);
+    ERROR("%s: ERROR RETURNING NULL\n", __func__);
     return 0;
 }
 

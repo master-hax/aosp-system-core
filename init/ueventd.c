@@ -180,3 +180,164 @@ void set_device_permission(int nargs, char **args)
     add_dev_perms(name, attr, perm, uid, gid, prefix);
     free(tmp);
 }
+
+/**
+ * args[0] = inet:[<inet_link>;*]/<if_name>
+ * args[1] = <target_name>
+ *
+ */
+void set_inet_args(int nargs, char **args)
+{
+    char *net_link;
+    char *if_name;
+    char *target_name;
+    unsigned int len_netlink = 0;
+
+    if (nargs <= 1) {
+        ERROR("%s:ERROR: Wrong number of args(=%d), 2 arguments needed:",
+              __func__, nargs);
+        ERROR("args[0] = inet:[<inet_link>;*]/<if_name>");
+        ERROR("args[1] = <target_name>");
+        return;
+    }
+
+    if (args[0][0] == '#') {
+        NOTICE("NOTICE: inet rename line commented OUT:'%s'\n", args[0]);
+        return;
+    }
+
+    /* Need to split string args[0] at '/' pos */
+    if_name = strchr(args[0], '/');
+    if (!if_name) {
+        ERROR("ERROR: Wrong string format for inet:%s\n", args[0]);
+        return;
+    }
+    net_link = args[0] + 5;
+
+    if (strlen(if_name) <= 1) {
+        ERROR("ERROR: if_name is missing:%s\n", args[0]);
+        return;
+    }
+
+    /* Find length of net_link string */
+    len_netlink = if_name-net_link;
+    net_link[len_netlink] = '\0';
+
+    if (strlen(net_link) == 0) {
+        ERROR("ERROR: Net_link is missing:%s\n", args[0]);
+        return;
+    }
+
+    /* Skip '/' char */
+    if_name++;
+
+    target_name = args[1];
+    if (strlen(target_name) == 0) {
+        ERROR("ERROR: Target_name is missing:%s\n", args[0]);
+        return;
+    }
+
+    add_inet_args(net_link, if_name, target_name);
+}
+
+/**
+ * args[0] = dev:[<vendorId>;*]/[<productId>;*]/<dev_name>
+ * args[1] = <target_name>
+ *
+ */
+void set_dev_args(int nargs, char **args)
+{
+    char *curptr = NULL;
+    char *endptr = NULL;
+    unsigned int vid;
+    unsigned int pid;
+    char *dev_name;
+    char *target_name;
+    unsigned int len_field = 0;
+
+    if (nargs <= 1) {
+        ERROR("%s:ERROR: Wrong number of args(=%d), 2 arguments needed:",
+              __func__, nargs);
+        ERROR("args[0] = dev:[<vendorId>;*]/[<productId>;*]/<dev_name>");
+        ERROR("args[1] = <target_name>");
+        return;
+    }
+
+    if (args[0][0] == '#') {
+        NOTICE("NOTICE: dev rename line commented OUT:'%s'\n", args[0]);
+        return;
+    }
+
+    /* Need to split string args[0] at '/' pos */
+    dev_name = strchr(args[0], '/');
+    if (!dev_name) {
+        ERROR("ERROR: Wrong string format for dev:'%s'\n", args[0]);
+        return;
+    }
+
+    curptr = args[0] + 4;
+    if (strlen(curptr) < 1) {
+        ERROR("ERROR: Vendor ID is missing:%s\n", args[0]);
+        return;
+    }
+
+    /* Vendor ID */
+    vid = strtol(curptr, &endptr, 10);
+    if ((!endptr) || strlen(endptr)<=1) {
+        ERROR("ERROR: Wrong string format for dev (vid:%d):'%s'\n", vid, args[0]);
+        return;
+    }
+
+    if (vid == 0) {
+        /* Wildcard? */
+        if (endptr[0] != '*') {
+            ERROR("ERROR: Wrong format, no wildcard, for dev (vid):'%s'\n", args[0]);
+            return;
+        }
+        /* vid is a wildcard */
+        NOTICE("NOTICE: vid is Wildcard\n");
+        /* Skip '*' character */
+        endptr++;
+    }
+
+    /* Skip '/' character */
+    dev_name++;
+    curptr = dev_name;
+    dev_name = strchr(dev_name, '/');
+    if (!dev_name) {
+        ERROR("ERROR: Product ID is missing:'%s'\n", args[0]);
+        return;
+    }
+
+    /* Product ID */
+    pid = strtol(curptr, &endptr, 10);
+    if ((!endptr) || strlen(endptr)<=1) {
+        ERROR("ERROR: Wrong string format for dev (pid:%d):'%s'\n", pid, args[0]);
+        return;
+    }
+
+    if (pid == 0) {
+        /* Wildcard? */
+        if (endptr[0] != '*') {
+            ERROR("ERROR: Wrong format, no wildcard, for dev (pid):'%s'\n", args[0]);
+            return;
+        }
+        /* pid is a wildcard */
+        NOTICE("NOTICE: pid is Wildcard\n");
+        /* Skip '*' character */
+        endptr++;
+    }
+    /* Skip '/' character */
+    dev_name++;
+    if ((args[0] + strlen(args[0])) < dev_name) {
+        ERROR("ERROR: Dev name is missing:'%s'\n", args[0]);
+        return;
+    }
+
+    target_name = args[1];
+    if (strlen(target_name) == 0) {
+        ERROR("ERROR: Target name is missing:%s\n", args[0]);
+        return;
+    }
+    add_dev_args(vid, pid, dev_name, target_name);
+}
