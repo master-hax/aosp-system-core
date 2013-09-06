@@ -11,7 +11,8 @@ AUDITD_MAX_LOG_FILE_SIZEKB ?= 100
 LOCAL_SRC_FILES:= \
 	auditd.c \
 	libaudit.c \
-	audit_log.c
+	audit_log.c \
+	audit_rules.c
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \

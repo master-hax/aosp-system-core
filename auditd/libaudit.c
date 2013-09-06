@@ -137,7 +137,7 @@ static int get_ack(int fd, int16_t seq)
  * @return
  *  This function returns a positive sequence number on success, else -errno.
  */
-static int audit_send(int fd, int type, const void *data, unsigned int size)
+int audit_send(int fd, int type, const void *data, unsigned int size)
 {
     int rc;
     static int16_t sequence = 0;
@@ -220,6 +220,87 @@ out:
     return rc;
 }
 
+int audit_update_watch_perms(struct audit_rule_data *rule, int perms)
+{
+    uint32_t i;
+
+    if (rule == NULL) {
+         return -EINVAL;
+    }
+
+    for (i = 0; i < rule->field_count; i++) {
+        if (rule->fields[i] == AUDIT_PERM) {
+            rule->values[i] = perms;
+            break;
+        }
+    }
+
+    if (rule->fields[i] == AUDIT_PERM) {
+        return 0;
+    }
+
+    if (rule->field_count > AUDIT_MAX_FIELDS - 1) {
+        return -2;
+    }
+
+    rule->fields[rule->field_count] = AUDIT_PERM;
+    rule->fieldflags[rule->field_count] = AUDIT_EQUAL;
+    rule->values[rule->field_count] = perms;
+    rule->field_count++;
+
+    return 0;
+}
+
+int audit_add_dir(struct audit_rule_data **rulep, const char *path)
+{
+    int len = strlen(path);
+    struct audit_rule_data *rule;
+
+    if (rulep == NULL) {
+        return -EINVAL;
+    }
+    *rulep = calloc(1, sizeof(*rule) + len);
+    rule = *rulep;
+    if (!rule) {
+        SLOGE("Out of memory");
+        return -1;
+    }
+
+    rule->flags = AUDIT_FILTER_EXIT;
+    rule->action = AUDIT_ALWAYS;
+    rule->field_count = 2;
+
+    rule->mask[0] = ~0;
+    rule->fields[0] = AUDIT_DIR;
+    rule->fieldflags[0] = AUDIT_EQUAL;
+    rule->values[0] = len;
+
+    rule->mask[1] = ~0;
+    rule->fields[1] = AUDIT_PERM;
+    rule->fieldflags[1] = AUDIT_EQUAL;
+    rule->values[1] = AUDIT_PERM_READ | AUDIT_PERM_WRITE |
+                      AUDIT_PERM_EXEC | AUDIT_PERM_ATTR;
+
+    rule->buflen = len;
+    memcpy(&rule->buf[0], path, len);
+
+    return 0;
+}
+
+int audit_set_enabled(int fd, uint32_t state)
+{
+    if (state > AUDIT_LOCKED) {
+        return -1;
+    }
+
+    struct audit_status s;
+    memset(&s, 0, sizeof(s));
+    s.mask = AUDIT_STATUS_ENABLED;
+    s.enabled = state;
+
+    return audit_send(fd, AUDIT_SET, &s, sizeof(s));
+}
+
 int audit_set_pid(int fd, uint32_t pid, rep_wait_t wmode)
 {
     int rc;
@@ -296,12 +377,15 @@ int audit_get_reply(int fd, struct audit_reply *rep, reply_t block, int peek)
          * another error manifests.
          */
         if (len < 0 && errno != EINTR) {
-            if (block == GET_REPLY_NONBLOCKING && errno == EAGAIN) {
-                /* If the request is non blocking and the errno is EAGAIN, just return 0 */
-                return 0;
+            if (errno == EAGAIN) {
+                if (block == GET_REPLY_NONBLOCKING) {
+                    /* If the request is non blocking and the errno is EAGAIN, just return 0 */
+                    return 0;
+                }
+            } else {
+                SLOGE("Error receiving from netlink socket, error: %s", strerror(errno));
+                return -errno;
             }
-            SLOGE("Error receiving from netlink socket, error: %s", strerror(errno));
-            return -errno;
         }
 
         /* 0 or greater indicates success */
