@@ -213,6 +213,30 @@ out:
     return f;
 }
 
+void fs_mgr_free_fstab(struct fstab *fstab)
+{
+    int i;
+
+    for (i = 0; i < fstab->num_entries; i++) {
+        /* Free the pointers return by strdup(3) */
+        free(fstab->recs[i].blk_device);
+        free(fstab->recs[i].mount_point);
+        free(fstab->recs[i].fs_type);
+        free(fstab->recs[i].fs_options);
+        free(fstab->recs[i].key_loc);
+        free(fstab->recs[i].label);
+    }
+
+    /* Free the fstab_recs array created by calloc(3) */
+    free(fstab->recs);
+
+    /* Free the fstab filename */
+    free(fstab->fstab_filename);
+
+    /* Free fstab */
+    free(fstab);
+}
+
 struct fstab *fs_mgr_read_fstab(const char *fstab_path)
 {
     FILE *fstab_file;
@@ -222,7 +246,7 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
     char *line = NULL;
     const char *delim = " \t";
     char *save_ptr, *p;
-    struct fstab *fstab;
+    struct fstab *fstab = NULL;
     struct fstab_rec *recs;
     char *key_loc;
     long long part_length;
@@ -345,33 +369,11 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
     return fstab;
 
 out:
+    fclose(fstab_file);
     free(line);
+    if (fstab)
+        fs_mgr_free_fstab(fstab);
     return 0;
-}
-
-void fs_mgr_free_fstab(struct fstab *fstab)
-{
-    int i;
-
-    for (i = 0; i < fstab->num_entries; i++) {
-        /* Free the pointers return by strdup(3) */
-        free(fstab->recs[i].blk_device);
-        free(fstab->recs[i].mount_point);
-        free(fstab->recs[i].fs_type);
-        free(fstab->recs[i].fs_options);
-        free(fstab->recs[i].key_loc);
-        free(fstab->recs[i].label);
-        i++;
-    }
-
-    /* Free the fstab_recs array created by calloc(3) */
-    free(fstab->recs);
-
-    /* Free the fstab filename */
-    free(fstab->fstab_filename);
-
-    /* Free fstab */
-    free(fstab);
 }
 
 static void check_fs(char *blk_device, char *fs_type, char *target)
