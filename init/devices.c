@@ -192,10 +192,12 @@ static mode_t get_device_perm(const char *path, unsigned *uid, unsigned *gid)
     return 0600;
 }
 
-static void make_device(const char *path,
-                        const char *upath,
-                        int block, int major, int minor)
+static void make_device(struct uevent *uevent,
+                        const char *path,
+                        int block)
 {
+    int major = uevent->major;
+    int minor = uevent->minor;
     unsigned uid;
     unsigned gid;
     mode_t mode;
@@ -477,13 +479,16 @@ static char **parse_platform_block_device(struct uevent *uevent)
     return links;
 }
 
-static void handle_device(const char *action, const char *devpath,
-        const char *path, int block, int major, int minor, char **links)
+static void handle_device(struct uevent *uevent,
+                          const char *devpath,
+                          int block,
+                          char **links)
 {
     int i;
+    const char *action = uevent->action;
 
     if(!strcmp(action, "add")) {
-        make_device(devpath, path, block, major, minor);
+        make_device(uevent, devpath, block);
         if (links) {
             for (i = 0; links[i]; i++)
                 make_link(devpath, links[i]);
@@ -553,8 +558,7 @@ static void handle_block_device_event(struct uevent *uevent)
     if (!strncmp(uevent->path, "/devices/", 9))
         links = parse_platform_block_device(uevent);
 
-    handle_device(uevent->action, devpath, uevent->path, 1,
-            uevent->major, uevent->minor, links);
+    handle_device(uevent, devpath, 1, links);
 }
 
 static void handle_generic_device_event(struct uevent *uevent)
@@ -643,8 +647,7 @@ static void handle_generic_device_event(struct uevent *uevent)
      if (!devpath[0])
          snprintf(devpath, sizeof(devpath), "%s%s", base, name);
 
-     handle_device(uevent->action, devpath, uevent->path, 0,
-             uevent->major, uevent->minor, links);
+     handle_device(uevent, devpath, 0, links);
 }
 
 static void handle_device_event(struct uevent *uevent)
