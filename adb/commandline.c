@@ -173,6 +173,8 @@ void help()
         "  adb wait-for-device          - block until device is online\n"
         "  adb start-server             - ensure that there is a server running\n"
         "  adb kill-server              - kill the server if it is running\n"
+        "  adb restart-server           - kill the server if it is running, then starts it\n"
+        "  adb server-version           - print the version of the server if running, otherwise returns nonzero\n"
         "  adb get-state                - prints: offline | bootloader | device\n"
         "  adb get-serialno             - prints: <serial-number>\n"
         "  adb get-devpath              - prints: <device-path>\n"
@@ -1194,7 +1196,7 @@ top:
         }
     }
 
-    if(!strcmp(argv[0], "kill-server")) {
+    if(!strcmp(argv[0], "kill-server") || !strcmp(argv[0], "stop-server")) {
         int fd;
         fd = _adb_connect("host:kill");
         if(fd == -1) {
@@ -1202,6 +1204,58 @@ top:
             return 1;
         }
         return 0;
+    }
+
+    if(!strcmp(argv[0], "restart-server")) {
+        int fd;
+        fd = _adb_connect("host:kill");
+        if(fd >= 0) {
+            fprintf(stdout,"* waiting for server to stop *\n");
+            /* following wait-for-death logic in adb_connect() */
+            adb_close(fd);
+            adb_sleep_ms(2000);
+        }
+        return adb_connect("host:start-server");
+    }
+
+    if(!strcmp(argv[0], "server-version")) {
+        int fd;
+        fd = _adb_connect("host:version");
+        if(fd == -1) {
+            fprintf(stderr,"* server not running *\n");
+            return -1;
+        }
+
+        char buf[100];
+        int n, version;
+
+        // parse version result as in adb_connect()
+        if(fd >= 0) {
+            if(readx(fd, buf, 4)) {
+                fprintf(stderr, "error: could not read response length from server");
+                adb_close(fd);
+                return -2;
+            }
+
+            buf[4] = 0;
+            n = strtoul(buf, 0, 16);
+            if(n > (int)sizeof(buf) || readx(fd, buf, n)) {
+                fprintf(stderr, "error: could not read response from server");
+                adb_close(fd);
+                return -2;
+            }
+
+            adb_close(fd);
+
+            if (sscanf(buf, "%04x", &version) != 1) {
+                fprintf(stderr, "error: malformed server response\n");
+                return -2;
+            }
+            fprintf(stdout, "server running, version %d\n", version);
+            return 0;
+        }
+        fprintf(stderr, "error: %s\n", adb_error());
+        return -1;
     }
 
     if(!strcmp(argv[0], "sideload")) {
