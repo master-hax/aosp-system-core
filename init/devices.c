@@ -436,9 +436,28 @@ static char **parse_platform_block_device(struct uevent *uevent)
     struct stat info;
 
     pdev = find_platform_device(uevent->path);
-    if (!pdev)
+    if (pdev)
+        device = pdev->name;
+    else if (!strncmp(uevent->path, "/devices/pci", 12)) {
+        char *e;
+        char *n = uevent->path + 9;
+
+        /* We want two levels; the PCI domain and bus number,
+         * and the peripheral ID. So something like:
+         * pci0000:00/0000:00:1f.2 */
+        e = strchr(n, '/');
+        if (!e)
+            return NULL;
+        e = strchr(e + 1, '/');
+        if (!e)
+            return NULL;
+        if (e - n + 1 > sizeof(buf))
+            return NULL;
+        strncpy(buf, n, e - n);
+        buf[e - n] = '\0';
+        device = buf;
+    } else
         return NULL;
-    device = pdev->name;
 
     char **links = malloc(sizeof(char *) * 4);
     if (!links)
