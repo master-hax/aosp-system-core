@@ -1,0 +1,8 @@
+Code-Review+2: Colin Cross <ccross@android.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+1: Bernhard Rosenkränzer <Bernhard.Rosenkranzer@linaro.org>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Wed, 18 Sep 2013 21:38:33 +0000
+Reviewed-on: https://android-review.googlesource.com/47910
+Project: platform/system/core
+Branch: refs/heads/master
