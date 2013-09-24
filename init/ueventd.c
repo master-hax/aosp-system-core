@@ -80,6 +80,7 @@ int ueventd_main(int argc, char **argv)
     get_hardware_name(hardware, &revision);
 
     ueventd_parse_config_file("/ueventd.rc");
+    ueventd_parse_config_file("/ueventd.composite.rc");
 
     snprintf(tmp, sizeof(tmp), "/ueventd.%s.rc", hardware);
     ueventd_parse_config_file(tmp);
