@@ -1,0 +1,12 @@
+Code-Review+2: Colin Cross <ccross@android.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+1: Stephen Smalley <sds@tycho.nsa.gov>
+Code-Review+1: Geremy Condra <gcondra@google.com>
+Code-Review+1: Robert Craig <rpcraig@tycho.ncsc.mil>
+Code-Review+1: William Roberts <wroberts@tresys.com>
+Code-Review+1: Joshua Brindle <brindle@quarksecurity.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Mon, 30 Sep 2013 20:04:11 +0000
+Reviewed-on: https://android-review.googlesource.com/64211
+Project: platform/system/core
+Branch: refs/heads/master
