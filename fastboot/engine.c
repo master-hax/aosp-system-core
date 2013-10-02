@@ -76,6 +76,7 @@ char *mkmsg(const char *fmt, ...)
 #define OP_NOTICE     4
 #define OP_FORMAT     5
 #define OP_DOWNLOAD_SPARSE 6
+#define OP_WAIT_FOR_DISCONNECT 7
 
 typedef struct Action Action;
 
@@ -587,6 +588,11 @@ void fb_queue_notice(const char *notice)
     a->data = (void*) notice;
 }
 
+void fb_queue_wait_for_disconnect(void)
+{
+    queue_action(OP_WAIT_FOR_DISCONNECT, "");
+}
+
 int fb_execute_queue(usb_handle *usb)
 {
     Action *a;
@@ -628,6 +634,8 @@ int fb_execute_queue(usb_handle *usb)
             status = fb_download_data_sparse(usb, a->data);
             status = a->func(a, status, status ? fb_get_error() : "");
             if (status) break;
+        } else if (a->op == OP_WAIT_FOR_DISCONNECT) {
+            usb_wait_for_disconnect(usb);
         } else {
             die("bogus action");
         }

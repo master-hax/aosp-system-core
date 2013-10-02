@@ -50,6 +50,7 @@
 #endif
 #include <asm/byteorder.h>
 
+#include "fastboot.h"
 #include "usb.h"
 
 #define MAX_RETRIES 5
@@ -103,7 +104,7 @@ static int check(void *_desc, int len, unsigned type, int size)
     return 0;
 }
 
-static int filter_usb_device(int fd, char* sysfs_name,
+static int filter_usb_device(char* sysfs_name,
                              char *ptr, int len, int writable,
                              ifc_match_func callback,
                              int *ept_in_id, int *ept_out_id, int *ifc_id)
@@ -308,7 +309,7 @@ static usb_handle *find_usb_device(const char *base, ifc_match_func callback)
 
             n = read(fd, desc, sizeof(desc));
 
-            if(filter_usb_device(fd, de->d_name, desc, n, writable, callback,
+            if(filter_usb_device(de->d_name, desc, n, writable, callback,
                                  &in, &out, &ifc) == 0) {
                 usb = calloc(1, sizeof(usb_handle));
                 strcpy(usb->fname, devname);
@@ -340,26 +341,11 @@ int usb_write(usb_handle *h, const void *_data, int len)
     struct usbdevfs_bulktransfer bulk;
     int n;
 
-    if(h->ep_out == 0) {
+    if(h->ep_out == 0 || h->desc == -1) {
         return -1;
     }
 
-    if(len == 0) {
-        bulk.ep = h->ep_out;
-        bulk.len = 0;
-        bulk.data = data;
-        bulk.timeout = 0;
-
-        n = ioctl(h->desc, USBDEVFS_BULK, &bulk);
-        if(n != 0) {
-            fprintf(stderr,"ERROR: n = %d, errno = %d (%s)\n",
-                    n, errno, strerror(errno));
-            return -1;
-        }
-        return 0;
-    }
-
-    while(len > 0) {
+    do {
         int xfer;
         xfer = (len > MAX_USBFS_BULK_SIZE) ? MAX_USBFS_BULK_SIZE : len;
 
@@ -378,7 +364,7 @@ int usb_write(usb_handle *h, const void *_data, int len)
         count += xfer;
         len -= xfer;
         data += xfer;
-    }
+    } while(len > 0);
 
     return count;
 }
@@ -390,7 +376,7 @@ int usb_read(usb_handle *h, void *_data, int len)
     struct usbdevfs_bulktransfer bulk;
     int n, retry;
 
-    if(h->ep_in == 0) {
+    if(h->ep_in == 0 || h->desc == -1) {
         return -1;
     }
 
@@ -457,4 +443,19 @@ int usb_close(usb_handle *h)
 usb_handle *usb_open(ifc_match_func callback)
 {
     return find_usb_device("/sys/bus/usb/devices", callback);
+}
+
+// Wait for the system to notice the device is gone, so that a subsequent
+// fastboot command won't try to access the device before it's rebooted.
+// It shouldn't take more than a second or so, but we'll time out after
+// 5 seconds just in case. Returns 0 for success, -1 for timeout.
+int usb_wait_for_disconnect(usb_handle *usb)
+{
+  double deadline = now() + 5;
+  while (now() < deadline) {
+    if (access(usb->fname, F_OK))
+      return 0;
+    usleep(50000);
+  }
+  return -1;
 }
