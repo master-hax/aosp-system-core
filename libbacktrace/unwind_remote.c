@@ -36,6 +36,10 @@ typedef struct {
 static bool remote_get_frames(backtrace_t* backtrace) {
   backtrace_private_t* data = (backtrace_private_t*)backtrace->private_data;
   unw_cursor_t cursor;
+  if (sizeof(unw_word_t) != sizeof(uintptr_t)) {
+    printf("Fail.\n");
+  }
+
   int ret = unw_init_remote(&cursor, data->addr_space, data->upt_info);
   if (ret < 0) {
     ALOGW("remote_get_frames: unw_init_remote failed %d\n", ret);
@@ -46,6 +50,7 @@ static bool remote_get_frames(backtrace_t* backtrace) {
   bool returnValue = true;
   backtrace->num_frames = 0;
   uintptr_t map_start;
+  unw_word_t value;
   do {
     frame = &backtrace->frames[backtrace->num_frames];
     frame->stack_size = 0;
@@ -54,18 +59,21 @@ static bool remote_get_frames(backtrace_t* backtrace) {
     frame->proc_name = NULL;
     frame->proc_offset = 0;
 
-    ret = unw_get_reg(&cursor, UNW_REG_IP, &frame->pc);
+    ret = unw_get_reg(&cursor, UNW_REG_IP, &value);
     if (ret < 0) {
       ALOGW("remote_get_frames: Failed to read IP %d\n", ret);
       returnValue = false;
       break;
     }
-    ret = unw_get_reg(&cursor, UNW_REG_SP, &frame->sp);
+    frame->pc = (uintptr_t)value;
+    ret = unw_get_reg(&cursor, UNW_REG_SP, &value);
     if (ret < 0) {
       ALOGW("remote_get_frames: Failed to read SP %d\n", ret);
       returnValue = false;
       break;
     }
+    frame->sp = (uintptr_t)value;
+
     if (backtrace->num_frames) {
       backtrace_frame_data_t* prev = &backtrace->frames[backtrace->num_frames-1];
       prev->stack_size = frame->sp - prev->sp;
@@ -139,8 +147,11 @@ char* remote_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
   backtrace_private_t* data = (backtrace_private_t*)backtrace->private_data;
   char buf[512];
 
-  if (unw_get_proc_name_by_ip(data->addr_space, pc, buf, sizeof(buf), offset,
+  *offset = 0;
+  unw_word_t value;
+  if (unw_get_proc_name_by_ip(data->addr_space, pc, buf, sizeof(buf), &value,
                               data->upt_info) >= 0 && buf[0] != '\0') {
+    *offset = (uintptr_t)value;
     char* symbol = demangle_symbol_name(buf);
     if (!symbol) {
       symbol = strdup(buf);
