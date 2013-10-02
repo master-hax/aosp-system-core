@@ -65,6 +65,9 @@ include $(BUILD_SHARED_LIBRARY)
 #----------------------------------------------------------------------------
 # The host libbacktrace library using libcorkscrew
 #----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+# Only linux-x86 host versions of libbacktrace supported.
+#----------------------------------------------------------------------------
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES += \
@@ -93,6 +96,7 @@ LOCAL_MODULE := libbacktrace
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_HOST_SHARED_LIBRARY)
+endif # HOST_OS-HOST_ARCH == linux-x86
 
 #----------------------------------------------------------------------------
 # libbacktrace test library, all optimizations turned off
