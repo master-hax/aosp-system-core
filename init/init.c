@@ -612,9 +612,13 @@ static void import_kernel_nv(char *name, int for_emulator)
 
     if (for_emulator) {
         /* in the emulator, export any kernel option with the
-         * ro.kernel. prefix */
+         * ro.kernel. prefix except for selinux that is ro.boot. */
         char buff[PROP_NAME_MAX];
-        int len = snprintf( buff, sizeof(buff), "ro.kernel.%s", name );
+        int len;
+        if (!strcmp (name, "selinux"))
+            len = snprintf( buff, sizeof(buff), "ro.boot.%s", name );
+        else
+            len = snprintf( buff, sizeof(buff), "ro.kernel.%s", name );
 
         if (len < (int)sizeof(buff))
             property_set( buff, value );
