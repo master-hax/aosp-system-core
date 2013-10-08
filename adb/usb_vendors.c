@@ -159,6 +159,8 @@
 #define VENDOR_ID_MSI           0x0DB0
 // Wacom's USB Vendor ID
 #define VENDOR_ID_WACOM         0x0531
+// EMERGING_TECH's USB Vendor ID
+#define VENDOR_ID_EMERGING_TECH 0x297F
 
 /** built-in vendor list */
 int builtInVendorIds[] = {
@@ -224,6 +226,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_ECS,
     VENDOR_ID_MSI,
     VENDOR_ID_WACOM,
+    VENDOR_ID_EMERGING_TECH,
 };
 
 #define BUILT_IN_VENDOR_COUNT    (sizeof(builtInVendorIds)/sizeof(builtInVendorIds[0]))
