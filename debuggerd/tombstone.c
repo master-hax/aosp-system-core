@@ -401,13 +401,13 @@ static void dump_nearby_maps(const backtrace_map_info_t* map_info_list, log_t* l
 
 static void dump_thread(const backtrace_t* backtrace, log_t* log, int scope_flags,
         int* total_sleep_time_usec) {
-    wait_for_stop(backtrace->tid, total_sleep_time_usec);
+    wait_for_stop(backtrace->pid, total_sleep_time_usec);
 
-    dump_registers(log, backtrace->tid, scope_flags);
+    dump_registers(log, backtrace->pid, scope_flags);
     dump_backtrace_and_stack(backtrace, log, scope_flags);
     if (IS_AT_FAULT(scope_flags)) {
-        dump_memory_and_code(log, backtrace->tid, scope_flags);
-        dump_nearby_maps(backtrace->map_info_list, log, backtrace->tid, scope_flags);
+        dump_memory_and_code(log, backtrace->pid, scope_flags);
+        dump_nearby_maps(backtrace->map_info_list, log, backtrace->pid, scope_flags);
     }
 }
 

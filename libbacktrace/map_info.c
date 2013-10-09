@@ -129,16 +129,16 @@ static backtrace_map_info_t* parse_maps_line(const char* line)
   return mi;
 }
 
-backtrace_map_info_t* backtrace_create_map_info_list(pid_t tid) {
+backtrace_map_info_t* backtrace_create_map_info_list(pid_t pid) {
   char path[PATH_MAX];
   char line[1024];
   FILE* fp;
   backtrace_map_info_t* milist = NULL;
 
-  if (tid < 0) {
-    tid = getpid();
+  if (pid < 0) {
+    pid = getpid();
   }
-  snprintf(path, PATH_MAX, "/proc/%d/maps", tid);
+  snprintf(path, PATH_MAX, "/proc/%d/maps", pid);
   fp = fopen(path, "r");
   if (fp) {
     while(fgets(line, sizeof(line), fp)) {
