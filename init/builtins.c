@@ -755,6 +755,16 @@ int do_restorecon(int nargs, char **args) {
     return 0;
 }
 
+int do_restorecon_recursive(int nargs, char **args) {
+    int i;
+
+    for (i = 1; i < nargs; i++) {
+        if (restorecon_recursive(args[i]) < 0)
+            return -errno;
+    }
+    return 0;
+}
+
 int do_setsebool(int nargs, char **args) {
     const char *name = args[1];
     const char *value = args[2];
