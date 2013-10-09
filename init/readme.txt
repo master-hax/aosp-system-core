@@ -192,9 +192,9 @@ mount <type> <device> <dir> [ <mountoption> ]*
    device by name.
    <mountoption>s include "ro", "rw", "remount", "noatime", ...
 
-restorecon <path>
+restorecon [-R] <path>
    Restore the file named by <path> to the security context specified
-   in the file_contexts configuration.
+   in the file_contexts configuration. "-R" is for recursive restorecon.
    Not required for directories created by the init.rc as these are
    automatically labeled correctly by init.
 

@@ -748,6 +748,17 @@ int do_chmod(int nargs, char **args) {
 int do_restorecon(int nargs, char **args) {
     int i;
 
+    if (args[1][0] == '-') {
+        if (args[1][1] == 'R') {
+            for (i = 2; i < nargs; i++) {
+                if (restorecon_recursive(args[i]) < 0)
+                    return -errno;
+            }
+            return 0;
+        }
+        return -EINVAL;
+    }
+
     for (i = 1; i < nargs; i++) {
         if (restorecon(args[i]) < 0)
             return -errno;
