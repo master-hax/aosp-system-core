@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <backtrace/backtrace.h>
 
 #include "common.h"
+#include "thread.h"
 #include "unwind.h"
 
-bool backtrace_get_data(backtrace_t* backtrace, pid_t tid) {
+bool backtrace_get_data(backtrace_t* backtrace, pid_t pid) {
   backtrace->num_frames = 0;
-  backtrace->tid = tid;
+  if (pid < 0) {
+    pid = getpid();
+  }
+  backtrace->pid = pid;
 
-  backtrace->map_info_list = backtrace_create_map_info_list(tid);
-  if (tid < 0) {
+  backtrace->map_info_list = backtrace_create_map_info_list(pid);
+  if (pid == getpid()) {
     return local_get_data(backtrace);
   } else {
     return remote_get_data(backtrace);
@@ -40,7 +47,7 @@ void backtrace_free_data(backtrace_t* backtrace) {
     backtrace->map_info_list = NULL;
   }
 
-  if (backtrace->tid < 0) {
+  if (backtrace->pid == getpid()) {
     local_free_data(backtrace);
   } else {
     remote_free_data(backtrace);
@@ -49,9 +56,15 @@ void backtrace_free_data(backtrace_t* backtrace) {
 
 char* backtrace_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
                               uintptr_t* offset) {
-  if (backtrace->tid < 0) {
+  if (backtrace->pid == getpid()) {
     return local_get_proc_name(backtrace, pc, offset);
   } else {
     return remote_get_proc_name(backtrace, pc, offset);
   }
+}
+
+void init_thread_entry(tid_list_t* entry) {
+}
+
+void destroy_thread_entry(tid_list_t* entry) {
 }

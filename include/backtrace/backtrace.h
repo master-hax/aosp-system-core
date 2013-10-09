@@ -51,15 +51,19 @@ typedef struct {
   backtrace_frame_data_t frames[MAX_BACKTRACE_FRAMES];
   size_t num_frames;
 
+  pid_t pid;
   pid_t tid;
   backtrace_map_info_t* map_info_list;
   void* private_data;
 } backtrace_t;
 
-/* Gather the backtrace data for tid and fill in the backtrace structure.
- * If tid < 0, then gather the backtrace for the current thread.
+/* Gather the backtrace data for pid and fill in the backtrace structure.
+ * If pid < 0, then gather the backtrace for the current thread.
  */
-bool backtrace_get_data(backtrace_t* backtrace, pid_t tid);
+bool backtrace_get_data(backtrace_t* backtrace, pid_t pid);
+
+/* Gather the backtrace data for a pthread instead of a process. */
+bool backtrace_get_thread_data(backtrace_t* backtrace, pid_t tid);
 
 /* Free any memory associated with the backtrace structure. */
 void backtrace_free_data(backtrace_t* backtrace);

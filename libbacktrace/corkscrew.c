@@ -22,35 +22,41 @@
 #include <backtrace/backtrace.h>
 
 #include <corkscrew/backtrace.h>
+#include <backtrace-arch.h>
 
 #define __USE_GNU
 #include <dlfcn.h>
 
 #include "common.h"
 #include "demangle.h"
+#include "thread.h"
 
-bool backtrace_get_data(backtrace_t* backtrace, pid_t tid) {
+bool backtrace_get_data(backtrace_t* backtrace, pid_t pid) {
   backtrace->num_frames = 0;
-  backtrace->tid = tid;
+  if (pid < 0) {
+    pid = getpid();
+  }
+  backtrace->pid = pid;
+  backtrace->tid = -1;
   backtrace->private_data = NULL;
-  backtrace->map_info_list = backtrace_create_map_info_list(tid);
+  backtrace->map_info_list = backtrace_create_map_info_list(pid);
 
   backtrace_frame_t frames[MAX_BACKTRACE_FRAMES];
   ssize_t num_frames;
-  if (tid < 0) {
+  if (pid == getpid()) {
     // Get data for the current thread.
     num_frames = unwind_backtrace(frames, 0, MAX_BACKTRACE_FRAMES);
   } else {
     // Get data for a different thread.
-    ptrace_context_t* ptrace_context = load_ptrace_context(tid);
+    ptrace_context_t* ptrace_context = load_ptrace_context(pid);
     backtrace->private_data = ptrace_context;
 
     num_frames = unwind_backtrace_ptrace(
-        tid, ptrace_context, frames, 0, MAX_BACKTRACE_FRAMES);
+        pid, ptrace_context, frames, 0, MAX_BACKTRACE_FRAMES);
   }
   if (num_frames < 0) {
-      ALOGW("backtrace_get_data: unwind_backtrace_ptrace failed %d\n",
-            num_frames);
+      ALOGW("%s::%s(): unwind_backtrace_ptrace failed %d\n",
+            __FILE__, __FUNCTION__, num_frames);
       backtrace_free_data(backtrace);
       return false;
   }
@@ -96,7 +102,7 @@ char* backtrace_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
     uintptr_t* offset) {
   const char* symbol_name = NULL;
   *offset = 0;
-  if (backtrace->tid < 0) {
+  if (backtrace->pid == getpid()) {
     // Get information about the current thread.
     Dl_info info;
     const backtrace_map_info_t* map_info;
@@ -128,3 +134,39 @@ char* backtrace_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
   }
   return name;
 }
+
+void init_thread_entry(tid_list_t* entry) {
+  entry->data = (map_info_t*)load_map_info_list(getpid());
+}
+
+void destroy_thread_entry(tid_list_t* entry) {
+  free_map_info_list((map_info_t*)entry->data);
+}
+
+void gather_thread_frame_data(tid_list_t* entry, siginfo_t* siginfo,
+                              void* sigcontext) {
+  backtrace_frame_t frames[MAX_BACKTRACE_FRAMES];
+  ssize_t num_frames = unwind_backtrace_signal_arch(
+      siginfo, sigcontext, (map_info_t*)entry->data, frames, 0,
+      MAX_BACKTRACE_FRAMES);
+  if (num_frames <= 0) {
+    entry->backtrace->num_frames = 0;
+  } else {
+    entry->backtrace->num_frames = num_frames;
+    backtrace_frame_data_t* frame;
+    for (size_t i = 0; i < entry->backtrace->num_frames; i++) {
+      frame = &entry->backtrace->frames[i];
+      frame->pc = frames[i].absolute_pc;
+      frame->sp = frames[i].stack_top;
+      frame->stack_size = frames[i].stack_size;
+
+      frame->map_offset = 0;
+      frame->map_name = NULL;
+      frame->map_offset = 0;
+
+      frame->proc_offset = 0;
+      frame->proc_name = NULL;
+    }
+  }
+}
+

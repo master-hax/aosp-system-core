@@ -17,6 +17,8 @@
 #define LOG_TAG "libbacktrace"
 
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <cutils/log.h>
 #include <backtrace/backtrace.h>
@@ -27,20 +29,28 @@
 
 #include "common.h"
 #include "demangle.h"
+#include "thread.h"
 
 static bool local_get_frames(backtrace_t* backtrace) {
   unw_context_t* context = (unw_context_t*)backtrace->private_data;
-  unw_cursor_t cursor;
 
   int ret = unw_getcontext(context);
   if (ret < 0) {
-    ALOGW("local_get_frames: unw_getcontext failed %d\n", ret);
+    ALOGW("%s::%s(): unw_getcontext failed %d\n", __FILE__, __FUNCTION__, ret);
     return false;
   }
 
-  ret = unw_init_local(&cursor, context);
+  // The cursor structure is quite large, do not let it sit on the stack.
+  unw_cursor_t* cursor = (unw_cursor_t*)malloc(sizeof(unw_cursor_t));
+  if (cursor == NULL) {
+    ALOGW("%s::%s(): Cannot allocate cursor structure.\n", __FILE__,
+          __FUNCTION__);
+    return false;
+  }
+  ret = unw_init_local(cursor, context);
   if (ret < 0) {
-    ALOGW("local_get_frames: unw_init_local failed %d\n", ret);
+    ALOGW("%s::%s(): unw_init_local failed %d\n", __FILE__, __FUNCTION__, ret);
+    free(cursor);
     return false;
   }
 
@@ -57,16 +67,16 @@ static bool local_get_frames(backtrace_t* backtrace) {
     frame->proc_name = NULL;
     frame->proc_offset = 0;
 
-    ret = unw_get_reg(&cursor, UNW_REG_IP, &value);
+    ret = unw_get_reg(cursor, UNW_REG_IP, &value);
     if (ret < 0) {
-      ALOGW("get_frames: Failed to read IP %d\n", ret);
+      ALOGW("%s::%s(): Failed to read IP %d\n", __FILE__, __FUNCTION__, ret);
       returnValue = false;
       break;
     }
     frame->pc = (uintptr_t)value;
-    ret = unw_get_reg(&cursor, UNW_REG_SP, &value);
+    ret = unw_get_reg(cursor, UNW_REG_SP, &value);
     if (ret < 0) {
-      ALOGW("get_frames: Failed to read IP %d\n", ret);
+      ALOGW("%s::%s(): Failed to read IP %d\n", __FILE__, __FUNCTION__, ret);
       returnValue = false;
       break;
     }
@@ -85,14 +95,15 @@ static bool local_get_frames(backtrace_t* backtrace) {
     }
 
     backtrace->num_frames++;
-    ret = unw_step (&cursor);
+    ret = unw_step (cursor);
   } while (ret > 0 && backtrace->num_frames < MAX_BACKTRACE_FRAMES);
 
+  free(cursor);
   return returnValue;
 }
 
 bool local_get_data(backtrace_t* backtrace) {
-  unw_context_t *context = (unw_context_t*)malloc(sizeof(unw_context_t));
+  unw_context_t* context = (unw_context_t*)malloc(sizeof(unw_context_t));
   backtrace->private_data = context;
 
   if (!local_get_frames(backtrace)) {
@@ -127,4 +138,122 @@ char* local_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
     return symbol;
   }
   return NULL;
+}
+
+void gather_thread_frame_data(tid_list_t*entry, siginfo_t* siginfo,
+                              void* sigcontext) {
+  unw_context_t* unw_context = (unw_context_t*)malloc(sizeof(unw_context_t));
+  entry->backtrace->private_data = unw_context;
+  unw_tdep_context_t* context = (unw_tdep_context_t*)unw_context;
+
+#if defined(__arm__)
+  #if !defined(__BIONIC_HAVE_UCONTEXT_T)
+  /* Old versions of the Android <signal.h> didn't define ucontext_t. */
+  #include <asm/sigcontext.h> /* Ensure 'struct sigcontext' is defined. */
+
+  /* Machine context at the time a signal was raised. */
+  typedef struct ucontext {
+    uint32_t uc_flags;
+    struct ucontext* uc_link;
+    stack_t uc_stack;
+    struct sigcontext uc_mcontext;
+    uint32_t uc_sigmask;
+  } ucontext_t;
+  #endif /* !__BIONIC_HAVE_UCONTEXT_T */
+
+  const ucontext_t* uc = (const ucontext_t*)sigcontext;
+
+  context->regs[0] = uc->uc_mcontext.arm_r0;
+  context->regs[1] = uc->uc_mcontext.arm_r1;
+  context->regs[2] = uc->uc_mcontext.arm_r2;
+  context->regs[3] = uc->uc_mcontext.arm_r3;
+  context->regs[4] = uc->uc_mcontext.arm_r4;
+  context->regs[5] = uc->uc_mcontext.arm_r5;
+  context->regs[6] = uc->uc_mcontext.arm_r6;
+  context->regs[7] = uc->uc_mcontext.arm_r7;
+  context->regs[8] = uc->uc_mcontext.arm_r8;
+  context->regs[9] = uc->uc_mcontext.arm_r9;
+  context->regs[10] = uc->uc_mcontext.arm_r10;
+  context->regs[11] = uc->uc_mcontext.arm_fp;
+  context->regs[12] = uc->uc_mcontext.arm_ip;
+  context->regs[13] = uc->uc_mcontext.arm_sp;
+  context->regs[14] = uc->uc_mcontext.arm_lr;
+  context->regs[15] = uc->uc_mcontext.arm_pc;
+
+#elif defined(__mips__)
+
+  typedef struct ucontext {
+    uint32_t sp;
+    uint32_t ra;
+    uint32_t pc;
+  } ucontext_t;
+
+  const ucontext_t* uc = (const ucontext_t*)sigcontext;
+
+  context->uc_mcontext.sp = uc->sp;
+  context->uc_mcontext.pc = uc->pc;
+  context->uc_mcontext.ra = uc->ra;
+
+#elif defined(__x86__)
+
+  #include <asm/sigcontext.h>
+  #include <asm/ucontext.h>
+  typedef struct ucontext ucontext_t;
+
+  const ucontext_t* uc = (const ucontext_t*)sigcontext;
+
+  uc->uc_mcontext.gregs[REG_EBP] = uc->uc_mcontext.gregs[REG_EBP];
+  uc->uc_mcontext.gregs[REG_ESP] = uc->uc_mcontext.gregs[REG_ESP];
+  uc->uc_mcontext.gregs[REG_EIP] = uc->uc_mcontext.gregs[REG_EIP];
+
+#endif
+
+  // The cursor structure is quite large, do not let it sit on the stack.
+  unw_cursor_t* cursor = (unw_cursor_t*)malloc(sizeof(unw_cursor_t));
+  if (cursor == NULL) {
+    ALOGW("%s::%s(): Cannot allocate cursor structure.\n", __FILE__,
+          __FUNCTION__);
+    return;
+  }
+  int ret = unw_init_local(cursor, unw_context);
+  if (ret < 0) {
+    ALOGW("%s::%s(): unw_init_local failed %d\n", __FILE__, __FUNCTION__, ret);
+    free(cursor);
+    return;
+  }
+
+  backtrace_frame_data_t* frame;
+  backtrace_t* backtrace = entry->backtrace;
+  backtrace->num_frames = 0;
+  unw_word_t value;
+  do {
+    frame = &backtrace->frames[backtrace->num_frames];
+    frame->stack_size = 0;
+    frame->map_name = NULL;
+    frame->map_offset = 0;
+    frame->proc_name = NULL;
+    frame->proc_offset = 0;
+
+    ret = unw_get_reg(cursor, UNW_REG_IP, &value);
+    if (ret < 0) {
+      ALOGW("%s::%s(): Failed to read IP %d\n", __FILE__, __FUNCTION__, ret);
+      break;
+    }
+    frame->pc = (uintptr_t)value;
+    ret = unw_get_reg(cursor, UNW_REG_SP, &value);
+    if (ret < 0) {
+      ALOGW("%s::%s(): Failed to read IP %d\n", __FILE__, __FUNCTION__, ret);
+      break;
+    }
+    frame->sp = (uintptr_t)value;
+
+    if (backtrace->num_frames) {
+      backtrace_frame_data_t* prev = &backtrace->frames[backtrace->num_frames-1];
+      prev->stack_size = frame->sp - prev->sp;
+    }
+
+    backtrace->num_frames++;
+    ret = unw_step (cursor);
+  } while (ret > 0 && backtrace->num_frames < MAX_BACKTRACE_FRAMES);
+  free(cursor);
 }

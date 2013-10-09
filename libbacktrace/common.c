@@ -29,34 +29,37 @@
 bool backtrace_read_word(const backtrace_t* backtrace, uintptr_t ptr,
                          uint32_t* out_value) {
   if (ptr & 3) {
-    ALOGW("backtrace_read_word: invalid pointer %p", (void*)ptr);
+    ALOGW("%s::%s(): invalid pointer %p", __FILE__, __FUNCTION__, (void*)ptr);
     *out_value = (uint32_t)-1;
     return false;
   }
 
   // Check if reading from the current process, or a different process.
-  if (backtrace->tid < 0) {
+  if (backtrace->pid == getpid()) {
     const backtrace_map_info_t* map_info = backtrace_find_map_info(backtrace->map_info_list, ptr);
     if (map_info && map_info->is_readable) {
       *out_value = *(uint32_t*)ptr;
       return true;
     } else {
-      ALOGW("backtrace_read_word: pointer %p not in a readbale map", (void*)ptr);
+      ALOGW("%s::%s(): pointer %p not in a readbale map", __FILE__,
+            __FUNCTION__, (void*)ptr);
       *out_value = (uint32_t)-1;
       return false;
     }
   } else {
 #if defined(__APPLE__)
-    ALOGW("read_word: MacOS does not support reading from another pid.\n");
+    ALOGW("%s::%s(): MacOS does not support reading from another pid.\n",
+          __FILE__, __FUNCTION__);
     return false;
 #else
     // ptrace() returns -1 and sets errno when the operation fails.
     // To disambiguate -1 from a valid result, we clear errno beforehand.
     errno = 0;
-    *out_value = ptrace(PTRACE_PEEKTEXT, backtrace->tid, (void*)ptr, NULL);
+    *out_value = ptrace(PTRACE_PEEKTEXT, backtrace->pid, (void*)ptr, NULL);
     if (*out_value == (uint32_t)-1 && errno) {
-      ALOGW("try_get_word: invalid pointer 0x%08x reading from tid %d, "
-            "ptrace() errno=%d", ptr, backtrace->tid, errno);
+      ALOGW("%s::%s(): invalid pointer 0x%08x reading from pid %d, "
+            "ptrace() errno=%d", __FILE__, __FUNCTION__, ptr, backtrace->pid,
+            errno);
       return false;
     }
     return true;

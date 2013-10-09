@@ -35,10 +35,19 @@ typedef struct {
 
 static bool remote_get_frames(backtrace_t* backtrace) {
   backtrace_private_t* data = (backtrace_private_t*)backtrace->private_data;
-  unw_cursor_t cursor;
-  int ret = unw_init_remote(&cursor, data->addr_space, data->upt_info);
+
+  // The cursor structure is quite large, do not let it sit on the stack.
+  unw_cursor_t* cursor = (unw_cursor_t*)malloc(sizeof(unw_cursor_t));
+  if (cursor == NULL) {
+    ALOGW("%s::%s(): Cannot allocate cursor structure.\n", __FILE__,
+          __FUNCTION__);
+    return false;
+  }
+
+  int ret = unw_init_remote(cursor, data->addr_space, data->upt_info);
   if (ret < 0) {
-    ALOGW("remote_get_frames: unw_init_remote failed %d\n", ret);
+    ALOGW("%s::%s(): unw_init_remote failed %d\n", __FILE__, __FUNCTION__, ret);
+    free(cursor);
     return false;
   }
 
@@ -55,16 +64,16 @@ static bool remote_get_frames(backtrace_t* backtrace) {
     frame->proc_name = NULL;
     frame->proc_offset = 0;
 
-    ret = unw_get_reg(&cursor, UNW_REG_IP, &value);
+    ret = unw_get_reg(cursor, UNW_REG_IP, &value);
     if (ret < 0) {
-      ALOGW("remote_get_frames: Failed to read IP %d\n", ret);
+      ALOGW("%s::%s(): Failed to read IP %d\n", __FILE__, __FUNCTION__, ret);
       returnValue = false;
       break;
     }
     frame->pc = (uintptr_t)value;
-    ret = unw_get_reg(&cursor, UNW_REG_SP, &value);
+    ret = unw_get_reg(cursor, UNW_REG_SP, &value);
     if (ret < 0) {
-      ALOGW("remote_get_frames: Failed to read SP %d\n", ret);
+      ALOGW("%s::%s(): Failed to read SP %d\n", __FILE__, __FUNCTION__, ret);
       returnValue = false;
       break;
     }
@@ -83,16 +92,17 @@ static bool remote_get_frames(backtrace_t* backtrace) {
     }
 
     backtrace->num_frames++;
-    ret = unw_step (&cursor);
+    ret = unw_step (cursor);
   } while (ret > 0 && backtrace->num_frames < MAX_BACKTRACE_FRAMES);
 
+  free(cursor);
   return returnValue;
 }
 
 bool remote_get_data(backtrace_t* backtrace) {
   backtrace_private_t* data = (backtrace_private_t*)malloc(sizeof(backtrace_private_t));
   if (!data) {
-    ALOGW("remote_get_data: Failed to allocate memory.\n");
+    ALOGW("%s::%s(): Failed to allocate memory.\n", __FILE__, __FUNCTION__);
     backtrace_free_data(backtrace);
     return false;
   }
@@ -102,14 +112,15 @@ bool remote_get_data(backtrace_t* backtrace) {
   backtrace->private_data = data;
   data->addr_space = unw_create_addr_space(&_UPT_accessors, 0);
   if (!data->addr_space) {
-    ALOGW("remote_get_data: Failed to create unw address space.\n");
+    ALOGW("%s::%s(): Failed to create unw address space.\n", __FILE__,
+          __FUNCTION__);
     backtrace_free_data(backtrace);
     return false;
   }
 
-  data->upt_info = _UPT_create(backtrace->tid);
+  data->upt_info = _UPT_create(backtrace->pid);
   if (!data->upt_info) {
-    ALOGW("remote_get_data: Failed to create upt info.\n");
+    ALOGW("%s::%s(): Failed to create upt info.\n", __FILE__, __FUNCTION__);
     backtrace_free_data(backtrace);
     return false;
   }
