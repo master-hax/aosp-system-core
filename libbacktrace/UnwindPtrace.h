@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-#ifndef _DEMANGLE_H
-#define _DEMANGLE_H
+#ifndef _LIBBACKTRACE_UNWIND_PTRACE_H
+#define _LIBBACKTRACE_UNWIND_PTRACE_H
 
-/* Called to demangle a symbol name to be printed. Returns an allocated
- * string that must be freed by the caller.
- */
-char* demangle_symbol_name(const char* name);
+#include <string>
 
-#endif /* _DEMANGLE_H */
+#include "Backtrace.h"
+
+#include <libunwind.h>
+
+class UnwindPtrace : public BacktraceImpl {
+public:
+  UnwindPtrace();
+  virtual ~UnwindPtrace();
+
+  virtual bool Unwind(size_t num_ignore_frames);
+
+  virtual std::string GetProcName(uintptr_t pc, uintptr_t* offset);
+
+private:
+  unw_addr_space_t addr_space_;
+  struct UPT_info* upt_info_;
+};
+
+#endif // _LIBBACKTRACE_UNWIND_PTRACE_H

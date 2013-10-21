@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef _LIBBACKTRACE_THREAD_UTILS_H
+#define _LIBBACKTRACE_THREAD_UTILS_H
 
-#include <backtrace/backtrace.h>
+#include <unistd.h>
 
-/* Common routine to free any data allocated to store frame information. */
-void free_frame_data(backtrace_t* backtrace);
+__BEGIN_DECLS
 
-#endif /* _COMMON_H */
+int tgkill(int tgid, int tid, int sig);
+
+pid_t gettid();
+
+__END_DECLS
+
+#endif /* _LIBBACKTRACE_THREAD_UTILS_H */

@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
+#ifndef _LIBBACKTRACE_BACKTRACE_H
+#define _LIBBACKTRACE_BACKTRACE_H
+
+#include <backtrace/Backtrace.h>
+
 #include <sys/types.h>
 
-#include "demangle.h"
+class BacktraceCurrent : public Backtrace {
+public:
+  BacktraceCurrent(BacktraceImpl* impl);
+  virtual ~BacktraceCurrent();
 
-extern char* __cxa_demangle (const char* mangled, char* buf, size_t* len,
-                             int* status);
+  bool ReadWord(uintptr_t ptr, uint32_t* out_value);
+};
 
-char* demangle_symbol_name(const char* name) {
-#if defined(__APPLE__)
-  // Mac OS' __cxa_demangle demangles "f" as "float"; last tested on 10.7.
-  if (name != NULL && name[0] != '_') {
-    return NULL;
-  }
-#endif
-  // __cxa_demangle handles NULL by returning NULL
-  return __cxa_demangle(name, 0, 0, 0);
-}
+class BacktracePtrace : public Backtrace {
+public:
+  BacktracePtrace(BacktraceImpl* impl, pid_t pid, pid_t tid);
+  virtual ~BacktracePtrace();
+
+  bool ReadWord(uintptr_t ptr, uint32_t* out_value);
+};
+
+Backtrace* CreateCurrentObj();
+Backtrace* CreatePtraceObj(pid_t pid, pid_t tid);
+Backtrace* CreateThreadObj(pid_t tid);
+
+#endif // _LIBBACKTRACE_BACKTRACE_H
