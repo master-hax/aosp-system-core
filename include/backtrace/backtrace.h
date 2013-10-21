@@ -21,9 +21,7 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+__BEGIN_DECLS
 
 #define MAX_BACKTRACE_FRAMES 64
 
@@ -51,40 +49,50 @@ typedef struct {
   backtrace_frame_data_t frames[MAX_BACKTRACE_FRAMES];
   size_t num_frames;
 
+  pid_t pid;
   pid_t tid;
   backtrace_map_info_t* map_info_list;
-  void* private_data;
 } backtrace_t;
 
-/* Gather the backtrace data for tid and fill in the backtrace structure.
- * If tid < 0, then gather the backtrace for the current thread.
- */
-bool backtrace_get_data(backtrace_t* backtrace, pid_t tid);
+typedef struct {
+  void* data;
+  const backtrace_t* backtrace;
+} backtrace_context_t;
 
-/* Free any memory associated with the backtrace structure. */
-void backtrace_free_data(backtrace_t* backtrace);
+/* Create a context for the backtrace data and gather the backtrace.
+ * If pid < 0, then gather the backtrace for the current process.
+ */
+bool backtrace_create_context(
+    backtrace_context_t* context, pid_t pid, pid_t tid, size_t num_ignore_frames);
+
+/* Gather the backtrace data for a pthread instead of a process. */
+bool backtrace_create_thread_context(
+    backtrace_context_t* context, pid_t tid, size_t num_ignore_frames);
+
+/* Free any memory allocated during the context create. */
+void backtrace_destroy_context(backtrace_context_t* context);
 
 /* Read data at a specific address for a process. */
 bool backtrace_read_word(
-    const backtrace_t* backtrace, uintptr_t ptr, uint32_t* value);
+    const backtrace_context_t* context, uintptr_t ptr, uint32_t* value);
 
 /* Get information about the map associated with a pc. If NULL is
  * returned, then map_start is not set.
  */
 const char* backtrace_get_map_info(
-    const backtrace_t* backtrace, uintptr_t pc, uintptr_t* map_start);
+    const backtrace_context_t* context, uintptr_t pc, uintptr_t* map_start);
 
 /* Get the procedure name and offest given the pc. If NULL is returned,
  * then proc_offset is not set. The returned string is allocated using
  * malloc and must be freed by the caller.
  */
 char* backtrace_get_proc_name(
-    const backtrace_t* backtrace, uintptr_t pc, uintptr_t* proc_offset);
+    const backtrace_context_t* context, uintptr_t pc, uintptr_t* proc_offset);
 
-/* Loads memory map from /proc/<tid>/maps. If tid < 0, then load the memory
+/* Loads memory map from /proc/<pid>/maps. If pid < 0, then load the memory
  * map for the current process.
  */
-backtrace_map_info_t* backtrace_create_map_info_list(pid_t tid);
+backtrace_map_info_t* backtrace_create_map_info_list(pid_t pid);
 
 /* Frees memory associated with the map list. */
 void backtrace_destroy_map_info_list(backtrace_map_info_t* map_info_list);
@@ -95,10 +103,12 @@ const backtrace_map_info_t* backtrace_find_map_info(
 
 /* Create a formatted line of backtrace information for a single frame. */
 void backtrace_format_frame_data(
-    const backtrace_frame_data_t* frame, size_t frame_num, char *buf, size_t buf_size);
+    const backtrace_context_t* context, size_t frame_num, char* buf,
+    size_t buf_size);
 
-#ifdef __cplusplus
-}
-#endif
+/* Get the backtrace data structure associated with the context. */
+const backtrace_t* backtrace_get_data(backtrace_context_t* context);
+
+__END_DECLS
 
 #endif /* _BACKTRACE_H */

@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-#ifndef _UNWIND_H
-#define _UNWIND_H
+#ifndef _LIBBACKTRACE_UNWIND_PTRACE_H
+#define _LIBBACKTRACE_UNWIND_PTRACE_H
 
-bool local_get_data(backtrace_t* backtrace);
+#include <backtrace/backtrace.h>
 
-void local_free_data(backtrace_t* backtrace);
+#include "Backtrace.h"
 
-char* local_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
-                          uintptr_t* offset);
+#include <libunwind.h>
 
-bool remote_get_data(backtrace_t* backtrace);
+class UnwindPtrace : public BacktraceImpl {
+public:
+  UnwindPtrace();
+  virtual ~UnwindPtrace();
 
-void remote_free_data(backtrace_t* backtrace);
+  virtual bool Unwind(size_t num_ignore_frames);
 
-char* remote_get_proc_name(const backtrace_t* backtrace, uintptr_t pc,
-                           uintptr_t* offset);
+  virtual char* GetProcName(uintptr_t pc, uintptr_t* offset);
 
-#endif /* _UNWIND_H */
+private:
+  unw_addr_space_t addr_space_;
+  struct UPT_info* upt_info_;
+};
+
+#endif // _LIBBACKTRACE_UNWIND_PTRACE_H

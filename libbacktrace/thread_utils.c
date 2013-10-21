@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
-#ifndef _COMMON_H
-#define _COMMON_H
+#include "thread_utils.h"
 
-#include <backtrace/backtrace.h>
+#if defined(__APPLE__)
 
-/* Common routine to free any data allocated to store frame information. */
-void free_frame_data(backtrace_t* backtrace);
+#include <sys/syscall.h>
 
-#endif /* _COMMON_H */
+// Mac OS >= 10.6 has a system call equivalent to Linux's gettid().
+pid_t gettid() {
+  return syscall(SYS_thread_selfid);
+}
+
+#elif !defined(__BIONIC__)
+
+// glibc doesn't implement or export either gettid or tgkill.
+#include <unistd.h>
+#include <sys/syscall.h>
+
+pid_t gettid() {
+  return syscall(__NR_gettid);
+}
+
+int tgkill(int tgid, int tid, int sig) {
+  return syscall(__NR_tgkill, tgid, tid, sig);
+}
+
+#endif
