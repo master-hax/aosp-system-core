@@ -132,7 +132,7 @@ BatteryMonitor::PowerSupplyType BatteryMonitor::readPowerSupplyType(const String
             { "Mains", ANDROID_POWER_SUPPLY_TYPE_AC },
             { "USB", ANDROID_POWER_SUPPLY_TYPE_USB },
             { "USB_DCP", ANDROID_POWER_SUPPLY_TYPE_AC },
-            { "USB_CDP", ANDROID_POWER_SUPPLY_TYPE_AC },
+            { "USB_CDP", ANDROID_POWER_SUPPLY_TYPE_USB },
             { "USB_ACA", ANDROID_POWER_SUPPLY_TYPE_AC },
             { "Wireless", ANDROID_POWER_SUPPLY_TYPE_WIRELESS },
             { NULL, 0 },
