@@ -35,24 +35,24 @@ static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 ThreadEntry::ThreadEntry(
     BacktraceThreadInterface* intf, pid_t pid, pid_t tid, size_t num_ignore_frames)
-    : thread_intf_(intf), pid_(pid), tid_(tid), next_(NULL), prev_(NULL),
-      state_(STATE_WAITING), num_ignore_frames_(num_ignore_frames) {
+    : thread_intf(intf), pid(pid), tid(tid), next(NULL), prev(NULL),
+      state(STATE_WAITING), num_ignore_frames(num_ignore_frames) {
 }
 
 ThreadEntry::~ThreadEntry() {
   pthread_mutex_lock(&g_mutex);
   if (g_list == this) {
-    g_list = next_;
+    g_list = next;
   } else {
-    if (next_) {
-      next_->prev_ = prev_;
+    if (next) {
+      next->prev = prev;
     }
-    prev_->next_ = next_;
+    prev->next = next;
   }
   pthread_mutex_unlock(&g_mutex);
 
-  next_ = NULL;
-  prev_ = NULL;
+  next = NULL;
+  prev = NULL;
 }
 
 ThreadEntry* ThreadEntry::AddThreadToUnwind(
@@ -64,19 +64,19 @@ ThreadEntry* ThreadEntry::AddThreadToUnwind(
   while (cur_entry != NULL) {
     if (cur_entry->Match(pid, tid)) {
       // There is already an entry for this pid/tid, this is bad.
-      ALOGW("%s::%s(): Entry for pid %d tid %d already exists.\n",
+      ALOGW("%s::%s(): Entry for pid %d tid %d already exists.",
             __FILE__, __FUNCTION__, pid, tid);
 
       pthread_mutex_unlock(&g_mutex);
       return NULL;
     }
-    cur_entry = cur_entry->next_;
+    cur_entry = cur_entry->next;
   }
 
   // Add the entry to the list.
-  entry->next_ = g_list;
+  entry->next = g_list;
   if (g_list) {
-    g_list->prev_ = entry;
+    g_list->prev = entry;
   }
   g_list = entry;
   pthread_mutex_unlock(&g_mutex);
@@ -97,20 +97,20 @@ static void SignalHandler(int n __attribute__((unused)), siginfo_t* siginfo,
       if (cur_entry->Match(pid, tid)) {
         break;
       }
-      cur_entry = cur_entry->next_;
+      cur_entry = cur_entry->next;
     }
     pthread_mutex_unlock(&g_mutex);
     if (!cur_entry) {
-      ALOGW("%s::%s(): Unable to find pid %d tid %d information\n",
+      ALOGW("%s::%s(): Unable to find pid %d tid %d information",
             __FILE__, __FUNCTION__, pid, tid);
       return;
     }
 
-    if (android_atomic_acquire_cas(STATE_WAITING, STATE_DUMPING, &cur_entry->state_) == 0) {
-      cur_entry->thread_intf_->ThreadUnwind(siginfo, sigcontext,
-                                            cur_entry->num_ignore_frames_);
+    if (android_atomic_acquire_cas(STATE_WAITING, STATE_DUMPING, &cur_entry->state) == 0) {
+      cur_entry->thread_intf->ThreadUnwind(siginfo, sigcontext,
+                                           cur_entry->num_ignore_frames);
     }
-    android_atomic_release_store(STATE_DONE, &cur_entry->state_);
+    android_atomic_release_store(STATE_DONE, &cur_entry->state);
   }
 }
 
@@ -143,10 +143,10 @@ void BacktraceThread::FinishUnwind() {
 }
 
 bool BacktraceThread::TriggerUnwindOnThread(ThreadEntry* entry) {
-  entry->state_ = STATE_WAITING;
+  entry->state = STATE_WAITING;
 
   if (tgkill(Pid(), Tid(), SIGURG) != 0) {
-    ALOGW("%s::%s(): tgkill failed %s\n", __FILE__, __FUNCTION__, strerror(errno));
+    ALOGW("%s::%s(): tgkill failed %s", __FILE__, __FUNCTION__, strerror(errno));
     return false;
   }
 
@@ -154,7 +154,7 @@ bool BacktraceThread::TriggerUnwindOnThread(ThreadEntry* entry) {
   int wait_millis = 1000;
   int32_t state;
   while (true) {
-    state = android_atomic_acquire_load(&entry->state_);
+    state = android_atomic_acquire_load(&entry->state);
     if (state != STATE_WAITING) {
       break;
     }
@@ -167,23 +167,23 @@ bool BacktraceThread::TriggerUnwindOnThread(ThreadEntry* entry) {
 
   bool cancelled = false;
   if (state == STATE_WAITING) {
-    if (android_atomic_acquire_cas(state, STATE_CANCEL, &entry->state_) == 0) {
-      ALOGW("%s::%s(): Cancelled dump of thread %d\n", __FILE__, __FUNCTION__,
-            entry->tid_);
+    if (android_atomic_acquire_cas(state, STATE_CANCEL, &entry->state) == 0) {
+      ALOGW("%s::%s(): Cancelled dump of thread %d", __FILE__, __FUNCTION__,
+            entry->tid);
       state = STATE_CANCEL;
       cancelled = true;
     } else {
-      state = android_atomic_acquire_load(&entry->state_);
+      state = android_atomic_acquire_load(&entry->state);
     }
   }
 
   // Wait for at most one minute for the dump to finish.
   wait_millis = 60000;
-  while (android_atomic_acquire_load(&entry->state_) != STATE_DONE) {
+  while (android_atomic_acquire_load(&entry->state) != STATE_DONE) {
     if (wait_millis--) {
       usleep(1000);
     } else {
-      ALOGW("%s::%s(): Didn't finish thread unwind in 60 seconds.\n",
+      ALOGW("%s::%s(): Didn't finish thread unwind in 60 seconds.",
             __FILE__, __FUNCTION__);
       break;
     }
@@ -212,7 +212,7 @@ bool BacktraceThread::Unwind(size_t num_ignore_frames) {
     retval = TriggerUnwindOnThread(entry);
     sigaction(SIGURG, &oldact, NULL);
   } else {
-    ALOGW("%s::%s(): sigaction failed %s\n", __FILE__, __FUNCTION__, strerror(errno));
+    ALOGW("%s::%s(): sigaction failed %s", __FILE__, __FUNCTION__, strerror(errno));
   }
 
   if (retval) {
