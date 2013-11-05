@@ -149,7 +149,6 @@ LOCAL_CONLYFLAGS += \
 
 LOCAL_CPPFLAGS += \
 	$(common_cppflags) \
-	-fpermissive \
 
 LOCAL_SHARED_LIBRARIES += \
 	libcutils \
@@ -250,9 +249,6 @@ LOCAL_CFLAGS += \
 LOCAL_SHARED_LIBRARIES := \
 	libbacktrace_test \
 	libbacktrace \
-
-LOCAL_CPPFLAGS += \
-	-fpermissive \
 
 LOCAL_LDLIBS := \
 	-lpthread \
