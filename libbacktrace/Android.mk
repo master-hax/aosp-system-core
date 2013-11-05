@@ -143,13 +143,13 @@ LOCAL_CFLAGS += \
 	-g \
 	-DGTEST_OS_LINUX_ANDROID \
 	-DGTEST_HAS_STD_STRING \
+	-Werror \
 
 LOCAL_CONLYFLAGS += \
 	$(common_conlyflags) \
 
 LOCAL_CPPFLAGS += \
 	$(common_cppflags) \
-	-fpermissive \
 
 LOCAL_SHARED_LIBRARIES += \
 	libcutils \
@@ -246,13 +246,11 @@ LOCAL_CFLAGS += \
 	-O0 \
 	-g \
 	-DGTEST_HAS_STD_STRING \
+	-Werror \
 
 LOCAL_SHARED_LIBRARIES := \
 	libbacktrace_test \
 	libbacktrace \
-
-LOCAL_CPPFLAGS += \
-	-fpermissive \
 
 LOCAL_LDLIBS := \
 	-lpthread \
