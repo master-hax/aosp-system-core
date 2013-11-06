@@ -46,6 +46,7 @@ static struct {
     _SIG(STKFLT),
 #endif
     _SIG(WINCH),
+    _SIG(RTMIN),
 #undef _SIG
 };
 
