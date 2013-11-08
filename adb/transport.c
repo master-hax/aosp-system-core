@@ -290,7 +290,22 @@ static void *output_thread(void *_t)
         } else {
             D("%s: remote read failed for transport\n", t->serial);
             put_apacket(p);
+
+#if !ADB_HOST
+            // Sync offline without Kicking Transport, and keep stay in the loop
+            D("%s: SYNC offline without Kick transport\n", t->serial);
+            p = get_apacket();
+            p->msg.command = A_SYNC;
+            p->msg.arg0 = 0;
+            p->msg.arg1 = 0;
+            p->msg.magic = A_SYNC ^ 0xffffffff;
+            if (write_packet(t->fd, t->serial, &p)) {
+                put_apacket(p);
+                D("%s: failed to write SYNC apacket to transport", t->serial);
+            }
+#else
             break;
+#endif
         }
     }
 
@@ -329,9 +344,14 @@ static void *input_thread(void *_t)
         }
         if(p->msg.command == A_SYNC){
             if(p->msg.arg0 == 0) {
+#if !ADB_HOST
+                D("%s: transport SYNC offline without kicking transport\n",
+                  t->serial);
+#else
                 D("%s: transport SYNC offline\n", t->serial);
                 put_apacket(p);
                 break;
+#endif
             } else {
                 if(p->msg.arg1 == t->sync_token) {
                     D("%s: transport SYNC online\n", t->serial);
