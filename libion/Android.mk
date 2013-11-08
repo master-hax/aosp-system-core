@@ -16,3 +16,5 @@ LOCAL_MODULE_TAGS := optional tests
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SHARED_LIBRARIES := liblog
 include $(BUILD_EXECUTABLE)
+
+include $(LOCAL_PATH)/tests/Android.mk
