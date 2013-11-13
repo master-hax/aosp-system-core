@@ -45,6 +45,8 @@ extern "C" {
 
 #if defined(__arm__)
 #include <cutils/atomic-arm.h>
+#elif defined(__aarch64__)
+#include <cutils/atomic-aarch64.h>
 #elif defined(__i386__) || defined(__x86_64__)
 #include <cutils/atomic-x86.h>
 #elif defined(__mips__)
