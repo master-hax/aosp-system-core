@@ -25,6 +25,7 @@
 #include "../backtrace-helper.h"
 #include "../ptrace-arch.h"
 #include <corkscrew/ptrace.h>
+#include <sys/user.h>
 #include "dwarf.h"
 
 #include <stdlib.h>
@@ -34,46 +35,21 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/ptrace.h>
+#if 1
 #include <cutils/log.h>
+#else  // replace logging with direct stderr output (useful for run and debug on host)
+#include <stdio.h>
+
+#define ALOGV(...) fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n");
+#define ALOGE(...) fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n");
+#endif
 
 #if defined(__BIONIC__)
-
-#if defined(__BIONIC_HAVE_UCONTEXT_T)
 
 // Bionic offers the Linux kernel headers.
 #include <asm/sigcontext.h>
 #include <asm/ucontext.h>
 typedef struct ucontext ucontext_t;
-
-#else /* __BIONIC_HAVE_UCONTEXT_T */
-
-/* Old versions of the Android <signal.h> didn't define ucontext_t. */
-
-typedef struct {
-  uint32_t  gregs[32];
-  void*     fpregs;
-  uint32_t  oldmask;
-  uint32_t  cr2;
-} mcontext_t;
-
-enum {
-  REG_GS = 0, REG_FS, REG_ES, REG_DS,
-  REG_EDI, REG_ESI, REG_EBP, REG_ESP,
-  REG_EBX, REG_EDX, REG_ECX, REG_EAX,
-  REG_TRAPNO, REG_ERR, REG_EIP, REG_CS,
-  REG_EFL, REG_UESP, REG_SS
-};
-
-/* Machine context at the time a signal was raised. */
-typedef struct ucontext {
-    uint32_t uc_flags;
-    struct ucontext* uc_link;
-    stack_t uc_stack;
-    mcontext_t uc_mcontext;
-    uint32_t uc_sigmask;
-} ucontext_t;
-
-#endif /* __BIONIC_HAVE_UCONTEXT_T */
 
 #elif defined(__APPLE__)
 
@@ -90,7 +66,7 @@ typedef struct ucontext {
 
 /* Unwind state. */
 typedef struct {
-    uint32_t reg[DWARF_REGISTERS];
+    size_t reg[DWARF_REGISTERS];
 } unwind_state_t;
 
 typedef struct {
@@ -123,78 +99,85 @@ static bool try_get_byte(const memory_t* memory, uintptr_t ptr, uint8_t* out_val
 
     if (ptr < lastptr || lastptr + 3 < ptr) {
         lastptr = (ptr >> 2) << 2;
-        if (!try_get_word(memory, lastptr, &buf)) {
+        if (!try_get_word(memory, lastptr, &buf))
             return false;
-        }
     }
     *out_value = (uint8_t)((buf >> ((ptr & 3) * 8)) & 0xff);
     ++*cursor;
     return true;
 }
 
-/* Getting X bytes. 4 is maximum for now. */
-static bool try_get_xbytes(const memory_t* memory, uintptr_t ptr, uint32_t* out_value, uint8_t bytes, uint32_t* cursor) {
-    uint32_t data = 0;
-    if (bytes > 4) {
-        ALOGE("can't read more than 4 bytes, trying to read %d", bytes);
+/* Getting X bytes. */
+static bool try_get_xbytes(const memory_t* memory, uintptr_t ptr, uintptr_t* out_value, uint8_t bytes, uint32_t* cursor) {
+    uintptr_t data = 0;
+    if (bytes > sizeof(data)) {
+        ALOGE("can't read more than %zd bytes, trying to read %d", sizeof(data), bytes);
         return false;
     }
     for (int i = 0; i < bytes; i++) {
         uint8_t buf;
-        if (!try_get_byte(memory, ptr, &buf, cursor)) {
+        if (!try_get_byte(memory, ptr, &buf, cursor))
             return false;
-        }
-        data |= (uint32_t)buf << (i * 8);
+        data |= (uintptr_t)buf << (i * 8);
     }
     *out_value = data;
     return true;
 }
 
-/* Reads signed/unsigned LEB128 encoded data. From 1 to 4 bytes. */
-static bool try_get_leb128(const memory_t* memory, uintptr_t ptr, uint32_t* out_value, uint32_t* cursor, bool sign_extend) {
+/* Getting register. */
+static bool try_get_reg(const memory_t* memory, uintptr_t ptr, size_t* out_value) {
+#ifdef __i386__
+    return try_get_word(memory, ptr, (uint32_t *)out_value);
+#else
+    return try_get_xword(memory, ptr, (uint64_t *)out_value);
+#endif
+}
+
+/* Reads signed/unsigned LEB128 encoded data. From 1 to 8 bytes. */
+static bool try_get_leb128(const memory_t* memory, uintptr_t ptr, uintptr_t* out_value, uint32_t* cursor, bool sign_extend) {
     uint8_t buf = 0;
-    uint32_t val = 0;
+    uintptr_t val = 0;
     uint8_t c = 0;
     do {
        if (!try_get_byte(memory, ptr, &buf, cursor)) {
            return false;
        }
-       val |= ((uint32_t)buf & 0x7f) << (c * 7);
+       val |= ((uintptr_t)buf & 0x7f) << (c * 7);
        c++;
-    } while (buf & 0x80 && (c * 7) <= 32);
-    if (c * 7 > 32) {
-       ALOGE("%s: data exceeds expected 4 bytes maximum", __FUNCTION__);
+    } while (buf & 0x80 && (c * 7) <= 64);
+    if (c * 7 > 64) {
+       ALOGE("%s: data exceeds expected 8 bytes maximum", __FUNCTION__);
        return false;
     }
     if (sign_extend) {
         if (buf & 0x40) {
-            val |= ((uint32_t)-1 << (c * 7));
+            val |= ((uintptr_t)-1 << (c * 7));
         }
     }
     *out_value = val;
     return true;
 }
 
-/* Reads signed LEB128 encoded data. From 1 to 4 bytes. */
-static bool try_get_sleb128(const memory_t* memory, uintptr_t ptr, uint32_t* out_value, uint32_t* cursor) {
+/* Reads signed LEB128 encoded data. From 1 to 8 bytes. */
+static bool try_get_sleb128(const memory_t* memory, uintptr_t ptr, uintptr_t* out_value, uint32_t* cursor) {
   return try_get_leb128(memory, ptr, out_value, cursor, true);
 }
 
-/* Reads unsigned LEB128 encoded data. From 1 to 4 bytes. */
-static bool try_get_uleb128(const memory_t* memory, uintptr_t ptr, uint32_t* out_value, uint32_t* cursor) {
+/* Reads unsigned LEB128 encoded data. From 1 to 8 bytes. */
+static bool try_get_uleb128(const memory_t* memory, uintptr_t ptr, uintptr_t* out_value, uint32_t* cursor) {
   return try_get_leb128(memory, ptr, out_value, cursor, false);
 }
 
 /* Getting data encoded by dwarf encodings. */
-static bool read_dwarf(const memory_t* memory, uintptr_t ptr, uint32_t* out_value, uint8_t encoding, uint32_t* cursor) {
-    uint32_t data = 0;
+static bool read_dwarf(const memory_t* memory, uintptr_t ptr, uintptr_t* out_value, uint8_t encoding, uint32_t* cursor) {
+    uintptr_t data = 0;
     bool issigned = true;
     uintptr_t addr = ptr + *cursor;
     /* Lower 4 bits is data type/size */
     /* TODO: add more encodings if it becomes necessary */
     switch (encoding & 0xf) {
         case DW_EH_PE_absptr:
-            if (!try_get_xbytes(memory, ptr, &data, 4, cursor)) {
+            if (!try_get_xbytes(memory, ptr, &data, sizeof(uintptr_t), cursor)) {
                 return false;
             }
             *out_value = data;
@@ -205,6 +188,8 @@ static bool read_dwarf(const memory_t* memory, uintptr_t ptr, uint32_t* out_valu
             if (!try_get_xbytes(memory, ptr, &data, 4, cursor)) {
                 return false;
             }
+	    if (issigned) /* sign extend */
+		data = (intptr_t)(int32_t)data;
             break;
         default:
             ALOGE("unrecognized dwarf lower part encoding: 0x%x", encoding);
@@ -218,7 +203,7 @@ static bool read_dwarf(const memory_t* memory, uintptr_t ptr, uint32_t* out_valu
             break;
         case DW_EH_PE_pcrel:
             if (issigned) {
-                *out_value = addr + (int32_t)data;
+                *out_value = addr + (intptr_t)data;
             } else {
                 *out_value = addr + data;
             }
@@ -226,7 +211,7 @@ static bool read_dwarf(const memory_t* memory, uintptr_t ptr, uint32_t* out_valu
         /* Assuming ptr is correct base to calculate datarel */
         case DW_EH_PE_datarel:
             if (issigned) {
-                *out_value = ptr + (int32_t)data;
+                *out_value = ptr + (intptr_t)data;
             } else {
                 *out_value = ptr + data;
             }
@@ -247,12 +232,12 @@ static uintptr_t find_fde(const memory_t* memory,
     }
     const map_info_t* mi = find_map_info(map_info_list, pc);
     if (!mi) {
-        ALOGV("find_fde: no map info for pc:0x%x", pc);
+        ALOGV("find_fde: no map info for pc:0x%zx", pc);
         return 0;
     }
     const map_info_data_t* midata = mi->data;
     if (!midata) {
-        ALOGV("find_fde: no eh_frame_hdr for map: start=0x%x, end=0x%x", mi->start, mi->end);
+        ALOGV("find_fde: no eh_frame_hdr for map: start=0x%zx, end=0x%zx", mi->start, mi->end);
         return 0;
     }
 
@@ -286,7 +271,7 @@ static uintptr_t find_fde(const memory_t* memory,
     */
     if (!read_dwarf(memory, eh_frame_hdr, &eh_hdr_info.eh_frame_ptr, eh_hdr_info.eh_frame_ptr_enc, &c)) return 0;
     if (!read_dwarf(memory, eh_frame_hdr, &eh_hdr_info.fde_count, eh_hdr_info.fde_count_enc, &c)) return 0;
-    ALOGV("find_fde: found %d FDEs", eh_hdr_info.fde_count);
+    ALOGV("find_fde: found %zd FDEs", eh_hdr_info.fde_count);
 
     int32_t low = 0;
     int32_t high = eh_hdr_info.fde_count;
@@ -305,13 +290,13 @@ static uintptr_t find_fde(const memory_t* memory,
     }
     /* Value found is at high. */
     if (high < 0) {
-        ALOGV("find_fde: pc %x is out of FDE bounds: %x", pc, start);
+        ALOGV("find_fde: pc %zx is out of FDE bounds: %zx", pc, start);
         return 0;
     }
     c += high * 8;
     if (!read_dwarf(memory, eh_frame_hdr, &start, eh_hdr_info.fde_table_enc, &c)) return 0;
     if (!read_dwarf(memory, eh_frame_hdr, &fde, eh_hdr_info.fde_table_enc, &c)) return 0;
-    ALOGV("pc 0x%x, ENTRY %d: start=0x%x, fde=0x%x", pc, high, start, fde);
+    ALOGV("pc 0x%zx, ENTRY %d: start=0x%zx, fde=0x%zx", pc, high, start, fde);
     return fde;
 }
 
@@ -334,22 +319,22 @@ static bool execute_dwarf(const memory_t* memory, uintptr_t ptr, cie_info_t* cie
     }
 
     switch ((dwarf_CFA)inst) {
-        uint32_t reg = 0;
-        uint32_t offset = 0;
+        uintptr_t reg = 0;
+        uintptr_t offset = 0;
         case DW_CFA_advance_loc:
             dstate->loc += op * cie_info->code_align;
-            ALOGV("DW_CFA_advance_loc: %d to 0x%x", op, dstate->loc);
+            ALOGV("DW_CFA_advance_loc: %zd to 0x%zx", op * cie_info->code_align, dstate->loc);
             break;
         case DW_CFA_offset:
             if (!try_get_uleb128(memory, ptr, &offset, cursor)) return false;
             dstate->regs[op].rule = 'o';
             dstate->regs[op].value = offset * cie_info->data_align;
-            ALOGV("DW_CFA_offset: r%d = o(%d)", op, dstate->regs[op].value);
+            ALOGV("DW_CFA_offset: r%d = o(%zd)", op, dstate->regs[op].value);
             break;
         case DW_CFA_restore:
             dstate->regs[op].rule = stack->regs[op].rule;
             dstate->regs[op].value = stack->regs[op].value;
-            ALOGV("DW_CFA_restore: r%d = %c(%d)", op, dstate->regs[op].rule, dstate->regs[op].value);
+            ALOGV("DW_CFA_restore: r%d = %c(%zd)", op, dstate->regs[op].rule, dstate->regs[op].value);
             break;
         case DW_CFA_nop:
             break;
@@ -360,75 +345,75 @@ static bool execute_dwarf(const memory_t* memory, uintptr_t ptr, cie_info_t* cie
                 return false;
             }
             dstate->loc = offset * cie_info->code_align;
-            ALOGV("DW_CFA_set_loc: %d to 0x%x", offset * cie_info->code_align, dstate->loc);
+            ALOGV("DW_CFA_set_loc: %zd to 0x%zx", offset * cie_info->code_align, dstate->loc);
             break;
         case DW_CFA_advance_loc1:
             if (!try_get_byte(memory, ptr, (uint8_t*)&offset, cursor)) return false;
             dstate->loc += (uint8_t)offset * cie_info->code_align;
-            ALOGV("DW_CFA_advance_loc1: %d to 0x%x", (uint8_t)offset * cie_info->code_align, dstate->loc);
+            ALOGV("DW_CFA_advance_loc1: %zd to 0x%zx", (uint8_t)offset * cie_info->code_align, dstate->loc);
             break;
         case DW_CFA_advance_loc2:
             if (!try_get_xbytes(memory, ptr, &offset, 2, cursor)) return false;
             dstate->loc += (uint16_t)offset * cie_info->code_align;
-            ALOGV("DW_CFA_advance_loc2: %d to 0x%x", (uint16_t)offset * cie_info->code_align, dstate->loc);
+            ALOGV("DW_CFA_advance_loc2: %zd to 0x%zx", (uint16_t)offset * cie_info->code_align, dstate->loc);
             break;
         case DW_CFA_advance_loc4:
             if (!try_get_xbytes(memory, ptr, &offset, 4, cursor)) return false;
             dstate->loc += offset * cie_info->code_align;
-            ALOGV("DW_CFA_advance_loc4: %d to 0x%x", offset * cie_info->code_align, dstate->loc);
+            ALOGV("DW_CFA_advance_loc4: %zd to 0x%zx", offset * cie_info->code_align, dstate->loc);
             break;
         case DW_CFA_offset_extended: // probably we don't have it on x86.
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) return false;
             if (!try_get_uleb128(memory, ptr, &offset, cursor)) return false;
             if (reg >= DWARF_REGISTERS) {
-                ALOGE("DW_CFA_offset_extended: r%d exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
+                ALOGE("DW_CFA_offset_extended: r%zd exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
                 return false;
             }
             dstate->regs[reg].rule = 'o';
             dstate->regs[reg].value = offset * cie_info->data_align;
-            ALOGV("DW_CFA_offset_extended: r%d = o(%d)", reg, dstate->regs[reg].value);
+            ALOGV("DW_CFA_offset_extended: r%zd = o(%zd)", reg, dstate->regs[reg].value);
             break;
         case DW_CFA_restore_extended: // probably we don't have it on x86.
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) return false;
             if (reg >= DWARF_REGISTERS) {
-                ALOGE("DW_CFA_restore_extended: r%d exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
+                ALOGE("DW_CFA_restore_extended: r%zd exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
                 return false;
             }
             dstate->regs[reg].rule = stack->regs[reg].rule;
             dstate->regs[reg].value = stack->regs[reg].value;
-            ALOGV("DW_CFA_restore: r%d = %c(%d)", reg, dstate->regs[reg].rule, dstate->regs[reg].value);
+            ALOGV("DW_CFA_restore: r%zd = %c(%zd)", reg, dstate->regs[reg].rule, dstate->regs[reg].value);
             break;
         case DW_CFA_undefined: // probably we don't have it on x86.
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) return false;
             if (reg >= DWARF_REGISTERS) {
-                ALOGE("DW_CFA_undefined: r%d exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
+                ALOGE("DW_CFA_undefined: r%zd exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
                 return false;
             }
             dstate->regs[reg].rule = 'u';
             dstate->regs[reg].value = 0;
-            ALOGV("DW_CFA_undefined: r%d", reg);
+            ALOGV("DW_CFA_undefined: r%zd", reg);
             break;
         case DW_CFA_same_value: // probably we don't have it on x86.
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) return false;
             if (reg >= DWARF_REGISTERS) {
-                ALOGE("DW_CFA_undefined: r%d exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
+                ALOGE("DW_CFA_undefined: r%zd exceeds supported number of registers (%d)", reg, DWARF_REGISTERS);
                 return false;
             }
             dstate->regs[reg].rule = 's';
             dstate->regs[reg].value = 0;
-            ALOGV("DW_CFA_same_value: r%d", reg);
+            ALOGV("DW_CFA_same_value: r%zd", reg);
             break;
         case DW_CFA_register: // probably we don't have it on x86.
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) return false;
             /* that's new register actually, not offset */
             if (!try_get_uleb128(memory, ptr, &offset, cursor)) return false;
             if (reg >= DWARF_REGISTERS || offset >= DWARF_REGISTERS) {
-                ALOGE("DW_CFA_register: r%d or r%d exceeds supported number of registers (%d)", reg, offset, DWARF_REGISTERS);
+                ALOGE("DW_CFA_register: r%zd or r%zd exceeds supported number of registers (%d)", reg, offset, DWARF_REGISTERS);
                 return false;
             }
             dstate->regs[reg].rule = 'r';
             dstate->regs[reg].value = offset;
-            ALOGV("DW_CFA_register: r%d = r(%d)", reg, dstate->regs[reg].value);
+            ALOGV("DW_CFA_register: r%zd = r(%zd)", reg, dstate->regs[reg].value);
             break;
         case DW_CFA_remember_state:
             if (*stack_ptr == DWARF_STATES_STACK) {
@@ -456,21 +441,21 @@ static bool execute_dwarf(const memory_t* memory, uintptr_t ptr, cie_info_t* cie
             if (!try_get_uleb128(memory, ptr, &offset, cursor)) return false;
             dstate->cfa_reg = reg;
             dstate->cfa_off = offset;
-            ALOGV("DW_CFA_def_cfa: %x(r%d)", offset, reg);
+            ALOGV("DW_CFA_def_cfa: %zx(r%zd)", offset, reg);
             break;
         case DW_CFA_def_cfa_register:
             if (!try_get_uleb128(memory, ptr, &reg, cursor)) {
                 return false;
             }
             dstate->cfa_reg = reg;
-            ALOGV("DW_CFA_def_cfa_register: r%d", reg);
+            ALOGV("DW_CFA_def_cfa_register: r%zd", reg);
             break;
         case DW_CFA_def_cfa_offset:
             if (!try_get_uleb128(memory, ptr, &offset, cursor)) {
                 return false;
             }
             dstate->cfa_off = offset;
-            ALOGV("DW_CFA_def_cfa_offset: %x", offset);
+            ALOGV("DW_CFA_def_cfa_offset: %zx", offset);
             break;
         default:
             ALOGE("unrecognized DW_CFA_* instruction: 0x%x", inst);
@@ -480,10 +465,10 @@ static bool execute_dwarf(const memory_t* memory, uintptr_t ptr, cie_info_t* cie
 }
 
 /* Restoring particular register value based on dwarf state. */
-static bool get_old_register_value(const memory_t* memory, uint32_t cfa,
+static bool get_old_register_value(const memory_t* memory, uintptr_t cfa,
                                    dwarf_state_t* dstate, uint8_t reg,
                                    unwind_state_t* state, unwind_state_t* newstate) {
-    uint32_t addr;
+    uintptr_t addr;
     switch (dstate->regs[reg].rule) {
         case 0:
             /* We don't have dstate updated for this register, so assuming value kept the same.
@@ -491,28 +476,28 @@ static bool get_old_register_value(const memory_t* memory, uint32_t cfa,
                but we don't have all registers in state to handle this properly */
             ALOGV("get_old_register_value: value of r%d is the same", reg);
             // for ESP if it's not updated by dwarf rule we assume it's equal to CFA
-            if (reg == DWARF_ESP) {
-                ALOGV("get_old_register_value: adjusting esp to CFA: 0x%x", cfa);
+            if (reg == DWARF_SP) {
+                ALOGV("get_old_register_value: adjusting sp to CFA: 0x%zx", cfa);
                 newstate->reg[reg] = cfa;
             } else {
                 newstate->reg[reg] = state->reg[reg];
             }
             break;
         case 'o':
-            addr = cfa + (int32_t)dstate->regs[reg].value;
-            if (!try_get_word(memory, addr, &newstate->reg[reg])) {
-                ALOGE("get_old_register_value: can't read from 0x%x", addr);
+            addr = cfa + (intptr_t)dstate->regs[reg].value;
+            if (!try_get_reg(memory, addr, &newstate->reg[reg])) {
+                ALOGE("get_old_register_value: can't read from 0x%zx", addr);
                 return false;
             }
-            ALOGV("get_old_register_value: r%d at 0x%x is 0x%x", reg, addr, newstate->reg[reg]);
+            ALOGV("get_old_register_value: r%d at 0x%zx is 0x%zx", reg, addr, newstate->reg[reg]);
             break;
         case 'r':
             /* We don't have all registers in state so don't even try to look at 'r' */
             ALOGE("get_old_register_value: register lookup not implemented yet");
             break;
         default:
-            ALOGE("get_old_register_value: unexpected rule:%c value:%d for register %d",
-                   dstate->regs[reg].rule, (int32_t)dstate->regs[reg].value, reg);
+            ALOGE("get_old_register_value: unexpected rule:%c value:%zd for register %d",
+                   dstate->regs[reg].rule, (intptr_t)dstate->regs[reg].value, reg);
             return false;
     }
     return true;
@@ -525,25 +510,25 @@ static bool update_state(const memory_t* memory, unwind_state_t* state,
     /* We can restore more registers here if we need them. Meanwile doing minimal work here. */
     /* Getting CFA. */
     uintptr_t cfa = 0;
-    if (dstate->cfa_reg == DWARF_ESP) {
-        cfa = state->reg[DWARF_ESP] + dstate->cfa_off;
-    } else if (dstate->cfa_reg == DWARF_EBP) {
-        cfa = state->reg[DWARF_EBP] + dstate->cfa_off;
+    if (dstate->cfa_reg == DWARF_SP) {
+        cfa = state->reg[DWARF_SP] + dstate->cfa_off;
+    } else if (dstate->cfa_reg == DWARF_BP) {
+        cfa = state->reg[DWARF_BP] + dstate->cfa_off;
     } else {
         ALOGE("update_state: unexpected CFA register: %d", dstate->cfa_reg);
         return false;
     }
-    ALOGV("update_state: new CFA: 0x%x", cfa);
+    ALOGV("update_state: new CFA: 0x%zx", cfa);
     /* Getting EIP. */
-    if (!get_old_register_value(memory, cfa, dstate, DWARF_EIP, state, &newstate)) return false;
+    if (!get_old_register_value(memory, cfa, dstate, DWARF_IP, state, &newstate)) return false;
     /* Getting EBP. */
-    if (!get_old_register_value(memory, cfa, dstate, DWARF_EBP, state, &newstate)) return false;
+    if (!get_old_register_value(memory, cfa, dstate, DWARF_BP, state, &newstate)) return false;
     /* Getting ESP. */
-    if (!get_old_register_value(memory, cfa, dstate, DWARF_ESP, state, &newstate)) return false;
+    if (!get_old_register_value(memory, cfa, dstate, DWARF_SP, state, &newstate)) return false;
 
-    ALOGV("update_state: IP:  0x%x; restore IP:  0x%x", state->reg[DWARF_EIP], newstate.reg[DWARF_EIP]);
-    ALOGV("update_state: EBP: 0x%x; restore EBP: 0x%x", state->reg[DWARF_EBP], newstate.reg[DWARF_EBP]);
-    ALOGV("update_state: ESP: 0x%x; restore ESP: 0x%x", state->reg[DWARF_ESP], newstate.reg[DWARF_ESP]);
+    ALOGV("update_state: IP:  0x%zx; restore IP:  0x%zx", state->reg[DWARF_IP], newstate.reg[DWARF_IP]);
+    ALOGV("update_state: EBP: 0x%zx; restore EBP: 0x%zx", state->reg[DWARF_BP], newstate.reg[DWARF_BP]);
+    ALOGV("update_state: ESP: 0x%zx; restore ESP: 0x%zx", state->reg[DWARF_SP], newstate.reg[DWARF_SP]);
     *state = newstate;
     return true;
 }
@@ -555,7 +540,7 @@ static bool execute_fde(const memory_t* memory,
     uint32_t fde_length = 0;
     uint32_t cie_length = 0;
     uintptr_t cie = 0;
-    uintptr_t cie_offset = 0;
+    uint32_t cie_offset = 0;
     cie_info_t cie_i;
     cie_info_t* cie_info = &cie_i;
     fde_info_t fde_i;
@@ -607,7 +592,7 @@ static bool execute_fde(const memory_t* memory,
         }
     }
     ALOGV("execute_fde: FDE length: %d", fde_length);
-    ALOGV("execute_fde: CIE pointer: %x", cie);
+    ALOGV("execute_fde: CIE pointer: %zx", cie);
     ALOGV("execute_fde: CIE length: %d", cie_length);
 
     /* Read CIE:
@@ -664,8 +649,8 @@ static bool execute_fde(const memory_t* memory,
             return false;
         }
     }
-    ALOGV("execute_fde: CIE code alignment factor: %d", cie_info->code_align);
-    ALOGV("execute_fde: CIE data alignment factor: %d", cie_info->data_align);
+    ALOGV("execute_fde: CIE code alignment factor: %zd", cie_info->code_align);
+    ALOGV("execute_fde: CIE data alignment factor: %zd", cie_info->data_align);
     if (cie_info->aug_z) {
         if (!try_get_uleb128(memory, cie, &cie_info->aug_z, &c)) {
             return false;
@@ -725,11 +710,11 @@ static bool execute_fde(const memory_t* memory,
         return false;
     }
     dstate->loc = fde_info->start;
-    ALOGV("execute_fde: FDE start: %x", dstate->loc);
-    if (!read_dwarf(memory, fde, &fde_info->length, 0, &c)) {
+    ALOGV("execute_fde: FDE start: %zx", dstate->loc);
+    if (!read_dwarf(memory, fde, &fde_info->length, (uint8_t)cie_info->aug_R, &c)) {
         return false;
     }
-    ALOGV("execute_fde: FDE length: %x", fde_info->length);
+    ALOGV("execute_fde: FDE length: %zx", fde_info->length);
     if (cie_info->aug_z) {
         if (!try_get_uleb128(memory, fde, &fde_info->aug_z, &c)) {
             return false;
@@ -745,11 +730,11 @@ static bool execute_fde(const memory_t* memory,
     /* Save CIE state as 0 element of stack. Used by DW_CFA_restore. */
     stack[0] = *dstate;
     stack_ptr = 1;
-    while (c < fde_length + 4 && state->reg[DWARF_EIP] >= dstate->loc) {
+    while (c < fde_length + 4 && state->reg[DWARF_IP] >= dstate->loc) {
         if (!execute_dwarf(memory, fde, cie_info, dstate, &c, stack, &stack_ptr)) {
            return false;
         }
-        ALOGV("IP: %x, LOC: %x", state->reg[DWARF_EIP], dstate->loc);
+        ALOGV("IP: %zx, LOC: %zx", state->reg[DWARF_IP], dstate->loc);
     }
 
     return update_state(memory, state, dstate);
@@ -764,55 +749,56 @@ static ssize_t unwind_backtrace_common(const memory_t* memory,
     size_t returned_frames = 0;
 
     ALOGV("Unwinding tid: %d", memory->tid);
-    ALOGV("IP: %x", state->reg[DWARF_EIP]);
-    ALOGV("BP: %x", state->reg[DWARF_EBP]);
-    ALOGV("SP: %x", state->reg[DWARF_ESP]);
+    ALOGV("IP: %zx", state->reg[DWARF_IP]);
+    ALOGV("BP: %zx", state->reg[DWARF_BP]);
+    ALOGV("SP: %zx", state->reg[DWARF_SP]);
 
     for (size_t index = 0; returned_frames < max_depth; index++) {
-        uintptr_t fde = find_fde(memory, map_info_list, state->reg[DWARF_EIP]);
+        uintptr_t fde = find_fde(memory, map_info_list, state->reg[DWARF_IP]);
         /* FDE is not found, it may happen if stack is corrupted or calling wrong adress.
            Getting return address from stack.
         */
         if (!fde) {
-            uint32_t ip;
+            size_t ip;
             ALOGV("trying to restore registers from stack");
-            if (!try_get_word(memory, state->reg[DWARF_EBP] + 4, &ip) ||
-                ip == state->reg[DWARF_EIP]) {
+
+            if (!try_get_reg(memory, state->reg[DWARF_BP] + sizeof(state->reg[DWARF_BP]), &ip) ||
+                ip == state->reg[DWARF_IP]) {
                 ALOGV("can't get IP from stack");
                 break;
             }
             /* We've been able to get IP from stack so recording the frame before continue. */
             backtrace_frame_t* frame = add_backtrace_entry(
-                    index ? rewind_pc_arch(memory, state->reg[DWARF_EIP]) : state->reg[DWARF_EIP],
+                    index ? rewind_pc_arch(memory, state->reg[DWARF_IP]) : state->reg[DWARF_IP],
                     backtrace, ignore_depth, max_depth,
                     &ignored_frames, &returned_frames);
-            state->reg[DWARF_EIP] = ip;
-            state->reg[DWARF_ESP] = state->reg[DWARF_EBP] + 8;
-            if (!try_get_word(memory, state->reg[DWARF_EBP], &state->reg[DWARF_EBP])) {
+            state->reg[DWARF_IP] = ip;
+            state->reg[DWARF_SP] = state->reg[DWARF_BP] + sizeof(state->reg[DWARF_BP]) * 2;
+            if (!try_get_reg(memory, state->reg[DWARF_BP], &state->reg[DWARF_BP])) {
                 ALOGV("can't get EBP from stack");
                 break;
             }
-            ALOGV("restore IP: %x", state->reg[DWARF_EIP]);
-            ALOGV("restore BP: %x", state->reg[DWARF_EBP]);
-            ALOGV("restore SP: %x", state->reg[DWARF_ESP]);
+            ALOGV("restore IP: %zx", state->reg[DWARF_IP]);
+            ALOGV("restore BP: %zx", state->reg[DWARF_BP]);
+            ALOGV("restore SP: %zx", state->reg[DWARF_SP]);
             continue;
         }
         backtrace_frame_t* frame = add_backtrace_entry(
-                index ? rewind_pc_arch(memory, state->reg[DWARF_EIP]) : state->reg[DWARF_EIP],
+                index ? rewind_pc_arch(memory, state->reg[DWARF_IP]) : state->reg[DWARF_IP],
                 backtrace, ignore_depth, max_depth,
                 &ignored_frames, &returned_frames);
 
-        uint32_t stack_top = state->reg[DWARF_ESP];
+        uintptr_t stack_top = state->reg[DWARF_SP];
 
         if (!execute_fde(memory, fde, state)) break;
 
         if (frame) {
             frame->stack_top = stack_top;
-            if (stack_top < state->reg[DWARF_ESP]) {
-                frame->stack_size = state->reg[DWARF_ESP] - stack_top;
+            if (stack_top < state->reg[DWARF_SP]) {
+                frame->stack_size = state->reg[DWARF_SP] - stack_top;
             }
         }
-        ALOGV("Stack: 0x%x ... 0x%x - %d bytes", frame->stack_top, state->reg[DWARF_ESP], frame->stack_size);
+        ALOGV("Stack: 0x%zx ... 0x%zx - %zd bytes", frame->stack_top, state->reg[DWARF_SP], frame->stack_size);
     }
     return returned_frames;
 }
@@ -824,15 +810,20 @@ ssize_t unwind_backtrace_signal_arch(siginfo_t* siginfo __attribute__((unused)),
 
     unwind_state_t state;
 #if defined(__APPLE__)
-    state.reg[DWARF_EBP] = uc->uc_mcontext->__ss.__ebp;
-    state.reg[DWARF_ESP] = uc->uc_mcontext->__ss.__esp;
-    state.reg[DWARF_EIP] = uc->uc_mcontext->__ss.__eip;
+    state.reg[DWARF_BP] = uc->uc_mcontext->__ss.__ebp;
+    state.reg[DWARF_SP] = uc->uc_mcontext->__ss.__esp;
+    state.reg[DWARF_IP] = uc->uc_mcontext->__ss.__eip;
 #else
-    state.reg[DWARF_EBP] = uc->uc_mcontext.gregs[REG_EBP];
-    state.reg[DWARF_ESP] = uc->uc_mcontext.gregs[REG_ESP];
-    state.reg[DWARF_EIP] = uc->uc_mcontext.gregs[REG_EIP];
+# ifdef __i386__
+    state.reg[DWARF_BP] = uc->uc_mcontext.ebp;
+    state.reg[DWARF_SP] = uc->uc_mcontext.esp;
+    state.reg[DWARF_IP] = uc->uc_mcontext.eip;
+# else
+    state.reg[DWARF_BP] = uc->uc_mcontext.rbp;
+    state.reg[DWARF_SP] = uc->uc_mcontext.rsp;
+    state.reg[DWARF_IP] = uc->uc_mcontext.rip;
+# endif
 #endif
-
     memory_t memory;
     init_memory(&memory, map_info_list);
     return unwind_backtrace_common(&memory, map_info_list,
@@ -844,15 +835,15 @@ ssize_t unwind_backtrace_ptrace_arch(pid_t tid, const ptrace_context_t* context,
 #if defined(__APPLE__)
     return -1;
 #else
-    pt_regs_x86_t regs;
+    struct user_regs_struct regs;
     if (ptrace(PTRACE_GETREGS, tid, 0, &regs)) {
         return -1;
     }
 
     unwind_state_t state;
-    state.reg[DWARF_EBP] = regs.ebp;
-    state.reg[DWARF_EIP] = regs.eip;
-    state.reg[DWARF_ESP] = regs.esp;
+    state.reg[DWARF_BP] = regs.bp;
+    state.reg[DWARF_IP] = regs.ip;
+    state.reg[DWARF_SP] = regs.sp;
 
     memory_t memory;
     init_memory_ptrace(&memory, tid);

@@ -48,7 +48,7 @@ public:
   BacktraceCurrent(BacktraceImpl* impl);
   virtual ~BacktraceCurrent();
 
-  bool ReadWord(uintptr_t ptr, uint32_t* out_value);
+  bool ReadWord(uintptr_t ptr, unsigned long* out_value);
 };
 
 class BacktracePtrace : public Backtrace {
@@ -56,7 +56,7 @@ public:
   BacktracePtrace(BacktraceImpl* impl, pid_t pid, pid_t tid);
   virtual ~BacktracePtrace();
 
-  bool ReadWord(uintptr_t ptr, uint32_t* out_value);
+  bool ReadWord(uintptr_t ptr, unsigned long* out_value);
 };
 
 Backtrace* CreateCurrentObj();

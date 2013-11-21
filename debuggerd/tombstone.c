@@ -181,7 +181,7 @@ static void dump_fault_addr(log_t* log, pid_t tid, int sig)
     if(ptrace(PTRACE_GETSIGINFO, tid, 0, &si)){
         _LOG(log, SCOPE_AT_FAULT, "cannot get siginfo: %s\n", strerror(errno));
     } else if (signal_has_address(sig)) {
-        _LOG(log, SCOPE_AT_FAULT, "signal %d (%s), code %d (%s), fault addr %08x\n",
+        _LOG(log, SCOPE_AT_FAULT, "signal %d (%s), code %d (%s), fault addr %08zx\n",
              sig, get_signame(sig),
              si.si_code, get_sigcode(sig, si.si_code),
              (uintptr_t) si.si_addr);
@@ -231,7 +231,7 @@ static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, int scope_flags) 
 static void dump_stack_segment(const backtrace_context_t* context, log_t* log,
         int scope_flags, uintptr_t *sp, size_t words, int label) {
     for (size_t i = 0; i < words; i++) {
-        uint32_t stack_content;
+        unsigned long stack_content;
         if (!backtrace_read_word(context, *sp, &stack_content)) {
             break;
         }
@@ -245,33 +245,33 @@ static void dump_stack_segment(const backtrace_context_t* context, log_t* log,
         if (func_name) {
             if (!i && label >= 0) {
                 if (offset) {
-                    _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s+%u)\n",
+                    _LOG(log, scope_flags, "    #%02d  %08zx  %08lx  %s (%s+%zu)\n",
                             label, *sp, stack_content, map_name, func_name, offset);
                 } else {
-                    _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s)\n",
+                    _LOG(log, scope_flags, "    #%02d  %08zx  %08lx  %s (%s)\n",
                             label, *sp, stack_content, map_name, func_name);
                 }
             } else {
                 if (offset) {
-                    _LOG(log, scope_flags, "         %08x  %08x  %s (%s+%u)\n",
+                    _LOG(log, scope_flags, "         %08zx  %08lx  %s (%s+%zu)\n",
                             *sp, stack_content, map_name, func_name, offset);
                 } else {
-                    _LOG(log, scope_flags, "         %08x  %08x  %s (%s)\n",
+                    _LOG(log, scope_flags, "         %08zx  %08lx  %s (%s)\n",
                             *sp, stack_content, map_name, func_name);
                 }
             }
             free(func_name);
         } else {
             if (!i && label >= 0) {
-                _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s\n",
+                _LOG(log, scope_flags, "    #%02d  %08zx  %08lx  %s\n",
                         label, *sp, stack_content, map_name);
             } else {
-                _LOG(log, scope_flags, "         %08x  %08x  %s\n",
+                _LOG(log, scope_flags, "         %08zx  %08lx  %s\n",
                         *sp, stack_content, map_name);
             }
         }
 
-        *sp += sizeof(uint32_t);
+        *sp += sizeof(uintptr_t);
     }
 }
 
@@ -294,7 +294,7 @@ static void dump_stack(const backtrace_context_t* context, log_t* log, int scope
     scope_flags |= SCOPE_SENSITIVE;
 
     // Dump a few words before the first frame.
-    uintptr_t sp = backtrace->frames[first].sp - STACK_WORDS * sizeof(uint32_t);
+    uintptr_t sp = backtrace->frames[first].sp - STACK_WORDS * sizeof(uintptr_t);
     dump_stack_segment(context, log, scope_flags, &sp, STACK_WORDS, -1);
 
     // Dump a few words from all successive frames.
@@ -314,7 +314,7 @@ static void dump_stack(const backtrace_context_t* context, log_t* log, int scope
                 _LOG(log, scope_flags, "         ........  ........\n");
             }
         } else {
-            size_t words = frame->stack_size / sizeof(uint32_t);
+            size_t words = frame->stack_size / sizeof(uintptr_t);
             if (words == 0) {
                 words = 1;
             } else if (words > STACK_WORDS) {
@@ -338,7 +338,7 @@ static void dump_backtrace_and_stack(const backtrace_context_t* context,
 
 static void dump_map(log_t* log, const backtrace_map_info_t* m, const char* what, int scope_flags) {
     if (m != NULL) {
-        _LOG(log, scope_flags, "    %08x-%08x %c%c%c %s\n", m->start, m->end,
+        _LOG(log, scope_flags, "    %08zx-%08zx %c%c%c %s\n", m->start, m->end,
              m->is_readable ? 'r' : '-',
              m->is_writable ? 'w' : '-',
              m->is_executable ? 'x' : '-',
@@ -367,7 +367,7 @@ static void dump_nearby_maps(const backtrace_map_info_t* map_info_list, log_t* l
         return;
     }
 
-    _LOG(log, scope_flags, "\nmemory map around fault addr %08x:\n", (int)si.si_addr);
+    _LOG(log, scope_flags, "\nmemory map around fault addr %08zx:\n", (uintptr_t)si.si_addr);
 
     /*
      * Search for a match, or for a hole where the match would be.  The list
@@ -619,24 +619,15 @@ static void dump_abort_message(const backtrace_context_t* context, log_t* log, u
   memset(msg, 0, sizeof(msg));
   char* p = &msg[0];
   while (p < &msg[sizeof(msg)]) {
-    uint32_t data;
+    unsigned long data;
+    size_t len = sizeof(unsigned long);
     if (!backtrace_read_word(context, address, &data)) {
       break;
     }
-    address += sizeof(uint32_t);
+    address += sizeof(unsigned long);
 
-    if ((*p++ = (data >>  0) & 0xff) == 0) {
-      break;
-    }
-    if ((*p++ = (data >>  8) & 0xff) == 0) {
-      break;
-    }
-    if ((*p++ = (data >> 16) & 0xff) == 0) {
-      break;
-    }
-    if ((*p++ = (data >> 24) & 0xff) == 0) {
-      break;
-    }
+    while (len > 0 && (*p++ = (data >> (sizeof(unsigned long) - len) * 8) & 0xff) != 0)
+       len--;
   }
   msg[sizeof(msg) - 1] = '\0';
 

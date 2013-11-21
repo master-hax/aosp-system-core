@@ -71,7 +71,7 @@ typedef struct {
       uint8_t fde_count_enc;
       uint8_t fde_table_enc;
       uintptr_t eh_frame_ptr;
-      uint32_t fde_count;
+      size_t fde_count;
 } eh_frame_hdr_info_t;
 
 /*
@@ -80,14 +80,14 @@ typedef struct {
 
 typedef struct {
       uint8_t version;
-      uint32_t code_align;
-      uint32_t data_align;
-      uint32_t reg;
-      uint32_t aug_z;
+      uintptr_t code_align;
+      uintptr_t data_align;
+      size_t reg;
+      size_t aug_z;
       uint8_t aug_L;
       uint8_t aug_R;
       uint8_t aug_S;
-      uint32_t aug_P;
+      uintptr_t aug_P;
 } cie_info_t;
 
 /*
@@ -95,10 +95,10 @@ typedef struct {
 */
 
 typedef struct {
-      uint32_t start;
-      uint32_t length; // number of instructions covered by FDE
-      uint32_t aug_z;
-      uint32_t aug_L;
+      uintptr_t start;
+      size_t length; // number of instructions covered by FDE
+      size_t aug_z;
+      uintptr_t aug_L;
 } fde_info_t;
 
 /*
@@ -111,7 +111,7 @@ typedef struct {
 
 typedef struct {
     char rule;         // rule: o - offset(value); r - register(value)
-    uint32_t value;    // value
+    uintptr_t value;    // value
 } reg_rule_t;
 
 /* Dwarf preserved number of registers for x86. */
@@ -131,10 +131,36 @@ typedef struct {
 #define DWARF_ECX     1
 #define DWARF_EDX     2
 #define DWARF_EBX     3
-#define DWARF_ESP     4
-#define DWARF_EBP     5
 #define DWARF_ESI     6
 #define DWARF_EDI     7
+#define DWARF_ESP     4
+#define DWARF_EBP     5
 #define DWARF_EIP     8
 
+#define DWARF_RAX     0
+#define DWARF_RDX     1
+#define DWARF_RCX     2
+#define DWARF_RBX     3
+#define DWARF_RSI     4
+#define DWARF_RDI     5
+#define DWARF_RBP     6
+#define DWARF_RSP     7
+#define DWARF_R8      8
+#define DWARF_R9      9
+#define DWARF_R10    10
+#define DWARF_R11    11
+#define DWARF_R12    12
+#define DWARF_R13    13
+#define DWARF_R14    14
+#define DWARF_R15    15
+#define DWARF_RIP    16
 
+#ifdef __i386__
+# define DWARF_IP DWARF_EIP
+# define DWARF_BP DWARF_EBP
+# define DWARF_SP DWARF_ESP
+#else
+# define DWARF_IP DWARF_RIP
+# define DWARF_BP DWARF_RBP
+# define DWARF_SP DWARF_RSP
+#endif

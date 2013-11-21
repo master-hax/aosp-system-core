@@ -42,29 +42,6 @@ typedef struct {
     const map_info_t* map_info_list;
 } memory_t;
 
-#if __i386__
-/* ptrace() register context. */
-typedef struct pt_regs_x86 {
-    uint32_t ebx;
-    uint32_t ecx;
-    uint32_t edx;
-    uint32_t esi;
-    uint32_t edi;
-    uint32_t ebp;
-    uint32_t eax;
-    uint32_t xds;
-    uint32_t xes;
-    uint32_t xfs;
-    uint32_t xgs;
-    uint32_t orig_eax;
-    uint32_t eip;
-    uint32_t xcs;
-    uint32_t eflags;
-    uint32_t esp;
-    uint32_t xss;
-} pt_regs_x86_t;
-#endif
-
 #if __mips__
 /* ptrace() GET_REGS context. */
 typedef struct pt_regs_mips {
@@ -97,10 +74,23 @@ void init_memory_ptrace(memory_t* memory, pid_t tid);
 bool try_get_word(const memory_t* memory, uintptr_t ptr, uint32_t* out_value);
 
 /*
+ * Reads a 8bytes of memory safely.
+ * If the memory is local, ensures that the address is readable before dereferencing it.
+ * Returns false and a value of 0xffffffffffffffff if the word could not be read.
+ */
+bool try_get_xword(const memory_t* memory, uintptr_t ptr, uint64_t* out_value);
+
+/*
  * Reads a word of memory safely using ptrace().
  * Returns false and a value of 0xffffffff if the word could not be read.
  */
 bool try_get_word_ptrace(pid_t tid, uintptr_t ptr, uint32_t* out_value);
+
+/*
+ * Reads a 8bytes of memory safely using ptrace().
+ * Returns false and a value of 0xffffffffffffffff if the word could not be read.
+ */
+bool try_get_xword_ptrace(pid_t tid, uintptr_t ptr, uint64_t* out_value);
 
 /*
  * Loads information needed for examining a remote process using ptrace().

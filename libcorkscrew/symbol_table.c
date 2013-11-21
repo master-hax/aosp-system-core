@@ -32,7 +32,7 @@
 
 #include <elf.h>
 
-static bool is_elf(Elf32_Ehdr* e) {
+static bool is_elf(Elf_Ehdr* e) {
     return (e->e_ident[EI_MAG0] == ELFMAG0 &&
             e->e_ident[EI_MAG1] == ELFMAG1 &&
             e->e_ident[EI_MAG2] == ELFMAG2 &&
@@ -81,16 +81,16 @@ symbol_table_t* load_symbol_table(const char *filename) {
     }
 
     // Parse the file header
-    Elf32_Ehdr *hdr = (Elf32_Ehdr*)base;
+    Elf_Ehdr *hdr = (Elf_Ehdr*)base;
     if (!is_elf(hdr)) {
         goto out_close;
     }
-    Elf32_Shdr *shdr = (Elf32_Shdr*)(base + hdr->e_shoff);
+    Elf_Shdr *shdr = (Elf_Shdr*)(base + hdr->e_shoff);
 
     // Search for the dynamic symbols section
     int sym_idx = -1;
     int dynsym_idx = -1;
-    for (Elf32_Half i = 0; i < hdr->e_shnum; i++) {
+    for (Elf_Half i = 0; i < hdr->e_shnum; i++) {
         if (shdr[i].sh_type == SHT_SYMTAB) {
             sym_idx = i;
         }
@@ -108,21 +108,21 @@ symbol_table_t* load_symbol_table(const char *filename) {
     }
     table->num_symbols = 0;
 
-    Elf32_Sym *dynsyms = NULL;
+    Elf_Sym *dynsyms = NULL;
     int dynnumsyms = 0;
     char *dynstr = NULL;
     if (dynsym_idx != -1) {
-        dynsyms = (Elf32_Sym*)(base + shdr[dynsym_idx].sh_offset);
+        dynsyms = (Elf_Sym*)(base + shdr[dynsym_idx].sh_offset);
         dynnumsyms = shdr[dynsym_idx].sh_size / shdr[dynsym_idx].sh_entsize;
         int dynstr_idx = shdr[dynsym_idx].sh_link;
         dynstr = base + shdr[dynstr_idx].sh_offset;
     }
 
-    Elf32_Sym *syms = NULL;
+    Elf_Sym *syms = NULL;
     int numsyms = 0;
     char *str = NULL;
     if (sym_idx != -1) {
-        syms = (Elf32_Sym*)(base + shdr[sym_idx].sh_offset);
+        syms = (Elf_Sym*)(base + shdr[sym_idx].sh_offset);
         numsyms = shdr[sym_idx].sh_size / shdr[sym_idx].sh_entsize;
         int str_idx = shdr[sym_idx].sh_link;
         str = base + shdr[str_idx].sh_offset;
@@ -170,7 +170,7 @@ symbol_table_t* load_symbol_table(const char *filename) {
                 table->symbols[symbol_index].name = strdup(dynstr + dynsyms[i].st_name);
                 table->symbols[symbol_index].start = dynsyms[i].st_value;
                 table->symbols[symbol_index].end = dynsyms[i].st_value + dynsyms[i].st_size;
-                ALOGV("  [%d] '%s' 0x%08x-0x%08x (DYNAMIC)",
+                ALOGV("  [%zd] '%s' 0x%08zx-0x%08zx (DYNAMIC)",
                         symbol_index, table->symbols[symbol_index].name,
                         table->symbols[symbol_index].start, table->symbols[symbol_index].end);
                 symbol_index += 1;
@@ -188,7 +188,7 @@ symbol_table_t* load_symbol_table(const char *filename) {
                 table->symbols[symbol_index].name = strdup(str + syms[i].st_name);
                 table->symbols[symbol_index].start = syms[i].st_value;
                 table->symbols[symbol_index].end = syms[i].st_value + syms[i].st_size;
-                ALOGV("  [%d] '%s' 0x%08x-0x%08x",
+                ALOGV("  [%zd] '%s' 0x%08zx-0x%08zx",
                         symbol_index, table->symbols[symbol_index].name,
                         table->symbols[symbol_index].start, table->symbols[symbol_index].end);
                 symbol_index += 1;

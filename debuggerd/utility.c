@@ -74,7 +74,10 @@ void _LOG(log_t* log, int scopeFlags, const char *fmt, ...) {
 
     if (want_log_write) {
         // whatever goes to logcat also goes to the Activity Manager
-        __android_log_vprint(ANDROID_LOG_INFO, "DEBUG", fmt, ap);
+        if (len > 0)
+          __android_log_write(ANDROID_LOG_INFO, "DEBUG", buf);
+        else
+          __android_log_vprint(ANDROID_LOG_INFO, "DEBUG", fmt, ap);
         if (want_amfd_write && len > 0) {
             int written = write_to_am(log->amfd, buf, len);
             if (written <= 0) {

@@ -24,30 +24,38 @@
 #include <cutils/log.h>
 
 static void load_eh_frame_hdr(pid_t pid, map_info_t* mi, uintptr_t *eh_frame_hdr) {
-    uint32_t elf_phoff;
+    Elf_Off  elf_phoff;
     uint32_t elf_phentsize_ehsize;
     uint32_t elf_shentsize_phnum;
-    if (try_get_word_ptrace(pid, mi->start + offsetof(Elf32_Ehdr, e_phoff), &elf_phoff)
-            && try_get_word_ptrace(pid, mi->start + offsetof(Elf32_Ehdr, e_ehsize),
+    if (
+#ifdef __i386__
+	try_get_word_ptrace(pid, mi->start + offsetof(Elf_Ehdr, e_phoff), &elf_phoff)
+#else
+	try_get_xword_ptrace(pid, mi->start + offsetof(Elf_Ehdr, e_phoff), &elf_phoff)
+#endif
+            && try_get_word_ptrace(pid, mi->start + offsetof(Elf_Ehdr, e_ehsize),
                     &elf_phentsize_ehsize)
-            && try_get_word_ptrace(pid, mi->start + offsetof(Elf32_Ehdr, e_phnum),
+            && try_get_word_ptrace(pid, mi->start + offsetof(Elf_Ehdr, e_phnum),
                     &elf_shentsize_phnum)) {
         uint32_t elf_phentsize = elf_phentsize_ehsize >> 16;
         uint32_t elf_phnum = elf_shentsize_phnum & 0xffff;
         for (uint32_t i = 0; i < elf_phnum; i++) {
             uintptr_t elf_phdr = mi->start + elf_phoff + i * elf_phentsize;
             uint32_t elf_phdr_type;
-            if (!try_get_word_ptrace(pid, elf_phdr + offsetof(Elf32_Phdr, p_type), &elf_phdr_type)) {
+            if (!try_get_word_ptrace(pid, elf_phdr + offsetof(Elf_Phdr, p_type), &elf_phdr_type))
                 break;
-            }
             if (elf_phdr_type == PT_GNU_EH_FRAME) {
-                uint32_t elf_phdr_offset;
-                if (!try_get_word_ptrace(pid, elf_phdr + offsetof(Elf32_Phdr, p_offset),
-                        &elf_phdr_offset)) {
-                    break;
-                }
+                Elf_Off elf_phdr_offset;
+                if (
+#ifdef __i386__
+	!try_get_word_ptrace(pid, elf_phdr + offsetof(Elf_Phdr, p_offset), &elf_phdr_offset)
+#else
+	!try_get_xword_ptrace(pid, elf_phdr + offsetof(Elf_Phdr, p_offset), &elf_phdr_offset)
+#endif
+                   )
+                   break;
                 *eh_frame_hdr = mi->start + elf_phdr_offset;
-                ALOGV("Parsed .eh_frame_hdr info for %s: start=0x%08x", mi->name, *eh_frame_hdr);
+                ALOGV("Parsed .eh_frame_hdr info for %s: start=0x%08zx", mi->name, *eh_frame_hdr);
                 return;
             }
         }

@@ -38,7 +38,7 @@ ifeq ($(TARGET_ARCH),arm)
 LOCAL_SRC_FILES += $(arm_src_files)
 LOCAL_CFLAGS += -DCORKSCREW_HAVE_ARCH
 endif
-ifeq ($(TARGET_ARCH),x86)
+ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),x86 x86_64))
 LOCAL_SRC_FILES += $(x86_src_files)
 LOCAL_CFLAGS += -DCORKSCREW_HAVE_ARCH
 endif

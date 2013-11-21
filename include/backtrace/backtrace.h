@@ -82,7 +82,7 @@ void backtrace_destroy_context(backtrace_context_t* context);
 
 /* Read data at a specific address for a process. */
 bool backtrace_read_word(
-    const backtrace_context_t* context, uintptr_t ptr, uint32_t* value);
+    const backtrace_context_t* context, uintptr_t ptr, unsigned long* value);
 
 /* Get information about the map name associated with a pc. If NULL is
  * returned, then map_start is not set.

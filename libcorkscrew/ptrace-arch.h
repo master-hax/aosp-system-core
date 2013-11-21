@@ -30,10 +30,10 @@ extern "C" {
 /* Custom extra data we stuff into map_info_t structures as part
  * of our ptrace_context_t. */
 typedef struct {
-#ifdef __arm__
+#if defined(__arm__)
     uintptr_t exidx_start;
     size_t exidx_size;
-#elif __i386__
+#elif defined(__i386__) || defined(__x86_64__)
     uintptr_t eh_frame_hdr;
 #endif
     symbol_table_t* symbol_table;

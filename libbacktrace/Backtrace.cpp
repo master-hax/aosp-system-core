@@ -93,10 +93,10 @@ std::string Backtrace::GetFunctionName(uintptr_t pc, uintptr_t* offset) {
   return func_name;
 }
 
-bool Backtrace::VerifyReadWordArgs(uintptr_t ptr, uint32_t* out_value) {
-  if (ptr & 3) {
+bool Backtrace::VerifyReadWordArgs(uintptr_t ptr, unsigned long* out_value) {
+  if (ptr & (sizeof(uintptr_t)-1)) {
     BACK_LOGW("invalid pointer %p", (void*)ptr);
-    *out_value = (uint32_t)-1;
+    *out_value = (unsigned long)-1;
     return false;
   }
   return true;
@@ -160,18 +160,18 @@ BacktraceCurrent::BacktraceCurrent(BacktraceImpl* impl) : Backtrace(impl) {
 BacktraceCurrent::~BacktraceCurrent() {
 }
 
-bool BacktraceCurrent::ReadWord(uintptr_t ptr, uint32_t* out_value) {
+bool BacktraceCurrent::ReadWord(uintptr_t ptr, unsigned long* out_value) {
   if (!VerifyReadWordArgs(ptr, out_value)) {
     return false;
   }
 
   const backtrace_map_info_t* map_info = FindMapInfo(ptr);
   if (map_info && map_info->is_readable) {
-    *out_value = *reinterpret_cast<uint32_t*>(ptr);
+    *out_value = *reinterpret_cast<unsigned long*>(ptr);
     return true;
   } else {
     BACK_LOGW("pointer %p not in a readable map", reinterpret_cast<void*>(ptr));
-    *out_value = static_cast<uint32_t>(-1);
+    *out_value = static_cast<unsigned long>(-1);
     return false;
   }
 }
@@ -190,7 +190,7 @@ BacktracePtrace::BacktracePtrace(BacktraceImpl* impl, pid_t pid, pid_t tid)
 BacktracePtrace::~BacktracePtrace() {
 }
 
-bool BacktracePtrace::ReadWord(uintptr_t ptr, uint32_t* out_value) {
+bool BacktracePtrace::ReadWord(uintptr_t ptr, unsigned long* out_value) {
   if (!VerifyReadWordArgs(ptr, out_value)) {
     return false;
   }
@@ -203,7 +203,7 @@ bool BacktracePtrace::ReadWord(uintptr_t ptr, uint32_t* out_value) {
   // To disambiguate -1 from a valid result, we clear errno beforehand.
   errno = 0;
   *out_value = ptrace(PTRACE_PEEKTEXT, Tid(), reinterpret_cast<void*>(ptr), NULL);
-  if (*out_value == static_cast<uint32_t>(-1) && errno) {
+  if (*out_value == static_cast<unsigned long>(-1) && errno) {
     BACK_LOGW("invalid pointer %p reading from tid %d, ptrace() strerror(errno)=%s",
               reinterpret_cast<void*>(ptr), Tid(), strerror(errno));
     return false;
@@ -262,7 +262,7 @@ const backtrace_t* backtrace_get_data(backtrace_context_t* context) {
   return NULL;
 }
 
-bool backtrace_read_word(const backtrace_context_t* context, uintptr_t ptr, uint32_t* value) {
+bool backtrace_read_word(const backtrace_context_t* context, uintptr_t ptr, unsigned long* value) {
   if (context->data) {
     Backtrace* backtrace = reinterpret_cast<Backtrace*>(context->data);
     return backtrace->ReadWord(ptr, value);

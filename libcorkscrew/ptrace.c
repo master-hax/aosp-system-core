@@ -79,10 +79,50 @@ bool try_get_word(const memory_t* memory, uintptr_t ptr, uint32_t* out_value) {
     }
 }
 
+bool try_get_xword(const memory_t* memory, uintptr_t ptr, uint64_t* out_value) {
+    ALOGV("try_get_8bytes: reading word at %p", (void*) ptr);
+    if (ptr & 7) {
+        ALOGV("try_get_8bytes: invalid pointer %p", (void*) ptr);
+        *out_value = 0xffffffffffffffffLL;
+        return false;
+    }
+    if (memory->tid < 0) {
+        if (!is_readable_map(memory->map_info_list, ptr)) {
+            ALOGV("try_get_8bytes: pointer %p not in a readable map", (void*) ptr);
+            *out_value = 0xffffffffffffffffLL;
+            return false;
+        }
+        *out_value = *(uint64_t*)ptr;
+        return true;
+    } else {
+#if defined(__APPLE__)
+        ALOGV("no ptrace on Mac OS");
+        return false;
+#else
+        // ptrace() returns -1 and sets errno when the operation fails.
+        // To disambiguate -1 from a valid result, we clear errno beforehand.
+        errno = 0;
+        *out_value = ptrace(PTRACE_PEEKTEXT, memory->tid, (void*)ptr, NULL);
+        if (*out_value == 0xffffffffffffffffLL && errno) {
+            ALOGV("try_get_word: invalid pointer 0x%08x reading from tid %d, "
+                    "ptrace() errno=%d", ptr, memory->tid, errno);
+            return false;
+        }
+        return true;
+#endif
+    }
+}
+
 bool try_get_word_ptrace(pid_t tid, uintptr_t ptr, uint32_t* out_value) {
     memory_t memory;
     init_memory_ptrace(&memory, tid);
     return try_get_word(&memory, ptr, out_value);
+}
+
+bool try_get_xword_ptrace(pid_t tid, uintptr_t ptr, uint64_t* out_value) {
+    memory_t memory;
+    init_memory_ptrace(&memory, tid);
+    return try_get_xword(&memory, ptr, out_value);
 }
 
 static void load_ptrace_map_info_data(pid_t pid, map_info_t* mi) {

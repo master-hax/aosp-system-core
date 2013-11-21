@@ -53,7 +53,7 @@ public:
   virtual const backtrace_map_info_t* FindMapInfo(uintptr_t ptr);
 
   // Read the data at a specific address.
-  virtual bool ReadWord(uintptr_t ptr, uint32_t* out_value) = 0;
+  virtual bool ReadWord(uintptr_t ptr, unsigned long* out_value) = 0;
 
   // Create a string representing the formatted line of backtrace information
   // for a single frame.
@@ -72,7 +72,7 @@ public:
 protected:
   Backtrace(BacktraceImpl* impl);
 
-  virtual bool VerifyReadWordArgs(uintptr_t ptr, uint32_t* out_value);
+  virtual bool VerifyReadWordArgs(uintptr_t ptr, unsigned long* out_value);
 
   BacktraceImpl* impl_;
 
