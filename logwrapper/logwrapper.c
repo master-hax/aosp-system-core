@@ -23,6 +23,7 @@
 #include <cutils/klog.h>
 
 #include "cutils/log.h"
+#include "cutils/properties.h"
 
 void fatal(const char *msg) {
     fprintf(stderr, "%s", msg);
@@ -54,6 +55,7 @@ int main(int argc, char* argv[]) {
     int ch;
     int status = 0xAAAA;
     int rc;
+    char build_type[PROPERTY_VALUE_MAX];
 
     while ((ch = getopt(argc, argv, "adk")) != -1) {
         switch (ch) {
@@ -77,6 +79,13 @@ int main(int argc, char* argv[]) {
 
     if (argc < 1) {
         usage();
+    }
+
+    property_get("ro.build.type", build_type, "null");
+    if (!strncmp(build_type, "user", PROPERTY_VALUE_MAX - 1)) {
+        ALOGW("Using logwrapper on user build is not allowed.\n"
+              "You must strip ALL occurences of it's use prior\n"
+              "to shipping the product!\n");
     }
 
     rc = android_fork_execvp_ext(argc, &argv[0], &status, true,
