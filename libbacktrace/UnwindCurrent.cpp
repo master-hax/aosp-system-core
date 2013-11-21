@@ -40,7 +40,7 @@
     struct sigcontext uc_mcontext;
     uint32_t uc_sigmask;
   } ucontext_t;
-#elif defined(__i386__)
+#elif defined(__i386__) || defined (__x86_64__)
   #include <ucontext.h>
 #elif !defined(__mips__) && !defined(__aarch64__)
   #error Unsupported architecture.
@@ -156,7 +156,7 @@ void UnwindCurrent::ExtractContext(void* sigcontext) {
   context->regs[13] = uc->uc_mcontext.arm_sp;
   context->regs[14] = uc->uc_mcontext.arm_lr;
   context->regs[15] = uc->uc_mcontext.arm_pc;
-#elif defined(__mips__) || defined(__i386__)
+#elif defined(__mips__) || defined(__i386__) || defined(__x86_64__)
   context->uc_mcontext = uc->uc_mcontext;
 #endif
 }

@@ -60,20 +60,19 @@ void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
   want_log_write = IS_AT_FAULT(scopeFlags) && (!log || !log->quiet);
   want_amfd_write = IS_AT_FAULT(scopeFlags) && !IS_SENSITIVE(scopeFlags) && log && log->amfd >= 0;
 
-  // if we're going to need the literal string, generate it once here
-  if (want_tfd_write || want_amfd_write) {
-    vsnprintf(buf, sizeof(buf), fmt, ap);
-    len = strlen(buf);
-  }
+  // generate string once here
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  len = strlen(buf);
+  if (len <= 0) return;
 
   if (want_tfd_write) {
     write(log->tfd, buf, len);
   }
 
   if (want_log_write) {
-    // whatever goes to logcat also goes to the Activity Manager
-    __android_log_vprint(ANDROID_LOG_INFO, "DEBUG", fmt, ap);
-    if (want_amfd_write && len > 0) {
+    __android_log_write(ANDROID_LOG_INFO, "DEBUG", buf);
+    if (want_amfd_write) {
       int written = write_to_am(log->amfd, buf, len);
       if (written <= 0) {
         // timeout or other failure on write; stop informing the activity manager
@@ -81,7 +80,6 @@ void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
       }
     }
   }
-  va_end(ap);
 }
 
 int wait_for_signal(pid_t tid, int* total_sleep_time_usec) {
