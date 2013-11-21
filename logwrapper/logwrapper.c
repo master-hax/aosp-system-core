@@ -21,6 +21,7 @@
 
 #include <logwrap/logwrap.h>
 #include <cutils/klog.h>
+#include <errno.h>
 
 #include "cutils/log.h"
 
