@@ -30,7 +30,11 @@ LOCAL_POST_INSTALL_CMD := mkdir -p $(addprefix $(TARGET_ROOT_OUT)/, \
 
 include $(BUILD_SYSTEM)/base_rules.mk
 
-$(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/init.environ.rc.in
+# Give a chance to use an alternate init.environ.rc.in if
+# TARGET_ENVIRON_RC_IN is set.
+TARGET_ENVIRON_RC_IN ?= $(LOCAL_PATH)/init.environ.rc.in
+
+$(LOCAL_BUILT_MODULE): $(TARGET_ENVIRON_RC_IN)
 	@echo "Generate: $< -> $@"
 	@mkdir -p $(dir $@)
 	$(hide) sed -e 's?%BOOTCLASSPATH%?$(PRODUCT_BOOTCLASSPATH)?g' $< >$@
