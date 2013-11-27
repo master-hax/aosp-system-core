@@ -154,7 +154,6 @@ static int do_action(const char* arg)
     fprintf(stderr, "where OP is:\n");
     fprintf(stderr, "  smash-stack     overwrite a stack-guard canary\n");
     fprintf(stderr, "  stack-overflow  recurse until the stack overflows\n");
-    fprintf(stderr, "  heap-corruption cause a libc abort by corrupting the heap\n");
     fprintf(stderr, "  heap-usage      cause a libc abort by abusing a heap function\n");
     fprintf(stderr, "  nostack         crash with a NULL stack pointer\n");
     fprintf(stderr, "  ctest           (obsoleted by thread-crash?)\n");

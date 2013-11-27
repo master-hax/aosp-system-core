@@ -13,7 +13,7 @@ LOCAL_SRC_FILES:= \
 	utility.c \
 	$(TARGET_ARCH)/machine.c
 
-LOCAL_CFLAGS := -Wall -Wno-unused-parameter -std=gnu99
+LOCAL_CFLAGS := -Wall -Werror -Wno-unused-parameter -std=gnu99
 LOCAL_MODULE := debuggerd
 
 ifeq ($(ARCH_ARM_HAVE_VFP),true)
@@ -42,6 +42,34 @@ LOCAL_CFLAGS += -fstack-protector-all
 #LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_SHARED_LIBRARIES := libcutils liblog libc
 include $(BUILD_EXECUTABLE)
+
+# run test on host
+
+crasher-run-on-host: crasher $(TARGET_OUT_EXECUTABLES)/$(LINKER) $(TARGET_OUT_EXECUTABLES)/sh $(TARGET_OUT_EXECUTABLES)/debuggerd
+	if [ ! -d /system -o ! -d /system/bin ]; then \
+	  echo "Attempting to create /system/bin"; \
+	  sudo mkdir -p -m 0777 /system/bin; \
+	fi
+	if [ ! -d /data -o ! -d /data/tombstones ]; then \
+	  echo "Attempting to create /data/tombstones"; \
+	  sudo mkdir -p -m 0777 /data/tombstones; \
+	fi
+	if [ ! -d /data/system ]; then \
+	  echo "Attempting to create /data/system"; \
+	  sudo mkdir -p -m 0777 /data/system; \
+	fi
+	rm -rf /data/tombstones/*
+	mkdir -p $(TARGET_OUT_DATA)/local/tmp
+	cp $(TARGET_OUT_EXECUTABLES)/$(LINKER) /system/bin
+	cp $(TARGET_OUT_EXECUTABLES)/sh /system/bin
+	LD_LIBRARY_PATH=$(TARGET_OUT_SHARED_LIBRARIES) $(TARGET_OUT_EXECUTABLES)/debuggerd &
+	sleep 1
+	-ANDROID_DATA=$(TARGET_OUT_DATA) \
+	ANDROID_ROOT=$(TARGET_OUT) \
+	LD_LIBRARY_PATH=$(TARGET_OUT_SHARED_LIBRARIES) \
+		$(TARGET_OUT_OPTIONAL_EXECUTABLES)/crasher crash
+	kill `ps | grep debuggerd | awk '{print $$1}'`
+	cat /data/tombstones/tombstone_00
 
 ifeq ($(ARCH_ARM_HAVE_VFP),true)
 include $(CLEAR_VARS)
