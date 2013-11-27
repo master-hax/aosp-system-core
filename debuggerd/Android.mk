@@ -50,6 +50,18 @@ LOCAL_CFLAGS += -fstack-protector-all -Wno-unused-parameter -Wno-free-nonheap-ob
 #LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_SHARED_LIBRARIES := libcutils liblog libc
 include $(BUILD_EXECUTABLE)
+RUN_ON_HOST_FLAGS := crash
+RUN_ON_HOST_DEPS := $(TARGET_OUT_EXECUTABLES)/debuggerd
+RUN_ON_HOST_DIRS := /data/tombstones /data/system
+RUN_ON_HOST_PREPARE := \
+	rm -rf /data/tombstones/* ; \
+	LD_LIBRARY_PATH=$(TARGET_OUT_SHARED_LIBRARIES) $(TARGET_OUT_EXECUTABLES)/debuggerd &
+RUN_ON_HOST_FINISH := \
+	kill `ps | grep debuggerd | awk '{print $$1}'` ; \
+        cat /data/tombstones/tombstone_00
+include $(RUN_ON_HOST)
+
+# run test on host
 
 ifeq ($(ARCH_ARM_HAVE_VFP),true)
 include $(CLEAR_VARS)
