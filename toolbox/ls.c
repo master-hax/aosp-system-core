@@ -75,24 +75,28 @@ static void mode2str(unsigned mode, char *out)
     *out = 0;
 }
 
-static void user2str(unsigned uid, char *out)
+static char* user2str(uid_t uid)
 {
     struct passwd *pw = getpwuid(uid);
+    char* result = NULL;
     if(pw) {
-        strcpy(out, pw->pw_name);
+        result = strdup(pw->pw_name);
     } else {
-        sprintf(out, "%d", uid);
+        if (asprintf(&result, "%d", uid) == -1) { return NULL; }
     }
+    return result;
 }
 
-static void group2str(unsigned gid, char *out)
+static char* group2str(gid_t gid)
 {
     struct group *gr = getgrgid(gid);
+    char* result = NULL;
     if(gr) {
-        strcpy(out, gr->gr_name);
+        result = strdup(gr->gr_name);
     } else {
-        sprintf(out, "%d", gid);
+        if (asprintf(&result, "%d", gid) == -1) { return NULL; }
     }
+    return result;
 }
 
 static int show_total_size(const char *dirname, DIR *d, int flags)
@@ -164,8 +168,8 @@ static int listfile_long(const char *path, struct stat *s, int flags)
 {
     char date[32];
     char mode[16];
-    char user[16];
-    char group[16];
+    char* user = NULL;
+    char* group = NULL;
     const char *name;
 
     if(!s || !path) {
@@ -182,11 +186,11 @@ static int listfile_long(const char *path, struct stat *s, int flags)
 
     mode2str(s->st_mode, mode);
     if (flags & LIST_LONG_NUMERIC) {
-        sprintf(user, "%ld", s->st_uid);
-        sprintf(group, "%ld", s->st_gid);
+        if (asprintf(&user, "%ld", s->st_uid) == -1) { user = NULL; }
+        if (asprintf(&group, "%ld", s->st_gid) == -1) { group = NULL; }
     } else {
-        user2str(s->st_uid, user);
-        group2str(s->st_gid, group);
+        user = user2str(s->st_uid);
+        group = group2str(s->st_gid);
     }
 
     strftime(date, 32, "%Y-%m-%d %H:%M", localtime((const time_t*)&s->st_mtime));
@@ -209,7 +213,7 @@ static int listfile_long(const char *path, struct stat *s, int flags)
         break;
     case S_IFLNK: {
         char linkto[256];
-        int len;
+        ssize_t len;
 
         len = readlink(path, linkto, 256);
         if(len < 0) return -1;
@@ -232,14 +236,16 @@ static int listfile_long(const char *path, struct stat *s, int flags)
                mode, user, group, date, name);
 
     }
+    if (user != NULL) { free(user); }
+    if (group != NULL) { free(group); }
     return 0;
 }
 
-static int listfile_maclabel(const char *path, struct stat *s, int flags)
+static int listfile_maclabel(const char *path, struct stat *s)
 {
     char mode[16];
-    char user[16];
-    char group[16];
+    char* user;
+    char* group;
     char *maclabel = NULL;
     const char *name;
 
@@ -261,8 +267,8 @@ static int listfile_maclabel(const char *path, struct stat *s, int flags)
     }
 
     mode2str(s->st_mode, mode);
-    user2str(s->st_uid, user);
-    group2str(s->st_gid, group);
+    user = user2str(s->st_uid);
+    group = group2str(s->st_gid);
 
     switch(s->st_mode & S_IFMT) {
     case S_IFLNK: {
@@ -292,6 +298,8 @@ static int listfile_maclabel(const char *path, struct stat *s, int flags)
     }
 
     free(maclabel);
+    if (user != NULL) { free(user); }
+    if (group != NULL) { free(group); }
 
     return 0;
 }
@@ -324,7 +332,7 @@ static int listfile(const char *dirname, const char *filename, int flags)
     }
 
     if ((flags & LIST_MACLABEL) != 0) {
-        return listfile_maclabel(pathname, &s, flags);
+        return listfile_maclabel(pathname, &s);
     } else if ((flags & LIST_LONG) != 0) {
         return listfile_long(pathname, &s, flags);
     } else /*((flags & LIST_SIZE) != 0)*/ {
