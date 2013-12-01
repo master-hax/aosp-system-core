@@ -41,9 +41,7 @@
     uint32_t uc_sigmask;
   } ucontext_t;
 #elif defined(__i386__)
-  #include <asm/sigcontext.h>
-  #include <asm/ucontext.h>
-  typedef struct ucontext ucontext_t;
+  #include <ucontext.h>
 #elif !defined(__mips__) && !defined(__aarch64__)
   #error Unsupported architecture.
 #endif
