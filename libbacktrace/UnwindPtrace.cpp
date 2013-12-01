@@ -21,8 +21,6 @@
 #include <sys/types.h>
 #include <string.h>
 
-#include <cutils/log.h>
-
 #include <libunwind.h>
 #include <libunwind-ptrace.h>
 

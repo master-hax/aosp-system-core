@@ -22,7 +22,6 @@
 #include <sys/types.h>
 
 #include <cutils/atomic.h>
-#include <cutils/log.h>
 
 #include "BacktraceThread.h"
 #include "thread_utils.h"

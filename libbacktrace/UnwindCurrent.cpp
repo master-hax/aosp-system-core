@@ -18,8 +18,6 @@
 
 #include <sys/types.h>
 
-#include <cutils/log.h>
-
 #include <backtrace/backtrace.h>
 
 #define UNW_LOCAL_ONLY
@@ -177,9 +175,15 @@ void UnwindCurrent::ExtractContext(void* sigcontext) {
   context->uc_mcontext.pc = uc->pc;
   context->uc_mcontext.ra = uc->ra;
 #elif defined(__i386__)
+# if defined(__BIONIC__)
+  context->uc_mcontext.ebp = uc->uc_mcontext.ebp;
+  context->uc_mcontext.esp = uc->uc_mcontext.esp;
+  context->uc_mcontext.eip = uc->uc_mcontext.eip;
+# else
   context->uc_mcontext.gregs[REG_EBP] = uc->uc_mcontext.gregs[REG_EBP];
   context->uc_mcontext.gregs[REG_ESP] = uc->uc_mcontext.gregs[REG_ESP];
   context->uc_mcontext.gregs[REG_EIP] = uc->uc_mcontext.gregs[REG_EIP];
+# endif
 #endif
 }
 
