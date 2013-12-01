@@ -18,8 +18,6 @@
 
 #include <sys/types.h>
 
-#include <cutils/log.h>
-
 #include <backtrace/backtrace.h>
 
 #define UNW_LOCAL_ONLY

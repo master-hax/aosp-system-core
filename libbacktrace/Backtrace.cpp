@@ -27,7 +27,6 @@
 #include <string>
 
 #include <backtrace/Backtrace.h>
-#include <cutils/log.h>
 
 #include "Backtrace.h"
 #include "thread_utils.h"

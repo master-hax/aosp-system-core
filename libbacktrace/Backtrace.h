@@ -22,8 +22,20 @@
 #include <sys/types.h>
 
 // Macro to log the function name along with the warning message.
+
+// Change to 1 if want to see output in stderr
+#define PRINT_TO_STDERR 0
+
+#if PRINT_TO_STDERR
+#include <stdio.h>
+#define ALOGV(...) fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n");
+#define ALOGE(...) fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n");
+#define BACK_LOGW(...) fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n");
+#else
+#include <cutils/log.h>
 #define BACK_LOGW(format, ...) \
   ALOGW("%s: " format, __PRETTY_FUNCTION__, ##__VA_ARGS__)
+#endif
 
 class BacktraceImpl {
 public:
