@@ -136,6 +136,28 @@ TEST(ziparchive, ExtractToMemory) {
   CloseArchive(handle);
 }
 
+TEST(ziparchive, OpenFailsOnMalformedZips) {
+  ZipArchiveHandle handle;
+  // Duplicate entry in central directory.
+  ASSERT_LT(OpenArchiveWrapper("duplicate_entry.zip", &handle), 0);
+
+  // Missing central directory signature (First byte is 08
+  // instead of 06)
+  ASSERT_LT(OpenArchiveWrapper("missing_cd_signature.zip", &handle), 0);
+
+  // Invalid central directory offset.
+  //
+  // Correct offset = 0x00 00 01 68 (byte 360)
+  // File offset    = 0xFF FF FF 68
+  ASSERT_LT(OpenArchiveWrapper("invalid_cd_offset.zip", &handle), 0);
+
+  // Invalid central directory size.
+  //
+  // Correct size = 0x00 00 01 78 (362 bytes)
+  // File size    = 0x00 00 FF 78
+  ASSERT_LT(OpenArchiveWrapper("invalid_cd_size.zip", &handle), 0);
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
 
