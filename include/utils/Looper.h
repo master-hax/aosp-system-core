@@ -22,7 +22,7 @@
 #include <utils/KeyedVector.h>
 #include <utils/Timers.h>
 
-#include <android/looper.h>
+#include <utils/LooperCommon.h>
 
 #include <sys/epoll.h>
 
@@ -101,7 +101,6 @@ public:
      */
     virtual int handleEvent(int fd, int events, void* data) = 0;
 };
-
 
 /**
  * Wraps a ALooper_callbackFunc function pointer.
