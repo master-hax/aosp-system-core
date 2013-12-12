@@ -22,7 +22,7 @@
 #include <utils/KeyedVector.h>
 #include <utils/Timers.h>
 
-#include <android/looper.h>
+#include <utils/LooperCommon.h>
 
 #include <sys/epoll.h>
 
