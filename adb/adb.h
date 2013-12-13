@@ -233,7 +233,7 @@ struct alistener
 
 void print_packet(const char *label, apacket *p);
 
-asocket *find_local_socket(unsigned id);
+asocket *find_local_socket(unsigned local_id, unsigned remote_id);
 void install_local_socket(asocket *s);
 void remove_socket(asocket *s);
 void close_all_sockets(atransport *t);

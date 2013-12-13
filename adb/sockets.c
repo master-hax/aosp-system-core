@@ -59,17 +59,22 @@ static asocket local_socket_closing_list = {
     .prev = &local_socket_closing_list,
 };
 
-asocket *find_local_socket(unsigned id)
+// Parse the global list of sockets to find one with id |local_id|.
+// If |peer_id| is not 0, also check that it is connected to a peer
+// with id |peer_id|. Returns an asocket handle on success, NULL on failure.
+asocket *find_local_socket(unsigned local_id, unsigned peer_id)
 {
     asocket *s;
     asocket *result = NULL;
 
     adb_mutex_lock(&socket_list_lock);
     for (s = local_socket_list.next; s != &local_socket_list; s = s->next) {
-        if (s->id == id) {
+        if (s->id != local_id)
+            continue;
+        if (peer_id == 0 || (s->peer && s->peer->id == peer_id)) {
             result = s;
-            break;
         }
+        break;
     }
     adb_mutex_unlock(&socket_list_lock);
 
@@ -91,6 +96,11 @@ void install_local_socket(asocket *s)
     adb_mutex_lock(&socket_list_lock);
 
     s->id = local_socket_next_id++;
+
+    // Socket ids should never be 0.
+    if (local_socket_next_id == 0)
+      local_socket_next_id = 1;
+
     insert_local_socket(s, &local_socket_list);
 
     adb_mutex_unlock(&socket_list_lock);
@@ -521,8 +531,15 @@ static void remote_socket_disconnect(void*  _s, atransport*  t)
 
 asocket *create_remote_socket(unsigned id, atransport *t)
 {
-    asocket *s = calloc(1, sizeof(aremotesocket));
-    adisconnect*  dis = &((aremotesocket*)s)->disconnect;
+    asocket* s;
+    adisconnect* dis;
+
+    if (id == 0) {
+        D("create_remote_socket: Invalid socket id (0)\n");
+        return NULL;
+    }
+    s = calloc(1, sizeof(aremotesocket));
+    dis = &((aremotesocket*)s)->disconnect;
 
     if (s == NULL) fatal("cannot allocate socket");
     s->id = id;
