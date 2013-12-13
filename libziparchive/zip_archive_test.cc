@@ -16,8 +16,10 @@
 
 #include "ziparchive/zip_archive.h"
 
-#include "getopt.h"
+#include <errno.h>
+#include <getopt.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <gtest/gtest.h>
 
 static std::string test_data_dir;
@@ -134,6 +136,43 @@ TEST(ziparchive, ExtractToMemory) {
   delete[] buffer;
 
   CloseArchive(handle);
+}
+
+TEST(ziparchive, ExtractToFile) {
+  char kTempFilePattern[] = "zip_archive_test_XXXXXX";
+  int fd = mkstemp(kTempFilePattern);
+  const uint8_t data[8] = { '1', '2', '3', '4', '5', '6', '7', '8' };
+  const ssize_t data_size = sizeof(data);
+
+  ASSERT_EQ(data_size, write(fd, data, data_size));
+
+  ZipArchiveHandle handle;
+  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+
+  ZipEntry entry;
+  ASSERT_EQ(0, FindEntry(handle, "a.txt", &entry));
+  ASSERT_EQ(0, ExtractEntryToFile(handle, &entry, fd));
+
+  ASSERT_EQ(0, lseek64(fd, 0, SEEK_SET));
+
+  // Assert that the first 8 bytes of the file haven't been clobbered.
+  uint8_t read_buffer[8];
+  ASSERT_EQ(8, TEMP_FAILURE_RETRY(read(fd, read_buffer, data_size)));
+  ASSERT_EQ(0, memcmp(read_buffer, data, data_size));
+
+  // Assert that the remainder of the file contains the incompressed data.
+  uint8_t* uncompressed_data = new uint8_t[entry.uncompressed_length];
+  ASSERT_EQ(static_cast<ssize_t>(entry.uncompressed_length),
+            TEMP_FAILURE_RETRY(
+                read(fd, uncompressed_data, entry.uncompressed_length)));
+  ASSERT_EQ(0, memcmp(uncompressed_data, kATxtContents,
+                      sizeof(kATxtContents)));
+
+  // Assert that the total length of the file is sane
+  ASSERT_EQ(data_size + sizeof(kATxtContents), lseek64(fd, 0, SEEK_END));
+
+  close(fd);
+  delete[] uncompressed_data;
 }
 
 int main(int argc, char** argv) {
