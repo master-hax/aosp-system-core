@@ -15,5 +15,6 @@
  */
 
 #define ANDROID_ATOMIC_INLINE
+#undef NO_ATOMIC_INLINES /* Make sure we pull in the implementation here */
 
 #include <cutils/atomic-inline.h>

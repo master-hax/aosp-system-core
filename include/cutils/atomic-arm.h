@@ -19,6 +19,13 @@
 
 #include <stdint.h>
 
+/* In Clang, extern always_inline symbols are exported, causing clashes
+ * when linking something that includes the function definitions in several
+ * source files (e.g. libcutils).
+ * We need an option to make sure they're included only once.
+ */
+#ifndef NO_ATOMIC_INLINES
+
 #ifndef ANDROID_ATOMIC_INLINE
 #define ANDROID_ATOMIC_INLINE inline __attribute__((always_inline))
 #endif
@@ -173,4 +180,5 @@ int32_t android_atomic_or(int32_t value, volatile int32_t *ptr)
     return prev;
 }
 
+#endif /* NO_ATOMIC_INLINES */
 #endif /* ANDROID_CUTILS_ATOMIC_ARM_H */
