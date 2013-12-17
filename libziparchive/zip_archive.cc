@@ -193,7 +193,8 @@ static android::FileMap* MapFileSegment(const int fd, const off64_t start,
                                         const size_t length, const bool read_only,
                                         const char* debug_file_name) {
   android::FileMap* file_map = new android::FileMap;
-  const bool success = file_map->create(debug_file_name, fd, start, length, read_only);
+  const bool success = file_map->create(strdup(debug_file_name), fd, start, length,
+                                        read_only);
   if (!success) {
     file_map->release();
     return NULL;
