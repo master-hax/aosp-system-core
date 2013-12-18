@@ -127,3 +127,81 @@ void wait_for_stop(pid_t tid, int* total_sleep_time_usec) {
     *total_sleep_time_usec += sleep_time_usec;
   }
 }
+
+#if defined (__mips__)
+#define DUMP_MEMORY_AS_ASCII 1
+#else
+#define DUMP_MEMORY_AS_ASCII 0
+#endif
+
+void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags) {
+    char code_buffer[64];
+    char ascii_buffer[32];
+    uintptr_t p, end;
+
+    p = addr & ~(sizeof(long) - 1);
+    /* Dump 32 bytes before addr */
+    p -= 32;
+    if (p > addr) {
+        /* catch underflow */
+        p = 0;
+    }
+    /* Dump 256 bytes */
+    end = p + 256;
+    /* catch overflow; 'end - p' has to be multiples of 16 */
+    while (end < p)
+        end -= 16;
+
+    /* Dump the code around PC as:
+     *  addr             contents                           ascii
+     *  0000000000008d34 ef000000e8bd0090 e1b00000512fff1e  ............../Q
+     *  0000000000008d44 ea00b1f9e92d0090 e3a070fcef000000  ......-..p......
+     * On 32-bit machines, there are still 16 bytes per line but addresses and
+     * words are of course presented differently.
+     */
+    while (p < end) {
+        int len;
+        char* asc_out = ascii_buffer;
+
+        len = sprintf(code_buffer, "%" PRIzxPTR " ", p);
+
+        for (size_t i = 0; i < 16/sizeof(long); i++) {
+            /*
+             * If we see (data == -1 && errno != 0), we know that the ptrace
+             * call failed, probably because we're dumping memory in an
+             * unmapped or inaccessible page.
+             */
+            long data = ptrace(PTRACE_PEEKTEXT, tid, (void*)p, NULL);
+            if ((data == -1) && errno) {
+#ifdef __LP64__
+                len += sprintf(code_buffer + len, "%16s ", "unreadable mem.");
+#else
+                len += sprintf(code_buffer + len, "%8s ", "unreada.");
+#endif
+            } else {
+                len += sprintf(code_buffer + len, "%" PRIzxPTR " ",
+                               static_cast<uintptr_t>(data));
+            }
+
+            /* Enable the following code blob to dump ASCII values */
+#if DUMP_MEMORY_AS_ASCII
+            for (size_t j = 0; j < sizeof(long); j++) {
+                /*
+                 * Our isprint() allows high-ASCII characters that display
+                 * differently (often badly) in different viewers, so we
+                 * just use a simpler test.
+                 */
+                char val = (data >> (j*8)) & 0xff;
+                if (val >= 0x20 && val < 0x7f) {
+                    *asc_out++ = val;
+                } else {
+                    *asc_out++ = '.';
+                }
+            }
+#endif
+            p += sizeof(long);
+        }
+        *asc_out = '\0';
+        _LOG(log, scope_flags, "    %s %s\n", code_buffer, ascii_buffer);
+    }
+}

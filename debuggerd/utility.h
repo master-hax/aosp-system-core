@@ -63,4 +63,6 @@ void _LOG(log_t* log, int scopeFlags, const char *fmt, ...)
 int wait_for_signal(pid_t tid, int* total_sleep_time_usec);
 void wait_for_stop(pid_t tid, int* total_sleep_time_usec);
 
+void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags);
+
 #endif // _DEBUGGERD_UTILITY_H
