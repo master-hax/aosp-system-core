@@ -41,6 +41,8 @@
 
 #include <selinux/android.h>
 
+#include <android/log.h>
+
 #include <UniquePtr.h>
 
 #include "machine.h"
@@ -181,9 +183,9 @@ static void dump_fault_addr(log_t* log, pid_t tid, int sig) {
   if (ptrace(PTRACE_GETSIGINFO, tid, 0, &si)){
     _LOG(log, SCOPE_AT_FAULT, "cannot get siginfo: %s\n", strerror(errno));
   } else if (signal_has_address(sig)) {
-    _LOG(log, SCOPE_AT_FAULT, "signal %d (%s), code %d (%s), fault addr %0*" PRIxPTR "\n",
+    _LOG(log, SCOPE_AT_FAULT, "signal %d (%s), code %d (%s), fault addr %" PRIzxPTR "\n",
          sig, get_signame(sig), si.si_code, get_sigcode(sig, si.si_code),
-         sizeof(uintptr_t)*2, reinterpret_cast<uintptr_t>(si.si_addr));
+         reinterpret_cast<uintptr_t>(si.si_addr));
   } else {
     _LOG(log, SCOPE_AT_FAULT, "signal %d (%s), code %d (%s), fault addr --------\n",
          sig, get_signame(sig), si.si_code, get_sigcode(sig, si.si_code));
@@ -245,36 +247,38 @@ static void dump_stack_segment(
     if (!func_name.empty()) {
       if (!i && label >= 0) {
         if (offset) {
-          _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s+%u)\n",
+          _LOG(log, scope_flags,
+               "    #%02d  %" PRIzxPTR "  %" PRIzxPTR "  %s (%s+%" PRIuPTR ")\n",
                label, *sp, static_cast<uintptr_t>(stack_content), map_name,
                func_name.c_str(), offset);
         } else {
-          _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s)\n",
+          _LOG(log, scope_flags, "    #%02d  %" PRIzxPTR "  %" PRIzxPTR "  %s (%s)\n",
                label, *sp, static_cast<uintptr_t>(stack_content), map_name,
                func_name.c_str());
         }
       } else {
         if (offset) {
-          _LOG(log, scope_flags, "         %08x  %08x  %s (%s+%u)\n",
+          _LOG(log, scope_flags,
+               "         %" PRIzxPTR "  %" PRIzxPTR "  %s (%s+%" PRIuPTR ")\n",
                *sp, static_cast<uintptr_t>(stack_content), map_name,
                func_name.c_str(), offset);
         } else {
-          _LOG(log, scope_flags, "         %08x  %08x  %s (%s)\n",
+          _LOG(log, scope_flags, "         %" PRIzxPTR "  %" PRIzxPTR "  %s (%s)\n",
                *sp, static_cast<uintptr_t>(stack_content), map_name,
                func_name.c_str());
         }
       }
     } else {
       if (!i && label >= 0) {
-        _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s\n",
+        _LOG(log, scope_flags, "    #%02d  %" PRIzxPTR "  %" PRIzxPTR "  %s\n",
              label, *sp, static_cast<uintptr_t>(stack_content), map_name);
       } else {
-        _LOG(log, scope_flags, "         %08x  %08x  %s\n",
+        _LOG(log, scope_flags, "         %" PRIzxPTR "  %" PRIzxPTR "  %s\n",
              *sp, static_cast<uintptr_t>(stack_content), map_name);
       }
     }
 
-    *sp += sizeof(uint32_t);
+    *sp += sizeof(uintptr_t);
   }
 }
 
@@ -297,7 +301,7 @@ static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
   scope_flags |= SCOPE_SENSITIVE;
 
   // Dump a few words before the first frame.
-  uintptr_t sp = backtrace->GetFrame(first)->sp - STACK_WORDS * sizeof(uint32_t);
+  uintptr_t sp = backtrace->GetFrame(first)->sp - STACK_WORDS * sizeof(uintptr_t);
   dump_stack_segment(backtrace, log, scope_flags, &sp, STACK_WORDS, -1);
 
   // Dump a few words from all successive frames.
@@ -317,7 +321,7 @@ static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
         _LOG(log, scope_flags, "         ........  ........\n");
       }
     } else {
-      size_t words = frame->stack_size / sizeof(uint32_t);
+      size_t words = frame->stack_size / sizeof(uintptr_t);
       if (words == 0) {
         words = 1;
       } else if (words > STACK_WORDS) {
@@ -340,7 +344,7 @@ static void dump_backtrace_and_stack(Backtrace* backtrace, log_t* log, int scope
 
 static void dump_map(log_t* log, const backtrace_map_t* map, const char* what, int scope_flags) {
   if (map != NULL) {
-    _LOG(log, scope_flags, "    %08x-%08x %c%c%c %s\n", map->start, map->end,
+    _LOG(log, scope_flags, "    %" PRIzxPTR "-%" PRIzxPTR " %c%c%c %s\n", map->start, map->end,
          (map->flags & PROT_READ) ? 'r' : '-', (map->flags & PROT_WRITE) ? 'w' : '-',
          (map->flags & PROT_EXEC) ? 'x' : '-', map->name.c_str());
   } else {
@@ -366,7 +370,7 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid, int scope
     return;
   }
 
-  _LOG(log, scope_flags, "\nmemory map around fault addr %" PRIxPTR ":\n",
+  _LOG(log, scope_flags, "\nmemory map around fault addr %" PRIzxPTR ":\n",
        reinterpret_cast<uintptr_t>(si.si_addr));
 
   // Search for a match, or for a hole where the match would be.  The list
@@ -668,7 +672,11 @@ static bool dump_crash(log_t* log, pid_t pid, pid_t tid, int signal, uintptr_t a
 //
 // Returns the path of the tombstone file, allocated using malloc().  Caller must free() it.
 static char* find_and_open_tombstone(int* fd) {
+#ifdef __aarch64__
+  long mtime = LONG_MAX;
+#else
   unsigned long mtime = ULONG_MAX;
+#endif
   struct stat sb;
 
   // XXX: Our stat.st_mtime isn't time_t. If it changes, as it probably ought
