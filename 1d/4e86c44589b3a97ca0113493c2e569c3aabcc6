@@ -1,0 +1,7 @@
+Code-Review+2: JP Abgrall <jpa@google.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Sat, 28 Dec 2013 20:09:52 +0000
+Reviewed-on: https://android-review.googlesource.com/70300
+Project: platform/system/core
+Branch: refs/heads/master
