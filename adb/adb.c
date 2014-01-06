@@ -1180,7 +1180,8 @@ int launch_server(int server_port)
         char str_port[30];
         snprintf(str_port, sizeof(str_port), "%d",  server_port);
         // child process
-        int result = execl(path, "adb", "-P", str_port, "fork-server", "server", NULL);
+        int result = execl(path, "adb", "-P", str_port, "fork-server", "server",
+                (gListenAll) ? "-a" : NULL, NULL); // pass on the -a option to server if specified
         // this should not return
         fprintf(stderr, "OOPS! execl returned %d, errno: %d\n", result, errno);
     } else  {
