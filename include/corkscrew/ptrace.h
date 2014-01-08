@@ -97,6 +97,14 @@ void init_memory_ptrace(memory_t* memory, pid_t tid);
 bool try_get_word(const memory_t* memory, uintptr_t ptr, uint32_t* out_value);
 
 /*
+ * Reads a word of memory safely.
+ * If the memory is local, ensures that the address is readable and belongs to a stack
+ * before dereferencing it.
+ * Returns false and a value of 0xffffffff if the word could not be read.
+ */
+bool try_get_word_from_stack(const memory_t* memory, uintptr_t ptr, uint32_t* out_value);
+
+/*
  * Reads a word of memory safely using ptrace().
  * Returns false and a value of 0xffffffff if the word could not be read.
  */

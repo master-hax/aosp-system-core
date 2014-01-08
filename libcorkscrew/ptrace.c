@@ -79,6 +79,40 @@ bool try_get_word(const memory_t* memory, uintptr_t ptr, uint32_t* out_value) {
     }
 }
 
+bool try_get_word_from_stack(const memory_t* memory, uintptr_t ptr, uint32_t* out_value) {
+    ALOGV("try_get_word_from_stack: reading word at %p", (void*) ptr);
+    if (ptr & 3) {
+        ALOGV("try_get_word_from_stack: invalid pointer %p", (void*) ptr);
+        *out_value = 0xffffffffL;
+        return false;
+    }
+    if (memory->tid < 0) {
+        if (!is_readable_stack_map(memory->map_info_list, ptr)) {
+            ALOGV("try_get_word_from_stack: pointer %p not in a mapped stack", (void*) ptr);
+            *out_value = 0xffffffffL;
+            return false;
+        }
+        *out_value = *(uint32_t*)ptr;
+        return true;
+    } else {
+#if defined(__APPLE__)
+        ALOGV("no ptrace on Mac OS");
+        return false;
+#else
+        // ptrace() returns -1 and sets errno when the operation fails.
+        // To disambiguate -1 from a valid result, we clear errno beforehand.
+        errno = 0;
+        *out_value = ptrace(PTRACE_PEEKTEXT, memory->tid, (void*)ptr, NULL);
+        if (*out_value == 0xffffffffL && errno) {
+            ALOGV("try_get_word_from_stack: invalid pointer 0x%08x reading from tid %d, "
+                    "ptrace() errno=%d", ptr, memory->tid, errno);
+            return false;
+        }
+        return true;
+#endif
+    }
+}
+
 bool try_get_word_ptrace(pid_t tid, uintptr_t ptr, uint32_t* out_value) {
     memory_t memory;
     init_memory_ptrace(&memory, tid);
