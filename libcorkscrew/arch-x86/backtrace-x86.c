@@ -737,7 +737,7 @@ static ssize_t unwind_backtrace_common(const memory_t* memory,
         if (!fde) {
             uint32_t ip;
             ALOGV("trying to restore registers from stack");
-            if (!try_get_word(memory, state->reg[DWARF_EBP] + 4, &ip) ||
+            if (!try_get_word_from_stack(memory, state->reg[DWARF_EBP] + 4, &ip) ||
                 ip == state->reg[DWARF_EIP]) {
                 ALOGV("can't get IP from stack");
                 break;
@@ -749,7 +749,7 @@ static ssize_t unwind_backtrace_common(const memory_t* memory,
                     &ignored_frames, &returned_frames);
             state->reg[DWARF_EIP] = ip;
             state->reg[DWARF_ESP] = state->reg[DWARF_EBP] + 8;
-            if (!try_get_word(memory, state->reg[DWARF_EBP], &state->reg[DWARF_EBP])) {
+            if (!try_get_word_from_stack(memory, state->reg[DWARF_EBP], &state->reg[DWARF_EBP])) {
                 ALOGV("can't get EBP from stack");
                 break;
             }

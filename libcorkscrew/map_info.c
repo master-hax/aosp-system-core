@@ -185,6 +185,12 @@ bool is_executable_map(const map_info_t* milist, uintptr_t addr) {
     return mi && mi->is_executable;
 }
 
+#define STACK_NAME "[stack"
+bool is_readable_stack_map(const map_info_t* milist, uintptr_t addr) {
+    const map_info_t* mi = find_map_info(milist, addr);
+    return (is_readable_map(milist, addr) && (strncmp(mi->name, STACK_NAME, strlen(STACK_NAME))==0));
+}
+
 static pthread_mutex_t g_my_map_info_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 static map_info_t* g_my_map_info_list = NULL;
 

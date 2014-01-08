@@ -49,6 +49,8 @@ const map_info_t* find_map_info(const map_info_t* milist, uintptr_t addr);
 
 /* Returns true if the addr is in a readable map. */
 bool is_readable_map(const map_info_t* milist, uintptr_t addr);
+/* Returns true if the addr is in a readable stack map. */
+bool is_readable_stack_map(const map_info_t* milist, uintptr_t addr);
 /* Returns true if the addr is in a writable map. */
 bool is_writable_map(const map_info_t* milist, uintptr_t addr);
 /* Returns true if the addr is in an executable map. */
