@@ -526,7 +526,7 @@ int make_dir(const char *path, mode_t mode)
 
 int restorecon(const char *pathname)
 {
-    char *secontext = NULL;
+    char *oldsecontext = NULL, *secontext = NULL;
     struct stat sb;
     int i;
 
@@ -535,12 +535,20 @@ int restorecon(const char *pathname)
 
     if (lstat(pathname, &sb) < 0)
         return -errno;
-    if (selabel_lookup(sehandle, &secontext, pathname, sb.st_mode) < 0)
+    if (lgetfilecon(pathname, &oldsecontext) < 0)
         return -errno;
-    if (lsetfilecon(pathname, secontext) < 0) {
-        freecon(secontext);
+    if (selabel_lookup(sehandle, &secontext, pathname, sb.st_mode) < 0) {
+        freecon(oldsecontext);
         return -errno;
     }
+    if (strcmp(oldsecontext, secontext)) {
+        if (lsetfilecon(pathname, secontext) < 0) {
+            freecon(oldsecontext);
+            freecon(secontext);
+            return -errno;
+        }
+    }
+    freecon(oldsecontext);
     freecon(secontext);
     return 0;
 }
