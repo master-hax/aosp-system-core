@@ -21,9 +21,9 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-#include <backtrace/backtrace.h>
-
 #include "utility.h"
+
+class Backtrace;
 
 /* Dumps a backtrace using a format similar to what Dalvik uses so that the result
  * can be intermixed in a bug report. */
@@ -31,7 +31,7 @@ void dump_backtrace(int fd, int amfd, pid_t pid, pid_t tid, bool* detach_failed,
         int* total_sleep_time_usec);
 
 /* Dumps the backtrace in the backtrace data structure to the log. */
-void dump_backtrace_to_log(const backtrace_context_t* context, log_t* log,
+void dump_backtrace_to_log(Backtrace* backtrace, log_t* log,
         int scope_flags, const char* prefix);
 
 #endif // _DEBUGGERD_BACKTRACE_H
