@@ -19,10 +19,29 @@
 #if defined(__APPLE__)
 
 #include <sys/syscall.h>
+#include <sys/types.h>
 
 // Mac OS >= 10.6 has a system call equivalent to Linux's gettid().
 pid_t gettid() {
   return syscall(SYS_thread_selfid);
+}
+
+// Empty implementation for now.
+int tgkill(int tgid, int tid, int sig) {
+  return 0;
+}
+
+// Empty implementation of atomic operations.
+int android_atomic_acquire_cas(int32_t oldvalue, int32_t newvalue, volatile int32_t* addr) {
+  return 0;
+}
+
+int android_atomic_acquire_load(volatile const int32_t* addr) {
+  return 0;
+}
+
+int android_atomic_release_store(int32_t value, volatile int32_t* addr) {
+  return 0;
 }
 
 #elif !defined(__BIONIC__)

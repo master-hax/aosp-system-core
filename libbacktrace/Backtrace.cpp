@@ -17,7 +17,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined(__APPLE__)
 #include <sys/ptrace.h>
+#endif
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -87,7 +89,7 @@ std::string Backtrace::GetFunctionName(uintptr_t pc, uintptr_t* offset) {
   if (!func_name.empty()) {
 #if defined(__APPLE__)
     // Mac OS' __cxa_demangle demangles "f" as "float"; last tested on 10.7.
-    if (symbol_name[0] != '_') {
+    if (func_name[0] != '_') {
       return func_name;
     }
 #endif
