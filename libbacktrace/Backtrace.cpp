@@ -17,7 +17,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined(__APPLE__)
 #include <sys/ptrace.h>
+#endif
 #include <sys/types.h>
 #include <unistd.h>
 
