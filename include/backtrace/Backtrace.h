@@ -71,6 +71,10 @@ public:
     return &backtrace_.frames[frame_num];
   }
 
+  const backtrace_map_info_t* GetMapList() {
+    return map_info_;
+  }
+
 protected:
   Backtrace(BacktraceImpl* impl, pid_t pid, backtrace_map_info_t* map_info);
 
