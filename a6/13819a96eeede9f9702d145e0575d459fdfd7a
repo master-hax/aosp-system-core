@@ -1,0 +1,10 @@
+Code-Review+2: Colin Cross <ccross@android.com>
+Code-Review+1: Nick Kralevich <nnk@google.com>
+Verified+1: Nick Kralevich <nnk@google.com>
+Code-Review+1: Stephen Smalley <sds@tycho.nsa.gov>
+Code-Review+1: William Roberts <wroberts@tresys.com>
+Submitted-by: Nick Kralevich <nnk@google.com>
+Submitted-at: Tue, 14 Jan 2014 00:19:53 +0000
+Reviewed-on: https://android-review.googlesource.com/78701
+Project: platform/system/core
+Branch: refs/heads/master
