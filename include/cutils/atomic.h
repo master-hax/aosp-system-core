@@ -54,7 +54,7 @@ extern "C" {
  * you should not rely on this, and instead assume that only the minimal
  * acquire/release protection is provided.
  *
- * NOTE: all int32_t* values are expected to be aligned on 32-bit boundaries.
+ * NOTE: all long* values are expected to be aligned on 32-bit boundaries.
  * If they are not, atomicity is not guaranteed.
  */
 
@@ -65,11 +65,43 @@ extern "C" {
  * These have the same characteristics (e.g. what happens on overflow)
  * as the equivalent non-atomic C operations.
  */
-int32_t android_atomic_inc(volatile int32_t* addr);
-int32_t android_atomic_dec(volatile int32_t* addr);
-int32_t android_atomic_add(int32_t value, volatile int32_t* addr);
-int32_t android_atomic_and(int32_t value, volatile int32_t* addr);
-int32_t android_atomic_or(int32_t value, volatile int32_t* addr);
+
+#ifdef __LP64__
+#define	ATOMIC_OP_TYPE	long
+#else
+#define	ATOMIC_OP_TYPE	int32_t
+#endif
+
+/*
+ * We use long here to make 32bit operations used on 32bit system and
+ * 64bit operations used on 64bit system.
+ */
+ATOMIC_OP_TYPE android_atomic_inc(volatile ATOMIC_OP_TYPE* addr);
+ATOMIC_OP_TYPE android_atomic_dec(volatile ATOMIC_OP_TYPE* addr);
+ATOMIC_OP_TYPE android_atomic_add(ATOMIC_OP_TYPE value, volatile ATOMIC_OP_TYPE* addr);
+ATOMIC_OP_TYPE android_atomic_and(ATOMIC_OP_TYPE value, volatile ATOMIC_OP_TYPE* addr);
+ATOMIC_OP_TYPE android_atomic_or(ATOMIC_OP_TYPE value, volatile ATOMIC_OP_TYPE* addr);
+
+/*
+ * For 32bit system, we like android_atomic(32)_xxx just work on int32_t.
+ * This is the default 32bit android default behavior.
+ *
+ * For 64bit system, we like the android_atomic_xxx work on 64bit.
+ * and android_atomic32_xxx work on 32bit.
+ */
+#ifdef	__LP64__
+int32_t android_atomic32_inc(volatile int32_t* addr);
+int32_t android_atomic32_dec(volatile int32_t* addr);
+int32_t android_atomic32_add(int32_t value, volatile int32_t* addr);
+int32_t android_atomic32_and(int32_t value, volatile int32_t* addr);
+int32_t android_atomic32_or(int32_t value, volatile int32_t* addr);
+#else
+#define	android_atomic32_inc android_atomic_inc
+#define	android_atomic32_dec android_atomic_dec
+#define	android_atomic32_add android_atomic_add
+#define	android_atomic32_and android_atomic_and
+#define	android_atomic32_or  android_atomic_or
+#endif
 
 /*
  * Perform an atomic load with "acquire" or "release" ordering.
@@ -77,18 +109,32 @@ int32_t android_atomic_or(int32_t value, volatile int32_t* addr);
  * This is only necessary if you need the memory barrier.  A 32-bit read
  * from a 32-bit aligned address is atomic on all supported platforms.
  */
-int32_t android_atomic_acquire_load(volatile const int32_t* addr);
-int32_t android_atomic_release_load(volatile const int32_t* addr);
+ATOMIC_OP_TYPE android_atomic_acquire_load(volatile const ATOMIC_OP_TYPE* addr);
+ATOMIC_OP_TYPE android_atomic_release_load(volatile const ATOMIC_OP_TYPE* addr);
 
+#ifdef	__LP64__
+int32_t android_atomic32_acquire_load(volatile const int32_t* addr);
+int32_t android_atomic32_release_load(volatile const int32_t* addr);
+#else
+#define	android_atomic32_acquire_load android_atomic_acquire_load
+#define	android_atomic32_release_load android_atomic_release_load
+#endif
 /*
  * Perform an atomic store with "acquire" or "release" ordering.
  *
  * This is only necessary if you need the memory barrier.  A 32-bit write
  * to a 32-bit aligned address is atomic on all supported platforms.
  */
-void android_atomic_acquire_store(int32_t value, volatile int32_t* addr);
-void android_atomic_release_store(int32_t value, volatile int32_t* addr);
+void android_atomic_acquire_store(ATOMIC_OP_TYPE value, volatile ATOMIC_OP_TYPE* addr);
+void android_atomic_release_store(ATOMIC_OP_TYPE value, volatile ATOMIC_OP_TYPE* addr);
 
+#ifdef	__LP64__
+void android_atomic32_acquire_store(int32_t value, volatile int32_t* addr);
+void android_atomic32_release_store(int32_t value, volatile int32_t* addr);
+#else
+#define	android_atomic32_acquire_store android_atomic_acquire_store
+#define android_atomic32_release_store android_atomic_release_store
+#endif
 /*
  * Compare-and-set operation with "acquire" or "release" ordering.
  *
@@ -101,11 +147,20 @@ void android_atomic_release_store(int32_t value, volatile int32_t* addr);
  * Implementations that use the release CAS in a loop may be less efficient
  * than possible, because we re-issue the memory barrier on each iteration.
  */
-int android_atomic_acquire_cas(int32_t oldvalue, int32_t newvalue,
-        volatile int32_t* addr);
-int android_atomic_release_cas(int32_t oldvalue, int32_t newvalue,
-        volatile int32_t* addr);
+int android_atomic_acquire_cas(ATOMIC_OP_TYPE oldvalue, ATOMIC_OP_TYPE newvalue,
+        volatile ATOMIC_OP_TYPE* addr);
+int android_atomic_release_cas(ATOMIC_OP_TYPE oldvalue, ATOMIC_OP_TYPE newvalue,
+        volatile ATOMIC_OP_TYPE* addr);
 
+#ifdef	__LP64__
+int android_atomic32_acquire_cas(int32_t oldvalue, int32_t newvalue,
+        volatile int32_t* addr);
+int android_atomic32_release_cas(int32_t oldvalue, int32_t newvalue,
+        volatile int32_t* addr);
+#else
+#define	android_atomic32_acquire_cas android_atomic_acquire_cas
+#define	android_atomic32_release_cas android_atomic_release_cas
+#endif
 /*
  * Aliases for code using an older version of this header.  These are now
  * deprecated and should not be used.  The definitions will be removed
@@ -113,6 +168,8 @@ int android_atomic_release_cas(int32_t oldvalue, int32_t newvalue,
  */
 #define android_atomic_write android_atomic_release_store
 #define android_atomic_cmpxchg android_atomic_release_cas
+#define android_atomic32_write android_atomic32_release_store
+#define android_atomic32_cmpxchg android_atomic32_release_cas
 
 #ifdef __cplusplus
 } // extern "C"

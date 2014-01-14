@@ -150,4 +150,19 @@ android_atomic_or(int32_t value, volatile int32_t *ptr)
     return prev;
 }
 
+#define android_atomic32_inc android_atomic_inc
+#define android_atomic32_dec android_atomic_dec
+#define android_atomic32_add android_atomic_add
+#define android_atomic32_and android_atomic_and
+#define android_atomic32_or  android_atomic_or
+#define android_atomic32_acquire_load android_atomic_acquire_load
+#define android_atomic32_release_load android_atomic_release_load
+#define android_atomic32_acquire_store android_atomic_acquire_store
+#define android_atomic32_release_store android_atomic_release_store
+#define android_atomic32_acquire_cas android_atomic_acquire_cas
+#define android_atomic32_release_cas android_atomic_release_cas
+#define android_atomic32_write android_atomic32_release_store
+#define android_atomic32_cmpxchg android_atomic32_release_cas
+#define android_atomic32_cas android_atomic_cas
+
 #endif /* ANDROID_CUTILS_ATOMIC_X86_H */
