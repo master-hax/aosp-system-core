@@ -574,8 +574,9 @@ int fs_mgr_mount_all(struct fstab *fstab)
             }
             encrypted = 1;
         } else {
-            ERROR("Cannot mount filesystem on %s at %s\n",
-                    fstab->recs[i].blk_device, fstab->recs[i].mount_point);
+            ERROR("Cannot mount filesystem on %s at %s options: %s error: %s\n",
+                fstab->recs[i].blk_device, fstab->recs[i].blk_device,
+                fstab->recs[i].fs_options, strerror(errno));
             goto out;
         }
     }
@@ -644,8 +645,8 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
         }
         if (__mount(n_blk_device, m, fstab->recs[i].fs_type,
                     fstab->recs[i].flags, fstab->recs[i].fs_options)) {
-            ERROR("Cannot mount filesystem on %s at %s\n",
-                    n_blk_device, m);
+            ERROR("Cannot mount filesystem on %s at %s options: %s error: %s\n",
+                n_blk_device, m, fstab->recs[i].fs_options, strerror(errno));
             goto out;
         } else {
             ret = 0;
