@@ -560,6 +560,9 @@ int fs_mgr_mount_all(struct fstab *fstab)
             continue;
         }
 
+	/* back up errno as partition_wipe clobbers the value */
+	mret = errno;
+
         /* mount(2) returned an error, check if it's encrypted and deal with it */
         if ((fstab->recs[i].fs_mgr_flags & MF_CRYPT) &&
             !partition_wiped(fstab->recs[i].blk_device)) {
@@ -568,14 +571,15 @@ int fs_mgr_mount_all(struct fstab *fstab)
              */
             if (mount("tmpfs", fstab->recs[i].mount_point, "tmpfs",
                   MS_NOATIME | MS_NOSUID | MS_NODEV, CRYPTO_TMPFS_OPTIONS) < 0) {
-                ERROR("Cannot mount tmpfs filesystem for encrypted fs at %s\n",
-                        fstab->recs[i].mount_point);
+                ERROR("Cannot mount tmpfs filesystem for encrypted fs at %s error: %s\n",
+                        fstab->recs[i].mount_point, strerror(errno));
                 goto out;
             }
             encrypted = 1;
         } else {
-            ERROR("Cannot mount filesystem on %s at %s\n",
-                    fstab->recs[i].blk_device, fstab->recs[i].mount_point);
+            ERROR("Cannot mount filesystem on %s at %s options: %s error: %s\n",
+                    fstab->recs[i].blk_device, fstab->recs[i].mount_point,
+                    fstab->recs[i].fs_options, strerror(mret);
             goto out;
         }
     }
@@ -644,8 +648,8 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
         }
         if (__mount(n_blk_device, m, fstab->recs[i].fs_type,
                     fstab->recs[i].flags, fstab->recs[i].fs_options)) {
-            ERROR("Cannot mount filesystem on %s at %s\n",
-                    n_blk_device, m);
+            ERROR("Cannot mount filesystem on %s at %s options: %s error: %s\n",
+                n_blk_device, m, fstab->recs[i].fs_options, strerror(errno));
             goto out;
         } else {
             ret = 0;
