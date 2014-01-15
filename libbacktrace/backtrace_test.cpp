@@ -29,6 +29,7 @@
 #include <unistd.h>
 
 #include <backtrace/Backtrace.h>
+#include <backtrace/BacktraceMap.h>
 #include <UniquePtr.h>
 
 #include <cutils/atomic.h>
@@ -103,9 +104,8 @@ void WaitForStop(pid_t pid) {
 bool ReadyLevelBacktrace(Backtrace* backtrace) {
   // See if test_level_four is in the backtrace.
   bool found = false;
-  for (size_t i = 0; i < backtrace->NumFrames(); i++) {
-    const backtrace_frame_data_t* frame = backtrace->GetFrame(i);
-    if (frame->func_name != NULL && strcmp(frame->func_name, "test_level_four") == 0) {
+  for (backtrace_frame_const_iterator it = backtrace->begin(); it != backtrace->end(); ++it) {
+    if (it->func_name == "test_level_four") {
       found = true;
       break;
     }
@@ -122,8 +122,7 @@ void VerifyLevelDump(Backtrace* backtrace) {
   // frame we want.
   size_t frame_num = 0;
   for (size_t i = backtrace->NumFrames()-1; i > 2; i--) {
-    if (backtrace->GetFrame(i)->func_name != NULL &&
-        strcmp(backtrace->GetFrame(i)->func_name, "test_level_one") == 0) {
+    if (backtrace->GetFrame(i)->func_name == "test_level_one") {
       frame_num = i;
       break;
     }
@@ -131,14 +130,10 @@ void VerifyLevelDump(Backtrace* backtrace) {
   ASSERT_LT(static_cast<size_t>(0), frame_num);
   ASSERT_LE(static_cast<size_t>(3), frame_num);
 
-  ASSERT_TRUE(NULL != backtrace->GetFrame(frame_num)->func_name);
-  ASSERT_STREQ(backtrace->GetFrame(frame_num)->func_name, "test_level_one");
-  ASSERT_TRUE(NULL != backtrace->GetFrame(frame_num-1)->func_name);
-  ASSERT_STREQ(backtrace->GetFrame(frame_num-1)->func_name, "test_level_two");
-  ASSERT_TRUE(NULL != backtrace->GetFrame(frame_num-2)->func_name);
-  ASSERT_STREQ(backtrace->GetFrame(frame_num-2)->func_name, "test_level_three");
-  ASSERT_TRUE(NULL != backtrace->GetFrame(frame_num-3)->func_name);
-  ASSERT_STREQ(backtrace->GetFrame(frame_num-3)->func_name, "test_level_four");
+  ASSERT_STREQ(backtrace->GetFrame(frame_num)->func_name.c_str(), "test_level_one");
+  ASSERT_STREQ(backtrace->GetFrame(frame_num-1)->func_name.c_str(), "test_level_two");
+  ASSERT_STREQ(backtrace->GetFrame(frame_num-2)->func_name.c_str(), "test_level_three");
+  ASSERT_STREQ(backtrace->GetFrame(frame_num-3)->func_name.c_str(), "test_level_four");
 }
 
 void VerifyLevelBacktrace(void*) {
@@ -157,8 +152,7 @@ bool ReadyMaxBacktrace(Backtrace* backtrace) {
 void VerifyMaxDump(Backtrace* backtrace) {
   ASSERT_EQ(backtrace->NumFrames(), static_cast<size_t>(MAX_BACKTRACE_FRAMES));
   // Verify that the last frame is our recursive call.
-  ASSERT_TRUE(NULL != backtrace->GetFrame(MAX_BACKTRACE_FRAMES-1)->func_name);
-  ASSERT_STREQ(backtrace->GetFrame(MAX_BACKTRACE_FRAMES-1)->func_name,
+  ASSERT_STREQ(backtrace->GetFrame(MAX_BACKTRACE_FRAMES-1)->func_name.c_str(),
                "test_recursive_call");
 }
 
@@ -220,8 +214,7 @@ void VerifyIgnoreFrames(
       EXPECT_EQ(bt_ign2->GetFrame(i)->sp, bt_all->GetFrame(i+2)->sp);
       EXPECT_EQ(bt_ign2->GetFrame(i)->stack_size, bt_all->GetFrame(i+2)->stack_size);
     }
-    if (!check && bt_ign2->GetFrame(i)->func_name &&
-        strcmp(bt_ign2->GetFrame(i)->func_name, cur_proc) == 0) {
+    if (!check && bt_ign2->GetFrame(i)->func_name == cur_proc) {
       check = true;
     }
   }
@@ -598,18 +591,29 @@ TEST(libbacktrace, format_test) {
   ASSERT_TRUE(backtrace.get() != NULL);
 
   backtrace_frame_data_t frame;
-  memset(&frame, 0, sizeof(backtrace_frame_data_t));
+  frame.num = 1;
+  frame.pc = 2;
+  frame.sp = 0;
+  frame.stack_size = 0;
+  frame.map = NULL;
+  frame.func_offset = 0;
+
+  backtrace_map_t map;
+  map.start = 0;
+  map.end = 0;
 
   frame.num = 1;
 #if defined(__LP64__)
-  EXPECT_STREQ("#01 pc 0000000000000000  <unknown>",
+  EXPECT_STREQ("#01 pc 0000000000000002  <unknown>",
 #else
-  EXPECT_STREQ("#01 pc 00000000  <unknown>",
+  EXPECT_STREQ("#01 pc 00000002  <unknown>",
 #endif
                backtrace->FormatFrameData(&frame).c_str());
 
-  frame.pc = 0x12345678;
-  frame.map_name = "MapFake";
+  frame.pc = 0x12345679;
+  frame.map = &map;
+  map.name = "MapFake";
+  map.start =  1;
 #if defined(__LP64__)
   EXPECT_STREQ("#01 pc 0000000012345678  MapFake",
 #else
@@ -617,7 +621,7 @@ TEST(libbacktrace, format_test) {
 #endif
                backtrace->FormatFrameData(&frame).c_str());
 
-  frame.func_name = const_cast<char*>("ProcFake");
+  frame.func_name = "ProcFake";
 #if defined(__LP64__)
   EXPECT_STREQ("#01 pc 0000000012345678  MapFake (ProcFake)",
 #else
