@@ -245,7 +245,16 @@ static int create_subprocess(const char *cmd, const char *arg0, const char *arg1
         } else {
            D("adb: unable to open %s\n", text);
         }
-        execl(cmd, cmd, arg0, arg1, NULL);
+#ifdef ALLOW_ADBD_ROOT
+        if (getuid() == 0) {
+           // When running as root, route all commands through su.
+           // This allows us to transition into the "su" SELinux domain,
+           // which doesn't enforce the shell security policy.
+           execl("/system/xbin/su", "/system/xbin/su", "-c", cmd, arg0, arg1, NULL);
+        } else
+#endif
+            execl(cmd, cmd, arg0, arg1, NULL);
+
         fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
                 cmd, strerror(errno), errno);
         exit(-1);
