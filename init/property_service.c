@@ -586,11 +586,15 @@ void load_persist_props(void)
     load_persistent_properties();
 }
 
+void load_build_props(void)
+{
+    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL);
+}
+
 void start_property_service(void)
 {
     int fd;
 
-    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL);
     load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT, NULL);
     load_properties_from_file(PROP_PATH_FACTORY, "ro.");
     load_override_properties();
