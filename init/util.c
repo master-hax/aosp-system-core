@@ -575,9 +575,20 @@ int restorecon_recursive(const char* pathname)
 {
     int fd_limit = 20;
     int flags = FTW_DEPTH | FTW_MOUNT | FTW_PHYS;
+    char restorecon_done[PATH_MAX];
+    int rc, fd;
 
     if (is_selinux_enabled() <= 0 || !sehandle)
         return 0;
 
-    return nftw(pathname, nftw_restorecon, fd_limit, flags);
+    snprintf(restorecon_done, sizeof restorecon_done, "%s/.restorecon_done", pathname);
+    if (access(restorecon_done, F_OK) == 0)
+        return 0;
+
+    rc = nftw(pathname, nftw_restorecon, fd_limit, flags);
+    if (rc)
+        return rc;
+    fd = open(restorecon_done, O_WRONLY|O_CREAT, 0000);
+    close(fd);
+    return 0;
 }
