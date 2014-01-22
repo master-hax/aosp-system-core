@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/xattr.h>
 
 /* for ANDROID_SOCKET_* */
 #include <cutils/sockets.h>
@@ -39,6 +40,7 @@
 #include "init.h"
 #include "log.h"
 #include "util.h"
+#include "property_service.h"
 
 /*
  * android_name_to_id - returns the integer uid/gid associated with the given
@@ -524,7 +526,13 @@ int make_dir(const char *path, mode_t mode)
     return rc;
 }
 
-static int restorecon_sb(const char *pathname, const struct stat *sb)
+#define RESTORECON_LAST "security.restorecon_last"
+
+static char ro_build_description[PROP_VALUE_MAX];
+static int ro_build_description_len;
+
+static int restorecon_sb(const char *pathname, const struct stat *sb,
+                         bool setrestoreconlast)
 {
     char *secontext = NULL;
     char *oldsecontext = NULL;
@@ -547,6 +555,10 @@ static int restorecon_sb(const char *pathname, const struct stat *sb)
     }
     freecon(oldsecontext);
     freecon(secontext);
+
+    if (S_ISDIR(sb->st_mode) && setrestoreconlast && ro_build_description_len)
+        setxattr(pathname, RESTORECON_LAST, ro_build_description,
+                 ro_build_description_len, 0);
     return 0;
 }
 
@@ -560,14 +572,14 @@ int restorecon(const char *pathname)
     if (lstat(pathname, &sb) < 0)
         return -errno;
 
-    return restorecon_sb(pathname, &sb);
+    return restorecon_sb(pathname, &sb, false);
 }
 
 static int nftw_restorecon(const char* filename, const struct stat* statptr,
     int fileflags __attribute__((unused)),
     struct FTW* pftw __attribute__((unused)))
 {
-    restorecon_sb(filename, statptr);
+    restorecon_sb(filename, statptr, true);
     return 0;
 }
 
@@ -575,9 +587,36 @@ int restorecon_recursive(const char* pathname)
 {
     int fd_limit = 20;
     int flags = FTW_DEPTH | FTW_MOUNT | FTW_PHYS;
+    char xattr_value[PROP_VALUE_MAX];
+    int rc;
+    ssize_t size;
 
     if (is_selinux_enabled() <= 0 || !sehandle)
         return 0;
 
-    return nftw(pathname, nftw_restorecon, fd_limit, flags);
+    if (!ro_build_description_len) {
+        ro_build_description_len = property_get("ro.build.description",
+                                                ro_build_description);
+        if (ro_build_description_len <= 0)
+            ERROR("Could not get ro.build.description (len %d)",
+                  ro_build_description_len);
+    }
+
+    size = getxattr(pathname, RESTORECON_LAST, xattr_value,
+                    ro_build_description_len);
+    if (ro_build_description_len && size == ro_build_description_len &&
+        memcmp(ro_build_description, xattr_value,
+	       ro_build_description_len) == 0) {
+        ERROR("Skipping restorecon_recursive(%s)\n", pathname);
+        return 0;
+    }
+
+    rc = nftw(pathname, nftw_restorecon, fd_limit, flags);
+    if (rc)
+        return rc;
+
+    if (ro_build_description_len)
+        setxattr(pathname, RESTORECON_LAST, ro_build_description,
+                 ro_build_description_len, 0);
+    return 0;
 }
