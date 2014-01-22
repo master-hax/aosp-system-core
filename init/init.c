@@ -785,6 +785,16 @@ static void process_kernel_cmdline(void)
     export_kernel_boot_props();
 }
 
+static int load_build_props_action(int nargs, char **args)
+{
+    /* load build props from system.  This must happen
+     * before post-fs-data so that ro.build.date.utc
+     * can be used by restorecon_recursive.
+     */
+    load_build_props();
+    return 0;
+}
+
 static int property_service_init_action(int nargs, char **args)
 {
     /* read any property files on system or data and
@@ -1052,7 +1062,10 @@ int main(int argc, char **argv)
         action_for_each_trigger("early-fs", action_add_queue_tail);
         action_for_each_trigger("fs", action_add_queue_tail);
         action_for_each_trigger("post-fs", action_add_queue_tail);
+        queue_builtin_action(load_build_props_action, "load_build_props");
         action_for_each_trigger("post-fs-data", action_add_queue_tail);
+    } else {
+        queue_builtin_action(load_build_props_action, "load_build_props");
     }
 
     /* Repeat mix_hwrng_into_linux_rng in case /dev/hw_random or /dev/random
