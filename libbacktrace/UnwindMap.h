@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef _LIBBACKTRACE_UNWIND_PTRACE_H
-#define _LIBBACKTRACE_UNWIND_PTRACE_H
+#ifndef _LIBBACKTRACE_UNWIND_MAP_H
+#define _LIBBACKTRACE_UNWIND_MAP_H
 
-#include <string>
+#include <backtrace/BacktraceMap.h>
 
-#include "Backtrace.h"
+// Due to the way libunwind implements local/remote code, do not include
+// libunwind.h here. It must be included before this header file in the
+// source code.
 
-#include <libunwind.h>
-
-class UnwindPtrace : public BacktraceImpl {
+class UnwindMap : public BacktraceMap {
 public:
-  UnwindPtrace();
-  virtual ~UnwindPtrace();
+  UnwindMap(pid_t pid);
+  virtual ~UnwindMap();
 
-  virtual bool Unwind(size_t num_ignore_frames);
+  virtual bool Build();
 
-  virtual std::string GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset);
+  unw_map_cursor_t* GetMapCursor() { return &map_cursor_; }
 
 private:
-  unw_addr_space_t addr_space_;
-  struct UPT_info* upt_info_;
+  unw_map_cursor_t map_cursor_;
 };
 
-#endif // _LIBBACKTRACE_UNWIND_PTRACE_H
+#endif // _LIBBACKTRACE_UNWIND_MAP_H

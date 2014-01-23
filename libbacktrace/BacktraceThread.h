@@ -58,8 +58,6 @@ class BacktraceThreadInterface {
 public:
   virtual ~BacktraceThreadInterface() { }
 
-  virtual bool Init() = 0;
-
   virtual void ThreadUnwind(
       siginfo_t* siginfo, void* sigcontext, size_t num_ignore_frames) = 0;
 };
