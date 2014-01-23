@@ -23,7 +23,7 @@ common_shared_libs := \
 	liblog \
 
 # To enable using libunwind on each arch, add it to this list.
-libunwind_architectures := arm64
+libunwind_architectures := arm arm64
 
 ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),$(libunwind_architectures)))
 
@@ -35,6 +35,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
 	$(common_src) \
 	UnwindCurrent.cpp \
+	UnwindMap.cpp \
 	UnwindPtrace.cpp \
 
 LOCAL_CFLAGS := \

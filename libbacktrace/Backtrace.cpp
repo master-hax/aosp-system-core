@@ -40,20 +40,20 @@ Backtrace::Backtrace(BacktraceImpl* impl, pid_t pid, BacktraceMap* map)
   impl_->SetParent(this);
 
   if (map_ == NULL) {
-    // The map will be created when needed.
+    map_ = BacktraceMap::Create(pid);
     map_shared_ = false;
   }
 }
 
 Backtrace::~Backtrace() {
-  if (map_ && !map_shared_) {
-    delete map_;
-    map_ = NULL;
-  }
-
   if (impl_) {
     delete impl_;
     impl_ = NULL;
+  }
+
+  if (map_ && !map_shared_) {
+    delete map_;
+    map_ = NULL;
   }
 }
 
@@ -129,28 +129,8 @@ std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
   return buf;
 }
 
-bool Backtrace::BuildMap() {
-  map_ = impl_->CreateBacktraceMap(pid_);
-  if (!map_->Build()) {
-    BACK_LOGW("Failed to build map for process %d", pid_);
-    return false;
-  }
-  return true;
-}
-
 const backtrace_map_t* Backtrace::FindMap(uintptr_t pc) {
-  if (map_ == NULL) {
-    // Lazy eval, time to build the map.
-    if (!BuildMap()) {
-      return NULL;
-    }
-  }
   return map_->Find(pc);
-}
-
-BacktraceMap* Backtrace::TakeMapOwnership() {
-  map_shared_ = true;
-  return map_;
 }
 
 //-------------------------------------------------------------------------
@@ -226,3 +206,16 @@ Backtrace* Backtrace::Create(pid_t pid, pid_t tid, BacktraceMap* map) {
     return CreatePtraceObj(pid, tid, map);
   }
 }
+
+#if defined(__APPLE__)
+// Corkscrew and libunwind don't compile on the mac, so create a generic
+// map object.
+BacktraceMap* BacktraceMap::Create(pid_t pid) {
+  BacktraceMap* map = new BacktraceMap(pid);
+  if (!map->Build()) {
+    delete map;
+    return NULL;
+  }
+  return map;
+}
+#endif

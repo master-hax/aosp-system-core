@@ -21,8 +21,12 @@
 #include <string>
 #include <vector>
 
+#include <backtrace/backtrace_constants.h>
 #include <backtrace/BacktraceMap.h>
 #include <log/log.h>
+
+#include "thread_utils.h"
+#include "Backtrace.h"
 
 BacktraceMap::BacktraceMap(pid_t pid) : pid_(pid) {
   if (pid_ < 0) {
