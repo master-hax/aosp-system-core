@@ -39,12 +39,19 @@ public:
 
   void SetParent(Backtrace* backtrace) { backtrace_obj_ = backtrace; }
 
-  virtual BacktraceMap* CreateBacktraceMap(pid_t pid) = 0;
+  inline pid_t Pid() { return backtrace_obj_->Pid(); }
+  inline pid_t Tid() { return backtrace_obj_->Tid(); }
+
+  inline const backtrace_map_t* FindMap(uintptr_t addr) {
+    return backtrace_obj_->FindMap(addr);
+  }
+  inline std::string GetFunctionName(uintptr_t pc, uintptr_t* offset) {
+    return backtrace_obj_->GetFunctionName(pc, offset);
+  }
+  inline BacktraceMap* GetMap() { return backtrace_obj_->GetMap(); }
 
 protected:
   inline std::vector<backtrace_frame_data_t>* GetFrames() { return &backtrace_obj_->frames_; }
-
-  inline bool BuildMap() { return backtrace_obj_->BuildMap(); }
 
   Backtrace* backtrace_obj_;
 };
