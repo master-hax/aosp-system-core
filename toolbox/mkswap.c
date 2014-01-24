@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <linux/fs.h>
 
 /* XXX This needs to be obtained from kernel headers. See b/9336527 */
 struct linux_swap_header {
@@ -26,16 +27,17 @@ int mkswap_main(int argc, char **argv)
     int err = 0;
     int fd;
     ssize_t len;
-    off_t swap_size;
+    off64_t swap_size;
     int pagesize;
     struct linux_swap_header sw_hdr;
+    struct stat sb;
 
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
         return -EINVAL;
     }
 
-    fd = open(argv[1], O_WRONLY);
+    fd = open(argv[1], O_RDWR);
     if (fd < 0) {
         err = errno;
         fprintf(stderr, "Cannot open %s\n", argv[1]);
@@ -44,17 +46,31 @@ int mkswap_main(int argc, char **argv)
 
     pagesize = getpagesize();
     /* Determine the length of the swap file */
-    swap_size = lseek(fd, 0, SEEK_END);
-    if (swap_size < MIN_PAGES * pagesize) {
-        fprintf(stderr, "Swap file needs to be at least %dkB\n",
-            (MIN_PAGES * pagesize) >> 10);
-        err = -ENOSPC;
+    if (fstat(fd, &sb)) {
+        fprintf(stderr, "Couldn't fstat file\n");
+        err = errno;
         goto err;
     }
-    if (lseek(fd, 0, SEEK_SET)) {
-        err = errno;
-        fprintf(stderr, "Can't seek to the beginning of the file\n");
-        goto err;
+    if (S_ISBLK(sb.st_mode)) {
+        if (ioctl(fd, BLKGETSIZE64, &swap_size) < 0) {
+            fprintf(stderr, "Couldn't determine block device size\n");
+            err = errno;
+            goto err;
+        }
+    } else {
+        swap_size = lseek(fd, 0, SEEK_END);
+
+        if (swap_size < MIN_PAGES * pagesize) {
+            fprintf(stderr, "Swap file needs to be at least %dkB\n",
+                    (MIN_PAGES * pagesize) >> 10);
+            err = -ENOSPC;
+            goto err;
+        }
+        if (lseek(fd, 0, SEEK_SET)) {
+            err = errno;
+            fprintf(stderr, "Can't seek to the beginning of the file\n");
+            goto err;
+        }
     }
 
     memset(&sw_hdr, 0, sizeof(sw_hdr));
