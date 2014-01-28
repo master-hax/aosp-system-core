@@ -226,7 +226,7 @@ static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, int scope_flags) 
 static void dump_stack_segment(
     Backtrace* backtrace, log_t* log, int scope_flags, uintptr_t* sp, size_t words, int label) {
   for (size_t i = 0; i < words; i++) {
-    uint32_t stack_content;
+    long stack_content;
     if (!backtrace->ReadWord(*sp, &stack_content)) {
       break;
     }
@@ -244,27 +244,31 @@ static void dump_stack_segment(
       if (!i && label >= 0) {
         if (offset) {
           _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s+%u)\n",
-               label, *sp, stack_content, map_name, func_name.c_str(), offset);
+               label, *sp, static_cast<uintptr_t>(stack_content), map_name,
+               func_name.c_str(), offset);
         } else {
           _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s (%s)\n",
-               label, *sp, stack_content, map_name, func_name.c_str());
+               label, *sp, static_cast<uintptr_t>(stack_content), map_name,
+               func_name.c_str());
         }
       } else {
         if (offset) {
           _LOG(log, scope_flags, "         %08x  %08x  %s (%s+%u)\n",
-               *sp, stack_content, map_name, func_name.c_str(), offset);
+               *sp, static_cast<uintptr_t>(stack_content), map_name,
+               func_name.c_str(), offset);
         } else {
           _LOG(log, scope_flags, "         %08x  %08x  %s (%s)\n",
-               *sp, stack_content, map_name, func_name.c_str());
+               *sp, static_cast<uintptr_t>(stack_content), map_name,
+               func_name.c_str());
         }
       }
     } else {
       if (!i && label >= 0) {
         _LOG(log, scope_flags, "    #%02d  %08x  %08x  %s\n",
-             label, *sp, stack_content, map_name);
+             label, *sp, static_cast<uintptr_t>(stack_content), map_name);
       } else {
         _LOG(log, scope_flags, "         %08x  %08x  %s\n",
-             *sp, stack_content, map_name);
+             *sp, static_cast<uintptr_t>(stack_content), map_name);
       }
     }
 
@@ -587,7 +591,7 @@ static void dump_abort_message(Backtrace* backtrace, log_t* log, uintptr_t addre
   memset(msg, 0, sizeof(msg));
   char* p = &msg[0];
   while (p < &msg[sizeof(msg)]) {
-    uint32_t data;
+    long data;
     if (!backtrace->ReadWord(address, &data)) {
       break;
     }

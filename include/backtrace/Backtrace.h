@@ -69,7 +69,7 @@ public:
   virtual BacktraceMap* TakeMapOwnership();
 
   // Read the data at a specific address.
-  virtual bool ReadWord(uintptr_t ptr, uint32_t* out_value) = 0;
+  virtual bool ReadWord(uintptr_t ptr, long* out_value) = 0;
 
   // Create a string representing the formatted line of backtrace information
   // for a single frame.
@@ -100,7 +100,7 @@ public:
 protected:
   Backtrace(BacktraceImpl* impl, pid_t pid, BacktraceMap* map);
 
-  virtual bool VerifyReadWordArgs(uintptr_t ptr, uint32_t* out_value);
+  virtual bool VerifyReadWordArgs(uintptr_t ptr, long* out_value);
 
   bool BuildMap();
 
