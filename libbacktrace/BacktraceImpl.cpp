@@ -112,15 +112,15 @@ std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
 
   char buf[512];
   if (!frame->func_name.empty() && frame->func_offset) {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s (%s+%" PRIuPTR ")",
-             frame->num, (int)sizeof(uintptr_t)*2, relative_pc, map_name,
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s (%s+%" PRIuPTR ")",
+             frame->num, relative_pc, map_name,
              frame->func_name.c_str(), frame->func_offset);
   } else if (!frame->func_name.empty()) {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s (%s)", frame->num,
-             (int)sizeof(uintptr_t)*2, relative_pc, map_name, frame->func_name.c_str());
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s (%s)", frame->num,
+             relative_pc, map_name, frame->func_name.c_str());
   } else {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s", frame->num,
-             (int)sizeof(uintptr_t)*2, relative_pc, map_name);
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s", frame->num,
+             relative_pc, map_name);
   }
 
   return buf;
