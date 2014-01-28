@@ -82,10 +82,10 @@ std::string Backtrace::GetFunctionName(uintptr_t pc, uintptr_t* offset) {
   return func_name;
 }
 
-bool Backtrace::VerifyReadWordArgs(uintptr_t ptr, uint32_t* out_value) {
+bool Backtrace::VerifyReadWordArgs(uintptr_t ptr, long* out_value) {
   if (ptr & 3) {
     BACK_LOGW("invalid pointer %p", (void*)ptr);
-    *out_value = (uint32_t)-1;
+    *out_value = (long)-1;
     return false;
   }
   return true;
@@ -115,15 +115,15 @@ std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
 
   char buf[512];
   if (!frame->func_name.empty() && frame->func_offset) {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s (%s+%" PRIuPTR ")",
-             frame->num, (int)sizeof(uintptr_t)*2, relative_pc, map_name,
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s (%s+%" PRIuPTR ")",
+             frame->num, relative_pc, map_name,
              frame->func_name.c_str(), frame->func_offset);
   } else if (!frame->func_name.empty()) {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s (%s)", frame->num,
-             (int)sizeof(uintptr_t)*2, relative_pc, map_name, frame->func_name.c_str());
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s (%s)", frame->num,
+             relative_pc, map_name, frame->func_name.c_str());
   } else {
-    snprintf(buf, sizeof(buf), "#%02zu pc %0*" PRIxPTR "  %s", frame->num,
-             (int)sizeof(uintptr_t)*2, relative_pc, map_name);
+    snprintf(buf, sizeof(buf), "#%02zu pc %" PRIzxPTR "  %s", frame->num,
+             relative_pc, map_name);
   }
 
   return buf;
@@ -143,18 +143,18 @@ BacktraceCurrent::BacktraceCurrent(
 BacktraceCurrent::~BacktraceCurrent() {
 }
 
-bool BacktraceCurrent::ReadWord(uintptr_t ptr, uint32_t* out_value) {
+bool BacktraceCurrent::ReadWord(uintptr_t ptr, long* out_value) {
   if (!VerifyReadWordArgs(ptr, out_value)) {
     return false;
   }
 
   const backtrace_map_t* map = FindMap(ptr);
   if (map && map->flags & PROT_READ) {
-    *out_value = *reinterpret_cast<uint32_t*>(ptr);
+    *out_value = *reinterpret_cast<long*>(ptr);
     return true;
   } else {
     BACK_LOGW("pointer %p not in a readable map", reinterpret_cast<void*>(ptr));
-    *out_value = static_cast<uint32_t>(-1);
+    *out_value = static_cast<long>(-1);
     return false;
   }
 }
@@ -171,7 +171,7 @@ BacktracePtrace::BacktracePtrace(
 BacktracePtrace::~BacktracePtrace() {
 }
 
-bool BacktracePtrace::ReadWord(uintptr_t ptr, uint32_t* out_value) {
+bool BacktracePtrace::ReadWord(uintptr_t ptr, long* out_value) {
   if (!VerifyReadWordArgs(ptr, out_value)) {
     return false;
   }
@@ -184,7 +184,7 @@ bool BacktracePtrace::ReadWord(uintptr_t ptr, uint32_t* out_value) {
   // To disambiguate -1 from a valid result, we clear errno beforehand.
   errno = 0;
   *out_value = ptrace(PTRACE_PEEKTEXT, Tid(), reinterpret_cast<void*>(ptr), NULL);
-  if (*out_value == static_cast<uint32_t>(-1) && errno) {
+  if (*out_value == static_cast<long>(-1) && errno) {
     BACK_LOGW("invalid pointer %p reading from tid %d, ptrace() strerror(errno)=%s",
               reinterpret_cast<void*>(ptr), Tid(), strerror(errno));
     return false;
