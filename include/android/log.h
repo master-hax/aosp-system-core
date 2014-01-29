@@ -121,6 +121,21 @@ void __android_log_assert(const char *cond, const char *tag,
 #endif
     ;
 
+/*
+ * The following defines a non-standard format for printing zero-padded pointers
+ * in hex in printf-like functions.
+ */
+#include <inttypes.h>
+
+#ifdef __LP64__
+#define __PTR_zero_pad "016"
+#else
+#define __PTR_zero_pad  "08"
+#endif
+
+#define PRIzxPTR __PTR_zero_pad PRIxPTR
+#define PRIzXPTR __PTR_zero_pad PRIXPTR
+
 #ifdef __cplusplus
 }
 #endif
