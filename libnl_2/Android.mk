@@ -3,6 +3,8 @@
 # * Library is not thread safe
 #######################################
 
+ifneq ($(TARGET_IS_64_BIT),true)
+
 LOCAL_PATH := $(call my-dir)
 
 
@@ -35,3 +37,5 @@ LOCAL_SHARED_LIBRARIES:= liblog
 LOCAL_MODULE := libnl_2
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SHARED_LIBRARY)
+
+endif # TARGET_IS_64_BIT
