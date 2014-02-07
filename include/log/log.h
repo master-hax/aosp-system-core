@@ -74,7 +74,7 @@ extern "C" {
  */
 #ifndef ALOGV
 #if LOG_NDEBUG
-#define ALOGV(...)   ((void)0)
+#define ALOGV(...) ((void)ALOG_DISABLED(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #else
 #define ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #endif
@@ -203,7 +203,7 @@ extern "C" {
  */
 #ifndef SLOGV
 #if LOG_NDEBUG
-#define SLOGV(...)   ((void)0)
+#define SLOGV(...) ((void)__android_log_buf_print_disabled(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #else
 #define SLOGV(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #endif
@@ -285,7 +285,7 @@ extern "C" {
  */
 #ifndef RLOGV
 #if LOG_NDEBUG
-#define RLOGV(...)   ((void)0)
+#define RLOGV(...) ((void)__android_log_buf_print_disabled(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #else
 #define RLOGV(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #endif
@@ -429,6 +429,9 @@ extern "C" {
     LOG_PRI(ANDROID_##priority, tag, __VA_ARGS__)
 #endif
 
+#define ALOG_DISABLED(priority, tag, ...) \
+    LOG_PRI_DISABLED(ANDROID_##priority, tag, __VA_ARGS__)
+
 /*
  * Log macro that allows you to specify a number for the priority.
  */
@@ -436,6 +439,9 @@ extern "C" {
 #define LOG_PRI(priority, tag, ...) \
     android_printLog(priority, tag, __VA_ARGS__)
 #endif
+
+#define LOG_PRI_DISABLED(priority, tag, ...) \
+    android_printLog_disabled(priority, tag, __VA_ARGS__)
 
 /*
  * Log macro that allows you to pass in a varargs ("args" is a va_list).
@@ -501,6 +507,9 @@ typedef enum {
 #define android_printLog(prio, tag, fmt...) \
     __android_log_print(prio, tag, fmt)
 
+#define android_printLog_disabled(prio, tag, fmt...) \
+    __android_log_print_disabled(prio, tag, fmt)
+
 #define android_vprintLog(prio, cond, tag, fmt...) \
     __android_log_vprint(prio, tag, fmt)
 
@@ -557,7 +566,28 @@ typedef enum log_id {
  * Send a simple string to the log.
  */
 int __android_log_buf_write(int bufID, int prio, const char *tag, const char *text);
-int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fmt, ...);
+int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fmt, ...)
+#if defined(__GNUC__)
+    __attribute__((__format__(printf, 4, 5)))
+#endif
+    ;
+
+static inline int __android_log_buf_print_disabled(int bufID, int prio,
+                                                   const char *tag,
+                                                   const char *fmt, ...)
+#if defined(__GNUC__)
+    __attribute__((__format__(printf, 4, 5)))
+#endif
+    ;
+
+static inline int __android_log_buf_print_disabled(int bufID __attribute__((__unused__)),
+                                                   int prio __attribute__((__unused__)),
+                                                   const char *tag __attribute__((__unused__)),
+                                                   const char *fmt __attribute__((__unused__)),
+                                                   ...)
+{
+    return 0;
+}
 
 #ifdef __cplusplus
 }
