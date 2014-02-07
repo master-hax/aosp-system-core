@@ -103,6 +103,26 @@ int __android_log_print(int prio, const char *tag,  const char *fmt, ...)
     ;
 
 /*
+ * Dummy function to provide argument checking on disabled logs
+ */
+static inline
+int __android_log_print_disabled(int prio, const char *tag, const char *fmt, ...)
+#if defined(__GNUC__)
+    __attribute__ ((format(printf, 3, 4)))
+#endif
+    ;
+
+
+static inline
+int __android_log_print_disabled(int prio __attribute__((__unused__)),
+                                 const char *tag __attribute__((__unused__)),
+                                 const char *fmt __attribute__((__unused__)),
+                                 ...)
+{
+    return 0;
+}
+
+/*
  * A variant of __android_log_print() that takes a va_list to list
  * additional parameters.
  */
