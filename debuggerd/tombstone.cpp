@@ -653,8 +653,10 @@ static bool dump_crash(log_t* log, pid_t pid, pid_t tid, int signal, uintptr_t a
 //
 // Returns the path of the tombstone file, allocated using malloc().  Caller must free() it.
 static char* find_and_open_tombstone(int* fd) {
-#ifdef __aarch64__
+#if defined(__aarch64__)
   long mtime = LONG_MAX;
+#elif defined(__mips__)
+  unsigned int mtime = UINT_MAX;
 #else
   unsigned long mtime = ULONG_MAX;
 #endif
