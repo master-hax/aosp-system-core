@@ -522,7 +522,7 @@ static void load_persistent_properties()
                     || (sb.st_uid != 0)
                     || (sb.st_gid != 0)
                     || (sb.st_nlink != 1)) {
-                ERROR("skipping insecure property file %s (uid=%u gid=%u nlink=%d mode=%o)\n",
+                ERROR("skipping insecure property file %s (uid=%lu gid=%lu nlink=%d mode=%o)\n",
                       entry->d_name, sb.st_uid, sb.st_gid, sb.st_nlink, sb.st_mode);
                 close(fd);
                 continue;
