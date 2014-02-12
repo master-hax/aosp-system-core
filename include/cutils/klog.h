@@ -18,6 +18,7 @@
 #define _CUTILS_KLOG_H_
 
 #include <sys/cdefs.h>
+#include <stdarg.h>
 
 __BEGIN_DECLS
 
@@ -26,6 +27,7 @@ void klog_set_level(int level);
 void klog_close(void);
 void klog_write(int level, const char *fmt, ...)
     __attribute__ ((format(printf, 2, 3)));
+void klog_vwrite(int level, const char *fmt, va_list ap);
 
 __END_DECLS
 

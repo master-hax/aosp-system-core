@@ -93,7 +93,7 @@ int create_socket(const char *name, int type, mode_t perm, uid_t uid,
     char *filecon;
 
     if (socketcon)
-        setsockcreatecon(socketcon);
+        setsockcreatecon((const security_context_t) socketcon);
 
     fd = socket(PF_UNIX, type, 0);
     if (fd < 0) {

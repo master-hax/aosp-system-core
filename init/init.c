@@ -934,9 +934,18 @@ int selinux_reload_policy(void)
     return 0;
 }
 
-int audit_callback(void *data, security_class_t cls, char *buf, size_t len)
+static int audit_callback(void *data, security_class_t cls, char *buf, size_t len)
 {
     snprintf(buf, len, "property=%s", !data ? "NULL" : (char *)data);
+    return 0;
+}
+
+static int log_callback(int type, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    klog_vwrite(KLOG_DEFAULT_LEVEL, fmt, ap);
+    va_end(ap);
     return 0;
 }
 
@@ -1013,7 +1022,7 @@ int main(int argc, char **argv)
     process_kernel_cmdline();
 
     union selinux_callback cb;
-    cb.func_log = klog_write;
+    cb.func_log = log_callback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
 
     cb.func_audit = audit_callback;
