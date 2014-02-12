@@ -68,7 +68,8 @@ TOOLS := \
 	swapon \
 	swapoff \
 	mkswap \
-	readlink
+	readlink \
+	getrestoreconlast
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 TOOLS += r
