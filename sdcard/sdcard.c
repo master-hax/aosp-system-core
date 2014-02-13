@@ -232,7 +232,7 @@ struct fuse_handler {
      * buffer at the same time.  This allows us to share the underlying storage. */
     union {
         __u8 request_buffer[MAX_REQUEST_SIZE];
-        __u8 read_buffer[MAX_READ];
+        __u8 read_buffer[MAX_READ + PAGESIZE];
     };
 };
 
@@ -1198,6 +1198,7 @@ static int handle_open(struct fuse* fuse, struct fuse_handler* handler,
         return -ENOMEM;
     }
     TRACE("[%d] OPEN %s\n", handler->token, path);
+
     h->fd = open(path, req->flags);
     if (h->fd < 0) {
         free(h);
@@ -1218,6 +1219,7 @@ static int handle_read(struct fuse* fuse, struct fuse_handler* handler,
     __u32 size = req->size;
     __u64 offset = req->offset;
     int res;
+    __u8 *read_buffer = (__u8 *) (((uintptr_t) handler->read_buffer + PAGESIZE) & ~(PAGESIZE-1));
 
     /* Don't access any other fields of hdr or req beyond this point, the read buffer
      * overlaps the request buffer and will clobber data in the request.  This
@@ -1225,14 +1227,14 @@ static int handle_read(struct fuse* fuse, struct fuse_handler* handler,
 
     TRACE("[%d] READ %p(%d) %u@%llu\n", handler->token,
             h, h->fd, size, offset);
-    if (size > sizeof(handler->read_buffer)) {
+    if (size > MAX_READ) {
         return -EINVAL;
     }
-    res = pread64(h->fd, handler->read_buffer, size, offset);
+    res = pread64(h->fd, read_buffer, size, offset);
     if (res < 0) {
         return -errno;
     }
-    fuse_reply(fuse, unique, handler->read_buffer, res);
+    fuse_reply(fuse, unique, read_buffer, res);
     return NO_STATUS;
 }
 
