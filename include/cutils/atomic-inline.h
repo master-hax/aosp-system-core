@@ -69,6 +69,112 @@ extern "C" {
 #define ANDROID_MEMBAR_STORE android_memory_store_barrier
 #endif
 
+#ifdef __LP64__
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_acquire_load_pointer(volatile const void** ptr)
+{
+    return (void*)android_atomic_acquire_load64((volatile const int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_release_load_pointer(volatile const void** ptr)
+{
+    return (void*)android_atomic_release_load64((volatile const int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void android_atomic_acquire_store_pointer(void* value, volatile void** ptr)
+{
+    android_atomic_acquire_store64((int64_t)value, (volatile int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void android_atomic_release_store_pointer(void* value, volatile void** ptr)
+{
+    android_atomic_release_store64((int64_t)value, (volatile int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_cas_pointer(void* old_value, void* new_value,
+                                 volatile void** ptr)
+{
+    return (void*)android_atomic_cas64((int64_t)old_value, (int64_t)new_value,
+                                       (volatile int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_acquire_cas_pointer(void* old_value, void* new_value,
+                                         volatile void** ptr)
+{
+    return (void*)android_atomic_acquire_cas64((int64_t)old_value,
+                                               (int64_t)new_value,
+                                               (volatile int64_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_release_cas_pointer(void* old_value, void* new_value,
+                                         volatile void** ptr)
+{
+    return (void*)android_atomic_release_cas64((int64_t)old_value,
+                                               (int64_t)new_value,
+                                               (volatile int64_t*)ptr);
+}
+
+#else /* #ifdef __LP64__ */
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_acquire_load_pointer(volatile const void** ptr)
+{
+    return (void*)android_atomic_acquire_load((volatile const int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_release_load_pointer(volatile const void** ptr)
+{
+    return (void*)android_atomic_release_load((volatile const int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void android_atomic_acquire_store_pointer(void* value, volatile void** ptr)
+{
+    android_atomic_acquire_store((int32_t)value, (volatile int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void android_atomic_release_store_pointer(void* value, volatile void** ptr)
+{
+    android_atomic_release_store((int32_t)value, (volatile int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_cas_pointer(void* old_value, void* new_value,
+                                 volatile void** ptr)
+{
+    return (void*)android_atomic_cas((int32_t)old_value, (int32_t)new_value,
+                                     (volatile int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_acquire_cas_pointer(void* old_value, void* new_value,
+                                         volatile void** ptr)
+{
+    return (void*)android_atomic_acquire_cas((int32_t)old_value,
+                                             (int32_t)new_value,
+                                             (volatile int32_t*)ptr);
+}
+
+extern ANDROID_ATOMIC_INLINE
+void* android_atomic_release_cas_pointer(void* old_value, void* new_value,
+                                         volatile void** ptr)
+{
+    return (void*)android_atomic_release_cas((int32_t)old_value,
+                                             (int32_t)new_value,
+                                             (volatile int32_t*)ptr);
+}
+
+#endif /* #ifdef __LP64__ */
+
 #ifdef __cplusplus
 }
 #endif
