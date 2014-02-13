@@ -239,7 +239,7 @@ int genl_ctrl_alloc_cache(struct nl_sock *sock, struct nl_cache **result)
 
 return_genl_id:
 	/* Return family id as cache pointer */
-	*result = (struct nl_cache *) nl80211_genl_id;
+	*result = (struct nl_cache *)(intptr_t)nl80211_genl_id;
 	rc = 0;
 error_recvbuf:
 	free(recvbuf);
@@ -263,7 +263,7 @@ struct genl_family *genl_ctrl_search_by_name(struct nl_cache *cache, \
 	gf->ce_refcnt++;
 
 	/* Overriding cache pointer as family id for now */
-	gf->gf_id = (uint16_t) ((uint32_t) cache);
+	gf->gf_id = (uint16_t) ((intptr_t) cache);
 	strncpy(gf->gf_name, name, GENL_NAMSIZ);
 
 	return gf;

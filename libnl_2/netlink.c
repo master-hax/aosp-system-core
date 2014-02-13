@@ -241,7 +241,7 @@ int nl_send_iovec(struct nl_sock *sk, struct nl_msg *msg,
 /* Send netlink message with control over sendmsg() message header */
 int nl_sendmsg(struct nl_sock *sk, struct nl_msg *msg, struct msghdr *hdr)
 {
-	return sendmsg(sk->s_fd, (struct msghdr *) msg, (int) hdr);
+	return sendmsg(sk->s_fd, (struct msghdr *) msg, (int)(intptr_t)hdr);
 }
 
 /* Create and connect netlink socket */
