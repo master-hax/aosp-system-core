@@ -40,6 +40,9 @@
 
 #include "fuse.h"
 
+#define LOG_TAG "sdcardd"
+#include <cutils/log.h>
+
 /* README
  *
  * What is this?
@@ -91,12 +94,12 @@
 #define FUSE_TRACE 0
 
 #if FUSE_TRACE
-#define TRACE(x...) fprintf(stderr,x)
+#define TRACE(x...) SLOGI(x)
 #else
 #define TRACE(x...) do {} while (0)
 #endif
 
-#define ERROR(x...) fprintf(stderr,x)
+#define ERROR(x...) SLOGE(x)
 
 #define FUSE_UNKNOWN_INO 0xffffffff
 
