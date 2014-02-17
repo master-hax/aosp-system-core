@@ -22,6 +22,7 @@
 #include <ctype.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/system_properties.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -53,6 +54,17 @@
 #define ZRAM_CONF_DEV   "/sys/block/zram0/disksize"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
+
+/* Returns 1 if running inside an SDK system image, 0 otherwise.
+ */
+static int detect_sdk_system_image(void)
+{
+    /* Read ro.product.name, which will be 'sdk', or 'sdk_<arch>'. */
+    char prop[PROP_VALUE_MAX];
+
+    return __system_property_get("ro.product.name", prop) != 0 &&
+           !strncmp(prop, "sdk", 3);
+}
 
 /*
  * gettime() - returns the time in seconds of the system's monotonic clock or
@@ -116,15 +128,24 @@ static void check_fs(char *blk_device, char *fs_type, char *target)
             umount(target);
         }
 
-        INFO("Running %s on %s\n", E2FSCK_BIN, blk_device);
+        /*
+         * Do not try to run e2fsck() when running inside an SDK system
+         * image since the binary is not available there.
+         */
+        if (detect_sdk_system_image()) {
+            INFO("Not running %s on %s (SDK system image detected)\n",
+                 E2FSCK_BIN, blk_device);
+        } else {
+            INFO("Running %s on %s\n", E2FSCK_BIN, blk_device);
 
-        ret = android_fork_execvp_ext(ARRAY_SIZE(e2fsck_argv), e2fsck_argv,
-                                      &status, true, LOG_KLOG | LOG_FILE,
-                                      true, FSCK_LOG_FILE);
+            ret = android_fork_execvp_ext(ARRAY_SIZE(e2fsck_argv), e2fsck_argv,
+                                        &status, true, LOG_KLOG | LOG_FILE,
+                                        true, FSCK_LOG_FILE);
 
-        if (ret < 0) {
-            /* No need to check for error in fork, we can't really handle it now */
-            ERROR("Failed trying to run %s\n", E2FSCK_BIN);
+            if (ret < 0) {
+                /* No need to check for error in fork, we can't really handle it now */
+                ERROR("Failed trying to run %s\n", E2FSCK_BIN);
+            }
         }
     }
 
