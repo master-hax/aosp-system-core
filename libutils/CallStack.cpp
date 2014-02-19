@@ -141,4 +141,105 @@ void CallStack::print(Printer& printer) const {
     free_backtrace_symbols(symbols, mCount);
 }
 
+CallStac2::CallStac2() :
+        mCount(0) {
+}
+
+CallStac2::CallStac2(const CallStac2& rhs) :
+        mCount(rhs.mCount) {
+    if (mCount) {
+        memcpy(mStack, rhs.mStack, mCount * sizeof(backtrace_frame_t));
+    }
+}
+
+CallStac2::~CallStac2() {
+}
+
+CallStac2& CallStac2::operator = (const CallStac2& rhs) {
+    mCount = rhs.mCount;
+    if (mCount) {
+        memcpy(mStack, rhs.mStack, mCount * sizeof(backtrace_frame_t));
+    }
+    return *this;
+}
+
+bool CallStac2::operator == (const CallStac2& rhs) const {
+    if (mCount != rhs.mCount)
+        return false;
+    return !mCount || memcmp(mStack, rhs.mStack, mCount * sizeof(backtrace_frame_t)) == 0;
+}
+
+bool CallStac2::operator != (const CallStac2& rhs) const {
+    return !operator == (rhs);
+}
+
+bool CallStac2::operator < (const CallStac2& rhs) const {
+    if (mCount != rhs.mCount)
+        return mCount < rhs.mCount;
+    return memcmp(mStack, rhs.mStack, mCount * sizeof(backtrace_frame_t)) < 0;
+}
+
+bool CallStac2::operator >= (const CallStac2& rhs) const {
+    return !operator < (rhs);
+}
+
+bool CallStac2::operator > (const CallStac2& rhs) const {
+    if (mCount != rhs.mCount)
+        return mCount > rhs.mCount;
+    return memcmp(mStack, rhs.mStack, mCount * sizeof(backtrace_frame_t)) > 0;
+}
+
+bool CallStac2::operator <= (const CallStac2& rhs) const {
+    return !operator > (rhs);
+}
+
+const void* CallStac2::operator [] (int index) const {
+    if (index >= int(mCount))
+        return 0;
+    return reinterpret_cast<const void*>(mStack[index].absolute_pc);
+}
+
+void CallStac2::clear() {
+    mCount = 0;
+}
+
+void CallStac2::update(int32_t ignoreDepth, int32_t maxDepth) {
+    if (maxDepth > MAX_DEPTH) {
+        maxDepth = MAX_DEPTH;
+    }
+    ssize_t count = unwind_backtrace(mStack, ignoreDepth + 1, maxDepth);
+    mCount = count > 0 ? count : 0;
+}
+
+void CallStac2::dump(const char* prefix) const {
+    backtrace_symbol_t symbols[mCount];
+
+    get_backtrace_symbols(mStack, mCount, symbols);
+    for (size_t i = 0; i < mCount; i++) {
+        char line[MAX_BACKTRACE_LINE_LENGTH];
+        format_backtrace_line(i, &mStack[i], &symbols[i],
+                line, MAX_BACKTRACE_LINE_LENGTH);
+        ALOGD("%s%s", prefix, line);
+    }
+    free_backtrace_symbols(symbols, mCount);
+}
+
+String8 CallStac2::toString(const char* prefix) const {
+    String8 str;
+    backtrace_symbol_t symbols[mCount];
+
+    get_backtrace_symbols(mStack, mCount, symbols);
+    for (size_t i = 0; i < mCount; i++) {
+        char line[MAX_BACKTRACE_LINE_LENGTH];
+        format_backtrace_line(i, &mStack[i], &symbols[i],
+                line, MAX_BACKTRACE_LINE_LENGTH);
+        str.append(prefix);
+        str.append(line);
+        str.append("\n");
+    }
+    free_backtrace_symbols(symbols, mCount);
+    return str;
+}
+
+
 }; // namespace android
