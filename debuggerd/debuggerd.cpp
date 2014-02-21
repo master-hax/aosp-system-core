@@ -256,13 +256,23 @@ static bool should_attach_gdb(debugger_request_t* request) {
   return false;
 }
 
+static bool should_dump_tombstone() {
+  char value[PROPERTY_VALUE_MAX];
+  property_get("persist.sys.tombstones", value, "true");
+  if (strcmp(value, "false") == 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 static void handle_request(int fd) {
   XLOG("handle_request(%d)\n", fd);
 
   debugger_request_t request;
   memset(&request, 0, sizeof(request));
   int status = read_request(fd, &request);
-  if (!status) {
+  if (!status && should_dump_tombstone()) {
     XLOG("BOOM: pid=%d uid=%d gid=%d tid=%d\n",
          request.pid, request.uid, request.gid, request.tid);
 
