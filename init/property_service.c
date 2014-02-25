@@ -41,6 +41,7 @@
 #include <sys/atomics.h>
 #include <private/android_filesystem_config.h>
 
+#include <selinux/android.h>
 #include <selinux/selinux.h>
 #include <selinux/label.h>
 
@@ -352,6 +353,12 @@ int property_set(const char *name, const char *value)
     } else if (strcmp("selinux.reload_policy", name) == 0 &&
                strcmp("1", value) == 0) {
         selinux_reload_policy();
+    } else if (strcmp("selinux.restorecondatadata", name) == 0  &&
+               strcmp("1", value) == 0) {
+        selinux_android_restorecon("/data/data", SELINUX_ANDROID_RESTORECON_RECURSE |
+                SELINUX_ANDROID_RESTORECON_DATADATA);
+        selinux_android_restorecon("/data/user", SELINUX_ANDROID_RESTORECON_RECURSE |
+                SELINUX_ANDROID_RESTORECON_DATADATA);
     }
     property_changed(name, value);
     return 0;
