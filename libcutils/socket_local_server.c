@@ -107,7 +107,7 @@ int socket_local_server(const char *name, int namespace, int type)
         return -1;
     }
 
-    if (type == SOCK_STREAM) {
+    if (type & SOCK_STREAM) {
         int ret;
 
         ret = listen(s, LISTEN_BACKLOG);
