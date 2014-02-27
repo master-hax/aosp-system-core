@@ -1244,7 +1244,12 @@ static int handle_write(struct fuse* fuse, struct fuse_handler* handler,
     struct fuse_write_out out;
     struct handle *h = id_to_ptr(req->fh);
     int res;
+#ifdef __clang__
+    __u8 alignable_buffer[req->size+PAGESIZE]; // workaround for clang bug #13007
+    __u8 *aligned_buffer = alignable_buffer + (PAGESIZE-req->size%PAGESIZE);
+#else
     __u8 aligned_buffer[req->size] __attribute__((__aligned__(PAGESIZE)));
+#endif
     
     if (req->flags & O_DIRECT) {
         memcpy(aligned_buffer, buffer, req->size);

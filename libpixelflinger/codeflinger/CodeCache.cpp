@@ -27,6 +27,11 @@
 #define LOG_TAG "CodeCache"
 #include <cutils/log.h>
 
+#ifdef __clang__
+// Clang doesn't have __builtin___clear_cache, but libgcc has __clear_cache
+#include <stddef.h>
+#define __builtin___clear_cache(x,y) __clear_cache(x,y)
+#endif
 
 #include "CodeCache.h"
 
