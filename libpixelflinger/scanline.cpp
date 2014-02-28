@@ -59,9 +59,13 @@
 
 #ifdef NDEBUG
 #   define ANDROID_RELEASE
-#   define ANDROID_CODEGEN      ANDROID_CODEGEN_GENERATED
 #else
 #   define ANDROID_DEBUG
+#endif
+
+#ifdef	__x86_64__	// Use generic codegen for x86_64
+#   define ANDROID_CODEGEN      ANDROID_CODEGEN_GENERIC
+#else
 #   define ANDROID_CODEGEN      ANDROID_CODEGEN_GENERATED
 #endif
 
