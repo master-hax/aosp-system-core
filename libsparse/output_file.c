@@ -47,6 +47,8 @@
 #define off64_t off_t
 #endif
 
+#define UNUSED __attribute__((__unused__))
+
 #define min(a, b) \
 	({ typeof(a) _a = (a); typeof(b) _b = (b); (_a < _b) ? _a : _b; })
 
@@ -264,7 +266,7 @@ static struct output_file_ops gz_file_ops = {
 	.close = gz_file_close,
 };
 
-static int callback_file_open(struct output_file *out, int fd)
+static int callback_file_open(struct output_file *out UNUSED, int fd UNUSED)
 {
 	return 0;
 }
@@ -287,7 +289,7 @@ static int callback_file_skip(struct output_file *out, int64_t off)
 	return 0;
 }
 
-static int callback_file_pad(struct output_file *out, int64_t len)
+static int callback_file_pad(struct output_file *out UNUSED, int64_t len UNUSED)
 {
 	return -1;
 }
@@ -631,8 +633,8 @@ static struct output_file *output_file_new_normal(void)
 }
 
 struct output_file *output_file_open_callback(int (*write)(void *, const void *, int),
-		void *priv, unsigned int block_size, int64_t len, int gz, int sparse,
-		int chunks, int crc)
+		void *priv, unsigned int block_size, int64_t len,
+                int gz UNUSED, int sparse, int chunks, int crc)
 {
 	int ret;
 	struct output_file_callback *outc;

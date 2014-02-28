@@ -26,6 +26,8 @@
 #include "sparse_defs.h"
 #include "sparse_format.h"
 
+#define UNUSED __attribute__((__unused__))
+
 struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len)
 {
 	struct sparse_file *s = calloc(sizeof(struct sparse_file), 1);
@@ -189,7 +191,7 @@ int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
 	return ret;
 }
 
-static int out_counter_write(void *priv, const void *data, int len)
+static int out_counter_write(void *priv, const void *data UNUSED, int len)
 {
 	int64_t *count = priv;
 	*count += len;

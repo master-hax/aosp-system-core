@@ -29,6 +29,7 @@
 
 #include <sparse/sparse.h>
 
+#include "output_file.h"
 #include "sparse_crc32.h"
 #include "sparse_file.h"
 #include "sparse_format.h"
@@ -44,6 +45,8 @@
 
 #define COPY_BUF_SIZE (1024U*1024U)
 static char *copybuf;
+
+#define UNUSED __attribute__((__unused__))
 
 #define min(a, b) \
 	({ typeof(a) _a = (a); typeof(b) _b = (b); (_a < _b) ? _a : _b; })
@@ -175,7 +178,8 @@ static int process_fill_chunk(struct sparse_file *s, unsigned int chunk_size,
 }
 
 static int process_skip_chunk(struct sparse_file *s, unsigned int chunk_size,
-		int fd, unsigned int blocks, unsigned int block, uint32_t *crc32)
+		int fd UNUSED, unsigned int blocks, unsigned int block UNUSED,
+                uint32_t *crc32)
 {
 	int ret;
 	int chunk;
