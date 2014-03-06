@@ -114,11 +114,30 @@ include $(BUILD_EXECUTABLE)
 $(LOCAL_PATH)/toolbox.c: $(intermediates)/tools.h
 
 TOOLS_H := $(intermediates)/tools.h
-$(TOOLS_H): PRIVATE_TOOLS := $(ALL_TOOLS)
-$(TOOLS_H): PRIVATE_CUSTOM_TOOL = echo "/* file generated automatically */" > $@ ; for t in $(PRIVATE_TOOLS) ; do echo "TOOL($$t)" >> $@ ; done
-$(TOOLS_H): $(LOCAL_PATH)/Android.mk
-$(TOOLS_H):
+TOOLS_H_TMP := $(TOOLS_H).tmp
+
+# Generate the new header in a temporary file so we can compare against
+# the previous one, if existing.
+#
+.PHONY: $(TOOLS_H_TMP)
+$(TOOLS_H_TMP): PRIVATE_TOOLS := $(ALL_TOOLS)
+$(TOOLS_H_TMP): PRIVATE_CUSTOM_TOOL = echo "/* file generated automatically */" > $@ ; for t in $(PRIVATE_TOOLS) ; do echo "TOOL($$t)" >> $@ ; done
+$(TOOLS_H_TMP): $(LOCAL_PATH)/Android.mk
+$(TOOLS_H_TMP):
 	$(transform-generated-source)
+
+# Make the real header file a dependency on the temporary header file,
+# overriding the real header file only when they differ so we rebuild
+# the dependent source files only when the header is actually modified.
+#
+# This is to ensure that the relevant parts get appropriately rebuilt
+# when switching between eng/user variant without cleaning first.
+#
+$(TOOLS_H): $(TOOLS_H_TMP)
+	$(hide) if ! diff -Nq $< $@ &>/dev/null; then \
+			cp -f $< $@; \
+		fi
+	$(hide) rm -f $<
 
 # Make #!/system/bin/toolbox launchers for each tool.
 #
