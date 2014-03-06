@@ -25,6 +25,7 @@
 
 #include <cutils/memory.h>
 #include <cutils/log.h>
+#include <machine/cpu-features.h>
 
 #include "buffer.h"
 #include "scanline.h"
