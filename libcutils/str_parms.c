@@ -194,23 +194,39 @@ err_create_str_parms:
 int str_parms_add_str(struct str_parms *str_parms, const char *key,
                       const char *value)
 {
-    void *old_val;
-    void *tmp_key;
-    void *tmp_val;
+    void *tmp_key = NULL;
+    void *tmp_val = NULL;
+    void *old_val = NULL;
+
+    // strdup and hashmapPut both set errno on failure.
+    // Set errno to 0 so we can recognize whether anything went wrong.
+    errno = 0;
 
     tmp_key = strdup(key);
-    tmp_val = strdup(value);
-    old_val = hashmapPut(str_parms->map, tmp_key, tmp_val);
-
-    if (old_val) {
-        free(old_val);
-        free(tmp_key);
-    } else if (errno == ENOMEM) {
-        free(tmp_key);
-        free(tmp_val);
-        return -ENOMEM;
+    if (tmp_key == NULL) {
+        goto clean_up;
     }
-    return 0;
+
+    tmp_val = strdup(value);
+    if (tmp_val == NULL) {
+        goto clean_up;
+    }
+
+    old_val = hashmapPut(str_parms->map, tmp_key, tmp_val);
+    if (old_val == NULL && errno != ENOMEM) {
+        // Prevent tmp_key and tmp_val from being freed now they're owned by the hashmap.
+        tmp_key = tmp_val = NULL;
+    }
+    if (old_val != NULL) {
+        // Prevent tmp_val from being freed now it's owned by the hashmap.
+        tmp_val = NULL;
+    }
+
+clean_up:
+    free(tmp_key);
+    free(tmp_val);
+    free(old_val);
+    return -errno;
 }
 
 int str_parms_add_int(struct str_parms *str_parms, const char *key, int value)
@@ -337,7 +353,6 @@ static void test_str_parms_str(const char *str)
 {
     struct str_parms *str_parms;
     char *out_str;
-    int ret;
 
     str_parms = str_parms_create_str(str);
     str_parms_add_str(str_parms, "dude", "woah");
@@ -369,6 +384,12 @@ int main(void)
     test_str_parms_str("foo=bar;baz=bat");
     test_str_parms_str("foo=bar;baz=bat;");
     test_str_parms_str("foo=bar;baz=bat;foo=bar");
+
+    // hashmapPut reports errors by setting errno to ENOMEM.
+    // Test that we're not confused by running in an environment where this is already true.
+    errno = ENOMEM;
+    test_str_parms_str("foo=bar;baz=");
+    test_str_parms_str("foo=bar;baz=");
 
     return 0;
 }
