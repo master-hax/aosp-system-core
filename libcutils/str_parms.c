@@ -197,9 +197,13 @@ int str_parms_add_str(struct str_parms *str_parms, const char *key,
     void *old_val;
     void *tmp_key;
     void *tmp_val;
+    int old_errno;
 
     tmp_key = strdup(key);
     tmp_val = strdup(value);
+
+    old_errno = errno;
+    errno = 0; // focus on errno from hashmapPut
     old_val = hashmapPut(str_parms->map, tmp_key, tmp_val);
 
     if (old_val) {
@@ -210,6 +214,7 @@ int str_parms_add_str(struct str_parms *str_parms, const char *key,
         free(tmp_val);
         return -ENOMEM;
     }
+    errno = old_errno; // resume errno if local ok
     return 0;
 }
 
