@@ -56,7 +56,7 @@ int r_main(int argc, char *argv[])
         value = strtoul(argv[2], 0, 16);
     }
 
-    int fd = open("/dev/mem", O_RDWR | O_SYNC);
+    int fd = open("/dev/mem", O_RDONLY);
     if(fd < 0) {
         fprintf(stderr,"cannot open /dev/mem\n");
         return -1;
@@ -66,8 +66,8 @@ int r_main(int argc, char *argv[])
     size_t mmap_size = endaddr - mmap_start + 1;
     mmap_size = (mmap_size + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
 
-    void* page = mmap64(0, mmap_size, PROT_READ | PROT_WRITE,
-                        MAP_SHARED, fd, mmap_start);
+    void* page = mmap64(0, mmap_size, PROT_READ, MAP_SHARED,
+                        fd, mmap_start);
 
     if(page == MAP_FAILED){
         fprintf(stderr,"cannot mmap region\n");
