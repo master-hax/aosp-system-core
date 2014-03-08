@@ -32,55 +32,15 @@
 // only update the local address space once, and keep a reference count
 // of maps using the same map cursor.
 //-------------------------------------------------------------------------
-static pthread_mutex_t g_map_mutex = PTHREAD_MUTEX_INITIALIZER;
-static unw_map_cursor_t g_map_cursor;
-static int g_map_references = 0;
-
 UnwindMap::UnwindMap(pid_t pid) : BacktraceMap(pid) {
-  map_cursor_.map_list = NULL;
 }
 
 UnwindMap::~UnwindMap() {
-  if (pid_ == getpid()) {
-    pthread_mutex_lock(&g_map_mutex);
-    if (--g_map_references == 0) {
-      // Clear the local address space map.
-      unw_map_local_set(NULL);
-      unw_map_cursor_destroy(&map_cursor_);
-    }
-    pthread_mutex_unlock(&g_map_mutex);
-  } else {
-    unw_map_cursor_destroy(&map_cursor_);
-  }
+  unw_map_cursor_destroy(&map_cursor_);
+  unw_map_cursor_clear(&map_cursor_);
 }
 
-bool UnwindMap::Build() {
-  bool return_value = true;
-  if (pid_ == getpid()) {
-    pthread_mutex_lock(&g_map_mutex);
-    if (g_map_references == 0) {
-      return_value = (unw_map_cursor_create(&map_cursor_, pid_) == 0);
-      if (return_value) {
-        // Set the local address space map to our new map.
-        unw_map_local_set(&map_cursor_);
-        g_map_references = 1;
-        g_map_cursor = map_cursor_;
-      }
-    } else {
-      g_map_references++;
-      map_cursor_ = g_map_cursor;
-    }
-    pthread_mutex_unlock(&g_map_mutex);
-  } else {
-    return_value = (unw_map_cursor_create(&map_cursor_, pid_) == 0);
-  }
-
-  if (!return_value)
-    return false;
-
-  // Use the map_cursor information to construct the BacktraceMap data
-  // rather than reparsing /proc/self/maps.
-  unw_map_cursor_reset(&map_cursor_);
+void UnwindMap::GenerateMap() {
   unw_map_t unw_map;
   while (unw_map_cursor_get(&map_cursor_, &unw_map)) {
     backtrace_map_t map;
@@ -93,15 +53,66 @@ bool UnwindMap::Build() {
     // The maps are in descending order, but we want them in ascending order.
     maps_.push_front(map);
   }
+}
+
+bool UnwindMap::Build() {
+  bool return_value = (unw_map_cursor_create(&map_cursor_, pid_) == 0);
+
+  if (!return_value)
+    return false;
+
+  // Use the map_cursor information to construct the BacktraceMap data
+  // rather than reparsing /proc/self/maps.
+  unw_map_cursor_reset(&map_cursor_);
+  GenerateMap();
 
   return true;
+}
+
+UnwindMapLocal::UnwindMapLocal() : UnwindMap(getpid()), map_created_(false) {
+}
+
+UnwindMapLocal::~UnwindMapLocal() {
+  if (map_created_) {
+    unw_map_local_destroy();
+    unw_map_cursor_clear(&map_cursor_);
+  }
+}
+
+bool UnwindMapLocal::Build() {
+  map_created_ = (unw_map_local_create() == 0);
+  if (map_created_) {
+    unw_map_local_cursor_get(&map_cursor_);
+    GenerateMap();
+  }
+
+  return map_created_;
+}
+
+const backtrace_map_t* UnwindMapLocal::Find(uintptr_t addr) {
+  const backtrace_map_t* map = BacktraceMap::Find(addr);
+  if (!map) {
+    // Check to see if the underlying map changed.
+    if (unw_map_local_cursor_valid(&map_cursor_) < 0) {
+      // Try and regenerate the list.
+      unw_map_local_cursor_get(&map_cursor_);
+      GenerateMap();
+      map = BacktraceMap::Find(addr);
+    }
+  }
+  return map;
 }
 
 //-------------------------------------------------------------------------
 // BacktraceMap create function.
 //-------------------------------------------------------------------------
 BacktraceMap* BacktraceMap::Create(pid_t pid) {
-  BacktraceMap* map = new UnwindMap(pid);
+  BacktraceMap* map;
+  if (pid == getpid()) {
+    map = new UnwindMapLocal();
+  } else {
+    map = new UnwindMap(pid);
+  }
   if (!map->Build()) {
     delete map;
     return NULL;
