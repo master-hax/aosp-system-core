@@ -107,8 +107,12 @@ void help()
         "                                 will disconnect from all connected TCP/IP devices.\n"
         "\n"
         "device commands:\n"
-        "  adb push <local> <remote>    - copy file/dir to device\n"
-        "  adb pull <remote> [<local>]  - copy file/dir from device\n"
+        "  adb push [-p] <local> <remote>\n"
+        "                               - copy file/dir to device\n"
+        "                                 ('-p' to display the transfer progress)\n"
+        "  adb pull [-p] <remote> [<local>]\n"
+        "                               - copy file/dir from device\n"
+        "                                 ('-p' to display the transfer progress)\n"
         "  adb sync [ <directory> ]     - copy host->device only if changed\n"
         "                                 (-l means list but don't copy)\n"
         "                                 (see 'adb help all')\n"
@@ -1368,18 +1372,63 @@ top:
     }
 
     if(!strcmp(argv[0], "push")) {
-        if(argc != 3) return usage();
-        return do_sync_push(argv[1], argv[2], 0 /* no verify APK */);
+      char** arg = &argv[1];
+      int narg = argc - 1;
+
+      int show_progress = 0;
+      const char* lpath = NULL, *rpath = NULL;
+
+      if ((narg > 0) && !strcmp(*arg, "-p")) {
+          show_progress = 1;
+          ++arg;
+          --narg;
+      }
+
+      if (narg > 0) {
+          lpath = *arg;
+          ++arg;
+          --narg;
+      }
+
+      if (narg > 0) {
+          rpath = *arg;
+      }
+
+      if ((lpath != NULL) && (rpath != NULL)) {
+          return do_sync_push(lpath, rpath, 0 /* no verify APK */, show_progress);
+      }
+
+      return usage();
     }
 
     if(!strcmp(argv[0], "pull")) {
-        if (argc == 2) {
-            return do_sync_pull(argv[1], ".");
-        } else if (argc == 3) {
-            return do_sync_pull(argv[1], argv[2]);
-        } else {
-            return usage();
+        char** arg = &argv[1];
+        int narg = argc - 1;
+
+        int show_progress = 0;
+        const char* rpath = NULL, *lpath = ".";
+
+        if ((narg > 0) && !strcmp(*arg, "-p")) {
+            show_progress = 1;
+            ++arg;
+            --narg;
         }
+
+        if (narg > 0) {
+            rpath = *arg;
+            ++arg;
+            --narg;
+        }
+
+        if (narg > 0) {
+            lpath = *arg;
+        }
+
+        if (rpath != NULL) {
+            return do_sync_pull(rpath, lpath, show_progress);
+        }
+
+        return usage();
     }
 
     if(!strcmp(argv[0], "install")) {
@@ -1717,7 +1766,7 @@ int install_app(transport_type transport, char* serial, int argc, char** argv)
         }
     }
 
-    err = do_sync_push(apk_file, apk_dest, verify_apk);
+    err = do_sync_push(apk_file, apk_dest, verify_apk, 0 /* no show progress */);
     if (err) {
         goto cleanup_apk;
     } else {
@@ -1725,7 +1774,8 @@ int install_app(transport_type transport, char* serial, int argc, char** argv)
     }
 
     if (verification_file != NULL) {
-        err = do_sync_push(verification_file, verification_dest, 0 /* no verify APK */);
+        err = do_sync_push(verification_file, verification_dest, 0 /* no verify APK */,
+                           0 /* no show progress */);
         if (err) {
             goto cleanup_apk;
         } else {
