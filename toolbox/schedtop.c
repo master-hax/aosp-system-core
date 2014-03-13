@@ -1,18 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
+#include <dirent.h>
 #include <fcntl.h>
-#include <unistd.h>
-
+#include <inttypes.h>
+#include <pwd.h>
+#include <signal.h>
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
-
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
-#include <signal.h>
-
-#include <pwd.h>
+#include <unistd.h>
 
 struct thread_info {
     int pid;
@@ -110,7 +108,8 @@ static void add_thread(int pid, int tid, struct thread_info *proc_info)
         sprintf(line, "/proc/%d/schedstat", pid);
     if (read_line(line, sizeof(line)))
         return;
-    if(sscanf(line, "%llu %llu %u", &info->exec_time, &info->delay_time, &info->run_count) != 3)
+    if(sscanf(line, "%" PRIu64 " %" PRIu64 " %" PRIu32,
+              &info->exec_time, &info->delay_time, &info->run_count) != 3)
         return;
     if (proc_info) {
         proc_info->exec_time += info->exec_time;
