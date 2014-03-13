@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <cutils/log.h>
+#include <log/log.h>
 
 #include <diskconfig/diskconfig.h>
 
@@ -35,10 +35,10 @@ write_raw_image(const char *dst, const char *src, loff_t offset, int test)
     int dst_fd = -1;
     int src_fd = -1;
     uint8_t buffer[2048];
-    int nr_bytes;
-    int tmp;
+    ssize_t nr_bytes;
+    ssize_t tmp;
     int done = 0;
-    uint64_t total = 0;
+    size_t total = 0;
 
     ALOGI("Writing RAW image '%s' to '%s' (offset=%llu)", src, dst, offset);
     if ((src_fd = open(src, O_RDONLY)) < 0) {
@@ -101,7 +101,7 @@ write_raw_image(const char *dst, const char *src, loff_t offset, int test)
     if (dst_fd >= 0)
         fsync(dst_fd);
 
-    ALOGI("Wrote %llu bytes to %s @ %lld", total, dst, offset);
+    ALOGI("Wrote %zu bytes to %s @ %lld", total, dst, offset);
 
     close(src_fd);
     if (dst_fd >= 0)
