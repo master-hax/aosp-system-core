@@ -64,6 +64,9 @@ int usage(void)
             "       [ --cmdline <kernel-commandline> ]\n"
             "       [ --board <boardname> ]\n"
             "       [ --base <address> ]\n"
+            "       [ --kernel_offset <address> ]\n"
+            "       [ --ramdisk_offset <address> ]\n"
+            "       [ --second_offset <address> ]\n"
             "       [ --pagesize <pagesize> ]\n"
             "       -o|--output <filename>\n"
             );
