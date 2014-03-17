@@ -60,6 +60,8 @@
 #include "ueventd.h"
 #include "watchdogd.h"
 
+#define UNUSED __attribute__((__unused__))
+
 struct selabel_handle *sehandle;
 struct selabel_handle *sehandle_prop;
 
@@ -550,7 +552,7 @@ void execute_one_command(void)
     INFO("command '%s' r=%d\n", cur_command->args[0], ret);
 }
 
-static int wait_for_coldboot_done_action(int nargs, char **args)
+static int wait_for_coldboot_done_action(int nargs UNUSED, char **args UNUSED)
 {
     int ret;
     INFO("wait for %s\n", coldboot_done);
@@ -575,7 +577,7 @@ static int wait_for_coldboot_done_action(int nargs, char **args)
  * time. We do not reboot or halt on failures, as this is a best-effort
  * attempt.
  */
-static int mix_hwrng_into_linux_rng_action(int nargs, char **args)
+static int mix_hwrng_into_linux_rng_action(int nargs UNUSED, char **args UNUSED)
 {
     int result = -1;
     int hwrandom_fd = -1;
@@ -638,13 +640,13 @@ ret:
     return result;
 }
 
-static int keychord_init_action(int nargs, char **args)
+static int keychord_init_action(int nargs UNUSED, char **args UNUSED)
 {
     keychord_init();
     return 0;
 }
 
-static int console_init_action(int nargs, char **args)
+static int console_init_action(int nargs UNUSED, char **args UNUSED)
 {
     int fd;
 
@@ -785,7 +787,7 @@ static void process_kernel_cmdline(void)
     export_kernel_boot_props();
 }
 
-static int property_service_init_action(int nargs, char **args)
+static int property_service_init_action(int nargs UNUSED, char **args UNUSED)
 {
     /* read any property files on system or data and
      * fire up the property service.  This must happen
@@ -796,13 +798,13 @@ static int property_service_init_action(int nargs, char **args)
     return 0;
 }
 
-static int signal_init_action(int nargs, char **args)
+static int signal_init_action(int nargs UNUSED, char **args UNUSED)
 {
     signal_init();
     return 0;
 }
 
-static int check_startup_action(int nargs, char **args)
+static int check_startup_action(int nargs UNUSED, char **args UNUSED)
 {
     /* make sure we actually have all the pieces we need */
     if ((get_property_set_fd() < 0) ||
@@ -817,7 +819,7 @@ static int check_startup_action(int nargs, char **args)
     return 0;
 }
 
-static int queue_property_triggers_action(int nargs, char **args)
+static int queue_property_triggers_action(int nargs UNUSED, char **args UNUSED)
 {
     queue_all_property_triggers();
     /* enable property triggers */

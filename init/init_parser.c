@@ -36,6 +36,8 @@
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
+#define UNUSED __attribute__((__unused__))
+
 static list_declare(service_list);
 static list_declare(action_list);
 static list_declare(action_queue);
@@ -170,7 +172,7 @@ static int lookup_keyword(const char *s)
     return K_UNKNOWN;
 }
 
-static void parse_line_no_op(struct parse_state *state, int nargs, char **args)
+static void parse_line_no_op(struct parse_state *state UNUSED, int nargs UNUSED, char **args UNUSED)
 {
 }
 

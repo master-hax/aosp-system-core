@@ -49,6 +49,8 @@
 
 #include <private/android_filesystem_config.h>
 
+#define UNUSED __attribute__((__unused__))
+
 void add_environment(const char *name, const char *value);
 
 extern int init_module(void *, unsigned long, const char *);
@@ -199,19 +201,19 @@ static void service_start_if_not_disabled(struct service *svc)
     }
 }
 
-int do_chdir(int nargs, char **args)
+int do_chdir(int nargs UNUSED, char **args)
 {
     chdir(args[1]);
     return 0;
 }
 
-int do_chroot(int nargs, char **args)
+int do_chroot(int nargs UNUSED, char **args)
 {
     chroot(args[1]);
     return 0;
 }
 
-int do_class_start(int nargs, char **args)
+int do_class_start(int nargs UNUSED, char **args)
 {
         /* Starting a class does not start services
          * which are explicitly disabled.  They must
@@ -221,40 +223,40 @@ int do_class_start(int nargs, char **args)
     return 0;
 }
 
-int do_class_stop(int nargs, char **args)
+int do_class_stop(int nargs UNUSED, char **args)
 {
     service_for_each_class(args[1], service_stop);
     return 0;
 }
 
-int do_class_reset(int nargs, char **args)
+int do_class_reset(int nargs UNUSED, char **args)
 {
     service_for_each_class(args[1], service_reset);
     return 0;
 }
 
-int do_domainname(int nargs, char **args)
+int do_domainname(int nargs UNUSED, char **args)
 {
     return write_file("/proc/sys/kernel/domainname", args[1]);
 }
 
-int do_exec(int nargs, char **args)
+int do_exec(int nargs UNUSED, char **args UNUSED)
 {
     return -1;
 }
 
-int do_export(int nargs, char **args)
+int do_export(int nargs UNUSED, char **args)
 {
     add_environment(args[1], args[2]);
     return 0;
 }
 
-int do_hostname(int nargs, char **args)
+int do_hostname(int nargs UNUSED, char **args)
 {
     return write_file("/proc/sys/kernel/hostname", args[1]);
 }
 
-int do_ifup(int nargs, char **args)
+int do_ifup(int nargs UNUSED, char **args)
 {
     return __ifupdown(args[1], 1);
 }
@@ -516,7 +518,7 @@ int do_mount_all(int nargs, char **args)
     return ret;
 }
 
-int do_swapon_all(int nargs, char **args)
+int do_swapon_all(int nargs UNUSED, char **args)
 {
     struct fstab *fstab;
     int ret;
@@ -528,7 +530,7 @@ int do_swapon_all(int nargs, char **args)
     return ret;
 }
 
-int do_setcon(int nargs, char **args) {
+int do_setcon(int nargs UNUSED, char **args) {
     if (is_selinux_enabled() <= 0)
         return 0;
     if (setcon(args[1]) < 0) {
@@ -537,7 +539,7 @@ int do_setcon(int nargs, char **args) {
     return 0;
 }
 
-int do_setenforce(int nargs, char **args) {
+int do_setenforce(int nargs UNUSED, char **args) {
     if (is_selinux_enabled() <= 0)
         return 0;
     if (security_setenforce(atoi(args[1])) < 0) {
@@ -546,7 +548,7 @@ int do_setenforce(int nargs, char **args) {
     return 0;
 }
 
-int do_setkey(int nargs, char **args)
+int do_setkey(int nargs UNUSED, char **args)
 {
     struct kbentry kbe;
     kbe.kb_table = strtoul(args[1], 0, 0);
@@ -555,7 +557,7 @@ int do_setkey(int nargs, char **args)
     return setkey(&kbe);
 }
 
-int do_setprop(int nargs, char **args)
+int do_setprop(int nargs UNUSED, char **args)
 {
     const char *name = args[1];
     const char *value = args[2];
@@ -571,7 +573,7 @@ int do_setprop(int nargs, char **args)
     return 0;
 }
 
-int do_setrlimit(int nargs, char **args)
+int do_setrlimit(int nargs UNUSED, char **args)
 {
     struct rlimit limit;
     int resource;
@@ -581,7 +583,7 @@ int do_setrlimit(int nargs, char **args)
     return setrlimit(resource, &limit);
 }
 
-int do_start(int nargs, char **args)
+int do_start(int nargs UNUSED, char **args)
 {
     struct service *svc;
     svc = service_find_by_name(args[1]);
@@ -591,7 +593,7 @@ int do_start(int nargs, char **args)
     return 0;
 }
 
-int do_stop(int nargs, char **args)
+int do_stop(int nargs UNUSED, char **args)
 {
     struct service *svc;
     svc = service_find_by_name(args[1]);
@@ -601,7 +603,7 @@ int do_stop(int nargs, char **args)
     return 0;
 }
 
-int do_restart(int nargs, char **args)
+int do_restart(int nargs UNUSED, char **args)
 {
     struct service *svc;
     svc = service_find_by_name(args[1]);
@@ -611,7 +613,7 @@ int do_restart(int nargs, char **args)
     return 0;
 }
 
-int do_powerctl(int nargs, char **args)
+int do_powerctl(int nargs UNUSED, char **args)
 {
     char command[PROP_VALUE_MAX];
     int res;
@@ -648,23 +650,23 @@ int do_powerctl(int nargs, char **args)
     return android_reboot(cmd, 0, reboot_target);
 }
 
-int do_trigger(int nargs, char **args)
+int do_trigger(int nargs UNUSED, char **args)
 {
     action_for_each_trigger(args[1], action_add_queue_tail);
     return 0;
 }
 
-int do_symlink(int nargs, char **args)
+int do_symlink(int nargs UNUSED, char **args)
 {
     return symlink(args[1], args[2]);
 }
 
-int do_rm(int nargs, char **args)
+int do_rm(int nargs UNUSED, char **args)
 {
     return unlink(args[1]);
 }
 
-int do_rmdir(int nargs, char **args)
+int do_rmdir(int nargs UNUSED, char **args)
 {
     return rmdir(args[1]);
 }
@@ -683,7 +685,7 @@ int do_sysclktz(int nargs, char **args)
     return 0;
 }
 
-int do_write(int nargs, char **args)
+int do_write(int nargs UNUSED, char **args)
 {
     const char *path = args[1];
     const char *value = args[2];
@@ -787,7 +789,7 @@ static mode_t get_mode(const char *s) {
     return mode;
 }
 
-int do_chmod(int nargs, char **args) {
+int do_chmod(int nargs UNUSED, char **args) {
     mode_t mode = get_mode(args[1]);
     if (_chmod(args[2], mode) < 0) {
         return -errno;
@@ -817,7 +819,7 @@ int do_restorecon_recursive(int nargs, char **args) {
     return ret;
 }
 
-int do_setsebool(int nargs, char **args) {
+int do_setsebool(int nargs UNUSED, char **args) {
     const char *name = args[1];
     const char *value = args[2];
     SELboolean b;
@@ -853,7 +855,7 @@ int do_loglevel(int nargs, char **args) {
     return -1;
 }
 
-int do_load_persist_props(int nargs, char **args) {
+int do_load_persist_props(int nargs UNUSED, char **args UNUSED) {
     if (nargs == 1) {
         load_persist_props();
         return 0;

@@ -30,10 +30,12 @@
 #include "devices.h"
 #include "ueventd_parser.h"
 
+#define UNUSED __attribute__((__unused__))
+
 static char hardware[32];
 static unsigned revision = 0;
 
-static void import_kernel_nv(char *name, int in_qemu)
+static void import_kernel_nv(char *name, int in_qemu UNUSED)
 {
     if (*name != '\0') {
         char *value = strchr(name, '=');
@@ -47,7 +49,7 @@ static void import_kernel_nv(char *name, int in_qemu)
     }
 }
 
-int ueventd_main(int argc, char **argv)
+int ueventd_main(int argc UNUSED, char **argv UNUSED)
 {
     struct pollfd ufd;
     int nr;
