@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <mtd/mtd-user.h>
+#include <signal.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <ctype.h>
-#include <signal.h>
-#include <sys/wait.h>
+#include <sys/cdefs.h>
 #include <sys/mount.h>
-#include <sys/stat.h>
 #include <sys/poll.h>
-#include <errno.h>
-#include <stdarg.h>
-#include <mtd/mtd-user.h>
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/system_properties.h>
+#include <sys/types.h>
 #include <sys/un.h>
+#include <sys/wait.h>
+#include <termios.h>
+#include <unistd.h>
 
-#include <selinux/selinux.h>
-#include <selinux/label.h>
 #include <selinux/android.h>
+#include <selinux/label.h>
+#include <selinux/selinux.h>
 
 #include <libgen.h>
 
@@ -43,21 +46,19 @@
 #include <cutils/sockets.h>
 #include <cutils/iosched_policy.h>
 #include <cutils/fs.h>
+
 #include <private/android_filesystem_config.h>
-#include <termios.h>
 
-#include <sys/system_properties.h>
-
+#include "bootchart.h"
 #include "devices.h"
 #include "init.h"
+#include "init_parser.h"
+#include "keychords.h"
 #include "log.h"
 #include "property_service.h"
-#include "bootchart.h"
 #include "signal_handler.h"
-#include "keychords.h"
-#include "init_parser.h"
-#include "util.h"
 #include "ueventd.h"
+#include "util.h"
 #include "watchdogd.h"
 
 struct selabel_handle *sehandle;
@@ -550,7 +551,7 @@ void execute_one_command(void)
     INFO("command '%s' r=%d\n", cur_command->args[0], ret);
 }
 
-static int wait_for_coldboot_done_action(int nargs, char **args)
+static int wait_for_coldboot_done_action(int nargs __unused, char **args __unused)
 {
     int ret;
     INFO("wait for %s\n", coldboot_done);
@@ -575,7 +576,7 @@ static int wait_for_coldboot_done_action(int nargs, char **args)
  * time. We do not reboot or halt on failures, as this is a best-effort
  * attempt.
  */
-static int mix_hwrng_into_linux_rng_action(int nargs, char **args)
+static int mix_hwrng_into_linux_rng_action(int nargs __unused, char **args __unused)
 {
     int result = -1;
     int hwrandom_fd = -1;
@@ -638,13 +639,13 @@ ret:
     return result;
 }
 
-static int keychord_init_action(int nargs, char **args)
+static int keychord_init_action(int nargs __unused, char **args __unused)
 {
     keychord_init();
     return 0;
 }
 
-static int console_init_action(int nargs, char **args)
+static int console_init_action(int nargs __unused, char **args __unused)
 {
     int fd;
 
@@ -785,7 +786,7 @@ static void process_kernel_cmdline(void)
     export_kernel_boot_props();
 }
 
-static int property_service_init_action(int nargs, char **args)
+static int property_service_init_action(int nargs __unused, char **args __unused)
 {
     /* read any property files on system or data and
      * fire up the property service.  This must happen
@@ -796,13 +797,13 @@ static int property_service_init_action(int nargs, char **args)
     return 0;
 }
 
-static int signal_init_action(int nargs, char **args)
+static int signal_init_action(int nargs __unused, char **args __unused)
 {
     signal_init();
     return 0;
 }
 
-static int check_startup_action(int nargs, char **args)
+static int check_startup_action(int nargs __unused, char **args __unused)
 {
     /* make sure we actually have all the pieces we need */
     if ((get_property_set_fd() < 0) ||
@@ -817,7 +818,7 @@ static int check_startup_action(int nargs, char **args)
     return 0;
 }
 
-static int queue_property_triggers_action(int nargs, char **args)
+static int queue_property_triggers_action(int nargs __unused, char **args __unused)
 {
     queue_all_property_triggers();
     /* enable property triggers */

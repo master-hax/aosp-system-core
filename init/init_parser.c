@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <ctype.h>
 #include <fcntl.h>
 #include <stdarg.h>
-#include <string.h>
 #include <stddef.h>
-#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/cdefs.h>
+#include <unistd.h>
 
 #include "init.h"
-#include "parser.h"
 #include "init_parser.h"
 #include "log.h"
+#include "parser.h"
 #include "property_service.h"
 #include "util.h"
 
@@ -170,7 +171,7 @@ static int lookup_keyword(const char *s)
     return K_UNKNOWN;
 }
 
-static void parse_line_no_op(struct parse_state *state, int nargs, char **args)
+static void parse_line_no_op(struct parse_state *state __unused, int nargs __unused, char **args __unused)
 {
 }
 
