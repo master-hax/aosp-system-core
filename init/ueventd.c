@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-#include <poll.h>
-#include <fcntl.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
+#include <fcntl.h>
+#include <poll.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/cdefs.h>
 
 #include <private/android_filesystem_config.h>
 
-#include "ueventd.h"
-#include "log.h"
-#include "util.h"
 #include "devices.h"
+#include "log.h"
+#include "ueventd.h"
 #include "ueventd_parser.h"
+#include "util.h"
 
 static char hardware[32];
 static unsigned revision = 0;
 
-static void import_kernel_nv(char *name, int in_qemu)
+static void import_kernel_nv(char *name, int in_qemu __unused)
 {
     if (*name != '\0') {
         char *value = strchr(name, '=');
@@ -47,7 +48,7 @@ static void import_kernel_nv(char *name, int in_qemu)
     }
 }
 
-int ueventd_main(int argc, char **argv)
+int ueventd_main(int argc __unused, char **argv __unused)
 {
     struct pollfd ufd;
     int nr;
