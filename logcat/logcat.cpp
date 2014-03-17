@@ -699,7 +699,7 @@ int main(int argc, char **argv)
             int ret;
             ret = android_logger_clear(dev->logger);
             if (ret) {
-                perror("clearLog");
+                perror("not permitted to clear the log");
                 exit(EXIT_FAILURE);
             }
         }
@@ -707,7 +707,7 @@ int main(int argc, char **argv)
 #ifdef USERDEBUG_BUILD
 
         if (setLogSize && android_logger_set_log_size(dev->logger, setLogSize)) {
-            perror("setLogSize");
+            perror("not permitted to set the log size");
             exit(EXIT_FAILURE);
         }
 
@@ -718,13 +718,13 @@ int main(int argc, char **argv)
 
             size = android_logger_get_log_size(dev->logger);
             if (size < 0) {
-                perror("getLogSize");
+                perror("not permitted to get the log size");
                 exit(EXIT_FAILURE);
             }
 
             readable = android_logger_get_log_readable_size(dev->logger);
             if (readable < 0) {
-                perror("getLogReadableSize");
+                perror("not permitted to get the readable log size");
                 exit(EXIT_FAILURE);
             }
 
@@ -748,7 +748,7 @@ int main(int argc, char **argv)
         free(buf);
 
         if (ret) {
-            perror("setPruneList");
+            perror("not permitted to set the prune list");
             exit(EXIT_FAILURE);
         }
     }
@@ -792,7 +792,7 @@ int main(int argc, char **argv)
         }
 
         if (!buf) {
-            perror("response read");
+            perror("response read failure");
             exit(EXIT_FAILURE);
         }
 
@@ -859,7 +859,7 @@ int main(int argc, char **argv)
                 fprintf(stderr, "read: unexpected length.\n");
                 exit(EXIT_FAILURE);
             }
-            perror("logcat read");
+            perror("logcat read failure");
             exit(EXIT_FAILURE);
         }
 
