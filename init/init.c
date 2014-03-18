@@ -842,25 +842,22 @@ static int bootchart_init_action(int nargs, char **args)
 #endif
 
 static const struct selinux_opt seopts_prop[] = {
+        { SELABEL_OPT_PATH, "/data/security/current/property_contexts" },
         { SELABEL_OPT_PATH, "/property_contexts" },
         { 0, NULL }
 };
 
 struct selabel_handle* selinux_android_prop_context_handle(void)
 {
-    int i = 0;
-    struct selabel_handle* sehandle = NULL;
-    while ((sehandle == NULL) && seopts_prop[i].value) {
-        sehandle = selabel_open(SELABEL_CTX_ANDROID_PROP, &seopts_prop[i], 1);
-        i++;
-    }
-
+    int policy_index = selinux_get_policy_index();
+    struct selabel_handle* sehandle = selabel_open(SELABEL_CTX_ANDROID_PROP,
+                                                   &seopts_prop[policy_index], 1);
     if (!sehandle) {
         ERROR("SELinux:  Could not load property_contexts:  %s\n",
               strerror(errno));
         return NULL;
     }
-    INFO("SELinux: Loaded property contexts from %s\n", seopts_prop[i - 1].value);
+    INFO("SELinux: Loaded property contexts from %s\n", seopts_prop[policy_index].value);
     return sehandle;
 }
 
@@ -918,6 +915,8 @@ int selinux_reload_policy(void)
     }
 
     INFO("SELinux: Attempting to reload policy files\n");
+
+    selinux_set_policy_index();
 
     if (selinux_android_reload_policy() == -1) {
         return -1;
