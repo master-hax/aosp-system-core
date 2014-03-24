@@ -16,6 +16,8 @@
 
 #include <ctype.h>
 #include <poll.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <cutils/sockets.h>
 
@@ -23,7 +25,7 @@
 #include "FlushCommand.h"
 
 LogReader::LogReader(LogBuffer *logbuf)
-        : SocketListener("logdr", true)
+        : SocketListener(getLogSocket(), true)
         , mLogbuf(*logbuf)
 { }
 
@@ -166,4 +168,37 @@ void LogReader::doSocketDelete(SocketClient *cli) {
         it++;
     }
     LogTimeEntry::unlock();
+}
+
+int LogReader::getLogSocket() {
+    static const char socketName[] = "logdr";
+    int sock = android_get_control_socket(socketName);
+#ifdef USERDEBUG_BUILD
+    if (sock < 0) {
+        // falls here if not started in init. This path
+        // allows for runtime debugging. Following will
+        // also fail at runtime without precautions.
+        //
+        // EADDRINUSE if logger is running.
+        // EACCESS if started without precautions (below)
+        sock = socket_local_server(socketName,
+                                   ANDROID_SOCKET_NAMESPACE_RESERVED,
+                                   SOCK_SEQPACKET);
+        if (sock < 0) {
+            fprintf(stderr, "failure to open /dev/socket/logdr (%s)\n%s",
+                    strerror(errno),
+                    (errno != EACCES) ? "" :
+                            " setenforce 0\n"
+                            " chmod 777 /dev/socket\n"
+                            " runcon u:r:logd:s0 /system/bin/logd"
+                             " </dev/null >/dev/null 2>&1 &\n"
+                            " sleep 1\n"
+                            " chmod 755 /dev/socket\n"
+                            " chown logd.logd /dev/socket/logd*\n"
+                            " restorecon /dev/socket/logd*\n"
+                            " setenforce 1\n");
+        }
+    }
+#endif
+    return sock;
 }
