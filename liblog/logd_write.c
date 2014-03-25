@@ -85,14 +85,14 @@ static int __write_to_log_null(log_id_t log_fd UNUSED, struct iovec *vec UNUSED,
 
 static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
 {
-#if FAKE_LOG_DEVICE
     ssize_t ret;
+#if FAKE_LOG_DEVICE
     int log_fd;
 
     if (/*(int)log_id >= 0 &&*/ (int)log_id < (int)LOG_ID_MAX) {
         log_fd = log_fds[(int)log_id];
     } else {
-        return EBADF;
+        return -EBADF;
     }
     do {
         ret = fakeLogWritev(log_fd, vec, nr);
@@ -101,7 +101,7 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
     return ret;
 #else
     if (logd_fd == -1) {
-        return -1;
+        return -EBADF;
     }
     if (getuid() == AID_LOGD) {
         /*
@@ -155,8 +155,23 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
         newVec[i].iov_len  = vec[i-header_length].iov_len;
     }
 
-    /* The write below could be lost, but will never block. */
-    return writev(logd_fd, newVec, nr + header_length);
+    /*
+     * The write below could be lost, but will never block.
+     *
+     * ENOTCONN occurs if logd dies.
+     * EAGAIN occurs if logd is overloaded.
+     */
+    ret = writev(logd_fd, newVec, nr + header_length);
+    if (ret == -1) {
+        ret = -errno;
+        if (ret == -ENOTCONN) {
+            int logd_fd_hold = logd_fd;
+            logd_fd = -1;
+            close(logd_fd_hold);
+            write_to_log = __write_to_log_init;
+        }
+    }
+    return ret;
 #endif
 }
 
