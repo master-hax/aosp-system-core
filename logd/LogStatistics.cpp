@@ -440,6 +440,16 @@ size_t LogStatistics::elementsTotal(log_id_t log_id, uid_t uid, pid_t pid) {
     return elements;
 }
 
+static unsigned int pidlen(pid_t pid) {
+    // faster than log10, or a sample sprintf
+    return 2 + (pid > 9) + (pid > 99) + (pid > 999) + (pid > 9999)
+        + (pid > 99999L)
+        + (pid > 999999L)
+        + (pid > 9999999L)
+        + (pid > 99999999L)
+        + (pid > 999999999L);
+}
+
 void LogStatistics::format(char **buf,
                            uid_t uid, unsigned int logMask, log_time oldest) {
     static const unsigned short spaces_current = 13;
@@ -506,6 +516,177 @@ void LogStatistics::format(char **buf,
             spaces -= string.length() - oldLength;
         }
         spaces += spaces_total;
+    }
+
+    // Construct list of worst spammers by Pid
+    PidStatisticsCollection Pids[LOG_ID_MAX - LOG_ID_MIN];
+    static const unsigned char num_spammers = 5;
+
+    log_id_for_each(i) {
+        if (!(logMask & (1 << i))) {
+            continue;
+        }
+
+        PidStatisticsCollection &pids = Pids[i - LOG_ID_MIN];
+        pids.clear();
+
+        LidStatistics &l = id(i);
+        UidStatisticsCollection::iterator iu;
+        for (iu = l.begin(); iu != l.end(); ++iu) {
+            UidStatistics &u = *(*iu);
+            PidStatisticsCollection::iterator ip;
+            for (ip = u.begin(); ip != u.end(); ++ip) {
+                PidStatistics *p = (*ip);
+                if (p->getPid() == p->gone) {
+                    break;
+                }
+
+                size_t mySizes = p->sizes();
+
+                PidStatisticsCollection::iterator q;
+                unsigned char num = 0;
+                for (q = pids.begin(); q != pids.end(); ++q) {
+                    if (mySizes > (*q)->sizes()) {
+                        pids.insert(q, p);
+                        break;
+                    }
+                    // do we need to traverse deeped in the list?
+                    if (++num > num_spammers) {
+                        break;
+                    }
+                }
+                if (q == pids.end()) {
+                   pids.push_back(p);
+                }
+            }
+        }
+    }
+
+    for (int line = 0; line < num_spammers; ++line) {
+        char line_buffer[28];
+        const char *header;
+        if (line) {
+            ssize_t n = snprintf(line_buffer, sizeof(line_buffer),
+                                 "\n %u:", line+1);
+            header = line_buffer;
+            spaces = 27 - n;
+        } else {
+            header = "\nSpam:  name/PID";
+            spaces = 11;
+        }
+
+        // The following is to ensure that we handle names longer
+        // than spaces_total gracefully by doing some calculated
+        // indentation on each column. KISS would mean we print
+        // the fields spilling the columns which is less visually
+        // appealing or truncated (prefix or suffix).
+
+        log_id_t prev_id = LOG_ID_MIN;
+        log_id_t last_id = LOG_ID_MIN;
+        unsigned short deficit[LOG_ID_MAX - LOG_ID_MIN];
+        log_id_for_each(i) {
+            deficit[i - LOG_ID_MIN] = 0;
+            if (!(logMask & (1 << i))) {
+                continue;
+            }
+
+            PidStatisticsCollection &pids = Pids[i - LOG_ID_MIN];
+            PidStatisticsCollection::iterator pt = pids.begin();
+            unsigned short len = 0;
+            if (pt != pids.end()) {
+                PidStatistics *p = *pt;
+                char *name = p->getName();
+                pid_t pid = p->getPid();
+                if (!name || !*name) {
+                    name = pidToName(pid);
+                    if (name && *name) {
+                        p->setName(name);
+                    }
+                }
+                if (name) {
+                    len = strlen(name);
+                }
+                len += pidlen(pid);
+                if (len < spaces_total) {
+                    len = 0;
+                } else {
+                    len -= spaces_total - 1;
+                }
+            }
+            if (i != last_id) {
+                deficit[last_id - LOG_ID_MIN] = len;
+                if ((len > spaces_total) && (i != prev_id)) {
+                    deficit[prev_id - LOG_ID_MIN] -= len - spaces_total;
+                }
+            }
+            prev_id = last_id;
+            last_id = i;
+        }
+
+        // Traverse list and print
+
+        short enforce_spaces = 0;
+        log_id_for_each(i) {
+            if (!(logMask & (1 << i))) {
+                continue;
+            }
+
+            ++enforce_spaces;
+
+            PidStatisticsCollection &pids = Pids[i - LOG_ID_MIN];
+            PidStatisticsCollection::iterator pt = pids.begin();
+            if (pt != pids.end()) {
+                if (header) {
+                    string.appendFormat(header);
+                    header = NULL;
+                }
+                oldLength = string.length();
+
+                PidStatistics *p = *pt;
+                const char *name = p->getName();
+                if (!name) {
+                    name = "";
+                }
+
+                pid_t pid = p->getPid();
+                unsigned short len = strlen(name) + pidlen(pid)
+                                   + deficit[i - LOG_ID_MIN];
+                unsigned short indent = 0;
+
+                if (len >= spaces_total) {
+                    indent = len - spaces_total + 1;
+                    if (spaces > 0) {
+                        if (spaces <= indent) {
+                            indent = spaces - 1;
+                        }
+                    } else {
+                        indent = 0;
+                    }
+                    spaces -= indent;
+                }
+                if (spaces < enforce_spaces) {
+                    indent -= enforce_spaces - spaces;
+                    spaces = enforce_spaces;
+                }
+                string.appendFormat("%*s%s/%d", spaces, "", name, pid);
+
+                spaces -= string.length() - oldLength - indent;
+                enforce_spaces = 0;
+                Pids[i - LOG_ID_MIN].erase(pt);
+            }
+            spaces += spaces_total;
+        }
+        // If we printed nothing this round, escape now
+        if (header) {
+            break;
+        }
+    }
+
+    log_id_for_each(i) {
+        if (!(logMask & (1 << i))) {
+            continue;
+        }
+        Pids[i - LOG_ID_MIN].clear();
     }
 
     if (dgram_qlen_statistics) {
