@@ -63,7 +63,7 @@ void PidStatistics::add(unsigned short size) {
 bool PidStatistics::subtract(unsigned short size) {
     mSizes -= size;
     --mElements;
-    return mElements == 0 && kill(pid, 0);
+    return (mElements == 0) && kill(pid, 0) && (errno != EPERM);
 }
 
 void PidStatistics::addTotal(size_t size, size_t element) {
@@ -508,6 +508,108 @@ void LogStatistics::format(char **buf,
         spaces += spaces_total;
     }
 
+    // Construct list of worst spammers by Pid
+    static const unsigned char num_spammers = 10;
+    bool header = false;
+
+    log_id_for_each(i) {
+        if (!(logMask & (1 << i))) {
+            continue;
+        }
+
+        PidStatisticsCollection pids;
+        pids.clear();
+
+        LidStatistics &l = id(i);
+        UidStatisticsCollection::iterator iu;
+        for (iu = l.begin(); iu != l.end(); ++iu) {
+            UidStatistics &u = *(*iu);
+            PidStatisticsCollection::iterator ip;
+            for (ip = u.begin(); ip != u.end(); ++ip) {
+                PidStatistics *p = (*ip);
+                if (p->getPid() == p->gone) {
+                    break;
+                }
+
+                size_t mySizes = p->sizes();
+
+                PidStatisticsCollection::iterator q;
+                unsigned char num = 0;
+                for (q = pids.begin(); q != pids.end(); ++q) {
+                    if (mySizes > (*q)->sizes()) {
+                        pids.insert(q, p);
+                        break;
+                    }
+                    // do we need to traverse deeper in the list?
+                    if (++num > num_spammers) {
+                        break;
+                    }
+                }
+                if (q == pids.end()) {
+                   pids.push_back(p);
+                }
+            }
+        }
+
+        size_t threshold = sizes(i);
+        if (threshold < 65536) {
+            threshold = 65536;
+        }
+        threshold /= 100;
+
+        PidStatisticsCollection::iterator pt = pids.begin();
+
+        for(int line = 0;
+                (pt != pids.end()) && (line < num_spammers);
+                ++line, pt = pids.erase(pt)) {
+            PidStatistics *p = *pt;
+
+            size_t sizes = p->sizes();
+            if (sizes < threshold) {
+                break;
+            }
+
+            char *name = p->getName();
+            pid_t pid = p->getPid();
+            if (!name || !*name) {
+                name = pidToName(pid);
+                if (name) {
+                    if (*name) {
+                        p->setName(name);
+                    } else {
+                        free(name);
+                        name = const_cast<char *>("");
+                    }
+                } else {
+                    name = const_cast<char *>("");
+                }
+            }
+
+            if (!header) {
+                string.appendFormat("\n\nChattiest clients:\n"
+                                    "log id %-*s PID[?] name",
+                                    spaces_total, "size/total");
+                header = true;
+            }
+
+            size_t sizesTotal = p->sizesTotal();
+
+            android::String8 sz("");
+            sz.appendFormat((sizes != sizesTotal) ? "%zu/%zu" : "%zu",
+                              sizes, sizesTotal);
+
+            android::String8 pd("");
+            pd.appendFormat("%u%c", pid,
+                             kill(pid, 0) && (errno != EPERM) ? '?' : ' ');
+
+            string.appendFormat("\n%-7s%-*s %-7s%s",
+                                (line) ? "" : android_log_id_to_name(i),
+                                spaces_total, sz.string(), pd.string(), name);
+        }
+
+        pids.clear();
+    }
+
     if (dgram_qlen_statistics) {
         const unsigned short spaces_time = 6;
         const unsigned long long max_seconds = 100000;
@@ -562,7 +664,7 @@ void LogStatistics::format(char **buf,
             continue;
         }
 
-        bool header = false;
+        header = false;
         bool first = true;
 
         UidStatisticsCollection::iterator ut;
@@ -659,7 +761,7 @@ void LogStatistics::format(char **buf,
                     continue;
                 }
                 els = pp->elements();
-                bool gone = kill(p, 0);
+                bool gone = kill(p, 0) && (errno != EPERM);
                 if (gone && (els == 0)) {
                     // ToDo: garbage collection: move this statistical bucket
                     //       from its current UID/PID to UID/? (races and
