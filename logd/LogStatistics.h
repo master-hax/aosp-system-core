@@ -36,12 +36,18 @@ class PidStatistics {
     size_t mSizes;
     size_t mElements;
 
+    const char *name;
+
 public:
     static const pid_t gone = (pid_t) -1;
 
-    PidStatistics(pid_t pid);
+    PidStatistics(pid_t pid, const char *name = NULL);
+    PidStatistics(PidStatistics &copy);
+    ~PidStatistics();
 
     pid_t getPid() const { return pid; }
+    const char *getName() const { return name; }
+    void setName(const char *name);
 
     void add(unsigned short size);
     bool subtract(unsigned short size); // returns true if stats and PID gone
@@ -157,6 +163,9 @@ public:
 
     // *strp = malloc, balance with free
     void format(char **strp, uid_t uid, unsigned int logMask, log_time oldest);
+
+    // helper
+    static const char *pid_to_name(pid_t pid);
 };
 
 #endif // _LOGD_LOG_STATISTICS_H__
