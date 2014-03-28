@@ -55,6 +55,9 @@ static void parse_line_action(struct parse_state *state, int nargs, char **args)
 #define COMMAND 0x02
 #define OPTION  0x04
 
+#define PROP_EXPAND_ERROR -1
+#define PROP_EXPAND_NOT_FOUND -2
+
 #include "keywords.h"
 
 #define KEYWORD(symbol, flags, nargs, func) \
@@ -274,7 +277,7 @@ int expand_props(char *dst, const char *src, int dst_size)
         if (!prop_val_len) {
             ERROR("property '%s' doesn't exist while expanding '%s'\n",
                   prop, src);
-            goto err;
+            return PROP_EXPAND_NOT_FOUND;
         }
 
         ret = push_chars(&dst_ptr, &left, prop_val, prop_val_len);
@@ -290,7 +293,7 @@ int expand_props(char *dst, const char *src, int dst_size)
 err_nospace:
     ERROR("destination buffer overflow while expanding '%s'\n", src);
 err:
-    return -1;
+    return PROP_EXPAND_ERROR;
 }
 
 static void parse_import(struct parse_state *state, int nargs, char **args)
@@ -637,15 +640,43 @@ static void *parse_service(struct parse_state *state, int nargs, char **args)
         parse_error(state, "out of memory\n");
         return 0;
     }
+
     svc->name = args[1];
-    svc->classname = "default";
-    memcpy(svc->args, args + 2, sizeof(char*) * nargs);
-    svc->args[nargs] = 0;
+    args += 2;
+    int i;
+    char* expanded = NULL;
+    for (i = 0; i < nargs; ++i) {
+        expanded = (char*) malloc(PROP_VALUE_MAX);
+        if (!expanded) {
+            goto fail;
+        }
+
+        int error = expand_props(expanded, args[i], PROP_VALUE_MAX);
+        if (error == PROP_EXPAND_ERROR) {
+            parse_error(state, "unable to expand property '%s'\n", args[i]);
+            goto fail;
+        } else if (error == PROP_EXPAND_NOT_FOUND) {
+            expanded[0] = '\0';
+        }
+
+        svc->args[i] = expanded;
+    }
     svc->nargs = nargs;
+    svc->args[nargs] = 0;
+
+    svc->classname = "default";
     svc->onrestart.name = "onrestart";
     list_init(&svc->onrestart.commands);
     list_add_tail(&service_list, &svc->slist);
     return svc;
+fail:
+    free(expanded);
+    int j;
+    for (j = 0; j < i; ++j) {
+        free(svc->args[i]);
+    }
+
+    return 0;
 }
 
 static void parse_line_service(struct parse_state *state, int nargs, char **args)
