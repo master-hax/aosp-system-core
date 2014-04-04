@@ -1,6 +1,7 @@
 service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server
     class main
     socket zygote stream 660 root system
+    setprop zygote.secondary.abis arm64-v8a
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
