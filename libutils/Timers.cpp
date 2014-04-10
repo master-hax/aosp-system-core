@@ -34,7 +34,7 @@
 
 nsecs_t systemTime(int clock)
 {
-#if defined(HAVE_POSIX_CLOCKS)
+#if defined(HAVE_POSIX_CLOCKS) && defined(CLOCK_BOOTTIME)
     static const clockid_t clocks[] = {
             CLOCK_REALTIME,
             CLOCK_MONOTONIC,
