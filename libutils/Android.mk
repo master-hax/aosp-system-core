@@ -43,7 +43,7 @@ commonSources:= \
 	VectorImpl.cpp \
 	misc.cpp
 
-host_commonCflags := -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS)
+host_commonCflags := -DLIBUTILS_NATIVE=1 -DLIBUTILS_HOST=1 $(TOOL_CFLAGS)
 
 ifeq ($(HOST_OS),windows)
 ifeq ($(strip $(USE_CYGWIN),),)
