@@ -77,11 +77,7 @@ static int wait_for_fb_sleep(void)
 
 static void *earlysuspend_thread_func(void *arg)
 {
-    char buf[80];
-    char wakeup_count[20];
-    int wakeup_count_len;
-    int ret;
-
+    (void)arg;
     while (1) {
         if (wait_for_fb_sleep()) {
             ALOGE("Failed reading wait_for_fb_sleep, exiting earlysuspend thread\n");
