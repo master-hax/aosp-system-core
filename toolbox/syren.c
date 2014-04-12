@@ -123,6 +123,10 @@ syren_main(int argc, char **argv)
 
 	r = find_reg(argv[2]);
 	if (r == NULL) {
+		if(strlen(argv[2]) >= 32){
+                        fprintf(stderr, "REGNAME too long\n");
+                	return 0;
+		}
 		strcpy(name, argv[2]);
 		char *addr_str = strchr(argv[2], ':');
 		if (addr_str == NULL)
