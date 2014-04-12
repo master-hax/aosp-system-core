@@ -123,7 +123,7 @@ syren_main(int argc, char **argv)
 
 	r = find_reg(argv[2]);
 	if (r == NULL) {
-		if(strlen(argv[2]) >= 32){
+		if(strlen(argv[2]) >= sizeof(name)){
                         fprintf(stderr, "REGNAME too long\n");
                 	return 0;
 		}
