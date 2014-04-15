@@ -96,6 +96,8 @@ struct {
     { "persist.gps.",      AID_GPS,      0 },
     { "persist.service.bdroid.", AID_BLUETOOTH,   0 },
     { "selinux."         , AID_SYSTEM,   0 },
+    { "media.",            AID_MEDIA,   0},
+    { "persist.sys.cam",   AID_MEDIA,   0},
     { NULL, 0, 0 }
 };
 
