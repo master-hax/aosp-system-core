@@ -289,7 +289,15 @@ static ssize_t send_log_msg(struct logger *logger,
         goto done;
     }
 
-    ret = read(sock, buf, buf_size);
+    char *cp = buf;
+    size_t len = buf_size;
+    while ((ret = TEMP_FAILURE_RETRY(read(sock, cp, len))) > 0) {
+        if (ret == len) {
+            break;
+        }
+        len -= ret;
+        cp += ret;
+    }
 
 done:
     if ((ret == -1) && errno) {
