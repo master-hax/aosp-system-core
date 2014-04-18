@@ -284,12 +284,21 @@ static ssize_t send_log_msg(struct logger *logger,
         snprintf(buf, buf_size, msg, logger ? logger->id : (unsigned) -1);
     }
 
-    ret = write(sock, buf, strlen(buf) + 1);
+    ret = strlen(buf) + 1;
+    ret = TEMP_FAILURE_RETRY(write(sock, buf, ret));
     if (ret <= 0) {
         goto done;
     }
 
-    ret = read(sock, buf, buf_size);
+    char *cp = buf;
+    size_t len = buf_size;
+    while ((ret = TEMP_FAILURE_RETRY(read(sock, cp, len))) > 0) {
+        if (ret == len) {
+            break;
+        }
+        len -= ret;
+        cp += ret;
+    }
 
 done:
     if ((ret == -1) && errno) {
