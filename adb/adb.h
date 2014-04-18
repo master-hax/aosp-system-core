@@ -21,7 +21,7 @@
 
 #include "transport.h"  /* readx(), writex() */
 
-#define MAX_PAYLOAD 4096
+#define MAX_PAYLOAD 65536
 
 #define A_SYNC 0x434e5953
 #define A_CNXN 0x4e584e43
