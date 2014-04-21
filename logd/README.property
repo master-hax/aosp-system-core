@@ -1,0 +1,33 @@
+The properties that logd responds to are:
+
+name                       type default  description
+logd.auditd.dmesg           bool  true   selinux audit messages duplicated and
+                                         sent on to dmesg log
+logd.dgram_qlen.statistics  bool  false  Record dgram_qlen statistics. This
+                                         represents a performance impact and
+                                         is used to determine the platform's
+                                         minimum domain socket network FIFO
+                                         size (see source for details) based
+                                         on typical load (logcat -S)
+
+Reserved (not implemented)
+logd.logSize               number 256K   Size of the buffer for each log id
+                                         (logcat -G)
+logd.main.logSize          number 256K   Size of the buffer for the main log
+logd.system.logSize        number 256K   Size of the buffer for the system log
+logd.radio.logSize         number 256K   Size of the buffer for the radio log
+logd.event.logSize         number 256K   Size of the buffer for the event log
+logd.crash.logSize         number 256K   Size of the buffer for the crash log
+logd.statistics             bool  true   Collect statistics (logcat -S)
+logd.pruneList             string "~!"   log spam filter (logcat -P)
+logd                        bool  true   Enable Android user space logger
+logd.auditd                 bool  true   Enable selinux audit daemon
+logd.syslog                string ""     Enable syslog duplicate relay
+                                         forwarding to specified puppetmaster
+
+NB:
+- bool (Boolean) false is unset, empty or zero. true is any number other
+  than zero.
+- number _may_ support multipliers (K, M or G) for convenience, recommended
+  to use fully specified value (eg: instead of 256K, 262144)
+- strings may contain spaces or punctuation, must be quoted.
