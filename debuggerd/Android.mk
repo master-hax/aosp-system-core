@@ -32,6 +32,7 @@ endif # ARCH_ARM_HAVE_VFP_D32
 
 LOCAL_SHARED_LIBRARIES := \
 	libbacktrace \
+	libcorkscrew \
 	libc \
 	libcutils \
 	liblog \
