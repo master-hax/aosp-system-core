@@ -201,9 +201,17 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
     newVec[2].iov_len    = sizeof(log_time);
 
     size_t i;
-    for (i = header_length; i < nr + header_length; i++) {
+    for (ret = 0, i = header_length; i < nr + header_length; i++) {
         newVec[i].iov_base = vec[i-header_length].iov_base;
-        newVec[i].iov_len  = vec[i-header_length].iov_len;
+        ret += newVec[i].iov_len = vec[i-header_length].iov_len;
+    }
+
+    if (ret > LOGGER_ENTRY_MAX_PAYLOAD) {
+        ret -= LOGGER_ENTRY_MAX_PAYLOAD;
+        if (newVec[nr + header_length - 1].iov_len < ret) {
+            return -EINVAL;
+        }
+        newVec[nr + header_length - 1].iov_len -= ret;
     }
 
     /*
@@ -232,6 +240,11 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
             if (ret < 0) {
                 ret = -errno;
             }
+        }
+    }
+    if (ret > 0) {
+        for (i = 0; i < header_length; i++) {
+            ret -= newVec[i].iov_len;
         }
     }
     return ret;
