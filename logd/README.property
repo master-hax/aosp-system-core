@@ -1,6 +1,7 @@
 The properties that logd responds to are:
 
 name                       type default  description
+logd.auditd                 bool  true   Enable selinux audit daemon
 logd.auditd.dmesg           bool  true   selinux audit messages duplicated and
                                          sent on to dmesg log
 logd.dgram_qlen.statistics  bool  false  Record dgram_qlen statistics. This
@@ -9,3 +10,7 @@ logd.dgram_qlen.statistics  bool  false  Record dgram_qlen statistics. This
                                          minimum domain socket network FIFO
                                          size (see source for details) based
                                          on typical load (logcat -S)
+
+NB:
+- bool (Boolean) false is unset, empty or zero. true is any number other
+  than zero.
