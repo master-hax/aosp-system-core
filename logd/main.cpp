@@ -113,11 +113,16 @@ static int drop_privs() {
 // space logger.  Additional transitory per-client threads are created
 // for each reader once they register.
 int main() {
+    char property[PROPERTY_VALUE_MAX];
+    property_get("logd.auditd", property, "1");
+    bool auditd = !!atol(property);
+
     int fdDmesg = -1;
-    char dmesg[PROPERTY_VALUE_MAX];
-    property_get("logd.auditd.dmesg", dmesg, "1");
-    if (atol(dmesg)) {
-        fdDmesg = open("/dev/kmsg", O_WRONLY);
+    if (auditd) {
+        property_get("logd.auditd.dmesg", property, "1");
+        if (atol(property)) {
+            fdDmesg = open("/dev/kmsg", O_WRONLY);
+        }
     }
 
     if (drop_privs() != 0) {
@@ -171,11 +176,13 @@ int main() {
     // initiated log messages. New log entries are added to LogBuffer
     // and LogReader is notified to send updates to connected clients.
 
-    // failure is an option ... messages are in dmesg (required by standard)
-    LogAudit *al = new LogAudit(logBuf, reader, fdDmesg);
-    if (al->startListener()) {
-        delete al;
-        close(fdDmesg);
+    if (auditd) {
+        // failure is an option ... messages are in dmesg (required by standard)
+        LogAudit *al = new LogAudit(logBuf, reader, fdDmesg);
+        if (al->startListener()) {
+            delete al;
+            close(fdDmesg);
+        }
     }
 
     pause();
