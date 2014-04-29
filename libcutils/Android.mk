@@ -22,6 +22,7 @@ else
     targetSmpFlag := -DANDROID_SMP=0
 endif
 hostSmpFlag := -DANDROID_SMP=0
+warningFlag := -Werror
 
 commonSources := \
 	hashmap.c \
@@ -77,7 +78,7 @@ LOCAL_MODULE := libcutils
 LOCAL_SRC_FILES := $(commonSources) $(commonHostSources) dlmalloc_stubs.c
 LOCAL_LDLIBS := -lpthread
 LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS += $(hostSmpFlag)
+LOCAL_CFLAGS += $(hostSmpFlag) $(warningFlag)
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 
@@ -88,14 +89,14 @@ LOCAL_MODULE := lib64cutils
 LOCAL_SRC_FILES := $(commonSources) $(commonHostSources) dlmalloc_stubs.c
 LOCAL_LDLIBS := -lpthread
 LOCAL_STATIC_LIBRARIES := lib64log
-LOCAL_CFLAGS += $(hostSmpFlag) -m64
+LOCAL_CFLAGS += $(hostSmpFlag) -m64 $(warningFlag)
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 # Tests for host
 # ========================================================
 include $(CLEAR_VARS)
 LOCAL_MODULE := tst_str_parms
-LOCAL_CFLAGS += -DTEST_STR_PARMS
+LOCAL_CFLAGS += -DTEST_STR_PARMS $(warningFlag)
 LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
 LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_MODULE_TAGS := optional
@@ -135,7 +136,7 @@ endif # !arm
 
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS += $(targetSmpFlag)
+LOCAL_CFLAGS += $(targetSmpFlag) $(warningFlag)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -144,13 +145,13 @@ LOCAL_MODULE := libcutils
 # liblog symbols present in libcutils.
 LOCAL_WHOLE_STATIC_LIBRARIES := libcutils liblog
 LOCAL_SHARED_LIBRARIES := liblog
-LOCAL_CFLAGS += $(targetSmpFlag)
+LOCAL_CFLAGS += $(targetSmpFlag) $(warningFlag)
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := tst_str_parms
-LOCAL_CFLAGS += -DTEST_STR_PARMS
+LOCAL_CFLAGS += -DTEST_STR_PARMS $(warningFlag)
 LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_MODULE_TAGS := optional
