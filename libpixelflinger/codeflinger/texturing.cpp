@@ -43,7 +43,6 @@ namespace android {
 void GGLAssembler::init_iterated_color(fragment_parts_t& parts, const reg_t& x)
 {
     context_t const* c = mBuilderContext.c;
-    const needs_t& needs = mBuilderContext.needs;
 
     if (mSmooth) {
         // NOTE: we could take this case in the mDithering + !mSmooth case,
@@ -326,9 +325,7 @@ void GGLAssembler::init_textures(
         tex_coord_t* coords,
         const reg_t& x, const reg_t& y)
 {
-    context_t const* c = mBuilderContext.c;
     const needs_t& needs = mBuilderContext.needs;
-    int Rctx = mBuilderContext.Rctx;
     int Rx = x.reg;
     int Ry = y.reg;
 
@@ -404,10 +401,6 @@ void GGLAssembler::init_textures(
 void GGLAssembler::build_textures(  fragment_parts_t& parts,
                                     Scratch& regs)
 {
-    context_t const* c = mBuilderContext.c;
-    const needs_t& needs = mBuilderContext.needs;
-    int Rctx = mBuilderContext.Rctx;
-
     // We don't have a way to spill registers automatically
     // spill depth and AA regs, when we know we may have to.
     // build the spill list...
@@ -436,7 +429,6 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
 
     Spill spill(registerFile(), *this, spill_list);
 
-    const bool multiTexture = mTextureMachine.activeUnits > 1;
     for (int i=0 ; i<GGL_TEXTURE_UNIT_COUNT; i++) {
         const texture_unit_t& tmu = mTextureMachine.tmu[i];
         if (tmu.format_idx == 0)
@@ -658,7 +650,6 @@ void GGLAssembler::build_textures(  fragment_parts_t& parts,
 void GGLAssembler::build_iterate_texture_coordinates(
     const fragment_parts_t& parts)
 {
-    const bool multiTexture = mTextureMachine.activeUnits > 1;
     for (int i=0 ; i<GGL_TEXTURE_UNIT_COUNT; i++) {
         const texture_unit_t& tmu = mTextureMachine.tmu[i];
         if (tmu.format_idx == 0)
