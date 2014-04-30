@@ -61,7 +61,7 @@ LOCAL_LDLIBS := -lpthread
 ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_LDLIBS += -lrt
 endif
-LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1
+LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -82,7 +82,7 @@ LOCAL_LDLIBS := -lpthread
 ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_LDLIBS += -lrt
 endif
-LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -m64
+LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -m64 -Werror
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 # Shared and static library for target
@@ -90,13 +90,13 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_SRC_FILES := $(liblog_target_sources)
-LOCAL_CFLAGS := $(liblog_cflags)
+LOCAL_CFLAGS := -Werror
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_WHOLE_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS := $(liblog_cflags)
+LOCAL_CFLAGS := -Werror
 include $(BUILD_SHARED_LIBRARY)
 
 include $(call first-makefiles-under,$(LOCAL_PATH))
