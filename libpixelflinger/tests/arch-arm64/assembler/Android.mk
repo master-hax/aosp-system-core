@@ -1,7 +1,7 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= \
+LOCAL_SRC_FILES := \
     arm64_assembler_test.cpp\
     asm_test_jacket.S
 
@@ -12,8 +12,10 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_C_INCLUDES := \
     system/core/libpixelflinger
 
-LOCAL_MODULE:= test-pixelflinger-arm64-assembler-test
+LOCAL_MODULE := test-pixelflinger-arm64-assembler-test
 
 LOCAL_MODULE_TAGS := tests
+
+LOCAL_CFLAGS := -Werror -Wno-unused-parameter
 
 include $(BUILD_EXECUTABLE)
