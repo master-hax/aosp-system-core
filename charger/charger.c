@@ -39,6 +39,7 @@
 #include <cutils/klog.h>
 #include <cutils/list.h>
 #include <cutils/misc.h>
+#include <cutils/properties.h>
 #include <cutils/uevent.h>
 #include <cutils/properties.h>
 
@@ -68,6 +69,7 @@ char *locale;
 #define UNPLUGGED_SHUTDOWN_TIME (10 * MSEC_PER_SEC)
 
 #define BATTERY_FULL_THRESH     95
+#define BOOT_BATT_MIN_CAP_THRS  0
 
 #define LAST_KMSG_PATH          "/proc/last_kmsg"
 #define LAST_KMSG_MAX_SZ        (32 * 1024)
@@ -133,6 +135,8 @@ struct charger {
     gr_surface surf_unknown;
 
     struct power_supply *battery;
+
+    int boot_min_cap;
 };
 
 struct uevent {
@@ -993,6 +997,7 @@ int main(int argc, char **argv)
     int64_t now = curr_time_ms() - 1;
     int fd;
     int i;
+    char value[PROPERTY_VALUE_MAX], default_value[PROPERTY_VALUE_MAX];
 
     list_init(&charger->supplies);
 
@@ -1043,6 +1048,11 @@ int main(int argc, char **argv)
     }
 
     ev_sync_key_state(set_key_callback, charger);
+
+    sprintf(default_value, "%d", BOOT_BATT_MIN_CAP_THRS);
+    property_get("ro.boot.min.cap", value, default_value);
+    sscanf(value, "%d", &charger->boot_min_cap);
+    LOGI("Minimum capacity for Android-boot:%d\n", charger->boot_min_cap);
 
 #ifndef CHARGER_DISABLE_INIT_BLANK
     gr_fb_blank(true);
