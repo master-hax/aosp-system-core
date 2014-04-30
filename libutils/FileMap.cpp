@@ -24,6 +24,16 @@
 #include <utils/Log.h>
 
 #include <inttypes.h>
+#ifdef __CYGWIN__
+#  undef _WIN32
+#endif
+#ifdef _WIN32
+// inttypes.h is borken for WIN32 DWORD
+#  define WIN32_PREFIX_DWORD "l"
+#else
+#  define WIN32_PREFIX_DWORD
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -65,7 +75,7 @@ FileMap::~FileMap(void)
 #endif
 #ifdef HAVE_WIN32_FILEMAP
     if (mBasePtr && UnmapViewOfFile(mBasePtr) == 0) {
-        ALOGD("UnmapViewOfFile(%p) failed, error = %" PRId32 "\n", mBasePtr,
+        ALOGD("UnmapViewOfFile(%p) failed, error = %" WIN32_PREFIX_DWORD PRId32 "\n", mBasePtr,
               GetLastError() );
     }
     if (mFileMapping != INVALID_HANDLE_VALUE) {
@@ -102,7 +112,7 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
     mFileHandle  = (HANDLE) _get_osfhandle(fd);
     mFileMapping = CreateFileMapping( mFileHandle, NULL, protect, 0, 0, NULL);
     if (mFileMapping == NULL) {
-        ALOGE("CreateFileMapping(%p, %" PRIx32 ") failed with error %" PRId32 "\n",
+        ALOGE("CreateFileMapping(%p, %" WIN32_PREFIX_DWORD PRIx32 ") failed with error %" WIN32_PREFIX_DWORD PRId32 "\n",
               mFileHandle, protect, GetLastError() );
         return false;
     }
@@ -117,7 +127,7 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
                               (DWORD)(adjOffset),
                               adjLength );
     if (mBasePtr == NULL) {
-        ALOGE("MapViewOfFile(%" PRId64 ", %zu) failed with error %" PRId32 "\n",
+        ALOGE("MapViewOfFile(%" PRId64 ", %zu) failed with error %" WIN32_PREFIX_DWORD PRId32 "\n",
               adjOffset, adjLength, GetLastError() );
         CloseHandle(mFileMapping);
         mFileMapping = INVALID_HANDLE_VALUE;
