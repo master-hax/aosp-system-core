@@ -25,13 +25,15 @@
 ** ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "mincrypt/rsa.h"
 #include "mincrypt/sha.h"
+
+#define UNUSED __attribute__((unused))
 
 // RSA test data taken from:
 //
@@ -791,7 +793,7 @@ unsigned char* parsehex(char* str, int* len) {
 }
 
 
-int main(int arg, char** argv) {
+int main(int arg UNUSED, char** argv UNUSED) {
 
     unsigned char hash[SHA_DIGEST_SIZE];
 
