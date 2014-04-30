@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log/event_tag_map.h>
-#include <log/log.h>
 
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
 #include <sys/mman.h>
-#include <errno.h>
-#include <assert.h>
+
+#include <log/event_tag_map.h>
+#include <log/log.h>
 
 #define OUT_TAG "EventTagMap"
 
@@ -52,7 +53,7 @@ static int countMapLines(const EventTagMap* map);
 static int parseMapLines(EventTagMap* map);
 static int scanTagLine(char** pData, EventTag* tag, int lineNum);
 static int sortTags(EventTagMap* map);
-static void dumpTags(const EventTagMap* map);
+static inline void dumpTags(const EventTagMap* map);
 
 
 /*
@@ -185,8 +186,6 @@ static inline int isCharDigit(char c)
  */
 static int processFile(EventTagMap* map)
 {
-    EventTag* tagArray = NULL;
-
     /* get a tag count */
     map->numTags = countMapLines(map);
     if (map->numTags < 0)
@@ -426,7 +425,7 @@ static int sortTags(EventTagMap* map)
 /*
  * Dump the tag array for debugging.
  */
-static void dumpTags(const EventTagMap* map)
+static inline void dumpTags(const EventTagMap* map)
 {
     int i;
 
@@ -435,4 +434,3 @@ static void dumpTags(const EventTagMap* map)
         printf("  %3d: %6d '%s'\n", i, tag->tagIndex, tag->tagStr);
     }
 }
-

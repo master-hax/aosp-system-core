@@ -17,17 +17,19 @@
 
 #define _GNU_SOURCE /* for asprintf */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <assert.h>
 #include <arpa/inet.h>
+#include <assert.h>
+#include <ctype.h>
+#include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <log/logd.h>
 #include <log/logprint.h>
+
+#define UNUSED __attribute__((__unused__))
 
 typedef struct FilterInfo_t {
     char *mTag;
@@ -52,7 +54,7 @@ static FilterInfo * filterinfo_new(const char * tag, android_LogPriority pri)
     return p_ret;
 }
 
-static void filterinfo_free(FilterInfo *p_info)
+static inline void filterinfo_free(FilterInfo *p_info)
 {
     if (p_info == NULL) {
         return;
@@ -140,7 +142,7 @@ static android_LogPriority filterPriForTag(
 }
 
 /** for debugging */
-static void dumpFilters(AndroidLogFormat *p_format)
+static inline void dumpFilters(AndroidLogFormat *p_format)
 {
     FilterInfo *p_fi;
 
@@ -234,7 +236,6 @@ AndroidLogPrintFormat android_log_formatFromString(const char * formatString)
 int android_log_addFilterRule(AndroidLogFormat *p_format,
         const char *filterExpression)
 {
-    size_t i=0;
     size_t tagNameLength;
     android_LogPriority pri = ANDROID_LOG_DEFAULT;
 
@@ -718,7 +719,6 @@ char *android_log_formatLogLine (
 #endif
     struct tm* ptm;
     char timeBuf[32];
-    char headerBuf[128];
     char prefixBuf[128], suffixBuf[128];
     char priChar;
     int prefixSuffixIsHeaderFooter = 0;
@@ -817,7 +817,6 @@ char *android_log_formatLogLine (
     /* the following code is tragically unreadable */
 
     size_t numLines;
-    size_t i;
     char *p;
     size_t bufferSize;
     const char *pm;
@@ -949,41 +948,39 @@ void logprint_run_tests()
 
 #else
 
-    int err;
-    const char *tag;
+    int err UNUSED;
+    static const char tag[] = "random";
     AndroidLogFormat *p_format;
 
     p_format = android_log_format_new();
 
     fprintf(stderr, "running tests\n");
 
-    tag = "random";
-
     android_log_addFilterRule(p_format,"*:i");
 
-    assert (ANDROID_LOG_INFO == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_INFO == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) == 0);
     android_log_addFilterRule(p_format, "*");
-    assert (ANDROID_LOG_DEBUG == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_DEBUG == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) > 0);
     android_log_addFilterRule(p_format, "*:v");
-    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) > 0);
     android_log_addFilterRule(p_format, "*:i");
-    assert (ANDROID_LOG_INFO == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_INFO == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) == 0);
 
-    android_log_addFilterRule(p_format, "random");
-    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, "random"));
+    android_log_addFilterRule(p_format, tag);
+    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) > 0);
     android_log_addFilterRule(p_format, "random:v");
-    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_VERBOSE == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) > 0);
     android_log_addFilterRule(p_format, "random:d");
-    assert (ANDROID_LOG_DEBUG == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_DEBUG == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) > 0);
     android_log_addFilterRule(p_format, "random:w");
-    assert (ANDROID_LOG_WARN == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_WARN == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) == 0);
 
     android_log_addFilterRule(p_format, "crap:*");
@@ -993,30 +990,29 @@ void logprint_run_tests()
     // invalid expression
     err = android_log_addFilterRule(p_format, "random:z");
     assert (err < 0);
-    assert (ANDROID_LOG_WARN == filterPriForTag(p_format, "random"));
+    assert (ANDROID_LOG_WARN == filterPriForTag(p_format, tag));
     assert(android_log_shouldPrintLine(p_format, tag, ANDROID_LOG_DEBUG) == 0);
 
     // Issue #550946
     err = android_log_addFilterString(p_format, " ");
     assert(err == 0);
-    assert(ANDROID_LOG_WARN == filterPriForTag(p_format, "random"));
+    assert(ANDROID_LOG_WARN == filterPriForTag(p_format, tag));
 
     // note trailing space
     err = android_log_addFilterString(p_format, "*:s random:d ");
     assert(err == 0);
-    assert(ANDROID_LOG_DEBUG == filterPriForTag(p_format, "random"));
+    assert(ANDROID_LOG_DEBUG == filterPriForTag(p_format, tag));
 
     err = android_log_addFilterString(p_format, "*:s random:z");
     assert(err < 0);
 
 
 #if 0
-    char *ret;
     char defaultBuffer[512];
 
-    ret = android_log_formatLogLine(p_format,
+    android_log_formatLogLine(p_format,
         defaultBuffer, sizeof(defaultBuffer), 0, ANDROID_LOG_ERROR, 123,
-        123, 123, "random", "nofile", strlen("Hello"), "Hello", NULL);
+        123, 123, tag, "nofile", strlen("Hello"), "Hello", NULL);
 #endif
 
 
