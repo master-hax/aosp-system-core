@@ -69,6 +69,7 @@ static BatteryMonitor* gBatteryMonitor;
 
 static bool nosvcmgr;
 static bool nopolling;
+static bool nowakeup;
 
 static void wakealarm_set_interval(int interval) {
     struct itimerspec itval;
@@ -200,7 +201,9 @@ static void healthd_mainloop(void) {
     }
 
     if (uevent_fd >= 0) {
-        ev.events = EPOLLIN | EPOLLWAKEUP;
+        ev.events = EPOLLIN;
+        if (!nowakeup)
+            ev.events |= EPOLLWAKEUP;
         ev.data.ptr = (void *)uevent_event;
         if (epoll_ctl(epollfd, EPOLL_CTL_ADD, uevent_fd, &ev) == -1)
             KLOG_ERROR(LOG_TAG,
@@ -211,7 +214,9 @@ static void healthd_mainloop(void) {
     }
 
     if (wakealarm_fd >= 0) {
-        ev.events = EPOLLIN | EPOLLWAKEUP;
+        ev.events = EPOLLIN;
+        if (!nowakeup)
+            ev.events |= EPOLLWAKEUP;
         ev.data.ptr = (void *)wakealarm_event;
         if (epoll_ctl(epollfd, EPOLL_CTL_ADD, wakealarm_fd, &ev) == -1)
             KLOG_ERROR(LOG_TAG,
@@ -222,7 +227,9 @@ static void healthd_mainloop(void) {
    }
 
     if (binder_fd >= 0) {
-        ev.events = EPOLLIN | EPOLLWAKEUP;
+        ev.events = EPOLLIN;
+        if (!nowakeup)
+            ev.events |= EPOLLWAKEUP;
         ev.data.ptr= (void *)binder_event;
         if (epoll_ctl(epollfd, EPOLL_CTL_ADD, binder_fd, &ev) == -1)
             KLOG_ERROR(LOG_TAG,
@@ -263,13 +270,16 @@ int main(int argc, char **argv) {
 
     klog_set_level(KLOG_LEVEL);
 
-    while ((ch = getopt(argc, argv, "np")) != -1) {
+    while ((ch = getopt(argc, argv, "npw")) != -1) {
         switch (ch) {
         case 'n':
             nosvcmgr = true;
             break;
         case 'p':
             nopolling = true;
+            break;
+        case 'w':
+            nowakeup = true;
             break;
         case '?':
         default:
