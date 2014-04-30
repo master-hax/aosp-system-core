@@ -658,7 +658,7 @@ alistener listener_list = {
     .prev = &listener_list,
 };
 
-static void ss_listener_event_func(int _fd, unsigned ev, void *_l)
+static void ss_listener_event_func(int _fd, unsigned ev, void *_l __unused)
 {
     asocket *s;
 
@@ -731,7 +731,7 @@ static void  free_listener(alistener*  l)
     free(l);
 }
 
-static void listener_disconnect(void*  _l, atransport*  t)
+static void listener_disconnect(void*  _l, atransport*  t __unused)
 {
     alistener*  l = _l;
 
@@ -819,7 +819,7 @@ static int format_listeners(char* buf, size_t buflen)
     return result;
 }
 
-static int remove_listener(const char *local_name, atransport* transport)
+static int remove_listener(const char *local_name, atransport* transport __unused)
 {
     alistener *l;
 
@@ -1428,7 +1428,7 @@ int adb_main(int is_daemon, int server_port)
     return 0;
 }
 
-int handle_host_request(char *service, transport_type ttype, char* serial, int reply_fd, asocket *s)
+int handle_host_request(char *service, transport_type ttype, char* serial, int reply_fd, asocket *s __unused)
 {
     atransport *transport = NULL;
 

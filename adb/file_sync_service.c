@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
+#include <errno.h>
+#include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
-#include <utime.h>
 #include <unistd.h>
+#include <utime.h>
 
-#include <errno.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
 #include "sysdeps.h"
@@ -32,6 +31,8 @@
 #define TRACE_TAG  TRACE_SYNC
 #include "adb.h"
 #include "file_sync_service.h"
+
+#define UNUSED __attribute__((__unused__))
 
 /* TODO: use fs_config to configure permissions on /data */
 static bool is_on_system(const char *name) {
@@ -418,7 +419,7 @@ static int do_recv(int s, const char *path, char *buffer)
     return 0;
 }
 
-void file_sync_service(int fd, void *cookie)
+void file_sync_service(int fd, void *cookie UNUSED)
 {
     syncmsg msg;
     char name[1025];

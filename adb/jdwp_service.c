@@ -7,6 +7,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define UNUSED __attribute__((__unused__))
+
 /* here's how these things work.
 
    when adbd starts, it creates a unix server socket
@@ -507,7 +509,7 @@ jdwp_control_init( JdwpControl*  control,
 
 
 static void
-jdwp_control_event( int  s, unsigned  events, void*  _control )
+jdwp_control_event( int  s UNUSED, unsigned  events, void*  _control )
 {
     JdwpControl*  control = (JdwpControl*) _control;
 

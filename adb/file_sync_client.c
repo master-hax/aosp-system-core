@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+#include <errno.h>
+#include <dirent.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <time.h>
-#include <dirent.h>
-#include <limits.h>
 #include <sys/types.h>
+#include <time.h>
 #include <zipfile/zipfile.h>
 
 #include "sysdeps.h"
@@ -31,6 +31,7 @@
 #include "adb_client.h"
 #include "file_sync_service.h"
 
+#define UNUSED __attribute__((__unused__))
 
 static unsigned long long total_bytes;
 static long long start_time;
@@ -595,7 +596,7 @@ remote_error:
 
 
 static void do_sync_ls_cb(unsigned mode, unsigned size, unsigned time,
-                          const char *name, void *cookie)
+                          const char *name, void *cookie UNUSED)
 {
     printf("%08x %08x %08x %s\n", mode, size, time, name);
 }
@@ -932,7 +933,7 @@ static int remote_build_list(int syncfd, copyinfo **filelist,
 }
 
 static int copy_remote_dir_local(int fd, const char *rpath, const char *lpath,
-                                 int checktimestamps)
+                                 int checktimestamps UNUSED)
 {
     copyinfo *filelist = 0;
     copyinfo *ci, *next;

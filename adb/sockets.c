@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
 #include <string.h>
-#include <ctype.h>
+#include <unistd.h>
 
 #include "sysdeps.h"
 
 #define  TRACE_TAG  TRACE_SOCKETS
 #include "adb.h"
+
+#define UNUSED __attribute__((__unused__))
 
 ADB_MUTEX_DEFINE( socket_list_lock );
 
@@ -530,7 +532,7 @@ static void remote_socket_close(asocket *s)
     free(s);
 }
 
-static void remote_socket_disconnect(void*  _s, atransport*  t)
+static void remote_socket_disconnect(void*  _s, atransport*  t UNUSED)
 {
     asocket*  s    = _s;
     asocket*  peer = s->peer;

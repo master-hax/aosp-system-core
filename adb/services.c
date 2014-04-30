@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
 #include <errno.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "sysdeps.h"
 
 #define  TRACE_TAG  TRACE_SERVICES
 #include "adb.h"
 #include "file_sync_service.h"
+
+#define UNUSED __attribute__((__unused__))
 
 #if ADB_HOST
 #  ifndef HAVE_WINSOCK
@@ -57,7 +59,7 @@ void *service_bootstrap_func(void *x)
 
 #if !ADB_HOST
 
-void restart_root_service(int fd, void *cookie)
+void restart_root_service(int fd, void *cookie UNUSED)
 {
     char buf[100];
     char value[PROPERTY_VALUE_MAX];
@@ -102,7 +104,7 @@ void restart_tcp_service(int fd, void *cookie)
     adb_close(fd);
 }
 
-void restart_usb_service(int fd, void *cookie)
+void restart_usb_service(int fd, void *cookie UNUSED)
 {
     char buf[100];
 

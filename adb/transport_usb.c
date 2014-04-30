@@ -27,6 +27,8 @@
 #include "usb_vendors.h"
 #endif
 
+#define UNUSED __attribute__((__unused__))
+
 #ifdef HAVE_BIG_ENDIAN
 #define H4(x)	(((x) & 0xFF000000) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | (((x) & 0x000000FF) << 24)
 static inline void fix_endians(apacket *p)
@@ -129,7 +131,7 @@ void init_usb_transport(atransport *t, usb_handle *h, int state)
 }
 
 #if ADB_HOST
-int is_adb_interface(int vid, int pid, int usb_class, int usb_subclass, int usb_protocol)
+int is_adb_interface(int vid, int pid UNUSED, int usb_class, int usb_subclass, int usb_protocol)
 {
     unsigned i;
     for (i = 0; i < vendorIdCount; i++) {
