@@ -14,6 +14,8 @@
 #include <cutils/log.h>
 #include <cutils/sockets.h>
 
+#define UNUSED __attribute__((__unused__))
+
 extern const char* __progname;
 
 void crash1(void);
@@ -26,7 +28,7 @@ static void maybe_abort() {
     }
 }
 
-static int smash_stack(int i) {
+static int smash_stack(int i UNUSED) {
     printf("crasher: deliberately corrupting stack...\n");
     // Unless there's a "big enough" buffer on the stack, gcc
     // doesn't bother inserting checks.
@@ -47,7 +49,7 @@ __attribute__((noinline)) static void overflow_stack(void* p) {
     overflow_stack(&buf);
 }
 
-static void test_call1()
+static inline void test_call1()
 {
     *((int*) 32) = 1;
 }
