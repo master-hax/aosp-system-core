@@ -160,7 +160,7 @@ int adb_auth_verify(void *token, void *sig, int siglen)
     return ret;
 }
 
-static void usb_disconnected(void* unused, atransport* t)
+static void usb_disconnected(void* unused __unused, atransport* t __unused)
 {
     D("USB disconnect\n");
     remove_transport_disconnect(usb_transport, &usb_disconnect);
@@ -168,7 +168,7 @@ static void usb_disconnected(void* unused, atransport* t)
     needs_retry = false;
 }
 
-static void adb_auth_event(int fd, unsigned events, void *data)
+static void adb_auth_event(int fd, unsigned events, void *data __unused)
 {
     char response[2];
     int ret;
@@ -226,7 +226,7 @@ void adb_auth_confirm_key(unsigned char *key, size_t len, atransport *t)
     fdevent_add(&t->auth_fde, FDE_READ);
 }
 
-static void adb_auth_listener(int fd, unsigned events, void *data)
+static void adb_auth_listener(int fd, unsigned events __unused, void *data __unused)
 {
     struct sockaddr addr;
     socklen_t alen;

@@ -25,6 +25,8 @@
 #define   TRACE_TAG  TRACE_TRANSPORT
 #include "adb.h"
 
+#define UNUSED __attribute__((__unused__))
+
 static void transport_unref(atransport *t);
 
 static atransport transport_list = {
@@ -568,7 +570,7 @@ transport_write_action(int  fd, struct tmsg*  m)
     return 0;
 }
 
-static void transport_registration_func(int _fd, unsigned ev, void *data)
+static void transport_registration_func(int _fd, unsigned ev, void *data UNUSED)
 {
     tmsg m;
     adb_thread_t output_thread_ptr;
@@ -744,7 +746,7 @@ void add_transport_disconnect(atransport*  t, adisconnect*  dis)
     adb_mutex_unlock(&transport_lock);
 }
 
-void remove_transport_disconnect(atransport*  t, adisconnect*  dis)
+void remove_transport_disconnect(atransport*  t UNUSED, adisconnect*  dis)
 {
     dis->prev->next = dis->next;
     dis->next->prev = dis->prev;

@@ -29,21 +29,25 @@ void send_auth_request(atransport *t);
 #define ADB_AUTH_SIGNATURE     2
 #define ADB_AUTH_RSAPUBLICKEY  3
 
+#ifndef __unused
+#define __unused __attribute__((__unused__))
+#endif
+
 #if ADB_HOST
 
 int adb_auth_sign(void *key, void *token, size_t token_size, void *sig);
 void *adb_auth_nextkey(void *current);
 int adb_auth_get_userkey(unsigned char *data, size_t len);
 
-static inline int adb_auth_generate_token(void *token, size_t token_size) { return 0; }
-static inline int adb_auth_verify(void *token, void *sig, int siglen) { return 0; }
-static inline void adb_auth_confirm_key(unsigned char *data, size_t len, atransport *t) { }
+static inline int adb_auth_generate_token(void *token __unused, size_t token_size __unused) { return 0; }
+static inline int adb_auth_verify(void *token __unused, void *sig __unused, int siglen __unused) { return 0; }
+static inline void adb_auth_confirm_key(unsigned char *data __unused, size_t len __unused, atransport *t __unused) { }
 
 #else // !ADB_HOST
 
-static inline int adb_auth_sign(void* key, void *token, size_t token_size, void *sig) { return 0; }
-static inline void *adb_auth_nextkey(void *current) { return NULL; }
-static inline int adb_auth_get_userkey(unsigned char *data, size_t len) { return 0; }
+static inline int adb_auth_sign(void* key __unused, void *token __unused, size_t token_size __unused, void *sig __unused) { return 0; }
+static inline void *adb_auth_nextkey(void *current __unused) { return NULL; }
+static inline int adb_auth_get_userkey(unsigned char *data __unused, size_t len __unused) { return 0; }
 
 int adb_auth_generate_token(void *token, size_t token_size);
 int adb_auth_verify(void *token, void *sig, int siglen);

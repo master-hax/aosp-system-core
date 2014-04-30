@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "fdevent.h"
 #include "adb.h"
 
 #include <linux/fb.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
+
+#define UNUSED __attribute__((__unused__))
 
 /* TODO:
 ** - sync with vsync to avoid tearing
@@ -52,7 +54,7 @@ struct fbinfo {
     unsigned int alpha_length;
 } __attribute__((packed));
 
-void framebuffer_service(int fd, void *cookie)
+void framebuffer_service(int fd, void *cookie UNUSED)
 {
     struct fbinfo fbinfo;
     unsigned int i, bsize;

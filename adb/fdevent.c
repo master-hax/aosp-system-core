@@ -15,22 +15,21 @@
 ** limitations under the License.
 */
 
-#include <sys/ioctl.h>
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 #include <errno.h>
-
 #include <fcntl.h>
-
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "fdevent.h"
 #include "transport.h"
 #include "sysdeps.h"
+
+#define UNUSED __attribute__((__unused__))
 
 
 /* !!! Do not enable DEBUG for the adb that will run as the server:
@@ -321,7 +320,7 @@ static int fdevent_fd_check(fd_set *fds)
 }
 
 #if !DEBUG
-static inline void dump_all_fds(const char *extra_msg) {}
+static inline void dump_all_fds(const char *extra_msg UNUSED) {}
 #else
 static void dump_all_fds(const char *extra_msg)
 {
@@ -514,7 +513,7 @@ static void fdevent_call_fdfunc(fdevent* fde)
     fde->func(fde->fd, events, fde->arg);
 }
 
-static void fdevent_subproc_event_func(int fd, unsigned ev, void *userdata)
+static void fdevent_subproc_event_func(int fd, unsigned ev, void *userdata UNUSED)
 {
 
     D("subproc handling on fd=%d ev=%04x\n", fd, ev);

@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
+#include <sys/types.h>
+
+#define UNUSED __attribute__((__unused__))
 
 #include "sysdeps.h"
-#include <sys/types.h>
-#if !ADB_HOST
+#if ADB_HOST
+#define __adb_unused
+#else
 #include <cutils/properties.h>
+#define __adb_unused UNUSED
 #endif
 
 #define  TRACE_TAG  TRACE_TRANSPORT
@@ -136,7 +141,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port)
 }
 
 
-static void *client_socket_thread(void *x)
+static void *client_socket_thread(void *x UNUSED)
 {
 #if ADB_HOST
     int  port  = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
@@ -402,7 +407,7 @@ int get_available_local_transport_index()
 }
 #endif
 
-int init_socket_transport(atransport *t, int s, int adb_port, int local)
+int init_socket_transport(atransport *t, int s, int adb_port __adb_unused, int local __adb_unused)
 {
     int  fail = 0;
 

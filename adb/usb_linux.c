@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-
 #include <sys/ioctl.h>
-#include <sys/types.h>
 #include <sys/time.h>
-#include <dirent.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <ctype.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <linux/usbdevice_fs.h>
 #include <linux/version.h>
@@ -41,6 +40,7 @@
 #define   TRACE_TAG  TRACE_USB
 #include "adb.h"
 
+#define UNUSED __attribute__((__unused__))
 
 /* usb scan debugging is waaaay too verbose */
 #define DBGX(x...)
@@ -681,7 +681,7 @@ fail:
     free(usb);
 }
 
-void* device_poll_thread(void* unused)
+void* device_poll_thread(void* unused UNUSED)
 {
     D("Created device thread\n");
     for(;;) {
@@ -693,7 +693,7 @@ void* device_poll_thread(void* unused)
     return NULL;
 }
 
-static void sigalrm_handler(int signo)
+static void sigalrm_handler(int signo UNUSED)
 {
     // don't need to do anything here
 }

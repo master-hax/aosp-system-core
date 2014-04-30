@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
+#include <errno.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/functionfs.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <errno.h>
 
 #include "sysdeps.h"
 
 #define   TRACE_TAG  TRACE_USB
 #include "adb.h"
+
+#define UNUSED __attribute__((__unused__))
 
 #define MAX_PACKET_SIZE_FS	64
 #define MAX_PACKET_SIZE_HS	512
@@ -486,7 +488,7 @@ int usb_read(usb_handle *h, void *data, int len)
 {
     return h->read(h, data, len);
 }
-int usb_close(usb_handle *h)
+int usb_close(usb_handle *h UNUSED)
 {
     return 0;
 }
