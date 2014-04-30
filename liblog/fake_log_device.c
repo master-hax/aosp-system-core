@@ -23,15 +23,17 @@
 
 #include <log/logd.h>
 
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
 #endif
+
+#define UNUSED __attribute__((__unused__))
 
 #define kMaxTagLen  16      /* from the long-dead utils/Log.cpp */
 
@@ -613,7 +615,7 @@ static int logClose(int fd)
 /*
  * Open a log output device and return a fake fd.
  */
-static int logOpen(const char* pathName, int flags)
+static int logOpen(const char* pathName, int flags UNUSED)
 {
     LogState *logState;
     int fd = -1;
