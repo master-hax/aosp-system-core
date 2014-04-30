@@ -91,7 +91,7 @@ static inline void swap(T& a, T& b) {
     b = t;
 }
 
-static void
+static inline void
 triangle_dump_points( const GGLcoord*  v0,
                       const GGLcoord*  v1,
                       const GGLcoord*  v2 )
@@ -347,7 +347,6 @@ void linex_validate(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord 
 
 static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
-    GGL_CONTEXT(c, con);
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
@@ -375,7 +374,6 @@ static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord wi
 
 static void aa_linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
-    GGL_CONTEXT(c, con);
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
@@ -476,7 +474,7 @@ static void trianglex_debug(void* con,
     c->scanline = save_scanline;
 }
 
-static void trianglex_xor(void* con,
+static inline void trianglex_xor(void* con,
         const GGLcoord* v0, const GGLcoord* v1, const GGLcoord* v2)
 {
     trianglex_big(con,v0,v1,v2);
@@ -646,7 +644,7 @@ edge_dump( Edge*  edge )
 		edge->x_incr, edge->x_incr/float(FIXED_ONE) );
 }
 
-static void
+static inline void
 triangle_dump_edges( Edge*  edges,
                      int            count )
 { 
