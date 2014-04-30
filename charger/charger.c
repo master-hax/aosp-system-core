@@ -881,12 +881,15 @@ static void process_key(struct charger *charger, int code, int64_t now)
                  */
                 set_next_key_check(charger, key, POWER_ON_KEY_TIME);
             }
+            /* Turn on display and kick animation on power-key press
+             * rather than on key release
+             */
+            kick_animation(charger->batt_anim);
+            request_suspend(false);
         } else {
             /* if the power key got released, force screen state cycle */
-            if (key->pending) {
-                request_suspend(false);
+            if (key->pending)
                 kick_animation(charger->batt_anim);
-            }
         }
     }
 
@@ -904,6 +907,10 @@ static void handle_input_state(struct charger *charger, int64_t now)
 static void handle_power_supply_state(struct charger *charger, int64_t now)
 {
     if (charger->num_supplies_online == 0 || !is_status_charging(charger)) {
+        /* Last cycle would have stopped at the extreme top of battery-icon
+         * Need to show the correct level corresponding to capacity.
+         */
+        kick_animation(charger->batt_anim);
         request_suspend(false);
         if (charger->next_pwr_check == -1) {
             charger->next_pwr_check = now + UNPLUGGED_SHUTDOWN_TIME;
