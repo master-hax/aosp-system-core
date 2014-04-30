@@ -1,5 +1,4 @@
 LOCAL_PATH:= $(call my-dir)
-include $(CLEAR_VARS)
 
 #
 # C/C++ and ARMv5 objects
@@ -26,7 +25,7 @@ PIXELFLINGER_SRC_FILES:= \
 	raster.cpp \
 	buffer.cpp
 
-PIXELFLINGER_CFLAGS := -fstrict-aliasing -fomit-frame-pointer
+PIXELFLINGER_CFLAGS := -fstrict-aliasing -fomit-frame-pointer -Wno-unused-parameter -Werror
 
 PIXELFLINGER_SRC_FILES_arm := \
 	codeflinger/ARMAssembler.cpp \

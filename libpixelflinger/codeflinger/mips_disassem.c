@@ -34,10 +34,10 @@
  *  from: @(#)kadb.c    8.1 (Berkeley) 6/10/93
  */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdarg.h>
 #include <stdbool.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <sys/cdefs.h>
 
 #include <sys/types.h>
