@@ -75,6 +75,9 @@ char *locale;
 #define LOGI(x...) do { KLOG_INFO("charger", x); } while (0)
 #define LOGV(x...) do { KLOG_DEBUG("charger", x); } while (0)
 
+#define STATUS_CHARGING "Charging"
+#define STATUS_FULL "Full"
+
 struct key_state {
     bool pending;
     bool down;
@@ -88,6 +91,7 @@ struct power_supply {
     bool online;
     bool valid;
     char cap_path[PATH_MAX];
+    char charge_status_path[PATH_MAX];
 };
 
 struct frame {
@@ -307,6 +311,25 @@ static int get_battery_capacity(struct charger *charger)
     return batt_cap;
 }
 
+static int is_status_charging(struct charger *charger)
+{
+    int ret;
+    char charge_status[32];
+
+    if (!charger->battery)
+        return 0;
+
+    ret = read_file(charger->battery->charge_status_path, charge_status, sizeof(charge_status));
+    if (ret < 0)
+        return 0;
+
+    if (!strncmp(charge_status, STATUS_CHARGING, strlen(STATUS_CHARGING))
+            || !strncmp(charge_status, STATUS_FULL, strlen(STATUS_FULL)))
+        return 1;
+    else
+        return 0;
+}
+
 static struct power_supply *find_supply(struct charger *charger,
                                         const char *name)
 {
@@ -335,6 +358,8 @@ static struct power_supply *add_supply(struct charger *charger,
     strlcpy(supply->type, type, sizeof(supply->type));
     snprintf(supply->cap_path, sizeof(supply->cap_path),
              "/sys/%s/capacity", path);
+    snprintf(supply->charge_status_path, sizeof(supply->charge_status_path),
+             "/sys/%s/status", path);
     supply->online = online;
     list_add_tail(&charger->supplies, &supply->list);
     charger->num_supplies++;
@@ -699,7 +724,7 @@ static void update_screen_state(struct charger *charger, int64_t now)
         charger->next_screen_transition = -1;
         gr_fb_blank(true);
         LOGV("[%lld] animation done\n", now);
-        if (charger->num_supplies_online > 0)
+        if (charger->num_supplies_online > 0 && is_status_charging(charger))
             request_suspend(true);
         return;
     }
@@ -753,7 +778,7 @@ static void update_screen_state(struct charger *charger, int64_t now)
     /* advance frame cntr to the next valid frame only if we are charging
      * if necessary, advance cycle cntr, and reset frame cntr
      */
-    if (charger->num_supplies_online != 0) {
+    if (charger->num_supplies_online != 0 && is_status_charging(charger)) {
         batt_anim->cur_frame++;
 
         /* if the frame is used for level-only, that is only show it when it's
@@ -869,7 +894,7 @@ static void handle_input_state(struct charger *charger, int64_t now)
 
 static void handle_power_supply_state(struct charger *charger, int64_t now)
 {
-    if (charger->num_supplies_online == 0) {
+    if (charger->num_supplies_online == 0 || !is_status_charging(charger)) {
         request_suspend(false);
         if (charger->next_pwr_check == -1) {
             charger->next_pwr_check = now + UNPLUGGED_SHUTDOWN_TIME;
