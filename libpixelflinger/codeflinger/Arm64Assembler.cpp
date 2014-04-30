@@ -152,6 +152,7 @@
 
 namespace android {
 
+#if ARM64_ASM_DEBUG
 static const char* shift_codes[] =
 {
     "LSL", "LSR", "ASR", "ROR"
@@ -162,6 +163,7 @@ static const char *cc_codes[] =
     "PL", "VS", "VC", "HI", "LS",
     "GE", "LT", "GT", "LE", "AL", "NV"
 };
+#endif
 
 ArmToArm64Assembler::ArmToArm64Assembler(const sp<Assembly>& assembly)
     :   ARMAssemblerInterface(),
@@ -985,10 +987,12 @@ uint32_t ArmToArm64Assembler::reg_post(int /*Rm*/)
 // A64 instructions
 // ----------------------------------------------------------------------------
 
+#if ARM64_ASM_DEBUG
 static const char * dataTransferOpName[] =
 {
     "LDR","LDRB","LDRH","STR","STRB","STRH"
 };
+#endif
 
 static const uint32_t dataTransferOpCode [] =
 {
