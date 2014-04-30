@@ -39,6 +39,7 @@
 #include <cutils/klog.h>
 #include <cutils/list.h>
 #include <cutils/misc.h>
+#include <cutils/properties.h>
 #include <cutils/uevent.h>
 
 #ifdef CHARGER_ENABLE_SUSPEND
@@ -67,6 +68,7 @@ char *locale;
 #define UNPLUGGED_SHUTDOWN_TIME (10 * MSEC_PER_SEC)
 
 #define BATTERY_FULL_THRESH     95
+#define BOOT_BATT_MIN_CAP_THRS  0
 
 #define LAST_KMSG_PATH          "/proc/last_kmsg"
 #define LAST_KMSG_MAX_SZ        (32 * 1024)
@@ -132,6 +134,8 @@ struct charger {
     gr_surface surf_unknown;
 
     struct power_supply *battery;
+
+    int boot_min_cap;
 };
 
 struct uevent {
@@ -864,8 +868,13 @@ static void process_key(struct charger *charger, int code, int64_t now)
         if (key->down) {
             int64_t reboot_timeout = key->timestamp + POWER_ON_KEY_TIME;
             if (now >= reboot_timeout) {
-                LOGI("[%lld] rebooting\n", now);
-                android_reboot(ANDROID_RB_RESTART, 0, 0);
+                if (get_battery_capacity(charger) >= charger->boot_min_cap) {
+                    LOGI("[%lld] rebooting\n", now);
+                    android_reboot(ANDROID_RB_RESTART, 0, 0);
+                } else {
+                    LOGI("[%lld] ignore power-button press, battery level "
+                            "less than minimum\n", now);
+                }
             } else {
                 /* if the key is pressed but timeout hasn't expired,
                  * make sure we wake up at the right-ish time to check
@@ -984,6 +993,7 @@ int main(int argc, char **argv)
     int64_t now = curr_time_ms() - 1;
     int fd;
     int i;
+    char value[PROPERTY_VALUE_MAX], default_value[PROPERTY_VALUE_MAX];
 
     list_init(&charger->supplies);
 
@@ -1034,6 +1044,11 @@ int main(int argc, char **argv)
     }
 
     ev_sync_key_state(set_key_callback, charger);
+
+    sprintf(default_value, "%d", BOOT_BATT_MIN_CAP_THRS);
+    property_get("ro.boot.min.cap", value, default_value);
+    sscanf(value, "%d", &charger->boot_min_cap);
+    LOGI("Minimum capacity for Android-boot:%d\n", charger->boot_min_cap);
 
 #ifndef CHARGER_DISABLE_INIT_BLANK
     gr_fb_blank(true);
