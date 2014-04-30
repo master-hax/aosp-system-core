@@ -68,6 +68,7 @@ static int wakealarm_wake_interval = DEFAULT_PERIODIC_CHORES_INTERVAL_FAST;
 static BatteryMonitor* gBatteryMonitor;
 
 static bool nosvcmgr;
+static bool nopolling;
 
 static void wakealarm_set_interval(int interval) {
     struct itimerspec itval;
@@ -262,15 +263,23 @@ int main(int argc, char **argv) {
 
     klog_set_level(KLOG_LEVEL);
 
-    while ((ch = getopt(argc, argv, "n")) != -1) {
+    while ((ch = getopt(argc, argv, "np")) != -1) {
         switch (ch) {
         case 'n':
             nosvcmgr = true;
+            break;
+        case 'p':
+            nopolling = true;
             break;
         case '?':
         default:
             KLOG_WARNING(LOG_TAG, "Unrecognized healthd option: %c\n", ch);
         }
+    }
+
+    if (nopolling == true) {
+        healthd_config.periodic_chores_interval_fast = -1;
+        healthd_config.periodic_chores_interval_slow = -1;
     }
 
     healthd_board_init(&healthd_config);
