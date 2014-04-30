@@ -91,20 +91,6 @@ static inline void swap(T& a, T& b) {
     b = t;
 }
 
-static void
-triangle_dump_points( const GGLcoord*  v0,
-                      const GGLcoord*  v1,
-                      const GGLcoord*  v2 )
-{
-    float tri = 1.0f / TRI_ONE;
-    ALOGD("  P0=(%.3f, %.3f)  [%08x, %08x]\n"
-          "  P1=(%.3f, %.3f)  [%08x, %08x]\n"
-          "  P2=(%.3f, %.3f)  [%08x, %08x]\n",
-          v0[0]*tri, v0[1]*tri, v0[0], v0[1],
-          v1[0]*tri, v1[1]*tri, v1[0], v1[1],
-          v2[0]*tri, v2[1]*tri, v2[0], v2[1] );
-}
-
 // ----------------------------------------------------------------------------
 #if 0
 #pragma mark -
@@ -347,7 +333,6 @@ void linex_validate(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord 
 
 static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
-    GGL_CONTEXT(c, con);
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
@@ -375,7 +360,6 @@ static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord wi
 
 static void aa_linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
-    GGL_CONTEXT(c, con);
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
@@ -474,13 +458,6 @@ static void trianglex_debug(void* con,
     linex(con, v1, v2, TRI_ONE);
     linex(con, v2, v0, TRI_ONE);
     c->scanline = save_scanline;
-}
-
-static void trianglex_xor(void* con,
-        const GGLcoord* v0, const GGLcoord* v1, const GGLcoord* v2)
-{
-    trianglex_big(con,v0,v1,v2);
-    trianglex_small(con,v0,v1,v2);
 }
 
 // ----------------------------------------------------------------------------
@@ -644,15 +621,6 @@ edge_dump( Edge*  edge )
 		edge->y_bot, edge->y_bot/float(TRI_ONE),
 		edge->x, edge->x/float(FIXED_ONE),
 		edge->x_incr, edge->x_incr/float(FIXED_ONE) );
-}
-
-static void
-triangle_dump_edges( Edge*  edges,
-                     int            count )
-{ 
-    ALOGI( "%d edge%s:\n", count, count == 1 ? "" : "s" );
-	for ( ; count > 0; count--, edges++ )
-	  edge_dump( edges );
 }
 
 // the following function sets up an edge, it assumes
