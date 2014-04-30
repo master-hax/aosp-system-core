@@ -84,7 +84,7 @@ include $(BUILD_EXECUTABLE)
 
 # vendor trigger HAL
 include $(CLEAR_VARS)
-LOCAL_CFLAGS := -Wall -Werror
+LOCAL_CFLAGS := -Wall -Werror -Wno-unused-parameter
 LOCAL_MODULE := libvendortrigger.default
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := vendor_trigger_default.c
