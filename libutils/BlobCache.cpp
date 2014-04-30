@@ -49,7 +49,7 @@ BlobCache::BlobCache(size_t maxKeySize, size_t maxValueSize, size_t maxTotalSize
     mRandState[1] = (now >> 16) & 0xFFFF;
     mRandState[2] = (now >> 32) & 0xFFFF;
 #endif
-    ALOGV("initializing random seed using %lld", now);
+    ALOGV("initializing random seed using %lld", (unsigned long long)now);
 }
 
 void BlobCache::set(const void* key, size_t keySize, const void* value,
