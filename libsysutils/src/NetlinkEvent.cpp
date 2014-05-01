@@ -109,16 +109,16 @@ bool NetlinkEvent::parseIfAddrMessage(int type, struct ifaddrmsg *ifaddr,
             if (ifaddr->ifa_family == AF_INET) {
                 struct in_addr *addr4 = (struct in_addr *) RTA_DATA(rta);
                 if (RTA_PAYLOAD(rta) < sizeof(*addr4)) {
-                    SLOGE("Short IPv4 address (%d bytes) in %s",
-                          RTA_PAYLOAD(rta), msgtype);
+                    SLOGE("Short IPv4 address (%lu bytes) in %s",
+                          (unsigned long)RTA_PAYLOAD(rta), msgtype);
                     continue;
                 }
                 inet_ntop(AF_INET, addr4, addrstr, sizeof(addrstr));
             } else if (ifaddr->ifa_family == AF_INET6) {
                 struct in6_addr *addr6 = (struct in6_addr *) RTA_DATA(rta);
                 if (RTA_PAYLOAD(rta) < sizeof(*addr6)) {
-                    SLOGE("Short IPv6 address (%d bytes) in %s",
-                          RTA_PAYLOAD(rta), msgtype);
+                    SLOGE("Short IPv6 address (%lu bytes) in %s",
+                          (unsigned long)RTA_PAYLOAD(rta), msgtype);
                     continue;
                 }
                 inet_ntop(AF_INET6, addr6, addrstr, sizeof(addrstr));
@@ -152,8 +152,8 @@ bool NetlinkEvent::parseIfAddrMessage(int type, struct ifaddrmsg *ifaddr,
             }
 
             if (RTA_PAYLOAD(rta) < sizeof(*cacheinfo)) {
-                SLOGE("Short IFA_CACHEINFO (%d vs. %d bytes) in %s",
-                      RTA_PAYLOAD(rta), sizeof(cacheinfo), msgtype);
+                SLOGE("Short IFA_CACHEINFO (%lu vs. %tu bytes) in %s",
+                      (unsigned long)RTA_PAYLOAD(rta), sizeof(cacheinfo), msgtype);
                 continue;
             }
 
@@ -174,7 +174,6 @@ bool NetlinkEvent::parseIfAddrMessage(int type, struct ifaddrmsg *ifaddr,
 }
 
 /*
-<<<<<<< HEAD
  * Parse a RTM_NEWNDUSEROPT message.
  */
 bool NetlinkEvent::parseNdUserOptMessage(struct nduseroptmsg *msg, int len) {
