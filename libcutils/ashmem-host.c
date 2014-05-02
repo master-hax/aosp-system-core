@@ -32,9 +32,9 @@
 
 #include <cutils/ashmem.h>
 
-#define __unused __attribute__((__unused__))
+#define UNUSED __attribute__((__unused__))
 
-int ashmem_create_region(const char *ignored __unused, size_t size)
+int ashmem_create_region(const char *ignored UNUSED, size_t size)
 {
 	static const char txt[] = "abcdefghijklmnopqrstuvwxyz"
 				  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -80,17 +80,17 @@ error:
 	return -1;
 }
 
-int ashmem_set_prot_region(int fd __unused, int prot __unused)
+int ashmem_set_prot_region(int fd UNUSED, int prot UNUSED)
 {
 	return 0;
 }
 
-int ashmem_pin_region(int fd __unused, size_t offset __unused, size_t len __unused)
+int ashmem_pin_region(int fd UNUSED, size_t offset UNUSED, size_t len UNUSED)
 {
 	return ASHMEM_NOT_PURGED;
 }
 
-int ashmem_unpin_region(int fd __unused, size_t offset __unused, size_t len __unused)
+int ashmem_unpin_region(int fd UNUSED, size_t offset UNUSED, size_t len UNUSED)
 {
 	return ASHMEM_IS_UNPINNED;
 }
