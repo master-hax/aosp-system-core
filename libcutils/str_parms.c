@@ -24,6 +24,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __CYGWIN__
+#  undef _WIN32
+#endif
+#ifdef _WIN32 // I can not sleep at night
+extern char *strtok_r(char *, const char *, char **);
+extern char *strndup(const char *, size_t);
+int asprintf(char **, const char *, ...)
+    __attribute__((__format__(printf, 2, 3))) __attribute__((__nonnull__(2)));
+#endif
+
 #include <cutils/hashmap.h>
 #include <cutils/memory.h>
 #include <cutils/str_parms.h>
