@@ -291,7 +291,8 @@ void usage(void)
             "  flashall                                 flash boot, system, and if found, recovery, tos\n"
             "  flash <partition> [ <filename> ]         write a file to a flash partition\n"
             "  erase <partition>                        erase a flash partition\n"
-            "  format <partition>                       format a flash partition \n"
+            "  format[:[<fs type>][:[<size>]] <partition> format a flash partition. Can override\n"
+            "                                           the fs type and/or size the bootloader reports.\n"
             "  getvar <variable>                        display a bootloader variable\n"
             "  boot <kernel> [ <ramdisk> ]              download and boot kernel\n"
             "  flash:raw boot <kernel> [ <ramdisk> ]    create bootimage and flash it\n"
@@ -616,7 +617,7 @@ static int needs_erase(const char *part)
     /* The function fb_format_supported() currently returns the value
      * we want, so just call it.
      */
-     return fb_format_supported(usb, part);
+     return fb_format_supported(usb, part, NULL);
 }
 
 static int load_buf_fd(usb_handle *usb, int fd,
@@ -879,9 +880,11 @@ static int64_t parse_num(const char *arg)
     return num;
 }
 
-void fb_perform_format(const char *partition, int skip_if_not_supported)
+void fb_perform_format(const char *partition, int skip_if_not_supported, const char *type_override, const char *size_override)
 {
-    char pType[FB_RESPONSE_SZ + 1], pSize[FB_RESPONSE_SZ + 1];
+    char pTypeBuff[FB_RESPONSE_SZ + 1], pSizeBuff[FB_RESPONSE_SZ + 1];
+    char *pType = pTypeBuff;
+    char *pSize = pSizeBuff;
     unsigned int limit = INT_MAX;
     struct fastboot_buffer buf;
     const char *errMsg = NULL;
@@ -900,11 +903,23 @@ void fb_perform_format(const char *partition, int skip_if_not_supported)
         errMsg = "Can't determine partition type.\n";
         goto failed;
     }
+    if (type_override) {
+        if (strcmp(type_override, pType)) {
+            fprintf(stderr, "Warning: %s type is %s, but %s was requested for formating.\n", partition, pType, type_override);
+        }
+        pType = type_override;
+    }
 
     status = fb_getvar(usb, pSize, "partition-size:%s", partition);
     if (status) {
         errMsg = "Unable to get partition size\n";
         goto failed;
+    }
+    if (size_override) {
+        if (strcmp(size_override, pSize)) {
+            fprintf(stderr, "Warning: %s size is %s, but %s was requested for formating.\n", partition, pSize, size_override);
+        }
+        pSize = size_override;
     }
 
     gen = fs_get_generator(pType);
@@ -1067,18 +1082,43 @@ int main(int argc, char **argv)
         } else if(!strcmp(*argv, "erase")) {
             require(2);
 
-            if (fb_format_supported(usb, argv[1])) {
+            if (fb_format_supported(usb, argv[1], NULL)) {
                 fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
             }
 
             fb_queue_erase(argv[1]);
             skip(2);
-        } else if(!strcmp(*argv, "format")) {
+        } else if(!strncmp(*argv, "format", strlen("format"))) {
+            char *overrides = NULL;
+            char *type_override = NULL;
+            char *size_override = NULL;
+            int scan_res;
             require(2);
             if (erase_first && needs_erase(argv[1])) {
                 fb_queue_erase(argv[1]);
             }
-            fb_perform_format(argv[1], 0);
+            /*
+             * Parsing for: "format[:[type][:[size]]]"
+             * Some valid things:
+             *  - select ontly the size, and leave default fs type:
+             *    format::0x4000000 userdata
+             *  - default fs type and size:
+             *    format userdata
+             *    format:: userdata
+             */
+            if (sscanf(*argv, "format:%ms", &overrides) == 1) {
+                if (!overrides[0]) {
+                    free(overrides);
+                    overrides = NULL;
+                }
+            }
+            /* strsep() returns the 1st part and modifies its argument to point to the second part */
+            size_override = overrides;
+            type_override = strsep(&size_override, ":");
+            if (type_override && !type_override[0]) type_override = NULL;
+            if (size_override && !size_override[0]) size_override = NULL;
+            fb_perform_format(argv[1], 0, type_override, size_override);
+            free(overrides);
             skip(2);
         } else if(!strcmp(*argv, "signature")) {
             require(2);
@@ -1166,9 +1206,9 @@ int main(int argc, char **argv)
 
     if (wants_wipe) {
         fb_queue_erase("userdata");
-        fb_perform_format("userdata", 1);
+        fb_perform_format("userdata", 1, NULL, NULL);
         fb_queue_erase("cache");
-        fb_perform_format("cache", 1);
+        fb_perform_format("cache", 1, NULL, NULL);
     }
     if (wants_reboot) {
         fb_queue_reboot();
