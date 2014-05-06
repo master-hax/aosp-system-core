@@ -46,6 +46,7 @@ ifeq ($(HOST_OS),windows)
     LOCAL_LDLIBS += -lws2_32
     USE_SYSDEPS_WIN32 := 1
     LOCAL_C_INCLUDES += /usr/i586-mingw32msvc/include/ddk
+    LOCAL_SRC_FILES += ../../../bionic/libc/upstream-openbsd/lib/libc/string/strsep.c
   endif
   LOCAL_C_INCLUDES += development/host/windows/usb/api
 endif

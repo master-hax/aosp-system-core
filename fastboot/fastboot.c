@@ -33,6 +33,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#if !defined(strsep)
+/* Most likely windows-y build env */
+char *strsep(char **stringp, const char *delim);
+#endif
+
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -288,10 +293,13 @@ void usage(void)
             "\n"
             "commands:\n"
             "  update <filename>                        reflash device from update.zip\n"
-            "  flashall                                 flash boot, system, and if found, recovery, tos\n"
+            "  flashall                                 flash boot, system, and if found,\n"
+            "                                           recovery, tos\n"
             "  flash <partition> [ <filename> ]         write a file to a flash partition\n"
             "  erase <partition>                        erase a flash partition\n"
-            "  format <partition>                       format a flash partition \n"
+            "  format[:[<fs type>][:[<size>]] <partition> format a flash partition.\n"
+            "                                           Can override the fs type and/or\n"
+            "                                           size the bootloader reports.\n"
             "  getvar <variable>                        display a bootloader variable\n"
             "  boot <kernel> [ <ramdisk> ]              download and boot kernel\n"
             "  flash:raw boot <kernel> [ <ramdisk> ]    create bootimage and flash it\n"
@@ -312,10 +320,12 @@ void usage(void)
             "  -p <product>                             specify product name\n"
             "  -c <cmdline>                             override kernel commandline\n"
             "  -i <vendor id>                           specify a custom USB vendor id\n"
-            "  -b <base_addr>                           specify a custom kernel base address. default: 0x10000000\n"
-            "  -n <page size>                           specify the nand page size. default: 2048\n"
-            "  -S <size>[K|M|G]                         automatically sparse files greater than\n"
-            "                                           size.  0 to disable\n"
+            "  -b <base_addr>                           specify a custom kernel base address.\n"
+            "                                           default: 0x10000000\n"
+            "  -n <page size>                           specify the nand page size.\n"
+            "                                           default: 2048\n"
+            "  -S <size>[K|M|G]                         automatically sparse files greater\n"
+            "                                           than size.  0 to disable\n"
         );
 }
 
@@ -616,7 +626,7 @@ static int needs_erase(const char *part)
     /* The function fb_format_supported() currently returns the value
      * we want, so just call it.
      */
-     return fb_format_supported(usb, part);
+     return fb_format_supported(usb, part, NULL);
 }
 
 static int load_buf_fd(usb_handle *usb, int fd,
@@ -879,9 +889,12 @@ static int64_t parse_num(const char *arg)
     return num;
 }
 
-void fb_perform_format(const char *partition, int skip_if_not_supported)
+void fb_perform_format(const char *partition, int skip_if_not_supported,
+                       const char *type_override, const char *size_override)
 {
-    char pType[FB_RESPONSE_SZ + 1], pSize[FB_RESPONSE_SZ + 1];
+    char pTypeBuff[FB_RESPONSE_SZ + 1], pSizeBuff[FB_RESPONSE_SZ + 1];
+    char *pType = pTypeBuff;
+    char *pSize = pSizeBuff;
     unsigned int limit = INT_MAX;
     struct fastboot_buffer buf;
     const char *errMsg = NULL;
@@ -900,11 +913,27 @@ void fb_perform_format(const char *partition, int skip_if_not_supported)
         errMsg = "Can't determine partition type.\n";
         goto failed;
     }
+    if (type_override) {
+        if (strcmp(type_override, pType)) {
+            fprintf(stderr,
+                    "Warning: %s type is %s, but %s was requested for formating.\n",
+                    partition, pType, type_override);
+        }
+        pType = type_override;
+    }
 
     status = fb_getvar(usb, pSize, "partition-size:%s", partition);
     if (status) {
         errMsg = "Unable to get partition size\n";
         goto failed;
+    }
+    if (size_override) {
+        if (strcmp(size_override, pSize)) {
+            fprintf(stderr,
+                    "Warning: %s size is %s, but %s was requested for formating.\n",
+                    partition, pSize, size_override);
+        }
+        pSize = size_override;
     }
 
     gen = fs_get_generator(pType);
@@ -1067,18 +1096,50 @@ int main(int argc, char **argv)
         } else if(!strcmp(*argv, "erase")) {
             require(2);
 
-            if (fb_format_supported(usb, argv[1])) {
+            if (fb_format_supported(usb, argv[1], NULL)) {
                 fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
             }
 
             fb_queue_erase(argv[1]);
             skip(2);
-        } else if(!strcmp(*argv, "format")) {
+        } else if(!strncmp(*argv, "format", strlen("format"))) {
+            /* Ugly hack to accomodate the lack of posix-compliant "%ms" in
+             * sscanf(*argv, "%ms", &buff) for MINGW.
+             * We need a preprocessor limit on the len to pass sscanf(... %<len>s...) so that
+             * it works on windows and non-windows.
+             */
+#           define SCAN_STR_LIMIT 63
+#           define STRINGIFY(x) STRINGIFY_AUX(x)
+#           define STRINGIFY_AUX(x) #x
+            char scan_buff[SCAN_STR_LIMIT + 1];  /* +1 for the '\0' that sscanf() will add */
+            char *overrides = scan_buff;
+            char *type_override = NULL;
+            char *size_override = NULL;
+            int scan_res;
             require(2);
             if (erase_first && needs_erase(argv[1])) {
                 fb_queue_erase(argv[1]);
             }
-            fb_perform_format(argv[1], 0);
+            /*
+             * Parsing for: "format[:[type][:[size]]]"
+             * Some valid things:
+             *  - select ontly the size, and leave default fs type:
+             *    format::0x4000000 userdata
+             *  - default fs type and size:
+             *    format userdata
+             *    format:: userdata
+             */
+            if (sscanf(*argv, "format:%" STRINGIFY(SCAN_STR_LIMIT) "s", overrides) == 1) {
+                if (!overrides[0]) {
+                    overrides = NULL;
+                }
+            }
+            /* strsep() returns the 1st part and modifies its argument to point to the second part */
+            size_override = overrides;
+            type_override = strsep(&size_override, ":");
+            if (type_override && !type_override[0]) type_override = NULL;
+            if (size_override && !size_override[0]) size_override = NULL;
+            fb_perform_format(argv[1], 0, type_override, size_override);
             skip(2);
         } else if(!strcmp(*argv, "signature")) {
             require(2);
@@ -1166,9 +1227,9 @@ int main(int argc, char **argv)
 
     if (wants_wipe) {
         fb_queue_erase("userdata");
-        fb_perform_format("userdata", 1);
+        fb_perform_format("userdata", 1, NULL, NULL);
         fb_queue_erase("cache");
-        fb_perform_format("cache", 1);
+        fb_perform_format("cache", 1, NULL, NULL);
     }
     if (wants_reboot) {
         fb_queue_reboot();
