@@ -316,7 +316,7 @@ static int cb_save(Action *a, int status, char *resp)
     return 0;
 }
 
-void fb_queue_query_save(const char *var, char *dest, unsigned dest_size)
+void fb_queue_query_save(const char *var, char *dest, size_t dest_size)
 {
     Action *a;
     a = queue_action(OP_QUERY, "getvar:%s", var);
@@ -344,7 +344,7 @@ void fb_queue_command(const char *cmd, const char *msg)
     a->msg = msg;
 }
 
-void fb_queue_download(const char *name, void *data, unsigned size)
+void fb_queue_download(const char *name, void *data, size_t size)
 {
     Action *a = queue_action(OP_DOWNLOAD, "");
     a->data = data;

@@ -204,7 +204,7 @@ int fb_command_response(usb_handle *usb, const char *cmd, char *response)
     return _command_send_no_data(usb, cmd, response);
 }
 
-int fb_download_data(usb_handle *usb, const void *data, unsigned size)
+int fb_download_data(usb_handle *usb, const void *data, size_t size)
 {
     char cmd[64];
     int r;
