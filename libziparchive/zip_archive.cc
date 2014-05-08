@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <utils/Compat.h>
 #include <utils/FileMap.h>
 #include <zlib.h>
 
@@ -219,7 +218,7 @@ static int32_t CopyFileToFile(int fd, uint8_t* begin, const uint32_t length, uin
     ssize_t actual = TEMP_FAILURE_RETRY(read(fd, buf, get_size));
 
     if (actual != get_size) {
-      ALOGW("CopyFileToFile: copy read failed (" ZD " vs " ZD ")", actual, get_size);
+      ALOGW("CopyFileToFile: copy read failed (%zd vs %zd)", actual, get_size);
       return kIoError;
     }
 
@@ -901,10 +900,10 @@ static int32_t InflateToFile(int fd, const ZipEntry* entry,
   do {
     /* read as much as we can */
     if (zstream.avail_in == 0) {
-      const ZD_TYPE getSize = (compressed_length > kBufSize) ? kBufSize : compressed_length;
-      const ZD_TYPE actual = TEMP_FAILURE_RETRY(read(fd, read_buf, getSize));
+      const ssize_t getSize = (compressed_length > kBufSize) ? kBufSize : compressed_length;
+      const ssize_t actual = TEMP_FAILURE_RETRY(read(fd, read_buf, getSize));
       if (actual != getSize) {
-        ALOGW("Zip: inflate read failed (" ZD " vs " ZD ")", actual, getSize);
+        ALOGW("Zip: inflate read failed (%zd vs %zd)", actual, getSize);
         result = kIoError;
         goto z_bail;
       }
