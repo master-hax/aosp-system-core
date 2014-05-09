@@ -14,6 +14,7 @@ int start_main(int argc, char *argv[])
     } else {
         /* defaults to starting the common services stopped by stop.c */
         property_set("ctl.start", "surfaceflinger");
+        property_set("ctl.start", "zygote_secondary");
         property_set("ctl.start", "zygote");
     }
 

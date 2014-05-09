@@ -12,6 +12,7 @@ int stop_main(int argc, char *argv[])
     } else{
         /* defaults to stopping the common services */
         property_set("ctl.stop", "zygote");
+        property_set("ctl.stop", "zygote_secondary");
         property_set("ctl.stop", "surfaceflinger");
     }
 
