@@ -32,6 +32,8 @@
 // Default
 #define LOG_BUFFER_SIZE (256 * 1024) // Tuned on a per-platform basis here?
 #define log_buffer_size(id) mMaxSize[id]
+#define LOG_BUFFER_MIN_SIZE (64 * 1024UL)
+#define LOG_BUFFER_MAX_SIZE (256 * 1024 * 1024UL)
 
 static unsigned long property_get_size(const char *key) {
     char property[PROPERTY_VALUE_MAX];
@@ -56,6 +58,10 @@ static unsigned long property_get_size(const char *key) {
         value = 0;
     }
 
+    if ((value < LOG_BUFFER_MIN_SIZE) || (LOG_BUFFER_MAX_SIZE < value)) {
+        value = 0;
+    }
+
     return value;
 }
 
@@ -64,17 +70,26 @@ LogBuffer::LogBuffer(LastLogTimes *times)
     pthread_mutex_init(&mLogElementsLock, NULL);
     dgram_qlen_statistics = false;
 
-    static const char global_default[] = "persist.logd.size";
-    unsigned long default_size = property_get_size(global_default);
+    static const char global_tuneable[] = "persist.logd.size"; // Settings App
+    static const char global_default[] = "ro.logd.size";       // BoardConfig.mk
+
+    unsigned long default_size = property_get_size(global_tuneable);
+    if (!default_size) {
+        default_size = property_get_size(global_default);
+    }
 
     log_id_for_each(i) {
         setSize(i, LOG_BUFFER_SIZE);
         setSize(i, default_size);
 
         char key[PROP_NAME_MAX];
+
         snprintf(key, sizeof(key), "%s.%s",
                  global_default, android_log_id_to_name(i));
+        setSize(i, property_get_size(key));
 
+        snprintf(key, sizeof(key), "%s.%s",
+                 global_tuneable, android_log_id_to_name(i));
         setSize(i, property_get_size(key));
     }
 }
@@ -339,7 +354,7 @@ unsigned long LogBuffer::getSizeUsed(log_id_t id) {
 // set the total space allocated to "id"
 int LogBuffer::setSize(log_id_t id, unsigned long size) {
     // Reasonable limits ...
-    if ((size < (64 * 1024)) || ((256 * 1024 * 1024) < size)) {
+    if ((size < LOG_BUFFER_MIN_SIZE) || (LOG_BUFFER_MAX_SIZE < size)) {
         return -1;
     }
     pthread_mutex_lock(&mLogElementsLock);
