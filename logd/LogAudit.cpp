@@ -54,8 +54,9 @@ bool LogAudit::onDataAvailable(SocketClient *cli) {
     return true;
 }
 
-#define AUDIT_LOG_ID   LOG_ID_MAIN
-#define AUDIT_LOG_PRIO ANDROID_LOG_WARN
+#define AUDIT_LOG_ID   LOG_ID_EVENTS
+#define AUDIT_LOG_PRIO ANDROID_LOG_INFO
+#define AUDIT_LOG_TAG  1003
 
 int LogAudit::logPrint(const char *fmt, ...) {
     if (fmt == NULL) {
@@ -115,6 +116,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
         strcpy(pidptr, cp);
     }
 
+#if AUDIT_LOG_ID != LOG_ID_EVENTS
     static const char comm_str[] = " comm=\"";
     char *comm = strstr(str, comm_str);
     if (comm) {
@@ -134,21 +136,44 @@ int LogAudit::logPrint(const char *fmt, ...) {
     } else if (!(comm = logbuf->pidToName(pid))) {
         comm = strdup("unknown");
     }
+#endif
 
+    size_t n = strlen(str);
+#if AUDIT_LOG_ID == LOG_ID_EVENTS
+    n += sizeof(uint32_t) + sizeof(uint8_t) + sizeof(uint32_t);
+#else
     size_t l = strlen(comm) + 1;
-    size_t n = l + strlen(str) + 2;
+    n += l + 2;
+#endif
 
     char *newstr = reinterpret_cast<char *>(malloc(n));
     if (!newstr) {
+#if AUDIT_LOG_ID != LOG_ID_EVENTS
         free(comm);
+#endif
         free(str);
         return -ENOMEM;
     }
 
+#if AUDIT_LOG_ID == LOG_ID_EVENTS
+    char *msg = newstr;
+    *msg++ = AUDIT_LOG_TAG & 0xFF;
+    *msg++ = (AUDIT_LOG_TAG >> 8) & 0xFF;
+    *msg++ = (AUDIT_LOG_TAG >> 16) & 0xFF;
+    *msg++ = (AUDIT_LOG_TAG >> 24) & 0xFF;
+    *msg++ = EVENT_TYPE_STRING;
+    size_t l = n - sizeof(uint32_t) - sizeof(uint8_t) - sizeof(uint32_t);
+    *msg++ = l & 0xFF;
+    *msg++ = (l >> 8) & 0xFF;
+    *msg++ = (l >> 16) & 0xFF;
+    *msg++ = (l >> 24) & 0xFF;
+    memcpy(msg, str, l);
+#else
     *newstr = AUDIT_LOG_PRIO;
     strcpy(newstr + 1, comm);
     free(comm);
     strcpy(newstr + 1 + l, str);
+#endif
     free(str);
 
     logbuf->log(AUDIT_LOG_ID, now, uid, pid, tid, newstr,
