@@ -18,5 +18,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libnetd_client
 LOCAL_SRC_FILES := FwmarkClient.cpp NetdClient.cpp
+LOCAL_CFLAGS := -Werror
 
 include $(BUILD_SHARED_LIBRARY)
