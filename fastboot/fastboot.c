@@ -577,7 +577,7 @@ static int64_t get_target_sparse_limit(struct usb_handle *usb)
         limit = strtoul(response, NULL, 0);
         if (limit > 0) {
             fprintf(stderr, "target reported max download size of %lld bytes\n",
-                    limit);
+                    (long long)limit);
         }
     }
 
