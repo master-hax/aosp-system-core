@@ -96,17 +96,32 @@ static const char *ENV[32];
 /* add_environment - add "key=value" to the current environment */
 int add_environment(const char *key, const char *val)
 {
-    int n;
+    unsigned int n;
+    size_t key_len = strlen(key);
 
-    for (n = 0; n < 31; n++) {
-        if (!ENV[n]) {
-            size_t len = strlen(key) + strlen(val) + 2;
+    /* The last environment entry is reserved to terminate the list */
+    for (n = 0; n < (ARRAY_SIZE(ENV) - 1); n++) {
+
+        /* Delete any existing entry for this key */
+        if (ENV[n] != NULL) {
+            size_t entry_key_len = strcspn(ENV[n], "=");
+            if ((entry_key_len == key_len) && (strncmp(ENV[n], key, entry_key_len) == 0)) {
+                free((void*)ENV[n]);
+                ENV[n] = NULL;
+            }
+        }
+
+        /* Add entry if a free slot is available */
+        if (ENV[n] == NULL) {
+            size_t len = key_len + strlen(val) + 2;
             char *entry = malloc(len);
             snprintf(entry, len, "%s=%s", key, val);
             ENV[n] = entry;
             return 0;
         }
     }
+
+    ERROR("No env. room to store: '%s':'%s'\n", key, val);
 
     return 1;
 }
