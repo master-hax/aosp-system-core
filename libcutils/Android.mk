@@ -81,6 +81,7 @@ LOCAL_CFLAGS += $(hostSmpFlag)
 ifneq ($(HOST_OS),windows)
 LOCAL_CFLAGS += -Werror
 endif
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 
@@ -94,6 +95,7 @@ LOCAL_CFLAGS += $(hostSmpFlag) -m64
 ifneq ($(HOST_OS),windows)
 LOCAL_CFLAGS += -Werror
 endif
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 # Tests for host
@@ -107,6 +109,7 @@ endif
 LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
 LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_MODULE_TAGS := optional
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_EXECUTABLE)
 
 
@@ -120,30 +123,36 @@ LOCAL_SRC_FILES := $(commonSources) \
         ashmem-dev.c \
         debugger.c \
         klog.c \
+		memory.c \
         partition_utils.c \
         properties.c \
         qtaguid.c \
         trace.c \
-        uevent.c
+        uevent.c \
 
-ifeq ($(TARGET_ARCH),arm)
-    LOCAL_SRC_FILES += arch-arm/memset32.S
-else  # !arm
-    ifeq ($(TARGET_ARCH),x86)
-        LOCAL_CFLAGS += -DHAVE_MEMSET16 -DHAVE_MEMSET32
-        LOCAL_SRC_FILES += arch-x86/android_memset16.S arch-x86/android_memset32.S memory.c
-    else # !x86
-        ifeq ($(TARGET_ARCH),mips)
-            LOCAL_SRC_FILES += arch-mips/android_memset.c
-        else # !mips
-            LOCAL_SRC_FILES += memory.c
-        endif # !mips
-    endif # !x86
-endif # !arm
+LOCAL_SRC_FILES_arm += \
+        arch-arm/memset32.S \
+
+LOCAL_SRC_FILES_mips += \
+        arch-mips/android_memset.c \
+
+LOCAL_SRC_FILES_x86 += \
+        arch-x86/android_memset16.S \
+        arch-x86/android_memset32.S \
+
+LOCAL_SRC_FILES_x86_64 += \
+        arch-x86_64/android_memset16_SSE2-atom.S \
+        arch-x86_64/android_memset32_SSE2-atom.S \
+
+LOCAL_CFLAGS_arm += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_mips += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_x86 += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+LOCAL_CFLAGS_x86_64 += -DHAVE_MEMSET16 -DHAVE_MEMSET32
 
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS += $(targetSmpFlag) -Werror
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -154,6 +163,7 @@ LOCAL_WHOLE_STATIC_LIBRARIES := libcutils liblog
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_CFLAGS += $(targetSmpFlag) -Werror
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -162,6 +172,7 @@ LOCAL_CFLAGS += -DTEST_STR_PARMS -Werror
 LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_MODULE_TAGS := optional
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_EXECUTABLE)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
