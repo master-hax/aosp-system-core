@@ -132,11 +132,19 @@ else  # !arm
         LOCAL_CFLAGS += -DHAVE_MEMSET16 -DHAVE_MEMSET32
         LOCAL_SRC_FILES += arch-x86/android_memset16.S arch-x86/android_memset32.S memory.c
     else # !x86
-        ifeq ($(TARGET_ARCH),mips)
-            LOCAL_SRC_FILES += arch-mips/android_memset.c
-        else # !mips
+        ifeq ($(TARGET_ARCH),x86_64)
+            LOCAL_CFLAGS += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+            LOCAL_SRC_FILES_x86 += arch-x86/android_memset16.S arch-x86/android_memset32.S
+            LOCAL_SRC_FILES_x86_64 += arch-x86_64/android_memset16_SSE2-atom.S \
+                                      arch-x86_64/android_memset32_SSE2-atom.S
             LOCAL_SRC_FILES += memory.c
-        endif # !mips
+        else # !x86_64
+            ifeq ($(TARGET_ARCH),mips)
+                LOCAL_SRC_FILES += arch-mips/android_memset.c
+            else # !mips
+                LOCAL_SRC_FILES += memory.c
+            endif # !mips
+    endif # !x86_64
     endif # !x86
 endif # !arm
 
