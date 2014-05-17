@@ -92,20 +92,42 @@ static void disable_debug_led() {
 }
 
 static void wait_for_user_action(pid_t pid) {
-  // First log a helpful message
+  // Find out the name of the process that crashed.
+  char path[64];
+  snprintf(path, sizeof(path), "/proc/%d/exe", pid);
+
+  char exe[PATH_MAX];
+  int count;
+  if ((count = readlink(path, exe, sizeof(exe) - 1)) == -1) {
+    LOG("readlink('%s') failed: %s", path, strerror(errno));
+    snprintf(path, sizeof(path), "/proc/%d/comm", pid);
+    FILE* fp = fopen(path, "r");
+    char* result = fgets(exe, sizeof(exe), fp);
+    fclose(fp);
+    if (result != NULL) {
+      result[strlen(result) - 1] = '\0';
+    } else {
+      LOG("fgets('%s') failed: %s", path, strerror(errno));
+      strlcpy(exe, "unknown", sizeof(exe));
+    }
+  } else {
+    exe[count] = '\0';
+  }
+
+  // Explain how to attach the debugger.
   LOG(    "********************************************************\n"
-          "* Process %d has been suspended while crashing.  To\n"
-          "* attach gdbserver for a gdb connection on port 5039\n"
+          "* Process %d has been suspended while crashing.\n"
+          "* To attach gdbserver for a gdb connection on port 5039\n"
           "* and start gdbclient:\n"
           "*\n"
-          "*     gdbclient app_process :5039 %d\n"
+          "*     gdbclient %s :5039 %d\n"
           "*\n"
-          "* Wait for gdb to start, then press HOME or VOLUME DOWN key\n"
+          "* Wait for gdb to start, then press the VOLUME DOWN key\n"
           "* to let the process continue crashing.\n"
           "********************************************************\n",
-          pid, pid);
+          pid, exe, pid);
 
-  // wait for HOME or VOLUME DOWN key
+  // Wait for VOLUME DOWN.
   if (init_getevent() == 0) {
     int ms = 1200 / 10;
     int dit = 1;
@@ -118,17 +140,14 @@ static void wait_for_user_action(pid_t pid) {
     };
     size_t s = 0;
     input_event e;
-    bool done = false;
     init_debug_led();
     enable_debug_led();
-    do {
+    while (true) {
       int timeout = abs(codes[s]) * ms;
       int res = get_event(&e, timeout);
       if (res == 0) {
-        if (e.type == EV_KEY
-            && (e.code == KEY_HOME || e.code == KEY_VOLUMEDOWN)
-            && e.value == 0) {
-          done = true;
+        if (e.type == EV_KEY && e.code == KEY_VOLUMEDOWN && e.value == 0) {
+          break;
         }
       } else if (res == 1) {
         if (++s >= sizeof(codes)/sizeof(*codes))
@@ -139,7 +158,7 @@ static void wait_for_user_action(pid_t pid) {
           disable_debug_led();
         }
       }
-    } while (!done);
+    }
     uninit_getevent();
   }
 
