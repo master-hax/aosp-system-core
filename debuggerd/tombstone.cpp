@@ -640,21 +640,25 @@ static bool dump_crash(log_t* log, pid_t pid, pid_t tid, int signal, int si_code
     dump_signal_info(log, tid, signal, si_code);
   }
 
+#if 0
   UniquePtr<BacktraceMap> map(BacktraceMap::Create(pid));
   UniquePtr<Backtrace> backtrace(Backtrace::Create(pid, tid, map.get()));
   if (backtrace->Unwind(0)) {
     dump_abort_message(backtrace.get(), log, abort_msg_address);
     dump_thread(backtrace.get(), log, SCOPE_AT_FAULT, total_sleep_time_usec);
   }
+#endif
 
   if (want_logs) {
     dump_logs(log, pid, 5);
   }
 
   bool detach_failed = false;
+#if 0
   if (dump_sibling_threads) {
     detach_failed = dump_sibling_thread_report(log, pid, tid, total_sleep_time_usec, map.get());
   }
+#endif
 
   if (want_logs) {
     dump_logs(log, pid, 0);
