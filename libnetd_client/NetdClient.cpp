@@ -25,6 +25,20 @@
 
 namespace {
 
+volatile sig_atomic_t netIdForProcess = NETID_UNSET;
+volatile sig_atomic_t netIdForResolv = NETID_UNSET;
+
+typedef int (*Accept4FunctionType)(int, sockaddr*, socklen_t*, int);
+typedef int (*ConnectFunctionType)(int, const sockaddr*, socklen_t);
+typedef int (*SocketFunctionType)(int, int, int);
+typedef unsigned (*NetIdForResolvFunctionType)(unsigned);
+
+// These variables are only modified at startup (when libc.so is loaded) and never afterwards, so
+// it's okay that they are read later at runtime without a lock.
+Accept4FunctionType libcAccept4 = 0;
+ConnectFunctionType libcConnect = 0;
+SocketFunctionType libcSocket = 0;
+
 int closeFdAndRestoreErrno(int fd) {
     int error = errno;
     close(fd);
@@ -32,39 +46,21 @@ int closeFdAndRestoreErrno(int fd) {
     return -1;
 }
 
-typedef int (*ConnectFunctionType)(int, const sockaddr*, socklen_t);
-typedef int (*AcceptFunctionType)(int, sockaddr*, socklen_t*);
-typedef unsigned (*NetIdForResolvFunctionType)(unsigned);
-
-// These variables are only modified at startup (when libc.so is loaded) and never afterwards, so
-// it's okay that they are read later at runtime without a lock.
-ConnectFunctionType libcConnect = 0;
-AcceptFunctionType libcAccept = 0;
-
-int netdClientConnect(int sockfd, const sockaddr* addr, socklen_t addrlen) {
-    if (FwmarkClient::shouldSetFwmark(sockfd, addr)) {
-        char data[] = {FWMARK_COMMAND_ON_CONNECT};
-        if (!FwmarkClient().send(data, sizeof(data), sockfd)) {
-            return -1;
-        }
-    }
-    return libcConnect(sockfd, addr, addrlen);
-}
-
-int netdClientAccept(int sockfd, sockaddr* addr, socklen_t* addrlen) {
-    int acceptedSocket = libcAccept(sockfd, addr, addrlen);
+int netdClientAccept4(int sockfd, sockaddr* addr, socklen_t* addrlen, int flags) {
+    int acceptedSocket = libcAccept4(sockfd, addr, addrlen, flags);
     if (acceptedSocket == -1) {
         return -1;
     }
-    sockaddr socketAddress;
-    if (!addr) {
-        socklen_t socketAddressLen = sizeof(socketAddress);
-        if (getsockname(acceptedSocket, &socketAddress, &socketAddressLen) == -1) {
+    int domain;
+    if (addr) {
+        domain = addr->sa_family;
+    } else {
+        socklen_t domainLen = sizeof(domain);
+        if (getsockopt(acceptedSocket, SOL_SOCKET, SO_DOMAIN, &domain, &domainLen) == -1) {
             return closeFdAndRestoreErrno(acceptedSocket);
         }
-        addr = &socketAddress;
     }
-    if (FwmarkClient::shouldSetFwmark(acceptedSocket, addr)) {
+    if (FwmarkClient::shouldSetFwmark(domain)) {
         char data[] = {FWMARK_COMMAND_ON_ACCEPT};
         if (!FwmarkClient().send(data, sizeof(data), acceptedSocket)) {
             return closeFdAndRestoreErrno(acceptedSocket);
@@ -73,8 +69,29 @@ int netdClientAccept(int sockfd, sockaddr* addr, socklen_t* addrlen) {
     return acceptedSocket;
 }
 
-volatile sig_atomic_t netIdForProcess = NETID_UNSET;
-volatile sig_atomic_t netIdForResolv = NETID_UNSET;
+int netdClientConnect(int sockfd, const sockaddr* addr, socklen_t addrlen) {
+    if (sockfd >= 0 && addr && FwmarkClient::shouldSetFwmark(addr->sa_family)) {
+        char data[] = {FWMARK_COMMAND_ON_CONNECT};
+        if (!FwmarkClient().send(data, sizeof(data), sockfd)) {
+            return -1;
+        }
+    }
+    return libcConnect(sockfd, addr, addrlen);
+}
+
+int netdClientSocket(int domain, int type, int protocol) {
+    int socketFd = libcSocket(domain, type, protocol);
+    if (socketFd == -1) {
+        return -1;
+    }
+    unsigned netId = netIdForProcess;
+    if (netId != NETID_UNSET && FwmarkClient::shouldSetFwmark(domain)) {
+        if (!setNetworkForSocket(netId, socketFd)) {
+            return closeFdAndRestoreErrno(socketFd);
+        }
+    }
+    return socketFd;
+}
 
 unsigned getNetworkForResolv(unsigned netId) {
     if (netId != NETID_UNSET) {
@@ -109,6 +126,13 @@ bool setNetworkForTarget(unsigned netId, volatile sig_atomic_t* target) {
 
 }  // namespace
 
+extern "C" void netdClientInitAccept4(Accept4FunctionType* function) {
+    if (function && *function) {
+        libcAccept4 = *function;
+        *function = netdClientAccept4;
+    }
+}
+
 extern "C" void netdClientInitConnect(ConnectFunctionType* function) {
     if (function && *function) {
         libcConnect = *function;
@@ -116,10 +140,10 @@ extern "C" void netdClientInitConnect(ConnectFunctionType* function) {
     }
 }
 
-extern "C" void netdClientInitAccept(AcceptFunctionType* function) {
+extern "C" void netdClientInitSocket(SocketFunctionType* function) {
     if (function && *function) {
-        libcAccept = *function;
-        *function = netdClientAccept;
+        libcSocket = *function;
+        *function = netdClientSocket;
     }
 }
 
