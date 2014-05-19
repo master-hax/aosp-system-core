@@ -16,6 +16,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_C_INCLUDES := bionic/libc/dns/include
 LOCAL_MODULE := libnetd_client
 LOCAL_SRC_FILES := FwmarkClient.cpp NetdClient.cpp
 
