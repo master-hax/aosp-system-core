@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+#include "netd_client/NetdClient.h"
+
 #include "FwmarkClient.h"
 #include "netd_client/FwmarkCommands.h"
+#include "resolv_netid.h"
 
 #include <sys/socket.h>
 #include <unistd.h>
@@ -31,7 +34,10 @@ int closeFdAndRestoreErrno(int fd) {
 
 typedef int (*ConnectFunctionType)(int, const sockaddr*, socklen_t);
 typedef int (*AcceptFunctionType)(int, sockaddr*, socklen_t*);
+typedef unsigned (*NetIdForResolvFunctionType)(unsigned);
 
+// These variables are only modified at startup (when libc.so is loaded) and never afterwards, so
+// it's okay that they are read later at runtime without a lock.
 ConnectFunctionType libcConnect = 0;
 AcceptFunctionType libcAccept = 0;
 
@@ -67,6 +73,38 @@ int netdClientAccept(int sockfd, sockaddr* addr, socklen_t* addrlen) {
     return acceptedSocket;
 }
 
+volatile sig_atomic_t netIdForProcess = NETID_UNSET;
+volatile sig_atomic_t netIdForResolv = NETID_UNSET;
+
+unsigned getNetworkForResolv(unsigned netId) {
+    if (netId != NETID_UNSET) {
+        return netId;
+    }
+    netId = netIdForProcess;
+    if (netId != NETID_UNSET) {
+        return netId;
+    }
+    return netIdForResolv;
+}
+
+bool setNetworkForTarget(unsigned netId, volatile sig_atomic_t* target) {
+    if (netId == NETID_UNSET) {
+        *target = netId;
+        return true;
+    }
+    // Don't create an AF_INET socket, because that might cause a useless IPC to the fwmark server.
+    int socketFd = socket(AF_UNIX, SOCK_DGRAM, 0);
+    if (socketFd < 0) {
+        return false;
+    }
+    bool status = setNetworkForSocket(netId, socketFd);
+    closeFdAndRestoreErrno(socketFd);
+    if (status) {
+        *target = netId;
+    }
+    return status;
+}
+
 }  // namespace
 
 extern "C" void netdClientInitConnect(ConnectFunctionType* function) {
@@ -81,4 +119,28 @@ extern "C" void netdClientInitAccept(AcceptFunctionType* function) {
         libcAccept = *function;
         *function = netdClientAccept;
     }
+}
+
+extern "C" void netdClientInitNetIdForResolv(NetIdForResolvFunctionType* function) {
+    if (function) {
+        *function = getNetworkForResolv;
+    }
+}
+
+extern "C" bool setNetworkForSocket(unsigned netId, int socketFd) {
+    if (socketFd < 0) {
+        errno = EBADF;
+        return false;
+    }
+    char data[1 + sizeof(netId)] = {FWMARK_COMMAND_SELECT_NETWORK};
+    memcpy(&data[1], &netId, sizeof(netId));
+    return FwmarkClient().send(data, sizeof(data), socketFd);
+}
+
+extern "C" bool setNetworkForProcess(unsigned netId) {
+    return setNetworkForTarget(netId, &netIdForProcess);
+}
+
+extern "C" bool setNetworkForResolv(unsigned netId) {
+    return setNetworkForTarget(netId, &netIdForResolv);
 }
