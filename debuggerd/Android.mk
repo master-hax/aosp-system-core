@@ -30,13 +30,18 @@ LOCAL_CFLAGS_arm += -DWITH_VFP_D32
 endif # ARCH_ARM_HAVE_VFP_D32
 
 LOCAL_SHARED_LIBRARIES := \
-	libbacktrace \
 	libc \
 	libcutils \
 	liblog \
 	libselinux \
 
+ifeq (,$(TARGET_BUILD_APPS))
+LOCAL_SHARED_LIBRARIES += libbacktrace_libc++
+include external/libcxx/libcxx.mk
+else
+LOCAL_SHARED_LIBRARIES += libbacktrace
 include external/stlport/libstlport.mk
+endif
 
 LOCAL_MODULE := debuggerd
 LOCAL_MODULE_STEM_32 := debuggerd
