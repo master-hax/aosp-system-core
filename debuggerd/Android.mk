@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libselinux \
 
-include external/stlport/libstlport.mk
+include external/libcxx/libcxx.mk
 
 LOCAL_MODULE := debuggerd
 LOCAL_MODULE_STEM_32 := debuggerd
