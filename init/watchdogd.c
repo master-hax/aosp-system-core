@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include <linux/watchdog.h>
+#include <private/android_filesystem_config.h>
 
 #include "log.h"
 #include "util.h"
@@ -38,6 +39,13 @@ int watchdogd_main(int argc, char **argv)
     klog_init();
 
     INFO("Starting watchdogd\n");
+
+    /* Drop root privileges if necessary.  */
+    if (geteuid() == AID_ROOT
+        && (setresgid(AID_SYSTEM, AID_SYSTEM, AID_SYSTEM) || setresuid(AID_SYSTEM, AID_SYSTEM, AID_SYSTEM))) {
+        ERROR("watchdogd: Failed to change UID or GUID to system.\n");
+        return 1;
+    }
 
     if (argc >= 2)
         interval = atoi(argv[1]);
