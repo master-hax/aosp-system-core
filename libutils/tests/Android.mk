@@ -18,17 +18,23 @@ shared_libraries := \
     liblog \
     libcutils \
     libutils \
-    libstlport
 
-static_libraries := \
-    libgtest \
-    libgtest_main
 
+ifeq (,$(TARGET_BUILD_APPS))
 $(foreach file,$(test_src_files), \
     $(eval include $(CLEAR_VARS)) \
     $(eval LOCAL_SHARED_LIBRARIES := $(shared_libraries)) \
-    $(eval LOCAL_STATIC_LIBRARIES := $(static_libraries)) \
+    $(eval LOCAL_SRC_FILES := $(file)) \
+    $(eval LOCAL_MODULE := $(notdir $(file:%.cpp=%))) \
+    $(eval include external/libcxx/libcxx.mk) \
+    $(eval include $(BUILD_NATIVE_TEST)) \
+)
+else
+$(foreach file,$(test_src_files), \
+    $(eval include $(CLEAR_VARS)) \
+    $(eval LOCAL_SHARED_LIBRARIES := $(shared_libraries)) \
     $(eval LOCAL_SRC_FILES := $(file)) \
     $(eval LOCAL_MODULE := $(notdir $(file:%.cpp=%))) \
     $(eval include $(BUILD_NATIVE_TEST)) \
 )
+endif

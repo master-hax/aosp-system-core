@@ -108,11 +108,16 @@ LOCAL_STATIC_LIBRARIES := \
 	libcutils
 
 LOCAL_SHARED_LIBRARIES := \
-        libbacktrace \
         liblog \
         libdl
 
+ifeq (,$(TARGET_BUILD_APPS))
+LOCAL_SHARED_LIBRARIES += libbacktrace_libc++
+include external/libcxx/libcxx.mk
+else
+LOCAL_SHARED_LIBRARIES += libbacktrace
 include external/stlport/libstlport.mk
+endif
 
 LOCAL_MODULE:= libutils
 include $(BUILD_STATIC_LIBRARY)
@@ -123,12 +128,17 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libutils
 LOCAL_WHOLE_STATIC_LIBRARIES := libutils
 LOCAL_SHARED_LIBRARIES := \
-        libbacktrace \
         libcutils \
         libdl \
         liblog \
 
+ifeq (,$(TARGET_BUILD_APPS))
+LOCAL_SHARED_LIBRARIES += libbacktrace_libc++
+include external/libcxx/libcxx.mk
+else
+LOCAL_SHARED_LIBRARIES += libbacktrace
 include external/stlport/libstlport.mk
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
