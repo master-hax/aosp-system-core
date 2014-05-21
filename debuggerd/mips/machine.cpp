@@ -32,10 +32,21 @@
 
 #define R(x) (static_cast<unsigned int>(x))
 
+// ptrace treats all registers as 64 bits, but pt_reg has registers as 32 bits.
+typedef struct pt_regs_mips {
+    uint64_t regs[32];
+    uint64_t lo;
+    uint64_t hi;
+    uint64_t cp0_epc;
+    uint64_t cp0_badvaddr;
+    uint64_t cp0_status;
+    uint64_t cp0_cause;
+} pt_regs_mips_t;
+
 // If configured to do so, dump memory around *all* registers
 // for the crashing thread.
 void dump_memory_and_code(log_t* log, pid_t tid, int scope_flags) {
-  pt_regs r;
+  pt_regs_mips_t r;
   if (ptrace(PTRACE_GETREGS, tid, 0, &r)) {
     return;
   }
@@ -78,7 +89,7 @@ void dump_memory_and_code(log_t* log, pid_t tid, int scope_flags) {
 }
 
 void dump_registers(log_t* log, pid_t tid, int scope_flags) {
-  pt_regs r;
+  pt_regs_mips_t r;
   if(ptrace(PTRACE_GETREGS, tid, 0, &r)) {
     _LOG(log, scope_flags, "cannot get registers: %s\n", strerror(errno));
     return;
