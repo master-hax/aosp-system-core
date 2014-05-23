@@ -129,7 +129,8 @@ static void SignalHandler(int, siginfo_t*, void* sigcontext) {
     return;
   }
 
-  entry->CopyUcontext(reinterpret_cast<ucontext_t*>(sigcontext));
+  // The only thing the unwinder cares about is the mcontext data.
+  memcpy(&ucontext_.uc_mcontext, &ucontext->uc_mcontext, sizeof(ucontext->uc_mcontext));
 
   // Indicate the ucontext is now valid.
   entry->Wake();

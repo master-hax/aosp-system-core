@@ -40,10 +40,6 @@ public:
 
   static void Remove(ThreadEntry* entry);
 
-  inline void CopyUcontext(ucontext_t* ucontext) {
-    memcpy(&ucontext_, ucontext, sizeof(ucontext_));
-  }
-
   void Wake();
 
   void Wait(int);
