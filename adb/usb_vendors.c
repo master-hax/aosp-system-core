@@ -174,6 +174,8 @@
 #define VENDOR_ID_TOSHIBA       0x0930
 // Vizio's USB Vendor ID
 #define VENDOR_ID_VIZIO         0xE040
+// Unowhy's USB Vendor ID
+#define VENDOR_ID_UNOWHY        0x2A49
 // Wacom's USB Vendor ID
 #define VENDOR_ID_WACOM         0x0531
 // Xiaomi's USB Vendor ID
@@ -258,6 +260,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_TI,
     VENDOR_ID_TOSHIBA,
     VENDOR_ID_VIZIO,
+    VENDOR_ID_UNOWHY,
     VENDOR_ID_WACOM,
     VENDOR_ID_XIAOMI,
     VENDOR_ID_YOTADEVICES,
