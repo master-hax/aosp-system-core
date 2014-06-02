@@ -142,4 +142,6 @@ extern struct selabel_handle *sehandle;
 extern struct selabel_handle *sehandle_prop;
 extern int selinux_reload_policy(void);
 
+extern void setservicecon(const char *servicecon);
+
 #endif	/* _INIT_INIT_H */

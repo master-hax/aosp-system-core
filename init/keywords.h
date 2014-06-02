@@ -27,6 +27,7 @@ int do_setkey(int nargs, char **args);
 int do_setprop(int nargs, char **args);
 int do_setrlimit(int nargs, char **args);
 int do_setsebool(int nargs, char **args);
+int do_setservicecon(int nargs, char **args);
 int do_start(int nargs, char **args);
 int do_stop(int nargs, char **args);
 int do_swapon_all(int nargs, char **args);
@@ -87,6 +88,7 @@ enum {
     KEYWORD(setprop,     COMMAND, 2, do_setprop)
     KEYWORD(setrlimit,   COMMAND, 3, do_setrlimit)
     KEYWORD(setsebool,   COMMAND, 2, do_setsebool)
+    KEYWORD(setservicecon,      COMMAND, 1, do_setservicecon)
     KEYWORD(socket,      OPTION,  0, 0)
     KEYWORD(start,       COMMAND, 1, do_start)
     KEYWORD(stop,        COMMAND, 1, do_stop)
