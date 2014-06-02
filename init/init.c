@@ -165,6 +165,13 @@ static void publish_socket(const char *name, int fd)
     fcntl(fd, F_SETFD, 0);
 }
 
+static const char *servicecon = NULL;
+
+void setservicecon(const char *s)
+{
+    servicecon = s;
+}
+
 void service_start(struct service *svc, const char *dynamic_args)
 {
     struct stat s;
@@ -172,6 +179,7 @@ void service_start(struct service *svc, const char *dynamic_args)
     int needs_console;
     int n;
     char *scon = NULL;
+    bool needs_setservicecon = false;
     int rc;
 
         /* starting a service removes it from the disabled or reset
@@ -237,6 +245,7 @@ void service_start(struct service *svc, const char *dynamic_args)
             rc = security_compute_create(mycon, fcon, string_to_security_class("process"), &scon);
             if (rc == 0 && !strcmp(scon, mycon)) {
                 ERROR("Warning!  Service %s needs a SELinux domain defined; please fix!\n", svc->name);
+                needs_setservicecon = true;
             }
             freecon(mycon);
             freecon(fcon);
@@ -328,6 +337,11 @@ void service_start(struct service *svc, const char *dynamic_args)
         if (svc->seclabel) {
             if (is_selinux_enabled() > 0 && setexeccon(svc->seclabel) < 0) {
                 ERROR("cannot setexeccon('%s'): %s\n", svc->seclabel, strerror(errno));
+                _exit(127);
+            }
+        } else if (servicecon && needs_setservicecon) {
+            if (setexeccon(servicecon) < 0) {
+                ERROR("cannot setexeccon('%s'): %s\n", servicecon, strerror(errno));
                 _exit(127);
             }
         }

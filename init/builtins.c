@@ -860,6 +860,19 @@ int do_setsebool(int nargs, char **args) {
     return 0;
 }
 
+int do_setservicecon(int nargs, char **args) {
+    if (is_selinux_enabled() <= 0)
+        return 0;
+
+    if (security_check_context(args[1]) < 0) {
+        ERROR("setservicecon: invalid context %s\n", args[1]);
+        return -1;
+    }
+
+    setservicecon(args[1]);
+    return 0;
+}
+
 int do_loglevel(int nargs, char **args) {
     int log_level;
     char log_level_str[PROP_VALUE_MAX] = "";
