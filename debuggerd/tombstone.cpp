@@ -281,8 +281,10 @@ static void dump_stack_segment(
 
 static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
   size_t first = 0, last;
+
   for (size_t i = 0; i < backtrace->NumFrames(); i++) {
     const backtrace_frame_data_t* frame = backtrace->GetFrame(i);
+
     if (frame->sp) {
       if (!first) {
         first = i+1;
@@ -298,18 +300,24 @@ static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
   scope_flags |= SCOPE_SENSITIVE;
 
   // Dump a few words before the first frame.
-  word_t sp = backtrace->GetFrame(first)->sp - STACK_WORDS * sizeof(word_t);
-  dump_stack_segment(backtrace, log, scope_flags, &sp, STACK_WORDS, -1);
+  ///word_t sp = backtrace->GetFrame(first)->sp - STACK_WORDS * sizeof(word_t);
+  ///dump_stack_segment(backtrace, log, scope_flags, &sp, STACK_WORDS, -1);
 
   // Dump a few words from all successive frames.
   // Only log the first 3 frames, put the rest in the tombstone.
   for (size_t i = first; i <= last; i++) {
     const backtrace_frame_data_t* frame = backtrace->GetFrame(i);
-    if (sp != frame->sp) {
+
+    /*_LOG(log, scope_flags, "frame number %d: ", frame->num);
+    _LOG(log, scope_flags, "sp = %d ", frame->sp);
+    _LOG(log, scope_flags, "pc = %d ", frame->pc);
+    _LOG(log, scope_flags, "symbol = %s\n", frame->func_name);*/
+
+    /*if (sp != frame->sp) {
       _LOG(log, scope_flags, "         ........  ........\n");
       sp = frame->sp;
-    }
-    if (i - first == 3) {
+    }*/
+    /*if (i - first == 3) {
       scope_flags &= (~SCOPE_AT_FAULT);
     }
     if (i == last) {
@@ -325,7 +333,7 @@ static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
         words = STACK_WORDS;
       }
       dump_stack_segment(backtrace, log, scope_flags, &sp, words, i);
-    }
+    }*/
   }
 }
 
