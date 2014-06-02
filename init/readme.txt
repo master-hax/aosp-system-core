@@ -236,6 +236,12 @@ setsebool <name> <value>
    Set SELinux boolean <name> to <value>.
    <value> may be 1|true|on or 0|false|off
 
+setservicecon <securitycontext>
+   Set default SELinux security context for services to <securitycontext>.
+   This security context is assigned to services that have neither
+   a seclabel option nor an automatic domain transition defined in policy.
+   It ensures that such services are not left running in init's domain.
+
 start <service>
    Start a service running if it is not already running.
 

@@ -861,6 +861,14 @@ int do_setsebool(int nargs, char **args) {
     return 0;
 }
 
+int do_setservicecon(int nargs, char **args) {
+    if (setservicecon(args[1]) < 0) {
+        ERROR("setservicecon: could not set to %s\n", args[1]);
+        return -1;
+    }
+    return 0;
+}
+
 int do_loglevel(int nargs, char **args) {
     if (nargs == 2) {
         klog_set_level(atoi(args[1]));
