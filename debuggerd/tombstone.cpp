@@ -230,59 +230,12 @@ static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, int scope_flags) 
   }
 }
 
-static void dump_stack_segment(
-    Backtrace* backtrace, log_t* log, int scope_flags, uintptr_t* sp, size_t words, int label) {
-  for (size_t i = 0; i < words; i++) {
-    word_t stack_content;
-    if (!backtrace->ReadWord(*sp, &stack_content)) {
-      break;
-    }
-
-    const backtrace_map_t* map = backtrace->FindMap(stack_content);
-    const char* map_name;
-    if (!map) {
-      map_name = "";
-    } else {
-      map_name = map->name.c_str();
-    }
-    uintptr_t offset = 0;
-    std::string func_name(backtrace->GetFunctionName(stack_content, &offset));
-    if (!func_name.empty()) {
-      if (!i && label >= 0) {
-        if (offset) {
-          _LOG(log, scope_flags, "    #%02d  %" PRIPTR "  %" PRIPTR "  %s (%s+%" PRIuPTR ")\n",
-               label, *sp, stack_content, map_name, func_name.c_str(), offset);
-        } else {
-          _LOG(log, scope_flags, "    #%02d  %" PRIPTR "  %" PRIPTR "  %s (%s)\n",
-               label, *sp, stack_content, map_name, func_name.c_str());
-        }
-      } else {
-        if (offset) {
-          _LOG(log, scope_flags, "         %" PRIPTR "  %" PRIPTR "  %s (%s+%" PRIuPTR ")\n",
-               *sp, stack_content, map_name, func_name.c_str(), offset);
-        } else {
-          _LOG(log, scope_flags, "         %" PRIPTR "  %" PRIPTR "  %s (%s)\n",
-               *sp, stack_content, map_name, func_name.c_str());
-        }
-      }
-    } else {
-      if (!i && label >= 0) {
-        _LOG(log, scope_flags, "    #%02d  %" PRIPTR "  %" PRIPTR "  %s\n",
-             label, *sp, stack_content, map_name);
-      } else {
-        _LOG(log, scope_flags, "         %" PRIPTR "  %" PRIPTR "  %s\n",
-             *sp, stack_content, map_name);
-      }
-    }
-
-    *sp += sizeof(word_t);
-  }
-}
-
 static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
   size_t first = 0, last;
+
   for (size_t i = 0; i < backtrace->NumFrames(); i++) {
     const backtrace_frame_data_t* frame = backtrace->GetFrame(i);
+
     if (frame->sp) {
       if (!first) {
         first = i+1;
@@ -297,36 +250,16 @@ static void dump_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
 
   scope_flags |= SCOPE_SENSITIVE;
 
-  // Dump a few words before the first frame.
-  word_t sp = backtrace->GetFrame(first)->sp - STACK_WORDS * sizeof(word_t);
-  dump_stack_segment(backtrace, log, scope_flags, &sp, STACK_WORDS, -1);
-
-  // Dump a few words from all successive frames.
-  // Only log the first 3 frames, put the rest in the tombstone.
   for (size_t i = first; i <= last; i++) {
     const backtrace_frame_data_t* frame = backtrace->GetFrame(i);
-    if (sp != frame->sp) {
-      _LOG(log, scope_flags, "         ........  ........\n");
-      sp = frame->sp;
-    }
-    if (i - first == 3) {
-      scope_flags &= (~SCOPE_AT_FAULT);
-    }
-    if (i == last) {
-      dump_stack_segment(backtrace, log, scope_flags, &sp, STACK_WORDS, i);
-      if (sp < frame->sp + frame->stack_size) {
-        _LOG(log, scope_flags, "         ........  ........\n");
-      }
-    } else {
-      size_t words = frame->stack_size / sizeof(word_t);
-      if (words == 0) {
-        words = 1;
-      } else if (words > STACK_WORDS) {
-        words = STACK_WORDS;
-      }
-      dump_stack_segment(backtrace, log, scope_flags, &sp, words, i);
-    }
+
+    _LOG(log, scope_flags, "   frame number %d:  ", frame->num);
+    _LOG(log, scope_flags, "sp = %" PRIPTR ", ", frame->sp);
+    _LOG(log, scope_flags, "pc = %" PRIPTR ", ", frame->pc);
+    _LOG(log, scope_flags, "symbol = %s\n", frame->func_name.c_str());
   }
+
+  _LOG(log, scope_flags, "\n\n");
 }
 
 static void dump_backtrace_and_stack(Backtrace* backtrace, log_t* log, int scope_flags) {
