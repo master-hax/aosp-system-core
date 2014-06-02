@@ -359,8 +359,9 @@ static void dump_backtrace_and_stack(Backtrace* backtrace, log_t* log, int scope
     _LOG(log, scope_flags, "\nbacktrace:\n");
     dump_backtrace_to_log(backtrace, log, scope_flags, "    ");
 
-    _LOG(log, scope_flags, "\nstack:\n");
-    dump_stack(backtrace, log, scope_flags);
+    /* I'm assuming that the backtrace is still wanted */
+    //_LOG(log, scope_flags, "\nstack:\n");
+    //dump_stack(backtrace, log, scope_flags);
   }
 }
 
