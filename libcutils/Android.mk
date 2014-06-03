@@ -40,9 +40,6 @@ commonSources := \
 	iosched_policy.c \
 	str_parms.c \
 
-commonHostSources := \
-        ashmem-host.c
-
 # some files must not be compiled when building against Mingw
 # they correspond to features not used by our host development tools
 # which are also hard or even impossible to port to native Win32
@@ -58,9 +55,11 @@ ifneq ($(strip $(USE_MINGW)),)
 endif
 
 ifneq ($(WINDOWS_HOST_ONLY),1)
-    commonSources += \
-        fs.c \
-        multiuser.c \
+	commonSources += \
+	ashmem-host.cc \
+	fs.c \
+	multiuser.c \
+	ashmem-host.cc \
 	socket_inaddr_any_server.c \
 	socket_local_client.c \
 	socket_local_server.c \
