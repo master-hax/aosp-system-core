@@ -30,21 +30,25 @@ typedef struct {
     bool quiet;
 } log_t;
 
+// List of types of logs to simplify the logging decision in _LOG
+enum logtype {
+	GENERAL,
+	HEADER,
+	THREAD,
+	REGISTERS,
+	BACKTRACE,
+	MAPS,
+	MEMORY,
+	STACK
+};
+
 /* Log information onto the tombstone.  scopeFlags is a bitmask of the flags defined
  * here. */
-void _LOG(log_t* log, int scopeFlags, const char *fmt, ...)
+void _LOG(log_t* log, enum logtype ltype, const char *fmt, ...)
         __attribute__ ((format(printf, 3, 4)));
 
-/* The message pertains specifically to the faulting thread / process */
-#define SCOPE_AT_FAULT (1 << 0)
-/* The message contains sensitive information such as RAM contents */
-#define SCOPE_SENSITIVE  (1 << 1)
-
-#define IS_AT_FAULT(x)    (((x) & SCOPE_AT_FAULT) != 0)
-#define IS_SENSITIVE(x)    (((x) & SCOPE_SENSITIVE) != 0)
-
 /* Further helpful macros */
-#define LOG(fmt...) _LOG(NULL, SCOPE_AT_FAULT, fmt)
+#define LOG(fmt...) _LOG(NULL, logtype::GENERAL, fmt)
 
 /* Set to 1 for normal debug traces */
 #if 0
@@ -63,6 +67,6 @@ void _LOG(log_t* log, int scopeFlags, const char *fmt, ...)
 int wait_for_signal(pid_t tid, int* total_sleep_time_usec);
 void wait_for_stop(pid_t tid, int* total_sleep_time_usec);
 
-void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags);
+void dump_memory(log_t* log, pid_t tid, uintptr_t addr);
 
 #endif // _DEBUGGERD_UTILITY_H

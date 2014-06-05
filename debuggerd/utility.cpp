@@ -44,10 +44,48 @@ static int write_to_am(int fd, const char* buf, int len) {
   return len;
 }
 
-void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
-  bool want_tfd_write = log && log->tfd >= 0;
-  bool want_log_write = IS_AT_FAULT(scopeFlags) && (!log || !log->quiet);
-  bool want_amfd_write = IS_AT_FAULT(scopeFlags) && !IS_SENSITIVE(scopeFlags) && log && log->amfd >= 0;
+// whitelist output types that are not considered sensitive and therefore
+//  are okay to output to activity manager
+bool is_sensitive(enum logtype ltype) {
+  if ((ltype == HEADER)
+   || (ltype == REGISTERS)
+   || (ltype == BACKTRACE)
+   || (ltype == GENERAL)) {
+    return false;
+  }
+  return true;
+}
+
+// blacklist output not desired in the tombstone file
+bool to_tombstone(enum logtype ltype) {
+  if ((ltype == GENERAL)
+   || (ltype == HEADER)
+   || (ltype == REGISTERS)
+   || (ltype == BACKTRACE)
+   || (ltype == MAPS)
+   || (ltype == MEMORY)
+   || (ltype == STACK)) {
+    return true;
+  }
+  return false;
+}
+
+// blacklist output not desired in the logcat output
+bool to_logcat(enum logtype ltype) {
+  if ((ltype == GENERAL)
+   || (ltype == HEADER)
+   || (ltype == REGISTERS)
+   || (ltype == BACKTRACE)) {
+    return true;
+  }
+  return false;
+}
+
+void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
+  // define which categories go to which location
+  bool want_tomb_write = log && log->tfd && to_tombstone(ltype);
+  bool want_log_write = (!log || !log->quiet) && to_logcat(ltype);
+  bool want_actmanager_write = log && log->amfd >= 0 && !is_sensitive(ltype);
 
   char buf[512];
   va_list ap;
@@ -60,13 +98,14 @@ void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
     return;
   }
 
-  if (want_tfd_write) {
+  if (want_tomb_write) {
     TEMP_FAILURE_RETRY(write(log->tfd, buf, len));
   }
 
   if (want_log_write) {
     __android_log_buf_write(LOG_ID_CRASH, ANDROID_LOG_INFO, "DEBUG", buf);
-    if (want_amfd_write) {
+    // write to activity manager
+    if (want_actmanager_write) {
       int written = write_to_am(log->amfd, buf, len);
       if (written <= 0) {
         // timeout or other failure on write; stop informing the activity manager
@@ -126,7 +165,7 @@ void wait_for_stop(pid_t tid, int* total_sleep_time_usec) {
 #define DUMP_MEMORY_AS_ASCII 0
 #endif
 
-void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags) {
+void dump_memory(log_t* log, pid_t tid, uintptr_t addr) {
     char code_buffer[64];
     char ascii_buffer[32];
     uintptr_t p, end;
@@ -190,6 +229,6 @@ void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags) {
             p += sizeof(long);
         }
         *asc_out = '\0';
-        _LOG(log, scope_flags, "    %s %s\n", code_buffer, ascii_buffer);
+        _LOG(log, logtype::MEMORY, "    %s %s\n", code_buffer, ascii_buffer);
     }
 }
