@@ -30,6 +30,7 @@
 #include <UniquePtr.h>
 
 #include "backtrace.h"
+
 #include "utility.h"
 
 static void dump_process_header(log_t* log, pid_t pid) {
@@ -49,15 +50,15 @@ static void dump_process_header(log_t* log, pid_t pid) {
   localtime_r(&t, &tm);
   char timestr[64];
   strftime(timestr, sizeof(timestr), "%F %T", &tm);
-  _LOG(log, SCOPE_AT_FAULT, "\n\n----- pid %d at %s -----\n", pid, timestr);
+  _LOG(log, logtype::HEADER, "\n\n----- pid %d at %s -----\n", pid, timestr);
 
   if (procname) {
-    _LOG(log, SCOPE_AT_FAULT, "Cmd line: %s\n", procname);
+    _LOG(log, logtype::HEADER, "Cmd line: %s\n", procname);
   }
 }
 
 static void dump_process_footer(log_t* log, pid_t pid) {
-  _LOG(log, SCOPE_AT_FAULT, "\n----- end %d -----\n", pid);
+  _LOG(log, logtype::HEADER, "\n----- end %d -----\n", pid);
 }
 
 static void dump_thread(
@@ -79,10 +80,10 @@ static void dump_thread(
     }
   }
 
-  _LOG(log, SCOPE_AT_FAULT, "\n\"%s\" sysTid=%d\n", threadname ? threadname : "<unknown>", tid);
+  _LOG(log, logtype::THREAD, "\n\"%s\" sysTid=%d\n", threadname ? threadname : "<unknown>", tid);
 
   if (!attached && ptrace(PTRACE_ATTACH, tid, 0, 0) < 0) {
-    _LOG(log, SCOPE_AT_FAULT, "Could not attach to thread: %s\n", strerror(errno));
+    LOG_ERROR("Could not attach to thread: %s\n", strerror(errno));
     return;
   }
 
@@ -90,11 +91,11 @@ static void dump_thread(
 
   UniquePtr<Backtrace> backtrace(Backtrace::Create(tid, BACKTRACE_CURRENT_THREAD));
   if (backtrace->Unwind(0)) {
-    dump_backtrace_to_log(backtrace.get(), log, SCOPE_AT_FAULT, "  ");
+    dump_backtrace_to_log(backtrace.get(), log, "  ", true);
   }
 
   if (!attached && ptrace(PTRACE_DETACH, tid, 0, 0) != 0) {
-    LOG("ptrace detach from %d failed: %s\n", tid, strerror(errno));
+    LOG_ERROR("ptrace detach from %d failed: %s\n", tid, strerror(errno));
     *detach_failed = true;
   }
 }
@@ -133,9 +134,10 @@ void dump_backtrace(int fd, int amfd, pid_t pid, pid_t tid, bool* detach_failed,
   dump_process_footer(&log, pid);
 }
 
-void dump_backtrace_to_log(Backtrace* backtrace, log_t* log,
-                           int scope_flags, const char* prefix) {
+void dump_backtrace_to_log(Backtrace* backtrace, log_t* log, const char* prefix, bool is_at_fault) {
+  logtype ltype = is_at_fault? logtype::FAULT_BACKTRACE : logtype::NOFAULT_BACKTRACE;
+
   for (size_t i = 0; i < backtrace->NumFrames(); i++) {
-    _LOG(log, scope_flags, "%s%s\n", prefix, backtrace->FormatFrameData(i).c_str());
+    _LOG(log, ltype, "%s%s\n", prefix, backtrace->FormatFrameData(i).c_str());
   }
 }
