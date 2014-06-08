@@ -92,19 +92,20 @@ LOCAL_SRC_FILES := \
 	toolbox.c \
 	uid_from_user.c \
 
-LOCAL_C_INCLUDES := bionic/libc/bionic
-
 LOCAL_CFLAGS += \
     -std=gnu99 \
     -Werror -Wno-unused-parameter \
     -include bsd-compatibility.h \
 
+LOCAL_C_INCLUDES += external/openssl/include
+
+# TODO: only md5.c needs libcrypto, and only a few things need libselinux,
+# and only a few things need libcutils. We should probably split toolbox
+# up, at leat along those natural fault lines.
 LOCAL_SHARED_LIBRARIES := \
-	libcutils \
-	liblog \
-	libc \
-	libusbhost \
-	libselinux
+    libcrypto \
+    libcutils \
+    libselinux \
 
 LOCAL_MODULE := toolbox
 
