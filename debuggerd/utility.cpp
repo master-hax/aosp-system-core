@@ -36,7 +36,7 @@ static int write_to_am(int fd, const char* buf, int len) {
     int written = TEMP_FAILURE_RETRY(write(fd, buf + len - to_write, to_write));
     if (written < 0) {
       // hard failure
-      LOG("AM write failure (%d / %s)\n", errno, strerror(errno));
+      LOG_ERROR("AM write failure (%d / %s)\n", errno, strerror(errno));
       return -1;
     }
     to_write -= written;
@@ -44,10 +44,33 @@ static int write_to_am(int fd, const char* buf, int len) {
   return len;
 }
 
-void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
-  bool want_tfd_write = log && log->tfd >= 0;
-  bool want_log_write = IS_AT_FAULT(scopeFlags) && (!log || !log->quiet);
-  bool want_amfd_write = IS_AT_FAULT(scopeFlags) && !IS_SENSITIVE(scopeFlags) && log && log->amfd >= 0;
+// Blacklist output types that are considered sensitive and therefore
+//  are not okay to output to activity manager or the log.
+bool is_sensitive(enum logtype ltype) {
+  if ((ltype == HEADER)
+   || (ltype == REGISTERS)
+   || (ltype == BACKTRACE)
+   || (ltype == ERROR)) {
+    return false;
+  }
+  return true;
+}
+
+// Whitelist output desired in the logcat output.
+bool to_logcat(enum logtype ltype) {
+  if ((ltype == ERROR)
+   || (ltype == HEADER)
+   || (ltype == REGISTERS)
+   || (ltype == BACKTRACE)) {
+    return true;
+  }
+  return false;
+}
+
+void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
+  bool want_tombstone_write = log && log->tfd;
+  bool want_log_write = (!log || !log->quiet) && to_logcat(ltype) && (log && log->crashed_tid == log->current_tid);
+  bool want_activitymanager_write = log && log->amfd >= 0 && !is_sensitive(ltype);
 
   char buf[512];
   va_list ap;
@@ -60,13 +83,13 @@ void _LOG(log_t* log, int scopeFlags, const char* fmt, ...) {
     return;
   }
 
-  if (want_tfd_write) {
+  if (want_tombstone_write) {
     TEMP_FAILURE_RETRY(write(log->tfd, buf, len));
   }
 
   if (want_log_write) {
     __android_log_buf_write(LOG_ID_CRASH, ANDROID_LOG_INFO, "DEBUG", buf);
-    if (want_amfd_write) {
+    if (want_activitymanager_write) {
       int written = write_to_am(log->amfd, buf, len);
       if (written <= 0) {
         // timeout or other failure on write; stop informing the activity manager
@@ -83,20 +106,20 @@ int wait_for_signal(pid_t tid, int* total_sleep_time_usec) {
     if (n < 0) {
       if (errno == EAGAIN)
         continue;
-      LOG("waitpid failed: %s\n", strerror(errno));
+      LOG_ERROR("waitpid failed: %s\n", strerror(errno));
       return -1;
     } else if (n > 0) {
       XLOG("waitpid: n=%d status=%08x\n", n, status);
       if (WIFSTOPPED(status)) {
         return WSTOPSIG(status);
       } else {
-        LOG("unexpected waitpid response: n=%d, status=%08x\n", n, status);
+        LOG_ERROR("unexpected waitpid response: n=%d, status=%08x\n", n, status);
         return -1;
       }
     }
 
     if (*total_sleep_time_usec > max_total_sleep_usec) {
-      LOG("timed out waiting for tid=%d to die\n", tid);
+      LOG_ERROR("timed out waiting for tid=%d to die\n", tid);
       return -1;
     }
 
@@ -111,7 +134,7 @@ void wait_for_stop(pid_t tid, int* total_sleep_time_usec) {
   siginfo_t si;
   while (TEMP_FAILURE_RETRY(ptrace(PTRACE_GETSIGINFO, tid, 0, &si)) < 0 && errno == ESRCH) {
     if (*total_sleep_time_usec > max_total_sleep_usec) {
-      LOG("timed out waiting for tid=%d to stop\n", tid);
+      LOG_ERROR("timed out waiting for tid=%d to stop\n", tid);
       break;
     }
 
@@ -126,7 +149,7 @@ void wait_for_stop(pid_t tid, int* total_sleep_time_usec) {
 #define DUMP_MEMORY_AS_ASCII 0
 #endif
 
-void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags) {
+void dump_memory(log_t* log, pid_t tid, uintptr_t addr) {
     char code_buffer[64];
     char ascii_buffer[32];
     uintptr_t p, end;
@@ -190,6 +213,6 @@ void dump_memory(log_t* log, pid_t tid, uintptr_t addr, int scope_flags) {
             p += sizeof(long);
         }
         *asc_out = '\0';
-        _LOG(log, scope_flags, "    %s %s\n", code_buffer, ascii_buffer);
+        _LOG(log, logtype::MEMORY, "    %s %s\n", code_buffer, ascii_buffer);
     }
 }
