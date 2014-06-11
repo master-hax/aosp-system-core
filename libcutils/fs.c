@@ -210,9 +210,10 @@ int fs_mkdirs(const char* path, mode_t mode) {
                 }
             }
 
-            /* Yay, segment is ready for us to step into */
+            /* Yay, segment is ready for us to step into... we have to make sure it's
+             * still the same though. */
             int next_fd;
-            if ((next_fd = openat(fd, segment, 0)) == -1) {
+            if ((next_fd = openat(fd, segment, O_NOFOLLOW)) == -1) {
                 ALOGE("Failed to openat(%s): %s", buf, strerror(errno));
                 res = -errno;
                 goto done_close;
