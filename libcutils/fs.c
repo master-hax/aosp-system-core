@@ -44,7 +44,7 @@ int fs_prepare_dir(const char* path, mode_t mode, uid_t uid, gid_t gid) {
         if (errno == ENOENT) {
             goto create;
         } else {
-            ALOGE("Failed to lstat(%s): %s", path, strerror(errno));
+            ALOGE("Failed to stat(%s): %s", path, strerror(errno));
             return -1;
         }
     }
