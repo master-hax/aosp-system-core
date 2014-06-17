@@ -373,28 +373,9 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
   _LOG(log, logtype::MAPS, "\nmemory map around fault addr %" PRIPTR ":\n",
        reinterpret_cast<uintptr_t>(si.si_addr));
 
-  // Search for a match, or for a hole where the match would be.  The list
-  // is backward from the file content, so it starts at high addresses.
-  const backtrace_map_t* cur_map = NULL;
-  const backtrace_map_t* next_map = NULL;
-  const backtrace_map_t* prev_map = NULL;
   for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
-    if (addr >= it->start && addr < it->end) {
-      cur_map = &*it;
-      if (it != map->begin()) {
-        prev_map = &*(it-1);
-      }
-      if (++it != map->end()) {
-        next_map = &*it;
-      }
-      break;
-    }
+    dump_map(log, &*it, "current map");
   }
-
-  // Show the map address in ascending order (like /proc/pid/maps).
-  dump_map(log, prev_map, "map below");
-  dump_map(log, cur_map, "map for address");
-  dump_map(log, next_map, "map above");
 }
 
 static void dump_thread(
