@@ -343,10 +343,24 @@ static void dump_backtrace_and_stack(Backtrace* backtrace, log_t* log) {
   }
 }
 
-static void dump_map(log_t* log, const backtrace_map_t* map) {
-  _LOG(log, logtype::MAPS, "    %" PRIPTR "-%" PRIPTR " %c%c%c %s\n", map->start, map->end,
-         (map->flags & PROT_READ) ? 'r' : '-', (map->flags & PROT_WRITE) ? 'w' : '-',
-         (map->flags & PROT_EXEC) ? 'x' : '-', map->name.c_str());
+static void dump_map(log_t* log, const backtrace_map_t* map, bool fault_addr) {
+  // I know this is the worst ever when the only difference is that little "--->" in the
+  // beginning, but I'm honestly having trouble figuring out how to do this in a sensible
+  // way.  I can't get the ?: construct to work in that position to choose between arrow
+  // and no arrow, and the PRIPTR is really throwing me off since it doesn't seem to work
+  // like a normal string.
+  if(fault_addr) {
+    _LOG(log, logtype::MAPS, "--->%" PRIPTR "-%" PRIPTR " %c%c%c %s\n",
+            map->start, map->end,
+           (map->flags & PROT_READ) ? 'r' : '-', (map->flags & PROT_WRITE) ? 'w' : '-',
+           (map->flags & PROT_EXEC) ? 'x' : '-', map->name.c_str());
+  }
+  else {
+    _LOG(log, logtype::MAPS, "    %" PRIPTR "-%" PRIPTR " %c%c%c %s\n",
+            map->start, map->end,
+           (map->flags & PROT_READ) ? 'r' : '-', (map->flags & PROT_WRITE) ? 'w' : '-',
+           (map->flags & PROT_EXEC) ? 'x' : '-', map->name.c_str());
+  }
 }
 
 static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
@@ -366,10 +380,18 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
     return;
   }
 
-  _LOG(log, logtype::MAPS, "\nmemory map:\n");
+  _LOG(log, logtype::MAPS, "\nmemory map: (pointer location prefixed with --->)\n");
 
+  bool found_map = false;
   for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
-    dump_map(log, &*it);
+    bool in_map = addr >= (*it).start && addr < (*it).end;
+    dump_map(log, &*it, in_map);
+    if(in_map) {
+      found_map = true;
+    }
+  }
+  if(!found_map) {
+    _LOG(log, logtype::ERROR, "\nFault address was in unmapped memory segment!");
   }
 }
 
