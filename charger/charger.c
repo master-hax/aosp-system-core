@@ -498,7 +498,7 @@ static void process_uevent(struct charger *charger, struct uevent *uevent)
         process_ps_uevent(charger, uevent);
 }
 
-#define UEVENT_MSG_LEN  1024
+#define UEVENT_MSG_LEN  2048
 static int handle_uevent_fd(struct charger *charger, int fd)
 {
     char msg[UEVENT_MSG_LEN+2];
