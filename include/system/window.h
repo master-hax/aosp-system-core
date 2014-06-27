@@ -7,7 +7,7 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, soft`ware
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -26,8 +26,8 @@
 #include <system/graphics.h>
 #include <unistd.h>
 
-#ifndef __unused
-#define __unused __attribute__((__unused__))
+#ifndef __UNUSED
+#define __UNUSED __attribute__((__UNUSED__))
 #endif
 #ifndef __deprecated
 #define __deprecated __attribute__((__deprecated__))
@@ -610,19 +610,19 @@ static inline int native_window_set_usage(
 
 /* deprecated. Always returns 0. Don't call. */
 static inline int native_window_connect(
-        struct ANativeWindow* window __unused, int api __unused) __deprecated;
+        struct ANativeWindow* window __UNUSED, int api __UNUSED) __deprecated;
 
 static inline int native_window_connect(
-        struct ANativeWindow* window __unused, int api __unused) {
+        struct ANativeWindow* window __UNUSED, int api __UNUSED) {
     return 0;
 }
 
 /* deprecated. Always returns 0. Don't call. */
 static inline int native_window_disconnect(
-        struct ANativeWindow* window __unused, int api __unused) __deprecated;
+        struct ANativeWindow* window __UNUSED, int api __UNUSED) __deprecated;
 
 static inline int native_window_disconnect(
-        struct ANativeWindow* window __unused, int api __unused) {
+        struct ANativeWindow* window __UNUSED, int api __UNUSED) {
     return 0;
 }
 
