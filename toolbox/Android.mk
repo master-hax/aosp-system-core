@@ -114,6 +114,11 @@ LOCAL_STATIC_LIBRARIES := \
 LOCAL_MODULE := toolbox
 LOCAL_ADDITIONAL_DEPENDENCIES += $(LOCAL_PATH)/Android.mk
 
+ifeq (true,$(TARGET_PREFER_32_BIT_EXECUTABLES))
+# We are doing a 32p build, force recovery to be 64bit
+LOCAL_MULTILIB := 64
+endif
+
 # Including this will define $(intermediates).
 #
 include $(BUILD_EXECUTABLE)
