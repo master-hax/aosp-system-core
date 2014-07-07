@@ -354,16 +354,22 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
 
   _LOG(log, logtype::MAPS, "\nmemory map: (fault address prefixed with --->)\n");
 
-  bool found_map = false;
+  if(addr < map->begin()->start) {
+    _LOG(log, logtype::MAPS, "--->Fault address falls before any mapped regions\n");
+  }
+
+  BacktraceMap::const_iterator prev = map->begin();
+
   for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
+    if(addr > (*prev).end && addr  < (*it).start) {
+      _LOG(log, logtype::MAPS, "--->Fault address falls between mapped regions\n");
+    }
+    prev = it;
     bool in_map = addr >= (*it).start && addr < (*it).end;
     dump_map(log, &*it, in_map);
-    if(in_map) {
-      found_map = true;
-    }
   }
-  if(!found_map) {
-    _LOG(log, logtype::ERROR, "\nFault address was not in any map!");
+  if(addr > (*prev).end) {
+    _LOG(log, logtype::MAPS, "--->Fault address falls after any mapped regions\n");
   }
 }
 
