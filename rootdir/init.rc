@@ -422,6 +422,10 @@ on boot
     # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
 
+    # Define default video bitrate and framerate in wifi display
+    setprop media.wfd.video-bitrate adaptive
+    setprop media.wfd.video-framerate adaptive
+
     class_start core
     class_start main
 
