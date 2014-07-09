@@ -27,9 +27,6 @@
 #include "../utility.h"
 #include "../machine.h"
 
-// enable to dump memory pointed to by every register
-#define DUMP_MEMORY_FOR_ALL_REGISTERS 1
-
 #ifdef WITH_VFP
 #ifdef WITH_VFP_D32
 #define NUM_VFP_REGS 32
@@ -38,8 +35,6 @@
 #endif
 #endif
 
-// If configured to do so, dump memory around *all* registers
-// for the crashing thread.
 void dump_memory_and_code(log_t* log, pid_t tid) {
   struct pt_regs regs;
   if (ptrace(PTRACE_GETREGS, tid, 0, &regs)) {
