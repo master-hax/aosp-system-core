@@ -170,7 +170,7 @@ static int read_verity_metadata(char *block_device, char **signature, char **tab
         ERROR("Could not get target device size.\n");
         goto out;
     }
-    if (fseek(device, device_length, SEEK_SET) < 0) {
+    if (lseek64(fileno(device), device_length, SEEK_SET) < 0) {
         ERROR("Could not seek to start of verity metadata block.\n");
         goto out;
     }
