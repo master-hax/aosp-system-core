@@ -103,7 +103,8 @@ void dump_registers(log_t* log, pid_t tid) {
   }
 
   for (int i = 0; i < 32; i += 4) {
-    _LOG(log, logtype::REGISTERS, "    v%-2d  %016lx  v%-2d  %016lx  v%-2d  %016lx  v%-2d  %016lx\n",
+    _LOG(log, logtype::FP_REGISTERS,
+         "    v%-2d  %016lx  v%-2d  %016lx  v%-2d  %016lx  v%-2d  %016lx\n",
          i, (uint64_t)f.vregs[i],
          i+1, (uint64_t)f.vregs[i+1],
          i+2, (uint64_t)f.vregs[i+2],
