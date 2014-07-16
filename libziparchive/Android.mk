@@ -14,7 +14,6 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
-
 source_files := zip_archive.cc
 
 include $(CLEAR_VARS)
