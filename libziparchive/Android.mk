@@ -17,7 +17,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 source_files := \
-	zip_archive.h \
 	zip_archive.cc
 
 includes := external/zlib
@@ -34,7 +33,6 @@ LOCAL_CFLAGS := -Werror
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libziparchive
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_SRC_FILES := ${source_files}
 LOCAL_C_INCLUDES += ${includes}
