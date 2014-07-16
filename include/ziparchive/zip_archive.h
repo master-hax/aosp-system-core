@@ -32,6 +32,15 @@ enum {
   kCompressDeflated   = 8,        // standard deflate
 };
 
+/* Archive flags used in OpenArchive */
+enum {
+  kArchiveFlagNone = 0x0,
+  kArchiveFlagCloseFile = 0x01, // close file on CloseArchive
+
+  // default
+  kArchiveFlagDefaults = kArchiveFlagCloseFile,
+};
+
 struct ZipEntryName {
   const char* name;
   uint16_t name_length;
@@ -82,7 +91,8 @@ typedef void* ZipArchiveHandle;
  *
  * Returns 0 on success, and negative values on failure.
  */
-int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle);
+int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle,
+                    int flags = kArchiveFlagDefaults);
 
 /*
  * Like OpenArchive, but takes a file descriptor open for reading
@@ -100,7 +110,7 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle);
  * Returns 0 on success, and negative values on failure.
  */
 int32_t OpenArchiveFd(const int fd, const char* debugFileName,
-                      ZipArchiveHandle *handle);
+                      ZipArchiveHandle *handle, int flags = kArchiveFlagDefaults);
 
 /*
  * Close archive, releasing resources associated with it. This will
