@@ -109,7 +109,7 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle);
  * Returns 0 on success, and negative values on failure.
  */
 int32_t OpenArchiveFd(const int fd, const char* debugFileName,
-                      ZipArchiveHandle *handle);
+                      ZipArchiveHandle *handle, bool close_file = true);
 
 /*
  * Close archive, releasing resources associated with it. This will
