@@ -288,6 +288,7 @@ static const char kTempMappingFileName[] = "zip: ExtractFileToFile";
 struct ZipArchive {
   /* open Zip archive */
   int fd;
+  int flags;
 
   /* mapped central directory area */
   off64_t directory_offset;
@@ -660,17 +661,19 @@ static int32_t OpenArchiveInternal(ZipArchive* archive,
 }
 
 int32_t OpenArchiveFd(int fd, const char* debug_file_name,
-                      ZipArchiveHandle* handle) {
+                      ZipArchiveHandle* handle, int flags) {
   ZipArchive* archive = (ZipArchive*) malloc(sizeof(ZipArchive));
   memset(archive, 0, sizeof(*archive));
   *handle = archive;
 
   archive->fd = fd;
+  archive->flags = flags;
 
   return OpenArchiveInternal(archive, debug_file_name);
 }
 
-int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle) {
+int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle,
+                    int flags) {
   ZipArchive* archive = (ZipArchive*) malloc(sizeof(ZipArchive));
   memset(archive, 0, sizeof(*archive));
   *handle = archive;
@@ -683,6 +686,8 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle) {
     archive->fd = fd;
   }
 
+  archive->flags = flags;
+
   return OpenArchiveInternal(archive, fileName);
 }
 
@@ -693,7 +698,7 @@ void CloseArchive(ZipArchiveHandle handle) {
   ZipArchive* archive = (ZipArchive*) handle;
   ALOGV("Closing archive %p", archive);
 
-  if (archive->fd >= 0) {
+  if ((archive->flags & kArchiveFlagCloseFile) != 0 && archive->fd >= 0) {
     close(archive->fd);
   }
 
