@@ -73,6 +73,8 @@ endif
 ifeq ($(build_type),host)
   # Only build if host builds are supported.
   ifeq ($(build_host),true)
+    # Clang builds are not supported for now
+    LOCAL_CLANG := false
     ifneq ($($(module)_libc++),)
       include external/libcxx/libcxx.mk
     endif
