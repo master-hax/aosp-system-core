@@ -82,7 +82,7 @@ LOCAL_SRC_FILES += Looper.cpp
 endif
 LOCAL_MODULE:= lib64utils
 LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS += $(host_commonCflags) -m64
+LOCAL_CFLAGS += $(host_commonCflags) -m64 -march=x86-64
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 
