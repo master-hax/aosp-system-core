@@ -92,7 +92,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := lib64cutils
 LOCAL_SRC_FILES := $(commonSources) $(commonHostSources) dlmalloc_stubs.c
 LOCAL_STATIC_LIBRARIES := lib64log
-LOCAL_CFLAGS += $(hostSmpFlag) -m64
+LOCAL_CFLAGS += $(hostSmpFlag) -m64 -march=x86-64
 ifneq ($(HOST_OS),windows)
 LOCAL_CFLAGS += -Werror
 endif
