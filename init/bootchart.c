@@ -119,6 +119,25 @@ file_buff_done( FileBuff  buff )
     }
 }
 
+static long long
+get_uptime_jiffies()
+{
+    char       buff[65];
+    int        fd, ret, len;
+    long long  jiffies = 0;
+
+    fd = open("/proc/uptime",O_RDONLY);
+    if (fd >= 0) {
+        int  ret;
+        ret = unix_read(fd, buff, 64);
+        close(fd);
+        buff[64] = 0;
+        if (ret >= 0)
+            jiffies = 100LL*strtod(buff,NULL);
+    }
+    return jiffies;
+}
+
 static void
 log_header(void)
 {
@@ -185,22 +204,11 @@ static void
 do_log_uptime(FileBuff  log)
 {
     char  buff[65];
-    int   fd, ret, len;
+    int   len;
 
-    fd = open("/proc/uptime",O_RDONLY);
-    if (fd >= 0) {
-        int  ret;
-        ret = unix_read(fd, buff, 64);
-        close(fd);
-        buff[64] = 0;
-        if (ret >= 0) {
-            long long  jiffies = 100LL*strtod(buff,NULL);
-            int        len;
-            snprintf(buff,sizeof(buff),"%lld\n",jiffies);
-            len = strlen(buff);
-            file_buff_write(log, buff, len);
-        }
-    }
+    snprintf(buff,sizeof(buff),"%lld\n",get_uptime_jiffies());
+    len = strlen(buff);
+    file_buff_write(log, buff, len);
 }
 
 static void
@@ -375,4 +383,10 @@ void  bootchart_finish( void )
     file_buff_done(log_disks);
     file_buff_done(log_procs);
     acct(NULL);
+}
+
+/* called to get time (in ms) used by bootchart */
+long long  bootchart_gettime( void )
+{
+    return 10LL*get_uptime_jiffies();
 }
