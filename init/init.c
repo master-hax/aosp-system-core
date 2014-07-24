@@ -65,6 +65,7 @@ static int property_triggers_enabled = 0;
 
 #if BOOTCHART
 static int   bootchart_count;
+static long long bootchart_time = 0;
 #endif
 
 static char console[32];
@@ -1147,12 +1148,25 @@ int main(int argc, char **argv)
 
 #if BOOTCHART
         if (bootchart_count > 0) {
-            if (timeout < 0 || timeout > BOOTCHART_POLLING_MS)
-                timeout = BOOTCHART_POLLING_MS;
-            if (bootchart_step() < 0 || --bootchart_count == 0) {
-                bootchart_finish();
-                bootchart_count = 0;
+            long long current_time;
+            int elapsed_time, remaining_time;
+
+            current_time = bootchart_gettime();
+            elapsed_time = current_time - bootchart_time;
+
+            if (elapsed_time >= BOOTCHART_POLLING_MS) {
+                bootchart_time = current_time;
+                if (bootchart_step() < 0 || --bootchart_count == 0) {
+                    bootchart_finish();
+                    remaining_time = -1;
+                } else {
+                    remaining_time = BOOTCHART_POLLING_MS;
+                }
+            } else {
+                remaining_time = BOOTCHART_POLLING_MS - elapsed_time;
             }
+            if (timeout < 0 || timeout > remaining_time)
+                timeout = remaining_time;
         }
 #endif
 
