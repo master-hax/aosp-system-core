@@ -258,8 +258,9 @@ wait <path> [ <timeout> ]
   currently defaults to five seconds.
 
 write <path> <string> [ <string> ]*
-   Open the file at <path> and write one or more strings
-   to it with write(2)
+   Open and truncate the file at <path> and write one or more strings
+   to it with write(2). This is meant for writing to virtual kernel
+   files like sysfs and proc files where appending doesn't make sense.
 
 
 Properties
