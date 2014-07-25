@@ -304,6 +304,14 @@ struct ZipArchive {
    */
   uint32_t hash_table_size;
   ZipEntryName* hash_table;
+
+  ZipArchive() :
+      fd(-1),
+      directory_offset(0),
+      directory_map(NULL),
+      num_entries(0),
+      hash_table_size(0),
+      hash_table(NULL) {}
 };
 
 // Returns 0 on success and negative values on failure.
@@ -661,8 +669,7 @@ static int32_t OpenArchiveInternal(ZipArchive* archive,
 
 int32_t OpenArchiveFd(int fd, const char* debug_file_name,
                       ZipArchiveHandle* handle) {
-  ZipArchive* archive = (ZipArchive*) malloc(sizeof(ZipArchive));
-  memset(archive, 0, sizeof(*archive));
+  ZipArchive* archive = new ZipArchive();
   *handle = archive;
 
   archive->fd = fd;
@@ -671,8 +678,7 @@ int32_t OpenArchiveFd(int fd, const char* debug_file_name,
 }
 
 int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle) {
-  ZipArchive* archive = (ZipArchive*) malloc(sizeof(ZipArchive));
-  memset(archive, 0, sizeof(*archive));
+  ZipArchive* archive = new ZipArchive();
   *handle = archive;
 
   const int fd = open(fileName, O_RDONLY | O_BINARY, 0);
@@ -701,7 +707,7 @@ void CloseArchive(ZipArchiveHandle handle) {
     archive->directory_map->release();
   }
   free(archive->hash_table);
-  free(archive);
+  delete(archive);
 }
 
 static int32_t UpdateEntryFromDataDescriptor(int fd,
