@@ -350,16 +350,13 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
     return;
   }
 
-  bool is_running = (si.si_code == SI_USER);
+  bool has_fault_address = (si.si_signo == SIGILL || si.si_signo == SIGFPE ||
+      si.si_signo == SIGSEGV || si.si_signo == SIGBUS || si.si_signo == SIGTRAP);
   uintptr_t addr = reinterpret_cast<uintptr_t>(si.si_addr);
-  addr &= ~0xfff;     // round to 4K page boundary
-  if (!is_running && addr == 0) {    // null-pointer deref
-    return;
-  }
 
-  _LOG(log, logtype::MAPS, "\nmemory map: %s\n", is_running? "" : "(fault address prefixed with --->)");
+  _LOG(log, logtype::MAPS, "\nmemory map: %s\n", has_fault_address ? "(fault address prefixed with --->)" : "");
 
-  if(!is_running && (addr < map->begin()->start)) {
+  if(has_fault_address && (addr < map->begin()->start)) {
     _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " before any mapped regions\n", addr);
   }
 
@@ -369,10 +366,10 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
       _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " between mapped regions\n", addr);
     }
     prev = it;
-    bool in_map = !is_running && (addr >= (*it).start) && (addr < (*it).end);
+    bool in_map = has_fault_address && (addr >= (*it).start) && (addr < (*it).end);
     dump_map(log, &*it, in_map);
   }
-  if (!is_running && (addr >= (*prev).end)) {
+  if (has_fault_address && (addr >= (*prev).end)) {
     _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " after any mapped regions\n", addr);
   }
 }
