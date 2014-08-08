@@ -352,10 +352,6 @@ static void dump_nearby_maps(BacktraceMap* map, log_t* log, pid_t tid) {
 
   bool is_running = (si.si_code == SI_USER);
   uintptr_t addr = reinterpret_cast<uintptr_t>(si.si_addr);
-  addr &= ~0xfff;     // round to 4K page boundary
-  if (!is_running && addr == 0) {    // null-pointer deref
-    return;
-  }
 
   _LOG(log, logtype::MAPS, "\nmemory map: %s\n", is_running? "" : "(fault address prefixed with --->)");
 
