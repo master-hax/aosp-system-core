@@ -909,6 +909,13 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* p
   return 0;
 }
 
+int32_t EndIteration(void* cookie) {
+  if (cookie != NULL) {
+    free(cookie);
+  }
+  return 0;
+}
+
 int32_t FindEntry(const ZipArchiveHandle handle, const char* entryName,
                   ZipEntry* data) {
   const ZipArchive* archive = (ZipArchive*) handle;
