@@ -33,7 +33,7 @@ enum {
 };
 
 struct ZipEntryName {
-  const char* name;
+  const uint8_t* name;
   uint16_t name_length;
 };
 
@@ -124,7 +124,7 @@ void CloseArchive(ZipArchiveHandle handle);
  * and length, a call to VerifyCrcAndLengths must be made after entry data
  * has been processed.
  */
-int32_t FindEntry(const ZipArchiveHandle handle, const char* entryName,
+int32_t FindEntry(const ZipArchiveHandle handle, const ZipEntryName& entryName,
                   ZipEntry* data);
 
 /*
@@ -141,7 +141,7 @@ int32_t FindEntry(const ZipArchiveHandle handle, const char* entryName,
  * Returns 0 on success and negative values on failure.
  */
 int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr,
-                       const char* prefix);
+                       const ZipEntryName* prefix);
 
 /*
  * Advance to the next element in the zipfile in iteration order.
