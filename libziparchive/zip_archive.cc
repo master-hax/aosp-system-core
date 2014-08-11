@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <utils/Compat.h>
 #include <utils/FileMap.h>
+#include <vector>
 #include <zlib.h>
 
 #include <JNIHelp.h>  // TEMP_FAILURE_RETRY may or may not be in unistd
@@ -391,7 +392,7 @@ static uint32_t RoundUpPower2(uint32_t val) {
   return val;
 }
 
-static uint32_t ComputeHash(const char* str, uint16_t len) {
+static uint32_t ComputeHash(const uint8_t* str, uint16_t len) {
   uint32_t hash = 0;
 
   while (len--) {
@@ -407,7 +408,7 @@ static uint32_t ComputeHash(const char* str, uint16_t len) {
  */
 static int64_t EntryToIndex(const ZipEntryName* hash_table,
                             const uint32_t hash_table_size,
-                            const char* name, uint16_t length) {
+                            const uint8_t* name, uint16_t length) {
   const uint32_t hash = ComputeHash(name, length);
 
   // NOTE: (hash_table_size - 1) is guaranteed to be non-negative.
@@ -429,7 +430,7 @@ static int64_t EntryToIndex(const ZipEntryName* hash_table,
  * Add a new entry to the hash table.
  */
 static int32_t AddToHash(ZipEntryName *hash_table, const uint64_t hash_table_size,
-                         const char* name, uint16_t length) {
+                         const uint8_t* name, uint16_t length) {
   const uint64_t hash = ComputeHash(name, length);
   uint32_t ent = hash & (hash_table_size - 1);
 
@@ -646,7 +647,7 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     const uint16_t comment_length = cdr->comment_length;
 
     /* add the CDE filename to the hash table */
-    const char* file_name = reinterpret_cast<const char *>(ptr + sizeof(CentralDirectoryRecord));
+    const uint8_t* file_name = reinterpret_cast<const uint8_t*>(ptr + sizeof(CentralDirectoryRecord));
     const int add_result = AddToHash(archive->hash_table,
         archive->hash_table_size, file_name, file_name_length);
     if (add_result) {
@@ -766,12 +767,12 @@ static inline ssize_t ReadAtOffset(int fd, uint8_t* buf, size_t len,
 static int32_t FindEntry(const ZipArchive* archive, const int ent,
                          ZipEntry* data) {
   const uint16_t nameLen = archive->hash_table[ent].name_length;
-  const char* name = archive->hash_table[ent].name;
+  const uint8_t* name = archive->hash_table[ent].name;
 
   // Recover the start of the central directory entry from the filename
   // pointer.  The filename is the first entry past the fixed-size data,
   // so we can just subtract back from that.
-  const uint8_t* ptr = reinterpret_cast<const uint8_t*>(name);
+  const uint8_t* ptr = name;
   ptr -= sizeof(CentralDirectoryRecord);
 
   // This is the base of our mmapped region, we have to sanity check that
@@ -899,12 +900,11 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
 
 struct IterationHandle {
   uint32_t position;
-  const char* prefix;
-  uint16_t prefix_len;
+  std::vector<uint8_t> prefix;
   ZipArchive* archive;
 };
 
-int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* prefix) {
+int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const ZipEntryName* prefix) {
   ZipArchive* archive = (ZipArchive *) handle;
 
   if (archive == NULL || archive->hash_table == NULL) {
@@ -912,14 +912,13 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* p
     return kInvalidHandle;
   }
 
-  IterationHandle* cookie = (IterationHandle*) malloc(sizeof(IterationHandle));
+  IterationHandle* cookie = new IterationHandle();
   cookie->position = 0;
   cookie->archive = archive;
   if (prefix != NULL) {
-    cookie->prefix = strdup(prefix);
-    cookie->prefix_len = strlen(prefix);
-  } else {
-    cookie->prefix = NULL;
+    cookie->prefix.insert(cookie->prefix.begin(),
+                          prefix->name,
+                          prefix->name + prefix->name_length);
   }
 
   *cookie_ptr = cookie ;
@@ -928,28 +927,27 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* p
 
 void EndIteration(void* cookie) {
   if (cookie != NULL) {
-    IterationHandle* handle = reinterpret_cast<IterationHandle*>(cookie);
-    if (handle->prefix != NULL) {
-      free(const_cast<char*>(handle->prefix));
-    }
-    free(cookie);
+    delete reinterpret_cast<IterationHandle*>(cookie);
   }
 }
 
-int32_t FindEntry(const ZipArchiveHandle handle, const char* entryName,
+int32_t FindEntry(const ZipArchiveHandle handle, const ZipEntryName* entryName,
                   ZipEntry* data) {
   const ZipArchive* archive = (ZipArchive*) handle;
-  const int nameLen = strlen(entryName);
-  if (nameLen == 0 || nameLen > 65535) {
-    ALOGW("Zip: Invalid filename %s", entryName);
+  if (entryName == NULL) {
+    ALOGW("Zip: Invalid filename NULL");
+    return kInvalidEntryName;
+  }
+  if (entryName->name_length == 0) {
+    ALOGW("Zip: Invalid filename %.*s", entryName->name_length, entryName->name);
     return kInvalidEntryName;
   }
 
   const int64_t ent = EntryToIndex(archive->hash_table,
-    archive->hash_table_size, entryName, nameLen);
+    archive->hash_table_size, entryName->name, entryName->name_length);
 
   if (ent < 0) {
-    ALOGV("Zip: Could not find entry %.*s", nameLen, entryName);
+    ALOGV("Zip: Could not find entry %.*s", entryName->name_length, entryName->name);
     return ent;
   }
 
@@ -974,8 +972,8 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
 
   for (uint32_t i = currentOffset; i < hash_table_length; ++i) {
     if (hash_table[i].name != NULL &&
-        (handle->prefix == NULL ||
-         (memcmp(handle->prefix, hash_table[i].name, handle->prefix_len) == 0))) {
+        (handle->prefix.empty() ||
+         (memcmp(&(handle->prefix[0]), hash_table[i].name, handle->prefix.size()) == 0))) {
       handle->position = (i + 1);
       const int error = FindEntry(archive, i, data);
       if (!error) {
