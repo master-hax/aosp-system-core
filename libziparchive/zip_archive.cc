@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <utils/Compat.h>
 #include <utils/FileMap.h>
+#include <vector>
 #include <zlib.h>
 
 #include <JNIHelp.h>  // TEMP_FAILURE_RETRY may or may not be in unistd
@@ -884,8 +885,7 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
 
 struct IterationHandle {
   uint32_t position;
-  const char* prefix;
-  uint16_t prefix_len;
+  std::vector<char> prefix;
   ZipArchive* archive;
 };
 
@@ -897,14 +897,12 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* p
     return kInvalidHandle;
   }
 
-  IterationHandle* cookie = (IterationHandle*) malloc(sizeof(IterationHandle));
+  IterationHandle* cookie = new IterationHandle();
   cookie->position = 0;
   cookie->archive = archive;
   if (prefix != NULL) {
-    cookie->prefix = strdup(prefix);
-    cookie->prefix_len = strlen(prefix);
-  } else {
-    cookie->prefix = NULL;
+    int prefixLen = strlen(prefix);
+    cookie->prefix.insert(cookie->prefix.begin(), prefix, prefix + prefixLen);
   }
 
   *cookie_ptr = cookie ;
@@ -913,11 +911,7 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const char* p
 
 void EndIteration(void* cookie) {
   if (cookie != NULL) {
-    IterationHandle* handle = reinterpret_cast<IterationHandle*>(cookie);
-    if (handle->prefix != NULL) {
-      free(const_cast<char*>(handle->prefix));
-    }
-    free(cookie);
+    delete reinterpret_cast<IterationHandle*>(cookie);
   }
 }
 
@@ -959,8 +953,8 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
 
   for (uint32_t i = currentOffset; i < hash_table_length; ++i) {
     if (hash_table[i].name != NULL &&
-        (handle->prefix == NULL ||
-         (memcmp(handle->prefix, hash_table[i].name, handle->prefix_len) == 0))) {
+        (handle->prefix.empty() ||
+         (memcmp(&(handle->prefix[0]), hash_table[i].name, handle->prefix.size()) == 0))) {
       handle->position = (i + 1);
       const int error = FindEntry(archive, i, data);
       if (!error) {
