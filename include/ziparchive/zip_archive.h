@@ -20,6 +20,7 @@
 #ifndef LIBZIPARCHIVE_ZIPARCHIVE_H_
 #define LIBZIPARCHIVE_ZIPARCHIVE_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>
 #include <utils/Compat.h>
@@ -156,6 +157,12 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName *name);
  * in StartIteration.
  */
 void EndIteration(void* cookie);
+
+/*
+ * Returns 1 if entry names in an archive are encoded in UTF-8.
+ * Returns 0 otherwise.
+ */
+bool HasUTF8Names(ZipArchiveHandle handle);
 
 /*
  * Uncompress and write an entry to an open file identified by |fd|.
