@@ -192,8 +192,11 @@ struct DataDescriptor {
 
 #undef DISALLOW_IMPLICIT_CONSTRUCTORS
 
-static const uint32_t kGPBDDFlagMask = 0x0008;         // mask value that signifies that the entry has a DD
+// mask value that signifies that the entry has a DD
+static const uint32_t kGPBDDFlagMask = 0x0008;
 static const uint32_t kMaxErrorLen = 1024;
+// mask value that signifies that the entry names are encoded in UTF-8
+static const uint32_t kGPBEFSFlagMask = 0x0800;
 
 // The maximum size of a central directory or a file
 // comment in bytes.
@@ -295,6 +298,12 @@ struct ZipArchive {
 
   /* number of entries in the Zip archive */
   uint16_t num_entries;
+  /*
+   * true if majority of entries have names encoded in UTF-8.
+   * Ideally we would like all entry names to be encoded with either UTF-8 or
+   * IBM PC but if both encodings are used we will pick the more used one.
+   */
+  bool utf8_names_encoding;
 
   /*
    * We know how many entries are in the Zip archive, so we can have a
@@ -310,6 +319,7 @@ struct ZipArchive {
       directory_offset(0),
       directory_map(NULL),
       num_entries(0),
+      utf8_names_encoding(false),
       hash_table_size(0),
       hash_table(NULL) {}
 
@@ -595,7 +605,7 @@ static int32_t MapCentralDirectory(int fd, const char* debug_file_name,
  *
  * Returns 0 on success.
  */
-static int32_t ParseZipArchive(ZipArchive* archive) {
+static int32_t ParseZipArchive(ZipArchive* archive, const char* debug_file_name) {
   int32_t result = -1;
   const uint8_t* const cd_ptr = (const uint8_t*) archive->directory_map->getDataPtr();
   const size_t cd_length = archive->directory_map->getDataLength();
@@ -616,6 +626,8 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
    */
   const uint8_t* const cd_end = cd_ptr + cd_length;
   const uint8_t* ptr = cd_ptr;
+  uint16_t num_utf8 = 0;
+  uint16_t num_ibmpc = 0;
   for (uint16_t i = 0; i < num_entries; i++) {
     const CentralDirectoryRecord* cdr =
         reinterpret_cast<const CentralDirectoryRecord*>(ptr);
@@ -655,7 +667,17 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
           ptr - cd_ptr, cd_length, i);
       goto bail;
     }
+    if (cdr->gpb_flags & kGPBEFSFlagMask) {
+      ++num_utf8;
+    } else {
+      ++num_ibmpc;
+    }
   }
+  if (num_utf8 > 0 && num_ibmpc > 0) {
+    ALOGW("Zip: archive %s contains entries with names encoded with different encodings.",
+          debug_file_name);
+  }
+  archive->utf8_names_encoding = num_utf8 > num_ibmpc;
   ALOGV("+++ zip good scan %" PRIu16 " entries", num_entries);
 
   result = 0;
@@ -671,7 +693,7 @@ static int32_t OpenArchiveInternal(ZipArchive* archive,
     return result;
   }
 
-  if ((result = ParseZipArchive(archive))) {
+  if ((result = ParseZipArchive(archive, debug_file_name))) {
     return result;
   }
 
@@ -974,6 +996,11 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
 
   handle->position = 0;
   return kIterationEnd;
+}
+
+bool UsesUTF8ForNamesEncoding(const ZipArchiveHandle& handle) {
+  const ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle);
+  return archive->utf8_names_encoding;
 }
 
 static int32_t InflateToFile(int fd, const ZipEntry* entry,
