@@ -77,6 +77,10 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_SRC_FILES := $(liblog_target_sources)
 LOCAL_CFLAGS := -Werror
+ifneq ($(LOGD_WRITE_EXT_LIB),)
+LOCAL_CFLAGS += -DLOGD_WRITE_EXT
+LOCAL_WHOLE_STATIC_LIBRARIES := $(LOGD_WRITE_EXT_LIB)
+endif
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

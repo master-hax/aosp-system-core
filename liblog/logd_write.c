@@ -47,6 +47,10 @@
 #include "fake_log_device.h"
 #endif
 
+#ifdef LOGD_WRITE_EXT
+extern void logd_write_ext(struct iovec *vec, size_t nr);
+#endif
+
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
 #ifdef HAVE_PTHREADS
@@ -227,6 +231,10 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
             break;
         }
     }
+
+#ifdef LOGD_WRITE_EXT
+    logd_write_ext(newVec, i);
+#endif
 
     /*
      * The write below could be lost, but will never block.
