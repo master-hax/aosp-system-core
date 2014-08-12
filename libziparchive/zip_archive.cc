@@ -194,6 +194,7 @@ struct DataDescriptor {
 
 static const uint32_t kGPBDDFlagMask = 0x0008;         // mask value that signifies that the entry has a DD
 static const uint32_t kMaxErrorLen = 1024;
+static const uint32_t kGPBEFSFlagMask = 0x0800;        // mask value that signifies that the entry names are encoded in UTF-8
 
 // The maximum size of a central directory or a file
 // comment in bytes.
@@ -295,6 +296,7 @@ struct ZipArchive {
 
   /* number of entries in the Zip archive */
   uint16_t num_entries;
+  bool utf8_names_encoding;
 
   /*
    * We know how many entries are in the Zip archive, so we can have a
@@ -310,6 +312,7 @@ struct ZipArchive {
       directory_offset(0),
       directory_map(NULL),
       num_entries(0),
+      utf8_names_encoding(false),
       hash_table_size(0),
       hash_table(NULL) {}
 
@@ -616,6 +619,8 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
    */
   const uint8_t* const cd_end = cd_ptr + cd_length;
   const uint8_t* ptr = cd_ptr;
+  // Entry names encoding in archive: 0 - unresolved, 1 - IBM PC, 2 - UTF-8
+  uint8_t names_encoding = 0;
   for (uint16_t i = 0; i < num_entries; i++) {
     const CentralDirectoryRecord* cdr =
         reinterpret_cast<const CentralDirectoryRecord*>(ptr);
@@ -655,6 +660,22 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
           ptr - cd_ptr, cd_length, i);
       goto bail;
     }
+    if ((cdr->gpb_flags & kGPBEFSFlagMask) == 0) {
+      if (names_encoding == 2) {
+        ALOGW("Zip: Entry names encoded with different encoding");
+        goto bail;
+      }
+      names_encoding = 1;
+    } else {
+      if (names_encoding == 1) {
+        ALOGW("Zip: Entry names encoded with different encoding");
+        goto bail;
+      }
+      names_encoding = 2;
+    }
+  }
+  if (names_encoding == 2) {
+    archive->utf8_names_encoding = true;
   }
   ALOGV("+++ zip good scan %" PRIu16 " entries", num_entries);
 
@@ -974,6 +995,11 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
 
   handle->position = 0;
   return kIterationEnd;
+}
+
+int32_t HasUTF8Names(ZipArchiveHandle handle) {
+  const ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle);
+  return archive->utf8_names_encoding;
 }
 
 static int32_t InflateToFile(int fd, const ZipEntry* entry,
