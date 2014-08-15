@@ -639,8 +639,17 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     const uint16_t extra_length = cdr->extra_field_length;
     const uint16_t comment_length = cdr->comment_length;
 
-    /* add the CDE filename to the hash table */
     const char* file_name = reinterpret_cast<const char *>(ptr + sizeof(CentralDirectoryRecord));
+    /* check that file name doesn't contain \0 character */
+    for (uint16_t pos = 0; pos < file_name_length; ++pos) {
+      if (file_name[pos] == '\0') {
+        ALOGW("Zip: entry name with \\0 on a position %d/%d: %.*s", pos, file_name_length - 1,
+              file_name_length, file_name);
+        goto bail;
+      }
+    }
+
+    /* add the CDE filename to the hash table */
     const int add_result = AddToHash(archive->hash_table,
         archive->hash_table_size, file_name, file_name_length);
     if (add_result) {
