@@ -640,9 +640,17 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     const uint16_t file_name_length = cdr->file_name_length;
     const uint16_t extra_length = cdr->extra_field_length;
     const uint16_t comment_length = cdr->comment_length;
+    const uint8_t* file_name = ptr + sizeof(CentralDirectoryRecord);
+
+    /* check that file name doesn't contain \0 character */
+    uint8_t* pos = reinterpret_cast<uint8_t*>(memchr(file_name, 0, file_name_length));
+    if (pos != NULL) {
+      ALOGW("Zip: entry name with \\0 on a position %zu/%d: %.*s", pos - file_name,
+            file_name_length - 1, file_name_length, file_name);
+      goto bail;
+    }
 
     /* add the CDE filename to the hash table */
-    const uint8_t* file_name = ptr + sizeof(CentralDirectoryRecord);
     ZipEntryName entry_name;
     entry_name.name = file_name;
     entry_name.name_length = file_name_length;
