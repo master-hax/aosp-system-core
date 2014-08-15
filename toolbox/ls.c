@@ -189,7 +189,8 @@ static int listfile_long(const char *path, struct stat *s, int flags)
         group2str(s->st_gid, group, sizeof(group));
     }
 
-    strftime(date, 32, "%Y-%m-%d %H:%M", localtime((const time_t*)&s->st_mtime));
+    time_t mtime = s->st_mtime;
+    strftime(date, 32, "%Y-%m-%d %H:%M", localtime(&mtime));
     date[31] = 0;
 
 // 12345678901234567890123456789012345678901234567890123456789012345678901234567890
