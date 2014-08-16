@@ -1,0 +1,10 @@
+Code-Review+1: Sebastien Bessiere <sebastien.bessiere@intel.com>
+Code-Review+1: Jim Bish <jim.bish@intel.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+1: Mike Chen <mjchen@google.com>
+Code-Review+2: Colin Cross <ccross@android.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Sat, 16 Aug 2014 04:09:41 +0000
+Reviewed-on: https://android-review.googlesource.com/102445
+Project: platform/system/core
+Branch: refs/heads/master
