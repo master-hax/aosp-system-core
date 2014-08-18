@@ -29,7 +29,6 @@
 #include <unistd.h>
 #include <utils/Compat.h>
 #include <utils/FileMap.h>
-#include <vector>
 #include <zlib.h>
 
 #include <JNIHelp.h>  // TEMP_FAILURE_RETRY may or may not be in unistd
@@ -889,8 +888,22 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
 
 struct IterationHandle {
   uint32_t position;
-  std::vector<uint8_t> prefix;
+  const uint8_t* prefix;
+  uint16_t prefix_len;
   ZipArchive* archive;
+
+  IterationHandle() : prefix(NULL), prefix_len(0) {}
+
+  IterationHandle(const ZipEntryName* prefix_name)
+      : prefix(new uint8_t[prefix_name->name_length]),
+        prefix_len(prefix_name->name_length) {
+    memcpy(reinterpret_cast<void*>(const_cast<uint8_t*>(prefix)), prefix_name->name,
+           prefix_len * sizeof(uint8_t));
+  }
+
+  ~IterationHandle() {
+    delete [] prefix;
+  }
 };
 
 int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr,
@@ -902,14 +915,10 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr,
     return kInvalidHandle;
   }
 
-  IterationHandle* cookie = new IterationHandle();
+  IterationHandle* cookie =
+      optional_prefix != NULL ? new IterationHandle(optional_prefix) : new IterationHandle();
   cookie->position = 0;
   cookie->archive = archive;
-  if (optional_prefix != NULL) {
-    cookie->prefix.insert(cookie->prefix.begin(),
-                          optional_prefix->name,
-                          optional_prefix->name + optional_prefix->name_length);
-  }
 
   *cookie_ptr = cookie ;
   return 0;
@@ -956,8 +965,8 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
 
   for (uint32_t i = currentOffset; i < hash_table_length; ++i) {
     if (hash_table[i].name != NULL &&
-        (handle->prefix.empty() ||
-         (memcmp(&(handle->prefix[0]), hash_table[i].name, handle->prefix.size()) == 0))) {
+        (handle->prefix_len == 0 ||
+         (memcmp(handle->prefix, hash_table[i].name, handle->prefix_len) == 0))) {
       handle->position = (i + 1);
       const int error = FindEntry(archive, i, data);
       if (!error) {
