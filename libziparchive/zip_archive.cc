@@ -906,9 +906,10 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr,
   cookie->position = 0;
   cookie->archive = archive;
   if (optional_prefix != NULL) {
-    cookie->prefix.insert(cookie->prefix.begin(),
-                          optional_prefix->name,
-                          optional_prefix->name + optional_prefix->name_length);
+    cookie->prefix.reserve(optional_prefix->name_length);
+    for (int i = 0; i < optional_prefix->name_length; ++i) {
+      cookie->prefix.push_back(optional_prefix->name[i]);
+    }
   }
 
   *cookie_ptr = cookie ;
