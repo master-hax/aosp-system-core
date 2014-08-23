@@ -69,5 +69,5 @@ void load_ptrace_map_info_data_arch(pid_t pid, map_info_t* mi, map_info_data_t* 
     load_exidx_header(pid, mi, &data->exidx_start, &data->exidx_size);
 }
 
-void free_ptrace_map_info_data_arch(map_info_t* mi, map_info_data_t* data) {
+void free_ptrace_map_info_data_arch(map_info_t* mi __attribute__((unused)), map_info_data_t* data __attribute__((unused))) {
 }
