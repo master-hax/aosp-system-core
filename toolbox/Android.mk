@@ -146,6 +146,7 @@ OUR_TOOLS := \
     date \
     df \
     dmesg \
+    false \
     getenforce \
     getevent \
     getprop \
@@ -191,6 +192,7 @@ OUR_TOOLS := \
     swapon \
     top \
     touch \
+    true \
     umount \
     uptime \
     vmstat \
