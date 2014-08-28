@@ -118,6 +118,8 @@
 #define VENDOR_ID_LGE           0x1004
 // Lumigon's USB Vendor ID
 #define VENDOR_ID_LUMIGON       0x25E3
+// Micromax's USB Vendor ID
+#define VENDOR_ID_MICROMAX      0x2A96
 // Motorola's USB Vendor ID
 #define VENDOR_ID_MOTOROLA      0x22b8
 // MSI's USB Vendor ID
@@ -278,6 +280,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_YOTADEVICES,
     VENDOR_ID_YULONG_COOLPAD,
     VENDOR_ID_ZTE,
+    VENDOR_ID_MICROMAX
 };
 /* Keep the list above sorted alphabetically */
 
