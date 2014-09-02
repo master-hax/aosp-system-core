@@ -28,11 +28,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <windows.h>
 
@@ -47,3 +50,12 @@ void get_my_path(char exe[PATH_MAX])
 		*r = 0;
 }
 
+int64_t file_size(int fd)
+{
+    struct __stat64 st;
+    int ret;
+
+    ret = _fstat64(fd, &st);
+
+    return ret ? -1 : st.st_size;
+}

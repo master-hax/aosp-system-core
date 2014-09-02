@@ -27,6 +27,8 @@
  */
 
 #import <Carbon/Carbon.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 void get_my_path(char s[PATH_MAX])
@@ -43,4 +45,12 @@ void get_my_path(char s[PATH_MAX])
     if(x) x[1] = 0;
 }
 
+int64_t file_size(int fd)
+{
+    struct stat st;
+    int ret;
 
+    ret = fstat(fd, &st);
+
+    return ret ? -1 : st.st_size;
+}

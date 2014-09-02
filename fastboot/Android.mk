@@ -44,6 +44,7 @@ ifeq ($(HOST_OS),windows)
   endif
   ifneq ($(strip $(USE_MINGW)),)
     # MinGW under Linux case
+    LOCAL_CFLAGS += -D__MSVCRT_VERSION__=0x0601
     LOCAL_LDLIBS += -lws2_32
     USE_SYSDEPS_WIN32 := 1
     LOCAL_C_INCLUDES += /usr/i586-mingw32msvc/include/ddk

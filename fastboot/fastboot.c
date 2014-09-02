@@ -150,15 +150,7 @@ char *find_item(const char *item, const char *product)
     return strdup(path);
 }
 
-static int64_t file_size(int fd)
-{
-    struct stat st;
-    int ret;
-
-    ret = fstat(fd, &st);
-
-    return ret ? -1 : st.st_size;
-}
+int64_t file_size(int fd);
 
 static void *load_fd(int fd, unsigned *_sz)
 {
