@@ -26,11 +26,15 @@
  * SUCH DAMAGE.
  */
 
+#define _LARGEFILE64_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
 
@@ -49,4 +53,14 @@ void get_my_path(char *path)
         x = strrchr(path,'/');
         if(x) x[1] = 0;
     }
+}
+
+int64_t file_size(int fd)
+{
+    struct stat st;
+    int ret;
+
+    ret = fstat(fd, &st);
+
+    return ret ? -1 : st.st_size;
 }
