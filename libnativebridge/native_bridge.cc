@@ -19,27 +19,31 @@
 #include <cutils/log.h>
 #include <dlfcn.h>
 #include <stdio.h>
-#include "utils/Mutex.h"
 
 
 namespace android {
 
-static Mutex native_bridge_lock("native bridge lock");
-
 // The symbol name exposed by native-bridge with the type of NativeBridgeCallbacks.
 static constexpr const char* kNativeBridgeInterfaceSymbol = "NativeBridgeItf";
 
-// The filename of the library we are supposed to load.
-static const char* native_bridge_library_filename = nullptr;
+enum class NativeBridgeState {
+  kNotSetup,                        // Initial state.
+  kOpened,                          // After successful dlopen.
+  kInitialized,                     // After successful initialization.
+  kClosed                           // Closed or errors.
+};
+// Current state of the native bridge.
+static NativeBridgeState state = NativeBridgeState::kNotSetup;
 
-// Whether a native bridge is available (loaded and ready).
-static bool available = false;
-// Whether we have already initialized (or tried to).
-static bool initialized = false;
 // Whether we had an error at some point.
 static bool had_error = false;
 
+// Handle of the loaded library.
+static void* native_bridge_handle = nullptr;
+// Pointer to the callbacks. Available as soon as LoadNativeBridge succeeds, but only initialized
+// later.
 static NativeBridgeCallbacks* callbacks = nullptr;
+// Callbacks provided by the environment to the bridge. Passed to LoadNativeBridge.
 static const NativeBridgeRuntimeCallbacks* runtime_callbacks = nullptr;
 
 // Characters allowed in a native bridge filename. The first character must
@@ -83,81 +87,89 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
   }
 }
 
-void SetupNativeBridge(const char* nb_library_filename,
-                       const NativeBridgeRuntimeCallbacks* runtime_cbs) {
-  Mutex::Autolock auto_lock(native_bridge_lock);
-
-  if (initialized || native_bridge_library_filename != nullptr) {
+bool LoadNativeBridge(const char* nb_library_filename,
+                      const NativeBridgeRuntimeCallbacks* runtime_cbs) {
+  if (state != NativeBridgeState::kNotSetup) {
     // Setup has been called before. Ignore this call.
-    ALOGW("Called SetupNativeBridge for an already set up native bridge.");
+    ALOGW("Called LoadNativeBridge for an already set up native bridge.");
     // Note: counts as an error, even though the bridge may be functional.
-    had_error = true;
-    return;
-  }
-
-  runtime_callbacks = runtime_cbs;
-
-  if (nb_library_filename == nullptr) {
-    available = false;
-    initialized = true;
-  } else {
-    // Check whether it's an empty string.
-    if (*nb_library_filename == 0) {
-      available = false;
-      initialized = true;
-    } else if (!NativeBridgeNameAcceptable(nb_library_filename)) {
-      available = false;
-      initialized = true;
-      had_error = true;
-    }
-
-    if (!initialized) {
-      // Didn't find a name error or empty string, assign it.
-      native_bridge_library_filename = nb_library_filename;
-    }
-  }
-}
-
-static bool NativeBridgeInitialize() {
-  Mutex::Autolock auto_lock(native_bridge_lock);
-
-  if (initialized) {
-    // Somebody did it before.
-    return available;
-  }
-
-  available = false;
-
-  if (native_bridge_library_filename == nullptr) {
-    // Called initialize without setup. dlopen has special semantics for nullptr input.
-    // So just call it a day here. This counts as an error.
-    initialized = true;
     had_error = true;
     return false;
   }
 
-  void* handle = dlopen(native_bridge_library_filename, RTLD_LAZY);
-  if (handle != nullptr) {
-    callbacks = reinterpret_cast<NativeBridgeCallbacks*>(dlsym(handle,
-                                                               kNativeBridgeInterfaceSymbol));
-
-    if (callbacks != nullptr) {
-      available = callbacks->initialize(runtime_callbacks);
-    }
-
-    if (!available) {
-      // If we fail initialization, this counts as an error.
+  if (nb_library_filename == nullptr || *nb_library_filename == 0) {
+    state = NativeBridgeState::kClosed;
+    return true;
+  } else {
+    if (!NativeBridgeNameAcceptable(nb_library_filename)) {
+      state = NativeBridgeState::kClosed;
       had_error = true;
-      dlclose(handle);
+    } else {
+      // Try to open the library.
+      void* handle = dlopen(nb_library_filename, RTLD_LAZY);
+      if (handle != nullptr) {
+        callbacks = reinterpret_cast<NativeBridgeCallbacks*>(dlsym(handle,
+                                                                   kNativeBridgeInterfaceSymbol));
+        if (callbacks != nullptr) {
+          // Store the handle for later.
+          native_bridge_handle = handle;
+        } else {
+          dlclose(handle);
+        }
+      }
+
+      // Two failure conditions: could not find library (dlopen failed), or could not find native
+      // bridge interface (dlsym failed). Both are an error and close the native bridge.
+      if (callbacks == nullptr) {
+        had_error = true;
+        state = NativeBridgeState::kClosed;
+      } else {
+        runtime_callbacks = runtime_cbs;
+        state = NativeBridgeState::kOpened;
+      }
+    }
+    return state == NativeBridgeState::kOpened;
+  }
+}
+
+bool InitializeNativeBridge() {
+  if (state == NativeBridgeState::kOpened) {
+    // Try to initialize.
+    if (callbacks->initialize(runtime_callbacks)) {
+      state = NativeBridgeState::kInitialized;
+    } else {
+      // Unload the library.
+      dlclose(native_bridge_handle);
+      had_error = true;
+      state = NativeBridgeState::kClosed;
     }
   } else {
-    // Being unable to open the library counts as an error.
     had_error = true;
+    state = NativeBridgeState::kClosed;
   }
 
-  initialized = true;
+  return state == NativeBridgeState::kInitialized;
+}
 
-  return available;
+void UnloadNativeBridge() {
+  switch(state) {
+    case NativeBridgeState::kOpened:
+    case NativeBridgeState::kInitialized:
+      // Unload.
+      dlclose(native_bridge_handle);
+      break;
+
+    case NativeBridgeState::kNotSetup:
+      // Not even set up. Error.
+      had_error = true;
+      break;
+
+    case NativeBridgeState::kClosed:
+      // Ignore.
+      break;
+  }
+
+  state = NativeBridgeState::kClosed;
 }
 
 bool NativeBridgeError() {
@@ -165,11 +177,15 @@ bool NativeBridgeError() {
 }
 
 bool NativeBridgeAvailable() {
-  return NativeBridgeInitialize();
+  return state == NativeBridgeState::kOpened || state == NativeBridgeState::kInitialized;
+}
+
+bool NativeBridgeInitialized() {
+  return state == NativeBridgeState::kInitialized;
 }
 
 void* NativeBridgeLoadLibrary(const char* libpath, int flag) {
-  if (NativeBridgeInitialize()) {
+  if (NativeBridgeInitialized()) {
     return callbacks->loadLibrary(libpath, flag);
   }
   return nullptr;
@@ -177,14 +193,14 @@ void* NativeBridgeLoadLibrary(const char* libpath, int flag) {
 
 void* NativeBridgeGetTrampoline(void* handle, const char* name, const char* shorty,
                                 uint32_t len) {
-  if (NativeBridgeInitialize()) {
+  if (NativeBridgeInitialized()) {
     return callbacks->getTrampoline(handle, name, shorty, len);
   }
   return nullptr;
 }
 
 bool NativeBridgeIsSupported(const char* libpath) {
-  if (NativeBridgeInitialize()) {
+  if (NativeBridgeInitialized()) {
     return callbacks->isSupported(libpath);
   }
   return false;
