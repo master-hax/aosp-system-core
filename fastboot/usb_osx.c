@@ -265,6 +265,7 @@ static int try_device(io_service_t device, usb_handle *handle) {
     HRESULT result;
     UInt8 serialIndex;
     UInt32 locationId;
+    int ret = 0;
 
     // Create an intermediate plugin.
     kr = IOCreatePlugInInterfaceForService(device,
@@ -292,6 +293,15 @@ static int try_device(io_service_t device, usb_handle *handle) {
     IODestroyPlugInInterface(plugin);
 
     // So, we have a device, finally. Grab its vitals.
+
+
+    kr = (*dev)->USBDeviceOpen(dev);
+    if (kr != 0) {
+        WARN("USBDeviceOpen");
+        goto error;
+    }
+
+    ret = -1;
 
     kr = (*dev)->GetDeviceVendor(dev, &handle->info.dev_vendor);
     if (kr != 0) {
@@ -364,6 +374,7 @@ static int try_device(io_service_t device, usb_handle *handle) {
         goto error;
     }
 
+    (*dev)->USBDeviceClose(dev);
     (*dev)->Release(dev);
     return 0;
 
@@ -373,7 +384,7 @@ static int try_device(io_service_t device, usb_handle *handle) {
         (*dev)->Release(dev);
     }
 
-    return -1;
+    return ret;
 }
 
 
