@@ -28,6 +28,9 @@ LOCAL_SHARED_LIBRARIES := \
 
 LOCAL_CFLAGS := -Werror $(shell sed -n 's/^\([0-9]*\)[ \t]*auditd[ \t].*/-DAUDITD_LOG_TAG=\1/p' $(LOCAL_PATH)/event.logtags)
 
+# Ignore benign warning, http://b/17409250
+LOCAL_CLANG_CFLAGS += -Wno-format-extra-args
+
 include $(BUILD_EXECUTABLE)
 
 include $(call first-makefiles-under,$(LOCAL_PATH))

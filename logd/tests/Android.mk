@@ -48,6 +48,8 @@ LOCAL_MODULE := $(test_module_prefix)unit-tests
 LOCAL_MODULE_TAGS := $(test_tags)
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_CFLAGS += $(test_c_flags)
+# Ignore benign warning, http://b/17409250
+LOCAL_CLANG_CFLAGS += -Wno-format-extra-args
 LOCAL_SHARED_LIBRARIES := libcutils
 LOCAL_SRC_FILES := $(test_src_files)
 include $(BUILD_NATIVE_TEST)
