@@ -18,10 +18,12 @@ package com.android.dumpkey;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.Key;
 import java.security.PublicKey;
@@ -29,6 +31,7 @@ import java.security.Security;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECPoint;
+import java.security.spec.X509EncodedKeySpec;
 
 /**
  * Command line tool to extract RSA public keys from X.509 certificates
@@ -237,6 +240,7 @@ class DumpPublicKey {
         try {
             for (int i = 0; i < args.length; i++) {
                 FileInputStream input = new FileInputStream(args[i]);
+                /*
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 X509Certificate cert = (X509Certificate) cf.generateCertificate(input);
 
@@ -257,6 +261,16 @@ class DumpPublicKey {
                 }
 
                 PublicKey key = cert.getPublicKey();
+                */
+                boolean useSHA256 = true;
+                KeyFactory kf = KeyFactory.getInstance("RSA");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[8192];
+                int numRead;
+                while ((numRead = input.read(buffer)) > 0) {
+                    baos.write(buffer, 0, numRead);
+                }
+                PublicKey key = kf.generatePublic(new X509EncodedKeySpec(baos.toByteArray()));
                 check(key, useSHA256);
                 System.out.print(print(key, useSHA256));
                 System.out.println(i < args.length - 1 ? "," : "");
