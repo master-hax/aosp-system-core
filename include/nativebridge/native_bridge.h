@@ -22,6 +22,15 @@
 
 namespace android {
 
+// Environment values required by the apps running with native bridge
+struct NativeBridgeEnv {
+    const char* cpu_abi;
+    const char* cpu_abi2;
+    const char* os_arch;
+    const char* lib_path;
+    const char* cpuinfo_path;
+};
+
 struct NativeBridgeRuntimeCallbacks;
 
 // Open the native bridge, if any. Should be called by Runtime::Init(). A null library filename
@@ -63,6 +72,11 @@ bool NativeBridgeError();
 // This functionality is exposed mainly for testing.
 bool NativeBridgeNameAcceptable(const char* native_bridge_library_filename);
 
+// Provide environment values required by the app running with native bridge according
+// to the instruction set.
+const struct NativeBridgeEnv* NativeBridgeGetAppEnv(const char* instruction_set,
+                                                    const char* private_dir);
+
 // Native bridge interfaces to runtime.
 struct NativeBridgeCallbacks {
   // Initialize native bridge. Native bridge's internal implementation must ensure MT safety and
@@ -102,6 +116,17 @@ struct NativeBridgeCallbacks {
   // Returns:
   //   TRUE if library is supported by native bridge, FALSE otherwise
   bool (*isSupported)(const char* libpath);
+
+  // Provide environment values required by the app running with native bridge according to the
+  // instruction set.
+  //
+  // Parameters:
+  //    instruction_set [IN] the instruction set of the app
+  //    private_dir     [IN] the private dir for the app
+  // Returns:
+  //    NULL if not supported by native bridge.
+  //    Otherwise, return all environment values to be set after fork.
+  const struct NativeBridgeEnv* (*getAppEnv)(const char* instruction_set, const char* private_dir);
 };
 
 // Runtime interfaces to native bridge.

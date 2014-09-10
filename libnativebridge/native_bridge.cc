@@ -240,4 +240,12 @@ bool NativeBridgeIsSupported(const char* libpath) {
   return false;
 }
 
+const struct NativeBridgeEnv* NativeBridgeGetAppEnv(const char* instruction_set,
+                                                    const char* private_dir) {
+  if (NativeBridgeInitialized()) {
+    return callbacks->getAppEnv(instruction_set, private_dir);
+  }
+  return NULL;
+}
+
 };  // namespace android
