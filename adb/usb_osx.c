@@ -492,8 +492,9 @@ int usb_write(usb_handle *handle, const void *buf, int len)
 
 int usb_read(usb_handle *handle, void *buf, int len)
 {
-    IOReturn result;
+    IOReturn result = 0;
     UInt32  numBytes = len;
+    int unstalled = 0;
 
     if (!len) {
         return 0;
@@ -513,15 +514,23 @@ int usb_read(usb_handle *handle, void *buf, int len)
         return -1;
     }
 
-    result =
-      (*handle->interface)->ReadPipe(handle->interface,
-                                    handle->bulkIn, buf, &numBytes);
+    do {
+        if (kIOUSBPipeStalled == result) {
+            DBG("Pipe stalled. Trying to clear.");
+            (*handle->interface)->ClearPipeStall(handle->interface, handle->bulkIn);
+            unstalled = 1;
+        }
 
-    if (0 == result)
-        return 0;
-    else {
-        DBG("ERR: usb_read failed with status %d\n", result);
-    }
+        result =
+          (*handle->interface)->ReadPipe(handle->interface,
+                                        handle->bulkIn, buf, &numBytes);
+
+        if (kIOReturnSuccess == result)
+            return 0;
+        else {
+            DBG("ERR: usb_read failed with status %x\n", result);
+        }
+    } while (!unstalled && kIOUSBPipeStalled == result);
 
     return -1;
 }
