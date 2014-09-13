@@ -22,7 +22,6 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <limits.h>
-#include <linux/fuse.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +41,9 @@
 #include <cutils/multiuser.h>
 
 #include <private/android_filesystem_config.h>
+
+/* Use the frozen fuse header. */
+#include "fuse.h"
 
 /* README
  *
