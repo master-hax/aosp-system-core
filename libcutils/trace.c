@@ -22,6 +22,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+
+#ifdef ANDROID_SMP
+/* Declare and define andoird_atomic_* functions as weak inline to
+ * avoid multiple definitions at link time.
+ * Clang/LLVM tools do not handle extern inline linkage like GCC.
+ */
+#if __clang__
+#define ANDROID_ATOMIC_DEC_INLINE inline
+#define ANDROID_ATOMIC_INLINE inline __attribute__((always_inline, weak))
+#else
+#define ANDROID_ATOMIC_DEC_INLINE
+#define ANDROID_ATOMIC_INLINE extern inline __attribute__((always_inline))
+#endif
+#endif
+
 #include <cutils/atomic.h>
 #include <cutils/compiler.h>
 #include <cutils/properties.h>
