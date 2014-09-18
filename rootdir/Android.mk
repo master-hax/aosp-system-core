@@ -40,6 +40,7 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/init.environ.rc.in $(bcp_dep)
 	@echo "Generate: $< -> $@"
 	@mkdir -p $(dir $@)
 	$(hide) sed -e 's?%BOOTCLASSPATH%?$(PRODUCT_BOOTCLASSPATH)?g' $< >$@
+	$(hide) sed -i -e "s?%GCOV_PREFIX_STRIP%?`echo $(ANDROID_BUILD_TOP) | grep -o / | wc -l`?g" $@
 
 bcp_md5 :=
 bcp_dep :=
