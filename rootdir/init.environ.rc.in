@@ -10,3 +10,5 @@ on init
     export LOOP_MOUNTPOINT /mnt/obb
     export BOOTCLASSPATH %BOOTCLASSPATH%
     export LD_PRELOAD libsigchain.so
+    export GCOV_PREFIX /data/local/tmp/gcov
+    export GCOV_PREFIX_STRIP %GCOV_PREFIX_STRIP%
