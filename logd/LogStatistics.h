@@ -26,6 +26,9 @@
 #define log_id_for_each(i) \
     for (log_id_t i = LOG_ID_MIN; i < LOG_ID_MAX; i = (log_id_t) (i + 1))
 
+class PidStatisticsGone;
+typedef android::List<PidStatisticsGone *> PidStatisticsGoneCollection;
+
 class PidStatistics {
     const pid_t pid;
 
@@ -38,6 +41,19 @@ class PidStatistics {
 
     char *name;
     bool mGone;
+    bool mMultiple;
+
+    PidStatisticsGoneCollection Pids;
+
+    PidStatisticsGoneCollection::iterator begin() { return Pids.begin(); }
+    PidStatisticsGoneCollection::iterator end() { return Pids.end(); }
+    PidStatisticsGoneCollection::iterator
+        erase(PidStatisticsGoneCollection::iterator i)
+            { return Pids.erase(i); }
+//    void insert(PidStatisticsGoneCollection::iterator i, PidStatisticsGone *p)
+//        { mMultiple = true; Pids.insert(i, p); }
+    void push_back(PidStatisticsGone *p)
+        { mMultiple = true; Pids.push_back(p); }
 
 public:
     static const pid_t gone = (pid_t) -1;
@@ -47,12 +63,16 @@ public:
     ~PidStatistics();
 
     pid_t getPid() const { return pid; }
+    bool pidMatch(pid_t pid);
     bool pidGone();
+    bool pidMultiple() const { return mMultiple; }
     char *getName() const { return name; }
     void setName(char *name);
 
     void add(unsigned short size);
-    bool subtract(unsigned short size); // returns true if stats and PID gone
+    void add(PidStatistics *p);
+    // returns true if stats and PID gone
+    bool subtract(unsigned short size, pid_t ppid);
     void addTotal(size_t size, size_t element);
 
     size_t sizes() const { return mSizes; }
@@ -63,6 +83,27 @@ public:
 
     // helper
     static char *pidToName(pid_t pid);
+};
+
+// Alias pid, crash/replace or polling
+class PidStatisticsGone {
+    const pid_t pid;
+
+    // Current
+    size_t mElements;
+
+public:
+    PidStatisticsGone(const PidStatistics &copy);
+
+    pid_t getPid() const { return pid; }
+    void add(PidStatistics *p) { mElements += p->elements(); }
+    void add(PidStatisticsGone *p) { mElements += p->mElements; }
+    bool subtract() {
+        if (mElements) {
+            --mElements;
+        }
+        return mElements == 0;
+    }
 };
 
 typedef android::List<PidStatistics *> PidStatisticsCollection;
@@ -90,7 +131,8 @@ public:
 
     uid_t getUid() { return uid; }
 
-    void add(unsigned short size, pid_t pid);
+    // returns true if PID restarted
+    bool add(unsigned short size, pid_t pid);
     void subtract(unsigned short size, pid_t pid);
     void sort();
 
@@ -123,7 +165,8 @@ public:
     UidStatisticsCollection::iterator begin() { return Uids.begin(); }
     UidStatisticsCollection::iterator end() { return Uids.end(); }
 
-    void add(unsigned short size, uid_t uid, pid_t pid);
+    // returns true if PID restarted
+    bool add(unsigned short size, uid_t uid, pid_t pid);
     void subtract(unsigned short size, uid_t uid, pid_t pid);
     void sort();
 
