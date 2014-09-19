@@ -24,6 +24,11 @@
 
 #include "LogStatistics.h"
 
+PidStatisticsGone::PidStatisticsGone(const PidStatistics *copy)
+        : pid(copy->getPid())
+        , mElements(copy->elements())
+{ }
+
 PidStatistics::PidStatistics(pid_t pid, char *name)
         : pid(pid)
         , mSizesTotal(0)
@@ -32,17 +37,20 @@ PidStatistics::PidStatistics(pid_t pid, char *name)
         , mElements(0)
         , name(name)
         , mGone(false)
+        , mMultiple(false)
 { }
 
 #ifdef DO_NOT_ERROR_IF_PIDSTATISTICS_USES_A_COPY_CONSTRUCTOR
 PidStatistics::PidStatistics(const PidStatistics &copy)
-        : pid(copy->pid)
-        , name(copy->name ? strdup(copy->name) : NULL)
-        , mSizesTotal(copy->mSizesTotal)
-        , mElementsTotal(copy->mElementsTotal)
-        , mSizes(copy->mSizes)
-        , mElements(copy->mElements)
-        , mGone(copy->mGone)
+        : pid(copy.pid)
+        , mSizesTotal(copy.mSizesTotal)
+        , mElementsTotal(copy.mElementsTotal)
+        , mSizes(copy.mSizes)
+        , mElements(copy.mElements)
+        , name(copy.name ? strdup(copy.name) : NULL)
+        , mGone(copy.mGone)
+        , mMultiple(copy.mMultiple)
+        , gonePids(copy.gonePids)
 { }
 #endif
 
@@ -69,6 +77,24 @@ void PidStatistics::setName(char *new_name) {
     name = new_name;
 }
 
+PidStatisticsGone *PidStatistics::findMatch(pid_t ppid) {
+    PidStatisticsGoneCollection::iterator it;
+    for (it = begin(); it != end(); ++it) {
+        PidStatisticsGone &p = *it;
+        if (p.getPid() == ppid) {
+            return &p;
+        }
+    }
+    return NULL;
+}
+
+bool PidStatistics::pidMatches(pid_t ppid) {
+    if (getPid() == ppid) {
+        return true;
+    }
+    return findMatch(ppid) != NULL;
+}
+
 void PidStatistics::add(unsigned short size) {
     mSizesTotal += size;
     ++mElementsTotal;
@@ -76,9 +102,50 @@ void PidStatistics::add(unsigned short size) {
     ++mElements;
 }
 
-bool PidStatistics::subtract(unsigned short size) {
-    mSizes -= size;
-    --mElements;
+void PidStatistics::add(PidStatistics *p) {
+    mSizesTotal += p->mSizesTotal;
+    mElementsTotal += p->mElementsTotal;
+    mSizes += p->mSizes;
+    mElements += p->mElements;
+
+    pid_t ppid = p->getPid();
+    if (getPid() != ppid) {
+        PidStatisticsGone *pq = findMatch(ppid);
+        if (pq) {
+            pq->add(p);
+        } else {
+            PidStatisticsGone pg(p);
+            push_back(pg);
+        }
+    }
+    for(PidStatisticsGoneCollection::iterator it = p->begin(); it != p->end(); ++it) {
+        PidStatisticsGone &pl = *it;
+        PidStatisticsGone *pr = findMatch(pl.getPid());
+        if (pr) {
+            pr->add(pl);
+        } else {
+            push_back(pl);
+        }
+    }
+}
+
+bool PidStatistics::subtract(unsigned short size, pid_t ppid) {
+    PidStatisticsGoneCollection::iterator it;
+    for (it = begin(); it != end(); ++it) {
+        PidStatisticsGone &pg = *it;
+        if ((pg.getPid() == ppid) && pg.subtract()) {
+            erase(it);
+            break;
+        }
+    }
+    if (mSizes < size) {
+        mSizes = 0;
+    } else {
+        mSizes -= size;
+    }
+    if (mElements) {
+        --mElements;
+    }
     return (mElements == 0) && pidGone();
 }
 
@@ -116,6 +183,12 @@ char *PidStatistics::pidToName(pid_t pid) {
     return retval;
 }
 
+char PidStatistics::pidType() {
+    return pidMultiple()
+        ? (pidGone() ? '@' : '*')
+        : (pidGone() ? '?' : ' ');
+}
+
 UidStatistics::UidStatistics(uid_t uid)
         : uid(uid)
         , mSizes(0)
@@ -131,7 +204,7 @@ UidStatistics::~UidStatistics() {
     }
 }
 
-void UidStatistics::add(unsigned short size, pid_t pid) {
+bool UidStatistics::add(unsigned short size, pid_t pid) {
     mSizes += size;
     ++mElements;
 
@@ -140,31 +213,99 @@ void UidStatistics::add(unsigned short size, pid_t pid) {
     PidStatisticsCollection::iterator it;
     for (last = it = begin(); it != end(); last = it, ++it) {
         p = *it;
-        if (pid == p->getPid()) {
+        if (p->pidMatches(pid)) {
+            char *name = p->getName();
+            if (!name || !*name) {
+                name = pidToName(p->getPid());
+                if (name) {
+                    if (*name) {
+                        p->setName(name);
+                    } else {
+                        free(name);
+                        name = NULL;
+                    }
+                }
+            }
             p->add(size);
-            return;
+            return false;
         }
     }
     // insert if the gone entry.
     bool insert_before_last = (last != it) && p && (p->getPid() == p->gone);
-    p = new PidStatistics(pid, pidToName(pid));
+
+    // Second pass to see if new pid is a restart, this will allow us
+    // to coalesce reports from a single service that crashes, but not from a
+    // service that runs multiple parallel instances (eg: dex2oat)
+    bool replace = false;
+    char *name = pidToName(pid);
+    if (name) {
+        for (it = begin(); it != end();  ++it) {
+            p = *it;
+            char *pname = p->getName();
+            bool gone = false, set_gone = !pname || !*pname;
+            if (set_gone) {
+                gone = p->pidGone();
+                if (gone) {
+                    pname = NULL;
+                } else {
+                    pname = pidToName(p->getPid());
+                    if (pname) {
+                        if (*pname) {
+                            p->setName(pname);
+                        } else {
+                            free(pname);
+                            pname = NULL;
+                        }
+                    }
+                }
+            }
+            if (pname && !strcmp(name, pname)) {
+               replace = set_gone ? gone : p->pidGone();
+               if (!replace) {
+                   break;
+               }
+            }
+        }
+    }
+    p = new PidStatistics(pid, name);
+    if (replace) {
+        for (it = begin(); it != end();) {
+           PidStatistics *pp = *it;
+           char *pname = pp->getName();
+           if (pname && *pname && !strcmp(name, pname)) {
+               p->add(pp);
+               delete pp;
+               it = erase(it);
+           } else {
+               ++it;
+           }
+        }
+    }
+
     if (insert_before_last) {
         insert(last, p);
     } else {
         push_back(p);
     }
     p->add(size);
+    return replace;
 }
 
 void UidStatistics::subtract(unsigned short size, pid_t pid) {
-    mSizes -= size;
-    --mElements;
+    if (size > mSizes) {
+        mSizes = 0;
+    } else {
+        mSizes -= size;
+    }
+    if (mElements) {
+        --mElements;
+    }
 
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         PidStatistics *p = *it;
-        if (pid == p->getPid()) {
-            if (p->subtract(size)) {
+        if (p->pidMatches(pid)) {
+            if (p->subtract(size, pid)) {
                 size_t szsTotal = p->sizesTotal();
                 size_t elsTotal = p->elementsTotal();
                 delete p;
@@ -219,7 +360,7 @@ size_t UidStatistics::sizes(pid_t pid) {
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         PidStatistics *p = *it;
-        if (pid == p->getPid()) {
+        if (p->pidMatches(pid)) {
             return p->sizes();
         }
     }
@@ -234,7 +375,7 @@ size_t UidStatistics::elements(pid_t pid) {
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         PidStatistics *p = *it;
-        if (pid == p->getPid()) {
+        if (p->pidMatches(pid)) {
             return p->elements();
         }
     }
@@ -246,7 +387,7 @@ size_t UidStatistics::sizesTotal(pid_t pid) {
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         PidStatistics *p = *it;
-        if ((pid == pid_all) || (pid == p->getPid())) {
+        if ((pid == pid_all) || p->pidMatches(pid)) {
             sizes += p->sizesTotal();
         }
     }
@@ -258,7 +399,7 @@ size_t UidStatistics::elementsTotal(pid_t pid) {
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         PidStatistics *p = *it;
-        if ((pid == pid_all) || (pid == p->getPid())) {
+        if ((pid == pid_all) || p->pidMatches(pid)) {
             elements += p->elementsTotal();
         }
     }
@@ -277,7 +418,7 @@ LidStatistics::~LidStatistics() {
     }
 }
 
-void LidStatistics::add(unsigned short size, uid_t uid, pid_t pid) {
+bool LidStatistics::add(unsigned short size, uid_t uid, pid_t pid) {
     UidStatistics *u;
     UidStatisticsCollection::iterator it;
     UidStatisticsCollection::iterator last;
@@ -289,12 +430,12 @@ void LidStatistics::add(unsigned short size, uid_t uid, pid_t pid) {
     for (last = it = begin(); it != end(); last = it, ++it) {
         u = *it;
         if (uid == u->getUid()) {
-            u->add(size, pid);
+            bool replace = u->add(size, pid);
             if ((last != it) && ((*last)->sizesTotal() < u->sizesTotal())) {
                 Uids.erase(it);
                 Uids.insert(last, u);
             }
-            return;
+            return replace;
         }
     }
     u = new UidStatistics(uid);
@@ -303,7 +444,7 @@ void LidStatistics::add(unsigned short size, uid_t uid, pid_t pid) {
     } else {
         Uids.push_back(u);
     }
-    u->add(size, pid);
+    return u->add(size, pid);
 }
 
 void LidStatistics::subtract(unsigned short size, uid_t uid, pid_t pid) {
@@ -468,7 +609,107 @@ void LogStatistics::add(unsigned short size,
     if (!mStatistics) {
         return;
     }
-    id(log_id).add(size, uid, pid);
+
+    LidStatistics *l = &id(log_id);
+    if (!l->add(size, uid, pid)) {
+        return;
+    }
+
+    // Garbage Collection, PID restarted, merge in other log ids
+    if (uid == (uid_t) -1) { // init
+        uid = (uid_t) AID_ROOT;
+    }
+
+    // Find the direct reference to the uid/pid
+    UidStatistics *u;
+    UidStatisticsCollection::iterator iu;
+    for (iu = l->begin(); iu != l->end(); ++iu) {
+        u = *iu;
+        if (uid == u->getUid()) {
+            break;
+        }
+    }
+    if (iu == l->end()) {
+        return;
+    }
+    PidStatistics *p;
+    PidStatisticsCollection::iterator ip;
+    for (ip = u->begin(); ip != u->end(); ++ip) {
+        p = *ip;
+        if (pid == p->getPid()) {
+            break;
+        }
+    }
+    if (ip == u->end()) {
+        return;
+    }
+    const char *name = p->getName();
+    if (!name || !*name) {
+        return;
+    }
+
+    // Find all references to our set of pids in other logs
+    log_id_for_each(i) {
+        if (i == log_id) {
+            continue;
+        }
+        l = &id(i);
+        for (iu = l->begin(); iu != l->end(); ++iu) {
+            u = *iu;
+            if (uid != u->getUid()) {
+                continue;
+            }
+            // Find the master pid (match, or highest pid)
+            PidStatistics *mp = NULL;
+            PidStatistics *pp;
+            for (ip = u->begin(); ip != u->end(); ++ip) {
+                pp = *ip;
+                pid_t ppid = pp->getPid();
+                if (!p->pidMatches(ppid)) {
+                    continue;
+                }
+                const char *pname = pp->getName();
+                if (!pname || !*pname) {
+                    continue;
+                }
+                if (strcmp(name, pname)) {
+                    continue;
+                }
+                if (pid == ppid) {
+                    mp = pp;
+                    break;
+                }
+                if (!mp || (mp->getPid() < ppid)) {
+                    mp = pp;
+                }
+            }
+            if (!mp) {
+                continue;
+            }
+            // now merge all that match into master
+            for (ip = u->begin(); ip != u->end();) {
+                pp = *ip;
+                if (pp == mp) {
+                    ++ip;
+                    continue;
+                }
+                pid_t ppid = pp->getPid();
+                if (!p->pidMatches(ppid)) {
+                    ++ip;
+                    continue;
+                }
+                const char *pname = pp->getName();
+                if (pname && !*pname && strcmp(name, pname)) {
+                    ++ip;
+                    continue;
+                }
+
+                mp->add(pp);
+                delete pp;
+                ip = u->erase(ip);
+            }
+        }
+    }
 }
 
 void LogStatistics::subtract(unsigned short size,
@@ -616,6 +857,7 @@ void LogStatistics::format(char **buf,
 
         PidStatisticsCollection pids;
         pids.clear();
+        PidStatisticsCollection::iterator q;
 
         LidStatistics &l = id(i);
         UidStatisticsCollection::iterator iu;
@@ -628,9 +870,48 @@ void LogStatistics::format(char **buf,
                     break;
                 }
 
+                char *name = p->getName();
+                if (!name || !*name) {
+                    name = pidToName(p->getPid());
+                    if (name) {
+                        if (*name) {
+                            p->setName(name);
+                        } else {
+                            free(name);
+                            name = NULL;
+                        }
+                    }
+                }
+
+                // Make a copy, or merge into name-match
+                PidStatistics *qp = NULL;
+                q = pids.end();
+                if (name) {
+                    for (q = pids.begin(); q != pids.end(); ++q) {
+                        qp = *q;
+                        char *qname = qp->getName();
+                        if (qname && *qname && !strcmp(name, qname)) {
+                            pids.erase(q);
+                            break;
+                        }
+                    }
+                }
+                if (q == pids.end()) {
+                    if (name) {
+                        char *nname = new char[strlen(name) + 1];
+                        name = strcpy(nname, name);
+                    }
+                    qp = new PidStatistics(p->getPid(), name);
+                }
+                if (qp == NULL) {
+                    // NOTREACH
+                    continue;
+                }
+                qp->add(p);
+                p = qp;
+
                 size_t mySizes = p->sizes();
 
-                PidStatisticsCollection::iterator q;
                 unsigned char num = 0;
                 for (q = pids.begin(); q != pids.end(); ++q) {
                     if (mySizes > (*q)->sizes()) {
@@ -644,6 +925,7 @@ void LogStatistics::format(char **buf,
                 }
                 if (q == pids.end()) {
                    pids.push_back(p);
+                   p = NULL;
                 }
             }
         }
@@ -682,7 +964,8 @@ void LogStatistics::format(char **buf,
 
             if (!header) {
                 string.appendFormat("\n\nChattiest clients:\n"
-                                    "log id %-*s PID[?] name",
+                                    "log id %-*s PID[x] name"
+                                    "    gone: x=? multiple pids: x=* both: x=@",
                                     spaces_total, "size/total");
                 header = true;
             }
@@ -697,7 +980,7 @@ void LogStatistics::format(char **buf,
             }
 
             android::String8 pd("");
-            pd.appendFormat("%u%c", pid, p->pidGone() ? '?' : ' ');
+            pd.appendFormat("%u%c", pid, p->pidType());
 
             string.appendFormat("\n%-7s%-*s %-7s%s",
                                 line ? "" : android_log_id_to_name(i),
@@ -705,7 +988,9 @@ void LogStatistics::format(char **buf,
                                 name ? name : "");
         }
 
-        pids.clear();
+        for (q = pids.begin(); q != pids.end(); q = pids.erase(q)) {
+            delete (*q);
+        }
     }
 
     if (dgramQlenStatistics) {
@@ -785,7 +1070,7 @@ void LogStatistics::format(char **buf,
                 intermediate = string.format("%s: UID/PID Total size/num",
                                              android_log_id_to_name(i));
                 string.appendFormat("\n\n%-31sNow          "
-                                         "UID/PID[?]  Total              Now",
+                                         "UID/PID[x]  Total              Now",
                                     intermediate.string());
                 intermediate.clear();
                 header = true;
@@ -808,11 +1093,9 @@ void LogStatistics::format(char **buf,
             if (!oneline) {
                 intermediate = string.format("%d", u);
             } else if (p == PidStatistics::gone) {
-                intermediate = string.format("%d/?", u);
-            } else if (pp->pidGone()) {
-                intermediate = string.format("%d/%d?", u, p);
+                intermediate = string.format("%d/%c", u, pp->pidType());
             } else {
-                intermediate = string.format("%d/%d", u, p);
+                intermediate = string.format("%d/%d%c", u, p, pp->pidType());
             }
             string.appendFormat(first ? "\n%-12s" : "%-12s",
                                 intermediate.string());
@@ -941,7 +1224,7 @@ uid_t LogStatistics::pidToUid(pid_t pid) {
             UidStatistics &u = *(*iu);
             PidStatisticsCollection::iterator ip;
             for (ip = u.begin(); ip != u.end(); ++ip) {
-                if ((*ip)->getPid() == pid) {
+                if ((*ip)->pidMatches(pid)) {
                     return u.getUid();
                 }
             }
