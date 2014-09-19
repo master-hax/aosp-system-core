@@ -1,0 +1,22 @@
+--- logd/LogStatistics.cpp
++++ logd/LogStatistics.cpp
+@@ -1087,12 +1372,13 @@
+             PidStatistics *pp = *pt;
+             pid_t p = pp->getPid();
+ 
+-            intermediate = string.format(oneline
+-                                             ? ((p == PidStatistics::gone)
+-                                                 ? "%d/?"
+-                                                 : "%d/%d%c")
+-                                             : "%d",
+-                                         u, p, pp->pidGone() ? '?' : '\0');
++            if (!oneline) {
++                intermediate = string.format("%d", u);
++            } else if (p == PidStatistics::gone) {
++                intermediate = string.format("%d/%c", u, pp->pidType());
++            } else {
++                intermediate = string.format("%d/%d%c", u, p, pp->pidType());
++            }
+             string.appendFormat(first ? "\n%-12s" : "%-12s",
+                                 intermediate.string());
+             intermediate.clear();
