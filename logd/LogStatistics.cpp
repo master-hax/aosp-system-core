@@ -539,24 +539,25 @@ size_t LidStatistics::elementsTotal(uid_t uid, pid_t pid) {
 }
 
 LogStatistics::LogStatistics()
-        : start(CLOCK_MONOTONIC) {
+        : mStatistics(false)
+        , dgramQlenStatistics(false)
+        , start(CLOCK_MONOTONIC) {
     log_id_for_each(i) {
         mSizes[i] = 0;
         mElements[i] = 0;
     }
 
-    dgram_qlen_statistics = false;
-    for(unsigned short bucket = 0; dgram_qlen(bucket); ++bucket) {
+    for(unsigned short bucket = 0; dgramQlen(bucket); ++bucket) {
         mMinimum[bucket].tv_sec = mMinimum[bucket].tv_sec_max;
         mMinimum[bucket].tv_nsec = mMinimum[bucket].tv_nsec_max;
     }
 }
 
-//   Each bucket below represents a dgram_qlen of log messages. By
+//   Each bucket below represents a dgramQlen of log messages. By
 //   finding the minimum period of time from start to finish
-//   of each dgram_qlen, we can get a performance expectation for
+//   of each dgramQlen, we can get a performance expectation for
 //   the user space logger. The net result is that the period
-//   of time divided by the dgram_qlen will give us the average time
+//   of time divided by the dgramQlen will give us the average time
 //   between log messages; at the point where the average time
 //   is greater than the throughput capability of the logger
 //   we will not longer require the benefits of the FIFO formed
@@ -567,7 +568,7 @@ LogStatistics::LogStatistics()
 //
 //   for example (reformatted):
 //
-//       Minimum time between log events per dgram_qlen:
+//       Minimum time between log events per dgramQlen:
 //       1   2   3   5   10  20  30  50  100  200 300 400 500 600
 //       5u2 12u 13u 15u 16u 27u 30u 36u 407u 3m1 3m3 3m9 3m9 5m5
 //
@@ -581,12 +582,12 @@ LogStatistics::LogStatistics()
 //   a large engineering margin so the rule of thumb that lead us to 100 is
 //   fine.
 //
-// bucket dgram_qlen are tuned for /proc/sys/net/unix/max_dgram_qlen = 300
+// bucket dgramQlen are tuned for /proc/sys/net/unix/max_dgram_qlen = 300
 const unsigned short LogStatistics::mBuckets[] = {
     1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 400, 500, 600
 };
 
-unsigned short LogStatistics::dgram_qlen(unsigned short bucket) {
+unsigned short LogStatistics::dgramQlen(unsigned short bucket) {
     if (bucket >= sizeof(mBuckets) / sizeof(mBuckets[0])) {
         return 0;
     }
@@ -610,6 +611,9 @@ void LogStatistics::add(unsigned short size,
                         log_id_t log_id, uid_t uid, pid_t pid) {
     mSizes[log_id] += size;
     ++mElements[log_id];
+    if (!mStatistics) {
+        return;
+    }
 #define LOGD_CROSS_LOG_GARBAGE_COLLECTION
 #ifndef LOGD_CROSS_LOG_GARBAGE_COLLECTION
     id(log_id).add(size, uid, pid);
@@ -721,6 +725,9 @@ void LogStatistics::subtract(unsigned short size,
                              log_id_t log_id, uid_t uid, pid_t pid) {
     mSizes[log_id] -= size;
     --mElements[log_id];
+    if (!mStatistics) {
+        return;
+    }
     id(log_id).subtract(size, uid, pid);
 }
 
@@ -810,25 +817,28 @@ void LogStatistics::format(char **buf,
 
     spaces = 1;
     log_time t(CLOCK_MONOTONIC);
-    unsigned long long d = t.nsec() - start.nsec();
-    string.appendFormat("\nTotal%4llu:%02llu:%02llu.%09llu",
+    unsigned long long d;
+    if (mStatistics) {
+        d = t.nsec() - start.nsec();
+        string.appendFormat("\nTotal%4llu:%02llu:%02llu.%09llu",
                   d / NS_PER_SEC / 60 / 60, (d / NS_PER_SEC / 60) % 60,
                   (d / NS_PER_SEC) % 60, d % NS_PER_SEC);
 
-    log_id_for_each(i) {
-        if (!(logMask & (1 << i))) {
-            continue;
+        log_id_for_each(i) {
+            if (!(logMask & (1 << i))) {
+                continue;
+            }
+            oldLength = string.length();
+            if (spaces < 0) {
+                spaces = 0;
+            }
+            string.appendFormat("%*s%zu/%zu", spaces, "",
+                                sizesTotal(i), elementsTotal(i));
+            spaces += spaces_total + oldLength - string.length();
         }
-        oldLength = string.length();
-        if (spaces < 0) {
-            spaces = 0;
-        }
-        string.appendFormat("%*s%zu/%zu", spaces, "",
-                            sizesTotal(i), elementsTotal(i));
-        spaces += spaces_total + oldLength - string.length();
+        spaces = 1;
     }
 
-    spaces = 1;
     d = t.nsec() - oldest.nsec();
     string.appendFormat("\nNow%6llu:%02llu:%02llu.%09llu",
                   d / NS_PER_SEC / 60 / 60, (d / NS_PER_SEC / 60) % 60,
@@ -998,23 +1008,23 @@ void LogStatistics::format(char **buf,
         }
     }
 
-    if (dgram_qlen_statistics) {
+    if (dgramQlenStatistics) {
         const unsigned short spaces_time = 6;
         const unsigned long long max_seconds = 100000;
         spaces = 0;
-        string.append("\n\nMinimum time between log events per dgram_qlen:\n");
-        for(unsigned short i = 0; dgram_qlen(i); ++i) {
+        string.append("\n\nMinimum time between log events per max_dgram_qlen:\n");
+        for(unsigned short i = 0; dgramQlen(i); ++i) {
             oldLength = string.length();
             if (spaces < 0) {
                 spaces = 0;
             }
-            string.appendFormat("%*s%u", spaces, "", dgram_qlen(i));
+            string.appendFormat("%*s%u", spaces, "", dgramQlen(i));
             spaces += spaces_time + oldLength - string.length();
         }
         string.append("\n");
         spaces = 0;
         unsigned short n;
-        for(unsigned short i = 0; (n = dgram_qlen(i)); ++i) {
+        for(unsigned short i = 0; (n = dgramQlen(i)); ++i) {
             unsigned long long duration = minimum(i);
             if (duration) {
                 duration /= n;
