@@ -267,8 +267,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 
             if (uid == caller_uid) {
                 it = mLogElements.erase(it);
-                unsigned short len = e->getMsgLen();
-                stats.subtract(len, id, uid, e->getPid());
+                stats.subtract(e->getMsgLen(), id, uid, e->getPid());
                 delete e;
                 pruneRows--;
                 if (pruneRows == 0) {
@@ -321,7 +320,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             if (uid == worst) {
                 it = mLogElements.erase(it);
                 unsigned short len = e->getMsgLen();
-                stats.subtract(len, id, worst, e->getPid());
+                stats.subtract(len, id, uid, e->getPid());
                 delete e;
                 kick = true;
                 pruneRows--;

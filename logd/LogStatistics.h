@@ -72,6 +72,10 @@ class UidStatistics {
 
     PidStatisticsCollection Pids;
 
+    void insert(PidStatisticsCollection::iterator i, PidStatistics *p)
+        { Pids.insert(i, p); }
+    void push_back(PidStatistics *p) { Pids.push_back(p); }
+
     size_t mSizes;
     size_t mElements;
 
@@ -81,6 +85,8 @@ public:
 
     PidStatisticsCollection::iterator begin() { return Pids.begin(); }
     PidStatisticsCollection::iterator end() { return Pids.end(); }
+    PidStatisticsCollection::iterator erase(PidStatisticsCollection::iterator i)
+        { return Pids.erase(i); }
 
     uid_t getUid() { return uid; }
 
