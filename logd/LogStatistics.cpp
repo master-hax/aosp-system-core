@@ -51,11 +51,11 @@ PidStatistics::~PidStatistics() {
 }
 
 bool PidStatistics::pidGone() {
-    if (mGone) {
+    if (mGone || (pid == gone)) {
         return true;
     }
-    if (pid == gone) {
-        return true;
+    if (pid == 0) {
+        return false;
     }
     if (kill(pid, 0) && (errno != EPERM)) {
         mGone = true;
@@ -90,9 +90,14 @@ void PidStatistics::addTotal(size_t size, size_t element) {
 }
 
 // must call free to release return value
+//  If only we could sniff our own logs for:
+//   <time> <pid> <pid> E AndroidRuntime: Process: <name>, PID: <pid>
+//  which debuggerd prints as a process is crashing.
 char *PidStatistics::pidToName(pid_t pid) {
     char *retval = NULL;
-    if (pid != gone) {
+    if (pid == 0) { // special case from auditd for kernel
+        strdup("logd.auditd");
+    } else if (pid != gone) {
         char buffer[512];
         snprintf(buffer, sizeof(buffer), "/proc/%u/cmdline", pid);
         int fd = open(buffer, O_RDONLY);
@@ -122,7 +127,7 @@ UidStatistics::~UidStatistics() {
     PidStatisticsCollection::iterator it;
     for (it = begin(); it != end();) {
         delete (*it);
-        it = Pids.erase(it);
+        it = erase(it);
     }
 }
 
@@ -130,7 +135,7 @@ void UidStatistics::add(unsigned short size, pid_t pid) {
     mSizes += size;
     ++mElements;
 
-    PidStatistics *p;
+    PidStatistics *p = NULL;
     PidStatisticsCollection::iterator last;
     PidStatisticsCollection::iterator it;
     for (last = it = begin(); it != end(); last = it, ++it) {
@@ -141,12 +146,12 @@ void UidStatistics::add(unsigned short size, pid_t pid) {
         }
     }
     // insert if the gone entry.
-    bool insert = (last != it) && (p->getPid() == p->gone);
+    bool insert_before_last = (last != it) && p && (p->getPid() == p->gone);
     p = new PidStatistics(pid, pidToName(pid));
-    if (insert) {
-        Pids.insert(last, p);
+    if (insert_before_last) {
+        insert(last, p);
     } else {
-        Pids.push_back(p);
+        push_back(p);
     }
     p->add(size);
 }
@@ -163,17 +168,17 @@ void UidStatistics::subtract(unsigned short size, pid_t pid) {
                 size_t szsTotal = p->sizesTotal();
                 size_t elsTotal = p->elementsTotal();
                 delete p;
-                Pids.erase(it);
+                erase(it);
                 it = end();
                 --it;
                 if (it == end()) {
                     p = new PidStatistics(p->gone);
-                    Pids.push_back(p);
+                    push_back(p);
                 } else {
                     p = *it;
                     if (p->getPid() != p->gone) {
                         p = new PidStatistics(p->gone);
-                        Pids.push_back(p);
+                        push_back(p);
                     }
                 }
                 p->addTotal(szsTotal, elsTotal);
@@ -194,8 +199,8 @@ void UidStatistics::sort() {
                 PidStatistics *n = (*it);
                 if ((n->getPid() != n->gone) && (n->sizes() > l->sizes())) {
                     pass = true;
-                    Pids.erase(it);
-                    Pids.insert(lt, n);
+                    erase(it);
+                    insert(lt, n);
                     it = lt;
                     n = l;
                 }
@@ -302,6 +307,10 @@ void LidStatistics::add(unsigned short size, uid_t uid, pid_t pid) {
 }
 
 void LidStatistics::subtract(unsigned short size, uid_t uid, pid_t pid) {
+    if (uid == (uid_t) -1) { // init
+        uid = (uid_t) AID_ROOT;
+    }
+
     UidStatisticsCollection::iterator it;
     for (it = begin(); it != end(); ++it) {
         UidStatistics *u = *it;
@@ -727,8 +736,8 @@ void LogStatistics::format(char **buf,
                             / (NS_PER_SEC / 1000));
                 } else if (duration >= (NS_PER_SEC / (1000000 / 10))) {
                     string.appendFormat("%lluu",
-                         (duration + (NS_PER_SEC / 2 / 1000000))
-                             / (NS_PER_SEC / 1000000));
+                        (duration + (NS_PER_SEC / 2 / 1000000))
+                            / (NS_PER_SEC / 1000000));
                 } else {
                     string.appendFormat("%llun", duration);
                 }
