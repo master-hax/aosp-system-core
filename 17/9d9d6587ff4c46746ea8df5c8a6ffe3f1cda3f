@@ -1,0 +1,7 @@
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+2: Kenny Root <kroot@android.com>
+Submitted-by: Alex Klyubin <klyubin@google.com>
+Submitted-at: Fri, 26 Sep 2014 21:51:35 +0000
+Reviewed-on: https://android-review.googlesource.com/106481
+Project: platform/system/core
+Branch: refs/heads/master
