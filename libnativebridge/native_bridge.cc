@@ -240,11 +240,16 @@ void PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruct
   // mount command will fail, so we safe the extra file existence check...
   char cpuinfo_path[1024];
 
+#ifdef HAVE_ANDROID_OS
   snprintf(cpuinfo_path, 1024, "/system/lib"
 #ifdef __LP64__
-  "64"
+      "64"
+#endif  // __LP64__
+      "/%s/cpuinfo", instruction_set);
+#else   // !HAVE_ANDROID_OS
+  // To be able to test on the host, we hardwire a relative path.
+  snprintf(cpuinfo_path, 1024, "./cpuinfo");
 #endif
-    "/%s/cpuinfo", instruction_set);
 
   // Bind-mount.
   if (TEMP_FAILURE_RETRY(mount(cpuinfo_path,        // Source.
@@ -252,7 +257,7 @@ void PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruct
                                nullptr,             // FS type.
                                MS_BIND,             // Mount flags: bind mount.
                                nullptr)) == -1) {   // "Data."
-    ALOGW("Failed to bind-mount %s as /proc/cpuinfo: %d", cpuinfo_path, errno);
+    ALOGW("Failed to bind-mount %s as /proc/cpuinfo: %s", cpuinfo_path, strerror(errno));
   }
 #else
   UNUSED(instruction_set);
