@@ -15,6 +15,7 @@
  */
 
 #include <ctype.h>
+#include <endian.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +25,9 @@
 #include <unistd.h>
 
 #include <cutils/properties.h>
+#include <log/event_tag_map.h>
 #include <log/logger.h>
+#include <private/android_logger.h>
 
 #include "LogBuffer.h"
 #include "LogReader.h"
@@ -139,6 +142,36 @@ int LogBuffer::log(log_id_t log_id, log_time realtime,
     if ((log_id >= LOG_ID_MAX) || (log_id < 0)) {
         return -EINVAL;
     }
+
+    int prio = ANDROID_LOG_INFO;
+    const char *tag = NULL;
+    if (log_id == LOG_ID_EVENTS) {
+        static const EventTagMap *map;
+
+        if (!map) {
+            pthread_mutex_lock(&mLogElementsLock);
+            if (!map) {
+                map = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+            }
+            pthread_mutex_unlock(&mLogElementsLock);
+        }
+        if (map) {
+            tag = android_lookupEventTag(map,
+                    le32toh(((const android_event_header_t *)msg)->tag));
+        }
+    } else {
+        prio = *msg;
+        tag = msg + 1;
+    }
+    if (!__android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE)) {
+        // Log traffic received
+        pthread_mutex_lock(&mLogElementsLock);
+        stats.add(len, log_id, uid, pid);
+        stats.subtract(len, log_id, uid, pid);
+        pthread_mutex_unlock(&mLogElementsLock);
+        return -EACCES;
+    }
+
     LogBufferElement *elem = new LogBufferElement(log_id, realtime,
                                                   uid, pid, tid, msg, len);
 
