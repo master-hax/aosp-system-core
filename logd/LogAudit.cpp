@@ -146,23 +146,29 @@ int LogAudit::logPrint(const char *fmt, ...) {
 
     bool notify = false;
 
-    android_log_event_string_t *event = static_cast<android_log_event_string_t *>(malloc(n));
-    if (!event) {
-        rc = -ENOMEM;
-    } else {
-        event->header.tag = htole32(AUDITD_LOG_TAG);
-        event->type = EVENT_TYPE_STRING;
-        event->length = htole32(l);
-        memcpy(event->data, str, l);
+    static const char tag[] = "auditd";
 
-        rc = logbuf->log(LOG_ID_EVENTS, now, uid, pid, tid,
-                         reinterpret_cast<char *>(event),
-                         (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
-        free(event);
+    if (__android_log_is_loggable(ANDROID_LOG_INFO, tag, ANDROID_LOG_VERBOSE)) {
+        android_log_event_string_t *event = static_cast<android_log_event_string_t *>(malloc(n));
+        if (!event) {
+            rc = -ENOMEM;
+        } else {
+            event->header.tag = htole32(AUDITD_LOG_TAG);
+            event->type = EVENT_TYPE_STRING;
+            event->length = htole32(l);
+            memcpy(event->data, str, l);
 
-        if (rc >= 0) {
-            notify = true;
+            rc = logbuf->log(LOG_ID_EVENTS, now, uid, pid, tid,
+                             reinterpret_cast<char *>(event),
+                             (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+            free(event);
+
+            if (rc >= 0) {
+                notify = true;
+            }
         }
+    } else {
+        rc = -EACCES;
     }
 
     // log to main
@@ -175,7 +181,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
         comm += sizeof(comm_str) - 1;
     } else if (pid == getpid()) {
         pid = tid;
-        comm = "auditd";
+        comm = tag;
     } else if (!(comm = logbuf->pidToName(pid))) {
         comm = "unknown";
     }
@@ -196,11 +202,15 @@ int LogAudit::logPrint(const char *fmt, ...) {
     } else {
         *newstr = info ? ANDROID_LOG_INFO : ANDROID_LOG_WARN;
         strlcpy(newstr + 1, comm, l);
-        strncpy(newstr + 1 + l, str, estr - str);
-        strcpy(newstr + 1 + l + (estr - str), ecomm);
+        if (__android_log_is_loggable(*newstr, newstr + 1, ANDROID_LOG_VERBOSE)) {
+            strncpy(newstr + 1 + l, str, estr - str);
+            strcpy(newstr + 1 + l + (estr - str), ecomm);
 
-        rc = logbuf->log(LOG_ID_MAIN, now, uid, pid, tid, newstr,
-                         (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+            rc = logbuf->log(LOG_ID_MAIN, now, uid, pid, tid, newstr,
+                             (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+        } else {
+            rc = -EACCES;
+        }
         free(newstr);
 
         if (rc >= 0) {

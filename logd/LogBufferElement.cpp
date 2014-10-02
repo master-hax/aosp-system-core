@@ -50,6 +50,13 @@ LogBufferElement::~LogBufferElement() {
     delete [] mMsg;
 }
 
+uint32_t LogBufferElement::getTag() const {
+    if ((mLogId != LOG_ID_EVENTS) || !mMsg || (mMsgLen < sizeof(uint32_t))) {
+        return 0;
+    }
+    return le32toh(((android_event_header_t *)mMsg)->tag);
+}
+
 // caller must own and free character string
 static char *tidToName(pid_t tid) {
     char *retval = NULL;
@@ -98,8 +105,12 @@ static char *tidToName(pid_t tid) {
 size_t LogBufferElement::populateDroppedMessage(char *&buffer,
         LogBuffer *parent) {
     static const char tag[] = "logd";
-    static const char format_uid[] = "uid=%u%s too chatty%s, expire %u line%s";
 
+    if (!__android_log_is_loggable(ANDROID_LOG_INFO, tag, ANDROID_LOG_VERBOSE)) {
+        return 0;
+    }
+
+    static const char format_uid[] = "uid=%u%s too chatty%s, expire %u line%s";
     char *name = parent->uidToName(mUid);
     char *commName = tidToName(mTid);
     if (!commName && (mTid != mPid)) {
