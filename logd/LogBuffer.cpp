@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include <cutils/properties.h>
+#include <log/event_tag_map.h>
 #include <log/logger.h>
 
 #include "LogBuffer.h"
@@ -132,12 +133,50 @@ LogBuffer::LogBuffer(LastLogTimes *times)
     }
 }
 
+/*
+ * Extract a 4-byte value from a byte stream.
+ */
+static inline uint32_t get4LE(const uint8_t* src)
+{
+    return src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+}
+
+static const EventTagMap *map;
+
 void LogBuffer::log(log_id_t log_id, log_time realtime,
                     uid_t uid, pid_t pid, pid_t tid,
                     const char *msg, unsigned short len) {
     if ((log_id >= LOG_ID_MAX) || (log_id < 0)) {
         return;
     }
+
+    int prio = ANDROID_LOG_INFO; 
+    const char *tag = NULL;
+    if (log_id == LOG_ID_EVENTS) {
+        if (!map) {
+            pthread_mutex_lock(&mLogElementsLock);
+            if (!map) {
+                map = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+            }
+            pthread_mutex_unlock(&mLogElementsLock);
+        }
+        if (map) {
+            const uint8_t *src = (const uint8_t *)msg;
+            tag = android_lookupEventTag(map, get4LE(src));
+        }
+    } else {
+        prio = *msg;
+        tag = msg + 1;
+    }
+    if (!__android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE)) {
+        // Log traffic received
+        pthread_mutex_lock(&mLogElementsLock);
+        stats.add(len, log_id, uid, pid);
+        stats.subtract(len, log_id, uid, pid);
+        pthread_mutex_unlock(&mLogElementsLock);
+        return;
+    }
+
     LogBufferElement *elem = new LogBufferElement(log_id, realtime,
                                                   uid, pid, tid, msg, len);
 
