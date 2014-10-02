@@ -1243,7 +1243,13 @@ static int handle_write(struct fuse* fuse, struct fuse_handler* handler,
     struct fuse_write_out out;
     struct handle *h = id_to_ptr(req->fh);
     int res;
+#ifndef __clang__
     __u8 aligned_buffer[req->size] __attribute__((__aligned__(PAGESIZE)));
+#else
+    /* This is a workaround for llvm bug #13007 */
+    __u8 alignable_buffer[req->size+PAGESIZE];
+    __u8 *aligned_buffer = alignable_buffer+(PAGESIZE-(uintptr_t)&alignable_buffer%PAGESIZE);
+#endif
 
     if (req->flags & O_DIRECT) {
         memcpy(aligned_buffer, buffer, req->size);
