@@ -355,6 +355,7 @@ static void usage() {
             "  boot <kernel> [ <ramdisk> [ <second> ] ] Download and boot kernel.\n"
             "  flash:raw boot <kernel> [ <ramdisk> [ <second> ] ]\n"
             "                                           Create bootimage and flash it.\n"
+            "  dump <filename> <command>                dump data of <command> to <filename>.\n"
             "  devices [-l]                             List all connected devices [with\n"
             "                                           device paths].\n"
             "  continue                                 Continue with autoboot.\n"
@@ -1770,6 +1771,12 @@ int main(int argc, char **argv)
               usage();
               return 1;
             }
+        } else if(!strcmp(*argv, "dump")) {
+            require(2);
+            char* filename = argv[1];
+            skip(2);
+            argc = do_oem_command(argc, argv);
+            fb_queue_dump(filename);
         } else {
             usage();
             return 1;
