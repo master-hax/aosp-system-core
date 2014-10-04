@@ -1,0 +1,7 @@
+Code-Review+2: Brian Carlstrom <bdc@google.com>
+Verified+1: Hans Boehm <hboehm@google.com>
+Submitted-by: Hans Boehm <hboehm@google.com>
+Submitted-at: Sat, 04 Oct 2014 01:31:49 +0000
+Reviewed-on: https://android-review.googlesource.com/109601
+Project: platform/system/core
+Branch: refs/heads/master
