@@ -69,8 +69,8 @@ int ioctl_main(int argc, char *argv[])
         return 1;
     }
     optind++;
-    
-    ioctl_nr = strtol(argv[optind], NULL, 0);
+
+    ioctl_nr = strtoul(argv[optind], NULL, 0);
     optind++;
 
     if(direct_arg) {
