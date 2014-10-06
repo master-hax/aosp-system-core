@@ -20,7 +20,7 @@ int ioctl_main(int argc, char *argv[])
     int length = -1;
     int arg_size = 4;
     int direct_arg = 0;
-    uint32_t ioctl_nr;
+    int ioctl_nr;
     void *ioctl_args = NULL;
     uint8_t *ioctl_argp;
     uint8_t *ioctl_argp_save = NULL;
@@ -45,7 +45,7 @@ int ioctl_main(int argc, char *argv[])
             break;
         case 'h':
             fprintf(stderr, "%s [-l <length>] [-a <argsize>] [-rdh] <device> <ioctlnr>\n"
-                    "  -l <lenght>   Length of io buffer\n"
+                    "  -l <length>   Length of io buffer\n"
                     "  -a <argsize>  Size of each argument (1-8)\n"
                     "  -r            Open device in read only mode\n"
                     "  -d            Direct argument (no iobuffer)\n"
@@ -69,8 +69,12 @@ int ioctl_main(int argc, char *argv[])
         return 1;
     }
     optind++;
-    
-    ioctl_nr = strtol(argv[optind], NULL, 0);
+
+    /* IOCTL(2) wants second parameter as a signed int.
+     * Let's let the user specify either negative numbers or large positive
+     * numbers, for the case where ioctl number is larger than INT_MAX.
+     */
+    ioctl_nr = UINT_MAX & strtoll(argv[optind], NULL, 0);
     optind++;
 
     if(direct_arg) {
