@@ -82,13 +82,14 @@ extern "C" {
 #endif
 
 #define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
+#define __CONDITION(cond)   (__builtin_expect((cond)!=0, 1))
 
 #ifndef ALOGV_IF
 #if LOG_NDEBUG
 #define ALOGV_IF(cond, ...)   ((void)0)
 #else
 #define ALOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (CONDITION(android_testLog(ANDROID_LOG_VERBOSE, LOG_TAG))) \
     ? ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -103,7 +104,7 @@ extern "C" {
 
 #ifndef ALOGD_IF
 #define ALOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_DEBUG, LOG_TAG))) \
     ? ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -117,7 +118,7 @@ extern "C" {
 
 #ifndef ALOGI_IF
 #define ALOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_INFO, LOG_TAG))) \
     ? ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -131,7 +132,7 @@ extern "C" {
 
 #ifndef ALOGW_IF
 #define ALOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_WARN, LOG_TAG))) \
     ? ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -145,7 +146,7 @@ extern "C" {
 
 #ifndef ALOGE_IF
 #define ALOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_ERROR, LOG_TAG))) \
     ? ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -218,7 +219,7 @@ extern "C" {
 #define SLOGV_IF(cond, ...)   ((void)0)
 #else
 #define SLOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (CONDITION(android_testLog(ANDROID_LOG_VERBOSE, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -233,7 +234,7 @@ extern "C" {
 
 #ifndef SLOGD_IF
 #define SLOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_DEBUG, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -247,7 +248,7 @@ extern "C" {
 
 #ifndef SLOGI_IF
 #define SLOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_INFO, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -261,7 +262,7 @@ extern "C" {
 
 #ifndef SLOGW_IF
 #define SLOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_WARN, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -275,7 +276,7 @@ extern "C" {
 
 #ifndef SLOGE_IF
 #define SLOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_ERROR, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -301,7 +302,7 @@ extern "C" {
 #define RLOGV_IF(cond, ...)   ((void)0)
 #else
 #define RLOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (CONDITION(android_testLog(ANDROID_LOG_VERBOSE, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -316,7 +317,7 @@ extern "C" {
 
 #ifndef RLOGD_IF
 #define RLOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_DEBUG, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -330,7 +331,7 @@ extern "C" {
 
 #ifndef RLOGI_IF
 #define RLOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_INFO, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -344,7 +345,7 @@ extern "C" {
 
 #ifndef RLOGW_IF
 #define RLOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_WARN, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -358,7 +359,7 @@ extern "C" {
 
 #ifndef RLOGE_IF
 #define RLOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (CONDITION(cond)) && (__CONDITION(android_testLog(ANDROID_LOG_ERROR, LOG_TAG))) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -534,8 +535,14 @@ typedef enum {
 #define android_btWriteLog(tag, type, payload, len) \
     __android_log_btwrite(tag, type, payload, len)
 
+#if LOG_NDEBUG /* Production */
+#define android_testLog(prio, tag) \
+    (__android_log_is_loggable(prio, tag, ANDROID_LOG_DEBUG) != 0)
+#else
+#define android_testLog(prio, tag) \
+    (__android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE) != 0)
+#endif
 // TODO: remove these prototypes and their users
-#define android_testLog(prio, tag) (1)
 #define android_writevLog(vec,num) do{}while(0)
 #define android_write1Log(str,len) do{}while (0)
 #define android_setMinPriority(tag, prio) do{}while(0)
