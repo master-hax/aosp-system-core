@@ -27,6 +27,7 @@
 const log_time LogBufferElement::FLUSH_ERROR((uint32_t)0, (uint32_t)0);
 
 LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
+                                   log_time monotonic,
                                    uid_t uid, pid_t pid, pid_t tid,
                                    const char *msg, unsigned short len)
         : mLogId(log_id)
@@ -34,7 +35,7 @@ LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
         , mPid(pid)
         , mTid(tid)
         , mMsgLen(len)
-        , mMonotonicTime(CLOCK_MONOTONIC)
+        , mMonotonicTime(monotonic)
         , mRealTime(realtime) {
     mMsg = new char[len];
     memcpy(mMsg, msg, len);
