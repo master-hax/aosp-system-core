@@ -132,13 +132,13 @@ LogBuffer::LogBuffer(LastLogTimes *times)
     }
 }
 
-void LogBuffer::log(log_id_t log_id, log_time realtime,
+void LogBuffer::log(log_id_t log_id, log_time realtime, log_time monotonic,
                     uid_t uid, pid_t pid, pid_t tid,
                     const char *msg, unsigned short len) {
     if ((log_id >= LOG_ID_MAX) || (log_id < 0)) {
         return;
     }
-    LogBufferElement *elem = new LogBufferElement(log_id, realtime,
+    LogBufferElement *elem = new LogBufferElement(log_id, realtime, monotonic,
                                                   uid, pid, tid, msg, len);
 
     pthread_mutex_lock(&mLogElementsLock);
@@ -442,7 +442,7 @@ log_time LogBuffer::flushTo(
         bool (*filter)(const LogBufferElement *element, void *arg), void *arg) {
     LogBufferElementCollection::iterator it;
     log_time max = start;
-    uid_t uid = reader->getUid();
+    uid_t uid = privileged ? AID_ROOT : reader->getUid();
 
     pthread_mutex_lock(&mLogElementsLock);
     for (it = mLogElements.begin(); it != mLogElements.end(); ++it) {
@@ -496,4 +496,56 @@ void LogBuffer::formatStatistics(char **strp, uid_t uid, unsigned int logMask) {
     stats.format(strp, uid, logMask, oldest);
 
     pthread_mutex_unlock(&mLogElementsLock);
+}
+
+void LogBuffer::convertIfMonotonicToReal(log_time &start) {
+    log_time monotonic(CLOCK_MONOTONIC);
+    monotonic.tv_sec += 10;
+    if (start > monotonic) {
+        return;
+    }
+    monotonic.tv_sec -= 10;
+    log_time real(CLOCK_REALTIME);
+
+    class LogFindStart {
+        bool startTimeSet;
+        bool diffSet;
+        log_time &start;
+        log_time diff;
+
+    public:
+        LogFindStart(log_time &start)
+                : startTimeSet(false)
+                , diffSet(false)
+                , start(start)
+        { }
+
+        static bool callback(const LogBufferElement *element, void *obj) {
+            LogFindStart *me = reinterpret_cast<LogFindStart *>(obj);
+            if (!me->startTimeSet) {
+                if (me->start == element->getMonotonicTime()) {
+                    me->start = element->getRealTime();
+                    me->startTimeSet = true;
+                } else {
+                    if (me->diffSet && (me->start < element->getMonotonicTime())) {
+                        me->start += me->diff;
+                        me->startTimeSet = true;
+                    }
+                    me->diffSet = true;
+                    me->diff = element->getRealTime() - element->getMonotonicTime();
+                }
+            }
+            return false;
+        }
+
+        bool found() { return startTimeSet; }
+    } logFindStart(start);
+
+    flushTo(NULL, LogTimeEntry::EPOCH, true,
+                     logFindStart.callback, &logFindStart);
+
+    if (!logFindStart.found()) {
+        const log_time diff(real - monotonic);
+        start += diff;
+    }
 }
