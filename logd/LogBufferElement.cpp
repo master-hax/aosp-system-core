@@ -33,6 +33,7 @@ const uint64_t LogBufferElement::FLUSH_ERROR(0);
 atomic_int_fast64_t LogBufferElement::sequence;
 
 LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
+                                   log_time monotonic,
                                    uid_t uid, pid_t pid, pid_t tid,
                                    const char *msg, unsigned short len)
         : mLogId(log_id)

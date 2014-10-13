@@ -48,7 +48,7 @@ public:
     LogBuffer(LastLogTimes *times);
     void init();
 
-    int log(log_id_t log_id, log_time realtime,
+    int log(log_id_t log_id, log_time realtime, log_time monotonic,
             uid_t uid, pid_t pid, pid_t tid,
             const char *msg, unsigned short len);
     uint64_t flushTo(SocketClient *writer, const uint64_t start,
@@ -75,6 +75,8 @@ public:
     char *pidToName(pid_t pid) { return stats.pidToName(pid); }
     uid_t pidToUid(pid_t pid) { return stats.pidToUid(pid); }
     char *uidToName(uid_t uid) { return stats.uidToName(uid); }
+
+    void convertIfMonotonicToReal(log_time &start);
 
 private:
     void maybePrune(log_id_t id);

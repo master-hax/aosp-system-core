@@ -92,13 +92,15 @@ bool LogListener::onDataAvailable(SocketClient *cli) {
         return false;
     }
 
+    log_time monotonic(CLOCK_MONOTONIC);
+
     char *msg = ((char *)buffer) + sizeof(android_log_header_t);
     n -= sizeof(android_log_header_t);
 
     // NB: hdr.msg_flags & MSG_TRUNC is not tested, silently passing a
     // truncated message to the logs.
 
-    if (logbuf->log((log_id_t)header->id, header->realtime,
+    if (logbuf->log((log_id_t)header->id, header->realtime, monotonic,
             cred->uid, cred->pid, header->tid, msg,
             ((size_t) n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX) >= 0) {
         reader->notifyNewLog();
