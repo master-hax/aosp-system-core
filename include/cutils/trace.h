@@ -176,6 +176,48 @@ static inline uint64_t atrace_is_tag_enabled(uint64_t tag)
 }
 
 /**
+ * Write a message with pid.
+ * Do not inline this rarely used function.
+ */
+static __attribute__((noinline))
+void atrace_write_name(const char *fmt, const char* name)
+{
+    char buf[ATRACE_MESSAGE_LENGTH];
+    size_t len;
+
+    len = snprintf(buf, ATRACE_MESSAGE_LENGTH, fmt, getpid(), name);
+    write(atrace_marker_fd, buf, len);
+}
+
+/**
+ * Write a message with an int32 value.
+ * Do not inline this rarely used function.
+ */
+static __attribute__((noinline))
+void atrace_write_int32(const char *fmt, const char* name, int32_t n)
+{
+    char buf[ATRACE_MESSAGE_LENGTH];
+    size_t len;
+
+    len = snprintf(buf, ATRACE_MESSAGE_LENGTH, fmt, getpid(), name, n);
+    write(atrace_marker_fd, buf, len);
+}
+
+/**
+ * Write a message with an int64 value.
+ * Do not inline this rarely used function.
+ */
+static __attribute__((noinline))
+void atrace_write_int64(const char *fmt, const char* name, int64_t n)
+{
+    char buf[ATRACE_MESSAGE_LENGTH];
+    size_t len;
+
+    len = snprintf(buf, ATRACE_MESSAGE_LENGTH, fmt, getpid(), name, n);
+    write(atrace_marker_fd, buf, len);
+}
+
+/**
  * Trace the beginning of a context.  name is used to identify the context.
  * This is often used to time function execution.
  */
@@ -183,11 +225,7 @@ static inline uint64_t atrace_is_tag_enabled(uint64_t tag)
 static inline void atrace_begin(uint64_t tag, const char* name)
 {
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "B|%d|%s", getpid(), name);
-        write(atrace_marker_fd, buf, len);
+        atrace_write_name("B|%d|%s", name);
     }
 }
 
@@ -217,12 +255,7 @@ static inline void atrace_async_begin(uint64_t tag, const char* name,
         int32_t cookie)
 {
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "S|%d|%s|%" PRId32,
-                getpid(), name, cookie);
-        write(atrace_marker_fd, buf, len);
+        atrace_write_int32("S|%d|%s|%" PRId32, name, cookie);
     }
 }
 
@@ -235,12 +268,7 @@ static inline void atrace_async_end(uint64_t tag, const char* name,
         int32_t cookie)
 {
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "F|%d|%s|%" PRId32,
-                getpid(), name, cookie);
-        write(atrace_marker_fd, buf, len);
+        atrace_write_int32("F|%d|%s|%" PRId32, name, cookie);
     }
 }
 
@@ -253,12 +281,7 @@ static inline void atrace_async_end(uint64_t tag, const char* name,
 static inline void atrace_int(uint64_t tag, const char* name, int32_t value)
 {
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "C|%d|%s|%" PRId32,
-                getpid(), name, value);
-        write(atrace_marker_fd, buf, len);
+        atrace_write_int32("C|%d|%s|%" PRId32, name, value);
     }
 }
 
@@ -270,12 +293,7 @@ static inline void atrace_int(uint64_t tag, const char* name, int32_t value)
 static inline void atrace_int64(uint64_t tag, const char* name, int64_t value)
 {
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "C|%d|%s|%" PRId64,
-                getpid(), name, value);
-        write(atrace_marker_fd, buf, len);
+        atrace_write_int64("C|%d|%s|%" PRId64, name, value);
     }
 }
 
