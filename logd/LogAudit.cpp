@@ -108,17 +108,26 @@ int LogAudit::logPrint(const char *fmt, ...) {
     pid_t pid = getpid();
     pid_t tid = gettid();
     uid_t uid = getuid();
-    log_time now;
+    log_time mono, real;
 
     static const char audit_str[] = " audit(";
     char *timeptr = strstr(str, audit_str);
+    if (!timeptr) {
+        timeptr = strstr(str, audit_str + 1);
+        if (timeptr) {
+            --timeptr;
+        }
+    }
     if (timeptr
-            && ((cp = now.strptime(timeptr + sizeof(audit_str) - 1, "%s.%q")))
+            && ((cp = mono.strptime(timeptr + sizeof(audit_str) - 1, "%s.%q")))
             && (*cp == ':')) {
+        real = mono;
         memcpy(timeptr + sizeof(audit_str) - 1, "0.0", 3);
         memmove(timeptr + sizeof(audit_str) - 1 + 3, cp, strlen(cp) + 1);
+        logbuf->convertIfMonotonicToReal(real);
     } else {
-        now.strptime("", ""); // side effect of setting CLOCK_REALTIME
+        mono = log_time(CLOCK_MONOTONIC);
+        real = log_time(CLOCK_REALTIME);
     }
 
     static const char pid_str[] = " pid=";
@@ -158,7 +167,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
         *cp++ = (l >> 24) & 0xFF;
         memcpy(cp, str, l);
 
-        logbuf->log(LOG_ID_EVENTS, now, uid, pid, tid, newstr,
+        logbuf->log(LOG_ID_EVENTS, real, mono, uid, pid, tid, newstr,
                     (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
         free(newstr);
 
@@ -199,7 +208,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
         strncpy(newstr + 1 + l, str, estr - str);
         strcpy(newstr + 1 + l + (estr - str), ecomm);
 
-        logbuf->log(LOG_ID_MAIN, now, uid, pid, tid, newstr,
+        logbuf->log(LOG_ID_MAIN, real, mono, uid, pid, tid, newstr,
                     (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
         free(newstr);
 
