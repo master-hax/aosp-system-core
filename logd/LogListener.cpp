@@ -95,6 +95,7 @@ bool LogListener::onDataAvailable(SocketClient *cli) {
     n -= sizeof(uint16_t);
 
     // third element is the realtime at point of caller
+    log_time monotonic(CLOCK_MONOTONIC);
     log_time realtime(msg);
     msg += sizeof(log_time);
     n -= sizeof(log_time);
@@ -102,7 +103,7 @@ bool LogListener::onDataAvailable(SocketClient *cli) {
     // NB: hdr.msg_flags & MSG_TRUNC is not tested, silently passing a
     // truncated message to the logs.
 
-    logbuf->log(log_id, realtime, cred->uid, cred->pid, tid, msg,
+    logbuf->log(log_id, realtime, monotonic, cred->uid, cred->pid, tid, msg,
         ((size_t) n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
     reader->notifyNewLog();
 
