@@ -33,7 +33,7 @@ class LogBufferElement {
     const log_time mRealTime;
 
 public:
-    LogBufferElement(log_id_t log_id, log_time realtime,
+    LogBufferElement(log_id_t log_id, log_time realtime, log_time monotonic,
                      uid_t uid, pid_t pid, pid_t tid,
                      const char *msg, unsigned short len);
     virtual ~LogBufferElement();
