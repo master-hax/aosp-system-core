@@ -85,13 +85,6 @@ __BEGIN_DECLS
 
 #ifdef HAVE_ANDROID_OS
 /**
- * Maximum size of a message that can be logged to the trace buffer.
- * Note this message includes a tag, the pid, and the string given as the name.
- * Names should be kept short to get the most use of the trace buffer.
- */
-#define ATRACE_MESSAGE_LENGTH 1024
-
-/**
  * Opens the trace file for writing and reads the property for initial tags.
  * The atrace.tags.enableflags property sets the tags to trace.
  * This function should not be explicitly called, the first call to any normal
@@ -180,29 +173,14 @@ static inline uint64_t atrace_is_tag_enabled(uint64_t tag)
  * This is often used to time function execution.
  */
 #define ATRACE_BEGIN(name) atrace_begin(ATRACE_TAG, name)
-static inline void atrace_begin(uint64_t tag, const char* name)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "B|%d|%s", getpid(), name);
-        write(atrace_marker_fd, buf, len);
-    }
-}
+void atrace_begin(uint64_t tag, const char* name);
 
 /**
  * Trace the end of a context.
  * This should match up (and occur after) a corresponding ATRACE_BEGIN.
  */
 #define ATRACE_END() atrace_end(ATRACE_TAG)
-static inline void atrace_end(uint64_t tag)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char c = 'E';
-        write(atrace_marker_fd, &c, 1);
-    }
-}
+void atrace_end(uint64_t tag);
 
 /**
  * Trace the beginning of an asynchronous event. Unlike ATRACE_BEGIN/ATRACE_END
@@ -213,71 +191,28 @@ static inline void atrace_end(uint64_t tag)
  */
 #define ATRACE_ASYNC_BEGIN(name, cookie) \
     atrace_async_begin(ATRACE_TAG, name, cookie)
-static inline void atrace_async_begin(uint64_t tag, const char* name,
-        int32_t cookie)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "S|%d|%s|%" PRId32,
-                getpid(), name, cookie);
-        write(atrace_marker_fd, buf, len);
-    }
-}
+void atrace_async_begin(uint64_t tag, const char* name, int32_t cookie);
 
 /**
  * Trace the end of an asynchronous event.
  * This should have a corresponding ATRACE_ASYNC_BEGIN.
  */
 #define ATRACE_ASYNC_END(name, cookie) atrace_async_end(ATRACE_TAG, name, cookie)
-static inline void atrace_async_end(uint64_t tag, const char* name,
-        int32_t cookie)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "F|%d|%s|%" PRId32,
-                getpid(), name, cookie);
-        write(atrace_marker_fd, buf, len);
-    }
-}
-
+void atrace_async_end(uint64_t tag, const char* name, int32_t cookie);
 
 /**
  * Traces an integer counter value.  name is used to identify the counter.
  * This can be used to track how a value changes over time.
  */
 #define ATRACE_INT(name, value) atrace_int(ATRACE_TAG, name, value)
-static inline void atrace_int(uint64_t tag, const char* name, int32_t value)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "C|%d|%s|%" PRId32,
-                getpid(), name, value);
-        write(atrace_marker_fd, buf, len);
-    }
-}
+void atrace_int(uint64_t tag, const char* name, int32_t value);
 
 /**
  * Traces a 64-bit integer counter value.  name is used to identify the
  * counter. This can be used to track how a value changes over time.
  */
 #define ATRACE_INT64(name, value) atrace_int64(ATRACE_TAG, name, value)
-static inline void atrace_int64(uint64_t tag, const char* name, int64_t value)
-{
-    if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
-        char buf[ATRACE_MESSAGE_LENGTH];
-        size_t len;
-
-        len = snprintf(buf, ATRACE_MESSAGE_LENGTH, "C|%d|%s|%" PRId64,
-                getpid(), name, value);
-        write(atrace_marker_fd, buf, len);
-    }
-}
+void atrace_int64(uint64_t tag, const char* name, int64_t value);
 
 #else // not HAVE_ANDROID_OS
 
