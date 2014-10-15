@@ -235,7 +235,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
 int LogAudit::log(char *buf) {
     char *audit = strstr(buf, " audit(");
     if (!audit) {
-        return -EXDEV;
+        return 0;
     }
 
     *audit = '\0';

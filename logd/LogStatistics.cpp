@@ -41,8 +41,8 @@ namespace android {
 // caller must own and free character string
 char *pidToName(pid_t pid) {
     char *retval = NULL;
-    if (pid == 0) { // special case from auditd for kernel
-        retval = strdup("logd.auditd");
+    if (pid == 0) { // special case from auditd/klogd for kernel
+        retval = strdup("logd");
     } else {
         char buffer[512];
         snprintf(buffer, sizeof(buffer), "/proc/%u/cmdline", pid);
