@@ -35,6 +35,7 @@
 #include "LogBuffer.h"
 #include "LogListener.h"
 #include "LogAudit.h"
+#include "LogKlog.h"
 
 //
 //  The service is designed to be run by init, it does not respond well
@@ -122,6 +123,17 @@ static bool property_get_bool(const char *key, bool def) {
     return def;
 }
 
+static bool property_get_bool_svelte(const char *key) {
+    bool not_user;
+    {
+        char property[PROPERTY_VALUE_MAX];
+        property_get("ro.build.type", property, "");
+        not_user = !!strcmp(property, "user");
+    }
+    return property_get_bool(key, not_user
+            && !property_get_bool("ro.config.low_ram", false));
+}
+
 // Foreground waits for exit of the three main persistent threads that
 // are started here.  The three threads are created to manage UNIX
 // domain client sockets for writing, reading and controlling the user
@@ -129,9 +141,14 @@ static bool property_get_bool(const char *key, bool def) {
 // for each reader once they register.
 int main() {
     bool auditd = property_get_bool("logd.auditd", true);
+    bool klogd = property_get_bool_svelte("logd.klogd");
 
+    int fdPmesg = -1;
+    if (klogd) {
+        fdPmesg = open("/proc/kmsg", O_RDONLY | O_NDELAY);
+    }
     int fdDmesg = -1;
-    if (auditd && property_get_bool("logd.auditd.dmesg", true)) {
+    if (klogd || (auditd && property_get_bool("logd.auditd.dmesg", true))) {
         fdDmesg = open("/dev/kmsg", O_WRONLY);
     }
 
@@ -153,14 +170,8 @@ int main() {
     if (property_get_bool("logd.statistics.dgram_qlen", false)) {
         logBuf->enableDgramQlenStatistics();
     }
-    {
-        char property[PROPERTY_VALUE_MAX];
-        property_get("ro.build.type", property, "");
-        if (property_get_bool("logd.statistics",
-                   !!strcmp(property, "user")
-                && !property_get_bool("ro.config.low_ram", false))) {
-            logBuf->enableStatistics();
-        }
+    if (property_get_bool_svelte("logd.statistics")) {
+        logBuf->enableStatistics();
     }
 
     // LogReader listens on /dev/socket/logdr. When a client
@@ -193,10 +204,17 @@ int main() {
     // initiated log messages. New log entries are added to LogBuffer
     // and LogReader is notified to send updates to connected clients.
 
+    LogAudit *al = NULL;
     if (auditd) {
-        // failure is an option ... messages are in dmesg (required by standard)
-        LogAudit *al = new LogAudit(logBuf, reader, fdDmesg);
+        al = new LogAudit(logBuf, reader, fdDmesg);
+    }
 
+    LogKlog *kl = NULL;
+    if (klogd) {
+        kl = new LogKlog(logBuf, reader, fdDmesg, fdPmesg, al != NULL);
+    }
+
+    if (al || kl) {
         int len = klogctl(KLOG_SIZE_BUFFER, NULL, 0);
         if (len > 0) {
             len++;
@@ -209,17 +227,26 @@ int main() {
             for(char *ptr, *tok = buf;
                     (rc >= 0) && ((tok = strtok_r(tok, "\r\n", &ptr)));
                     tok = NULL) {
-                rc = al->log(tok);
+                if (al) {
+                    rc = al->log(tok);
+                }
+                if (kl) {
+                    rc = kl->log(tok);
+                }
             }
         }
 
-        if (al->startListener()) {
+        // failure is an option ... messages are in dmesg (required by standard)
+
+        if (kl && kl->startListener()) {
+            delete kl;
+        }
+
+        if (al && al->startListener()) {
             delete al;
-            close(fdDmesg);
         }
     }
 
     pause();
     exit(0);
 }
-
