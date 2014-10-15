@@ -41,6 +41,7 @@
 #include "LogBuffer.h"
 #include "LogListener.h"
 #include "LogAudit.h"
+#include "LogKlog.h"
 
 #define KMSG_PRIORITY(PRI)                            \
     '<',                                              \
@@ -238,6 +239,17 @@ void reinit_signal_handler(int /*signal*/) {
     sem_post(&reinit);
 }
 
+static bool property_get_bool_svelte(const char *key) {
+    bool not_user;
+    {
+        char property[PROPERTY_VALUE_MAX];
+        property_get("ro.build.type", property, "");
+        not_user = !!strcmp(property, "user");
+    }
+    return property_get_bool(key, not_user
+            && !property_get_bool("ro.config.low_ram", false));
+}
+
 // Foreground waits for exit of the main persistent threads
 // that are started here. The threads are created to manage
 // UNIX domain client sockets for writing, reading and
@@ -245,6 +257,11 @@ void reinit_signal_handler(int /*signal*/) {
 // logging plugins like auditd and restart control. Additional
 // transitory per-client threads are created for each reader.
 int main(int argc, char *argv[]) {
+    int fdPmesg = -1;
+    bool klogd = property_get_bool_svelte("logd.klogd");
+    if (klogd) {
+        fdPmesg = open("/proc/kmsg", O_RDONLY | O_NDELAY);
+    }
     fdDmesg = open("/dev/kmsg", O_WRONLY);
 
     // issue reinit command. KISS argument parsing.
@@ -321,14 +338,8 @@ int main(int argc, char *argv[]) {
 
     signal(SIGHUP, reinit_signal_handler);
 
-    {
-        char property[PROPERTY_VALUE_MAX];
-        property_get("ro.build.type", property, "");
-        if (property_get_bool("logd.statistics",
-                   !!strcmp(property, "user")
-                && !property_get_bool("ro.config.low_ram", false))) {
-            logBuf->enableStatistics();
-        }
+    if (property_get_bool_svelte("logd.statistics")) {
+        logBuf->enableStatistics();
     }
 
     // LogReader listens on /dev/socket/logdr. When a client
@@ -363,12 +374,18 @@ int main(int argc, char *argv[]) {
 
     bool auditd = property_get_bool("logd.auditd", true);
 
+    LogAudit *al = NULL;
     if (auditd) {
         bool dmesg = property_get_bool("logd.auditd.dmesg", true);
+        al = new LogAudit(logBuf, reader, dmesg ? fdDmesg : -1);
+    }
 
-        // failure is an option ... messages are in dmesg (required by standard)
-        LogAudit *al = new LogAudit(logBuf, reader, dmesg ? fdDmesg : -1);
+    LogKlog *kl = NULL;
+    if (klogd) {
+        kl = new LogKlog(logBuf, reader, fdDmesg, fdPmesg, al != NULL);
+    }
 
+    if (al || kl) {
         int len = klogctl(KLOG_SIZE_BUFFER, NULL, 0);
         if (len > 0) {
             len++;
@@ -376,16 +393,27 @@ int main(int argc, char *argv[]) {
 
             int rc = klogctl(KLOG_READ_ALL, buf, len);
 
-            if (rc >= 0) {
-                buf[len - 1] = '\0';
+            buf[len - 1] = '\0';
 
-                for (char *ptr, *tok = buf; (tok = strtok_r(tok, "\r\n", &ptr)); tok = NULL) {
-                    al->log(tok);
+            for (char *ptr, *tok = buf;
+                 (rc >= 0) && ((tok = strtok_r(tok, "\r\n", &ptr)));
+                 tok = NULL) {
+                if (al) {
+                    rc = al->log(tok);
+                }
+                if (kl) {
+                    rc = kl->log(tok);
                 }
             }
         }
 
-        if (al->startListener()) {
+        // failure is an option ... messages are in dmesg (required by standard)
+
+        if (kl && kl->startListener()) {
+            delete kl;
+        }
+
+        if (al && al->startListener()) {
             delete al;
         }
     }
