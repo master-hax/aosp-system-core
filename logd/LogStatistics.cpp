@@ -95,8 +95,8 @@ void PidStatistics::addTotal(size_t size, size_t element) {
 //  which debuggerd prints as a process is crashing.
 char *PidStatistics::pidToName(pid_t pid) {
     char *retval = NULL;
-    if (pid == 0) { // special case from auditd for kernel
-        retval = strdup("logd.auditd");
+    if (pid == 0) { // special case from auditd/klogd for kernel
+        retval = strdup("logd");
     } else if (pid != gone) {
         char buffer[512];
         snprintf(buffer, sizeof(buffer), "/proc/%u/cmdline", pid);
