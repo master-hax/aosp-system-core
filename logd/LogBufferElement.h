@@ -39,7 +39,7 @@ char *pidToName(pid_t pid);
 }
 
 static inline bool worstUidEnabledForLogid(log_id_t id) {
-    return (id != LOG_ID_CRASH) && (id != LOG_ID_EVENTS);
+    return (id != LOG_ID_CRASH) && (id != LOG_ID_KERNEL) && (id != LOG_ID_EVENTS);
 }
 
 class LogBuffer;
