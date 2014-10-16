@@ -532,7 +532,7 @@ static void connect_device(char* host, char* buffer, int buffer_size)
 
     fd = socket_network_client_timeout(hostbuf, port, SOCK_STREAM, 10);
     if (fd < 0) {
-        snprintf(buffer, buffer_size, "unable to connect to %s:%d", host, port);
+        snprintf(buffer, buffer_size, "unable to connect to %s", serial);
         return;
     }
 
@@ -620,6 +620,7 @@ static void connect_service(int fd, void* cookie)
     snprintf(resp, sizeof(resp), "%04x%s",(unsigned)strlen(buf), buf);
     writex(fd, resp, strlen(resp));
     adb_close(fd);
+    free(host);
 }
 #endif
 
@@ -648,6 +649,9 @@ asocket*  host_service_to_socket(const char*  name, const char *serial)
             sinfo->transport = kTransportAny;
             sinfo->state = CS_DEVICE;
         } else {
+            if (sinfo->serial) {
+                free(sinfo->serial);
+            }
             free(sinfo);
             return NULL;
         }
@@ -655,7 +659,7 @@ asocket*  host_service_to_socket(const char*  name, const char *serial)
         int fd = create_service_thread(wait_for_state, sinfo);
         return create_local_socket(fd);
     } else if (!strncmp(name, "connect:", 8)) {
-        const char *host = name + 8;
+        const char *host = strdup(name + 8);
         int fd = create_service_thread(connect_service, (void *)host);
         return create_local_socket(fd);
     }
