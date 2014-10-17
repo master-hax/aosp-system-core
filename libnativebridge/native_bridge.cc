@@ -47,10 +47,10 @@ enum class NativeBridgeState {
   kClosed                           // Closed or errors.
 };
 
-static const char* kNotSetupString = "kNotSetup";
-static const char* kOpenedString = "kOpened";
-static const char* kInitializedString = "kInitialized";
-static const char* kClosedString = "kClosed";
+static constexpr const char* kNotSetupString = "kNotSetup";
+static constexpr const char* kOpenedString = "kOpened";
+static constexpr const char* kInitializedString = "kInitialized";
+static constexpr const char* kClosedString = "kClosed";
 
 static const char* GetNativeBridgeStateString(NativeBridgeState state) {
   switch (state) {
@@ -82,8 +82,14 @@ static NativeBridgeCallbacks* callbacks = nullptr;
 // Callbacks provided by the environment to the bridge. Passed to LoadNativeBridge.
 static const NativeBridgeRuntimeCallbacks* runtime_callbacks = nullptr;
 
-// The app's data directory.
-static char* app_data_dir = nullptr;
+// The app's code cache directory.
+static char* app_code_cache_dir = nullptr;
+
+// Code cache directory (relative to the application private directory)
+// Ideally we'd like to call into framework to retrieve this name. However that's considered an
+// implementation detail and will require either hacks or consistent refactorings. We compromise
+// and hard code the directory name again here.
+static constexpr const char* kCodeCacheDir = "code_cache";
 
 static constexpr uint32_t kNativeBridgeCallbackVersion = 1;
 
@@ -132,6 +138,19 @@ static bool VersionCheck(NativeBridgeCallbacks* cb) {
   return cb != nullptr && cb->version == kNativeBridgeCallbackVersion;
 }
 
+static void DeleteArray(char** arr) {
+  if (*arr != nullptr) {
+    delete [] *arr;
+    *arr = nullptr;
+  }
+}
+
+static void CloseNativeBridge(bool had_error_in) {
+  state = NativeBridgeState::kClosed;
+  had_error |= had_error_in;
+  DeleteArray(&app_code_cache_dir);
+}
+
 bool LoadNativeBridge(const char* nb_library_filename,
                       const NativeBridgeRuntimeCallbacks* runtime_cbs) {
   // We expect only one place that calls LoadNativeBridge: Runtime::Init. At that point we are not
@@ -149,12 +168,11 @@ bool LoadNativeBridge(const char* nb_library_filename,
   }
 
   if (nb_library_filename == nullptr || *nb_library_filename == 0) {
-    state = NativeBridgeState::kClosed;
+    CloseNativeBridge(false);
     return true;
   } else {
     if (!NativeBridgeNameAcceptable(nb_library_filename)) {
-      state = NativeBridgeState::kClosed;
-      had_error = true;
+      CloseNativeBridge(true);
     } else {
       // Try to open the library.
       void* handle = dlopen(nb_library_filename, RTLD_LAZY);
@@ -178,8 +196,7 @@ bool LoadNativeBridge(const char* nb_library_filename,
       // Two failure conditions: could not find library (dlopen failed), or could not find native
       // bridge interface (dlsym failed). Both are an error and close the native bridge.
       if (callbacks == nullptr) {
-        had_error = true;
-        state = NativeBridgeState::kClosed;
+        CloseNativeBridge(true);
       } else {
         runtime_callbacks = runtime_cbs;
         state = NativeBridgeState::kOpened;
@@ -217,14 +234,15 @@ template<typename T> void UNUSED(const T&) {}
 #endif
 
 void PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruction_set) {
-  if (app_data_dir_in == nullptr) {
+  if (app_data_dir_in == nullptr) { // TODO: this should not happen, assert it?
     return;
   }
 
-  const size_t len = strlen(app_data_dir_in);
-  // Make a copy for us.
-  app_data_dir = new char[len];
-  strncpy(app_data_dir, app_data_dir_in, len);
+  // Create the path to the application code cache directory.
+  // The memory will be release after Initialization or when the native bridge is closed.
+  const size_t len = strlen(app_data_dir_in) + strlen(kCodeCacheDir) + 2; // '\0' + '/'
+  app_code_cache_dir = new char[len];
+  snprintf(app_code_cache_dir, len, "%s/%s", app_data_dir_in, kCodeCacheDir);
 
 #ifndef __APPLE__
   if (instruction_set == nullptr) {
@@ -397,19 +415,26 @@ bool InitializeNativeBridge(JNIEnv* env, const char* instruction_set) {
   // point we are not multi-threaded, so we do not need locking here.
 
   if (state == NativeBridgeState::kOpened) {
+    // Check for code cache: if it doesn't exist try to create it.
+    struct stat st;
+    if ((app_code_cache_dir != nullptr) && (stat(app_code_cache_dir, &st) != 0)) {
+      if (TEMP_FAILURE_RETRY(mkdir(app_code_cache_dir, S_IRWXU | S_IRWXG | S_IXOTH)) == -1) {
+        ALOGW("Cannot create code cache directory %s: %s", app_code_cache_dir, strerror(errno));
+      }
+    }
     // Try to initialize.
-    if (callbacks->initialize(runtime_callbacks, app_data_dir, instruction_set)) {
+    if (callbacks->initialize(runtime_callbacks, app_code_cache_dir, instruction_set)) {
       SetupEnvironment(callbacks, env, instruction_set);
       state = NativeBridgeState::kInitialized;
+      // We no longer need the code cache path, release the memory.
+      DeleteArray(&app_code_cache_dir);
     } else {
       // Unload the library.
       dlclose(native_bridge_handle);
-      had_error = true;
-      state = NativeBridgeState::kClosed;
+      CloseNativeBridge(true);
     }
   } else {
-    had_error = true;
-    state = NativeBridgeState::kClosed;
+    CloseNativeBridge(true);
   }
 
   return state == NativeBridgeState::kInitialized;
@@ -424,19 +449,18 @@ void UnloadNativeBridge() {
     case NativeBridgeState::kInitialized:
       // Unload.
       dlclose(native_bridge_handle);
+      CloseNativeBridge(false);
       break;
 
     case NativeBridgeState::kNotSetup:
       // Not even set up. Error.
-      had_error = true;
+      CloseNativeBridge(true);
       break;
 
     case NativeBridgeState::kClosed:
       // Ignore.
       break;
   }
-
-  state = NativeBridgeState::kClosed;
 }
 
 bool NativeBridgeError() {
