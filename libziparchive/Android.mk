@@ -15,6 +15,7 @@
 
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
 source_files := \
 	zip_archive.h \
@@ -34,6 +35,7 @@ LOCAL_CFLAGS := -Werror
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_MODULE := libziparchive
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_SRC_FILES := ${source_files}
@@ -46,6 +48,7 @@ LOCAL_MULTILIB := both
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_MODULE := ziparchive-tests
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_CFLAGS += \
@@ -54,10 +57,11 @@ LOCAL_CFLAGS += \
     -Werror
 LOCAL_SRC_FILES := zip_archive_test.cc
 LOCAL_SHARED_LIBRARIES := liblog
-LOCAL_STATIC_LIBRARIES := libziparchive libz libgtest libgtest_main libutils
+LOCAL_STATIC_LIBRARIES := libziparchive libz libutils
 include $(BUILD_NATIVE_TEST)
 
 include $(CLEAR_VARS)
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_MODULE := ziparchive-tests-host
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_CFLAGS += \
@@ -68,8 +72,6 @@ LOCAL_CFLAGS += \
 LOCAL_SRC_FILES := zip_archive_test.cc
 LOCAL_STATIC_LIBRARIES := libziparchive-host \
 	libz \
-	libgtest_host \
-	libgtest_main_host \
 	liblog \
 	libutils
 include $(BUILD_HOST_NATIVE_TEST)
