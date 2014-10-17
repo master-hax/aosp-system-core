@@ -31,36 +31,9 @@ namespace android {
 static constexpr const char* kTestData = "PreInitializeNativeBridge test.";
 
 TEST_F(NativeBridgeTest, PreInitializeNativeBridge) {
-#ifndef __APPLE__         // Mac OS does not support bind-mount.
-#ifndef HAVE_ANDROID_OS   // Cannot write into the hard-wired location.
-    // Try to create our mount namespace.
-    if (unshare(CLONE_NEWNS) != -1) {
-        // Create a dummy file.
-        FILE* cpuinfo = fopen("./cpuinfo", "w");
-        ASSERT_NE(nullptr, cpuinfo) << strerror(errno);
-        fprintf(cpuinfo, kTestData);
-        fclose(cpuinfo);
-
-        // Call the setup.
-        PreInitializeNativeBridge("does not matter 1", "short 2");
-
-        // Read /proc/cpuinfo
-        FILE* proc_cpuinfo = fopen("/proc/cpuinfo", "r");
-        ASSERT_NE(nullptr, proc_cpuinfo) << strerror(errno);
-        char buf[1024];
-        EXPECT_NE(nullptr, fgets(buf, sizeof(buf), proc_cpuinfo)) << "Error reading.";
-        fclose(proc_cpuinfo);
-
-        EXPECT_EQ(0, strcmp(buf, kTestData));
-
-        // Delete the file.
-        ASSERT_EQ(0, unlink("./cpuinfo")) << "Error unlinking temporary file.";
-        // Ending the test will tear down the mount namespace.
-    } else {
-        GTEST_LOG_(WARNING) << "Could not create mount namespace. Are you running this as root?";
-    }
-#endif
-#endif
+    EXPECT_EQ(false, PreInitializeNativeBridge("app_private_dir", "isa"));
+    EXPECT_EQ(true, NativeBridgeError());
+    EXPECT_EQ(false, NativeBridgeAvailable());
 }
 
 }  // namespace android
