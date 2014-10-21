@@ -422,27 +422,29 @@ void *unzip_file(zipfile_t zip, const char *name, unsigned *sz)
 
 static int unzip_to_file(zipfile_t zip, char *name)
 {
-    int fd;
-    char *data;
-    unsigned sz;
+    zipentry_t entry;
+    FILE* dest;
 
-    fd = fileno(tmpfile());
-    if (fd < 0) {
+    entry = lookup_zipentry(zip, name);
+    if (entry == NULL) {
+        fprintf(stderr, "archive does not contain '%s'\n", name);
         return -1;
     }
 
-    data = unzip_file(zip, name, &sz);
-    if (data == 0) {
+    dest = tmpfile();
+    if (dest == NULL) {
+        fprintf(stderr, "fails to create tmp file for '%s'\n", name);
         return -1;
     }
 
-    if (write(fd, data, sz) != (ssize_t)sz) {
-        fd = -1;
+    if (decompress_zipentry_to_file(entry, dest)) {
+        fprintf(stderr, "failed to unzip '%s' from archive\n", name);
+        return -1;
     }
 
-    free(data);
-    lseek(fd, 0, SEEK_SET);
-    return fd;
+    fflush(dest);
+    fseek(dest, 0, SEEK_SET);
+    return fileno(dest);
 }
 
 static char *strip(char *s)

@@ -18,6 +18,7 @@
 #define _ZIPFILE_ZIPFILE_H
 
 #include <stddef.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +47,9 @@ char* get_zipentry_name(zipentry_t entry);
 // The buffer must be 1.001 times the buffer size returned
 // by get_zipentry_size.  Returns nonzero on failure.
 int decompress_zipentry(zipentry_t entry, void* buf, int bufsize);
+
+// Returns nonzero on failure.
+int decompress_zipentry_to_file(zipentry_t e, FILE* fout);
 
 // iterate through the entries in the zip file.  pass a pointer to
 // a void* initialized to NULL to start.  Returns NULL when done

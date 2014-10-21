@@ -5,6 +5,7 @@
 #include <string.h>
 #include <zlib.h>
 #define DEF_MEM_LEVEL 8                // normally in zutil.h?
+#define CHUNK_SIZE 16384
 
 zipfile_t
 init_zipfile(const void* data, size_t size)
@@ -111,6 +112,55 @@ uninflate(unsigned char* out, int unlen, const unsigned char* in, int clen)
     return err;
 }
 
+static int
+uninflate_to_file(FILE* dest, const unsigned char* in, int clen)
+{
+    z_stream zstream;
+    int zerr;
+    unsigned have;
+    unsigned char out_chk[CHUNK_SIZE];
+
+    memset(&zstream, 0, sizeof(zstream));
+    zstream.zalloc = Z_NULL;
+    zstream.zfree = Z_NULL;
+    zstream.opaque = Z_NULL;
+    zstream.avail_in = clen;
+    zstream.next_in = (void*)in;
+
+    // Use the undocumented "negative window bits" feature to tell zlib
+    // that there's no zlib header waiting for it.
+    zerr = inflateInit2(&zstream, -MAX_WBITS);
+    if (zerr != Z_OK) {
+        return -1;
+    }
+
+    // run inflate() on input until output buffer not full
+    do {
+        zstream.avail_out = CHUNK_SIZE;
+        zstream.next_out = out_chk;
+        zerr = inflate(&zstream, Z_NO_FLUSH);
+        switch (zerr) {
+            case Z_NEED_DICT:
+                zerr = Z_DATA_ERROR;     // and fall through
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
+                inflateEnd(&zstream);
+            case Z_STREAM_ERROR:
+                fprintf(stderr, "uninflate_to_file inflate error zerr=%d\n", zerr);
+                return -1;
+        }
+        have = CHUNK_SIZE - zstream.avail_out;
+        if (fwrite(out_chk, 1, have, dest) != have) {
+            inflateEnd(&zstream);
+            return -1;
+        }
+    } while (zstream.avail_out == 0);
+
+    // clean up and return
+    inflateEnd(&zstream);
+    return 0;
+}
+
 int
 decompress_zipentry(zipentry_t e, void* buf, int bufsize)
 {
@@ -123,6 +173,26 @@ decompress_zipentry(zipentry_t e, void* buf, int bufsize)
         case DEFLATED:
             return uninflate(buf, bufsize, entry->data, entry->compressedSize);
         default:
+            return -1;
+    }
+}
+
+int
+decompress_zipentry_to_file(zipentry_t e, FILE* dest)
+{
+    Zipentry* entry = (Zipentry*)e;
+
+    switch (entry->compressionMethod)
+    {
+        case STORED:
+            if (fwrite(entry->data, 1, entry->uncompressedSize, dest) !=
+                entry->uncompressedSize)
+                return -1;
+            return 0;
+        case DEFLATED:
+            return uninflate_to_file(dest, entry->data, entry->compressedSize);
+        default:
+            printf("Unsupported compressionMethod %d \n", entry->compressionMethod);
             return -1;
     }
 }
