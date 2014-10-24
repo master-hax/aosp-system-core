@@ -50,6 +50,7 @@ const backtrace_map_t* BacktraceMap::Find(uintptr_t addr) {
 bool BacktraceMap::ParseLine(const char* line, backtrace_map_t* map) {
   unsigned long int start;
   unsigned long int end;
+  unsigned int offset = 0;
   char permissions[5];
   int name_pos;
 
@@ -65,14 +66,15 @@ bool BacktraceMap::ParseLine(const char* line, backtrace_map_t* map) {
 // 6f000000-6f01e000 rwxp 00000000 00:0c 16389419   /system/lib/libcomposer.so\n
 // 012345678901234567890123456789012345678901234567890123456789
 // 0         1         2         3         4         5
-  if (sscanf(line, "%lx-%lx %4s %*x %*x:%*x %*d%n",
-             &start, &end, permissions, &name_pos) != 3) {
+  if (sscanf(line, "%lx-%lx %4s %x %*x:%*x %*d%n",
+             &start, &end, permissions, &offset, &name_pos) != 3) {
 #endif
     return false;
   }
 
   map->start = start;
   map->end = end;
+  map->offset = offset;
   map->flags = PROT_NONE;
   if (permissions[0] == 'r') {
     map->flags |= PROT_READ;
@@ -92,9 +94,9 @@ bool BacktraceMap::ParseLine(const char* line, backtrace_map_t* map) {
     map->name.erase(map->name.length()-1);
   }
 
-  ALOGV("Parsed map: start=%p, end=%p, flags=%x, name=%s",
+  ALOGV("Parsed map: start=%p, end=%p, offset=%p, flags=%x, name=%s",
         reinterpret_cast<void*>(map->start), reinterpret_cast<void*>(map->end),
-        map->flags, map->name.c_str());
+        reinterpret_cast<void*>(map->offset), map->flags, map->name.c_str());
   return true;
 }
 

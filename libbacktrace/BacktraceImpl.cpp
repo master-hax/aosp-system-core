@@ -105,12 +105,7 @@ std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
     map_name = "<unknown>";
   }
 
-  uintptr_t relative_pc;
-  if (frame->map) {
-    relative_pc = frame->pc - frame->map->start;
-  } else {
-    relative_pc = frame->pc;
-  }
+  uintptr_t relative_pc = BacktraceMap::GetRelativePc(frame->map, frame->pc);
 
   char buf[512];
   if (!frame->func_name.empty() && frame->func_offset) {

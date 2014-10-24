@@ -35,6 +35,7 @@
 struct backtrace_map_t {
   uintptr_t start;
   uintptr_t end;
+  uintptr_t offset;
   int flags;
   std::string name;
 };
@@ -59,6 +60,14 @@ public:
       return map->flags;
     }
     return PROT_NONE;
+  }
+
+  static uintptr_t GetRelativePc(const backtrace_map_t* map, uintptr_t pc) {
+    if (map) {
+      return pc - map->start + map->offset;
+    } else {
+      return pc;
+    }
   }
 
   bool IsReadable(uintptr_t pc) { return GetFlags(pc) & PROT_READ; }
