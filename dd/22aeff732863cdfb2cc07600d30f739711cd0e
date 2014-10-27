@@ -1,0 +1,8 @@
+Code-Review+1: Calin Juravle <calin@google.com>
+Code-Review+2: Andreas Gampe <agampe@google.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Submitted-by: Narayan Kamath <narayan@google.com>
+Submitted-at: Mon, 27 Oct 2014 16:16:02 +0000
+Reviewed-on: https://android-review.googlesource.com/111703
+Project: platform/system/core
+Branch: refs/heads/master
