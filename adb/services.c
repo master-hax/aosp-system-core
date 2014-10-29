@@ -231,6 +231,11 @@ static int create_subproc_pty(const char *cmd, const char *arg0, const char *arg
     if (*pid == 0) {
         init_subproc_child();
 
+        // Wait 50ms to ensure that the subproc_waiter_service
+        // has enough time to write the pidtag to the start of the
+        // output if necessary.
+        adb_sleep_ms(SUBPROC_FORK_DELAY);
+
         int pts = unix_open(devname, O_RDWR | O_CLOEXEC);
         if (pts < 0) {
             fprintf(stderr, "child failed to open pseudo-term slave: %s\n", devname);
@@ -305,9 +310,186 @@ static int create_subproc_raw(const char *cmd, const char *arg0, const char *arg
 #endif
 
 #if !ADB_HOST
+/*
+ * If a command is sent using 'rshell:', then adbd will send back the output
+ * with a PID attached to the front. This PID can then be used to
+ * request the return value that was seen for that PID, with 'retval:<PID>'
+ *
+ * We keep a linked list of retval nodes, each of which stores a PID that was
+ * given back, and the associated return value for that PID.
+ */
+
+typedef struct retval_node retval_node;
+struct retval_node {
+  pid_t pid;
+  int retval;
+  time_t creation_time;
+  struct retval_node *next;
+};
+
+typedef struct pidflag_cookie pidflag_cookie;
+struct pidflag_cookie {
+  pid_t pid;
+  bool save_retval_flag;
+};
+
+static retval_node *retval_nodes = NULL;
+static retval_node *final_retval_node = NULL;
+static int retval_nodes_size = 0;
+
+static adb_mutex_t retval_nodes_lock = ADB_MUTEX_INITIALIZER;
+
+static void cleanup_old_retval_nodes() {
+    // No need to acquire the lock in here, get_retval_from_pid()
+    // has already done it.
+    time_t current_time = time(NULL);
+
+    int deleted = 0;
+
+    retval_node *curr = retval_nodes;
+    retval_node *prev = NULL;
+
+    // Iterate through the list and delete any nodes that are older
+    // than 60 seconds.
+    while (curr != NULL) {
+        retval_node *to_delete = curr;
+        curr = curr->next;
+        if ((current_time - to_delete->creation_time) > 60) {
+            D("Deleting pid %d during cleanup", to_delete->pid);
+            retval_nodes_size--;
+            deleted++;
+
+            // Remove from list
+            if (prev == NULL) {
+                // We're at the start
+                retval_nodes = to_delete->next;
+            } else {
+                // We're in the middle, or at the end
+                prev->next = to_delete->next;
+            }
+            if (final_retval_node == to_delete) {
+                final_retval_node = prev;
+            }
+            // NB: prev stays the same, because we just deleted something
+
+            // Finally, deallocate
+            free(to_delete);
+        } else {
+            prev = to_delete;
+        }
+    }
+
+    D("cleanup_old_retval_nodes() deleted %d nodes", deleted);
+}
+
+static void save_pid_retval(pid_t pid, int retval) {
+    int not_success = adb_mutex_lock(&retval_nodes_lock);
+    if (not_success) {
+        D("save_pid_retval() mutex enter failed");
+        return;
+    }
+    D("ENTER save_pid_retval() %d", pid);
+
+    // Create a new retval node
+    retval_node *new_retval_node = (retval_node*) malloc(sizeof(retval_node));
+    new_retval_node->pid = pid;
+    new_retval_node->retval = retval;
+    new_retval_node->next = NULL;
+    new_retval_node->creation_time = time(NULL);
+
+    if (retval_nodes == NULL) {
+        retval_nodes = new_retval_node;
+        final_retval_node = new_retval_node;
+    } else {
+        final_retval_node->next = new_retval_node;
+        final_retval_node = new_retval_node;
+    }
+
+    retval_nodes_size++;
+
+    D("save_pid_retval(%d, %d) [size = %d]", pid, retval, retval_nodes_size);
+
+    D("EXIT save_pid_retval() %d", pid);
+    adb_mutex_unlock(&retval_nodes_lock);
+}
+
+
+static int get_retval_from_pid(pid_t pid) {
+    int not_success = adb_mutex_lock(&retval_nodes_lock);
+    if (not_success) {
+        D("get_retval_from_pid() mutex enter failed");
+        return 0;
+    }
+    D("ENTER get_retval_from_pid() %d", pid);
+
+    if (retval_nodes == NULL) {
+        D("get_retval_from_pid() no retval_nodes found");
+        D("EXIT get_retval_from_pid() %d", pid);
+        adb_mutex_unlock(&retval_nodes_lock);
+        return 0;
+    }
+
+    int retval = 0;
+
+    retval_node *curr = retval_nodes;
+    retval_node *prev = NULL;
+
+    // Iterate through the list until we find the node with our pid
+    while (curr != NULL) {
+        if (curr->pid == pid) {
+            retval = curr->retval;
+            break;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr != NULL) {
+        // Remove our node from the list
+        if (prev == NULL) {
+            // We're at the start
+            retval_nodes = curr->next;
+        } else {
+            // We're in the middle, or at the end
+            prev->next = curr->next;
+        }
+        if (final_retval_node == curr) {
+            final_retval_node = prev;
+        }
+        free(curr);
+        retval_nodes_size--;
+        D("get_retval_from_pid(%d) returns %d [size = %d]", pid, retval, retval_nodes_size);
+    } else {
+        D("get_retval_from_pid() couldn't find retval_nodes list");
+        retval = 0;
+    }
+
+    cleanup_old_retval_nodes();
+
+    D("EXIT get_retval_from_pid() %d", pid);
+    adb_mutex_unlock(&retval_nodes_lock);
+
+    return retval;
+}
+
 static void subproc_waiter_service(int fd, void *cookie)
 {
-    pid_t pid = (pid_t) (uintptr_t) cookie;
+    pidflag_cookie *wide_cookie = (pidflag_cookie*) cookie;
+    pid_t pid = wide_cookie->pid;
+    bool save_retval = wide_cookie->save_retval_flag;
+    free(wide_cookie);
+
+    if (save_retval) {
+        // The forked process will wait 50ms, to ensure that we
+        // have time to write the PID tag at the start of the output.
+        //
+        // Tag looks like: 00000000::||||::
+        char buf[17];
+        snprintf(buf, 17, "%08d%s", pid, RETVAL_PID_END_TAG);
+        writex(fd, buf, strlen(buf));
+    }
+
+    int retval = 0;
 
     D("entered. fd=%d of pid=%d\n", fd, pid);
     for (;;) {
@@ -317,26 +499,34 @@ static void subproc_waiter_service(int fd, void *cookie)
             D("fd=%d, post waitpid(pid=%d) status=%04x\n", fd, p, status);
             if (WIFSIGNALED(status)) {
                 D("*** Killed by signal %d\n", WTERMSIG(status));
+                retval = 128 + WTERMSIG(status);
                 break;
             } else if (!WIFEXITED(status)) {
                 D("*** Didn't exit!!. status %d\n", status);
+                retval = status;
                 break;
             } else if (WEXITSTATUS(status) >= 0) {
                 D("*** Exit code %d\n", WEXITSTATUS(status));
+                retval = WEXITSTATUS(status);
                 break;
             }
          }
     }
+
+    if (save_retval) {
+        save_pid_retval(pid, retval);
+    }
+
     D("shell exited fd=%d of pid=%d err=%d\n", fd, pid, errno);
     if (SHELL_EXIT_NOTIFY_FD >=0) {
-      int res;
-      res = writex(SHELL_EXIT_NOTIFY_FD, &fd, sizeof(fd));
-      D("notified shell exit via fd=%d for pid=%d res=%d errno=%d\n",
-        SHELL_EXIT_NOTIFY_FD, pid, res, errno);
+        int res;
+        res = writex(SHELL_EXIT_NOTIFY_FD, &fd, sizeof(fd));
+        D("notified shell exit via fd=%d for pid=%d res=%d errno=%d\n",
+          SHELL_EXIT_NOTIFY_FD, pid, res, errno);
     }
 }
 
-static int create_subproc_thread(const char *name, const subproc_mode mode)
+static int create_subproc_thread(const char *name, const subproc_mode mode, bool save_retval)
 {
     stinfo *sti;
     adb_thread_t t;
@@ -366,7 +556,15 @@ static int create_subproc_thread(const char *name, const subproc_mode mode)
     sti = malloc(sizeof(stinfo));
     if(sti == 0) fatal("cannot allocate stinfo");
     sti->func = subproc_waiter_service;
-    sti->cookie = (void*) (uintptr_t) pid;
+
+    // Need to send two things to subproc_waiter_service, the pid
+    // and a flag indicating if the return value needs to be saved
+    // So create a temporary container for storing these
+    pidflag_cookie* wide_cookie = malloc(sizeof(pidflag_cookie));
+    wide_cookie->pid = pid;
+    wide_cookie->save_retval_flag = save_retval;
+    sti->cookie = (void*) wide_cookie;
+
     sti->fd = ret_fd;
 
     if (adb_thread_create(&t, service_bootstrap_func, sti)) {
@@ -378,6 +576,21 @@ static int create_subproc_thread(const char *name, const subproc_mode mode)
 
     D("service thread started, fd=%d pid=%d\n", ret_fd, pid);
     return ret_fd;
+}
+#endif
+
+#if !ADB_HOST
+void retval_service(int fd, void *cookie)
+{
+    pid_t* pid_container = (int*) cookie;
+    pid_t pid = *pid_container;
+    free(pid_container);
+    int retval = get_retval_from_pid(pid);
+
+    char retval_str[32];
+    snprintf(retval_str, 32, "%d", retval);
+    writex(fd, retval_str, strlen(retval_str));
+    adb_close(fd);
 }
 #endif
 
@@ -421,9 +634,21 @@ int service_to_fd(const char *name)
     } else if (!strncmp(name, "jdwp:", 5)) {
         ret = create_jdwp_connection_fd(atoi(name+5));
     } else if(!HOST && !strncmp(name, "shell:", 6)) {
-        ret = create_subproc_thread(name + 6, SUBPROC_PTY);
+        ret = create_subproc_thread(name + 6, SUBPROC_PTY, false);
+    } else if(!HOST && !strncmp(name, "rshell:", 7)) {
+        ret = create_subproc_thread(name + 7, SUBPROC_PTY, true);
     } else if(!HOST && !strncmp(name, "exec:", 5)) {
-        ret = create_subproc_thread(name + 5, SUBPROC_RAW);
+        ret = create_subproc_thread(name + 5, SUBPROC_RAW, false);
+    } else if(!HOST && !strncmp(name, "retval:", 7)) {
+        // create_service_thread passes data using void*, but we
+        // can't convert between potentially 64-bit pointers
+        // and integers, so store our pid into a temporary container
+        // and pass the pointer to that container to retval_service
+        // which will free the container
+        pid_t pid = atoi(name + 7);
+        pid_t* pid_container = (pid_t*) malloc(sizeof(pid_t));
+        *pid_container = pid;
+        ret = create_service_thread(retval_service, (void*) pid_container);
     } else if(!strncmp(name, "sync:", 5)) {
         ret = create_service_thread(file_sync_service, NULL);
     } else if(!strncmp(name, "remount:", 8)) {
@@ -444,12 +669,12 @@ int service_to_fd(const char *name)
         }
         char* cmd;
         if (asprintf(&cmd, "/system/bin/bu backup %s", arg) != -1) {
-            ret = create_subproc_thread(cmd, SUBPROC_RAW);
+            ret = create_subproc_thread(cmd, SUBPROC_RAW, false);
             free(cmd);
         }
         free(arg);
     } else if(!strncmp(name, "restore:", 8)) {
-        ret = create_subproc_thread("/system/bin/bu restore", SUBPROC_RAW);
+        ret = create_subproc_thread("/system/bin/bu restore", SUBPROC_RAW, false);
     } else if(!strncmp(name, "tcpip:", 6)) {
         int port;
         if (sscanf(name + 6, "%d", &port) == 0) {
