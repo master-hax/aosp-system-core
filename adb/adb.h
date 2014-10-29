@@ -37,7 +37,10 @@
 #define ADB_VERSION_MAJOR 1         // Used for help/version information
 #define ADB_VERSION_MINOR 0         // Used for help/version information
 
-#define ADB_SERVER_VERSION    32    // Increment this when we want to force users to start a new adb server
+#define ADB_SERVER_VERSION    33    // Increment this when we want to force users to start a new adb server
+
+#define RETVAL_PID_END_TAG "::||||::"
+#define SUBPROC_FORK_DELAY 50
 
 typedef struct amessage amessage;
 typedef struct apacket apacket;

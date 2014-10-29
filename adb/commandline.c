@@ -278,8 +278,45 @@ static void stdin_raw_restore(int fd)
 }
 #endif
 
-static void read_and_dump(int fd)
+#define FAILED_TO_READ_RETVAL 0x1000
+#define FAILED_TO_READ_PID -1
+
+static int read_retval(int fd)
 {
+    char buf[32];
+    int len;
+    int retval = 0;
+    len = adb_read(fd, buf, 32);
+    if (len == 0) {
+      return FAILED_TO_READ_RETVAL;
+    }
+    retval = atoi(buf);
+    return retval;
+}
+
+static pid_t read_and_dump(int fd, bool read_pid)
+{
+    pid_t pid = 0;
+
+    // If we've been told to we need to read a pid that
+    // was given to us, read it. It should always be of the form
+    // 00000000::||||:: at the start of the output we're reading.
+    // where 00000000 is a pid.
+    if (read_pid) {
+        char pid_buf[9];
+        int pid_len;
+        // Read the proper pid value
+        pid_len = adb_read(fd, pid_buf, 8);
+        // Parse the value
+        pid = (pid_t) atoi(pid_buf);
+        // Read the end tag
+        adb_read(fd, pid_buf, 8);
+        if (strcmp(pid_buf, RETVAL_PID_END_TAG) != 0) {
+            fprintf(stderr, "error: didn't find the pid as expected when requested\n");
+            pid = (pid_t) FAILED_TO_READ_PID;
+        }
+    }
+
     char buf[4096];
     int len;
 
@@ -298,6 +335,8 @@ static void read_and_dump(int fd)
         fwrite(buf, 1, len, stdout);
         fflush(stdout);
     }
+
+    return pid;
 }
 
 static void read_status_line(int fd, char* buf, size_t count)
@@ -435,7 +474,7 @@ int interactive_shell(void)
 
     stdin_raw_init(fdi);
     adb_thread_create(&thr, stdin_read_thread, fds);
-    read_and_dump(fd);
+    read_and_dump(fd, false);
     stdin_raw_restore(fdi);
     return 0;
 }
@@ -818,7 +857,7 @@ static int send_shellcommand(transport_type transport, char* serial, char* buf)
         do_cmd(transport, serial, "wait-for-device", 0);
     }
 
-    read_and_dump(fd);
+    read_and_dump(fd, false);
     ret = adb_close(fd);
     if (ret)
         perror("close");
@@ -1383,7 +1422,8 @@ int adb_commandline(int argc, char **argv)
             return r;
         }
 
-        snprintf(buf, sizeof(buf), "shell:%s", argv[1]);
+        // Use rshell:, not shell:, to specify we want to be able to obtain a return value
+        snprintf(buf, sizeof(buf), "rshell:%s", argv[1]);
         argc -= 2;
         argv += 2;
         while (argc-- > 0) {
@@ -1398,10 +1438,23 @@ int adb_commandline(int argc, char **argv)
             fd = adb_connect(buf);
             if (fd >= 0) {
                 D("about to read_and_dump(fd=%d)\n", fd);
-                read_and_dump(fd);
-                D("read_and_dump() done.\n");
+                pid_t pid = read_and_dump(fd, true);
+                D("read_and_dump_with_cookie() done.\n");
                 adb_close(fd);
+
                 r = 0;
+
+                if (pid != (pid_t) FAILED_TO_READ_PID) {
+                  // Request the retval, using the pid we were given
+                  snprintf(buf, sizeof(buf), "retval:%08d", pid);
+                  fd = adb_connect(buf);
+                  r = read_retval(fd);
+                  adb_close(fd);
+                  if (r == FAILED_TO_READ_RETVAL) {
+                      r = 0;
+                      fprintf(stderr, "failed to read return value with adb shell\n");
+                  }
+                }
             } else {
                 fprintf(stderr,"error: %s\n", adb_error());
                 r = -1;
@@ -1484,7 +1537,7 @@ int adb_commandline(int argc, char **argv)
             snprintf(command, sizeof(command), "%s:", argv[0]);
         int fd = adb_connect(command);
         if (fd >= 0) {
-            read_and_dump(fd);
+            read_and_dump(fd, false);
             adb_close(fd);
             return 0;
         }
@@ -1710,7 +1763,7 @@ int adb_commandline(int argc, char **argv)
     else if (!strcmp(argv[0], "jdwp")) {
         int  fd = adb_connect("jdwp");
         if (fd >= 0) {
-            read_and_dump(fd);
+            read_and_dump(fd, false);
             adb_close(fd);
             return 0;
         } else {
