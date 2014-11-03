@@ -1,6 +1,16 @@
 LOCAL_PATH:= $(call my-dir)
 
 #######################################
+# /system/etc/hosts
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := etc/hosts
+LOCAL_SRC_FILES := etc/hosts
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT)
+
+include $(BUILD_PREBUILT)
+#######################################
 # init.rc
 # Only copy init.rc if the target doesn't have its own.
 ifneq ($(TARGET_PROVIDES_INIT_RC),true)
