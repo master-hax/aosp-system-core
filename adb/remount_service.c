@@ -30,6 +30,7 @@
 
 static int system_ro = 1;
 static int vendor_ro = 1;
+static int oem_ro = 1;
 
 /* Returns the device used to mount a directory in /proc/mounts */
 static char *find_mount(const char *dir)
@@ -72,6 +73,15 @@ static int hasVendorPartition()
 {
     struct stat info;
     if (!lstat("/vendor", &info))
+        if ((info.st_mode & S_IFMT) == S_IFDIR)
+          return true;
+    return false;
+}
+
+static int hasOemPartition()
+{
+    struct stat info;
+    if (!lstat("/oem", &info))
         if ((info.st_mode & S_IFMT) == S_IFDIR)
           return true;
     return false;
@@ -127,7 +137,14 @@ void remount_service(int fd, void *cookie)
         }
     }
 
-    if (!system_ro && (!vendor_ro || !hasVendorPartition()))
+    if (hasOemPartition()) {
+        if (remount("/oem", &oem_ro)) {
+            snprintf(buffer, sizeof(buffer), "remount of oem failed: %s\n",strerror(errno));
+            write_string(fd, buffer);
+        }
+    }
+
+    if (!system_ro && (!vendor_ro || !hasVendorPartition()) && (!oem_ro || !hasOemPartition()))
         write_string(fd, "remount succeeded\n");
     else {
         write_string(fd, "remount failed\n");
