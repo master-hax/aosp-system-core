@@ -83,6 +83,11 @@
 #define AID_CACHE         2001  /* cache access */
 #define AID_DIAG          2002  /* access to diagnostic resources */
 
+/* The range 2800-2999 is reserved for OEM, and must never be
+ * used here */
+#define AID_OEM_RESERVED1 2800
+#define AID_OEM_RESERVED2 2999
+
 /* The 3000 series are intended for use as supplemental group id's only.
  * They indicate special Android capabilities that the kernel is aware of. */
 #define AID_NET_BT_ADMIN  3001  /* bluetooth: create any socket */
