@@ -27,7 +27,7 @@
 #include "sparse_defs.h"
 #include "sparse_format.h"
 
-struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len)
+struct sparse_file *sparse_file_new(unsigned int block_size, ssize_t len)
 {
 	struct sparse_file *s = calloc(sizeof(struct sparse_file), 1);
 	if (!s) {
@@ -53,19 +53,19 @@ void sparse_file_destroy(struct sparse_file *s)
 }
 
 int sparse_file_add_data(struct sparse_file *s,
-		void *data, unsigned int len, unsigned int block)
+		void *data, ssize_t len, unsigned int block)
 {
 	return backed_block_add_data(s->backed_block_list, data, len, block);
 }
 
 int sparse_file_add_fill(struct sparse_file *s,
-		uint32_t fill_val, unsigned int len, unsigned int block)
+		uint32_t fill_val, ssize_t len, unsigned int block)
 {
 	return backed_block_add_fill(s->backed_block_list, fill_val, len, block);
 }
 
 int sparse_file_add_file(struct sparse_file *s,
-		const char *filename, int64_t file_offset, unsigned int len,
+		const char *filename, off_t file_offset, ssize_t len,
 		unsigned int block)
 {
 	return backed_block_add_file(s->backed_block_list, filename, file_offset,
@@ -73,7 +73,7 @@ int sparse_file_add_file(struct sparse_file *s,
 }
 
 int sparse_file_add_fd(struct sparse_file *s,
-		int fd, int64_t file_offset, unsigned int len, unsigned int block)
+		int fd, off_t file_offset, ssize_t len, unsigned int block)
 {
 	return backed_block_add_fd(s->backed_block_list, fd, file_offset,
 			len, block);
@@ -133,14 +133,14 @@ static int write_all_blocks(struct sparse_file *s, struct output_file *out)
 {
 	struct backed_block *bb;
 	unsigned int last_block = 0;
-	int64_t pad;
+	ssize_t pad;
 	int ret = 0;
 
 	for (bb = backed_block_iter_new(s->backed_block_list); bb;
 			bb = backed_block_iter_next(bb)) {
 		if (backed_block_block(bb) > last_block) {
 			unsigned int blocks = backed_block_block(bb) - last_block;
-			write_skip_chunk(out, (int64_t)blocks * s->block_size);
+			write_skip_chunk(out, (off_t)blocks * s->block_size);
 		}
 		ret = sparse_file_write_block(out, bb);
 		if (ret)
@@ -149,7 +149,7 @@ static int write_all_blocks(struct sparse_file *s, struct output_file *out)
 				DIV_ROUND_UP(backed_block_len(bb), s->block_size);
 	}
 
-	pad = s->len - (int64_t)last_block * s->block_size;
+	pad = s->len - (ssize_t)last_block * s->block_size;
 	assert(pad >= 0);
 	if (pad > 0) {
 		write_skip_chunk(out, pad);
@@ -179,7 +179,7 @@ int sparse_file_write(struct sparse_file *s, int fd, bool gz, bool sparse,
 }
 
 int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
-		int (*write)(void *priv, const void *data, int len), void *priv)
+		int (*write)(void *priv, const void *data, ssize_t len), void *priv)
 {
 	int ret;
 	int chunks;
@@ -199,18 +199,18 @@ int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
 	return ret;
 }
 
-static int out_counter_write(void *priv, const void *data __unused, int len)
+static int out_counter_write(void *priv, const void *data __unused, ssize_t len)
 {
-	int64_t *count = priv;
+	ssize_t *count = priv;
 	*count += len;
 	return 0;
 }
 
-int64_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc)
+ssize_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc)
 {
 	int ret;
 	int chunks = sparse_count_chunks(s);
-	int64_t count = 0;
+	ssize_t count = 0;
 	struct output_file *out;
 
 	out = output_file_open_callback(out_counter_write, &count,
@@ -231,15 +231,15 @@ int64_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc)
 }
 
 static struct backed_block *move_chunks_up_to_len(struct sparse_file *from,
-		struct sparse_file *to, unsigned int len)
+		struct sparse_file *to, ssize_t len)
 {
-	int64_t count = 0;
+	ssize_t count = 0;
 	struct output_file *out_counter;
 	struct backed_block *last_bb = NULL;
 	struct backed_block *bb;
 	struct backed_block *start;
 	unsigned int last_block = 0;
-	int64_t file_len = 0;
+	ssize_t file_len = 0;
 	int ret;
 
 	/*

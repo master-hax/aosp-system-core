@@ -19,6 +19,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <unistd.h>
 
 #ifdef	__cplusplus
 extern "C" {
@@ -39,7 +40,7 @@ struct sparse_file;
  *
  * Returns the sparse file cookie, or NULL on error.
  */
-struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len);
+struct sparse_file *sparse_file_new(unsigned int block_size, ssize_t len);
 
 /**
  * sparse_file_destroy - destroy a sparse file cookie
@@ -70,7 +71,7 @@ void sparse_file_destroy(struct sparse_file *s);
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_add_data(struct sparse_file *s,
-		void *data, unsigned int len, unsigned int block);
+		void *data, ssize_t len, unsigned int block);
 
 /**
  * sparse_file_add_fill - associate a fill chunk with a sparse file
@@ -88,7 +89,7 @@ int sparse_file_add_data(struct sparse_file *s,
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_add_fill(struct sparse_file *s,
-		uint32_t fill_val, unsigned int len, unsigned int block);
+		uint32_t fill_val, ssize_t len, unsigned int block);
 
 /**
  * sparse_file_add_file - associate a chunk of a file with a sparse file
@@ -111,7 +112,7 @@ int sparse_file_add_fill(struct sparse_file *s,
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_add_file(struct sparse_file *s,
-		const char *filename, int64_t file_offset, unsigned int len,
+		const char *filename, off_t file_offset, ssize_t len,
 		unsigned int block);
 
 /**
@@ -138,7 +139,7 @@ int sparse_file_add_file(struct sparse_file *s,
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_add_fd(struct sparse_file *s,
-		int fd, int64_t file_offset, unsigned int len, unsigned int block);
+		int fd, off_t file_offset, ssize_t len, unsigned int block);
 
 /**
  * sparse_file_write - write a sparse file to a file
@@ -173,7 +174,7 @@ int sparse_file_write(struct sparse_file *s, int fd, bool gz, bool sparse,
  * sparse format.  If sparse is false, this is the size of the normal
  * non-sparse file.
  */
-int64_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc);
+ssize_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc);
 
 /**
  * sparse_file_callback - call a callback for blocks in sparse file
@@ -194,7 +195,7 @@ int64_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc);
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
-		int (*write)(void *priv, const void *data, int len), void *priv);
+		int (*write)(void *priv, const void *data, ssize_t len), void *priv);
 
 /**
  * sparse_file_read - read a file into a sparse file cookie
