@@ -328,13 +328,13 @@ int read_all(int fd, void *buf, size_t len)
 			return -errno;
 
 		if (ret == 0)
-			return -EINVAL;
+			break;
 
 		ptr += ret;
 		total += ret;
 	}
 
-	return 0;
+	return total;
 }
 
 static int write_sparse_skip_chunk(struct output_file *out, int64_t skip_len)
@@ -695,26 +695,49 @@ int write_fill_chunk(struct output_file *out, int64_t len,
 int write_fd_chunk(struct output_file *out, int64_t len,
 		int fd, int64_t offset)
 {
-	int ret;
+	int ret = 0;;
+
+#ifndef USE_MINGW
 	off64_t aligned_offset;
 	int64_t aligned_diff;
-	int64_t buffer_size;
+	int64_t buffer_size, mapped_size = 0;
+        int64_t MAX_MAP_SIZE = 0xc0000000; /* 3G */
 	char *ptr;
 
 	aligned_offset = offset & ~(4096 - 1);
 	aligned_diff = offset - aligned_offset;
 	buffer_size = len + aligned_diff;
 
-#ifndef USE_MINGW
-	char *data = mmap64(NULL, buffer_size, PROT_READ, MAP_SHARED, fd,
-			aligned_offset);
-	if (data == MAP_FAILED) {
-		return -errno;
+	while (mapped_size < buffer_size) {
+		int64_t to_mapped = min(MAX_MAP_SIZE, (buffer_size - mapped_size));
+		char *data = mmap64(NULL, to_mapped, PROT_READ, MAP_SHARED,
+			fd, aligned_offset + mapped_size);
+
+		if (data == MAP_FAILED) {
+			return -errno;
+		}
+
+		ptr = data + aligned_diff;
+		ret = out->sparse_ops->write_data_chunk(out, to_mapped - aligned_diff, ptr);
+
+		if (aligned_diff > 0)
+			aligned_diff = 0;
+
+		munmap(data, to_mapped);
+
+		if (ret < 0) {
+			return ret;
+		}
+
+		mapped_size += to_mapped;
 	}
-	ptr = data + aligned_diff;
 #else
 	off64_t pos;
-	char *data = malloc(len);
+	unsigned int BUFFER_LEN = 0x40000000; /* 1G memory */
+	int64_t total = 0;
+	unsigned int buffer_size = min(BUFFER_LEN, len);
+	char *data = malloc(buffer_size);
+
 	if (!data) {
 		return -errno;
 	}
@@ -723,19 +746,22 @@ int write_fd_chunk(struct output_file *out, int64_t len,
                 free(data);
 		return -errno;
 	}
-	ret = read_all(fd, data, len);
-	if (ret < 0) {
-                free(data);
-		return ret;
+
+	while (total < len) {
+		ret = read_all(fd, data, min(buffer_size, (len - total)));
+		if (ret <= 0) {
+			free(data);
+			return ret;
+		}
+		total += ret;
+		ret = out->sparse_ops->write_data_chunk(out, ret, data);
+		if (ret < 0) {
+			free(data);
+			return ret;
+		}
 	}
-	ptr = data;
-#endif
 
-	ret = out->sparse_ops->write_data_chunk(out, len, ptr);
-
-#ifndef USE_MINGW
-	munmap(data, buffer_size);
-#else
+	ret = 0;
 	free(data);
 #endif
 
