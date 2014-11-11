@@ -729,7 +729,7 @@ static char *escape_arg(const char *s)
  */
 int ppp(int argc, char **argv)
 {
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
     fprintf(stderr, "error: adb %s not implemented on Win32\n", argv[0]);
     return -1;
 #else
@@ -792,7 +792,7 @@ int ppp(int argc, char **argv)
         adb_close(fd);
         return 0;
     }
-#endif /* !HAVE_WIN32_PROC */
+#endif /* !defined(__MINGW32__) */
 }
 
 static int send_shellcommand(transport_type transport, char* serial, char* buf)

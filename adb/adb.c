@@ -947,7 +947,7 @@ nomem:
     return INSTALL_STATUS_INTERNAL_ERROR;
 }
 
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
 static BOOL WINAPI ctrlc_handler(DWORD type)
 {
     exit(STATUS_CONTROL_C_EXIT);
@@ -962,7 +962,7 @@ static void adb_cleanup(void)
 
 void start_logging(void)
 {
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
     char    temp[ MAX_PATH ];
     FILE*   fnul;
     FILE*   flog;
@@ -1070,7 +1070,7 @@ void adb_set_affinity(void)
 
 int launch_server(int server_port)
 {
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
     /* we need to start the server in the background                    */
     /* we create a PIPE that will be used to wait for the server's "OK" */
     /* message since the pipe handles must be inheritable, we use a     */
@@ -1169,7 +1169,7 @@ int launch_server(int server_port)
             return -1;
         }
     }
-#elif defined(HAVE_FORKEXEC)
+#else
     char    path[PATH_MAX];
     int     fd[2];
 
@@ -1220,8 +1220,6 @@ int launch_server(int server_port)
 
         setsid();
     }
-#else
-#error "cannot implement background server start on this platform"
 #endif
     return 0;
 }
@@ -1307,9 +1305,9 @@ int adb_main(int is_daemon, int server_port)
 #endif
 
     atexit(adb_cleanup);
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
     SetConsoleCtrlHandler( ctrlc_handler, TRUE );
-#elif defined(HAVE_FORKEXEC)
+#else
     // No SIGCHLD. Let the service subproc handle its children.
     signal(SIGPIPE, SIG_IGN);
 #endif
@@ -1425,10 +1423,10 @@ int adb_main(int is_daemon, int server_port)
     if (is_daemon)
     {
         // inform our parent that we are up and running.
-#ifdef HAVE_WIN32_PROC
+#if defined(__MINGW32__)
         DWORD  count;
         WriteFile( GetStdHandle( STD_OUTPUT_HANDLE ), "OK\n", 3, &count, NULL );
-#elif defined(HAVE_FORKEXEC)
+#else
         fprintf(stderr, "OK\n");
 #endif
         start_logging();
