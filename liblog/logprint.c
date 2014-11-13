@@ -726,7 +726,7 @@ char *android_log_formatLogLine (
     const AndroidLogEntry *entry,
     size_t *p_outLength)
 {
-#if defined(HAVE_LOCALTIME_R)
+#if !defined(_WIN32)
     struct tm tmBuf;
 #endif
     struct tm* ptm;
