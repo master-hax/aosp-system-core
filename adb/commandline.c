@@ -676,11 +676,6 @@ static void status_window(transport_type ttype, const char* serial)
     }
 }
 
-static int should_escape(const char c)
-{
-    return (c == ' ' || c == '\'' || c == '"' || c == '\\' || c == '(' || c == ')');
-}
-
 /* Duplicate and escape given argument. */
 static char *escape_arg(const char *s)
 {
@@ -689,32 +684,27 @@ static char *escape_arg(const char *s)
     char *ret;
     char *dest;
 
-    alloc_len = 0;
+    alloc_len = 3;
     for (ts = s; *ts != '\0'; ts++) {
         alloc_len++;
-        if (should_escape(*ts)) {
-            alloc_len++;
+        if (*ts == '\'') {
+            alloc_len += 3;
         }
     }
 
-    if (alloc_len == 0) {
-        // Preserve empty arguments
-        ret = (char *) malloc(3);
-        ret[0] = '\"';
-        ret[1] = '\"';
-        ret[2] = '\0';
-        return ret;
-    }
-
-    ret = (char *) malloc(alloc_len + 1);
+    ret = (char *) malloc(alloc_len);
     dest = ret;
+    *dest++ = '\'';
 
     for (ts = s; *ts != '\0'; ts++) {
-        if (should_escape(*ts)) {
+        if (*ts == '\'') {
+            *dest++ = '\'';
             *dest++ = '\\';
+            *dest++ = '\'';
         }
         *dest++ = *ts;
     }
+    *dest++ = '\'';
     *dest++ = '\0';
 
     return ret;
