@@ -265,7 +265,7 @@ int killProcessGroup(uid_t uid, int initialPid, int signal)
         }
     }
 
-    SLOGV("Killed process group uid %d pid %d in %ldms, %d procs remain", uid, initialPid,
+    SLOGV("Killed process group uid %d pid %d in %lldms, %d procs remain", uid, initialPid,
             android::uptimeMillis()-startTime, processes);
 
     if (processes == 0) {
