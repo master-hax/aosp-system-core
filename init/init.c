@@ -24,6 +24,7 @@
 #include <sys/wait.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/sysinfo.h>
 #include <sys/poll.h>
 #include <errno.h>
 #include <stdarg.h>
@@ -740,6 +741,23 @@ static void import_kernel_nv(char *name, int for_emulator)
     }
 }
 
+static void check_smp(void)
+{
+    int nproc = get_nprocs_conf();
+#if ANDROID_SMP == 0
+    if (nproc > 1) {
+        ERROR("Non-SMP build running on a multi-core system\n");
+        ERROR("For this target set: TARGET_CPU_SMP to true\n");
+        exit(1);
+    }
+#else
+    if (nproc == 1) {
+        NOTICE("SMP build running on a single-core system\n");
+        NOTICE("For this target you can set: TARGET_CPU_SMP to false\n");
+    }
+#endif
+}
+
 static void export_kernel_boot_props(void)
 {
     char tmp[PROP_VALUE_MAX];
@@ -1049,6 +1067,7 @@ int main(int argc, char **argv)
     property_init();
 
     get_hardware_name(hardware, &revision);
+    check_smp();
 
     process_kernel_cmdline();
 

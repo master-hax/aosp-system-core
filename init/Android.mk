@@ -28,6 +28,12 @@ ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 LOCAL_CFLAGS += -DALLOW_LOCAL_PROP_OVERRIDE=1 -DALLOW_DISABLE_SELINUX=1
 endif
 
+ifeq ($(TARGET_CPU_SMP),true)
+LOCAL_CFLAGS += -DANDROID_SMP=1
+else
+LOCAL_CFLAGS += -DANDROID_SMP=0
+endif
+
 # Enable ueventd logging
 #LOCAL_CFLAGS += -DLOG_UEVENTS=1
 
