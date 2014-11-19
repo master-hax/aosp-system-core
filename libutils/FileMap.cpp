@@ -196,7 +196,7 @@ try_again:
 // Provide guidance to the system.
 int FileMap::advise(MapAdvice advice)
 {
-#if !defined(_WIN32)
+#if HAVE_MADVISE
     int cc, sysAdvice;
 
     switch (advice) {
@@ -216,5 +216,5 @@ int FileMap::advise(MapAdvice advice)
     return cc;
 #else
     return -1;
-#endif
+#endif // HAVE_MADVISE
 }
