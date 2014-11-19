@@ -83,12 +83,7 @@ static void dump_thread(
 
   _LOG(log, logtype::BACKTRACE, "\n\"%s\" sysTid=%d\n", threadname ? threadname : "<unknown>", tid);
 
-  if (!attached && ptrace(PTRACE_ATTACH, tid, 0, 0) < 0) {
-    _LOG(log, logtype::BACKTRACE, "Could not attach to thread: %s\n", strerror(errno));
-    return;
-  }
-
-  if (!attached && wait_for_sigstop(tid, total_sleep_time_usec, detach_failed) == -1) {
+  if (!attached && attach_tid(tid, total_sleep_time_usec, detach_failed, NULL)) {
     return;
   }
 
@@ -97,9 +92,7 @@ static void dump_thread(
     dump_backtrace_to_log(backtrace.get(), log, "  ");
   }
 
-  if (!attached && ptrace(PTRACE_DETACH, tid, 0, 0) != 0) {
-    _LOG(log, logtype::ERROR, "ptrace detach from %d failed: %s\n", tid, strerror(errno));
-    *detach_failed = true;
+  if (!attached && detach_tid(tid, detach_failed) {
   }
 }
 

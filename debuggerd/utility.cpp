@@ -91,8 +91,16 @@ void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
   }
 }
 
-int wait_for_sigstop(pid_t tid, int* total_sleep_time_usec, bool* detach_failed) {
-  bool allow_dead_tid = false;
+bool detach_tid(pid_t tid, bool* detach_failed) {
+  if (ptrace(PTRACE_DETACH, tid, 0, 0) != 0) {
+    ALOGE("detach failed: tid %d, %s", tid, strerror(errno));
+    *detach_failed = true;
+    return false;
+  }
+  return true;
+}
+
+int get_signal(pid_t tid, int* total_sleep_time_usec, bool* possible_dead_tid) {
   for (;;) {
     int status;
     pid_t n = TEMP_FAILURE_RETRY(waitpid(tid, &status, __WALL | WNOHANG));
@@ -106,7 +114,9 @@ int wait_for_sigstop(pid_t tid, int* total_sleep_time_usec, bool* detach_failed)
         ALOGE("unexpected waitpid response: n=%d, status=%08x\n", n, status);
         // This is the only circumstance under which we can allow a detach
         // to fail with ESRCH, which indicates the tid has exited.
-        allow_dead_tid = true;
+        if (possible_dead_tid) {
+          *possible_dead_tid = true;
+        }
         break;
       }
     }
@@ -119,16 +129,32 @@ int wait_for_sigstop(pid_t tid, int* total_sleep_time_usec, bool* detach_failed)
     usleep(SLEEP_TIME_USEC);
     *total_sleep_time_usec += SLEEP_TIME_USEC;
   }
+  return -1;
+}
+
+bool attach_tid(pid_t tid, int* total_sleep_time_usec, bool* detach_failed, int* stop_signal) {
+  if (ptrace(PTRACE_ATTACH, tid, 0, 0) != 0) {
+    ALOGE("attach failed: tid %d, %s", tid, strerror(errno));
+    return false;
+  }
+
+  int signal = get_signal(tid, total_sleep_time_usec, &possible_dead_tid);
+  if (signal != -1) {
+    if (stop_signal) {
+      *stop_signal = signal;
+    }
+    return true;
+  }
 
   if (ptrace(PTRACE_DETACH, tid, 0, 0) != 0) {
-    if (allow_dead_tid && errno == ESRCH) {
+    if (possible_dead_tid && errno == ESRCH) {
       ALOGE("tid exited before attach completed: tid %d", tid);
     } else {
       *detach_failed = true;
       ALOGE("detach failed: tid %d, %s", tid, strerror(errno));
     }
   }
-  return -1;
+  return false;
 }
 
 #if defined (__mips__)
