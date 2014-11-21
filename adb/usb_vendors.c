@@ -78,6 +78,8 @@
 #define VENDOR_ID_GIGASET       0x1E85
 // GIONEE's USB Vendor ID
 #define VENDOR_ID_GIONEE        0x271D
+// Goclever Sp z o.o.'s USB Vendor ID
+#define VENDOR_ID_GOCLEVER      0x2AC9
 // Google's USB Vendor ID
 #define VENDOR_ID_GOOGLE        0x18d1
 // Haier's USB Vendor ID
@@ -226,6 +228,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_GIGABYTE,
     VENDOR_ID_GIGASET,
     VENDOR_ID_GIONEE,
+    VENDOR_ID_GOCLEVER,
     VENDOR_ID_GOOGLE,
     VENDOR_ID_HAIER,
     VENDOR_ID_HARRIS,
