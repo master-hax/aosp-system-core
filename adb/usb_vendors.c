@@ -72,6 +72,8 @@
 #define VENDOR_ID_FUNAI         0x0F1C
 // Garmin-Asus's USB Vendor ID
 #define VENDOR_ID_GARMIN_ASUS   0x091E
+// General Mobile's USB Vendor ID
+#define VENDOR_ID_GENERAL_MOBILE 0x2AC9
 // Gigabyte's USB Vendor ID
 #define VENDOR_ID_GIGABYTE      0x0414
 // Gigaset's USB Vendor ID
@@ -223,6 +225,7 @@ int builtInVendorIds[] = {
     VENDOR_ID_FUJITSU,
     VENDOR_ID_FUNAI,
     VENDOR_ID_GARMIN_ASUS,
+    VENDOR_ID_GENERAL_MOBILE,
     VENDOR_ID_GIGABYTE,
     VENDOR_ID_GIGASET,
     VENDOR_ID_GIONEE,
