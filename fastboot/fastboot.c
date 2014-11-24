@@ -321,6 +321,7 @@ void usage(void)
             "                                           default: 2048\n"
             "  -S <size>[K|M|G]                         automatically sparse files greater\n"
             "                                           than size.  0 to disable\n"
+            "  -f                                       force stdout and stderr to be unbuffered\n"
         );
 }
 
@@ -1002,7 +1003,7 @@ int main(int argc, char **argv)
     serial = getenv("ANDROID_SERIAL");
 
     while (1) {
-        c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:h", longopts, NULL);
+        c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:flp:c:i:m:h", longopts, NULL);
         if (c < 0) {
             break;
         }
@@ -1013,6 +1014,10 @@ int main(int argc, char **argv)
             break;
         case 'c':
             cmdline = optarg;
+            break;
+        case 'f':
+            setvbuf(stdout, NULL, _IONBF, 0);
+            setvbuf(stderr, NULL, _IONBF, 0);
             break;
         case 'h':
             usage();
