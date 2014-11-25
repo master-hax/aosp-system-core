@@ -155,6 +155,7 @@ int usb_write(usb_handle* handle, const void* data, int len) {
     unsigned long time_out = 5000;
     unsigned long written = 0;
     unsigned count = 0;
+    unsigned len_total = len;
     int ret;
 
     DBG("usb_write %d\n", len);
@@ -179,6 +180,9 @@ int usb_write(usb_handle* handle, const void* data, int len) {
             count += written;
             len -= written;
             data = (const char *)data + written;
+
+            if (usb_progress)
+                print_progress(count, len_total);
 
             if (len == 0)
                 return count;

@@ -549,6 +549,9 @@ int usb_write(usb_handle *h, const void *data, int len) {
 
         lenRemaining -= lenToSend;
         data = (const char*)data + lenToSend;
+
+        if (usb_progress)
+            print_progress(len - lenRemaining, len);
     }
 #endif
 

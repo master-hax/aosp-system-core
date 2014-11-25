@@ -58,6 +58,7 @@
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(*(a)))
 
 char cur_product[FB_RESPONSE_SZ + 1];
+int usb_progress = 0;
 
 void bootimg_set_cmdline(boot_img_hdr *h, const char *cmdline);
 
@@ -998,6 +999,7 @@ int main(int argc, char **argv)
         {"tags_offset", required_argument, 0, 't'},
         {"help", 0, 0, 'h'},
         {"unbuffered", 0, 0, 0},
+        {"progress", 0, 0, 0},
         {0, 0, 0, 0}
     };
 
@@ -1069,6 +1071,8 @@ int main(int argc, char **argv)
             if (strcmp("unbuffered", longopts[longindex].name) == 0) {
                 setvbuf(stdout, NULL, _IONBF, 0);
                 setvbuf(stderr, NULL, _IONBF, 0);
+            } else if (strcmp("progress", longopts[longindex].name) == 0) {
+                usb_progress = 1;
             }
             break;
         default:

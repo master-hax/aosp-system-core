@@ -29,6 +29,19 @@
 #ifndef _USB_H_
 #define _USB_H_
 
+#define print_progress(written, total) \
+    do { \
+        if ((total) > 1024) { \
+            if ((written) < (total)) { \
+                fprintf(stderr, "\rprogress: %3d%%", \
+                        (int) (((written) / (double) (total)) * 100.0f)); \
+            } else { \
+                fprintf(stderr, "\rprogress: 100%%\n"); \
+            } \
+        } \
+    } \
+    while (0)
+
 typedef struct usb_handle usb_handle;
 
 typedef struct usb_ifc_info usb_ifc_info;
@@ -63,5 +76,7 @@ int usb_close(usb_handle *h);
 int usb_read(usb_handle *h, void *_data, int len);
 int usb_write(usb_handle *h, const void *_data, int len);
 int usb_wait_for_disconnect(usb_handle *h);
+
+extern int usb_progress;
 
 #endif

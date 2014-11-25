@@ -360,6 +360,7 @@ int usb_write(usb_handle *h, const void *_data, int len)
 {
     unsigned char *data = (unsigned char*) _data;
     unsigned count = 0;
+    unsigned len_total = len;
     struct usbdevfs_bulktransfer bulk;
     int n;
 
@@ -386,6 +387,9 @@ int usb_write(usb_handle *h, const void *_data, int len)
         count += xfer;
         len -= xfer;
         data += xfer;
+
+        if (usb_progress)
+            print_progress(count, len_total);
     } while(len > 0);
 
     return count;
