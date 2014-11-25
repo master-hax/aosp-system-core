@@ -5,6 +5,35 @@
 
 LOCAL_PATH:= $(call my-dir)
 
+# libadb
+# =========================================================
+
+# Much of adb is duplicated in bootable/recovery/minadb and fastboot. Changes
+# made to adb rarely get ported to the other two, so the trees have diverged a
+# bit. We'd like to stop this because it is a maintenance nightmare, but the
+# divergence makes this difficult to do all at once. For now, we will start
+# small by moving common files into a static library. Hopefully some day we can
+# get enough of adb in here that we no longer need minadb. https://b/17626262
+LIBADB_SRC_FILES :=
+LIBADB_C_FLAGS := -Wall -Werror -D_XOPEN_SOURCE -D_GNU_SOURCE
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libadb
+LOCAL_CFLAGS := $(LIBADB_CFLAGS) -DADB_HOST=0
+LOCAL_SRC_FILES := $(LIBADB_SRC_FILES) fdevent.cpp
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libadb
+LOCAL_CFLAGS := $(LIBADB_CFLAGS) -DADB_HOST=1
+LOCAL_SRC_FILES := $(LIBADB_SRC_FILES)
+ifeq ($(HOST_OS),windows)
+    LOCAL_SRC_FILES += sysdeps_wind32.c
+else
+    LOCAL_SRC_FILES += fdevent.cpp
+endif
+include $(BUILD_HOST_STATIC_LIBRARY)
+
 # adb host tool
 # =========================================================
 include $(CLEAR_VARS)
@@ -37,10 +66,6 @@ ifeq ($(HOST_OS),windows)
   USB_SRCS := usb_windows.c
   EXTRA_SRCS := get_my_path_windows.c
   EXTRA_STATIC_LIBS := AdbWinApi
-  ifneq ($(strip $(USE_CYGWIN)),)
-    # Pure cygwin case
-    LOCAL_LDLIBS += -lpthread -lgdi32
-  endif
   ifneq ($(strip $(USE_MINGW)),)
     # MinGW under Linux case
     LOCAL_LDLIBS += -lws2_32 -lgdi32
@@ -68,8 +93,6 @@ LOCAL_C_INCLUDES += external/openssl/include
 
 ifneq ($(USE_SYSDEPS_WIN32),)
   LOCAL_SRC_FILES += sysdeps_win32.c
-else
-  LOCAL_SRC_FILES += fdevent.c
 endif
 
 LOCAL_CFLAGS += -O2 -g -DADB_HOST=1 -Wall -Wno-unused-parameter -Werror
@@ -77,7 +100,13 @@ LOCAL_CFLAGS += -D_XOPEN_SOURCE -D_GNU_SOURCE
 LOCAL_MODULE := adb
 LOCAL_MODULE_TAGS := debug
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz libcrypto_static $(EXTRA_STATIC_LIBS)
+LOCAL_STATIC_LIBRARIES := \
+    libadb \
+    libzipfile \
+    libunz \
+    libcrypto_static \
+    $(EXTRA_STATIC_LIBS) \
+
 ifeq ($(USE_SYSDEPS_WIN32),)
 	LOCAL_STATIC_LIBRARIES += libcutils
 endif
@@ -101,7 +130,6 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
 	adb.c \
-	fdevent.c \
 	transport.c \
 	transport_local.c \
 	transport_usb.c \
@@ -132,7 +160,7 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 
-LOCAL_STATIC_LIBRARIES := liblog libcutils libc libmincrypt libselinux
+LOCAL_STATIC_LIBRARIES := libadb liblog libcutils libc libmincrypt libselinux
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_EXECUTABLE)
 
@@ -156,7 +184,6 @@ LOCAL_SRC_FILES := \
 	file_sync_client.c \
 	get_my_path_linux.c \
 	usb_linux.c \
-	fdevent.c
 
 LOCAL_CFLAGS := \
 	-O2 \
@@ -171,7 +198,7 @@ LOCAL_C_INCLUDES += external/openssl/include
 
 LOCAL_MODULE := adb
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz libcutils liblog
+LOCAL_STATIC_LIBRARIES := libadb libzipfile libunz libcutils liblog
 
 LOCAL_SHARED_LIBRARIES := libcrypto
 
