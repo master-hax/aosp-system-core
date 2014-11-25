@@ -165,10 +165,9 @@ void ion_share_test()
         if (recvmsg(sd[0], &msg, 0) < 0)
             perror("master recv 1");
     } else {
-        struct msghdr msg;
         struct cmsghdr *cmsg;
         char* ptr;
-        int fd, recv_fd;
+        int recv_fd;
         char* child_buf[100];
         /* child */
         struct iovec count_vec = {
@@ -196,7 +195,7 @@ void ion_share_test()
             return;
         }
         printf("child %d\n", recv_fd);
-        fd = ion_open();
+        ion_open();
         ptr = mmap(NULL, len, prot, map_flags, recv_fd, 0);
         if (ptr == MAP_FAILED) {
             return;
