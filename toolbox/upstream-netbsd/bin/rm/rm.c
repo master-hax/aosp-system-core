@@ -60,7 +60,10 @@ __RCSID("$NetBSD: rm.c,v 1.53 2013/04/26 18:43:22 christos Exp $");
 #include <string.h>
 #include <unistd.h>
 
-static int dflag, eval, fflag, iflag, Pflag, stdin_ok, vflag, Wflag;
+static int dflag, eval, fflag, iflag, Pflag, stdin_ok, vflag;
+#ifndef __ANDROID__
+static int Wflag;
+#endif
 static int xflag;
 static sig_atomic_t pinfo;
 

@@ -378,6 +378,10 @@ int
 setfile(struct stat *fs, int fd)
 {
 	int rval, islink;
+#ifdef __ANDROID__
+        /* Is unused otherwise. */
+        (void)islink;
+#endif
 
 	rval = 0;
 	islink = S_ISLNK(fs->st_mode);
