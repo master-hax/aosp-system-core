@@ -43,8 +43,8 @@
 #define LOG_HEADER      LOG_ROOT"/header"
 #define LOG_ACCT        LOG_ROOT"/kernel_pacct"
 
-#define LOG_STARTFILE   "/data/bootchart-start"
-#define LOG_STOPFILE    "/data/bootchart-stop"
+#define LOG_STARTFILE   "/data/local/tmp/bootchart-start"
+#define LOG_STOPFILE    "/data/local/tmp/bootchart-stop"
 
 static int
 unix_read(int  fd, void*  buff, int  len)
