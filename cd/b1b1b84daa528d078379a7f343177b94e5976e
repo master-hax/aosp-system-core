@@ -1,0 +1,8 @@
+Code-Review+1: Haojun Bao <baohaojun@gmail.com>
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Submitted-by: Elliott Hughes <enh@google.com>
+Submitted-at: Wed, 03 Dec 2014 18:38:04 +0000
+Reviewed-on: https://android-review.googlesource.com/94501
+Project: platform/system/core
+Branch: refs/heads/master
