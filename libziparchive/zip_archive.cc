@@ -590,6 +590,41 @@ static int32_t MapCentralDirectory(int fd, const char* debug_file_name,
   return result;
 }
 
+// Check if |length| bytes at |entry_name| constitute a valid entry name.
+// Entry names must be valid UTF-8 and must not contain '0'.
+static bool IsValidEntryName(const uint8_t* entry_name, const size_t length) {
+  for (size_t i = 0; i < length; ++i) {
+    const uint8_t byte = entry_name[i];
+    if (byte == 0) {
+      return false;
+    } else if (byte & 0x80) {
+      // Single byte sequence.
+      continue;
+    } else if ((byte & 0xc0) == 0x80 || (byte & 0xfe) == 0xfe) {
+      // Invalid sequence.
+      return false;
+    } else {
+      // 2-5 byte sequences.
+      for (uint8_t first = byte << 1; first & 0x80; first <<= 1) {
+        ++i;
+
+        // Missing continuation byte..
+        if (i == length) {
+          return false;
+        }
+
+        // Invalid continuation byte.
+        const uint8_t continuation_byte = entry_name[i];
+        if ((continuation_byte & 0xc0) != 0x80) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 /*
  * Parses the Zip archive's Central Directory.  Allocates and populates the
  * hash table.
@@ -641,9 +676,8 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     const uint16_t comment_length = cdr->comment_length;
     const uint8_t* file_name = ptr + sizeof(CentralDirectoryRecord);
 
-    /* check that file name doesn't contain \0 character */
-    if (memchr(file_name, 0, file_name_length) != NULL) {
-      ALOGW("Zip: entry name can't contain \\0 character");
+    /* check that file is valid UTF-8 and doesn't contain \0 character */
+    if (!IsValidEntryName(file_name, file_name_length)) {
       goto bail;
     }
 
