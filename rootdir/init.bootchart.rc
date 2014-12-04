@@ -1,0 +1,3 @@
+on fs
+    mkdir /data/bootchart 0755 shell shell
+    bootchart_init

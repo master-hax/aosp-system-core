@@ -14,6 +14,19 @@ LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
 include $(BUILD_PREBUILT)
 endif
 #######################################
+# init.bootchart.rc
+# Only copy init.bootchart.rc if INIT_BOOTCHART set to true
+ifeq ($(INIT_BOOTCHART),true)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := init.bootchart.rc
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
+
+include $(BUILD_PREBUILT)
+endif
+#######################################
 # init.environ.rc
 
 include $(CLEAR_VARS)
