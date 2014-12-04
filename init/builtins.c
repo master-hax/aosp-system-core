@@ -737,7 +737,7 @@ int do_write(int nargs, char **args)
 {
     const char *path = args[1];
     const char *value = args[2];
-    char prop_val[PROP_VALUE_MAX];
+    char prop_val[256];
     int ret;
 
     ret = expand_props(prop_val, value, sizeof(prop_val));
