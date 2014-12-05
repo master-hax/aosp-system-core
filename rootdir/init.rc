@@ -235,6 +235,11 @@ on post-fs-data
     # We restorecon /data in case the userdata partition has been reset.
     restorecon /data
 
+    # make the bootchart_init one of the earlier action after data partition mounted
+    # so that we can collect data as much as possible
+    mkdir /data/bootchart 0755 shell shell
+    bootchart_init
+
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
     copy /data/system/entropy.dat /dev/urandom
 
