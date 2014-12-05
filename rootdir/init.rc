@@ -229,6 +229,11 @@ on post-fs
     mkdir /cache/lost+found 0770 root root
 
 on post-fs-data
+    # make the bootchart_init the first action after data partition mounted
+    # so that we can collect data as much as possible
+    mkdir /data/bootchart 0755 shell shell
+    bootchart_init
+
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data

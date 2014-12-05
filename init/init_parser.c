@@ -76,8 +76,12 @@ static struct {
 static int lookup_keyword(const char *s)
 {
     switch (*s++) {
+#if BOOTCHART
+    case 'b':
+        if (!strcmp(s, "ootchart_init")) return K_bootchart_init;
+#endif
     case 'c':
-    if (!strcmp(s, "opy")) return K_copy;
+        if (!strcmp(s, "opy")) return K_copy;
         if (!strcmp(s, "apability")) return K_capability;
         if (!strcmp(s, "hdir")) return K_chdir;
         if (!strcmp(s, "hroot")) return K_chroot;
