@@ -21,6 +21,8 @@
  */
 
 #include "bootchart.h"
+#include "keywords.h"
+#include "log.h"
 
 #include <dirent.h>
 #include <errno.h>
@@ -41,8 +43,10 @@
 #define LOG_HEADER      LOG_ROOT"/header"
 #define LOG_ACCT        LOG_ROOT"/kernel_pacct"
 
-#define LOG_STARTFILE   "/data/bootchart-start"
-#define LOG_STOPFILE    "/data/bootchart-stop"
+#define LOG_STARTFILE   LOG_ROOT"/start"
+#define LOG_STOPFILE    LOG_ROOT"/stop"
+
+int bootchart_count;
 
 static int
 proc_read(const char*  filename, char* buff, size_t  buffsize)
@@ -69,7 +73,7 @@ static void
 file_buff_open( FileBuff*  buff, const char*  path )
 {
     buff->count = 0;
-    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC, 0755);
+    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0755);
 }
 
 static void
@@ -252,6 +256,20 @@ static FileBuff  log_stat[1];
 static FileBuff  log_procs[1];
 static FileBuff  log_disks[1];
 
+int do_bootchart_init(int nargs, char **args)
+{
+    bootchart_count = bootchart_init();
+    if (bootchart_count < 0) {
+        ERROR("bootcharting init failure\n");
+    } else if (bootchart_count > 0) {
+        NOTICE("bootcharting started (period=%d ms)\n", bootchart_count*BOOTCHART_POLLING_MS);
+    } else {
+        NOTICE("bootcharting ignored\n");
+    }
+
+    return 0;
+}
+
 /* called to setup bootcharting */
 int   bootchart_init( void )
 {
@@ -314,7 +332,7 @@ int  bootchart_step( void )
     do_log_file(log_disks,  "/proc/diskstats");
     do_log_procs(log_procs);
 
-    /* we stop when /data/bootchart-stop contains 1 */
+    /* we stop when /data/bootchart/stop contains 1 */
     {
         char  buff[2];
         if (proc_read(LOG_STOPFILE,buff,sizeof(buff)) > 0 && buff[0] == '1') {

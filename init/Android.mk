@@ -4,10 +4,12 @@ LOCAL_PATH:= $(call my-dir)
 
 # --
 
+ifneq ($(filter eng userdebug,$(TARGET_BUILD_VARIANT)),)
 ifeq ($(strip $(INIT_BOOTCHART)),true)
 init_options += -DBOOTCHART=1
 else
 init_options  += -DBOOTCHART=0
+endif
 endif
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))

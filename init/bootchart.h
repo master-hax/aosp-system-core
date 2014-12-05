@@ -17,6 +17,7 @@
 #ifndef _BOOTCHART_H
 #define _BOOTCHART_H
 
+extern int   bootchart_count;
 extern int   bootchart_init(void);
 extern int   bootchart_step(void);
 extern void  bootchart_finish(void);
