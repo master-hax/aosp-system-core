@@ -32,7 +32,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "keywords.h"
 #include "bootchart.h"
+#include "log.h"
 
 #define VERSION         "0.8"
 #define SAMPLE_PERIOD   0.2
@@ -43,8 +45,10 @@
 #define LOG_HEADER      LOG_ROOT"/header"
 #define LOG_ACCT        LOG_ROOT"/kernel_pacct"
 
-#define LOG_STARTFILE   "/data/bootchart-start"
-#define LOG_STOPFILE    "/data/bootchart-stop"
+#define LOG_STARTFILE   LOG_ROOT"/start"
+#define LOG_STOPFILE    LOG_ROOT"/stop"
+
+int bootchart_count;
 
 static int
 unix_read(int  fd, void*  buff, int  len)
@@ -66,7 +70,7 @@ static int
 proc_read(const char*  filename, char* buff, size_t  buffsize)
 {
     int  len = 0;
-    int  fd  = open(filename, O_RDONLY);
+    int  fd  = open(filename, O_RDONLY|O_CLOEXEC);
     if (fd >= 0) {
         len = unix_read(fd, buff, buffsize-1);
         close(fd);
@@ -87,7 +91,7 @@ static void
 file_buff_open( FileBuff  buff, const char*  path )
 {
     buff->count = 0;
-    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC, 0755);
+    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0755);
 }
 
 static void
@@ -144,7 +148,7 @@ log_header(void)
     struct tm  now = *localtime(&now_t);
     strftime(date, sizeof(date), "%x %X", &now);
 
-    out = fopen( LOG_HEADER, "w" );
+    out = fopen( LOG_HEADER, "we" );
     if (out == NULL)
         return;
 
@@ -181,9 +185,8 @@ open_log_file(int*  plogfd, const char*  logfile)
     int    logfd = *plogfd;
 
     /* create log file if needed */
-    if (logfd < 0) 
-    {
-        logfd = open(logfile,O_WRONLY|O_CREAT|O_TRUNC,0755);
+    if (logfd < 0){
+        logfd = open(logfile, O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0755);
         if (logfd < 0) {
             *plogfd = -2;
             return;
@@ -220,7 +223,7 @@ do_log_file(FileBuff  log, const char*  procfile)
     do_log_uptime(log);
 
     /* append file content */
-    fd = open(procfile,O_RDONLY);
+    fd = open(procfile, O_RDONLY|O_CLOEXEC);
     if (fd >= 0) {
         close_on_exec(fd);
         for (;;) {
@@ -264,7 +267,7 @@ do_log_procs(FileBuff  log)
 
             /* read process stat line */
             snprintf(filename,sizeof(filename),"/proc/%d/stat",pid);
-            fd = open(filename,O_RDONLY);
+            fd = open(filename, O_RDONLY|O_CLOEXEC);
             if (fd >= 0) {
                len = unix_read(fd, buff, sizeof(buff)-1);
                close(fd);
@@ -295,6 +298,20 @@ do_log_procs(FileBuff  log)
 static FileBuffRec  log_stat[1];
 static FileBuffRec  log_procs[1];
 static FileBuffRec  log_disks[1];
+
+int do_bootchart_init(int nargs, char **args)
+{
+    bootchart_count = bootchart_init();
+    if (bootchart_count < 0) {
+        ERROR("bootcharting init failure\n");
+    } else if (bootchart_count > 0) {
+        NOTICE("bootcharting started (period=%d ms)\n", bootchart_count*BOOTCHART_POLLING_MS);
+    } else {
+        NOTICE("bootcharting ignored\n");
+    }
+
+    return 0;
+}
 
 /* called to setup bootcharting */
 int   bootchart_init( void )
@@ -340,7 +357,7 @@ int   bootchart_init( void )
 
     /* create kernel process accounting file */
     {
-        int  fd = open( LOG_ACCT, O_WRONLY|O_CREAT|O_TRUNC,0644);
+        int  fd = open( LOG_ACCT, O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0644);
         if (fd >= 0) {
             close(fd);
             acct( LOG_ACCT );
