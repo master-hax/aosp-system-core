@@ -21,6 +21,8 @@
  */
 
 #include "bootchart.h"
+#include "keywords.h"
+#include "log.h"
 
 #include <dirent.h>
 #include <errno.h>
@@ -32,6 +34,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#define BOOTCHART_POLLING_MS             200  /* polling period in ms */
+#define BOOTCHART_DEFAULT_TIME_SEC    (2*60)  /* default polling time in seconds */
+#define BOOTCHART_MAX_TIME_SEC       (10*60)  /* max polling time in seconds */
+
 #define VERSION         "0.8"
 #define SAMPLE_PERIOD   0.2
 #define LOG_ROOT        "/data/bootchart"
@@ -41,8 +47,11 @@
 #define LOG_HEADER      LOG_ROOT"/header"
 #define LOG_ACCT        LOG_ROOT"/kernel_pacct"
 
-#define LOG_STARTFILE   "/data/bootchart-start"
-#define LOG_STOPFILE    "/data/bootchart-stop"
+#define LOG_STARTFILE   LOG_ROOT"/start"
+#define LOG_STOPFILE    LOG_ROOT"/stop"
+
+static long long last_bootchart_time;
+static int bootchart_count;
 
 static int
 proc_read(const char*  filename, char* buff, size_t  buffsize)
@@ -69,7 +78,7 @@ static void
 file_buff_open( FileBuff*  buff, const char*  path )
 {
     buff->count = 0;
-    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC, 0755);
+    buff->fd    = open(path, O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0755);
 }
 
 static void
@@ -252,6 +261,20 @@ static FileBuff  log_stat[1];
 static FileBuff  log_procs[1];
 static FileBuff  log_disks[1];
 
+int do_bootchart_init(int nargs, char **args)
+{
+    bootchart_count = bootchart_init();
+    if (bootchart_count < 0) {
+        ERROR("bootcharting init failure\n");
+    } else if (bootchart_count > 0) {
+        NOTICE("bootcharting started (period=%d ms)\n", bootchart_count*BOOTCHART_POLLING_MS);
+    } else {
+        NOTICE("bootcharting ignored\n");
+    }
+
+    return 0;
+}
+
 /* called to setup bootcharting */
 int   bootchart_init( void )
 {
@@ -307,14 +330,13 @@ int   bootchart_init( void )
     return count;
 }
 
-/* called each time you want to perform a bootchart sampling op */
-int  bootchart_step( void )
+static int  bootchart_step( void )
 {
     do_log_file(log_stat,   "/proc/stat");
     do_log_file(log_disks,  "/proc/diskstats");
     do_log_procs(log_procs);
 
-    /* we stop when /data/bootchart-stop contains 1 */
+    /* we stop when /data/bootchart/stop contains 1 */
     {
         char  buff[2];
         if (proc_read(LOG_STOPFILE,buff,sizeof(buff)) > 0 && buff[0] == '1') {
@@ -325,6 +347,42 @@ int  bootchart_step( void )
     return 0;
 }
 
+/* called to get time (in ms) used by bootchart */
+static long long bootchart_gettime() {
+    return 10LL*get_uptime_jiffies();
+}
+
+/* called each time you want to perform a bootchart sampling op */
+void bootchart_sample(int* timeout) {
+    if (bootchart_count > 0) {
+        long long current_time;
+        int elapsed_time, remaining_time;
+
+        current_time = bootchart_gettime();
+        elapsed_time = current_time - last_bootchart_time;
+
+        if (elapsed_time >= BOOTCHART_POLLING_MS) {
+            /* count missed samples */
+            while (elapsed_time >= BOOTCHART_POLLING_MS) {
+                elapsed_time -= BOOTCHART_POLLING_MS;
+                bootchart_count--;
+            }
+            /* count may be negative, take a sample anyway */
+            last_bootchart_time = current_time;
+            if (bootchart_step() < 0 || bootchart_count <= 0) {
+                bootchart_finish();
+                bootchart_count = 0;
+            }
+        }
+        if (bootchart_count > 0) {
+            remaining_time = BOOTCHART_POLLING_MS - elapsed_time;
+            if (*timeout < 0 || *timeout > remaining_time) {
+                *timeout = remaining_time;
+            }
+        }
+    }
+}
+
 void  bootchart_finish( void )
 {
     unlink( LOG_STOPFILE );
@@ -332,10 +390,4 @@ void  bootchart_finish( void )
     file_buff_done(log_disks);
     file_buff_done(log_procs);
     acct(NULL);
-}
-
-/* called to get time (in ms) used by bootchart */
-long long  bootchart_gettime( void )
-{
-    return 10LL*get_uptime_jiffies();
 }
