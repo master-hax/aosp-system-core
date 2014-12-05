@@ -32,7 +32,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "keywords.h"
 #include "bootchart.h"
+#include "log.h"
 
 #define VERSION         "0.8"
 #define SAMPLE_PERIOD   0.2
@@ -43,8 +45,10 @@
 #define LOG_HEADER      LOG_ROOT"/header"
 #define LOG_ACCT        LOG_ROOT"/kernel_pacct"
 
-#define LOG_STARTFILE   "/data/bootchart-start"
-#define LOG_STOPFILE    "/data/bootchart-stop"
+#define LOG_STARTFILE   LOG_ROOT"/start"
+#define LOG_STOPFILE    LOG_ROOT"/stop"
+
+int bootchart_count;
 
 static int
 unix_read(int  fd, void*  buff, int  len)
@@ -295,6 +299,20 @@ do_log_procs(FileBuff  log)
 static FileBuffRec  log_stat[1];
 static FileBuffRec  log_procs[1];
 static FileBuffRec  log_disks[1];
+
+int do_bootchart_init(int nargs, char **args)
+{
+    bootchart_count = bootchart_init();
+    if (bootchart_count < 0) {
+        ERROR("bootcharting init failure\n");
+    } else if (bootchart_count > 0) {
+        NOTICE("bootcharting started (period=%d ms)\n", bootchart_count*BOOTCHART_POLLING_MS);
+    } else {
+        NOTICE("bootcharting ignored\n");
+    }
+
+    return 0;
+}
 
 /* called to setup bootcharting */
 int   bootchart_init( void )

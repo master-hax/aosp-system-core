@@ -192,6 +192,12 @@ on late-init
 
 
 on post-fs
+    # make the bootchart_init the first action after data partition mounted
+    # so that we can collect data as much as possible
+    mkdir /data/bootchart 0755 shell shell
+    restorecon_recursive /data/bootchart
+    bootchart_init
+
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
     # mount shared so changes propagate into child namespaces
