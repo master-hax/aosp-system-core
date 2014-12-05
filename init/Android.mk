@@ -19,9 +19,11 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_CFLAGS    += -Wno-unused-parameter
 
+ifneq ($(filter eng userdebug,$(TARGET_BUILD_VARIANT)),)
 ifeq ($(strip $(INIT_BOOTCHART)),true)
 LOCAL_SRC_FILES += bootchart.c
 LOCAL_CFLAGS    += -DBOOTCHART=1
+endif
 endif
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
