@@ -1167,17 +1167,17 @@ int adb_commandline(int argc, char **argv)
     }
 
     /* modifiers and flags */
-    while(argc > 0) {
-        if(!strcmp(argv[0],"server")) {
+    while (argc > 0) {
+        if (!strcmp(argv[0],"server")) {
             is_server = 1;
-        } else if(!strcmp(argv[0],"nodaemon")) {
+        } else if (!strcmp(argv[0],"nodaemon")) {
             no_daemon = 1;
         } else if (!strcmp(argv[0], "fork-server")) {
             /* this is a special flag used only when the ADB client launches the ADB Server */
             is_daemon = 1;
-        } else if(!strcmp(argv[0],"persist")) {
+        } else if (!strcmp(argv[0],"persist")) {
             persist = 1;
-        } else if(!strncmp(argv[0], "-p", 2)) {
+        } else if (!strncmp(argv[0], "-p", 2)) {
             const char *product = NULL;
             if (argv[0][2] == '\0') {
                 if (argc < 2) return usage();
@@ -1197,7 +1197,7 @@ int adb_commandline(int argc, char **argv)
             if (isdigit(argv[0][2])) {
                 serial = argv[0] + 2;
             } else {
-                if(argc < 2 || argv[0][2] != '\0') return usage();
+                if (argc < 2 || argv[0][2] != '\0') return usage();
                 serial = argv[1];
                 argc--;
                 argv++;
@@ -1208,7 +1208,7 @@ int adb_commandline(int argc, char **argv)
             ttype = kTransportLocal;
         } else if (!strcmp(argv[0],"-a")) {
             gListenAll = 1;
-        } else if(!strncmp(argv[0], "-H", 2)) {
+        } else if (!strncmp(argv[0], "-H", 2)) {
             const char *hostname = NULL;
             if (argv[0][2] == '\0') {
                 if (argc < 2) return usage();
@@ -1220,7 +1220,7 @@ int adb_commandline(int argc, char **argv)
             }
             adb_set_tcp_name(hostname);
 
-        } else if(!strncmp(argv[0], "-P", 2)) {
+        } else if (!strncmp(argv[0], "-P", 2)) {
             if (argv[0][2] == '\0') {
                 if (argc < 2) return usage();
                 server_port_str = argv[1];
@@ -1259,13 +1259,13 @@ int adb_commandline(int argc, char **argv)
         } else {
             r = launch_server(server_port);
         }
-        if(r) {
+        if (r) {
             fprintf(stderr,"* could not start server *\n");
         }
         return r;
     }
 
-    if(argc == 0) {
+    if (argc == 0) {
         return usage();
     }
 
@@ -1303,7 +1303,7 @@ int adb_commandline(int argc, char **argv)
     }
 
     /* adb_connect() commands */
-    if(!strcmp(argv[0], "devices")) {
+    if (!strcmp(argv[0], "devices")) {
         char *tmp;
         char *listopt;
         if (argc < 2)
@@ -1316,7 +1316,7 @@ int adb_commandline(int argc, char **argv)
         }
         snprintf(buf, sizeof buf, "host:%s%s", argv[0], listopt);
         tmp = adb_query(buf);
-        if(tmp) {
+        if (tmp) {
             printf("List of devices attached \n");
             printf("%s\n", tmp);
             return 0;
@@ -1332,7 +1332,7 @@ int adb_commandline(int argc, char **argv)
         }
         snprintf(buf, sizeof buf, "host:connect:%s", argv[1]);
         tmp = adb_query(buf);
-        if(tmp) {
+        if (tmp) {
             printf("%s\n", tmp);
             return 0;
         } else {
@@ -1351,7 +1351,7 @@ int adb_commandline(int argc, char **argv)
             snprintf(buf, sizeof buf, "host:disconnect:");
         }
         tmp = adb_query(buf);
-        if(tmp) {
+        if (tmp) {
             printf("%s\n", tmp);
             return 0;
         } else {
@@ -1372,7 +1372,7 @@ int adb_commandline(int argc, char **argv)
             fflush(stdout);
         }
 
-        if(argc < 2) {
+        if (argc < 2) {
             D("starting interactive shell\n");
             r = interactive_shell();
             if (h) {
@@ -1395,7 +1395,7 @@ int adb_commandline(int argc, char **argv)
         for(;;) {
             D("interactive shell loop. buff=%s\n", buf);
             fd = adb_connect(buf);
-            if(fd >= 0) {
+            if (fd >= 0) {
                 D("about to read_and_dump(fd=%d)\n", fd);
                 read_and_dump(fd);
                 D("read_and_dump() done.\n");
@@ -1406,7 +1406,7 @@ int adb_commandline(int argc, char **argv)
                 r = -1;
             }
 
-            if(persist) {
+            if (persist) {
                 fprintf(stderr,"\n- waiting for device -\n");
                 adb_sleep_ms(1000);
                 do_cmd(ttype, serial, "wait-for-device", 0);
@@ -1452,7 +1452,7 @@ int adb_commandline(int argc, char **argv)
     else if (!strcmp(argv[0], "kill-server")) {
         int fd;
         fd = _adb_connect("host:kill");
-        if(fd == -1) {
+        if (fd == -1) {
             fprintf(stderr,"* server not running *\n");
             return 1;
         }
@@ -1480,7 +1480,7 @@ int adb_commandline(int argc, char **argv)
         else
             snprintf(command, sizeof(command), "%s:", argv[0]);
         int fd = adb_connect(command);
-        if(fd >= 0) {
+        if (fd >= 0) {
             read_and_dump(fd);
             adb_close(fd);
             return 0;
@@ -1579,7 +1579,7 @@ int adb_commandline(int argc, char **argv)
           snprintf(buf, sizeof buf, "%s:%s:%s;%s", host_prefix, command, argv[1], argv[2]);
         }
 
-        if(adb_command(buf)) {
+        if (adb_command(buf)) {
             fprintf(stderr,"error: %s\n", adb_error());
             return 1;
         }
@@ -1633,7 +1633,7 @@ int adb_commandline(int argc, char **argv)
         int listonly = 0;
 
         int ret;
-        if(argc < 2) {
+        if (argc < 2) {
             /* No local path was specified. */
             srcarg = NULL;
         } else if (argc >= 2 && strcmp(argv[1], "-l") == 0) {
@@ -1643,20 +1643,20 @@ int adb_commandline(int argc, char **argv)
             } else {
                 srcarg = NULL;
             }
-        } else if(argc == 2) {
+        } else if (argc == 2) {
             /* A local path or "android"/"data" arg was specified. */
             srcarg = argv[1];
         } else {
             return usage();
         }
         ret = find_sync_dirs(srcarg, &android_srcpath, &data_srcpath, &vendor_srcpath);
-        if(ret != 0) return usage();
+        if (ret != 0) return usage();
 
-        if(android_srcpath != NULL)
+        if (android_srcpath != NULL)
             ret = do_sync_sync(android_srcpath, "/system", listonly);
-        if(ret == 0 && vendor_srcpath != NULL)
+        if (ret == 0 && vendor_srcpath != NULL)
             ret = do_sync_sync(vendor_srcpath, "/vendor", listonly);
-        if(ret == 0 && data_srcpath != NULL)
+        if (ret == 0 && data_srcpath != NULL)
             ret = do_sync_sync(data_srcpath, "/data", listonly);
 
         free(android_srcpath);
@@ -1673,7 +1673,7 @@ int adb_commandline(int argc, char **argv)
 
         format_host_command(buf, sizeof buf, argv[0], ttype, serial);
         tmp = adb_query(buf);
-        if(tmp) {
+        if (tmp) {
             printf("%s\n", tmp);
             return 0;
         } else {
