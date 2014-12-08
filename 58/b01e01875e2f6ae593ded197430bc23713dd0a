@@ -1,0 +1,8 @@
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+1: Jack Pham <jackp@codeaurora.org>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Submitted-by: Elliott Hughes <enh@google.com>
+Submitted-at: Mon, 08 Dec 2014 22:35:40 +0000
+Reviewed-on: https://android-review.googlesource.com/94892
+Project: platform/system/core
+Branch: refs/heads/master
