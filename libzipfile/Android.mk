@@ -8,7 +8,7 @@ LOCAL_SRC_FILES:= \
 	zipfile.c
 
 LOCAL_STATIC_LIBRARIES := \
-	libunz
+	libz
 
 LOCAL_MODULE:= libzipfile
 
@@ -28,7 +28,7 @@ LOCAL_SRC_FILES:= \
 	zipfile.c
 
 LOCAL_STATIC_LIBRARIES := \
-	libunz
+	libz
 
 LOCAL_MODULE:= libzipfile
 
@@ -45,7 +45,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
 	test_zipfile.c
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz
+LOCAL_STATIC_LIBRARIES := libzipfile libz
 
 LOCAL_MODULE := test_zipfile
 

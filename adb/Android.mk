@@ -77,7 +77,7 @@ LOCAL_CFLAGS += -D_XOPEN_SOURCE -D_GNU_SOURCE
 LOCAL_MODULE := adb
 LOCAL_MODULE_TAGS := debug
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz libcrypto_static $(EXTRA_STATIC_LIBS)
+LOCAL_STATIC_LIBRARIES := libzipfile libz libcrypto_static $(EXTRA_STATIC_LIBS)
 ifeq ($(USE_SYSDEPS_WIN32),)
 	LOCAL_STATIC_LIBRARIES += libcutils
 endif
@@ -171,7 +171,7 @@ LOCAL_C_INCLUDES += external/openssl/include
 
 LOCAL_MODULE := adb
 
-LOCAL_STATIC_LIBRARIES := libzipfile libunz libcutils liblog
+LOCAL_STATIC_LIBRARIES := libzipfile libz libcutils liblog
 
 LOCAL_SHARED_LIBRARIES := libcrypto
 
