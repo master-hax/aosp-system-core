@@ -19,30 +19,41 @@
 
 #include <sys/cdefs.h>
 #include <arpa/inet.h>
+#include <cutils/properties.h>
+
 
 __BEGIN_DECLS
+
+typedef struct {
+    char dest[PROPERTY_VALUE_MAX];
+    char via[PROPERTY_VALUE_MAX];
+} NetutilsDhcpRoute;
 
 extern int do_dhcp(char *iname);
 extern int dhcp_do_request(const char *ifname,
                           char *ipaddr,
                           char *gateway,
                           uint32_t *prefixLength,
-                          char *dns[],
+                          char * const dns[],
                           char *server,
                           uint32_t *lease,
                           char *vendorInfo,
                           char *domain,
-                          char *mtu);
+                          char *mtu,
+                          NetutilsDhcpRoute ** routes,
+                          int * numRoutes);
 extern int dhcp_do_request_renew(const char *ifname,
                                 char *ipaddr,
                                 char *gateway,
                                 uint32_t *prefixLength,
-                                char *dns[],
+                                char * const dns[],
                                 char *server,
                                 uint32_t *lease,
                                 char *vendorInfo,
                                 char *domain,
-                                char *mtu);
+                                char *mtu,
+                                NetutilsDhcpRoute** routes,
+                                int * numRoutes);
 extern int dhcp_stop(const char *ifname);
 extern int dhcp_release_lease(const char *ifname);
 extern char *dhcp_get_errmsg();
