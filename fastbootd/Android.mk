@@ -17,10 +17,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
-    external/openssl/include \
-    external/mdnsresponder/mDNSShared \
-    $(LOCAL_PATH)/include \
-    external/zlib/ \
+    $(LOCAL_PATH)/include
 
 LOCAL_SRC_FILES := \
     config.c \
@@ -60,8 +57,6 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
-LOCAL_C_INCLUDES := \
-    external/zlib/
 
 LOCAL_SRC_FILES := \
     commands/partitions.c \
