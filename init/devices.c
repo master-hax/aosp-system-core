@@ -490,6 +490,71 @@ err:
     return NULL;
 }
 
+#define SYS_PATH_LEN 256
+#define PORT_NAME_MAX 64
+
+static char **get_virtio_ports_symlinks(struct uevent *uevent)
+{
+    char **links;
+    char sysnamepath[SYS_PATH_LEN];
+    char portname[PORT_NAME_MAX];
+    int r;
+    int fd;
+    size_t remain, pos;
+    struct stat st;
+
+    links = malloc(sizeof(char *));
+    if (!links) {
+        ERROR("failed to allocate links array: %s\n", strerror(errno));
+        return NULL;
+    }
+
+    r = snprintf(sysnamepath, SYS_PATH_LEN, "/sys%s/name", uevent->path);
+    if (r < 0 || r >= SYS_PATH_LEN) {
+        ERROR("failed to construct /sys%s/name path\n", uevent->path);
+        return NULL;
+    }
+
+    fd = open(sysnamepath, O_RDONLY);
+    if (fd < 0)
+        goto err_out;
+
+    r = fstat(fd, &st);
+    if (r < 0)
+        goto err_out;
+
+    remain = st.st_size;
+    pos = 0;
+    while (remain) {
+        r = read(fd, portname + pos, PORT_NAME_MAX - pos);
+        if (r < 0)
+            goto err_out;
+        else if (!r)
+            break;
+        remain -= r;
+        pos += r;
+    }
+
+    /* ensure null-terminated and remove newline */
+    portname[pos - 1] = '\0';
+
+    r = close(fd);
+    if (r < 0)
+        goto err_out;
+
+    r = asprintf(&links[0], "/dev/virtio-ports/%s", portname);
+    if (r < 0) {
+        ERROR("failed to construct synlink path /dev/virtio-ports/%s: %s\n",
+              portname, strerror(errno));
+        return NULL;
+    }
+
+    return links;
+err_out:
+    ERROR("failed to open and read %s: %s\n", sysnamepath, strerror(errno));
+    return NULL;
+}
+
 static char **get_block_device_symlinks(struct uevent *uevent)
 {
     const char *device;
@@ -609,6 +674,28 @@ static const char *parse_device_name(struct uevent *uevent, unsigned int len)
     }
 
     return name;
+}
+
+static void handle_virtio_ports_device_event(struct uevent *uevent)
+{
+    const char *base = "/dev/virtio-ports/";
+    const char *name;
+    char devpath[96];
+    char **links = NULL;
+
+    name = parse_device_name(uevent, 64);
+    if (!name)
+        return;
+
+    snprintf(devpath, sizeof(devpath), "%s%s", base, name);
+    make_dir(base, 0755);
+
+    ERROR("uevent->path: %s\n", uevent->path);
+
+    links = get_virtio_ports_symlinks(uevent);
+
+    handle_device(uevent->action, devpath, uevent->path, 1,
+            uevent->major, uevent->minor, links);
 }
 
 static void handle_block_device_event(struct uevent *uevent)
@@ -776,6 +863,8 @@ static void handle_device_event(struct uevent *uevent)
         handle_block_device_event(uevent);
     } else if (!strncmp(uevent->subsystem, "platform", 8)) {
         handle_platform_device_event(uevent);
+    } else if (!strncmp(uevent->subsystem, "virtio-ports", 12)) {
+        handle_virtio_ports_device_event(uevent);
     } else {
         handle_generic_device_event(uevent);
     }
