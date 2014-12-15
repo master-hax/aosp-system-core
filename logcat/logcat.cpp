@@ -235,6 +235,7 @@ static void show_help(const char *cmd)
                     "  -T '<time>'     print most recent lines since specified time (not imply -d)\n"
                     "                  count is pure numerical, time is 'MM-DD hh:mm:ss.mmm'\n"
                     "  -g              get the size of the log's ring buffer and exit\n"
+                    "  -D              dump logs from prior to last reboot\n"
                     "  -b <buffer>     Request alternate ring buffer, 'main', 'system', 'radio',\n"
                     "                  'events', 'crash' or 'all'. Multiple -b parameters are\n"
                     "                  allowed and results are interleaved. The default is\n"
@@ -345,7 +346,7 @@ int main(int argc, char **argv)
     for (;;) {
         int ret;
 
-        ret = getopt(argc, argv, "cdt:T:gG:sQf:r:n:v:b:BSpP:");
+        ret = getopt(argc, argv, "cdDt:T:gG:sQf:r:n:v:b:BSpP:");
 
         if (ret < 0) {
             break;
@@ -359,15 +360,19 @@ int main(int argc, char **argv)
 
             case 'c':
                 clearLog = 1;
-                mode = O_WRONLY;
+                mode |= O_WRONLY;
+            break;
+
+            case 'D':
+                mode |= O_PSTORE;
             break;
 
             case 'd':
-                mode = O_RDONLY | O_NDELAY;
+                mode |= O_RDONLY | O_NDELAY;
             break;
 
             case 't':
-                mode = O_RDONLY | O_NDELAY;
+                mode |= O_RDONLY | O_NDELAY;
                 /* FALLTHRU */
             case 'T':
                 if (strspn(optarg, "0123456789") != strlen(optarg)) {
