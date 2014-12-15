@@ -159,6 +159,7 @@ int android_logger_set_prune_list(struct logger_list *logger_list,
 #define ANDROID_LOG_RDWR     000000002
 #define ANDROID_LOG_ACCMODE  (ANDROID_LOG_RDONLY | ANDROID_LOG_WRONLY | ANDROID_LOG_RDWR)
 #define ANDROID_LOG_NONBLOCK 000004000
+#define ANDROID_LOG_PSTORE   010000000
 
 struct logger_list *android_logger_list_alloc(int mode,
                                               unsigned int tail,
