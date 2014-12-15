@@ -156,6 +156,8 @@ ssize_t android_logger_get_prune_list(struct logger_list *logger_list,
 int android_logger_set_prune_list(struct logger_list *logger_list,
                                   char *buf, size_t len);
 
+/* Hijack O_DIRECT in mode to switch to retreiving persistent storage */
+#define O_PSTORE O_DIRECT
 struct logger_list *android_logger_list_alloc(int mode,
                                               unsigned int tail,
                                               pid_t pid);
