@@ -30,6 +30,8 @@
 #include <cutils/sockets.h>
 #include <log/log.h>
 #include <log/logger.h>
+#include <private/android_filesystem_config.h>
+#include <private/android_logger.h>
 
 /* branchless on many architectures. */
 #define min(x,y) ((y) ^ (((x) ^ (y)) & -((x) < (y))))
@@ -353,10 +355,59 @@ static int check_log_success(char *buf, ssize_t ret)
     return 0;
 }
 
+/* And this is why we are concerned about a security audit? */
+static uid_t android_getuid()
+{
+    uid_t euid;
+    uid_t uid;
+    gid_t gid;
+    ssize_t i;
+    static uid_t last_uid = (uid_t) -1;
+
+    if (last_uid != (uid_t) -1) {
+        return last_uid;
+    }
+    uid = getuid();
+    if ((uid == AID_SYSTEM) || (uid == AID_LOG) || (uid == AID_ROOT)) {
+        return last_uid = AID_ROOT;
+    }
+    euid = geteuid();
+    if ((euid == AID_SYSTEM) || (euid == AID_LOG) || (euid == AID_ROOT)) {
+        return last_uid = AID_ROOT;
+    }
+    gid = getgid();
+    if ((gid == AID_SYSTEM) || (gid == AID_LOG) || (gid == AID_ROOT)) {
+        return last_uid = AID_ROOT;
+    }
+    gid = getegid();
+    if ((gid == AID_SYSTEM) || (gid == AID_LOG) || (gid == AID_ROOT)) {
+        return last_uid = AID_ROOT;
+    }
+    i = getgroups((size_t) 0, NULL);
+    if (i > 0) {
+        gid_t list[i];
+
+        getgroups(i, list);
+        while (--i >= 0) {
+            if ((list[i] == AID_SYSTEM) || (list[i] == AID_LOG) || (list[i] == AID_ROOT)) {
+                return last_uid = AID_ROOT;
+            }
+        }
+    }
+    return last_uid = uid;
+}
+
 int android_logger_clear(struct logger *logger)
 {
     char buf[512];
 
+    if (logger->top->mode & O_PSTORE) {
+        if (android_getuid() == AID_ROOT) {
+            return unlink("/sys/fs/pstore/pmsg-ramoops-0");
+        }
+        errno = EPERM;
+        return -1;
+    }
     return check_log_success(buf,
         send_log_msg(logger, "clear %d", buf, sizeof(buf)));
 }
@@ -568,7 +619,9 @@ static void caught_signal(int signum __unused)
 int android_logger_list_read(struct logger_list *logger_list,
                              struct log_msg *log_msg)
 {
-    int ret, e;
+    ssize_t ret;
+    int e;
+    uid_t uid;
     struct logger *logger;
     struct sigaction ignore;
     struct sigaction old_sigaction;
@@ -576,6 +629,105 @@ int android_logger_list_read(struct logger_list *logger_list,
 
     if (!logger_list) {
         return -EINVAL;
+    }
+
+    if (logger_list->mode & O_PSTORE) {
+        struct __attribute__((__packed__)) {
+            android_pmsg_log_header_t p;
+            android_log_header_t l;
+        } buf;
+        static uint8_t preread_count;
+
+        if (logger_list->sock < 0) {
+            int fd = open("/sys/fs/pstore/pmsg-ramoops-0", O_RDONLY);
+
+            if (fd < 0) {
+                if ((fd == -1) && errno) {
+                    return -errno;
+                }
+                return fd;
+            }
+            logger_list->sock = fd;
+        }
+        ret = 0;
+        preread_count = 0;
+        while(1) {
+            if (preread_count < sizeof(buf)) {
+                ret = read(logger_list->sock, &buf.p.magic + preread_count,
+                           sizeof(buf) - preread_count);
+                e = errno;
+                if (ret != (ssize_t)(sizeof(buf) - preread_count)) {
+                    if ((ret == 0) || ((ret == -1) && (e == EINTR))) {
+                        return -EAGAIN;
+                    }
+                    if (ret <= 0) {
+                        if ((ret == -1) && e) {
+                            return -e;
+                        }
+                        return ret;
+                    }
+                }
+                preread_count += ret;
+            }
+            if (preread_count != sizeof(buf)) {
+                return -EIO;
+            }
+            if ((buf.p.magic != LOGGER_MAGIC)
+             || (buf.p.len <= sizeof(buf))
+             || (buf.p.len > (sizeof(buf) + LOGGER_ENTRY_MAX_PAYLOAD))
+             || (buf.l.id > LOG_ID_MAX)
+             || (buf.l.realtime.tv_nsec >= NS_PER_SEC)) {
+                do {
+                    memmove(&buf.p.magic, &buf.p.magic + 1, --preread_count);
+                } while (preread_count && (buf.p.magic != LOGGER_MAGIC));
+                continue;
+            }
+            memset(log_msg, 0, sizeof(*log_msg));
+            ret = read(logger_list->sock, log_msg->entry_v3.msg,
+                       buf.p.len - sizeof(buf));
+            e = errno;
+            if ((ret == -1) && (e == EINTR)) {
+                return -EAGAIN;
+            }
+            preread_count = 0;
+            if (ret <= 0) {
+                if ((ret == -1) && e) {
+                    return -e;
+                }
+                return ret;
+            }
+            uid = android_getuid();
+            if ((uid != AID_ROOT) && (uid != buf.p.uid)) {
+                memset(log_msg, 0, sizeof(*log_msg)); /* security wipe */
+                continue;
+            }
+            if (ret != (ssize_t)(buf.p.len - sizeof(buf))) {
+                continue;
+            }
+            if ((logger_list->start.tv_sec || logger_list->start.tv_nsec)
+             && ((logger_list->start.tv_sec > buf.l.realtime.tv_sec)
+              || ((logger_list->start.tv_sec == buf.l.realtime.tv_sec)
+               && (logger_list->start.tv_nsec > buf.l.realtime.tv_nsec)))) {
+                continue;
+            }
+            if (logger_list->pid && (logger_list->pid != buf.p.pid)) {
+                continue;
+            }
+            log_msg->entry_v3.len = buf.p.len - sizeof(buf);
+            log_msg->entry_v3.hdr_size = sizeof(log_msg->entry_v3);
+            log_msg->entry_v3.pid = buf.p.pid;
+            log_msg->entry_v3.tid = buf.l.tid;
+            log_msg->entry_v3.sec = buf.l.realtime.tv_sec;
+            log_msg->entry_v3.nsec = buf.l.realtime.tv_nsec;
+            log_msg->entry_v3.lid = buf.l.id;
+            logger_for_each(logger, logger_list) {
+                if (log_msg->entry.lid == logger->id) {
+                    return ret;
+                }
+            }
+        }
+        /* NOTREACH */
+        return ret;
     }
 
     if (logger_list->mode & O_NONBLOCK) {
