@@ -74,6 +74,8 @@ struct logger_entry_v3 {
  */
 #define LOGGER_ENTRY_MAX_LEN		(5*1024)
 
+#define LOGGER_MAGIC 'l'
+
 #define NS_PER_SEC 1000000000ULL
 
 struct log_msg {
