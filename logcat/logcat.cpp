@@ -235,6 +235,7 @@ static void show_help(const char *cmd)
                     "  -T '<time>'     print most recent lines since specified time (not imply -d)\n"
                     "                  count is pure numerical, time is 'MM-DD hh:mm:ss.mmm'\n"
                     "  -g              get the size of the log's ring buffer and exit\n"
+                    "  -L              dump logs from prior to last reboot\n"
                     "  -b <buffer>     Request alternate ring buffer, 'main', 'system', 'radio',\n"
                     "                  'events', 'crash' or 'all'. Multiple -b parameters are\n"
                     "                  allowed and results are interleaved. The default is\n"
@@ -345,7 +346,7 @@ int main(int argc, char **argv)
     for (;;) {
         int ret;
 
-        ret = getopt(argc, argv, "cdt:T:gG:sQf:r:n:v:b:BSpP:");
+        ret = getopt(argc, argv, "cdLt:T:gG:sQf:r:n:v:b:BSpP:");
 
         if (ret < 0) {
             break;
@@ -360,6 +361,10 @@ int main(int argc, char **argv)
             case 'c':
                 clearLog = 1;
                 mode |= ANDROID_LOG_WRONLY;
+            break;
+
+            case 'L':
+                mode |= ANDROID_LOG_PSTORE;
             break;
 
             case 'd':
