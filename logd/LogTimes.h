@@ -67,7 +67,10 @@ public:
         pthread_cond_signal(&threadTriggeredCondition);
     }
 
-    void triggerSkip_Locked(unsigned int skip) { skipAhead = skip; }
+    void triggerSkip_Locked(unsigned int skip) {
+        if (mNonBlock)
+            skipAhead = skip;
+    }
 
     // Called after LogTimeEntry removed from list, lock implicitly held
     void release_Locked(void) {

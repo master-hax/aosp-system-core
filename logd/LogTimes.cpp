@@ -184,12 +184,12 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
 
     LogTimeEntry::lock();
 
+    me->mStart = element->getMonotonicTime();
+
     if (me->skipAhead) {
         me->skipAhead--;
         goto skip;
     }
-
-    me->mStart = element->getMonotonicTime();
 
     // Truncate to close race between first and second pass
     if (me->mNonBlock && me->mTail && (me->mIndex >= me->mCount)) {
