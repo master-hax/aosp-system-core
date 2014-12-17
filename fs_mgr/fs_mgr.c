@@ -28,6 +28,7 @@
 #include <libgen.h>
 #include <time.h>
 #include <sys/swap.h>
+#include <dirent.h>
 
 #include <linux/loop.h>
 #include <private/android_filesystem_config.h>
@@ -315,6 +316,78 @@ static int mount_with_alternatives(struct fstab *fstab, int start_idx, int *end_
     return 0;
 }
 
+static int translate_labels(struct fstab_rec *rec)
+{
+    DIR *blockdir = NULL;
+    struct dirent *ent;
+    char *label = rec->blk_device + strlen("LABEL=");
+    size_t label_len = strlen(label) > 16 ? 16 : strlen(label);
+    int ret = -1;
+
+    blockdir = opendir("/dev/block");
+    if (!blockdir) {
+        ERROR("couldn't open /dev/block\n");
+        goto out;
+    }
+
+    while ((ent = readdir(blockdir))) {
+        int fd;
+        int cnt;
+        long magic;
+        static char super_buf[1024];
+        char *s_label;
+
+        if (!ent->d_type == DT_BLK)
+            continue;
+
+        fd = openat(dirfd(blockdir), ent->d_name, O_RDONLY);
+        if (fd < 0) {
+            ERROR("Cannot open block device /dev/block/%s\n", ent->d_name);
+            goto out;
+        }
+
+        cnt = lseek(fd, 1024, SEEK_CUR);
+        cnt += read(fd, super_buf, 1024);
+        close(fd);
+
+        if (cnt != 2048) {
+            /* Probably a loopback device or something else without a readable
+             * superblock.
+             */
+            continue;
+        }
+
+        if (super_buf[56] != 0x53 || super_buf[57] != 0xEF) {
+            INFO("/dev/block/%s not ext{234}\n", ent->d_name);
+            continue;
+        }
+
+        s_label = super_buf + 120;
+        if (!strncmp(label, s_label, label_len)) {
+            char *new_blk_device;
+
+            /* This theoretically leaks memory, but it is assumed that this
+             * process either goes away or only calls fs_mgr_mount_all() once
+             * (on boot), and it would have to call it *a lot* for this to be
+             * measureable.
+             */
+            if (asprintf(&new_blk_device, "/dev/block/%s", ent->d_name) < 0) {
+                ERROR("Could not allocate block device string\n");
+                goto out;
+            }
+            INFO("resolved label %s to %s\n", rec->blk_device, new_blk_device);
+            rec->blk_device = new_blk_device;
+            ret = 0;
+            break;
+        }
+    }
+
+out:
+    if (blockdir)
+        closedir(blockdir);
+    return ret;
+}
+
 /* When multiple fstab records share the same mount_point, it will
  * try to mount each one in turn, and ignore any duplicates after a
  * first successful mount.
@@ -344,6 +417,18 @@ int fs_mgr_mount_all(struct fstab *fstab)
             !strcmp(fstab->recs[i].fs_type, "emmc") ||
             !strcmp(fstab->recs[i].fs_type, "mtd")) {
             continue;
+        }
+
+        /* Translate LABEL= file system labels into block devices */
+        if ((!strcmp(fstab->recs[i].fs_type, "ext2") ||
+             !strcmp(fstab->recs[i].fs_type, "ext3") ||
+             !strcmp(fstab->recs[i].fs_type, "ext4")) &&
+            !strncmp(fstab->recs[i].blk_device, "LABEL=", 6)) {
+            int tret = translate_labels(&fstab->recs[i]);
+            if (tret < 0) {
+                ERROR("Could not translate label to block device\n");
+                continue;
+            }
         }
 
         if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
