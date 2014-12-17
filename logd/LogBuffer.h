@@ -82,7 +82,7 @@ public:
 
 private:
     void maybePrune(log_id_t id);
-    void prune(log_id_t id, unsigned long pruneRows, uid_t uid = AID_ROOT);
+    void prune(log_id_t id, unsigned long pruneRows, uid_t uid = AID_ROOT, bool autoPrune = true);
 
 };
 

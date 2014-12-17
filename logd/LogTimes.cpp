@@ -36,7 +36,6 @@ LogTimeEntry::LogTimeEntry(LogReader &reader, SocketClient *client,
         , mReader(reader)
         , mLogMask(logMask)
         , mPid(pid)
-        , skipAhead(0)
         , mCount(0)
         , mTail(tail)
         , mIndex(0)
@@ -46,6 +45,9 @@ LogTimeEntry::LogTimeEntry(LogReader &reader, SocketClient *client,
         , mEnd(CLOCK_MONOTONIC)
 {
         pthread_cond_init(&threadTriggeredCondition, NULL);
+        for (log_id_t i = LOG_ID_MIN; i < LOG_ID_MAX; i = (log_id_t) (i + 1)) {
+            skipAhead[i] = 0;
+        }
 }
 
 void LogTimeEntry::startReader_Locked(void) {
@@ -169,7 +171,7 @@ bool LogTimeEntry::FilterFirstPass(const LogBufferElement *element, void *obj) {
     }
 
     if ((!me->mPid || (me->mPid == element->getPid()))
-            && (me->mLogMask & (1 << element->getLogId()))) {
+            && (me->isWatching(element->getLogId()))) {
         ++me->mCount;
     }
 
@@ -184,19 +186,19 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
 
     LogTimeEntry::lock();
 
-    if (me->skipAhead) {
-        me->skipAhead--;
+    me->mStart = element->getMonotonicTime();
+
+    if (me->skipAhead[element->getLogId()]) {
+        me->skipAhead[element->getLogId()]--;
         goto skip;
     }
-
-    me->mStart = element->getMonotonicTime();
 
     // Truncate to close race between first and second pass
     if (me->mNonBlock && me->mTail && (me->mIndex >= me->mCount)) {
         goto skip;
     }
 
-    if ((me->mLogMask & (1 << element->getLogId())) == 0) {
+    if (!me->isWatching(element->getLogId())) {
         goto skip;
     }
 
@@ -223,7 +225,7 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
     }
 
 ok:
-    if (!me->skipAhead) {
+    if (!me->skipAhead[element->getLogId()]) {
         LogTimeEntry::unlock();
         return true;
     }

@@ -233,7 +233,7 @@ void LogBuffer::maybePrune(log_id_t id) {
 // prune "pruneRows" of type "id" from the buffer.
 //
 // mLogElementsLock must be held when this function is called.
-void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
+void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid, bool autoPrune) {
     LogTimeEntry *oldest = NULL;
 
     LogTimeEntry::lock();
@@ -242,7 +242,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     LastLogTimes::iterator t = mTimes.begin();
     while(t != mTimes.end()) {
         LogTimeEntry *entry = (*t);
-        if (entry->owned_Locked()
+        if (entry->owned_Locked() && entry->isWatching(id)
                 && (!oldest || (oldest->mStart > entry->mStart))) {
             oldest = entry;
         }
@@ -353,8 +353,8 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                     if (stats.sizes(id) > (2 * log_buffer_size(id))) {
                         // kick a misbehaving log reader client off the island
                         oldest->release_Locked();
-                    } else {
-                        oldest->triggerSkip_Locked(pruneRows);
+                    } else if (autoPrune) {
+                        oldest->triggerSkip_Locked(id, pruneRows);
                     }
                 }
                 break;
@@ -384,8 +384,8 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                     if (stats.sizes(id) > (2 * log_buffer_size(id))) {
                         // kick a misbehaving log reader client off the island
                         oldest->release_Locked();
-                    } else {
-                        oldest->triggerSkip_Locked(pruneRows);
+                    } else if (autoPrune) {
+                        oldest->triggerSkip_Locked(id, pruneRows);
                     }
                     break;
                 }
@@ -405,7 +405,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 // clear all rows of type "id" from the buffer.
 void LogBuffer::clear(log_id_t id, uid_t uid) {
     pthread_mutex_lock(&mLogElementsLock);
-    prune(id, ULONG_MAX, uid);
+    prune(id, ULONG_MAX, uid, false);
     pthread_mutex_unlock(&mLogElementsLock);
 }
 
