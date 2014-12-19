@@ -15,7 +15,8 @@
  */
 
 #include <gtest/gtest.h>
-
+#include <string.h>
+#include <iostream>
 #include <ion/ion.h>
 
 #include "ion_test_fixture.h"
@@ -55,9 +56,11 @@ void IonAllHeapsTest::SetUp() {
             }
             m_lastHeap = i;
             m_allHeaps.push_back(i);
-        } else {
-            ASSERT_EQ(-ENODEV, ret);
+        } else if (ret != -ENODEV) {
+            std::cerr << "[IonTest] Warning: heap " << i << " reporting error code "
+                    <<  strerror(ret) << std::endl;
         }
+
     }
     ion_close(fd);
 

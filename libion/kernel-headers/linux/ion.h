@@ -73,6 +73,8 @@ struct ion_custom_data {
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define ION_IOC_IMPORT _IOWR(ION_IOC_MAGIC, 5, struct ion_fd_data)
 #define ION_IOC_SYNC _IOWR(ION_IOC_MAGIC, 7, struct ion_fd_data)
+#define ION_IOC_UNPIN _IOWR(ION_IOC_MAGIC, 8, struct ion_handle_data)
+#define ION_IOC_PIN _IOWR(ION_IOC_MAGIC, 9, struct ion_handle_data)
 #define ION_IOC_CUSTOM _IOWR(ION_IOC_MAGIC, 6, struct ion_custom_data)
 #endif
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */

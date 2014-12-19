@@ -22,7 +22,7 @@
 
 #include "ion_test_fixture.h"
 
-class FormerlyValidHandle : public IonTest {
+class FormerlyValidHandle : public IonAllHeapsTest {
  public:
     virtual void SetUp();
     virtual void TearDown();
@@ -31,8 +31,8 @@ class FormerlyValidHandle : public IonTest {
 
 void FormerlyValidHandle::SetUp()
 {
-    IonTest::SetUp();
-    ASSERT_EQ(0, ion_alloc(m_ionFd, 4096, 0, 1/* ion_env->m_firstHeap */, 0, &m_handle));
+    IonAllHeapsTest::SetUp();
+    ASSERT_EQ(0, ion_alloc(m_ionFd, 4096, 0, m_firstHeap, 0, &m_handle));
     ASSERT_TRUE(m_handle != 0);
     ASSERT_EQ(0, ion_free(m_ionFd, m_handle));
 }
