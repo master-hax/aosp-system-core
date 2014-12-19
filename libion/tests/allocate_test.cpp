@@ -140,6 +140,7 @@ TEST_F(Allocate, Large)
     for (unsigned int heapMask : m_allHeaps) {
             SCOPED_TRACE(::testing::Message() << "heap " << heapMask);
         ion_user_handle_t handle = 0;
+        // this gets killed by lowmemkiller
         ASSERT_EQ(-ENOMEM, ion_alloc(m_ionFd, 3UL*1024*1024*1024, 0, heapMask, 0, &handle));
     }
 }

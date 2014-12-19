@@ -86,6 +86,20 @@ int ion_free(int fd, ion_user_handle_t handle)
     return ion_ioctl(fd, ION_IOC_FREE, &data);
 }
 
+int ion_unpin(int fd, ion_user_handle_t handle) {
+	struct ion_handle_data data = {
+			.handle = handle,
+	};
+	return ion_ioctl(fd, ION_IOC_UNPIN, &data);
+}
+
+int ion_pin(int fd, ion_user_handle_t handle) {
+	struct ion_handle_data data = {
+			.handle = handle,
+	};
+	return ion_ioctl(fd, ION_IOC_PIN, &data);
+}
+
 int ion_map(int fd, ion_user_handle_t handle, size_t length, int prot,
             int flags, off_t offset, unsigned char **ptr, int *map_fd)
 {

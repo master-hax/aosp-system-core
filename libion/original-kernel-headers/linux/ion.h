@@ -186,6 +186,21 @@ struct ion_custom_data {
 #define ION_IOC_SYNC		_IOWR(ION_IOC_MAGIC, 7, struct ion_fd_data)
 
 /**
+ * DOC: ION_IOC_UNPIN - marks a buffer reclaimable under memory pressure
+ *
+ * Takes an ion_handle_data struct and marks it reclaimable.
+ */
+#define ION_IOC_UNPIN		_IOWR(ION_IOC_MAGIC, 8, struct ion_handle_data)
+
+/**
+ * DOC: ION_IOC_PIN - attempts to repin and unpinned buffer
+ *
+ * Takes an ion_handle_data struct and attempts to mark it non-reclaimable.
+ * Returns -ENODATA if the buffer has already been reclaimed.
+ */
+#define ION_IOC_PIN		_IOWR(ION_IOC_MAGIC, 9, struct ion_handle_data)
+
+/**
  * DOC: ION_IOC_CUSTOM - call architecture specific ion ioctl
  *
  * Takes the argument of the architecture specific ioctl to call and

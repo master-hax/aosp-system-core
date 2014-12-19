@@ -51,7 +51,6 @@ void Device::SetUp()
 
 void Device::TearDown()
 {
-    ASSERT_EQ(0, close(m_deviceFd));
     IonAllHeapsTest::TearDown();
 }
 
