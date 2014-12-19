@@ -29,5 +29,6 @@ LOCAL_SRC_FILES := \
 	invalid_values_test.cpp \
 	map_test.cpp \
 	device_test.cpp \
-	exit_test.cpp
+	exit_test.cpp \
+	pin_test.cpp
 include $(BUILD_NATIVE_TEST)

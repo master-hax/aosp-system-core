@@ -56,7 +56,6 @@ void IonAllHeapsTest::SetUp() {
             m_lastHeap = i;
             m_allHeaps.push_back(i);
         } else {
-            ASSERT_EQ(-ENODEV, ret);
         }
     }
     ion_close(fd);
