@@ -309,9 +309,11 @@ static int write_data_buffer(int fd, char* file_buffer, int size, syncsendbuf *s
     return err;
 }
 
-#ifdef HAVE_SYMLINKS
 static int write_data_link(int fd, const char *path, syncsendbuf *sbuf)
 {
+#if defined(_WIN32)
+    abort();
+#else
     int len, ret;
 
     len = readlink(path, sbuf->data, SYNC_DATA_MAX-1);
@@ -331,8 +333,8 @@ static int write_data_link(int fd, const char *path, syncsendbuf *sbuf)
     total_bytes += len + 1;
 
     return 0;
-}
 #endif
+}
 
 static int sync_send(int fd, const char *lpath, const char *rpath,
                      unsigned mtime, mode_t mode, int show_progress)
@@ -364,10 +366,8 @@ static int sync_send(int fd, const char *lpath, const char *rpath,
         free(file_buffer);
     } else if (S_ISREG(mode))
         write_data_file(fd, lpath, sbuf, show_progress);
-#ifdef HAVE_SYMLINKS
     else if (S_ISLNK(mode))
         write_data_link(fd, lpath, sbuf);
-#endif
     else
         goto fail;
 
