@@ -66,7 +66,7 @@
 #include "mips_disassem.h"
 
 // Choose MIPS arch variant following gcc flags
-#if defined(__mips__) && __mips==32 && __mips_isa_rev>=2
+#if defined(_MIPS_ARCH_MIPS32R2) || defined(_MIPS_ARCH_MIPS32R5) || defined(_MIPS_ARCH_MIPS32R6)
 #define mips32r2 1
 #else
 #define mips32r2 0

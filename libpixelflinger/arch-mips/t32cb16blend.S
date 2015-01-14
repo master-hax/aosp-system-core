@@ -32,7 +32,7 @@
  * Uses $t0,$t6,$t7,$t8
  */
 
-#if __mips==32 && __mips_isa_rev>=2
+#if defined(_MIPS_ARCH_MIPS32R2) || defined(_MIPS_ARCH_MIPS32R5) || defined(_MIPS_ARCH_MIPS32R6)
 	.macro pixel dreg src fb shift
 	/*
 	 * sA = s >> 24
