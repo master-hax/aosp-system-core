@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2007 The Android Open Source Project
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -534,6 +531,7 @@ void load_all_props(void)
     load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL);
     load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT, NULL);
     load_properties_from_file(PROP_PATH_VENDOR_BUILD, NULL);
+    load_properties_from_file(PROP_PATH_BOOTIMAGE_BUILD, NULL);
     load_properties_from_file(PROP_PATH_FACTORY, "ro.*");
 
     load_override_properties();
