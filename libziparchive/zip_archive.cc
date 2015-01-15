@@ -1131,7 +1131,19 @@ int32_t ExtractEntryToFile(ZipArchiveHandle handle,
     return kIoError;
   }
 
-  int result = TEMP_FAILURE_RETRY(ftruncate(fd, declared_length + current_offset));
+  int result = 0;
+#if defined(__linux__)
+  if (declared_length > 0) {
+    result = TEMP_FAILURE_RETRY(fallocate(fd, 0, current_offset, declared_length));
+    if (result == -1) {
+      ALOGW("Zip: unable to allocate space for file to %" PRId64 ": %s",
+            (int64_t)(declared_length + current_offset), strerror(errno));
+      return kIoError;
+    }
+  }
+#endif  // defined(__linux__)
+
+  result = TEMP_FAILURE_RETRY(ftruncate(fd, declared_length + current_offset));
   if (result == -1) {
     ALOGW("Zip: unable to truncate file to %" PRId64 ": %s",
           static_cast<int64_t>(declared_length + current_offset), strerror(errno));
