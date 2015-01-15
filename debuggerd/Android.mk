@@ -22,6 +22,10 @@ LOCAL_CPPFLAGS := \
     -Wunused \
     -Werror \
 
+ifeq ($(TARGET_IS_64_BIT),true)
+LOCAL_CPPFLAGS += -DDEBUGGERD_64BIT
+endif
+
 LOCAL_SHARED_LIBRARIES := \
     libbacktrace \
     libcutils \
