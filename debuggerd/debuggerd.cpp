@@ -255,6 +255,70 @@ static bool should_attach_gdb(debugger_request_t* request) {
   return false;
 }
 
+#if defined(__LP64__)
+static bool is32bit(pid_t tid) {
+  char* exeline;
+  if (asprintf(&exeline, "/proc/%d/exe", tid) == -1) {
+    return false;
+  }
+  int fd = open(exeline, O_RDONLY | O_CLOEXEC);
+  int saved_errno = errno;
+  free(exeline);
+  if (fd == -1) {
+    ALOGW("Failed to open /proc/%d/exe %s", tid, strerror(saved_errno));
+    return false;
+  }
+
+  char ehdr[EI_NIDENT];
+  ssize_t bytes = read(fd, &ehdr, sizeof(ehdr));
+  close(fd);
+  if (bytes != (ssize_t) sizeof(ehdr) || memcmp(ELFMAG, ehdr, SELFMAG) != 0) {
+    return false;
+  }
+  if (ehdr[EI_CLASS] == ELFCLASS32) {
+    return true;
+  }
+  return false;
+}
+
+static void redirect_to_32(int fd, debugger_request_t* request) {
+  debugger32_msg_t msg32;
+  memset(&msg32, 0, sizeof(msg32));
+  msg32.tid = request->tid;
+  msg32.action = request->action;
+
+  int sock_fd = socket_local_client(DEBUGGER32_SOCKET_NAME, ANDROID_SOCKET_NAMESPACE_ABSTRACT,
+                                    SOCK_STREAM | SOCK_CLOEXEC);
+  if (sock_fd < 0) {
+    ALOGE("Failed to connect to debuggerd32: %s", strerror(errno));
+    return;
+  }
+
+  if (TEMP_FAILURE_RETRY(write(sock_fd, &msg32, sizeof(msg32))) != (ssize_t) sizeof(msg32)) {
+    ALOGE("Failed to write request to debuggerd32 socket: %s", strerror(errno));
+    close(sock_fd);
+    return;
+  }
+
+  char ack;
+  if (TEMP_FAILURE_RETRY(read(sock_fd, &ack, 1)) == -1) {
+    ALOGE("Failed to read ack from debuggerd32 socket: %s", strerror(errno));
+    close(sock_fd);
+    return;
+  }
+
+  char buffer[1024];
+  ssize_t n;
+  while ((n = TEMP_FAILURE_RETRY(read(sock_fd, buffer, sizeof(buffer)))) > 0) {
+    if (TEMP_FAILURE_RETRY(write(fd, buffer, n)) != n) {
+      ALOGE("Failed to write data to fd: %s", strerror(errno));
+      break;
+    }
+  }
+  close(sock_fd);
+}
+#endif
+
 static void handle_request(int fd) {
   ALOGV("handle_request(%d)\n", fd);
 
@@ -264,6 +328,17 @@ static void handle_request(int fd) {
   if (!status) {
     ALOGV("BOOM: pid=%d uid=%d gid=%d tid=%d\n",
          request.pid, request.uid, request.gid, request.tid);
+
+#if defined(__LP64__)
+    // On 64 bit systems, requests to dump 32 bit and 64 bit tids come
+    // to the 64 bit debuggerd. If the process is a 32 bit executable,
+    // redirect the request to the 32 bit debuggerd.
+    if (is32bit(request.tid)) {
+      redirect_to_32(fd, &request);
+      close(fd);
+      return;
+    }
+#endif
 
     // At this point, the thread that made the request is blocked in
     // a read() call.  If the thread has crashed, then this gives us
