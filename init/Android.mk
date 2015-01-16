@@ -33,9 +33,9 @@ endif
 
 LOCAL_MODULE:= init
 
-# Currently, init doesn't start when built with clang.
-# Needs further investigation.
-LOCAL_CLANG := false
+# Clang driver does not recognize -Bstatic.
+# To minimize risk, we now add -static only to link 'init'.
+LOCAL_CLANG_LDFLAGS := -static
 
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
