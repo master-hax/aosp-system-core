@@ -1,0 +1,8 @@
+Verified+1: Deckard Autoverifier <deckard@android.com>
+Code-Review+2: JP Abgrall <jpa@google.com>
+Verified+1: JP Abgrall <jpa@google.com>
+Submitted-by: JP Abgrall <jpa@google.com>
+Submitted-at: Thu, 22 Jan 2015 23:59:04 +0000
+Reviewed-on: https://android-review.googlesource.com/120046
+Project: platform/system/core
+Branch: refs/heads/master
