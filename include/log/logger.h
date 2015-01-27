@@ -182,6 +182,14 @@ struct logger_list *android_logger_list_open(log_id_t id,
 log_id_t android_name_to_log_id(const char *logName);
 const char *android_log_id_to_name(log_id_t log_id);
 
+/*
+ * Logging frontends, bit mask to select features
+ */
+#define LOGGER_NORMAL      0x0
+#define LOGGER_FIFO        0x1 /* reduce syscall overhead push to background */
+
+int android_set_log_frontend(unsigned frontend);
+
 #ifdef __cplusplus
 }
 #endif
