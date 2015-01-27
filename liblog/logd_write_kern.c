@@ -323,3 +323,8 @@ int __android_log_bswrite(int32_t tag, const char *payload)
 
     return write_to_log(LOG_ID_EVENTS, vec, 4);
 }
+
+int android_set_log_frontend(unsigned frontend __unused)
+{
+    return LOGGER_KERNEL;
+}
