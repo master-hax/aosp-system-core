@@ -16,7 +16,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
 #include <pthread.h>
 #endif
 #include <stdarg.h>
@@ -28,7 +28,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#ifdef __BIONIC__
+#if defined(__BIONIC__)
 #include <android/set_abort_message.h>
 #endif
 
@@ -57,7 +57,7 @@
 
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
 static pthread_mutex_t log_init_lock = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
@@ -119,7 +119,7 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
 
 static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
 {
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
     pthread_mutex_lock(&log_init_lock);
 #endif
 
@@ -147,7 +147,7 @@ static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
         }
     }
 
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
     pthread_mutex_unlock(&log_init_lock);
 #endif
 
@@ -179,7 +179,7 @@ int __android_log_write(int prio, const char *tag, const char *msg)
             tag = tmp_tag;
     }
 
-#if __BIONIC__
+#if defined(__BIONIC__)
     if (prio == ANDROID_LOG_FATAL) {
         android_set_abort_message(msg);
     }

@@ -29,9 +29,6 @@
 #define _LIBS_LOG_LOG_H
 
 #include <sys/types.h>
-#ifdef HAVE_PTHREADS
-#include <pthread.h>
-#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
