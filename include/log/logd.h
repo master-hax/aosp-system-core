@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/types.h>
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
 #include <pthread.h>
 #endif
 #include <log/uio.h>

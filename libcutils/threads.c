@@ -16,7 +16,7 @@
 
 #include <cutils/threads.h>
 
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
 void*  thread_store_get( thread_store_t*  store )
 {
     if (!store->has_tls)
@@ -42,9 +42,7 @@ extern void   thread_store_set( thread_store_t*          store,
     pthread_setspecific( store->tls, value );
 }
 
-#endif
-
-#ifdef HAVE_WIN32_THREADS
+#else /* !defined(_WIN32) */
 void*  thread_store_get( thread_store_t*  store )
 {
     if (!store->has_tls)
@@ -79,4 +77,4 @@ void   thread_store_set( thread_store_t*          store,
     
     TlsSetValue( store->tls, value );
 }
-#endif
+#endif /* !defined(_WIN32) */

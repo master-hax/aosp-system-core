@@ -28,7 +28,7 @@
 #include <errno.h>
 #include <limits.h>
 
-#ifdef HAVE_WIN32_THREADS
+#if defined(_WIN32)
 #include <windows.h>
 #endif
 

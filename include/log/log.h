@@ -29,7 +29,7 @@
 #define _LIBS_LOG_LOG_H
 
 #include <sys/types.h>
-#ifdef HAVE_PTHREADS
+#if !defined(_WIN32)
 #include <pthread.h>
 #endif
 #include <stdarg.h>

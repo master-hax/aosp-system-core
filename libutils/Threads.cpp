@@ -24,11 +24,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
 # include <pthread.h>
 # include <sched.h>
 # include <sys/resource.h>
-#elif defined(HAVE_WIN32_THREADS)
+#else
 # include <windows.h>
 # include <stdint.h>
 # include <process.h>
@@ -59,7 +59,7 @@
 using namespace android;
 
 // ----------------------------------------------------------------------------
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
 // ----------------------------------------------------------------------------
 
 /*
@@ -188,7 +188,7 @@ android_thread_id_t androidGetThreadId()
 }
 
 // ----------------------------------------------------------------------------
-#elif defined(HAVE_WIN32_THREADS)
+#else // !defined(_WIN32)
 // ----------------------------------------------------------------------------
 
 /*
@@ -268,9 +268,7 @@ android_thread_id_t androidGetThreadId()
 }
 
 // ----------------------------------------------------------------------------
-#else
-#error "Threads not supported"
-#endif
+#endif // !defined(_WIN32)
 
 // ----------------------------------------------------------------------------
 
@@ -308,7 +306,7 @@ int androidSetThreadPriority(pid_t tid, int pri)
 {
     int rc = 0;
     
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
     int lasterr = 0;
 
     if (pri >= ANDROID_PRIORITY_BACKGROUND) {
@@ -332,7 +330,7 @@ int androidSetThreadPriority(pid_t tid, int pri)
 }
 
 int androidGetThreadPriority(pid_t tid) {
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
     return getpriority(PRIO_PROCESS, tid);
 #else
     return ANDROID_PRIORITY_NORMAL;
@@ -349,9 +347,9 @@ namespace android {
  * ===========================================================================
  */
 
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
 // implemented as inlines in threads.h
-#elif defined(HAVE_WIN32_THREADS)
+#else
 
 Mutex::Mutex()
 {
@@ -413,9 +411,7 @@ status_t Mutex::tryLock()
     return (dwWaitResult == WAIT_OBJECT_0) ? 0 : -1;
 }
 
-#else
-#error "Somebody forgot to implement threads for this platform."
-#endif
+#endif // !defined(_WIN32)
 
 
 /*
@@ -424,9 +420,9 @@ status_t Mutex::tryLock()
  * ===========================================================================
  */
 
-#if defined(HAVE_PTHREADS)
+#if !defined(_WIN32)
 // implemented as inlines in threads.h
-#elif defined(HAVE_WIN32_THREADS)
+#else
 
 /*
  * Windows doesn't have a condition variable solution.  It's possible
@@ -647,9 +643,7 @@ void Condition::broadcast()
     ReleaseMutex(condState->internalMutex);
 }
 
-#else
-#error "condition variables not supported on this platform"
-#endif
+#endif // !defined(_WIN32)
 
 // ----------------------------------------------------------------------------
 
