@@ -81,6 +81,9 @@ SYNOPSIS
        log_id_t android_name_to_log_id(const char *logName)
        const char *android_log_id_to_name(log_id_t log_id)
 
+       void __android_set_to_log_pc()
+       void __android_set_to_log_direct()
+
        Link with -llog
 
 DESCRIPTION
@@ -125,6 +128,10 @@ DESCRIPTION
        sion  respectively.  android_logger_get_id returns the id that was used
        when opening the sub-log.  It is recommended to open the  log  O_RDONLY
        in these cases.
+
+       __android_set_to_log_*() handlers alter the backend.   'pc' refers to a
+       spawned thread with a  producer-consumer  list used for low-latency but
+       low-volume and higher-cpu backend.  'direct' refers to lowest cpu cost.
 
 SEE ALSO
        syslogd(8)

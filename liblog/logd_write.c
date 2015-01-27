@@ -17,6 +17,8 @@
 #include <fcntl.h>
 #if !defined(_WIN32)
 #include <pthread.h>
+#include <semaphore.h>
+#include <sys/prctl.h>
 #endif
 #include <stdarg.h>
 #include <stdio.h>
@@ -73,6 +75,7 @@ static int pstore_fd = -1;
 static enum {
     kLogUninitialized, kLogNotAvailable, kLogAvailable
 } g_log_status = kLogUninitialized;
+
 int __android_log_dev_available(void)
 {
     if (g_log_status == kLogUninitialized) {
@@ -145,6 +148,9 @@ static int __write_to_log_initialize()
     return ret;
 }
 
+static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
+static pid_t last_pid = (pid_t) -1;
+
 static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
 {
     ssize_t ret;
@@ -169,8 +175,6 @@ static int __write_to_log_kernel(log_id_t log_id, struct iovec *vec, size_t nr)
     android_pmsg_log_header_t pmsg_header;
     struct timespec ts;
     size_t i, payload_size;
-    static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
-    static pid_t last_pid = (pid_t) -1;
 
     if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
         last_uid = getuid();
@@ -519,3 +523,240 @@ int __android_log_bswrite(int32_t tag, const char *payload)
 
     return write_to_log(LOG_ID_EVENTS, vec, 4);
 }
+
+#if !defined(_WIN32)
+#if !FAKE_LOG_DEVICE
+
+/* Producer-Consumer Log Writing */
+
+typedef struct __attribute__((__packed__)) {
+    android_log_header_t log_header;
+    uint16_t payload_length;
+    unsigned char payload[(4*1024) - sizeof(uint16_t) - sizeof(android_log_header_t)];
+} entry_t;
+
+#define PC_NUM_ENTRIES 16
+
+typedef struct {
+    pthread_t thread;
+    sem_t full;
+    sem_t empty;
+    sem_t write;
+    uint16_t size;
+    uint16_t producer;
+    uint16_t consumer;
+    uint8_t started;
+    uint8_t stopped;
+    entry_t entries[PC_NUM_ENTRIES];
+} buffer_t;
+
+static buffer_t *__android_pc_buffer;
+
+/* Consumer */
+static void * __android_pc_thread_start(void *obj __unused)
+{
+    if (!__android_pc_buffer) {
+        return NULL;
+    }
+
+    if ((pstore_fd < 0) || (logd_fd < 0)) {
+        pthread_mutex_lock(&log_init_lock);
+        __write_to_log_initialize();
+        pthread_mutex_unlock(&log_init_lock);
+    }
+
+    if ((pstore_fd < 0) || (logd_fd < 0)) {
+        __android_pc_buffer->started = 0;
+        __android_pc_buffer->stopped = 1;
+        return NULL;
+    }
+
+    prctl(PR_SET_NAME, "logd.writer.per");
+
+    if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
+        last_uid = getuid();
+    }
+    if (last_pid == (pid_t) -1) {
+        last_pid = getpid();
+    }
+
+    while (__android_pc_buffer && !(__android_pc_buffer->started
+            ? sem_wait(&__android_pc_buffer->full)
+            : sem_trywait(&__android_pc_buffer->full))) {
+        uint16_t consumer_before, consumer_after;
+        entry_t *e;
+        static const size_t num_vec = 3;
+        struct iovec vec[num_vec];
+        android_pmsg_log_header_t pmsg_header;
+
+        if (!__android_pc_buffer
+                || (!__android_pc_buffer->started
+                    && (__android_pc_buffer->consumer
+                        == __android_pc_buffer->producer))) {
+            break;
+        }
+
+        consumer_before = __android_pc_buffer->consumer;
+        consumer_after = (consumer_before + 1) % __android_pc_buffer->size;
+
+        e = &__android_pc_buffer->entries[consumer_before];
+
+        pmsg_header.magic = LOGGER_MAGIC;
+        pmsg_header.len = sizeof(pmsg_header) + sizeof(e->log_header)
+                        + e->payload_length;
+        pmsg_header.uid = last_uid;
+        pmsg_header.pid = last_pid;
+
+        vec[0].iov_base = (unsigned char *) &pmsg_header;
+        vec[0].iov_len  = sizeof(pmsg_header);
+        vec[1].iov_base = (unsigned char *) &e->log_header;
+        vec[1].iov_len  = sizeof(e->log_header);
+        vec[2].iov_base = e->payload;
+        vec[2].iov_len  = e->payload_length;
+
+        if (pstore_fd >= 0) {
+            TEMP_FAILURE_RETRY(writev(pstore_fd, vec, num_vec));
+        }
+
+        if (logd_fd >= 0) {
+            ssize_t ret = -EAGAIN;
+            while (ret == -EAGAIN) {
+                ret = TEMP_FAILURE_RETRY(writev(logd_fd, vec + 1, num_vec - 1));
+                if (ret < 0) {
+                    ret = -errno;
+                }
+                if (ret == -ENOTCONN) {
+                    pthread_mutex_lock(&log_init_lock);
+                    ret = __write_to_log_initialize();
+                    pthread_mutex_unlock(&log_init_lock);
+
+                    if (ret >= 0) {
+                        ret = -EAGAIN;
+                    }
+                }
+            }
+        }
+
+        __android_pc_buffer->consumer = consumer_after;
+        sem_post(&__android_pc_buffer->empty);
+    }
+
+    if (__android_pc_buffer) {
+        __android_pc_buffer->started = 0;
+        __android_pc_buffer->stopped = 1;
+    }
+    return NULL;
+}
+
+/* Producer(s) */
+static int __write_to_log_pc(log_id_t log_id, struct iovec *vec, size_t nr)
+{
+    struct timespec ts;
+    unsigned producer_before, producer_after;
+    entry_t *e;
+    unsigned char *p;
+    size_t left;
+
+    if (!__android_pc_buffer) {
+        __android_pc_buffer = calloc((size_t)1, sizeof(buffer_t));
+        if (!__android_pc_buffer) {
+            return -ENOMEM;
+        }
+        __android_pc_buffer->size = PC_NUM_ENTRIES;
+        sem_init(&__android_pc_buffer->empty, 0, __android_pc_buffer->size);
+        sem_init(&__android_pc_buffer->full, 0, 0);
+        sem_init(&__android_pc_buffer->write, 0, 1);
+    }
+
+    if (sem_trywait(&__android_pc_buffer->empty)) {
+        return -EAGAIN;
+    }
+
+    sem_wait(&__android_pc_buffer->write);
+    producer_before = __android_pc_buffer->producer;
+    producer_after = (producer_before + 1) % __android_pc_buffer->size;
+
+    clock_gettime(CLOCK_REALTIME, &ts);
+
+    e = &__android_pc_buffer->entries[producer_before];
+    e->log_header.id = log_id;
+    e->log_header.tid = gettid();
+    e->log_header.realtime.tv_sec = ts.tv_sec;
+    e->log_header.realtime.tv_nsec = ts.tv_nsec;
+
+    p = e->payload;
+    left = sizeof(e->payload);
+    while (nr) {
+        size_t len = vec->iov_len;
+        if (len > left) {
+            len = left;
+            nr = 1;
+        }
+        memcpy(p, vec->iov_base, len);
+        left -= len;
+        if (left == 0) {
+            break;
+        }
+        ++vec;
+        p += len;
+        --nr;
+    }
+    e->payload_length = sizeof(e->payload) - left;
+    __android_pc_buffer->producer = producer_after;
+    sem_post(&__android_pc_buffer->full);
+    if (!__android_pc_buffer->started) {
+        pthread_attr_t attr;
+
+        if (!pthread_attr_init(&attr)) {
+            if (!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)
+             && !pthread_create(&__android_pc_buffer->thread, &attr,
+                                __android_pc_thread_start, NULL)) {
+                __android_pc_buffer->started = 1;
+                sem_post(&__android_pc_buffer->write);
+                pthread_attr_destroy(&attr);
+                return 0;
+            }
+            pthread_attr_destroy(&attr);
+        }
+        sem_post(&__android_pc_buffer->write);
+        return -ENOMEM;
+    }
+    sem_post(&__android_pc_buffer->write);
+    return 0;
+}
+
+void __android_set_to_log_pc()
+{
+    write_to_log = __write_to_log_pc;
+}
+
+void __android_set_to_log_direct()
+{
+    buffer_t *b;
+
+    if (write_to_log != __write_to_log_pc) {
+        return;
+    }
+
+    write_to_log = __write_to_log_init;
+
+    b = __android_pc_buffer;
+    if (b) {
+        int i;
+
+        b->started = 0;
+        if (!sem_getvalue(&b->full, &i) && (i <= 0)) {
+            sem_post(&b->full);
+        }
+
+        for (i = 10; !b->stopped && i; --i) {
+            sleep(1);
+        }
+
+        __android_pc_buffer = NULL;
+        free(b);
+    }
+}
+
+#endif
+#endif

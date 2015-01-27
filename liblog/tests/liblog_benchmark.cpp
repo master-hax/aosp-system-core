@@ -53,7 +53,18 @@ static void BM_log_maximum_retry(int iters) {
 
     StopBenchmarkTiming();
 }
-BENCHMARK(BM_log_maximum_retry);
+
+static void BM_log_maximum_retry_direct(int iters) {
+    __android_set_to_log_direct();
+    BM_log_maximum_retry(iters);
+}
+BENCHMARK(BM_log_maximum_retry_direct);
+
+static void BM_log_maximum_retry_pc(int iters) {
+    __android_set_to_log_pc();
+    BM_log_maximum_retry(iters);
+}
+BENCHMARK(BM_log_maximum_retry_pc);
 
 /*
  *	Measure the fastest rate we can stuff print messages into the log
@@ -69,12 +80,23 @@ static void BM_log_maximum(int iters) {
 
     StopBenchmarkTiming();
 }
-BENCHMARK(BM_log_maximum);
+
+static void BM_log_maximum_direct(int iters) {
+    __android_set_to_log_direct();
+    BM_log_maximum(iters);
+}
+BENCHMARK(BM_log_maximum_direct);
+
+static void BM_log_maximum_pc(int iters) {
+    __android_set_to_log_pc();
+    BM_log_maximum(iters);
+}
+BENCHMARK(BM_log_maximum_pc);
 
 /*
- *	Measure the time it takes to submit the android logging call using
- * discrete acquisition under light load. Expect this to be a pair of
- * syscall periods (2us).
+ *	Measure the time it takes to collect the time using
+ * discrete acquisition under light load. Expect this to be a
+ * syscall periods (2us) or data read time if zero-syscall.
  */
 static void BM_clock_overhead(int iters) {
     for (int i = 0; i < iters; ++i) {
@@ -85,19 +107,45 @@ static void BM_clock_overhead(int iters) {
 BENCHMARK(BM_clock_overhead);
 
 /*
+ *	Measure the time it takes to form sprintf plus time using
+ * discrete acquisition under light load. Expect this to be a
+ * syscall periods (2us) or sprintf time if zero-syscall time.
+ */
+static void BM_sprintf_overhead(int iters) {
+    for (int i = 0; i < iters; ++i) {
+       char buffer[64];
+       StartBenchmarkTiming();
+       snprintf(buffer, sizeof(buffer), "BM_sprintf_overhead:%d", i);
+       StopBenchmarkTiming();
+    }
+}
+BENCHMARK(BM_sprintf_overhead);
+
+/*
  *	Measure the time it takes to submit the android logging call using
  * discrete acquisition under light load. Expect this to be a dozen or so
- * syscall periods (40us).
+ * syscall periods (40us) plus time to run *printf
  */
 static void BM_log_overhead(int iters) {
     for (int i = 0; i < iters; ++i) {
        StartBenchmarkTiming();
        __android_log_print(ANDROID_LOG_INFO, "BM_log_overhead", "%d", i);
        StopBenchmarkTiming();
-       usleep(1000);
+       usleep(1000); // allow logd to catch up
     }
 }
-BENCHMARK(BM_log_overhead);
+
+static void BM_log_overhead_direct(int iters) {
+    __android_set_to_log_direct();
+    BM_log_overhead(iters);
+}
+BENCHMARK(BM_log_overhead_direct);
+
+static void BM_log_overhead_pc(int iters) {
+    __android_set_to_log_pc();
+    BM_log_overhead(iters);
+}
+BENCHMARK(BM_log_overhead_pc);
 
 static void caught_latency(int /*signum*/)
 {
@@ -191,7 +239,18 @@ static void BM_log_latency(int iters) {
 
     android_logger_list_free(logger_list);
 }
-BENCHMARK(BM_log_latency);
+
+static void BM_log_latency_direct(int iters) {
+    __android_set_to_log_direct();
+    BM_log_latency(iters);
+}
+BENCHMARK(BM_log_latency_direct);
+
+static void BM_log_latency_pc(int iters) {
+    __android_set_to_log_pc();
+    BM_log_latency(iters);
+}
+BENCHMARK(BM_log_latency_pc);
 
 static void caught_delay(int /*signum*/)
 {
@@ -265,4 +324,15 @@ static void BM_log_delay(int iters) {
 
     android_logger_list_free(logger_list);
 }
-BENCHMARK(BM_log_delay);
+
+static void BM_log_delay_direct(int iters) {
+    __android_set_to_log_direct();
+    BM_log_delay(iters);
+}
+BENCHMARK(BM_log_delay_direct);
+
+static void BM_log_delay_pc(int iters) {
+    __android_set_to_log_pc();
+    BM_log_delay(iters);
+}
+BENCHMARK(BM_log_delay_pc);
