@@ -76,61 +76,10 @@ static int write_file(const char *path, const char *value)
     }
 }
 
-static int _open(const char *path)
-{
-    int fd;
-
-    fd = open(path, O_RDONLY | O_NOFOLLOW);
-    if (fd < 0)
-        fd = open(path, O_WRONLY | O_NOFOLLOW);
-
-    return fd;
-}
-
-static int _chown(const char *path, unsigned int uid, unsigned int gid)
-{
-    int fd;
-    int ret;
-
-    fd = _open(path);
-    if (fd < 0) {
-        return -1;
-    }
-
-    ret = fchown(fd, uid, gid);
-    if (ret < 0) {
-        int errno_copy = errno;
-        close(fd);
-        errno = errno_copy;
-        return -1;
-    }
-
-    close(fd);
-
-    return 0;
-}
-
 static int _chmod(const char *path, mode_t mode)
 {
-    int fd;
-    int ret;
-
-    fd = _open(path);
-    if (fd < 0) {
-        return -1;
-    }
-
-    ret = fchmod(fd, mode);
-    if (ret < 0) {
-        int errno_copy = errno;
-        close(fd);
-        errno = errno_copy;
-        return -1;
-    }
-
-    close(fd);
-
-    return 0;
+    // Make sure we don't change the target of a symlink
+    return fchmodat(AT_FDCWD, path, mode, AT_SYMLINK_NOFOLLOW);
 }
 
 static int insmod(const char *filename, char *options)
@@ -334,7 +283,7 @@ int do_mkdir(int nargs, char **args)
             gid = decode_uid(args[4]);
         }
 
-        if (_chown(args[1], uid, gid) < 0) {
+        if (lchown(args[1], uid, gid) == -1) {
             return -errno;
         }
 
@@ -814,10 +763,10 @@ out:
 int do_chown(int nargs, char **args) {
     /* GID is optional. */
     if (nargs == 3) {
-        if (_chown(args[2], decode_uid(args[1]), -1) < 0)
+        if (lchown(args[2], decode_uid(args[1]), -1) == -1)
             return -errno;
     } else if (nargs == 4) {
-        if (_chown(args[3], decode_uid(args[1]), decode_uid(args[2])) < 0)
+        if (lchown(args[3], decode_uid(args[1]), decode_uid(args[2])) == -1)
             return -errno;
     } else {
         return -1;
