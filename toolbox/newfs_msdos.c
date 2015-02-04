@@ -164,7 +164,7 @@ struct bpb {
     u_int spt;          /* sectors per track */
     u_int hds;          /* drive heads */
     u_int hid;          /* hidden sectors */
-    u_int bsec;         /* big total sectors */
+    u_long bsec;        /* big total sectors */
     u_int bspf;         /* big sectors per FAT */
     u_int rdcl;         /* root directory start cluster */
     u_int infs;         /* file system info sector */
@@ -420,7 +420,7 @@ int newfs_msdos_main(int argc, char *argv[])
         bpb.bsec -= (opt_ofs / bpb.bps);
         delta = bpb.bsec % bpb.spt;
         if (delta != 0) {
-            warnx("trim %d sectors from %d to adjust to a multiple of %d",
+            warnx("trim %d sectors from %lu to adjust to a multiple of %d",
                   (int)delta, bpb.bsec, bpb.spt);
             bpb.bsec -= delta;
         }
@@ -616,7 +616,7 @@ int newfs_msdos_main(int argc, char *argv[])
     if (cls > maxcls(fat)) {
         cls = maxcls(fat);
         bpb.bsec = x1 + (cls + 1) * bpb.spc - 1;
-        warnx("warning: FAT type limits file system to %u sectors", bpb.bsec);
+        warnx("warning: FAT type limits file system to %lu sectors", bpb.bsec);
     }
     printf("%s: %u sector%s in %u FAT%u cluster%s (%u bytes/cluster)\n",
            fname, cls * bpb.spc, cls * bpb.spc == 1 ? "" : "s", cls, fat,
@@ -930,7 +930,7 @@ static void print_bpb(struct bpb *bpb)
         printf(" spf=%u", bpb->spf);
     printf(" spt=%u hds=%u hid=%u", bpb->spt, bpb->hds, bpb->hid);
     if (bpb->bsec)
-        printf(" bsec=%u", bpb->bsec);
+        printf(" bsec=%lu", bpb->bsec);
     if (!bpb->spf) {
         printf(" bspf=%u rdcl=%u", bpb->bspf, bpb->rdcl);
         printf(" infs=");
