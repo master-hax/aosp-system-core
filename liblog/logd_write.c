@@ -17,8 +17,15 @@
 #include <fcntl.h>
 #if !defined(_WIN32)
 #include <pthread.h>
+#include <sched.h>
+#include <semaphore.h>
+#include <sys/mman.h>
+#include <sys/prctl.h>
+#define ANDROID_PR_SET_VMA           0x53564d41
+#define ANDROID_PR_SET_VMA_ANON_NAME 0
 #endif
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +47,10 @@
 #include <log/log_read.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
+
+/* branchless on many architectures. */
+#define min(x,y) ((y) ^ (((x) ^ (y)) & -((x) < (y))))
+#define max(x,y) ((y) ^ (((x) ^ (y)) & -((x) > (y))))
 
 #define LOG_BUF_SIZE 1024
 
@@ -146,6 +157,9 @@ static int __write_to_log_initialize()
     return ret;
 }
 
+static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
+static pid_t last_pid = (pid_t) -1;
+
 static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 {
     ssize_t ret;
@@ -170,8 +184,6 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     android_pmsg_log_header_t pmsg_header;
     struct timespec ts;
     size_t i, payload_size;
-    static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
-    static pid_t last_pid = (pid_t) -1;
 
     if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
         last_uid = getuid();
@@ -524,14 +536,354 @@ int __android_log_bswrite(int32_t tag, const char *payload)
 #if !FAKE_LOG_DEVICE
 #if !defined(_WIN32)
 
+/* Producer-Consumer Log Writing */
+
+#define PAGE_ROUND_UP(x) ((((size_t)(x)) + PAGE_SIZE - 1) & (~(PAGE_SIZE - 1)))
+
+typedef struct __attribute__((__packed__, __aligned__(PAGE_SIZE))) {
+    android_log_header_t log_header;
+    uint16_t payload_length;
+    unsigned char payload[PAGE_ROUND_UP(LOGGER_ENTRY_MAX_PAYLOAD
+                              + sizeof(uint16_t) + sizeof(android_log_header_t))
+                          - sizeof(uint16_t) - sizeof(android_log_header_t)];
+} entry_t;
+
+#define FIFO_NUM_ENTRIES 16
+
+/* sleep time in useconds */
+#define FIFO_SLEEP ((100 * FIFO_NUM_ENTRIES) / 2) /* ratelimit 100us/message */
+#define FIFO_MAX_SLEEP 100000
+
+typedef struct {
+    entry_t entries[FIFO_NUM_ENTRIES];
+    pthread_t thread;
+    sem_t full;
+    sem_t empty;
+    sem_t write;
+    int policy;
+    uint16_t producer;
+    uint16_t consumer;
+    bool started;
+} buffer_t;
+
+static buffer_t *__android_fifo_buffer;
+
+/* Flush a write in progress in other thread */
+static inline void __android_fifo_write_barrier(buffer_t * b)
+{
+    sched_yield();
+    sem_wait(&b->write);
+    sem_post(&b->write);
+}
+
+/* Consumer */
+static void * __android_fifo_thread_start(void *obj)
+{
+    buffer_t *b;
+    int fd;
+    pid_t tid;
+    struct sched_param param;
+
+    prctl(PR_SET_NAME, "logd.writer.per");
+
+    b = obj;
+    if (!b) {
+        return NULL;
+    }
+
+    if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
+        last_uid = getuid();
+    }
+    if (last_pid == (pid_t) -1) {
+        last_pid = getpid();
+    }
+
+    /*
+     *    We can not use libcutils from liblog, so no convenient
+     * set_sched_policy() call to join background cgroup. Open coded ...
+     */
+    tid = gettid();
+    fd = open("/dev/cpuctl/bg_non_interactive/tasks", O_WRONLY | O_CLOEXEC);
+    if (fd >= 0) {
+        char buffer[32];
+        int len = snprintf(buffer, sizeof(buffer), "%u", (unsigned)tid);
+        len = write(fd, buffer, min(len, (int)sizeof(buffer)));
+        close(fd);
+    }
+
+    /* Set to lowest priority */
+    memset (&param, 0, sizeof(param));
+    sched_setscheduler(tid, b->policy, &param);
+
+    while (true) {
+        unsigned consumer;
+        int i;
+        entry_t *e;
+        static const size_t num_vec = 3;
+        struct iovec vec[num_vec];
+        android_pmsg_log_header_t pmsg_header;
+
+        consumer = max((FIFO_MAX_SLEEP + (FIFO_SLEEP / 2)) / FIFO_SLEEP, 1);
+        while (b->started && !sem_getvalue(&b->full, &i) && (i <= 0) && consumer--) {
+            usleep(FIFO_SLEEP);
+        }
+
+        if (b->started ? sem_wait(&b->full) : sem_trywait(&b->full)) {
+            break;
+        }
+
+        consumer = b->consumer;
+
+        e = &b->entries[consumer];
+
+        pmsg_header.magic = LOGGER_MAGIC;
+        pmsg_header.len = sizeof(pmsg_header) + sizeof(e->log_header)
+                        + e->payload_length;
+        pmsg_header.uid = last_uid;
+        pmsg_header.pid = last_pid;
+
+        vec[0].iov_base = (unsigned char *) &pmsg_header;
+        vec[0].iov_len  = sizeof(pmsg_header);
+        vec[1].iov_base = (unsigned char *) &e->log_header;
+        vec[1].iov_len  = sizeof(e->log_header);
+        vec[2].iov_base = e->payload;
+        vec[2].iov_len  = e->payload_length;
+
+        if (pstore_fd >= 0) {
+            TEMP_FAILURE_RETRY(writev(pstore_fd, vec, num_vec));
+        }
+
+        if (logd_fd >= 0) {
+            ssize_t ret = -EAGAIN;
+            while (ret == -EAGAIN) {
+                ret = TEMP_FAILURE_RETRY(writev(logd_fd, vec + 1, num_vec - 1));
+                if (ret < 0) {
+                    ret = -errno;
+                }
+                if (ret == -ENOTCONN) {
+                    pthread_mutex_lock(&log_init_lock);
+                    ret = __write_to_log_initialize();
+                    pthread_mutex_unlock(&log_init_lock);
+
+                    if (ret >= 0) {
+                        ret = -EAGAIN;
+                    }
+                }
+            }
+        }
+
+        madvise(e, sizeof(entry_t), MADV_DONTNEED);
+
+        b->consumer = (consumer + 1) % FIFO_NUM_ENTRIES;
+        sem_post(&b->empty);
+    }
+
+    __android_fifo_buffer = NULL;
+    __android_fifo_write_barrier(b);
+    munmap(b, sizeof(buffer_t));
+    return NULL;
+}
+
+/* Producer(s) */
+static int __write_to_log_fifo(log_id_t log_id, struct iovec *vec, size_t nr)
+{
+    struct timespec ts;
+    unsigned producer;
+    entry_t *e;
+    unsigned char *p;
+    size_t left;
+    buffer_t *b = __android_fifo_buffer;
+    int ret;
+
+    if (!b) {
+        return -ENOMEM;
+    }
+
+    /* No syscall, but does introduce a memory barrier on success */
+    if (sem_trywait(&b->empty)) {
+        return -EAGAIN;
+    }
+
+    /* May incur a syscall on non-vdso, lets not compromise accuracy */
+    clock_gettime(CLOCK_REALTIME, &ts);
+
+    /*
+     *    Single source of logs introduces another memory barrier. When
+     * multiple sources, contention introduces a syscall (futex) and a
+     * real chance for a sleep. For non-spammy applications, the chances
+     * of a contention is still low.
+     */
+    sem_wait(&b->write);
+    producer = b->producer;
+
+    e = &b->entries[producer];
+
+    /* This incurs a zero-page copy-on-write fault on first memory barrier */
+    e->log_header.id = log_id;
+    e->log_header.tid = gettid();
+    e->log_header.realtime.tv_sec = ts.tv_sec;
+    e->log_header.realtime.tv_nsec = ts.tv_nsec;
+
+    p = e->payload;
+    left = LOGGER_ENTRY_MAX_PAYLOAD;
+    while (nr) {
+        size_t len = vec->iov_len;
+        if (len > left) {
+            len = left;
+            nr = 1;
+        }
+        memcpy(p, vec->iov_base, len);
+        left -= len;
+        if (left == 0) {
+            break;
+        }
+        ++vec;
+        p += len;
+        --nr;
+    }
+    ret = LOGGER_ENTRY_MAX_PAYLOAD - left;
+    e->payload_length = ret;
+    b->producer = (producer + 1) % FIFO_NUM_ENTRIES;
+
+    /*
+     *    When not streaming (the normal case) this incurs a syscall (futex)
+     * and a task switch to the Consumer worker delaying timely return! This
+     * is also the first memory barrier since writing to the entry.
+     */
+    sem_post(&b->full);
+
+    /*
+     *    Single source of logs introduces another memory barrier. When
+     * multiple sources, contention above introduces a syscall (futex) to
+     * wake up the other Producer thread.
+     */
+    sem_post(&b->write);
+
+    return ret;
+}
+
+static int __write_to_log_fifo_init(log_id_t log_id, struct iovec *vec, size_t nr)
+{
+    pthread_mutex_lock(&log_init_lock);
+
+    if (write_to_log == __write_to_log_fifo_init) {
+        int ret;
+        buffer_t *b;
+
+        ret = __write_to_log_initialize();
+        if (ret < 0) {
+            pthread_mutex_unlock(&log_init_lock);
+            return ret;
+        }
+
+        write_to_log = __write_to_log_fifo;
+
+        b = __android_fifo_buffer;
+        if (!b) {
+            b = __android_fifo_buffer = mmap(NULL, sizeof(buffer_t),
+                                           PROT_READ | PROT_WRITE,
+                                           MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+            if (b == MAP_FAILED) {
+                write_to_log = __write_to_log_daemon;
+                b = __android_fifo_buffer = NULL;
+            } else {
+                pthread_attr_t attr;
+
+                prctl(ANDROID_PR_SET_VMA, ANDROID_PR_SET_VMA_ANON_NAME,
+                      b, sizeof(buffer_t), "logd.writer.per");
+                sem_init(&b->empty, 0, FIFO_NUM_ENTRIES);
+                sem_init(&b->full, 0, 0);
+                sem_init(&b->write, 0, 1);
+                /*
+                 * Set the policy to inconsequential at our current level.
+                 */
+                switch (sched_getscheduler((pid_t)0)) {
+                case SCHED_FIFO:
+                case SCHED_RR:
+                    b->policy = SCHED_BATCH;
+                    break;
+                default:
+                    b->policy = SCHED_IDLE;
+                    break;
+                }
+                if (!pthread_attr_init(&attr)) {
+                    struct sched_param param;
+
+                    memset (&param, 0, sizeof(param));
+                    pthread_attr_setschedparam(&attr, &param);
+                    pthread_attr_setschedpolicy(&attr, b->policy);
+                    if (!pthread_attr_setdetachstate(&attr,
+                                                     PTHREAD_CREATE_DETACHED)) {
+                        b->started = true;
+                        if (pthread_create(&b->thread, &attr,
+                                           __android_fifo_thread_start, b)) {
+                            b->started = false;
+                        }
+                    }
+                    pthread_attr_destroy(&attr);
+                }
+                if (!b->started) {
+                    /*
+                     *    Since we have performed all the steps of
+                     * __write_to_log_init, we can go straight to
+                     * setting write_to_log.
+                     */
+                    write_to_log = __write_to_log_daemon;
+                    __android_fifo_buffer = NULL;
+                    munmap(b, sizeof(buffer_t));
+                }
+            }
+        }
+    }
+
+    pthread_mutex_unlock(&log_init_lock);
+
+    return write_to_log(log_id, vec, nr);
+}
+
+static void __write_to_log_fifo_free()
+{
+    buffer_t *b = __android_fifo_buffer;
+    if (b) {
+        int i;
+
+        __android_fifo_write_barrier(b);
+        i = !sem_getvalue(&b->full, &i) && (i <= 0); /* blocked? */
+
+        b->started = false;
+
+        if (i) {
+            sem_post(&b->full); /* kick */
+        }
+
+        for (i = max((FIFO_MAX_SLEEP + (FIFO_SLEEP / 2)) / FIFO_SLEEP, 1);
+                __android_fifo_buffer && i; --i) {
+            usleep(FIFO_SLEEP);
+        }
+    }
+}
+
 int android_set_log_frontend(unsigned frontend)
 {
     pthread_mutex_lock(&log_init_lock);
+
+    if (frontend & LOGGER_FIFO) {
+        if ((write_to_log != __write_to_log_fifo)
+         && (write_to_log != __write_to_log_fifo_init)) {
+            write_to_log = __write_to_log_fifo_init;
+        }
+
+        pthread_mutex_unlock(&log_init_lock);
+
+        return LOGGER_NORMAL | LOGGER_FIFO;
+    }
 
     if (frontend & LOGGER_NULL) {
         write_to_log = __write_to_log_null;
 
         pthread_mutex_unlock(&log_init_lock);
+
+        __write_to_log_fifo_free();
 
         return LOGGER_NULL;
     }
@@ -546,6 +898,8 @@ int android_set_log_frontend(unsigned frontend)
     write_to_log = __write_to_log_init;
 
     pthread_mutex_unlock(&log_init_lock);
+
+    __write_to_log_fifo_free();
 
     return LOGGER_NORMAL;
 }

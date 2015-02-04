@@ -188,6 +188,7 @@ const char *android_log_id_to_name(log_id_t log_id);
 #define LOGGER_NORMAL      0x0
 #define LOGGER_KERNEL      0x1 /* Reserved/Deprecated */
 #define LOGGER_NULL        0x2
+#define LOGGER_FIFO        0x4 /* reduce syscall overhead push to background */
 
 int android_set_log_frontend(unsigned frontend);
 

@@ -129,7 +129,9 @@ DESCRIPTION
        in these cases.
 
        android_set_log_frontend() selects frontend filters. Argument is either
-       LOGGER_NORMAL or LOGGER_NULL. The later drops all content on the floor.
+       LOGGER_NORMAL, LOGGER_NULL or LOGGER_FIFO. LOGGER_NULL drops content on
+       the floor.   LOGGER_FIFO  spawns  thread with a  FIFO  for  low-latency
+       moderate-volume with batch-priority backend.
 
 SEE ALSO
        syslogd(8)
