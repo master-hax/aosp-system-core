@@ -4,27 +4,26 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= \
-	builtins.c \
-	init.c \
-	devices.c \
-	property_service.c \
-	util.c \
-	parser.c \
-	keychords.c \
-	signal_handler.c \
-	init_parser.c \
-	ueventd.c \
-	ueventd_parser.c \
-	watchdogd.c
+    builtins.cpp \
+    devices.cpp \
+    init.cpp \
+    init_parser.cpp \
+    keychords.cpp \
+    parser.cpp \
+    property_service.cpp \
+    signal_handler.cpp \
+    ueventd.cpp \
+    ueventd_parser.cpp \
+    util.cpp \
+    watchdogd.cpp \
 
 LOCAL_CFLAGS += \
-    -std=gnu11 \
     -Wall \
     -Werror -Wno-error=deprecated-declarations \
     -Wno-unused-parameter \
 
 ifeq ($(strip $(INIT_BOOTCHART)),true)
-LOCAL_SRC_FILES += bootchart.c
+LOCAL_SRC_FILES += bootchart.cpp
 LOCAL_CFLAGS    += -DBOOTCHART=1
 endif
 
