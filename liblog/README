@@ -81,6 +81,8 @@ SYNOPSIS
        log_id_t android_name_to_log_id(const char *logName)
        const char *android_log_id_to_name(log_id_t log_id)
 
+       int android_set_log_frontend(int frontend)
+
        Link with -llog
 
 DESCRIPTION
@@ -125,6 +127,10 @@ DESCRIPTION
        sion  respectively.  android_logger_get_id returns the id that was used
        when opening the sub-log.  It is recommended to open the  log  O_RDONLY
        in these cases.
+
+       android_set_log_frontend() selects frontend filters. Argument is either
+       LOGGER_NORMAL or LOGGER_FIFO.   The later spawns thread with a FIFO for
+       low-latency moderate-volume with batch-priority backend.
 
 SEE ALSO
        syslogd(8)
