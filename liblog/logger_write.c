@@ -25,6 +25,7 @@
 #endif
 
 #include <log/event_tag_map.h>
+#include <log/log_frontend.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
@@ -609,4 +610,33 @@ LIBLOG_ABI_PUBLIC int __android_log_security_bswrite(int32_t tag,
     vec[3].iov_len = len;
 
     return write_to_log(LOG_ID_SECURITY, vec, 4);
+}
+
+static int __write_to_log_null(log_id_t log_id __unused,
+                               struct iovec* vec __unused,
+                               size_t nr __unused)
+{
+    return 0;
+}
+
+LIBLOG_ABI_PUBLIC int android_set_log_frontend(int frontend_flag)
+{
+    __android_log_lock();
+
+    if (frontend_flag & LOGGER_NULL) {
+        write_to_log = __write_to_log_null;
+
+        __android_log_unlock();
+
+        return LOGGER_NULL;
+    }
+
+    if ((write_to_log != __write_to_log_init)
+     && (write_to_log == __write_to_log_daemon)) {
+        write_to_log = __write_to_log_init;
+    }
+
+    __android_log_unlock();
+
+    return LOGGER_NORMAL;
 }

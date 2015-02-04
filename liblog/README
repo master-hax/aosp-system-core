@@ -108,6 +108,8 @@ SYNOPSIS
 
        int android_log_destroy(android_log_context *ctx)
 
+       int android_set_log_frontend(int frontend_flag)
+
        Link with -llog
 
 DESCRIPTION
@@ -161,6 +163,9 @@ DESCRIPTION
        sion  respectively.  android_logger_get_id returns the id that was used
        when  opening  the  sub-log.    It  is  recommended  to  open  the  log
        ANDROID_LOG_RDONLY in these cases.
+
+       android_set_log_frontend() selects frontend filters. Argument is either
+       LOGGER_NORMAL or LOGGER_NULL. The later drops all content on the floor.
 
 ERRORS
        If messages fail, a negative error code will be returned to the caller.
