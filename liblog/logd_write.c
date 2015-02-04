@@ -520,3 +520,50 @@ int __android_log_bswrite(int32_t tag, const char *payload)
 
     return write_to_log(LOG_ID_EVENTS, vec, 4);
 }
+
+#if !FAKE_LOG_DEVICE
+#if !defined(_WIN32)
+
+int android_set_log_frontend(unsigned frontend)
+{
+    pthread_mutex_lock(&log_init_lock);
+
+    if (frontend & LOGGER_NULL) {
+        write_to_log = __write_to_log_null;
+
+        pthread_mutex_unlock(&log_init_lock);
+
+        return LOGGER_NULL;
+    }
+
+    if ((write_to_log == __write_to_log_init)
+     || (write_to_log == __write_to_log_daemon)) {
+        pthread_mutex_unlock(&log_init_lock);
+
+        return LOGGER_NORMAL;
+    }
+
+    write_to_log = __write_to_log_init;
+
+    pthread_mutex_unlock(&log_init_lock);
+
+    return LOGGER_NORMAL;
+}
+
+#else
+
+int android_set_log_frontend(unsigned frontend __unused)
+{
+    return LOGGER_NORMAL;
+}
+
+#endif
+
+#else
+
+int android_set_log_frontend(unsigned frontend __unused)
+{
+    return LOGGER_NULL;
+}
+
+#endif
