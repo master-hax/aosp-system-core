@@ -108,6 +108,9 @@ SYNOPSIS
 
        int android_log_destroy(android_log_context *ctx)
 
+       int android_set_log_frontend(unsigned frontend_flag)
+       int android_get_log_frontend()
+
        Link with -llog
 
 DESCRIPTION
@@ -162,6 +165,11 @@ DESCRIPTION
        when  opening  the  sub-log.    It  is  recommended  to  open  the  log
        ANDROID_LOG_RDONLY in these cases.
 
+       android_set_log_frontend() selects frontend filters. Argument is either
+       LOGGER_NORMAL  or  LOGGER_NULL.  The  latter  drops  all content on the
+       floor.  Both android_set_log_frontend() and  android_get_log_frontend()
+       return the current frontend mask, or an -errno.
+
 ERRORS
        If messages fail, a negative error code will be returned to the caller.
 
@@ -194,4 +202,4 @@ SEE ALSO
 
 
 
-                                  17 Oct 2016                        LIBLOG(3)
+                                  07 Feb 2017                        LIBLOG(3)
