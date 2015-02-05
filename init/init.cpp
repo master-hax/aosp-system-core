@@ -747,6 +747,10 @@ static void import_kernel_nv(char *name, int for_emulator)
         char prop[PROP_NAME_MAX];
         int cnt;
 
+        if (!strcmp(boot_prop_name, "hardware")) {
+            strlcpy(hardware, value, sizeof(hardware));
+        }
+
         cnt = snprintf(prop, sizeof(prop), "ro.boot.%s", boot_prop_name);
         if (cnt < PROP_NAME_MAX)
             property_set(prop, value);
@@ -816,11 +820,6 @@ static void process_kernel_cmdline(void)
     import_kernel_cmdline(0, import_kernel_nv);
     if (qemu[0])
         import_kernel_cmdline(1, import_kernel_nv);
-
-    /* now propogate the info given on command line to internal variables
-     * used by init as well as the current required properties
-     */
-    export_kernel_boot_props();
 }
 
 static int property_service_init_action(int nargs, char **args)
@@ -1032,9 +1031,13 @@ int main(int argc, char **argv)
     klog_init();
     property_init();
 
+    process_kernel_cmdline();
     get_hardware_name(hardware, &revision);
 
-    process_kernel_cmdline();
+    /* now propogate the info given on command line to internal variables
+     * used by init as well as the current required properties
+     */
+    export_kernel_boot_props();
 
     union selinux_callback cb;
     cb.func_log = log_callback;
