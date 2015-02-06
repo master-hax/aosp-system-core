@@ -697,12 +697,7 @@ TEST(libbacktrace, format_test) {
   frame.pc = 2;
   frame.sp = 0;
   frame.stack_size = 0;
-  frame.map = NULL;
   frame.func_offset = 0;
-
-  backtrace_map_t map;
-  map.start = 0;
-  map.end = 0;
 
   // Check no map set.
   frame.num = 1;
@@ -714,8 +709,8 @@ TEST(libbacktrace, format_test) {
             backtrace->FormatFrameData(&frame));
 
   // Check map name empty, but exists.
-  frame.map = &map;
-  map.start = 1;
+  frame.map.start = 1;
+  frame.map.end = 1;
 #if defined(__LP64__)
   EXPECT_EQ("#01 pc 0000000000000001  <unknown>",
 #else
@@ -726,9 +721,9 @@ TEST(libbacktrace, format_test) {
 
   // Check relative pc is set and map name is set.
   frame.pc = 0x12345679;
-  frame.map = &map;
-  map.name = "MapFake";
-  map.start =  1;
+  frame.map.name = "MapFake";
+  frame.map.start =  1;
+  frame.map.end =  1;
 #if defined(__LP64__)
   EXPECT_EQ("#01 pc 0000000012345678  MapFake",
 #else
