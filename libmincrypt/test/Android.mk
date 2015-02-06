@@ -13,3 +13,9 @@ LOCAL_MODULE := ecdsa_test
 LOCAL_SRC_FILES := ecdsa_test.c
 LOCAL_STATIC_LIBRARIES := libmincrypt
 include $(BUILD_HOST_NATIVE_TEST)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := p256_unittest
+LOCAL_SRC_FILES := p256_unittest.c
+LOCAL_STATIC_LIBRARIES := libmincrypt
+include $(BUILD_HOST_NATIVE_TEST)
