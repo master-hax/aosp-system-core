@@ -940,7 +940,7 @@ int selinux_reload_policy(void)
     return 0;
 }
 
-static int audit_callback(void *data, security_class_t cls __attribute__((unused)), char *buf, size_t len)
+static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_t len)
 {
     snprintf(buf, len, "property=%s", !data ? "NULL" : (char *)data);
     return 0;
