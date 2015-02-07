@@ -172,9 +172,25 @@ int do_enable(int nargs, char **args)
     return 0;
 }
 
-int do_exec(int nargs, char **args)
-{
-    return -1;
+// TODO:
+// * supplementary groups?
+// * expand properties on command line
+// * property setup in init.cpp needs to happen earlier
+int do_exec(int nargs, char** args) {
+    // Parse the arguments: exec UID GID SECLABEL COMMAND ARGS...
+    uid_t uid = decode_uid(args[1]);
+    gid_t gid = decode_uid(args[2]);
+    char* seclabel = args[3];
+    int argc = nargs - 4;
+    char** argv = args + 4;
+
+    service* svc = make_exec_oneshot_service(uid, gid, seclabel, argc, argv);
+    if (svc == NULL) {
+        return -1;
+    }
+
+    service_start(svc, NULL);
+    return 0;
 }
 
 int do_execonce(int nargs, char **args)
