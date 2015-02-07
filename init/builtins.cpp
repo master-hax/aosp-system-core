@@ -174,7 +174,26 @@ int do_enable(int nargs, char **args)
 
 int do_exec(int nargs, char **args)
 {
-    return -1;
+    INFO("execing '%s'...\n", args[1]);
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        ERROR("Fork failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    if (pid == 0) {
+        // Child.
+        zap_stdio();
+        if (execv(args[1], args + 1) == -1) {
+            ERROR("exec of '%s' failed: %s\n", args[1], strerror(errno));
+            _exit(1);
+        }
+        _exit(127);
+    }
+
+    // Parent.
+    return track_exec_child(args[1], pid);
 }
 
 int do_execonce(int nargs, char **args)

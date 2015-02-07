@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -435,7 +436,7 @@ parser_done:
 }
 
 int init_parse_config_file(const char* path) {
-    INFO("Parsing %s...", path);
+    INFO("Parsing %s...\n", path);
     std::string data;
     if (!read_file(path, &data)) {
         return -1;
@@ -656,6 +657,24 @@ struct action *action_remove_queue_head(void)
 int action_queue_empty()
 {
     return list_empty(&action_queue);
+}
+
+int track_exec_child(const char* argv0, pid_t pid) {
+    service* svc = (service*) calloc(1, sizeof(*svc));
+    if (svc == NULL) {
+        ERROR("Couldn't track pid %d for exec of '%s': %s", pid, argv0, strerror(errno));
+        return -1;
+    }
+    char* name;
+    asprintf(&name, "pid %d (%s)", pid, argv0);
+    svc->name = name;
+    svc->classname = "default";
+    svc->flags = SVC_ONESHOT | SVC_RUNNING;
+    svc->pid = pid;
+    svc->nargs = 0;
+    svc->args[0] = NULL;
+    list_add_tail(&service_list, &svc->slist);
+    return 0;
 }
 
 static void *parse_service(struct parse_state *state, int nargs, char **args)

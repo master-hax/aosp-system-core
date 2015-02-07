@@ -33,4 +33,6 @@ void queue_builtin_action(int (*func)(int nargs, char **args), const char *name)
 int init_parse_config_file(const char *fn);
 int expand_props(char *dst, const char *src, int len);
 
+int track_exec_child(const char* name, pid_t pid);
+
 #endif
