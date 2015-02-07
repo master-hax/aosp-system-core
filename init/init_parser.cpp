@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -437,7 +438,7 @@ parser_done:
 }
 
 int init_parse_config_file(const char* path) {
-    INFO("Parsing %s...", path);
+    INFO("Parsing %s...\n", path);
     std::string data;
     if (!read_file(path, &data)) {
         return -1;
@@ -658,6 +659,28 @@ struct action *action_remove_queue_head(void)
 int action_queue_empty()
 {
     return list_empty(&action_queue);
+}
+
+service* make_exec_oneshot_service(uid_t uid, gid_t gid, char* seclabel, int argc, char** argv) {
+    service* svc = (service*) calloc(1, sizeof(*svc) + sizeof(char*) * argc);
+    if (svc == NULL) {
+        ERROR("Couldn't allocate service for exec of '%s': %s", argv[0], strerror(errno));
+        return NULL;
+    }
+    static int exec_count; // Every service needs a unique name.
+    char* name;
+    asprintf(&name, "exec %d (%s)", exec_count++, argv[0]);
+    svc->name = name;
+    svc->classname = "default";
+    svc->flags = SVC_EXEC | SVC_ONESHOT;
+    svc->uid = uid;
+    svc->gid = gid;
+    svc->seclabel = seclabel;
+    svc->nargs = argc;
+    memcpy(svc->args, argv, sizeof(char*) * svc->nargs);
+    svc->args[argc] = NULL;
+    list_add_tail(&service_list, &svc->slist);
+    return svc;
 }
 
 static void *parse_service(struct parse_state *state, int nargs, char **args)

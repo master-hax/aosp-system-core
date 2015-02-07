@@ -137,14 +137,16 @@ boot
 Commands
 --------
 
-exec <path> [ <argument> ]*
-   This command is not implemented.
+exec <user> <group> <seccontext> <command> [ <argument> ]*
+   Fork and execute <command>, running as the given user and group
+   in the given security context. No other commands will be run until
+   this one finishes.
 
 execonce <path> [ <argument> ]*
    Fork and execute a program (<path>).  This will block until
    the program completes execution.  This command can be run at most
    once during init's lifetime. Subsequent invocations are ignored.
-   It is best to avoid exec as unlike the builtin commands, it runs
+   It is best to avoid execonce as unlike the builtin commands, it runs
    the risk of getting init "stuck".
 
 export <name> <value>

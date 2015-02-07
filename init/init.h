@@ -77,17 +77,17 @@ struct svcenvinfo {
     const char *value;
 };
 
-#define SVC_DISABLED    0x01  /* do not autostart with class */
-#define SVC_ONESHOT     0x02  /* do not restart on exit */
-#define SVC_RUNNING     0x04  /* currently active */
-#define SVC_RESTARTING  0x08  /* waiting to restart */
-#define SVC_CONSOLE     0x10  /* requires console */
-#define SVC_CRITICAL    0x20  /* will reboot into recovery if keeps crashing */
-#define SVC_RESET       0x40  /* Use when stopping a process, but not disabling
-                                 so it can be restarted with its class */
-#define SVC_RC_DISABLED 0x80  /* Remember if the disabled flag was set in the rc script */
-#define SVC_RESTART     0x100 /* Use to safely restart (stop, wait, start) a service */
-#define SVC_DISABLED_START 0x200 /* a start was requested but it was disabled at the time */
+#define SVC_DISABLED       0x001  // do not autostart with class
+#define SVC_ONESHOT        0x002  // do not restart on exit
+#define SVC_RUNNING        0x004  // currently active
+#define SVC_RESTARTING     0x008  // waiting to restart
+#define SVC_CONSOLE        0x010  // requires console
+#define SVC_CRITICAL       0x020  // will reboot into recovery if keeps crashing
+#define SVC_RESET          0x040  // Use when stopping a process, but not disabling so it can be restarted with its class.
+#define SVC_RC_DISABLED    0x080  // Remember if the disabled flag was set in the rc script.
+#define SVC_RESTART        0x100  // Use to safely restart (stop, wait, start) a service.
+#define SVC_DISABLED_START 0x200  // A start was requested but it was disabled at the time.
+#define SVC_EXEC           0x400  // This synthetic service corresponds to an 'exec'.
 
 #define NR_SVC_SUPP_GIDS 12    /* twelve supplementary groups */
 
@@ -130,6 +130,8 @@ struct service {
     /* "MUST BE AT THE END OF THE STRUCT" */
     char *args[1];
 }; /*     ^-------'args' MUST be at the end of this struct! */
+
+extern bool waiting_for_exec;
 
 void notify_service_state(const char *name, const char *state);
 
