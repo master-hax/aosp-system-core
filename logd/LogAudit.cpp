@@ -154,12 +154,14 @@ int LogAudit::logPrint(const char *fmt, ...) {
         event->payload.length = htole32(l);
         memcpy(event->payload.data, str, l);
 
-        logbuf->log(LOG_ID_EVENTS, now, uid, pid, tid,
-                    reinterpret_cast<char *>(event),
-                    (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+        rc = logbuf->log(LOG_ID_EVENTS, now, uid, pid, tid,
+                         reinterpret_cast<char *>(event),
+                         (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
         free(event);
 
-        notify = true;
+        if (rc >= 0) {
+            notify = true;
+        }
     }
 
     // log to main
@@ -196,17 +198,22 @@ int LogAudit::logPrint(const char *fmt, ...) {
         strncpy(newstr + 1 + l, str, estr - str);
         strcpy(newstr + 1 + l + (estr - str), ecomm);
 
-        logbuf->log(LOG_ID_MAIN, now, uid, pid, tid, newstr,
-                    (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+        rc = logbuf->log(LOG_ID_MAIN, now, uid, pid, tid, newstr,
+                         (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
         free(newstr);
 
-        notify = true;
+        if (rc >= 0) {
+            notify = true;
+        }
     }
 
     free(str);
 
     if (notify) {
         reader->notifyNewLog();
+        if (rc < 0) {
+            rc = n;
+        }
     }
 
     return rc;
@@ -215,7 +222,7 @@ int LogAudit::logPrint(const char *fmt, ...) {
 int LogAudit::log(char *buf) {
     char *audit = strstr(buf, " audit(");
     if (!audit) {
-        return 0;
+        return -EXDEV;
     }
 
     *audit = '\0';
