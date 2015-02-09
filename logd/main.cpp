@@ -304,7 +304,7 @@ int main(int argc, char *argv[]) {
             for(char *ptr, *tok = buf;
                     (rc >= 0) && ((tok = strtok_r(tok, "\r\n", &ptr)));
                     tok = NULL) {
-                rc = al->log(tok);
+                al->log(tok);
             }
         }
 
