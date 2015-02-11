@@ -146,6 +146,27 @@ static int __write_to_log_initialize()
     return ret;
 }
 
+struct LogThroughputLimit {
+  unsigned count;
+  unsigned lines_num;
+  unsigned delay_us;
+};
+
+volatile struct LogThroughputLimit throughput_limit;
+
+__attribute__((constructor)) static void throughput_limit_init()  {
+  char* env = getenv("LIBLOG_THROUGHPUT_LIMIT");
+  throughput_limit.count = 0;
+
+  if (env == NULL ||
+      2 != sscanf(env, "%u/%u", &throughput_limit.lines_num, &throughput_limit.delay_us)) {
+    throughput_limit.lines_num = 0;
+    throughput_limit.delay_us = 0;
+  } else {
+    throughput_limit.delay_us *= 1000;
+  }
+}
+
 static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 {
     ssize_t ret;
@@ -246,6 +267,12 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 
     if (logd_fd < 0) {
         return -EBADF;
+    }
+
+    if (throughput_limit.delay_us &&
+        ++throughput_limit.count >= throughput_limit.lines_num) {
+      usleep(throughput_limit.delay_us);
+      throughput_limit.count = 0;
     }
 
     /*
