@@ -350,7 +350,7 @@ service akmd /system/bin/logwrapper /sbin/akmd
 
 For quicker turnaround when working on init itself, use:
 
-  mm
+  mm -j
   m ramdisk-nodeps
   m bootimage-nodeps
   adb reboot bootloader
