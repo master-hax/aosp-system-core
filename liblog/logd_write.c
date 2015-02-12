@@ -35,6 +35,7 @@
 #include <android/set_abort_message.h>
 #endif
 
+#include <cutils/atomic.h>
 #include <log/logd.h>
 #include <log/logger.h>
 #include <log/log_read.h>
@@ -172,6 +173,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     size_t i, payload_size;
     static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
     static pid_t last_pid = (pid_t) -1;
+    static volatile int32_t dropped;
 
     if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
         last_uid = getuid();
@@ -206,7 +208,6 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     pmsg_header.uid = last_uid;
     pmsg_header.pid = last_pid;
 
-    header.id = log_id;
     header.tid = gettid();
     header.realtime.tv_sec = ts.tv_sec;
     header.realtime.tv_nsec = ts.tv_nsec;
@@ -215,6 +216,34 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     newVec[0].iov_len    = sizeof(pmsg_header);
     newVec[1].iov_base   = (unsigned char *) &header;
     newVec[1].iov_len    = sizeof(header);
+
+    if (logd_fd > 0) {
+        int32_t snapshot = dropped;
+        if (snapshot) {
+            char buffer[9];
+
+            header.id = LOG_ID_EVENTS;
+            buffer[0] = LIBLOG_LOG_TAG & 0xFF;
+            buffer[1] = (LIBLOG_LOG_TAG >> 8) & 0xFF;
+            buffer[2] = (LIBLOG_LOG_TAG >> 16) & 0xFF;
+            buffer[3] = (LIBLOG_LOG_TAG >> 24) & 0xFF;
+            buffer[4] = EVENT_TYPE_INT;
+            buffer[5] = snapshot & 0xFF;
+            buffer[6] = (snapshot >> 8) & 0xFF;
+            buffer[7] = (snapshot >> 16) & 0xFF;
+            buffer[8] = (snapshot >> 24) & 0xFF;
+
+            newVec[2].iov_base = buffer;
+            newVec[2].iov_len  = sizeof(buffer);
+
+            ret = TEMP_FAILURE_RETRY(writev(logd_fd, newVec + 1, 2));
+            if (ret == (ssize_t)(sizeof(header) + sizeof(buffer))) {
+                android_atomic_add(-snapshot, &dropped);
+            }
+        }
+    }
+
+    header.id = log_id;
 
     for (payload_size = 0, i = header_length; i < nr + header_length; i++) {
         newVec[i].iov_base = vec[i - header_length].iov_base;
@@ -281,6 +310,8 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 
     if (ret > (ssize_t)sizeof(header)) {
         ret -= sizeof(header);
+    } else if (ret == -EAGAIN) {
+        android_atomic_inc(&dropped);
     }
 #endif
 
