@@ -36,11 +36,8 @@ on init
 
     # Backward compatibility
     symlink /system/etc /etc
-    symlink /sys/kernel/debug /d
-
-    # Right now vendor lives on the same filesystem as system,
-    # but someday that may change.
     symlink /system/vendor /vendor
+    symlink /sys/kernel/debug /d
 
     # Create cgroup mount point for cpu accounting
     mkdir /acct
