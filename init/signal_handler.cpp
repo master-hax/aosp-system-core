@@ -25,6 +25,7 @@
 #include <cutils/sockets.h>
 #include <cutils/android_reboot.h>
 #include <cutils/list.h>
+#include <fs_mgr.h>
 
 #include "init.h"
 #include "util.h"
@@ -104,6 +105,9 @@ static int wait_for_one_process(int block)
                 ERROR("critical process '%s' exited %d times in %d minutes; "
                       "rebooting into recovery mode\n", svc->name,
                       CRITICAL_CRASH_THRESHOLD, CRITICAL_CRASH_WINDOW / 60);
+                /* If the problem is caused by dm-verity, we may not have updated
+                 * verity state yet. Update it before restarting. */
+                fs_mgr_update_verity_state();
                 android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
                 return 0;
             }
