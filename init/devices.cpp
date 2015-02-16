@@ -42,6 +42,8 @@
 
 #include <cutils/list.h>
 #include <cutils/uevent.h>
+#include <fs_mgr.h>
+#include <sys/system_properties.h>
 
 #include "devices.h"
 #include "ueventd_parser.h"
@@ -64,6 +66,7 @@ struct uevent {
     const char *firmware;
     const char *partition_name;
     const char *device_name;
+    const char *verity_msg;
     int partition_num;
     int major;
     int minor;
@@ -382,6 +385,7 @@ static void parse_event(const char *msg, struct uevent *uevent)
     uevent->partition_name = NULL;
     uevent->partition_num = -1;
     uevent->device_name = NULL;
+    uevent->verity_msg = NULL;
 
         /* currently ignoring SEQNUM */
     while(*msg) {
@@ -412,6 +416,9 @@ static void parse_event(const char *msg, struct uevent *uevent)
         } else if(!strncmp(msg, "DEVNAME=", 8)) {
             msg += 8;
             uevent->device_name = msg;
+        } else if(!strncmp(msg, "VERITY_ERR_BLOCK_NR=", 20)) {
+            msg += 20;
+            uevent->verity_msg = msg;
         }
 
         /* advance to after the next \0 */
@@ -921,6 +928,21 @@ static void handle_firmware_event(struct uevent *uevent)
     }
 }
 
+static void handle_verity_event(struct uevent *uevent)
+{
+    if (!uevent->verity_msg || strcmp(uevent->action, "change"))
+        return;
+
+    /* This event occurs only when dm-verity has prevented a read due to
+     * a corrupted block. verity_msg contains the affected block number. */
+
+    INFO("received verity uevent (%s)\n", uevent->verity_msg);
+
+    if (__system_property_set("verity.state", "corrupted") < 0) {
+        ERROR("failed to set verity.state\n");
+    }
+}
+
 #define UEVENT_MSG_LEN  2048
 void handle_device_fd()
 {
@@ -945,6 +967,7 @@ void handle_device_fd()
             }
         }
 
+        handle_verity_event(&uevent);
         handle_device_event(&uevent);
         handle_firmware_event(&uevent);
     }
