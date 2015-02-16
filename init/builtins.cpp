@@ -712,6 +712,27 @@ int do_sysclktz(int nargs, char **args)
     return 0;
 }
 
+int do_verity_load_state(int nargs, char **args) {
+    if (nargs == 1) {
+        int mode = VERITY_MODE_NORMAL;
+
+        if (fs_mgr_load_verity_state(&mode) == 0 &&
+                mode == VERITY_MODE_LOGGING) {
+            property_set("verity.state", "logging");
+        } else {
+            property_set("verity.state", "normal");
+        }
+    }
+    return -1;
+}
+
+int do_verity_update_state(int nargs, char **args) {
+    if (nargs == 1) {
+        return fs_mgr_update_verity_state();
+    }
+    return -1;
+}
+
 int do_write(int nargs, char **args)
 {
     const char *path = args[1];

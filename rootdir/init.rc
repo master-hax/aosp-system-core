@@ -468,6 +468,9 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset late_start
     class_reset main
 
+on property:verity.state=corrupted
+    verity_update_state
+
 on property:sys.powerctl=*
     powerctl ${sys.powerctl}
 
