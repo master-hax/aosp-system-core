@@ -107,6 +107,17 @@ static bool should_drop_privileges() {
         return false;
     }
 
+    // The properties that affect `adb root` and `adb unroot` are ro.secure and
+    // ro.debuggable. In this context the names don't make the expected behavior
+    // particularly obvious.
+    //
+    // ro.debuggable:
+    //   Allowed to become root, but not necessarily the default. Set by default
+    //   on eng and userdebug builds.
+    //
+    // ro.secure:
+    //   Drop privildges by default. Set by default on userdebug and user
+    //   builds.
     property_get("ro.secure", value, "1");
     bool ro_secure = (strcmp(value, "1") == 0);
 
