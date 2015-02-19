@@ -141,16 +141,11 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
 
     // init on first use
     if (mPageSize == -1) {
-#if NOT_USING_KLIBC
         mPageSize = sysconf(_SC_PAGESIZE);
         if (mPageSize == -1) {
             ALOGE("could not get _SC_PAGESIZE\n");
             return false;
         }
-#else
-        // this holds for Linux, Darwin, Cygwin, and doesn't pain the ARM
-        mPageSize = 4096;
-#endif
     }
 
     adjust   = offset % mPageSize;
