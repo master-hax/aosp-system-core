@@ -52,6 +52,7 @@
 #define FIRMWARE_DIR1   "/etc/firmware"
 #define FIRMWARE_DIR2   "/vendor/firmware"
 #define FIRMWARE_DIR3   "/firmware/image"
+#define FIRMWARE_DIR4   "/oem/firmware"
 
 extern struct selabel_handle *sehandle;
 
@@ -846,6 +847,10 @@ static void process_firmware_event(struct uevent *uevent)
         goto data_free_out;
 
     l = asprintf(&file3, FIRMWARE_DIR3"/%s", uevent->firmware);
+    if (l == -1)
+        goto data_free_out;
+
+    l = asprintf(&file3, FIRMWARE_DIR4"/%s", uevent->firmware);
     if (l == -1)
         goto data_free_out;
 
