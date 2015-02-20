@@ -28,7 +28,7 @@
 #include <cutils/properties.h>
 #include <stdbool.h>
 #include <inttypes.h>
-#include "loghack.h"
+#include <log/log.h>
 
 int8_t property_get_bool(const char *key, int8_t default_value) {
     if (!key) {
