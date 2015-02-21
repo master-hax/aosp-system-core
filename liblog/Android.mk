@@ -55,6 +55,7 @@ endif
 
 # Shared and static library for host
 # ========================================================
+include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_SRC_FILES := $(liblog_host_sources)
 LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror
@@ -70,6 +71,17 @@ endif
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_SHARED_LIBRARY)
 
+# Static library for recovery mode on the target.
+#
+# This is configured to use the fake log device because logd
+# will not be running or present during recovery mode.
+# =======================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE := liblog-recovery
+LOCAL_SRC_FILES := $(liblog_host_sources)
+LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror
+LOCAL_MULTILIB := both
+include $(BUILD_STATIC_LIBRARY)
 
 # Shared and static library for target
 # ========================================================
