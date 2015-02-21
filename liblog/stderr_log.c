@@ -19,7 +19,7 @@
  * passed on to the underlying (fake) log device.  When not in the
  * simulator, messages are printed to stderr.
  */
-#include "fake_log_device.h"
+#include "stderr_log.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -42,51 +42,10 @@
 #define kTagSetSize 16      /* arbitrary */
 
 #if 0
-#define TRACE(...) printf("fake_log_device: " __VA_ARGS__)
+#define TRACE(...) printf("stderr_log: " __VA_ARGS__)
 #else
 #define TRACE(...) ((void)0)
 #endif
-
-/* from the long-dead utils/Log.cpp */
-typedef enum {
-    FORMAT_OFF = 0,
-    FORMAT_BRIEF,
-    FORMAT_PROCESS,
-    FORMAT_TAG,
-    FORMAT_THREAD,
-    FORMAT_RAW,
-    FORMAT_TIME,
-    FORMAT_THREADTIME,
-    FORMAT_LONG
-} LogFormat;
-
-
-/*
- * Log driver state.
- */
-typedef struct LogState {
-    /* the fake fd that's seen by the user */
-    int     fakeFd;
-
-    /* a printable name for this fake device */
-    char   *debugName;
-
-    /* nonzero if this is a binary log */
-    int     isBinary;
-
-    /* global minimum priority */
-    int     globalMinPriority;
-
-    /* output format */
-    LogFormat outputFormat;
-
-    /* tags and priorities */
-    struct {
-        char    tag[kMaxTagLen];
-        int     minPriority;
-    } tagSet[kTagSetSize];
-} LogState;
-
 
 #if !defined(_WIN32)
 /*
@@ -111,61 +70,16 @@ static void unlock()
 #define unlock() ((void)0)
 #endif  // !defined(_WIN32)
 
+// Log tags, as parsed from the ANDROID_LOG_TAGS environment variable.
+typedef struct LogTags {
+    int globalMinPriority;
+    struct {
+        char tag[kMaxTagLen];
+        int minPriority;
+    } tagSet[kTagSetSize];
+} LogTags;
 
-/*
- * File descriptor management.
- */
-#define FAKE_FD_BASE 10000
-#define MAX_OPEN_LOGS 16
-static LogState *openLogTable[MAX_OPEN_LOGS];
-
-/*
- * Allocate an fd and associate a new LogState with it.
- * The fd is available via the fakeFd field of the return value.
- */
-static LogState *createLogState()
-{
-    size_t i;
-
-    for (i = 0; i < sizeof(openLogTable); i++) {
-        if (openLogTable[i] == NULL) {
-            openLogTable[i] = calloc(1, sizeof(LogState));
-            openLogTable[i]->fakeFd = FAKE_FD_BASE + i;
-            return openLogTable[i];
-        }
-    }
-    return NULL;
-}
-
-/*
- * Translate an fd to a LogState.
- */
-static LogState *fdToLogState(int fd)
-{
-    if (fd >= FAKE_FD_BASE && fd < FAKE_FD_BASE + MAX_OPEN_LOGS) {
-        return openLogTable[fd - FAKE_FD_BASE];
-    }
-    return NULL;
-}
-
-/*
- * Unregister the fake fd and free the memory it pointed to.
- */
-static void deleteFakeFd(int fd)
-{
-    LogState *ls;
-
-    lock();
-
-    ls = fdToLogState(fd);
-    if (ls != NULL) {
-        openLogTable[fd - FAKE_FD_BASE] = NULL;
-        free(ls->debugName);
-        free(ls);
-    }
-
-    unlock();
-}
+static LogTags* logTags;
 
 /*
  * Configure logging based on ANDROID_LOG_TAGS environment variable.  We
@@ -177,22 +91,19 @@ static void deleteFakeFd(int fd)
  * and a letter indicating the minimum priority level we're expected to log.
  * This can be used to reveal or conceal logs with specific tags.
  *
- * We also want to check ANDROID_PRINTF_LOG to determine how the output
- * will look.
+ * TODO: There seem to be multiple copies of this code floating around.
+ * Should we cull ?
  */
-static void configureInitialState(const char* pathName, LogState* logState)
+static void configureLogTags()
 {
-    static const int kDevLogLen = sizeof("/dev/log/") - 1;
-
-    logState->debugName = strdup(pathName);
-
-    /* identify binary logs */
-    if (strcmp(pathName + kDevLogLen, "events") == 0) {
-        logState->isBinary = 1;
+    if (logTags != NULL) {
+        return;
     }
 
+    logTags = calloc(1, sizeof(LogTags));
+
     /* global min priority defaults to "info" level */
-    logState->globalMinPriority = ANDROID_LOG_INFO;
+    logTags->globalMinPriority = ANDROID_LOG_INFO;
 
     /*
      * This is based on the the long-dead utils/Log.cpp code.
@@ -257,48 +168,19 @@ static void configureInitialState(const char* pathName, LogState* logState)
             }
 
             if (tagName[0] == 0) {
-                logState->globalMinPriority = minPrio;
+                logTags->globalMinPriority = minPrio;
                 TRACE("+++ global min prio %d\n", logState->globalMinPriority);
             } else {
-                logState->tagSet[entry].minPriority = minPrio;
-                strcpy(logState->tagSet[entry].tag, tagName);
+                logTags->tagSet[entry].minPriority = minPrio;
+                strcpy(logTags->tagSet[entry].tag, tagName);
                 TRACE("+++ entry %d: %s:%d\n",
                     entry,
-                    logState->tagSet[entry].tag,
-                    logState->tagSet[entry].minPriority);
+                    logTags->tagSet[entry].tag,
+                    logTags->tagSet[entry].minPriority);
                 entry++;
             }
         }
     }
-
-
-    /*
-     * Taken from the long-dead utils/Log.cpp
-     */
-    const char* fstr = getenv("ANDROID_PRINTF_LOG");
-    LogFormat format;
-    if (fstr == NULL) {
-        format = FORMAT_BRIEF;
-    } else {
-        if (strcmp(fstr, "brief") == 0)
-            format = FORMAT_BRIEF;
-        else if (strcmp(fstr, "process") == 0)
-            format = FORMAT_PROCESS;
-        else if (strcmp(fstr, "tag") == 0)
-            format = FORMAT_PROCESS;
-        else if (strcmp(fstr, "thread") == 0)
-            format = FORMAT_PROCESS;
-        else if (strcmp(fstr, "raw") == 0)
-            format = FORMAT_PROCESS;
-        else if (strcmp(fstr, "time") == 0)
-            format = FORMAT_PROCESS;
-        else if (strcmp(fstr, "long") == 0)
-            format = FORMAT_PROCESS;
-        else
-            format = (LogFormat) atoi(fstr);        // really?!
-    }
-
-    logState->outputFormat = format;
 }
 
 /*
@@ -349,8 +231,7 @@ static ssize_t fake_writev(int fd, const struct iovec *iov, int iovcnt) {
  *
  * Log format parsing taken from the long-dead utils/Log.cpp.
  */
-static void showLog(LogState *state,
-        int logPrio, const char* tag, const char* msg)
+static void showLog(int logPrio, const char* tag, const char* msg)
 {
 #if !defined(_WIN32)
     struct tm tmBuf;
@@ -387,52 +268,15 @@ static void showLog(LogState *state,
 
     /*
      * Construct a buffer containing the log header and log message.
+     * This is equivalent to the long dead FORMAT_BRIEF from the obsolete
+     * ANDROID_LOG_PRINTF environment variable. All past usages of this
+     * variable have used BRIEF.
      */
-    size_t prefixLen, suffixLen;
-
-    switch (state->outputFormat) {
-    case FORMAT_TAG:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c/%-8s: ", priChar, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_PROCESS:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d) ", priChar, pid);
-        suffixLen = snprintf(suffixBuf, sizeof(suffixBuf),
-            "  (%s)\n", tag);
-        break;
-    case FORMAT_THREAD:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d:%5d) ", priChar, pid, tid);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_RAW:
-        prefixBuf[0] = 0; prefixLen = 0;
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_TIME:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%s %-8s\n\t", timeBuf, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_THREADTIME:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%s %5d %5d %c %-8s \n\t", timeBuf, pid, tid, priChar, tag);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-    case FORMAT_LONG:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "[ %s %5d:%5d %c/%-8s ]\n",
-            timeBuf, pid, tid, priChar, tag);
-        strcpy(suffixBuf, "\n\n"); suffixLen = 2;
-        break;
-    default:
-        prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
+    const size_t prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
             "%c/%-8s(%5d): ", priChar, tag, pid);
-        strcpy(suffixBuf, "\n"); suffixLen = 1;
-        break;
-     }
+    strcpy(suffixBuf, "\n");
+
+    const size_t suffixLen = 1;
 
     /*
      * Figure out how many lines there will be.
@@ -545,30 +389,25 @@ static void showLog(LogState *state,
  *  tag (N bytes -- null-terminated ASCII string)
  *  message (N bytes -- null-terminated ASCII string)
  */
-static ssize_t logWritev(int fd, const struct iovec* vector, int count)
+ssize_t write_to_stderr(log_id_t log_id, const struct iovec* vector, int count)
 {
-    LogState* state;
-
     /* Make sure that no-one frees the LogState while we're using it.
      * Also guarantees that only one thread is in showLog() at a given
      * time (if it matters).
      */
     lock();
 
-    state = fdToLogState(fd);
-    if (state == NULL) {
-        errno = EBADF;
-        goto error;
+    if (logTags == NULL) {
+      configureLogTags();
     }
 
-    if (state->isBinary) {
-        TRACE("%s: ignoring binary log\n", state->debugName);
+    if (log_id == LOG_ID_EVENTS) {
+        TRACE("%s: ignoring binary log for events\n");
         goto bail;
     }
 
     if (count != 3) {
-        TRACE("%s: writevLog with count=%d not expected\n",
-            state->debugName, count);
+        TRACE("%d: writevLog with count=%d not expected\n", log_id, count);
         goto error;
     }
 
@@ -579,20 +418,20 @@ static ssize_t logWritev(int fd, const struct iovec* vector, int count)
 
     /* see if this log tag is configured */
     int i;
-    int minPrio = state->globalMinPriority;
+    int minPrio = logTags->globalMinPriority;
     for (i = 0; i < kTagSetSize; i++) {
-        if (state->tagSet[i].minPriority == ANDROID_LOG_UNKNOWN)
+        if (logTags->tagSet[i].minPriority == ANDROID_LOG_UNKNOWN)
             break;      /* reached end of configured values */
 
-        if (strcmp(state->tagSet[i].tag, tag) == 0) {
+        if (strcmp(logTags->tagSet[i].tag, tag) == 0) {
             //TRACE("MATCH tag '%s'\n", tag);
-            minPrio = state->tagSet[i].minPriority;
+            minPrio = logTags->tagSet[i].minPriority;
             break;
         }
     }
 
     if (logPrio >= minPrio) {
-        showLog(state, logPrio, tag, msg);
+        showLog(logPrio, tag, msg);
     } else {
         //TRACE("+++ NOLOG(%d): %s %s", logPrio, tag, msg);
     }
@@ -603,91 +442,6 @@ bail:
 error:
     unlock();
     return -1;
-}
-
-/*
- * Free up our state and close the fake descriptor.
- */
-static int logClose(int fd)
-{
-    deleteFakeFd(fd);
-    return 0;
-}
-
-/*
- * Open a log output device and return a fake fd.
- */
-static int logOpen(const char* pathName, int flags __unused)
-{
-    LogState *logState;
-    int fd = -1;
-
-    lock();
-
-    logState = createLogState();
-    if (logState != NULL) {
-        configureInitialState(pathName, logState);
-        fd = logState->fakeFd;
-    } else  {
-        errno = ENFILE;
-    }
-
-    unlock();
-
-    return fd;
-}
-
-
-/*
- * Runtime redirection.  If this binary is running in the simulator,
- * just pass log messages to the emulated device.  If it's running
- * outside of the simulator, write the log messages to stderr.
- */
-
-static int (*redirectOpen)(const char *pathName, int flags) = NULL;
-static int (*redirectClose)(int fd) = NULL;
-static ssize_t (*redirectWritev)(int fd, const struct iovec* vector, int count)
-        = NULL;
-
-static void setRedirects()
-{
-    const char *ws;
-
-    /* Wrapsim sets this environment variable on children that it's
-     * created using its LD_PRELOAD wrapper.
-     */
-    ws = getenv("ANDROID_WRAPSIM");
-    if (ws != NULL && strcmp(ws, "1") == 0) {
-        /* We're running inside wrapsim, so we can just write to the device. */
-        redirectOpen = (int (*)(const char *pathName, int flags))open;
-        redirectClose = close;
-        redirectWritev = writev;
-    } else {
-        /* There's no device to delegate to; handle the logging ourselves. */
-        redirectOpen = logOpen;
-        redirectClose = logClose;
-        redirectWritev = logWritev;
-    }
-}
-
-int fakeLogOpen(const char *pathName, int flags)
-{
-    if (redirectOpen == NULL) {
-        setRedirects();
-    }
-    return redirectOpen(pathName, flags);
-}
-
-int fakeLogClose(int fd)
-{
-    /* Assume that open() was called first. */
-    return redirectClose(fd);
-}
-
-ssize_t fakeLogWritev(int fd, const struct iovec* vector, int count)
-{
-    /* Assume that open() was called first. */
-    return redirectWritev(fd, vector, count);
 }
 
 int __android_log_is_loggable(int prio, const char *tag __unused, int def)
