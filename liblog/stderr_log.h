@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef _LIBLOG_FAKE_LOG_DEVICE_H
-#define _LIBLOG_FAKE_LOG_DEVICE_H
+#ifndef _LIBLOG_STDERR_LOG_H
+#define _LIBLOG_STDERR_LOG_H
 
 #include <sys/types.h>
 
+#include <log/log.h>
+
 struct iovec;
 
-int fakeLogOpen(const char *pathName, int flags);
-int fakeLogClose(int fd);
-ssize_t fakeLogWritev(int fd, const struct iovec* vector, int count);
+ssize_t write_to_stderr(log_id_t logid, const struct iovec* vector, int count);
 
-#endif // _LIBLOG_FAKE_LOG_DEVICE_H
+#endif // _LIBLOG_STDERR_LOG_H

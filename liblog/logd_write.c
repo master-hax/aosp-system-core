@@ -24,7 +24,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#if (FAKE_LOG_DEVICE == 0)
+#if !defined(STDERR_LOG)
 #include <sys/socket.h>
 #include <sys/un.h>
 #endif
@@ -43,9 +43,9 @@
 
 #define LOG_BUF_SIZE 1024
 
-#if FAKE_LOG_DEVICE
+#if defined(STDERR_LOG)
 /* This will be defined when building for the host. */
-#include "fake_log_device.h"
+#include "stderr_log.h"
 #endif
 
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
@@ -58,9 +58,7 @@ static pthread_mutex_t log_init_lock = PTHREAD_MUTEX_INITIALIZER;
 #define __unused  __attribute__((__unused__))
 #endif
 
-#if FAKE_LOG_DEVICE
-static int log_fds[(int)LOG_ID_MAX] = { -1, -1, -1, -1, -1 };
-#else
+#if !defined(STDERR_LOG)
 static int logd_fd = -1;
 static int pstore_fd = -1;
 #endif
@@ -86,7 +84,7 @@ int __android_log_dev_available(void)
     return (g_log_status == kLogAvailable);
 }
 
-#if !FAKE_LOG_DEVICE
+#if !defined(STDERR_LOG)
 /* give up, resources too limited */
 static int __write_to_log_null(log_id_t log_fd __unused, struct iovec *vec __unused,
                                size_t nr __unused)
@@ -98,15 +96,11 @@ static int __write_to_log_null(log_id_t log_fd __unused, struct iovec *vec __unu
 /* log_init_lock assumed */
 static int __write_to_log_initialize()
 {
+#if defined(STDERR_LOG)
+    return 0;
+#else
     int i, ret = 0;
 
-#if FAKE_LOG_DEVICE
-    for (i = 0; i < LOG_ID_MAX; i++) {
-        char buf[sizeof("/dev/log_system")];
-        snprintf(buf, sizeof(buf), "/dev/log_%s", android_log_id_to_name(i));
-        log_fds[i] = fakeLogOpen(buf, O_WRONLY);
-    }
-#else
     if (logd_fd >= 0) {
         i = logd_fd;
         logd_fd = -1;
@@ -141,29 +135,17 @@ static int __write_to_log_initialize()
         }
     }
     logd_fd = i;
-#endif
 
     return ret;
+#endif
 }
 
 static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 {
-    ssize_t ret;
-#if FAKE_LOG_DEVICE
-    int log_fd;
-
-    if (/*(int)log_id >= 0 &&*/ (int)log_id < (int)LOG_ID_MAX) {
-        log_fd = log_fds[(int)log_id];
-    } else {
-        return -EBADF;
-    }
-    do {
-        ret = fakeLogWritev(log_fd, vec, nr);
-        if (ret < 0) {
-            ret = -errno;
-        }
-    } while (ret == -EINTR);
+#if defined(STDERR_LOG)
+    return write_to_stderr(log_id, vec, nr);
 #else
+    ssize_t ret;
     static const unsigned header_length = 2;
     struct iovec newVec[nr + header_length];
     android_log_header_t header;
@@ -282,28 +264,10 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     if (ret > (ssize_t)sizeof(header)) {
         ret -= sizeof(header);
     }
-#endif
 
     return ret;
-}
-
-#if FAKE_LOG_DEVICE
-static const char *LOG_NAME[LOG_ID_MAX] = {
-    [LOG_ID_MAIN] = "main",
-    [LOG_ID_RADIO] = "radio",
-    [LOG_ID_EVENTS] = "events",
-    [LOG_ID_SYSTEM] = "system",
-    [LOG_ID_CRASH] = "crash"
-};
-
-const char *android_log_id_to_name(log_id_t log_id)
-{
-    if (log_id >= LOG_ID_MAX) {
-        log_id = LOG_ID_MAIN;
-    }
-    return LOG_NAME[log_id];
-}
 #endif
+}
 
 static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
 {
