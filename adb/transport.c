@@ -69,8 +69,7 @@ static void  dump_hex( const unsigned char*  ptr, size_t  len )
 }
 #endif
 
-void
-kick_transport(atransport*  t)
+void kick_transport(atransport* t)
 {
     if (t && !t->kicked)
     {
@@ -87,8 +86,22 @@ kick_transport(atransport*  t)
     }
 }
 
-void
-run_transport_disconnects(atransport*  t)
+// Each atransport contains a list of adisconnects (t->disconnects).
+// An adisconnect contains a link to the next/prev adisconnect, a function
+// pointer to a disconnect callback which takes a void* piece of user data and
+// the atransport, and some user data for the callback (helpfully named
+// "opaque").
+//
+// The list is circular. New items are added to the entry member of the list
+// (t->disconnects) by add_transport_disconnect.
+//
+// run_transport_disconnects invokes each function in the list.
+//
+// Gotchas:
+//   * run_transport_disconnects assumes that t->disconnects is non-null, so
+//     this can't be run on a zeroed atransport.
+//   * The list is preserved as callbacks are invoked, so don't call it twice.
+void run_transport_disconnects(atransport* t)
 {
     adisconnect*  dis = t->disconnects.next;
 
@@ -753,7 +766,7 @@ void remove_transport_disconnect(atransport*  t, adisconnect*  dis)
     dis->next = dis->prev = dis;
 }
 
-static int qual_char_is_invalid(char ch)
+int qual_char_is_invalid(char ch)
 {
     if ('A' <= ch && ch <= 'Z')
         return 0;
