@@ -45,7 +45,7 @@ else
         uio.c
 endif
 
-liblog_host_sources := $(liblog_sources) fake_log_device.c
+liblog_stderr_sources := $(liblog_sources) stderr_log.c
 liblog_target_sources := $(liblog_sources) log_time.cpp log_is_loggable.c
 ifneq ($(TARGET_USES_LOGD),false)
 liblog_target_sources += log_read.c
@@ -55,9 +55,10 @@ endif
 
 # Shared and static library for host
 # ========================================================
+include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
-LOCAL_SRC_FILES := $(liblog_host_sources)
-LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror
+LOCAL_SRC_FILES := $(liblog_stderr_sources)
+LOCAL_CFLAGS := -DSTDERR_LOG -Werror
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_STATIC_LIBRARY)
 
@@ -70,6 +71,18 @@ endif
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_SHARED_LIBRARY)
 
+# Static library for the target that always logs to stderr.
+#
+# WARNING: This target is not for general use. The vast majority
+# of android code can assume the presence of logd and just use
+# liblog instead.
+# =======================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE := liblog-stderr
+LOCAL_SRC_FILES := $(liblog_stderr_sources)
+LOCAL_CFLAGS := -DSTDERR_LOG -Werror
+LOCAL_MULTILIB := both
+include $(BUILD_STATIC_LIBRARY)
 
 # Shared and static library for target
 # ========================================================
