@@ -313,7 +313,7 @@ retrieve them and create a bootchart.tgz file that can be used with the
 bootchart command-line utility:
 
   sudo apt-get install pybootchartgui
-  $ANDROID_BUILD_TOP/system/core/init/grab-bootchart.sh
+  $ANDROID_BUILD_TOP/system/core/init/grab-bootchart.sh [-s serialno]
   bootchart ./bootchart.tgz
   gnome-open bootchart.png
 
