@@ -18,10 +18,10 @@
 #define __ADB_H
 
 #include <limits.h>
+#include <sys/types.h>
 
 #include "adb_trace.h"
 #include "fdevent.h"
-#include "transport.h"  /* readx(), writex() */
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,12 +37,15 @@ extern "C" {
 #define A_WRTE 0x45545257
 #define A_AUTH 0x48545541
 
-#define A_VERSION 0x01000000        // ADB protocol version
+// ADB protocol version.
+#define A_VERSION 0x01000000
 
-#define ADB_VERSION_MAJOR 1         // Used for help/version information
-#define ADB_VERSION_MINOR 0         // Used for help/version information
+// Used for help/version information.
+#define ADB_VERSION_MAJOR 1
+#define ADB_VERSION_MINOR 0
 
-#define ADB_SERVER_VERSION    32    // Increment this when we want to force users to start a new adb server
+// Increment this when we want to force users to start a new adb server.
+#define ADB_SERVER_VERSION    32
 
 typedef struct amessage amessage;
 typedef struct apacket apacket;
@@ -278,17 +281,6 @@ int  list_transports(char *buf, size_t  bufsize, int long_listing);
 void update_transports(void);
 
 asocket*  create_device_tracker(void);
-
-/* Obtain a transport from the available transports.
-** If state is != CS_ANY, only transports in that state are considered.
-** If serial is non-NULL then only the device with that serial will be chosen.
-** If no suitable transport is found, error is set.
-*/
-atransport *acquire_one_transport(int state, transport_type ttype, const char* serial, char **error_out);
-void   add_transport_disconnect( atransport*  t, adisconnect*  dis );
-void   remove_transport_disconnect( atransport*  t, adisconnect*  dis );
-void   run_transport_disconnects( atransport*  t );
-void   kick_transport( atransport*  t );
 
 /* initialize a transport object's func pointers and state */
 #if ADB_HOST

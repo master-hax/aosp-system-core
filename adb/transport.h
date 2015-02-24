@@ -19,16 +19,33 @@
 
 #include <sys/types.h>
 
+#include "adb.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* convenience wrappers around read/write that will retry on
-** EINTR and/or short read/write.  Returns 0 on success, -1
-** on error or EOF.
-*/
+/*
+ * Convenience wrappers around read/write that will retry on
+ * EINTR and/or short read/write.  Returns 0 on success, -1
+ * on error or EOF.
+ *
+ * TODO(danalbert): Just kill theses and use TEMP_FAILURE_RETRY.
+ */
 int readx(int fd, void *ptr, size_t len);
 int writex(int fd, const void *ptr, size_t len);
+
+/*
+ * Obtain a transport from the available transports.
+ * If state is != CS_ANY, only transports in that state are considered.
+ * If serial is non-NULL then only the device with that serial will be chosen.
+ * If no suitable transport is found, error is set.
+ */
+atransport *acquire_one_transport(int state, transport_type ttype, const char* serial, char **error_out);
+void add_transport_disconnect( atransport*  t, adisconnect*  dis );
+void remove_transport_disconnect( atransport*  t, adisconnect*  dis );
+void kick_transport( atransport*  t );
+void run_transport_disconnects( atransport*  t );
 
 #ifdef __cplusplus
 }
