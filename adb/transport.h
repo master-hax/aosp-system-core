@@ -17,6 +17,7 @@
 #ifndef __TRANSPORT_H
 #define __TRANSPORT_H
 
+#include <stdbool.h>
 #include <sys/types.h>
 
 #include "adb.h"
@@ -26,12 +27,23 @@ extern "C" {
 #endif
 
 /*
- * Convenience wrappers around read/write that will retry on
- * EINTR and/or short read/write.  Returns 0 on success, -1
- * on error or EOF.
+ * Reads exactly len bytes from fd into buf.
+ *
+ * Returns false if there is an error or if EOF was reached before len bytes
+ * were read. If EOF was found, errno will be set to 0.
+ *
+ * If this function fails, the contents of buf are undefined.
  */
-int readx(int fd, void *ptr, size_t len);
-int writex(int fd, const void *ptr, size_t len);
+bool ReadFdExactly(int fd, void *buf, size_t len);
+
+/*
+ * Writes exactly len bytes from buf to fd.
+ *
+ * Returns false if there is an error or if the fd was closed before the write
+ * completed. If the other end of the fd (such as in a socket, pipe, or fifo),
+ * is closed, errno will be set to 0.
+ */
+bool WriteFdExactly(int fd, const void *buf, size_t len);
 
 /*
  * Obtain a transport from the available transports.

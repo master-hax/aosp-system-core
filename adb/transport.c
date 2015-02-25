@@ -1152,72 +1152,68 @@ void unregister_usb_transport(usb_handle *usb)
 #undef TRACE_TAG
 #define TRACE_TAG  TRACE_RWX
 
-int readx(int fd, void *ptr, size_t len)
-{
-    char *p = ptr;
-    int r;
+bool ReadFdExactly(int fd, void* buf, size_t len) {
+    char* p = buf;
+
 #if ADB_TRACE
     size_t len0 = len;
 #endif
+
     D("readx: fd=%d wanted=%zu\n", fd, len);
-    while(len > 0) {
-        r = adb_read(fd, p, len);
-        if(r > 0) {
+    while (len > 0) {
+        int r = TEMP_FAILURE_RETRY(adb_read(fd, p, len));
+        if (r > 0) {
             len -= r;
             p += r;
+        } else if (r == -1) {
+            D("readx: fd=%d error %d: %s\n", fd, errno, strerror(errno));
+            return false;
         } else {
-            if (r < 0) {
-                D("readx: fd=%d error %d: %s\n", fd, errno, strerror(errno));
-                if (errno == EINTR)
-                    continue;
-            } else {
-                D("readx: fd=%d disconnected\n", fd);
-            }
-            return -1;
+            D("readx: fd=%d disconnected\n", fd);
+            errno = 0;
+            return false;
         }
     }
 
 #if ADB_TRACE
     D("readx: fd=%d wanted=%zu got=%zu\n", fd, len0, len0 - len);
     if (ADB_TRACING) {
-        dump_hex( ptr, len0 );
+        dump_hex(buf, len0);
     }
 #endif
-    return 0;
+
+    return true;
 }
 
-int writex(int fd, const void *ptr, size_t len)
-{
-    char *p = (char*) ptr;
+bool WriteFdExactly(int fd, const void* buf, size_t len) {
+    char* p = (char*)buf;
     int r;
 
 #if ADB_TRACE
     D("writex: fd=%d len=%d: ", fd, (int)len);
     if (ADB_TRACING) {
-        dump_hex( ptr, len );
+        dump_hex(buf, len);
     }
 #endif
-    while(len > 0) {
-        r = adb_write(fd, p, len);
-        if(r > 0) {
+
+    while (len > 0) {
+        r = TEMP_FAILURE_RETRY(adb_write(fd, p, len));
+        if (r == -1) {
+            D("writex: fd=%d error %d: %s\n", fd, errno, strerror(errno));
+            if (errno == EAGAIN) {
+                adb_sleep_ms(1); // just yield some cpu time
+                continue;
+            } else if (errno == EPIPE) {
+                D("writex: fd=%d disconnected\n", fd);
+                errno = 0;
+                return false;
+            }
+        } else {
             len -= r;
             p += r;
-        } else {
-            if (r < 0) {
-                D("writex: fd=%d error %d: %s\n", fd, errno, strerror(errno));
-                if (errno == EINTR)
-                    continue;
-                if (errno == EAGAIN) {
-                    adb_sleep_ms(1); // just yield some cpu time
-                    continue;
-                }
-            } else {
-                D("writex: fd=%d disconnected\n", fd);
-            }
-            return -1;
         }
     }
-    return 0;
+    return true;
 }
 
 int check_header(apacket *p)
