@@ -32,6 +32,11 @@ class LogBufferElement {
     const log_time mMonotonicTime;
     const log_time mRealTime;
 
+    // Extract a 4-byte value from a byte stream.
+    static inline uint32_t get4LE(const uint8_t* src) {
+        return src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+    }
+
 public:
     LogBufferElement(log_id_t log_id, log_time realtime,
                      uid_t uid, pid_t pid, pid_t tid,
@@ -43,6 +48,15 @@ public:
     pid_t getPid(void) const { return mPid; }
     pid_t getTid(void) const { return mTid; }
     unsigned short getMsgLen() const { return mMsgLen; }
+    // Is this a liblog event reporting data loss?
+    bool isLiblog() const {
+#ifdef LIBLOG_LOG_TAG
+        return (mLogId == LOG_ID_EVENTS)
+            && (LIBLOG_LOG_TAG == get4LE((const uint8_t *)mMsg));
+#else
+        return false;
+#endif
+    }
     log_time getMonotonicTime(void) const { return mMonotonicTime; }
     log_time getRealTime(void) const { return mRealTime; }
 
