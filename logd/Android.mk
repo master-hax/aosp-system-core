@@ -26,7 +26,15 @@ LOCAL_SHARED_LIBRARIES := \
     libcutils \
     libutils
 
-LOCAL_CFLAGS := -Werror $(shell sed -n 's/^\([0-9]*\)[ \t]*auditd[ \t].*/-DAUDITD_LOG_TAG=\1/p' $(LOCAL_PATH)/event.logtags)
+event_logtags = $(shell \
+    sed -n \
+        "s/^\([0-9]*\)[ \t]*$1[ \t].*/-D`echo $1 | tr a-z A-Z`_LOG_TAG=\1/p" \
+        $(LOCAL_PATH)/$2/event.logtags)
+
+audit_flag := $(call event_logtags,auditd)
+liblog_flag := $(call event_logtags,liblog,../liblog)
+
+LOCAL_CFLAGS := -Werror $(audit_flag) $(liblog_flag)
 
 include $(BUILD_EXECUTABLE)
 

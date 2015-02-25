@@ -171,7 +171,7 @@ bool LogTimeEntry::FilterFirstPass(const LogBufferElement *element, void *obj) {
     }
 
     if ((!me->mPid || (me->mPid == element->getPid()))
-            && (me->isWatching(element->getLogId()))) {
+            && (me->isWatching(element->getLogId()) || element->isLiblog())) {
         ++me->mCount;
     }
 
@@ -198,7 +198,7 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
         goto skip;
     }
 
-    if (!me->isWatching(element->getLogId())) {
+    if (!me->isWatching(element->getLogId()) && !element->isLiblog()) {
         goto skip;
     }
 
