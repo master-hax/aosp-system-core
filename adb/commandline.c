@@ -486,7 +486,7 @@ int adb_download_buffer(const char *service, const char *fn, const void* data, i
 
     while(sz > 0) {
         unsigned xfer = (sz > CHUNK_SIZE) ? CHUNK_SIZE : sz;
-        if(writex(fd, ptr, xfer)) {
+        if(!WriteFdExactly(fd, ptr, xfer)) {
             adb_status(fd);
             fprintf(stderr,"* failed to write data '%s' *\n", adb_error());
             return -1;
@@ -502,7 +502,7 @@ int adb_download_buffer(const char *service, const char *fn, const void* data, i
         printf("\n");
     }
 
-    if(readx(fd, buf, 4)){
+    if(!ReadFdExactly(fd, buf, 4)){
         fprintf(stderr,"* error reading response *\n");
         adb_close(fd);
         return -1;
@@ -587,7 +587,7 @@ int adb_sideload_host(const char* fn) {
 
     int last_percent = -1;
     for (;;) {
-        if (readx(fd, buf, 8)) {
+        if (!ReadFdExactly(fd, buf, 8)) {
             fprintf(stderr, "* failed to read command: %s\n", adb_error());
             status = -1;
             goto done;
@@ -614,7 +614,7 @@ int adb_sideload_host(const char* fn) {
             to_write = sz - offset;
         }
 
-        if(writex(fd, start, to_write)) {
+        if(!WriteFdExactly(fd, start, to_write)) {
             adb_status(fd);
             fprintf(stderr,"* failed to write data '%s' *\n", adb_error());
             status = -1;
