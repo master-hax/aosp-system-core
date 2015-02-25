@@ -31,6 +31,9 @@ class LogBufferElement {
     const unsigned short mMsgLen;
     const log_time mMonotonicTime;
     const log_time mRealTime;
+#ifdef LIBLOG_LOG_TAG
+    bool mIsLiblog;
+#endif
 
 public:
     LogBufferElement(log_id_t log_id, log_time realtime,
@@ -43,6 +46,14 @@ public:
     pid_t getPid(void) const { return mPid; }
     pid_t getTid(void) const { return mTid; }
     unsigned short getMsgLen() const { return mMsgLen; }
+    // Is this a liblog event reporting data loss?
+    bool isLiblog() const {
+#ifdef LIBLOG_LOG_TAG
+        return mIsLiblog;
+#else
+        return false;
+#endif
+    }
     log_time getMonotonicTime(void) const { return mMonotonicTime; }
     log_time getRealTime(void) const { return mRealTime; }
 

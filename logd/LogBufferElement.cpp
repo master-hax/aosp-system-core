@@ -26,6 +26,13 @@
 
 const log_time LogBufferElement::FLUSH_ERROR((uint32_t)0, (uint32_t)0);
 
+#ifdef LIBLOG_LOG_TAG
+// Extract a 4-byte value from a byte stream.
+static inline uint32_t get4LE(const uint8_t* src) {
+    return src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+}
+#endif
+
 LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
                                    uid_t uid, pid_t pid, pid_t tid,
                                    const char *msg, unsigned short len)
@@ -35,7 +42,12 @@ LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
         , mTid(tid)
         , mMsgLen(len)
         , mMonotonicTime(CLOCK_MONOTONIC)
-        , mRealTime(realtime) {
+        , mRealTime(realtime)
+#ifdef LIBLOG_LOG_TAG
+        , mIsLiblog((log_id == LOG_ID_EVENTS)
+            && (LIBLOG_LOG_TAG == get4LE((const uint8_t *)msg)))
+#endif
+{
     mMsg = new char[len];
     memcpy(mMsg, msg, len);
 }
