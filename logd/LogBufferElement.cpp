@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+#include <endian.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 
 #include <log/logger.h>
+#include <private/android_logger.h>
 
 #include "LogBufferElement.h"
 #include "LogReader.h"
@@ -35,7 +37,12 @@ LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
         , mTid(tid)
         , mMsgLen(len)
         , mMonotonicTime(CLOCK_MONOTONIC)
-        , mRealTime(realtime) {
+        , mRealTime(realtime)
+#ifdef LIBLOG_LOG_TAG
+        , mIsLiblog((log_id == LOG_ID_EVENTS) &&
+            (htole32(LIBLOG_LOG_TAG) == ((android_event_header_t *)msg)->tag))
+#endif
+{
     mMsg = new char[len];
     memcpy(mMsg, msg, len);
 }
