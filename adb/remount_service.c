@@ -110,7 +110,7 @@ errout:
 
 static void write_string(int fd, const char* str)
 {
-    writex(fd, str, strlen(str));
+    WriteFdExactly(fd, str, strlen(str));
 }
 
 void remount_service(int fd, void *cookie)
