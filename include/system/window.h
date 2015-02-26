@@ -262,6 +262,15 @@ enum {
      * the aspect ratio of the buffers produced.
      */
     NATIVE_WINDOW_STICKY_TRANSFORM = 11,
+
+    /*
+     * Returns the age of the contents of the most recently dequeued buffer as
+     * the number of frames that have elapsed since it was last queued. For
+     * example, if the window is double-buffered, the age of any given buffer in
+     * steady state will be 2. If the dequeued buffer has never been queued, its
+     * age will be 0.
+     */
+    NATIVE_WINDOW_BUFFER_AGE = 12,
 };
 
 /* Valid operations for the (*perform)() hook.
