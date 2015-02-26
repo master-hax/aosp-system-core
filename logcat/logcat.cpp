@@ -852,6 +852,7 @@ int main(int argc, char **argv)
         android::g_eventTagMap = android_openEventTagMap(EVENT_TAG_MAP_FILE);
 
     dev = NULL;
+    log_device_t t("unexpected", false, '?');
     while (1) {
         struct log_msg log_msg;
         log_device_t* d;
@@ -885,8 +886,15 @@ int main(int argc, char **argv)
             }
         }
         if (!d) {
-            fprintf(stderr, "read: Unexpected log ID!\n");
-            exit(EXIT_FAILURE);
+            if (android::g_devCount == 1) {
+                android::g_devCount++;
+            }
+            d = &t;
+            d->binary = log_msg.id() == LOG_ID_EVENTS;
+            if (!needBinary && d->binary) {
+                android::g_eventTagMap = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+                needBinary = true;
+            }
         }
 
         if (dev != d) {
