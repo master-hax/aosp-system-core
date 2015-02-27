@@ -5,6 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
     backtrace.cpp \
     debuggerd.cpp \
+	Elf.cpp \
     getevent.cpp \
     tombstone.cpp \
     utility.cpp \
@@ -31,6 +32,7 @@ LOCAL_SHARED_LIBRARIES := \
     libcutils \
     liblog \
     libselinux \
+    libutils \
 
 LOCAL_CLANG := true
 
