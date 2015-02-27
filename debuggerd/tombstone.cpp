@@ -38,6 +38,7 @@
 #include <log/log.h>
 #include <log/logger.h>
 #include <log/logprint.h>
+#include <utils/stringprintf.h>
 
 #include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
@@ -46,9 +47,13 @@
 
 #include <UniquePtr.h>
 
+#include <string>
+#include <vector>
+
 #include "machine.h"
 #include "tombstone.h"
 #include "backtrace.h"
+#include "Elf.h"
 
 #define STACK_WORDS 16
 
@@ -325,44 +330,79 @@ static void dump_stack(Backtrace* backtrace, log_t* log) {
   }
 }
 
-static void dump_map(log_t* log, const backtrace_map_t* map, bool fault_addr) {
-  _LOG(log, logtype::MAPS, "%s%" PRIPTR "-%" PRIPTR " %c%c%c  %7" PRIdPTR "%s\n",
-         (fault_addr? "--->" : "    "), map->start, map->end - 1,
-         (map->flags & PROT_READ) ? 'r' : '-', (map->flags & PROT_WRITE) ? 'w' : '-',
-         (map->flags & PROT_EXEC) ? 'x' : '-',
-         (map->end - map->start),
-         (map->name.length() > 0) ? ("  " + map->name).c_str() : "");
-}
-
-static void dump_all_maps(BacktraceMap* map, log_t* log, pid_t tid) {
-  bool has_fault_address = false;
+static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, pid_t tid) {
+  bool print_fault_address_marker = false;
   uintptr_t addr = 0;
   siginfo_t si;
   memset(&si, 0, sizeof(si));
   if (ptrace(PTRACE_GETSIGINFO, tid, 0, &si)) {
-    _LOG(log, logtype::MAPS, "cannot get siginfo for %d: %s\n", tid, strerror(errno));
+    _LOG(log, logtype::ERROR, "cannot get siginfo for %d: %s\n", tid, strerror(errno));
   } else {
-    has_fault_address = signal_has_si_addr(si.si_signo);
+    print_fault_address_marker = signal_has_si_addr(si.si_signo);
     addr = reinterpret_cast<uintptr_t>(si.si_addr);
   }
 
-  _LOG(log, logtype::MAPS, "\nmemory map:%s\n", has_fault_address ? " (fault address prefixed with --->)" : "");
-
-  if (has_fault_address && (addr < map->begin()->start)) {
-    _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " before any mapped regions\n", addr);
-  }
-
-  BacktraceMap::const_iterator prev = map->begin();
-  for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
-    if (addr >= (*prev).end && addr < (*it).start) {
-      _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " between mapped regions\n", addr);
+  std::vector<std::string> map_lines;
+  if (!print_fault_address_marker) {
+    map_lines.push_back("memory map:");
+  } else {
+    map_lines.push_back("memory map: (fault address prefixed with --->)");
+    if (map->begin() != map->end() && addr < map->begin()->start) {
+      map_lines.push_back(android::StringPrintf(
+          "--->Fault address falls at %" PRIPTR " before any mapped regions",
+          addr));
+      print_fault_address_marker = false;
     }
-    prev = it;
-    bool in_map = has_fault_address && (addr >= (*it).start) && (addr < (*it).end);
-    dump_map(log, &*it, in_map);
   }
-  if (has_fault_address && (addr >= (*prev).end)) {
-    _LOG(log, logtype::MAPS, "--->Fault address falls at %" PRIPTR " after any mapped regions\n", addr);
+
+  for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
+    std::string line = "    ";
+    if (print_fault_address_marker) {
+      if (addr < it->start) {
+        map_lines.push_back(android::StringPrintf(
+            "--->Fault address falls at %" PRIPTR " between mapped regions",
+            addr));
+        print_fault_address_marker = false;
+      } else if (addr >= it->start && addr < it->end) {
+        line = "--->";
+        print_fault_address_marker = false;
+      }
+    }
+    line += android::StringPrintf("%" PRIPTR "-%" PRIPTR " ", it->start, it->end - 1);
+    if (it->flags & PROT_READ) {
+      line += 'r';
+    } else {
+      line += '-';
+    }
+    if (it->flags & PROT_WRITE) {
+      line += 'w';
+    } else {
+      line += '-';
+    }
+    if (it->flags & PROT_EXEC) {
+      line += 'x';
+    } else {
+      line += '-';
+    }
+    line += android::StringPrintf("  %8" PRIxPTR, it->end - it->start);
+    if (it->name.length() > 0) {
+      line += "  " + it->name;
+      std::string build_id;
+      if ((it->flags & PROT_READ) && ElfGetBuildId(backtrace, it->start, &build_id)) {
+        line += " (BuildId: " + build_id + ")";
+      }
+    }
+    map_lines.push_back(line);
+  }
+  if (print_fault_address_marker) {
+    map_lines.push_back(android::StringPrintf(
+          "--->Fault address falls at %" PRIPTR " after any mapped regions",
+          addr));
+  }
+
+  _LOG(log, logtype::MAPS, "\n");
+  for (const auto& map_line : map_lines) {
+    _LOG(log, logtype::MAPS, "%s\n", map_line.c_str());
   }
 }
 
@@ -627,7 +667,7 @@ static bool dump_crash(log_t* log, pid_t pid, pid_t tid, int signal, int si_code
     dump_backtrace_and_stack(backtrace.get(), log);
   }
   dump_memory_and_code(log, tid);
-  dump_all_maps(map.get(), log, tid);
+  dump_all_maps(backtrace.get(), map.get(), log, tid);
 
   if (want_logs) {
     dump_logs(log, pid, 5);
