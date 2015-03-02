@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
+#include <math.h>
+
 #define DEF_MEM_LEVEL 8                // normally in zutil.h?
 
 zipfile_t
@@ -79,7 +81,7 @@ static int
 uninflate(unsigned char* out, int unlen, const unsigned char* in, int clen)
 {
     z_stream zstream;
-    int err = 0;
+    int err = END_OF_STREAM;
     int zerr;
 
     memset(&zstream, 0, sizeof(zstream));
@@ -92,19 +94,20 @@ uninflate(unsigned char* out, int unlen, const unsigned char* in, int clen)
     zstream.avail_out = unlen;
     zstream.data_type = Z_UNKNOWN;
 
-    // Use the undocumented "negative window bits" feature to tell zlib
-    // that there's no zlib header waiting for it.
+    /* Use the undocumented "negative window bits" feature to tell zlib
+     * that there's no zlib header waiting for it.
+     */
     zerr = inflateInit2(&zstream, -MAX_WBITS);
     if (zerr != Z_OK) {
-        return -1;
+        return UNZIP_ERROR;
     }
 
-    // uncompress the data
+    /* uncompress the data */
     zerr = inflate(&zstream, Z_FINISH);
     if (zerr != Z_STREAM_END) {
         fprintf(stderr, "zerr=%d Z_STREAM_END=%d total_out=%lu\n", zerr, Z_STREAM_END,
                     zstream.total_out);
-        err = -1;
+        err = UNZIP_ERROR;
     }
 
      inflateEnd(&zstream);
@@ -126,6 +129,103 @@ decompress_zipentry(zipentry_t e, void* buf, int bufsize)
             return -1;
     }
 }
+
+/* call this api instead of decompress_zipentry if the size of the buffer
+ * passed is smaller than the uncompressed size of the image.
+ * The caller should repeat calling the function until the function
+ * returns END_OF_STREAM or UNZIP_ERROR. The function returns
+ * BUFFER_FULL when there is more uncompressed data left in the input
+ * file, but the zip engine has run out of output buffer space.
+ */
+
+int
+decompress_zipentry_multiple(zipentry_t e, void* buf, unsigned int bufsize, unsigned int* bytescopied)
+{
+    Zipentry* entry = (Zipentry*)e;
+    int err = END_OF_STREAM;
+    int zerr;
+
+    if ( entry == NULL || buf == NULL || bytescopied == NULL) {
+        fprintf(stderr, "Null pointers passed in one of the arguments\n");
+        return UNZIP_ERROR;
+    }
+
+    /* if we have enough space in the output buffer to
+     * hold the entire decompressed output, then, call
+     * into decompress_zipentry.
+     */
+
+    if (bufsize > ceil(entry->uncompressedSize * 1.001)) {
+        *bytescopied = get_zipentry_size(e);
+        return decompress_zipentry(e, buf, bufsize);
+    }
+
+    switch (entry->compressionMethod)
+    {
+        case STORED:
+            if (bufsize >= (entry->uncompressedSize - entry->uncompressedBytes)) {
+                memcpy(buf, entry->data + entry->uncompressedBytes,
+                    entry->uncompressedSize - entry->uncompressedBytes);
+                *bytescopied = entry->uncompressedSize - entry->uncompressedBytes;
+                return END_OF_STREAM;
+            } else {
+                memcpy(buf, entry->data + entry->uncompressedBytes, bufsize);
+                entry->uncompressedBytes += bufsize;
+                *bytescopied = bufsize;
+                return BUFFER_FULL;
+            }
+        case DEFLATED:
+        /* zstream initialized during the first call to decompress a file. */
+            if(entry->zstream == NULL) {
+                entry->zstream = calloc(1, sizeof(z_stream));
+                if(entry->zstream == NULL) {
+                    fprintf(stderr, "failed to allocate %lu bytes\n",
+                        (unsigned long)sizeof(z_stream));
+                    return UNZIP_ERROR;
+                }
+
+                entry->zstream->zalloc = Z_NULL;
+                entry->zstream->zfree = Z_NULL;
+                entry->zstream->opaque = Z_NULL;
+                entry->zstream->next_in = (void*)entry->data;
+                entry->zstream->avail_in = entry->compressedSize;
+                entry->zstream->next_out = (Bytef*)buf;
+                entry->zstream->avail_out = bufsize;
+                entry->zstream->data_type = Z_UNKNOWN;
+
+                zerr = inflateInit2(entry->zstream, -MAX_WBITS);
+                if (zerr != Z_OK) {
+                    return UNZIP_ERROR;
+                }
+            } else {
+                entry->zstream->next_out = (Bytef*)buf;
+                entry->zstream->avail_out = bufsize;
+            }
+            /* uncompress the data */
+            zerr = inflate(entry->zstream, Z_SYNC_FLUSH);
+            if (zerr == Z_OK) {
+                *bytescopied = bufsize;
+                err = BUFFER_FULL;
+            } else if (zerr == Z_STREAM_END) {
+                *bytescopied = bufsize - entry->zstream->avail_out;
+                inflateEnd(entry->zstream);
+                free(entry->zstream);
+                entry->zstream = NULL;
+                err = END_OF_STREAM;
+            } else {
+                fprintf(stderr, "zerr=%d Z_STREAM_END=%d total_out=%lu\n",
+                    zerr, Z_STREAM_END, entry->zstream->total_out);
+                free(entry->zstream);
+                entry->zstream = NULL;
+                err = UNZIP_ERROR;
+            }
+
+            return err;
+        default:
+            return UNZIP_ERROR;
+    }
+}
+
 
 void
 dump_zipfile(FILE* to, zipfile_t file)
