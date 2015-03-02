@@ -33,3 +33,20 @@ on early-boot
 # Allow only the shell group to read and truncate the kernel trace.
     chown root shell /sys/kernel/debug/tracing/trace
     chmod 0660 /sys/kernel/debug/tracing/trace
+
+# Set up boot sys trace configuration.
+    setprop debug.atrace.tags.enableflags 0x40000
+    write /sys/kernel/debug/tracing/buffer_size_kb 65536
+    write /sys/kernel/debug/tracing/events/sched/sched_switch/enable 1
+    write /sys/kernel/debug/tracing/events/sched/sched_wakeup/enable 1
+    write /sys/kernel/debug/tracing/events/f2fs/f2fs_sync_file_enter/enable 1
+    write /sys/kernel/debug/tracing/events/f2fs/f2fs_sync_file_exit/enable 1
+    write /sys/kernel/debug/tracing/events/f2fs/f2fs_write_begin/enable 1
+    write /sys/kernel/debug/tracing/events/f2fs/f2fs_write_end/enable 1
+    write /sys/kernel/debug/tracing/events/ext4/ext4_da_write_begin/enable 1
+    write /sys/kernel/debug/tracing/events/ext4/ext4_da_write_end/enable 1
+    write /sys/kernel/debug/tracing/events/ext4/ext4_sync_file_enter/enable 1
+    write /sys/kernel/debug/tracing/events/ext4/ext4_sync_file_exit/enable 1
+    write /sys/kernel/debug/tracing/events/block/block_rq_issue/enable 1
+    write /sys/kernel/debug/tracing/events/block/block_rq_complete/enable 1
+ 
