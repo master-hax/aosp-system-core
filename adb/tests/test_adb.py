@@ -240,12 +240,16 @@ class AdbBasic(unittest.TestCase):
     def test_root_unroot(self):
         """Make sure that adb root and adb unroot work, using id(1)."""
         adb = AdbWrapper()
-        adb.root()
-        adb.wait()
-        self.assertEqual("root", adb.shell("id -un").strip())
-        adb.unroot()
-        adb.wait()
-        self.assertEqual("shell", adb.shell("id -un").strip())
+        try:
+            adb.root()
+            adb.wait()
+            self.assertEqual("root", adb.shell("id -un").strip())
+            adb.unroot()
+            adb.wait()
+            self.assertEqual("shell", adb.shell("id -un").strip())
+        finally:
+            adb.root()
+            adb.wait()
 
 
 class AdbFile(unittest.TestCase):
