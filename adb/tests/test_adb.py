@@ -237,15 +237,32 @@ class AdbBasic(unittest.TestCase):
                 version_num = True
         self.assertTrue(version_num)
 
-    def test_root_unroot(self):
-        """Make sure that adb root and adb unroot work, using id(1)."""
+    def _test_root(self):
         adb = AdbWrapper()
         adb.root()
         adb.wait()
         self.assertEqual("root", adb.shell("id -un").strip())
+
+    def _test_unroot(self):
+        adb = AdbWrapper()
         adb.unroot()
         adb.wait()
         self.assertEqual("shell", adb.shell("id -un").strip())
+
+    def test_root_unroot(self):
+        """Make sure that adb root and adb unroot work, using id(1)."""
+        adb = AdbWrapper()
+        current_user = adb.shell("id -un").strip()
+        try:
+            if current_user == "root":
+                self._test_unroot()
+                self._test_root()
+            elif current_user == "shell":
+                self._test_root()
+                self._test_unroot()
+        finally:
+            adb.root()
+            adb.wait()
 
 
 class AdbFile(unittest.TestCase):
