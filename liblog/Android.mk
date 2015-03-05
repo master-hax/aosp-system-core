@@ -38,7 +38,6 @@ endif
 
 ifndef WITH_MINGW
     liblog_sources += \
-        logprint.c \
         event_tag_map.c
 else
     liblog_sources += \
@@ -47,6 +46,9 @@ endif
 
 liblog_host_sources := $(liblog_sources) fake_log_device.c
 liblog_target_sources := $(liblog_sources) log_time.cpp log_is_loggable.c
+ifndef WITH_MINGW
+liblog_target_sources += logprint.c
+endif
 ifneq ($(TARGET_USES_LOGD),false)
 liblog_target_sources += log_read.c
 else
