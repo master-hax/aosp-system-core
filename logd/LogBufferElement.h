@@ -42,6 +42,7 @@ public:
     uid_t getUid(void) const { return mUid; }
     pid_t getPid(void) const { return mPid; }
     pid_t getTid(void) const { return mTid; }
+    const char *getMsg() const { return mMsg; }
     unsigned short getMsgLen() const { return mMsgLen; }
     log_time getMonotonicTime(void) const { return mMonotonicTime; }
     log_time getRealTime(void) const { return mRealTime; }

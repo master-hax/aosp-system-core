@@ -20,9 +20,11 @@
 #include <pthread.h>
 #include <time.h>
 #include <sys/types.h>
-#include <sysutils/SocketClient.h>
-#include <utils/List.h>
+
 #include <log/log.h>
+#include <sysutils/SocketClient.h>
+#include <utils/BasicHashtable.h>
+#include <utils/List.h>
 
 class LogReader;
 
@@ -43,6 +45,12 @@ class LogTimeEntry {
     unsigned long mCount;
     unsigned long mTail;
     unsigned long mIndex;
+    struct TEntry {
+        const uid_t key;
+        TEntry(uid_t key):key(key) { }
+        inline const uid_t& getKey() const { return key; }
+    };
+    android::BasicHashtable<uid_t, TEntry> mTable[LOG_ID_MAX];
 
 public:
     LogTimeEntry(LogReader &reader, SocketClient *client, bool nonBlock,

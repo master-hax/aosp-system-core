@@ -56,12 +56,18 @@ TEST(logcat, buckets) {
 
     while (fgets(buffer, sizeof(buffer), fp)) {
         if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
-            while (char *cp = strrchr(buffer, '\n')) {
+            char *cp;
+            if ((cp = strchr(buffer, ':'))) {
+                *cp = '\0';
+            }
+            while ((cp = strrchr(buffer, '\n'))) {
                 *cp = '\0';
             }
             log_id_t id = android_name_to_log_id(buffer + sizeof(begin) - 1);
-            ids |= 1 << id;
-            ++count;
+            if (!(ids & (1 << id))) {
+                ids |= 1 << id;
+                ++count;
+            }
         }
     }
 
