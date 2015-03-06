@@ -150,8 +150,16 @@ static void processBuffer(log_device_t* dev, struct log_msg *buf)
     }
 
     if (android_log_shouldPrintLine(g_logformat, entry.tag, entry.priority)) {
-        bytesWritten = android_log_printLogLine(g_logformat, g_outFD, &entry);
-
+        if ((entry.priority == ANDROID_LOG_INFO)
+         && !strncmp(entry.message, "UID:", 4)
+         && ((strspn(entry.message + 4, "0123456789") + 4) == entry.messageLen)) {
+            static const char slice[] = "--------- beginning of %s:%s\n";
+            char buffer[sizeof(slice) + strlen(dev->device) + entry.messageLen];
+            size_t len = snprintf(buffer, sizeof(buffer), slice, dev->device, entry.message);
+            bytesWritten = TEMP_FAILURE_RETRY(write(g_outFD, buffer, len));
+        } else {
+            bytesWritten = android_log_printLogLine(g_logformat, g_outFD, &entry);
+        }
         if (bytesWritten < 0) {
             perror("output error");
             exit(-1);
