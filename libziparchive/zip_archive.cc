@@ -828,22 +828,19 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
       return kInvalidOffset;
     }
 
-    uint8_t* name_buf = reinterpret_cast<uint8_t*>(malloc(nameLen));
+    uint8_t name_buf[nameLen];
     ssize_t actual = ReadAtOffset(archive->fd, name_buf, nameLen,
                                   name_offset);
 
     if (actual != nameLen) {
       ALOGW("Zip: failed reading lfh name from offset %" PRId64, static_cast<int64_t>(name_offset));
-      free(name_buf);
       return kIoError;
     }
 
     if (memcmp(archive->hash_table[ent].name, name_buf, nameLen)) {
-      free(name_buf);
       return kInconsistentInformation;
     }
 
-    free(name_buf);
   } else {
     ALOGW("Zip: lfh name did not match central directory.");
     return kInconsistentInformation;
