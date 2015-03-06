@@ -970,6 +970,9 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
   return kIterationEnd;
 }
 
+// This method uses libz macros with old-style-casts
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 static int32_t InflateToFile(int fd, const ZipEntry* entry,
                              uint8_t* begin, uint32_t length,
                              uint64_t* crc_out) {
@@ -1075,6 +1078,7 @@ z_bail:
 
   return result;
 }
+#pragma GCC diagnostic pop
 
 int32_t ExtractToMemory(ZipArchiveHandle handle,
                         ZipEntry* entry, uint8_t* begin, uint32_t size) {
