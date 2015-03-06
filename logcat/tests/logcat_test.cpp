@@ -56,6 +56,9 @@ TEST(logcat, buckets) {
 
     while (fgets(buffer, sizeof(buffer), fp)) {
         if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
+            if (strchr(buffer, ':')) {
+                continue;
+            }
             while (char *cp = strrchr(buffer, '\n')) {
                 *cp = '\0';
             }
