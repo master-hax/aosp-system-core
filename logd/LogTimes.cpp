@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/prctl.h>
+
+#include <log/logger.h>
+#include <private/android_logger.h>
 
 #include "FlushCommand.h"
 #include "LogBuffer.h"
@@ -183,13 +188,14 @@ bool LogTimeEntry::FilterFirstPass(const LogBufferElement *element, void *obj) {
 // A second pass to send the selected elements
 bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) {
     LogTimeEntry *me = reinterpret_cast<LogTimeEntry *>(obj);
+    log_id_t id = element->getLogId();
 
     LogTimeEntry::lock();
 
     me->mStart = element->getMonotonicTime();
 
-    if (me->skipAhead[element->getLogId()]) {
-        me->skipAhead[element->getLogId()]--;
+    if (me->skipAhead[id]) {
+        me->skipAhead[id]--;
         goto skip;
     }
 
@@ -198,7 +204,7 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
         goto skip;
     }
 
-    if (!me->isWatching(element->getLogId())) {
+    if (!me->isWatching(id)) {
         goto skip;
     }
 
@@ -225,8 +231,68 @@ bool LogTimeEntry::FilterSecondPass(const LogBufferElement *element, void *obj) 
     }
 
 ok:
-    if (!me->skipAhead[element->getLogId()]) {
+    if (!me->skipAhead[id]) {
+        // Check if this is the first UID per logid message buffer
+        uid_t uid = element->getUid();
+        android::hash_t hash = android::hash_type(uid);
+        bool found = me->mTable[id].find(-1, hash, uid) != -1;
+        if (!found) {
+            TEntry initEntry(uid);
+            me->mTable[id].add(hash, initEntry);
+        }
+        SocketClient *reader = me->mClient;
         LogTimeEntry::unlock();
+
+        if (found) {
+            return true;
+        }
+
+        // Inject first UID per logid message buffer
+        static const char format[] = "UID:%d";
+        const char *msg = element->getMsg();
+        size_t hdrlen = (id == LOG_ID_EVENTS)
+            ? sizeof(android_log_event_string_t)
+            : (strlen(msg + 1) + 2);
+        size_t len = snprintf(NULL, 0, format, uid);
+
+        struct entry {
+            struct logger_entry_v3 header;
+            union {
+                android_log_event_string_t event;
+                char message[];
+            } msg;
+        } *entry;
+
+        entry = static_cast<struct entry *>(
+                    calloc(1, sizeof(entry->header) + hdrlen + len + 1));
+        if (!entry) {
+            return true;
+        }
+
+        entry->header.hdr_size = sizeof(entry->header);
+        entry->header.len = hdrlen + len;
+        entry->header.lid = id;
+        entry->header.pid = element->getPid();
+        entry->header.tid = element->getTid();
+        log_time realtime = element->getRealTime();
+        entry->header.sec = realtime.tv_sec;
+        entry->header.nsec = realtime.tv_nsec;
+        if (id == LOG_ID_EVENTS) {
+            entry->msg.event.header.tag = ((const android_event_header_t *)msg)->tag;
+            entry->msg.event.payload.type = EVENT_TYPE_STRING;
+            entry->msg.event.payload.length = htole32(len);
+        } else {
+            // Text messages must have terminating nul in count
+            entry->header.len++;
+            entry->msg.message[0] = ANDROID_LOG_INFO;
+            strcpy(entry->msg.message + 1, msg + 1);
+        }
+        snprintf(entry->msg.message + hdrlen, len + 1, format, uid);
+
+        reader->sendData(entry, sizeof(entry->header) + hdrlen + len);
+
+        free(entry);
+
         return true;
     }
     // FALLTHRU
