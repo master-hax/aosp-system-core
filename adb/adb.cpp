@@ -16,16 +16,18 @@
 
 #define  TRACE_TAG   TRACE_ADB
 
+#include <ctype.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stddef.h>
 #include <string.h>
-#include <time.h>
 #include <sys/time.h>
-#include <stdint.h>
+#include <time.h>
+
+#include <string>
 
 #include "sysdeps.h"
 #include "adb.h"
@@ -76,6 +78,23 @@ void fatal_errno(const char *fmt, ...)
 
 int   adb_trace_mask;
 
+#if ADB_HOST
+std::string get_trace_setting() {
+    const char* setting = getenv("ADB_TRACE");
+    if (setting == nullptr) {
+        setting = "";
+    }
+
+    return std::string(setting);
+}
+#else
+std::string get_trace_setting() {
+    char buf[PROPERTY_VALUE_MAX];
+    property_get("service.adb.trace", buf, "");
+    return std::string(buf);
+}
+#endif
+
 /* read a comma/space/colum/semi-column separated list of tags
  * from the ADB_TRACE environment variable and build the trace
  * mask from it. note that '1' and 'all' are special cases to
@@ -83,8 +102,7 @@ int   adb_trace_mask;
  */
 void  adb_trace_init(void)
 {
-    const char*  p = getenv("ADB_TRACE");
-    const char*  q;
+    const std::string trace_setting = get_trace_setting();
 
     static const struct {
         const char*  tag;
@@ -106,14 +124,16 @@ void  adb_trace_init(void)
         { NULL, 0 }
     };
 
-    if (p == NULL)
-            return;
+    if (trace_setting == "") {
+        return;
+    }
 
     /* use a comma/column/semi-colum/space separated list */
+    const char* p = trace_setting.c_str();
     while (*p) {
         int  len, tagn;
 
-        q = strpbrk(p, " ,:;");
+        const char* q = strpbrk(p, " ,:;");
         if (q == NULL) {
             q = p + strlen(p);
         }
