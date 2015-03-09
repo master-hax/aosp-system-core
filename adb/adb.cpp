@@ -16,16 +16,18 @@
 
 #define  TRACE_TAG   TRACE_ADB
 
+#include <ctype.h>
+#include <errno.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stddef.h>
 #include <string.h>
-#include <time.h>
 #include <sys/time.h>
-#include <stdint.h>
+#include <time.h>
+
+#include <string>
 
 #include "sysdeps.h"
 #include "adb.h"
@@ -74,17 +76,70 @@ void fatal_errno(const char *fmt, ...)
     exit(-1);
 }
 
-int   adb_trace_mask;
+#if !ADB_HOST
+void start_device_log(void) {
+    adb_mkdir("/data/adb", 0775);
+
+    struct tm now;
+    time_t t;
+    tzset();
+    time(&t);
+    localtime_r(&t, &now);
+
+    char path[PATH_MAX];
+    strftime(path, sizeof(path), "/data/adb/adb-%Y-%m-%d-%H-%M-%S.txt", &now);
+
+    int fd = unix_open(path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
+    if (fd == -1) {
+        return;
+    }
+
+    // redirect stdout and stderr to the log file
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+    fprintf(stderr, "--- adb starting (pid %d) ---\n", getpid());
+    adb_close(fd);
+
+    fd = unix_open("/dev/null", O_RDONLY);
+    dup2(fd, 0);
+    adb_close(fd);
+}
+#endif
+
+int adb_trace_mask;
+
+std::string get_trace_setting_from_env() {
+    const char* setting = getenv("ADB_TRACE");
+    if (setting == nullptr) {
+        setting = "";
+    }
+
+    return std::string(setting);
+}
+
+#if !ADB_HOST
+std::string get_trace_setting_from_prop() {
+    char buf[PROPERTY_VALUE_MAX];
+    property_get("persist.adb.trace_mask", buf, "");
+    return std::string(buf);
+}
+#endif
+
+std::string get_trace_setting() {
+#if ADB_HOST
+    return get_trace_setting_from_env();
+#else
+    return get_trace_setting_from_prop();
+#endif
+}
 
 /* read a comma/space/colum/semi-column separated list of tags
  * from the ADB_TRACE environment variable and build the trace
  * mask from it. note that '1' and 'all' are special cases to
  * enable all tracing
  */
-void  adb_trace_init(void)
-{
-    const char*  p = getenv("ADB_TRACE");
-    const char*  q;
+void  adb_trace_init(void) {
+    const std::string trace_setting = get_trace_setting();
 
     static const struct {
         const char*  tag;
@@ -106,25 +161,25 @@ void  adb_trace_init(void)
         { NULL, 0 }
     };
 
-    if (p == NULL)
-            return;
+    if (trace_setting.empty()) {
+        return;
+    }
 
-    /* use a comma/column/semi-colum/space separated list */
+    /* use a comma/colon/semi-colon/space separated list */
+    const char* p = trace_setting.c_str();
     while (*p) {
         int  len, tagn;
 
-        q = strpbrk(p, " ,:;");
+        const char* q = strpbrk(p, " ,:;");
         if (q == NULL) {
             q = p + strlen(p);
         }
         len = q - p;
 
-        for (tagn = 0; tags[tagn].tag != NULL; tagn++)
-        {
+        for (tagn = 0; tags[tagn].tag != NULL; tagn++) {
             int  taglen = strlen(tags[tagn].tag);
 
-            if (len == taglen && !memcmp(tags[tagn].tag, p, len) )
-            {
+            if (len == taglen && !memcmp(tags[tagn].tag, p, len)) {
                 int  flag = tags[tagn].flag;
                 if (flag == 0) {
                     adb_trace_mask = ~0;
@@ -138,6 +193,10 @@ void  adb_trace_init(void)
         if (*p)
             p++;
     }
+
+#if !ADB_HOST
+    start_device_log();
+#endif
 }
 
 apacket* get_apacket(void)
