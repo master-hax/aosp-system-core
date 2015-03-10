@@ -29,6 +29,14 @@ static char *nexttok(char **strp)
 #define SHOW_NUMERIC_UID 32
 #define SHOW_ABI 64
 
+#if __LP64__
+#define WCHAN_WIDTH     16
+#define PC_WIDTH        16
+#else
+#define WCHAN_WIDTH     8
+#define PC_WIDTH        8
+#endif
+
 static int display_flags = 0;
 static int ppid_filter = 0;
 
@@ -44,7 +52,8 @@ static int ps_line(int pid, int tid, char *namefilter)
     int fd, r;
     char *ptr, *name, *state;
     int ppid;
-    unsigned wchan, rss, vss, eip;
+    unsigned rss, vss;
+    unsigned long wchan, eip;
     unsigned utime, stime;
     int prio, nice, rtprio, sched, psr;
     struct passwd *pw;
@@ -176,7 +185,7 @@ static int ps_line(int pid, int tid, char *namefilter)
             else
                 printf(" %.2s ", get_sched_policy_name(p));
         }
-        printf(" %08x %08x %s ", wchan, eip, state);
+        printf(" %0*lx %0*lx %s ", WCHAN_WIDTH, wchan, PC_WIDTH, eip, state);
         if (display_flags & SHOW_ABI) {
             print_exe_abi(pid);
         }
@@ -287,10 +296,12 @@ int ps_main(int argc, char **argv)
     if (display_flags & SHOW_MACLABEL) {
         printf("LABEL                          USER     PID   PPID  NAME\n");
     } else {
-        printf("USER     PID   PPID  VSIZE  RSS   %s%s %s WCHAN    PC        %sNAME\n",
+        printf("USER     PID   PPID  VSIZE  RSS   %s%s %s%*s %*s  %sNAME\n",
                (display_flags&SHOW_CPU)?"CPU ":"",
                (display_flags&SHOW_PRIO)?"PRIO  NICE  RTPRI SCHED ":"",
                (display_flags&SHOW_POLICY)?"PCY " : "",
+               WCHAN_WIDTH, "WCHAN",
+               PC_WIDTH, "PC",
                (display_flags&SHOW_ABI)?"ABI " : "");
     }
     while((de = readdir(d)) != 0){
