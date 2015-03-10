@@ -40,6 +40,7 @@ commonSources:= \
     Unicode.cpp \
     VectorImpl.cpp \
     file.cpp \
+    logging.cpp \
     misc.cpp \
     stringprintf.cpp \
     strings.cpp \
