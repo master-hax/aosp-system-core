@@ -276,16 +276,17 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         size_t second_worst_sizes = 0;
 
         if ((id != LOG_ID_CRASH) && mPrune.worstUidEnabled()) {
-            LidStatistics &l = stats.id(id);
-            l.sort();
-            UidStatisticsCollection::iterator iu = l.begin();
-            if (iu != l.end()) {
-                UidStatistics *u = *iu;
-                worst = u->getUid();
-                worst_sizes = u->sizes();
-                if (++iu != l.end()) {
-                    second_worst_sizes = (*iu)->sizes();
+            const UidEntry **sorted = stats.sort(2, id);
+
+            if (sorted) {
+                if (sorted[0]) {
+                    worst = sorted[0]->getKey();
+                    worst_sizes = sorted[0]->getSizes();
+                    if (sorted[1]) {
+                        second_worst_sizes = sorted[1]->getSizes();
+                    }
                 }
+                delete [] sorted;
             }
         }
 
@@ -481,22 +482,9 @@ log_time LogBuffer::flushTo(
 }
 
 void LogBuffer::formatStatistics(char **strp, uid_t uid, unsigned int logMask) {
-    log_time oldest(CLOCK_MONOTONIC);
-
     pthread_mutex_lock(&mLogElementsLock);
 
-    // Find oldest element in the log(s)
-    LogBufferElementCollection::iterator it;
-    for (it = mLogElements.begin(); it != mLogElements.end(); ++it) {
-        LogBufferElement *element = *it;
-
-        if ((logMask & (1 << element->getLogId()))) {
-            oldest = element->getMonotonicTime();
-            break;
-        }
-    }
-
-    stats.format(strp, uid, logMask, oldest);
+    stats.format(strp, uid, logMask);
 
     pthread_mutex_unlock(&mLogElementsLock);
 }

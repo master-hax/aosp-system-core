@@ -131,6 +131,8 @@ static bool property_get_bool(const char *key, bool def) {
     return def;
 }
 
+int fdPackages = -1;
+
 static sem_t reinit;
 static bool reinit_running = false;
 static LogBuffer *logBuf = NULL;
@@ -139,10 +141,18 @@ static void *reinit_thread_start(void * /*obj*/) {
     prctl(PR_SET_NAME, "logd.daemon");
     set_sched_policy(0, SP_BACKGROUND);
 
-    setgid(AID_LOGD);
-    setuid(AID_LOGD);
+    setgid(AID_SYSTEM);
+    setuid(AID_SYSTEM);
 
-    while (reinit_running && !sem_wait(&reinit) && reinit_running) {
+    for (;;) {
+        if (fdPackages < 0) {
+            fdPackages = open("/data/system/packages.xml", O_RDONLY);
+        }
+
+        if (!reinit_running || sem_wait(&reinit) || !reinit_running) {
+            break;
+        }
+
         // Anything that reads persist.<property>
         if (logBuf) {
             logBuf->init();
