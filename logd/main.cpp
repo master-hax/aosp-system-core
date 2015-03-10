@@ -127,17 +127,48 @@ static bool property_get_bool(const char *key, bool def) {
     return def;
 }
 
-// Foreground waits for exit of the three main persistent threads that
-// are started here.  The three threads are created to manage UNIX
-// domain client sockets for writing, reading and controlling the user
-// space logger.  Additional transitory per-client threads are created
-// for each reader once they register.
+int fdPackages = -1;
+
+static void *reinit_thread_start(void * /*obj*/) {
+    prctl(PR_SET_NAME, "logd.daemon");
+    set_sched_policy(0, SP_BACKGROUND);
+
+    setgid(AID_SYSTEM);
+    setuid(AID_SYSTEM);
+
+    fdPackages = open("/data/system/packages.xml", O_RDONLY);
+
+    return NULL;
+}
+
+// Foreground waits for exit of the main persistent threads
+// that are started here. The threads are created to manage
+// UNIX domain client sockets for writing, reading and
+// controlling the user space logger, and for any additional
+// logging plugins like auditd and system privilege. Additional
+// transitory per-client threads are created for each reader.
 int main() {
     bool auditd = property_get_bool("logd.auditd", true);
 
     int fdDmesg = -1;
     if (auditd && property_get_bool("logd.auditd.dmesg", true)) {
         fdDmesg = open("/dev/kmsg", O_WRONLY);
+    }
+
+    // system privilege thread (for selinux)
+    pthread_attr_t attr;
+    if (!pthread_attr_init(&attr)) {
+        struct sched_param param;
+
+        memset(&param, 0, sizeof(param));
+        pthread_attr_setschedparam(&attr, &param);
+        pthread_attr_setschedpolicy(&attr, SCHED_BATCH);
+        if (!pthread_attr_setdetachstate(&attr,
+                                         PTHREAD_CREATE_DETACHED)) {
+            pthread_t thread;
+            pthread_create(&thread, &attr, reinit_thread_start, NULL);
+        }
+        pthread_attr_destroy(&attr);
     }
 
     if (drop_privs() != 0) {
