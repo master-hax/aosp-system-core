@@ -142,6 +142,7 @@ static bool property_get_bool(const char *key, bool def) {
 // globally for debugging if necessary. eg:
 //   write(fdDmesg, "I am here\n", 10);
 static int fdDmesg = -1;
+int fdPackages = -1;
 
 static sem_t reinit;
 static bool reinit_running = false;
@@ -151,10 +152,19 @@ static void *reinit_thread_start(void * /*obj*/) {
     prctl(PR_SET_NAME, "logd.daemon");
     set_sched_policy(0, SP_BACKGROUND);
 
-    setgid(AID_LOGD);
-    setuid(AID_LOGD);
+    setgid(AID_SYSTEM);
+    setuid(AID_SYSTEM);
 
-    while (reinit_running && !sem_wait(&reinit) && reinit_running) {
+    for (;;) {
+        // Privileged items to re-initialize
+        if (fdPackages < 0) {
+            fdPackages = open("/data/system/packages.list", O_RDONLY);
+        }
+
+        if (!reinit_running || sem_wait(&reinit) || !reinit_running) {
+            break;
+        }
+
         if (fdDmesg >= 0) {
             static const char reinit_message[] = { KMSG_PRIORITY(LOG_INFO),
                 'l', 'o', 'g', 'd', '.', 'd', 'a', 'e', 'm', 'o', 'n', ':',
