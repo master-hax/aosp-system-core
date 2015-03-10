@@ -84,8 +84,11 @@ LOCAL_MODULE := liblog
 LOCAL_WHOLE_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS := -Werror $(liblog_cflags)
 
+ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),mips mips64))
 # TODO: This is to work around b/19059885. Remove after root cause is fixed
+# MIPS doesn't support GNU hash style.
 LOCAL_LDFLAGS := -Wl,--hash-style=both
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
