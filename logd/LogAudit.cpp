@@ -29,10 +29,14 @@
 #include "libaudit.h"
 #include "LogAudit.h"
 
-#define KMSG_PRIORITY(PRI)         \
-    '<',                           \
-    '0' + (LOG_AUTH | (PRI)) / 10, \
-    '0' + (LOG_AUTH | (PRI)) % 10, \
+#ifndef LOG_MAKEPRI
+# define LOG_MAKEPRI(fac, pri) ((fac) | (pri))
+#endif
+
+#define KMSG_PRIORITY(PRI)                          \
+    '<',                                            \
+    '0' + LOG_MAKEPRI(LOG_AUTH, LOG_PRI(PRI)) / 10, \
+    '0' + LOG_MAKEPRI(LOG_AUTH, LOG_PRI(PRI)) % 10, \
     '>'
 
 LogAudit::LogAudit(LogBuffer *buf, LogReader *reader, int fdDmesg)
