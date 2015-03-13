@@ -39,6 +39,7 @@
 #include <android/set_abort_message.h>
 #endif
 
+#include <log/event_tag_map.h>
 #include <log/logd.h>
 #include <log/logger.h>
 #include <log/log_read.h>
@@ -207,9 +208,33 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             }
         }
         if (!__android_log_security()) {
+            atomic_store(&dropped_security, 0);
             return -EPERM;
         }
+    } else if (log_id == LOG_ID_EVENTS) {
+        if (vec[0].iov_len >= 4) {
+            static const EventTagMap *map;
+
+            if (!map) {
+                map = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+            }
+            if (map && !__android_log_is_loggable(ANDROID_LOG_INFO,
+                                                  android_lookupEventTag(
+                                                      map,
+                                                      htole32(
+                                                          ((uint32_t *)vec[0].iov_base)[0])),
+                                                  ANDROID_LOG_VERBOSE)) {
+                return -EPERM;
+            }
+        }
+    } else if (!__android_log_is_loggable(((char *)vec[0].iov_base)[0],
+                                          (vec[0].iov_len > 1)
+                                              ? &((char *)vec[0].iov_base)[1]
+                                              : ((char *)vec[1].iov_base),
+                                          ANDROID_LOG_VERBOSE)) {
+        return -EPERM;
     }
+
     /*
      *  struct {
      *      // what we provide to pstore
@@ -267,7 +292,9 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             }
         }
         snapshot = atomic_exchange_explicit(&dropped, 0, memory_order_relaxed);
-        if (snapshot) {
+        if (snapshot && __android_log_is_loggable(ANDROID_LOG_INFO,
+                                                  "liblog",
+                                                  ANDROID_LOG_VERBOSE)) {
             android_log_event_int_t buffer;
 
             header.id = LOG_ID_EVENTS;
