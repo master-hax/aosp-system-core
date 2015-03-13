@@ -169,7 +169,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     } while (ret == -EINTR);
 #else
     static const unsigned header_length = 2;
-    struct iovec newVec[nr + header_length];
+    struct iovec newVec[header_length + (nr ? nr : 1)];
     android_log_header_t header;
     android_pmsg_log_header_t pmsg_header;
     struct timespec ts;
