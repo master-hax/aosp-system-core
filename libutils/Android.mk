@@ -15,33 +15,34 @@
 LOCAL_PATH:= $(call my-dir)
 
 commonSources:= \
-	BasicHashtable.cpp \
-	BlobCache.cpp \
-	CallStack.cpp \
-	FileMap.cpp \
-	JenkinsHash.cpp \
-	LinearAllocator.cpp \
-	LinearTransform.cpp \
-	Log.cpp \
-	NativeHandle.cpp \
-	Printer.cpp \
-	ProcessCallStack.cpp \
-	PropertyMap.cpp \
-	RefBase.cpp \
-	SharedBuffer.cpp \
-	Static.cpp \
-	StopWatch.cpp \
-	String8.cpp \
-	String16.cpp \
-	SystemClock.cpp \
-	Threads.cpp \
-	Timers.cpp \
-	Tokenizer.cpp \
-	Unicode.cpp \
-	VectorImpl.cpp \
-	file.cpp \
-	misc.cpp \
-	stringprintf.cpp \
+    BasicHashtable.cpp \
+    BlobCache.cpp \
+    CallStack.cpp \
+    FileMap.cpp \
+    JenkinsHash.cpp \
+    LinearAllocator.cpp \
+    LinearTransform.cpp \
+    Log.cpp \
+    NativeHandle.cpp \
+    Printer.cpp \
+    ProcessCallStack.cpp \
+    PropertyMap.cpp \
+    RefBase.cpp \
+    SharedBuffer.cpp \
+    Static.cpp \
+    StopWatch.cpp \
+    String16.cpp \
+    String8.cpp \
+    SystemClock.cpp \
+    Threads.cpp \
+    Timers.cpp \
+    Tokenizer.cpp \
+    Unicode.cpp \
+    VectorImpl.cpp \
+    file.cpp \
+    misc.cpp \
+    stringprintf.cpp \
+    strings.cpp \
 
 host_commonCflags := -DLIBUTILS_NATIVE=1 $(TOOL_CFLAGS) -Werror
 
@@ -52,48 +53,48 @@ host_commonCflags += -DMB_CUR_MAX=1
 endif
 endif
 
-# For the host
+# For the host, static
 # =====================================================
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= $(commonSources)
-ifeq ($(HOST_OS), linux)
+ifeq ($(HOST_OS),linux)
 LOCAL_SRC_FILES += Looper.cpp
 endif
 ifeq ($(HOST_OS),darwin)
 LOCAL_CFLAGS += -Wno-unused-parameter
 endif
 LOCAL_MODULE:= libutils
-LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS += $(host_commonCflags)
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_STATIC_LIBRARY)
 
+# For the host, shared
+# =====================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE:= libutils
+LOCAL_MULTILIB := both
+LOCAL_WHOLE_STATIC_LIBRARIES := libutils
+LOCAL_STATIC_LIBRARIES := libcutils
+LOCAL_SHARED_LIBRARIES := \
+    libbacktrace \
+    liblog \
+
+include $(BUILD_HOST_SHARED_LIBRARY)
 
 # For the device, static
 # =====================================================
 include $(CLEAR_VARS)
-
-
-# we have the common sources, plus some device-specific stuff
-LOCAL_SRC_FILES:= \
-	$(commonSources) \
-	Looper.cpp \
-	Trace.cpp
-
+LOCAL_MODULE := libutils
+LOCAL_CFLAGS := -Werror
 ifeq ($(TARGET_ARCH),mips)
 LOCAL_CFLAGS += -DALIGN_DOUBLE
 endif
-LOCAL_CFLAGS += -Werror
 
-LOCAL_STATIC_LIBRARIES := \
-	libcutils
+LOCAL_SRC_FILES := \
+    $(commonSources) \
+    Looper.cpp \
+    Trace.cpp \
 
-LOCAL_SHARED_LIBRARIES := \
-        libbacktrace \
-        liblog \
-        libdl
-
-LOCAL_MODULE:= libutils
 include $(BUILD_STATIC_LIBRARY)
 
 # For the device, shared
@@ -102,14 +103,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libutils
 LOCAL_WHOLE_STATIC_LIBRARIES := libutils
 LOCAL_SHARED_LIBRARIES := \
-        libbacktrace \
-        libcutils \
-        libdl \
-        liblog
-LOCAL_CFLAGS := -Werror
+    libbacktrace \
+    libcutils \
+    liblog \
+    libdl \
 
 include $(BUILD_SHARED_LIBRARY)
-
 
 # Build the tests in the tests/ subdirectory.
 include $(call first-makefiles-under,$(LOCAL_PATH))

@@ -17,27 +17,34 @@
 # Build the unit tests.
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-
-LOCAL_MODULE := libutils_tests
-
-LOCAL_SRC_FILES := \
+libutils_test_srcs := \
     BasicHashtable_test.cpp \
     BlobCache_test.cpp \
     BitSet_test.cpp \
     file_test.cpp \
-    Looper_test.cpp \
     LruCache_test.cpp \
     String8_test.cpp \
     stringprintf_test.cpp \
+    strings_test.cpp \
     Unicode_test.cpp \
     Vector_test.cpp \
 
-LOCAL_SHARED_LIBRARIES := \
-    libz \
+libutils_test_shlibs := \
     liblog \
-    libcutils \
     libutils \
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := libutils_tests
+LOCAL_SRC_FILES := $(libutils_test_srcs) Looper_test.cpp
+LOCAL_SHARED_LIBRARIES := $(libutils_test_shlibs) libcutils libz
 include $(BUILD_NATIVE_TEST)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libutils_tests
+LOCAL_SRC_FILES := $(libutils_test_srcs)
+ifeq ($(HOST_OS),linux)
+LOCAL_SRC_FILES += Looper_test.cpp
+endif
+LOCAL_STATIC_LIBRARIES := libcutils
+LOCAL_SHARED_LIBRARIES := $(libutils_test_shlibs) libz-host
+include $(BUILD_HOST_NATIVE_TEST)
