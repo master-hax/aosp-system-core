@@ -164,6 +164,12 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     if (!nr) {
         return -EINVAL;
     }
+    if (!__android_log_is_loggable(
+            (log_id == LOG_ID_EVENTS) ? ANDROID_LOG_INFO : ((char *)vec[0].iov_base)[0],
+            NULL,
+            ANDROID_LOG_VERBOSE)) {
+        return 0;
+    }
 
     if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
         last_uid = getuid();
