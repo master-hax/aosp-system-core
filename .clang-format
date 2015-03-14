@@ -3,9 +3,11 @@ AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: false
 
 CommentPragmas: NOLINT:.*
-DerivePointerAlignment: false
-IndentWidth: 2
-PointerAlignment: Left
-TabWidth: 2
 UseTab: Never
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 100
+AccessModifierOffset: -4
 PenaltyExcessCharacter: 32
+DerivePointerAlignment: false
+PointerAlignment: Left
