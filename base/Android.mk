@@ -18,6 +18,7 @@ LOCAL_PATH := $(call my-dir)
 
 libbase_src_files := \
     file.cpp \
+    logging.cpp \
     stringprintf.cpp \
     strings.cpp \
 
