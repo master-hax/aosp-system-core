@@ -309,15 +309,12 @@ static int write_data_buffer(int fd, char* file_buffer, int size, syncsendbuf *s
     return err;
 }
 
-#if defined(_WIN32)
-extern int write_data_link(int fd, const char *path, syncsendbuf *sbuf) __attribute__((error("no symlinks on Windows")));
-#else
-static int write_data_link(int fd, const char *path, syncsendbuf *sbuf)
-{
+#if !defined(_WIN32)
+extern int write_data_link(int fd, const char *path, syncsendbuf *sbuf) {
     int len, ret;
 
     len = readlink(path, sbuf->data, SYNC_DATA_MAX-1);
-    if(len < 0) {
+    if (len < 0) {
         fprintf(stderr, "error reading link '%s': %s\n", path, strerror(errno));
         return -1;
     }
@@ -327,7 +324,7 @@ static int write_data_link(int fd, const char *path, syncsendbuf *sbuf)
     sbuf->id = ID_DATA;
 
     ret = !WriteFdExactly(fd, sbuf, sizeof(unsigned) * 2 + len + 1);
-    if(ret)
+    if (ret)
         return -1;
 
     total_bytes += len + 1;
