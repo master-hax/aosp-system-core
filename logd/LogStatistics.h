@@ -17,6 +17,7 @@
 #ifndef _LOGD_LOG_STATISTICS_H__
 #define _LOGD_LOG_STATISTICS_H__
 
+#include <stdlib.h>
 #include <sys/types.h>
 
 #include <log/log.h>
@@ -39,6 +40,30 @@ struct UidEntry {
     inline bool subtract(size_t s) { size -= s; return !size; }
 };
 
+struct PidEntry {
+    const pid_t pid;
+    uid_t uid;
+    char *name;
+    size_t size;
+
+    PidEntry(pid_t p, uid_t u, char *n):pid(p),uid(u),name(n),size(0) { }
+    PidEntry(const PidEntry &c):
+        pid(c.pid),
+        uid(c.uid),
+        name(c.name ? strdup(c.name) : NULL),
+        size(c.size) { }
+    ~PidEntry() { free(name); }
+
+    const pid_t&getKey() const { return pid; }
+    const uid_t&getUid() const { return uid; }
+    uid_t&setUid(uid_t u) { return uid = u; }
+    const char*getName() const { return name; }
+    char *setName(char *n) { free(name); return name = n; }
+    size_t getSizes() const { return size; }
+    inline void add(size_t s) { size += s; }
+    inline bool subtract(size_t s) { size -= s; return !size; }
+};
+
 // Log Statistics
 class LogStatistics {
     size_t mSizes[LOG_ID_MAX];
@@ -49,16 +74,22 @@ class LogStatistics {
     // uid to size list
     android::BasicHashtable<uid_t, UidEntry> uidTable[LOG_ID_MAX];
 
+    // pid to uid list
+    android::BasicHashtable<pid_t, PidEntry> pidTable;
+
+    bool enable;
+
 public:
     LogStatistics();
 
-    void enableStatistics() { }
+    void enableStatistics() { enable = true; }
 
     void add(LogBufferElement *entry);
     void subtract(LogBufferElement *entry);
 
     // Caller must delete array
     const UidEntry **sort(size_t n, log_id i);
+    const PidEntry **sort(size_t n);
 
     // fast track current value by id only
     size_t sizes(log_id_t id) const { return mSizes[id]; }
