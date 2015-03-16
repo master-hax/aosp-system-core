@@ -76,10 +76,12 @@ void LogStatistics::add(LogBufferElement *e) {
     if (index == -1) {
         UidEntry initEntry(uid);
         initEntry.add(size);
+        initEntry.add_dropped(e->getDropped());
         table.add(hash, initEntry);
     } else {
         UidEntry &entry = table.editEntryAt(index);
         entry.add(size);
+        entry.add_dropped(e->getDropped());
     }
 
     mSizesTotal[log_id] += size;
@@ -123,7 +125,7 @@ void LogStatistics::subtract(LogBufferElement *e) {
     ssize_t index = table.find(-1, hash, uid);
     if (index != -1) {
         UidEntry &entry = table.editEntryAt(index);
-        if (entry.subtract(size)) {
+        if (entry.subtract(size) || entry.subtract_dropped(e->getDropped())) {
             table.removeAt(index);
         }
     }
@@ -140,6 +142,35 @@ void LogStatistics::subtract(LogBufferElement *e) {
         if (entry.subtract(size)) {
             pidTable.removeAt(index);
         }
+    }
+}
+
+void LogStatistics::drop(LogBufferElement *e) {
+    log_id_t log_id = e->getLogId();
+    unsigned short size = e->getMsgLen();
+    mSizes[log_id] -= size;
+    --mElements[log_id];
+
+    uid_t uid = e->getUid();
+    android::hash_t hash = android::hash_type(uid);
+    typeof uidTable[0] &table = uidTable[log_id];
+    ssize_t index = table.find(-1, hash, uid);
+    if (index != -1) {
+        UidEntry &entry = table.editEntryAt(index);
+        entry.subtract(size);
+        entry.add_dropped(1);
+    }
+
+    if (!enable) {
+        return;
+    }
+
+    pid_t pid = e->getPid();
+    hash = android::hash_type(pid);
+    index = pidTable.find(-1, hash, pid);
+    if (index != -1) {
+        PidEntry &entry = pidTable.editEntryAt(index);
+        entry.subtract(size);
     }
 }
 
@@ -415,6 +446,10 @@ void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
             spaces += (spaces_total * 2) - k.length() - 1;
 
             android::String8 l("");
+            size_t dropped = entry->getDropped();
+            if (dropped) {
+                l.appendFormat("drop:%zu ", dropped);
+            }
             l.appendFormat("%zu", sizes);
 
             while (spaces <= (ssize_t)l.length()) {
