@@ -18,6 +18,7 @@
 #define _LOGD_LOG_BUFFER_ELEMENT_H__
 
 #include <stdatomic.h>
+#include <stdlib.h>
 #include <sys/types.h>
 
 #include <sysutils/SocketClient.h>
@@ -38,7 +39,7 @@ class LogBufferElement {
     const pid_t mPid;
     const pid_t mTid;
     char *mMsg;
-    const unsigned short mMsgLen;
+    unsigned short mMsgLen; // dropped count if mMsg == NULL
     const uint64_t mSequence;
     const log_time mRealTime;
     static atomic_int_fast64_t sequence;
@@ -53,7 +54,15 @@ public:
     uid_t getUid(void) const { return mUid; }
     pid_t getPid(void) const { return mPid; }
     pid_t getTid(void) const { return mTid; }
-    unsigned short getMsgLen() const { return mMsgLen; }
+    unsigned short getDropped(void) const { return mMsg ? 0 : mMsgLen; }
+    unsigned short setDropped(unsigned short value) {
+        if (mMsg) {
+            free(mMsg);
+            mMsg = NULL;
+        }
+        return mMsgLen = value;
+    }
+    unsigned short getMsgLen() const { return mMsg ? mMsgLen : 0; }
     uint64_t getSequence(void) const { return mSequence; }
     static uint64_t getCurrentSequence(void) { return sequence.load(memory_order_relaxed); }
     log_time getRealTime(void) const { return mRealTime; }
