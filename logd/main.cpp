@@ -155,6 +155,7 @@ static void *reinit_thread_start(void * /*obj*/) {
     setuid(AID_LOGD);
 
     while (reinit_running && !sem_wait(&reinit) && reinit_running) {
+
         if (fdDmesg >= 0) {
             static const char reinit_message[] = { KMSG_PRIORITY(LOG_INFO),
                 'l', 'o', 'g', 'd', '.', 'd', 'a', 'e', 'm', 'o', 'n', ':',
