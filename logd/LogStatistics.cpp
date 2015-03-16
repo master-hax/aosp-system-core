@@ -16,7 +16,6 @@
 
 #include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -26,7 +25,8 @@
 
 #include "LogStatistics.h"
 
-LogStatistics::LogStatistics() {
+LogStatistics::LogStatistics()
+        : enable(false) {
     log_id_for_each(id) {
         mSizes[id] = 0;
         mElements[id] = 0;
@@ -35,8 +35,10 @@ LogStatistics::LogStatistics() {
     }
 }
 
+namespace android {
+
 // caller must own and free character string
-char *LogStatistics::pidToName(pid_t pid) {
+static char *pidToName(pid_t pid) {
     char *retval = NULL;
     if (pid == 0) { // special case from auditd for kernel
         retval = strdup("logd.auditd");
@@ -57,6 +59,8 @@ char *LogStatistics::pidToName(pid_t pid) {
         }
     }
     return retval;
+}
+
 }
 
 void LogStatistics::add(LogBufferElement *e) {
@@ -80,6 +84,31 @@ void LogStatistics::add(LogBufferElement *e) {
 
     mSizesTotal[log_id] += size;
     ++mElementsTotal[log_id];
+
+    if (!enable) {
+        return;
+    }
+
+    pid_t pid = e->getPid();
+    hash = android::hash_type(pid);
+    index = pidTable.find(-1, hash, pid);
+    if (index == -1) {
+        PidEntry initEntry(pid, uid, android::pidToName(pid));
+        initEntry.add(size);
+        pidTable.add(hash, initEntry);
+    } else {
+        PidEntry &entry = pidTable.editEntryAt(index);
+        if (entry.getUid() != uid) {
+            entry.setUid(uid);
+            entry.setName(android::pidToName(pid));
+        } else if (!entry.getName()) {
+            char *name = android::pidToName(pid);
+            if (name) {
+                entry.setName(name);
+            }
+        }
+        entry.add(size);
+    }
 }
 
 void LogStatistics::subtract(LogBufferElement *e) {
@@ -98,6 +127,20 @@ void LogStatistics::subtract(LogBufferElement *e) {
             table.removeAt(index);
         }
     }
+
+    if (!enable) {
+        return;
+    }
+
+    pid_t pid = e->getPid();
+    hash = android::hash_type(pid);
+    index = pidTable.find(-1, hash, pid);
+    if (index != -1) {
+        PidEntry &entry = pidTable.editEntryAt(index);
+        if (entry.subtract(size)) {
+            pidTable.removeAt(index);
+        }
+    }
 }
 
 // Caller must free array
@@ -113,6 +156,36 @@ const UidEntry **LogStatistics::sort(size_t n, log_id id) {
     ssize_t index = -1;
     while ((index = table.next(index)) >= 0) {
         const UidEntry &entry = table.entryAt(index);
+        ssize_t i = n - 1;
+        size_t s = entry.getSizes();
+
+        if (retval[i] && (s < retval[i]->getSizes())) {
+            continue;
+        }
+        retval[i] = &entry;
+        while (--i >= 0) {
+            if (retval[i] && (s < retval[i]->getSizes())) {
+                break;
+            }
+            retval[i+1] = retval[i];
+            retval[i] = &entry;
+        }
+    }
+    return retval;
+}
+
+// Caller must free array
+const PidEntry **LogStatistics::sort(size_t n) {
+    if (!n) {
+        return NULL;
+    }
+
+    const PidEntry **retval = new const PidEntry* [n];
+    memset(retval, 0, sizeof(*retval) * n);
+
+    ssize_t index = -1;
+    while ((index = pidTable.next(index)) >= 0) {
+        const PidEntry &entry = pidTable.entryAt(index);
         ssize_t i = n - 1;
         size_t s = entry.getSizes();
 
@@ -186,8 +259,28 @@ char *LogStatistics::uidToName(uid_t uid) {
         fclose(fp);
     }
 
+    char *name = NULL;
+
+    ssize_t index = -1;
+    while ((index = pidTable.next(index)) != -1) {
+        const PidEntry &entry = pidTable.entryAt(index);
+
+        if (entry.getUid() == uid) {
+            const char *n = entry.getName();
+
+            if (n) {
+                if (!name) {
+                    name = strdup(n);
+                } else if (strcmp(name, n)) {
+                    free(name);
+                    return NULL;
+                }
+            }
+        }
+    }
+
     // No one
-    return NULL;
+    return name;
 }
 
 void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
@@ -255,12 +348,12 @@ void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
     // Report on Chattiest
 
     // Chattiest by application (UID)
+    static const size_t maximum_sorted_entries = 32;
     log_id_for_each(id) {
         if (!(logMask & (1 << id))) {
             continue;
         }
 
-        static const size_t maximum_sorted_entries = 32;
         const UidEntry **sorted = sort(maximum_sorted_entries, id);
 
         if (!sorted) {
@@ -354,10 +447,108 @@ void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
         delete [] sorted;
     }
 
+    if (enable) {
+        const PidEntry **sorted = sort(maximum_sorted_entries);
+
+        if (!sorted) {
+            *buf = strdup(string.string());
+            return;
+        }
+
+        bool print = false;
+        size_t len = 0;
+        for(size_t index = 0; index < maximum_sorted_entries; ++index) {
+            const PidEntry *entry = sorted[index];
+
+            if (!entry) {
+                continue;
+            }
+
+            size_t sizes = entry->getSizes();
+            if (!sizes) {
+                continue;
+            }
+
+            uid_t u = entry->getUid();
+            if ((uid != AID_ROOT) && (u != uid)) {
+                continue;
+            }
+
+            if (!print) {
+                if (uid == AID_ROOT) {
+                    string.appendFormat(
+                        "\n\nChattiest PIDs:\nPID%*s PID%*s\n",
+                        (spaces_total * 2) - 4, "Size",
+                        (spaces_total * 2) - 4, "Size");
+                } else {
+                    string.appendFormat(
+                        "\n\nLogging for your PID:\n");
+                }
+                print = true;
+                len = 0;
+            }
+
+            // Line up content with two headers
+            spaces = -len;
+            while (spaces < 0) {
+                spaces += spaces_total * 2;
+            }
+            android::String8 s("");
+            s.appendFormat("%*s", spaces, "");
+            spaces = 0;
+
+            const char *name = entry->getName();
+            android::String8 k("");
+            if (name) {
+                k.appendFormat("%s", name);
+            } else {
+                char *n = uidToName(u);
+                if (n) {
+                    k.appendFormat("%s", n);
+                    free(n);
+                }
+            }
+            k.appendFormat("[%u]", entry->getKey());
+            spaces += (spaces_total * 2) - k.length() - 1;
+
+            android::String8 v("");
+            v.appendFormat("%zu", sizes);
+
+            while (spaces <= (ssize_t)v.length()) {
+                spaces += spaces_total * 2;
+            }
+
+            v.setTo("");
+            v.appendFormat("%s%s%*zu", s.string(), k.string(), spaces, sizes);
+            s.setTo("");
+
+            // Deal with line wrap
+            if ((len + v.length()) > 80) {
+                v.setTo("");
+                v.appendFormat("%s%*zu", k.string(), spaces, sizes);
+
+                if (v.length() > 80) { // Too much to align?
+                    v.setTo("");
+                    v.appendFormat("%s %zu", k.string(), sizes);
+                }
+
+                string.appendFormat("\n");
+                len = 0;
+            }
+            k.setTo("");
+            string.appendFormat("%s", v.string());
+            len += v.length();
+        }
+
+        delete [] sorted;
+    }
+
     *buf = strdup(string.string());
 }
 
-uid_t LogStatistics::pidToUid(pid_t pid) {
+namespace android {
+
+uid_t pidToUid(pid_t pid) {
     char buffer[512];
     snprintf(buffer, sizeof(buffer), "/proc/%u/status", pid);
     FILE *fp = fopen(buffer, "r");
@@ -372,4 +563,53 @@ uid_t LogStatistics::pidToUid(pid_t pid) {
         fclose(fp);
     }
     return getuid(); // associate this with the logger
+}
+
+}
+
+uid_t LogStatistics::pidToUid(pid_t pid) {
+    uid_t uid;
+    android::hash_t hash = android::hash_type(pid);
+    ssize_t index = pidTable.find(-1, hash, pid);
+    if (index == -1) {
+        uid = android::pidToUid(pid);
+        PidEntry initEntry(pid, uid, android::pidToName(pid));
+        pidTable.add(hash, initEntry);
+    } else {
+        PidEntry &entry = pidTable.editEntryAt(index);
+        if (!entry.getName()) {
+            char *name = android::pidToName(pid);
+            if (name) {
+                entry.setName(name);
+            }
+        }
+        uid = entry.getUid();
+    }
+    return uid;
+}
+
+// caller must free character string
+char *LogStatistics::pidToName(pid_t pid) {
+    char *name;
+
+    android::hash_t hash = android::hash_type(pid);
+    ssize_t index = pidTable.find(-1, hash, pid);
+    if (index == -1) {
+        name = android::pidToName(pid);
+        PidEntry initEntry(pid, android::pidToUid(pid), name ? strdup(name) : NULL);
+        pidTable.add(hash, initEntry);
+    } else {
+        PidEntry &entry = pidTable.editEntryAt(index);
+        const char *n = entry.getName();
+        if (n) {
+            name = strdup(n);
+        } else {
+            name = android::pidToName(pid);
+            if (name) {
+                entry.setName(strdup(name));
+            }
+        }
+    }
+
+    return name;
 }
