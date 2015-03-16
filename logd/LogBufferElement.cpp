@@ -22,6 +22,7 @@
 #include <log/logger.h>
 
 #include "LogBufferElement.h"
+#include "LogCommand.h"
 #include "LogReader.h"
 
 const uint64_t LogBufferElement::FLUSH_ERROR(0);
@@ -34,9 +35,9 @@ LogBufferElement::LogBufferElement(log_id_t log_id, log_time realtime,
         , mUid(uid)
         , mPid(pid)
         , mTid(tid)
-        , mMsgLen(len)
         , mSequence(sequence.fetch_add(1, memory_order_relaxed))
-        , mRealTime(realtime) {
+        , mRealTime(realtime)
+        , u(len) {
     mMsg = new char[len];
     memcpy(mMsg, msg, len);
 }
@@ -45,11 +46,59 @@ LogBufferElement::~LogBufferElement() {
     delete [] mMsg;
 }
 
+// assumption: mMsg == NULL
+size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) {
+    static const char format_uid[] = "uid=%u dropped=%u";
+    static const size_t unprivileged_offset = 7;
+    static const char tag[] = "logd";
+
+    size_t len;
+    if (privileged) {
+        len = snprintf(NULL, 0, format_uid, mUid, u.dropped);
+    } else {
+        len = snprintf(NULL, 0, format_uid + unprivileged_offset, u.dropped);
+    }
+
+    size_t hdrLen;
+    if (mLogId == LOG_ID_EVENTS) {
+        hdrLen = sizeof(android_log_event_string_t);
+    } else {
+        hdrLen = 1 + sizeof(tag);
+    }
+
+    buffer = static_cast<char *>(calloc(1, hdrLen + len + 1));
+    if (!buffer) {
+        return 0;
+    }
+
+    size_t retval = hdrLen + len;
+    if (mLogId == LOG_ID_EVENTS) {
+        android_log_event_string_t *e = reinterpret_cast<android_log_event_string_t *>(buffer);
+
+        e->header.tag = htole32(LOGD_LOG_TAG);
+        e->type = EVENT_TYPE_STRING;
+        e->length = htole32(len);
+    } else {
+        ++retval;
+        buffer[0] = ANDROID_LOG_INFO;
+        strcpy(buffer + 1, tag);
+    }
+
+    if (privileged) {
+        snprintf(buffer + hdrLen, len + 1, format_uid, mUid, u.dropped);
+    } else {
+        snprintf(buffer + hdrLen, len + 1, format_uid + unprivileged_offset, u.dropped);
+    }
+
+    return retval;
+}
+
 uint64_t LogBufferElement::flushTo(SocketClient *reader) {
     struct logger_entry_v3 entry;
+
     memset(&entry, 0, sizeof(struct logger_entry_v3));
+
     entry.hdr_size = sizeof(struct logger_entry_v3);
-    entry.len = mMsgLen;
     entry.lid = mLogId;
     entry.pid = mPid;
     entry.tid = mTid;
@@ -59,11 +108,26 @@ uint64_t LogBufferElement::flushTo(SocketClient *reader) {
     struct iovec iovec[2];
     iovec[0].iov_base = &entry;
     iovec[0].iov_len = sizeof(struct logger_entry_v3);
-    iovec[1].iov_base = mMsg;
-    iovec[1].iov_len = mMsgLen;
-    if (reader->sendDatav(iovec, 2)) {
-        return FLUSH_ERROR;
+
+    char *buffer = NULL;
+
+    if (!mMsg) {
+        entry.len = populateDroppedMessage(buffer, clientHasLogCredentials(reader));
+        if (!entry.len) {
+            return mSequence;
+        }
+        iovec[1].iov_base = buffer;
+    } else {
+        entry.len = u.msgLen;
+        iovec[1].iov_base = mMsg;
+    }
+    iovec[1].iov_len = entry.len;
+
+    uint64_t retval = reader->sendDatav(iovec, 2) ? FLUSH_ERROR : mSequence;
+
+    if (buffer) {
+        free(buffer);
     }
 
-    return mSequence;
+    return retval;
 }
