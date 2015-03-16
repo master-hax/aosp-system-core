@@ -1,4 +1,4 @@
-#include <ctype.h>
+/#include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -29,6 +29,7 @@ static char *nexttok(char **strp)
 #define SHOW_MACLABEL 16
 #define SHOW_NUMERIC_UID 32
 #define SHOW_ABI 64
+#define SHOW_ONLY_NAME 128
 
 #if __LP64__
 #define PC_WIDTH 10 /* Realistically, the top bits will be 0, so don't waste space. */
@@ -159,6 +160,10 @@ static int ps_line(int pid, int tid, char *namefilter)
     }
 
     if(!namefilter || !strncmp(cmdline[0] ? cmdline : name, namefilter, strlen(namefilter))) {
+        if (display_flags & SHOW_NAME_ONLY) {
+            printf("%s\n", name);
+            return 0;
+        }
         if (display_flags & SHOW_MACLABEL) {
             fd = open(macline, O_RDONLY);
             strcpy(macline, "-");
@@ -294,6 +299,11 @@ int ps_main(int argc, char **argv)
             argv++;
         } else if(isdigit(argv[1][0])){
             pidfilter = atoi(argv[1]);
+        } else if(!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")) {
+            printf("Source at system/core/toolbox/ps.c\n");
+            goto end;
+        } else if (!strcmp(argv[1], "-N")) {
+            display_flags |= SHOW_NAME_ONLY;
         } else {
             namefilter = argv[1];
         }
@@ -301,15 +311,17 @@ int ps_main(int argc, char **argv)
         argv++;
     }
 
-    if (display_flags & SHOW_MACLABEL) {
-        printf("LABEL                          USER      PID   PPID  NAME\n");
-    } else {
-        printf("USER      PID   PPID  VSIZE  RSS  %s%s %sWCHAN      %*s  %sNAME\n",
-               (display_flags&SHOW_CPU)?"CPU ":"",
-               (display_flags&SHOW_PRIO)?"PRIO  NICE  RTPRI SCHED ":"",
-               (display_flags&SHOW_POLICY)?"PCY " : "",
-               (int) PC_WIDTH, "PC",
-               (display_flags&SHOW_ABI)?"ABI " : "");
+    if (display_flags & SHOW_NAME_ONLY) {
+        if (display_flags & SHOW_MACLABEL) {
+            printf("LABEL                          USER      PID   PPID  NAME\n");
+        } else {
+            printf("USER      PID   PPID  VSIZE  RSS  %s%s %sWCHAN      %*s  %sNAME\n",
+                   (display_flags&SHOW_CPU)?"CPU ":"",
+                   (display_flags&SHOW_PRIO)?"PRIO  NICE  RTPRI SCHED ":"",
+                   (display_flags&SHOW_POLICY)?"PCY " : "",
+                   (int) PC_WIDTH, "PC",
+                   (display_flags&SHOW_ABI)?"ABI " : "");
+        }
     }
     while((de = readdir(d)) != 0){
         if(isdigit(de->d_name[0])){
@@ -320,7 +332,7 @@ int ps_main(int argc, char **argv)
             }
         }
     }
+ end:
     closedir(d);
     return 0;
 }
-
