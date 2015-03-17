@@ -23,6 +23,10 @@ extern "C" {
 
 extern int auth_enabled;
 
+#if !ADB_HOST
+void adb_cloexec_auth_socket();
+#endif
+
 void adb_auth_init(void);
 int adb_auth_keygen(const char* filename);
 void adb_auth_verified(atransport *t);
