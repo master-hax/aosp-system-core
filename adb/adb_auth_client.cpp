@@ -260,6 +260,9 @@ void adb_auth_init(void)
     }
     fcntl(fd, F_SETFD, FD_CLOEXEC);
 
+    if (! auth_enabled)
+        return;
+
     ret = listen(fd, 4);
     if (ret < 0) {
         D("Failed to listen on '%d'\n", fd);

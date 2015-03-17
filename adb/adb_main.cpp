@@ -275,8 +275,7 @@ int adb_main(int is_daemon, int server_port)
 #else
     property_get("ro.adb.secure", value, "0");
     auth_enabled = !strcmp(value, "1");
-    if (auth_enabled)
-        adb_auth_init();
+    adb_auth_init();
 
     // Our external storage path may be different than apps, since
     // we aren't able to bind mount after dropping root.
