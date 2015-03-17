@@ -273,6 +273,10 @@ int adb_main(int is_daemon, int server_port)
         exit(1);
     }
 #else
+    // We need to call this even if auth isn't enabled because the file
+    // descriptor will always be open.
+    adb_cloexec_auth_socket();
+
     property_get("ro.adb.secure", value, "0");
     auth_enabled = !strcmp(value, "1");
     if (auth_enabled)
