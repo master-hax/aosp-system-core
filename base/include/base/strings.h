@@ -23,9 +23,36 @@
 namespace android {
 namespace base {
 
+// TODO(danalbert): Should match the internal APIs more closely.
+//
+// Should make these changes sooner rather than later so we don't have to fixup
+// too many users.
+//
+// * The internal APIs return a new vector rather than appending to the current
+//   one.
+// * Split("foo", "") would return {"f", "o", "o"} rather than {"foo"}. I'd opt
+//   for Split("foo") doing this and Split("foo", "") being a compiler-time
+//   error instead.
+// * Split("", ",") would return {""} rather than {}. I'm not sure we want to
+//   copy this behavior.
+
 // Splits a string using the given separator character into a vector of strings.
 // Empty strings will be omitted.
+//
+// Note that this appends the split string to the existing vector rather than
+// clearing it.
 void Split(const std::string& s, char separator,
+           std::vector<std::string>* result);
+
+// Same as the singe character separator version of Split, but splits on any of
+// the separator characters.
+//
+// Using the empty string as a separator list results in the string not being
+// split.
+//
+// Note that this appends the split string to the existing vector rather than
+// clearing it.
+void Split(const std::string& s, const char* separators,
            std::vector<std::string>* result);
 
 // Trims whitespace off both ends of the given string.

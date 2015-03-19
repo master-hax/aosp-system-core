@@ -25,11 +25,20 @@ TEST(strings, split_empty) {
   std::vector<std::string> parts;
   android::base::Split("", '\0', &parts);
   ASSERT_EQ(0U, parts.size());
+
+  parts.clear();
+  android::base::Split("", "", &parts);
+  ASSERT_EQ(0U, parts.size());
 }
 
 TEST(strings, split_single) {
   std::vector<std::string> parts;
   android::base::Split("foo", ',', &parts);
+  ASSERT_EQ(1U, parts.size());
+  ASSERT_EQ("foo", parts[0]);
+
+  parts.clear();
+  android::base::Split("foo", ",", &parts);
   ASSERT_EQ(1U, parts.size());
   ASSERT_EQ("foo", parts[0]);
 }
@@ -41,11 +50,41 @@ TEST(strings, split_simple) {
   ASSERT_EQ("foo", parts[0]);
   ASSERT_EQ("bar", parts[1]);
   ASSERT_EQ("baz", parts[2]);
+
+  parts.clear();
+  android::base::Split("foo,bar,baz", ",", &parts);
+  ASSERT_EQ(3U, parts.size());
+  ASSERT_EQ("foo", parts[0]);
+  ASSERT_EQ("bar", parts[1]);
+  ASSERT_EQ("baz", parts[2]);
 }
 
 TEST(strings, split_with_empty_part) {
   std::vector<std::string> parts;
   android::base::Split("foo,,bar", ',', &parts);
+  ASSERT_EQ(2U, parts.size());
+  ASSERT_EQ("foo", parts[0]);
+  ASSERT_EQ("bar", parts[1]);
+
+  parts.clear();
+  android::base::Split("foo,,bar", ",", &parts);
+  ASSERT_EQ(2U, parts.size());
+  ASSERT_EQ("foo", parts[0]);
+  ASSERT_EQ("bar", parts[1]);
+}
+
+TEST(strings, split_any) {
+  std::vector<std::string> parts;
+  android::base::Split("foo:bar,baz", ",:", &parts);
+  ASSERT_EQ(3U, parts.size());
+  ASSERT_EQ("foo", parts[0]);
+  ASSERT_EQ("bar", parts[1]);
+  ASSERT_EQ("baz", parts[2]);
+}
+
+TEST(strings, split_any_with_empty_part) {
+  std::vector<std::string> parts;
+  android::base::Split("foo:,bar", ",:", &parts);
   ASSERT_EQ(2U, parts.size());
   ASSERT_EQ("foo", parts[0]);
   ASSERT_EQ("bar", parts[1]);

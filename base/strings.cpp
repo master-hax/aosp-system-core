@@ -24,15 +24,21 @@ namespace base {
 
 void Split(const std::string& s, char separator,
            std::vector<std::string>* result) {
+  const char separators[2] = {separator, '\0'};
+  Split(s, separators, result);
+}
+
+void Split(const std::string& s, const char* separators,
+           std::vector<std::string>* result) {
   const char* p = s.data();
   const char* end = p + s.size();
   while (p != end) {
-    if (*p == separator) {
+    if (strchr(separators, *p) != nullptr) {
       ++p;
     } else {
       const char* start = p;
-      while (++p != end && *p != separator) {
-        // Skip to the next occurrence of the separator.
+      while (++p != end && (strchr(separators, *p) == nullptr)) {
+        // Skip to the next occurrence of a separator.
       }
       result->push_back(std::string(start, p - start));
     }
