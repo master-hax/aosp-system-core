@@ -16,7 +16,7 @@
 
 // Build the unit tests.
 
-/*cc_test {
+cc_test {
 
     name: "libutils_tests",
 
@@ -30,6 +30,7 @@
         "Unicode_test.cpp",
         "Vector_test.cpp",
     ],
+    include_dirs: ["libnativehelper/include/nativehelper"],
 
     shared_libs: [
         "libz",
@@ -37,4 +38,4 @@
         "libcutils",
         "libutils",
     ],
-}*/
+}
