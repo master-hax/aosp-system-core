@@ -53,9 +53,11 @@ endif
 
 LOCAL_STATIC_LIBRARIES := \
     $(EXTRA_STATIC_LIBS) \
-    libzipfile \
+    libziparchive-host \
     libext4_utils_host \
     libsparse_host \
+    libutils \
+    liblog \
     libz
 
 ifneq ($(HOST_OS),windows)
