@@ -59,6 +59,10 @@ LOCAL_SRC_FILES := \
     qemu_tracing.cpp \
     usb_linux_client.c \
 
+# Even though we're building a static library (and thus there's no link step for
+# this to take effect), this adds the includes to our path.
+LOCAL_STATIC_LIBRARIES := libbase
+
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -71,8 +75,8 @@ LOCAL_SRC_FILES := \
     adb_auth_host.cpp \
 
 # Even though we're building a static library (and thus there's no link step for
-# this to take effect), this adds the SSL includes to our path.
-LOCAL_STATIC_LIBRARIES := libcrypto_static
+# this to take effect), this adds the includes to our path.
+LOCAL_STATIC_LIBRARIES := libcrypto_static libbase
 
 ifeq ($(HOST_OS),windows)
     LOCAL_C_INCLUDES += development/host/windows/usb/api/
@@ -155,6 +159,7 @@ LOCAL_MODULE_TAGS := debug
 LOCAL_STATIC_LIBRARIES := \
     libadb \
     libcrypto_static \
+    libbase \
     $(EXTRA_STATIC_LIBS) \
 
 ifeq ($(USE_SYSDEPS_WIN32),)
@@ -209,16 +214,17 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 LOCAL_C_INCLUDES += system/extras/ext4_utils system/core/fs_mgr/include
+LOCAL_CXX_STL := libc++_static
 
 LOCAL_STATIC_LIBRARIES := \
     libadbd \
     libfs_mgr \
     liblog \
-    libcutils \
-    libc \
     libmincrypt \
     libselinux \
     libext4_utils_static \
+    libcutils \
+    libbase \
 
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
