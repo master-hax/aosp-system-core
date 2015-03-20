@@ -17,6 +17,19 @@
 #include <cutils/threads.h>
 
 #if !defined(_WIN32)
+
+// For GetTid.
+#if defined(__APPLE__)
+#include "AvailabilityMacros.h"  // For MAC_OS_X_VERSION_MAX_ALLOWED
+#include <sys/syscall.h>
+#include <sys/time.h>
+#else
+#if !defined(__BIONIC__)
+#include <syscall.h>
+#endif
+#include <unistd.h>
+#endif
+
 void*  thread_store_get( thread_store_t*  store )
 {
     if (!store->has_tls)
@@ -41,6 +54,21 @@ extern void   thread_store_set( thread_store_t*          store,
 
     pthread_setspecific( store->tls, value );
 }
+
+#ifndef __ANDROID__
+pid_t GetTid() {
+#if defined(__APPLE__)
+  uint64_t owner;
+  // Requires Mac OS 10.6
+  CHECK_PTHREAD_CALL(pthread_threadid_np, (NULL, &owner), __FUNCTION__);
+  return owner;
+#elif defined(__BIONIC__)
+  return gettid();
+#else
+  return syscall(__NR_gettid);
+#endif
+}
+#endif  // __ANDROID__
 
 #else /* !defined(_WIN32) */
 void*  thread_store_get( thread_store_t*  store )
