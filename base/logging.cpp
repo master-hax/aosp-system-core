@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "base/strings.h"
+#include "cutils/threads.h"
 
 // Headers for LogMessage::LogLine.
 #ifdef __ANDROID__
@@ -31,15 +32,6 @@
 #else
 #include <sys/types.h>
 #include <unistd.h>
-#endif
-
-// For GetTid.
-#if defined(__APPLE__)
-#include "AvailabilityMacros.h"  // For MAC_OS_X_VERSION_MAX_ALLOWED
-#include <sys/syscall.h>
-#include <sys/time.h>
-#elif !defined(__BIONIC__)
-#include <syscall.h>
 #endif
 
 namespace android {
@@ -51,19 +43,6 @@ static LogSeverity gMinimumLogSeverity = INFO;
 static std::unique_ptr<std::string> gCmdLine;
 static std::unique_ptr<std::string> gProgramInvocationName;
 static std::unique_ptr<std::string> gProgramInvocationShortName;
-
-#ifndef __ANDROID__
-static pid_t GetTid() {
-#if defined(__APPLE__)
-  uint64_t owner;
-  // Requires Mac OS 10.6
-  CHECK_PTHREAD_CALL(pthread_threadid_np, (NULL, &owner), __FUNCTION__);
-  return owner;
-#else
-  return syscall(__NR_gettid);
-#endif
-}
-#endif  // __ANDROID__
 
 const char* GetCmdLine() {
   return (gCmdLine.get() != nullptr) ? gCmdLine->c_str() : nullptr;
