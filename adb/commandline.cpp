@@ -209,7 +209,9 @@ void help()
         "  adb get-devpath              - prints: <device-path>\n"
         "  adb status-window            - continuously print device status for a specified device\n"
         "  adb remount                  - remounts the /system, /vendor (if present) and /oem (if present) partitions on the device read-write\n"
-        "  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program\n"
+        "  adb reboot [bootloader|recovery]\n"
+        "                               - reboots the device, optionally into the bootloader or recovery program.\n"
+        "  adb reboot sideload          - reboots the device into the sideload mode in recovery program (adb root required).\n"
         "  adb reboot-bootloader        - reboots the device into the bootloader\n"
         "  adb root                     - restarts the adbd daemon with root permissions\n"
         "  adb unroot                   - restarts the adbd daemon without root permissions\n"
@@ -1129,6 +1131,17 @@ static void parse_push_pull_args(const char **arg, int narg, char const **path1,
     }
 }
 
+static int adb_connect_command(const char* command) {
+    int fd = adb_connect(command);
+    if (fd != -1) {
+        read_and_dump(fd);
+        adb_close(fd);
+        return 0;
+    }
+    fprintf(stderr, "Error: %s\n", adb_error());
+    return 1;
+}
+
 int adb_commandline(int argc, const char **argv)
 {
     char buf[4096];
@@ -1468,9 +1481,29 @@ int adb_commandline(int argc, const char **argv)
             return 0;
         }
     }
+    else if (!strcmp(argv[0], "reboot") ||
+             !strcmp(argv[0], "reboot-bootloader")) {
+        char command[100];
+        if (argc == 1) {
+            if (!strcmp(argv[0], "reboot-bootloader")) {
+                snprintf(command, sizeof(command), "reboot:bootloader");
+            } else {
+                snprintf(command, sizeof(command), "reboot:");
+            }
+        } else if ((argc == 2) &&
+                   (!strcmp(argv[1], "bootloader") ||
+                    !strcmp(argv[1], "recovery") ||
+                    !strcmp(argv[1], "sideload"))) {
+            snprintf(command, sizeof(command), "reboot:%s", argv[1]);
+        } else {
+            // Warns user of unexpected reboot argument, but tries it anyway.
+            fprintf(stderr, "Warning: Unexpected reboot argument \"%s\"\n", argv[1]);
+            fprintf(stderr, "Usage: adb reboot [bootloader|recovery|sideload]\n");
+            snprintf(command, sizeof(command), "reboot:%s", argv[1]);
+        }
+        return adb_connect_command(command);
+    }
     else if (!strcmp(argv[0], "remount") ||
-             !strcmp(argv[0], "reboot") ||
-             !strcmp(argv[0], "reboot-bootloader") ||
              !strcmp(argv[0], "tcpip") ||
              !strcmp(argv[0], "usb") ||
              !strcmp(argv[0], "root") ||
@@ -1478,20 +1511,12 @@ int adb_commandline(int argc, const char **argv)
              !strcmp(argv[0], "disable-verity") ||
              !strcmp(argv[0], "enable-verity")) {
         char command[100];
-        if (!strcmp(argv[0], "reboot-bootloader"))
-            snprintf(command, sizeof(command), "reboot:bootloader");
-        else if (argc > 1)
+        if (argc > 1) {
             snprintf(command, sizeof(command), "%s:%s", argv[0], argv[1]);
-        else
+        } else {
             snprintf(command, sizeof(command), "%s:", argv[0]);
-        int fd = adb_connect(command);
-        if (fd >= 0) {
-            read_and_dump(fd);
-            adb_close(fd);
-            return 0;
         }
-        fprintf(stderr,"error: %s\n", adb_error());
-        return 1;
+        return adb_connect_command(command);
     }
     else if (!strcmp(argv[0], "bugreport")) {
         if (argc != 1) return usage();
@@ -1716,15 +1741,7 @@ int adb_commandline(int argc, const char **argv)
         return adb_auth_keygen(argv[1]);
     }
     else if (!strcmp(argv[0], "jdwp")) {
-        int  fd = adb_connect("jdwp");
-        if (fd >= 0) {
-            read_and_dump(fd);
-            adb_close(fd);
-            return 0;
-        } else {
-            fprintf(stderr, "error: %s\n", adb_error());
-            return -1;
-        }
+        return adb_connect_command("jdwp");
     }
     /* "adb /?" is a common idiom under Windows */
     else if (!strcmp(argv[0], "help") || !strcmp(argv[0], "/?")) {
