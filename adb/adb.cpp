@@ -79,18 +79,19 @@ void fatal_errno(const char *fmt, ...)
 
 #if !ADB_HOST
 void start_device_log(void) {
-    adb_mkdir("/data/adb", 0775);
-
     struct tm now;
     time_t t;
     tzset();
     time(&t);
     localtime_r(&t, &now);
 
+    // TODO(danalbert): Add a sequence number to the file name.
+    // If adbd crashes and restarts in the same second, we'll clobber the log
+    // that might have information about the crash.
     char path[PATH_MAX];
     strftime(path, sizeof(path), "/data/adb/adb-%Y-%m-%d-%H-%M-%S.txt", &now);
 
-    int fd = unix_open(path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
+    int fd = unix_open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0640);
     if (fd == -1) {
         return;
     }
@@ -99,10 +100,6 @@ void start_device_log(void) {
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDERR_FILENO);
     fprintf(stderr, "--- adb starting (pid %d) ---\n", getpid());
-    adb_close(fd);
-
-    fd = unix_open("/dev/null", O_RDONLY);
-    dup2(fd, 0);
     adb_close(fd);
 }
 #endif

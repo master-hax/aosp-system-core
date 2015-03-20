@@ -352,6 +352,10 @@ int adb_main(int is_daemon, int server_port)
 int main(int argc, char **argv) {
 #if ADB_HOST
     adb_sysdeps_init();
+#else
+    if (adb_close(STDIN_FILENO) == -1) {
+        D("failed to close stdin: %s", strerror(errno));
+    }
 #endif
     adb_trace_init();
 
