@@ -79,8 +79,6 @@ void fatal_errno(const char *fmt, ...)
 
 #if !ADB_HOST
 void start_device_log(void) {
-    adb_mkdir("/data/adb", 0775);
-
     struct tm now;
     time_t t;
     tzset();
@@ -90,7 +88,7 @@ void start_device_log(void) {
     char path[PATH_MAX];
     strftime(path, sizeof(path), "/data/adb/adb-%Y-%m-%d-%H-%M-%S.txt", &now);
 
-    int fd = unix_open(path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
+    int fd = unix_open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0640);
     if (fd == -1) {
         return;
     }
@@ -101,8 +99,8 @@ void start_device_log(void) {
     fprintf(stderr, "--- adb starting (pid %d) ---\n", getpid());
     adb_close(fd);
 
-    fd = unix_open("/dev/null", O_RDONLY);
-    dup2(fd, 0);
+    fd = unix_open("/dev/null", O_RDONLY | O_CLOEXEC);
+    dup2(fd, STDIN_FILENO);
     adb_close(fd);
 }
 #endif
