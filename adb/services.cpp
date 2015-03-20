@@ -137,10 +137,33 @@ void reboot_service(int fd, void *arg)
     char buf[100];
     char property_val[PROPERTY_VALUE_MAX];
     int ret;
+    const char *reboot_arg = static_cast<const char *>(arg);
+
+#define RECOVERY_DIR "/cache/recovery"
+#define COMMAND_FILE RECOVERY_DIR "/command"
+
+    // It reboots into sideload mode by setting "--sideload" in the command file.
+    if (!strcmp(reboot_arg, "sideload")) {
+      // Ensure /cache/recovery exists.
+      if (adb_mkdir(RECOVERY_DIR, 0770) < 0 && errno != EEXIST) {
+        D("Failed to access / create directory '%s': %s\n", RECOVERY_DIR, strerror(errno));
+        goto cleanup;
+      }
+
+      int fd_command = adb_open_mode(COMMAND_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0700);
+      if (fd_command < 0) {
+        D("Failed to open '%s': %s\n", COMMAND_FILE, strerror(errno));
+        goto cleanup;
+      }
+      adb_write(fd_command, "--sideload", strlen("--sideload"));
+      adb_close(fd_command);
+
+      reboot_arg = "recovery";
+    }
 
     sync();
 
-    ret = snprintf(property_val, sizeof(property_val), "reboot,%s", (char *) arg);
+    ret = snprintf(property_val, sizeof(property_val), "reboot,%s", reboot_arg);
     if (ret >= (int) sizeof(property_val)) {
         snprintf(buf, sizeof(buf), "reboot string too long. length=%d\n", ret);
         WriteFdExactly(fd, buf, strlen(buf));

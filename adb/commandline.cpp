@@ -209,7 +209,9 @@ void help()
         "  adb get-devpath              - prints: <device-path>\n"
         "  adb status-window            - continuously print device status for a specified device\n"
         "  adb remount                  - remounts the /system, /vendor (if present) and /oem (if present) partitions on the device read-write\n"
-        "  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program\n"
+        "  adb reboot [bootloader|recovery]\n"
+        "                               - reboots the device, optionally into the bootloader or recovery program.\n"
+        "  adb reboot sideload          - reboots the device into the sideload mode in recovery program (adb root required).\n"
         "  adb reboot-bootloader        - reboots the device into the bootloader\n"
         "  adb root                     - restarts the adbd daemon with root permissions\n"
         "  adb unroot                   - restarts the adbd daemon without root permissions\n"
@@ -1468,9 +1470,34 @@ int adb_commandline(int argc, const char **argv)
             return 0;
         }
     }
+    else if (!strcmp(argv[0], "reboot") ||
+             !strcmp(argv[0], "reboot-bootloader")) {
+        char command[100];
+        if (argc == 1) {
+            if (!strcmp(argv[0], "reboot-bootloader")) {
+                snprintf(command, sizeof(command), "reboot:bootloader");
+            } else {
+                snprintf(command, sizeof(command), "reboot:");
+            }
+        } else if ((argc == 2) &&
+                   (!strcmp(argv[1], "bootloader") ||
+                    !strcmp(argv[1], "recovery") ||
+                    !strcmp(argv[1], "sideload"))) {
+            snprintf(command, sizeof(command), "reboot:%s", argv[1]);
+        } else {
+            fprintf(stderr, "Usage: adb reboot [bootloader|recovery|sideload]\n");
+            return 1;
+        }
+        int fd = adb_connect(command);
+        if (fd >= 0) {
+            read_and_dump(fd);
+            adb_close(fd);
+            return 0;
+        }
+        fprintf(stderr,"error: %s\n", adb_error());
+        return 1;
+    }
     else if (!strcmp(argv[0], "remount") ||
-             !strcmp(argv[0], "reboot") ||
-             !strcmp(argv[0], "reboot-bootloader") ||
              !strcmp(argv[0], "tcpip") ||
              !strcmp(argv[0], "usb") ||
              !strcmp(argv[0], "root") ||
@@ -1478,12 +1505,11 @@ int adb_commandline(int argc, const char **argv)
              !strcmp(argv[0], "disable-verity") ||
              !strcmp(argv[0], "enable-verity")) {
         char command[100];
-        if (!strcmp(argv[0], "reboot-bootloader"))
-            snprintf(command, sizeof(command), "reboot:bootloader");
-        else if (argc > 1)
+        if (argc > 1) {
             snprintf(command, sizeof(command), "%s:%s", argv[0], argv[1]);
-        else
+        } else {
             snprintf(command, sizeof(command), "%s:", argv[0]);
+        }
         int fd = adb_connect(command);
         if (fd >= 0) {
             read_and_dump(fd);
