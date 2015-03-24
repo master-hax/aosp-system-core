@@ -98,6 +98,7 @@ struct service {
     char *name;
     const char *classname;
 
+    uint64_t permitted;
     unsigned flags;
     pid_t pid;
     time_t time_started;    /* time of last start */

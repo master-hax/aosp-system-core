@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
 #include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <stdarg.h>
-#include <string.h>
 #include <stddef.h>
-#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/capability.h>
+#include <unistd.h>
 
 #include "init.h"
 #include "parser.h"
@@ -211,6 +212,99 @@ static int lookup_keyword(const char *s)
         break;
     }
     return K_UNKNOWN;
+}
+
+static int lookup_capability(const char *s) {
+    static const char cap_[] = "cap_";
+
+    if (strncmp(s, cap_, sizeof(cap_) - 1)) {
+        return -1;
+    }
+    s += sizeof(cap_) - 1;
+    switch (*s++) {
+    case 'a':
+        static const char cap_audit_[] = "udit_";
+        if (strncmp(s, cap_audit_, sizeof(cap_audit_) - 1)) break;
+        s += sizeof(cap_audit_) - 1;
+        if (!strcmp(s, "write")) return CAP_AUDIT_WRITE;
+        if (!strcmp(s, "control")) return CAP_AUDIT_CONTROL;
+        break;
+    case 'b':
+        if (!strcmp(s, "lock_suspend")) return CAP_BLOCK_SUSPEND;
+        break;
+    case 'c':
+        if (!strcmp(s, "hown")) return CAP_CHOWN;
+        break;
+    case 'd':
+        static const char cap_dac_[] = "ac_";
+        if (strncmp(s, cap_dac_, sizeof(cap_dac_) - 1)) break;
+        s += sizeof(cap_dac_) - 1;
+        if (!strcmp(s, "override")) return CAP_DAC_OVERRIDE;
+        if (!strcmp(s, "read_search")) return CAP_DAC_READ_SEARCH;
+        break;
+    case 'f':
+        if (!strcmp(s, "owner")) return CAP_FOWNER;
+        if (!strcmp(s, "setid")) return CAP_FSETID;
+        break;
+    case 'i':
+        static const char cap_ipc_[] = "pc_";
+        if (strncmp(s, cap_ipc_, sizeof(cap_ipc_) - 1)) break;
+        s += sizeof(cap_ipc_) - 1;
+        if (!strcmp(s, "lock")) return CAP_IPC_LOCK;
+        if (!strcmp(s, "owner")) return CAP_IPC_OWNER;
+        break;
+    case 'k':
+        if (!strcmp(s, "ill")) return CAP_KILL;
+        break;
+    case 'l':
+        if (!strcmp(s, "inux_immutable")) return CAP_LINUX_IMMUTABLE;
+        if (!strcmp(s, "ease")) return CAP_LEASE;
+        break;
+    case 'm':
+        if (!strcmp(s, "knod")) return CAP_MKNOD;
+
+        static const char cap_mac_[] = "ac_";
+        if (strncmp(s, cap_mac_, sizeof(cap_mac_) - 1)) break;
+        s += sizeof(cap_mac_) - 1;
+        if (!strcmp(s, "override")) return CAP_MAC_OVERRIDE;
+        if (!strcmp(s, "admin")) return CAP_MAC_ADMIN;
+        break;
+    case 'n':
+        static const char cap_net_[] = "et_";
+        if (strncmp(s, cap_net_, sizeof(cap_net_) - 1)) break;
+        s += sizeof(cap_net_) - 1;
+        if (!strcmp(s, "bind_service")) return CAP_NET_BIND_SERVICE;
+        if (!strcmp(s, "braodcast")) return CAP_NET_BROADCAST;
+        if (!strcmp(s, "admin")) return CAP_NET_ADMIN;
+        if (!strcmp(s, "raw")) return CAP_NET_RAW;
+        break;
+    case 's':
+        if (!strcmp(s, "etgid")) return CAP_SETGID;
+        if (!strcmp(s, "etuid")) return CAP_SETUID;
+        if (!strcmp(s, "etpcap")) return CAP_SETPCAP;
+        if (!strcmp(s, "etfcap")) return CAP_SETFCAP;
+        if (!strcmp(s, "yslog")) return CAP_SYSLOG;
+
+        static const char cap_sys_[] = "ys_";
+        if (strncmp(s, cap_sys_, sizeof(cap_sys_) - 1)) break;
+        s += sizeof(cap_sys_) - 1;
+        if (!strcmp(s, "module")) return CAP_SYS_MODULE;
+        if (!strcmp(s, "rawio")) return CAP_SYS_RAWIO;
+        if (!strcmp(s, "chroot")) return CAP_SYS_CHROOT;
+//      if (!strcmp(s, "ptrace")) return CAP_SYS_PTRACE;
+        if (!strcmp(s, "pacct")) return CAP_SYS_PACCT;
+        if (!strcmp(s, "admin")) return CAP_SYS_ADMIN;
+        if (!strcmp(s, "boot")) return CAP_SYS_BOOT;
+        if (!strcmp(s, "nice")) return CAP_SYS_NICE;
+        if (!strcmp(s, "resource")) return CAP_SYS_RESOURCE;
+        if (!strcmp(s, "time")) return CAP_SYS_TIME;
+        if (!strcmp(s, "tty_config")) return CAP_SYS_TTY_CONFIG;
+        break;
+    case 'w':
+        if (!strcmp(s, "ake_alarm")) return CAP_WAKE_ALARM;
+        break;
+    }
+    return -1;
 }
 
 static void parse_line_no_op(struct parse_state*, int, char**) {
@@ -772,6 +866,11 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
     kw = lookup_keyword(args[0]);
     switch (kw) {
     case K_capability:
+        if (nargs != 2) {
+            parse_error(state, "capability option requires a capname\n");
+        } else {
+            svc->permitted |= (int64_t)1 << lookup_capability(args[1]);
+        }
         break;
     case K_class:
         if (nargs != 2) {

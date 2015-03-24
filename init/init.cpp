@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/capability.h>
 #include <sys/mount.h>
 #include <sys/poll.h>
 #include <sys/socket.h>
@@ -303,6 +304,34 @@ void service_start(struct service *svc, const char *dynamic_args)
         }
 
         setpgid(0, getpid());
+
+        if (svc->permitted) {
+            struct __user_cap_header_struct capheader;
+            struct __user_cap_data_struct capdata[CAP_TO_INDEX(CAP_LAST_CAP) + 1];
+
+            memset(&capheader, 0, sizeof(capheader));
+            memset(&capdata[0], 0, sizeof(capdata));
+
+            capheader.version = _LINUX_CAPABILITY_VERSION_3;
+            capheader.pid = getpid();
+
+            uint64_t permitted = svc->permitted;
+            for (size_t n = 0; permitted; n++) {
+                uint64_t mask = (uint64_t)1 << n;
+                if (permitted & mask) {
+                    if (n <= CAP_LAST_CAP) {
+                        capdata[CAP_TO_INDEX(n)].permitted |= CAP_TO_MASK(n);
+                        capdata[CAP_TO_INDEX(n)].effective = capdata[CAP_TO_INDEX(n)].permitted;
+                        capdata[CAP_TO_INDEX(n)].inheritable = 1;
+                    }
+                    permitted &= ~mask;
+                }
+            }
+            if (capset(&capheader, &capdata[0]) < 0) {
+                ERROR("capset failed: %s\n", strerror(errno));
+                _exit(127);
+            }
+        }
 
         // As requested, set our gid, supplemental gids, and uid.
         if (svc->gid) {
