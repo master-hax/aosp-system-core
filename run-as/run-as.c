@@ -15,22 +15,24 @@
 ** limitations under the License.
 */
 
-#define PROGNAME  "run-as"
-#define LOG_TAG   PROGNAME
+#define PROGNAME "run-as"
+#define LOG_TAG  PROGNAME
 
+#include <dirent.h>
+#include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
+#include <sys/capability.h>
 #include <sys/stat.h>
-#include <dirent.h>
-#include <errno.h>
-#include <unistd.h>
+#include <sys/types.h>
 #include <time.h>
-#include <stdarg.h>
+#include <unistd.h>
 
-#include <selinux/android.h>
 #include <private/android_filesystem_config.h>
+#include <selinux/android.h>
+
 #include "package.h"
 
 /*
@@ -86,8 +88,8 @@
 static void
 usage(void)
 {
-    const char*  str = "Usage: " PROGNAME " <package-name> <command> [<args>]\n\n";
-    write(1, str, strlen(str));
+    static const char str[] = "Usage: " PROGNAME " <package-name> <command> [<args>]\n\n";
+    write(1, str, sizeof(str) - 1);
     exit(1);
 }
 
@@ -110,10 +112,13 @@ int main(int argc, char **argv)
     const char* pkgname;
     int myuid, uid, gid;
     PackageInfo info;
+    struct __user_cap_header_struct capheader;
+    struct __user_cap_data_struct capdata[2];
 
     /* check arguments */
-    if (argc < 2)
+    if (argc < 2) {
         usage();
+    }
 
     /* check userid of caller - must be 'shell' or 'root' */
     myuid = getuid();
@@ -146,6 +151,25 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    memset(&capheader, 0, sizeof(capheader));
+    memset(&capdata, 0, sizeof(capdata));
+    capheader.version = _LINUX_CAPABILITY_VERSION_3;
+    capheader.pid = 0;
+    if (capget(&capheader, &capdata[0]) < 0) {
+        panic("Could not get capabilities: %s\n", strerror(errno));
+        return 1;
+    }
+
+    capdata[CAP_TO_INDEX(CAP_SETUID)].effective |= CAP_TO_MASK(CAP_SETUID);
+    capdata[CAP_TO_INDEX(CAP_SETGID)].effective |= CAP_TO_MASK(CAP_SETGID);
+    capdata[0].inheritable = 0;
+    capdata[1].inheritable = 0;
+
+    if (capset(&capheader, &capdata[0]) < 0) {
+        panic("Could not set capabilities: %s\n", strerror(errno));
+        return 1;
+    }
+
     /* Ensure that we change all real/effective/saved IDs at the
      * same time to avoid nasty surprises.
      */
@@ -155,22 +179,21 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    memset(&capdata, 0, sizeof(capdata));
+    if (capset(&capheader, &capdata[0]) < 0) {
+        panic("Could not clear all capabilities: %s\n", strerror(errno));
+        return 1;
+    }
+
     if (selinux_android_setcontext(uid, 0, info.seinfo, pkgname) < 0) {
-        panic("Could not set SELinux security context:  %s\n", strerror(errno));
+        panic("Could not set SELinux security context: %s\n", strerror(errno));
         return 1;
     }
 
     /* cd into the data directory */
-    {
-        int ret;
-        do {
-            ret = chdir(info.dataDir);
-        } while (ret < 0 && errno == EINTR);
-
-        if (ret < 0) {
-            panic("Could not cd to package's data directory: %s\n", strerror(errno));
-            return 1;
-        }
+    if (TEMP_FAILURE_RETRY(chdir(info.dataDir)) < 0) {
+        panic("Could not cd to package's data directory: %s\n", strerror(errno));
+        return 1;
     }
 
     /* User specified command for exec. */
