@@ -16,9 +16,9 @@
 
 #include <assert.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -46,7 +46,7 @@ static bool ReadData(int fd, unsigned long place, uint64_t *data) {
 
 size_t GetPssBytes() {
   FILE* maps = fopen("/proc/self/maps", "r");
-  assert(maps != NULL);
+  assert(maps != nullptr);
 
   int pagecount_fd = open("/proc/kpagecount", O_RDONLY);
   assert(pagecount_fd >= 0);

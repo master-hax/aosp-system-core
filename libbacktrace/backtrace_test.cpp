@@ -33,13 +33,14 @@
 #include <backtrace/BacktraceMap.h>
 
 // For the THREAD_SIGNAL definition.
-#include "BacktraceThread.h"
+#include "BacktraceCurrent.h"
 
 #include <cutils/atomic.h>
 #include <gtest/gtest.h>
 
 #include <algorithm>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "thread_utils.h"
@@ -83,15 +84,16 @@ uint64_t NanoTime() {
   return static_cast<uint64_t>(t.tv_sec * NS_PER_SEC + t.tv_nsec);
 }
 
-void DumpFrames(Backtrace* backtrace) {
+std::string DumpFrames(Backtrace* backtrace) {
   if (backtrace->NumFrames() == 0) {
-    printf("    No frames to dump\n");
-    return;
+    return std::string("   No frames to dump\n");
   }
 
+  std::string frame;
   for (size_t i = 0; i < backtrace->NumFrames(); i++) {
-    printf("    %s\n", backtrace->FormatFrameData(i).c_str());
+    frame += "   " + backtrace->FormatFrameData(i) + '\n';
   }
+  return frame;
 }
 
 void WaitForStop(pid_t pid) {
@@ -133,8 +135,8 @@ void VerifyLevelDump(Backtrace* backtrace) {
       break;
     }
   }
-  ASSERT_LT(static_cast<size_t>(0), frame_num);
-  ASSERT_LE(static_cast<size_t>(3), frame_num);
+  ASSERT_LT(static_cast<size_t>(0), frame_num) << DumpFrames(backtrace);
+  ASSERT_LE(static_cast<size_t>(3), frame_num) << DumpFrames(backtrace);
 
   ASSERT_EQ(backtrace->GetFrame(frame_num)->func_name, "test_level_one");
   ASSERT_EQ(backtrace->GetFrame(frame_num-1)->func_name, "test_level_two");
@@ -490,9 +492,13 @@ TEST(libbacktrace, thread_level_trace) {
   // The SA_RESTORER flag gets set behind our back, so a direct comparison
   // doesn't work unless we mask the value off. Mips doesn't have this
   // flag, so skip this on that platform.
-#ifdef SA_RESTORER
+#if defined(SA_RESTORER)
   cur_action.sa_flags &= ~SA_RESTORER;
   new_action.sa_flags &= ~SA_RESTORER;
+#elif defined(__GLIBC__)
+  // Our host compiler doesn't appear to define this flag for some reason.
+  cur_action.sa_flags &= ~0x04000000;
+  new_action.sa_flags &= ~0x04000000;
 #endif
   EXPECT_EQ(cur_action.sa_flags, new_action.sa_flags);
 }
