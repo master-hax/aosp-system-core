@@ -72,7 +72,7 @@ public:
   virtual ~Backtrace();
 
   // Get the current stack trace and store in the backtrace_ structure.
-  virtual bool Unwind(size_t num_ignore_frames, ucontext_t* context = NULL);
+  virtual bool Unwind(size_t num_ignore_frames, ucontext_t* context = NULL) = 0;
 
   // Get the function name and offset into the function given the pc.
   // If the string is empty, then no valid function name was found.
@@ -117,7 +117,11 @@ public:
   BacktraceMap* GetMap() { return map_; }
 
 protected:
-  Backtrace(BacktraceImpl* impl, pid_t pid, BacktraceMap* map);
+  Backtrace(pid_t pid, pid_t tid, BacktraceMap* map);
+
+  // The name returned is not demangled, GetFunctionName() takes care of
+  // demangling the name.
+  virtual std::string GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset) = 0;
 
   virtual bool VerifyReadWordArgs(uintptr_t ptr, word_t* out_value);
 
@@ -130,10 +134,6 @@ protected:
   bool map_shared_;
 
   std::vector<backtrace_frame_data_t> frames_;
-
-  BacktraceImpl* impl_;
-
-  friend class BacktraceImpl;
 };
 
 #endif // _BACKTRACE_BACKTRACE_H
