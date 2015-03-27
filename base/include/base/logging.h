@@ -35,9 +35,50 @@ enum LogSeverity {
 };
 
 enum LogId {
+  DEFAULT,
   MAIN,
   SYSTEM,
 };
+
+class Logger {
+ public:
+  Logger() {}
+  virtual ~Logger() {}
+
+  virtual void log(LogId, LogSeverity, const char* tag, const char* file,
+                   unsigned int line, const char* message) = 0;
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(Logger);
+};
+
+class StderrLogger : public Logger {
+ public:
+  StderrLogger() {}
+  virtual ~StderrLogger() {}
+
+  void log(LogId, LogSeverity, const char* tag, const char* file,
+           unsigned int line, const char* message) override;
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(StderrLogger);
+};
+
+#ifdef __ANDROID__
+class LogdLogger : public Logger {
+ public:
+  explicit LogdLogger(LogId default_log_id = android::base::MAIN);
+  virtual ~LogdLogger() {}
+
+  void log(LogId, LogSeverity, const char* tag, const char* file,
+           unsigned int line, const char* message) override;
+
+ private:
+  LogId default_log_id_;
+
+  DISALLOW_COPY_AND_ASSIGN(LogdLogger);
+};
+#endif
 
 // Configure logging based on ANDROID_LOG_TAGS environment variable.
 // We need to parse a string that looks like
@@ -47,6 +88,10 @@ enum LogId {
 // The tag (or '*' for the global level) comes first, followed by a colon and a
 // letter indicating the minimum priority level we're expected to log.  This can
 // be used to reveal or conceal logs with specific tags.
+extern void InitLogging(char* argv[], std::unique_ptr<Logger> logger);
+
+// Configures logging using the default logger (logd for the device, stderr for
+// the host).
 extern void InitLogging(char* argv[]);
 
 // Returns the command line used to invoke the current tool or nullptr if
@@ -65,8 +110,8 @@ extern const char* ProgramInvocationShortName();
 // FATAL it also causes an abort. For example:
 //
 //     LOG(FATAL) << "We didn't expect to reach here";
-#define LOG(severity)                                                    \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::MAIN, \
+#define LOG(severity)                                                       \
+  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
                               ::android::base::severity, -1).stream()
 
 // Logs a message to logcat with the specified log ID on Android otherwise to
@@ -77,8 +122,8 @@ extern const char* ProgramInvocationShortName();
 
 // A variant of LOG that also logs the current errno value. To be used when
 // library calls fail.
-#define PLOG(severity)                                                   \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::MAIN, \
+#define PLOG(severity)                                                      \
+  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
                               ::android::base::severity, errno).stream()
 
 // Behaves like PLOG, but logs to the specified log ID.
@@ -96,20 +141,20 @@ extern const char* ProgramInvocationShortName();
 //
 //     CHECK(false == true) results in a log message of
 //       "Check failed: false == true".
-#define CHECK(x)                                                         \
-  if (UNLIKELY(!(x)))                                                    \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::MAIN, \
-                              ::android::base::FATAL, -1).stream()       \
+#define CHECK(x)                                                            \
+  if (UNLIKELY(!(x)))                                                       \
+  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
+                              ::android::base::FATAL, -1).stream()          \
       << "Check failed: " #x << " "
 
 // Helper for CHECK_xx(x,y) macros.
-#define CHECK_OP(LHS, RHS, OP)                                           \
-  for (auto _values = ::android::base::MakeEagerEvaluator(LHS, RHS);     \
-       UNLIKELY(!(_values.lhs OP _values.rhs));                          \
-       /* empty */)                                                      \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::MAIN, \
-                              ::android::base::FATAL, -1).stream()       \
-      << "Check failed: " << #LHS << " " << #OP << " " << #RHS           \
+#define CHECK_OP(LHS, RHS, OP)                                              \
+  for (auto _values = ::android::base::MakeEagerEvaluator(LHS, RHS);        \
+       UNLIKELY(!(_values.lhs OP _values.rhs));                             \
+       /* empty */)                                                         \
+  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
+                              ::android::base::FATAL, -1).stream()          \
+      << "Check failed: " << #LHS << " " << #OP << " " << #RHS              \
       << " (" #LHS "=" << _values.lhs << ", " #RHS "=" << _values.rhs << ") "
 
 // Check whether a condition holds between x and y, LOG(FATAL) if not. The value
