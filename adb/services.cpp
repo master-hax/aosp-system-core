@@ -132,31 +132,78 @@ void restart_usb_service(int fd, void *cookie)
     adb_close(fd);
 }
 
-void reboot_service(int fd, void *arg)
-{
+static int reboot_service_impl(int fd, void* arg) {
+    const char* reboot_arg = static_cast<const char*>(arg);
+    bool auto_reboot = false;
+
+    if (strcmp(reboot_arg, "sideload-a") == 0) {
+        auto_reboot = true;
+        reboot_arg = "sideload";
+    }
+
     char buf[100];
-    char property_val[PROPERTY_VALUE_MAX];
-    int ret;
+    // It reboots into sideload mode by setting "--sideload" in the command file.
+    if (strcmp(reboot_arg, "sideload") == 0) {
+        if (getuid() != 0) {
+            snprintf(buf, sizeof(buf), "'adb root' is required for 'adb reboot sideload'.\n");
+            WriteStringFully(fd, buf);
+            return -1;
+        }
+
+        const char* const recovery_dir = "/cache/recovery";
+        const char* const command_file = "/cache/recovery/command";
+        // Ensure /cache/recovery exists.
+        if (adb_mkdir(recovery_dir, 0770) == -1 && errno != EEXIST) {
+            D("Failed to create directory '%s': %s\n", recovery_dir, strerror(errno));
+            return -1;
+        }
+
+        int fd_command = adb_open_mode(command_file, O_WRONLY | O_CREAT | O_TRUNC, 0700);
+        if (fd_command == -1) {
+            D("Failed to open '%s': %s\n", command_file, strerror(errno));
+            return -1;
+        }
+
+        WriteStringFully(fd_command, "--sideload\n");
+        if (auto_reboot) {
+            WriteStringFully(fd_command, "--auto_reboot\n");
+        }
+        adb_close(fd_command);
+
+        reboot_arg = "recovery";
+    }
 
     sync();
 
-    ret = snprintf(property_val, sizeof(property_val), "reboot,%s", (char *) arg);
-    if (ret >= (int) sizeof(property_val)) {
+    char property_val[PROPERTY_VALUE_MAX];
+    int ret;
+    ret = snprintf(property_val, sizeof(property_val), "reboot,%s", reboot_arg);
+    if (ret >= static_cast<int>(sizeof(property_val))) {
         snprintf(buf, sizeof(buf), "reboot string too long. length=%d\n", ret);
-        WriteFdExactly(fd, buf, strlen(buf));
-        goto cleanup;
+        WriteStringFully(fd, buf);
+        return -1;
     }
 
     ret = property_set(ANDROID_RB_PROPERTY, property_val);
     if (ret < 0) {
         snprintf(buf, sizeof(buf), "reboot failed: %d\n", ret);
-        WriteFdExactly(fd, buf, strlen(buf));
-        goto cleanup;
+        WriteStringFully(fd, buf);
+        return -1;
     }
-    // Don't return early. Give the reboot command time to take effect
-    // to avoid messing up scripts which do "adb reboot && adb wait-for-device"
-    while(1) { pause(); }
-cleanup:
+
+    return 0;
+}
+
+void reboot_service(int fd, void* arg)
+{
+    if (reboot_service_impl(fd, arg) == 0) {
+        // Don't return early. Give the reboot command time to take effect
+        // to avoid messing up scripts which do "adb reboot && adb wait-for-device"
+        while (1) {
+            pause();
+        }
+    }
+
     free(arg);
     adb_close(fd);
 }
