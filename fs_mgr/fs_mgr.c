@@ -31,7 +31,7 @@
 #include <dirent.h>
 #include <ext4.h>
 #include <ext4_sb.h>
-#include <ext4_crypt.h>
+#include <ext4_crypt_init_extensions.h>
 
 #include <linux/loop.h>
 #include <private/android_filesystem_config.h>
