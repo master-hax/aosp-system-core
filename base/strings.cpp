@@ -52,6 +52,13 @@ std::vector<std::string> Split(const std::string& s,
   return split;
 }
 
+std::pair<std::string, std::string> SplitFirst(const std::string& s,
+                                               char delim) {
+  size_t delim_loc = s.find(delim);
+  CHECK_NE(delim_loc, s.npos);
+  return std::make_pair(s.substr(0, delim_loc), s.substr(delim_loc + 1));
+}
+
 std::string Trim(const std::string& s) {
   std::string result;
 

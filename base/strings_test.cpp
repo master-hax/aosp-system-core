@@ -70,6 +70,24 @@ TEST(strings, split_any_with_empty_part) {
   ASSERT_EQ("bar", parts[1]);
 }
 
+TEST(strings, SplitFirst) {
+    const auto split = android::base::SplitFirst("foo:bar:baz", ':');
+    ASSERT_EQ("foo", split.first);
+    ASSERT_EQ("bar:baz", split.second);
+}
+
+TEST(strings, SplitFirst_empty_first) {
+    const auto split = android::base::SplitFirst(":bar", ':');
+    ASSERT_EQ("", split.first);
+    ASSERT_EQ("bar", split.second);
+}
+
+TEST(strings, SplitFirst_empty_second) {
+    const auto split = android::base::SplitFirst("foo:", ':');
+    ASSERT_EQ("foo", split.first);
+    ASSERT_EQ("", split.second);
+}
+
 TEST(strings, trim_empty) {
   ASSERT_EQ("", android::base::Trim(""));
 }

@@ -33,6 +33,10 @@ namespace base {
 std::vector<std::string> Split(const std::string& s,
                                const std::string& delimiters);
 
+// Splits a string at the first occurence of a delimiter and returns the result
+// as a pair. The string must contain the delimiter.
+std::pair<std::string, std::string> SplitFirst(const std::string& s, char delim);
+
 // Trims whitespace off both ends of the given string.
 std::string Trim(const std::string& s);
 
