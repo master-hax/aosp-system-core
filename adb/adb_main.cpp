@@ -33,6 +33,11 @@
 #include <sys/prctl.h>
 
 #include "cutils/properties.h"
+#ifdef HAVE_ANDROID_OS
+#include <linux/capability.h>
+#else
+#include "private/android_filesystem_capability.h"
+#endif
 #include "private/android_filesystem_config.h"
 #include "selinux/selinux.h"
 
