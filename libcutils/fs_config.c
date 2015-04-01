@@ -19,11 +19,26 @@
 ** by the device side of adb.
 */
 
+#include <errno.h>
+#include <fcntl.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <private/android_filesystem_config.h>
+
+struct fs_path_config_from_file {
+    unsigned len;
+    unsigned mode;
+    unsigned uid;
+    unsigned gid;
+    uint64_t capabilities;
+    char prefix[];
+};
 
 /* Rules for directories.
 ** These rules are applied based on "first match", so they
@@ -101,18 +116,111 @@ static const struct fs_path_config android_files[] = {
     { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
 };
 
+/* host build */
+#ifndef TEMP_FAILURE_RETRY
+#define TEMP_FAILURE_RETRY(exp) ({         \
+    __typeof__(exp) _rc;                   \
+    do {                                   \
+        _rc = (exp);                       \
+    } while (_rc == -1 && errno == EINTR); \
+    _rc; })
+#endif
+
+static int fs_config_open(int dir)
+{
+    int fd = -1;
+    static const char conf_dir[] = "/system/etc/fs_config_dirs";
+    static const char conf_file[] = "/system/etc/fs_config_files";
+
+    char *name = NULL;
+    const char *out = getenv("OUT");
+    if (out && *out) {
+        name = (char *)calloc(1, strlen(out) +
+            (sizeof(conf_file) > sizeof(conf_dir) ? sizeof(conf_file) : sizeof(conf_dir)));
+    }
+    if (name) {
+        strcat(strcpy(name, out), dir ? conf_dir : conf_file);
+        fd = TEMP_FAILURE_RETRY(open(name, O_RDONLY));
+        free(name);
+    }
+    if (fd < 0) {
+        fd = TEMP_FAILURE_RETRY(open(dir ? conf_dir : conf_file, O_RDONLY));
+    }
+    return fd;
+}
+
 void fs_config(const char *path, int dir,
                unsigned *uid, unsigned *gid, unsigned *mode, uint64_t *capabilities)
 {
     const struct fs_path_config *pc;
     int plen;
+    struct stat st;
+    void *address = NULL;
+
+    int fd = fs_config_open(dir);
+    if ((fd >= 0)
+     && (TEMP_FAILURE_RETRY(fstat(fd, &st)) >= 0)
+     && (size_t)st.st_size) {
+        for(;;) {
+            address = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+            if (address != MAP_FAILED) {
+                break;
+            }
+            if (errno != EINTR) {
+                address = NULL;
+                break;
+            }
+        }
+    } else if (fd >= 0) {
+        close(fd);
+    }
 
     if (path[0] == '/') {
         path++;
     }
 
-    pc = dir ? android_dirs : android_files;
     plen = strlen(path);
+
+    if (address) {
+        const struct fs_path_config_from_file *p = (const struct fs_path_config_from_file *)
+            address;
+        const struct fs_path_config_from_file *e = (const struct fs_path_config_from_file *)
+            ((const char *)address + st.st_size - sizeof(*p));
+        for (; p < e; p = (const struct fs_path_config_from_file *)(((const char *)p) + p->len)) {
+            ssize_t len = strlen(p->prefix);
+            ssize_t remainder = p->len - sizeof(*p);
+            if (len > remainder) {
+                len = remainder;
+            }
+            if ((len <= 0) || (len > ((const char *)e - (const char *)p))) {
+                p = e;
+                break;
+            }
+            if (dir) {
+                if ((plen >= len) && !strncmp(p->prefix, path, len)) break;
+            } else {
+                /* If name ends in * then allow partial matches. */
+                if (p->prefix[len - 1] == '*') {
+                    if (!strncmp(p->prefix, path, len - 1)) break;
+                } else if (plen == len) {
+                    if (!strncmp(p->prefix, path, len)) break;
+                }
+            }
+        }
+        if (p < e) {
+            *uid = p->uid;
+            *gid = p->gid;
+            *mode = (*mode & (~07777)) | p->mode;
+            *capabilities = p->capabilities;
+        }
+        munmap(address, st.st_size);
+        close(fd);
+        if (p < e) {
+            return;
+        }
+    }
+
+    pc = dir ? android_dirs : android_files;
     for(; pc->prefix; pc++){
         int len = strlen(pc->prefix);
         if (dir) {
