@@ -236,3 +236,21 @@ void fs_config(const char *path, int dir,
     *mode = (*mode & (~07777)) | pc->mode;
     *capabilities = pc->capabilities;
 }
+
+ssize_t fs_config_generate(char *buffer, size_t length, const struct fs_path_config *pc)
+{
+    struct fs_path_config_from_file *p = (struct fs_path_config_from_file *)buffer;
+    size_t len = (sizeof(*p) + strlen(pc->prefix) + sizeof(uint64_t)) & -sizeof(uint64_t);
+
+    if (length < len) {
+        return -ENOSPC;
+    }
+    memset(p, 0, len);
+    p->len = htole16(len);
+    p->mode = htole16(pc->mode);
+    p->uid = htole16(pc->uid);
+    p->gid = htole16(pc->gid);
+    p->capabilities = htole64(pc->capabilities);
+    strcpy(p->prefix, pc->prefix);
+    return len;
+}
