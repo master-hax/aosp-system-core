@@ -304,6 +304,40 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     return ret;
 }
 
+struct RetryDelivery {
+  unsigned count;
+  unsigned delay_us;
+};
+
+volatile struct RetryDelivery retry_delivery;
+
+__attribute__((constructor)) static void retry_delivery_init()  {
+  char* env = getenv("LIBLOG_RETRY_DELIVERY");
+
+  if (env == NULL ||
+      2 != sscanf(env, "%u/%u", &retry_delivery.count, &retry_delivery.delay_us)) {
+    retry_delivery.count = 0;
+    retry_delivery.delay_us = 0;
+  } else {
+    retry_delivery.delay_us *= 1000;
+  }
+}
+
+static int __write_to_log_daemon_retry(log_id_t log_id, struct iovec *vec, size_t nr)
+{
+  int retry = retry_delivery.count;
+  useconds_t delay = retry_delivery.delay_us;
+  int res;
+
+  while (0 > (res = __write_to_log_daemon(log_id, vec, nr)) &&
+         --retry >= 0) {
+    usleep(delay);
+    delay += delay;
+  };
+
+  return res;
+}
+
 #if FAKE_LOG_DEVICE
 static const char *LOG_NAME[LOG_ID_MAX] = {
     [LOG_ID_MAIN] = "main",
@@ -344,7 +378,8 @@ static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
             return ret;
         }
 
-        write_to_log = __write_to_log_daemon;
+        write_to_log = retry_delivery.count == 0 ? __write_to_log_daemon :
+                                                   __write_to_log_daemon_retry;
     }
 
 #if !defined(_WIN32)
