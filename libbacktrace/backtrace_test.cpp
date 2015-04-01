@@ -200,6 +200,29 @@ bool WaitForNonZero(int32_t* value, uint64_t seconds) {
   return false;
 }
 
+TEST(libbacktrace, local_no_unwind_frames) {
+  // Verify that a local unwind does not include any frames within
+  // libunwind or libbacktrace.
+  std::unique_ptr<Backtrace> backtrace(Backtrace::Create(getpid(), getpid()));
+  ASSERT_TRUE(backtrace->Unwind(0));
+
+  ASSERT_TRUE(backtrace->NumFrames() != 0);
+  std::string libunwind = "libunwind.so";
+  std::string libbacktrace = "libbacktrace.so";
+  for (const auto& frame : *backtrace ) {
+    if (BacktraceMap::IsValid(frame.map)) {
+      const std::string* name = &frame.map.name;
+      ASSERT_TRUE(name->compare(name->length() - libunwind.length(),
+                                libunwind.length(), libunwind) != 0)
+        << DumpFrames(backtrace.get());
+      ASSERT_TRUE(name->compare(name->length() - libbacktrace.length(),
+                                 libbacktrace.length(), libbacktrace) != 0)
+        << DumpFrames(backtrace.get());
+    }
+    break;
+  }
+}
+
 TEST(libbacktrace, local_trace) {
   ASSERT_NE(test_level_one(1, 2, 3, 4, VerifyLevelBacktrace, nullptr), 0);
 }

@@ -73,6 +73,20 @@ bool BacktraceCurrent::Unwind(size_t num_ignore_frames, ucontext_t* ucontext) {
   return UnwindFromContext(num_ignore_frames, nullptr);
 }
 
+bool BacktraceCurrent::DiscardFrame(const backtrace_frame_data_t& frame) {
+  if (BacktraceMap::IsValid(frame.map)) {
+    std::string name(frame.map.name);
+    size_t slash = frame.map.name.rfind('/');
+    if (slash != std::string::npos) {
+      name.erase(0, slash + 1);
+    }
+    if (name == "libunwind.so" || name == "libbacktrace.so") {
+      return true;
+    }
+  }
+  return false;
+}
+
 static pthread_mutex_t g_sigaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void SignalHandler(int, siginfo_t*, void* sigcontext) {
