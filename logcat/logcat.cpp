@@ -93,7 +93,10 @@ static void rotateLogs()
             asprintf(&file0, "%s.%.*d", g_outputFileName, maxRotationCountDigits, i - 1);
         }
 
-        err = rename (file0, file1);
+        if (file0 && file1)
+            err = rename (file0, file1);
+        else
+            err = EACCES;
 
         if (err < 0 && errno != ENOENT) {
             perror("while rotating log files");
@@ -195,6 +198,7 @@ static void setupOutput()
 
     } else {
         struct stat statbuf;
+        int ret;
 
         g_outFD = openLogFile (g_outputFileName);
 
@@ -203,7 +207,13 @@ static void setupOutput()
             exit(-1);
         }
 
-        fstat(g_outFD, &statbuf);
+        ret = fstat(g_outFD, &statbuf);
+
+        if (ret) {
+            close(g_outFD);
+            perror ("couldn't get output file stat");
+            exit(-1);
+        }
 
         g_outByteCount = statbuf.st_size;
     }
@@ -217,7 +227,7 @@ static void show_help(const char *cmd)
                     "  -s              Set default filter to silent.\n"
                     "                  Like specifying filterspec '*:S'\n"
                     "  -f <filename>   Log to file. Default to stdout\n"
-                    "  -r [<kbytes>]   Rotate log every kbytes. (16 if unspecified). Requires -f\n"
+                    "  -r <kbytes>     Rotate log every kbytes. Requires -f\n"
                     "  -n <count>      Sets max number of rotated logs to <count>, default 4\n"
                     "  -v <format>     Sets the log print format, where <format> is:\n\n"
                     "                  brief color long process raw tag thread threadtime time\n\n"
@@ -508,22 +518,17 @@ int main(int argc, char **argv)
             break;
 
             case 'r':
-                if (optarg == NULL) {
-                    android::g_logRotateSizeKBytes
-                                = DEFAULT_LOG_ROTATE_SIZE_KBYTES;
-                } else {
-                    if (!isdigit(optarg[0])) {
-                        fprintf(stderr,"Invalid parameter to -r\n");
-                        android::show_help(argv[0]);
-                        exit(-1);
-                    }
-                    android::g_logRotateSizeKBytes = atoi(optarg);
+                if (!isdigit(optarg[0])) {
+                    fprintf(stderr,"Invalid parameter to -r\n");
+                    android::show_help(argv[0]);
+                    exit(-1);
                 }
+                android::g_logRotateSizeKBytes = atoi(optarg);
             break;
 
             case 'n':
                 if (!isdigit(optarg[0])) {
-                    fprintf(stderr,"Invalid parameter to -r\n");
+                    fprintf(stderr,"Invalid parameter to -n\n");
                     android::show_help(argv[0]);
                     exit(-1);
                 }
@@ -750,10 +755,13 @@ int main(int argc, char **argv)
     if (setPruneList) {
         size_t len = strlen(setPruneList) + 32; // margin to allow rc
         char *buf = (char *) malloc(len);
+        int ret = ENOMEM;
 
-        strcpy(buf, setPruneList);
-        int ret = android_logger_set_prune_list(logger_list, buf, len);
-        free(buf);
+        if (buf) {
+            strcpy(buf, setPruneList);
+            ret = android_logger_set_prune_list(logger_list, buf, len);
+            free(buf);
+        }
 
         if (ret) {
             perror("failed to set the prune list");
@@ -767,7 +775,7 @@ int main(int argc, char **argv)
 
         for(int retry = 32;
                 (retry >= 0) && ((buf = new char [len]));
-                delete [] buf, --retry) {
+                delete [] buf, buf = NULL, --retry) {
             if (getPruneList) {
                 android_logger_get_prune_list(logger_list, buf, len);
             } else {
