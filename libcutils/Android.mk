@@ -89,19 +89,6 @@ LOCAL_MULTILIB := both
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_HOST_SHARED_LIBRARY)
 
-# Tests for host
-# ========================================================
-include $(CLEAR_VARS)
-LOCAL_MODULE := tst_str_parms
-LOCAL_CFLAGS += -DTEST_STR_PARMS
-ifneq ($(HOST_OS),windows)
-LOCAL_CFLAGS += -Werror
-endif
-LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
-LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_MODULE_TAGS := optional
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-include $(BUILD_HOST_EXECUTABLE)
 
 
 # Shared and static library for target
@@ -152,14 +139,5 @@ LOCAL_CFLAGS += -Werror
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := tst_str_parms
-LOCAL_CFLAGS += -DTEST_STR_PARMS -Werror
-LOCAL_SRC_FILES := str_parms.c hashmap.c memory.c
-LOCAL_SHARED_LIBRARIES := liblog
-LOCAL_MODULE_TAGS := optional
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-include $(BUILD_EXECUTABLE)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
