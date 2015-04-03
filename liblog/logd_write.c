@@ -361,27 +361,8 @@ int __android_log_write(int prio, const char *tag, const char *msg)
 
 int __android_log_buf_write(int bufID, int prio, const char *tag, const char *msg)
 {
-    struct iovec vec[3];
-    char tmp_tag[32];
-
-    if (!tag)
+    if (!tag) {
         tag = "";
-
-    /* XXX: This needs to go! */
-    if ((bufID != LOG_ID_RADIO) &&
-         (!strcmp(tag, "HTC_RIL") ||
-        !strncmp(tag, "RIL", 3) || /* Any log tag with "RIL" as the prefix */
-        !strncmp(tag, "IMS", 3) || /* Any log tag with "IMS" as the prefix */
-        !strcmp(tag, "AT") ||
-        !strcmp(tag, "GSM") ||
-        !strcmp(tag, "STK") ||
-        !strcmp(tag, "CDMA") ||
-        !strcmp(tag, "PHONE") ||
-        !strcmp(tag, "SMS"))) {
-            bufID = LOG_ID_RADIO;
-            /* Inform third party apps/ril/radio.. to use Rlog or RLOG */
-            snprintf(tmp_tag, sizeof(tmp_tag), "use-Rlog/RLOG-%s", tag);
-            tag = tmp_tag;
     }
 
 #if __BIONIC__
@@ -390,6 +371,7 @@ int __android_log_buf_write(int bufID, int prio, const char *tag, const char *ms
     }
 #endif
 
+    struct iovec vec[3];
     vec[0].iov_base   = (unsigned char *) &prio;
     vec[0].iov_len    = 1;
     vec[1].iov_base   = (void *) tag;
