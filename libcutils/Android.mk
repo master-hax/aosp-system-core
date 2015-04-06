@@ -111,8 +111,15 @@ LOCAL_CLANG_ASFLAGS_arm += -no-integrated-as
 
 LOCAL_SRC_FILES_arm += arch-arm/memset32.S
 LOCAL_SRC_FILES_arm64 += arch-arm64/android_memset.S
-LOCAL_SRC_FILES_mips += arch-mips/android_memset.S
-LOCAL_SRC_FILES_mips64 += arch-mips/android_memset.S
+
+ifndef ARCH_MIPS_REV6
+  LOCAL_CFLAGS_mips += -DHAVE_MEMSET16 -DHAVE_MEMSET32
+  LOCAL_SRC_FILES_mips += arch-mips/android_memset.S
+else
+  LOCAL_SRC_FILES_mips += arch-mips/android_memset.c
+endif
+
+LOCAL_SRC_FILES_mips64 += arch-mips/android_memset.c
 
 LOCAL_SRC_FILES_x86 += \
         arch-x86/android_memset16.S \
