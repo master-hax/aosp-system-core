@@ -10,7 +10,7 @@ LOCAL_MODULE := mkbootfs
 
 LOCAL_CFLAGS := -Werror
 
-LOCAL_STATIC_LIBRARIES := libcutils
+LOCAL_STATIC_LIBRARIES := libcutils liblog
 
 include $(BUILD_HOST_EXECUTABLE)
 
