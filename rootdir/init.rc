@@ -162,6 +162,7 @@ on property:sys.boot_from_charger_mode=1
 # Load properties from /system/ + /factory after fs mount.
 on load_all_props_action
     load_all_props
+    start logd
     start logd-reinit
 
 # Indicate to fw loaders that the relevant mounts are up.
@@ -188,6 +189,7 @@ on late-init
 
 
 on post-fs
+    start logd
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
     # mount shared so changes propagate into child namespaces
@@ -439,6 +441,7 @@ on property:vold.decrypt=trigger_reset_main
 
 on property:vold.decrypt=trigger_load_persist_props
     load_persist_props
+    start logd
     start logd-reinit
 
 on property:vold.decrypt=trigger_post_fs_data
