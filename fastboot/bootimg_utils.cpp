@@ -37,11 +37,11 @@ void bootimg_set_cmdline(boot_img_hdr *h, const char *cmdline)
     strcpy((char*) h->cmdline, cmdline);
 }
 
-boot_img_hdr *mkbootimg(void *kernel, unsigned kernel_size, unsigned kernel_offset,
-                        void *ramdisk, unsigned ramdisk_size, unsigned ramdisk_offset,
-                        void *second, unsigned second_size, unsigned second_offset,
+boot_img_hdr *mkbootimg(void *kernel, int64_t kernel_size, unsigned kernel_offset,
+                        void *ramdisk, int64_t ramdisk_size, unsigned ramdisk_offset,
+                        void *second, int64_t second_size, unsigned second_offset,
                         unsigned page_size, unsigned base, unsigned tags_offset,
-                        unsigned *bootimg_size)
+                        int64_t* bootimg_size)
 {
     unsigned kernel_actual;
     unsigned ramdisk_actual;
