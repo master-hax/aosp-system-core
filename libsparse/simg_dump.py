@@ -135,7 +135,7 @@ def main():
           break;
         else:
           crc_bin = FH.read(4)
-          crc = struct.unpack("<I", crc)
+          crc = struct.unpack("<I", crc_bin)
           print("Unverified CRC32 0x%08X" % (crc))
       elif chunk_type == 0xCAC5:
           if data_sz != 0:
