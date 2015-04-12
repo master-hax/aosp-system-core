@@ -137,6 +137,13 @@ def main():
           crc_bin = FH.read(4)
           crc = struct.unpack("<I", crc)
           print("Unverified CRC32 0x%08X" % (crc))
+      elif chunk_type == 0xCAC5:
+          if data_sz != 0:
+            print("Rewind chunk input size is non-zero (%u)" % (data_sz))
+            break;
+          else:
+            print("Rewind", end="")
+          offset = -chunk_sz
       else:
           print("Unknown chunk type 0x%04X" % (chunk_type), end="")
           break;

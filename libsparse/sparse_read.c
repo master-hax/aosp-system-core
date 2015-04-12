@@ -219,9 +219,25 @@ static int process_crc32_chunk(int fd, unsigned int chunk_size, uint32_t crc32)
 	return 0;
 }
 
+static int process_rewind_chunk(struct sparse_file *s, unsigned int chunk_size,
+				unsigned int *cur_block)
+{
+	struct sparse_file_layer *layer;
+	if (chunk_size != 0)
+		return -EINVAL;
+
+	/* start a new layer with higher order */
+	layer = sparse_file_layer_lookup(s, s->layer->order + 1);
+	if (layer == NULL)
+		return -ENOMEM;
+
+	*cur_block = 0;
+	return 0;
+}
+
 static int process_chunk(struct sparse_file *s, int fd, off64_t offset,
 		unsigned int chunk_hdr_sz, chunk_header_t *chunk_header,
-		unsigned int cur_block, uint32_t *crc_ptr)
+		unsigned int *cur_block, uint32_t *crc_ptr)
 {
 	int ret;
 	unsigned int chunk_data_size;
@@ -231,35 +247,45 @@ static int process_chunk(struct sparse_file *s, int fd, off64_t offset,
 	switch (chunk_header->chunk_type) {
 		case CHUNK_TYPE_RAW:
 			ret = process_raw_chunk(s, chunk_data_size, fd, offset,
-					chunk_header->chunk_sz, cur_block, crc_ptr);
+					chunk_header->chunk_sz, *cur_block, crc_ptr);
 			if (ret < 0) {
 				verbose_error(s->verbose, ret, "data block at %lld", offset);
 				return ret;
 			}
-			return chunk_header->chunk_sz;
+			*cur_block += chunk_header->chunk_sz;
+			return 0;
 		case CHUNK_TYPE_FILL:
 			ret = process_fill_chunk(s, chunk_data_size, fd,
-					chunk_header->chunk_sz, cur_block, crc_ptr);
+					chunk_header->chunk_sz, *cur_block, crc_ptr);
 			if (ret < 0) {
 				verbose_error(s->verbose, ret, "fill block at %lld", offset);
 				return ret;
 			}
-			return chunk_header->chunk_sz;
+			*cur_block += chunk_header->chunk_sz;
+			return 0;
 		case CHUNK_TYPE_DONT_CARE:
 			ret = process_skip_chunk(s, chunk_data_size, fd,
-					chunk_header->chunk_sz, cur_block, crc_ptr);
+					chunk_header->chunk_sz, *cur_block, crc_ptr);
 			if (chunk_data_size != 0) {
 				if (ret < 0) {
 					verbose_error(s->verbose, ret, "skip block at %lld", offset);
 					return ret;
 				}
 			}
-			return chunk_header->chunk_sz;
+			*cur_block += chunk_header->chunk_sz;
+			return 0;
 		case CHUNK_TYPE_CRC32:
 			ret = process_crc32_chunk(fd, chunk_data_size, *crc_ptr);
 			if (ret < 0) {
 				verbose_error(s->verbose, -EINVAL, "crc block at %lld",
 						offset);
+				return ret;
+			}
+			return 0;
+		case CHUNK_TYPE_REWIND:
+			ret = process_rewind_chunk(s, chunk_data_size, cur_block);
+			if (ret < 0) {
+				verbose_error(s->verbose, -EINVAL, "rewind block at %lld", offset);
 				return ret;
 			}
 			return 0;
@@ -338,12 +364,10 @@ static int sparse_file_read_sparse(struct sparse_file *s, int fd, bool crc)
 		offset = lseek64(fd, 0, SEEK_CUR);
 
 		ret = process_chunk(s, fd, offset, sparse_header.chunk_hdr_sz, &chunk_header,
-				cur_block, crc_ptr);
+				&cur_block, crc_ptr);
 		if (ret < 0) {
 			return ret;
 		}
-
-		cur_block += ret;
 	}
 
 	if (sparse_header.total_blks != cur_block) {

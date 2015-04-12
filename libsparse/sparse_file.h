@@ -19,14 +19,22 @@
 
 #include <sparse/sparse.h>
 
+struct sparse_file_layer {
+	int order;
+	struct backed_block_list *block_list;
+	struct sparse_file_layer *next;
+};
+
 struct sparse_file {
 	unsigned int block_size;
 	int64_t len;
 	bool verbose;
-
-	struct backed_block_list *backed_block_list;
+	struct sparse_file_layer *layer;		/* current layer */
+	struct sparse_file_layer *default_layer;	/* default layer for backward compatible */
+	struct sparse_file_layer *layer_list;
 	struct output_file *out;
 };
 
+struct sparse_file_layer *sparse_file_layer_lookup(struct sparse_file *s, int order);
 
 #endif /* _LIBSPARSE_SPARSE_FILE_H_ */

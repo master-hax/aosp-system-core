@@ -27,6 +27,57 @@
 #include "sparse_defs.h"
 #include "sparse_format.h"
 
+struct sparse_file_layer *sparse_file_layer_lookup(struct sparse_file *s, int order)
+{
+	struct sparse_file_layer *prev, *next;
+	struct backed_block_list *list;
+	struct sparse_file_layer *layer = NULL;
+
+	/* mostly likely in current layer */
+	if (s->layer && s->layer->order == order)
+		return s->layer;
+
+	/* search for the ordered list */
+	for (prev = NULL, next = s->layer_list;
+	     next != NULL && next->order <= order;
+	     prev = next, next = next->next) {
+		if (prev && prev->order == order) {
+			layer = prev;
+			break;
+		}
+		if (next && next->order == order) {
+			layer = next;
+			break;
+		}
+	}
+
+	/* found an existing one */
+	if (layer) {
+		s->layer = layer;
+		return layer;
+	}
+
+	/* lookup failed, create a new one between prev and next */
+	layer = calloc(1, sizeof(*layer));
+	if (layer == NULL)
+		return NULL;
+
+	layer->block_list = backed_block_list_new(s->block_size);
+	if (layer->block_list == NULL) {
+		free(layer);
+		return NULL;
+	}
+
+	layer->order = order;
+	layer->next = next;
+	if (prev == NULL)
+		s->layer_list = layer;
+	else
+		prev->next = layer;
+	s->layer = layer;
+	return layer;
+}
+
 struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len)
 {
 	struct sparse_file *s = calloc(sizeof(struct sparse_file), 1);
@@ -34,65 +85,115 @@ struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len)
 		return NULL;
 	}
 
-	s->backed_block_list = backed_block_list_new(block_size);
-	if (!s->backed_block_list) {
-		free(s);
-		return NULL;
-	}
-
 	s->block_size = block_size;
 	s->len = len;
 
+	/* default layer order being 0 */
+	s->layer = sparse_file_layer_lookup(s, 0);
 	return s;
 }
 
 void sparse_file_destroy(struct sparse_file *s)
 {
-	backed_block_list_destroy(s->backed_block_list);
+	struct sparse_file_layer *layer, *next;
+
+	for (layer = s->layer_list; layer; layer = next) {
+		next = layer->next;
+		backed_block_list_destroy(layer->block_list);
+		free(layer);
+	}
 	free(s);
 }
 
 int sparse_file_add_data(struct sparse_file *s,
 		void *data, unsigned int len, unsigned int block)
 {
-	return backed_block_add_data(s->backed_block_list, data, len, block);
+	return backed_block_add_data(s->layer->block_list, data, len, block);
 }
 
 int sparse_file_add_fill(struct sparse_file *s,
 		uint32_t fill_val, unsigned int len, unsigned int block)
 {
-	return backed_block_add_fill(s->backed_block_list, fill_val, len, block);
+	return backed_block_add_fill(s->layer->block_list, fill_val, len, block);
 }
 
 int sparse_file_add_file(struct sparse_file *s,
 		const char *filename, int64_t file_offset, unsigned int len,
 		unsigned int block)
 {
-	return backed_block_add_file(s->backed_block_list, filename, file_offset,
+	return backed_block_add_file(s->layer->block_list, filename, file_offset,
 			len, block);
 }
 
 int sparse_file_add_fd(struct sparse_file *s,
 		int fd, int64_t file_offset, unsigned int len, unsigned int block)
 {
-	return backed_block_add_fd(s->backed_block_list, fd, file_offset,
+	return backed_block_add_fd(s->layer->block_list, fd, file_offset,
 			len, block);
 }
+
+int sparse_file_add_data_ordered(struct sparse_file *s, int order,
+		void *data, unsigned int len, unsigned int block)
+{
+	struct sparse_file_layer *layer = sparse_file_layer_lookup(s, order);
+	if (layer == NULL)
+		return -ENOMEM;
+	return backed_block_add_data(layer->block_list, data, len, block);
+}
+
+int sparse_file_add_fill_ordered(struct sparse_file *s, int order,
+		uint32_t fill_val, unsigned int len, unsigned int block)
+{
+	struct sparse_file_layer *layer = sparse_file_layer_lookup(s, order);
+	if (layer == NULL)
+		return -ENOMEM;
+	return backed_block_add_fill(layer->block_list, fill_val, len, block);
+}
+
+int sparse_file_add_file_ordered(struct sparse_file *s, int order,
+		const char *filename, int64_t file_offset, unsigned int len,
+		unsigned int block)
+{
+	struct sparse_file_layer *layer = sparse_file_layer_lookup(s, order);
+	if (layer == NULL)
+		return -ENOMEM;
+	return backed_block_add_file(layer->block_list, filename, file_offset,
+			len, block);
+}
+
+int sparse_file_add_fd_ordered(struct sparse_file *s, int order,
+		int fd, int64_t file_offset, unsigned int len, unsigned int block)
+{
+	struct sparse_file_layer *layer = sparse_file_layer_lookup(s, order);
+	if (layer == NULL)
+		return -ENOMEM;
+	return backed_block_add_fd(layer->block_list, fd, file_offset,
+			len, block);
+}
+
 unsigned int sparse_count_chunks(struct sparse_file *s)
 {
 	struct backed_block *bb;
 	unsigned int last_block = 0;
 	unsigned int chunks = 0;
+	struct sparse_file_layer *layer;
 
-	for (bb = backed_block_iter_new(s->backed_block_list); bb;
+	for (layer = s->layer_list; layer; layer = layer->next) {
+		for (bb = backed_block_iter_new(layer->block_list); bb;
 			bb = backed_block_iter_next(bb)) {
-		if (backed_block_block(bb) > last_block) {
-			/* If there is a gap between chunks, add a skip chunk */
+			if (backed_block_block(bb) > last_block) {
+				/* If there is a gap between chunks, add a skip chunk */
+				chunks++;
+			}
 			chunks++;
-		}
-		chunks++;
-		last_block = backed_block_block(bb) +
+			last_block = backed_block_block(bb) +
 				DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+		}
+		/* If there is a new layer, add a REWIND chunk */
+		if (layer->next) {
+			chunks++;
+			last_block = 0;
+		}
 	}
 	if (last_block < DIV_ROUND_UP(s->len, s->block_size)) {
 		chunks++;
@@ -131,22 +232,29 @@ static int sparse_file_write_block(struct output_file *out,
 
 static int write_all_blocks(struct sparse_file *s, struct output_file *out)
 {
+	struct sparse_file_layer *layer;
 	struct backed_block *bb;
 	unsigned int last_block = 0;
 	int64_t pad;
 	int ret = 0;
 
-	for (bb = backed_block_iter_new(s->backed_block_list); bb;
+	for (layer = s->layer_list; layer; layer = layer->next) {
+		for (bb = backed_block_iter_new(layer->block_list); bb;
 			bb = backed_block_iter_next(bb)) {
-		if (backed_block_block(bb) > last_block) {
-			unsigned int blocks = backed_block_block(bb) - last_block;
-			write_skip_chunk(out, (int64_t)blocks * s->block_size);
-		}
-		ret = sparse_file_write_block(out, bb);
-		if (ret)
-			return ret;
-		last_block = backed_block_block(bb) +
+			if (backed_block_block(bb) > last_block) {
+				unsigned int blocks = backed_block_block(bb) - last_block;
+				write_skip_chunk(out, (int64_t)blocks * s->block_size);
+			}
+			ret = sparse_file_write_block(out, bb);
+			if (ret)
+				return ret;
+			last_block = backed_block_block(bb) +
 				DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+		}
+		if (layer->next) {
+			write_rewind_chunk(out);
+			last_block = 0;
+		}
 	}
 
 	pad = s->len - (int64_t)last_block * s->block_size;
@@ -230,7 +338,8 @@ int64_t sparse_file_len(struct sparse_file *s, bool sparse, bool crc)
 	return count;
 }
 
-static struct backed_block *move_chunks_up_to_len(struct sparse_file *from,
+static struct backed_block *move_chunks_up_to_len(
+		struct sparse_file_layer *from,
 		struct sparse_file *to, unsigned int len)
 {
 	int64_t count = 0;
@@ -249,7 +358,7 @@ static struct backed_block *move_chunks_up_to_len(struct sparse_file *from,
 			sizeof(uint32_t);
 	len -= overhead;
 
-	start = backed_block_iter_new(from->backed_block_list);
+	start = backed_block_iter_new(from->block_list);
 	out_counter = output_file_open_callback(out_counter_write, &count,
 			to->block_size, to->len, false, true, 0, false);
 	if (!out_counter) {
@@ -271,8 +380,9 @@ static struct backed_block *move_chunks_up_to_len(struct sparse_file *from,
 			 * are at least 7/8ths of the requested size
 			 */
 			if (!last_bb || (len - file_len > (len / 8))) {
-				backed_block_split(from->backed_block_list, bb, len - file_len);
+				backed_block_split(from->block_list, bb, len - file_len);
 				last_bb = bb;
+				file_len += (len - file_len);
 			}
 			goto move;
 		}
@@ -281,8 +391,8 @@ static struct backed_block *move_chunks_up_to_len(struct sparse_file *from,
 	}
 
 move:
-	backed_block_list_move(from->backed_block_list,
-		to->backed_block_list, start, last_bb);
+	backed_block_list_move(from->block_list,
+		to->layer->block_list, start, last_bb);
 
 out:
 	output_file_close(out_counter);
@@ -296,6 +406,7 @@ int sparse_file_resparse(struct sparse_file *in_s, unsigned int max_len,
 	struct backed_block *bb;
 	struct sparse_file *s;
 	struct sparse_file *tmp;
+	struct sparse_file_layer *layer;
 	int c = 0;
 
 	tmp = sparse_file_new(in_s->block_size, in_s->len);
@@ -303,23 +414,27 @@ int sparse_file_resparse(struct sparse_file *in_s, unsigned int max_len,
 		return -ENOMEM;
 	}
 
-	do {
-		s = sparse_file_new(in_s->block_size, in_s->len);
+	for (layer = in_s->layer_list; layer; layer = layer->next) {
+		do {
+			s = sparse_file_new(in_s->block_size, in_s->len);
 
-		bb = move_chunks_up_to_len(in_s, s, max_len);
+			bb = move_chunks_up_to_len(layer, s, max_len);
 
-		if (c < out_s_count) {
-			out_s[c] = s;
-		} else {
-			backed_block_list_move(s->backed_block_list, tmp->backed_block_list,
-					NULL, NULL);
-			sparse_file_destroy(s);
-		}
-		c++;
-	} while (bb);
+			if (c < out_s_count) {
+				out_s[c] = s;
+			} else {
+				backed_block_list_move(s->layer->block_list,
+						       tmp->layer->block_list,
+						       NULL, NULL);
+				sparse_file_destroy(s);
+			}
+			c++;
+		} while (bb);
 
-	backed_block_list_move(tmp->backed_block_list, in_s->backed_block_list,
-			NULL, NULL);
+		/* move back to the original layer */
+		backed_block_list_move(tmp->layer->block_list,
+				       layer->block_list, NULL, NULL);
+	}
 
 	sparse_file_destroy(tmp);
 

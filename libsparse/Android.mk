@@ -67,6 +67,30 @@ include $(BUILD_EXECUTABLE)
 
 
 include $(CLEAR_VARS)
+LOCAL_SRC_FILES := simg2simg.c \
+	sparse_crc32.c
+LOCAL_MODULE := simg2simg_host
+# Need a unique module name, but exe should still be called simg2img
+LOCAL_MODULE_STEM := simg2simg
+LOCAL_STATIC_LIBRARIES := \
+    libsparse_host \
+    libz
+LOCAL_CFLAGS := -Werror
+include $(BUILD_HOST_EXECUTABLE)
+
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := simg2simg.c \
+	sparse_crc32.c
+LOCAL_MODULE := simg2simg
+LOCAL_STATIC_LIBRARIES := \
+    libsparse_static \
+    libz
+LOCAL_CFLAGS := -Werror
+include $(BUILD_EXECUTABLE)
+
+
+include $(CLEAR_VARS)
 LOCAL_SRC_FILES := img2simg.c
 LOCAL_MODULE := img2simg_host
 # Need a unique module name, but exe should still be called simg2img

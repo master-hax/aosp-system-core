@@ -62,6 +62,7 @@
 struct output_file_ops {
 	int (*open)(struct output_file *, int fd);
 	int (*skip)(struct output_file *, int64_t);
+	int (*rewind)(struct output_file *);
 	int (*pad)(struct output_file *, int64_t);
 	int (*write)(struct output_file *, void *, int);
 	void (*close)(struct output_file *);
@@ -73,6 +74,7 @@ struct sparse_file_ops {
 	int (*write_fill_chunk)(struct output_file *out, unsigned int len,
 			uint32_t fill_val);
 	int (*write_skip_chunk)(struct output_file *out, int64_t len);
+	int (*write_rewind_chunk)(struct output_file *out);
 	int (*write_end_chunk)(struct output_file *out);
 };
 
@@ -136,6 +138,19 @@ static int file_skip(struct output_file *out, int64_t cnt)
 	return 0;
 }
 
+static int file_rewind(struct output_file *out)
+{
+	off64_t ret;
+	struct output_file_normal *outn = to_output_file_normal(out);
+
+	ret = lseek64(outn->fd, 0LL, SEEK_SET);
+	if (ret < 0) {
+		error_errno("lseek64");
+		return -1;
+	}
+	return 0;
+}
+
 static int file_pad(struct output_file *out, int64_t len)
 {
 	int ret;
@@ -176,6 +191,7 @@ static void file_close(struct output_file *out)
 static struct output_file_ops file_ops = {
 	.open = file_open,
 	.skip = file_skip,
+	.rewind = file_rewind,
 	.pad = file_pad,
 	.write = file_write,
 	.close = file_close,
@@ -194,13 +210,25 @@ static int gz_file_open(struct output_file *out, int fd)
 	return 0;
 }
 
-
 static int gz_file_skip(struct output_file *out, int64_t cnt)
 {
 	off64_t ret;
 	struct output_file_gz *outgz = to_output_file_gz(out);
 
 	ret = gzseek(outgz->gz_fd, cnt, SEEK_CUR);
+	if (ret < 0) {
+		error_errno("gzseek");
+		return -1;
+	}
+	return 0;
+}
+
+static int gz_file_rewind(struct output_file *out)
+{
+	off64_t ret;
+	struct output_file_gz *outgz = to_output_file_gz(out);
+
+	ret = gzseek(outgz->gz_fd, 0LL, SEEK_SET);
 	if (ret < 0) {
 		error_errno("gzseek");
 		return -1;
@@ -260,6 +288,7 @@ static void gz_file_close(struct output_file *out)
 static struct output_file_ops gz_file_ops = {
 	.open = gz_file_open,
 	.skip = gz_file_skip,
+	.rewind = gz_file_rewind,
 	.pad = gz_file_pad,
 	.write = gz_file_write,
 	.close = gz_file_close,
@@ -288,6 +317,11 @@ static int callback_file_skip(struct output_file *out, int64_t off)
 	return 0;
 }
 
+static int callback_file_rewind(struct output_file *out __unused)
+{
+	return -1;
+}
+
 static int callback_file_pad(struct output_file *out __unused, int64_t len __unused)
 {
 	return -1;
@@ -310,6 +344,7 @@ static void callback_file_close(struct output_file *out)
 static struct output_file_ops callback_file_ops = {
 	.open = callback_file_open,
 	.skip = callback_file_skip,
+	.rewind = callback_file_rewind,
 	.pad = callback_file_pad,
 	.write = callback_file_write,
 	.close = callback_file_close,
@@ -360,6 +395,24 @@ static int write_sparse_skip_chunk(struct output_file *out, int64_t skip_len)
 	out->cur_out_ptr += skip_len;
 	out->chunk_cnt++;
 
+	return 0;
+}
+
+static int write_sparse_rewind_chunk(struct output_file *out)
+{
+	chunk_header_t chunk_header;
+	int ret;
+
+	chunk_header.chunk_type = CHUNK_TYPE_REWIND;
+	chunk_header.reserved1 = 0;
+	chunk_header.chunk_sz = 0;
+	chunk_header.total_sz = CHUNK_HEADER_LEN;
+	ret = out->ops->write(out, &chunk_header, sizeof(chunk_header));
+	if (ret < 0)
+		return -1;
+
+	out->cur_out_ptr = 0LL;
+	out->chunk_cnt++;
 	return 0;
 }
 
@@ -469,6 +522,7 @@ static struct sparse_file_ops sparse_file_ops = {
 		.write_data_chunk = write_sparse_data_chunk,
 		.write_fill_chunk = write_sparse_fill_chunk,
 		.write_skip_chunk = write_sparse_skip_chunk,
+		.write_rewind_chunk = write_sparse_rewind_chunk,
 		.write_end_chunk = write_sparse_end_chunk,
 };
 
@@ -520,6 +574,11 @@ static int write_normal_skip_chunk(struct output_file *out, int64_t len)
 	return out->ops->skip(out, len);
 }
 
+static int write_normal_rewind_chunk(struct output_file *out)
+{
+	return out->ops->rewind(out);
+}
+
 int write_normal_end_chunk(struct output_file *out)
 {
 	return out->ops->pad(out, out->len);
@@ -529,6 +588,7 @@ static struct sparse_file_ops normal_file_ops = {
 		.write_data_chunk = write_normal_data_chunk,
 		.write_fill_chunk = write_normal_fill_chunk,
 		.write_skip_chunk = write_normal_skip_chunk,
+		.write_rewind_chunk = write_normal_rewind_chunk,
 		.write_end_chunk = write_normal_end_chunk,
 };
 
@@ -763,4 +823,9 @@ int write_file_chunk(struct output_file *out, unsigned int len,
 int write_skip_chunk(struct output_file *out, int64_t len)
 {
 	return out->sparse_ops->write_skip_chunk(out, len);
+}
+
+int write_rewind_chunk(struct output_file *out)
+{
+	return out->sparse_ops->write_rewind_chunk(out);
 }

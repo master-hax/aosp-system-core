@@ -141,6 +141,20 @@ int sparse_file_add_fd(struct sparse_file *s,
 		int fd, int64_t file_offset, unsigned int len, unsigned int block);
 
 /**
+ * sparse_file_add_{data,fill,file,fd}_ordered - associate chunk of data with
+ * order, chunks with smaller order numbers will be written out firstly
+ */
+int sparse_file_add_data_ordered(struct sparse_file *s, int order,
+		void *data, unsigned int len, unsigned int block);
+int sparse_file_add_fill_ordered(struct sparse_file *s, int order,
+		uint32_t fill_val, unsigned int len, unsigned int block);
+int sparse_file_add_file_ordered(struct sparse_file *s, int order,
+		const char *filename, int64_t file_offset, unsigned int len,
+		unsigned int block);
+int sparse_file_add_fd_ordered(struct sparse_file *s, int order,
+		int fd, int64_t file_offset, unsigned int len, unsigned int block);
+
+/**
  * sparse_file_write - write a sparse file to a file
  *
  * @s - sparse file cookie
