@@ -115,6 +115,23 @@ void LogStatistics::add(LogBufferElement *e) {
         entry.add(size);
         entry.add_dropped(dropped);
     }
+
+    uint32_t tag = e->getTag();
+    if (tag) {
+        hash = android::hash_type(tag);
+        index = tagTable.find(-1, hash, tag);
+        if (index == -1) {
+            TagEntry initEntry(tag, uid);
+            initEntry.add(size);
+            tagTable.add(hash, initEntry);
+        } else {
+            TagEntry &entry = tagTable.editEntryAt(index);
+            if (entry.getUid() != uid) {
+                entry.setUid(-1);
+            }
+            entry.add(size);
+        }
+    }
 }
 
 void LogStatistics::subtract(LogBufferElement *e) {
@@ -146,6 +163,18 @@ void LogStatistics::subtract(LogBufferElement *e) {
         PidEntry &entry = pidTable.editEntryAt(index);
         if (entry.subtract(size) || entry.subtract_dropped(dropped)) {
             pidTable.removeAt(index);
+        }
+    }
+
+    uint32_t tag = e->getTag();
+    if (tag) {
+        hash = android::hash_type(tag);
+        index = tagTable.find(-1, hash, tag);
+        if (index != -1) {
+            TagEntry &entry = tagTable.editEntryAt(index);
+            if (entry.subtract(size)) {
+                tagTable.removeAt(index);
+            }
         }
     }
 }
@@ -369,6 +398,7 @@ void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
     }
 
     if (enable) {
+        // Pid table
         bool headerPrinted = false;
         std::unique_ptr<const PidEntry *[]> sorted = pidTable.sort(maximum_sorted_entries);
         ssize_t index = -1;
@@ -413,6 +443,46 @@ void LogStatistics::format(char **buf, uid_t uid, unsigned int logMask) {
             if (dropped) {
                 pruned.appendFormat("%zu", dropped);
             }
+
+            format_line(output, name, size, pruned);
+        }
+    }
+
+    if (enable && (logMask & (1 << LOG_ID_EVENTS))) {
+        // Tag table
+        bool headerPrinted = false;
+        std::unique_ptr<const TagEntry *[]> sorted = tagTable.sort(maximum_sorted_entries);
+        ssize_t index = -1;
+        while ((index = tagTable.next(index, sorted, maximum_sorted_entries)) >= 0) {
+            const TagEntry *entry = sorted[index];
+            uid_t u = entry->getUid();
+            if ((uid != AID_ROOT) && (u != uid)) {
+                continue;
+            }
+
+            android::String8 pruned("");
+
+            if (!headerPrinted) {
+                output.appendFormat("\n\nChattiest events buffer TAGs:\n");
+                android::String8 name("    TAG/UID");
+                android::String8 size("Size");
+                format_line(output, name, size, pruned);
+                headerPrinted = true;
+            }
+
+            android::String8 name("");
+            if (u == (uid_t)-1) {
+                name.appendFormat("%7u", entry->getKey());
+            } else {
+                name.appendFormat("%7u/%u", entry->getKey(), u);
+            }
+            const char *n = entry->getName();
+            if (n) {
+                name.appendFormat("%*s%s", (int)std::max(14 - name.length(), (size_t)1), "", n);
+            }
+
+            android::String8 size("");
+            size.appendFormat("%zu", entry->getSizes());
 
             format_line(output, name, size, pruned);
         }

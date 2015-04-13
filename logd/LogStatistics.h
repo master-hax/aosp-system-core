@@ -121,6 +121,26 @@ struct PidEntry {
     inline bool subtract_dropped(size_t d) { dropped -= d; return !dropped && !size; }
 };
 
+struct TagEntry {
+    const uint32_t tag;
+    uid_t uid;
+    size_t size;
+
+    TagEntry(uint32_t t, uid_t u):tag(t),uid(u),size(0) { }
+    TagEntry(const TagEntry &c):
+        tag(c.tag),
+        uid(c.uid),
+        size(c.size) { }
+
+    const uint32_t&getKey() const { return tag; }
+    const uid_t&getUid() const { return uid; }
+    uid_t&setUid(uid_t u) { return uid = u; }
+    const char*getName() const { return android::tagToName(tag); }
+    size_t getSizes() const { return size; }
+    inline void add(size_t s) { size += s; }
+    inline bool subtract(size_t s) { size -= s; return !size; }
+};
+
 // Log Statistics
 class LogStatistics {
     size_t mSizes[LOG_ID_MAX];
@@ -136,6 +156,10 @@ class LogStatistics {
     // pid to uid list
     typedef LogHashtable<pid_t, PidEntry> pidTable_t;
     pidTable_t pidTable;
+
+    // tag list
+    typedef LogHashtable<uint32_t, TagEntry> tagTable_t;
+    tagTable_t tagTable;
 
 public:
     LogStatistics();

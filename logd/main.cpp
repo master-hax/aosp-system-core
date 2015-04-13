@@ -35,8 +35,9 @@
 #include <cutils/properties.h>
 #include <cutils/sched_policy.h>
 #include <cutils/sockets.h>
+#include <log/event_tag_map.h>
+#include <private/android_filesystem_config.h>
 
-#include "private/android_filesystem_config.h"
 #include "CommandListener.h"
 #include "LogBuffer.h"
 #include "LogListener.h"
@@ -230,6 +231,25 @@ void reinit_signal_handler(int /*signal*/) {
     sem_post(&reinit);
 }
 
+// tagToName converts an events tag into a name
+static sem_t sem_map;
+
+const char *android::tagToName(uint32_t tag) {
+    static const EventTagMap *map;
+
+    if (!map) {
+        sem_wait(&sem_map);
+        if (!map) {
+            map = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+        }
+        sem_post(&sem_map);
+        if (!map) {
+            return NULL;
+        }
+    }
+    return android_lookupEventTag(map, tag);
+}
+
 // Foreground waits for exit of the main persistent threads
 // that are started here. The threads are created to manage
 // UNIX domain client sockets for writing, reading and
@@ -277,6 +297,7 @@ int main(int argc, char *argv[]) {
     // Reinit Thread
     sem_init(&reinit, 0, 0);
     sem_init(&uidName, 0, 0);
+    sem_init(&sem_map, 0, 1);
     pthread_attr_t attr;
     if (!pthread_attr_init(&attr)) {
         struct sched_param param;
