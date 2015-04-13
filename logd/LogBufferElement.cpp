@@ -48,6 +48,13 @@ LogBufferElement::~LogBufferElement() {
     delete [] mMsg;
 }
 
+uint32_t LogBufferElement::getTag() const {
+    if ((mLogId != LOG_ID_EVENTS) || !mMsg || (mMsgLen < sizeof(uint32_t))) {
+        return 0;
+    }
+    return le32toh(((android_event_header_t *)mMsg)->tag);
+}
+
 // assumption: mMsg == NULL
 size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) {
     static const char format_uid[] = "uid=%u dropped=%u";
