@@ -947,6 +947,7 @@ static void *parse_action(struct parse_state *state, int nargs, char **args)
         if (!(i % 2)) {
             if (strcmp(args[i], "&&")) {
                 parse_error(state, "& is the only symbol allowed to concatenate actions\n");
+                free(act);
                 return 0;
             } else
                 continue;
