@@ -75,50 +75,67 @@ public:
     }
 };
 
-struct UidEntry {
-    const uid_t uid;
+struct EntryBase {
     size_t size;
+
+    EntryBase():size(0) {}
+
+    size_t getSizes() const { return size; }
+    inline void add(size_t s) { size += s; }
+    inline bool subtract(size_t s) { size -= s; return !size; }
+};
+
+struct EntryBaseDropped : public EntryBase {
     size_t dropped;
 
-    UidEntry(uid_t uid):uid(uid),size(0),dropped(0) { }
+    EntryBaseDropped():dropped(0) { }
 
-    inline const uid_t&getKey() const { return uid; }
-    size_t getSizes() const { return size; }
     size_t getDropped() const { return dropped; }
-
-    inline void add(size_t s) { size += s; }
     inline void add_dropped(size_t d) { dropped += d; }
-    inline bool subtract(size_t s) { size -= s; return !dropped && !size; }
+    inline bool subtract(size_t s) { return EntryBase::subtract(s) && !dropped; }
     inline bool subtract_dropped(size_t d) { dropped -= d; return !dropped && !size; }
 };
 
-struct PidEntry {
+struct UidEntry : public EntryBaseDropped {
+    const uid_t uid;
+
+    UidEntry(uid_t uid):uid(uid) { }
+
+    inline const uid_t&getKey() const { return uid; }
+};
+
+struct PidEntry : public EntryBaseDropped {
     const pid_t pid;
     uid_t uid;
     char *name;
-    size_t size;
-    size_t dropped;
 
-    PidEntry(pid_t p, uid_t u, char *n):pid(p),uid(u),name(n),size(0),dropped(0) { }
+    PidEntry(pid_t p, uid_t u, char *n):pid(p),uid(u),name(n) { }
     PidEntry(const PidEntry &c):
+        EntryBaseDropped(c),
         pid(c.pid),
         uid(c.uid),
-        name(c.name ? strdup(c.name) : NULL),
-        size(c.size),
-        dropped(c.dropped) { }
+        name(c.name ? strdup(c.name) : NULL) { }
     ~PidEntry() { free(name); }
 
     const pid_t&getKey() const { return pid; }
+
     const uid_t&getUid() const { return uid; }
     uid_t&setUid(uid_t u) { return uid = u; }
     const char*getName() const { return name; }
     char *setName(char *n) { free(name); return name = n; }
-    size_t getSizes() const { return size; }
-    size_t getDropped() const { return dropped; }
-    inline void add(size_t s) { size += s; }
-    inline void add_dropped(size_t d) { dropped += d; }
-    inline bool subtract(size_t s) { size -= s; return !dropped && !size; }
-    inline bool subtract_dropped(size_t d) { dropped -= d; return !dropped && !size; }
+};
+
+struct TagEntry : public EntryBase {
+    const uint32_t tag;
+    uid_t uid;
+
+    TagEntry(uint32_t t, uid_t u):tag(t),uid(u) { }
+
+    const uint32_t&getKey() const { return tag; }
+
+    const uid_t&getUid() const { return uid; }
+    uid_t&setUid(uid_t u) { return uid = u; }
+    const char*getName() const { return android::tagToName(tag); }
 };
 
 // Log Statistics
@@ -136,6 +153,10 @@ class LogStatistics {
     // pid to uid list
     typedef LogHashtable<pid_t, PidEntry> pidTable_t;
     pidTable_t pidTable;
+
+    // tag list
+    typedef LogHashtable<uint32_t, TagEntry> tagTable_t;
+    tagTable_t tagTable;
 
 public:
     LogStatistics();

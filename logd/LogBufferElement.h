@@ -25,11 +25,17 @@
 #include <log/log.h>
 #include <log/log_read.h>
 
+// Hijack this header as a common include file used by most all sources
+// to report some utilities defined here and there.
+
 namespace android {
 
 // Furnished in main.cpp. Caller must own and free returned value
 // This function is designed for a single caller and is NOT thread-safe
 char *uidToName(uid_t uid);
+
+// Furnished in main.cpp. Thread safe.
+const char *tagToName(uint32_t tag);
 
 }
 
@@ -76,6 +82,8 @@ public:
     uint64_t getSequence(void) const { return mSequence; }
     static uint64_t getCurrentSequence(void) { return sequence.load(memory_order_relaxed); }
     log_time getRealTime(void) const { return mRealTime; }
+
+    uint32_t getTag(void) const;
 
     static const uint64_t FLUSH_ERROR;
     uint64_t flushTo(SocketClient *writer);
