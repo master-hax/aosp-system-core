@@ -42,7 +42,9 @@ extern "C" {
 /*
  * Ensure that directory exists with given mode and owners.
  */
+#if (!defined(__uid_t_defined) || !defined(__gid_t_defined)) /* _WIN32 */
 extern int fs_prepare_dir(const char* path, mode_t mode, uid_t uid, gid_t gid);
+#endif
 
 /*
  * Read single plaintext integer from given file, correctly handling files
