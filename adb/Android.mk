@@ -157,9 +157,16 @@ LOCAL_STATIC_LIBRARIES := \
     libcrypto_static \
     $(EXTRA_STATIC_LIBS) \
 
+# Don't add anything here, we don't want additional shared dependencies
+# on the host adb tool, and shared libraries that link against libc++
+# will violate ODR
+LOCAL_SHARED_LIBRARIES :=
+
 ifeq ($(USE_SYSDEPS_WIN32),)
     LOCAL_STATIC_LIBRARIES += libcutils
 endif
+
+LOCAL_CXX_STL := libc++_static
 
 include $(BUILD_HOST_EXECUTABLE)
 
