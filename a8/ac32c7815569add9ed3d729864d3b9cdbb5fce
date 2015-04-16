@@ -1,0 +1,7 @@
+Code-Review+2: Hans Boehm <hboehm@google.com>
+Verified+1: Yabin Cui <yabinc@google.com>
+Submitted-by: Yabin Cui <yabinc@google.com>
+Submitted-at: Thu, 16 Apr 2015 18:35:38 +0000
+Reviewed-on: https://android-review.googlesource.com/147049
+Project: platform/system/core
+Branch: refs/heads/master
