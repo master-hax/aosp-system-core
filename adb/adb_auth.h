@@ -19,6 +19,12 @@
 
 #include "adb.h"
 
+#include <string>
+
+#if ADB_HOST
+#include <openssl/evp.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,10 +47,15 @@ void send_auth_publickey(atransport *t);
 
 #if ADB_HOST
 
+struct AdbKeyInfo {
+  std::string name;
+  RSA* rsa;
+};
+
 void adb_auth_init(void);
-int adb_auth_sign(void *key, const unsigned char* token, size_t token_size,
+int adb_auth_sign(AdbKeyInfo* key_info, const unsigned char* token, size_t token_size,
                   unsigned char* sig);
-void *adb_auth_nextkey(void *current);
+AdbKeyInfo* adb_auth_get_key(size_t index);
 int adb_auth_get_userkey(unsigned char *data, size_t len);
 
 static inline int adb_auth_generate_token(void *token, size_t token_size) { return 0; }
@@ -57,7 +68,7 @@ static inline int adb_auth_sign(void* key, const unsigned char* token,
                                 size_t token_size, unsigned char* sig) {
     return 0;
 }
-static inline void *adb_auth_nextkey(void *current) { return NULL; }
+static inline AdbKeyInfo* adb_auth_get_key(size_t) { return NULL; }
 static inline int adb_auth_get_userkey(unsigned char *data, size_t len) { return 0; }
 
 void adbd_auth_init(void);

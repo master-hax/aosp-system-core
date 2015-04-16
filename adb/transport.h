@@ -23,6 +23,16 @@
 #include "adb.h"
 
 #ifdef __cplusplus
+#include <string>
+// Obtain a transport from the available transports.
+// If state is != CS_ANY, only transports in that state are considered.
+// If serial is non-NULL then only the device with that serial will be chosen.
+// If no suitable transport is found, error is set.
+atransport* acquire_one_transport(int state, transport_type ttype,
+                                  const char* serial, std::string* error_out);
+#endif
+
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -30,14 +40,6 @@ extern "C" {
 void dump_hex(const unsigned char* ptr, size_t  len);
 #endif
 
-/*
- * Obtain a transport from the available transports.
- * If state is != CS_ANY, only transports in that state are considered.
- * If serial is non-NULL then only the device with that serial will be chosen.
- * If no suitable transport is found, error is set.
- */
-atransport* acquire_one_transport(int state, transport_type ttype,
-                                  const char* serial, const char** error_out);
 void add_transport_disconnect(atransport* t, adisconnect* dis);
 void remove_transport_disconnect(atransport* t, adisconnect* dis);
 void kick_transport(atransport* t);

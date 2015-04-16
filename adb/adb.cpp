@@ -504,7 +504,7 @@ void handle_packet(apacket *p, atransport *t)
     case A_AUTH:
         if (p->msg.arg0 == ADB_AUTH_TOKEN) {
             t->connection_state = CS_UNAUTHORIZED;
-            t->key = adb_auth_nextkey(t->key);
+            t->key = adb_auth_get_key(t->next_key_index++);
             if (t->key) {
                 send_auth_response(p->data, p->msg.data_length, t);
             } else {
@@ -838,10 +838,10 @@ int handle_forward_request(const char* service, transport_type ttype, char* seri
             }
         }
 
-        const char* err;
-        transport = acquire_one_transport(CS_ANY, ttype, serial, &err);
+        std::string error_string;
+        transport = acquire_one_transport(CS_ANY, ttype, serial, &error_string);
         if (!transport) {
-            sendfailmsg(reply_fd, err);
+            sendfailmsg(reply_fd, error_string.c_str());
             return 1;
         }
 
@@ -910,14 +910,14 @@ int handle_host_request(char *service, transport_type ttype, char* serial, int r
             serial = service;
         }
 
-        const char* error_string = "unknown failure";
+        std::string error_string = "unknown failure";
         transport = acquire_one_transport(CS_ANY, type, serial, &error_string);
 
         if (transport) {
             s->transport = transport;
             adb_write(reply_fd, "OKAY", 4);
         } else {
-            sendfailmsg(reply_fd, error_string);
+            sendfailmsg(reply_fd, error_string.c_str());
         }
         return 1;
     }

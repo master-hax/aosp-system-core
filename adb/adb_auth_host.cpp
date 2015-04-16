@@ -43,7 +43,8 @@
 #include "mincrypt/rsa.h"
 #undef RSA_verify
 
-#include <cutils/list.h>
+#include <string>
+#include <vector>
 
 #include <openssl/evp.h>
 #include <openssl/objects.h>
@@ -58,13 +59,7 @@
 #define ANDROID_PATH   ".android"
 #define ADB_KEY_FILE   "adbkey"
 
-struct adb_private_key {
-    struct listnode node;
-    RSA *rsa;
-};
-
-static struct listnode key_list;
-
+static std::vector<AdbKeyInfo*> g_key_list;
 
 /* Convert OpenSSL RSA private key to android pre-computed RSAPublicKey format */
 static int RSA_to_RSAPublicKey(RSA *rsa, RSAPublicKey *pkey)
@@ -270,35 +265,26 @@ out:
     return ret;
 }
 
-static int read_key(const char *file, struct listnode *list)
-{
+static int read_key(const char *file) {
     D("read_key '%s'\n", file);
 
-    FILE* f = fopen(file, "r");
-    if (!f) {
+    FILE* fp = fopen(file, "re");
+    if (!fp) {
         D("Failed to open '%s'\n", file);
         return 0;
     }
 
-    adb_private_key* key = reinterpret_cast<adb_private_key*>(
-        malloc(sizeof(adb_private_key)));
-    if (!key) {
-        D("Failed to alloc key\n");
-        fclose(f);
-        return 0;
-    }
-    key->rsa = RSA_new();
-
-    if (!PEM_read_RSAPrivateKey(f, &key->rsa, NULL, NULL)) {
+    RSA* rsa = RSA_new();
+    if (!rsa || !PEM_read_RSAPrivateKey(fp, &rsa, NULL, NULL)) {
         D("Failed to read key\n");
-        fclose(f);
-        RSA_free(key->rsa);
-        free(key);
+        RSA_free(rsa);
+        fclose(fp);
         return 0;
     }
 
-    fclose(f);
-    list_add_tail(list, &key->node);
+    fclose(fp);
+
+    g_key_list.push_back(new AdbKeyInfo { file, rsa });
     return 1;
 }
 
@@ -306,7 +292,6 @@ static int get_user_keyfilepath(char *filename, size_t len)
 {
     const char *format, *home;
     char android_dir[PATH_MAX];
-    struct stat buf;
 #ifdef _WIN32
     char path[PATH_MAX];
     home = getenv("ANDROID_SDK_HOME");
@@ -328,7 +313,8 @@ static int get_user_keyfilepath(char *filename, size_t len)
                         ANDROID_PATH) >= (int)sizeof(android_dir))
         return -1;
 
-    if (stat(android_dir, &buf)) {
+    struct stat sb;
+    if (stat(android_dir, &sb) == -1) {
         if (adb_mkdir(android_dir, 0750) < 0) {
             D("Cannot mkdir '%s'", android_dir);
             return -1;
@@ -338,13 +324,9 @@ static int get_user_keyfilepath(char *filename, size_t len)
     return snprintf(filename, len, format, android_dir, ADB_KEY_FILE);
 }
 
-static int get_user_key(struct listnode *list)
-{
-    struct stat buf;
+static int get_user_key() {
     char path[PATH_MAX];
-    int ret;
-
-    ret = get_user_keyfilepath(path, sizeof(path));
+    int ret = get_user_keyfilepath(path, sizeof(path));
     if (ret < 0 || ret >= (signed)sizeof(path)) {
         D("Error getting user key filename");
         return 0;
@@ -352,54 +334,43 @@ static int get_user_key(struct listnode *list)
 
     D("user key '%s'\n", path);
 
-    if (stat(path, &buf) == -1) {
-        if (!generate_key(path)) {
-            D("Failed to generate new key\n");
-            return 0;
-        }
+    if (!generate_key(path)) {
+        D("Failed to generate new key\n");
+        return 0;
     }
 
-    return read_key(path, list);
+    return read_key(path);
 }
 
-static void get_vendor_keys(struct listnode *list)
-{
-    const char *adb_keys_path;
-    char keys_path[MAX_PAYLOAD];
-    char *path;
-    char *save;
-    struct stat buf;
-
-    adb_keys_path = getenv("ADB_VENDOR_KEYS");
-    if (!adb_keys_path)
+static void get_vendor_keys() {
+    const char* adb_keys_path = getenv("ADB_VENDOR_KEYS");
+    if (!adb_keys_path) {
         return;
+    }
+    char keys_path[MAX_PAYLOAD];
     strncpy(keys_path, adb_keys_path, sizeof(keys_path));
 
-    path = adb_strtok_r(keys_path, ENV_PATH_SEPARATOR_STR, &save);
+    char* save;
+    char* path = adb_strtok_r(keys_path, ENV_PATH_SEPARATOR_STR, &save);
     while (path) {
         D("Reading: '%s'\n", path);
-
-        if (stat(path, &buf))
-            D("Can't read '%s'\n", path);
-        else if (!read_key(path, list))
+        if (!read_key(path)) {
             D("Failed to read '%s'\n", path);
-
+        }
         path = adb_strtok_r(NULL, ENV_PATH_SEPARATOR_STR, &save);
     }
 }
 
-int adb_auth_sign(void *node, const unsigned char* token, size_t token_size,
+int adb_auth_sign(AdbKeyInfo* key_info, const unsigned char* token, size_t token_size,
                   unsigned char* sig)
 {
-    unsigned int len;
-    struct adb_private_key *key = node_to_item(node, struct adb_private_key, node);
-
     if (token_size != TOKEN_SIZE) {
         D("Unexpected token size %zd\n", token_size);
         return 0;
     }
 
-    if (!RSA_sign(NID_sha1, token, token_size, sig, &len, key->rsa)) {
+    unsigned int len;
+    if (!RSA_sign(NID_sha1, token, token_size, sig, &len, key_info->rsa)) {
         return 0;
     }
 
@@ -407,26 +378,8 @@ int adb_auth_sign(void *node, const unsigned char* token, size_t token_size,
     return (int)len;
 }
 
-void *adb_auth_nextkey(void *current)
-{
-    struct listnode *item;
-
-    if (list_empty(&key_list))
-        return NULL;
-
-    if (!current)
-        return list_head(&key_list);
-
-    list_for_each(item, &key_list) {
-        if (item == current) {
-            /* current is the last item, we tried all the keys */
-            if (item->next == &key_list)
-                return NULL;
-            return item->next;
-        }
-    }
-
-    return NULL;
+AdbKeyInfo* adb_auth_get_key(size_t index) {
+    return index < g_key_list.size() ? g_key_list[index] : NULL;
 }
 
 int adb_auth_get_userkey(unsigned char *data, size_t len)
@@ -466,19 +419,13 @@ int adb_auth_keygen(const char* filename) {
     return (generate_key(filename) == 0);
 }
 
-void adb_auth_init(void)
-{
-    int ret;
-
+void adb_auth_init(void) {
     D("adb_auth_init\n");
 
-    list_init(&key_list);
-
-    ret = get_user_key(&key_list);
-    if (!ret) {
+    if (!get_user_key()) {
         D("Failed to get user key\n");
         return;
     }
 
-    get_vendor_keys(&key_list);
+    get_vendor_keys();
 }

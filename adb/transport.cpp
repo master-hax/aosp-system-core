@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include "adb.h"
+#include "adb_auth.h"
 
 static void transport_unref(atransport *t);
 
@@ -801,7 +802,7 @@ static int qual_match(const char *to_test,
 }
 
 atransport *acquire_one_transport(int state, transport_type ttype,
-                                  const char* serial, const char** error_out)
+                                  const char* serial, std::string* error_out)
 {
     atransport *t;
     atransport *result = NULL;
@@ -870,8 +871,20 @@ retry:
 
     if (result) {
         if (result->connection_state == CS_UNAUTHORIZED) {
-            if (error_out)
-                *error_out = "device unauthorized. Please check the confirmation dialog on your device.";
+            if (error_out) {
+                *error_out = "Device unauthorized.";
+#if ADB_HOST
+                *error_out += " Tried the following keys:\n";
+                AdbKeyInfo* key_info;
+                for (size_t i = 0; (key_info = adb_auth_get_key(i)) != nullptr; ++i) {
+                    *error_out += "  " + key_info->name + "\n";
+                }
+                *error_out += "This daemon's $ADB_VENDOR_KEYS is ";
+                *error_out += getenv("ADB_VENDOR_KEYS");
+                *error_out += "; use \'adb kill-server\' if that looks wrong.\n";
+                *error_out += "Otherwise check for a confirmation dialog on your device.";
+#endif
+            }
             result = NULL;
         }
 
@@ -892,7 +905,7 @@ retry:
     if (result) {
         /* found one that we can take */
         if (error_out)
-            *error_out = NULL;
+            *error_out = "success";
     } else if (state != CS_ANY && (serial || !ambiguous)) {
         adb_sleep_ms(1000);
         goto retry;

@@ -47,6 +47,7 @@ extern "C" {
 // Increment this when we want to force users to start a new adb server.
 #define ADB_SERVER_VERSION 32
 
+typedef struct AdbKeyInfo AdbKeyInfo;
 typedef struct amessage amessage;
 typedef struct apacket apacket;
 typedef struct asocket asocket;
@@ -215,7 +216,8 @@ struct atransport
     int          kicked;
     adisconnect  disconnects;
 
-    void *key;
+    size_t next_key_index;
+    AdbKeyInfo* key;
     unsigned char token[TOKEN_SIZE];
     fdevent auth_fde;
     unsigned failed_auth_attempts;
