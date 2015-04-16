@@ -33,6 +33,22 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+/* <cutils/fs.h> requires uid_t and gid_t defined (but not used by us) */
+
+#ifndef __uid_t_defined
+typedef unsigned short uid_t;
+#define __uid_t_defined
+#endif
+
+#ifndef __gid_t_defined
+typedef unsigned short gid_t;
+#define __gid_t_defined
+#endif
+
+#endif
+
+/* <cutils/fs.h> is used to get definition of TEMP_FAILURE_RETRY */
 #include <cutils/fs.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
@@ -47,7 +63,7 @@ struct fs_path_config_from_file {
     char prefix[];
 } __attribute__((__aligned__(sizeof(uint64_t))));
 
-/* My kingdom for <endian.h> */
+/* My kingdom for <endian.h>, create inlines non-conflicting namespace */
 static inline uint16_t get2LE(const uint8_t* src)
 {
     return src[0] | (src[1] << 8);
