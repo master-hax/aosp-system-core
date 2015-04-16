@@ -161,6 +161,8 @@ ifeq ($(USE_SYSDEPS_WIN32),)
     LOCAL_STATIC_LIBRARIES += libcutils
 endif
 
+LOCAL_CXX_STL := libc++_static
+
 include $(BUILD_HOST_EXECUTABLE)
 
 $(call dist-for-goals,dist_files sdk,$(LOCAL_BUILT_MODULE))
