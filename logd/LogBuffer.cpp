@@ -226,6 +226,41 @@ LogBufferElementCollection::iterator LogBuffer::erase(LogBufferElementCollection
     return it;
 }
 
+// Define a temporary mechanism to report the last LogBufferElement pointer
+// for the specified uid, pid and tid. Used below to help merge-sort when
+// pruning for worst UID.
+class LogBufferElementKey {
+    const union {
+        struct {
+            uint16_t uid;
+            uint16_t pid;
+            uint16_t tid;
+            uint16_t padding;
+        } __packed;
+        uint64_t value;
+    } __packed;
+
+public:
+    LogBufferElementKey(uid_t u, pid_t p, pid_t t):uid(u),pid(p),tid(t),padding(0) { }
+    LogBufferElementKey(uint64_t k):value(k) { }
+
+    uint64_t getKey() { return value; }
+};
+
+struct LogBufferElementEntry {
+    const uint64_t key;
+    LogBufferElement *last;
+
+public:
+    LogBufferElementEntry(const uint64_t &k, LogBufferElement *e):key(k),last(e) { }
+
+    const uint64_t&getKey() const { return key; }
+
+    LogBufferElement *getLast() { return last; }
+};
+
+typedef android::BasicHashtable<uint64_t, LogBufferElementEntry> LogBufferElementLast;
+
 // prune "pruneRows" of type "id" from the buffer.
 //
 // mLogElementsLock must be held when this function is called.
@@ -301,7 +336,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
 
         bool kick = false;
         bool leading = true;
-        LogBufferElement *last = NULL;
+        LogBufferElementLast last;
         for(it = mLogElements.begin(); it != mLogElements.end();) {
             LogBufferElement *e = *it;
 
@@ -322,24 +357,35 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 continue;
             }
 
+            uid_t uid = e->getUid();
             pid_t pid = e->getPid();
+            pid_t tid = e->getTid();
 
             // merge any drops
-            if (last && dropped
-             && ((dropped + last->getDropped()) < USHRT_MAX)
-             && (last->getPid() == pid)
-             && (last->getTid() == e->getTid())) {
-                it = mLogElements.erase(it);
-                stats.erase(e);
-                delete e;
-                last->setDropped(dropped + last->getDropped());
-                continue;
+            if (dropped) {
+                LogBufferElementKey key(uid, pid, tid);
+                android::hash_t hash = android::hash_type(key.getKey());
+                ssize_t index = last.find(-1, hash, key.getKey());
+                if (index != -1) {
+                    LogBufferElementEntry &entry = last.editEntryAt(index);
+                    LogBufferElement *l = entry.getLast();
+                    unsigned short d = l->getDropped();
+                    if ((dropped + d) > USHRT_MAX) {
+                        last.removeAt(index);
+                    } else {
+                        it = mLogElements.erase(it);
+                        stats.erase(e);
+                        delete e;
+                        l->setDropped(dropped + d);
+                        continue;
+                    }
+                }
             }
 
             leading = false;
 
             if (hasBlacklist && mPrune.naughty(e)) {
-                last = NULL;
+                last.clear();
                 it = erase(it);
                 if (dropped) {
                     continue;
@@ -350,7 +396,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                     break;
                 }
 
-                if (e->getUid() == worst) {
+                if (uid == worst) {
                     kick = true;
                     if (worst_sizes < second_worst_sizes) {
                         break;
@@ -361,13 +407,15 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
 
             if (dropped) {
-                last = e;
+                LogBufferElementKey key(uid, pid, tid);
+                android::hash_t hash = android::hash_type(key.getKey());
+                last.add(hash, LogBufferElementEntry(key.getKey(), e));
                 ++it;
                 continue;
             }
 
-            if (e->getUid() != worst) {
-                last = NULL;
+            if (uid != worst) {
+                last.clear();
                 ++it;
                 continue;
             }
@@ -383,16 +431,25 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             stats.drop(e);
             e->setDropped(1);
             // merge any drops
-            if (last
-             && (last->getDropped() < (USHRT_MAX - 1))
-             && (last->getPid() == pid)
-             && (last->getTid() == e->getTid())) {
-                it = mLogElements.erase(it);
-                stats.erase(e);
-                delete e;
-                last->setDropped(last->getDropped() + 1);
+            LogBufferElementKey key(uid, pid, tid);
+            android::hash_t hash = android::hash_type(key.getKey());
+            ssize_t index = last.find(-1, hash, key.getKey());
+            if (index != -1) {
+                LogBufferElementEntry &entry = last.editEntryAt(index);
+                LogBufferElement *l = entry.getLast();
+                unsigned short d = l->getDropped();
+                if (d > (USHRT_MAX - 1)) {
+                    last.removeAt(index);
+                    last.add(hash, LogBufferElementEntry(key.getKey(), e));
+                    ++it;
+                } else {
+                    it = mLogElements.erase(it);
+                    stats.erase(e);
+                    delete e;
+                    l->setDropped(d + 1);
+                }
             } else {
-                last = e;
+                last.add(hash, LogBufferElementEntry(key.getKey(), e));
                 ++it;
             }
             if (worst_sizes < second_worst_sizes) {
@@ -400,6 +457,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
             worst_sizes -= len;
         }
+        last.clear();
 
         if (!kick || !mPrune.worstUidEnabled()) {
             break; // the following loop will ask bad clients to skip/drop
