@@ -324,35 +324,6 @@ struct ZipArchive {
   }
 };
 
-static int32_t CopyFileToFile(int fd, uint8_t* begin, const uint32_t length, uint64_t *crc_out) {
-  static const uint32_t kBufSize = 32768;
-  uint8_t buf[kBufSize];
-
-  uint32_t count = 0;
-  uint64_t crc = 0;
-  while (count < length) {
-    uint32_t remaining = length - count;
-
-    // Safe conversion because kBufSize is narrow enough for a 32 bit signed
-    // value.
-    ssize_t get_size = (remaining > kBufSize) ? kBufSize : remaining;
-    ssize_t actual = TEMP_FAILURE_RETRY(read(fd, buf, get_size));
-
-    if (actual != get_size) {
-      ALOGW("CopyFileToFile: copy read failed (" ZD " vs " ZD ")", actual, get_size);
-      return kIoError;
-    }
-
-    memcpy(begin + count, buf, get_size);
-    crc = crc32(crc, buf, get_size);
-    count += get_size;
-  }
-
-  *crc_out = crc;
-
-  return 0;
-}
-
 /*
  * Round up to the next highest power of 2.
  *
@@ -972,6 +943,126 @@ int32_t Next(void* cookie, ZipEntry* data, ZipEntryName* name) {
   return kIterationEnd;
 }
 
+#ifndef DISALLOW_COPY_AND_ASSIGN
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+   TypeName(const TypeName&) = delete;  \
+   void operator=(const TypeName&) = delete
+#endif
+
+class ZipWriter {
+ public:
+  virtual bool Append(uint8_t* buf, size_t buf_size) = 0;
+  virtual ~ZipWriter() {};
+ protected:
+  ZipWriter() {}
+ private:
+  DISALLOW_COPY_AND_ASSIGN(ZipWriter);
+};
+
+// A ZipWriter that writes data to a fixed size memory region.
+// The size of the memory region must be equal to the total size of
+// the data appended to it.
+class MemoryWriter : public ZipWriter {
+ public:
+  MemoryWriter(uint8_t* buf, size_t size) : ZipWriter(),
+      buf_(buf), size_(size), bytes_written_(0) {
+  }
+
+  virtual bool Append(uint8_t* buf, size_t buf_size) {
+    if (bytes_written_ + buf_size > size_) {
+      ALOGW("Zip: Unexpected size " ZD " (declared) vs " ZD " (actual)",
+            size_, bytes_written_ + buf_size);
+      return false;
+    }
+
+    memcpy(buf_ + bytes_written_, buf, buf_size);
+    bytes_written_ += buf_size;
+    return true;
+  }
+
+ private:
+  uint8_t* const buf_;
+  const size_t size_;
+  size_t bytes_written_;
+};
+
+// A writer that appends data to a file |fd| at its current position.
+// The file will be truncated to the end of the written data.
+class FileWriter : public ZipWriter {
+ public:
+
+  // Creates a FileWriter for |fd| and prepare to write |entry| to it,
+  // guaranteeing that the file descriptor is valid and that there's enough
+  // space on the volume to write out the entry completely and that the file
+  // is truncated to the correct length.
+  //
+  // Returns a valid FileWriter on success, |nullptr| if an error occurred.
+  static FileWriter* create(int fd, const ZipEntry* entry) {
+    const uint32_t declared_length = entry->uncompressed_length;
+    const off64_t current_offset = lseek64(fd, 0, SEEK_CUR);
+    if (current_offset == -1) {
+      ALOGW("Zip: unable to seek to current location on fd %d: %s", fd, strerror(errno));
+      return nullptr;
+    }
+
+    int result = 0;
+#if defined(__linux__)
+    if (declared_length > 0) {
+      result = TEMP_FAILURE_RETRY(fallocate(fd, 0, current_offset, declared_length));
+      if (result == -1) {
+        ALOGW("Zip: unable to allocate space for file to %" PRId64 ": %s",
+              static_cast<int64_t>(declared_length + current_offset), strerror(errno));
+        return nullptr;
+      }
+    }
+#endif  // __linux__
+
+    result = TEMP_FAILURE_RETRY(ftruncate(fd, declared_length + current_offset));
+    if (result == -1) {
+      ALOGW("Zip: unable to truncate file to %" PRId64 ": %s",
+            static_cast<int64_t>(declared_length + current_offset), strerror(errno));
+      return nullptr;
+    }
+
+    return new FileWriter(fd, declared_length);
+  }
+
+  virtual bool Append(uint8_t* buf, size_t buf_size) {
+    if (bytes_written_ + buf_size > declared_length_) {
+      ALOGW("Zip: Unexpected size " ZD " (declared) vs " ZD " (actual)",
+            declared_length_, bytes_written_ + buf_size);
+      return false;
+    }
+
+    size_t total_bytes_written = 0;
+    while (total_bytes_written < buf_size) {
+      ssize_t bytes_written = TEMP_FAILURE_RETRY(write(fd_, buf, buf_size));
+      if (bytes_written < 0) {
+        ALOGW("Zip: unable to write " ZD " bytes to file; %s", buf_size, strerror(errno));
+        return false;
+      }
+
+      buf += bytes_written;
+      total_bytes_written += bytes_written;
+    }
+
+    bytes_written_ += total_bytes_written;
+
+    return true;
+  }
+ private:
+  FileWriter(const int fd, const size_t declared_length) :
+      ZipWriter(),
+      fd_(fd),
+      declared_length_(declared_length),
+      bytes_written_(0) {
+  }
+
+  const int fd_;
+  const size_t declared_length_;
+  size_t bytes_written_;
+};
+
 // This method is using libz macros with old-style-casts
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -980,9 +1071,8 @@ static inline int zlib_inflateInit2(z_stream* stream, int window_bits) {
 }
 #pragma GCC diagnostic pop
 
-static int32_t InflateToFile(int fd, const ZipEntry* entry,
-                             uint8_t* begin, uint32_t length,
-                             uint64_t* crc_out) {
+static int32_t InflateEntryToWriter(int fd, const ZipEntry* entry,
+                                    ZipWriter* writer, uint64_t* crc_out) {
   const size_t kBufSize = 32768;
   std::vector<uint8_t> read_buf(kBufSize);
   std::vector<uint8_t> write_buf(kBufSize);
@@ -1058,11 +1148,9 @@ static int32_t InflateToFile(int fd, const ZipEntry* entry,
       (zerr == Z_STREAM_END && zstream.avail_out != kBufSize)) {
       const size_t write_size = zstream.next_out - &write_buf[0];
       // The file might have declared a bogus length.
-      if (write_size + write_count > length) {
-        return -1;
+      if (!writer->Append(&write_buf[0], write_size)) {
+        return kInconsistentInformation;
       }
-      memcpy(begin + write_count, &write_buf[0], write_size);
-      write_count += write_size;
 
       zstream.next_out = &write_buf[0];
       zstream.avail_out = kBufSize;
@@ -1083,8 +1171,41 @@ static int32_t InflateToFile(int fd, const ZipEntry* entry,
   return 0;
 }
 
-int32_t ExtractToMemory(ZipArchiveHandle handle,
-                        ZipEntry* entry, uint8_t* begin, uint32_t size) {
+static int32_t CopyEntryToWriter(int fd, const ZipEntry* entry, ZipWriter* writer,
+                                 uint64_t *crc_out) {
+  static const uint32_t kBufSize = 32768;
+  std::vector<uint8_t> buf(kBufSize);
+
+  const uint32_t length = entry->uncompressed_length;
+  uint32_t count = 0;
+  uint64_t crc = 0;
+  while (count < length) {
+    uint32_t remaining = length - count;
+
+    // Safe conversion because kBufSize is narrow enough for a 32 bit signed
+    // value.
+    ssize_t get_size = (remaining > kBufSize) ? kBufSize : remaining;
+    ssize_t actual = TEMP_FAILURE_RETRY(read(fd, &buf[0], get_size));
+
+    if (actual != get_size) {
+      ALOGW("CopyFileToFile: copy read failed (" ZD " vs " ZD ")", actual, get_size);
+      return kIoError;
+    }
+
+    if (!writer->Append(&buf[0], get_size)) {
+      return kIoError;
+    }
+    crc = crc32(crc, &buf[0], get_size);
+    count += get_size;
+  }
+
+  *crc_out = crc;
+
+  return 0;
+}
+
+int32_t ExtractToWriter(ZipArchiveHandle handle,
+                        ZipEntry* entry, ZipWriter* writer) {
   ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle);
   const uint16_t method = entry->method;
   off64_t data_offset = entry->offset;
@@ -1098,9 +1219,9 @@ int32_t ExtractToMemory(ZipArchiveHandle handle,
   int32_t return_value = -1;
   uint64_t crc = 0;
   if (method == kCompressStored) {
-    return_value = CopyFileToFile(archive->fd, begin, size, &crc);
+    return_value = CopyEntryToWriter(archive->fd, entry, writer, &crc);
   } else if (method == kCompressDeflated) {
-    return_value = InflateToFile(archive->fd, entry, begin, size, &crc);
+    return_value = InflateEntryToWriter(archive->fd, entry, writer, &crc);
   }
 
   if (!return_value && entry->has_data_descriptor) {
@@ -1120,40 +1241,17 @@ int32_t ExtractToMemory(ZipArchiveHandle handle,
   return return_value;
 }
 
+int32_t ExtractToMemory(ZipArchiveHandle handle, ZipEntry* entry,
+                        uint8_t* begin, uint32_t size) {
+  std::unique_ptr<ZipWriter> writer(new MemoryWriter(begin, size));
+  return ExtractToWriter(handle, entry, writer.get());
+}
+
 int32_t ExtractEntryToFile(ZipArchiveHandle handle,
                            ZipEntry* entry, int fd) {
-  const uint32_t declared_length = entry->uncompressed_length;
-
-  const off64_t current_offset = lseek64(fd, 0, SEEK_CUR);
-  if (current_offset == -1) {
-    ALOGW("Zip: unable to seek to current location on fd %d: %s", fd,
-          strerror(errno));
-    return kIoError;
-  }
-
-  int result = TEMP_FAILURE_RETRY(ftruncate(fd, declared_length + current_offset));
-  if (result == -1) {
-    ALOGW("Zip: unable to truncate file to %" PRId64 ": %s",
-          static_cast<int64_t>(declared_length + current_offset), strerror(errno));
-    return kIoError;
-  }
-
-  // Don't attempt to map a region of length 0. We still need the
-  // ftruncate() though, since the API guarantees that we will truncate
-  // the file to the end of the uncompressed output.
-  if (declared_length == 0) {
-      return 0;
-  }
-
-  android::FileMap map;
-  if (!map.create(kTempMappingFileName, fd, current_offset, declared_length, false)) {
-    return kMmapFailed;
-  }
-
-  const int32_t error = ExtractToMemory(handle, entry,
-                                        reinterpret_cast<uint8_t*>(map.getDataPtr()),
-                                        map.getDataLength());
-  return error;
+  std::unique_ptr<ZipWriter> writer(FileWriter::create(fd, entry));
+  // TODO: null check for writer.
+  return ExtractToWriter(handle, entry, writer.get());
 }
 
 const char* ErrorCodeString(int32_t error_code) {
