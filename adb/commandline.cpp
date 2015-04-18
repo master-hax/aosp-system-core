@@ -789,21 +789,17 @@ static int mkdirs(const char *path)
 }
 
 static int backup(int argc, const char** argv) {
-    char buf[4096];
-    char default_name[32];
-    const char* filename = strcpy(default_name, "./backup.ab");
-    int fd, outFd;
-    int i, j;
+    const char* filename = "./backup.ab";
 
     /* find, extract, and use any -f argument */
-    for (i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         if (!strcmp("-f", argv[i])) {
             if (i == argc-1) {
                 fprintf(stderr, "adb: -f passed with no filename\n");
                 return usage();
             }
             filename = argv[i+1];
-            for (j = i+2; j <= argc; ) {
+            for (int j = i+2; j <= argc; ) {
                 argv[i++] = argv[j++];
             }
             argc -= 2;
@@ -816,20 +812,20 @@ static int backup(int argc, const char** argv) {
 
     adb_unlink(filename);
     mkdirs(filename);
-    outFd = adb_creat(filename, 0640);
+    int outFd = adb_creat(filename, 0640);
     if (outFd < 0) {
         fprintf(stderr, "adb: unable to open file %s\n", filename);
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "backup");
+    std::string cmd = "backup:";
     for (argc--, argv++; argc; argc--, argv++) {
-        strncat(buf, ":", sizeof(buf) - strlen(buf) - 1);
-        strncat(buf, argv[0], sizeof(buf) - strlen(buf) - 1);
+        cmd += " ";
+        cmd += escape_arg(*argv);
     }
 
-    D("backup. filename=%s buf=%s\n", filename, buf);
-    fd = adb_connect(buf);
+    D("backup. filename=%s cmd=%s\n", filename, cmd.c_str());
+    int fd = adb_connect(cmd.c_str());
     if (fd < 0) {
         fprintf(stderr, "adb: unable to connect for backup\n");
         adb_close(outFd);
