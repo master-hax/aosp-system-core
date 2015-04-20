@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
 #include <endian.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -48,15 +50,84 @@ LogBufferElement::~LogBufferElement() {
     delete [] mMsg;
 }
 
-// assumption: mMsg == NULL
-size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) {
-    static const char format_uid[] = "uid=%u dropped=%u";
-    static const size_t unprivileged_offset = 7;
-    static const char tag[] = "logd";
+// caller must own and free character string
+static char *tidToName(pid_t tid) {
+    char *retval = NULL;
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "/proc/%u/comm", tid);
+    int fd = open(buffer, O_RDONLY);
+    if (fd >= 0) {
+        ssize_t ret = read(fd, buffer, sizeof(buffer));
+        if (ret >= (ssize_t)sizeof(buffer)) {
+            ret = sizeof(buffer) - 1;
+        }
+        while ((ret > 0) && isspace(buffer[ret - 1])) {
+            --ret;
+        }
+        if (ret > 0) {
+            buffer[ret] = '\0';
+            retval = strdup(buffer);
+        }
+        close(fd);
+    }
 
+    // if nothing for comm, check out cmdline
+    char *name = android::pidToName(tid);
+    if (!retval) {
+        retval = name;
+        name = NULL;
+    }
+
+    // check if comm is truncated, see if cmdline has full representation
+    size_t retval_len = retval ? strlen(retval) : 0;
+    size_t name_len = name ? strlen(name) : 0;
+    if (retval_len && name_len && (retval_len < name_len)
+     && !strcmp(retval, name + name_len - retval_len)) {
+        free(retval);
+        retval = name;
+    } else {
+        free(name);
+    }
+    return retval;
+}
+
+// assumption: mMsg == NULL
+size_t LogBufferElement::populateDroppedMessage(char *&buffer, SocketClient *reader) {
+    static const char format_uid[] = "uid=%u%s too chatty dropped=%u";
+    static const size_t unprivileged_offset = 9;
+    static const char tag[] = "logd";
+    char *name = NULL;
+    bool privileged = clientHasLogCredentials(reader) || mUid == reader->getUid();
     size_t len;
+
     if (privileged) {
-        len = snprintf(NULL, 0, format_uid, mUid, mDropped);
+        char *uidName = android::uidToName(mUid);
+        char *commName = tidToName(mTid);
+        if (!commName) {
+            commName = tidToName(mPid);
+        }
+        if (uidName && commName && !strcmp(uidName, commName)) {
+            free(commName);
+            commName = NULL;
+        }
+        if (uidName) {
+            asprintf(&name, "(%s)", uidName);
+            free(uidName);
+        }
+        if (commName) {
+            if (name) {
+                char *p = NULL;
+                asprintf(&p, "%s comm=%s", name, commName);
+                if (p) {
+                    free(name);
+                    name = p;
+                }
+            } else {
+                asprintf(&name, " comm=%s", commName);
+            }
+            free(commName);
+        }
+        len = snprintf(NULL, 0, format_uid, mUid, name ? name : "", mDropped);
     } else {
         len = snprintf(NULL, 0, format_uid + unprivileged_offset, mDropped);
     }
@@ -70,6 +141,7 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) 
 
     buffer = static_cast<char *>(calloc(1, hdrLen + len + 1));
     if (!buffer) {
+        free(name);
         return 0;
     }
 
@@ -87,7 +159,8 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) 
     }
 
     if (privileged) {
-        snprintf(buffer + hdrLen, len + 1, format_uid, mUid, mDropped);
+        snprintf(buffer + hdrLen, len + 1, format_uid, mUid, name ? name : "", mDropped);
+        free(name);
     } else {
         snprintf(buffer + hdrLen, len + 1, format_uid + unprivileged_offset, mDropped);
     }
@@ -114,7 +187,7 @@ uint64_t LogBufferElement::flushTo(SocketClient *reader) {
     char *buffer = NULL;
 
     if (!mMsg) {
-        entry.len = populateDroppedMessage(buffer, clientHasLogCredentials(reader));
+        entry.len = populateDroppedMessage(buffer, reader);
         if (!entry.len) {
             return mSequence;
         }
