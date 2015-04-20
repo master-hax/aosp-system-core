@@ -286,6 +286,21 @@ struct LogBufferElementLast : public android::BasicHashtable<uint64_t, LogBuffer
             add(hash, LogBufferElementEntry(key.getKey(), e));
     }
 
+    inline void clear() {
+        android::BasicHashtable<uint64_t, LogBufferElementEntry>::clear();
+    }
+
+    void clear(LogBufferElement *e) {
+        uint64_t current = e->getRealTime().nsec() - NS_PER_SEC;
+        ssize_t index = -1;
+        while((index = next(index)) >= 0) {
+            if (current > editEntryAt(index).getLast()->getRealTime().nsec()) {
+                removeAt(index);
+                index = -1;
+            }
+        }
+    }
+
 };
 
 // prune "pruneRows" of type "id" from the buffer.
@@ -395,7 +410,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             leading = false;
 
             if (hasBlacklist && mPrune.naughty(e)) {
-                last.clear();
+                last.clear(e);
                 it = erase(it);
                 if (dropped) {
                     continue;
@@ -423,7 +438,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
 
             if (e->getUid() != worst) {
-                last.clear();
+                last.clear(e);
                 ++it;
                 continue;
             }
