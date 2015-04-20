@@ -161,7 +161,10 @@ ifeq ($(USE_SYSDEPS_WIN32),)
     LOCAL_STATIC_LIBRARIES += libcutils
 endif
 
-LOCAL_CXX_STL := libc++_static
+# libc++ not available on windows yet
+ifneq ($(HOST_OS),windows)
+    LOCAL_CXX_STL := libc++_static
+endif
 
 # Don't add anything here, we don't want additional shared dependencies
 # on the host adb tool, and shared libraries that link against libc++
