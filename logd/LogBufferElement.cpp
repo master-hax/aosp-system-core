@@ -55,6 +55,47 @@ uint32_t LogBufferElement::getTag() const {
     return le32toh(((android_event_header_t *)mMsg)->tag);
 }
 
+// caller must own and free character string
+char *android::tidToName(pid_t tid) {
+    char *retval = NULL;
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "/proc/%u/comm", tid);
+    int fd = open(buffer, O_RDONLY);
+    if (fd >= 0) {
+        ssize_t ret = read(fd, buffer, sizeof(buffer));
+        if (ret >= (ssize_t)sizeof(buffer)) {
+            ret = sizeof(buffer) - 1;
+        }
+        while ((ret > 0) && isspace(buffer[ret - 1])) {
+            --ret;
+        }
+        if (ret > 0) {
+            buffer[ret] = '\0';
+            retval = strdup(buffer);
+        }
+        close(fd);
+    }
+
+    // if nothing for comm, check out cmdline
+    char *name = android::pidToName(tid);
+    if (!retval) {
+        retval = name;
+        name = NULL;
+    }
+
+    // check if comm is truncated, see if cmdline has full representation
+    size_t retval_len = retval ? strlen(retval) : 0;
+    size_t name_len = name ? strlen(name) : 0;
+    if (retval_len && name_len && (retval_len < name_len)
+     && !strcmp(retval, name + name_len - retval_len)) {
+        free(retval);
+        retval = name;
+    } else {
+        free(name);
+    }
+    return retval;
+}
+
 // assumption: mMsg == NULL
 size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) {
     static const char format_uid[] = "uid=%u dropped=%u";
