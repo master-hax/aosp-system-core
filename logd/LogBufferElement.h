@@ -28,8 +28,10 @@
 namespace android {
 
 // Furnished in main.cpp. Caller must own and free returned value
-// This function is designed for a single caller and is NOT thread-safe
 char *uidToName(uid_t uid);
+
+// Furnished in LogStatistics.cpp. Caller must own and free returned value
+char *pidToName(pid_t pid);
 
 }
 
@@ -52,7 +54,7 @@ class LogBufferElement {
     static atomic_int_fast64_t sequence;
 
     // assumption: mMsg == NULL
-    size_t populateDroppedMessage(char *&buffer, bool privileged);
+    size_t populateDroppedMessage(char *&buffer, SocketClient *reader);
 
 public:
     LogBufferElement(log_id_t log_id, log_time realtime,
