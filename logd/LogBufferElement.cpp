@@ -15,6 +15,7 @@
  */
 
 #include <endian.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -48,15 +49,62 @@ LogBufferElement::~LogBufferElement() {
     delete [] mMsg;
 }
 
-// assumption: mMsg == NULL
-size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) {
-    static const char format_uid[] = "uid=%u dropped=%u";
-    static const size_t unprivileged_offset = 7;
-    static const char tag[] = "logd";
+// caller must own and free character string
+static char *tidToName(pid_t tid) {
+    char *retval = NULL;
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "/proc/%u/comm", tid);
+    int fd = open(buffer, O_RDONLY);
+    if (fd >= 0) {
+        ssize_t ret = read(fd, buffer, sizeof(buffer));
+        if (ret > 0) {
+            buffer[sizeof(buffer)-1] = '\0';
+            retval = strdup(buffer);
+        }
+        close(fd);
+    }
+    return retval;
+}
 
+// assumption: mMsg == NULL
+size_t LogBufferElement::populateDroppedMessage(char *&buffer, SocketClient *reader) {
+    static const char format_uid[] = "uid=%u%s too chatty dropped=%u";
+    static const size_t unprivileged_offset = 9;
+    static const char tag[] = "logd";
+    char *name = NULL;
+    bool privileged = clientHasLogCredentials(reader) || mUid == reader->getUid();
     size_t len;
+
     if (privileged) {
-        len = snprintf(NULL, 0, format_uid, mUid, mDropped);
+        char *n = android::uidToName(mUid);
+        if (n) {
+            asprintf(&name, "(%s)", n);
+            free(n);
+        }
+        n = tidToName(mTid);
+        if (!n) {
+            n = tidToName(mPid);
+            if (!n) {
+                n = android::pidToName(mTid);
+                if (!n) {
+                    n = android::pidToName(mPid);
+                }
+            }
+        }
+        if (n) {
+            if (name) {
+                char *p = NULL;
+                asprintf(&p, "%s comm=%s", name, n);
+                if (p) {
+                    free(name);
+                    name = p;
+                }
+            } else {
+                asprintf(&name, " comm=%s", n);
+            }
+            free(n);
+        }
+        len = snprintf(NULL, 0, format_uid, mUid, name ? name : "", mDropped);
     } else {
         len = snprintf(NULL, 0, format_uid + unprivileged_offset, mDropped);
     }
@@ -70,6 +118,7 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) 
 
     buffer = static_cast<char *>(calloc(1, hdrLen + len + 1));
     if (!buffer) {
+        free(name);
         return 0;
     }
 
@@ -87,7 +136,8 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, bool privileged) 
     }
 
     if (privileged) {
-        snprintf(buffer + hdrLen, len + 1, format_uid, mUid, mDropped);
+        snprintf(buffer + hdrLen, len + 1, format_uid, mUid, name ? name : "", mDropped);
+        free(name);
     } else {
         snprintf(buffer + hdrLen, len + 1, format_uid + unprivileged_offset, mDropped);
     }
@@ -114,7 +164,7 @@ uint64_t LogBufferElement::flushTo(SocketClient *reader) {
     char *buffer = NULL;
 
     if (!mMsg) {
-        entry.len = populateDroppedMessage(buffer, clientHasLogCredentials(reader));
+        entry.len = populateDroppedMessage(buffer, reader);
         if (!entry.len) {
             return mSequence;
         }
