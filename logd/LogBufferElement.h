@@ -37,6 +37,10 @@ char *uidToName(uid_t uid);
 // Furnished in main.cpp. Thread safe.
 const char *tagToName(uint32_t tag);
 
+// Furnished in LogStatistics.cpp. Caller must own and free returned value
+char *pidToName(pid_t pid);
+char *tidToName(pid_t tid);
+
 }
 
 static inline bool worstUidEnabledForLogid(log_id_t id) {
