@@ -18,6 +18,7 @@
 
 #include "sysdeps.h"
 
+#include <cutils/properties.h>
 #include <dirent.h>
 #include <errno.h>
 #include <linux/usb/ch9.h>
@@ -38,6 +39,8 @@
 
 #define cpu_to_le16(x)  htole16(x)
 #define cpu_to_le32(x)  htole32(x)
+
+#define FFS_READY "sys.usb.ffs.ready"
 
 struct usb_handle
 {
@@ -362,6 +365,7 @@ static void *usb_ffs_open_thread(void *x)
 
             adb_sleep_ms(1000);
         }
+	property_set(FFS_READY, "1");
 
         D("[ usb_thread - registering device ]\n");
         register_usb_transport(usb, 0, 0, 1);
