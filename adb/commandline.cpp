@@ -312,6 +312,9 @@ static void read_status_line(int fd, char* buf, size_t count)
 static void copy_to_file(int inFd, int outFd) {
     const size_t BUFSIZE = 32 * 1024;
     char* buf = (char*) malloc(BUFSIZE);
+    if (buf == nullptr) {
+        abort(); // This code doesn't currently report any errors!
+    }
     int len;
     long total = 0;
 
@@ -419,6 +422,11 @@ static int interactive_shell() {
     fdi = 0; //dup(0);
 
     int* fds = reinterpret_cast<int*>(malloc(sizeof(int) * 2));
+    if (fds == nullptr) {
+        fprintf(stderr, "couldn't allocate fds array: %s\n", strerror(errno));
+        return 1;
+    }
+
     fds[0] = fd;
     fds[1] = fdi;
 
