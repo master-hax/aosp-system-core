@@ -961,11 +961,12 @@ static void selinux_initialize() {
     }
 
     selinux_init_all_handles();
+
     bool is_enforcing = selinux_is_enforcing();
-    INFO("SELinux: security_setenforce(%d)\n", is_enforcing);
     security_setenforce(is_enforcing);
 
-    NOTICE("(Initializing SELinux took %.2fs.)\n", t.duration());
+    NOTICE("(Initializing SELinux %s took %.2fs.)\n",
+           is_enforcing ? "enforcing" : "non-enforcing", t.duration());
 }
 
 int main(int argc, char** argv) {
@@ -1020,6 +1021,18 @@ int main(int argc, char** argv) {
     export_kernel_boot_props();
 
     selinux_initialize();
+
+    NOTICE("init is (%s)!\n", argv[0]);
+    if (*argv[0] != '-') {
+        NOTICE("re-execing init...\n");
+        const char* path = argv[0];
+        argv[0] = const_cast<char*>("-init");
+        if (execv(path, argv) == -1) {
+            ERROR("execv(\"%s\") failed: %s\n", path, strerror(errno));
+            // TODO: exit, or just blunder on?
+            while (true) ;
+        }
+    }
 
     // These directories were necessarily created before initial policy load
     // and therefore need their security context restored to the proper value.
