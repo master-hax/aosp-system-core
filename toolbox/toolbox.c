@@ -1,6 +1,8 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 int main(int, char **);
 
@@ -31,10 +33,20 @@ static struct
     { 0, 0 },
 };
 
+static void SIGPIPE_handler(int signal) {
+    _exit(0);
+}
+
 int main(int argc, char **argv)
 {
     int i;
     char *name = argv[0];
+
+    // Let's assume that none of this code handles broken pipes. At least ls,
+    // ps, and top were broken (though I'd previously added this fix locally
+    // to top). We exit rather than use SIG_IGN because tools like top will
+    // just keep on writing to nowhere forever if we don't stop them.
+    signal(SIGPIPE, SIGPIPE_handler);
 
     if((argc > 1) && (argv[1][0] == '@')) {
         name = argv[1] + 1;
