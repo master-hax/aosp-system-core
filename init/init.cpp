@@ -832,22 +832,6 @@ static void process_kernel_cmdline(void)
         import_kernel_cmdline(1, import_kernel_nv);
 }
 
-static int property_service_init_action(int nargs, char **args)
-{
-    /* read any property files on system or data and
-     * fire up the property service.  This must happen
-     * after the ro.foo properties are set above so
-     * that /data/local.prop cannot interfere with them.
-     */
-    start_property_service();
-    if (get_property_set_fd() < 0) {
-        ERROR("start_property_service() failed\n");
-        exit(1);
-    }
-
-    return 0;
-}
-
 static int queue_property_triggers_action(int nargs, char **args)
 {
     queue_all_property_triggers();
@@ -1054,6 +1038,7 @@ int main(int argc, char** argv) {
     signal_init();
 
     property_load_boot_defaults();
+    start_property_service();
 
     init_parse_config_file("/init.rc");
 
@@ -1070,7 +1055,6 @@ int main(int argc, char** argv) {
     // Repeat mix_hwrng_into_linux_rng in case /dev/hw_random or /dev/random
     // wasn't ready immediately after wait_for_coldboot_done
     queue_builtin_action(mix_hwrng_into_linux_rng_action, "mix_hwrng_into_linux_rng");
-    queue_builtin_action(property_service_init_action, "property_service_init");
 
     // Don't mount filesystems or start core system services in charger mode.
     char bootmode[PROP_VALUE_MAX];
@@ -1083,26 +1067,19 @@ int main(int argc, char** argv) {
     // Run all property triggers based on current state of the properties.
     queue_builtin_action(queue_property_triggers_action, "queue_property_triggers");
 
-    // TODO: why do we only initialize ufds after execute_one_command and restart_processes?
     size_t fd_count = 0;
     struct pollfd ufds[3];
     ufds[fd_count++] = { .fd = get_signal_fd(), .events = POLLIN, .revents = 0 };
-    bool property_set_fd_init = false;
+    ufds[fd_count++] = { .fd = get_property_set_fd(), .events = POLLIN, .revents = 0 };
+    // TODO: can we work out when /dev/keychord is first accessible and open this fd then?
     bool keychord_fd_init = false;
 
-    for (;;) {
+    while (true) {
         if (!waiting_for_exec) {
             execute_one_command();
             restart_processes();
         }
 
-        if (!property_set_fd_init && get_property_set_fd() > 0) {
-            ufds[fd_count].fd = get_property_set_fd();
-            ufds[fd_count].events = POLLIN;
-            ufds[fd_count].revents = 0;
-            fd_count++;
-            property_set_fd_init = true;
-        }
         if (!keychord_fd_init && get_keychord_fd() > 0) {
             ufds[fd_count].fd = get_keychord_fd();
             ufds[fd_count].events = POLLIN;
@@ -1124,8 +1101,11 @@ int main(int argc, char** argv) {
 
         bootchart_sample(&timeout);
 
-        int nr = poll(ufds, fd_count, timeout);
+        int nr = TEMP_FAILURE_RETRY(poll(ufds, fd_count, timeout));
         if (nr <= 0) {
+            if (nr == -1) {
+                ERROR("poll failed: %s\n", strerror(errno));
+            }
             continue;
         }
 
