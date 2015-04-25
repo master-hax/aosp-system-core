@@ -179,10 +179,12 @@ bool read_file(const char* path, std::string* content) {
 int write_file(const char* path, const char* content) {
     int fd = TEMP_FAILURE_RETRY(open(path, O_WRONLY|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0600));
     if (fd == -1) {
-        return -errno;
+        return -1;
     }
-    int result = android::base::WriteStringToFd(content, fd) ? 0 : -errno;
+    int result = android::base::WriteStringToFd(content, fd) ? 0 : -1;
+    int save_errno = errno;
     TEMP_FAILURE_RETRY(close(fd));
+    errno = save_errno;
     return result;
 }
 
