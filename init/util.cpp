@@ -379,20 +379,22 @@ int wait_for_file(const char *filename, int timeout)
 
 void open_devnull_stdio(void)
 {
-    int fd;
-    static const char *name = "/dev/__null__";
-    if (mknod(name, S_IFCHR | 0600, (1 << 8) | 3) == 0) {
-        fd = open(name, O_RDWR);
-        unlink(name);
-        if (fd >= 0) {
-            dup2(fd, 0);
-            dup2(fd, 1);
-            dup2(fd, 2);
-            if (fd > 2) {
-                close(fd);
-            }
-            return;
+    int fd = open("/sys/fs/selinux/null", O_RDWR);
+    if (fd == -1) {
+        static const char *name = "/dev/__null__";
+        if (mknod(name, S_IFCHR | 0600, (1 << 8) | 3) == 0) {
+            fd = open(name, O_RDWR);
+            unlink(name);
         }
+    }
+    if (fd >= 0) {
+        dup2(fd, 0);
+        dup2(fd, 1);
+        dup2(fd, 2);
+        if (fd > 2) {
+            close(fd);
+        }
+        return;
     }
 
     exit(1);
