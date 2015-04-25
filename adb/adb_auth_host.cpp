@@ -43,6 +43,7 @@
 #include "mincrypt/rsa.h"
 #undef RSA_verify
 
+#include <base/strings.h>
 #include <cutils/list.h>
 
 #include <openssl/evp.h>
@@ -274,14 +275,13 @@ static int read_key(const char *file, struct listnode *list)
 {
     D("read_key '%s'\n", file);
 
-    FILE* f = fopen(file, "r");
+    FILE* f = fopen(file, "re");
     if (!f) {
-        D("Failed to open '%s'\n", file);
+        D("Failed to open '%s': %s\n", file, strerror(errno));
         return 0;
     }
 
-    adb_private_key* key = reinterpret_cast<adb_private_key*>(
-        malloc(sizeof(adb_private_key)));
+    adb_private_key* key = reinterpret_cast<adb_private_key*>(malloc(sizeof(adb_private_key)));
     if (!key) {
         D("Failed to alloc key\n");
         fclose(f);
@@ -362,29 +362,16 @@ static int get_user_key(struct listnode *list)
     return read_key(path, list);
 }
 
-static void get_vendor_keys(struct listnode *list)
-{
-    const char *adb_keys_path;
-    char keys_path[MAX_PAYLOAD];
-    char *path;
-    char *save;
-    struct stat buf;
-
-    adb_keys_path = getenv("ADB_VENDOR_KEYS");
-    if (!adb_keys_path)
+static void get_vendor_keys(struct listnode* key_list) {
+    const char* adb_keys_path = getenv("ADB_VENDOR_KEYS");
+    if (adb_keys_path == nullptr) {
         return;
-    strncpy(keys_path, adb_keys_path, sizeof(keys_path));
+    }
 
-    path = adb_strtok_r(keys_path, ENV_PATH_SEPARATOR_STR, &save);
-    while (path) {
-        D("Reading: '%s'\n", path);
-
-        if (stat(path, &buf))
-            D("Can't read '%s'\n", path);
-        else if (!read_key(path, list))
-            D("Failed to read '%s'\n", path);
-
-        path = adb_strtok_r(NULL, ENV_PATH_SEPARATOR_STR, &save);
+    for (auto& path : android::base::Split(adb_keys_path, ENV_PATH_SEPARATOR_STR)) {
+        if (!read_key(path.c_str(), key_list)) {
+            D("Failed to read '%s'\n", path.c_str());
+        }
     }
 }
 
