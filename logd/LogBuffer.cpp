@@ -296,7 +296,8 @@ public:
         ssize_t index = -1;
         while((index = next(index)) >= 0) {
             LogBufferElement *l = editEntryAt(index).getLast();
-            if ((l->getDropped() >= 4) && (current > l->getRealTime().nsec())) {
+            if ((l->getDropped() >= EXPIRE_THRESHOLD)
+             && (current > l->getRealTime().nsec())) {
                 removeAt(index);
                 index = -1;
             }
@@ -606,8 +607,10 @@ uint64_t LogBuffer::flushTo(
         }
     }
 
+    void *priv = NULL;
+    LogBufferElement *element = NULL;
     for (; it != mLogElements.end(); ++it) {
-        LogBufferElement *element = *it;
+        element = *it;
 
         if (!privileged && (element->getUid() != uid)) {
             continue;
@@ -631,15 +634,18 @@ uint64_t LogBuffer::flushTo(
         pthread_mutex_unlock(&mLogElementsLock);
 
         // range locking in LastLogTimes looks after us
-        max = element->flushTo(reader, this);
+        max = element->flushTo(reader, this, &priv);
 
         if (max == element->FLUSH_ERROR) {
+            element->flushEnd(reader, this, &priv);
             return max;
         }
 
         pthread_mutex_lock(&mLogElementsLock);
     }
     pthread_mutex_unlock(&mLogElementsLock);
+
+    element->flushEnd(reader, this, &priv);
 
     return max;
 }

@@ -41,6 +41,8 @@ static inline bool worstUidEnabledForLogid(log_id_t id) {
 
 class LogBuffer;
 
+#define EXPIRE_THRESHOLD 4 // A smaller expire count is considered too chatty
+
 class LogBufferElement {
     const log_id_t mLogId;
     const uid_t mUid;
@@ -57,7 +59,7 @@ class LogBufferElement {
 
     // assumption: mMsg == NULL
     size_t populateDroppedMessage(char *&buffer,
-                                  LogBuffer *parent);
+                                  LogBuffer *parent, unsigned long count);
 
 public:
     LogBufferElement(log_id_t log_id, log_time realtime,
@@ -83,7 +85,8 @@ public:
     log_time getRealTime(void) const { return mRealTime; }
 
     static const uint64_t FLUSH_ERROR;
-    uint64_t flushTo(SocketClient *writer, LogBuffer *parent);
+    uint64_t flushTo(SocketClient *writer, LogBuffer *parent, void **priv);
+    static void flushEnd(SocketClient *writer, LogBuffer *parent, void **priv);
 };
 
 #endif
