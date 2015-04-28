@@ -39,6 +39,8 @@ static inline bool worstUidEnabledForLogid(log_id_t id) {
     return (id != LOG_ID_CRASH) && (id != LOG_ID_EVENTS);
 }
 
+class LogBuffer;
+
 class LogBufferElement {
     const log_id_t mLogId;
     const uid_t mUid;
@@ -54,7 +56,8 @@ class LogBufferElement {
     static atomic_int_fast64_t sequence;
 
     // assumption: mMsg == NULL
-    size_t populateDroppedMessage(char *&buffer, SocketClient *reader);
+    size_t populateDroppedMessage(char *&buffer, SocketClient *reader,
+                                  LogBuffer &parent, unsigned long count);
 
 public:
     LogBufferElement(log_id_t log_id, log_time realtime,
@@ -80,7 +83,7 @@ public:
     log_time getRealTime(void) const { return mRealTime; }
 
     static const uint64_t FLUSH_ERROR;
-    uint64_t flushTo(SocketClient *writer);
+    uint64_t flushTo(SocketClient *writer, LogBuffer &parent, void **priv);
 };
 
 #endif

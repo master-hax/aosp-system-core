@@ -606,8 +606,10 @@ uint64_t LogBuffer::flushTo(
         }
     }
 
+    void *priv = NULL;
+    LogBufferElement *element = NULL;
     for (; it != mLogElements.end(); ++it) {
-        LogBufferElement *element = *it;
+        element = *it;
 
         if (!privileged && (element->getUid() != uid)) {
             continue;
@@ -631,15 +633,18 @@ uint64_t LogBuffer::flushTo(
         pthread_mutex_unlock(&mLogElementsLock);
 
         // range locking in LastLogTimes looks after us
-        max = element->flushTo(reader);
+        max = element->flushTo(reader, *this, &priv);
 
         if (max == element->FLUSH_ERROR) {
+            element->flushTo(NULL, *this, &priv); // Free priv
             return max;
         }
 
         pthread_mutex_lock(&mLogElementsLock);
     }
     pthread_mutex_unlock(&mLogElementsLock);
+
+    element->flushTo(NULL, *this, &priv); // Free priv
 
     return max;
 }

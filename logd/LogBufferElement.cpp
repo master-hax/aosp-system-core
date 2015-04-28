@@ -95,19 +95,23 @@ static char *tidToName(pid_t tid) {
 }
 
 // assumption: mMsg == NULL
-size_t LogBufferElement::populateDroppedMessage(char *&buffer, SocketClient *reader) {
-    static const char format_uid[] = "uid=%u%s too chatty, expire %u line%s";
-    static const size_t unprivileged_offset = 9;
+size_t LogBufferElement::populateDroppedMessage(char *&buffer,
+        SocketClient *reader, LogBuffer &parent, unsigned long expired) {
     static const char tag[] = "logd";
+    static const char format_uid[] = "uid=%u%s too chatty, expire %lu line%s";
+    static const size_t unprivileged_offset = 9;
     char *name = NULL;
     bool privileged = clientHasLogCredentials(reader) || mUid == reader->getUid();
     size_t len;
 
     if (privileged) {
-        char *uidName = android::uidToName(mUid);
+        char *uidName = parent.uidToName(mUid);
         char *commName = tidToName(mTid);
-        if (!commName) {
+        if (!commName && (mTid != mPid)) {
             commName = tidToName(mPid);
+        }
+        if (!commName) {
+            commName = parent.pidToName(mPid);
         }
         if (uidName && commName && !strcmp(uidName, commName)) {
             free(commName);
@@ -132,10 +136,10 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, SocketClient *rea
         }
         // identical to below to calculate the buffer size required
         len = snprintf(NULL, 0, format_uid, mUid, name ? name : "",
-                       mDropped, (mDropped > 1) ? "s" : "");
+                       expired, (expired > 1) ? "s" : "");
     } else {
         len = snprintf(NULL, 0, format_uid + unprivileged_offset,
-                       mDropped, (mDropped > 1) ? "s" : "");
+                       expired, (expired > 1) ? "s" : "");
     }
 
     size_t hdrLen;
@@ -166,18 +170,84 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer, SocketClient *rea
 
     if (privileged) {
         snprintf(buffer + hdrLen, len + 1, format_uid, mUid, name ? name : "",
-                 mDropped, (mDropped > 1) ? "s" : "");
+                 expired, (expired > 1) ? "s" : "");
         free(name);
     } else {
         snprintf(buffer + hdrLen, len + 1, format_uid + unprivileged_offset,
-                 mDropped, (mDropped > 1) ? "s" : "");
+                 expired, (expired > 1) ? "s" : "");
     }
 
     return retval;
 }
 
-uint64_t LogBufferElement::flushTo(SocketClient *reader) {
+// Define a temporary mechanism to hold on to the total expire count
+// for the specified lid, uid, pid and tid.
+class LogBufferElementKey {
+    const union {
+        struct {
+            uint16_t lid;
+            uint16_t uid;
+            uint16_t pid;
+            uint16_t tid;
+        } __packed;
+        uint64_t value;
+    } __packed;
+
+public:
+    LogBufferElementKey(LogBufferElement *e):
+        lid(e->getLogId()),
+        uid(e->getUid()),
+        pid(e->getPid()),
+        tid(e->getTid()) { }
+    uint64_t getKey() { return value; }
+};
+
+class LogToExpire {
+    const uint64_t key;
+    unsigned long expired;
+
+public:
+    LogToExpire(LogBufferElement *e):
+        key(LogBufferElementKey(e).getKey()),
+        expired(e->getDropped()) { }
+
+    const uint64_t&getKey() const { return key; }
+
+    unsigned long getExpired() const { return expired; }
+    unsigned long add(LogBufferElement *e) { return expired += e->getDropped(); }
+};
+
+class LogBufferElementLast : public android::BasicHashtable<uint64_t, LogToExpire> { };
+
+uint64_t LogBufferElement::flushTo(SocketClient *reader, LogBuffer &parent, void **priv) {
     struct logger_entry_v3 entry;
+
+    // Call to free priv resource
+    if (!this || !reader) {
+        LogBufferElementLast *last = reinterpret_cast<LogBufferElementLast *>(*priv);
+        if (last) {
+            delete last;
+            *priv = NULL;
+        }
+        return this ? mSequence : FLUSH_ERROR;
+    }
+
+    // This is one of the dropped-count messages
+    if (!mMsg) {
+        if (!*priv) {
+            *priv = new LogBufferElementLast;
+        }
+        LogBufferElementLast *last = reinterpret_cast<LogBufferElementLast *>(*priv);
+        uint64_t key = LogBufferElementKey(this).getKey();
+        android::hash_t hash = android::hash_type(key);
+        ssize_t index = last->find(-1, hash, key);
+        if (index == -1) {
+            last->add(hash, LogToExpire(this));
+        } else {
+            last->editEntryAt(index).add(this);
+        }
+        return mSequence;
+    }
 
     memset(&entry, 0, sizeof(struct logger_entry_v3));
 
@@ -192,25 +262,30 @@ uint64_t LogBufferElement::flushTo(SocketClient *reader) {
     iovec[0].iov_base = &entry;
     iovec[0].iov_len = sizeof(struct logger_entry_v3);
 
-    char *buffer = NULL;
+    // Did we have an associated drop-count message?
+    LogBufferElementLast *last = reinterpret_cast<LogBufferElementLast *>(*priv);
+    if (last) {
+        uint64_t key = LogBufferElementKey(this).getKey();
+        android::hash_t hash = android::hash_type(key);
+        ssize_t index = last->find(-1, hash, key);
+        if (index != -1) {
+            char *buffer = NULL;
+            entry.len = populateDroppedMessage(buffer, reader, parent,
+	        last->entryAt(index).getExpired());
+            last->removeAt(index);
+            if (entry.len) {
+                iovec[1].iov_base = buffer;
+                iovec[1].iov_len = entry.len;
 
-    if (!mMsg) {
-        entry.len = populateDroppedMessage(buffer, reader);
-        if (!entry.len) {
-            return mSequence;
+                reader->sendDatav(iovec, 2);
+            }
+            free(buffer);
         }
-        iovec[1].iov_base = buffer;
-    } else {
-        entry.len = mMsgLen;
-        iovec[1].iov_base = mMsg;
     }
+
+    entry.len = mMsgLen;
+    iovec[1].iov_base = mMsg;
     iovec[1].iov_len = entry.len;
 
-    uint64_t retval = reader->sendDatav(iovec, 2) ? FLUSH_ERROR : mSequence;
-
-    if (buffer) {
-        free(buffer);
-    }
-
-    return retval;
+    return reader->sendDatav(iovec, 2) ? FLUSH_ERROR : mSequence;
 }
