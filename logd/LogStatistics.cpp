@@ -223,6 +223,23 @@ char *LogStatistics::uidToName(uid_t uid) {
         }
     }
 
+    if (uid > 40000) {
+        char *n = android::uidToName(uid - 40000);
+        if (n) {
+            char *a = NULL;
+            asprintf(&a, "%s{%s}", name ? name : "", n);
+            if (a) {
+                free(name);
+                free(n);
+                name = a;
+            } else if (!name) {
+                name = n;
+            } else {
+                free(n);
+            }
+        }
+    }
+
     // No one
     return name;
 }
