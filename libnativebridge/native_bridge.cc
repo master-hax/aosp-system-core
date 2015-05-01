@@ -83,7 +83,7 @@ static bool had_error = false;
 static void* native_bridge_handle = nullptr;
 // Pointer to the callbacks. Available as soon as LoadNativeBridge succeeds, but only initialized
 // later.
-static NativeBridgeCallbacks* callbacks = nullptr;
+static const NativeBridgeCallbacks* callbacks = nullptr;
 // Callbacks provided by the environment to the bridge. Passed to LoadNativeBridge.
 static const NativeBridgeRuntimeCallbacks* runtime_callbacks = nullptr;
 
@@ -95,8 +95,6 @@ static char* app_code_cache_dir = nullptr;
 // implementation detail and will require either hacks or consistent refactorings. We compromise
 // and hard code the directory name again here.
 static constexpr const char* kCodeCacheDir = "code_cache";
-
-static constexpr uint32_t kNativeBridgeCallbackVersion = 1;
 
 // Characters allowed in a native bridge filename. The first character must
 // be in [a-zA-Z] (expected 'l' for "libx"). The rest must be in [a-zA-Z0-9._-].
@@ -121,7 +119,9 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
     // First character must be [a-zA-Z].
     if (!CharacterAllowed(*ptr, true))  {
       // Found an invalid fist character, don't accept.
-      ALOGE("Native bridge library %s has been rejected for first character %c", nb_library_filename, *ptr);
+      ALOGE("Native bridge library %s has been rejected for first character %c",
+            nb_library_filename,
+            *ptr);
       return false;
     } else {
       // For the rest, be more liberal.
@@ -139,8 +139,10 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
   }
 }
 
-static bool VersionCheck(NativeBridgeCallbacks* cb) {
-  return cb != nullptr && cb->version == kNativeBridgeCallbackVersion;
+static bool VersionCheck(const NativeBridgeCallbacks* cb) {
+  // Libnativebridge is now designed to be forward-compatible. So only "0" is an unsupported
+  // version.
+  return cb != nullptr && cb->version >= NativeBridgeCallbacks::kVersionNum;
 }
 
 static void CloseNativeBridge(bool with_error) {
@@ -321,7 +323,7 @@ static void SetCpuAbi(JNIEnv* env, jclass build_class, const char* field, const 
 }
 
 // Set up the environment for the bridged app.
-static void SetupEnvironment(NativeBridgeCallbacks* callbacks, JNIEnv* env, const char* isa) {
+static void SetupEnvironment(const NativeBridgeCallbacks* callbacks, JNIEnv* env, const char* isa) {
   // Need a JNIEnv* to do anything.
   if (env == nullptr) {
     ALOGW("No JNIEnv* to set up app environment.");
@@ -483,6 +485,22 @@ bool NativeBridgeIsSupported(const char* libpath) {
     return callbacks->isSupported(libpath);
   }
   return false;
+}
+
+uint32_t NativeBridgeGetVersion() {
+  if (NativeBridgeAvailable()) {
+    return callbacks->version;
+  }
+  return 0;
+}
+
+NativeBridgeSignalHandlerFn NativeBridgeGetSignalHandler(int signal) {
+  if (NativeBridgeInitialized()) {
+    if (callbacks->version >= NativeBridgeCallbacks2::kVersionNum) {
+      return reinterpret_cast<const NativeBridgeCallbacks2*>(callbacks)->getSignalHandler(signal);
+    }
+  }
+  return nullptr;
 }
 
 };  // namespace android

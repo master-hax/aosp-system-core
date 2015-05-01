@@ -11,6 +11,7 @@ test_src_files := \
     CodeCacheExists_test.cpp \
     CompleteFlow_test.cpp \
     InvalidCharsNativeBridge_test.cpp \
+    NativeBridgeVersion_test.cpp \
     NeedsNativeBridge_test.cpp \
     PreInitializeNativeBridge_test.cpp \
     PreInitializeNativeBridgeFail1_test.cpp \
