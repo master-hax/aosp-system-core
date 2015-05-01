@@ -96,7 +96,7 @@ static char* app_code_cache_dir = nullptr;
 // and hard code the directory name again here.
 static constexpr const char* kCodeCacheDir = "code_cache";
 
-static constexpr uint32_t kNativeBridgeCallbackVersion = 1;
+static constexpr uint32_t kMaxNativeBridgeCallbackVersion = 2;
 
 // Characters allowed in a native bridge filename. The first character must
 // be in [a-zA-Z] (expected 'l' for "libx"). The rest must be in [a-zA-Z0-9._-].
@@ -140,7 +140,7 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
 }
 
 static bool VersionCheck(NativeBridgeCallbacks* cb) {
-  return cb != nullptr && cb->version == kNativeBridgeCallbackVersion;
+  return cb != nullptr && 0U < cb->version && cb->version <= kMaxNativeBridgeCallbackVersion;
 }
 
 static void CloseNativeBridge(bool with_error) {
@@ -483,6 +483,15 @@ bool NativeBridgeIsSupported(const char* libpath) {
     return callbacks->isSupported(libpath);
   }
   return false;
+}
+
+NativeBridgeSignalHandlerFn NativeBridgeGetSignalHandler(int signal) {
+  if (NativeBridgeInitialized()) {
+    if (callbacks->version >= 2) {
+      return reinterpret_cast<NativeBridgeCallbacks2*>(callbacks)->getSignalHandler(signal);
+    }
+  }
+  return nullptr;
 }
 
 };  // namespace android
