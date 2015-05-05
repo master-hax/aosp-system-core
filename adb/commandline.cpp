@@ -1157,11 +1157,12 @@ int adb_commandline(int argc, const char **argv) {
         }
 
         std::string cmd = "shell:";
-        cmd += argv[1];
-        argc -= 2;
-        argv += 2;
+        --argc;
+        ++argv;
         while (argc-- > 0) {
-            cmd += " " + escape_arg(*argv++);
+            // We don't escape here, just like ssh(1). http://b/20564385.
+            cmd += *argv++;
+            if (*argv) cmd += " ";
         }
 
         while (true) {
