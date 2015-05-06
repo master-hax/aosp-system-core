@@ -61,19 +61,29 @@ std::string escape_arg(const std::string& s) {
 int mkdirs(const char *path)
 {
     int ret;
-    char *x = (char *)path + 1;
+    char *my_path = strdup(path);
+    if (!my_path) {
+        errno = ENOMEM;
+        return -1;
+    }
+    char *x = my_path + 1;
 
     for(;;) {
-        x = adb_dirstart(x);
-        if(x == 0) return 0;
+        x = (char *)adb_dirstart(x);
+        if(x == 0) {
+            free(my_path);
+            return 0;
+        }
         *x = 0;
         ret = adb_mkdir(path, 0775);
         *x = OS_PATH_SEPARATOR;
         if((ret < 0) && (errno != EEXIST)) {
+            free(my_path);
             return ret;
         }
         x++;
     }
+    free(my_path);
     return 0;
 }
 
