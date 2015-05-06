@@ -52,6 +52,10 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
+#ifdef __cplusplus
+#include <string>
+#endif
+
 #include "fdevent.h"
 
 #define OS_PATH_SEPARATOR '\\'
@@ -234,10 +238,10 @@ static __inline__ void  disable_tcp_nagle( int  fd )
 
 extern int  adb_socketpair( int  sv[2] );
 
-static __inline__  char*  adb_dirstart( const char*  path )
+static __inline__  const char*  adb_dirstart( const char*  path )
 {
-    char*  p  = strchr(path, '/');
-    char*  p2 = strchr(path, '\\');
+    const char*  p  = strchr(path, '/');
+    const char*  p2 = strchr(path, '\\');
 
     if ( !p )
         p = p2;
@@ -247,10 +251,24 @@ static __inline__  char*  adb_dirstart( const char*  path )
     return p;
 }
 
-static __inline__  char*  adb_dirstop( const char*  path )
+#ifdef __cplusplus
+static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0) {
+    size_t p = path.find('/', pos);
+    size_t p2 = path.find('\\', pos);
+
+    if ( p == std::string::npos )
+        p = p2;
+    else if ( p2 != std::string::npos && p2 > p )
+        p = p2;
+
+    return p;
+}
+#endif
+
+static __inline__  const char*  adb_dirstop( const char*  path )
 {
-    char*  p  = strrchr(path, '/');
-    char*  p2 = strrchr(path, '\\');
+    const char*  p  = strrchr(path, '/');
+    const char*  p2 = strrchr(path, '\\');
 
     if ( !p )
         p = p2;
@@ -283,6 +301,10 @@ static __inline__  int  adb_is_absolute_host_path( const char*  path )
 #include <netinet/tcp.h>
 #include <string.h>
 #include <unistd.h>
+
+#ifdef __cplusplus
+#include <string>
+#endif
 
 #define OS_PATH_SEPARATOR '/'
 #define OS_PATH_SEPARATOR_STR "/"
@@ -485,6 +507,14 @@ static __inline__ int  adb_mkdir(const char*  path, int mode)
 {
     return mkdir(path, mode);
 }
+
+#ifdef __cplusplus
+static __inline__ int  adb_mkdir(const std::string& path, int mode)
+{
+    return adb_mkdir(path.c_str(), mode);
+}
+#endif
+
 #undef   mkdir
 #define  mkdir  ___xxx_mkdir
 
@@ -492,12 +522,18 @@ static __inline__ void  adb_sysdeps_init(void)
 {
 }
 
-static __inline__ char*  adb_dirstart(const char*  path)
+static __inline__ const char*  adb_dirstart(const char*  path)
 {
     return strchr(path, '/');
 }
 
-static __inline__ char*  adb_dirstop(const char*  path)
+#ifdef __cplusplus
+static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0) {
+    return path.find('/', pos);
+}
+#endif
+
+static __inline__ const char*  adb_dirstop(const char*  path)
 {
     return strrchr(path, '/');
 }
