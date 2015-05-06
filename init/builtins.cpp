@@ -223,6 +223,7 @@ int do_mkdir(int nargs, char **args)
         ret = fchmodat(AT_FDCWD, args[1], mode, AT_SYMLINK_NOFOLLOW);
     }
     if (ret == -1) {
+        ERROR("mkdir failed with %s\n", strerror(errno));
         return -errno;
     }
 
@@ -235,6 +236,7 @@ int do_mkdir(int nargs, char **args)
         }
 
         if (lchown(args[1], uid, gid) == -1) {
+            ERROR("lchown failed with %s\n", strerror(errno));
             return -errno;
         }
 
@@ -242,6 +244,7 @@ int do_mkdir(int nargs, char **args)
         if (mode & (S_ISUID | S_ISGID)) {
             ret = fchmodat(AT_FDCWD, args[1], mode, AT_SYMLINK_NOFOLLOW);
             if (ret == -1) {
+                ERROR("fchmodat failed with %s\n", strerror(errno));
                 return -errno;
             }
         }
