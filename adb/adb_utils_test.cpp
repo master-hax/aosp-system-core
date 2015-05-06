@@ -18,6 +18,19 @@
 
 #include <gtest/gtest.h>
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "sysdeps.h"
+
+#ifdef __ANDROID__
+#define TMP_PREFIX "/data/local/tmp"
+#else /* host */
+#define TMP_PREFIX "/tmp"
+#endif
+#define TMP_TEMPLATE TMP_PREFIX "/adb-util-test-mkdirs.XXXXXX"
+
+
 TEST(adb_utils, directory_exists) {
   ASSERT_TRUE(directory_exists("/proc"));
   ASSERT_FALSE(directory_exists("/proc/self")); // Symbolic link.
@@ -131,4 +144,35 @@ TEST(adb_utils, parse_host_and_port) {
   EXPECT_FALSE(parse_host_and_port("1.2.3.4:-1", &canonical_address, &host, &port, &error));
   EXPECT_FALSE(parse_host_and_port("1.2.3.4:0", &canonical_address, &host, &port, &error));
   EXPECT_FALSE(parse_host_and_port("1.2.3.4:65536", &canonical_address, &host, &port, &error));
+}
+
+class adb_utils_fixture : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+    std::string temp_pattern(TMP_TEMPLATE);
+    char* temp(mkdtemp(&temp_pattern[0]));
+    if (temp) path_ = temp;
+    ASSERT_FALSE(path_.empty()) << "Failed to create test directory.";
+  }
+
+  virtual void TearDown() {
+    if (!path_.empty()) {
+      adb_unlink((path_+"/file").c_str());
+      rmdir((path_+"/dir/subdir").c_str());
+      rmdir((path_+"/dir").c_str());
+      rmdir(path_.c_str());
+    }
+  }
+
+  std::string& path() { return path_; }
+
+ private:
+  std::string path_;
+};
+
+TEST_F(adb_utils_fixture, mkdirs) {
+  EXPECT_TRUE(mkdirs(path() + "/dir/subdir/file"));
+  std::string file = path() + "/file";
+  adb_creat(file.c_str(), 0600);
+  EXPECT_FALSE(mkdirs(file + "/subdir/"));
 }
