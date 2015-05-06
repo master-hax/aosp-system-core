@@ -52,6 +52,8 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
+#include <string>
+
 #include "fdevent.h"
 
 #define OS_PATH_SEPARATOR '\\'
@@ -118,7 +120,7 @@ static __inline__  int    adb_unlink(const char*  path)
 #undef  unlink
 #define unlink  ___xxx_unlink
 
-static __inline__ int  adb_mkdir(const char*  path, int mode)
+static __inline__ int  adb_mkdir(const std::string&  path, int mode)
 {
 	return _mkdir(path);
 }
@@ -234,27 +236,27 @@ static __inline__ void  disable_tcp_nagle( int  fd )
 
 extern int  adb_socketpair( int  sv[2] );
 
-static __inline__  char*  adb_dirstart( const char*  path )
+static __inline__ size_t adb_dirstart( const std::string& path, size_t pos = 0 )
 {
-    char*  p  = strchr(path, '/');
-    char*  p2 = strchr(path, '\\');
+    size_t p  = path.find('/', pos);
+    size_t p2 = path.find('\\', pos);
 
-    if ( !p )
+    if ( p == std::string::npos )
         p = p2;
-    else if ( p2 && p2 > p )
+    else if ( p2 != std::string::npos && p2 > p )
         p = p2;
 
     return p;
 }
 
-static __inline__  char*  adb_dirstop( const char*  path )
+static __inline__  size_t  adb_dirstop( const std::string& path, size_t post = 0 )
 {
-    char*  p  = strrchr(path, '/');
-    char*  p2 = strrchr(path, '\\');
+    size_t p  = path.rfind('/');
+    size_t p2 = path.rfind('\\');
 
-    if ( !p )
+    if ( p == std::string::npos )
         p = p2;
-    else if ( p2 && p2 > p )
+    else if ( p2 != std::string::npos && p2 > p )
         p = p2;
 
     return p;
@@ -283,6 +285,8 @@ static __inline__  int  adb_is_absolute_host_path( const char*  path )
 #include <netinet/tcp.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <string>
 
 #define OS_PATH_SEPARATOR '/'
 #define OS_PATH_SEPARATOR_STR "/"
@@ -481,10 +485,11 @@ static __inline__ void  adb_sleep_ms( int  mseconds )
     usleep( mseconds*1000 );
 }
 
-static __inline__ int  adb_mkdir(const char*  path, int mode)
+static __inline__ int  adb_mkdir(const std::string& path, int mode)
 {
-    return mkdir(path, mode);
+    return mkdir(path.c_str(), mode);
 }
+
 #undef   mkdir
 #define  mkdir  ___xxx_mkdir
 
@@ -492,14 +497,14 @@ static __inline__ void  adb_sysdeps_init(void)
 {
 }
 
-static __inline__ char*  adb_dirstart(const char*  path)
+static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0)
 {
-    return strchr(path, '/');
+    return path.find('/', pos);
 }
 
-static __inline__ char*  adb_dirstop(const char*  path)
+static __inline__ size_t adb_dirstop(const std::string& path, size_t pos = 0)
 {
-    return strrchr(path, '/');
+    return path.rfind('/');
 }
 
 static __inline__  int  adb_is_absolute_host_path( const char*  path )
