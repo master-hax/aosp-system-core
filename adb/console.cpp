@@ -39,6 +39,22 @@ int  adb_send_emulator_command(int  argc, const char**  argv)
         adb_write( fd, (nn == argc-1) ? "\n" : " ", 1 );
     }
     adb_write( fd, QUIT, sizeof(QUIT)-1 );
+
+    // Drain output that the emulator console has sent us to prevent a problem
+    // on Windows where if adb closes the socket without reading all the data,
+    // the emulator's next call to recv() will have an ECONNABORTED error,
+    // preventing the emulator from reading the command that adb has sent.
+    char buf[4 * 1024];
+    int result;
+    do {
+        result = adb_read(fd, buf, sizeof(buf));
+        // Keep reading until zero bytes (EOF) or an error. If 'adb emu kill'
+        // is executed, the emulator calls exit() which causes adb to get
+        // ECONNRESET. Any other emu command is followed by the quit command
+        // that we sent above, and that causes the emulator to close the socket
+        // which should cause zero bytes (EOF) to be returned.
+    } while (result > 0);
+
     adb_close(fd);
 
     return 0;
