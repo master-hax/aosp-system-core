@@ -18,6 +18,11 @@
 
 #include <gtest/gtest.h>
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "sysdeps.h"
+
 TEST(adb_utils, directory_exists) {
   ASSERT_TRUE(directory_exists("/proc"));
   ASSERT_FALSE(directory_exists("/proc/self")); // Symbolic link.
@@ -49,4 +54,43 @@ TEST(adb_utils, escape_arg) {
   ASSERT_EQ(R"('abc\')", escape_arg("abc\\"));
   ASSERT_EQ(R"('abc(')", escape_arg("abc("));
   ASSERT_EQ(R"('abc)')", escape_arg("abc)"));
+}
+
+class adb_utils_fixture : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+    tmp_exists_ = false;
+    char *temp_pattern = strdup("/tmp/adb-util-test-mkdirs.XXXXXX");
+    ASSERT_NE(nullptr, temp_pattern) << "Failed to allocate directory name.";
+    char *temp = mkdtemp(temp_pattern);
+    if (temp == nullptr)
+      free(temp_pattern);
+    else
+      tmp_exists_ = true;
+    ASSERT_NE(nullptr, temp) << "Failed to create test directory.";
+    path_ = temp;
+    free(temp_pattern);
+  }
+
+  virtual void TearDown() {
+    if(tmp_exists_) {
+      adb_unlink((path_+"/file").c_str());
+      rmdir((path_+"/dir/subdir").c_str());
+      rmdir((path_+"/dir").c_str());
+      rmdir(path_.c_str());
+    }
+  }
+
+  std::string& path() { return path_; }
+
+ private:
+  std::string path_;
+  bool tmp_exists_;
+};
+
+TEST_F(adb_utils_fixture, mkdirs) {
+  EXPECT_EQ(mkdirs(path() + "/dir/subdir/file"), 0);
+  std::string file = path() + "/file";
+  adb_creat(file.c_str(), 0600);
+  EXPECT_LT(mkdirs(file + "/subdir/"), 0);
 }
