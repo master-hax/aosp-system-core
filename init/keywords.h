@@ -38,6 +38,7 @@ int do_load_all_props(int nargs, char **args);
 int do_verity_load_state(int nargs, char **args);
 int do_verity_update_state(int nargs, char **args);
 int do_wait(int nargs, char **args);
+int do_vdc(int nargs, char **args);
 #define __MAKE_KEYWORD_ENUM__
 #define KEYWORD(symbol, flags, nargs, func) K_##symbol,
 enum {
@@ -98,6 +99,7 @@ enum {
     KEYWORD(load_all_props,        COMMAND, 0, do_load_all_props)
     KEYWORD(ioprio,      OPTION,  0, 0)
     KEYWORD(bootchart_init,        COMMAND, 0, do_bootchart_init)
+    KEYWORD(vdc,         COMMAND, 1, do_vdc)
 #ifdef __MAKE_KEYWORD_ENUM__
     KEYWORD_COUNT,
 };

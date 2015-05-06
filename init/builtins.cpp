@@ -851,3 +851,38 @@ int do_installkey(int nargs, char **args)
     return e4crypt_create_device_key(args[1],
                                      do_installkeys_ensure_dir_exists);
 }
+
+int do_vdc(int nargs, char **args)
+{
+    pid_t pid = fork();
+    if (pid < 0) {
+        ERROR("vdc: failed to fork: %s\n", strerror(errno));
+        return -errno;
+    }
+    if (pid == 0) {
+        char arg0[4] = "vdc";
+        args[0] = arg0;
+        execv("/system/bin/vdc", args);
+        fprintf(stderr, "vdc: execv of vdc failed: %s\n", strerror(errno));
+        exit(-1);
+    }
+    while (true) {
+        int status;
+        pid_t retpid = waitpid(pid, &status, 0);
+        if (retpid < 0) {
+            ERROR("vdc: error collecting child status: %s\n", strerror(errno));
+            return -errno;
+        }
+        if (retpid == pid) {
+            if (!WIFEXITED(status)) {
+                ERROR("vdc: terminated abnormally");
+                return -1;
+            }
+            if (WEXITSTATUS(status) != 0) {
+                ERROR("vdc: returned status %d", WEXITSTATUS(status));
+                return -1;
+            }
+            return 0;
+        }
+    }
+}
