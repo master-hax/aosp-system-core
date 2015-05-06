@@ -169,7 +169,7 @@ endif
 LOCAL_CLANG := $(adb_host_clang)
 
 LOCAL_SRC_FILES := \
-    adb_main.cpp \
+    client/main.cpp \
     console.cpp \
     commandline.cpp \
     adb_client.cpp \
@@ -221,7 +221,7 @@ include $(CLEAR_VARS)
 LOCAL_CLANG := true
 
 LOCAL_SRC_FILES := \
-    adb_main.cpp \
+    daemon/main.cpp \
     services.cpp \
     file_sync_service.cpp \
     framebuffer_service.cpp \
