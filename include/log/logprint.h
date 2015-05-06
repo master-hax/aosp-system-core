@@ -37,6 +37,7 @@ typedef enum {
     FORMAT_THREADTIME,
     FORMAT_LONG,
     FORMAT_COLOR,
+    FORMAT_USEC,
 } AndroidLogPrintFormat;
 
 typedef struct AndroidLogFormat_t AndroidLogFormat;
