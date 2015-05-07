@@ -768,7 +768,7 @@ static int smart_socket_enqueue(asocket *s, apacket *p)
             ** the OKAY or FAIL message and all we have to do
             ** is clean up.
             */
-        if(handle_host_request(service, type, serial, s->peer->fd, s) == 0) {
+        if(handle_host_request(service, type, serial ? serial : "", s->peer->fd, s) == 0) {
                 /* XXX fail message? */
             D( "SS(%d): handled host service '%s'\n", s->id, service );
             goto fail;

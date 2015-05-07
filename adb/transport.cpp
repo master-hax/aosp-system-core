@@ -756,7 +756,7 @@ retry:
         }
 
         /* check for matching serial number */
-        if (serial) {
+        if (serial && *serial != '\0') {
             if ((t->serial && !strcmp(serial, t->serial)) ||
                 (t->devpath && !strcmp(serial, t->devpath)) ||
                 qual_match(serial, "product:", t->product, false) ||
