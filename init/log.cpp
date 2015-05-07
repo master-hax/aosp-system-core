@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+#include "log.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/uio.h>
 
+#include <string>
+
 #include <selinux/selinux.h>
 
-#include "log.h"
+#include <base/stringprintf.h>
 
 static void init_klog_vwrite(int level, const char* fmt, va_list ap) {
     static const char* tag = basename(getprogname());
@@ -29,13 +33,16 @@ static void init_klog_vwrite(int level, const char* fmt, va_list ap) {
     snprintf(prefix, sizeof(prefix), "<%d>%s: ", level, tag);
 
     char msg[512];
-    vsnprintf(msg, sizeof(msg), fmt, ap);
+    size_t msg_size = vsnprintf(msg, sizeof(msg), fmt, ap);
+    if (msg_size >= sizeof(msg)) {
+        msg_size = snprintf(msg, sizeof(msg), "(%zu-byte message too long for kernel)\n", msg_size);
+    }
 
     iovec iov[2];
     iov[0].iov_base = prefix;
     iov[0].iov_len = strlen(prefix);
     iov[1].iov_base = msg;
-    iov[1].iov_len = strlen(msg);
+    iov[1].iov_len = msg_size;
 
     klog_writev(level, iov, 2);
 }
