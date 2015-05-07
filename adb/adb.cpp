@@ -693,12 +693,31 @@ int launch_server(int server_port)
 }
 #endif /* ADB_HOST */
 
+bool startswith(const std::string& str, const char* prefix, size_t pos = 0)
+{
+    size_t plen = strlen(prefix);
+    if (plen > str.length()) return false;
+    return str.compare(pos, plen, prefix) == 0;
+}
+
+std::string left_of(const std::string& str, char c)
+{
+    size_t loc = str.find(c);
+    return (loc == std::string::npos) ? str : str.substr(0, loc);
+}
+
+std::string right_of(const std::string& str, char c)
+{
+    size_t loc = str.find(c);
+    return (loc == std::string::npos) ? std::string() : str.substr(loc + 1);
+}
+
 // Try to handle a network forwarding request.
 // This returns 1 on success, 0 on failure, and -1 to indicate this is not
 // a forwarding-related request.
-int handle_forward_request(const char* service, TransportType type, char* serial, int reply_fd)
+int handle_forward_request(const std::string& service, TransportType type, const std::string& serial, int reply_fd)
 {
-    if (!strcmp(service, "list-forward")) {
+    if (service == "list-forward") {
         // Create the list of forward redirections.
         std::string listeners = format_listeners();
 #if ADB_HOST
@@ -708,7 +727,7 @@ int handle_forward_request(const char* service, TransportType type, char* serial
         return 1;
     }
 
-    if (!strcmp(service, "killforward-all")) {
+    if (service == "killforward-all") {
         remove_all_listeners();
 #if ADB_HOST
         /* On the host: 1st OKAY is connect, 2nd OKAY is status */
@@ -718,46 +737,46 @@ int handle_forward_request(const char* service, TransportType type, char* serial
         return 1;
     }
 
-    if (!strncmp(service, "forward:",8) ||
-        !strncmp(service, "killforward:",12)) {
-        char *local, *remote;
+    if (startswith(service, "forward:") ||
+        startswith(service, "killforward:")) {
+        std::string local, remote;
         atransport *transport;
 
-        int createForward = strncmp(service, "kill", 4);
+        bool createForward = !startswith(service, "kill");
         int no_rebind = 0;
 
-        local = strchr(service, ':') + 1;
+        local = right_of(service, ':');
 
         // Handle forward:norebind:<local>... here
-        if (createForward && !strncmp(local, "norebind:", 9)) {
+        if (createForward && startswith(local, "norebind:")) {
             no_rebind = 1;
-            local = strchr(local, ':') + 1;
+            local = right_of(local, ':');
         }
 
-        remote = strchr(local,';');
+        remote = right_of(local,';');
 
         if (createForward) {
             // Check forward: parameter format: '<local>;<remote>'
-            if(remote == 0) {
+            if(remote.empty()) {
                 SendFail(reply_fd, "malformed forward spec");
                 return 1;
             }
 
-            *remote++ = 0;
-            if((local[0] == 0) || (remote[0] == 0) || (remote[0] == '*')) {
+            local = left_of(local, ';');
+            if(local.empty() || remote.empty() || (remote[0] == '*')) {
                 SendFail(reply_fd, "malformed forward spec");
                 return 1;
             }
         } else {
             // Check killforward: parameter format: '<local>'
-            if (local[0] == 0) {
+            if (local.empty()) {
                 SendFail(reply_fd, "malformed forward spec");
                 return 1;
             }
         }
 
         std::string error_msg;
-        transport = acquire_one_transport(CS_ANY, type, serial, &error_msg);
+        transport = acquire_one_transport(CS_ANY, type, serial.c_str(), &error_msg);
         if (!transport) {
             SendFail(reply_fd, error_msg);
             return 1;
@@ -765,9 +784,9 @@ int handle_forward_request(const char* service, TransportType type, char* serial
 
         InstallStatus r;
         if (createForward) {
-            r = install_listener(local, remote, transport, no_rebind);
+            r = install_listener(local.c_str(), remote.c_str(), transport, no_rebind);
         } else {
-            r = remove_listener(local, transport);
+            r = remove_listener(local.c_str(), transport);
         }
         if (r == INSTALL_STATUS_OK) {
 #if ADB_HOST
@@ -796,9 +815,9 @@ int handle_forward_request(const char* service, TransportType type, char* serial
     return 0;
 }
 
-int handle_host_request(char *service, TransportType type, char* serial, int reply_fd, asocket *s)
+int handle_host_request(const std::string& service, TransportType type, const std::string& serial, int reply_fd, asocket *s)
 {
-    if(!strcmp(service, "kill")) {
+    if(service == "kill") {
         fprintf(stderr,"adb server killed by remote request\n");
         fflush(stdout);
         SendOkay(reply_fd);
@@ -812,22 +831,22 @@ int handle_host_request(char *service, TransportType type, char* serial, int rep
     // "transport-usb:" is used for switching transport to the only USB transport
     // "transport-local:" is used for switching transport to the only local transport
     // "transport-any:" is used for switching transport to the only transport
-    if (!strncmp(service, "transport", strlen("transport"))) {
+    if (startswith(service, "transport")) {
         TransportType type = kTransportAny;
+        std::string transport_serial;
 
-        if (!strncmp(service, "transport-usb", strlen("transport-usb"))) {
+        if (startswith(service, "transport-usb")) {
             type = kTransportUsb;
-        } else if (!strncmp(service, "transport-local", strlen("transport-local"))) {
+        } else if (startswith(service, "transport-local")) {
             type = kTransportLocal;
-        } else if (!strncmp(service, "transport-any", strlen("transport-any"))) {
+        } else if (startswith(service, "transport-any")) {
             type = kTransportAny;
-        } else if (!strncmp(service, "transport:", strlen("transport:"))) {
-            service += strlen("transport:");
-            serial = service;
+        } else if (startswith(service, "transport:")) {
+            transport_serial = right_of(service, ':');
         }
 
         std::string error_msg = "unknown failure";
-        transport = acquire_one_transport(CS_ANY, type, serial, &error_msg);
+        transport = acquire_one_transport(CS_ANY, type, transport_serial.c_str(), &error_msg);
 
         if (transport) {
             s->transport = transport;
@@ -839,9 +858,9 @@ int handle_host_request(char *service, TransportType type, char* serial, int rep
     }
 
     // return a list of all connected devices
-    if (!strncmp(service, "devices", 7)) {
-        bool long_listing = (strcmp(service+7, "-l") == 0);
-        if (long_listing || service[7] == 0) {
+    if (startswith(service, "devices")) {
+        bool long_listing = startswith(service, "-l", 7);
+        if (long_listing || service.size() == 7) {
             D("Getting device list...\n");
             std::string device_list = list_transports(long_listing);
             D("Sending device list...\n");
@@ -853,44 +872,41 @@ int handle_host_request(char *service, TransportType type, char* serial, int rep
     }
 
     // remove TCP transport
-    if (!strncmp(service, "disconnect:", 11)) {
-        char buffer[4096];
-        memset(buffer, 0, sizeof(buffer));
-        char* serial = service + 11;
-        if (serial[0] == 0) {
+    if (startswith(service, "disconnect:")) {
+        std::string reply;
+        if (service == "disconnect:") {
             // disconnect from all TCP devices
             unregister_all_tcp_transports();
         } else {
-            char hostbuf[100];
+            std::string serial = service.substr(11);
             // assume port 5555 if no port is specified
-            if (!strchr(serial, ':')) {
-                snprintf(hostbuf, sizeof(hostbuf) - 1, "%s:5555", serial);
-                serial = hostbuf;
+            if (serial.find(':') == std::string::npos) {
+                serial.append(":5555");
             }
-            atransport *t = find_transport(serial);
+            atransport *t = find_transport(serial.c_str());
 
             if (t) {
                 unregister_transport(t);
             } else {
-                snprintf(buffer, sizeof(buffer), "No such device %s", serial);
+                reply.append("No such device ").append(serial);
             }
         }
 
         SendOkay(reply_fd);
-        SendProtocolString(reply_fd, buffer);
+        SendProtocolString(reply_fd, reply);
         return 0;
     }
 
     // returns our value for ADB_SERVER_VERSION
-    if (!strcmp(service, "version")) {
+    if (service == "version") {
         SendOkay(reply_fd);
         SendProtocolString(reply_fd, android::base::StringPrintf("%04x", ADB_SERVER_VERSION));
         return 0;
     }
 
-    if(!strncmp(service,"get-serialno",strlen("get-serialno"))) {
-        const char *out = "unknown";
-        transport = acquire_one_transport(CS_ANY, type, serial, NULL);
+    if(startswith(service,"get-serialno")) {
+        std::string out = "unknown";
+        transport = acquire_one_transport(CS_ANY, type, serial.c_str(), NULL);
         if (transport && transport->serial) {
             out = transport->serial;
         }
@@ -898,9 +914,9 @@ int handle_host_request(char *service, TransportType type, char* serial, int rep
         SendProtocolString(reply_fd, out);
         return 0;
     }
-    if(!strncmp(service,"get-devpath",strlen("get-devpath"))) {
-        const char *out = "unknown";
-        transport = acquire_one_transport(CS_ANY, type, serial, NULL);
+    if(startswith(service,"get-devpath")) {
+        std::string out = "unknown";
+        transport = acquire_one_transport(CS_ANY, type, serial.c_str(), NULL);
         if (transport && transport->devpath) {
             out = transport->devpath;
         }
@@ -909,15 +925,15 @@ int handle_host_request(char *service, TransportType type, char* serial, int rep
         return 0;
     }
     // indicates a new emulator instance has started
-    if (!strncmp(service,"emulator:",9)) {
-        int  port = atoi(service+9);
+    if (startswith(service,"emulator:")) {
+        int  port = std::stoi(service.substr(9));
         local_connect(port);
         /* we don't even need to send a reply */
         return 0;
     }
 
-    if(!strncmp(service,"get-state",strlen("get-state"))) {
-        transport = acquire_one_transport(CS_ANY, type, serial, NULL);
+    if(startswith(service,"get-state")) {
+        transport = acquire_one_transport(CS_ANY, type, serial.c_str(), NULL);
         SendOkay(reply_fd);
         SendProtocolString(reply_fd, transport->connection_state_name());
         return 0;
