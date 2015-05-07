@@ -41,14 +41,12 @@
 #include "qemu_tracing.h"
 #endif
 
-static void adb_cleanup(void)
-{
+static void adb_cleanup(void) {
     usb_cleanup();
 }
 
 #if defined(_WIN32)
-static BOOL WINAPI ctrlc_handler(DWORD type)
-{
+static BOOL WINAPI ctrlc_handler(DWORD type) {
     exit(STATUS_CONTROL_C_EXIT);
     return TRUE;
 }
@@ -58,30 +56,29 @@ static BOOL WINAPI ctrlc_handler(DWORD type)
 #ifdef WORKAROUND_BUG6558362
 #include <sched.h>
 #define AFFINITY_ENVVAR "ADB_CPU_AFFINITY_BUG6558362"
-void adb_set_affinity(void)
-{
-   cpu_set_t cpu_set;
-   const char* cpunum_str = getenv(AFFINITY_ENVVAR);
-   char* strtol_res;
-   int cpu_num;
+void adb_set_affinity(void) {
+    cpu_set_t cpu_set;
+    const char* cpunum_str = getenv(AFFINITY_ENVVAR);
+    char* strtol_res;
+    int cpu_num;
 
-   if (!cpunum_str || !*cpunum_str)
-       return;
-   cpu_num = strtol(cpunum_str, &strtol_res, 0);
-   if (*strtol_res != '\0')
-     fatal("bad number (%s) in env var %s. Expecting 0..n.\n", cpunum_str, AFFINITY_ENVVAR);
+    if (!cpunum_str || !*cpunum_str) return;
+    cpu_num = strtol(cpunum_str, &strtol_res, 0);
+    if (*strtol_res != '\0')
+        fatal("bad number (%s) in env var %s. Expecting 0..n.\n", cpunum_str,
+              AFFINITY_ENVVAR);
 
-   sched_getaffinity(0, sizeof(cpu_set), &cpu_set);
-   D("orig cpu_set[0]=0x%08lx\n", cpu_set.__bits[0]);
-   CPU_ZERO(&cpu_set);
-   CPU_SET(cpu_num, &cpu_set);
-   sched_setaffinity(0, sizeof(cpu_set), &cpu_set);
-   sched_getaffinity(0, sizeof(cpu_set), &cpu_set);
-   D("new cpu_set[0]=0x%08lx\n", cpu_set.__bits[0]);
+    sched_getaffinity(0, sizeof(cpu_set), &cpu_set);
+    D("orig cpu_set[0]=0x%08lx\n", cpu_set.__bits[0]);
+    CPU_ZERO(&cpu_set);
+    CPU_SET(cpu_num, &cpu_set);
+    sched_setaffinity(0, sizeof(cpu_set), &cpu_set);
+    sched_getaffinity(0, sizeof(cpu_set), &cpu_set);
+    D("new cpu_set[0]=0x%08lx\n", cpu_set.__bits[0]);
 }
 #endif
 #else /* ADB_HOST */
-static const char *root_seclabel = NULL;
+static const char* root_seclabel = NULL;
 
 static void drop_capabilities_bounding_set_if_needed() {
 #ifdef ALLOW_ADBD_ROOT
@@ -113,7 +110,8 @@ static bool should_drop_privileges() {
     char value[PROPERTY_VALUE_MAX];
 
     // The emulator is never secure, so don't drop privileges there.
-    // TODO: this seems like a bug --- shouldn't the emulator behave like a device?
+    // TODO: this seems like a bug --- shouldn't the emulator behave like a
+    // device?
     property_get("ro.kernel.qemu", value, "");
     if (strcmp(value, "1") == 0) {
         return false;
@@ -154,35 +152,32 @@ static bool should_drop_privileges() {
 
     return drop;
 #else
-    return true; // "adb root" not allowed, always drop privileges.
+    return true;  // "adb root" not allowed, always drop privileges.
 #endif /* ALLOW_ADBD_ROOT */
 }
 #endif /* ADB_HOST */
 
-void start_logging(void)
-{
+void start_logging(void) {
 #if defined(_WIN32)
-    char    temp[ MAX_PATH ];
-    FILE*   fnul;
-    FILE*   flog;
+    char temp[MAX_PATH];
+    FILE* fnul;
+    FILE* flog;
 
-    GetTempPath( sizeof(temp) - 8, temp );
-    strcat( temp, "adb.log" );
+    GetTempPath(sizeof(temp) - 8, temp);
+    strcat(temp, "adb.log");
 
     /* Win32 specific redirections */
-    fnul = fopen( "NUL", "rt" );
-    if (fnul != NULL)
-        stdin[0] = fnul[0];
+    fnul = fopen("NUL", "rt");
+    if (fnul != NULL) stdin[0] = fnul[0];
 
-    flog = fopen( temp, "at" );
-    if (flog == NULL)
-        flog = fnul;
+    flog = fopen(temp, "at");
+    if (flog == NULL) flog = fnul;
 
-    setvbuf( flog, NULL, _IONBF, 0 );
+    setvbuf(flog, NULL, _IONBF, 0);
 
     stdout[0] = flog[0];
     stderr[0] = flog[0];
-    fprintf(stderr,"--- adb starting (pid %d) ---\n", getpid());
+    fprintf(stderr, "--- adb starting (pid %d) ---\n", getpid());
 #else
     int fd;
 
@@ -191,18 +186,17 @@ void start_logging(void)
     adb_close(fd);
 
     fd = unix_open("/tmp/adb.log", O_WRONLY | O_CREAT | O_APPEND, 0640);
-    if(fd < 0) {
+    if (fd < 0) {
         fd = unix_open("/dev/null", O_WRONLY);
     }
     dup2(fd, 1);
     dup2(fd, 2);
     adb_close(fd);
-    fprintf(stderr,"--- adb starting (pid %d) ---\n", getpid());
+    fprintf(stderr, "--- adb starting (pid %d) ---\n", getpid());
 #endif
 }
 
-int adb_main(int is_daemon, int server_port)
-{
+int adb_main(int is_daemon, int server_port) {
 #if !ADB_HOST
     int port;
     char value[PROPERTY_VALUE_MAX];
@@ -212,7 +206,7 @@ int adb_main(int is_daemon, int server_port)
 
     atexit(adb_cleanup);
 #if defined(_WIN32)
-    SetConsoleCtrlHandler( ctrlc_handler, TRUE );
+    SetConsoleCtrlHandler(ctrlc_handler, TRUE);
 #else
     // No SIGCHLD. Let the service subproc handle its children.
     signal(SIGPIPE, SIG_IGN);
@@ -224,7 +218,7 @@ int adb_main(int is_daemon, int server_port)
     HOST = 1;
 
 #ifdef WORKAROUND_BUG6558362
-    if(is_daemon) adb_set_affinity();
+    if (is_daemon) adb_set_affinity();
 #endif
     usb_init();
     local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
@@ -241,8 +235,7 @@ int adb_main(int is_daemon, int server_port)
 
     property_get("ro.adb.secure", value, "0");
     auth_enabled = !strcmp(value, "1");
-    if (auth_enabled)
-        adbd_auth_init();
+    if (auth_enabled) adbd_auth_init();
 
     // Our external storage path may be different than apps, since
     // we aren't able to bind mount after dropping root.
@@ -264,10 +257,10 @@ int adb_main(int is_daemon, int server_port)
     ** AID_SDCARD_RW to allow writing to the SD card
     ** AID_NET_BW_STATS to read out qtaguid statistics
     */
-    gid_t groups[] = { AID_ADB, AID_LOG, AID_INPUT, AID_INET, AID_NET_BT,
-                       AID_NET_BT_ADMIN, AID_SDCARD_R, AID_SDCARD_RW,
-                       AID_NET_BW_STATS };
-    if (setgroups(sizeof(groups)/sizeof(groups[0]), groups) != 0) {
+    gid_t groups[] = {AID_ADB,      AID_LOG,       AID_INPUT,
+                      AID_INET,     AID_NET_BT,    AID_NET_BT_ADMIN,
+                      AID_SDCARD_R, AID_SDCARD_RW, AID_NET_BW_STATS};
+    if (setgroups(sizeof(groups) / sizeof(groups[0]), groups) != 0) {
         exit(1);
     }
 
@@ -288,11 +281,12 @@ int adb_main(int is_daemon, int server_port)
     } else {
         if ((root_seclabel != NULL) && (is_selinux_enabled() > 0)) {
             // b/12587913: fix setcon to allow const pointers
-            if (setcon((char *)root_seclabel) < 0) {
+            if (setcon((char*)root_seclabel) < 0) {
                 exit(1);
             }
         }
-        std::string local_name = android::base::StringPrintf("tcp:%d", server_port);
+        std::string local_name =
+            android::base::StringPrintf("tcp:%d", server_port);
         if (install_listener(local_name, "*smartsocket*", NULL, 0)) {
             exit(1);
         }
@@ -326,12 +320,11 @@ int adb_main(int is_daemon, int server_port)
     D("adb_main(): post init_jdwp()\n");
 #endif
 
-    if (is_daemon)
-    {
-        // inform our parent that we are up and running.
+    if (is_daemon) {
+// inform our parent that we are up and running.
 #if defined(_WIN32)
-        DWORD  count;
-        WriteFile( GetStdHandle( STD_OUTPUT_HANDLE ), "OK\n", 3, &count, NULL );
+        DWORD count;
+        WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), "OK\n", 3, &count, NULL);
 #else
         fprintf(stderr, "OK\n");
 #endif
@@ -359,7 +352,7 @@ void close_stdin() {
 #endif
 
 // TODO(danalbert): Split this file up into adb_main.cpp and adbd_main.cpp.
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 #if ADB_HOST
     // adb client/server
     adb_sysdeps_init();
@@ -377,22 +370,21 @@ int main(int argc, char **argv) {
 
         int option_index = 0;
         int c = getopt_long(argc, argv, "", opts, &option_index);
-        if (c == -1)
-            break;
+        if (c == -1) break;
         switch (c) {
-        case 's':
-            root_seclabel = optarg;
-            break;
-        case 'b':
-            adb_device_banner = optarg;
-            break;
-        case 'v':
-            printf("Android Debug Bridge Daemon version %d.%d.%d %s\n",
-                   ADB_VERSION_MAJOR, ADB_VERSION_MINOR, ADB_SERVER_VERSION,
-                   ADB_REVISION);
-            return 0;
-        default:
-            break;
+            case 's':
+                root_seclabel = optarg;
+                break;
+            case 'b':
+                adb_device_banner = optarg;
+                break;
+            case 'v':
+                printf("Android Debug Bridge Daemon version %d.%d.%d %s\n",
+                       ADB_VERSION_MAJOR, ADB_VERSION_MINOR, ADB_SERVER_VERSION,
+                       ADB_REVISION);
+                return 0;
+            default:
+                break;
         }
     }
 

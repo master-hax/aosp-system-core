@@ -31,39 +31,38 @@
 #include "sysdeps.h"
 
 bool getcwd(std::string* s) {
-  char* cwd = getcwd(nullptr, 0);
-  if (cwd != nullptr) *s = cwd;
-  free(cwd);
-  return (cwd != nullptr);
+    char* cwd = getcwd(nullptr, 0);
+    if (cwd != nullptr) *s = cwd;
+    free(cwd);
+    return (cwd != nullptr);
 }
 
 bool directory_exists(const std::string& path) {
-  struct stat sb;
-  return lstat(path.c_str(), &sb) != -1 && S_ISDIR(sb.st_mode);
+    struct stat sb;
+    return lstat(path.c_str(), &sb) != -1 && S_ISDIR(sb.st_mode);
 }
 
 std::string escape_arg(const std::string& s) {
-  std::string result = s;
+    std::string result = s;
 
-  // Insert a \ before any ' in the string.
-  for (auto it = result.begin(); it != result.end(); ++it) {
-      if (*it == '\'') {
-          it = result.insert(it, '\\') + 1;
-      }
-  }
+    // Insert a \ before any ' in the string.
+    for (auto it = result.begin(); it != result.end(); ++it) {
+        if (*it == '\'') {
+            it = result.insert(it, '\\') + 1;
+        }
+    }
 
-  // Prefix and suffix the whole string with '.
-  result.insert(result.begin(), '\'');
-  result.push_back('\'');
-  return result;
+    // Prefix and suffix the whole string with '.
+    result.insert(result.begin(), '\'');
+    result.push_back('\'');
+    return result;
 }
 
-bool mkdirs(const std::string& path)
-{
-    for(size_t i = adb_dirstart(path, 1); i != std::string::npos;
-        i = adb_dirstart(path, i + 1)) {
+bool mkdirs(const std::string& path) {
+    for (size_t i = adb_dirstart(path, 1); i != std::string::npos;
+         i = adb_dirstart(path, i + 1)) {
         int ret = adb_mkdir(path.substr(0, i), 0775);
-        if((ret == -1) && (errno != EEXIST)) {
+        if ((ret == -1) && (errno != EEXIST)) {
             return false;
         }
     }

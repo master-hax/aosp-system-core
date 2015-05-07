@@ -30,104 +30,106 @@
 #include "base/file.h"
 
 class TemporaryFile {
- public:
-  TemporaryFile() {
-    init("/data/local/tmp");
-    if (fd == -1) {
-      init("/tmp");
+   public:
+    TemporaryFile() {
+        init("/data/local/tmp");
+        if (fd == -1) {
+            init("/tmp");
+        }
     }
-  }
 
-  ~TemporaryFile() {
-    close(fd);
-    unlink(filename);
-  }
+    ~TemporaryFile() {
+        close(fd);
+        unlink(filename);
+    }
 
-  int fd;
-  char filename[1024];
+    int fd;
+    char filename[1024];
 
- private:
-  void init(const char* tmp_dir) {
-    snprintf(filename, sizeof(filename), "%s/TemporaryFile-XXXXXX", tmp_dir);
-    fd = mkstemp(filename);
-  }
+   private:
+    void init(const char* tmp_dir) {
+        snprintf(filename, sizeof(filename), "%s/TemporaryFile-XXXXXX", tmp_dir);
+        fd = mkstemp(filename);
+    }
 };
 
 TEST(io, ReadFdExactly_whole) {
-  const char expected[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char expected[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  ASSERT_TRUE(android::base::WriteStringToFd(expected, tf.fd)) << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    ASSERT_TRUE(android::base::WriteStringToFd(expected, tf.fd))
+        << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  // Test reading the whole file.
-  char buf[sizeof(expected)] = {};
-  ASSERT_TRUE(ReadFdExactly(tf.fd, buf, sizeof(buf) - 1)) << strerror(errno);
-  EXPECT_STREQ(expected, buf);
+    // Test reading the whole file.
+    char buf[sizeof(expected)] = {};
+    ASSERT_TRUE(ReadFdExactly(tf.fd, buf, sizeof(buf) - 1)) << strerror(errno);
+    EXPECT_STREQ(expected, buf);
 }
 
 TEST(io, ReadFdExactly_eof) {
-  const char expected[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char expected[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  ASSERT_TRUE(android::base::WriteStringToFd(expected, tf.fd)) << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    ASSERT_TRUE(android::base::WriteStringToFd(expected, tf.fd))
+        << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  // Test that not having enough data will fail.
-  char buf[sizeof(expected) + 1] = {};
-  ASSERT_FALSE(ReadFdExactly(tf.fd, buf, sizeof(buf)));
-  EXPECT_EQ(0, errno) << strerror(errno);
+    // Test that not having enough data will fail.
+    char buf[sizeof(expected) + 1] = {};
+    ASSERT_FALSE(ReadFdExactly(tf.fd, buf, sizeof(buf)));
+    EXPECT_EQ(0, errno) << strerror(errno);
 }
 
 TEST(io, ReadFdExactly_partial) {
-  const char input[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char input[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  ASSERT_TRUE(android::base::WriteStringToFd(input, tf.fd)) << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    ASSERT_TRUE(android::base::WriteStringToFd(input, tf.fd)) << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  // Test reading a partial file.
-  char buf[sizeof(input) - 1] = {};
-  ASSERT_TRUE(ReadFdExactly(tf.fd, buf, sizeof(buf) - 1));
+    // Test reading a partial file.
+    char buf[sizeof(input) - 1] = {};
+    ASSERT_TRUE(ReadFdExactly(tf.fd, buf, sizeof(buf) - 1));
 
-  std::string expected(input);
-  expected.pop_back();
-  EXPECT_STREQ(expected.c_str(), buf);
+    std::string expected(input);
+    expected.pop_back();
+    EXPECT_STREQ(expected.c_str(), buf);
 }
 
 TEST(io, WriteFdExactly_whole) {
-  const char expected[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char expected[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  // Test writing the whole string to the file.
-  ASSERT_TRUE(WriteFdExactly(tf.fd, expected, sizeof(expected)))
-    << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    // Test writing the whole string to the file.
+    ASSERT_TRUE(WriteFdExactly(tf.fd, expected, sizeof(expected)))
+        << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  std::string s;
-  ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
-  EXPECT_STREQ(expected, s.c_str());
+    std::string s;
+    ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
+    EXPECT_STREQ(expected, s.c_str());
 }
 
 TEST(io, WriteFdExactly_partial) {
-  const char buf[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char buf[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  // Test writing a partial string to the file.
-  ASSERT_TRUE(WriteFdExactly(tf.fd, buf, sizeof(buf) - 2)) << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    // Test writing a partial string to the file.
+    ASSERT_TRUE(WriteFdExactly(tf.fd, buf, sizeof(buf) - 2)) << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  std::string expected(buf);
-  expected.pop_back();
+    std::string expected(buf);
+    expected.pop_back();
 
-  std::string s;
-  ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
-  EXPECT_EQ(expected, s);
+    std::string s;
+    ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
+    EXPECT_EQ(expected, s);
 }
 
 TEST(io, WriteFdExactly_ENOSPC) {
@@ -140,17 +142,17 @@ TEST(io, WriteFdExactly_ENOSPC) {
 }
 
 TEST(io, WriteFdExactly_string) {
-  const char str[] = "Foobar";
-  TemporaryFile tf;
-  ASSERT_NE(-1, tf.fd);
+    const char str[] = "Foobar";
+    TemporaryFile tf;
+    ASSERT_NE(-1, tf.fd);
 
-  // Test writing a partial string to the file.
-  ASSERT_TRUE(WriteFdExactly(tf.fd, str)) << strerror(errno);
-  ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
+    // Test writing a partial string to the file.
+    ASSERT_TRUE(WriteFdExactly(tf.fd, str)) << strerror(errno);
+    ASSERT_EQ(0, lseek(tf.fd, SEEK_SET, 0));
 
-  std::string s;
-  ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
-  EXPECT_STREQ(str, s.c_str());
+    std::string s;
+    ASSERT_TRUE(android::base::ReadFdToString(tf.fd, &s));
+    EXPECT_STREQ(str, s.c_str());
 }
 
 TEST(io, WriteFdFmt) {

@@ -33,7 +33,7 @@
 #include "remount_service.h"
 
 #define FSTAB_PREFIX "/fstab."
-struct fstab *fstab;
+struct fstab* fstab;
 
 #ifdef ALLOW_ADBD_DISABLE_VERITY
 static const bool kAllowDisableVerity = true;
@@ -41,14 +41,13 @@ static const bool kAllowDisableVerity = true;
 static const bool kAllowDisableVerity = false;
 #endif
 
-static int get_target_device_size(int fd, const char *blk_device,
-                                  uint64_t *device_size)
-{
+static int get_target_device_size(int fd, const char* blk_device,
+                                  uint64_t* device_size) {
     int data_device;
     struct ext4_super_block sb;
     struct fs_info info;
 
-    info.len = 0;  /* Only len is set to 0 to ask the device for real size. */
+    info.len = 0; /* Only len is set to 0 to ask the device for real size. */
 
     data_device = adb_open(blk_device, O_RDONLY | O_CLOEXEC);
     if (data_device < 0) {
@@ -76,12 +75,11 @@ static int get_target_device_size(int fd, const char *blk_device,
 }
 
 /* Turn verity on/off */
-static int set_verity_enabled_state(int fd, const char *block_device,
-                                    const char* mount_point, bool enable)
-{
+static int set_verity_enabled_state(int fd, const char* block_device,
+                                    const char* mount_point, bool enable) {
     uint32_t magic_number;
-    const uint32_t new_magic = enable ? VERITY_METADATA_MAGIC_NUMBER
-                                      : VERITY_METADATA_MAGIC_DISABLE;
+    const uint32_t new_magic =
+        enable ? VERITY_METADATA_MAGIC_NUMBER : VERITY_METADATA_MAGIC_DISABLE;
     uint64_t device_length = 0;
     int device = -1;
     int retval = -1;
@@ -94,7 +92,8 @@ static int set_verity_enabled_state(int fd, const char *block_device,
 
     device = adb_open(block_device, O_RDWR | O_CLOEXEC);
     if (device == -1) {
-        WriteFdFmt(fd, "Could not open block device %s (%s).\n", block_device, strerror(errno));
+        WriteFdFmt(fd, "Could not open block device %s (%s).\n", block_device,
+                   strerror(errno));
         WriteFdFmt(fd, "Maybe run adb remount?\n");
         goto errout;
     }
@@ -111,7 +110,8 @@ static int set_verity_enabled_state(int fd, const char *block_device,
     }
 
     // check the magic number
-    if (adb_read(device, &magic_number, sizeof(magic_number)) != sizeof(magic_number)) {
+    if (adb_read(device, &magic_number, sizeof(magic_number)) !=
+        sizeof(magic_number)) {
         WriteFdFmt(fd, "Couldn't read magic number!\n");
         goto errout;
     }
@@ -126,9 +126,10 @@ static int set_verity_enabled_state(int fd, const char *block_device,
         goto errout;
     }
 
-    if (magic_number != VERITY_METADATA_MAGIC_NUMBER
-            && magic_number != VERITY_METADATA_MAGIC_DISABLE) {
-        WriteFdFmt(fd, "Couldn't find verity metadata at offset %" PRIu64 "!\n", device_length);
+    if (magic_number != VERITY_METADATA_MAGIC_NUMBER &&
+        magic_number != VERITY_METADATA_MAGIC_DISABLE) {
+        WriteFdFmt(fd, "Couldn't find verity metadata at offset %" PRIu64 "!\n",
+                   device_length);
         goto errout;
     }
 
@@ -138,22 +139,21 @@ static int set_verity_enabled_state(int fd, const char *block_device,
     }
 
     if (adb_write(device, &new_magic, sizeof(new_magic)) != sizeof(new_magic)) {
-        WriteFdFmt(fd, "Could not set verity %s flag on device %s with error %s\n",
-                   enable ? "enabled" : "disabled",
-                   block_device, strerror(errno));
+        WriteFdFmt(
+            fd, "Could not set verity %s flag on device %s with error %s\n",
+            enable ? "enabled" : "disabled", block_device, strerror(errno));
         goto errout;
     }
 
-    WriteFdFmt(fd, "Verity %s on %s\n", enable ? "enabled" : "disabled", mount_point);
+    WriteFdFmt(fd, "Verity %s on %s\n", enable ? "enabled" : "disabled",
+               mount_point);
     retval = 0;
 errout:
-    if (device != -1)
-        adb_close(device);
+    if (device != -1) adb_close(device);
     return retval;
 }
 
-void set_verity_enabled_state_service(int fd, void* cookie)
-{
+void set_verity_enabled_state_service(int fd, void* cookie) {
     bool enable = (cookie != NULL);
     if (kAllowDisableVerity) {
         char fstab_filename[PROPERTY_VALUE_MAX + sizeof(FSTAB_PREFIX)];
@@ -174,28 +174,30 @@ void set_verity_enabled_state_service(int fd, void* cookie)
         }
 
         property_get("ro.hardware", propbuf, "");
-        snprintf(fstab_filename, sizeof(fstab_filename), FSTAB_PREFIX"%s",
+        snprintf(fstab_filename, sizeof(fstab_filename), FSTAB_PREFIX "%s",
                  propbuf);
 
         fstab = fs_mgr_read_fstab(fstab_filename);
         if (!fstab) {
-            WriteFdFmt(fd, "Failed to open %s\nMaybe run adb root?\n", fstab_filename);
+            WriteFdFmt(fd, "Failed to open %s\nMaybe run adb root?\n",
+                       fstab_filename);
             goto errout;
         }
 
         /* Loop through entries looking for ones that vold manages */
         for (i = 0; i < fstab->num_entries; i++) {
-            if(fs_mgr_is_verified(&fstab->recs[i])) {
+            if (fs_mgr_is_verified(&fstab->recs[i])) {
                 if (!set_verity_enabled_state(fd, fstab->recs[i].blk_device,
                                               fstab->recs[i].mount_point,
                                               enable)) {
                     any_changed = true;
                 }
-           }
+            }
         }
 
         if (any_changed) {
-            WriteFdFmt(fd, "Now reboot your device for settings to take effect\n");
+            WriteFdFmt(fd,
+                       "Now reboot your device for settings to take effect\n");
         }
     } else {
         WriteFdFmt(fd, "%s-verity only works for userdebug builds\n",

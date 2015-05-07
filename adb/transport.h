@@ -67,4 +67,4 @@ void send_packet(apacket* p, atransport* t);
 
 asocket* create_device_tracker(void);
 
-#endif   /* __TRANSPORT_H */
+#endif /* __TRANSPORT_H */

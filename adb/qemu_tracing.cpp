@@ -30,20 +30,19 @@
 
 #undef open
 #undef write
-#define open    adb_open
-#define write   adb_write
+#define open adb_open
+#define write adb_write
 #include <hardware/qemu_pipe.h>
 #undef open
 #undef write
-#define open    ___xxx_open
-#define write   ___xxx_write
+#define open ___xxx_open
+#define write ___xxx_write
 
 /* A handle to adb-debug qemud service in the emulator. */
-int   adb_debug_qemu = -1;
+int adb_debug_qemu = -1;
 
 /* Initializes connection with the adb-debug qemud service in the emulator. */
-int adb_qemu_trace_init(void)
-{
+int adb_qemu_trace_init(void) {
     char con_name[32];
 
     if (adb_debug_qemu >= 0) {
@@ -56,8 +55,7 @@ int adb_qemu_trace_init(void)
     return (adb_debug_qemu >= 0) ? 0 : -1;
 }
 
-void adb_qemu_trace(const char* fmt, ...)
-{
+void adb_qemu_trace(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
     char msg[1024];

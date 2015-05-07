@@ -24,15 +24,15 @@
 #include <string.h>
 
 #ifdef _WIN32
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN
-#  endif
-#  include "windows.h"
-#  include "shlobj.h"
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include "windows.h"
+#include "shlobj.h"
 #else
-#  include <sys/types.h>
-#  include <sys/stat.h>
-#  include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 #include "adb.h"
@@ -56,20 +56,19 @@
 #include <openssl/base64.h>
 #endif
 
-#define ANDROID_PATH   ".android"
-#define ADB_KEY_FILE   "adbkey"
+#define ANDROID_PATH ".android"
+#define ADB_KEY_FILE "adbkey"
 
 struct adb_private_key {
     struct listnode node;
-    RSA *rsa;
+    RSA* rsa;
 };
 
 static struct listnode key_list;
 
-
-/* Convert OpenSSL RSA private key to android pre-computed RSAPublicKey format */
-static int RSA_to_RSAPublicKey(RSA *rsa, RSAPublicKey *pkey)
-{
+/* Convert OpenSSL RSA private key to android pre-computed RSAPublicKey format
+ */
+static int RSA_to_RSAPublicKey(RSA* rsa, RSAPublicKey* pkey) {
     int ret = 1;
     unsigned int i;
 
@@ -115,48 +114,41 @@ out:
     return ret;
 }
 
-static void get_user_info(char *buf, size_t len)
-{
+static void get_user_info(char* buf, size_t len) {
     char hostname[1024], username[1024];
     int ret = -1;
 
     if (getenv("HOSTNAME") != NULL) {
         strncpy(hostname, getenv("HOSTNAME"), sizeof(hostname));
-        hostname[sizeof(hostname)-1] = '\0';
+        hostname[sizeof(hostname) - 1] = '\0';
         ret = 0;
     }
 
 #ifndef _WIN32
-    if (ret < 0)
-        ret = gethostname(hostname, sizeof(hostname));
+    if (ret < 0) ret = gethostname(hostname, sizeof(hostname));
 #endif
-    if (ret < 0)
-        strcpy(hostname, "unknown");
+    if (ret < 0) strcpy(hostname, "unknown");
 
     ret = -1;
 
     if (getenv("LOGNAME") != NULL) {
         strncpy(username, getenv("LOGNAME"), sizeof(username));
-        username[sizeof(username)-1] = '\0';
+        username[sizeof(username) - 1] = '\0';
         ret = 0;
     }
 
 #if !defined _WIN32 && !defined ADB_HOST_ON_TARGET
-    if (ret < 0)
-        ret = getlogin_r(username, sizeof(username));
+    if (ret < 0) ret = getlogin_r(username, sizeof(username));
 #endif
-    if (ret < 0)
-        strcpy(username, "unknown");
+    if (ret < 0) strcpy(username, "unknown");
 
     ret = snprintf(buf, len, " %s@%s", username, hostname);
-    if (ret >= (signed)len)
-        buf[len - 1] = '\0';
+    if (ret >= (signed)len) buf[len - 1] = '\0';
 }
 
-static int write_public_keyfile(RSA *private_key, const char *private_key_path)
-{
+static int write_public_keyfile(RSA* private_key, const char* private_key_path) {
     RSAPublicKey pkey;
-    FILE *outfile = NULL;
+    FILE* outfile = NULL;
     char path[PATH_MAX], info[MAX_PAYLOAD];
     uint8_t* encoded = nullptr;
     size_t encoded_length;
@@ -198,7 +190,7 @@ static int write_public_keyfile(RSA *private_key, const char *private_key_path)
         goto out;
     }
 
-    encoded_length = EVP_EncodeBlock(encoded, (uint8_t*) &pkey, sizeof(pkey));
+    encoded_length = EVP_EncodeBlock(encoded, (uint8_t*)&pkey, sizeof(pkey));
     get_user_info(info, sizeof(info));
 
     if (fwrite(encoded, encoded_length, 1, outfile) != 1 ||
@@ -209,7 +201,7 @@ static int write_public_keyfile(RSA *private_key, const char *private_key_path)
 
     ret = 1;
 
- out:
+out:
     if (outfile != NULL) {
         fclose(outfile);
     }
@@ -217,13 +209,12 @@ static int write_public_keyfile(RSA *private_key, const char *private_key_path)
     return ret;
 }
 
-static int generate_key(const char *file)
-{
+static int generate_key(const char* file) {
     EVP_PKEY* pkey = EVP_PKEY_new();
     BIGNUM* exponent = BN_new();
     RSA* rsa = RSA_new();
     mode_t old_mask;
-    FILE *f = NULL;
+    FILE* f = NULL;
     int ret = 0;
 
     D("generate_key '%s'\n", file);
@@ -261,16 +252,14 @@ static int generate_key(const char *file)
     ret = 1;
 
 out:
-    if (f)
-        fclose(f);
+    if (f) fclose(f);
     EVP_PKEY_free(pkey);
     RSA_free(rsa);
     BN_free(exponent);
     return ret;
 }
 
-static int read_key(const char *file, struct listnode *list)
-{
+static int read_key(const char* file, struct listnode* list) {
     D("read_key '%s'\n", file);
 
     FILE* fp = fopen(file, "re");
@@ -295,8 +284,7 @@ static int read_key(const char *file, struct listnode *list)
     return 1;
 }
 
-static int get_user_keyfilepath(char *filename, size_t len)
-{
+static int get_user_keyfilepath(char* filename, size_t len) {
     const char *format, *home;
     char android_dir[PATH_MAX];
     struct stat buf;
@@ -310,15 +298,14 @@ static int get_user_keyfilepath(char *filename, size_t len)
     format = "%s\\%s";
 #else
     home = getenv("HOME");
-    if (!home)
-        return -1;
+    if (!home) return -1;
     format = "%s/%s";
 #endif
 
     D("home '%s'\n", home);
 
     if (snprintf(android_dir, sizeof(android_dir), format, home,
-                        ANDROID_PATH) >= (int)sizeof(android_dir))
+                 ANDROID_PATH) >= (int)sizeof(android_dir))
         return -1;
 
     if (stat(android_dir, &buf)) {
@@ -331,8 +318,7 @@ static int get_user_keyfilepath(char *filename, size_t len)
     return snprintf(filename, len, format, android_dir, ADB_KEY_FILE);
 }
 
-static int get_user_key(struct listnode *list)
-{
+static int get_user_key(struct listnode* list) {
     struct stat buf;
     char path[PATH_MAX];
     int ret;
@@ -361,18 +347,19 @@ static void get_vendor_keys(struct listnode* key_list) {
         return;
     }
 
-    for (auto& path : android::base::Split(adb_keys_path, ENV_PATH_SEPARATOR_STR)) {
+    for (auto& path :
+         android::base::Split(adb_keys_path, ENV_PATH_SEPARATOR_STR)) {
         if (!read_key(path.c_str(), key_list)) {
             D("Failed to read '%s'\n", path.c_str());
         }
     }
 }
 
-int adb_auth_sign(void *node, const unsigned char* token, size_t token_size,
-                  unsigned char* sig)
-{
+int adb_auth_sign(void* node, const unsigned char* token, size_t token_size,
+                  unsigned char* sig) {
     unsigned int len;
-    struct adb_private_key *key = node_to_item(node, struct adb_private_key, node);
+    struct adb_private_key* key =
+        node_to_item(node, struct adb_private_key, node);
 
     if (token_size != TOKEN_SIZE) {
         D("Unexpected token size %zd\n", token_size);
@@ -387,21 +374,17 @@ int adb_auth_sign(void *node, const unsigned char* token, size_t token_size,
     return (int)len;
 }
 
-void *adb_auth_nextkey(void *current)
-{
-    struct listnode *item;
+void* adb_auth_nextkey(void* current) {
+    struct listnode* item;
 
-    if (list_empty(&key_list))
-        return NULL;
+    if (list_empty(&key_list)) return NULL;
 
-    if (!current)
-        return list_head(&key_list);
+    if (!current) return list_head(&key_list);
 
     list_for_each(item, &key_list) {
         if (item == current) {
             /* current is the last item, we tried all the keys */
-            if (item->next == &key_list)
-                return NULL;
+            if (item->next == &key_list) return NULL;
             return item->next;
         }
     }
@@ -409,8 +392,7 @@ void *adb_auth_nextkey(void *current)
     return NULL;
 }
 
-int adb_auth_get_userkey(unsigned char *data, size_t len)
-{
+int adb_auth_get_userkey(unsigned char* data, size_t len) {
     char path[PATH_MAX];
     int ret = get_user_keyfilepath(path, sizeof(path) - 4);
     if (ret < 0 || ret >= (signed)(sizeof(path) - 4)) {
@@ -446,8 +428,7 @@ int adb_auth_keygen(const char* filename) {
     return (generate_key(filename) == 0);
 }
 
-void adb_auth_init(void)
-{
+void adb_auth_init(void) {
     int ret;
 
     D("adb_auth_init\n");

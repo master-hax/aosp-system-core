@@ -25,26 +25,25 @@
 
 #include "adb.h"
 
-static int remote_read(apacket *p, atransport *t)
-{
-    if(usb_read(t->usb, &p->msg, sizeof(amessage))){
+static int remote_read(apacket* p, atransport* t) {
+    if (usb_read(t->usb, &p->msg, sizeof(amessage))) {
         D("remote usb: read terminated (message)\n");
         return -1;
     }
 
-    if(check_header(p)) {
+    if (check_header(p)) {
         D("remote usb: check_header failed\n");
         return -1;
     }
 
-    if(p->msg.data_length) {
-        if(usb_read(t->usb, p->data, p->msg.data_length)){
+    if (p->msg.data_length) {
+        if (usb_read(t->usb, p->data, p->msg.data_length)) {
             D("remote usb: terminated (data)\n");
             return -1;
         }
     }
 
-    if(check_data(p)) {
+    if (check_data(p)) {
         D("remote usb: check_data failed\n");
         return -1;
     }
@@ -52,16 +51,15 @@ static int remote_read(apacket *p, atransport *t)
     return 0;
 }
 
-static int remote_write(apacket *p, atransport *t)
-{
+static int remote_write(apacket* p, atransport* t) {
     unsigned size = p->msg.data_length;
 
-    if(usb_write(t->usb, &p->msg, sizeof(amessage))) {
+    if (usb_write(t->usb, &p->msg, sizeof(amessage))) {
         D("remote usb: 1 - write terminated\n");
         return -1;
     }
-    if(p->msg.data_length == 0) return 0;
-    if(usb_write(t->usb, &p->data, size)) {
+    if (p->msg.data_length == 0) return 0;
+    if (usb_write(t->usb, &p->data, size)) {
         D("remote usb: 2 - write terminated\n");
         return -1;
     }
@@ -69,19 +67,16 @@ static int remote_write(apacket *p, atransport *t)
     return 0;
 }
 
-static void remote_close(atransport *t)
-{
+static void remote_close(atransport* t) {
     usb_close(t->usb);
     t->usb = 0;
 }
 
-static void remote_kick(atransport *t)
-{
+static void remote_kick(atransport* t) {
     usb_kick(t->usb);
 }
 
-void init_usb_transport(atransport *t, usb_handle *h, int state)
-{
+void init_usb_transport(atransport* t, usb_handle* h, int state) {
     D("transport: usb\n");
     t->close = remote_close;
     t->kick = remote_kick;
@@ -100,8 +95,9 @@ void init_usb_transport(atransport *t, usb_handle *h, int state)
 }
 
 #if ADB_HOST
-int is_adb_interface(int vid, int pid, int usb_class, int usb_subclass, int usb_protocol)
-{
-    return (usb_class == ADB_CLASS && usb_subclass == ADB_SUBCLASS && usb_protocol == ADB_PROTOCOL);
+int is_adb_interface(int vid, int pid, int usb_class, int usb_subclass,
+                     int usb_protocol) {
+    return (usb_class == ADB_CLASS && usb_subclass == ADB_SUBCLASS &&
+            usb_protocol == ADB_PROTOCOL);
 }
 #endif

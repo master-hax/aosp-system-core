@@ -30,10 +30,9 @@
 
 int auth_enabled = 0;
 
-void send_auth_request(atransport *t)
-{
+void send_auth_request(atransport* t) {
     D("Calling send_auth_request\n");
-    apacket *p;
+    apacket* p;
     int ret;
 
     ret = adb_auth_generate_token(t->token, sizeof(t->token));
@@ -50,10 +49,9 @@ void send_auth_request(atransport *t)
     send_packet(p, t);
 }
 
-void send_auth_response(uint8_t *token, size_t token_size, atransport *t)
-{
+void send_auth_response(uint8_t* token, size_t token_size, atransport* t) {
     D("Calling send_auth_response\n");
-    apacket *p = get_apacket();
+    apacket* p = get_apacket();
     int ret;
 
     ret = adb_auth_sign(t->key, token, token_size, p->data);
@@ -69,10 +67,9 @@ void send_auth_response(uint8_t *token, size_t token_size, atransport *t)
     send_packet(p, t);
 }
 
-void send_auth_publickey(atransport *t)
-{
+void send_auth_publickey(atransport* t) {
     D("Calling send_auth_publickey\n");
-    apacket *p = get_apacket();
+    apacket* p = get_apacket();
     int ret;
 
     ret = adb_auth_get_userkey(p->data, sizeof(p->data));
@@ -88,8 +85,7 @@ void send_auth_publickey(atransport *t)
     send_packet(p, t);
 }
 
-void adb_auth_verified(atransport *t)
-{
+void adb_auth_verified(atransport* t) {
     handle_online(t);
     send_connect(t);
 }

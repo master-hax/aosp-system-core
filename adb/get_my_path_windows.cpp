@@ -20,17 +20,14 @@
 
 #include "adb.h"
 
-void get_my_path(char *exe, size_t maxLen)
-{
-    char  *r;
+void get_my_path(char* exe, size_t maxLen) {
+    char* r;
 
     /* XXX: should be GetModuleFileNameA */
     if (GetModuleFileName(NULL, exe, maxLen) > 0) {
         r = strrchr(exe, '\\');
-        if (r != NULL)
-            *r = '\0';
+        if (r != NULL) *r = '\0';
     } else {
         exe[0] = '\0';
     }
 }
-

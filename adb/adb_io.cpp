@@ -86,7 +86,7 @@ bool WriteFdExactly(int fd, const void* buf, size_t len) {
         if (r == -1) {
             D("writex: fd=%d error %d: %s\n", fd, errno, strerror(errno));
             if (errno == EAGAIN) {
-                adb_sleep_ms(1); // just yield some cpu time
+                adb_sleep_ms(1);  // just yield some cpu time
                 continue;
             } else if (errno == EPIPE) {
                 D("writex: fd=%d disconnected\n", fd);

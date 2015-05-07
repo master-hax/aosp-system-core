@@ -23,22 +23,21 @@
 
 // error/status codes for install_listener.
 enum InstallStatus {
-  INSTALL_STATUS_OK = 0,
-  INSTALL_STATUS_INTERNAL_ERROR = -1,
-  INSTALL_STATUS_CANNOT_BIND = -2,
-  INSTALL_STATUS_CANNOT_REBIND = -3,
-  INSTALL_STATUS_LISTENER_NOT_FOUND = -4,
+    INSTALL_STATUS_OK = 0,
+    INSTALL_STATUS_INTERNAL_ERROR = -1,
+    INSTALL_STATUS_CANNOT_BIND = -2,
+    INSTALL_STATUS_CANNOT_REBIND = -3,
+    INSTALL_STATUS_LISTENER_NOT_FOUND = -4,
 };
 
 extern alistener listener_list;
 
-void listener_disconnect(void*  _l, atransport*  t);
-void listener_event_func(int _fd, unsigned ev, void *_l);
-void ss_listener_event_func(int _fd, unsigned ev, void *_l);
+void listener_disconnect(void* _l, atransport* t);
+void listener_event_func(int _fd, unsigned ev, void* _l);
+void ss_listener_event_func(int _fd, unsigned ev, void* _l);
 
 InstallStatus install_listener(const std::string& local_name,
-                               const char* connect_to,
-                               atransport* transport,
+                               const char* connect_to, atransport* transport,
                                int no_rebind);
 
 std::string format_listeners();

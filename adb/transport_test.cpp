@@ -21,33 +21,34 @@
 #include "adb.h"
 
 TEST(transport, kick_transport) {
-  atransport t = {};
-  // Mutate some member so we can test that the function is run.
-  t.kick = [](atransport* trans) { trans->fd = 42; };
-  atransport expected = t;
-  expected.fd = 42;
-  expected.kicked = 1;
-  kick_transport(&t);
-  ASSERT_EQ(42, t.fd);
-  ASSERT_EQ(1, t.kicked);
-  ASSERT_EQ(0, memcmp(&expected, &t, sizeof(atransport)));
+    atransport t = {};
+    // Mutate some member so we can test that the function is run.
+    t.kick = [](atransport* trans) { trans->fd = 42; };
+    atransport expected = t;
+    expected.fd = 42;
+    expected.kicked = 1;
+    kick_transport(&t);
+    ASSERT_EQ(42, t.fd);
+    ASSERT_EQ(1, t.kicked);
+    ASSERT_EQ(0, memcmp(&expected, &t, sizeof(atransport)));
 }
 
 TEST(transport, kick_transport_already_kicked) {
-  // Ensure that the transport is not modified if the transport has already been
-  // kicked.
-  atransport t = {};
-  t.kicked = 1;
-  t.kick = [](atransport*) { FAIL() << "Kick should not have been called"; };
-  atransport expected = t;
-  kick_transport(&t);
-  ASSERT_EQ(0, memcmp(&expected, &t, sizeof(atransport)));
+    // Ensure that the transport is not modified if the transport has already
+    // been
+    // kicked.
+    atransport t = {};
+    t.kicked = 1;
+    t.kick = [](atransport*) { FAIL() << "Kick should not have been called"; };
+    atransport expected = t;
+    kick_transport(&t);
+    ASSERT_EQ(0, memcmp(&expected, &t, sizeof(atransport)));
 }
 
 // Disabled because the function currently segfaults for a zeroed atransport. I
 // want to make sure I understand how this is working at all before I try fixing
 // that.
 TEST(transport, DISABLED_run_transport_disconnects_zeroed_atransport) {
-  atransport t = {};
-  run_transport_disconnects(&t);
+    atransport t = {};
+    run_transport_disconnects(&t);
 }

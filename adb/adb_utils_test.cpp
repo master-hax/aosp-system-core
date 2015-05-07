@@ -30,75 +30,77 @@
 #endif
 #define TMP_TEMPLATE TMP_PREFIX "/adb-util-test-mkdirs.XXXXXX"
 
-
 TEST(adb_utils, directory_exists) {
-  ASSERT_TRUE(directory_exists("/proc"));
-  ASSERT_FALSE(directory_exists("/proc/self")); // Symbolic link.
-  ASSERT_FALSE(directory_exists("/proc/does-not-exist"));
+    ASSERT_TRUE(directory_exists("/proc"));
+    ASSERT_FALSE(directory_exists("/proc/self"));  // Symbolic link.
+    ASSERT_FALSE(directory_exists("/proc/does-not-exist"));
 }
 
 TEST(adb_utils, escape_arg) {
-  ASSERT_EQ(R"('')", escape_arg(""));
+    ASSERT_EQ(R"('')", escape_arg(""));
 
-  ASSERT_EQ(R"('abc')", escape_arg("abc"));
+    ASSERT_EQ(R"('abc')", escape_arg("abc"));
 
-  ASSERT_EQ(R"(' abc')", escape_arg(" abc"));
-  ASSERT_EQ(R"('\'abc')", escape_arg("'abc"));
-  ASSERT_EQ(R"('"abc')", escape_arg("\"abc"));
-  ASSERT_EQ(R"('\abc')", escape_arg("\\abc"));
-  ASSERT_EQ(R"('(abc')", escape_arg("(abc"));
-  ASSERT_EQ(R"(')abc')", escape_arg(")abc"));
+    ASSERT_EQ(R"(' abc')", escape_arg(" abc"));
+    ASSERT_EQ(R"('\'abc')", escape_arg("'abc"));
+    ASSERT_EQ(R"('"abc')", escape_arg("\"abc"));
+    ASSERT_EQ(R"('\abc')", escape_arg("\\abc"));
+    ASSERT_EQ(R"('(abc')", escape_arg("(abc"));
+    ASSERT_EQ(R"(')abc')", escape_arg(")abc"));
 
-  ASSERT_EQ(R"('abc abc')", escape_arg("abc abc"));
-  ASSERT_EQ(R"('abc\'abc')", escape_arg("abc'abc"));
-  ASSERT_EQ(R"('abc"abc')", escape_arg("abc\"abc"));
-  ASSERT_EQ(R"('abc\abc')", escape_arg("abc\\abc"));
-  ASSERT_EQ(R"('abc(abc')", escape_arg("abc(abc"));
-  ASSERT_EQ(R"('abc)abc')", escape_arg("abc)abc"));
+    ASSERT_EQ(R"('abc abc')", escape_arg("abc abc"));
+    ASSERT_EQ(R"('abc\'abc')", escape_arg("abc'abc"));
+    ASSERT_EQ(R"('abc"abc')", escape_arg("abc\"abc"));
+    ASSERT_EQ(R"('abc\abc')", escape_arg("abc\\abc"));
+    ASSERT_EQ(R"('abc(abc')", escape_arg("abc(abc"));
+    ASSERT_EQ(R"('abc)abc')", escape_arg("abc)abc"));
 
-  ASSERT_EQ(R"('abc ')", escape_arg("abc "));
-  ASSERT_EQ(R"('abc\'')", escape_arg("abc'"));
-  ASSERT_EQ(R"('abc"')", escape_arg("abc\""));
-  ASSERT_EQ(R"('abc\')", escape_arg("abc\\"));
-  ASSERT_EQ(R"('abc(')", escape_arg("abc("));
-  ASSERT_EQ(R"('abc)')", escape_arg("abc)"));
+    ASSERT_EQ(R"('abc ')", escape_arg("abc "));
+    ASSERT_EQ(R"('abc\'')", escape_arg("abc'"));
+    ASSERT_EQ(R"('abc"')", escape_arg("abc\""));
+    ASSERT_EQ(R"('abc\')", escape_arg("abc\\"));
+    ASSERT_EQ(R"('abc(')", escape_arg("abc("));
+    ASSERT_EQ(R"('abc)')", escape_arg("abc)"));
 }
 
 class adb_utils_fixture : public ::testing::Test {
- protected:
-  virtual void SetUp() {
-    tmp_exists_ = false;
-    char *temp_pattern = strdup(TMP_TEMPLATE);
-    ASSERT_NE(nullptr, temp_pattern) << "Failed to allocate directory name.";
-    char *temp = mkdtemp(temp_pattern);
-    if (temp == nullptr)
-      free(temp_pattern);
-    else
-      tmp_exists_ = true;
-    ASSERT_NE(nullptr, temp) << "Failed to create test directory.";
-    path_ = temp;
-    free(temp_pattern);
-  }
-
-  virtual void TearDown() {
-    if(tmp_exists_) {
-      adb_unlink((path_+"/file").c_str());
-      rmdir((path_+"/dir/subdir").c_str());
-      rmdir((path_+"/dir").c_str());
-      rmdir(path_.c_str());
+   protected:
+    virtual void SetUp() {
+        tmp_exists_ = false;
+        char* temp_pattern = strdup(TMP_TEMPLATE);
+        ASSERT_NE(nullptr, temp_pattern)
+            << "Failed to allocate directory name.";
+        char* temp = mkdtemp(temp_pattern);
+        if (temp == nullptr)
+            free(temp_pattern);
+        else
+            tmp_exists_ = true;
+        ASSERT_NE(nullptr, temp) << "Failed to create test directory.";
+        path_ = temp;
+        free(temp_pattern);
     }
-  }
 
-  std::string& path() { return path_; }
+    virtual void TearDown() {
+        if (tmp_exists_) {
+            adb_unlink((path_ + "/file").c_str());
+            rmdir((path_ + "/dir/subdir").c_str());
+            rmdir((path_ + "/dir").c_str());
+            rmdir(path_.c_str());
+        }
+    }
 
- private:
-  std::string path_;
-  bool tmp_exists_;
+    std::string& path() {
+        return path_;
+    }
+
+   private:
+    std::string path_;
+    bool tmp_exists_;
 };
 
 TEST_F(adb_utils_fixture, mkdirs) {
-  EXPECT_TRUE(mkdirs(path() + "/dir/subdir/file"));
-  std::string file = path() + "/file";
-  adb_creat(file.c_str(), 0600);
-  EXPECT_FALSE(mkdirs(file + "/subdir/"));
+    EXPECT_TRUE(mkdirs(path() + "/dir/subdir/file"));
+    std::string file = path() + "/file";
+    adb_creat(file.c_str(), 0600);
+    EXPECT_FALSE(mkdirs(file + "/subdir/"));
 }

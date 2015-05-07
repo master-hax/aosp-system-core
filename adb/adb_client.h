@@ -19,7 +19,8 @@ int adb_command(const std::string& service, std::string* error);
 
 // Connects to the named adb service and fills 'result' with the response.
 // Returns true on success; returns false and fills 'error' on failure.
-bool adb_query(const std::string& service, std::string* result, std::string* error);
+bool adb_query(const std::string& service, std::string* result,
+               std::string* error);
 
 // Set the preferred transport to connect to.
 void adb_set_transport(TransportType type, const char* serial);
@@ -36,13 +37,13 @@ void adb_set_tcp_name(const char* hostname);
  * of -1 if there is no emulator, and -2 if there is more than one.
  * assumes adb_set_transport() was alled previously...
  */
-int  adb_get_emulator_console_port(void);
+int adb_get_emulator_console_port(void);
 
 /* send commands to the current emulator instance. will fail if there
  * is zero, or more than one emulator connected (or if you use -s <serial>
  * with a <serial> that does not designate an emulator)
  */
-int  adb_send_emulator_command(int  argc, const char**  argv);
+int adb_send_emulator_command(int argc, const char** argv);
 
 // Reads a standard adb status response (OKAY|FAIL) and
 // returns true in the event of OKAY, false in the event of FAIL

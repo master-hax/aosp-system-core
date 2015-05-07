@@ -39,7 +39,7 @@ static int vendor_ro = 1;
 static int oem_ro = 1;
 
 /* Returns the device used to mount a directory in /proc/mounts */
-static std::string find_mount(const char *dir) {
+static std::string find_mount(const char* dir) {
     FILE* fp;
     struct mntent* mentry;
     char* device = NULL;
@@ -86,14 +86,14 @@ static int remount(const char* dir, int* dir_ro) {
 }
 
 static bool remount_partition(int fd, const char* partition, int* ro) {
-  if (!directory_exists(partition)) {
+    if (!directory_exists(partition)) {
+        return true;
+    }
+    if (remount(partition, ro)) {
+        WriteFdFmt(fd, "remount of %s failed: %s\n", partition, strerror(errno));
+        return false;
+    }
     return true;
-  }
-  if (remount(partition, ro)) {
-    WriteFdFmt(fd, "remount of %s failed: %s\n", partition, strerror(errno));
-    return false;
-  }
-  return true;
 }
 
 void remount_service(int fd, void* cookie) {
@@ -119,16 +119,14 @@ void remount_service(int fd, void* cookie) {
     if (system_verified || vendor_verified) {
         // Allow remount but warn of likely bad effects
         bool both = system_verified && vendor_verified;
-        WriteFdFmt(fd,
-                   "dm_verity is enabled on the %s%s%s partition%s.\n",
-                   system_verified ? "system" : "",
-                   both ? " and " : "",
-                   vendor_verified ? "vendor" : "",
-                   both ? "s" : "");
-        WriteFdExactly(fd,
-                       "Use \"adb disable-verity\" to disable verity.\n"
-                       "If you do not, remount may succeed, however, you will still "
-                       "not be able to write to these volumes.\n");
+        WriteFdFmt(fd, "dm_verity is enabled on the %s%s%s partition%s.\n",
+                   system_verified ? "system" : "", both ? " and " : "",
+                   vendor_verified ? "vendor" : "", both ? "s" : "");
+        WriteFdExactly(
+            fd,
+            "Use \"adb disable-verity\" to disable verity.\n"
+            "If you do not, remount may succeed, however, you will still "
+            "not be able to write to these volumes.\n");
     }
 
     bool success = true;

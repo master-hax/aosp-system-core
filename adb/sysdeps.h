@@ -21,7 +21,7 @@
 #define _ADB_SYSDEPS_H
 
 #ifdef __CYGWIN__
-#  undef _WIN32
+#undef _WIN32
 #endif
 
 /*
@@ -31,12 +31,14 @@
  */
 #ifndef TEMP_FAILURE_RETRY
 /* Used to retry syscalls that can return EINTR. */
-#define TEMP_FAILURE_RETRY(exp) ({         \
-    typeof (exp) _rc;                      \
-    do {                                   \
-        _rc = (exp);                       \
-    } while (_rc == -1 && errno == EINTR); \
-    _rc; })
+#define TEMP_FAILURE_RETRY(exp)                \
+    ({                                         \
+        typeof(exp) _rc;                       \
+        do {                                   \
+            _rc = (exp);                       \
+        } while (_rc == -1 && errno == EINTR); \
+        _rc;                                   \
+    })
 #endif
 
 #ifdef _WIN32
@@ -60,210 +62,192 @@
 #define OS_PATH_SEPARATOR_STR "\\"
 #define ENV_PATH_SEPARATOR_STR ";"
 
-typedef CRITICAL_SECTION          adb_mutex_t;
+typedef CRITICAL_SECTION adb_mutex_t;
 
-#define  ADB_MUTEX_DEFINE(x)     adb_mutex_t   x
+#define ADB_MUTEX_DEFINE(x) adb_mutex_t x
 
 /* declare all mutexes */
 /* For win32, adb_sysdeps_init() will do the mutex runtime initialization. */
-#define  ADB_MUTEX(x)   extern adb_mutex_t  x;
+#define ADB_MUTEX(x) extern adb_mutex_t x;
 #include "mutex_list.h"
 
-extern void  adb_sysdeps_init(void);
+extern void adb_sysdeps_init(void);
 
-static __inline__ void adb_mutex_lock( adb_mutex_t*  lock )
-{
-    EnterCriticalSection( lock );
+static __inline__ void adb_mutex_lock(adb_mutex_t* lock) {
+    EnterCriticalSection(lock);
 }
 
-static __inline__ void  adb_mutex_unlock( adb_mutex_t*  lock )
-{
-    LeaveCriticalSection( lock );
+static __inline__ void adb_mutex_unlock(adb_mutex_t* lock) {
+    LeaveCriticalSection(lock);
 }
 
-typedef  void*  (*adb_thread_func_t)(void*  arg);
+typedef void* (*adb_thread_func_t)(void* arg);
 
-typedef  void (*win_thread_func_t)(void*  arg);
+typedef void (*win_thread_func_t)(void* arg);
 
 static __inline__ bool adb_thread_create(adb_thread_func_t func, void* arg) {
     uintptr_t tid = _beginthread((win_thread_func_t)func, 0, arg);
     return (tid != static_cast<uintptr_t>(-1L));
 }
 
-static __inline__  unsigned long adb_thread_id()
-{
+static __inline__ unsigned long adb_thread_id() {
     return GetCurrentThreadId();
 }
 
-static __inline__ void  close_on_exec(int  fd)
-{
+static __inline__ void close_on_exec(int fd) {
     /* nothing really */
 }
 
-#define  lstat    stat   /* no symlinks on Win32 */
+#define lstat stat /* no symlinks on Win32 */
 
-#define  S_ISLNK(m)   0   /* no symlinks on Win32 */
+#define S_ISLNK(m) 0 /* no symlinks on Win32 */
 
-static __inline__  int    adb_unlink(const char*  path)
-{
-    int  rc = unlink(path);
+static __inline__ int adb_unlink(const char* path) {
+    int rc = unlink(path);
 
     if (rc == -1 && errno == EACCES) {
         /* unlink returns EACCES when the file is read-only, so we first */
         /* try to make it writable, then unlink again...                  */
-        rc = chmod(path, _S_IREAD|_S_IWRITE );
-        if (rc == 0)
-            rc = unlink(path);
+        rc = chmod(path, _S_IREAD | _S_IWRITE);
+        if (rc == 0) rc = unlink(path);
     }
     return rc;
 }
-#undef  unlink
-#define unlink  ___xxx_unlink
+#undef unlink
+#define unlink ___xxx_unlink
 
-static __inline__ int  adb_mkdir(const std::string&  path, int mode)
-{
-	return _mkdir(path);
+static __inline__ int adb_mkdir(const std::string& path, int mode) {
+    return _mkdir(path);
 }
-#undef   mkdir
-#define  mkdir  ___xxx_mkdir
+#undef mkdir
+#define mkdir ___xxx_mkdir
 
-extern int  adb_open(const char*  path, int  options);
-extern int  adb_creat(const char*  path, int  mode);
-extern int  adb_read(int  fd, void* buf, int len);
-extern int  adb_write(int  fd, const void*  buf, int  len);
-extern int  adb_lseek(int  fd, int  pos, int  where);
-extern int  adb_shutdown(int  fd);
-extern int  adb_close(int  fd);
+extern int adb_open(const char* path, int options);
+extern int adb_creat(const char* path, int mode);
+extern int adb_read(int fd, void* buf, int len);
+extern int adb_write(int fd, const void* buf, int len);
+extern int adb_lseek(int fd, int pos, int where);
+extern int adb_shutdown(int fd);
+extern int adb_close(int fd);
 
-static __inline__ int  unix_close(int fd)
-{
+static __inline__ int unix_close(int fd) {
     return close(fd);
 }
-#undef   close
-#define  close   ____xxx_close
+#undef close
+#define close ____xxx_close
 
-extern int  unix_read(int  fd, void*  buf, size_t  len);
+extern int unix_read(int fd, void* buf, size_t len);
 
-#undef   read
-#define  read  ___xxx_read
+#undef read
+#define read ___xxx_read
 
-static __inline__  int  unix_write(int  fd, const void*  buf, size_t  len)
-{
+static __inline__ int unix_write(int fd, const void* buf, size_t len) {
     return write(fd, buf, len);
 }
-#undef   write
-#define  write  ___xxx_write
+#undef write
+#define write ___xxx_write
 
-static __inline__ int  adb_open_mode(const char* path, int options, int mode)
-{
+static __inline__ int adb_open_mode(const char* path, int options, int mode) {
     return adb_open(path, options);
 }
 
-static __inline__ int  unix_open(const char*  path, int options,...)
-{
-    if ((options & O_CREAT) == 0)
-    {
-        return  open(path, options);
-    }
-    else
-    {
-        int      mode;
-        va_list  args;
-        va_start( args, options );
-        mode = va_arg( args, int );
-        va_end( args );
+static __inline__ int unix_open(const char* path, int options, ...) {
+    if ((options & O_CREAT) == 0) {
+        return open(path, options);
+    } else {
+        int mode;
+        va_list args;
+        va_start(args, options);
+        mode = va_arg(args, int);
+        va_end(args);
         return open(path, options, mode);
     }
 }
-#define  open    ___xxx_unix_open
-
+#define open ___xxx_unix_open
 
 /* normally provided by <cutils/misc.h> */
-extern void*  load_file(const char*  pathname, unsigned*  psize);
+extern void* load_file(const char* pathname, unsigned* psize);
 
 /* normally provided by <cutils/sockets.h> */
 extern int socket_loopback_client(int port, int type);
-extern int socket_network_client(const char *host, int port, int type);
-extern int socket_network_client_timeout(const char *host, int port, int type,
+extern int socket_network_client(const char* host, int port, int type);
+extern int socket_network_client_timeout(const char* host, int port, int type,
                                          int timeout);
 extern int socket_loopback_server(int port, int type);
 extern int socket_inaddr_any_server(int port, int type);
 
 /* normally provided by "fdevent.h" */
 
-#define FDE_READ              0x0001
-#define FDE_WRITE             0x0002
-#define FDE_ERROR             0x0004
-#define FDE_DONT_CLOSE        0x0080
+#define FDE_READ 0x0001
+#define FDE_WRITE 0x0002
+#define FDE_ERROR 0x0004
+#define FDE_DONT_CLOSE 0x0080
 
-typedef void (*fd_func)(int fd, unsigned events, void *userdata);
+typedef void (*fd_func)(int fd, unsigned events, void* userdata);
 
-fdevent *fdevent_create(int fd, fd_func func, void *arg);
-void     fdevent_destroy(fdevent *fde);
-void     fdevent_install(fdevent *fde, int fd, fd_func func, void *arg);
-void     fdevent_remove(fdevent *item);
-void     fdevent_set(fdevent *fde, unsigned events);
-void     fdevent_add(fdevent *fde, unsigned events);
-void     fdevent_del(fdevent *fde, unsigned events);
-void     fdevent_loop();
+fdevent* fdevent_create(int fd, fd_func func, void* arg);
+void fdevent_destroy(fdevent* fde);
+void fdevent_install(fdevent* fde, int fd, fd_func func, void* arg);
+void fdevent_remove(fdevent* item);
+void fdevent_set(fdevent* fde, unsigned events);
+void fdevent_add(fdevent* fde, unsigned events);
+void fdevent_del(fdevent* fde, unsigned events);
+void fdevent_loop();
 
-static __inline__ void  adb_sleep_ms( int  mseconds )
-{
-    Sleep( mseconds );
+static __inline__ void adb_sleep_ms(int mseconds) {
+    Sleep(mseconds);
 }
 
-extern int  adb_socket_accept(int  serverfd, struct sockaddr*  addr, socklen_t  *addrlen);
+extern int adb_socket_accept(int serverfd, struct sockaddr* addr,
+                             socklen_t* addrlen);
 
-#undef   accept
-#define  accept  ___xxx_accept
+#undef accept
+#define accept ___xxx_accept
 
-extern int  adb_setsockopt(int  fd, int  level, int  optname, const void*  optval, socklen_t  optlen);
+extern int adb_setsockopt(int fd, int level, int optname, const void* optval,
+                          socklen_t optlen);
 
-#undef   setsockopt
-#define  setsockopt  ___xxx_setsockopt
+#undef setsockopt
+#define setsockopt ___xxx_setsockopt
 
-static __inline__  int  adb_socket_setbufsize( int   fd, int  bufsize )
-{
+static __inline__ int adb_socket_setbufsize(int fd, int bufsize) {
     int opt = bufsize;
-    return adb_setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const void*)&opt, sizeof(opt));
+    return adb_setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const void*)&opt,
+                          sizeof(opt));
 }
 
-static __inline__ void  disable_tcp_nagle( int  fd )
-{
-    int  on = 1;
+static __inline__ void disable_tcp_nagle(int fd) {
+    int on = 1;
     adb_setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const void*)&on, sizeof(on));
 }
 
-extern int  adb_socketpair( int  sv[2] );
+extern int adb_socketpair(int sv[2]);
 
-static __inline__ size_t adb_dirstart( const std::string& path, size_t pos = 0 )
-{
-    size_t p  = path.find('/', pos);
+static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0) {
+    size_t p = path.find('/', pos);
     size_t p2 = path.find('\\', pos);
 
-    if ( p == std::string::npos )
+    if (p == std::string::npos)
         p = p2;
-    else if ( p2 != std::string::npos && p2 > p )
+    else if (p2 != std::string::npos && p2 > p)
         p = p2;
 
     return p;
 }
 
-static __inline__  size_t  adb_dirstop( const std::string& path, size_t post = 0 )
-{
-    size_t p  = path.rfind('/');
+static __inline__ size_t adb_dirstop(const std::string& path, size_t post = 0) {
+    size_t p = path.rfind('/');
     size_t p2 = path.rfind('\\');
 
-    if ( p == std::string::npos )
+    if (p == std::string::npos)
         p = p2;
-    else if ( p2 != std::string::npos && p2 > p )
+    else if (p2 != std::string::npos && p2 > p)
         p = p2;
 
     return p;
 }
 
-static __inline__  int  adb_is_absolute_host_path( const char*  path )
-{
+static __inline__ int adb_is_absolute_host_path(const char* path) {
     return isalpha(path[0]) && path[1] == ':' && path[2] == '\\';
 }
 
@@ -292,142 +276,124 @@ static __inline__  int  adb_is_absolute_host_path( const char*  path )
 #define OS_PATH_SEPARATOR_STR "/"
 #define ENV_PATH_SEPARATOR_STR ":"
 
-typedef  pthread_mutex_t          adb_mutex_t;
+typedef pthread_mutex_t adb_mutex_t;
 
-#define  ADB_MUTEX_INITIALIZER    PTHREAD_MUTEX_INITIALIZER
-#define  adb_mutex_init           pthread_mutex_init
-#define  adb_mutex_lock           pthread_mutex_lock
-#define  adb_mutex_unlock         pthread_mutex_unlock
-#define  adb_mutex_destroy        pthread_mutex_destroy
+#define ADB_MUTEX_INITIALIZER PTHREAD_MUTEX_INITIALIZER
+#define adb_mutex_init pthread_mutex_init
+#define adb_mutex_lock pthread_mutex_lock
+#define adb_mutex_unlock pthread_mutex_unlock
+#define adb_mutex_destroy pthread_mutex_destroy
 
-#define  ADB_MUTEX_DEFINE(m)      adb_mutex_t   m = PTHREAD_MUTEX_INITIALIZER
+#define ADB_MUTEX_DEFINE(m) adb_mutex_t m = PTHREAD_MUTEX_INITIALIZER
 
-#define  adb_cond_t               pthread_cond_t
-#define  adb_cond_init            pthread_cond_init
-#define  adb_cond_wait            pthread_cond_wait
-#define  adb_cond_broadcast       pthread_cond_broadcast
-#define  adb_cond_signal          pthread_cond_signal
-#define  adb_cond_destroy         pthread_cond_destroy
+#define adb_cond_t pthread_cond_t
+#define adb_cond_init pthread_cond_init
+#define adb_cond_wait pthread_cond_wait
+#define adb_cond_broadcast pthread_cond_broadcast
+#define adb_cond_signal pthread_cond_signal
+#define adb_cond_destroy pthread_cond_destroy
 
 /* declare all mutexes */
-#define  ADB_MUTEX(x)   extern adb_mutex_t  x;
+#define ADB_MUTEX(x) extern adb_mutex_t x;
 #include "mutex_list.h"
 
-static __inline__ void  close_on_exec(int  fd)
-{
-    fcntl( fd, F_SETFD, FD_CLOEXEC );
+static __inline__ void close_on_exec(int fd) {
+    fcntl(fd, F_SETFD, FD_CLOEXEC);
 }
 
-static __inline__ int  unix_open(const char*  path, int options,...)
-{
-    if ((options & O_CREAT) == 0)
-    {
-        return  TEMP_FAILURE_RETRY( open(path, options) );
-    }
-    else
-    {
-        int      mode;
-        va_list  args;
-        va_start( args, options );
-        mode = va_arg( args, int );
-        va_end( args );
-        return TEMP_FAILURE_RETRY( open( path, options, mode ) );
+static __inline__ int unix_open(const char* path, int options, ...) {
+    if ((options & O_CREAT) == 0) {
+        return TEMP_FAILURE_RETRY(open(path, options));
+    } else {
+        int mode;
+        va_list args;
+        va_start(args, options);
+        mode = va_arg(args, int);
+        va_end(args);
+        return TEMP_FAILURE_RETRY(open(path, options, mode));
     }
 }
 
-static __inline__ int  adb_open_mode( const char*  pathname, int  options, int  mode )
-{
-    return TEMP_FAILURE_RETRY( open( pathname, options, mode ) );
+static __inline__ int adb_open_mode(const char* pathname, int options,
+                                    int mode) {
+    return TEMP_FAILURE_RETRY(open(pathname, options, mode));
 }
 
-
-static __inline__ int  adb_open( const char*  pathname, int  options )
-{
-    int  fd = TEMP_FAILURE_RETRY( open( pathname, options ) );
-    if (fd < 0)
-        return -1;
-    close_on_exec( fd );
+static __inline__ int adb_open(const char* pathname, int options) {
+    int fd = TEMP_FAILURE_RETRY(open(pathname, options));
+    if (fd < 0) return -1;
+    close_on_exec(fd);
     return fd;
 }
-#undef   open
-#define  open    ___xxx_open
+#undef open
+#define open ___xxx_open
 
-static __inline__ int  adb_shutdown(int fd)
-{
+static __inline__ int adb_shutdown(int fd) {
     return shutdown(fd, SHUT_RDWR);
 }
-#undef   shutdown
-#define  shutdown   ____xxx_shutdown
+#undef shutdown
+#define shutdown ____xxx_shutdown
 
-static __inline__ int  adb_close(int fd)
-{
+static __inline__ int adb_close(int fd) {
     return close(fd);
 }
-#undef   close
-#define  close   ____xxx_close
+#undef close
+#define close ____xxx_close
 
-
-static __inline__  int  adb_read(int  fd, void*  buf, size_t  len)
-{
-    return TEMP_FAILURE_RETRY( read( fd, buf, len ) );
+static __inline__ int adb_read(int fd, void* buf, size_t len) {
+    return TEMP_FAILURE_RETRY(read(fd, buf, len));
 }
 
-#undef   read
-#define  read  ___xxx_read
+#undef read
+#define read ___xxx_read
 
-static __inline__  int  adb_write(int  fd, const void*  buf, size_t  len)
-{
-    return TEMP_FAILURE_RETRY( write( fd, buf, len ) );
+static __inline__ int adb_write(int fd, const void* buf, size_t len) {
+    return TEMP_FAILURE_RETRY(write(fd, buf, len));
 }
-#undef   write
-#define  write  ___xxx_write
+#undef write
+#define write ___xxx_write
 
-static __inline__ int   adb_lseek(int  fd, int  pos, int  where)
-{
+static __inline__ int adb_lseek(int fd, int pos, int where) {
     return lseek(fd, pos, where);
 }
-#undef   lseek
-#define  lseek   ___xxx_lseek
+#undef lseek
+#define lseek ___xxx_lseek
 
-static __inline__  int    adb_unlink(const char*  path)
-{
-    return  unlink(path);
+static __inline__ int adb_unlink(const char* path) {
+    return unlink(path);
 }
-#undef  unlink
-#define unlink  ___xxx_unlink
+#undef unlink
+#define unlink ___xxx_unlink
 
-static __inline__  int  adb_creat(const char*  path, int  mode)
-{
-    int  fd = TEMP_FAILURE_RETRY( creat( path, mode ) );
+static __inline__ int adb_creat(const char* path, int mode) {
+    int fd = TEMP_FAILURE_RETRY(creat(path, mode));
 
-    if ( fd < 0 )
-        return -1;
+    if (fd < 0) return -1;
 
     close_on_exec(fd);
     return fd;
 }
-#undef   creat
-#define  creat  ___xxx_creat
+#undef creat
+#define creat ___xxx_creat
 
-static __inline__ int  adb_socket_accept(int  serverfd, struct sockaddr*  addr, socklen_t  *addrlen)
-{
+static __inline__ int adb_socket_accept(int serverfd, struct sockaddr* addr,
+                                        socklen_t* addrlen) {
     int fd;
 
-    fd = TEMP_FAILURE_RETRY( accept( serverfd, addr, addrlen ) );
-    if (fd >= 0)
-        close_on_exec(fd);
+    fd = TEMP_FAILURE_RETRY(accept(serverfd, addr, addrlen));
+    if (fd >= 0) close_on_exec(fd);
 
     return fd;
 }
 
-#undef   accept
-#define  accept  ___xxx_accept
+#undef accept
+#define accept ___xxx_accept
 
-#define  unix_read   adb_read
-#define  unix_write  adb_write
-#define  unix_close  adb_close
+#define unix_read adb_read
+#define unix_write adb_write
+#define unix_close adb_close
 
-typedef void*  (*adb_thread_func_t)( void*  arg );
+typedef void* (*adb_thread_func_t)(void* arg);
 
 static __inline__ bool adb_thread_create(adb_thread_func_t start, void* arg) {
     pthread_attr_t attr;
@@ -439,81 +405,69 @@ static __inline__ bool adb_thread_create(adb_thread_func_t start, void* arg) {
     return (errno == 0);
 }
 
-static __inline__  int  adb_socket_setbufsize( int   fd, int  bufsize )
-{
+static __inline__ int adb_socket_setbufsize(int fd, int bufsize) {
     int opt = bufsize;
     return setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &opt, sizeof(opt));
 }
 
-static __inline__ void  disable_tcp_nagle(int fd)
-{
-    int  on = 1;
-    setsockopt( fd, IPPROTO_TCP, TCP_NODELAY, (void*)&on, sizeof(on) );
+static __inline__ void disable_tcp_nagle(int fd) {
+    int on = 1;
+    setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (void*)&on, sizeof(on));
 }
 
-static __inline__ int  adb_setsockopt( int  fd, int  level, int  optname, const void*  optval, socklen_t  optlen )
-{
-    return setsockopt( fd, level, optname, optval, optlen );
+static __inline__ int adb_setsockopt(int fd, int level, int optname,
+                                     const void* optval, socklen_t optlen) {
+    return setsockopt(fd, level, optname, optval, optlen);
 }
 
-#undef   setsockopt
-#define  setsockopt  ___xxx_setsockopt
+#undef setsockopt
+#define setsockopt ___xxx_setsockopt
 
-static __inline__ int  unix_socketpair( int  d, int  type, int  protocol, int sv[2] )
-{
-    return socketpair( d, type, protocol, sv );
+static __inline__ int unix_socketpair(int d, int type, int protocol, int sv[2]) {
+    return socketpair(d, type, protocol, sv);
 }
 
-static __inline__ int  adb_socketpair( int  sv[2] )
-{
-    int  rc;
+static __inline__ int adb_socketpair(int sv[2]) {
+    int rc;
 
-    rc = unix_socketpair( AF_UNIX, SOCK_STREAM, 0, sv );
-    if (rc < 0)
-        return -1;
+    rc = unix_socketpair(AF_UNIX, SOCK_STREAM, 0, sv);
+    if (rc < 0) return -1;
 
-    close_on_exec( sv[0] );
-    close_on_exec( sv[1] );
+    close_on_exec(sv[0]);
+    close_on_exec(sv[1]);
     return 0;
 }
 
-#undef   socketpair
-#define  socketpair   ___xxx_socketpair
+#undef socketpair
+#define socketpair ___xxx_socketpair
 
-static __inline__ void  adb_sleep_ms( int  mseconds )
-{
-    usleep( mseconds*1000 );
+static __inline__ void adb_sleep_ms(int mseconds) {
+    usleep(mseconds * 1000);
 }
 
-static __inline__ int  adb_mkdir(const std::string& path, int mode)
-{
+static __inline__ int adb_mkdir(const std::string& path, int mode) {
     return mkdir(path.c_str(), mode);
 }
 
-#undef   mkdir
-#define  mkdir  ___xxx_mkdir
+#undef mkdir
+#define mkdir ___xxx_mkdir
 
-static __inline__ void  adb_sysdeps_init(void)
-{
+static __inline__ void adb_sysdeps_init(void) {
 }
 
-static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0)
-{
+static __inline__ size_t adb_dirstart(const std::string& path, size_t pos = 0) {
     return path.find('/', pos);
 }
 
-static __inline__ size_t adb_dirstop(const std::string& path, size_t pos = 0)
-{
+static __inline__ size_t adb_dirstop(const std::string& path, size_t pos = 0) {
     return path.rfind('/');
 }
 
-static __inline__  int  adb_is_absolute_host_path( const char*  path )
-{
+static __inline__ int adb_is_absolute_host_path(const char* path) {
     return path[0] == '/';
 }
 
-static __inline__ unsigned long adb_thread_id()
-{
+static __inline__ unsigned long adb_thread_id() {
     return (unsigned long)pthread_self();
 }
 

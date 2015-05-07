@@ -54,8 +54,7 @@ struct fbinfo {
     unsigned int alpha_length;
 } __attribute__((packed));
 
-void framebuffer_service(int fd, void *cookie)
-{
+void framebuffer_service(int fd, void* cookie) {
     struct fbinfo fbinfo;
     unsigned int i, bsize;
     char buf[640];
@@ -74,7 +73,7 @@ void framebuffer_service(int fd, void *cookie)
         adb_close(fds[0]);
         adb_close(fds[1]);
         const char* command = "screencap";
-        const char *args[2] = {command, NULL};
+        const char* args[2] = {command, NULL};
         execvp(command, (char**)args);
         exit(1);
     }
@@ -83,9 +82,9 @@ void framebuffer_service(int fd, void *cookie)
     fd_screencap = fds[0];
 
     /* read w, h & format */
-    if(!ReadFdExactly(fd_screencap, &w, 4)) goto done;
-    if(!ReadFdExactly(fd_screencap, &h, 4)) goto done;
-    if(!ReadFdExactly(fd_screencap, &f, 4)) goto done;
+    if (!ReadFdExactly(fd_screencap, &w, 4)) goto done;
+    if (!ReadFdExactly(fd_screencap, &h, 4)) goto done;
+    if (!ReadFdExactly(fd_screencap, &f, 4)) goto done;
 
     fbinfo.version = DDMS_RAWIMAGE_VERSION;
     /* see hardware/hardware.h */
@@ -159,21 +158,20 @@ void framebuffer_service(int fd, void *cookie)
             fbinfo.blue_length = 8;
             fbinfo.alpha_offset = 24;
             fbinfo.alpha_length = 8;
-           break;
+            break;
         default:
             goto done;
     }
 
     /* write header */
-    if(!WriteFdExactly(fd, &fbinfo, sizeof(fbinfo))) goto done;
+    if (!WriteFdExactly(fd, &fbinfo, sizeof(fbinfo))) goto done;
 
     /* write data */
-    for(i = 0; i < fbinfo.size; i += bsize) {
-      bsize = sizeof(buf);
-      if (i + bsize > fbinfo.size)
-        bsize = fbinfo.size - i;
-      if(!ReadFdExactly(fd_screencap, buf, bsize)) goto done;
-      if(!WriteFdExactly(fd, buf, bsize)) goto done;
+    for (i = 0; i < fbinfo.size; i += bsize) {
+        bsize = sizeof(buf);
+        if (i + bsize > fbinfo.size) bsize = fbinfo.size - i;
+        if (!ReadFdExactly(fd_screencap, buf, bsize)) goto done;
+        if (!WriteFdExactly(fd, buf, bsize)) goto done;
     }
 
 done:

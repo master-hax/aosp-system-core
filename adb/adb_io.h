@@ -27,7 +27,8 @@ bool SendOkay(int fd);
 // Sends the protocol "FAIL" message, with the given failure reason.
 bool SendFail(int fd, const std::string& reason);
 
-// Writes a protocol-format string; a four hex digit length followed by the string data.
+// Writes a protocol-format string; a four hex digit length followed by the
+// string data.
 bool SendProtocolString(int fd, const std::string& s);
 
 /*
@@ -38,7 +39,7 @@ bool SendProtocolString(int fd, const std::string& s);
  *
  * If this function fails, the contents of buf are undefined.
  */
-bool ReadFdExactly(int fd, void *buf, size_t len);
+bool ReadFdExactly(int fd, void* buf, size_t len);
 
 /*
  * Writes exactly len bytes from buf to fd.
@@ -54,6 +55,7 @@ bool WriteFdExactly(int fd, const char* s);
 bool WriteFdExactly(int fd, const std::string& s);
 
 // Same as above, but formats the string to send.
-bool WriteFdFmt(int fd, const char* fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
+bool WriteFdFmt(int fd, const char* fmt, ...)
+    __attribute__((__format__(__printf__, 2, 3)));
 
 #endif /* ADB_IO_H */

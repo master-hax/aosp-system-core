@@ -64,19 +64,16 @@ static bool ReadProtocolString(int fd, std::string* s, std::string* error) {
     return true;
 }
 
-void adb_set_transport(TransportType type, const char* serial)
-{
+void adb_set_transport(TransportType type, const char* serial) {
     __adb_transport = type;
     __adb_serial = serial;
 }
 
-void adb_set_tcp_specifics(int server_port)
-{
+void adb_set_tcp_specifics(int server_port) {
     __adb_server_port = server_port;
 }
 
-void adb_set_tcp_name(const char* hostname)
-{
+void adb_set_tcp_name(const char* hostname) {
     __adb_server_name = hostname;
 }
 
@@ -118,18 +115,18 @@ static int switch_socket_transport(int fd, std::string* error) {
     } else {
         const char* transport_type = "???";
         switch (__adb_transport) {
-          case kTransportUsb:
-            transport_type = "transport-usb";
-            break;
-          case kTransportLocal:
-            transport_type = "transport-local";
-            break;
-          case kTransportAny:
-            transport_type = "transport-any";
-            break;
-          case kTransportHost:
-            // no switch necessary
-            return 0;
+            case kTransportUsb:
+                transport_type = "transport-usb";
+                break;
+            case kTransportLocal:
+                transport_type = "transport-local";
+                break;
+            case kTransportAny:
+                transport_type = "transport-any";
+                break;
+            case kTransportHost:
+                // no switch necessary
+                return 0;
         }
         service += "host:";
         service += transport_type;
@@ -163,8 +160,9 @@ bool adb_status(int fd, std::string* error) {
     }
 
     if (memcmp(buf, "FAIL", 4)) {
-        *error = android::base::StringPrintf("protocol fault (status %02x %02x %02x %02x?!)",
-                                             buf[0], buf[1], buf[2], buf[3]);
+        *error = android::base::StringPrintf(
+            "protocol fault (status %02x %02x %02x %02x?!)", buf[0], buf[1],
+            buf[2], buf[3]);
         return false;
     }
 
@@ -182,7 +180,8 @@ int _adb_connect(const std::string& service, std::string* error) {
 
     int fd;
     if (__adb_server_name) {
-        fd = socket_network_client(__adb_server_name, __adb_server_port, SOCK_STREAM);
+        fd = socket_network_client(__adb_server_name, __adb_server_port,
+                                   SOCK_STREAM);
     } else {
         fd = socket_loopback_client(__adb_server_port, SOCK_STREAM);
     }
@@ -191,11 +190,12 @@ int _adb_connect(const std::string& service, std::string* error) {
         return -2;
     }
 
-    if (memcmp(&service[0],"host",4) != 0 && switch_socket_transport(fd, error)) {
+    if (memcmp(&service[0], "host", 4) != 0 &&
+        switch_socket_transport(fd, error)) {
         return -1;
     }
 
-    if(!SendProtocolString(fd, service)) {
+    if (!SendProtocolString(fd, service)) {
         *error = perror_str("write failure during connection");
         adb_close(fd);
         return -1;
@@ -216,23 +216,24 @@ int adb_connect(const std::string& service, std::string* error) {
 
     D("adb_connect: service %s\n", service.c_str());
     if (fd == -2 && __adb_server_name) {
-        fprintf(stderr,"** Cannot start server on remote host\n");
+        fprintf(stderr, "** Cannot start server on remote host\n");
         return fd;
     } else if (fd == -2) {
-        fprintf(stdout,"* daemon not running. starting it now on port %d *\n",
+        fprintf(stdout, "* daemon not running. starting it now on port %d *\n",
                 __adb_server_port);
     start_server:
         if (launch_server(__adb_server_port)) {
-            fprintf(stderr,"* failed to start daemon *\n");
+            fprintf(stderr, "* failed to start daemon *\n");
             return -1;
         } else {
-            fprintf(stdout,"* daemon started successfully *\n");
+            fprintf(stdout, "* daemon started successfully *\n");
         }
         /* give the server some time to start properly and detect devices */
         adb_sleep_ms(3000);
         // fall through to _adb_connect
     } else {
-        // if server was running, check its version to make sure it is not out of date
+        // if server was running, check its version to make sure it is not out
+        // of date
         int version = ADB_SERVER_VERSION - 1;
 
         // if we have a file descriptor, then parse version result
@@ -249,7 +250,8 @@ int adb_connect(const std::string& service, std::string* error) {
             }
         } else {
             // if fd is -1, then check for "unknown host service",
-            // which would indicate a version of adb that does not support the version command
+            // which would indicate a version of adb that does not support the
+            // version command
             if (*error == "unknown host service") {
                 return fd;
             }
@@ -274,8 +276,8 @@ int adb_connect(const std::string& service, std::string* error) {
     fd = _adb_connect(service, error);
     if (fd == -1) {
         D("_adb_connect error: %s", error->c_str());
-    } else if(fd == -2) {
-        fprintf(stderr,"** daemon still not running\n");
+    } else if (fd == -2) {
+        fprintf(stderr, "** daemon still not running\n");
     }
     D("adb_connect: return fd %d\n", fd);
 
@@ -284,7 +286,6 @@ error:
     adb_close(fd);
     return -1;
 }
-
 
 int adb_command(const std::string& service, std::string* error) {
     int fd = adb_connect(service, error);
@@ -301,11 +302,12 @@ int adb_command(const std::string& service, std::string* error) {
     return 0;
 }
 
-bool adb_query(const std::string& service, std::string* result, std::string* error) {
+bool adb_query(const std::string& service, std::string* result,
+               std::string* error) {
     D("adb_query: %s\n", service.c_str());
     int fd = adb_connect(service, error);
     if (fd < 0) {
-        fprintf(stderr,"error: %s\n", error->c_str());
+        fprintf(stderr, "error: %s\n", error->c_str());
         return 0;
     }
 

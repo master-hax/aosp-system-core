@@ -27,27 +27,25 @@
 int gListenAll = 0; /* Not static because it is used in commandline.c. */
 
 alistener listener_list = {
-    .next = &listener_list,
-    .prev = &listener_list,
+    .next = &listener_list, .prev = &listener_list,
 };
 
-void ss_listener_event_func(int _fd, unsigned ev, void *_l)
-{
-    asocket *s;
+void ss_listener_event_func(int _fd, unsigned ev, void* _l) {
+    asocket* s;
 
-    if(ev & FDE_READ) {
+    if (ev & FDE_READ) {
         struct sockaddr addr;
         socklen_t alen;
         int fd;
 
         alen = sizeof(addr);
         fd = adb_socket_accept(_fd, &addr, &alen);
-        if(fd < 0) return;
+        if (fd < 0) return;
 
         adb_socket_setbufsize(fd, CHUNK_SIZE);
 
         s = create_local_socket(fd);
-        if(s) {
+        if (s) {
             connect_to_smartsocket(s);
             return;
         }
@@ -56,10 +54,9 @@ void ss_listener_event_func(int _fd, unsigned ev, void *_l)
     }
 }
 
-void listener_event_func(int _fd, unsigned ev, void* _l)
-{
+void listener_event_func(int _fd, unsigned ev, void* _l) {
     alistener* listener = reinterpret_cast<alistener*>(_l);
-    asocket *s;
+    asocket* s;
 
     if (ev & FDE_READ) {
         struct sockaddr addr;
@@ -83,8 +80,7 @@ void listener_event_func(int _fd, unsigned ev, void* _l)
     }
 }
 
-static void  free_listener(alistener*  l)
-{
+static void free_listener(alistener* l) {
     if (l->next) {
         l->next->prev = l->prev;
         l->prev->next = l->next;
@@ -94,11 +90,9 @@ static void  free_listener(alistener*  l)
     // closes the corresponding fd
     fdevent_remove(&l->fde);
 
-    if (l->local_name)
-        free((char*)l->local_name);
+    if (l->local_name) free((char*)l->local_name);
 
-    if (l->connect_to)
-        free((char*)l->connect_to);
+    if (l->connect_to) free((char*)l->connect_to);
 
     if (l->transport) {
         remove_transport_disconnect(l->transport, &l->disconnect);
@@ -106,17 +100,15 @@ static void  free_listener(alistener*  l)
     free(l);
 }
 
-void listener_disconnect(void* listener, atransport*  t)
-{
+void listener_disconnect(void* listener, atransport* t) {
     free_listener(reinterpret_cast<alistener*>(listener));
 }
 
-int local_name_to_fd(const char *name)
-{
+int local_name_to_fd(const char* name) {
     int port;
 
-    if(!strncmp("tcp:", name, 4)){
-        int  ret;
+    if (!strncmp("tcp:", name, 4)) {
+        int ret;
         port = atoi(name + 4);
 
         if (gListenAll > 0) {
@@ -127,17 +119,17 @@ int local_name_to_fd(const char *name)
 
         return ret;
     }
-#ifndef HAVE_WIN32_IPC  /* no Unix-domain sockets on Win32 */
+#ifndef HAVE_WIN32_IPC /* no Unix-domain sockets on Win32 */
     // It's non-sensical to support the "reserved" space on the adb host side
-    if(!strncmp(name, "local:", 6)) {
-        return socket_local_server(name + 6,
-                ANDROID_SOCKET_NAMESPACE_ABSTRACT, SOCK_STREAM);
-    } else if(!strncmp(name, "localabstract:", 14)) {
-        return socket_local_server(name + 14,
-                ANDROID_SOCKET_NAMESPACE_ABSTRACT, SOCK_STREAM);
-    } else if(!strncmp(name, "localfilesystem:", 16)) {
-        return socket_local_server(name + 16,
-                ANDROID_SOCKET_NAMESPACE_FILESYSTEM, SOCK_STREAM);
+    if (!strncmp(name, "local:", 6)) {
+        return socket_local_server(name + 6, ANDROID_SOCKET_NAMESPACE_ABSTRACT,
+                                   SOCK_STREAM);
+    } else if (!strncmp(name, "localabstract:", 14)) {
+        return socket_local_server(name + 14, ANDROID_SOCKET_NAMESPACE_ABSTRACT,
+                                   SOCK_STREAM);
+    } else if (!strncmp(name, "localfilesystem:", 16)) {
+        return socket_local_server(
+            name + 16, ANDROID_SOCKET_NAMESPACE_FILESYSTEM, SOCK_STREAM);
     }
 
 #endif
@@ -154,14 +146,14 @@ std::string format_listeners() {
             continue;
         }
         //  <device-serial> " " <local-name> " " <remote-name> "\n"
-        android::base::StringAppendF(&result, "%s %s %s\n",
-                                     l->transport->serial, l->local_name, l->connect_to);
+        android::base::StringAppendF(&result, "%s %s %s\n", l->transport->serial,
+                                     l->local_name, l->connect_to);
     }
     return result;
 }
 
-InstallStatus remove_listener(const char *local_name, atransport* transport) {
-    alistener *l;
+InstallStatus remove_listener(const char* local_name, atransport* transport) {
+    alistener* l;
 
     for (l = listener_list.next; l != &listener_list; l = l->next) {
         if (!strcmp(local_name, l->local_name)) {
@@ -172,29 +164,25 @@ InstallStatus remove_listener(const char *local_name, atransport* transport) {
     return INSTALL_STATUS_LISTENER_NOT_FOUND;
 }
 
-void remove_all_listeners(void)
-{
+void remove_all_listeners(void) {
     alistener *l, *l_next;
     for (l = listener_list.next; l != &listener_list; l = l_next) {
         l_next = l->next;
         // Never remove smart sockets.
-        if (l->connect_to[0] == '*')
-            continue;
+        if (l->connect_to[0] == '*') continue;
         listener_disconnect(l, l->transport);
     }
 }
 
 InstallStatus install_listener(const std::string& local_name,
-                                  const char *connect_to,
-                                  atransport* transport,
-                                  int no_rebind)
-{
+                               const char* connect_to, atransport* transport,
+                               int no_rebind) {
     for (alistener* l = listener_list.next; l != &listener_list; l = l->next) {
         if (local_name == l->local_name) {
             char* cto;
 
             /* can't repurpose a smartsocket */
-            if(l->connect_to[0] == '*') {
+            if (l->connect_to[0] == '*') {
                 return INSTALL_STATUS_INTERNAL_ERROR;
             }
 
@@ -204,11 +192,11 @@ InstallStatus install_listener(const std::string& local_name,
             }
 
             cto = strdup(connect_to);
-            if(cto == 0) {
+            if (cto == 0) {
                 return INSTALL_STATUS_INTERNAL_ERROR;
             }
 
-            free((void*) l->connect_to);
+            free((void*)l->connect_to);
             l->connect_to = cto;
             if (l->transport != transport) {
                 remove_transport_disconnect(l->transport, &l->disconnect);
@@ -219,8 +207,8 @@ InstallStatus install_listener(const std::string& local_name,
         }
     }
 
-    alistener* listener = reinterpret_cast<alistener*>(
-        calloc(1, sizeof(alistener)));
+    alistener* listener =
+        reinterpret_cast<alistener*>(calloc(1, sizeof(alistener)));
     if (listener == nullptr) {
         goto nomem;
     }
@@ -262,7 +250,7 @@ InstallStatus install_listener(const std::string& local_name,
 
     if (transport) {
         listener->disconnect.opaque = listener;
-        listener->disconnect.func   = listener_disconnect;
+        listener->disconnect.func = listener_disconnect;
         add_transport_disconnect(transport, &listener->disconnect);
     }
     return INSTALL_STATUS_OK;
