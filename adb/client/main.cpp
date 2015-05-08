@@ -44,7 +44,7 @@ static const bool kWorkaroundBug6558362 = false;
 
 // We only build the affinity WAR code for Linux.
 #if defined(__linux__)
-static void adb_set_affinity(void) {
+static void adb_workaround_affinity(void) {
     const char affinity_env[] = "ADB_CPU_AFFINITY_BUG6558362";
     const char* cpunum_str = getenv(affinity_env);
     if (cpunum_str == nullptr || *cpunum_str == '\0') {
@@ -68,6 +68,10 @@ static void adb_set_affinity(void) {
 
     sched_getaffinity(0, sizeof(cpu_set), &cpu_set);
     D("new cpu_set[0]=0x%08lx\n", cpu_set.__bits[0]);
+}
+#else
+static void adb_workaround_affinity(void) {
+    // No workaround was ever iomplemented for the other platforms.
 }
 #endif
 
@@ -135,11 +139,9 @@ int adb_main(int is_daemon, int server_port) {
 
     init_transport_registration();
 
-#if defined(__linux__)
     if (kWorkaroundBug6558362 && is_daemon) {
-        adb_set_affinity();
+        adb_workaround_affinity();
     }
-#endif
 
     usb_init();
     local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
