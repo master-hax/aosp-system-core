@@ -168,6 +168,8 @@ ifeq ($(HOST_OS),windows)
     # Windows.h defines an awful ERROR macro that collides with base/logging.h.
     # Suppress it with NOGDI.
     LOCAL_CFLAGS += -DNOGDI
+    # Use wmain instead of main
+    LOCAL_LDFLAGS += -municode
     LOCAL_LDLIBS += -lws2_32 -lgdi32
     EXTRA_STATIC_LIBS := AdbWinApi
 endif
