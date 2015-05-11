@@ -155,11 +155,12 @@ int adb_main(int is_daemon, int server_port) {
         // "OKAY".
         // TODO(danalbert): Why do we use stdout for Windows?
 #if defined(_WIN32)
-        int reply_fd = STDOUT_FILENO;
+        DWORD  count;
+        WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), "OK\n", 3, &count, NULL);
 #else
         int reply_fd = STDERR_FILENO;
-#endif
         android::base::WriteStringToFd("OK\n", reply_fd);
+#endif
         close_stdin();
         setup_daemon_logging();
     }
