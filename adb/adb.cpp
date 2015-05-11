@@ -32,6 +32,7 @@
 
 #include <string>
 
+#include <base/macros.h>
 #include <base/stringprintf.h>
 #include <base/strings.h>
 
@@ -545,9 +546,9 @@ int launch_server(int server_port)
     HANDLE                pipe_read, pipe_write;
     HANDLE                stdout_handle, stderr_handle;
     SECURITY_ATTRIBUTES   sa;
-    STARTUPINFO           startup;
+    STARTUPINFOW          startup;
     PROCESS_INFORMATION   pinfo;
-    char                  program_path[ MAX_PATH ];
+    WCHAR                 program_path[ MAX_PATH ];
     int                   ret;
 
     sa.nLength = sizeof(sa);
@@ -593,10 +594,18 @@ int launch_server(int server_port)
     ZeroMemory( &pinfo, sizeof(pinfo) );
 
     /* get path of current program */
-    GetModuleFileName( NULL, program_path, sizeof(program_path) );
-    char args[64];
-    snprintf(args, sizeof(args), "adb -P %d fork-server server",  server_port);
-    ret = CreateProcess(
+    DWORD module_result = GetModuleFileNameW(NULL, program_path,
+                                             arraysize(program_path));
+    if ((module_result == arraysize(program_path)) || (module_result == 0)) {
+        // String truncation or some other error.
+        fprintf(stderr, "GetModuleFileNameW() failure, error %ld\n",
+                GetLastError());
+        return -1;
+    }
+    WCHAR args[64];
+    snwprintf(args, arraysize(args),
+              L"adb -P %d fork-server server", server_port);
+    ret = CreateProcessW(
             program_path,                              /* program path  */
             args,
                                     /* the fork-server argument will set the
