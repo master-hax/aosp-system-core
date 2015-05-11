@@ -623,16 +623,18 @@ int launch_server(int server_port)
 
     /* wait for the "OK\n" message */
     {
-        char  temp[3];
+        char  temp[4];
         DWORD  count;
 
-        ret = ReadFile( pipe_read, temp, 3, &count, NULL );
+        ret = ReadFile( pipe_read, temp, sizeof(temp), &count, NULL );
         CloseHandle( pipe_read );
         if ( !ret ) {
             fprintf(stderr, "could not read ok from ADB Server, error = %ld\n", GetLastError() );
             return -1;
         }
-        if (count != 3 || temp[0] != 'O' || temp[1] != 'K' || temp[2] != '\n') {
+        // Server may use \r\n or \n depending on if textmode is used.
+        if (!(((count == 3) && (memcmp("OK\n", temp, count) == 0)) ||
+            ((count == 4) && (memcmp("OK\r\n", temp, count) == 0)))) {
             fprintf(stderr, "ADB server didn't ACK\n" );
             return -1;
         }
