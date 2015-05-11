@@ -43,14 +43,18 @@
 
 #include <ctype.h>
 #include <direct.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <io.h>
 #include <process.h>
 #include <sys/stat.h>
+#include <utime.h>
 #include <winsock2.h>
 #include <windows.h>
 #include <ws2tcpip.h>
+
+#include <string>   // Prototypes for narrow() and widen() use std::(w)string.
 
 #include "fdevent.h"
 
@@ -102,26 +106,11 @@ static __inline__ void  close_on_exec(int  fd)
 
 #define  S_ISLNK(m)   0   /* no symlinks on Win32 */
 
-static __inline__  int    adb_unlink(const char*  path)
-{
-    int  rc = unlink(path);
-
-    if (rc == -1 && errno == EACCES) {
-        /* unlink returns EACCES when the file is read-only, so we first */
-        /* try to make it writable, then unlink again...                  */
-        rc = chmod(path, _S_IREAD|_S_IWRITE );
-        if (rc == 0)
-            rc = unlink(path);
-    }
-    return rc;
-}
+extern int  adb_unlink(const char*  path);
 #undef  unlink
 #define unlink  ___xxx_unlink
 
-static __inline__ int  adb_mkdir(const char*  path, int mode)
-{
-	return _mkdir(path);
-}
+extern int  adb_mkdir(const char*  path, int mode);
 #undef   mkdir
 #define  mkdir  ___xxx_mkdir
 
@@ -264,6 +253,79 @@ static __inline__  int  adb_is_absolute_host_path( const char*  path )
 {
     return isalpha(path[0]) && path[1] == ':' && path[2] == '\\';
 }
+
+// We later define a macro mapping 'stat' to 'adb_stat'. This causes:
+//   struct stat s;
+//   stat(filename, &s);
+// To turn into the following:
+//   struct adb_stat s;
+//   adb_stat(filename, &s);
+// To get this to work, we need to make 'struct adb_stat' the same as
+// 'struct stat'. Note that this definition of 'struct adb_stat' uses the
+// *current* macro definition of stat, so it may actually be inheriting from
+// struct _stat32i64 (or some other remapping).
+struct adb_stat : public stat {};
+
+static_assert(sizeof(struct adb_stat) == sizeof(struct stat),
+    "structures should be the same");
+
+extern int adb_stat(const char* f, struct adb_stat* s);
+
+// stat is already a macro, undefine it so we can redefine it.
+#undef stat
+#define stat adb_stat
+
+// UTF-8 versions of POSIX APIs.
+extern DIR* adb_opendir(const char* dirname);
+extern struct dirent* adb_readdir(DIR* dir);
+extern int adb_closedir(DIR* dir);
+
+extern int adb_utime(const char *, struct utimbuf *);
+extern int adb_chmod(const char *, int);
+
+extern int adb_fprintf(FILE *stream, const char *format, ...);
+extern int adb_printf(const char *format, ...);
+
+// Remap calls to POSIX APIs to our UTF-8 versions.
+#define opendir adb_opendir
+#define readdir adb_readdir
+#define closedir adb_closedir
+#define rewinddir rewinddir_utf8_not_yet_implemented
+#define telldir telldir_utf8_not_yet_implemented
+#define seekdir seekdir_utf8_not_yet_implemented
+
+#define utime adb_utime
+#define chmod adb_chmod
+
+#define fprintf adb_fprintf
+#define printf adb_printf
+
+// Convert from UTF-8 to UTF-16, typically used to convert char strings into
+// wchar_t strings that can be passed to wchar_t-based OS and C Runtime APIs
+// on Windows.
+extern std::wstring widen(const std::string& utf8);
+extern std::wstring widen(const char* utf8);
+
+// Convert from UTF-16 to UTF-8, typically used to convert strings from OS and
+// C Runtime APIs that return wchar_t, to a format for our char-based data
+// structures.
+extern std::string narrow(const std::wstring& utf16);
+extern std::string narrow(const wchar_t* utf16);
+
+// Helper class to convert UTF-16 argv from wmain() to UTF-8 args that can be
+// passed to main().
+class NarrowArgs {
+public:
+    NarrowArgs(int argc, wchar_t** argv);
+    ~NarrowArgs();
+
+    inline char** data() {
+        return narrow_args;
+    }
+
+private:
+    char** narrow_args;
+};
 
 #else /* !_WIN32 a.k.a. Unix */
 
