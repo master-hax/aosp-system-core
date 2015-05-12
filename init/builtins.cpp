@@ -63,7 +63,7 @@ static int insmod(const char *filename, char *options)
     }
 
     // TODO: use finit_module for >= 3.8 kernels.
-    return init_module(&module[0], module.size(), options);
+    return init_module(&module[0], module.size() - 1, options);
 }
 
 static int __ifupdown(const char *interface, int up)
