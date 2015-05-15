@@ -290,6 +290,13 @@ class AdbBasic(unittest.TestCase):
         self.assertEqual('t', adb.shell("FOO=a BAR=b echo t").strip())
         self.assertEqual('123Linux', adb.shell("echo -n 123\;uname").strip())
 
+    def test_line_endings(self):
+        """Ensure that line ending translation is not happening in the pty.
+
+        Bug: http://b/19735063
+        """
+        self.assertFalse(AdbWrapper().shell("uname").endswith("\r\n"))
+
 
 class AdbFile(unittest.TestCase):
     SCRATCH_DIR = "/data/local/tmp"
