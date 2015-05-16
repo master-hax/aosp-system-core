@@ -69,12 +69,12 @@ static void print_header()
             "NAME");
 }
 
-static void print_type(char *type, struct pid_info_t* info)
+static void print_symlink(const char* path, struct pid_info_t* info)
 {
     static ssize_t link_dest_size;
     static char link_dest[PATH_MAX];
 
-    strlcat(info->path, type, sizeof(info->path));
+    strlcat(info->path, path, sizeof(info->path));
     if ((link_dest_size = readlink(info->path, link_dest, sizeof(link_dest)-1)) < 0) {
         if (errno == ENOENT)
             goto out;
@@ -88,9 +88,30 @@ static void print_type(char *type, struct pid_info_t* info)
     if (!strcmp(link_dest, "/"))
         goto out;
 
+    char fd[32] = "?";
+    char type[32] = "?";
+    char device[32] = "?";
+    char size_off[32] = "?";
+    char node[32] = "?";
+
+    struct stat sb;
+    if (lstat(link_dest, &sb) != -1) {
+        switch ((sb.st_mode & S_IFMT)) {
+          case S_IFSOCK: strcpy(type, "sock"); break;
+          case S_IFLNK: strcpy(type, "LINK"); break;
+          case S_IFREG: strcpy(type, "REG"); break;
+          case S_IFBLK: strcpy(type, "BLK"); break;
+          case S_IFDIR: strcpy(type, "DIR"); break;
+          case S_IFCHR: strcpy(type, "CHR"); break;
+          case S_IFIFO: strcpy(type, "FIFO"); break;
+        }
+        snprintf(device, sizeof(device), "%d,%d", (int) sb.st_dev, (int) sb.st_rdev);
+        snprintf(node, sizeof(node), "%d", (int) sb.st_ino);
+        snprintf(size_off, sizeof(size_off), "%d", (int) sb.st_size);
+    }
+
     printf("%-9s %5d %10s %4s %9s %18s %9s %10s %s\n",
-            info->cmdline, info->pid, info->user, type,
-            "???", "???", "???", "???", link_dest);
+            info->cmdline, info->pid, info->user, fd, type, device, size_off, node, link_dest);
 
 out:
     info->path[info->parent_length] = '\0';
@@ -111,8 +132,7 @@ static void print_maps(struct pid_info_t* info)
     if (!maps)
         goto out;
 
-    while (fscanf(maps, "%*x-%*x %*s %zx %s %ld %s\n", &offset, device, &inode,
-            file) == 4) {
+    while (fscanf(maps, "%*x-%*x %*s %zx %s %ld %s\n", &offset, device, &inode, file) == 4) {
         // We don't care about non-file maps
         if (inode == 0 || !strcmp(device, "00:00"))
             continue;
@@ -152,7 +172,7 @@ static void print_fds(struct pid_info_t* info)
         if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, ".."))
             continue;
 
-        print_type(de->d_name, info);
+        print_symlink(de->d_name, info);
     }
     closedir(dir);
 
@@ -207,9 +227,9 @@ static void lsof_dumpinfo(pid_t pid)
     strlcpy(info.cmdline, basename(cmdline), sizeof(info.cmdline));
 
     // Read each of these symlinks
-    print_type("cwd", &info);
-    print_type("exe", &info);
-    print_type("root", &info);
+    print_symlink("cwd", &info);
+    print_symlink("exe", &info);
+    print_symlink("root", &info);
 
     print_fds(&info);
     print_maps(&info);
