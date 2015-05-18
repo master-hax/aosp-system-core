@@ -25,7 +25,7 @@
 
 /*
  * Obtain a transport from the available transports.
- * If state is != CS_ANY, only transports in that state are considered.
+ * If state is != kCsAny, only transports in that state are considered.
  * If serial is non-NULL then only the device with that serial will be chosen.
  * If no suitable transport is found, error is set.
  */
@@ -50,7 +50,7 @@ void register_usb_transport(usb_handle* h, const char* serial,
 /* cause new transports to be init'd and added to the list */
 int register_socket_transport(int s, const char* serial, int port, int local);
 
-/* this should only be used for transports with connection_state == CS_NOPERM */
+// This should only be used for transports with connection_state == kCsNoPerm.
 void unregister_usb_transport(usb_handle* usb);
 
 /* these should only be used for the "adb disconnect" command */

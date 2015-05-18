@@ -665,13 +665,13 @@ asocket*  host_service_to_socket(const char*  name, const char *serial)
 
         if (!strncmp(name, "local", strlen("local"))) {
             sinfo->transport_type = kTransportLocal;
-            sinfo->state = CS_DEVICE;
+            sinfo->state = kCsDevice;
         } else if (!strncmp(name, "usb", strlen("usb"))) {
             sinfo->transport_type = kTransportUsb;
-            sinfo->state = CS_DEVICE;
+            sinfo->state = kCsDevice;
         } else if (!strncmp(name, "any", strlen("any"))) {
             sinfo->transport_type = kTransportAny;
-            sinfo->state = CS_DEVICE;
+            sinfo->state = kCsDevice;
         } else {
             if (sinfo->serial) {
                 free(sinfo->serial);
