@@ -23,6 +23,80 @@
 
 #include "adb.h"
 
+typedef std::unordered_set<std::string> FeatureSet;
+
+const FeatureSet& supported_features();
+
+class atransport {
+public:
+    // TODO(danalbert): We expose waaaaaaay too much stuff because this was
+    // historically just a struct, but making the whole thing a more idiomatic
+    // class in one go is a very large change. Given how bad our testing is,
+    // it's better to do this piece by piece.
+
+    atransport() {
+        auth_fde = {};
+        transport_fde = {};
+    }
+
+    virtual ~atransport() {}
+
+    int (*read_from_remote)(apacket* p, atransport* t) = nullptr;
+    int (*write_to_remote)(apacket* p, atransport* t) = nullptr;
+    void (*close)(atransport* t) = nullptr;
+    void (*kick)(atransport* t) = nullptr;
+
+    int fd = -1;
+    int transport_socket = -1;
+    fdevent transport_fde;
+    int ref_count = 0;
+    uint32_t sync_token = 0;
+    ConnectionState connection_state = kCsOffline;
+    bool online = false;
+    TransportType type = kTransportAny;
+
+    // USB handle or socket fd as needed.
+    usb_handle* usb = nullptr;
+    int sfd = -1;
+
+    // Used to identify transports for clients.
+    char* serial = nullptr;
+    char* product = nullptr;
+    char* model = nullptr;
+    char* device = nullptr;
+    char* devpath = nullptr;
+    int adb_port = -1;  // Use for emulators (local transport)
+    bool kicked = false;
+
+    // A list of adisconnect callbacks called when the transport is kicked.
+    adisconnect disconnects = {};
+
+    void* key = nullptr;
+    unsigned char token[TOKEN_SIZE] = {};
+    fdevent auth_fde;
+    size_t failed_auth_attempts = 0;
+
+    const char* connection_state_name() const;
+
+    inline const FeatureSet features() const {
+        return features_;
+    }
+
+    bool has_feature(const std::string& feature) const;
+    void add_feature(const std::string& feature);
+
+    // Returns true if both we and the other end of the transport support the
+    // feature.
+    bool AllowedFeature(const std::string& feature) const;
+
+private:
+    // A set of features transmitted in the banner with the initial connection.
+    // This is stored in the banner as 'features=feature0,feature1,etc'.
+    FeatureSet features_;
+
+    DISALLOW_COPY_AND_ASSIGN(atransport);
+};
+
 /*
  * Obtain a transport from the available transports.
  * If state is != kCsAny, only transports in that state are considered.

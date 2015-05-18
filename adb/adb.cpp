@@ -33,6 +33,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <base/logging.h>
 #include <base/stringprintf.h>
@@ -58,6 +59,8 @@ int HOST = 0;
 #if !ADB_HOST
 const char* adb_device_banner = "device";
 static android::base::LogdLogger gLogdLogger;
+#else
+const char *adb_device_banner = "host";
 #endif
 
 void AdbLogger(android::base::LogId id, android::base::LogSeverity severity,
@@ -291,45 +294,49 @@ static void send_close(unsigned local, unsigned remote, atransport *t)
     send_packet(p, t);
 }
 
-static size_t fill_connect_data(char *buf, size_t bufsize)
-{
-#if ADB_HOST
-    return snprintf(buf, bufsize, "host::") + 1;
-#else
-    static const char *cnxn_props[] = {
+std::string get_connection_string() {
+    std::vector<std::string> connection_properties;
+
+#if !ADB_HOST
+    static const char* cnxn_props[] = {
         "ro.product.name",
         "ro.product.model",
         "ro.product.device",
     };
-    static const int num_cnxn_props = ARRAY_SIZE(cnxn_props);
-    int i;
-    size_t remaining = bufsize;
-    size_t len;
 
-    len = snprintf(buf, remaining, "%s::", adb_device_banner);
-    remaining -= len;
-    buf += len;
-    for (i = 0; i < num_cnxn_props; i++) {
+    for (const auto& prop_name : cnxn_props) {
         char value[PROPERTY_VALUE_MAX];
-        property_get(cnxn_props[i], value, "");
-        len = snprintf(buf, remaining, "%s=%s;", cnxn_props[i], value);
-        remaining -= len;
-        buf += len;
+        property_get(prop_name, value, "");
+        connection_properties.push_back(
+            android::base::StringPrintf("%s=%s", prop_name, value));
     }
-
-    return bufsize - remaining + 1;
 #endif
+
+    connection_properties.push_back(android::base::StringPrintf(
+        "features=%s", android::base::Join(supported_features(), ',').c_str()));
+
+    return android::base::StringPrintf(
+        "%s::%s", adb_device_banner,
+        android::base::Join(connection_properties, ';').c_str());
 }
 
-void send_connect(atransport *t)
-{
+void send_connect(atransport *t) {
     D("Calling send_connect \n");
     apacket *cp = get_apacket();
     cp->msg.command = A_CNXN;
     cp->msg.arg0 = A_VERSION;
     cp->msg.arg1 = MAX_PAYLOAD;
-    cp->msg.data_length = fill_connect_data((char *)cp->data,
-                                            sizeof(cp->data));
+
+    std::string connection_str = get_connection_string();
+    if (connection_str.length() > MAX_PAYLOAD) {
+        LOG(WARNING) << "Connection string is too long for packet and will be "
+                        "truncated.";
+        connection_str.resize(MAX_PAYLOAD);
+    }
+
+    memcpy(cp->data, connection_str.c_str(), connection_str.length());
+    cp->msg.data_length = connection_str.length();
+
     send_packet(cp, t);
 }
 
@@ -342,8 +349,8 @@ static void qual_overwrite(char** dst, const std::string& src) {
     *dst = strdup(src.c_str());
 }
 
-void parse_banner(const char* banner, atransport* t) {
-    D("parse_banner: %s\n", banner);
+void parse_banner(const std::string& banner, atransport* t) {
+    D("parse_banner: %s\n", banner.c_str());
 
     // The format is something like:
     // "device::ro.product.name=x;ro.product.model=y;ro.product.device=z;".
@@ -366,6 +373,10 @@ void parse_banner(const char* banner, atransport* t) {
                 qual_overwrite(&t->model, value);
             } else if (key == "ro.product.device") {
                 qual_overwrite(&t->device, value);
+            } else if (key == "features") {
+                for (const auto& feature : android::base::Split(value, ",")) {
+                    t->add_feature(feature);
+                }
             }
         }
     }
@@ -393,6 +404,25 @@ void parse_banner(const char* banner, atransport* t) {
     }
 }
 
+static void handle_new_connection(atransport* t, apacket* p) {
+    // TODO: Verify version, etc.
+    if (t->connection_state != kCsOffline) {
+        t->connection_state = kCsOffline;
+        handle_offline(t);
+    }
+
+    std::string banner(reinterpret_cast<const char*>(p->data),
+                       p->msg.data_length);
+    parse_banner(banner, t);
+
+    if (HOST || !auth_enabled) {
+        handle_online(t);
+        if (!HOST) send_connect(t);
+    } else {
+        send_auth_request(t);
+    }
+}
+
 void handle_packet(apacket *p, atransport *t)
 {
     asocket *s;
@@ -415,21 +445,8 @@ void handle_packet(apacket *p, atransport *t)
         }
         return;
 
-    case A_CNXN: /* CONNECT(version, maxdata, "system-id-string") */
-            /* XXX verify version, etc */
-        if(t->connection_state != kCsOffline) {
-            t->connection_state = kCsOffline;
-            handle_offline(t);
-        }
-
-        parse_banner(reinterpret_cast<const char*>(p->data), t);
-
-        if (HOST || !auth_enabled) {
-            handle_online(t);
-            if(!HOST) send_connect(t);
-        } else {
-            send_auth_request(t);
-        }
+    case A_CNXN:  // CONNECT(version, maxdata, "system-id-string")
+        handle_new_connection(t, p);
         break;
 
     case A_AUTH:
