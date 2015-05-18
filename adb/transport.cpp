@@ -29,6 +29,7 @@
 #include <list>
 
 #include <base/stringprintf.h>
+#include <base/strings.h>
 
 #include "adb.h"
 #include "adb_utils.h"
@@ -538,7 +539,7 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
 
     t = m.transport;
 
-    if(m.action == 0){
+    if (m.action == 0) {
         D("transport: %s removing and free'ing %d\n", t->serial, t->transport_socket);
 
             /* IMPORTANT: the remove closes one half of the
@@ -836,6 +837,28 @@ const char* atransport::connection_state_name() const {
     }
 }
 
+// The list of features supported by the current system. Will be sent to the
+// other side of the connection in the banner.
+static const std::unordered_set<std::string> gSupportedFeatures = {
+};
+
+const FeatureSet& supported_features() {
+    return gSupportedFeatures;
+}
+
+bool atransport::has_feature(const std::string& feature) const {
+    return features_.count(feature) > 0;
+}
+
+void atransport::add_feature(const std::string& feature) {
+    features_.insert(feature);
+}
+
+bool atransport::AllowedFeature(const std::string& feature) const {
+    return has_feature(feature) &&
+           supported_features().count(feature) > 0;
+}
+
 #if ADB_HOST
 
 static void append_transport_info(std::string* result, const char* key,
@@ -870,6 +893,9 @@ static void append_transport(const atransport* t, std::string* result,
         append_transport_info(result, "product:", t->product, false);
         append_transport_info(result, "model:", t->model, true);
         append_transport_info(result, "device:", t->device, false);
+        append_transport_info(result, "features:",
+                              android::base::Join(t->features(), ',').c_str(),
+                              false);
     }
     *result += '\n';
 }
