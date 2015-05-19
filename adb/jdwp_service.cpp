@@ -469,10 +469,13 @@ jdwp_control_init( JdwpControl*  control,
                    const char*   sockname,
                    int           socknamelen )
 {
-    struct sockaddr_un   addr;
+    union {
+        struct sockaddr sa;
+        struct sockaddr_un un;
+    } addr;
     socklen_t            addrlen;
     int                  s;
-    int                  maxpath = sizeof(addr.sun_path);
+    int                  maxpath = sizeof(addr.un.sun_path);
     int                  pathlen = socknamelen;
 
     if (pathlen >= maxpath) {
@@ -482,8 +485,8 @@ jdwp_control_init( JdwpControl*  control,
     }
 
     memset(&addr, 0, sizeof(addr));
-    addr.sun_family = AF_UNIX;
-    memcpy(addr.sun_path, sockname, socknamelen);
+    addr.un.sun_family = AF_UNIX;
+    memcpy(addr.un.sun_path, sockname, socknamelen);
 
     s = socket( AF_UNIX, SOCK_STREAM, 0 );
     if (s < 0) {
@@ -492,9 +495,9 @@ jdwp_control_init( JdwpControl*  control,
         return -1;
     }
 
-    addrlen = (pathlen + sizeof(addr.sun_family));
+    addrlen = (pathlen + sizeof(addr.un.sun_family));
 
-    if (bind(s, (struct sockaddr*)&addr, addrlen) < 0) {
+    if (bind(s, &addr.sa, addrlen) < 0) {
         D( "could not bind vm debug control socket: %d: %s\n",
            errno, strerror(errno) );
         adb_close(s);

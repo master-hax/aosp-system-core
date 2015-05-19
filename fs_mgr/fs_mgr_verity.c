@@ -842,7 +842,10 @@ out:
 
 int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
 {
-    _Alignas(struct dm_ioctl) char buffer[DM_BUF_SIZE];
+    _Alignas(struct dm_ioctl) union {
+        char buffer[DM_BUF_SIZE];
+        struct dm_ioctl io;
+    } buffer;
     char fstab_filename[PROPERTY_VALUE_MAX + sizeof(FSTAB_PREFIX)];
     char *mount_point;
     char propbuf[PROPERTY_VALUE_MAX];
@@ -852,7 +855,7 @@ int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
     int mode;
     int rc = -1;
     off64_t offset = 0;
-    struct dm_ioctl *io = (struct dm_ioctl *) buffer;
+    struct dm_ioctl *io = &buffer.io;
     struct fstab *fstab = NULL;
 
     fd = TEMP_FAILURE_RETRY(open("/dev/device-mapper", O_RDWR | O_CLOEXEC));
@@ -891,7 +894,7 @@ int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
             continue;
         }
 
-        status = &buffer[io->data_start + sizeof(struct dm_target_spec)];
+        status = &buffer.buffer[io->data_start + sizeof(struct dm_target_spec)];
 
         if (*status == 'C') {
             if (write_verity_state(fstab->recs[i].verity_loc, offset,
@@ -930,8 +933,11 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab) {
     char *verity_table_signature = 0;
     uint64_t device_size = 0;
 
-    _Alignas(struct dm_ioctl) char buffer[DM_BUF_SIZE];
-    struct dm_ioctl *io = (struct dm_ioctl *) buffer;
+    _Alignas(struct dm_ioctl) union {
+        char buffer[DM_BUF_SIZE];
+        struct dm_ioctl io;
+    } buffer;
+    struct dm_ioctl *io = &buffer.io;
     char *mount_point = basename(fstab->mount_point);
 
     // get verity filesystem size

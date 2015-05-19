@@ -44,7 +44,10 @@ int socket_network_client(const char *host, int port, int type)
 int socket_network_client_timeout(const char *host, int port, int type, int timeout)
 {
     struct hostent *hp;
-    struct sockaddr_in addr;
+    union {
+        struct sockaddr sa;
+        struct sockaddr_in in;
+    } addr;
     int s;
     int flags = 0, error = 0, ret = 0;
     fd_set rset, wset;
@@ -58,9 +61,9 @@ int socket_network_client_timeout(const char *host, int port, int type, int time
     if (hp == 0) return -1;
 
     memset(&addr, 0, sizeof(addr));
-    addr.sin_family = hp->h_addrtype;
-    addr.sin_port = htons(port);
-    memcpy(&addr.sin_addr, hp->h_addr, hp->h_length);
+    addr.in.sin_family = hp->h_addrtype;
+    addr.in.sin_port = htons(port);
+    memcpy(&addr.in.sin_addr, hp->h_addr, hp->h_length);
 
     s = socket(hp->h_addrtype, type, 0);
     if (s < 0) return -1;
@@ -75,7 +78,7 @@ int socket_network_client_timeout(const char *host, int port, int type, int time
         return -1;
     }
 
-    if ((ret = connect(s, (struct sockaddr *) &addr, sizeof(addr))) < 0) {
+    if ((ret = connect(s, &addr.sa, sizeof(addr))) < 0) {
         if (errno != EINPROGRESS) {
             close(s);
             return -1;

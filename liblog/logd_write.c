@@ -114,12 +114,15 @@ static int __write_to_log_initialize()
             ret = -errno;
             close(i);
         } else {
-            struct sockaddr_un un;
-            memset(&un, 0, sizeof(struct sockaddr_un));
-            un.sun_family = AF_UNIX;
-            strcpy(un.sun_path, "/dev/socket/logdw");
+            union {
+                struct sockaddr sa;
+                struct sockaddr_un un;
+            } addr;
+            memset(&addr, 0, sizeof(struct sockaddr_un));
+            addr.un.sun_family = AF_UNIX;
+            strcpy(addr.un.sun_path, "/dev/socket/logdw");
 
-            if (TEMP_FAILURE_RETRY(connect(i, (struct sockaddr *)&un,
+            if (TEMP_FAILURE_RETRY(connect(i, &addr.sa,
                                            sizeof(struct sockaddr_un))) < 0) {
                 ret = -errno;
                 close(i);

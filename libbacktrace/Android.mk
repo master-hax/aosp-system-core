@@ -30,6 +30,9 @@ libbacktrace_common_cppflags := \
 libbacktrace_common_clang_cflags += \
     -Wno-inline-asm
 
+# For libunwind headers on aarch64
+libbacktrace_common_cflags += -fno-strict-aliasing
+
 build_host := false
 ifeq ($(HOST_OS),linux)
 ifeq ($(HOST_ARCH),$(filter $(HOST_ARCH),x86 x86_64))

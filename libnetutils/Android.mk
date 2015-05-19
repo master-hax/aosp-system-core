@@ -16,6 +16,9 @@ LOCAL_MODULE := libnetutils
 
 LOCAL_CFLAGS := -Werror
 
+# Aliasing rule violations in ifreq in ifc_utils.c
+LOCAL_CFLAGS += -fno-strict-aliasing
+
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)

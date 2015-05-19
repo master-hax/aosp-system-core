@@ -126,17 +126,20 @@ error:
 int socket_local_client_connect(int fd, const char *name, int namespaceId, 
         int type UNUSED)
 {
-    struct sockaddr_un addr;
+    union {
+        struct sockaddr sa;
+        struct sockaddr_un un;
+    } addr;
     socklen_t alen;
     int err;
 
-    err = socket_make_sockaddr_un(name, namespaceId, &addr, &alen);
+    err = socket_make_sockaddr_un(name, namespaceId, &addr.un, &alen);
 
     if (err < 0) {
         goto error;
     }
 
-    if(connect(fd, (struct sockaddr *) &addr, alen) < 0) {
+    if(connect(fd, &addr.sa, alen) < 0) {
         goto error;
     }
 

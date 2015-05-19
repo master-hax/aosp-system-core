@@ -24,6 +24,8 @@ LOCAL_STATIC_LIBRARIES := libz
 LOCAL_SHARED_LIBRARIES := libutils libbase
 LOCAL_MODULE:= libziparchive
 LOCAL_CFLAGS := -Werror -Wall
+# Aliasing violation in UpdateEntryFromDataDescriptor
+LOCAL_CFLAGS += -fno-strict-aliasing
 LOCAL_CPPFLAGS := -Wold-style-cast
 include $(BUILD_STATIC_LIBRARY)
 
@@ -33,6 +35,8 @@ LOCAL_SRC_FILES := ${source_files}
 LOCAL_STATIC_LIBRARIES := libz libutils libbase
 LOCAL_MODULE:= libziparchive-host
 LOCAL_CFLAGS := -Werror
+# Aliasing violation in UpdateEntryFromDataDescriptor
+LOCAL_CFLAGS += -fno-strict-aliasing
 ifneq ($(strip $(USE_MINGW)),)
 	LOCAL_CFLAGS += -mno-ms-bitfields
 endif
@@ -46,6 +50,8 @@ LOCAL_STATIC_LIBRARIES := libz libutils
 LOCAL_SHARED_LIBRARIES := liblog libbase
 LOCAL_MODULE:= libziparchive-host
 LOCAL_CFLAGS := -Werror
+# Aliasing violation in UpdateEntryFromDataDescriptor
+LOCAL_CFLAGS += -fno-strict-aliasing
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_SHARED_LIBRARY)
 

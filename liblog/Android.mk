@@ -58,12 +58,16 @@ endif
 LOCAL_MODULE := liblog
 LOCAL_SRC_FILES := $(liblog_host_sources)
 LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror $(liblog_cflags)
+# logger_for_each dereferences type-punned pointers
+LOCAL_CFLAGS += -fno-strict-aliasing
 LOCAL_MULTILIB := both
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_WHOLE_STATIC_LIBRARIES := liblog
+# logger_for_each dereferences type-punned pointers
+LOCAL_CFLAGS += -fno-strict-aliasing
 ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_LDLIBS := -lrt
 endif
@@ -77,12 +81,16 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_SRC_FILES := $(liblog_target_sources)
 LOCAL_CFLAGS := -Werror $(liblog_cflags)
+# logger_for_each dereferences type-punned pointers
+LOCAL_CFLAGS += -fno-strict-aliasing
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := liblog
 LOCAL_WHOLE_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS := -Werror $(liblog_cflags)
+# logger_for_each dereferences type-punned pointers
+LOCAL_CFLAGS += -fno-strict-aliasing
 
 # TODO: This is to work around b/19059885. Remove after root cause is fixed
 LOCAL_LDFLAGS_arm := -Wl,--hash-style=both

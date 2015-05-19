@@ -35,18 +35,21 @@
  */
 int socket_loopback_client(int port, int type)
 {
-    struct sockaddr_in addr;
+    union {
+        struct sockaddr sa;
+        struct sockaddr_in in;
+    } addr;
     int s;
 
     memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    addr.in.sin_family = AF_INET;
+    addr.in.sin_port = htons(port);
+    addr.in.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
     s = socket(AF_INET, type, 0);
     if(s < 0) return -1;
 
-    if(connect(s, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
+    if(connect(s, &addr.sa, sizeof(addr)) < 0) {
         close(s);
         return -1;
     }

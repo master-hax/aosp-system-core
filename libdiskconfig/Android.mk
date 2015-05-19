@@ -13,6 +13,7 @@ LOCAL_MODULE := libdiskconfig
 LOCAL_MODULE_TAGS := optional
 LOCAL_SYSTEM_SHARED_LIBRARIES := libcutils liblog libc
 LOCAL_CFLAGS := -Werror
+LOCAL_CFLAGS += -fno-strict-aliasing
 include $(BUILD_SHARED_LIBRARY)
 
 ifeq ($(HOST_OS),linux)
@@ -21,5 +22,6 @@ LOCAL_SRC_FILES := $(commonSources)
 LOCAL_MODULE := libdiskconfig_host
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := -O2 -g -W -Wall -Werror -D_LARGEFILE64_SOURCE
+LOCAL_CFLAGS += -fno-strict-aliasing
 include $(BUILD_HOST_STATIC_LIBRARY)
 endif # HOST_OS == linux

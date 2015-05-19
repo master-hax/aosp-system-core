@@ -103,14 +103,17 @@ out:
 
 int uevent_open_socket(int buf_sz, bool passcred)
 {
-    struct sockaddr_nl addr;
+    union {
+        struct sockaddr sa;
+        struct sockaddr_nl nl;
+    } addr;
     int on = passcred;
     int s;
 
     memset(&addr, 0, sizeof(addr));
-    addr.nl_family = AF_NETLINK;
-    addr.nl_pid = getpid();
-    addr.nl_groups = 0xffffffff;
+    addr.nl.nl_family = AF_NETLINK;
+    addr.nl.nl_pid = getpid();
+    addr.nl.nl_groups = 0xffffffff;
 
     s = socket(PF_NETLINK, SOCK_DGRAM | SOCK_CLOEXEC, NETLINK_KOBJECT_UEVENT);
     if(s < 0)
@@ -119,7 +122,7 @@ int uevent_open_socket(int buf_sz, bool passcred)
     setsockopt(s, SOL_SOCKET, SO_RCVBUFFORCE, &buf_sz, sizeof(buf_sz));
     setsockopt(s, SOL_SOCKET, SO_PASSCRED, &on, sizeof(on));
 
-    if(bind(s, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
+    if(bind(s, &addr.sa, sizeof(addr)) < 0) {
         close(s);
         return -1;
     }

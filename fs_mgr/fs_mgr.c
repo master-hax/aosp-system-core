@@ -383,8 +383,10 @@ static int translate_ext_labels(struct fstab_rec *rec)
 
     while ((ent = readdir(blockdir))) {
         int fd;
-        char super_buf[1024];
-        struct ext4_super_block *sb;
+        union {
+            char buf[1024];
+            struct ext4_super_block sb;
+        } super;
 
         if (ent->d_type != DT_BLK)
             continue;
@@ -396,7 +398,7 @@ static int translate_ext_labels(struct fstab_rec *rec)
         }
 
         if (TEMP_FAILURE_RETRY(lseek(fd, 1024, SEEK_SET)) < 0 ||
-            TEMP_FAILURE_RETRY(read(fd, super_buf, 1024)) != 1024) {
+            TEMP_FAILURE_RETRY(read(fd, super.buf, 1024)) != 1024) {
             /* Probably a loopback device or something else without a readable
              * superblock.
              */
@@ -404,13 +406,12 @@ static int translate_ext_labels(struct fstab_rec *rec)
             continue;
         }
 
-        sb = (struct ext4_super_block *)super_buf;
-        if (sb->s_magic != EXT4_SUPER_MAGIC) {
+        if (super.sb.s_magic != EXT4_SUPER_MAGIC) {
             INFO("/dev/block/%s not ext{234}\n", ent->d_name);
             continue;
         }
 
-        if (!strncmp(label, sb->s_volume_name, label_len)) {
+        if (!strncmp(label, super.sb.s_volume_name, label_len)) {
             char *new_blk_device;
 
             if (asprintf(&new_blk_device, "/dev/block/%s", ent->d_name) < 0) {
