@@ -17,12 +17,14 @@
 LOCAL_PATH := $(call my-dir)
 
 libbase_src_files := \
+    fd_file.cpp \
     file.cpp \
     logging.cpp \
     stringprintf.cpp \
     strings.cpp \
 
 libbase_test_src_files := \
+    fd_file_test.cpp \
     file_test.cpp \
     logging_test.cpp \
     stringprintf_test.cpp \
@@ -34,6 +36,7 @@ libbase_cppflags := \
     -Wall \
     -Wextra \
     -Werror \
+    -D_FILE_OFFSET_BITS=64 \
 
 # Device
 # ------------------------------------------------------------------------------
