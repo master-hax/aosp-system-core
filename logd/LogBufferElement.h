@@ -48,6 +48,8 @@ static inline bool worstUidEnabledForLogid(log_id_t id) {
 
 class LogBuffer;
 
+#define EXPIRE_THRESHOLD 4 // A smaller expire count is considered too chatty
+
 class LogBufferElement {
     const log_id_t mLogId;
     const uid_t mUid;
