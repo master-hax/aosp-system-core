@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include "base/logging.h"
-
 #include <libgen.h>
 
 // For getprogname(3) or program_invocation_short_name.
@@ -38,6 +36,7 @@
 #include <windows.h>
 #endif
 
+#include "base/logging.h"
 #include "base/macros.h"
 #include "base/strings.h"
 #include "cutils/threads.h"
