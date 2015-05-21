@@ -27,6 +27,7 @@
 #if !ADB_HOST
 #include <pty.h>
 #include <termios.h>
+#include <utmp.h>
 #endif
 
 #ifndef _WIN32
@@ -37,6 +38,7 @@
 #endif
 
 #include <base/file.h>
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <base/strings.h>
 
@@ -227,10 +229,13 @@ static int create_service_thread(void (*func)(int, void *), void *cookie)
     return s[0];
 }
 
-#if !ADB_HOST
+enum class SubprocessType {
+    Raw,
+    Pty,
+};
 
-static void init_subproc_child()
-{
+#if !ADB_HOST
+static void init_subproc_child() {
     setsid();
 
     // Set OOM score adjustment to prevent killing
@@ -243,109 +248,104 @@ static void init_subproc_child()
     }
 }
 
-#if !ADB_HOST
-static int create_subproc_pty(const char* cmd, const char* arg0,
-                              const char* arg1, pid_t* pid) {
-    D("create_subproc_pty(cmd=%s, arg0=%s, arg1=%s)\n", cmd, arg0, arg1);
-    char pts_name[PATH_MAX];
-    int ptm;
-    *pid = forkpty(&ptm, pts_name, nullptr, nullptr);
-    if (*pid == -1) {
-        printf("- fork failed: %s -\n", strerror(errno));
-        adb_close(ptm);
+static bool get_pty(bool batch, int* ptm, int* pts) {
+    if (openpty(ptm, pts, nullptr, nullptr, nullptr) == -1) {
+        PLOG(ERROR) << "openpty failed";
+        return false;
+    }
+
+    if (batch) {
+        termios tattr;
+        if (tcgetattr(*pts, &tattr) == -1) {
+            PLOG(ERROR) << "tcgetattr failed";
+            return false;
+        }
+
+        cfmakeraw(&tattr);
+        if (tcsetattr(*pts, TCSADRAIN, &tattr) == -1) {
+            PLOG(ERROR) << "tcsetattr failed";
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static pid_t make_subproc(const char* cmd, const char* arg0, const char* arg1,
+                          int fd, SubprocessType type) {
+    pid_t pid = fork();
+    if (pid == -1) {
+        PLOG(ERROR) << "fork failed";
+        adb_close(fd);
         return -1;
     }
 
-    if (*pid == 0) {
-        init_subproc_child();
-
-        int pts = unix_open(pts_name, O_RDWR | O_CLOEXEC);
-        if (pts == -1) {
-            fprintf(stderr, "child failed to open pseudo-term slave %s: %s\n",
-                    pts_name, strerror(errno));
-            adb_close(ptm);
-            exit(-1);
-        }
-
-        // arg0 is "-c" in batch mode and "-" in interactive mode.
-        if (strcmp(arg0, "-c") == 0) {
-            termios tattr;
-            if (tcgetattr(pts, &tattr) == -1) {
-                fprintf(stderr, "tcgetattr failed: %s\n", strerror(errno));
-                adb_close(pts);
-                adb_close(ptm);
-                exit(-1);
-            }
-
-            cfmakeraw(&tattr);
-            if (tcsetattr(pts, TCSADRAIN, &tattr) == -1) {
-                fprintf(stderr, "tcsetattr failed: %s\n", strerror(errno));
-                adb_close(pts);
-                adb_close(ptm);
-                exit(-1);
-            }
-        }
-
-        dup2(pts, STDIN_FILENO);
-        dup2(pts, STDOUT_FILENO);
-        dup2(pts, STDERR_FILENO);
-
-        adb_close(pts);
-        adb_close(ptm);
-
-        execl(cmd, cmd, arg0, arg1, nullptr);
-        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
-                cmd, strerror(errno), errno);
-        exit(-1);
-    } else {
-        return ptm;
+    if (pid != 0) {
+        return pid;
     }
+
+    init_subproc_child();
+
+    if (type == SubprocessType::Pty && login_tty(fd) == -1) {
+        adb_close(fd);
+        fprintf(stderr, "login_tty failed: %s\n", strerror(errno));
+        exit(-1);
+    }
+
+    dup2(fd, STDIN_FILENO);
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+
+    adb_close(fd);
+
+    execl(cmd, cmd, arg0, arg1, nullptr);
+    fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
+            cmd, strerror(errno), errno);
+    exit(-1);
 }
-#endif // !ADB_HOST
 
-static int create_subproc_raw(const char *cmd, const char *arg0, const char *arg1, pid_t *pid)
-{
+static int create_subproc_pty(const char* cmd, const char* arg0,
+                              const char* arg1, pid_t* pid) {
+    D("create_subproc_pty(cmd=%s, arg0=%s, arg1=%s)\n", cmd, arg0, arg1);
+
+    int ptm;
+    int pts;
+    // arg0 is "-c" in batch mode and "-" in interactive mode.
+    if (!get_pty(strcmp(arg0, "-c") == 0, &ptm, &pts)) {
+        adb_close(ptm);
+        adb_close(pts);
+        return -1;
+    }
+
+    *pid = make_subproc(cmd, arg0, arg1, pts, SubprocessType::Pty);
+    if (*pid == -1) {
+        adb_close(ptm);
+        adb_close(pts);
+        return -1;
+    }
+
+    adb_close(pts);
+    return ptm;
+}
+
+static int create_subproc_raw(const char* cmd, const char* arg0,
+                              const char* arg1, pid_t* pid) {
     D("create_subproc_raw(cmd=%s, arg0=%s, arg1=%s)\n", cmd, arg0, arg1);
-#if defined(_WIN32)
-    fprintf(stderr, "error: create_subproc_raw not implemented on Win32 (%s %s %s)\n", cmd, arg0, arg1);
-    return -1;
-#else
-
-    // 0 is parent socket, 1 is child socket
-    int sv[2];
-    if (adb_socketpair(sv) < 0) {
-        printf("[ cannot create socket pair - %s ]\n", strerror(errno));
+    int sv[2];  // 0 is parent socket, 1 is child socket.
+    if (adb_socketpair(sv) == -1) {
+        PLOG(ERROR) << "adb_socketpair failed";
         return -1;
     }
     D("socketpair: (%d,%d)", sv[0], sv[1]);
 
-    *pid = fork();
-    if (*pid < 0) {
-        printf("- fork failed: %s -\n", strerror(errno));
+    *pid = make_subproc(cmd, arg0, arg1, sv[1], SubprocessType::Raw);
+    if (*pid == -1) {
         adb_close(sv[0]);
-        adb_close(sv[1]);
         return -1;
     }
 
-    if (*pid == 0) {
-        adb_close(sv[0]);
-        init_subproc_child();
-
-        dup2(sv[1], STDIN_FILENO);
-        dup2(sv[1], STDOUT_FILENO);
-        dup2(sv[1], STDERR_FILENO);
-
-        adb_close(sv[1]);
-
-        execl(cmd, cmd, arg0, arg1, NULL);
-        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
-                cmd, strerror(errno), errno);
-        exit(-1);
-    } else {
-        adb_close(sv[1]);
-        return sv[0];
-    }
-#endif /* !defined(_WIN32) */
+    adb_close(sv[1]);
+    return sv[0];
 }
 #endif  /* !ABD_HOST */
 
@@ -387,7 +387,7 @@ static void subproc_waiter_service(int fd, void *cookie)
     }
 }
 
-static int create_subproc_thread(const char *name, bool pty = false) {
+static int create_subproc_thread(const char* name, SubprocessType type) {
     const char *arg0, *arg1;
     if (name == 0 || *name == 0) {
         arg0 = "-"; arg1 = 0;
@@ -397,7 +397,7 @@ static int create_subproc_thread(const char *name, bool pty = false) {
 
     pid_t pid = -1;
     int ret_fd;
-    if (pty) {
+    if (type == SubprocessType::Pty) {
         ret_fd = create_subproc_pty(SHELL_COMMAND, arg0, arg1, &pid);
     } else {
         ret_fd = create_subproc_raw(SHELL_COMMAND, arg0, arg1, &pid);
@@ -462,9 +462,9 @@ int service_to_fd(const char *name)
     } else if (!strncmp(name, "jdwp:", 5)) {
         ret = create_jdwp_connection_fd(atoi(name+5));
     } else if(!HOST && !strncmp(name, "shell:", 6)) {
-        ret = create_subproc_thread(name + 6, true);
+        ret = create_subproc_thread(name + 6, SubprocessType::Pty);
     } else if(!HOST && !strncmp(name, "exec:", 5)) {
-        ret = create_subproc_thread(name + 5);
+        ret = create_subproc_thread(name + 5, SubprocessType::Raw);
     } else if(!strncmp(name, "sync:", 5)) {
         ret = create_service_thread(file_sync_service, NULL);
     } else if(!strncmp(name, "remount:", 8)) {
@@ -478,10 +478,12 @@ int service_to_fd(const char *name)
     } else if(!strncmp(name, "unroot:", 7)) {
         ret = create_service_thread(restart_unroot_service, NULL);
     } else if(!strncmp(name, "backup:", 7)) {
-        ret = create_subproc_thread(android::base::StringPrintf("/system/bin/bu backup %s",
-                                                                (name + 7)).c_str());
+        ret = create_subproc_thread(
+            android::base::StringPrintf("/system/bin/bu backup %s", (name + 7)).c_str(),
+            SubprocessType::Raw);
     } else if(!strncmp(name, "restore:", 8)) {
-        ret = create_subproc_thread("/system/bin/bu restore");
+        ret = create_subproc_thread("/system/bin/bu restore",
+                                    SubprocessType::Raw);
     } else if(!strncmp(name, "tcpip:", 6)) {
         int port;
         if (sscanf(name + 6, "%d", &port) != 1) {
