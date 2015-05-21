@@ -1460,6 +1460,10 @@ int adb_commandline(int argc, const char **argv) {
         fprintf(stdout, "%s", adb_version().c_str());
         return 0;
     }
+    else if (!strcmp(argv[0], "features")) {
+        printf("Supported features:\n");
+        return adb_query_command("host:features");
+    }
 
     usage();
     return 1;
