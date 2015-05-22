@@ -20,6 +20,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 TEST(strings, split_empty) {
   std::vector<std::string> parts = android::base::Split("", ",");
@@ -119,6 +120,11 @@ TEST(strings, join_simple) {
 TEST(strings, join_separator_in_vector) {
   std::vector<std::string> list = {",", ","};
   ASSERT_EQ(",,,", android::base::Join(list, ','));
+}
+
+TEST(strings, join_simple_ints) {
+  std::set<int> list = {1, 2, 3};
+  ASSERT_EQ("1,2,3", android::base::Join(list, ','));
 }
 
 TEST(strings, startswith_empty) {
