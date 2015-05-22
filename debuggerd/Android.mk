@@ -1,4 +1,4 @@
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
@@ -70,3 +70,45 @@ LOCAL_MODULE_STEM_64 := crasher64
 LOCAL_MULTILIB := both
 
 include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+	utility.cpp \
+	test/dump_memory_test.cpp \
+	test/log_fake.cpp \
+
+LOCAL_MODULE := debuggerd_test
+
+LOCAL_SHARED_LIBRARIES := \
+	libbacktrace \
+	libbase \
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/test
+
+LOCAL_MODULE_STEM_32 := $(LOCAL_MODULE)32
+LOCAL_MODULE_STEM_64 := $(LOCAL_MODULE)64
+LOCAL_MULTILIB := both
+
+include $(BUILD_HOST_NATIVE_TEST)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+	utility.cpp \
+	test/dump_memory_test.cpp \
+	test/log_fake.cpp \
+
+LOCAL_MODULE := debuggerd_test
+
+LOCAL_SHARED_LIBRARIES := \
+	libbacktrace \
+	libbase \
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/test
+
+LOCAL_MODULE_STEM_32 := $(LOCAL_MODULE)32
+LOCAL_MODULE_STEM_64 := $(LOCAL_MODULE)64
+LOCAL_MULTILIB := both
+
+include $(BUILD_NATIVE_TEST)
