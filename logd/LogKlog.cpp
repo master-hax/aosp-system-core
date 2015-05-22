@@ -36,6 +36,127 @@
 
 static const char priority_message[] = { KMSG_PRIORITY(LOG_INFO), '\0' };
 
+// Parsing is hard
+
+// called if we see a '<', s is the next character, returns pointer after '>'
+static char *is_prio(char *s) {
+    if (!isdigit(*s++)) {
+        return NULL;
+    }
+    char c;
+    while ((c = *s++)) {
+        if (!isdigit(c) && (c == '>')) {
+            return s;
+        }
+    }
+    return NULL;
+}
+
+// called if we see a '[', s is the next character, returns pointer after ']'
+static char *is_timestamp(char *s) {
+    while (*s == ' ') {
+        ++s;
+    }
+    if (!isdigit(*s++)) {
+        return NULL;
+    }
+    bool first_period = true;
+    char c;
+    while ((c = *s++)) {
+        if ((c == '.') && first_period) {
+            first_period = false;
+            continue;
+        }
+        if (!isdigit(c) && (c == ']')) {
+            return s;
+        }
+    }
+    return NULL;
+}
+
+// Like strtok_r with "\r\n" except that we look for log signatures (regex)
+//   \(\(<[0-9]+>\)\([[] *[0-9]+[]]\)\{0,1\}\|[[] *[0-9]+[]]\)
+// and split if we see a second one without a newline.
+char *log_strtok_r(char *s, char **last) {
+    if (!s) {
+        if (!(s = *last)) {
+            return NULL;
+        }
+        // fixup for log signature split <, digit |= 0xF0;
+        if ((*s & 0xF0) == 0xF0) {
+            *s = (*s & 0x0F) + '0';
+            *--s = '<';
+        }
+        // fixup for log signature split [, 0xE<ten> is space, 0xE<digit>
+        if ((*s & 0xF0) == 0xE0) {
+            *s = (*s & 0x0F) + '0';
+            if (*s == ('0' + 10)) {
+                *s = ' ';
+            }
+            *--s = '[';
+        }
+    }
+
+    s += strspn(s, "\r\n");
+
+    if (!*s) { // no non-delimiter characters
+        *last = NULL;
+        return NULL;
+    }
+    char *peek, *tok = s;
+
+    for (;;) {
+        char c = *s++;
+        switch (c) {
+        case '\0':
+            *last = NULL;
+            return tok;
+
+        case '\r':
+        case '\n':
+            s[-1] = '\0';
+            *last = s;
+            return tok;
+
+        case '<':
+            peek = is_prio(s);
+            if (!peek) {
+                break;
+            }
+            if (s != (tok + 1)) { // not first?
+                s[-1] = '\0';
+                *s |= 0xF0; // signature for '<'
+                *last = s;
+                return tok;
+            }
+            s = peek;
+            if ((*s == '[') && ((peek = is_timestamp(s + 1)))) {
+                s = peek;
+            }
+            break;
+
+        case '[':
+            peek = is_timestamp(s);
+            if (!peek) {
+                break;
+            }
+            if (s != (tok + 1)) { // not first?
+                s[-1] = '\0';
+                if (*s == ' ') {
+                    *s = '0' + 10;
+                }
+                *s &= 0x0F;
+                *s |= 0xE0; // signature for '['
+                *last = s;
+                return tok;
+            }
+            s = peek;
+            break;
+        }
+    }
+    /* NOTREACHED */
+}
+
 log_time LogKlog::correction = log_time(CLOCK_REALTIME) - log_time(CLOCK_MONOTONIC);
 
 LogKlog::LogKlog(LogBuffer *buf, LogReader *reader, int fdWrite, int fdRead, bool auditd) :
@@ -81,8 +202,8 @@ bool LogKlog::onDataAvailable(SocketClient *cli) {
         char *ep = buffer + len;
         *ep = '\0';
         len = 0;
-        for(char *ptr, *tok = buffer;
-                ((tok = strtok_r(tok, "\r\n", &ptr)));
+        for(char *ptr = NULL, *tok = buffer;
+                ((tok = log_strtok_r(tok, &ptr)));
                 tok = NULL) {
             if (((tok + strlen(tok)) == ep) && (retval != 0) && full) {
                 len = strlen(tok);
