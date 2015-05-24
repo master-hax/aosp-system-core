@@ -63,6 +63,27 @@ public:
     }
 };
 
+class TransportSetup {
+public:
+  TransportSetup() {
+#ifdef _WIN32
+    // Use extern instead of including sysdeps.h which brings in various macros
+    // that conflict with APIs used in this file.
+    extern void adb_sysdeps_init(void);
+    adb_sysdeps_init();
+#else
+    // adb_sysdeps_init() is an inline function that we cannot link against.
+#endif
+  }
+};
+
+// Static initializer will call adb_sysdeps_init() before main() to initialize
+// the transport mutex before it is used in the tests. Alternatives would be to
+// use a static initializer to implement adb_sysdeps_init() itself in
+// sysdeps_win32.cpp (maybe not a good idea because of unclear init order), or
+// to use a test fixture whose SetUp() could do the init once.
+static TransportSetup g_TransportSetup;
+
 TEST(transport, kick_transport) {
   TestTransport t;
 
