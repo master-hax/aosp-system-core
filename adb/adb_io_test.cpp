@@ -25,17 +25,47 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <string>
 
 #include "base/file.h"
+#include "base/logging.h"
+
+#ifdef _WIN32
+int mkstemp(char* template_name) {
+    if (_mktemp(template_name) == nullptr) {
+        return -1;
+    }
+    // Use open() to match the close() that TemporaryFile's destructor does.
+    // Note that on Windows, this does CR/LF translation and _setmode() should
+    // be used to change that if appropriate.
+    return open(template_name, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+}
+#endif
 
 class TemporaryFile {
  public:
   TemporaryFile() {
+#ifdef _WIN32
+    char tmp_dir[MAX_PATH];
+    DWORD result = GetTempPathA(sizeof(tmp_dir), tmp_dir);
+    CHECK_NE(result, 0ul) << "GetTempPathA failed, error: " << GetLastError();
+    CHECK_LT(result, sizeof(tmp_dir)) << "path truncated to: " << result;
+
+    // GetTempPath() returns a path with a trailing slash, but init()
+    // does not expect that, so remove it.
+    CHECK_EQ(tmp_dir[result - 1], '\\');
+    tmp_dir[result - 1] = '\0';
+    init(tmp_dir);
+#else
     init("/data/local/tmp");
     if (fd == -1) {
       init("/tmp");
     }
+#endif
   }
 
   ~TemporaryFile() {
@@ -48,10 +78,17 @@ class TemporaryFile {
 
  private:
   void init(const char* tmp_dir) {
-    snprintf(filename, sizeof(filename), "%s/TemporaryFile-XXXXXX", tmp_dir);
+    snprintf(filename, sizeof(filename), "%s%cTemporaryFile-XXXXXX", tmp_dir,
+             OS_PATH_SEPARATOR);
     fd = mkstemp(filename);
   }
 };
+
+// All of these tests fail on Windows because they use the C Runtime open(),
+// but the adb_io APIs expect file descriptors from adb_open(). Also, the
+// android::base file APIs use the C Runtime which uses CR/LF translation by
+// default (changeable with _setmode()), but the adb_io APIs use adb_read()
+// and adb_write() which do no translation.
 
 TEST(io, ReadFdExactly_whole) {
   const char expected[] = "Foobar";
