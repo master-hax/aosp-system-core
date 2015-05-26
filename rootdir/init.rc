@@ -312,6 +312,7 @@ on post-fs-data
     mkdir /data/ss 0700 system system
     mkdir /data/system 0775 system system
     mkdir /data/system/heapdump 0700 system system
+    mkdir /data/system/logd 0700 logd logd
     mkdir /data/user 0711 system system
 
     # Reload policy from /data/security if present.
@@ -652,3 +653,15 @@ service perfprofd /system/xbin/perfprofd
     disabled
     user root
     oneshot
+
+on property:ro.build.type=eng
+    start syslogd
+
+on property:ro.build.type=userdebug
+    start syslogd
+
+service syslogd /system/bin/logcat -f /data/system/logd/logcat -b all -r 64 -n 256 -v threadtime -v usec -v printable -D
+    class main
+    disabled
+    user logd
+    seclabel u:r:logd:s0
