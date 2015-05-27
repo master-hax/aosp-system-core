@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
@@ -15,7 +16,11 @@
 #include <sys/cdefs.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
+
+#include <memory>
+#include <string>
 
 #include <cutils/sockets.h>
 #include <log/log.h>
@@ -231,7 +236,7 @@ static void show_help(const char *cmd)
     fprintf(stderr, "options include:\n"
                     "  -s              Set default filter to silent.\n"
                     "                  Like specifying filterspec '*:S'\n"
-                    "  -f <filename>   Log to file. Default to stdout\n"
+                    "  -f <filename>   Log to file. Default is stdout\n"
                     "  -r <kbytes>     Rotate log every kbytes. Requires -f\n"
                     "  -n <count>      Sets max number of rotated logs to <count>, default 4\n"
                     "  -v <format>     Sets the log print format, where <format> is:\n\n"
@@ -358,6 +363,7 @@ static void logcat_panic(bool showHelp, const char *fmt, ...)
 int main(int argc, char **argv)
 {
     using namespace android;
+    static const char default_time_format[] = "%m-%d %H:%M:%S.%q";
     int err;
     int hasSetLogFormat = 0;
     int clearLog = 0;
@@ -417,12 +423,11 @@ int main(int argc, char **argv)
                 /* FALLTHRU */
             case 'T':
                 if (strspn(optarg, "0123456789") != strlen(optarg)) {
-                    char *cp = tail_time.strptime(optarg,
-                                                  log_time::default_format);
+                    char *cp = tail_time.strptime(optarg, default_time_format);
                     if (!cp) {
                         logcat_panic(false,
                                     "-%c \"%s\" not in \"%s\" time format\n",
-                                    ret, optarg, log_time::default_format);
+                                    ret, optarg, default_time_format);
                     }
                     if (*cp) {
                         char c = *cp;
@@ -544,10 +549,57 @@ int main(int argc, char **argv)
                 g_printBinary = 1;
             break;
 
-            case 'f':
+            case 'f': {
+                // Find last logged line in gestalt of all matching output files
+                std::string directory;
+                char *file = strrchr(optarg, '/');
+                if (!file) {
+                    directory = ".";
+                    file = optarg;
+                } else {
+                    *file = '\0';
+                    directory = optarg;
+                    *file = '/';
+                    ++file;
+                }
+                size_t len = strlen(file);
+                std::unique_ptr<DIR, int(*)(DIR*)>dir(opendir(directory.data()),
+                                                      closedir);
+                struct dirent *dp;
+                while ((dp = readdir(dir.get())) != NULL) {
+                    if ((dp->d_type != DT_REG)
+                            || strncmp(dp->d_name, file, len)
+                            || (dp->d_name[len] && (dp->d_name[len] != '.'))) {
+                        continue;
+                    }
+
+                    std::string file_name = directory.data();
+                    file_name += "/";
+                    file_name += dp->d_name;
+                    std::unique_ptr<FILE, int(*)(FILE*)>fp(
+                            fopen(file_name.data(), "r"),
+                            fclose);
+                    log_time l(tail_time);
+                    if (fp.get()) {
+                        char *cp = NULL;
+                        size_t n;
+                        while (getline(&cp, &n, fp.get()) > 0) {
+                            log_time t(log_time::EPOCH);
+                            char *ep = t.strptime(cp, default_time_format);
+                            if (ep && (*ep == ' ') && (t > tail_time)) {
+                                tail_time = t;
+                            }
+                        }
+                        free(cp);
+                    }
+                    // We count on the basename file to be the definitive end
+                    if (!dp->d_name[len] && (tail_time != l)) {
+                        break;
+                    }
+                }
                 // redirect output to a file
                 g_outputFileName = optarg;
-
+            }
             break;
 
             case 'r':
