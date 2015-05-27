@@ -231,7 +231,7 @@ static void show_help(const char *cmd)
     fprintf(stderr, "options include:\n"
                     "  -s              Set default filter to silent.\n"
                     "                  Like specifying filterspec '*:S'\n"
-                    "  -f <filename>   Log to file. Default to stdout\n"
+                    "  -f <filename>   Log to file. Default is stdout\n"
                     "  -r <kbytes>     Rotate log every kbytes. Requires -f\n"
                     "  -n <count>      Sets max number of rotated logs to <count>, default 4\n"
                     "  -v <format>     Sets the log print format, where <format> is:\n\n"
@@ -358,6 +358,7 @@ static void logcat_panic(bool showHelp, const char *fmt, ...)
 int main(int argc, char **argv)
 {
     using namespace android;
+    static const char default_time_format[] = "%m-%d %H:%M:%S.%q";
     int err;
     int hasSetLogFormat = 0;
     int clearLog = 0;
@@ -417,12 +418,11 @@ int main(int argc, char **argv)
                 /* FALLTHRU */
             case 'T':
                 if (strspn(optarg, "0123456789") != strlen(optarg)) {
-                    char *cp = tail_time.strptime(optarg,
-                                                  log_time::default_format);
+                    char *cp = tail_time.strptime(optarg, default_time_format);
                     if (!cp) {
                         logcat_panic(false,
                                     "-%c \"%s\" not in \"%s\" time format\n",
-                                    ret, optarg, log_time::default_format);
+                                    ret, optarg, default_time_format);
                     }
                     if (*cp) {
                         char c = *cp;
@@ -545,6 +545,23 @@ int main(int argc, char **argv)
             break;
 
             case 'f':
+                // Find last logged line
+                {
+                    FILE *fp = fopen(optarg, "r");
+                    if (fp) {
+                        char *cp = NULL;
+                        size_t n;
+                        while (getline(&cp, &n, fp) > 0) {
+                            log_time t(log_time::EPOCH);
+                            char *ep = t.strptime(cp, default_time_format);
+                            if (ep && (*ep == ' ')) {
+                                tail_time = t;
+                            }
+                        }
+                        free(cp);
+                        fclose(fp);
+                    }
+                }
                 // redirect output to a file
                 g_outputFileName = optarg;
 
