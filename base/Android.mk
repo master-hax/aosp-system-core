@@ -33,12 +33,14 @@ libbase_test_src_files := \
 # TODO(danalbert): Port the RandomAccessFile API to Windows.
 raf_src_files := \
     fd_file.cpp \
+    mapped_file.cpp \
     null_file.cpp \
     random_access_file_utils.cpp \
     string_file.cpp \
 
 raf_test_src_files := \
     fd_file_test.cpp \
+    mapped_file_test.cpp \
     null_file_test.cpp \
     random_access_file_utils_test.cpp \
     string_file_test.cpp \
