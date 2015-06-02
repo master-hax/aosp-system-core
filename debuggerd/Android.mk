@@ -79,17 +79,23 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
     utility.cpp \
+	test/dump_maps_test.cpp \
     test/dump_memory_test.cpp \
+	test/elf_fake.cpp \
     test/log_fake.cpp \
+	test/property_fake.cpp \
+    test/ptrace_fake.cpp \
+	test/selinux_fake.cpp \
 
 LOCAL_MODULE := debuggerd_test
 
 LOCAL_SHARED_LIBRARIES := \
     libbacktrace \
     libbase \
+    libcutils \
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/test
-LOCAL_CPPFLAGS := $(common_cppflags)
+LOCAL_CPPFLAGS := $(common_cppflags) -Wno-missing-field-initializers
 
 LOCAL_MODULE_STEM_32 := $(LOCAL_MODULE)32
 LOCAL_MODULE_STEM_64 := $(LOCAL_MODULE)64
@@ -101,17 +107,23 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
     utility.cpp \
+	test/dump_maps_test.cpp \
     test/dump_memory_test.cpp \
+	test/elf_fake.cpp \
     test/log_fake.cpp \
+	test/property_fake.cpp \
+    test/ptrace_fake.cpp \
+	test/selinux_fake.cpp \
 
 LOCAL_MODULE := debuggerd_test
 
 LOCAL_SHARED_LIBRARIES := \
     libbacktrace \
     libbase \
+    libcutils \
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/test
-LOCAL_CPPFLAGS := $(common_cppflags)
+LOCAL_CPPFLAGS := $(common_cppflags) -Wno-missing-field-initializers
 
 LOCAL_MODULE_STEM_32 := $(LOCAL_MODULE)32
 LOCAL_MODULE_STEM_64 := $(LOCAL_MODULE)64
