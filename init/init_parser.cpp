@@ -663,7 +663,7 @@ int action_queue_empty()
 }
 
 service* make_exec_oneshot_service(int nargs, char** args) {
-    // Parse the arguments: exec [SECLABEL [UID [GID]*] --] COMMAND ARGS...
+    // Parse the arguments: exec [[SECLABEL] UID [GID]* --] COMMAND ARGS...
     int command_arg = 1;
     for (int i = 1; i < nargs; ++i) {
         if (strcmp(args[i], "--") == 0) {
@@ -689,17 +689,19 @@ service* make_exec_oneshot_service(int nargs, char** args) {
         return NULL;
     }
 
-    if (command_arg > 2) {
+    int uid_arg = 1;
+    if ((command_arg > 2) && strchr(args[1], ':')) {
+        uid_arg = 2;
         svc->seclabel = args[1];
     }
-    if (command_arg > 3) {
-        svc->uid = decode_uid(args[2]);
+    if (command_arg > (1 + uid_arg)) {
+        svc->uid = decode_uid(args[uid_arg]);
     }
-    if (command_arg > 4) {
-        svc->gid = decode_uid(args[3]);
-        svc->nr_supp_gids = command_arg - 1 /* -- */ - 4 /* exec SECLABEL UID GID */;
+    if (command_arg > (2 + uid_arg)) {
+        svc->gid = decode_uid(args[uid_arg + 1]);
+        svc->nr_supp_gids = command_arg /* -- */ - uid_arg - 3 /* exec [SECLABEL] UID GID */;
         for (size_t i = 0; i < svc->nr_supp_gids; ++i) {
-            svc->supp_gids[i] = decode_uid(args[4 + i]);
+            svc->supp_gids[i] = decode_uid(args[uid_arg + 2 + i]);
         }
     }
 
