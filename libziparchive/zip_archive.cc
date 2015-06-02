@@ -1009,7 +1009,7 @@ class FileWriter : public Writer {
       // will not allocate space on disk and this call to fallocate will not
       // change the file size.
       result = TEMP_FAILURE_RETRY(fallocate(fd, 0, current_offset, declared_length));
-      if (result == -1) {
+      if (result == -1 && errno == ENOSPC) {
         ALOGW("Zip: unable to allocate space for file to %" PRId64 ": %s",
               static_cast<int64_t>(declared_length + current_offset), strerror(errno));
         return std::unique_ptr<FileWriter>(nullptr);
