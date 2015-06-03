@@ -84,17 +84,20 @@ FileMap::~FileMap(void)
 bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t length,
         bool readOnly)
 {
+ALOGE("FileMap::create %s, %d, %" PRId64 ", %d", origFileName, fd, offset, (int) length);
+    assert(fd >= 0);
+    assert(offset >= 0);
+    assert(length > 0);
+
 #if defined(__MINGW32__)
-    int     adjust;
-    off64_t adjOffset;
-    size_t  adjLength;
 
     if (mPageSize == -1) {
-        SYSTEM_INFO  si;
-
-        GetSystemInfo( &si );
+        SYSTEM_INFO si;
+        GetSystemInfo(&si);
         mPageSize = si.dwAllocationGranularity;
     }
+
+ALOGE("mPageSize=%d", (int) mPageSize);
 
     DWORD  protect = readOnly ? PAGE_READONLY : PAGE_READWRITE;
 
@@ -106,9 +109,11 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
         return false;
     }
 
-    adjust    = offset % mPageSize;
-    adjOffset = offset - adjust;
-    adjLength = length + adjust;
+    int adjustment = offset % mPageSize;
+ALOGE("adjustment=%d", adjustment);
+    off64_t adjOffset = offset - adjustment;
+    size_t adjLength = length + adjustment;
+ALOGE("adjOffset=%" PRId64 " adjLength=%d", adjOffset, adjLength);
 
     mBasePtr = MapViewOfFile( mFileMapping,
                               readOnly ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS,
@@ -123,16 +128,6 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
         return false;
     }
 #else // !defined(__MINGW32__)
-    int     prot, flags, adjust;
-    off64_t adjOffset;
-    size_t  adjLength;
-
-    void* ptr;
-
-    assert(fd >= 0);
-    assert(offset >= 0);
-    assert(length > 0);
-
     // init on first use
     if (mPageSize == -1) {
         mPageSize = sysconf(_SC_PAGESIZE);
@@ -141,17 +136,19 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
             return false;
         }
     }
+ALOGE("mPageSize=%d", (int) mPageSize);
 
-    adjust = offset % mPageSize;
-    adjOffset = offset - adjust;
-    adjLength = length + adjust;
+    int adjustment = offset % mPageSize;
+ALOGE("adjustment=%d", adjustment);
+    off64_t adjOffset = offset - adjustment;
+    size_t adjLength = length + adjustment;
+ALOGE("adjOffset=%" PRId64 " adjLength=%zu", adjOffset, adjLength);
 
-    flags = MAP_SHARED;
-    prot = PROT_READ;
+    int prot = PROT_READ;
     if (!readOnly)
         prot |= PROT_WRITE;
 
-    ptr = mmap(NULL, adjLength, prot, flags, fd, adjOffset);
+    void* ptr = mmap(NULL, adjLength, prot, MAP_SHARED, fd, adjOffset);
     if (ptr == MAP_FAILED) {
         ALOGE("mmap(%lld,%zu) failed: %s\n",
             (long long)adjOffset, adjLength, strerror(errno));
@@ -163,7 +160,7 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
     mFileName = origFileName != NULL ? strdup(origFileName) : NULL;
     mBaseLength = adjLength;
     mDataOffset = offset;
-    mDataPtr = (char*) mBasePtr + adjust;
+    mDataPtr = (char*) mBasePtr + adjustment;
     mDataLength = length;
 
     assert(mBasePtr != NULL);
