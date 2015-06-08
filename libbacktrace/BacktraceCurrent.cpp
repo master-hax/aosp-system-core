@@ -74,7 +74,7 @@ bool BacktraceCurrent::Unwind(size_t num_ignore_frames, ucontext_t* ucontext) {
     return UnwindFromContext(num_ignore_frames, ucontext);
   }
 
-  if (Tid() != gettid()) {
+  if (Tid() != GetTid()) {
     return UnwindThread(num_ignore_frames);
   }
 
@@ -94,9 +94,9 @@ bool BacktraceCurrent::DiscardFrame(const backtrace_frame_data_t& frame) {
 static pthread_mutex_t g_sigaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void SignalHandler(int, siginfo_t*, void* sigcontext) {
-  ThreadEntry* entry = ThreadEntry::Get(getpid(), gettid(), false);
+  ThreadEntry* entry = ThreadEntry::Get(getpid(), GetTid(), false);
   if (!entry) {
-    BACK_LOGE("pid %d, tid %d entry not found", getpid(), gettid());
+    BACK_LOGE("pid %d, tid %d entry not found", getpid(), GetTid());
     return;
   }
 

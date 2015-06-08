@@ -19,6 +19,7 @@
 
 #include <inttypes.h>
 #include <stdint.h>
+#include <sys/syscall.h>
 
 #include <string>
 #include <vector>
@@ -51,6 +52,18 @@ typedef __darwin_ucontext ucontext_t;
 struct ucontext;
 typedef ucontext ucontext_t;
 #endif
+
+static inline pid_t GetTid() {
+#if defined(__APPLE__)
+  uint64_t owner;
+  CHECK_PTHREAD_CALL(pthread_threadid_np, (nullptr, &owner), __FUNCTION__);  // Requires Mac OS 10.6
+  return owner;
+#elif defined(__BIONIC__)
+  return gettid();
+#else
+  return syscall(__NR_gettid);
+#endif
+}
 
 class Backtrace {
 public:
