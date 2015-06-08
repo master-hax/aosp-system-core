@@ -17,6 +17,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/syscall.h>
 #include <sys/types.h>
 #include <ucontext.h>
 
@@ -35,6 +36,18 @@
 #include "UnwindPtrace.h"
 
 using android::base::StringPrintf;
+
+static pid_t GetTid() {
+#if defined(__APPLE__)
+  uint64_t owner;
+  CHECK_PTHREAD_CALL(pthread_threadid_np, (nullptr, &owner), __FUNCTION__);  // Requires Mac OS 10.6
+  return owner;
+#elif defined(__BIONIC__)
+  return gettid();
+#else
+  return syscall(__NR_gettid);
+#endif
+}
 
 //-------------------------------------------------------------------------
 // Backtrace functions.
@@ -123,7 +136,7 @@ Backtrace* Backtrace::Create(pid_t pid, pid_t tid, BacktraceMap* map) {
   if (pid == BACKTRACE_CURRENT_PROCESS) {
     pid = getpid();
     if (tid == BACKTRACE_CURRENT_THREAD) {
-      tid = gettid();
+      tid = GetTid();
     }
   } else if (tid == BACKTRACE_CURRENT_THREAD) {
     tid = pid;
