@@ -20,6 +20,7 @@
 #include <string.h>
 #include <sys/param.h>
 #include <sys/ptrace.h>
+#include <sys/syscall.h>
 #include <sys/types.h>
 #include <ucontext.h>
 #include <unistd.h>
@@ -35,6 +36,18 @@
 #include "BacktraceLog.h"
 #include "ThreadEntry.h"
 #include "thread_utils.h"
+
+static pid_t GetTid() {
+#if defined(__APPLE__)
+  uint64_t owner;
+  CHECK_PTHREAD_CALL(pthread_threadid_np, (nullptr, &owner), __FUNCTION__);  // Requires Mac OS 10.6
+  return owner;
+#elif defined(__BIONIC__)
+  return gettid();
+#else
+  return syscall(__NR_gettid);
+#endif
+}
 
 bool BacktraceCurrent::ReadWord(uintptr_t ptr, word_t* out_value) {
   if (!VerifyReadWordArgs(ptr, out_value)) {
@@ -74,7 +87,7 @@ bool BacktraceCurrent::Unwind(size_t num_ignore_frames, ucontext_t* ucontext) {
     return UnwindFromContext(num_ignore_frames, ucontext);
   }
 
-  if (Tid() != gettid()) {
+  if (Tid() != GetTid()) {
     return UnwindThread(num_ignore_frames);
   }
 
@@ -94,9 +107,9 @@ bool BacktraceCurrent::DiscardFrame(const backtrace_frame_data_t& frame) {
 static pthread_mutex_t g_sigaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void SignalHandler(int, siginfo_t*, void* sigcontext) {
-  ThreadEntry* entry = ThreadEntry::Get(getpid(), gettid(), false);
+  ThreadEntry* entry = ThreadEntry::Get(getpid(), GetTid(), false);
   if (!entry) {
-    BACK_LOGE("pid %d, tid %d entry not found", getpid(), gettid());
+    BACK_LOGE("pid %d, tid %d entry not found", getpid(), GetTid());
     return;
   }
 
