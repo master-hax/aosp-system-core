@@ -220,6 +220,7 @@ endif
 # adbd device daemon
 # =========================================================
 
+ifeq (,$(strip $(SANITIZE_TARGET)))
 include $(CLEAR_VARS)
 
 LOCAL_CLANG := true
@@ -265,3 +266,4 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
 
 include $(BUILD_EXECUTABLE)
+endif # SANITIZE_TARGET

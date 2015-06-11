@@ -123,6 +123,7 @@ LOCAL_SRC_FILES_x86_64 += \
 LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS += -Werror -std=gnu90
+LOCAL_SANITIZE := never
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
