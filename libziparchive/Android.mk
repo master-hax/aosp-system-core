@@ -30,6 +30,17 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_SRC_FILES := ${source_files}
+LOCAL_STATIC_LIBRARIES := libz_nosanitize
+LOCAL_SHARED_LIBRARIES := libutils libbase
+LOCAL_MODULE:= libziparchive_nosanitize
+LOCAL_CFLAGS := -Werror -Wall
+LOCAL_CPPFLAGS := -Wold-style-cast
+LOCAL_SANITIZE := never
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_CPP_EXTENSION := .cc
+LOCAL_SRC_FILES := ${source_files}
 LOCAL_STATIC_LIBRARIES := libz libutils libbase
 LOCAL_MODULE:= libziparchive-host
 LOCAL_CFLAGS := -Werror

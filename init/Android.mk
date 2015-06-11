@@ -33,6 +33,7 @@ LOCAL_MODULE := libinit
 LOCAL_CLANG := true
 include $(BUILD_STATIC_LIBRARY)
 
+ifeq (,$(strip $(SANITIZE_TARGET)))
 include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
@@ -79,6 +80,7 @@ LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
 
 LOCAL_CLANG := true
 include $(BUILD_EXECUTABLE)
+endif # SANITIZE_TARGET
 
 
 
