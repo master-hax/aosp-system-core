@@ -91,7 +91,34 @@ LOCAL_SHARED_LIBRARIES := \
         liblog \
         libdl
 
-LOCAL_MODULE:= libutils
+LOCAL_MODULE := libutils
+include $(BUILD_STATIC_LIBRARY)
+
+
+include $(CLEAR_VARS)
+
+
+# we have the common sources, plus some device-specific stuff
+LOCAL_SRC_FILES:= \
+	$(commonSources) \
+	Looper.cpp \
+	Trace.cpp
+
+ifeq ($(TARGET_ARCH),mips)
+LOCAL_CFLAGS += -DALIGN_DOUBLE
+endif
+LOCAL_CFLAGS += -Werror
+
+LOCAL_STATIC_LIBRARIES := \
+	libcutils
+
+LOCAL_SHARED_LIBRARIES := \
+        libbacktrace \
+        liblog \
+        libdl
+
+LOCAL_MODULE := libutils_nosanitize
+LOCAL_SANITIZE := never
 include $(BUILD_STATIC_LIBRARY)
 
 # For the device, shared

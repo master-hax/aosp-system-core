@@ -8,6 +8,7 @@ LOCAL_MODULE := libhealthd.default
 LOCAL_CFLAGS := -Werror
 include $(BUILD_STATIC_LIBRARY)
 
+ifeq (,$(strip $(SANITIZE_TARGET)))
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
@@ -48,6 +49,7 @@ LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT) \
     && ln -sf /sbin/healthd $(TARGET_ROOT_OUT)/charger
 
 include $(BUILD_EXECUTABLE)
+endif # SANITIZE_TARGET
 
 
 define _add-charger-image
