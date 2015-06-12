@@ -89,6 +89,7 @@ LOCAL_CFLAGS := -Werror $(liblog_cflags)
 
 # TODO: This is to work around b/19059885. Remove after root cause is fixed
 LOCAL_LDFLAGS_arm := -Wl,--hash-style=both
+
 LOCAL_SANITIZE := never
 LOCAL_CXX_STL := none
 
