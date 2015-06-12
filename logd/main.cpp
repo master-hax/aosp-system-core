@@ -413,11 +413,14 @@ int main(int argc, char *argv[]) {
     if (al || kl) {
         int len = klogctl(KLOG_SIZE_BUFFER, NULL, 0);
         if (len > 0) {
-            len++;
+            len += 1024; // Margin for additional input race or trailing nul
             char buf[len];
 
             int rc = klogctl(KLOG_READ_ALL, buf, len);
 
+            if ((rc > 0) && (rc < len)) {
+                len = rc + 1;
+            }
             buf[len - 1] = '\0';
 
             if ((rc >= 0) && kl) {

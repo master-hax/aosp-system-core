@@ -45,9 +45,13 @@ static char *is_prio(char *s) {
     }
     char c;
     while ((c = *s++)) {
-        if (!isdigit(c) && (c == '>')) {
+        if (isdigit(c)) {
+            continue;
+        }
+        if (c == '>') {
             return s;
         }
+        break;
     }
     return NULL;
 }
@@ -67,15 +71,19 @@ static char *is_timestamp(char *s) {
             first_period = false;
             continue;
         }
-        if (!isdigit(c) && (c == ']')) {
+        if (isdigit(c)) {
+            continue;
+        }
+        if ((c == ']') && !first_period && (*s == ' ')) {
             return s;
         }
+        break;
     }
     return NULL;
 }
 
 // Like strtok_r with "\r\n" except that we look for log signatures (regex)
-//   \(\(<[0-9]+>\)\([[] *[0-9]+[]]\)\{0,1\}\|[[] *[0-9]+[]]\)
+// \(\(<[0-9]+>\)\([[] *[0-9]+[.][0-9]+[]] \)\{0,1\}\|[[] *[0-9]+[.][0-9]+[]] \)
 // and split if we see a second one without a newline.
 
 #define SIGNATURE_MASK     0xF0
@@ -547,10 +555,21 @@ int LogKlog::log(const char *buf) {
         }
     }
     size_t l = etag - tag;
+    // skip leading space
     while (isspace(*buf)) {
         ++buf;
     }
-    size_t n = 1 + l + 1 + strlen(buf) + 1;
+    // truncate trailing space
+    size_t b = strlen(buf);
+    while (b && isspace(buf[b-1])) {
+        --b;
+    }
+    // trick ... allow tag with empty content to be logged. log() drops empty
+    if (!b && l) {
+        buf = " ";
+        b = 1;
+    }
+    size_t n = 1 + l + 1 + b + 1;
 
     // Allocate a buffer to hold the interpreted log message
     int rc = n;
@@ -572,7 +591,8 @@ int LogKlog::log(const char *buf) {
     ++np;
 
     // Copy main message to the remainder
-    strcpy(np, buf);
+    strncpy(np, buf, b);
+    np[b] = '\0';
 
     // Log message
     rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr,
