@@ -131,8 +131,9 @@ int compare_type(const TYPE& lhs, const TYPE& rhs) {
 template<typename TYPE> inline
 void construct_type(TYPE* p, size_t n) {
     if (!traits<TYPE>::has_trivial_ctor) {
-        while (n--) {
+        while (n > 0) {
             new(p++) TYPE;
+            n--;
         }
     }
 }
@@ -140,9 +141,10 @@ void construct_type(TYPE* p, size_t n) {
 template<typename TYPE> inline
 void destroy_type(TYPE* p, size_t n) {
     if (!traits<TYPE>::has_trivial_dtor) {
-        while (n--) {
+        while (n > 0) {
             p->~TYPE();
             p++;
+            n--;
         }
     }
 }
@@ -150,9 +152,10 @@ void destroy_type(TYPE* p, size_t n) {
 template<typename TYPE> inline
 void copy_type(TYPE* d, const TYPE* s, size_t n) {
     if (!traits<TYPE>::has_trivial_copy) {
-        while (n--) {
+        while (n > 0) {
             new(d) TYPE(*s);
             d++, s++;
+            n--;
         }
     } else {
         memcpy(d,s,n*sizeof(TYPE));
@@ -162,13 +165,15 @@ void copy_type(TYPE* d, const TYPE* s, size_t n) {
 template<typename TYPE> inline
 void splat_type(TYPE* where, const TYPE* what, size_t n) {
     if (!traits<TYPE>::has_trivial_copy) {
-        while (n--) {
+        while (n > 0) {
             new(where) TYPE(*what);
             where++;
+            n--;
         }
     } else {
-        while (n--) {
+        while (n > 0) {
             *where++ = *what;
+            n--;
         }
     }
 }
@@ -182,7 +187,7 @@ void move_forward_type(TYPE* d, const TYPE* s, size_t n = 1) {
     } else {
         d += n;
         s += n;
-        while (n--) {
+        while (n > 0) {
             --d, --s;
             if (!traits<TYPE>::has_trivial_copy) {
                 new(d) TYPE(*s);
@@ -192,6 +197,7 @@ void move_forward_type(TYPE* d, const TYPE* s, size_t n = 1) {
             if (!traits<TYPE>::has_trivial_dtor) {
                 s->~TYPE();
             }
+            n--;
         }
     }
 }
@@ -203,7 +209,7 @@ void move_backward_type(TYPE* d, const TYPE* s, size_t n = 1) {
     {
         memmove(d,s,n*sizeof(TYPE));
     } else {
-        while (n--) {
+        while (n > 0) {
             if (!traits<TYPE>::has_trivial_copy) {
                 new(d) TYPE(*s);
             } else {
@@ -213,6 +219,7 @@ void move_backward_type(TYPE* d, const TYPE* s, size_t n = 1) {
                 s->~TYPE();
             }
             d++, s++;
+            n--;
         }
     }
 }
