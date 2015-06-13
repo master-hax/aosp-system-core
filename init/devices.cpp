@@ -974,11 +974,8 @@ static void coldboot(const char *path)
 }
 
 void device_init() {
-    sehandle = NULL;
-    if (is_selinux_enabled() > 0) {
-        sehandle = selinux_android_file_context_handle();
-        selinux_status_open(true);
-    }
+    sehandle = selinux_android_file_context_handle();
+    selinux_status_open(true);
 
     /* is 256K enough? udev uses 16MB! */
     device_fd = uevent_open_socket(256*1024, true);
