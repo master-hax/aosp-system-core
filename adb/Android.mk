@@ -239,11 +239,9 @@ LOCAL_CFLAGS := \
     -Wno-deprecated-declarations \
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
-LOCAL_CFLAGS += -DALLOW_ADBD_ROOT=1
-endif
-
-ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 LOCAL_CFLAGS += -DALLOW_ADBD_DISABLE_VERITY=1
+LOCAL_CFLAGS += -DALLOW_ADBD_NO_AUTH=1
+LOCAL_CFLAGS += -DALLOW_ADBD_ROOT=1
 endif
 
 LOCAL_MODULE := adbd
