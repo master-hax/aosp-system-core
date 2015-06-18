@@ -72,16 +72,37 @@ LOCAL_STATIC_LIBRARIES := \
     libc++_static \
     libdl
 
-# Create symlinks
-LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
-    ln -sf ../init $(TARGET_ROOT_OUT)/sbin/ueventd; \
-    ln -sf ../init $(TARGET_ROOT_OUT)/sbin/watchdogd
-
 LOCAL_CLANG := true
 include $(BUILD_EXECUTABLE)
 
+shim_cflags := -Wall -Wextra \
+    -Wno-unused-parameter \
+    -Werror \
+    -DINIT_PATH="\"/init\""
 
+# ueventd shim
+include $(CLEAR_VARS)
+LOCAL_MODULE:= ueventd
+LOCAL_CFLAGS := $(shim_cflags)
+LOCAL_SRC_FILES:= shim.c
+LOCAL_FORCE_STATIC_EXECUTABLE := true
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
+LOCAL_STATIC_LIBRARIES := libc
+LOCAL_CLANG := true
+include $(BUILD_EXECUTABLE)
 
+# watchdogd shim
+include $(CLEAR_VARS)
+LOCAL_MODULE:= watchdogd
+LOCAL_CFLAGS := $(shim_cflags)
+LOCAL_SRC_FILES:= shim.c
+LOCAL_FORCE_STATIC_EXECUTABLE := true
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
+LOCAL_STATIC_LIBRARIES := libc
+LOCAL_CLANG := true
+include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := init_tests
