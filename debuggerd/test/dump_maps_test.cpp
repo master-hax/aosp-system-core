@@ -493,7 +493,6 @@ TEST_F(DumpMapsTest, multiple_maps_getsiginfo_fail) {
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
   ASSERT_TRUE(android::base::ReadFdToString(log_.tfd, &tombstone_contents));
   const char* expected_dump = \
-"Cannot get siginfo for 100: Bad address\n"
 "\nmemory map:\n"
 #if defined(__LP64__)
 "    00000000'0a434000-00000000'0a434fff -w-      1000      1000  (load base 0xd000)\n";
@@ -503,9 +502,8 @@ TEST_F(DumpMapsTest, multiple_maps_getsiginfo_fail) {
   ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
 
   // Verify that the log buf is empty, and no error messages.
-  ASSERT_STREQ("DEBUG Cannot get siginfo for 100: Bad address\n",
-               getFakeLogBuf().c_str());
-  ASSERT_STREQ("", getFakeLogPrint().c_str());
+  ASSERT_STREQ("", getFakeLogBuf().c_str());
+  ASSERT_STREQ("DEBUG Cannot get siginfo for 100: Bad address\n\n", getFakeLogPrint().c_str());
 }
 
 TEST_F(DumpMapsTest, multiple_maps_check_signal_has_si_addr) {
