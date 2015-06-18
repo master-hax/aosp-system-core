@@ -479,7 +479,6 @@ on property:sys.sysctl.tcp_def_init_rwnd=*
 service ueventd /sbin/ueventd
     class core
     critical
-    seclabel u:r:ueventd:s0
 
 service logd /system/bin/logd
     class core
