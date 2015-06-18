@@ -494,7 +494,6 @@ service logd-reinit /system/bin/logd --reinit
 service healthd /sbin/healthd
     class core
     critical
-    seclabel u:r:healthd:s0
 
 service console /system/bin/sh
     class core
@@ -512,7 +511,6 @@ service adbd /sbin/adbd --root_seclabel=u:r:su:s0
     class core
     socket adbd stream 660 system system
     disabled
-    seclabel u:r:adbd:s0
 
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
