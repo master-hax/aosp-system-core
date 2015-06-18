@@ -989,8 +989,14 @@ int main(int argc, char** argv) {
     // If we're in the kernel domain, re-exec init to transition to the init domain now
     // that the SELinux policy has been loaded.
     if (is_first_stage) {
+
+	if (restorecon_recursive("/sbin")) {
+            ERROR("restorecon recursive of /sbin failed: %s\n", strerror(errno));
+            security_failure();
+	}
+
         if (restorecon("/init") == -1) {
-            ERROR("restorecon failed: %s\n", strerror(errno));
+            ERROR("restorecon of /init failed: %s\n", strerror(errno));
             security_failure();
         }
         char* path = argv[0];
