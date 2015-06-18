@@ -577,6 +577,10 @@ int main(int argc, char** argv) {
         SelinuxSetupKernelLogging();
         SelinuxInitialize();
 
+        if (restorecon_recursive("/sbin") == -1) {
+            PLOG(FATAL) << "restorecon_resursive of /sbin failed";
+        }
+
         // We're in the kernel domain, so re-exec init to transition to the init domain now
         // that the SELinux policy has been loaded.
         if (selinux_android_restorecon("/init", 0) == -1) {
