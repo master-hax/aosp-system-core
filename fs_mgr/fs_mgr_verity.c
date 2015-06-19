@@ -859,6 +859,7 @@ out:
 int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
 {
     _Alignas(struct dm_ioctl) char buffer[DM_BUF_SIZE];
+    bool write_state = true;
     char fstab_filename[PROPERTY_VALUE_MAX + sizeof(FSTAB_PREFIX)];
     char *mount_point;
     char propbuf[PROPERTY_VALUE_MAX];
@@ -875,7 +876,7 @@ int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
     property_get("ro.boot.veritymode", propbuf, "");
 
     if (*propbuf != '\0') {
-        return 0; /* state is kept by the bootloader */
+        write_state = false; /* state is kept by the bootloader */
     }
 
     fd = TEMP_FAILURE_RETRY(open("/dev/device-mapper", O_RDWR | O_CLOEXEC));
@@ -916,7 +917,7 @@ int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
 
         status = &buffer[io->data_start + sizeof(struct dm_target_spec)];
 
-        if (*status == 'C') {
+        if (write_state && *status == 'C') {
             if (write_verity_state(fstab->recs[i].verity_loc, offset,
                     VERITY_MODE_LOGGING) < 0) {
                 continue;
