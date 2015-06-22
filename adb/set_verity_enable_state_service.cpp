@@ -153,6 +153,17 @@ static int set_verity_enabled_state(int fd, const char *block_device,
         goto errout;
     }
 
+    if (!enable) {
+        char *cmd;
+        retval = asprintf(&cmd, "rm -rf %s", OVERLAYFS_BASE_PATH);
+        if (retval)
+            goto errout;
+        retval = system(cmd);
+        free(cmd);
+        if (retval)
+            goto errout;
+    }
+
     WriteFdFmt(fd, "Verity %s on %s\n", enable ? "enabled" : "disabled", mount_point);
     retval = 0;
 errout:
