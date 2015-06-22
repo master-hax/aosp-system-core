@@ -251,6 +251,7 @@ LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 LOCAL_C_INCLUDES += system/extras/ext4_utils
+LOCAL_C_INCLUDES += system/extras/squashfs_utils
 
 LOCAL_STATIC_LIBRARIES := \
     libadbd \
@@ -260,6 +261,7 @@ LOCAL_STATIC_LIBRARIES := \
     libmincrypt \
     libselinux \
     libext4_utils_static \
+    libsquashfs_utils \
     libcutils \
     libbase \
 
