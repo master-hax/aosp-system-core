@@ -37,8 +37,6 @@
 #include "transport.h"
 #include "qemu_tracing.h"
 
-static const char* root_seclabel = nullptr;
-
 static void drop_capabilities_bounding_set_if_needed() {
 #ifdef ALLOW_ADBD_ROOT
     char value[PROPERTY_VALUE_MAX];
@@ -114,7 +112,37 @@ static bool should_drop_privileges() {
 #endif // ALLOW_ADBD_ROOT
 }
 
-int adbd_main(int server_port) {
+static void set_context(const char *self_path) {
+    char *mycon = NULL;
+    char *scon = NULL;
+    char *fcon = NULL;
+
+    int rc = getcon(&mycon);
+    if (rc < 0) {
+        PLOG(FATAL) << "Error getting self context";
+    }
+
+    rc = getfilecon(self_path, &fcon);
+    if (rc < 0) {
+        PLOG(FATAL) << "Error computing context for root adbd: " << strerror(errno);
+    }
+
+    rc = security_compute_create(mycon, fcon, string_to_security_class("process"), &scon);
+    if (rc < 0) {
+        PLOG(FATAL) << "Error computing context for root adbd: " << strerror(errno);
+    }
+
+    PLOG(INFO) << "adb computing context source: \"" << mycon << "\" exec \"" << fcon <<
+        "\" --> \"" << scon << "\"";
+
+    rc = setcon(scon);
+
+    freecon(mycon);
+    freecon(fcon);
+    freecon(scon);
+}
+
+int adbd_main(int server_port, const char *self_path) {
     umask(0);
 
     signal(SIGPIPE, SIG_IGN);
@@ -172,11 +200,7 @@ int adbd_main(int server_port) {
 
         D("Local port disabled\n");
     } else {
-        if (root_seclabel != nullptr) {
-            if (setcon(root_seclabel) < 0) {
-                LOG(FATAL) << "Could not set selinux context";
-            }
-        }
+        set_context(self_path);
         std::string local_name =
             android::base::StringPrintf("tcp:%d", server_port);
         if (install_listener(local_name, "*smartsocket*", nullptr, 0)) {
@@ -233,7 +257,6 @@ static void close_stdin() {
 int main(int argc, char** argv) {
     while (true) {
         static struct option opts[] = {
-            {"root_seclabel", required_argument, nullptr, 's'},
             {"device_banner", required_argument, nullptr, 'b'},
             {"version", no_argument, nullptr, 'v'},
         };
@@ -245,9 +268,6 @@ int main(int argc, char** argv) {
         }
 
         switch (c) {
-        case 's':
-            root_seclabel = optarg;
-            break;
         case 'b':
             adb_device_banner = optarg;
             break;
@@ -271,5 +291,5 @@ int main(int argc, char** argv) {
     adb_qemu_trace_init();
 
     D("Handling main()\n");
-    return adbd_main(DEFAULT_ADB_PORT);
+    return adbd_main(DEFAULT_ADB_PORT, argv[0]);
 }
