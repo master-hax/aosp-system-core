@@ -29,6 +29,7 @@
 #include "adb.h"
 #include "adb_io.h"
 #include "ext4_sb.h"
+#include "squashfs_utils.h"
 #include "fs_mgr.h"
 #include "remount_service.h"
 
@@ -42,13 +43,9 @@ static const bool kAllowDisableVerity = false;
 #endif
 
 static int get_target_device_size(int fd, const char *blk_device,
-                                  uint64_t *device_size)
+                                  const char *fs_type, uint64_t *device_size)
 {
     int data_device;
-    struct ext4_super_block sb;
-    struct fs_info info;
-
-    info.len = 0;  /* Only len is set to 0 to ask the device for real size. */
 
     data_device = adb_open(blk_device, O_RDONLY | O_CLOEXEC);
     if (data_device < 0) {
@@ -62,14 +59,25 @@ static int get_target_device_size(int fd, const char *blk_device,
         return -1;
     }
 
-    if (adb_read(data_device, &sb, sizeof(sb)) != sizeof(sb)) {
-        WriteFdFmt(fd, "Error reading superblock\n");
-        adb_close(data_device);
-        return -1;
-    }
+    if (!strcmp(fs_type, "ext4")) {
+        struct ext4_super_block sb;
+        struct fs_info info;
 
-    ext4_parse_sb(&sb, &info);
-    *device_size = info.len;
+        if (adb_read(data_device, &sb, sizeof(sb)) != sizeof(sb)) {
+            WriteFdFmt(fd, "Error reading superblock\n");
+            adb_close(data_device);
+            return -1;
+        }
+
+        info.len = 0;  /* Only len is set to 0 to ask the device for real size. */
+        ext4_parse_sb(&sb, &info);
+        *device_size = info.len;
+
+    } else if (!strcmp(fs_type, "squashfs")) {
+        struct squashfs_info info;
+        squashfs_parse_sb((char *)blk_device, &info);
+        *device_size = info.bytes_used_4K_padded;
+    }
 
     adb_close(data_device);
     return 0;
@@ -77,7 +85,8 @@ static int get_target_device_size(int fd, const char *blk_device,
 
 /* Turn verity on/off */
 static int set_verity_enabled_state(int fd, const char *block_device,
-                                    const char* mount_point, bool enable)
+                                    const char *mount_point, const char *fs_type,
+                                    bool enable)
 {
     uint32_t magic_number;
     const uint32_t new_magic = enable ? VERITY_METADATA_MAGIC_NUMBER
@@ -100,7 +109,7 @@ static int set_verity_enabled_state(int fd, const char *block_device,
     }
 
     // find the start of the verity metadata
-    if (get_target_device_size(fd, (char*)block_device, &device_length) < 0) {
+    if (get_target_device_size(fd, (char*)block_device, (char *)fs_type, &device_length) < 0) {
         WriteFdFmt(fd, "Could not get target device size.\n");
         goto errout;
     }
@@ -188,6 +197,7 @@ void set_verity_enabled_state_service(int fd, void* cookie)
             if(fs_mgr_is_verified(&fstab->recs[i])) {
                 if (!set_verity_enabled_state(fd, fstab->recs[i].blk_device,
                                               fstab->recs[i].mount_point,
+                                              fstab->recs[i].fs_type,
                                               enable)) {
                     any_changed = true;
                 }
