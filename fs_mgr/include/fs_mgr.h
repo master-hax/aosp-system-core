@@ -20,6 +20,8 @@
 #include <stdint.h>
 #include <linux/dm-ioctl.h>
 
+#define OVERLAYFS_BASE_PATH "/cache/.overlayfs"
+
 // Magic number at start of verity metadata
 #define VERITY_METADATA_MAGIC_NUMBER 0xb001b001
 

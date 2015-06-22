@@ -241,6 +241,46 @@ static int __mount(const char *source, const char *target, const struct fstab_re
     return ret;
 }
 
+static int __mount_overlay(const char *target)
+{
+    char *s, *new_mnt, *directory, *fs_options;
+    char *base = OVERLAYFS_BASE_PATH;
+    int ret = -1;
+
+    s = strdup(target);
+    for (new_mnt = s; *new_mnt == '/'; new_mnt++);
+    remove_trailing_slashes(new_mnt);
+
+    mkdir(base, 0755);
+    if (asprintf(&directory, "%s/%s_upper", base, new_mnt) < 0) {
+        ERROR("Could not allocate overlay upper directory string\n");
+        goto out;
+    }
+    mkdir(directory, 0755);
+    free(directory);
+    if (asprintf(&directory, "%s/%s_work", base, new_mnt) < 0) {
+        ERROR("Could not allocate overlay work directory string\n");
+        goto out;
+    }
+    mkdir(directory, 0755);
+    free(directory);
+
+    if (asprintf(&fs_options,
+                "lowerdir=%s,upperdir=%s/%s_upper,workdir=%s/%s_work",
+                target, base, new_mnt, base, new_mnt) < 0) {
+        ERROR("Could not allocate overlay options string\n");
+        goto out;
+    }
+
+    ret = mount("overlay", target, "overlay", MS_RDONLY, fs_options);
+    INFO("%s(target=%s,options=%s)=%d\n", __func__, target, fs_options, ret);
+
+    free(fs_options);
+out:
+    free(s);
+    return ret;
+}
+
 static int fs_match(char *in1, char *in2)
 {
     char *n1;
@@ -506,8 +546,15 @@ int fs_mgr_mount_all(struct fstab *fstab)
     int mret = -1;
     int mount_errno = 0;
     int attempted_idx = -1;
+    char *overlay_request;
 
     if (!fstab) {
+        return -1;
+    }
+
+    overlay_request = calloc(1, fstab->num_entries);
+    if (!overlay_request) {
+        ERROR("Could not allocate overlay_request array\n");
         return -1;
     }
 
@@ -547,9 +594,18 @@ int fs_mgr_mount_all(struct fstab *fstab)
                 ERROR("Could not set up verified partition, skipping!\n");
                 continue;
             }
+            if (rc == FS_MGR_SETUP_VERITY_DISABLED && (fstab->recs[i].fs_mgr_flags & MF_OVERLAY)) {
+                overlay_request[i] = 1;
+            }
+        } else if (fstab->recs[i].fs_mgr_flags & MF_OVERLAY) {
+            overlay_request[i] = 1;
         }
         int last_idx_inspected;
         mret = mount_with_alternatives(fstab, i, &last_idx_inspected, &attempted_idx);
+        if (i < last_idx_inspected && overlay_request[i]) {
+            overlay_request[i] = 0;
+            overlay_request[last_idx_inspected] = 1;
+        }
         i = last_idx_inspected;
         mount_errno = errno;
 
@@ -559,6 +615,7 @@ int fs_mgr_mount_all(struct fstab *fstab)
 
             if (status == FS_MGR_MNTALL_FAIL) {
                 /* Fatal error - no point continuing */
+                free(overlay_request);
                 return status;
             }
 
@@ -605,6 +662,16 @@ int fs_mgr_mount_all(struct fstab *fstab)
             continue;
         }
     }
+
+    for (i = 0; i < fstab->num_entries; i++) {
+        if (overlay_request[i] && !__mount_overlay(fstab->recs[i].mount_point)) {
+            ERROR("Failed to mount an overlayfs directory on %s error: %s\n",
+                    fstab->recs[i].mount_point, strerror(errno));
+            ++error_count;
+            continue;
+        }
+    }
+    free(overlay_request);
 
     if (error_count) {
         return -1;
