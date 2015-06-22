@@ -70,6 +70,7 @@ static struct flag_list fs_mgr_flags[] = {
     { "zramsize=",   MF_ZRAMSIZE },
     { "verify",      MF_VERIFY },
     { "noemulatedsd", MF_NOEMULATEDSD },
+    { "overlay",     MF_OVERLAY },
     { "defaults",    0 },
     { 0,             0 },
 };
