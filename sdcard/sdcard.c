@@ -841,12 +841,12 @@ static int fuse_reply_entry(struct fuse* fuse, __u64 unique,
 }
 
 static int fuse_reply_attr(struct fuse* fuse, __u64 unique, const struct node* node,
-        const char* path)
+        const char* path, __u64 fh)
 {
     struct fuse_attr_out out;
     struct stat s;
 
-    if (lstat(path, &s) < 0) {
+    if ((fh && fstat(fh, &s) < 0) || lstat(path, &s) < 0) {
         return -errno;
     }
     memset(&out, 0, sizeof(out));
@@ -920,7 +920,7 @@ static int handle_getattr(struct fuse* fuse, struct fuse_handler* handler,
         return -EACCES;
     }
 
-    return fuse_reply_attr(fuse, hdr->unique, node, path);
+    return fuse_reply_attr(fuse, hdr->unique, node, path, req->fh);
 }
 
 static int handle_setattr(struct fuse* fuse, struct fuse_handler* handler,
@@ -985,7 +985,7 @@ static int handle_setattr(struct fuse* fuse, struct fuse_handler* handler,
             return -errno;
         }
     }
-    return fuse_reply_attr(fuse, hdr->unique, node, path);
+    return fuse_reply_attr(fuse, hdr->unique, node, path, req->fh);
 }
 
 static int handle_mknod(struct fuse* fuse, struct fuse_handler* handler,
