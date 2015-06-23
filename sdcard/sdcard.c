@@ -165,6 +165,12 @@ struct dirhandle {
     DIR *d;
 };
 
+typedef enum {
+	DEL_FILE_NO,
+	DEL_FILE_REGULAR,
+	DEL_FILE_DIRECTORY,
+} deletion_t;
+
 struct node {
     __u32 refcount;
     __u64 nid;
@@ -200,7 +206,7 @@ struct node {
     char* graft_path;
     size_t graft_pathlen;
 
-    bool deleted;
+    deletion_t deleted;
 };
 
 static int str_hash(void *key) {
@@ -285,14 +291,22 @@ static void acquire_node_locked(struct node* node)
 }
 
 static void remove_node_from_parent_locked(struct node* node);
+static ssize_t get_node_path_locked(struct node* node, char* buf, size_t bufsize);
 
 static void release_node_locked(struct node* node)
 {
+    char path[PATH_MAX];
     TRACE("RELEASE %p (%s) rc=%d\n", node, node->name, node->refcount);
     if (node->refcount > 0) {
         node->refcount--;
         if (!node->refcount) {
             TRACE("DESTROY %p (%s)\n", node, node->name);
+            if (node->deleted == DEL_FILE_REGULAR) {
+                if (get_node_path_locked(node, path, sizeof(path)) < 0 ||
+                        unlink(path) < 0) {
+                    ERROR("unlink failed: %s\n", path);
+                }
+            }
             remove_node_from_parent_locked(node);
 
                 /* TODO: remove debugging - poison memory */
@@ -633,7 +647,7 @@ struct node *create_node_locked(struct fuse* fuse,
     node->ino = fuse->inode_ctr++;
     node->gen = fuse->next_generation++;
 
-    node->deleted = false;
+    node->deleted = DEL_FILE_NO;
 
     derive_permissions_locked(fuse, parent, node);
     acquire_node_locked(node);
@@ -1077,6 +1091,10 @@ static int handle_unlink(struct fuse* fuse, struct fuse_handler* handler,
     struct node* child_node;
     char parent_path[PATH_MAX];
     char child_path[PATH_MAX];
+    char new_child_path[PATH_MAX];
+    const char* new_actual_name;
+    char new_name[PATH_MAX];
+    int res;
 
     pthread_mutex_lock(&fuse->lock);
     has_rw = get_caller_has_rw_locked(fuse, hdr);
@@ -1093,16 +1111,43 @@ static int handle_unlink(struct fuse* fuse, struct fuse_handler* handler,
     if (!check_caller_access_to_name(fuse, hdr, parent_node, name, W_OK, has_rw)) {
         return -EACCES;
     }
-    if (unlink(child_path) < 0) {
-        return -errno;
-    }
     pthread_mutex_lock(&fuse->lock);
     child_node = lookup_child_by_name_locked(parent_node, name);
-    if (child_node) {
-        child_node->deleted = true;
+    if (!child_node || get_node_path_locked(child_node,
+                child_path, sizeof(child_path)) < 0) {
+        res = -ENOENT;
+        goto lookup_error;
+    } else {
+        child_node->deleted = DEL_FILE_REGULAR;
     }
+    acquire_node_locked(child_node);
     pthread_mutex_unlock(&fuse->lock);
-    return 0;
+
+    sprintf(new_name, ".sdcard_%"PRIx64, (uint64_t)child_node->nid);
+    if (!(new_actual_name = find_file_within(parent_path, new_name,
+            new_child_path, sizeof(new_child_path), 0))) {
+        res = -ENOENT;
+        goto io_error;
+    }
+
+    TRACE("[%d] UNLINK %s->%s\n", handler->token, child_path, new_child_path);
+    res = rename(child_path, new_child_path);
+    if (res < 0) {
+        res = -errno;
+        goto io_error;
+    }
+
+    pthread_mutex_lock(&fuse->lock);
+    res = rename_node_locked(child_node, new_name, new_actual_name);
+    goto done;
+
+io_error:
+    pthread_mutex_lock(&fuse->lock);
+done:
+    release_node_locked(child_node);
+lookup_error:
+    pthread_mutex_unlock(&fuse->lock);
+    return res;
 }
 
 static int handle_rmdir(struct fuse* fuse, struct fuse_handler* handler,
@@ -1135,7 +1180,7 @@ static int handle_rmdir(struct fuse* fuse, struct fuse_handler* handler,
     pthread_mutex_lock(&fuse->lock);
     child_node = lookup_child_by_name_locked(parent_node, name);
     if (child_node) {
-        child_node->deleted = true;
+        child_node->deleted = DEL_FILE_DIRECTORY;
     }
     pthread_mutex_unlock(&fuse->lock);
     return 0;
