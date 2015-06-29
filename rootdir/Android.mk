@@ -50,4 +50,13 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/init.environ.rc.in $(bcp_dep)
 
 bcp_md5 :=
 bcp_dep :=
+
 #######################################
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := foo.bar
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
+
+include $(BUILD_PREBUILT)
