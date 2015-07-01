@@ -237,9 +237,8 @@ static int read_request(int fd, debugger_request_t* out_request) {
 static bool should_attach_gdb(debugger_request_t* request) {
   if (request->action == DEBUGGER_ACTION_CRASH) {
     char value[PROPERTY_VALUE_MAX];
-    property_get("debug.db.uid", value, "-1");
-    int debug_uid = atoi(value);
-    return debug_uid >= 0 && request->uid <= (uid_t)debug_uid;
+    property_get("debug.debuggerd.wait_for_gdb", value, "0");
+    return atoi(value) != 0;
   }
   return false;
 }
