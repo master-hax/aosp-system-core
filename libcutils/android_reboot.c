@@ -15,24 +15,53 @@
  */
 
 #include <unistd.h>
+#include <sys/mount.h>
 #include <sys/reboot.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <mntent.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <cutils/android_reboot.h>
+#include <cutils/list.h>
 
 #define UNUSED __attribute__((unused))
+#define READONLY_CHECK_TIMES 50
+
+typedef struct {
+    struct listnode list;
+    struct mntent entry;
+} mntent_list;
+
+static bool has_mount_option(const char* opts, const char* opt_to_find)
+{
+  bool ret = false;
+  char* copy = NULL;
+  char* opt;
+  char* rem;
+
+  while ((opt = strtok_r(copy ? NULL : (copy = strdup(opts)), ",", &rem))) {
+      if (!strcmp(opt, opt_to_find)) {
+          ret = true;
+          break;
+      }
+  }
+
+  free(copy);
+  return ret;
+}
 
 /* Check to see if /proc/mounts contains any writeable filesystems
  * backed by a block device.
  * Return true if none found, else return false.
  */
-static int remount_ro_done(void)
+static bool remount_ro_done(void)
 {
     FILE* fp;
     struct mntent* mentry;
@@ -40,10 +69,11 @@ static int remount_ro_done(void)
 
     if ((fp = setmntent("/proc/mounts", "r")) == NULL) {
         /* If we can't read /proc/mounts, just give up. */
-        return 1;
+        return true;
     }
     while ((mentry = getmntent(fp)) != NULL) {
-        if (!strncmp(mentry->mnt_fsname, "/dev/block", 10) && strstr(mentry->mnt_opts, "rw,")) {
+        if (!strncmp(mentry->mnt_fsname, "/dev/block", 10) &&
+            has_mount_option(mentry->mnt_opts, "rw")) {
             found_rw_fs = 1;
             break;
         }
@@ -51,6 +81,46 @@ static int remount_ro_done(void)
     endmntent(fp);
 
     return !found_rw_fs;
+}
+
+/* Find all read+write block devices in /proc/mounts and write them to
+ * |rw_entries|. Return the number of entries written.
+ */
+static void find_rw(struct listnode* rw_entries)
+{
+    FILE* fp;
+    struct mntent* mentry;
+
+    if ((fp = setmntent("/proc/mounts", "r")) == NULL) {
+        return;
+    }
+    while ((mentry = getmntent(fp)) != NULL) {
+        if (!strncmp(mentry->mnt_fsname, "/dev/block", 10) &&
+            has_mount_option(mentry->mnt_opts, "rw")) {
+            mntent_list* item = (mntent_list*)calloc(1, sizeof(mntent_list));
+            item->entry = *mentry;
+            item->entry.mnt_fsname = strdup(mentry->mnt_fsname);
+            item->entry.mnt_dir = strdup(mentry->mnt_dir);
+            item->entry.mnt_type = strdup(mentry->mnt_type);
+            item->entry.mnt_opts = strdup(mentry->mnt_opts);
+            list_add_tail(rw_entries, &item->list);
+        }
+    }
+    endmntent(fp);
+}
+
+static void free_rw(struct listnode* rw_entries)
+{
+    struct listnode* node;
+    struct listnode* n;
+    list_for_each_safe(node, n, rw_entries) {
+        mntent_list* item = node_to_item(node, mntent_list, list);
+        free(item->entry.mnt_fsname);
+        free(item->entry.mnt_dir);
+        free(item->entry.mnt_type);
+        free(item->entry.mnt_opts);
+        free(item);
+    }
 }
 
 /* Remounting filesystems read-only is difficult when there are files
@@ -64,37 +134,59 @@ static int remount_ro_done(void)
  * repeatedly until there are no more writable filesystems mounted on
  * block devices.
  */
-static void remount_ro(void)
+static bool remount_ro(void)
 {
     int fd, cnt = 0;
 
     /* Trigger the remount of the filesystems as read-only,
      * which also marks them clean.
      */
-    fd = open("/proc/sysrq-trigger", O_WRONLY);
+    fd = TEMP_FAILURE_RETRY(open("/proc/sysrq-trigger", O_WRONLY));
     if (fd < 0) {
-        return;
+        return false;
     }
-    write(fd, "u", 1);
+    TEMP_FAILURE_RETRY(write(fd, "u", 1));
     close(fd);
 
 
     /* Now poll /proc/mounts till it's done */
-    while (!remount_ro_done() && (cnt < 50)) {
+    while (!remount_ro_done() && (cnt < READONLY_CHECK_TIMES)) {
         usleep(100000);
         cnt++;
     }
 
-    return;
+    return cnt < READONLY_CHECK_TIMES;
 }
 
+static void remount_ro_callback(struct listnode* rw_entries,
+                                void (*cb_on_remount)(const struct mntent*))
+{
+    struct listnode* node;
+    list_for_each(node, rw_entries) {
+        mntent_list* item = node_to_item(node, mntent_list, list);
+        cb_on_remount(&item->entry);
+    }
+}
 
-int android_reboot(int cmd, int flags UNUSED, const char *arg)
+int android_reboot_with_callback(
+    int cmd, int flags UNUSED, const char *arg,
+    void (*cb_on_remount)(const struct mntent*))
 {
     int ret;
+    bool remounted;
+    list_declare(rw_entries);
 
     sync();
-    remount_ro();
+    if (cb_on_remount) {
+        find_rw(&rw_entries);
+    }
+    remounted = remount_ro();
+    if (cb_on_remount) {
+        if (remounted) {
+            remount_ro_callback(&rw_entries, cb_on_remount);
+        }
+        free_rw(&rw_entries);
+    }
 
     switch (cmd) {
         case ANDROID_RB_RESTART:
@@ -117,3 +209,7 @@ int android_reboot(int cmd, int flags UNUSED, const char *arg)
     return ret;
 }
 
+int android_reboot(int cmd, int flags, const char *arg)
+{
+    return android_reboot_with_callback(cmd, flags, arg, NULL);
+}
