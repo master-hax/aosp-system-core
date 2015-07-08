@@ -277,8 +277,8 @@ asocket *create_remote_socket(unsigned id, atransport *t);
 void connect_to_remote(asocket *s, const char *destination);
 void connect_to_smartsocket(asocket *s);
 
-void fatal(const char *fmt, ...);
-void fatal_errno(const char *fmt, ...);
+void fatal(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+void fatal_errno(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 
 void handle_packet(apacket *p, atransport *t);
 
