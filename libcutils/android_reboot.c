@@ -15,6 +15,7 @@
  */
 
 #include <unistd.h>
+#include <sys/mount.h>
 #include <sys/reboot.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
@@ -22,7 +23,9 @@
 #include <fcntl.h>
 #include <mntent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <cutils/android_reboot.h>
 
@@ -53,6 +56,43 @@ static int remount_ro_done(void)
     return !found_rw_fs;
 }
 
+/* Find all read+write block devices in /proc/mounts and write them to
+ * |rw_entries|. Return the number of entries written.
+ */
+static int find_rw(struct mntent* rw_entries, int rw_entries_len)
+{
+    FILE* fp;
+    struct mntent* mentry;
+    int count = 0;
+
+    if ((fp = setmntent("/proc/mounts", "r")) == NULL) {
+        return 0;
+    }
+    while ((mentry = getmntent(fp)) != NULL && count < rw_entries_len) {
+        if (!strncmp(mentry->mnt_fsname, "/dev/block", 10) && strstr(mentry->mnt_opts, "rw,")) {
+            rw_entries[count] = *mentry;
+            rw_entries[count].mnt_fsname = strdup(mentry->mnt_fsname);
+            rw_entries[count].mnt_dir = strdup(mentry->mnt_dir);
+            rw_entries[count].mnt_type = strdup(mentry->mnt_type);
+            rw_entries[count].mnt_opts = strdup(mentry->mnt_opts);
+            ++count;
+        }
+    }
+    endmntent(fp);
+    return count;
+}
+
+static void free_rw(struct mntent* rw_entries, int rw_entries_len)
+{
+    int i;
+    for (i = 0; i < rw_entries_len; ++i) {
+        free(rw_entries[i].mnt_fsname);
+        free(rw_entries[i].mnt_dir);
+        free(rw_entries[i].mnt_type);
+        free(rw_entries[i].mnt_opts);
+    }
+}
+
 /* Remounting filesystems read-only is difficult when there are files
  * opened for writing or pending deletes on the filesystem.  There is
  * no way to force the remount with the mount(2) syscall.  The magic sysrq
@@ -64,7 +104,7 @@ static int remount_ro_done(void)
  * repeatedly until there are no more writable filesystems mounted on
  * block devices.
  */
-static void remount_ro(void)
+static int remount_ro(void)
 {
     int fd, cnt = 0;
 
@@ -73,7 +113,7 @@ static void remount_ro(void)
      */
     fd = open("/proc/sysrq-trigger", O_WRONLY);
     if (fd < 0) {
-        return;
+        return -1;
     }
     write(fd, "u", 1);
     close(fd);
@@ -85,16 +125,37 @@ static void remount_ro(void)
         cnt++;
     }
 
-    return;
+    return (cnt < 50) ? 0 : -1;
 }
 
+static void remount_ro_callback(struct mntent* rw_entries, int rw_entries_len,
+                                void (*cb_on_remount)(const struct mntent*))
+{
+    int i;
+    for (i = 0; i < rw_entries_len; ++i)
+        cb_on_remount(&rw_entries[i]);
+}
 
-int android_reboot(int cmd, int flags UNUSED, const char *arg)
+int android_reboot_with_callback(
+    int cmd, int flags UNUSED, const char *arg,
+    void (*cb_on_remount)(const struct mntent*))
 {
     int ret;
+    struct mntent rw_entries[16];
+    int rw_entries_len = 0;
 
     sync();
-    remount_ro();
+    if (cb_on_remount) {
+        rw_entries_len =
+            find_rw(rw_entries, sizeof(rw_entries) / sizeof(rw_entries[0]));
+    }
+    ret = remount_ro();
+    if (cb_on_remount) {
+        if (!ret) {
+            remount_ro_callback(rw_entries, rw_entries_len, cb_on_remount);
+        }
+        free_rw(rw_entries, rw_entries_len);
+    }
 
     switch (cmd) {
         case ANDROID_RB_RESTART:
@@ -117,3 +178,7 @@ int android_reboot(int cmd, int flags UNUSED, const char *arg)
     return ret;
 }
 
+int android_reboot(int cmd, int flags UNUSED, const char *arg)
+{
+    return android_reboot_with_callback(cmd, flags, arg, NULL);
+}
