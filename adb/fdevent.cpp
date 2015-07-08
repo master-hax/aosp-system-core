@@ -45,6 +45,8 @@
 int SHELL_EXIT_NOTIFY_FD = -1;
 
 static void fatal(const char *fn, const char *fmt, ...)
+    __attribute__((format(printf, 2, 3)));
+static void fatal(const char *fn, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);

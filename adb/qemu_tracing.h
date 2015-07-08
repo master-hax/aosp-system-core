@@ -23,6 +23,7 @@
 
 /* Initializes connection with the adb-debug qemud service in the emulator. */
 int adb_qemu_trace_init(void);
-void adb_qemu_trace(const char* fmt, ...);
+void adb_qemu_trace(const char* fmt, ...)
+    __attribute__((__format__(printf, 1, 2)));
 
 #endif /* __QEMU_TRACING_H */
