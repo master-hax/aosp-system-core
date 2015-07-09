@@ -17,7 +17,8 @@
 #ifndef __SOCKET_LOCAL_H
 #define __SOCKET_LOCAL_H
 
-#define FILESYSTEM_SOCKET_PREFIX "/tmp/" 
+#define FILESYSTEM_SOCKET_PREFIX "/tmp/"
+/* See also android.net.LocalSocketAddress */
 #define ANDROID_RESERVED_SOCKET_PREFIX "/dev/socket/"
 
 /*
