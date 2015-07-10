@@ -16,6 +16,12 @@ on boot
     chown root shell /sys/kernel/debug/tracing/events/power/cpu_idle/enable
     chown root shell /sys/kernel/debug/tracing/events/power/clock_set_rate/enable
     chown root shell /sys/kernel/debug/tracing/events/cpufreq_interactive/enable
+    chown root shell /sys/kernel/debug/tracing/events/binder/binder_transaction/enable
+    chown root shell /sys/kernel/debug/tracing/events/binder/binder_transaction_received/enable
+    chown root shell /sys/kernel/debug/tracing/events/binder/binder_lock/enable
+    chown root shell /sys/kernel/debug/tracing/events/binder/binder_locked/enable
+    chown root shell /sys/kernel/debug/tracing/events/binder/binder_unlock/enable
+
     chown root shell /sys/kernel/debug/tracing/tracing_on
 
     chmod 0664 /sys/kernel/debug/tracing/trace_clock
@@ -29,6 +35,11 @@ on boot
     chmod 0664 /sys/kernel/debug/tracing/events/power/clock_set_rate/enable
     chmod 0664 /sys/kernel/debug/tracing/events/cpufreq_interactive/enable
     chmod 0664 /sys/kernel/debug/tracing/tracing_on
+    chmod 0664 /sys/kernel/debug/tracing/events/binder/binder_transaction/enable
+    chmod 0664 /sys/kernel/debug/tracing/events/binder/binder_transaction_received/enable
+    chmod 0664 /sys/kernel/debug/tracing/events/binder/binder_lock/enable
+    chmod 0664 /sys/kernel/debug/tracing/events/binder/binder_locked/enable
+    chmod 0664 /sys/kernel/debug/tracing/events/binder/binder_unlock/enable
 
 # Allow only the shell group to read and truncate the kernel trace.
     chown root shell /sys/kernel/debug/tracing/trace
