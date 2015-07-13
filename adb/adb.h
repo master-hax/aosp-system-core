@@ -25,7 +25,9 @@
 #include "adb_trace.h"
 #include "fdevent.h"
 
-#define MAX_PAYLOAD 4096
+#define MAX_PAYLOAD_V1 (  4 * 1024U)
+#define MAX_PAYLOAD_V2 (256 * 1024U)
+#define MAX_PAYLOAD    MAX_PAYLOAD_V2
 
 #define A_SYNC 0x434e5953
 #define A_CNXN 0x4e584e43
@@ -36,7 +38,7 @@
 #define A_AUTH 0x48545541
 
 // ADB protocol version.
-#define A_VERSION 0x01000000
+#define A_VERSION 0x01000000U
 
 // Used for help/version information.
 #define ADB_VERSION_MAJOR 1
@@ -137,6 +139,8 @@ struct asocket {
 
         /* A socket is bound to atransport */
     atransport *transport;
+
+    unsigned get_max_payload() const;
 };
 
 
@@ -193,6 +197,8 @@ public:
     atransport() {
         auth_fde = {};
         transport_fde = {};
+        protocol_version = A_VERSION;
+        max_payload = MAX_PAYLOAD;
     }
 
     virtual ~atransport() {}
@@ -234,7 +240,14 @@ public:
 
     const char* connection_state_name() const;
 
+    void update_version(unsigned version, unsigned payload);
+    unsigned get_protocol_version() const;
+    unsigned get_max_payload() const;
+
 private:
+    unsigned protocol_version;
+    unsigned max_payload;
+
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };
 

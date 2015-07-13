@@ -834,6 +834,19 @@ const char* atransport::connection_state_name() const {
     }
 }
 
+void atransport::update_version(unsigned version, unsigned payload) {
+    protocol_version = std::min(version, A_VERSION);
+    max_payload = std::min(payload, MAX_PAYLOAD);
+}
+
+unsigned atransport::get_protocol_version() const {
+    return protocol_version;
+}
+
+unsigned atransport::get_max_payload() const {
+    return max_payload;
+}
+
 #if ADB_HOST
 
 static void append_transport_info(std::string* result, const char* key,
@@ -1019,15 +1032,16 @@ void unregister_usb_transport(usb_handle *usb) {
 #undef TRACE_TAG
 #define TRACE_TAG  TRACE_RWX
 
-int check_header(apacket *p)
+int check_header(apacket *p, atransport *t)
 {
     if(p->msg.magic != (p->msg.command ^ 0xffffffff)) {
         D("check_header(): invalid magic\n");
         return -1;
     }
 
-    if(p->msg.data_length > MAX_PAYLOAD) {
-        D("check_header(): %d > MAX_PAYLOAD\n", p->msg.data_length);
+    if(p->msg.data_length > t->get_max_payload()) {
+        D("check_header(): %u > atransport::max_payload = %u\n",
+            p->msg.data_length, t->get_max_payload());
         return -1;
     }
 
