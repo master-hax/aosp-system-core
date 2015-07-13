@@ -43,8 +43,8 @@ static char *is_prio(char *s) {
     if (!isdigit(*s++)) {
         return NULL;
     }
-    char c;
-    while ((c = *s++)) {
+    char c, len=0;
+    while (((c = *s++)) && (++len < 5)) {
         if (!isdigit(c)) {
             return (c == '>') ? s : NULL;
         }
@@ -535,7 +535,8 @@ int LogKlog::log(const char *buf) {
         }
         size = etag - tag;
         if ((size <= 1)
-         || ((size == 2) && (isdigit(tag[0]) || isdigit(tag[1])))
+         || ((size == 2) && (isdigit(tag[0]) || isdigit(tag[1]))) // x9
+         || ((size == 3) && (isdigit(tag[1]) && isdigit(tag[2]))) // x11
          || ((size == 3) && !strncmp(tag, "CPU", 3))
          || ((size == 7) && !strncmp(tag, "WARNING", 7))
          || ((size == 5) && !strncmp(tag, "ERROR", 5))
