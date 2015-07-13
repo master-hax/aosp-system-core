@@ -60,11 +60,14 @@ The version is used to ensure protocol compatibility and maxdata
 declares the maximum message body size that the remote system
 is willing to accept.
 
-Currently, version=0x01000000 and maxdata=4096
+Currently, version=0x01000000 and maxdata=256*1024 for WRTE packets and
+maxdata=4096 (used in older versions of ADB) for CONNECT and AUTH packets
+because these packets sent before the CONNECT packet from the device what
+will specify the maxdata supported by the device.
 
 Both sides send a CONNECT message when the connection between them is
 established.  Until a CONNECT message is received no other messages may
-be sent.  Any messages received before a CONNECT message MUST be ignored.
+be sent. Any messages received before a CONNECT message MUST be ignored.
 
 If a CONNECT message is received with an unknown version or insufficiently
 large maxdata value, the connection with the other side must be closed.
