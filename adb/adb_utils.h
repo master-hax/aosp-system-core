@@ -28,4 +28,13 @@ std::string escape_arg(const std::string& s);
 
 void dump_hex(const void* ptr, size_t byte_count);
 
+// Parses 'address' into 'host' and 'port'.
+// If no port is given, takes the default from *port.
+// 'canonical_address' then becomes "host:port" or "[host]:port" as appropriate.
+// Returns false on failure and sets *error to an appropriate message.
+bool parse_ip_address(const std::string& address,
+                      std::string* canonical_address,
+                      std::string* host, int* port,
+                      std::string* error);
+
 #endif
