@@ -226,6 +226,7 @@ struct fuse {
 
     __u64 next_generation;
     int fd;
+    int pipefd[2];
     derive_t derive;
     bool split_perms;
     gid_t write_gid;
@@ -1302,22 +1303,26 @@ static int handle_read(struct fuse* fuse, struct fuse_handler* handler,
 }
 
 static int handle_write(struct fuse* fuse, struct fuse_handler* handler,
-        const struct fuse_in_header* hdr, const struct fuse_write_in* req,
-        const void* buffer)
+        const struct fuse_in_header* hdr, const struct fuse_write_in* req)
 {
     struct fuse_write_out out;
     struct handle *h = id_to_ptr(req->fh);
     int res;
     __u8 aligned_buffer[req->size] __attribute__((__aligned__(PAGESIZE)));
 
-    if (req->flags & O_DIRECT) {
-        memcpy(aligned_buffer, buffer, req->size);
-        buffer = (const __u8*) aligned_buffer;
-    }
-
     TRACE("[%d] WRITE %p(%d) %u@%"PRIu64"\n", handler->token,
             h, h->fd, req->size, req->offset);
-    res = pwrite64(h->fd, buffer, req->size, req->offset);
+
+    if (req->flags & O_DIRECT) {
+        if ((size_t)read(fuse->pipefd[0], aligned_buffer, req->size) < req->size) {
+            return -errno;
+        }
+        const void *buffer = (const __u8*) aligned_buffer;
+        res = pwrite64(h->fd, buffer, req->size, req->offset);
+    } else {
+        loff_t offset = req->offset;
+        res = splice(fuse->pipefd[0], NULL, h->fd, &offset, req->size, SPLICE_F_MORE | SPLICE_F_MOVE);
+    }
     if (res < 0) {
         return -errno;
     }
@@ -1589,8 +1594,7 @@ static int handle_fuse_request(struct fuse *fuse, struct fuse_handler* handler,
 
     case FUSE_WRITE: { /* write_in, byte[write_in.size] -> write_out */
         const struct fuse_write_in *req = data;
-        const void* buffer = (const __u8*)data + sizeof(*req);
-        return handle_write(fuse, handler, hdr, req, buffer);
+        return handle_write(fuse, handler, hdr, req);
     }
 
     case FUSE_STATFS: { /* getattr_in -> attr_out */
@@ -1648,8 +1652,9 @@ static void handle_fuse_requests(struct fuse_handler* handler)
 {
     struct fuse* fuse = handler->fuse;
     for (;;) {
-        ssize_t len = read(fuse->fd,
-                handler->request_buffer, sizeof(handler->request_buffer));
+        //TODO: Deal with pipe maximum sizewhen splicing big requests
+        ssize_t len = splice(fuse->fd, NULL, fuse->pipefd[1], NULL,
+                sizeof(handler->request_buffer), SPLICE_F_MORE | SPLICE_F_MOVE);
         if (len < 0) {
             if (errno != EINTR) {
                 ERROR("[%d] handle_fuse_requests: errno=%d\n", handler->token, errno);
@@ -1662,6 +1667,14 @@ static void handle_fuse_requests(struct fuse_handler* handler)
             continue;
         }
 
+        size_t hdr_write_len = sizeof(struct fuse_in_header) + sizeof(struct fuse_write_in);
+        if ((size_t)read(fuse->pipefd[0], handler->request_buffer,
+                    ((size_t)len > hdr_write_len ? hdr_write_len : (size_t)len)) <
+                ((size_t)len > hdr_write_len ? hdr_write_len : (size_t)len)) {
+            ERROR("[%d] request too short\n", handler->token);
+            continue;
+        }
+
         const struct fuse_in_header *hdr = (void*)handler->request_buffer;
         if (hdr->len != (size_t)len) {
             ERROR("[%d] malformed header: len=%zu, hdr->len=%u\n",
@@ -1671,6 +1684,13 @@ static void handle_fuse_requests(struct fuse_handler* handler)
 
         const void *data = handler->request_buffer + sizeof(struct fuse_in_header);
         size_t data_len = len - sizeof(struct fuse_in_header);
+        if (hdr->opcode != FUSE_WRITE && (size_t)len > hdr_write_len) {
+            if ((size_t)read(fuse->pipefd[0], handler->request_buffer + hdr_write_len,
+                        len - hdr_write_len) < len - hdr_write_len) {
+                ERROR("[%d] request too short\n", handler->token);
+                continue;
+            }
+        }
         __u64 unique = hdr->unique;
         int res = handle_fuse_request(fuse, handler, hdr, data, data_len);
 
@@ -1880,6 +1900,11 @@ static int run(const char* source_path, const char* dest_path, uid_t uid,
     fd = open("/dev/fuse", O_RDWR);
     if (fd < 0){
         ERROR("cannot open fuse device: %s\n", strerror(errno));
+        return -1;
+    }
+
+    if (pipe(fuse->pipefd)) {
+        ERROR("failed to create pipe: %s\n", strerror(errno));
         return -1;
     }
 
