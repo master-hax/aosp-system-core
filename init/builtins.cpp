@@ -402,11 +402,17 @@ int do_mount_all(int nargs, char **args)
     int child_ret = -1;
     int status;
     struct fstab *fstab;
+    char fstabfile[PROP_VALUE_MAX];
 
     if (nargs != 2) {
         return -1;
     }
 
+    ret = expand_props(fstabfile, args[1], sizeof(fstabfile);
+    if (ret) {
+        ERROR("mount_all: cannot expand '%s' \n", args[1]);
+        return -EINVAL;
+    }
     /*
      * Call fs_mgr_mount_all() to mount all filesystems.  We fork(2) and
      * do the call in the child to provide protection to the main init
@@ -430,7 +436,7 @@ int do_mount_all(int nargs, char **args)
     } else if (pid == 0) {
         /* child, call fs_mgr_mount_all() */
         klog_set_level(6);  /* So we can see what fs_mgr_mount_all() does */
-        fstab = fs_mgr_read_fstab(args[1]);
+        fstab = fs_mgr_read_fstab(fstabfile);
         child_ret = fs_mgr_mount_all(fstab);
         fs_mgr_free_fstab(fstab);
         if (child_ret == -1) {
