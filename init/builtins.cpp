@@ -457,6 +457,20 @@ static int wipe_data_via_recovery()
     while (1) { pause(); }  // never reached
 }
 
+void import_late(void)
+{
+    size_t i;
+    static const char *init_files[] = {
+        "/system/init/init.rc",
+        "/vendor/init/init.rc",
+        "/odm/init/init.rc"
+    };
+
+    for (i = 0; i < ARRAY_SIZE(init_files); ++i)
+        init_parse_config_file(init_files[i]);
+
+}
+
 /*
  * This function might request a reboot, in which case it will
  * not return.
@@ -513,6 +527,8 @@ int do_mount_all(int nargs, char **args)
         /* fork failed, return an error */
         return -1;
     }
+
+    import_late();
 
     if (ret == FS_MGR_MNTALL_DEV_NEEDS_ENCRYPTION) {
         property_set("vold.decrypt", "trigger_encryption");
