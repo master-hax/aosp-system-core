@@ -28,6 +28,7 @@
 
 #include <list>
 
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <base/strings.h>
 
@@ -476,6 +477,11 @@ struct tmsg
     int         action;
 };
 
+enum {
+    kActionRemoveTransport = 0,
+    kActionRegisterTransport
+};
+
 static int
 transport_read_action(int  fd, struct tmsg*  m)
 {
@@ -536,7 +542,7 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
 
     t = m.transport;
 
-    if (m.action == 0) {
+    if (m.action == kActionRemoveTransport) {
         D("transport: %s removing and free'ing %d\n", t->serial, t->transport_socket);
 
             /* IMPORTANT: the remove closes one half of the
@@ -568,7 +574,8 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
         return;
     }
 
-    /* don't create transport threads for inaccessible devices */
+    /* don't create transport threads for inaccessible devices, devices whose
+       interfaces are not writeable */
     if (t->connection_state != kCsNoPerm) {
         /* initial references are the two threads */
         t->ref_count = 2;
@@ -633,7 +640,7 @@ static void register_transport(atransport *transport)
 {
     tmsg m;
     m.transport = transport;
-    m.action = 1;
+    m.action = kActionRegisterTransport;
     D("transport: %s registered\n", transport->serial);
     if(transport_write_action(transport_registration_send, &m)) {
         fatal_errno("cannot write transport registration socket\n");
@@ -644,7 +651,7 @@ static void remove_transport(atransport *transport)
 {
     tmsg m;
     m.transport = transport;
-    m.action = 0;
+    m.action = kActionRemoveTransport;
     D("transport: %s removed\n", transport->serial);
     if(transport_write_action(transport_registration_send, &m)) {
         fatal_errno("cannot write transport registration socket\n");
@@ -654,6 +661,7 @@ static void remove_transport(atransport *transport)
 
 static void transport_unref_locked(atransport *t)
 {
+    CHECK_GT(t->ref_count, 0);
     t->ref_count--;
     if (t->ref_count == 0) {
         D("transport: %s unref (kicking and closing)\n", t->serial);
@@ -723,6 +731,9 @@ static int qual_match(const char *to_test,
     return !*to_test;
 }
 
+// BUGBUG: This is probably not thread-safe because it does not increment
+// atransport->ref_count before unlocking transport_lock, so the object could
+// be deleted right after the unlock.
 atransport* acquire_one_transport(ConnectionState state, TransportType type,
                                   const char* serial, std::string* error_out) {
     atransport *result = NULL;
@@ -948,6 +959,11 @@ int register_socket_transport(int s, const char *serial, int port, int local) {
         return -1;
     }
 
+    // BUGBUG: Is it possible for init_socket_transport() above to add the
+    // transport to the local_transports array, and then for the transport to
+    // be deleted below, leaving a dangling pointer in the local_transports
+    // array?
+
     adb_mutex_lock(&transport_lock);
     for (auto transport : pending_list) {
         if (transport->serial && strcmp(serial, transport->serial) == 0) {
@@ -974,51 +990,37 @@ int register_socket_transport(int s, const char *serial, int port, int local) {
 }
 
 #if ADB_HOST
-atransport *find_transport(const char *serial) {
-    atransport* result = nullptr;
 
+// Unregisters non-emulator TCP transports. Pass nullptr for all, or specify
+// a serial. Returns whether anything was unregistered.
+bool unregister_tcp_transports(const char* serial) {
+    bool any_kicked = false;
+
+    // To unregister a transport, just kick it. This will break the output
+    // thread out of any read and then the output thread will tell the input
+    // thread to exit. Then both threads will call transport_unref which will
+    // really unregister the transport when the refcount drops to zero.
     adb_mutex_lock(&transport_lock);
     for (auto t : transport_list) {
-        if (t->serial && strcmp(serial, t->serial) == 0) {
-            result = t;
-            break;
-        }
-    }
-    adb_mutex_unlock(&transport_lock);
-
-    return result;
-}
-
-void unregister_transport(atransport *t)
-{
-    adb_mutex_lock(&transport_lock);
-    transport_list.remove(t);
-    adb_mutex_unlock(&transport_lock);
-
-    kick_transport(t);
-    transport_unref(t);
-}
-
-// Unregisters all non-emulator TCP transports.
-void unregister_all_tcp_transports() {
-    adb_mutex_lock(&transport_lock);
-    for (auto it = transport_list.begin(); it != transport_list.end(); ) {
-        atransport* t = *it;
+        // Non-emulators have adb_port == 0.
         if (t->type == kTransportLocal && t->adb_port == 0) {
-            // We cannot call kick_transport when holding transport_lock.
-            if (!t->kicked) {
-                t->kicked = 1;
-                t->kick(t);
+            if ((serial == nullptr) ||
+                (t->serial && strcmp(serial, t->serial) == 0)) {
+                // We cannot call kick_transport when holding transport_lock.
+                if (!t->kicked) {
+                    t->kicked = 1;
+                    t->kick(t);
+                }
+                any_kicked = true;
             }
-            transport_unref_locked(t);
-
-            it = transport_list.erase(it);
-        } else {
-            ++it;
         }
     }
-
     adb_mutex_unlock(&transport_lock);
+
+    // Note that this does not wait for the unregister to complete. That really
+    // happens after transport_registration_func does its work.
+
+    return any_kicked;
 }
 
 #endif
@@ -1047,6 +1049,13 @@ void register_usb_transport(usb_handle* usb, const char* serial,
 
 // This should only be used for transports with connection_state == kCsNoPerm.
 void unregister_usb_transport(usb_handle *usb) {
+    // BUGBUG: This only removes the transport from transport_list, but it
+    // should really do the inverse of register_usb_transport. That would
+    // involve doing the rest of the stuff that transport_unref_locked does when
+    // the ref_count drops to zero. If that is done, then
+    // transport_registration_func should also be fixed to only do the
+    // socketpair cleanup if the socketpair was setup in the first place (which
+    // is not done for non-writable USB devices).
     adb_mutex_lock(&transport_lock);
     transport_list.remove_if([usb](atransport* t) {
         return t->usb == usb && t->connection_state == kCsNoPerm;

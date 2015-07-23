@@ -968,7 +968,7 @@ int handle_host_request(const char* service, TransportType type,
         const std::string address(service + 11);
         if (address.empty()) {
             // disconnect from all TCP devices
-            unregister_all_tcp_transports();
+            unregister_tcp_transports(nullptr);
             return SendOkay(reply_fd, "disconnected everything");
         }
 
@@ -980,12 +980,10 @@ int handle_host_request(const char* service, TransportType type,
             return SendFail(reply_fd, android::base::StringPrintf("couldn't parse '%s': %s",
                                                                   address.c_str(), error.c_str()));
         }
-        atransport* t = find_transport(serial.c_str());
-        if (t == nullptr) {
+        if (!unregister_tcp_transports(serial.c_str())) {
             return SendFail(reply_fd, android::base::StringPrintf("no such device '%s'",
                                                                   serial.c_str()));
         }
-        unregister_transport(t);
         return SendOkay(reply_fd, android::base::StringPrintf("disconnected %s", address.c_str()));
     }
 

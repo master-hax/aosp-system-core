@@ -121,11 +121,9 @@ void run_transport_disconnects(atransport* t);
 void update_transports(void);
 
 /* transports are ref-counted
-** get_device_transport does an acquire on your behalf before returning
 */
 void init_transport_registration(void);
 std::string list_transports(bool long_listing);
-atransport* find_transport(const char* serial);
 
 void register_usb_transport(usb_handle* h, const char* serial,
                             const char* devpath, unsigned writeable);
@@ -136,9 +134,8 @@ int register_socket_transport(int s, const char* serial, int port, int local);
 // This should only be used for transports with connection_state == kCsNoPerm.
 void unregister_usb_transport(usb_handle* usb);
 
-/* these should only be used for the "adb disconnect" command */
-void unregister_transport(atransport* t);
-void unregister_all_tcp_transports();
+/* this should only be used for the "adb disconnect" command */
+bool unregister_tcp_transports(const char* serial);
 
 int check_header(apacket* p, atransport* t);
 int check_data(apacket* p);
