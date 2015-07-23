@@ -202,6 +202,12 @@ class RootUnrootTest(DeviceTest):
         self.assertEqual('root', self.device.shell(['id', '-un']).strip())
 
     def _test_unroot(self):
+        # daemon/main.cpp:should_drop_privileges() causes adb unroot to
+        # not work on the emulator. Plus, adb unroot disconnects the
+        # emulator from the adb server, hanging the test suite until
+        # adb kill-server and adb start-server are run.
+        if self.device.get_prop('ro.kernel.qemu') == '1':
+            return
         self.device.unroot()
         self.device.wait()
         self.assertEqual('shell', self.device.shell(['id', '-un']).strip())
