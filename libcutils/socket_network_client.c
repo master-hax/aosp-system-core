@@ -41,7 +41,8 @@ static int toggle_O_NONBLOCK(int s) {
 // Connect to the given host and port.
 // 'timeout' is in seconds (0 for no timeout).
 // Returns a file descriptor or -1 on error.
-int socket_network_client_timeout(const char* host, int port, int type, int timeout) {
+int socket_network_client_timeout(const char* host, int port, int type, int timeout,
+                                  int* getaddrinfo_error) {
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -51,7 +52,8 @@ int socket_network_client_timeout(const char* host, int port, int type, int time
     snprintf(port_str, sizeof(port_str), "%d", port);
 
     struct addrinfo* addrs;
-    if (getaddrinfo(host, port_str, &hints, &addrs) != 0) {
+    *getaddrinfo_error = getaddrinfo(host, port_str, &hints, &addrs);
+    if (getaddrinfo_error != 0) {
         return -1;
     }
 
@@ -116,5 +118,6 @@ int socket_network_client_timeout(const char* host, int port, int type, int time
 }
 
 int socket_network_client(const char* host, int port, int type) {
-    return socket_network_client_timeout(host, port, type, 0);
+    int getaddrinfo_error;
+    return socket_network_client_timeout(host, port, type, 0, &getaddrinfo_error);
 }
