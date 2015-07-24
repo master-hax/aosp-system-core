@@ -18,46 +18,67 @@
 #define _INIT_INIT_H
 
 #include <sys/types.h>
+#include <stdlib.h>
 
+#include <list>
+#include <map>
 #include <string>
 #include <vector>
 
 #include <cutils/list.h>
 #include <cutils/iosched_policy.h>
 
-struct command
+class Command
 {
-        /* list of commands in an action */
-    struct listnode clist;
+public:
+    Command(int (*f)(int nargs, char** args),
+            int nargs,
+            char** args,
+            int line = 0,
+            const std::string& filename = "") :
+        func(f), nargs(nargs), line(line), filename(filename) {
+        this->args = (char**)calloc(sizeof(char*), nargs);
+        memcpy(this->args, args, sizeof(char*) * nargs);
+    }
 
-    int (*func)(int nargs, char **args);
+    ~Command() {
+        free(args);
+    }
 
-    int line;
-    const char *filename;
+    int call_func();
+
+    std::string build_command_string();
+    std::string build_source_string();
+    int (*func)(int nargs, char** args); //TEMP for dump_parser_state
+
+private:
 
     int nargs;
-    char *args[1];
+    char** args;
+    int line;
+    const std::string filename;
 };
 
-struct trigger {
-    struct listnode nlist;
-    const char *name;
-};
+class Action {
+public:
+    Action() { }
+    void add_command(Command* c) {
+        commands.push_back(c);
+    }
 
-struct action {
-        /* node in list of all actions */
-    struct listnode alist;
-        /* node in the queue of pending actions */
-    struct listnode qlist;
-        /* node in list of actions for a trigger */
-    struct listnode tlist;
+    bool init_triggers(int nargs, char** args);
+    bool init_single_trigger(const char* name);
+    bool check_event_trigger(const std::string& trigger);
+    bool check_property_trigger(const std::string& name = "", const std::string& value = "");
+    bool triggers_equal(const class Action& other);
+    std::string build_triggers_string();
 
-    unsigned hash;
+    std::list<Command*> commands;
 
-        /* list of actions which triggers the commands*/
-    struct listnode triggers;
-    struct listnode commands;
-    struct command *current;
+private:
+    bool check_property_triggers(const std::string& name = "", const std::string& value = "");
+    std::map<std::string, std::string> property_triggers;
+    std::string event_trigger;
 };
 
 struct socketinfo {
@@ -117,7 +138,7 @@ struct service {
     struct socketinfo *sockets;
     struct svcenvinfo *envvars;
 
-    struct action onrestart;  /* Actions to execute on restart. */
+    Action* onrestart;  /* Actions to execute on restart. */
 
     std::vector<std::string>* writepid_files_;
 
@@ -137,8 +158,6 @@ struct service {
 extern bool waiting_for_exec;
 extern struct selabel_handle *sehandle;
 extern struct selabel_handle *sehandle_prop;
-
-std::string build_triggers_string(struct action *cur_action);
 
 void handle_control_message(const char *msg, const char *arg);
 

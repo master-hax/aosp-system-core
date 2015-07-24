@@ -21,13 +21,13 @@
 
 #define INIT_PARSER_MAXARGS 64
 
-struct action;
+class Action;
 struct service;
 
-struct action *action_remove_queue_head(void);
-void action_add_queue_tail(struct action *act);
+Action* action_remove_queue_head(void);
+void action_add_queue_tail(Action* act);
 void action_for_each_trigger(const char *trigger,
-                             void (*func)(struct action *act));
+                             void (*func)(Action* act));
 int action_queue_empty(void);
 void queue_property_triggers(const char *name, const char *value);
 void queue_all_property_triggers();
