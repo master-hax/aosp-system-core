@@ -37,9 +37,11 @@
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
 
+#include <algorithm>
+
 static list_declare(service_list);
-static list_declare(action_list);
-static list_declare(action_queue);
+static std::list<Action*> action_list;
+static std::list<Action*> action_queue;
 
 struct import {
     struct listnode list;
@@ -77,6 +79,167 @@ static struct {
 #define kw_func(kw) (keyword_info[kw].func)
 #define kw_nargs(kw) (keyword_info[kw].nargs)
 
+std::string Command::build_command_string()
+{
+    std::string ret;
+    for (int i = 0; i < nargs; i++) {
+        ret.append(args[i]);
+        ret.push_back(' ');
+    }
+    ret.pop_back();
+    return ret;
+}
+
+std::string Command::build_source_string()
+{
+    if (!filename.empty())
+        return android::base::StringPrintf(" (%s:%d)", filename.c_str(), line);
+    else
+        return std::string();
+}
+
+int Command::call_func()
+{
+    std::vector<std::string> strs;
+    strs.resize(nargs);
+    strs[0] = args[0];
+    for (int i = 1; i < nargs; ++i) {
+        if (expand_props(args[i], &strs[i]) == -1) {
+            ERROR("%s: cannot expand '%s'\n", args[0], args[i]);
+            return -EINVAL;
+        }
+    }
+
+    std::vector<char*> args;
+    for (auto& s : strs) {
+        args.push_back(&s[0]);
+    }
+
+    return func(args.size(), &args[0]);
+}
+
+bool Action::init_triggers(int nargs, char** args)
+{
+    int i;
+
+    for (i = 1; i < nargs; i++) {
+        if (!(i % 2)) {
+            if (strcmp(args[i], "&&"))
+                return false;
+            else
+                continue;
+        }
+
+        if (!strncmp(args[i], "property:", strlen("property:"))) {
+            std::string prop_name(args[i] + strlen("property:"));
+            size_t equal_pos = prop_name.find('=');
+            if (equal_pos == std::string::npos)
+                return false;
+
+            std::string prop_value(prop_name.substr(equal_pos + 1));
+            prop_name.erase(equal_pos);
+
+            auto res = property_triggers.emplace(prop_name, prop_value);
+            if (res.second == false)
+                return false;
+
+        } else {
+            if (!event_trigger.empty())
+                return false;
+
+            event_trigger = args[i];
+        }
+    }
+
+    return true;
+}
+
+//TODO(tomcherry): Will be removed when we move args from char** to std::vector
+bool Action::init_single_trigger(const char* name)
+{
+    int nargs = 2;
+    char** args = (char**)calloc(sizeof(char*), nargs);
+    args[1] = strdup(name);
+
+    bool ret = init_triggers(nargs, args);
+    free(args[1]);
+    free(args);
+
+    return ret;
+}
+
+bool Action::check_property_triggers(const std::string& name,
+                                     const std::string& value)
+{
+    bool found = !name.compare("");
+    if (property_triggers.size() == 0)
+        return true;
+
+    for (auto& t : property_triggers) {
+        if (!t.first.compare(name)) {
+            if (t.second.compare("*") &&
+                t.second.compare(value))
+                return false;
+            else
+                found = true;
+        } else {
+            std::string prop_val = property_get(t.first.c_str());
+            if (prop_val.empty() ||
+                (t.second.compare("*") &&
+                 t.second.compare(prop_val)))
+                return false;
+        }
+    }
+    return found;
+}
+
+bool Action::check_event_trigger(const std::string& trigger)
+{
+    if (event_trigger.empty())
+        return false;
+
+    if (trigger.compare(event_trigger))
+        return false;
+
+    if (!check_property_triggers())
+        return false;
+
+    return true;
+}
+
+bool Action::check_property_trigger(const std::string& name, const std::string& value)
+{
+    if (!event_trigger.empty())
+        return false;
+
+    return check_property_triggers(name, value);
+}
+
+bool Action::triggers_equal(const class Action& other)
+{
+    return property_triggers.size() == other.property_triggers.size() &&
+        std::equal(property_triggers.begin(), property_triggers.end(),
+                   other.property_triggers.begin()) &&
+        !event_trigger.compare(other.event_trigger);
+}
+
+std::string Action::build_triggers_string() {
+    std::string result;
+
+    for (auto& t : property_triggers) {
+        result.append(t.first);
+        result.push_back('=');
+        result.append(t.second);
+        result.push_back(' ');
+    }
+    if (!event_trigger.empty()) {
+        result.append(event_trigger);
+        result.push_back(' ');
+    }
+    result.pop_back();
+    return result;
+}
+
 void dump_parser_state() {
     if (false) {
         struct listnode* node;
@@ -94,24 +257,20 @@ void dump_parser_state() {
             }
         }
 
-        list_for_each(node, &action_list) {
-            action* act = node_to_item(node, struct action, alist);
+        for (auto& a : action_list) {
             INFO("on ");
-            std::string trigger_name = build_triggers_string(act);
+            std::string trigger_name = a->build_triggers_string();
             INFO("%s", trigger_name.c_str());
             INFO("\n");
 
-            struct listnode* node2;
-            list_for_each(node2, &act->commands) {
-                command* cmd = node_to_item(node2, struct command, clist);
-                INFO("  %p", cmd->func);
-                for (int n = 0; n < cmd->nargs; n++) {
-                    INFO(" %s", cmd->args[n]);
-                }
-                INFO("\n");
+            for (auto& c : a->commands) {
+                INFO("  %p", c->func);
+                std::string cmd_str = c->build_command_string();
+                INFO(" %s", cmd_str.c_str());
             }
             INFO("\n");
         }
+        INFO("\n");
     }
 }
 
@@ -528,122 +687,59 @@ void service_for_each_flags(unsigned matchflags,
 }
 
 void action_for_each_trigger(const char *trigger,
-                             void (*func)(struct action *act))
+                             void (*func)(Action* act))
 {
-    struct listnode *node, *node2;
-    struct action *act;
-    struct trigger *cur_trigger;
-
-    list_for_each(node, &action_list) {
-        act = node_to_item(node, struct action, alist);
-        list_for_each(node2, &act->triggers) {
-            cur_trigger = node_to_item(node2, struct trigger, nlist);
-            if (!strcmp(cur_trigger->name, trigger)) {
-                func(act);
-            }
-        }
+    for (auto& a : action_list) {
+        if (a->check_event_trigger(trigger))
+            func(a);
     }
 }
 
 
 void queue_property_triggers(const char *name, const char *value)
 {
-    struct listnode *node, *node2;
-    struct action *act;
-    struct trigger *cur_trigger;
-    bool match;
-    int name_length;
-
-    list_for_each(node, &action_list) {
-        act = node_to_item(node, struct action, alist);
-            match = !name;
-        list_for_each(node2, &act->triggers) {
-            cur_trigger = node_to_item(node2, struct trigger, nlist);
-            if (!strncmp(cur_trigger->name, "property:", strlen("property:"))) {
-                const char *test = cur_trigger->name + strlen("property:");
-                if (!match) {
-                    name_length = strlen(name);
-                    if (!strncmp(name, test, name_length) &&
-                        test[name_length] == '=' &&
-                        (!strcmp(test + name_length + 1, value) ||
-                        !strcmp(test + name_length + 1, "*"))) {
-                        match = true;
-                        continue;
-                    }
-                } else {
-                     const char* equals = strchr(test, '=');
-                     if (equals) {
-                         int length = equals - test;
-                         if (length <= PROP_NAME_MAX) {
-                             std::string prop_name(test, length);
-                             std::string value = property_get(prop_name.c_str());
-
-                             /* does the property exist, and match the trigger value? */
-                             if (!value.empty() && (!strcmp(equals + 1, value.c_str()) ||
-                                !strcmp(equals + 1, "*"))) {
-                                 continue;
-                             }
-                         }
-                     }
-                 }
-             }
-             match = false;
-             break;
-        }
-        if (match) {
-            action_add_queue_tail(act);
-        }
+    for (auto& a : action_list) {
+        if (a->check_property_trigger(name, value))
+            action_add_queue_tail(a);
     }
 }
 
 void queue_all_property_triggers()
 {
-    queue_property_triggers(NULL, NULL);
+    queue_property_triggers("", "");
 }
 
 void queue_builtin_action(int (*func)(int nargs, char **args), const char *name)
 {
-    action* act = (action*) calloc(1, sizeof(*act));
-    trigger* cur_trigger = (trigger*) calloc(1, sizeof(*cur_trigger));
-    cur_trigger->name = name;
-    list_init(&act->triggers);
-    list_add_tail(&act->triggers, &cur_trigger->nlist);
-    list_init(&act->commands);
-    list_init(&act->qlist);
+    Action* act = new Action();
+    if (!act->init_single_trigger(name))
+        return;
 
-    command* cmd = (command*) calloc(1, sizeof(*cmd));
-    cmd->func = func;
-    cmd->args[0] = const_cast<char*>(name);
-    cmd->nargs = 1;
-    list_add_tail(&act->commands, &cmd->clist);
+    Command* cmd = new Command(func, 0, nullptr);
+    act->add_command(cmd);
 
-    list_add_tail(&action_list, &act->alist);
     action_add_queue_tail(act);
 }
 
-void action_add_queue_tail(struct action *act)
+void action_add_queue_tail(Action* act)
 {
-    if (list_empty(&act->qlist)) {
-        list_add_tail(&action_queue, &act->qlist);
-    }
+    action_queue.push_back(act);
 }
 
-struct action *action_remove_queue_head(void)
+Action* action_remove_queue_head(void)
 {
-    if (list_empty(&action_queue)) {
-        return 0;
-    } else {
-        struct listnode *node = list_head(&action_queue);
-        struct action *act = node_to_item(node, struct action, qlist);
-        list_remove(node);
-        list_init(node);
-        return act;
+    if (!action_queue_empty()) {
+        Action* ret = action_queue.front();
+        action_queue.pop_front();
+        return ret;
     }
+
+    return nullptr;
 }
 
 int action_queue_empty()
 {
-    return list_empty(&action_queue);
+    return action_queue.empty();
 }
 
 service* make_exec_oneshot_service(int nargs, char** args) {
@@ -732,13 +828,10 @@ static void *parse_service(struct parse_state *state, int nargs, char **args)
     svc->name = strdup(args[1]);
     svc->classname = "default";
     memcpy(svc->args, args + 2, sizeof(char*) * nargs);
-    trigger* cur_trigger = (trigger*) calloc(1, sizeof(*cur_trigger));
     svc->args[nargs] = 0;
     svc->nargs = nargs;
-    list_init(&svc->onrestart.triggers);
-    cur_trigger->name = "onrestart";
-    list_add_tail(&svc->onrestart.triggers, &cur_trigger->nlist);
-    list_init(&svc->onrestart.commands);
+    svc->onrestart = new Action();
+    svc->onrestart->init_single_trigger("onrestart");
     list_add_tail(&service_list, &svc->slist);
     return svc;
 }
@@ -746,7 +839,7 @@ static void *parse_service(struct parse_state *state, int nargs, char **args)
 static void parse_line_service(struct parse_state *state, int nargs, char **args)
 {
     struct service *svc = (service*) state->context;
-    struct command *cmd;
+    Command* cmd;
     int i, kw, kw_nargs;
 
     if (nargs == 0) {
@@ -841,11 +934,8 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
             break;
         }
 
-        cmd = (command*) malloc(sizeof(*cmd) + sizeof(char*) * nargs);
-        cmd->func = kw_func(kw);
-        cmd->nargs = nargs;
-        memcpy(cmd->args, args, sizeof(char*) * nargs);
-        list_add_tail(&svc->onrestart.commands, &cmd->clist);
+        cmd = new Command(kw_func(kw), nargs, args);
+        svc->onrestart->add_command(cmd);
         break;
     case K_critical:
         svc->flags |= SVC_CRITICAL;
@@ -926,46 +1016,33 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
 
 static void *parse_action(struct parse_state *state, int nargs, char **args)
 {
-    struct trigger *cur_trigger;
-    int i;
     if (nargs < 2) {
         parse_error(state, "actions must have a trigger\n");
         return 0;
     }
 
-    action* act = (action*) calloc(1, sizeof(*act));
-    list_init(&act->triggers);
-
-    for (i = 1; i < nargs; i++) {
-        if (!(i % 2)) {
-            if (strcmp(args[i], "&&")) {
-                struct listnode *node;
-                struct listnode *node2;
-                parse_error(state, "& is the only symbol allowed to concatenate actions\n");
-                list_for_each_safe(node, node2, &act->triggers) {
-                    struct trigger *trigger = node_to_item(node, struct trigger, nlist);
-                    free(trigger);
-                }
-                free(act);
-                return 0;
-            } else
-                continue;
-        }
-        cur_trigger = (trigger*) calloc(1, sizeof(*cur_trigger));
-        cur_trigger->name = args[i];
-        list_add_tail(&act->triggers, &cur_trigger->nlist);
+    Action* act = new Action();
+    if (!act->init_triggers(nargs, args)) {
+        parse_error(state, "syntax error while parsing action\n");
+        return nullptr;
     }
 
-    list_init(&act->commands);
-    list_init(&act->qlist);
-    list_add_tail(&action_list, &act->alist);
-        /* XXX add to hash */
+    auto old_act_it =
+        std::find_if(action_list.begin(), action_list.end(),
+                     [&] (Action* a) { return act->triggers_equal(*a); });
+
+    if (old_act_it != action_list.end()) {
+        delete act;
+        return *old_act_it;
+    }
+
+    action_list.push_back(act);
     return act;
 }
 
 static void parse_line_action(struct parse_state* state, int nargs, char **args)
 {
-    struct action *act = (action*) state->context;
+    Action* act = (Action*) state->context;
     int kw, n;
 
     if (nargs == 0) {
@@ -984,11 +1061,7 @@ static void parse_line_action(struct parse_state* state, int nargs, char **args)
             n > 2 ? "arguments" : "argument");
         return;
     }
-    command* cmd = (command*) malloc(sizeof(*cmd) + sizeof(char*) * nargs);
-    cmd->func = kw_func(kw);
-    cmd->line = state->line;
-    cmd->filename = state->filename;
-    cmd->nargs = nargs;
-    memcpy(cmd->args, args, sizeof(char*) * nargs);
-    list_add_tail(&act->commands, &cmd->clist);
+
+    Command* cmd = new Command(kw_func(kw), nargs, args, state->line, state->filename);
+    act->add_command(cmd);
 }
