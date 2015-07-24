@@ -72,8 +72,8 @@ static int property_triggers_enabled = 0;
 
 static char qemu[32];
 
-static struct action *cur_action = NULL;
-static struct command *cur_command = NULL;
+static Action* cur_action = nullptr;
+static std::list<Command*>::iterator cur_command_it;
 
 static int have_console;
 static std::string console_name = "/dev/console";
@@ -542,112 +542,37 @@ void handle_control_message(const char *msg, const char *arg)
     }
 }
 
-static struct command *get_first_command(struct action *act)
-{
-    struct listnode *node;
-    node = list_head(&act->commands);
-    if (!node || list_empty(&act->commands))
-        return NULL;
-
-    return node_to_item(node, struct command, clist);
-}
-
-static struct command *get_next_command(struct action *act, struct command *cmd)
-{
-    struct listnode *node;
-    node = cmd->clist.next;
-    if (!node)
-        return NULL;
-    if (node == &act->commands)
-        return NULL;
-
-    return node_to_item(node, struct command, clist);
-}
-
-static int is_last_command(struct action *act, struct command *cmd)
-{
-    return (list_tail(&act->commands) == &cmd->clist);
-}
-
-
-std::string build_triggers_string(struct action *cur_action) {
-    std::string result;
-    struct listnode *node;
-    struct trigger *cur_trigger;
-
-    list_for_each(node, &cur_action->triggers) {
-        cur_trigger = node_to_item(node, struct trigger, nlist);
-        if (node != cur_action->triggers.next) {
-            result.push_back(' ');
-        }
-        result += cur_trigger->name;
-    }
-    return result;
-}
-
-bool expand_command_arguments(int nargs, char** args, std::vector<std::string>* expanded_args) {
-    std::vector<std::string>& strs = *expanded_args;
-    strs.resize(nargs);
-    strs[0] = args[0];
-    for (int i = 1; i < nargs; ++i) {
-        if (expand_props(args[i], &strs[i]) == -1) {
-            ERROR("%s: cannot expand '%s'\n", args[0], args[i]);
-            return false;
-        }
-    }
-    return true;
-}
-
 void execute_one_command() {
     Timer t;
 
-    if (!cur_action || !cur_command || is_last_command(cur_action, cur_command)) {
+    if (!cur_action || cur_command_it == cur_action->commands.end()) {
         cur_action = action_remove_queue_head();
-        cur_command = NULL;
         if (!cur_action) {
             return;
         }
 
-        std::string trigger_name = build_triggers_string(cur_action);
+        cur_command_it = cur_action->commands.begin();
+        if (cur_command_it == cur_action->commands.end())
+            return;
+
+        std::string trigger_name = cur_action->build_triggers_string();
+
         INFO("processing action %p (%s)\n", cur_action, trigger_name.c_str());
-        cur_command = get_first_command(cur_action);
-    } else {
-        cur_command = get_next_command(cur_action, cur_command);
     }
 
-    if (!cur_command) {
-        return;
-    }
-    int result = 0;
-    std::vector<std::string> arg_strs;
-    if (!expand_command_arguments(cur_command->nargs, cur_command->args, &arg_strs)) {
-        result = -EINVAL;
-    }
-    if (result == 0) {
-        std::vector<char*> args;
-        for (auto& s : arg_strs) {
-            args.push_back(&s[0]);
-        }
-        result = cur_command->func(args.size(), &args[0]);
-    }
+    Command* cur_command = *cur_command_it;
+    int result = cur_command->call_func();
+
     if (klog_get_level() >= KLOG_INFO_LEVEL) {
-        std::string cmd_str;
-        for (int i = 0; i < cur_command->nargs; ++i) {
-            if (i > 0) {
-                cmd_str.push_back(' ');
-            }
-            cmd_str += cur_command->args[i];
-        }
-        std::string trigger_name = build_triggers_string(cur_action);
-
-        std::string source;
-        if (cur_command->filename) {
-            source = android::base::StringPrintf(" (%s:%d)", cur_command->filename, cur_command->line);
-        }
+        std::string trigger_name = cur_action->build_triggers_string();
+        std::string cmd_str = cur_command->build_command_string();
+        std::string source = cur_command->build_source_string();
 
         INFO("Command '%s' action=%s%s returned %d took %.2fs\n",
              cmd_str.c_str(), trigger_name.c_str(), source.c_str(), result, t.duration());
     }
+
+    cur_command_it++;
 }
 
 static int wait_for_coldboot_done_action(int nargs, char **args) {
