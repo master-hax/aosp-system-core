@@ -72,8 +72,8 @@ static int property_triggers_enabled = 0;
 
 static char qemu[32];
 
-static struct action *cur_action = NULL;
-static struct command *cur_command = NULL;
+static Action* cur_action = nullptr;
+static std::list<Command*>::iterator cur_command;
 
 static int have_console;
 static std::string console_name = "/dev/console";
@@ -542,89 +542,40 @@ void handle_control_message(const char *msg, const char *arg)
     }
 }
 
-static struct command *get_first_command(struct action *act)
-{
-    struct listnode *node;
-    node = list_head(&act->commands);
-    if (!node || list_empty(&act->commands))
-        return NULL;
-
-    return node_to_item(node, struct command, clist);
-}
-
-static struct command *get_next_command(struct action *act, struct command *cmd)
-{
-    struct listnode *node;
-    node = cmd->clist.next;
-    if (!node)
-        return NULL;
-    if (node == &act->commands)
-        return NULL;
-
-    return node_to_item(node, struct command, clist);
-}
-
-static int is_last_command(struct action *act, struct command *cmd)
-{
-    return (list_tail(&act->commands) == &cmd->clist);
-}
-
-
-void build_triggers_string(char *name_str, int length, struct action *cur_action) {
-    struct listnode *node;
-    struct trigger *cur_trigger;
-
-    list_for_each(node, &cur_action->triggers) {
-        cur_trigger = node_to_item(node, struct trigger, nlist);
-        if (node != cur_action->triggers.next) {
-            strlcat(name_str, " " , length);
-        }
-        strlcat(name_str, cur_trigger->name , length);
-    }
-}
-
 void execute_one_command() {
     Timer t;
 
-    char cmd_str[256] = "";
     char name_str[256] = "";
 
-    if (!cur_action || !cur_command || is_last_command(cur_action, cur_command)) {
+    if (!cur_action || cur_command == cur_action->commands.end()) {
         cur_action = action_remove_queue_head();
-        cur_command = NULL;
         if (!cur_action) {
             return;
         }
 
-        build_triggers_string(name_str, sizeof(name_str), cur_action);
+        cur_command = cur_action->commands.begin();
+        if (cur_command == cur_action->commands.end())
+            return;
+
+        cur_action->build_triggers_string(name_str, sizeof(name_str));
 
         INFO("processing action %p (%s)\n", cur_action, name_str);
-        cur_command = get_first_command(cur_action);
-    } else {
-        cur_command = get_next_command(cur_action, cur_command);
     }
 
-    if (!cur_command) {
-        return;
-    }
+    int result = (*cur_command)->call_func();
 
-    int result = cur_command->func(cur_command->nargs, cur_command->args);
     if (klog_get_level() >= KLOG_INFO_LEVEL) {
-        for (int i = 0; i < cur_command->nargs; i++) {
-            strlcat(cmd_str, cur_command->args[i], sizeof(cmd_str));
-            if (i < cur_command->nargs - 1) {
-                strlcat(cmd_str, " ", sizeof(cmd_str));
-            }
-        }
-        char source[256];
-        if (cur_command->filename) {
-            snprintf(source, sizeof(source), " (%s:%d)", cur_command->filename, cur_command->line);
-        } else {
-            *source = '\0';
-        }
+        char cmd_str[256] = "";
+        char source[256] = "";
+
+        (*cur_command)->build_command_string(cmd_str, sizeof(cmd_str));
+        (*cur_command)->build_source_string(source, sizeof(source));
+
         INFO("Command '%s' action=%s%s returned %d took %.2fs\n",
              cmd_str, cur_action ? name_str : "", source, result, t.duration());
     }
+
+    cur_command++;
 }
 
 static int wait_for_coldboot_done_action(int nargs, char **args) {

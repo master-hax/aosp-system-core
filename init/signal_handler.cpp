@@ -133,11 +133,9 @@ static bool wait_for_one_process() {
     svc->flags |= SVC_RESTARTING;
 
     // Execute all onrestart commands for this service.
-    struct listnode* node;
-    list_for_each(node, &svc->onrestart.commands) {
-        command* cmd = node_to_item(node, struct command, clist);
-        cmd->func(cmd->nargs, cmd->args);
-    }
+    for (auto& c : svc->onrestart->commands)
+            c->call_func();
+
     svc->NotifyStateChange("restarting");
     return true;
 }
