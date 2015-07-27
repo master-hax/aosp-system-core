@@ -27,7 +27,7 @@
 void reinit_signal_handler(int /*signal*/);
 
 class CommandListener : public FrameworkListener {
-    LogBuffer &mBuf;
+    LogBuffer &mBuf __attribute__((unused));
 
 public:
     CommandListener(LogBuffer *buf, LogReader *reader, LogListener *swl);
@@ -37,7 +37,7 @@ private:
     static int getLogSocket();
 
     class ShutdownCmd : public LogCommand {
-        LogBuffer &mBuf;
+        LogBuffer &mBuf __attribute__((unused));
         LogReader &mReader;
         LogListener &mSwl;
 

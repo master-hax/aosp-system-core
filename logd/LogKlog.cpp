@@ -492,7 +492,6 @@ int LogKlog::log(const char *buf) {
                     }
                 }
             } else if (isspace(cp[size])) {
-                const char *b = cp;
                 cp += size;
                 while (isspace(*++cp));
                 // <PRI>[<TIME>] <tag> <tag> : message
