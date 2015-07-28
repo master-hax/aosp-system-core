@@ -10,7 +10,7 @@
 #include <policy/mock_device_policy.h>
 #include <policy/libpolicy.h>
 
-#include "metrics/c_metrics_library.h"
+#include "c_metrics_library.h"
 #include "metrics/metrics_library.h"
 
 using base::FilePath;
