@@ -216,6 +216,26 @@ class TcpIpTest(DeviceTest):
             subprocess.CalledProcessError, self.device.tcpip, 'foo')
 
 
+class SystemPropertiesTest(DeviceTest):
+    def setUp(self):
+        super(SystemPropertiesTest, self).setUp()
+        self.prop_name = 'foo.bar'
+        self.device.shell(['setprop', self.prop_name, '""'])
+
+    def tearDown(self):
+        super(SystemPropertiesTest, self).tearDown()
+        self.device.shell(['setprop', self.prop_name, '""'])
+
+    def test_get_prop(self):
+        self.device.shell(['setprop', self.prop_name, 'baz'])
+        self.assertEqual(self.device.get_prop(self.prop_name), 'baz')
+
+    def test_set_prop(self):
+        self.device.set_prop(self.prop_name, 'qux')
+        self.assertEqual(
+            self.device.shell(['getprop', self.prop_name]).strip(), 'qux')
+
+
 def compute_md5(string):
     hsh = hashlib.md5()
     hsh.update(string)
@@ -392,7 +412,6 @@ class FileOperationsTest(DeviceTest):
         finally:
             self.device.shell(['rm', '-rf', self.DEVICE_TEMP_DIR])
             shutil.rmtree(base_dir + self.DEVICE_TEMP_DIR)
-
 
     def test_unicode_paths(self):
         """Ensure that we can support non-ASCII paths, even on Windows."""
