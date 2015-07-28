@@ -188,6 +188,10 @@ class RootUnrootTest(DeviceTest):
 
     def test_root_unroot(self):
         """Make sure that adb root and adb unroot work, using id(1)."""
+        if self.device.get_prop('ro.debuggable') != 1:
+            raise unittest.SkipTest(
+                'root/unroot tests cannot be run on production builds')
+
         original_user = self.device.shell(['id', '-un']).strip()
         try:
             if original_user == 'root':
@@ -214,6 +218,38 @@ class TcpIpTest(DeviceTest):
             subprocess.CalledProcessError, self.device.tcpip, '')
         self.assertRaises(
             subprocess.CalledProcessError, self.device.tcpip, 'foo')
+
+
+class SystemPropertiesTest(DeviceTest):
+    def setUp(self):
+        super(SystemPropertiesTest, self).setUp()
+
+        self.was_root = self.device.shell(['id', '-un']).strip() == 'root'
+        if not self.was_root:
+            message = self.device.root()
+            if 'cannot run as root in production builds' in message:
+                raise unittest.SkipTest(message.strip())
+            self.device.wait()
+
+        self.prop_name = 'foo.bar'
+        self.device.shell(['setprop', self.prop_name, '""'])
+
+    def tearDown(self):
+        super(SystemPropertiesTest, self).tearDown()
+        self.device.shell(['setprop', self.prop_name, '""'])
+
+        if not self.was_root:
+            self.device.unroot()
+            self.device.wait()
+
+    def test_get_prop(self):
+        self.device.shell(['setprop', self.prop_name, 'baz'])
+        self.assertEqual(self.device.get_prop(self.prop_name), 'baz')
+
+    def test_set_prop(self):
+        self.device.set_prop(self.prop_name, 'qux')
+        self.assertEqual(
+            self.device.shell(['getprop', self.prop_name]).strip(), 'qux')
 
 
 def compute_md5(string):
@@ -392,7 +428,6 @@ class FileOperationsTest(DeviceTest):
         finally:
             self.device.shell(['rm', '-rf', self.DEVICE_TEMP_DIR])
             shutil.rmtree(base_dir + self.DEVICE_TEMP_DIR)
-
 
     def test_unicode_paths(self):
         """Ensure that we can support non-ASCII paths, even on Windows."""
