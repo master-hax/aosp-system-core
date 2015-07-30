@@ -30,7 +30,7 @@
 class Action::Command
 {
 public:
-    Command(int (*f)(int nargs, char** args),
+    Command(int (*f)(const std::vector<std::string>& args),
             const std::vector<std::string>& args,
             const std::string& filename,
             int line);
@@ -40,13 +40,13 @@ public:
     std::string BuildSourceString() const;
 
 private:
-    int (*func_)(int nargs, char** args);
+    int (*func_)(const std::vector<std::string>& args);
     const std::vector<std::string> args_;
     const std::string filename_;
     int line_;
 };
 
-Action::Command::Command(int (*f)(int nargs, char** args),
+Action::Command::Command(int (*f)(const std::vector<std::string>& args),
                          const std::vector<std::string>& args,
                          const std::string& filename,
                          int line) :
@@ -66,12 +66,7 @@ int Action::Command::InvokeFunc() const
         }
     }
 
-    std::vector<char*> args;
-    for (auto& s : strs) {
-        args.push_back(&s[0]);
-    }
-
-    return func_(args.size(), &args[0]);
+    return func_(strs);
 }
 
 std::string Action::Command::BuildCommandString() const
@@ -92,7 +87,7 @@ Action::Action()
 {
 }
 
-void Action::AddCommand(int (*f)(int nargs, char** args),
+void Action::AddCommand(int (*f)(const std::vector<std::string>& args),
                         const std::vector<std::string>& args,
                         const std::string& filename, int line)
 {
@@ -305,7 +300,7 @@ void ActionManager::QueueAllPropertyTriggers()
     QueuePropertyTrigger("", "");
 }
 
-void ActionManager::QueueBuiltinAction(int (*func)(int nargs, char** args),
+void ActionManager::QueueBuiltinAction(int (*func)(const std::vector<std::string>& args),
                                        const std::string& name)
 {
     Action* act = new Action();
