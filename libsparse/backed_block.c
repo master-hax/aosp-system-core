@@ -221,7 +221,7 @@ static int merge_bb(struct backed_block_list *bbl,
 		}
 		break;
 	case BACKED_BLOCK_FILE:
-		if (a->file.filename != b->file.filename ||
+		if (strcmp(a->file.filename, b->file.filename) ||
 				a->file.offset + a->len != b->file.offset) {
 			return -EINVAL;
 		}
@@ -279,7 +279,10 @@ static int queue_bb(struct backed_block_list *bbl, struct backed_block *new_bb)
 	}
 
 	merge_bb(bbl, new_bb, new_bb->next);
-	merge_bb(bbl, bb, new_bb);
+	if (!merge_bb(bbl, bb, new_bb)) {
+		/* new_bb destroyed, point to retained as last_used */
+		bbl->last_used = bb;
+	}
 
 	return 0;
 }
