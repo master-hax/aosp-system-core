@@ -509,16 +509,16 @@ void service_for_each_flags(unsigned matchflags,
 }
 
 service* make_exec_oneshot_service(int nargs, char** args) {
-    // Parse the arguments: exec [SECLABEL [UID [GID]*] --] COMMAND ARGS...
+    // Parse the arguments: [SECLABEL [UID [GID]*] --] COMMAND ARGS...
     // SECLABEL can be a - to denote default
-    int command_arg = 1;
-    for (int i = 1; i < nargs; ++i) {
+    int command_arg = 0;
+    for (int i = 0; i < nargs; ++i) {
         if (strcmp(args[i], "--") == 0) {
             command_arg = i + 1;
             break;
         }
     }
-    if (command_arg > 4 + NR_SVC_SUPP_GIDS) {
+    if (command_arg > 3 + NR_SVC_SUPP_GIDS) {
         ERROR("exec called with too many supplementary group ids\n");
         return NULL;
     }
@@ -536,17 +536,17 @@ service* make_exec_oneshot_service(int nargs, char** args) {
         return NULL;
     }
 
-    if ((command_arg > 2) && strcmp(args[1], "-")) {
-        svc->seclabel = args[1];
+    if ((command_arg > 1) && strcmp(args[0], "-")) {
+        svc->seclabel = args[0];
+    }
+    if (command_arg > 2) {
+        svc->uid = decode_uid(args[1]);
     }
     if (command_arg > 3) {
-        svc->uid = decode_uid(args[2]);
-    }
-    if (command_arg > 4) {
-        svc->gid = decode_uid(args[3]);
-        svc->nr_supp_gids = command_arg - 1 /* -- */ - 4 /* exec SECLABEL UID GID */;
+        svc->gid = decode_uid(args[2]);
+        svc->nr_supp_gids = command_arg /* -- */ - 4 /* SECLABEL UID GID */;
         for (size_t i = 0; i < svc->nr_supp_gids; ++i) {
-            svc->supp_gids[i] = decode_uid(args[4 + i]);
+            svc->supp_gids[i] = decode_uid(args[3 + i]);
         }
     }
 
@@ -699,7 +699,7 @@ static void parse_line_service(struct parse_state *state, int nargs, char **args
                 kw_nargs > 2 ? "arguments" : "argument");
             break;
         }
-        str_args.assign(args, args + nargs);
+        str_args.assign(args + 1, args + nargs);
         svc->onrestart->AddCommand(kw_func(kw), str_args);
         break;
     case K_critical:
@@ -814,6 +814,6 @@ static void parse_line_action(struct parse_state* state, int nargs, char **args)
         return;
     }
 
-    std::vector<std::string> str_args(args, args + nargs);
+    std::vector<std::string> str_args(args + 1, args + nargs);
     act->AddCommand(kw_func(kw), str_args, state->filename, state->line);
 }
