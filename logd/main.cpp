@@ -165,12 +165,15 @@ static LogBuffer *logBuf = NULL;
 
 static bool package_list_parser_cb(pkg_info *info, void * /* userdata */) {
 
+    bool rc = true;
     if (info->uid == uid) {
         name = strdup(info->name);
+        /* false to stop processing */
+        rc = false;
     }
 
     packagelist_free(info);
-    return true;
+    return rc;
 }
 
 static void *reinit_thread_start(void * /*obj*/) {
