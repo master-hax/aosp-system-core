@@ -12,32 +12,41 @@ endif
 
 init_options += -DLOG_UEVENTS=0
 
-init_cflags += \
+init_cflags_common += \
     $(init_options) \
     -Wall -Wextra \
     -Wno-unused-parameter \
     -Werror \
+
+# Host builds do not have Android SELinux support. 
+init_cflags = $(init_cflags_common) -DINIT_HAVE_SELINUX=1
 
 # --
 
 # If building on Linux, then build unit test for the host.
 ifeq ($(HOST_OS),linux)
 include $(CLEAR_VARS)
-LOCAL_CPPFLAGS := $(init_cflags)
+LOCAL_CPPFLAGS := $(init_cflags_common)
 LOCAL_SRC_FILES:= \
+    parser/parser.cpp \
     parser/tokenizer.cpp \
+    util.cpp \
 
 LOCAL_MODULE := libinit_parser
 LOCAL_CLANG := true
+LOCAL_SHARED_LIBRARIES := libbase libcutils
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := init_parser_tests
 LOCAL_SRC_FILES := \
+    parser/parser_test.cpp \
     parser/tokenizer_test.cpp \
 
+LOCAL_LDLIBS += -lrt
 LOCAL_STATIC_LIBRARIES := libinit_parser
 LOCAL_CLANG := true
+LOCAL_SHARED_LIBRARIES := libbase libcutils
 include $(BUILD_HOST_NATIVE_TEST)
 endif
 

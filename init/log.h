@@ -19,6 +19,7 @@
 
 #include <cutils/klog.h>
 
+#if defined(__ANDROID__)
 #define ERROR(x...)   init_klog_write(KLOG_ERROR_LEVEL, x)
 #define WARNING(x...) init_klog_write(KLOG_WARNING_LEVEL, x)
 #define NOTICE(x...)  init_klog_write(KLOG_NOTICE_LEVEL, x)
@@ -28,5 +29,12 @@
 
 void init_klog_write(int level, const char* fmt, ...) __printflike(2, 3);
 int selinux_klog_callback(int level, const char* fmt, ...) __printflike(2, 3);
-
+#else
+#define ERROR(x...)   printf(x)
+#define WARNING(x...) printf(x)
+#define NOTICE(x...)  printf(x)
+#define INFO(x...)    printf(x)
+#define DEBUG(x...)   printf(x)
+#define VERBOSE(x...) printf(x)
+#endif
 #endif
