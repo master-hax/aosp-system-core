@@ -58,8 +58,7 @@ int Action::Command::InvokeFunc() const
 {
     std::vector<std::string> expanded_args;
     expanded_args.resize(args_.size());
-    expanded_args[0] = args_[0];
-    for (std::size_t i = 1; i < args_.size(); ++i) {
+    for (std::size_t i = 0; i < args_.size(); ++i) {
         if (expand_props(args_[i], &expanded_args[i]) == -1) {
             ERROR("%s: cannot expand '%s'\n", args_[0].c_str(), args_[i].c_str());
             return -EINVAL;
