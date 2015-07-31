@@ -48,6 +48,7 @@ LOCAL_SRC_FILES:= \
     init_parser.cpp \
     log.cpp \
     parser.cpp \
+    service.cpp \
     util.cpp \
 
 LOCAL_STATIC_LIBRARIES := libbase
@@ -105,16 +106,16 @@ include $(BUILD_EXECUTABLE)
 
 
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := init_tests
-LOCAL_SRC_FILES := \
-    init_parser_test.cpp \
-    util_test.cpp \
+#include $(CLEAR_VARS)
+#LOCAL_MODULE := init_tests
+#LOCAL_SRC_FILES := \
+#    init_parser_test.cpp \
+#    util_test.cpp \
 
-LOCAL_SHARED_LIBRARIES += \
-    libcutils \
-    libbase \
+#LOCAL_SHARED_LIBRARIES += \
+#    libcutils \
+#    libbase \
 
-LOCAL_STATIC_LIBRARIES := libinit
-LOCAL_CLANG := true
-include $(BUILD_NATIVE_TEST)
+#LOCAL_STATIC_LIBRARIES := libinit
+#LOCAL_CLANG := true
+#include $(BUILD_NATIVE_TEST)
