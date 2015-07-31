@@ -176,31 +176,31 @@ int do_class_start(const std::vector<std::string>& args)
          * which are explicitly disabled.  They must
          * be started individually.
          */
-    service_for_each_class(args[1].c_str(), service_start_if_not_disabled);
+    service_for_each_class(args[0].c_str(), service_start_if_not_disabled);
     return 0;
 }
 
 int do_class_stop(const std::vector<std::string>& args)
 {
-    service_for_each_class(args[1].c_str(), service_stop);
+    service_for_each_class(args[0].c_str(), service_stop);
     return 0;
 }
 
 int do_class_reset(const std::vector<std::string>& args)
 {
-    service_for_each_class(args[1].c_str(), service_reset);
+    service_for_each_class(args[0].c_str(), service_reset);
     return 0;
 }
 
 int do_domainname(const std::vector<std::string>& args)
 {
-    return write_file("/proc/sys/kernel/domainname", args[1].c_str());
+    return write_file("/proc/sys/kernel/domainname", args[0].c_str());
 }
 
 int do_enable(const std::vector<std::string>& args)
 {
     struct service *svc;
-    svc = service_find_by_name(args[1].c_str());
+    svc = service_find_by_name(args[0].c_str());
     if (svc) {
         svc->flags &= ~(SVC_DISABLED | SVC_RC_DISABLED);
         if (svc->flags & SVC_DISABLED_START) {
@@ -228,32 +228,32 @@ int do_exec(const std::vector<std::string>& args) {
 
 int do_export(const std::vector<std::string>& args)
 {
-    return add_environment(args[1].c_str(), args[2].c_str());
+    return add_environment(args[0].c_str(), args[1].c_str());
 }
 
 int do_hostname(const std::vector<std::string>& args)
 {
-    return write_file("/proc/sys/kernel/hostname", args[1].c_str());
+    return write_file("/proc/sys/kernel/hostname", args[0].c_str());
 }
 
 int do_ifup(const std::vector<std::string>& args)
 {
-    return __ifupdown(args[1].c_str(), 1);
+    return __ifupdown(args[0].c_str(), 1);
 }
 
 int do_insmod(const std::vector<std::string>& args)
 {
     std::string options;
 
-    if (args.size() > 2) {
-        options += args[2];
-        for (std::size_t i = 3; i < args.size(); ++i) {
+    if (args.size() > 1) {
+        options += args[1];
+        for (std::size_t i = 2; i < args.size(); ++i) {
             options += ' ';
             options += args[i];
         }
     }
 
-    return insmod(args[1].c_str(), options.c_str());
+    return insmod(args[0].c_str(), options.c_str());
 }
 
 int do_mkdir(const std::vector<std::string>& args)
@@ -263,41 +263,41 @@ int do_mkdir(const std::vector<std::string>& args)
 
     /* mkdir <path> [mode] [owner] [group] */
 
-    if (args.size() >= 3) {
-        mode = std::stoul(args[2], 0, 8);
+    if (args.size() >= 2) {
+        mode = std::stoul(args[1], 0, 8);
     }
 
-    ret = make_dir(args[1].c_str(), mode);
+    ret = make_dir(args[0].c_str(), mode);
     /* chmod in case the directory already exists */
     if (ret == -1 && errno == EEXIST) {
-        ret = fchmodat(AT_FDCWD, args[1].c_str(), mode, AT_SYMLINK_NOFOLLOW);
+        ret = fchmodat(AT_FDCWD, args[0].c_str(), mode, AT_SYMLINK_NOFOLLOW);
     }
     if (ret == -1) {
         return -errno;
     }
 
-    if (args.size() >= 4) {
-        uid_t uid = decode_uid(args[3].c_str());
+    if (args.size() >= 3) {
+        uid_t uid = decode_uid(args[2].c_str());
         gid_t gid = -1;
 
-        if (args.size() == 5) {
-            gid = decode_uid(args[4].c_str());
+        if (args.size() == 4) {
+            gid = decode_uid(args[3].c_str());
         }
 
-        if (lchown(args[1].c_str(), uid, gid) == -1) {
+        if (lchown(args[0].c_str(), uid, gid) == -1) {
             return -errno;
         }
 
         /* chown may have cleared S_ISUID and S_ISGID, chmod again */
         if (mode & (S_ISUID | S_ISGID)) {
-            ret = fchmodat(AT_FDCWD, args[1].c_str(), mode, AT_SYMLINK_NOFOLLOW);
+            ret = fchmodat(AT_FDCWD, args[0].c_str(), mode, AT_SYMLINK_NOFOLLOW);
             if (ret == -1) {
                 return -errno;
             }
         }
     }
 
-    return e4crypt_set_directory_policy(args[1].c_str());
+    return e4crypt_set_directory_policy(args[0].c_str());
 }
 
 static struct {
@@ -335,7 +335,7 @@ int do_mount(const std::vector<std::string>& args)
     int n, i;
     int wait = 0;
 
-    for (na = 4; na < args.size(); na++) {
+    for (na = 3; na < args.size(); na++) {
         for (i = 0; mount_flags[i].name; i++) {
             if (!args[na].compare(mount_flags[i].name)) {
                 flags |= mount_flags[i].flag;
@@ -352,9 +352,9 @@ int do_mount(const std::vector<std::string>& args)
         }
     }
 
-    system = args[1].c_str();
-    source = args[2].c_str();
-    target = args[3].c_str();
+    system = args[0].c_str();
+    source = args[1].c_str();
+    target = args[2].c_str();
 
     if (!strncmp(source, "mtd@", 4)) {
         n = mtd_name_to_number(source + 4);
@@ -454,10 +454,10 @@ int do_mount_all(const std::vector<std::string>& args)
     int status;
     struct fstab *fstab;
 
-    if (args.size() != 2) {
+    if (args.size() != 1) {
         return -1;
     }
-    const char* fstabfile = args[1].c_str();
+    const char* fstabfile = args[0].c_str();
     /*
      * Call fs_mgr_mount_all() to mount all filesystems.  We fork(2) and
      * do the call in the child to provide protection to the main init
@@ -540,7 +540,7 @@ int do_swapon_all(const std::vector<std::string>& args)
     struct fstab *fstab;
     int ret;
 
-    fstab = fs_mgr_read_fstab(args[1].c_str());
+    fstab = fs_mgr_read_fstab(args[0].c_str());
     ret = fs_mgr_swapon_all(fstab);
     fs_mgr_free_fstab(fstab);
 
@@ -549,8 +549,8 @@ int do_swapon_all(const std::vector<std::string>& args)
 
 int do_setprop(const std::vector<std::string>& args)
 {
-    const char* name = args[1].c_str();
-    const char* value = args[2].c_str();
+    const char* name = args[0].c_str();
+    const char* value = args[1].c_str();
     property_set(name, value);
     return 0;
 }
@@ -559,16 +559,16 @@ int do_setrlimit(const std::vector<std::string>& args)
 {
     struct rlimit limit;
     int resource;
-    resource = std::stoi(args[1]);
-    limit.rlim_cur = std::stoi(args[2]);
-    limit.rlim_max = std::stoi(args[3]);
+    resource = std::stoi(args[0]);
+    limit.rlim_cur = std::stoi(args[1]);
+    limit.rlim_max = std::stoi(args[2]);
     return setrlimit(resource, &limit);
 }
 
 int do_start(const std::vector<std::string>& args)
 {
     struct service *svc;
-    svc = service_find_by_name(args[1].c_str());
+    svc = service_find_by_name(args[0].c_str());
     if (svc) {
         service_start(svc, NULL);
     }
@@ -578,7 +578,7 @@ int do_start(const std::vector<std::string>& args)
 int do_stop(const std::vector<std::string>& args)
 {
     struct service *svc;
-    svc = service_find_by_name(args[1].c_str());
+    svc = service_find_by_name(args[0].c_str());
     if (svc) {
         service_stop(svc);
     }
@@ -588,7 +588,7 @@ int do_stop(const std::vector<std::string>& args)
 int do_restart(const std::vector<std::string>& args)
 {
     struct service *svc;
-    svc = service_find_by_name(args[1].c_str());
+    svc = service_find_by_name(args[0].c_str());
     if (svc) {
         service_restart(svc);
     }
@@ -597,7 +597,7 @@ int do_restart(const std::vector<std::string>& args)
 
 int do_powerctl(const std::vector<std::string>& args)
 {
-    const char* command = args[1].c_str();
+    const char* command = args[0].c_str();
     int len = 0;
     int cmd = 0;
     const char *reboot_target;
@@ -630,34 +630,34 @@ int do_powerctl(const std::vector<std::string>& args)
 
 int do_trigger(const std::vector<std::string>& args)
 {
-    ActionManager::GetInstance().QueueEventTrigger(args[1]);
+    ActionManager::GetInstance().QueueEventTrigger(args[0]);
     return 0;
 }
 
 int do_symlink(const std::vector<std::string>& args)
 {
-    return symlink(args[1].c_str(), args[2].c_str());
+    return symlink(args[0].c_str(), args[1].c_str());
 }
 
 int do_rm(const std::vector<std::string>& args)
 {
-    return unlink(args[1].c_str());
+    return unlink(args[0].c_str());
 }
 
 int do_rmdir(const std::vector<std::string>& args)
 {
-    return rmdir(args[1].c_str());
+    return rmdir(args[0].c_str());
 }
 
 int do_sysclktz(const std::vector<std::string>& args)
 {
     struct timezone tz;
 
-    if (args.size() != 2)
+    if (args.size() != 1)
         return -1;
 
     memset(&tz, 0, sizeof(tz));
-    tz.tz_minuteswest = std::stoi(args[1]);
+    tz.tz_minuteswest = std::stoi(args[0]);
     if (settimeofday(NULL, &tz))
         return -1;
     return 0;
@@ -683,8 +683,8 @@ int do_verity_update_state(const std::vector<std::string>& args) {
 
 int do_write(const std::vector<std::string>& args)
 {
-    const char* path = args[1].c_str();
-    const char* value = args[2].c_str();
+    const char* path = args[0].c_str();
+    const char* value = args[1].c_str();
     return write_file(path, value);
 }
 
@@ -697,16 +697,16 @@ int do_copy(const std::vector<std::string>& args)
     int brtw, brtr;
     char *p;
 
-    if (args.size() != 3)
+    if (args.size() != 2)
         return -1;
 
-    if (stat(args[1].c_str(), &info) < 0)
+    if (stat(args[0].c_str(), &info) < 0)
         return -1;
 
-    if ((fd1 = open(args[1].c_str(), O_RDONLY|O_CLOEXEC)) < 0)
+    if ((fd1 = open(args[0].c_str(), O_RDONLY|O_CLOEXEC)) < 0)
         goto out_err;
 
-    if ((fd2 = open(args[2].c_str(), O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0660)) < 0)
+    if ((fd2 = open(args[1].c_str(), O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, 0660)) < 0)
         goto out_err;
 
     if (!(buffer = (char*) malloc(info.st_size)))
@@ -752,12 +752,12 @@ out:
 
 int do_chown(const std::vector<std::string>& args) {
     /* GID is optional. */
-    if (args.size() == 3) {
-        if (lchown(args[2].c_str(), decode_uid(args[1].c_str()), -1) == -1)
+    if (args.size() == 2) {
+        if (lchown(args[1].c_str(), decode_uid(args[0].c_str()), -1) == -1)
             return -errno;
     } else if (args.size() == 4) {
-        if (lchown(args[3].c_str(), decode_uid(args[1].c_str()),
-                   decode_uid(args[2].c_str())) == -1)
+        if (lchown(args[2].c_str(), decode_uid(args[0].c_str()),
+                   decode_uid(args[1].c_str())) == -1)
             return -errno;
     } else {
         return -1;
@@ -779,8 +779,8 @@ static mode_t get_mode(const char *s) {
 }
 
 int do_chmod(const std::vector<std::string>& args) {
-    mode_t mode = get_mode(args[1].c_str());
-    if (fchmodat(AT_FDCWD, args[2].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
+    mode_t mode = get_mode(args[0].c_str());
+    if (fchmodat(AT_FDCWD, args[1].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
         return -errno;
     }
     return 0;
@@ -789,8 +789,8 @@ int do_chmod(const std::vector<std::string>& args) {
 int do_restorecon(const std::vector<std::string>& args) {
     int ret = 0;
 
-    for (auto it = std::next(args.begin()); it != args.end(); ++it) {
-        if (restorecon(it->c_str()) < 0)
+    for (auto& s : args) {
+        if (restorecon(s.c_str()) < 0)
             ret = -errno;
     }
     return ret;
@@ -799,20 +799,20 @@ int do_restorecon(const std::vector<std::string>& args) {
 int do_restorecon_recursive(const std::vector<std::string>& args) {
     int ret = 0;
 
-    for (auto it = std::next(args.begin()); it != args.end(); ++it) {
-        if (restorecon_recursive(it->c_str()) < 0)
+    for (auto& s : args) {
+        if (restorecon_recursive(s.c_str()) < 0)
             ret = -errno;
     }
     return ret;
 }
 
 int do_loglevel(const std::vector<std::string>& args) {
-    if (args.size() != 2) {
+    if (args.size() != 1) {
         ERROR("loglevel: missing argument\n");
         return -EINVAL;
     }
 
-    int log_level = std::stoi(args[1]);
+    int log_level = std::stoi(args[0]);
     if (log_level < KLOG_ERROR_LEVEL || log_level > KLOG_DEBUG_LEVEL) {
         ERROR("loglevel: invalid log level'%d'\n", log_level);
         return -EINVAL;
@@ -822,7 +822,7 @@ int do_loglevel(const std::vector<std::string>& args) {
 }
 
 int do_load_persist_props(const std::vector<std::string>& args) {
-    if (args.size() == 1) {
+    if (args.size() == 0) {
         load_persist_props();
         return 0;
     }
@@ -830,7 +830,7 @@ int do_load_persist_props(const std::vector<std::string>& args) {
 }
 
 int do_load_all_props(const std::vector<std::string>& args) {
-    if (args.size() == 1) {
+    if (args.size() == 0) {
         load_all_props();
         return 0;
     }
@@ -839,10 +839,10 @@ int do_load_all_props(const std::vector<std::string>& args) {
 
 int do_wait(const std::vector<std::string>& args)
 {
-    if (args.size() == 2) {
-        return wait_for_file(args[1].c_str(), COMMAND_RETRY_TIMEOUT);
-    } else if (args.size() == 3) {
-        return wait_for_file(args[1].c_str(), std::stoi(args[2]));
+    if (args.size() == 1) {
+        return wait_for_file(args[0].c_str(), COMMAND_RETRY_TIMEOUT);
+    } else if (args.size() == 2) {
+        return wait_for_file(args[0].c_str(), std::stoi(args[1]));
     } else
         return -1;
 }
@@ -861,7 +861,7 @@ static int do_installkeys_ensure_dir_exists(const char* dir)
 
 int do_installkey(const std::vector<std::string>& args)
 {
-    if (args.size() != 2) {
+    if (args.size() != 1) {
         return -1;
     }
 
@@ -870,6 +870,6 @@ int do_installkey(const std::vector<std::string>& args)
         return 0;
     }
 
-    return e4crypt_create_device_key(args[1].c_str(),
+    return e4crypt_create_device_key(args[0].c_str(),
                                      do_installkeys_ensure_dir_exists);
 }
