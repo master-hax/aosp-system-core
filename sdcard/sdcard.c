@@ -24,6 +24,7 @@
 #include <limits.h>
 #include <linux/fuse.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +35,7 @@
 #include <sys/stat.h>
 #include <sys/statfs.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
 
@@ -41,6 +43,7 @@
 #include <cutils/hashmap.h>
 #include <cutils/log.h>
 #include <cutils/multiuser.h>
+#include <packagelistparser/packagelistparser.h>
 
 #include <private/android_filesystem_config.h>
 
@@ -121,9 +124,6 @@
 /* Pseudo-error constant used to indicate that no fuse status is needed
  * or that a reply has already been written. */
 #define NO_STATUS 1
-
-/* Path to system-provided mapping of package name to appIds */
-static const char* const kPackagesListFile = "/data/system/packages.list";
 
 /* Supplementary groups to execute with */
 static const gid_t kGroups[1] = { AID_PACKAGE_INFO };
@@ -1706,46 +1706,42 @@ static bool remove_int_to_null(void *key, void *value, void *context) {
     return true;
 }
 
-static int read_package_list(struct fuse *fuse) {
+static bool package_parse_callback(pkg_info *info, void *userdata) {
+    size_t i;
+    struct fuse *fuse = (struct fuse *)userdata;
+
+    char* name = strdup(info->name);
+    hashmapPut(fuse->package_to_appid, name, (void*) (uintptr_t) info->uid);
+
+    for (i=0; i < info->gids.cnt; i++) {
+        gid_t gid = info->gids.gids[i];
+
+        if (gid == fuse->write_gid) {
+            hashmapPut(fuse->appid_with_rw, (void*) (uintptr_t) gid, (void*) (uintptr_t) 1);
+            break;
+        }
+    }
+
+    packagelist_free(info);
+    return true;
+}
+
+static bool read_package_list(struct fuse *fuse) {
     pthread_mutex_lock(&fuse->lock);
 
     hashmapForEach(fuse->package_to_appid, remove_str_to_int, fuse->package_to_appid);
     hashmapForEach(fuse->appid_with_rw, remove_int_to_null, fuse->appid_with_rw);
 
-    FILE* file = fopen(kPackagesListFile, "r");
-    if (!file) {
-        ERROR("failed to open package list: %s\n", strerror(errno));
-        pthread_mutex_unlock(&fuse->lock);
-        return -1;
-    }
+    bool rc = packagelist_parse(package_parse_callback, fuse);
 
-    char buf[512];
-    while (fgets(buf, sizeof(buf), file) != NULL) {
-        char package_name[512];
-        int appid;
-        char gids[512];
-
-        if (sscanf(buf, "%s %d %*d %*s %*s %s", package_name, &appid, gids) == 3) {
-            char* package_name_dup = strdup(package_name);
-            hashmapPut(fuse->package_to_appid, package_name_dup, (void*) (uintptr_t) appid);
-
-            char* token = strtok(gids, ",");
-            while (token != NULL) {
-                if (strtoul(token, NULL, 10) == fuse->write_gid) {
-                    hashmapPut(fuse->appid_with_rw, (void*) (uintptr_t) appid, (void*) (uintptr_t) 1);
-                    break;
-                }
-                token = strtok(NULL, ",");
-            }
-        }
-    }
-
-    TRACE("read_package_list: found %zu packages, %zu with write_gid\n",
+    if (rc) {
+        TRACE("read_package_list: found %zu packages, %zu with write_gid\n",
             hashmapSize(fuse->package_to_appid),
             hashmapSize(fuse->appid_with_rw));
-    fclose(file);
+    }
     pthread_mutex_unlock(&fuse->lock);
-    return 0;
+
+    return rc;
 }
 
 static void watch_package_list(struct fuse* fuse) {
@@ -1761,11 +1757,11 @@ static void watch_package_list(struct fuse* fuse) {
     bool active = false;
     while (1) {
         if (!active) {
-            int res = inotify_add_watch(nfd, kPackagesListFile, IN_DELETE_SELF);
+            int res = inotify_add_watch(nfd, PACKAGES_LIST_FILE, IN_DELETE_SELF);
             if (res == -1) {
                 if (errno == ENOENT || errno == EACCES) {
                     /* Framework may not have created yet, sleep and retry */
-                    ERROR("missing packages.list; retrying\n");
+                    ERROR("missing \"%s\"; retrying\n", PACKAGES_LIST_FILE);
                     sleep(3);
                     continue;
                 } else {
@@ -1776,8 +1772,8 @@ static void watch_package_list(struct fuse* fuse) {
 
             /* Watch above will tell us about any future changes, so
              * read the current state. */
-            if (read_package_list(fuse) == -1) {
-                ERROR("read_package_list failed: %s\n", strerror(errno));
+            if (read_package_list(fuse) == false) {
+                ERROR("read_package_list failed\n");
                 return;
             }
             active = true;
