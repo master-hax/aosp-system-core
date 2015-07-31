@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #include <memory>
 
@@ -41,6 +42,7 @@
 #include <log/event_tag_map.h>
 #include <private/android_filesystem_config.h>
 #include <utils/threads.h>
+#include <packagelistparser/packagelistparser.h>
 
 #include "CommandListener.h"
 #include "LogBuffer.h"
@@ -161,6 +163,19 @@ static sem_t reinit;
 static bool reinit_running = false;
 static LogBuffer *logBuf = NULL;
 
+static bool package_list_parser_cb(pkg_info *info, void * /* userdata */) {
+
+    bool rc = true;
+    if (info->uid == uid) {
+        name = strdup(info->name);
+        /* false to stop processing */
+        rc = false;
+    }
+
+    packagelist_free(info);
+    return rc;
+}
+
 static void *reinit_thread_start(void * /*obj*/) {
     prctl(PR_SET_NAME, "logd.daemon");
     set_sched_policy(0, SP_BACKGROUND);
@@ -175,31 +190,8 @@ static void *reinit_thread_start(void * /*obj*/) {
         if (uid) {
             name = NULL;
 
-            FILE *fp = fopen("/data/system/packages.list", "r");
-            if (fp) {
-                // This simple parser is sensitive to format changes in
-                // frameworks/base/services/core/java/com/android/server/pm/Settings.java
-                // A dependency note has been added to that file to correct
-                // this parser.
+            packagelist_parse(package_list_parser_cb, NULL);
 
-                char *buffer = NULL;
-                size_t len;
-                while (getline(&buffer, &len, fp) > 0) {
-                    char *userId = strchr(buffer, ' ');
-                    if (!userId) {
-                        continue;
-                    }
-                    *userId = '\0';
-                    unsigned long value = strtoul(userId + 1, NULL, 10);
-                    if (value != uid) {
-                        continue;
-                    }
-                    name = strdup(buffer);
-                    break;
-                }
-                free(buffer);
-                fclose(fp);
-            }
             uid = 0;
             sem_post(&uidName);
             continue;
