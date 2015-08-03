@@ -30,10 +30,10 @@
 #include "init.h"
 #include "parser.h"
 #include "init_parser.h"
-#include "log.h"
 #include "property_service.h"
 #include "util.h"
 
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
@@ -81,15 +81,16 @@ void dump_parser_state() {
         struct listnode* node;
         list_for_each(node, &service_list) {
             service* svc = node_to_item(node, struct service, slist);
-            INFO("service %s\n", svc->name);
-            INFO("  class '%s'\n", svc->classname);
-            INFO("  exec");
+            LOG(DEBUG) << "service " << svc->name;
+            LOG(DEBUG) << "  class '" << svc->classname << "'";
+            std::string log_command;
             for (int n = 0; n < svc->nargs; n++) {
-                INFO(" '%s'", svc->args[n]);
+                android::base::StringAppendF(&log_command, " '%s'", svc->args[n]);
             }
-            INFO("\n");
+            LOG(DEBUG) << "  exec" << log_command;
             for (socketinfo* si = svc->sockets; si; si = si->next) {
-                INFO("  socket %s %s 0%o\n", si->name, si->type, si->perm);
+                LOG(DEBUG) << "  socket " << si->name << " " 
+                           << si->type << " 0" << std::oct << si->perm;
             }
         }
         ActionManager::GetInstance().DumpState();
@@ -237,27 +238,27 @@ int expand_props(const std::string& src, std::string* dst) {
             const char* end = strchr(c, '}');
             if (!end) {
                 // failed to find closing brace, abort.
-                ERROR("unexpected end of string in '%s', looking for }\n", src.c_str());
+                LOG(ERROR) << "unexpected end of string in '" << src << "', looking for }";
                 goto err;
             }
             prop_name = std::string(c, end);
             c = end + 1;
         } else {
             prop_name = c;
-            ERROR("using deprecated syntax for specifying property '%s', use ${name} instead\n",
-                  c);
+            LOG(ERROR) << "using deprecated syntax for specifying property '"
+                       << c << "', use ${name} instead";
             c += prop_name.size();
         }
 
         if (prop_name.empty()) {
-            ERROR("invalid zero-length prop name in '%s'\n", src.c_str());
+            LOG(ERROR) << "invalid zero-length prop name in '" << src << "'";
             goto err;
         }
 
         std::string prop_val = property_get(prop_name.c_str());
         if (prop_val.empty()) {
-            ERROR("property '%s' doesn't exist while expanding '%s'\n",
-                  prop_name.c_str(), src.c_str());
+            LOG(ERROR) << "property '" << prop_name
+                       << "' doesn't exist while expanding '" << src << "'";
             goto err;
         }
 
@@ -274,15 +275,15 @@ err:
 static void parse_import(struct parse_state *state, int nargs, char **args)
 {
     if (nargs != 2) {
-        ERROR("single argument needed for import\n");
+        LOG(ERROR) << "single argument needed for import";
         return;
     }
 
     std::string conf_file;
     int ret = expand_props(args[1], &conf_file);
     if (ret) {
-        ERROR("error while handling import on line '%d' in '%s'\n",
-              state->line, state->filename);
+        LOG(ERROR) << "error while handling import on line '" << state->line
+                   << "' in '" << state->filename << "'";
         return;
     }
 
@@ -291,14 +292,12 @@ static void parse_import(struct parse_state *state, int nargs, char **args)
 
     struct listnode *import_list = (listnode*) state->priv;
     list_add_tail(import_list, &import->list);
-    INFO("Added '%s' to import list\n", import->filename);
+    LOG(DEBUG) << "Added '" << import->filename << "' to import list";
 }
 
 static void parse_new_section(struct parse_state *state, int kw,
                        int nargs, char **args)
 {
-    printf("[ %s %s ]\n", args[0],
-           nargs > 1 ? args[1] : "");
     switch(kw) {
     case K_service:
         state->context = parse_service(state, nargs, args);
@@ -369,14 +368,14 @@ parser_done:
     list_for_each(node, &import_list) {
          struct import* import = node_to_item(node, struct import, list);
          if (!init_parse_config(import->filename)) {
-             ERROR("could not import file '%s' from '%s': %s\n",
-                   import->filename, fn, strerror(errno));
+             PLOG(ERROR) << "could not import file '" << import->filename
+                         << "' from '" << fn;
          }
     }
 }
 
 static bool init_parse_config_file(const char* path) {
-    INFO("Parsing file %s...\n", path);
+    LOG(DEBUG) << "Parsing file " << path << "...";
     Timer t;
     std::string data;
     if (!read_file(path, &data)) {
@@ -387,15 +386,15 @@ static bool init_parse_config_file(const char* path) {
     parse_config(path, data);
     dump_parser_state();
 
-    NOTICE("(Parsing %s took %.2fs.)\n", path, t.duration());
+    LOG(INFO) << "Parsing " << path << " took " << t.duration() << "s.)";
     return true;
 }
 
 static bool init_parse_config_dir(const char* path) {
-    INFO("Parsing directory %s...\n", path);
+    LOG(DEBUG) << "Parsing directory " << path << "...";
     std::unique_ptr<DIR, int(*)(DIR*)> config_dir(opendir(path), closedir);
     if (!config_dir) {
-        ERROR("Could not import directory '%s'\n", path);
+        LOG(ERROR) << "Could not import directory '" << path << "'";
         return false;
     }
     dirent* current_file;
@@ -405,7 +404,7 @@ static bool init_parse_config_dir(const char* path) {
         // Ignore directories and only process regular files.
         if (current_file->d_type == DT_REG) {
             if (!init_parse_config_file(current_path.c_str())) {
-                ERROR("could not import file '%s'\n", current_path.c_str());
+                LOG(ERROR) << "could not import file '" << current_path << "'";
             }
         }
     }
@@ -519,20 +518,20 @@ service* make_exec_oneshot_service(int nargs, char** args) {
         }
     }
     if (command_arg > 4 + NR_SVC_SUPP_GIDS) {
-        ERROR("exec called with too many supplementary group ids\n");
+        LOG(ERROR) << "exec called with too many supplementary group ids";
         return NULL;
     }
 
     int argc = nargs - command_arg;
     char** argv = (args + command_arg);
     if (argc < 1) {
-        ERROR("exec called without command\n");
+        LOG(ERROR) << "exec called without command";
         return NULL;
     }
 
     service* svc = (service*) calloc(1, sizeof(*svc) + sizeof(char*) * argc);
     if (svc == NULL) {
-        ERROR("Couldn't allocate service for exec of '%s': %s", argv[0], strerror(errno));
+        PLOG(ERROR) << "Couldn't allocate service for exec of '" << argv[0];
         return NULL;
     }
 
@@ -554,7 +553,7 @@ service* make_exec_oneshot_service(int nargs, char** args) {
     char* name = NULL;
     asprintf(&name, "exec %d (%s)", exec_count++, argv[0]);
     if (name == NULL) {
-        ERROR("Couldn't allocate name for exec service '%s'\n", argv[0]);
+        LOG(ERROR) << "Couldn't allocate name for exec service '" << argv[0] << "'";
         free(svc);
         return NULL;
     }

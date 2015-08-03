@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <cutils/android_reboot.h>
 #include <cutils/list.h>
@@ -30,7 +31,6 @@
 
 #include "action.h"
 #include "init.h"
-#include "log.h"
 #include "util.h"
 
 #define CRITICAL_CRASH_THRESHOLD    4       /* if we crash >4 times ... */
@@ -57,7 +57,7 @@ static bool wait_for_one_process() {
     if (pid == 0) {
         return false;
     } else if (pid == -1) {
-        ERROR("waitpid failed: %s\n", strerror(errno));
+        PLOG(ERROR) << "waitpid failed";
         return false;
     }
 
@@ -70,7 +70,7 @@ static bool wait_for_one_process() {
         name = android::base::StringPrintf("Untracked pid %d", pid);
     }
 
-    NOTICE("%s %s\n", name.c_str(), DescribeStatus(status).c_str());
+    LOG(INFO) << name << DescribeStatus(status);
 
     if (!svc) {
         return true;
@@ -79,7 +79,8 @@ static bool wait_for_one_process() {
     // TODO: all the code from here down should be a member function on service.
 
     if (!(svc->flags & SVC_ONESHOT) || (svc->flags & SVC_RESTART)) {
-        NOTICE("Service '%s' (pid %d) killing any children in process group\n", svc->name, pid);
+        LOG(INFO) << "Service '" << svc->name << "' (pid " << pid
+                  << ") killing any children in process group";
         kill(-pid, SIGKILL);
     }
 
@@ -91,7 +92,7 @@ static bool wait_for_one_process() {
     }
 
     if (svc->flags & SVC_EXEC) {
-        INFO("SVC_EXEC pid %d finished...\n", svc->pid);
+        LOG(DEBUG) << "SVC_EXEC pid " << svc->pid << " finished...";
         waiting_for_exec = false;
         list_remove(&svc->slist);
         free(svc->name);
@@ -118,9 +119,10 @@ static bool wait_for_one_process() {
     if ((svc->flags & SVC_CRITICAL) && !(svc->flags & SVC_RESTART)) {
         if (svc->time_crashed + CRITICAL_CRASH_WINDOW >= now) {
             if (++svc->nr_crashed > CRITICAL_CRASH_THRESHOLD) {
-                ERROR("critical process '%s' exited %d times in %d minutes; "
-                      "rebooting into recovery mode\n", svc->name,
-                      CRITICAL_CRASH_THRESHOLD, CRITICAL_CRASH_WINDOW / 60);
+                LOG(ERROR) << "critical process '" << svc->name << "' exited "
+                           << CRITICAL_CRASH_THRESHOLD << " times in "
+                           << CRITICAL_CRASH_WINDOW / 60
+                           << " minutes; rebooting into recovery mode;";
                 android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
                 return true;
             }
@@ -155,7 +157,7 @@ static void handle_signal() {
 
 static void SIGCHLD_handler(int) {
     if (TEMP_FAILURE_RETRY(write(signal_write_fd, "1", 1)) == -1) {
-        ERROR("write(signal_write_fd) failed: %s\n", strerror(errno));
+        PLOG(ERROR) << "write(signal_write_fd) failed";
     }
 }
 
@@ -163,7 +165,7 @@ void signal_handler_init() {
     // Create a signalling mechanism for SIGCHLD.
     int s[2];
     if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0, s) == -1) {
-        ERROR("socketpair failed: %s\n", strerror(errno));
+        PLOG(ERROR) << "socketpair failed";
         exit(1);
     }
 
