@@ -72,6 +72,6 @@ int do_sync_push(const char *lpath, const char *rpath, bool show_progress);
 int do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only);
 int do_sync_pull(const char *rpath, const char *lpath, bool show_progress, int pullTime);
 
-#define SYNC_DATA_MAX (64*1024)
+#define SYNC_DATA_MAX (256*1024)
 
 #endif

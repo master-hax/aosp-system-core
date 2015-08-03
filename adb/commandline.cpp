@@ -889,14 +889,14 @@ static std::string find_product_out_path(const std::string& hint) {
 }
 
 static void parse_push_pull_args(const char **arg, int narg, char const **path1,
-                                 char const **path2, int *show_progress,
+                                 char const **path2, bool* show_progress,
                                  int *copy_attrs) {
-    *show_progress = 0;
+    *show_progress = false;
     *copy_attrs = 0;
 
     while (narg > 0) {
         if (!strcmp(*arg, "-p")) {
-            *show_progress = 1;
+            *show_progress = true;
         } else if (!strcmp(*arg, "-a")) {
             *copy_attrs = 1;
         } else {
@@ -1334,7 +1334,7 @@ int adb_commandline(int argc, const char **argv) {
         return do_sync_ls(argv[1]);
     }
     else if (!strcmp(argv[0], "push")) {
-        int show_progress = 0;
+        bool show_progress = false;
         int copy_attrs = 0; // unused
         const char* lpath = NULL, *rpath = NULL;
 
@@ -1347,7 +1347,7 @@ int adb_commandline(int argc, const char **argv) {
         return usage();
     }
     else if (!strcmp(argv[0], "pull")) {
-        int show_progress = 0;
+        bool show_progress = false;
         int copy_attrs = 0;
         const char* rpath = NULL, *lpath = ".";
 
@@ -1537,7 +1537,7 @@ static int install_app(TransportType transport, const char* serial, int argc, co
 
     const char* apk_file = argv[last_apk];
     std::string apk_dest = android::base::StringPrintf(where, adb_basename(apk_file).c_str());
-    int err = do_sync_push(apk_file, apk_dest.c_str(), 0 /* no show progress */);
+    int err = do_sync_push(apk_file, apk_dest.c_str(), false /* no show progress */);
     if (err) {
         goto cleanup_apk;
     } else {

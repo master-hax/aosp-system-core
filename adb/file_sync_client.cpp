@@ -140,16 +140,15 @@ static int sync_readtime(int fd, const char* path, unsigned int* timestamp, unsi
     msg.req.id = ID_STAT;
     msg.req.namelen = htoll(len);
 
-    if(!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
-       !WriteFdExactly(fd, path, len)) {
+    if (!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) || !WriteFdExactly(fd, path, len)) {
         return -1;
     }
 
-    if(!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat))) {
+    if (!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat))) {
         return -1;
     }
 
-    if(msg.stat.id != ID_STAT) {
+    if (msg.stat.id != ID_STAT) {
         return -1;
     }
 
@@ -158,16 +157,14 @@ static int sync_readtime(int fd, const char* path, unsigned int* timestamp, unsi
     return 0;
 }
 
-static int sync_start_readtime(int fd, const char *path)
-{
-    syncmsg msg;
-    int len = strlen(path);
+static int sync_start_readtime(int fd, const char* path) {
+    size_t len = strlen(path);
 
+    syncmsg msg;
     msg.req.id = ID_STAT;
     msg.req.namelen = htoll(len);
 
-    if(!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
-       !WriteFdExactly(fd, path, len)) {
+    if (!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) || !WriteFdExactly(fd, path, len)) {
         return -1;
     }
 
@@ -178,11 +175,10 @@ static int sync_finish_readtime(int fd, unsigned int *timestamp,
                                 unsigned int *mode, unsigned int *size)
 {
     syncmsg msg;
-
-    if(!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat)))
+    if (!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat)))
         return -1;
 
-    if(msg.stat.id != ID_STAT)
+    if (msg.stat.id != ID_STAT)
         return -1;
 
     *timestamp = ltohl(msg.stat.time);
@@ -199,16 +195,15 @@ static int sync_readmode(int fd, const char* path, unsigned* mode) {
     msg.req.id = ID_STAT;
     msg.req.namelen = htoll(len);
 
-    if(!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
-       !WriteFdExactly(fd, path, len)) {
+    if (!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) || !WriteFdExactly(fd, path, len)) {
         return -1;
     }
 
-    if(!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat))) {
+    if (!ReadFdExactly(fd, &msg.stat, sizeof(msg.stat))) {
         return -1;
     }
 
-    if(msg.stat.id != ID_STAT) {
+    if (msg.stat.id != ID_STAT) {
         return -1;
     }
 
@@ -218,11 +213,11 @@ static int sync_readmode(int fd, const char* path, unsigned* mode) {
 
 static int write_data_file(int fd, const char *path, syncsendbuf *sbuf, bool show_progress)
 {
-    int lfd, err = 0;
+    int err = 0;
     unsigned long long size = 0;
 
-    lfd = adb_open(path, O_RDONLY);
-    if(lfd < 0) {
+    int lfd = adb_open(path, O_RDONLY);
+    if (lfd < 0) {
         fprintf(stderr,"cannot open '%s': %s\n", path, strerror(errno));
         return -1;
     }
@@ -239,14 +234,12 @@ static int write_data_file(int fd, const char *path, syncsendbuf *sbuf, bool sho
     }
 
     sbuf->id = ID_DATA;
-    for(;;) {
-        int ret;
-
-        ret = adb_read(lfd, sbuf->data, SYNC_DATA_MAX);
-        if(!ret)
+    for (;;) {
+        int ret = adb_read(lfd, sbuf->data, SYNC_DATA_MAX);
+        if (!ret)
             break;
 
-        if(ret < 0) {
+        if (ret < 0) {
             if(errno == EINTR)
                 continue;
             fprintf(stderr,"cannot read '%s': %s\n", path, strerror(errno));
@@ -254,7 +247,7 @@ static int write_data_file(int fd, const char *path, syncsendbuf *sbuf, bool sho
         }
 
         sbuf->size = htoll(ret);
-        if(!WriteFdExactly(fd, sbuf, sizeof(unsigned) * 2 + ret)){
+        if (!WriteFdExactly(fd, sbuf, sizeof(unsigned) * 2 + ret)) {
             err = -1;
             break;
         }
@@ -266,36 +259,6 @@ static int write_data_file(int fd, const char *path, syncsendbuf *sbuf, bool sho
     }
 
     adb_close(lfd);
-    return err;
-}
-
-static int write_data_buffer(int fd, char* file_buffer, int size, syncsendbuf *sbuf,
-                             bool show_progress)
-{
-    int err = 0;
-    int total = 0;
-
-    sbuf->id = ID_DATA;
-    while (total < size) {
-        int count = size - total;
-        if (count > SYNC_DATA_MAX) {
-            count = SYNC_DATA_MAX;
-        }
-
-        memcpy(sbuf->data, &file_buffer[total], count);
-        sbuf->size = htoll(count);
-        if(!WriteFdExactly(fd, sbuf, sizeof(unsigned) * 2 + count)){
-            err = -1;
-            break;
-        }
-        total += count;
-        total_bytes += count;
-
-        if (show_progress) {
-            print_transfer_progress(total, size);
-        }
-    }
-
     return err;
 }
 
@@ -327,57 +290,51 @@ static int write_data_link(int fd, const char *path, syncsendbuf *sbuf)
 static int sync_send(int fd, const char *lpath, const char *rpath,
                      unsigned mtime, mode_t mode, bool show_progress)
 {
+    syncsendbuf* sbuf = &send_buffer;
     syncmsg msg;
-    int len, r;
-    syncsendbuf *sbuf = &send_buffer;
-    char* file_buffer = NULL;
-    int size = 0;
+
     char tmp[64];
-
-    len = strlen(rpath);
-    if(len > 1024) goto fail;
-
     snprintf(tmp, sizeof(tmp), ",%d", mode);
-    r = strlen(tmp);
+    size_t r = strlen(tmp);
+
+    size_t len = strlen(rpath);
+    if (len > 1024) goto fail;
 
     msg.req.id = ID_SEND;
     msg.req.namelen = htoll(len + r);
 
-    if(!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
-       !WriteFdExactly(fd, rpath, len) || !WriteFdExactly(fd, tmp, r)) {
-        free(file_buffer);
+    if (!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
+        !WriteFdExactly(fd, rpath, len) || !WriteFdExactly(fd, tmp, r)) {
         goto fail;
     }
 
-    if (file_buffer) {
-        write_data_buffer(fd, file_buffer, size, sbuf, show_progress);
-        free(file_buffer);
-    } else if (S_ISREG(mode))
+    if (S_ISREG(mode)) {
         write_data_file(fd, lpath, sbuf, show_progress);
-    else if (S_ISLNK(mode))
+    } else if (S_ISLNK(mode)) {
         write_data_link(fd, lpath, sbuf);
-    else
+    } else {
         goto fail;
+    }
 
     msg.data.id = ID_DONE;
     msg.data.size = htoll(mtime);
-    if(!WriteFdExactly(fd, &msg.data, sizeof(msg.data)))
+    if (!WriteFdExactly(fd, &msg.data, sizeof(msg.data)))
         goto fail;
 
-    if(!ReadFdExactly(fd, &msg.status, sizeof(msg.status)))
+    if (!ReadFdExactly(fd, &msg.status, sizeof(msg.status)))
         return -1;
 
-    if(msg.status.id != ID_OKAY) {
-        if(msg.status.id == ID_FAIL) {
+    if (msg.status.id != ID_OKAY) {
+        if (msg.status.id == ID_FAIL) {
             len = ltohl(msg.status.msglen);
-            if(len > 256) len = 256;
-            if(!ReadFdExactly(fd, sbuf->data, len)) {
+            if (len > 256) len = 256;
+            if (!ReadFdExactly(fd, sbuf->data, len)) {
                 return -1;
             }
             sbuf->data[len] = 0;
-        } else
+        } else {
             strcpy(sbuf->data, "unknown reason");
-
+        }
         fprintf(stderr,"failed to copy '%s' to '%s': %s\n", lpath, rpath, sbuf->data);
         return -1;
     }
@@ -423,8 +380,7 @@ static int sync_recv(int fd, const char* rpath, const char* lpath, bool show_pro
 
     msg.req.id = ID_RECV;
     msg.req.namelen = htoll(len);
-    if(!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) ||
-       !WriteFdExactly(fd, rpath, len)) {
+    if (!WriteFdExactly(fd, &msg.req, sizeof(msg.req)) || !WriteFdExactly(fd, rpath, len)) {
         return -1;
     }
 
@@ -457,7 +413,7 @@ static int sync_recv(int fd, const char* rpath, const char* lpath, bool show_pro
         if(id == ID_DONE) break;
         if(id != ID_DATA) goto remote_error;
         if(len > SYNC_DATA_MAX) {
-            fprintf(stderr,"data overrun\n");
+            fprintf(stderr, "msg.data.size too large: %d\n", len);
             adb_close(lfd);
             return -1;
         }
@@ -563,53 +519,46 @@ static copyinfo* mkcopyinfo(const char* spath, const char* dpath, const char* na
 }
 
 
-static int local_build_list(copyinfo **filelist,
-                            const char *lpath, const char *rpath)
-{
-    DIR *d;
-    struct dirent *de;
-    struct stat st;
+static int local_build_list(copyinfo** filelist, const char* lpath, const char* rpath) {
     copyinfo *dirlist = 0;
     copyinfo *ci, *next;
 
-    d = opendir(lpath);
-    if(d == 0) {
+    std::unique_ptr<DIR, int(*)(DIR*)> dir(opendir(lpath), closedir);
+    if (!dir) {
         fprintf(stderr,"cannot open '%s': %s\n", lpath, strerror(errno));
         return -1;
     }
 
-    while((de = readdir(d))) {
+    dirent *de;
+    while ((de = readdir(dir.get()))) {
         char stat_path[PATH_MAX];
-        char *name = de->d_name;
-
-        if(name[0] == '.') {
-            if(name[1] == 0) continue;
-            if((name[1] == '.') && (name[2] == 0)) continue;
+        char* name = de->d_name;
+        if (name[0] == '.') {
+            if (name[1] == 0) continue;
+            if ((name[1] == '.') && (name[2] == 0)) continue;
         }
 
-        /*
-         * We could use d_type if HAVE_DIRENT_D_TYPE is defined, but reiserfs
-         * always returns DT_UNKNOWN, so we just use stat() for all cases.
-         */
+        // We could use d_type if HAVE_DIRENT_D_TYPE is defined, but reiserfs
+        // always returns DT_UNKNOWN, so we just use stat() for all cases.
         if (strlen(lpath) + strlen(de->d_name) + 1 > sizeof(stat_path))
             continue;
         strcpy(stat_path, lpath);
         strcat(stat_path, de->d_name);
 
-        if(!lstat(stat_path, &st)) {
+        struct stat st;
+        if (!lstat(stat_path, &st)) {
             if (S_ISDIR(st.st_mode)) {
                 ci = mkcopyinfo(lpath, rpath, name, 1);
                 ci->next = dirlist;
                 dirlist = ci;
             } else {
                 ci = mkcopyinfo(lpath, rpath, name, 0);
-                if(lstat(ci->src, &st)) {
+                if (lstat(ci->src, &st)) {
                     fprintf(stderr,"cannot stat '%s': %s\n", ci->src, strerror(errno));
                     free(ci);
-                    closedir(d);
                     return -1;
                 }
-                if(!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
+                if (!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
                     fprintf(stderr, "skipping special file '%s'\n", ci->src);
                     free(ci);
                 } else {
@@ -625,9 +574,7 @@ static int local_build_list(copyinfo **filelist,
         }
     }
 
-    closedir(d);
-
-    for(ci = dirlist; ci != 0; ci = next) {
+    for (ci = dirlist; ci != 0; ci = next) {
         next = ci->next;
         local_build_list(filelist, ci->src, ci->dst);
         free(ci);
@@ -687,8 +634,7 @@ static int copy_local_dir_remote(int fd, const char *lpath, const char *rpath, i
         if(ci->flag == 0) {
             fprintf(stderr,"%spush: %s -> %s\n", listonly ? "would " : "", ci->src, ci->dst);
             if(!listonly &&
-               sync_send(fd, ci->src, ci->dst, ci->time, ci->mode,
-                         0 /* no show progress */)) {
+               sync_send(fd, ci->src, ci->dst, ci->time, ci->mode, false /* no show progress */)) {
                 return 1;
             }
             pushed++;
