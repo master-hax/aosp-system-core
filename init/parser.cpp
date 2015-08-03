@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "log.h"
+#include <base/logging.h>
 
 void parse_error(struct parse_state *state, const char *fmt, ...)
 {
@@ -20,7 +20,7 @@ void parse_error(struct parse_state *state, const char *fmt, ...)
     vsnprintf(buf + off, 128 - off, fmt, ap);
     va_end(ap);
     buf[127] = 0;
-    ERROR("%s", buf);
+    LOG(ERROR) << buf;
 }
 
 int next_token(struct parse_state *state)

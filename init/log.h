@@ -17,16 +17,16 @@
 #ifndef _INIT_LOG_H_
 #define _INIT_LOG_H_
 
+#include <base/logging.h>
 #include <cutils/klog.h>
 
-#define ERROR(x...)   init_klog_write(KLOG_ERROR_LEVEL, x)
-#define WARNING(x...) init_klog_write(KLOG_WARNING_LEVEL, x)
-#define NOTICE(x...)  init_klog_write(KLOG_NOTICE_LEVEL, x)
-#define INFO(x...)    init_klog_write(KLOG_INFO_LEVEL, x)
-#define DEBUG(x...)   init_klog_write(KLOG_DEBUG_LEVEL, x)
-#define VERBOSE(x...) init_klog_write(KLOG_DEBUG_LEVEL, x)
-
-void init_klog_write(int level, const char* fmt, ...) __printflike(2, 3);
-int selinux_klog_callback(int level, const char* fmt, ...) __printflike(2, 3);
+int SelinuxKlogCallback(int type, const char* fmt, ...);
+void KlogLogger(android::base::LogId id,
+                android::base::LogSeverity severity,
+                const char*,
+                const char* file,
+                unsigned int line,
+                const char* message);
+void InitLogging(void);
 
 #endif

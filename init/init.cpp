@@ -42,6 +42,7 @@
 #include <selinux/android.h>
 
 #include <base/file.h>
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <base/strings.h>
 #include <cutils/android_reboot.h>
@@ -56,12 +57,12 @@
 #include "action.h"
 #include "devices.h"
 #include "init.h"
-#include "log.h"
 #include "property_service.h"
 #include "bootchart.h"
 #include "signal_handler.h"
 #include "keychords.h"
 #include "init_parser.h"
+#include "log.h"
 #include "util.h"
 #include "ueventd.h"
 #include "watchdogd.h"
@@ -88,7 +89,7 @@ void register_epoll_handler(int fd, void (*fn)()) {
     ev.events = EPOLLIN;
     ev.data.ptr = reinterpret_cast<void*>(fn);
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
-        ERROR("epoll_ctl failed: %s\n", strerror(errno));
+        PLOG(ERROR) << "epoll_ctl failed";
     }
 }
 
@@ -106,7 +107,8 @@ void service::NotifyStateChange(const char* new_state) {
     char prop_name[PROP_NAME_MAX];
     if (snprintf(prop_name, sizeof(prop_name), "init.svc.%s", name) >= PROP_NAME_MAX) {
         // If the property name would be too long, we can't set it.
-        ERROR("Property name \"init.svc.%s\" too long; not setting to %s\n", name, new_state);
+        LOG(ERROR) << "Property name \"init.svc." << name
+                   << "\" too long; not setting to " << new_state;
         return;
     }
 
@@ -140,7 +142,7 @@ int add_environment(const char *key, const char *val)
         }
     }
 
-    ERROR("No env. room to store: '%s':'%s'\n", key, val);
+    LOG(ERROR) << "No env. room to store: '" << key << "':'" << val << "'";
 
     return -1;
 }
@@ -199,20 +201,22 @@ void service_start(struct service *svc, const char *dynamic_args)
 
     bool needs_console = (svc->flags & SVC_CONSOLE);
     if (needs_console && !have_console) {
-        ERROR("service '%s' requires console\n", svc->name);
+        LOG(ERROR) << "service '" << svc->name <<  "' requires console";
         svc->flags |= SVC_DISABLED;
         return;
     }
 
     struct stat sb;
     if (stat(svc->args[0], &sb) == -1) {
-        ERROR("cannot find '%s' (%s), disabling '%s'\n", svc->args[0], strerror(errno), svc->name);
+      LOG(ERROR) << "cannot find '" << svc->args[0] << "' (" << strerror(errno)
+                 << "), disabling '" << svc->name << "'";
         svc->flags |= SVC_DISABLED;
         return;
     }
 
     if ((!(svc->flags & SVC_ONESHOT)) && dynamic_args) {
-        ERROR("service '%s' must be one-shot to use dynamic args, disabling\n", svc->args[0]);
+        LOG(ERROR) << "service '" << svc->args[0]
+                   << "' must be one-shot to use dynamic args, disabling";
         svc->flags |= SVC_DISABLED;
         return;
     }
@@ -221,29 +225,29 @@ void service_start(struct service *svc, const char *dynamic_args)
     if (svc->seclabel) {
         scon = strdup(svc->seclabel);
         if (!scon) {
-            ERROR("Out of memory while starting '%s'\n", svc->name);
+            LOG(ERROR) << "Out of memory while starting '" << svc->name << "'";
             return;
         }
     } else {
         char *mycon = NULL, *fcon = NULL;
 
-        INFO("computing context for service '%s'\n", svc->args[0]);
+        LOG(DEBUG) << "computing context for service '" << svc->args[0] << "'";
         int rc = getcon(&mycon);
         if (rc < 0) {
-            ERROR("could not get context while starting '%s'\n", svc->name);
+            LOG(ERROR) << "could not get context while starting '" << svc->name << "'";
             return;
         }
 
         rc = getfilecon(svc->args[0], &fcon);
         if (rc < 0) {
-            ERROR("could not get context while starting '%s'\n", svc->name);
+            LOG(ERROR) << "could not get context while starting '" << svc->name << "'";
             free(mycon);
             return;
         }
 
         rc = security_compute_create(mycon, fcon, string_to_security_class("process"), &scon);
         if (rc == 0 && !strcmp(scon, mycon)) {
-            ERROR("Service %s does not have a SELinux domain defined.\n", svc->name);
+            LOG(ERROR) << "Service " << svc->name << " does not have a SELinux domain defined.";
             free(mycon);
             free(fcon);
             free(scon);
@@ -252,12 +256,12 @@ void service_start(struct service *svc, const char *dynamic_args)
         free(mycon);
         free(fcon);
         if (rc < 0) {
-            ERROR("could not get context while starting '%s'\n", svc->name);
+            LOG(ERROR) << "could not get context while starting '" << svc->name << "'";
             return;
         }
     }
 
-    NOTICE("Starting service '%s'...\n", svc->name);
+    LOG(INFO) << "Starting service '" << svc->name << "'...";
 
     pid_t pid = fork();
     if (pid == 0) {
@@ -294,16 +298,16 @@ void service_start(struct service *svc, const char *dynamic_args)
             std::string pid_str = android::base::StringPrintf("%d", pid);
             for (auto& file : *svc->writepid_files_) {
                 if (!android::base::WriteStringToFile(pid_str, file)) {
-                    ERROR("couldn't write %s to %s: %s\n",
-                          pid_str.c_str(), file.c_str(), strerror(errno));
+                    PLOG(ERROR) << "couldn't write " << pid_str << " to " << file;
                 }
             }
         }
 
         if (svc->ioprio_class != IoSchedClass_NONE) {
             if (android_set_ioprio(getpid(), svc->ioprio_class, svc->ioprio_pri)) {
-                ERROR("Failed to set pid %d ioprio = %d,%d: %s\n",
-                      getpid(), svc->ioprio_class, svc->ioprio_pri, strerror(errno));
+                PLOG(ERROR) << "Failed to set pid " << getpid()
+                            << " ioprio = " << svc->ioprio_class << ","
+                            << svc->ioprio_pri;;
             }
         }
 
@@ -316,10 +320,10 @@ void service_start(struct service *svc, const char *dynamic_args)
 
         if (false) {
             for (size_t n = 0; svc->args[n]; n++) {
-                INFO("args[%zu] = '%s'\n", n, svc->args[n]);
+                LOG(DEBUG) << "args[" << n << "] = '" << svc->args[n] << "'";
             }
             for (size_t n = 0; ENV[n]; n++) {
-                INFO("env[%zu] = '%s'\n", n, ENV[n]);
+                LOG(DEBUG) << "env[" << n << "] = '" << ENV[n] << "'";
             }
         }
 
@@ -328,32 +332,32 @@ void service_start(struct service *svc, const char *dynamic_args)
         // As requested, set our gid, supplemental gids, and uid.
         if (svc->gid) {
             if (setgid(svc->gid) != 0) {
-                ERROR("setgid failed: %s\n", strerror(errno));
+                PLOG(ERROR) << "setgid failed";
                 _exit(127);
             }
         }
         if (svc->nr_supp_gids) {
             if (setgroups(svc->nr_supp_gids, svc->supp_gids) != 0) {
-                ERROR("setgroups failed: %s\n", strerror(errno));
+                PLOG(ERROR) << "setgroups failed";
                 _exit(127);
             }
         }
         if (svc->uid) {
             if (setuid(svc->uid) != 0) {
-                ERROR("setuid failed: %s\n", strerror(errno));
+                PLOG(ERROR) << "setuid failed";
                 _exit(127);
             }
         }
         if (svc->seclabel) {
             if (setexeccon(svc->seclabel) < 0) {
-                ERROR("cannot setexeccon('%s'): %s\n", svc->seclabel, strerror(errno));
+                PLOG(ERROR) << "cannot setexeccon('" << svc->seclabel << "')";
                 _exit(127);
             }
         }
 
         if (!dynamic_args) {
             if (execve(svc->args[0], (char**) svc->args, (char**) ENV) < 0) {
-                ERROR("cannot execve('%s'): %s\n", svc->args[0], strerror(errno));
+                PLOG(ERROR) << "cannot execve('" << svc->args[0] << "')";
             }
         } else {
             char *arg_ptrs[INIT_PARSER_MAXARGS+1];
@@ -379,7 +383,7 @@ void service_start(struct service *svc, const char *dynamic_args)
     free(scon);
 
     if (pid < 0) {
-        ERROR("failed to start '%s'\n", svc->name);
+        LOG(ERROR) << "failed to start '" << svc->name << "'";
         svc->pid = 0;
         return;
     }
@@ -389,9 +393,10 @@ void service_start(struct service *svc, const char *dynamic_args)
     svc->flags |= SVC_RUNNING;
 
     if ((svc->flags & SVC_EXEC) != 0) {
-        INFO("SVC_EXEC pid %d (uid %d gid %d+%zu context %s) started; waiting...\n",
-             svc->pid, svc->uid, svc->gid, svc->nr_supp_gids,
-             svc->seclabel ? : "default");
+        LOG(DEBUG) << "SVC_EXEC pid " << svc->pid << " (uid " << svc->uid
+                   << " gid " << svc->gid << "+" << svc->nr_supp_gids
+                   << " context " << (svc->seclabel ? svc->seclabel : "default")
+                   << ") started; waiting...";
         waiting_for_exec = true;
     }
 
@@ -419,7 +424,7 @@ static void service_stop_or_reset(struct service *svc, int how)
     }
 
     if (svc->pid) {
-        NOTICE("Service '%s' is being killed...\n", svc->name);
+        LOG(INFO) << "Service '" << svc->name << "' is being killed...";
         kill(-svc->pid, SIGKILL);
         svc->NotifyStateChange("stopping");
     } else {
@@ -499,7 +504,7 @@ static void msg_start(const char *name)
     if (svc) {
         service_start(svc, args);
     } else {
-        ERROR("no such service '%s'\n", name);
+        LOG(ERROR) << "no such service '" << name << "'";
     }
     if (tmp)
         free(tmp);
@@ -512,7 +517,7 @@ static void msg_stop(const char *name)
     if (svc) {
         service_stop(svc);
     } else {
-        ERROR("no such service '%s'\n", name);
+        LOG(ERROR) << "no such service '"<< name <<"'";
     }
 }
 
@@ -523,7 +528,7 @@ static void msg_restart(const char *name)
     if (svc) {
         service_restart(svc);
     } else {
-        ERROR("no such service '%s'\n", name);
+        LOG(ERROR) << "no such service '" << name << "'";
     }
 }
 
@@ -536,22 +541,22 @@ void handle_control_message(const char *msg, const char *arg)
     } else if (!strcmp(msg,"restart")) {
         msg_restart(arg);
     } else {
-        ERROR("unknown control msg '%s'\n", msg);
+        LOG(ERROR) << "unknown control msg '" << msg << "'";
     }
 }
 
 static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
-    NOTICE("Waiting for %s...\n", COLDBOOT_DONE);
+    LOG(INFO) << "Waiting for " << COLDBOOT_DONE << "...";
     // Any longer than 1s is an unreasonable length of time to delay booting.
     // If you're hitting this timeout, check that you didn't make your
     // sepolicy regular expressions too expensive (http://b/19899875).
     if (wait_for_file(COLDBOOT_DONE, 1)) {
-        ERROR("Timed out waiting for %s\n", COLDBOOT_DONE);
+        LOG(ERROR) << "Timed out waiting for " << COLDBOOT_DONE;
     }
 
-    NOTICE("Waiting for %s took %.2fs.\n", COLDBOOT_DONE, t.duration());
+    LOG(INFO) << "Waiting for " << COLDBOOT_DONE << " took " << t.duration() << "s.";
     return 0;
 }
 
@@ -583,11 +588,11 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
             open("/dev/hw_random", O_RDONLY | O_NOFOLLOW | O_CLOEXEC));
     if (hwrandom_fd == -1) {
         if (errno == ENOENT) {
-          ERROR("/dev/hw_random not found\n");
+          LOG(ERROR) << "/dev/hw_random not found";
           /* It's not an error to not have a Hardware RNG. */
           result = 0;
         } else {
-          ERROR("Failed to open /dev/hw_random: %s\n", strerror(errno));
+          PLOG(ERROR) << "Failed to open /dev/hw_random";
         }
         goto ret;
     }
@@ -595,7 +600,7 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
     urandom_fd = TEMP_FAILURE_RETRY(
             open("/dev/urandom", O_WRONLY | O_NOFOLLOW | O_CLOEXEC));
     if (urandom_fd == -1) {
-        ERROR("Failed to open /dev/urandom: %s\n", strerror(errno));
+        PLOG(ERROR) << "Failed to open /dev/urandom";
         goto ret;
     }
 
@@ -603,23 +608,23 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
         chunk_size = TEMP_FAILURE_RETRY(
                 read(hwrandom_fd, buf, sizeof(buf) - total_bytes_written));
         if (chunk_size == -1) {
-            ERROR("Failed to read from /dev/hw_random: %s\n", strerror(errno));
+            PLOG(ERROR) << "Failed to read from /dev/hw_random";
             goto ret;
         } else if (chunk_size == 0) {
-            ERROR("Failed to read from /dev/hw_random: EOF\n");
+            LOG(ERROR) << "Failed to read from /dev/hw_random: EOF";
             goto ret;
         }
 
         chunk_size = TEMP_FAILURE_RETRY(write(urandom_fd, buf, chunk_size));
         if (chunk_size == -1) {
-            ERROR("Failed to write to /dev/urandom: %s\n", strerror(errno));
+            PLOG(ERROR) << "Failed to write to /dev/urandom";
             goto ret;
         }
         total_bytes_written += chunk_size;
     }
 
-    INFO("Mixed %zu bytes from /dev/hw_random into /dev/urandom",
-                total_bytes_written);
+    LOG(DEBUG) << "Mixed " << total_bytes_written
+               << " bytes from /dev/hw_random into /dev/urandom";
     result = 0;
 
 ret:
@@ -719,7 +724,7 @@ static void process_kernel_dt() {
     std::string dt_file;
     android::base::ReadFileToString(file_name, &dt_file);
     if (!dt_file.compare("android,firmware")) {
-        ERROR("firmware/android is not compatible with 'android,firmware'\n");
+        LOG(ERROR) << "firmware/android is not compatible with 'android,firmware'";
         return;
     }
 
@@ -792,7 +797,7 @@ static bool selinux_is_enforcing(void)
 
 int selinux_reload_policy(void)
 {
-    INFO("SELinux: Attempting to reload policy files\n");
+    LOG(DEBUG) << "SELinux: Attempting to reload policy files";
 
     if (selinux_android_reload_policy() == -1) {
         return -1;
@@ -814,7 +819,7 @@ static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_
 }
 
 static void security_failure() {
-    ERROR("Security failure; rebooting into recovery mode...\n");
+    LOG(ERROR) << "Security failure; rebooting into recovery mode...";
     android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
     while (true) { pause(); }  // never reached
 }
@@ -823,15 +828,15 @@ static void selinux_initialize(bool in_kernel_domain) {
     Timer t;
 
     selinux_callback cb;
-    cb.func_log = selinux_klog_callback;
+    cb.func_log = SelinuxKlogCallback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
     cb.func_audit = audit_callback;
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
 
     if (in_kernel_domain) {
-        INFO("Loading SELinux policy...\n");
+        LOG(DEBUG) << "Loading SELinux policy...";
         if (selinux_android_load_policy() < 0) {
-            ERROR("failed to load policy: %s\n", strerror(errno));
+            PLOG(ERROR) << "failed to load policy";
             security_failure();
         }
 
@@ -839,8 +844,9 @@ static void selinux_initialize(bool in_kernel_domain) {
         bool is_enforcing = selinux_is_enforcing();
         if (kernel_enforcing != is_enforcing) {
             if (security_setenforce(is_enforcing)) {
-                ERROR("security_setenforce(%s) failed: %s\n",
-                      is_enforcing ? "true" : "false", strerror(errno));
+                PLOG(ERROR) << "security_setenforce("
+                            << (is_enforcing ? "true" : "false")
+                            << ") failed";
                 security_failure();
             }
         }
@@ -849,12 +855,15 @@ static void selinux_initialize(bool in_kernel_domain) {
             security_failure();
         }
 
-        NOTICE("(Initializing SELinux %s took %.2fs.)\n",
-               is_enforcing ? "enforcing" : "non-enforcing", t.duration());
+        LOG(INFO) << "(Initializing SELinux "
+                  << (is_enforcing ? "enforcing" : "non-enforcing") << " took "
+                  << t.duration() << "s.)";
     } else {
         selinux_init_all_handles();
     }
 }
+
+
 
 int main(int argc, char** argv) {
     if (!strcmp(basename(argv[0]), "ueventd")) {
@@ -888,10 +897,10 @@ int main(int argc, char** argv) {
     // later on. Now that tmpfs is mounted on /dev, we can actually talk
     // to the outside world.
     open_devnull_stdio();
-    klog_init();
-    klog_set_level(KLOG_NOTICE_LEVEL);
-
-    NOTICE("init %s started!\n", is_first_stage ? "first stage" : "second stage");
+#if defined(__ANDROID__)
+    InitLogging();
+#endif
+    LOG(INFO) << "init " << (is_first_stage ? "first stage" : "second stage") << " started!";
 
     if (!is_first_stage) {
         // Indicate that booting is in progress to background fw loaders, etc.
@@ -916,13 +925,13 @@ int main(int argc, char** argv) {
     // that the SELinux policy has been loaded.
     if (is_first_stage) {
         if (restorecon("/init") == -1) {
-            ERROR("restorecon failed: %s\n", strerror(errno));
+            PLOG(ERROR) << "restorecon failed";
             security_failure();
         }
         char* path = argv[0];
         char* args[] = { path, const_cast<char*>("--second-stage"), nullptr };
         if (execv(path, args) == -1) {
-            ERROR("execv(\"%s\") failed: %s\n", path, strerror(errno));
+            PLOG(ERROR) << "execv(\"" << path << "\") failed";
             security_failure();
         }
     }
@@ -930,7 +939,7 @@ int main(int argc, char** argv) {
     // These directories were necessarily created before initial policy load
     // and therefore need their security context restored to the proper value.
     // This must happen before /dev is populated by ueventd.
-    NOTICE("Running restorecon...\n");
+    LOG(INFO) << "Running restorecon...";
     restorecon("/dev");
     restorecon("/dev/socket");
     restorecon("/dev/__properties__");
@@ -938,7 +947,7 @@ int main(int argc, char** argv) {
 
     epoll_fd = epoll_create1(EPOLL_CLOEXEC);
     if (epoll_fd == -1) {
-        ERROR("epoll_create1 failed: %s\n", strerror(errno));
+        PLOG(ERROR) << "epoll_create1 failed";
         exit(1);
     }
 
@@ -1000,7 +1009,7 @@ int main(int argc, char** argv) {
         epoll_event ev;
         int nr = TEMP_FAILURE_RETRY(epoll_wait(epoll_fd, &ev, 1, timeout));
         if (nr == -1) {
-            ERROR("epoll_wait failed: %s\n", strerror(errno));
+            PLOG(ERROR) << "epoll_wait failed";
         } else if (nr == 1) {
             ((void (*)()) ev.data.ptr)();
         }

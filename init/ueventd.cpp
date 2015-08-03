@@ -22,14 +22,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/selinux.h>
 
 #include "ueventd.h"
-#include "log.h"
 #include "util.h"
 #include "devices.h"
+#include "log.h"
 #include "ueventd_parser.h"
 #include "property_service.h"
 
@@ -50,13 +51,14 @@ int ueventd_main(int argc, char **argv)
     signal(SIGCHLD, SIG_IGN);
 
     open_devnull_stdio();
-    klog_init();
-    klog_set_level(KLOG_NOTICE_LEVEL);
+#if defined(__ANDROID__)
+    InitLogging();
+#endif
 
-    NOTICE("ueventd started!\n");
+    LOG(INFO) << "ueventd started!";
 
     selinux_callback cb;
-    cb.func_log = selinux_klog_callback;
+    cb.func_log = SelinuxKlogCallback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
 
     std::string hardware = property_get("ro.hardware");
@@ -115,14 +117,14 @@ void set_device_permission(int nargs, char **args)
     name = args[0];
 
     if (!strncmp(name,"/sys/", 5) && (nargs == 5)) {
-        INFO("/sys/ rule %s %s\n",args[0],args[1]);
+        LOG(DEBUG) << "/sys/ rule " << args[0] << " " << args[1];
         attr = args[1];
         args++;
         nargs--;
     }
 
     if (nargs != 4) {
-        ERROR("invalid line ueventd.rc line for '%s'\n", args[0]);
+        LOG(ERROR) << "invalid line ueventd.rc line for '" << args[0] << "'";
         return;
     }
 
@@ -146,14 +148,14 @@ void set_device_permission(int nargs, char **args)
 
     perm = strtol(args[1], &endptr, 8);
     if (!endptr || *endptr != '\0') {
-        ERROR("invalid mode '%s'\n", args[1]);
+        LOG(ERROR) << "invalid mode '" << args[1] << "'";
         free(tmp);
         return;
     }
 
     ret = get_android_id(args[2]);
     if (ret < 0) {
-        ERROR("invalid uid '%s'\n", args[2]);
+        LOG(ERROR) << "invalid uid '" << args[2] << "'";
         free(tmp);
         return;
     }
@@ -161,7 +163,7 @@ void set_device_permission(int nargs, char **args)
 
     ret = get_android_id(args[3]);
     if (ret < 0) {
-        ERROR("invalid gid '%s'\n", args[3]);
+        LOG(ERROR) << "invalid gid '" << args[3] << "'";
         free(tmp);
         return;
     }

@@ -37,6 +37,7 @@
 #include <selinux/label.h>
 
 #include <fs_mgr.h>
+#include <base/logging.h>
 #include <base/stringprintf.h>
 #include <cutils/partition_utils.h>
 #include <cutils/android_reboot.h>
@@ -50,7 +51,6 @@
 #include "devices.h"
 #include "init_parser.h"
 #include "util.h"
-#include "log.h"
 
 #define chmod DO_NOT_USE_CHMOD_USE_FCHMODAT_SYMLINK_NOFOLLOW
 #define UNMOUNT_CHECK_MS 5000
@@ -410,7 +410,7 @@ int do_mount(const std::vector<std::string>& args)
         }
 
         close(fd);
-        ERROR("out of loopback devices");
+        LOG(ERROR) << "out of loopback devices";
         return -1;
     } else {
         if (wait)
@@ -435,7 +435,7 @@ static int wipe_data_via_recovery()
         write(fd, "--reason=wipe_data_via_recovery\n", strlen("--reason=wipe_data_via_recovery\n") + 1);
         close(fd);
     } else {
-        ERROR("could not open /cache/recovery/command\n");
+        LOG(ERROR) << "could not open /cache/recovery/command";
         return -1;
     }
     android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
@@ -470,7 +470,7 @@ int do_mount_all(const std::vector<std::string>& args)
         int wp_ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, 0));
         if (wp_ret < 0) {
             /* Unexpected error code. We will continue anyway. */
-            NOTICE("waitpid failed rc=%d: %s\n", wp_ret, strerror(errno));
+            PLOG(INFO) << "waitpid failed rc=" << wp_ret;
         }
 
         if (WIFEXITED(status)) {
@@ -480,12 +480,12 @@ int do_mount_all(const std::vector<std::string>& args)
         }
     } else if (pid == 0) {
         /* child, call fs_mgr_mount_all() */
-        klog_set_level(6);  /* So we can see what fs_mgr_mount_all() does */
+        //klog_set_level(6);  /* So we can see what fs_mgr_mount_all() does */
         fstab = fs_mgr_read_fstab(fstabfile);
         child_ret = fs_mgr_mount_all(fstab);
         fs_mgr_free_fstab(fstab);
         if (child_ret == -1) {
-            ERROR("fs_mgr_mount_all returned an error\n");
+            LOG(ERROR) << "fs_mgr_mount_all returned an error";
         }
         _exit(child_ret);
     } else {
@@ -507,7 +507,7 @@ int do_mount_all(const std::vector<std::string>& args)
         ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
     } else if (ret == FS_MGR_MNTALL_DEV_NEEDS_RECOVERY) {
         /* Setup a wipe via recovery, and reboot into recovery */
-        ERROR("fs_mgr_mount_all suggested recovery, so wiping data via recovery.\n");
+        LOG(ERROR) << "fs_mgr_mount_all suggested recovery, so wiping data via recovery.";
         ret = wipe_data_via_recovery();
         /* If reboot worked, there is no return. */
     } else if (ret == FS_MGR_MNTALL_DEV_DEFAULT_FILE_ENCRYPTED) {
@@ -528,7 +528,7 @@ int do_mount_all(const std::vector<std::string>& args)
         property_set("ro.crypto.type", "file");
         property_set("vold.decrypt", "trigger_restart_min_framework");
     } else if (ret > 0) {
-        ERROR("fs_mgr_mount_all returned unexpected error %d\n", ret);
+        LOG(ERROR) << "fs_mgr_mount_all returned unexpected error " << ret;
     }
     /* else ... < 0: error */
 
@@ -610,7 +610,7 @@ int do_powerctl(const std::vector<std::string>& args)
         cmd = ANDROID_RB_RESTART2;
         len = 6;
     } else {
-        ERROR("powerctl: unrecognized command '%s'\n", command);
+        LOG(ERROR) << "powerctl: unrecognized command '" << command << "'";
         return -EINVAL;
     }
 
@@ -624,7 +624,8 @@ int do_powerctl(const std::vector<std::string>& args)
             reboot_target = &command[len + 1];
         }
     } else if (command[len] != '\0') {
-        ERROR("powerctl: unrecognized reboot target '%s'\n", &command[len]);
+        LOG(ERROR) << "powerctl: unrecognized reboot target '" << &command[len]
+                   << "'";
         return -EINVAL;
     }
 
@@ -812,16 +813,17 @@ int do_restorecon_recursive(const std::vector<std::string>& args) {
 
 int do_loglevel(const std::vector<std::string>& args) {
     if (args.size() != 2) {
-        ERROR("loglevel: missing argument\n");
+        LOG(ERROR) << "loglevel: missing argument";
         return -EINVAL;
     }
-
+    /*
     int log_level = std::stoi(args[1]);
     if (log_level < KLOG_ERROR_LEVEL || log_level > KLOG_DEBUG_LEVEL) {
-        ERROR("loglevel: invalid log level'%d'\n", log_level);
+        LOG(ERROR) << "loglevel: invalid log level'" << log_level << "'";
         return -EINVAL;
     }
     klog_set_level(log_level);
+    */
     return 0;
 }
 

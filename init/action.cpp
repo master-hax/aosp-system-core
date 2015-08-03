@@ -18,12 +18,12 @@
 
 #include <errno.h>
 
+#include <base/logging.h>
 #include <base/strings.h>
 #include <base/stringprintf.h>
 
 #include "error.h"
 #include "init_parser.h"
-#include "log.h"
 #include "property_service.h"
 #include "util.h"
 
@@ -61,7 +61,7 @@ int Action::Command::InvokeFunc() const
     expanded_args[0] = args_[0];
     for (std::size_t i = 1; i < args_.size(); ++i) {
         if (expand_props(args_[i], &expanded_args[i]) == -1) {
-            ERROR("%s: cannot expand '%s'\n", args_[0].c_str(), args_[i].c_str());
+            LOG(ERROR) << args_[0] << ": cannot expand '" << args_[i] << "'";
             return -EINVAL;
         }
     }
@@ -117,15 +117,10 @@ void Action::ExecuteCommand(const Command& command) const
     Timer t;
     int result = command.InvokeFunc();
 
-    if (klog_get_level() >= KLOG_INFO_LEVEL) {
-        std::string trigger_name = BuildTriggersString();
-        std::string cmd_str = command.BuildCommandString();
-        std::string source = command.BuildSourceString();
-
-        INFO("Command '%s' action=%s%s returned %d took %.2fs\n",
-             cmd_str.c_str(), trigger_name.c_str(), source.c_str(),
-             result, t.duration());
-    }
+    LOG(DEBUG) << "Command '" << command.BuildCommandString()
+               << "' action=" << BuildTriggersString()
+               << command.BuildSourceString() << " returned " << result
+               << " took " << t.duration() << "s";
 }
 
 bool Action::ParsePropertyTrigger(const std::string& trigger, std::string* err)
@@ -255,16 +250,13 @@ std::string Action::BuildTriggersString() const
 
 void Action::DumpState() const
 {
-    INFO("on ");
-    std::string trigger_name = BuildTriggersString();
-    INFO("%s", trigger_name.c_str());
-    INFO("\n");
+    LOG(DEBUG) << "on " << BuildTriggersString();
 
+    std::string cmd_str;
     for (const auto& c : commands_) {
-        std::string cmd_str = c->BuildCommandString();
-        INFO(" %s", cmd_str.c_str());
+        android::base::StringAppendF(&cmd_str, " %s", c->BuildCommandString().c_str());
     }
-    INFO("\n");
+    LOG(DEBUG) << cmd_str;
 }
 
 ActionManager::ActionManager() : cur_command_(0)
@@ -328,7 +320,7 @@ void ActionManager::ExecuteOneCommand() {
 
     if (cur_command_ == 0) {
         std::string trigger_name = action->BuildTriggersString();
-        INFO("processing action %p (%s)\n", action, trigger_name.c_str());
+        LOG(DEBUG) << "processing action " << std::hex << action << " (" << trigger_name << ")";
     }
 
     action->ExecuteOneCommand(cur_command_++);
@@ -374,5 +366,4 @@ void ActionManager::DumpState() const
     for (const auto& a : action_list_) {
         a->DumpState();
     }
-    INFO("\n");
 }
