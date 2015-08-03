@@ -22,6 +22,8 @@
 
 #include <linux/watchdog.h>
 
+#include <base/logging.h>
+
 #include "log.h"
 #include "util.h"
 
@@ -29,8 +31,9 @@
 
 int watchdogd_main(int argc, char **argv) {
     open_devnull_stdio();
-    klog_init();
-    klog_set_level(KLOG_NOTICE_LEVEL);
+#if defined(__ANDROID__)
+    InitLogging();
+#endif
 
     int interval = 10;
     if (argc >= 2) interval = atoi(argv[1]);
@@ -38,30 +41,30 @@ int watchdogd_main(int argc, char **argv) {
     int margin = 10;
     if (argc >= 3) margin = atoi(argv[2]);
 
-    NOTICE("started (interval %d, margin %d)!\n", interval, margin);
+    LOG(INFO) << "started (interval " << interval << ", margin " << margin << ")!";
 
     int fd = open(DEV_NAME, O_RDWR|O_CLOEXEC);
     if (fd == -1) {
-        ERROR("Failed to open %s: %s\n", DEV_NAME, strerror(errno));
+        LOG(ERROR) << "Failed to open " << DEV_NAME << ": " << strerror(errno);
         return 1;
     }
 
     int timeout = interval + margin;
     int ret = ioctl(fd, WDIOC_SETTIMEOUT, &timeout);
     if (ret) {
-        ERROR("Failed to set timeout to %d: %s\n", timeout, strerror(errno));
+        LOG(ERROR) << "Failed to set timeout to " << timeout << ": " << strerror(errno);
         ret = ioctl(fd, WDIOC_GETTIMEOUT, &timeout);
         if (ret) {
-            ERROR("Failed to get timeout: %s\n", strerror(errno));
+            LOG(ERROR) << "Failed to get timeout: " << strerror(errno);
         } else {
             if (timeout > margin) {
                 interval = timeout - margin;
             } else {
                 interval = 1;
             }
-            WARNING("Adjusted interval to timeout returned by driver:"
-                    " timeout %d, interval %d, margin %d\n",
-                    timeout, interval, margin);
+            LOG(WARNING) << "Adjusted interval to timeout returned by driver:  timeout "
+                         << timeout << " , interval " << interval << ", margin "
+                         << margin;
         }
     }
 
