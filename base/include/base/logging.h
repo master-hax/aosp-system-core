@@ -289,6 +289,9 @@ class LogMessage {
   DISALLOW_COPY_AND_ASSIGN(LogMessage);
 };
 
+// Change the global log level.
+void SetLogLevel(LogSeverity level);
+
 // Allows to temporarily change the minimum severity level for logging.
 class ScopedLogSeverity {
  public:

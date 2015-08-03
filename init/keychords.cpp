@@ -23,8 +23,9 @@
 #include <linux/keychord.h>
 #include <unistd.h>
 
+#include <base/logging.h>
+
 #include "init.h"
-#include "log.h"
 #include "property_service.h"
 
 static struct input_keychord *keychords = 0;
@@ -42,7 +43,7 @@ void add_service_keycodes(struct service *svc)
         size = sizeof(*keychord) + svc->nkeycodes * sizeof(keychord->keycodes[0]);
         keychords = (input_keychord*) realloc(keychords, keychords_length + size);
         if (!keychords) {
-            ERROR("could not allocate keychords\n");
+            LOG(ERROR) << "could not allocate keychords";
             keychords_length = 0;
             keychords_count = 0;
             return;
@@ -69,7 +70,7 @@ static void handle_keychord() {
 
     ret = read(keychord_fd, &id, sizeof(id));
     if (ret != sizeof(id)) {
-        ERROR("could not read keychord id\n");
+        LOG(ERROR) << "could not read keychord id";
         return;
     }
 
@@ -78,10 +79,10 @@ static void handle_keychord() {
     if (adb_enabled == "running") {
         svc = service_find_by_keychord(id);
         if (svc) {
-            INFO("Starting service %s from keychord\n", svc->name);
+            LOG(DEBUG) << "Starting service " << svc->name << " from keychord";
             service_start(svc, NULL);
         } else {
-            ERROR("service for keychord %d not found\n", id);
+            LOG(ERROR) << "service for keychord " << id << " not found";
         }
     }
 }
@@ -96,13 +97,13 @@ void keychord_init() {
 
     keychord_fd = TEMP_FAILURE_RETRY(open("/dev/keychord", O_RDWR | O_CLOEXEC));
     if (keychord_fd == -1) {
-        ERROR("could not open /dev/keychord: %s\n", strerror(errno));
+        PLOG(ERROR) << "could not open /dev/keychord";
         return;
     }
 
     int ret = write(keychord_fd, keychords, keychords_length);
     if (ret != keychords_length) {
-        ERROR("could not configure /dev/keychord %d: %s\n", ret, strerror(errno));
+        PLOG(ERROR) << "could not configure /dev/keychord " << ret;
         close(keychord_fd);
     }
 

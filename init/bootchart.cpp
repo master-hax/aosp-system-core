@@ -16,7 +16,6 @@
 
 #include "bootchart.h"
 #include "keywords.h"
-#include "log.h"
 #include "property_service.h"
 
 #include <dirent.h>
@@ -34,6 +33,7 @@
 #include <string>
 
 #include <base/file.h>
+#include <base/logging.h>
 
 #define LOG_ROOT        "/data/bootchart"
 #define LOG_STAT        LOG_ROOT"/proc_stat.log"
@@ -206,12 +206,13 @@ static int bootchart_init() {
 int do_bootchart_init(const std::vector<std::string>& args) {
     g_remaining_samples = bootchart_init();
     if (g_remaining_samples < 0) {
-        ERROR("Bootcharting init failure: %s\n", strerror(errno));
+        PLOG(ERROR) << "Bootcharting init failure";
     } else if (g_remaining_samples > 0) {
-        NOTICE("Bootcharting started (will run for %d s).\n",
-               (g_remaining_samples * BOOTCHART_POLLING_MS) / 1000);
+        LOG(INFO) << "Bootcharting started (will run for "
+                  << ((g_remaining_samples * BOOTCHART_POLLING_MS) / 1000)
+                  << " s).";
     } else {
-        NOTICE("Not bootcharting.\n");
+        LOG(INFO) << "Not bootcharting.";
     }
     return 0;
 }

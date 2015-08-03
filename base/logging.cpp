@@ -362,6 +362,10 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogId id,
   gLogger(id, severity, tag, file, line, message);
 }
 
+void SetLogLevel(LogSeverity level) {
+  gMinimumLogSeverity = level;
+}
+
 ScopedLogSeverity::ScopedLogSeverity(LogSeverity level) {
   old_ = gMinimumLogSeverity;
   gMinimumLogSeverity = level;

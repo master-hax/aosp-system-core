@@ -33,6 +33,7 @@
 #include <sys/un.h>
 
 #include <base/file.h>
+#include <base/logging.h>
 #include <base/strings.h>
 
 /* for ANDROID_SOCKET_* */
@@ -42,7 +43,6 @@
 #include <private/android_filesystem_config.h>
 
 #include "init.h"
-#include "log.h"
 #include "util.h"
 
 /*
@@ -86,7 +86,7 @@ static unsigned int do_decode_uid(const char *s)
 unsigned int decode_uid(const char *s) {
     unsigned int v = do_decode_uid(s);
     if (v == UINT_MAX) {
-        ERROR("decode_uid: Unable to find UID for '%s'. Returning UINT_MAX\n", s);
+        LOG(ERROR) << "decode_uid: Unable to find UID for '" << s << "'. Returning UINT_MAX";
     }
     return v;
 }
@@ -109,7 +109,7 @@ int create_socket(const char *name, int type, mode_t perm, uid_t uid,
 
     fd = socket(PF_UNIX, type, 0);
     if (fd < 0) {
-        ERROR("Failed to open socket '%s': %s\n", name, strerror(errno));
+        PLOG(ERROR) << "Failed to open socket " << name;
         return -1;
     }
 
@@ -123,7 +123,7 @@ int create_socket(const char *name, int type, mode_t perm, uid_t uid,
 
     ret = unlink(addr.sun_path);
     if (ret != 0 && errno != ENOENT) {
-        ERROR("Failed to unlink old socket '%s': %s\n", name, strerror(errno));
+        PLOG(ERROR) << "Failed to unlink old socket " << name;
         goto out_close;
     }
 
@@ -136,18 +136,22 @@ int create_socket(const char *name, int type, mode_t perm, uid_t uid,
 
     ret = bind(fd, (struct sockaddr *) &addr, sizeof (addr));
     if (ret) {
-        ERROR("Failed to bind socket '%s': %s\n", name, strerror(errno));
+        PLOG(ERROR) << "Failed to bind socket " << name;
         goto out_unlink;
     }
 
     setfscreatecon(NULL);
     freecon(filecon);
 
-    chown(addr.sun_path, uid, gid);
-    chmod(addr.sun_path, perm);
+    if ( (chown(addr.sun_path, uid, gid) == 1) ||
+        (chmod(addr.sun_path, perm) == -1)) {
+        PLOG(ERROR) << "Failed set perms on socket " << name;
+        goto out_unlink;
+    }
 
-    INFO("Created socket '%s' with mode '%o', user '%d', group '%d'\n",
-         addr.sun_path, perm, uid, gid);
+    LOG(DEBUG) << "Created socket '" << addr.sun_path << "' with mode '"
+               << std::oct << perm << "', user '" << uid << "', group '" << gid
+               << "'";
 
     return fd;
 
@@ -170,11 +174,11 @@ bool read_file(const char* path, std::string* content) {
     // or group-writable files.
     struct stat sb;
     if (fstat(fd, &sb) == -1) {
-        ERROR("fstat failed for '%s': %s\n", path, strerror(errno));
+        PLOG(ERROR) << "fstat failed for " << path;
         return false;
     }
     if ((sb.st_mode & (S_IWGRP | S_IWOTH)) != 0) {
-        ERROR("skipping insecure file '%s'\n", path);
+        LOG(ERROR) << "skipping insecure file '" << path << "'";
         return false;
     }
 
@@ -186,12 +190,12 @@ bool read_file(const char* path, std::string* content) {
 int write_file(const char* path, const char* content) {
     int fd = TEMP_FAILURE_RETRY(open(path, O_WRONLY|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0600));
     if (fd == -1) {
-        NOTICE("write_file: Unable to open '%s': %s\n", path, strerror(errno));
+        PLOG(INFO) << "write_file: Unable to open " << path;
         return -1;
     }
     int result = android::base::WriteStringToFd(content, fd) ? 0 : -1;
     if (result == -1) {
-        NOTICE("write_file: Unable to write to '%s': %s\n", path, strerror(errno));
+        PLOG(INFO) << "write_file: Unable to write to " << path;
     }
     close(fd);
     return result;
@@ -233,13 +237,13 @@ static void find_mtd_partitions(void)
             if (x) {
                 *x = 0;
             }
-            INFO("mtd partition %d, %s\n", mtdnum, mtdname + 1);
+            LOG(DEBUG) << "mtd partition " << mtdnum << ", " << (mtdname + 1);
             if (mtd_part_count < MAX_MTD_PARTITIONS) {
                 strcpy(mtd_part_map[mtd_part_count].name, mtdname + 1);
                 mtd_part_map[mtd_part_count].number = mtdnum;
                 mtd_part_count++;
             } else {
-                ERROR("too many mtd partitions\n");
+                LOG(ERROR) << "too many mtd partitions";
             }
         }
         while (pmtdsize > 0 && *pmtdbufp != '\n') {
@@ -298,7 +302,7 @@ int mkdir_recursive(const char *pathname, mode_t mode)
         if (width == 0)
             continue;
         if ((unsigned int)width > sizeof(buf) - 1) {
-            ERROR("path too long for mkdir_recursive\n");
+            LOG(ERROR) << "path too long for mkdir_recursive";
             return -1;
         }
         memcpy(buf, pathname, width);
@@ -352,12 +356,14 @@ void make_link(const char *oldpath, const char *newpath)
     memcpy(buf, newpath, width);
     buf[width] = 0;
     ret = mkdir_recursive(buf, 0755);
-    if (ret)
-        ERROR("Failed to create directory %s: %s (%d)\n", buf, strerror(errno), errno);
+    if (ret) {
+        PLOG(ERROR) << "Failed to create directory";
+    }
 
     ret = symlink(oldpath, newpath);
-    if (ret && errno != EEXIST)
-        ERROR("Failed to symlink %s to %s: %s (%d)\n", oldpath, newpath, strerror(errno), errno);
+    if (ret && errno != EEXIST) {
+        PLOG(ERROR) << "Failed to symlink " << oldpath << " to " << newpath;
+    }
 }
 
 void remove_link(const char *oldpath, const char *newpath)
