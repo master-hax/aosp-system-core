@@ -26,7 +26,6 @@
 
 #define ID_STAT MKID('S','T','A','T')
 #define ID_LIST MKID('L','I','S','T')
-#define ID_ULNK MKID('U','L','N','K')
 #define ID_SEND MKID('S','E','N','D')
 #define ID_RECV MKID('R','E','C','V')
 #define ID_DENT MKID('D','E','N','T')
@@ -63,14 +62,13 @@ union syncmsg {
         unsigned id;
         unsigned msglen;
     } status;
-} ;
-
+};
 
 void file_sync_service(int fd, void *cookie);
-int do_sync_ls(const char *path);
-int do_sync_push(const char *lpath, const char *rpath, bool show_progress);
-int do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only);
-int do_sync_pull(const char *rpath, const char *lpath, bool show_progress, int pullTime);
+bool do_sync_ls(const char *path);
+bool do_sync_push(const char *lpath, const char *rpath, bool show_progress);
+bool do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only);
+bool do_sync_pull(const char *rpath, const char *lpath, bool show_progress, int copy_attrs);
 
 #define SYNC_DATA_MAX (64*1024)
 

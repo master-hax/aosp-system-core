@@ -35,6 +35,24 @@ bool SendProtocolString(int fd, const std::string& s) {
     return WriteFdFmt(fd, "%04x", length) && WriteFdExactly(fd, s);
 }
 
+bool ReadProtocolString(int fd, std::string* s, std::string* error) {
+    char buf[5];
+    if (!ReadFdExactly(fd, buf, 4)) {
+        *error = perror_str("protocol fault (couldn't read status length)");
+        return false;
+    }
+    buf[4] = 0;
+
+    unsigned long len = strtoul(buf, 0, 16);
+    s->resize(len, '\0');
+    if (!ReadFdExactly(fd, &(*s)[0], len)) {
+        *error = perror_str("protocol fault (couldn't read status message)");
+        return false;
+    }
+
+    return true;
+}
+
 bool SendOkay(int fd) {
     return WriteFdExactly(fd, "OKAY", 4);
 }
