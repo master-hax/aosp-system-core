@@ -20,48 +20,65 @@
 #include <string.h>
 #include <sys/uio.h>
 
+#include <cutils/klog.h>
 #include <selinux/selinux.h>
 
 #include <base/stringprintf.h>
 
-static void init_klog_vwrite(int level, const char* fmt, va_list ap) {
-    static const char* tag = basename(getprogname());
-
-    // The kernel's printk buffer is only 1024 bytes.
-    // TODO: should we automatically break up long lines into multiple lines?
-    // Or we could log but with something like "..." at the end?
-    char buf[1024];
-    size_t prefix_size = snprintf(buf, sizeof(buf), "<%d>%s: ", level, tag);
-    size_t msg_size = vsnprintf(buf + prefix_size, sizeof(buf) - prefix_size, fmt, ap);
-    if (msg_size >= sizeof(buf) - prefix_size) {
-        msg_size = snprintf(buf + prefix_size, sizeof(buf) - prefix_size,
-                            "(%zu-byte message too long for printk)\n", msg_size);
+int SelinuxKlogCallback(int type, const char *fmt, ...) {
+    std::string log_message;
+    va_list ap;
+    va_start(ap, fmt);
+    android::base::StringAppendV(&log_message, fmt, ap);
+    va_end(ap);
+    if (type == SELINUX_WARNING) {
+        LOG(WARNING) << log_message;
+    } else if (type == SELINUX_INFO) {
+        LOG(DEBUG) << log_message;
+    } else {
+        LOG(ERROR) << log_message;
     }
+    return 0;
+}
+
+void KlogLogger(android::base::LogId id,
+                android::base::LogSeverity severity,
+                const char*,
+                const char* file,
+                unsigned int line,
+                const char* message) {
+    int level = KLOG_ERROR_LEVEL;
+    switch(severity) {
+        case android::base::VERBOSE:
+            level = KLOG_DEBUG_LEVEL;
+            break;
+        case android::base::DEBUG:
+            level = KLOG_DEBUG_LEVEL;
+            break;
+        case android::base::INFO:
+            level = KLOG_NOTICE_LEVEL;
+            break;
+        case android::base::WARNING:
+            level = KLOG_WARNING_LEVEL;
+            break;
+        case android::base::ERROR:
+            level = KLOG_ERROR_LEVEL;
+            break;
+        case android::base::FATAL:
+            level = KLOG_ERROR_LEVEL;
+            break;
+    }
+    std::string log_message = android::base::StringPrintf("init: %s\n", message);
 
     iovec iov[1];
-    iov[0].iov_base = buf;
-    iov[0].iov_len = prefix_size + msg_size;
+    iov[0].iov_base = (void*)log_message.c_str();
+    iov[0].iov_len = log_message.size();
 
     klog_writev(level, iov, 1);
 }
 
-void init_klog_write(int level, const char* fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    init_klog_vwrite(level, fmt, ap);
-    va_end(ap);
-}
-
-int selinux_klog_callback(int type, const char *fmt, ...) {
-    int level = KLOG_ERROR_LEVEL;
-    if (type == SELINUX_WARNING) {
-        level = KLOG_WARNING_LEVEL;
-    } else if (type == SELINUX_INFO) {
-        level = KLOG_INFO_LEVEL;
-    }
-    va_list ap;
-    va_start(ap, fmt);
-    init_klog_vwrite(level, fmt, ap);
-    va_end(ap);
-    return 0;
+void InitLogging(void) {
+    klog_init();
+    klog_set_level(KLOG_NOTICE_LEVEL);
+    SetLogger(KlogLogger);
 }
