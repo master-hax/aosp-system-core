@@ -40,13 +40,13 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 
+#include <base/logging.h>
 #include <cutils/list.h>
 #include <cutils/uevent.h>
 
 #include "devices.h"
 #include "ueventd_parser.h"
 #include "util.h"
-#include "log.h"
 
 #define SYSFS_PREFIX    "/sys"
 static const char *firmware_dirs[] = { "/etc/firmware",
@@ -153,7 +153,8 @@ void fixup_sys_perms(const char *upath)
             break;
 
         snprintf(buf, sizeof(buf), "/sys%s/%s", upath, dp->attr);
-        INFO("fixup %s %d %d 0%o\n", buf, dp->uid, dp->gid, dp->perm);
+        LOG(DEBUG) << "fixup " << buf << " " << dp->uid << " " << dp->gid
+                   << " 0" << std::oct << dp->perm;
         chown(buf, dp->uid, dp->gid);
         chmod(buf, dp->perm);
     }
@@ -165,7 +166,7 @@ void fixup_sys_perms(const char *upath)
         return;
     }
     if (access(buf, F_OK) == 0) {
-        INFO("restorecon_recursive: %s\n", buf);
+        LOG(DEBUG) << "restorecon_recursive: " << buf;
         restorecon_recursive(buf);
     }
 }
@@ -273,7 +274,7 @@ static void add_platform_device(const char *path)
             name += 9;
     }
 
-    INFO("adding platform device %s (%s)\n", name, path);
+    LOG(DEBUG) << "adding platform device " << name << " (" << path << ")";
 
     bus = (platform_node*) calloc(1, sizeof(struct platform_node));
     bus->path = strdup(path);
@@ -312,7 +313,7 @@ static void remove_platform_device(const char *path)
     list_for_each_reverse(node, &platform_names) {
         bus = node_to_item(node, struct platform_node, list);
         if (!strcmp(path, bus->path)) {
-            INFO("removing platform device %s\n", bus->name);
+            LOG(DEBUG) << "removing platform device " << bus->name;
             free(bus->path);
             list_remove(node);
             free(bus);
@@ -401,9 +402,9 @@ static void parse_event(const char *msg, struct uevent *uevent)
     }
 
     if (LOG_UEVENTS) {
-        INFO("event { '%s', '%s', '%s', '%s', %d, %d }\n",
-             uevent->action, uevent->path, uevent->subsystem,
-             uevent->firmware, uevent->major, uevent->minor);
+        LOG(DEBUG) << "event { '" << uevent->action << "', '" << uevent->path
+                   << "', '" << uevent->subsystem << "', '" << uevent->firmware
+                   << "', " << uevent->major << ", " << uevent->minor << " }";
     }
 }
 
@@ -487,7 +488,7 @@ static char **get_block_device_symlinks(struct uevent *uevent)
         return NULL;
     memset(links, 0, sizeof(char *) * 4);
 
-    INFO("found %s device %s\n", type, device);
+    LOG(DEBUG) << "found " << type << " device " << device;
 
     snprintf(link_path, sizeof(link_path), "/dev/block/%s/%s", type, device);
 
@@ -495,7 +496,7 @@ static char **get_block_device_symlinks(struct uevent *uevent)
         p = strdup(uevent->partition_name);
         sanitize(p);
         if (strcmp(uevent->partition_name, p))
-            NOTICE("Linking partition '%s' as '%s'\n", uevent->partition_name, p);
+            LOG(INFO) << "Linking partition '" << uevent->partition_name << "' as '" << p << "'";
         if (asprintf(&links[link_num], "%s/by-name/%s", link_path, p) > 0)
             link_num++;
         else
@@ -573,8 +574,8 @@ static const char *parse_device_name(struct uevent *uevent, unsigned int len)
 
     /* too-long names would overrun our buffer */
     if(strlen(name) > len) {
-        ERROR("DEVPATH=%s exceeds %u-character limit on filename; ignoring event\n",
-                name, len);
+        LOG(ERROR) << "DEVPATH=" << name << " exceeds " << len
+                   << "-character limit on filename; ignoring event";
         return NULL;
     }
 
@@ -609,12 +610,12 @@ static bool assemble_devpath(char *devpath, const char *dirname,
 {
     int s = snprintf(devpath, DEVPATH_LEN, "%s/%s", dirname, devname);
     if (s < 0) {
-        ERROR("failed to assemble device path (%s); ignoring event\n",
-                strerror(errno));
+        LOG(ERROR) << "failed to assemble device path (" << strerror(errno)
+                   << "); ignoring event";
         return false;
     } else if (s >= DEVPATH_LEN) {
-        ERROR("%s/%s exceeds %u-character limit on path; ignoring event\n",
-                dirname, devname, DEVPATH_LEN);
+        LOG(ERROR) << dirname << "/" << devname << " exceeds " << DEVPATH_LEN
+                   << "-character limit on path; ignoring event";
         return false;
     }
     return true;
@@ -658,8 +659,9 @@ static void handle_generic_device_event(struct uevent *uevent)
             break;
 
         default:
-            ERROR("%s subsystem's devpath option is not set; ignoring event\n",
-                    uevent->subsystem);
+            LOG(ERROR)
+                << uevent->subsystem
+                << " subsystem's devpath option is not set; ignoring event";
             return;
         }
 
@@ -717,7 +719,7 @@ static void handle_generic_device_event(struct uevent *uevent)
          make_dir(base, 0755);
      } else if(!strncmp(uevent->subsystem, "misc", 4) &&
                  !strncmp(name, "log_", 4)) {
-         INFO("kernel logger is deprecated\n");
+         LOG(DEBUG) << "kernel logger is deprecated";
          base = "/dev/log/";
          make_dir(base, 0755);
          name += 4;
@@ -804,8 +806,8 @@ static void process_firmware_event(struct uevent *uevent)
     size_t i;
     int booting = is_booting();
 
-    INFO("firmware: loading '%s' for '%s'\n",
-         uevent->firmware, uevent->path);
+    LOG(DEBUG) << "firmware: loading '" << uevent->firmware << "' for '"
+               << uevent->path << "'";
 
     l = asprintf(&root, SYSFS_PREFIX"%s/", uevent->path);
     if (l == -1)
@@ -837,9 +839,9 @@ try_loading_again:
         free(file);
         if (fw_fd >= 0) {
             if(!load_firmware(fw_fd, loading_fd, data_fd))
-                INFO("firmware: copy success { '%s', '%s' }\n", root, uevent->firmware);
+                LOG(DEBUG) << "firmware: copy success { '" << root << "', '" << uevent->firmware << "' }";
             else
-                INFO("firmware: copy failure { '%s', '%s' }\n", root, uevent->firmware);
+                LOG(DEBUG) << "firmware: copy failure { '" << root << "', '" << uevent->firmware << "' }";
             break;
         }
     }
@@ -852,7 +854,7 @@ try_loading_again:
             booting = is_booting();
             goto try_loading_again;
         }
-        INFO("firmware: could not open '%s': %s\n", uevent->firmware, strerror(errno));
+        PLOG(DEBUG) << "firmware: could not open " << uevent->firmware;
         write(loading_fd, "-1", 2);
         goto data_close_out;
     }
@@ -886,7 +888,7 @@ static void handle_firmware_event(struct uevent *uevent)
         process_firmware_event(uevent);
         _exit(EXIT_SUCCESS);
     } else if (pid < 0) {
-        ERROR("could not fork to process firmware event: %s\n", strerror(errno));
+        PLOG(ERROR) << "could not fork to process firmware event";
     }
 }
 
@@ -983,7 +985,7 @@ void device_init() {
     fcntl(device_fd, F_SETFL, O_NONBLOCK);
 
     if (access(COLDBOOT_DONE, F_OK) == 0) {
-        NOTICE("Skipping coldboot, already done!\n");
+        LOG(INFO) << "Skipping coldboot, already done!";
         return;
     }
 
@@ -992,7 +994,7 @@ void device_init() {
     coldboot("/sys/block");
     coldboot("/sys/devices");
     close(open(COLDBOOT_DONE, O_WRONLY|O_CREAT|O_CLOEXEC, 0000));
-    NOTICE("Coldboot took %.2fs.\n", t.duration());
+    LOG(INFO) << "Coldboot took " << t.duration() << "s.";
 }
 
 int get_device_fd()
