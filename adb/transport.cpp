@@ -1,4 +1,4 @@
-/*
+
  * Copyright (C) 2007 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -849,7 +849,7 @@ size_t atransport::get_max_payload() const {
 // The list of features supported by the current system. Will be sent to the
 // other side of the connection in the banner.
 static const FeatureSet gSupportedFeatures = {
-    // None yet.
+    "sync=2"
 };
 
 const FeatureSet& supported_features() {
@@ -865,8 +865,7 @@ void atransport::add_feature(const std::string& feature) {
 }
 
 bool atransport::CanUseFeature(const std::string& feature) const {
-    return has_feature(feature) &&
-           supported_features().count(feature) > 0;
+    return has_feature(feature) && supported_features().count(feature) > 0;
 }
 
 #if ADB_HOST
