@@ -14,7 +14,7 @@
 #include "metrics/metrics_library.h"
 #include "uploader/metrics_log.h"
 #include "uploader/sender.h"
-#include "uploader/system_profile_cache.h"
+#include "uploader/system_profile_android.h"
 
 namespace metrics {
 class ChromeUserMetricsExtension;
