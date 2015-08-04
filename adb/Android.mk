@@ -294,9 +294,9 @@ LOCAL_STATIC_LIBRARIES := \
     libadbd \
     libbase \
     libfs_mgr \
+    libselinux \
     liblog \
     libmincrypt \
-    libselinux \
     libext4_utils_static \
     libcutils \
     libbase \
