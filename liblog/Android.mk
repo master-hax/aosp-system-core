@@ -60,7 +60,11 @@ ifeq ($(strip $(HOST_OS)),linux)
 LOCAL_LDLIBS := -lrt
 endif
 LOCAL_MULTILIB := both
+# LOCAL_CXX_STL of none uses -nodefaultlib, but that breaks the Windows build
+# which needs the default libs for read(), write(), etc.
+ifneq ($(HOST_OS),windows)
 LOCAL_CXX_STL := none
+endif
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 
