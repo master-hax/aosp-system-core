@@ -362,7 +362,7 @@ CheckInterface(IOUSBInterfaceInterface **interface, UInt16 vendor, UInt16 produc
 
             handle->zero_mask = maxPacketSize - 1;
         } else {
-            DBG("ERR: FindDeviceInterface - could not get pipe properties\n");
+            DBG("ERR: FindDeviceInterface - could not get pipe properties (%08x)\n", kr);
             goto err_get_pipe_props;
         }
     }
