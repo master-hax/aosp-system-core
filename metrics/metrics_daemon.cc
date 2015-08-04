@@ -23,6 +23,8 @@
 #include <base/sys_info.h>
 #include <dbus/dbus.h>
 #include <dbus/message.h>
+
+#include "constants.h"
 #include "uploader/upload_service.h"
 
 using base::FilePath;
@@ -195,13 +197,13 @@ uint32_t MetricsDaemon::GetOsVersionHash() {
   if (version_hash_is_cached)
     return cached_version_hash;
   version_hash_is_cached = true;
-  std::string version;
-  if (base::SysInfo::GetLsbReleaseValue("CHROMEOS_RELEASE_VERSION", &version)) {
-    cached_version_hash = base::Hash(version);
-  } else if (testing_) {
+  std::string version = metrics::kDefaultVersion;
+  // The version might not be set for development devices. In this case, use the
+  // zero version.
+  base::SysInfo::GetLsbReleaseValue("BRILLO_VERSION", &version);
+  cached_version_hash = base::Hash(version);
+  if (testing_) {
     cached_version_hash = 42;  // return any plausible value for the hash
-  } else {
-    LOG(FATAL) << "could not find CHROMEOS_RELEASE_VERSION";
   }
   return cached_version_hash;
 }
