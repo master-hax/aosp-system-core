@@ -89,9 +89,9 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
     libext4_utils_static \
     libutils \
-    liblog \
     libc \
     libselinux \
+    liblog \
     libmincrypt \
     libc++_static \
     libdl
