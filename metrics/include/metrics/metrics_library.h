@@ -111,9 +111,6 @@ class MetricsLibrary : public MetricsLibraryInterface {
   // number in the histograms dashboard).
   bool SendCrosEventToUMA(const std::string& event);
 
-  // Sends to Autotest and returns true on success.
-  static bool SendToAutotest(const std::string& name, int value);
-
  private:
   friend class CMetricsLibraryTest;
   friend class MetricsLibraryTest;

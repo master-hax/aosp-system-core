@@ -75,11 +75,6 @@ static int SendStats(char* argv[],
     sample = ParseInt(argv[name_index + 1]);
   }
 
-  // Send metrics
-  if (send_to_autotest) {
-    MetricsLibrary::SendToAutotest(name, sample);
-  }
-
   if (send_to_chrome) {
     MetricsLibrary metrics_lib;
     metrics_lib.Init();
