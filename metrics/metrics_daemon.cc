@@ -44,10 +44,6 @@ const char kCrashReporterUserCrashSignal[] = "UserCrash";
 const char kCrashReporterMatchRule[] =
     "type='signal',interface='%s',path='/',member='%s'";
 
-// Build type of an official build.
-// See src/third_party/chromiumos-overlay/chromeos/scripts/cros_set_lsb_release.
-const char kOfficialBuild[] = "Official Build";
-
 const int kSecondsPerMinute = 60;
 const int kMinutesPerHour = 60;
 const int kHoursPerDay = 24;
@@ -210,13 +206,6 @@ uint32_t MetricsDaemon::GetOsVersionHash() {
   return cached_version_hash;
 }
 
-bool MetricsDaemon::IsOnOfficialBuild() const {
-  std::string build_type;
-  return (base::SysInfo::GetLsbReleaseValue("CHROMEOS_RELEASE_BUILD_TYPE",
-                                            &build_type) &&
-          build_type == kOfficialBuild);
-}
-
 void MetricsDaemon::Init(bool testing,
                          bool uploader_active,
                          MetricsLibraryInterface* metrics_lib,
@@ -337,14 +326,9 @@ int MetricsDaemon::OnInit() {
   */
 
   if (uploader_active_) {
-    if (IsOnOfficialBuild()) {
-      LOG(INFO) << "uploader enabled";
-      upload_service_.reset(
-          new UploadService(new SystemProfileAndroid(), metrics_lib_, server_));
-      upload_service_->Init(upload_interval_, metrics_file_);
-    } else {
-      LOG(INFO) << "uploader disabled on non-official build";
-    }
+    upload_service_.reset(
+        new UploadService(new SystemProfileAndroid(), metrics_lib_, server_));
+    upload_service_->Init(upload_interval_, metrics_file_);
   }
 
   return EX_OK;
