@@ -285,8 +285,8 @@ void MetricsDaemon::Init(bool testing,
   cpuinfo_max_freq_path_ = cpuinfo_max_freq_path;
 
   // If testing, initialize Stats Reporter without connecting DBus
-  if (testing_)
-    StatsReporterInit();
+  //if (testing_)
+  //  StatsReporterInit();
 }
 
 int MetricsDaemon::OnInit() {
@@ -294,12 +294,12 @@ int MetricsDaemon::OnInit() {
   if (return_code != EX_OK)
     return return_code;
 
-  StatsReporterInit();
+  //StatsReporterInit();
 
   // Start collecting meminfo stats.
-  ScheduleMeminfoCallback(kMetricMeminfoInterval);
-  memuse_final_time_ = GetActiveTime() + kMemuseIntervals[0];
-  ScheduleMemuseCallback(kMemuseIntervals[0]);
+  //ScheduleMeminfoCallback(kMetricMeminfoInterval);
+  //memuse_final_time_ = GetActiveTime() + kMemuseIntervals[0];
+  //ScheduleMemuseCallback(kMemuseIntervals[0]);
 
   if (testing_)
     return EX_OK;
@@ -329,10 +329,12 @@ int MetricsDaemon::OnInit() {
     return EX_UNAVAILABLE;
   }
 
+  /*
   base::MessageLoop::current()->PostDelayedTask(FROM_HERE,
       base::Bind(&MetricsDaemon::HandleUpdateStatsTimeout,
                  base::Unretained(this)),
       base::TimeDelta::FromMilliseconds(kUpdateStatsIntervalMs));
+  */
 
   if (uploader_active_) {
     if (IsOnOfficialBuild()) {
