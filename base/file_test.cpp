@@ -78,32 +78,6 @@ TEST(file, WriteStringToFd) {
   EXPECT_EQ("abc", s);
 }
 
-TEST(file, ReadFully) {
-#ifdef _WIN32
-  VersionFile ver;
-  ASSERT_NE(ver.filename, nullptr);
-  const char* filename = ver.filename;
-  // Note that ReadFully() does CR/LF translation, so we expect \n, not \r\n.
-  const char expected[] = "\nMicrosoft Windows";
-#else
-  const char* filename = "/proc/version";
-  const char expected[] = "Linux";
-#endif
-  int fd = open(filename, O_RDONLY);
-  ASSERT_NE(-1, fd) << strerror(errno);
-
-  char buf[1024];
-  memset(buf, 0, sizeof(buf));
-  ASSERT_TRUE(android::base::ReadFully(fd, buf, sizeof(expected) - 1));
-  ASSERT_STREQ(expected, buf);
-
-  ASSERT_EQ(0, lseek(fd, 0, SEEK_SET)) << strerror(errno);
-
-  ASSERT_FALSE(android::base::ReadFully(fd, buf, sizeof(buf)));
-
-  close(fd);
-}
-
 TEST(file, WriteFully) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
