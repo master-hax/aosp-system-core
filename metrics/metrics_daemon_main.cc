@@ -8,7 +8,6 @@
 #include <base/strings/string_util.h>
 #include <chromeos/flag_helper.h>
 #include <chromeos/syslog_logging.h>
-#include <rootdev/rootdev.h>
 
 #include "metrics_daemon.h"
 
@@ -21,7 +20,8 @@ const char kCpuinfoMaxFreqPath[] =
 // it cannot find the disk stats file.
 static
 const std::string MetricsMainDiskStatsPath() {
-  char dev_path_cstr[PATH_MAX];
+  return "";
+  /*char dev_path_cstr[PATH_MAX];
   std::string dev_prefix = "/dev/";
   std::string dev_path;
   std::string dev_name;
@@ -40,6 +40,7 @@ const std::string MetricsMainDiskStatsPath() {
   // Get the device name, e.g. "sda" from "/dev/sda".
   dev_name = dev_path.substr(dev_prefix.length());
   return "/sys/class/block/" + dev_name + "/stat";
+  */
 }
 
 int main(int argc, char** argv) {
