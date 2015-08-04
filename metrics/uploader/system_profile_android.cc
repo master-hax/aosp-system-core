@@ -61,15 +61,16 @@ bool SystemProfileAndroid::Initialize() {
   CHECK(!initialized_)
       << "this should be called only once in the metrics_daemon lifetime.";
 
-  std::string channel;
-  if (!base::SysInfo::GetLsbReleaseValue("BRILLO_CHANNEL", &channel) ||
-      !base::SysInfo::GetLsbReleaseValue("BRILLO_VERSION", &profile_.version) ||
-      !base::SysInfo::GetLsbReleaseValue("BRILLO_BUILD_TARGET_ID",
+  if (!base::SysInfo::GetLsbReleaseValue("BRILLO_BUILD_TARGET_ID",
                                          &profile_.build_target_id)) {
     LOG(ERROR) << "Could not initialize system profile.";
     return false;
   }
 
+  std::string channel = "";
+  profile_.version = metrics::kDefaultVersion;
+  base::SysInfo::GetLsbReleaseValue("BRILLO_CHANNEL", &channel);
+  base::SysInfo::GetLsbReleaseValue("BRILLO_VERSION", &profile_.version);
   profile_.client_id =
       testing_ ? "client_id_test" :
       GetPersistentGUID(metrics::kMetricsGUIDFilePath);
