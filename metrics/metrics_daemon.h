@@ -31,6 +31,7 @@ class MetricsDaemon : public chromeos::DBusDaemon {
   // Initializes metrics class variables.
   void Init(bool testing,
             bool uploader_active,
+            bool dbus_enabled,
             MetricsLibraryInterface* metrics_lib,
             const std::string& diskstats_path,
             const std::string& vmstats_path,
@@ -289,6 +290,10 @@ class MetricsDaemon : public chromeos::DBusDaemon {
 
   // Whether the uploader is enabled or disabled.
   bool uploader_active_;
+
+  // Whether or not dbus should be used.
+  // If disabled, we will not collect the frequency of crashes.
+  bool dbus_enabled_;
 
   // Root of the configuration files to use.
   std::string config_root_;
