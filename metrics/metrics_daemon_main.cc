@@ -56,6 +56,9 @@ int main(int argc, char** argv) {
               false,
               "run the uploader once and exit");
 
+  // Enable dbus.
+  DEFINE_bool(withdbus, true, "Enable dbus");
+
   // Upload Service flags.
   DEFINE_int32(upload_interval_secs,
                1800,
@@ -85,6 +88,7 @@ int main(int argc, char** argv) {
   MetricsDaemon daemon;
   daemon.Init(FLAGS_uploader_test,
               FLAGS_uploader | FLAGS_uploader_test,
+              FLAGS_withdbus,
               &metrics_lib,
               MetricsMainDiskStatsPath(),
               "/proc/vmstat",
