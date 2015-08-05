@@ -408,7 +408,21 @@ def parse_args():
                         'event tags are read. Every line contains one event '
                         'tag and the last event tag is used to detect that '
                         'the device has finished booting.')
+    parser.add_argument('--apkdir', help='Specify the directory which contains '
+                        'APK files to be installed before measuring boot time.')
     return parser.parse_args()
+
+
+def install_apks(device, apkdir):
+    apks = os.listdir(apkdir)
+    for apk in apks:
+        _, ext = os.path.splitext(apk)
+        if ext != '.apk':
+            logging.warning('Skip installing the non-APK file: %s', apk)
+            continue
+        apk_path = os.path.join(apkdir, apk)
+        print 'Installing: ' + apk_path
+        device.install(apk_path, ['-r'])
 
 
 def main():
@@ -424,6 +438,9 @@ def main():
             device.get_prop('ro.build.flavor'),
             device.get_prop('ro.build.version.incremental'))
     check_dm_verity_settings(device)
+
+    if args.apkdir:
+        install_apks(device, args.apkdir)
 
     record_list = []
     event_tags = filter_event_tags(read_event_tags(args.tags), device)
