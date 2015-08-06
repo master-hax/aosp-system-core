@@ -135,22 +135,6 @@ static void setup_daemon_logging(void) {
 int adb_main(int is_daemon, int server_port) {
     HOST = 1;
 
-#if defined(_WIN32)
-    SetConsoleCtrlHandler(ctrlc_handler, TRUE);
-#else
-    signal(SIGPIPE, SIG_IGN);
-#endif
-
-    init_transport_registration();
-
-    if (kWorkaroundBug6558362 && is_daemon) {
-        adb_workaround_affinity();
-    }
-
-    usb_init();
-    local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
-    adb_auth_init();
-
     std::string error;
     std::string local_name = android::base::StringPrintf("tcp:%d", server_port);
     if (install_listener(local_name, "*smartsocket*", nullptr, 0, &error)) {
@@ -179,10 +163,29 @@ int adb_main(int is_daemon, int server_port) {
 #else
         int reply_fd = STDERR_FILENO;
 #endif
-        android::base::WriteStringToFd("OK\n", reply_fd);
+        bool success = android::base::WriteStringToFd("OK\n", reply_fd);
         close_stdin();
         setup_daemon_logging();
+        if (!success) {
+            D("writing OK reply back to parent failed\n");
+        }
     }
+
+#if defined(_WIN32)
+    SetConsoleCtrlHandler(ctrlc_handler, TRUE);
+#else
+    signal(SIGPIPE, SIG_IGN);
+#endif
+
+    init_transport_registration();
+
+    if (kWorkaroundBug6558362 && is_daemon) {
+        adb_workaround_affinity();
+    }
+
+    usb_init();
+    local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
+    adb_auth_init();
 
     D("Event loop starting\n");
     fdevent_loop();
@@ -204,7 +207,6 @@ int main(int argc, char** argv) {
 
     adb_sysdeps_init();
     adb_trace_init(argv);
-    D("Handling commandline()\n");
     return adb_commandline(argc - 1, const_cast<const char**>(argv + 1));
 }
 
