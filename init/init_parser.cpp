@@ -315,10 +315,13 @@ static void parse_config(const char *fn, const std::string& data)
 
     int nargs = 0;
 
+    //TODO: Use a parser with const input and remove this strdup()
+    char* data_copy = strdup(data.c_str());
+
     parse_state state;
     state.filename = fn;
     state.line = 0;
-    state.ptr = strdup(data.c_str());  // TODO: fix this code!
+    state.ptr = data_copy;
     state.nexttoken = 0;
     state.parse_line = parse_line_no_op;
 
@@ -359,6 +362,7 @@ parser_done:
                    import->filename, fn, strerror(errno));
          }
     }
+    free(data_copy);
 }
 
 static bool init_parse_config_file(const char* path) {
