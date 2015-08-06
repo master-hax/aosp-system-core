@@ -307,7 +307,7 @@ static void parse_new_section(struct parse_state *state, int kw,
     state->parse_line = parse_line_no_op;
 }
 
-static void parse_config(const char *fn, const std::string& data)
+static void parse_config(const char *fn, std::string& data)
 {
     struct listnode import_list;
     struct listnode *node;
@@ -318,7 +318,7 @@ static void parse_config(const char *fn, const std::string& data)
     parse_state state;
     state.filename = fn;
     state.line = 0;
-    state.ptr = strdup(data.c_str());  // TODO: fix this code!
+    state.ptr = &data[0];
     state.nexttoken = 0;
     state.parse_line = parse_line_no_op;
 
