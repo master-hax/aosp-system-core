@@ -954,6 +954,20 @@ int adb_commandline(int argc, const char **argv) {
     int r;
     TransportType transport_type = kTransportAny;
 
+#if defined(_WIN32)
+    // TODO(danalbert): Why do we use stdout for Windows? There is a
+    // comment in launch_server() that suggests that non-Windows uses
+    // stderr because it is non-buffered. So perhaps the history is that
+    // stdout was preferred for all platforms, but it was discovered that
+    // non-Windows needed a non-buffered fd, so stderr was used there.
+    // Linux/Mac have now moved on to using a different fd than either
+    // stdout/err to avoid collision with logging statements
+    int ack_reply_fd = STDOUT_FILENO;
+#else
+    int ack_reply_fd = -1;
+#endif
+
+
     // If defined, this should be an absolute path to
     // the directory containing all of the various system images
     // for a particular product.  If not defined, and the adb
@@ -989,6 +1003,29 @@ int adb_commandline(int argc, const char **argv) {
         } else if (!strcmp(argv[0], "fork-server")) {
             /* this is a special flag used only when the ADB client launches the ADB Server */
             is_daemon = 1;
+        } else if (!strcmp(argv[0], "-reply_fd")) {
+	    const char* reply_fd_str = nullptr;
+            if (argv[0][10] == '\0') {
+                if (argc < 2) return usage();
+                reply_fd_str = argv[1];
+                argc--;
+                argv++;
+            } else {
+                reply_fd_str = argv[0] + 10;
+            }
+            if (strlen(reply_fd_str) > 0) {
+                ack_reply_fd = (int) strtol(reply_fd_str, NULL, 0);
+                if (ack_reply_fd <= 0 || ack_reply_fd > 65535) {
+                    fprintf(stderr,
+                            "adb: server to client reply fd must be a positive number less than 65536. Got \"%s\"\n",
+                            reply_fd_str);
+                    return usage();
+                }
+            } else {
+                fprintf(stderr,
+                "adb: server to client reply fd must be a positive number less than 65536. Got empty string.\n");
+                return usage();
+            }
         } else if (!strncmp(argv[0], "-p", 2)) {
             const char* product = nullptr;
             if (argv[0][2] == '\0') {
@@ -1066,7 +1103,13 @@ int adb_commandline(int argc, const char **argv) {
 
     if (is_server) {
         if (no_daemon || is_daemon) {
-            r = adb_main(is_daemon, server_port);
+#if !defined(_WIN32)
+            if (ack_reply_fd < 0) {
+                fprintf(stderr, "fd for adb server to client communication not specified");
+		return usage();
+	    }
+#endif
+            r = adb_main(is_daemon, server_port, ack_reply_fd);
         } else {
             r = launch_server(server_port);
         }
