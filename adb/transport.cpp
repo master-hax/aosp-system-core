@@ -237,8 +237,10 @@ void send_packet(apacket *p, atransport *t)
 
 static void *output_thread(void *_t)
 {
+restart:
     atransport *t = reinterpret_cast<atransport*>(_t);
     apacket *p;
+    int restart_count = 0;
 
     D("%s: starting transport output thread on fd %d, SYNC online (%d)\n",
        t->serial, t->fd, t->sync_token + 1);
@@ -267,6 +269,9 @@ static void *output_thread(void *_t)
             }
         } else {
             D("%s: remote read failed for transport\n", t->serial);
+            if (restart_count++ < 2) {
+                goto restart;
+            }
             put_apacket(p);
             break;
         }
@@ -1033,7 +1038,7 @@ void unregister_usb_transport(usb_handle *usb) {
 int check_header(apacket *p, atransport *t)
 {
     if(p->msg.magic != (p->msg.command ^ 0xffffffff)) {
-        D("check_header(): invalid magic\n");
+        D("check_header(): invalid magic: magic = %08x, comand = %08x\n", p->msg.magic, p->msg.command);
         return -1;
     }
 
