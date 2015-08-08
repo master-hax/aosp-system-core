@@ -41,7 +41,12 @@ include $(BUILD_SYSTEM)/base_rules.mk
 
 EXPORT_GLOBAL_ASAN_OPTIONS :=
 ifeq (address,$(strip $(SANITIZE_TARGET)))
-  EXPORT_GLOBAL_ASAN_OPTIONS := export ASAN_OPTIONS allow_user_segv_handler=1:detect_odr_violation=0:alloc_dealloc_mismatch=0
+  EXPORT_GLOBAL_ASAN_OPTIONS := export ASAN_OPTIONS include=/system/asan.options
+  GLOBAL_ASAN_OPTIONS=allow_user_segv_handler=1:detect_odr_violation=0:alloc_dealloc_mismatch=0:allocator_may_return_null=1
+$(TARGET_OUT)/asan.options:
+	@echo "Writing $@: $(GLOBAL_ASAN_OPTIONS)"
+	$(hide) echo "$(GLOBAL_ASAN_OPTIONS)" >$@
+$(LOCAL_BUILT_MODULE): $(TARGET_OUT)/asan.options
 endif
 
 # Regenerate init.environ.rc if PRODUCT_BOOTCLASSPATH has changed.
