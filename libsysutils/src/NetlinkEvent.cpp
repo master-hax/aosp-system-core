@@ -58,6 +58,7 @@ const int NetlinkEvent::NlActionAddressRemoved = 7;
 const int NetlinkEvent::NlActionRdnss = 8;
 const int NetlinkEvent::NlActionRouteUpdated = 9;
 const int NetlinkEvent::NlActionRouteRemoved = 10;
+const int NetlinkEvent::NlActionMove = 11;
 
 NetlinkEvent::NetlinkEvent() {
     mAction = NlActionUnknown;
@@ -622,6 +623,8 @@ bool NetlinkEvent::parseAsciiNetlinkMessage(char *buffer, int size) {
                     mAction = NlActionRemove;
                 else if (!strcmp(a, "change"))
                     mAction = NlActionChange;
+                if (!strcmp(a, "move"))
+                    mAction = NlActionMove;
             } else if ((a = HAS_CONST_PREFIX(s, end, "SEQNUM=")) != NULL) {
                 mSeq = atoi(a);
             } else if ((a = HAS_CONST_PREFIX(s, end, "SUBSYSTEM=")) != NULL) {

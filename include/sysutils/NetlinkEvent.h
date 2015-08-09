@@ -39,6 +39,7 @@ public:
     const static int NlActionRdnss;
     const static int NlActionRouteUpdated;
     const static int NlActionRouteRemoved;
+    const static int NlActionMove;
 
     NetlinkEvent();
     virtual ~NetlinkEvent();
