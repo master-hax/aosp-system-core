@@ -59,6 +59,16 @@ struct stinfo {
     void *cookie;
 };
 
+// Selects between a raw or PTY subprocess.
+// The automatic type determines whether to use a PTY or not based on
+// whether the process is interactive or not, which is how SSH works, e.g.:
+//   adb shell            --> interactive, PTY
+//   adb shell echo "foo" --> non-interactive, raw
+enum class SubprocessType {
+    kPty,
+    kRaw,
+    kAutoDetermine
+};
 
 void *service_bootstrap_func(void *x)
 {
@@ -389,17 +399,35 @@ static void subproc_waiter_service(int fd, void *cookie)
     }
 }
 
-static int create_subproc_thread(const char *name, bool pty = false) {
+// Starts a subprocess and spawns a thread to wait for the subprocess to finish
+// and trigger the necessary cleanup.
+//
+// |name| is the command to execute in the subprocess; empty string or nullptr
+// will start an interactive session.
+// |type| selects between a PTY or raw subprocess.
+//
+// Returns an open file descriptor tied to the subprocess stdin/stdout/stderr.
+static int create_subproc_thread(const char *name, SubprocessType type) {
     const char *arg0, *arg1;
-    if (name == 0 || *name == 0) {
-        arg0 = "-"; arg1 = 0;
+    if (name == nullptr || *name == '\0') {
+        arg0 = "-";
+        arg1 = nullptr;
+        // Interactive session: default to a PTY subprocess.
+        if (type == SubprocessType::kAutoDetermine) {
+            type = SubprocessType::kPty;
+        }
     } else {
-        arg0 = "-c"; arg1 = name;
+        arg0 = "-c";
+        arg1 = name;
+        // Non-interactive session: default to a raw subprocess.
+        if (type == SubprocessType::kAutoDetermine) {
+            type = SubprocessType::kRaw;
+        }
     }
 
     pid_t pid = -1;
     int ret_fd;
-    if (pty) {
+    if (type == SubprocessType::kPty) {
         ret_fd = create_subproc_pty(SHELL_COMMAND, arg0, arg1, &pid);
     } else {
         ret_fd = create_subproc_raw(SHELL_COMMAND, arg0, arg1, &pid);
@@ -466,9 +494,9 @@ int service_to_fd(const char *name)
     } else if (!strncmp(name, "jdwp:", 5)) {
         ret = create_jdwp_connection_fd(atoi(name+5));
     } else if(!HOST && !strncmp(name, "shell:", 6)) {
-        ret = create_subproc_thread(name + 6, true);
+        ret = create_subproc_thread(name + 6, SubprocessType::kAutoDetermine);
     } else if(!HOST && !strncmp(name, "exec:", 5)) {
-        ret = create_subproc_thread(name + 5);
+        ret = create_subproc_thread(name + 5, SubprocessType::kRaw);
     } else if(!strncmp(name, "sync:", 5)) {
         ret = create_service_thread(file_sync_service, NULL);
     } else if(!strncmp(name, "remount:", 8)) {
@@ -482,10 +510,13 @@ int service_to_fd(const char *name)
     } else if(!strncmp(name, "unroot:", 7)) {
         ret = create_service_thread(restart_unroot_service, NULL);
     } else if(!strncmp(name, "backup:", 7)) {
-        ret = create_subproc_thread(android::base::StringPrintf("/system/bin/bu backup %s",
-                                                                (name + 7)).c_str());
+        ret = create_subproc_thread(
+                android::base::StringPrintf("/system/bin/bu backup %s",
+                                            (name + 7)).c_str(),
+                SubprocessType::kRaw);
     } else if(!strncmp(name, "restore:", 8)) {
-        ret = create_subproc_thread("/system/bin/bu restore");
+        ret = create_subproc_thread("/system/bin/bu restore",
+                                    SubprocessType::kRaw);
     } else if(!strncmp(name, "tcpip:", 6)) {
         int port;
         if (sscanf(name + 6, "%d", &port) != 1) {

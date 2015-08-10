@@ -101,6 +101,24 @@ def get_device(serial=None, product=None):
 
 
 class AndroidDevice(object):
+    # Delimiter string to indicate the start of the exit code. Anything
+    # should work equally well here except for:
+    #   - Newline characters: not reliable with interactive shells.
+    #   - Numeric digits: could combine with user-printed digits.
+    _RETURN_CODE_DELIMITER = 'x'
+
+    # Follow any shell command with this string to get the exit
+    # status of a program since this isn't propagated by adb.
+    #
+    # The delimiter is needed because `printf 1; echo $?` would print
+    # "10", and we wouldn't be able to distinguish the exit code.
+    _RETURN_CODE_PROBE_STRING = 'echo "%s$?"' % _RETURN_CODE_DELIMITER
+
+    # Maximum search distance from the output end to find the delimiter.
+    # Interactive shells can have some unusual newline character effects,
+    # so that \n can sometimes be transformed to \r\r\n.
+    _RETURN_CODE_SEARCH_LENGTH = len('%s255\r\r\n' % _RETURN_CODE_DELIMITER)
+
     def __init__(self, serial, product=None):
         self.serial = serial
         self.product = product
@@ -110,40 +128,43 @@ class AndroidDevice(object):
         if self.product is not None:
             self.adb_cmd.extend(['-p', product])
         self._linesep = None
-        self._shell_result_pattern = None
 
     @property
     def linesep(self):
         if self._linesep is None:
-            self._linesep = subprocess.check_output(['adb', 'shell', 'echo'])
+            self._linesep = subprocess.check_output(self.adb_cmd +
+                                                    ['shell', 'echo'])
         return self._linesep
 
     def _make_shell_cmd(self, user_cmd):
-        # Follow any shell command with `; echo; echo $?` to get the exit
-        # status of a program since this isn't propagated by adb.
-        #
-        # The leading newline is needed because `printf 1; echo $?` would print
-        # "10", and we wouldn't be able to distinguish the exit code.
-        rc_probe = '; echo "\n$?"'
-        return self.adb_cmd + ['shell'] + user_cmd + [rc_probe]
+        return (self.adb_cmd + ['shell'] + user_cmd +
+                ['; ' + self._RETURN_CODE_PROBE_STRING])
 
-    def _parse_shell_output(self, out):  # pylint: disable=no-self-use
-        search_text = out
-        max_result_len = len('{0}255{0}'.format(self.linesep))
-        if len(search_text) > max_result_len:
-            # We don't want to regex match over massive amounts of data when we
-            # know the part we want is right at the end.
-            search_text = search_text[-max_result_len:]
-        if self._shell_result_pattern is None:
-            self._shell_result_pattern = re.compile(
-                r'({0}\d+{0})$'.format(self.linesep), re.MULTILINE)
-        m = self._shell_result_pattern.search(search_text)
-        if m is None:
+    def _parse_shell_output(self, out):
+        """Finds the exit code string from shell output.
+
+        Args:
+            out: Shell output string.
+
+        Returns:
+            An (exit_code, output_string) tuple. The output string is
+            cleaned of any additional stuff we appended to find the
+            exit code.
+
+        Raises:
+            RuntimeError: Could not find the exit code in |out|.
+        """
+        # Since our return code string is always the last command we only need
+        # to search backwards until we find our delimiter. Restrict the search
+        # to a small distance from the end to avoid searching tons of data
+        # in case something went wrong and the delimiter is missing.
+        delimiter_index = out.rfind(
+                self._RETURN_CODE_DELIMITER,
+                max(0, len(out) - self._RETURN_CODE_SEARCH_LENGTH))
+        if delimiter_index < 0:
             raise RuntimeError('Could not find exit status in shell output.')
-
-        result_text = m.group(1)
-        result = int(result_text.strip())
-        out = out[:-len(result_text)]  # Trim the result text from the output.
+        result = int(out[delimiter_index + len(self._RETURN_CODE_DELIMITER):])
+        out = out[:delimiter_index]
         return result, out
 
     def _simple_call(self, cmd):
@@ -169,6 +190,39 @@ class AndroidDevice(object):
             cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         out, _ = p.communicate()
         return self._parse_shell_output(out)
+
+    def shell_interactive(self, commands):
+        """Run a set of commands in an interactive shell.
+
+        Prefer the non-interactive shell functions when possible, some
+        strangeness comes up when trying to run an interactive shell
+        from a non-interactive Python script. This should only be used
+        to check things specific to interactive shells (e.g. PTY
+        settings).
+
+        Note also that the output string will be unpredictable and
+        difficult to parse; searching for specific substrings should
+        work but matching exact output is unreliable due to newline
+        translation, input echoing, and the command prompt.
+
+        Args:
+            commands: A list of string commands to run in the shell.
+
+        Returns:
+            An (exit_code, output_string) tuple. The output string
+            contains both stdout and stderr.
+        """
+        # Closing host-side stdout doesn't currently trigger the interactive
+        # shell to exit so we need to explicitly add an exit command to close
+        # the session from the device side.
+        # We also need to append \n to complete an interactive command.
+        input_string = '; '.join(commands +
+                                 [self._RETURN_CODE_PROBE_STRING, 'exit 0\n'])
+        proc = subprocess.Popen(
+                self.adb_cmd + ['shell'], stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        output = proc.communicate(input=input_string)[0]
+        return self._parse_shell_output(output)
 
     def install(self, filename, replace=False):
         cmd = ['install']
