@@ -155,6 +155,19 @@ class ShellTest(DeviceTest):
         output = self.device.shell(['uname'])
         self.assertEqual(output, 'Linux' + self.device.linesep)
 
+    def test_pty_logic(self):
+        """Verify PTY logic for shells.
+
+        Interactive shells should use a PTY, non-interactive should not.
+
+        Bug: http://b/21215503
+        """
+        exit_code = self.device.shell_interactive(['[ -t 0 ]'])[0]
+        self.assertEqual(exit_code, 0)
+
+        exit_code = self.device.shell_nocheck(['[ -t 0 ]'])[0]
+        self.assertEqual(exit_code, 1)
+
 
 class ArgumentEscapingTest(DeviceTest):
     def test_shell_escaping(self):
