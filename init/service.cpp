@@ -464,7 +464,12 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
             if (setexeccon(seclabel_.c_str()) < 0) {
                 ERROR("cannot setexeccon('%s'): %s\n",
                       seclabel_.c_str(), strerror(errno));
-                _exit(127);
+                // Fail soft when in permissive mode (eng/userdebug only) so that services
+                // with seclabels of non-existent types still start. Useful for early
+                // bring up and policy porting.
+                if (selinux_is_enforcing()) {
+                    _exit(127);
+                }
             }
         }
 

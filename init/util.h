@@ -27,6 +27,8 @@
 
 #define COLDBOOT_DONE "/dev/.coldboot_done"
 
+enum selinux_enforcing_status { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
+
 int mtd_name_to_number(const char *name);
 int create_socket(const char *name, int type, mode_t perm,
                   uid_t uid, gid_t gid, const char *socketcon);
@@ -65,4 +67,5 @@ int restorecon(const char *pathname);
 int restorecon_recursive(const char *pathname);
 std::string bytes_to_hex(const uint8_t *bytes, size_t bytes_len);
 bool is_dir(const char* pathname);
+bool selinux_is_enforcing(void);
 #endif
