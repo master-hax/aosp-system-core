@@ -183,6 +183,28 @@ static void publish_socket(const char *name, int fd)
     fcntl(fd, F_SETFD, 0);
 }
 
+enum selinux_enforcing_status { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
+
+static selinux_enforcing_status selinux_status_from_cmdline() {
+    selinux_enforcing_status status = SELINUX_ENFORCING;
+
+    import_kernel_cmdline(false, [&](const std::string& key, const std::string& value, bool in_qemu) {
+        if (key == "androidboot.selinux" && value == "permissive") {
+            status = SELINUX_PERMISSIVE;
+        }
+    });
+
+    return status;
+}
+
+static bool selinux_is_enforcing(void)
+{
+    if (ALLOW_PERMISSIVE_SELINUX) {
+        return selinux_status_from_cmdline() == SELINUX_ENFORCING;
+    }
+    return true;
+}
+
 void service_start(struct service *svc, const char *dynamic_args)
 {
     // Starting a service removes it from the disabled or reset state and
@@ -347,7 +369,11 @@ void service_start(struct service *svc, const char *dynamic_args)
         if (svc->seclabel) {
             if (setexeccon(svc->seclabel) < 0) {
                 ERROR("cannot setexeccon('%s'): %s\n", svc->seclabel, strerror(errno));
-                _exit(127);
+                // Fail soft when in permissive mode (eng/userdebug only) so that services
+                // with seclabels of non-existent types still start. Useful for early
+                // bring up and policy porting.
+                if (selinux_is_enforcing())
+                    _exit(127);
             }
         }
 
@@ -766,28 +792,6 @@ static void selinux_init_all_handles(void)
     sehandle = selinux_android_file_context_handle();
     selinux_android_set_sehandle(sehandle);
     sehandle_prop = selinux_android_prop_context_handle();
-}
-
-enum selinux_enforcing_status { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
-
-static selinux_enforcing_status selinux_status_from_cmdline() {
-    selinux_enforcing_status status = SELINUX_ENFORCING;
-
-    import_kernel_cmdline(false, [&](const std::string& key, const std::string& value, bool in_qemu) {
-        if (key == "androidboot.selinux" && value == "permissive") {
-            status = SELINUX_PERMISSIVE;
-        }
-    });
-
-    return status;
-}
-
-static bool selinux_is_enforcing(void)
-{
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return selinux_status_from_cmdline() == SELINUX_ENFORCING;
-    }
-    return true;
 }
 
 int selinux_reload_policy(void)
