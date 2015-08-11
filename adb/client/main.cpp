@@ -87,14 +87,10 @@ static std::string GetLogFilePath() {
     // https://msdn.microsoft.com/en-us/library/windows/desktop/aa364992%28v=vs.85%29.aspx
     DWORD nchars = GetTempPathW(arraysize(temp_path), temp_path);
     if ((nchars >= arraysize(temp_path)) || (nchars == 0)) {
-        // If string truncation or some other error.
-        // TODO(danalbert): Log the error message from
-        // FormatMessage(GetLastError()). Pure Windows APIs only touch
-        // GetLastError(), C Runtime APIs touch errno, so maybe there should be
-        // WPLOG or PLOGW (which would read GetLastError() instead of errno),
-        // in addition to PLOG, or maybe better to just ignore it and add a
-        // simplified version of FormatMessage() for use in log messages.
-        LOG(ERROR) << "Error creating log file";
+        // If string truncation or some other error, warn.
+        fprintf(stderr, "adb: cannot retrieve temporary file path: %s\n",
+                SystemErrorCodeToString(GetLastError()).c_str());
+        return "";
     }
 
     return narrow(temp_path) + log_name;
@@ -115,14 +111,31 @@ static void close_stdin() {
 }
 
 static void setup_daemon_logging(void) {
-    int fd = unix_open(GetLogFilePath().c_str(), O_WRONLY | O_CREAT | O_APPEND,
+    int fd = -1;
+    const std::string log_file_path(GetLogFilePath());
+    if (!log_file_path.empty()) {
+        fd = unix_open(log_file_path.c_str(), O_WRONLY | O_CREAT | O_APPEND,
                        0640);
+        if (fd == -1) {
+            // warn
+            fprintf(stderr, "adb: cannot open '%s': %s", log_file_path.c_str(),
+                    strerror(errno));
+        }
+    }
     if (fd == -1) {
         fd = unix_open(kNullFileName, O_WRONLY);
+        if (fd == -1) {
+            // warn
+            fprintf(stderr, "adb: cannot open '%s': %s", kNullFileName,
+                    strerror(errno));
+        }
     }
-    dup2(fd, STDOUT_FILENO);
-    dup2(fd, STDERR_FILENO);
-    unix_close(fd);
+
+    if (fd != -1) {
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+        unix_close(fd);
+    }
 
 #ifdef _WIN32
     // On Windows, stderr is buffered by default, so switch to non-buffered
