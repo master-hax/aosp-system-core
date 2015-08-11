@@ -70,9 +70,14 @@ const char* getprogname() {
   static char progname[MAX_PATH] = {};
 
   if (first) {
-    // TODO(danalbert): This is a full path on Windows. Just get the basename.
-    DWORD nchars = GetModuleFileName(nullptr, progname, sizeof(progname));
-    DCHECK_GT(nchars, 0U);
+    CHAR longname[MAX_PATH];
+    DWORD nchars = GetModuleFileNameA(nullptr, longname, arraysize(longname));
+    if ((nchars >= arraysize(longname)) || (nchars == 0)) {
+      // String truncation or some other error.
+      strcpy(progname, "<unknown>");
+    } else {
+      strcpy(progname, basename(longname));
+    }
     first = false;
   }
 
@@ -82,25 +87,22 @@ const char* getprogname() {
 class mutex {
  public:
   mutex() {
-    semaphore_ = CreateSemaphore(nullptr, 1, 1, nullptr);
-    CHECK(semaphore_ != nullptr) << "Failed to create Mutex";
+    InitializeCriticalSection(&critical_section_);
   }
   ~mutex() {
-    CloseHandle(semaphore_);
+    DeleteCriticalSection(&critical_section_);
   }
 
   void lock() {
-    DWORD result = WaitForSingleObject(semaphore_, INFINITE);
-    CHECK_EQ(result, WAIT_OBJECT_0) << GetLastError();
+    EnterCriticalSection(&critical_section_);
   }
 
   void unlock() {
-    bool result = ReleaseSemaphore(semaphore_, 1, nullptr);
-    CHECK(result);
+    LeaveCriticalSection(&critical_section_);
   }
 
  private:
-  HANDLE semaphore_;
+  CRITICAL_SECTION critical_section_;
 };
 
 template <typename LockT>
@@ -147,8 +149,9 @@ static const char* ProgramInvocationName() {
 
 void StderrLogger(LogId, LogSeverity severity, const char*, const char* file,
                   unsigned int line, const char* message) {
-  static const char* log_characters = "VDIWEF";
-  CHECK_EQ(strlen(log_characters), FATAL + 1U);
+  static const char log_characters[] = "VDIWEF";
+  static_assert(arraysize(log_characters) - 1 == FATAL + 1,
+                "Mismatch in size of log_characters and values in LogSeverity");
   char severity_char = log_characters[severity];
   fprintf(stderr, "%s %c %5d %5d %s:%u] %s\n", ProgramInvocationName(),
           severity_char, getpid(), gettid(), file, line, message);
@@ -262,14 +265,13 @@ void SetLogger(LogFunction&& logger) {
 class LogMessageData {
  public:
   LogMessageData(const char* file, unsigned int line, LogId id,
-                 LogSeverity severity, int error)
-      : file_(file),
+                 LogSeverity severity, int error, int saved_errno)
+      : file_(GetFileBasename(file)),
         line_number_(line),
         id_(id),
         severity_(severity),
-        error_(error) {
-    const char* last_slash = strrchr(file, '/');
-    file = (last_slash == nullptr) ? file : last_slash + 1;
+        error_(error),
+        errno_restorer_(saved_errno) {
   }
 
   const char* GetFile() const {
@@ -301,19 +303,39 @@ class LogMessageData {
   }
 
  private:
+  static const char* GetFileBasename(const char* file) {
+    const char* last_slash = strrchr(file, '/');
+    return (last_slash == nullptr) ? file : last_slash + 1;
+  }
+
+  class ErrnoRestorer {
+   public:
+    ErrnoRestorer(int saved_errno)
+      : saved_errno_(saved_errno) {
+    }
+
+    ~ErrnoRestorer() {
+      errno = saved_errno_;
+    }
+
+   private:
+    const int saved_errno_;
+  };
+
   std::ostringstream buffer_;
   const char* const file_;
   const unsigned int line_number_;
   const LogId id_;
   const LogSeverity severity_;
   const int error_;
+  ErrnoRestorer errno_restorer_;
 
   DISALLOW_COPY_AND_ASSIGN(LogMessageData);
 };
 
 LogMessage::LogMessage(const char* file, unsigned int line, LogId id,
                        LogSeverity severity, int error)
-    : data_(new LogMessageData(file, line, id, severity, error)) {
+    : data_(new LogMessageData(file, line, id, severity, error, errno)) {
 }
 
 LogMessage::~LogMessage() {
