@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <log/log.h>
 #include <utils/SharedBuffer.h>
 #include <utils/Atomic.h>
 
@@ -26,6 +27,11 @@ namespace android {
 
 SharedBuffer* SharedBuffer::alloc(size_t size)
 {
+    // Don't overflow if the combined size of the buffer / header is larger than
+    // size_max.
+    LOG_ALWAYS_FATAL_IF((size >= (SIZE_MAX - sizeof(SharedBuffer))),
+                        "Invalid buffer size %zu", size);
+
     SharedBuffer* sb = static_cast<SharedBuffer *>(malloc(sizeof(SharedBuffer) + size));
     if (sb) {
         sb->mRefs = 1;
