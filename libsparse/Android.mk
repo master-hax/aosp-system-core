@@ -18,6 +18,7 @@ LOCAL_MODULE := libsparse_host
 LOCAL_STATIC_LIBRARIES := libz
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CFLAGS := -Werror
+LOCAL_MODULE_HOST_OS := darwin linux windows
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 
@@ -88,7 +89,7 @@ LOCAL_CFLAGS := -Werror
 include $(BUILD_EXECUTABLE)
 
 
-ifneq ($(HOST_OS),windows)
+ifeq ($(HOST_OS),windows)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := append2simg.c
