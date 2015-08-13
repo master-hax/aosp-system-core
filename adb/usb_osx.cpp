@@ -43,11 +43,11 @@ static io_iterator_t            notificationIterator;
 
 struct usb_handle
 {
-    UInt8                     bulkIn;
-    UInt8                     bulkOut;
-    IOUSBInterfaceInterface   **interface;
-    io_object_t               usbNotification;
-    unsigned int              zero_mask;
+    UInt8                       bulkIn;
+    UInt8                       bulkOut;
+    IOUSBInterfaceInterface190  **interface;
+    io_object_t                 usbNotification;
+    unsigned int                zero_mask;
 };
 
 static CFRunLoopRef currentRunLoop = 0;
@@ -59,7 +59,7 @@ static void AndroidInterfaceAdded(void *refCon, io_iterator_t iterator);
 static void AndroidInterfaceNotify(void *refCon, io_iterator_t iterator,
                                    natural_t messageType,
                                    void *messageArgument);
-static usb_handle* CheckInterface(IOUSBInterfaceInterface **iface,
+static usb_handle* CheckInterface(IOUSBInterfaceInterface190 **iface,
                                   UInt16 vendor, UInt16 product);
 
 static int
@@ -256,7 +256,7 @@ AndroidInterfaceAdded(void *refCon, io_iterator_t iterator)
         DBG("INFO: Found vid=%04x pid=%04x serial=%s\n", vendor, product,
             serial);
 
-        usb_handle* handle = CheckInterface((IOUSBInterfaceInterface**)iface,
+        usb_handle* handle = CheckInterface((IOUSBInterfaceInterface190**)iface,
                                             vendor, product);
         if (handle == NULL) {
             DBG("ERR: Could not find device interface: %08x\n", kr);
@@ -302,7 +302,7 @@ AndroidInterfaceNotify(void *refCon, io_service_t service, natural_t messageType
 //* TODO: simplify this further since we only register to get ADB interface
 //* subclass+protocol events
 static usb_handle*
-CheckInterface(IOUSBInterfaceInterface **interface, UInt16 vendor, UInt16 product)
+CheckInterface(IOUSBInterfaceInterface190 **interface, UInt16 vendor, UInt16 product)
 {
     usb_handle*                 handle = NULL;
     IOReturn                    kr;
@@ -358,11 +358,29 @@ CheckInterface(IOUSBInterfaceInterface **interface, UInt16 vendor, UInt16 produc
             if (kUSBBulk != transferType)
                 continue;
 
-            if (kUSBIn == direction)
+            if (kUSBIn == direction) {
                 handle->bulkIn = endpoint;
 
-            if (kUSBOut == direction)
+                // Clear both the endpoints before starting
+                // When adb quits, we might clear the host endpoint but not the device.
+                // So we make sure both sides are clear before starting up.
+                kr = (*interface)->ClearPipeStallBothEnds(interface, handle->bulkIn);
+                if (kr != kIOReturnSuccess) {
+                    DBG("ERR: Could not clear input pipe; result %x, ignoring...\n", kr);
+                }
+            }
+
+            if (kUSBOut == direction) {
                 handle->bulkOut = endpoint;
+
+                // Clear both the endpoints before starting
+                // When adb quits, we might clear the host endpoint but not the device.
+                // So we make sure both sides are clear before starting up.
+                kr = (*interface)->ClearPipeStallBothEnds(interface, handle->bulkOut);
+                if (kr != 0) {
+                    DBG("ERR: Could not clear output pipe; result %x, ignoring....\n", kr);
+                }
+            }
 
             handle->zero_mask = maxPacketSize - 1;
         } else {
@@ -372,6 +390,8 @@ CheckInterface(IOUSBInterfaceInterface **interface, UInt16 vendor, UInt16 produc
     }
 
     handle->interface = interface;
+
+
     return handle;
 
 err_get_pipe_props:
