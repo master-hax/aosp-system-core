@@ -19,6 +19,7 @@
 #define __LIBS_LOGWRAP_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 __BEGIN_DECLS
 
@@ -53,6 +54,9 @@ __BEGIN_DECLS
  *           the specified log until the child has exited.
  *   file_path: if log_target has the LOG_FILE bit set, then this parameter
  *           must be set to the pathname of the file to log to.
+ *   input: set to non-NULL if you want to write to child's stdin.
+ *   input_len: the length of data in bytes input points to. Ignored when
+ *           input is NULL.
  *
  * Return value:
  *   0 when logwrap successfully run the child process and captured its status
@@ -70,6 +74,9 @@ __BEGIN_DECLS
 
 int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int_quit,
         int log_target, bool abbreviated, char *file_path);
+int android_fork_execvp_ext2(int argc, char* argv[], int *status, bool ignore_int_quit,
+        int log_target, bool abbreviated, char *file_path,
+        const uint8_t* input, ssize_t input_len);
 
 /* Similar to above, except abbreviated logging is not available, and if logwrap
  * is true, logging is to the Android system log, and if false, there is no
