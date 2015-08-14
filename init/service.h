@@ -114,6 +114,8 @@ private:
     time_t time_crashed_;    // first crash within inspection window
     int nr_crashed_;         // number of times crashed within window
 
+    time_t restart_delay_;
+
     uid_t uid_;
     gid_t gid_;
     std::vector<gid_t> supp_gids_;
