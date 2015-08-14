@@ -27,8 +27,11 @@ LOCAL_SRC_FILES_x86_64 := x86_64/machine.cpp
 
 LOCAL_CPPFLAGS := $(common_cppflags)
 
+LOCAL_REQUIRED_MODULES := debuggerd.rc
+
 ifeq ($(TARGET_IS_64_BIT),true)
 LOCAL_CPPFLAGS += -DTARGET_IS_64_BIT
+LOCAL_REQUIRED_MODULES += debuggerd64.rc
 endif
 
 LOCAL_SHARED_LIBRARIES := \
@@ -47,7 +50,23 @@ LOCAL_MULTILIB := both
 
 include $(BUILD_EXECUTABLE)
 
+include $(CLEAR_VARS)
 
+LOCAL_MODULE := debuggerd.rc
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT)/init
+
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := debuggerd64.rc
+LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT)/init
+
+include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := crasher.c
