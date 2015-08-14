@@ -144,3 +144,9 @@ BacktraceMap* BacktraceMap::Create(pid_t pid, bool /*uncached*/) {
   return map;
 }
 #endif
+
+BacktraceMap* BacktraceMap::Create(pid_t pid, const std::vector<backtrace_map_t>& maps) {
+    BacktraceMap* backtrace_map = new BacktraceMap(pid);
+    backtrace_map->maps_.insert(backtrace_map->maps_.begin(), maps.begin(), maps.end());
+    return backtrace_map;
+}
