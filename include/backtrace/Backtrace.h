@@ -52,6 +52,12 @@ struct ucontext;
 typedef ucontext ucontext_t;
 #endif
 
+struct StackInfo {
+  uint64_t stack_addr;
+  size_t stack_size;
+  const uint8_t* stack_data;
+};
+
 class Backtrace {
 public:
   // Create the correct Backtrace object based on what is to be unwound.
@@ -65,6 +71,11 @@ public:
   // If map is NULL, then create the map and manage it internally.
   // If map is not NULL, the map is still owned by the caller.
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
+
+  // Create a Backtrace object for a thread that has exited, using callbacks to retrieve
+  // needed information for unwinding.
+  static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                  const StackInfo& stack, bool cache_file = true);
 
   virtual ~Backtrace();
 
