@@ -52,6 +52,12 @@ struct ucontext;
 typedef ucontext ucontext_t;
 #endif
 
+struct backtrace_stackinfo_t {
+  uint64_t start;
+  uint64_t end;
+  const uint8_t* data;
+};
+
 class Backtrace {
 public:
   // Create the correct Backtrace object based on what is to be unwound.
@@ -65,6 +71,13 @@ public:
   // If map is NULL, then create the map and manage it internally.
   // If map is not NULL, the map is still owned by the caller.
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
+
+  // Create a Backtrace object for a thread that has exited. It needs stack information
+  // of the thread. If cache_file is enabled, the needed data in elf files will be cached
+  // in memory until current process exits. It benefits the performance when we need to
+  // do a large amount of offline backtracing work.
+  static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                  const backtrace_stackinfo_t& stack, bool cache_file = false);
 
   virtual ~Backtrace();
 
