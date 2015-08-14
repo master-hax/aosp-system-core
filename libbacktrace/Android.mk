@@ -25,6 +25,7 @@ libbacktrace_common_conlyflags := \
 
 libbacktrace_common_cppflags := \
 	-std=gnu++11 \
+	-I external/libunwind/include/tdep \
 
 # The latest clang (r230699) does not allow SP/PC to be declared in inline asm lists.
 libbacktrace_common_clang_cflags += \
@@ -44,6 +45,7 @@ libbacktrace_src_files := \
 	Backtrace.cpp \
 	BacktraceCurrent.cpp \
 	BacktraceMap.cpp \
+	BacktraceOffline.cpp \
 	BacktracePtrace.cpp \
 	thread_utils.c \
 	ThreadEntry.cpp \

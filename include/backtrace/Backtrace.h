@@ -20,6 +20,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -52,6 +53,29 @@ struct ucontext;
 typedef ucontext ucontext_t;
 #endif
 
+struct BacktraceOfflineCallbacks {
+    struct DebugFrameInfo {
+        bool is_eh_frame;
+        struct EhFrame {
+            uint64_t eh_frame_hdr_vaddr;
+            uint64_t eh_frame_vaddr;
+            uint64_t fde_table_offset_in_eh_frame_hdr;
+            std::vector<uint8_t> eh_frame_hdr_data;
+            std::vector<uint8_t> eh_frame_data;
+            struct ProgramHeader {
+                uint64_t vaddr;
+                uint64_t file_offset;
+                uint64_t file_size;
+            };
+            std::vector<ProgramHeader> program_headers;
+        } eh_frame;
+    };
+
+    std::function<DebugFrameInfo* (const std::string& filename)> GetDebugFrameInfo;
+    std::function<size_t (uint64_t offset, uint8_t* buffer, size_t size)> ReadStack;
+    std::function<bool (size_t reg_index, uint64_t* reg_value)> ReadReg;
+};
+
 class Backtrace {
 public:
   // Create the correct Backtrace object based on what is to be unwound.
@@ -65,6 +89,8 @@ public:
   // If map is NULL, then create the map and manage it internally.
   // If map is not NULL, the map is still owned by the caller.
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
+
+  static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map, BacktraceOfflineCallbacks callbacks);
 
   virtual ~Backtrace();
 
