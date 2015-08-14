@@ -30,6 +30,7 @@
 #include <cutils/threads.h>
 
 #include "BacktraceLog.h"
+#include "BacktraceOffline.h"
 #include "thread_utils.h"
 #include "UnwindCurrent.h"
 #include "UnwindPtrace.h"
@@ -134,4 +135,9 @@ Backtrace* Backtrace::Create(pid_t pid, pid_t tid, BacktraceMap* map) {
   } else {
     return new UnwindPtrace(pid, tid, map);
   }
+}
+
+Backtrace* Backtrace::CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                    BacktraceOfflineCallbacks callbacks) {
+  return new BacktraceOffline(pid, tid, map, callbacks);
 }
