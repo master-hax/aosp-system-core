@@ -40,6 +40,9 @@
 #define CRITICAL_CRASH_THRESHOLD    4       // if we crash >4 times ...
 #define CRITICAL_CRASH_WINDOW       (4*60)  // ... in 4 minutes, goto recovery
 
+// Maximum auto-respawning rate in seconds
+static const time_t kRestartThrottle = 3;
+
 SocketInfo::SocketInfo() : uid(0), gid(0), perm(0) {
 }
 
@@ -59,7 +62,7 @@ ServiceEnvironmentInfo::ServiceEnvironmentInfo(const std::string& name,
 Service::Service(const std::string& name, const std::string& classname,
                  const std::vector<std::string>& args)
     : name_(name), classname_(classname), flags_(0), pid_(0), time_started_(0),
-      time_crashed_(0), nr_crashed_(0), uid_(0), gid_(0), seclabel_(""),
+      time_crashed_(0), nr_crashed_(0), restart_delay_(0), uid_(0), gid_(0), seclabel_(""),
       ioprio_class_(IoSchedClass_NONE), ioprio_pri_(0), args_(args) {
     onrestart_.InitSingleTrigger("onrestart");
 }
@@ -68,8 +71,9 @@ Service::Service(const std::string& name, const std::string& classname,
                  unsigned flags, uid_t uid, gid_t gid, const std::vector<gid_t>& supp_gids,
                  const std::string& seclabel,  const std::vector<std::string>& args)
     : name_(name), classname_(classname), flags_(flags), pid_(0), time_started_(0),
-      time_crashed_(0), nr_crashed_(0), uid_(uid), gid_(gid), supp_gids_(supp_gids),
-      seclabel_(seclabel), ioprio_class_(IoSchedClass_NONE), ioprio_pri_(0), args_(args) {
+      time_crashed_(0), nr_crashed_(0), restart_delay_(0), uid_(uid), gid_(gid),
+      supp_gids_(supp_gids), seclabel_(seclabel), ioprio_class_(IoSchedClass_NONE),
+      ioprio_pri_(0), args_(args) {
     onrestart_.InitSingleTrigger("onrestart");
 }
 
@@ -143,6 +147,11 @@ bool Service::Reap() {
             time_crashed_ = now;
             nr_crashed_ = 1;
         }
+    }
+
+    time_t time_since_started = now - time_started_;
+    if (time_since_started < kRestartThrottle) {
+        restart_delay_ = kRestartThrottle - time_since_started;
     }
 
     flags_ &= (~SVC_RESTART);
@@ -469,6 +478,14 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
             }
         }
 
+        if (restart_delay_) {
+            NOTICE("Delaying '%s' restart for %ld seconds\n", name_.c_str(), restart_delay_);
+        }
+
+        while (restart_delay_) {
+            restart_delay_ = sleep(restart_delay_);
+        }
+
         std::vector<char*> strs;
         for (const auto& s : args_) {
             strs.push_back(const_cast<char*>(s.c_str()));
@@ -491,6 +508,7 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
     }
 
     time_started_ = gettime();
+    restart_delay_ = 0;
     pid_ = pid;
     flags_ |= SVC_RUNNING;
 
