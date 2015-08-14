@@ -474,7 +474,8 @@ static void child(int argc, char* argv[]) {
 }
 
 int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int_quit,
-        int log_target, bool abbreviated, char *file_path) {
+        int log_target, bool abbreviated, char *file_path,
+        const struct AndroidForkExecvpOption* opt) {
     pid_t pid;
     int parent_ptty;
     int child_ptty;
@@ -529,7 +530,10 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         pthread_sigmask(SIG_SETMASK, &oldset, NULL);
         close(parent_ptty);
 
-        // redirect stdout and stderr
+        // redirect stdin, stdout and stderr
+        if (opt && opt->opt_type == FORK_EXECVP_OPTION_INPUT) {
+            dup2(child_ptty, 0);
+        }
         dup2(child_ptty, 1);
         dup2(child_ptty, 2);
         close(child_ptty);
@@ -544,6 +548,20 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
             ignact.sa_handler = SIG_IGN;
             sigaction(SIGINT, &ignact, &intact);
             sigaction(SIGQUIT, &ignact, &quitact);
+        }
+
+        if (opt && opt->opt_type == FORK_EXECVP_OPTION_INPUT) {
+            ssize_t left = opt->opt_input.input_len;
+            const uint8_t* input = opt->opt_input.input;
+            while (left > 0) {
+                ssize_t res =
+                    TEMP_FAILURE_RETRY(write(parent_ptty, input, left));
+                if (res < 0) {
+                    break;
+                }
+                left -= res;
+                input += res;
+            }
         }
 
         rc = parent(argv[0], parent_ptty, pid, status, log_target,
