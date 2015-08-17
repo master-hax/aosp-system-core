@@ -16,6 +16,8 @@ LOCAL_PATH := $(call my-dir)
 
 ifeq ($(HOST_OS),linux)
 
+LOCAL_INIT_SERVICE := metrics_daemon
+
 metrics_cpp_extension := .cc
 libmetrics_sources := \
   c_metrics_library.cc \
@@ -96,12 +98,13 @@ include $(BUILD_STATIC_LIBRARY)
 # metrics daemon.
 # ========================================================
 include $(CLEAR_VARS)
-LOCAL_MODULE := metrics_daemon
+LOCAL_MODULE := $(LOCAL_INIT_SERVICE)
 LOCAL_C_INCLUDES := $(metrics_includes) \
   external/libchromeos
 LOCAL_CFLAGS := $(metrics_CFLAGS)
 LOCAL_CPP_EXTENSION := $(metrics_cpp_extension)
 LOCAL_CPPFLAGS := $(metrics_CPPFLAGS)
+LOCAL_REQUIRED_MODULES := init.$(LOCAL_INIT_SERVICE).rc
 LOCAL_RTTI_FLAG := -frtti
 LOCAL_SHARED_LIBRARIES := $(metrics_shared_libraries) \
   libmetrics \
@@ -112,5 +115,12 @@ LOCAL_SHARED_LIBRARIES := $(metrics_shared_libraries) \
 LOCAL_SRC_FILES := $(metrics_daemon_sources)
 LOCAL_STATIC_LIBRARIES := metrics_daemon_protos
 include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := init.$(LOCAL_INIT_SERVICE).rc
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)/initrc.d
+LOCAL_SRC_FILES := init.$(LOCAL_INIT_SERVICE).rc
+include $(BUILD_PREBUILT)
 
 endif # HOST_OS == linux
