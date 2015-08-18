@@ -138,11 +138,11 @@ TEST_F(BitSet32Test, FillAndClear) {
 TEST_F(BitSet32Test, GetIndexOfBit) {
     b1.markBit(1);
     b1.markBit(4);
-    EXPECT_EQ(b1.getIndexOfBit(1), 0);
-    EXPECT_EQ(b1.getIndexOfBit(4), 1);
+    EXPECT_EQ(b1.getIndexOfBit(1), static_cast<uint32_t>(0));
+    EXPECT_EQ(b1.getIndexOfBit(4), static_cast<uint32_t>(1));
     b1.markFirstUnmarkedBit();
-    EXPECT_EQ(b1.getIndexOfBit(1), 1);
-    EXPECT_EQ(b1.getIndexOfBit(4), 2);
+    EXPECT_EQ(b1.getIndexOfBit(1), static_cast<uint32_t>(1));
+    EXPECT_EQ(b1.getIndexOfBit(4), static_cast<uint32_t>(2));
 }
 
 class BitSet64Test : public testing::Test {
@@ -260,11 +260,11 @@ TEST_F(BitSet64Test, FillAndClear) {
 TEST_F(BitSet64Test, GetIndexOfBit) {
     b1.markBit(10);
     b1.markBit(40);
-    EXPECT_EQ(b1.getIndexOfBit(10), 0);
-    EXPECT_EQ(b1.getIndexOfBit(40), 1);
+    EXPECT_EQ(b1.getIndexOfBit(10), static_cast<uint32_t>(0));
+    EXPECT_EQ(b1.getIndexOfBit(40), static_cast<uint32_t>(1));
     b1.markFirstUnmarkedBit();
-    EXPECT_EQ(b1.getIndexOfBit(10), 1);
-    EXPECT_EQ(b1.getIndexOfBit(40), 2);
+    EXPECT_EQ(b1.getIndexOfBit(10), static_cast<uint32_t>(1));
+    EXPECT_EQ(b1.getIndexOfBit(40), static_cast<uint32_t>(2));
 }
 
 } // namespace android
