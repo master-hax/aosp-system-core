@@ -266,6 +266,14 @@ static void *output_thread(void *_t)
                 D("%s: failed to write apacket to transport\n", t->serial);
                 goto oops;
             }
+
+            //fix bug:adb-qemud send sync packet to notify adbd connection offline
+            if((p->msg.command == A_SYNC) && (p->msg.arg0 == 0)){
+                D("%s: transport SYNC offline\n", t->serial);
+                put_apacket(p);
+                goto oops;
+            }
+
         } else {
             D("%s: remote read failed for transport\n", t->serial);
             put_apacket(p);
