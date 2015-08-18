@@ -257,6 +257,13 @@ typedef enum {
     AUDIO_FORMAT_OPUS                = 0x08000000UL,
     AUDIO_FORMAT_AC3                 = 0x09000000UL,
     AUDIO_FORMAT_E_AC3               = 0x0A000000UL,
+    AUDIO_FORMAT_DTS                 = 0x0B000000UL,
+    AUDIO_FORMAT_DTS_HD              = 0x0C000000UL,
+    AUDIO_FORMAT_DOLBY_TRUEHD        = 0x0D000000UL,
+    AUDIO_FORMAT_DOLBY_ATMOS         = 0x0E000000UL,
+    AUDIO_FORMAT_DTS_X               = 0x0F000000UL,
+    AUDIO_FORMAT_DTS_NEO_X           = 0x10000000UL,
+    AUDIO_FORMAT_DTS_NEURAL_X        = 0x20000000UL,
     AUDIO_FORMAT_MAIN_MASK           = 0xFF000000UL,
     AUDIO_FORMAT_SUB_MASK            = 0x00FFFFFFUL,
 
@@ -1315,6 +1322,13 @@ static inline bool audio_is_valid_format(audio_format_t format)
     case AUDIO_FORMAT_OPUS:
     case AUDIO_FORMAT_AC3:
     case AUDIO_FORMAT_E_AC3:
+    case AUDIO_FORMAT_DTS:
+    case AUDIO_FORMAT_DTS_HD:
+    case AUDIO_FORMAT_DOLBY_TRUEHD:
+    case AUDIO_FORMAT_DOLBY_ATMOS:
+    case AUDIO_FORMAT_DTS_X:
+    case AUDIO_FORMAT_DTS_NEO_X:
+    case AUDIO_FORMAT_DTS_NEURAL_X:
         return true;
     default:
         return false;
