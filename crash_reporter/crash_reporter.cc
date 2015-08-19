@@ -23,6 +23,7 @@
 #include "user_collector.h"
 
 static const char kCrashCounterHistogram[] = "Logging.CrashCounter";
+static const char kDbusSendPath[] = "/system/xbin/dbus-send";
 static const char kUserCrashSignal[] =
     "org.chromium.CrashReporter.UserCrash";
 static const char kKernelCrashDetected[] = "/var/run/kernel-crash-detected";
@@ -73,27 +74,28 @@ static void CountUncleanShutdown() {
 
 static void CountUserCrash() {
   SendCrashMetrics(kCrashKindUser, "user");
-  std::string command = StringPrintf(
-      "/usr/bin/dbus-send --type=signal --system / \"%s\" &",
-      kUserCrashSignal);
   // Announce through D-Bus whenever a user crash happens. This is
   // used by the metrics daemon to log active use time between
   // crashes.
-  //
-  // This could be done more efficiently by explicit fork/exec or
-  // using a dbus library directly. However, this should run
-  // relatively rarely and longer term we may need to implement a
-  // better way to do this that doesn't rely on D-Bus.
-  //
-  // We run in the background in case dbus daemon itself is crashed
-  // and not responding.  This allows us to not block and potentially
-  // deadlock on a dbus-daemon crash.  If dbus-daemon crashes without
-  // restarting, each crash will fork off a lot of dbus-send
-  // processes.  Such a system is in a unusable state and will need
-  // to be restarted anyway.
 
-  int status = system(command.c_str());
-  LOG_IF(WARNING, status != 0) << "dbus-send running failed";
+  int pid = vfork();
+
+  if (pid == 0) {
+    // Child process.
+    LOG(INFO) << "exec'ing dbus-send";
+    char *argv[] = { const_cast<char*>(kDbusSendPath),
+                     "--type=signal",
+                     "--system",
+                     "/",
+                     const_cast<char*>(kUserCrashSignal),
+                     NULL };
+    char *env[] = { NULL };
+    execve(argv[0], argv, env);
+
+    _exit(0);
+  } else if (pid < 0) {
+    LOG(ERROR) << "Failed to run dbus-send";
+  }
 }
 
 
