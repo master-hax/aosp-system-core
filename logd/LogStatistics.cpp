@@ -183,12 +183,13 @@ char *LogStatistics::uidToName(uid_t uid) {
     return name;
 }
 
+static const size_t pruned_len = 14;
+
 static std::string format_line(
         const std::string &name,
         const std::string &size,
         const std::string &pruned) {
-    static const size_t pruned_len = 6;
-    static const size_t total_len = 70 + pruned_len;
+    static const size_t total_len = 66 + pruned_len;
 
     ssize_t drop_len = std::max(pruned.length() + 1, pruned_len);
     ssize_t size_len = std::max(size.length() + 1,
@@ -274,6 +275,14 @@ std::string LogStatistics::format(uid_t uid, unsigned int logMask) {
         }
 
         bool headerPrinted = false;
+        size_t totalDropped = 0;
+        for(uidTable_t::iterator it = uidTable[id].begin();
+                it != uidTable[id].end(); ++it) {
+            totalDropped += it->second.getDropped();
+        }
+        size_t totalVirtualSize = sizes(id)
+                                + totalDropped * sizesTotal(id)
+                                    / elementsTotal(id);
         std::unique_ptr<const UidEntry *[]> sorted = sort(maximum_sorted_entries, id);
         ssize_t index = -1;
         while ((index = uidTable_t::next(index, sorted, maximum_sorted_entries)) >= 0) {
@@ -304,7 +313,7 @@ std::string LogStatistics::format(uid_t uid, unsigned int logMask) {
 
                 name = "UID   PACKAGE";
                 size = "BYTES";
-                pruned = "LINES";
+                pruned = "NUM";
                 if (!worstUidEnabledForLogid(id)) {
                     pruned = "";
                 }
@@ -322,13 +331,51 @@ std::string LogStatistics::format(uid_t uid, unsigned int logMask) {
                 free(n);
             }
 
-            std::string size = android::base::StringPrintf("%zu",
-                                                           entry->getSizes());
+            size_t entrySize = entry->getSizes();
+            std::string size = android::base::StringPrintf("%zu", entrySize);
 
             std::string pruned = "";
+            int realPermille = entrySize * 1000 / sizes(id);
+            size_t virtualEntrySize = entrySize;
             size_t dropped = entry->getDropped();
             if (dropped) {
                 pruned = android::base::StringPrintf("%zu", dropped);
+                virtualEntrySize += dropped * sizesTotal(id)
+                    / elementsTotal(id);
+            }
+            int virtualPermille = virtualEntrySize * 1000 / totalVirtualSize;
+            int permille = (realPermille - virtualPermille) * 1000L
+                / (virtualPermille ?: 1);
+            if ((permille < -1) || (1 < permille)) {
+                std::string change;
+                const char *units = "%";
+                const char *prefix = (permille > 0) ? "+" : "";
+
+                if (permille > 999) {
+                    permille = (permille + 1000) / 100; // Now tenths fold
+                    units = "X";
+                    prefix = "";
+                }
+                if ((-99 < permille) && (permille < 99)) {
+                    change = android::base::StringPrintf("%s%d.%u%s",
+                        prefix,
+                        permille / 10,
+                        ((permille < 0) ? (-permille % 10) : (permille % 10)),
+                        units);
+                } else {
+                    change = android::base::StringPrintf("%s%d%s",
+                        prefix,
+                        (permille + 5) / 10, units);
+                }
+                ssize_t spaces = pruned_len - 2 - pruned.length() - change.length();
+                if ((spaces <= 0) && pruned.length()) {
+                    spaces = 1;
+                }
+                if (spaces > 0) {
+                    change += android::base::StringPrintf("%*s",
+                                                          (int)spaces, "");
+                }
+                pruned = change + pruned;
             }
 
             output += format_line(name, size, pruned);
@@ -361,7 +408,7 @@ std::string LogStatistics::format(uid_t uid, unsigned int logMask) {
 
                 name = "  PID/UID   COMMAND LINE";
                 size = "BYTES";
-                pruned = "LINES";
+                pruned = "NUM";
                 output += format_line(name, size, pruned);
 
                 headerPrinted = true;
@@ -419,7 +466,7 @@ std::string LogStatistics::format(uid_t uid, unsigned int logMask) {
 
                 name = "  TID/UID   COMM";
                 size = "BYTES";
-                pruned = "LINES";
+                pruned = "NUM";
                 output += format_line(name, size, pruned);
 
                 headerPrinted = true;
