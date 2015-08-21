@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <sys/cdefs.h>  // For __WORDSIZE
 #include <sys/types.h>  // For getpwuid_r, getgrnam_r, WEXITSTATUS.
+#include <unistd.h>  // For setgroups
 
 #include <string>
 #include <vector>
@@ -25,6 +26,7 @@
 #include <chromeos/process.h>
 #include <chromeos/syslog_logging.h>
 #include <cutils/properties.h>
+#include <private/android_filesystem_config.h>
 
 static const char kCollectionErrorSignature[] =
     "crash_reporter-user-collection";
@@ -65,6 +67,11 @@ void UserCollector::Initialize(
   core2md_failure_ = core2md_failure;
   directory_failure_ = directory_failure;
   filter_in_ = filter_in;
+
+  gid_t groups[] = { AID_SYSTEM, AID_DBUS };
+  if (setgroups(sizeof(groups)/sizeof(groups[0]), groups) != 0) {
+    LOG(WARNING) << "Unable to set groups.";
+  }
 }
 
 UserCollector::~UserCollector() {
