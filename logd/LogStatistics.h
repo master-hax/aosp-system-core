@@ -21,14 +21,20 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include <algorithm> // std::max
+#include <string>    // std::string
 #include <unordered_map>
 
+#include <base/stringprintf.h>
 #include <log/log.h>
+#include <private/android_filesystem_config.h>
 
 #include "LogBufferElement.h"
 
 #define log_id_for_each(i) \
     for (log_id_t i = LOG_ID_MIN; i < LOG_ID_MAX; i = (log_id_t) (i + 1))
+
+class LogStatistics;
 
 template <typename TKey, typename TEntry>
 class LogHashtable {
@@ -38,8 +44,9 @@ class LogHashtable {
 public:
 
     typedef typename std::unordered_map<TKey, TEntry>::iterator iterator;
+    typedef typename std::unordered_map<TKey, TEntry>::const_iterator const_iterator;
 
-    std::unique_ptr<const TEntry *[]> sort(size_t n) {
+    std::unique_ptr<const TEntry *[]> sort(size_t n) const {
         if (!n) {
             std::unique_ptr<const TEntry *[]> sorted(NULL);
             return sorted;
@@ -48,7 +55,7 @@ public:
         const TEntry **retval = new const TEntry* [n];
         memset(retval, 0, sizeof(*retval) * n);
 
-        for(iterator it = map.begin(); it != map.end(); ++it) {
+        for(const_iterator it = map.begin(); it != map.end(); ++it) {
             const TEntry &entry = it->second;
             size_t s = entry.getSizes();
             ssize_t i = n - 1;
@@ -64,16 +71,6 @@ public:
         }
         std::unique_ptr<const TEntry *[]> sorted(retval);
         return sorted;
-    }
-
-    // Iteration handler for the sort method output
-    static ssize_t next(ssize_t index, std::unique_ptr<const TEntry *[]> &sorted, size_t n) {
-        ++index;
-        if (!sorted.get() || (index < 0) || (n <= (size_t)index) || !sorted[index]
-         || (sorted[index]->getSizes() <= (sorted[0]->getSizes() / 100))) {
-            return -1;
-        }
-        return index;
     }
 
     inline iterator add(TKey key, LogBufferElement *e) {
@@ -111,9 +108,49 @@ public:
     }
 
     inline iterator begin() { return map.begin(); }
+    inline const_iterator begin() const { return map.begin(); }
     inline iterator end() { return map.end(); }
+    inline const_iterator end() const { return map.end(); }
 
+    std::string format(
+            const LogStatistics &stat,
+            uid_t uid,
+            const std::string &name = std::string(""),
+            log_id_t id = LOG_ID_MAX) const {
+        static const size_t maximum_sorted_entries = 32;
+        std::string output;
+        std::unique_ptr<const TEntry *[]> sorted = sort(maximum_sorted_entries);
+
+        if (!sorted.get()) {
+            return output;
+        }
+        bool headerPrinted = false;
+        for (size_t index = 0; index < maximum_sorted_entries; ++index) {
+            const TEntry *entry = sorted[index];
+            if (!entry) {
+                break;
+            }
+            if (entry->getSizes() <= (sorted[0]->getSizes() / 100)) {
+                break;
+            }
+            if ((uid != AID_ROOT) && (uid != entry->getUid())) {
+                continue;
+            }
+            if (!headerPrinted) {
+                output += "\n\n";
+                output += entry->formatHeader(name, id);
+                headerPrinted = true;
+            }
+            output += entry->format(stat, id);
+        }
+        return output;
+    }
 };
+
+namespace EntryBaseConstants {
+    static constexpr size_t pruned_len = 14;
+    static constexpr size_t total_len = 80;
+}
 
 struct EntryBase {
     size_t size;
@@ -125,6 +162,26 @@ struct EntryBase {
 
     inline void add(LogBufferElement *e) { size += e->getMsgLen(); }
     inline bool subtract(LogBufferElement *e) { size -= e->getMsgLen(); return !size; }
+
+    static std::string formatLine(
+            const std::string &name,
+            const std::string &size,
+            const std::string &pruned) {
+        ssize_t drop_len = std::max(pruned.length() + 1,
+                                    EntryBaseConstants::pruned_len);
+        ssize_t size_len = std::max(size.length() + 1,
+                                    EntryBaseConstants::total_len
+                                        - name.length() - drop_len - 1);
+
+        if (pruned.length()) {
+            return android::base::StringPrintf("%s%*s%*s\n", name.c_str(),
+                                               (int)size_len, size.c_str(),
+                                               (int)drop_len, pruned.c_str());
+        } else {
+            return android::base::StringPrintf("%s%*s\n", name.c_str(),
+                                               (int)size_len, size.c_str());
+        }
+    }
 };
 
 struct EntryBaseDropped : public EntryBase {
@@ -155,6 +212,10 @@ struct UidEntry : public EntryBaseDropped {
     UidEntry(LogBufferElement *e):EntryBaseDropped(e),uid(e->getUid()) { }
 
     inline const uid_t&getKey() const { return uid; }
+    inline const uid_t&getUid() const { return uid; }
+
+    std::string formatHeader(const std::string &name, log_id_t id) const;
+    std::string format(const LogStatistics &stat, log_id_t id) const;
 };
 
 namespace android {
@@ -211,6 +272,9 @@ struct PidEntry : public EntryBaseDropped {
         }
         EntryBaseDropped::add(e);
     }
+
+    std::string formatHeader(const std::string &name, log_id_t id) const;
+    std::string format(const LogStatistics &stat, log_id_t id) const;
 };
 
 struct TidEntry : public EntryBaseDropped {
@@ -263,6 +327,9 @@ struct TidEntry : public EntryBaseDropped {
         }
         EntryBaseDropped::add(e);
     }
+
+    std::string formatHeader(const std::string &name, log_id_t id) const;
+    std::string format(const LogStatistics &stat, log_id_t id) const;
 };
 
 struct TagEntry : public EntryBase {
@@ -285,6 +352,9 @@ struct TagEntry : public EntryBase {
         }
         EntryBase::add(e);
     }
+
+    std::string formatHeader(const std::string &name, log_id_t id) const;
+    std::string format(const LogStatistics &stat, log_id_t id) const;
 };
 
 // Log Statistics
@@ -331,12 +401,12 @@ public:
     size_t sizesTotal(log_id_t id) const { return mSizesTotal[id]; }
     size_t elementsTotal(log_id_t id) const { return mElementsTotal[id]; }
 
-    std::string format(uid_t uid, unsigned int logMask);
+    std::string format(uid_t uid, unsigned int logMask) const;
 
     // helper (must be locked directly or implicitly by mLogElementsLock)
-    char *pidToName(pid_t pid);
+    const char *pidToName(pid_t pid) const;
     uid_t pidToUid(pid_t pid);
-    char *uidToName(uid_t uid);
+    const char *uidToName(uid_t uid) const;
 };
 
 #endif // _LOGD_LOG_STATISTICS_H__
