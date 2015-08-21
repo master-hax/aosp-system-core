@@ -112,9 +112,9 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
 
     static const char format_uid[] = "uid=%u%s%s expire %u line%s";
     parent->lock();
-    char *name = parent->uidToName(mUid);
+    const char *name = parent->uidToName(mUid);
     parent->unlock();
-    char *commName = android::tidToName(mTid);
+    const char *commName = android::tidToName(mTid);
     if (!commName && (mTid != mPid)) {
         commName = android::tidToName(mPid);
     }
@@ -126,10 +126,10 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
     size_t len = name ? strlen(name) : 0;
     if (len && commName && !strncmp(name, commName, len)) {
         if (commName[len] == '\0') {
-            free(commName);
+            free(const_cast<char *>(commName));
             commName = NULL;
         } else {
-            free(name);
+            free(const_cast<char *>(name));
             name = NULL;
         }
     }
@@ -137,7 +137,7 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
         char *p = NULL;
         asprintf(&p, "(%s)", name);
         if (p) {
-            free(name);
+            free(const_cast<char *>(name));
             name = p;
         }
     }
@@ -145,7 +145,7 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
         char *p = NULL;
         asprintf(&p, " %s", commName);
         if (p) {
-            free(commName);
+            free(const_cast<char *>(commName));
             commName = p;
         }
     }
@@ -163,8 +163,8 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
 
     buffer = static_cast<char *>(calloc(1, hdrLen + len + 1));
     if (!buffer) {
-        free(name);
-        free(commName);
+        free(const_cast<char *>(name));
+        free(const_cast<char *>(commName));
         return 0;
     }
 
@@ -184,8 +184,8 @@ size_t LogBufferElement::populateDroppedMessage(char *&buffer,
     snprintf(buffer + hdrLen, len + 1, format_uid, mUid, name ? name : "",
              commName ? commName : "",
              mDropped, (mDropped > 1) ? "s" : "");
-    free(name);
-    free(commName);
+    free(const_cast<char *>(name));
+    free(const_cast<char *>(commName));
 
     return retval;
 }
