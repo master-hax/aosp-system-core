@@ -911,7 +911,7 @@ int handle_host_request(const char* service, TransportType type,
         // WSAECONNRESET and they'll never read the OKAY.
         adb_shutdown(reply_fd);
 
-        exit(0);
+        _exit(0);
     }
 
 #if ADB_HOST
