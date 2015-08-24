@@ -359,6 +359,8 @@ struct TagEntry : public EntryBase {
 
 // Log Statistics
 class LogStatistics {
+    friend UidEntry;
+
     size_t mSizes[LOG_ID_MAX];
     size_t mElements[LOG_ID_MAX];
     size_t mSizesTotal[LOG_ID_MAX];
