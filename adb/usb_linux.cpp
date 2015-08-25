@@ -35,9 +35,10 @@
 
 #include <chrono>
 #include <condition_variable>
-#include <list>
+#include <memory>
 #include <mutex>
 #include <string>
+#include <vector>
 
 #include <base/file.h>
 #include <base/stringprintf.h>
@@ -81,32 +82,66 @@ struct usb_handle {
     pthread_t reaper_thread = 0;
 };
 
-static std::mutex g_usb_handles_mutex;
-static std::list<usb_handle*> g_usb_handles;
+class UsbHandles {
+ public:
+  bool HasDevice(const std::string& dev_name) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return FindDevice(dev_name) != nullptr;
+  }
 
-static int is_known_device(const char* dev_name) {
-    std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
-    for (usb_handle* usb : g_usb_handles) {
-        if (usb->path == dev_name) {
-            // set mark flag to indicate this device is still alive
-            usb->mark = true;
-            return 1;
-        }
-    }
-    return 0;
-}
+  void AddDevice(std::unique_ptr<usb_handle> usb) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    usb_handles_.push_back(std::move(usb));
+  }
 
-static void kick_disconnected_devices() {
-    std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
-    // kick any devices in the device list that were not found in the device scan
-    for (usb_handle* usb : g_usb_handles) {
-        if (!usb->mark) {
-            usb_kick(usb);
-        } else {
-            usb->mark = false;
-        }
+  void RemoveDevice(usb_handle* usb) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto it = usb_handles_.begin(); it != usb_handles_.end(); ++it) {
+      if (it->get() == usb) {
+        usb_handles_.erase(it);
+        break;
+      }
     }
-}
+  }
+
+  bool MarkKnownDevice(const std::string& dev_name) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    usb_handle* usb = FindDevice(dev_name);
+    if (usb != nullptr) {
+      // Set mark flag to indicate this device is still alive.
+      usb->mark = true;
+      return true;
+    }
+    return false;
+  }
+
+  void KickUnmarkedDevices() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    // Kick any devices that were not found in the device scan. And remove all mark flags.
+    for (auto& usb : usb_handles_) {
+      if (!usb->mark) {
+        usb_kick(usb.get());
+      } else {
+        usb->mark = false;
+      }
+    }
+  }
+
+ private:
+  usb_handle* FindDevice(const std::string& name) {
+    for (auto& usb : usb_handles_) {
+      if (usb->path == name) {
+        return usb.get();
+      }
+    }
+    return nullptr;
+  }
+
+  std::mutex mutex_;
+  std::vector<std::unique_ptr<usb_handle>> usb_handles_;
+};
+
+UsbHandles g_usb_handles;
 
 static inline bool contains_non_digit(const char* name) {
     while (*name) {
@@ -145,8 +180,8 @@ static void find_usb_device(const std::string& base,
             if (contains_non_digit(de->d_name)) continue;
 
             std::string dev_name = bus_name + "/" + de->d_name;
-            if (is_known_device(dev_name.c_str())) {
-                continue;
+            if (g_usb_handles.MarkKnownDevice(dev_name)) {
+              continue;
             }
 
             int fd = unix_open(dev_name.c_str(), O_RDONLY | O_CLOEXEC);
@@ -488,12 +523,9 @@ void usb_kick(usb_handle* h) {
 }
 
 int usb_close(usb_handle* h) {
-    std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
-    g_usb_handles.remove(h);
-
     D("-- usb close %p (fd = %d) --\n", h, h->fd);
 
-    delete h;
+    g_usb_handles.RemoveDevice(h);
 
     return 0;
 }
@@ -509,13 +541,8 @@ static void register_device(const char* dev_name, const char* dev_path,
     //
     // If we have a usb_handle on the list of handles with a matching name, we
     // have no further work to do.
-    {
-        std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
-        for (usb_handle* usb: g_usb_handles) {
-            if (usb->path == dev_name) {
-                return;
-            }
-        }
+    if (g_usb_handles.HasDevice(dev_name)) {
+      return;
     }
 
     D("[ usb located new device %s (%d/%d/%d) ]\n", dev_name, ep_in, ep_out, interface);
@@ -563,12 +590,9 @@ static void register_device(const char* dev_name, const char* dev_path,
     serial = android::base::Trim(serial);
 
     // Add to the end of the active handles.
-    usb_handle* done_usb = usb.release();
-    {
-        std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
-        g_usb_handles.push_back(done_usb);
-    }
-    register_usb_transport(done_usb, serial.c_str(), dev_path, done_usb->writeable);
+    usb_handle* usb_p = usb.get();
+    g_usb_handles.AddDevice(std::move(usb));
+    register_usb_transport(usb_p, serial.c_str(), dev_path, usb_p->writeable);
 }
 
 static void* device_poll_thread(void* unused) {
@@ -576,7 +600,7 @@ static void* device_poll_thread(void* unused) {
     while (true) {
         // TODO: Use inotify.
         find_usb_device("/dev/bus/usb", register_device);
-        kick_disconnected_devices();
+        g_usb_handles.KickUnmarkedDevices();
         sleep(1);
     }
     return nullptr;
