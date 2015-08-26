@@ -604,7 +604,12 @@ int main(int argc, char** argv) {
     property_load_boot_defaults();
     start_property_service();
 
-    init_parse_config("/init.rc");
+    Parser& parser = Parser::GetInstance();
+    parser.AddSectionParser("service",
+                            ServiceManager::GetInstance().GetSectionParser());
+    parser.AddSectionParser("on",
+                            ActionManager::GetInstance().GetSectionParser());
+    parser.ParseConfig("/init.rc");
 
     ActionManager& am = ActionManager::GetInstance();
 
