@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef _BOOTCHART_H
-#define _BOOTCHART_H
+#ifndef _INIT_BUILTINS_H
+#define _INIT_BUILTINS_H
 
+#include <map>
 #include <string>
 #include <vector>
 
-int do_bootchart_init(const std::vector<std::string>& args);
-void bootchart_sample(int* timeout);
+using BuiltinFunction = int (*) (const std::vector<std::string>& args);
+using BuiltinKeywordMap = std::map<std::string, std::tuple<std::size_t, BuiltinFunction>>;
+const extern BuiltinKeywordMap builtin_keyword_map;
 
-#endif /* _BOOTCHART_H */
+#endif

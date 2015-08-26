@@ -22,10 +22,33 @@
 #include <string>
 #include <vector>
 
+#include "init_parser.h"
+
+class Command
+{
+public:
+    Command(int (*f)(const std::vector<std::string>& args),
+            const std::vector<std::string>& args,
+            const std::string& filename,
+            int line);
+
+    int InvokeFunc() const;
+    std::string BuildCommandString() const;
+    std::string BuildSourceString() const;
+
+private:
+    int (*func_)(const std::vector<std::string>& args);
+    const std::vector<std::string> args_;
+    const std::string filename_;
+    int line_;
+};
+
 class Action {
 public:
-    Action();
+    Action(bool oneshot = false);
 
+    bool AddCommand(const std::vector<std::string>& args,
+                    const std::string& filename, int line, std::string* err);
     void AddCommand(int (*f)(const std::vector<std::string>& args),
                     const std::vector<std::string>& args,
                     const std::string& filename = "", int line = 0);
@@ -37,13 +60,13 @@ public:
     bool CheckEventTrigger(const std::string& trigger) const;
     bool CheckPropertyTrigger(const std::string& name,
                               const std::string& value) const;
-    bool TriggersEqual(const class Action& other) const;
+    bool TriggersEqual(const Action& other) const;
     std::string BuildTriggersString() const;
     void DumpState() const;
 
-private:
-    class Command;
+    bool oneshot() const { return oneshot_; }
 
+private:
     void ExecuteCommand(const Command& command) const;
     bool CheckPropertyTriggers(const std::string& name = "",
                                const std::string& value = "") const;
@@ -51,13 +74,14 @@ private:
 
     std::map<std::string, std::string> property_triggers_;
     std::string event_trigger_;
-    std::vector<Command*> commands_;
+    std::vector<Command> commands_;
+    bool oneshot_;
 };
 
 class Trigger {
 public:
     virtual ~Trigger() { }
-    virtual bool CheckTriggers(const Action* action) = 0;
+    virtual bool CheckTriggers(const Action& action) const = 0;
 };
 
 class ActionManager {
@@ -70,9 +94,8 @@ public:
                             const std::string& name);
     void ExecuteOneCommand();
     bool HasMoreCommands() const;
-    Action* AddNewAction(const std::vector<std::string>& triggers,
-                         std::string* err);
     void DumpState() const;
+    std::unique_ptr<SectionParser> GetSectionParser();
 
 private:
     ActionManager();
@@ -80,9 +103,9 @@ private:
     ActionManager(ActionManager const&) = delete;
     void operator=(ActionManager const&) = delete;
 
-    std::vector<Action*> actions_;
+    std::vector<std::shared_ptr<Action>> actions_;
     std::queue<std::unique_ptr<Trigger>> trigger_queue_;
-    std::vector<Action*> current_executing_actions_;
+    std::vector<std::shared_ptr<Action>> current_executing_actions_;
     std::size_t current_command_;
 };
 
