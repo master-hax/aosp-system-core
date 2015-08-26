@@ -37,6 +37,8 @@
 #include "property_service.h"
 #include "util.h"
 
+using android::base::StringPrintf;
+
 #define CRITICAL_CRASH_THRESHOLD    4       // if we crash >4 times ...
 #define CRITICAL_CRASH_WINDOW       (4*60)  // ... in 4 minutes, goto recovery
 
@@ -84,7 +86,7 @@ void Service::NotifyStateChange(const std::string& new_state) const {
         return;
     }
 
-    std::string prop_name = android::base::StringPrintf("init.svc.%s", name_.c_str());
+    std::string prop_name = StringPrintf("init.svc.%s", name_.c_str());
     if (prop_name.length() >= PROP_NAME_MAX) {
         // If the property name would be too long, we can't set it.
         ERROR("Property name \"init.svc.%s\" too long; not setting to %s\n",
@@ -104,8 +106,7 @@ bool Service::Reap() {
 
     // Remove any sockets we may have created.
     for (const auto& si : sockets_) {
-        std::string tmp = android::base::StringPrintf(ANDROID_SOCKET_DIR "/%s",
-                                                      si.name.c_str());
+        std::string tmp = StringPrintf(ANDROID_SOCKET_DIR "/%s", si.name.c_str());
         unlink(tmp.c_str());
     }
 
@@ -218,8 +219,8 @@ bool Service::HandleLine(int kw, const std::vector<std::string>& args, std::stri
             *err = "group option requires a group id\n";
             return false;
         } else if (args.size() > NR_SVC_SUPP_GIDS + 2) {
-            *err = android::base::StringPrintf("group option accepts at most %d supp. groups\n",
-                                               NR_SVC_SUPP_GIDS);
+            *err = StringPrintf("group option accepts at most %d supp. groups\n",
+                                NR_SVC_SUPP_GIDS);
             return false;
         } else {
             gid_ = decode_uid(args[1].c_str());
@@ -246,7 +247,7 @@ bool Service::HandleLine(int kw, const std::vector<std::string>& args, std::stri
             return false;
         }
         str_args.assign(args.begin() + 1, args.end());
-        add_command_to_action(&onrestart_, str_args, "", 0, err);
+        onrestart_.AddCommand(str_args, "", 0, err);
         break;
     case K_critical:
         flags_ |= SVC_CRITICAL;
@@ -304,7 +305,7 @@ bool Service::HandleLine(int kw, const std::vector<std::string>& args, std::stri
         break;
 
     default:
-        *err = android::base::StringPrintf("invalid option '%s'\n", args[0].c_str());
+        *err = StringPrintf("invalid option '%s'\n", args[0].c_str());
         return false;
     }
     return true;
@@ -396,7 +397,7 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
         umask(077);
         if (properties_initialized()) {
             get_property_workspace(&fd, &sz);
-            std::string tmp = android::base::StringPrintf("%d,%d", dup(fd), sz);
+            std::string tmp = StringPrintf("%d,%d", dup(fd), sz);
             add_environment("ANDROID_PROPERTY_WORKSPACE", tmp.c_str());
         }
 
@@ -418,7 +419,7 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
             }
         }
 
-        std::string pid_str = android::base::StringPrintf("%d", pid);
+        std::string pid_str = StringPrintf("%d", pid);
         for (const auto& file : writepid_files_) {
             if (!android::base::WriteStringToFile(pid_str, file)) {
                 ERROR("couldn't write %s to %s: %s\n",
@@ -609,9 +610,8 @@ void Service::OpenConsole() const {
 }
 
 void Service::PublishSocket(const std::string& name, int fd) const {
-    std::string key = android::base::StringPrintf(ANDROID_SOCKET_ENV_PREFIX "%s",
-                                                  name.c_str());
-    std::string val = android::base::StringPrintf("%d", fd);
+    std::string key = StringPrintf(ANDROID_SOCKET_ENV_PREFIX "%s", name.c_str());
+    std::string val = StringPrintf("%d", fd);
     add_environment(key.c_str(), val.c_str());
 
     /* make sure we don't close-on-exec */
@@ -626,33 +626,6 @@ ServiceManager::ServiceManager() {
 ServiceManager& ServiceManager::GetInstance() {
     static ServiceManager instance;
     return instance;
-}
-
-Service* ServiceManager::AddNewService(const std::string& name,
-                                       const std::string& classname,
-                                       const std::vector<std::string>& args,
-                                       std::string* err) {
-    if (!IsValidName(name)) {
-        *err = android::base::StringPrintf("invalid service name '%s'\n", name.c_str());
-        return nullptr;
-    }
-
-    Service* svc = ServiceManager::GetInstance().FindServiceByName(name);
-    if (svc) {
-        *err = android::base::StringPrintf("ignored duplicate definition of service '%s'\n",
-                                           name.c_str());
-        return nullptr;
-    }
-
-    std::unique_ptr<Service> svc_p(new Service(name, classname, args));
-    if (!svc_p) {
-        ERROR("Couldn't allocate service for service '%s'", name.c_str());
-        return nullptr;
-    }
-    svc = svc_p.get();
-    services_.push_back(std::move(svc_p));
-
-    return svc;
 }
 
 Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& args) {
@@ -677,8 +650,7 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
     std::vector<std::string> str_args(args.begin() + command_arg, args.end());
 
     exec_count_++;
-    std::string name = android::base::StringPrintf("exec %d (%s)", exec_count_,
-                                                   str_args[0].c_str());
+    std::string name = StringPrintf("exec %d (%s)", exec_count_, str_args[0].c_str());
     unsigned flags = SVC_EXEC | SVC_ONESHOT;
 
     std::string seclabel = "";
@@ -783,7 +755,74 @@ void ServiceManager::RemoveService(const Service& svc)
     services_.erase(svc_it);
 }
 
-bool ServiceManager::IsValidName(const std::string& name) const
+void ServiceManager::DumpState() const
+{
+    for (const auto& s : services_) {
+        s->DumpState();
+    }
+    INFO("\n");
+}
+
+class ServiceParser : public SectionParser {
+public:
+    ServiceParser(std::vector<std::unique_ptr<Service>>* services)
+        : services_(services), svc_(nullptr) {
+    }
+    bool ParseSection(const std::vector<std::string>& args,
+                      std::string* err) override;
+    bool ParseLineSection(const std::vector<std::string>& args,
+                          const std::string& filename, int line,
+                          std::string* err) const override;
+    void EndSection() override;
+private:
+    bool IsValidName(const std::string& name) const;
+
+    std::vector<std::unique_ptr<Service>>* services_;
+    std::unique_ptr<Service> svc_;
+};
+
+bool ServiceParser::ParseSection(const std::vector<std::string>& args,
+                                 std::string* err) {
+    if (args.size() < 3) {
+        *err = "services must have a name and a program\n";
+        return false;
+    }
+
+    const std::string& name = args[1];
+    if (!IsValidName(name)) {
+        *err = StringPrintf("invalid service name '%s'\n", name.c_str());
+        return false;
+    }
+
+    Service* svc = ServiceManager::GetInstance().FindServiceByName(name);
+    if (svc) {
+        *err = StringPrintf("ignored duplicate definition of service '%s'\n",
+                            name.c_str());
+        return false;
+    }
+
+    std::vector<std::string> str_args(args.begin() + 2, args.end());
+    svc_ = std::make_unique<Service>(name, "default", str_args);
+    return true;
+}
+
+bool ServiceParser::ParseLineSection(const std::vector<std::string>& args,
+                                     const std::string& filename, int line,
+                                     std::string* err) const {
+    if (args.empty()) {
+        return true;
+    }
+
+    int kw = lookup_keyword(args[0].c_str());
+    std::string ret_err;
+    return svc_->HandleLine(kw, args, err);
+}
+
+void ServiceParser::EndSection() {
+    services_->emplace_back(std::move(svc_));
+}
+
+bool ServiceParser::IsValidName(const std::string& name) const
 {
     if (name.size() > 16) {
         return false;
@@ -796,10 +835,6 @@ bool ServiceManager::IsValidName(const std::string& name) const
     return true;
 }
 
-void ServiceManager::DumpState() const
-{
-    for (const auto& s : services_) {
-        s->DumpState();
-    }
-    INFO("\n");
+std::unique_ptr<SectionParser> ServiceManager::GetSectionParser() {
+    return std::make_unique<ServiceParser>(&services_);
 }

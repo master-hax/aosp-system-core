@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "builtins.h"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <mntent.h>
@@ -44,6 +46,7 @@
 #include <private/android_filesystem_config.h>
 
 #include "action.h"
+#include "bootchart.h"
 #include "devices.h"
 #include "init.h"
 #include "init_parser.h"
@@ -435,8 +438,9 @@ void import_late()
         "/odm/etc/init"
     };
 
+    Parser& parser = Parser::GetInstance();
     for (const auto& dir : init_directories) {
-        init_parse_config(dir.c_str());
+        parser.ParseConfig(dir.c_str());
     }
 }
 
@@ -881,3 +885,48 @@ int do_installkey(const std::vector<std::string>& args)
     return e4crypt_create_device_key(args[1].c_str(),
                                      do_installkeys_ensure_dir_exists);
 }
+
+//Map of keyword -> (minimum number of arguments, function pointer)
+//sed -e 's/KEYWORD(\([^,]*\),[^,]*,\s*\([0-9]*\),\s*\([^)]*\))/{"\1", {\2, \3}},/'
+const BuiltinKeywordMap builtin_keyword_map =
+{
+    {"bootchart_init",          {0,     do_bootchart_init}},
+    {"chmod",                   {2,     do_chmod}},
+    {"chown",                   {2,     do_chown}},
+    {"class_reset",             {1,     do_class_reset}},
+    {"class_start",             {1,     do_class_start}},
+    {"class_stop",              {1,     do_class_stop}},
+    {"copy",                    {2,     do_copy}},
+    {"domainname",              {1,     do_domainname}},
+    {"enable",                  {1,     do_enable}},
+    {"exec",                    {1,     do_exec}},
+    {"export",                  {2,     do_export}},
+    {"hostname",                {1,     do_hostname}},
+    {"ifup",                    {1,     do_ifup}},
+    {"insmod",                  {1,     do_insmod}},
+    {"installkey",              {1,     do_installkey}},
+    {"load_all_props",          {0,     do_load_all_props}},
+    {"load_persist_props",      {0,     do_load_persist_props}},
+    {"loglevel",                {1,     do_loglevel}},
+    {"mkdir",                   {1,     do_mkdir}},
+    {"mount_all",               {1,     do_mount_all}},
+    {"mount",                   {3,     do_mount}},
+    {"powerctl",                {1,     do_powerctl}},
+    {"restart",                 {1,     do_restart}},
+    {"restorecon",              {1,     do_restorecon}},
+    {"restorecon_recursive",    {1,     do_restorecon_recursive}},
+    {"rm",                      {1,     do_rm}},
+    {"rmdir",                   {1,     do_rmdir}},
+    {"setprop",                 {2,     do_setprop}},
+    {"setrlimit",               {3,     do_setrlimit}},
+    {"start",                   {1,     do_start}},
+    {"stop",                    {1,     do_stop}},
+    {"swapon_all",              {1,     do_swapon_all}},
+    {"symlink",                 {1,     do_symlink}},
+    {"sysclktz",                {1,     do_sysclktz}},
+    {"trigger",                 {1,     do_trigger}},
+    {"verity_load_state",       {0,     do_verity_load_state}},
+    {"verity_update_state",     {0,     do_verity_update_state}},
+    {"wait",                    {1,     do_wait}},
+    {"write",                   {2,     do_write}},
+};
