@@ -360,9 +360,10 @@ static void local_socket_event_func(int fd, unsigned ev, void* _s)
         } else {
             p->len = max_payload - avail;
 
+            unsigned saved_id = s->id;
+            int saved_fd = s->fd;
             r = s->peer->enqueue(s->peer, p);
-            D("LS(%d): fd=%d post peer->enqueue(). r=%d\n", s->id, s->fd,
-              r);
+            D("LS(%u): fd=%d post peer->enqueue(). r=%d\n", saved_id, saved_fd, r);
 
             if (r < 0) {
                     /* error return means they closed us as a side-effect
