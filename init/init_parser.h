@@ -20,13 +20,32 @@
 #include <string>
 #include <vector>
 
-#define INIT_PARSER_MAXARGS 64
+class SectionParser {
+public:
+    virtual ~SectionParser() {
+    }
+    virtual bool ParseSection(const std::vector<std::string>& args,
+                              std::string* err) = 0;
+    virtual bool ParseLineSection(const std::vector<std::string>& args,
+                                  const std::string& filename, int line,
+                                  std::string* err) const = 0;
+    virtual void EndSection() = 0;
+};
+
+#define SECTION 0x01
+#define COMMAND 0x02
+#define OPTION  0x04
+
+using BuiltinFunction = int (*) (const std::vector<std::string>& args);
+
+int lookup_keyword(const char *s);
+BuiltinFunction kw_func(int kw);
+size_t kw_nargs(int kw);
+bool kw_is(int kw, char type);
 
 class Action;
 
 bool init_parse_config(const char* path);
 int expand_props(const std::string& src, std::string* dst);
-bool add_command_to_action(Action* action, const std::vector<std::string>& args,
-                           const std::string& filename, int line, std::string* err);
 
 #endif

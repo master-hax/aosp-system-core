@@ -39,23 +39,6 @@
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
 
-static list_declare(service_list);
-
-struct import {
-    struct listnode list;
-    const char *filename;
-};
-
-static void *parse_service(struct parse_state *state, int nargs, char **args);
-static void parse_line_service(struct parse_state *state, int nargs, char **args);
-
-static void *parse_action(struct parse_state *state, int nargs, char **args);
-static void parse_line_action(struct parse_state *state, int nargs, char **args);
-
-#define SECTION 0x01
-#define COMMAND 0x02
-#define OPTION  0x04
-
 #include "keywords.h"
 
 #define KEYWORD(symbol, flags, nargs, func) \
@@ -72,17 +55,24 @@ static struct {
 };
 #undef KEYWORD
 
-#define kw_is(kw, type) (keyword_info[kw].flags & (type))
-#define kw_name(kw) (keyword_info[kw].name)
-#define kw_func(kw) (keyword_info[kw].func)
-#define kw_nargs(kw) (keyword_info[kw].nargs)
+BuiltinFunction kw_func(int kw) {
+    return keyword_info[kw].func;
+}
+
+size_t kw_nargs(int kw) {
+    return keyword_info[kw].nargs;
+}
+
+bool kw_is(int kw, char type) {
+    return keyword_info[kw].flags & (type);
+}
 
 void dump_parser_state() {
     ServiceManager::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
 }
 
-static int lookup_keyword(const char *s)
+int lookup_keyword(const char *s)
 {
     switch (*s++) {
     case 'b':
@@ -181,9 +171,6 @@ static int lookup_keyword(const char *s)
     return K_UNKNOWN;
 }
 
-static void parse_line_no_op(struct parse_state*, int, char**) {
-}
-
 int expand_props(const std::string& src, std::string* dst) {
     const char *src_ptr = src.c_str();
 
@@ -257,64 +244,58 @@ err:
     return -1;
 }
 
-static void parse_import(struct parse_state *state, int nargs, char **args)
-{
-    if (nargs != 2) {
-        ERROR("single argument needed for import\n");
-        return;
+class NoopParser : public SectionParser {
+public:
+    bool ParseSection(const std::vector<std::string>& args,
+                      std::string* err) override {
+        return true;
+    }
+    bool ParseLineSection(const std::vector<std::string>& args,
+                          const std::string& filename, int line,
+                          std::string* err) const override {
+        return true;
+    }
+    void EndSection() override {
+    }
+};
+
+class ImportParser : public SectionParser {
+public:
+    bool ParseSection(const std::vector<std::string>& args,
+                      std::string* err) override;
+    bool ParseLineSection(const std::vector<std::string>& args,
+                          const std::string& filename, int line,
+                          std::string* err) const override {
+        return true;
+    }
+    void EndSection() override {
+    }
+    std::vector<std::string> imports() const { return imports_; }
+private:
+    std::vector<std::string> imports_;
+};
+
+bool ImportParser::ParseSection(const std::vector<std::string>& args,
+                                std::string* err) {
+    if (args.size() != 2) {
+        *err = "single argument needed for import\n";
+        return false;
     }
 
     std::string conf_file;
     int ret = expand_props(args[1], &conf_file);
     if (ret) {
-        ERROR("error while handling import on line '%d' in '%s'\n",
-              state->line, state->filename);
-        return;
+        *err = "error while expanding import";
+        return false;
     }
 
-    struct import* import = (struct import*) calloc(1, sizeof(struct import));
-    import->filename = strdup(conf_file.c_str());
-
-    struct listnode *import_list = (listnode*) state->priv;
-    list_add_tail(import_list, &import->list);
-    INFO("Added '%s' to import list\n", import->filename);
-}
-
-static void parse_new_section(struct parse_state *state, int kw,
-                       int nargs, char **args)
-{
-    printf("[ %s %s ]\n", args[0],
-           nargs > 1 ? args[1] : "");
-    switch(kw) {
-    case K_service:
-        state->context = parse_service(state, nargs, args);
-        if (state->context) {
-            state->parse_line = parse_line_service;
-            return;
-        }
-        break;
-    case K_on:
-        state->context = parse_action(state, nargs, args);
-        if (state->context) {
-            state->parse_line = parse_line_action;
-            return;
-        }
-        break;
-    case K_import:
-        parse_import(state, nargs, args);
-        break;
-    }
-    state->parse_line = parse_line_no_op;
+    INFO("Added '%s' to import list\n", conf_file.c_str());
+    imports_.emplace_back(std::move(conf_file));
+    return true;
 }
 
 static void parse_config(const char *fn, const std::string& data)
 {
-    struct listnode import_list;
-    struct listnode *node;
-    char *args[INIT_PARSER_MAXARGS];
-
-    int nargs = 0;
-
     //TODO: Use a parser with const input and remove this copy
     std::vector<char> data_copy(data.begin(), data.end());
     data_copy.push_back('\0');
@@ -324,43 +305,59 @@ static void parse_config(const char *fn, const std::string& data)
     state.line = 0;
     state.ptr = &data_copy[0];
     state.nexttoken = 0;
-    state.parse_line = parse_line_no_op;
 
-    list_init(&import_list);
-    state.priv = &import_list;
+    std::map<std::string, std::unique_ptr<SectionParser>> section_parsers;
+    section_parsers["service"] = ServiceManager::GetInstance().GetSectionParser();
+    section_parsers["on"] = ActionManager::GetInstance().GetSectionParser();
+    section_parsers["import"] = std::make_unique<ImportParser>();
+
+    SectionParser* section_parser = nullptr;
+    std::vector<std::string> args;
 
     for (;;) {
         switch (next_token(&state)) {
         case T_EOF:
-            state.parse_line(&state, 0, 0);
+            if (section_parser) {
+                section_parser->EndSection();
+            }
             goto parser_done;
         case T_NEWLINE:
             state.line++;
-            if (nargs) {
-                int kw = lookup_keyword(args[0]);
-                if (kw_is(kw, SECTION)) {
-                    state.parse_line(&state, 0, 0);
-                    parse_new_section(&state, kw, nargs, args);
-                } else {
-                    state.parse_line(&state, nargs, args);
-                }
-                nargs = 0;
+            if (args.empty()) {
+                break;
             }
+            if (section_parsers.count(args[0])) {
+                if (section_parser) {
+                    section_parser->EndSection();
+                }
+                section_parser = section_parsers[args[0]].get();
+                std::string ret_err;
+                if (!section_parser->ParseSection(args, &ret_err)) {
+                    parse_error(&state, "%s\n", ret_err.c_str());
+                    section_parser = nullptr;
+                }
+            } else if (section_parser) {
+                std::string ret_err;
+                if (!section_parser->ParseLineSection(args, state.filename,
+                                                      state.line, &ret_err)) {
+                    parse_error(&state, "%s\n", ret_err.c_str());
+                }
+            }
+            args.clear();
             break;
         case T_TEXT:
-            if (nargs < INIT_PARSER_MAXARGS) {
-                args[nargs++] = state.text;
-            }
+            args.emplace_back(state.text);
             break;
         }
     }
 
 parser_done:
-    list_for_each(node, &import_list) {
-         struct import* import = node_to_item(node, struct import, list);
-         if (!init_parse_config(import->filename)) {
+    ImportParser* import_parser =
+        static_cast<ImportParser*>(section_parsers["import"].get());
+    for (const auto& s : import_parser->imports()) {
+        if (!init_parse_config(s.c_str())) {
              ERROR("could not import file '%s' from '%s': %s\n",
-                   import->filename, fn, strerror(errno));
+                   s.c_str(), fn, strerror(errno));
          }
     }
 }
@@ -407,92 +404,4 @@ bool init_parse_config(const char* path) {
         return init_parse_config_dir(path);
     }
     return init_parse_config_file(path);
-}
-
-static void *parse_service(struct parse_state *state, int nargs, char **args)
-{
-    if (nargs < 3) {
-        parse_error(state, "services must have a name and a program\n");
-        return nullptr;
-    }
-    std::vector<std::string> str_args(args + 2, args + nargs);
-    std::string ret_err;
-    Service* svc = ServiceManager::GetInstance().AddNewService(args[1], "default",
-                                                               str_args, &ret_err);
-
-    if (!svc) {
-        parse_error(state, "%s\n", ret_err.c_str());
-    }
-
-    return svc;
-}
-
-static void parse_line_service(struct parse_state *state, int nargs, char **args)
-{
-    if (nargs == 0) {
-        return;
-    }
-
-    Service* svc = static_cast<Service*>(state->context);
-    int kw = lookup_keyword(args[0]);
-    std::vector<std::string> str_args(args, args + nargs);
-    std::string ret_err;
-    bool ret = svc->HandleLine(kw, str_args, &ret_err);
-
-    if (!ret) {
-        parse_error(state, "%s\n", ret_err.c_str());
-    }
-}
-
-static void *parse_action(struct parse_state* state, int nargs, char **args)
-{
-    std::string ret_err;
-    std::vector<std::string> triggers(args + 1, args + nargs);
-    Action* ret = ActionManager::GetInstance().AddNewAction(triggers, &ret_err);
-
-    if (!ret) {
-        parse_error(state, "%s\n", ret_err.c_str());
-    }
-
-    return ret;
-}
-
-bool add_command_to_action(Action* action, const std::vector<std::string>& args,
-                           const std::string& filename, int line, std::string* err)
-{
-    int kw;
-    size_t n;
-
-    kw = lookup_keyword(args[0].c_str());
-    if (!kw_is(kw, COMMAND)) {
-        *err = android::base::StringPrintf("invalid command '%s'\n", args[0].c_str());
-        return false;
-    }
-
-    n = kw_nargs(kw);
-    if (args.size() < n) {
-        *err = android::base::StringPrintf("%s requires %zu %s\n",
-                                           args[0].c_str(), n - 1,
-                                           n > 2 ? "arguments" : "argument");
-        return false;
-    }
-
-    action->AddCommand(kw_func(kw), args, filename, line);
-    return true;
-}
-
-static void parse_line_action(struct parse_state* state, int nargs, char **args)
-{
-    if (nargs == 0) {
-        return;
-    }
-
-    Action* action = static_cast<Action*>(state->context);
-    std::vector<std::string> str_args(args, args + nargs);
-    std::string ret_err;
-    bool ret = add_command_to_action(action, str_args, state->filename,
-                                     state->line, &ret_err);
-    if (!ret) {
-        parse_error(state, "%s\n", ret_err.c_str());
-    }
 }
