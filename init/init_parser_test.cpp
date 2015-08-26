@@ -16,6 +16,7 @@
 
 #include "init_parser.h"
 
+#include "builtins.h"
 #include "init.h"
 #include "service.h"
 #include "util.h"
@@ -25,6 +26,10 @@
 
 #include <string>
 #include <vector>
+
+const BuiltinFunctionInfo* FindBuiltinFunctionInfo(const std::string&) {
+    return nullptr;
+}
 
 TEST(init_parser, make_exec_oneshot_service_invalid_syntax) {
     ServiceManager& sm = ServiceManager::GetInstance();

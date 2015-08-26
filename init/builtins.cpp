@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "builtins.h"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <mntent.h>
@@ -44,10 +46,10 @@
 #include <private/android_filesystem_config.h>
 
 #include "action.h"
+#include "bootchart.h"
 #include "devices.h"
 #include "init.h"
 #include "init_parser.h"
-#include "keywords.h"
 #include "log.h"
 #include "property_service.h"
 #include "service.h"
@@ -427,7 +429,7 @@ static int wipe_data_via_recovery()
     while (1) { pause(); }  // never reached
 }
 
-void import_late()
+static void import_late()
 {
     static const std::vector<std::string> init_directories = {
         "/system/etc/init",
@@ -435,8 +437,9 @@ void import_late()
         "/odm/etc/init"
     };
 
+    Parser& parser = Parser::GetInstance();
     for (const auto& dir : init_directories) {
-        init_parse_config(dir.c_str());
+        parser.ParseConfig(dir.c_str());
     }
 }
 
@@ -880,4 +883,58 @@ int do_installkey(const std::vector<std::string>& args)
 
     return e4crypt_create_device_key(args[1].c_str(),
                                      do_installkeys_ensure_dir_exists);
+}
+
+constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
+//Map of keyword ->
+//(minimum number of arguments, maximum number of arguments, function pointer)
+static const std::map<const std::string, BuiltinFunctionInfo> builtin_function_map =
+{
+    {"bootchart_init",          {0,     0,    do_bootchart_init}},
+    {"chmod",                   {2,     2,    do_chmod}},
+    {"chown",                   {2,     3,    do_chown}},
+    {"class_reset",             {1,     1,    do_class_reset}},
+    {"class_start",             {1,     1,    do_class_start}},
+    {"class_stop",              {1,     1,    do_class_stop}},
+    {"copy",                    {2,     2,    do_copy}},
+    {"domainname",              {1,     1,    do_domainname}},
+    {"enable",                  {1,     1,    do_enable}},
+    {"exec",                    {1,     kMax, do_exec}},
+    {"export",                  {2,     2,    do_export}},
+    {"hostname",                {1,     1,    do_hostname}},
+    {"ifup",                    {1,     1,    do_ifup}},
+    {"insmod",                  {1,     kMax, do_insmod}},
+    {"installkey",              {1,     1,    do_installkey}},
+    {"load_all_props",          {0,     0,    do_load_all_props}},
+    {"load_persist_props",      {0,     0,    do_load_persist_props}},
+    {"loglevel",                {1,     1,    do_loglevel}},
+    {"mkdir",                   {1,     4,    do_mkdir}},
+    {"mount_all",               {1,     1,    do_mount_all}},
+    {"mount",                   {3,     kMax, do_mount}},
+    {"powerctl",                {1,     1,    do_powerctl}},
+    {"restart",                 {1,     1,    do_restart}},
+    {"restorecon",              {1,     kMax, do_restorecon}},
+    {"restorecon_recursive",    {1,     kMax, do_restorecon_recursive}},
+    {"rm",                      {1,     1,    do_rm}},
+    {"rmdir",                   {1,     1,    do_rmdir}},
+    {"setprop",                 {2,     2,    do_setprop}},
+    {"setrlimit",               {3,     3,    do_setrlimit}},
+    {"start",                   {1,     1,    do_start}},
+    {"stop",                    {1,     1,    do_stop}},
+    {"swapon_all",              {1,     1,    do_swapon_all}},
+    {"symlink",                 {2,     2,    do_symlink}},
+    {"sysclktz",                {1,     1,    do_sysclktz}},
+    {"trigger",                 {1,     1,    do_trigger}},
+    {"verity_load_state",       {0,     0,    do_verity_load_state}},
+    {"verity_update_state",     {0,     0,    do_verity_update_state}},
+    {"wait",                    {1,     2,    do_wait}},
+    {"write",                   {2,     2,    do_write}},
+};
+
+const BuiltinFunctionInfo* FindBuiltinFunctionInfo(const std::string& keyword) {
+    auto function_info_it = builtin_function_map.find(keyword);
+    if (function_info_it == builtin_function_map.end()) {
+        return nullptr;
+    }
+    return &function_info_it->second;
 }
