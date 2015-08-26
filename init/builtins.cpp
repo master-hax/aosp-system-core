@@ -435,8 +435,9 @@ void import_late()
         "/odm/etc/init"
     };
 
+    Parser& parser = Parser::GetInstance();
     for (const auto& dir : init_directories) {
-        init_parse_config(dir.c_str());
+        parser.ParseConfig(dir.c_str());
     }
 }
 

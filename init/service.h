@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "action.h"
+#include "init_parser.h"
 
 #define SVC_DISABLED       0x001  // do not autostart with class
 #define SVC_ONESHOT        0x002  // do not restart on exit
@@ -141,9 +142,6 @@ class ServiceManager {
 public:
     static ServiceManager& GetInstance();
 
-    Service* AddNewService(const std::string& name, const std::string& classname,
-                                           const std::vector<std::string>& args,
-                                           std::string* err);
     Service* MakeExecOneshotService(const std::vector<std::string>& args);
     Service* FindServiceByName(const std::string& name) const;
     Service* FindServiceByPid(pid_t pid) const;
@@ -155,10 +153,10 @@ public:
                              void (*func)(Service* svc)) const;
     void RemoveService(const Service& svc);
     void DumpState() const;
+    std::unique_ptr<SectionParser> GetSectionParser();
+
 private:
     ServiceManager();
-
-    bool IsValidName(const std::string& name) const;
 
     static int exec_count_; // Every service needs a unique name.
     std::vector<std::unique_ptr<Service>> services_;
