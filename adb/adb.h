@@ -186,7 +186,6 @@ enum ConnectionState {
     kCsDevice,
     kCsHost,
     kCsRecovery,
-    kCsNoPerm,  // Insufficient permissions to communicate with the device.
     kCsSideload,
     kCsUnauthorized,
 };
@@ -243,7 +242,7 @@ int adb_main(int is_daemon, int server_port, int ack_reply_fd);
 int get_available_local_transport_index();
 #endif
 int  init_socket_transport(atransport *t, int s, int port, int local);
-void init_usb_transport(atransport *t, usb_handle *usb, ConnectionState state);
+void init_usb_transport(atransport *t, usb_handle *usb);
 
 #if ADB_HOST
 atransport* find_emulator_transport_by_adb_port(int adb_port);

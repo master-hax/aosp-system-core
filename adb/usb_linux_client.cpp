@@ -234,7 +234,7 @@ static void *usb_adb_open_thread(void *x)
         usb->fd = fd;
 
         D("[ usb_thread - registering device ]\n");
-        register_usb_transport(usb, 0, 0, 1);
+        register_usb_transport(usb, 0, 0);
     }
 
     // never gets here
@@ -421,7 +421,7 @@ static void *usb_ffs_open_thread(void *x)
         property_set("sys.usb.ffs.ready", "1");
 
         D("[ usb_thread - registering device ]\n");
-        register_usb_transport(usb, 0, 0, 1);
+        register_usb_transport(usb, 0, 0);
     }
 
     // never gets here

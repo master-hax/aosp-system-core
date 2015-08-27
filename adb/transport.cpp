@@ -558,34 +558,31 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
         return;
     }
 
-    /* don't create transport threads for inaccessible devices */
-    if (t->connection_state != kCsNoPerm) {
-        /* initial references are the two threads */
-        t->ref_count = 2;
+    /* initial references are the two threads */
+    t->ref_count = 2;
 
-        if (adb_socketpair(s)) {
-            fatal_errno("cannot open transport socketpair");
-        }
+    if (adb_socketpair(s)) {
+        fatal_errno("cannot open transport socketpair");
+    }
 
-        D("transport: %s socketpair: (%d,%d) starting\n", t->serial, s[0], s[1]);
+    D("transport: %s socketpair: (%d,%d) starting\n", t->serial, s[0], s[1]);
 
-        t->transport_socket = s[0];
-        t->fd = s[1];
+    t->transport_socket = s[0];
+    t->fd = s[1];
 
-        fdevent_install(&(t->transport_fde),
-                        t->transport_socket,
-                        transport_socket_events,
-                        t);
+    fdevent_install(&(t->transport_fde),
+                    t->transport_socket,
+                    transport_socket_events,
+                    t);
 
-        fdevent_set(&(t->transport_fde), FDE_READ);
+    fdevent_set(&(t->transport_fde), FDE_READ);
 
-        if (!adb_thread_create(input_thread, t)) {
-            fatal_errno("cannot create input thread");
-        }
+    if (!adb_thread_create(input_thread, t)) {
+        fatal_errno("cannot create input thread");
+    }
 
-        if (!adb_thread_create(output_thread, t)) {
-            fatal_errno("cannot create output thread");
-        }
+    if (!adb_thread_create(output_thread, t)) {
+        fatal_errno("cannot create output thread");
     }
 
     adb_mutex_lock(&transport_lock);
@@ -723,11 +720,6 @@ retry:
 
     adb_mutex_lock(&transport_lock);
     for (auto t : transport_list) {
-        if (t->connection_state == kCsNoPerm) {
-            *error_out = "insufficient permissions for device";
-            continue;
-        }
-
         /* check for matching serial number */
         if (serial) {
             if ((t->serial && !strcmp(serial, t->serial)) ||
@@ -816,7 +808,6 @@ const char* atransport::connection_state_name() const {
     case kCsDevice: return "device";
     case kCsHost: return "host";
     case kCsRecovery: return "recovery";
-    case kCsNoPerm: return "no permissions";
     case kCsSideload: return "sideload";
     case kCsUnauthorized: return "unauthorized";
     default: return "unknown";
@@ -1012,13 +1003,12 @@ void unregister_all_tcp_transports() {
 
 #endif
 
-void register_usb_transport(usb_handle* usb, const char* serial,
-                            const char* devpath, unsigned writeable) {
+void register_usb_transport(usb_handle* usb, const char* serial, const char* devpath) {
     atransport* t = new atransport();
 
     D("transport: %p init'ing for usb_handle %p (sn='%s')\n", t, usb,
       serial ? serial : "");
-    init_usb_transport(t, usb, (writeable ? kCsOffline : kCsNoPerm));
+    init_usb_transport(t, usb);
     if(serial) {
         t->serial = strdup(serial);
     }
@@ -1032,15 +1022,6 @@ void register_usb_transport(usb_handle* usb, const char* serial,
     adb_mutex_unlock(&transport_lock);
 
     register_transport(t);
-}
-
-// This should only be used for transports with connection_state == kCsNoPerm.
-void unregister_usb_transport(usb_handle *usb) {
-    adb_mutex_lock(&transport_lock);
-    transport_list.remove_if([usb](atransport* t) {
-        return t->usb == usb && t->connection_state == kCsNoPerm;
-    });
-    adb_mutex_unlock(&transport_lock);
 }
 
 #undef TRACE_TAG

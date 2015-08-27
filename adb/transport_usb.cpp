@@ -80,7 +80,7 @@ static void remote_kick(atransport *t)
     usb_kick(t->usb);
 }
 
-void init_usb_transport(atransport *t, usb_handle *h, ConnectionState state)
+void init_usb_transport(atransport *t, usb_handle *h)
 {
     D("transport: usb\n");
     t->close = remote_close;
@@ -88,7 +88,7 @@ void init_usb_transport(atransport *t, usb_handle *h, ConnectionState state)
     t->read_from_remote = remote_read;
     t->write_to_remote = remote_write;
     t->sync_token = 1;
-    t->connection_state = state;
+    t->connection_state = kCsOffline;
     t->type = kTransportUsb;
     t->usb = h;
 }

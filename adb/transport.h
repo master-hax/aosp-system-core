@@ -127,8 +127,7 @@ void init_transport_registration(void);
 std::string list_transports(bool long_listing);
 atransport* find_transport(const char* serial);
 
-void register_usb_transport(usb_handle* h, const char* serial,
-                            const char* devpath, unsigned writeable);
+void register_usb_transport(usb_handle* h, const char* serial, const char* devpath);
 
 /* cause new transports to be init'd and added to the list */
 int register_socket_transport(int s, const char* serial, int port, int local);

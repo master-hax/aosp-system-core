@@ -62,7 +62,6 @@ struct usb_handle {
     unsigned char ep_out;
 
     unsigned zero_mask;
-    unsigned writeable = 1;
 
     usbdevfs_urb urb_in;
     usbdevfs_urb urb_out;
@@ -460,30 +459,26 @@ void usb_kick(usb_handle* h) {
     if (!h->dead) {
         h->dead = true;
 
-        if (h->writeable) {
-            /* HACK ALERT!
-            ** Sometimes we get stuck in ioctl(USBDEVFS_REAPURB).
-            ** This is a workaround for that problem.
-            */
-            if (h->reaper_thread) {
-                pthread_kill(h->reaper_thread, SIGALRM);
-            }
-
-            /* cancel any pending transactions
-            ** these will quietly fail if the txns are not active,
-            ** but this ensures that a reader blocked on REAPURB
-            ** will get unblocked
-            */
-            ioctl(h->fd, USBDEVFS_DISCARDURB, &h->urb_in);
-            ioctl(h->fd, USBDEVFS_DISCARDURB, &h->urb_out);
-            h->urb_in.status = -ENODEV;
-            h->urb_out.status = -ENODEV;
-            h->urb_in_busy = false;
-            h->urb_out_busy = false;
-            h->cv.notify_all();
-        } else {
-            unregister_usb_transport(h);
+        /* HACK ALERT!
+        ** Sometimes we get stuck in ioctl(USBDEVFS_REAPURB).
+        ** This is a workaround for that problem.
+        */
+        if (h->reaper_thread) {
+            pthread_kill(h->reaper_thread, SIGALRM);
         }
+
+        /* cancel any pending transactions
+        ** these will quietly fail if the txns are not active,
+        ** but this ensures that a reader blocked on REAPURB
+        ** will get unblocked
+        */
+        ioctl(h->fd, USBDEVFS_DISCARDURB, &h->urb_in);
+        ioctl(h->fd, USBDEVFS_DISCARDURB, &h->urb_out);
+        h->urb_in.status = -ENODEV;
+        h->urb_out.status = -ENODEV;
+        h->urb_in_busy = false;
+        h->urb_out_busy = false;
+        h->cv.notify_all();
     }
 }
 
@@ -530,23 +525,15 @@ static void register_device(const char* dev_name, const char* dev_path,
 
     usb->fd = unix_open(usb->path.c_str(), O_RDWR | O_CLOEXEC);
     if (usb->fd == -1) {
-        // Opening RW failed, so see if we have RO access.
-        usb->fd = unix_open(usb->path.c_str(), O_RDONLY | O_CLOEXEC);
-        if (usb->fd == -1) {
-            D("[ usb open %s failed: %s]\n", usb->path.c_str(), strerror(errno));
-            return;
-        }
-        usb->writeable = 0;
+        D("[ usb open %s failed: %s]\n", usb->path.c_str(), strerror(errno));
+        return;
     }
 
-    D("[ usb opened %s%s, fd=%d]\n",
-      usb->path.c_str(), (usb->writeable ? "" : " (read-only)"), usb->fd);
+    D("[ usb opened %s, fd=%d]\n", usb->path.c_str(), usb->fd);
 
-    if (usb->writeable) {
-        if (ioctl(usb->fd, USBDEVFS_CLAIMINTERFACE, &interface) != 0) {
-            D("[ usb ioctl(%d, USBDEVFS_CLAIMINTERFACE) failed: %s]\n", usb->fd, strerror(errno));
-            return;
-        }
+    if (ioctl(usb->fd, USBDEVFS_CLAIMINTERFACE, &interface) != 0) {
+        D("[ usb ioctl(%d, USBDEVFS_CLAIMINTERFACE) failed: %s]\n", usb->fd, strerror(errno));
+        return;
     }
 
     // Read the device's serial number.
@@ -568,7 +555,7 @@ static void register_device(const char* dev_name, const char* dev_path,
         std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
         g_usb_handles.push_back(done_usb);
     }
-    register_usb_transport(done_usb, serial.c_str(), dev_path, done_usb->writeable);
+    register_usb_transport(done_usb, serial.c_str(), dev_path);
 }
 
 static void* device_poll_thread(void* unused) {
