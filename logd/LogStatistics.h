@@ -371,6 +371,10 @@ class LogStatistics {
     typedef LogHashtable<uid_t, UidEntry> uidTable_t;
     uidTable_t uidTable[LOG_ID_MAX];
 
+    // pid of system to size list
+    typedef LogHashtable<pid_t, PidEntry> pidSystemTable_t;
+    pidSystemTable_t pidSystemTable[LOG_ID_MAX];
+
     // pid to uid list
     typedef LogHashtable<pid_t, PidEntry> pidTable_t;
     pidTable_t pidTable;
@@ -395,7 +399,12 @@ public:
     // Correct for merging two entries referencing dropped content
     void erase(LogBufferElement *e) { --mElements[e->getLogId()]; }
 
-    std::unique_ptr<const UidEntry *[]> sort(size_t n, log_id i) { return uidTable[i].sort(n); }
+    std::unique_ptr<const UidEntry *[]> sort(size_t n, log_id i) {
+        return uidTable[i].sort(n);
+    }
+    std::unique_ptr<const PidEntry *[]> sort(size_t n, log_id i, uid_t) {
+        return pidSystemTable[i].sort(n);
+    }
 
     // fast track current value by id only
     size_t sizes(log_id_t id) const { return mSizes[id]; }
