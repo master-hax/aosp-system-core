@@ -3205,7 +3205,7 @@ void stdin_raw_restore(const int fd) {
     }
 }
 
-// Called by 'adb shell' and 'adb exec-in' to read from stdin.
+// Called by 'adb shell' to read from stdin.
 int unix_read(int fd, void* buf, size_t len) {
     if ((fd == STDIN_FILENO) && (_console_handle != NULL)) {
         // If it is a request to read from stdin, and stdin_raw_init() has been
