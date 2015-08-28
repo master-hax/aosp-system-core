@@ -183,12 +183,6 @@ static int write_data_file(SyncConnection& sc, const char* path, syncsendbuf* sb
     int err = 0;
     unsigned long long size = 0;
 
-    int lfd = adb_open(path, O_RDONLY);
-    if (lfd < 0) {
-        fprintf(stderr, "cannot open '%s': %s\n", path, strerror(errno));
-        return -1;
-    }
-
     if (show_progress) {
         // Determine local file size.
         struct stat st;
@@ -200,11 +194,20 @@ static int write_data_file(SyncConnection& sc, const char* path, syncsendbuf* sb
         size = st.st_size;
     }
 
+    int lfd = adb_open(path, O_RDONLY);
+    if (lfd < 0) {
+        fprintf(stderr, "cannot open '%s': %s\n", path, strerror(errno));
+        return -1;
+    }
+
     sbuf->id = ID_DATA;
     while (true) {
         int ret = adb_read(lfd, sbuf->data, sc.max);
         if (ret <= 0) {
-            if (ret < 0) fprintf(stderr, "cannot read '%s': %s\n", path, strerror(errno));
+            if (ret < 0) {
+                fprintf(stderr, "cannot read '%s': %s\n", path, strerror(errno));
+                err = -1;
+            }
             break;
         }
 
@@ -257,9 +260,9 @@ static bool sync_send(SyncConnection& sc, const char *lpath, const char *rpath,
     if (!SendRequest(sc.fd, ID_SEND, path_and_mode.c_str())) goto fail;
 
     if (S_ISREG(mode)) {
-        write_data_file(sc, lpath, sbuf, show_progress);
+        if (write_data_file(sc, lpath, sbuf, show_progress)) return false;
     } else if (S_ISLNK(mode)) {
-        write_data_link(sc, lpath, sbuf);
+        if (write_data_link(sc, lpath, sbuf)) return false;
     } else {
         goto fail;
     }
@@ -325,6 +328,7 @@ static int sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, b
 
     while (true) {
         if(!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
+            adb_close(lfd);
             return -1;
         }
         id = msg.data.id;
