@@ -101,12 +101,12 @@ static void  free_listener(alistener*  l)
         free((char*)l->connect_to);
 
     if (l->transport) {
-        remove_transport_disconnect(l->transport, &l->disconnect);
+        l->transport->RemoveDisconnect(&l->disconnect);
     }
     free(l);
 }
 
-static void listener_disconnect(void* listener, atransport* t) {
+static void listener_disconnect(void* listener, atransport*) {
     free_listener(reinterpret_cast<alistener*>(listener));
 }
 
@@ -209,9 +209,9 @@ InstallStatus install_listener(const std::string& local_name,
             free((void*) l->connect_to);
             l->connect_to = cto;
             if (l->transport != transport) {
-                remove_transport_disconnect(l->transport, &l->disconnect);
+                l->transport->RemoveDisconnect(&l->disconnect);
                 l->transport = transport;
-                add_transport_disconnect(l->transport, &l->disconnect);
+                l->transport->AddDisconnect(&l->disconnect);
             }
             return INSTALL_STATUS_OK;
         }
@@ -260,7 +260,7 @@ InstallStatus install_listener(const std::string& local_name,
     if (transport) {
         listener->disconnect.opaque = listener;
         listener->disconnect.func   = listener_disconnect;
-        add_transport_disconnect(transport, &listener->disconnect);
+        transport->AddDisconnect(&listener->disconnect);
     }
     return INSTALL_STATUS_OK;
 
