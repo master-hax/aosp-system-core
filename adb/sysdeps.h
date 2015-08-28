@@ -110,6 +110,9 @@ static __inline__ bool adb_thread_create(adb_thread_func_t func, void* arg) {
     return (tid != static_cast<uintptr_t>(-1L));
 }
 
+static __inline__ void adb_thread_setname(const std::string& name) {
+}
+
 static __inline__  unsigned long adb_thread_id()
 {
     return GetCurrentThreadId();
@@ -601,7 +604,15 @@ static __inline__ bool adb_thread_create(adb_thread_func_t start, void* arg) {
     return (errno == 0);
 }
 
-static __inline__  int  adb_socket_setbufsize( int   fd, int  bufsize )
+static __inline__ void adb_thread_setname(const std::string& name) {
+#ifdef __APPLE__
+    pthread_setname_np(name.c_str());
+#else
+    pthread_setname_np(pthread_self(), name.c_str());
+#endif
+}
+
+static __inline__  int  adb_socket_setbufsize(int fd, int  bufsize )
 {
     int opt = bufsize;
     return setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &opt, sizeof(opt));
