@@ -257,16 +257,10 @@ static void stdin_raw_restore(int fd) {
 #endif
 
 static void read_and_dump(int fd) {
-    while (fd >= 0) {
-        D("read_and_dump(): pre adb_read(fd=%d)\n", fd);
-        char buf[BUFSIZ];
-        int len = adb_read(fd, buf, sizeof(buf));
-        D("read_and_dump(): post adb_read(fd=%d): len=%d\n", fd, len);
-        if (len <= 0) {
-            break;
-        }
-
-        fwrite(buf, 1, len, stdout);
+    char buf[BUFSIZ];
+    ssize_t bytes_read;
+    while ((bytes_read = adb_read(fd, buf, sizeof(buf))) > 0) {
+        fwrite(buf, 1, bytes_read, stdout);
         fflush(stdout);
     }
 }
@@ -362,63 +356,58 @@ static void copy_to_file(int inFd, int outFd) {
     free(buf);
 }
 
-static void *stdin_read_thread(void *x)
-{
-    int fd, fdi;
-    unsigned char buf[1024];
-    int r, n;
-    int state = 0;
-
-    int *fds = (int*) x;
-    fd = fds[0];
-    fdi = fds[1];
+static void* stdin_read_thread(void* thread_data) {
+    int* fds = reinterpret_cast<int*>(thread_data);
+    int fd = fds[0];
+    int fdi = fds[1];
     free(fds);
 
+    int state = 0;
     while (true) {
-        /* fdi is really the client's stdin, so use read, not adb_read here */
+        // fdi is really the client's stdin, so use unix_read, not adb_read here.
         D("stdin_read_thread(): pre unix_read(fdi=%d,...)\n", fdi);
-        r = unix_read(fdi, buf, 1024);
+        char buf[BUFSIZ];
+        int r = unix_read(fdi, buf, sizeof(buf));
         D("stdin_read_thread(): post unix_read(fdi=%d,...)\n", fdi);
         if (r <= 0) break;
-        for (n = 0; n < r; n++){
+        for (int n = 0; n < r; n++){
             switch(buf[n]) {
-            case '\n':
+              case '\n':
                 state = 1;
                 break;
-            case '\r':
+              case '\r':
                 state = 1;
                 break;
-            case '~':
-                if(state == 1) state++;
+              case '~':
+                if (state == 1) state++;
                 break;
-            case '.':
-                if(state == 2) {
+              case '.':
+                if (state == 2) {
                     fprintf(stderr,"\n* disconnect *\n");
                     stdin_raw_restore(fdi);
                     exit(0);
                 }
-            default:
+              default:
                 state = 0;
             }
         }
         r = adb_write(fd, buf, r);
-        if(r <= 0) {
+        if (r <= 0) {
             break;
         }
     }
     return 0;
 }
 
-static int interactive_shell() {
-    int fdi;
-
+static int interactive_shell(const std::string& cmd) {
     std::string error;
-    int fd = adb_connect("shell:", &error);
+    int fd = adb_connect(cmd, &error);
     if (fd < 0) {
         fprintf(stderr,"error: %s\n", error.c_str());
         return 1;
     }
-    fdi = 0; //dup(0);
+
+    int fdi = 0; //dup(0);
 
     int* fds = reinterpret_cast<int*>(malloc(sizeof(int) * 2));
     if (fds == nullptr) {
@@ -433,7 +422,9 @@ static int interactive_shell() {
 
     adb_thread_create(stdin_read_thread, fds);
     read_and_dump(fd);
+
     stdin_raw_restore(fdi);
+
     return 0;
 }
 
@@ -1141,24 +1132,13 @@ int adb_commandline(int argc, const char **argv) {
     else if (!strcmp(argv[0], "emu")) {
         return adb_send_emulator_command(argc, argv, serial);
     }
-    else if (!strcmp(argv[0], "shell") || !strcmp(argv[0], "hell")) {
-        char h = (argv[0][0] == 'h');
-
-        if (h) {
-            printf("\x1b[41;33m");
-            fflush(stdout);
-        }
-
+    else if (!strcmp(argv[0], "shell")) {
+      /*
         if (argc < 2) {
             D("starting interactive shell\n");
-            r = interactive_shell();
-            if (h) {
-                printf("\x1b[0m");
-                fflush(stdout);
-            }
-            return r;
+            return interactive_shell();
         }
-
+        */
         std::string cmd = "shell:";
         --argc;
         ++argv;
@@ -1168,6 +1148,8 @@ int adb_commandline(int argc, const char **argv) {
             if (*argv) cmd += " ";
         }
 
+        return interactive_shell(cmd);
+        /*
         while (true) {
             D("interactive shell loop. cmd=%s\n", cmd.c_str());
             std::string error;
@@ -1184,40 +1166,9 @@ int adb_commandline(int argc, const char **argv) {
                 r = -1;
             }
 
-            if (h) {
-                printf("\x1b[0m");
-                fflush(stdout);
-            }
             D("interactive shell loop. return r=%d\n", r);
             return r;
-        }
-    }
-    else if (!strcmp(argv[0], "exec-in") || !strcmp(argv[0], "exec-out")) {
-        int exec_in = !strcmp(argv[0], "exec-in");
-
-        std::string cmd = "exec:";
-        cmd += argv[1];
-        argc -= 2;
-        argv += 2;
-        while (argc-- > 0) {
-            cmd += " " + escape_arg(*argv++);
-        }
-
-        std::string error;
-        int fd = adb_connect(cmd, &error);
-        if (fd < 0) {
-            fprintf(stderr, "error: %s\n", error.c_str());
-            return -1;
-        }
-
-        if (exec_in) {
-            copy_to_file(STDIN_FILENO, fd);
-        } else {
-            copy_to_file(fd, STDOUT_FILENO);
-        }
-
-        adb_close(fd);
-        return 0;
+        }*/
     }
     else if (!strcmp(argv[0], "kill-server")) {
         std::string error;

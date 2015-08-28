@@ -235,17 +235,16 @@ static int create_service_thread(void (*func)(int, void *), void *cookie)
 
 #if !ADB_HOST
 
-static void init_subproc_child()
-{
+static void init_subproc_child() {
     setsid();
 
     // Set OOM score adjustment to prevent killing
     int fd = adb_open("/proc/self/oom_score_adj", O_WRONLY | O_CLOEXEC);
-    if (fd >= 0) {
+    if (fd == -1) {
+        D("adb: unable to update oom_score_adj\n");
+    } else {
         adb_write(fd, "0", 1);
         adb_close(fd);
-    } else {
-       D("adb: unable to update oom_score_adj\n");
     }
 }
 
@@ -300,9 +299,8 @@ static int create_subproc_pty(const char* cmd, const char* arg0,
         unix_close(ptm);
 
         execl(cmd, cmd, arg0, arg1, nullptr);
-        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
-                cmd, strerror(errno), errno);
-        exit(-1);
+        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n", cmd, strerror(errno), errno);
+        _exit(-1);
     } else {
         return ptm;
     }
@@ -344,9 +342,8 @@ static int create_subproc_raw(const char *cmd, const char *arg0, const char *arg
         adb_close(sv[1]);
 
         execl(cmd, cmd, arg0, arg1, NULL);
-        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n",
-                cmd, strerror(errno), errno);
-        exit(-1);
+        fprintf(stderr, "- exec '%s' failed: %s (%d) -\n", cmd, strerror(errno), errno);
+        _exit(-1);
     } else {
         adb_close(sv[1]);
         return sv[0];
