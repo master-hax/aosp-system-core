@@ -241,11 +241,20 @@ void LogBuffer::maybePrune(log_id_t id) {
 LogBufferElementCollection::iterator LogBuffer::erase(LogBufferElementCollection::iterator it) {
     LogBufferElement *e = *it;
     log_id_t id = e->getLogId();
-    LogBufferIteratorMap::iterator f = mLastWorstUid[id].find(e->getUid());
 
+    LogBufferIteratorMap::iterator f = mLastWorstUid[id].find(e->getUid());
     if ((f != mLastWorstUid[id].end()) && (it == f->second)) {
         mLastWorstUid[id].erase(f);
     }
+
+    if (e->getUid() == AID_SYSTEM) {
+        LogBufferPidIteratorMap::iterator p
+            = mLastWorstPidOfSystem[id].find(e->getPid());
+        if ((p != mLastWorstPidOfSystem[id].end()) && (it == p->second)) {
+            mLastWorstPidOfSystem[id].erase(p);
+        }
+    }
+
     it = mLogElements.erase(it);
     stats.subtract(e);
     delete e;
@@ -370,19 +379,20 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         return;
     }
 
-    // prune by worst offender by uid
+    // prune by worst offenders; by blacklist, UID, and by PID of system UID
     bool hasBlacklist = mPrune.naughty();
     while (pruneRows > 0) {
         // recalculate the worst offender on every batched pass
         uid_t worst = (uid_t) -1;
         size_t worst_sizes = 0;
         size_t second_worst_sizes = 0;
+        pid_t worstPid = (pid_t) -1;
 
         if (worstUidEnabledForLogid(id) && mPrune.worstUidEnabled()) {
-            std::unique_ptr<const UidEntry *[]> sorted = stats.sort(2, id);
+            {
+                std::unique_ptr<const UidEntry *[]> sorted = stats.sort(2, id);
 
-            if (sorted.get()) {
-                if (sorted[0] && sorted[1]) {
+                if (sorted.get() && sorted[0] && sorted[1]) {
                     worst_sizes = sorted[0]->getSizes();
                     // Calculate threshold as 12.5% of available storage
                     size_t threshold = log_buffer_size(id) / 8;
@@ -393,6 +403,16 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                             second_worst_sizes = threshold;
                         }
                     }
+                }
+            }
+
+            if ((worst == AID_SYSTEM) && mPrune.worstPidOfSystemEnabled()) {
+                std::unique_ptr<const PidEntry *[]> sorted = stats.sort(2, id, worst);
+                if (sorted.get() && sorted[0] && sorted[1]) {
+                    worstPid = sorted[0]->getKey();
+                    second_worst_sizes = worst_sizes
+                                       - sorted[0]->getSizes()
+                                       + sorted[1]->getSizes();
                 }
             }
         }
@@ -412,7 +432,22 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 leading = false;
                 it = f->second;
             }
+            if (worst == AID_SYSTEM) {
+                LogBufferPidIteratorMap::iterator p
+                    = mLastWorstPidOfSystem[id].find(worst);
+                if ((p != mLastWorstPidOfSystem[id].end())
+                        && (p->second != mLogElements.end())) {
+                    leading = false;
+                    it = p->second;
+                }
+            }
         }
+        static const timespec too_old = {
+            EXPIRE_HOUR_THRESHOLD * 60 * 60, 0
+        };
+        LogBufferElementCollection::iterator lastt;
+        lastt = mLogElements.end();
+        --lastt;
         LogBufferElementLast last;
         while (it != mLogElements.end()) {
             LogBufferElement *e = *it;
@@ -442,6 +477,11 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 continue;
             }
 
+            if ((e->getRealTime() < ((*lastt)->getRealTime() - too_old))
+                    || (e->getRealTime() > (*lastt)->getRealTime())) {
+                break;
+            }
+
             if (hasBlacklist && mPrune.naughty(e)) {
                 last.clear(e);
                 it = erase(it);
@@ -467,7 +507,17 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             // unmerged drop message
             if (dropped) {
                 last.add(e);
-                if ((e->getUid() == worst)
+                if (e->getUid() == AID_SYSTEM) {
+                    if ((e->getPid() == worstPid)
+                            || (mLastWorstPidOfSystem[id].find(e->getPid())
+                                == mLastWorstPidOfSystem[id].end())) {
+                        mLastWorstUid[id][e->getUid()] = it;
+                    }
+                    if (mLastWorstUid[id].find(e->getUid())
+                            == mLastWorstUid[id].end()) {
+                        mLastWorstUid[id][e->getUid()] = it;
+                    }
+                } else if ((e->getUid() == worst)
                         || (mLastWorstUid[id].find(e->getUid())
                             == mLastWorstUid[id].end())) {
                     mLastWorstUid[id][e->getUid()] = it;
@@ -476,19 +526,9 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 continue;
             }
 
-            if (e->getUid() != worst) {
-                if (leading) {
-                    static const timespec too_old = {
-                        EXPIRE_HOUR_THRESHOLD * 60 * 60, 0
-                    };
-                    LogBufferElementCollection::iterator last;
-                    last = mLogElements.end();
-                    --last;
-                    if ((e->getRealTime() < ((*last)->getRealTime() - too_old))
-                            || (e->getRealTime() > (*last)->getRealTime())) {
-                        break;
-                    }
-                }
+            if ((e->getUid() != worst)
+                    || ((worstPid != (pid_t)-1)
+                        && (e->getPid() != worstPid))) {
                 leading = false;
                 last.clear(e);
                 ++it;
@@ -516,7 +556,15 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                     delete e;
                 } else {
                     last.add(e);
-                    mLastWorstUid[id][e->getUid()] = it;
+                    if (worstPid) {
+                        mLastWorstPidOfSystem[id][e->getPid()] = it;
+                        if (mLastWorstUid[id].find(e->getUid())
+                                == mLastWorstUid[id].end()) {
+                            mLastWorstUid[id][e->getUid()] = it;
+                        }
+                    } else {
+                        mLastWorstUid[id][e->getUid()] = it;
+                    }
                     ++it;
                 }
             }
