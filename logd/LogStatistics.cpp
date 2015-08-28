@@ -74,6 +74,9 @@ void LogStatistics::add(LogBufferElement *e) {
     }
 
     uidTable[log_id].add(e->getUid(), e);
+    if (e->getUid() == AID_SYSTEM) {
+        pidSystemTable[log_id].add(e->getPid(), e);
+    }
 
     if (!enable) {
         return;
@@ -99,6 +102,9 @@ void LogStatistics::subtract(LogBufferElement *e) {
     }
 
     uidTable[log_id].subtract(e->getUid(), e);
+    if (e->getUid() == AID_SYSTEM) {
+        pidSystemTable[log_id].subtract(e->getPid(), e);
+    }
 
     if (!enable) {
         return;
@@ -121,6 +127,9 @@ void LogStatistics::drop(LogBufferElement *e) {
     mSizes[log_id] -= size;
 
     uidTable[log_id].drop(e->getUid(), e);
+    if (e->getUid() == AID_SYSTEM) {
+        pidSystemTable[log_id].drop(e->getPid(), e);
+    }
 
     if (!enable) {
         return;
@@ -248,7 +257,8 @@ std::string UidEntry::format(const LogStatistics &stat, log_id_t id) const {
                     prefix,
                     (permille + 5) / 10, units);
             }
-            ssize_t spaces = pruned_len - 2 - pruned.length() - change.length();
+            ssize_t spaces = EntryBaseConstants::pruned_len
+                           - 2 - pruned.length() - change.length();
             if ((spaces <= 0) && pruned.length()) {
                 spaces = 1;
             }
@@ -259,7 +269,43 @@ std::string UidEntry::format(const LogStatistics &stat, log_id_t id) const {
         }
     }
 
-    return formatLine(name, size, pruned);
+    std::string output = formatLine(name, size, pruned);
+
+    if (u != AID_SYSTEM) {
+        return output;
+    }
+
+    static const size_t maximum_sorted_entries = 32;
+    std::unique_ptr<const PidEntry *[]> sorted
+        = stat.pidSystemTable[id].sort(maximum_sorted_entries);
+
+    if (!sorted.get()) {
+        return output;
+    }
+    std::string byPid;
+    size_t index;
+    bool hasDropped = false;
+    for (index = 0; index < maximum_sorted_entries; ++index) {
+        const PidEntry *entry = sorted[index];
+        if (!entry) {
+            break;
+        }
+        if (entry->getSizes() <= (getSizes() / 100)) {
+            break;
+        }
+        if (entry->getDropped()) {
+            hasDropped = true;
+        }
+        byPid += entry->format(stat, id);
+    }
+    if (index > 1) { // print this only if interesting
+        std::string ditto("\" ");
+        output += formatLine(std::string("  PID/UID   COMMAND LINE"),
+                             ditto, hasDropped ? ditto : std::string(""));
+        output += byPid;
+    }
+
+    return output;
 }
 
 std::string PidEntry::formatHeader(const std::string &name, log_id_t /* id */) const {
