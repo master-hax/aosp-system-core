@@ -223,6 +223,7 @@ static void *output_thread(void *_t)
     atransport *t = reinterpret_cast<atransport*>(_t);
     apacket *p;
 
+    adb_thread_setname("usb output");
     D("%s: starting transport output thread on fd %d, SYNC online (%d)\n",
        t->serial, t->fd, t->sync_token + 1);
     p = get_apacket();
@@ -279,6 +280,7 @@ static void *input_thread(void *_t)
     apacket *p;
     int active = 0;
 
+    adb_thread_setname("usb input");
     D("%s: starting transport input thread, reading from fd %d\n",
        t->serial, t->fd);
 

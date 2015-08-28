@@ -146,6 +146,7 @@ static void *server_socket_thread(void * arg)
     socklen_t alen;
     int port = (int) (uintptr_t) arg;
 
+    adb_thread_setname("server socket")
     D("transport: server_socket_thread() starting\n");
     serverfd = -1;
     for(;;) {
@@ -231,6 +232,7 @@ static const char _ok_resp[]    = "ok";
     char tmp[256];
     char con_name[32];
 
+    adb_thread_setname("qemu socket");
     D("transport: qemu_socket_thread() starting\n");
 
     /* adb QEMUD service connection request. */
