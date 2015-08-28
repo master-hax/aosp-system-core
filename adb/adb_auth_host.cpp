@@ -43,6 +43,8 @@
 #include "mincrypt/rsa.h"
 #undef RSA_verify
 
+#include <base/file.h>
+#include <base/stringprintf.h>
 #include <base/strings.h>
 #include <cutils/list.h>
 
@@ -217,8 +219,7 @@ static int write_public_keyfile(RSA *private_key, const char *private_key_path)
     return ret;
 }
 
-static int generate_key(const char *file)
-{
+static int generate_key(const char* file) {
     EVP_PKEY* pkey = EVP_PKEY_new();
     BIGNUM* exponent = BN_new();
     RSA* rsa = RSA_new();
@@ -269,14 +270,13 @@ out:
     return ret;
 }
 
-static int read_key(const char *file, struct listnode *list)
-{
+static bool read_key(const char* file, struct listnode* list) {
     D("read_key '%s'\n", file);
 
     FILE* fp = fopen(file, "r");
     if (!fp) {
         D("Failed to open '%s': %s\n", file, strerror(errno));
-        return 0;
+        return false;
     }
 
     adb_private_key* key = new adb_private_key;
@@ -287,79 +287,68 @@ static int read_key(const char *file, struct listnode *list)
         fclose(fp);
         RSA_free(key->rsa);
         delete key;
-        return 0;
+        return false;
     }
 
     fclose(fp);
     list_add_tail(list, &key->node);
-    return 1;
+    return true;
 }
 
-static int get_user_keyfilepath(char *filename, size_t len)
-{
-    const char *format, *home;
-    char android_dir[PATH_MAX];
-    struct stat buf;
-#ifdef _WIN32
-    std::string home_str;
-    home = getenv("ANDROID_SDK_HOME");
-    if (!home) {
+static std::string get_user_key_file_path() {
+    std::string path;
+#if defined(_WIN32)
+    std::string home;
+    const char* ANDROID_SDK_HOME = getenv("ANDROID_SDK_HOME");
+    if (ANDROID_SDK_HOME) {
+        home = ANDROID_SDK_HOME;
+    } else {
         WCHAR path[MAX_PATH];
         const HRESULT hr = SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path);
         if (FAILED(hr)) {
-            D("SHGetFolderPathW failed: %s\n",
-              SystemErrorCodeToString(hr).c_str());
+            fatal("Failed to retrieve user profile directory path: %s",
+                  SystemErrorCodeToString(hr).c_str());
             return -1;
         }
-        home_str = narrow(path);
-        home = home_str.c_str();
+        home = narrow(path);
     }
-    format = "%s\\%s";
+    path = android::base::StringPrintf("%s\\%s\\", home.c_str(), ANDROID_PATH);
 #else
-    home = getenv("HOME");
-    if (!home)
-        return -1;
-    format = "%s/%s";
+    const char* home = getenv("HOME");
+    if (!home) fatal("$HOME is not set!");
+    path = android::base::StringPrintf("%s/%s/", home, ANDROID_PATH);
 #endif
 
-    D("home '%s'\n", home);
+    D("looking for user key in '%s'\n", home);
 
-    if (snprintf(android_dir, sizeof(android_dir), format, home,
-                        ANDROID_PATH) >= (int)sizeof(android_dir))
-        return -1;
-
-    if (stat(android_dir, &buf)) {
-        if (adb_mkdir(android_dir, 0750) < 0) {
-            D("Cannot mkdir '%s'\n", android_dir);
-            return -1;
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == -1) {
+        if (adb_mkdir(path.c_str(), 0750) == -1) {
+            fatal_errno("recursive mkdir of '%s' failed", path.c_str());
         }
     }
 
-    return snprintf(filename, len, format, android_dir, ADB_KEY_FILE);
+    return path + ADB_KEY_FILE;
 }
 
-static int get_user_key(struct listnode *list)
-{
-    struct stat buf;
-    char path[PATH_MAX];
-    int ret;
-
-    ret = get_user_keyfilepath(path, sizeof(path));
-    if (ret < 0 || ret >= (signed)sizeof(path)) {
+static bool get_user_key(struct listnode* list) {
+    std::string path = get_user_key_file_path();
+    if (path.empty()) {
         D("Error getting user key filename\n");
-        return 0;
+        return false;
     }
 
-    D("user key '%s'\n", path);
+    D("user key '%s'\n", path.c_str());
 
-    if (stat(path, &buf) == -1) {
-        if (!generate_key(path)) {
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == -1) {
+        if (!generate_key(path.c_str())) {
             D("Failed to generate new key\n");
-            return 0;
+            return false;
         }
     }
 
-    return read_key(path, list);
+    return read_key(path.c_str(), list);
 }
 
 static void get_vendor_keys(struct listnode* key_list) {
@@ -416,39 +405,29 @@ void *adb_auth_nextkey(void *current)
     return NULL;
 }
 
-int adb_auth_get_userkey(unsigned char *data, size_t len)
-{
-    char path[PATH_MAX];
-    int ret = get_user_keyfilepath(path, sizeof(path) - 4);
-    if (ret < 0 || ret >= (signed)(sizeof(path) - 4)) {
+int adb_auth_get_userkey(unsigned char* data, size_t len) {
+    std::string path = get_user_key_file_path();
+    if (path.empty()) {
         D("Error getting user key filename\n");
         return 0;
     }
-    strcat(path, ".pub");
+    path += ".pub";
 
-    // TODO(danalbert): ReadFileToString
-    // Note that on Windows, load_file() does not do CR/LF translation, but
-    // ReadFileToString() uses the C Runtime which uses CR/LF translation by
-    // default (by is overridable with _setmode()).
-    unsigned size;
-    char* file_data = reinterpret_cast<char*>(load_file(path, &size));
-    if (file_data == nullptr) {
-        D("Can't load '%s'\n", path);
+    std::string key;
+    if (!android::base::ReadFileToString(path, &key)) {
+        D("Can't load '%s'\n", path.c_str());
         return 0;
     }
 
-    if (len < (size_t)(size + 1)) {
-        D("%s: Content too large ret=%d\n", path, size);
-        free(file_data);
+    if (len < (key.size() + 1)) {
+        D("Key '%s' too large: %zu\n", path.c_str(), key.size());
         return 0;
     }
 
-    memcpy(data, file_data, size);
-    free(file_data);
-    file_data = nullptr;
-    data[size] = '\0';
+    memcpy(data, key.data(), key.size());
+    data[key.size()] = '\0';
 
-    return size + 1;
+    return key.size() + 1;
 }
 
 int adb_auth_keygen(const char* filename) {
@@ -456,16 +435,12 @@ int adb_auth_keygen(const char* filename) {
     return (generate_key(filename) == 0);
 }
 
-void adb_auth_init(void)
-{
-    int ret;
-
+void adb_auth_init() {
     D("adb_auth_init\n");
 
     list_init(&key_list);
 
-    ret = get_user_key(&key_list);
-    if (!ret) {
+    if (!get_user_key(&key_list)) {
         D("Failed to get user key\n");
         return;
     }

@@ -33,6 +33,7 @@
 
 #include <string>
 
+#include <base/file.h>
 #include <base/stringprintf.h>
 
 #if !defined(_WIN32)
@@ -523,7 +524,6 @@ static int adb_download_buffer(const char *service, const char *fn, const void* 
  *   we hang up.
  */
 static int adb_sideload_host(const char* fn) {
-    unsigned sz;
     size_t xfer = 0;
     int status;
     int last_percent = -1;
@@ -531,12 +531,15 @@ static int adb_sideload_host(const char* fn) {
 
     printf("loading: '%s'", fn);
     fflush(stdout);
-    uint8_t* data = reinterpret_cast<uint8_t*>(load_file(fn, &sz));
-    if (data == 0) {
+    std::string holder;
+    if (!android::base::ReadFileToString(fn, &holder)) {
         printf("\n");
         fprintf(stderr, "* cannot read '%s' *\n", fn);
         return -1;
     }
+
+    const char* data = holder.data();
+    unsigned sz = holder.size();
 
     std::string service =
             android::base::StringPrintf("sideload-host:%d:%d", sz, SIDELOAD_HOST_BLOCK_SIZE);
@@ -574,7 +577,7 @@ static int adb_sideload_host(const char* fn) {
             status = -1;
             goto done;
         }
-        uint8_t* start = data + offset;
+        const char* start = data + offset;
         size_t offset_end = offset + SIDELOAD_HOST_BLOCK_SIZE;
         size_t to_write = SIDELOAD_HOST_BLOCK_SIZE;
         if (offset_end > sz) {
@@ -607,7 +610,6 @@ static int adb_sideload_host(const char* fn) {
 
   done:
     if (fd >= 0) adb_close(fd);
-    free(data);
     return status;
 }
 
