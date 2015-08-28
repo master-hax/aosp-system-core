@@ -22,9 +22,11 @@ persist.logd.size.event    number 256K   Size of the buffer for the event log
 persist.logd.size.crash    number 256K   Size of the buffer for the crash log
 persist.logd.filter         string       Pruning filter to optimize content,
                                          default is ro.logd.filter or
-                                         "~!" which means to prune the oldest
-                                         entries of chattiest UID. At runtime
-                                         use: logcat -P "<string>"
+                                         "~! ~1000/!" which means to prune the
+                                         oldest entries of chattiest UID, and
+                                         the chattiest PID of system
+                                         (1000, or AID_SYSTEM). At runtime use:
+                                         logcat -P "<string>"
 persist.logd.timestamp      string       The recording timestamp source. Default
                                          is ro.logd.timestamp. "m[onotonic]" is
                                          the only supported key character,
@@ -36,4 +38,6 @@ NB:
   such as main, system, ... override global default.
 - Pruning filter is of form of a space-separated list of [~][UID][/PID]
   references, where '~' prefix means to blacklist otherwise whitelist. For
-  blacklisting, UID may be a '!' to instead reference the chattiest client.
+  blacklisting, UID and PID may be a '!' to instead reference the chattiest
+  client, with the current restriction that the PID must be in the UID group
+  1000 (system or AID_SYSTEM).
