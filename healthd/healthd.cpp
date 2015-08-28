@@ -329,6 +329,7 @@ int main(int argc, char **argv) {
     int ch;
     int ret;
 
+    signal(SIGPIPE, SIG_IGN);
     klog_set_level(KLOG_LEVEL);
     healthd_mode_ops = &android_ops;
 
