@@ -17,6 +17,7 @@
 #include <ctype.h>
 
 #include <base/stringprintf.h>
+#include <cutils/properties.h>
 
 #include "LogWhiteBlackList.h"
 
@@ -49,7 +50,8 @@ std::string Prune::format() {
     return std::string("/");
 }
 
-PruneList::PruneList() : mWorstUidEnabled(true) {
+PruneList::PruneList() {
+    init(NULL);
 }
 
 PruneList::~PruneList() {
@@ -64,6 +66,7 @@ PruneList::~PruneList() {
 
 int PruneList::init(const char *str) {
     mWorstUidEnabled = true;
+    mWorstPidOfSystemEnabled = true;
     PruneCollection::iterator it;
     for (it = mNice.begin(); it != mNice.end();) {
         it = mNice.erase(it);
@@ -72,13 +75,44 @@ int PruneList::init(const char *str) {
         it = mNaughty.erase(it);
     }
 
-    if (!str) {
-        return 0;
+    static const char _default[] = "default";
+    // default here means take ro.logd.filter, persist.logd.filter then
+    // internal default in that order.
+    if (str && !strcmp(str, _default)) {
+        str = NULL;
+    }
+    static const char _disable[] = "disable";
+    if (str && !strcmp(str, _disable)) {
+        str = "";
+    }
+
+    std::string filter;
+
+    if (str) {
+        filter = str;
+    } else {
+        char property[PROPERTY_VALUE_MAX];
+        property_get("ro.logd.filter", property, _default);
+        filter = property;
+        property_get("persist.logd.filter", property, filter.c_str());
+        // default here means take ro.logd.filter
+        if (strcmp(property, _default)) {
+            filter = property;
+        }
+    }
+
+    // default here means take internal default.
+    if (filter == _default) {
+        filter = "~! ~1000/!";
+    }
+    if (filter == _disable) {
+        filter = "";
     }
 
     mWorstUidEnabled = false;
+    mWorstPidOfSystemEnabled = false;
 
-    for(; *str; ++str) {
+    for(str = filter.c_str(); *str; ++str) {
         if (isspace(*str)) {
             continue;
         }
@@ -90,6 +124,19 @@ int PruneList::init(const char *str) {
             if (*str == '!') {
                 mWorstUidEnabled = true;
                 ++str;
+                if (!*str) {
+                    break;
+                }
+                if (!isspace(*str)) {
+                    return 1;
+                }
+                continue;
+            }
+            // special case, translated to worst PID of System at priority
+            static const char worstPid[] = "1000/!";
+            if (!strncmp(str, worstPid, sizeof(worstPid) - 1)) {
+                mWorstPidOfSystemEnabled = true;
+                str += sizeof(worstPid) - 1;
                 if (!*str) {
                     break;
                 }
@@ -176,6 +223,9 @@ std::string PruneList::format() {
     if (mWorstUidEnabled) {
         string = "~!";
         fmt = nice_format;
+        if (mWorstPidOfSystemEnabled) {
+            string += " ~1000/!";
+        }
     }
 
     PruneCollection::iterator it;
