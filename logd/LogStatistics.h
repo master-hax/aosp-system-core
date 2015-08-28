@@ -385,6 +385,10 @@ class LogStatistics {
     typedef LogHashtable<uid_t, UidEntry> uidTable_t;
     uidTable_t uidTable[LOG_ID_MAX];
 
+    // pid of system to size list
+    typedef LogHashtable<pid_t, PidEntry> pidSystemTable_t;
+    pidSystemTable_t pidSystemTable[LOG_ID_MAX];
+
     // pid to uid list
     typedef LogHashtable<pid_t, PidEntry> pidTable_t;
     pidTable_t pidTable;
@@ -415,6 +419,9 @@ public:
 
     std::unique_ptr<const UidEntry *[]> sort(size_t len, log_id id) {
         return uidTable[id].sort(len);
+    }
+    std::unique_ptr<const PidEntry *[]> sort(size_t len, log_id id, uid_t) {
+        return pidSystemTable[id].sort(len);
     }
 
     // fast track current value by id only
