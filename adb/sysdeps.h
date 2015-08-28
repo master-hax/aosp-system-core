@@ -175,9 +175,6 @@ extern int unix_open(const char* path, int options, ...);
 #define  open    ___xxx_unix_open
 
 
-/* normally provided by <cutils/misc.h> */
-extern void*  load_file(const char*  pathname, unsigned*  psize);
-
 /* normally provided by "fdevent.h" */
 
 #define FDE_READ              0x0001
@@ -374,7 +371,6 @@ typedef std::unique_ptr<HANDLE, handle_deleter> unique_handle;
 #else /* !_WIN32 a.k.a. Unix */
 
 #include "fdevent.h"
-#include <cutils/misc.h>
 #include <cutils/sockets.h>
 #include <cutils/threads.h>
 #include <signal.h>
