@@ -22,9 +22,10 @@ persist.logd.size.event    number 256K   Size of the buffer for the event log
 persist.logd.size.crash    number 256K   Size of the buffer for the crash log
 persist.logd.filter         string       Pruning filter to optimize content,
                                          default is ro.logd.filter or
-                                         "~!" which means to prune the oldest
-                                         entries of chattiest UID. At runtime
-                                         use: logcat -P "<string>"
+                                         "~! ~1000!" which means to prune the
+                                         oldest entries of chattiest UID, and
+                                         PID of system (AID_SYSTEM). At
+                                         runtime use: logcat -P "<string>"
 
 NB:
 - number support multipliers (K or M) for convenience. Range is limited
