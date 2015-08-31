@@ -20,16 +20,18 @@
 #include <sys/stat.h>
 
 #include <map>
+#include <memory>
 #include <string>
 
 #include <base/files/file_path.h>
 #include <base/macros.h>
+#include <chromeos/process.h>
 #include <gtest/gtest_prod.h>  // for FRIEND_TEST
 
 // User crash collector.
 class CrashCollector {
  public:
-  typedef void (*CountCrashFunction)();
+  typedef std::unique_ptr<chromeos::ProcessImpl> (*CountCrashFunction)();
   typedef bool (*IsFeedbackAllowedFunction)();
 
   CrashCollector();

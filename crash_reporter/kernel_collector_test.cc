@@ -16,6 +16,7 @@
 
 #include "kernel_collector_test.h"
 
+#include <memory>
 #include <unistd.h>
 
 #include <base/files/file_util.h>
@@ -35,8 +36,9 @@ namespace {
 int s_crashes = 0;
 bool s_metrics = false;
 
-void CountCrash() {
+std::unique_ptr<chromeos::ProcessImpl> CountCrash() {
   ++s_crashes;
+  return nullptr;
 }
 
 bool IsMetrics() {

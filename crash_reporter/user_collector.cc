@@ -26,6 +26,7 @@
 #include <sys/types.h>  // For getpwuid_r, getgrnam_r, WEXITSTATUS.
 #include <unistd.h>  // For setgroups
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -564,7 +565,7 @@ bool UserCollector::HandleCrash(const std::string &crash_attributes,
                << " (" << reason << ")";
 
   if (dump) {
-    count_crash_function_();
+    std::unique_ptr<chromeos::ProcessImpl> proc = count_crash_function_();
 
     if (generate_diagnostics_) {
       bool out_of_capacity = false;
@@ -575,6 +576,11 @@ bool UserCollector::HandleCrash(const std::string &crash_attributes,
           EnqueueCollectionErrorLog(pid, error_type, exec);
         return false;
       }
+    }
+
+    if (proc) {
+      LOG(INFO) << "Waiting on dbus-send process to finish";
+      proc->Wait();
     }
   }
 

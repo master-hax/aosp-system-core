@@ -17,6 +17,7 @@
 #include "user_collector.h"
 
 #include <elf.h>
+#include <memory>
 #include <sys/cdefs.h>  // For __WORDSIZE
 #include <unistd.h>
 
@@ -42,8 +43,9 @@ const char kChromeIgnoreMsg[] =
     "ignoring call by kernel - chrome crash; "
     "waiting for chrome to call us directly";
 
-void CountCrash() {
+std::unique_ptr<chromeos::ProcessImpl> CountCrash() {
   ++s_crashes;
+  return nullptr;
 }
 
 bool IsMetrics() {

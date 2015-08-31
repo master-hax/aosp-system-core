@@ -16,6 +16,7 @@
 
 #include "crash_collector_test.h"
 
+#include <memory>
 #include <unistd.h>
 #include <utility>
 
@@ -35,8 +36,9 @@ using ::testing::Return;
 
 namespace {
 
-void CountCrash() {
+std::unique_ptr<chromeos::ProcessImpl> CountCrash() {
   ADD_FAILURE();
+  return nullptr;
 }
 
 bool IsMetrics() {
