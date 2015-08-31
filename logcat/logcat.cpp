@@ -260,7 +260,7 @@ static void show_help(const char *cmd)
                     "  -n <count>      Sets max number of rotated logs to <count>, default 4\n"
                     "  -v <format>     Sets the log print format, where <format> is:\n\n"
                     "                      brief color long printable process raw tag thread\n"
-                    "                      threadtime time usec\n\n"
+                    "                      threadtime time usec UTC year zone\n\n"
                     "  -D              print dividers between each log buffer\n"
                     "  -c              clear (flush) the entire log and exit\n"
                     "  -d              dump the log and then exit (don't block)\n"
