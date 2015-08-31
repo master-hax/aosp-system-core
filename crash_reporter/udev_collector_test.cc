@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <memory>
+
 #include <base/files/file_enumerator.h>
 #include <base/files/file_util.h>
 #include <base/files/scoped_temp_dir.h>
@@ -50,7 +52,9 @@ const char kDevCoredumpDataContents[] = "coredump";
 // Content for failing device's uevent file.
 const char kFailingDeviceUeventContents[] = "DRIVER=iwlwifi\n";
 
-void CountCrash() {}
+std::unique_ptr<chromeos::ProcessImpl> CountCrash() {
+  return nullptr;
+}
 
 bool s_consent_given = true;
 

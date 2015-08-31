@@ -16,6 +16,7 @@
 
 #include "unclean_shutdown_collector.h"
 
+#include <memory>
 #include <unistd.h>
 
 #include <base/files/file_util.h>
@@ -36,8 +37,9 @@ const char kTestDirectory[] = "test";
 const char kTestSuspended[] = "test/suspended";
 const char kTestUnclean[] = "test/unclean";
 
-void CountCrash() {
+std::unique_ptr<chromeos::ProcessImpl> CountCrash() {
   ++s_crashes;
+  return nullptr;
 }
 
 bool IsMetrics() {
