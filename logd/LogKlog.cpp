@@ -254,31 +254,38 @@ void LogKlog::sniffTime(log_time &now, const char **buf, bool reverse) {
     if ((cp = now.strptime(*buf, "[ %s.%q]"))) {
         static const char suspend[] = "PM: suspend entry ";
         static const char resume[] = "PM: suspend exit ";
-        static const char healthd[] = "healthd: battery ";
+        static const char healthd[] = "healthd";
+        static const char battery[] = ": battery ";
         static const char suspended[] = "Suspended for ";
 
         if (isspace(*cp)) {
             ++cp;
         }
-        if (!strncmp(cp, suspend, sizeof(suspend) - 1)) {
-            calculateCorrection(now, cp + sizeof(suspend) - 1);
-        } else if (!strncmp(cp, resume, sizeof(resume) - 1)) {
-            calculateCorrection(now, cp + sizeof(resume) - 1);
-        } else if (!strncmp(cp, healthd, sizeof(healthd) - 1)) {
+
+        const char *b;
+        if ((b = strstr(cp, suspend))) {
+            calculateCorrection(now, b + sizeof(suspend) - 1);
+        } else if ((b = strstr(cp, resume))) {
+            calculateCorrection(now, b + sizeof(resume) - 1);
+        } else if (((b = strstr(cp, healthd))) && ((b = strstr(b, battery)))) {
             // look for " 2???-??-?? ??:??:??.????????? ???"
             const char *tp;
-            for (tp = cp + sizeof(healthd) - 1; *tp && (*tp != '\n'); ++tp) {
+            for (tp = b + sizeof(battery) - 1; *tp && (*tp != '\n'); ++tp) {
                 if ((tp[0] == ' ') && (tp[1] == '2') && (tp[5] == '-')) {
                     calculateCorrection(now, tp + 1);
                     break;
                 }
             }
-        } else if (!strncmp(cp, suspended, sizeof(suspended) - 1)) {
+        } else if ((b = strstr(cp, suspended))) {
             log_time real;
             char *endp;
-            real.tv_sec = strtol(cp + sizeof(suspended) - 1, &endp, 10);
+            real.tv_sec = strtol(b + sizeof(suspended) - 1, &endp, 10);
             if (*endp == '.') {
-                real.tv_nsec = strtol(endp + 1, &endp, 10) * 1000000L;
+                unsigned long multiplier = NS_PER_SEC;
+                real.tv_nsec = 0;
+                while (isdigit(*++endp) && (multiplier /= 10)) {
+                    real.tv_nsec += (*endp - '0') * multiplier;
+                }
                 if (reverse) {
                     correction -= real;
                 } else {
