@@ -978,6 +978,9 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab) {
         goto out;
     }
 
+    // Wait for device-mapper
+    wait_for_file("/dev/device-mapper", WAIT_TIMEOUT);
+
     retval = FS_MGR_SETUP_VERITY_FAIL;
 
     // get the device mapper fd

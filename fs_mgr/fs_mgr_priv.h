@@ -81,6 +81,7 @@
 
 #define DM_BUF_SIZE 4096
 
+int wait_for_file(const char *filename, int timeout);
 int fs_mgr_set_blk_ro(const char *blockdev);
 
 #endif /* __CORE_FS_MGR_PRIV_H */

@@ -78,7 +78,7 @@ static time_t gettime(void)
     return ts.tv_sec;
 }
 
-static int wait_for_file(const char *filename, int timeout)
+int wait_for_file(const char *filename, int timeout)
 {
     struct stat info;
     time_t timeout_time = gettime() + timeout;
