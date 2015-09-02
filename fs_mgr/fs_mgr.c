@@ -78,18 +78,6 @@ static time_t gettime(void)
     return ts.tv_sec;
 }
 
-static int wait_for_file(const char *filename, int timeout)
-{
-    struct stat info;
-    time_t timeout_time = gettime() + timeout;
-    int ret = -1;
-
-    while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
-        usleep(10000);
-
-    return ret;
-}
-
 static void check_fs(char *blk_device, char *fs_type, char *target)
 {
     int status;
@@ -188,6 +176,18 @@ static void remove_trailing_slashes(char *n)
       *(n + len) = '\0';
       len--;
     }
+}
+
+int wait_for_file(const char *filename, int timeout)
+{
+    struct stat info;
+    time_t timeout_time = gettime() + timeout;
+    int ret = -1;
+
+    while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
+        usleep(10000);
+
+    return ret;
 }
 
 /*
