@@ -212,6 +212,12 @@ bool LogKlog::onDataAvailable(SocketClient *cli) {
         bool full = len == (sizeof(buffer) - 1);
         char *ep = buffer + len;
         *ep = '\0';
+        // any nuls in the middle convert to non-null
+        for (char *cp = buffer; --len; ++cp) {
+            if (*cp == '\0') {
+                *cp = 0x80;
+            }
+        }
         len = 0;
         for(char *ptr = NULL, *tok = buffer;
                 ((tok = log_strtok_r(tok, &ptr)));
@@ -268,6 +274,8 @@ void LogKlog::sniffTime(log_time &now, const char **buf, bool reverse) {
         } else if ((b = strstr(cp, resume))) {
             calculateCorrection(now, b + sizeof(resume) - 1);
         } else if (((b = strstr(cp, healthd))) && ((b = strstr(b, battery)))) {
+            // NB: healthd is roughly 150us late, worth the price to deal with
+            //     ntp-induced or hardware clock drift.
             // look for " 2???-??-?? ??:??:??.????????? ???"
             const char *tp;
             for (tp = b + sizeof(battery) - 1; *tp && (*tp != '\n'); ++tp) {

@@ -299,6 +299,12 @@ static void readDmesg(LogAudit *al, LogKlog *kl) {
         len = rc + 1;
     }
     buf[len - 1] = '\0';
+    // any nuls in the middle convert to non-null
+    for (char *cp = buf.get(); --len; ++cp) {
+        if (*cp == '\0') {
+            *cp = 0x80;
+        }
+    }
 
     if (kl) {
         kl->synchronize(buf.get());
