@@ -53,8 +53,6 @@
 #include <sys/mount.h>
 #endif
 
-ADB_MUTEX_DEFINE(D_lock);
-
 #if !ADB_HOST
 const char* adb_device_banner = "device";
 static android::base::LogdLogger gLogdLogger;

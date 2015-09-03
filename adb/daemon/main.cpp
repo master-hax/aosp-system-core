@@ -197,7 +197,7 @@ int adbd_main(int server_port) {
 
     int port;
     if (sscanf(prop_port, "%d", &port) == 1 && port > 0) {
-        printf("using port=%d\n", port);
+        D("using port=%d\n", port);
         // Listen on TCP port specified by service.adb.tcp.port property.
         local_init(port);
     } else if (!is_usb) {
