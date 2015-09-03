@@ -93,6 +93,10 @@ bool BacktraceCurrent::DiscardFrame(const backtrace_frame_data_t& frame) {
 
 static pthread_mutex_t g_sigaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+static void SignalLogOnly(int, siginfo_t*, void*) {
+  BACK_LOGE("pid %d, tid %d: Received a spurious signal %d\n", getpid(), gettid(), THREAD_SIGNAL);
+}
+
 static void SignalHandler(int, siginfo_t*, void* sigcontext) {
   ThreadEntry* entry = ThreadEntry::Get(getpid(), gettid(), false);
   if (!entry) {
@@ -151,9 +155,23 @@ bool BacktraceCurrent::UnwindThread(size_t num_ignore_frames) {
   // that we are waiting for the first Wake() call made by the thread.
   bool wait_completed = entry->Wait(1);
 
+  // If the wait failed, it could be that the signal could not be delivered
+  // within the timeout. At this point, mark the signal as to be ignored
+  // so that we don't crash if the signal eventually gets delivered.
+  if (!wait_completed && oldact.sa_sigaction == nullptr) {
+    // Add a signal handler that's simply going to log something so
+    // we can track if the signal did eventually fire. Only do this
+    // if there isn't already an action set up.
+    memset(&act, 0, sizeof(act));
+    act.sa_sigaction = SignalLogOnly;
+    act.sa_flags = SA_RESTART | SA_SIGINFO | SA_ONSTACK;
+    sigemptyset(&act.sa_mask);
+    sigaction(THREAD_SIGNAL, &act, nullptr);
+  } else {
+    sigaction(THREAD_SIGNAL, &oldact, nullptr);
+  }
   // After the thread has received the signal, allow other unwinders to
   // continue.
-  sigaction(THREAD_SIGNAL, &oldact, nullptr);
   pthread_mutex_unlock(&g_sigaction_mutex);
 
   bool unwind_done = false;
