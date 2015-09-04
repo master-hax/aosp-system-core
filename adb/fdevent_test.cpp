@@ -50,9 +50,8 @@ class FdHandler {
   public:
     FdHandler(int read_fd, int write_fd) : read_fd_(read_fd), write_fd_(write_fd) {
         fdevent_install(&read_fde_, read_fd_, FdEventCallback, this);
-        fdevent_add(&read_fde_, FDE_READ | FDE_ERROR);
+        fdevent_add(&read_fde_, FDE_READ);
         fdevent_install(&write_fde_, write_fd_, FdEventCallback, this);
-        fdevent_add(&write_fde_, FDE_ERROR);
     }
 
   private:
