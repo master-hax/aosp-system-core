@@ -36,7 +36,6 @@ enum AdbTrace {
     TRACE_JDWP,      /* 0x100 */
     TRACE_SERVICES,
     TRACE_AUTH,
-    TRACE_FDEVENT,
     TRACE_SHELL
 };
 
