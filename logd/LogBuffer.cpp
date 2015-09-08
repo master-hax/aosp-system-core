@@ -242,8 +242,8 @@ LogBufferElementCollection::iterator LogBuffer::erase(
         LogBufferElementCollection::iterator it, bool engageStats) {
     LogBufferElement *e = *it;
     log_id_t id = e->getLogId();
-    LogBufferIteratorMap::iterator f = mLastWorstUid[id].find(e->getUid());
 
+    LogBufferIteratorMap::iterator f = mLastWorstUid[id].find(e->getUid());
     if ((f != mLastWorstUid[id].end()) && (it == f->second)) {
         mLastWorstUid[id].erase(f);
     }
@@ -410,7 +410,12 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         bool kick = false;
         bool leading = true;
         it = mLogElements.begin();
-        if (worst != (uid_t) -1) {
+        // Perform at least one mandatory garbage collection cycle in following
+        // - clear leading chatty tags
+        // - merge chatty tags
+        // - check age-out of preserved logs
+        bool gc = pruneRows <= 1;
+        if (!gc && (worst != (uid_t) -1)) {
             LogBufferIteratorMap::iterator f = mLastWorstUid[id].find(worst);
             if ((f != mLastWorstUid[id].end())
                     && (f->second != mLogElements.end())) {
@@ -481,7 +486,7 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             // unmerged drop message
             if (dropped) {
                 last.add(e);
-                if ((e->getUid() == worst)
+                if ((!gc && (e->getUid() == worst))
                         || (mLastWorstUid[id].find(e->getUid())
                             == mLastWorstUid[id].end())) {
                     mLastWorstUid[id][e->getUid()] = it;
@@ -516,7 +521,10 @@ void LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                     it = erase(it, false);
                 } else {
                     last.add(e);
-                    mLastWorstUid[id][e->getUid()] = it;
+                    if (!gc || (mLastWorstUid[id].find(worst)
+                                == mLastWorstUid[id].end())) {
+                        mLastWorstUid[id][worst] = it;
+                    }
                     ++it;
                 }
             }
