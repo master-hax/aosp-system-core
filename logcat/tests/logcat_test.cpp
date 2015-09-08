@@ -73,6 +73,12 @@ TEST(logcat, buckets) {
 }
 
 TEST(logcat, year) {
+
+    if (android_log_timestamp() == 'm') {
+        fprintf(stderr, "Skipping test, logd is monotonic time\n");
+        return;
+    }
+
     FILE *fp;
 
     char needle[32];
@@ -107,6 +113,12 @@ TEST(logcat, year) {
 }
 
 TEST(logcat, tz) {
+
+    if (android_log_timestamp() == 'm') {
+        fprintf(stderr, "Skipping test, logd is monotonic time\n");
+        return;
+    }
+
     FILE *fp;
 
     ASSERT_TRUE(NULL != (fp = popen(
@@ -168,9 +180,18 @@ TEST(logcat, tail_3) {
     int count = 0;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[2]) && isdigit(buffer[3])
-         && (buffer[4] == '-')) {
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
+        }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep == '-') || (*ep == '.')) {
             ++count;
         }
     }
@@ -192,9 +213,18 @@ TEST(logcat, tail_10) {
     int count = 0;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[2]) && isdigit(buffer[3])
-         && (buffer[4] == '-')) {
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
+        }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep == '-') || (*ep == '.')) {
             ++count;
         }
     }
@@ -216,9 +246,18 @@ TEST(logcat, tail_100) {
     int count = 0;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[2]) && isdigit(buffer[3])
-         && (buffer[4] == '-')) {
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
+        }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep == '-') || (*ep == '.')) {
             ++count;
         }
     }
@@ -240,9 +279,18 @@ TEST(logcat, tail_1000) {
     int count = 0;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[2]) && isdigit(buffer[3])
-         && (buffer[4] == '-')) {
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
+        }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep == '-') || (*ep == '.')) {
             ++count;
         }
     }
@@ -261,21 +309,37 @@ TEST(logcat, tail_time) {
     char *last_timestamp = NULL;
     char *first_timestamp = NULL;
     int count = 0;
-    const unsigned int time_length = 18;
-    const unsigned int time_offset = 2;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[time_offset]) && isdigit(buffer[time_offset + 1])
-         && (buffer[time_offset + 2] == '-')) {
-            ++count;
-            buffer[time_length + time_offset] = '\0';
-            if (!first_timestamp) {
-                first_timestamp = strdup(buffer + time_offset);
-            }
-            free(last_timestamp);
-            last_timestamp = strdup(buffer + time_offset);
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
         }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep != '-') && (*ep != '.')) {
+            continue;
+        }
+        // Find PID field
+        while (((ep = strchr(ep, ':'))) && (*++ep != ' ')) {
+            ;
+        }
+        if (!ep) {
+            continue;
+        }
+        ep -= 7;
+        ++count;
+        *ep = '\0';
+        if (!first_timestamp) {
+            first_timestamp = strdup(cp);
+        }
+        free(last_timestamp);
+        last_timestamp = strdup(cp);
     }
     pclose(fp);
 
@@ -291,27 +355,46 @@ TEST(logcat, tail_time) {
     int last_timestamp_count = -1;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        if ((buffer[0] == '[') && (buffer[1] == ' ')
-         && isdigit(buffer[time_offset]) && isdigit(buffer[time_offset + 1])
-         && (buffer[time_offset + 2] == '-')) {
-            ++second_count;
-            buffer[time_length + time_offset] = '\0';
-            if (first_timestamp) {
-                // we can get a transitory *extremely* rare failure if hidden
-                // underneath the time is *exactly* XX-XX XX:XX:XX.XXX000000
-                EXPECT_STREQ(buffer + time_offset, first_timestamp);
-                free(first_timestamp);
-                first_timestamp = NULL;
-            }
-            if (!strcmp(buffer + time_offset, last_timestamp)) {
-                last_timestamp_count = second_count;
-            }
+        char *cp = buffer;
+        if (*cp != '[') {
+            continue;
+        }
+        while (*++cp == ' ') {
+            ;
+        }
+        char *ep = cp;
+        while (isdigit(*ep)) {
+            ++ep;
+        }
+        if ((*ep != '-') && (*ep != '.')) {
+            continue;
+        }
+        // Find PID field
+        while (((ep = strchr(ep, ':'))) && (*++ep != ' ')) {
+            ;
+        }
+        if (!ep) {
+            continue;
+        }
+        ep -= 7;
+        ++second_count;
+        *ep = '\0';
+        if (first_timestamp) {
+            // we can get a transitory *extremely* rare failure if hidden
+            // underneath the time is *exactly* XX-XX XX:XX:XX.XXX000000
+            EXPECT_STREQ(cp, first_timestamp);
+            free(first_timestamp);
+            first_timestamp = NULL;
+        }
+        if (!strcmp(cp, last_timestamp)) {
+            last_timestamp_count = second_count;
         }
     }
     pclose(fp);
 
     free(last_timestamp);
     last_timestamp = NULL;
+    free(first_timestamp);
 
     EXPECT_TRUE(first_timestamp == NULL);
     EXPECT_LE(count, second_count);
@@ -603,6 +686,9 @@ TEST(logcat, logrotate) {
                 }
             }
             pclose(fp);
+            if ((count != 7) && (count != 8)) {
+                fprintf(stderr, "count=%d\n", count);
+            }
             EXPECT_TRUE(count == 7 || count == 8);
         }
     }

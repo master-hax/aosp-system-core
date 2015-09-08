@@ -24,6 +24,7 @@
 #include <sys/uio.h>
 #include <syslog.h>
 
+#include <log/logger.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
@@ -128,11 +129,17 @@ int LogAudit::logPrint(const char *fmt, ...) {
         // is monotonic, later is real.
         //
 #       define EPOCH_PLUS_10_YEARS (10 * 1461 / 4 * 24 * 60 * 60)
-        if (now.tv_sec < EPOCH_PLUS_10_YEARS) {
-            LogKlog::convertMonotonicToReal(now);
+        if (android_log_timestamp() != 'm') {
+            if (now.tv_sec < EPOCH_PLUS_10_YEARS) {
+                LogKlog::convertMonotonicToReal(now);
+            }
+        } else if (now.tv_sec > EPOCH_PLUS_10_YEARS) {
+            now -= log_time(CLOCK_REALTIME) - log_time(CLOCK_MONOTONIC);
         }
+    } else if (android_log_timestamp() == 'm') {
+        now = log_time(CLOCK_MONOTONIC);
     } else {
-        now.strptime("", ""); // side effect of setting CLOCK_REALTIME
+        now = log_time(CLOCK_REALTIME);
     }
 
     static const char pid_str[] = " pid=";

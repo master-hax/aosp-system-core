@@ -39,6 +39,7 @@
 #include <cutils/sched_policy.h>
 #include <cutils/sockets.h>
 #include <log/event_tag_map.h>
+#include <log/logger.h>
 #include <private/android_filesystem_config.h>
 #include <utils/threads.h>
 
@@ -300,7 +301,7 @@ static void readDmesg(LogAudit *al, LogKlog *kl) {
     }
     buf[len - 1] = '\0';
 
-    if (kl) {
+    if (kl && (android_log_timestamp() != 'm')) {
         kl->synchronize(buf.get());
     }
 
