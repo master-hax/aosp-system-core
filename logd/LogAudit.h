@@ -29,6 +29,7 @@ class LogAudit : public SocketListener {
 public:
     LogAudit(LogBuffer *buf, LogReader *reader, int fdDmesg);
     int log(char *buf);
+    bool isMonotonic() { return logbuf->isMonotonic(); }
 
 protected:
     virtual bool onDataAvailable(SocketClient *cli);
