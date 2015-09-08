@@ -20,6 +20,10 @@ persist.logd.size.system   number 256K   Size of the buffer for the system log
 persist.logd.size.radio    number 256K   Size of the buffer for the radio log
 persist.logd.size.event    number 256K   Size of the buffer for the event log
 persist.logd.size.crash    number 256K   Size of the buffer for the crash log
+persist.logd.timestamp      string       The recording timestamp source. Default
+                                         is ro.logd.timestamp. "m[onotonic]" is
+                                         the only supported key character,
+                                         otherwise assumes realtime.
 
 NB:
 - number support multipliers (K or M) for convenience. Range is limited
