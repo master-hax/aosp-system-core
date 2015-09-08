@@ -260,6 +260,12 @@ void LogKlog::sniffTime(log_time &now, const char **buf, bool reverse) {
         if (isspace(*cp)) {
             ++cp;
         }
+        *buf = cp;
+
+        if (isMonotonic()) {
+            return;
+        }
+
         if (!strncmp(cp, suspend, sizeof(suspend) - 1)) {
             calculateCorrection(now, cp + sizeof(suspend) - 1);
         } else if (!strncmp(cp, resume, sizeof(resume) - 1)) {
@@ -288,9 +294,12 @@ void LogKlog::sniffTime(log_time &now, const char **buf, bool reverse) {
         }
 
         convertMonotonicToReal(now);
-        *buf = cp;
     } else {
-        now = log_time(CLOCK_REALTIME);
+        if (isMonotonic()) {
+            now = log_time(CLOCK_MONOTONIC);
+        } else {
+            now = log_time(CLOCK_REALTIME);
+        }
     }
 }
 

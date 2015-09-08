@@ -203,7 +203,7 @@ AndroidLogFormat *android_log_format_new()
     p_ret->year_output = false;
     p_ret->zone_output = false;
     p_ret->epoch_output = false;
-    p_ret->monotonic_output = false;
+    p_ret->monotonic_output = android_log_timestamp() == 'm';
 
     return p_ret;
 }
@@ -1262,7 +1262,10 @@ char *android_log_formatLogLine (
      * expected to be sensitive to that.
      */
     if (p_format->monotonic_output) {
-        convertMonotonic(entry);
+        // prevent convertMonotonic from being called if logd is monotonic
+        if (android_log_timestamp() != 'm') {
+            convertMonotonic(entry);
+        }
     }
     now = entry->tv_sec;
     if (p_format->epoch_output || p_format->monotonic_output) {

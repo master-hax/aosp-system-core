@@ -55,6 +55,9 @@ class LogBuffer;
 #define EXPIRE_RATELIMIT 10      // maximum rate in seconds to report expiration
 
 class LogBufferElement {
+
+    friend LogBuffer;
+
     const log_id_t mLogId;
     const uid_t mUid;
     const pid_t mPid;
@@ -65,7 +68,7 @@ class LogBufferElement {
         unsigned short mDropped;      // mMsg == NULL
     };
     const uint64_t mSequence;
-    const log_time mRealTime;
+    log_time mRealTime;
     static atomic_int_fast64_t sequence;
 
     // assumption: mMsg == NULL
