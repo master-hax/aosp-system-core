@@ -94,6 +94,9 @@ void keychord_init() {
         return;
     }
 
+    // Waiting for keychord
+    wait_for_file("/dev/keychord", COMMAND_RETRY_TIMEOUT);
+
     keychord_fd = TEMP_FAILURE_RETRY(open("/dev/keychord", O_RDWR | O_CLOEXEC));
     if (keychord_fd == -1) {
         ERROR("could not open /dev/keychord: %s\n", strerror(errno));
