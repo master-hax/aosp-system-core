@@ -101,19 +101,10 @@ static void get_active_slot_suffix(struct fstab *fstab, char *out_suffix,
         return;
     }
 
-    // If that didn't work, fall back to _a. The reasoning here is
-    // that since the fstab has the slotselect option set (otherwise
-    // we wouldn't end up here) we must assume that partitions are
-    // indeed set up for A/B. This corner-case is important because we
-    // may be on this codepath on newly provisioned A/B devices where
-    // misc isn't set up properly (it's just zeroes) and the
-    // bootloader does not (yet) natively support A/B.
-    //
-    // Why '_a'? Because that's what system/extras/boot_control_copy
-    // is using and since the bootloader isn't A/B aware we assume
-    // slots are set up this way.
-    WARNING("Could not determine slot suffix, falling back to \"_a\"\n");
-    strncpy(out_suffix, "_a", suffix_len);
+    // If that didn't work, don't use a suffix at all and assume
+    // existing partitions are to be used.
+    WARNING("Could not determine slot suffix - slotselect will be ignored\n");
+    out_suffix[0] = '\0';
     return;
 }
 
