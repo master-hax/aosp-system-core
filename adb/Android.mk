@@ -78,6 +78,9 @@ LIBADB_TEST_linux_SRCS := \
 LIBADB_TEST_darwin_SRCS := \
     fdevent_test.cpp \
 
+LIBADB_TEST_windows_SRCS := \
+    sysdeps_win32_test.cpp \
+
 include $(CLEAR_VARS)
 LOCAL_CLANG := true
 LOCAL_MODULE := libadbd
@@ -145,9 +148,12 @@ LOCAL_MODULE := adb_test
 LOCAL_CFLAGS := -DADB_HOST=1 $(LIBADB_CFLAGS)
 LOCAL_CFLAGS_windows := $(LIBADB_windows_CFLAGS)
 LOCAL_CFLAGS_linux := $(LIBADB_linux_CFLAGS)
+# Set entrypoint to wmain from sysdeps_win32.cpp instead of main
+LOCAL_LDFLAGS_windows := -municode
 LOCAL_SRC_FILES := $(LIBADB_TEST_SRCS) services.cpp
 LOCAL_SRC_FILES_linux := $(LIBADB_TEST_linux_SRCS)
 LOCAL_SRC_FILES_darwin := $(LIBADB_TEST_darwin_SRCS)
+LOCAL_SRC_FILES_windows := $(LIBADB_TEST_windows_SRCS)
 LOCAL_SANITIZE := $(adb_host_sanitize)
 LOCAL_SHARED_LIBRARIES := liblog libbase
 LOCAL_STATIC_LIBRARIES := \
