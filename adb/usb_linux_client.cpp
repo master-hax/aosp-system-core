@@ -72,6 +72,14 @@ struct ss_func_desc {
     struct usb_ss_ep_comp_descriptor sink_comp;
 } __attribute__((packed));
 
+struct func_desc_ss {
+    struct usb_interface_descriptor intf;
+    struct usb_endpoint_descriptor_no_audio source;
+    struct usb_ss_ep_comp_descriptor source_comp;
+    struct usb_endpoint_descriptor_no_audio sink;
+    struct usb_ss_ep_comp_descriptor sink_comp;
+} __attribute__((packed));
+
 struct desc_v1 {
     struct usb_functionfs_descs_head_v1 {
         __le32 magic;
