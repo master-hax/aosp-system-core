@@ -49,7 +49,7 @@ LOCAL_MODULE := liblog
 LOCAL_WHOLE_STATIC_LIBRARIES := liblog
 LOCAL_LDLIBS_linux := -lrt
 LOCAL_MULTILIB := both
-LOCAL_CXX_STL := none
+LOCAL_MODULE_HOST_OS := darwin linux windows
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 
