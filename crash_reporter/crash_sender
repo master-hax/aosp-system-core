@@ -183,7 +183,7 @@ is_device_coredump_upload_allowed() {
 generate_uniform_random() {
   local max=$1
   local random="$(od -An -N4 -tu /dev/urandom)"
-  echo $((random % max))
+  echo $((#random % max))
 }
 
 # Check if sending a crash now does not exceed the maximum 24hr rate and
