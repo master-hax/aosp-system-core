@@ -277,7 +277,7 @@ send_crash() {
   local report_payload="$(get_key_value "${meta_path}" "payload")"
   local kind="$(get_kind "${meta_path}")"
   local exec_name="$(get_key_value "${meta_path}" "exec_name")"
-  local url="${REPORT_UPLOAD_PROD_URL}"
+  local url="$(getprop crash_reporter.server)"
   local brillo_version="$(get_key_value "${meta_path}" "ver")"
   local hwclass="$(get_hardware_class)"
   local write_payload_size="$(get_key_value "${meta_path}" "payload_size")"
@@ -288,6 +288,11 @@ send_crash() {
   local version="$(get_key_value "${meta_path}" "upload_var_ver")"
   local upload_prefix="$(get_key_value "${meta_path}" "upload_prefix")"
   local guid
+
+  # If crash_reporter.server is not set, use the default crash server URL.
+  if [ -z "${url}" ]; then
+    url="${REPORT_UPLOAD_PROD_URL}"
+  fi
 
   set -- \
     -F "write_payload_size=${write_payload_size}" \
