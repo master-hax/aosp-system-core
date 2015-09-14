@@ -211,6 +211,9 @@ void adb_trace_init(char** argv) {
 
     setup_trace_mask();
     android::base::InitLogging(argv, AdbLogger);
+    if (adb_trace_mask != 0) {
+        static android::base::ScopedLogSeverity severity(android::base::DEBUG);
+    }
 
     D("%s", adb_version().c_str());
 }
