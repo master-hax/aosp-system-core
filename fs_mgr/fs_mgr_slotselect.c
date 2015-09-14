@@ -102,9 +102,14 @@ static int get_active_slot_suffix(struct fstab *fstab, char *out_suffix,
         return 0;
     }
 
-    ERROR("Error determining slot_suffix\n");
-
-    return -1;
+    // If that didn't work, just fall back to the empty suffix. This
+    // is a temporary fix for Brillo to avoid causing every
+    // Dragonboard user to repartition when making A/B the default on
+    // that board.
+    WARNING("Error determining slot_suffix, is your device properly "
+            "partitioned? Falling back to the empty suffix\n");
+    strncpy(out_suffix, "", suffix_len);
+    return 0;
 }
 
 // Updates |fstab| for slot_suffix. Returns 0 on success, -1 on error.
