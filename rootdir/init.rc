@@ -89,6 +89,8 @@ on init
     write /proc/sys/net/unix/max_dgram_qlen 300
     write /proc/sys/kernel/sched_rt_runtime_us 950000
     write /proc/sys/kernel/sched_rt_period_us 1000000
+    write /proc/sys/fs/protected_hardlinks 1
+    write /proc/sys/fs/protected_symlinks 1
 
     # reflect fwmark from incoming packets onto generated replies
     write /proc/sys/net/ipv4/fwmark_reflect 1
