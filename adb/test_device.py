@@ -264,14 +264,16 @@ class ArgumentEscapingTest(DeviceTest):
         tf = tempfile.NamedTemporaryFile('wb', suffix='-text;ls;1.apk',
                                          delete=False)
         tf.close()
-        self.assertIn("-text;ls;1.apk", self.device.install(tf.name))
+        self.assertIn("-text;ls;1.apk",
+                      self.device.install(tf.name, ignore_failure=True))
         os.remove(tf.name)
 
         # http://b/3090932
         tf = tempfile.NamedTemporaryFile('wb', suffix="-Live Hold'em.apk",
                                          delete=False)
         tf.close()
-        self.assertIn("-Live Hold'em.apk", self.device.install(tf.name))
+        self.assertIn("-Live Hold'em.apk",
+                      self.device.install(tf.name, ignore_failure=True))
         os.remove(tf.name)
 
 

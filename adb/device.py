@@ -264,12 +264,30 @@ class AndroidDevice(object):
             exit_code, stdout = self._parse_shell_output(stdout)
         return exit_code, stdout, stderr
 
-    def install(self, filename, replace=False):
+    def install(self, filename, replace=False, ignore_failure=False):
+        """Wraps `adb install`.
+
+        Args:
+          filename: path to an .apk to install.
+          replace: True to replace an existing application.
+          ignore_failure: True to catch any exceptions that may be
+              raised if install returns non-zero.
+
+        Returns:
+          A string of combined stdout/stderr output.
+        """
         cmd = ['install']
         if replace:
             cmd.append('-r')
         cmd.append(filename)
-        return self._simple_call(cmd)
+        try:
+            output = self._simple_call(cmd)
+        except subprocess.CalledProcessError as e:
+            if ignore_failure:
+                output = e.output
+            else:
+                raise
+        return output
 
     def push(self, local, remote):
         return self._simple_call(['push', local, remote])
