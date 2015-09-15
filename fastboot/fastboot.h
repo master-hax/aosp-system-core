@@ -64,6 +64,7 @@ void fb_queue_notice(const char *notice);
 void fb_queue_wait_for_disconnect(void);
 int fb_execute_queue(usb_handle *usb);
 int fb_queue_is_empty(void);
+void fb_set_active(const char *slot);
 
 /* util stuff */
 double now();
