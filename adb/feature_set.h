@@ -18,12 +18,47 @@
 #define FEATURE_SET_H_
 
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 
-typedef std::unordered_set<std::string> FeatureSet;
+// A FeatureSet holds string feature names and associated version numbers. It
+// also contains methods to convert to and from a string in order to serialize
+// the data for passing between adb client, adb host, and adbd.
+class FeatureSet {
+  public:
+    typedef std::unordered_map<std::string, int> FeaturesMap;
 
+    FeatureSet();
+    FeatureSet(FeaturesMap features);
+    FeatureSet(const std::string& features_string);
+
+    // Returns a feature version or 0 if it does not exist.
+    int GetVersion(const std::string& feature_name) const;
+
+    // Returns the highest feature version shared by both this FeatureSet and
+    // the local supported_features() set.
+    int GetSharedVersion(const std::string& feature_name) const;
+
+    // Packs or unpacks a FeatureSet into a string for passing over a transport.
+    std::string ToString() const;
+    void FromString(const std::string& features_string);
+
+    // Capability tests make it easier for each side to agree what each feature
+    // enables without hardcoding version numbers.
+    bool CanUseShellProtocol() const;
+
+    // Access the underlying map directly. Useful for iterating over all
+    // features and for unit testing.
+    const FeaturesMap& features_map() const { return features_map_; }
+
+  private:
+    FeaturesMap features_map_;
+};
+
+// Returns the set of locally supported features.
 const FeatureSet& supported_features();
 
-const extern char kFeatureShell2[];
+// Only use alphanumeric and single underscores in feature names to avoid
+// conflicts with banner or feature set parsing.
+constexpr char kFeatureShell[] = "shell";
 
 #endif  // FEATURE_SET_H_

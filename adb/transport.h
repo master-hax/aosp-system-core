@@ -83,12 +83,7 @@ public:
         return features_;
     }
 
-    bool has_feature(const std::string& feature) const;
-    void add_feature(const std::string& feature);
-
-    // Returns true if both we and the other end of the transport support the
-    // feature.
-    bool CanUseFeature(const std::string& feature) const;
+    void SetFeatures(const std::string& features_string);
 
     void AddDisconnect(adisconnect* disconnect);
     void RemoveDisconnect(adisconnect* disconnect);

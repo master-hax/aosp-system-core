@@ -47,6 +47,7 @@
 #include "adb_client.h"
 #include "adb_io.h"
 #include "adb_utils.h"
+#include "feature_set.h"
 #include "file_sync_service.h"
 #include "shell_service.h"
 #include "transport.h"
@@ -524,18 +525,15 @@ static std::string format_host_command(const char* command, TransportType type, 
     return android::base::StringPrintf("%s:%s", prefix, command);
 }
 
-// Checks whether the device indicated by |transport_type| and |serial| supports
-// |feature|. Returns the response string, which will be empty if the device
-// could not be found or the feature is not supported.
-static std::string CheckFeature(const std::string& feature,
-                                TransportType transport_type,
-                                const char* serial) {
-    std::string result, error, command("check-feature:" + feature);
-    if (!adb_query(format_host_command(command.c_str(), transport_type, serial),
-                   &result, &error)) {
-        return "";
+// Returns the feature version for the indicated transport, or 0 if unsupported.
+static FeatureSet GetFeatureSet(TransportType transport_type, const char* serial) {
+    std::string result, error;
+
+    if (adb_query(format_host_command("features", transport_type, serial),
+                  &result, &error)) {
+        return FeatureSet(result);
     }
-    return result;
+    return FeatureSet();
 }
 
 static int adb_download_buffer(const char *service, const char *fn, const void* data, unsigned sz,
@@ -797,9 +795,8 @@ static int send_shell_command(TransportType transport_type, const char* serial,
         wait_for_device("wait-for-device", transport_type, serial);
     }
 
-    bool use_shell_protocol = !CheckFeature(kFeatureShell2, transport_type,
-                                            serial).empty();
-    int exit_code = read_and_dump(fd, use_shell_protocol);
+    FeatureSet features = GetFeatureSet(transport_type, serial);
+    int exit_code = read_and_dump(fd, features.CanUseShellProtocol());
 
     if (adb_close(fd) < 0) {
         PLOG(ERROR) << "failure closing FD " << fd;
@@ -1243,13 +1240,12 @@ int adb_commandline(int argc, const char **argv) {
             fflush(stdout);
         }
 
-        bool use_shell_protocol;
-        if (CheckFeature(kFeatureShell2, transport_type, serial).empty()) {
+        FeatureSet features = GetFeatureSet(transport_type, serial);
+        bool use_shell_protocol = features.CanUseShellProtocol();
+        if (!use_shell_protocol) {
             D("shell protocol not supported, using raw data transfer");
-            use_shell_protocol = false;
         } else {
             D("using shell protocol");
-            use_shell_protocol = true;
         }
 
 
@@ -1545,7 +1541,14 @@ int adb_commandline(int argc, const char **argv) {
         return 0;
     }
     else if (!strcmp(argv[0], "features")) {
-        return adb_query_command(format_host_command("features", transport_type, serial));
+        FeatureSet features = GetFeatureSet(transport_type, serial);
+        for (const auto& feature : features.features_map()) {
+            int shared_version = features.GetSharedVersion(feature.first);
+            if (shared_version > 0) {
+                printf("%s %d\n", feature.first.c_str(), shared_version);
+            }
+        }
+        return 0;
     }
 
     usage();

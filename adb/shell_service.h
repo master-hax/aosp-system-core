@@ -30,6 +30,7 @@
 #include <base/macros.h>
 
 #include "adb.h"
+#include "transport.h"
 
 // Class to send and receive shell protocol packets.
 //

@@ -18,6 +18,8 @@
 
 #include <gtest/gtest.h>
 
+#include <base/strings.h>
+
 #include "adb.h"
 
 class TestTransport : public atransport {
@@ -56,7 +58,7 @@ public:
         EXPECT_EQ(0, memcmp(&auth_fde, &rhs.auth_fde, sizeof(fdevent)));
         EXPECT_EQ(failed_auth_attempts, rhs.failed_auth_attempts);
 
-        EXPECT_EQ(features(), rhs.features());
+        EXPECT_EQ(features().features_map(), rhs.features().features_map());
 
         return true;
     }
@@ -144,31 +146,12 @@ TEST(transport, RunDisconnects) {
     ASSERT_EQ(0, count);
 }
 
-TEST(transport, add_feature) {
-    atransport t;
-    ASSERT_EQ(0U, t.features().size());
-
-    t.add_feature("foo");
-    ASSERT_EQ(1U, t.features().size());
-    ASSERT_TRUE(t.has_feature("foo"));
-
-    t.add_feature("bar");
-    ASSERT_EQ(2U, t.features().size());
-    ASSERT_TRUE(t.has_feature("foo"));
-    ASSERT_TRUE(t.has_feature("bar"));
-
-    t.add_feature("foo");
-    ASSERT_EQ(2U, t.features().size());
-    ASSERT_TRUE(t.has_feature("foo"));
-    ASSERT_TRUE(t.has_feature("bar"));
-}
-
 TEST(transport, parse_banner_no_features) {
     atransport t;
 
     parse_banner("host::", &t);
 
-    ASSERT_EQ(0U, t.features().size());
+    ASSERT_EQ(0U, t.features().features_map().size());
     ASSERT_EQ(kCsHost, t.connection_state);
 
     ASSERT_EQ(nullptr, t.product);
@@ -185,7 +168,7 @@ TEST(transport, parse_banner_product_features) {
 
     ASSERT_EQ(kCsHost, t.connection_state);
 
-    ASSERT_EQ(0U, t.features().size());
+    ASSERT_EQ(0U, t.features().features_map().size());
 
     ASSERT_EQ(std::string("foo"), t.product);
     ASSERT_EQ(std::string("bar"), t.model);
@@ -197,14 +180,14 @@ TEST(transport, parse_banner_features) {
 
     const char banner[] =
         "host::ro.product.name=foo;ro.product.model=bar;ro.product.device=baz;"
-        "features=woodly,doodly";
+        "features=woodly__4,doodly__5";
     parse_banner(banner, &t);
 
     ASSERT_EQ(kCsHost, t.connection_state);
 
-    ASSERT_EQ(2U, t.features().size());
-    ASSERT_TRUE(t.has_feature("woodly"));
-    ASSERT_TRUE(t.has_feature("doodly"));
+    ASSERT_EQ(2U, t.features().features_map().size());
+    ASSERT_EQ(4, t.features().GetVersion("woodly"));
+    ASSERT_EQ(5, t.features().GetVersion("doodly"));
 
     ASSERT_EQ(std::string("foo"), t.product);
     ASSERT_EQ(std::string("bar"), t.model);

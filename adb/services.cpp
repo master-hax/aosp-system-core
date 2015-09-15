@@ -269,9 +269,8 @@ int service_to_fd(const char* name, const atransport* transport) {
         const char* args = name + 6;
         // Use raw for non-interactive, PTY for interactive.
         SubprocessType type = (*args ? SubprocessType::kRaw : SubprocessType::kPty);
-        SubprocessProtocol protocol =
-                (transport->CanUseFeature(kFeatureShell2) ? SubprocessProtocol::kShell
-                                                          : SubprocessProtocol::kNone);
+        SubprocessProtocol protocol = (transport->features().CanUseShellProtocol() ?
+                                       SubprocessProtocol::kShell : SubprocessProtocol::kNone);
         ret = StartSubprocess(args, type, protocol);
     } else if(!strncmp(name, "exec:", 5)) {
         ret = StartSubprocess(name + 5, SubprocessType::kRaw,

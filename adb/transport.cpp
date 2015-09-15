@@ -779,16 +779,8 @@ size_t atransport::get_max_payload() const {
     return max_payload;
 }
 
-bool atransport::has_feature(const std::string& feature) const {
-    return features_.count(feature) > 0;
-}
-
-void atransport::add_feature(const std::string& feature) {
-    features_.insert(feature);
-}
-
-bool atransport::CanUseFeature(const std::string& feature) const {
-    return has_feature(feature) && supported_features().count(feature) > 0;
+void atransport::SetFeatures(const std::string& features_string) {
+    features_.FromString(features_string);
 }
 
 void atransport::AddDisconnect(adisconnect* disconnect) {
@@ -841,8 +833,7 @@ static void append_transport(const atransport* t, std::string* result,
         append_transport_info(result, "model:", t->model, true);
         append_transport_info(result, "device:", t->device, false);
         append_transport_info(result, "features:",
-                              android::base::Join(t->features(), ',').c_str(),
-                              false);
+                              t->features().ToString().c_str(), false);
     }
     *result += '\n';
 }

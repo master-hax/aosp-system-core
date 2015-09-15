@@ -16,15 +16,86 @@
 
 #include "feature_set.h"
 
-// Do not use any of [:;=,] in feature strings, they have special meaning
-// in the connection banner.
-const char kFeatureShell2[] = "shell_2";
+#include <string.h>
+
+#include <algorithm>
+#include <utility>
+#include <vector>
+
+#include <base/stringprintf.h>
+#include <base/strings.h>
+
+namespace {
+
+// Feature format is <name1>__<version1>,<name2>__<version2>,etc.
+constexpr char kVersionDelimiter[] = "__";
+constexpr char kFeatureDelimiter = ',';
+
+}  // namespace
+
+FeatureSet::FeatureSet() {
+}
+
+FeatureSet::FeatureSet(FeaturesMap features) {
+    features_map_.swap(features);
+}
+
+FeatureSet::FeatureSet(const std::string& features_string) {
+    FromString(features_string);
+}
+
+std::string FeatureSet::ToString() const {
+    std::vector<std::string> strings;
+
+    for (const auto& pair : features_map_) {
+        strings.push_back(android::base::StringPrintf(
+                "%s%s%d", pair.first.c_str(), kVersionDelimiter, pair.second));
+    }
+
+    return android::base::Join(strings, kFeatureDelimiter);
+}
+
+void FeatureSet::FromString(const std::string& features) {
+    features_map_.clear();
+
+    for (const std::string& feature :
+            android::base::Split(features, std::string(&kFeatureDelimiter, 1))) {
+        size_t delimiter_index = feature.find(kVersionDelimiter);
+
+        if (delimiter_index == std::string::npos) {
+            // Default to version 1 if we can't find a version.
+            features_map_[feature] = 1;
+        } else {
+            std::string name = feature.substr(0, delimiter_index);
+            int version = atoi(&feature.c_str()[delimiter_index +
+                                                strlen(kVersionDelimiter)]);
+            features_map_[name] = version;
+        }
+    }
+}
+
+int FeatureSet::GetVersion(const std::string& feature_name) const {
+    auto iter = features_map_.find(feature_name);
+    if (iter == features_map_.end()) {
+        return 0;
+    }
+    return iter->second;
+}
+
+int FeatureSet::GetSharedVersion(const std::string& feature_name) const {
+    return std::min(GetVersion(feature_name),
+                    supported_features().GetVersion(feature_name));
+}
+
+bool FeatureSet::CanUseShellProtocol() const {
+    return GetSharedVersion(kFeatureShell) >= 2;
+}
 
 const FeatureSet& supported_features() {
     // Local static allocation to avoid global non-POD variables.
-    static const FeatureSet* features = new FeatureSet{
-        kFeatureShell2
-    };
+    static const FeatureSet* features = new FeatureSet({
+        std::make_pair(kFeatureShell, 2)
+    });
 
     return *features;
 }
