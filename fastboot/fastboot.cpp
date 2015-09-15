@@ -46,6 +46,9 @@
 #include <sparse/sparse.h>
 #include <ziparchive/zip_archive.h>
 
+#include <base/strings.h>
+#include <base/parseint.h>
+
 #include "bootimg_utils.h"
 #include "fastboot.h"
 #include "fs.h"
@@ -266,6 +269,8 @@ static void usage() {
             "                                           override the fs type and/or size\n"
             "                                           the bootloader reports.\n"
             "  getvar <variable>                        Display a bootloader variable.\n"
+            "  set_active <slot>                        Sets the active slot. If slots are\n"
+            "                                           not supported, this does nothing.\n"
             "  boot <kernel> [ <ramdisk> [ <second> ] ] Download and boot kernel.\n"
             "  flash:raw boot <kernel> [ <ramdisk> [ <second> ] ]\n"
             "                                           Create bootimage and flash it.\n"
@@ -292,6 +297,13 @@ static void usage() {
             "                                           (default: 2048).\n"
             "  -S <size>[K|M|G]                         Automatically sparse files greater\n"
             "                                           than 'size'. 0 to disable.\n"
+            "  --slot <slot>                            Specify slot to be used if device\n"
+            "                                           supports slots. This will be added\n"
+            "                                           to all partition names that support\n"
+            "                                           slots. 'all' can be given to refer\n"
+            "                                           to all slots. If this is not given,\n"
+            "                                           slotted partitions will default to\n"
+            "                                           the current active slot.\n"
         );
 }
 
@@ -681,6 +693,87 @@ static void flash_buf(const char *pname, struct fastboot_buffer *buf)
     }
 }
 
+static std::string verify_slot(usb_handle* usb, const char *slot) {
+    if (strcmp(slot, "all") == 0) {
+        return "all";
+    }
+    char pSlotBuff[FB_RESPONSE_SZ + 1];
+    if (fb_getvar(usb, pSlotBuff, "slot-count")) {
+        die("Failed to get number of slots.\n");
+    }
+    int slotmax;
+    if (!android::base::ParseInt(pSlotBuff, &slotmax)) {
+        die("cannot get slot max. Read: %s\n", pSlotBuff, strerror(errno));
+    }
+    int slotval;
+    if (!android::base::ParseInt(slot, &slotval)) {
+        die("Cannot parse slot %s: %s\n", slot, strerror(errno));
+    }
+    if (slotval < 0 || slotval >= slotmax) {
+        die("Invalid slot: %s. Slot must be between 0 and %s\n", slot, pSlotBuff);
+    }
+    return std::to_string(slotval);
+}
+
+static void get_partition_name(usb_handle* usb, const char *part, const char *slot, std::string &name, bool force_slot) {
+    char pSlotBuff[FB_RESPONSE_SZ + 1];
+    const char *pSlot = pSlotBuff;
+
+    if (fb_getvar(usb, pSlotBuff, "partition-slot:%s", part)) {
+        fprintf(stderr, "Failed to identify if partition %s is in a slot. Assuming no.\n", part);
+        pSlotBuff[0] = 0;
+    }
+    if (pSlotBuff[0] == '1') {
+        if (!slot || slot[0] == 0) {
+            if (fb_getvar(usb, pSlotBuff, "current-slot")) {
+                die("Failed to identify current slot.\n");
+            }
+            name = std::string(part) + '-' + pSlotBuff;
+        } else {
+            name = std::string(part) + '-' + slot;
+        }
+    } else {
+        if (force_slot && slot && slot[0]) {
+             fprintf(stderr, "Warning: %s does not support slots, and slot %s was requested.\n", part, slot);
+        }
+        name = std::string(part);
+    }
+}
+
+/* This function will find the real partition name given a base name, and a slot. If slot is NULL or empty,
+ * it will use the current slot. If slot is "all", it will return a list of all possible partition names.
+ * If force_slot is true, it will fail if a slot is specified, and the given partition does not support slots.
+ */
+static void get_partition_names(usb_handle* usb, const char *part, const char *slot, std::vector<std::string> &names, bool force_slot) {
+    char pSlotBuff[FB_RESPONSE_SZ + 1];
+
+    if (slot && strcmp(slot, "all") == 0) {
+        if (fb_getvar(usb, pSlotBuff, "partition-slot:%s", part)) {
+            die("Could not check if partition %s has slot.", part);
+        }
+        if (pSlotBuff[0] == '1') {
+            if (fb_getvar(usb, pSlotBuff, "slot-count")) {
+                die("Failed to get number of slots.");
+            }
+            int slotmax;
+            if (!android::base::ParseInt(pSlotBuff, &slotmax)) {
+                die("Failed to get number of slots.");
+            }
+            for (int i=0; i<slotmax; i++) {
+                std::string name;
+                get_partition_name(usb, part, std::to_string(i).c_str(), name, force_slot);
+                names.push_back(name);
+            }
+       } else {
+           names.push_back(part);
+       }
+    } else {
+       std::string name;
+       get_partition_name(usb, part, slot, name, force_slot);
+       names.push_back(name);
+    }
+}
+
 static void do_flash(usb_handle* usb, const char* pname, const char* fname) {
     struct fastboot_buffer buf;
 
@@ -698,7 +791,7 @@ static void do_update_signature(ZipArchiveHandle zip, char* fn) {
     fb_queue_command("signature", "installing signature");
 }
 
-static void do_update(usb_handle* usb, const char* filename, bool erase_first) {
+static void do_update(usb_handle* usb, const char* filename, const char* slot_override, bool erase_first) {
     queue_info_dump();
 
     fb_queue_query_save("product", cur_product, sizeof(cur_product));
@@ -731,15 +824,19 @@ static void do_update(usb_handle* usb, const char* filename, bool erase_first) {
         fastboot_buffer buf;
         int rc = load_buf_fd(usb, fd, &buf);
         if (rc) die("cannot load %s from flash", images[i].img_name);
-        do_update_signature(zip, images[i].sig_name);
-        if (erase_first && needs_erase(usb, images[i].part_name)) {
-            fb_queue_erase(images[i].part_name);
+        std::vector<std::string> partition_names;
+        get_partition_names(usb, images[i].part_name, slot_override, partition_names, false);
+        for (const std::string &partition : partition_names) {
+            do_update_signature(zip, images[i].sig_name);
+            if (erase_first && needs_erase(usb, partition.c_str())) {
+                fb_queue_erase(partition.c_str());
+            }
+            flash_buf(partition.c_str(), &buf);
+            /* not closing the fd here since the sparse code keeps the fd around
+             * but hasn't mmaped data yet. The tmpfile will get cleaned up when the
+             * program exits.
+             */
         }
-        flash_buf(images[i].part_name, &buf);
-        /* not closing the fd here since the sparse code keeps the fd around
-         * but hasn't mmaped data yet. The tmpfile will get cleaned up when the
-         * program exits.
-         */
     }
 
     CloseArchive(zip);
@@ -761,7 +858,7 @@ static void do_send_signature(char* fn) {
     fb_queue_command("signature", "installing signature");
 }
 
-static void do_flashall(usb_handle* usb, int erase_first) {
+static void do_flashall(usb_handle* usb, const char *slot_override, int erase_first) {
     queue_info_dump();
 
     fb_queue_query_save("product", cur_product, sizeof(cur_product));
@@ -783,11 +880,15 @@ static void do_flashall(usb_handle* usb, int erase_first) {
                 continue;
             die("could not load %s\n", images[i].img_name);
         }
-        do_send_signature(fname);
-        if (erase_first && needs_erase(usb, images[i].part_name)) {
-            fb_queue_erase(images[i].part_name);
+        std::vector<std::string> partition_names;
+        get_partition_names(usb, images[i].part_name, slot_override, partition_names, false);
+        for (const std::string &partition : partition_names) {
+            do_send_signature(fname);
+            if (erase_first && needs_erase(usb, partition.c_str())) {
+                fb_queue_erase(partition.c_str());
+            }
+            flash_buf(partition.c_str(), &buf);
         }
-        flash_buf(images[i].part_name, &buf);
     }
 }
 
@@ -948,6 +1049,7 @@ int main(int argc, char **argv)
     int status;
     int c;
     int longindex;
+    std::string slot_override;
 
     const struct option longopts[] = {
         {"base", required_argument, 0, 'b'},
@@ -958,6 +1060,7 @@ int main(int argc, char **argv)
         {"help", no_argument, 0, 'h'},
         {"unbuffered", no_argument, 0, 0},
         {"version", no_argument, 0, 0},
+        {"slot", required_argument, 0, 0},
         {0, 0, 0, 0}
     };
 
@@ -1032,6 +1135,8 @@ int main(int argc, char **argv)
             } else if (strcmp("version", longopts[longindex].name) == 0) {
                 fprintf(stdout, "fastboot version %s\n", FASTBOOT_REVISION);
                 return 0;
+            } else if (strcmp("slot", longopts[longindex].name) == 0) {
+                slot_override = std::string(optarg);
             }
             break;
         default:
@@ -1059,6 +1164,8 @@ int main(int argc, char **argv)
     }
 
     usb_handle* usb = open_device();
+    if (slot_override != "")
+        slot_override = verify_slot(usb, slot_override.c_str());
 
     while (argc > 0) {
         if(!strcmp(*argv, "getvar")) {
@@ -1067,12 +1174,15 @@ int main(int argc, char **argv)
             skip(2);
         } else if(!strcmp(*argv, "erase")) {
             require(2);
+            std::vector<std::string> partition_names;
+            get_partition_names(usb, argv[1], slot_override.c_str(), partition_names, true);
+            for (const std::string &partition : partition_names) {
+                if (fb_format_supported(usb, partition.c_str(), nullptr)) {
+                    fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
+                }
 
-            if (fb_format_supported(usb, argv[1], nullptr)) {
-                fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
+                fb_queue_erase(partition.c_str());
             }
-
-            fb_queue_erase(argv[1]);
             skip(2);
         } else if(!strncmp(*argv, "format", strlen("format"))) {
             char *overrides;
@@ -1100,10 +1210,15 @@ int main(int argc, char **argv)
             }
             if (type_override && !type_override[0]) type_override = nullptr;
             if (size_override && !size_override[0]) size_override = nullptr;
-            if (erase_first && needs_erase(usb, argv[1])) {
-                fb_queue_erase(argv[1]);
+
+            std::vector<std::string> partition_names;
+            get_partition_names(usb, argv[1], slot_override.c_str(), partition_names, true);
+            for (const std::string &partition : partition_names) {
+                if (erase_first && needs_erase(usb, partition.c_str())) {
+                    fb_queue_erase(partition.c_str());
+                }
+                fb_perform_format(usb, partition.c_str(), 0, type_override, size_override);
             }
-            fb_perform_format(usb, argv[1], 0, type_override, size_override);
             skip(2);
         } else if(!strcmp(*argv, "signature")) {
             require(2);
@@ -1163,12 +1278,15 @@ int main(int argc, char **argv)
                 skip(2);
             }
             if (fname == 0) die("cannot determine image filename for '%s'", pname);
-            if (erase_first && needs_erase(usb, pname)) {
-                fb_queue_erase(pname);
+            std::vector<std::string> partition_names;
+            get_partition_names(usb, pname, slot_override.c_str(), partition_names, true);
+            for (const std::string &partition : partition_names) {
+                if (erase_first && needs_erase(usb, partition.c_str())) {
+                    fb_queue_erase(partition.c_str());
+                }
+                do_flash(usb, partition.c_str(), fname);
             }
-            do_flash(usb, pname, fname);
         } else if(!strcmp(*argv, "flash:raw")) {
-            char *pname = argv[1];
             char *kname = argv[2];
             char *rname = 0;
             char *sname = 0;
@@ -1184,20 +1302,28 @@ int main(int argc, char **argv)
             }
             data = load_bootable_image(kname, rname, sname, &sz, cmdline);
             if (data == 0) die("cannot load bootable image");
-            fb_queue_flash(pname, data, sz);
+            std::vector<std::string> partition_names;
+            get_partition_names(usb, argv[1], slot_override.c_str(), partition_names, true);
+            for (const std::string &partition : partition_names) {
+                fb_queue_flash(partition.c_str(), data, sz);
+            }
         } else if(!strcmp(*argv, "flashall")) {
             skip(1);
-            do_flashall(usb, erase_first);
+            do_flashall(usb, slot_override.c_str(), erase_first);
             wants_reboot = 1;
         } else if(!strcmp(*argv, "update")) {
             if (argc > 1) {
-                do_update(usb, argv[1], erase_first);
+                do_update(usb, argv[1], slot_override.c_str(), erase_first);
                 skip(2);
             } else {
-                do_update(usb, "update.zip", erase_first);
+                do_update(usb, "update.zip", slot_override.c_str(), erase_first);
                 skip(1);
             }
             wants_reboot = 1;
+        } else if(!strcmp(*argv, "set_active")) {
+            require(2);
+            fb_set_active(argv[1]);
+            skip(2);
         } else if(!strcmp(*argv, "oem")) {
             argc = do_oem_command(argc, argv);
         } else if(!strcmp(*argv, "flashing") && argc == 2) {
