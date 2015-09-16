@@ -29,7 +29,7 @@ include $(CLEAR_VARS)
 # runs Trusty Keymaster through a basic set of operations with RSA
 # and ECDSA keys.
 ###
-LOCAL_MODULE := trusty_keymaster
+LOCAL_MODULE := trusty_keymaster_tipc
 LOCAL_C_INCLUDES:= \
 	system/keymaster \
 	external/openssl/include
