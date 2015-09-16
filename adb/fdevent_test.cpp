@@ -99,6 +99,7 @@ struct ThreadArg {
     int first_read_fd;
     int last_write_fd;
     size_t middle_pipe_count;
+    std::vector<std::unique_ptr<FdHandler>> fd_handlers;
 };
 
 static void FdEventThreadFunc(ThreadArg* arg) {
@@ -116,9 +117,8 @@ static void FdEventThreadFunc(ThreadArg* arg) {
     }
     write_fds.push_back(arg->last_write_fd);
 
-    std::vector<std::unique_ptr<FdHandler>> fd_handlers;
     for (size_t i = 0; i < read_fds.size(); ++i) {
-        fd_handlers.push_back(std::unique_ptr<FdHandler>(new FdHandler(read_fds[i], write_fds[i])));
+        arg->fd_handlers.push_back(std::unique_ptr<FdHandler>(new FdHandler(read_fds[i], write_fds[i])));
     }
 
     fdevent_loop();
