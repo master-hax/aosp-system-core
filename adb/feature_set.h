@@ -45,6 +45,7 @@ class FeatureSet {
     // Capability tests make it easier for each side to agree what each feature
     // enables without hardcoding version numbers.
     bool CanUseShellProtocol() const;
+    bool CanUseShellTypeArgument() const;
 
     // Access the underlying map directly. Useful for iterating over all
     // features and for unit testing.

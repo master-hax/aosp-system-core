@@ -18,6 +18,7 @@
 #define _ADB_UTILS_H_
 
 #include <string>
+#include <utility>
 
 bool getcwd(std::string* cwd);
 bool directory_exists(const std::string& path);
@@ -45,5 +46,10 @@ bool parse_host_and_port(const std::string& address,
                          std::string* error);
 
 std::string perror_str(const char* msg);
+
+// Splits a string into two parts based on the leftmost occurrence of the
+// |delimiter| substring. If |delimiter| is not in |input|, returns (input, "").
+typedef std::pair<std::string, std::string> StringPair;
+StringPair Partition(const std::string& input, const std::string& delimiter);
 
 #endif

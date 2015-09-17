@@ -36,6 +36,7 @@
 
 #include <base/logging.h>
 #include <base/stringprintf.h>
+#include <base/strings.h>
 
 #if !defined(_WIN32)
 #include <termios.h>
@@ -108,8 +109,9 @@ static void help() {
         "                                 ('-a' means copy timestamp and mode)\n"
         "  adb sync [ <directory> ]     - copy host->device only if changed\n"
         "                                 (-l means list but don't copy)\n"
-        "  adb shell                    - run remote shell interactively\n"
-        "  adb shell <command>          - run remote shell command\n"
+        "  adb shell [-Tt] <command>    - run remote shell command\n"
+        "                                 (-T disables PTY allocation)\n"
+        "                                 (-t forces PTY allocation)\n"
         "  adb emu <command>            - run emulator console command\n"
         "  adb logcat [ <filter-spec> ] - View device log\n"
         "  adb forward --list           - list all forward socket connections.\n"
@@ -476,9 +478,10 @@ static void* stdin_read_thread(void* x) {
     return nullptr;
 }
 
-static int interactive_shell(bool use_shell_protocol) {
+static int interactive_shell(const std::string& service_string,
+                             bool use_shell_protocol) {
     std::string error;
-    int fd = adb_connect("shell:", &error);
+    int fd = adb_connect(service_string, &error);
     if (fd < 0) {
         fprintf(stderr,"error: %s\n", error.c_str());
         return 1;
@@ -1248,10 +1251,29 @@ int adb_commandline(int argc, const char **argv) {
             D("using shell protocol");
         }
 
+        // Parse shell-specific command-line options.
+        std::string shell_type_arg;
+        // argv[0] is always "shell".
+        --argc;
+        ++argv;
+        while (argc) {
+            if (!strcmp(argv[0], "-T") || !strcmp(argv[0], "-t")) {
+                if (!features.CanUseShellTypeArgument()) {
+                    LOG(WARNING) << "target doesn't support PTY args -Tt";
+                } else {
+                    shell_type_arg = argv[0];
+                }
+                --argc;
+                ++argv;
+            } else {
+                break;
+            }
+        }
+        std::string service_string("shell" + shell_type_arg + ":");
 
-        if (argc < 2) {
+        if (!argc) {
             D("starting interactive shell");
-            r = interactive_shell(use_shell_protocol);
+            r = interactive_shell(service_string, use_shell_protocol);
             if (h) {
                 printf("\x1b[0m");
                 fflush(stdout);
@@ -1259,19 +1281,16 @@ int adb_commandline(int argc, const char **argv) {
             return r;
         }
 
-        std::string cmd = "shell:";
-        --argc;
-        ++argv;
-        while (argc-- > 0) {
-            // We don't escape here, just like ssh(1). http://b/20564385.
-            cmd += *argv++;
-            if (*argv) cmd += " ";
-        }
+        // We don't escape here, just like ssh(1). http://b/20564385.
+        service_string += android::base::Join(
+                std::vector<const char*>(argv, argv + argc), ' ');
+        argv += argc;
+        argc = 0;
 
         while (true) {
-            D("non-interactive shell loop. cmd=%s", cmd.c_str());
+            D("non-interactive shell loop. cmd=%s", service_string.c_str());
             std::string error;
-            int fd = adb_connect(cmd, &error);
+            int fd = adb_connect(service_string, &error);
             int r;
             if (fd >= 0) {
                 D("about to read_and_dump(fd=%d)", fd);

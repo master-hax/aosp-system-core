@@ -202,3 +202,17 @@ TEST(adb_utils, mkdirs) {
   ASSERT_EQ(0, chdir(td.path)) << strerror(errno);
   test_mkdirs(std::string("relative/subrel/file"));
 }
+
+void ExpectPartition(const std::string& input, const std::string& delimiter,
+                     const std::string& left, const std::string& right) {
+    StringPair result = Partition(input, delimiter);
+    EXPECT_EQ(result.first, left);
+    EXPECT_EQ(result.second, right);
+}
+
+TEST(adb_utils, Partition) {
+    ExpectPartition("foo bar", " ", "foo", "bar");
+    ExpectPartition("foo__bar", "_", "foo", "_bar");
+    ExpectPartition("foo bar baz", " ", "foo", "bar baz");
+    ExpectPartition("foobar", " ", "foobar", "");
+}

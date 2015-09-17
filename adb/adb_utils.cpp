@@ -229,3 +229,12 @@ bool parse_host_and_port(const std::string& address,
 std::string perror_str(const char* msg) {
     return android::base::StringPrintf("%s: %s", msg, strerror(errno));
 }
+
+StringPair Partition(const std::string& input, const std::string& delimiter) {
+    size_t delim_index = input.find(delimiter);
+    if (delim_index == std::string::npos) {
+        return std::make_pair(input, "");
+    }
+    return std::make_pair(std::string(input, 0, delim_index),
+                          std::string(input, delim_index + delimiter.length()));
+}

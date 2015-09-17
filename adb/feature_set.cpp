@@ -25,6 +25,8 @@
 #include <base/stringprintf.h>
 #include <base/strings.h>
 
+#include "adb_utils.h"
+
 namespace {
 
 // Feature format is <name1>__<version1>,<name2>__<version2>,etc.
@@ -60,17 +62,9 @@ void FeatureSet::FromString(const std::string& features) {
 
     for (const std::string& feature :
             android::base::Split(features, std::string(&kFeatureDelimiter, 1))) {
-        size_t delimiter_index = feature.find(kVersionDelimiter);
-
-        if (delimiter_index == std::string::npos) {
-            // Default to version 1 if we can't find a version.
-            features_map_[feature] = 1;
-        } else {
-            std::string name = feature.substr(0, delimiter_index);
-            int version = atoi(&feature.c_str()[delimiter_index +
-                                                strlen(kVersionDelimiter)]);
-            features_map_[name] = version;
-        }
+        // Default to version 1 if we can't find a version.
+        StringPair parts = Partition(feature, kVersionDelimiter);
+        features_map_[parts.first] = std::max(1, atoi(parts.second.c_str()));
     }
 }
 
@@ -91,10 +85,14 @@ bool FeatureSet::CanUseShellProtocol() const {
     return GetSharedVersion(kFeatureShell) >= 2;
 }
 
+bool FeatureSet::CanUseShellTypeArgument() const {
+    return GetSharedVersion(kFeatureShell) >= 3;
+}
+
 const FeatureSet& supported_features() {
     // Local static allocation to avoid global non-POD variables.
     static const FeatureSet* features = new FeatureSet({
-        std::make_pair(kFeatureShell, 2)
+        std::make_pair(kFeatureShell, 3)
     });
 
     return *features;

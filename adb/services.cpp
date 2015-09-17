@@ -194,7 +194,35 @@ void reverse_service(int fd, void* arg)
     adb_close(fd);
 }
 
-#endif
+// Shell service string can look like:
+//   shell:[command]     (auto-determine PTY)
+//   shell-T:[command]   (force raw)
+//   shell-t:[command]   (force PTY)
+static int ShellService(const std::string& args, const atransport* transport) {
+    StringPair parts = Partition(args, ":");
+    const std::string& service_args = parts.first;
+    const std::string& command = parts.second;
+
+    SubprocessType type;
+    if (service_args.empty()) {
+        // Default: use PTY for interactive, raw for non-interactive.
+        type = (command.empty() ? SubprocessType::kPty : SubprocessType::kRaw);
+    } else if (service_args == "-T") {
+        type = SubprocessType::kRaw;
+    } else if (service_args == "-t") {
+        type = SubprocessType::kPty;
+    } else {
+        LOG(ERROR) << "Invalid shell service arguments: " << args;
+        return -1;
+    }
+
+    SubprocessProtocol protocol = (transport->features().CanUseShellProtocol() ?
+                                   SubprocessProtocol::kShell : SubprocessProtocol::kNone);
+
+    return StartSubprocess(command.c_str(), type, protocol);
+}
+
+#endif  // !ADB_HOST
 
 static int create_service_thread(void (*func)(int, void *), void *cookie)
 {
@@ -265,13 +293,8 @@ int service_to_fd(const char* name, const atransport* transport) {
         ret = create_service_thread(framebuffer_service, 0);
     } else if (!strncmp(name, "jdwp:", 5)) {
         ret = create_jdwp_connection_fd(atoi(name+5));
-    } else if(!strncmp(name, "shell:", 6)) {
-        const char* args = name + 6;
-        // Use raw for non-interactive, PTY for interactive.
-        SubprocessType type = (*args ? SubprocessType::kRaw : SubprocessType::kPty);
-        SubprocessProtocol protocol = (transport->features().CanUseShellProtocol() ?
-                                       SubprocessProtocol::kShell : SubprocessProtocol::kNone);
-        ret = StartSubprocess(args, type, protocol);
+    } else if(!strncmp(name, "shell", 5)) {
+        ret = ShellService(name + 5, transport);
     } else if(!strncmp(name, "exec:", 5)) {
         ret = StartSubprocess(name + 5, SubprocessType::kRaw,
                               SubprocessProtocol::kNone);
