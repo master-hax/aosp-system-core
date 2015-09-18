@@ -136,7 +136,7 @@ static LogFunction gLogger = StderrLogger;
 #endif
 
 static bool gInitialized = false;
-static LogSeverity gMinimumLogSeverity = INFO;
+LogSeverity gMinimumLogSeverity = INFO;
 static std::unique_ptr<std::string> gProgramInvocationName;
 
 static const char* ProgramInvocationName() {
@@ -199,20 +199,6 @@ void InitLogging(char* argv[], LogFunction&& logger) {
   SetLogger(std::forward<LogFunction>(logger));
   InitLogging(argv);
 }
-
-// TODO: make this public; it's independently useful.
-class ErrnoRestorer {
- public:
-  ErrnoRestorer(int saved_errno) : saved_errno_(saved_errno) {
-  }
-
-  ~ErrnoRestorer() {
-    errno = saved_errno_;
-  }
-
- private:
-  const int saved_errno_;
-};
 
 void InitLogging(char* argv[]) {
   if (gInitialized) {
@@ -286,13 +272,12 @@ static const char* GetFileBasename(const char* file) {
 class LogMessageData {
  public:
   LogMessageData(const char* file, unsigned int line, LogId id,
-                 LogSeverity severity, int error, int saved_errno)
+                 LogSeverity severity, int error)
       : file_(GetFileBasename(file)),
         line_number_(line),
         id_(id),
         severity_(severity),
-        error_(error),
-        errno_restorer_(saved_errno) {
+        error_(error) {
   }
 
   const char* GetFile() const {
@@ -330,14 +315,13 @@ class LogMessageData {
   const LogId id_;
   const LogSeverity severity_;
   const int error_;
-  ErrnoRestorer errno_restorer_;
 
   DISALLOW_COPY_AND_ASSIGN(LogMessageData);
 };
 
 LogMessage::LogMessage(const char* file, unsigned int line, LogId id,
                        LogSeverity severity, int error)
-    : data_(new LogMessageData(file, line, id, severity, error, errno)) {
+    : data_(new LogMessageData(file, line, id, severity, error)) {
 }
 
 LogMessage::~LogMessage() {

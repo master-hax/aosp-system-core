@@ -49,6 +49,9 @@ enum LogId {
   SYSTEM,
 };
 
+// Global setting initialized by InitLogging.
+extern LogSeverity gMinimumLogSeverity;
+
 typedef std::function<void(LogId, LogSeverity, const char*, const char*,
                            unsigned int, const char*)> LogFunction;
 
@@ -87,30 +90,55 @@ extern void InitLogging(char* argv[]);
 // Replace the current logger.
 extern void SetLogger(LogFunction&& logger);
 
+class ErrnoRestorer {
+ public:
+  ErrnoRestorer()
+      : saved_errno_(errno) {
+  }
+
+  ~ErrnoRestorer() {
+    errno = saved_errno_;
+  }
+
+  // Allow this object to evaluate to false which is useful in macros.
+  operator bool() const {
+    return false;
+  }
+
+ private:
+  const int saved_errno_;
+};
+
 // Logs a message to logcat on Android otherwise to stderr. If the severity is
 // FATAL it also causes an abort. For example:
 //
 //     LOG(FATAL) << "We didn't expect to reach here";
-#define LOG(severity)                                                       \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
-                              ::android::base::severity, -1).stream()
+#define LOG(severity) LOG_TO(DEFAULT, severity)
 
 // Logs a message to logcat with the specified log ID on Android otherwise to
 // stderr. If the severity is FATAL it also causes an abort.
-#define LOG_TO(dest, severity)                                           \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::dest, \
-                              ::android::base::severity, -1).stream()
+#define LOG_TO(dest, severity)                                          \
+  if (::android::base::severity < ::android::base::gMinimumLogSeverity) \
+    ;                                                                   \
+  else                                                                  \
+    ::android::base::ErrnoRestorer() ? *(std::ostream*)nullptr :        \
+      ::android::base::LogMessage(__FILE__, __LINE__,                   \
+          ::android::base::dest,                                        \
+          ::android::base::severity, -1).stream()
 
 // A variant of LOG that also logs the current errno value. To be used when
 // library calls fail.
-#define PLOG(severity)                                                      \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
-                              ::android::base::severity, errno).stream()
+#define PLOG(severity) PLOG_TO(DEFAULT, severity)
 
 // Behaves like PLOG, but logs to the specified log ID.
-#define PLOG_TO(dest, severity)                                          \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::dest, \
-                              ::android::base::severity, errno).stream()
+#define PLOG_TO(dest, severity)                                         \
+  if (::android::base::severity < ::android::base::gMinimumLogSeverity) \
+    ;                                                                   \
+  else                                                                  \
+    ::android::base::ErrnoRestorer() ? *(std::ostream*)nullptr :        \
+      ::android::base::LogMessage(__FILE__, __LINE__,                   \
+          ::android::base::dest,                                        \
+          ::android::base::severity, errno).stream()
 
 // Marker that code is yet to be implemented.
 #define UNIMPLEMENTED(level) \
@@ -122,11 +150,13 @@ extern void SetLogger(LogFunction&& logger);
 //
 //     CHECK(false == true) results in a log message of
 //       "Check failed: false == true".
-#define CHECK(x)                                                            \
-  if (UNLIKELY(!(x)))                                                       \
-  ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
-                              ::android::base::FATAL, -1).stream()          \
-      << "Check failed: " #x << " "
+#define CHECK(x)                                                              \
+  if (LIKELY((x)))                                                            \
+    ;                                                                         \
+  else                                                                        \
+    ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
+                                ::android::base::FATAL, -1).stream()          \
+        << "Check failed: " #x << " "
 
 // Helper for CHECK_xx(x,y) macros.
 #define CHECK_OP(LHS, RHS, OP)                                              \
@@ -153,7 +183,9 @@ extern void SetLogger(LogFunction&& logger);
 
 // Helper for CHECK_STRxx(s1,s2) macros.
 #define CHECK_STROP(s1, s2, sense)                                         \
-  if (UNLIKELY((strcmp(s1, s2) == 0) != sense))                            \
+  if (LIKELY((strcmp(s1, s2) == 0) == sense))                              \
+    ;                                                                      \
+  else                                                                     \
     LOG(FATAL) << "Check failed: "                                         \
                << "\"" << s1 << "\""                                       \
                << (sense ? " == " : " != ") << "\"" << s2 << "\""
