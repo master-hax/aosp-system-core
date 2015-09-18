@@ -38,6 +38,7 @@ LIBADB_SRC_FILES := \
     adb_io.cpp \
     adb_listeners.cpp \
     adb_utils.cpp \
+    feature_set.cpp \
     sockets.cpp \
     transport.cpp \
     transport_local.cpp \

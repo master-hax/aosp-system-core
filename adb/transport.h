@@ -21,15 +21,9 @@
 
 #include <list>
 #include <string>
-#include <unordered_set>
 
 #include "adb.h"
-
-typedef std::unordered_set<std::string> FeatureSet;
-
-const FeatureSet& supported_features();
-
-const extern char kFeatureShell2[];
+#include "feature_set.h"
 
 class atransport {
 public:
@@ -85,7 +79,7 @@ public:
     int get_protocol_version() const;
     size_t get_max_payload() const;
 
-    inline const FeatureSet features() const {
+    const FeatureSet& features() const {
         return features_;
     }
 
