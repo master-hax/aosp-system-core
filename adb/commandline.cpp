@@ -1295,33 +1295,6 @@ int adb_commandline(int argc, const char **argv) {
             return r;
         }
     }
-    else if (!strcmp(argv[0], "exec-in") || !strcmp(argv[0], "exec-out")) {
-        int exec_in = !strcmp(argv[0], "exec-in");
-
-        std::string cmd = "exec:";
-        cmd += argv[1];
-        argc -= 2;
-        argv += 2;
-        while (argc-- > 0) {
-            cmd += " " + escape_arg(*argv++);
-        }
-
-        std::string error;
-        int fd = adb_connect(cmd, &error);
-        if (fd < 0) {
-            fprintf(stderr, "error: %s\n", error.c_str());
-            return -1;
-        }
-
-        if (exec_in) {
-            copy_to_file(STDIN_FILENO, fd);
-        } else {
-            copy_to_file(fd, STDOUT_FILENO);
-        }
-
-        adb_close(fd);
-        return 0;
-    }
     else if (!strcmp(argv[0], "kill-server")) {
         std::string error;
         int fd = _adb_connect("host:kill", &error);
