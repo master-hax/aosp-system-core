@@ -602,6 +602,12 @@ int main(int argc, char** argv) {
     restorecon("/dev");
     restorecon("/dev/socket");
     restorecon("/dev/__properties__");
+
+    // Don't use restorecon_recursive for /dev/__properties__secure__.
+    // The files in the directory (but not the directory itself) have
+    // already been labeled by the property service code.
+    restorecon("/dev/__properties__secure__");
+
     restorecon_recursive("/sys");
 
     epoll_fd = epoll_create1(EPOLL_CLOEXEC);
