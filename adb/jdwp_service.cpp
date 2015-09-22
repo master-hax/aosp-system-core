@@ -16,7 +16,7 @@
 
 /* implement the "debug-ports" and "track-debug-ports" device services */
 
-#define TRACE_TAG TRACE_JDWP
+#define TRACE_TAG JDWP
 
 #include "sysdeps.h"
 
