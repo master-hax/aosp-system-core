@@ -72,14 +72,6 @@ public:
   // If map is not NULL, the map is still owned by the caller.
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
 
-  // Create an offline Backtrace object that can be used to do an unwind without a process
-  // that is still running. If cache_file is set to true, then elf information will be cached
-  // for this call. The cached information survives until the calling process ends. This means
-  // that subsequent calls to create offline Backtrace objects will continue to use the same
-  // cache. It also assumes that the elf files used for each offline unwind are the same.
-  static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
-                                  const backtrace_stackinfo_t& stack, bool cache_file = false);
-
   virtual ~Backtrace();
 
   // Get the current stack trace and store in the backtrace_ structure.

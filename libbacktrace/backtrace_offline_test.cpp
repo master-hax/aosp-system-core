@@ -11,6 +11,7 @@
 
 #include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
+#include <backtrace/BacktraceOffline.h>
 #include <cutils/threads.h>
 
 #include <gtest/gtest.h>
@@ -107,7 +108,7 @@ static void OfflineBacktraceFunctionCall(std::function<int(void (*)(void*), void
   stack_info.data = stack_data.data();
 
   std::unique_ptr<Backtrace> backtrace(
-      Backtrace::CreateOffline(getpid(), arg.tid, map.get(), stack_info));
+      BacktraceOffline::CreateOffline(getpid(), arg.tid, map.get(), stack_info));
   ASSERT_TRUE(backtrace != nullptr);
 
   ucontext_t ucontext = GetUContextFromUnwContext(arg.unw_context);

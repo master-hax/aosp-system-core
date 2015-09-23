@@ -39,7 +39,7 @@ endif
 endif
 
 LLVM_ROOT_PATH := external/llvm
-include $(LLVM_ROOT_PATH)/llvm.mk
+-include $(LLVM_ROOT_PATH)/llvm.mk
 
 #-------------------------------------------------------------------------
 # The libbacktrace library.
@@ -48,7 +48,6 @@ libbacktrace_src_files := \
 	Backtrace.cpp \
 	BacktraceCurrent.cpp \
 	BacktraceMap.cpp \
-	BacktraceOffline.cpp \
 	BacktracePtrace.cpp \
 	thread_utils.c \
 	ThreadEntry.cpp \
@@ -61,9 +60,17 @@ libbacktrace_shared_libraries := \
 	liblog \
 	libunwind \
 
+ifdef LLVM_DEVICE_BUILD_MK
+libbacktrace_src_files += BacktraceOffline.cpp
+
 # Use shared llvm library on device to save space.
 libbacktrace_shared_libraries_target := \
 	libLLVM \
+
+endif
+
+ifdef LLVM_HOST_BUILD_MK
+libbacktrace_src_files += BacktraceOffline.cpp
 
 # Use static llvm libraries on host to remove dependency on 32-bit llvm shared library
 # which is not included in the prebuilt.
@@ -74,6 +81,9 @@ libbacktrace_static_libraries_host := \
 	libLLVMMCParser \
 	libLLVMCore \
 	libLLVMSupport \
+
+endif
+
 
 libbacktrace_ldlibs_host := \
 	-lpthread \
