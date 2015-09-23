@@ -1,4 +1,19 @@
 /*
+ * Copyright (C) 2013 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
  * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +29,8 @@
  * limitations under the License.
  */
 
-#ifndef _LIBBACKTRACE_UNWIND_OFFLINE_H
-#define _LIBBACKTRACE_UNWIND_OFFLINE_H
+#ifndef _BACKTRACE_BACKTRACE_OFFLINE_H
+#define _BACKTRACE_BACKTRACE_OFFLINE_H
 
 #include <libunwind.h>
 #include <stdint.h>
@@ -59,6 +74,16 @@ struct DebugFrameInfo {
 
 class BacktraceOffline : public Backtrace {
  public:
+ 
+  // Create an offline Backtrace object that can be used to do an unwind without a process
+  // that is still running. If cache_file is set to true, then elf information will be cached
+  // for this call. The cached information survives until the calling process ends. This means
+  // that subsequent calls to create offline Backtrace objects will continue to use the same
+  // cache. It also assumes that the elf files used for each offline unwind are the same.
+  static BacktraceOffline* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                        const backtrace_stackinfo_t& stack,
+                                        bool cache_file = false);
+
   BacktraceOffline(pid_t pid, pid_t tid, BacktraceMap* map, const backtrace_stackinfo_t& stack,
                    bool cache_file)
       : Backtrace(pid, tid, map),
@@ -102,4 +127,4 @@ class BacktraceOffline : public Backtrace {
   DebugFrameInfo* last_debug_frame_;
 };
 
-#endif  // _LIBBACKTRACE_BACKTRACE_OFFLINE_H
+#endif // _BACKTRACE_BACKTRACE_OFFLINE_H
