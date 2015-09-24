@@ -165,7 +165,10 @@ void framebuffer_service(int fd, void *cookie)
     }
 
     /* write header */
-    if(!WriteFdExactly(fd, &fbinfo, sizeof(fbinfo))) goto done;
+    if(!WriteFdExactly(fd, &fbinfo, sizeof(fbinfo))) {
+      kill(pid, SIGKILL);
+      goto done;
+    }
 
     /* write data */
     for(i = 0; i < fbinfo.size; i += bsize) {
@@ -173,7 +176,10 @@ void framebuffer_service(int fd, void *cookie)
       if (i + bsize > fbinfo.size)
         bsize = fbinfo.size - i;
       if(!ReadFdExactly(fd_screencap, buf, bsize)) goto done;
-      if(!WriteFdExactly(fd, buf, bsize)) goto done;
+      if(!WriteFdExactly(fd, buf, bsize)) {
+        kill(pid, SIGKILL);
+        goto done;
+      }
     }
 
 done:
