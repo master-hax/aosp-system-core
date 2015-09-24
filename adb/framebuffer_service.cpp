@@ -63,6 +63,7 @@ void framebuffer_service(int fd, void *cookie)
     int w, h, f;
     int fds[2];
     pid_t pid;
+    bool write_failure = false;
 
     if (pipe2(fds, O_CLOEXEC) < 0) goto pipefail;
 
@@ -165,7 +166,7 @@ void framebuffer_service(int fd, void *cookie)
     }
 
     /* write header */
-    if(!WriteFdExactly(fd, &fbinfo, sizeof(fbinfo))) goto done;
+    write_failure = !WriteFdExactly(fd, &fbinfo, sizeof(fbinfo));
 
     /* write data */
     for(i = 0; i < fbinfo.size; i += bsize) {
@@ -173,7 +174,9 @@ void framebuffer_service(int fd, void *cookie)
       if (i + bsize > fbinfo.size)
         bsize = fbinfo.size - i;
       if(!ReadFdExactly(fd_screencap, buf, bsize)) goto done;
-      if(!WriteFdExactly(fd, buf, bsize)) goto done;
+      if (!write_failure) {
+        write_failure = !WriteFdExactly(fd, buf, bsize);
+      }
     }
 
 done:
