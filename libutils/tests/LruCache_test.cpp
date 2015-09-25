@@ -217,11 +217,15 @@ TEST_F(LruCacheTest, StressTest) {
 
 TEST_F(LruCacheTest, NoLeak) {
     ComplexCache cache(100);
-
     cache.put(ComplexKey(0), ComplexValue(0));
     cache.put(ComplexKey(1), ComplexValue(1));
     EXPECT_EQ(2U, cache.size());
-    assertInstanceCount(2, 3);  // the null value counts as an instance
+    assertInstanceCount(
+	// 2 keys as keys for the hash tables, 2 keys in the entries
+        // (needed in removeOldest)
+	4,
+	// in addition to the two values in the entries, there is mNullValue
+        3);
 }
 
 TEST_F(LruCacheTest, Clear) {
@@ -230,7 +234,7 @@ TEST_F(LruCacheTest, Clear) {
     cache.put(ComplexKey(0), ComplexValue(0));
     cache.put(ComplexKey(1), ComplexValue(1));
     EXPECT_EQ(2U, cache.size());
-    assertInstanceCount(2, 3);
+    assertInstanceCount(4, 3);
     cache.clear();
     assertInstanceCount(0, 1);
 }
@@ -242,7 +246,7 @@ TEST_F(LruCacheTest, ClearNoDoubleFree) {
         cache.put(ComplexKey(0), ComplexValue(0));
         cache.put(ComplexKey(1), ComplexValue(1));
         EXPECT_EQ(2U, cache.size());
-        assertInstanceCount(2, 3);
+        assertInstanceCount(4, 3);
         cache.removeOldest();
         cache.clear();
         assertInstanceCount(0, 1);
@@ -256,13 +260,13 @@ TEST_F(LruCacheTest, ClearReuseOk) {
     cache.put(ComplexKey(0), ComplexValue(0));
     cache.put(ComplexKey(1), ComplexValue(1));
     EXPECT_EQ(2U, cache.size());
-    assertInstanceCount(2, 3);
+    assertInstanceCount(4, 3);
     cache.clear();
     assertInstanceCount(0, 1);
     cache.put(ComplexKey(0), ComplexValue(0));
     cache.put(ComplexKey(1), ComplexValue(1));
     EXPECT_EQ(2U, cache.size());
-    assertInstanceCount(2, 3);
+    assertInstanceCount(4, 3);
 }
 
 TEST_F(LruCacheTest, Callback) {
@@ -292,5 +296,4 @@ TEST_F(LruCacheTest, CallbackOnClear) {
     cache.clear();
     EXPECT_EQ(3, callback.callbackCount);
 }
-
 }

@@ -17,8 +17,11 @@
 #ifndef ANDROID_UTILS_LRU_CACHE_H
 #define ANDROID_UTILS_LRU_CACHE_H
 
+#include <unordered_map>
+
 #include <UniquePtr.h>
-#include <utils/BasicHashtable.h>
+
+#include "utils/TypeHelpers.h" // hash_t
 
 namespace android {
 
@@ -36,6 +39,7 @@ template <typename TKey, typename TValue>
 class LruCache {
 public:
     explicit LruCache(uint32_t maxCapacity);
+    ~LruCache();
 
     enum Capacity {
         kUnlimitedCapacity,
@@ -50,34 +54,12 @@ public:
     void clear();
     const TValue& peekOldestValue();
 
-    class Iterator {
-    public:
-        Iterator(const LruCache<TKey, TValue>& cache): mCache(cache), mIndex(-1) {
-        }
-
-        bool next() {
-            mIndex = mCache.mTable->next(mIndex);
-            return (ssize_t)mIndex != -1;
-        }
-
-        size_t index() const {
-            return mIndex;
-        }
-
-        const TValue& value() const {
-            return mCache.mTable->entryAt(mIndex).value;
-        }
-
-        const TKey& key() const {
-            return mCache.mTable->entryAt(mIndex).key;
-        }
-    private:
-        const LruCache<TKey, TValue>& mCache;
-        size_t mIndex;
-    };
-
 private:
     LruCache(const LruCache& that);  // disallow copy constructor
+
+    struct HashWithHashType : public std::unary_function<TKey,hash_t> {
+        size_t operator() (TKey value) const { return hash_type(value); };
+    };
 
     struct Entry {
         TKey key;
@@ -90,27 +72,62 @@ private:
         const TKey& getKey() const { return key; }
     };
 
+    typedef std::unordered_map<TKey, Entry*, HashWithHashType> LruCacheHashTable;
+
     void attachToCache(Entry& entry);
     void detachFromCache(Entry& entry);
     void rehash(size_t newCapacity);
 
-    UniquePtr<BasicHashtable<TKey, Entry> > mTable;
+    UniquePtr<LruCacheHashTable> mTable;
     OnEntryRemoved<TKey, TValue>* mListener;
     Entry* mOldest;
     Entry* mYoungest;
     uint32_t mMaxCapacity;
     TValue mNullValue;
+
+public:
+    class Iterator {
+    public:
+        Iterator(const LruCache<TKey, TValue>& cache): mCache(cache), mIterator(mCache.mTable->begin()) {
+        }
+
+        bool next() {
+            if (mIterator == mCache.mTable->end()) {
+		return false;
+            }
+            std::advance(mIterator, 1);
+            return mIterator != mCache.mTable->end();
+        }
+
+        const TValue& value() const {
+            return mIterator->second->value;
+        }
+
+        const TKey& key() const {
+            return mIterator->second->key;
+        }
+    private:
+        const LruCache<TKey, TValue>& mCache;
+        typename LruCacheHashTable::iterator mIterator;
+    };
 };
 
 // Implementation is here, because it's fully templated
 template <typename TKey, typename TValue>
 LruCache<TKey, TValue>::LruCache(uint32_t maxCapacity)
-    : mTable(new BasicHashtable<TKey, Entry>)
+    : mTable(new LruCacheHashTable())
     , mListener(NULL)
     , mOldest(NULL)
     , mYoungest(NULL)
     , mMaxCapacity(maxCapacity)
     , mNullValue(NULL) {
+    mTable->max_load_factor(1.0);
+};
+
+template <typename TKey, typename TValue>
+LruCache<TKey, TValue>::~LruCache() {
+    // Need to delete created entries.
+    clear();
 };
 
 template<typename K, typename V>
@@ -125,15 +142,14 @@ size_t LruCache<TKey, TValue>::size() const {
 
 template <typename TKey, typename TValue>
 const TValue& LruCache<TKey, TValue>::get(const TKey& key) {
-    hash_t hash = hash_type(key);
-    ssize_t index = mTable->find(-1, hash, key);
-    if (index == -1) {
+    auto find_result = mTable->find(key);
+    if (find_result == mTable->end()) {
         return mNullValue;
     }
-    Entry& entry = mTable->editEntryAt(index);
-    detachFromCache(entry);
-    attachToCache(entry);
-    return entry.value;
+    Entry *entry = find_result->second;
+    detachFromCache(*entry);
+    attachToCache(*entry);
+    return entry->value;
 }
 
 template <typename TKey, typename TValue>
@@ -142,36 +158,29 @@ bool LruCache<TKey, TValue>::put(const TKey& key, const TValue& value) {
         removeOldest();
     }
 
-    hash_t hash = hash_type(key);
-    ssize_t index = mTable->find(-1, hash, key);
-    if (index >= 0) {
+    if (mTable->find(key) != mTable->end()) {
         return false;
     }
-    if (!mTable->hasMoreRoom()) {
-        rehash(mTable->capacity() * 2);
-    }
 
-    // Would it be better to initialize a blank entry and assign key, value?
-    Entry initEntry(key, value);
-    index = mTable->add(hash, initEntry);
-    Entry& entry = mTable->editEntryAt(index);
-    attachToCache(entry);
+    Entry* newEntry = new Entry(key, value);
+    mTable->insert(std::make_pair(key, newEntry));
+    attachToCache(*newEntry);
     return true;
 }
 
 template <typename TKey, typename TValue>
 bool LruCache<TKey, TValue>::remove(const TKey& key) {
-    hash_t hash = hash_type(key);
-    ssize_t index = mTable->find(-1, hash, key);
-    if (index < 0) {
+    auto find_result = mTable->find(key);
+    if (find_result == mTable->end()) {
         return false;
     }
-    Entry& entry = mTable->editEntryAt(index);
+    Entry *entry = find_result->second;
     if (mListener) {
-        (*mListener)(entry.key, entry.value);
+        (*mListener)(entry->key, entry->value);
     }
-    detachFromCache(entry);
-    mTable->removeAt(index);
+    detachFromCache(*entry);
+    mTable->erase(entry->key);
+    delete entry;
     return true;
 }
 
@@ -201,6 +210,9 @@ void LruCache<TKey, TValue>::clear() {
     }
     mYoungest = NULL;
     mOldest = NULL;
+    for (auto key_val : *mTable.get()) {
+        delete key_val.second;
+    }
     mTable->clear();
 }
 
@@ -230,19 +242,6 @@ void LruCache<TKey, TValue>::detachFromCache(Entry& entry) {
 
     entry.parent = NULL;
     entry.child = NULL;
-}
-
-template <typename TKey, typename TValue>
-void LruCache<TKey, TValue>::rehash(size_t newCapacity) {
-    UniquePtr<BasicHashtable<TKey, Entry> > oldTable(mTable.release());
-    Entry* oldest = mOldest;
-
-    mOldest = NULL;
-    mYoungest = NULL;
-    mTable.reset(new BasicHashtable<TKey, Entry>(newCapacity));
-    for (Entry* p = oldest; p != NULL; p = p->child) {
-        put(p->key, p->value);
-    }
 }
 
 }
