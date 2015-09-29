@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <list>
@@ -51,6 +52,8 @@ int SHELL_EXIT_NOTIFY_FD = -1;
 #define FDE_PENDING    0x0200
 #define FDE_CREATED    0x0400
 
+#define SILENT_FD_CHECK_INTERVAL_IN_SEC   600u
+
 struct PollNode {
   fdevent* fde;
   pollfd pollfd;
@@ -65,6 +68,11 @@ struct PollNode {
 // That's why we don't need a lock for fdevent.
 static std::unordered_map<int, PollNode> g_poll_node_map;
 static std::list<fdevent*> g_pending_list;
+// g_silent_map stores the start time when a fd is in silent mode.
+// A fd is in silent mode means it listens to neither FDE_READ or FDE_WRITE events.
+// Using g_slient_map is a workaround for socket leak in adb server. See http://b/23314034.
+static std::unordered_map<int, time_t> g_silent_map;
+static size_t g_silent_fd_check_interval_in_sec = SILENT_FD_CHECK_INTERVAL_IN_SEC;
 
 static std::string dump_fde(const fdevent* fde) {
     std::string state;
@@ -125,6 +133,7 @@ void fdevent_install(fdevent* fde, int fd, fd_func func, void* arg) {
         LOG(ERROR) << "failed to fcntl(" << fd << ") to be nonblock";
     }
     auto pair = g_poll_node_map.emplace(fde->fd, PollNode(fde));
+    g_silent_map.emplace(fde->fd, time(nullptr));
     CHECK(pair.second) << "install existing fd " << fd;
     D("fdevent_install %s", dump_fde(fde).c_str());
 }
@@ -132,6 +141,7 @@ void fdevent_install(fdevent* fde, int fd, fd_func func, void* arg) {
 void fdevent_remove(fdevent* fde) {
     D("fdevent_remove %s", dump_fde(fde).c_str());
     if (fde->state & FDE_ACTIVE) {
+        g_silent_map.erase(fde->fd);
         g_poll_node_map.erase(fde->fd);
         if (fde->state & FDE_PENDING) {
             g_pending_list.remove(fde);
@@ -161,6 +171,11 @@ static void fdevent_update(fdevent* fde, unsigned events) {
         node.pollfd.events &= ~POLLOUT;
     }
     fde->state = (fde->state & FDE_STATEMASK) | events;
+    if (events & (FDE_READ | FDE_WRITE)) {
+        g_silent_map.erase(fde->fd);
+    } else {
+        g_silent_map[fde->fd] = time(nullptr);
+    }
 }
 
 void fdevent_set(fdevent* fde, unsigned events) {
@@ -206,6 +221,20 @@ static std::string dump_pollfds(const std::vector<pollfd>& pollfds) {
     return result;
 }
 
+static void fdevent_check_silent_fd(std::vector<pollfd>* pollfds) {
+    time_t cur_time = time(nullptr);
+    for (auto& pollfd : *pollfds) {
+        if (pollfd.events == 0 && pollfd.revents == 0 &&
+            g_silent_map.find(pollfd.fd) != g_silent_map.end()) {
+            time_t start_time = g_silent_map[pollfd.fd];
+            if (cur_time - start_time > static_cast<time_t>(g_silent_fd_check_interval_in_sec)) {
+                pollfd.revents |= POLLIN;
+                g_silent_map[pollfd.fd] = cur_time;
+            }
+        }
+    }
+}
+
 static void fdevent_process() {
     std::vector<pollfd> pollfds;
     for (auto it = g_poll_node_map.begin(); it != g_poll_node_map.end(); ++it) {
@@ -218,6 +247,7 @@ static void fdevent_process() {
         PLOG(ERROR) << "poll(), ret = " << ret;
         return;
     }
+    fdevent_check_silent_fd(&pollfds);
     for (auto& pollfd : pollfds) {
         if (pollfd.revents != 0) {
             D("for fd %d, revents = %x", pollfd.fd, pollfd.revents);
@@ -348,4 +378,8 @@ size_t fdevent_installed_count() {
 void fdevent_reset() {
     g_poll_node_map.clear();
     g_pending_list.clear();
+}
+
+void fdevent_set_silent_fd_check_interval(size_t sec) {
+    g_silent_fd_check_interval_in_sec = sec;
 }
