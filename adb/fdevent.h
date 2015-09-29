@@ -80,5 +80,7 @@ void fdevent_loop();
 size_t fdevent_installed_count();
 // For debugging only.
 void fdevent_reset();
+// For debugging only.
+void fdevent_set_silent_fd_check_interval(size_t sec);
 
 #endif

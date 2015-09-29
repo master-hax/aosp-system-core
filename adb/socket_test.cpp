@@ -260,41 +260,61 @@ TEST_F(LocalSocketTest, write_error_when_having_packets) {
     ASSERT_EQ(0, pthread_join(thread, nullptr));
 }
 
-struct CloseNoEventsArg {
-    int socket_fd;
-};
-
-static void CloseNoEventsThreadFunc(CloseNoEventsArg* arg) {
-    asocket* s = create_local_socket(arg->socket_fd);
-    ASSERT_TRUE(s != nullptr);
-
-    InstallDummySocket();
-    fdevent_loop();
+static void ClientThreadFunc() {
+    std::string error;
+    int fd = network_loopback_client(5038, SOCK_STREAM, &error);
+    ASSERT_GE(fd, 0) << error;
+    sleep(3);
+    ASSERT_EQ(0, adb_close(fd));
 }
 
-// This test checks when a local socket doesn't enable FDE_READ/FDE_WRITE/FDE_ERROR, it
-// can still be closed when some error happens on its file handler.
-// This test successes on linux but fails on mac because of different implementation of
-// poll(). I think the function tested here is useful to make adb server more stable on
-// linux.
-TEST_F(LocalSocketTest, close_with_no_events_installed) {
-    int socket_fd[2];
-    ASSERT_EQ(0, adb_socketpair(socket_fd));
+struct CloseSilentFdArg {
+  int silent_fd;
+  int wakeup_poll_fd;
+};
 
-    CloseNoEventsArg arg;
-    arg.socket_fd = socket_fd[1];
-    pthread_t thread;
-    ASSERT_EQ(0, pthread_create(&thread, nullptr,
-                                reinterpret_cast<void* (*)(void*)>(CloseNoEventsThreadFunc),
-                                &arg));
-    // Wait until the fdevent_loop() starts.
-    sleep(1);
-    ASSERT_EQ(2u, fdevent_installed_count());
-    ASSERT_EQ(0, adb_close(socket_fd[0]));
+static void CloseSilentFdThreadFunc(CloseSilentFdArg* arg) {
+  asocket* s = create_local_socket(arg->silent_fd);
+  ASSERT_TRUE(s != nullptr);
+  asocket* wakeup_poll_s = create_local_socket(arg->wakeup_poll_fd);
+  wakeup_poll_s->ready(wakeup_poll_s);
 
-    // Wait until the socket is closed.
-    sleep(1);
+  InstallDummySocket();
+  fdevent_loop();
+}
 
-    ASSERT_EQ(0, pthread_kill(thread, SIGUSR1));
-    ASSERT_EQ(0, pthread_join(thread, nullptr));
+TEST_F(LocalSocketTest, close_silent_fd) {
+  std::string error;
+  int listen_fd = network_inaddr_any_server(5038, SOCK_STREAM, &error);
+  ASSERT_GE(listen_fd, 0);
+  pthread_t client_thread;
+  ASSERT_EQ(0, pthread_create(&client_thread, nullptr,
+                              reinterpret_cast<void* (*)(void*)>(ClientThreadFunc), nullptr));
+
+  fdevent_set_silent_fd_check_interval(1);
+
+  struct sockaddr addr;
+  socklen_t alen;
+  alen = sizeof(addr);
+  int accept_fd = adb_socket_accept(listen_fd, &addr, &alen);
+  ASSERT_GE(accept_fd, 0);
+  int wakeup_poll_fd[2];
+  ASSERT_EQ(0, adb_socketpair(wakeup_poll_fd));
+  CloseSilentFdArg arg;
+  arg.silent_fd = accept_fd;
+  arg.wakeup_poll_fd = wakeup_poll_fd[1];
+  pthread_t thread;
+  ASSERT_EQ(0, pthread_create(&thread, nullptr,
+                              reinterpret_cast<void* (*)(void*)>(CloseSilentFdThreadFunc),
+                              &arg));
+  // Wait until the fdevent_loop() starts.
+  sleep(1);
+  ASSERT_EQ(3u, fdevent_installed_count());
+  // Wait until the client closes its socket.
+  ASSERT_EQ(0, pthread_join(client_thread, nullptr));
+  // Wake up poll().
+  ASSERT_EQ(0, adb_close(wakeup_poll_fd[0]));
+  sleep(1);
+  ASSERT_EQ(0, pthread_kill(thread, SIGUSR1));
+  ASSERT_EQ(0, pthread_join(thread, nullptr));
 }
