@@ -43,6 +43,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include <sparse/sparse.h>
 #include <ziparchive/zip_archive.h>
 
@@ -96,10 +103,29 @@ static struct {
     {"vendor.img", "vendor.sig", "vendor", true},
 };
 
-static char* find_item(const char* item, const char* product) {
+static char* find_in_out_dir(const char *fn, const char *product) {
     char *dir;
-    const char *fn;
     char path[PATH_MAX + 128];
+
+    if(product) {
+        get_my_path(path);
+        sprintf(path + strlen(path),
+                "../../../target/product/%s/%s", product, fn);
+        return strdup(path);
+    }
+
+    dir = getenv("ANDROID_PRODUCT_OUT");
+    if((dir == 0) || (dir[0] == 0)) {
+        die("neither -p product specified nor ANDROID_PRODUCT_OUT set");
+        return 0;
+    }
+
+    sprintf(path, "%s/%s", dir, fn);
+    return strdup(path);
+}
+
+static char* find_item(const char* item, const char* product) {
+    const char *fn;
 
     if(!strcmp(item,"boot")) {
         fn = "boot.img";
@@ -119,22 +145,7 @@ static char* find_item(const char* item, const char* product) {
         fprintf(stderr,"unknown partition '%s'\n", item);
         return 0;
     }
-
-    if(product) {
-        get_my_path(path);
-        sprintf(path + strlen(path),
-                "../../../target/product/%s/%s", product, fn);
-        return strdup(path);
-    }
-
-    dir = getenv("ANDROID_PRODUCT_OUT");
-    if((dir == 0) || (dir[0] == 0)) {
-        die("neither -p product specified nor ANDROID_PRODUCT_OUT set");
-        return 0;
-    }
-
-    sprintf(path, "%s/%s", dir, fn);
-    return strdup(path);
+    return find_in_out_dir(fn, product);
 }
 
 static int64_t get_file_size(int fd) {
@@ -247,6 +258,9 @@ static void usage() {
             "\n"
             "commands:\n"
             "  update <filename>                        Reflash device from update.zip.\n"
+            "  provision [ <filename> ]                 Execute fastboot commands from file,\n"
+            "                                           typically replacing the partition\n"
+            "                                           table and all partitions.\n"
             "  flashall                                 Flash boot, system, vendor, and --\n"
             "                                           if found -- recovery.\n"
             "  flash <partition> [ <filename> ]         Write a file to a flash partition.\n"
@@ -937,14 +951,301 @@ failed:
     fprintf(stderr,"FAILED (%s)\n", fb_get_error());
 }
 
+static int do_provision(usb_handle* usb, const char* filename,
+                        bool erase_first, int* wants_reboot,
+                        int* wants_reboot_bootloader);
+
+static int do_process_command(usb_handle* usb, int argc, char* argv[],
+                              bool erase_first, int* wants_reboot,
+                              int* wants_reboot_bootloader) {
+    void *data;
+    int64_t sz;
+
+    while (argc > 0) {
+        if(!strcmp(*argv, "getvar")) {
+            require(2);
+            fb_queue_display(argv[1], argv[1]);
+            skip(2);
+        } else if(!strcmp(*argv, "erase")) {
+            require(2);
+
+            if (fb_format_supported(usb, argv[1], nullptr)) {
+                fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
+            }
+
+            fb_queue_erase(argv[1]);
+            skip(2);
+        } else if(!strncmp(*argv, "format", strlen("format"))) {
+            char *overrides;
+            char *type_override = nullptr;
+            char *size_override = nullptr;
+            require(2);
+            /*
+             * Parsing for: "format[:[type][:[size]]]"
+             * Some valid things:
+             *  - select ontly the size, and leave default fs type:
+             *    format::0x4000000 userdata
+             *  - default fs type and size:
+             *    format userdata
+             *    format:: userdata
+             */
+            overrides = strchr(*argv, ':');
+            if (overrides) {
+                overrides++;
+                size_override = strchr(overrides, ':');
+                if (size_override) {
+                    size_override[0] = '\0';
+                    size_override++;
+                }
+                type_override = overrides;
+            }
+            if (type_override && !type_override[0]) type_override = nullptr;
+            if (size_override && !size_override[0]) size_override = nullptr;
+            if (erase_first && needs_erase(usb, argv[1])) {
+                fb_queue_erase(argv[1]);
+            }
+            fb_perform_format(usb, argv[1], 0, type_override, size_override);
+            skip(2);
+        } else if(!strcmp(*argv, "signature")) {
+            require(2);
+            data = load_file(argv[1], &sz);
+            if (data == nullptr) die("could not load '%s': %s", argv[1], strerror(errno));
+            if (sz != 256) die("signature must be 256 bytes");
+            fb_queue_download("signature", data, sz);
+            fb_queue_command("signature", "installing signature");
+            skip(2);
+        } else if(!strcmp(*argv, "reboot")) {
+            *wants_reboot = 1;
+            skip(1);
+            if (argc > 0) {
+                if (!strcmp(*argv, "bootloader")) {
+                    *wants_reboot = 0;
+                    *wants_reboot_bootloader = 1;
+                    skip(1);
+                }
+            }
+            require(0);
+        } else if(!strcmp(*argv, "reboot-bootloader")) {
+            *wants_reboot_bootloader = 1;
+            skip(1);
+        } else if (!strcmp(*argv, "continue")) {
+            fb_queue_command("continue", "resuming boot");
+            skip(1);
+        } else if(!strcmp(*argv, "boot")) {
+            char *kname = 0;
+            char *rname = 0;
+            char *sname = 0;
+            skip(1);
+            if (argc > 0) {
+                kname = argv[0];
+                skip(1);
+            }
+            if (argc > 0) {
+                rname = argv[0];
+                skip(1);
+            }
+            if (argc > 0) {
+                sname = argv[0];
+                skip(1);
+            }
+            data = load_bootable_image(kname, rname, sname, &sz, cmdline);
+            if (data == 0) return 1;
+            fb_queue_download("boot.img", data, sz);
+            fb_queue_command("boot", "booting");
+        } else if(!strcmp(*argv, "flash")) {
+            char *pname = argv[1];
+            char *fname = 0;
+            require(2);
+            if (argc > 2) {
+                fname = argv[2];
+                skip(3);
+            } else {
+                fname = find_item(pname, product);
+                skip(2);
+            }
+            if (fname == 0) die("cannot determine image filename for '%s'", pname);
+            if (erase_first && needs_erase(usb, pname)) {
+                fb_queue_erase(pname);
+            }
+            do_flash(usb, pname, fname);
+        } else if(!strcmp(*argv, "flash:raw")) {
+            char *pname = argv[1];
+            char *kname = argv[2];
+            char *rname = 0;
+            char *sname = 0;
+            require(3);
+            skip(3);
+            if (argc > 0) {
+                rname = argv[0];
+                skip(1);
+            }
+            if (argc > 0) {
+                sname = argv[0];
+                skip(1);
+            }
+            data = load_bootable_image(kname, rname, sname, &sz, cmdline);
+            if (data == 0) die("cannot load bootable image");
+            fb_queue_flash(pname, data, sz);
+        } else if(!strcmp(*argv, "flashall")) {
+            skip(1);
+            do_flashall(usb, erase_first);
+            *wants_reboot = 1;
+        } else if(!strcmp(*argv, "update")) {
+            if (argc > 1) {
+                do_update(usb, argv[1], erase_first);
+                skip(2);
+            } else {
+                do_update(usb, "update.zip", erase_first);
+                skip(1);
+            }
+            *wants_reboot = 1;
+        } else if(!strcmp(*argv, "provision")) {
+            char* fname;
+            if (argc > 1) {
+                fname = strdup(argv[1]);
+                skip(2);
+            } else {
+                fname = find_in_out_dir("provisioning-commands", product);
+                skip(1);
+            }
+            int status = do_provision(usb, fname, erase_first,
+                                      wants_reboot, wants_reboot_bootloader);
+            free(fname);
+            if (status != 0)
+                return status;
+            *wants_reboot = 1;
+        } else if(!strcmp(*argv, "oem")) {
+            argc = do_oem_command(argc, argv);
+        } else if(!strcmp(*argv, "flashing") && argc == 2) {
+            if(!strcmp(*(argv+1), "unlock") || !strcmp(*(argv+1), "lock")
+               || !strcmp(*(argv+1), "unlock_critical")
+               || !strcmp(*(argv+1), "lock_critical")
+               || !strcmp(*(argv+1), "get_unlock_ability")) {
+              argc = do_oem_command(argc, argv);
+            } else {
+              usage();
+              return 1;
+            }
+        } else {
+            usage();
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static bool line_is_comment(const std::string& line) {
+    for (auto& c : line) {
+        if (c == '#')
+            return true;
+        else if (!isspace(c))
+            return false;
+    }
+    return false;
+}
+
+static bool parse_argv(const std::string& command_line, int* out_argc, char*** out_argv) {
+    // NOTE: We currently don't support quoting or escaping in lines
+    // in the provisioning-commands file, e.g.
+    //
+    //   flash partition ${ANDROID_BUILD_TOP}/here\ be\ spaces/blah/foo.bin
+    //   flash partition "${ANDROID_BUILD_TOP}/here be spaces/blah/foo.bin"
+    //
+    // will currently not be parsed into three elements as shell users
+    // would expect. If this feature is needed, it can be added later.
+    std::vector<std::string> arguments;
+    const char* delim = " \t";
+
+    char* str = strdup(command_line.c_str());
+    char* token = strtok(str, delim);
+    while (token != nullptr) {
+        arguments.push_back(std::string(token));
+        token = strtok(nullptr, delim);
+    }
+    free(str);
+
+    // Convert resulting vector to argc, argv
+    *out_argc = arguments.size();
+    *out_argv = reinterpret_cast<char**>(malloc(sizeof(char*)*arguments.size()));
+    if (out_argv == nullptr)
+        return false;
+    int n = 0;
+    for (const auto& arg : arguments) {
+        (*out_argv)[n] = strdup(arg.c_str());
+        if ((*out_argv)[n] == nullptr) {
+            for (int m = 0; m < n; m++)
+                free((*out_argv)[m]);
+            free(*out_argv);
+            return false;
+        }
+        n++;
+    }
+    return true;
+}
+
+static int do_provision(usb_handle* usb, const char* filename,
+                        bool erase_first, int* wants_reboot,
+                        int* wants_reboot_bootloader) {
+    // These are the environment variables we support expansion of in
+    // the provisioning-commands file.
+    const std::string vars[] = {"ANDROID_PRODUCT_OUT", "ANDROID_BUILD_TOP"};
+    std::map<std::string, std::string> env_vars;
+    std::string line;
+    size_t pos;
+
+    // Generate "${var_name}" -> "var_value" map for environment
+    // variable expansion. We only support the environment variables
+    // specified in the |vars| array.
+    for (const auto& var : vars) {
+        char *value = getenv(var.c_str());
+        if (value != nullptr) {
+            env_vars.emplace(std::make_pair<std::string, std::string>
+                             ("${" + var + "}", value));
+        }
+    }
+
+    // Open provisioning-commands file and process one line at a time.
+    std::ifstream input(filename);
+    if (!input.is_open()) {
+        fprintf(stderr, "Error opening '%s'\n", filename);
+        return 1;
+    }
+    int line_no = 0;
+    while (std::getline(input, line)) {
+        if (line_is_comment(line))
+            continue;
+        // Expand environment variables.
+        for(const auto& env_var : env_vars) {
+            while ((pos = line.find(env_var.first)) != std::string::npos) {
+                line.replace(pos, env_var.first.size(), env_var.second);
+            }
+        }
+        // Process command on each line.
+        int line_argc;
+        char **line_argv;
+        if (!parse_argv(line, &line_argc, &line_argv))
+          return 1;
+        int status = do_process_command(usb, line_argc, line_argv, erase_first,
+                                        wants_reboot, wants_reboot_bootloader);
+        for (int n = 0; n < line_argc; n++)
+            free(line_argv[n]);
+        free(line_argv);
+        if (status != 0) {
+            fprintf(stderr, "Error processing line %d of provisioning-"
+                    "commands file '%s'\n", line_no, filename);
+            return 1;
+        }
+        line_no++;
+    }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     int wants_wipe = 0;
     int wants_reboot = 0;
     int wants_reboot_bootloader = 0;
     bool erase_first = true;
-    void *data;
-    int64_t sz;
     int status;
     int c;
     int longindex;
@@ -1060,161 +1361,10 @@ int main(int argc, char **argv)
 
     usb_handle* usb = open_device();
 
-    while (argc > 0) {
-        if(!strcmp(*argv, "getvar")) {
-            require(2);
-            fb_queue_display(argv[1], argv[1]);
-            skip(2);
-        } else if(!strcmp(*argv, "erase")) {
-            require(2);
-
-            if (fb_format_supported(usb, argv[1], nullptr)) {
-                fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
-            }
-
-            fb_queue_erase(argv[1]);
-            skip(2);
-        } else if(!strncmp(*argv, "format", strlen("format"))) {
-            char *overrides;
-            char *type_override = nullptr;
-            char *size_override = nullptr;
-            require(2);
-            /*
-             * Parsing for: "format[:[type][:[size]]]"
-             * Some valid things:
-             *  - select ontly the size, and leave default fs type:
-             *    format::0x4000000 userdata
-             *  - default fs type and size:
-             *    format userdata
-             *    format:: userdata
-             */
-            overrides = strchr(*argv, ':');
-            if (overrides) {
-                overrides++;
-                size_override = strchr(overrides, ':');
-                if (size_override) {
-                    size_override[0] = '\0';
-                    size_override++;
-                }
-                type_override = overrides;
-            }
-            if (type_override && !type_override[0]) type_override = nullptr;
-            if (size_override && !size_override[0]) size_override = nullptr;
-            if (erase_first && needs_erase(usb, argv[1])) {
-                fb_queue_erase(argv[1]);
-            }
-            fb_perform_format(usb, argv[1], 0, type_override, size_override);
-            skip(2);
-        } else if(!strcmp(*argv, "signature")) {
-            require(2);
-            data = load_file(argv[1], &sz);
-            if (data == nullptr) die("could not load '%s': %s", argv[1], strerror(errno));
-            if (sz != 256) die("signature must be 256 bytes");
-            fb_queue_download("signature", data, sz);
-            fb_queue_command("signature", "installing signature");
-            skip(2);
-        } else if(!strcmp(*argv, "reboot")) {
-            wants_reboot = 1;
-            skip(1);
-            if (argc > 0) {
-                if (!strcmp(*argv, "bootloader")) {
-                    wants_reboot = 0;
-                    wants_reboot_bootloader = 1;
-                    skip(1);
-                }
-            }
-            require(0);
-        } else if(!strcmp(*argv, "reboot-bootloader")) {
-            wants_reboot_bootloader = 1;
-            skip(1);
-        } else if (!strcmp(*argv, "continue")) {
-            fb_queue_command("continue", "resuming boot");
-            skip(1);
-        } else if(!strcmp(*argv, "boot")) {
-            char *kname = 0;
-            char *rname = 0;
-            char *sname = 0;
-            skip(1);
-            if (argc > 0) {
-                kname = argv[0];
-                skip(1);
-            }
-            if (argc > 0) {
-                rname = argv[0];
-                skip(1);
-            }
-            if (argc > 0) {
-                sname = argv[0];
-                skip(1);
-            }
-            data = load_bootable_image(kname, rname, sname, &sz, cmdline);
-            if (data == 0) return 1;
-            fb_queue_download("boot.img", data, sz);
-            fb_queue_command("boot", "booting");
-        } else if(!strcmp(*argv, "flash")) {
-            char *pname = argv[1];
-            char *fname = 0;
-            require(2);
-            if (argc > 2) {
-                fname = argv[2];
-                skip(3);
-            } else {
-                fname = find_item(pname, product);
-                skip(2);
-            }
-            if (fname == 0) die("cannot determine image filename for '%s'", pname);
-            if (erase_first && needs_erase(usb, pname)) {
-                fb_queue_erase(pname);
-            }
-            do_flash(usb, pname, fname);
-        } else if(!strcmp(*argv, "flash:raw")) {
-            char *pname = argv[1];
-            char *kname = argv[2];
-            char *rname = 0;
-            char *sname = 0;
-            require(3);
-            skip(3);
-            if (argc > 0) {
-                rname = argv[0];
-                skip(1);
-            }
-            if (argc > 0) {
-                sname = argv[0];
-                skip(1);
-            }
-            data = load_bootable_image(kname, rname, sname, &sz, cmdline);
-            if (data == 0) die("cannot load bootable image");
-            fb_queue_flash(pname, data, sz);
-        } else if(!strcmp(*argv, "flashall")) {
-            skip(1);
-            do_flashall(usb, erase_first);
-            wants_reboot = 1;
-        } else if(!strcmp(*argv, "update")) {
-            if (argc > 1) {
-                do_update(usb, argv[1], erase_first);
-                skip(2);
-            } else {
-                do_update(usb, "update.zip", erase_first);
-                skip(1);
-            }
-            wants_reboot = 1;
-        } else if(!strcmp(*argv, "oem")) {
-            argc = do_oem_command(argc, argv);
-        } else if(!strcmp(*argv, "flashing") && argc == 2) {
-            if(!strcmp(*(argv+1), "unlock") || !strcmp(*(argv+1), "lock")
-               || !strcmp(*(argv+1), "unlock_critical")
-               || !strcmp(*(argv+1), "lock_critical")
-               || !strcmp(*(argv+1), "get_unlock_ability")) {
-              argc = do_oem_command(argc, argv);
-            } else {
-              usage();
-              return 1;
-            }
-        } else {
-            usage();
-            return 1;
-        }
-    }
+    status = do_process_command(usb, argc, argv, erase_first,
+                                &wants_reboot, &wants_reboot_bootloader);
+    if (status != 0)
+        return status;
 
     if (wants_wipe) {
         fb_queue_erase("userdata");
