@@ -146,8 +146,8 @@ static void help() {
         "                               - remove a specific reversed socket connection\n"
         "  adb reverse --remove-all     - remove all reversed socket connections from device\n"
         "  adb jdwp                     - list PIDs of processes hosting a JDWP transport\n"
-        "  adb install [-lrtsd] <file>\n"
-        "  adb install-multiple [-lrtsdp] <file...>\n"
+        "  adb install [-lrtsdx] <file>\n"
+        "  adb install-multiple [-lrtsdpx] <file...>\n"
         "                               - push this package file to the device and install it\n"
         "                                 (-l: forward lock application)\n"
         "                                 (-r: replace existing application)\n"
@@ -155,8 +155,10 @@ static void help() {
         "                                 (-s: install application on sdcard)\n"
         "                                 (-d: allow version code downgrade)\n"
         "                                 (-p: partial application install)\n"
-        "  adb uninstall [-k] <package> - remove this app package from the device\n"
-        "                                 ('-k' means keep the data and cache directories)\n"
+        "                                 (-x: disable remote exit codes and stdout/stderr separation)\n"
+        "  adb uninstall [-kx] <package> - remove this app package from the device\n"
+        "                                 (-k: keep the data and cache directories)\n"
+        "                                 (-x: disable remote exit codes and stdout/stderr separation)\n"
         "  adb bugreport                - return all information from the device\n"
         "                                 that should be included in a bug report.\n"
         "\n"
@@ -1621,16 +1623,16 @@ int adb_commandline(int argc, const char **argv) {
     return 1;
 }
 
-static int pm_command(TransportType transport, const char* serial, int argc, const char** argv) {
+static int pm_command(TransportType transport, const char* serial,
+                      std::vector<const char*> pm_args,
+                      bool disable_shell_protocol) {
     std::string cmd = "pm";
 
-    while (argc-- > 0) {
-        cmd += " " + escape_arg(*argv++);
+    for (const char* arg : pm_args) {
+        cmd += " " + escape_arg(arg);
     }
 
-    // TODO(dpursell): add command-line arguments to install/uninstall to
-    // manually disable shell protocol if needed.
-    return send_shell_command(transport, serial, cmd, false);
+    return send_shell_command(transport, serial, cmd, disable_shell_protocol);
 }
 
 static int uninstall_app(TransportType transport, const char* serial, int argc, const char** argv) {
