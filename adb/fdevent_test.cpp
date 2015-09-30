@@ -176,7 +176,7 @@ static void InvalidFdThreadFunc(void*) {
 
     const int INVALID_WRITE_FD = std::numeric_limits<int>::max();
     InvalidFdArg write_arg;
-    write_arg.expected_events = FDE_READ | FDE_ERROR;
+    write_arg.expected_events = FDE_WRITE | FDE_ERROR;
     write_arg.happened_event_count = &happened_event_count;
     fdevent_install(&write_arg.fde, INVALID_WRITE_FD, InvalidFdEventCallback, &write_arg);
     fdevent_add(&write_arg.fde, FDE_WRITE);

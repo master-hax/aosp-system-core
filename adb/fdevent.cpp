@@ -168,17 +168,16 @@ void fdevent_set(fdevent* fde, unsigned events) {
     if ((fde->state & FDE_EVENTMASK) == events) {
         return;
     }
-    if (fde->state & FDE_ACTIVE) {
-        fdevent_update(fde, events);
-        D("fdevent_set: %s, events = %u", dump_fde(fde).c_str(), events);
+    CHECK(fde->state & FDE_ACTIVE);
+    fdevent_update(fde, events);
+    D("fdevent_set: %s, events = %u", dump_fde(fde).c_str(), events);
 
-        if (fde->state & FDE_PENDING) {
-            // If we are pending, make sure we don't signal an event that is no longer wanted.
-            fde->events &= ~events;
-            if (fde->events == 0) {
-                g_pending_list.remove(fde);
-                fde->state &= ~FDE_PENDING;
-            }
+    if (fde->state & FDE_PENDING) {
+        // If we are pending, make sure we don't signal an event that is no longer wanted.
+        fde->events &= events;
+        if (fde->events == 0) {
+            g_pending_list.remove(fde);
+            fde->state &= ~FDE_PENDING;
         }
     }
 }
@@ -230,9 +229,18 @@ static void fdevent_process() {
             events |= FDE_WRITE;
         }
         if (pollfd.revents & (POLLERR | POLLHUP | POLLNVAL)) {
-            // We fake a read, as the rest of the code assumes that errors will
-            // be detected at that point.
-            events |= FDE_READ | FDE_ERROR;
+            events |= FDE_ERROR;
+            // In case caller isn't waiting for FDE_ERROR, fake whatever it is
+            // waiting for (or read if it is waiting for both read & write),
+            // so that an error will be detected at that point.
+            if (pollfd.events & POLLIN) {
+                events |= FDE_READ;
+            } else if (pollfd.events & POLLOUT) {
+                events |= FDE_WRITE;
+            } else {
+                // Fake read even if caller isn't waiting for it.
+                events |= FDE_READ;
+            }
         }
         if (events != 0) {
             auto it = g_poll_node_map.find(pollfd.fd);
@@ -251,7 +259,7 @@ static void fdevent_call_fdfunc(fdevent* fde)
 {
     unsigned events = fde->events;
     fde->events = 0;
-    if(!(fde->state & FDE_PENDING)) return;
+    CHECK(fde->state & FDE_PENDING);
     fde->state &= (~FDE_PENDING);
     D("fdevent_call_fdfunc %s", dump_fde(fde).c_str());
     fde->func(fde->fd, events, fde->arg);
