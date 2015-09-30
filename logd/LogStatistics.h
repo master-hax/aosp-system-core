@@ -292,6 +292,7 @@ struct TagEntry : public EntryBase {
 class LogStatistics {
     size_t mSizes[LOG_ID_MAX];
     size_t mElements[LOG_ID_MAX];
+    size_t mDroppedElements[LOG_ID_MAX];
     size_t mSizesTotal[LOG_ID_MAX];
     size_t mElementsTotal[LOG_ID_MAX];
     bool enable;
@@ -322,13 +323,20 @@ public:
     // entry->setDropped(1) must follow this call
     void drop(LogBufferElement *entry);
     // Correct for coalescing two entries referencing dropped content
-    void erase(LogBufferElement *e) { --mElements[e->getLogId()]; }
+    void erase(LogBufferElement *e) {
+        log_id_t log_id = e->getLogId();
+        --mElements[log_id];
+        --mDroppedElements[log_id];
+    }
 
     std::unique_ptr<const UidEntry *[]> sort(size_t n, log_id i) { return uidTable[i].sort(n); }
 
     // fast track current value by id only
     size_t sizes(log_id_t id) const { return mSizes[id]; }
     size_t elements(log_id_t id) const { return mElements[id]; }
+    size_t realElements(log_id_t id) const {
+        return mElements[id] - mDroppedElements[id];
+    }
     size_t sizesTotal(log_id_t id) const { return mSizesTotal[id]; }
     size_t elementsTotal(log_id_t id) const { return mElementsTotal[id]; }
 
