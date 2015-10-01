@@ -467,7 +467,15 @@ int selinux_reload_policy(void)
 }
 
 static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_t len) {
-    snprintf(buf, len, "property=%s", !data ? "NULL" : (char *)data);
+
+    property_audit_data *d = (property_audit_data*)data;
+
+    if (!data) {
+        snprintf(buf, len, "property=NULL pid=NULL");
+        return 0;
+    }
+
+    snprintf(buf, len, "property=%s pid=%d", d->name, d->pid);
     return 0;
 }
 
