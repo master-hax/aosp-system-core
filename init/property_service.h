@@ -21,6 +21,11 @@
 #include <sys/system_properties.h>
 #include <string>
 
+struct property_audit_data {
+    pid_t pid;
+    const char* name;
+};
+
 extern void property_init(void);
 extern void property_load_boot_defaults(void);
 extern void load_persist_props(void);
