@@ -306,7 +306,7 @@ static const char *strnstr(const char *s, size_t len, const char *needle) {
                 }
                 --len;
             } while (*s++ != c);
-        } while (memcmp(s, needle, needleLen) != 0);
+        } while ((s[0] != needle[0]) || memcmp(s + 1, needle + 1, needleLen - 1));
         s--;
     }
     return s;
@@ -588,7 +588,7 @@ int LogKlog::log(const char *buf, size_t len) {
         const char *bt, *et, *cp;
 
         bt = p;
-        if (!strncmp(p, "[INFO]", 6)) {
+        if ((*p == '[') && !strncmp(p + 1, "INFO]", 5)) {
             // <PRI>[<TIME>] "[INFO]"<tag> ":" message
             bt = p + 6;
             taglen -= 6;
@@ -612,10 +612,10 @@ int LogKlog::log(const char *buf, size_t len) {
             p = cp + 1;
         } else if (taglen) {
             size = et - bt;
-            if (strncmp(bt, cp, size)) {
+            if ((*bt == *cp) && strncmp(bt + 1, cp + 1, size)) {
                 // <PRI>[<TIME>] <tag>_host '<tag>.<num>' : message
-                if (!strncmp(bt + size - 5, "_host", 5)
-                        && !strncmp(bt, cp, size - 5)) {
+                if ((bt[size - 5] == '_') && !strncmp(bt + size - 4, "host", 4)
+                        && !strncmp(bt + 1, cp + 1, size - 4)) {
                     const char *b = cp;
                     cp += size - 5;
                     taglen -= size - 5;
@@ -694,10 +694,14 @@ int LogKlog::log(const char *buf, size_t len) {
             // register names like x18 but not driver names like en0
                 || ((size == 3) && (isdigit(tag[1]) && isdigit(tag[2])))
             // blacklist
-                || ((size == 3) && !strncmp(tag, "CPU", 3))
-                || ((size == 7) && !strncasecmp(tag, "WARNING", 7))
-                || ((size == 5) && !strncasecmp(tag, "ERROR", 5))
-                || ((size == 4) && !strncasecmp(tag, "INFO", 4))) {
+                || ((size == 3) && (tag[0] == 'C')
+                    && !strncmp(tag + 1, "PU", 2))
+                || ((size == 7) && (tag[0] == 'W')
+                    && !strncasecmp(tag + 1, "ARNING", 6))
+                || ((size == 5) && (tag[0] == 'E')
+                    && !strncasecmp(tag + 1, "RROR", 4))
+                || ((size == 4) && (tag[0] == 'I')
+                    && !strncasecmp(tag + 1, "NFO", 3))) {
             p = start;
             etag = tag = "";
         }
@@ -709,7 +713,8 @@ int LogKlog::log(const char *buf, size_t len) {
     const char *mp = strnrchr(tag, ']', taglen);
     if (mp && (++mp < etag)) {
         size_t s = etag - mp;
-        if (((s + s) < taglen) && !memcmp(mp, mp - 1 - s, s)) {
+        if (((s + s) < taglen) && (mp[0] == mp[-1 - s])
+                && !memcmp(mp + 1, mp - s, s - 1)) {
             taglen = mp - tag;
         }
     }
@@ -727,6 +732,9 @@ int LogKlog::log(const char *buf, size_t len) {
         p = " ";
         b = 1;
     }
+    if (b > LOGGER_ENTRY_MAX_PAYLOAD) {
+        b = LOGGER_ENTRY_MAX_PAYLOAD;
+    }
     size_t n = 1 + taglen + 1 + b + 1;
     int rc = n;
     if ((taglen > n) || (b > n)) { // Can not happen ...
@@ -734,12 +742,7 @@ int LogKlog::log(const char *buf, size_t len) {
         return rc;
     }
 
-    // Allocate a buffer to hold the interpreted log message
-    char *newstr = reinterpret_cast<char *>(malloc(n));
-    if (!newstr) {
-        rc = -ENOMEM;
-        return rc;
-    }
+    char newstr[n];
     char *np = newstr;
 
     // Convert priority into single-byte Android logger priority
@@ -759,7 +762,6 @@ int LogKlog::log(const char *buf, size_t len) {
     // Log message
     rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr,
                      (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
-    free(newstr);
 
     // notify readers
     if (!rc) {
