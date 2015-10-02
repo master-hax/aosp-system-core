@@ -17,6 +17,7 @@
 #ifndef ANDROID_UTILS_LRU_CACHE_H
 #define ANDROID_UTILS_LRU_CACHE_H
 
+#include <sstream>
 #include <unordered_set>
 
 #include <UniquePtr.h>
@@ -87,11 +88,13 @@ private:
 
     typename LruCacheSet::iterator findByKey(const TKey& key) {
         Entry entryForSearch(key, mNullValue);
+        ALOGE((std::ostringstream() << "mSet is: " << mSet.get()).str().c_str());
+        ALOGE((std::ostringstream() << "checkValue is: " << checkValue).str().c_str());
         typename LruCacheSet::iterator result = mSet->find(&entryForSearch);
         return result;
     }
-
     UniquePtr<LruCacheSet> mSet;
+    LruCacheSet* checkValue;
     OnEntryRemoved<TKey, TValue>* mListener;
     Entry* mOldest;
     Entry* mYoungest;
@@ -135,6 +138,7 @@ LruCache<TKey, TValue>::LruCache(uint32_t maxCapacity)
     , mMaxCapacity(maxCapacity)
     , mNullValue(NULL) {
     mSet->max_load_factor(1.0);
+    checkValue = mSet.get();
 };
 
 template <typename TKey, typename TValue>
