@@ -1,0 +1,10 @@
+{
+  "metrics": {
+    "_EnableAnalyticsReporting": {
+      "scope": "owner"
+    },
+    "_DisableAnalyticsReporting": {
+      "scope": "owner"
+    }
+  }
+}

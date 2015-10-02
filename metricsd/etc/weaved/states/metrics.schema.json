@@ -1,0 +1,8 @@
+{
+  "metrics": {
+    "_AnalyticsReportingState": {
+      "enum": ["enabled", "disabled"],
+      "default": "disabled"
+    }
+  }
+}
