@@ -158,7 +158,13 @@ struct UidEntry : public EntryBaseDropped {
 };
 
 namespace android {
+
 uid_t pidToUid(pid_t pid);
+
+static inline bool is_zygote(const char *name) {
+    return name && (name[0] == 'z') && !strncmp(name, "ygote", 5);
+}
+
 }
 
 struct PidEntry : public EntryBaseDropped {
@@ -188,7 +194,7 @@ struct PidEntry : public EntryBaseDropped {
     const char*getName() const { return name; }
 
     inline void add(pid_t p) {
-        if (name && !strncmp(name, "zygote", 6)) {
+        if (android::is_zygote(name)) {
             free(name);
             name = NULL;
         }
@@ -240,7 +246,7 @@ struct TidEntry : public EntryBaseDropped {
     const char*getName() const { return name; }
 
     inline void add(pid_t t) {
-        if (name && !strncmp(name, "zygote", 6)) {
+        if (android::is_zygote(name)) {
             free(name);
             name = NULL;
         }
