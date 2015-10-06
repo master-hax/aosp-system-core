@@ -3265,6 +3265,15 @@ int unix_read(int fd, void* buf, size_t len) {
         // terminal.
         return _console_read(_console_handle, buf, len);
     } else {
+        if (fd == STDIN_FILENO) {
+            // If we're reading from stdin but we haven't made it raw, use
+            // read() but limit the buffer size. Reading stdin with too large of
+            // a buffer causes the read to fail with ENOMEM; not sure if this is
+            // a bug or if a second buffer needs to be allocated internally.
+            if (len > 4096) {
+                len = 4096;
+            }
+        }
         // Just call into C Runtime which can read from pipes/files and which
         // can do LF/CR translation (which is overridable with _setmode()).
         // Undefine the macro that is set in sysdeps.h which bans calls to

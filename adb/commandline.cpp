@@ -425,6 +425,7 @@ namespace {
 // Used to pass multiple values to the stdin read thread.
 struct StdinReadArgs {
     int stdin_fd, write_fd;
+    bool raw_stdin;
     std::unique_ptr<ShellProtocol> protocol;
 };
 
@@ -452,7 +453,13 @@ static void* stdin_read_thread(void* x) {
         D("stdin_read_thread(): pre unix_read(fdi=%d,...)", args->stdin_fd);
         int r = unix_read(args->stdin_fd, buffer_ptr, buffer_size);
         D("stdin_read_thread(): post unix_read(fdi=%d,...)", args->stdin_fd);
-        if (r <= 0) break;
+        if (r <= 0) {
+            if (args->protocol) {
+                // Send a 0-length stdin packet to indicate EOF.
+                args->protocol->Write(ShellProtocol::kIdStdin, 0);
+            }
+            break;
+        }
         for (int n = 0; n < r; n++){
             switch(buffer_ptr[n]) {
             case '\n':
@@ -466,8 +473,10 @@ static void* stdin_read_thread(void* x) {
                 break;
             case '.':
                 if(state == 2) {
+                    if (args->raw_stdin) {
+                        stdin_raw_restore(args->stdin_fd);
+                    }
                     fprintf(stderr,"\n* disconnect *\n");
-                    stdin_raw_restore(args->stdin_fd);
                     exit(0);
                 }
             default:
@@ -488,8 +497,40 @@ static void* stdin_read_thread(void* x) {
     return nullptr;
 }
 
-static int interactive_shell(const std::string& service_string,
-                             bool use_shell_protocol) {
+// Returns a shell service string with the indicated arguments and command.
+static std::string ShellServiceString(bool use_shell_protocol,
+                                      const std::string& type_arg,
+                                      const std::string& command) {
+    std::vector<std::string> args;
+    if (use_shell_protocol) {
+        args.push_back(kShellServiceArgShellProtocol);
+    }
+    if (!type_arg.empty()) {
+        args.push_back(type_arg);
+    }
+
+    // Shell service string can look like: shell[,arg1,arg2,...]:[command].
+    return android::base::StringPrintf("shell%s%s:%s",
+                                       args.empty() ? "" : ",",
+                                       android::base::Join(args, ',').c_str(),
+                                       command.c_str());
+}
+
+// Connects to a shell on the device and read/writes data.
+//
+// On success returns the remote exit code if |use_shell_protocol| is true,
+// 0 otherwise. On failure returns 1.
+static int RemoteShell(bool use_shell_protocol, const std::string& type_arg,
+                       const std::string& command) {
+    std::string service_string = ShellServiceString(use_shell_protocol,
+                                                    type_arg, command);
+
+    // Make local stdin raw if the device allocates a PTY, which happens if:
+    //   1. We are explicitly asking for a PTY shell, or
+    //   2. We don't specify shell type and are starting an interactive session.
+    bool raw_stdin = (type_arg == kShellServiceArgPty ||
+                      (type_arg.empty() && command.empty()));
+
     std::string error;
     int fd = adb_connect(service_string, &error);
     if (fd < 0) {
@@ -502,13 +543,16 @@ static int interactive_shell(const std::string& service_string,
         LOG(ERROR) << "couldn't allocate StdinReadArgs object";
         return 1;
     }
-    args->stdin_fd = 0;
+    args->stdin_fd = STDIN_FILENO;
     args->write_fd = fd;
+    args->raw_stdin = raw_stdin;
     if (use_shell_protocol) {
         args->protocol.reset(new ShellProtocol(args->write_fd));
     }
 
-    stdin_raw_init(args->stdin_fd);
+    if (raw_stdin) {
+        stdin_raw_init(STDIN_FILENO);
+    }
 
     int exit_code = 0;
     if (!adb_thread_create(stdin_read_thread, args)) {
@@ -519,7 +563,14 @@ static int interactive_shell(const std::string& service_string,
         exit_code = read_and_dump(fd, use_shell_protocol);
     }
 
-    stdin_raw_restore(args->stdin_fd);
+    if (raw_stdin) {
+        stdin_raw_restore(STDIN_FILENO);
+    }
+
+    if (adb_close(fd) < 0) {
+        PLOG(ERROR) << "failure closing shell service FD " << fd;
+    }
+
     return exit_code;
 }
 
@@ -793,25 +844,6 @@ static bool wait_for_device(const char* service, TransportType t, const char* se
 
     std::string cmd = format_host_command(service, t, serial);
     return adb_command(cmd);
-}
-
-// Returns a shell service string with the indicated arguments and command.
-static std::string ShellServiceString(bool use_shell_protocol,
-                                      const std::string& type_arg,
-                                      const std::string& command) {
-    std::vector<std::string> args;
-    if (use_shell_protocol) {
-        args.push_back(kShellServiceArgShellProtocol);
-    }
-    if (!type_arg.empty()) {
-        args.push_back(type_arg);
-    }
-
-    // Shell service string can look like: shell[,arg1,arg2,...]:[command].
-    return android::base::StringPrintf("shell%s%s:%s",
-                                       args.empty() ? "" : ",",
-                                       android::base::Join(args, ',').c_str(),
-                                       command.c_str());
 }
 
 // Connects to the device "shell" service with |command| and prints the
@@ -1320,51 +1352,26 @@ int adb_commandline(int argc, const char **argv) {
             }
         }
 
+        std::string command;
+        if (argc) {
+            // We don't escape here, just like ssh(1). http://b/20564385.
+            command = android::base::Join(
+                    std::vector<const char*>(argv, argv + argc), ' ');
+        }
+
         if (h) {
             printf("\x1b[41;33m");
             fflush(stdout);
         }
 
-        if (!argc) {
-            D("starting interactive shell");
-            std::string service_string =
-                    ShellServiceString(use_shell_protocol, shell_type_arg, "");
-            r = interactive_shell(service_string, use_shell_protocol);
-            if (h) {
-                printf("\x1b[0m");
-                fflush(stdout);
-            }
-            return r;
+        r = RemoteShell(use_shell_protocol, shell_type_arg, command);
+
+        if (h) {
+            printf("\x1b[0m");
+            fflush(stdout);
         }
 
-        // We don't escape here, just like ssh(1). http://b/20564385.
-        std::string command = android::base::Join(
-                std::vector<const char*>(argv, argv + argc), ' ');
-        std::string service_string =
-                ShellServiceString(use_shell_protocol, shell_type_arg, command);
-
-        while (true) {
-            D("non-interactive shell loop. cmd=%s", service_string.c_str());
-            std::string error;
-            int fd = adb_connect(service_string, &error);
-            int r;
-            if (fd >= 0) {
-                D("about to read_and_dump(fd=%d)", fd);
-                r = read_and_dump(fd, use_shell_protocol);
-                D("read_and_dump() done.");
-                adb_close(fd);
-            } else {
-                fprintf(stderr,"error: %s\n", error.c_str());
-                r = -1;
-            }
-
-            if (h) {
-                printf("\x1b[0m");
-                fflush(stdout);
-            }
-            D("non-interactive shell loop. return r=%d", r);
-            return r;
-        }
+        return r;
     }
     else if (!strcmp(argv[0], "exec-in") || !strcmp(argv[0], "exec-out")) {
         int exec_in = !strcmp(argv[0], "exec-in");
