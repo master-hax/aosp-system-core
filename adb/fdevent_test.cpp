@@ -18,13 +18,15 @@
 
 #include <gtest/gtest.h>
 
+#include <fcntl.h>
+#include <pthread.h>
+#include <signal.h>
+#include <unistd.h>
+
 #include <limits>
 #include <queue>
 #include <string>
 #include <vector>
-
-#include <pthread.h>
-#include <signal.h>
 
 #include "adb_io.h"
 
@@ -189,4 +191,16 @@ TEST_F(FdeventTest, invalid_fd) {
                                 reinterpret_cast<void* (*)(void*)>(InvalidFdThreadFunc),
                                 nullptr));
     ASSERT_EQ(0, pthread_join(thread, nullptr));
+}
+
+TEST_F(FdeventTest, keep_file_flags_in_fdevent_install) {
+    int fd = open("/dev/null", O_RDWR | O_APPEND);
+    ASSERT_GE(fd, 0);
+    int flags = fcntl(fd, F_GETFL, 0);
+    ASSERT_EQ(O_RDWR | O_APPEND, (flags & (O_RDWR | O_APPEND)));
+    fdevent fde;
+    fdevent_install(&fde, fd, nullptr, nullptr);
+    int new_flags = fcntl(fd, F_GETFL, 0);
+    ASSERT_EQ(O_RDWR | O_APPEND, (new_flags & (O_RDWR | O_APPEND)));
+    fdevent_remove(&fde);
 }
