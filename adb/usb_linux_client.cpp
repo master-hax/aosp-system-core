@@ -354,9 +354,9 @@ static void init_functionfs(struct usb_handle *h)
     v2_descriptor.header.length = cpu_to_le32(sizeof(v2_descriptor));
     v2_descriptor.header.flags = FUNCTIONFS_HAS_FS_DESC | FUNCTIONFS_HAS_HS_DESC |
                                  FUNCTIONFS_HAS_SS_DESC | FUNCTIONFS_HAS_MS_OS_DESC;
-    v2_descriptor.fs_count = 3;
-    v2_descriptor.hs_count = 3;
-    v2_descriptor.ss_count = 5;
+    v2_descriptor.fs_count = cpu_to_le32(3);
+    v2_descriptor.hs_count = cpu_to_le32(3);
+    v2_descriptor.ss_count = cpu_to_le32(5);
     v2_descriptor.os_count = cpu_to_le32(1);
     v2_descriptor.fs_descs = fs_descriptors;
     v2_descriptor.hs_descs = hs_descriptors;
