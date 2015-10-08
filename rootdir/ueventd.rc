@@ -97,4 +97,7 @@ subsystem adf
 /sys/devices/system/cpu/cpu*   cpufreq/scaling_min_freq   0664  system system
 
 # DVB API device nodes
+subsystem dvb
+       devname uevent_devname
+       dirname /dev
 /dev/dvb*                 0660   root       system
