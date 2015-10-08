@@ -485,10 +485,18 @@ static int check_verity_restart(const char *fname)
         goto out;
     }
 
-    if (TEMP_FAILURE_RETRY(read(fd, buffer, size)) != size) {
-        ERROR("Failed to read %zd bytes from %s (%s)\n", size, fname,
-            strerror(errno));
-        goto out;
+    size_t remaining = size;
+    char* b = buffer;
+    while (remaining > 0) {
+        ssize_t n = TEMP_FAILURE_RETRY(read(fd, b, remaining));
+        if (n <= 0) {
+            ERROR("Failed to read %zd bytes from %s (%s)\n", size, fname,
+                strerror(errno));
+            goto out;
+        }
+
+        b += n;
+        remaining -= n;
     }
 
     buffer[size] = '\0';
