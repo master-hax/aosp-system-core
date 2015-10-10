@@ -1,0 +1,9 @@
+Code-Review+2: Elliott Hughes <enh@google.com>
+Code-Review+1: Stephen Smalley <sds@tycho.nsa.gov>
+Code-Review+1: Richard Haines <richard_c_haines@btinternet.com>
+Verified+1: Nick Kralevich <nnk@google.com>
+Submitted-by: Nick Kralevich <nnk@google.com>
+Submitted-at: Sat, 10 Oct 2015 20:07:35 +0000
+Reviewed-on: https://android-review.googlesource.com/174504
+Project: platform/system/core
+Branch: refs/heads/master
