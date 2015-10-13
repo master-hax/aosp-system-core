@@ -901,11 +901,12 @@ static int backup(int argc, const char** argv) {
         return -1;
     }
 
-    std::string cmd = "backup:";
-    --argc;
-    ++argv;
-    while (argc-- > 0) {
-        cmd += " " + escape_arg(*argv++);
+    std::string cmd = "backup";
+    for (int i = 1; i < argc; i++) {
+        // For compatibility reason, don't use space or escape_arg() here.
+        // See http://b/24976399.
+        cmd.push_back(':');
+        cmd += argv[i];
     }
 
     D("backup. filename=%s cmd=%s", filename, cmd.c_str());

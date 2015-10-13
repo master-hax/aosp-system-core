@@ -320,9 +320,16 @@ int service_to_fd(const char* name, const atransport* transport) {
     } else if(!strncmp(name, "unroot:", 7)) {
         ret = create_service_thread(restart_unroot_service, NULL);
     } else if(!strncmp(name, "backup:", 7)) {
-        ret = StartSubprocess(android::base::StringPrintf("/system/bin/bu backup %s",
-                                                          (name + 7)).c_str(),
-                              SubprocessType::kRaw, SubprocessProtocol::kNone);
+        std::string cmd = "/system/bin/bu ";
+        for (const char* p = name; *p != '\0'; ++p) {
+            // For compatibility reason, don't remove handling of colon.
+            if (*p == ':') {
+                cmd.push_back(' ');
+            } else {
+                cmd.push_back(*p);
+            }
+        }
+        ret = StartSubprocess(cmd.c_str(), SubprocessType::kRaw, SubprocessProtocol::kNone);
     } else if(!strncmp(name, "restore:", 8)) {
         ret = StartSubprocess("/system/bin/bu restore", SubprocessType::kRaw,
                               SubprocessProtocol::kNone);
