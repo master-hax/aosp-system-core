@@ -29,7 +29,7 @@ std::string adb_dirname(const std::string& path);
 
 bool mkdirs(const std::string& path);
 
-std::string escape_arg(const std::string& s);
+std::string escape_arg(const std::string& s, bool addQuotes = true);
 
 std::string dump_hex(const void* ptr, size_t byte_count);
 
