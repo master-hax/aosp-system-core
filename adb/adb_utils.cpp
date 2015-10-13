@@ -47,7 +47,7 @@ bool directory_exists(const std::string& path) {
   return lstat(path.c_str(), &sb) != -1 && S_ISDIR(sb.st_mode);
 }
 
-std::string escape_arg(const std::string& s) {
+std::string escape_arg(const std::string& s, bool addQuotes) {
   std::string result = s;
 
   // Escape any ' in the string (before we single-quote the whole thing).
@@ -62,9 +62,11 @@ std::string escape_arg(const std::string& s) {
     }
   }
 
-  // Prefix and suffix the whole string with '.
-  result.insert(result.begin(), '\'');
-  result.push_back('\'');
+  if (addQuotes) {
+    // Prefix and suffix the whole string with '.
+    result.insert(result.begin(), '\'');
+    result.push_back('\'');
+  }
   return result;
 }
 

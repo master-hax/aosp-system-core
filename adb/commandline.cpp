@@ -901,11 +901,11 @@ static int backup(int argc, const char** argv) {
         return -1;
     }
 
-    std::string cmd = "backup:";
+    std::string cmd = "backup";
     --argc;
     ++argv;
     while (argc-- > 0) {
-        cmd += " " + escape_arg(*argv++);
+        cmd += ":" + escape_arg(*argv++, false);
     }
 
     D("backup. filename=%s cmd=%s", filename, cmd.c_str());
