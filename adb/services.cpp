@@ -31,6 +31,8 @@
 #include <unistd.h>
 #endif
 
+#include <algorithm>
+
 #include <base/file.h>
 #include <base/stringprintf.h>
 #include <base/strings.h>
@@ -320,9 +322,10 @@ int service_to_fd(const char* name, const atransport* transport) {
     } else if(!strncmp(name, "unroot:", 7)) {
         ret = create_service_thread(restart_unroot_service, NULL);
     } else if(!strncmp(name, "backup:", 7)) {
-        ret = StartSubprocess(android::base::StringPrintf("/system/bin/bu backup %s",
-                                                          (name + 7)).c_str(),
-                              SubprocessType::kRaw, SubprocessProtocol::kNone);
+        std::string cmd = android::base::StringPrintf("/system/bin/bu backup %s", (name + 7));
+        // For compatibility reason, don't remove handling of colon.
+        std::replace(cmd.begin(), cmd.end(), ':', ' ');
+        ret = StartSubprocess(cmd.c_str(), SubprocessType::kRaw, SubprocessProtocol::kNone);
     } else if(!strncmp(name, "restore:", 8)) {
         ret = StartSubprocess("/system/bin/bu restore", SubprocessType::kRaw,
                               SubprocessProtocol::kNone);
