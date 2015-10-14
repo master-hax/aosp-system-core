@@ -28,7 +28,7 @@
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
-#include <cutils/properties.h>
+#include <brillo/osrelease_reader.h>
 #include <dbus/dbus.h>
 #include <dbus/message.h>
 
@@ -159,11 +159,10 @@ uint32_t MetricsDaemon::GetOsVersionHash() {
     return cached_version_hash;
   version_hash_is_cached = true;
 
-  char version[PROPERTY_VALUE_MAX];
-  // The version might not be set for development devices. In this case, use the
-  // zero version.
-  property_get(metrics::kProductVersionProperty, version,
-               metrics::kDefaultVersion);
+  brillo::OsReleaseReader reader;
+  reader.Load();
+  std::string version;
+  reader.GetString("product_version", &version);
 
   cached_version_hash = base::Hash(version);
   if (testing_) {
