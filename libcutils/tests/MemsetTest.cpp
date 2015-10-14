@@ -160,8 +160,8 @@ void RunMemsetTests(test_e test_type, uint32_t value, int align[][2], size_t num
       VerifyFencepost(&buf_align[len]);
     }
   }
-  delete expected_buf;
-  delete buf;
+  delete[] expected_buf;
+  delete[] buf;
 }
 
 TEST(libcutils, android_memset16_non_zero) {
