@@ -86,6 +86,14 @@ class SyncConnection {
 
         SendQuit();
         ShowTransferRate();
+
+        // We sent a quit command, so the server should be doing orderly
+        // shutdown soon. But if we encountered an error while we were using
+        // the connection, the server might still be sending data (before
+        // doing orderly shutdown), in which case we won't wait for all of the
+        // data nor the coming orderly shutdown. In the common success case,
+        // this will wait for the server to do orderly shutdown.
+        ReadOrderlyShutdown(fd);
         adb_close(fd);
     }
 

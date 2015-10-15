@@ -577,6 +577,7 @@ static int adb_download_buffer(const char *service, const char *fn, const void* 
             std::string error;
             adb_status(fd, &error);
             fprintf(stderr,"* failed to write data '%s' *\n", error.c_str());
+            adb_close(fd);
             return -1;
         }
         sz -= xfer;
@@ -592,6 +593,7 @@ static int adb_download_buffer(const char *service, const char *fn, const void* 
 
     if (!adb_status(fd, &error)) {
         fprintf(stderr,"* error response '%s' *\n", error.c_str());
+        adb_close(fd);
         return -1;
     }
 
@@ -1409,6 +1411,7 @@ int adb_commandline(int argc, const char **argv) {
         } else {
             // Successfully connected, kill command sent, okay status came back.
             // Server should exit() in a moment, if not already.
+            ReadOrderlyShutdown(fd);
             adb_close(fd);
             return 0;
         }
