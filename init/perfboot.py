@@ -354,6 +354,26 @@ def print_summary(record_list, end_tag):
     print 'standard deviation:', stddev(end_times)
 
 
+def wait_device_boot(device):
+    """Waits for the device to boot."""
+    # If the device is a real device or an emulator on localhost,
+    # adb wait-for-device just works. If it is running on a remote machine,
+    # we need to keep trying to connect the remote host since the connection
+    # is closed on device reboot.
+    ready = False
+    assert device.serial
+    if ':' in device.serial and not device.serial.startswith('localhost:'):
+        def connector():
+            while not ready:
+                time.sleep(1)
+                device.connect(device.serial)
+        th = threading.Thread(target=connector)
+        th.daemon = True
+        th.start()
+    device.wait()
+    ready = True
+
+
 def do_iteration(device, interval_adjuster, event_tags_re, end_tag):
     """Measures the boot time once."""
     device.wait()
@@ -363,7 +383,7 @@ def do_iteration(device, interval_adjuster, event_tags_re, end_tag):
     record = {}
     booted = False
     while not booted:
-        device.wait()
+        wait_device_boot(device)
         # Stop the iteration if it does not finish within 120 seconds.
         timeout = 120
         t = WatchdogTimer(timeout)
