@@ -63,7 +63,7 @@ public:
     };
 
     enum {
-        CODEGEN_ARCH_ARM = 1, CODEGEN_ARCH_MIPS, CODEGEN_ARCH_ARM64
+        CODEGEN_ARCH_ARM = 1, CODEGEN_ARCH_MIPS, CODEGEN_ARCH_ARM64, CODEGEN_ARCH_MIPS64
     };
 
     // -----------------------------------------------------------------------
@@ -104,6 +104,7 @@ public:
     // generate the code
     virtual void reset() = 0;
     virtual int  generate(const char* name) = 0;
+    //virtual int  generate_test(const char* name) = 0;
     virtual void disassemble(const char* name) = 0;
     virtual int  getCodegenArch() = 0;
     
@@ -115,7 +116,8 @@ public:
     // data processing...
     enum {
         opAND, opEOR, opSUB, opRSB, opADD, opADC, opSBC, opRSC, 
-        opTST, opTEQ, opCMP, opCMN, opORR, opMOV, opBIC, opMVN
+        opTST, opTEQ, opCMP, opCMN, opORR, opMOV, opBIC, opMVN,
+        opADD64, opSUB64
     };
 
     virtual void
