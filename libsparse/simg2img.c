@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 			exit(-1);
 		}
 
-		lseek(out, SEEK_SET, 0);
+		lseek(out, 0, SEEK_SET);
 
 		ret = sparse_file_write(s, out, false, false, false);
 		if (ret < 0) {
