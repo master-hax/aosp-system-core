@@ -466,22 +466,9 @@ send_crash() {
 
   if [ ${curl_result} -eq 0 ]; then
     local id="$(cat "${report_id}")"
-    local product_name
     local timestamp="$(date +%s)"
-    case ${product} in
-    Chrome_ChromeOS)
-      if is_official_image; then
-        product_name="Chrome"
-      else
-        product_name="Chromium"
-      fi
-      ;;
-    *)
-      product_name="Brillo"
-      ;;
-    esac
-    printf '%s,%s,%s\n' \
-      "${timestamp}" "${id}" "${product_name}" >> "${CRASH_LOG}"
+    printf '%s,%s,%s,%s\n' \
+      "${timestamp}" "${id}" "${product}" "${exec_name}" >> "${CRASH_LOG}"
     lecho "Crash report receipt ID ${id}"
   else
     lecho "Crash sending failed with exit code ${curl_result}: " \
