@@ -24,6 +24,7 @@
 #include <string>
 
 #include "base/macros.h"  // For TEMP_FAILURE_RETRY on Darwin.
+#include "base/u8.h"
 #define LOG_TAG "base.file"
 #include "cutils/log.h"
 #include "utils/Compat.h"
@@ -34,6 +35,10 @@
 
 namespace android {
 namespace base {
+
+// Versions of these APIs that support UTF-8 filenames.
+using u8::open;
+using u8::unlink;
 
 bool ReadFdToString(int fd, std::string* content) {
   content->clear();
