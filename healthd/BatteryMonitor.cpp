@@ -449,6 +449,12 @@ void BatteryMonitor::init(struct healthd_config *hc) {
             path.clear();
             path.appendFormat("%s/%s/type", POWER_SUPPLY_SYSFS_PATH, name);
             switch(readPowerSupplyType(path)) {
+            case ANDROID_POWER_SUPPLY_TYPE_UNKNOWN:
+                // power source is currently unknown. in the case of usb it only
+                // means that it is connected to something unknown, but it may
+                // later be connected to something known. if we disregard from it
+                // here it means we will never acknowledge it as a power source
+                // later.
             case ANDROID_POWER_SUPPLY_TYPE_AC:
             case ANDROID_POWER_SUPPLY_TYPE_USB:
             case ANDROID_POWER_SUPPLY_TYPE_WIRELESS:
@@ -571,9 +577,6 @@ void BatteryMonitor::init(struct healthd_config *hc) {
                         mHealthdConfig->batteryTechnologyPath = path;
                 }
 
-                break;
-
-            case ANDROID_POWER_SUPPLY_TYPE_UNKNOWN:
                 break;
             }
         }
