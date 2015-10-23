@@ -16,8 +16,15 @@
 
 #if defined(__slm__)
 /* Values are optimized for Silvermont */
-#define SHARED_CACHE_SIZE   (1024*1024)         /* Silvermont L2 Cache */
-#define DATA_CACHE_SIZE     (24*1024)           /* Silvermont L1 Data Cache */
+#ifndef ARCH_SHARED_CACHE_SIZE
+#define ARCH_SHARED_CACHE_SIZE  (1024*1024)     /* Silvermont L2 Cache */
+#endif
+#ifndef ARCH_DATA_CACHE_SIZE
+#define ARCH_DATA_CACHE_SIZE    (24*1024)       /* Silvermont L1 Data Cache */
+#endif
+
+#define SHARED_CACHE_SIZE       (ARCH_SHARED_CACHE_SIZE)        /* Silvermont L2 Cache */
+#define DATA_CACHE_SIZE         (ARCH_DATA_CACHE_SIZE)          /* Silvermont L1 Data Cache */
 #else
 /* Values are optimized for Atom */
 #define SHARED_CACHE_SIZE   (512*1024)          /* Atom L2 Cache */

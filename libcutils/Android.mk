@@ -102,6 +102,14 @@ LOCAL_SRC_FILES_arm64 += arch-arm64/android_memset.S
 LOCAL_SRC_FILES_mips += arch-mips/android_memset.c
 LOCAL_SRC_FILES_mips64 += arch-mips/android_memset.c
 
+ifneq ($(BOARD_SHARED_CACHE_SIZE),)
+LOCAL_CFLAGS += -DARCH_SHARED_CACHE_SIZE=$(BOARD_SHARED_CACHE_SIZE)
+endif
+
+ifneq ($(BOARD_DATA_CACHE_SIZE),)
+LOCAL_CFLAGS += -DARCH_DATA_CACHE_SIZE=$(BOARD_DATA_CACHE_SIZE)
+endif
+
 LOCAL_SRC_FILES_x86 += \
         arch-x86/android_memset16.S \
         arch-x86/android_memset32.S \
