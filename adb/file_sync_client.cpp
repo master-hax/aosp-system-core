@@ -164,9 +164,14 @@ class SyncConnection {
             return true;
         }
         if (msg.status.id != ID_FAIL) {
-            fprintf(stderr, "failed to copy '%s' to '%s': unknown reason\n", from, to);
+            fprintf(stderr, "failed to copy '%s' to '%s': unknown reason %d\n", from, to,
+                    msg.status.id);
             return false;
         }
+        return ReportCopyFailure(from, to, msg);
+    }
+
+    bool ReportCopyFailure(const char* from, const char* to, const syncmsg& msg) {
         char buffer[msg.status.msglen + 1];
         if (!ReadFdExactly(fd, buffer, msg.status.msglen)) {
             fprintf(stderr, "failed to copy '%s' to '%s'; failed to read reason (!): %s\n",
@@ -351,9 +356,6 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
 }
 
 static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, bool show_progress) {
-    syncmsg msg;
-    int lfd = -1;
-
     size_t len = strlen(rpath);
     if (len > 1024) return false;
 
@@ -363,54 +365,54 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, 
     }
 
     if (!sc.SendRequest(ID_RECV, rpath)) return false;
-    if (!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) return false;
 
-    unsigned id = msg.data.id;
-
-    if (id == ID_DATA || id == ID_DONE) {
-        adb_unlink(lpath);
-        mkdirs(lpath);
-        lfd = adb_creat(lpath, 0644);
-        if(lfd < 0) {
-            fprintf(stderr, "cannot create '%s': %s\n", lpath, strerror(errno));
-            return false;
-        }
-        goto handle_data;
-    } else {
-        goto remote_error;
+    adb_unlink(lpath);
+    mkdirs(lpath);
+    int lfd = adb_creat(lpath, 0644);
+    if (lfd < 0) {
+        fprintf(stderr, "cannot create '%s': %s\n", lpath, strerror(errno));
+        return false;
     }
 
     while (true) {
-        char buffer[SYNC_DATA_MAX];
-
+        syncmsg msg;
         if (!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
             adb_close(lfd);
+            adb_unlink(lpath);
             return false;
         }
-        id = msg.data.id;
 
-    handle_data:
-        len = msg.data.size;
-        if (id == ID_DONE) break;
-        if (id != ID_DATA) goto remote_error;
-        if (len > sc.max) {
-            fprintf(stderr, "msg.data.size too large: %zu (max %zu)\n", len, sc.max);
+        if (msg.data.id == ID_DONE) break;
+
+        if (msg.data.id != ID_DATA) {
             adb_close(lfd);
+            adb_unlink(lpath);
+            sc.ReportCopyFailure(rpath, lpath, msg);
             return false;
         }
 
-        if (!ReadFdExactly(sc.fd, buffer, len)) {
+        if (msg.data.size > sc.max) {
+            fprintf(stderr, "msg.data.size too large: %u (max %zu)\n", msg.data.size, sc.max);
             adb_close(lfd);
+            adb_unlink(lpath);
             return false;
         }
 
-        if (!WriteFdExactly(lfd, buffer, len)) {
-            fprintf(stderr, "cannot write '%s': %s\n", rpath, strerror(errno));
+        char buffer[SYNC_DATA_MAX];
+        if (!ReadFdExactly(sc.fd, buffer, msg.data.size)) {
             adb_close(lfd);
+            adb_unlink(lpath);
             return false;
         }
 
-        sc.total_bytes += len;
+        if (!WriteFdExactly(lfd, buffer, msg.data.size)) {
+            fprintf(stderr, "cannot write '%s': %s\n", lpath, strerror(errno));
+            adb_close(lfd);
+            adb_unlink(lpath);
+            return false;
+        }
+
+        sc.total_bytes += msg.data.size;
 
         if (show_progress) {
             print_transfer_progress(sc.total_bytes, size);
@@ -419,12 +421,6 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath, 
 
     adb_close(lfd);
     return true;
-
-remote_error:
-    adb_close(lfd);
-    adb_unlink(lpath);
-    sc.CopyDone(rpath, lpath);
-    return false;
 }
 
 static void do_sync_ls_cb(unsigned mode, unsigned size, unsigned time,
