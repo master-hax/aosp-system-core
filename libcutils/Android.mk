@@ -52,34 +52,51 @@ nonWindowsHostSources := \
         ashmem-host.c \
         trace-host.c
 
+# Sets common variables for the shared and static libraries for host.
+define libcutils_host_common
+  ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+  LOCAL_CFLAGS += -DUSERDEBUG_OR_ENG_BUILD=1
+  endif
+
+  LOCAL_SRC_FILES := $(commonSources) dlmalloc_stubs.c
+  LOCAL_SRC_FILES_darwin := $(nonWindowsSources) $(nonWindowsHostSources)
+  LOCAL_SRC_FILES_linux := $(nonWindowsSources) $(nonWindowsHostSources)
+  LOCAL_STATIC_LIBRARIES := liblog
+  LOCAL_CFLAGS_darwin := -Werror -Wall -Wextra
+  LOCAL_CFLAGS_linux := -Werror -Wall -Wextra
+  LOCAL_MULTILIB := both
+endef
+
+# Sets common variables for the shared and static libraries for target.
+define libcutils_target_common
+  ifneq ($(ENABLE_CPUSETS),)
+  LOCAL_CFLAGS += -DUSE_CPUSETS
+  endif
+
+  ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+  LOCAL_CFLAGS += -DUSERDEBUG_OR_ENG_BUILD=1
+  endif
+
+  LOCAL_CLANG := true
+  LOCAL_SANITIZE := integer
+  LOCAL_CFLAGS += -Werror -Wall -Wextra
+endef
+
 
 # Shared and static library for host
 # ========================================================
 LOCAL_MODULE := libcutils
-LOCAL_SRC_FILES := $(commonSources) dlmalloc_stubs.c
-LOCAL_SRC_FILES_darwin := $(nonWindowsSources) $(nonWindowsHostSources)
-LOCAL_SRC_FILES_linux := $(nonWindowsSources) $(nonWindowsHostSources)
-LOCAL_STATIC_LIBRARIES := liblog
-LOCAL_CFLAGS_darwin := -Werror -Wall -Wextra
-LOCAL_CFLAGS_linux := -Werror -Wall -Wextra
-LOCAL_MULTILIB := both
 LOCAL_MODULE_HOST_OS := darwin linux windows
+$(eval $(libcutils_host_common))
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libcutils
-LOCAL_SRC_FILES := $(commonSources) dlmalloc_stubs.c
-LOCAL_SRC_FILES_darwin := $(nonWindowsSources) $(nonWindowsHostSources)
-LOCAL_SRC_FILES_linux := $(nonWindowsSources) $(nonWindowsHostSources)
-LOCAL_SHARED_LIBRARIES := liblog
-LOCAL_CFLAGS_darwin := -Werror -Wall -Wextra
-LOCAL_CFLAGS_linux := -Werror -Wall -Wextra
-LOCAL_MULTILIB := both
+$(eval $(libcutils_host_common))
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 
-
-# Shared and static library for target
+# Static library for target
 # ========================================================
 
 include $(CLEAR_VARS)
@@ -110,29 +127,21 @@ LOCAL_SRC_FILES_x86_64 += \
         arch-x86_64/android_memset16.S \
         arch-x86_64/android_memset32.S \
 
-LOCAL_C_INCLUDES := $(libcutils_c_includes)
 LOCAL_STATIC_LIBRARIES := liblog
-ifneq ($(ENABLE_CPUSETS),)
-LOCAL_CFLAGS += -DUSE_CPUSETS
-endif
-LOCAL_CFLAGS += -Werror -Wall -Wextra -std=gnu90
-LOCAL_CLANG := true
-LOCAL_SANITIZE := integer
+LOCAL_CFLAGS += -std=gnu90
+$(eval $(libcutils_target_common))
 include $(BUILD_STATIC_LIBRARY)
+
+# Shared library for target
+# ========================================================
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libcutils
-# TODO: remove liblog as whole static library, once we don't have prebuilt that requires
-# liblog symbols present in libcutils.
+# TODO: remove liblog as whole static library, once we don't have prebuilt that
+# requires liblog symbols present in libcutils.
 LOCAL_WHOLE_STATIC_LIBRARIES := libcutils liblog
 LOCAL_SHARED_LIBRARIES := liblog
-ifneq ($(ENABLE_CPUSETS),)
-LOCAL_CFLAGS += -DUSE_CPUSETS
-endif
-LOCAL_CFLAGS += -Werror -Wall -Wextra
-LOCAL_C_INCLUDES := $(libcutils_c_includes)
-LOCAL_CLANG := true
-LOCAL_SANITIZE := integer
+$(eval $(libcutils_target_common))
 include $(BUILD_SHARED_LIBRARY)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
