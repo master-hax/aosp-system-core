@@ -93,3 +93,38 @@ TEST(sysdeps_win32, adb_strerror) {
     // adb_strerror() returns.
     TestAdbStrError(ECONNRESET, "Connection reset by peer");
 }
+
+// Tests adb_isatty().
+TEST(sysdeps_win32, adb_isatty) {
+    // stdin and stdout should be consoles. Use CONIN$ and CONOUT$ special files
+    // so that we can test this even if stdin/stdout have been redirected.
+    HANDLE conin = CreateFileW(widen("CONIN$").c_str(),
+                               GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
+                               nullptr, OPEN_EXISTING, 0, nullptr);
+    HANDLE conout = CreateFileW(widen("CONOUT$").c_str(),
+                                GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE,
+                                nullptr, OPEN_EXISTING, 0, nullptr);
+    for (const HANDLE handle : {conin, conout}) {
+        int fd = _open_osfhandle(reinterpret_cast<intptr_t>(handle), 0);
+        EXPECT_TRUE(fd >= 0);
+        EXPECT_EQ(1, adb_isatty(fd));
+        EXPECT_EQ(0, _close(fd));
+    }
+
+    // nul returns 1 from isatty(), make sure adb_isatty() corrects that.
+    int nul_fd = adb_open("nul", O_RDONLY);
+    EXPECT_TRUE(nul_fd >= 0);
+    EXPECT_EQ(0, adb_isatty(nul_fd));
+    EXPECT_EQ(0, adb_close(nul_fd));
+
+    // Check that our socketpairs don't register as consoles.
+    int pipe[2];
+    EXPECT_EQ(0, adb_socketpair(pipe));
+    EXPECT_EQ(0, adb_isatty(pipe[0]));
+    EXPECT_EQ(0, adb_isatty(pipe[1]));
+    EXPECT_EQ(0, adb_close(pipe[0]));
+    EXPECT_EQ(0, adb_close(pipe[1]));
+
+    // Make sure an invalid FD is handled correctly.
+    EXPECT_EQ(0, adb_isatty(-1));
+}
