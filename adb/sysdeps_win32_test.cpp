@@ -93,3 +93,51 @@ TEST(sysdeps_win32, adb_strerror) {
     // adb_strerror() returns.
     TestAdbStrError(ECONNRESET, "Connection reset by peer");
 }
+
+// Tests adb_isatty().
+// adb_xxx() file handling functions don't use actual FDs but use some internal
+// abstraction, so these FDs will always cause adb_isatty() to return 0. We need
+// to use the underlying OS file functions instead.
+TEST(sysdeps_win32, adb_isatty) {
+    // stdin and stdout should be consoles. Use CONIN$ and CONOUT$ special files
+    // so that we can test this even if stdin/stdout have been redirected. Read
+    // permissions are required for adb_isatty().
+    int conin_fd = _open("CONIN$", _O_RDONLY);
+    int conout_fd = _open("CONOUT$", _O_RDWR);
+    for (const int fd : {conin_fd, conout_fd}) {
+        EXPECT_TRUE(fd >= 0);
+        EXPECT_EQ(1, adb_isatty(fd));
+        EXPECT_EQ(0, _close(fd));
+    }
+
+    // nul returns 1 from isatty(), make sure adb_isatty() corrects that.
+    for (auto flags : {_O_RDONLY, _O_RDWR}) {
+        int nul_fd = _open("nul", flags);
+        EXPECT_TRUE(nul_fd >= 0);
+        EXPECT_EQ(0, adb_isatty(nul_fd));
+        EXPECT_EQ(0, _close(nul_fd));
+    }
+
+    // Check a real file. mktemp() has some issues but it's simple and should be
+    // fine for a unit test.
+    char temp_file_name[] = "tmp_sysdep_XXXXXX";
+    ASSERT_TRUE(mktemp(temp_file_name) != nullptr);
+    for (auto flags : {_O_RDONLY, _O_RDWR}) {
+        int temp_fd = _open(temp_file_name, flags | _O_CREAT, _S_IWRITE);
+        EXPECT_TRUE(temp_fd >= 0);
+        EXPECT_EQ(0, adb_isatty(temp_fd));
+        EXPECT_EQ(0, _close(temp_fd));
+    }
+    EXPECT_EQ(0, _unlink(temp_file_name));
+
+    // Check a real OS pipe.
+    int pipe_fds[2];
+    EXPECT_EQ(0, _pipe(pipe_fds, 64, O_BINARY));
+    EXPECT_EQ(0, adb_isatty(pipe_fds[0]));
+    EXPECT_EQ(0, adb_isatty(pipe_fds[1]));
+    EXPECT_EQ(0, _close(pipe_fds[0]));
+    EXPECT_EQ(0, _close(pipe_fds[1]));
+
+    // Make sure an invalid FD is handled correctly.
+    EXPECT_EQ(0, adb_isatty(-1));
+}

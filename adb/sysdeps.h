@@ -181,6 +181,13 @@ static __inline__ int  adb_open_mode(const char* path, int options, int mode)
 extern int unix_open(const char* path, int options, ...);
 #define  open    ___xxx_unix_open
 
+// Custom isatty() code to ignore character devices like NUL. Requires
+// GENERIC_READ access to the underlying HANDLE or this will always return 0.
+// |fd| can be STDxx_FILENO constants or an FD returned by unix_open(), but
+// adb_open() FDs will always return 0.
+// On Windows, adb_isatty() may not set errno properly on failure.
+int adb_isatty(int fd);
+#define  isatty  ___xxx_isatty
 
 /* normally provided by <cutils/misc.h> */
 extern void*  load_file(const char*  pathname, unsigned*  psize);
@@ -550,6 +557,11 @@ static __inline__  int  adb_creat(const char*  path, int  mode)
 }
 #undef   creat
 #define  creat  ___xxx_creat
+
+static __inline__ int adb_isatty(int fd) {
+    return isatty(fd);
+}
+#define  isatty  ___xxx_isatty
 
 // Helper for network_* functions.
 inline int _fd_set_error_str(int fd, std::string* error) {
