@@ -51,6 +51,8 @@ enum storage_cmd {
 
 	STORAGE_RPMB_SEND      = 8 << STORAGE_REQ_SHIFT,
 
+	/* transaction support */
+	STORAGE_END_TRANSACTTION = 9 << STORAGE_REQ_SHIFT,
 };
 
 /**
@@ -65,6 +67,9 @@ enum storage_cmd {
  * @STORAGE_ERR_ACCESS:         the file is not accessible in the requested mode
  * @STORAGE_ERR_NOT_FOUND:      the file was not found
  * @STORAGE_ERR_EXIST           the file exists when it shouldn't as in with OPEN_CREATE | OPEN_EXCLUSIVE.
+ * @STORAGE_ERR_TRANSACT        returned by various operations to indicate that current transaction
+ *                              is in error state. Such state could be only cleared by sending
+ *                              STORAGE_END_TRANSACTION message.
  */
 enum storage_err {
 	STORAGE_NO_ERROR          = 0,
@@ -74,6 +79,7 @@ enum storage_err {
 	STORAGE_ERR_ACCESS        = 4,
 	STORAGE_ERR_NOT_FOUND     = 5,
 	STORAGE_ERR_EXIST         = 6,
+	STORAGE_ERR_TRANSACT      = 7,
 };
 
 /**
@@ -113,9 +119,12 @@ enum storage_file_open_flag {
  *                          sent with STORAGE_MSG_FLAG_BATCH will be sent.
  *                          This is only supported by the non-secure disk proxy
  *                          server.
+ * @STORAGE_MSG_FLAG_TRANSACT_COMPLETE: if set, indicates that server need to commit
+ *                                      current transaction after processing this message.
  */
 enum storage_msg_flag {
-	STORAGE_MSG_FLAG_BATCH = 1,
+	STORAGE_MSG_FLAG_BATCH = 0x1,
+	STORAGE_MSG_FLAG_TRANSACT_COMPLETE = 0x2,
 };
 
 /*
