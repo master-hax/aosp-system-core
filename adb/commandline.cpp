@@ -33,6 +33,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <base/logging.h>
 #include <base/stringprintf.h>
@@ -101,13 +102,13 @@ static void help() {
         "                                 will disconnect from all connected TCP/IP devices.\n"
         "\n"
         "device commands:\n"
-        "  adb push [-p] <local> <remote>\n"
-        "                               - copy file/dir to device\n"
-        "                                 ('-p' to display the transfer progress)\n"
-        "  adb pull [-p] [-a] <remote> [<local>]\n"
-        "                               - copy file/dir from device\n"
-        "                                 ('-p' to display the transfer progress)\n"
-        "                                 ('-a' means copy timestamp and mode)\n"
+        "  adb push [-p] <local>... <remote>\n"
+        "                               - copy files/dirs to device\n"
+        "                                 (-p displays transfer progress)\n"
+        "  adb pull [-p] [-a] <remote>... <local>\n"
+        "                               - copy files/dirs from device\n"
+        "                                 (-p displays transfer progress)\n"
+        "                                 (-a preserves file timestamp and mode)\n"
         "  adb sync [ <directory> ]     - copy host->device only if changed\n"
         "                                 (-l means list but don't copy)\n"
         "  adb shell [-Ttx]             - run remote shell interactively\n"
@@ -1065,32 +1066,36 @@ static std::string find_product_out_path(const std::string& hint) {
     return path;
 }
 
-static void parse_push_pull_args(const char **arg, int narg, char const **path1,
-                                 char const **path2, bool* show_progress,
-                                 int *copy_attrs) {
+static void parse_push_pull_args(const char** arg, int narg,
+                                 std::vector<const char*>* src, const char** dst,
+                                 bool* show_progress, int* copy_attrs) {
     *show_progress = false;
     *copy_attrs = 0;
 
+    src->clear();
+    bool ignore_flags = false;
     while (narg > 0) {
-        if (!strcmp(*arg, "-p")) {
-            *show_progress = true;
-        } else if (!strcmp(*arg, "-a")) {
-            *copy_attrs = 1;
+        if (ignore_flags || *arg[0] != '-') {
+            src->push_back(*arg);
         } else {
-            break;
+            if (!strcmp(*arg, "-p")) {
+                *show_progress = true;
+            } else if (!strcmp(*arg, "-a")) {
+                *copy_attrs = 1;
+            } else if (!strcmp(*arg, "--")) {
+                ignore_flags = true;
+            } else {
+                fprintf(stderr, "adb: unrecognized option '%s'\n", *arg);
+                exit(1);
+            }
         }
         ++arg;
         --narg;
     }
 
-    if (narg > 0) {
-        *path1 = *arg;
-        ++arg;
-        --narg;
-    }
-
-    if (narg > 0) {
-        *path2 = *arg;
+    if (src->size() > 1) {
+        *dst = src->back();
+        src->pop_back();
     }
 }
 
@@ -1563,20 +1568,24 @@ int adb_commandline(int argc, const char **argv) {
     else if (!strcmp(argv[0], "push")) {
         bool show_progress = false;
         int copy_attrs = 0;
-        const char* lpath = NULL, *rpath = NULL;
+        std::vector<const char*> srcs;
+        const char* dst = nullptr;
 
-        parse_push_pull_args(&argv[1], argc - 1, &lpath, &rpath, &show_progress, &copy_attrs);
-        if (!lpath || !rpath || copy_attrs != 0) return usage();
-        return do_sync_push(lpath, rpath, show_progress) ? 0 : 1;
+        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &show_progress,
+                             &copy_attrs);
+        if (srcs.empty() || !dst || copy_attrs != 0) return usage();
+        return do_sync_push(srcs, dst, show_progress) ? 0 : 1;
     }
     else if (!strcmp(argv[0], "pull")) {
         bool show_progress = false;
         int copy_attrs = 0;
-        const char* rpath = NULL, *lpath = ".";
+        std::vector<const char*> srcs;
+        const char* dst = ".";
 
-        parse_push_pull_args(&argv[1], argc - 1, &rpath, &lpath, &show_progress, &copy_attrs);
-        if (!rpath) return usage();
-        return do_sync_pull(rpath, lpath, show_progress, copy_attrs) ? 0 : 1;
+        parse_push_pull_args(&argv[1], argc - 1, &srcs, &dst, &show_progress,
+                             &copy_attrs);
+        if (srcs.empty()) return usage();
+        return do_sync_pull(srcs, dst, show_progress, copy_attrs) ? 0 : 1;
     }
     else if (!strcmp(argv[0], "install")) {
         if (argc < 2) return usage();
