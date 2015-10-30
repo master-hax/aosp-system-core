@@ -63,6 +63,24 @@ struct usb_handle
     unsigned int zero_mask;
 };
 
+class OsxUsbTransport : public Transport {
+    OsxUsbTransport(usb_handle* handle) : h(handle) {}
+    ~OsxUsbTransport() override {
+        if (h) {
+            free(h);
+        }
+    }
+
+    ssize_t Read(void* data, size_t len) override;
+    ssize_t Write(const void* data, size_t len) override;
+    int Close() override;
+
+  private:
+    usb_handle* h;
+
+    DISALLOW_COPY_AND_ASSIGN(OsxUsbTransport);
+};
+
 /** Try out all the interfaces and see if there's a match. Returns 0 on
  * success, -1 on failure. */
 static int try_interfaces(IOUSBDeviceInterface182 **dev, usb_handle *handle) {
@@ -463,28 +481,23 @@ static int init_usb(ifc_match_func callback, usb_handle **handle) {
  * Definitions of this file's public functions.
  */
 
-usb_handle *usb_open(ifc_match_func callback) {
-    usb_handle *handle = NULL;
+Transport* usb_open(ifc_match_func callback) {
+    usb_handle* handle = nullptr;
 
     if (init_usb(callback, &handle) < 0) {
         /* Something went wrong initializing USB. */
-        return NULL;
+        return nullptr;
     }
 
-    return handle;
+    return new OsxUsbTransport(handle);
 }
 
-int usb_close(usb_handle *h) {
+int OsxUsbTransport::Close() {
     /* TODO: Something better here? */
     return 0;
 }
 
-int usb_wait_for_disconnect(usb_handle *usb) {
-    /* TODO: Punt for now */
-    return 0;
-}
-
-int usb_read(usb_handle *h, void *data, int len) {
+ssize_t OsxUsbTransport::Read(void* data, size_t len) {
     IOReturn result;
     UInt32 numBytes = len;
 
@@ -518,7 +531,7 @@ int usb_read(usb_handle *h, void *data, int len) {
     return -1;
 }
 
-int usb_write(usb_handle *h, const void *data, int len) {
+ssize_t OsxUsbTransport::Write(const void* data, size_t len) {
     IOReturn result;
 
     if (len == 0) {

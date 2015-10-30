@@ -63,9 +63,27 @@ struct usb_handle {
     char*         interface_name;
 };
 
+class WindowsUsbTransport : public Transport {
+  public:
+    WindowsUsbTransport(usb_handle* _handle) : handle(_handle) {}
+    ~WindowsUsbTransport() override {
+        if (handle) {
+            free(handle);
+        }
+    }
+
+    ssize_t Read(void* data, size_t len) override;
+    ssize_t Write(const void* data, size_t len) override;
+    int Close() override;
+
+  private:
+    usb_handle* handle;
+
+    DISALLOW_COPY_AND_ASSIGN(WindowsUsbTransport);
+};
+
 /// Class ID assigned to the device by androidusb.sys
 static const GUID usb_class_id = ANDROID_USB_CLASS_ID;
-
 
 /// Checks if interface (device) matches certain criteria
 int recognized_device(usb_handle* handle, ifc_match_func callback);
@@ -73,20 +91,11 @@ int recognized_device(usb_handle* handle, ifc_match_func callback);
 /// Opens usb interface (device) by interface (device) name.
 usb_handle* do_usb_open(const wchar_t* interface_name);
 
-/// Writes data to the opened usb handle
-int usb_write(usb_handle* handle, const void* data, int len);
-
-/// Reads data using the opened usb handle
-int usb_read(usb_handle *handle, void* data, int len);
-
 /// Cleans up opened usb handle
 void usb_cleanup_handle(usb_handle* handle);
 
 /// Cleans up (but don't close) opened usb handle
 void usb_kick(usb_handle* handle);
-
-/// Closes opened usb handle
-int usb_close(usb_handle* handle);
 
 
 usb_handle* do_usb_open(const wchar_t* interface_name) {
@@ -152,7 +161,7 @@ usb_handle* do_usb_open(const wchar_t* interface_name) {
     return NULL;
 }
 
-int usb_write(usb_handle* handle, const void* data, int len) {
+ssize_t WindowsUsbTransport::Write(const void* data, size_t len) {
     unsigned long time_out = 5000;
     unsigned long written = 0;
     unsigned count = 0;
@@ -194,7 +203,7 @@ int usb_write(usb_handle* handle, const void* data, int len) {
     return -1;
 }
 
-int usb_read(usb_handle *handle, void* data, int len) {
+ssize_t WindowsUsbTransport::Read(void* data, size_t len) {
     unsigned long time_out = 0;
     unsigned long read = 0;
     int ret;
@@ -258,20 +267,16 @@ void usb_kick(usb_handle* handle) {
     }
 }
 
-int usb_close(usb_handle* handle) {
+int WindowsUsbTransport::Close() {
     DBG("usb_close\n");
 
-    if (NULL != handle) {
+    if (nullptr != handle) {
         // Cleanup handle
         usb_cleanup_handle(handle);
         free(handle);
+        handle = nullptr;
     }
 
-    return 0;
-}
-
-int usb_wait_for_disconnect(usb_handle *usb) {
-    /* TODO: Punt for now */
     return 0;
 }
 
@@ -373,9 +378,10 @@ static usb_handle *find_usb_device(ifc_match_func callback) {
     return handle;
 }
 
-usb_handle *usb_open(ifc_match_func callback)
+Transport* usb_open(ifc_match_func callback)
 {
-    return find_usb_device(callback);
+    usb_handle* handle = find_usb_device(callback);
+    return handle ? new WindowsUsbTransport(handle) : nullptr;
 }
 
 // called from fastboot.c

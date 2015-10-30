@@ -85,6 +85,26 @@ struct usb_handle
     unsigned char ep_out;
 };
 
+class LinuxUsbTransport : public Transport {
+  public:
+    LinuxUsbTransport(usb_handle* handle) : h(handle) {}
+    ~LinuxUsbTransport() override {
+        if (h) {
+            free(h);
+        }
+    }
+
+    ssize_t Read(void* data, size_t len) override;
+    ssize_t Write(const void* data, size_t len) override;
+    int Close() override;
+    int WaitForDisconnect() override;
+
+  private:
+    usb_handle* h;
+
+    DISALLOW_COPY_AND_ASSIGN(LinuxUsbTransport);
+};
+
 /* True if name isn't a valid name for a USB device in /sys/bus/usb/devices.
  * Device names are made up of numbers, dots, and dashes, e.g., '7-1.5'.
  * We reject interfaces (e.g., '7-1.5:1.0') and host controllers (e.g. 'usb1').
@@ -366,7 +386,7 @@ static usb_handle *find_usb_device(const char *base, ifc_match_func callback)
     return usb;
 }
 
-int usb_write(usb_handle *h, const void *_data, int len)
+ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
 {
     unsigned char *data = (unsigned char*) _data;
     unsigned count = 0;
@@ -401,7 +421,7 @@ int usb_write(usb_handle *h, const void *_data, int len)
     return count;
 }
 
-int usb_read(usb_handle *h, void *_data, int len)
+ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
 {
     unsigned char *data = (unsigned char*) _data;
     unsigned count = 0;
@@ -446,19 +466,7 @@ int usb_read(usb_handle *h, void *_data, int len)
     return count;
 }
 
-void usb_kick(usb_handle *h)
-{
-    int fd;
-
-    fd = h->desc;
-    h->desc = -1;
-    if(fd >= 0) {
-        close(fd);
-        DBG("[ usb closed %d ]\n", fd);
-    }
-}
-
-int usb_close(usb_handle *h)
+int LinuxUsbTransport::Close()
 {
     int fd;
 
@@ -472,20 +480,21 @@ int usb_close(usb_handle *h)
     return 0;
 }
 
-usb_handle *usb_open(ifc_match_func callback)
+Transport* usb_open(ifc_match_func callback)
 {
-    return find_usb_device("/sys/bus/usb/devices", callback);
+    usb_handle* handle = find_usb_device("/sys/bus/usb/devices", callback);
+    return handle ? new LinuxUsbTransport(handle) : nullptr;
 }
 
 /* Wait for the system to notice the device is gone, so that a subsequent
  * fastboot command won't try to access the device before it's rebooted.
  * Returns 0 for success, -1 for timeout.
  */
-int usb_wait_for_disconnect(usb_handle *usb)
+int LinuxUsbTransport::WaitForDisconnect()
 {
   double deadline = now() + WAIT_FOR_DISCONNECT_TIMEOUT;
   while (now() < deadline) {
-    if (access(usb->fname, F_OK))
+    if (access(h->fname, F_OK))
       return 0;
     usleep(50000);
   }
