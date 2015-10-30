@@ -75,41 +75,41 @@ static Action *action_last = 0;
 
 
 
-int fb_getvar(struct usb_handle *usb, char *response, const char *fmt, ...)
-{
+bool fb_getvar(usb_handle* usb, std::string* response, const char* fmt, ...) {
     char cmd[CMD_SIZE] = "getvar:";
     int getvar_len = strlen(cmd);
-    va_list args;
 
-    response[FB_RESPONSE_SZ] = '\0';
+    va_list args;
     va_start(args, fmt);
     vsnprintf(cmd + getvar_len, sizeof(cmd) - getvar_len, fmt, args);
     va_end(args);
     cmd[CMD_SIZE - 1] = '\0';
-    return fb_command_response(usb, cmd, response);
+
+    char buf[FB_RESPONSE_SZ + 1];
+    memset(buf, 0, sizeof(buf));
+    if (fb_command_response(usb, cmd, buf)) {
+      return false;
+    }
+    *response = buf;
+    return true;
 }
 
 
-/* Return true if this partition is supported by the fastboot format command.
- * It is also used to determine if we should first erase a partition before
- * flashing it with an ext4 filesystem.  See needs_erase()
- *
- * Not all devices report the filesystem type, so don't report any errors,
- * just return false.
- */
-int fb_format_supported(usb_handle *usb, const char *partition, const char *type_override)
-{
-    char fs_type[FB_RESPONSE_SZ + 1] = {0,};
-    int status;
-
+// Return true if this partition is supported by the fastboot format command.
+// It is also used to determine if we should first erase a partition before
+// flashing it with an ext4 filesystem.  See needs_erase()
+//
+// Not all devices report the filesystem type, so don't report any errors,
+// just return false.
+bool fb_format_supported(usb_handle *usb, const char *partition, const char *type_override) {
     if (type_override) {
         return !!fs_get_generator(type_override);
     }
-    status = fb_getvar(usb, fs_type, "partition-type:%s", partition);
-    if (status) {
-        return 0;
+    std::string partition_type;
+    if (!fb_getvar(usb, &partition_type, "partition-type:%s", partition)) {
+        return false;
     }
-    return !!fs_get_generator(fs_type);
+    return !!fs_get_generator(partition_type.c_str());
 }
 
 static int cb_default(Action* a, int status, const char* resp) {
@@ -393,9 +393,4 @@ int fb_execute_queue(usb_handle *usb)
 
     fprintf(stderr,"finished. total time: %.3fs\n", (now() - start));
     return status;
-}
-
-int fb_queue_is_empty(void)
-{
-    return (action_list == nullptr);
 }

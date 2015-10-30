@@ -567,25 +567,20 @@ static struct sparse_file **load_sparse_files(int fd, int max_size)
     return out_s;
 }
 
-static int64_t get_target_sparse_limit(struct usb_handle *usb)
-{
-    int64_t limit = 0;
-    char response[FB_RESPONSE_SZ + 1];
-    int status = fb_getvar(usb, response, "max-download-size");
-
-    if (!status) {
-        limit = strtoul(response, nullptr, 0);
-        if (limit > 0) {
-            fprintf(stderr, "target reported max download size of %" PRId64 " bytes\n",
-                    limit);
-        }
+static int64_t get_target_sparse_limit(usb_handle* usb) {
+    std::string response;
+    if (!fb_getvar(usb, &response, "max-download-size")) {
+        return 0;
     }
 
+    uint64_t limit = strtoull(response.c_str(), nullptr, 0);
+    if (limit > 0) {
+        fprintf(stderr, "target reported max download size of %" PRId64 " bytes\n", limit);
+    }
     return limit;
 }
 
-static int64_t get_sparse_limit(struct usb_handle *usb, int64_t size)
-{
+static int64_t get_sparse_limit(usb_handle* usb, int64_t size) {
     int64_t limit;
 
     if (sparse_limit == 0) {
@@ -610,16 +605,11 @@ static int64_t get_sparse_limit(struct usb_handle *usb, int64_t size)
     return 0;
 }
 
-/* Until we get lazy inode table init working in make_ext4fs, we need to
- * erase partitions of type ext4 before flashing a filesystem so no stale
- * inodes are left lying around.  Otherwise, e2fsck gets very upset.
- */
-static int needs_erase(usb_handle* usb, const char *part)
-{
-    /* The function fb_format_supported() currently returns the value
-     * we want, so just call it.
-     */
-     return fb_format_supported(usb, part, nullptr);
+// Until we get lazy inode table init working in make_ext4fs, we need to
+// erase partitions of type ext4 before flashing a filesystem so no stale
+// inodes are left lying around.  Otherwise, e2fsck gets very upset.
+static bool needs_erase(usb_handle* usb, const char* part) {
+    return !fb_format_supported(usb, part, nullptr);
 }
 
 static int load_buf_fd(usb_handle* usb, int fd, struct fastboot_buffer* buf) {
@@ -852,64 +842,61 @@ static int64_t parse_num(const char *arg)
 }
 
 static void fb_perform_format(usb_handle* usb,
-                              const char *partition, int skip_if_not_supported,
-                              const char *type_override, const char *size_override) {
-    char pTypeBuff[FB_RESPONSE_SZ + 1], pSizeBuff[FB_RESPONSE_SZ + 1];
-    char *pType = pTypeBuff;
-    char *pSize = pSizeBuff;
-    unsigned int limit = INT_MAX;
+                              const char* partition, int skip_if_not_supported,
+                              const char* type_override, const char* size_override) {
+    std::string partition_type, partition_size;
+
     struct fastboot_buffer buf;
-    const char *errMsg = nullptr;
-    const struct fs_generator *gen;
+    const char* errMsg = nullptr;
+    const struct fs_generator* gen = nullptr;
     uint64_t pSz;
-    int status;
     int fd;
 
-    if (target_sparse_limit > 0 && target_sparse_limit < limit)
+    unsigned int limit = INT_MAX;
+    if (target_sparse_limit > 0 && target_sparse_limit < limit) {
         limit = target_sparse_limit;
-    if (sparse_limit > 0 && sparse_limit < limit)
+    }
+    if (sparse_limit > 0 && sparse_limit < limit) {
         limit = sparse_limit;
+    }
 
-    status = fb_getvar(usb, pType, "partition-type:%s", partition);
-    if (status) {
+    if (!fb_getvar(usb, &partition_type, "partition-type:%s", partition)) {
         errMsg = "Can't determine partition type.\n";
         goto failed;
     }
     if (type_override) {
-        if (strcmp(type_override, pType)) {
-            fprintf(stderr,
-                    "Warning: %s type is %s, but %s was requested for formating.\n",
-                    partition, pType, type_override);
+        if (partition_type != type_override) {
+            fprintf(stderr, "Warning: %s type is %s, but %s was requested for formatting.\n",
+                    partition, partition_type.c_str(), type_override);
         }
-        pType = (char *)type_override;
+        partition_type = type_override;
     }
 
-    status = fb_getvar(usb, pSize, "partition-size:%s", partition);
-    if (status) {
+    if (!fb_getvar(usb, &partition_size, "partition-size:%s", partition)) {
         errMsg = "Unable to get partition size\n";
         goto failed;
     }
     if (size_override) {
-        if (strcmp(size_override, pSize)) {
-            fprintf(stderr,
-                    "Warning: %s size is %s, but %s was requested for formating.\n",
-                    partition, pSize, size_override);
+        if (partition_size != size_override) {
+            fprintf(stderr, "Warning: %s size is %s, but %s was requested for formatting.\n",
+                    partition, partition_size.c_str(), size_override);
         }
-        pSize = (char *)size_override;
+        partition_size = size_override;
     }
 
-    gen = fs_get_generator(pType);
+    gen = fs_get_generator(partition_type.c_str());
     if (!gen) {
         if (skip_if_not_supported) {
             fprintf(stderr, "Erase successful, but not automatically formatting.\n");
-            fprintf(stderr, "File system type %s not supported.\n", pType);
+            fprintf(stderr, "File system type %s not supported.\n", partition_type.c_str());
             return;
         }
-        fprintf(stderr, "Formatting is not supported for filesystem with type '%s'.\n", pType);
+        fprintf(stderr, "Formatting is not supported for filesystem with type '%s'.\n",
+                partition_type.c_str());
         return;
     }
 
-    pSz = strtoll(pSize, (char **)nullptr, 16);
+    pSz = strtoll(partition_size.c_str(), nullptr, 16);
 
     fd = fileno(tmpfile());
     if (fs_generator_generate(gen, fd, pSz)) {
@@ -924,15 +911,12 @@ static void fb_perform_format(usb_handle* usb,
         return;
     }
     flash_buf(partition, &buf);
-
     return;
-
 
 failed:
     if (skip_if_not_supported) {
         fprintf(stderr, "Erase successful, but not automatically formatting.\n");
-        if (errMsg)
-            fprintf(stderr, "%s", errMsg);
+        if (errMsg) fprintf(stderr, "%s", errMsg);
     }
     fprintf(stderr,"FAILED (%s)\n", fb_get_error());
 }
@@ -945,8 +929,6 @@ int main(int argc, char **argv)
     bool erase_first = true;
     void *data;
     int64_t sz;
-    int status;
-    int c;
     int longindex;
 
     const struct option longopts[] = {
@@ -964,7 +946,7 @@ int main(int argc, char **argv)
     serial = getenv("ANDROID_SERIAL");
 
     while (1) {
-        c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:h", longopts, &longindex);
+        int c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:h", longopts, &longindex);
         if (c < 0) {
             break;
         }
@@ -1061,14 +1043,14 @@ int main(int argc, char **argv)
     usb_handle* usb = open_device();
 
     while (argc > 0) {
-        if(!strcmp(*argv, "getvar")) {
+        if (!strcmp(*argv, "getvar")) {
             require(2);
             fb_queue_display(argv[1], argv[1]);
             skip(2);
         } else if(!strcmp(*argv, "erase")) {
             require(2);
 
-            if (fb_format_supported(usb, argv[1], nullptr)) {
+            if (!fb_format_supported(usb, argv[1], nullptr)) {
                 fprintf(stderr, "******** Did you mean to fastboot format this partition?\n");
             }
 
@@ -1217,10 +1199,16 @@ int main(int argc, char **argv)
     }
 
     if (wants_wipe) {
+        fprintf(stderr, "wiping userdata...\n");
         fb_queue_erase("userdata");
         fb_perform_format(usb, "userdata", 1, nullptr, nullptr);
-        fb_queue_erase("cache");
-        fb_perform_format(usb, "cache", 1, nullptr, nullptr);
+
+        std::string cache_type;
+        if (fb_getvar(usb, &cache_type, "partition-type:cache") && !cache_type.empty()) {
+            fprintf(stderr, "wiping cache...\n");
+            fb_queue_erase("cache");
+            fb_perform_format(usb, "cache", 1, nullptr, nullptr);
+        }
     }
     if (wants_reboot) {
         fb_queue_reboot();
@@ -1230,9 +1218,5 @@ int main(int argc, char **argv)
         fb_queue_wait_for_disconnect();
     }
 
-    if (fb_queue_is_empty())
-        return 0;
-
-    status = fb_execute_queue(usb);
-    return (status) ? 1 : 0;
+    return fb_execute_queue(usb) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
