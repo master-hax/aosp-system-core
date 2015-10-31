@@ -231,6 +231,17 @@ static int ShellService(const std::string& args, const atransport* transport) {
     return StartSubprocess(command.c_str(), type, protocol);
 }
 
+static int create_service_in_main_thread(void (*func)(int, void*), void* cookie) {
+    int s[2];
+    if (adb_socketpair(s)) {
+        PLOG(ERROR) << "cannot create service socket pair.";
+        return -1;
+    }
+    VLOG(SERVICES) << "service socketpair: " << s[0] << ", " << s[1];
+    func(s[1], cookie);
+    return s[0];
+}
+
 #endif  // !ADB_HOST
 
 static int create_service_thread(void (*func)(int, void *), void *cookie)
@@ -339,7 +350,7 @@ int service_to_fd(const char* name, const atransport* transport) {
         if (cookie == NULL) {
             ret = -1;
         } else {
-            ret = create_service_thread(reverse_service, cookie);
+            ret = create_service_in_main_thread(reverse_service, cookie);
             if (ret < 0) {
                 free(cookie);
             }
