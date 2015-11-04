@@ -473,13 +473,23 @@ struct copyinfo
     unsigned int mode;
     uint64_t size;
     bool skip;
+    bool isdir;
 };
 
 static copyinfo mkcopyinfo(const std::string& spath, const std::string& dpath,
-                           const char* name, bool isdir) {
+                           const std::string& name, bool isdir) {
     copyinfo result;
-    result.src = spath + name;
-    result.dst = dpath + name;
+    result.src = spath;
+    result.dst = dpath;
+    if (result.src.back() != '/') {
+      result.src.push_back('/');
+    }
+    if (result.dst.back() != '/') {
+      result.dst.push_back('/');
+    }
+    result.src.append(name);
+    result.dst.append(name);
+
     if (isdir) {
         result.src.push_back('/');
         result.dst.push_back('/');
@@ -488,6 +498,7 @@ static copyinfo mkcopyinfo(const std::string& spath, const std::string& dpath,
     result.mode = 0;
     result.size = 0;
     result.skip = false;
+    result.isdir = isdir;
     return result;
 }
 
@@ -505,10 +516,14 @@ static bool local_build_list(SyncConnection& sc, std::vector<copyinfo>* filelist
         return false;
     }
 
+    bool empty_dir = true;
     dirent* de;
     while ((de = readdir(dir.get()))) {
-        if (IsDotOrDotDot(de->d_name)) continue;
+        if (IsDotOrDotDot(de->d_name)) {
+            continue;
+        }
 
+        empty_dir = false;
         std::string stat_path = lpath + de->d_name;
 
         struct stat st;
@@ -534,6 +549,15 @@ static bool local_build_list(SyncConnection& sc, std::vector<copyinfo>* filelist
 
     // Close this directory and recurse.
     dir.reset();
+
+    // Add the current directory to the list if it was empty, to ensure that
+    // it gets created.
+    if (empty_dir) {
+        filelist->push_back(mkcopyinfo(adb_dirname(lpath), adb_dirname(rpath),
+                                       adb_basename(lpath), 1));
+        return true;
+    }
+
     for (const copyinfo& ci : dirlist) {
         local_build_list(sc, filelist, ci.src.c_str(), ci.dst.c_str());
     }
@@ -663,14 +687,17 @@ static bool remote_build_list(SyncConnection& sc,
                               const std::string& rpath,
                               const std::string& lpath) {
     std::vector<copyinfo> dirlist;
+    bool empty_dir = true;
 
     // Put the files/dirs in rpath on the lists.
     auto callback = [&](unsigned mode, unsigned size, unsigned time,
                         const char* name) {
-        if (S_ISDIR(mode)) {
-            // Don't try recursing down "." or "..".
-            if (IsDotOrDotDot(name)) return;
+        if (IsDotOrDotDot(name)) {
+            return;
+        }
+        empty_dir = false;
 
+        if (S_ISDIR(mode)) {
             dirlist.push_back(mkcopyinfo(rpath, lpath, name, 1));
         } else if (S_ISREG(mode) || S_ISLNK(mode)) {
             copyinfo ci = mkcopyinfo(rpath, lpath, name, 0);
@@ -686,6 +713,18 @@ static bool remote_build_list(SyncConnection& sc,
 
     if (!sync_ls(sc, rpath.c_str(), callback)) {
         return false;
+    }
+
+    // Add the current directory to the list if it was empty, to ensure that
+    // it gets created.
+    if (empty_dir) {
+        auto rdname = adb_dirname(rpath);
+        auto ldname = adb_dirname(lpath);
+        auto rbasename = adb_basename(rpath);
+        auto lbasename = adb_basename(lpath);
+        filelist->push_back(mkcopyinfo(adb_dirname(rpath), adb_dirname(lpath),
+                                       adb_basename(rpath), 1));
+        return true;
     }
 
     // Recurse into each directory we found.
@@ -739,6 +778,14 @@ static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
     for (const copyinfo &ci : filelist) {
         if (!ci.skip) {
             sc.Printf("pull: %s -> %s", ci.src.c_str(), ci.dst.c_str());
+            if (ci.isdir) {
+                // Entry is an empty directory, create it and continue.
+                // TODO(b/25457350): We don't preserve permissions on directories.
+                if (!mkdirs(ci.dst))  {
+                    return false;
+                }
+                continue;
+            }
             if (!sync_recv(sc, ci.src.c_str(), ci.dst.c_str())) {
                 return false;
             }
