@@ -168,3 +168,39 @@ TEST_F(zipwriter, WriteCompressedZipWithOneFile) {
 
   CloseArchive(handle);
 }
+
+// This test should verify that if the last write would run out.
+TEST_F(zipwriter, WriteCompressedZipFlushFull) {
+  // This value will cause the finish to require multiple calls to deflate.
+  constexpr size_t kBufSize = 10000000;
+  std::vector<uint8_t> buffer(kBufSize);
+  size_t prev = 1;
+  for (size_t i = 0; i < kBufSize; i++) {
+    buffer[i] = i + prev;
+    prev = i;
+  }
+
+  ZipWriter writer(file_);
+  ASSERT_EQ(0, writer.StartEntry("file.txt", ZipWriter::kCompress));
+  ASSERT_EQ(0, writer.WriteBytes(buffer.data(), buffer.size()));
+  ASSERT_EQ(0, writer.FinishEntry());
+  ASSERT_EQ(0, writer.Finish());
+
+  ASSERT_GE(0, lseek(fd_, 0, SEEK_SET));
+
+  ZipArchiveHandle handle;
+  ASSERT_EQ(0, OpenArchiveFd(fd_, "temp", &handle, false));
+
+  ZipEntry data;
+  ASSERT_EQ(0, FindEntry(handle, ZipString("file.txt"), &data));
+  EXPECT_EQ(kCompressDeflated, data.method);
+  EXPECT_EQ(kBufSize, data.uncompressed_length);
+
+  std::vector<uint8_t> decompress(kBufSize);
+  memset(decompress.data(), 0, kBufSize);
+  ASSERT_EQ(0, ExtractToMemory(handle, &data, decompress.data(), decompress.size()));
+  EXPECT_EQ(0, memcmp(decompress.data(), buffer.data(), kBufSize))
+      << "Input buffer and output buffer are different.";
+
+  CloseArchive(handle);
+}
