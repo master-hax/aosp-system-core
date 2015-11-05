@@ -25,10 +25,11 @@ extern "C" {
 #include <crypto_scrypt.h>
 }
 
-#include <UniquePtr.h>
-#include <gatekeeper/gatekeeper.h>
 #include <iostream>
+#include <memory>
 #include <unordered_map>
+
+#include <gatekeeper/gatekeeper.h>
 
 namespace gatekeeper {
 
@@ -170,7 +171,7 @@ private:
     typedef std::unordered_map<uint32_t, failure_record_t> FailureRecordMap;
     typedef std::unordered_map<uint64_t, fast_hash_t> FastHashMap;
 
-    UniquePtr<uint8_t[]> key_;
+    std::unique_ptr<uint8_t[]> key_;
     FailureRecordMap failure_map_;
     FastHashMap fast_hash_map_;
 };

@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include <gtest/gtest.h>
-#include <UniquePtr.h>
 
 #include <hardware/hw_auth_token.h>
 
