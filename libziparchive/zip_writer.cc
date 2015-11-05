@@ -288,7 +288,21 @@ int32_t ZipWriter::FlushCompressedBytes(FileInfo* file) {
   assert(z_stream_->next_out != nullptr);
   assert(z_stream_->avail_out != 0);
 
-  int zerr = deflate(z_stream_.get(), Z_FINISH);
+  // Keep deflating while there isn't enough space in the buffer to
+  // to complete the compress.
+  int zerr;
+  while ((zerr = deflate(z_stream_.get(), Z_FINISH)) == Z_OK) {
+    assert(z_stream_->avail_out == 0);
+    size_t dataToWrite = z_stream_->next_out - buffer_.data();
+    if (fwrite(buffer_.data(), 1, dataToWrite, file_) != dataToWrite) {
+      return HandleError(kIoError);
+    }
+    file->compressed_size += dataToWrite;
+    current_offset_ += dataToWrite;
+
+    z_stream_->next_out = buffer_.data();
+    z_stream_->avail_out = buffer_.size();
+  }
   if (zerr != Z_STREAM_END) {
     return HandleError(kZlibError);
   }
