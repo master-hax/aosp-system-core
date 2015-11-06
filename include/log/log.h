@@ -616,6 +616,8 @@ typedef enum log_id {
  * Use the per-tag properties "log.tag.<tagname>" to generate a runtime
  * result of non-zero to expose a log.
  */
+/* 'Secret' def flag save 2 syscalls if never calls within signal handler */
+#define ANDROID_LOGGABLE_NOT_WITHIN_SIGNAL 0x8000
 int __android_log_is_loggable(int prio, const char *tag, int def);
 
 int __android_log_error_write(int tag, const char *subTag, int32_t uid, const char *data,

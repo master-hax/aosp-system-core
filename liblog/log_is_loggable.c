@@ -16,12 +16,48 @@
 
 #include <ctype.h>
 #include <pthread.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
 #include <android/log.h>
+#include <log/log.h>
+
+static pthread_mutex_t lock_loggable = PTHREAD_MUTEX_INITIALIZER;
+
+static bool lock(sigset_t *sigflags)
+{
+    /*
+     * If we trigger a signal handler in the middle of locked activity and the
+     * signal handler logs a message, we could get into a deadlock state.
+     */
+    sigset_t all;
+
+    if (!sigflags) {
+        return !pthread_mutex_lock(&lock_loggable);
+    }
+
+    sigfillset(&all);
+    if (pthread_sigmask(SIG_BLOCK, &all, sigflags)) {
+        return false;
+    }
+    if (pthread_mutex_lock(&lock_loggable)) {
+        pthread_sigmask(SIG_UNBLOCK, sigflags, NULL);
+        return false;
+    }
+    return true;
+}
+
+static void unlock(sigset_t *sigflags)
+{
+    pthread_mutex_unlock(&lock_loggable);
+    if (sigflags) {
+        pthread_sigmask(SIG_UNBLOCK, sigflags, NULL);
+    }
+}
 
 struct cache {
     const prop_info *pinfo;
@@ -48,8 +84,6 @@ static void refresh_cache(struct cache *cache, const char *key)
     __system_property_read(cache->pinfo, 0, buf);
     cache->c = buf[0];
 }
-
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 static int __android_log_level(const char *tag, int def)
 {
@@ -83,10 +117,54 @@ static int __android_log_level(const char *tag, int def)
         { NULL, -1, 0 },
         { NULL, -1, 0 }
     };
+    sigset_t sigflags;
 
     strcpy(key, log_namespace);
 
-    pthread_mutex_lock(&lock);
+    if (!lock((def & ANDROID_LOGGABLE_NOT_WITHIN_SIGNAL) ? NULL : &sigflags)) {
+        /* Can not lock, lets get a quick and reasonable best-guess */
+        if (taglen) {
+            char *_last_tag;
+            for (i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
+                c = tag_cache[i].c;
+                if (c) {
+                    break;
+                }
+            }
+            _last_tag = last_tag;
+            if (!_last_tag || strcmp(_last_tag, tag)) {
+                c = '\0'; /* Here we suffer with the less than optimal guess */
+            }
+        }
+        switch (toupper(c)) { /* if invalid, resort to global */
+        case 'V': return ANDROID_LOG_VERBOSE;
+        case 'D': return ANDROID_LOG_DEBUG;
+        case 'I': return ANDROID_LOG_INFO;
+        case 'W': return ANDROID_LOG_WARN;
+        case 'E': return ANDROID_LOG_ERROR;
+        case 'F': /* FALLTHRU */ /* Not officially supported */
+        case 'A': return ANDROID_LOG_FATAL;
+        case 'S': return -1; /* ANDROID_LOG_SUPPRESS */
+        default:
+            for(i = 0; i < (sizeof(global_cache) / sizeof(global_cache[0])); ++i) {
+                c = global_cache[i].c;
+                if (c) {
+                    break;
+                }
+            }
+            switch (toupper(c)) {
+            case 'V': return ANDROID_LOG_VERBOSE;
+            case 'D': return ANDROID_LOG_DEBUG;
+            case 'I': return ANDROID_LOG_INFO;
+            case 'W': return ANDROID_LOG_WARN;
+            case 'E': return ANDROID_LOG_ERROR;
+            case 'F': /* FALLTHRU */ /* Not officially supported */
+            case 'A': return ANDROID_LOG_FATAL;
+            case 'S': return -1; /* ANDROID_LOG_SUPPRESS */
+            }
+        }
+        return def & ~ANDROID_LOGGABLE_NOT_WITHIN_SIGNAL;
+    }
 
     current_global_serial = __system_property_area_serial();
 
@@ -156,7 +234,7 @@ static int __android_log_level(const char *tag, int def)
 
     global_serial = current_global_serial;
 
-    pthread_mutex_unlock(&lock);
+    unlock((def & ANDROID_LOGGABLE_NOT_WITHIN_SIGNAL) ? NULL : &sigflags);
 
     switch (toupper(c)) {
     case 'V': return ANDROID_LOG_VERBOSE;
@@ -168,7 +246,7 @@ static int __android_log_level(const char *tag, int def)
     case 'A': return ANDROID_LOG_FATAL;
     case 'S': return -1; /* ANDROID_LOG_SUPPRESS */
     }
-    return def;
+    return def & ~ANDROID_LOGGABLE_NOT_WITHIN_SIGNAL;
 }
 
 int __android_log_is_loggable(int prio, const char *tag, int def)
@@ -177,27 +255,36 @@ int __android_log_is_loggable(int prio, const char *tag, int def)
     return logLevel >= 0 && prio >= logLevel;
 }
 
+/*
+ * Timestamp state generally remains constant, since a change is
+ * rare, we can accept a trylock failure gracefully.
+ */
+static pthread_mutex_t lock_timestamp = PTHREAD_MUTEX_INITIALIZER;
+
 char android_log_timestamp()
 {
     static struct cache r_time_cache = { NULL, -1, 0 };
     static struct cache p_time_cache = { NULL, -1, 0 };
-    static uint32_t serial;
-    uint32_t current_serial;
     char retval;
 
-    pthread_mutex_lock(&lock);
+    if (pthread_mutex_trylock(&lock_timestamp)) {
+        if (!(retval = p_time_cache.c)) {
+            retval = r_time_cache.c;
+        }
+    } else {
+        static uint32_t serial;
+        uint32_t current_serial = __system_property_area_serial();
+        if (current_serial != serial) {
+            refresh_cache(&r_time_cache, "ro.logd.timestamp");
+            refresh_cache(&p_time_cache, "persist.logd.timestamp");
+            serial = current_serial;
+        }
+        if (!(retval = p_time_cache.c)) {
+            retval = r_time_cache.c;
+        }
 
-    current_serial = __system_property_area_serial();
-    if (current_serial != serial) {
-        refresh_cache(&r_time_cache, "ro.logd.timestamp");
-        refresh_cache(&p_time_cache, "persist.logd.timestamp");
-        serial = current_serial;
+        pthread_mutex_unlock(&lock_timestamp);
     }
-    if (!(retval = p_time_cache.c)) {
-        retval = r_time_cache.c;
-    }
-
-    pthread_mutex_unlock(&lock);
 
     return tolower(retval ?: 'r');
 }
