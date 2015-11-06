@@ -24,6 +24,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,6 +32,7 @@
 
 #if !defined(_WIN32)
 #include <pthread.h>
+#include <time.h>
 #endif
 
 #ifndef __unused
@@ -97,9 +99,23 @@ typedef struct LogState {
  */
 static pthread_mutex_t fakeLogDeviceLock = PTHREAD_MUTEX_INITIALIZER;
 
-static void lock()
+static bool lock()
 {
-    pthread_mutex_lock(&fakeLogDeviceLock);
+    /*
+     * If we trigger a signal handler in the middle of locked activity and the
+     * signal handler logs a message, we could get into a deadlock state.
+     * Solution is to time out after 5 seconds and report a lock failure.
+     */
+    struct timespec ts;
+
+#if FAKE_LOG_DEVICE /* Host Build */
+    ts.tv_nsec = 0;
+    time(&ts.tv_sec);
+#else
+    clock_gettime(CLOCK_REALTIME, &ts);
+#endif
+    ts.tv_sec += 5;
+    return !pthread_mutex_timedlock(&fakeLogDeviceLock, &ts);
 }
 
 static void unlock()
@@ -107,7 +123,7 @@ static void unlock()
     pthread_mutex_unlock(&fakeLogDeviceLock);
 }
 #else   // !defined(_WIN32)
-#define lock() ((void)0)
+#define lock() (true)
 #define unlock() ((void)0)
 #endif  // !defined(_WIN32)
 
@@ -155,7 +171,9 @@ static void deleteFakeFd(int fd)
 {
     LogState *ls;
 
-    lock();
+    if (!lock()) {
+        return;
+    }
 
     ls = fdToLogState(fd);
     if (ls != NULL) {
@@ -553,7 +571,10 @@ static ssize_t logWritev(int fd, const struct iovec* vector, int count)
      * Also guarantees that only one thread is in showLog() at a given
      * time (if it matters).
      */
-    lock();
+    if (!lock()) {
+        errno = EAGAIN;
+        goto error;
+    }
 
     state = fdToLogState(fd);
     if (state == NULL) {
@@ -622,7 +643,10 @@ static int logOpen(const char* pathName, int flags __unused)
     LogState *logState;
     int fd = -1;
 
-    lock();
+    if (!lock()) {
+        errno = EAGAIN;
+        return fd;
+    }
 
     logState = createLogState();
     if (logState != NULL) {

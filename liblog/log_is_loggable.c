@@ -16,12 +16,43 @@
 
 #include <ctype.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
 #include <android/log.h>
+
+static pthread_mutex_t lock_cache = PTHREAD_MUTEX_INITIALIZER;
+
+static bool lock()
+{
+    /*
+     * If we trigger a signal handler in the middle of locked activity and the
+     * signal handler logs a message, we could get into a deadlock state.
+     * Solution is to time out after 5 seconds and report a lock failure.
+     */
+    struct timespec ts;
+
+    /*
+     * Fastpath to trylock first, before switching to acquiring the absolute
+     * time (possible syscall) and sleeping in timedlock.
+     */
+    if (!pthread_mutex_trylock(&lock_cache)) {
+        return true;
+    }
+
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += 5;
+    return !pthread_mutex_timedlock(&lock_cache, &ts);
+}
+
+static void unlock()
+{
+    pthread_mutex_unlock(&lock_cache);
+}
 
 struct cache {
     const prop_info *pinfo;
@@ -48,8 +79,6 @@ static void refresh_cache(struct cache *cache, const char *key)
     __system_property_read(cache->pinfo, 0, buf);
     cache->c = buf[0];
 }
-
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 static int __android_log_level(const char *tag, int def)
 {
@@ -86,7 +115,50 @@ static int __android_log_level(const char *tag, int def)
 
     strcpy(key, log_namespace);
 
-    pthread_mutex_lock(&lock);
+    if (!lock()) {
+        /* Can not lock, lets get a quick and reasonable best-guess */
+        if (taglen) {
+            char *_last_tag;
+            for (i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
+                c = tag_cache[i].c;
+                if (c) {
+                    break;
+                }
+            }
+            _last_tag = last_tag;
+            if (!_last_tag || strcmp(_last_tag, tag)) {
+                c = '\0';
+            }
+        }
+        switch (toupper(c)) { /* if invalid, resort to global */
+        case 'V': return ANDROID_LOG_VERBOSE;
+        case 'D': return ANDROID_LOG_DEBUG;
+        case 'I': return ANDROID_LOG_INFO;
+        case 'W': return ANDROID_LOG_WARN;
+        case 'E': return ANDROID_LOG_ERROR;
+        case 'F': /* FALLTHRU */ /* Not officially supported */
+        case 'A': return ANDROID_LOG_FATAL;
+        case 'S': return -1; /* ANDROID_LOG_SUPPRESS */
+        default:
+            for(i = 0; i < (sizeof(global_cache) / sizeof(global_cache[0])); ++i) {
+                c = global_cache[i].c;
+                if (c) {
+                    break;
+                }
+            }
+            switch (toupper(c)) {
+            case 'V': return ANDROID_LOG_VERBOSE;
+            case 'D': return ANDROID_LOG_DEBUG;
+            case 'I': return ANDROID_LOG_INFO;
+            case 'W': return ANDROID_LOG_WARN;
+            case 'E': return ANDROID_LOG_ERROR;
+            case 'F': /* FALLTHRU */ /* Not officially supported */
+            case 'A': return ANDROID_LOG_FATAL;
+            case 'S': return -1; /* ANDROID_LOG_SUPPRESS */
+            }
+        }
+        return def;
+    }
 
     current_global_serial = __system_property_area_serial();
 
@@ -156,7 +228,7 @@ static int __android_log_level(const char *tag, int def)
 
     global_serial = current_global_serial;
 
-    pthread_mutex_unlock(&lock);
+    unlock();
 
     switch (toupper(c)) {
     case 'V': return ANDROID_LOG_VERBOSE;
@@ -185,7 +257,12 @@ char android_log_timestamp()
     uint32_t current_serial;
     char retval;
 
-    pthread_mutex_lock(&lock);
+    if (!lock()) {
+        if (!(retval = p_time_cache.c)) {
+            retval = r_time_cache.c;
+        }
+        return tolower(retval ?: 'r');
+    }
 
     current_serial = __system_property_area_serial();
     if (current_serial != serial) {
@@ -197,7 +274,7 @@ char android_log_timestamp()
         retval = r_time_cache.c;
     }
 
-    pthread_mutex_unlock(&lock);
+    unlock();
 
     return tolower(retval ?: 'r');
 }

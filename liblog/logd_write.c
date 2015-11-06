@@ -23,6 +23,7 @@
 #endif
 #include <stdarg.h>
 #include <stdatomic.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,7 +57,34 @@ static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
 #if !defined(_WIN32)
 static pthread_mutex_t log_init_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static bool lock()
+{
+    /*
+     * If we trigger a signal handler in the middle of locked activity and the
+     * signal handler logs a message, we could get into a deadlock state.
+     * Solution is to time out after 5 seconds and report a lock failure.
+     */
+    struct timespec ts;
+
+#if FAKE_LOG_DEVICE
+    ts.tv_nsec = 0;
+    time(&ts.tv_sec);
+#else
+    clock_gettime(CLOCK_REALTIME, &ts);
 #endif
+    ts.tv_sec += 5;
+    return !pthread_mutex_timedlock(&log_init_lock, &ts);
+}
+
+static void unlock()
+{
+    pthread_mutex_unlock(&log_init_lock);
+}
+#else   // !defined(_WIN32)
+#define lock() (true)
+#define unlock() ((void)0)
+#endif  // !defined(_WIN32)
 
 #ifndef __unused
 #define __unused  __attribute__((__unused__))
@@ -276,16 +304,11 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     ret = TEMP_FAILURE_RETRY(writev(logd_fd, newVec + 1, i - 1));
     if (ret < 0) {
         ret = -errno;
-        if (ret == -ENOTCONN) {
-#if !defined(_WIN32)
-            pthread_mutex_lock(&log_init_lock);
-#endif
+        if ((ret == -ENOTCONN) && lock()) {
             close(logd_fd);
             logd_fd = -1;
             ret = __write_to_log_initialize();
-#if !defined(_WIN32)
-            pthread_mutex_unlock(&log_init_lock);
-#endif
+            unlock();
 
             if (ret < 0) {
                 return ret;
@@ -300,7 +323,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 
     if (ret > (ssize_t)sizeof(header)) {
         ret -= sizeof(header);
-    } else if (ret == -EAGAIN) {
+    } else if ((ret == -EAGAIN) || (ret == -ENOTCONN)) {
         atomic_fetch_add_explicit(&dropped, 1, memory_order_relaxed);
     }
 #endif
@@ -329,32 +352,31 @@ const char *android_log_id_to_name(log_id_t log_id)
 
 static int __write_to_log_init(log_id_t log_id, struct iovec *vec, size_t nr)
 {
-#if !defined(_WIN32)
-    pthread_mutex_lock(&log_init_lock);
-#endif
+    if (!lock()) {
+        if (write_to_log == __write_to_log_init) {
+            return -EAGAIN;
+        }
+        /* someone else initialized, cool! */
+    } else {
+        if (write_to_log == __write_to_log_init) {
+            int ret;
 
-    if (write_to_log == __write_to_log_init) {
-        int ret;
-
-        ret = __write_to_log_initialize();
-        if (ret < 0) {
-#if !defined(_WIN32)
-            pthread_mutex_unlock(&log_init_lock);
-#endif
+            ret = __write_to_log_initialize();
+            if (ret < 0) {
+                unlock();
 #if (FAKE_LOG_DEVICE == 0)
-            if (pstore_fd >= 0) {
-                __write_to_log_daemon(log_id, vec, nr);
-            }
+                if (pstore_fd >= 0) {
+                    __write_to_log_daemon(log_id, vec, nr);
+                }
 #endif
-            return ret;
+                return ret;
+            }
+
+            write_to_log = __write_to_log_daemon;
         }
 
-        write_to_log = __write_to_log_daemon;
+        unlock();
     }
-
-#if !defined(_WIN32)
-    pthread_mutex_unlock(&log_init_lock);
-#endif
 
     return write_to_log(log_id, vec, nr);
 }
