@@ -24,6 +24,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -95,20 +97,38 @@ typedef struct LogState {
  * to both protect the fd list and to prevent LogStates from being
  * freed out from under a user.
  */
+#ifdef PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP
+static pthread_mutex_t fakeLogDeviceLock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
+#else
 static pthread_mutex_t fakeLogDeviceLock = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
-static void lock()
+static bool lock(sigset_t *sigflags)
 {
-    pthread_mutex_lock(&fakeLogDeviceLock);
+    /*
+     * If we trigger a signal handler in the middle of locked activity and the
+     * signal handler logs a message, we could get into a deadlock state.
+     */
+    sigset_t all;
+    sigfillset(&all);
+    if (pthread_sigmask(SIG_BLOCK, &all, sigflags)) {
+        return false;
+    }
+    if (pthread_mutex_lock(&fakeLogDeviceLock)) {
+        pthread_sigmask(SIG_UNBLOCK, sigflags, NULL);
+        return false;
+    }
+    return true;
 }
 
-static void unlock()
+static void unlock(sigset_t *sigflags)
 {
     pthread_mutex_unlock(&fakeLogDeviceLock);
+    pthread_sigmask(SIG_UNBLOCK, sigflags, NULL);
 }
 #else   // !defined(_WIN32)
-#define lock() ((void)0)
-#define unlock() ((void)0)
+#define lock(sigflags) (true)
+#define unlock(sigflags) ((void)0)
 #endif  // !defined(_WIN32)
 
 
@@ -154,8 +174,11 @@ static LogState *fdToLogState(int fd)
 static void deleteFakeFd(int fd)
 {
     LogState *ls;
+    sigset_t sigflags __unused;
 
-    lock();
+    if (!lock(&sigflags)) {
+        return;
+    }
 
     ls = fdToLogState(fd);
     if (ls != NULL) {
@@ -164,7 +187,7 @@ static void deleteFakeFd(int fd)
         free(ls);
     }
 
-    unlock();
+    unlock(&sigflags);
 }
 
 /*
@@ -548,12 +571,16 @@ static void showLog(LogState *state,
 static ssize_t logWritev(int fd, const struct iovec* vector, int count)
 {
     LogState* state;
+    sigset_t sigflags __unused;
 
     /* Make sure that no-one frees the LogState while we're using it.
      * Also guarantees that only one thread is in showLog() at a given
      * time (if it matters).
      */
-    lock();
+    if (!lock(&sigflags)) {
+        errno = EDEADLK;
+        goto error;
+    }
 
     state = fdToLogState(fd);
     if (state == NULL) {
@@ -598,10 +625,10 @@ static ssize_t logWritev(int fd, const struct iovec* vector, int count)
     }
 
 bail:
-    unlock();
+    unlock(&sigflags);
     return vector[0].iov_len + vector[1].iov_len + vector[2].iov_len;
 error:
-    unlock();
+    unlock(&sigflags);
     return -1;
 }
 
@@ -621,8 +648,12 @@ static int logOpen(const char* pathName, int flags __unused)
 {
     LogState *logState;
     int fd = -1;
+    sigset_t sigflags __unused;
 
-    lock();
+    if (!lock(&sigflags)) {
+        errno = EDEADLK;
+        return fd;
+    }
 
     logState = createLogState();
     if (logState != NULL) {
@@ -632,7 +663,7 @@ static int logOpen(const char* pathName, int flags __unused)
         errno = ENFILE;
     }
 
-    unlock();
+    unlock(&sigflags);
 
     return fd;
 }
