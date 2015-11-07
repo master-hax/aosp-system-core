@@ -480,6 +480,8 @@ static copyinfo mkcopyinfo(const std::string& spath, const std::string& dpath,
     copyinfo result;
     result.src = spath;
     result.dst = dpath;
+
+    // FIXME(b/25573669): This is probably broken on win32?
     if (result.src.back() != '/') {
       result.src.push_back('/');
     }
@@ -573,7 +575,9 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
                                   std::string rpath, bool check_timestamps,
                                   bool list_only) {
     // Make sure that both directory paths end in a slash.
-    // Both paths are known to exist, so they cannot be empty.
+    // Both paths are known to be nonempty.
+    //
+    // FIXME(b/25573669): This is probably broken on win32?
     if (lpath.back() != '/') {
         lpath.push_back('/');
     }
@@ -640,7 +644,8 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
     bool success = true;
     unsigned mode;
     if (!sync_stat(sc, dst, nullptr, &mode, nullptr)) return false;
-    bool dst_isdir = mode != 0 && S_ISDIR(mode);
+    bool dst_exists = mode;
+    bool dst_isdir = S_ISDIR(mode);
 
     if (!dst_isdir) {
         if (srcs.size() > 1) {
@@ -648,7 +653,10 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
             return false;
         } else {
             size_t dst_len = strlen(dst);
-            if (dst[dst_len - 1] == '/') {
+
+            // A path that ends with a slash doesn't have to be a directory if
+            // it doesn't exist yet.
+            if (dst[dst_len - 1] == '/' && dst_exists) {
                 sc.Error("failed to access '%s': Not a directory", dst);
                 return false;
             }
@@ -759,10 +767,12 @@ static int set_time_and_mode(const char *lpath, time_t time, unsigned int mode)
 static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
                                   std::string lpath, bool copy_attrs) {
     // Make sure that both directory paths end in a slash.
-    // Both paths are known to exist, so they cannot be empty.
+    // Both paths are known to be nonempty, so we don't need to check.
     if (rpath.back() != '/') {
         rpath.push_back('/');
     }
+
+    // FIXME(b/25573669): This is probably broken on win32?
     if (lpath.back() != '/') {
         lpath.push_back('/');
     }
@@ -819,16 +829,27 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
 
     bool success = true;
     unsigned mode, time;
-    struct stat st;
+    struct stat st = {};
     if (stat(dst, &st)) {
-        // If we're only pulling one file, the destination path might point to
+        // If we're only pulling one path, the destination path might point to
         // a path that doesn't exist yet.
-        if (srcs.size() != 1 || errno != ENOENT) {
-            sc.Error("cannot stat '%s': %s", dst, strerror(errno));
+        if (srcs.size() == 1 && errno == ENOENT) {
+            // However, its parent must exist.
+            struct stat parent_st;
+            if (stat(adb_dirname(dst).c_str(), &parent_st)) {
+                sc.Error("cannot create file/directory '%s': %s", dst, strerror(errno));
+                return false;
+            }
+        } else if (srcs.size() > 1) {
+            sc.Error("target '%s' is not a directory", dst);
+            return false;
+        } else {
+            sc.Error("failed to access '%s': %s", dst, strerror(errno));
             return false;
         }
     }
 
+    bool dst_exists = st.st_mode;
     bool dst_isdir = S_ISDIR(st.st_mode);
     if (!dst_isdir) {
         if (srcs.size() > 1) {
@@ -836,7 +857,10 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
             return false;
         } else {
             size_t dst_len = strlen(dst);
-            if (dst[dst_len - 1] == '/') {
+
+            // A path that ends with a slash doesn't have to be a directory if
+            // it doesn't exist yet.
+            if (dst[dst_len - 1] == '/' && dst_exists) {
                 sc.Error("failed to access '%s': Not a directory", dst);
                 return false;
             }
