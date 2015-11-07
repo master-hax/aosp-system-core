@@ -674,12 +674,30 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
         }
 
         if (S_ISDIR(st.st_mode)) {
-            success &= copy_local_dir_remote(sc, src_path, dst, false, false);
+            std::string dst_dir = dst;
+
+            // If the destination path existed originally, the source directory
+            // should be copied as a child of the destination.
+            if (dst_exists) {
+                if (!dst_isdir) {
+                    sc.Error("target '%s' is not a directory", dst);
+                    return false;
+                }
+                // dst is a POSIX path, so we don't want to use the sysdeps
+                // helpers here.
+                if (dst_dir.back() != '/') {
+                    dst_dir.push_back('/');
+                }
+                dst_dir.append(adb_basename(src_path));
+            }
+
+            success &= copy_local_dir_remote(sc, src_path, dst_dir.c_str(),
+                                             false, false);
             continue;
         }
 
         std::string path_holder;
-        if (mode != 0 && S_ISDIR(mode)) {
+        if (mode != 0 && dst_isdir) {
             // If we're copying a local file to a remote directory,
             // we really want to copy to remote_dir + "/" + local_filename.
             path_holder = android::base::StringPrintf(
@@ -897,7 +915,23 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
                 }
             }
         } else if (S_ISDIR(mode)) {
-            success &= copy_remote_dir_local(sc, src_path, dst_path, copy_attrs);
+            std::string dst_dir = dst;
+
+            // If the destination path existed originally, the source directory
+            // should be copied as a child of the destination.
+            if (dst_exists) {
+                if (!dst_isdir) {
+                    sc.Error("target '%s' is not a directory", dst);
+                    return false;
+                }
+                if (!adb_is_separator(dst_dir.back())) {
+                    dst_dir.push_back(OS_PATH_SEPARATOR);
+                }
+                dst_dir.append(adb_basename(src_path));
+            }
+
+            success &= copy_remote_dir_local(sc, src_path, dst_dir.c_str(),
+                                             copy_attrs);
             continue;
         } else {
             sc.Error("remote object '%s' not a file or directory", src_path);
