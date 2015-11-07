@@ -480,6 +480,8 @@ static copyinfo mkcopyinfo(const std::string& spath, const std::string& dpath,
     copyinfo result;
     result.src = spath;
     result.dst = dpath;
+
+    // FIXME(b/25573669): This is probably broken on win32?
     if (result.src.back() != '/') {
       result.src.push_back('/');
     }
@@ -527,22 +529,23 @@ static bool local_build_list(SyncConnection& sc, std::vector<copyinfo>* filelist
         std::string stat_path = lpath + de->d_name;
 
         struct stat st;
-        if (!lstat(stat_path.c_str(), &st)) {
-            copyinfo ci = mkcopyinfo(lpath, rpath, de->d_name, st.st_mode);
-            if (S_ISDIR(st.st_mode)) {
-                dirlist.push_back(ci);
-            } else {
-                if (!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
-                    sc.Error("skipping special file '%s'", lpath.c_str());
-                } else {
-                    ci.time = st.st_mtime;
-                    ci.size = st.st_size;
-                    filelist->push_back(ci);
-                }
-            }
-        } else {
+        if (lstat(stat_path.c_str(), &st) == -1) {
             sc.Error("cannot lstat '%s': %s", stat_path.c_str(),
                      strerror(errno));
+            continue;
+        };
+
+        copyinfo ci = mkcopyinfo(lpath, rpath, de->d_name, st.st_mode);
+        if (S_ISDIR(st.st_mode)) {
+            dirlist.push_back(ci);
+        } else {
+            if (!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
+                sc.Error("skipping special file '%s'", lpath.c_str());
+            } else {
+                ci.time = st.st_mtime;
+                ci.size = st.st_size;
+                filelist->push_back(ci);
+            }
         }
     }
 
@@ -573,7 +576,9 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
                                   std::string rpath, bool check_timestamps,
                                   bool list_only) {
     // Make sure that both directory paths end in a slash.
-    // Both paths are known to exist, so they cannot be empty.
+    // Both paths are known to be nonempty.
+    //
+    // FIXME(b/25573669): This is probably broken on win32?
     if (lpath.back() != '/') {
         lpath.push_back('/');
     }
@@ -640,7 +645,8 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
     bool success = true;
     unsigned mode;
     if (!sync_stat(sc, dst, nullptr, &mode, nullptr)) return false;
-    bool dst_isdir = mode != 0 && S_ISDIR(mode);
+    bool dst_exists = (mode != 0);
+    bool dst_isdir = S_ISDIR(mode);
 
     if (!dst_isdir) {
         if (srcs.size() > 1) {
@@ -648,7 +654,10 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
             return false;
         } else {
             size_t dst_len = strlen(dst);
-            if (dst[dst_len - 1] == '/') {
+
+            // A path that ends with a slash doesn't have to be a directory if
+            // it doesn't exist yet.
+            if (dst[dst_len - 1] == '/' && dst_exists) {
                 sc.Error("failed to access '%s': Not a directory", dst);
                 return false;
             }
@@ -658,7 +667,7 @@ bool do_sync_push(const std::vector<const char*>& srcs, const char* dst) {
     for (const char* src_path : srcs) {
         const char* dst_path = dst;
         struct stat st;
-        if (stat(src_path, &st)) {
+        if (stat(src_path, &st) == -1) {
             sc.Error("cannot stat '%s': %s", src_path, strerror(errno));
             success = false;
             continue;
@@ -759,10 +768,12 @@ static int set_time_and_mode(const char *lpath, time_t time, unsigned int mode)
 static bool copy_remote_dir_local(SyncConnection& sc, std::string rpath,
                                   std::string lpath, bool copy_attrs) {
     // Make sure that both directory paths end in a slash.
-    // Both paths are known to exist, so they cannot be empty.
+    // Both paths are known to be nonempty, so we don't need to check.
     if (rpath.back() != '/') {
         rpath.push_back('/');
     }
+
+    // FIXME(b/25573669): This is probably broken on win32?
     if (lpath.back() != '/') {
         lpath.push_back('/');
     }
@@ -819,16 +830,24 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
 
     bool success = true;
     unsigned mode, time;
-    struct stat st;
-    if (stat(dst, &st)) {
-        // If we're only pulling one file, the destination path might point to
+    struct stat st = {};
+    if (stat(dst, &st) == -1) {
+        // If we're only pulling one path, the destination path might point to
         // a path that doesn't exist yet.
-        if (srcs.size() != 1 || errno != ENOENT) {
-            sc.Error("cannot stat '%s': %s", dst, strerror(errno));
+        if (srcs.size() == 1 && errno == ENOENT) {
+            // However, its parent must exist.
+            struct stat parent_st;
+            if (stat(adb_dirname(dst).c_str(), &parent_st) == -1) {
+                sc.Error("cannot create file/directory '%s': %s", dst, strerror(errno));
+                return false;
+            }
+        } else {
+            sc.Error("failed to access '%s': %s", dst, strerror(errno));
             return false;
         }
     }
 
+    bool dst_exists = (st.st_mode != 0);
     bool dst_isdir = S_ISDIR(st.st_mode);
     if (!dst_isdir) {
         if (srcs.size() > 1) {
@@ -836,7 +855,10 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
             return false;
         } else {
             size_t dst_len = strlen(dst);
-            if (dst[dst_len - 1] == '/') {
+
+            // A path that ends with a slash doesn't have to be a directory if
+            // it doesn't exist yet.
+            if (dst[dst_len - 1] == '/' && dst_exists) {
                 sc.Error("failed to access '%s': Not a directory", dst);
                 return false;
             }
