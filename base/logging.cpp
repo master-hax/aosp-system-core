@@ -268,7 +268,16 @@ void SetLogger(LogFunction&& logger) {
 // have a non-modifying basename.
 static const char* GetFileBasename(const char* file) {
   const char* last_slash = strrchr(file, '/');
-  return (last_slash == nullptr) ? file : last_slash + 1;
+  if (last_slash != nullptr) {
+    return last_slash + 1;
+  }
+#if defined(_WIN32)
+  const char* last_backslash = strrchr(file, '\\');
+  if (last_backslash != nullptr) {
+    return last_backslash + 1;
+  }
+#endif
+  return file;
 }
 
 // This indirection greatly reduces the stack impact of having lots of
