@@ -448,18 +448,43 @@ static FeatureSet GetFeatureSet(TransportType transport_type, const char* serial
 }
 
 static void send_window_size_change(int fd, std::unique_ptr<ShellProtocol>& shell) {
-#if !defined(_WIN32)
     // Old devices can't handle window size changes.
     if (shell == nullptr) return;
 
+#if defined(_WIN32)
+    struct winsize {
+        unsigned short ws_row;
+        unsigned short ws_col;
+        unsigned short ws_xpixel;
+        unsigned short ws_ypixel;
+    };
+#endif
+
     winsize ws;
+
+#if defined(_WIN32)
+    // If stdout is redirected to a non-console, we won't be able to get the
+    // console size, but that makes sense.
+    const intptr_t intptr_handle = _get_osfhandle(STDOUT_FILENO);
+    if (intptr_handle == -1) return;
+
+    const HANDLE handle = reinterpret_cast<const HANDLE>(intptr_handle);
+
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    memset(&info, 0, sizeof(info));
+    if (!GetConsoleScreenBufferInfo(handle, &info)) return;
+
+    memset(&ws, 0, sizeof(ws));
+    ws.ws_row = info.srWindow.Bottom - info.srWindow.Top + 1;
+    ws.ws_col = info.srWindow.Right - info.srWindow.Left + 1;
+#else
     if (ioctl(fd, TIOCGWINSZ, &ws) == -1) return;
+#endif
 
     // Send the new window size as human-readable ASCII for debugging convenience.
     size_t l = snprintf(shell->data(), shell->data_capacity(), "%dx%d,%dx%d",
                         ws.ws_row, ws.ws_col, ws.ws_xpixel, ws.ws_ypixel);
     shell->Write(ShellProtocol::kIdWindowSizeChange, l + 1);
-#endif
 }
 
 // Used to pass multiple values to the stdin read thread.
@@ -484,7 +509,10 @@ static void* stdin_read_thread_loop(void* x) {
     pthread_sigmask(SIG_BLOCK, &sigset, nullptr);
 #endif
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+    // _get_interesting_input_record_uncached() causes unix_read_interruptible()
+    // to return -1 with errno == EINTR if the window size changes.
+#else
     // Unblock SIGWINCH for this thread, so our read(2) below will be
     // interrupted if the window size changes.
     sigset_t mask;
@@ -505,20 +533,15 @@ static void* stdin_read_thread_loop(void* x) {
     }
 
     while (true) {
-        // Use unix_read() rather than adb_read() for stdin.
-        D("stdin_read_thread_loop(): pre unix_read(fdi=%d,...)", args->stdin_fd);
-#if !defined(_WIN32)
-#undef read
-        int r = read(args->stdin_fd, buffer_ptr, buffer_size);
+        // Use unix_read_interruptible() rather than adb_read() for stdin.
+        D("stdin_read_thread_loop(): pre unix_read_interruptible(fdi=%d,...)", args->stdin_fd);
+        int r = unix_read_interruptible(args->stdin_fd, buffer_ptr,
+                                        buffer_size);
         if (r == -1 && errno == EINTR) {
             send_window_size_change(args->stdin_fd, args->protocol);
             continue;
         }
-#define read ___xxx_read
-#else
-        int r = unix_read(args->stdin_fd, buffer_ptr, buffer_size);
-#endif
-        D("stdin_read_thread_loop(): post unix_read(fdi=%d,...)", args->stdin_fd);
+        D("stdin_read_thread_loop(): post unix_read_interruptible(fdi=%d,...)", args->stdin_fd);
         if (r <= 0) {
             // Only devices using the shell protocol know to close subprocess
             // stdin. For older devices we want to just leave the connection
