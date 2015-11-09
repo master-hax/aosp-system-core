@@ -852,7 +852,7 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
             continue;
         }
 
-        if (S_ISREG(mode) || S_ISLNK(mode) || S_ISCHR(mode) || S_ISBLK(mode)) {
+        if (S_ISREG(mode) || S_ISLNK(mode)) {
             std::string path_holder;
             struct stat st;
             if (stat(dst_path, &st) == 0) {
