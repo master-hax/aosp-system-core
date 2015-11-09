@@ -241,7 +241,6 @@ static void *read_transport_thread(void *_t)
 
 oops:
     D("%s: read_transport thread is exiting", t->serial);
-    kick_transport(t);
     transport_unref(t);
     return 0;
 }
@@ -292,7 +291,6 @@ static void *write_transport_thread(void *_t)
     }
 
     D("%s: write_transport thread is exiting, fd %d", t->serial, t->fd);
-    kick_transport(t);
     transport_unref(t);
     return 0;
 }
@@ -524,6 +522,11 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
         if (t->devpath)
             free(t->devpath);
 
+        // finally, close the t->sfd
+        if (!t->kicked) {
+             t->kicked = 1;
+             t->kick(t);
+        }
         delete t;
 
         update_transports();
@@ -619,7 +622,6 @@ static void transport_unref(atransport* t) {
     t->ref_count--;
     if (t->ref_count == 0) {
         D("transport: %s unref (kicking and closing)", t->serial);
-        kick_transport_locked(t);
         t->close(t);
         remove_transport(t);
     } else {

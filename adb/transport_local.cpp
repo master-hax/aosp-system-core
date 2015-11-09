@@ -260,9 +260,7 @@ static const char _ok_resp[]    = "ok";
         if ((size_t)res == strlen(_accept_req)) {
             /* Wait for the response. In the response we expect 'ok' on success,
              * or 'ko' on failure. */
-            res = adb_read(fd, tmp, sizeof(tmp));
-            if (res != 2 || memcmp(tmp, _ok_resp, 2)) {
-                D("Accepting ADB host connection has failed.");
+            if (!ReadFdExactly(fd, tmp, 2) || memcmp(tmp, _ok_resp, 2)) {
                 adb_close(fd);
             } else {
                 /* Host is connected. Register the transport, and start the
