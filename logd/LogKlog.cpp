@@ -596,7 +596,7 @@ int LogKlog::log(const char *buf, size_t len) {
         const char *bt, *et, *cp;
 
         bt = p;
-        if (!fast<strncmp>(p, "[INFO]", 6)) {
+        if ((taglen >= 6) && !fast<strncmp>(p, "[INFO]", 6)) {
             // <PRI>[<TIME>] "[INFO]"<tag> ":" message
             bt = p + 6;
             taglen -= 6;
@@ -620,7 +620,9 @@ int LogKlog::log(const char *buf, size_t len) {
             p = cp + 1;
         } else if (taglen) {
             size = et - bt;
-            if ((*bt == *cp) && fast<strncmp>(bt + 1, cp + 1, size - 1)) {
+            if ((taglen > size) &&
+                    (*bt == *cp) &&
+                    fast<strncmp>(bt + 1, cp + 1, size - 1)) {
                 // <PRI>[<TIME>] <tag>_host '<tag>.<num>' : message
                 if (!fast<strncmp>(bt + size - 5, "_host", 5)
                         && !fast<strncmp>(bt + 1, cp + 1, size - 6)) {
@@ -694,7 +696,7 @@ int LogKlog::log(const char *buf, size_t len) {
                     p = cp + 1;
                 }
             }
-        }
+        } /* else no tag */
         size = etag - tag;
         if ((size <= 1)
             // register names like x9
@@ -721,6 +723,10 @@ int LogKlog::log(const char *buf, size_t len) {
             taglen = mp - tag;
         }
     }
+    // Deal with sloppy and simplistic harmless p = cp + 1 etc above.
+    if (len < (size_t)(p - buf)) {
+        p = &buf[len];
+    }
     // skip leading space
     while ((isspace(*p) || !*p) && (p < &buf[len])) {
         ++p;
@@ -735,14 +741,18 @@ int LogKlog::log(const char *buf, size_t len) {
         p = " ";
         b = 1;
     }
+    // paranoid sanity check, can not happen ...
     if (b > LOGGER_ENTRY_MAX_PAYLOAD) {
         b = LOGGER_ENTRY_MAX_PAYLOAD;
     }
+    if (taglen > LOGGER_ENTRY_MAX_PAYLOAD) {
+        taglen = LOGGER_ENTRY_MAX_PAYLOAD;
+    }
+    // calculate buffer copy requirements
     size_t n = 1 + taglen + 1 + b + 1;
-    int rc = n;
-    if ((taglen > n) || (b > n)) { // Can not happen ...
-        rc = -EINVAL;
-        return rc;
+    // paranoid sanity check, can not happen ...
+    if ((taglen > n) || (b > n) || (n > USHRT_MAX)) {
+        return -EINVAL;
     }
 
     char newstr[n];
@@ -763,8 +773,8 @@ int LogKlog::log(const char *buf, size_t len) {
     np[b] = '\0';
 
     // Log message
-    rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr,
-                     (n <= USHRT_MAX) ? (unsigned short) n : USHRT_MAX);
+    int rc = logbuf->log(LOG_ID_KERNEL, now, uid, pid, tid, newstr,
+                         (unsigned short) n);
 
     // notify readers
     if (!rc) {
