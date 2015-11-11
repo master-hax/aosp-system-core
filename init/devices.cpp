@@ -77,6 +77,7 @@ struct perms_ {
     unsigned int gid;
     unsigned short prefix;
     unsigned short wildcard;
+    unsigned short dev_class;
 };
 
 struct perm_node {
@@ -97,8 +98,9 @@ static list_declare(platform_names);
 
 int add_dev_perms(const char *name, const char *attr,
                   mode_t perm, unsigned int uid, unsigned int gid,
-                  unsigned short prefix,
-                  unsigned short wildcard) {
+                  unsigned short prefix, unsigned short wildcard,
+                  unsigned short dev_class) {
+
     struct perm_node *node = (perm_node*) calloc(1, sizeof(*node));
     if (!node)
         return -ENOMEM;
@@ -118,6 +120,7 @@ int add_dev_perms(const char *name, const char *attr,
     node->dp.gid = gid;
     node->dp.prefix = prefix;
     node->dp.wildcard = wildcard;
+    node->dp.dev_class = dev_class;
 
     if (attr)
         list_add_tail(&sys_perms, &node->plist);
@@ -138,16 +141,135 @@ void fixup_sys_perms(const char *upath)
      */
     list_for_each(node, &sys_perms) {
         dp = &(node_to_item(node, struct perm_node, plist))->dp;
-        if (dp->prefix) {
+        INFO("Rule %s with prefix: %d; wildcard: %d; class: %d\n",
+            dp->name, dp->prefix, dp->wildcard, dp->dev_class);
+
+        if (dp->prefix && !dp->dev_class) {
             if (strncmp(upath, dp->name + 4, strlen(dp->name + 4)))
                 continue;
-        } else if (dp->wildcard) {
+        } else if (dp->wildcard && !dp->dev_class) {
             if (fnmatch(dp->name + 4, upath, FNM_PATHNAME) != 0)
                 continue;
+        } else if (dp->dev_class) {
+                DIR *class_dir;
+                struct dirent *class_dirent;
+
+                char *sub_start;
+                char sub_name[512];
+                char *sub_end;
+                unsigned short int sub_len = 0;
+
+                char class_path[512];
+                unsigned short int class_len = 0;
+
+                /* Retrieve the subsystem name */
+                /* /sys/class/$SUBSYSTEM */
+                memset(class_path, 0, 512);
+                memset(sub_name, 0, 512);
+                sub_start = strstr(dp->name, "/class/");
+                if (NULL == sub_start)
+                        continue;
+
+                sub_start += 7; /* /sys/class/$S <- next char after '/' */
+                sub_end = sub_start;
+                while (*++sub_end != '/' ||
+                        ((unsigned int)(sub_end - sub_start) > 512)) {
+                    ;
+                }
+                /* /sys/class/$SUBSYSTEM/ <- '/' */
+                sub_len = (unsigned short int)(sub_end - sub_start);
+                if (sub_len >= 512) continue;
+
+                /* Skip this rule if it refers to another subsystem */
+                strncpy(sub_name, sub_start, sub_len); //skip '/'
+                sub_name[sub_len+1] = '\0';
+                INFO("sub name %s len %d\n", sub_name, sub_len);
+                if (NULL == (strstr(upath, sub_name))) {
+                    INFO("Skip %s for %s\n",
+                            dp->name, upath);
+                    continue;
+                }
+
+                /* Build class directory name and walk symbolic links */
+                class_len = (unsigned short int)(sub_end - dp->name);
+                strncpy(class_path, dp->name, class_len+1); //include '/'
+                class_path[class_len+2] = '\0';
+                INFO("class path %s len %d\n",
+                        class_path, class_len);
+
+                class_dir = opendir(class_path);
+                if (NULL == class_dir){
+                        ERROR("Unable to open dir %s: %s\n",
+                                        class_path, strerror(errno));
+                        continue;
+                }
+
+                unsigned short int rule_match = 0;
+                char symlink_path[512];
+                char symlink_target[512];
+                while ( NULL != (class_dirent = readdir(class_dir))) {
+                        memset(symlink_path, 0, 512);
+                        memset(symlink_target, 0, 512);
+
+                        if (!(class_dirent->d_type & DT_LNK)){
+                                //FIXME: this fails with some attributes eg.
+                                // /sys/class/gpio/export or
+                                // /sys/class/gpio/unexport
+                                //
+                                // They are not symlinks but DT_LINK flag is set
+                                // readlink will fail for this files
+                                continue;
+                        }
+
+                        INFO("File name %s is a link\n", class_dirent->d_name);
+
+                        if (strlen(class_path) +
+                                strlen(class_dirent->d_name) > 512) {
+                                ERROR(" %s + %s: Pathname too long!\n",
+                                                class_path,
+                                                class_dirent->d_name);
+                                continue;
+                        }
+
+                        /* Check if link target matches the event source */
+                        strncpy(symlink_path, class_path, strlen(class_path));
+                        strcat(symlink_path, class_dirent->d_name);
+                        if (readlink(symlink_path, symlink_target, 512) < 0) {
+                                INFO(" Unable to read link %s: %s\n",
+                                                symlink_path,
+                                                strerror(errno));
+                                continue;
+                        }
+                        INFO("Link %s points to %s\n",
+                                symlink_path,
+                                symlink_target);
+
+                        /* +5 to skip '../..' in front of syslink_target */
+                        char *rover = symlink_target + 5;
+                        if (!strncmp(rover, upath, strlen(rover))){
+                                INFO("Found match for event %s:\n \
+                                       rule %s with target %s\n",
+                                        upath, dp->name,
+                                        rover);
+                                rule_match = 1;
+                                break;
+                        }
+                }
+                closedir(class_dir);
+
+                if (!rule_match)
+                        continue;
+
+        } else if (dp->wildcard && dp->dev_class) {
+            //FIXME + TODO
+            continue;
         } else {
             if (strcmp(upath, dp->name + 4))
                 continue;
         }
+
+        INFO("Rule for %s matches upath: %s\n",
+                dp->name, upath);
 
         if ((strlen(upath) + strlen(dp->attr) + 6) > sizeof(buf))
             break;

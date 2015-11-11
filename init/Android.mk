@@ -100,7 +100,8 @@ LOCAL_STATIC_LIBRARIES := \
     libc++_static \
     libdl \
     libsparse_static \
-    libz
+    libz \
+    libutils
 
 # Create symlinks
 LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \

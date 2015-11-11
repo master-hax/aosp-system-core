@@ -102,6 +102,7 @@ void set_device_permission(int nargs, char **args)
     gid_t gid;
     int prefix = 0;
     int wildcard = 0;
+    int dev_class = 0;
     char *endptr;
     int ret;
     char *tmp = 0;
@@ -142,6 +143,12 @@ void set_device_permission(int nargs, char **args)
         } else if (wildcard_chr) {
             wildcard = 1;
         }
+
+        /* Check if rule refers to a class entry */
+        char *class_str = strstr(name, "/class/");
+        if (NULL != class_str){
+                dev_class = 1;
+        }
     }
 
     perm = strtol(args[1], &endptr, 8);
@@ -167,6 +174,6 @@ void set_device_permission(int nargs, char **args)
     }
     gid = ret;
 
-    add_dev_perms(name, attr, perm, uid, gid, prefix, wildcard);
+    add_dev_perms(name, attr, perm, uid, gid, prefix, wildcard, dev_class);
     free(tmp);
 }
