@@ -505,10 +505,11 @@ static void* stdin_read_thread_loop(void* x) {
         buffer_size = args->protocol->data_capacity();
     }
 
-    // If we need to parse escape sequences, make life easy.
-    if (args->raw_stdin && args->escape_char != '\0') {
-        buffer_size = 1;
-    }
+    // If we need to parse escape sequences, and the previous read put us in the
+    // kInEscape state, we need one extra byte to write the escape character
+    // that we swallowed before.
+    const size_t read_size = (args->raw_stdin && args->escape_char != '\0') ?
+            (buffer_size - 1) : buffer_size;
 
     enum EscapeState { kMidFlow, kStartOfLine, kInEscape };
     EscapeState state = kStartOfLine;
@@ -518,14 +519,14 @@ static void* stdin_read_thread_loop(void* x) {
         D("stdin_read_thread_loop(): pre unix_read(fdi=%d,...)", args->stdin_fd);
 #if !defined(_WIN32)
 #undef read
-        int r = read(args->stdin_fd, buffer_ptr, buffer_size);
+        int r = read(args->stdin_fd, buffer_ptr, read_size);
         if (r == -1 && errno == EINTR) {
             send_window_size_change(args->stdin_fd, args->protocol);
             continue;
         }
 #define read ___xxx_read
 #else
-        int r = unix_read(args->stdin_fd, buffer_ptr, buffer_size);
+        int r = unix_read(args->stdin_fd, buffer_ptr, read_size);
 #endif
         D("stdin_read_thread_loop(): post unix_read(fdi=%d,...)", args->stdin_fd);
         if (r <= 0) {
@@ -544,30 +545,39 @@ static void* stdin_read_thread_loop(void* x) {
         // process starts ignoring the signal. SSH also does this, see the
         // "escape characters" section on the ssh man page for more info.
         if (args->raw_stdin && args->escape_char != '\0') {
-            char ch = buffer_ptr[0];
-            if (ch == args->escape_char) {
-                if (state == kStartOfLine) {
-                    state = kInEscape;
-                    // Swallow the escape character.
-                    continue;
-                } else {
-                    state = kMidFlow;
-                }
-            } else {
-                if (state == kInEscape) {
-                    if (ch == '.') {
-                        fprintf(stderr,"\r\n[ disconnected ]\r\n");
-                        stdin_raw_restore();
-                        exit(0);
+            for (int i = 0; i < r; ++i) {
+                const char ch = buffer_ptr[i];
+                if (ch == args->escape_char) {
+                    if (state == kStartOfLine) {
+                        state = kInEscape;
+                        // Swallow the escape character.
+                        memmove(&buffer_ptr[i], &buffer_ptr[i + 1],
+                                r - (i + 1));
+                        --r;
+                        --i;    // process any char after the escape character
                     } else {
-                        // We swallowed an escape character that wasn't part of
-                        // a valid escape sequence; time to cough it up.
-                        buffer_ptr[0] = args->escape_char;
-                        buffer_ptr[1] = ch;
-                        ++r;
+                        state = kMidFlow;
                     }
+                } else {
+                    if (state == kInEscape) {
+                        if (ch == '.') {
+                            fprintf(stderr, "\r\n[ disconnected ]\r\n");
+                            stdin_raw_restore();
+                            exit(0);
+                        } else {
+                            // We swallowed an escape character that wasn't part
+                            // of a valid escape sequence; time to cough it up.
+                            CHECK_LE(r + 1, static_cast<int>(buffer_size));
+                            memmove(&buffer_ptr[i + 1], &buffer_ptr[i], r - i);
+                            buffer_ptr[i] = args->escape_char;
+                            CHECK_EQ(ch, buffer_ptr[i + 1]);
+                            ++r;
+                            ++i;    // skip char that we just processed
+                        }
+                    }
+                    state = (ch == '\n' || ch == '\r') ?
+                            kStartOfLine : kMidFlow;
                 }
-                state = (ch == '\n' || ch == '\r') ? kStartOfLine : kMidFlow;
             }
         }
         if (args->protocol) {

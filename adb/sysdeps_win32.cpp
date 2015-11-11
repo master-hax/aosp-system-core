@@ -2950,6 +2950,11 @@ size_t _escape_prefix(char* const buf, const size_t len) {
 // -1 on error. Never returns zero because Win32 consoles are never 'closed'
 // (as far as I can tell).
 static int _console_read(const HANDLE console, void* buf, size_t len) {
+    // The longest output sequence is 7 bytes, produced by input such as
+    // Ctrl-Shift-Alt F5. Instead of maintaining an internal buffer, we just
+    // make this minimum size part of the API.
+    CHECK_GE(len, 7u) << "buffer size is too small";
+
     for (;;) {
         KEY_EVENT_RECORD* const key_event = _get_key_event_record(console);
         if (key_event == NULL) {
