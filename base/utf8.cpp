@@ -27,6 +27,22 @@
 namespace android {
 namespace base {
 
+namespace {
+
+// Helper to set errno based on GetLastError() after WideCharToMultiByte()/MultiByteToWideChar().
+void SetErrnoFromLastError() {
+  switch (GetLastError()) {
+    case ERROR_NO_UNICODE_TRANSLATION:
+      errno = EILSEQ;
+      break;
+    default:
+      errno = EINVAL;
+      break;
+  }
+}
+
+}
+
 bool WideToUTF8(const wchar_t* utf16, const size_t size, std::string* utf8) {
   utf8->clear();
 
@@ -49,6 +65,7 @@ bool WideToUTF8(const wchar_t* utf16, const size_t size, std::string* utf8) {
   const int chars_required = WideCharToMultiByte(CP_UTF8, flags, utf16, size,
                                                  NULL, 0, NULL, NULL);
   if (chars_required <= 0) {
+    SetErrnoFromLastError();
     return false;
   }
 
@@ -59,6 +76,7 @@ bool WideToUTF8(const wchar_t* utf16, const size_t size, std::string* utf8) {
                                          &(*utf8)[0], chars_required, NULL,
                                          NULL);
   if (result != chars_required) {
+    SetErrnoFromLastError();
     CHECK_LE(result, chars_required) << "WideCharToMultiByte wrote " << result
         << " chars to buffer of " << chars_required << " chars";
     utf8->clear();
@@ -79,9 +97,11 @@ bool WideToUTF8(const std::wstring& utf16, std::string* utf8) {
   return WideToUTF8(utf16.c_str(), utf16.length(), utf8);
 }
 
+namespace {
+
 // Internal helper function that takes MultiByteToWideChar() flags.
-static bool _UTF8ToWideWithFlags(const char* utf8, const size_t size,
-                                 std::wstring* utf16, const DWORD flags) {
+bool UTF8ToWideWithFlags(const char* utf8, const size_t size, std::wstring* utf16,
+                         const DWORD flags) {
   utf16->clear();
 
   if (size == 0) {
@@ -93,6 +113,7 @@ static bool _UTF8ToWideWithFlags(const char* utf8, const size_t size,
   const int chars_required = MultiByteToWideChar(CP_UTF8, flags, utf8, size,
                                                  NULL, 0);
   if (chars_required <= 0) {
+    SetErrnoFromLastError();
     return false;
   }
 
@@ -102,6 +123,7 @@ static bool _UTF8ToWideWithFlags(const char* utf8, const size_t size,
   const int result = MultiByteToWideChar(CP_UTF8, flags, utf8, size,
                                          &(*utf16)[0], chars_required);
   if (result != chars_required) {
+    SetErrnoFromLastError();
     CHECK_LE(result, chars_required) << "MultiByteToWideChar wrote " << result
         << " chars to buffer of " << chars_required << " chars";
     utf16->clear();
@@ -111,15 +133,20 @@ static bool _UTF8ToWideWithFlags(const char* utf8, const size_t size,
   return true;
 }
 
+}
+
 bool UTF8ToWide(const char* utf8, const size_t size, std::wstring* utf16) {
   // If strictly interpreting as UTF-8 succeeds, return success.
-  if (_UTF8ToWideWithFlags(utf8, size, utf16, MB_ERR_INVALID_CHARS)) {
+  if (UTF8ToWideWithFlags(utf8, size, utf16, MB_ERR_INVALID_CHARS)) {
     return true;
   }
 
+  const int saved_errno = errno;
+
   // Fallback to non-strict interpretation, allowing invalid characters and
   // converting as best as possible, and return false to signify a problem.
-  (void)_UTF8ToWideWithFlags(utf8, size, utf16, 0);
+  (void)UTF8ToWideWithFlags(utf8, size, utf16, 0);
+  errno = saved_errno;
   return false;
 }
 
@@ -140,7 +167,6 @@ namespace utf8 {
 int open(const char* name, int flags, ...) {
   std::wstring name_utf16;
   if (!UTF8ToWide(name, &name_utf16)) {
-    errno = EINVAL;
     return -1;
   }
 
@@ -158,7 +184,6 @@ int open(const char* name, int flags, ...) {
 int unlink(const char* name) {
   std::wstring name_utf16;
   if (!UTF8ToWide(name, &name_utf16)) {
-    errno = EINVAL;
     return -1;
   }
 
