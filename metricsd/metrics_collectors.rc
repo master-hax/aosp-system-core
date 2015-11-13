@@ -1,0 +1,4 @@
+service metricscollector /system/bin/metrics_collectors --foreground --logtosyslog
+    class late_start
+    user system
+    group system dbus inet
