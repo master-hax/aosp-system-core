@@ -261,8 +261,11 @@ LOCAL_STATIC_LIBRARIES := \
     libadb \
     libbase \
     libcrypto_static \
-    libcutils \
     liblog \
+
+ifneq ($(HOST_OS),windows)
+    LOCAL_STATIC_LIBRARIES += libcutils
+endif
 
 LOCAL_CXX_STL := libc++_static
 
