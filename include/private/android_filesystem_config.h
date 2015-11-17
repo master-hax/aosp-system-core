@@ -83,6 +83,7 @@
 #define AID_TLSDATE       1039  /* tlsdate unprivileged user */
 #define AID_MEDIA_EX      1040  /* mediaextractor process */
 #define AID_AUDIOSERVER   1041  /* audioserver process */
+#define AID_DEBUGGERD     1042  /* debuggerd unprivileged user */
 
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
@@ -184,6 +185,7 @@ static const struct android_id_info android_ids[] = {
     { "tlsdate",       AID_TLSDATE, },
     { "mediaex",       AID_MEDIA_EX, },
     { "audioserver",   AID_AUDIOSERVER, },
+    { "debuggerd",     AID_DEBUGGERD, },
 
     { "shell",         AID_SHELL, },
     { "cache",         AID_CACHE, },
