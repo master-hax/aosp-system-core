@@ -16,7 +16,7 @@
 LOCAL_PATH := $(my-dir)
 include $(CLEAR_VARS)
 
-commonSources := \
+libcutils_common_srcs := \
         hashmap.c \
         atomic.c.arm \
         native_handle.c \
@@ -43,7 +43,7 @@ commonSources := \
         socket_network_client.c \
         sockets.c \
 
-hostSources := \
+libcutils_host_srcs := \
         ashmem-host.c \
         trace-host.c
 
@@ -51,7 +51,7 @@ hostSources := \
 # Shared and static library for host
 # ========================================================
 LOCAL_MODULE := libcutils
-LOCAL_SRC_FILES := $(commonSources) $(hostSources) dlmalloc_stubs.c
+LOCAL_SRC_FILES := $(libcutils_common_srcs) $(libcutils_host_srcs) dlmalloc_stubs.c
 LOCAL_STATIC_LIBRARIES := liblog
 LOCAL_CFLAGS := -Werror -Wall -Wextra
 LOCAL_MULTILIB := both
@@ -60,7 +60,7 @@ include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libcutils
-LOCAL_SRC_FILES := $(commonSources) $(hostSources) dlmalloc_stubs.c
+LOCAL_SRC_FILES := $(libcutils_common_srcs) $(libcutils_host_srcs) dlmalloc_stubs.c
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_CFLAGS := -Werror -Wall -Wextra
 LOCAL_MULTILIB := both
@@ -73,7 +73,7 @@ include $(BUILD_HOST_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libcutils
-LOCAL_SRC_FILES := $(commonSources) \
+LOCAL_SRC_FILES := $(libcutils_common_srcs) \
         android_reboot.c \
         ashmem-dev.c \
         debugger.c \
