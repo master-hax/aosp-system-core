@@ -263,7 +263,7 @@ LOCAL_STATIC_LIBRARIES := \
     libcrypto_static \
     liblog \
 
-# Don't use libcutils on Windows.
+# The needed libcutils functions are implemented on Windows by sysdeps_win32.cpp.
 LOCAL_STATIC_LIBRARIES_darwin := libcutils
 LOCAL_STATIC_LIBRARIES_linux := libcutils
 
