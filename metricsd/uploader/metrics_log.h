@@ -34,15 +34,17 @@ class MetricsLog : public metrics::MetricsLogBase {
   // SystemProfileSetter.
   MetricsLog();
 
-  void IncrementUserCrashCount();
-  void IncrementKernelCrashCount();
-  void IncrementUncleanShutdownCount();
+  void IncrementUserCrashCount(unsigned int count);
+  void IncrementKernelCrashCount(unsigned int count);
+  void IncrementUncleanShutdownCount(unsigned int count);
 
   // Populate the system profile with system information using setter.
   bool PopulateSystemProfile(SystemProfileSetter* setter);
 
  private:
+  friend class UploadServiceTest;
   FRIEND_TEST(UploadServiceTest, LogContainsAggregatedValues);
+  FRIEND_TEST(UploadServiceTest, LogContainsCrashCounts);
   FRIEND_TEST(UploadServiceTest, LogKernelCrash);
   FRIEND_TEST(UploadServiceTest, LogUncleanShutdown);
   FRIEND_TEST(UploadServiceTest, LogUserCrash);
