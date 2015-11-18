@@ -18,30 +18,28 @@
 #include <base/command_line.h>
 #include <base/files/file_path.h>
 #include <base/logging.h>
+#include <base/metrics/statistics_recorder.h>
 #include <base/strings/string_util.h>
 #include <base/time/time.h>
 #include <brillo/flag_helper.h>
 #include <brillo/syslog_logging.h>
 
 #include "constants.h"
+#include "uploader/crash_counters.h"
+#include "uploader/metrics_service_runner.h"
 #include "uploader/upload_service.h"
-
 
 int main(int argc, char** argv) {
   DEFINE_bool(foreground, false, "Don't daemonize");
 
   // Upload the metrics once and exit. (used for testing)
-  DEFINE_bool(uploader_test,
-              false,
-              "run the uploader once and exit");
+  DEFINE_bool(uploader_test, false, "run the uploader once and exit");
 
   // Upload Service flags.
-  DEFINE_int32(upload_interval_secs,
-               1800,
+  DEFINE_int32(upload_interval_secs, 1800,
                "Interval at which metrics_daemon sends the metrics. (needs "
                "-uploader)");
-  DEFINE_string(server,
-                metrics::kMetricsServer,
+  DEFINE_string(server, metrics::kMetricsServer,
                 "Server to upload the metrics to. (needs -uploader)");
   DEFINE_string(private_directory, metrics::kMetricsdDirectory,
                 "Path to the private directory used by metricsd "
@@ -56,8 +54,8 @@ int main(int argc, char** argv) {
 
   brillo::FlagHelper::Init(argc, argv, "Brillo metrics daemon.");
 
-  int logging_location = (FLAGS_foreground ? brillo::kLogToStderr
-                          : brillo::kLogToSyslog);
+  int logging_location =
+      (FLAGS_foreground ? brillo::kLogToStderr : brillo::kLogToSyslog);
   if (FLAGS_logtosyslog)
     logging_location = brillo::kLogToSyslog;
 
@@ -76,10 +74,16 @@ int main(int argc, char** argv) {
     return errno;
   }
 
-  UploadService service(
+  std::shared_ptr<CrashCounters> counters(new CrashCounters);
+
+  UploadService upload_service(
       FLAGS_server, base::TimeDelta::FromSeconds(FLAGS_upload_interval_secs),
       base::FilePath(FLAGS_private_directory),
-      base::FilePath(FLAGS_shared_directory));
+      base::FilePath(FLAGS_shared_directory), counters);
 
-  service.Run();
+  base::StatisticsRecorder::Initialize();
+  MetricsServiceRunner binder_service(counters);
+  binder_service.run();
+
+  upload_service.Run();
 }
