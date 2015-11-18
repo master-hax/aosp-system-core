@@ -18,6 +18,7 @@
 
 #include <base/logging.h>
 #include <base/strings/stringprintf.h>
+#include <binder/IServiceManager.h>
 #include <errno.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -25,9 +26,10 @@
 #include <cstdio>
 #include <cstring>
 
+#include "android/brillo/IMetricsService.h"
 #include "constants.h"
-#include "serialization/metric_sample.h"
-#include "serialization/serialization_utils.h"
+//#include "serialization/metric_sample.h"
+//#include "serialization/serialization_utils.h"
 
 static const char kCrosEventHistogramName[] = "Platform.CrOSEvent";
 static const int kCrosEventHistogramMax = 100;
@@ -52,6 +54,10 @@ static const char *kCrosEventNames[] = {
   "TPM.NonZeroDictionaryAttackCounter",  // 11
   "TPM.EarlyResetDuringCommand",  // 12
 };
+
+using android::binder::Status;
+using android::brillo::IMetricsService;
+using android::String16;
 
 MetricsLibrary::MetricsLibrary() {}
 MetricsLibrary::~MetricsLibrary() {}
@@ -123,6 +129,23 @@ bool MetricsLibrary::IsGuestMode() {
   return result && (access("/var/run/state/logged-in", F_OK) == 0);
 }
 
+bool MetricsLibrary::CheckService() {
+  if (proxy_.get() && android::IInterface::asBinder(proxy_)->isBinderAlive())
+    return true;
+  LOG(INFO) << "is empty";
+
+  String16 name("android.brillo.IMetricsService");
+  proxy_ = android::interface_cast<IMetricsService>(
+      android::defaultServiceManager()->checkService(name));
+  LOG(INFO) << "am here";
+  if (proxy_.get())
+    return true;
+
+  LOG(INFO) << "could not find the service";
+  
+  return false;
+}
+
 bool MetricsLibrary::AreMetricsEnabled() {
   static struct stat stat_buffer;
   time_t this_check_time = time(nullptr);
@@ -135,7 +158,7 @@ bool MetricsLibrary::AreMetricsEnabled() {
 
 void MetricsLibrary::Init() {
   base::FilePath dir = base::FilePath(metrics::kMetricsDirectory);
-  uma_events_file_ = dir.Append(metrics::kMetricsEventsFileName);
+  //uma_events_file_ = dir.Append(metrics::kMetricsEventsFileName);
   consent_file_ = dir.Append(metrics::kConsentFileName);
   cached_enabled_ = false;
   cached_enabled_time_ = 0;
@@ -148,7 +171,6 @@ void MetricsLibrary::InitWithNoCaching() {
 }
 
 void MetricsLibrary::InitForTest(const base::FilePath& metrics_directory) {
-  uma_events_file_ = metrics_directory.Append(metrics::kMetricsEventsFileName);
   consent_file_ = metrics_directory.Append(metrics::kConsentFileName);
   cached_enabled_ = false;
   cached_enabled_time_ = 0;
@@ -160,42 +182,34 @@ bool MetricsLibrary::SendToUMA(const std::string& name,
                                int min,
                                int max,
                                int nbuckets) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::HistogramSample(name, sample, min, max, nbuckets)
-           .get(),
-      uma_events_file_.value());
+  return CheckService() && proxy_->recordHistogram(
+      String16(name.c_str()), sample, min, max, nbuckets).isOk();
 }
 
 bool MetricsLibrary::SendEnumToUMA(const std::string& name, int sample,
                                    int max) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::LinearHistogramSample(name, sample, max).get(),
-      uma_events_file_.value());
+  return CheckService() && proxy_->recordLinearHistogram(
+      String16(name.c_str()), sample, max).isOk();
 }
 
 bool MetricsLibrary::SendBoolToUMA(const std::string& name, bool sample) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::LinearHistogramSample(name,
-                                                    sample ? 1 : 0, 2).get(),
-      uma_events_file_.value());
+  return CheckService() && proxy_->recordLinearHistogram(
+      String16(name.c_str()), sample ? 1 : 0, 2).isOk();
 }
 
 bool MetricsLibrary::SendSparseToUMA(const std::string& name, int sample) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::SparseHistogramSample(name, sample).get(),
-      uma_events_file_.value());
+  return CheckService() && proxy_->recordSparseHistogram(
+      String16(name.c_str()), sample).isOk();
 }
 
 bool MetricsLibrary::SendUserActionToUMA(const std::string& action) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::UserActionSample(action).get(),
-      uma_events_file_.value());
+
+  return CheckService() && proxy_->recordUserAction(
+      String16(action.c_str())).isOk();
 }
 
 bool MetricsLibrary::SendCrashToUMA(const char *crash_kind) {
-  return metrics::SerializationUtils::WriteMetricToFile(
-      *metrics::MetricSample::CrashSample(crash_kind).get(),
-      uma_events_file_.value());
+  return CheckService() && proxy_->recordCrash(String16(crash_kind)).isOk();
 }
 
 bool MetricsLibrary::SendCrosEventToUMA(const std::string& event) {

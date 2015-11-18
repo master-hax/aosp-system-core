@@ -33,8 +33,8 @@
 #include <base/sha1.h>
 
 #include "constants.h"
-#include "serialization/metric_sample.h"
-#include "serialization/serialization_utils.h"
+//#include "serialization/metric_sample.h"
+//#include "serialization/serialization_utils.h"
 #include "uploader/metrics_log.h"
 #include "uploader/sender_http.h"
 #include "uploader/system_profile_setter.h"
@@ -54,8 +54,6 @@ UploadService::UploadService(const std::string& server,
 }
 
 int UploadService::OnInit() {
-  base::StatisticsRecorder::Initialize();
-
   system_profile_setter_.reset(new SystemProfileCache());
 
   base::MessageLoop::current()->PostDelayedTask(FROM_HERE,
@@ -67,7 +65,6 @@ int UploadService::OnInit() {
 }
 
 void UploadService::InitForTest(SystemProfileSetter* setter) {
-  base::StatisticsRecorder::Initialize();
   system_profile_setter_.reset(setter);
 }
 
@@ -99,13 +96,13 @@ void UploadService::UploadEvent() {
     return;
   }
 
-  // Previous upload successful, reading metrics sample from the file.
-  ReadMetrics();
+  // Previous upload successful, stage another log.
   GatherHistograms();
   StageCurrentLog();
 
   // If a log is available for upload, upload it.
   if (HasStagedLog()) {
+    LOG(INFO) << "has staged";
     SendStagedLog();
   }
 }
@@ -138,70 +135,6 @@ void UploadService::Reset() {
   base::DeleteFile(staged_log_path_, false);
   current_log_.reset();
   failed_upload_count_.Set(0);
-}
-
-void UploadService::ReadMetrics() {
-  CHECK(!HasStagedLog()) << "cannot read metrics until the old logs have been "
-                         << "discarded";
-
-  ScopedVector<metrics::MetricSample> vector;
-  metrics::SerializationUtils::ReadAndTruncateMetricsFromFile(
-      metrics_file_.value(), &vector);
-
-  int i = 0;
-  for (ScopedVector<metrics::MetricSample>::iterator it = vector.begin();
-       it != vector.end(); it++) {
-    metrics::MetricSample* sample = *it;
-    AddSample(*sample);
-    i++;
-  }
-  VLOG(1) << i << " samples read";
-}
-
-void UploadService::AddSample(const metrics::MetricSample& sample) {
-  base::HistogramBase* counter;
-  switch (sample.type()) {
-    case metrics::MetricSample::CRASH:
-      AddCrash(sample.name());
-      break;
-    case metrics::MetricSample::HISTOGRAM:
-      counter = base::Histogram::FactoryGet(
-          sample.name(), sample.min(), sample.max(), sample.bucket_count(),
-          base::Histogram::kUmaTargetedHistogramFlag);
-      counter->Add(sample.sample());
-      break;
-    case metrics::MetricSample::SPARSE_HISTOGRAM:
-      counter = base::SparseHistogram::FactoryGet(
-          sample.name(), base::HistogramBase::kUmaTargetedHistogramFlag);
-      counter->Add(sample.sample());
-      break;
-    case metrics::MetricSample::LINEAR_HISTOGRAM:
-      counter = base::LinearHistogram::FactoryGet(
-          sample.name(),
-          1,
-          sample.max(),
-          sample.max() + 1,
-          base::Histogram::kUmaTargetedHistogramFlag);
-      counter->Add(sample.sample());
-      break;
-    case metrics::MetricSample::USER_ACTION:
-      GetOrCreateCurrentLog()->RecordUserAction(sample.name());
-      break;
-    default:
-      break;
-  }
-}
-
-void UploadService::AddCrash(const std::string& crash_name) {
-  if (crash_name == "user") {
-    GetOrCreateCurrentLog()->IncrementUserCrashCount();
-  } else if (crash_name == "kernel") {
-    GetOrCreateCurrentLog()->IncrementKernelCrashCount();
-  } else if (crash_name == "uncleanshutdown") {
-    GetOrCreateCurrentLog()->IncrementUncleanShutdownCount();
-  } else {
-    DLOG(ERROR) << "crash name unknown" << crash_name;
-  }
 }
 
 void UploadService::GatherHistograms() {
@@ -265,4 +198,3 @@ void UploadService::RemoveFailedLog() {
 bool UploadService::AreMetricsEnabled() {
   return base::PathExists(consent_file_);
 }
-

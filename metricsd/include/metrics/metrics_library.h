@@ -27,6 +27,9 @@
 #include <base/memory/scoped_ptr.h>
 #include <gtest/gtest_prod.h>  // for FRIEND_TEST
 
+#include "binder/IServiceManager.h"
+#include "android/brillo/IMetricsService.h"
+
 class MetricsLibraryInterface {
  public:
   virtual void Init() = 0;
@@ -152,6 +155,8 @@ class MetricsLibrary : public MetricsLibraryInterface {
                        char* buffer, int buffer_size,
                        bool* result);
 
+  bool CheckService();
+
   // Time at which we last checked if metrics were enabled.
   time_t cached_enabled_time_;
 
@@ -160,8 +165,9 @@ class MetricsLibrary : public MetricsLibraryInterface {
 
   // True iff we should cache the enabled/disabled status.
   bool use_caching_;
-
-  base::FilePath uma_events_file_;
+  
+  android::sp<android::IServiceManager> manager_;
+  android::sp<android::brillo::IMetricsService> proxy_;
   base::FilePath consent_file_;
 
   DISALLOW_COPY_AND_ASSIGN(MetricsLibrary);
