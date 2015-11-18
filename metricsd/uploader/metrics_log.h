@@ -34,9 +34,9 @@ class MetricsLog : public metrics::MetricsLogBase {
   // SystemProfileSetter.
   MetricsLog();
 
-  void IncrementUserCrashCount();
-  void IncrementKernelCrashCount();
-  void IncrementUncleanShutdownCount();
+  void IncrementUserCrashCount(int count);
+  void IncrementKernelCrashCount(int count);
+  void IncrementUncleanShutdownCount(int count);
 
   // Populate the system profile with system information using setter.
   bool PopulateSystemProfile(SystemProfileSetter* setter);

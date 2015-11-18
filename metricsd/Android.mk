@@ -18,8 +18,6 @@ metrics_cpp_extension := .cc
 libmetrics_sources := \
   c_metrics_library.cc \
   metrics_library.cc \
-  serialization/metric_sample.cc \
-  serialization/serialization_utils.cc \
   timer.cc
 
 metrics_client_sources := \
@@ -34,8 +32,9 @@ metrics_collector_common := \
 
 metricsd_common := \
   persistent_integer.cc \
-  serialization/metric_sample.cc \
-  serialization/serialization_utils.cc \
+  uploader/binder_service.cc \
+  uploader/binder_thread.cc \
+  uploader/crash_counters.cc \
   uploader/metrics_hashes.cc \
   uploader/metrics_log_base.cc \
   uploader/metrics_log.cc \
@@ -49,7 +48,6 @@ metrics_collector_tests_sources := \
   metrics_collector_test.cc \
   metrics_library_test.cc \
   persistent_integer_test.cc \
-  serialization/serialization_utils_unittest.cc \
   timer_test.cc \
 
 metricsd_tests_sources := \
@@ -70,7 +68,7 @@ metrics_CPPFLAGS := -Wno-non-virtual-dtor \
   -fvisibility=default
 metrics_includes := external/gtest/include \
   $(LOCAL_PATH)/include
-libmetrics_shared_libraries := libchrome libbrillo
+libmetrics_shared_libraries := libchrome libbinder libbrillo libutils
 metrics_collector_shared_libraries := $(libmetrics_shared_libraries) \
   libbrillo-dbus \
   libbrillo-http \
@@ -81,11 +79,21 @@ metrics_collector_shared_libraries := $(libmetrics_shared_libraries) \
   libweaved \
 
 metricsd_shared_libraries := \
+  libbinder \
   libbrillo \
   libbrillo-http \
   libchrome \
   libprotobuf-cpp-lite \
   libupdate_engine_client \
+  libutils \
+
+# Static proxy library for the binder interface.
+# ========================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE := metrics_binder_proxy
+LOCAL_SHARED_LIBRARIES := libbinder libutils
+LOCAL_SRC_FILES := aidl/android/brillo/IMetricsService.aidl
+include $(BUILD_STATIC_LIBRARY)
 
 # Shared library for metrics.
 # ========================================================
@@ -100,6 +108,7 @@ LOCAL_RTTI_FLAG := -frtti
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_SHARED_LIBRARIES := $(libmetrics_shared_libraries)
 LOCAL_SRC_FILES := $(libmetrics_sources)
+LOCAL_STATIC_LIBRARIES := metrics_binder_proxy
 include $(BUILD_SHARED_LIBRARY)
 
 # CLI client for metrics.
@@ -114,6 +123,7 @@ LOCAL_CPPFLAGS := $(metrics_CPPFLAGS)
 LOCAL_SHARED_LIBRARIES := $(libmetrics_shared_libraries) \
   libmetrics
 LOCAL_SRC_FILES := $(metrics_client_sources)
+LOCAL_STATIC_LIBRARIES := metrics_binder_proxy
 include $(BUILD_EXECUTABLE)
 
 # Protobuf library for metricsd.
@@ -144,6 +154,7 @@ LOCAL_RTTI_FLAG := -frtti
 LOCAL_SHARED_LIBRARIES := $(metrics_collector_shared_libraries)
 LOCAL_SRC_FILES := $(metrics_collector_common) \
   metrics_collector_main.cc
+LOCAL_STATIC_LIBRARIES := metrics_binder_proxy
 include $(BUILD_EXECUTABLE)
 
 # metricsd daemon.
@@ -158,9 +169,8 @@ LOCAL_CPPFLAGS := $(metrics_CPPFLAGS)
 LOCAL_INIT_RC := metricsd.rc
 LOCAL_REQUIRED_MODULES := \
   metrics_collector
-LOCAL_RTTI_FLAG := -frtti
 LOCAL_SHARED_LIBRARIES := $(metricsd_shared_libraries)
-LOCAL_STATIC_LIBRARIES := metricsd_protos
+LOCAL_STATIC_LIBRARIES := metricsd_protos metrics_binder_proxy
 LOCAL_SRC_FILES := $(metricsd_common) \
   metricsd_main.cc
 include $(BUILD_EXECUTABLE)
@@ -173,10 +183,9 @@ LOCAL_CFLAGS := $(metrics_CFLAGS)
 LOCAL_CLANG := true
 LOCAL_CPP_EXTENSION := $(metrics_cpp_extension)
 LOCAL_CPPFLAGS := $(metrics_CPPFLAGS) -Wno-sign-compare
-LOCAL_RTTI_FLAG := -frtti
-LOCAL_SHARED_LIBRARIES := $(metricsd_shared_libraries) libmetrics
+LOCAL_SHARED_LIBRARIES := $(metricsd_shared_libraries)
 LOCAL_SRC_FILES := $(metricsd_tests_sources) $(metricsd_common)
-LOCAL_STATIC_LIBRARIES := libBionicGtestMain libgmock metricsd_protos
+LOCAL_STATIC_LIBRARIES := libBionicGtestMain libgmock metricsd_protos metrics_binder_proxy
 include $(BUILD_NATIVE_TEST)
 
 # Unit tests for metrics_collector.
@@ -191,7 +200,7 @@ LOCAL_RTTI_FLAG := -frtti
 LOCAL_SHARED_LIBRARIES := $(metrics_collector_shared_libraries)
 LOCAL_SRC_FILES := $(metrics_collector_tests_sources) \
   $(metrics_collector_common)
-LOCAL_STATIC_LIBRARIES := libBionicGtestMain libgmock
+LOCAL_STATIC_LIBRARIES := libBionicGtestMain libgmock metrics_binder_proxy
 include $(BUILD_NATIVE_TEST)
 
 # Weave schema files
