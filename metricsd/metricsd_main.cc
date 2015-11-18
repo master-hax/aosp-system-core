@@ -18,12 +18,15 @@
 #include <base/command_line.h>
 #include <base/files/file_path.h>
 #include <base/logging.h>
+#include <base/metrics/statistics_recorder.h>
 #include <base/strings/string_util.h>
 #include <base/time/time.h>
 #include <brillo/flag_helper.h>
 #include <brillo/syslog_logging.h>
 
 #include "constants.h"
+#include "uploader/binder_thread.h"
+#include "uploader/crash_counters.h"
 #include "uploader/upload_service.h"
 
 
@@ -72,9 +75,16 @@ int main(int argc, char** argv) {
     return errno;
   }
 
+  std::shared_ptr<CrashCounters> counters(new CrashCounters);
+
   UploadService service(FLAGS_server,
                         base::TimeDelta::FromSeconds(FLAGS_upload_interval_secs),
-                        base::FilePath(FLAGS_metrics_directory));
+                        base::FilePath(FLAGS_metrics_directory),
+                        counters);
+
+  base::StatisticsRecorder::Initialize();
+  BinderThread b(counters);
+  b.run();
 
   service.Run();
 }
