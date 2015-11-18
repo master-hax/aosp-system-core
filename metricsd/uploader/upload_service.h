@@ -25,19 +25,11 @@
 #include <brillo/daemons/daemon.h>
 
 #include "persistent_integer.h"
+#include "uploader/crash_counters.h"
 #include "uploader/metrics_log.h"
+#include "uploader/proto/chrome_user_metrics_extension.pb.h"
 #include "uploader/sender.h"
 #include "uploader/system_profile_cache.h"
-
-namespace metrics {
-class ChromeUserMetricsExtension;
-class CrashSample;
-class HistogramSample;
-class LinearHistogramSample;
-class MetricSample;
-class SparseHistogramSample;
-class UserActionSample;
-}
 
 class SystemProfileSetter;
 
@@ -72,7 +64,8 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   UploadService(const std::string& server,
                 const base::TimeDelta& upload_interval,
                 const base::FilePath& private_metrics_directory,
-                const base::FilePath& shared_metrics_directory);
+                const base::FilePath& shared_metrics_directory,
+                const std::shared_ptr<CrashCounters> counters);
 
   // Initializes the upload service.
   int OnInit();
@@ -106,6 +99,7 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   FRIEND_TEST(UploadServiceTest, EmptyLogsAreNotSent);
   FRIEND_TEST(UploadServiceTest, FailedSendAreRetried);
   FRIEND_TEST(UploadServiceTest, LogContainsAggregatedValues);
+  FRIEND_TEST(UploadServiceTest, LogContainsCrashCounts);
   FRIEND_TEST(UploadServiceTest, LogEmptyAfterUpload);
   FRIEND_TEST(UploadServiceTest, LogEmptyByDefault);
   FRIEND_TEST(UploadServiceTest, LogFromTheMetricsLibrary);
@@ -124,15 +118,6 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
 
   // Resets the internal state.
   void Reset();
-
-  // Reads all the metrics from the disk.
-  void ReadMetrics();
-
-  // Adds a generic sample to the current log.
-  void AddSample(const metrics::MetricSample& sample);
-
-  // Adds a crash to the current log.
-  void AddCrash(const std::string& crash_name);
 
   // Returns true iff metrics reporting is enabled.
   bool AreMetricsEnabled();
@@ -163,11 +148,11 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   scoped_ptr<Sender> sender_;
   chromeos_metrics::PersistentInteger failed_upload_count_;
   scoped_ptr<MetricsLog> current_log_;
+  std::shared_ptr<CrashCounters> counters_;
 
   base::TimeDelta upload_interval_;
 
   base::FilePath consent_file_;
-  base::FilePath metrics_file_;
   base::FilePath staged_log_path_;
 
   bool testing_;
