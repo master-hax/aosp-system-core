@@ -31,12 +31,6 @@
 
 namespace metrics {
 class ChromeUserMetricsExtension;
-class CrashSample;
-class HistogramSample;
-class LinearHistogramSample;
-class MetricSample;
-class SparseHistogramSample;
-class UserActionSample;
 }
 
 class SystemProfileSetter;
@@ -123,15 +117,6 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
 
   // Resets the internal state.
   void Reset();
-
-  // Reads all the metrics from the disk.
-  void ReadMetrics();
-
-  // Adds a generic sample to the current log.
-  void AddSample(const metrics::MetricSample& sample);
-
-  // Adds a crash to the current log.
-  void AddCrash(const std::string& crash_name);
 
   // Returns true iff metrics reporting is enabled.
   bool AreMetricsEnabled();
