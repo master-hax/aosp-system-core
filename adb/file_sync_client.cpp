@@ -102,7 +102,7 @@ class SyncConnection {
 
     // Sending header, payload, and footer in a single write makes a huge
     // difference to "adb sync" performance.
-    bool SendSmallFile(const char* path_and_mode,
+    void SendSmallFile(const char* path_and_mode,
                        const char* rpath,
                        const char* data, size_t data_length,
                        unsigned mtime) {
@@ -112,7 +112,7 @@ class SyncConnection {
         if (path_length > 1024) {
             Error("SendSmallFile failed: path too long: %zu", path_length);
             errno = ENAMETOOLONG;
-            return false;
+            return;
         }
 
         std::vector<char> buf(sizeof(SyncRequest) + path_length +
@@ -139,10 +139,9 @@ class SyncConnection {
         req_done->path_length = mtime;
         p += sizeof(SyncRequest);
 
-        if (!WriteFdExactly(fd, &buf[0], (p - &buf[0]))) return false;
-
-        total_bytes += data_length;
-        return true;
+        if (WriteFdExactly(fd, &buf[0], (p - &buf[0]))) {
+            total_bytes += data_length;
+        }
     }
 
     bool CopyDone(const char* from, const char* to) {
@@ -285,18 +284,18 @@ static bool sync_stat(SyncConnection& sc, const char* path,
     return sc.SendRequest(ID_STAT, path) && sync_finish_stat(sc, timestamp, mode, size);
 }
 
-static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
+static void SendLargeFile(SyncConnection& sc, const char* path_and_mode,
                           const char* lpath, const char* rpath,
                           unsigned mtime) {
     if (!sc.SendRequest(ID_SEND, path_and_mode)) {
         sc.Error("failed to send ID_SEND message '%s': %s", path_and_mode, strerror(errno));
-        return false;
+        return;
     }
 
     struct stat st;
     if (stat(lpath, &st) == -1) {
         sc.Error("cannot stat '%s': %s", lpath, strerror(errno));
-        return false;
+        return;
     }
 
     uint64_t total_size = st.st_size;
@@ -305,7 +304,7 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
     int lfd = adb_open(lpath, O_RDONLY);
     if (lfd < 0) {
         sc.Error("cannot open '%s': %s", lpath, strerror(errno));
-        return false;
+        return;
     }
 
     syncsendbuf sbuf;
@@ -316,7 +315,7 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
             if (ret < 0) {
                 sc.Error("cannot read '%s': %s", lpath, strerror(errno));
                 adb_close(lfd);
-                return false;
+                return;
             }
             break;
         }
@@ -324,7 +323,7 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
         sbuf.size = ret;
         if (!WriteFdExactly(sc.fd, &sbuf, sizeof(unsigned) * 2 + ret)) {
             adb_close(lfd);
-            return false;
+            return;
         }
         sc.total_bytes += ret;
 
@@ -333,7 +332,6 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
         int percentage = static_cast<int>(bytes_copied * 100 / total_size);
         sc.Printf("%s: %d%%", rpath, percentage);
     }
-
     adb_close(lfd);
 
     syncmsg msg;
@@ -341,10 +339,8 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
     msg.data.size = mtime;
     if (!WriteFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
         sc.Error("failed to send ID_DONE message for '%s': %s", rpath, strerror(errno));
-        return false;
+        return;
     }
-
-    return true;
 }
 
 static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
@@ -362,7 +358,7 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
         }
         buf[data_length++] = '\0';
 
-        if (!sc.SendSmallFile(path_and_mode.c_str(), rpath, buf, data_length, mtime)) return false;
+        sc.SendSmallFile(path_and_mode.c_str(), rpath, buf, data_length, mtime);
         return sc.CopyDone(lpath, rpath);
 #endif
     }
@@ -383,13 +379,9 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
             sc.Error("failed to read all of '%s': %s", lpath, strerror(errno));
             return false;
         }
-        if (!sc.SendSmallFile(path_and_mode.c_str(), rpath, data.data(), data.size(), mtime)) {
-            return false;
-        }
+        sc.SendSmallFile(path_and_mode.c_str(), rpath, data.data(), data.size(), mtime);
     } else {
-        if (!SendLargeFile(sc, path_and_mode.c_str(), lpath, rpath, mtime)) {
-            return false;
-        }
+        SendLargeFile(sc, path_and_mode.c_str(), lpath, rpath, mtime);
     }
     return sc.CopyDone(lpath, rpath);
 }
@@ -622,11 +614,9 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
     for (const copyinfo& ci : filelist) {
         if (!ci.skip) {
             if (list_only) {
-                sc.Error("would push: %s -> %s", ci.lpath.c_str(),
-                         ci.rpath.c_str());
+                sc.Error("would push: %s -> %s", ci.lpath.c_str(), ci.rpath.c_str());
             } else {
-                if (!sync_send(sc, ci.lpath.c_str(), ci.rpath.c_str(), ci.time,
-                               ci.mode)) {
+                if (!sync_send(sc, ci.lpath.c_str(), ci.rpath.c_str(), ci.time, ci.mode)) {
                     return false;
                 }
             }
