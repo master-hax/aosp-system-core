@@ -333,7 +333,6 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
         int percentage = static_cast<int>(bytes_copied * 100 / total_size);
         sc.Printf("%s: %d%%", rpath, percentage);
     }
-
     adb_close(lfd);
 
     syncmsg msg;
@@ -343,7 +342,6 @@ static bool SendLargeFile(SyncConnection& sc, const char* path_and_mode,
         sc.Error("failed to send ID_DONE message for '%s': %s", rpath, strerror(errno));
         return false;
     }
-
     return true;
 }
 
@@ -362,8 +360,8 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
         }
         buf[data_length++] = '\0';
 
-        if (!sc.SendSmallFile(path_and_mode.c_str(), rpath, buf, data_length, mtime)) return false;
-        return sc.CopyDone(lpath, rpath);
+        bool sent = sc.SendSmallFile(path_and_mode.c_str(), rpath, buf, data_length, mtime);
+        return sc.CopyDone(lpath, rpath) && sent;
 #endif
     }
 
@@ -377,21 +375,18 @@ static bool sync_send(SyncConnection& sc, const char* lpath, const char* rpath,
         sc.Error("failed to stat local file '%s': %s", lpath, strerror(errno));
         return false;
     }
+    bool sent = false;
     if (st.st_size < SYNC_DATA_MAX) {
         std::string data;
         if (!android::base::ReadFileToString(lpath, &data)) {
             sc.Error("failed to read all of '%s': %s", lpath, strerror(errno));
             return false;
         }
-        if (!sc.SendSmallFile(path_and_mode.c_str(), rpath, data.data(), data.size(), mtime)) {
-            return false;
-        }
+        sent = sc.SendSmallFile(path_and_mode.c_str(), rpath, data.data(), data.size(), mtime);
     } else {
-        if (!SendLargeFile(sc, path_and_mode.c_str(), lpath, rpath, mtime)) {
-            return false;
-        }
+        sent = SendLargeFile(sc, path_and_mode.c_str(), lpath, rpath, mtime);
     }
-    return sc.CopyDone(lpath, rpath);
+    return sc.CopyDone(lpath, rpath) && sent;
 }
 
 static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath) {
@@ -622,11 +617,9 @@ static bool copy_local_dir_remote(SyncConnection& sc, std::string lpath,
     for (const copyinfo& ci : filelist) {
         if (!ci.skip) {
             if (list_only) {
-                sc.Error("would push: %s -> %s", ci.lpath.c_str(),
-                         ci.rpath.c_str());
+                sc.Error("would push: %s -> %s", ci.lpath.c_str(), ci.rpath.c_str());
             } else {
-                if (!sync_send(sc, ci.lpath.c_str(), ci.rpath.c_str(), ci.time,
-                               ci.mode)) {
+                if (!sync_send(sc, ci.lpath.c_str(), ci.rpath.c_str(), ci.time, ci.mode)) {
                     return false;
                 }
             }

@@ -86,8 +86,7 @@ static void close_stdin() {
 
 static void setup_daemon_logging(void) {
     const std::string log_file_path(GetLogFilePath());
-    int fd = unix_open(log_file_path.c_str(), O_WRONLY | O_CREAT | O_APPEND,
-                       0640);
+    int fd = unix_open(log_file_path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0640);
     if (fd == -1) {
         fatal("cannot open '%s': %s", log_file_path.c_str(), strerror(errno));
     }
@@ -103,7 +102,7 @@ static void setup_daemon_logging(void) {
     LOG(INFO) << adb_version();
 }
 
-int adb_main(int is_daemon, int server_port, int ack_reply_fd) {
+int adb_server_main(int is_daemon, int server_port, int ack_reply_fd) {
 #if defined(_WIN32)
     // adb start-server starts us up with stdout and stderr hooked up to
     // anonymous pipes to. When the C Runtime sees this, it makes stderr and
@@ -120,8 +119,6 @@ int adb_main(int is_daemon, int server_port, int ack_reply_fd) {
     }
 
     SetConsoleCtrlHandler(ctrlc_handler, TRUE);
-#else
-    signal(SIGPIPE, SIG_IGN);
 #endif
 
     init_transport_registration();
