@@ -66,6 +66,7 @@
 
 char cur_product[FB_RESPONSE_SZ + 1];
 
+static const char *trans_spec = 0;
 static const char *serial = 0;
 static const char *product = 0;
 static const char *cmdline = 0;
@@ -230,6 +231,11 @@ static Transport* open_device() {
 
     if (transport) return transport;
 
+    if (trans_spec) {
+        transport = create_transport(trans_spec);
+        return transport;
+    }
+
     for (;;) {
         transport = usb_open(match_fastboot);
         if (transport) return transport;
@@ -294,6 +300,9 @@ static void usage() {
             "                                           if supported by partition type).\n"
             "  -u                                       Do not erase partition before\n"
             "                                           formatting.\n"
+            "  -T <transport specification>             Specify the transport to be used\n"
+            "                                           to connect to the device.\n"
+            "                                           IE: -T tcp:<IP>\n"
             "  -s <specific device>                     Specify device serial number\n"
             "                                           or path to device port.\n"
             "  -p <product>                             Specify product name.\n"
@@ -1115,7 +1124,7 @@ int main(int argc, char **argv)
     serial = getenv("ANDROID_SERIAL");
 
     while (1) {
-        int c = getopt_long(argc, argv, "wub:k:n:r:t:s:S:lp:c:i:m:ha::", longopts, &longindex);
+        int c = getopt_long(argc, argv, "wub:k:n:r:t:T:s:S:lp:c:i:m:ha::", longopts, &longindex);
         if (c < 0) {
             break;
         }
@@ -1163,6 +1172,9 @@ int main(int argc, char **argv)
             break;
         case 't':
             tags_offset = strtoul(optarg, 0, 16);
+            break;
+        case 'T':
+            trans_spec = optarg;
             break;
         case 's':
             serial = optarg;
