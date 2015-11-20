@@ -36,6 +36,26 @@
 ADB_MUTEX_DEFINE(basename_lock);
 ADB_MUTEX_DEFINE(dirname_lock);
 
+#if defined(_WIN32)
+constexpr char kNullFileName[] = "NUL";
+#else
+constexpr char kNullFileName[] = "/dev/null";
+#endif
+
+void close_stdin() {
+    int fd = unix_open(kNullFileName, O_RDONLY);
+    if (fd == -1) {
+        fprintf(stderr, "warning: failed to open %s: %s\n", kNullFileName, strerror(errno));
+        return;
+    }
+
+    if (TEMP_FAILURE_RETRY(dup2(fd, STDIN_FILENO)) == -1) {
+        fprintf(stderr, "warning: failed to redirect stdin to %s: %s\n", kNullFileName,
+                strerror(errno));
+    }
+    unix_close(fd);
+}
+
 bool getcwd(std::string* s) {
   char* cwd = getcwd(nullptr, 0);
   if (cwd != nullptr) *s = cwd;
