@@ -112,12 +112,13 @@ static void help() {
         "                                 (-a preserves file timestamp and mode)\n"
         "  adb sync [ <directory> ]     - copy host->device only if changed\n"
         "                                 (-l means list but don't copy)\n"
-        "  adb shell [-e escape] [-Tt] [-x] [command]\n"
+        "  adb shell [-e escape] [-Tt] [-x] [-n] [command]\n"
         "                               - run remote shell command (interactive shell if no command given)\n"
         "                                 (-e: choose escape character, or \"none\"; default '~')\n"
         "                                 (-T: disable PTY allocation)\n"
         "                                 (-t: force PTY allocation)\n"
         "                                 (-x: disable remote exit codes and stdout/stderr separation)\n"
+        "                                 (-n: don't read from stdin)\n"
         "  adb emu <command>            - run emulator console command\n"
         "  adb logcat [ <filter-spec> ] - View device log\n"
         "  adb forward --list           - list all forward socket connections.\n"
@@ -731,6 +732,30 @@ static int adb_shell(int argc, const char** argv,
             ++argv;
         } else if (!strcmp(argv[0], "-x")) {
             use_shell_protocol = false;
+            --argc;
+            ++argv;
+        } else if (!strcmp(argv[0], "-n")) {
+            // Open /dev/null and dup it to stdin.
+            // On Windows, make sure we get actual FDs.
+#undef open
+#undef close
+#if defined(_WIN32)
+#define DEV_NULL "NUL"
+#else
+#define DEV_NULL "/dev/null"
+#endif
+            int devnull_fd = open(DEV_NULL, O_RDONLY);
+            if (devnull_fd == -1) {
+                fprintf(stderr, "warning: failed to open " DEV_NULL ", ignoring -n");
+            } else {
+                dup2(devnull_fd, STDIN_FILENO);
+                close(devnull_fd);
+            }
+
+#define open ___xxx_open
+#define close ___xxx_close
+#undef DEV_NULL
+
             --argc;
             ++argv;
         } else {
