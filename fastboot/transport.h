@@ -45,4 +45,8 @@ class Transport {
     DISALLOW_COPY_AND_ASSIGN(Transport);
 };
 
+// Factory method to create the appropriate transport
+// as function of |trans_spec| transport specification
+Transport* create_transport(const char* trans_spec);
+
 #endif  // TRANSPORT_H_
