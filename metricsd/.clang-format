@@ -1,0 +1,10 @@
+BasedOnStyle: Google
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BinPackParameters: false
+CommentPragmas: NOLINT:.*
+DerivePointerAlignment: false
+PenaltyExcessCharacter: 32
+PointerAlignment: Left
+TabWidth: 2
