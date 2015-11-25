@@ -71,7 +71,8 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
  public:
   UploadService(const std::string& server,
                 const base::TimeDelta& upload_interval,
-                const base::FilePath& metrics_directory);
+                const base::FilePath& private_metrics_directory,
+                const base::FilePath& shared_metrics_directory);
 
   // Initializes the upload service.
   int OnInit();

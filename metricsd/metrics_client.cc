@@ -141,7 +141,7 @@ static int IsGuestMode() {
 
 static int DumpLogs() {
   base::FilePath events_file = base::FilePath(
-      metrics::kMetricsDirectory).Append(metrics::kMetricsEventsFileName);
+      metrics::kSharedMetricsDirectory).Append(metrics::kMetricsEventsFileName);
   printf("Metrics from %s\n\n", events_file.value().data());
 
   ScopedVector<metrics::MetricSample> metrics;

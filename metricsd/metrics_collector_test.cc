@@ -45,7 +45,7 @@ class MetricsCollectorTest : public testing::Test {
   virtual void SetUp() {
     brillo::FlagHelper::Init(0, nullptr, "");
     EXPECT_TRUE(temp_dir_.CreateUniqueTempDir());
-    daemon_.Init(true, &metrics_lib_, "", temp_dir_.path());
+    daemon_.Init(true, &metrics_lib_, "", temp_dir_.path(), temp_dir_.path());
   }
 
   // Adds a metrics library mock expectation that the specified metric

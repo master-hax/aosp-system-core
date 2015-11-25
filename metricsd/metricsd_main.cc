@@ -43,9 +43,15 @@ int main(int argc, char** argv) {
   DEFINE_string(server,
                 metrics::kMetricsServer,
                 "Server to upload the metrics to. (needs -uploader)");
-  DEFINE_string(metrics_directory,
-                metrics::kMetricsDirectory,
-                "Root of the configuration files (testing only)");
+  DEFINE_string(private_directory,
+                metrics::kMetricsdDirectory,
+                "Path to the private directory used by metricsd "
+                "(testing only)");
+  DEFINE_string(shared_directory,
+                metrics::kSharedMetricsDirectory,
+                "Path to the shared metrics directory, used by "
+                "metrics_collector, metricsd and all metrics clients "
+                "(testing only)");
 
   DEFINE_bool(logtostderr, false, "Log to standard error");
   DEFINE_bool(logtosyslog, false, "Log to syslog");
@@ -74,7 +80,8 @@ int main(int argc, char** argv) {
 
   UploadService service(FLAGS_server,
                         base::TimeDelta::FromSeconds(FLAGS_upload_interval_secs),
-                        base::FilePath(FLAGS_metrics_directory));
+                        base::FilePath(FLAGS_private_directory),
+                        base::FilePath(FLAGS_shared_directory));
 
   service.Run();
 }
