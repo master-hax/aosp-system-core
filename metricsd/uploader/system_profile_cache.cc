@@ -58,16 +58,16 @@ SystemProfileCache::SystemProfileCache()
     testing_(false),
     metrics_directory_(metrics::kMetricsDirectory),
     session_id_(new chromeos_metrics::PersistentInteger(
-        kPersistentSessionIdFilename)) {
+        kPersistentSessionIdFilename, metrics_directory_)) {
 }
 
 SystemProfileCache::SystemProfileCache(bool testing,
                                        const base::FilePath& metrics_directory)
     : initialized_(false),
-      testing_(testing),
-      metrics_directory_(metrics_directory),
-      session_id_(new chromeos_metrics::PersistentInteger(
-          kPersistentSessionIdFilename)) {
+    testing_(testing),
+    metrics_directory_(metrics_directory),
+    session_id_(new chromeos_metrics::PersistentInteger(
+        kPersistentSessionIdFilename, metrics_directory)) {
 }
 
 bool SystemProfileCache::Initialize() {

@@ -27,8 +27,9 @@ namespace chromeos_metrics {
 
 class PersistentIntegerMock : public PersistentInteger {
  public:
-  explicit PersistentIntegerMock(const std::string& name)
-      : PersistentInteger(name) {}
+  explicit PersistentIntegerMock(const std::string& name,
+                                 const base::FilePath& directory)
+      : PersistentInteger(name, directory) {}
     MOCK_METHOD1(Add, void(int64_t count));
 };
 
