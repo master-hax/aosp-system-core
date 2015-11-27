@@ -492,6 +492,7 @@ asocket* host_service_to_socket(const char* name, const char* serial) {
     if (!strcmp(name,"track-devices")) {
         return create_device_tracker();
     } else if (!strncmp(name, "wait-for-", strlen("wait-for-"))) {
+        int fd = -1;
         auto sinfo = reinterpret_cast<state_info*>(malloc(sizeof(state_info)));
         if (sinfo == nullptr) {
             fprintf(stderr, "couldn't allocate state_info: %s", strerror(errno));
@@ -507,23 +508,38 @@ asocket* host_service_to_socket(const char* name, const char* serial) {
 
         if (!strncmp(name, "local", strlen("local"))) {
             sinfo->transport_type = kTransportLocal;
-            sinfo->state = kCsDevice;
+            name += strlen("local");
         } else if (!strncmp(name, "usb", strlen("usb"))) {
             sinfo->transport_type = kTransportUsb;
-            sinfo->state = kCsDevice;
+            name += strlen("usb");
         } else if (!strncmp(name, "any", strlen("any"))) {
             sinfo->transport_type = kTransportAny;
-            sinfo->state = kCsDevice;
+            name += strlen("any");
         } else {
-            if (sinfo->serial) {
-                free(sinfo->serial);
-            }
-            free(sinfo);
-            return NULL;
+            goto error;
         }
 
-        int fd = create_service_thread(wait_for_state, sinfo);
+        if (!strcmp(name, "-device")) {
+            sinfo->state = kCsDevice;
+        } else if (!strcmp(name, "-recovery")) {
+            sinfo->state = kCsRecovery;
+        } else if (!strcmp(name, "-sideload")) {
+            sinfo->state = kCsSideload;
+        } else if (!strcmp(name, "-bootloader")) {
+            sinfo->state = kCsBootloader;
+        } else {
+            goto error;
+        }
+
+        fd = create_service_thread(wait_for_state, sinfo);
         return create_local_socket(fd);
+
+    error:
+        if (sinfo->serial) {
+            free(sinfo->serial);
+        }
+        free(sinfo);
+        return NULL;
     } else if (!strncmp(name, "connect:", 8)) {
         char* host = strdup(name + 8);
         int fd = create_service_thread(connect_service, host);

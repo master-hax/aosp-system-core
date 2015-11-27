@@ -204,6 +204,9 @@ static void help() {
         "\n"
         "scripting:\n"
         "  adb wait-for-device          - block until device is online\n"
+        "  adb wait-for-<T>-<S>         - block until device is on state \"S\" using transport layer \"T\"\n"
+        "                                 State S could be: device, recovery, sideload or bootloader\n"
+        "                                 Transport layer T could be: usb, local or any\n"
         "  adb start-server             - ensure that there is a server running\n"
         "  adb kill-server              - kill the server if it is running\n"
         "  adb get-state                - prints: offline | bootloader | device\n"
@@ -1009,11 +1012,11 @@ static bool wait_for_device(const char* service, TransportType t, const char* se
     // If so, check they weren't more specific in their choice of transport type.
     if (strcmp(service, "wait-for-device") == 0) {
         if (t == kTransportUsb) {
-            service = "wait-for-usb";
+            service = "wait-for-usb-device";
         } else if (t == kTransportLocal) {
-            service = "wait-for-local";
+            service = "wait-for-local-device";
         } else {
-            service = "wait-for-any";
+            service = "wait-for-any-device";
         }
     }
 
