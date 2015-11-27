@@ -507,19 +507,29 @@ asocket* host_service_to_socket(const char* name, const char* serial) {
 
         if (!strncmp(name, "local", strlen("local"))) {
             sinfo->transport_type = kTransportLocal;
-            sinfo->state = kCsDevice;
+            name += strlen("local");
         } else if (!strncmp(name, "usb", strlen("usb"))) {
             sinfo->transport_type = kTransportUsb;
-            sinfo->state = kCsDevice;
+            name += strlen("usb");
         } else if (!strncmp(name, "any", strlen("any"))) {
             sinfo->transport_type = kTransportAny;
-            sinfo->state = kCsDevice;
+            name += strlen("any");
         } else {
             if (sinfo->serial) {
                 free(sinfo->serial);
             }
             free(sinfo);
             return NULL;
+        }
+
+        if (!strncmp(name, "-bootloader", strlen("-bootloader"))) {
+            sinfo->state = kCsBootloader;
+        } else if (!strncmp(name, "-recovery", strlen("-recovery"))) {
+            sinfo->state = kCsRecovery;
+        } else if (!strncmp(name, "-sideload", strlen("-sideload"))) {
+            sinfo->state = kCsSideload;
+        } else {
+            sinfo->state = kCsDevice; // default fallback
         }
 
         int fd = create_service_thread(wait_for_state, sinfo);
