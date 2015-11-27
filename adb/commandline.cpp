@@ -204,7 +204,10 @@ static void help() {
         "  adb version                  - show version num\n"
         "\n"
         "scripting:\n"
-        "  adb wait-for-device          - block until device is online\n"
+        "  adb wait-for[-<transport>]-<state>\n"
+        "                               - wait for device to be in the given state:\n"
+        "                                 device, recovery, sideload, or bootloader\n"
+        "                                 Transport is: usb, local or any [default=any]\n"
         "  adb start-server             - ensure that there is a server running\n"
         "  adb kill-server              - kill the server if it is running\n"
         "  adb get-state                - prints: offline | bootloader | device\n"
@@ -1010,16 +1013,44 @@ static int ppp(int argc, const char** argv) {
 #endif /* !defined(_WIN32) */
 }
 
+static bool check_wait_for_device_syntax(const char* service) {
+    // TODO: when we have libc++ for Windows, use a regular expression instead.
+    // wait-for-((any|local|usb)-)?(bootloader|device|recovery|sideload)
+
+    if (!android::base::StartsWith(service, "wait-for-")) {
+        return false;
+    }
+    service += strlen("wait-for-");
+
+    if (android::base::StartsWith(service, "any-")) service += strlen("any-");
+    else if (android::base::StartsWith(service, "local-")) service += strlen("local-");
+    else if (android::base::StartsWith(service, "usb-")) service += strlen("usb-");
+    else return false;
+
+    if (android::base::StartsWith(service, "bootloader")) service += strlen("bootloader");
+    else if (android::base::StartsWith(service, "device")) service += strlen("device");
+    else if (android::base::StartsWith(service, "recovery")) service += strlen("recovery");
+    else if (android::base::StartsWith(service, "sideload")) service += strlen("sideload");
+    else return false;
+
+    return true;
+}
+
 static bool wait_for_device(const char* service, TransportType t, const char* serial) {
+    if (!check_wait_for_device_syntax(service)) {
+        fprintf(stderr, "adb: unknown wait-for- command: %s\n", service);
+        return false;
+    }
+
     // Was the caller vague about what they'd like us to wait for?
     // If so, check they weren't more specific in their choice of transport type.
     if (strcmp(service, "wait-for-device") == 0) {
         if (t == kTransportUsb) {
-            service = "wait-for-usb";
+            service = "wait-for-usb-device";
         } else if (t == kTransportLocal) {
-            service = "wait-for-local";
+            service = "wait-for-local-device";
         } else {
-            service = "wait-for-any";
+            service = "wait-for-any-device";
         }
     }
 
