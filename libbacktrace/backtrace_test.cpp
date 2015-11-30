@@ -775,13 +775,14 @@ TEST(libbacktrace, format_test) {
             backtrace->FormatFrameData(&frame));
 
   // Check map name empty, but exists.
-  frame.map.start = 1;
-  frame.map.end = 1;
+  frame.pc = 0xb0020;
+  frame.map.start = 0xb0000;
+  frame.map.end = 0xbffff;
   frame.map.load_base = 0;
 #if defined(__LP64__)
-  EXPECT_EQ("#01 pc 0000000000000001  <unknown>",
+  EXPECT_EQ("#01 pc 0000000000000020  <anonymous:00000000000b0000>",
 #else
-  EXPECT_EQ("#01 pc 00000001  <unknown>",
+  EXPECT_EQ("#01 pc 00000020  <anonymous:000b0000>",
 #endif
             backtrace->FormatFrameData(&frame));
 
