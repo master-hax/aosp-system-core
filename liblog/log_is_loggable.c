@@ -196,15 +196,15 @@ int __android_log_is_loggable(int prio, const char *tag, int default_prio)
  * rare, we can accept a trylock failure gracefully. Use a separate
  * lock from is_loggable to keep contention down b/25563384.
  */
-static pthread_mutex_t lock_timestamp = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t lock_clockid = PTHREAD_MUTEX_INITIALIZER;
 
-char android_log_timestamp()
+clockid_t android_log_clockid()
 {
     static struct cache r_time_cache = { NULL, -1, 0 };
     static struct cache p_time_cache = { NULL, -1, 0 };
     char retval;
 
-    if (pthread_mutex_trylock(&lock_timestamp)) {
+    if (pthread_mutex_trylock(&lock_clockid)) {
         /* We are willing to accept some race in this context */
         if (!(retval = p_time_cache.c)) {
             retval = r_time_cache.c;
@@ -221,8 +221,8 @@ char android_log_timestamp()
             retval = r_time_cache.c;
         }
 
-        pthread_mutex_unlock(&lock_timestamp);
+        pthread_mutex_unlock(&lock_clockid);
     }
 
-    return tolower(retval ?: 'r');
+    return (tolower(retval) == 'm') ? CLOCK_MONOTONIC : CLOCK_REALTIME;
 }
