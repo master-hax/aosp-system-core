@@ -523,10 +523,10 @@ jdwp_control_event( int  s, unsigned  events, void*  _control )
     JdwpControl*  control = (JdwpControl*) _control;
 
     if (events & FDE_READ) {
-        struct sockaddr   addr;
-        socklen_t         addrlen = sizeof(addr);
-        int               s = -1;
-        JdwpProcess*      proc;
+        struct sockaddr_storage  addr;
+        socklen_t                addrlen = sizeof(addr);
+        int                      s = -1;
+        JdwpProcess*             proc;
 
         do {
             s = adb_socket_accept( control->listen_socket, &addr, &addrlen );

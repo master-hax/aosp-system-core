@@ -228,7 +228,7 @@ void adb_auth_confirm_key(unsigned char *key, size_t len, atransport *t)
 
 static void adb_auth_listener(int fd, unsigned events, void *data)
 {
-    struct sockaddr addr;
+    struct sockaddr_storage addr;
     socklen_t alen;
     int s;
 

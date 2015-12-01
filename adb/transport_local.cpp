@@ -143,7 +143,7 @@ static void *client_socket_thread(void *x)
 static void *server_socket_thread(void * arg)
 {
     int serverfd, fd;
-    struct sockaddr addr;
+    struct sockaddr_storage addr;
     socklen_t alen;
     int port = (int) (uintptr_t) arg;
 
