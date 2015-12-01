@@ -143,7 +143,8 @@ static void *client_socket_thread(void *x)
 static void *server_socket_thread(void * arg)
 {
     int serverfd, fd;
-    struct sockaddr addr;
+    struct sockaddr_storage addr;
+    struct sockaddr *addrp = reinterpret_cast<struct sockaddr*>(&addr);
     socklen_t alen;
     int port = (int) (uintptr_t) arg;
 
@@ -164,7 +165,7 @@ static void *server_socket_thread(void * arg)
 
         alen = sizeof(addr);
         D("server: trying to get new connection from %d", port);
-        fd = adb_socket_accept(serverfd, &addr, &alen);
+        fd = adb_socket_accept(serverfd, addrp, &alen);
         if(fd >= 0) {
             D("server: new connection on fd %d", fd);
             close_on_exec(fd);
