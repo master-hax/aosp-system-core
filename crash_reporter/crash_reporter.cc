@@ -25,10 +25,13 @@
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
+#include <binder/IServiceManager.h>
 #include <brillo/flag_helper.h>
-#include <brillo/process.h>
 #include <brillo/syslog_logging.h>
 #include <metrics/metrics_library.h>
+#include <utils/String16.h>
+
+#include "android/brillo/metrics/IMetricsCollectorService.h"
 
 #include "kernel_collector.h"
 #include "kernel_warning_collector.h"
@@ -37,12 +40,12 @@
 #include "user_collector.h"
 
 static const char kCrashCounterHistogram[] = "Logging.CrashCounter";
-static const char kUserCrashSignal[] =
-    "org.chromium.CrashReporter.UserCrash";
 static const char kKernelCrashDetected[] = "/var/run/kernel-crash-detected";
 static const char kUncleanShutdownDetected[] =
     "/var/run/unclean-shutdown-detected";
 static const char kGUIDFileName[] = "/data/misc/crash_reporter/guid";
+static const char kMetricsCollectorServiceName[] =
+    "android.brillo.metrics.IMetricsCollectorService";
 
 // Enumeration of kinds of crashes to be used in the CrashCounter histogram.
 enum CrashKinds {
@@ -56,6 +59,7 @@ enum CrashKinds {
 
 static MetricsLibrary s_metrics_lib;
 
+using android::brillo::metrics::IMetricsCollectorService;
 using base::FilePath;
 using base::StringPrintf;
 
@@ -88,32 +92,14 @@ static void CountUncleanShutdown() {
 
 static void CountUserCrash() {
   SendCrashMetrics(kCrashKindUser, "user");
-  // Announce through D-Bus whenever a user crash happens. This is
-  // used by the metrics daemon to log active use time between
-  // crashes.
-  //
-  // We run in the background in case dbus-daemon itself is crashed
-  // and not responding.  This allows us to not block and potentially
-  // deadlock on a dbus-daemon crash.  If dbus-daemon crashes without
-  // restarting, each crash will fork off a lot of dbus-send
-  // processes.  Such a system is in a unusable state and will need
-  // to be restarted anyway.
-  //
-  // Note: This will mean that the dbus-send process will become a zombie and
-  // reparent to init for reaping, but that's OK -- see above.
-
-  brillo::ProcessImpl dbus_send;
-  dbus_send.AddArg("/system/bin/dbus-send");
-  dbus_send.AddArg("--type=signal");
-  dbus_send.AddArg("--system");
-  dbus_send.AddArg("/");
-  dbus_send.AddArg(kUserCrashSignal);
-  bool status = dbus_send.Start();
-  if (status) {
-    dbus_send.Release();
-  } else {
-    PLOG(WARNING) << "Sending UserCrash DBus signal failed";
-  }
+  // Tell the metrics collector about the user crash, in order to log active
+  // use time between crashes.
+  const android::String16 name(kMetricsCollectorServiceName);
+  android::sp<IMetricsCollectorService> metricscollectorservice =
+      android::interface_cast<IMetricsCollectorService>(
+          android::defaultServiceManager()->checkService(name));
+  if (metricscollectorservice != nullptr)
+    metricscollectorservice->notifyUserCrash();
 }
 
 
