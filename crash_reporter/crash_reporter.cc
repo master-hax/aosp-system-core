@@ -32,7 +32,6 @@
 
 #include "kernel_collector.h"
 #include "kernel_warning_collector.h"
-#include "udev_collector.h"
 #include "unclean_shutdown_collector.h"
 #include "user_collector.h"
 
@@ -192,20 +191,6 @@ static int HandleUserCrash(UserCollector *user_collector,
   return 0;
 }
 
-static int HandleUdevCrash(UdevCollector *udev_collector,
-                           const std::string& udev_event) {
-  // Handle a crash indicated by a udev event.
-  CHECK(!udev_event.empty()) << "--udev= must be set";
-
-  // Accumulate logs to help in diagnosing failures during user collection.
-  brillo::LogToString(true);
-  bool handled = udev_collector->HandleCrash(udev_event);
-  brillo::LogToString(false);
-  if (!handled)
-    return 1;
-  return 0;
-}
-
 static int HandleKernelWarning(KernelWarningCollector
                                *kernel_warning_collector) {
   // Accumulate logs to help in diagnosing failures during collection.
@@ -265,7 +250,6 @@ int main(int argc, char *argv[]) {
   DEFINE_bool(crash_test, false, "Crash test");
   DEFINE_string(user, "", "User crash info (pid:signal:exec_name)");
   DEFINE_bool(unclean_check, true, "Check for unclean shutdown");
-  DEFINE_string(udev, "", "Udev event description (type:device:subsystem)");
   DEFINE_bool(kernel_warning, false, "Report collected kernel warning");
   DEFINE_string(pid, "", "PID of crashing process");
   DEFINE_string(uid, "", "UID of crashing process");
@@ -295,8 +279,6 @@ int main(int argc, char *argv[]) {
   UncleanShutdownCollector unclean_shutdown_collector;
   unclean_shutdown_collector.Initialize(CountUncleanShutdown,
                                         IsFeedbackAllowed);
-  UdevCollector udev_collector;
-  udev_collector.Initialize(CountUdevCrash, IsFeedbackAllowed);
 
   KernelWarningCollector kernel_warning_collector;
   kernel_warning_collector.Initialize(CountUdevCrash, IsFeedbackAllowed);
@@ -318,10 +300,6 @@ int main(int argc, char *argv[]) {
   if (!FLAGS_generate_kernel_signature.empty()) {
     return GenerateKernelSignature(&kernel_collector,
                                    FLAGS_generate_kernel_signature);
-  }
-
-  if (!FLAGS_udev.empty()) {
-    return HandleUdevCrash(&udev_collector, FLAGS_udev);
   }
 
   if (FLAGS_kernel_warning) {
