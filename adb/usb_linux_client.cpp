@@ -473,11 +473,22 @@ static int bulk_write(int bulk_in, const uint8_t* buf, size_t length)
 static int usb_ffs_write(usb_handle* h, const void* data, int len)
 {
     D("about to write (fd=%d, len=%d)", h->bulk_in, len);
-    int n = bulk_write(h->bulk_in, reinterpret_cast<const uint8_t*>(data), len);
-    if (n != len) {
-        D("ERROR: fd = %d, n = %d: %s", h->bulk_in, n, strerror(errno));
-        return -1;
+
+    // Writes larger than 16k fail on some devices (seed with 3.10.49-g209ea2f in particular).
+    const uint8_t* buf = reinterpret_cast<const uint8_t*>(data);
+    while (len > 0) {
+        int write_len = (len > 16384) ? 16384 : len;
+
+        int n = bulk_write(h->bulk_in, buf, write_len);
+        if (n != write_len) {
+            D("ERROR: fd = %d, n = %d: %s", h->bulk_in, n, strerror(errno));
+            return -1;
+        }
+
+        buf += n;
+        len -= n;
     }
+
     D("[ done fd=%d ]", h->bulk_in);
     return 0;
 }
