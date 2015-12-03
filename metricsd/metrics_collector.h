@@ -69,7 +69,12 @@ class MetricsCollector : public brillo::DBusDaemon {
   static const char kOrigDataSizeName[];
   static const char kZeroPagesName[];
 
+  // Updates the active use time and logs time between user-space
+  // process crashes.  Called via MetricsCollectorServiceTrampoline.
+  void ProcessUserCrash();
+
  private:
+  friend class MetricsCollectorServiceTrampoline;
   friend class MetricsCollectorTest;
   FRIEND_TEST(MetricsCollectorTest, CheckSystemCrash);
   FRIEND_TEST(MetricsCollectorTest, ComputeEpochNoCurrent);
@@ -108,11 +113,6 @@ class MetricsCollector : public brillo::DBusDaemon {
     int value;               // value from /proc/meminfo
   };
 
-  // D-Bus filter callback.
-  static DBusHandlerResult MessageFilter(DBusConnection* connection,
-                                         DBusMessage* message,
-                                         void* user_data);
-
   // Enables metrics reporting.
   void OnEnableMetrics(const std::weak_ptr<weaved::Command>& cmd);
 
@@ -121,10 +121,6 @@ class MetricsCollector : public brillo::DBusDaemon {
 
   // Updates the weave device state.
   void UpdateWeaveState();
-
-  // Updates the active use time and logs time between user-space
-  // process crashes.
-  void ProcessUserCrash();
 
   // Updates the active use time and logs time between kernel crashes.
   void ProcessKernelCrash();
