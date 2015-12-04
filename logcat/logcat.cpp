@@ -748,6 +748,11 @@ int main(int argc, char **argv)
 
                 if (strcmp(optarg, "all") == 0) {
                     for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
+
+                        if (i == LOG_ID_SECURITY) {
+                            continue;
+                        }
+
                         const char *name = android_log_id_to_name((log_id_t)i);
                         log_id_t log_id = android_name_to_log_id(name);
 
@@ -769,8 +774,7 @@ int main(int argc, char **argv)
                             break;
                         }
 
-                        bool binary = !strcmp(name, "events") ||
-                                      !strcmp(name, "security");
+                        bool binary = !strcmp(name, "events");
                         log_device_t* d = new log_device_t(name, binary);
 
                         if (dev) {
