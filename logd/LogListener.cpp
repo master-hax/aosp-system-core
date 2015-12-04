@@ -92,6 +92,14 @@ bool LogListener::onDataAvailable(SocketClient *cli) {
         return false;
     }
 
+    if ((header->id == LOG_ID_SECURITY) &&
+            (cred->uid != AID_SYSTEM) &&
+            (cred->uid != AID_ROOT) &&
+            !__android_log_security() &&
+            !clientHasLogCredentials(cli)) { // slowest failure check done last
+        return false;
+    }
+
     char *msg = ((char *)buffer) + sizeof(android_log_header_t);
     n -= sizeof(android_log_header_t);
 

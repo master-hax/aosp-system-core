@@ -199,15 +199,23 @@ int LogBuffer::log(log_id_t log_id, log_time realtime,
 
     LogBufferElement *elem = new LogBufferElement(log_id, realtime,
                                                   uid, pid, tid, msg, len);
-    int prio = ANDROID_LOG_INFO;
-    const char *tag = NULL;
-    if (log_id == LOG_ID_EVENTS) {
-        tag = android::tagToName(elem->getTag());
+    bool loggable = true;
+    if (log_id == LOG_ID_SECURITY) {
+        if ((uid != AID_SYSTEM) && (uid != AID_ROOT)) {
+            loggable = false;
+        }
     } else {
-        prio = *msg;
-        tag = msg + 1;
+        int prio = ANDROID_LOG_INFO;
+        const char *tag = NULL;
+        if (log_id == LOG_ID_EVENTS) {
+            tag = android::tagToName(elem->getTag());
+        } else {
+            prio = *msg;
+            tag = msg + 1;
+        }
+        loggable = __android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE);
     }
-    if (!__android_log_is_loggable(prio, tag, ANDROID_LOG_VERBOSE)) {
+    if (!loggable) {
         // Log traffic received to total
         pthread_mutex_lock(&mLogElementsLock);
         stats.add(elem);
@@ -484,7 +492,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     }
 
     // prune by worst offender by uid
-    bool hasBlacklist = mPrune.naughty();
+    bool hasBlacklist = mPrune.naughty() && (id != LOG_ID_SECURITY);
     while (!clearAll && (pruneRows > 0)) {
         // recalculate the worst offender on every batched pass
         uid_t worst = (uid_t) -1;
@@ -654,7 +662,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     }
 
     bool whitelist = false;
-    bool hasWhitelist = mPrune.nice() && !clearAll;
+    bool hasWhitelist = mPrune.nice() && !clearAll && (id != LOG_ID_SECURITY);
     it = mLogElements.begin();
     while((pruneRows > 0) && (it != mLogElements.end())) {
         LogBufferElement *e = *it;
