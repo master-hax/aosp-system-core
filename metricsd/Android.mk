@@ -84,6 +84,7 @@ metrics_collector_static_libraries := libmetricscollectorservice
 metricsd_shared_libraries := \
   libbinder \
   libbrillo \
+  libbrillo-binder \
   libbrillo-http \
   libchrome \
   libprotobuf-cpp-lite \
