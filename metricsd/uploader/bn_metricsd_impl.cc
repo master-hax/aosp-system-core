@@ -16,11 +16,13 @@
 
 #include "uploader/bn_metricsd_impl.h"
 
+#include <base/bind.h>
 #include <base/metrics/histogram.h>
 #include <base/metrics/sparse_histogram.h>
 #include <base/metrics/statistics_recorder.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
+#include <brillo/binder_watcher.h>
 #include <utils/Errors.h>
 #include <utils/String16.h>
 #include <utils/String8.h>
@@ -42,9 +44,17 @@ void BnMetricsdImpl::Run() {
       android::defaultServiceManager()->addService(getInterfaceDescriptor(),
                                                    this);
   CHECK(status == android::OK) << "Metricsd service registration failed";
-  android::ProcessState::self()->setThreadPoolMaxThreadCount(0);
-  android::IPCThreadState::self()->disableBackgroundScheduling(true);
-  android::IPCThreadState::self()->joinThreadPool();
+
+  base::MessageLoopForIO message_loop_for_io;
+  message_loop_.reset(new brillo::BaseMessageLoop(&message_loop_for_io));
+  brillo::BinderWatcher watcher;
+  CHECK(watcher.Init()) << "failed to initialize the binder file descriptor "
+                        << "watcher";
+  message_loop_->Run();
+}
+
+void BnMetricsdImpl::Quit() {
+  message_loop_->BreakLoop();
 }
 
 Status BnMetricsdImpl::recordHistogram(

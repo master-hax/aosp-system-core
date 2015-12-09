@@ -19,6 +19,7 @@
 #include <sysexits.h>
 
 #include <string>
+#include <thread>
 
 #include <base/bind.h>
 #include <base/files/file_util.h>
@@ -33,6 +34,7 @@
 #include <base/sha1.h>
 
 #include "constants.h"
+#include "uploader/bn_metricsd_impl.h"
 #include "uploader/metrics_log.h"
 #include "uploader/sender_http.h"
 #include "uploader/system_profile_setter.h"
@@ -49,12 +51,14 @@ UploadService::UploadService(const std::string& server,
       failed_upload_count_(metrics::kFailedUploadCountName,
                            private_metrics_directory),
       counters_(counters),
-      upload_interval_(upload_interval) {
+      upload_interval_(upload_interval),
+      binder_service_(counters) {
   staged_log_path_ = private_metrics_directory.Append(metrics::kStagedLogName);
   consent_file_ = shared_metrics_directory.Append(metrics::kConsentFileName);
 }
 
 int UploadService::OnInit() {
+  brillo::Daemon::OnInit();
   system_profile_setter_.reset(new SystemProfileCache());
 
   base::MessageLoop::current()->PostDelayedTask(FROM_HERE,
@@ -62,7 +66,16 @@ int UploadService::OnInit() {
                  base::Unretained(this),
                  upload_interval_),
       upload_interval_);
+
+  // Create and start the binder thread.
+  binder_thread_.reset(new std::thread(&BnMetricsdImpl::Run, &binder_service_));
+
   return EX_OK;
+}
+
+void UploadService::OnShutdown(int* exit_code) {
+  binder_service_.Quit();
+  binder_thread_->join();
 }
 
 void UploadService::InitForTest(SystemProfileSetter* setter) {
