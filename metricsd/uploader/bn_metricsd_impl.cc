@@ -16,11 +16,13 @@
 
 #include "uploader/bn_metricsd_impl.h"
 
+#include <base/logging.h>
 #include <base/metrics/histogram.h>
 #include <base/metrics/sparse_histogram.h>
 #include <base/metrics/statistics_recorder.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
+#include <utils/Errors.h>
 #include <utils/String16.h>
 #include <utils/String8.h>
 
@@ -37,7 +39,14 @@ BnMetricsdImpl::BnMetricsdImpl(const std::shared_ptr<CrashCounters>& counters)
 }
 
 void BnMetricsdImpl::Run() {
-  android::defaultServiceManager()->addService(getInterfaceDescriptor(), this);
+  android::status_t status =
+      android::defaultServiceManager()->addService(getInterfaceDescriptor(),
+                                                   this);
+  if (status != android::OK) {
+    LOG(ERROR) << "Metricsd: failed to add service: " << status;
+    return;
+ }
+
   android::ProcessState::self()->setThreadPoolMaxThreadCount(0);
   android::IPCThreadState::self()->disableBackgroundScheduling(true);
   android::IPCThreadState::self()->joinThreadPool();
