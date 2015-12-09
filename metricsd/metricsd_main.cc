@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <thread>
-
 #include <base/at_exit.h>
 #include <base/command_line.h>
 #include <base/files/file_path.h>
@@ -27,7 +25,6 @@
 #include <brillo/syslog_logging.h>
 
 #include "constants.h"
-#include "uploader/bn_metricsd_impl.h"
 #include "uploader/crash_counters.h"
 #include "uploader/upload_service.h"
 
@@ -84,10 +81,6 @@ int main(int argc, char** argv) {
       base::FilePath(FLAGS_shared_directory), counters);
 
   base::StatisticsRecorder::Initialize();
-
-  // Create and start the binder thread.
-  BnMetricsdImpl binder_service(counters);
-  std::thread binder_thread(&BnMetricsdImpl::Run, &binder_service);
 
   upload_service.Run();
 }
