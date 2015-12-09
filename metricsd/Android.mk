@@ -80,6 +80,7 @@ metrics_collector_shared_libraries := $(libmetrics_shared_libraries) \
 metricsd_shared_libraries := \
   libbinder \
   libbrillo \
+  libbrillo-binder \
   libbrillo-http \
   libchrome \
   libprotobuf-cpp-lite \

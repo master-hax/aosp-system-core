@@ -18,6 +18,7 @@
 #define METRICSD_UPLOADER_BN_METRICSD_IMPL_H_
 
 #include "android/brillo/metrics/BnMetricsd.h"
+#include "brillo/message_loops/base_message_loop.h"
 #include "uploader/crash_counters.h"
 
 class BnMetricsdImpl : public android::brillo::metrics::BnMetricsd {
@@ -27,6 +28,9 @@ class BnMetricsdImpl : public android::brillo::metrics::BnMetricsd {
 
   // Starts the binder main loop.
   void Run();
+
+  // Stop the message loop.
+  void Quit();
 
   // Records a histogram.
   android::binder::Status recordHistogram(const android::String16& name,
@@ -52,6 +56,7 @@ class BnMetricsdImpl : public android::brillo::metrics::BnMetricsd {
 
  private:
   std::shared_ptr<CrashCounters> counters_;
+  std::unique_ptr<brillo::BaseMessageLoop> message_loop_;
 };
 
 #endif  // METRICSD_UPLOADER_BN_METRICSD_IMPL_H_
