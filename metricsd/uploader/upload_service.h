@@ -18,6 +18,7 @@
 #define METRICS_UPLOADER_UPLOAD_SERVICE_H_
 
 #include <string>
+#include <thread>
 
 #include <base/metrics/histogram_base.h>
 #include <base/metrics/histogram_flattener.h>
@@ -25,6 +26,7 @@
 #include <brillo/daemons/daemon.h>
 
 #include "persistent_integer.h"
+#include "uploader/bn_metricsd_impl.h"
 #include "uploader/crash_counters.h"
 #include "uploader/metrics_log.h"
 #include "uploader/proto/chrome_user_metrics_extension.pb.h"
@@ -67,6 +69,9 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
 
   // Initializes the upload service.
   int OnInit();
+
+  // Cleans up the internal state before exiting.
+  void OnShutdown(int* exit_code) override;
 
   // Starts a new log. The log needs to be regenerated after each successful
   // launch as it is destroyed when staging the log.
@@ -150,6 +155,8 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
 
   base::TimeDelta upload_interval_;
 
+  BnMetricsdImpl binder_service_;
+  std::unique_ptr<std::thread> binder_thread_;
   base::FilePath consent_file_;
   base::FilePath staged_log_path_;
 

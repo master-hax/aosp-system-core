@@ -148,12 +148,9 @@ TEST_F(UploadServiceTest, EmptyLogsAreNotSent) {
 }
 
 TEST_F(UploadServiceTest, LogEmptyByDefault) {
-  UploadService upload_service("", base::TimeDelta(), dir_.path(), dir_.path(),
-                               std::make_shared<CrashCounters>());
-
-  // current_log_ should be initialized later as it needs AtExitManager to exit
+  // current_log_ should be initialized later as it needs AtExitManager to exist
   // in order to gather system information from SysInfo.
-  EXPECT_FALSE(upload_service.current_log_);
+  EXPECT_FALSE(upload_service_->current_log_);
 }
 
 TEST_F(UploadServiceTest, CanSendMultipleTimes) {
