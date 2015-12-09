@@ -21,6 +21,7 @@
 #include <base/metrics/statistics_recorder.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
+#include <utils/Errors.h>
 #include <utils/String16.h>
 #include <utils/String8.h>
 
@@ -37,7 +38,10 @@ BnMetricsdImpl::BnMetricsdImpl(const std::shared_ptr<CrashCounters>& counters)
 }
 
 void BnMetricsdImpl::Run() {
-  android::defaultServiceManager()->addService(getInterfaceDescriptor(), this);
+  android::status_t status =
+      android::defaultServiceManager()->addService(getInterfaceDescriptor(),
+                                                   this);
+  CHECK(status == android::OK);
   android::ProcessState::self()->setThreadPoolMaxThreadCount(0);
   android::IPCThreadState::self()->disableBackgroundScheduling(true);
   android::IPCThreadState::self()->joinThreadPool();
