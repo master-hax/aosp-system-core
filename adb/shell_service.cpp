@@ -88,6 +88,8 @@
 #include <termios.h>
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
@@ -237,12 +239,32 @@ bool Subprocess::ForkAndExec() {
     ScopedFd parent_error_sfd, child_error_sfd;
     char pts_name[PATH_MAX];
 
-    // Create a socketpair for the fork() child to report any errors back to
-    // the parent. Since we use threads, logging directly from the child could
-    // create a race condition.
+    // Create a socketpair for the fork() child to report any errors back to the parent. Since we
+    // use threads, logging directly from the child might deadlock due to locks held in another
+    // thread during the fork.
     if (!CreateSocketpair(&parent_error_sfd, &child_error_sfd)) {
         LOG(ERROR) << "failed to create pipe for subprocess error reporting";
     }
+
+    // Construct the environment for the child before we fork.
+    passwd* pw = getpwuid(getuid());
+    std::vector<std::string> env;
+    if (pw != nullptr) {
+        env.push_back(android::base::StringPrintf("HOME=%s" ,pw->pw_dir));
+        env.push_back(android::base::StringPrintf("LOGNAME=%s", pw->pw_name));
+        env.push_back(android::base::StringPrintf("USER=%s", pw->pw_name));
+        env.push_back(android::base::StringPrintf("SHELL=%s" ,pw->pw_shell));
+    }
+
+    if (!terminal_type_.empty()) {
+        env.push_back(android::base::StringPrintf("TERM=%s", terminal_type_.c_str()));
+    }
+
+    std::vector<const char*> cenv;
+    for (const std::string& str : env) {
+        cenv.push_back(str.c_str());
+    }
+    cenv.push_back(nullptr);
 
     if (type_ == SubprocessType::kPty) {
         int fd;
@@ -287,25 +309,14 @@ bool Subprocess::ForkAndExec() {
         close_on_exec(child_error_sfd.fd());
 
         // TODO: $HOSTNAME? Normally bash automatically sets that, but mksh doesn't.
-        passwd* pw = getpwuid(getuid());
-        if (pw != nullptr) {
-            setenv("HOME", pw->pw_dir, 1);
-            setenv("LOGNAME", pw->pw_name, 1);
-            setenv("SHELL", pw->pw_shell, 1);
-            setenv("USER", pw->pw_name, 1);
-        }
-        if (!terminal_type_.empty()) {
-            setenv("TERM", terminal_type_.c_str(), 1);
-        }
-
         if (is_interactive()) {
-            execl(_PATH_BSHELL, _PATH_BSHELL, "-", nullptr);
+            execle(_PATH_BSHELL, _PATH_BSHELL, "-", nullptr, cenv.data());
         } else {
-            execl(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr);
+            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
         }
         WriteFdExactly(child_error_sfd.fd(), "exec '" _PATH_BSHELL "' failed");
         child_error_sfd.Reset();
-        exit(-1);
+        _Exit(1);
     }
 
     // Subprocess parent.
@@ -320,6 +331,7 @@ bool Subprocess::ForkAndExec() {
         return false;
     }
 
+    D("subprocess parent: exec completed");
     if (protocol_ == SubprocessProtocol::kNone) {
         // No protocol: all streams pass through the stdinout FD and hook
         // directly into the local socket for raw data transfer.
@@ -357,6 +369,7 @@ bool Subprocess::ForkAndExec() {
         return false;
     }
 
+    D("subprocess parent: completed");
     return true;
 }
 
