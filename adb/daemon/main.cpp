@@ -31,6 +31,9 @@
 #include "private/android_filesystem_config.h"
 #include "selinux/selinux.h"
 
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
+#include <sys/_system_properties.h>
+
 #include "adb.h"
 #include "adb_auth.h"
 #include "adb_listeners.h"
@@ -145,6 +148,10 @@ static void drop_privileges(int server_port) {
             if (setcon(root_seclabel) < 0) {
                 LOG(FATAL) << "Could not set SELinux context";
             }
+            // System properties must be reinitialized after setcon() otherwise the
+            // previous property files will be leaked since mmap()'ed regions are not
+            // closed as a result of setcon().
+            __system_properties_init();
         }
         std::string error;
         std::string local_name =
