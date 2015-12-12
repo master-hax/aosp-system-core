@@ -35,6 +35,7 @@
 
 #include "adb.h"
 #include "adb_utils.h"
+#include "diagnose_linux_usb.h"
 
 static void transport_unref(atransport *t);
 
@@ -674,11 +675,16 @@ atransport* acquire_one_transport(TransportType type, const char* serial,
     adb_mutex_lock(&transport_lock);
     for (const auto& t : transport_list) {
         if (t->connection_state == kCsNoPerm) {
+#if defined(__linux__) && !defined(__ANDROID__)
+            // On the Linux host, try to diagnose common USB problems.
             *error_out = UsbNoPermissionsLongHelpText();
             // If we couldn't figure out a reasonable help message default to something generic.
             if (error_out->empty()) {
                 *error_out = "insufficient permissions for device";
             }
+#else
+            *error_out = "insufficient permissions for device";
+#endif
             continue;
         }
 
@@ -760,8 +766,12 @@ const std::string atransport::connection_state_name() const {
         case kCsHost: return "host";
         case kCsRecovery: return "recovery";
         case kCsNoPerm: {
+#if defined(__linux__)
             std::string message = UsbNoPermissionsShortHelpText();
             return message.empty() ? "no permissions" : message;
+#else
+            return "no permissions";
+#endif
         }
         case kCsSideload: return "sideload";
         case kCsUnauthorized: return "unauthorized";
