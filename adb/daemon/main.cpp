@@ -27,6 +27,8 @@
 
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <libminijail.h>
+
 #include "cutils/properties.h"
 #include "private/android_filesystem_config.h"
 #include "selinux/selinux.h"
@@ -91,12 +93,12 @@ static bool should_drop_privileges() {
     bool adb_root = (strcmp(value, "1") == 0);
     bool adb_unroot = (strcmp(value, "0") == 0);
 
-    // ...except "adb root" lets you keep privileges in a debuggable build.
+    // ... except "adb root" lets you keep privileges in a debuggable build.
     if (ro_debuggable && adb_root) {
         drop = false;
     }
 
-    // ...and "adb unroot" lets you explicitly drop privileges.
+    // ... and "adb unroot" lets you explicitly drop privileges.
     if (adb_unroot) {
         drop = true;
     }
@@ -108,6 +110,8 @@ static bool should_drop_privileges() {
 }
 
 static void drop_privileges(int server_port) {
+    struct minijail *j = minijail_new();
+
     // Add extra groups:
     // AID_ADB to access the USB driver
     // AID_LOG to read system logs (adb logcat)
@@ -118,29 +122,30 @@ static void drop_privileges(int server_port) {
     // AID_SDCARD_RW to allow writing to the SD card
     // AID_NET_BW_STATS to read out qtaguid statistics
     // AID_READPROC for reading /proc entries across UID boundaries
-    gid_t groups[] = {AID_ADB,      AID_LOG,       AID_INPUT,
-                      AID_INET,     AID_NET_BT,    AID_NET_BT_ADMIN,
-                      AID_SDCARD_R, AID_SDCARD_RW, AID_NET_BW_STATS,
-                      AID_READPROC };
-    if (setgroups(sizeof(groups) / sizeof(groups[0]), groups) != 0) {
-        PLOG(FATAL) << "Could not set supplemental groups";
-    }
+    gid_t groups[] = { AID_ADB,      AID_LOG,       AID_INPUT,
+                       AID_INET,     AID_NET_BT,    AID_NET_BT_ADMIN,
+                       AID_SDCARD_R, AID_SDCARD_RW, AID_NET_BW_STATS,
+                       AID_READPROC };
+    minijail_set_supplementary_gids(j, sizeof(groups) / sizeof(groups[0]),
+                                    groups);
 
-    /* don't listen on a port (default 5037) if running in secure mode */
-    /* don't run as root if we are running in secure mode */
+    // Don't listen on a port (default 5037) if running in secure mode.
+    // Don't run as root if running in secure mode.
     if (should_drop_privileges()) {
         drop_capabilities_bounding_set_if_needed();
 
-        /* then switch user and group to "shell" */
-        if (setgid(AID_SHELL) != 0) {
-            PLOG(FATAL) << "Could not setgid";
-        }
-        if (setuid(AID_SHELL) != 0) {
-            PLOG(FATAL) << "Could not setuid";
-        }
+        minijail_change_gid(j, AID_SHELL);
+        minijail_change_uid(j, AID_SHELL);
+        // minijail_enter() will abort if any priv-dropping step fails.
+        minijail_enter(j);
+        minijail_destroy(j);
 
         D("Local port disabled");
     } else {
+        // minijail_enter() will abort if any priv-dropping step fails.
+        minijail_enter(j);
+        minijail_destroy(j);
+
         if (root_seclabel != nullptr) {
             if (setcon(root_seclabel) < 0) {
                 LOG(FATAL) << "Could not set SELinux context";
@@ -152,7 +157,7 @@ static void drop_privileges(int server_port) {
         if (install_listener(local_name, "*smartsocket*", nullptr, 0,
                              &error)) {
             LOG(FATAL) << "Could not install *smartsocket* listener: "
-                << error;
+                       << error;
         }
     }
 }
