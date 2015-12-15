@@ -61,6 +61,7 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
  public:
   UploadService(const std::string& server,
                 const base::TimeDelta& upload_interval,
+                const base::TimeDelta& disk_persistence_interval,
                 const base::FilePath& private_metrics_directory,
                 const base::FilePath& shared_metrics_directory,
                 const std::shared_ptr<CrashCounters> counters);
@@ -72,8 +73,14 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   // launch as it is destroyed when staging the log.
   void StartNewLog();
 
-  // Event callback for handling MessageLoop events.
-  void UploadEventCallback(const base::TimeDelta& interval);
+  // Event callback for handling Upload events.
+  void UploadEventCallback();
+
+  // Event callback for handling Persist events.
+  void PersistEventCallback();
+
+  // Saves the current metrics to a file.
+  void PersistToDisk();
 
   // Triggers an upload event.
   void UploadEvent();
@@ -93,6 +100,8 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   friend class UploadServiceTest;
 
   FRIEND_TEST(UploadServiceTest, CanSendMultipleTimes);
+  FRIEND_TEST(UploadServiceTest, CorruptedSavedLog);
+  FRIEND_TEST(UploadServiceTest, CurrentLogSavedAndResumed);
   FRIEND_TEST(UploadServiceTest, DiscardLogsAfterTooManyFailedUpload);
   FRIEND_TEST(UploadServiceTest, EmptyLogsAreNotSent);
   FRIEND_TEST(UploadServiceTest, FailedSendAreRetried);
@@ -104,6 +113,7 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   FRIEND_TEST(UploadServiceTest, LogKernelCrash);
   FRIEND_TEST(UploadServiceTest, LogUncleanShutdown);
   FRIEND_TEST(UploadServiceTest, LogUserCrash);
+  FRIEND_TEST(UploadServiceTest, PersistEmptyLog);
   FRIEND_TEST(UploadServiceTest, UnknownCrashIgnored);
   FRIEND_TEST(UploadServiceTest, ValuesInConfigFileAreSent);
 
@@ -149,9 +159,11 @@ class UploadService : public base::HistogramFlattener, public brillo::Daemon {
   std::shared_ptr<CrashCounters> counters_;
 
   base::TimeDelta upload_interval_;
+  base::TimeDelta disk_persistence_interval_;
 
   base::FilePath consent_file_;
   base::FilePath staged_log_path_;
+  base::FilePath saved_log_path_;
 
   bool testing_;
 };
