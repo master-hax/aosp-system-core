@@ -3,7 +3,7 @@ on post-fs-data
     mkdir /data/misc/metricsd 0700 system system
     mkdir /data/misc/metrics_collector 0700 system system
 
-service metricsd /system/bin/metricsd --foreground --logtosyslog
+service metricsd /system/bin/metricsd --foreground --logtosyslog --v=1
     class late_start
     user system
     group system dbus inet
