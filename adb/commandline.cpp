@@ -560,9 +560,18 @@ static void* stdin_read_thread_loop(void* x) {
             } else {
                 if (state == kInEscape) {
                     if (ch == '.') {
-                        fprintf(stderr,"\r\n[ disconnected ]\r\n");
+                        fprintf(stderr, "\r\n[ disconnected ]\r\n");
                         stdin_raw_restore();
                         exit(0);
+#if !defined(_WIN32)
+                    } else if (ch == 'Z' - '@') {
+                        fprintf(stderr, "\r\n%c^Z [ suspend adb shell ]\r\n", args->escape_char);
+                        stdin_raw_restore();
+                        kill(getpid(), SIGTSTP);
+                        stdin_raw_init();
+                        state = kStartOfLine;
+                        continue;
+#endif
                     } else {
                         // We swallowed an escape character that wasn't part of
                         // a valid escape sequence; time to cough it up.
