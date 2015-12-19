@@ -698,7 +698,7 @@ static int init_mp(char *levelstr, void *event_handler)
         goto err_open_evctlfd;
     }
 
-    evfd = eventfd(0, EFD_NONBLOCK);
+    evfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if (evfd < 0) {
         ALOGE("eventfd failed for level %s; errno=%d", levelstr, errno);
         goto err_eventfd;
