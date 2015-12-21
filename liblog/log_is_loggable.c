@@ -25,13 +25,18 @@
 
 static pthread_mutex_t lock_loggable = PTHREAD_MUTEX_INITIALIZER;
 
-static void lock()
+static int lock()
 {
     /*
      * If we trigger a signal handler in the middle of locked activity and the
      * signal handler logs a message, we could get into a deadlock state.
      */
-    pthread_mutex_lock(&lock_loggable);
+    /*
+     *  Any contention, and we can turn around and use the non-cached method
+     * in less time than the system call associated with a mutex to deal with
+     * the contention.
+     */
+    return pthread_mutex_trylock(&lock_loggable);
 }
 
 static void unlock()
@@ -44,6 +49,12 @@ struct cache {
     uint32_t serial;
     unsigned char c;
 };
+
+static int check_cache(struct cache *cache)
+{
+    return cache->pinfo
+        && __system_property_serial(cache->pinfo) != cache->serial;
+}
 
 #define BOOLEAN_TRUE 0xFF
 #define BOOLEAN_FALSE 0xFE
@@ -58,6 +69,7 @@ static void refresh_cache(struct cache *cache, const char *key)
         if (!cache->pinfo) {
             return;
         }
+        cache->serial = -1;
     }
     serial = __system_property_serial(cache->pinfo);
     if (serial == cache->serial) {
@@ -85,7 +97,7 @@ static int __android_log_level(const char *tag, int default_prio)
     /* calculate the size of our key temporary buffer */
     const size_t taglen = (tag && *tag) ? strlen(tag) : 0;
     /* sizeof(log_namespace) = strlen(log_namespace) + 1 */
-    char key[sizeof(log_namespace) + taglen];
+    char key[sizeof(log_namespace) + taglen]; /* may be > PROPERTY_KEY_MAX */
     char *kp;
     size_t i;
     char c = 0;
@@ -101,48 +113,75 @@ static int __android_log_level(const char *tag, int default_prio)
     static char *last_tag;
     static uint32_t global_serial;
     uint32_t current_global_serial;
-    static struct cache tag_cache[2] = {
-        { NULL, -1, 0 },
-        { NULL, -1, 0 }
-    };
-    static struct cache global_cache[2] = {
-        { NULL, -1, 0 },
-        { NULL, -1, 0 }
-    };
+    static struct cache tag_cache[2];
+    static struct cache global_cache[2];
+    int change_detected;
+    int global_change_detected;
+    int not_locked;
 
     strcpy(key, log_namespace);
 
-    lock();
+    global_change_detected = change_detected = not_locked = lock();
 
-    current_global_serial = __system_property_area_serial();
+    if (!not_locked) {
+        /*
+         *  check all known serial numbers for changes.
+         */
+        for (i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
+            if (check_cache(&tag_cache[i])) {
+                change_detected = 1;
+            }
+        }
+        for (i = 0; i < (sizeof(global_cache) / sizeof(global_cache[0])); ++i) {
+            if (check_cache(&global_cache[i])) {
+                global_change_detected = 1;
+            }
+        }
+
+        current_global_serial = __system_property_area_serial();
+        if (current_global_serial != global_serial) {
+            change_detected = 1;
+            global_change_detected = 1;
+        }
+    }
 
     if (taglen) {
-        uint32_t current_local_serial = current_global_serial;
-
-        if (!last_tag || (last_tag[0] != tag[0]) || strcmp(last_tag + 1, tag + 1)) {
-            /* invalidate log.tag.<tag> cache */
-            for(i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
-                tag_cache[i].pinfo = NULL;
-                tag_cache[i].serial = -1;
-                tag_cache[i].c = '\0';
+        int local_change_detected = change_detected;
+        if (!not_locked) {
+            if (!last_tag
+                    || (last_tag[0] != tag[0])
+                    || strcmp(last_tag + 1, tag + 1)) {
+                /* invalidate log.tag.<tag> cache */
+                for (i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
+                    tag_cache[i].pinfo = NULL;
+                    tag_cache[i].c = '\0';
+                }
+                free(last_tag);
+                last_tag = NULL;
+                local_change_detected = 1;
             }
-            free(last_tag);
-            last_tag = NULL;
-            current_global_serial = -1;
-        }
-        if (!last_tag) {
-            last_tag = strdup(tag);
+            if (!last_tag) {
+                last_tag = strdup(tag);
+            }
         }
         strcpy(key + sizeof(log_namespace) - 1, tag);
 
         kp = key;
-        for(i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
-            if (current_local_serial != global_serial) {
-                refresh_cache(&tag_cache[i], kp);
+        for (i = 0; i < (sizeof(tag_cache) / sizeof(tag_cache[0])); ++i) {
+            struct cache *cache = &tag_cache[i];
+            struct cache temp_cache;
+
+            if (not_locked) {
+                temp_cache.pinfo = NULL;
+                temp_cache.c = '\0';
+                cache = &temp_cache;
+            }
+            if (local_change_detected) {
+                refresh_cache(cache, kp);
             }
 
-            if (tag_cache[i].c) {
-                c = tag_cache[i].c;
+            if (cache->c) {
+                c = cache->c;
                 break;
             }
 
@@ -166,13 +205,24 @@ static int __android_log_level(const char *tag, int default_prio)
         key[sizeof(log_namespace) - 2] = '\0';
 
         kp = key;
-        for(i = 0; i < (sizeof(global_cache) / sizeof(global_cache[0])); ++i) {
-            if (current_global_serial != global_serial) {
-                refresh_cache(&global_cache[i], kp);
+        for (i = 0; i < (sizeof(global_cache) / sizeof(global_cache[0])); ++i) {
+            struct cache *cache = &global_cache[i];
+            struct cache temp_cache;
+
+            if (not_locked) {
+                temp_cache = *cache;
+                if (temp_cache.pinfo != cache->pinfo) { /* check atomic */
+                    temp_cache.pinfo = NULL;
+                    temp_cache.c = '\0';
+                }
+                cache = &temp_cache;
+            }
+            if (global_change_detected) {
+                refresh_cache(cache, kp);
             }
 
-            if (global_cache[i].c) {
-                c = global_cache[i].c;
+            if (cache->c) {
+                c = cache->c;
                 break;
             }
 
@@ -181,9 +231,10 @@ static int __android_log_level(const char *tag, int default_prio)
         break;
     }
 
-    global_serial = current_global_serial;
-
-    unlock();
+    if (!not_locked) {
+        global_serial = current_global_serial;
+        unlock();
+    }
 
     switch (toupper(c)) {
     case 'V': return ANDROID_LOG_VERBOSE;
@@ -214,8 +265,8 @@ static pthread_mutex_t lock_clockid = PTHREAD_MUTEX_INITIALIZER;
 
 clockid_t android_log_clockid()
 {
-    static struct cache r_time_cache = { NULL, -1, 0 };
-    static struct cache p_time_cache = { NULL, -1, 0 };
+    static struct cache r_time_cache;
+    static struct cache p_time_cache;
     char c;
 
     if (pthread_mutex_trylock(&lock_clockid)) {
@@ -225,8 +276,20 @@ clockid_t android_log_clockid()
         }
     } else {
         static uint32_t serial;
-        uint32_t current_serial = __system_property_area_serial();
+        uint32_t current_serial;
+        int change_detected = 0;
+
+        if (check_cache(&r_time_cache)) {
+            change_detected = 1;
+        }
+        if (check_cache(&p_time_cache)) {
+            change_detected = 1;
+        }
+        current_serial = __system_property_area_serial();
         if (current_serial != serial) {
+            change_detected = 1;
+        }
+        if (change_detected) {
             refresh_cache(&r_time_cache, "ro.logd.timestamp");
             refresh_cache(&p_time_cache, "persist.logd.timestamp");
             serial = current_serial;
@@ -259,8 +322,20 @@ int __android_log_security()
                  (p_security_cache.c == BOOLEAN_TRUE);
     } else {
         static uint32_t serial;
-        uint32_t current_serial = __system_property_area_serial();
+        uint32_t current_serial;
+        int change_detected = 0;
+
+        if (check_cache(&r_do_cache)) {
+            change_detected = 1;
+        }
+        if (check_cache(&p_security_cache)) {
+            change_detected = 1;
+        }
+        current_serial = __system_property_area_serial();
         if (current_serial != serial) {
+            change_detected = 1;
+        }
+        if (change_detected) {
             refresh_cache(&r_do_cache, "ro.device_owner");
             refresh_cache(&p_security_cache, "persist.logd.security");
             serial = current_serial;
