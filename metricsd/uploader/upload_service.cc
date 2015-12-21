@@ -169,7 +169,7 @@ void UploadService::StageCurrentLog() {
   if (!current_log_)
     return;
 
-  scoped_ptr<MetricsLog> staged_log;
+  std::unique_ptr<MetricsLog> staged_log;
   staged_log.swap(current_log_);
   staged_log->CloseLog();
   if (!staged_log->PopulateSystemProfile(system_profile_setter_.get())) {
