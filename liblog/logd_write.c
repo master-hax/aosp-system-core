@@ -225,50 +225,48 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             return -EPERM;
         }
     } else if (log_id == LOG_ID_EVENTS) {
-        static atomic_uintptr_t map;
-        int ret;
-        const char *tag;
-        EventTagMap *m, *f;
-
         if (vec[0].iov_len < 4) {
             return -EINVAL;
         }
+        if (((uint32_t *)vec[0].iov_base)[0] != htole32(SNET_EVENT_LOG_TAG)) {
+            static atomic_uintptr_t map;
+            int ret;
+            const char *tag = NULL;
+            EventTagMap *m, *f = NULL;
 
-        tag = NULL;
-        f = NULL;
-        m = (EventTagMap *)atomic_load(&map);
-
-        if (!m) {
-            ret = trylock();
             m = (EventTagMap *)atomic_load(&map);
             if (!m) {
-                m = android_openEventTagMap(EVENT_TAG_MAP_FILE);
-                if (ret) {
-                    f = m;
-                } else {
-                    if (!m) { /* One chance to open map file */
-                        m = (EventTagMap *)(uintptr_t)-1LL;
-                    }
-                    atomic_store(&map, (uintptr_t)m);
+                ret = trylock();
+                m = (EventTagMap *)atomic_load(&map);
+                if (!m) {
+                    m = android_openEventTagMap(EVENT_TAG_MAP_FILE);
+                    if (ret) {
+                        f = m;
+                    } else {
+                        if (!m) { /* One chance to open map file */
+                            m = (EventTagMap *)(uintptr_t)-1LL;
+                        }
+                        atomic_store(&map, (uintptr_t)m);
+                   }
+                }
+                if (!ret) {
+                    unlock();
                 }
             }
-            if (!ret) {
-                unlock();
-            }
-        }
-        if (m && (m != (EventTagMap *)(uintptr_t)-1LL)) {
-            tag = android_lookupEventTag(
+            if (m && (m != (EventTagMap *)(uintptr_t)-1LL)) {
+                tag = android_lookupEventTag(
                                     m,
                                     htole32(((uint32_t *)vec[0].iov_base)[0]));
-        }
-        ret = __android_log_is_loggable(ANDROID_LOG_INFO,
-                                        tag,
-                                        ANDROID_LOG_VERBOSE);
-        if (f) {
-            android_closeEventTagMap(f);
-        }
-        if (!ret) {
-            return -EPERM;
+            }
+            ret = __android_log_is_loggable(ANDROID_LOG_INFO,
+                                            tag,
+                                            ANDROID_LOG_VERBOSE);
+            if (f) {
+                android_closeEventTagMap(f);
+            }
+            if (!ret) {
+                return -EPERM;
+            }
         }
     } else {
         /* Validate the incoming tag, tag content can not split across iovec */
