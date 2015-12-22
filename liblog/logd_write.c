@@ -212,7 +212,9 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             return -EPERM;
         }
     } else if (log_id == LOG_ID_EVENTS) {
-        if (vec[0].iov_len >= 4) {
+        if ((vec[0].iov_len >= 4) &&
+                (((uint32_t *)vec[0].iov_base)[0] !=
+                    htole32(SNET_EVENT_LOG_TAG))) {
             static const EventTagMap *map;
 
             if (!map) {
