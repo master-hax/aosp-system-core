@@ -28,6 +28,7 @@
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
+#include <binderwrapper/binder_wrapper.h>
 #include <brillo/osrelease_reader.h>
 #include <dbus/dbus.h>
 #include <dbus/message.h>
@@ -206,6 +207,7 @@ void MetricsCollector::Init(bool testing, MetricsLibraryInterface* metrics_lib,
 }
 
 int MetricsCollector::OnInit() {
+  android::BinderWrapper::Create();
   int return_code = brillo::DBusDaemon::OnInit();
   if (return_code != EX_OK)
     return return_code;
@@ -223,18 +225,11 @@ int MetricsCollector::OnInit() {
   bus_->AssertOnDBusThread();
   CHECK(bus_->SetUpAsyncOperations());
 
-  device_ = weaved::Device::CreateInstance(
-      bus_,
-      base::Bind(&MetricsCollector::UpdateWeaveState, base::Unretained(this)));
-  device_->AddComponent(kWeaveComponent, {"_metrics"});
-  device_->AddCommandHandler(
-      kWeaveComponent,
-      "_metrics.enableAnalyticsReporting",
-      base::Bind(&MetricsCollector::OnEnableMetrics, base::Unretained(this)));
-  device_->AddCommandHandler(
-      kWeaveComponent,
-      "_metrics.disableAnalyticsReporting",
-      base::Bind(&MetricsCollector::OnDisableMetrics, base::Unretained(this)));
+  weave_service_token_ = weaved::Service::Connect(
+      android::BinderWrapper::Get(),
+      brillo::MessageLoop::current(),
+      base::Bind(&MetricsCollector::OnWeaveServiceConnected,
+                 weak_ptr_factory_.GetWeakPtr()));
 
   latest_cpu_use_microseconds_ = cpu_usage_collector_->GetCumulativeCpuUse();
   base::MessageLoop::current()->PostDelayedTask(FROM_HERE,
@@ -249,12 +244,28 @@ void MetricsCollector::OnShutdown(int* return_code) {
   brillo::DBusDaemon::OnShutdown(return_code);
 }
 
-void MetricsCollector::OnEnableMetrics(
-    const std::weak_ptr<weaved::Command>& cmd) {
-  auto command = cmd.lock();
-  if (!command)
+void MetricsCollector::OnWeaveServiceConnected(
+    const std::weak_ptr<weaved::Service>& service) {
+  service_ = service;
+  auto weave_service = service.lock();
+  if (!weave_service)
     return;
 
+  weave_service->AddComponent(kWeaveComponent, {"_metrics"}, nullptr);
+  weave_service->AddCommandHandler(
+      kWeaveComponent,
+      "_metrics.enableAnalyticsReporting",
+      base::Bind(&MetricsCollector::OnEnableMetrics, base::Unretained(this)));
+  weave_service->AddCommandHandler(
+      kWeaveComponent,
+      "_metrics.disableAnalyticsReporting",
+      base::Bind(&MetricsCollector::OnDisableMetrics, base::Unretained(this)));
+
+  UpdateWeaveState();
+}
+
+void MetricsCollector::OnEnableMetrics(
+    std::unique_ptr<weaved::Command> command) {
   if (base::WriteFile(
           shared_metrics_directory_.Append(metrics::kConsentFileName), "", 0) !=
       0) {
@@ -269,11 +280,7 @@ void MetricsCollector::OnEnableMetrics(
 }
 
 void MetricsCollector::OnDisableMetrics(
-    const std::weak_ptr<weaved::Command>& cmd) {
-  auto command = cmd.lock();
-  if (!command)
-    return;
-
+    std::unique_ptr<weaved::Command> command) {
   if (!base::DeleteFile(
           shared_metrics_directory_.Append(metrics::kConsentFileName), false)) {
     PLOG(ERROR) << "Could not delete the consent file.";
@@ -287,16 +294,17 @@ void MetricsCollector::OnDisableMetrics(
 }
 
 void MetricsCollector::UpdateWeaveState() {
-  if (!device_)
+  auto weave_service = service_.lock();
+  if (!weave_service)
     return;
 
   std::string enabled =
       metrics_lib_->AreMetricsEnabled() ? "enabled" : "disabled";
 
-  if (!device_->SetStateProperty(kWeaveComponent,
-                                 "_metrics.analyticsReportingState",
-                                 enabled,
-                                 nullptr)) {
+  if (!weave_service->SetStateProperty(kWeaveComponent,
+                                       "_metrics.analyticsReportingState",
+                                       enabled,
+                                       nullptr)) {
     LOG(ERROR) << "failed to update weave's state";
   }
 }
