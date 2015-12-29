@@ -70,6 +70,7 @@ metrics_includes := external/gtest/include \
   $(LOCAL_PATH)/include
 libmetrics_shared_libraries := libchrome libbinder libbrillo libutils
 metrics_collector_shared_libraries := $(libmetrics_shared_libraries) \
+  libbinderwrapper \
   libbrillo-binder \
   libbrillo-dbus \
   libbrillo-http \
