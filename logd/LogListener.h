@@ -23,9 +23,11 @@
 class LogListener : public SocketListener {
     LogBuffer *logbuf;
     LogReader *reader;
+    pid_t who;
 
 public:
     LogListener(LogBuffer *buf, LogReader *reader);
+    pid_t getWho() const { return who; }
 
 protected:
     virtual bool onDataAvailable(SocketClient *cli);

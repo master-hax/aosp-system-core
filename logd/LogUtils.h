@@ -39,6 +39,10 @@ const char *tagToName(uint32_t tag);
 
 }
 
+// Furnished in LogBuffer.cpp
+bool big_buffer();
+bool really_big_buffer();
+
 // Furnished in LogCommand.cpp
 bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid);
 bool clientHasLogCredentials(SocketClient *cli);

@@ -87,18 +87,23 @@
 //
 
 static int drop_privs() {
-    struct sched_param param;
-    memset(&param, 0, sizeof(param));
+    // Larger size typically means debug scenarios
+    bool fg = really_big_buffer();
 
-    if (set_sched_policy(0, SP_BACKGROUND) < 0) {
+    if (set_sched_policy(0, fg ? SP_FOREGROUND : SP_BACKGROUND) < 0) {
         return -1;
     }
 
+    struct sched_param param;
+    memset(&param, 0, sizeof(param));
     if (sched_setscheduler((pid_t) 0, SCHED_BATCH, &param) < 0) {
         return -1;
     }
 
-    if (setpriority(PRIO_PROCESS, 0, ANDROID_PRIORITY_BACKGROUND) < 0) {
+    if (setpriority(PRIO_PROCESS, 0,
+                    fg ?
+                        ANDROID_PRIORITY_DEFAULT :
+                        ANDROID_PRIORITY_BACKGROUND) < 0) {
         return -1;
     }
 
@@ -107,7 +112,6 @@ static int drop_privs() {
     }
 
     gid_t groups[] = { AID_READPROC };
-
     if (setgroups(sizeof(groups) / sizeof(groups[0]), groups) == -1) {
         return -1;
     }
@@ -223,6 +227,7 @@ static char *name;
 static sem_t reinit;
 static bool reinit_running = false;
 static LogBuffer *logBuf = NULL;
+static LogListener *swl = NULL;
 
 static bool package_list_parser_cb(pkg_info *info, void * /* userdata */) {
 
@@ -269,6 +274,35 @@ static void *reinit_thread_start(void * /*obj*/) {
         if (logBuf) {
             logBuf->init();
             logBuf->initPrune(NULL);
+            // logd.writer thread adjust priority
+            if (swl) {
+                pid_t who = swl->getWho();
+                bool fg = really_big_buffer();
+
+                set_sched_policy(who, fg ? SP_FOREGROUND : SP_BACKGROUND);
+
+                struct sched_param param;
+                memset(&param, 0, sizeof(param));
+                sched_setscheduler(who, SCHED_BATCH, &param);
+
+                setpriority(PRIO_PROCESS, who,
+                            fg ?
+                                ANDROID_PRIORITY_DEFAULT :
+                                ANDROID_PRIORITY_BACKGROUND);
+
+                if (who) {
+                    int fd = open(fg ?
+                                      "/dev/cpuctl/tasks" :
+                                      "/dev/cpuctl/bg_non_interactive/tasks",
+                                  O_WRONLY);
+                    if (fd >= 0) {
+                        char buffer[32];
+                        snprintf(buffer, sizeof(buffer), "%d\n", who);
+                        write(fd, buffer, strlen(buffer));
+                        close(fd);
+                    }
+                }
+            }
         }
     }
 
@@ -472,7 +506,7 @@ int main(int argc, char *argv[]) {
     // initiated log messages. New log entries are added to LogBuffer
     // and LogReader is notified to send updates to connected clients.
 
-    LogListener *swl = new LogListener(logBuf, reader);
+    swl = new LogListener(logBuf, reader);
     // Backlog and /proc/sys/net/unix/max_dgram_qlen set to large value
     if (swl->startListener(600)) {
         exit(1);
