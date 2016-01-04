@@ -19,6 +19,7 @@
 #include <android-base/stringprintf.h>
 #include <cutils/properties.h>
 
+#include "LogUtils.h"
 #include "LogWhiteBlackList.h"
 
 // White and Black list
@@ -104,7 +105,7 @@ int PruneList::init(const char *str) {
     // default here means take internal default.
     if (filter == _default) {
         // See README.property for description of filter format
-        filter = "~! ~1000/!";
+        filter = big_buffer() ? "" : "~! ~1000/!";
     }
     if (filter == _disable) {
         filter = "";

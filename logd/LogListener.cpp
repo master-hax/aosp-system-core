@@ -32,12 +32,14 @@
 LogListener::LogListener(LogBuffer *buf, LogReader *reader) :
         SocketListener(getLogSocket(), false),
         logbuf(buf),
-        reader(reader) {
+        reader(reader),
+        who(0) {
 }
 
 bool LogListener::onDataAvailable(SocketClient *cli) {
     static bool name_set;
     if (!name_set) {
+        who = gettid();
         prctl(PR_SET_NAME, "logd.writer");
         name_set = true;
     }

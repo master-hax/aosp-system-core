@@ -93,10 +93,10 @@ static unsigned long property_get_size(const char *key) {
     return value;
 }
 
-void LogBuffer::init() {
-    static const char global_tuneable[] = "persist.logd.size"; // Settings App
-    static const char global_default[] = "ro.logd.size";       // BoardConfig.mk
+static const char global_tuneable[] = "persist.logd.size"; // Settings App
+static const char global_default[] = "ro.logd.size";       // BoardConfig.mk
 
+static unsigned long default_property_size() {
     unsigned long default_size = property_get_size(global_tuneable);
     if (!default_size) {
         default_size = property_get_size(global_default);
@@ -107,6 +107,21 @@ void LogBuffer::init() {
                 : LOG_BUFFER_SIZE;    // 256K
         }
     }
+    return default_size;
+}
+
+// following are used to tune logger features based on scaling issues to prune
+
+bool big_buffer() { // breakpoint where spam filter looses value
+    return default_property_size() > (LOG_BUFFER_SIZE * 2); // > 512KB
+}
+
+bool really_big_buffer() { // breakpoint where background cgroup hurts us
+    return default_property_size() > (LOG_BUFFER_SIZE * 4); // > 1MB
+}
+
+void LogBuffer::init() {
+    unsigned long default_size = default_property_size();
 
     log_id_for_each(i) {
         char key[PROP_NAME_MAX];
