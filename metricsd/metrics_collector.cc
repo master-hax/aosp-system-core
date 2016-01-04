@@ -30,12 +30,13 @@
 #include <base/strings/string_split.h>
 #include <base/strings/string_util.h>
 #include <base/strings/stringprintf.h>
+#include <brillo/binder_watcher.h>
 #include <brillo/osrelease_reader.h>
 #include <dbus/dbus.h>
 #include <dbus/message.h>
 
 #include "constants.h"
-#include "metrics_collector_service_trampoline.h"
+#include "metrics_collector_service_impl.h"
 
 using base::FilePath;
 using base::StringPrintf;
@@ -128,10 +129,15 @@ int MetricsCollector::Run() {
     version_cumulative_cpu_use_->Set(0);
   }
 
-  // Start metricscollectorservice via trampoline
-  MetricsCollectorServiceTrampoline metricscollectorservice_trampoline(this);
-  metricscollectorservice_trampoline.Run();
+  // Start metricscollectorservice
+  android::sp<BnMetricsCollectorServiceImpl> metricscollectorservice =
+      new BnMetricsCollectorServiceImpl(this);
+  metricscollectorservice->Publish();
 
+  // Watch Binder events in the main loop
+  std::unique_ptr<brillo::BinderWatcher> binder_watcher;
+  binder_watcher.reset(new ::brillo::BinderWatcher);
+  CHECK(binder_watcher->Init()) << "Binder FD watcher init failed";
   return brillo::DBusDaemon::Run();
 }
 
