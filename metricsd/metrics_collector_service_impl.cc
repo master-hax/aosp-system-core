@@ -21,13 +21,13 @@
 #include <brillo/binder_watcher.h>
 #include <utils/Errors.h>
 
-#include "metrics_collector_service_trampoline.h"
+#include "metrics_collector.h"
 
 using namespace android;
 
 BnMetricsCollectorServiceImpl::BnMetricsCollectorServiceImpl(
-    MetricsCollectorServiceTrampoline* metrics_collector_service_trampoline) {
-  metrics_collector_service_trampoline_ = metrics_collector_service_trampoline;
+    MetricsCollector* metrics_collector) {
+  metrics_collector_ = metrics_collector;
 }
 
 void BnMetricsCollectorServiceImpl::Run() {
@@ -39,6 +39,6 @@ void BnMetricsCollectorServiceImpl::Run() {
 }
 
 android::binder::Status BnMetricsCollectorServiceImpl::notifyUserCrash() {
-  metrics_collector_service_trampoline_->ProcessUserCrash();
+  metrics_collector_->ProcessUserCrash();
   return android::binder::Status::ok();
 }
