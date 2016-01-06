@@ -37,10 +37,10 @@ BnMetricsdImpl::BnMetricsdImpl(const std::shared_ptr<CrashCounters>& counters)
   CHECK(counters_) << "Invalid counters argument to constructor";
 }
 
-void BnMetricsdImpl::Run() {
+void BnMetricsdImpl::Run(android::sp<BnMetricsdImpl> service_ref) {
   android::status_t status =
       android::defaultServiceManager()->addService(getInterfaceDescriptor(),
-                                                   this);
+                                                   service_ref);
   CHECK(status == android::OK) << "Metricsd service registration failed";
   android::ProcessState::self()->setThreadPoolMaxThreadCount(0);
   android::IPCThreadState::self()->disableBackgroundScheduling(true);

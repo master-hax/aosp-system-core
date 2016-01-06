@@ -86,8 +86,9 @@ int main(int argc, char** argv) {
   base::StatisticsRecorder::Initialize();
 
   // Create and start the binder thread.
-  BnMetricsdImpl binder_service(counters);
-  std::thread binder_thread(&BnMetricsdImpl::Run, &binder_service);
+  android::sp<BnMetricsdImpl> binder_service = new BnMetricsdImpl(counters);
+  std::thread binder_thread(&BnMetricsdImpl::Run, binder_service.get(),
+                            binder_service);
 
   upload_service.Run();
 }

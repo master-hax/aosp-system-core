@@ -26,7 +26,7 @@ class BnMetricsdImpl : public android::brillo::metrics::BnMetricsd {
   virtual ~BnMetricsdImpl() = default;
 
   // Starts the binder main loop.
-  void Run();
+  void Run(android::sp<BnMetricsdImpl> service_ref);
 
   // Records a histogram.
   android::binder::Status recordHistogram(const android::String16& name,
