@@ -30,7 +30,7 @@ namespace android {
 class BatteryPropertiesRegistrar : public BnBatteryPropertiesRegistrar,
                                    public IBinder::DeathRecipient {
 public:
-    void publish();
+    void publish(sp<BatteryPropertiesRegistrar> service);
     void notifyListeners(struct BatteryProperties props);
 
 private:
