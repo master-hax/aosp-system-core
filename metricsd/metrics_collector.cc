@@ -71,6 +71,7 @@ const char kMeminfoFileName[] = "/proc/meminfo";
 const char kVmStatFileName[] = "/proc/vmstat";
 
 const char kWeaveComponent[] = "metrics";
+const char kWeaveTrait[] = "_metrics";
 
 }  // namespace
 
@@ -259,14 +260,12 @@ void MetricsCollector::OnWeaveServiceConnected(
   if (!weave_service)
     return;
 
-  weave_service->AddComponent(kWeaveComponent, {"_metrics"}, nullptr);
+  weave_service->AddComponent(kWeaveComponent, {kWeaveTrait}, nullptr);
   weave_service->AddCommandHandler(
-      kWeaveComponent,
-      "_metrics.enableAnalyticsReporting",
+      kWeaveComponent, kWeaveTrait, "enableAnalyticsReporting",
       base::Bind(&MetricsCollector::OnEnableMetrics, base::Unretained(this)));
   weave_service->AddCommandHandler(
-      kWeaveComponent,
-      "_metrics.disableAnalyticsReporting",
+      kWeaveComponent, kWeaveTrait, "disableAnalyticsReporting",
       base::Bind(&MetricsCollector::OnDisableMetrics, base::Unretained(this)));
 
   UpdateWeaveState();
@@ -309,9 +308,8 @@ void MetricsCollector::UpdateWeaveState() {
   std::string enabled =
       metrics_lib_->AreMetricsEnabled() ? "enabled" : "disabled";
 
-  if (!weave_service->SetStateProperty(kWeaveComponent,
-                                       "_metrics.analyticsReportingState",
-                                       enabled,
+  if (!weave_service->SetStateProperty(kWeaveComponent, kWeaveTrait,
+                                       "analyticsReportingState", enabled,
                                        nullptr)) {
     LOG(ERROR) << "failed to update weave's state";
   }
