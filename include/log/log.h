@@ -615,6 +615,18 @@ int __android_log_is_loggable(int prio, const char *tag, int default_prio);
 
 int __android_log_security(); /* Device Owner is present */
 
+#define SECURITY_LOG_STRING(_tag, _value) {                                 \
+        if (__android_log_security()) {                                     \
+            __android_log_security_bswrite(_tag, _value);                   \
+        }                                                                   \
+    }
+
+// Defined in frameworks/base/core/java/android/auditing/SecurityLog.logtags
+#define SEC_TAG_ADB_SHELL_INTERACTIVE 210001
+#define SEC_TAG_ADB_SHELL_CMD         210002
+#define SEC_TAG_ADB_RECV_FILE         210003
+#define SEC_TAG_ADB_SEND_FILE         210004
+
 int __android_log_error_write(int tag, const char *subTag, int32_t uid, const char *data,
                               uint32_t dataLen);
 
