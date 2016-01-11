@@ -95,11 +95,16 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <paths.h>
+#include <log/log.h>
 
 #include "adb.h"
 #include "adb_io.h"
 #include "adb_trace.h"
 #include "adb_utils.h"
+
+// Defined in frameworks/base/core/java/android/auditing/SecurityLog.logtags
+#define SEC_TAG_ADB_SHELL_INTERACTIVE 210001
+#define SEC_TAG_ADB_SHELL_CMD         210002
 
 namespace {
 
@@ -239,6 +244,14 @@ bool Subprocess::ForkAndExec() {
     ScopedFd child_stdinout_sfd, child_stderr_sfd;
     ScopedFd parent_error_sfd, child_error_sfd;
     char pts_name[PATH_MAX];
+
+    if (__android_log_security()) {
+        if (is_interactive()) {
+            __android_log_security_bswrite(SEC_TAG_ADB_SHELL_INTERACTIVE, "");
+        } else {
+            __android_log_security_bswrite(SEC_TAG_ADB_SHELL_CMD, command_.c_str());
+        }
+    }
 
     // Create a socketpair for the fork() child to report any errors back to the parent. Since we
     // use threads, logging directly from the child might deadlock due to locks held in another
