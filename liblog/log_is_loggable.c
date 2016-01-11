@@ -349,7 +349,7 @@ int __android_log_security()
     static struct cache2 security = {
         PTHREAD_MUTEX_INITIALIZER,
         0,
-        "persist.logd.security",
+        "logd.security",
         { NULL, -1, BOOLEAN_FALSE },
         "ro.device_owner",
         { NULL, -1, BOOLEAN_FALSE },
