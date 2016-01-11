@@ -1,0 +1,608 @@
+#!/usr/bin/env python
+
+# Copyright 2016, The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import argparse
+import Crypto.PublicKey.RSA
+import hashlib
+import os
+import struct
+import subprocess
+import sys
+
+# Keep in sync with bvb_boot_image_header.h
+BVB_VERSION_MAJOR = 1
+BVB_VERSION_MINOR = 0
+
+def round_to_multiple(number, size):
+    remainder = number%size
+    if remainder == 0:
+        return number
+    return number + size - remainder
+
+
+def write_long(f, num_bits, value):
+    for n in range(0, num_bits / 8):
+        bit_pos = num_bits - 8 - n*8
+        octet = (value >> bit_pos) & 0xff
+        f.write(struct.pack('!B', octet))
+
+
+def egcd(a, b):
+    x,y, u,v = 0,1, 1,0
+    while a != 0:
+        q, r = b//a, b%a
+        m, n = x-u*q, y-v*q
+        b,a, x,y, u,v = a,r, u,v, m,n
+    gcd = b
+    return gcd, x, y
+
+
+def modinv(a, m):
+    gcd, x, y = egcd(a, m)
+    if gcd != 1:
+        return None  # modular inverse does not exist
+    else:
+        return x % m
+
+
+def parse_number(x):
+    return int(x, 0)
+
+
+def dump_public_key(f, key):
+    # key.e is exponent
+    # key.n is modulus
+    key_num_bits = key.size() + 1
+    # Calculate n0inv = -1/n[0] (mod 2^32)
+    b = 2L**32
+    n0inv = b - modinv(key.n, b)
+    # Calculate rr = r^2 (mod N), where r = 2^(# of key bits)
+    r = 2L ** key.n.bit_length()
+    rrmodn = r*r % key.n
+    f.write(struct.pack('!II',
+                        key_num_bits,
+                        n0inv))
+    write_long(f, key_num_bits, key.n)
+    write_long(f, key_num_bits, rrmodn)
+
+
+ALGORITHMS = {
+    'NONE': {
+        'algorithm_type': 0,        # BVB_ALGORITHM_TYPE_NONE
+        'hash_num_bytes': 0,
+        'signature_num_bytes': 0,
+        'public_key_num_bytes': 0,
+        'padding' : []
+    },
+    'SHA256_RSA2048': {
+        'algorithm_type': 1,        # BVB_ALGORITHM_TYPE_SHA256_RSA2048
+        'hash_num_bytes': 32,
+        'signature_num_bytes': 256,
+        'public_key_num_bytes': 8 + 2*2048/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*202 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05,
+            0x00, 0x04, 0x20,
+        ]
+    },
+    'SHA256_RSA4096': {
+        'algorithm_type': 2,        # BVB_ALGORITHM_TYPE_SHA256_RSA4096
+        'hash_num_bytes': 32,
+        'signature_num_bytes': 512,
+        'public_key_num_bytes': 8 + 2*4096/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*458 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05,
+            0x00, 0x04, 0x20,
+        ]
+    },
+    'SHA256_RSA8192': {
+        'algorithm_type': 3,        # BVB_ALGORITHM_TYPE_SHA256_RSA8192
+        'hash_num_bytes': 32,
+        'signature_num_bytes': 1024,
+        'public_key_num_bytes': 8 + 2*8192/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*970 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05,
+            0x00, 0x04, 0x20,
+        ]
+    },
+    'SHA512_RSA2048': {
+        'algorithm_type': 4,        # BVB_ALGORITHM_TYPE_SHA512_RSA2048
+        'hash_num_bytes': 64,
+        'signature_num_bytes': 256,
+        'public_key_num_bytes': 8 + 2*2048/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*170 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05,
+            0x00, 0x04, 0x40
+        ]
+    },
+    'SHA512_RSA4096': {
+        'algorithm_type': 5,        # BVB_ALGORITHM_TYPE_SHA512_RSA4096
+        'hash_num_bytes': 64,
+        'signature_num_bytes': 512,
+        'public_key_num_bytes': 8 + 2*4096/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*426 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05,
+            0x00, 0x04, 0x40
+        ]
+    },
+    'SHA512_RSA8192': {
+        'algorithm_type': 6,        # BVB_ALGORITHM_TYPE_SHA512_RSA8192
+        'hash_num_bytes': 64,
+        'signature_num_bytes': 1024,
+        'public_key_num_bytes': 8 + 2*8192/8,
+        'padding' : [
+            # PKCS1-v1_5 padding
+            0x00, 0x01] + [0xff]*938 + [0x00] + [
+            # ASN.1 header
+            0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86,
+            0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05,
+            0x00, 0x04, 0x40
+        ]
+    },
+}
+
+
+def lookup_algorithm_by_type(alg_type):
+    for alg_name in ALGORITHMS:
+        alg_data = ALGORITHMS[alg_name]
+        if alg_data['algorithm_type'] == alg_type:
+            return (alg_name, alg_data)
+    raise Exception('Unknown algorithm type %d' % alg_type)
+
+
+def add_property(encoded_props, key, value):
+    encoded_props.extend(struct.pack('!QQ', len(key), len(value)))
+    encoded_props.extend(key)
+    encoded_props.append(0)
+    encoded_props.extend(value)
+    encoded_props.append(0)
+    num_bytes = 2*8 + len(key) + len(value) + 2
+    padding_bytes = (8 - num_bytes) & 7
+    for n in range(padding_bytes):
+        encoded_props.append(0)
+
+
+class BvbHeader(object):
+    SIZE = 8192
+
+    FORMAT_STRING = (
+        '!4s2L'   # magic, 2 x version
+        '3Q'      # 3 x block size
+        'L'       # algorithm type
+        '2Q'      # offset, size (hash)
+        '2Q'      # offset, size (signature)
+        '2Q'      # offset, size (public key)
+        '2Q'      # offset, size (properties)
+        'Q'       # rollback_index
+        '2Q'      # offset, size (kernel)
+        '2Q'      # offset, size (initrd)
+        'Q'       # kernel load address
+        'Q'       # initrd load address
+        '4096s')  # cmdline
+
+    def __init__(self, data = None):
+        if data:
+            (self.magic,
+             self.version_major,
+             self.version_minor,
+             self.authentication_data_block_size,
+             self.auxilary_data_block_size,
+             self.payload_data_block_size,
+             self.algorithm_type,
+             self.hash_offset,
+             self.hash_size,
+             self.signature_offset,
+             self.signature_size,
+             self.public_key_offset,
+             self.public_key_size,
+             self.properties_offset,
+             self.properties_size,
+             self.rollback_index,
+             self.kernel_offset,
+             self.kernel_size,
+             self.initrd_offset,
+             self.initrd_size,
+             self.kernel_address,
+             self.initrd_address,
+             self.kernel_cmdline) = struct.unpack(self.FORMAT_STRING,
+                                                  data[0:4256])
+            # Nuke NUL-bytes at the end of the string.
+            self.kernel_cmdline = self.kernel_cmdline.split('\0', 1)[0]
+            if self.magic != 'BVB0':
+                raise Exception('Given image does not look like a Brillo boot image')
+        else:
+            self.magic = 'BVB0'
+            self.version_major = BVB_VERSION_MAJOR
+            self.version_minor = BVB_VERSION_MINOR
+            self.authentication_block_size = 0
+            self.auxilary_block_size = 0
+            self.payload_block_size = 0
+            self.algorithm_type = 0
+            self.hash_offset = 0
+            self.hash_size = 0
+            self.signature_offset = 0
+            self.signature_size = 0
+            self.public_key_offset = 0
+            self.public_key_size = 0
+            self.properties_offset = 0
+            self.properties_size = 0
+            self.rollback_index = 0
+            self.kernel_offset = 0
+            self.kernel_size = 0
+            self.initrd_offset = 0
+            self.initrd_size = 0
+            self.kernel_address = 0
+            self.initrd_address = 0
+            self.kernel_cmdline = ''
+
+
+    def save(self, output):
+        output.write(struct.pack(self.FORMAT_STRING,
+            self.magic,
+            self.version_major,
+            self.version_minor,
+            self.authentication_data_block_size,
+            self.auxilary_data_block_size,
+            self.payload_data_block_size,
+            self.algorithm_type,
+            self.hash_offset,
+            self.hash_size,
+            self.signature_offset,
+            self.signature_size,
+            self.public_key_offset,
+            self.public_key_size,
+            self.properties_offset,
+            self.properties_size,
+            self.rollback_index,
+            self.kernel_offset,
+            self.kernel_size,
+            self.initrd_offset,
+            self.initrd_size,
+            self.kernel_address,
+            self.initrd_address,
+            self.kernel_cmdline))
+        output.write(struct.pack('3936x'))
+
+
+class BvbTool(object):
+    def __init__(self):
+        parser = argparse.ArgumentParser(
+            usage='''bvbtool COMMAND [<args>]
+
+Commands:
+   version              Prints out version of bvbtool.
+   make_boot_image      Make boot image.
+   sign_boot_image      Sign boot image.
+   info_boot_image      Show information about boot image.
+   extract_public_key   Extract public key.
+
+''')
+        parser.add_argument('COMMAND', help='The command to run')
+        args = parser.parse_args(sys.argv[1:2])
+        if not hasattr(self, args.COMMAND):
+            print 'Unrecognized command'
+            parser.print_help()
+            sys.exit(1)
+        getattr(self, args.COMMAND)()
+
+
+    def version(self):
+        print '%d.%d' % (BVB_VERSION_MAJOR, BVB_VERSION_MINOR)
+
+
+    def info_boot_image(self):
+        parser = argparse.ArgumentParser(
+            prog='bvbtool info_boot_image',
+            description='Show information about Brillo boot image.')
+        parser.add_argument('--image', help='Brillo boot image to use',
+                            type=argparse.FileType('rb'), required=True)
+        parser.add_argument('--output', help='Write info to file',
+                            type=argparse.FileType('wt'), default=sys.stdout)
+        args = parser.parse_args(sys.argv[2:])
+
+        h = BvbHeader(args.image.read(BvbHeader.SIZE))
+
+        (alg_name, _) = lookup_algorithm_by_type(h.algorithm_type)
+
+        o = args.output
+        o.write('Boot Image version:       %d.%d\n' % (h.version_major, h.version_minor))
+        o.write('Header Block:             %d bytes\n' % BvbHeader.SIZE)
+        o.write('Authentication Block:     %d bytes\n' % h.authentication_data_block_size)
+        o.write('Auxilary Block:           %d bytes\n' % h.auxilary_data_block_size)
+        o.write('Payload Block:            %d bytes\n' % h.payload_data_block_size)
+        o.write('Algorithm:                %s\n' % alg_name)
+        o.write('Rollback Index:           %d\n' % h.rollback_index)
+        o.write('Kernel:                   %d bytes\n' % h.kernel_size)
+        o.write('Initrd:                   %d bytes\n' % h.initrd_size)
+        o.write('Kernel Load Address:      0x%08x\n' % h.kernel_address)
+        o.write('Initrd Load Address:      0x%08x\n' % h.initrd_address)
+        o.write('Kernel Cmdline:           %s\n' % h.kernel_cmdline)
+
+        # Print properties.
+        o.write('Properties:\n')
+        authentication_block_offset = BvbHeader.SIZE
+        auxilary_block_offset = authentication_block_offset + h.authentication_data_block_size
+        prop_start_offset = auxilary_block_offset + h.properties_offset
+        prop_end_offset = prop_start_offset + h.properties_size
+        args.image.seek(prop_start_offset)
+        num_printed = 0
+        while args.image.tell() < prop_end_offset:
+            (key_len, value_len) = struct.unpack('!2Q', args.image.read(16))
+            num_bytes = key_len + value_len + 2
+            padding_bytes = (8 - num_bytes) & 7
+            prop_data = args.image.read(num_bytes + padding_bytes)
+            key = prop_data[0:key_len]
+            # Avoid printing large property values (e.g. blobs).
+            if value_len >= 256:
+                o.write('    %s: (%d bytes)\n' %(key, value_len))
+            else:
+                value = prop_data[key_len + 1: key_len + 1 + value_len]
+                o.write('    %s: %s\n' %(key, repr(value)))
+            num_printed += 1
+        if num_printed == 0:
+            o.write('    (none)\n')
+
+
+    def make_boot_image(self):
+        parser = argparse.ArgumentParser(
+            prog='bvbtool make_boot_image',
+            description='Make Brillo boot image.')
+
+        parser.add_argument('--kernel', help='Path to kernel',
+                            type=argparse.FileType('rb')) #, required=True)
+        parser.add_argument('--initrd', help='Path to ramdisk',
+                            type=argparse.FileType('rb'))
+        parser.add_argument('--kernel_address', help='Kernel load address',
+                            type=parse_number, default=0x10008000)
+        parser.add_argument('--initrd_address', help='Ramdisk load address',
+                            type=parse_number, default=0x11000000)
+        parser.add_argument('--kernel_cmdline', help='Kernel command-line',
+                            default='')
+        parser.add_argument('--rollback_index', help='Rollback Index',
+                            type=parse_number, default=0)
+        parser.add_argument('--prop', help='Add property',
+                            metavar='KEY:VALUE', action='append')
+        parser.add_argument('--prop_from_file', help='Add property from file',
+                            metavar='KEY:PATH', action='append')
+        parser.add_argument('--output', help='Output file name',
+                            type=argparse.FileType('wb'),
+                            required=True)
+        args = parser.parse_args(sys.argv[2:])
+
+        h = BvbHeader()
+
+        # Write header data block and leave ample room for hash, signature
+        # and public key.
+        h.authentication_data_block_size = 4096
+        h.kernel_offset = 0
+        h.kernel_size = os.fstat(args.kernel.fileno()).st_size
+        h.initrd_offset = 0
+        h.initrd_size = 0
+        if args.initrd:
+            h.initrd_offset = h.kernel_offset + h.kernel_size
+            h.initrd_size = os.fstat(args.initrd.fileno()).st_size
+        h.payload_data_block_size = h.kernel_size + h.initrd_size
+
+        # Generate properties blob.
+        encoded_props = bytearray()
+        if args.prop:
+            for prop in args.prop:
+                idx = prop.find(':')
+                if idx == -1:
+                    sys.stderr.write('Malformed --property value %s.\n', prop)
+                    sys.exit(1)
+                key = prop[0:idx]
+                value = prop[(idx + 1):]
+                add_property(encoded_props, key, value)
+        if args.prop_from_file:
+            for prop in args.prop_from_file:
+                idx = prop.find(':')
+                if idx == -1:
+                    sys.stderr.write('Malformed --property value %s.\n', prop)
+                    sys.exit(1)
+                key = prop[0:idx]
+                file_path = prop[(idx + 1):]
+                value = open(file_path, 'rb').read()
+                add_property(encoded_props, key, value)
+
+        # We'll store the properties at offset 0 in the Auxiliary data
+        # block. Make sure it's big enough to hold the biggest
+        # possible key.
+        h.auxilary_data_block_size = round_to_multiple(len(encoded_props) + 4096, 64)
+        h.properties_offset = 0
+        h.properties_size = len(encoded_props)
+
+        h.rollback_index = args.rollback_index
+        h.kernel_address = args.kernel_address
+        h.initrd_address = args.initrd_address
+        h.kernel_cmdline = args.kernel_cmdline
+
+        # Save the header.
+        h.save(args.output)
+
+        # Write Authentication data block, as zeroes.
+        args.output.write(struct.pack(str(h.authentication_data_block_size) + 'x'))
+
+        # Write Auxilary data block. First properties, then pad with zeroes.
+        args.output.write(encoded_props)
+        args.output.write(struct.pack(
+            str(h.auxilary_data_block_size - len(encoded_props)) + 'x'))
+
+        # Write Payload data block: kernel and initrd
+        args.output.write(args.kernel.read())
+        if args.initrd:
+            args.output.write(args.initrd.read())
+
+
+    def sign_boot_image(self):
+        parser = argparse.ArgumentParser(
+            prog='bvbtool sign_boot_image',
+            description='Sign Brillo boot image.')
+        group = parser.add_argument_group()
+        group.add_argument('--show_algorithms', help='Show avaiable algorithms',
+                           action='store_true')
+        group = parser.add_argument_group()
+        group.add_argument('--image', help='Brillo boot image to sign',
+                           type=argparse.FileType('rab+'))
+        group.add_argument('--key', help='Path to RSA private key file')
+        group.add_argument('--algorithm', help='Algorithm to use')
+        args = parser.parse_args(sys.argv[2:])
+
+        if args.show_algorithms:
+            algs = []
+            for alg_name in ALGORITHMS:
+                if alg_name != 'NONE':
+                    algs.append(alg_name)
+            algs.sort()
+            for alg in algs:
+                print alg
+            sys.exit(0)
+
+        # Support 'NONE' to avoid conditionals in build systems if
+        # signing is not needed (this way they can always execute
+        # 'bvbtool sign_boot_image --algorithm NONE')
+        if args.algorithm == 'NONE':
+            sys.exit(0)
+
+        if not args.algorithm:
+            sys.stderr.write('Option --algorithm is required.\n')
+            sys.exit(1)
+        if not args.image:
+            sys.stderr.write('Option --image is required.\n')
+            sys.exit(1)
+        if not args.key:
+            sys.stderr.write('Option --key is required.\n')
+            sys.exit(1)
+
+        try:
+            alg = ALGORITHMS[args.algorithm]
+        except:
+            sys.stderr.write('Unknown algorithm %s.\n' % args.algorithm)
+            sys.exit(1)
+
+        h = BvbHeader(args.image.read(BvbHeader.SIZE))
+
+        if h.properties_offset != 0:
+            # This is just an implementation limitation which can be lifted later.
+            sys.stderr.write('Only support images with props at the top.\n')
+            sys.exit(1)
+
+        if h.authentication_data_block_size < alg['hash_num_bytes'] + alg['signature_num_bytes']:
+            sys.stderr.write('Insufficient room for storing hash and signature.\n')
+            sys.exit(1)
+
+        if h.auxilary_data_block_size < alg['public_key_num_bytes']:
+            sys.stderr.write('Insufficient room for storing public key.\n')
+            sys.exit(1)
+
+        authentication_data_block_offset = BvbHeader.SIZE
+        auxilary_data_block_offset = authentication_data_block_offset + h.authentication_data_block_size
+        payload_data_block_offset = auxilary_data_block_offset + h.auxilary_data_block_size
+
+        # Update header with hash type/offset/size, signature
+        # type/offset/size, and public key size.
+        h.algorithm_type = alg['algorithm_type']
+        # Hash offset and size (in Authentication data block).
+        h.hash_offset = 0
+        h.hash_size = alg['hash_num_bytes']
+        # Signature offset and size - it's stored right after the hash
+        # (in Authentication data block).
+        h.signature_offset = alg['hash_num_bytes']
+        h.signature_size = alg['signature_num_bytes']
+        # Public key offset and size - follows properties (in Auxilary data block).
+        h.public_key_offset = h.properties_size
+        h.public_key_size = alg['public_key_num_bytes']
+
+        # Extract public key and insert it into "Auxilary data" block.
+        key = Crypto.PublicKey.RSA.importKey(open(args.key).read())
+        args.image.seek(auxilary_data_block_offset + h.properties_size)
+        dump_public_key(args.image, key)
+
+        # Save the updated header.
+        args.image.seek(0)
+        h.save(args.image)
+
+        # Calculate the hash.
+        if args.algorithm[0:6] == 'SHA256':
+            ha = hashlib.sha256()
+        elif args.algorithm[0:6] == 'SHA512':
+            ha = hashlib.sha512()
+        else:
+            sys.stderr.write('Unsupported algorithm.\n')
+            sys.exit(1)
+        args.image.seek(0)
+        ha.update(args.image.read(BvbHeader.SIZE))
+        args.image.seek(auxilary_data_block_offset)
+        ha.update(args.image.read(h.auxilary_data_block_size))
+        ha.update(args.image.read(h.payload_data_block_size))
+        # Write the hash
+        args.image.seek(authentication_data_block_offset)
+        binary_hash = ha.digest()
+        args.image.write(binary_hash)
+
+        # Calculate the signature.
+        p = subprocess.Popen(['openssl', 'rsautl', '-sign',
+                              '-inkey', args.key, '-raw'],
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        padding_and_hash = str(bytearray(alg['padding'])) + binary_hash
+        (pout, perr) = p.communicate(padding_and_hash)
+        retcode = p.wait()
+        if retcode != 0:
+            sys.stderr.write('Error signing: %s\n' % perr)
+            sys.exit(1)
+        # Write the signature.
+        args.image.seek(authentication_data_block_offset + alg['hash_num_bytes'])
+        args.image.write(pout)
+
+
+    def extract_public_key(self):
+        parser = argparse.ArgumentParser(
+            prog='bvbtool extract_public_key',
+            description='Extract public key and dump it in the format used by Brillo.')
+        parser.add_argument('--key', help='Path to RSA private key file',
+                            required=True)
+        parser.add_argument('--output', help='Output file name',
+                            type=argparse.FileType('wb'),
+                            required=True)
+        args = parser.parse_args(sys.argv[2:])
+
+        key = Crypto.PublicKey.RSA.importKey(open(args.key).read())
+        dump_public_key(args.output, key)
+
+
+if __name__ == '__main__':
+    BvbTool()
