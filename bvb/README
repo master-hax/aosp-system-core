@@ -1,0 +1,144 @@
+This directory contains the specification for the Brillo Verified Boot
+boot image, a reference implementation for verified boot and A/B
+selection to be used in boot loaders, and a tool for generating and
+signing boot images.
+
+-- FILES AND DIRECTORIES
+
+ bvb_boot_image.h
+
+   The specification for Brillo Boot partitions as a C header file.
+
+ bvb_verify.[ch]
+
+   Code for cryptographically verifying a Brillo Boot Image.
+
+ bvb_property.[ch]
+
+   Code for looking up properties (key/value pairs) embedded in the
+   boot image.
+
+ bvb_sha.h, bvb_sha{256, 512}.c
+
+   Code for calculating SHA-256 and SHA-512.
+
+ bvb_rsa.h, bvb_rsa.c
+
+   Code for verifying RSA signatures.
+
+ bvb_util.[ch]
+
+   Various utility code.
+
+ bvb_sysdeps.h
+
+   Declarations of system dependencies expected to be provided by the
+   platform the reference implementation is used by. If the platform
+   provides the standard C runtime you can use bvb_sysdeps_stub.c.
+
+ bvb_sysdeps_stub.c
+
+   An implementation of system dependencies for the standard C runtime.
+
+ Android.mk
+
+   Build instructions for building the reference implementation and
+   associated unit tests.
+
+ bvb_*_unittest.cc
+
+   Unit tests for the reference implementation.
+
+ test/
+
+   Contains test data used in unit tests for the reference
+   implementation.
+
+ bvbtool
+
+   A tool written in Python for working with Brillo boot images.
+
+ README
+
+   This file.
+
+-- AUDIENCE AND PORTABILITY NOTES
+
+This code is intended to be used in bootloaders in devices running
+Brillo. The suggested approach is to copy the appropriate header and C
+files mentioned in the previous section into the boot loader and
+integrate as appropriate.
+
+The reference implementation will evolve over time so integration
+should be as non-invasive as possible. The intention is to keep the
+API of the reference implementation stable however it will be broken
+if necessary.
+
+As for portability, the reference implementation is intended to be
+highly portable, work on both little- and big-endian architectures and
+32- and 64-bit. It's also intended to work in non-standard
+environments without the standard C library and runtime.
+
+If the BVB_ENABLE_DEBUG preprocessor symbol is set, the code will
+include useful debug information and run-time checks. Production
+builds should not use this.
+
+-- COMPATIBILITY NOTES
+
+The Brillo Boot Image structure (as defined in bvb_boot_image.h)
+guarantees forwards- and backwards-compatibility provided the major
+version does not change.
+
+When backwards-compatible changes are made - for example, when a new
+field is added to BvbBootImageHeader - the minor version will be
+bumped. At the same time, the reference implementation will also be
+modified to test for the appropriate minor version before attempting
+to access the newly added field. This ensures that version 1.N of the
+reference implementation is able to read an old boot image header
+produced with version 1.M where N > M.
+
+The usual scenario is that the code parsing the BvbBootImageHeader
+rarely changes (it's usually in the firmware of a device and this
+firmware is rarely updated if ever), let's say it's fixed at version
+1.N. At the same time, the version of the bvbtool used to produce the
+boot image is rolling forward and is at version 1.M where M > N. The
+problem with this scenario is that version 1.M may easily and
+inadvertently introduce a seemingly compatible change that isn't. For
+example, consider if a new verification algorithm is added - in this
+case version 1.N of the reference implementation will fail at
+verification time when validating the |algorithm_field| of a 1.M image
+if it's set to the new algorithm.
+
+The best approach for dealing with this problem is to always used a
+pinned version of bvbtool (say, use version 1.N to generate images
+targeted for devices running version 1.N) for generating and signing
+images but sometimes this is not always possible nor
+desirable. Therefore, to avoid this compatibility problem, bvbtool is
+designed to always take such input as a command-line argument so it
+can be kept constant by the caller. In other words, as long as you
+keep your command-line options passed to the bvb tool the same, images
+produced by newer versions of bvb will continue to work on the same
+version of the reference implementation.
+
+-- BUILD SYSTEM INTEGRATION NOTES
+
+Brillo Verified Boot is enabled by the BOARD_BVB_ENABLE variable
+
+ BOARD_BVB_ENABLE := true
+
+By default, the algorithm SHA256_RSA8192 is used with a test key from
+this directory. This can be overriden by the BOARD_BVB_ALGORITHM and
+BOARD_BVB_KEY_PATH variables:
+
+ BOARD_BVB_ALGORITHM := SHA512_RSA8192
+ BOARD_BVB_KEY_PATH := /path/to/rsa_key_8192bits.pem
+
+The rollback index can be set with the BOARD_BVB_ROLLBACK_INDEX
+variable:
+
+ BOARD_BVB_ROLLBACK_INDEX := 5
+
+Additionally, the variables BOARD_BVB_MAKE_BOOT_IMAGE_ARGS and
+BOARD_BVB_SIGN_BOOT_IMAGE_ARGS can be used to specify additional
+options passed to respectively 'bvbtool make_boot_image' and 'bvbtool
+sign_boot_image'.
