@@ -44,9 +44,9 @@ LOCAL_CFLAGS_darwin := -Wno-unused-parameter
 LOCAL_SRC_FILES_windows := socket_windows.cpp usb_windows.cpp util_windows.cpp
 LOCAL_STATIC_LIBRARIES_windows := AdbWinApi
 LOCAL_REQUIRED_MODULES_windows := AdbWinApi
-LOCAL_LDLIBS_windows := -lws2_32
+LOCAL_LDLIBS_windows := -lws2_32 -lpsapi
 LOCAL_C_INCLUDES_windows := development/host/windows/usb/api
-
+LOCAL_CFLAGS_windows += -mno-ms-bitfields
 LOCAL_STATIC_LIBRARIES := \
     libziparchive-host \
     libext4_utils_host \
@@ -58,12 +58,12 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
 
 # libf2fs_dlutils_host will dlopen("libf2fs_fmt_host_dyn")
-LOCAL_CFLAGS_linux := -DUSE_F2FS
+LOCAL_CFLAGS += -DUSE_F2FS
 LOCAL_LDFLAGS_linux := -ldl -rdynamic -Wl,-rpath,.
-LOCAL_REQUIRED_MODULES_linux := libf2fs_fmt_host_dyn
+LOCAL_REQUIRED_MODULES += libf2fs_fmt_host_dyn
 # The following libf2fs_* are from system/extras/f2fs_utils,
 # and do not use code in external/f2fs-tools.
-LOCAL_STATIC_LIBRARIES_linux += libf2fs_utils_host libf2fs_ioutils_host libf2fs_dlutils_host
+LOCAL_STATIC_LIBRARIES += libf2fs_utils_host libf2fs_dlutils_host
 
 LOCAL_CXX_STL := libc++_static
 
