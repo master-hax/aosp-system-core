@@ -21,13 +21,17 @@
 #include <string.h>
 #include <unistd.h>
 
+#if !defined(_WIN32)
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#endif
 
 #include <cutils/sockets.h>
+
+#if !defined(_WIN32)
 
 static int toggle_O_NONBLOCK(int s) {
     int flags = fcntl(s, F_GETFL);
@@ -123,3 +127,43 @@ int socket_network_client(const char* host, int port, int type) {
     int getaddrinfo_error;
     return socket_network_client_timeout(host, port, type, 0, &getaddrinfo_error);
 }
+
+#else
+
+SOCKET socket_network_client(const char* host, int port, int type) {
+    if (!initialize_sockets()) {
+        return INVALID_SOCKET;
+    }
+
+    // First resolve the host and port parameters into a usable network address.
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_socktype = type;
+
+    struct addrinfo* address = NULL;
+    char port_str[16];
+    snprintf(port_str, sizeof(port_str), "%d", port);
+    getaddrinfo(host, port_str, &hints, &address);
+    if (address == NULL) {
+        return INVALID_SOCKET;
+    }
+
+    // Now create and connect the socket.
+    SOCKET sock = socket(address->ai_family, address->ai_socktype,
+                         address->ai_protocol);
+    if (sock == INVALID_SOCKET) {
+        freeaddrinfo(address);
+        return INVALID_SOCKET;
+    }
+
+    if (connect(sock, address->ai_addr, address->ai_addrlen) == SOCKET_ERROR) {
+        closesocket(sock);
+        freeaddrinfo(address);
+        return INVALID_SOCKET;
+    }
+
+    freeaddrinfo(address);
+    return sock;
+}
+
+#endif

@@ -17,6 +17,8 @@
 #include <cutils/sockets.h>
 #include <log/log.h>
 
+#if !defined(_WIN32)
+
 #if defined(__ANDROID__)
 /* For the socket trust (credentials) check */
 #include <private/android_filesystem_config.h>
@@ -45,3 +47,37 @@ bool socket_peer_is_trusted(int fd __android_unused)
 
     return true;
 }
+
+int socket_close(cutils_socket_t sock) {
+  return close(sock);
+}
+
+#else
+
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms741549(v=vs.85).aspx
+// claims WSACleanup() should be called before program exit, but general
+// consensus seems to be that it hasn't actually been necessary for a long time,
+// likely since Windows 3.1. Additionally, trying to properly use WSACleanup()
+// can be extremely tricky and cause deadlock when using threads or atexit().
+//
+// Both adb (1) and Chrome (2) purposefully avoid WSACleanup() with no issues.
+// (1) https://android.googlesource.com/platform/system/core.git/+/master/adb/sysdeps_win32.cpp
+// (2) https://code.google.com/p/chromium/codesearch#chromium/src/net/base/winsock_init.cc
+bool initialize_sockets() {
+    // There's no harm in calling WSAStartup() multiple times but no benefit
+    // either, we may as well skip it after the first.
+    static bool init_success = false;
+
+    if (!init_success) {
+        WSADATA wsaData;
+        init_success = (WSAStartup(MAKEWORD(2, 2), &wsaData) == 0);
+    }
+
+    return init_success;
+}
+
+int socket_close(cutils_socket_t sock) {
+    return closesocket(sock);
+}
+
+#endif

@@ -31,7 +31,10 @@ libcutils_common_sources := \
         threads.c \
         sched_policy.c \
         iosched_policy.c \
-        fs_config.c
+        fs_config.c \
+        socket_inaddr_any_server.c \
+        socket_network_client.c \
+        sockets.c \
 
 # some files must not be compiled when building against Mingw
 # they correspond to features not used by our host development tools
@@ -39,13 +42,10 @@ libcutils_common_sources := \
 libcutils_nonwindows_sources := \
         fs.c \
         multiuser.c \
-        socket_inaddr_any_server.c \
         socket_local_client.c \
         socket_local_server.c \
         socket_loopback_client.c \
         socket_loopback_server.c \
-        socket_network_client.c \
-        sockets.c \
         str_parms.c \
 
 libcutils_nonwindows_host_sources := \
@@ -54,6 +54,8 @@ libcutils_nonwindows_host_sources := \
 
 
 # Shared and static library for host
+# Note: when linking this library on Windows, you must also link to Winsock2
+# using "LOCAL_LDLIBS_windows := -lws2_32".
 # ========================================================
 LOCAL_MODULE := libcutils
 LOCAL_SRC_FILES := $(libcutils_common_sources) dlmalloc_stubs.c
