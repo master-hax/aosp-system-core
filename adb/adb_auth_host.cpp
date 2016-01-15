@@ -29,6 +29,11 @@
 #  endif
 #  include "windows.h"
 #  include "shlobj.h"
+// mingw makes a few definitions that fight with boringssl in wincrypt.h, which
+// is included from shlobj.h. Undef them here since we don't need them.
+#  undef X509_NAME
+#  undef X509_EXTENSIONS
+#  undef X509_CERT_PAIR
 #else
 #  include <sys/types.h>
 #  include <sys/stat.h>
