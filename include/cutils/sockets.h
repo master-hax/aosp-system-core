@@ -123,6 +123,9 @@ cutils_socket_t socket_inaddr_any_server(int port, int type);
  */
 int socket_close(cutils_socket_t sock);
 
+// Sets socket receive timeout using SO_RCVTIMEO.
+int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms);
+
 /*
  * socket_peer_is_trusted - Takes a socket which is presumed to be a
  * connected local socket (e.g. AF_LOCAL) and returns whether the peer
