@@ -183,7 +183,7 @@ class Subprocess {
     ~Subprocess();
 
     const std::string& command() const { return command_; }
-    bool is_interactive() const { return command_.empty(); }
+    bool is_interactive() const { return type_ == SubprocessType::kPty; }
 
     int local_socket_fd() const { return local_socket_sfd_.fd(); }
 
@@ -332,7 +332,7 @@ bool Subprocess::ForkAndExec() {
         parent_error_sfd.Reset();
         close_on_exec(child_error_sfd.fd());
 
-        if (is_interactive()) {
+        if (command_.empty()) {
             execle(_PATH_BSHELL, _PATH_BSHELL, "-", nullptr, cenv.data());
         } else {
             execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
