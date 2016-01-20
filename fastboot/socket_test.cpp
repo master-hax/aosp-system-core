@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-// Tests UDP functionality using loopback connections. Requires that kTestPort is available
-// for loopback communication on the host. These tests also assume that no UDP packets are lost,
-// which should be the case for loopback communication, but is not guaranteed.
+// Tests socket functionality using loopback connections. The UDP tests assume that no packets are
+// lost, which should be the case for loopback communication, but is not guaranteed.
 
 #include "socket.h"
 
 #include <gtest/gtest.h>
 
 enum {
-    // This port must be available for loopback communication.
-    kTestPort = 54321,
+    // Start and end values to attempt to create a server on. Having a range of values makes the
+    // test more robust to random port assignment conflict.
+    kTestPortStart = 54000,
+    kTestPortEnd = 54020,
 
     // Don't wait forever in a unit test.
     kTestTimeoutMs = 3000,
@@ -32,9 +33,16 @@ enum {
 
 // Creates connected sockets |server| and |client|. Returns true on success.
 bool MakeConnectedSockets(Socket::Protocol protocol, std::unique_ptr<Socket>* server,
-                          std::unique_ptr<Socket>* client, const std::string hostname = "localhost",
-                          int port = kTestPort) {
-    *server = Socket::NewServer(protocol, port);
+                          std::unique_ptr<Socket>* client,
+                          const std::string hostname = "localhost") {
+    int port;
+    for (port = kTestPortStart; port <= kTestPortEnd; ++port) {
+        *server = Socket::NewServer(protocol, port);
+        if (*server != nullptr) {
+            break;
+        }
+    }
+
     if (*server == nullptr) {
         ADD_FAILURE() << "Failed to create server.";
         return false;
