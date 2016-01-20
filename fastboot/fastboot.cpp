@@ -42,22 +42,23 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+
 #include <functional>
+#include <memory>
 #include <utility>
 #include <vector>
 
 #include <android-base/parseint.h>
+#include <android-base/parsenetaddress.h>
 #include <android-base/strings.h>
 #include <sparse/sparse.h>
 #include <ziparchive/zip_archive.h>
-
-#include <android-base/strings.h>
-#include <android-base/parseint.h>
 
 #include "bootimg_utils.h"
 #include "diagnose_usb.h"
 #include "fastboot.h"
 #include "fs.h"
+#include "tcp.h"
 #include "transport.h"
 #include "usb.h"
 
@@ -69,9 +70,9 @@
 
 char cur_product[FB_RESPONSE_SZ + 1];
 
-static const char *serial = 0;
-static const char *product = 0;
-static const char *cmdline = 0;
+static const char* serial = nullptr;
+static const char* product = nullptr;
+static const char* cmdline = nullptr;
 static unsigned short vendor_id = 0;
 static int long_listing = 0;
 static int64_t sparse_limit = -1;
@@ -227,17 +228,49 @@ static int list_devices_callback(usb_ifc_info* info) {
     return -1;
 }
 
+// Opens a new Transport connected to a device. If |serial| is non-null it will be used to identify
+// a specific device, otherwise the first USB device found will be used.
+//
+// This will block until the desired Transport is connected, so callers are guaranteed that the
+// returned Transport is non-null. The returned Transport is also a singleton, so multiple calls
+// to this function will return the same object, and the caller should not attempt to delete the
+// returned Transport.
 static Transport* open_device() {
-    static Transport* transport = nullptr;
-    int announce = 1;
+    // A static singleton here means the destructor is executed no matter whether the program calls
+    // exit() or returns from main(), which is required to properly close network connections.
+    static std::unique_ptr<Transport> transport;
+    bool announce = true;
 
-    if (transport) return transport;
+    if (transport != nullptr) {
+        return transport.get();
+    }
 
+    // Rather than try to figure out whether |serial| is a serial number, path, or network address,
+    // just try to find a matching USB device which is fast, then fall back to a network address
+    // which is slower. This will disallow targeting a network device whose hostname exactly matches
+    // a USB serial number or path, but this seems extremely unlikely.
     for (;;) {
-        transport = usb_open(match_fastboot);
-        if (transport) return transport;
+        transport.reset(usb_open(match_fastboot));
+
+        if (transport == nullptr && serial != nullptr) {
+            std::string host, error;
+            int port = tcp::kDefaultPort;
+            if (android::base::ParseNetAddress(serial, &host, &port, nullptr, &error)) {
+                transport = tcp::Connect(host, port, &error);
+            }
+
+            if (transport == nullptr && announce) {
+                fprintf(stderr, "No USB or network device %s found (network error: %s)\n", serial,
+                        error.c_str());
+            }
+        }
+
+        if (transport != nullptr) {
+            return transport.get();
+        }
+
         if (announce) {
-            announce = 0;
+            announce = false;
             fprintf(stderr, "< waiting for %s >\n", serial ? serial : "any device");
         }
         usleep(1000);
@@ -299,8 +332,10 @@ static void usage() {
             "                                           if supported by partition type).\n"
             "  -u                                       Do not erase partition before\n"
             "                                           formatting.\n"
-            "  -s <specific device>                     Specify device serial number\n"
-            "                                           or path to device port.\n"
+            "  -s <specific device>                     Specify a device. For a USB device provide\n"
+            "                                           either a serial number or path to device\n"
+            "                                           port. For a network device provide a\n"
+            "                                           hostname[:port] network address.\n"
             "  -p <product>                             Specify product name.\n"
             "  -c <cmdline>                             Override kernel commandline.\n"
             "  -i <vendor id>                           Specify a custom USB vendor id.\n"
