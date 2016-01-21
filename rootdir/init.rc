@@ -333,6 +333,7 @@ on post-fs-data
     mkdir /data/local 0751 root root
     mkdir /data/misc/media 0700 media media
     mkdir /data/misc/vold 0700 root root
+    mkdir /data/misc/bootstat 0700 root root
     mkdir /data/misc/boottrace 0771 system shell
     mkdir /data/misc/update_engine 0700 root root
     mkdir /data/misc/trace 0700 root root
@@ -540,6 +541,16 @@ on property:vold.decrypt=trigger_shutdown_framework
 
 on property:sys.powerctl=*
     powerctl ${sys.powerctl}
+
+# This marker, boot animation stopped, is considered the point at which the
+# the user may interact with the device, so it is a good proxy for the boot
+# complete signal.
+on property:init.svc.bootanim=stopped
+    # Record boot_complete timing event.
+    exec - root root -- /system/bin/bootstat -r boot_complete
+
+    # Log all boot events.
+    exec - root root -- /system/bin/bootstat -l
 
 # system server cannot write to /proc/sys files,
 # and chown/chmod does not work for /proc/sys/ entries.
