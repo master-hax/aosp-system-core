@@ -1,0 +1,8 @@
+Code-Review+2: Steve Fung <stevefung@google.com>
+Presubmit-Verified+1: Treehugger Robot <android-build-prod@system.gserviceaccount.com>
+Verified+1: Bertrand Simonnet <bsimonnet@google.com>
+Submitted-by: Bertrand Simonnet <bsimonnet@google.com>
+Submitted-at: Fri, 22 Jan 2016 22:06:52 +0000
+Reviewed-on: https://android-review.googlesource.com/198036
+Project: platform/system/core
+Branch: refs/heads/master
