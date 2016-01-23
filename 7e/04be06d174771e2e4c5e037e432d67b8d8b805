@@ -1,0 +1,9 @@
+Presubmit-Ready+1: Treehugger Robot <android-build-prod@system.gserviceaccount.com>
+Code-Review+2: Stephen Hines <srhines@google.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Verified+1: Rom Lemarchand <romlem@android.com>
+Submitted-by: Rom Lemarchand <romlem@android.com>
+Submitted-at: Sat, 23 Jan 2016 03:41:41 +0000
+Reviewed-on: https://android-review.googlesource.com/198054
+Project: platform/system/core
+Branch: refs/heads/master
