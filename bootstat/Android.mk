@@ -40,11 +40,15 @@ bootstat_cflags := \
         -Werror
 
 bootstat_cppflags := \
-        -Wno-non-virtual-dtor
+        -Wno-non-virtual-dtor \
+        -std=c++14
 
 bootstat_debug_cflags := \
         $(bootstat_cflags) \
         -UNDEBUG
+
+bootstat_debug_cppflags := \
+        -std=c++14
 
 # 524291 corresponds to sysui_histogram, from
 # frameworks/base/core/java/com/android/internal/logging/EventLogTags.logtags
