@@ -93,3 +93,19 @@ void FlushCommand::runSocketCommand(SocketClient *client) {
 bool FlushCommand::hasReadLogs(SocketClient *client) {
     return clientHasLogCredentials(client);
 }
+
+static bool clientHasSecurityCredentials(SocketClient *client) {
+    if (client->getUid() == AID_SYSTEM) {
+        return true;
+    }
+
+    if (client->getGid() == AID_SYSTEM) {
+        return true;
+    }
+
+    return false;
+}
+
+bool FlushCommand::hasSecurityLogs(SocketClient *client) {
+    return clientHasSecurityCredentials(client);
+}
