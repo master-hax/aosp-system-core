@@ -190,9 +190,9 @@ class Subprocess {
 
     // Sets up FDs, forks a subprocess, starts the subprocess manager thread,
     // and exec's the child. Returns false on failure.
-    bool ForkAndExec();
+    bool ForkAndExec(std::string* _Nonnull error);
 
-  private:
+   private:
     // Opens the file at |pts_name|.
     int OpenPtyChildFd(const char* pts_name, ScopedFd* error_sfd);
 
@@ -235,7 +235,7 @@ Subprocess::~Subprocess() {
     WaitForExit();
 }
 
-bool Subprocess::ForkAndExec() {
+bool Subprocess::ForkAndExec(std::string* error) {
     ScopedFd child_stdinout_sfd, child_stderr_sfd;
     ScopedFd parent_error_sfd, child_error_sfd;
     char pts_name[PATH_MAX];
@@ -306,7 +306,7 @@ bool Subprocess::ForkAndExec() {
     }
 
     if (pid_ == -1) {
-        PLOG(ERROR) << "fork failed";
+        *error = "fork failed";
         return false;
     }
 
@@ -336,7 +336,8 @@ bool Subprocess::ForkAndExec() {
         } else {
             execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
         }
-        WriteFdExactly(child_error_sfd.fd(), "exec '" _PATH_BSHELL "' failed");
+        WriteFdExactly(child_error_sfd.fd(), "exec '" _PATH_BSHELL "' failed: ");
+        WriteFdExactly(child_error_sfd.fd(), strerror(errno));
         child_error_sfd.Reset();
         _Exit(1);
     }
@@ -349,7 +350,7 @@ bool Subprocess::ForkAndExec() {
     child_error_sfd.Reset();
     std::string error_message = ReadAll(parent_error_sfd.fd());
     if (!error_message.empty()) {
-        LOG(ERROR) << error_message;
+        *error = error_message;
         return false;
     }
 
@@ -368,7 +369,7 @@ bool Subprocess::ForkAndExec() {
         input_.reset(new ShellProtocol(protocol_sfd_.fd()));
         output_.reset(new ShellProtocol(protocol_sfd_.fd()));
         if (!input_ || !output_) {
-            LOG(ERROR) << "failed to allocate shell protocol objects";
+            *error = "failed to allocate shell protocol objects";
             return false;
         }
 
@@ -379,7 +380,8 @@ bool Subprocess::ForkAndExec() {
         for (int fd : {stdinout_sfd_.fd(), stderr_sfd_.fd()}) {
             if (fd >= 0) {
                 if (!set_file_block_mode(fd, false)) {
-                    LOG(ERROR) << "failed to set non-blocking mode for fd " << fd;
+                    *error = android::base::StringPrintf(
+                        "failed to set non-blocking mode for fd %d", fd);
                     return false;
                 }
             }
@@ -387,7 +389,7 @@ bool Subprocess::ForkAndExec() {
     }
 
     if (!adb_thread_create(ThreadHandler, this)) {
-        PLOG(ERROR) << "failed to create subprocess thread";
+        *error = "failed to create subprocess thread";
         return false;
     }
 
@@ -671,6 +673,27 @@ void Subprocess::WaitForExit() {
 
 }  // namespace
 
+// Create a pipe containing the error.
+static int ReportError(SubprocessProtocol protocol, const std::string& message) {
+    int pipefd[2];
+    if (pipe(pipefd) != 0) {
+        LOG(ERROR) << "failed to create pipe to report error";
+        return -1;
+    }
+
+    std::string buf = android::base::StringPrintf("error: %s\n", message.c_str());
+    if (protocol == SubprocessProtocol::kShell) {
+        uint8_t id = ShellProtocol::kIdStderr;
+        uint32_t length = buf.length();
+        WriteFdExactly(pipefd[1], &id, sizeof(id));
+        WriteFdExactly(pipefd[1], &length, sizeof(length));
+    }
+
+    WriteFdExactly(pipefd[1], buf.data(), buf.length());
+    adb_close(pipefd[1]);
+    return pipefd[0];
+}
+
 int StartSubprocess(const char* name, const char* terminal_type,
                     SubprocessType type, SubprocessProtocol protocol) {
     D("starting %s subprocess (protocol=%s, TERM=%s): '%s'",
@@ -681,13 +704,14 @@ int StartSubprocess(const char* name, const char* terminal_type,
     Subprocess* subprocess = new Subprocess(name, terminal_type, type, protocol);
     if (!subprocess) {
         LOG(ERROR) << "failed to allocate new subprocess";
-        return -1;
+        return ReportError(protocol, "failed to allocate new subprocess");
     }
 
-    if (!subprocess->ForkAndExec()) {
-        LOG(ERROR) << "failed to start subprocess";
+    std::string error;
+    if (!subprocess->ForkAndExec(&error)) {
+        LOG(ERROR) << "failed to start subprocess: " << error;
         delete subprocess;
-        return -1;
+        return ReportError(protocol, error);
     }
 
     D("subprocess creation successful: local_socket_fd=%d, pid=%d",
