@@ -428,21 +428,6 @@ static void copy_to_file(int inFd, int outFd) {
     free(buf);
 }
 
-static std::string format_host_command(const char* command,
-                                       TransportType type, const char* serial) {
-    if (serial) {
-        return android::base::StringPrintf("host-serial:%s:%s", serial, command);
-    }
-
-    const char* prefix = "host";
-    if (type == kTransportUsb) {
-        prefix = "host-usb";
-    } else if (type == kTransportLocal) {
-        prefix = "host-local";
-    }
-    return android::base::StringPrintf("%s:%s", prefix, command);
-}
-
 namespace {
 
 enum class ErrorAction {
@@ -1709,6 +1694,18 @@ int adb_commandline(int argc, const char **argv) {
     else if (!strcmp(argv[0], "ls")) {
         if (argc != 2) return usage();
         return do_sync_ls(argv[1]) ? 0 : 1;
+    }
+    else if (!strcmp(argv[0], "stat")) {
+        if (argc != 2) return usage();
+        return do_sync_stat(argv[1]) ? 0 : 1;
+    }
+    else if (!strcmp(argv[0], "lstat")) {
+        if (argc != 2) return usage();
+        return do_sync_lstat(argv[1]) ? 0 : 1;
+    }
+    else if (!strcmp(argv[0], "readlink")) {
+        if (argc != 2) return usage();
+        return do_sync_readlink(argv[1]) ? 0 : 1;
     }
     else if (!strcmp(argv[0], "push")) {
         bool copy_attrs = false;

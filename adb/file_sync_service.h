@@ -22,7 +22,11 @@
 
 #define MKID(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((d) << 24))
 
-#define ID_STAT MKID('S','T','A','T')
+// The old stat actually does lstat.
+#define ID_LSTAT MKID('S','T','A','T')
+#define ID_STAT_V2 MKID('S','T','2','S')
+#define ID_LSTAT_V2 MKID('S','T','2','L')
+#define ID_READLINK MKID('R','D','L','K')
 #define ID_LIST MKID('L','I','S','T')
 #define ID_SEND MKID('S','E','N','D')
 #define ID_RECV MKID('R','E','C','V')
@@ -39,32 +43,55 @@ struct SyncRequest {
     // Followed by 'path_length' bytes of path (not NUL-terminated).
 } __attribute__((packed)) ;
 
+struct __attribute__((packed)) sync_stat {
+    uint32_t id;
+    int32_t error;
+    uint64_t dev;
+    uint64_t ino;
+    uint32_t mode;
+    uint32_t uid;
+    uint32_t gid;
+    uint64_t rdev;
+    int64_t size;
+    int64_t mtime;
+    int64_t ctime;
+};
+
 union syncmsg {
     struct __attribute__((packed)) {
-        unsigned id;
-        unsigned mode;
-        unsigned size;
-        unsigned time;
+        uint32_t id;
+        uint32_t mode;
+        uint32_t size;
+        uint32_t time;
     } stat;
+    struct sync_stat stat_v2;
     struct __attribute__((packed)) {
-        unsigned id;
-        unsigned mode;
-        unsigned size;
-        unsigned time;
-        unsigned namelen;
+        uint32_t id;
+        int32_t error;
+        uint32_t size;
+    } readlink;
+    struct __attribute__((packed)) {
+        uint32_t id;
+        uint32_t mode;
+        uint32_t size;
+        uint32_t time;
+        uint32_t namelen;
     } dent;
     struct __attribute__((packed)) {
-        unsigned id;
-        unsigned size;
+        uint32_t id;
+        uint32_t size;
     } data;
     struct __attribute__((packed)) {
-        unsigned id;
-        unsigned msglen;
+        uint32_t id;
+        uint32_t msglen;
     } status;
 };
 
 void file_sync_service(int fd, void* cookie);
 bool do_sync_ls(const char* path);
+bool do_sync_stat(const char* path);
+bool do_sync_lstat(const char* path);
+bool do_sync_readlink(const char* path);
 bool do_sync_push(const std::vector<const char*>& srcs, const char* dst);
 bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
                   bool copy_attrs);

@@ -39,6 +39,7 @@ bool CanUseFeature(const FeatureSet& feature_set, const std::string& feature);
 // Do not use any of [:;=,] in feature strings, they have special meaning
 // in the connection banner.
 extern const char* const kFeatureShell2;
+extern const char* const kFeatureFileSync2;
 // The 'cmd' command is available
 extern const char* const kFeatureCmd;
 
