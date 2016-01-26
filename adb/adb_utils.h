@@ -29,6 +29,13 @@ bool directory_exists(const std::string& path);
 std::string adb_basename(const std::string& path);
 std::string adb_dirname(const std::string& path);
 
+#if !defined(_WIN32)
+// readlink doesn't null terminate and will silently truncate if too large to fit in the buffer.
+// This function wraps stat and readlink in a race-safe manner to avoid this problem.
+// Returns whether succesful, with errno set to any possible result of stat or readlink.
+bool safe_readlink(const char* path, std::string* output);
+#endif
+
 bool mkdirs(const std::string& path);
 
 std::string escape_arg(const std::string& s);
