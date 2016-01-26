@@ -45,6 +45,7 @@ static auto& pending_list = *new std::list<atransport*>();
 ADB_MUTEX_DEFINE( transport_lock );
 
 const char* const kFeatureShell2 = "shell_v2";
+const char* const kFeatureStat2 = "stat_v2";
 const char* const kFeatureCmd = "cmd";
 
 static std::string dump_packet(const char* name, const char* func, apacket* p) {
@@ -788,6 +789,7 @@ const FeatureSet& supported_features() {
     // Local static allocation to avoid global non-POD variables.
     static const FeatureSet* features = new FeatureSet{
         kFeatureShell2,
+        kFeatureStat2,
         // Internal master has 'cmd'. AOSP master doesn't.
         // kFeatureCmd
 

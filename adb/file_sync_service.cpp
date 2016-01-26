@@ -92,6 +92,46 @@ static bool do_stat(int s, const char* path) {
     return WriteFdExactly(s, &msg.stat, sizeof(msg.stat));
 }
 
+namespace {
+enum class StatType : bool {
+    STAT,
+    LSTAT,
+};
+}
+
+static bool do_new_stat(int s, const char* path, StatType type) {
+    syncmsg result = {};
+    auto& stat_new = result.stat_new;
+    int (*stat_fn)(const char*, struct stat64*);
+    struct stat64 st;
+
+    switch (type) {
+        case StatType::STAT:
+            stat_new.id = ID_NEW_STAT;
+            stat_fn = stat64;
+            break;
+        case StatType::LSTAT:
+            stat_new.id = ID_NEW_LSTAT;
+            stat_fn = lstat64;
+            break;
+    }
+
+    if (stat_fn(path, &st) != 0) {
+        stat_new.error = errno;
+    } else {
+        stat_new.dev = st.st_dev;
+        stat_new.ino = st.st_ino;
+        stat_new.mode = st.st_mode;
+        stat_new.uid = st.st_uid;
+        stat_new.gid = st.st_gid;
+        stat_new.rdev = st.st_rdev;
+        stat_new.size = st.st_size;
+        stat_new.ctime = st.st_ctime;
+    }
+
+    return WriteFdExactly(s, &stat_new, sizeof(stat_new));
+}
+
 static bool do_list(int s, const char* path) {
     dirent* de;
 
@@ -368,24 +408,30 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
     D("sync: '%.4s' '%s'", id, name);
 
     switch (request.id) {
-      case ID_STAT:
-        if (!do_stat(fd, name)) return false;
-        break;
-      case ID_LIST:
-        if (!do_list(fd, name)) return false;
-        break;
-      case ID_SEND:
-        if (!do_send(fd, name, buffer)) return false;
-        break;
-      case ID_RECV:
-        if (!do_recv(fd, name, buffer)) return false;
-        break;
-      case ID_QUIT:
-        return false;
-      default:
-        SendSyncFail(fd, android::base::StringPrintf("unknown command '%.4s' (%08x)",
-                                                     id, request.id));
-        return false;
+        case ID_STAT:
+            if (!do_stat(fd, name)) return false;
+            break;
+        case ID_NEW_STAT:
+            if (!do_new_stat(fd, name, StatType::STAT)) return false;
+            break;
+        case ID_NEW_LSTAT:
+            if (!do_new_stat(fd, name, StatType::LSTAT)) return false;
+            break;
+        case ID_LIST:
+            if (!do_list(fd, name)) return false;
+            break;
+        case ID_SEND:
+            if (!do_send(fd, name, buffer)) return false;
+            break;
+        case ID_RECV:
+            if (!do_recv(fd, name, buffer)) return false;
+            break;
+        case ID_QUIT:
+            return false;
+        default:
+            SendSyncFail(
+                fd, android::base::StringPrintf("unknown command '%.4s' (%08x)", id, request.id));
+            return false;
     }
 
     return true;

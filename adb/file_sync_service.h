@@ -23,6 +23,8 @@
 #define MKID(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((d) << 24))
 
 #define ID_STAT MKID('S','T','A','T')
+#define ID_NEW_STAT MKID(' ','S','T','2')
+#define ID_NEW_LSTAT MKID('L','S','T','2')
 #define ID_LIST MKID('L','I','S','T')
 #define ID_SEND MKID('S','E','N','D')
 #define ID_RECV MKID('R','E','C','V')
@@ -46,6 +48,18 @@ union syncmsg {
         unsigned size;
         unsigned time;
     } stat;
+    struct __attribute__((packed)) {
+        unsigned id;
+        int32_t error;
+        uint64_t dev;
+        uint64_t ino;
+        uint32_t mode;
+        uint32_t uid;
+        uint32_t gid;
+        uint64_t rdev;
+        int64_t size;
+        uint64_t ctime;
+    } stat_new;
     struct __attribute__((packed)) {
         unsigned id;
         unsigned mode;
