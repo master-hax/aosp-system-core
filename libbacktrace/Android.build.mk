@@ -77,6 +77,8 @@ LOCAL_LDLIBS += \
 
 LOCAL_STRIP_MODULE := $($(module)_strip_module)
 
+LOCAL_ALLOW_UNDEFINED_SYMBOLS := $($(module)_allow_undefined_symbols)
+
 ifeq ($(build_type),target)
   include $(BUILD_$(build_target))
 endif
