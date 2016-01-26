@@ -77,9 +77,9 @@ static bool secure_mkdirs(const std::string& path) {
     return true;
 }
 
-static bool do_stat(int s, const char* path) {
+static bool do_lstat_v1(int s, const char* path) {
     syncmsg msg;
-    msg.stat.id = ID_STAT;
+    msg.stat.id = ID_LSTAT;
 
     struct stat st;
     memset(&st, 0, sizeof(st));
@@ -90,6 +90,61 @@ static bool do_stat(int s, const char* path) {
     msg.stat.time = st.st_mtime;
 
     return WriteFdExactly(s, &msg.stat, sizeof(msg.stat));
+}
+
+namespace {
+enum class StatType : bool {
+    LSTAT,
+    STAT,
+};
+}
+
+static bool do_stat_v2(int s, const char* path, StatType type) {
+    syncmsg msg = {};
+    auto& stat_v2 = msg.stat_v2;
+    int (*stat_fn)(const char*, struct stat64*);
+    struct stat64 st;
+
+    switch (type) {
+        case StatType::LSTAT:
+            stat_v2.id = ID_LSTAT_V2;
+            stat_fn = lstat64;
+            break;
+        case StatType::STAT:
+            stat_v2.id = ID_STAT_V2;
+            stat_fn = stat64;
+            break;
+    }
+
+    if (stat_fn(path, &st) != 0) {
+        stat_v2.error = errno;
+    } else {
+        stat_v2.dev = st.st_dev;
+        stat_v2.ino = st.st_ino;
+        stat_v2.mode = st.st_mode;
+        stat_v2.uid = st.st_uid;
+        stat_v2.gid = st.st_gid;
+        stat_v2.rdev = st.st_rdev;
+        stat_v2.size = st.st_size;
+        stat_v2.mtime = st.st_mtime;
+        stat_v2.ctime = st.st_ctime;
+    }
+
+    return WriteFdExactly(s, &stat_v2, sizeof(stat_v2));
+}
+
+static bool __attribute__((unused)) do_readlink(int s, const char* path) {
+    syncmsg msg = {};
+
+    msg.readlink.id = ID_READLINK;
+    std::string result;
+    if (!safe_readlink(path, &result)) {
+        msg.readlink.error = errno;
+    } else {
+        msg.readlink.size = result.length();
+    }
+    return WriteFdExactly(s, &msg.readlink, sizeof(msg.readlink)) &&
+           WriteFdExactly(s, result.data(), result.length());
 }
 
 static bool do_list(int s, const char* path) {
@@ -368,24 +423,33 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
     D("sync: '%.4s' '%s'", id, name);
 
     switch (request.id) {
-      case ID_STAT:
-        if (!do_stat(fd, name)) return false;
-        break;
-      case ID_LIST:
-        if (!do_list(fd, name)) return false;
-        break;
-      case ID_SEND:
-        if (!do_send(fd, name, buffer)) return false;
-        break;
-      case ID_RECV:
-        if (!do_recv(fd, name, buffer)) return false;
-        break;
-      case ID_QUIT:
-        return false;
-      default:
-        SendSyncFail(fd, android::base::StringPrintf("unknown command '%.4s' (%08x)",
-                                                     id, request.id));
-        return false;
+        case ID_LSTAT:
+            if (!do_lstat_v1(fd, name)) return false;
+            break;
+        case ID_LSTAT_V2:
+            if (!do_stat_v2(fd, name, StatType::LSTAT)) return false;
+            break;
+        case ID_STAT_V2:
+            if (!do_stat_v2(fd, name, StatType::STAT)) return false;
+            break;
+        case ID_READLINK:
+            if (!do_readlink(fd, name)) return false;
+            break;
+        case ID_LIST:
+            if (!do_list(fd, name)) return false;
+            break;
+        case ID_SEND:
+            if (!do_send(fd, name, buffer)) return false;
+            break;
+        case ID_RECV:
+            if (!do_recv(fd, name, buffer)) return false;
+            break;
+        case ID_QUIT:
+            return false;
+        default:
+            SendSyncFail(
+                fd, android::base::StringPrintf("unknown command '%.4s' (%08x)", id, request.id));
+            return false;
     }
 
     return true;

@@ -134,6 +134,32 @@ std::string adb_dirname(const std::string& path) {
   return result;
 }
 
+#if !defined(_WIN32)
+bool safe_readlink(const char* path, std::string* output) {
+  struct stat st;
+  std::string buf;
+
+  while (true) {
+    if (stat(path, &st) != 0) {
+      return false;
+    }
+
+    buf.resize(st.st_size + 1);
+    ssize_t length = readlink(path, &buf[0], buf.length());
+    if (length < 0) {
+      return false;
+    } else if (length > st.st_size) {
+      // The symlink was replaced with a longer one between the calls of stat and readlink.
+      continue;
+    }
+
+    buf.resize(length);
+    *output = std::move(buf);
+    return true;
+  }
+}
+#endif
+
 // Given a relative or absolute filepath, create the parent directory hierarchy
 // as needed. Returns true if the hierarchy is/was setup.
 bool mkdirs(const std::string& path) {
