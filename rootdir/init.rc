@@ -562,6 +562,14 @@ on property:sys.sysctl.extra_free_kbytes=*
 on property:sys.sysctl.tcp_def_init_rwnd=*
     write /proc/sys/net/ipv4/tcp_default_init_rwnd ${sys.sysctl.tcp_def_init_rwnd}
 
+on property:persist.mmc.max_read_speed=*
+    write /sys/block/mmcblk0/max_read_speed ${persist.mmc.max_read_speed}
+
+on property:persist.mmc.max_write_speed=*
+    write /sys/block/mmcblk0/max_write_speed ${persist.mmc.max_write_speed}
+
+on property:persist.mmc.cache_size=*
+    write /sys/block/mmcblk0/cache_size ${persist.mmc.cache_size}
 
 ## Daemon processes to be run by init.
 ##
