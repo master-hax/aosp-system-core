@@ -586,10 +586,14 @@ void BatteryMonitor::init(struct healthd_config *hc) {
         closedir(dir);
     }
 
-    // This indicates that there is no charger driver registered.
-    // Typically the case for devices which do not have a battery and
-    // and are always plugged into AC mains.
-    if (!mChargerNames.size()) {
+    // Read batteryPresent property.
+    if (!mHealthdConfig->batteryPresentPath.isEmpty())
+        props.batteryPresent = getBooleanField(mHealthdConfig->batteryPresentPath);
+    else
+        props.batteryPresent = mBatteryDevicePresent;
+
+    // If battery is not present on device, fake battery properties.
+    if (!props.batteryPresent) {
         KLOG_ERROR(LOG_TAG, "No charger supplies found\n");
         mBatteryFixedCapacity = ALWAYS_PLUGGED_CAPACITY;
         mBatteryFixedTemperature = FAKE_BATTERY_TEMPERATURE;
