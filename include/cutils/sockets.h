@@ -30,12 +30,15 @@
 
 typedef int  socklen_t;
 typedef SOCKET cutils_socket_t;
+typedef WSABUF cutils_socket_buffer;
 
 #else
 
 #include <sys/socket.h>
+#include <sys/uio.h>
 
 typedef int cutils_socket_t;
+typedef struct iovec cutils_socket_buffer;
 #define INVALID_SOCKET (-1)
 
 #endif
@@ -135,6 +138,26 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms);
  * Returns the local port the socket is bound to or -1 on error.
  */
 int socket_get_local_port(cutils_socket_t sock);
+
+/*
+ * Sends to a socket from multiple buffers; wraps writev() on Unix or WSASend()
+ * on Windows. This can give significant speedup compared to calling send()
+ * multiple times.
+ *
+ * Because Unix and Windows use different structs to hold buffers, we also
+ * need a generic function to set up the buffers.
+ *
+ * Example usage:
+ *   cutils_socket_buffer buffers[2];
+ *   socket_set_buffer(&buffer[0], data0, length0);
+ *   socket_set_buffer(&buffer[1], data1, length1);
+ *   socket_send_buffers(sock, buffers, 2);
+ *
+ * Returns the number of bytes written or -1 on error.
+ */
+void socket_set_buffer(cutils_socket_buffer* buffer, void* data, size_t length);
+ssize_t socket_send_buffers(cutils_socket_t sock, cutils_socket_buffer* buffers,
+                            size_t num_buffers);
 
 /*
  * socket_peer_is_trusted - Takes a socket which is presumed to be a

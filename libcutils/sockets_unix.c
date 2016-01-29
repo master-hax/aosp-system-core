@@ -56,3 +56,14 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms) {
   tv.tv_usec = (timeout_ms % 1000) * 1000;
   return setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
+
+void socket_set_buffer(cutils_socket_buffer* buffer, void* data,
+                       size_t length) {
+  buffer->iov_base = data;
+  buffer->iov_len = length;
+}
+
+ssize_t socket_send_buffers(cutils_socket_t sock, cutils_socket_buffer* buffers,
+                            size_t num_buffers) {
+  return writev(sock, buffers, num_buffers);
+}
