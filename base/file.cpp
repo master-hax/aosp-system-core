@@ -149,5 +149,34 @@ bool WriteFully(int fd, const void* data, size_t byte_count) {
   return true;
 }
 
+bool RemoveFileIfExists(const std::string& path, std::string* err) {
+  struct stat st;
+  int result = -1;
+  bool file_type_removable = false;
+#if defined(_WIN32)
+  //TODO: Windows version can't handle symbol link correctly.
+  result = stat(path.c_str(), &st);
+  file_type_removable = (result == 0 && S_ISREG(st.st_mode));
+#else
+  result = lstat(path.c_str(), &st);
+  file_type_removable = (result == 0 && (S_ISREG(st.st_mode) || S_ISLNK(st.st_mode)));
+#endif
+  if (result == 0) {
+    if (!file_type_removable) {
+      if (err != nullptr) {
+        *err = "wrong file format";
+      }
+      return false;
+    }
+    if (unlink(path.c_str()) == -1) {
+      if (err != nullptr) {
+        *err = strerror(errno);
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
 }  // namespace base
 }  // namespace android
