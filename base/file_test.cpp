@@ -96,3 +96,12 @@ TEST(file, WriteFully) {
   s.resize(1024);
   ASSERT_FALSE(android::base::ReadFully(tf.fd, &s[0], s.size()));
 }
+
+TEST(file, RemoveFileIfExist) {
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+  ASSERT_TRUE(android::base::RemoveFileIfExist(tf.path));
+  ASSERT_TRUE(android::base::RemoveFileIfExist(tf.path));
+  TemporaryDir td;
+  ASSERT_FALSE(android::base::RemoveFileIfExist(td.path));
+}

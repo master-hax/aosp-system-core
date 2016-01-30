@@ -37,6 +37,8 @@ bool WriteStringToFile(const std::string& content, const std::string& path,
 bool ReadFully(int fd, void* data, size_t byte_count);
 bool WriteFully(int fd, const void* data, size_t byte_count);
 
+bool RemoveFileIfExist(const std::string& path);
+
 }  // namespace base
 }  // namespace android
 

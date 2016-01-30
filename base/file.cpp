@@ -149,5 +149,18 @@ bool WriteFully(int fd, const void* data, size_t byte_count) {
   return true;
 }
 
+bool RemoveFileIfExist(const std::string& path) {
+  struct stat st;
+  if (stat(path.c_str(), &st) == 0) {
+    if (!S_ISREG(st.st_mode)) {
+      return false;
+    }
+    if (unlink(path.c_str()) == -1) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }  // namespace base
 }  // namespace android
