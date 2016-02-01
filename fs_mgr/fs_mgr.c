@@ -548,7 +548,7 @@ int fs_mgr_mount_all(struct fstab *fstab)
         }
 
         if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
-            int rc = fs_mgr_setup_verity(&fstab->recs[i]);
+            int rc = fs_mgr_setup_verity(&fstab->recs[i], true);
             if (device_is_debuggable() && rc == FS_MGR_SETUP_VERITY_DISABLED) {
                 INFO("Verity disabled");
             } else if (rc != FS_MGR_SETUP_VERITY_SUCCESS) {
@@ -706,7 +706,7 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
         }
 
         if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
-            int rc = fs_mgr_setup_verity(&fstab->recs[i]);
+            int rc = fs_mgr_setup_verity(&fstab->recs[i], true);
             if (device_is_debuggable() && rc == FS_MGR_SETUP_VERITY_DISABLED) {
                 INFO("Verity disabled");
             } else if (rc != FS_MGR_SETUP_VERITY_SUCCESS) {
@@ -904,4 +904,23 @@ int fs_mgr_get_crypt_info(struct fstab *fstab, char *key_loc, char *real_blk_dev
     }
 
     return 0;
+}
+
+int fs_mgr_early_setup_verity(struct fstab_rec *fstab_rec)
+{
+    if ((fstab_rec->fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
+        int rc = fs_mgr_setup_verity(fstab_rec, false);
+        if (device_is_debuggable() && rc == FS_MGR_SETUP_VERITY_DISABLED) {
+            INFO("Verity disabled");
+            return FS_MGR_EARLY_SETUP_VERITY_NO_VERITY;
+        } else if (rc == FS_MGR_SETUP_VERITY_SUCCESS) {
+            return FS_MGR_EARLY_SETUP_VERITY_SUCCESS;
+        } else {
+            return FS_MGR_EARLY_SETUP_VERITY_FAIL;
+        }
+    } else if (device_is_secure()) {
+        ERROR("Verity must be enabled for early mounted partitions on secured devices.\n");
+        return FS_MGR_EARLY_SETUP_VERITY_FAIL;
+    }
+    return FS_MGR_EARLY_SETUP_VERITY_NO_VERITY;
 }
