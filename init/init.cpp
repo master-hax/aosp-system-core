@@ -54,6 +54,7 @@
 #include "action.h"
 #include "bootchart.h"
 #include "devices.h"
+#include "fs_mgr.h"
 #include "import_parser.h"
 #include "init.h"
 #include "init_parser.h"
@@ -342,9 +343,6 @@ static void process_kernel_dt() {
 }
 
 static void process_kernel_cmdline() {
-    // Don't expose the raw commandline to unprivileged processes.
-    chmod("/proc/cmdline", 0440);
-
     // The first pass does the common stuff, and finds if we are in qemu.
     // The second pass is only necessary for qemu to export all kernel params
     // as properties.
@@ -461,6 +459,96 @@ static void set_usb_controller() {
     }
 }
 
+/* Returns a new path consisting of base_path and the file name in reference_path. */
+static char *get_path(const char *base_path, const char *reference_path) {
+    const char *file_name = strrchr(reference_path, '/');
+    char *dest;
+    if (file_name && asprintf(&dest, "%s%s", base_path, file_name) > 0)
+        return dest;
+    return NULL;
+}
+
+/* Imports the fstab info from cmdline. */
+static std::string import_cmdline_fstab() {
+    std::string prefix, fstab, fstab_full;
+
+    import_kernel_cmdline(false,
+        [&](const std::string& key, const std::string& value, bool in_qemu __attribute__((__unused__))) {
+            if (key == "android.early.prefix") {
+                prefix = value;
+            } else if (key == "android.early.fstab") {
+                fstab = value;
+            }
+        });
+    if (!fstab.empty()) {
+        // Convert "mmcblk0p09+/odm+ext4+ro+verify" to "mmcblk0p09 /odm ext4 ro verify"
+        std::replace(fstab.begin(), fstab.end(), '+', ' ');
+        for (const auto& entry : android::base::Split(fstab, "\n")) {
+            fstab_full += prefix + entry + '\n';
+        }
+    }
+    return fstab_full;
+}
+
+/* Early mount vendor and ODM partitions. The fstab info is read from kernel cmdline. */
+static void early_mount() {
+    std::string fstab_string = import_cmdline_fstab();
+    if (fstab_string.empty()) {
+        LOG(INFO) << "Failed to load vendor fstab from kernel cmdline";
+        return;
+    }
+    FILE *fstab_file = fmemopen((void *)fstab_string.c_str(), fstab_string.length(), "r");
+    struct fstab *fstab = fs_mgr_read_fstab_file(fstab_file);
+    fclose(fstab_file);
+    LOG(INFO) << "Loaded vendor fstab from cmdline";
+
+    if (early_device_socket_open()) {
+        LOG(ERROR) << "Failed to open device uevent socket";
+        fs_mgr_free_fstab(fstab);
+        return;
+    }
+
+    /* Create /dev/device-mapper for dm-verity */
+    early_create_dev("/sys/devices/virtual/misc/device-mapper", EARLY_CHAR_DEV);
+
+    for (int i = 0; i < fstab->num_entries; ++i) {
+        struct fstab_rec *rec = &fstab->recs[i];
+        char *mount_point = rec->mount_point;
+        char *syspath = rec->blk_device;
+
+        // Only mount /vendor and /odm
+        if (strcmp(mount_point, "/vendor") && strcmp(mount_point, "/odm"))
+            continue;
+
+        /* Create mount target under /dev/block/ from sysfs via uevent */
+        LOG(INFO) << "Mounting " << mount_point << " from " << syspath << "...";
+        rec->blk_device = get_path("/dev/block", syspath);
+        early_create_dev(syspath, EARLY_BLOCK_DEV);
+        free(syspath);
+
+        int rc = fs_mgr_early_setup_verity(rec);
+        if (rc == FS_MGR_EARLY_SETUP_VERITY_SUCCESS) {
+            /* Mount target is changed to /dev/block/dm-<n>; initiate its creation from sysfs counterpart */
+            char *dm_syspath = get_path("/sys/devices/virtual/block", rec->blk_device);
+            early_create_dev(dm_syspath, EARLY_BLOCK_DEV);
+            free(dm_syspath);
+        } else if (rc == FS_MGR_EARLY_SETUP_VERITY_FAIL) {
+            LOG(ERROR) << "Failed to set up dm-verity on " << rec->blk_device;
+            continue;
+        } else { /* FS_MGR_EARLY_SETUP_VERITY_NO_VERITY */
+            LOG(INFO) << "dm-verity disabled on debuggable device; mount directly on " << rec->blk_device;
+        }
+
+        mkdir(mount_point, 0755);
+        rc = mount(rec->blk_device, mount_point, rec->fs_type, rec->flags, rec->fs_options);
+        if (rc) {
+            PLOG(ERROR) << "Failed to mount on " << rec->blk_device;
+        }
+    }
+    early_device_socket_close();
+    fs_mgr_free_fstab(fstab);
+}
+
 int main(int argc, char** argv) {
     if (!strcmp(basename(argv[0]), "ueventd")) {
         return ueventd_main(argc, argv);
@@ -477,6 +565,9 @@ int main(int argc, char** argv) {
 
     bool is_first_stage = (argc == 1) || (strcmp(argv[1], "--second-stage") != 0);
 
+    // Don't expose the raw commandline to unprivileged processes.
+    chmod("/proc/cmdline", 0440);
+
     // Get the basic filesystem setup we need put together in the initramdisk
     // on / and then we'll let the rc file figure out the rest.
     if (is_first_stage) {
@@ -489,6 +580,7 @@ int main(int argc, char** argv) {
         mount("sysfs", "/sys", "sysfs", 0, NULL);
         mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL);
         mknod("/dev/kmsg", S_IFCHR | 0600, makedev(1, 11));
+        early_mount();
     }
 
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
@@ -541,6 +633,8 @@ int main(int argc, char** argv) {
     restorecon("/dev/__properties__");
     restorecon("/property_contexts");
     restorecon_recursive("/sys");
+    restorecon_recursive("/dev/block");
+    restorecon("/dev/device-mapper");
 
     epoll_fd = epoll_create1(EPOLL_CLOEXEC);
     if (epoll_fd == -1) {
