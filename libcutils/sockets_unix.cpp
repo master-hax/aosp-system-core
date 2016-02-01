@@ -15,6 +15,11 @@
  */
 
 #include <cutils/sockets.h>
+
+#include <sys/uio.h>
+
+#include <vector>
+
 #include <log/log.h>
 
 #if defined(__ANDROID__)
@@ -57,15 +62,15 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms) {
     return setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
-cutils_socket_buffer_t make_cutils_socket_buffer(void* data, size_t length) {
-    cutils_socket_buffer_t buffer;
-    buffer.iov_base = data;
-    buffer.iov_len = length;
-    return buffer;
-}
-
 ssize_t socket_send_buffers(cutils_socket_t sock,
-                            cutils_socket_buffer_t* buffers,
+                            const cutils_socket_buffer_t* buffers,
                             size_t num_buffers) {
-    return writev(sock, buffers, num_buffers);
+    std::vector<iovec> iovec_buffers(num_buffers);
+    for (size_t i = 0; i < num_buffers; ++i) {
+        // Unix uses the same structure for both send and receive so the data field is non-const.
+        iovec_buffers[i].iov_base = const_cast<void*>(buffers[i].data);
+        iovec_buffers[i].iov_len = buffers[i].length;
+    }
+
+    return writev(sock, iovec_buffers.data(), iovec_buffers.size());
 }

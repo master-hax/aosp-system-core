@@ -28,6 +28,12 @@
 
 #include <cutils/sockets.h>
 
+#include <vector>
+
+extern "C" {
+    bool initialize_windows_sockets();
+}
+
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms741549(v=vs.85).aspx
 // claims WSACleanup() should be called before program exit, but general
 // consensus seems to be that it hasn't actually been necessary for a long time,
@@ -59,20 +65,19 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms) {
                       sizeof(timeout_ms));
 }
 
-cutils_socket_buffer_t make_cutils_socket_buffer(void* data, size_t length) {
-    cutils_socket_buffer_t buffer;
-    buffer.buf = data;
-    buffer.len = length;
-    return buffer;
-}
-
 ssize_t socket_send_buffers(cutils_socket_t sock,
-                            cutils_socket_buffer_t* buffers,
+                            const cutils_socket_buffer_t* buffers,
                             size_t num_buffers) {
-    DWORD bytes_sent = 0;
+    std::vector<WSABUF> wsa_buffers(num_buffers);
+    for (size_t i = 0; i < num_buffers; ++i) {
+        // Windows uses the same structure for both send and receive so the data field is non-const.
+        wsa_buffers[i].buf = reinterpret_cast<char*>(const_cast<void*>(buffers[i].data));
+        wsa_buffers[i].len = buffers[i].length;
+    }
 
-    if (WSASend(sock, buffers, num_buffers, &bytes_sent, 0, NULL, NULL) !=
-            SOCKET_ERROR) {
+    DWORD bytes_sent = 0;
+    if (WSASend(sock, wsa_buffers.data(), wsa_buffers.size(), &bytes_sent, 0,
+                nullptr, nullptr) != SOCKET_ERROR) {
         return bytes_sent;
     }
     return -1;
