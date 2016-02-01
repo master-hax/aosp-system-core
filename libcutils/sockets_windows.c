@@ -59,21 +59,27 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms) {
                       sizeof(timeout_ms));
 }
 
-cutils_socket_buffer_t make_cutils_socket_buffer(void* data, size_t length) {
-    cutils_socket_buffer_t buffer;
-    buffer.buf = data;
-    buffer.len = length;
-    return buffer;
-}
-
 ssize_t socket_send_buffers(cutils_socket_t sock,
-                            cutils_socket_buffer_t* buffers,
+                            const cutils_socket_buffer_t* buffers,
                             size_t num_buffers) {
-    DWORD bytes_sent = 0;
+    if (num_buffers <= SOCKET_SEND_BUFFERS_MAX_BUFFERS) {
+        WSABUF wsa_buffers[SOCKET_SEND_BUFFERS_MAX_BUFFERS];
+        DWORD bytes_sent = 0;
+        size_t i;
 
-    if (WSASend(sock, buffers, num_buffers, &bytes_sent, 0, NULL, NULL) !=
-            SOCKET_ERROR) {
-        return bytes_sent;
+        for (i = 0; i < num_buffers; ++i) {
+            // It's safe to cast away const here; WSABUF declares non-const
+            // void* because it's used for both send and receive, but since
+            // we're only sending, the data won't be modified.
+            wsa_buffers[i].buf = (char*)(buffers[i].data);
+            wsa_buffers[i].len = buffers[i].length;
+        }
+
+        if (WSASend(sock, wsa_buffers, num_buffers, &bytes_sent, 0, NULL,
+                    NULL) != SOCKET_ERROR) {
+            return bytes_sent;
+        }
     }
+
     return -1;
 }

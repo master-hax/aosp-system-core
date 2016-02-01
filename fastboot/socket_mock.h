@@ -56,7 +56,8 @@ class SocketMock : public Socket {
     SocketMock();
     ~SocketMock() override;
 
-    ssize_t Send(const void* data, size_t length) override;
+    bool Send(const void* data, size_t length) override;
+    bool Send(std::vector<cutils_socket_buffer_t> buffers) override;
     ssize_t Receive(void* data, size_t length, int timeout_ms) override;
     int Close() override;
     virtual std::unique_ptr<Socket> Accept();
@@ -64,7 +65,7 @@ class SocketMock : public Socket {
     // Adds an expectation for Send().
     void ExpectSend(std::string message);
 
-    // Adds an expectation for Send() that returns -1.
+    // Adds an expectation for Send() that returns false.
     void ExpectSendFailure(std::string message);
 
     // Adds data to provide for Receive().

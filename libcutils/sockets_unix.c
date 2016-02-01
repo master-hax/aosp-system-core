@@ -15,6 +15,9 @@
  */
 
 #include <cutils/sockets.h>
+
+#include <sys/uio.h>
+
 #include <log/log.h>
 
 #if defined(__ANDROID__)
@@ -57,15 +60,23 @@ int socket_set_receive_timeout(cutils_socket_t sock, int timeout_ms) {
     return setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
-cutils_socket_buffer_t make_cutils_socket_buffer(void* data, size_t length) {
-    cutils_socket_buffer_t buffer;
-    buffer.iov_base = data;
-    buffer.iov_len = length;
-    return buffer;
-}
-
 ssize_t socket_send_buffers(cutils_socket_t sock,
-                            cutils_socket_buffer_t* buffers,
+                            const cutils_socket_buffer_t* buffers,
                             size_t num_buffers) {
-    return writev(sock, buffers, num_buffers);
+    if (num_buffers <= SOCKET_SEND_BUFFERS_MAX_BUFFERS) {
+        struct iovec iovec_buffers[SOCKET_SEND_BUFFERS_MAX_BUFFERS];
+        size_t i;
+
+        for (i = 0; i < num_buffers; ++i) {
+            // It's safe to cast away const here; iovec declares non-const
+            // void* because it's used for both send and receive, but since
+            // we're only sending, the data won't be modified.
+            iovec_buffers[i].iov_base = (void*)(buffers[i].data);
+            iovec_buffers[i].iov_len = buffers[i].length;
+        }
+
+        return writev(sock, iovec_buffers, num_buffers);
+    }
+
+    return -1;
 }

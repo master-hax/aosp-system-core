@@ -28,7 +28,7 @@ libcutils_common_sources := \
         process_name.c \
         record_stream.c \
         sched_policy.c \
-        sockets.cpp \
+        sockets.c \
         strdup16to8.c \
         strdup8to16.c \
         strlcpy.c \
