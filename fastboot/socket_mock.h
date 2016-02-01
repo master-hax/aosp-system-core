@@ -57,6 +57,7 @@ class SocketMock : public Socket {
     ~SocketMock() override;
 
     ssize_t Send(const void* data, size_t length) override;
+    ssize_t Send(std::vector<SendBuffer> buffers) override;
     ssize_t Receive(void* data, size_t length, int timeout_ms) override;
     int Close() override;
     virtual std::unique_ptr<Socket> Accept();

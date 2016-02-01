@@ -31,6 +31,30 @@
 #include <android-base/errors.h>
 #include <android-base/stringprintf.h>
 
+// Converts a vector of SendBuffer to a vector of cutils_socket_buffer_t.
+static std::vector<cutils_socket_buffer_t> MakeCutilsBufferVector(
+        const std::vector<Socket::SendBuffer>& send_buffers) {
+    std::vector<cutils_socket_buffer_t> socket_buffers(send_buffers.size());
+    for (size_t i = 0; i < send_buffers.size(); ++i) {
+        socket_buffers[i] = send_buffers[i].ToCutilsBuffer();
+    }
+    return socket_buffers;
+}
+
+Socket::SendBuffer::SendBuffer(const void* _data, size_t _length) : data(_data), length(_length) {}
+
+cutils_socket_buffer_t Socket::SendBuffer::ToCutilsBuffer() const {
+    // cutils_socket_buffer_t has a non-const void* because the same structure is used for reads
+    // and writes. However, SendBuffer is only used for writing so it's safe to remove the const
+    // here since writing won't change the data.
+    return make_cutils_socket_buffer(const_cast<void*>(data), length);
+}
+
+void Socket::SendBuffer::Advance(size_t bytes) {
+    data = reinterpret_cast<const char*>(data) + bytes;
+    length -= bytes;
+}
+
 Socket::Socket(cutils_socket_t sock) : sock_(sock) {}
 
 Socket::~Socket() {
@@ -90,6 +114,7 @@ class UdpSocket : public Socket {
     UdpSocket(Type type, cutils_socket_t sock);
 
     ssize_t Send(const void* data, size_t length) override;
+    ssize_t Send(std::vector<SendBuffer> buffers) override;
     ssize_t Receive(void* data, size_t length, int timeout_ms) override;
 
   private:
@@ -114,6 +139,12 @@ ssize_t UdpSocket::Send(const void* data, size_t length) {
                                      reinterpret_cast<sockaddr*>(addr_.get()), addr_size_));
 }
 
+ssize_t UdpSocket::Send(std::vector<SendBuffer> buffers) {
+    std::vector<cutils_socket_buffer_t> cutils_buffers = MakeCutilsBufferVector(buffers);
+    return TEMP_FAILURE_RETRY(
+            socket_send_buffers_function_(sock_, cutils_buffers.data(), cutils_buffers.size()));
+}
+
 ssize_t UdpSocket::Receive(void* data, size_t length, int timeout_ms) {
     if (!SetReceiveTimeout(timeout_ms)) {
         return -1;
@@ -136,6 +167,7 @@ class TcpSocket : public Socket {
     TcpSocket(cutils_socket_t sock) : Socket(sock) {}
 
     ssize_t Send(const void* data, size_t length) override;
+    ssize_t Send(std::vector<SendBuffer> buffers) override;
     ssize_t Receive(void* data, size_t length, int timeout_ms) override;
 
     std::unique_ptr<Socket> Accept() override;
@@ -158,6 +190,46 @@ ssize_t TcpSocket::Send(const void* data, size_t length) {
             break;
         }
         total += bytes;
+    }
+
+    return total;
+}
+
+ssize_t TcpSocket::Send(std::vector<SendBuffer> buffers) {
+    size_t total = 0;
+
+    while (!buffers.empty()) {
+        std::vector<cutils_socket_buffer_t> cutils_buffers = MakeCutilsBufferVector(buffers);
+        ssize_t bytes = TEMP_FAILURE_RETRY(
+                socket_send_buffers_function_(sock_, cutils_buffers.data(), cutils_buffers.size()));
+
+        if (bytes == -1) {
+            if (total == 0) {
+                return -1;
+            }
+            break;
+        }
+        total += bytes;
+
+        // Adjust the buffers to skip past the bytes we've just sent.
+        auto iter = buffers.begin();
+        while (bytes > 0) {
+            if (iter->length > static_cast<size_t>(bytes)) {
+                // Incomplete buffer write; adjust the buffer to point to the next byte to send.
+                iter->Advance(bytes);
+                break;
+            }
+
+            // Complete buffer write; move on to the next buffer.
+            bytes -= iter->length;
+            ++iter;
+        }
+
+        // Shortcut the common case: we've written everything remaining.
+        if (iter == buffers.end()) {
+            break;
+        }
+        buffers.erase(buffers.begin(), iter);
     }
 
     return total;

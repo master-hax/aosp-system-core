@@ -60,6 +60,16 @@ ssize_t SocketMock::Send(const void* data, size_t length) {
     return return_value;
 }
 
+// Mock out multi-buffer send to be one large send, since that's what it should looks like from
+// the user's perspective.
+ssize_t SocketMock::Send(std::vector<SendBuffer> buffers) {
+    std::string data;
+    for (const auto& buffer : buffers) {
+        data.append(reinterpret_cast<const char*>(buffer.data), buffer.length);
+    }
+    return Send(data.data(), data.size());
+}
+
 ssize_t SocketMock::Receive(void* data, size_t length, int /*timeout_ms*/) {
     if (events_.empty()) {
         ADD_FAILURE() << "Receive() was called when no message was ready";
