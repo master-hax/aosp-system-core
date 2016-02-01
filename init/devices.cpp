@@ -900,7 +900,8 @@ static void handle_firmware_event(struct uevent *uevent)
 }
 
 #define UEVENT_MSG_LEN  2048
-void handle_device_fd()
+
+static inline void handle_device_fd_with(void (handle_uevent)(struct uevent*))
 {
     char msg[UEVENT_MSG_LEN+2];
     int n;
@@ -913,19 +914,26 @@ void handle_device_fd()
 
         struct uevent uevent;
         parse_event(msg, &uevent);
-
-        if (selinux_status_updated() > 0) {
-            struct selabel_handle *sehandle2;
-            sehandle2 = selinux_android_file_context_handle();
-            if (sehandle2) {
-                selabel_close(sehandle);
-                sehandle = sehandle2;
-            }
-        }
-
-        handle_device_event(&uevent);
-        handle_firmware_event(&uevent);
+        handle_uevent(&uevent);
     }
+}
+
+void handle_device_fd()
+{
+    handle_device_fd_with(
+        [](struct uevent *uevent) {
+            if (selinux_status_updated() > 0) {
+                struct selabel_handle *sehandle2;
+                sehandle2 = selinux_android_file_context_handle();
+                if (sehandle2) {
+                    selabel_close(sehandle);
+                    sehandle = sehandle2;
+                }
+            }
+
+            handle_device_event(uevent);
+            handle_firmware_event(uevent);
+        });
 }
 
 /* Coldboot walks parts of the /sys tree and pokes the uevent files
@@ -977,6 +985,71 @@ static void coldboot(const char *path)
     if(d) {
         do_coldboot(d.get());
     }
+}
+
+static void early_uevent_handler(struct uevent *uevent, const char *base, bool is_block)
+{
+    const char *name;
+    char devpath[96];
+
+    if (is_block && strncmp(uevent->subsystem, "block", 5))
+        return;
+
+    name = parse_device_name(uevent, 64);
+    if (!name) {
+        LOG(ERROR) << "Failed to parse dev name from uevent: " << uevent->action
+                   << " " << uevent->partition_name << " " << uevent->partition_num
+                   << " " << uevent->major << ":" << uevent->minor;
+        return;
+    }
+
+    snprintf(devpath, sizeof(devpath), "%s%s", base, name);
+    make_dir(base, 0755);
+
+    dev_t dev = makedev(uevent->major, uevent->minor);
+    mode_t mode = 0600 | (is_block ? S_IFBLK : S_IFCHR);
+    mknod(devpath, mode, dev);
+}
+
+void early_create_dev(const char *syspath, bool is_block)
+{
+    int dfd, fd;
+
+    dfd = open(syspath, O_RDONLY);
+    if (dfd < 0) {
+        LOG(ERROR) << "Failed to open " << syspath;
+        return;
+    }
+
+    fd = openat(dfd, "uevent", O_WRONLY);
+    if (fd < 0) {
+        LOG(ERROR) << "Failed to open " << syspath << "/uevent";
+        goto fail_uevent_file;
+    }
+
+    fcntl(device_fd, F_SETFL, O_NONBLOCK);
+
+    write(fd, "add\n", 4);
+    handle_device_fd_with(is_block ?
+        [](struct uevent *uevent) {
+            early_uevent_handler(uevent, "/dev/block/", 1);
+        } :
+        [](struct uevent *uevent) {
+            early_uevent_handler(uevent, "/dev/", 0);
+        });
+
+    close(fd);
+fail_uevent_file:
+    close(dfd);
+}
+
+int early_device_socket_open() {
+    device_fd = uevent_open_socket(256*1024, true);
+    return device_fd < 0;
+}
+
+void early_device_socket_close() {
+    close(device_fd);
 }
 
 void device_init() {

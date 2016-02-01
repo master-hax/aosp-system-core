@@ -21,6 +21,11 @@
 
 extern void handle_device_fd();
 extern void device_init(void);
+
+extern int early_device_socket_open();
+extern void early_device_socket_close();
+extern void early_create_dev(const char *syspath, bool is_block);
+
 extern int add_dev_perms(const char *name, const char *attr,
                          mode_t perm, unsigned int uid,
                          unsigned int gid, unsigned short prefix,
