@@ -1670,6 +1670,18 @@ int adb_commandline(int argc, const char **argv) {
         if (argc != 2) return usage();
         return do_sync_ls(argv[1]) ? 0 : 1;
     }
+    else if (!strcmp(argv[0], "stat")) {
+        if (argc != 2) return usage();
+        return do_sync_stat(argv[1]) ? 0 : 1;
+    }
+    else if (!strcmp(argv[0], "lstat")) {
+        if (argc != 2) return usage();
+        return do_sync_lstat(argv[1]) ? 0 : 1;
+    }
+    else if (!strcmp(argv[0], "readlink")) {
+        if (argc != 2) return usage();
+        return do_sync_readlink(argv[1]) ? 0 : 1;
+    }
     else if (!strcmp(argv[0], "push")) {
         bool copy_attrs = false;
         std::vector<const char*> srcs;
