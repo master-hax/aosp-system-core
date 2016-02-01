@@ -26,4 +26,9 @@ int tgkill(int tgid, int tid, int sig) {
   return syscall(__NR_tgkill, tgid, tid, sig);
 }
 
+// glibc doesn't implement or export gettid
+pid_t gettid() {
+  return (pid_t) syscall(__NR_gettid);
+}
+
 #endif
