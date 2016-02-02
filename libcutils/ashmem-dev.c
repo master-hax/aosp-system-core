@@ -19,6 +19,7 @@
  * ashmem-enabled kernel. See ashmem-sim.c for the "fake" tmp-based version,
  * used by the simulator.
  */
+#define LOG_TAG "ashmem"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -32,6 +33,7 @@
 #include <linux/ashmem.h>
 
 #include <cutils/ashmem.h>
+#include <log/log.h>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
 
@@ -93,8 +95,7 @@ static int __ashmem_is_ashmem(int fd)
     }
 
     if (!S_ISCHR(st.st_mode) || !st.st_rdev) {
-        errno = ENOTTY;
-        return -1;
+        goto error_no_rdev;
     }
 
     pthread_mutex_lock(&__ashmem_lock);
@@ -115,6 +116,18 @@ static int __ashmem_is_ashmem(int fd)
 
     if (st.st_rdev == rdev) {
         return 0;
+    }
+
+    if (rdev) {
+        ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o %d:%d",
+          fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
+          S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP,
+          major(rdev), minor(rdev));
+    } else {
+error_no_rdev:
+        ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o",
+          fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
+          S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP);
     }
 
     errno = ENOTTY;
