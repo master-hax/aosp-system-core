@@ -22,6 +22,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdatomic.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -34,6 +35,87 @@
 
 #define ASHMEM_DEVICE "/dev/ashmem"
 
+/* ashem identity */
+static atomic_int_fast64_t __ashmem_rdev;
+
+/* logistics of getting file descriptor for ashmem */
+static int __ashmem_open()
+{
+    int fd, ret;
+    struct stat st;
+
+    fd = ret = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR));
+    if (ret < 0) {
+        goto error;
+    }
+
+    ret = TEMP_FAILURE_RETRY(fstat(fd, &st));
+    if (ret < 0) {
+        goto error;
+    }
+    if (!S_ISCHR(st.st_mode)) {
+        ret = -ENOTTY;
+        goto error;
+    }
+
+    atomic_store(&__ashmem_rdev, (int64_t)st.st_rdev);
+    return fd;
+
+error:
+    if ((ret == -1) && errno) {
+        ret = -errno;
+    }
+    close(fd);
+    return ret;
+}
+
+/* Make sure file descriptor references ashmem, negative number means false */
+static int __ashmem_is_ashmem(int fd)
+{
+    dev_t rdev;
+    struct stat st;
+    int ret;
+
+    if (fd < 0) {
+        return fd;
+    }
+
+    ret = TEMP_FAILURE_RETRY(fstat(fd, &st));
+    if (ret < 0) {
+        goto error;
+    }
+
+    if (!S_ISCHR(st.st_mode) || !st.st_rdev) {
+        goto failed;
+    }
+
+    rdev = atomic_load(&__ashmem_rdev);
+    if (!rdev) {
+        ret = __ashmem_open();
+        if (ret < 0) {
+            return ret;
+        }
+        close(ret);
+        rdev = atomic_load(&__ashmem_rdev);
+        if (!rdev) {
+            goto failed;
+        }
+    }
+
+    if (st.st_rdev == rdev) {
+        return 0;
+    }
+
+failed:
+    ret = -ENOTTY;
+
+error:
+    if ((ret == -1) && errno) {
+        ret = -errno;
+    }
+    return ret;
+}
+
 /*
  * ashmem_create_region - creates a new ashmem region and returns the file
  * descriptor, or <0 on error
@@ -45,9 +127,9 @@ int ashmem_create_region(const char *name, size_t size)
 {
     int fd, ret;
 
-    fd = ret = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR));
+    fd = ret = __ashmem_open();
     if (ret < 0) {
-        goto error;
+        return ret;
     }
 
     if (name) {
@@ -77,7 +159,12 @@ error:
 
 int ashmem_set_prot_region(int fd, int prot)
 {
-    int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot));
+    int ret = __ashmem_is_ashmem(fd);
+    if (ret < 0) {
+        return ret;
+    }
+
+    ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot));
     if ((ret == -1) && errno) {
         return -errno;
     }
@@ -87,7 +174,13 @@ int ashmem_set_prot_region(int fd, int prot)
 int ashmem_pin_region(int fd, size_t offset, size_t len)
 {
     struct ashmem_pin pin = { offset, len };
-    int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_PIN, &pin));
+
+    int ret = __ashmem_is_ashmem(fd);
+    if (ret < 0) {
+        return ret;
+    }
+
+    ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_PIN, &pin));
     if ((ret == -1) && errno) {
         return -errno;
     }
@@ -97,7 +190,13 @@ int ashmem_pin_region(int fd, size_t offset, size_t len)
 int ashmem_unpin_region(int fd, size_t offset, size_t len)
 {
     struct ashmem_pin pin = { offset, len };
-    int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_UNPIN, &pin));
+
+    int ret = __ashmem_is_ashmem(fd);
+    if (ret < 0) {
+        return ret;
+    }
+
+    ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_UNPIN, &pin));
     if ((ret == -1) && errno) {
         return -errno;
     }
@@ -106,7 +205,12 @@ int ashmem_unpin_region(int fd, size_t offset, size_t len)
 
 int ashmem_get_size_region(int fd)
 {
-    int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL));
+    int ret = __ashmem_is_ashmem(fd);
+    if (ret < 0) {
+        return ret;
+    }
+
+    ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL));
     if ((ret == -1) && errno) {
         return -errno;
     }
