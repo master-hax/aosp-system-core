@@ -88,9 +88,10 @@ static int __ashmem_is_ashmem(int fd)
         if (rdev) {
             goto error;
         }
-        ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o ?:?",
+        LOG_ALWAYS_FATAL("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o ?:?",
           fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
           S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP);
+        /* NOTREACHED */
 
         errno = ENOTTY;
         return -1;
@@ -114,10 +115,11 @@ static int __ashmem_is_ashmem(int fd)
     }
 
 error:
-    ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o %d:%d",
+    LOG_ALWAYS_FATAL("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o %d:%d",
       fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
       S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP,
       major(rdev), minor(rdev));
+    /* NOTREACHED */
 
     errno = ENOTTY;
     return -1;
