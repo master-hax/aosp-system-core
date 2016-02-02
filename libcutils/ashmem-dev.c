@@ -19,10 +19,12 @@
  * ashmem-enabled kernel. See ashmem-sim.c for the "fake" tmp-based version,
  * used by the simulator.
  */
+#define LOG_TAG "ashmem"
 
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <stdatomic.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -32,11 +34,12 @@
 #include <linux/ashmem.h>
 
 #include <cutils/ashmem.h>
+#include <log/log.h>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
 
-/* ashmem identity */
-static dev_t __ashmem_rdev;
+/* ashmem dev_t identity, atomic to allow us to sniff value without lock */
+static atomic_int_fast64_t __ashmem_rdev;
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* logistics of getting file descriptor for ashmem */
@@ -63,7 +66,7 @@ static int __ashmem_open_locked()
         return -1;
     }
 
-    __ashmem_rdev = st.st_rdev;
+    atomic_store(&__ashmem_rdev, st.st_rdev);
     return fd;
 }
 
@@ -91,8 +94,8 @@ static int __ashmem_is_ashmem(int fd)
     }
 
     if (!S_ISCHR(st.st_mode) || !st.st_rdev) {
-        errno = ENOTTY;
-        return -1;
+        rdev = atomic_load_explicit(&__ashmem_rdev, memory_order_relaxed);
+        goto error;
     }
 
     pthread_mutex_lock(&__ashmem_lock);
@@ -115,6 +118,18 @@ static int __ashmem_is_ashmem(int fd)
 
     if (st.st_rdev == rdev) {
         return 0;
+    }
+
+error:
+    if (rdev) {
+        ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o %d:%d",
+          fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
+          S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP,
+          major(rdev), minor(rdev));
+    } else {
+        ALOGE("illegal fd=%d mode=0%o rdev=%d:%d expected 0%o",
+          fd, st.st_mode, major(st.st_rdev), minor(st.st_rdev),
+          S_IFCHR | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IRGRP);
     }
 
     errno = ENOTTY;
