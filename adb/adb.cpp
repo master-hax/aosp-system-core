@@ -854,6 +854,9 @@ int launch_server(int server_port)
     if (pid == 0) {
         // child side of the fork
 
+        // Set the process group so that ctrl-c in the spawning process doesn't kill us.
+        setpgrp();
+
         adb_close(fd[0]);
 
         char str_port[30];
