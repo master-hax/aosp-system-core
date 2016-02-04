@@ -749,4 +749,7 @@ static inline void disable_tcp_nagle(int fd) {
     adb_setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &off, sizeof(off));
 }
 
+// Returns -1 on error, 0 when timeout reached, 1 when the fd can be read or was disconnected.
+int wait_for_fd_activity(int fd, int timeout_ms, std::string* error);
+
 #endif /* _ADB_SYSDEPS_H */
