@@ -50,7 +50,7 @@ cc_library {
             // TODO: This is to work around b/24465209. Remove after root cause is fixed
             ldflags: ["-Wl,--hash-style=both"],
         },
-        windows: {
+        windows_x86: {
             srcs: ["uio.c"],
             enabled: true,
         },
