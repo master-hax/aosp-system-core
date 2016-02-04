@@ -1178,6 +1178,28 @@ fail:
     return -1;
 }
 
+int wait_for_fd_activity(int fd, int timeout_ms, std::string* error) {
+    FH fh = _fh_from_int(fd, __func__);
+    if (!fh || fh->clazz != &_fh_socket_class) {
+        D("wait_for_fd: invalid fd %d", fd);
+        errno = EBADF;
+        return -1;
+    }
+
+    int real_fd = fh->fh_socket;
+    struct timeval timeout = {.tv_sec = 0, .tv_usec = timeout_ms * 1000};
+    fd_set fdset;
+    FD_ZERO(&fdset);
+    FD_SET(real_fd, &fdset);
+    int rc = select(real_fd, &fdset, nullptr, nullptr, &timeout);
+    if (rc < 0) {
+        *error = android::base::StringPrintf(
+            "select failed: %s", android::base::SystemErrorCodeToString(WSAGetLastError()).c_str());
+        return -1;
+    }
+    return rc;
+}
+
 /**************************************************************************/
 /**************************************************************************/
 /*****                                                                *****/
