@@ -178,13 +178,22 @@ static const char* ProgramInvocationName() {
   return gProgramInvocationName->c_str();
 }
 
+/* pid_t is 64-bit on WIN64 */
+#ifndef PRIdPID
+#ifdef _WIN64
+#define PRIdPID "lld"
+#else
+#define PRIdPID "d"
+#endif
+#endif
+
 void StderrLogger(LogId, LogSeverity severity, const char*, const char* file,
                   unsigned int line, const char* message) {
   static const char log_characters[] = "VDIWEF";
   static_assert(arraysize(log_characters) - 1 == FATAL + 1,
                 "Mismatch in size of log_characters and values in LogSeverity");
   char severity_char = log_characters[severity];
-  fprintf(stderr, "%s %c %5d %5d %s:%u] %s\n", ProgramInvocationName(),
+  fprintf(stderr, "%s %c %5d %5" PRIdPID " %s:%u] %s\n", ProgramInvocationName(),
           severity_char, getpid(), GetThreadId(), file, line, message);
 }
 
