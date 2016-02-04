@@ -21,6 +21,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // We only build the affinity WAR code for Linux.
 #if defined(__linux__)
