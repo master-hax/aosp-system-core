@@ -350,6 +350,14 @@ static ssize_t fake_writev(int fd, const struct iovec *iov, int iovcnt) {
 #define writev fake_writev
 #endif
 
+/* pid_t is 64-bit on WIN64 */
+#ifndef PRIdPID
+#ifdef _WIN64
+#define PRIdPID "lld"
+#else
+#define PRIdPID "d"
+#endif
+#endif
 
 /*
  * Write a filtered log message to stderr.
@@ -405,13 +413,14 @@ static void showLog(LogState *state,
         break;
     case FORMAT_PROCESS:
         prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d) ", priChar, pid);
+            "%c(%5" PRIdPID ") ", priChar, pid);
         suffixLen = snprintf(suffixBuf, sizeof(suffixBuf),
             "  (%s)\n", tag);
         break;
     case FORMAT_THREAD:
         prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c(%5d:%5d) ", priChar, pid, tid);
+            "%c(%5" PRIdPID ":%5" PRIdPID ") ",
+            priChar, pid, tid);
         strcpy(suffixBuf, "\n"); suffixLen = 1;
         break;
     case FORMAT_RAW:
@@ -425,18 +434,19 @@ static void showLog(LogState *state,
         break;
     case FORMAT_THREADTIME:
         prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%s %5d %5d %c %-8s \n\t", timeBuf, pid, tid, priChar, tag);
+            "%s %5" PRIdPID " %5" PRIdPID " %c %-8s \n\t",
+            timeBuf, pid, tid, priChar, tag);
         strcpy(suffixBuf, "\n"); suffixLen = 1;
         break;
     case FORMAT_LONG:
         prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "[ %s %5d:%5d %c/%-8s ]\n",
+            "[ %s %5" PRIdPID ":%5" PRIdPID " %c/%-8s ]\n",
             timeBuf, pid, tid, priChar, tag);
         strcpy(suffixBuf, "\n\n"); suffixLen = 2;
         break;
     default:
         prefixLen = snprintf(prefixBuf, sizeof(prefixBuf),
-            "%c/%-8s(%5d): ", priChar, tag, pid);
+            "%c/%-8s(%5" PRIdPID "): ", priChar, tag, pid);
         strcpy(suffixBuf, "\n"); suffixLen = 1;
         break;
      }
