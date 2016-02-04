@@ -174,9 +174,6 @@ void *load_file(const char *fn, unsigned *_sz)
 /**************************************************************************/
 /**************************************************************************/
 
-/* used to emulate unix-domain socket pairs */
-typedef struct SocketPairRec_*  SocketPair;
-
 typedef struct FHRec_
 {
     FHClass    clazz;
@@ -185,7 +182,6 @@ typedef struct FHRec_
     union {
         HANDLE      handle;
         SOCKET      socket;
-        SocketPair  pair;
     } u;
 
     HANDLE    event;
@@ -197,7 +193,6 @@ typedef struct FHRec_
 
 #define  fh_handle  u.handle
 #define  fh_socket  u.socket
-#define  fh_pair    u.pair
 
 #define  WIN32_FH_BASE    100
 
@@ -1105,448 +1100,47 @@ int  adb_shutdown(int  fd)
     return 0;
 }
 
-/**************************************************************************/
-/**************************************************************************/
-/*****                                                                *****/
-/*****    emulated socketpairs                                       *****/
-/*****                                                                *****/
-/**************************************************************************/
-/**************************************************************************/
+// Emulate socketpair(2) by binding and connecting to a socket.
+int adb_socketpair(int sv[2]) {
+    std::string error;
+    // The client will search for emulators starting at DEFAULT_ADB_LOCAL_TRANSPORT_PORT (5555),
+    // incrementing by 2 up to ADB_LOCAL_TRANSPORT_MAX (64) times. Use the even ports so it doesn't
+    // try to connect to our temporary socketpair sockets.
+    for (int i = 0; i < 64; ++i) {
+        int port = 5556 + i * 2;
+        int server = network_loopback_server(port, SOCK_STREAM, &error);
+        if (server < 0) {
+            D("adb_socketpair: failed to create server: %s", error.c_str());
+            continue;
+        }
 
-/* we implement socketpairs directly in use space for the following reasons:
- *   - it avoids copying data from/to the Nt kernel
- *   - it allows us to implement fdevent hooks easily and cheaply, something
- *     that is not possible with standard Win32 pipes !!
- *
- * basically, we use two circular buffers, each one corresponding to a given
- * direction.
- *
- * each buffer is implemented as two regions:
- *
- *   region A which is (a_start,a_end)
- *   region B which is (0, b_end)  with b_end <= a_start
- *
- * an empty buffer has:  a_start = a_end = b_end = 0
- *
- * a_start is the pointer where we start reading data
- * a_end is the pointer where we start writing data, unless it is BUFFER_SIZE,
- * then you start writing at b_end
- *
- * the buffer is full when  b_end == a_start && a_end == BUFFER_SIZE
- *
- * there is room when b_end < a_start || a_end < BUFER_SIZE
- *
- * when reading, a_start is incremented, it a_start meets a_end, then
- * we do:  a_start = 0, a_end = b_end, b_end = 0, and keep going on..
- */
+        int client = network_loopback_client(port, SOCK_STREAM, &error);
+        if (client < 0) {
+            D("adb_socketpair: failed to connect client: %s", error.c_str());
+            adb_close(server);
+            return -1;
+        }
 
-#define  BIP_BUFFER_SIZE   4096
+        int accepted = adb_socket_accept(server, nullptr, nullptr);
+        if (accepted < 0) {
+            const DWORD err = WSAGetLastError();
+            D("adb_socketpair: failed to accept: %s",
+              android::base::SystemErrorCodeToString(err).c_str());
+            _socket_set_errno(err);
 
-#if 0
-#include <stdio.h>
-#  define  BIPD(x)      D x
-#  define  BIPDUMP   bip_dump_hex
-
-static void  bip_dump_hex( const unsigned char*  ptr, size_t  len )
-{
-    int  nn, len2 = len;
-
-    if (len2 > 8) len2 = 8;
-
-    for (nn = 0; nn < len2; nn++)
-        printf("%02x", ptr[nn]);
-    printf("  ");
-
-    for (nn = 0; nn < len2; nn++) {
-        int  c = ptr[nn];
-        if (c < 32 || c > 127)
-            c = '.';
-        printf("%c", c);
-    }
-    printf("\n");
-    fflush(stdout);
-}
-
-#else
-#  define  BIPD(x)        do {} while (0)
-#  define  BIPDUMP(p,l)   BIPD(p)
-#endif
-
-typedef struct BipBufferRec_
-{
-    int                a_start;
-    int                a_end;
-    int                b_end;
-    int                fdin;
-    int                fdout;
-    int                closed;
-    int                can_write;  /* boolean */
-    HANDLE             evt_write;  /* event signaled when one can write to a buffer  */
-    int                can_read;   /* boolean */
-    HANDLE             evt_read;   /* event signaled when one can read from a buffer */
-    CRITICAL_SECTION  lock;
-    unsigned char      buff[ BIP_BUFFER_SIZE ];
-
-} BipBufferRec, *BipBuffer;
-
-static void
-bip_buffer_init( BipBuffer  buffer )
-{
-    D( "bit_buffer_init %p", buffer );
-    buffer->a_start   = 0;
-    buffer->a_end     = 0;
-    buffer->b_end     = 0;
-    buffer->can_write = 1;
-    buffer->can_read  = 0;
-    buffer->fdin      = 0;
-    buffer->fdout     = 0;
-    buffer->closed    = 0;
-    buffer->evt_write = CreateEvent( NULL, TRUE, TRUE, NULL );
-    buffer->evt_read  = CreateEvent( NULL, TRUE, FALSE, NULL );
-    InitializeCriticalSection( &buffer->lock );
-}
-
-static void
-bip_buffer_close( BipBuffer  bip )
-{
-    bip->closed = 1;
-
-    if (!bip->can_read) {
-        SetEvent( bip->evt_read );
-    }
-    if (!bip->can_write) {
-        SetEvent( bip->evt_write );
-    }
-}
-
-static void
-bip_buffer_done( BipBuffer  bip )
-{
-    BIPD(( "bip_buffer_done: %d->%d", bip->fdin, bip->fdout ));
-    CloseHandle( bip->evt_read );
-    CloseHandle( bip->evt_write );
-    DeleteCriticalSection( &bip->lock );
-}
-
-static int
-bip_buffer_write( BipBuffer  bip, const void* src, int  len )
-{
-    int  avail, count = 0;
-
-    if (len <= 0)
+            adb_close(server);
+            adb_close(client);
+            return -1;
+        }
+        adb_close(server);
+        sv[0] = client;
+        sv[1] = accepted;
+        D("success!");
         return 0;
-
-    BIPD(( "bip_buffer_write: enter %d->%d len %d", bip->fdin, bip->fdout, len ));
-    BIPDUMP( src, len );
-
-    if (bip->closed) {
-        errno = EPIPE;
-        return -1;
     }
 
-    EnterCriticalSection( &bip->lock );
-
-    while (!bip->can_write) {
-        int  ret;
-        LeaveCriticalSection( &bip->lock );
-
-        if (bip->closed) {
-            errno = EPIPE;
-            return -1;
-        }
-        /* spinlocking here is probably unfair, but let's live with it */
-        ret = WaitForSingleObject( bip->evt_write, INFINITE );
-        if (ret != WAIT_OBJECT_0) {  /* buffer probably closed */
-            D( "bip_buffer_write: error %d->%d WaitForSingleObject returned %d, error %ld", bip->fdin, bip->fdout, ret, GetLastError() );
-            return 0;
-        }
-        if (bip->closed) {
-            errno = EPIPE;
-            return -1;
-        }
-        EnterCriticalSection( &bip->lock );
-    }
-
-    BIPD(( "bip_buffer_write: exec %d->%d len %d", bip->fdin, bip->fdout, len ));
-
-    avail = BIP_BUFFER_SIZE - bip->a_end;
-    if (avail > 0)
-    {
-        /* we can append to region A */
-        if (avail > len)
-            avail = len;
-
-        memcpy( bip->buff + bip->a_end, src, avail );
-        src   = (const char *)src + avail;
-        count += avail;
-        len   -= avail;
-
-        bip->a_end += avail;
-        if (bip->a_end == BIP_BUFFER_SIZE && bip->a_start == 0) {
-            bip->can_write = 0;
-            ResetEvent( bip->evt_write );
-            goto Exit;
-        }
-    }
-
-    if (len == 0)
-        goto Exit;
-
-    avail = bip->a_start - bip->b_end;
-    assert( avail > 0 );  /* since can_write is TRUE */
-
-    if (avail > len)
-        avail = len;
-
-    memcpy( bip->buff + bip->b_end, src, avail );
-    count += avail;
-    bip->b_end += avail;
-
-    if (bip->b_end == bip->a_start) {
-        bip->can_write = 0;
-        ResetEvent( bip->evt_write );
-    }
-
-Exit:
-    assert( count > 0 );
-
-    if ( !bip->can_read ) {
-        bip->can_read = 1;
-        SetEvent( bip->evt_read );
-    }
-
-    BIPD(( "bip_buffer_write: exit %d->%d count %d (as=%d ae=%d be=%d cw=%d cr=%d",
-            bip->fdin, bip->fdout, count, bip->a_start, bip->a_end, bip->b_end, bip->can_write, bip->can_read ));
-    LeaveCriticalSection( &bip->lock );
-
-    return count;
- }
-
-static int
-bip_buffer_read( BipBuffer  bip, void*  dst, int  len )
-{
-    int  avail, count = 0;
-
-    if (len <= 0)
-        return 0;
-
-    BIPD(( "bip_buffer_read: enter %d->%d len %d", bip->fdin, bip->fdout, len ));
-
-    EnterCriticalSection( &bip->lock );
-    while ( !bip->can_read )
-    {
-#if 0
-        LeaveCriticalSection( &bip->lock );
-        errno = EAGAIN;
-        return -1;
-#else
-        int  ret;
-        LeaveCriticalSection( &bip->lock );
-
-        if (bip->closed) {
-            errno = EPIPE;
-            return -1;
-        }
-
-        ret = WaitForSingleObject( bip->evt_read, INFINITE );
-        if (ret != WAIT_OBJECT_0) { /* probably closed buffer */
-            D( "bip_buffer_read: error %d->%d WaitForSingleObject returned %d, error %ld", bip->fdin, bip->fdout, ret, GetLastError());
-            return 0;
-        }
-        if (bip->closed) {
-            errno = EPIPE;
-            return -1;
-        }
-        EnterCriticalSection( &bip->lock );
-#endif
-    }
-
-    BIPD(( "bip_buffer_read: exec %d->%d len %d", bip->fdin, bip->fdout, len ));
-
-    avail = bip->a_end - bip->a_start;
-    assert( avail > 0 );  /* since can_read is TRUE */
-
-    if (avail > len)
-        avail = len;
-
-    memcpy( dst, bip->buff + bip->a_start, avail );
-    dst   = (char *)dst + avail;
-    count += avail;
-    len   -= avail;
-
-    bip->a_start += avail;
-    if (bip->a_start < bip->a_end)
-        goto Exit;
-
-    bip->a_start = 0;
-    bip->a_end   = bip->b_end;
-    bip->b_end   = 0;
-
-    avail = bip->a_end;
-    if (avail > 0) {
-        if (avail > len)
-            avail = len;
-        memcpy( dst, bip->buff, avail );
-        count += avail;
-        bip->a_start += avail;
-
-        if ( bip->a_start < bip->a_end )
-            goto Exit;
-
-        bip->a_start = bip->a_end = 0;
-    }
-
-    bip->can_read = 0;
-    ResetEvent( bip->evt_read );
-
-Exit:
-    assert( count > 0 );
-
-    if (!bip->can_write ) {
-        bip->can_write = 1;
-        SetEvent( bip->evt_write );
-    }
-
-    BIPDUMP( (const unsigned char*)dst - count, count );
-    BIPD(( "bip_buffer_read: exit %d->%d count %d (as=%d ae=%d be=%d cw=%d cr=%d",
-            bip->fdin, bip->fdout, count, bip->a_start, bip->a_end, bip->b_end, bip->can_write, bip->can_read ));
-    LeaveCriticalSection( &bip->lock );
-
-    return count;
-}
-
-typedef struct SocketPairRec_
-{
-    BipBufferRec  a2b_bip;
-    BipBufferRec  b2a_bip;
-    FH            a_fd;
-    int           used;
-
-} SocketPairRec;
-
-void _fh_socketpair_init( FH  f )
-{
-    f->fh_pair = NULL;
-}
-
-static int
-_fh_socketpair_close( FH  f )
-{
-    if ( f->fh_pair ) {
-        SocketPair  pair = f->fh_pair;
-
-        if ( f == pair->a_fd ) {
-            pair->a_fd = NULL;
-        }
-
-        bip_buffer_close( &pair->b2a_bip );
-        bip_buffer_close( &pair->a2b_bip );
-
-        if ( --pair->used == 0 ) {
-            bip_buffer_done( &pair->b2a_bip );
-            bip_buffer_done( &pair->a2b_bip );
-            free( pair );
-        }
-        f->fh_pair = NULL;
-    }
-    return 0;
-}
-
-static int
-_fh_socketpair_lseek( FH  f, int pos, int  origin )
-{
-    errno = ESPIPE;
+    errno = EADDRNOTAVAIL;
     return -1;
-}
-
-static int
-_fh_socketpair_read( FH  f, void* buf, int  len )
-{
-    SocketPair  pair = f->fh_pair;
-    BipBuffer   bip;
-
-    if (!pair)
-        return -1;
-
-    if ( f == pair->a_fd )
-        bip = &pair->b2a_bip;
-    else
-        bip = &pair->a2b_bip;
-
-    return bip_buffer_read( bip, buf, len );
-}
-
-static int
-_fh_socketpair_write( FH  f, const void*  buf, int  len )
-{
-    SocketPair  pair = f->fh_pair;
-    BipBuffer   bip;
-
-    if (!pair)
-        return -1;
-
-    if ( f == pair->a_fd )
-        bip = &pair->a2b_bip;
-    else
-        bip = &pair->b2a_bip;
-
-    return bip_buffer_write( bip, buf, len );
-}
-
-
-static void  _fh_socketpair_hook( FH  f, int  event, EventHook  hook );  /* forward */
-
-static const FHClassRec  _fh_socketpair_class =
-{
-    _fh_socketpair_init,
-    _fh_socketpair_close,
-    _fh_socketpair_lseek,
-    _fh_socketpair_read,
-    _fh_socketpair_write,
-    _fh_socketpair_hook
-};
-
-
-int  adb_socketpair(int sv[2]) {
-    SocketPair pair;
-
-    unique_fh fa(_fh_alloc(&_fh_socketpair_class));
-    if (!fa) {
-        return -1;
-    }
-    unique_fh fb(_fh_alloc(&_fh_socketpair_class));
-    if (!fb) {
-        return -1;
-    }
-
-    pair = reinterpret_cast<SocketPair>(malloc(sizeof(*pair)));
-    if (pair == NULL) {
-        D("adb_socketpair: not enough memory to allocate pipes" );
-        return -1;
-    }
-
-    bip_buffer_init( &pair->a2b_bip );
-    bip_buffer_init( &pair->b2a_bip );
-
-    fa->fh_pair = pair;
-    fb->fh_pair = pair;
-    pair->used  = 2;
-    pair->a_fd  = fa.get();
-
-    sv[0] = _fh_to_int(fa.get());
-    sv[1] = _fh_to_int(fb.get());
-
-    pair->a2b_bip.fdin  = sv[0];
-    pair->a2b_bip.fdout = sv[1];
-    pair->b2a_bip.fdin  = sv[1];
-    pair->b2a_bip.fdout = sv[0];
-
-    snprintf( fa->name, sizeof(fa->name), "%d(pair:%d)", sv[0], sv[1] );
-    snprintf( fb->name, sizeof(fb->name), "%d(pair:%d)", sv[1], sv[0] );
-    D( "adb_socketpair: returns (%d, %d)", sv[0], sv[1] );
-    fa.release();
-    fb.release();
-    return 0;
 }
 
 /**************************************************************************/
@@ -2397,59 +1991,6 @@ static void  _fh_socket_hook( FH  f, int  events, EventHook  hook )
     // TODO: check return value?
     _event_socket_start( hook );
 }
-
-/** SOCKETPAIR EVENT HOOKS
- **/
-
-static void  _event_socketpair_prepare( EventHook  hook )
-{
-    FH          fh   = hook->fh;
-    SocketPair  pair = fh->fh_pair;
-    BipBuffer   rbip = (pair->a_fd == fh) ? &pair->b2a_bip : &pair->a2b_bip;
-    BipBuffer   wbip = (pair->a_fd == fh) ? &pair->a2b_bip : &pair->b2a_bip;
-
-    if (hook->wanted & FDE_READ && rbip->can_read)
-        hook->ready |= FDE_READ;
-
-    if (hook->wanted & FDE_WRITE && wbip->can_write)
-        hook->ready |= FDE_WRITE;
- }
-
- static int  _event_socketpair_start( EventHook  hook )
- {
-    FH          fh   = hook->fh;
-    SocketPair  pair = fh->fh_pair;
-    BipBuffer   rbip = (pair->a_fd == fh) ? &pair->b2a_bip : &pair->a2b_bip;
-    BipBuffer   wbip = (pair->a_fd == fh) ? &pair->a2b_bip : &pair->b2a_bip;
-
-    if (hook->wanted == FDE_READ)
-        hook->h = rbip->evt_read;
-
-    else if (hook->wanted == FDE_WRITE)
-        hook->h = wbip->evt_write;
-
-    else {
-        D("_event_socketpair_start: can't handle FDE_READ+FDE_WRITE" );
-        return 0;
-    }
-    D( "_event_socketpair_start: hook %s for %x wanted=%x",
-       hook->fh->name, _fh_to_int(fh), hook->wanted);
-    return 1;
-}
-
-static int  _event_socketpair_peek( EventHook  hook )
-{
-    _event_socketpair_prepare( hook );
-    return hook->ready != 0;
-}
-
-static void  _fh_socketpair_hook( FH  fh, int  events, EventHook  hook )
-{
-    hook->prepare = _event_socketpair_prepare;
-    hook->start   = _event_socketpair_start;
-    hook->peek    = _event_socketpair_peek;
-}
-
 
 static adb_mutex_t g_console_output_buffer_lock;
 
