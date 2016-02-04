@@ -28,6 +28,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/ioctl.h>
+#include <sys/poll.h>
 #include <unistd.h>
 #endif
 
@@ -361,6 +362,23 @@ struct state_info {
     ConnectionState state;
 };
 
+// Returns -1 on error, 0 when timeout reached, 1 when fd is active
+static int wait_for_fd(int fd, int timeout_ms, std::string* error) {
+#if !defined(_WIN32)
+    struct pollfd pfd = {.fd = fd, .events = POLLRDHUP, .revents = 0};
+    int rc = poll(&pfd, 1, timeout_ms);
+    if (rc < 0) {
+        *error = android::base::StringPrintf("poll failed: %s", strerror(errno));
+        return -1;
+    }
+    return rc;
+#else
+    // ¯\_(ツ)_/¯
+    adb_sleep_ms(timeout_ms);
+    return 0;
+#endif
+}
+
 static void wait_for_state(int fd, void* data) {
     std::unique_ptr<state_info> sinfo(reinterpret_cast<state_info*>(data));
 
@@ -371,12 +389,20 @@ static void wait_for_state(int fd, void* data) {
         std::string error = "unknown error";
         const char* serial = sinfo->serial.length() ? sinfo->serial.c_str() : NULL;
         atransport* t = acquire_one_transport(sinfo->transport_type, serial, &is_ambiguous, &error);
-
         if (t != nullptr && t->connection_state == sinfo->state) {
             SendOkay(fd);
             break;
         } else if (!is_ambiguous) {
-            adb_sleep_ms(1000);
+            int rc = wait_for_fd(fd, 1000, &error);
+            if (rc < 0) {
+                SendFail(fd, error);
+                break;
+            } else if (rc > 0) {
+                // The other end of the socket is closed, probably because the other side was
+                // terminated, bail out.
+                break;
+            }
+
             // Try again...
         } else {
             SendFail(fd, error);
