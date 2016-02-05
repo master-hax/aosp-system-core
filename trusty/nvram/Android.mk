@@ -16,6 +16,19 @@
 
 LOCAL_PATH := $(call my-dir)
 
+# nvram.trusty is the Trusty NVRAM HAL module.
+include $(CLEAR_VARS)
+LOCAL_MODULE := nvram.trusty
+LOCAL_MODULE_RELATIVE_PATH := hw
+LOCAL_SRC_FILES := \
+	module.c \
+	nvram_ipc.cpp \
+	trusty_nvram.cpp
+LOCAL_MODULE_TAGS := optional
+LOCAL_CFLAGS := -Wall -Werror -Wextra -fvisibility=hidden
+LOCAL_SHARED_LIBRARIES := libbase liblog libtrusty libnvram
+include $(BUILD_SHARED_LIBRARY)
+
 # nvram_client implements a command-line utility to access the
 # access-controlled NVRAM Trusty app.
 include $(CLEAR_VARS)
