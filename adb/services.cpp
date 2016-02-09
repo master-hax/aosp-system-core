@@ -257,7 +257,7 @@ static int create_service_thread(void (*func)(int, void *), void *cookie)
     sti->cookie = cookie;
     sti->fd = s[1];
 
-    if (!adb_thread_create(service_bootstrap_func, sti)) {
+    if (!adb_thread_create_detached(service_bootstrap_func, sti)) {
         free(sti);
         adb_close(s[0]);
         adb_close(s[1]);
