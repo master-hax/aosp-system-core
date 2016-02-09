@@ -552,11 +552,11 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
 
         fdevent_set(&(t->transport_fde), FDE_READ);
 
-        if (!adb_thread_create(write_transport_thread, t)) {
+        if (!adb_thread_create_detached(write_transport_thread, t)) {
             fatal_errno("cannot create write_transport thread");
         }
 
-        if (!adb_thread_create(read_transport_thread, t)) {
+        if (!adb_thread_create_detached(read_transport_thread, t)) {
             fatal_errno("cannot create read_transport thread");
         }
     }

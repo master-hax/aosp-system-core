@@ -30,6 +30,7 @@
 #include <vector>
 
 // Include this before open/unlink are defined as macros below.
+#include <android-base/errors.h>
 #include <android-base/utf8.h>
 
 /*
@@ -114,13 +115,61 @@ static __inline__ void  adb_mutex_unlock( adb_mutex_t*  lock )
     LeaveCriticalSection( lock );
 }
 
-typedef  void*  (*adb_thread_func_t)(void*  arg);
+typedef void* (*adb_thread_func_t)(void* arg);
+typedef HANDLE adb_thread_t;
 
-typedef  void (*win_thread_func_t)(void*  arg);
+struct win_thread_args {
+    adb_thread_func_t func;
+    void* arg;
+};
 
-static __inline__ bool adb_thread_create(adb_thread_func_t func, void* arg) {
-    uintptr_t tid = _beginthread((win_thread_func_t)func, 0, arg);
-    return (tid != static_cast<uintptr_t>(-1L));
+static unsigned __stdcall win_thread_wrapper(void* args) {
+    auto* data = reinterpret_cast<win_thread_args*>(args);
+    void* result = data->func(data->arg);
+    delete data;
+    return reinterpret_cast<unsigned>(result);
+}
+
+static __inline__ bool adb_thread_create(adb_thread_t* thread, adb_thread_func_t func, void* arg) {
+    win_thread_args* args = new win_thread_args{.func = func, .arg = arg};
+    uintptr_t tid = _beginthreadex(nullptr, 0, win_thread_wrapper, args, 0, nullptr);
+    if (tid != static_cast<uintptr_t>(0)) {
+        *thread = reinterpret_cast<HANDLE>(tid);
+        return true;
+    }
+    return false;
+}
+
+static __inline__ bool adb_thread_create_detached(adb_thread_func_t func, void* arg) {
+    adb_thread_t thread;
+    if (!adb_thread_create(&thread, func, arg)) {
+        return false;
+    }
+    CloseHandle(thread);
+    return true;
+}
+
+static __inline__ bool adb_thread_join(adb_thread_t thread) {
+    switch (WaitForSingleObject(thread, INFINITE)) {
+        case WAIT_OBJECT_0:
+            CloseHandle(thread);
+            return true;
+
+        case WAIT_FAILED:
+            fprintf(stderr, "adb_thread_join failed: %s\n",
+                    android::base::SystemErrorCodeToString(GetLastError()).c_str());
+            break;
+
+        default:
+            break;
+    }
+
+    return false;
+}
+
+static __inline__ bool adb_thread_detach(adb_thread_t thread) {
+    CloseHandle(thread);
+    return true;
 }
 
 static __inline__ int adb_thread_setname(const std::string& name) {
@@ -658,14 +707,38 @@ static __inline__ int  adb_socket_accept(int  serverfd, struct sockaddr*  addr, 
 
 typedef void*  (*adb_thread_func_t)( void*  arg );
 
-static __inline__ bool adb_thread_create(adb_thread_func_t start, void* arg) {
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+typedef pthread_t adb_thread_t;
 
-    pthread_t thread;
-    errno = pthread_create(&thread, &attr, start, arg);
-    return (errno == 0);
+static __inline__ bool adb_thread_create(adb_thread_t* thread, adb_thread_func_t start, void* arg) {
+    pthread_t temp;
+    errno = pthread_create(&temp, nullptr, start, arg);
+    if (errno == 0) {
+        *thread = temp;
+        return true;
+    }
+    return false;
+}
+
+static __inline__ bool adb_thread_create_detached(adb_thread_func_t start, void* arg) {
+    adb_thread_t thread;
+    if (!adb_thread_create(&thread, start, arg)) {
+        return false;
+    }
+    if (pthread_detach(thread) != 0) {
+        fprintf(stderr, "error: failed to detach thread: %s", strerror(errno));
+        abort();
+    }
+    return true;
+}
+
+static __inline__ bool adb_thread_join(adb_thread_t thread) {
+    errno = pthread_join(thread, nullptr);
+    return errno == 0;
+}
+
+static __inline__ bool adb_thread_detach(adb_thread_t thread) {
+    errno = pthread_detach(thread);
+    return errno == 0;
 }
 
 static __inline__ int adb_thread_setname(const std::string& name) {

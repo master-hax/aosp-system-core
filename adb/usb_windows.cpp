@@ -260,10 +260,10 @@ static void* _power_notification_thread(void* unused) {
 }
 
 void usb_init() {
-  if (!adb_thread_create(device_poll_thread, nullptr)) {
+  if (!adb_thread_create_detached(device_poll_thread, nullptr)) {
     fatal_errno("cannot create device poll thread");
   }
-  if (!adb_thread_create(_power_notification_thread, nullptr)) {
+  if (!adb_thread_create_detached(_power_notification_thread, nullptr)) {
     fatal_errno("cannot create power notification thread");
   }
 }
