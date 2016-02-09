@@ -591,7 +591,7 @@ void usb_init() {
     actions.sa_handler = [](int) {};
     sigaction(SIGALRM, &actions, nullptr);
 
-    if (!adb_thread_create(device_poll_thread, nullptr)) {
+    if (!adb_thread_create_detached(device_poll_thread, nullptr)) {
         fatal_errno("cannot create device_poll thread");
     }
 }

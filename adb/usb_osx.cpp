@@ -438,7 +438,7 @@ void usb_init() {
         adb_mutex_init(&start_lock, NULL);
         adb_cond_init(&start_cond, NULL);
 
-        if (!adb_thread_create(RunLoopThread, nullptr)) {
+        if (!adb_thread_create_detached(RunLoopThread, nullptr)) {
             fatal_errno("cannot create RunLoop thread");
         }
 

@@ -420,7 +420,7 @@ bool Subprocess::ForkAndExec(std::string* error) {
         }
     }
 
-    if (!adb_thread_create(ThreadHandler, this)) {
+    if (!adb_thread_create_detached(ThreadHandler, this)) {
         *error =
             android::base::StringPrintf("failed to create subprocess thread: %s", strerror(errno));
         kill(pid_, SIGKILL);
