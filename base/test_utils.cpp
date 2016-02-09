@@ -72,8 +72,8 @@ static std::string GetSystemTempDir() {
 #endif
 }
 
-TemporaryFile::TemporaryFile() {
-  init(GetSystemTempDir());
+TemporaryFile::TemporaryFile(const std::string& template_pattern) {
+  init(GetSystemTempDir(), template_pattern);
 }
 
 TemporaryFile::~TemporaryFile() {
@@ -81,9 +81,9 @@ TemporaryFile::~TemporaryFile() {
   unlink(path);
 }
 
-void TemporaryFile::init(const std::string& tmp_dir) {
-  snprintf(path, sizeof(path), "%s%cTemporaryFile-XXXXXX", tmp_dir.c_str(),
-           OS_PATH_SEPARATOR);
+void TemporaryFile::init(const std::string& tmp_dir, const std::string& template_pattern) {
+  snprintf(path, sizeof(path), "%s%c%s", tmp_dir.c_str(),
+           OS_PATH_SEPARATOR, template_pattern.c_str());
   fd = mkstemp(path);
 }
 
