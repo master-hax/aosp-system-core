@@ -23,14 +23,14 @@
 
 class TemporaryFile {
  public:
-  TemporaryFile();
+  TemporaryFile(const std::string& template_pattern = "TemporaryFile-XXXXXX");
   ~TemporaryFile();
 
   int fd;
   char path[1024];
 
  private:
-  void init(const std::string& tmp_dir);
+  void init(const std::string& tmp_dir, const std::string& template_pattern);
 
   DISALLOW_COPY_AND_ASSIGN(TemporaryFile);
 };
