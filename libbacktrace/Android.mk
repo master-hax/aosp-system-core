@@ -71,14 +71,22 @@ include $(LOCAL_PATH)/Android.build.mk
 build_type := host
 libbacktrace_multilib := both
 include $(LOCAL_PATH)/Android.build.mk
+
+libbacktrace_shared_libraries :=
+
 libbacktrace_static_libraries := \
 	libbase \
 	liblog \
 	libunwind \
+	liblzma \
 
+module := libbacktrace
+build_type := target
 build_target := STATIC_LIBRARY
 include $(LOCAL_PATH)/Android.build.mk
-libbacktrace_static_libraries :=
+build_type := host
+libbacktrace_multilib := both
+include $(LOCAL_PATH)/Android.build.mk
 
 #-------------------------------------------------------------------------
 # The libbacktrace_offline shared library.
@@ -95,9 +103,22 @@ libbacktrace_offline_shared_libraries := \
 libbacktrace_offline_shared_libraries_target := \
 	libLLVM \
 
-# Use static llvm libraries on host to remove dependency on 32-bit llvm shared library
-# which is not included in the prebuilt.
-libbacktrace_offline_static_libraries_host := \
+module := libbacktrace_offline
+build_type := target
+build_target := SHARED_LIBRARIY
+include $(LOCAL_PATH)/Android.build.mk
+build_type := host
+libbacktrace_multilib := both
+include $(LOCAL_PATH)/Android.build.mk
+
+libbacktrace_offline_shared_libraries :=
+libbacktrace_offline_static_libraries := \
+	libbacktrace \
+	libbase \
+	libcutils \
+	liblog \
+	libunwind \
+	liblzma \
 	libLLVMObject \
 	libLLVMBitReader \
 	libLLVMMC \
@@ -106,12 +127,8 @@ libbacktrace_offline_static_libraries_host := \
 	libLLVMSupport \
 
 module := libbacktrace_offline
-module_tag := optional
 build_type := target
-build_target := SHARED_LIBRARY
-include $(LOCAL_PATH)/Android.build.mk
-build_type := host
-libbacktrace_multilib := both
+build_target := STATIC_LIBRARY
 include $(LOCAL_PATH)/Android.build.mk
 
 #-------------------------------------------------------------------------
