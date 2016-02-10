@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <atomic>
 
+#include "adb_io.h"
 #include "sysdeps.h"
 
 static void* increment_atomic_int(void* c) {
@@ -56,4 +57,19 @@ TEST(sysdeps_thread, join) {
     }
 
     ASSERT_EQ(500, counter.load());
+}
+
+TEST(sysdeps_socketpair, smoke) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    ASSERT_TRUE(WriteFdExactly(fds[0], "foo", 4));
+    ASSERT_TRUE(WriteFdExactly(fds[1], "bar", 4));
+
+    char buf[4];
+    ASSERT_TRUE(ReadFdExactly(fds[1], buf, 4));
+    ASSERT_STREQ(buf, "foo");
+    ASSERT_TRUE(ReadFdExactly(fds[0], buf, 4));
+    ASSERT_STREQ(buf, "bar");
+    adb_close(fds[0]);
+    adb_close(fds[1]);
 }

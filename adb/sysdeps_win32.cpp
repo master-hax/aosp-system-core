@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include <algorithm>
+#include <atomic>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -104,7 +105,7 @@ void handle_deleter::operator()(HANDLE h) {
     // only need to check for INVALID_HANDLE_VALUE.
     if (h != INVALID_HANDLE_VALUE) {
         if (!CloseHandle(h)) {
-            D("CloseHandle(%p) failed: %s", h,
+            printf("CloseHandle(%p) failed: %s", h,
               android::base::SystemErrorCodeToString(GetLastError()).c_str());
         }
     }
@@ -2231,11 +2232,18 @@ void fdevent_del(fdevent *fde, unsigned events)
         fde, (fde->state & FDE_EVENTMASK) & (~(events & FDE_EVENTMASK)));
 }
 
+static std::atomic<bool> terminate_loop(false);
+
 void fdevent_loop()
 {
     fdevent *fde;
 
     for(;;) {
+        if (terminate_loop) {
+            terminate_loop = false;
+            return;
+        }
+
 #if DEBUG
         fprintf(stderr,"--- ---- waiting for events\n");
 #endif
@@ -2250,6 +2258,31 @@ void fdevent_loop()
         }
     }
 }
+
+void fdevent_terminate_loop() {
+    terminate_loop = true;
+}
+
+void fdevent_reset() {
+    // Close all of our FDs, so that tests failures due to fd exhaustion don't spread.
+    for (int i = 0; i < WIN32_MAX_FHS; ++i) {
+        adb_close(i);
+    }
+
+    win32_looper.hooks = nullptr;
+}
+
+size_t fdevent_installed_count() {
+    size_t count = 0;
+    auto hook = win32_looper.hooks;
+    while (hook) {
+        ++count;
+        hook = hook->next;
+    }
+
+    return count;
+}
+
 
 /**  FILE EVENT HOOKS
  **/
