@@ -72,6 +72,7 @@ struct PollNode {
 // That's why we don't need a lock for fdevent.
 static auto& g_poll_node_map = *new std::unordered_map<int, PollNode>();
 static auto& g_pending_list = *new std::list<fdevent*>();
+static bool terminate_loop;
 static bool main_thread_valid;
 static pthread_t main_thread;
 
@@ -363,6 +364,11 @@ void fdevent_loop()
 #endif // !ADB_HOST
 
     while (true) {
+        if (terminate_loop) {
+            terminate_loop = false;
+            return;
+        }
+
         D("--- --- waiting for events");
 
         fdevent_process();
@@ -373,6 +379,10 @@ void fdevent_loop()
             fdevent_call_fdfunc(fde);
         }
     }
+}
+
+void fdevent_terminate_loop() {
+    terminate_loop = true;
 }
 
 size_t fdevent_installed_count() {
