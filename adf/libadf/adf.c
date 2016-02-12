@@ -20,6 +20,7 @@
 #include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -266,6 +267,9 @@ static ssize_t adf_interfaces_filter(struct adf_device *dev,
     adf_id_t *ids_ret = NULL;
 
     size_t i;
+    if (n_in > 0 && !in) {
+        abort();
+    }
     for (i = 0; i < n_in; i++) {
         int fd = adf_interface_open(dev, in[i], O_RDONLY);
         if (fd < 0) {
@@ -774,8 +778,10 @@ int adf_find_simple_post_configuration(struct adf_device *dev,
 
     if (n_intfs < 0)
         return n_intfs;
-    else if (!n_intfs)
+    else if (!n_intfs) {
+        free(intfs);  /* suppress static analyzer false positive warning. */
         return -ENODEV;
+    }
 
     adf_id_t *primary_intfs;
     ssize_t n_primary_intfs = adf_interfaces_filter_by_flag(dev,
