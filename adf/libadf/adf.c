@@ -774,8 +774,16 @@ int adf_find_simple_post_configuration(struct adf_device *dev,
 
     if (n_intfs < 0)
         return n_intfs;
-    else if (!n_intfs)
+    else if (!n_intfs) {
+#if __clang_analyzer__
+        /* When n_intfs is 0, intfs must be NULL,
+         * but clang static analyzer does not know that.
+         * Adding a call to free and supress the warning.
+         */
+        free(intfs);
+#endif
         return -ENODEV;
+    }
 
     adf_id_t *primary_intfs;
     ssize_t n_primary_intfs = adf_interfaces_filter_by_flag(dev,
