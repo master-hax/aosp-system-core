@@ -31,11 +31,11 @@ libziparchive_common_c_flags := \
     -Werror \
     -Wall \
 
-# Incorrectly warns when C++11 empty brace {} initializer is used.
+# Our headers include <zlib.h> which includes old-style casts.
+libziparchive_common_cpp_flags += -Wno-old-style-cast
+# GCC incorrectly warns when C++11 empty brace {} initializer is used.
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61489
-libziparchive_common_cpp_flags := \
-    -Wold-style-cast \
-    -Wno-missing-field-initializers \
+libziparchive_common_cpp_flags += -Wno-missing-field-initializers
 
 include $(CLEAR_VARS)
 LOCAL_CPP_EXTENSION := .cc
@@ -45,6 +45,8 @@ LOCAL_SHARED_LIBRARIES := libutils libbase
 LOCAL_MODULE:= libziparchive
 LOCAL_CFLAGS := $(libziparchive_common_c_flags)
 LOCAL_CPPFLAGS := $(libziparchive_common_cpp_flags)
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -58,6 +60,8 @@ LOCAL_CPPFLAGS := $(libziparchive_common_cpp_flags)
 
 LOCAL_MULTILIB := both
 LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -69,6 +73,8 @@ LOCAL_MODULE:= libziparchive-host
 LOCAL_CFLAGS := $(libziparchive_common_c_flags)
 LOCAL_CPPFLAGS := $(libziparchive_common_cpp_flags)
 LOCAL_MULTILIB := both
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 include $(BUILD_HOST_SHARED_LIBRARY)
 
 # Tests.
