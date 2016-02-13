@@ -43,7 +43,7 @@ string ElideMiddle(const string& str, size_t width) {
   return result;
 }
 
-LinePrinter::LinePrinter() : have_blank_line_(true) {
+LinePrinter::LinePrinter() : current_line_length_(0) {
 #ifndef _WIN32
   const char* term = getenv("TERM");
   smart_terminal_ = unix_isatty(1) && term && string(term) != "dumb";
@@ -66,15 +66,17 @@ static void Out(const std::string& s) {
 }
 
 void LinePrinter::Print(string to_print, LineType type) {
-  if (!smart_terminal_) {
-    Out(to_print + "\n");
-    return;
-  }
-
   // Print over previous line, if any.
   // On Windows, calling a C library function writing to stdout also handles
   // pausing the executable when the "Pause" key or Ctrl-S is pressed.
   printf("\r");
+
+  if (!smart_terminal_) {
+    Out(to_print);
+    fflush(stdout);
+    current_line_length_ = to_print.size();
+    return;
+  }
 
   if (type == INFO) {
 #ifdef _WIN32
@@ -114,14 +116,17 @@ void LinePrinter::Print(string to_print, LineType type) {
     fflush(stdout);
 #endif
 
-    have_blank_line_ = false;
+    current_line_length_ = to_print.size();
   } else {
     Out(to_print);
     Out("\n");
-    have_blank_line_ = true;
+    current_line_length_ = 0;
   }
 }
 
 void LinePrinter::KeepInfoLine() {
-  if (!have_blank_line_) Out("\n");
+  if (current_line_length_ > 0) {
+    Out("\n");
+    current_line_length_ = 0;
+  }
 }
