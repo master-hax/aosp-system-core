@@ -329,3 +329,78 @@ TEST_F(BvbToolTest, Info)
       "    large_blob: (65536 bytes)\n",
       info_data);
 }
+
+TEST_F(BvbToolTest, ImageHashes) {
+  // test/dummy_rootfs.bin is a 1,049,600 byte (1025 Kib) file.
+  EXPECT_COMMAND(
+      0, "cp test/dummy_rootfs.bin %s/rootfs.bin", testdir_.value().c_str());
+  EXPECT_COMMAND(
+      0,
+      "./bvbtool add_image_hashes --salt d00df00d  --image %s/rootfs.bin",
+      testdir_.value().c_str());
+
+  // We don't want to impose the requirement of having the
+  // veritysetup(1) command available on builders but leave it here so
+  // it can be manually enabled when making changes.
+  //
+  // (The fact that we end up with the correct root hash and tree size
+  // demonstrates correctness sufficiently well.)
+  if (false) {
+    EXPECT_COMMAND(0,
+                   "veritysetup --no-superblock --format=1 --hash=sha1 "
+                   "--data-block-size=4096 --hash-block-size=4096 "
+                   "--salt=d00df00d "
+                   "--data-blocks=257 "
+                   "--hash-offset=1052672 "
+                   "verify "
+                   "%s/rootfs.bin %s/rootfs.bin "
+                   "d0e3b9865f45fc66c1a64796dae1666647103f72",
+                   testdir_.value().c_str(),
+                   testdir_.value().c_str());
+  }
+
+  base::FilePath info_path = testdir_.Append("info_output.txt");
+  EXPECT_COMMAND(
+      0,
+      "./bvbtool info_image_hashes --image %s/rootfs.bin --output %s",
+      testdir_.value().c_str(),
+      info_path.value().c_str());
+
+  std::string info_data;
+  ASSERT_TRUE(base::ReadFileToString(info_path, &info_data));
+
+  // Note that image size is rounded up to block size (4096).
+  ASSERT_EQ(
+      "Footer version:        1.0\n"
+      "Version of dm-verity:  1\n"
+      "Image Size:            1052672 bytes\n"
+      "Tree Offset:           1052672\n"
+      "Tree Size:             16384 bytes\n"
+      "Data Block Size:       4096 bytes\n"
+      "Hash Block Size:       4096 bytes\n"
+      "Hash Algorithm:        sha1\n"
+      "Salt:                  d00df00d\n"
+      "Root Hash:             d0e3b9865f45fc66c1a64796dae1666647103f72\n",
+      info_data);
+
+  // Check that bvbtool injects the directives for setting up the
+  // rootfs for the given integrity-checked file system BEFORE the
+  // user-supplied command-line.
+  GenerateBootImage("SHA256_RSA2048",
+                    "some_option=42",
+                    0,
+                    base::FilePath("test/testkey_rsa2048.pem"),
+                    base::StringPrintf("--rootfs_with_hashes %s/rootfs.bin",
+                                       testdir_.value().c_str()));
+  BvbBootImageHeader h;
+  bvb_boot_image_header_to_host_byte_order(
+      reinterpret_cast<BvbBootImageHeader*>(boot_image_.data()), &h);
+
+  EXPECT_EQ(
+      "dm=\"1 vroot none ro 1,"
+      "0 2056 verity 1 PARTUUID=$(ANDROID_SYSTEM_PARTUUID) "
+      "PARTUUID=$(ANDROID_SYSTEM_PARTUUID) 4096 4096 257 257 sha1 "
+      "d0e3b9865f45fc66c1a64796dae1666647103f72 d00df00d\" "
+      "some_option=42",
+      std::string(reinterpret_cast<const char*>(h.kernel_cmdline)));
+}
