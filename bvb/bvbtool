@@ -157,6 +157,19 @@ def round_to_multiple(number, size):
     return number + size - remainder
 
 
+def round_to_pow2(number):
+    """Rounds a number up to the next power of 2.
+
+    Args:
+        number: The number to round up.
+
+    Returns:
+        If |number| is already a power of 2 then |number| is
+        returned. Otherwise the smallest power of 2 greater than
+         |number| is returned.
+    """
+    return 2**((number - 1).bit_length())
+
 def write_long(output, num_bits, value):
     """Writes a long to an output stream using a given amount of bits.
 
@@ -301,6 +314,109 @@ def add_property(encoded_props, key, value):
     for n in range(padding_bytes):
         encoded_props.append(0)
 
+class BvbIntegrityFooter(object):
+    """A class for parsing and writing Integrity Footers.
+
+    Integrity footers are stored at the end of filesystems where
+    dm-verity hashes has been added with the 'add_image_hashes'
+    command.
+
+    Attributes:
+        magic: Magic for identifying the footer, see |MAGIC|.
+        version_major: The major version of bvbtool that wrote the footer.
+        version_minor: The minor version of bvbtool that wrote the footer.
+        dm_verity_version: dm-verity version used.
+        image_size: Size of the image, after rounding up to |block_size|.
+        tree_offset: Offset of the hash tree in the file.
+        tree_size: Size of the tree.
+        data_block_size: Data block size
+        hash_block_size: Hash block size
+        hash_algorithm: Hash algorithm used.
+        salt_hex: Salt used, as a hex-string
+        root_hash_hex: Root hash, as a hex-string.
+    """
+
+    MAGIC = 'BVBi'
+    SIZE = 4096
+    RESERVED = 1968
+    FORMAT_STRING = (
+        '!4s2L'               # magic, 2 x version
+        'L'                   # dm-verity version used
+        'Q'                   # image size (bytes)
+        'Q'                   # tree offset (bytes)
+        'Q'                   # tree size (bytes)
+        'L'                   # data block size (bytes)
+        'L'                   # hash block size (bytes)
+        '32s'                 # hash algorithm used
+        '1024s'               # salt, as a hex string
+        '1024s' +             # root hash, as a hex string
+        str(RESERVED) + 'x')  # padding for reserved bytes
+
+    def __init__(self, data = None):
+        """Initializes a new footer object.
+
+        Arguments:
+            data: If not None, must be a bytearray of size 4096.
+
+        Raises:
+            Exception: If the given data is malformed.
+        """
+        assert(struct.calcsize(self.FORMAT_STRING) == self.SIZE)
+
+        if data:
+            (self.magic,
+             self.version_major,
+             self.version_minor,
+             self.dm_verity_version,
+             self.image_size,
+             self.tree_offset,
+             self.tree_size,
+             self.data_block_size,
+             self.hash_block_size,
+             self.hash_algorithm,
+             self.salt_hex,
+             self.root_hash_hex) = struct.unpack(self.FORMAT_STRING, data)
+            if self.magic != self.MAGIC:
+                raise Exception('Given data does not look like a Brillo integrity footer.')
+            # Nuke NUL-bytes at the end.
+            self.hash_algorithm = self.hash_algorithm.split('\0', 1)[0]
+            self.salt_hex = self.salt_hex.split('\0', 1)[0]
+            self.root_hash_hex = self.root_hash_hex.split('\0', 1)[0]
+        else:
+            self.magic = self.MAGIC
+            self.version_major = BVB_VERSION_MAJOR
+            self.version_minor = BVB_VERSION_MINOR
+            self.dm_verity_version = 0
+            self.image_size = 0
+            self.tree_offset = 0
+            self.tree_size = 0
+            self.data_block_size = 0
+            self.hash_block_size = 0
+            self.hash_algorithm = ''
+            self.salt_hex = ''
+            self.root_hash_hex = ''
+
+
+    def save(self, output):
+        """Serializes the header (4096 bytes) to disk.
+
+        Arguments:
+            output: The object to write the output to.
+        """
+        output.write(struct.pack(self.FORMAT_STRING,
+                                 self.magic,
+                                 self.version_major,
+                                 self.version_minor,
+                                 self.dm_verity_version,
+                                 self.image_size,
+                                 self.tree_offset,
+                                 self.tree_size,
+                                 self.data_block_size,
+                                 self.hash_block_size,
+                                 self.hash_algorithm,
+                                 self.salt_hex,
+                                 self.root_hash_hex))
+
 
 class BvbHeader(object):
     """A class for parsing and writing Brillo Verified Boot headers.
@@ -442,6 +558,8 @@ Commands:
    make_boot_image      Make boot image.
    sign_boot_image      Sign boot image.
    info_boot_image      Show information about boot image.
+   add_image_hashes     Add hashes for integrity-checking to image.
+   info_image_hashes    Show information about integrity-checking hashes.
    extract_public_key   Extract public key.
 
 """)
@@ -529,6 +647,8 @@ Commands:
                             type=parse_number, default=0x11000000)
         parser.add_argument('--kernel_cmdline', help='Kernel command-line',
                             default='')
+        parser.add_argument('--rootfs_with_hashes', help='Setup dm-verity for given rootfs',
+                            type=argparse.FileType('rb'))
         parser.add_argument('--rollback_index', help='Rollback Index',
                             type=parse_number, default=0)
         parser.add_argument('--prop', help='Add property',
@@ -587,6 +707,30 @@ Commands:
         h.kernel_address = args.kernel_address
         h.initrd_address = args.initrd_address
         h.kernel_cmdline = args.kernel_cmdline
+
+        # Setup dm-verity, if requested.
+        if args.rootfs_with_hashes:
+            args.rootfs_with_hashes.seek(0, os.SEEK_END)
+            image_size = args.rootfs_with_hashes.tell()
+            args.rootfs_with_hashes.seek(image_size - BvbIntegrityFooter.SIZE)
+            f = BvbIntegrityFooter(args.rootfs_with_hashes.read(BvbIntegrityFooter.SIZE))
+            c = 'dm="1 vroot none ro 1,'
+            c += '0 '                                       # start
+            c += '%d ' % (f.image_size/512)                 # size (# sectors)
+            c += 'verity %d ' % f.dm_verity_version         # type and version
+            c += 'PARTUUID=$(ANDROID_SYSTEM_PARTUUID) '     # data_dev
+            c += 'PARTUUID=$(ANDROID_SYSTEM_PARTUUID) '     # hash_dev
+            c += '%d ' % f.data_block_size                  # data_block
+            c += '%d ' % f.hash_block_size                  # hash_block
+            c += '%d ' % (f.image_size / f.data_block_size) # #blocks
+            c += '%d ' % (f.image_size / f.data_block_size) # hash_offset
+            c += '%s ' % f.hash_algorithm                   # hash_alg
+            c += '%s ' % f.root_hash_hex                    # root_digest
+            c += '%s'  % f.salt_hex                         # salt
+            c += '"'
+            if len(h.kernel_cmdline) > 0:
+                c += ' '
+            h.kernel_cmdline = c + h.kernel_cmdline
 
         # Save the header.
         h.save(args.output)
@@ -744,6 +888,171 @@ Commands:
         key = Crypto.PublicKey.RSA.importKey(open(args.key).read())
         write_rsa_key(args.output, key)
 
+
+    def info_image_hashes(self):
+        """Implements the 'info_boot_image' command."""
+        parser = argparse.ArgumentParser(
+            prog='bvbtool info_image_hashes',
+            description='Show information about integrity-checking hashes.')
+        parser.add_argument('--image', help='Brillo boot image to use',
+                            type=argparse.FileType('rb'), required=True)
+        parser.add_argument('--output', help='Write info to file',
+                            type=argparse.FileType('wt'), default=sys.stdout)
+        args = parser.parse_args(sys.argv[2:])
+
+        args.image.seek(0, os.SEEK_END)
+        image_size = args.image.tell()
+        args.image.seek(image_size - BvbIntegrityFooter.SIZE)
+        footer = BvbIntegrityFooter(args.image.read(BvbIntegrityFooter.SIZE))
+
+        o = args.output
+        o.write('Footer version:        %d.%d\n' % (footer.version_major, footer.version_minor))
+        o.write('Version of dm-verity:  %d\n' % footer.dm_verity_version)
+        o.write('Image Size:            %d bytes\n' % footer.image_size)
+        o.write('Tree Offset:           %d\n' % footer.tree_offset)
+        o.write('Tree Size:             %d bytes\n' % footer.tree_size)
+        o.write('Data Block Size:       %d bytes\n' % footer.data_block_size)
+        o.write('Hash Block Size:       %d bytes\n' % footer.hash_block_size)
+        o.write('Hash Algorithm:        %s\n' % footer.hash_algorithm)
+        o.write('Salt:                  %s\n' % footer.salt_hex)
+        o.write('Root Hash:             %s\n' % footer.root_hash_hex)
+
+
+    def add_image_hashes(self):
+        """Implements the 'add_image_hashes' command."""
+        parser = argparse.ArgumentParser(
+            prog='bvbtool add_hashes_to_image',
+            description='Add hashes for integrity-checking to image.')
+        parser.add_argument('--image', help='Brillo boot image to add hashes to',
+                            type=argparse.FileType('rab+'))
+        parser.add_argument('--hash', help='Hash algorithm to use (default: sha1)',
+                            default='sha1')
+        parser.add_argument('--salt', help='Salt in hex (default: /dev/urandom)')
+        parser.add_argument('--block_size', help='Block size (default: 4096)',
+                            type=parse_number, default=4096)
+        args = parser.parse_args(sys.argv[2:])
+
+
+        # If there's already a footer of ours, truncate it. This way
+        # 'bvbtool add_hashes_to_image' is idempotent modulo salts.
+        args.image.seek(0, os.SEEK_END)
+        image_size = args.image.tell()
+        args.image.seek(image_size - BvbIntegrityFooter.SIZE)
+        try:
+            footer = BvbIntegrityFooter(args.image.read(BvbIntegrityFooter.SIZE))
+            # Existing footer found. Just truncate.
+            image_size = footer.image_size
+            args.image.truncate(image_size)
+        except:
+            pass
+
+        # Ensure image is multiple of block_size
+        rounded_image_size = round_to_multiple(image_size, args.block_size)
+        if rounded_image_size > image_size:
+            args.image.write('\0' * (rounded_image_size - image_size))
+            image_size = rounded_image_size
+
+        tree_offset = image_size
+
+        digest_size = len(hashlib.new(name=args.hash).digest())
+        digest_padding = round_to_pow2(digest_size) - digest_size
+
+        if args.salt == '':
+            salt = ''
+        elif args.salt:
+            salt = args.salt.decode('hex')
+        else:
+            # If salt is not explicitly specified, choose a hash
+            # that's the same size as the hash size.
+            hash_size = digest_size
+            salt = open('/dev/urandom').read(hash_size)
+
+        # Hashes are stored upside down so we need to calcuate hash
+        # offsets in advance.
+        (hash_level_offsets, tree_size) = calc_hash_level_offsets(image_size,
+                                                                  args.block_size,
+                                                                  digest_size + digest_padding)
+
+        # Make room for the tree.
+        args.image.truncate(image_size + tree_size)
+
+        # Generate the tree.
+        hash_src_offset = 0
+        hash_src_size = image_size
+        level_num = 0
+        while hash_src_size > args.block_size:
+            level_output = ''
+            args.image.seek(hash_src_offset)
+            remaining = hash_src_size
+            while remaining > 0:
+                ha = hashlib.new(name=args.hash, string=salt)
+                data = args.image.read(min(remaining, args.block_size))
+                if len(data) == 0:
+                    raise Exception()
+                remaining -= len(data)
+                ha.update(data)
+                if len(data) < args.block_size:
+                    ha.update('\0' * (args.block_size - len(data)))
+                level_output += ha.digest()
+                if digest_padding > 0:
+                    level_output += '\0'*digest_padding
+
+            padding_needed = round_to_multiple(len(level_output), args.block_size) - len(level_output)
+            level_output += '\0' * padding_needed
+
+            hash_dest_offset = hash_level_offsets[level_num] + tree_offset
+
+            args.image.seek(hash_dest_offset)
+            args.image.write(level_output)
+
+            hash_src_offset = hash_dest_offset
+            hash_src_size = len(level_output)
+
+            level_num += 1
+
+        ha = hashlib.new(name=args.hash, string=salt)
+        ha.update(level_output)
+        root_hash = ha.digest()
+
+        # Write footer with the root hash and other information.
+        footer = BvbIntegrityFooter()
+        footer.dm_verity_version = 1
+        footer.image_size = image_size
+        footer.tree_offset = tree_offset
+        footer.tree_size = tree_size
+        footer.data_block_size = args.block_size
+        footer.hash_block_size = args.block_size
+        footer.hash_algorithm = args.hash
+        footer.salt_hex = salt.encode('hex')
+        footer.root_hash_hex = root_hash.encode('hex')
+        args.image.seek(tree_offset + tree_size)
+        footer.save(args.image)
+
+
+def calc_hash_level_offsets(image_size, block_size, digest_size):
+    level_offsets = []
+    level_sizes = []
+    tree_size = 0
+
+    num_levels = 0
+    size = image_size
+    while size > block_size:
+        num_blocks = (size + block_size - 1) / block_size
+        level_size = round_to_multiple(num_blocks * digest_size, block_size)
+
+        level_sizes.append(level_size)
+        tree_size += level_size
+        num_levels += 1
+
+        size = level_size
+
+    for n in range(0, num_levels):
+        offset = 0
+        for m in range(n + 1, num_levels):
+            offset += level_sizes[m]
+        level_offsets.append(offset)
+
+    return (level_offsets, tree_size)
 
 if __name__ == '__main__':
     BvbTool()
