@@ -17,8 +17,10 @@
 #ifndef ANDROID_STRING16_H
 #define ANDROID_STRING16_H
 
+#include <string>
+
 #include <utils/Errors.h>
-#include <utils/Unicode.h>
+#include <utils/String8.h>
 #include <utils/TypeHelpers.h>
 
 // ---------------------------------------------------------------------------
@@ -65,6 +67,7 @@ public:
 
     inline  const char16_t*     string() const;
 
+    inline  std::string         std_string() const;
             size_t              size() const;
             void                setTo(const String16& other);
             status_t            setTo(const char16_t* other);

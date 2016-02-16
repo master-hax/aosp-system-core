@@ -18,7 +18,6 @@
 
 #include <utils/Log.h>
 #include <utils/Unicode.h>
-#include <utils/String8.h>
 #include <utils/threads.h>
 
 #include <memory.h>
@@ -164,6 +163,11 @@ String16::String16(const char* o, size_t len)
 String16::~String16()
 {
     SharedBuffer::bufferFromData(mString)->release();
+}
+
+inline std::string String16::std_string() const
+{
+    return std::string(String8(*this).string());
 }
 
 size_t String16::size() const
