@@ -14,6 +14,7 @@ LOCAL_SRC_FILES := \
 	healthd.cpp \
 	healthd_mode_android.cpp \
 	healthd_mode_charger.cpp \
+	healthd_mode_recovery.cpp \
 	BatteryMonitor.cpp \
 	BatteryPropertiesRegistrar.cpp
 
@@ -35,7 +36,8 @@ endif
 
 LOCAL_C_INCLUDES := bootable/recovery
 
-LOCAL_STATIC_LIBRARIES := libbatteryservice libbinder libminui libpng libz libutils libcutils liblog libm libc
+LOCAL_STATIC_LIBRARIES := libbatteryservice libbase libbinder libminui libpng \
+                          libz libutils libcutils liblog libm libc
 
 ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
 LOCAL_STATIC_LIBRARIES += libsuspend
