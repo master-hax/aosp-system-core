@@ -21,10 +21,8 @@
 #include "fdevent.h"
 
 #include <fcntl.h>
-#include <poll.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
 
 #include <list>
@@ -73,17 +71,17 @@ struct PollNode {
 static auto& g_poll_node_map = *new std::unordered_map<int, PollNode>();
 static auto& g_pending_list = *new std::list<fdevent*>();
 static bool main_thread_valid;
-static pthread_t main_thread;
+static adb_thread_t main_thread;
 
 static void check_main_thread() {
     if (main_thread_valid) {
-        CHECK_NE(0, pthread_equal(main_thread, pthread_self()));
+        CHECK_NE(0, adb_thread_equal(main_thread, adb_thread_self()));
     }
 }
 
 static void set_main_thread() {
     main_thread_valid = true;
-    main_thread = pthread_self();
+    main_thread = adb_thread_self();
 }
 
 static std::string dump_fde(const fdevent* fde) {
@@ -233,13 +231,13 @@ static std::string dump_pollfds(const std::vector<pollfd>& pollfds) {
 }
 
 static void fdevent_process() {
-    std::vector<pollfd> pollfds;
+    std::vector<adb_pollfd> pollfds;
     for (const auto& pair : g_poll_node_map) {
         pollfds.push_back(pair.second.pollfd);
     }
     CHECK_GT(pollfds.size(), 0u);
     D("poll(), pollfds = %s", dump_pollfds(pollfds).c_str());
-    int ret = TEMP_FAILURE_RETRY(poll(&pollfds[0], pollfds.size(), -1));
+    int ret = adb_poll(&pollfds[0], pollfds.size(), -1);
     if (ret == -1) {
         PLOG(ERROR) << "poll(), ret = " << ret;
         return;
@@ -269,7 +267,7 @@ static void fdevent_process() {
             auto it = g_poll_node_map.find(pollfd.fd);
             CHECK(it != g_poll_node_map.end());
             fdevent* fde = it->second.fde;
-            CHECK_EQ(fde->fd, pollfd.fd);
+            CHECK_EQ(fde->fd, static_cast<int>(pollfd.fd));
             fde->events |= events;
             D("%s got events %x", dump_fde(fde).c_str(), events);
             fde->state |= FDE_PENDING;
@@ -288,7 +286,10 @@ static void fdevent_call_fdfunc(fdevent* fde)
     fde->func(fde->fd, events, fde->arg);
 }
 
-#if !ADB_HOST
+#if !ADB_HOST & !defined(_WIN32)
+
+#include <sys/ioctl.h>
+
 static void fdevent_subproc_event_func(int fd, unsigned ev,
                                        void* /* userdata */)
 {

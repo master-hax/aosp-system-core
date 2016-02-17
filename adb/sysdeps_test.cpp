@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <atomic>
 
+#include "adb_io.h"
 #include "sysdeps.h"
 
 static void increment_atomic_int(void* c) {
@@ -66,4 +67,105 @@ TEST(sysdeps_thread, exit) {
         },
         nullptr, &thread));
     ASSERT_TRUE(adb_thread_join(thread));
+}
+
+TEST(sysdeps_socketpair, smoke) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    ASSERT_TRUE(WriteFdExactly(fds[0], "foo", 4));
+    ASSERT_TRUE(WriteFdExactly(fds[1], "bar", 4));
+
+    char buf[4];
+    ASSERT_TRUE(ReadFdExactly(fds[1], buf, 4));
+    ASSERT_STREQ(buf, "foo");
+    ASSERT_TRUE(ReadFdExactly(fds[0], buf, 4));
+    ASSERT_STREQ(buf, "bar");
+    ASSERT_EQ(0, adb_close(fds[0]));
+    ASSERT_EQ(0, adb_close(fds[1]));
+}
+
+TEST(sysdeps_poll, smoke) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    adb_pollfd pfd[2];
+    pfd[0].fd = fds[0];
+    pfd[0].events = POLLIN;
+    pfd[1].fd = fds[1];
+    pfd[1].events = POLLOUT;
+
+    EXPECT_EQ(1, adb_poll(pfd, 2, 0));
+    EXPECT_EQ(0, pfd[0].revents);
+    EXPECT_NE(0, pfd[1].revents & POLLOUT);
+    EXPECT_EQ(0, pfd[1].revents & ~POLLOUT);
+
+    ASSERT_TRUE(WriteFdExactly(fds[1], "foo", 4));
+    EXPECT_EQ(2, adb_poll(pfd, 2, 0));
+    EXPECT_NE(0, pfd[0].revents & POLLIN);
+    EXPECT_EQ(0, pfd[0].revents & ~POLLIN);
+    EXPECT_NE(0, pfd[1].revents & POLLOUT);
+    EXPECT_EQ(0, pfd[1].revents & ~POLLOUT);
+
+    ASSERT_EQ(0, adb_close(fds[0]));
+    ASSERT_EQ(0, adb_close(fds[1]));
+}
+
+TEST(sysdeps_poll, timeout) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    adb_pollfd pfd;
+    pfd.fd = fds[0];
+    pfd.events = POLLIN;
+
+    EXPECT_EQ(0, adb_poll(&pfd, 1, 100));
+    EXPECT_EQ(0, pfd.revents);
+
+    ASSERT_TRUE(WriteFdExactly(fds[1], "foo", 4));
+    EXPECT_EQ(1, adb_poll(&pfd, 1, 100));
+    EXPECT_NE(0, pfd.revents & POLLIN);
+    EXPECT_EQ(0, pfd.revents & ~POLLIN);
+
+    ASSERT_EQ(0, adb_close(fds[0]));
+    ASSERT_EQ(0, adb_close(fds[1]));
+}
+
+TEST(sysdeps_poll, invalid_fd) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    adb_pollfd pfd[3];
+    pfd[0].fd = fds[0];
+    pfd[0].events = POLLIN;
+    pfd[1].fd = INT_MAX;
+    pfd[1].events = POLLIN;
+    pfd[2].fd = fds[1];
+    pfd[2].events = POLLOUT;
+
+    ASSERT_TRUE(WriteFdExactly(fds[1], "foo", 4));
+    ASSERT_EQ(3, adb_poll(pfd, 3, 0));
+
+    // Windows defines POLLIN as POLLRDNORM | POLLRDBAND.
+    EXPECT_NE(0, POLLIN & pfd[0].revents);
+    EXPECT_EQ(POLLNVAL, pfd[1].revents);
+    EXPECT_EQ(POLLOUT, pfd[2].revents);
+    ASSERT_EQ(0, adb_close(fds[0]));
+    ASSERT_EQ(0, adb_close(fds[1]));
+}
+
+TEST(sysdeps_poll, duplicate_fd) {
+    int fds[2];
+    ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
+    adb_pollfd pfd[2];
+    pfd[0].fd = fds[0];
+    pfd[0].events = POLLIN;
+    pfd[1] = pfd[0];
+
+    EXPECT_EQ(0, adb_poll(pfd, 2, 0));
+    ASSERT_TRUE(WriteFdExactly(fds[1], "foo", 4));
+
+    // Returns 1 on Windows.
+    // This probably isn't a problem for adb, since we don't allow the same FD to be registered
+    // more than once in fdevent.
+    EXPECT_EQ(2, adb_poll(pfd, 2, 0));
+
+    ASSERT_EQ(0, adb_close(fds[0]));
+    ASSERT_EQ(0, adb_close(fds[1]));
 }
