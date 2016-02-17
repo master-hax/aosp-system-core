@@ -20,6 +20,7 @@ endif
 LOCAL_SRC_FILES := \
 	healthd.cpp \
 	healthd_mode_android.cpp \
+	healthd_mode_recovery.cpp \
 	BatteryMonitor.cpp \
 	BatteryPropertiesRegistrar.cpp
 
@@ -55,7 +56,7 @@ ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_STATIC_LIBRARIES += libminui libpng libz
 endif
 
-LOCAL_STATIC_LIBRARIES += libutils libcutils liblog libm libc
+LOCAL_STATIC_LIBRARIES += libbase libutils libcutils liblog libm libc
 
 ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
 LOCAL_STATIC_LIBRARIES += libsuspend

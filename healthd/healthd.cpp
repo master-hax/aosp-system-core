@@ -93,6 +93,10 @@ extern void healthd_mode_charger_heartbeat(void);
 extern void healthd_mode_charger_battery_update(
     struct android::BatteryProperties *props);
 
+// Recovery mode
+
+extern void healthd_mode_recovery_battery_update(android::BatteryProperties *props);
+
 // NOPs for modes that need no special action
 
 static void healthd_mode_nop_init(struct healthd_config *config);
@@ -126,7 +130,7 @@ static struct healthd_mode_ops recovery_ops = {
     .init = healthd_mode_nop_init,
     .preparetowait = healthd_mode_nop_preparetowait,
     .heartbeat = healthd_mode_nop_heartbeat,
-    .battery_update = healthd_mode_nop_battery_update,
+    .battery_update = healthd_mode_recovery_battery_update,
 };
 
 static void healthd_mode_nop_init(struct healthd_config* /*config*/) {
