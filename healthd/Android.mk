@@ -9,6 +9,12 @@ LOCAL_CFLAGS := -Werror
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_SRC_FILES := BatteryMonitor.cpp
+LOCAL_MODULE := libbatterymonitor
+LOCAL_STATIC_LIBRARIES := libutils
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 
 ifeq ($(strip $(BOARD_CHARGER_NO_UI)),true)
 LOCAL_CHARGER_NO_UI := true
@@ -20,7 +26,6 @@ endif
 LOCAL_SRC_FILES := \
 	healthd.cpp \
 	healthd_mode_android.cpp \
-	BatteryMonitor.cpp \
 	BatteryPropertiesRegistrar.cpp
 
 ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
@@ -49,7 +54,7 @@ endif
 
 LOCAL_C_INCLUDES := bootable/recovery
 
-LOCAL_STATIC_LIBRARIES := libbatteryservice libbinder
+LOCAL_STATIC_LIBRARIES := libbatterymonitor libbatteryservice libbinder
 
 ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_STATIC_LIBRARIES += libminui libpng libz
