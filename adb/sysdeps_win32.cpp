@@ -1163,12 +1163,17 @@ int adb_socketpair(int sv[2]) {
         goto fail;
     }
 
+    errno = 0;
     accepted = adb_socket_accept(server, nullptr, nullptr);
     if (accepted < 0) {
-        const DWORD err = WSAGetLastError();
-        D("adb_socketpair: failed to accept: %s",
-          android::base::SystemErrorCodeToString(err).c_str());
-        _socket_set_errno(err);
+        if (errno == 0) {
+            const DWORD err = WSAGetLastError();
+            D("adb_socketpair: failed to accept: %s",
+              android::base::SystemErrorCodeToString(err).c_str());
+            _socket_set_errno(err);
+        } else {
+            D("adb_socketpair: failed to accept: %s", strerror(errno));
+        }
         goto fail;
     }
     adb_close(server);

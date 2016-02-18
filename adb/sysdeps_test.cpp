@@ -84,6 +84,26 @@ TEST(sysdeps_socketpair, smoke) {
     ASSERT_EQ(0, adb_close(fds[1]));
 }
 
+TEST(sysdeps_fd, exhaustion) {
+    std::vector<int> fds;
+    int socketpair[2];
+
+    while (adb_socketpair(socketpair) == 0) {
+        fds.push_back(socketpair[0]);
+        fds.push_back(socketpair[1]);
+    }
+
+    ASSERT_EQ(EMFILE, errno) << strerror(errno);
+    for (int fd : fds) {
+        ASSERT_EQ(0, adb_close(fd));
+    }
+    ASSERT_EQ(0, adb_socketpair(socketpair));
+    ASSERT_EQ(socketpair[0], fds[0]);
+    ASSERT_EQ(socketpair[1], fds[1]);
+    ASSERT_EQ(0, adb_close(socketpair[0]));
+    ASSERT_EQ(0, adb_close(socketpair[1]));
+}
+
 TEST(sysdeps_poll, smoke) {
     int fds[2];
     ASSERT_EQ(0, adb_socketpair(fds)) << strerror(errno);
