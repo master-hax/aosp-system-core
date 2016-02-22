@@ -319,8 +319,8 @@ bool BatteryMonitor::update(void) {
             }
 
             if (!mHealthdConfig->batteryCycleCountPath.isEmpty()) {
-                len += snprintf(dmesgline + len, sizeof(dmesgline) - len,
-                                " cc=%d", props.batteryCycleCount);
+                snprintf(dmesgline + len, sizeof(dmesgline) - len, " cc=%d",
+                         props.batteryCycleCount);
             }
         } else {
             snprintf(dmesgline, sizeof(dmesgline),
