@@ -50,6 +50,10 @@ static ssize_t adf_find_nodes(const char *pattern, adf_id_t **ids)
 
         if (matched < 0) {
             ret = -errno;
+#if __clang_analyzer__
+            if (ret >= 0)
+                __builtin_unreachable();
+#endif
             goto done;
         } else if (matched != 1) {
             continue;
@@ -65,8 +69,13 @@ static ssize_t adf_find_nodes(const char *pattern, adf_id_t **ids)
         ids_ret[n] = id;
         n++;
     }
-    if (errno)
+    if (errno) {
         ret = -errno;
+#if __clang_analyzer__
+        if (ret >= 0)
+            __builtin_unreachable();
+#endif
+    }
     else
         ret = n;
 
