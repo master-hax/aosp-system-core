@@ -184,6 +184,8 @@ enum {
     RADIO_EVENT_METADATA    = 4,  /* New meta data received */
     RADIO_EVENT_TA          = 5,  /* Traffic announcement start or stop */
     RADIO_EVENT_AF_SWITCH   = 6,  /* Switch to Alternate Frequency */
+    RADIO_EVENT_VOL_BUT_DOWN= 7,  /* Volume Down */
+    RADIO_EVENT_VOL_BUT_UP  = 8,  /* Volume Up */
     // begin framework only events
     RADIO_EVENT_CONTROL     = 100, /* loss/gain of tuner control */
     RADIO_EVENT_SERVER_DIED = 101, /* radio service died */
@@ -195,7 +197,8 @@ typedef struct radio_hal_event {
     radio_event_type_t  type;       /* event type */
     int                 status;     /* used by RADIO_EVENT_CONFIG, RADIO_EVENT_TUNED */
     union {
-        bool                    on;     /* RADIO_EVENT_ANTENNA, RADIO_EVENT_TA */
+        bool                    on;     /* RADIO_EVENT_ANTENNA, RADIO_EVENT_TA,
+                                         * RADIO_EVENT_VOL_BUT_DOWN, RADIO_EVENT_VOL_BUT_UP */
         radio_hal_band_config_t config; /* RADIO_EVENT_CONFIG */
         radio_program_info_t    info;   /* RADIO_EVENT_TUNED, RADIO_EVENT_AF_SWITCH */
         radio_metadata_t        *metadata; /* RADIO_EVENT_METADATA */
