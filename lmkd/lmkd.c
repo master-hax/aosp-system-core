@@ -27,6 +27,7 @@
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -249,13 +250,37 @@ static void writefilestring(char *path, char *s) {
     close(fd);
 }
 
+static int get_uid(int pid) {
+    char path[PATH_MAX];
+    struct stat stats;
+    snprintf(path, sizeof(path), "/proc/%d", pid);
+    if (stat(path, &stats) == 0) {
+        return stats.st_uid;
+    }
+    return -errno;
+}
+
 static void cmd_procprio(int pid, int uid, int oomadj) {
     struct proc *procp;
     char path[80];
     char val[20];
+    int real_uid;
 
     if (oomadj < OOM_DISABLE || oomadj > OOM_ADJUST_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", oomadj);
+        return;
+    }
+
+    real_uid = get_uid(pid);
+    if (real_uid < 0) {
+        if (real_uid == -ENOENT) {
+            ALOGW("/proc/%d does not exist", pid);
+            return;
+        } else {
+            ALOGW("Unable to get uid of pid %d; errno=%d", pid, -real_uid);
+        }
+    } else if (uid != real_uid) {
+        ALOGW("Incoming pid %d with uid %d does not match real uid %d", pid, uid, real_uid);
         return;
     }
 
@@ -268,16 +293,16 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
 
     procp = pid_lookup(pid);
     if (!procp) {
-            procp = malloc(sizeof(struct proc));
-            if (!procp) {
-                // Oh, the irony.  May need to rebuild our state.
-                return;
-            }
+        procp = malloc(sizeof(struct proc));
+        if (!procp) {
+            // Oh, the irony.  May need to rebuild our state.
+            return;
+        }
 
-            procp->pid = pid;
-            procp->uid = uid;
-            procp->oomadj = oomadj;
-            proc_insert(procp);
+        procp->pid = pid;
+        procp->uid = uid;
+        procp->oomadj = oomadj;
+        proc_insert(procp);
     } else {
         proc_unslot(procp);
         procp->oomadj = oomadj;
