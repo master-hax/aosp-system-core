@@ -179,7 +179,10 @@ static void adb_auth_event(int fd, unsigned events, void *data)
             D("Framework disconnect");
             if (usb_transport)
                 fdevent_remove(&usb_transport->auth_fde);
-            framework_fd = -1;
+            if (framework_fd >= 0) {
+                adb_close(framework_fd);
+                framework_fd = -1;
+            }
         }
         else if (ret == 2 && response[0] == 'O' && response[1] == 'K') {
             if (usb_transport)
@@ -228,6 +231,12 @@ void adb_auth_confirm_key(unsigned char *key, size_t len, atransport *t)
 
 static void adb_auth_listener(int fd, unsigned events, void *data)
 {
+    // Close the previous framework fd if it exists.
+    if (framework_fd >= 0) {
+        adb_close(framework_fd);
+        framework_fd = -1;
+    }
+
     sockaddr_storage addr;
     socklen_t alen;
     int s;
