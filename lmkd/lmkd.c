@@ -27,6 +27,7 @@
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -249,8 +250,9 @@ static void writefilestring(char *path, char *s) {
     close(fd);
 }
 
-static void cmd_procprio(int pid, int uid, int oomadj) {
+static void cmd_procprio(int pid, uid_t uid, int oomadj) {
     struct proc *procp;
+    struct stat stats;
     char path[80];
     char val[20];
 
@@ -260,6 +262,21 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
     }
 
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", pid);
+    if (stat(path, &stats) == 0) {
+        if (stats.st_uid != uid) {
+            ALOGW("Incoming pid %d with uid %u does not match real uid %u",
+                  pid, uid, stats.st_uid);
+            return;
+        }
+    } else {
+        if (errno == ENOENT) {
+            ALOGW("%s does not exist", path);
+            return;
+        } else {
+            ALOGW("Unable to stat %s; errno=%d", path, errno);
+        }
+    }
+
     snprintf(val, sizeof(val), "%d", lowmem_oom_adj_to_oom_score_adj(oomadj));
     writefilestring(path, val);
 
@@ -268,16 +285,16 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
 
     procp = pid_lookup(pid);
     if (!procp) {
-            procp = malloc(sizeof(struct proc));
-            if (!procp) {
-                // Oh, the irony.  May need to rebuild our state.
-                return;
-            }
+        procp = malloc(sizeof(struct proc));
+        if (!procp) {
+            // Oh, the irony.  May need to rebuild our state.
+            return;
+        }
 
-            procp->pid = pid;
-            procp->uid = uid;
-            procp->oomadj = oomadj;
-            proc_insert(procp);
+        procp->pid = pid;
+        procp->uid = uid;
+        procp->oomadj = oomadj;
+        proc_insert(procp);
     } else {
         proc_unslot(procp);
         procp->oomadj = oomadj;
@@ -583,7 +600,7 @@ static int kill_one_process(struct proc *procp, int other_free, int other_file,
         return -1;
     }
 
-    ALOGI("Killing '%s' (%d), uid %d, adj %d\n"
+    ALOGI("Killing '%s' (%d), uid %u, adj %d\n"
           "   to free %ldkB because cache %s%ldkB is below limit %ldkB for oom_adj %d\n"
           "   Free memory is %s%ldkB %s reserved",
           taskname, pid, uid, procp->oomadj, tasksize * page_k,
