@@ -190,6 +190,7 @@ TEST_F(UserCollectorTest, GetSymlinkTarget) {
     ASSERT_EQ(0, symlink(this_link.c_str(), kLink));
     ASSERT_TRUE(collector_.GetSymlinkTarget(FilePath(kLink), &result));
     ASSERT_EQ(this_link, result.value());
+    unlink(kLink);
   }
 }
 
