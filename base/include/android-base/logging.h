@@ -150,6 +150,15 @@ class ErrnoRestorer {
 #define UNIMPLEMENTED(level) \
   LOG(level) << __PRETTY_FUNCTION__ << " unimplemented "
 
+#ifdef __clang_analyzer__
+// Let static analyzer know that this expression will abort.
+// Should not be used in real output to link.
+void __undefined_abort() __attribute__((noreturn));
+#define LOG_FATAL_ABORT_STRING (::android::base::__undefined_abort(), " ")
+#else
+#define LOG_FATAL_ABORT_STRING " "
+#endif
+
 // Check whether condition x holds and LOG(FATAL) if not. The value of the
 // expression x is only evaluated once. Extra logging can be appended using <<
 // after. For example:
@@ -162,7 +171,7 @@ class ErrnoRestorer {
   else                                                                        \
     ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::DEFAULT, \
                                 ::android::base::FATAL, -1).stream()          \
-        << "Check failed: " #x << " "
+        << "Check failed: " #x << LOG_FATAL_ABORT_STRING
 
 // Helper for CHECK_xx(x,y) macros.
 #define CHECK_OP(LHS, RHS, OP)                                              \
