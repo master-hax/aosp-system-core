@@ -44,7 +44,7 @@ private:
     static int getLogSocket();
     int logPrint(const char *fmt, ...)
         __attribute__ ((__format__ (__printf__, 2, 3)));
-    void logToDmesg(const std::string& str);
+    void logToDmesg(const std::string& str, bool once = false);
     std::string getProperty(const std::string& name);
     void enforceIntegrity();
 };
