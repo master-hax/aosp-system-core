@@ -493,7 +493,6 @@ void BatteryMonitor::init(struct healthd_config *hc) {
                 break;
 
             case ANDROID_POWER_SUPPLY_TYPE_BATTERY:
-                mBatteryDevicePresent = true;
 
                 if (mHealthdConfig->batteryStatusPath.isEmpty()) {
                     path.clear();
@@ -515,8 +514,10 @@ void BatteryMonitor::init(struct healthd_config *hc) {
                     path.clear();
                     path.appendFormat("%s/%s/present", POWER_SUPPLY_SYSFS_PATH,
                                       name);
-                    if (access(path, R_OK) == 0)
+                    if (access(path, R_OK) == 0) {
                         mHealthdConfig->batteryPresentPath = path;
+                        mBatteryDevicePresent = getBooleanField(path);
+                    }
                 }
 
                 if (mHealthdConfig->batteryCapacityPath.isEmpty()) {
@@ -613,19 +614,15 @@ void BatteryMonitor::init(struct healthd_config *hc) {
         }
     }
 
-    // This indicates that there is no charger driver registered.
     // Typically the case for devices which do not have a battery and
     // and are always plugged into AC mains.
-    if (!mChargerNames.size()) {
-        KLOG_ERROR(LOG_TAG, "No charger supplies found\n");
-        mBatteryFixedCapacity = ALWAYS_PLUGGED_CAPACITY;
-        mBatteryFixedTemperature = FAKE_BATTERY_TEMPERATURE;
-        mAlwaysPluggedDevice = true;
-    }
     if (!mBatteryDevicePresent) {
         KLOG_WARNING(LOG_TAG, "No battery devices found\n");
         hc->periodic_chores_interval_fast = -1;
         hc->periodic_chores_interval_slow = -1;
+        mBatteryFixedCapacity = ALWAYS_PLUGGED_CAPACITY;
+        mBatteryFixedTemperature = FAKE_BATTERY_TEMPERATURE;
+        mAlwaysPluggedDevice = true;
     } else {
         if (mHealthdConfig->batteryStatusPath.isEmpty())
             KLOG_WARNING(LOG_TAG, "BatteryStatusPath not found\n");
