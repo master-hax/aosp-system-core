@@ -82,11 +82,21 @@ bool LogAudit::onDataAvailable(SocketClient *cli) {
     return true;
 }
 
-void LogAudit::logToDmesg(const std::string& str)
+void LogAudit::logToDmesg(const std::string& str, bool once)
 {
     static const char prefix[] = { KMSG_PRIORITY(LOG_INFO),
         'l', 'o', 'g', 'd', '.', 'a', 'u', 'd', 'i', 't', 'd', ':',
         ' ', '\0' };
+    static bool loggedOnce = false;
+
+    if (once) {
+        if (loggedOnce) {
+            return;
+        } else {
+            loggedOnce = true;
+        }
+    }
+
     std::string message = prefix + str + "\n";
     write(fdDmesg, message.c_str(), message.length());
 }
@@ -100,10 +110,10 @@ std::string LogAudit::getProperty(const std::string& name)
 
 void LogAudit::enforceIntegrity() {
     if (!AUDITD_ENFORCE_INTEGRITY) {
-        logToDmesg("integrity enforcement suppressed; not rebooting");
+        logToDmesg("integrity enforcement suppressed; not rebooting", true);
     } else if (rebootToSafeMode) {
         if (getProperty("persist.sys.safemode") == "1") {
-            logToDmesg("integrity enforcement suppressed; in safe mode");
+            logToDmesg("integrity enforcement suppressed; in safe mode", true);
             return;
         }
 
