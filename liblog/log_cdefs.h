@@ -18,6 +18,17 @@
 #define _LIBLOG_CDEFS_H__
 
 #include <sys/cdefs.h>
+#include <unistd.h>
+
+#ifndef __BEGIN_DECLS
+#if defined(__cplusplus)
+#define __BEGIN_DECLS           extern "C" {
+#define __END_DECLS             }
+#else
+#define __BEGIN_DECLS
+#define __END_DECLS
+#endif
+#endif
 
 /* Declare this library function hidden and internal */
 #if defined(_WIN32)
@@ -49,6 +60,17 @@
 /* Unused argument. For C code only, remove symbol name for C++ */
 #ifndef __unused
 #define __unused        __attribute__((__unused__))
+#endif
+
+/* Actually lack of unistd.h definition */
+#ifndef TEMP_FAILURE_RETRY
+/* Used to retry syscalls that can return EINTR. */
+#define TEMP_FAILURE_RETRY(exp) ({         \
+    __typeof__(exp) _rc;                   \
+    do {                                   \
+        _rc = (exp);                       \
+    } while (_rc == -1 && errno == EINTR); \
+    _rc; })
 #endif
 
 #endif /* _LIBLOG_CDEFS_H__ */
