@@ -994,6 +994,8 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
                     dst_dir.push_back(OS_PATH_SEPARATOR);
                 }
                 dst_dir.append(adb_basename(src_path));
+            } else {
+                mkdirs(dst);
             }
 
             success &= copy_remote_dir_local(sc, src_path, dst_dir.c_str(), copy_attrs);
