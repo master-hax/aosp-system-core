@@ -15,6 +15,7 @@
  */
 
 #include <fcntl.h>
+#include <memory>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -133,7 +134,8 @@ void Device::dirtyCache(void *ptr, size_t size)
 
 TEST_F(Device, KernelReadCached)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -201,7 +203,8 @@ TEST_F(Device, KernelWriteCached)
 
 TEST_F(Device, DMAReadCached)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -267,7 +270,8 @@ TEST_F(Device, DMAWriteCached)
 
 TEST_F(Device, KernelReadCachedNeedsSync)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -335,7 +339,8 @@ TEST_F(Device, KernelWriteCachedNeedsSync)
 
 TEST_F(Device, DMAReadCachedNeedsSync)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -404,7 +409,8 @@ TEST_F(Device, DMAWriteCachedNeedsSync)
 }
 TEST_F(Device, KernelRead)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -472,7 +478,8 @@ TEST_F(Device, KernelWrite)
 
 TEST_F(Device, DMARead)
 {
-    void *alloc = malloc(8192 + 1024);
+    auto alloc_ptr = std::make_unique<char[]>(8192 + 1024);
+    void *alloc = alloc_ptr.get();
     void *buf = (void *)(ALIGN((unsigned long)alloc, 4096) + 1024);
 
     for (unsigned int heapMask : m_allHeaps) {
@@ -538,7 +545,8 @@ TEST_F(Device, DMAWrite)
 
 TEST_F(Device, IsCached)
 {
-    void *buf = malloc(4096);
+    auto buf_ptr = std::make_unique<char[]>(4096);
+    void *buf = buf_ptr.get();
 
     for (unsigned int heapMask : m_allHeaps) {
         SCOPED_TRACE(::testing::Message() << "heap " << heapMask);
