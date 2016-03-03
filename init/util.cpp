@@ -401,20 +401,9 @@ int wait_for_file(const char *filename, int timeout)
 
 void open_devnull_stdio(void)
 {
-    // Try to avoid the mknod() call if we can. Since SELinux makes
-    // a /dev/null replacement available for free, let's use it.
     int fd = open("/sys/fs/selinux/null", O_RDWR);
     if (fd == -1) {
-        // OOPS, /sys/fs/selinux/null isn't available, likely because
-        // /sys/fs/selinux isn't mounted. Fall back to mknod.
-        static const char *name = "/dev/__null__";
-        if (mknod(name, S_IFCHR | 0600, (1 << 8) | 3) == 0) {
-            fd = open(name, O_RDWR);
-            unlink(name);
-        }
-        if (fd == -1) {
-            exit(1);
-        }
+        exit(1);
     }
 
     dup2(fd, 0);
