@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <memory>
 #include <sys/mman.h>
 
 #include <gtest/gtest.h>
@@ -90,7 +91,9 @@ TEST_F(Allocate, RepeatedAllocate)
 
 TEST_F(Allocate, Zeroed)
 {
-    void *zeroes = calloc(4096, 1);
+    std::unique_ptr<char[]> zeroes_ptr(new char[4096]);
+    void *zeroes = zeroes_ptr.get();
+    memset(zeroes, 0, 4096);
 
     for (unsigned int heapMask : m_allHeaps) {
         SCOPED_TRACE(::testing::Message() << "heap " << heapMask);
