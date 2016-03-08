@@ -26,7 +26,7 @@
  *
  *      unique_fd ufd(open("/some/path", "r"));
  *
- *      if (ufd.get() < 0) // invalid descriptor
+ *      if (!ufd) // invalid descriptor
  *          return error;
  *
  *      // Do something useful
@@ -65,6 +65,10 @@ class unique_fd final {
     int ret = value_;
     value_ = -1;
     return ret;
+  }
+
+  explicit operator bool() const {
+    return value_ != -1;
   }
 
  private:
