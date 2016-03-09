@@ -189,6 +189,8 @@ LIBLOG_HIDDEN void __android_log_lock();
 LIBLOG_HIDDEN int __android_log_trylock();
 LIBLOG_HIDDEN void __android_log_unlock();
 
+LIBLOG_HIDDEN bool __android_log_local;
+
 __END_DECLS
 
 #endif /* _LIBLOG_LOGGER_H__ */

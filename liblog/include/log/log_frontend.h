@@ -20,6 +20,7 @@ extern "C" {
 #define LOGGER_NORMAL 0x0
 #define LOGGER_KERNEL 0x1 /* Reserved/Deprecated */
 #define LOGGER_NULL   0x2
+#define LOGGER_LOCAL  0x4
 
 int android_set_log_frontend(int frontend_flag);
 

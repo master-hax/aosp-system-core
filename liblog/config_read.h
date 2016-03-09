@@ -44,6 +44,7 @@ extern LIBLOG_HIDDEN struct listnode __android_log_persist_read;
          (n) = (transp)->node.next)
 
 LIBLOG_HIDDEN void __android_log_config_read();
+LIBLOG_HIDDEN void __android_log_config_read_close();
 
 __END_DECLS
 
