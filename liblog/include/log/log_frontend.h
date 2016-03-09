@@ -17,9 +17,10 @@ extern "C" {
 /*
  * Logging frontends, bit mask to select features. Function returns selection.
  */
-#define LOGGER_NORMAL 0x0
+#define LOGGER_NORMAL 0x0 /* logs sent to logd daemon */
 #define LOGGER_KERNEL 0x1 /* Reserved/Deprecated */
 #define LOGGER_NULL   0x2 /* Does not release resources of other selections */
+#define LOGGER_LOCAL  0x4 /* logs sent to local memory */
 
 /* both return the selected frontend flag mask, or a -errno */
 int android_set_log_frontend(unsigned frontend_flag);

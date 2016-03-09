@@ -166,9 +166,10 @@ DESCRIPTION
        ANDROID_LOG_RDONLY in these cases.
 
        android_set_log_frontend() selects frontend filters. Argument is either
-       LOGGER_NORMAL or LOGGER_NULL. The later drops all content on the floor.
-       Both android_set_log_frontend()  and  android_get_log_frontend() return
-       the current frontend mask, or a -errno.
+       LOGGER_NORMAL, LOGGER_NULL or LOGGER_LOCAL.  Log to logger daemon, drop
+       contents on floor,  or log into  local memory  respectively.       Both
+       android_set_log_frontend()  and  android_get_log_frontend()  return the
+       current frontend mask, or a -errno.
 
 ERRORS
        If messages fail, a negative error code will be returned to the caller.
