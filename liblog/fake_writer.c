@@ -46,7 +46,7 @@ static int fakeOpen() {
     int i;
 
     for (i = 0; i < LOG_ID_MAX; i++) {
-        char buf[sizeof("/dev/log_security")];
+        char buf[sizeof("/dev/log_security") + 8];
         snprintf(buf, sizeof(buf), "/dev/log_%s", android_log_id_to_name(i));
         logFds[i] = fakeLogOpen(buf, O_WRONLY);
     }
@@ -66,16 +66,28 @@ static int fakeWrite(log_id_t log_id, struct timespec *ts __unused,
                       struct iovec *vec, size_t nr)
 {
     ssize_t ret;
-    int logFd;
+    size_t i;
+    int logFd, len;
 
     if (/*(int)log_id >= 0 &&*/ (int)log_id >= (int)LOG_ID_MAX) {
         return -EBADF;
+    }
+
+    len = 0;
+    for (i = 0; i < nr; ++i) {
+        len += vec[i].iov_len;
+    }
+
+    if (len > LOGGER_ENTRY_MAX_PAYLOAD) {
+        len = LOGGER_ENTRY_MAX_PAYLOAD;
     }
 
     logFd = logFds[(int)log_id];
     ret = TEMP_FAILURE_RETRY(fakeLogWritev(logFd, vec, nr));
     if (ret < 0) {
         ret = -errno;
+    } else if (ret > len) {
+        ret = len;
     }
 
     return ret;

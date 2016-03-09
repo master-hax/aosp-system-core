@@ -216,7 +216,11 @@ LIBLOG_ABI_PUBLIC AndroidLogFormat *android_log_format_new()
     p_ret->year_output = false;
     p_ret->zone_output = false;
     p_ret->epoch_output = false;
+#ifdef __ANDROID__
     p_ret->monotonic_output = android_log_clockid() == CLOCK_MONOTONIC;
+#else
+    p_ret->monotonic_output = false;
+#endif
     p_ret->uid_output = false;
     p_ret->descriptive_output = false;
     descriptive_output = false;
@@ -1531,7 +1535,10 @@ LIBLOG_ABI_PUBLIC char *android_log_formatLogLine (
     nsec = entry->tv_nsec;
     if (p_format->monotonic_output) {
         // prevent convertMonotonic from being called if logd is monotonic
-        if (android_log_clockid() != CLOCK_MONOTONIC) {
+#if __ANDROID__
+        if (android_log_clockid() != CLOCK_MONOTONIC)
+#endif
+        {
             struct timespec time;
             convertMonotonic(&time, entry);
             now = time.tv_sec;
@@ -1591,8 +1598,10 @@ LIBLOG_ABI_PUBLIC char *android_log_formatLogLine (
              * This code is Android specific, bionic guarantees that
              * calls to non-reentrant getpwuid() are thread safe.
              */
+#if (FAKE_LOG_DEVICE == 0)
 #ifndef __BIONIC__
 #warning "This code assumes that getpwuid is thread safe, only true with Bionic!"
+#endif
 #endif
             struct passwd* pwd = getpwuid(entry->uid);
             if (pwd && (strlen(pwd->pw_name) <= 5)) {
