@@ -19,6 +19,15 @@
 
 #include <sys/cdefs.h>
 
+/* Declare this library function hidden and internal */
+#ifndef __HIDDEN__
+#if defined(_WIN32)
+#define __HIDDEN__
+#else
+#define __HIDDEN__ __attribute__((visibility("hidden")))
+#endif
+#endif
+
 /* Declare this library function visible and external */
 #ifndef __ABI_PUBLIC__
 #if defined(_WIN32)
