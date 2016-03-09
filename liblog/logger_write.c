@@ -29,6 +29,7 @@
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 
+#include "config_read.h" /* __android_log_config_read_close() definition */
 #include "config_write.h"
 #include "log_portability.h"
 #include "logger.h"
@@ -170,6 +171,8 @@ LIBLOG_ABI_PUBLIC void __android_log_close()
             (*transport->close)();
         }
     }
+
+    __android_log_config_write_close();
 
 #if defined(__ANDROID__)
     /*
@@ -637,6 +640,8 @@ static int __write_to_log_null(log_id_t log_id, struct iovec* vec, size_t nr)
     return len;
 }
 
+LIBLOG_HIDDEN bool __android_log_local;
+
 LIBLOG_ABI_PUBLIC int android_set_log_frontend(unsigned frontend_flag)
 {
     __android_log_lock();
@@ -649,9 +654,33 @@ LIBLOG_ABI_PUBLIC int android_set_log_frontend(unsigned frontend_flag)
         return LOGGER_NULL;
     }
 
+    if (frontend_flag & LOGGER_LOCAL) {
+        if (!__android_log_local) {
+            __android_log_local = true;
+            __android_log_config_write_close();
+            __android_log_config_read_close();
+
+            write_to_log = __write_to_log_init;
+        /* generically we only expect these two values for write_to_log */
+        } else if ((write_to_log != __write_to_log_init) &&
+                   (write_to_log != __write_to_log_daemon)) {
+            write_to_log = __write_to_log_init;
+        }
+
+        __android_log_unlock();
+
+        return LOGGER_LOCAL;
+    }
+
+    if (__android_log_local) {
+        __android_log_local = false;
+        __android_log_config_write_close();
+        __android_log_config_read_close();
+
+        write_to_log = __write_to_log_init;
     /* generically we only expect these two values for write_to_log */
-    if ((write_to_log != __write_to_log_init)
-     && (write_to_log != __write_to_log_daemon)) {
+    } else if ((write_to_log != __write_to_log_init) &&
+               (write_to_log != __write_to_log_daemon)) {
         write_to_log = __write_to_log_init;
     }
 
@@ -667,9 +696,14 @@ LIBLOG_ABI_PUBLIC int android_get_log_frontend()
     __android_log_lock();
     if (write_to_log == __write_to_log_null) {
         ret = LOGGER_NULL;
-    } else if ((write_to_log != __write_to_log_init) &&
-               (write_to_log != __write_to_log_daemon)) {
-        ret = -EINVAL;
+    } else {
+        if (__android_log_local) {
+            ret = LOGGER_LOCAL;
+        }
+        if ((write_to_log != __write_to_log_init) &&
+            (write_to_log != __write_to_log_daemon)) {
+            ret = -EINVAL;
+        }
     }
     __android_log_unlock();
 
