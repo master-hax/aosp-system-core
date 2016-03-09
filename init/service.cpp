@@ -329,10 +329,16 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
     }
 
     bool needs_console = (flags_ & SVC_CONSOLE);
-    if (needs_console && !have_console) {
-        ERROR("service '%s' requires console\n", name_.c_str());
-        flags_ |= SVC_DISABLED;
-        return false;
+    std::string console = DEFAULT_CONSOLE;
+    if (needs_console) {
+        if (console_names.empty()) {
+            ERROR("service '%s' requires console\n", name_.c_str());
+            flags_ |= SVC_DISABLED;
+            return false;
+        }
+        if (args_.size() > 1) {
+            console = args_[1];
+        }
     }
 
     struct stat sb;
@@ -433,7 +439,7 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
 
         if (needs_console) {
             setsid();
-            OpenConsole();
+            OpenConsole(console);
         } else {
             ZapStdio();
         }
@@ -605,9 +611,14 @@ void Service::ZapStdio() const {
     close(fd);
 }
 
-void Service::OpenConsole() const {
+void Service::OpenConsole(const std::string& console) const {
     int fd;
-    if ((fd = open(console_name.c_str(), O_RDWR)) < 0) {
+    if (std::find(console_names.begin(), console_names.end(), console) != console_names.end()) {
+        std::string c_path = "/dev/" + console;
+        if ((fd = open(c_path.c_str(), O_RDWR)) < 0) {
+            fd = open("/dev/null", O_RDWR);
+        }
+    } else {
         fd = open("/dev/null", O_RDWR);
     }
     ioctl(fd, TIOCSCTTY, 0);

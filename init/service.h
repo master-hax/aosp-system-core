@@ -109,7 +109,7 @@ private:
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void ZapStdio() const;
-    void OpenConsole() const;
+    void OpenConsole(const std::string& console) const;
     void PublishSocket(const std::string& name, int fd) const;
 
     bool HandleClass(const std::vector<std::string>& args, std::string* err);
