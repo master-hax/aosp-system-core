@@ -395,11 +395,14 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
     NOTICE("Starting service '%s'...\n", name_.c_str());
 
     pid_t pid = fork();
+    std::string console = DEFAULT_CONSOLE;
     if (pid == 0) {
         umask(077);
 
         for (const auto& ei : envvars_) {
             add_environment(ei.name.c_str(), ei.value.c_str());
+            if (ei.name == DEFAULT_CONSOLE)
+                console = ei.value;
         }
 
         for (const auto& si : sockets_) {
@@ -433,7 +436,7 @@ bool Service::Start(const std::vector<std::string>& dynamic_args) {
 
         if (needs_console) {
             setsid();
-            OpenConsole();
+            OpenConsole(console);
         } else {
             ZapStdio();
         }
@@ -605,9 +608,14 @@ void Service::ZapStdio() const {
     close(fd);
 }
 
-void Service::OpenConsole() const {
+void Service::OpenConsole(const std::string& console) const {
     int fd;
-    if ((fd = open(console_name.c_str(), O_RDWR)) < 0) {
+    if (std::find(console_names.begin(), console_names.end(), console) != console_names.end()) {
+        std::string c_path = "/dev/" + console;
+        if ((fd = open(c_path.c_str(), O_RDWR)) < 0) {
+            fd = open("/dev/null", O_RDWR);
+        }
+    } else {
         fd = open("/dev/null", O_RDWR);
     }
     ioctl(fd, TIOCSCTTY, 0);
