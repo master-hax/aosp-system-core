@@ -40,6 +40,8 @@
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
 
+LIBLOG_HIDDEN int __android_log_is_debuggable();
+
 /*
  * This is used by the C++ code to decide if it should write logs through
  * the C code.  Basically, if /dev/socket/logd is available, we're running in
@@ -343,12 +345,12 @@ LIBLOG_ABI_PUBLIC int __android_log_buf_write(int bufID, int prio,
     }
 #endif
 
-    vec[0].iov_base   = (unsigned char *) &prio;
-    vec[0].iov_len    = 1;
-    vec[1].iov_base   = (void *) tag;
-    vec[1].iov_len    = strlen(tag) + 1;
-    vec[2].iov_base   = (void *) msg;
-    vec[2].iov_len    = strlen(msg) + 1;
+    vec[0].iov_base = (unsigned char *)&prio;
+    vec[0].iov_len  = 1;
+    vec[1].iov_base = (void *)tag;
+    vec[1].iov_len  = strlen(tag) + 1;
+    vec[2].iov_base = (void *)msg;
+    vec[2].iov_len  = strlen(msg) + 1;
 
     return write_to_log(bufID, vec, 3);
 }
