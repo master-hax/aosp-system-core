@@ -256,6 +256,32 @@ int __android_log_is_loggable(int prio, const char *tag, int default_prio)
     return logLevel >= 0 && prio >= logLevel;
 }
 
+__LIBC_HIDDEN__ int __android_log_is_debuggable()
+{
+    static uint32_t serial;
+    static struct cache tag_cache;
+    int ret;
+
+    if (tag_cache.c || lock()) { /* ro property does not change after set */
+        ret = tag_cache.c == '1';
+    } else {
+        int change_detected = check_cache(&tag_cache);
+        uint32_t current_serial = __system_property_area_serial();
+        if (current_serial != serial) {
+            change_detected = 1;
+        }
+        if (change_detected) {
+            refresh_cache(&tag_cache, "ro.debuggable");
+            serial = current_serial;
+        }
+        ret = tag_cache.c == '1';
+
+        unlock();
+    }
+
+    return ret;
+}
+
 /*
  * For properties that are read often, but generally remain constant.
  * Since a change is rare, we will accept a trylock failure gracefully.
