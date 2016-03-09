@@ -58,6 +58,8 @@
 static int __write_to_log_init(log_id_t, struct iovec *vec, size_t nr);
 static int (*write_to_log)(log_id_t, struct iovec *vec, size_t nr) = __write_to_log_init;
 
+__HIDDEN__ int __android_log_is_debuggable();
+
 #if !defined(_WIN32)
 static pthread_mutex_t log_init_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -184,7 +186,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     struct timespec ts;
     size_t i, payload_size;
     static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
-    static pid_t last_pid = (pid_t) -1;
+    static pid_t last_pid = (pid_t)-1;
     static atomic_int_fast32_t dropped;
     static atomic_int_fast32_t dropped_security;
 
@@ -195,7 +197,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
         last_uid = getuid();
     }
-    if (last_pid == (pid_t) -1) {
+    if (last_pid == (pid_t)-1) {
         last_pid = getpid();
     }
     if (log_id == LOG_ID_SECURITY) {
@@ -339,19 +341,12 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 
     clock_gettime(android_log_clockid(), &ts);
 
-    pmsg_header.magic = LOGGER_MAGIC;
-    pmsg_header.len = sizeof(pmsg_header) + sizeof(header);
-    pmsg_header.uid = last_uid;
-    pmsg_header.pid = last_pid;
-
     header.tid = gettid();
     header.realtime.tv_sec = ts.tv_sec;
     header.realtime.tv_nsec = ts.tv_nsec;
 
-    newVec[0].iov_base   = (unsigned char *) &pmsg_header;
-    newVec[0].iov_len    = sizeof(pmsg_header);
-    newVec[1].iov_base   = (unsigned char *) &header;
-    newVec[1].iov_len    = sizeof(header);
+    newVec[1].iov_base = (unsigned char *)&header;
+    newVec[1].iov_len  = sizeof(header);
 
     if (logd_fd > 0) {
         int32_t snapshot = atomic_exchange_explicit(&dropped_security, 0,
@@ -410,9 +405,17 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             break;
         }
     }
-    pmsg_header.len += payload_size;
 
-    if (pstore_fd >= 0) {
+    if ((pstore_fd >= 0) &&
+            ((log_id == LOG_ID_SECURITY) || __android_log_is_debuggable())) {
+        pmsg_header.magic = LOGGER_MAGIC;
+        pmsg_header.len = sizeof(pmsg_header) + sizeof(header) + payload_size;
+        pmsg_header.uid = last_uid;
+        pmsg_header.pid = last_pid;
+
+        newVec[0].iov_base = (unsigned char *)&pmsg_header;
+        newVec[0].iov_len  = sizeof(pmsg_header);
+
         TEMP_FAILURE_RETRY(writev(pstore_fd, newVec, i));
     }
 
@@ -556,12 +559,12 @@ __ABI_PUBLIC__ int __android_log_buf_write(int bufID, int prio,
     }
 #endif
 
-    vec[0].iov_base   = (unsigned char *) &prio;
-    vec[0].iov_len    = 1;
-    vec[1].iov_base   = (void *) tag;
-    vec[1].iov_len    = strlen(tag) + 1;
-    vec[2].iov_base   = (void *) msg;
-    vec[2].iov_len    = strlen(msg) + 1;
+    vec[0].iov_base = (unsigned char *)&prio;
+    vec[0].iov_len  = 1;
+    vec[1].iov_base = (void *)tag;
+    vec[1].iov_len  = strlen(tag) + 1;
+    vec[2].iov_base = (void *)msg;
+    vec[2].iov_len  = strlen(msg) + 1;
 
     return write_to_log(bufID, vec, 3);
 }
