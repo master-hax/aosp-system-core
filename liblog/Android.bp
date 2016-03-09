@@ -34,6 +34,7 @@ liblog_target_sources = [
     "logprint.c",
     "pmsg_reader.c",
     "pmsg_writer.c",
+    "local_logger.c",
     "logd_reader.c",
     "logd_writer.c",
     "logger_read.c",
@@ -54,6 +55,7 @@ cc_library {
         },
         android: {
             srcs: liblog_target_sources,
+            whole_static_libs: [ "libcbinder" ],
             // AddressSanitizer runtime library depends on liblog.
             sanitize: {
                 never: true,
