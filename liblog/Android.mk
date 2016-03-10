@@ -26,7 +26,7 @@ liblog_cflags := -DLIBLOG_LOG_TAG=1005
 
 liblog_sources := logd_write.c log_event_list.c log_event_write.c
 liblog_host_sources := $(liblog_sources) fake_log_device.c event.logtags
-liblog_target_sources := $(liblog_sources) event_tag_map.c
+liblog_target_sources := $(liblog_sources) event_tag_map.c pmsg_writer.c
 liblog_target_sources += log_time.cpp log_is_loggable.c logprint.c log_read.c
 
 # Shared and static library for host
