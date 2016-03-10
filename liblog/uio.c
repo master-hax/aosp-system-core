@@ -19,7 +19,9 @@
 #include <log/uio.h>
 #include <unistd.h>
 
-int  readv( int  fd, struct iovec*  vecs, int  count )
+#include "cdefs.h"
+
+__ABI_PUBLIC__ int readv(int fd, struct iovec *vecs, int count)
 {
     int   total = 0;
 
@@ -46,7 +48,7 @@ Exit:
     return total;
 }
 
-int  writev( int  fd, const struct iovec*  vecs, int  count )
+__ABI_PUBLIC__ int writev(int fd, const struct iovec *vecs, int count)
 {
     int   total = 0;
 

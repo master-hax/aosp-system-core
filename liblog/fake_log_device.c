@@ -33,9 +33,7 @@
 #include <pthread.h>
 #endif
 
-#ifndef __unused
-#define __unused __attribute__((__unused__))
-#endif
+#include "cdefs.h"
 
 #define kMaxTagLen  16      /* from the long-dead utils/Log.cpp */
 
