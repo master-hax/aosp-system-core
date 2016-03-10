@@ -19,10 +19,12 @@
 
 #include <sys/types.h>
 
+#include "cdefs.h"
+
 struct iovec;
 
-int fakeLogOpen(const char *pathName, int flags);
-int fakeLogClose(int fd);
-ssize_t fakeLogWritev(int fd, const struct iovec* vector, int count);
+__HIDDEN__ int fakeLogOpen(const char *pathName, int flags);
+__HIDDEN__ int fakeLogClose(int fd);
+__HIDDEN__ ssize_t fakeLogWritev(int fd, const struct iovec* vector, int count);
 
 #endif // _LIBLOG_FAKE_LOG_DEVICE_H

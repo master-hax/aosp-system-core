@@ -25,6 +25,8 @@
 #include <log/log.h>
 #include <log/logger.h>
 
+#include "cdefs.h"
+
 #define MAX_EVENT_PAYLOAD (LOGGER_ENTRY_MAX_PAYLOAD - sizeof(int32_t))
 
 typedef struct {
@@ -43,7 +45,7 @@ typedef struct {
     uint8_t storage[LOGGER_ENTRY_MAX_PAYLOAD];
 } android_log_context_internal;
 
-android_log_context create_android_logger(uint32_t tag) {
+__ABI_PUBLIC__ android_log_context create_android_logger(uint32_t tag) {
     size_t needed, i;
     android_log_context_internal *context;
 
@@ -65,7 +67,8 @@ android_log_context create_android_logger(uint32_t tag) {
     return (android_log_context)context;
 }
 
-android_log_context create_android_log_parser(const char *msg, size_t len) {
+__ABI_PUBLIC__ android_log_context create_android_log_parser(const char *msg,
+                                                             size_t len) {
     android_log_context_internal *context;
     size_t i;
 
@@ -81,7 +84,7 @@ android_log_context create_android_log_parser(const char *msg, size_t len) {
     return (android_log_context)context;
 }
 
-int android_log_destroy(android_log_context *ctx) {
+__ABI_PUBLIC__ int android_log_destroy(android_log_context *ctx) {
     android_log_context_internal *context;
 
     context = (android_log_context_internal *)*ctx;
@@ -94,7 +97,7 @@ int android_log_destroy(android_log_context *ctx) {
     return 0;
 }
 
-int android_log_write_list_begin(android_log_context ctx) {
+__ABI_PUBLIC__ int android_log_write_list_begin(android_log_context ctx) {
     size_t needed;
     android_log_context_internal *context;
 
@@ -137,7 +140,8 @@ static inline void copy4LE(uint8_t *buf, uint32_t val)
     buf[3] = (val >> 24) & 0xFF;
 }
 
-int android_log_write_int32(android_log_context ctx, int32_t value) {
+__ABI_PUBLIC__ int android_log_write_int32(android_log_context ctx,
+                                           int32_t value) {
     size_t needed;
     android_log_context_internal *context;
 
@@ -172,7 +176,8 @@ static inline void copy8LE(uint8_t *buf, uint64_t val)
     buf[7] = (val >> 56) & 0xFF;
 }
 
-int android_log_write_int64(android_log_context ctx, int64_t value) {
+__ABI_PUBLIC__ int android_log_write_int64(android_log_context ctx,
+                                           int64_t value) {
     size_t needed;
     android_log_context_internal *context;
 
@@ -195,8 +200,9 @@ int android_log_write_int64(android_log_context ctx, int64_t value) {
     return 0;
 }
 
-int android_log_write_string8_len(android_log_context ctx,
-                                  const char *value, size_t maxlen) {
+__ABI_PUBLIC__ int android_log_write_string8_len(android_log_context ctx,
+                                                 const char *value,
+                                                 size_t maxlen) {
     size_t needed;
     ssize_t len;
     android_log_context_internal *context;
@@ -231,11 +237,13 @@ int android_log_write_string8_len(android_log_context ctx,
     return len;
 }
 
-int android_log_write_string8(android_log_context ctx, const char *value) {
+__ABI_PUBLIC__ int android_log_write_string8(android_log_context ctx,
+                                             const char *value) {
     return android_log_write_string8_len(ctx, value, MAX_EVENT_PAYLOAD);
 }
 
-int android_log_write_float32(android_log_context ctx, float value) {
+__ABI_PUBLIC__ int android_log_write_float32(android_log_context ctx,
+                                             float value) {
     size_t needed;
     uint32_t ivalue;
     android_log_context_internal *context;
@@ -260,7 +268,7 @@ int android_log_write_float32(android_log_context ctx, float value) {
     return 0;
 }
 
-int android_log_write_list_end(android_log_context ctx) {
+__ABI_PUBLIC__ int android_log_write_list_end(android_log_context ctx) {
     android_log_context_internal *context;
 
     context = (android_log_context_internal *)ctx;
@@ -290,7 +298,8 @@ int android_log_write_list_end(android_log_context ctx) {
 /*
  * Logs the list of elements to the event log.
  */
-int android_log_write_list(android_log_context ctx, log_id_t id) {
+__ABI_PUBLIC__ int android_log_write_list(android_log_context ctx,
+                                          log_id_t id) {
     android_log_context_internal *context;
     const char *msg;
     ssize_t len;
@@ -518,10 +527,12 @@ static android_log_list_element android_log_read_next_internal(
     }
 }
 
-android_log_list_element android_log_read_next(android_log_context ctx) {
+__ABI_PUBLIC__ android_log_list_element android_log_read_next(
+        android_log_context ctx) {
     return android_log_read_next_internal(ctx, 0);
 }
 
-android_log_list_element android_log_peek_next(android_log_context ctx) {
+__ABI_PUBLIC__ android_log_list_element android_log_peek_next(
+        android_log_context ctx) {
     return android_log_read_next_internal(ctx, 1);
 }
