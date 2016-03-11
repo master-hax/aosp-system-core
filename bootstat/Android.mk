@@ -20,7 +20,8 @@ bootstat_c_includes := external/gtest/include
 
 bootstat_lib_src_files := \
         boot_event_record_store.cpp \
-        event_log_list_builder.cpp
+        event_log_list_builder.cpp \
+        uptime_parser.cpp
 
 bootstat_src_files := \
         bootstat.cpp
@@ -28,7 +29,8 @@ bootstat_src_files := \
 bootstat_test_src_files := \
         boot_event_record_store_test.cpp \
         event_log_list_builder_test.cpp \
-        testrunner.cpp
+        testrunner.cpp \
+        uptime_parser_test.cpp
 
 bootstat_shared_libs := \
         libbase \
