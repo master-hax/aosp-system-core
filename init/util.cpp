@@ -424,16 +424,20 @@ void open_devnull_stdio(void)
 }
 
 void import_kernel_cmdline(bool in_qemu,
-                           std::function<void(const std::string&, const std::string&, bool)> fn) {
+                           std::function<void(const std::string&, const std::string&, bool)> fn,
+                           std::function<void(void)> prep, std::function<void(void)> postp) {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
-
+    // Invoking preprocess function
+    prep();
     for (const auto& entry : android::base::Split(android::base::Trim(cmdline), " ")) {
         std::vector<std::string> pieces = android::base::Split(entry, "=");
         if (pieces.size() == 2) {
             fn(pieces[0], pieces[1], in_qemu);
         }
     }
+    // Invoking postprocess function
+    postp();
 }
 
 int make_dir(const char *path, mode_t mode)
