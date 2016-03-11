@@ -333,6 +333,17 @@ static int console_init_action(const std::vector<std::string>& args)
     return 0;
 }
 
+static std::map<std::string, std::string> p_map;
+static void import_kernel_prep(void) {
+    p_map.clear();
+}
+
+static void import_kernel_postp(void) {
+    for (auto it : p_map) {
+        property_set(it.first.c_str(), it.second.c_str());
+    }
+}
+
 static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
     if (key.empty()) return;
 
@@ -345,8 +356,13 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
     if (key == "qemu") {
         strlcpy(qemu, value.c_str(), sizeof(qemu));
     } else if (android::base::StartsWith(key, "androidboot.")) {
-        property_set(android::base::StringPrintf("ro.boot.%s", key.c_str() + 12).c_str(),
-                     value.c_str());
+        std::string p_name = android::base::StringPrintf("ro.boot.%s", key.c_str() + 12);
+        auto it = p_map.find(p_name);
+        if (it == p_map.end()) {
+            p_map.emplace(p_name, value);
+        } else {
+            it->second.append(":").append(value);
+        }
     }
 }
 
@@ -419,7 +435,7 @@ static void process_kernel_cmdline() {
     // The first pass does the common stuff, and finds if we are in qemu.
     // The second pass is only necessary for qemu to export all kernel params
     // as properties.
-    import_kernel_cmdline(false, import_kernel_nv);
+    import_kernel_cmdline(false, import_kernel_nv, import_kernel_prep, import_kernel_postp);
     if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
