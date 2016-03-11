@@ -115,6 +115,13 @@ Options
 Options are modifiers to services.  They affect how and when init
 runs the service.
 
+console [<console>]
+  Flags that service needs a console. The second parameter maps the
+  service to a specific console, ie mapping service to "/dev/tty0":
+     console tty0
+  The service is mapped to system console "/dev/console" by default if
+  second parameter is not specified.
+
 critical
   This is a device-critical service. If it exits more than four times in
   four minutes, the device will reboot into recovery mode.
