@@ -317,6 +317,10 @@ static int console_init_action(const std::vector<std::string>& args)
     return 0;
 }
 
+static std::map<std::string, std::string> p_map;
+static std::vector<std::string> p_filter = {
+    "androidboot.console"
+};
 static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
     if (key.empty()) return;
 
@@ -329,8 +333,17 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
     if (key == "qemu") {
         strlcpy(qemu, value.c_str(), sizeof(qemu));
     } else if (android::base::StartsWith(key, "androidboot.")) {
-        property_set(android::base::StringPrintf("ro.boot.%s", key.c_str() + 12).c_str(),
-                     value.c_str());
+        std::string p_name = android::base::StringPrintf("ro.boot.%s", key.c_str() + 12);
+        if (std::find(p_filter.begin(), p_filter.end(), key) == p_filter.end()) {
+            property_set(p_name.c_str(), value.c_str());
+        } else {
+            auto it = p_map.find(p_name);
+            if (it == p_map.end()) {
+                p_map.emplace(p_name, value);
+            } else {
+                it->second.append(":").append(value);
+            }
+       }
     }
 }
 
@@ -403,7 +416,11 @@ static void process_kernel_cmdline() {
     // The first pass does the common stuff, and finds if we are in qemu.
     // The second pass is only necessary for qemu to export all kernel params
     // as properties.
+    p_map.clear();
     import_kernel_cmdline(false, import_kernel_nv);
+    for (auto it : p_map) {
+        property_set(it.first.c_str(), it.second.c_str());
+    }
     if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
