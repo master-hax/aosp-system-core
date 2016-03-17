@@ -248,7 +248,7 @@ static int read_request(int fd, debugger_request_t* out_request) {
   return 0;
 }
 
-static bool should_attach_gdb(debugger_request_t* request) {
+static bool should_attach_gdb(const debugger_request_t* request) {
   if (request->action == DEBUGGER_ACTION_CRASH) {
     return property_get_bool("debug.debuggerd.wait_for_gdb", false);
   }
@@ -563,6 +563,10 @@ static void worker_process(int fd, debugger_request_t& request) {
 
 static void monitor_worker_process(int child_pid, const debugger_request_t& request) {
   struct timespec timeout = {.tv_sec = 10, .tv_nsec = 0 };
+  if (should_attach_gdb(&request)) {
+    // If wait_for_gdb is enabled, set the timeout to something large.
+    timeout.tv_sec = INT_MAX;
+  }
 
   sigset_t signal_set;
   sigemptyset(&signal_set);
