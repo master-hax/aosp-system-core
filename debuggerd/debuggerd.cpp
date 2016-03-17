@@ -561,7 +561,8 @@ static void handle_request(int fd) {
     return;
   }
 
-  ALOGV("BOOM: pid=%d uid=%d gid=%d tid=%d\n", request.pid, request.uid, request.gid, request.tid);
+  ALOGW("debuggerd: handling request: pid=%d uid=%d gid=%d tid=%d\n", request.pid, request.uid,
+        request.gid, request.tid);
 
 #if defined(__LP64__)
   // On 64 bit systems, requests to dump 32 bit and 64 bit tids come
@@ -585,7 +586,73 @@ static void handle_request(int fd) {
     ALOGE("debuggerd: failed to fork: %s\n", strerror(errno));
     return;
   } else if (fork_pid != 0) {
-    waitpid(fork_pid, nullptr, 0);
+    sigset_t signal_set;
+    siginfo_t siginfo;
+    struct timespec timeout = {.tv_sec = 10, .tv_nsec = 0 };
+
+    sigemptyset(&signal_set);
+    sigaddset(&signal_set, SIGCHLD);
+
+    bool kill_worker = false;
+    bool kill_target = false;
+    bool kill_self = false;
+
+    int status;
+    int signal = TEMP_FAILURE_RETRY(sigtimedwait(&signal_set, &siginfo, &timeout));
+    if (signal == SIGCHLD) {
+      pid_t rc = waitpid(0, &status, WNOHANG | WUNTRACED);
+      if (rc != fork_pid) {
+        ALOGE("debuggerd: waitpid returned unexpected pid (%d), committing murder-suicide", rc);
+        kill_worker = true;
+        kill_target = true;
+        kill_self = true;
+      }
+
+      if (WIFSIGNALED(status)) {
+        ALOGE("debuggerd: worker process %d terminated due to signal %d", fork_pid,
+              WTERMSIG(status));
+        kill_worker = false;
+        kill_target = true;
+      } else if (WIFSTOPPED(status)) {
+        ALOGE("debuggerd: worker process %d stopped due to signal %d", fork_pid, WSTOPSIG(status));
+        kill_worker = true;
+        kill_target = true;
+      }
+    } else {
+      ALOGE("debuggerd: worker process %d timed out", fork_pid);
+      kill_worker = true;
+      kill_target = true;
+    }
+
+    if (kill_worker) {
+      // Something bad happened, kill the worker.
+      if (kill(fork_pid, SIGKILL) != 0) {
+        ALOGE("debuggerd: failed to kill worker process %d: %s", fork_pid, strerror(errno));
+      } else {
+        waitpid(fork_pid, &status, 0);
+      }
+    }
+
+    if (kill_target) {
+      // Resume or kill the target, depending on what the initial request was.
+      if (request.action == DEBUGGER_ACTION_CRASH) {
+        ALOGE("debuggerd: killing target %d", request.pid);
+        kill(request.pid, SIGKILL);
+      } else {
+        ALOGE("debuggerd: resuming target %d", request.pid);
+        kill(request.pid, SIGCONT);
+      }
+    }
+
+    if (kill_self) {
+      if (kill(signal_pid, SIGKILL) != 0) {
+        ALOGE("debuggerd: failed to kill signal sender: %s", strerror(errno));
+      } else {
+        waitpid(signal_pid, &status, 0);
+      }
+
+      _exit(1);
+    }
     return;
   }
 
@@ -719,12 +786,11 @@ static int do_server() {
   // Ignore failed writes to closed sockets
   signal(SIGPIPE, SIG_IGN);
 
-  struct sigaction act;
-  act.sa_handler = SIG_DFL;
-  sigemptyset(&act.sa_mask);
-  sigaddset(&act.sa_mask,SIGCHLD);
-  act.sa_flags = SA_NOCLDWAIT;
-  sigaction(SIGCHLD, &act, 0);
+  // Block SIGCHLD so we can sigtimedwait for it.
+  sigset_t sigchld;
+  sigemptyset(&sigchld);
+  sigaddset(&sigchld, SIGCHLD);
+  sigprocmask(SIG_SETMASK, &sigchld, nullptr);
 
   int s = socket_local_server(SOCKET_NAME, ANDROID_SOCKET_NAMESPACE_ABSTRACT,
                               SOCK_STREAM | SOCK_CLOEXEC);
