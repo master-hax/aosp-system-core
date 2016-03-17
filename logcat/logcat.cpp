@@ -37,6 +37,8 @@
 #include <log/logprint.h>
 #include <system/thread_defs.h>
 
+#include <pcrecpp.h>
+
 #define DEFAULT_MAX_ROTATED_LOGS 4
 
 static AndroidLogFormat * g_logformat;
@@ -79,6 +81,7 @@ static int g_devCount = 0;                              // >1 means multiple
 // 0 means "infinite"
 static size_t g_maxCount = 0;
 static size_t g_printCount = 0;
+static pcrecpp::RE* g_regex;
 
 __noreturn static void logcat_panic(bool showHelp, const char *fmt, ...) __printflike(2,3);
 
@@ -146,6 +149,17 @@ void printBinary(struct log_msg *buf)
     TEMP_FAILURE_RETRY(write(g_outFD, buf, size));
 }
 
+static bool regexOk(const AndroidLogEntry& entry)
+{
+    if (! g_regex) {
+        return true;
+    }
+
+    std::string messageString(entry.message, entry.messageLen);
+
+    return g_regex->PartialMatch(messageString);
+}
+
 static void processBuffer(log_device_t* dev, struct log_msg *buf)
 {
     int bytesWritten = 0;
@@ -174,7 +188,8 @@ static void processBuffer(log_device_t* dev, struct log_msg *buf)
         goto error;
     }
 
-    if (android_log_shouldPrintLine(g_logformat, entry.tag, entry.priority)) {
+    if (android_log_shouldPrintLine(g_logformat, entry.tag, entry.priority) &&
+        regexOk(entry)) {
         bytesWritten = android_log_printLogLine(g_logformat, g_outFD, &entry);
 
         g_printCount++;
@@ -276,6 +291,8 @@ static void show_help(const char *cmd)
                     "  -c              clear (flush) the entire log and exit\n"
                     "  --clear\n"
                     "  -d              dump the log and then exit (don't block)\n"
+                    "  -e <expr>       only print lines where the log message matches <expr>\n"
+                    "  --regex <expr>  where <expr> is a regular expression\n"
                     "  -m <count>      quit after printing <count> lines\n"
                     "  --max-count=<count>\n"
                     "  -t <count>      print only the most recent <count> lines (implies -d)\n"
@@ -556,6 +573,7 @@ int main(int argc, char **argv)
           { pid_str,         required_argument, NULL,   0 },
           { "max-count",     required_argument, NULL,   'm' },
           { "prune",         optional_argument, NULL,   'p' },
+          { "regex",         required_argument, NULL,   'e' },
           { "rotate_count",  required_argument, NULL,   'n' },
           { "rotate_kbytes", required_argument, NULL,   'r' },
           { "statistics",    no_argument,       NULL,   'S' },
@@ -564,7 +582,7 @@ int main(int argc, char **argv)
           { NULL,            0,                 NULL,   0 }
         };
 
-        ret = getopt_long(argc, argv, ":cdDLt:T:gG:sQf:r:n:v:b:BSpP:m:",
+        ret = getopt_long(argc, argv, ":cdDLt:T:gG:sQf:r:n:v:b:BSpP:m:e:",
                           long_options, &option_index);
 
         if (ret < 0) {
@@ -650,6 +668,10 @@ int main(int argc, char **argv)
 
             case 'D':
                 printDividers = true;
+            break;
+
+            case 'e':
+                g_regex = new pcrecpp::RE(optarg);
             break;
 
             case 'm': {
