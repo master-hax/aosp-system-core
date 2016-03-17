@@ -953,3 +953,46 @@ TEST(logcat, white_black_adjust) {
     free(list);
     list = NULL;
 }
+
+static volatile int unblock;
+
+static void unblock_alarm(int /*signum*/) {
+    unblock = 1;
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_aab"));
+}
+
+TEST(logcat, regex) {
+    FILE *fp;
+    int count = 0;
+
+    char buffer[5120];
+
+    snprintf(buffer, sizeof(buffer), "logcat --pid %d -e logcat_test_a+b", getpid());
+
+    ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_ab"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_b"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_aaaab"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_aaaa"));
+
+    signal(SIGALRM, unblock_alarm);
+    alarm(2);
+    unblock = 0;
+    while (!unblock && fgets(buffer, sizeof(buffer), fp)) {
+        if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
+            continue;
+        }
+
+        EXPECT_TRUE(strstr(buffer, "logcat_test_") != NULL);
+
+        count++;
+    }
+    alarm(0);
+    signal(SIGALRM, SIG_DFL);
+
+    //TODO: Uncomment this when we find a reliable way to make the process die.
+    //pclose(fp);
+
+    ASSERT_EQ(3, count);
+}
