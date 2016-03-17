@@ -76,6 +76,9 @@ static int g_outFD = -1;
 static size_t g_outByteCount = 0;
 static int g_printBinary = 0;
 static int g_devCount = 0;                              // >1 means multiple
+// 0 means "infinite"
+static size_t g_maxCount = 0;
+static size_t g_printCount = 0;
 
 __noreturn static void logcat_panic(bool showHelp, const char *fmt, ...) __printflike(2,3);
 
@@ -174,6 +177,8 @@ static void processBuffer(log_device_t* dev, struct log_msg *buf)
     if (android_log_shouldPrintLine(g_logformat, entry.tag, entry.priority)) {
         bytesWritten = android_log_printLogLine(g_logformat, g_outFD, &entry);
 
+        g_printCount++;
+
         if (bytesWritten < 0) {
             logcat_panic(false, "output error");
         }
@@ -271,6 +276,8 @@ static void show_help(const char *cmd)
                     "  -c              clear (flush) the entire log and exit\n"
                     "  --clear\n"
                     "  -d              dump the log and then exit (don't block)\n"
+                    "  -m <count>      quit after printing <count> lines\n"
+                    "  --max-count=<count>\n"
                     "  -t <count>      print only the most recent <count> lines (implies -d)\n"
                     "  -t '<time>'     print most recent lines since specified time (implies -d)\n"
                     "  -T <count>      print only the most recent <count> lines (does not imply -d)\n"
@@ -547,6 +554,7 @@ int main(int argc, char **argv)
           { "format",        required_argument, NULL,   'v' },
           { "last",          no_argument,       NULL,   'L' },
           { pid_str,         required_argument, NULL,   0 },
+          { "max-count",     required_argument, NULL,   'm' },
           { "prune",         optional_argument, NULL,   'p' },
           { "rotate_count",  required_argument, NULL,   'n' },
           { "rotate_kbytes", required_argument, NULL,   'r' },
@@ -556,7 +564,7 @@ int main(int argc, char **argv)
           { NULL,            0,                 NULL,   0 }
         };
 
-        ret = getopt_long(argc, argv, ":cdDLt:T:gG:sQf:r:n:v:b:BSpP:",
+        ret = getopt_long(argc, argv, ":cdDLt:T:gG:sQf:r:n:v:b:BSpP:m:",
                           long_options, &option_index);
 
         if (ret < 0) {
@@ -642,6 +650,18 @@ int main(int argc, char **argv)
 
             case 'D':
                 printDividers = true;
+            break;
+
+            case 'm': {
+                char *end = NULL;
+                long long value = strtoll(optarg, &end, 0);
+                if (end == optarg || *end || value <= 0) {
+                    logcat_panic(false, "-%c \"%s\" isn't an "
+                                 "integer greater than zero\n", ret, optarg);
+                }
+
+                g_maxCount = value;
+            }
             break;
 
             case 'g':
@@ -1135,7 +1155,7 @@ int main(int argc, char **argv)
 
     dev = NULL;
     log_device_t unexpected("unexpected", false);
-    while (1) {
+    while (!g_maxCount || g_printCount < g_maxCount) {
         struct log_msg log_msg;
         log_device_t* d;
         int ret = android_logger_list_read(logger_list, &log_msg);
