@@ -967,7 +967,7 @@ TEST(logcat, regex) {
 
     char buffer[5120];
 
-    snprintf(buffer, sizeof(buffer), "logcat --pid %d -e logcat_test_a+b", getpid());
+    snprintf(buffer, sizeof(buffer), "logcat --pid %d -m 3 -e logcat_test_a+b", getpid());
 
     ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
 
@@ -991,8 +991,42 @@ TEST(logcat, regex) {
     alarm(0);
     signal(SIGALRM, SIG_DFL);
 
-    //TODO: Uncomment this when we find a reliable way to make the process die.
-    //pclose(fp);
+    pclose(fp);
+
+    ASSERT_EQ(3, count);
+}
+
+static void alarm_fail(int /*signum*/) {
+    GTEST_FAIL();
+}
+
+TEST(logcat, maxcount) {
+    FILE *fp;
+    int count = 0;
+
+    char buffer[5120];
+
+    snprintf(buffer, sizeof(buffer), "logcat --pid %d --max-count 3", getpid());
+
+    ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test"));
+
+    signal(SIGALRM, alarm_fail);
+    alarm(2);
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
+            continue;
+        }
+
+        count++;
+    }
+    alarm(0);
+    signal(SIGALRM, SIG_DFL);
+
+    pclose(fp);
 
     ASSERT_EQ(3, count);
 }
