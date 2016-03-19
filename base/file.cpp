@@ -172,5 +172,24 @@ bool RemoveFileIfExists(const std::string& path, std::string* err) {
   return true;
 }
 
+#if !defined(_WIN32)
+bool SetCloseOnExec(int fd) {
+  // This dance is more portable than Linux's O_CLOEXEC open(2) flag.
+  int flags = fcntl(fd, F_GETFD);
+  if (flags == -1) {
+    return false;
+  }
+  int rc = fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
+  if (rc == -1) {
+    return false;
+  }
+  return true;
+}
+#else
+bool SetCloseOnExec(int) {
+  return true;
+}
+#endif
+
 }  // namespace base
 }  // namespace android
