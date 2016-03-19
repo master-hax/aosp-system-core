@@ -17,6 +17,7 @@ LOCAL_PATH := $(call my-dir)
 
 libziparchive_source_files := \
     zip_archive.cc \
+    zip_archive_holder.cc \
     zip_archive_stream_entry.cc \
     zip_writer.cc \
 

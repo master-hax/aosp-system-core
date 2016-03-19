@@ -44,6 +44,7 @@
 #include <unistd.h>
 
 #include <functional>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -51,7 +52,7 @@
 #include <android-base/parsenetaddress.h>
 #include <android-base/strings.h>
 #include <sparse/sparse.h>
-#include <ziparchive/zip_archive.h>
+#include <ziparchive/zip_archive_holder.h>
 
 #include "bootimg_utils.h"
 #include "diagnose_usb.h"
@@ -918,29 +919,26 @@ static void do_update(Transport* transport, const char* filename, const char* sl
 
     fb_queue_query_save("product", cur_product, sizeof(cur_product));
 
-    ZipArchiveHandle zip;
-    int error = OpenArchive(filename, &zip);
-    if (error != 0) {
-        CloseArchive(zip);
-        die("failed to open zip file '%s': %s", filename, ErrorCodeString(error));
+    std::string err_msg;
+    std::unique_ptr<ZipArchiveHolder> zip = ZipArchiveHolder::Open(filename, &err_msg);
+    if (zip == nullptr) {
+        die("failed to open zip file '%s': %s", filename, err_msg.c_str());
     }
 
     int64_t sz;
-    void* data = unzip_file(zip, "android-info.txt", &sz);
+    void* data = unzip_file(zip->handle(), "android-info.txt", &sz);
     if (data == nullptr) {
-        CloseArchive(zip);
         die("update package '%s' has no android-info.txt", filename);
     }
 
     setup_requirements(reinterpret_cast<char*>(data), sz);
 
     for (size_t i = 0; i < ARRAY_SIZE(images); ++i) {
-        int fd = unzip_to_file(zip, images[i].img_name);
+        int fd = unzip_to_file(zip->handle(), images[i].img_name);
         if (fd == -1) {
             if (images[i].is_optional) {
                 continue;
             }
-            CloseArchive(zip);
             exit(1); // unzip_to_file already explained why.
         }
         fastboot_buffer buf;
@@ -948,7 +946,7 @@ static void do_update(Transport* transport, const char* filename, const char* sl
         if (rc) die("cannot load %s from flash", images[i].img_name);
 
         auto update = [&](const std::string &partition) {
-            do_update_signature(zip, images[i].sig_name);
+            do_update_signature(zip->handle(), images[i].sig_name);
             if (erase_first && needs_erase(transport, partition.c_str())) {
                 fb_queue_erase(partition.c_str());
             }
@@ -960,8 +958,6 @@ static void do_update(Transport* transport, const char* filename, const char* sl
         };
         do_for_partitions(transport, images[i].part_name, slot_override, update, false);
     }
-
-    CloseArchive(zip);
 }
 
 static void do_send_signature(char* fn) {
