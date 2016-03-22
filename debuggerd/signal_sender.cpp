@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cutils/process_name.h>
 #include <log/logger.h>
 
 #include "signal_sender.h"
@@ -34,6 +35,33 @@ struct signal_message {
   pid_t tid;
   int signal;
 };
+
+extern "C" const char* __progname;
+
+static void set_signal_sender_process_name() {
+#if defined(__LP64__)
+  constexpr char long_process_name[] = "debuggerd64:signaller";
+  constexpr char short_process_name[] = "debuggerd64:sig";
+  static_assert(sizeof(long_process_name) <= sizeof("/system/bin/debuggerd64"), "");
+#else
+  constexpr char long_process_name[] = "debuggerd:signaller";
+  constexpr char short_process_name[] = "debuggerd:sig";
+  static_assert(sizeof(long_process_name) <= sizeof("/system/bin/debuggerd"), "");
+#endif
+
+  // prctl(PR_SET_NAME) has a maximum length of 16 chars, including null terminator.
+  static_assert(sizeof(short_process_name) <= 16, "");
+  set_process_name(short_process_name);
+
+  char* argv0 = const_cast<char*>(__progname);
+  if (strlen(argv0) <= strlen(long_process_name)) {
+    ALOGE("debuggerd: unexpected __progname %s", __progname);
+    return;
+  }
+
+  memset(argv0, 0, strlen(argv0));
+  strcpy(argv0, long_process_name);
+}
 
 // Fork a process to send signals for the worker processes to use after they've dropped privileges.
 bool start_signal_sender() {
@@ -55,6 +83,8 @@ bool start_signal_sender() {
     return false;
   } else if (fork_pid == 0) {
     close(sfd[1]);
+
+    set_signal_sender_process_name();
 
     while (true) {
       signal_message msg;
