@@ -310,6 +310,7 @@ static bool __attribute__((unused)) set_mmap_rnd_bits_min(int start, int min, bo
     }
     std::ifstream inf(path, std::fstream::in);
     if (!inf) {
+        ERROR("Cannot open for reading: %s!\n", path.c_str());
         return false;
     }
     while (start >= min) {
@@ -317,6 +318,7 @@ static bool __attribute__((unused)) set_mmap_rnd_bits_min(int start, int min, bo
         std::string str_val = std::to_string(start);
         std::ofstream of(path, std::fstream::out);
         if (!of) {
+            ERROR("Cannot open for writing: %s!\n", path.c_str());
             return false;
         }
         of << str_val << std::endl;
@@ -332,7 +334,12 @@ static bool __attribute__((unused)) set_mmap_rnd_bits_min(int start, int min, bo
         start--;
     }
     inf.close();
-    return (start >= min);
+    if (start < min) {
+        ERROR("Unable to set minimum required entropy %d in %s!\n",
+              min, path.c_str());
+        return false;
+    }
+    return true;
 }
 
 /*
