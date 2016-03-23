@@ -44,14 +44,18 @@ class unique_fd final {
   ~unique_fd() { clear(); }
 
   unique_fd(unique_fd&& other) : value_(other.release()) {}
-  unique_fd& operator = (unique_fd&& s) {
+  unique_fd& operator=(unique_fd&& s) {
     reset(s.release());
     return *this;
   }
 
   void reset(int new_value) {
-    if (value_ >= 0)
+    if (value_ != -1) {
+      // Even if close(2) fails with EINTR, the fd will have been closed.
+      // Using TEMP_FAILURE_RETRY will either lead to EBADF or closing someone else's fd.
+      // http://lkml.indiana.edu/hypermail/linux/kernel/0509.1/0877.html
       close(value_);
+    }
     value_ = new_value;
   }
 
@@ -61,7 +65,7 @@ class unique_fd final {
 
   int get() const { return value_; }
 
-  int release() {
+  int release() __attribute__((warn_unused_result)) {
     int ret = value_;
     value_ = -1;
     return ret;
