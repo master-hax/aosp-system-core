@@ -17,12 +17,17 @@
 #include "boot_event_record_store.h"
 
 #include <dirent.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <utime.h>
 #include <cstdint>
 #include <cstdlib>
+#include <fstream>
 #include <android-base/file.h>
+#include <android-base/logging.h>
 #include <android-base/test_utils.h>
+#include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "uptime_parser.h"
@@ -30,6 +35,41 @@
 using testing::UnorderedElementsAreArray;
 
 namespace {
+
+// Creates a fake boot event record file at |record_path| containing the boot
+// record |value|. This method is necessary as truncating a
+// BootEventRecordStore-created file would modify the mtime, which would alter
+// the value of the record.
+bool CreateEmptyBootEventRecord(const std::string& record_path, int32_t value) {
+  android::base::unique_fd record_fd(creat(record_path.c_str(), S_IRUSR | S_IWUSR));
+  if (record_fd.get() == -1) {
+    return false;
+  }
+
+  // Writing the value as content in the record file is a debug measure to
+  // ensure the validity of the file mtime value, i.e., to check that the record
+  // file mtime values are not changed once set.
+  // TODO(jhawkins): Remove this block.
+  if (!android::base::WriteStringToFd(std::to_string(value), record_fd.get())) {
+    return false;
+  }
+
+  // Fill out the stat structure for |record_path| in order to get the atime to
+  // set in the utime() call.
+  struct stat file_stat;
+  if (stat(record_path.c_str(), &file_stat) == -1) {
+    return false;
+  }
+
+  // Set the |modtime| of the file to store the value of the boot event while
+  // preserving the |actime| (as read by stat).
+  struct utimbuf times = {/* actime */ file_stat.st_atime, /* modtime */ value};
+  if (utime(record_path.c_str(), &times) == -1) {
+    return false;
+  }
+
+  return true;
+}
 
 // Returns true if the time difference between |a| and |b| is no larger
 // than 10 seconds.  This allow for a relatively large fuzz when comparing
@@ -178,4 +218,19 @@ TEST_F(BootEventRecordStoreTest, GetBootEvent) {
 
   // Null |record|.
   EXPECT_DEATH(store.GetBootEvent("carboniferous", nullptr), std::string());
+}
+
+// Tests that the BootEventRecordStore is capable of handling an older record
+// protocol which does not contain file contents.
+TEST_F(BootEventRecordStoreTest, GetBootEventNoFileContent) {
+  BootEventRecordStore store;
+  store.SetStorePath(GetStorePathForTesting());
+
+  EXPECT_TRUE(CreateEmptyBootEventRecord(store.GetBootEventPath("devonian"), 2718));
+
+  BootEventRecordStore::BootEventRecord record;
+  bool result = store.GetBootEvent("devonian", &record);
+  EXPECT_EQ(true, result);
+  EXPECT_EQ("devonian", record.first);
+  EXPECT_EQ(2718, record.second);
 }
