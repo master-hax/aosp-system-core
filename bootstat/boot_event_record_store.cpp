@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-#include "boot_event_record_store.h"
 
+#include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <utime.h>
+
 #include <cstdlib>
 #include <string>
 #include <utility>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
+
+#include "boot_event_record_store.h"
 #include "histogram_logger.h"
 #include "uptime_parser.h"
 
@@ -55,7 +59,8 @@ bool ParseRecordEventTime(const std::string& path, int32_t* uptime) {
     return false;
   }
 
-  int32_t value = std::stoi(content);
+  int32_t value = (content.length() && isdigit(content.data()[0])) ?
+    std::stoi(content) : -1;
   bootstat::LogHistogram("bootstat_mtime_matches_content", value == *uptime);
 
   return true;

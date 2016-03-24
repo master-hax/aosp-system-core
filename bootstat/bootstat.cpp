@@ -18,8 +18,10 @@
 // timestamp, dump the persisted events, and log all events to EventLog to be
 // uploaded to Android log storage via Tron.
 
+#include <ctype.h>
 #include <getopt.h>
 #include <unistd.h>
+
 #include <cmath>
 #include <cstddef>
 #include <cstdio>
@@ -27,9 +29,11 @@
 #include <map>
 #include <memory>
 #include <string>
+
 #include <android-base/logging.h>
 #include <cutils/properties.h>
 #include <log/log.h>
+
 #include "boot_event_record_store.h"
 #include "event_log_list_builder.h"
 #include "histogram_logger.h"
@@ -286,7 +290,7 @@ int main(int argc, char **argv) {
       // This case handles long options which have no single-character mapping.
       case 0: {
         const std::string option_name = long_options[option_index].name;
-        if (option_name == value_str) {
+        if ((option_name == value_str) && isdigit(optarg[optarg[0] == '-'])) {
           // |optarg| is an external variable set by getopt representing
           // the option argument.
           value = optarg;
