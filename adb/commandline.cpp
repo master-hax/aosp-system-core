@@ -239,6 +239,9 @@ static void help() {
         "  - If it is \"system\", \"vendor\", \"oem\" or \"data\", only the corresponding partition\n"
         "    is updated.\n"
         "\n"
+        "internal debugging:\n"
+        " adb reconnect device            Kick connection from the device side and make it reconnect.\n"
+        "\n"
         "environment variables:\n"
         "  ADB_TRACE                    - Print debug information. A comma separated list of the following values\n"
         "                                 1 or all, adb, sockets, packets, rwx, usb, sync, sysdeps, transport, jdwp\n"
@@ -1903,6 +1906,16 @@ int adb_commandline(int argc, const char **argv) {
             if (CanUseFeature(features, name)) {
                 printf("%s\n", name.c_str());
             }
+        }
+        return 0;
+    }
+    else if (!strcmp(argv[0], "reconnect")) {
+        if (argc == 2 && !strcmp(argv[1], "device")) {
+            // Notice that it can cause socket leak on mac/windows, because the
+            // device may not reply to this command.
+            std::string err;
+            adb_connect("reconnect", &err);
+            return 0;
         }
         return 0;
     }

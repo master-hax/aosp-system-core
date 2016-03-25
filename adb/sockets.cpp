@@ -41,8 +41,6 @@ ADB_MUTEX_DEFINE( socket_list_lock );
 
 static void local_socket_close_locked(asocket *s);
 
-static unsigned local_socket_next_id = 1;
-
 static asocket local_socket_list = {
     .next = &local_socket_list,
     .prev = &local_socket_list,
@@ -88,16 +86,22 @@ insert_local_socket(asocket*  s, asocket*  list)
     s->next->prev = s;
 }
 
+static unsigned GetNextSocketId() {
+    static unsigned local_socket_next_id = 1;
+    unsigned ret = local_socket_next_id++;
+    // local socket id can't be zero. And HEARTBEAT_SOCKET_ID is
+    // reserved to send heartbeat packets.
+    if (local_socket_next_id == HEARTBEAT_SOCKET_ID) {
+        local_socket_next_id = 1;
+    }
+    return ret;
+}
 
 void install_local_socket(asocket *s)
 {
     adb_mutex_lock(&socket_list_lock);
 
-    s->id = local_socket_next_id++;
-
-    // Socket ids should never be 0.
-    if (local_socket_next_id == 0)
-      local_socket_next_id = 1;
+    s->id = GetNextSocketId();
 
     insert_local_socket(s, &local_socket_list);
 

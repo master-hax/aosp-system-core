@@ -168,9 +168,11 @@ int _adb_connect(const std::string& service, std::string* error) {
         return -1;
     }
 
-    if (!adb_status(fd, error)) {
-        adb_close(fd);
-        return -1;
+    if (service != "reconnect") {
+        if (!adb_status(fd, error)) {
+            adb_close(fd);
+            return -1;
+        }
     }
 
     D("_adb_connect: return fd %d", fd);
