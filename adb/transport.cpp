@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <list>
 
 #include <android-base/logging.h>
@@ -143,6 +144,14 @@ static void transport_socket_events(int fd, unsigned events, void *_t)
         if(read_packet(fd, t->serial, &p)){
             D("%s: failed to read packet from transport socket on fd %d", t->serial, fd);
         } else {
+#if ADB_HOST
+            if (p->msg.command == A_CLSE && p->msg.arg0 == 0 &&
+                p->msg.arg1 == HEARTBEAT_SOCKET_ID) {
+                t->SetHeartbeatClosePacketReceivedTime(steady_clock::now());
+                put_apacket(p);
+                return;
+            }
+#endif
             handle_packet(p, (atransport *) _t);
         }
     }
@@ -172,7 +181,6 @@ void send_packet(apacket *p, atransport *t)
         errno = 0;
         fatal_errno("Transport is null");
     }
-
     if(write_packet(t->transport_socket, t->serial, &p)){
         fatal_errno("cannot enqueue packet on transport socket");
     }
@@ -566,6 +574,62 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
     update_transports();
 }
 
+#if ADB_HOST
+static fdevent kick_invalid_transports_fde;
+
+// kick_invalid_transports() can only be called in the main thread, because
+// there is no protection of transport content.
+static void kick_invalid_transports() {
+    steady_clock::time_point now = steady_clock::now();
+    adb_mutex_lock(&transport_lock);
+    for (auto& t : transport_list) {
+        if (t->online == 0) {
+            auto duration = std::chrono::duration_cast<std::chrono::duration<double>>(
+                now - t->GetCreatedTime());
+            if (duration.count() >= 3) {
+                VLOG(TRANSPORT) << "Kick transport " << t->serial
+                    << " which has been offlined for " << duration.count() << " seconds";
+                kick_transport_locked(t);
+            }
+        } else if (t->connection_state == kCsDevice) {
+            HeartbeatStatus status = t->CheckHeartbeatStatus(now);
+            if (status == HeartbeatStatus::INVALID) {
+                VLOG(TRANSPORT) << "Kick transport " << t->serial;
+                kick_transport_locked(t);
+            } else if (status == HeartbeatStatus::FINISHED) {
+                apacket* p = get_apacket();
+                p->msg.command = A_OPEN;
+                p->msg.arg0 = HEARTBEAT_SOCKET_ID;
+                send_packet(p, t);
+                t->SetHeartbeatOpenPacketSentTime(steady_clock::now());
+            }
+        }
+    }
+    adb_mutex_unlock(&transport_lock);
+}
+
+static void kick_invalid_transports_func(int fd, unsigned ev, void*) {
+    if (ev & FDE_READ) {
+        char c;
+        int r;
+        do {
+           r = adb_read(fd, &c, 1);
+        } while (r > 0);
+        kick_invalid_transports();
+    }
+}
+
+static void kick_invalid_transports_reminder_thread(void* arg) {
+    int fd = static_cast<int>(reinterpret_cast<intptr_t>(arg));
+    while (true) {
+        adb_sleep_ms(1000);
+        char c;
+        adb_write(fd, &c, 1);
+    }
+}
+
+#endif
+
 void init_transport_registration(void)
 {
     int s[2];
@@ -573,7 +637,7 @@ void init_transport_registration(void)
     if(adb_socketpair(s)){
         fatal_errno("cannot open transport registration socketpair");
     }
-    D("socketpair: (%d,%d)", s[0], s[1]);
+    D("socketpair for transport registration: (%d,%d)", s[0], s[1]);
 
     transport_registration_send = s[0];
     transport_registration_recv = s[1];
@@ -584,6 +648,20 @@ void init_transport_registration(void)
                     0);
 
     fdevent_set(&transport_registration_fde, FDE_READ);
+#if ADB_HOST
+    int fd[2];
+    if (adb_socketpair(fd)) {
+        fatal_errno("cannot create socketpair");
+    }
+    VLOG(TRANSPORT) << "socketpair for kick invalid transports (" << fd[0] << ", " << fd[1] << ")";
+    fdevent_install(&kick_invalid_transports_fde, fd[1],
+                    kick_invalid_transports_func, 0);
+    fdevent_set(&kick_invalid_transports_fde, FDE_READ);
+    if (!adb_thread_create(kick_invalid_transports_reminder_thread,
+                           reinterpret_cast<void*>(static_cast<intptr_t>(fd[0])))) {
+        fatal_errno("cannot create kick_invalid transports_reminder_thread");
+    }
+#endif
 }
 
 /* the fdevent select pump is single threaded */
@@ -871,6 +949,29 @@ bool atransport::MatchesTarget(const std::string& target) const {
            qual_match(target.c_str(), "device:", device, false);
 }
 
+HeartbeatStatus atransport::CheckHeartbeatStatus(steady_clock::time_point now) {
+    time_interval open_duration = std::chrono::duration_cast<time_interval>(
+                                    now - heartbeat_open_packet_sent_time_);
+    if (open_duration > heartbeat_interval_) {
+        if (heartbeat_close_packet_received_time_ > heartbeat_open_packet_sent_time_) {
+            heartbeat_failed_count_ = 0;
+        } else {
+            if (++heartbeat_failed_count_ >= heartbeat_failed_count_before_invalid_) {
+                time_interval no_response_duration = std::chrono::duration_cast<time_interval>(
+                                                      now - heartbeat_close_packet_received_time_);
+                VLOG(TRANSPORT) << "Transport " << serial
+                    << " has no response for heartbeat A_OPEN packets for "
+                    << no_response_duration.count() << " s,"
+                    << " heartbeat_interval is " << heartbeat_interval_.count() << " s,"
+                    << " heartbeat_failed_count is " << heartbeat_failed_count_;
+                return HeartbeatStatus::INVALID;
+            }
+        }
+        return HeartbeatStatus::FINISHED;
+    }
+    return HeartbeatStatus::WAITING;
+}
+
 #if ADB_HOST
 
 static void append_transport_info(std::string* result, const char* key,
@@ -933,8 +1034,10 @@ void close_usb_devices() {
 }
 #endif // ADB_HOST
 
-int register_socket_transport(int s, const char *serial, int port, int local) {
-    atransport* t = new atransport();
+int register_socket_transport(int s, const char *serial, int port, int local,
+                              size_t heartbeat_interval_in_sec,
+                              size_t heartbeat_count_before_fail) {
+    atransport* t = new atransport(heartbeat_interval_in_sec, heartbeat_count_before_fail);
 
     if (!serial) {
         char buf[32];
@@ -1008,7 +1111,7 @@ void kick_all_tcp_devices() {
 
 void register_usb_transport(usb_handle* usb, const char* serial,
                             const char* devpath, unsigned writeable) {
-    atransport* t = new atransport();
+    atransport* t = new atransport(1, 2);
 
     D("transport: %p init'ing for usb_handle %p (sn='%s')", t, usb,
       serial ? serial : "");
