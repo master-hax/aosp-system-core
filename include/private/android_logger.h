@@ -126,6 +126,8 @@ ssize_t __android_log_pmsg_file_read(
         log_id_t logId, char prio, const char *prefix,
         __android_log_pmsg_file_read_fn fn, void *arg);
 
+int __android_log_is_debuggable();
+
 #if defined(__cplusplus)
 }
 #endif
