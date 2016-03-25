@@ -103,6 +103,8 @@ static void help() {
         "                                 Port 5555 is used by default if no port number is specified.\n"
         "                                 Using this command with no additional arguments\n"
         "                                 will disconnect from all connected TCP/IP devices.\n"
+        " reconnect device                Kick connection from the device side and make it reconnect.\n"
+        "                                 Use for adb debugging.\n"
         "\n"
         "device commands:\n"
         "  adb push <local>... <remote>\n"
@@ -1903,6 +1905,16 @@ int adb_commandline(int argc, const char **argv) {
             if (CanUseFeature(features, name)) {
                 printf("%s\n", name.c_str());
             }
+        }
+        return 0;
+    }
+    else if (!strcmp(argv[0], "reconnect")) {
+        if (argc == 2 && !strcmp(argv[1], "device")) {
+            // Notice that it can cause socket leak on mac/windows, because the
+            // device may not reply to this command.
+            std::string err;
+            adb_connect("reconnect", &err);
+            return 0;
         }
         return 0;
     }

@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 
+#include <chrono>
 #include <list>
 #include <string>
 #include <unordered_set>
@@ -49,7 +50,7 @@ public:
     // class in one go is a very large change. Given how bad our testing is,
     // it's better to do this piece by piece.
 
-    atransport() {
+    atransport() : created_time_(std::chrono::steady_clock::now()) {
         transport_fde = {};
         protocol_version = A_VERSION;
         max_payload = MAX_PAYLOAD;
@@ -122,6 +123,28 @@ public:
     // This is to make it easier to use the same network target for both fastboot and adb.
     bool MatchesTarget(const std::string& target) const;
 
+    std::chrono::steady_clock::time_point GetCreatedTime() const {
+        return created_time_;
+    }
+
+    std::chrono::steady_clock::time_point GetHeartbeatOpenPacketSendingTime() const {
+        return heartbeat_open_packet_sending_time_;
+    }
+    void SetHeartbeatOpenPacketSendingTime(std::chrono::steady_clock::time_point tp) {
+        heartbeat_open_packet_sending_time_ = tp;
+    }
+    std::chrono::steady_clock::time_point GetHeartbeatClosePacketReceivingTime() const {
+        return heartbeat_close_packet_receiving_time_;
+    }
+    void SetHeartbeatClosePacketReceivingTime(std::chrono::steady_clock::time_point tp) {
+        heartbeat_close_packet_receiving_time_ = tp;
+    }
+
+    // Monitor packet from main thread to connection.
+    void MonitorSentPacket(apacket* p);
+    // Monitor packet from connection to main thread.
+    void MonitorReceivedPacket(apacket* p);
+
 private:
     // A set of features transmitted in the banner with the initial connection.
     // This is stored in the banner as 'features=feature0,feature1,etc'.
@@ -131,6 +154,10 @@ private:
 
     // A list of adisconnect callbacks called when the transport is kicked.
     std::list<adisconnect*> disconnects_;
+
+    const std::chrono::steady_clock::time_point created_time_;
+    std::chrono::steady_clock::time_point heartbeat_open_packet_sending_time_;
+    std::chrono::steady_clock::time_point heartbeat_close_packet_receiving_time_;
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };
