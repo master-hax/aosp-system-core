@@ -75,6 +75,10 @@ struct apacket
     unsigned char data[MAX_PAYLOAD];
 };
 
+// HEARTBEAT_SOCKET_ID is used by adb host server to send A_OPEN packets to devices
+// and receive A_CLSE packets from devices regularly.
+constexpr uint32_t HEARTBEAT_SOCKET_ID = 0xffffffff;
+
 /* the adisconnect structure is used to record a callback that
 ** will be called whenever a transport is disconnected (e.g. by the user)
 ** this should be used to cleanup objects that depend on the
