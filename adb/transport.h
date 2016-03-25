@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 
+#include <chrono>
 #include <list>
 #include <string>
 #include <unordered_set>
@@ -42,6 +43,15 @@ extern const char* const kFeatureShell2;
 // The 'cmd' command is available
 extern const char* const kFeatureCmd;
 
+using steady_clock = std::chrono::steady_clock;
+using time_interval = std::chrono::duration<double>;
+
+enum class HeartbeatStatus {
+  WAITING,
+  FINISHED,
+  INVALID,
+};
+
 class atransport {
 public:
     // TODO(danalbert): We expose waaaaaaay too much stuff because this was
@@ -49,7 +59,11 @@ public:
     // class in one go is a very large change. Given how bad our testing is,
     // it's better to do this piece by piece.
 
-    atransport() {
+    atransport(size_t heartbeat_interval_in_sec, size_t heartbeat_failed_count_before_invalid)
+        : created_time_(std::chrono::steady_clock::now()),
+          heartbeat_interval_(heartbeat_interval_in_sec),
+          heartbeat_failed_count_before_invalid_(heartbeat_failed_count_before_invalid),
+          heartbeat_failed_count_(0) {
         transport_fde = {};
         protocol_version = A_VERSION;
         max_payload = MAX_PAYLOAD;
@@ -122,6 +136,21 @@ public:
     // This is to make it easier to use the same network target for both fastboot and adb.
     bool MatchesTarget(const std::string& target) const;
 
+    steady_clock::time_point GetCreatedTime() const {
+        return created_time_;
+    }
+
+    void SetHeartbeatOpenPacketSentTime(steady_clock::time_point tp) {
+        heartbeat_open_packet_sent_time_ = tp;
+    }
+
+    void SetHeartbeatClosePacketReceivedTime(steady_clock::time_point tp) {
+        heartbeat_close_packet_received_time_ = tp;
+    }
+
+    time_interval GetInitialConnectionTimeout();
+    HeartbeatStatus CheckHeartbeatStatus(steady_clock::time_point now);
+
 private:
     // A set of features transmitted in the banner with the initial connection.
     // This is stored in the banner as 'features=feature0,feature1,etc'.
@@ -131,6 +160,13 @@ private:
 
     // A list of adisconnect callbacks called when the transport is kicked.
     std::list<adisconnect*> disconnects_;
+
+    const steady_clock::time_point created_time_;
+    const time_interval heartbeat_interval_;
+    const size_t heartbeat_failed_count_before_invalid_;
+    size_t heartbeat_failed_count_;
+    steady_clock::time_point heartbeat_open_packet_sent_time_;
+    steady_clock::time_point heartbeat_close_packet_received_time_;
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };
@@ -156,7 +192,9 @@ void register_usb_transport(usb_handle* h, const char* serial,
                             const char* devpath, unsigned writeable);
 
 /* cause new transports to be init'd and added to the list */
-int register_socket_transport(int s, const char* serial, int port, int local);
+int register_socket_transport(int s, const char* serial, int port, int local,
+                              size_t heartbeat_internal_in_sec,
+                              size_t heartbeat_count_before_fail);
 
 // This should only be used for transports with connection_state == kCsNoPerm.
 void unregister_usb_transport(usb_handle* usb);

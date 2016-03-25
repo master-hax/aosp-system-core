@@ -112,7 +112,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
         close_on_exec(fd);
         disable_tcp_nagle(fd);
         std::string serial = android::base::StringPrintf("emulator-%d", console_port);
-        if (register_socket_transport(fd, serial.c_str(), adb_port, 1) == 0) {
+        if (register_socket_transport(fd, serial.c_str(), adb_port, 1, 1, 3) == 0) {
             return 0;
         }
         adb_close(fd);
@@ -167,7 +167,7 @@ static void server_socket_thread(void* arg) {
             D("server: new connection on fd %d", fd);
             close_on_exec(fd);
             disable_tcp_nagle(fd);
-            register_socket_transport(fd, "host", port, 1);
+            register_socket_transport(fd, "host", port, 1, 1, 3);
         }
     }
     D("transport: server_socket_thread() exiting");
@@ -261,7 +261,7 @@ static void qemu_socket_thread(void* arg) {
                 /* Host is connected. Register the transport, and start the
                  * exchange. */
                 std::string serial = android::base::StringPrintf("host-%d", fd);
-                register_socket_transport(fd, serial.c_str(), port, 1);
+                register_socket_transport(fd, serial.c_str(), port, 1, 1, 3);
                 if (!WriteFdExactly(fd, _start_req, strlen(_start_req))) {
                     adb_close(fd);
                 }

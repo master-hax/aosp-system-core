@@ -22,6 +22,9 @@
 
 class TestTransport : public atransport {
 public:
+    TestTransport() : atransport(1, 1) {
+    }
+
     bool operator==(const atransport& rhs) const {
         EXPECT_EQ(read_from_remote, rhs.read_from_remote);
         EXPECT_EQ(write_to_remote, rhs.write_to_remote);
@@ -120,7 +123,7 @@ static void DisconnectFunc(void* arg, atransport*) {
 }
 
 TEST(transport, RunDisconnects) {
-    atransport t;
+    TestTransport t;
     // RunDisconnects() can be called with an empty atransport.
     t.RunDisconnects();
 
@@ -144,7 +147,7 @@ TEST(transport, RunDisconnects) {
 }
 
 TEST(transport, SetFeatures) {
-    atransport t;
+    TestTransport t;
     ASSERT_EQ(0U, t.features().size());
 
     t.SetFeatures(FeatureSetToString(FeatureSet{"foo"}));
@@ -172,7 +175,7 @@ TEST(transport, SetFeatures) {
 }
 
 TEST(transport, parse_banner_no_features) {
-    atransport t;
+    TestTransport t;
 
     parse_banner("host::", &t);
 
@@ -185,7 +188,7 @@ TEST(transport, parse_banner_no_features) {
 }
 
 TEST(transport, parse_banner_product_features) {
-    atransport t;
+    TestTransport t;
 
     const char banner[] =
         "host::ro.product.name=foo;ro.product.model=bar;ro.product.device=baz;";
@@ -201,7 +204,7 @@ TEST(transport, parse_banner_product_features) {
 }
 
 TEST(transport, parse_banner_features) {
-    atransport t;
+    TestTransport t;
 
     const char banner[] =
         "host::ro.product.name=foo;ro.product.model=bar;ro.product.device=baz;"
@@ -226,7 +229,7 @@ TEST(transport, test_matches_target) {
     std::string model = "test_model";
     std::string device = "test_device";
 
-    atransport t;
+    TestTransport t;
     t.serial = &serial[0];
     t.devpath = &devpath[0];
     t.product = &product[0];
@@ -253,7 +256,7 @@ TEST(transport, test_matches_target) {
 TEST(transport, test_matches_target_local) {
     std::string serial = "100.100.100.100:5555";
 
-    atransport t;
+    TestTransport t;
     t.serial = &serial[0];
 
     // Network address matching should only be used for local transports.
