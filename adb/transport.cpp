@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <list>
 
 #include <android-base/logging.h>
@@ -143,6 +144,9 @@ static void transport_socket_events(int fd, unsigned events, void *_t)
         if(read_packet(fd, t->serial, &p)){
             D("%s: failed to read packet from transport socket on fd %d", t->serial, fd);
         } else {
+#if ADB_HOST
+            t->MonitorReceivedPacket(p);
+#endif
             handle_packet(p, (atransport *) _t);
         }
     }
@@ -172,7 +176,9 @@ void send_packet(apacket *p, atransport *t)
         errno = 0;
         fatal_errno("Transport is null");
     }
-
+#if ADB_HOST
+    t->MonitorSentPacket(p);
+#endif
     if(write_packet(t->transport_socket, t->serial, &p)){
         fatal_errno("cannot enqueue packet on transport socket");
     }
@@ -305,7 +311,11 @@ static void kick_transport_locked(atransport* t) {
 
 void kick_transport(atransport* t) {
     adb_mutex_lock(&transport_lock);
-    kick_transport_locked(t);
+    // As kick_transport() can be called from threads without guarantee that t is valid,
+    // check if the transport is in transport_list first.
+    if (std::find(transport_list.begin(), transport_list.end(), t) != transport_list.end()) {
+        kick_transport_locked(t);
+    }
     adb_mutex_unlock(&transport_lock);
 }
 
@@ -566,6 +576,60 @@ static void transport_registration_func(int _fd, unsigned ev, void *data)
     update_transports();
 }
 
+#if ADB_HOST
+static fdevent kick_invalid_transports_fde;
+
+// kick_invalid_transports() can only be called in the main thread, because
+// there is no protection of transport content.
+static void kick_invalid_transports() {
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    adb_mutex_lock(&transport_lock);
+    for (auto& t : transport_list) {
+        if (t->online == 0) {
+            auto duration = std::chrono::duration_cast<std::chrono::duration<double>>(
+                now - t->GetCreatedTime());
+            if (duration.count() >= 3) {
+                VLOG(TRANSPORT) << "Kick transport " << t->serial
+                    << " which has been offlined for " << duration.count() << " seconds";
+                kick_transport_locked(t);
+            }
+        } else if (t->connection_state == kCsDevice) {
+            auto open_duration = std::chrono::duration_cast<std::chrono::duration<double>>(
+                now - t->GetSendingOpenPacketTime());
+            if (open_duration.count() > 1 &&
+                t->GetSendingOpenPacketTime() > t->GetReceivingOkayPacketTime()) {
+                VLOG(TRANSPORT) << "Kick transport " << t->serial
+                    << " which has no response for A_OPEN packet for "
+                    << open_duration.count() << " seconds";
+                kick_transport_locked(t);
+            }
+        }
+    }
+    adb_mutex_unlock(&transport_lock);
+}
+
+static void kick_invalid_transports_func(int fd, unsigned ev, void*) {
+    if (ev & FDE_READ) {
+        char c;
+        int r;
+        do {
+           r = adb_read(fd, &c, 1);
+        } while (r > 0);
+        kick_invalid_transports();
+    }
+}
+
+static void kick_invalid_transports_reminder_thread(void* arg) {
+    int fd = static_cast<int>(reinterpret_cast<intptr_t>(arg));
+    while (true) {
+        adb_sleep_ms(1000);
+        char c;
+        adb_write(fd, &c, 1);
+    }
+}
+
+#endif
+
 void init_transport_registration(void)
 {
     int s[2];
@@ -573,7 +637,7 @@ void init_transport_registration(void)
     if(adb_socketpair(s)){
         fatal_errno("cannot open transport registration socketpair");
     }
-    D("socketpair: (%d,%d)", s[0], s[1]);
+    D("socketpair for transport registration: (%d,%d)", s[0], s[1]);
 
     transport_registration_send = s[0];
     transport_registration_recv = s[1];
@@ -584,6 +648,20 @@ void init_transport_registration(void)
                     0);
 
     fdevent_set(&transport_registration_fde, FDE_READ);
+#if ADB_HOST
+    int fd[2];
+    if (adb_socketpair(fd)) {
+        fatal_errno("cannot create socketpair");
+    }
+    VLOG(TRANSPORT) << "socketpair for kick invalid transports (" << fd[0] << ", " << fd[1] << ")";
+    fdevent_install(&kick_invalid_transports_fde, fd[1],
+                    kick_invalid_transports_func, 0);
+    fdevent_set(&kick_invalid_transports_fde, FDE_READ);
+    if (!adb_thread_create(kick_invalid_transports_reminder_thread,
+                           reinterpret_cast<void*>(static_cast<intptr_t>(fd[0])))) {
+        fatal_errno("cannot create kick_invalid transports_reminder_thread");
+    }
+#endif
 }
 
 /* the fdevent select pump is single threaded */
@@ -869,6 +947,19 @@ bool atransport::MatchesTarget(const std::string& target) const {
            qual_match(target.c_str(), "product:", product, false) ||
            qual_match(target.c_str(), "model:", model, true) ||
            qual_match(target.c_str(), "device:", device, false);
+}
+
+void atransport::MonitorSentPacket(apacket* p) {
+    if (p->msg.command == A_OPEN) {
+        sending_open_packet_time_ = std::chrono::steady_clock::now();
+    }
+}
+
+// Monitor packet from connection to main thread.
+void atransport::MonitorReceivedPacket(apacket* p) {
+    if (p->msg.command == A_OKAY) {
+        receiving_okay_packet_time_ = std::chrono::steady_clock::now();
+    }
 }
 
 #if ADB_HOST

@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 
+#include <chrono>
 #include <list>
 #include <string>
 #include <unordered_set>
@@ -49,7 +50,7 @@ public:
     // class in one go is a very large change. Given how bad our testing is,
     // it's better to do this piece by piece.
 
-    atransport() {
+    atransport() : created_time_(std::chrono::steady_clock::now()) {
         transport_fde = {};
         protocol_version = A_VERSION;
         max_payload = MAX_PAYLOAD;
@@ -122,6 +123,24 @@ public:
     // This is to make it easier to use the same network target for both fastboot and adb.
     bool MatchesTarget(const std::string& target) const;
 
+    const std::chrono::steady_clock::time_point GetCreatedTime() const {
+        return created_time_;
+    }
+
+    // Get the latest time main thread sent A_OPEN packet to connection.
+    const std::chrono::steady_clock::time_point GetSendingOpenPacketTime() const {
+        return sending_open_packet_time_;
+    }
+    // Get the latest time connection sent A_OKAY packet to the main thread.
+    const std::chrono::steady_clock::time_point GetReceivingOkayPacketTime() const {
+        return receiving_okay_packet_time_;
+    }
+
+    // Monitor packet from main thread to connection.
+    void MonitorSentPacket(apacket* p);
+    // Monitor packet from connection to main thread.
+    void MonitorReceivedPacket(apacket* p);
+
 private:
     // A set of features transmitted in the banner with the initial connection.
     // This is stored in the banner as 'features=feature0,feature1,etc'.
@@ -131,6 +150,10 @@ private:
 
     // A list of adisconnect callbacks called when the transport is kicked.
     std::list<adisconnect*> disconnects_;
+
+    const std::chrono::steady_clock::time_point created_time_;
+    std::chrono::steady_clock::time_point sending_open_packet_time_;
+    std::chrono::steady_clock::time_point receiving_okay_packet_time_;
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };
