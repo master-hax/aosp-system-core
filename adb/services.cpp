@@ -426,7 +426,7 @@ static void connect_device(const std::string& address, std::string* response) {
         D("warning: failed to configure TCP keepalives (%s)", strerror(errno));
     }
 
-    int ret = register_socket_transport(fd, serial.c_str(), port, 0);
+    int ret = register_socket_transport(fd, serial.c_str(), port, 0, 1, 10);
     if (ret < 0) {
         adb_close(fd);
         *response = android::base::StringPrintf("already connected to %s", serial.c_str());
