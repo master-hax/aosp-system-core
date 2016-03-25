@@ -244,6 +244,9 @@ static void help() {
         "                                 1 or all, adb, sockets, packets, rwx, usb, sync, sysdeps, transport, jdwp\n"
         "  ANDROID_SERIAL               - The serial number to connect to. -s takes priority over this if given.\n"
         "  ANDROID_LOG_TAGS             - When used with the logcat option, only these debug tags are printed.\n"
+        "\n"
+        "internal debugging commands:\n"
+        " reconnect device                Kick connection from the device side and make it reconnect.\n"
         );
 }
 
@@ -1903,6 +1906,16 @@ int adb_commandline(int argc, const char **argv) {
             if (CanUseFeature(features, name)) {
                 printf("%s\n", name.c_str());
             }
+        }
+        return 0;
+    }
+    else if (!strcmp(argv[0], "reconnect")) {
+        if (argc == 2 && !strcmp(argv[1], "device")) {
+            // Notice that it can cause socket leak on mac/windows, because the
+            // device may not reply to this command.
+            std::string err;
+            adb_connect("reconnect", &err);
+            return 0;
         }
         return 0;
     }
