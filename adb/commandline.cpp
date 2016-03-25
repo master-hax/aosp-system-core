@@ -103,6 +103,7 @@ static void help() {
         "                                 Port 5555 is used by default if no port number is specified.\n"
         "                                 Using this command with no additional arguments\n"
         "                                 will disconnect from all connected TCP/IP devices.\n"
+        " reconnect                       Kick current connection from host side and make it reconnect.\n"
         "\n"
         "device commands:\n"
         "  adb push <local>... <remote>\n"
@@ -1905,6 +1906,9 @@ int adb_commandline(int argc, const char **argv) {
             }
         }
         return 0;
+    }
+    else if (!strcmp(argv[0], "reconnect")) {
+        return adb_query_command("host:reconnect");
     }
 
     usage();

@@ -305,7 +305,9 @@ static void kick_transport_locked(atransport* t) {
 
 void kick_transport(atransport* t) {
     adb_mutex_lock(&transport_lock);
-    kick_transport_locked(t);
+    if (std::find(transport_list.begin(), transport_list.end(), t) != transport_list.end()) {
+      kick_transport_locked(t);
+    }
     adb_mutex_unlock(&transport_lock);
 }
 
@@ -617,7 +619,6 @@ static void transport_unref(atransport* t) {
     t->ref_count--;
     if (t->ref_count == 0) {
         D("transport: %s unref (kicking and closing)", t->serial);
-        kick_transport_locked(t);
         t->close(t);
         remove_transport(t);
     } else {
