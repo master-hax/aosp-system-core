@@ -63,17 +63,40 @@
 
 // System call provided by bionic but not in any header file.
 extern "C" int init_module(void *, unsigned long, const char *);
+extern "C" int finit_module(int fd, const char *, int);
 
 static const int kTerminateServiceDelayMicroSeconds = 50000;
 
-static int insmod(const char *filename, const char *options) {
+// Only used on kernel below 3.8. Delete?
+static int old_insmod(const char *filename, const char *options) {
     std::string module;
     if (!read_file(filename, &module)) {
         return -1;
     }
 
-    // TODO: use finit_module for >= 3.8 kernels.
-    return init_module(&module[0], module.size(), options);
+    int rc = init_module(&module[0], module.size(), options);
+    if (rc == -1) {
+        ERROR("init_module for \"%s\" failed: %s", filename, strerror(errno));
+    }
+    return rc;
+}
+
+static int insmod(const char *filename, const char *options) {
+    int fd = open(filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    if (fd == -1) {
+        ERROR("insmod: open(\"%s\") failed: %s", filename, strerror(errno));
+        return -1;
+    }
+    int rc = finit_module(fd, options, 0);
+    int saveerrno = errno;
+    close(fd);
+    if (rc == -1) {
+        if (saveerrno == ENOSYS) {
+            return old_insmod(filename, options);
+        }
+        ERROR("finit_module for \"%s\" failed: %s", filename, strerror(errno));
+    }
+    return rc;
 }
 
 static int __ifupdown(const char *interface, int up) {
