@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sys/syscall.h>
 #include <linux/loop.h>
 #include <ext4_crypt_init_extensions.h>
 
@@ -61,19 +62,20 @@
 #define UNMOUNT_CHECK_MS 5000
 #define UNMOUNT_CHECK_TIMES 10
 
-// System call provided by bionic but not in any header file.
-extern "C" int init_module(void *, unsigned long, const char *);
-
 static const int kTerminateServiceDelayMicroSeconds = 50000;
 
 static int insmod(const char *filename, const char *options) {
-    std::string module;
-    if (!read_file(filename, &module)) {
+    int fd = open(filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    if (fd == -1) {
+        ERROR("insmod: open(\"%s\") failed: %s", filename, strerror(errno));
         return -1;
     }
-
-    // TODO: use finit_module for >= 3.8 kernels.
-    return init_module(&module[0], module.size(), options);
+    int rc = syscall(__NR_finit_module, fd, options, 0);
+    if (rc == -1) {
+        ERROR("finit_module for \"%s\" failed: %s", filename, strerror(errno));
+    }
+    close(fd);
+    return rc;
 }
 
 static int __ifupdown(const char *interface, int up) {
