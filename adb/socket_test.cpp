@@ -276,7 +276,7 @@ TEST_F(LocalSocketTest, close_socket_in_CLOSE_WAIT_state) {
 // Checks that skip_host_serial(serial) returns a pointer to the part of |serial| which matches
 // |expected|, otherwise logs the failure to gtest.
 void VerifySkipHostSerial(const std::string& serial, const char* expected) {
-    const char* result = internal::skip_host_serial(serial.c_str());
+    char* result = internal::skip_host_serial(&serial[0]);
     if (expected == nullptr) {
         EXPECT_EQ(nullptr, result);
     } else {
