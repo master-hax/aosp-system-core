@@ -30,7 +30,9 @@
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#ifndef HOST
 #include <cutils/properties.h>
+#endif
 #include <gtest/gtest.h>
 #include <log/logprint.h>
 #include <log/log_event_list.h>
@@ -51,6 +53,58 @@
           || (_rc == -EINTR)       \
           || (_rc == -EAGAIN));    \
     _rc; })
+
+#ifdef HOST
+void __android_log_close() { }
+int __android_log_buf_print(int, int, const char *, const char *, ...) { return -ENODEV; }
+int __android_log_buf_write(int, int, const char *, const char *) { return -ENODEV; }
+int __android_log_btwrite(int32_t, char, const void *, size_t) { return -ENODEV; }
+int __android_log_bswrite(int32_t, const char *) { return -ENODEV; }
+
+int __android_log_security() { return 0; }
+int __android_log_security_bwrite(int32_t, const void *, size_t) { return -ENODEV; }
+int __android_log_security_bswrite(int32_t, const char *) { return -ENODEV; }
+
+struct logger_list *android_logger_list_alloc(int, unsigned int, pid_t) { return NULL; }
+struct logger_list *android_logger_list_open(log_id_t, int, unsigned int, pid_t) { return NULL; }
+struct logger *android_logger_open(struct logger_list *, log_id_t) { return NULL; }
+log_id_t android_logger_get_id(struct logger *) { return LOG_ID_MAX; }
+int android_logger_list_read(struct logger_list *, struct log_msg *) { return -ENODEV; }
+void android_logger_list_free(struct logger_list *) { }
+long android_logger_get_log_size(struct logger *) { return 0; }
+long android_logger_get_log_readable_size(struct logger *) { return 0; }
+int android_logger_get_log_version(struct logger *) { return 0; }
+ssize_t __android_log_pmsg_file_write(log_id_t, char, const char *, const char *, size_t) { return -ENODEV; }
+ssize_t __android_log_pmsg_file_read(log_id_t, char, const char *, __android_log_pmsg_file_read_fn, void *) { return -ENODEV; }
+clockid_t android_log_clockid() { return CLOCK_REALTIME; }
+int clock_gettime(clockid_t, struct timespec *) { return -EPERM; }
+int __android_log_is_loggable_len(int, const char *, size_t, int) { return 0; }
+log_id_t android_name_to_log_id(const char *) { return LOG_ID_MAX; }
+const char *android_log_id_to_name(log_id_t) { return NULL; }
+int __android_log_error_write(int, const char *, int32_t, const char *, uint32_t) { return -ENODEV; }
+
+android_log_list_element android_log_read_next(android_log_context) { android_log_list_element elem; memset(&elem, 0, sizeof(elem)); return elem; }
+android_log_list_element android_log_peek_next(android_log_context) { android_log_list_element elem; memset(&elem, 0, sizeof(elem)); return elem; }
+int android_log_destroy(android_log_context *) { return -EINVAL; }
+android_log_context create_android_logger(uint32_t) { return NULL; }
+android_log_context create_android_log_parser(const char *, size_t) { return NULL; }
+int android_log_write_list_begin(android_log_context) { return -ENODEV; }
+int android_log_write_list_end(android_log_context) { return -ENODEV; }
+int android_log_write_list(android_log_context, log_id_t) { return -ENODEV; }
+int android_log_write_int32(android_log_context, int32_t) { return -ENODEV; }
+int android_log_write_int64(android_log_context, int64_t) { return -ENODEV; }
+int android_log_write_string8(android_log_context, const char *) { return -ENODEV; }
+int android_log_write_float32(android_log_context, float) { return -ENODEV; }
+
+AndroidLogFormat *android_log_format_new() { return NULL; }
+int android_log_addFilterRule(AndroidLogFormat *, const char *) { return -ENODEV; }
+int android_log_addFilterString(AndroidLogFormat *, const char *) { return -ENODEV; }
+int android_log_shouldPrintLine (AndroidLogFormat *, const char *, android_LogPriority) { return -ENODEV; }
+void android_log_format_free(AndroidLogFormat *) { }
+int android_log_processLogBuffer(struct logger_entry *, AndroidLogEntry *) { return 0; }
+int android_log_processBinaryLogBuffer(struct logger_entry *, AndroidLogEntry *, const EventTagMap *, char *, int) { return 0; }
+int android_log_printLogLine(AndroidLogFormat *, int, const AndroidLogEntry *) { return 0; }
+#endif
 
 TEST(liblog, __android_log_buf_print) {
     EXPECT_LT(0, __android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO,
@@ -451,6 +505,7 @@ TEST(liblog, __android_log_buf_write_and_print__newline_space_prefix) {
 }
 
 TEST(liblog, __security) {
+#ifndef HOST
     static const char persist_key[] = "persist.logd.security";
     static const char readonly_key[] = "ro.device_owner";
     static const char nothing_val[] = "_NOTHING_TO_SEE_HERE_";
@@ -485,9 +540,11 @@ TEST(liblog, __security) {
     property_set(persist_key, "");
     EXPECT_FALSE(__android_log_security());
     property_set(persist_key, persist);
+#endif
 }
 
 TEST(liblog, __security_buffer) {
+#ifndef HOST
     struct logger_list *logger_list;
     android_event_long_t buffer;
 
@@ -621,7 +678,7 @@ TEST(liblog, __security_buffer) {
                 "not system, content submitted but can not check end-to-end\n");
     }
     EXPECT_EQ(clientHasSecurityCredentials ? 1 : 0, count);
-
+#endif
 }
 
 static unsigned signaled;
@@ -1379,6 +1436,7 @@ TEST(liblog, filterRule) {
 }
 
 TEST(liblog, is_loggable) {
+#ifndef HOST
     static const char tag[] = "is_loggable";
     static const char log_namespace[] = "persist.log.tag.";
     static const size_t base_offset = 8; /* skip "persist." */
@@ -1671,6 +1729,7 @@ TEST(liblog, is_loggable) {
     key[sizeof(log_namespace) - 2] = '\0';
     property_set(key, hold[2]);
     property_set(key + base_offset, hold[3]);
+#endif
 }
 
 TEST(liblog, android_errorWriteWithInfoLog__android_logger_list_read__typical) {
