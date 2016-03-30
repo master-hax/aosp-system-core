@@ -47,6 +47,10 @@
 #include <android-base/strings.h>
 #include <cutils/list.h>
 
+/* HACK: The adb_printf macro conflicts with BoringSSL's use of
+ * __attribute__((format(printf, [...]))). */
+#undef printf
+
 #include <openssl/evp.h>
 #include <openssl/objects.h>
 #include <openssl/pem.h>
@@ -56,6 +60,8 @@
 #if defined(OPENSSL_IS_BORINGSSL)
 #include <openssl/base64.h>
 #endif
+
+#define printf adb_printf
 
 #define ANDROID_PATH   ".android"
 #define ADB_KEY_FILE   "adbkey"
