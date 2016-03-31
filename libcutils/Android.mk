@@ -92,7 +92,6 @@ LOCAL_MODULE := libcutils
 LOCAL_SRC_FILES := $(libcutils_common_sources) \
         $(libcutils_nonwindows_sources) \
         android_reboot.c \
-        ashmem-dev.c \
         debugger.c \
         klog.c \
         partition_utils.c \
@@ -100,6 +99,12 @@ LOCAL_SRC_FILES := $(libcutils_common_sources) \
         qtaguid.c \
         trace-dev.c \
         uevent.c \
+
+ifneq ($(ART_LINUX_TARGET),)
+LOCAL_SRC_FILES += ashmem-host.c
+else
+LOCAL_SRC_FILES += ashmem-dev.c
+endif
 
 LOCAL_SRC_FILES_arm += arch-arm/memset32.S
 LOCAL_SRC_FILES_arm64 += arch-arm64/android_memset.S
