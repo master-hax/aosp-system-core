@@ -466,9 +466,14 @@ static log_time lastLogTime(char *outputFileName) {
         *file = '/';
         ++file;
     }
+
+    std::unique_ptr<DIR, int(*)(DIR*)>dir(opendir(directory.c_str()), closedir);
+    if (!dir.get()) {
+        return retval;
+    }
+
     size_t len = strlen(file);
     log_time modulo(0, NS_PER_SEC);
-    std::unique_ptr<DIR, int(*)(DIR*)>dir(opendir(directory.c_str()), closedir);
     struct dirent *dp;
     while ((dp = readdir(dir.get())) != NULL) {
         if ((dp->d_type != DT_REG)
@@ -578,11 +583,13 @@ int main(int argc, char **argv)
           { "dividers",      no_argument,       NULL,   'D' },
           { "file",          required_argument, NULL,   'f' },
           { "format",        required_argument, NULL,   'v' },
+          // hidden and undocumented reserved alias for --regex
+          { "grep",          required_argument, NULL,   'e' },
           // hidden and undocumented reserved alias for --max-count
           { "head",          required_argument, NULL,   'm' },
           { "last",          no_argument,       NULL,   'L' },
-          { pid_str,         required_argument, NULL,   0 },
           { "max-count",     required_argument, NULL,   'm' },
+          { pid_str,         required_argument, NULL,   0 },
           { print_str,       no_argument,       NULL,   0 },
           { "prune",         optional_argument, NULL,   'p' },
           { "regex",         required_argument, NULL,   'e' },
