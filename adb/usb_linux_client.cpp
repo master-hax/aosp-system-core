@@ -31,6 +31,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <atomic>
 
 #include "adb.h"
 #include "transport.h"
@@ -53,18 +54,20 @@ struct usb_handle
 {
     adb_cond_t notify;
     adb_mutex_t lock;
+    bool open_new_connection;
 
     int (*write)(usb_handle *h, const void *data, int len);
     int (*read)(usb_handle *h, void *data, int len);
     void (*kick)(usb_handle *h);
+    void (*close)(usb_handle *h);
 
     // Legacy f_adb
-    int fd;
+    std::atomic<int> fd;
 
     // FunctionFS
     int control;
-    int bulk_out; /* "out" from the host's perspective => source for adbd */
-    int bulk_in;  /* "in" from the host's perspective => sink for adbd */
+    std::atomic<int> bulk_out; /* "out" from the host's perspective => source for adbd */
+    std::atomic<int> bulk_in;  /* "in" from the host's perspective => sink for adbd */
 };
 
 struct func_desc {
@@ -241,9 +244,15 @@ static void usb_adb_open_thread(void* x) {
     while (true) {
         // wait until the USB device needs opening
         adb_mutex_lock(&usb->lock);
-        while (usb->fd != -1)
+        while (!usb->open_new_connection) {
             adb_cond_wait(&usb->notify, &usb->lock);
+        }
+        usb->open_new_connection = true;
         adb_mutex_unlock(&usb->lock);
+
+        // The usb data of previous transport may not be finished in the kernel,
+        // so sleep 1 second here to avoid EOVERFLOW error in usb_adb_read.
+        adb_sleep_ms(1000);
 
         D("[ usb_thread - opening device ]");
         do {
@@ -274,20 +283,20 @@ static int usb_adb_write(usb_handle *h, const void *data, int len)
 {
     int n;
 
-    D("about to write (fd=%d, len=%d)", h->fd, len);
+    D("about to write (fd=%d, len=%d)", h->fd.load(), len);
     n = unix_write(h->fd, data, len);
     if(n != len) {
         D("ERROR: fd = %d, n = %d, errno = %d (%s)",
-            h->fd, n, errno, strerror(errno));
+            h->fd.load(), n, errno, strerror(errno));
         return -1;
     }
-    D("[ done fd=%d ]", h->fd);
+    D("[ done fd=%d ]", h->fd.load());
     return 0;
 }
 
 static int usb_adb_read(usb_handle *h, void *data, int len)
 {
-    D("about to read (fd=%d, len=%d)", h->fd, len);
+    D("about to read (fd=%d, len=%d)", h->fd.load(), len);
     while (len > 0) {
         // The kernel implementation of adb_read in f_adb.c doesn't support
         // reads larger then 4096 bytes. Read the data in 4096 byte chunks to
@@ -296,24 +305,32 @@ static int usb_adb_read(usb_handle *h, void *data, int len)
         int n = unix_read(h->fd, data, bytes_to_read);
         if (n != bytes_to_read) {
             D("ERROR: fd = %d, n = %d, errno = %d (%s)",
-                h->fd, n, errno, strerror(errno));
+                h->fd.load(), n, errno, strerror(errno));
             return -1;
         }
         len -= n;
         data = ((char*)data) + n;
     }
-    D("[ done fd=%d ]", h->fd);
+    D("[ done fd=%d ]", h->fd.load());
     return 0;
 }
 
-static void usb_adb_kick(usb_handle *h)
-{
+static void usb_adb_kick(usb_handle *h) {
     D("usb_kick");
-    adb_mutex_lock(&h->lock);
-    unix_close(h->fd);
+    // Other threads may be calling usb_adb_read/usb_adb_write at the same time.
+    // After unix_close(fd), the file handler number will be reused to open other
+    // files. Make h->fd = -1 visible to other threads before calling unix_close(fd),
+    // so other threads calling usb_adb_read/usb_adb_write will not happen to
+    // operate on the wrong file reusing the file handler number.
+    int fd = h->fd;
     h->fd = -1;
+    unix_close(fd);
+}
 
-    // notify usb_adb_open_thread that we are disconnected
+static void usb_adb_or_ffs_close(usb_handle *h) {
+    // Notify usb_adb_open_thread to open a new connection.
+    adb_mutex_lock(&h->lock);
+    h->open_new_connection = true;
     adb_cond_signal(&h->notify);
     adb_mutex_unlock(&h->lock);
 }
@@ -326,8 +343,10 @@ static void usb_adb_init()
     h->write = usb_adb_write;
     h->read = usb_adb_read;
     h->kick = usb_adb_kick;
+    h->close = usb_adb_or_ffs_close;
     h->fd = -1;
 
+    h->open_new_connection = true;
     adb_cond_init(&h->notify, 0);
     adb_mutex_init(&h->lock, 0);
 
@@ -350,7 +369,7 @@ static void usb_adb_init()
 }
 
 
-static void init_functionfs(struct usb_handle *h)
+static bool init_functionfs(struct usb_handle *h)
 {
     ssize_t ret;
     struct desc_v1 v1_descriptor;
@@ -413,7 +432,7 @@ static void init_functionfs(struct usb_handle *h)
         goto err;
     }
 
-    return;
+    return true;
 
 err:
     if (h->bulk_in > 0) {
@@ -428,7 +447,7 @@ err:
         adb_close(h->control);
         h->control = -1;
     }
-    return;
+    return false;
 }
 
 static void usb_ffs_open_thread(void* x) {
@@ -439,16 +458,20 @@ static void usb_ffs_open_thread(void* x) {
     while (true) {
         // wait until the USB device needs opening
         adb_mutex_lock(&usb->lock);
-        while (usb->control != -1 && usb->bulk_in != -1 && usb->bulk_out != -1)
+        while (!usb->open_new_connection) {
             adb_cond_wait(&usb->notify, &usb->lock);
+        }
+        usb->open_new_connection = false;
         adb_mutex_unlock(&usb->lock);
 
+        // The usb data of previous transport may not be finished in the kernel,
+        // so sleep 1 second here to avoid EOVERFLOW error in usb_adb_read.
+        adb_sleep_ms(1000);
+
         while (true) {
-            init_functionfs(usb);
-
-            if (usb->control >= 0 && usb->bulk_in >= 0 && usb->bulk_out >= 0)
+            if (init_functionfs(usb)) {
                 break;
-
+            }
             adb_sleep_ms(1000);
         }
         property_set("sys.usb.ffs.ready", "1");
@@ -462,40 +485,40 @@ static void usb_ffs_open_thread(void* x) {
 }
 
 static int usb_ffs_write(usb_handle* h, const void* data, int len) {
-    D("about to write (fd=%d, len=%d)", h->bulk_in, len);
+    D("about to write (fd=%d, len=%d)", h->bulk_in.load(), len);
 
     const char* buf = static_cast<const char*>(data);
     while (len > 0) {
         int write_len = std::min(USB_FFS_MAX_WRITE, len);
         int n = adb_write(h->bulk_in, buf, write_len);
         if (n < 0) {
-            D("ERROR: fd = %d, n = %d: %s", h->bulk_in, n, strerror(errno));
+            D("ERROR: fd = %d, n = %d: %s", h->bulk_in.load(), n, strerror(errno));
             return -1;
         }
         buf += n;
         len -= n;
     }
 
-    D("[ done fd=%d ]", h->bulk_in);
+    D("[ done fd=%d ]", h->bulk_in.load());
     return 0;
 }
 
 static int usb_ffs_read(usb_handle* h, void* data, int len) {
-    D("about to read (fd=%d, len=%d)", h->bulk_out, len);
+    D("about to read (fd=%d, len=%d)", h->bulk_out.load(), len);
 
     char* buf = static_cast<char*>(data);
     while (len > 0) {
         int read_len = std::min(USB_FFS_MAX_READ, len);
         int n = adb_read(h->bulk_out, buf, read_len);
         if (n < 0) {
-            D("ERROR: fd = %d, n = %d: %s", h->bulk_out, n, strerror(errno));
+            D("ERROR: fd = %d, n = %d: %s", h->bulk_out.load(), n, strerror(errno));
             return -1;
         }
         buf += n;
         len -= n;
     }
 
-    D("[ done fd=%d ]", h->bulk_out);
+    D("[ done fd=%d ]", h->bulk_out.load());
     return 0;
 }
 
@@ -505,26 +528,23 @@ static void usb_ffs_kick(usb_handle *h)
 
     err = ioctl(h->bulk_in, FUNCTIONFS_CLEAR_HALT);
     if (err < 0) {
-        D("[ kick: source (fd=%d) clear halt failed (%d) ]", h->bulk_in, errno);
+        D("[ kick: source (fd=%d) clear halt failed (%d) ]", h->bulk_in.load(), errno);
     }
 
     err = ioctl(h->bulk_out, FUNCTIONFS_CLEAR_HALT);
     if (err < 0) {
-        D("[ kick: sink (fd=%d) clear halt failed (%d) ]", h->bulk_out, errno);
+        D("[ kick: sink (fd=%d) clear halt failed (%d) ]", h->bulk_out.load(), errno);
     }
-
-    adb_mutex_lock(&h->lock);
 
     // don't close ep0 here, since we may not need to reinitialize it with
     // the same descriptors again. if however ep1/ep2 fail to re-open in
     // init_functionfs, only then would we close and open ep0 again.
-    adb_close(h->bulk_out);
-    adb_close(h->bulk_in);
-    h->bulk_out = h->bulk_in = -1;
-
-    // notify usb_ffs_open_thread that we are disconnected
-    adb_cond_signal(&h->notify);
-    adb_mutex_unlock(&h->lock);
+    int bulk_out = h->bulk_out;
+    h->bulk_out = -1;
+    adb_close(bulk_out);
+    int bulk_in = h->bulk_in;
+    h->bulk_in = -1;
+    adb_close(bulk_in);
 }
 
 static void usb_ffs_init()
@@ -537,10 +557,12 @@ static void usb_ffs_init()
     h->write = usb_ffs_write;
     h->read = usb_ffs_read;
     h->kick = usb_ffs_kick;
+    h->close = usb_adb_or_ffs_close;
     h->control = -1;
     h->bulk_out = -1;
     h->bulk_out = -1;
 
+    h->open_new_connection = true;
     adb_cond_init(&h->notify, 0);
     adb_mutex_init(&h->lock, 0);
 
@@ -569,6 +591,7 @@ int usb_read(usb_handle *h, void *data, int len)
 }
 int usb_close(usb_handle *h)
 {
+    h->close(h);
     return 0;
 }
 
