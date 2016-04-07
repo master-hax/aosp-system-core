@@ -23,6 +23,7 @@
 #include <errno.h>
 #include <time.h>
 #include <ftw.h>
+#include <pwd.h>
 
 #include <selinux/label.h>
 #include <selinux/android.h>
@@ -39,8 +40,6 @@
 #include <cutils/sockets.h>
 #include <android-base/stringprintf.h>
 
-#include <private/android_filesystem_config.h>
-
 #include "init.h"
 #include "log.h"
 #include "property_service.h"
@@ -52,15 +51,14 @@
  */
 static unsigned int android_name_to_id(const char *name)
 {
-    const struct android_id_info *info = android_ids;
-    unsigned int n;
 
-    for (n = 0; n < android_id_count; n++) {
-        if (!strcmp(info[n].name, name))
-            return info[n].aid;
+    struct passwd *pwd = getpwnam(name);
+    if (!pwd) {
+        ERROR("Converting name to uid failed: %s\n", name);
+        return UINT_MAX;
     }
 
-    return UINT_MAX;
+    return pwd->pw_uid;
 }
 
 static unsigned int do_decode_uid(const char *s)
