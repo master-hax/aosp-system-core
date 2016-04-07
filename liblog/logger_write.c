@@ -525,6 +525,26 @@ LIBLOG_ABI_PUBLIC int __android_log_bswrite(int32_t tag, const char *payload)
 }
 
 /*
+ * Like __android_log_security_bwrite, but takes the type as well.  Doesn't work
+ * for the general case where we're generating lists of stuff, but very
+ * handy if we just want to dump an integer into the log.
+ */
+LIBLOG_ABI_PUBLIC int __android_log_security_btwrite(int32_t tag, char type,
+                                            const void *payload, size_t len)
+{
+    struct iovec vec[3];
+
+    vec[0].iov_base = &tag;
+    vec[0].iov_len = sizeof(tag);
+    vec[1].iov_base = &type;
+    vec[1].iov_len = sizeof(type);
+    vec[2].iov_base = (void*)payload;
+    vec[2].iov_len = len;
+
+    return write_to_log(LOG_ID_SECURITY, vec, 3);
+}
+
+/*
  * Like __android_log_security_bwrite, but used for writing strings to the
  * security log.
  */

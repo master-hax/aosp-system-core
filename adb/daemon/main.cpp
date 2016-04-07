@@ -19,6 +19,7 @@
 #include "sysdeps.h"
 
 #include <errno.h>
+#include <log/log.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,6 +40,7 @@
 #include "adb_auth.h"
 #include "adb_listeners.h"
 #include "adb_utils.h"
+#include "security_log_tags.h"
 #include "transport.h"
 
 static const char* root_seclabel = nullptr;
@@ -91,8 +93,15 @@ static bool should_drop_privileges() {
         drop = true;
     }
 
+    int has_root_privileges = drop ? 0 : 1;
+    __android_log_security_btwrite(SEC_TAG_ADBD_RESTARTED, EVENT_TYPE_INT, &has_root_privileges,
+            sizeof(has_root_privileges));
+
     return drop;
 #else
+    int has_root_privileges = 0;
+    __android_log_security_btwrite(SEC_TAG_ADBD_RESTARTED, EVENT_TYPE_INT, &has_root_privileges,
+            sizeof(has_root_privileges));
     return true; // "adb root" not allowed, always drop privileges.
 #endif // ALLOW_ADBD_ROOT
 }

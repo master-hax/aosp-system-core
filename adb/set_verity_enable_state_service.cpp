@@ -20,6 +20,7 @@
 
 #include <fcntl.h>
 #include <inttypes.h>
+#include <log/log.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -30,6 +31,7 @@
 #include "adb_io.h"
 #include "fs_mgr.h"
 #include "remount_service.h"
+#include "security_log_tags.h"
 
 #include "fec/io.h"
 
@@ -85,6 +87,11 @@ static int set_verity_enabled_state(int fd, const char *block_device,
     }
 
     WriteFdFmt(fd, "Verity %s on %s\n", enable ? "enabled" : "disabled", mount_point);
+
+    int enabled = enable ? 1 : 0;
+    __android_log_security_btwrite(SEC_TAG_ADB_VERITY_STATE_CHANGED, EVENT_TYPE_INT, &enabled,
+            sizeof(enabled));
+
     return 0;
 }
 
