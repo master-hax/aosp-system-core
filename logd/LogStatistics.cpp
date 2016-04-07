@@ -15,8 +15,10 @@
  */
 
 #include <fcntl.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <log/logger.h>
@@ -159,14 +161,14 @@ const char *LogStatistics::uidToName(uid_t uid) const {
         return strdup("auditd");
     }
 
-    // Android hard coded
-    const struct android_id_info *info = android_ids;
+    // Android system
+    if (uid < AID_APP) {
+        struct passwd _passwd, *pwd;
+        char _buf[256];
 
-    for (size_t i = 0; i < android_id_count; ++i) {
-        if (info->aid == uid) {
-            return strdup(info->name);
+        if (!getpwuid_r(uid, &_passwd, _buf, sizeof(_buf), &pwd) && pwd) {
+            return strdup(pwd->pw_name);
         }
-        ++info;
     }
 
     // Parse /data/system/packages.list
