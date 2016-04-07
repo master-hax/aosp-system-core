@@ -48,7 +48,6 @@
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
 #include <cutils/sockets.h>
-#include <private/android_filesystem_config.h>
 
 #include <memory>
 
@@ -511,8 +510,7 @@ int main(int argc, char** argv) {
         mkdir("/dev/pts", 0755);
         mkdir("/dev/socket", 0755);
         mount("devpts", "/dev/pts", "devpts", 0, NULL);
-        #define MAKE_STR(x) __STRING(x)
-        mount("proc", "/proc", "proc", 0, "hidepid=2,gid=" MAKE_STR(AID_READPROC));
+        mount("proc", "/proc", "proc", 0, "hidepid=2,gid=3009");
         mount("sysfs", "/sys", "sysfs", 0, NULL);
         mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL);
     }
