@@ -1740,7 +1740,22 @@ int adb_commandline(int argc, const char **argv) {
             cmd = host_prefix + ":forward:" + argv[0] + ";" + argv[1];
         }
 
-        return adb_command(cmd) ? 0 : 1;
+        std::string error;
+        int fd = adb_connect(cmd, &error);
+        if (fd < 0 || !adb_status(fd, &error)) {
+            adb_close(fd);
+            fprintf(stderr, "error: %s\n", error.c_str());
+            return 1;
+        }
+
+        // Server or device may optionally return a resolved TCP port number.
+        std::string resolved_port;
+        if (ReadProtocolString(fd, &resolved_port, &error) && !resolved_port.empty()) {
+            printf("%s\n", resolved_port.c_str());
+        }
+
+        ReadOrderlyShutdown(fd);
+        return 0;
     }
     /* do_sync_*() commands */
     else if (!strcmp(argv[0], "ls")) {
