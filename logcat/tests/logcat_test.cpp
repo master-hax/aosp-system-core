@@ -25,6 +25,7 @@
 
 #include <memory>
 
+#include <cutils/properties.h>
 #include <gtest/gtest.h>
 #include <log/log.h>
 #include <log/logger.h>
@@ -370,13 +371,15 @@ TEST(logcat, End_to_End) {
     ASSERT_EQ(1, count);
 }
 
-TEST(logcat, get_size) {
+int get_groups(const char *cmd) {
     FILE *fp;
 
     // NB: crash log only available in user space
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -v brief -b radio -b events -b system -b main -g 2>/dev/null",
-      "r")));
+    EXPECT_TRUE(NULL != (fp = popen(cmd, "r")));
+
+    if (fp == NULL) {
+        return 0;
+    }
 
     char buffer[5120];
 
@@ -438,99 +441,31 @@ TEST(logcat, get_size) {
 
     pclose(fp);
 
-    ASSERT_EQ(4, count);
+    return count;
+}
+
+TEST(logcat, get_size) {
+    ASSERT_EQ(4, get_groups(
+      "logcat -v brief -b radio -b events -b system -b main -g 2>/dev/null"));
 }
 
 // duplicate test for get_size, but use comma-separated list of buffers
 TEST(logcat, multiple_buffer) {
-    FILE *fp;
+    ASSERT_EQ(4, get_groups(
+      "logcat -v brief -b radio,events,system,main -g 2>/dev/null"));
+}
 
-    // NB: crash log only available in user space
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -v brief -b radio,events,system,main -g 2>/dev/null",
-      "r")));
-
-    char buffer[5120];
-
-    int count = 0;
-
-    while (fgets(buffer, sizeof(buffer), fp)) {
-        int size, consumed, max, payload;
-        char size_mult[3], consumed_mult[3];
-        long full_size, full_consumed;
-
-        size = consumed = max = payload = 0;
-        // NB: crash log can be very small, not hit a Kb of consumed space
-        //     doubly lucky we are not including it.
-        if (6 != sscanf(buffer, "%*s ring buffer is %d%2s (%d%2s consumed),"
-                                " max entry is %db, max payload is %db",
-                                &size, size_mult, &consumed, consumed_mult,
-                                &max, &payload)) {
-            fprintf(stderr, "WARNING: Parse error: %s", buffer);
-            continue;
-        }
-        full_size = size;
-        switch(size_mult[0]) {
-        case 'G':
-            full_size *= 1024;
-            /* FALLTHRU */
-        case 'M':
-            full_size *= 1024;
-            /* FALLTHRU */
-        case 'K':
-            full_size *= 1024;
-            /* FALLTHRU */
-        case 'b':
-            break;
-        }
-        full_consumed = consumed;
-        switch(consumed_mult[0]) {
-        case 'G':
-            full_consumed *= 1024;
-            /* FALLTHRU */
-        case 'M':
-            full_consumed *= 1024;
-            /* FALLTHRU */
-        case 'K':
-            full_consumed *= 1024;
-            /* FALLTHRU */
-        case 'b':
-            break;
-        }
-        EXPECT_GT((full_size * 9) / 4, full_consumed);
-        EXPECT_GT(full_size, max);
-        EXPECT_GT(max, payload);
-
-        if ((((full_size * 9) / 4) >= full_consumed)
-         && (full_size > max)
-         && (max > payload)) {
-            ++count;
-        }
-    }
-
-    pclose(fp);
-
-    ASSERT_EQ(4, count);
+// duplicate test for get_size, but use test.logcat.buffer property
+TEST(logcat, property_expand) {
+    property_set("test.logcat.buffer", "radio,events");
+    EXPECT_EQ(4, get_groups(
+      "logcat -v brief -b 'system,${test.logcat.buffer:-bogo},main' -g 2>/dev/null"));
+    property_set("test.logcat.buffer", "");
 }
 
 TEST(logcat, bad_buffer) {
-    FILE *fp;
-
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -v brief -b radio,events,bogo,system,main -g 2>/dev/null",
-      "r")));
-
-    char buffer[5120];
-
-    int count = 0;
-
-    while (fgets(buffer, sizeof(buffer), fp)) {
-        ++count;
-    }
-
-    pclose(fp);
-
-    ASSERT_EQ(0, count);
+    ASSERT_EQ(0, get_groups(
+      "logcat -v brief -b radio,events,bogo,system,main -g 2>/dev/null"));
 }
 
 static void caught_blocking(int /*signum*/)

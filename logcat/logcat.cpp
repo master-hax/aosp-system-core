@@ -27,6 +27,7 @@
 
 #include <android-base/file.h>
 #include <android-base/strings.h>
+#include <cutils/properties.h>
 #include <cutils/sched_policy.h>
 #include <cutils/sockets.h>
 #include <log/event_tag_map.h>
@@ -280,10 +281,10 @@ static void show_help(const char *cmd)
     fprintf(stderr, "options include:\n"
                     "  -s              Set default filter to silent. Equivalent to filterspec '*:S'\n"
                     "  -f <file> or --file=<file>    Log to file. Default is stdout\n"
-                    "  -r <kbytes>     Rotate log every kbytes. Requires -f option\n"
-                    "    or --rotate-kbytes=<kbytes>\n"
+                    "  -r <kbytes>     Rotate log every kbytes. Permits property expansion.\n"
+                    "    or --rotate-kbytes=<kbytes> Requires -f option\n"
                     "  -n <count>      Sets max number of rotated logs to <count>, default 4\n"
-                    "    or --rotate-count=<count>\n"
+                    "    or --rotate-count=<count>   Permits property expansion.\n"
                     "  -v <format>     Sets the log print format, where <format> is:\n"
                     "    or --format=<format> brief color epoch long monotonic printable process raw\n"
                     "                         tag thread threadtime time uid usec UTC year zone\n"
@@ -312,7 +313,7 @@ static void show_help(const char *cmd)
                     "    or --buffer=<buffer>        'events', 'crash', 'default' or 'all'.\n"
                     "                  Multiple -b parameters or comma separated list of buffer are\n"
                     "                  allowed and buffer results are interleaved. Default\n"
-                    "                  -b main,system,crash.\n"
+                    "                  -b main,system,crash. Permits property expansion.\n"
                     "  -B or --binary  Output the log in binary.\n"
                     "  -S or --statistics            Output statistics.\n"
                     "  -p or --prune   Print prune white and ~black list. Service is specified as\n"
@@ -329,7 +330,11 @@ static void show_help(const char *cmd)
                     "                  comes first. Improves efficiency of polling by providing\n"
                     "                  an about-to-wrap wakeup.\n");
 
-    fprintf(stderr,"\nfilterspecs are a series of \n"
+    fprintf(stderr,"\nProperty expansion where available, may need to be single quoted to prevent\n"
+                   "shell expansion:\n"
+                   "  ${key}          - Expand string with property value associated with key\n"
+                   "  ${key:-default} - Expand, if property key value clear, use default\n"
+                   "\nfilterspecs are a series of \n"
                    "  <tag>[:priority]\n\n"
                    "where <tag> is a log component tag (or * for all) and priority is:\n"
                    "  V    Verbose (default for <tag>)\n"
@@ -386,7 +391,7 @@ static const char *multiplier_of_size(unsigned long value)
 }
 
 /*String to unsigned int, returns -1 if it fails*/
-static bool getSizeTArg(char *ptr, size_t *val, size_t min = 0,
+static bool getSizeTArg(const char *ptr, size_t *val, size_t min = 0,
                         size_t max = SIZE_MAX)
 {
     if (!ptr) {
@@ -525,6 +530,35 @@ static log_time lastLogTime(char *outputFileName) {
     // a replay of the last entry we have just checked.
     retval += modulo;
     return retval;
+}
+
+std::string expand(const char *str)
+{
+  std::string retval(str);
+
+  for (size_t pos; (pos = retval.find("${")) != std::string::npos; ) {
+    size_t epos = retval.find("}", pos + 2);
+    if (epos == std::string::npos) {
+      break;
+    }
+    size_t def = retval.find(":-", pos + 2);
+    if (def >= epos) {
+      def = std::string::npos;
+    }
+    std::string default_value("");
+    std::string key;
+    if (def == std::string::npos) {
+      key = retval.substr(pos + 2, epos - (pos + 2));
+    } else {
+      key = retval.substr(pos + 2, def - (pos + 2));
+      default_value = retval.substr(def + 2, epos - (def + 2));
+    }
+    char value[PROPERTY_VALUE_MAX];
+    property_get(key.c_str(), value, default_value.c_str());
+    retval.replace(pos, epos - pos + 1, value);
+  }
+
+  return retval;
 }
 
 } /* namespace android */
@@ -758,23 +792,39 @@ int main(int argc, char **argv)
 
             case 'b': {
                 unsigned idMask = 0;
-                while ((optarg = strtok(optarg, ",:; \t\n\r\f")) != NULL) {
-                    if (strcmp(optarg, "default") == 0) {
+
+                std::string expanded = expand(optarg);
+                std::unique_ptr<char, void(*)(void *)>
+                    copy(strdup(expanded.c_str()), free);
+                char *str = copy.get();
+                while ((str = strtok(str, ",:; \t\n\r\f")) != NULL) {
+                    if (strcmp(str, "default") == 0) {
                         idMask |= (1 << LOG_ID_MAIN) |
                                   (1 << LOG_ID_SYSTEM) |
                                   (1 << LOG_ID_CRASH);
-                    } else if (strcmp(optarg, "all") == 0) {
+                    } else if (strcmp(str, "all") == 0) {
                         idMask = (unsigned)-1;
                     } else {
-                        log_id_t log_id = android_name_to_log_id(optarg);
+                        log_id_t log_id = android_name_to_log_id(str);
                         const char *name = android_log_id_to_name(log_id);
 
-                        if (strcmp(name, optarg) != 0) {
-                            logcat_panic(true, "unknown buffer %s\n", optarg);
+                        if (strcmp(name, str) != 0) {
+                            bool strDifferent = expanded.compare(str);
+                            if (expanded.compare(optarg)) {
+                                expanded += " expanded from ";
+                                expanded += optarg;
+                            }
+                            if (strDifferent) {
+                                expanded = std::string(str) +
+                                           " within " +
+                                           expanded;
+                            }
+                            logcat_panic(true, "unknown buffer -b %s\n",
+                                         expanded.c_str());
                         }
                         idMask |= (1 << log_id);
                     }
-                    optarg = NULL;
+                    str = NULL;
                 }
 
                 for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
@@ -829,22 +879,36 @@ int main(int argc, char **argv)
                 g_outputFileName = optarg;
             break;
 
-            case 'r':
-                if (!getSizeTArg(optarg, &g_logRotateSizeKBytes, 1)) {
-                    logcat_panic(true, "Invalid parameter %s to -r\n", optarg);
+            case 'r': {
+                std::string expanded = expand(optarg);
+                if (!getSizeTArg(expanded.c_str(), &g_logRotateSizeKBytes, 1)) {
+                    if (expanded.compare(optarg)) {
+                        expanded += " expanded from ";
+                        expanded += optarg;
+                    }
+                    logcat_panic(true, "Invalid parameter -r %s\n",
+                                 expanded.c_str());
                 }
+            }
             break;
 
-            case 'n':
-                if (!getSizeTArg(optarg, &g_maxRotatedLogs, 1)) {
-                    logcat_panic(true, "Invalid parameter %s to -n\n", optarg);
+            case 'n': {
+                std::string expanded = expand(optarg);
+                if (!getSizeTArg(expanded.c_str(), &g_maxRotatedLogs, 1)) {
+                    if (expanded.compare(optarg)) {
+                        expanded += " expanded from ";
+                        expanded += optarg;
+                    }
+                    logcat_panic(true, "Invalid parameter -n %s\n",
+                                 expanded.c_str());
                 }
+            }
             break;
 
             case 'v':
                 err = setLogFormat (optarg);
                 if (err < 0) {
-                    logcat_panic(true, "Invalid parameter %s to -v\n", optarg);
+                    logcat_panic(true, "Invalid parameter -v %s\n", optarg);
                 }
                 hasSetLogFormat |= err;
             break;
