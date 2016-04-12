@@ -1,5 +1,5 @@
 #! /system/bin/sh
-# logpersist cat start and stop handlers
+# logpersist cat, start and stop handlers
 progname="${0##*/}"
 case `getprop ro.debuggable` in
 1) ;;
@@ -7,36 +7,102 @@ case `getprop ro.debuggable` in
    exit 1
    ;;
 esac
+
 data=/data/misc/logd
 property=persist.logd.logpersistd
 service=logcatd
-if [ X"${1}" = X"-h" -o X"${1}" = X"--help" ]; then
-  echo "${progname%.*}.cat            - dump current ${service%d} logs"
-  echo "${progname%.*}.start          - start ${service} service"
-  echo "${progname%.*}.stop [--clear] - stop ${service} service"
-  exit 0
-fi
+size_default=256
+buffer_default=all
+args="${@}"
+
+size=${size_default}
+buffer=${buffer_default}
+clear=false
+while [ ${#} -gt 0 ]; do
+  case ${1} in
+    -c|--clear) clear=true ;;
+    --size=*) size="${1#--size=}" ;;
+    --rotate-count=*) size="${1#--rotate-count=}" ;;
+    -n|--size|--rotate-count) size="${2}" ; shift ;;
+    --buffer=*) buffer="${1#--buffer=}" ;;
+    -b|--buffer) buffer="${2}" ; shift ;;
+    -h|--help|*)
+      LEAD_SPACE_="`echo ${progname%.*} | tr '[ -~]' ' '`"
+      echo "${progname%.*}.cat             - dump current ${service%d} logs"
+      echo "${progname%.*}.start [--size=<size_in_kb>] [--buffer=<buffers>] [--clear]"
+      echo "${LEAD_SPACE_}                 - start ${service} service"
+      echo "${progname%.*}.stop [--clear]  - stop ${service} service"
+      case ${1} in
+        -h|--help) exit 0 ;;
+        *) echo ERROR: bad argument ${@} >&2 ; exit 1 ;;
+      esac
+      ;;
+  esac
+  shift
+done
+
+[ -n "${size}" -a "${size_default}" != "${size}" ] ||
+  unset size
+[ -z "${size}" ] ||
+  ( [ 0 -lt "${size}" ] && [ 2048 -ge "${size}" ] ) >/dev/null 2>&1 ||
+  ( echo ERROR: Invalid --size ${size} >&2 && false ) || exit 1
+[ -n "${buffer}" -a "${buffer_default}" != "${buffer}" ] ||
+  unset buffer
+[ -z "${buffer}" ] ||
+  logcat -b ${buffer} -g >/dev/null 2>&1 ||
+  ( echo ERROR: Invalid --buffer ${buffer} >&2 && false ) || exit 1
+
 case ${progname} in
 *.cat)
-  su 1036 ls "${data}" |
+  [ -z "${size}" -a -z "${buffer}" -a "true" != "${clear}" ] ||
+    echo WARNING: Can not use --clear, --size or --buffer with ${progname%.*}.cat >&2
+  su logd ls "${data}" |
   tr -d '\r' |
   sort -ru |
   sed "s#^#${data}/#" |
-  su 1036 xargs cat
+  su logd xargs cat
   ;;
 *.start)
-  su 0 setprop ${property} ${service}
+  current_buffer="`getprop ${property}.buffer`"
+  current_size="`getprop ${property}.size`"
+  current_status="`getprop ${property}`"
+  if [ "${service}" = "${current_status}" ]; then
+    if [ "true" != "${clear}" ] &&
+       [ "${buffer}" != "${current_buffer}" -o "${size}" != "${current_size}" ]
+    then
+      echo "ERROR: Changing existing collection parameters, suggest --clear" >&2
+      echo "       To override and retain data, ${progname%.*}.stop first" >&2
+      exit 1
+    fi
+    su root stop ${service}
+    su root setprop ${property} ""
+    sleep 1
+  fi
+  [ "true" != "${clear}" ] ||
+    su logd,misc rm -rf "${data}"
+  [ -z "${buffer}" -a -z "${current_buffer}" ] ||
+    su root setprop ${property}.buffer "${buffer}"
+  [ -z "${size}" -a -z "${current_size}" ] ||
+    su root setprop ${property}.size "${size}"
+  # ${service}.rc does the heavy lifting with the following trigger
+  su root setprop ${property} ${service}
   getprop ${property}
   sleep 1
   ps -t | grep "${data##*/}.*${service%d}"
   ;;
 *.stop)
-  su 0 stop ${service}
-  su 0 setprop ${property} ""
-  [ X"${1}" != X"-c" -a X"${1}" != X"--clear" ] ||
-  ( sleep 1 ; su 1036,9998 rm -rf "${data}" )
+  [ -z "${size}" -a -z "${buffer}" ] ||
+    echo "WARNING: Can not use --size or --buffer with ${progname%.*}.stop" >&2
+  su root stop ${service}
+  su root setprop ${property} ""
+  [ -z "`getprop ${property}.buffer`" ] ||
+    su root setprop ${property}.buffer ""
+  [ -z "`getprop ${property}.size`" ] ||
+    su root setprop ${property}.size ""
+  [ "true" != "${clear}" ] ||
+    ( sleep 1 ; su logd,misc rm -rf "${data}" )
   ;;
 *)
-  echo "Unexpected command ${0##*/} ${@}" >&2
+  echo "ERROR: Unexpected command ${0##*/} ${args}" >&2
   exit 1
 esac
