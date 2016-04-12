@@ -1,5 +1,5 @@
 #! /system/bin/sh
-# logpersist cat start and stop handlers
+# logpersist cat, start and stop handlers
 progname="${0##*/}"
 case `getprop ro.debuggable` in
 1) ;;
@@ -10,14 +10,36 @@ esac
 data=/data/misc/logd
 property=persist.logd.logpersistd
 service=logcatd
-if [ X"${1}" = X"-h" -o X"${1}" = X"--help" ]; then
-  echo "${progname%.*}.cat            - dump current ${service%d} logs"
-  echo "${progname%.*}.start          - start ${service} service"
-  echo "${progname%.*}.stop [--clear] - stop ${service} service"
-  exit 0
-fi
+size=256
+buffer=all
+clear=false
+while [ ${#} -gt 0 ]; do
+  case ${1} in
+    -c|--clear) clear=true ;;
+    --size=*) size="${1#--size=}" ;;
+    --rotate-count=*) size="${1#--rotate-count=}" ;;
+    -n) size="${2}" ; shift ;;
+    --buffer=*) buffer="${1#--buffer=}" ;;
+    -b) buffer="${2}" ; shift ;;
+    -h|--help)
+      echo "${progname%.*}.cat            - dump current ${service%d} logs"
+      echo "${progname%.*}.start [--size=<size_in_kb>] \\"
+      echo "                     [--buffer=<buffers_to_collect>] \\"
+      echo "                     [--clear]"
+      echo "                              - start ${service} service"
+      echo "${progname%.*}.stop [--clear] - stop ${service} service"
+      exit 0
+  esac
+  shift
+done
+[ "256" != "${size}" ] ||
+  size=
+[ "all" != "${buffer}" ] ||
+  buffer=
 case ${progname} in
 *.cat)
+  [ -z "${size}" -a -z "${buffer}" -a "true" != "${clear}" ] ||
+    echo "Can not use --clear, --size or --buffer with ${progname%.*}.cat" >&2
   su 1036 ls "${data}" |
   tr -d '\r' |
   sort -ru |
@@ -25,16 +47,29 @@ case ${progname} in
   su 1036 xargs cat
   ;;
 *.start)
+  [ "true" != "${clear}" ] ||
+    ( sleep 1 ; su 1036,9998 rm -rf "${data}" )
+  su 0 setprop ${property} ""
+  [ -z "${buffer}" -a -z "`getprop ${property}.buffer`" ] ||
+    su 0 setprop ${property}.buffer "${buffer}"
+  [ -z "${size}" -a -z "`getprop ${property}.size`" ] ||
+    su 0 setprop ${property}.size "${size}"
   su 0 setprop ${property} ${service}
   getprop ${property}
   sleep 1
   ps -t | grep "${data##*/}.*${service%d}"
   ;;
 *.stop)
+  [ -z "${size}" -a -z "${buffer}" ] ||
+    echo "Can not use --size or --buffer with ${progname%.*}.stop" >&2
   su 0 stop ${service}
   su 0 setprop ${property} ""
-  [ X"${1}" != X"-c" -a X"${1}" != X"--clear" ] ||
-  ( sleep 1 ; su 1036,9998 rm -rf "${data}" )
+  [ -z "`getprop ${property}.buffer`" ] ||
+    su 0 setprop ${property}.buffer ""
+  [ -z "`getprop ${property}.size`" ] ||
+    su 0 setprop ${property}.size ""
+  [ "true" != "${clear}" ] ||
+    ( sleep 1 ; su 1036,9998 rm -rf "${data}" )
   ;;
 *)
   echo "Unexpected command ${0##*/} ${@}" >&2
