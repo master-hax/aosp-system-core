@@ -18,6 +18,7 @@
 #define _LIBBACKTRACE_THREAD_ENTRY_H
 
 #include <pthread.h>
+#include <stdatomic.h>
 #include <sys/types.h>
 #include <ucontext.h>
 
@@ -38,7 +39,7 @@ public:
 
     // Always reset the wait value since this could be the first or nth
     // time this entry is locked.
-    wait_value_ = 0;
+    atomic_store(&wait_value_, 0);
   }
 
   inline void Unlock() {
@@ -59,7 +60,7 @@ private:
   pthread_mutex_t mutex_;
   pthread_mutex_t wait_mutex_;
   pthread_cond_t wait_cond_;
-  int wait_value_;
+  atomic_int wait_value_;
   ThreadEntry* next_;
   ThreadEntry* prev_;
   ucontext_t ucontext_;

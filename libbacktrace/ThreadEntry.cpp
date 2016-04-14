@@ -15,6 +15,7 @@
  */
 
 #include <pthread.h>
+#include <stdatomic.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
@@ -103,7 +104,7 @@ bool ThreadEntry::Wait(int value) {
 
   bool wait_completed = true;
   pthread_mutex_lock(&wait_mutex_);
-  while (wait_value_ != value) {
+  while (atomic_load(&wait_value_) != value) {
     int ret = pthread_cond_timedwait(&wait_cond_, &wait_mutex_, &ts);
     if (ret != 0) {
       BACK_LOGW("pthread_cond_timedwait for value %d failed: %s", value, strerror(ret));
@@ -118,7 +119,7 @@ bool ThreadEntry::Wait(int value) {
 
 void ThreadEntry::Wake() {
   pthread_mutex_lock(&wait_mutex_);
-  wait_value_++;
+  atomic_fetch_add(&wait_value_, 1);
   pthread_mutex_unlock(&wait_mutex_);
 
   pthread_cond_signal(&wait_cond_);
