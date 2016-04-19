@@ -301,12 +301,13 @@ int set_sched_policy(int tid, SchedPolicy policy)
     pthread_once(&the_once, __initialize);
 
 #if POLICY_DEBUG
-    char statfile[64];
+    int statfile_length = 64;
+    char statfile[statfile_length];
     char statline[1024];
     char thread_name[255];
     int fd;
 
-    sprintf(statfile, "/proc/%d/stat", tid);
+    snprintf(statfile, statfile_length, "/proc/%d/stat", tid);
     memset(thread_name, 0, sizeof(thread_name));
 
     fd = open(statfile, O_RDONLY);
