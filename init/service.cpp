@@ -17,6 +17,10 @@
 #include "service.h"
 
 #include <fcntl.h>
+#include <sched.h>
+#include <syscall.h>
+#include <sys/mount.h>
+#include <sys/prctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -24,6 +28,12 @@
 #include <unistd.h>
 
 #include <selinux/selinux.h>
+
+// DEBUG
+// #include <selinux/selinux.h>
+#include <selinux/label.h>
+#include <selinux/android.h>
+
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
@@ -34,6 +44,7 @@
 #include "init.h"
 #include "init_parser.h"
 #include "log.h"
+#include "process.h"
 #include "property_service.h"
 #include "util.h"
 
@@ -42,6 +53,34 @@ using android::base::WriteStringToFile;
 
 #define CRITICAL_CRASH_THRESHOLD    4       // if we crash >4 times ...
 #define CRITICAL_CRASH_WINDOW       (4*60)  // ... in 4 minutes, goto recovery
+
+namespace {
+static int init_exitstatus = 0;
+
+void init_term(int __attribute__ ((unused)) sig)
+{
+    _exit(init_exitstatus);
+}
+
+int init(pid_t rootpid) {
+    pid_t pid;
+    int status;
+    /* So that we exit with the right status. */
+    signal(SIGTERM, init_term);
+    while ((pid = wait(&status)) > 0) {
+        /*
+         * This loop will only end when either there are no processes
+         * left inside our pid namespace or we get a signal.
+         */
+        if (pid == rootpid)
+            init_exitstatus = status;
+    }
+    if (!WIFEXITED(init_exitstatus))
+        _exit(254);
+    _exit(WEXITSTATUS(init_exitstatus));
+}
+
+}
 
 SocketInfo::SocketInfo() : uid(0), gid(0), perm(0) {
 }
@@ -235,6 +274,12 @@ bool Service::HandleOnrestart(const std::vector<std::string>& args, std::string*
     return true;
 }
 
+bool Service::HandlePidns(const std::vector<std::string>& args, std::string* err) {
+    NOTICE("pidns\n");
+    flags_ |= SVC_PIDNS;
+    return true;
+}
+
 bool Service::HandleSeclabel(const std::vector<std::string>& args, std::string* err) {
     seclabel_ = args[1];
     return true;
@@ -291,6 +336,7 @@ Service::OptionHandlerMap::Map& Service::OptionHandlerMap::map() const {
         {"keycodes",    {1,     kMax, &Service::HandleKeycodes}},
         {"oneshot",     {0,     0,    &Service::HandleOneshot}},
         {"onrestart",   {1,     kMax, &Service::HandleOnrestart}},
+        {"pidns",       {0,     0,    &Service::HandlePidns}},
         {"seclabel",    {1,     1,    &Service::HandleSeclabel}},
         {"setenv",      {2,     2,    &Service::HandleSetenv}},
         {"socket",      {3,     6,    &Service::HandleSocket}},
@@ -362,13 +408,13 @@ bool Service::Start() {
         INFO("computing context for service '%s'\n", args_[0].c_str());
         int rc = getcon(&mycon);
         if (rc < 0) {
-            ERROR("could not get context while starting '%s'\n", name_.c_str());
+            ERROR("could not getcon context while starting '%s'\n", name_.c_str());
             return false;
         }
 
         rc = getfilecon(args_[0].c_str(), &fcon);
         if (rc < 0) {
-            ERROR("could not get context while starting '%s'\n", name_.c_str());
+            ERROR("could not getfilecon context while starting '%s'\n", name_.c_str());
             free(mycon);
             return false;
         }
@@ -396,9 +442,43 @@ bool Service::Start() {
 
     NOTICE("Starting service '%s'...\n", name_.c_str());
 
-    pid_t pid = fork();
+    pid_t pid = -1;
+
+    if (flags_ & SVC_PIDNS) {
+        ERROR("ForkWithFlags\n");
+        // pid = ForkWithFlags(CLONE_NEWPID | CLONE_NEWNS | SIGCHLD, nullptr, nullptr);
+        pid = ForkWithFlags(CLONE_NEWPID | SIGCHLD, nullptr, nullptr);
+    } else {
+        pid = fork();
+    }
+
     if (pid == 0) {
         umask(077);
+
+        if (flags_ & SVC_PIDNS) {
+            if (unshare(CLONE_NEWNS)) {
+                ERROR("couldn't unshare(mnt)\n");
+            }
+            const char *kProcPath = "/proc";
+            const unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
+            if (mount("", kProcPath, "proc", kSafeFlags | MS_REMOUNT, "")) {
+                ERROR("couldn't remount(/proc)");
+            }
+
+            if (prctl(PR_SET_NAME, name_.c_str()) < 0) {
+                ERROR("couldn't set name.\n");
+            }
+            pid_t child_pid = fork();
+
+            if (child_pid < 0) {
+                ERROR("couldn't fork init inside the PID namespace.\n");
+                _exit(child_pid);
+            }
+
+            if (child_pid > 0) {
+                init(pid);   // never returns.
+            }
+        }
 
         for (const auto& ei : envvars_) {
             add_environment(ei.name.c_str(), ei.value.c_str());
@@ -418,6 +498,8 @@ bool Service::Start() {
             }
         }
 
+        // XXX
+        // TODO(jorgelo): fix PID.
         std::string pid_str = StringPrintf("%d", getpid());
         for (const auto& file : writepid_files_) {
             if (!WriteStringToFile(pid_str, file)) {
