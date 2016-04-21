@@ -17,6 +17,9 @@
 #include "service.h"
 
 #include <fcntl.h>
+#include <sched.h>
+#include <sys/mount.h>
+#include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -48,6 +51,46 @@ using android::base::WriteStringToFile;
 
 #define CRITICAL_CRASH_THRESHOLD    4       // if we crash >4 times ...
 #define CRITICAL_CRASH_WINDOW       (4*60)  // ... in 4 minutes, goto recovery
+
+static void SetUpPidNamespace(const std::string& service_name) {
+    constexpr unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
+    if (mount("", "/proc", "proc", kSafeFlags | MS_REMOUNT, "") == -1) {
+        PLOG(ERROR) << "couldn't remount(/proc)";
+    }
+
+    if (prctl(PR_SET_NAME, service_name.c_str()) == -1) {
+        PLOG(ERROR) << "couldn't set name";
+    }
+
+    pid_t child_pid = fork();
+    if (child_pid == -1) {
+        PLOG(ERROR) << "couldn't fork init inside the PID namespace";
+        // It's OK to _exit(2) here since this is running in the first child
+        // process.
+        _exit(EXIT_FAILURE);
+    }
+
+    if (child_pid > 0) {
+        // So that we exit with the right status.
+        static int init_exitstatus = 0;
+        signal(SIGTERM, [](int) { _exit(init_exitstatus); });
+
+        pid_t waited_pid;
+        int status;
+        while ((waited_pid = wait(&status)) > 0) {
+             // This loop will end when there are no processes left inside the
+             // PID namespace or when the init process inside the PID namespace
+             // gets a signal.
+            if (waited_pid == child_pid) {
+                init_exitstatus = status;
+            }
+        }
+        if (!WIFEXITED(init_exitstatus)) {
+            _exit(EXIT_FAILURE);
+        }
+        _exit(WEXITSTATUS(init_exitstatus));
+    }
+}
 
 SocketInfo::SocketInfo() : uid(0), gid(0), perm(0) {
 }
@@ -257,6 +300,11 @@ bool Service::HandleOnrestart(const std::vector<std::string>& args, std::string*
     return true;
 }
 
+bool Service::HandlePidns(const std::vector<std::string>& args, std::string* err) {
+    flags_ |= SVC_PIDNS;
+    return true;
+}
+
 bool Service::HandleSeclabel(const std::vector<std::string>& args, std::string* err) {
     seclabel_ = args[1];
     return true;
@@ -314,6 +362,7 @@ Service::OptionHandlerMap::Map& Service::OptionHandlerMap::map() const {
         {"keycodes",    {1,     kMax, &Service::HandleKeycodes}},
         {"oneshot",     {0,     0,    &Service::HandleOneshot}},
         {"onrestart",   {1,     kMax, &Service::HandleOnrestart}},
+        {"pidns",       {0,     0,    &Service::HandlePidns}},
         {"seclabel",    {1,     1,    &Service::HandleSeclabel}},
         {"setenv",      {2,     2,    &Service::HandleSetenv}},
         {"socket",      {3,     6,    &Service::HandleSocket}},
@@ -389,7 +438,7 @@ bool Service::Start() {
 
         rc = getfilecon(args_[0].c_str(), &fcon);
         if (rc < 0) {
-            LOG(ERROR) << "could not get context while starting '" << name_ << "'";
+            LOG(ERROR) << "could not get file context while starting '" << name_ << "'";
             free(mycon);
             return false;
         }
@@ -417,9 +466,22 @@ bool Service::Start() {
 
     LOG(VERBOSE) << "Starting service '" << name_ << "'...";
 
-    pid_t pid = fork();
+    pid_t pid = -1;
+    if (flags_ & SVC_PIDNS) {
+        pid = clone(nullptr, nullptr, CLONE_NEWPID | CLONE_NEWNS | SIGCHLD,
+                    nullptr);
+    } else {
+        pid = fork();
+    }
+
     if (pid == 0) {
         umask(077);
+
+        if (flags_ & SVC_PIDNS) {
+            // This will fork again to run an init process inside the PID
+            // namespace.
+            SetUpPidNamespace(name_);
+        }
 
         for (const auto& ei : envvars_) {
             add_environment(ei.name.c_str(), ei.value.c_str());

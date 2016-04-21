@@ -41,6 +41,7 @@
 #define SVC_RESTART        0x100  // Use to safely restart (stop, wait, start) a service.
 #define SVC_DISABLED_START 0x200  // A start was requested but it was disabled at the time.
 #define SVC_EXEC           0x400  // This synthetic service corresponds to an 'exec'.
+#define SVC_PIDNS          0x800  // Run the service in a new PID namespace.
 
 #define NR_SVC_SUPP_GIDS 12    // twelve supplementary groups
 
@@ -123,6 +124,7 @@ private:
     bool HandleKeycodes(const std::vector<std::string>& args, std::string* err);
     bool HandleOneshot(const std::vector<std::string>& args, std::string* err);
     bool HandleOnrestart(const std::vector<std::string>& args, std::string* err);
+    bool HandlePidns(const std::vector<std::string>& args, std::string* err);
     bool HandleSeclabel(const std::vector<std::string>& args, std::string* err);
     bool HandleSetenv(const std::vector<std::string>& args, std::string* err);
     bool HandleSocket(const std::vector<std::string>& args, std::string* err);
