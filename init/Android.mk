@@ -66,6 +66,7 @@ LOCAL_SRC_FILES:= \
     devices.cpp \
     init.cpp \
     keychords.cpp \
+    process.cpp \
     property_service.cpp \
     signal_handler.cpp \
     ueventd.cpp \

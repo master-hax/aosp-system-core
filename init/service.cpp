@@ -17,6 +17,8 @@
 #include "service.h"
 
 #include <fcntl.h>
+#include <sched.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -34,6 +36,7 @@
 #include "init.h"
 #include "init_parser.h"
 #include "log.h"
+#include "process.h"
 #include "property_service.h"
 #include "util.h"
 
@@ -235,6 +238,12 @@ bool Service::HandleOnrestart(const std::vector<std::string>& args, std::string*
     return true;
 }
 
+bool Service::HandlePidns(const std::vector<std::string>& args, std::string* err) {
+    NOTICE("pidns\n");
+    flags_ |= SVC_PIDNS;
+    return true;
+}
+
 bool Service::HandleSeclabel(const std::vector<std::string>& args, std::string* err) {
     seclabel_ = args[1];
     return true;
@@ -291,6 +300,7 @@ Service::OptionHandlerMap::Map& Service::OptionHandlerMap::map() const {
         {"keycodes",    {1,     kMax, &Service::HandleKeycodes}},
         {"oneshot",     {0,     0,    &Service::HandleOneshot}},
         {"onrestart",   {1,     kMax, &Service::HandleOnrestart}},
+        {"pidns",       {0,     0,    &Service::HandlePidns}},
         {"seclabel",    {1,     1,    &Service::HandleSeclabel}},
         {"setenv",      {2,     2,    &Service::HandleSetenv}},
         {"socket",      {3,     6,    &Service::HandleSocket}},
@@ -396,8 +406,36 @@ bool Service::Start() {
 
     NOTICE("Starting service '%s'...\n", name_.c_str());
 
-    pid_t pid = fork();
+    pid_t pid = -1;
+
+    if (flags_ & SVC_PIDNS) {
+        ERROR("SVC_PIDNS\n");
+        pid = ForkWithFlags(CLONE_NEWPID | SIGCHLD, nullptr, nullptr);
+    } else {
+        pid = fork();
+    }
+
     if (pid == 0) {
+        if (flags_ & SVC_PIDNS) {
+            if (unshare(CLONE_NEWNS))
+                ERROR("unshare(vfs)");
+            const char *kProcPath = "/proc";
+            // const unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
+            const unsigned int kSafeFlags = 0;
+            /*
+             * Right now, we're holding a reference to our parent's old mount of
+             * /proc in our namespace, which means using MS_REMOUNT here would
+             * mutate our parent's mount as well, even though we're in a VFS
+             * namespace (!). Instead, remove their mount from our namespace
+             * and make our own. However, if we are in a new user namespace, /proc
+             * is not seen as mounted, so don't return error if umount() fails.
+             */
+            if (umount2(kProcPath, MNT_DETACH))
+                ERROR("couldn't umount(/proc)");
+            if (mount("", kProcPath, "proc", kSafeFlags, ""))
+                ERROR("couldn't mount(/proc)");
+        }
+
         umask(077);
 
         for (const auto& ei : envvars_) {
