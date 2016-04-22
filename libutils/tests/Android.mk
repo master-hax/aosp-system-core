@@ -19,6 +19,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_CFLAGS := -Werror -Wthread-safety
+
 LOCAL_MODULE := libutils_tests
 
 LOCAL_SRC_FILES := \
@@ -26,6 +28,7 @@ LOCAL_SRC_FILES := \
     BitSet_test.cpp \
     Looper_test.cpp \
     LruCache_test.cpp \
+    Mutex_test.cpp \
     String8_test.cpp \
     StrongPointer_test.cpp \
     Unicode_test.cpp \

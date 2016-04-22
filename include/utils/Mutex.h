@@ -28,6 +28,12 @@
 #include <utils/Errors.h>
 #include <utils/Timers.h>
 
+#if defined(__clang__)
+#define __UTILS_THREAD_ANNOTATION(x) __attribute__((x))
+#else
+#define __UTILS_THREAD_ANNOTATION(x)
+#endif
+
 // ---------------------------------------------------------------------------
 namespace android {
 // ---------------------------------------------------------------------------
@@ -40,58 +46,67 @@ class Condition;
  * The mutex must be unlocked by the thread that locked it.  They are not
  * recursive, i.e. the same thread can't lock it multiple times.
  */
-class Mutex {
-public:
-    enum {
-        PRIVATE = 0,
-        SHARED = 1
-    };
+class __UTILS_THREAD_ANNOTATION(capability("mutex")) Mutex {
+ public:
+  enum {
+   PRIVATE = 0,
+   SHARED = 1
+  };
 
-                Mutex();
-                Mutex(const char* name);
-                Mutex(int type, const char* name = NULL);
-                ~Mutex();
+  Mutex();
+  Mutex(const char* name);
+  Mutex(int type, const char* name = NULL);
+  ~Mutex();
 
-    // lock or unlock the mutex
-    status_t    lock();
-    void        unlock();
+  // lock or unlock the mutex
+  status_t lock() __UTILS_THREAD_ANNOTATION(acquire_capability());
+  void unlock() __UTILS_THREAD_ANNOTATION(release_capability());
 
-    // lock if possible; returns 0 on success, error otherwise
-    status_t    tryLock();
+  // lock if possible; returns 0 on success, error otherwise
+  status_t tryLock() __UTILS_THREAD_ANNOTATION(try_acquire_capability(0));
 
 #if defined(__ANDROID__)
-    // lock the mutex, but don't wait longer than timeoutMilliseconds.
-    // Returns 0 on success, TIMED_OUT for failure due to timeout expiration.
-    //
-    // OSX doesn't have pthread_mutex_timedlock() or equivalent. To keep
-    // capabilities consistent across host OSes, this method is only available
-    // when building Android binaries.
-    status_t    timedLock(nsecs_t timeoutMilliseconds);
+  // lock the mutex, but don't wait longer than timeoutMilliseconds.
+  // Returns 0 on success, TIMED_OUT for failure due to timeout expiration.
+  //
+  // OSX doesn't have pthread_mutex_timedlock() or equivalent. To keep
+  // capabilities consistent across host OSes, this method is only available
+  // when building Android binaries.
+  status_t timedLock(nsecs_t timeoutMilliseconds) __UTILS_THREAD_ANNOTATION(try_acquire_capability(0));
 #endif
 
-    // Manages the mutex automatically. It'll be locked when Autolock is
-    // constructed and released when Autolock goes out of scope.
-    class Autolock {
-    public:
-        inline Autolock(Mutex& mutex) : mLock(mutex)  { mLock.lock(); }
-        inline Autolock(Mutex* mutex) : mLock(*mutex) { mLock.lock(); }
-        inline ~Autolock() { mLock.unlock(); }
-    private:
-        Mutex& mLock;
-    };
+  // Manages the mutex automatically. It'll be locked when Autolock is
+  // constructed and released when Autolock goes out of scope.
+  class __UTILS_THREAD_ANNOTATION(scoped_lockable) Autolock {
+   public:
+    inline Autolock(Mutex& mutex) __UTILS_THREAD_ANNOTATION(acquire_capability(mutex))
+        : mLock(mutex) {
+      mLock.lock();
+    }
 
-private:
-    friend class Condition;
+    inline Autolock(Mutex* mutex) __UTILS_THREAD_ANNOTATION(acquire_capability(mutex))
+        : mLock(*mutex) {
+      mLock.lock();
+    }
 
-    // A mutex cannot be copied
-                Mutex(const Mutex&);
-    Mutex&      operator = (const Mutex&);
+    inline ~Autolock() __UTILS_THREAD_ANNOTATION(release_capability) { mLock.unlock(); }
+
+   private:
+    Mutex& mLock;
+  };
+
+ private:
+  friend class Condition;
+
+  // A mutex cannot be copied
+  Mutex(const Mutex&);
+  Mutex& operator=(const Mutex&);
 
 #if !defined(_WIN32)
-    pthread_mutex_t mMutex;
+  pthread_mutex_t mMutex;
 #else
-    void    _init();
-    void*   mState;
+  void _init();
+  void* mState;
 #endif
 };
 
