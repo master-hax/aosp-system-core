@@ -843,11 +843,45 @@ out:
     return rc;
 }
 
+static int fs_mgr_update_verity_table_blk_device(char *blk_device, char **table)
+{
+    char *saveptr, *word, *result = NULL;
+
+    word = strtok_r(*table, " ", &saveptr);
+    if (!word)
+        return 0;
+
+    while (word) {
+        if (strstr(word, "/dev/block/") == word &&
+            strstr(blk_device, word) == blk_device)
+            word = blk_device;
+
+        if (!result) {
+            result = strdup(word);
+        } else {
+            char *tmp = result;
+            if (asprintf(&result, "%s %s", result, word) == -1)
+                goto error;
+            free(tmp);
+        }
+
+        word = strtok_r(NULL, " ", &saveptr);
+    }
+
+    free(*table);
+    *table = result;
+    return 0;
+
+error:
+    free(result);
+    return -1;
+}
+
 int fs_mgr_setup_verity(struct fstab_rec *fstab)
 {
     int retval = FS_MGR_SETUP_VERITY_FAIL;
     int fd = -1;
-    char *invalid_table = NULL;
+    char *table = NULL;
     char *verity_blk_name = NULL;
     struct fec_handle *f = NULL;
     struct fec_verity_metadata verity;
@@ -912,8 +946,15 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab)
         params.mode = VERITY_MODE_EIO;
     }
 
+    if (!verity.table)
+        goto out;
+
+    table = strdup(verity.table);
+    if (!table)
+        goto out;
+
     // verify the signature on the table
-    if (verify_table(verity.signature, sizeof(verity.signature), verity.table,
+    if (verify_table(verity.signature, sizeof(verity.signature), table,
             verity.table_length) < 0) {
         if (params.mode == VERITY_MODE_LOGGING) {
             // the user has been warned, allow mounting without dm-verity
@@ -922,19 +963,19 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab)
         }
 
         // invalidate root hash and salt to trigger device-specific recovery
-        invalid_table = strdup(verity.table);
-
-        if (!invalid_table ||
-                invalidate_table(invalid_table, verity.table_length) < 0) {
+        if (invalidate_table(table, verity.table_length) < 0) {
             goto out;
         }
-
-        params.table = invalid_table;
-    } else {
-        params.table = verity.table;
     }
 
     INFO("Enabling dm-verity for %s (mode %d)\n", mount_point, params.mode);
+
+    if (fstab->fs_mgr_flags & MF_SLOTSELECT) {
+        // Update the verity params using the actual block device path
+        if (fs_mgr_update_verity_table_blk_device(fstab->blk_device, &table))
+            goto loaded;
+    }
+    params.table = table;
 
     // load the verity mapping table
     if (load_verity_table(io, mount_point, verity.data_size, fd, &params,
@@ -1001,7 +1042,7 @@ out:
     }
 
     fec_close(f);
-    free(invalid_table);
+    free(table);
     free(verity_blk_name);
 
     return retval;
