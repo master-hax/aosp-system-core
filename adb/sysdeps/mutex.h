@@ -36,27 +36,31 @@ namespace std {
 class recursive_mutex {
   public:
     recursive_mutex() {
-        InitializeCriticalSection(&mutex_);
+        InitializeCriticalSection(&cs_);
     }
 
     ~recursive_mutex() {
-        DeleteCriticalSection(&mutex_);
+        DeleteCriticalSection(&cs_);
     }
 
     void lock() {
-        EnterCriticalSection(&mutex_);
+        EnterCriticalSection(&cs_);
     }
 
     bool try_lock() {
-        return TryEnterCriticalSection(&mutex_);
+        return TryEnterCriticalSection(&cs_);
     }
 
     void unlock() {
-        LeaveCriticalSection(&mutex_);
+        LeaveCriticalSection(&cs_);
     }
 
-  private:
-    CRITICAL_SECTION mutex_;
+    CRITICAL_SECTION* getCS() {
+        return &cs_;
+    }
+
+  protected:
+    CRITICAL_SECTION cs_;
 
     DISALLOW_COPY_AND_ASSIGN(recursive_mutex);
 };
@@ -100,6 +104,8 @@ class mutex {
   private:
     recursive_mutex mutex_;
     size_t lock_count_ = 0;
+
+    friend class condition_variable;
 };
 
 }
