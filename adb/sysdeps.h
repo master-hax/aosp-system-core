@@ -116,6 +116,20 @@ static __inline__ void  adb_mutex_unlock( adb_mutex_t*  lock )
     LeaveCriticalSection( lock );
 }
 
+typedef CONDITION_VARIABLE adb_cond_t;
+
+static __inline__ void adb_cond_init(adb_cond_t* cond, void*) {
+    InitializeConditionVariable(cond);
+}
+
+static __inline__ void adb_cond_wait(adb_cond_t* cond, adb_mutex_t* lock) {
+    SleepConditionVariableCS(cond, lock, INFINITE);
+}
+
+static __inline__ void adb_cond_signal(adb_cond_t* cond) {
+    WakeConditionVariable(cond);
+}
+
 typedef void (*adb_thread_func_t)(void* arg);
 typedef HANDLE adb_thread_t;
 

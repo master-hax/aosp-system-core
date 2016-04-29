@@ -12,6 +12,7 @@ ADB_MUTEX(socket_list_lock)
 ADB_MUTEX(transport_lock)
 #if ADB_HOST
 ADB_MUTEX(local_transports_lock)
+ADB_MUTEX(retry_ports_lock)
 #endif
 ADB_MUTEX(usb_lock)
 
