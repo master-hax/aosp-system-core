@@ -25,6 +25,10 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include <condition_variable>
+#include <mutex>
+#include <vector>
+
 #include <android-base/stringprintf.h>
 #include <cutils/sockets.h>
 
@@ -85,9 +89,9 @@ static int remote_write(apacket *p, atransport *t)
     return 0;
 }
 
-void local_connect(int port) {
+bool local_connect(int port) {
     std::string dummy;
-    local_connect_arbitrary_ports(port-1, port, &dummy);
+    return local_connect_arbitrary_ports(port-1, port, &dummy) == 0;
 }
 
 int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* error) {
@@ -121,18 +125,66 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
 }
 
 #if ADB_HOST
+
+static void PollAllLocalPortsForEmulator() {
+    int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
+    int count = ADB_LOCAL_TRANSPORT_MAX;
+
+    // Try to connect to any number of running emulator instances.
+    for ( ; count > 0; count--, port += 2 ) {
+        local_connect(port);
+    }
+}
+
+// Retry the disconnected local port for 60 times, and sleep 1 second between two retries.
+constexpr uint32_t LOCAL_PORT_RETRY_COUNT = 60;
+constexpr uint32_t LOCAL_PORT_RETRY_INTERVAL_IN_MS = 1000;
+
+struct RetryPort {
+  int port;
+  uint32_t retry_count;
+};
+
+static std::vector<RetryPort>& retry_ports = *new std::vector<RetryPort>;
+ADB_MUTEX_DEFINE(retry_ports_lock);
+adb_cond_t retry_ports_cond;
+
 static void client_socket_thread(void* x) {
     adb_thread_setname("client_socket_thread");
     D("transport: client_socket_thread() starting");
+    adb_cond_init(&retry_ports_cond, nullptr);
+    PollAllLocalPortsForEmulator();
     while (true) {
-        int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
-        int count = ADB_LOCAL_TRANSPORT_MAX;
-
-        // Try to connect to any number of running emulator instances.
-        for ( ; count > 0; count--, port += 2 ) {
-            local_connect(port);
+        std::vector<RetryPort> ports;
+        // Collect retry ports.
+        adb_mutex_lock(&retry_ports_lock);
+        adb_cond_wait(&retry_ports_cond, &retry_ports_lock);
+        if (!retry_ports.empty()) {
+            ports.insert(ports.end(), retry_ports.begin(), retry_ports.end());
+            retry_ports.clear();
         }
-        sleep(1);
+        adb_mutex_unlock(&retry_ports_lock);
+        // Sleep here instead of the end of loop, because if we immediately try to reconnect the emulator
+        // just kicked, the adbd and the emulator may not have time to clean up the previous transport.
+        adb_sleep_ms(LOCAL_PORT_RETRY_INTERVAL_IN_MS);
+
+        // Try connecting retry ports.
+        std::vector<RetryPort> next_ports;
+        for (auto& port : ports) {
+            VLOG(TRANSPORT) << "retry " << port.port << ", last retry_count " << port.retry_count;
+            if (local_connect(port.port)) {
+                VLOG(TRANSPORT) << "retry " << port.port << " successfully";
+                continue;
+            }
+            if (--port.retry_count > 0) {
+                next_ports.push_back(port);
+            }
+        }
+
+        // Copy back left retry ports.
+        adb_mutex_lock(&retry_ports_lock);
+        retry_ports.insert(retry_ports.end(), next_ports.begin(), next_ports.end());
+        adb_mutex_unlock(&retry_ports_lock);
     }
 }
 
@@ -339,17 +391,33 @@ static void remote_close(atransport *t)
         t->sfd = -1;
         adb_close(fd);
     }
+#if ADB_HOST
+    int local_port;
+    if (t->GetLocalPortForEmulator(&local_port)) {
+        VLOG(TRANSPORT) << "remote_close, local_port = " << local_port;
+        adb_mutex_lock(&retry_ports_lock);
+        RetryPort port;
+        port.port = local_port;
+        port.retry_count = LOCAL_PORT_RETRY_COUNT;
+        retry_ports.push_back(port);
+        adb_mutex_unlock(&retry_ports_lock);
+        adb_cond_signal(&retry_ports_cond);
+    }
+#endif
 }
 
 
 #if ADB_HOST
 /* Only call this function if you already hold local_transports_lock. */
-atransport* find_emulator_transport_by_adb_port_locked(int adb_port)
+static atransport* find_emulator_transport_by_adb_port_locked(int adb_port)
 {
     int i;
     for (i = 0; i < ADB_LOCAL_TRANSPORT_MAX; i++) {
-        if (local_transports[i] && local_transports[i]->adb_port == adb_port) {
-            return local_transports[i];
+        int local_port;
+        if (local_transports[i] && local_transports[i]->GetLocalPortForEmulator(&local_port)) {
+            if (local_port == adb_port) {
+                return local_transports[i];
+            }
         }
     }
     return NULL;
@@ -396,13 +464,12 @@ int init_socket_transport(atransport *t, int s, int adb_port, int local)
     t->sync_token = 1;
     t->connection_state = kCsOffline;
     t->type = kTransportLocal;
-    t->adb_port = 0;
 
 #if ADB_HOST
     if (local) {
         adb_mutex_lock( &local_transports_lock );
         {
-            t->adb_port = adb_port;
+            t->SetLocalPortForEmulator(adb_port);
             atransport* existing_transport =
                     find_emulator_transport_by_adb_port_locked(adb_port);
             int index = get_available_local_transport_index_locked();
