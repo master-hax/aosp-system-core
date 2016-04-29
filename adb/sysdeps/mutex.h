@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+#ifndef _ADB_SYSDEPS_MUTEX_H
+#define _ADB_SYSDEPS_MUTEX_H
 #if defined(_WIN32)
 
 #include <windows.h>
@@ -35,34 +37,42 @@ namespace std {
 // CRITICAL_SECTION is recursive, so just wrap it in a Mutex-compatible class.
 class recursive_mutex {
   public:
+    typedef CRITICAL_SECTION* native_handle_type;
+
     recursive_mutex() {
-        InitializeCriticalSection(&mutex_);
+        InitializeCriticalSection(&cs_);
     }
 
     ~recursive_mutex() {
-        DeleteCriticalSection(&mutex_);
+        DeleteCriticalSection(&cs_);
     }
 
     void lock() {
-        EnterCriticalSection(&mutex_);
+        EnterCriticalSection(&cs_);
     }
 
     bool try_lock() {
-        return TryEnterCriticalSection(&mutex_);
+        return TryEnterCriticalSection(&cs_);
     }
 
     void unlock() {
-        LeaveCriticalSection(&mutex_);
+        LeaveCriticalSection(&cs_);
+    }
+
+    native_handle_type native_handle() {
+        return &cs_;
     }
 
   private:
-    CRITICAL_SECTION mutex_;
+    CRITICAL_SECTION cs_;
 
     DISALLOW_COPY_AND_ASSIGN(recursive_mutex);
 };
 
 class mutex {
   public:
+    typedef CRITICAL_SECTION* native_handle_type;
+
     mutex() {
     }
 
@@ -97,11 +107,18 @@ class mutex {
         return true;
     }
 
+    native_handle_type native_handle() {
+        return mutex_.native_handle();
+    }
+
   private:
     recursive_mutex mutex_;
     size_t lock_count_ = 0;
+
+    friend class condition_variable;
 };
 
 }
 
-#endif
+#endif  // defined(_WIN32)
+#endif  // _ADB_SYSDEPS_MUTEX_H
