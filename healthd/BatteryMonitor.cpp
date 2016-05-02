@@ -158,7 +158,7 @@ BatteryMonitor::PowerSupplyType BatteryMonitor::readPowerSupplyType(const String
             { "USB", ANDROID_POWER_SUPPLY_TYPE_USB },
             { "USB_DCP", ANDROID_POWER_SUPPLY_TYPE_AC },
             { "USB_HVDCP", ANDROID_POWER_SUPPLY_TYPE_AC },
-            { "USB_CDP", ANDROID_POWER_SUPPLY_TYPE_AC },
+            { "USB_CDP", ANDROID_POWER_SUPPLY_TYPE_USB },
             { "USB_ACA", ANDROID_POWER_SUPPLY_TYPE_AC },
             { "USB_C", ANDROID_POWER_SUPPLY_TYPE_AC },
             { "USB_PD", ANDROID_POWER_SUPPLY_TYPE_AC },
@@ -637,7 +637,7 @@ void BatteryMonitor::init(struct healthd_config *hc) {
             KLOG_WARNING(LOG_TAG, "BatteryTemperaturePath not found\n");
         if (mHealthdConfig->batteryTechnologyPath.isEmpty())
             KLOG_WARNING(LOG_TAG, "BatteryTechnologyPath not found\n");
-	if (mHealthdConfig->batteryCurrentNowPath.isEmpty())
+        if (mHealthdConfig->batteryCurrentNowPath.isEmpty())
             KLOG_WARNING(LOG_TAG, "BatteryCurrentNowPath not found\n");
         if (mHealthdConfig->batteryFullChargePath.isEmpty())
             KLOG_WARNING(LOG_TAG, "BatteryFullChargePath not found\n");
