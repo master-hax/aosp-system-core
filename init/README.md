@@ -203,7 +203,10 @@ runs the service.
 
 `writepid <file...>`
 > Write the child's pid to the given files when it forks. Meant for
-  cgroup/cpuset usage.
+  cgroup/cpuset usage. If there is no files under /dev/cpuset/ specified, but a
+  system property 'ro.cpuset.default' is set to a non-empty cpuset name (e.g.
+  '/foreground'), then the pid is written to a file under
+  '/dev/cpuset/<default_cpuset>/tasks'.
 
 `priority <priority>`
 > Scheduling priority of the service process. This value has to be in range
