@@ -202,8 +202,16 @@ runs the service.
 > Execute a Command (see below) when service restarts.
 
 `writepid <file...>`
-> Write the child's pid to the given files when it forks. Meant for
-  cgroup/cpuset usage.
+> Write the child's pid to the given files when it forks. For writing to files
+  under /dev/cpuset/ please use 'cpuset' option instead (see below) since it has
+  special handling for default cpusets when no option is specified for a service.
+
+`cpuset <path>`
+> Specifies the cpuset to run the service in. The "path" parameter is the cpuset
+  path relative to the root cpuset in /dev/cpuset/. If 'cpuset' is omitted, then
+  the system default cpuset specified in 'ro.cpuset.default' system property is
+  used. If 'ro.cpuset.default' system propery is empty or unspecified then
+  the root cpuset will be assigned.
 
 `priority <priority>`
 > Scheduling priority of the service process. This value has to be in range
