@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 
+#include <android-base/unique_fd.h>
 #include <cutils/iosched_policy.h>
 
 #include <memory>
@@ -109,6 +110,7 @@ private:
     bool ParseCapabilities(const std::vector<std::string>& args, std::string *err);
     bool ParseClass(const std::vector<std::string>& args, std::string* err);
     bool ParseConsole(const std::vector<std::string>& args, std::string* err);
+    bool ParseCpuSet(const std::vector<std::string>& args, std::string* err);
     bool ParseCritical(const std::vector<std::string>& args, std::string* err);
     bool ParseDisabled(const std::vector<std::string>& args, std::string* err);
     bool ParseGroup(const std::vector<std::string>& args, std::string* err);
@@ -126,12 +128,15 @@ private:
     bool ParseUser(const std::vector<std::string>& args, std::string* err);
     bool ParseWritepid(const std::vector<std::string>& args, std::string* err);
 
+    android::base::unique_fd OpenCpuSetFd(const std::string& subpath);
+
     template <typename T>
     bool AddDescriptor(const std::vector<std::string>& args, std::string* err);
 
     std::string name_;
     std::string classname_;
     std::string console_;
+    std::string cpuset_;
 
     unsigned flags_;
     pid_t pid_;
