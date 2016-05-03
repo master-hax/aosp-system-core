@@ -205,6 +205,10 @@ runs the service.
 > Write the child's pid to the given files when it forks. Meant for
   cgroup/cpuset usage.
 
+`cpuset <path>`
+> Specifies the cpuset to run the service in. The "path" parameter is the cpuset
+  path relative to the root cpuset in /dev/cpuset.
+
 `priority <priority>`
 > Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().
