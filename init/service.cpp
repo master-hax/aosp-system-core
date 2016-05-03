@@ -512,6 +512,12 @@ bool Service::ParseWritepid(const std::vector<std::string>& args, std::string* e
     return true;
 }
 
+bool Service::ParseCpuSet(const std::vector<std::string>& args, std::string* err) {
+    cpuset_tasks_fd_ = OpenCpuSetFd(args[1]);
+    // Fail parsing if a cpuset was requested for the service but we can't open it.
+    return cpuset_tasks_fd_.get() != -1;
+}
+
 class Service::OptionParserMap : public KeywordMap<OptionParser> {
 public:
     OptionParserMap() {
@@ -527,6 +533,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
                         {1,     kMax, &Service::ParseCapabilities}},
         {"class",       {1,     1,    &Service::ParseClass}},
         {"console",     {0,     1,    &Service::ParseConsole}},
+        {"cpuset",      {1,     1,    &Service::ParseCpuSet}},
         {"critical",    {0,     0,    &Service::ParseCritical}},
         {"disabled",    {0,     0,    &Service::ParseDisabled}},
         {"group",       {1,     NR_SVC_SUPP_GIDS + 1, &Service::ParseGroup}},
@@ -621,6 +628,21 @@ bool Service::Start() {
     }
 
     if (pid == 0) {
+        // Attach the process to the cpuset specified in the service or use
+        // the system default if one is not specified. When no system default
+        // is set, fallback to leaving the process in the root cpuset.
+        if (cpuset_tasks_fd_.get() == -1) {
+            cpuset_tasks_fd_ = OpenCpuSetFd(property_get("ro.cpuset.default"));
+        }
+
+        if (cpuset_tasks_fd_.get() != -1) {
+          std::string pid = std::to_string(getpid());
+          if (!android::base::WriteStringToFd(pid, cpuset_tasks_fd_.get())) {
+              PLOG(ERROR) <<  "Failed to write pid to cpuset tasks";
+          }
+          cpuset_tasks_fd_.reset();
+        }
+
         umask(077);
 
         if (namespace_flags_ & CLONE_NEWPID) {
@@ -669,6 +691,8 @@ bool Service::Start() {
 
         _exit(127);
     }
+
+    cpuset_tasks_fd_.reset();
 
     if (pid < 0) {
         PLOG(ERROR) << "failed to fork for '" << name_ << "'";
@@ -807,6 +831,36 @@ void Service::OpenConsole() const {
     dup2(fd, 1);
     dup2(fd, 2);
     close(fd);
+}
+
+// Opens the cpuset 'tasks' file. The cpuset is specified relative to the
+// standard mount point for the cpuset cgroup at /dev/cpuset, regardless of
+// leading "/" chars.
+android::base::unique_fd Service::OpenCpuSetFd(const std::string& subpath) {
+    android::base::unique_fd tasks_fd;
+    std::string path = "./" + subpath;
+    android::base::unique_fd base_fd{open("/dev/cpuset",
+                                          O_CLOEXEC | O_RDONLY | O_DIRECTORY)};
+    if (base_fd.get() == -1) {
+        PLOG(ERROR) << "Failed to open root cpuset";
+        return tasks_fd;
+    }
+
+    android::base::unique_fd cpuset_fd{openat(
+        base_fd.get(), path.c_str(), O_CLOEXEC | O_RDONLY | O_DIRECTORY)};
+    if (cpuset_fd.get() == -1) {
+        PLOG(ERROR) << "Failed to open cpuset \"" << subpath.c_str() << "\"";
+        return tasks_fd;
+    }
+
+    // Do not use O_CLOEXEC here since this fd will be passed to the child
+    // process.
+    tasks_fd.reset(openat(cpuset_fd.get(), "tasks", O_WRONLY));
+    if (tasks_fd.get() == -1) {
+        PLOG(ERROR) << "Failed to open cpuset tasks";
+    }
+
+    return tasks_fd;
 }
 
 int ServiceManager::exec_count_ = 0;
