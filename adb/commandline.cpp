@@ -1416,6 +1416,12 @@ int adb_commandline(int argc, const char **argv) {
     }
     // TODO: also try TARGET_PRODUCT/TARGET_DEVICE as a hint
 
+    /* Validate and assign the server host */
+    const char* server_host_str = getenv("ANDROID_ADB_SERVER_HOST");
+    if (server_host_str && strlen(server_host_str) > 0) {
+        adb_set_tcp_name(server_host_str);
+    }
+
     /* Validate and assign the server port */
     const char* server_port_str = getenv("ANDROID_ADB_SERVER_PORT");
     int server_port = DEFAULT_ADB_PORT;
