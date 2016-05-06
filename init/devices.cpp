@@ -146,7 +146,26 @@ static bool perm_path_matches(const char *path, struct perms_ *dp)
     return false;
 }
 
-void fixup_sys_perms(const char *upath)
+static bool match_subsystem(struct perms_ *dp, const char *pattern,
+                            const char *path, const char *subsystem)
+{
+    char buf[512];
+    const char *name;
+
+    if (!pattern || !subsystem || strstr(dp->name, subsystem) == NULL)
+        return false;
+
+    name = basename(path);
+    int len = snprintf(buf, sizeof(buf), pattern, subsystem, name);
+    if ((len < 0) || ((size_t) len >= sizeof(buf))) {
+        // Overflow
+        return false;
+    }
+
+    return perm_path_matches(buf, dp);
+}
+
+static void fixup_sys_perms(const char *upath, const char *subsystem)
 {
     char buf[512];
     struct listnode *node;
@@ -165,7 +184,11 @@ void fixup_sys_perms(const char *upath)
         char attr_buf[512];
 
         dp = &(node_to_item(node, struct perm_node, plist))->dp;
-        if (!perm_path_matches(buf, dp)) {
+        if (match_subsystem(dp, SYSFS_PREFIX "/class/%s/%s", buf, subsystem)) {
+            ; // matched
+        } else if (match_subsystem(dp, SYSFS_PREFIX "/bus/%s/devices/%s", buf, subsystem)) {
+            ; // matched
+        } else if (!perm_path_matches(buf, dp)) {
                 continue;
         }
 
@@ -742,7 +765,7 @@ static void handle_generic_device_event(struct uevent *uevent)
 static void handle_device_event(struct uevent *uevent)
 {
     if (!strcmp(uevent->action,"add") || !strcmp(uevent->action, "change") || !strcmp(uevent->action, "online"))
-        fixup_sys_perms(uevent->path);
+        fixup_sys_perms(uevent->path, uevent->subsystem);
 
     if (!strncmp(uevent->subsystem, "block", 5)) {
         handle_block_device_event(uevent);
