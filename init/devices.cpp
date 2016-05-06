@@ -130,7 +130,30 @@ int add_dev_perms(const char *name, const char *attr,
     return 0;
 }
 
-void fixup_sys_perms(const char *upath)
+static int match_subsystem(struct perms_ *dp, const char *upath,
+                           const char *base, const char *subsystem)
+{
+    char class_path[512];
+    const char *name;
+
+    if (strstr(dp->name, subsystem) == NULL)
+        return -1;
+
+    name = basename(upath);
+    snprintf(class_path, sizeof(class_path), "/sys/%s/%s/%s", base, subsystem, name);
+
+    if (dp->prefix) {
+        if (strncmp(class_path, dp->name, strlen(dp->name)) == 0)
+            return 0;
+    } else {
+        if (strcmp(class_path, dp->name) == 0)
+            return 0;
+    }
+
+    return -1;
+}
+
+static void fixup_sys_perms(const char *upath, const char *subsystem)
 {
     char buf[512];
     struct listnode *node;
@@ -141,7 +164,11 @@ void fixup_sys_perms(const char *upath)
      */
     list_for_each(node, &sys_perms) {
         dp = &(node_to_item(node, struct perm_node, plist))->dp;
-        if (dp->prefix) {
+        if (match_subsystem(dp, upath, "class", subsystem) == 0) {
+            ; // matched
+        } else if (match_subsystem(dp, upath, "bus", subsystem) == 0) {
+            ; // matched
+        } else if (dp->prefix) {
             if (strncmp(upath, dp->name + 4, strlen(dp->name + 4)))
                 continue;
         } else if (dp->wildcard) {
@@ -747,7 +774,7 @@ static void handle_generic_device_event(struct uevent *uevent)
 static void handle_device_event(struct uevent *uevent)
 {
     if (!strcmp(uevent->action,"add") || !strcmp(uevent->action, "change") || !strcmp(uevent->action, "online"))
-        fixup_sys_perms(uevent->path);
+        fixup_sys_perms(uevent->path, uevent->subsystem);
 
     if (!strncmp(uevent->subsystem, "block", 5)) {
         handle_block_device_event(uevent);
