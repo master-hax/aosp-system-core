@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include <private/android_filesystem_config.h>
 #include <private/canned_fs_config.h>
@@ -54,8 +55,14 @@ int load_canned_fs_config(const char* fn) {
 			canned_data = (Path*) realloc(canned_data, canned_alloc * sizeof(Path));
 		}
 		Path* p = canned_data + canned_used;
-		p->path = strdup(strtok(line, " "));
-		p->uid = atoi(strtok(NULL, " "));
+		bool rootdir = false;
+		if (line[0] == ' ') {
+			rootdir = true;
+			p->path = strdup("");
+		} else {
+			p->path = strdup(strtok(line, " "));
+		}
+		p->uid = atoi(strtok(rootdir ? line : NULL, " "));
 		p->gid = atoi(strtok(NULL, " "));
 		p->mode = strtol(strtok(NULL, " "), NULL, 8);   // mode is in octal
 		p->capabilities = 0;
