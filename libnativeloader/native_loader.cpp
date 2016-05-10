@@ -19,7 +19,7 @@
 
 #include <dlfcn.h>
 #ifdef __ANDROID__
-#include <android/dlext.h>
+#include "dlext_namespaces.h"
 #include "cutils/properties.h"
 #include "log/log.h"
 #endif
@@ -105,6 +105,13 @@ class LibraryNamespaces {
   }
 
   void Initialize() {
+    // Once public namespace is initialized there is no
+    // point in running this code - it will have no effect
+    // on the current list of public libraries.
+    if (initialized_) {
+      return;
+    }
+
     std::vector<std::string> sonames;
     const char* android_root_env = getenv("ANDROID_ROOT");
     std::string root_dir = android_root_env != nullptr ? android_root_env : "/system";
