@@ -27,7 +27,6 @@
 
 #include <utils/RefBase.h>
 
-#include <utils/Atomic.h>
 #include <utils/CallStack.h>
 #include <utils/Log.h>
 #include <utils/threads.h>
@@ -57,6 +56,33 @@
 
 namespace android {
 
+// Usage, invariants, etc:
+
+// It is normally OK just to keep weak pointers to an object.  The object
+// will be deallocated by decWeak when the last weak reference disappears.
+// Once a a strong reference has been created, the object will disappear
+// once the last strong reference does (decStrong).
+// AttemptIncStrong will succeed if the object has a strong reference,
+// or if it has a weak reference and has never had a strong reference.
+// AttemptIncWeak really does succeed only if there is already a WEAK
+// reference, and thus may fail when attemptIncStrong would succeed.
+// OBJECT_LIFETIME_WEAK changes this behavior to retain the object
+// unconditionally until the last reference of either kind disappears.
+// The client ensure that the extendObjectLifetime call happens before
+// the dec call that would otherwise have deallocated the object, or
+// before an attemptIncStrong call that might rely on it.  We do not
+// worry about concurrent changes to the object lifetime.
+// mStrong is the strong reference count.
+// mWeak is the weak reference count.
+// Between calls, and ignoring memory ordering effects, mWeak includes
+// strong references, and is thus >= mStrong.
+// The client must ensure that every inc() call happens before
+// the corresponding dec() call.
+// Increments for the two counters use memory_order_relaxed, and are thus
+// unordered.  But a final decX operation happens after all other decX
+// operations (due to decrement ordering), and hence after all incX operations.
+
+
 #define INITIAL_STRONG_VALUE (1<<28)
 
 // ---------------------------------------------------------------------------
@@ -64,10 +90,10 @@ namespace android {
 class RefBase::weakref_impl : public RefBase::weakref_type
 {
 public:
-    volatile int32_t    mStrong;
-    volatile int32_t    mWeak;
-    RefBase* const      mBase;
-    volatile int32_t    mFlags;
+    std::atomic<int32_t>    mStrong;
+    std::atomic<int32_t>    mWeak;
+    RefBase* const          mBase;
+    std::atomic<int32_t>    mFlags;
 
 #if !DEBUG_REFS
 
@@ -141,7 +167,7 @@ public:
     void addStrongRef(const void* id) {
         //ALOGD_IF(mTrackEnabled,
         //        "addStrongRef: RefBase=%p, id=%p", mBase, id);
-        addRef(&mStrongRefs, id, mStrong);
+        addRef(&mStrongRefs, id, mStrong.load(memory_order_relaxed));
     }
 
     void removeStrongRef(const void* id) {
@@ -150,7 +176,7 @@ public:
         if (!mRetain) {
             removeRef(&mStrongRefs, id);
         } else {
-            addRef(&mStrongRefs, id, -mStrong);
+            addRef(&mStrongRefs, id, -mStrong.load(memory_order_relaxed));
         }
     }
 
@@ -162,14 +188,14 @@ public:
     }
 
     void addWeakRef(const void* id) {
-        addRef(&mWeakRefs, id, mWeak);
+        addRef(&mWeakRefs, id, mWeak.load(memory_order_relaxed));
     }
 
     void removeWeakRef(const void* id) {
         if (!mRetain) {
             removeRef(&mWeakRefs, id);
         } else {
-            addRef(&mWeakRefs, id, -mWeak);
+            addRef(&mWeakRefs, id, -mWeak.load(memory_order_relaxed));
         }
     }
 
@@ -330,7 +356,7 @@ void RefBase::incStrong(const void* id) const
     refs->incWeak(id);
     
     refs->addStrongRef(id);
-    const int32_t c = android_atomic_inc(&refs->mStrong);
+    const int32_t c = refs->mStrong.fetch_add(1, memory_order_relaxed);
     ALOG_ASSERT(c > 0, "incStrong() called on %p after last strong ref", refs);
 #if PRINT_REFS
     ALOGD("incStrong of %p from %p: cnt=%d\n", this, id, c);
@@ -339,7 +365,9 @@ void RefBase::incStrong(const void* id) const
         return;
     }
 
-    android_atomic_add(-INITIAL_STRONG_VALUE, &refs->mStrong);
+    // This cannot result in zero, since the corresponding decStrong must
+    // happen after us.
+    refs->mStrong.fetch_sub(INITIAL_STRONG_VALUE, memory_order_relaxed);
     refs->mBase->onFirstRef();
 }
 
@@ -347,14 +375,15 @@ void RefBase::decStrong(const void* id) const
 {
     weakref_impl* const refs = mRefs;
     refs->removeStrongRef(id);
-    const int32_t c = android_atomic_dec(&refs->mStrong);
+    const int32_t c = refs->mStrong.fetch_sub(1, memory_order_release);
 #if PRINT_REFS
     ALOGD("decStrong of %p from %p: cnt=%d\n", this, id, c);
 #endif
     ALOG_ASSERT(c >= 1, "decStrong() called on %p too many times", refs);
     if (c == 1) {
         refs->mBase->onLastStrongRef(id);
-        if ((refs->mFlags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_STRONG) {
+        int32_t flags = refs->mFlags.load(memory_order_relaxed);
+        if ((flags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_STRONG) {
             delete this;
         }
     }
@@ -363,11 +392,13 @@ void RefBase::decStrong(const void* id) const
 
 void RefBase::forceIncStrong(const void* id) const
 {
+    // Allows initial mStrong of 0 in addition to INITIAL_STRONG_VALUE.
+    // TODO: Better document assumptions.
     weakref_impl* const refs = mRefs;
     refs->incWeak(id);
     
     refs->addStrongRef(id);
-    const int32_t c = android_atomic_inc(&refs->mStrong);
+    const int32_t c = refs->mStrong.fetch_add(1, memory_order_relaxed);
     ALOG_ASSERT(c >= 0, "forceIncStrong called on %p after ref count underflow",
                refs);
 #if PRINT_REFS
@@ -376,7 +407,7 @@ void RefBase::forceIncStrong(const void* id) const
 
     switch (c) {
     case INITIAL_STRONG_VALUE:
-        android_atomic_add(-INITIAL_STRONG_VALUE, &refs->mStrong);
+        refs->mStrong.fetch_sub(INITIAL_STRONG_VALUE, memory_order_relaxed);
         // fall through...
     case 0:
         refs->mBase->onFirstRef();
@@ -385,7 +416,8 @@ void RefBase::forceIncStrong(const void* id) const
 
 int32_t RefBase::getStrongCount() const
 {
-    return mRefs->mStrong;
+    // Debugging only; No memory ordering guarantees.
+    return mRefs->mStrong.load(memory_order_relaxed);
 }
 
 RefBase* RefBase::weakref_type::refBase() const
@@ -397,7 +429,7 @@ void RefBase::weakref_type::incWeak(const void* id)
 {
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
     impl->addWeakRef(id);
-    const int32_t c __unused = android_atomic_inc(&impl->mWeak);
+    const int32_t c __unused = impl->mWeak.fetch_add(1, memory_order_relaxed);
     ALOG_ASSERT(c >= 0, "incWeak called on %p after last weak ref", this);
 }
 
@@ -406,16 +438,18 @@ void RefBase::weakref_type::decWeak(const void* id)
 {
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
     impl->removeWeakRef(id);
-    const int32_t c = android_atomic_dec(&impl->mWeak);
+    const int32_t c = impl->mWeak.fetch_sub(1, memory_order_release);
     ALOG_ASSERT(c >= 1, "decWeak called on %p too many times", this);
     if (c != 1) return;
+    atomic_thread_fence(memory_order_acquire);
 
-    if ((impl->mFlags&OBJECT_LIFETIME_WEAK) == OBJECT_LIFETIME_STRONG) {
+    int32_t flags = impl->mFlags.load(memory_order_relaxed);
+    if ((flags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_STRONG) {
         // This is the regular lifetime case. The object is destroyed
         // when the last strong reference goes away. Since weakref_impl
         // outlive the object, it is not destroyed in the dtor, and
         // we'll have to do it here.
-        if (impl->mStrong == INITIAL_STRONG_VALUE) {
+        if (impl->mStrong.load(memory_order_relaxed) == INITIAL_STRONG_VALUE) {
             // Special case: we never had a strong reference, so we need to
             // destroy the object now.
             delete impl->mBase;
@@ -424,9 +458,9 @@ void RefBase::weakref_type::decWeak(const void* id)
             delete impl;
         }
     } else {
-        // less common case: lifetime is OBJECT_LIFETIME_{WEAK|FOREVER}
+        // less common case: lifetime is OBJECT_LIFETIME_WEAK
         impl->mBase->onLastWeakRef(id);
-        if ((impl->mFlags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_WEAK) {
+        if ((flags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_WEAK) {
             // this is the OBJECT_LIFETIME_WEAK case. The last weak-reference
             // is gone, we can destroy the object.
             delete impl->mBase;
@@ -439,7 +473,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
     incWeak(id);
     
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
-    int32_t curCount = impl->mStrong;
+    int32_t curCount = impl->mStrong.load(memory_order_relaxed);
 
     ALOG_ASSERT(curCount >= 0,
             "attemptIncStrong called on %p after underflow", this);
@@ -447,19 +481,20 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
     while (curCount > 0 && curCount != INITIAL_STRONG_VALUE) {
         // we're in the easy/common case of promoting a weak-reference
         // from an existing strong reference.
-        if (android_atomic_cmpxchg(curCount, curCount+1, &impl->mStrong) == 0) {
+        if (impl->mStrong.compare_exchange_weak(curCount, curCount+1,
+                memory_order_relaxed)) {
             break;
         }
         // the strong count has changed on us, we need to re-assert our
-        // situation.
-        curCount = impl->mStrong;
+        // situation. curCount was updated.
     }
     
     if (curCount <= 0 || curCount == INITIAL_STRONG_VALUE) {
         // we're now in the harder case of either:
         // - there never was a strong reference on us
         // - or, all strong references have been released
-        if ((impl->mFlags&OBJECT_LIFETIME_WEAK) == OBJECT_LIFETIME_STRONG) {
+        int32_t flags = impl->mFlags.load(memory_order_relaxed);
+        if ((flags&OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_STRONG) {
             // this object has a "normal" life-time, i.e.: it gets destroyed
             // when the last strong reference goes away
             if (curCount <= 0) {
@@ -473,13 +508,13 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
             // there never was a strong-reference, so we can try to
             // promote this object; we need to do that atomically.
             while (curCount > 0) {
-                if (android_atomic_cmpxchg(curCount, curCount + 1,
-                        &impl->mStrong) == 0) {
+                if (impl->mStrong.compare_exchange_weak(curCount, curCount+1,
+                        memory_order_relaxed)) {
                     break;
                 }
                 // the strong count has changed on us, we need to re-assert our
                 // situation (e.g.: another thread has inc/decStrong'ed us)
-                curCount = impl->mStrong;
+                // curCount has been updated.
             }
 
             if (curCount <= 0) {
@@ -499,7 +534,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
             }
             // grab a strong-reference, which is always safe due to the
             // extended life-time.
-            curCount = android_atomic_inc(&impl->mStrong);
+            curCount = impl->mStrong.fetch_add(1, memory_order_relaxed);
         }
 
         // If the strong reference count has already been incremented by
@@ -518,21 +553,15 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
     ALOGD("attemptIncStrong of %p from %p: cnt=%d\n", this, id, curCount);
 #endif
 
-    // now we need to fix-up the count if it was INITIAL_STRONG_VALUE
-    // this must be done safely, i.e.: handle the case where several threads
+    // curCount is the value of mStrong before we increment ed it.
+    // Now we need to fix-up the count if it was INITIAL_STRONG_VALUE.
+    // This must be done safely, i.e.: handle the case where several threads
     // were here in attemptIncStrong().
-    curCount = impl->mStrong;
-    while (curCount >= INITIAL_STRONG_VALUE) {
-        ALOG_ASSERT(curCount > INITIAL_STRONG_VALUE,
-                "attemptIncStrong in %p underflowed to INITIAL_STRONG_VALUE",
-                this);
-        if (android_atomic_cmpxchg(curCount, curCount-INITIAL_STRONG_VALUE,
-                &impl->mStrong) == 0) {
-            break;
-        }
-        // the strong-count changed on us, we need to re-assert the situation,
-        // for e.g.: it's possible the fix-up happened in another thread.
-        curCount = impl->mStrong;
+    // curCount > INITIAL_STRONG_VALUE is OK, and can happen if we're doing
+    // this in the middle of another incStrong.  The subtraction is handled
+    // by the thread that started with INITIAL_STRONG_VALUE.
+    if (curCount == INITIAL_STRONG_VALUE) {
+        impl->mStrong.fetch_sub(INITIAL_STRONG_VALUE, memory_order_relaxed);
     }
 
     return true;
@@ -542,14 +571,15 @@ bool RefBase::weakref_type::attemptIncWeak(const void* id)
 {
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
 
-    int32_t curCount = impl->mWeak;
+    int32_t curCount = impl->mWeak.load(memory_order_relaxed);
     ALOG_ASSERT(curCount >= 0, "attemptIncWeak called on %p after underflow",
                this);
     while (curCount > 0) {
-        if (android_atomic_cmpxchg(curCount, curCount+1, &impl->mWeak) == 0) {
+        if (impl->mWeak.compare_exchange_weak(curCount, curCount+1,
+                memory_order_relaxed)) {
             break;
         }
-        curCount = impl->mWeak;
+        // curCount has been updated.
     }
 
     if (curCount > 0) {
@@ -561,7 +591,8 @@ bool RefBase::weakref_type::attemptIncWeak(const void* id)
 
 int32_t RefBase::weakref_type::getWeakCount() const
 {
-    return static_cast<const weakref_impl*>(this)->mWeak;
+    // Debug only!
+    return static_cast<const weakref_impl*>(this)->mWeak.load(memory_order_relaxed);
 }
 
 void RefBase::weakref_type::printRefs() const
@@ -592,17 +623,18 @@ RefBase::RefBase()
 
 RefBase::~RefBase()
 {
-    if (mRefs->mStrong == INITIAL_STRONG_VALUE) {
+    if (mRefs->mStrong.load(memory_order_relaxed) == INITIAL_STRONG_VALUE) {
         // we never acquired a strong (and/or weak) reference on this object.
         delete mRefs;
     } else {
-        // life-time of this object is extended to WEAK or FOREVER, in
+        // life-time of this object is extended to WEAK, in
         // which case weakref_impl doesn't out-live the object and we
         // can free it now.
-        if ((mRefs->mFlags & OBJECT_LIFETIME_MASK) != OBJECT_LIFETIME_STRONG) {
+        int32_t flags = mRefs->mFlags.load(memory_order_relaxed);
+        if ((flags & OBJECT_LIFETIME_MASK) != OBJECT_LIFETIME_STRONG) {
             // It's possible that the weak count is not 0 if the object
             // re-acquired a weak reference in its destructor
-            if (mRefs->mWeak == 0) {
+            if (mRefs->mWeak.load(memory_order_relaxed) == 0) {
                 delete mRefs;
             }
         }
@@ -613,7 +645,9 @@ RefBase::~RefBase()
 
 void RefBase::extendObjectLifetime(int32_t mode)
 {
-    android_atomic_or(mode, &mRefs->mFlags);
+    // Must be happens-before ordered with respect to construction or any
+    // operation that could destroy the object.
+    mRefs->mFlags.fetch_or(mode, memory_order_relaxed);
 }
 
 void RefBase::onFirstRef()
