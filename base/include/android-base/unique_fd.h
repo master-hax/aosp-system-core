@@ -39,15 +39,21 @@
 namespace android {
 namespace base {
 
-class unique_fd final {
+struct DefaultCloser {
+  void Close(int fd) {
+    ::close(fd);
+  }
+};
+
+class unique_fd_impl final {
  public:
-  unique_fd() : value_(-1) {}
+  unique_fd_impl() : value_(-1) {}
 
-  explicit unique_fd(int value) : value_(value) {}
-  ~unique_fd() { clear(); }
+  explicit unique_fd_impl(int value) : value_(value) {}
+  ~unique_fd_impl() { clear(); }
 
-  unique_fd(unique_fd&& other) : value_(other.release()) {}
-  unique_fd& operator=(unique_fd&& s) {
+  unique_fd_impl(unique_fd&& other) : value_(other.release()) {}
+  unique_fd_impl& operator=(unique_fd&& s) {
     reset(s.release());
     return *this;
   }
@@ -78,9 +84,11 @@ class unique_fd final {
  private:
   int value_;
 
-  unique_fd(const unique_fd&);
-  void operator=(const unique_fd&);
+  unique_fd_impl(const unique_fd&);
+  void operator=(const unique_fd_impl&);
 };
+
+using unique_fd = unique_fd_impl<DefaultCloser>;
 
 }  // namespace base
 }  // namespace android
