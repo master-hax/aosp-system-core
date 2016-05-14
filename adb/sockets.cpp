@@ -223,8 +223,13 @@ static void local_socket_destroy(asocket  *s)
         n = p->next;
         put_apacket(p);
     }
-    remove_socket(s);
-    free(s);
+
+    if (s->close == local_socket_close) {
+        remove_socket(s);
+        free(s);
+    } else {
+        s->close(s);
+    }
 
     if (exit_on_close) {
         D("local_socket_destroy: exiting");
