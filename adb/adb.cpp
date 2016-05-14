@@ -69,7 +69,7 @@ void fatal(const char *fmt, ...) {
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
     va_end(ap);
-    exit(-1);
+    abort();
 }
 
 void fatal_errno(const char* fmt, ...) {
@@ -79,7 +79,7 @@ void fatal_errno(const char* fmt, ...) {
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
     va_end(ap);
-    exit(-1);
+    abort();
 }
 
 apacket* get_apacket(void)
