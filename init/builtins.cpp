@@ -36,6 +36,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <linux/loop.h>
+#include <linux/module.h>
 #include <ext4_crypt_init_extensions.h>
 
 #include <selinux/selinux.h>
@@ -66,13 +67,13 @@
 
 static const int kTerminateServiceDelayMicroSeconds = 50000;
 
-static int insmod(const char *filename, const char *options) {
+static int insmod(const char *filename, const char *options, int flags) {
     int fd = open(filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
     if (fd == -1) {
         ERROR("insmod: open(\"%s\") failed: %s", filename, strerror(errno));
         return -1;
     }
-    int rc = syscall(__NR_finit_module, fd, options, 0);
+    int rc = syscall(__NR_finit_module, fd, options, flags);
     if (rc == -1) {
         ERROR("finit_module for \"%s\" failed: %s", filename, strerror(errno));
     }
@@ -270,16 +271,23 @@ static int do_ifup(const std::vector<std::string>& args) {
 
 static int do_insmod(const std::vector<std::string>& args) {
     std::string options;
+    int flags = 0;
+    unsigned int path_index = 1;
 
-    if (args.size() > 2) {
-        options += args[2];
-        for (std::size_t i = 3; i < args.size(); ++i) {
+    if (!args[1].compare("-f")) {
+        flags = MODULE_INIT_IGNORE_VERMAGIC;
+        path_index = 2;
+    }
+
+    if (args.size() > path_index + 1) {
+        options += args[path_index + 1];
+        for (std::size_t i = path_index + 2; i < args.size(); ++i) {
             options += ' ';
             options += args[i];
         }
     }
 
-    return insmod(args[1].c_str(), options.c_str());
+    return insmod(args[path_index].c_str(), options.c_str(), flags);
 }
 
 static int do_mkdir(const std::vector<std::string>& args) {
