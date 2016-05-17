@@ -36,6 +36,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <linux/loop.h>
+#include <linux/module.h>
 #include <ext4_crypt_init_extensions.h>
 
 #include <selinux/selinux.h>
@@ -72,7 +73,7 @@ static int insmod(const char *filename, const char *options) {
         ERROR("insmod: open(\"%s\") failed: %s", filename, strerror(errno));
         return -1;
     }
-    int rc = syscall(__NR_finit_module, fd, options, 0);
+    int rc = syscall(__NR_finit_module, fd, options, MODULE_INIT_IGNORE_VERMAGIC);
     if (rc == -1) {
         ERROR("finit_module for \"%s\" failed: %s", filename, strerror(errno));
     }
