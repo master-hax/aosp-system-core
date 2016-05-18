@@ -244,3 +244,47 @@ TEST_F(sysdeps_poll, fd_count) {
         adb_close(fd);
     }
 }
+
+#include "sysdeps/mutex.h"
+TEST(sysdeps_mutex, mutex_smoke) {
+    static std::atomic<bool> finished(false);
+    static std::mutex &m = *new std::mutex();
+    m.lock();
+    adb_thread_create([](void*) {
+        ASSERT_FALSE(m.try_lock());
+        m.lock();
+        finished.store(true);
+        adb_sleep_ms(200);
+        m.unlock();
+    }, nullptr);
+
+    ASSERT_FALSE(finished.load());
+    adb_sleep_ms(100);
+    ASSERT_FALSE(finished.load());
+    m.unlock();
+    adb_sleep_ms(100);
+    m.lock();
+    ASSERT_TRUE(finished.load());
+}
+
+TEST(sysdeps_mutex, recursive_mutex_smoke) {
+    static std::recursive_mutex &m = *new std::recursive_mutex();
+
+    m.lock();
+    ASSERT_TRUE(m.try_lock());
+    m.unlock();
+
+    adb_thread_create([](void*) {
+        ASSERT_FALSE(m.try_lock());
+        m.lock();
+        adb_sleep_ms(100);
+        m.unlock();
+    }, nullptr);
+
+    adb_sleep_ms(100);
+    m.unlock();
+    adb_sleep_ms(100);
+    ASSERT_FALSE(m.try_lock());
+    m.lock();
+    m.unlock();
+}
