@@ -20,7 +20,6 @@
 #include <string.h>
 
 #include <log/log.h>
-#include <utils/Atomic.h>
 
 #include "SharedBuffer.h"
 
@@ -37,7 +36,7 @@ SharedBuffer* SharedBuffer::alloc(size_t size)
 
     SharedBuffer* sb = static_cast<SharedBuffer *>(malloc(sizeof(SharedBuffer) + size));
     if (sb) {
-        sb->mRefs = 1;
+        std::atomic_init(&sb->mRefs, 1);
         sb->mSize = size;
     }
     return sb;
@@ -46,7 +45,9 @@ SharedBuffer* SharedBuffer::alloc(size_t size)
 
 ssize_t SharedBuffer::dealloc(const SharedBuffer* released)
 {
-    if (released->mRefs != 0) return -1; // XXX: invalid operation
+    if (released->mRefs.load(std::memory_order_relaxed) != 0) {
+        return -1; // XXX: invalid operation
+    }
     free(const_cast<SharedBuffer*>(released));
     return 0;
 }
@@ -108,14 +109,15 @@ SharedBuffer* SharedBuffer::reset(size_t new_size) const
 }
 
 void SharedBuffer::acquire() const {
-    android_atomic_inc(&mRefs);
+    mRefs.fetch_add(1, std::memory_order_relaxed);
 }
 
 int32_t SharedBuffer::release(uint32_t flags) const
 {
     int32_t prev = 1;
-    if (onlyOwner() || ((prev = android_atomic_dec(&mRefs)) == 1)) {
-        mRefs = 0;
+    if (onlyOwner() || ((prev = mRefs.fetch_sub(1, std::memory_order_release) == 1)
+            && (atomic_thread_fence(std::memory_order_acquire), true))) {
+        mRefs.store(0, std::memory_order_relaxed);
         if ((flags & eKeepStorage) == 0) {
             free(const_cast<SharedBuffer*>(this));
         }
