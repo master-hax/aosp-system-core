@@ -17,6 +17,7 @@
 #ifndef ANDROID_SHARED_BUFFER_H
 #define ANDROID_SHARED_BUFFER_H
 
+#include <atomic>
 #include <stdint.h>
 #include <sys/types.h>
 
@@ -94,11 +95,15 @@ private:
         SharedBuffer(const SharedBuffer&);
         SharedBuffer& operator = (const SharedBuffer&);
  
-        // 16 bytes. must be sized to preserve correct alignment.
-        mutable int32_t        mRefs;
-                size_t         mSize;
-                uint32_t       mReserved[2];
+        // Must be sized to preserve correct alignment.
+        mutable std::atomic<int32_t>        mRefs;
+                size_t                      mSize;
+                uint32_t                    mReserved[2];
 };
+
+static_assert(sizeof(SharedBuffer) % 8 == 0
+        && (sizeof(size_t) > 4 || sizeof(SharedBuffer) == 16),
+        "SharedBuffer has unexpected size");
 
 // ---------------------------------------------------------------------------
 
@@ -127,7 +132,7 @@ size_t SharedBuffer::sizeFromData(const void* data) {
 }
 
 bool SharedBuffer::onlyOwner() const {
-    return (mRefs == 1);
+    return (mRefs.load(std::memory_order_acquire) == 1);
 }
 
 }; // namespace android
