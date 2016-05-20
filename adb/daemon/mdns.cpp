@@ -72,7 +72,11 @@ static void setup_mdns_thread(void* /* unused */) {
     start_mdns();
     std::lock_guard<std::mutex> lock(mdns_lock);
 
-    auto error = DNSServiceRegister(&mdns_ref, 0, 0, nullptr, "_adb._tcp",
+    char hostname[PROPERTY_VALUE_MAX + 4] = "adb-";
+
+    property_get("ro.serialno", hostname + 4, "unidentified");
+
+    auto error = DNSServiceRegister(&mdns_ref, 0, 0, hostname, "_adb._tcp",
                                     nullptr, nullptr, htobe16((uint16_t)port),
                                     0, nullptr, mdns_callback, nullptr);
 
