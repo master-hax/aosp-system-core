@@ -236,6 +236,21 @@ int LogAudit::logPrint(const char *fmt, ...) {
         memmove(pidptr, cp, strlen(cp) + 1);
     }
 
+    static const char tid_str[] = " tid=";
+    pidptr = strstr(str, tid_str);
+    if (pidptr && isdigit(pidptr[sizeof(tid_str) - 1])) {
+        cp = pidptr + sizeof(tid_str) - 1;
+        tid = 0;
+        while (isdigit(*cp)) {
+            pid = (pid * 10) + (*cp - '0');
+            ++cp;
+        }
+        logbuf->lock();
+        uid = logbuf->pidToUid(tid);
+        logbuf->unlock();
+        memmove(pidptr, cp, strlen(cp) + 1);
+    }
+
     // log to events
 
     size_t l = strnlen(str, LOGGER_ENTRY_MAX_PAYLOAD);
