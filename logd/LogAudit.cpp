@@ -200,9 +200,9 @@ int LogAudit::logPrint(const char *fmt, ...) {
     }
 
     static const char pid_str[] = " pid=";
-    char *pidptr = strstr(str, pid_str);
-    if (pidptr && isdigit(pidptr[sizeof(pid_str) - 1])) {
-        cp = pidptr + sizeof(pid_str) - 1;
+    char *idptr = strstr(str, pid_str);
+    if (idptr && isdigit(idptr[sizeof(pid_str) - 1])) {
+        cp = idptr + sizeof(pid_str) - 1;
         pid = 0;
         while (isdigit(*cp)) {
             pid = (pid * 10) + (*cp - '0');
@@ -210,10 +210,42 @@ int LogAudit::logPrint(const char *fmt, ...) {
         }
         tid = pid;
         logbuf->lock();
+        // return AID_LOGD if it can not be found
         uid = logbuf->pidToUid(pid);
         logbuf->unlock();
-        memmove(pidptr, cp, strlen(cp) + 1);
+        memmove(idptr, cp, strlen(cp) + 1);
     }
+
+    static const char tid_str[] = " tid=";
+    idptr = strstr(str, tid_str);
+    if (idptr && isdigit(idptr[sizeof(tid_str) - 1])) {
+        cp = idptr + sizeof(tid_str) - 1;
+        tid = 0;
+        while (isdigit(*cp)) {
+            tid = (tid * 10) + (*cp - '0');
+            ++cp;
+        }
+        logbuf->lock();
+        // return AID_LOGD if it can not be found
+        uid = logbuf->pidToUid(tid);
+        logbuf->unlock();
+        memmove(idptr, cp, strlen(cp) + 1);
+    }
+
+    static const char uid_str[] = " uid=";
+    idptr = strstr(str, uid_str);
+    if (idptr && isdigit(idptr[sizeof(uid_str) - 1])) {
+        cp = idptr + sizeof(uid_str) - 1;
+        uid = 0;
+        while (isdigit(*cp)) {
+            uid = (uid * 10) + (*cp - '0');
+            ++cp;
+        }
+        if (uid < AID_APP) memmove(idptr, cp, strlen(cp) + 1);
+    }
+
+    // limit uid to system set
+    if (uid >= AID_APP) uid = AID_LOGD;
 
     // log to events
 
