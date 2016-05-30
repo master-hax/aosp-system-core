@@ -41,7 +41,8 @@ void* OpenNativeLibrary(JNIEnv* env,
                         int32_t target_sdk_version,
                         const char* path,
                         jobject class_loader,
-                        jstring library_path);
+                        jstring library_path,
+                        bool* needs_native_bridge);
 
 __attribute__((visibility("default")))
 bool CloseNativeLibrary(void* handle);

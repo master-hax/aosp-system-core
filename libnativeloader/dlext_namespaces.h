@@ -31,7 +31,9 @@ __BEGIN_DECLS
  * for the code not loaded by dynamic linker; for example calls from the mono-compiled code.
  */
 extern bool android_init_namespaces(const char* public_ns_sonames,
-                                    const char* anon_ns_library_path);
+                                    const char* anon_ns_library_path,
+                                    struct android_namespace_t** default_ns,
+                                    struct android_namespace_t** anonymous_ns);
 
 
 enum {
