@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "NativeBridge"
+
 #include "nativebridge/native_bridge.h"
 
 #include <cstring>
@@ -24,7 +26,9 @@
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
-
+#ifdef __ANDROID__
+#include <android/dlext.h>
+#endif
 
 namespace android {
 
@@ -96,7 +100,7 @@ static char* app_code_cache_dir = nullptr;
 // and hard code the directory name again here.
 static constexpr const char* kCodeCacheDir = "code_cache";
 
-static constexpr uint32_t kLibNativeBridgeVersion = 2;
+static constexpr uint32_t kMinLibNativeBridgeVersion = 2;
 
 // Characters allowed in a native bridge filename. The first character must
 // be in [a-zA-Z] (expected 'l' for "libx"). The rest must be in [a-zA-Z0-9._-].
@@ -148,16 +152,16 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
   }
 }
 
-static bool VersionCheck(const NativeBridgeCallbacks* cb) {
+static bool isCompatibleWith(const uint32_t version) {
   // Libnativebridge is now designed to be forward-compatible. So only "0" is an unsupported
   // version.
-  if (cb == nullptr || cb->version == 0) {
+  if (callbacks == nullptr || callbacks->version == 0 || version == 0) {
     return false;
   }
 
   // If this is a v2+ bridge, it may not be forwards- or backwards-compatible. Check.
-  if (cb->version >= 2) {
-    if (!callbacks->isCompatibleWith(kLibNativeBridgeVersion)) {
+  if (callbacks->version >= 2) {
+    if (!callbacks->isCompatibleWith(version)) {
       // TODO: Scan which version is supported, and fall back to handle it.
       return false;
     }
@@ -201,7 +205,7 @@ bool LoadNativeBridge(const char* nb_library_filename,
         callbacks = reinterpret_cast<NativeBridgeCallbacks*>(dlsym(handle,
                                                                    kNativeBridgeInterfaceSymbol));
         if (callbacks != nullptr) {
-          if (VersionCheck(callbacks)) {
+          if (isCompatibleWith(kMinLibNativeBridgeVersion)) {
             // Store the handle for later.
             native_bridge_handle = handle;
           } else {
@@ -516,10 +520,89 @@ uint32_t NativeBridgeGetVersion() {
 }
 
 NativeBridgeSignalHandlerFn NativeBridgeGetSignalHandler(int signal) {
-  if (NativeBridgeInitialized() && callbacks->version >= 2) {
+  if (NativeBridgeInitialized() && isCompatibleWith(2)) {
     return callbacks->getSignalHandler(signal);
   }
   return nullptr;
 }
+
+int NativeBridgeUnloadLibrary(void* handle) {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(3)) {
+      return callbacks->unloadLibrary(handle);
+    } else {
+      ALOGE("not compatible with version 3!");
+    }
+  }
+  return -1;
+}
+
+char* NativeBridgeDumpError() {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(3)) {
+      return callbacks->dumpError();
+    } else {
+      ALOGE("not compatible with version 3, return empty message");
+    }
+  }
+  return nullptr;
+}
+
+#ifdef __ANDROID__
+void NativeBridgeInitNamespace(const char* public_ns_sonames,
+                               const char* anon_ns_library_path,
+                               const void* default_nskey,
+                               const void* anonymous_nskey,
+                               const NativeLoaderLoadLibraryCallback callback) {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(3)) {
+      bool ret = callbacks->initNamespace(public_ns_sonames,
+                                          anon_ns_library_path,
+                                          default_nskey,
+                                          anonymous_nskey,
+                                          callback);
+      ALOGE_IF(ret == false, "failed to init namespace");
+    } else {
+      ALOGE("not compatible with version 3, cannot init namespace");
+    }
+  }
+}
+
+void NativeBridgeCreateNamespace(const char* name,
+                                 const char* ld_library_path,
+                                 const char* default_library_path,
+                                 uint64_t type,
+                                 const char* permitted_when_isolated_path,
+                                 const void* this_nskey,
+                                 const void* parent_nskey) {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(3)) {
+      bool ret = callbacks->createNamespace(name,
+                                            ld_library_path,
+                                            default_library_path,
+                                            type,
+                                            permitted_when_isolated_path,
+                                            this_nskey,
+                                            parent_nskey);
+      ALOGE_IF(ret == false, "failed to create namespace %s", name);
+    } else {
+      ALOGE("not compatible with version 3, cannot create namespace %s", name);
+    }
+  }
+}
+
+void* NativeBridgeLoadLibraryExt(const char* libpath, int flag, void* ns_key) {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(3)) {
+      return callbacks->loadLibraryExt(libpath, flag, ns_key);
+    } else if (isCompatibleWith(2)) {
+      ALOGE("not compatible with version 3 but compatible with verson 2, "
+            "fallback to load library without android_dlextinfo)");
+      return callbacks->loadLibrary(libpath, flag);
+    }
+  }
+  return nullptr;
+}
+#endif
 
 };  // namespace android

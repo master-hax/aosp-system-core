@@ -23,6 +23,7 @@
 #include "cutils/properties.h"
 #include "log/log.h"
 #endif
+#include "nativebridge/native_bridge.h"
 
 #include <algorithm>
 #include <vector>
@@ -48,6 +49,14 @@ static bool is_debuggable() {
   char debuggable[PROP_VALUE_MAX];
   property_get("ro.debuggable", debuggable, "0");
   return std::string(debuggable) == "1";
+}
+
+// Used by Native Bridge only.
+static void* NativeLoaderLoadLibrary(const char* path, int flag, void* ns_key) {
+  android_dlextinfo extinfo;
+  extinfo.flags = ANDROID_DLEXT_USE_NAMESPACE;
+  extinfo.library_namespace = reinterpret_cast<android_namespace_t*>(ns_key);
+  return android_dlopen_ext(path, flag, &extinfo);
 }
 
 class LibraryNamespaces {
@@ -105,6 +114,15 @@ class LibraryNamespaces {
                                   parent_ns);
 
     if (ns != nullptr) {
+      NativeBridgeCreateNamespace("classloader-namespace",
+                                  nullptr,
+                                  library_path.c_str(),
+                                  namespace_type,
+                                  java_permitted_path != nullptr ?
+                                      permitted_path.c_str() :
+                                      nullptr,
+                                  reinterpret_cast<void*>(ns),
+                                  reinterpret_cast<void*>(parent_ns));
       namespaces_.push_back(std::make_pair(env->NewWeakGlobalRef(class_loader), ns));
     }
 
@@ -221,7 +239,19 @@ class LibraryNamespaces {
     // code is one example) unknown to linker in which  case linker uses anonymous
     // namespace. The second argument specifies the search path for the anonymous
     // namespace which is the library_path of the classloader.
-    initialized_ = android_init_namespaces(public_libraries_.c_str(), library_path);
+    android_namespace_t* default_ns = nullptr;
+    android_namespace_t* anonymous_ns = nullptr;
+    initialized_ = android_init_namespaces(public_libraries_.c_str(),
+                                           library_path,
+                                           &default_ns,
+                                           &anonymous_ns);
+    if (initialized_ == true) {
+      NativeBridgeInitNamespace(public_libraries_.c_str(),
+                                library_path,
+                                reinterpret_cast<void*>(default_ns),
+                                reinterpret_cast<void*>(anonymous_ns),
+                                NativeLoaderLoadLibrary);
+    }
 
     return initialized_;
   }
@@ -299,15 +329,38 @@ jstring CreateClassLoaderNamespace(JNIEnv* env,
   return nullptr;
 }
 
+static void* nbLoadLibraryWrapper(bool* needs_native_bridge, const char* path, void* ns) {
+  if (NativeBridgeIsSupported(path)) {
+    *needs_native_bridge = true;
+#if defined(__ANDROID__)
+    if (ns != nullptr) {
+      return NativeBridgeLoadLibraryExt(path, RTLD_NOW, ns);
+    } else {
+      return NativeBridgeLoadLibrary(path, RTLD_NOW);
+    }
+#else
+    UNUSED(ns);
+    return NativeBridgeLoadLibrary(path, RTLD_NOW);
+#endif
+  }
+  return nullptr;
+}
+
+
 void* OpenNativeLibrary(JNIEnv* env,
                         int32_t target_sdk_version,
                         const char* path,
                         jobject class_loader,
-                        jstring library_path) {
+                        jstring library_path,
+                        bool* needs_native_bridge) {
 #if defined(__ANDROID__)
   UNUSED(target_sdk_version);
   if (class_loader == nullptr) {
-    return dlopen(path, RTLD_NOW);
+    void* handle = dlopen(path, RTLD_NOW);
+    if (handle == nullptr) {
+      handle = nbLoadLibraryWrapper(needs_native_bridge, path, nullptr);
+    }
+    return handle;
   }
 
   std::lock_guard<std::mutex> guard(g_namespaces_mutex);
@@ -326,10 +379,18 @@ void* OpenNativeLibrary(JNIEnv* env,
   extinfo.flags = ANDROID_DLEXT_USE_NAMESPACE;
   extinfo.library_namespace = ns;
 
-  return android_dlopen_ext(path, RTLD_NOW, &extinfo);
+  void* handle = android_dlopen_ext(path, RTLD_NOW, &extinfo);
+  if (handle == nullptr) {
+    handle = nbLoadLibraryWrapper(needs_native_bridge, path, reinterpret_cast<void*>(ns));
+  }
+  return handle;
 #else
   UNUSED(env, target_sdk_version, class_loader, library_path);
-  return dlopen(path, RTLD_NOW);
+  void* handle = dlopen(path, RTLD_NOW);
+  if (handle == nullptr) {
+    handle = nbLoadLibraryWrapper(needs_native_bridge, path, nullptr);
+  }
+  return handle;
 #endif
 }
 
