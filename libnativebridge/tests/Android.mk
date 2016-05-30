@@ -20,7 +20,9 @@ test_src_files := \
     PreInitializeNativeBridgeFail2_test.cpp \
     ReSetupNativeBridge_test.cpp \
     UnavailableNativeBridge_test.cpp \
-    ValidNameNativeBridge_test.cpp
+    ValidNameNativeBridge_test.cpp \
+    NativeBridge3UnloadLibrary_test.cpp \
+    NativeBridge3DumpError_test.cpp
 
 
 shared_libraries := \
