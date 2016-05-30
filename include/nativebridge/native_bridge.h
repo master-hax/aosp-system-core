@@ -67,7 +67,9 @@ void* NativeBridgeLoadLibrary(const char* libpath, int flag);
 // Get a native bridge trampoline for specified native method.
 void* NativeBridgeGetTrampoline(void* handle, const char* name, const char* shorty, uint32_t len);
 
-// True if native library is valid and is for an ABI that is supported by native bridge.
+// True if native library paths are valid and is for an ABI that is supported by native bridge.
+// The *libpath* must point to a library.
+// Won't be called in Android mode in v3.
 bool NativeBridgeIsSupported(const char* libpath);
 
 // Returns the version number of the native bridge. This information is available after a
@@ -90,6 +92,36 @@ bool NativeBridgeError();
 //
 // This functionality is exposed mainly for testing.
 bool NativeBridgeNameAcceptable(const char* native_bridge_library_filename);
+
+// Decrements the reference count on the dynamic library handler. If the reference count drops
+// to zero then the dynamic library is unloaded.
+int NativeBridgeUnloadLibrary(void* handle);
+
+// Get last error message of native bridge when fail to load library or search symbol.
+// This is reflection of dlerror() for native bridge.
+char* NativeBridgeGetError();
+
+struct native_bridge_namespace_t;
+
+// True if native library paths are valid and is for an ABI that is supported by native bridge.
+// Different from NativeBridgeIsSupported(), the *path* here must be a directory containing
+// libraries of an ABI.
+bool NativeBridgeIsPathSupported(const char* path);
+
+// Initializes public and anonymous namespace at native bridge side.
+bool NativeBridgeInitNamespace(const char* public_ns_sonames,
+                               const char* anon_ns_library_path);
+
+// Create a namespace and pass the key of related namespaces to native bridge.
+native_bridge_namespace_t* NativeBridgeCreateNamespace(const char* name,
+                                                       const char* ld_library_path,
+                                                       const char* default_library_path,
+                                                       uint64_t type,
+                                                       const char* permitted_when_isolated_path,
+                                                       native_bridge_namespace_t* parent_ns);
+
+// Load a shared library with namespace key that is supported by the native bridge.
+void* NativeBridgeLoadLibraryExt(const char* libpath, int flag, native_bridge_namespace_t* ns);
 
 // Native bridge interfaces to runtime.
 struct NativeBridgeCallbacks {
@@ -133,6 +165,9 @@ struct NativeBridgeCallbacks {
   //   libpath [IN] path to the shared library
   // Returns:
   //   TRUE if library is supported by native bridge, FALSE otherwise
+  //
+  // Note that this callback is deprecated and no longer used starting with native bridge v3
+  // Use isPathSupported instead.
   bool (*isSupported)(const char* libpath);
 
   // Provide environment values required by the app running with native bridge according to the
@@ -169,6 +204,79 @@ struct NativeBridgeCallbacks {
   //     runtime.
   //     Otherwise, a pointer to the signal handler.
   NativeBridgeSignalHandlerFn (*getSignalHandler)(int signal);
+
+  // Added callbacks in version 3.
+
+  // Decrements the reference count on the dynamic library handler. If the reference count drops
+  // to zero then the dynamic library is unloaded.
+  //
+  // Parameters:
+  //     handle [IN] the handler of a dynamic library.
+  //
+  // Returns:
+  //   0 on success, and nonzero on error.
+  int (*unloadLibrary)(void* handle);
+
+  // Dump the last failure message of native bridge when fail to load library or search symbol.
+  //
+  // Parameters:
+  //
+  // Returns:
+  //   A string describing the most recent error that occurred when load library
+  //   or lookup symbol via native bridge.
+  char* (*getError)();
+
+  // Check whether library paths are supported by native bridge.
+  //
+  // Parameters:
+  //   library_path [IN] search paths for native libraries (directories separated by ':')
+  // Returns:
+  //   TRUE if libraries within search paths are supported by native bridge, FALSE otherwise
+  bool (*isPathSupported)(const char* library_path);
+
+  // Initializes anonymous namespace at native bridge side and pass the key of
+  // two namespaces(default and anonymous) owned by dynamic linker to native bridge.
+  //
+  // Parameters:
+  //     public_ns_sonames [IN] the name of "public" libraries, same as dynamic linker's.
+  //     anon_ns_library_path [IN] the library search path of (anonymous), same as dynamic linker's.
+  // Returns:
+  //     true if the pass is ok.
+  //     Otherwise, false.
+  bool (*initNamespace)(const char* public_ns_sonames,
+                        const char* anon_ns_library_path);
+
+
+  // Create a namespace and pass the key of releated namespaces to native bridge.
+  //
+  // Parameters:
+  //     name [IN] the name of the namespace to be created, same as the original namespace's.
+  //     ld_library_path [IN] the first set of library search path of the namespace to be created,
+  //                          same as the original namespace's.
+  //     default_library_path [IN] the second set of library search path of the namespace to be created,
+  //                               same as the original namespace's.
+  //     type [IN] the attribute of the namespace to be created, same as the original namespace's.
+  //     permitted_when_isolated_path [IN] the permitted path for isolated namespace(if it is),
+  //                                       same as the original namespace's
+  //     parent_nskey [IN] the key of the namespace to be inherited from at dynamic linker side.
+  // Returns:
+  //     native_bridge_namespace_t* for created namespace or nullptr in the case of error.
+  native_bridge_namespace_t* (*createNamespace)(const char* name,
+                                                const char* ld_library_path,
+                                                const char* default_library_path,
+                                                uint64_t type,
+                                                const char* permitted_when_isolated_path,
+                                                native_bridge_namespace_t* parent_ns);
+
+  // Load a shared library with namespace key that is supported by the native bridge.
+  //
+  // Parameters:
+  //   libpath [IN] path to the shared library
+  //   flag [IN] the stardard RTLD_XXX defined in bionic dlfcn.h
+  //   ns_key [IN] the key of namespace in which the library should be loaded
+  // Returns:
+  //   The opaque handle of the shared library if sucessful, otherwise NULL
+  void* (*loadLibraryExt)(const char* libpath, int flag, native_bridge_namespace_t* ns);
 };
 
 // Runtime interfaces to native bridge.
