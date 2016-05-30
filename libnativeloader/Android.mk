@@ -12,7 +12,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libnativeloader
 
 LOCAL_SRC_FILES:= $(native_loader_common_src_files)
-LOCAL_SHARED_LIBRARIES := libnativehelper liblog libcutils libdl
+LOCAL_SHARED_LIBRARIES := libnativehelper liblog libcutils libnativebridge libdl
 LOCAL_STATIC_LIBRARIES := libbase
 LOCAL_CLANG := true
 LOCAL_CFLAGS := $(native_loader_common_cflags)
@@ -29,7 +29,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libnativeloader
 
 LOCAL_SRC_FILES:= $(native_loader_common_src_files)
-LOCAL_SHARED_LIBRARIES := libnativehelper liblog libcutils
+LOCAL_SHARED_LIBRARIES := libnativehelper liblog libcutils libnativebridge
 LOCAL_STATIC_LIBRARIES := libbase
 LOCAL_CLANG := true
 LOCAL_CFLAGS := $(native_loader_common_cflags)
@@ -47,7 +47,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libnativeloader
 
 LOCAL_SRC_FILES:= $(native_loader_common_src_files)
-LOCAL_STATIC_LIBRARIES := libnativehelper libcutils liblog libbase
+LOCAL_STATIC_LIBRARIES := libnativehelper libcutils liblog libbase libnativebridge
 LOCAL_CLANG := true
 LOCAL_CFLAGS := $(native_loader_common_cflags)
 LOCAL_CPPFLAGS := -std=gnu++14 -fvisibility=hidden
