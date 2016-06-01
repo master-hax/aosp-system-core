@@ -72,6 +72,9 @@ namespace android {
 // call that would otherwise have deallocated the object, or before an
 // attemptIncStrong call that might rely on it.  We do not worry about
 // concurrent changes to the object lifetime.
+// Weak pointers are not cleared when the object is reclaimed.
+// The only safe way to access the associated target is by using promote()
+// or attemptIncStrong to get a strong pointer. unsafe_get() is indeed unsafe.
 // mStrong is the strong reference count.  mWeak is the weak reference count.
 // Between calls, and ignoring memory ordering effects, mWeak includes strong
 // references, and is thus >= mStrong.
