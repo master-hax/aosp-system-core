@@ -114,7 +114,7 @@ case ${progname} in
   # 20ms done, to permit process feedback check
   sleep 1
   # also generate an error return code if not found running, bonus
-  ps -t | grep "${data##*/}.*${service%d}"
+  ps -Telf | grep -v grep | grep "${data##*/}.*${service%d}"
   ;;
 *.stop)
   if [ -n "${size}${buffer}" ]; then
