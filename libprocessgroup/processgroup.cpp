@@ -252,7 +252,11 @@ int killProcessGroup(uid_t uid, int initialPid, int signal)
 {
     int processes;
     const int sleep_us = 5 * 1000;  // 5ms
+#ifdef STATIC
+    int64_t startTime = 0;
+#else
     int64_t startTime = android::uptimeMillis();
+#endif
     int retry = 40;
 
     while ((processes = killProcessGroupOnce(uid, initialPid, signal)) > 0) {
@@ -268,7 +272,11 @@ int killProcessGroup(uid_t uid, int initialPid, int signal)
     }
 
     SLOGV("Killed process group uid %d pid %d in %" PRId64 "ms, %d procs remain", uid, initialPid,
+#ifdef STATIC
+            startTime, processes);
+#else
             android::uptimeMillis()-startTime, processes);
+#endif
 
     if (processes == 0) {
         return removeProcessGroup(uid, initialPid);
