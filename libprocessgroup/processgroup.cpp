@@ -33,8 +33,6 @@
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
 
-#include <utils/SystemClock.h>
-
 #include <processgroup/processgroup.h>
 #include "processgroup_priv.h"
 
@@ -248,11 +246,17 @@ static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
     return processes;
 }
 
+static time_t gettime() {
+    timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return now.tv_sec;
+}
+
 int killProcessGroup(uid_t uid, int initialPid, int signal)
 {
     int processes;
     const int sleep_us = 5 * 1000;  // 5ms
-    int64_t startTime = android::uptimeMillis();
+    int64_t startTime = gettime();
     int retry = 40;
 
     while ((processes = killProcessGroupOnce(uid, initialPid, signal)) > 0) {
@@ -268,7 +272,7 @@ int killProcessGroup(uid_t uid, int initialPid, int signal)
     }
 
     SLOGV("Killed process group uid %d pid %d in %" PRId64 "ms, %d procs remain", uid, initialPid,
-            android::uptimeMillis()-startTime, processes);
+            gettime()-startTime, processes);
 
     if (processes == 0) {
         return removeProcessGroup(uid, initialPid);
