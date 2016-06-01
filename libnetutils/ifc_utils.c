@@ -46,6 +46,7 @@
 #else
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h>
 #define ALOGD printf
 #define ALOGW printf
 #endif
@@ -56,7 +57,11 @@
 #endif
 
 static int ifc_ctl_sock = -1;
+static int ifc_ctl_refcount = 0;
+static pthread_mutex_t ifc_ctl_lock = PTHREAD_MUTEX_INITIALIZER;
 static int ifc_ctl_sock6 = -1;
+static int ifc_ctl_refcount6 = 0;
+static pthread_mutex_t ifc_ctl_lock6 = PTHREAD_MUTEX_INITIALIZER;
 void printerr(char *fmt, ...);
 
 #define DBG 0
@@ -122,7 +127,8 @@ int string_to_ip(const char *string, struct sockaddr_storage *ss) {
 int ifc_init(void)
 {
     int ret;
-    if (ifc_ctl_sock == -1) {
+    pthread_mutex_lock(&ifc_ctl_lock);
+    if (ifc_ctl_refcount++ == 0) {
         ifc_ctl_sock = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
         if (ifc_ctl_sock < 0) {
             printerr("socket() failed: %s\n", strerror(errno));
@@ -130,36 +136,55 @@ int ifc_init(void)
     }
 
     ret = ifc_ctl_sock < 0 ? -1 : 0;
+    pthread_mutex_unlock(&ifc_ctl_lock);
     if (DBG) printerr("ifc_init_returning %d", ret);
     return ret;
 }
 
 int ifc_init6(void)
 {
-    if (ifc_ctl_sock6 == -1) {
+    int ret;
+    pthread_mutex_lock(&ifc_ctl_lock6);
+    if (ifc_ctl_refcount6++ == 0) {
         ifc_ctl_sock6 = socket(AF_INET6, SOCK_DGRAM | SOCK_CLOEXEC, 0);
         if (ifc_ctl_sock6 < 0) {
             printerr("socket() failed: %s\n", strerror(errno));
         }
     }
-    return ifc_ctl_sock6 < 0 ? -1 : 0;
+
+    ret = ifc_ctl_sock6 < 0 ? -1 : 0;
+    pthread_mutex_unlock(&ifc_ctl_lock6);
+    if (DBG) printerr("ifc_init6 returning %d", ret);
+    return ret;
 }
 
 void ifc_close(void)
 {
     if (DBG) printerr("ifc_close");
-    if (ifc_ctl_sock != -1) {
+    pthread_mutex_lock(&ifc_ctl_lock);
+    if (--ifc_ctl_refcount == 0) {
         (void)close(ifc_ctl_sock);
         ifc_ctl_sock = -1;
     }
+    if (ifc_ctl_refcount < 0) {
+        printerr("Unbalanced call to ifc_close(), forcing refcount to 0");
+        ifc_ctl_refcount = 0;
+    }
+    pthread_mutex_unlock(&ifc_ctl_lock);
 }
 
 void ifc_close6(void)
 {
-    if (ifc_ctl_sock6 != -1) {
+    pthread_mutex_lock(&ifc_ctl_lock6);
+    if (--ifc_ctl_refcount6 == 0) {
         (void)close(ifc_ctl_sock6);
         ifc_ctl_sock6 = -1;
     }
+    if (ifc_ctl_refcount6 < 0) {
+        printerr("Unbalanced call to ifc_close6(), forcing refcount to 0");
+        ifc_ctl_refcount6 = 0;
+    }
+    pthread_mutex_unlock(&ifc_ctl_lock6);
 }
 
 static void ifc_init_ifr(const char *name, struct ifreq *ifr)
