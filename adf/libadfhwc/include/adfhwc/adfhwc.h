@@ -23,6 +23,7 @@
 #include <video/adf.h>
 
 #include <hardware/hwcomposer.h>
+#include <hardware/hwcomposer2.h>
 
 struct adf_hwc_helper;
 
@@ -122,6 +123,8 @@ int adf_query_display_types_supported(struct adf_hwc_helper *dev, int *value);
 int adf_getDisplayConfigs(struct adf_hwc_helper *dev, int disp,
         uint32_t *configs, size_t *numConfigs);
 int adf_getDisplayAttributes(struct adf_hwc_helper *dev, int disp,
+        uint32_t config, const uint32_t *attributes, int32_t *values);
+int adf_getDisplayAttributes_v2(struct adf_hwc_helper *dev, int disp,
         uint32_t config, const uint32_t *attributes, int32_t *values);
 
 __END_DECLS
