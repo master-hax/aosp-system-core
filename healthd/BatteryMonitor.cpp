@@ -136,10 +136,13 @@ int BatteryMonitor::readFromFile(const String8& path, char* buf, size_t size) {
     if (count > 0)
             cp = (char *)memrchr(buf, '\n', count);
 
-    if (cp)
+    if (cp) {
         *cp = '\0';
-    else
+    }
+    else {
         buf[0] = '\0';
+        count = 0;
+    }
 
     close(fd);
     return count;
