@@ -21,6 +21,17 @@
 
 __BEGIN_DECLS
 
+struct sw_sync_create_fence_data {
+ uint32_t value;
+ char name[32];
+ int32_t fence; /* fd of new fence */
+};
+
+#define SW_SYNC_IOC_MAGIC	'W'
+
+#define SW_SYNC_IOC_CREATE_FENCE	_IOWR(SW_SYNC_IOC_MAGIC, 0,\
+		struct sw_sync_create_fence_data)
+#define SW_SYNC_IOC_INC			_IOW(SW_SYNC_IOC_MAGIC, 1, __u32)
 /*
  * sw_sync is mainly intended for testing and should not be compiled into
  * production kernels

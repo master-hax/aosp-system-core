@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <linux/sw_sync.h>
+#include "sw_sync.h"
 
 #include <sys/ioctl.h>
 #include <sys/stat.h>
