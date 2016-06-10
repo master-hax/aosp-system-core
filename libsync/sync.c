@@ -22,11 +22,12 @@
 #include <string.h>
 
 #include <linux/sync.h>
-#include <linux/sw_sync.h>
 
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include "sw_sync.h"
 
 int sync_wait(int fd, int timeout)
 {
