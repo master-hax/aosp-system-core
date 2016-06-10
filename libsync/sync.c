@@ -21,30 +21,29 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <linux/sync.h>
-
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <sync/sync.h>
 #include "sw_sync.h"
 
 int sync_wait(int fd, int timeout)
 {
     __s32 to = timeout;
 
-    return ioctl(fd, SYNC_IOC_WAIT, &to);
+    return ioctl(fd, SYNC_IOC_LEGACY_WAIT, &to);
 }
 
 int sync_merge(const char *name, int fd1, int fd2)
 {
-    struct sync_merge_data data;
+    struct sync_legacy_merge_data data;
     int err;
 
     data.fd2 = fd2;
     strlcpy(data.name, name, sizeof(data.name));
 
-    err = ioctl(fd1, SYNC_IOC_MERGE, &data);
+    err = ioctl(fd1, SYNC_IOC_LEGACY_MERGE, &data);
     if (err < 0)
         return err;
 
@@ -61,7 +60,7 @@ struct sync_fence_info_data *sync_fence_info(int fd)
         return NULL;
 
     info->len = 4096;
-    err = ioctl(fd, SYNC_IOC_FENCE_INFO, info);
+    err = ioctl(fd, SYNC_IOC_LEGACY_FENCE_INFO, info);
     if (err < 0) {
         free(info);
         return NULL;
