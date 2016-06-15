@@ -20,6 +20,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include <mutex>
+
 #include <backtrace/BacktraceMap.h>
 
 // The unw_map_cursor_t structure is different depending on whether it is
@@ -60,6 +62,8 @@ private:
   bool GenerateMap();
 
   bool map_created_;
+
+  std::mutex map_lock_;
 };
 
 #endif // _LIBBACKTRACE_UNWIND_MAP_H

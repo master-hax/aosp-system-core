@@ -19,6 +19,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <mutex>
+
 #include <backtrace/BacktraceMap.h>
 
 #include <libunwind.h>
@@ -82,6 +84,10 @@ UnwindMapLocal::~UnwindMapLocal() {
 }
 
 bool UnwindMapLocal::GenerateMap() {
+  // Lock so that multiple threads cannot modify the maps data at the
+  // same time.
+  std::lock_guard<std::mutex> map_guard(map_lock_);
+
   // It's possible for the map to be regenerated while this loop is occurring.
   // If that happens, get the map again, but only try at most three times
   // before giving up.
