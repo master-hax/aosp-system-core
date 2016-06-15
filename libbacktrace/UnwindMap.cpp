@@ -19,6 +19,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <shared_mutex>
+
 #include <backtrace/BacktraceMap.h>
 
 #include <libunwind.h>
@@ -72,6 +74,7 @@ bool UnwindMapRemote::Build() {
 }
 
 UnwindMapLocal::UnwindMapLocal() : UnwindMap(getpid()), map_created_(false) {
+  pthread_rwlock_init(&map_lock_, nullptr);
 }
 
 UnwindMapLocal::~UnwindMapLocal() {
@@ -82,9 +85,14 @@ UnwindMapLocal::~UnwindMapLocal() {
 }
 
 bool UnwindMapLocal::GenerateMap() {
+  // Lock so that multiple threads cannot modify the maps data at the
+  // same time.
+  pthread_rwlock_wrlock(&map_lock_);
+
   // It's possible for the map to be regenerated while this loop is occurring.
   // If that happens, get the map again, but only try at most three times
   // before giving up.
+  bool generated = false;
   for (int i = 0; i < 3; i++) {
     maps_.clear();
 
@@ -110,12 +118,17 @@ bool UnwindMapLocal::GenerateMap() {
     }
     // Check to see if the map changed while getting the data.
     if (ret != -UNW_EINVAL) {
-      return true;
+      generated = true;
+      break;
     }
   }
 
-  BACK_LOGW("Unable to generate the map.");
-  return false;
+  pthread_rwlock_unlock(&map_lock_);
+
+  if (!generated) {
+    BACK_LOGW("Unable to generate the map.");
+  }
+  return generated;
 }
 
 bool UnwindMapLocal::Build() {
