@@ -163,6 +163,10 @@ class Subprocess {
     // and exec's the child. Returns false on failure.
     bool ForkAndExec(std::string* _Nonnull error);
 
+    // Starts the subprocess manager thread. The spawned thread can delete Subprocess at any time,
+    // so after this point, using Subprocess is unsafe.
+    bool StartThread(std::string* _Nonnull error);
+
   private:
     // Opens the file at |pts_name|.
     int OpenPtyChildFd(const char* pts_name, unique_fd* error_sfd);
@@ -390,6 +394,11 @@ bool Subprocess::ForkAndExec(std::string* error) {
         }
     }
 
+    D("subprocess parent: completed");
+    return true;
+}
+
+bool Subprocess::StartThread(std::string* error) {
     if (!adb_thread_create(ThreadHandler, this)) {
         *error =
             android::base::StringPrintf("failed to create subprocess thread: %s", strerror(errno));
@@ -397,7 +406,6 @@ bool Subprocess::ForkAndExec(std::string* error) {
         return false;
     }
 
-    D("subprocess parent: completed");
     return true;
 }
 
@@ -441,6 +449,7 @@ void Subprocess::ThreadHandler(void* userdata) {
     adb_thread_setname(android::base::StringPrintf(
             "shell srvc %d", subprocess->local_socket_fd()));
 
+    D("passing data streams for PID %d", subprocess->pid());
     subprocess->PassDataStreams();
 
     D("deleting Subprocess for PID %d", subprocess->pid());
@@ -746,7 +755,15 @@ int StartSubprocess(const char* name, const char* terminal_type,
         return ReportError(protocol, error);
     }
 
-    D("subprocess creation successful: local_socket_fd=%d, pid=%d",
-      subprocess->local_socket_fd(), subprocess->pid());
-    return subprocess->local_socket_fd();
+    unique_fd local_socket(dup(subprocess->local_socket_fd()));
+    D("subprocess creation successful: local_socket_fd=%d, pid=%d", local_socket.get(),
+      subprocess->pid());
+
+    if (!subprocess->StartThread(&error)) {
+        LOG(ERROR) << "failed to start subprocess management thread: " << error;
+        delete subprocess;
+        return ReportError(protocol, error);
+    }
+
+    return local_socket.release();
 }
