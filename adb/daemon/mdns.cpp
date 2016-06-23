@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "adb_mdns.h"
 #include "sysdeps.h"
 
 #include <dns_sd.h>
@@ -76,7 +77,7 @@ static void setup_mdns_thread(void* /* unused */) {
 
     property_get("ro.serialno", hostname + 4, "unidentified");
 
-    auto error = DNSServiceRegister(&mdns_ref, 0, 0, hostname, "_adb._tcp",
+    auto error = DNSServiceRegister(&mdns_ref, 0, 0, hostname, kADBServiceType,
                                     nullptr, nullptr, htobe16((uint16_t)port),
                                     0, nullptr, mdns_callback, nullptr);
 
