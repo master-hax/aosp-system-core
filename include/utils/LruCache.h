@@ -20,6 +20,7 @@
 #include <memory>
 #include <unordered_set>
 
+#include "log/log.h"
 #include "utils/TypeHelpers.h"  // hash_t
 
 namespace android {
@@ -56,36 +57,55 @@ public:
 private:
     LruCache(const LruCache& that);  // disallow copy constructor
 
-    struct Entry {
+    // Super class so that we can have entries having only a key reference, for searches.
+    class KeyedEntry {
+    public:
+        virtual const TKey& getKey() const = 0;
+        // Make sure the right destructor is executed so that keys and values are deleted.
+        virtual ~KeyedEntry() {}
+    };
+
+    class Entry final : public KeyedEntry {
+    public:
         TKey key;
         TValue value;
         Entry* parent;
         Entry* child;
 
-        Entry(TKey key_, TValue value_) : key(key_), value(value_), parent(NULL), child(NULL) {
+        Entry(TKey _key, TValue _value) : key(_key), value(_value), parent(NULL), child(NULL) {
         }
-        const TKey& getKey() const { return key; }
+        const TKey& getKey() const final { return key; }
     };
 
-    struct HashForEntry : public std::unary_function<Entry*, hash_t> {
-        size_t operator() (const Entry* entry) const {
-            return hash_type(entry->key);
+    class EntryForSearch : public KeyedEntry {
+    public:
+        const TKey& key;
+        EntryForSearch(const TKey& key_) : key(key_) {
+        }
+        const TKey& getKey() const final { return key; }
+    };
+
+    struct HashForEntry : public std::unary_function<KeyedEntry*, hash_t> {
+        size_t operator() (const KeyedEntry* entry) const {
+            return hash_type(entry->getKey());
         };
     };
 
-    struct EqualityForHashedEntries : public std::unary_function<Entry*, hash_t> {
-        bool operator() (const Entry* lhs, const Entry* rhs) const {
-            return lhs->key == rhs->key;
+    struct EqualityForHashedEntries : public std::unary_function<KeyedEntry*, hash_t> {
+        bool operator() (const KeyedEntry* lhs, const KeyedEntry* rhs) const {
+            return lhs->getKey() == rhs->getKey();
         };
     };
 
-    typedef std::unordered_set<Entry*, HashForEntry, EqualityForHashedEntries> LruCacheSet;
+    // All entries in the set will be Entry*. Using the weaker KeyedEntry as to allow entries
+    // that have only a key reference, for searching.
+    typedef std::unordered_set<KeyedEntry*, HashForEntry, EqualityForHashedEntries> LruCacheSet;
 
     void attachToCache(Entry& entry);
     void detachFromCache(Entry& entry);
 
     typename LruCacheSet::iterator findByKey(const TKey& key) {
-        Entry entryForSearch(key, mNullValue);
+        EntryForSearch entryForSearch(key);
         typename LruCacheSet::iterator result = mSet->find(&entryForSearch);
         return result;
     }
@@ -124,11 +144,13 @@ public:
         }
 
         const TValue& value() const {
-            return (*mIterator)->value;
+            // All the elements in the set are of type Entry. See comment in the definition
+            // of LruCacheSet above.
+            return reinterpret_cast<Entry *>(*mIterator)->value;
         }
 
         const TKey& key() const {
-            return (*mIterator)->key;
+            return (*mIterator)->getKey();
         }
     private:
         const LruCache<TKey, TValue>& mCache;
@@ -167,11 +189,14 @@ size_t LruCache<TKey, TValue>::size() const {
 
 template <typename TKey, typename TValue>
 const TValue& LruCache<TKey, TValue>::get(const TKey& key) {
+    ALOGE("New impl!");
     typename LruCacheSet::const_iterator find_result = findByKey(key);
     if (find_result == mSet->end()) {
         return mNullValue;
     }
-    Entry *entry = *find_result;
+    // All the elements in the set are of type Entry. See comment in the definition
+    // of LruCacheSet above.
+    Entry *entry = reinterpret_cast<Entry*>(*find_result);
     detachFromCache(*entry);
     attachToCache(*entry);
     return entry->value;
@@ -199,7 +224,9 @@ bool LruCache<TKey, TValue>::remove(const TKey& key) {
     if (find_result == mSet->end()) {
         return false;
     }
-    Entry* entry = *find_result;
+    // All the elements in the set are of type Entry. See comment in the definition
+    // of LruCacheSet above.
+    Entry* entry = reinterpret_cast<Entry*>(*find_result);
     mSet->erase(entry);
     if (mListener) {
         (*mListener)(entry->key, entry->value);
