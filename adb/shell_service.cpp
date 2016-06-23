@@ -761,6 +761,7 @@ int StartSubprocess(const char* name, const char* terminal_type,
 
     if (!Subprocess::StartThread(std::move(subprocess), &error)) {
         LOG(ERROR) << "failed to start subprocess management thread: " << error;
+        adb_close(local_socket);
         return ReportError(protocol, error);
     }
 
