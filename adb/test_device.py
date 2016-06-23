@@ -31,6 +31,7 @@ import string
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 import mock
@@ -494,6 +495,28 @@ class ShellTest(DeviceTest):
             stdout, stderr = proc.communicate(input)
             self.assertEqual(input.splitlines(), stdout.splitlines())
             self.assertEqual('', stderr)
+
+    def test_sighup(self):
+        """Ensure that SIGHUP gets sent upon non-interactive ctrl-c"""
+        log_path = "/data/local/tmp/adb_signal_test.log"
+
+        # Clear the output file.
+        self.device.shell_nocheck(["echo", ">", log_path])
+
+        script ="""
+            trap "echo SIGINT > {path}; exit 0" SIGINT
+            trap "echo SIGHUP > {path}; exit 0" SIGHUP
+            while true; do sleep 100; done
+        """.format(path=log_path)
+
+        script = ";".join([x.strip() for x in script.strip().splitlines()])
+
+        process = self.device.shell_popen(
+            ["sh", "-c", "'{}'".format(script)])
+
+        process.send_signal(signal.SIGINT)
+        stdout, _ = self.device.shell(["cat", log_path])
+        self.assertEqual(stdout.strip(), "SIGHUP")
 
 
 class ArgumentEscapingTest(DeviceTest):
