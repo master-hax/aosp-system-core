@@ -156,6 +156,13 @@ LOCAL_STATIC_LIBRARIES := libadbd libcrypto_utils_static libcrypto_static
 LOCAL_SHARED_LIBRARIES := liblog libbase libcutils
 include $(BUILD_NATIVE_TEST)
 
+# adb_signal_test_helper
+# =========================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE := adb_signal_test_helper
+LOCAL_SRC_FILES := signal_test_helper.cpp
+include $(BUILD_NATIVE_TEST)
+
 # libdiagnose_usb
 # =========================================================
 
