@@ -23,8 +23,6 @@
 #include <string>
 #include <functional>
 
-#define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))
-
 #define COLDBOOT_DONE "/dev/.coldboot_done"
 
 int mtd_name_to_number(const char *name);
