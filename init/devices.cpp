@@ -731,9 +731,6 @@ static void handle_generic_device_event(struct uevent *uevent)
      } else if(!strncmp(uevent->subsystem, "input", 5)) {
          base = "/dev/input/";
          make_dir(base, 0755);
-     } else if(!strncmp(uevent->subsystem, "mtd", 3)) {
-         base = "/dev/mtd/";
-         make_dir(base, 0755);
      } else if(!strncmp(uevent->subsystem, "sound", 5)) {
          base = "/dev/snd/";
          make_dir(base, 0755);
