@@ -329,7 +329,7 @@ retry:
         /* if we fail, see if have read-only access */
         fd = open(dev_name, O_RDONLY);
         D("usb_device_open open returned %d errno %d\n", fd, errno);
-        if (fd < 0 && (errno == EACCES || errno == ENOENT) && !did_retry) {
+        if (fd < 0 && (errno == EACCES || errno == ENOENT || errno == ENODEV) && !did_retry) {
             /* work around race condition between inotify and permissions management */
             sleep(1);
             did_retry = 1;
