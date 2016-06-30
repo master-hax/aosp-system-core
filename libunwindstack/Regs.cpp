@@ -21,14 +21,17 @@
 
 #include <vector>
 
+#include <unwindstack/Elf.h>
+#include <unwindstack/MapInfo.h>
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
+
 #include "Check.h"
-#include "Elf.h"
-#include "ElfInterface.h"
 #include "Machine.h"
-#include "MapInfo.h"
-#include "Regs.h"
 #include "Ucontext.h"
 #include "User.h"
+
+namespace unwindstack {
 
 template <typename AddressType>
 uint64_t RegsImpl<AddressType>::GetRelPc(Elf* elf, const MapInfo* map_info) {
@@ -354,3 +357,5 @@ Regs* Regs::CreateFromLocal() {
 #endif
   return regs;
 }
+
+}  // namespace unwindstack

@@ -31,12 +31,14 @@
 #include <string>
 #include <thread>
 
-#include "Elf.h"
-#include "MapInfo.h"
-#include "Maps.h"
-#include "Memory.h"
-#include "Regs.h"
-#include "RegsGetLocal.h"
+#include <unwindstack/Elf.h>
+#include <unwindstack/MapInfo.h>
+#include <unwindstack/Maps.h>
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
+#include <unwindstack/RegsGetLocal.h>
+
+namespace unwindstack {
 
 static std::atomic_bool g_ready(false);
 static volatile bool g_ready_for_remote = false;
@@ -210,7 +212,7 @@ TEST(UnwindTest, from_context) {
 
   // Wait for context data.
   void* ucontext;
-  for (size_t i = 0; i < 200; i++) {
+  for (size_t i = 0; i < 2000; i++) {
     ucontext = reinterpret_cast<void*>(g_ucontext.load());
     if (ucontext != nullptr) {
       break;
@@ -231,3 +233,5 @@ TEST(UnwindTest, from_context) {
   g_finish = true;
   thread.join();
 }
+
+}  // namespace unwindstack

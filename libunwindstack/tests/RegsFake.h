@@ -19,7 +19,10 @@
 
 #include <stdint.h>
 
-#include "Regs.h"
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
+
+namespace unwindstack {
 
 template <typename TypeParam>
 class RegsFake : public RegsImpl<TypeParam> {
@@ -33,5 +36,7 @@ class RegsFake : public RegsImpl<TypeParam> {
   void SetFromRaw() override {}
   bool GetReturnAddressFromDefault(Memory*, uint64_t*) { return false; }
 };
+
+}  // namespace unwindstack
 
 #endif  // _LIBUNWINDSTACK_TESTS_REGS_FAKE_H

@@ -18,12 +18,14 @@
 
 #include <gtest/gtest.h>
 
-#include "Elf.h"
-#include "ElfInterface.h"
-#include "MapInfo.h"
-#include "Regs.h"
+#include <unwindstack/Elf.h>
+#include <unwindstack/ElfInterface.h>
+#include <unwindstack/MapInfo.h>
+#include <unwindstack/Regs.h>
 
 #include "MemoryFake.h"
+
+namespace unwindstack {
 
 class ElfFake : public Elf {
  public:
@@ -305,3 +307,5 @@ TEST_F(RegsTest, x86_64_set_from_raw) {
   EXPECT_EQ(0x1200000000U, x86_64.sp());
   EXPECT_EQ(0x4900000000U, x86_64.pc());
 }
+
+}  // namespace unwindstack

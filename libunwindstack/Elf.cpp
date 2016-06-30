@@ -23,12 +23,16 @@
 #define LOG_TAG "unwind"
 #include <log/log.h>
 
-#include "Elf.h"
-#include "ElfInterface.h"
+#include <unwindstack/Elf.h>
+#include <unwindstack/ElfInterface.h>
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
+
 #include "ElfInterfaceArm.h"
 #include "Machine.h"
-#include "Memory.h"
-#include "Regs.h"
+#include "Symbols.h"
+
+namespace unwindstack {
 
 bool Elf::Init() {
   if (!memory_) {
@@ -69,6 +73,27 @@ void Elf::InitGnuDebugdata() {
     gnu_debugdata_memory_.reset(nullptr);
     gnu_debugdata_interface_.reset(nullptr);
   }
+}
+
+bool Elf::GetSoname(std::string* name) {
+  return valid_ && interface_->GetSoname(name);
+}
+
+bool Elf::GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offset) {
+  return valid_ && (interface_->GetFunctionName(addr, name, func_offset) ||
+                    (gnu_debugdata_interface_ &&
+                     gnu_debugdata_interface_->GetFunctionName(addr, name, func_offset)));
+}
+
+bool Elf::Step(uint64_t rel_pc, Regs* regs, Memory* process_memory) {
+  return valid_ && (interface_->Step(rel_pc, regs, process_memory) ||
+                    (gnu_debugdata_interface_ &&
+                     gnu_debugdata_interface_->Step(rel_pc, regs, process_memory)));
+}
+
+uint64_t Elf::GetLoadBias() {
+  if (!valid_) return 0;
+  return interface_->load_bias();
 }
 
 bool Elf::IsValidElf(Memory* memory) {
@@ -133,3 +158,5 @@ ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {
 
   return interface.release();
 }
+
+}  // namespace unwindstack

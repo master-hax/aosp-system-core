@@ -22,7 +22,7 @@
 
 #include <gtest/gtest.h>
 
-#include "Elf.h"
+#include <unwindstack/Elf.h>
 
 #include "ElfTestUtils.h"
 #include "MemoryFake.h"
@@ -30,6 +30,8 @@
 #if !defined(PT_ARM_EXIDX)
 #define PT_ARM_EXIDX 0x70000001
 #endif
+
+namespace unwindstack {
 
 class ElfTest : public ::testing::Test {
  protected:
@@ -237,3 +239,5 @@ TEST_F(ElfTest, gnu_debugdata_init64) {
   elf.InitGnuDebugdata();
   ASSERT_TRUE(elf.gnu_debugdata_interface() != nullptr);
 }
+
+}  // namespace unwindstack

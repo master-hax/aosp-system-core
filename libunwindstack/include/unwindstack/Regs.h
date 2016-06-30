@@ -21,9 +21,12 @@
 
 #include <vector>
 
+namespace unwindstack {
+
 // Forward declarations.
 class Elf;
 struct MapInfo;
+class Memory;
 
 class Regs {
  public:
@@ -136,5 +139,7 @@ class RegsX86_64 : public RegsImpl<uint64_t> {
 
   void SetFromRaw() override;
 };
+
+}  // namespace unwindstack
 
 #endif  // _LIBUNWINDSTACK_REGS_H
