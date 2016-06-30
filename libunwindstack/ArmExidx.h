@@ -21,8 +21,9 @@
 
 #include <deque>
 
-#include "Memory.h"
-#include "Regs.h"
+// Forward declarations.
+class Memory;
+class RegsArm;
 
 enum ArmStatus : size_t {
   ARM_STATUS_NONE = 0,
@@ -43,7 +44,7 @@ enum ArmOp : uint8_t {
 
 class ArmExidx {
  public:
-  ArmExidx(Regs32* regs, Memory* elf_memory, Memory* process_memory)
+  ArmExidx(RegsArm* regs, Memory* elf_memory, Memory* process_memory)
       : regs_(regs), elf_memory_(elf_memory), process_memory_(process_memory) {}
   virtual ~ArmExidx() {}
 
@@ -59,7 +60,7 @@ class ArmExidx {
 
   ArmStatus status() { return status_; }
 
-  Regs32* regs() { return regs_; }
+  RegsArm* regs() { return regs_; }
 
   uint32_t cfa() { return cfa_; }
   void set_cfa(uint32_t cfa) { cfa_ = cfa; }
@@ -87,7 +88,7 @@ class ArmExidx {
   bool DecodePrefix_11_010(uint8_t byte);
   bool DecodePrefix_11(uint8_t byte);
 
-  Regs32* regs_ = nullptr;
+  RegsArm* regs_ = nullptr;
   uint32_t cfa_ = 0;
   std::deque<uint8_t> data_;
   ArmStatus status_ = ARM_STATUS_NONE;
