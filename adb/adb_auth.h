@@ -43,15 +43,9 @@ int adb_auth_sign(void *key, const unsigned char* token, size_t token_size,
 void *adb_auth_nextkey(void *current);
 std::string adb_auth_get_userkey();
 
-static inline int adb_auth_generate_token(void *token, size_t token_size) {
-    return 0;
-}
-static inline int adb_auth_verify(void *token, size_t token_size,
-                                  void *sig, int siglen) {
-    return 0;
-}
-static inline void adb_auth_confirm_key(unsigned char *data, size_t len,
-                                        atransport *t) {}
+static inline bool adb_auth_generate_token(void*, size_t) { return false; }
+static inline bool adb_auth_verify(void*, size_t, void*, int) { return false; }
+static inline void adb_auth_confirm_key(unsigned char*, size_t, atransport*) {}
 
 #else // !ADB_HOST
 
@@ -64,9 +58,8 @@ static inline std::string adb_auth_get_userkey() { return ""; }
 
 void adbd_auth_init(void);
 void adbd_cloexec_auth_socket();
-int adb_auth_generate_token(void *token, size_t token_size);
-int adb_auth_verify(uint8_t* token, size_t token_size,
-                    uint8_t* sig, int siglen);
+bool adb_auth_generate_token(void* token, size_t token_size);
+bool adb_auth_verify(uint8_t* token, size_t token_size, uint8_t* sig, int sig_len);
 void adb_auth_confirm_key(unsigned char *data, size_t len, atransport *t);
 
 #endif // ADB_HOST
