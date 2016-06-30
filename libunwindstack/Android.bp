@@ -47,17 +47,36 @@ cc_defaults {
 
     srcs: [
         "ArmExidx.cpp",
+        "DwarfCfa.cpp",
+        "DwarfEhFrame.cpp",
+        "DwarfDebugFrame.cpp",
+        "DwarfMemory.cpp",
+        "DwarfOp.cpp",
+        "DwarfSection.cpp",
         "Elf.cpp",
         "ElfInterface.cpp",
         "ElfInterfaceArm.cpp",
         "Log.cpp",
-        "Regs.cpp",
+        "Maps.cpp",
+        "MapInfo.cpp",
         "Memory.cpp",
+        "Regs.cpp",
+        "Symbols.cpp",
     ],
+
+    arch: {
+        x86: {
+            srcs: ["LocalGetRegsX86.S"],
+        },
+        x86_64: {
+            srcs: ["LocalGetRegsX86_64.S"],
+        },
+    },
 
     shared_libs: [
         "libbase",
         "liblog",
+				"liblzma",
     ],
 }
 
@@ -87,16 +106,25 @@ cc_defaults {
     srcs: [
         "tests/ArmExidxDecodeTest.cpp",
         "tests/ArmExidxExtractTest.cpp",
+        "tests/DwarfCfaLogTest.cpp",
+        "tests/DwarfCfaTest.cpp",
+        "tests/DwarfOpLogTest.cpp",
+        "tests/DwarfOpTest.cpp",
+        "tests/DwarfMemoryTest.cpp",
         "tests/ElfInterfaceArmTest.cpp",
         "tests/ElfInterfaceTest.cpp",
         "tests/ElfTest.cpp",
         "tests/LogFake.cpp",
+        "tests/MapInfoTest.cpp",
+        "tests/MapsTest.cpp",
+        "tests/MemoryBuffer.cpp",
         "tests/MemoryFake.cpp",
         "tests/MemoryFileTest.cpp",
         "tests/MemoryLocalTest.cpp",
         "tests/MemoryRangeTest.cpp",
         "tests/MemoryRemoteTest.cpp",
         "tests/RegsTest.cpp",
+        "tests/SymbolsTest.cpp",
     ],
 
     cflags: [
@@ -107,6 +135,7 @@ cc_defaults {
     shared_libs: [
         "libbase",
         "liblog",
+				"liblzma",
     ],
 
     target: {
@@ -146,15 +175,49 @@ cc_defaults {
     defaults: ["libunwindstack_flags"],
 
     shared_libs: [
-        "libunwindstack",
-        "libbase",
+        //"libunwindstack",
+        //"libbase",
     ],
 
     static_libs: [
+        "libunwindstack_debug",
         "liblog",
+        "libbase",
+        "liblzma",
     ],
 
     compile_multilib: "both",
+
+    strip: {
+        keep_symbols: true,
+    },
+}
+
+cc_binary {
+    name: "unwind",
+    defaults: ["libunwindstack_executables"],
+
+    // Do not optimize the code so the callstack is preserved.
+    cflags: [
+        "-O0",
+        "-g",
+    ],
+
+    srcs: [
+        "unwind.cpp",
+    ],
+
+    shared_libs: [
+        "libbacktrace",
+    ],
+
+    target: {
+        linux: {
+            host_ldlibs: [
+                "-lrt",
+            ],
+        },
+    },
 }
 
 cc_binary {
@@ -163,5 +226,23 @@ cc_binary {
 
     srcs: [
         "unwind_info.cpp",
+    ],
+}
+
+cc_binary {
+    name: "unwind_offline",
+    defaults: ["libunwindstack_executables"],
+
+    srcs: [
+        "unwind_offline.cpp",
+    ],
+}
+
+cc_binary {
+    name: "unwind_symbols",
+    defaults: ["libunwindstack_executables"],
+
+    srcs: [
+        "unwind_symbols.cpp",
     ],
 }
