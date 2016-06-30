@@ -55,6 +55,7 @@ enum BacktraceUnwindError : uint32_t {
 struct backtrace_frame_data_t {
   size_t num;             // The current fame number.
   uintptr_t pc;           // The absolute pc.
+  uintptr_t rel_pc;       // The relative pc.
   uintptr_t sp;           // The top of the stack.
   size_t stack_size;      // The size of the stack, zero indicate an unknown stack size.
   backtrace_map_t map;    // The map associated with the given pc.
@@ -89,6 +90,10 @@ public:
   // If map is NULL, then create the map and manage it internally.
   // If map is not NULL, the map is still owned by the caller.
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
+
+  // This is temporary and provides a method to create a backtrace object
+  // using the new unwind method.
+  static Backtrace* CreateNew(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
 
   // Create an offline Backtrace object that can be used to do an unwind without a process
   // that is still running. If cache_file is set to true, then elf information will be cached

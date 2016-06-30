@@ -150,29 +150,52 @@ cc_test {
 }
 
 //-------------------------------------------------------------------------
-// Utility Executables
+// Tools
 //-------------------------------------------------------------------------
 cc_defaults {
-    name: "libunwindstack_executables",
+    name: "libunwindstack_tools",
     defaults: ["libunwindstack_flags"],
 
     shared_libs: [
         "libunwindstack",
         "libbase",
-        "liblzma",
-    ],
-
-    static_libs: [
         "liblog",
+        "liblzma",
     ],
 }
 
 cc_binary {
-    name: "unwind_info",
-    defaults: ["libunwindstack_executables"],
+    name: "unwind",
+    defaults: ["libunwindstack_tools"],
 
     srcs: [
-        "unwind_info.cpp",
+        "tools/unwind.cpp",
+    ],
+
+    target: {
+        linux: {
+            host_ldlibs: [
+                "-lrt",
+            ],
+        },
+    },
+}
+
+cc_binary {
+    name: "unwind_info",
+    defaults: ["libunwindstack_tools"],
+
+    srcs: [
+        "tools/unwind_info.cpp",
+    ],
+}
+
+cc_binary {
+    name: "unwind_symbols",
+    defaults: ["libunwindstack_tools"],
+
+    srcs: [
+        "tools/unwind_symbols.cpp",
     ],
 }
 
