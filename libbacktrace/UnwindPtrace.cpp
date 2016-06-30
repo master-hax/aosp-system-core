@@ -135,6 +135,7 @@ bool UnwindPtrace::Unwind(size_t num_ignore_frames, ucontext_t* ucontext) {
       }
 
       FillInMap(frame->pc, &frame->map);
+      frame->rel_pc = BacktraceMap::GetRelativePc(frame->map, frame->pc);
 
       frame->func_name = GetFunctionName(frame->pc, &frame->func_offset, &frame->map);
 
