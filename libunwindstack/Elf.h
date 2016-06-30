@@ -59,6 +59,11 @@ class Elf {
 
   ElfInterface* CreateInterfaceFromMemory(Memory* memory);
 
+  uint64_t GetLoadBias() {
+    if (!valid_) return 0;
+    return interface_->load_bias();
+  }
+
   bool valid() { return valid_; }
 
   uint32_t machine_type() { return machine_type_; }
