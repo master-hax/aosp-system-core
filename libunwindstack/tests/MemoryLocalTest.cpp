@@ -73,3 +73,13 @@ TEST(MemoryLocalTest, read_illegal) {
   ASSERT_FALSE(local.Read(0, dst.data(), 1));
   ASSERT_FALSE(local.Read(0, dst.data(), 100));
 }
+
+TEST(MemoryLocalTest, read_overflow) {
+  MemoryLocal local;
+
+  // On 32 bit this test doesn't necessarily cause an overflow. The 64 bit
+  // version will always go through the overflow check.
+  std::vector<uint8_t> dst(100);
+  uint64_t value;
+  ASSERT_FALSE(local.Read(reinterpret_cast<uint64_t>(&value), dst.data(), SIZE_MAX));
+}
