@@ -58,6 +58,7 @@ class Regs {
   uint16_t total_regs() { return total_regs_; }
 
   static Regs* RemoteGet(pid_t pid, uint32_t* machine_type);
+  static Regs* CreateFromUcontext(uint32_t machine_type, void* ucontext);
 
  protected:
   uint16_t total_regs_;
