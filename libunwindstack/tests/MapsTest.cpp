@@ -22,16 +22,7 @@
 
 #include "Maps.h"
 
-#include "LogFake.h"
-
-class MapsTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    ResetLogs();
-  }
-};
-
-TEST_F(MapsTest, parse_permissions) {
+TEST(MapsTest, parse_permissions) {
   MapsBuffer maps("1000-2000 ---- 00000000 00:00 0\n"
                   "2000-3000 r--- 00000000 00:00 0\n"
                   "3000-4000 -w-- 00000000 00:00 0\n"
@@ -74,7 +65,7 @@ TEST_F(MapsTest, parse_permissions) {
   ASSERT_EQ(it, maps.end());
 }
 
-TEST_F(MapsTest, parse_name) {
+TEST(MapsTest, parse_name) {
   MapsBuffer maps("720b29b000-720b29e000 rw-p 00000000 00:00 0\n"
                   "720b29e000-720b29f000 rw-p 00000000 00:00 0 /system/lib/fake.so\n"
                   "720b29f000-720b2a0000 rw-p 00000000 00:00 0");
@@ -103,7 +94,7 @@ TEST_F(MapsTest, parse_name) {
   ASSERT_EQ(it, maps.end());
 }
 
-TEST_F(MapsTest, parse_offset) {
+TEST(MapsTest, parse_offset) {
   MapsBuffer maps("a000-e000 rw-p 00000000 00:00 0 /system/lib/fake.so\n"
                   "e000-f000 rw-p 00a12345 00:00 0 /system/lib/fake.so\n");
 
@@ -125,7 +116,7 @@ TEST_F(MapsTest, parse_offset) {
   ASSERT_EQ(maps.end(), it);
 }
 
-TEST_F(MapsTest, file_smoke) {
+TEST(MapsTest, file_smoke) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -161,7 +152,7 @@ TEST_F(MapsTest, file_smoke) {
   ASSERT_EQ(it, maps.end());
 }
 
-TEST_F(MapsTest, find) {
+TEST(MapsTest, find) {
   MapsBuffer maps("1000-2000 r--p 00000010 00:00 0 /system/lib/fake1.so\n"
                   "3000-4000 -w-p 00000020 00:00 0 /system/lib/fake2.so\n"
                   "6000-8000 --xp 00000030 00:00 0 /system/lib/fake3.so\n"
