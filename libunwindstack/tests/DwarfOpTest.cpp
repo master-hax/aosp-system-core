@@ -30,10 +30,10 @@
 #include "MemoryFake.h"
 
 template <typename TypeParam>
-class RegsFake : public RegsTmpl<TypeParam> {
+class RegsFake : public RegsImpl<TypeParam> {
  public:
   RegsFake(uint16_t total_regs, uint16_t sp_reg)
-      : RegsTmpl<TypeParam>(total_regs, sp_reg, Regs::Location(Regs::LOCATION_UNKNOWN, 0)) {}
+      : RegsImpl<TypeParam>(total_regs, sp_reg, Regs::Location(Regs::LOCATION_UNKNOWN, 0)) {}
   virtual ~RegsFake() = default;
 
   uint64_t GetRelPc(Elf*, const MapInfo*) override { return 0; }
