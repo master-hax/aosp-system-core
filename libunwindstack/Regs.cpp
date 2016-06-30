@@ -27,6 +27,7 @@
 #include "Machine.h"
 #include "MapInfo.h"
 #include "Regs.h"
+#include "Ucontext.h"
 #include "User.h"
 
 template <typename AddressType>
@@ -232,6 +233,67 @@ Regs* Regs::RemoteGet(pid_t pid, uint32_t* machine_type) {
   case sizeof(arm64_user_regs):
     *machine_type = EM_AARCH64;
     return ReadArm64(buffer.data());
+  }
+  return nullptr;
+}
+
+static Regs* CreateFromArmUcontext(void* ucontext) {
+  arm_ucontext_t* arm_ucontext = reinterpret_cast<arm_ucontext_t*>(ucontext);
+
+  RegsArm* regs = new RegsArm();
+  memcpy(regs->RawData(), &arm_ucontext->uc_mcontext.regs[0], ARM_REG_LAST * sizeof(uint32_t));
+
+  regs->set_pc((*regs)[ARM_REG_PC]);
+  regs->set_sp((*regs)[ARM_REG_SP]);
+
+  return regs;
+}
+
+static Regs* CreateFromArm64Ucontext(void* ucontext) {
+  arm64_ucontext_t* arm64_ucontext = reinterpret_cast<arm64_ucontext_t*>(ucontext);
+
+  RegsArm64* regs = new RegsArm64();
+  memcpy(regs->RawData(), &arm64_ucontext->uc_mcontext.regs[0], ARM64_REG_LAST * sizeof(uint64_t));
+  regs->set_pc((*regs)[ARM64_REG_PC]);
+  regs->set_sp((*regs)[ARM64_REG_SP]);
+
+  return regs;
+}
+
+static Regs* CreateFromX86Ucontext(void* ucontext) {
+  x86_ucontext_t* x86_ucontext = reinterpret_cast<x86_ucontext_t*>(ucontext);
+
+  RegsX86* regs = new RegsX86();
+  memcpy(regs->RawData(), &x86_ucontext->uc_mcontext.regs[0], X86_REG_LAST * sizeof(uint64_t));
+
+  regs->set_pc((*regs)[X86_REG_PC]);
+  regs->set_sp((*regs)[X86_REG_SP]);
+
+  return regs;
+}
+
+static Regs* CreateFromX86_64Ucontext(void* ucontext) {
+  x86_64_ucontext_t* x86_64_ucontext = reinterpret_cast<x86_64_ucontext_t*>(ucontext);
+
+  RegsX86_64* regs = new RegsX86_64();
+  memcpy(regs->RawData(), &x86_64_ucontext->uc_mcontext.regs[0], X86_64_REG_LAST * sizeof(uint64_t));
+
+  regs->set_pc((*regs)[X86_64_REG_PC]);
+  regs->set_sp((*regs)[X86_64_REG_SP]);
+
+  return regs;
+}
+
+Regs* Regs::CreateFromUcontext(uint32_t machine_type, void* ucontext) {
+  switch (machine_type) {
+    case EM_386:
+      return CreateFromX86Ucontext(ucontext);
+    case EM_X86_64:
+      return CreateFromX86_64Ucontext(ucontext);
+    case EM_ARM:
+      return CreateFromArmUcontext(ucontext);
+    case EM_AARCH64:
+      return CreateFromArm64Ucontext(ucontext);
   }
   return nullptr;
 }

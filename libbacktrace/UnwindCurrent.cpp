@@ -133,6 +133,7 @@ bool UnwindCurrent::UnwindFromContext(size_t num_ignore_frames, ucontext_t* ucon
           backtrace_frame_data_t* prev = &frames_.at(num_frames-1);
           prev->stack_size = frame->sp - prev->sp;
         }
+        frame->rel_pc = BacktraceMap::GetRelativePc(frame->map, frame->pc);
         num_frames++;
       } else {
         num_ignore_frames--;
