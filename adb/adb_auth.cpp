@@ -16,8 +16,9 @@
 
 #define TRACE_TAG ADB
 
-#include "sysdeps.h"
+#include "adb.h"
 #include "adb_auth.h"
+#include "transport.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -25,28 +26,22 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "adb.h"
-#include "transport.h"
-
 bool auth_required = true;
 
 void send_auth_request(atransport *t)
 {
     D("Calling send_auth_request");
-    apacket *p;
-    int ret;
 
-    ret = adb_auth_generate_token(t->token, sizeof(t->token));
-    if (ret != sizeof(t->token)) {
-        D("Error generating token ret=%d", ret);
+    if (!adb_auth_generate_token(t->token, sizeof(t->token))) {
+        LOG(ERROR) << "Error generating token";
         return;
     }
 
-    p = get_apacket();
-    memcpy(p->data, t->token, ret);
+    apacket* p = get_apacket();
+    memcpy(p->data, t->token, sizeof(t->token));
     p->msg.command = A_AUTH;
     p->msg.arg0 = ADB_AUTH_TOKEN;
-    p->msg.data_length = ret;
+    p->msg.data_length = sizeof(t->token);
     send_packet(p, t);
 }
 
