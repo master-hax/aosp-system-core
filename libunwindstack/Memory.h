@@ -103,6 +103,9 @@ class MemoryRemote : public Memory {
 
   pid_t pid() { return pid_; }
 
+ protected:
+  virtual bool PtraceRead(uint64_t addr, long* value);
+
  private:
   pid_t pid_;
 };

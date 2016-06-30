@@ -121,11 +121,34 @@ TEST_F(MemoryRemoteTest, read_fail) {
   ASSERT_TRUE(remote.Read(reinterpret_cast<uint64_t>(src) + pagesize - 1, dst.data(), 1));
   ASSERT_FALSE(remote.Read(reinterpret_cast<uint64_t>(src) + pagesize - 4, dst.data(), 8));
 
+  // Check overflow condition is caught properly.
+  ASSERT_FALSE(remote.Read(UINT64_MAX - 100, dst.data(), 200));
+
   ASSERT_EQ(0, munmap(src, pagesize));
 
   ASSERT_TRUE(Detach(pid));
 
   kill(pid, SIGKILL);
+}
+
+class MemoryRemoteFake : public MemoryRemote {
+ public:
+  MemoryRemoteFake() : MemoryRemote(0) {}
+  virtual ~MemoryRemoteFake() = default;
+
+ protected:
+  bool PtraceRead(uint64_t, long* value) override {
+    *value = 0;
+    return true;
+  }
+};
+
+TEST_F(MemoryRemoteTest, read_overflow) {
+  MemoryRemoteFake remote;
+
+  // Check overflow condition is caught properly.
+  std::vector<uint8_t> dst(200);
+  ASSERT_FALSE(remote.Read(UINT64_MAX - 100, dst.data(), 200));
 }
 
 TEST_F(MemoryRemoteTest, read_illegal) {

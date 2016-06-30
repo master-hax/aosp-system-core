@@ -98,8 +98,8 @@ bool ElfInterfaceArm::HandleType(uint64_t offset, uint32_t type) {
 }
 
 bool ElfInterfaceArm::Step(uint64_t pc, Regs* regs, Memory* process_memory) {
-  return StepExidx(pc, regs, process_memory) ||
-      ElfInterface32::Step(pc, regs, process_memory);
+  // Always do the dwarf step first.
+  return ElfInterface32::Step(pc, regs, process_memory) || StepExidx(pc, regs, process_memory);
 }
 
 bool ElfInterfaceArm::StepExidx(uint64_t pc, Regs* regs, Memory* process_memory) {
