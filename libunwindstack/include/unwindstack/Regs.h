@@ -21,9 +21,13 @@
 
 #include <vector>
 
+namespace unwindstack {
+
 // Forward declarations.
 class Elf;
 struct MapInfo;
+class Memory;
+struct x86_ucontext_t;
 
 class Regs {
  public:
@@ -50,9 +54,9 @@ class Regs {
 
   virtual bool GetReturnAddressFromDefault(Memory* memory, uint64_t* value) = 0;
 
-  virtual uint64_t GetRelPc(Elf* elf, const MapInfo* map_info) = 0;
-
   virtual uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) = 0;
+
+  virtual bool StepIfSignalHandler(Memory*) { return false; }
 
   virtual void SetFromRaw() = 0;
 
@@ -76,8 +80,6 @@ class RegsImpl : public Regs {
   RegsImpl(uint16_t total_regs, uint16_t sp_reg, Location return_loc)
       : Regs(total_regs, sp_reg, return_loc), regs_(total_regs) {}
   virtual ~RegsImpl() = default;
-
-  uint64_t GetRelPc(Elf* elf, const MapInfo* map_info) override;
 
   bool GetReturnAddressFromDefault(Memory* memory, uint64_t* value) override;
 
@@ -105,6 +107,8 @@ class RegsArm : public RegsImpl<uint32_t> {
   uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) override;
 
   void SetFromRaw() override;
+
+  bool StepIfSignalHandler(Memory* memory) override;
 };
 
 class RegsArm64 : public RegsImpl<uint64_t> {
@@ -115,6 +119,8 @@ class RegsArm64 : public RegsImpl<uint64_t> {
   uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) override;
 
   void SetFromRaw() override;
+
+  bool StepIfSignalHandler(Memory* memory) override;
 };
 
 class RegsX86 : public RegsImpl<uint32_t> {
@@ -125,6 +131,10 @@ class RegsX86 : public RegsImpl<uint32_t> {
   uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) override;
 
   void SetFromRaw() override;
+
+  bool StepIfSignalHandler(Memory* memory) override;
+
+  void SetFromUcontext(x86_ucontext_t* ucontext);
 };
 
 class RegsX86_64 : public RegsImpl<uint64_t> {
@@ -136,5 +146,7 @@ class RegsX86_64 : public RegsImpl<uint64_t> {
 
   void SetFromRaw() override;
 };
+
+}  // namespace unwindstack
 
 #endif  // _LIBUNWINDSTACK_REGS_H

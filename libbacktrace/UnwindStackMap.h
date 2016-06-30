@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef _LIBUNWINDSTACK_ERROR_H
-#define _LIBUNWINDSTACK_ERROR_H
+#ifndef _LIBBACKTRACE_UNWINDSTACK_MAP_H
+#define _LIBBACKTRACE_UNWINDSTACK_MAP_H
 
-#include <stdlib.h>
+#include <stdint.h>
+#include <sys/types.h>
 
-#include <unwindstack/Log.h>
+#include <backtrace/BacktraceMap.h>
+#include <unwindstack/Maps.h>
 
-namespace unwindstack {
+class UnwindStackMap : public BacktraceMap {
+ public:
+  explicit UnwindStackMap(pid_t pid);
+  ~UnwindStackMap() = default;
 
-#define CHECK(assertion)                                   \
-  if (__builtin_expect(!(assertion), false)) {             \
-    log(0, "%s:%d: %s\n", __FILE__, __LINE__, #assertion); \
-    abort();                                               \
-  }
+  bool Build() override;
 
-}  // namespace unwindstack
+  void FillIn(uintptr_t addr, backtrace_map_t* map) override;
 
-#endif  // _LIBUNWINDSTACK_ERROR_H
+  unwindstack::Maps* stack_maps() { return stack_maps_.get(); }
+
+ protected:
+  std::unique_ptr<unwindstack::Maps> stack_maps_;
+};
+
+#endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H
