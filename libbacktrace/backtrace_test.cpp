@@ -784,6 +784,7 @@ TEST(libbacktrace, format_test) {
   backtrace_frame_data_t frame;
   frame.num = 1;
   frame.pc = 2;
+  frame.rel_pc = 2;
   frame.sp = 0;
   frame.stack_size = 0;
   frame.func_offset = 0;
@@ -799,6 +800,7 @@ TEST(libbacktrace, format_test) {
 
   // Check map name empty, but exists.
   frame.pc = 0xb0020;
+  frame.rel_pc = 0x00020;
   frame.map.start = 0xb0000;
   frame.map.end = 0xbffff;
   frame.map.load_base = 0;
@@ -811,6 +813,7 @@ TEST(libbacktrace, format_test) {
 
   // Check map name begins with a [.
   frame.pc = 0xc0020;
+  frame.rel_pc = 0x00020;
   frame.map.start = 0xc0000;
   frame.map.end = 0xcffff;
   frame.map.load_base = 0;
@@ -824,6 +827,7 @@ TEST(libbacktrace, format_test) {
 
   // Check relative pc is set and map name is set.
   frame.pc = 0x12345679;
+  frame.rel_pc = 0x12345678;
   frame.map.name = "MapFake";
   frame.map.start =  1;
   frame.map.end =  1;
@@ -853,6 +857,7 @@ TEST(libbacktrace, format_test) {
             backtrace->FormatFrameData(&frame));
 
   // Check func_name is set, func offset is non-zero, and load_base is non-zero.
+  frame.rel_pc = 0x123456dc;
   frame.func_offset = 645;
   frame.map.load_base = 100;
 #if defined(__LP64__)

@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef _LIBUNWINDSTACK_ERROR_H
-#define _LIBUNWINDSTACK_ERROR_H
+#ifndef _LIBUNWINDSTACK_ELF_INTERFACE_X86_64_H
+#define _LIBUNWINDSTACK_ELF_INTERFACE_X86_64_H
 
-#include <stdlib.h>
+#include <stdint.h>
 
-#include <unwindstack/Log.h>
+#include <unwindstack/ElfInterface.h>
+
+// Forward declarations.
+class Memory;
 
 namespace unwindstack {
 
-#define CHECK(assertion)                                   \
-  if (__builtin_expect(!(assertion), false)) {             \
-    log(0, "%s:%d: %s\n", __FILE__, __LINE__, #assertion); \
-    abort();                                               \
-  }
+class ElfInterfaceX86_64 : public ElfInterface64 {
+ public:
+  ElfInterfaceX86_64(Memory* memory) : ElfInterface64(memory) {}
+  virtual ~ElfInterfaceX86_64() = default;
+
+  bool Step(uint64_t pc, Regs* regs, Memory* process_memory) override;
+};
 
 }  // namespace unwindstack
 
-#endif  // _LIBUNWINDSTACK_ERROR_H
+#endif  // _LIBUNWINDSTACK_ELF_INTERFACE_X86_64_H

@@ -44,6 +44,7 @@ cc_defaults {
 cc_library {
     name: "libunwindstack",
     defaults: ["libunwindstack_flags"],
+    export_include_dirs: ["include"],
 
     srcs: [
         "ArmExidx.cpp",
@@ -56,6 +57,7 @@ cc_library {
         "Elf.cpp",
         "ElfInterface.cpp",
         "ElfInterfaceArm.cpp",
+        "ElfInterfaceX86_64.cpp",
         "Log.cpp",
         "MapInfo.cpp",
         "Maps.cpp",
