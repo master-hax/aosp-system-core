@@ -19,11 +19,14 @@
 
 #include <sys/types.h>
 
+#include <deque>
 #include <list>
 #include <string>
 #include <unordered_set>
 
 #include "adb.h"
+
+#include <openssl/rsa.h>
 
 typedef std::unordered_set<std::string> FeatureSet;
 
@@ -104,7 +107,7 @@ public:
         return type == kTransportLocal && local_port_for_emulator_ == -1;
     }
 
-    void* key = nullptr;
+    std::deque<RSA*> keys;
     unsigned char token[TOKEN_SIZE] = {};
     size_t failed_auth_attempts = 0;
 
