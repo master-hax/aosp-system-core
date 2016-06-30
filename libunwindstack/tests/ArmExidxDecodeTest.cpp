@@ -24,6 +24,7 @@
 #include <gtest/gtest.h>
 
 #include "ArmExidx.h"
+#include "Regs.h"
 #include "Log.h"
 
 #include "LogFake.h"
@@ -38,12 +39,14 @@ class ArmExidxDecodeTest : public ::testing::TestWithParam<std::string> {
       process_memory = &process_memory_;
     }
 
-    regs32_.reset(new Regs32(0, 1, 32));
-    for (size_t i = 0; i < 32; i++) {
-      (*regs32_)[i] = 0;
+    regs_arm_.reset(new RegsArm());
+    for (size_t i = 0; i < regs_arm_->total_regs(); i++) {
+      (*regs_arm_)[i] = 0;
     }
+    regs_arm_->set_pc(0);
+    regs_arm_->set_sp(0);
 
-    exidx_.reset(new ArmExidx(regs32_.get(), &elf_memory_, process_memory));
+    exidx_.reset(new ArmExidx(regs_arm_.get(), &elf_memory_, process_memory));
     if (log_) {
       exidx_->set_log(true);
       exidx_->set_log_indent(0);
@@ -66,7 +69,7 @@ class ArmExidxDecodeTest : public ::testing::TestWithParam<std::string> {
   }
 
   std::unique_ptr<ArmExidx> exidx_;
-  std::unique_ptr<Regs32> regs32_;
+  std::unique_ptr<RegsArm> regs_arm_;
   std::deque<uint8_t>* data_;
 
   MemoryFake elf_memory_;
@@ -231,7 +234,7 @@ TEST_P(ArmExidxDecodeTest, set_vsp_from_register) {
   // 1001nnnn: Set vsp = r[nnnn] (nnnn != 13, 15)
   exidx_->set_cfa(0x100);
   for (size_t i = 0; i < 15; i++) {
-    (*regs32_)[i] = i + 1;
+    (*regs_arm_)[i] = i + 1;
   }
 
   data_->push_back(0x90);
