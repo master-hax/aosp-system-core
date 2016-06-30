@@ -91,6 +91,12 @@ bool MemoryFileAtOffset::Read(uint64_t addr, void* dst, size_t size) {
 }
 
 static bool PtraceRead(pid_t pid, uint64_t addr, long* value) {
+#if !defined(__LP64__)
+  // Cannot read an address greater than 32 bits.
+  if (addr > UINT32_MAX) {
+    return false;
+  }
+#endif
   // ptrace() returns -1 and sets errno when the operation fails.
   // To disambiguate -1 from a valid result, we clear errno beforehand.
   errno = 0;
