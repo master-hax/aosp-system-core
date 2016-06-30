@@ -97,3 +97,10 @@ TEST_F(MemoryRangeTest, read_string_fencepost) {
   std::string dst_name;
   ASSERT_FALSE(range.ReadString(0, &dst_name));
 }
+
+TEST_F(MemoryRangeTest, read_overflow) {
+  std::vector<uint8_t> buffer(100);
+
+  std::unique_ptr<MemoryRange> overflow(new MemoryRange(new MemoryFakeAlwaysReadZero, 100, 200));
+  ASSERT_FALSE(overflow->Read(UINT64_MAX - 10, buffer.data(), 100));
+}
