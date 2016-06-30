@@ -66,6 +66,26 @@ static void dump_thread(log_t* log, BacktraceMap* map, pid_t pid, pid_t tid,
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid, map));
   if (backtrace->Unwind(0)) {
+    std::unique_ptr<BacktraceMap> map_new(BacktraceMap::CreateNew(pid));
+    std::unique_ptr<Backtrace> backtrace_new(Backtrace::CreateNew(pid, tid, map_new.get()));
+    if (backtrace_new->Unwind(0)) {
+      std::string backtrace_str;
+      for (size_t i = 0; i < backtrace->NumFrames(); i++) {
+        backtrace_str += backtrace->FormatFrameData(i);
+      }
+      std::string backtrace_new_str;
+      for (size_t i = 0; i < backtrace_new->NumFrames(); i++) {
+        backtrace_new_str += backtrace_new->FormatFrameData(i);
+      }
+      if (backtrace_str != backtrace_new_str) {
+        ALOGE("Mismatch between new backtrace and old backtrace.");
+      } else {
+        ALOGE("New backtrace and old backtrace are exactly the same.");
+      }
+    } else {
+      ALOGE("Unwind new failed: %s",
+            backtrace_new->GetErrorString(backtrace_new->GetError()).c_str());
+    }
     dump_backtrace_to_log(backtrace.get(), log, "  ");
   } else {
     ALOGE("Unwind failed: tid = %d: %s", tid,
@@ -107,6 +127,26 @@ void dump_backtrace_ucontext(int output_fd, ucontext_t* ucontext) {
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid));
   if (backtrace->Unwind(0, ucontext)) {
+    std::unique_ptr<BacktraceMap> map_new(BacktraceMap::CreateNew(pid));
+    std::unique_ptr<Backtrace> backtrace_new(Backtrace::CreateNew(pid, tid, map_new.get()));
+    if (backtrace_new->Unwind(0)) {
+      std::string backtrace_str;
+      for (size_t i = 0; i < backtrace->NumFrames(); i++) {
+        backtrace_str += backtrace->FormatFrameData(i);
+      }
+      std::string backtrace_new_str;
+      for (size_t i = 0; i < backtrace_new->NumFrames(); i++) {
+        backtrace_new_str += backtrace_new->FormatFrameData(i);
+      }
+      if (backtrace_str != backtrace_new_str) {
+        ALOGE("Mismatch between new backtrace and old backtrace.");
+      } else {
+        ALOGE("New backtrace and old backtrace are exactly the same.");
+      }
+    } else {
+      ALOGE("Unwind new failed: %s",
+            backtrace_new->GetErrorString(backtrace_new->GetError()).c_str());
+    }
     dump_backtrace_to_log(backtrace.get(), &log, "  ");
   } else {
     ALOGE("Unwind failed: tid = %d: %s", tid,
