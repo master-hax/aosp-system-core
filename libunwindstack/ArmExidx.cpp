@@ -25,6 +25,8 @@
 #include "ArmExidx.h"
 #include "Log.h"
 #include "Machine.h"
+#include "Memory.h"
+#include "Regs.h"
 
 void ArmExidx::LogRawData() {
   std::string log_str("Raw Data:");

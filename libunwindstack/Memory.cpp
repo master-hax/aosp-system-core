@@ -55,7 +55,7 @@ MemoryFileAtOffset::~MemoryFileAtOffset() {
   }
 }
 
-bool MemoryFileAtOffset::Init(const std::string& file, uint64_t offset) {
+bool MemoryFileAtOffset::Init(const std::string& file, uint64_t offset, uint64_t size) {
   android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(file.c_str(), O_RDONLY | O_CLOEXEC)));
   if (fd == -1) {
     return false;
@@ -71,6 +71,10 @@ bool MemoryFileAtOffset::Init(const std::string& file, uint64_t offset) {
   offset_ = offset & (getpagesize() - 1);
   uint64_t aligned_offset = offset & ~(getpagesize() - 1);
   size_ = buf.st_size - aligned_offset;
+  if (size < (UINT64_MAX - offset_) && size + offset_ < size_) {
+    // Truncate the mapped size.
+    size_ = size + offset_;
+  }
   void* map = mmap(nullptr, size_, PROT_READ, MAP_PRIVATE, fd, aligned_offset);
   if (map == MAP_FAILED) {
     return false;
@@ -91,6 +95,12 @@ bool MemoryFileAtOffset::Read(uint64_t addr, void* dst, size_t size) {
 }
 
 static bool PtraceRead(pid_t pid, uint64_t addr, long* value) {
+#if !defined(__LP64__)
+  // Cannot read an address greater than 32 bits.
+  if (addr > UINT32_MAX) {
+    return false;
+  }
+#endif
   // ptrace() returns -1 and sets errno when the operation fails.
   // To disambiguate -1 from a valid result, we clear errno beforehand.
   errno = 0;
