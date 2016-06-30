@@ -813,6 +813,7 @@ TEST(libbacktrace, format_test) {
 
   // Check map name begins with a [.
   frame.pc = 0xc0020;
+  frame.rel_pc = 0x00020;
   frame.map.start = 0xc0000;
   frame.map.end = 0xcffff;
   frame.map.load_bias = 0;
@@ -1755,9 +1756,10 @@ TEST(libbacktrace, unwind_remote_through_signal_using_action) {
 #define MAX_LEAK_BYTES (32*1024UL)
 
 static void CheckForLeak(pid_t pid, pid_t tid) {
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(pid));
   // Do a few runs to get the PSS stable.
   for (size_t i = 0; i < 100; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = Backtrace::Create(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());
@@ -1768,7 +1770,7 @@ static void CheckForLeak(pid_t pid, pid_t tid) {
 
   // Loop enough that even a small leak should be detectable.
   for (size_t i = 0; i < 4096; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = Backtrace::Create(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());

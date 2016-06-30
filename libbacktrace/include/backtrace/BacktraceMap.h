@@ -57,6 +57,9 @@ public:
 
   static BacktraceMap* Create(pid_t pid, const std::vector<backtrace_map_t>& maps);
 
+  // Temporary to use new unwind method.
+  static BacktraceMap* CreateNew(pid_t pid, bool uncached = false);
+
   virtual ~BacktraceMap();
 
   // Fill in the map data structure for the given address.

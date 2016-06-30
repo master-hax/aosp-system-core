@@ -150,7 +150,8 @@ void UnwindMapLocal::FillIn(uintptr_t addr, backtrace_map_t* map) {
 //-------------------------------------------------------------------------
 // BacktraceMap create function.
 //-------------------------------------------------------------------------
-BacktraceMap* BacktraceMap::Create(pid_t pid, bool uncached) {
+// TEMPORARY rename to CreateNew
+BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached) {
   BacktraceMap* map;
 
   if (uncached) {

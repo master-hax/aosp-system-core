@@ -123,7 +123,8 @@ void Backtrace::FillInMap(uintptr_t pc, backtrace_map_t* map) {
   }
 }
 
-Backtrace* Backtrace::Create(pid_t pid, pid_t tid, BacktraceMap* map) {
+// TEMPORARY rename to CreateNew
+Backtrace* Backtrace::CreateNew(pid_t pid, pid_t tid, BacktraceMap* map) {
   if (pid == BACKTRACE_CURRENT_PROCESS) {
     pid = getpid();
     if (tid == BACKTRACE_CURRENT_THREAD) {
