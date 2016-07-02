@@ -292,6 +292,33 @@ int set_cpuset_policy(int tid, SchedPolicy policy)
 #endif
 }
 
+int set_timerslack_ns(int tid, unsigned long long slack)
+{
+    char slackfile[64];
+    int fd;
+    int ret = 0;
+
+    /* v4.6+ kernels support the /proc/<tid>/timerslack_ns interface */
+    snprintf(slackfile, sizeof(slackfile), "/proc/%d/timerslack_ns", tid);
+    fd = open(slackfile, O_WRONLY);
+    if (fd >= 0) {
+        char valstr[64];
+
+        snprintf(valstr, sizeof(valstr), "%llu", slack);
+        if (write(fd, valstr, strlen(valstr)) < 0)
+            ret = -1;
+        if (close(fd) < 0)
+            ret = -1;
+    } else
+        ret = -1;
+
+    /* if the above fails, try the old common.git PR_SET_TIMERSLACK_PID */
+    if (ret == -1)
+        prctl(PR_SET_TIMERSLACK_PID, slack, tid);
+
+    return ret;
+}
+
 int set_sched_policy(int tid, SchedPolicy policy)
 {
     if (tid == 0) {
@@ -372,8 +399,8 @@ int set_sched_policy(int tid, SchedPolicy policy)
                            &param);
     }
 
-    prctl(PR_SET_TIMERSLACK_PID,
-          policy == SP_BACKGROUND ? TIMER_SLACK_BG : TIMER_SLACK_FG, tid);
+    set_timerslack_ns(tid, policy == SP_BACKGROUND ?
+                               TIMER_SLACK_BG : TIMER_SLACK_FG);
 
     return 0;
 }
