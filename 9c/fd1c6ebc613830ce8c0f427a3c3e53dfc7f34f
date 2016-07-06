@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Todd Kjos <tkjos@google.com>
+Autosubmit+1: Mark Salyzyn <salyzyn@google.com>
+Code-Review+1: Mark Salyzyn <salyzyn@google.com>
+Verified+1: Mark Salyzyn <salyzyn@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 06 Jul 2016 20:18:00 +0000
+Reviewed-on: https://android-review.googlesource.com/245877
+Project: platform/system/core
+Branch: refs/heads/master
