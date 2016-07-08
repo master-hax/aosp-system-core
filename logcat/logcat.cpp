@@ -1,39 +1,14 @@
 // Copyright 2006-2015 The Android Open Source Project
 
-#include <arpa/inet.h>
-#include <assert.h>
-#include <ctype.h>
 #include <dirent.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <math.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/cdefs.h>
 #include <sys/resource.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <time.h>
-#include <unistd.h>
-
-#include <memory>
-#include <string>
 
 #include <android-base/file.h>
 #include <android-base/strings.h>
 #include <cutils/sched_policy.h>
-#include <cutils/sockets.h>
-#include <log/event_tag_map.h>
-#include <log/log.h>
-#include <log/log_read.h>
-#include <log/logd.h>
-#include <log/logger.h>
 #include <log/logprint.h>
 #include <system/thread_defs.h>
 
