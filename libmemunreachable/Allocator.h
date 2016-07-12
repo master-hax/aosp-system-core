@@ -109,13 +109,13 @@ public:
   }
 
   // Construct an STLAllocator on top of a Heap
-  STLAllocator(const Heap& heap) :
+  explicit STLAllocator(const Heap& heap) :
       heap_(heap) {
   }
 
   // Rebind an STLAllocator from an another STLAllocator
   template<typename U>
-  STLAllocator(const STLAllocator<U>& other) :
+  explicit STLAllocator(const STLAllocator<U>& other) :
       heap_(other.heap_) {
   }
 
@@ -155,12 +155,12 @@ class Allocator : public STLAllocator<T> {
  public:
   ~Allocator() {}
 
-  Allocator(const Heap& other) :
+  explicit Allocator(const Heap& other) :
       STLAllocator<T>(other) {
   }
 
   template<typename U>
-  Allocator(const STLAllocator<U>& other) :
+  explicit Allocator(const STLAllocator<U>& other) :
       STLAllocator<T>(other) {
   }
 

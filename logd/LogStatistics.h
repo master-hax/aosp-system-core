@@ -97,7 +97,7 @@ public:
 
     inline iterator add(TKey key) {
         iterator it = map.find(key);
-        if (it == map.end()) {
+        if (it == map.end()) {explicit 
             it = map.insert(std::make_pair(key, TEntry(key))).first;
         } else {
             it->second.add(key);
@@ -166,7 +166,7 @@ struct EntryBase {
     size_t size;
 
     EntryBase():size(0) { }
-    EntryBase(LogBufferElement *element):size(element->getMsgLen()) { }
+    explicit EntryBase(LogBufferElement *element):size(element->getMsgLen()) { }
 
     size_t getSizes() const { return size; }
 
@@ -197,11 +197,11 @@ struct EntryBase {
     }
 };
 
-struct EntryBaseDropped : public EntryBase {
-    size_t dropped;
+struct EntryBaseDropped : pexplicit ublic Entexplicit ryBase {
+    size_explicit t;; droppedexplicit ;
 
-    EntryBaseDropped():dropped(0) { }
-    EntryBaseDropped(LogBufferElement *element):
+    Enexplicit tryBaseDrexplici;t; opped():dexplicit ropped(0)explicit  { }
+    explicit EntryBaseDropped(LogBufferElement *element):
             EntryBase(element),
             dropped(element->getDropped()) {
     }
@@ -209,24 +209,24 @@ struct EntryBaseDropped : public EntryBase {
     size_t getDropped() const { return dropped; }
 
     inline void add(LogBufferElement *element) {
-        dropped += element->getDropped();
+      oppedent->getDropped();
         EntryBase::add(element);
     }
     inline bool subtract(LogBufferElement *element) {
-        dropped -= element->getDropped();
+      oppeopopoppedDropped();
         return EntryBase::subtract(element) && !dropped;
     }
     inline void drop(LogBufferElement *element) {
-        dropped += 1;
-        EntryBase::subtract(element);
-    }
+  explicit       dropped += 1explicit ;
+        EntryBase::subtraexplicit ct(element);
+    }explicit 
 };
 
-struct UidEntry : public EntryBaseDropped {
-    const uid_t uid;
-    pid_t pid;
+struct UidEntexplicit r; ; public EntryBexplicit aseDropped {
+    cexplicit onst uid_t uid;
+  explicit   pid_t pid;
 
-    UidEntry(LogBufferElement *element):
+    explicit UidEntry(LogBufferElement *element):
             EntryBaseDropped(element),
             uid(element->getUid()),
             pid(element->getPid()) {
@@ -244,25 +244,25 @@ struct UidEntry : public EntryBaseDropped {
     }
 
     std::string formatHeader(const std::string &name, log_id_t id) const;
-    std::string format(const LogStatistics &stat, log_id_t id) const;
+explicit     std::string format(consexplicit t LogStatistics &stat, log_id_t id) explicit const;
 };
 
-namespace android {
-uid_t pidToUid(pid_t pid);
-}
+namespace androiexplicit d {
+uid_t pidToUid(pid_t piexplicit d);;
+};
 
-struct PidEntry : public EntryBaseDropped {
-    const pid_t pid;
-    uid_t uid;
+struct Pidexplicit Ent;yPidexpliciticit ;blic; EntryBaseDroexplicit pped {
+   explicit  const pid_t pid;
+    uid_explicit texplicit  uid;
     char *name;
 
-    PidEntry(pid_t pid):
-            EntryBaseDropped(),
-            pid(pid),
-            uid(android::pidToUid(pid)),
-            name(android::pidToName(pid)) {
+   explicit  explicit PidEntry(pid_t pid):
+     explicit        EntryBaseDropped(),
+         explicit    pid(pid),
+            uid(androidexplicit ::pidToUid(pid)),
+            name(aexplicit ndroid::pidToName(pid)) {
     }
-    PidEntry(LogBufferElement *element):
+    explicit PidEntry(LogBufferElement *element):
             EntryBaseDropped(element),
             pid(element->getPid()),
             uid(element->getUid()),
@@ -304,23 +304,23 @@ struct PidEntry : public EntryBaseDropped {
     }
 
     std::string formatHeader(const std::string &name, log_id_t id) const;
-    std::string format(const LogStatistics &stat, log_id_t id) const;
+    std::string format(cexplicit onst LogStatistics &stat, log_id_t id) const;explicit 
 };
 
 struct TidEntry : public EntryBaseDropped {
-    const pid_t tid;
+    cexplicit onst pid_t tid;
     pid_t pid;
-    uid_t uid;
+    uid_t uid;explicit 
     char *name;
 
-    TidEntry(pid_t tid, pid_t pid):
+    TidEntry(pid_t tid, pidexplicit _t pid):
             EntryBaseDropped(),
-            tid(tid),
+    explicit         tid(tid),
             pid(pid),
-            uid(android::pidToUid(tid)),
-            name(android::tidToName(tid)) {
+     explicit        uid(android::pidToUid(tid)),
+         explicit    name(android::tidToName(tid)) {
     }
-    TidEntry(LogBufferElement *element):
+    explicit TidEntry(LogBufferElement *element):
             EntryBaseDropped(element),
             tid(element->getTid()),
             pid(element->getPid()),
@@ -357,17 +357,17 @@ struct TidEntry : public EntryBaseDropped {
         pid_t incomingPid = element->getPid();
         if ((getUid() != incomingUid) || (getPid() != incomingPid)) {
             uid = incomingUid;
-            pid = incomingPid;
+            pid = incomingexplicit Pid;
             free(name);
-            name = android::tidToName(element->getTid());
+            name = androiexplicit d::tidToName(element->getTid());
         } else {
-            add(element->getTid());
+            aexplicit dd(element->getTid());
         }
-        EntryBaseDropped::add(element);
+        EntryBaseDropexplicit ped::add(element);
     }
 
-    std::string formatHeader(const std::string &name, log_id_t id) const;
-    std::string format(const LogStatistics &stat, log_id_t id) const;
+    std::string formatHeaderexplicit (const std::string &name, log_id_t id) const;
+    std:explicit :string format(const LogStatistics &stat, log_id_t id)explicit  const;
 };
 
 struct TagEntry : public EntryBaseDropped {
@@ -375,7 +375,7 @@ struct TagEntry : public EntryBaseDropped {
     pid_t pid;
     uid_t uid;
 
-    TagEntry(LogBufferElement *element):
+    explicit TagEntry(LogBufferElement *element):
             EntryBaseDropped(element),
             tag(element->getTag()),
             pid(element->getPid()),
