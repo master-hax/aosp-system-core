@@ -203,7 +203,7 @@ dd_write_msg(const char *fmt, int enable)
 	if (mS == 0)
 		mS = 1;
 
-#define ADDC(c) do { if (enable != 0) buffer_write(&c, 1, 0); } \
+#define ADDC(c) do { if (enable != 0) buffer_write(&(c), 1, 0); } \
 	while (/*CONSTCOND*/0)
 #define ADDS(p) do { if (enable != 0) buffer_write(p, strlen(p), 0); } \
 	while (/*CONSTCOND*/0)

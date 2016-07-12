@@ -51,10 +51,10 @@ class sp
 public:
     inline sp() : m_ptr(0) { }
 
-    sp(T* other);
+    explicit sp(T* other);
     sp(const sp<T>& other);
-    template<typename U> sp(U* other);
-    template<typename U> sp(const sp<U>& other);
+    template<typename U> explicit sp(U* other);
+    template<typename U> explicit sp(const sp<U>& other);
 
     ~sp();
     
