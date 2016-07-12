@@ -42,7 +42,7 @@ template  <typename T>
 class AssemblyKey : public AssemblyKeyBase
 {
 public:
-    AssemblyKey(const T& rhs) : mKey(rhs) { }
+    explicit AssemblyKey(const T& rhs) : mKey(rhs) { }
     virtual int compare_type(const AssemblyKeyBase& key) const {
         const T& rhs = static_cast<const AssemblyKey&>(key).mKey;
         return android::compare_type(mKey, rhs);
@@ -56,7 +56,7 @@ private:
 class Assembly
 {
 public:
-                Assembly(size_t size);
+                explicit Assembly(size_t size);
     virtual     ~Assembly();
 
     ssize_t     size() const;
@@ -80,7 +80,7 @@ class CodeCache
 {
 public:
 // pretty simple cache API...
-                CodeCache(size_t size);
+                explicit CodeCache(size_t size);
                 ~CodeCache();
     
             sp<Assembly>        lookup(const AssemblyKeyBase& key) const;
@@ -105,7 +105,7 @@ private:
         const AssemblyKeyBase* mKey;
     public:
         key_t() { };
-        key_t(const AssemblyKeyBase& k) : mKey(&k)  { }
+        explicit key_t(const AssemblyKeyBase& k) : mKey(&k)  { }
     };
 
     mutable pthread_mutex_t             mLock;
