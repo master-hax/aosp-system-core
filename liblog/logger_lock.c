@@ -21,33 +21,66 @@
 #if !defined(_WIN32)
 #include <pthread.h>
 #endif
+#include <sys/types.h>
 
 #include <private/android_filesystem_config.h>
 
 #include "logger.h"
+
+#if !defined(_WIN32)
+static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
+#endif
 
 LIBLOG_HIDDEN uid_t __android_log_uid()
 {
 #if defined(_WIN32)
     return AID_SYSTEM;
 #else
-    static uid_t last_uid = AID_ROOT; /* logd *always* starts up as AID_ROOT */
+    uid_t uid = last_uid;
 
-    if (last_uid == AID_ROOT) { /* have we called to get the UID yet? */
-        last_uid = getuid();
+    if (uid == AID_ROOT) { /* have we called to get the UID yet? */
+        uid = getuid();
+        last_uid = uid;
     }
-    return last_uid;
+    return uid;
 #endif
 }
 
 LIBLOG_HIDDEN pid_t __android_log_pid()
 {
     static pid_t last_pid = (pid_t) -1;
+#if (FAKE_LOG_DEVICE == 0) /* HOST */
+    static char vforked;
+    static pid_t last_tid;
+#endif
+    pid_t pid = last_pid;
 
-    if (last_pid == (pid_t) -1) {
-        last_pid = getpid();
+    if (pid == (pid_t) -1) {
+        pid = getpid();
+        last_pid = pid;
+#if (FAKE_LOG_DEVICE == 0)
+        last_tid = gettid();
+#endif
     }
-    return last_pid;
+#if (FAKE_LOG_DEVICE == 0)
+    else if (vforked == 0) {
+        pid_t tid = gettid();
+
+        if (last_tid != tid) {
+            pid = getpid();
+            if (pid != last_pid) {
+                last_pid = pid;
+#if !defined(_WIN32)
+                /* Just in case uid cache also in trouble */
+                last_uid = AID_ROOT;
+#endif
+                ++vforked;
+            }
+            last_tid = tid;
+        }
+    }
+#endif
+    return pid;
 }
 
 #if !defined(_WIN32)
