@@ -203,7 +203,7 @@ struct EntryBaseDropped : public EntryBase {
     EntryBaseDropped():dropped(0) { }
     EntryBaseDropped(LogBufferElement *element):
             EntryBase(element),
-            dropped(element->getDropped()){
+            dropped(element->getDropped()) {
     }
 
     size_t getDropped() const { return dropped; }
@@ -370,13 +370,13 @@ struct TidEntry : public EntryBaseDropped {
     std::string format(const LogStatistics &stat, log_id_t id) const;
 };
 
-struct TagEntry : public EntryBase {
+struct TagEntry : public EntryBaseDropped {
     const uint32_t tag;
     pid_t pid;
     uid_t uid;
 
     TagEntry(LogBufferElement *element):
-            EntryBase(element),
+            EntryBaseDropped(element),
             tag(element->getTag()),
             pid(element->getPid()),
             uid(element->getUid()) {
@@ -458,6 +458,10 @@ public:
     std::unique_ptr<const PidEntry *[]> sortPids(uid_t uid, pid_t pid,
                                              size_t len, log_id id) {
         return pidSystemTable[id].sort(uid, pid, len);
+    }
+    std::unique_ptr<const TagEntry *[]> sortTags(uid_t uid, pid_t pid,
+                                             size_t len, log_id) {
+        return tagTable.sort(uid, pid, len);
     }
 
     // fast track current value by id only
