@@ -35,3 +35,5 @@
 
 1003  auditd (avc|3)
 1004  logd (dropped|3)
+#1005 liblog
+1006  chatty (dropped|3)
