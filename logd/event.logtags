@@ -35,3 +35,4 @@
 
 1003  auditd (avc|3)
 1004  logd (dropped|3)
+1006  chatty (dropped|3)
