@@ -28,8 +28,7 @@ LOCAL_SHARED_LIBRARIES := \
     liblog \
     libcutils \
     libbase \
-    libpackagelistparser \
-    libminijail
+    libpackagelistparser
 
 # This is what we want to do:
 #  event_logtags = $(shell \
