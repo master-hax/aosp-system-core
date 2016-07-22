@@ -74,6 +74,7 @@ struct fstab_rec {
     int partnum;
     int swap_prio;
     unsigned int zram_size;
+    uint64_t reserved_size;
 };
 
 // Callback function for verity status
