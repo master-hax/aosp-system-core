@@ -188,6 +188,11 @@ priority <priority>
   Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().
 
+oom_score_adjust <value>
+   Sets the child's /proc/self/oom_score_adj to the specified value,
+   which must range from -1000 to 1000.
+
+
 Triggers
 --------
 Triggers are strings which can be used to match certain kinds of
