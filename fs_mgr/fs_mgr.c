@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/swap.h>
@@ -37,6 +38,7 @@
 #include <cutils/android_reboot.h>
 #include <cutils/partition_utils.h>
 #include <cutils/properties.h>
+#include <linux/fs.h>
 #include <linux/loop.h>
 #include <logwrap/logwrap.h>
 #include <private/android_filesystem_config.h>
@@ -51,8 +53,9 @@
 #define KEY_IN_FOOTER  "footer"
 
 #define E2FSCK_BIN      "/system/bin/e2fsck"
-#define F2FS_FSCK_BIN  "/system/bin/fsck.f2fs"
+#define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
 #define MKSWAP_BIN      "/system/bin/mkswap"
+#define TUNE2FS_BIN     "/system/bin/tune2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
 
@@ -177,6 +180,52 @@ static void check_fs(char *blk_device, char *fs_type, char *target)
     }
 
     return;
+}
+
+static void do_reserved_size(char *blk_device, char *fs_type, struct fstab_rec *rec)
+{
+    /* Check for the types of filesystems we know how to check */
+    if (!strcmp(fs_type, "ext2") || !strcmp(fs_type, "ext3") || !strcmp(fs_type, "ext4")) {
+        /*
+         * Some system images do not have tune2fs for licensing reasons
+         * Detect these and skip reserve blocks.
+         */
+        if (access(TUNE2FS_BIN, X_OK)) {
+            INFO("Not running %s on %s (executable not in system image)\n",
+                 TUNE2FS_BIN, blk_device);
+        } else {
+            INFO("Running %s on %s\n", TUNE2FS_BIN, blk_device);
+
+            int status = 0;
+            int ret = 0;
+            uint64_t reserved_blocks = rec->reserved_size / 4096;
+            int fd = TEMP_FAILURE_RETRY(open(blk_device, O_RDONLY | O_CLOEXEC));
+            if (fd >= 0) {
+                uint64_t total_blocks = 0;
+                if (ioctl(fd, BLKGETSIZE, &total_blocks) == 0) {
+                    reserved_blocks = min(reserved_blocks, (0.02 * total_blocks));
+                }
+                close(fd);
+            }
+
+            char buf[16] = {0};
+            snprintf(buf, sizeof (buf), "-r %llu", reserved_blocks);
+            char *tune2fs_argv[] = {
+                TUNE2FS_BIN,
+                buf,
+                blk_device,
+            };
+
+            ret = android_fork_execvp_ext(ARRAY_SIZE(tune2fs_argv), tune2fs_argv,
+                                          &status, true, LOG_KLOG | LOG_FILE,
+                                          true, NULL, NULL, 0);
+
+            if (ret < 0) {
+                /* No need to check for error in fork, we can't really handle it now */
+                ERROR("Failed trying to run %s\n", TUNE2FS_BIN);
+            }
+        }
+    }
 }
 
 static void remove_trailing_slashes(char *n)
@@ -333,6 +382,12 @@ static int mount_with_alternatives(struct fstab *fstab, int start_idx, int *end_
                 check_fs(fstab->recs[i].blk_device, fstab->recs[i].fs_type,
                          fstab->recs[i].mount_point);
             }
+
+            if (fstab->recs[i].fs_mgr_flags & MF_RESERVEDSIZE) {
+                do_reserved_size(fstab->recs[i].blk_device, fstab->recs[i].fs_type,
+                                 &fstab->recs[i]);
+            }
+
             if (!__mount(fstab->recs[i].blk_device, fstab->recs[i].mount_point, &fstab->recs[i])) {
                 *attempted_idx = i;
                 mounted = 1;
@@ -703,6 +758,10 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
         if (fstab->recs[i].fs_mgr_flags & MF_CHECK) {
             check_fs(n_blk_device, fstab->recs[i].fs_type,
                      fstab->recs[i].mount_point);
+        }
+
+        if (fstab->recs[i].fs_mgr_flags & MF_RESERVEDSIZE) {
+            do_reserved_size(n_blk_device, fstab->recs[i].fs_type, &fstab->recs[i]);
         }
 
         if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
