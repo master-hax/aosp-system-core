@@ -222,10 +222,14 @@ public:
     
     inline wp() : m_ptr(0) { }
 
-    wp(T* other);
+    // Converting constructors from raw pointers were at implicit until mid-2016.
+    // This was potentially dangerous. The creation and subsequent destruction of
+    // a weak pointer may cause the underlying object to be implicitly destroyed, and
+    // thus should not itself be an implicit operation.
+    explicit wp(T* other);
     wp(const wp<T>& other);
     wp(const sp<T>& other);
-    template<typename U> wp(U* other);
+    template<typename U> explicit wp(U* other);
     template<typename U> wp(const sp<U>& other);
     template<typename U> wp(const wp<U>& other);
 

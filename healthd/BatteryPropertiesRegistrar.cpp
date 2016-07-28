@@ -66,7 +66,7 @@ void BatteryPropertiesRegistrar::unregisterListener(const sp<IBatteryPropertiesL
     Mutex::Autolock _l(mRegistrationLock);
     for (size_t i = 0; i < mListeners.size(); i++) {
         if (IInterface::asBinder(mListeners[i]) == IInterface::asBinder(listener)) {
-            IInterface::asBinder(mListeners[i])->unlinkToDeath(this);
+            IInterface::asBinder(mListeners[i])->unlinkToDeath(wp<IBinder::DeathRecipient>(this));
             mListeners.removeAt(i);
             break;
         }
