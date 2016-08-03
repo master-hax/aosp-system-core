@@ -87,7 +87,7 @@ TEST(RefBase, WeakCopies) {
     EXPECT_EQ(1, foo->getWeakRefs()->getWeakCount());
     ASSERT_FALSE(isDeleted) << "deleted too early! still has a reference!";
     wp1 = nullptr;
-    ASSERT_TRUE(isDeleted) << "foo2 was leaked!";
+    ASSERT_FALSE(isDeleted) << "Deletion on wp destruction should no longer occur";
 }
 
 
