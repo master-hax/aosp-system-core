@@ -663,7 +663,7 @@ int LogKlog::log(const char *buf, size_t len) {
                         p = cp + 1;
                     }
                 }
-            } else if (isspace(cp[size])) {
+            } else if ((taglen > size) && isspace(cp[size])) {
                 cp += size;
                 taglen -= size;
                 while (--taglen && isspace(*++cp));
@@ -678,7 +678,7 @@ int LogKlog::log(const char *buf, size_t len) {
                 tag = bt;
                 etag = et;
                 p = cp + size + 1;
-            } else if ((cp[size] == '.') || isdigit(cp[size])) {
+            } else if ((taglen > size) && ((cp[size] == '.') || isdigit(cp[size]))) {
                 // <PRI>[<TIME>] <tag> '<tag>.<num>' : message
                 // <PRI>[<TIME>] <tag> '<tag><num>' : message
                 const char *b = cp;
