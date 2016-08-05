@@ -605,57 +605,117 @@ int LogKlog::log(const char *buf, size_t len) {
     const char *tag = "";
     const char *etag = tag;
     size_t taglen = len - (p - buf);
-    if (!isspace(*p) && *p) {
+    if (!isspace(*p) && *p) { // validate buffer has remaining content
         const char *bt, *et, *cp;
 
         bt = p;
-        if ((taglen >= 6) && !fast<strncmp>(p, "[INFO]", 6)) {
-            // <PRI>[<TIME>] "[INFO]"<tag> ":" message
-            bt = p + 6;
-            taglen -= 6;
+        {
+            static const char info[] = "[INFO]";
+            static const size_t infoLen = strlen(info);
+            if ((taglen >= infoLen) && !fast<strncmp>(p, info, infoLen)) {
+                // <PRI>[<TIME>] "[INFO]"<tag> ":" message
+                bt = p + infoLen;
+                taglen -= infoLen;
+            }
         }
-        for(et = bt; taglen && *et && (*et != ':') && !isspace(*et); ++et, --taglen) {
+
+        for (et = bt; taglen && *et && (*et != ':') && !isspace(*et); ++et, --taglen) {
            // skip ':' within [ ... ]
            if (*et == '[') {
                while (taglen && *et && *et != ']') {
                    ++et;
                    --taglen;
                }
-            }
+               if (!taglen) {
+                   break;
+               }
+           }
         }
-        for(cp = et; taglen && isspace(*cp); ++cp, --taglen);
-        size_t size;
+        for (cp = et; taglen && isspace(*cp); ++cp, --taglen);
 
-        if (*cp == ':') {
-            // One Word
-            tag = bt;
-            etag = et;
-            p = cp + 1;
-        } else if (taglen) {
-            size = et - bt;
-            if ((taglen > size) &&   // enough space for match plus trailing :
-                    (*bt == *cp) &&  // ubber fast<strncmp> pair
-                    fast<strncmp>(bt + 1, cp + 1, size - 1)) {
-                // <PRI>[<TIME>] <tag>_host '<tag>.<num>' : message
-                if (!fast<strncmp>(bt + size - 5, "_host", 5)
-                        && !fast<strncmp>(bt + 1, cp + 1, size - 6)) {
-                    const char *b = cp;
-                    cp += size - 5;
-                    taglen -= size - 5;
-                    if (*cp == '.') {
+        // Validate tag, clean up any tag stutter.
+        if (taglen) {
+            if (*cp == ':') {
+                // One Word
+                tag = bt;
+                etag = et;
+                p = cp + 1;
+            } else {
+                size_t size = et - bt;
+                if ((taglen > size) &&  // enough space to match plus trailing :
+                        size &&
+                        (*bt == *cp) && // ubber fast<strncmp> pair
+                        fast<strncmp>(bt + 1, cp + 1, size - 1)) {
+                    // <PRI>[<TIME>] <tag>_host '<tag>.<num>' : message
+                    static const char host[] = "_host";
+                    static const size_t hostlen = strlen(host);
+                    if ((size > hostlen) &&
+                            !fast<strncmp>(bt + size - hostlen, host, hostlen) &&
+                            !fast<strncmp>(bt + 1, cp + 1, size - hostlen - 1)) {
+                        const char *b = cp;
+                        cp += size - hostlen;
+                        taglen -= size - hostlen;
+                        if (*cp == '.') {
+                            while (--taglen && !isspace(*++cp) && (*cp != ':'));
+                            const char *e;
+                            for (e = cp; taglen && isspace(*cp); ++cp, --taglen);
+                            if (*cp == ':') {
+                                tag = b;
+                                etag = e;
+                                p = cp + 1;
+                            }
+                        }
+                    } else {
                         while (--taglen && !isspace(*++cp) && (*cp != ':'));
                         const char *e;
-                        for(e = cp; taglen && isspace(*cp); ++cp, --taglen);
+                        for (e = cp; taglen && isspace(*cp); ++cp, --taglen);
+                        // Two words
                         if (*cp == ':') {
-                            tag = b;
+                            tag = bt;
                             etag = e;
                             p = cp + 1;
                         }
                     }
-                } else {
+                } else if ((taglen > size) && isspace(cp[size])) {
+                    cp += size;
+                    taglen -= size;
+                    while (--taglen && isspace(*++cp));
+                    // <PRI>[<TIME>] <tag> <tag> : message
+                    if (*cp == ':') {
+                        tag = bt;
+                        etag = et;
+                        p = cp + 1;
+                    }
+                } else if ((taglen > size) && (cp[size] == ':')) {
+                    // <PRI>[<TIME>] <tag> <tag> : message
+                    tag = bt;
+                    etag = et;
+                    p = cp + size + 1;
+                } else if ((taglen > size) &&
+                        ((cp[size] == '.') || isdigit(cp[size]))) {
+                    // <PRI>[<TIME>] <tag> '<tag>.<num>' : message
+                    // <PRI>[<TIME>] <tag> '<tag><num>' : message
+                    const char *b = cp;
+                    cp += size;
+                    taglen -= size;
                     while (--taglen && !isspace(*++cp) && (*cp != ':'));
-                    const char *e;
-                    for(e = cp; taglen && isspace(*cp); ++cp, --taglen);
+                    const char *e = cp;
+                    while (taglen && isspace(*cp)) {
+                        ++cp;
+                        --taglen;
+                    }
+                    if (*cp == ':') {
+                        tag = b;
+                        etag = e;
+                        p = cp + 1;
+                    }
+                } else { // (taglen <= size) || nothing above
+                    while (--taglen && !isspace(*++cp) && (*cp != ':'));
+                    const char *e = cp;
+                    while (taglen && isspace(*cp)) {
+                        ++cp;
+                        --taglen;
+                    }
                     // Two words
                     if (*cp == ':') {
                         tag = bt;
@@ -663,64 +723,28 @@ int LogKlog::log(const char *buf, size_t len) {
                         p = cp + 1;
                     }
                 }
-            } else if (isspace(cp[size])) {
-                cp += size;
-                taglen -= size;
-                while (--taglen && isspace(*++cp));
-                // <PRI>[<TIME>] <tag> <tag> : message
-                if (*cp == ':') {
-                    tag = bt;
-                    etag = et;
-                    p = cp + 1;
-                }
-            } else if (cp[size] == ':') {
-                // <PRI>[<TIME>] <tag> <tag> : message
-                tag = bt;
-                etag = et;
-                p = cp + size + 1;
-            } else if ((cp[size] == '.') || isdigit(cp[size])) {
-                // <PRI>[<TIME>] <tag> '<tag>.<num>' : message
-                // <PRI>[<TIME>] <tag> '<tag><num>' : message
-                const char *b = cp;
-                cp += size;
-                taglen -= size;
-                while (--taglen && !isspace(*++cp) && (*cp != ':'));
-                const char *e = cp;
-                while (taglen && isspace(*cp)) {
-                    ++cp;
-                    --taglen;
-                }
-                if (*cp == ':') {
-                    tag = b;
-                    etag = e;
-                    p = cp + 1;
-                }
-            } else {
-                while (--taglen && !isspace(*++cp) && (*cp != ':'));
-                const char *e = cp;
-                while (taglen && isspace(*cp)) {
-                    ++cp;
-                    --taglen;
-                }
-                // Two words
-                if (*cp == ':') {
-                    tag = bt;
-                    etag = e;
-                    p = cp + 1;
-                }
             }
-        } /* else no tag */
-        size = etag - tag;
+        } // else no tag
+
+        size_t size = etag - tag;
+        static const char cpu[] = "CPU";
+        static const size_t cpuLen = strlen(cpu);
+        static const char warning[] = "WARNING";
+        static const size_t warningLen = strlen(warning);
+        static const char error[] = "ERROR";
+        static const size_t errorLen = strlen(error);
+        static const char info[] = "INFO";
+        static const size_t infoLen = strlen(info);
         if ((size <= 1)
             // register names like x9
                 || ((size == 2) && (isdigit(tag[0]) || isdigit(tag[1])))
             // register names like x18 but not driver names like en0
                 || ((size == 3) && (isdigit(tag[1]) && isdigit(tag[2])))
             // blacklist
-                || ((size == 3) && !fast<strncmp>(tag, "CPU", 3))
-                || ((size == 7) && !fast<strncasecmp>(tag, "WARNING", 7))
-                || ((size == 5) && !fast<strncasecmp>(tag, "ERROR", 5))
-                || ((size == 4) && !fast<strncasecmp>(tag, "INFO", 4))) {
+                || ((size == cpuLen) && !fast<strncmp>(tag, cpu, cpuLen))
+                || ((size == warningLen) && !fast<strncasecmp>(tag, warning, warningLen))
+                || ((size == errorLen) && !fast<strncasecmp>(tag, error, errorLen))
+                || ((size == infoLen) && !fast<strncasecmp>(tag, info, infoLen))) {
             p = start;
             etag = tag = "";
         }
