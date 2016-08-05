@@ -614,17 +614,20 @@ int LogKlog::log(const char *buf, size_t len) {
             bt = p + 6;
             taglen -= 6;
         }
-        for(et = bt; taglen && *et && (*et != ':') && !isspace(*et); ++et, --taglen) {
+
+        for (et = bt; taglen && *et && (*et != ':') && !isspace(*et); ++et, --taglen) {
            // skip ':' within [ ... ]
            if (*et == '[') {
                while (taglen && *et && *et != ']') {
                    ++et;
                    --taglen;
                }
-            }
+               if (!taglen) {
+                   break;
+               }
+           }
         }
-        for(cp = et; taglen && isspace(*cp); ++cp, --taglen);
-        size_t size;
+        for (cp = et; taglen && isspace(*cp); ++cp, --taglen);
 
         if (*cp == ':') {
             // One Word
@@ -632,7 +635,7 @@ int LogKlog::log(const char *buf, size_t len) {
             etag = et;
             p = cp + 1;
         } else if (taglen) {
-            size = et - bt;
+            size_t size = et - bt;
             if ((taglen > size) &&   // enough space for match plus trailing :
                     (*bt == *cp) &&  // ubber fast<strncmp> pair
                     fast<strncmp>(bt + 1, cp + 1, size - 1)) {
@@ -663,7 +666,7 @@ int LogKlog::log(const char *buf, size_t len) {
                         p = cp + 1;
                     }
                 }
-            } else if (isspace(cp[size])) {
+            } else if ((taglen > size) && isspace(cp[size])) {
                 cp += size;
                 taglen -= size;
                 while (--taglen && isspace(*++cp));
@@ -673,12 +676,13 @@ int LogKlog::log(const char *buf, size_t len) {
                     etag = et;
                     p = cp + 1;
                 }
-            } else if (cp[size] == ':') {
+            } else if ((taglen > size) && (cp[size] == ':')) {
                 // <PRI>[<TIME>] <tag> <tag> : message
                 tag = bt;
                 etag = et;
                 p = cp + size + 1;
-            } else if ((cp[size] == '.') || isdigit(cp[size])) {
+            } else if ((taglen > size) &&
+                    ((cp[size] == '.') || isdigit(cp[size]))) {
                 // <PRI>[<TIME>] <tag> '<tag>.<num>' : message
                 // <PRI>[<TIME>] <tag> '<tag><num>' : message
                 const char *b = cp;
@@ -695,7 +699,7 @@ int LogKlog::log(const char *buf, size_t len) {
                     etag = e;
                     p = cp + 1;
                 }
-            } else {
+            } else { // (taglen <= size) || nothing above
                 while (--taglen && !isspace(*++cp) && (*cp != ':'));
                 const char *e = cp;
                 while (taglen && isspace(*cp)) {
@@ -709,8 +713,9 @@ int LogKlog::log(const char *buf, size_t len) {
                     p = cp + 1;
                 }
             }
-        } /* else no tag */
-        size = etag - tag;
+        } // else no tag
+
+        size_t size = etag - tag;
         if ((size <= 1)
             // register names like x9
                 || ((size == 2) && (isdigit(tag[0]) || isdigit(tag[1])))
