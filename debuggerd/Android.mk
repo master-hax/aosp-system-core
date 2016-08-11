@@ -15,26 +15,18 @@ endif
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:= \
-    backtrace.cpp \
     debuggerd.cpp \
-    elf_utils.cpp \
     getevent.cpp \
     signal_sender.cpp \
-    tombstone.cpp \
-    utility.cpp \
-
-LOCAL_SRC_FILES_arm    := arm/machine.cpp
-LOCAL_SRC_FILES_arm64  := arm64/machine.cpp
-LOCAL_SRC_FILES_mips   := mips/machine.cpp
-LOCAL_SRC_FILES_mips64 := mips64/machine.cpp
-LOCAL_SRC_FILES_x86    := x86/machine.cpp
-LOCAL_SRC_FILES_x86_64 := x86_64/machine.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CPPFLAGS := $(common_cppflags)
 
 LOCAL_INIT_RC_32 := debuggerd.rc
 LOCAL_INIT_RC_64 := debuggerd64.rc
+
+LOCAL_STATIC_LIBRARIES := \
+		libdebuggerd
 
 LOCAL_SHARED_LIBRARIES := \
     libbacktrace \
