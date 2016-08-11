@@ -56,4 +56,11 @@ typedef struct {
 
 void debuggerd_init(debuggerd_callbacks_t* callbacks);
 
+// DEBUGGER_ACTION_DUMP_TOMBSTONE and DEBUGGER_ACTION_DUMP_BACKTRACE are both
+// triggered via DEBUGGER_SIGNAL. The debugger_action_t is sent via si_value
+// using sigqueue(2) or equivalent. If no si_value is specified (e.g. if the
+// signal is sent by kill(2)), the default behavior is to print the backtrace
+// to the log.
+#define DEBUGGER_SIGNAL SIGQUIT
+
 __END_DECLS
