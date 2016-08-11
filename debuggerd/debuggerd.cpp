@@ -459,9 +459,8 @@ static bool perform_dump(const debugger_request_t& request, int fd, int tombston
     return false;
   }
 
-  int total_sleep_time_usec = 0;
   while (true) {
-    int signal = wait_for_signal(request.tid, &total_sleep_time_usec);
+    int signal = wait_for_signal(request.tid);
     switch (signal) {
       case -1:
         ALOGE("debuggerd: timed out waiting for signal");
