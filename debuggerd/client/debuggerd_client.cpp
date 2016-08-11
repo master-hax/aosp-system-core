@@ -38,6 +38,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/prctl.h>
+#include <sys/ptrace.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
 #include <sys/un.h>
@@ -45,52 +46,16 @@
 
 #include "private/libc_logging.h"
 
-#if defined(TARGET_IS_64_BIT) && !defined(__LP64__)
-#define SOCKET_NAME "android:debuggerd32"
-#else
-#define SOCKET_NAME "android:debuggerd"
-#endif
-
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)
 
+#if defined(__LP64__)
+#define CRASH_DUMP_PATH "/system/bin/crash_dump64"
+#else
+#define CRASH_DUMP_PATH "/system/bin/crash_dump32"
+#endif
+
 static debuggerd_callbacks_t g_callbacks;
-
-static int socket_abstract_client(const char* name, int type) {
-  sockaddr_un addr;
-
-  // Test with length +1 for the *initial* '\0'.
-  size_t namelen = strlen(name);
-  if ((namelen + 1) > sizeof(addr.sun_path)) {
-    errno = EINVAL;
-    return -1;
-  }
-
-  // This is used for abstract socket namespace, we need
-  // an initial '\0' at the start of the Unix socket path.
-  //
-  // Note: The path in this case is *not* supposed to be
-  // '\0'-terminated. ("man 7 unix" for the gory details.)
-  memset(&addr, 0, sizeof(addr));
-  addr.sun_family = AF_LOCAL;
-  addr.sun_path[0] = 0;
-  memcpy(addr.sun_path + 1, name, namelen);
-
-  socklen_t alen = namelen + offsetof(sockaddr_un, sun_path) + 1;
-
-  int s = socket(AF_LOCAL, type, 0);
-  if (s == -1) {
-    return -1;
-  }
-
-  int rc = TEMP_FAILURE_RETRY(connect(s, reinterpret_cast<sockaddr*>(&addr), alen));
-  if (rc == -1) {
-    close(s);
-    return -1;
-  }
-
-  return s;
-}
 
 /*
  * Writes a summary of the signal to the log file.  We do this so that, if
@@ -185,65 +150,8 @@ static bool have_siginfo(int signum) {
   return result;
 }
 
-static void send_debuggerd_packet() {
-  // Mutex to prevent multiple crashing threads from trying to talk
-  // to debuggerd at the same time.
-  static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
-  int ret = pthread_mutex_trylock(&crash_mutex);
-  if (ret != 0) {
-    if (ret == EBUSY) {
-      __libc_format_log(ANDROID_LOG_INFO, "libc",
-                        "Another thread contacted debuggerd first; not contacting debuggerd.");
-      // This will never complete since the lock is never released.
-      pthread_mutex_lock(&crash_mutex);
-    } else {
-      __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_trylock failed: %s", strerror(ret));
-    }
-    return;
-  }
-
-  int s = socket_abstract_client(SOCKET_NAME, SOCK_STREAM | SOCK_CLOEXEC);
-  if (s == -1) {
-    __libc_format_log(ANDROID_LOG_FATAL, "libc", "Unable to open connection to debuggerd: %s",
-                      strerror(errno));
-    return;
-  }
-
-  // debuggerd knows our pid from the credentials on the
-  // local socket but we need to tell it the tid of the crashing thread.
-  // debuggerd will be paranoid and verify that we sent a tid
-  // that's actually in our process.
-  debugger_msg_t msg;
-  msg.action = DEBUGGER_ACTION_CRASH;
-  msg.tid = gettid();
-  msg.abort_msg_address = 0;
-
-  if (g_callbacks.get_abort_message) {
-    msg.abort_msg_address = reinterpret_cast<uintptr_t>(g_callbacks.get_abort_message());
-  }
-
-  ret = TEMP_FAILURE_RETRY(write(s, &msg, sizeof(msg)));
-  if (ret == sizeof(msg)) {
-    char debuggerd_ack;
-    ret = TEMP_FAILURE_RETRY(read(s, &debuggerd_ack, 1));
-    int saved_errno = errno;
-    if (g_callbacks.post_dump) {
-      g_callbacks.post_dump();
-    }
-    errno = saved_errno;
-  } else {
-    // read or write failed -- broken connection?
-    __libc_format_log(ANDROID_LOG_FATAL, "libc", "Failed while talking to debuggerd: %s",
-                      strerror(errno));
-  }
-
-  close(s);
-}
-
-/*
- * Catches fatal signals so we can ask debuggerd to ptrace us before
- * we crash.
- */
+// Handler that does crash dumping by forking and doing the processing in the child.
+// Do this by ptracing the relevant thread, and then execing debuggerd to do the actual dump.
 static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) {
   // It's possible somebody cleared the SA_SIGINFO flag, which would mean
   // our "info" arg holds an undefined value.
@@ -253,7 +161,50 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
 
   log_signal_summary(signal_number, info);
 
-  send_debuggerd_packet();
+  int tid = gettid();
+
+  // Use a pipe to coordinate the dumping of the process.
+  int pipefds[2];
+  if (pipe2(pipefds, O_CLOEXEC) != 0) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc",
+                      "failed to create pipe in debuggerd_signal_handler: %s", strerror(errno));
+  }
+
+  // Don't use fork(2) to avoid calling pthread_atfork handlers.
+  int forkpid = clone(nullptr, nullptr, SIGCHLD, nullptr);
+  if (forkpid == -1) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to fork in debuggerd_signal_handler: %s",
+                      strerror(errno));
+  } else if (forkpid == 0) {
+    // ptrace our parent, any relevant threads, and then exec debuggerd to dump stacks.
+    close(pipefds[0]);
+    pid_t parent = getppid();
+    if (ptrace(PTRACE_ATTACH, parent) != 0) {
+      __libc_format_log(ANDROID_LOG_ERROR, "libc", "failed to ptrace parent: %s", strerror(errno));
+      if (TEMP_FAILURE_RETRY(write(pipefds[1], "", 1)) != 1) {
+        kill(parent, SIGKILL);
+      }
+      _exit(1);
+    }
+
+    char buf[10];
+    snprintf(buf, sizeof(buf), "%d", tid);
+
+    execl(CRASH_DUMP_PATH, CRASH_DUMP_PATH, buf, nullptr);
+  }
+
+  // In the parent, close the write end of the pipe, and try to read the pipe.
+  // If the pipe closes, the helper was succesfully execed. If we succesfully read
+  // data, something went wrong.
+  close(pipefds[1]);
+  char dummy;
+  ssize_t rc = TEMP_FAILURE_RETRY(read(pipefds[0], &dummy, 1));
+  if (rc != 0) {
+    if (rc == -1) {
+      __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to read in debuggerd_signal_handler: %s",
+                        strerror(errno));
+    }
+  }
 
   // We need to return from the signal handler so that debuggerd can dump the
   // thread that crashed, but returning here does not guarantee that the signal
@@ -276,12 +227,14 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
     // check to allow all si_code values in calls coming from inside the house.
   }
 
-  int rc = syscall(SYS_rt_tgsigqueueinfo, getpid(), gettid(), signal_number, info);
+  rc = syscall(SYS_rt_tgsigqueueinfo, getpid(), gettid(), signal_number, info);
   if (rc != 0) {
     __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to resend signal during crash: %s",
                       strerror(errno));
-    _exit(0);
+    _exit(1);
   }
+
+  close(pipefds[0]);
 }
 
 void debuggerd_init(debuggerd_callbacks_t* callbacks) {
@@ -307,4 +260,5 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   sigaction(SIGSTKFLT, &action, nullptr);
 #endif
   sigaction(SIGTRAP, &action, nullptr);
+  sigaction(DEBUGGER_SIGNAL, &action, nullptr);
 }

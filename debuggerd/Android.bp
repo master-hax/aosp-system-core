@@ -1,12 +1,13 @@
-cc_library_static {
-  name: "libdebuggerd_client",
-  srcs: ["client/debuggerd_client.cpp"],
-
+cc_defaults {
+  name: "debuggerd_defaults",
   cflags: [
     "-Wall",
     "-Wextra",
     "-Werror",
     "-Os",
+  ],
+  cppflags: [
+    "-std=c++14",
   ],
 
   target: {
@@ -17,9 +18,76 @@ cc_library_static {
 
   local_include_dirs: ["include"],
   export_include_dirs: ["include"],
+}
+
+cc_library_static {
+  name: "libdebuggerd_client",
+  defaults: ["debuggerd_defaults"],
+  srcs: ["client/debuggerd_client.cpp"],
 
   // libdebuggerd_client gets async signal safe logging via libc_logging,
   // which defines its interface in bionic private headers.
   include_dirs: ["bionic/libc"],
   static_libs: ["libc_logging"],
+}
+
+cc_library {
+  name: "libdebuggerd",
+  defaults: ["debuggerd_defaults"],
+
+  srcs: [
+    "backtrace.cpp",
+    "elf_utils.cpp",
+    "tombstone.cpp",
+    "utility.cpp",
+  ],
+  target: {
+    android_arm: {
+      srcs: ["arm/machine.cpp"]
+    },
+    android_arm64: {
+      srcs: ["arm64/machine.cpp"]
+    },
+    android_mips: {
+      srcs: ["mips/machine.cpp"]
+    },
+    android_mips64: {
+      srcs: ["mips64/machine.cpp"]
+    },
+    android_x86: {
+      srcs: ["x86/machine.cpp"]
+    },
+    android_x86_64: {
+      srcs: ["x86_64/machine.cpp"]
+    },
+  },
+
+  shared_libs: [
+    "libbacktrace",
+    "libbase",
+    "libcutils",
+    "liblog",
+    "libselinux",
+  ],
+}
+
+cc_binary {
+  name: "crash_dump",
+  srcs: ["crash_dump.cpp"],
+  defaults: ["debuggerd_defaults"],
+  compile_multilib: "both",
+  multilib: {
+    lib32: {
+      suffix: "32",
+    },
+    lib64: {
+      suffix: "64",
+    },
+  },
+
+  shared_libs: [
+    "libbacktrace",
+    "libdebuggerd",
+    "liblog",
+  ],
 }
