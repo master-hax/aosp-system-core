@@ -51,6 +51,8 @@ LIBADB_SRC_FILES := \
     adb_trace.cpp \
     adb_utils.cpp \
     fdevent.cpp \
+    services.cpp \
+    shell_service_protocol.cpp \
     sockets.cpp \
     transport.cpp \
     transport_local.cpp \
@@ -61,6 +63,7 @@ LIBADB_TEST_SRCS := \
     adb_listeners_test.cpp \
     adb_utils_test.cpp \
     fdevent_test.cpp \
+    shell_service_protocol_test.cpp \
     socket_test.cpp \
     sysdeps_test.cpp \
     sysdeps/stat_test.cpp \
@@ -82,17 +85,14 @@ LIBADB_windows_CFLAGS := \
 LIBADB_darwin_SRC_FILES := \
     get_my_path_darwin.cpp \
     sysdeps_unix.cpp \
-    usb_osx.cpp \
 
 LIBADB_linux_SRC_FILES := \
     get_my_path_linux.cpp \
     sysdeps_unix.cpp \
-    usb_linux.cpp \
 
 LIBADB_windows_SRC_FILES := \
     sysdeps_win32.cpp \
     sysdeps/win32/stat.cpp \
-    usb_windows.cpp \
 
 LIBADB_TEST_windows_SRCS := \
     sysdeps_win32_test.cpp \
@@ -103,9 +103,9 @@ LOCAL_MODULE := libadbd
 LOCAL_CFLAGS := $(LIBADB_CFLAGS) -DADB_HOST=0
 LOCAL_SRC_FILES := \
     $(LIBADB_SRC_FILES) \
-    adb_auth_client.cpp \
-    jdwp_service.cpp \
-    usb_linux_client.cpp \
+    daemon/adb_auth_daemon.cpp \
+    daemon/jdwp_service.cpp \
+    daemon/usb_linux.cpp \
 
 LOCAL_SANITIZE := $(adb_target_sanitize)
 
@@ -124,7 +124,6 @@ LOCAL_CFLAGS_linux := $(LIBADB_linux_CFLAGS)
 LOCAL_CFLAGS_darwin := $(LIBADB_darwin_CFLAGS)
 LOCAL_SRC_FILES := \
     $(LIBADB_SRC_FILES) \
-    adb_auth_host.cpp \
 
 LOCAL_SRC_FILES_darwin := $(LIBADB_darwin_SRC_FILES)
 LOCAL_SRC_FILES_linux := $(LIBADB_linux_SRC_FILES)
@@ -136,7 +135,6 @@ LOCAL_SANITIZE := $(adb_host_sanitize)
 # this to take effect), this adds the includes to our path.
 LOCAL_STATIC_LIBRARIES := libcrypto_utils libcrypto libbase
 
-LOCAL_C_INCLUDES_windows := development/host/windows/usb/api/
 LOCAL_MULTILIB := first
 
 include $(BUILD_HOST_STATIC_LIBRARY)
@@ -148,10 +146,8 @@ LOCAL_CFLAGS := -DADB_HOST=0 $(LIBADB_CFLAGS)
 LOCAL_SRC_FILES := \
     $(LIBADB_TEST_SRCS) \
     $(LIBADB_TEST_linux_SRCS) \
-    shell_service.cpp \
-    shell_service_protocol.cpp \
-    shell_service_protocol_test.cpp \
-    shell_service_test.cpp \
+    daemon/shell_service.cpp \
+    daemon/shell_service_test.cpp \
 
 LOCAL_SANITIZE := $(adb_target_sanitize)
 LOCAL_STATIC_LIBRARIES := libadbd libcrypto_utils libcrypto
@@ -183,13 +179,23 @@ LOCAL_CFLAGS_linux := $(LIBADB_linux_CFLAGS)
 LOCAL_CFLAGS_darwin := $(LIBADB_darwin_CFLAGS)
 LOCAL_SRC_FILES := \
     $(LIBADB_TEST_SRCS) \
-    services.cpp \
-    shell_service_protocol.cpp \
-    shell_service_protocol_test.cpp \
+    client/adb_auth_client.cpp \
+    client/services.cpp \
 
-LOCAL_SRC_FILES_linux := $(LIBADB_TEST_linux_SRCS)
-LOCAL_SRC_FILES_darwin := $(LIBADB_TEST_darwin_SRCS)
-LOCAL_SRC_FILES_windows := $(LIBADB_TEST_windows_SRCS)
+LOCAL_SRC_FILES_linux := \
+    $(LIBADB_TEST_linux_SRCS) \
+    client/usb_linux.cpp \
+
+LOCAL_SRC_FILES_darwin := \
+    $(LIBADB_TEST_darwin_SRCS) \
+    client/usb_darwin.cpp \
+
+LOCAL_SRC_FILES_windows := \
+    $(LIBADB_TEST_windows_SRCS) \
+    client/usb_windows.cpp \
+
+LOCAL_C_INCLUDES_windows := development/host/windows/usb/api/
+
 LOCAL_SANITIZE := $(adb_host_sanitize)
 LOCAL_SHARED_LIBRARIES := libbase
 LOCAL_STATIC_LIBRARIES := \
@@ -225,14 +231,25 @@ LOCAL_STATIC_LIBRARIES_windows := AdbWinApi
 LOCAL_REQUIRED_MODULES_windows := AdbWinApi AdbWinUsbApi
 
 LOCAL_SRC_FILES := \
-    adb_client.cpp \
+    client/adb_auth_client.cpp \
+    client/adb_client.cpp \
+    client/commandline.cpp \
+    client/console.cpp \
+    client/file_sync_client.cpp \
+    client/line_printer.cpp \
     client/main.cpp \
-    console.cpp \
-    commandline.cpp \
-    file_sync_client.cpp \
-    line_printer.cpp \
-    services.cpp \
-    shell_service_protocol.cpp \
+    client/services.cpp \
+
+LOCAL_SRC_FILES_linux := \
+    client/usb_linux.cpp \
+
+LOCAL_SRC_FILES_windows := \
+    client/usb_windows.cpp \
+
+LOCAL_SRC_FILES_darwin := \
+    client/usb_darwin.cpp \
+
+LOCAL_C_INCLUDES_windows := development/host/windows/usb/api/
 
 LOCAL_CFLAGS += \
     $(ADB_COMMON_CFLAGS) \
@@ -290,14 +307,13 @@ include $(CLEAR_VARS)
 LOCAL_CLANG := true
 
 LOCAL_SRC_FILES := \
+    daemon/file_sync_service.cpp \
+    daemon/framebuffer_service.cpp \
     daemon/main.cpp \
-    services.cpp \
-    file_sync_service.cpp \
-    framebuffer_service.cpp \
-    remount_service.cpp \
-    set_verity_enable_state_service.cpp \
-    shell_service.cpp \
-    shell_service_protocol.cpp \
+    daemon/remount_service.cpp \
+    daemon/services.cpp \
+    daemon/set_verity_enable_state_service.cpp \
+    daemon/shell_service.cpp \
 
 LOCAL_CFLAGS := \
     $(ADB_COMMON_CFLAGS) \

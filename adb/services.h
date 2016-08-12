@@ -17,8 +17,15 @@
 #ifndef SERVICES_H_
 #define SERVICES_H_
 
-constexpr char kShellServiceArgRaw[] = "raw";
-constexpr char kShellServiceArgPty[] = "pty";
-constexpr char kShellServiceArgShellProtocol[] = "v2";
+struct stinfo {
+    void (*func)(int fd, void *cookie);
+    int fd;
+    void *cookie;
+};
+
+void service_bootstrap_func(void* x);
+int create_service_thread(void (*func)(int, void *), void *cookie);
+
+int service_to_fd_shared(const char* name, const atransport* transport);
 
 #endif  // SERVICES_H_

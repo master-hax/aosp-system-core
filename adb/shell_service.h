@@ -31,6 +31,10 @@
 
 #include "adb.h"
 
+constexpr char kShellServiceArgRaw[] = "raw";
+constexpr char kShellServiceArgPty[] = "pty";
+constexpr char kShellServiceArgShellProtocol[] = "v2";
+
 // Class to send and receive shell protocol packets.
 //
 // To keep things simple and predictable, reads and writes block until an entire
