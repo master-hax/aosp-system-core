@@ -48,6 +48,8 @@
 #include "fastboot.h"
 #include "usb.h"
 
+#include <android-base/stringprintf.h>
+
 #define MAX_RETRIES 5
 
 /* Timeout in seconds for usb_wait_for_disconnect.
@@ -56,6 +58,7 @@
  */
 #define WAIT_FOR_DISCONNECT_TIMEOUT  3
 
+#define TRACE_USB
 #ifdef TRACE_USB
 #define DBG1(x...) fprintf(stderr, x)
 #define DBG(x...) fprintf(stderr, x)
@@ -86,6 +89,11 @@ struct usb_handle
     unsigned char ep_in;
     unsigned char ep_out;
 };
+
+std::string HandleToString(const usb_handle* handle) {
+    return android::base::StringPrintf("fname = %s, desc = %d, ep_in = %d, ep_out = %d",
+                                       handle->fname, handle->desc, handle->ep_in, handle->ep_out);
+}
 
 class LinuxUsbTransport : public Transport {
   public:
@@ -387,7 +395,11 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
     struct usbdevfs_bulktransfer bulk;
     int n;
 
+    DBG("LinuxUsbTransport::Write: writing %zu bytes to handle [%s]\n",
+        len, HandleToString(handle_.get()).c_str());;
+
     if (handle_->ep_out == 0 || handle_->desc == -1) {
+        DBG("ERROR LinuxUsbTransport::Write: handle has already been closed\n");
         return -1;
     }
 
@@ -402,8 +414,9 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
 
         n = ioctl(handle_->desc, USBDEVFS_BULK, &bulk);
         if(n != xfer) {
-            DBG("ERROR: n = %d, errno = %d (%s)\n",
-                n, errno, strerror(errno));
+            DBG("ERROR LinuxUsbTransport::Write: failed to transfer full USB packet."
+                " xfer = %d, n = %d, errno = %d (%s)\n",
+                xfer, n, errno, strerror(errno));
             return -1;
         }
 
@@ -411,6 +424,8 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
         len -= xfer;
         data += xfer;
     } while(len > 0);
+
+    DBG("LinuxUsbTransport::Write: success\n");
 
     return count;
 }
@@ -422,7 +437,11 @@ ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
     struct usbdevfs_bulktransfer bulk;
     int n, retry;
 
+    DBG("LinuxUsbTransport::Read: reading %zu bytes from handle [%s]\n",
+        len, HandleToString(handle_.get()).c_str());;
+
     if (handle_->ep_in == 0 || handle_->desc == -1) {
+        DBG("ERROR LinuxUsbTransport::Read: handle has already been closed\n");
         return -1;
     }
 
@@ -436,12 +455,12 @@ ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
         retry = 0;
 
         do{
-           DBG("[ usb read %d fd = %d], fname=%s\n", xfer, handle_->desc, handle_->fname);
+//           DBG("[ usb read %d fd = %d], fname=%s\n", xfer, handle_->desc, handle_->fname);
            n = ioctl(handle_->desc, USBDEVFS_BULK, &bulk);
-           DBG("[ usb read %d ] = %d, fname=%s, Retry %d \n", xfer, n, handle_->fname, retry);
+//           DBG("[ usb read %d ] = %d, fname=%s, Retry %d \n", xfer, n, handle_->fname, retry);
 
            if( n < 0 ) {
-            DBG1("ERROR: n = %d, errno = %d (%s)\n",n, errno, strerror(errno));
+//            DBG1("ERROR: n = %d, errno = %d (%s)\n",n, errno, strerror(errno));
             if ( ++retry > MAX_RETRIES ) return -1;
             sleep( 1 );
            }
@@ -457,6 +476,8 @@ ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
         }
     }
 
+    DBG("LinuxUsbTransport::Read: success\n");
+
     return count;
 }
 
@@ -464,11 +485,15 @@ int LinuxUsbTransport::Close()
 {
     int fd;
 
+    DBG("LinuxUsbTransport::Close: closing handle [%s]\n",
+        HandleToString(handle_.get()).c_str());
+
+
     fd = handle_->desc;
     handle_->desc = -1;
     if(fd >= 0) {
         close(fd);
-        DBG("[ usb closed %d ]\n", fd);
+        DBG("LinuxUsbTransport::Close: closed FD %d\n", fd);
     }
 
     return 0;
@@ -477,6 +502,11 @@ int LinuxUsbTransport::Close()
 Transport* usb_open(ifc_match_func callback)
 {
     std::unique_ptr<usb_handle> handle = find_usb_device("/sys/bus/usb/devices", callback);
+    if (handle != nullptr) {
+        DBG("usb_open: returning handle [%s]\n", HandleToString(handle.get()).c_str());
+    } else {
+        DBG("usb_open: returning nullptr\n");
+    }
     return handle ? new LinuxUsbTransport(std::move(handle)) : nullptr;
 }
 

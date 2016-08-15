@@ -60,6 +60,8 @@ static int check_response(Transport* transport, uint32_t size, char* response) {
         }
         status[r] = 0;
 
+        fprintf(stderr, "check_response: got response '%s'\n", status);
+
         if (r < 4) {
             g_error = android::base::StringPrintf("status malformed (%d bytes)", r);
             transport->Close();
@@ -97,6 +99,7 @@ static int check_response(Transport* transport, uint32_t size, char* response) {
             return dsize;
         }
 
+        fprintf(stderr, "ERROR check_response: unknown response, closing USB\n");
         g_error = "unknown status code";
         transport->Close();
         break;
@@ -116,8 +119,11 @@ static int _command_start(Transport* transport, const char* cmd, uint32_t size, 
         response[0] = 0;
     }
 
-    if (transport->Write(cmd, cmdsize) != static_cast<int>(cmdsize)) {
-        g_error = android::base::StringPrintf("command write failed (%s)", strerror(errno));
+    fprintf(stderr, "Writing command: %s\n", cmd);
+    ssize_t written = transport->Write(cmd, cmdsize);
+    if (written != static_cast<int>(cmdsize)) {
+        g_error = android::base::StringPrintf("command write failed: expected %zu, got %zd (%s)",
+                                              cmdsize, written, strerror(errno));
         transport->Close();
         return -1;
     }
