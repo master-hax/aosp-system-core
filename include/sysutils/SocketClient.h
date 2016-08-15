@@ -4,7 +4,6 @@
 #include "List.h"
 
 #include <pthread.h>
-#include <cutils/atomic.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 
