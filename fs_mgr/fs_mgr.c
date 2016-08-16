@@ -44,6 +44,7 @@
 #include <private/android_logger.h>
 
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_avb.h"
 #include "fs_mgr_priv_verity.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
@@ -471,6 +472,25 @@ static int handle_encryptable(const struct fstab_rec* rec)
     }
 }
 
+static bool use_vbmeta()
+{
+    char propbuf[PROPERTY_VALUE_MAX];
+    static bool use_vbmeta = false;
+    static bool got_result = false;
+
+    if (got_result) {
+        return use_vbmeta;
+    }
+
+    property_get("ro.boot.vbmeta.digest", propbuf, "");
+    if (propbuf[0] != '\0') {
+        use_vbmeta = true;
+    }
+
+    got_result = true;
+    return use_vbmeta;
+}
+
 /* When multiple fstab records share the same mount_point, it will
  * try to mount each one in turn, and ignore any duplicates after a
  * first successful mount.
@@ -484,8 +504,13 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     int mret = -1;
     int mount_errno = 0;
     int attempted_idx = -1;
+	struct vbmeta_descriptor_data desc_data;
 
     if (!fstab) {
+        return -1;
+    }
+
+    if (use_vbmeta() && load_and_verify_main_vbmeta(fstab, &desc_data) != 0) {
         return -1;
     }
 
@@ -639,6 +664,11 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         }
     }
 
+    if (use_vbmeta()) {
+		free(desc_data.descriptors);
+		free(desc_data.vbmeta_buf);
+    }
+
     if (error_count) {
         return -1;
     } else {
@@ -659,9 +689,14 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
     int mount_errors = 0;
     int first_mount_errno = 0;
     char *m;
+	struct vbmeta_descriptor_data desc_data;
 
     if (!fstab) {
         return ret;
+    }
+
+    if (use_vbmeta() && load_and_verify_main_vbmeta(fstab, &desc_data) != 0) {
+        goto out;
     }
 
     for (i = 0; i < fstab->num_entries; i++) {
@@ -728,6 +763,10 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
     }
 
 out:
+    if (use_vbmeta()) {
+		free(desc_data.descriptors);
+		free(desc_data.vbmeta_buf);
+    }
     return ret;
 }
 

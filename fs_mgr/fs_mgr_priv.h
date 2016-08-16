@@ -88,6 +88,19 @@ __BEGIN_DECLS
 
 #define DM_BUF_SIZE 4096
 
+/* helper macros */
+#ifndef unlikely
+    #define unlikely(x) __builtin_expect(!!(x), 0)
+    #define likely(x)   __builtin_expect(!!(x), 1)
+#endif
+
+#define check(p) \
+    if (unlikely(!(p))) { \
+        ERROR("`%s' failed", #p); \
+        errno = EFAULT; \
+        return -1; \
+    }
+
 int fs_mgr_set_blk_ro(const char *blockdev);
 int fs_mgr_update_for_slotselect(struct fstab *fstab);
 

@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <libgen.h>
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_avb.h"
 
 char *me = "";
 
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
     char *n_blk_dev=NULL;
     char *fstab_file=NULL;
     struct fstab *fstab=NULL;
+	struct vbmeta_descriptor_data desc_data;
 
     klog_set_level(6);
 
@@ -93,6 +95,14 @@ int main(int argc, char *argv[])
     fstab_file = argv[argc - 1];
 
     fstab = fs_mgr_read_fstab(fstab_file);
+
+	load_and_verify_main_vbmeta(fstab, &desc_data);
+	free(desc_data.descriptors);
+	free(desc_data.vbmeta_buf);
+
+    fs_mgr_free_fstab(fstab);
+    printf("early return-1104\n");
+    return 0;
 
     if (a_flag) {
         return fs_mgr_mount_all(fstab, MOUNT_MODE_DEFAULT);
