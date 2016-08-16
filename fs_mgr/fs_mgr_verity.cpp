@@ -45,6 +45,8 @@
 #include "fs_mgr_priv.h"
 #include "fs_mgr_priv_verity.h"
 
+#include "libavb.h"
+
 #define FSTAB_PREFIX "/fstab."
 
 #define VERITY_TABLE_RSA_KEY "/verity_key"

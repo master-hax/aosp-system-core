@@ -481,6 +481,25 @@ static int handle_encryptable(const struct fstab_rec* rec)
     }
 }
 
+static bool use_vbmeta()
+{
+    char propbuf[PROPERTY_VALUE_MAX];
+    static bool use_vbmeta = false;
+    static bool got_result = false;
+
+    if (got_result) {
+        return use_vbmeta;
+    }
+
+    property_get("ro.boot.vbmeta.digest", propbuf, "");
+    if (propbuf[0] != '\0') {
+        use_vbmeta = true;
+    }
+
+    got_result = true;
+    return use_vbmeta;
+}
+
 /* When multiple fstab records share the same mount_point, it will
  * try to mount each one in turn, and ignore any duplicates after a
  * first successful mount.
@@ -496,6 +515,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     int attempted_idx = -1;
 
     if (!fstab) {
+        return -1;
+    }
+
+    if (use_vbmeta() && !load_vbmeta_partition(fstab)) {
         return -1;
     }
 
@@ -649,6 +672,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         }
     }
 
+    if (use_vbmeta()) {
+        unload_vbmeta_partition();
+    }
+
     if (error_count) {
         return -1;
     } else {
@@ -672,6 +699,10 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
 
     if (!fstab) {
         return ret;
+    }
+
+    if (use_vbmeta() && !load_vbmeta_partition(fstab)) {
+        goto out;
     }
 
     for (i = 0; i < fstab->num_entries; i++) {
@@ -738,6 +769,9 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
     }
 
 out:
+    if (use_vbmeta()) {
+        unload_vbmeta_partition();
+    }
     return ret;
 }
 

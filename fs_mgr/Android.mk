@@ -12,6 +12,7 @@ common_static_libraries := \
     libext4_utils_static \
     libsquashfs_utils \
     libselinux
+    libavb
 
 include $(CLEAR_VARS)
 LOCAL_CLANG := true
