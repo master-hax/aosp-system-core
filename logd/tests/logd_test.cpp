@@ -343,12 +343,11 @@ TEST(logd, both) {
     };
 
     for (unsigned int i = 0; i < (sizeof(loggers) / sizeof(loggers[0])); ++i) {
-        fd = open(loggers[i], O_RDONLY);
+        fd = open(loggers[i], O_RDONLY | O_NONBLOCK);
         if (fd < 0) {
             continue;
         }
         kernel_logger_available = true;
-        fcntl(fd, F_SETFL, O_RDONLY | O_NONBLOCK);
         int result = TEMP_FAILURE_RETRY(read(fd, msg.buf, sizeof(msg)));
         if (result > 0) {
             kernel_logger_content = true;
