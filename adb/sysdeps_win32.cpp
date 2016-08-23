@@ -1061,7 +1061,7 @@ int adb_getsockname(int fd, struct sockaddr* sockaddr, socklen_t* optlen) {
         return -1;
     }
 
-    int result = getsockname(fh->fh_socket, sockaddr, optlen);
+    int result = (getsockname)(fh->fh_socket, sockaddr, optlen);
     if (result == SOCKET_ERROR) {
         const DWORD err = WSAGetLastError();
         D("adb_getsockname: setsockopt on fd %d failed: %s\n", fd,
@@ -1119,6 +1119,11 @@ int adb_socketpair(int sv[2]) {
     int local_port = -1;
     std::string error;
 
+    struct sockaddr_storage peer_addr;
+    struct sockaddr_storage client_addr;
+    socklen_t peer_socklen = sizeof(peer_addr);
+    socklen_t client_socklen = sizeof(client_addr);
+
     server = network_loopback_server(0, SOCK_STREAM, &error);
     if (server < 0) {
         D("adb_socketpair: failed to create server: %s", error.c_str());
@@ -1138,12 +1143,69 @@ int adb_socketpair(int sv[2]) {
         goto fail;
     }
 
-    accepted = adb_socket_accept(server, nullptr, nullptr);
+    // Make sure that the peer that connected to us and the client are the same.
+    accepted = adb_socket_accept(server, reinterpret_cast<sockaddr*>(&peer_addr), &peer_socklen);
     if (accepted < 0) {
         D("adb_socketpair: failed to accept: %s", strerror(errno));
         goto fail;
     }
+
+    if (adb_getsockname(client, reinterpret_cast<sockaddr*>(&client_addr), &client_socklen) != 0) {
+        D("adb_socketpair: failed to getpeername: %s", strerror(errno));
+        goto fail;
+    }
+
+    if (peer_socklen != client_socklen) {
+        D("adb_socketpair: client and peer sockaddrs have different lengths");
+        errno = EIO;
+        goto fail;
+    }
+
+    if (peer_addr.ss_family != client_addr.ss_family) {
+        D("adb_socketpair: incompatible client/peer sockaddr families: %d vs %d",
+          client_addr.ss_family, peer_addr.ss_family);
+        errno = EIO;
+        goto fail;
+    }
+
+    if (peer_addr.ss_family == AF_INET) {
+        struct sockaddr_in* client_in = reinterpret_cast<sockaddr_in*>(&client_addr);
+        struct sockaddr_in* peer_in = reinterpret_cast<sockaddr_in*>(&peer_addr);
+        if (client_in->sin_addr.s_addr != peer_in->sin_addr.s_addr) {
+            D("adb_socketpair: client/peer address mismatch");
+            errno = EIO;
+            goto fail;
+        }
+
+        if (client_in->sin_port != peer_in->sin_port) {
+            D("adb_socketpair: client/peer port mismatch: %d vs %d", client_in->sin_port,
+              peer_in->sin_port);
+            errno = EIO;
+            goto fail;
+        }
+    } else if (peer_addr.ss_family == AF_INET6) {
+        struct sockaddr_in6* client_in = reinterpret_cast<sockaddr_in6*>(&client_addr);
+        struct sockaddr_in6* peer_in = reinterpret_cast<sockaddr_in6*>(&peer_addr);
+        if (memcmp(client_in->sin6_addr.s6_addr, peer_in->sin6_addr.s6_addr, 16) != 0) {
+            D("adb_socketpair: client/peer address mismatch");
+            errno = EIO;
+            goto fail;
+        }
+
+        if (client_in->sin6_port != peer_in->sin6_port) {
+            D("adb_socketpair: client/peer port mismatch: %d vs %d", client_in->sin6_port,
+              peer_in->sin6_port);
+            errno = EIO;
+            goto fail;
+        }
+    } else {
+        D("adb_socketpair: unexpected socket family: %d", peer_addr.ss_family);
+        errno = EIO;
+        goto fail;
+    }
+
     adb_close(server);
+
     sv[0] = client;
     sv[1] = accepted;
     return 0;
