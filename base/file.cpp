@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <string>
 
@@ -170,6 +171,24 @@ bool RemoveFileIfExists(const std::string& path, std::string* err) {
   }
   return true;
 }
+
+#if !defined(_WIN32)
+bool Readlink(const std::string& path, std::string* result) {
+  result->clear();
+
+  // Annoyingly, the readlink system call returns EINVAL for a zero-sized buffer,
+  // and truncates to whatever size you do supply, so it can't be used to query.
+  // We could call lstat first, but that would introduce a race condition that
+  // we couldn't detect.
+  // ext2 and ext4 both have PAGE_SIZE limitations, so we assume that here.
+  char buf[4096];
+  ssize_t len = readlink(path.c_str(), buf, sizeof(buf));
+  if (len == -1) return false;
+
+  result->assign(buf, len);
+  return true;
+}
+#endif
 
 }  // namespace base
 }  // namespace android
