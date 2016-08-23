@@ -132,6 +132,33 @@ LIBLOG_ABI_PUBLIC int __android_log_dev_available()
     }
     return kLogNotAvailable;
 }
+/*
+ * Release any logger resources. A new log write will immediately re-acquire.
+ */
+LIBLOG_ABI_PUBLIC void __android_log_close()
+{
+    struct android_log_transport_write *transport;
+
+    __android_log_lock();
+
+    write_to_log = __write_to_log_init;
+
+    /*
+     * NB: Threads that are actively writing at this point are not held back
+     * by the lock and are at risk of dropping the messages with a return code
+     * -EBADF. Prefer to return error code than add the overhead of a lock to
+     * each log writing call. In addition, anyone calling this is doing so to
+     * release the logging resources, for them to do so with outstanding log
+     * requests is a disengenuous use of this function.
+     */
+    write_transport_for_each(transport, &__android_log_transport_write) {
+        if (transport->close) {
+            (*transport->close)();
+        }
+    }
+
+    __android_log_unlock();
+}
 
 /* log_init_lock assumed */
 static int __write_to_log_initialize()
