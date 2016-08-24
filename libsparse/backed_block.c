@@ -25,7 +25,7 @@
 
 struct backed_block {
 	unsigned int block;
-	unsigned int len;
+	int64_t len;
 	enum backed_block_type type;
 	union {
 		struct {
