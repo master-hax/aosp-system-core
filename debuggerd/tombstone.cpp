@@ -137,7 +137,9 @@ static const char* get_sigcode(int signo, int code) {
         case SEGV_BNDERR: return "SEGV_BNDERR";
 #endif
       }
-#if defined(SEGV_BNDERR)
+#if defined(SEGV_PKUERR)
+      static_assert(NSIGSEGV == SEGV_PKUERR, "missing SEGV_* si_code");
+#elif defined(SEGV_BNDERR)
       static_assert(NSIGSEGV == SEGV_BNDERR, "missing SEGV_* si_code");
 #else
       static_assert(NSIGSEGV == SEGV_ACCERR, "missing SEGV_* si_code");
