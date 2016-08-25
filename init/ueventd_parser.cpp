@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "ueventd.h"
 #include "ueventd_parser.h"
@@ -113,7 +114,7 @@ static void *parse_subsystem(parse_state* state, int /*nargs*/, char** args) {
         parse_error(state, "out of memory\n");
         return 0;
     }
-    s->name = args[1];
+    s->name = strdup(args[1]);
     s->dirname = "/dev";
     list_add_tail(&subsystem_list, &s->slist);
     return s;
@@ -142,7 +143,7 @@ static void parse_line_subsystem(struct parse_state *state, int nargs,
 
     case K_dirname:
         if (args[1][0] == '/')
-            s->dirname = args[1];
+            s->dirname = strdup(args[1]);
         else
             parse_error(state, "dirname '%s' does not start with '/'\n",
                     args[1]);
@@ -194,12 +195,15 @@ static void parse_line(struct parse_state *state, char **args, int nargs)
 static void parse_config(const char *fn, const std::string& data)
 {
     char *args[UEVENTD_PARSER_MAXARGS];
+    //TODO: Use a parser with const input and remove this copy
+    std::vector<char> data_copy(data.begin(), data.end());
+    data_copy.push_back('\0');
 
     int nargs = 0;
     parse_state state;
     state.filename = fn;
     state.line = 1;
-    state.ptr = strdup(data.c_str());  // TODO: fix this code!
+    state.ptr = &data_copy[0];
     state.nexttoken = 0;
     state.parse_line = parse_line_no_op;
     for (;;) {
