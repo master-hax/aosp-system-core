@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "ueventd.h"
 #include "ueventd_parser.h"
@@ -194,12 +195,15 @@ static void parse_line(struct parse_state *state, char **args, int nargs)
 static void parse_config(const char *fn, const std::string& data)
 {
     char *args[UEVENTD_PARSER_MAXARGS];
+    //TODO: Use a parser with const input and remove this copy
+    std::vector<char> data_copy(data.begin(), data.end());
+    data_copy.push_back('\0');
 
     int nargs = 0;
     parse_state state;
     state.filename = fn;
     state.line = 1;
-    state.ptr = strdup(data.c_str());  // TODO: fix this code!
+    state.ptr = &data_copy[0];
     state.nexttoken = 0;
     state.parse_line = parse_line_no_op;
     for (;;) {
