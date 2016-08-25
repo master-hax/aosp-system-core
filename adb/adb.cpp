@@ -610,8 +610,7 @@ static unsigned __stdcall _redirect_stderr_thread(HANDLE h) {
 
 #endif
 
-int launch_server(int server_port)
-{
+int launch_server(const std::string& socket_spec) {
 #if defined(_WIN32)
     /* we need to start the server in the background                    */
     /* we create a PIPE that will be used to wait for the server's "OK" */
@@ -714,9 +713,8 @@ int launch_server(int server_port)
     }
 
     WCHAR   args[64];
-    snwprintf(args, arraysize(args),
-              L"adb -P %d fork-server server --reply-fd %d", server_port,
-              ack_write_as_int);
+    snwprintf(args, arraysize(args), L"adb -L %s fork-server server --reply-fd %d",
+              socket_spec.c_str(), ack_write_as_int);
 
     PROCESS_INFORMATION   pinfo;
     ZeroMemory(&pinfo, sizeof(pinfo));
@@ -861,12 +859,11 @@ int launch_server(int server_port)
 
         adb_close(fd[0]);
 
-        char str_port[30];
-        snprintf(str_port, sizeof(str_port), "%d", server_port);
         char reply_fd[30];
         snprintf(reply_fd, sizeof(reply_fd), "%d", fd[1]);
         // child process
-        int result = execl(path, "adb", "-P", str_port, "fork-server", "server", "--reply-fd", reply_fd, NULL);
+        int result = execl(path, "adb", "-L", socket_spec.c_str(), "fork-server", "server",
+                           "--reply-fd", reply_fd, NULL);
         // this should not return
         fprintf(stderr, "OOPS! execl returned %d, errno: %d\n", result, errno);
     } else  {
