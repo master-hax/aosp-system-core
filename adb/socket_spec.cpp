@@ -126,6 +126,10 @@ bool is_socket_spec(const std::string& spec) {
     return StartsWith(spec, "tcp:");
 }
 
+bool is_local_socket_spec(const std::string& spec) {
+    return true;
+}
+
 int socket_spec_connect(const std::string& spec, std::string* error) {
     if (StartsWith(spec, "tcp:")) {
         std::string hostname;

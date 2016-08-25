@@ -127,8 +127,8 @@ void fatal_errno(const char* fmt, ...) __attribute__((noreturn, format(__printf_
 void handle_packet(apacket *p, atransport *t);
 
 void get_my_path(char *s, size_t maxLen);
-int launch_server(int server_port);
-int adb_server_main(int is_daemon, int server_port, int ack_reply_fd);
+int launch_server(const std::string& socket_spec);
+int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply_fd);
 
 /* initialize a transport object's func pointers and state */
 #if ADB_HOST
@@ -175,9 +175,11 @@ void put_apacket(apacket *p);
 /* adb and adbd are coexisting on the target, so use 5038 for adb
  * to avoid conflicting with adbd's usage of 5037
  */
-#  define DEFAULT_ADB_PORT 5038
+#define DEFAULT_ADB_PORT 5038
+#define DEFAULT_ADB_PORT_STR "5038"
 #else
-#  define DEFAULT_ADB_PORT 5037
+#define DEFAULT_ADB_PORT 5037
+#define DEFAULT_ADB_PORT_STR "5037"
 #endif
 
 #define DEFAULT_ADB_LOCAL_TRANSPORT_PORT 5555
