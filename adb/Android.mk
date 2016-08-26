@@ -124,10 +124,19 @@ LOCAL_CFLAGS_darwin := $(LIBADB_darwin_CFLAGS)
 LOCAL_SRC_FILES := \
     $(LIBADB_SRC_FILES) \
     adb_auth_host.cpp \
+    sysdeps/lockfile.cpp \
 
-LOCAL_SRC_FILES_darwin := $(LIBADB_darwin_SRC_FILES)
-LOCAL_SRC_FILES_linux := $(LIBADB_linux_SRC_FILES)
-LOCAL_SRC_FILES_windows := $(LIBADB_windows_SRC_FILES)
+LOCAL_SRC_FILES_darwin := \
+    $(LIBADB_darwin_SRC_FILES) \
+    sysdeps/posix/lockfile.cpp \
+
+LOCAL_SRC_FILES_linux := \
+    $(LIBADB_linux_SRC_FILES) \
+    sysdeps/posix/lockfile.cpp \
+
+LOCAL_SRC_FILES_windows := \
+    $(LIBADB_windows_SRC_FILES) \
+    sysdeps/win32/lockfile.cpp \
 
 LOCAL_SANITIZE := $(adb_host_sanitize)
 

@@ -229,9 +229,29 @@ class NonApiTest(unittest.TestCase):
                 output.strip(), 'connected to localhost:{}'.format(port))
             s.close()
 
+    def test_lockfile(self):
+        """Ensure that adb properly records and uses its lockfiles."""
+
+        # Start off by killing any running adb servers.
+        subprocess.check_output(['adb', 'kill-server'],
+                                stderr=subprocess.STDOUT)
+
+        # Start a server running on a non-default port.
+        subprocess.check_output(
+            ['adb', '-L', 'tcp:5038', 'start-server'], stderr=subprocess.STDOUT)
+
+        # Try to connect to it.
+        p = subprocess.Popen(['adb', 'devices'], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        p.communicate()
+
+        self.assertTrue(p.stderr.contains(
+            "already running, connecting to 'tcp:5038'"))
+
 
 def main():
     random.seed(0)
+    subprocess.check_output(['adb', 'kill-server'], stderr=subprocess.STDOUT)
     if len(adb.get_devices()) > 0:
         suite = unittest.TestLoader().loadTestsFromName(__name__)
         unittest.TextTestRunner(verbosity=3).run(suite)
