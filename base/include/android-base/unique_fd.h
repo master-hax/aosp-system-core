@@ -54,7 +54,7 @@ class unique_fd_impl final {
  public:
   unique_fd_impl() : value_(-1) {}
 
-  explicit unique_fd_impl(int value) : value_(value) {}
+  /*implicit*/ unique_fd_impl(int value) : value_(value) {}
   ~unique_fd_impl() { clear(); }
 
   unique_fd_impl(unique_fd_impl&& other) : value_(other.release()) {}
