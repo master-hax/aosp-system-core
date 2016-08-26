@@ -17,7 +17,6 @@
 #define TRACE_TAG ADB
 
 #include "sysdeps.h"
-#include "adb.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -41,10 +40,12 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 
+#include "adb.h"
 #include "adb_auth.h"
 #include "adb_io.h"
 #include "adb_listeners.h"
 #include "adb_utils.h"
+#include "sysdeps/lockfile.h"
 #include "transport.h"
 
 #if !ADB_HOST
@@ -1022,6 +1023,7 @@ int handle_host_request(const char* service, TransportType type,
         // may not read the OKAY sent above.
         adb_shutdown(reply_fd);
 
+        lockfile_release();
         exit(0);
     }
 
