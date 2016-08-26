@@ -55,6 +55,8 @@
 #include "file_sync_service.h"
 #include "services.h"
 #include "shell_service.h"
+#include "socket_spec.h"
+#include "sysdeps/lockfile.h"
 #include "transport.h"
 
 static int install_app(TransportType t, const char* serial, int argc, const char** argv);
@@ -1549,6 +1551,10 @@ int adb_commandline(int argc, const char **argv) {
         argv++;
     }
 
+    bool socket_specified = server_host_str || server_port_str || server_socket_str;
+    socket_specified |= getenv("ADB_SERVER_SOCKET") || getenv("ANDROID_ADB_SERVER_ADDRESS") ||
+                        getenv("ANDROID_ADB_SERVER_PORT");
+
     if ((server_host_str || server_port_str) && server_socket_str) {
         fprintf(stderr, "adb: -L is incompatible with -H or -P\n");
         exit(1);
@@ -1588,6 +1594,21 @@ int adb_commandline(int argc, const char **argv) {
             fatal("failed to allocate server socket specification");
         }
         server_socket_str = temp;
+    }
+
+    if (is_local_socket_spec(server_socket_str)) {
+        // Check to see if adb is already running locally.
+        // If the lockfile is acquired, it'll be inherited by the spawned server.
+        std::string lockfile_contents = server_socket_str;
+        if (!lockfile_acquire(&lockfile_contents)) {
+            if (lockfile_contents != server_socket_str) {
+                if (socket_specified) {
+                    fprintf(stderr, "warning: adb is already running, connecting to '%s'\n",
+                            lockfile_contents.c_str());
+                }
+                server_socket_str = lockfile_contents.c_str();
+            }
+        }
     }
 
     adb_set_socket_spec(server_socket_str);
