@@ -55,6 +55,7 @@
 #include "file_sync_service.h"
 #include "services.h"
 #include "shell_service.h"
+#include "sysdeps/lockfile.h"
 #include "transport.h"
 
 static int install_app(TransportType t, const char* serial, int argc, const char** argv);
@@ -1588,6 +1589,15 @@ int adb_commandline(int argc, const char **argv) {
             fatal("failed to allocate server socket specification");
         }
         server_socket_str = temp;
+    }
+
+    // Check to see if adb is already running.
+    // If the lockfile gets acquired, it'll be inherited by the spawned server.
+    std::string lockfile_contents = server_socket_str;
+    if (!lockfile_acquire(&lockfile_contents) && lockfile_contents != server_socket_str) {
+        fprintf(stderr, "warning: adb is already running, connecting to '%s'\n",
+                lockfile_contents.c_str());
+        server_socket_str = lockfile_contents.c_str();
     }
 
     adb_set_socket_spec(server_socket_str);
