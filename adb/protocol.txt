@@ -29,12 +29,12 @@ header followed (optionally) by a payload.  The header consists of 6
 32 bit words which are sent across the wire in little endian format.
 
 struct message {
-    unsigned command;       /* command identifier constant      */
-    unsigned arg0;          /* first argument                   */
-    unsigned arg1;          /* second argument                  */
-    unsigned data_length;   /* length of payload (0 is allowed) */
-    unsigned data_crc32;    /* crc32 of data payload            */
-    unsigned magic;         /* command ^ 0xffffffff             */
+    unsigned command;       /* command identifier constant (A_CNXN, ...) */
+    unsigned arg0;          /* first argument                            */
+    unsigned arg1;          /* second argument                           */
+    unsigned data_length;   /* length of payload (0 is allowed)          */
+    unsigned data_crc32;    /* crc32 of data payload                     */
+    unsigned magic;         /* command ^ 0xffffffff                      */
 };
 
 Receipt of an invalid message header, corrupt message payload, or an
@@ -77,6 +77,8 @@ where systemtype is "bootloader", "device", or "host", serialno is some
 kind of unique ID (or empty), and banner is a human-readable version
 or identifier string.  The banner is used to transmit useful properties.
 
+Command constant: A_CNXN
+
 
 --- AUTH(type, 0, "data") ----------------------------------------------
 
@@ -94,6 +96,8 @@ Once the recipient has tried all its private keys, it can reply with an
 AUTH packet where type is RSAPUBLICKEY(3) and data is the public key. If
 possible, an on-screen confirmation may be displayed for the user to
 confirm they want to install the public key on the device.
+
+Command constant: A_AUTH
 
 
 --- OPEN(local-id, 0, "destination") -----------------------------------
@@ -117,6 +121,8 @@ Common destination naming conventions include:
 * "upload" - service for pushing files across (like aproto's /sync)
 * "fs-bridge" - FUSE protocol filesystem bridge
 
+Command constant: A_OPEN
+
 
 --- READY(local-id, remote-id, "") -------------------------------------
 
@@ -134,6 +140,7 @@ The local-id is ignored on all but the first READY message (where it
 is used to establish the connection).  Nonetheless, the local-id MUST
 not change on later READY messages sent to the same stream.
 
+Command constant: A_OKAY
 
 
 --- WRITE(local-id, remote-id, "data") ---------------------------------
@@ -151,6 +158,8 @@ sent until another READY message has been received.  Recipients of
 a WRITE message that is in violation of this requirement will CLOSE
 the connection.
 
+Command constant: A_WRTE
+
 
 --- CLOSE(local-id, remote-id, "") -------------------------------------
 
@@ -167,6 +176,8 @@ The recipient should not respond to a CLOSE message in any way.  The
 recipient should cancel pending WRITEs or CLOSEs, but this is not a
 requirement, since they will be ignored.
 
+Command constant: A_CLSE
+
 
 --- SYNC(online, sequence, "") -----------------------------------------
 
@@ -181,6 +192,8 @@ to send across the wire.
   sends a SYNC(1, token) and continues to discard messages
 * when the io pump receives a matching SYNC(1, token), it once again
   starts accepting messages to forward to the remote side
+
+Command constant: A_SYNC
 
 
 --- message command constants ------------------------------------------
