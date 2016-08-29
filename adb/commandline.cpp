@@ -1565,8 +1565,22 @@ int adb_commandline(int argc, const char **argv) {
     else if (!strcmp(argv[0], "emu")) {
         return adb_send_emulator_command(argc, argv, serial);
     }
-    else if (!strcmp(argv[0], "shell")) {
-        return adb_shell(argc, argv);
+    else if (!strcmp(argv[0], "shell") || !strcmp(argv[0], "hell")) {
+        char h = (argv[0][0] == 'h');
+
+        // Welcome to Hell!
+        if (h) {
+            printf("\x1b[41;33m");
+            fflush(stdout);
+        }
+
+        int result = adb_shell(argc, argv);
+
+        if (h) {
+            printf("\x1b[0m");
+            fflush(stdout);
+        }
+        return result;
     }
     else if (!strcmp(argv[0], "exec-in") || !strcmp(argv[0], "exec-out")) {
         int exec_in = !strcmp(argv[0], "exec-in");
