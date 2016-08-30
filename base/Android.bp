@@ -59,6 +59,10 @@ cc_library {
     },
 }
 
+unix_test_srcs = [
+    "fork_test.cpp",
+]
+
 // Tests
 // ------------------------------------------------------------------------------
 cc_test {
@@ -76,6 +80,15 @@ cc_test {
         "test_main.cpp",
     ],
     target: {
+        android: {
+            srcs: unix_test_srcs,
+        },
+        darwin: {
+            srcs: unix_test_srcs,
+        },
+        linux: {
+            srcs: unix_test_srcs,
+        },
         windows: {
             srcs: ["utf8_test.cpp"],
             enabled: true,
