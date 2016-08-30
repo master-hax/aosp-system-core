@@ -333,7 +333,7 @@ static void run_sdcardfs(const std::string& source_path, const std::string& labe
         gid_t gid, userid_t userid, bool multi_user, bool full_write) {
     std::string dest_path_default = "/mnt/runtime/default/" + label;
     std::string dest_path_read = "/mnt/runtime/read/" + label;
-    std::string dest_path_write = "/mnt/runtime/read/" + label;
+    std::string dest_path_write = "/mnt/runtime/write/" + label;
 
     umask(0);
     if (multi_user) {
