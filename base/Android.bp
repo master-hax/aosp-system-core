@@ -20,6 +20,11 @@ libbase_cppflags = [
     "-Werror",
 ]
 
+unix_srcs = [
+    "errors_unix.cpp",
+    "local_socket.cpp",
+]
+
 cc_library {
     name: "libbase",
     clang: true,
@@ -38,15 +43,15 @@ cc_library {
     shared_libs: ["liblog"],
     target: {
         android: {
-            srcs: ["errors_unix.cpp"],
+            srcs: unix_srcs,
             cppflags: ["-Wexit-time-destructors"],
         },
         darwin: {
-            srcs: ["errors_unix.cpp"],
+            srcs: unix_srcs,
             cppflags: ["-Wexit-time-destructors"],
         },
         linux: {
-            srcs: ["errors_unix.cpp"],
+            srcs: unix_srcs,
             cppflags: ["-Wexit-time-destructors"],
         },
         windows: {
@@ -61,6 +66,7 @@ cc_library {
 
 unix_test_srcs = [
     "fork_test.cpp",
+    "local_socket_test.cpp",
 ]
 
 // Tests
