@@ -1,0 +1,9 @@
+Presubmit-Verified-1: Treehugger Robot <treehugger-gerrit@google.com>
+Autosubmit+1: Wei Wang <wvw@google.com>
+Code-Review+2: Colin Cross <ccross@android.com>
+Verified+1: Wei Wang <wvw@google.com>
+Submitted-by: Wei Wang <wvw@google.com>
+Submitted-at: Tue, 06 Sep 2016 20:05:57 +0000
+Reviewed-on: https://android-review.googlesource.com/270113
+Project: platform/system/core
+Branch: refs/heads/master
