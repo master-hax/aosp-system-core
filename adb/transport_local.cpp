@@ -17,8 +17,7 @@
 #define TRACE_TAG TRANSPORT
 
 #include "sysdeps.h"
-#include "sysdeps/condition_variable.h"
-#include "sysdeps/mutex.h"
+#include <condition_variable>
 #include "transport.h"
 
 #include <errno.h>

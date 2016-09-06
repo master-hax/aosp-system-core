@@ -20,8 +20,7 @@
 
 #include "adb_io.h"
 #include "sysdeps.h"
-#include "sysdeps/condition_variable.h"
-#include "sysdeps/mutex.h"
+#include <condition_variable>
 
 static void increment_atomic_int(void* c) {
     sleep(1);
