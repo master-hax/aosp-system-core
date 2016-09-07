@@ -41,6 +41,7 @@ enum LogSeverity {
   INFO,
   WARNING,
   ERROR,
+  INTERNAL_FATAL,  // Fatal tag, but won't abort.
   FATAL,
 };
 

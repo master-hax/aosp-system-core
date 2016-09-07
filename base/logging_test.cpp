@@ -122,7 +122,9 @@ TEST(logging, CHECK) {
 
 std::string make_log_pattern(android::base::LogSeverity severity,
                              const char* message) {
-  static const char* log_characters = "VDIWEF";
+  static const char log_characters[] = "VDIWEFF";
+  static_assert(arraysize(log_characters) - 1 == android::base::FATAL + 1,
+                "Mismatch in size of log_characters and values in LogSeverity");
   char log_char = log_characters[severity];
   std::string holder(__FILE__);
   return android::base::StringPrintf(
@@ -141,6 +143,22 @@ TEST(logging, LOG) {
   // We can't usefully check the output of any of these on Windows because we
   // don't have std::regex, but we can at least make sure we printed at least as
   // many characters are in the log message.
+  {
+    CapturedStderr cap;
+    LOG(INTERNAL_FATAL) << "foobar";
+    ASSERT_EQ(0, lseek(cap.fd(), 0, SEEK_SET));
+
+    std::string output;
+    android::base::ReadFdToString(cap.fd(), &output);
+    ASSERT_GT(output.length(), strlen("foobar"));
+
+#if !defined(_WIN32)
+    std::regex message_regex(
+        make_log_pattern(android::base::INTERNAL_FATAL, "foobar"));
+    ASSERT_TRUE(std::regex_search(output, message_regex)) << output;
+#endif
+  }
+
   {
     CapturedStderr cap;
     LOG(WARNING) << "foobar";
@@ -196,6 +214,23 @@ TEST(logging, LOG) {
 #if !defined(_WIN32)
     std::regex message_regex(
         make_log_pattern(android::base::DEBUG, "foobar"));
+    ASSERT_TRUE(std::regex_search(output, message_regex)) << output;
+#endif
+  }
+
+  {
+    android::base::ScopedLogSeverity severity(android::base::VERBOSE);
+    CapturedStderr cap;
+    LOG(VERBOSE) << "foobar";
+    ASSERT_EQ(0, lseek(cap.fd(), 0, SEEK_SET));
+
+    std::string output;
+    android::base::ReadFdToString(cap.fd(), &output);
+    ASSERT_GT(output.length(), strlen("foobar"));
+
+#if !defined(_WIN32)
+    std::regex message_regex(
+        make_log_pattern(android::base::VERBOSE, "foobar"));
     ASSERT_TRUE(std::regex_search(output, message_regex)) << output;
 #endif
   }
