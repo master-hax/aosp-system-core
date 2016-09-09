@@ -205,6 +205,28 @@ bool Readlink(const std::string& path, std::string* result) {
 }
 #endif
 
+bool Realpath(const std::string& path, std::string* result) {
+#if defined(__linux__) || defined(__APPLE__)
+  char realpath_buf[PATH_MAX];
+  if (realpath(path.c_str(), realpath_buf) != realpath_buf) {
+    return false;
+  }
+  *result = realpath_buf;
+  return true;
+#elif defined(_WIN32)
+  char realpath_buf[PATH_MAX];
+  DWORD result = GetFullPathName(path.c_str(), sizeof(realpath_buf), realpath_buf, NULL);
+  if (result != 0 && result < sizeof(realpath_buf)) {
+    *result = realpath_buf;
+    return true;
+  }
+
+  return false;
+#else
+#error unknown OS
+#endif
+}
+
 std::string GetExecutablePath() {
 #if defined(__linux__)
   std::string path;
