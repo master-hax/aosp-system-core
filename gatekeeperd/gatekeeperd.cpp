@@ -317,7 +317,7 @@ public:
 
 private:
     gatekeeper_device_t *device;
-    UniquePtr<SoftGateKeeperDevice> soft_device;
+    std::unique_ptr<SoftGateKeeperDevice> soft_device;
     const hw_module_t *module;
 };
 }// namespace android
