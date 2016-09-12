@@ -37,6 +37,7 @@ extern "C" {
 /* android_log_context C++ helpers */
 extern "C++" {
 class android_log_event_context {
+friend class __android_log_event_context;
 
 private:
     android_log_context ctx;
