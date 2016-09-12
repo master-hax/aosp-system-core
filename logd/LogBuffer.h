@@ -27,6 +27,7 @@
 #include <sysutils/SocketClient.h>
 
 #include "LogBufferElement.h"
+#include "LogTags.h"
 #include "LogTimes.h"
 #include "LogStatistics.h"
 #include "LogWhiteBlackList.h"
@@ -103,6 +104,8 @@ class LogBuffer {
     LogBufferElement* droppedElements[LOG_ID_MAX];
     void log(LogBufferElement* elem);
 
+    LogTags tags;
+
 public:
     LastLogTimes &mTimes;
 
@@ -132,6 +135,12 @@ public:
 
     int initPrune(const char *cp) { return mPrune.init(cp); }
     std::string formatPrune() { return mPrune.format(); }
+
+    std::string formatGetEventTag(uid_t uid,
+                                  const char *name, const char *format) {
+        return tags.formatGetEventTag(uid, name, format);
+    }
+    const char *tagToName(uint32_t tag) { return tags.tagToName(tag); }
 
     // helper must be protected directly or implicitly by lock()/unlock()
     const char *pidToName(pid_t pid) { return stats.pidToName(pid); }
