@@ -25,6 +25,33 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+/*
+ * Chicken and egg problem since class android_log_event_context defined in
+ * system/core/log/log.h references this private liblog function if
+ * _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_ is defined.
+ *
+ * Event function to retrieve the composed event buffer.
+ */
+
+/*
+ * The opaque context used to manipulate lists of events.
+ */
+#ifndef __android_log_context_defined
+#define __android_log_context_defined
+typedef struct android_log_context_internal* android_log_context;
+#endif
+
+/* Retrieve the composed event buffer */
+int android_log_write_list_buffer(android_log_context ctx, const char** msg);
+
+#if defined(__cplusplus)
+}
+#endif
+
 #include <log/log.h>
 
 #define LOGGER_MAGIC 'l'

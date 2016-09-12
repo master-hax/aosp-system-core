@@ -332,6 +332,38 @@ LIBLOG_ABI_PUBLIC int android_log_write_list(android_log_context ctx,
         __android_log_security_bwrite(context->tag, msg, len);
 }
 
+LIBLOG_ABI_PRIVATE int android_log_write_list_buffer(android_log_context ctx,
+                                                     const char **buffer) {
+    android_log_context_internal *context;
+    const char *msg;
+    ssize_t len;
+
+    context = (android_log_context_internal *)ctx;
+    if (!context || (kAndroidLoggerWrite != context->read_write_flag)) {
+        return -EBADF;
+    }
+    if (context->list_nest_depth) {
+        return -EIO;
+    }
+    if (buffer == NULL) {
+        return -EFAULT;
+    }
+    /* NB: if there was overflow, then log is truncated. Nothing reported */
+    context->storage[1] = context->count[0];
+    len = context->len = context->pos;
+    msg = (const char *)context->storage;
+    /* it'snot a list */
+    if (context->count[0] <= 1) {
+        len -= sizeof(uint8_t) + sizeof(uint8_t);
+        if (len < 0) {
+            len = 0;
+        }
+        msg += sizeof(uint8_t) + sizeof(uint8_t);
+    }
+    *buffer = msg;
+    return len;
+}
+
 /*
  * Extract a 4-byte value from a byte stream.
  */

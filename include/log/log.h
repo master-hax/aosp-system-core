@@ -854,8 +854,8 @@ android_log_list_element android_log_peek_next(android_log_context ctx);
 int android_log_destroy(android_log_context* ctx);
 
 #ifdef __cplusplus
-#ifndef __class_android_log_event_context
-#define __class_android_log_event_context
+#ifndef __class_android_log_event_context_defined
+#define __class_android_log_event_context_defined
 /* android_log_context C++ helpers */
 extern "C++" {
 class android_log_event_context {
@@ -962,6 +962,20 @@ public:
         if (retval < 0) ret = retval;
         return ret >= 0;
     }
+
+#ifdef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
+#if defined(_USING_LIBCXX)
+#define __class_android_log_event_context_private_defined
+    operator std::string() {
+        if (ret) return std::string("");
+        const char* cp = NULL;
+        ssize_t len = android_log_write_list_buffer(ctx, &cp);
+        if (len < 0) ret = len;
+        if (!cp || (len <= 0)) return std::string("");
+        return std::string(cp, len);
+    }
+#endif
+#endif
 
     android_log_list_element read() { return android_log_read_next(ctx); }
     android_log_list_element peek() { return android_log_peek_next(ctx); }
