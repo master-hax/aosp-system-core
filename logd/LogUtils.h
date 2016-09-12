@@ -39,8 +39,9 @@ size_t sizesTotal();
 char *pidToName(pid_t pid);
 char *tidToName(pid_t tid);
 
-// Furnished in main.cpp. Thread safe.
-const char *tagToName(size_t *len, uint32_t tag);
+// Furnished in LogTags.cpp. Thread safe.
+const char *tagToName(uint32_t tag);
+void ReReadEventLogTags();
 
 }
 
