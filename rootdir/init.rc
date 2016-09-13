@@ -555,6 +555,8 @@ on boot
     # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
 
+    # Start all binderized HAL daemons
+    class_start hal
     class_start core
 
 on nonencrypted
