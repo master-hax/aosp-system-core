@@ -132,12 +132,16 @@ LIBLOG_ABI_PUBLIC int __android_log_dev_available()
     }
     return kLogNotAvailable;
 }
+
+static atomic_uintptr_t tagMap;
+
 /*
  * Release any logger resources. A new log write will immediately re-acquire.
  */
 LIBLOG_ABI_PUBLIC void __android_log_close()
 {
     struct android_log_transport_write *transport;
+    EventTagMap *m;
 
     __android_log_lock();
 
@@ -164,6 +168,9 @@ LIBLOG_ABI_PUBLIC void __android_log_close()
             (*transport->close)();
         }
     }
+
+    m = (EventTagMap *)atomic_exchange(&tagMap, (uintptr_t)0);
+    android_closeEventTagMap(m);
 
     __android_log_unlock();
 }
@@ -250,7 +257,6 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
             return -EPERM;
         }
     } else if (log_id == LOG_ID_EVENTS) {
-        static atomic_uintptr_t map;
         const char *tag;
         EventTagMap *m, *f;
 
@@ -260,11 +266,11 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 
         tag = NULL;
         f = NULL;
-        m = (EventTagMap *)atomic_load(&map);
+        m = (EventTagMap *)atomic_load(&tagMap);
 
         if (!m) {
             ret = __android_log_trylock();
-            m = (EventTagMap *)atomic_load(&map); /* trylock flush cache */
+            m = (EventTagMap *)atomic_load(&tagMap); /* trylock flush cache */
             if (!m) {
                 m = android_openEventTagMap(EVENT_TAG_MAP_FILE);
                 if (ret) { /* trylock failed, use local copy, mark for close */
@@ -273,7 +279,7 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
                     if (!m) { /* One chance to open map file */
                         m = (EventTagMap *)(uintptr_t)-1LL;
                     }
-                    atomic_store(&map, (uintptr_t)m);
+                    atomic_store(&tagMap, (uintptr_t)m);
                 }
             }
             if (!ret) { /* trylock succeeded, unlock */
