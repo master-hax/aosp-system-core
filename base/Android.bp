@@ -28,6 +28,7 @@ cc_library {
         "file.cpp",
         "logging.cpp",
         "parsenetaddress.cpp",
+        "quick_exit.cpp",
         "stringprintf.cpp",
         "strings.cpp",
         "test_utils.cpp",
@@ -39,15 +40,12 @@ cc_library {
     target: {
         android: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         darwin: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         linux: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         windows: {
             srcs: [
@@ -71,6 +69,7 @@ cc_test {
         "logging_test.cpp",
         "parseint_test.cpp",
         "parsenetaddress_test.cpp",
+        "quick_exit_test.cpp",
         "stringprintf_test.cpp",
         "strings_test.cpp",
         "test_main.cpp",
