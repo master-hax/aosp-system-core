@@ -556,6 +556,7 @@ on boot
     setprop net.tcp.default_init_rwnd 60
 
     class_start core
+    class_start hal
 
 on nonencrypted
     # A/B update verifier that marks a successful boot.
