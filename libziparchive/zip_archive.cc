@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <utime.h>
 
 #include <memory>
 #include <vector>
@@ -33,6 +34,7 @@
 #include "android-base/file.h"
 #include "android-base/macros.h"  // TEMP_FAILURE_RETRY may or may not be in unistd
 #include "android-base/memory.h"
+#include <android-base/unique_fd.h>
 #include "log/log.h"
 #include "utils/Compat.h"
 #include "utils/FileMap.h"
@@ -42,6 +44,11 @@
 #include "entry_name_utils-inl.h"
 #include "zip_archive_common.h"
 #include "zip_archive_private.h"
+
+#ifdef _ANDROID_
+#include <selinux/label.h>
+#include <selinux/selinux.h>
+#endif
 
 using android::base::get_unaligned;
 
@@ -1073,3 +1080,188 @@ const char* ErrorCodeString(int32_t error_code) {
 int GetFileDescriptor(const ZipArchiveHandle handle) {
   return reinterpret_cast<ZipArchive*>(handle)->fd;
 }
+
+#if !defined(_WIN32)
+class ProcessWriter : public Writer {
+ public:
+  ProcessWriter(ProcessZipEntryFunction func, void* cookie) : Writer(),
+    proc_function_(func),
+    cookie_(cookie) {
+  }
+
+  virtual bool Append(uint8_t* buf, size_t buf_size) override {
+    return proc_function_(buf, buf_size, cookie_);
+  }
+
+ private:
+  ProcessZipEntryFunction proc_function_;
+  void* cookie_;
+};
+
+int32_t ProcessZipEntryContents(ZipArchiveHandle handle, ZipEntry* entry,
+                                ProcessZipEntryFunction func, void* cookie){
+  std::unique_ptr<Writer> writer(new ProcessWriter(func, cookie));
+  return ExtractToWriter(handle, entry, writer.get());
+}
+
+static bool IsDir(const std::string& dirpath) {
+  struct stat st;
+  if (stat(dirpath.c_str(), &st) == 0) {
+    if (S_ISDIR(st.st_mode)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool MKdirWithParents(const std::string& path, int mode, const struct utimbuf *timestamp,
+                             __attribute__((unused)) void* sehnd) {
+  size_t prev_end = 0;
+  while (prev_end < path.size()) {
+    size_t next_end = path.find('/', prev_end + 1);
+    if (next_end == std::string::npos) {
+      break;
+    }
+    std::string dir_path = path.substr(0, next_end);
+    if (!IsDir(dir_path)) {
+
+#ifdef _ANDROID_
+      char *secontext = nullptr;
+      if (sehnd) {
+        selabel_lookup(reinterpret_cast<selabel_handle>(sehnd), &secontext, dir_path.c_str(), mode);
+        setfscreatecon(secontext);
+      }
+#endif
+      int ret = mkdir(dir_path.c_str(), mode);
+#ifdef _ANDROID_
+      if (secontext) {
+        freecon(secontext);
+        setfscreatecon(NULL);
+      }
+#endif
+      if (ret != 0) {
+        ALOGE("failed to create dir %s\n", dir_path.c_str());
+        return false;
+      }
+
+      if (timestamp != NULL && utime(dir_path.c_str(), timestamp)) {
+        return -1;
+      }
+    }
+    prev_end = next_end;
+  }
+  return true;
+}
+
+/*
+ * Inflate all entries under zipDir to the directory specified by
+ * targetDir.
+ *
+ * The immediate children of zipDir will become the immediate
+ * children of targetDir; e.g., if the archive contains the entries
+ *
+ *     a/b/c/one
+ *     a/b/c/two
+ *     a/b/c/d/three
+ *
+ * and ExtractPackageRecursive(a, "a/b/c", "/tmp") is called, the resulting
+ * files will be
+ *
+ *     /tmp/one
+ *     /tmp/two
+ *     /tmp/d/three
+ *
+ * Returns true on success, false on failure.
+ */
+bool ExtractPackageRecursive(ZipArchiveHandle zip, const std::string& zip_path,
+                            const std::string& dest_path, const struct utimbuf* timestamp,
+                            __attribute__((unused)) void* sehnd) {
+  if (!zip_path.empty() && zip_path[0] == '/') {
+    ALOGE("ExtractPackageRecursive(): zip_path must be a relative path: %s\n", zip_path.c_str());
+    return false;
+  }
+  if (dest_path.empty() || dest_path[0] != '/') {
+    ALOGE("ExtractPackageRecursive(): dest_path must be an absolute path: %s\n", dest_path.c_str());
+    return false;
+  }
+
+#define UNZIP_DIRMODE 0755
+#define UNZIP_FILEMODE 0644
+  void* cookie;
+  std::string target_dir(dest_path);
+  if (dest_path.back() != '/') {
+    target_dir += '/';
+  }
+  std::string prefix_path(zip_path);
+  if (!zip_path.empty() && zip_path.back() != '/') {
+    prefix_path += '/';
+  }
+  const ZipString zip_prefix(prefix_path.c_str());
+
+  int ret = StartIteration(zip, &cookie, &zip_prefix, nullptr);
+  if (ret != 0) {
+    ALOGE("failed to start iterating zip entries.\n");
+    return false;
+  }
+
+  std::unique_ptr<void, decltype(&EndIteration)> guard(cookie, EndIteration);
+  ZipEntry entry;
+  ZipString name;
+  int extractCount = 0;
+  while (Next(cookie, &entry, &name) == 0) {
+    std::string entry_name(name.name, name.name + name.name_length);
+    std::string path = target_dir + entry_name;
+    // Skip dir.
+    if (path.back() == '/') {
+        continue;
+    }
+    //TODO handle the symlink.
+    if (!MKdirWithParents(path, UNZIP_DIRMODE, timestamp, sehnd)) {
+      ALOGE("failed to create dir for %s.\n", path.c_str());
+      return false;
+    }
+
+#ifdef _ANDROID_
+    char *secontext = NULL;
+    if (sehnd) {
+      selabel_lookup(reinterpret_cast<selabel_handle>(sehnd), &secontext, path.c_str(),
+                     UNZIP_FILEMODE);
+      setfscreatecon(secontext);
+    }
+#endif
+    android::base::unique_fd fd(open(path.c_str(), O_CREAT|O_WRONLY|O_TRUNC, UNZIP_FILEMODE));
+    if (fd == -1) {
+      ALOGE("Can't create target file \"%s\": %s", path.c_str(), strerror(errno));
+      return false;
+    }
+#ifdef _ANDROID_
+    if (secontext) {
+      freecon(secontext);
+      setfscreatecon(NULL);
+    }
+#endif
+
+    if (ExtractEntryToFile(zip, &entry, fd.get()) != 0) {
+      ALOGE("Error extracting \"%s\"", path.c_str());
+      return false;
+    }
+
+    if (fsync(fd.get()) != 0) {
+      ALOGE("Error syncing file descriptor when extracting \"%s\"", path.c_str());
+      return false;
+    }
+
+    if (timestamp != nullptr && utime(path.c_str(), timestamp)) {
+      ALOGE("Error touching \"%s\"", path.c_str());
+      return false;
+    }
+
+    ALOGE("Extracted file \"%s\"", path.c_str());
+    ++extractCount;
+  }
+
+  ALOGE("Extracted %d file(s)", extractCount);
+  return true;
+}
+
+#endif //!define(_WIN32)
