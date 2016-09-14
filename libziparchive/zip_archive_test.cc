@@ -21,11 +21,16 @@
 #include <string.h>
 #include <unistd.h>
 
+#if !defined(_WIN32)
+#include <pthread.h>
+#endif
+
 #include <memory>
 #include <vector>
 
 #include <android-base/file.h>
 #include <android-base/test_utils.h>
+#include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
 #include <ziparchive/zip_archive.h>
 #include <ziparchive/zip_archive_stream_entry.h>
@@ -493,6 +498,146 @@ TEST(ziparchive, ExtractToFile) {
   ASSERT_EQ(static_cast<ssize_t>(data_size + kATxtContents.size()),
             lseek64(tmp_file.fd, 0, SEEK_END));
 }
+
+#if !defined(_WIN32)
+class NewThreadInfo {
+ public:
+  ZipArchiveHandle za;
+  ZipEntry entry;
+  int fd;
+  bool data_state;
+  size_t data_written;
+  size_t target_count;
+
+  pthread_mutex_t mu;
+  pthread_cond_t cv;
+
+  NewThreadInfo() : data_state(false), data_written(0), target_count(0) {
+  }
+};
+
+static void TestWriter(const uint8_t* data, void* cookie) {
+  NewThreadInfo* info = reinterpret_cast<NewThreadInfo*>(cookie);
+
+  ASSERT_TRUE(android::base::WriteFully(info->fd, data, info->target_count));
+  info->data_written = info->target_count;
+}
+
+static bool ReceiveNewData(const uint8_t* data, size_t size, void* cookie) {
+  NewThreadInfo* nti = reinterpret_cast<NewThreadInfo*>(cookie);
+
+  while (size > 0) {
+    pthread_mutex_lock(&nti->mu);
+    while (nti->data_state == false) {
+        pthread_cond_wait(&nti->cv, &nti->mu);
+    }
+    pthread_mutex_unlock(&nti->mu);
+
+    nti->data_written = 0;
+    if (nti->target_count > size) {
+      nti->target_count = size;
+    }
+    TestWriter(data, cookie);
+    data += nti->target_count;
+    size -= nti->target_count;
+
+    if (nti->data_written == nti->target_count) {
+      pthread_mutex_lock(&nti->mu);
+      nti->data_state = false;
+      pthread_cond_broadcast(&nti->cv);
+      pthread_mutex_unlock(&nti->mu);
+    }
+  }
+  return true;
+}
+
+static void* UnzipNewData(void* cookie) {
+  NewThreadInfo* nti = reinterpret_cast<NewThreadInfo*>(cookie);
+  ProcessZipEntryContents(nti->za, &nti->entry, &ReceiveNewData, nti);
+  return nullptr;
+}
+
+// This test mimics the useage in OTA updater. We stream the content of a zip
+// entry out of the archive and hold the writer until its turn to go.
+TEST(ziparchive, ProcessZipEntryContents) {
+  TemporaryFile tmp_file;
+  ASSERT_NE(-1, tmp_file.fd);
+
+  ZipArchiveHandle handle;
+  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+
+  ZipEntry entry;
+  ZipString name;
+  SetZipString(&name, kATxtName);
+  ASSERT_EQ(0, FindEntry(handle, name, &entry));
+
+  NewThreadInfo* info = new NewThreadInfo();
+  info->za = handle;
+  info->entry = entry;
+  info->fd = tmp_file.fd;
+  pthread_mutex_init(&info->mu, nullptr);
+  pthread_cond_init(&info->cv, nullptr);
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+  pthread_t thread;
+
+  pthread_create(&thread, &attr, UnzipNewData, info);
+
+  size_t written = 0;
+  size_t size = entry.uncompressed_length;
+  while (written < size) {
+    pthread_mutex_lock(&info->mu);
+    info->data_state = true;
+    // Write 1/3 of the data at a time until we finish writing all the entry
+    // contents.
+    size_t to_write = (size/3 < size - written ? size/3 : size - written);
+    info->target_count = to_write;
+    pthread_cond_broadcast(&info->cv);
+
+    while(info->data_state) {
+      pthread_cond_wait(&info->cv, &info->mu);
+    }
+
+    pthread_mutex_unlock(&info->mu);
+    written += to_write;
+  }
+
+  std::vector<uint8_t> read_data(entry.uncompressed_length);
+  ASSERT_EQ(0, lseek64(tmp_file.fd, 0, SEEK_SET));
+  ASSERT_TRUE(android::base::ReadFully(tmp_file.fd, read_data.data(), entry.uncompressed_length));
+  ASSERT_EQ(read_data.size(), kATxtContents.size());
+  ASSERT_EQ(0, memcmp(read_data.data(), kATxtContents.data(), kATxtContents.size()));
+}
+
+TEST(ziparchive, ExtractPackageRecursive) {
+  TemporaryDir td;
+  ASSERT_NE(td.path, nullptr);
+  ZipArchiveHandle handle;
+  ASSERT_EQ(0, OpenArchiveWrapper(kValidZip, &handle));
+
+  ExtractPackageRecursive(handle, "", td.path, nullptr, nullptr);
+
+  std::string path(td.path);
+  android::base::unique_fd fd(open((path + "/a.txt").c_str(), O_RDONLY));
+  ASSERT_NE(fd, -1);
+  std::vector<uint8_t> read_data;
+  read_data.resize(kATxtContents.size());
+  ASSERT_TRUE(android::base::ReadFully(fd.get(), read_data.data(), read_data.size()));
+  ASSERT_EQ(0, memcmp(read_data.data(), kATxtContents.data(), kATxtContents.size()));
+
+  fd.reset(open((path + "/b.txt").c_str(), O_RDONLY));
+  ASSERT_NE(fd, -1);
+  fd.reset(open((path + "/b/c.txt").c_str(), O_RDONLY));
+  ASSERT_NE(fd, -1);
+  fd.reset(open((path + "/b/d.txt").c_str(), O_RDONLY));
+  ASSERT_NE(fd, -1);
+  read_data.resize(kBTxtContents.size());
+  ASSERT_TRUE(android::base::ReadFully(fd.get(), read_data.data(), read_data.size()));
+  ASSERT_EQ(0, memcmp(read_data.data(), kBTxtContents.data(), kBTxtContents.size()));
+}
+
+#endif
 
 static void ZipArchiveStreamTest(
     ZipArchiveHandle& handle, const std::string& entry_name, bool raw,
