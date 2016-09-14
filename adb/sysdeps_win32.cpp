@@ -1714,7 +1714,7 @@ size_t _escape_prefix(char* const buf, const size_t len) {
 }
 
 // Internal buffer to satisfy future _console_read() calls.
-static auto& g_console_input_buffer = *new std::vector<char>();
+static std::vector<char> g_console_input_buffer;
 
 // Writes to buffer buf (of length len), returning number of bytes written or -1 on error. Never
 // returns zero on console closure because Win32 consoles are never 'closed' (as far as I can tell).
@@ -2438,7 +2438,7 @@ size_t ParseCompleteUTF8(const char* const first, const char* const last,
 // Note that we use only one buffer even though stderr and stdout are logically separate streams.
 // This matches the behavior of Linux.
 // Protected by g_console_output_buffer_lock.
-static auto& g_console_output_buffer = *new std::vector<char>();
+static std::vector<char> g_console_output_buffer;
 
 // Internal helper function to write UTF-8 bytes to a console. Returns -1 on error.
 static int _console_write_utf8(const char* const buf, const size_t buf_size, FILE* stream,
@@ -2680,7 +2680,7 @@ extern "C" int wmain(int argc, wchar_t **argv) {
 // currently updated if putenv, setenv, unsetenv are called. Note that no
 // thread synchronization is done, but we're called early enough in
 // single-threaded startup that things work ok.
-static auto& g_environ_utf8 = *new std::unordered_map<std::string, char*>();
+static std::unordered_map<std::string, char*> g_environ_utf8;
 
 // Make sure that shadow UTF-8 environment variables are setup.
 static void _ensure_env_setup() {

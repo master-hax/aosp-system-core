@@ -47,6 +47,9 @@
 #include <android-base/file.h>
 #include <android-base/strings.h>
 #include <android-base/stringprintf.h>
+#include <android-base/quick_exit.h>
+
+using android::base::quick_exit;
 
 struct syncsendbuf {
     unsigned id;
@@ -528,7 +531,7 @@ class SyncConnection {
             } else {
                 Error("%zu-byte write failed: %s", data_length, strerror(errno));
             }
-            _exit(1);
+            quick_exit(1);
         }
         return true;
     }

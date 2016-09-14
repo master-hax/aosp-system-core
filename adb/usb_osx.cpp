@@ -35,10 +35,13 @@
 #include <vector>
 
 #include <android-base/logging.h>
+#include <android-base/quick_exit.h>
 #include <android-base/stringprintf.h>
 
 #include "adb.h"
 #include "transport.h"
+
+using android::base::at_quick_exit;
 
 struct usb_handle
 {
@@ -59,8 +62,8 @@ struct usb_handle
 
 static std::atomic<bool> usb_inited_flag;
 
-static auto& g_usb_handles_mutex = *new std::mutex();
-static auto& g_usb_handles = *new std::vector<std::unique_ptr<usb_handle>>();
+static std::mutex g_usb_handles_mutex;
+static std::vector<std::unique_ptr<usb_handle>> g_usb_handles;
 
 static bool IsKnownDevice(const std::string& devpath) {
     std::lock_guard<std::mutex> lock_guard(g_usb_handles_mutex);
@@ -392,7 +395,7 @@ err_get_num_ep:
     return nullptr;
 }
 
-std::mutex& operate_device_lock = *new std::mutex();
+static std::mutex operate_device_lock;
 
 static void RunLoopThread(void* unused) {
     adb_thread_setname("RunLoop");
@@ -421,7 +424,7 @@ static void usb_cleanup() {
 void usb_init() {
     static bool initialized = false;
     if (!initialized) {
-        atexit(usb_cleanup);
+        at_quick_exit(usb_cleanup);
 
         usb_inited_flag = false;
 

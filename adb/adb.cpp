@@ -38,6 +38,7 @@
 #include <android-base/logging.h>
 #include <android-base/macros.h>
 #include <android-base/parsenetaddress.h>
+#include <android-base/quick_exit.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 
@@ -52,6 +53,8 @@
 #include <sys/capability.h>
 #include <sys/mount.h>
 #endif
+
+using android::base::quick_exit;
 
 std::string adb_version() {
     // Don't change the format of this --- it's parsed by ddmlib.
@@ -1022,7 +1025,7 @@ int handle_host_request(const char* service, TransportType type,
         // may not read the OKAY sent above.
         adb_shutdown(reply_fd);
 
-        exit(0);
+        quick_exit(0);
     }
 
 #if ADB_HOST

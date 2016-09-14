@@ -119,19 +119,19 @@ const char* getprogname() {
 namespace android {
 namespace base {
 
-static auto& logging_lock = *new std::mutex();
+static std::mutex logging_lock;
 
 #ifdef __ANDROID__
-static auto& gLogger = *new LogFunction(LogdLogger());
+static LogFunction gLogger = LogdLogger();
 #else
-static auto& gLogger = *new LogFunction(StderrLogger);
+static LogFunction gLogger = StderrLogger;
 #endif
 
-static auto& gAborter = *new AbortFunction(DefaultAborter);
+static AbortFunction gAborter = DefaultAborter;
 
 static bool gInitialized = false;
 static LogSeverity gMinimumLogSeverity = INFO;
-static auto& gProgramInvocationName = *new std::unique_ptr<std::string>();
+static std::unique_ptr<std::string> gProgramInvocationName;
 
 static const char* ProgramInvocationName() {
   if (gProgramInvocationName == nullptr) {

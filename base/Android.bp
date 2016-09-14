@@ -40,15 +40,12 @@ cc_library {
     target: {
         android: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         darwin: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         linux: {
             srcs: ["errors_unix.cpp"],
-            cppflags: ["-Wexit-time-destructors"],
         },
         windows: {
             srcs: [

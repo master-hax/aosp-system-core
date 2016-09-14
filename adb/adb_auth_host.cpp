@@ -47,10 +47,9 @@
 #include "sysdeps.h"
 #include "sysdeps/mutex.h"
 
-static std::mutex& g_keys_mutex = *new std::mutex;
-static std::map<std::string, std::shared_ptr<RSA>>& g_keys =
-    *new std::map<std::string, std::shared_ptr<RSA>>;
-static std::map<int, std::string>& g_monitored_paths = *new std::map<int, std::string>;
+static std::mutex g_keys_mutex;
+static std::map<std::string, std::shared_ptr<RSA>> g_keys;
+static std::map<int, std::string> g_monitored_paths;
 
 static std::string get_user_info() {
     LOG(INFO) << "get_user_info...";

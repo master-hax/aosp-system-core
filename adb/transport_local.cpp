@@ -151,9 +151,9 @@ struct RetryPort {
 };
 
 // Retry emulators just kicked.
-static std::vector<RetryPort>& retry_ports = *new std::vector<RetryPort>;
-std::mutex &retry_ports_lock = *new std::mutex;
-std::condition_variable &retry_ports_cond = *new std::condition_variable;
+static std::vector<RetryPort> retry_ports;
+static std::mutex retry_ports_lock;
+static std::condition_variable retry_ports_cond;
 
 static void client_socket_thread(void* x) {
     adb_thread_setname("client_socket_thread");

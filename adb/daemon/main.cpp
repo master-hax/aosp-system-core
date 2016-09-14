@@ -29,6 +29,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/quick_exit.h>
 #include <android-base/stringprintf.h>
 #include <libminijail.h>
 #include <scoped_minijail.h>
@@ -251,5 +252,5 @@ int main(int argc, char** argv) {
     adb_trace_init(argv);
 
     D("Handling main()");
-    return adbd_main(DEFAULT_ADB_PORT);
+    quick_exit(adbd_main(DEFAULT_ADB_PORT));
 }

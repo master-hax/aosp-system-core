@@ -65,7 +65,7 @@ alistener::~alistener() {
 // listener_list retains ownership of all created alistener objects. Removing an alistener from
 // this list will cause it to be deleted.
 typedef std::list<std::unique_ptr<alistener>> ListenerList;
-static ListenerList& listener_list = *new ListenerList();
+static ListenerList listener_list;
 
 static void ss_listener_event_func(int _fd, unsigned ev, void *_l) {
     if (ev & FDE_READ) {

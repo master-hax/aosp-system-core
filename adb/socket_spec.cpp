@@ -50,7 +50,7 @@ struct LocalSocketType {
     bool available;
 };
 
-static auto& kLocalSocketTypes = *new std::unordered_map<std::string, LocalSocketType>({
+static std::unordered_map<std::string, LocalSocketType> kLocalSocketTypes = {
 #if ADB_HOST
     { "local", { ANDROID_SOCKET_NAMESPACE_FILESYSTEM, !ADB_WINDOWS } },
 #else
@@ -60,7 +60,7 @@ static auto& kLocalSocketTypes = *new std::unordered_map<std::string, LocalSocke
     { "localreserved", { ANDROID_SOCKET_NAMESPACE_RESERVED, !ADB_HOST } },
     { "localabstract", { ANDROID_SOCKET_NAMESPACE_ABSTRACT, ADB_LINUX } },
     { "localfilesystem", { ANDROID_SOCKET_NAMESPACE_FILESYSTEM, !ADB_WINDOWS } },
-});
+};
 
 static bool parse_tcp_spec(const std::string& spec, std::string* hostname, int* port,
                            std::string* error) {

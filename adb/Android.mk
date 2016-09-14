@@ -19,11 +19,9 @@ ADB_COMMON_CFLAGS := \
 
 ADB_COMMON_linux_CFLAGS := \
     -std=c++14 \
-    -Wexit-time-destructors \
 
 ADB_COMMON_darwin_CFLAGS := \
     -std=c++14 \
-    -Wexit-time-destructors \
 
 # Define windows.h and tchar.h Unicode preprocessor symbols so that
 # CreateFile(), _tfopen(), etc. map to versions that take wchar_t*, breaking the

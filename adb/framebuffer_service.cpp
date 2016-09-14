@@ -76,7 +76,7 @@ void framebuffer_service(int fd, void *cookie)
         const char* command = "screencap";
         const char *args[2] = {command, NULL};
         execvp(command, (char**)args);
-        exit(1);
+        _exit(1);
     }
 
     adb_close(fds[1]);

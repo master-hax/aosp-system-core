@@ -249,7 +249,7 @@ TEST_F(sysdeps_poll, fd_count) {
 
 TEST(sysdeps_mutex, mutex_smoke) {
     static std::atomic<bool> finished(false);
-    static std::mutex &m = *new std::mutex();
+    static std::mutex m;
     m.lock();
     ASSERT_FALSE(m.try_lock());
     adb_thread_create([](void*) {
@@ -273,7 +273,7 @@ TEST(sysdeps_mutex, mutex_smoke) {
 // Our implementation on Windows aborts on double lock.
 #if defined(_WIN32)
 TEST(sysdeps_mutex, mutex_reentrant_lock) {
-    std::mutex &m = *new std::mutex();
+    std::mutex m;
 
     m.lock();
     ASSERT_FALSE(m.try_lock());
@@ -282,7 +282,7 @@ TEST(sysdeps_mutex, mutex_reentrant_lock) {
 #endif
 
 TEST(sysdeps_mutex, recursive_mutex_smoke) {
-    static std::recursive_mutex &m = *new std::recursive_mutex();
+    static std::recursive_mutex m;
 
     m.lock();
     ASSERT_TRUE(m.try_lock());
@@ -304,8 +304,8 @@ TEST(sysdeps_mutex, recursive_mutex_smoke) {
 }
 
 TEST(sysdeps_condition_variable, smoke) {
-    static std::mutex &m = *new std::mutex;
-    static std::condition_variable &cond = *new std::condition_variable;
+    static std::mutex m;
+    static std::condition_variable cond;
     static volatile bool flag = false;
 
     std::unique_lock<std::mutex> lock(m);

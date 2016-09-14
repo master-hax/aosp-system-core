@@ -37,6 +37,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/quick_exit.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 
@@ -59,13 +60,15 @@
 #include "services.h"
 #include "shell_service.h"
 
+using android::base::quick_exit;
+
 static int install_app(TransportType t, const char* serial, int argc, const char** argv);
 static int install_multiple_app(TransportType t, const char* serial, int argc, const char** argv);
 static int uninstall_app(TransportType t, const char* serial, int argc, const char** argv);
 static int install_app_legacy(TransportType t, const char* serial, int argc, const char** argv);
 static int uninstall_app_legacy(TransportType t, const char* serial, int argc, const char** argv);
 
-static auto& gProductOutPath = *new std::string();
+static std::string gProductOutPath;
 extern int gListenAll;
 
 DefaultStandardStreamsCallback DEFAULT_STANDARD_STREAMS_CALLBACK(nullptr, nullptr);
@@ -74,7 +77,7 @@ static std::string product_file(const char *extra) {
     if (gProductOutPath.empty()) {
         fprintf(stderr, "adb: Product directory not specified; "
                 "use -p or define ANDROID_PRODUCT_OUT\n");
-        exit(1);
+        quick_exit(1);
     }
 
     return android::base::StringPrintf("%s%s%s",
@@ -585,7 +588,7 @@ static void stdin_read_thread_loop(void* x) {
                     if (ch == '.') {
                         fprintf(stderr,"\r\n[ disconnected ]\r\n");
                         stdin_raw_restore();
-                        exit(0);
+                        quick_exit(0);
                     } else {
                         // We swallowed an escape character that wasn't part of
                         // a valid escape sequence; time to cough it up.
@@ -1026,7 +1029,7 @@ static int ppp(int argc, const char** argv) {
         if (err < 0) {
             perror("execing pppd");
         }
-        exit(-1);
+        quick_exit(-1);
     } else {
         // parent side
 
@@ -1374,7 +1377,7 @@ static void parse_push_pull_args(const char** arg, int narg,
                 ignore_flags = true;
             } else {
                 fprintf(stderr, "adb: unrecognized option '%s'\n", *arg);
-                exit(1);
+                quick_exit(1);
             }
         }
         ++arg;
@@ -1544,7 +1547,7 @@ int adb_commandline(int argc, const char **argv) {
 
     if ((server_host_str || server_port_str) && server_socket_str) {
         fprintf(stderr, "adb: -L is incompatible with -H or -P\n");
-        exit(1);
+        quick_exit(1);
     }
 
     // If -L, -H, or -P are specified, ignore environment variables.

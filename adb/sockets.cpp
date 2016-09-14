@@ -30,6 +30,8 @@
 #include <string>
 #include <vector>
 
+#include <android-base/quick_exit.h>
+
 #if !ADB_HOST
 #include "cutils/properties.h"
 #endif
@@ -39,7 +41,9 @@
 #include "sysdeps/mutex.h"
 #include "transport.h"
 
-static std::recursive_mutex& local_socket_list_lock = *new std::recursive_mutex();
+using android::base::quick_exit;
+
+static std::recursive_mutex local_socket_list_lock;
 static unsigned local_socket_next_id = 1;
 
 static asocket local_socket_list = {
@@ -205,7 +209,7 @@ static void local_socket_destroy(asocket* s) {
 
     if (exit_on_close) {
         D("local_socket_destroy: exiting");
-        exit(1);
+        quick_exit(1);
     }
 }
 
