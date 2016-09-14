@@ -60,7 +60,7 @@ cc_library {
     shared_libs: ["liblog", "libbase"],
     target: {
         android: {
-            static_libs: ["libz"],
+            static_libs: ["libz", "libselinux"],
         },
         host: {
             shared_libs: ["libz-host"],

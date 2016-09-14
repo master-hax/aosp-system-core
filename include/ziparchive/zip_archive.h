@@ -26,6 +26,8 @@
 #include <sys/types.h>
 #include <utils/Compat.h>
 
+#include <string>
+
 __BEGIN_DECLS
 
 /* Zip compression methods we support */
@@ -213,6 +215,21 @@ int32_t ExtractToMemory(ZipArchiveHandle handle, ZipEntry* entry,
 int GetFileDescriptor(const ZipArchiveHandle handle);
 
 const char* ErrorCodeString(int32_t error_code);
+
+#if !defined(_WIN32)
+
+typedef bool (*ProcessZipEntryFunction)(const uint8_t* buf, size_t buf_size, void* cookie);
+
+/*
+ * Stream the uncompressed data through the supplied function,
+ * passing cookie to it each time it gets called.
+*/
+int32_t ProcessZipEntryContents(ZipArchiveHandle handle, ZipEntry* entry,
+        ProcessZipEntryFunction func, void* cookie);
+
+bool ExtractPackageRecursive(ZipArchiveHandle zip, const std::string& zip_path, const std::string& dest_path,
+                             const struct utimbuf* timestamp, void* sehnd);
+#endif
 
 __END_DECLS
 
