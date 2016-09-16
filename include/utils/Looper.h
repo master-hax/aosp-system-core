@@ -24,6 +24,11 @@
 
 #include <sys/epoll.h>
 
+// This file uses constructors that take parameters that shadow
+// member variables in initializer lists.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshadow-field-in-constructor"
+
 namespace android {
 
 /*
@@ -66,7 +71,7 @@ struct Message {
  */
 class MessageHandler : public virtual RefBase {
 protected:
-    virtual ~MessageHandler() { }
+    virtual ~MessageHandler();
 
 public:
     /**
@@ -97,7 +102,7 @@ private:
  */
 class LooperCallback : public virtual RefBase {
 protected:
-    virtual ~LooperCallback() { }
+    virtual ~LooperCallback();
 
 public:
     /**
@@ -483,5 +488,7 @@ private:
 };
 
 } // namespace android
+
+#pragma clang diagnostic pop
 
 #endif // UTILS_LOOPER_H

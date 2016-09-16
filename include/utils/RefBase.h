@@ -183,6 +183,11 @@
 // ---------------------------------------------------------------------------
 namespace android {
 
+// This file uses constructors that take parameters that shadow
+// member variables in initializer lists.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshadow-field-in-constructor"
+
 class TextOutput;
 TextOutput& printWeakPointer(TextOutput& to, const void* val);
 
@@ -212,7 +217,7 @@ protected:
     // subclasses; we have to make it protected to guarantee that it
     // cannot be called from this base class (and to make strict compilers
     // happy).
-    ~ReferenceRenamer() { }
+    ~ReferenceRenamer();
 public:
     virtual void operator()(size_t i) const = 0;
 };
@@ -372,7 +377,7 @@ private:
 // destructor to eliminate the template requirement of LightRefBase
 class VirtualLightRefBase : public LightRefBase<VirtualLightRefBase> {
 public:
-    virtual ~VirtualLightRefBase() {}
+    virtual ~VirtualLightRefBase();
 };
 
 // ---------------------------------------------------------------------------
@@ -712,6 +717,7 @@ void move_backward_type(wp<TYPE>* d, wp<TYPE> const* s, size_t n) {
     ReferenceMover::move_references(d, s, n);
 }
 
+#pragma clang diagnostic pop
 
 }; // namespace android
 
