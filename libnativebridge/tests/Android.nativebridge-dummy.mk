@@ -15,6 +15,8 @@ LOCAL_CFLAGS += -Werror -Wall
 LOCAL_CPPFLAGS := -std=gnu++11 -fvisibility=protected
 LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_MULTILIB := both
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/../include
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -30,6 +32,8 @@ LOCAL_CFLAGS += -Werror -Wall
 LOCAL_CPPFLAGS := -std=gnu++11 -fvisibility=protected
 LOCAL_LDFLAGS := -ldl
 LOCAL_MULTILIB := both
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/../include
 
 include $(BUILD_HOST_SHARED_LIBRARY)
 
@@ -51,6 +55,8 @@ LOCAL_CFLAGS += -Werror -Wall
 LOCAL_CPPFLAGS := -std=gnu++11 -fvisibility=protected
 LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_MULTILIB := both
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/../include
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -66,5 +72,7 @@ LOCAL_CFLAGS += -Werror -Wall
 LOCAL_CPPFLAGS := -std=gnu++11 -fvisibility=protected
 LOCAL_LDFLAGS := -ldl
 LOCAL_MULTILIB := both
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/../include
 
 include $(BUILD_HOST_SHARED_LIBRARY)
