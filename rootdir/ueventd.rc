@@ -4,7 +4,7 @@ subsystem adf
 # ueventd can only set permissions on device nodes and their associated
 # sysfs attributes, not on arbitrary paths.
 #
-# format for /dev rules: devname mode uid gid
+# format for /dev rules: devname mode uid gid [notify]
 # format for /sys rules: nodename attr mode uid gid
 # shortcut: "mtd@NN" expands to "/dev/mtd/mtdNN"
 

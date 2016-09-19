@@ -49,9 +49,10 @@
 #include <cutils/uevent.h>
 
 #include "devices.h"
+#include "log.h"
+#include "property_service.h"
 #include "ueventd_parser.h"
 #include "util.h"
-#include "log.h"
 
 #define SYSFS_PREFIX    "/sys"
 static const char *firmware_dirs[] = { "/etc/firmware",
@@ -82,6 +83,7 @@ struct perms_ {
     unsigned int gid;
     unsigned short prefix;
     unsigned short wildcard;
+    bool notify_add;
 };
 
 struct perm_node {
@@ -103,7 +105,8 @@ static list_declare(platform_names);
 int add_dev_perms(const char *name, const char *attr,
                   mode_t perm, unsigned int uid, unsigned int gid,
                   unsigned short prefix,
-                  unsigned short wildcard) {
+                  unsigned short wildcard,
+                  bool notify_add) {
     struct perm_node *node = (perm_node*) calloc(1, sizeof(*node));
     if (!node)
         return -ENOMEM;
@@ -123,6 +126,7 @@ int add_dev_perms(const char *name, const char *attr,
     node->dp.gid = gid;
     node->dp.prefix = prefix;
     node->dp.wildcard = wildcard;
+    node->dp.notify_add = notify_add;
 
     if (attr)
         list_add_tail(&sys_perms, &node->plist);
@@ -188,7 +192,7 @@ static void fixup_sys_perms(const char* upath, const char* subsystem) {
 }
 
 static mode_t get_device_perm(const char *path, const char **links,
-                unsigned *uid, unsigned *gid)
+                unsigned *uid, unsigned *gid, bool *notify_add)
 {
     struct listnode *node;
     struct perm_node *perm_node;
@@ -220,12 +224,14 @@ static mode_t get_device_perm(const char *path, const char **links,
         if (match) {
             *uid = dp->uid;
             *gid = dp->gid;
+            *notify_add = dp->notify_add;
             return dp->perm;
         }
     }
     /* Default if nothing found. */
     *uid = 0;
     *gid = 0;
+    *notify_add = false;
     return 0600;
 }
 
@@ -237,10 +243,11 @@ static void make_device(const char *path,
     unsigned uid;
     unsigned gid;
     mode_t mode;
+    bool notify_add;
     dev_t dev;
     char *secontext = NULL;
 
-    mode = get_device_perm(path, links, &uid, &gid) | (block ? S_IFBLK : S_IFCHR);
+    mode = get_device_perm(path, links, &uid, &gid, &notify_add) | (block ? S_IFBLK : S_IFCHR);
 
     if (selabel_lookup_best_match(sehandle, &secontext, path, links, mode)) {
         PLOG(ERROR) << "Device '" << path << "' not created; cannot find SELinux label";
@@ -280,6 +287,12 @@ out:
 
     freecon(secontext);
     setfscreatecon(NULL);
+
+    /* notify node creation via property */
+    if (notify_add) {
+        property_set(android::base::StringPrintf("add:%s", path).c_str(),
+                     android::base::StringPrintf("%d:%d", major, minor).c_str());
+    }
 }
 
 static void add_platform_device(const char *path)

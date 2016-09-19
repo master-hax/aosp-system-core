@@ -96,6 +96,7 @@ void set_device_permission(int nargs, char **args)
     int wildcard = 0;
     char *endptr;
     char *tmp = 0;
+    bool notify_add = false;
 
     if (nargs == 0)
         return;
@@ -109,6 +110,12 @@ void set_device_permission(int nargs, char **args)
         LOG(INFO) << "/sys/ rule " << args[0] << " " << args[1];
         attr = args[1];
         args++;
+        nargs--;
+    }
+
+    /* parse "notify" at the end first */
+    if (nargs == 5 && !strncmp(args[4], "notify", 6)) {
+        notify_add = true;
         nargs--;
     }
 
@@ -149,6 +156,6 @@ void set_device_permission(int nargs, char **args)
     }
     gid = grp->gr_gid;
 
-    add_dev_perms(name, attr, perm, uid, gid, prefix, wildcard);
+    add_dev_perms(name, attr, perm, uid, gid, prefix, wildcard, notify_add);
     free(tmp);
 }
