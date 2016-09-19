@@ -636,11 +636,17 @@ inline int _fd_set_error_str(int fd, std::string* error) {
 }
 
 inline int network_loopback_client(int port, int type, std::string* error) {
-  return _fd_set_error_str(socket_loopback_client(port, type), error);
+  int fd = socket_loopback_client(port, type);
+  if (fd < 0 && errno == EAFNOSUPPORT)
+      return _fd_set_error_str(socket_loopback_client6(port, type), error);
+  return _fd_set_error_str(fd, error);
 }
 
 inline int network_loopback_server(int port, int type, std::string* error) {
-  return _fd_set_error_str(socket_loopback_server(port, type), error);
+  int fd = socket_loopback_server(port, type);
+  if (fd < 0 && errno == EAFNOSUPPORT)
+      return _fd_set_error_str(socket_loopback_server6(port, type), error);
+  return _fd_set_error_str(fd, error);
 }
 
 inline int network_inaddr_any_server(int port, int type, std::string* error) {
