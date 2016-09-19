@@ -31,7 +31,7 @@ extern void early_create_dev(const std::string& syspath, early_device_type dev_t
 extern int add_dev_perms(const char *name, const char *attr,
                          mode_t perm, unsigned int uid,
                          unsigned int gid, unsigned short prefix,
-                         unsigned short wildcard);
+                         unsigned short wildcard, bool notify_add);
 int get_device_fd();
 
 #endif	/* _INIT_DEVICES_H */
