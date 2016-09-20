@@ -1000,7 +1000,7 @@ bool ServiceParser::IsValidName(const std::string& name) const {
         return false;
     }
     for (const auto& c : name) {
-        if (!isalnum(c) && (c != '_') && (c != '-')) {
+        if (!isalnum(c) && (c != '_') && (c != '-') && (c != '@') && (c != '.')) {
             return false;
         }
     }
