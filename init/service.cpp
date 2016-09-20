@@ -996,13 +996,7 @@ void ServiceParser::EndSection() {
 }
 
 bool ServiceParser::IsValidName(const std::string& name) const {
-    if (name.size() > PROP_NAME_MAX - sizeof("init.svc.")) {
-        return false;
-    }
-    for (const auto& c : name) {
-        if (!isalnum(c) && (c != '_') && (c != '-')) {
-            return false;
-        }
-    }
-    return true;
+    std::string property_name = "init.svc." + name;
+
+    return is_legal_property_name(property_name.c_str(), property_name.size());
 }
