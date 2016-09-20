@@ -63,6 +63,7 @@ LIBADB_TEST_SRCS := \
     adb_utils_test.cpp \
     fdevent_test.cpp \
     socket_test.cpp \
+    socket_spec_test.cpp \
     sysdeps_test.cpp \
     sysdeps/stat_test.cpp \
     transport_test.cpp \
