@@ -15,6 +15,8 @@
  */
 
 #include <fcntl.h>
+#include <inttypes.h>
+#include <poll.h>
 #include <sys/endian.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -695,7 +697,7 @@ BENCHMARK(BM_security);
 
 // Keep maps around for multiple iterations
 static std::unordered_set<uint32_t> set;
-static const EventTagMap* map;
+static EventTagMap* map;
 
 static bool prechargeEventMap() {
     if (map) return true;
@@ -785,3 +787,109 @@ static void BM_lookupEventFormat(int iters) {
     StopBenchmarkTiming();
 }
 BENCHMARK(BM_lookupEventFormat);
+
+/*
+ *	Measure the time it takes for android_lookupEventTagNum plus above
+ */
+static void BM_lookupEventTagNum(int iters) {
+
+    prechargeEventMap();
+
+    std::unordered_set<uint32_t>::const_iterator it = set.begin();
+
+    for (int i = 0; i < iters; ++i) {
+        size_t len;
+        const char* name = android_lookupEventTag_len(map, &len, (*it));
+        std::string Name(name, len);
+        const char* format = android_lookupEventFormat_len(map, &len, (*it));
+        std::string Format(format, len);
+        StartBenchmarkTiming();
+        android_lookupEventTagNum(map, Name.c_str(), Format.c_str(),
+                                  ANDROID_LOG_UNKNOWN);
+        StopBenchmarkTiming();
+        ++it;
+        if (it == set.end()) it = set.begin();
+    }
+
+}
+BENCHMARK(BM_lookupEventTagNum);
+
+// Must be functionally identical to liblog internal __send_log_msg.
+static void send_to_control(char *buf, size_t len)
+{
+    int sock = socket_local_client("logd",
+                                   ANDROID_SOCKET_NAMESPACE_RESERVED,
+                                   SOCK_STREAM);
+    if (sock < 0) return;
+    size_t writeLen = strlen(buf) + 1;
+
+    ssize_t ret = TEMP_FAILURE_RETRY(write(sock, buf, writeLen));
+    if (ret <= 0) {
+        close(sock);
+        return;
+    }
+    while ((ret = read(sock, buf, len)) > 0) {
+        if (((size_t)ret == len) || (len < PAGE_SIZE)) {
+            break;
+        }
+        len -= ret;
+        buf += ret;
+
+        struct pollfd p = {
+            .fd = sock,
+            .events = POLLIN,
+            .revents = 0
+        };
+
+        ret = poll(&p, 1, 20);
+        if ((ret <= 0) || !(p.revents & POLLIN)) {
+            break;
+        }
+    }
+    close(sock);
+}
+
+static void BM_lookupEventTagNum_logd_new(int iters) {
+    fprintf(stderr, "WARNING: "
+            "This test can cause logd to grow in size and hit DOS limiter\n");
+
+    for (int i = 0; i < iters; ++i) {
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        log_time now(CLOCK_MONOTONIC);
+        char name[64];
+        snprintf(name, sizeof(name), "a%" PRIu64, now.nsec());
+        snprintf(buffer, sizeof(buffer),
+                 "getEventTag name=%s format=\"(new|1)\"", name);
+        StartBenchmarkTiming();
+        send_to_control(buffer, sizeof(buffer));
+        StopBenchmarkTiming();
+    }
+}
+BENCHMARK(BM_lookupEventTagNum_logd_new);
+
+static void BM_lookupEventTagNum_logd_existing(int iters) {
+    prechargeEventMap();
+
+    std::unordered_set<uint32_t>::const_iterator it = set.begin();
+
+    for (int i = 0; i < iters; ++i) {
+        size_t len;
+        const char* name = android_lookupEventTag_len(map, &len, (*it));
+        std::string Name(name, len);
+        const char* format = android_lookupEventFormat_len(map, &len, (*it));
+        std::string Format(format, len);
+
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer),
+                 "getEventTag name=%s format=\"%s\"",
+                 Name.c_str(), Format.c_str());
+
+        StartBenchmarkTiming();
+        send_to_control(buffer, sizeof(buffer));
+        StopBenchmarkTiming();
+        ++it;
+        if (it == set.end()) it = set.begin();
+    }
+}
+BENCHMARK(BM_lookupEventTagNum_logd_existing);
