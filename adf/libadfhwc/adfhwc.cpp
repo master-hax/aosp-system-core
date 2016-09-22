@@ -202,11 +202,27 @@ static void handle_adf_event(struct adf_hwc_helper *dev, int disp)
     free(event);
 }
 
+static void handle_thread_exit(int /*sig*/)
+{
+    pthread_exit(0);
+}
+
 static void *adf_event_thread(void *data)
 {
     adf_hwc_helper *dev = static_cast<adf_hwc_helper *>(data);
 
     setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
+
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = handle_thread_exit;
+    int err = sigaction(SIGUSR1, &action, NULL);
+    if (err < 0) {
+        ALOGE("failed to set thread exit action %s", strerror(errno));
+        return NULL;
+    }
 
     pollfd *fds = new pollfd[dev->intf_fds.size()];
     for (size_t i = 0; i < dev->intf_fds.size(); i++) {
@@ -215,8 +231,7 @@ static void *adf_event_thread(void *data)
     }
 
     while (true) {
-        int err = poll(fds, dev->intf_fds.size(), -1);
-
+        err = poll(fds, dev->intf_fds.size(), -1);
         if (err > 0) {
             for (size_t i = 0; i < dev->intf_fds.size(); i++)
                 if (fds[i].revents & (POLLIN | POLLPRI))
@@ -284,7 +299,7 @@ err:
 
 void adf_hwc_close(struct adf_hwc_helper *dev)
 {
-    pthread_kill(dev->event_thread, SIGTERM);
+    pthread_kill(dev->event_thread, SIGUSR1);
     pthread_join(dev->event_thread, NULL);
 
     for (size_t i = 0; i < dev->intf_fds.size(); i++)
