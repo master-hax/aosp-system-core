@@ -29,9 +29,11 @@
 #include <vector>
 
 #include <android-base/file.h>
+#include <android-base/stringprintf.h>
 #include <android-base/test_utils.h>
 #include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
+#include <utils/FileMap.h>
 #include <ziparchive/zip_archive.h>
 #include <ziparchive/zip_archive_stream_entry.h>
 
@@ -41,6 +43,8 @@ static const std::string kMissingZip = "missing.zip";
 static const std::string kValidZip = "valid.zip";
 static const std::string kLargeZip = "large.zip";
 static const std::string kBadCrcZip = "bad_crc.zip";
+static const std::string kUpdateZip = "update.zip";
+
 
 static const std::vector<uint8_t> kATxtContents {
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -70,6 +74,7 @@ static int32_t OpenArchiveWrapper(const std::string& name,
   const std::string abs_path = test_data_dir + "/" + name;
   return OpenArchive(abs_path.c_str(), handle);
 }
+
 
 static void AssertNameEquals(const std::string& name_str,
                              const ZipString& name) {
@@ -637,6 +642,56 @@ TEST(ziparchive, ExtractPackageRecursive) {
   ASSERT_EQ(0, memcmp(read_data.data(), kBTxtContents.data(), kBTxtContents.size()));
 }
 
+TEST(ziparchive, OpenFromMemory) {
+  android::base::unique_fd fd(open((test_data_dir + "/" + kUpdateZip).c_str(), O_RDONLY | O_BINARY));
+  ASSERT_NE(-1, fd);
+  struct stat sb;
+  ASSERT_EQ(0, fstat(fd, &sb));
+  size_t total_size = sb.st_size;
+  size_t block_size = sb.st_blksize;
+
+  TemporaryFile tmp_map, tmp_block;
+  ASSERT_NE(-1, tmp_map.fd);
+  ASSERT_NE(-1, tmp_block.fd);
+  ASSERT_TRUE(android::base::WriteStringToFd(
+      android::base::StringPrintf("%s\n", tmp_block.path), tmp_map.fd));
+  ASSERT_TRUE(android::base::WriteStringToFd(
+      android::base::StringPrintf("%zu %zu\n", total_size, block_size), tmp_map.fd));
+
+  size_t ranges = (total_size - 1) / block_size + 1;
+  ASSERT_TRUE(android::base::WriteStringToFd(
+      android::base::StringPrintf("%zu\n", ranges), tmp_map.fd));
+
+  std::vector<uint8_t> buffer;
+  buffer.resize(total_size);
+  ASSERT_TRUE(android::base::ReadFully(fd, buffer.data(), total_size));
+
+  uint8_t zeros[block_size];
+  memset(zeros, 0, block_size);
+  size_t written = 0;
+  size_t start_block = 0;
+  while (written < total_size) {
+    size_t to_write = (total_size - written) < block_size ? (total_size - written) : block_size;
+    ASSERT_TRUE(android::base::WriteFully(tmp_block.fd, zeros, block_size));
+    ASSERT_TRUE(android::base::WriteFully(tmp_block.fd, buffer.data() + written, to_write));
+    written += to_write;
+    ASSERT_TRUE(android::base::WriteStringToFd(
+        android::base::StringPrintf("%zu %zu\n", start_block + 1, start_block + 2), tmp_map.fd));
+    start_block += 2;
+  }
+
+  android::FileMap block_map;
+  block_map.createFromBlockFile(tmp_map.path);
+  ZipArchiveHandle handle;
+  ASSERT_EQ(0, OpenArchiveFromMemory(&block_map, &handle));
+  static constexpr const char* BINARY_PATH = "META-INF/com/google/android/update-binary";
+  ZipString binary_path(BINARY_PATH);
+  ZipEntry binary_entry;
+  ASSERT_EQ(0, FindEntry(handle, binary_path, &binary_entry));
+  TemporaryFile tmp_binary;
+  ASSERT_NE(-1, tmp_binary.fd);
+  ASSERT_EQ(0, ExtractEntryToFile(handle, &binary_entry, tmp_binary.fd));
+}
 #endif
 
 static void ZipArchiveStreamTest(

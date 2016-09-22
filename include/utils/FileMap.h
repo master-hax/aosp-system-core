@@ -32,6 +32,8 @@
 #include <windows.h>
 #endif
 
+#include <inttypes.h>
+
 namespace android {
 
 /*
@@ -66,13 +68,19 @@ public:
     bool create(const char* origFileName, int fd,
                 off64_t offset, size_t length, bool readOnly);
 
+#if !defined(__MINGW32__)
+    bool createSubset(const FileMap* file_map, off64_t offset, size_t length);
+
+    bool createFromBlockFile(const char* blockFile);
+#endif
+
     ~FileMap(void);
 
     /*
      * Return the name of the file this map came from, if known.
      */
     const char* getFileName(void) const { return mFileName; }
-    
+
     /*
      * Get a pointer to the piece of the file we requested.
      */
