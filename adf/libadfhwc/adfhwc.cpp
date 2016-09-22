@@ -208,6 +208,16 @@ static void *adf_event_thread(void *data)
 
     setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
 
+    struct sigaction action = { };
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = [](int) { pthread_exit(0); };
+
+    if (sigaction(SIGTERM, &action, NULL) < 0) {
+        ALOGE("failed to set thread exit action %s", strerror(errno));
+        return NULL;
+    }
+
     pollfd *fds = new pollfd[dev->intf_fds.size()];
     for (size_t i = 0; i < dev->intf_fds.size(); i++) {
         fds[i].fd = dev->intf_fds[i];
@@ -216,7 +226,6 @@ static void *adf_event_thread(void *data)
 
     while (true) {
         int err = poll(fds, dev->intf_fds.size(), -1);
-
         if (err > 0) {
             for (size_t i = 0; i < dev->intf_fds.size(); i++)
                 if (fds[i].revents & (POLLIN | POLLPRI))
