@@ -28,6 +28,8 @@
 
 #include <string>
 
+#include "utils/FileMap.h"
+
 __BEGIN_DECLS
 
 /* Zip compression methods we support */
@@ -131,6 +133,8 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle);
  */
 int32_t OpenArchiveFd(const int fd, const char* debugFileName,
                       ZipArchiveHandle *handle, bool assume_ownership = true);
+
+int32_t OpenArchiveFromMemory(const android::FileMap* file_map, ZipArchiveHandle *handle);
 
 /*
  * Close archive, releasing resources associated with it. This will
