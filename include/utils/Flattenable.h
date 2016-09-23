@@ -19,6 +19,7 @@
 
 
 #include <stdint.h>
+#include <string.h>
 #include <sys/types.h>
 #include <utils/Errors.h>
 #include <utils/Debug.h>
@@ -60,14 +61,14 @@ public:
     // write a POD structure
     template<typename T>
     static void write(void*& buffer, size_t& size, const T& value) {
-        *static_cast<T*>(buffer) = value;
+        memcpy(buffer, &value, sizeof(T));
         advance(buffer, size, sizeof(T));
     }
 
     // read a POD structure
     template<typename T>
     static void read(void const*& buffer, size_t& size, T& value) {
-        value = *static_cast<T const*>(buffer);
+        memcpy(&value, buffer, sizeof(T));
         advance(buffer, size, sizeof(T));
     }
 };
