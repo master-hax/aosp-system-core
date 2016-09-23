@@ -18,6 +18,7 @@
 #define __CUTILS_SOCKETS_H
 
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,12 +67,15 @@ static inline int android_get_control_socket(const char* name)
 	}
 
 	errno = 0;
-	int fd = strtol(val, NULL, 10);
+	long ret = strtol(val, NULL, 10);
 	if (errno) {
 		return -1;
 	}
+	if (ret < 0 || ret > INT_MAX) {
+		return -1;
+	}
 
-	return fd;
+	return ret;
 }
 
 /*
