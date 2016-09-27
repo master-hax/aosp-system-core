@@ -32,6 +32,7 @@ cc_defaults {
 cc_defaults {
     name: "libziparchive_defaults",
     srcs: [
+		"zip_util.cc",
         "zip_archive.cc",
         "zip_archive_stream_entry.cc",
         "zip_writer.cc",
@@ -60,7 +61,7 @@ cc_library {
     shared_libs: ["liblog", "libbase"],
     target: {
         android: {
-            static_libs: ["libz"],
+            static_libs: ["libz", "libselinux"],
         },
         host: {
             shared_libs: ["libz-host"],

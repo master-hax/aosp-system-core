@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include <utils/Compat.h>
 
+#include <string>
+
+#include "utils/FileMap.h"
+
 __BEGIN_DECLS
 
 /* Zip compression methods we support */
@@ -130,6 +134,8 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle);
 int32_t OpenArchiveFd(const int fd, const char* debugFileName,
                       ZipArchiveHandle *handle, bool assume_ownership = true);
 
+int32_t OpenArchiveFromMemory(const android::FileMap* file_map, ZipArchiveHandle *handle);
+
 /*
  * Close archive, releasing resources associated with it. This will
  * unmap the central directory of the zipfile and free all internal
@@ -213,6 +219,28 @@ int32_t ExtractToMemory(ZipArchiveHandle handle, ZipEntry* entry,
 int GetFileDescriptor(const ZipArchiveHandle handle);
 
 const char* ErrorCodeString(int32_t error_code);
+
+#if !defined(_WIN32)
+
+typedef bool (*ProcessZipEntryFunction)(const uint8_t* buf, size_t buf_size, void* cookie);
+
+/*
+ * Stream the uncompressed data through the supplied function,
+ * passing cookie to it each time it gets called.
+*/
+int32_t ProcessZipEntryContents(ZipArchiveHandle handle, ZipEntry* entry,
+        ProcessZipEntryFunction func, void* cookie);
+
+bool ExtractPackageRecursive(ZipArchiveHandle zip, const std::string& zip_path, const std::string& dest_path,
+                             const struct utimbuf* timestamp, void* sehnd);
+
+bool CreateFileMap(const std::string& path, android::FileMap& block_map);
+
+bool MKdirWithParents(const std::string& path, int mode, const struct utimbuf *timestamp,
+                             __attribute__((unused)) void* sehnd);
+
+bool RemoveDir(const std::string& path);
+#endif
 
 __END_DECLS
 

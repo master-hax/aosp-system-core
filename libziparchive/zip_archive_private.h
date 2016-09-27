@@ -24,9 +24,32 @@
 #include <utils/FileMap.h>
 #include <ziparchive/zip_archive.h>
 
+class desp {
+ public:
+  bool file_type;
+  const int fd;
+  uint8_t* read_pos;
+  const android::FileMap* file_map;
+
+  desp(const int fd) : file_type(true), fd(fd), read_pos(nullptr), file_map(nullptr) {}
+
+  desp(const android::FileMap* file_map) :
+    file_type(false),
+    fd(-1),
+    read_pos(static_cast<uint8_t*>(file_map->getDataPtr())),
+    file_map(file_map){}
+
+  off64_t GetFileLength();
+
+  bool SeekToOffset(off64_t offset);
+
+  bool ReadData(uint8_t* buffer, size_t read_amount);
+};
+
 struct ZipArchive {
   // open Zip archive
-  const int fd;
+  //const int fd;
+  desp des_fd;
   const bool close_file;
 
   // mapped central directory area
@@ -44,16 +67,24 @@ struct ZipArchive {
   ZipString* hash_table;
 
   ZipArchive(const int fd, bool assume_ownership) :
-      fd(fd),
+      des_fd(fd),
       close_file(assume_ownership),
       directory_offset(0),
       num_entries(0),
       hash_table_size(0),
       hash_table(NULL) {}
 
+  ZipArchive(const android::FileMap* file_map) :
+      des_fd(file_map),
+      close_file(false),
+      directory_offset(0),
+      num_entries(0),
+      hash_table_size(0),
+      hash_table(NULL) {}
+
   ~ZipArchive() {
-    if (close_file && fd >= 0) {
-      close(fd);
+    if (close_file && des_fd.fd >= 0) {
+      close(des_fd.fd);
     }
 
     free(hash_table);
