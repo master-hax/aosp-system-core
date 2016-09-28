@@ -80,11 +80,11 @@ LIBADB_windows_CFLAGS := \
 
 LIBADB_darwin_SRC_FILES := \
     sysdeps_unix.cpp \
-    usb_osx.cpp \
+    usb_libusb.cpp \
 
 LIBADB_linux_SRC_FILES := \
     sysdeps_unix.cpp \
-    usb_linux.cpp \
+    usb_libusb.cpp \
 
 LIBADB_windows_SRC_FILES := \
     sysdeps_win32.cpp \
@@ -132,6 +132,8 @@ LOCAL_SANITIZE := $(adb_host_sanitize)
 # Even though we're building a static library (and thus there's no link step for
 # this to take effect), this adds the includes to our path.
 LOCAL_STATIC_LIBRARIES := libcrypto_utils libcrypto libbase
+LOCAL_STATIC_LIBRARIES_linux := libusb
+LOCAL_STATIC_LIBRARIES_darwin := libusb
 
 LOCAL_C_INCLUDES_windows := development/host/windows/usb/api/
 LOCAL_MULTILIB := first
@@ -151,7 +153,7 @@ LOCAL_SRC_FILES := \
     shell_service_test.cpp \
 
 LOCAL_SANITIZE := $(adb_target_sanitize)
-LOCAL_STATIC_LIBRARIES := libadbd libcrypto_utils libcrypto
+LOCAL_STATIC_LIBRARIES := libadbd libcrypto_utils libcrypto libusb
 LOCAL_SHARED_LIBRARIES := liblog libbase libcutils
 include $(BUILD_NATIVE_TEST)
 
@@ -201,10 +203,13 @@ LOCAL_STATIC_LIBRARIES := \
     libdiagnose_usb \
     libgmock_host \
 
+LOCAL_STATIC_LIBRARIES_linux := libusb
+LOCAL_STATIC_LIBRARIES_darwin := libusb
+LOCAL_LDLIBS_darwin := -framework CoreFoundation -framework IOKit -lobjc
+
 # Set entrypoint to wmain from sysdeps_win32.cpp instead of main
 LOCAL_LDFLAGS_windows := -municode
 LOCAL_LDLIBS_linux := -lrt -ldl -lpthread
-LOCAL_LDLIBS_darwin := -framework CoreFoundation -framework IOKit
 LOCAL_LDLIBS_windows := -lws2_32 -luserenv
 LOCAL_STATIC_LIBRARIES_windows := AdbWinApi
 
@@ -218,7 +223,7 @@ include $(CLEAR_VARS)
 
 LOCAL_LDLIBS_linux := -lrt -ldl -lpthread
 
-LOCAL_LDLIBS_darwin := -lpthread -framework CoreFoundation -framework IOKit -framework Carbon
+LOCAL_LDLIBS_darwin := -lpthread -framework CoreFoundation -framework IOKit -framework Carbon -lobjc
 
 # Use wmain instead of main
 LOCAL_LDFLAGS_windows := -municode
@@ -268,6 +273,9 @@ LOCAL_STATIC_LIBRARIES := \
 # Don't use libcutils on Windows.
 LOCAL_STATIC_LIBRARIES_darwin := libcutils
 LOCAL_STATIC_LIBRARIES_linux := libcutils
+
+LOCAL_STATIC_LIBRARIES_darwin += libusb
+LOCAL_STATIC_LIBRARIES_linux += libusb
 
 LOCAL_CXX_STL := libc++_static
 
