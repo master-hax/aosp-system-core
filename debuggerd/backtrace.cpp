@@ -31,9 +31,8 @@
 #include <memory>
 #include <string>
 
+#include <android/log.h>
 #include <backtrace/Backtrace.h>
-
-#include <log/log.h>
 
 #include "backtrace.h"
 

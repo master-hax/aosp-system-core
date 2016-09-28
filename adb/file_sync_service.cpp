@@ -37,9 +37,9 @@
 #include "private/android_filesystem_config.h"
 #include "security_log_tags.h"
 
+#include <android/log.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <log/log.h>
 #include <selinux/android.h>
 
 static bool should_use_fs_config(const std::string& path) {
