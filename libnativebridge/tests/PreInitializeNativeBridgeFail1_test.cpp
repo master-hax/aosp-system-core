@@ -17,14 +17,16 @@
 #include "NativeBridgeTest.h"
 
 #include <cstdio>
-#include <cstring>
-#include <cutils/log.h>
 #include <dlfcn.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+
+#include <cstring>
+
+#include <android/log.h>
 
 namespace android {
 
