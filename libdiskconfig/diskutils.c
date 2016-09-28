@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <log/log.h>
+#include <android/log.h>
 
 #include <diskconfig/diskconfig.h>
 
