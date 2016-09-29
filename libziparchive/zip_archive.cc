@@ -215,17 +215,39 @@ static int32_t AddToHash(ZipString *hash_table, const uint64_t hash_table_size,
   return 0;
 }
 
-static int32_t MapCentralDirectory0(int fd, const char* debug_file_name,
+// Attempts to read |len| bytes into |buf| at offset |off|.
+// On non-Windows platforms, callers are guaranteed that the |fd|
+// offset is unchanged and there is no side effect to this call.
+//
+// On Windows platforms this is not thread-safe.
+static inline bool ReadAtOffset(FileReaderWrapper& file_reader, uint8_t* buf, size_t len,
+                                off64_t off) {
+#if !defined(_WIN32)
+  if (file_reader.file_type) {
+    if (static_cast<size_t>(TEMP_FAILURE_RETRY(pread64(file_reader.fd, buf, len, off))) != len) {
+      ALOGE("Zip: failed to read at offset %" PRId64 "\n", off);
+      return false;
+    }
+    return true;
+  }
+#endif
+  if (!file_reader.SeekToOffset(off)) {
+    return false;
+  }
+  return file_reader.ReadData(buf, len);
+}
+
+static int32_t MapCentralDirectory0(FileReaderWrapper& file_reader, const char* debug_file_name,
                                     ZipArchive* archive, off64_t file_length,
                                     off64_t read_amount, uint8_t* scan_buffer) {
   const off64_t search_start = file_length - read_amount;
 
-  if (lseek64(fd, search_start, SEEK_SET) != search_start) {
+  if (!file_reader.SeekToOffset(search_start)) {
     ALOGW("Zip: seek %" PRId64 " failed: %s", static_cast<int64_t>(search_start),
           strerror(errno));
     return kIoError;
   }
-  if (!android::base::ReadFully(fd, scan_buffer, static_cast<size_t>(read_amount))) {
+  if (!file_reader.ReadData(scan_buffer, static_cast<size_t>(read_amount))) {
     ALOGW("Zip: read %" PRId64 " failed: %s", static_cast<int64_t>(read_amount),
           strerror(errno));
     return kIoError;
@@ -287,9 +309,11 @@ static int32_t MapCentralDirectory0(int fd, const char* debug_file_name,
    * It all looks good.  Create a mapping for the CD, and set the fields
    * in archive.
    */
-  if (!archive->directory_map.create(debug_file_name, fd,
-          static_cast<off64_t>(eocd->cd_start_offset),
-          static_cast<size_t>(eocd->cd_size), true /* read only */) ) {
+
+  if (!archive->central_directory.Create(debug_file_name, archive->file_reader,
+                                         static_cast<off64_t>(eocd->cd_start_offset),
+                                         static_cast<size_t>(eocd->cd_size))) {
+    ALOGE("Zip: failed to create central directory.\n");
     return kMmapFailed;
   }
 
@@ -304,18 +328,18 @@ static int32_t MapCentralDirectory0(int fd, const char* debug_file_name,
  *
  * On success, returns 0 after populating fields from the EOCD area:
  *   directory_offset
- *   directory_map
+ *   directory_ptr
  *   num_entries
  */
-static int32_t MapCentralDirectory(int fd, const char* debug_file_name,
+static int32_t MapCentralDirectory(FileReaderWrapper& file_reader, const char* debug_file_name,
                                    ZipArchive* archive) {
 
   // Test file length. We use lseek64 to make sure the file
   // is small enough to be a zip file (Its size must be less than
   // 0xffffffff bytes).
-  off64_t file_length = lseek64(fd, 0, SEEK_END);
+  off64_t file_length = file_reader.GetFileLength();
   if (file_length == -1) {
-    ALOGV("Zip: lseek on fd %d failed", fd);
+    ALOGV("Zip: failed to seek to data offset\n");
     return kInvalidFile;
   }
 
@@ -347,7 +371,7 @@ static int32_t MapCentralDirectory(int fd, const char* debug_file_name,
   }
 
   uint8_t* scan_buffer = reinterpret_cast<uint8_t*>(malloc(read_amount));
-  int32_t result = MapCentralDirectory0(fd, debug_file_name, archive,
+  int32_t result = MapCentralDirectory0(file_reader, debug_file_name, archive,
                                         file_length, read_amount, scan_buffer);
 
   free(scan_buffer);
@@ -361,9 +385,8 @@ static int32_t MapCentralDirectory(int fd, const char* debug_file_name,
  * Returns 0 on success.
  */
 static int32_t ParseZipArchive(ZipArchive* archive) {
-  const uint8_t* const cd_ptr =
-      reinterpret_cast<const uint8_t*>(archive->directory_map.getDataPtr());
-  const size_t cd_length = archive->directory_map.getDataLength();
+  const uint8_t* const cd_ptr = archive->central_directory.base_ptr;
+  const size_t cd_length = archive->central_directory.length;
   const uint16_t num_entries = archive->num_entries;
 
   /*
@@ -437,7 +460,7 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
 static int32_t OpenArchiveInternal(ZipArchive* archive,
                                    const char* debug_file_name) {
   int32_t result = -1;
-  if ((result = MapCentralDirectory(archive->fd, debug_file_name, archive))) {
+  if ((result = MapCentralDirectory(archive->file_reader, debug_file_name, archive))) {
     return result;
   }
 
@@ -468,6 +491,12 @@ int32_t OpenArchive(const char* fileName, ZipArchiveHandle* handle) {
   return OpenArchiveInternal(archive, fileName);
 }
 
+int32_t OpenArchiveFromMemory(void* address, size_t length, ZipArchiveHandle *handle) {
+  ZipArchive* archive = new ZipArchive(address, length);
+  *handle = archive;
+  return OpenArchiveInternal(archive, "");
+}
+
 /*
  * Close a ZipArchive, closing the file and freeing the contents.
  */
@@ -477,10 +506,10 @@ void CloseArchive(ZipArchiveHandle handle) {
   delete archive;
 }
 
-static int32_t UpdateEntryFromDataDescriptor(int fd,
+static int32_t UpdateEntryFromDataDescriptor(FileReaderWrapper& file_reader,
                                              ZipEntry *entry) {
   uint8_t ddBuf[sizeof(DataDescriptor) + sizeof(DataDescriptor::kOptSignature)];
-  if (!android::base::ReadFully(fd, ddBuf, sizeof(ddBuf))) {
+  if (!file_reader.ReadData(ddBuf, sizeof(ddBuf))) {
     return kIoError;
   }
 
@@ -493,23 +522,6 @@ static int32_t UpdateEntryFromDataDescriptor(int fd,
   entry->uncompressed_length = descriptor->uncompressed_size;
 
   return 0;
-}
-
-// Attempts to read |len| bytes into |buf| at offset |off|.
-// On non-Windows platforms, callers are guaranteed that the |fd|
-// offset is unchanged and there is no side effect to this call.
-//
-// On Windows platforms this is not thread-safe.
-static inline bool ReadAtOffset(int fd, uint8_t* buf, size_t len, off64_t off) {
-#if !defined(_WIN32)
-  return TEMP_FAILURE_RETRY(pread64(fd, buf, len, off));
-#else
-  if (lseek64(fd, off, SEEK_SET) != off) {
-    ALOGW("Zip: failed seek to offset %" PRId64, off);
-    return false;
-  }
-  return android::base::ReadFully(fd, buf, len);
-#endif
 }
 
 static int32_t FindEntry(const ZipArchive* archive, const int ent,
@@ -525,9 +537,8 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
   // This is the base of our mmapped region, we have to sanity check that
   // the name that's in the hash table is a pointer to a location within
   // this mapped region.
-  const uint8_t* base_ptr = reinterpret_cast<const uint8_t*>(
-    archive->directory_map.getDataPtr());
-  if (ptr < base_ptr || ptr > base_ptr + archive->directory_map.getDataLength()) {
+  const uint8_t* base_ptr = archive->central_directory.base_ptr;
+  if (ptr < base_ptr || ptr > base_ptr + archive->central_directory.length) {
     ALOGW("Zip: Invalid entry pointer");
     return kInvalidOffset;
   }
@@ -559,7 +570,7 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
   }
 
   uint8_t lfh_buf[sizeof(LocalFileHeader)];
-  if (!ReadAtOffset(archive->fd, lfh_buf, sizeof(lfh_buf), local_header_offset)) {
+  if (!ReadAtOffset(archive->file_reader, lfh_buf, sizeof(lfh_buf), local_header_offset)) {
     ALOGW("Zip: failed reading lfh name from offset %" PRId64,
         static_cast<int64_t>(local_header_offset));
     return kIoError;
@@ -600,7 +611,7 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent,
     }
 
     uint8_t* name_buf = reinterpret_cast<uint8_t*>(malloc(nameLen));
-    if (!ReadAtOffset(archive->fd, name_buf, nameLen, name_offset)) {
+    if (!ReadAtOffset(archive->file_reader, name_buf, nameLen, name_offset)) {
       ALOGW("Zip: failed reading lfh name from offset %" PRId64, static_cast<int64_t>(name_offset));
       free(name_buf);
       return kIoError;
@@ -881,7 +892,7 @@ static inline int zlib_inflateInit2(z_stream* stream, int window_bits) {
 }
 #pragma GCC diagnostic pop
 
-static int32_t InflateEntryToWriter(int fd, const ZipEntry* entry,
+static int32_t InflateEntryToWriter(FileReaderWrapper& file_reader, const ZipEntry* entry,
                                     Writer* writer, uint64_t* crc_out) {
   const size_t kBufSize = 32768;
   std::vector<uint8_t> read_buf(kBufSize);
@@ -931,7 +942,7 @@ static int32_t InflateEntryToWriter(int fd, const ZipEntry* entry,
     /* read as much as we can */
     if (zstream.avail_in == 0) {
       const size_t getSize = (compressed_length > kBufSize) ? kBufSize : compressed_length;
-      if (!android::base::ReadFully(fd, read_buf.data(), getSize)) {
+      if (!file_reader.ReadData(read_buf.data(), getSize)) {
         ALOGW("Zip: inflate read failed, getSize = %zu: %s", getSize, strerror(errno));
         return kIoError;
       }
@@ -979,7 +990,7 @@ static int32_t InflateEntryToWriter(int fd, const ZipEntry* entry,
   return 0;
 }
 
-static int32_t CopyEntryToWriter(int fd, const ZipEntry* entry, Writer* writer,
+static int32_t CopyEntryToWriter(FileReaderWrapper& file_reader, const ZipEntry* entry, Writer* writer,
                                  uint64_t *crc_out) {
   static const uint32_t kBufSize = 32768;
   std::vector<uint8_t> buf(kBufSize);
@@ -993,7 +1004,7 @@ static int32_t CopyEntryToWriter(int fd, const ZipEntry* entry, Writer* writer,
     // Safe conversion because kBufSize is narrow enough for a 32 bit signed
     // value.
     const size_t block_size = (remaining > kBufSize) ? kBufSize : remaining;
-    if (!android::base::ReadFully(fd, buf.data(), block_size)) {
+    if (!file_reader.ReadData(buf.data(), block_size)) {
       ALOGW("CopyFileToFile: copy read failed, block_size = %zu: %s", block_size, strerror(errno));
       return kIoError;
     }
@@ -1016,7 +1027,7 @@ int32_t ExtractToWriter(ZipArchiveHandle handle,
   const uint16_t method = entry->method;
   off64_t data_offset = entry->offset;
 
-  if (lseek64(archive->fd, data_offset, SEEK_SET) != data_offset) {
+  if (!archive->file_reader.SeekToOffset(data_offset)) {
     ALOGW("Zip: lseek to data at %" PRId64 " failed", static_cast<int64_t>(data_offset));
     return kIoError;
   }
@@ -1025,13 +1036,13 @@ int32_t ExtractToWriter(ZipArchiveHandle handle,
   int32_t return_value = -1;
   uint64_t crc = 0;
   if (method == kCompressStored) {
-    return_value = CopyEntryToWriter(archive->fd, entry, writer, &crc);
+    return_value = CopyEntryToWriter(archive->file_reader, entry, writer, &crc);
   } else if (method == kCompressDeflated) {
-    return_value = InflateEntryToWriter(archive->fd, entry, writer, &crc);
+    return_value = InflateEntryToWriter(archive->file_reader, entry, writer, &crc);
   }
 
   if (!return_value && entry->has_data_descriptor) {
-    return_value = UpdateEntryFromDataDescriptor(archive->fd, entry);
+    return_value = UpdateEntryFromDataDescriptor(archive->file_reader, entry);
     if (return_value) {
       return return_value;
     }
@@ -1072,7 +1083,7 @@ const char* ErrorCodeString(int32_t error_code) {
 }
 
 int GetFileDescriptor(const ZipArchiveHandle handle) {
-  return reinterpret_cast<ZipArchive*>(handle)->fd;
+  return reinterpret_cast<ZipArchive*>(handle)->file_reader.fd;
 }
 
 ZipString::ZipString(const char* entry_name)
@@ -1080,4 +1091,106 @@ ZipString::ZipString(const char* entry_name)
   size_t len = strlen(entry_name);
   CHECK_LE(len, static_cast<size_t>(UINT16_MAX));
   name_length = static_cast<uint16_t>(len);
+}
+
+#if !defined(_WIN32)
+class ProcessWriter : public Writer {
+ public:
+  ProcessWriter(ProcessZipEntryFunction func, void* cookie) : Writer(),
+    proc_function_(func),
+    cookie_(cookie) {
+  }
+
+  virtual bool Append(uint8_t* buf, size_t buf_size) override {
+    return proc_function_(buf, buf_size, cookie_);
+  }
+
+ private:
+  ProcessZipEntryFunction proc_function_;
+  void* cookie_;
+};
+
+int32_t ProcessZipEntryContents(ZipArchiveHandle handle, ZipEntry* entry,
+                                ProcessZipEntryFunction func, void* cookie){
+  std::unique_ptr<Writer> writer(new ProcessWriter(func, cookie));
+  return ExtractToWriter(handle, entry, writer.get());
+}
+
+#endif //!define(_WIN32)
+
+off64_t FileReaderWrapper::GetFileLength() {
+  if (file_type) {
+    off64_t result = lseek64(fd, 0, SEEK_END);
+    if (result == -1) {
+      ALOGE("Zip: lseek on fd %d failed: %s", fd, strerror(errno));
+    }
+    return result;
+  } else{
+    if (base_ptr == nullptr) {
+      ALOGE("Zip: invalid file map\n");
+      return -1;
+    }
+    return data_length;
+  }
+}
+
+bool FileReaderWrapper::SeekToOffset(off64_t offset) {
+  if (file_type) {
+    if (lseek64(fd, offset, SEEK_SET) != offset) {
+      ALOGE("Zip: lseek to %" PRId64 " failed: %s\n", offset, strerror(errno));
+      return false;
+    }
+    return true;
+  } else {
+    if (offset < 0 || offset > static_cast<off64_t>(data_length)) {
+      ALOGE("Zip: invalid offset: %" PRId64 ", data length: %zu\n" , offset,
+            data_length);
+      return false;
+    }
+
+    read_pos = offset;
+    return true;
+  }
+}
+
+bool FileReaderWrapper::ReadData(uint8_t* buffer, size_t read_amount) {
+  if (file_type) {
+    if(!android::base::ReadFully(fd, buffer, read_amount)) {
+      ALOGE("Zip: read from %d failed\n", fd);
+      return false;
+    }
+  } else {
+    memcpy(buffer, base_ptr + read_pos, read_amount);
+    read_pos += read_amount;
+  }
+  return true;
+}
+
+bool CentralDirectory::Create(const char* debug_file_name, FileReaderWrapper& file_reader,
+                              off64_t cd_start_offset, size_t cd_size) {
+  if (file_reader.file_type) {
+    if (!directory_map.create(debug_file_name, file_reader.fd,
+                              static_cast<off64_t>(cd_start_offset),
+                              static_cast<size_t>(cd_size), true /* read only */)) {
+      return false;
+    }
+
+    base_ptr = reinterpret_cast<uint8_t*>(directory_map.getDataPtr());
+    length = directory_map.getDataLength();
+  } else {
+    if (file_reader.base_ptr == nullptr) {
+      ALOGE("Zip: Failed to map central directory, bad file_reader base pointer\n");
+      return false;
+    }
+    if (static_cast<int64_t>(cd_start_offset) + cd_size > file_reader.data_length){
+      ALOGE("Zip: Failed to map central directory, offset exceeds mapped memory region ("
+            "start_offset %"  PRId64 ", cd_size %zu, mapped_region_size %zu)",
+            static_cast<int64_t>(cd_start_offset), cd_size, file_reader.data_length);
+      return false;
+    }
+
+    base_ptr = file_reader.base_ptr + cd_start_offset;
+    length = static_cast<size_t>(cd_size);
+  }
+  return true;
 }

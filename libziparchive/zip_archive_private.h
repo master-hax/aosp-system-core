@@ -21,17 +21,63 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <vector>
+
 #include <utils/FileMap.h>
 #include <ziparchive/zip_archive.h>
 
+class FileReaderWrapper {
+ public:
+  bool file_type;
+  const int fd;
+  size_t read_pos;
+  uint8_t* base_ptr;
+  size_t data_length;
+
+  FileReaderWrapper(const int fd) :
+    file_type(true),
+    fd(fd),
+    read_pos(0),
+    base_ptr(nullptr),
+    data_length(0){}
+
+  FileReaderWrapper(void* address, size_t length) :
+    file_type(false),
+    fd(-1),
+    read_pos(0),
+    base_ptr(reinterpret_cast<uint8_t*>(address)),
+    data_length(length){}
+
+  off64_t GetFileLength();
+
+  bool SeekToOffset(off64_t offset);
+
+  bool ReadData(uint8_t* buffer, size_t read_amount);
+};
+
+class CentralDirectory {
+ public:
+  uint8_t* base_ptr;
+  size_t length;
+  android::FileMap directory_map;
+
+  CentralDirectory(void) :
+    base_ptr(nullptr),
+    length(0) {}
+
+  bool Create(const char* debug_file_name, FileReaderWrapper& file_reader, off64_t start_offset,
+              size_t cd_size);
+
+};
+
 struct ZipArchive {
   // open Zip archive
-  const int fd;
+  mutable FileReaderWrapper file_reader;
   const bool close_file;
 
   // mapped central directory area
   off64_t directory_offset;
-  android::FileMap directory_map;
+  CentralDirectory central_directory;
 
   // number of entries in the Zip archive
   uint16_t num_entries;
@@ -44,16 +90,24 @@ struct ZipArchive {
   ZipString* hash_table;
 
   ZipArchive(const int fd, bool assume_ownership) :
-      fd(fd),
-      close_file(assume_ownership),
-      directory_offset(0),
-      num_entries(0),
-      hash_table_size(0),
-      hash_table(NULL) {}
+    file_reader(fd),
+    close_file(assume_ownership),
+    directory_offset(0),
+    num_entries(0),
+    hash_table_size(0),
+    hash_table(NULL) {}
+
+  ZipArchive(void* address, size_t length) :
+    file_reader(address, length),
+    close_file(false),
+    directory_offset(0),
+    num_entries(0),
+    hash_table_size(0),
+    hash_table(NULL) {}
 
   ~ZipArchive() {
-    if (close_file && fd >= 0) {
-      close(fd);
+    if (close_file && file_reader.fd >= 0) {
+      close(file_reader.fd);
     }
 
     free(hash_table);
