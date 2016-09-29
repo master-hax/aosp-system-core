@@ -56,7 +56,6 @@ cc_library {
     name: "libziparchive",
     host_supported: true,
     defaults: ["libziparchive_defaults", "libziparchive_flags"],
-    static_libs: ["libutils"],
     shared_libs: ["liblog", "libbase"],
     target: {
         android: {
@@ -75,7 +74,6 @@ cc_library {
     device_supported: false,
     defaults: ["libziparchive_defaults", "libziparchive_flags"],
     shared_libs: ["libz-host"],
-    static_libs: ["libutils"],
 }
 
 // Tests.
