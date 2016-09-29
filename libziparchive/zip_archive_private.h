@@ -21,17 +21,79 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <memory>
+#include <vector>
+
 #include <utils/FileMap.h>
 #include <ziparchive/zip_archive.h>
 
+class MappedZipFile {
+ public:
+  MappedZipFile(const int fd) :
+    has_fd(true),
+    fd(fd),
+    read_pos(0),
+    base_ptr(nullptr),
+    data_length(0){}
+
+  MappedZipFile(void* address, size_t length) :
+    has_fd(false),
+    fd(-1),
+    read_pos(0),
+    base_ptr(address),
+    data_length(static_cast<off64_t>(length)){}
+
+  bool HasFd() {return has_fd;}
+
+  int GetFileDescriptor();
+
+  void* GetBasePtr();
+
+  off64_t GetFileLength();
+
+  bool SeekToOffset(off64_t offset);
+
+  bool ReadData(uint8_t* buffer, size_t read_amount);
+
+  bool ReadAtOffset(uint8_t* buf, size_t len, off64_t off);
+
+ private:
+  // If has_fd is true, fd is valid and we'll read contents of a zip archive
+  // from the file. Otherwise, we're opening the archive from a memory mapped
+  // file. In that case, base_ptr points to the start of the memory region and
+  // data_length defines the file length.
+  bool has_fd;
+
+  const int fd;
+
+  // read_pos is the offset to the base_ptr where we read data from.
+  size_t read_pos;
+  void* base_ptr;
+  off64_t data_length;
+};
+
+class CentralDirectory {
+ public:
+  uint8_t* base_ptr;
+  size_t length;
+
+  CentralDirectory(void) :
+    base_ptr(nullptr),
+    length(0) {}
+
+  void Initialize(void* map_base_ptr, off64_t cd_start_offset, size_t cd_size);
+
+};
+
 struct ZipArchive {
   // open Zip archive
-  const int fd;
+  mutable MappedZipFile mapped_zip;
   const bool close_file;
 
   // mapped central directory area
   off64_t directory_offset;
-  android::FileMap directory_map;
+  CentralDirectory central_directory;
+  std::unique_ptr<android::FileMap> directory_map;
 
   // number of entries in the Zip archive
   uint16_t num_entries;
@@ -44,20 +106,36 @@ struct ZipArchive {
   ZipString* hash_table;
 
   ZipArchive(const int fd, bool assume_ownership) :
-      fd(fd),
-      close_file(assume_ownership),
-      directory_offset(0),
-      num_entries(0),
-      hash_table_size(0),
-      hash_table(NULL) {}
+    mapped_zip(fd),
+    close_file(assume_ownership),
+    directory_offset(0),
+    central_directory(),
+    directory_map(new android::FileMap()),
+    num_entries(0),
+    hash_table_size(0),
+    hash_table(NULL) {}
+
+  ZipArchive(void* address, size_t length) :
+    mapped_zip(address, length),
+    close_file(false),
+    directory_offset(0),
+    central_directory(),
+    directory_map(new android::FileMap()),
+    num_entries(0),
+    hash_table_size(0),
+    hash_table(NULL) {}
 
   ~ZipArchive() {
-    if (close_file && fd >= 0) {
-      close(fd);
+    if (close_file && mapped_zip.GetFileDescriptor() >= 0) {
+      close(mapped_zip.GetFileDescriptor());
     }
 
     free(hash_table);
   }
+
+  bool InitializeCentralDirectory(const char* debug_file_name, off64_t cd_start_offset,
+                                  size_t cd_size);
+
 };
 
 #endif  // LIBZIPARCHIVE_ZIPARCHIVE_PRIVATE_H_
