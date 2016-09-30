@@ -17,7 +17,6 @@
 #include <string.h>
 
 #include <android/log.h>
-#include <log/logger.h>
 
 #include "log_portability.h"
 

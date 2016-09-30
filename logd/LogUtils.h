@@ -20,7 +20,7 @@
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
-#include <android/log.h>
+#include <private/android_logger.h>
 #include <sysutils/SocketClient.h>
 
 // Hijack this header as a common include file used by most all sources
