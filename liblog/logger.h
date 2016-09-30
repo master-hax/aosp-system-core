@@ -22,7 +22,6 @@
 
 #include <android/log.h>
 #include <cutils/list.h>
-#include <log/logger.h>
 
 #include "log_portability.h"
 
