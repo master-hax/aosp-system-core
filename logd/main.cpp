@@ -44,6 +44,7 @@
 #include <log/event_tag_map.h>
 #include <packagelistparser/packagelistparser.h>
 #include <private/android_filesystem_config.h>
+#include <private/android_logger.h>
 #include <scoped_minijail.h>
 #include <utils/threads.h>
 

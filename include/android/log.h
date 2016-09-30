@@ -77,6 +77,12 @@
 #include <time.h>
 #include <unistd.h>
 
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+#include <string>
+}
+#endif
+
 #include <log/uio.h>
 
 #ifdef __cplusplus
@@ -152,22 +158,24 @@ void __android_log_assert(const char *cond, const char *tag,
 #endif
     ;
 
-//
-// C/C++ logging functions.  See the logging documentation for API details.
-//
-// We'd like these to be available from C code (in case we import some from
-// somewhere), so this has a C interface.
-//
-// The output will be correct when the log file is shared between multiple
-// threads and/or multiple processes so long as the operating system
-// supports O_APPEND.  These calls have mutex-protected data structures
-// and so are NOT reentrant.  Do not use LOG in a signal handler.
-//
+/*
+ * C/C++ logging functions.  See the logging documentation for API details.
+ *
+ * We'd like these to be available from C code (in case we import some from
+ * somewhere), so this has a C interface.
+ *
+ * The output will be correct when the log file is shared between multiple
+ * threads and/or multiple processes so long as the operating system
+ * supports O_APPEND.  These calls have mutex-protected data structures
+ * and so are NOT reentrant.  Do not use LOG in a signal handler.
+ */
 
-// This file uses ", ## __VA_ARGS__" zero-argument token pasting to
-// work around issues with debug-only syntax errors in assertions
-// that are missing format strings.  See commit
-// 19299904343daf191267564fe32e6cd5c165cd42
+/*
+ * This file uses ", ## __VA_ARGS__" zero-argument token pasting to
+ * work around issues with debug-only syntax errors in assertions
+ * that are missing format strings.  See commit
+ * 19299904343daf191267564fe32e6cd5c165cd42
+ */
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
@@ -181,7 +189,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
 int __android_log_security_bwrite(int32_t tag, const void *payload, size_t len);
 int __android_log_security_bswrite(int32_t tag, const char *payload);
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Normally we strip ALOGV (VERBOSE messages) from release builds.
@@ -205,7 +213,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #define LOG_TAG NULL
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 #ifndef __predict_false
 #define __predict_false(exp) __builtin_expect((exp) != 0, 0)
@@ -303,7 +311,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     : (void)0 )
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Conditional based on whether the current LOG_TAG is enabled at
@@ -349,11 +357,10 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #define IF_ALOGE() IF_ALOG(LOG_ERROR, LOG_TAG)
 #endif
 
-
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
- * Simplified macro to send a verbose system log message using the current LOG_TAG.
+ * Simplified macro to send a verbose system log message using current LOG_TAG.
  */
 #ifndef SLOGV
 #define __SLOGV(...) \
@@ -377,7 +384,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send a debug system log message using the current LOG_TAG.
+ * Simplified macro to send a debug system log message using current LOG_TAG.
  */
 #ifndef SLOGD
 #define SLOGD(...) \
@@ -392,7 +399,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send an info system log message using the current LOG_TAG.
+ * Simplified macro to send an info system log message using current LOG_TAG.
  */
 #ifndef SLOGI
 #define SLOGI(...) \
@@ -407,7 +414,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send a warning system log message using the current LOG_TAG.
+ * Simplified macro to send a warning system log message using current LOG_TAG.
  */
 #ifndef SLOGW
 #define SLOGW(...) \
@@ -422,7 +429,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send an error system log message using the current LOG_TAG.
+ * Simplified macro to send an error system log message using current LOG_TAG.
  */
 #ifndef SLOGE
 #define SLOGE(...) \
@@ -438,10 +445,10 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 
 #endif /* !LINT_RLOG */
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
- * Simplified macro to send a verbose radio log message using the current LOG_TAG.
+ * Simplified macro to send a verbose radio log message using current LOG_TAG.
  */
 #ifndef RLOGV
 #define __RLOGV(...) \
@@ -465,7 +472,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send a debug radio log message using the current LOG_TAG.
+ * Simplified macro to send a debug radio log message using  current LOG_TAG.
  */
 #ifndef RLOGD
 #define RLOGD(...) \
@@ -480,7 +487,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send an info radio log message using the current LOG_TAG.
+ * Simplified macro to send an info radio log message using  current LOG_TAG.
  */
 #ifndef RLOGI
 #define RLOGI(...) \
@@ -495,7 +502,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send a warning radio log message using the current LOG_TAG.
+ * Simplified macro to send a warning radio log message using current LOG_TAG.
  */
 #ifndef RLOGW
 #define RLOGW(...) \
@@ -510,7 +517,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 
 /*
- * Simplified macro to send an error radio log message using the current LOG_TAG.
+ * Simplified macro to send an error radio log message using current LOG_TAG.
  */
 #ifndef RLOGE
 #define RLOGE(...) \
@@ -524,8 +531,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     : (void)0 )
 #endif
 
-
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Log a fatal error.  If the given condition fails, this stops program
@@ -575,10 +581,9 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef ALOG_ASSERT
 #define ALOG_ASSERT(cond, ...) LOG_FATAL_IF(!(cond), ## __VA_ARGS__)
-//#define ALOG_ASSERT(cond) LOG_FATAL_IF(!(cond), "Assertion failed: " #cond)
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Basic log message macro.
@@ -617,7 +622,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     if (android_testLog(ANDROID_##priority, tag))
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Event logging.
@@ -687,6 +692,383 @@ typedef enum log_id {
 #define sizeof_log_id_t sizeof(typeof_log_id_t)
 #define typeof_log_id_t unsigned char
 
+/* --------------------------------------------------------------------- */
+
+/*
+ * The userspace structure for version 1 of the logger_entry ABI.
+ */
+struct logger_entry {
+    uint16_t    len;    /* length of the payload */
+    uint16_t    __pad;  /* no matter what, we get 2 bytes of padding */
+    int32_t     pid;    /* generating process's pid */
+    int32_t     tid;    /* generating process's tid */
+    int32_t     sec;    /* seconds since Epoch */
+    int32_t     nsec;   /* nanoseconds */
+#ifndef __cplusplus
+    char        msg[0]; /* the entry's payload */
+#endif
+};
+
+/*
+ * The userspace structure for version 2 of the logger_entry ABI.
+ */
+struct logger_entry_v2 {
+    uint16_t    len;       /* length of the payload */
+    uint16_t    hdr_size;  /* sizeof(struct logger_entry_v2) */
+    int32_t     pid;       /* generating process's pid */
+    int32_t     tid;       /* generating process's tid */
+    int32_t     sec;       /* seconds since Epoch */
+    int32_t     nsec;      /* nanoseconds */
+    uint32_t    euid;      /* effective UID of logger */
+#ifndef __cplusplus
+    char        msg[0];    /* the entry's payload */
+#endif
+} __attribute__((__packed__));
+
+/*
+ * The userspace structure for version 3 of the logger_entry ABI.
+ */
+struct logger_entry_v3 {
+    uint16_t    len;       /* length of the payload */
+    uint16_t    hdr_size;  /* sizeof(struct logger_entry_v3) */
+    int32_t     pid;       /* generating process's pid */
+    int32_t     tid;       /* generating process's tid */
+    int32_t     sec;       /* seconds since Epoch */
+    int32_t     nsec;      /* nanoseconds */
+    uint32_t    lid;       /* log id of the payload */
+#ifndef __cplusplus
+    char        msg[0];    /* the entry's payload */
+#endif
+} __attribute__((__packed__));
+
+/*
+ * The userspace structure for version 4 of the logger_entry ABI.
+ */
+struct logger_entry_v4 {
+    uint16_t    len;       /* length of the payload */
+    uint16_t    hdr_size;  /* sizeof(struct logger_entry_v4) */
+    int32_t     pid;       /* generating process's pid */
+    uint32_t    tid;       /* generating process's tid */
+    uint32_t    sec;       /* seconds since Epoch */
+    uint32_t    nsec;      /* nanoseconds */
+    uint32_t    lid;       /* log id of the payload, bottom 4 bits currently */
+    uint32_t    uid;       /* generating process's uid */
+#ifndef __cplusplus
+    char        msg[0];    /* the entry's payload */
+#endif
+};
+
+/* struct log_time is a wire-format variant of struct timespec */
+#define NS_PER_SEC 1000000000ULL
+
+#ifdef __cplusplus
+
+/*
+ * NB: we did NOT define a copy constructor. This will result in structure
+ * no longer being compatible with pass-by-value which is desired
+ * efficient behavior. Also, pass-by-reference breaks C/C++ ABI.
+ */
+struct log_time {
+public:
+    uint32_t tv_sec; /* good to Feb 5 2106 */
+    uint32_t tv_nsec;
+
+    static const uint32_t tv_sec_max = 0xFFFFFFFFUL;
+    static const uint32_t tv_nsec_max = 999999999UL;
+
+    log_time(const timespec &T)
+    {
+        tv_sec = static_cast<uint32_t>(T.tv_sec);
+        tv_nsec = static_cast<uint32_t>(T.tv_nsec);
+    }
+    log_time(uint32_t sec, uint32_t nsec)
+    {
+        tv_sec = sec;
+        tv_nsec = nsec;
+    }
+#ifdef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
+    static const timespec EPOCH;
+#endif
+    log_time()
+    {
+    }
+#ifdef __linux__
+    log_time(clockid_t id)
+    {
+        timespec T;
+        clock_gettime(id, &T);
+        tv_sec = static_cast<uint32_t>(T.tv_sec);
+        tv_nsec = static_cast<uint32_t>(T.tv_nsec);
+    }
+#endif
+    log_time(const char *T)
+    {
+        const uint8_t *c = reinterpret_cast<const uint8_t*>(T);
+        tv_sec = c[0] |
+                 (static_cast<uint32_t>(c[1]) << 8) |
+                 (static_cast<uint32_t>(c[2]) << 16) |
+                 (static_cast<uint32_t>(c[3]) << 24);
+        tv_nsec = c[4] |
+                  (static_cast<uint32_t>(c[5]) << 8) |
+                  (static_cast<uint32_t>(c[6]) << 16) |
+                  (static_cast<uint32_t>(c[7]) << 24);
+    }
+
+    /* timespec */
+    bool operator== (const timespec &T) const
+    {
+        return (tv_sec == static_cast<uint32_t>(T.tv_sec))
+            && (tv_nsec == static_cast<uint32_t>(T.tv_nsec));
+    }
+    bool operator!= (const timespec &T) const
+    {
+        return !(*this == T);
+    }
+    bool operator< (const timespec &T) const
+    {
+        return (tv_sec < static_cast<uint32_t>(T.tv_sec))
+            || ((tv_sec == static_cast<uint32_t>(T.tv_sec))
+                && (tv_nsec < static_cast<uint32_t>(T.tv_nsec)));
+    }
+    bool operator>= (const timespec &T) const
+    {
+        return !(*this < T);
+    }
+    bool operator> (const timespec &T) const
+    {
+        return (tv_sec > static_cast<uint32_t>(T.tv_sec))
+            || ((tv_sec == static_cast<uint32_t>(T.tv_sec))
+                && (tv_nsec > static_cast<uint32_t>(T.tv_nsec)));
+    }
+    bool operator<= (const timespec &T) const
+    {
+        return !(*this > T);
+    }
+
+#ifdef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
+    log_time operator-= (const timespec &T);
+    log_time operator- (const timespec &T) const
+    {
+        log_time local(*this);
+        return local -= T;
+    }
+    log_time operator+= (const timespec &T);
+    log_time operator+ (const timespec &T) const
+    {
+        log_time local(*this);
+        return local += T;
+    }
+#endif
+
+    /* log_time */
+    bool operator== (const log_time &T) const
+    {
+        return (tv_sec == T.tv_sec) && (tv_nsec == T.tv_nsec);
+    }
+    bool operator!= (const log_time &T) const
+    {
+        return !(*this == T);
+    }
+    bool operator< (const log_time &T) const
+    {
+        return (tv_sec < T.tv_sec)
+            || ((tv_sec == T.tv_sec) && (tv_nsec < T.tv_nsec));
+    }
+    bool operator>= (const log_time &T) const
+    {
+        return !(*this < T);
+    }
+    bool operator> (const log_time &T) const
+    {
+        return (tv_sec > T.tv_sec)
+            || ((tv_sec == T.tv_sec) && (tv_nsec > T.tv_nsec));
+    }
+    bool operator<= (const log_time &T) const
+    {
+        return !(*this > T);
+    }
+
+#ifdef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
+    log_time operator-= (const log_time &T);
+    log_time operator- (const log_time &T) const
+    {
+        log_time local(*this);
+        return local -= T;
+    }
+    log_time operator+= (const log_time &T);
+    log_time operator+ (const log_time &T) const
+    {
+        log_time local(*this);
+        return local += T;
+    }
+#endif
+
+    uint64_t nsec() const
+    {
+        return static_cast<uint64_t>(tv_sec) * NS_PER_SEC + tv_nsec;
+    }
+
+#ifdef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
+    static const char default_format[];
+
+    /* Add %#q for the fraction of a second to the standard library functions */
+    char *strptime(const char *s, const char *format = default_format);
+#endif
+} __attribute__((__packed__));
+
+#else
+
+typedef struct log_time {
+    uint32_t tv_sec;
+    uint32_t tv_nsec;
+} __attribute__((__packed__)) log_time;
+
+#endif
+
+/*
+ * The maximum size of the log entry payload that can be
+ * written to the logger. An attempt to write more than
+ * this amount will result in a truncated log entry.
+ */
+#define LOGGER_ENTRY_MAX_PAYLOAD 4068
+
+/*
+ * The maximum size of a log entry which can be read from the
+ * kernel logger driver. An attempt to read less than this amount
+ * may result in read() returning EINVAL.
+ */
+#define LOGGER_ENTRY_MAX_LEN    (5*1024)
+
+struct log_msg {
+    union {
+        unsigned char buf[LOGGER_ENTRY_MAX_LEN + 1];
+        struct logger_entry_v4 entry;
+        struct logger_entry_v4 entry_v4;
+        struct logger_entry_v3 entry_v3;
+        struct logger_entry_v2 entry_v2;
+        struct logger_entry    entry_v1;
+    } __attribute__((aligned(4)));
+#ifdef __cplusplus
+    /* Matching log_time operators */
+    bool operator== (const log_msg &T) const
+    {
+        return (entry.sec == T.entry.sec) && (entry.nsec == T.entry.nsec);
+    }
+    bool operator!= (const log_msg &T) const
+    {
+        return !(*this == T);
+    }
+    bool operator< (const log_msg &T) const
+    {
+        return (entry.sec < T.entry.sec)
+            || ((entry.sec == T.entry.sec)
+             && (entry.nsec < T.entry.nsec));
+    }
+    bool operator>= (const log_msg &T) const
+    {
+        return !(*this < T);
+    }
+    bool operator> (const log_msg &T) const
+    {
+        return (entry.sec > T.entry.sec)
+            || ((entry.sec == T.entry.sec)
+             && (entry.nsec > T.entry.nsec));
+    }
+    bool operator<= (const log_msg &T) const
+    {
+        return !(*this > T);
+    }
+    uint64_t nsec() const
+    {
+        return static_cast<uint64_t>(entry.sec) * NS_PER_SEC + entry.nsec;
+    }
+
+    /* packet methods */
+    log_id_t id()
+    {
+        return static_cast<log_id_t>(entry.lid);
+    }
+    char *msg()
+    {
+        unsigned short hdr_size = entry.hdr_size;
+        if (!hdr_size) {
+            hdr_size = sizeof(entry_v1);
+        }
+        if ((hdr_size < sizeof(entry_v1)) || (hdr_size > sizeof(entry))) {
+            return NULL;
+        }
+        return reinterpret_cast<char*>(buf) + hdr_size;
+    }
+    unsigned int len()
+    {
+        return (entry.hdr_size ?
+                    entry.hdr_size :
+                    static_cast<uint16_t>(sizeof(entry_v1))) +
+               entry.len;
+    }
+#endif
+};
+
+struct logger;
+
+log_id_t android_logger_get_id(struct logger *logger);
+
+int android_logger_clear(struct logger *logger);
+long android_logger_get_log_size(struct logger *logger);
+int android_logger_set_log_size(struct logger *logger, unsigned long size);
+long android_logger_get_log_readable_size(struct logger *logger);
+int android_logger_get_log_version(struct logger *logger);
+
+struct logger_list;
+
+ssize_t android_logger_get_statistics(struct logger_list *logger_list,
+                                      char *buf, size_t len);
+ssize_t android_logger_get_prune_list(struct logger_list *logger_list,
+                                      char *buf, size_t len);
+int android_logger_set_prune_list(struct logger_list *logger_list,
+                                  char *buf, size_t len);
+
+#define ANDROID_LOG_RDONLY   O_RDONLY
+#define ANDROID_LOG_WRONLY   O_WRONLY
+#define ANDROID_LOG_RDWR     O_RDWR
+#define ANDROID_LOG_ACCMODE  O_ACCMODE
+#define ANDROID_LOG_NONBLOCK O_NONBLOCK
+#define ANDROID_LOG_WRAP     0x40000000 /* Block until buffer about to wrap */
+#define ANDROID_LOG_WRAP_DEFAULT_TIMEOUT 7200 /* 2 hour default */
+#define ANDROID_LOG_PSTORE   0x80000000
+
+struct logger_list *android_logger_list_alloc(int mode,
+                                              unsigned int tail,
+                                              pid_t pid);
+struct logger_list *android_logger_list_alloc_time(int mode,
+                                                   log_time start,
+                                                   pid_t pid);
+void android_logger_list_free(struct logger_list *logger_list);
+/* In the purest sense, the following two are orthogonal interfaces */
+int android_logger_list_read(struct logger_list *logger_list,
+                             struct log_msg *log_msg);
+
+/* Multiple log_id_t opens */
+struct logger *android_logger_open(struct logger_list *logger_list,
+                                   log_id_t id);
+#define android_logger_close android_logger_free
+/* Single log_id_t open */
+struct logger_list *android_logger_list_open(log_id_t id,
+                                             int mode,
+                                             unsigned int tail,
+                                             pid_t pid);
+#define android_logger_list_close android_logger_list_free
+
+#ifdef __linux__
+clockid_t android_log_clockid();
+#endif
+
+/*
+ * log_id_t helpers
+ */
+log_id_t android_name_to_log_id(const char *logName);
+const char *android_log_id_to_name(log_id_t log_id);
+
 /* For manipulating lists of events. */
 
 #define ANDROID_MAX_LIST_NEST_DEPTH 8
@@ -748,9 +1130,99 @@ android_log_list_element android_log_peek_next(android_log_context ctx);
 /* Finished with reader or writer context */
 int android_log_destroy(android_log_context *ctx);
 
+#ifdef __cplusplus
+/* android_log_context C++ helpers */
+class android_log_event_context {
+    android_log_context ctx;
+    int ret;
+
+public:
+    explicit android_log_event_context(int tag) : ret(0) {
+        ctx = create_android_logger(static_cast<uint32_t>(tag));
+    }
+    explicit android_log_event_context(log_msg& log_msg) : ret(0) {
+        ctx = create_android_log_parser(log_msg.msg() + sizeof(uint32_t),
+                                        log_msg.entry.len - sizeof(uint32_t));
+    }
+    ~android_log_event_context() { android_log_destroy(&ctx); }
+
+    int close() {
+        int retval = android_log_destroy(&ctx);
+        if (retval < 0) ret = retval;
+        return retval;
+    }
+
+    /* To allow above C calls to use this class as parameter */
+    operator android_log_context() const { return ctx; }
+
+    int status() const { return ret; }
+
+    int begin() {
+        int retval = android_log_write_list_begin(ctx);
+        if (retval < 0) ret = retval;
+        return ret;
+    }
+    int end() {
+        int retval = android_log_write_list_end(ctx);
+        if (retval < 0) ret = retval;
+        return ret;
+    }
+
+    android_log_event_context& operator <<(int32_t value) {
+        int retval = android_log_write_int32(ctx, value);
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+    android_log_event_context& operator <<(uint32_t value) {
+        int retval = android_log_write_int32(ctx, static_cast<int32_t>(value));
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+    android_log_event_context& operator <<(int64_t value) {
+        int retval = android_log_write_int64(ctx, value);
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+    android_log_event_context& operator <<(uint64_t value) {
+        int retval = android_log_write_int64(ctx, static_cast<int64_t>(value));
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+    android_log_event_context& operator <<(const char* value) {
+        int retval = android_log_write_string8(ctx, value);
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+#if defined(_USING_LIBCXX)
+    android_log_event_context& operator <<(std::string& value) {
+        int retval = android_log_write_string8_len(ctx,
+                                                   value.data(),
+                                                   value.length());
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+#endif
+    android_log_event_context& operator <<(float value) {
+        int retval = android_log_write_float32(ctx, value);
+        if (retval < 0) ret = retval;
+        return *this;
+    }
+
+    int write(log_id_t id) {
+        int retval = android_log_write_list(ctx, id);
+        if (retval < 0) ret = retval;
+        return ret;
+    }
+
+    android_log_list_element read() { return android_log_read_next(ctx); }
+    android_log_list_element peek() { return android_log_peek_next(ctx); }
+
+};
+#endif
+
+/* --------------------------------------------------------------------- */
+
 /*
- * ===========================================================================
- *
  * The stuff in the rest of this file should not be used directly.
  */
 
@@ -822,8 +1294,8 @@ int __android_log_is_loggable_len(int prio, const char *tag, size_t len, int def
 
 int __android_log_security(); /* Device Owner is present */
 
-int __android_log_error_write(int tag, const char *subTag, int32_t uid, const char *data,
-                              uint32_t dataLen);
+int __android_log_error_write(int tag, const char *subTag, int32_t uid,
+                              const char *data, uint32_t dataLen);
 
 /*
  * Send a simple string to the log.
