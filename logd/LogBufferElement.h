@@ -23,7 +23,6 @@
 
 #include <android/log.h>
 #include <sysutils/SocketClient.h>
-#include <log/logger.h>
 
 class LogBuffer;
 
