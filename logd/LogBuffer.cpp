@@ -25,7 +25,7 @@
 #include <unordered_map>
 
 #include <cutils/properties.h>
-#include <log/logger.h>
+#include <private/android_logger.h>
 
 #include "LogBuffer.h"
 #include "LogKlog.h"
