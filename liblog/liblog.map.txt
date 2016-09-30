@@ -21,14 +21,34 @@ LIBLOG_K {
     __android_log_close;
 };
 
+LIBLOG_L {
+  global:
+    android_logger_clear;
+    android_logger_get_id;
+    android_logger_get_log_readable_size;
+    android_logger_get_log_size;
+    android_logger_get_log_version;
+    android_logger_list_alloc;
+    android_logger_list_alloc_time;
+    android_logger_list_free;
+    android_logger_list_open;
+    android_logger_list_read;
+    android_logger_open;
+    android_logger_set_log_size;
+};
+
 LIBLOG_M {
   global:
     __android_log_error_write;
     __android_log_is_loggable;
+    android_logger_get_prune_list;
+    android_logger_get_statistics;
+    android_logger_set_prune_list;
 };
 
 LIBLOG_N {
   global:
+    android_log_clockid;
     android_log_destroy;
     android_log_peek_next;
     android_log_read_next;
