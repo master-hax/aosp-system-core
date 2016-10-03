@@ -18,8 +18,11 @@
 #include <cutils/ashmem.h>
 #include <gtest/gtest.h>
 #include <android-base/unique_fd.h>
+#include <fcntl.h>
 
 using android::base::unique_fd;
+
+#define ASHMEM_DEVICE "/dev/ashmem"
 
 void TestCreateRegion(size_t size, unique_fd &fd, int prot) {
     fd = unique_fd(ashmem_create_region(nullptr, size));
@@ -42,6 +45,16 @@ void FillData(uint8_t* data, size_t dataLen) {
     for (size_t i = 0; i < dataLen; i++) {
         data[i] = i & 0xFF;
     }
+}
+
+int PurgeCaches() {
+    unique_fd fd(TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR)));
+
+    if (fd < 0) {
+        return fd;
+    }
+
+    return TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_PURGE_ALL_CACHES));
 }
 
 TEST(AshmemTest, BasicTest) {
@@ -174,4 +187,34 @@ TEST(AshmemTest, ForkMultiRegionTest) {
         ASSERT_EQ(0, memcmp(region, &data, size));
         EXPECT_EQ(0, munmap(region, size));
     }
+}
+
+TEST(AshmemTest, PinTest) {
+    unique_fd fd1, fd2;
+    void *region1, *region2;
+    constexpr size_t regionSize = PAGE_SIZE * 2;
+    constexpr size_t dataSize = PAGE_SIZE;
+    uint8_t data[dataSize];
+    FillData(data, dataSize);
+
+    ASSERT_NO_FATAL_FAILURE(TestCreateRegion(regionSize, fd1, PROT_READ | PROT_WRITE));
+    ASSERT_NO_FATAL_FAILURE(TestMmap(fd1, regionSize, PROT_READ | PROT_WRITE, &region1));
+    memcpy(region1, &data, dataSize);
+    ASSERT_EQ(0, memcmp(region1, &data, dataSize));
+    ASSERT_EQ(0, ashmem_unpin_region(fd1, PAGE_SIZE, PAGE_SIZE));
+
+    ASSERT_NO_FATAL_FAILURE(TestCreateRegion(regionSize, fd2, PROT_READ | PROT_WRITE));
+    ASSERT_NO_FATAL_FAILURE(TestMmap(fd2, regionSize, PROT_READ | PROT_WRITE, &region2));
+
+    ASSERT_LE(0, PurgeCaches());
+    ASSERT_EQ(ASHMEM_WAS_PURGED, ashmem_pin_region(fd1, PAGE_SIZE, PAGE_SIZE));
+    ASSERT_EQ(ASHMEM_NOT_PURGED, ashmem_pin_region(fd1, 0, PAGE_SIZE));
+    ASSERT_EQ(0, memcmp(region1, &data, dataSize));
+    ASSERT_EQ(ASHMEM_NOT_PURGED, ashmem_pin_region(fd2, 0, regionSize));
+    EXPECT_EQ(0, munmap(region1, regionSize));
+
+    ASSERT_LE(0, PurgeCaches());
+    ASSERT_EQ(ASHMEM_NOT_PURGED, ashmem_pin_region(fd1, 0, regionSize));
+    ASSERT_EQ(ASHMEM_NOT_PURGED, ashmem_pin_region(fd2, 0, regionSize));
+    EXPECT_EQ(0, munmap(region2, regionSize));
 }
