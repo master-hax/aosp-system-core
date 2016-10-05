@@ -154,13 +154,17 @@ static int file_write(struct output_file *out, void *data, int len)
 	int ret;
 	struct output_file_normal *outn = to_output_file_normal(out);
 
-	ret = write(outn->fd, data, len);
-	if (ret < 0) {
-		error_errno("write");
-		return -1;
-	} else if (ret < len) {
-		error("incomplete write");
-		return -1;
+	for (;;) {
+		ret = write(outn->fd, data, len);
+		if (ret < 0) {
+			error_errno("write");
+			return -1;
+		} else if (ret >= len) {
+			break;
+		}
+		/* Incomplete write */
+		data = (char *)data + ret;
+		len -= ret;
 	}
 
 	return 0;
