@@ -122,14 +122,19 @@ bool Parser::ParseConfigDir(const std::string& path) {
         return false;
     }
     dirent* current_file;
+    std::vector<std::string> files;
     while ((current_file = readdir(config_dir.get()))) {
         std::string current_path =
             android::base::StringPrintf("%s/%s", path.c_str(), current_file->d_name);
         // Ignore directories and only process regular files.
         if (current_file->d_type == DT_REG) {
-            if (!ParseConfigFile(current_path)) {
-                LOG(ERROR) << "could not import file '" << current_path << "'";
-            }
+            files.emplace_back(current_path);
+        }
+    }
+    std::sort(files.begin(), files.end());
+    for (const auto& file : files) {
+        if (!ParseConfigFile(file)) {
+            LOG(ERROR) << "could not import file '" << file << "'";
         }
     }
     return true;
