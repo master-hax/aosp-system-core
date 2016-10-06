@@ -188,6 +188,8 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * You can modify this (for example with "#define LOG_NDEBUG 0"
  * at the top of your source file) to change that behavior.
  */
+
+#ifdef LOG_TAG
 #ifndef LOG_NDEBUG
 #ifdef NDEBUG
 #define LOG_NDEBUG 1
@@ -195,14 +197,6 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #define LOG_NDEBUG 0
 #endif
 #endif
-
-/*
- * This is the local tag used for the following simplified
- * logging macros.  You can change this preprocessor definition
- * before using the other macros to change the tag.
- */
-#ifndef LOG_TAG
-#define LOG_TAG NULL
 #endif
 
 // ---------------------------------------------------------------------
@@ -229,14 +223,19 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef ALOGV
 #define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define ALOGV(...) do { if (0) { __ALOGV(__VA_ARGS__); } } while (0)
 #else
 #define ALOGV(...) __ALOGV(__VA_ARGS__)
 #endif
+#else
+#define ALOGV(...) do { if (0) { __ALOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef ALOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define ALOGV_IF(cond, ...)   ((void)0)
 #else
@@ -244,6 +243,9 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define ALOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -310,10 +312,14 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * verbose priority.
  */
 #ifndef IF_ALOGV
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define IF_ALOGV() if (false)
 #else
 #define IF_ALOGV() IF_ALOG(LOG_VERBOSE, LOG_TAG)
+#endif
+#else
+#define IF_ALOGV() if (false)
 #endif
 #endif
 
@@ -358,14 +364,19 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #ifndef SLOGV
 #define __SLOGV(...) \
     ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define SLOGV(...) do { if (0) { __SLOGV(__VA_ARGS__); } } while (0)
 #else
 #define SLOGV(...) __SLOGV(__VA_ARGS__)
 #endif
+#else
+#define SLOGV(...) do { if (0) { __SLOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef SLOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define SLOGV_IF(cond, ...)   ((void)0)
 #else
@@ -373,6 +384,9 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define SLOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -447,13 +461,18 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #define __RLOGV(...) \
     ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #if LOG_NDEBUG
+#if LOG_NDEBUG
 #define RLOGV(...) do { if (0) { __RLOGV(__VA_ARGS__); } } while (0)
 #else
 #define RLOGV(...) __RLOGV(__VA_ARGS__)
 #endif
+#else
+#define RLOGV(...) do { if (0) { __RLOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef RLOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define RLOGV_IF(cond, ...)   ((void)0)
 #else
@@ -461,6 +480,9 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
     ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define RLOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -549,6 +571,8 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Versions of LOG_ALWAYS_FATAL_IF and LOG_ALWAYS_FATAL that
  * are stripped out of release builds.
  */
+#ifdef LOG_NDEBUG
+
 #if LOG_NDEBUG
 
 #ifndef LOG_FATAL_IF
@@ -565,6 +589,17 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 #ifndef LOG_FATAL
 #define LOG_FATAL(...) LOG_ALWAYS_FATAL(__VA_ARGS__)
+#endif
+
+#endif
+
+#else
+
+#ifndef LOG_FATAL_IF
+#define LOG_FATAL_IF(cond, ...) ((void)0)
+#endif
+#ifndef LOG_FATAL
+#define LOG_FATAL(...) ((void)0)
 #endif
 
 #endif
@@ -801,6 +836,7 @@ int android_log_destroy(android_log_context *ctx);
  *        IF_ALOG as a convenient means to reimplement their policy
  *        over Android.
  */
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG /* Production */
 #define android_testLog(prio, tag) \
     (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
@@ -809,6 +845,11 @@ int android_log_destroy(android_log_context *ctx);
 #define android_testLog(prio, tag) \
     (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
                                    ANDROID_LOG_VERBOSE) != 0)
+#endif
+#else
+#define android_testLog(prio, tag) \
+    (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
+                                   ANDROID_LOG_DEBUG) != 0)
 #endif
 
 /*
