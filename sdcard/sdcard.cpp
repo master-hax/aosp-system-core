@@ -111,8 +111,8 @@ static void watch_package_list(struct fuse_global* global) {
     char event_buf[512];
 
     int nfd = inotify_init();
-    if (nfd < 0) {
-        PLOG(ERROR) << "inotify_init failed";
+    if (nfd == -1) {
+        PLOG(ERROR) << "inotify_init failed: " << strerror(errno);
         return;
     }
 
@@ -127,7 +127,7 @@ static void watch_package_list(struct fuse_global* global) {
                     sleep(3);
                     continue;
                 } else {
-                    PLOG(ERROR) << "inotify_add_watch failed";
+                    PLOG(ERROR) << "inotify_add_watch failed " << strerror(errno);
                     return;
                 }
             }
@@ -142,17 +142,19 @@ static void watch_package_list(struct fuse_global* global) {
         }
 
         int event_pos = 0;
-        int res = read(nfd, event_buf, sizeof(event_buf));
-        if (res < (int) sizeof(*event)) {
-            if (errno == EINTR)
-                continue;
-            PLOG(ERROR) << "failed to read inotify event";
+        ssize_t res = TEMP_FAILURE_RETRY(read(nfd, event_buf, sizeof(event_buf)));
+        if (res == -1) {
+            PLOG(ERROR) << "failed to read inotify event: " << strerror(errno);
+            return;
+        } else if (static_cast<size_t>(res) < sizeof(*event)) {
+            PLOG(ERROR) << "failed to read inotify event: read " << res << " expected "
+                        << sizeof(event_buf);
             return;
         }
 
-        while (res >= (int) sizeof(*event)) {
+        while (res >= static_cast<ssize_t>(sizeof(*event))) {
             int event_size;
-            event = (struct inotify_event *) (event_buf + event_pos);
+            event = reinterpret_cast<struct inotify_event*>(event_buf + event_pos);
 
             DLOG(INFO) << "inotify event: " << std::hex << event->mask << std::dec;
             if ((event->mask & IN_IGNORED) == IN_IGNORED) {
@@ -171,9 +173,9 @@ static void watch_package_list(struct fuse_global* global) {
 static int fuse_setup(struct fuse* fuse, gid_t gid, mode_t mask) {
     char opts[256];
 
-    fuse->fd = open("/dev/fuse", O_RDWR);
+    fuse->fd = TEMP_FAILURE_RETRY(open("/dev/fuse", O_RDWR | O_CLOEXEC));
     if (fuse->fd == -1) {
-        PLOG(ERROR) << "failed to open fuse device";
+        PLOG(ERROR) << "failed to open fuse device: " << strerror(errno);
         return -1;
     }
 
@@ -183,8 +185,8 @@ static int fuse_setup(struct fuse* fuse, gid_t gid, mode_t mask) {
             "fd=%i,rootmode=40000,default_permissions,allow_other,user_id=%d,group_id=%d",
             fuse->fd, fuse->global->uid, fuse->global->gid);
     if (mount("/dev/fuse", fuse->dest_path, "fuse", MS_NOSUID | MS_NODEV | MS_NOEXEC |
-            MS_NOATIME, opts) != 0) {
-        PLOG(ERROR) << "failed to mount fuse filesystem";
+            MS_NOATIME, opts) == -1) {
+        PLOG(ERROR) << "failed to mount fuse filesystem: " << strerror(errno);
         return -1;
     }
 
@@ -321,8 +323,8 @@ static bool sdcardfs_setup(const std::string& source_path, const std::string& de
             fsuid, fsgid, multi_user?"multiuser,":"", mask, userid, gid);
 
     if (mount(source_path.c_str(), dest_path.c_str(), "sdcardfs",
-                        MS_NOSUID | MS_NODEV | MS_NOEXEC | MS_NOATIME, opts.c_str()) != 0) {
-        PLOG(ERROR) << "failed to mount sdcardfs filesystem";
+                        MS_NOSUID | MS_NODEV | MS_NOEXEC | MS_NOATIME, opts.c_str()) == -1) {
+        PLOG(ERROR) << "failed to mount sdcardfs filesystem " << strerror(errno);
         return false;
     }
 
@@ -480,8 +482,8 @@ int main(int argc, char **argv) {
 
     rlim.rlim_cur = 8192;
     rlim.rlim_max = 8192;
-    if (setrlimit(RLIMIT_NOFILE, &rlim)) {
-        PLOG(ERROR) << "setting RLIMIT_NOFILE failed";
+    if (setrlimit(RLIMIT_NOFILE, &rlim) == -1) {
+        PLOG(ERROR) << "setting RLIMIT_NOFILE failed: " << strerror(errno);
     }
 
     while ((fs_read_atomic_int("/data/.layout_version", &fs_version) == -1) || (fs_version < 3)) {
