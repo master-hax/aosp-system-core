@@ -56,9 +56,11 @@ class LogHashtable {
 
 public:
 
+    size_t size() const { return map.size(); }
+
     size_t sizeOf() const {
         return sizeof(*this) +
-               (map.size() * (sizeof(TEntry) + sizeof(void*))) +
+               (size() * (sizeof(TEntry) + sizeof(void*))) +
                (bucket_size() * sizeof(size_t) + sizeof(void*));
     }
 
@@ -511,7 +513,9 @@ class LogStatistics {
     size_t sizeOf() const {
         size_t size = sizeof(*this) + pidTable.sizeOf() + tidTable.sizeOf() +
                       tagTable.sizeOf() + securityTagTable.sizeOf() +
-                      uidNameSize();
+                      uidNameSize() +
+                      (pidTable.size() * sizeof(pidTable_t::iterator)) +
+                      (tagTable.size() * sizeof(tagTable_t::iterator));
         for(auto it : pidTable) {
             const char* name = it.second.getName();
             if (name) size += strlen(name) + 1;
@@ -526,7 +530,9 @@ class LogStatistics {
         }
         log_id_for_each(id) {
             size += uidTable[id].sizeOf();
+            size += uidTable[id].size() * sizeof(uidTable_t::iterator);
             size += pidSystemTable[id].sizeOf();
+            size += pidSystemTable[id].size() * sizeof(pidSystemTable_t::iterator);
         }
         return size;
     }
