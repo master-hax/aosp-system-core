@@ -42,7 +42,25 @@ class LogHashtable {
 
     std::unordered_map<TKey, TEntry> map;
 
+    size_t bucket_size() const {
+        size_t count = 0;
+        for (size_t idx = 0; idx < map.bucket_count(); ++idx) {
+            size_t bucket_size = map.bucket_size(idx);
+            if (bucket_size == 0) bucket_size = 1;
+            count += bucket_size;
+        }
+        float load_factor = map.max_load_factor();
+        if (load_factor < 1.0) return count;
+        return count * load_factor;
+    }
+
 public:
+
+    size_t sizeOf() const {
+        return sizeof(*this) +
+               (map.size() * (sizeof(TEntry) + sizeof(void*))) +
+               (bucket_size() * sizeof(size_t) + sizeof(void*));
+    }
 
     typedef typename std::unordered_map<TKey, TEntry>::iterator iterator;
     typedef typename std::unordered_map<TKey, TEntry>::const_iterator const_iterator;
@@ -155,13 +173,14 @@ public:
         }
         return output;
     }
+
 };
 
 namespace EntryBaseConstants {
     static constexpr size_t pruned_len = 14;
     static constexpr size_t total_len = 80;
 }
-
+ 
 struct EntryBase {
     size_t size;
 
@@ -472,7 +491,48 @@ class LogStatistics {
     // security tag list
     tagTable_t securityTagTable;
 
+    size_t uidNameBucketSize() const {
+        size_t count = 0;
+        for (size_t idx = 0; idx < uidName.bucket_count(); ++idx) {
+            size_t bucket_size = uidName.bucket_size(idx);
+            if (bucket_size == 0) bucket_size = 1;
+            count += bucket_size;
+        }
+        float load_factor = uidName.max_load_factor();
+        if (load_factor < 1.0) return count;
+        return count * load_factor;
+    }
+
+    size_t uidNameSize() const {
+        return (uidName.size() * (sizeof(UidName) + sizeof(void*))) +
+               (uidNameBucketSize() * sizeof(size_t) + sizeof(void*));
+    }
+
+    size_t sizeOf() const {
+        size_t size = sizeof(*this) + pidTable.sizeOf() + tidTable.sizeOf() +
+                      tagTable.sizeOf() + securityTagTable.sizeOf() +
+                      uidNameSize();
+        for(auto it : pidTable) {
+            const char* name = it.second.getName();
+            if (name) size += strlen(name) + 1;
+        }
+        for(auto it : tidTable) {
+            const char* name = it.second.getName();
+            if (name) size += strlen(name) + 1;
+        }
+        for(auto it : uidName) {
+            const char* name = it.second.getName();
+            if (name) size += strlen(name) + 1;
+        }
+        log_id_for_each(id) {
+            size += uidTable[id].sizeOf();
+            size += pidSystemTable[id].sizeOf();
+        }
+        return size;
+    }
+
 public:
+
     LogStatistics();
 
     void enableStatistics() { enable = true; }
