@@ -188,6 +188,10 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * You can modify this (for example with "#define LOG_NDEBUG 0"
  * at the top of your source file) to change that behavior.
  */
+
+#ifdef LOG_TAG
+#undef __ANDROID_LOG_TAG
+#define __ANDROID_LOG_TAG LOG_TAG
 #ifndef LOG_NDEBUG
 #ifdef NDEBUG
 #define LOG_NDEBUG 1
@@ -195,14 +199,37 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #define LOG_NDEBUG 0
 #endif
 #endif
+#else
 
-/*
- * This is the local tag used for the following simplified
- * logging macros.  You can change this preprocessor definition
- * before using the other macros to change the tag.
- */
-#ifndef LOG_TAG
-#define LOG_TAG NULL
+/* We will ignore LOG_TAG defined after inclusion, if not defined before */
+#define __ANDROID_LOG_TAG NULL
+
+#if defined(__GNUC__)
+#ifdef __USE_MINGW_ANSI_STDIO
+#if __USE_MINGW_ANSI_STDIO
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-W#warnings"
+#endif
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-W#warnings"
+#endif
+#endif
+
+#warning "define Android LOG_TAG before including android/log.h"
+
+#if defined(__GNUC__)
+#ifdef __USE_MINGW_ANSI_STDIO
+#if __USE_MINGW_ANSI_STDIO
+#else
+#pragma GCC diagnostic pop
+#endif
+#else
+#pragma GCC diagnostic pop
+#endif
+#endif
+
 #endif
 
 // ---------------------------------------------------------------------
@@ -228,22 +255,30 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Simplified macro to send a verbose log message using the current LOG_TAG.
  */
 #ifndef ALOGV
-#define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__))
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define ALOGV(...) do { if (0) { __ALOGV(__VA_ARGS__); } } while (0)
 #else
 #define ALOGV(...) __ALOGV(__VA_ARGS__)
 #endif
+#else
+#define ALOGV(...) do { if (0) { __ALOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef ALOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define ALOGV_IF(cond, ...)   ((void)0)
 #else
 #define ALOGV_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)ALOG(LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define ALOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -251,13 +286,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Simplified macro to send a debug log message using the current LOG_TAG.
  */
 #ifndef ALOGD
-#define ALOGD(...) ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+#define ALOGD(...) ((void)ALOG(LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGD_IF
 #define ALOGD_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)ALOG(LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -265,13 +300,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Simplified macro to send an info log message using the current LOG_TAG.
  */
 #ifndef ALOGI
-#define ALOGI(...) ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__))
+#define ALOGI(...) ((void)ALOG(LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGI_IF
 #define ALOGI_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)ALOG(LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -279,13 +314,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Simplified macro to send a warning log message using the current LOG_TAG.
  */
 #ifndef ALOGW
-#define ALOGW(...) ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__))
+#define ALOGW(...) ((void)ALOG(LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGW_IF
 #define ALOGW_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)ALOG(LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -293,13 +328,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * Simplified macro to send an error log message using the current LOG_TAG.
  */
 #ifndef ALOGE
-#define ALOGE(...) ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__))
+#define ALOGE(...) ((void)ALOG(LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGE_IF
 #define ALOGE_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)ALOG(LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -310,10 +345,14 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * verbose priority.
  */
 #ifndef IF_ALOGV
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define IF_ALOGV() if (false)
 #else
-#define IF_ALOGV() IF_ALOG(LOG_VERBOSE, LOG_TAG)
+#define IF_ALOGV() IF_ALOG(LOG_VERBOSE, __ANDROID_LOG_TAG)
+#endif
+#else
+#define IF_ALOGV() if (false)
 #endif
 #endif
 
@@ -322,7 +361,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * debug priority.
  */
 #ifndef IF_ALOGD
-#define IF_ALOGD() IF_ALOG(LOG_DEBUG, LOG_TAG)
+#define IF_ALOGD() IF_ALOG(LOG_DEBUG, __ANDROID_LOG_TAG)
 #endif
 
 /*
@@ -330,7 +369,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * info priority.
  */
 #ifndef IF_ALOGI
-#define IF_ALOGI() IF_ALOG(LOG_INFO, LOG_TAG)
+#define IF_ALOGI() IF_ALOG(LOG_INFO, __ANDROID_LOG_TAG)
 #endif
 
 /*
@@ -338,7 +377,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * warn priority.
  */
 #ifndef IF_ALOGW
-#define IF_ALOGW() IF_ALOG(LOG_WARN, LOG_TAG)
+#define IF_ALOGW() IF_ALOG(LOG_WARN, __ANDROID_LOG_TAG)
 #endif
 
 /*
@@ -346,7 +385,7 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  * error priority.
  */
 #ifndef IF_ALOGE
-#define IF_ALOGE() IF_ALOG(LOG_ERROR, LOG_TAG)
+#define IF_ALOGE() IF_ALOG(LOG_ERROR, __ANDROID_LOG_TAG)
 #endif
 
 
@@ -357,22 +396,30 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef SLOGV
 #define __SLOGV(...) \
-    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__))
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define SLOGV(...) do { if (0) { __SLOGV(__VA_ARGS__); } } while (0)
 #else
 #define SLOGV(...) __SLOGV(__VA_ARGS__)
 #endif
+#else
+#define SLOGV(...) do { if (0) { __SLOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef SLOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define SLOGV_IF(cond, ...)   ((void)0)
 #else
 #define SLOGV_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define SLOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -381,13 +428,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef SLOGD
 #define SLOGD(...) \
-    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGD_IF
 #define SLOGD_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -396,13 +443,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef SLOGI
 #define SLOGI(...) \
-    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGI_IF
 #define SLOGI_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -411,13 +458,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef SLOGW
 #define SLOGW(...) \
-    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGW_IF
 #define SLOGW_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -426,13 +473,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef SLOGE
 #define SLOGE(...) \
-    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGE_IF
 #define SLOGE_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -445,22 +492,30 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef RLOGV
 #define __RLOGV(...) \
-    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__))
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define RLOGV(...) do { if (0) { __RLOGV(__VA_ARGS__); } } while (0)
 #else
 #define RLOGV(...) __RLOGV(__VA_ARGS__)
 #endif
+#else
+#define RLOGV(...) do { if (0) { __RLOGV(__VA_ARGS__); } } while (0)
+#endif
 #endif
 
 #ifndef RLOGV_IF
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG
 #define RLOGV_IF(cond, ...)   ((void)0)
 #else
 #define RLOGV_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
+#endif
+#else
+#define RLOGV_IF(cond, ...)   ((void)0)
 #endif
 #endif
 
@@ -469,13 +524,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef RLOGD
 #define RLOGD(...) \
-    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGD_IF
 #define RLOGD_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -484,13 +539,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef RLOGI
 #define RLOGI(...) \
-    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGI_IF
 #define RLOGI_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -499,13 +554,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef RLOGW
 #define RLOGW(...) \
-    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGW_IF
 #define RLOGW_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -514,13 +569,13 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
  */
 #ifndef RLOGE
 #define RLOGE(...) \
-    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGE_IF
 #define RLOGE_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
+    ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, __ANDROID_LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
 
@@ -536,19 +591,21 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #ifndef LOG_ALWAYS_FATAL_IF
 #define LOG_ALWAYS_FATAL_IF(cond, ...) \
     ( (__predict_false(cond)) \
-    ? ((void)android_printAssert(#cond, LOG_TAG, ## __VA_ARGS__)) \
+    ? ((void)android_printAssert(#cond, __ANDROID_LOG_TAG, ## __VA_ARGS__)) \
     : (void)0 )
 #endif
 
 #ifndef LOG_ALWAYS_FATAL
 #define LOG_ALWAYS_FATAL(...) \
-    ( ((void)android_printAssert(NULL, LOG_TAG, ## __VA_ARGS__)) )
+    ( ((void)android_printAssert(NULL, __ANDROID_LOG_TAG, ## __VA_ARGS__)) )
 #endif
 
 /*
  * Versions of LOG_ALWAYS_FATAL_IF and LOG_ALWAYS_FATAL that
  * are stripped out of release builds.
  */
+#ifdef LOG_NDEBUG
+
 #if LOG_NDEBUG
 
 #ifndef LOG_FATAL_IF
@@ -565,6 +622,17 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #endif
 #ifndef LOG_FATAL
 #define LOG_FATAL(...) LOG_ALWAYS_FATAL(__VA_ARGS__)
+#endif
+
+#endif
+
+#else
+
+#ifndef LOG_FATAL_IF
+#define LOG_FATAL_IF(cond, ...) ((void)0)
+#endif
+#ifndef LOG_FATAL
+#define LOG_FATAL(...) ((void)0)
 #endif
 
 #endif
@@ -687,6 +755,20 @@ typedef enum log_id {
 #define sizeof_log_id_t sizeof(typeof_log_id_t)
 #define typeof_log_id_t unsigned char
 
+/* --------------------------------------------------------------------- */
+
+#ifndef __ANDROID_USE_LIBLOG_EVENT_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 22
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_EVENT_INTERFACE
+
 /* For manipulating lists of events. */
 
 #define ANDROID_MAX_LIST_NEST_DEPTH 8
@@ -748,9 +830,11 @@ android_log_list_element android_log_peek_next(android_log_context ctx);
 /* Finished with reader or writer context */
 int android_log_destroy(android_log_context *ctx);
 
+#endif /* __ANDROID_USE_LIBLOG_EVENT_INTERFACE */
+
+/* --------------------------------------------------------------------- */
+
 /*
- * ===========================================================================
- *
  * The stuff in the rest of this file should not be used directly.
  */
 
@@ -787,12 +871,6 @@ int android_log_destroy(android_log_context *ctx);
 #define android_btWriteLog(tag, type, payload, len) \
     __android_log_btwrite(tag, type, payload, len)
 
-#define android_errorWriteLog(tag, subTag) \
-    __android_log_error_write(tag, subTag, -1, NULL, 0)
-
-#define android_errorWriteWithInfoLog(tag, subTag, uid, data, dataLen) \
-    __android_log_error_write(tag, subTag, uid, data, dataLen)
-
 /*
  *    IF_ALOG uses android_testLog, but IF_ALOG can be overridden.
  *    android_testLog will remain constant in its purpose as a wrapper
@@ -801,6 +879,7 @@ int android_log_destroy(android_log_context *ctx);
  *        IF_ALOG as a convenient means to reimplement their policy
  *        over Android.
  */
+#ifdef LOG_NDEBUG
 #if LOG_NDEBUG /* Production */
 #define android_testLog(prio, tag) \
     (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
@@ -810,6 +889,23 @@ int android_log_destroy(android_log_context *ctx);
     (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
                                    ANDROID_LOG_VERBOSE) != 0)
 #endif
+#else
+#define android_testLog(prio, tag) \
+    (__android_log_is_loggable_len(prio, tag, (tag && *tag) ? strlen(tag) : 0, \
+                                   ANDROID_LOG_DEBUG) != 0)
+#endif
+
+#ifndef __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 21
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE
 
 /*
  * Use the per-tag properties "log.tag.<tagname>" to generate a runtime
@@ -820,10 +916,32 @@ int android_log_destroy(android_log_context *ctx);
 int __android_log_is_loggable(int prio, const char *tag, int default_prio);
 int __android_log_is_loggable_len(int prio, const char *tag, size_t len, int default_prio);
 
+#endif /* __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE */
+
 int __android_log_security(); /* Device Owner is present */
 
-int __android_log_error_write(int tag, const char *subTag, int32_t uid, const char *data,
-                              uint32_t dataLen);
+#ifndef _ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 21
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE
+
+#define android_errorWriteLog(tag, subTag) \
+    __android_log_error_write(tag, subTag, -1, NULL, 0)
+
+#define android_errorWriteWithInfoLog(tag, subTag, uid, data, dataLen) \
+    __android_log_error_write(tag, subTag, uid, data, dataLen)
+
+int __android_log_error_write(int tag, const char *subTag, int32_t uid,
+                              const char *data, uint32_t dataLen);
+
+#endif /* __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE */
 
 /*
  * Send a simple string to the log.

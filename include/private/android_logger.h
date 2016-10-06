@@ -19,6 +19,10 @@
 #ifndef _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
 #define _SYSTEM_CORE_INCLUDE_PRIVATE_ANDROID_LOGGER_H_
 
+#ifndef LOG_TAG
+#define LOG_TAG NULL
+#endif
+
 /* Android private interfaces */
 
 #include <stdint.h>

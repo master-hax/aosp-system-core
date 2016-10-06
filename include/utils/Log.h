@@ -30,6 +30,10 @@
 
 #include <sys/types.h>
 
+#ifndef LOG_TAG
+#define LOG_TAG NULL
+#endif
+
 #include <android/log.h>
 
 #ifdef __cplusplus
