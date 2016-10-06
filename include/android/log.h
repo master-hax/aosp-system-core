@@ -86,6 +86,7 @@ extern "C" {
 /*
  * Android log priority values, in ascending priority order.
  */
+#ifndef _ANDROID_LOG_H__LOG_DEBUG
 typedef enum android_LogPriority {
     ANDROID_LOG_UNKNOWN = 0,
     ANDROID_LOG_DEFAULT,    /* only for SetMinPriority() */
@@ -97,6 +98,7 @@ typedef enum android_LogPriority {
     ANDROID_LOG_FATAL,
     ANDROID_LOG_SILENT,     /* only for SetMinPriority(); must be last */
 } android_LogPriority;
+#endif
 
 /*
  * Release any logger resources (a new log write will immediately re-acquire)
@@ -152,6 +154,7 @@ void __android_log_assert(const char *cond, const char *tag,
 #endif
     ;
 
+#ifdef LOG_TAG
 //
 // C/C++ logging functions.  See the logging documentation for API details.
 //
@@ -194,15 +197,6 @@ int __android_log_security_bswrite(int32_t tag, const char *payload);
 #else
 #define LOG_NDEBUG 0
 #endif
-#endif
-
-/*
- * This is the local tag used for the following simplified
- * logging macros.  You can change this preprocessor definition
- * before using the other macros to change the tag.
- */
-#ifndef LOG_TAG
-#define LOG_TAG NULL
 #endif
 
 // ---------------------------------------------------------------------
@@ -838,6 +832,8 @@ int __android_log_buf_print(int bufID, int prio, const char *tag, const char *fm
 #if defined(__clang__)
 #pragma clang diagnostic pop
 #endif
+
+#endif /* LOG_TAG */
 
 #ifdef __cplusplus
 }
