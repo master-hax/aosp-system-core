@@ -17,6 +17,10 @@
 #ifndef ANDROID_VECTOR_H
 #define ANDROID_VECTOR_H
 
+#ifndef LOG_TAG
+#define LOG_TAG "Vector"
+#endif
+
 #include <stdint.h>
 #include <sys/types.h>
 

@@ -17,6 +17,10 @@
 #ifndef ANDROID_KEYED_VECTOR_H
 #define ANDROID_KEYED_VECTOR_H
 
+#ifndef LOG_TAG
+#define LOG_TAG "KeyedVector"
+#endif
+
 #include <assert.h>
 #include <stdint.h>
 #include <sys/types.h>
