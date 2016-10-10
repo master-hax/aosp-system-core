@@ -53,18 +53,22 @@ LIBLOG_HIDDEN struct android_log_transport_write pmsgLoggerWrite = {
 
 static int pmsgOpen()
 {
-    if (pmsgLoggerWrite.context.fd < 0) {
-        pmsgLoggerWrite.context.fd = TEMP_FAILURE_RETRY(open("/dev/pmsg0", O_WRONLY | O_CLOEXEC));
+    if (atomic_load(&pmsgLoggerWrite.context.fd) < 0) {
+        int fd = TEMP_FAILURE_RETRY(open("/dev/pmsg0", O_WRONLY | O_CLOEXEC));
+        fd = atomic_exchange(&pmsgLoggerWrite.context.fd, fd);
+        if (fd > 0) {
+            close(fd);
+        }
     }
 
-    return pmsgLoggerWrite.context.fd;
+    return atomic_load(&pmsgLoggerWrite.context.fd);
 }
 
 static void pmsgClose()
 {
-    if (pmsgLoggerWrite.context.fd >= 0) {
-        close(pmsgLoggerWrite.context.fd);
-        pmsgLoggerWrite.context.fd = -1;
+    int fd = atomic_exchange(&pmsgLoggerWrite.context.fd, -1);
+    if (fd >= 0) {
+        close(fd);
     }
 }
 
@@ -78,7 +82,7 @@ static int pmsgAvailable(log_id_t logId)
             !__android_log_is_debuggable()) {
         return -EINVAL;
     }
-    if (pmsgLoggerWrite.context.fd < 0) {
+    if (atomic_load(&pmsgLoggerWrite.context.fd) < 0) {
         if (access("/dev/pmsg0", W_OK) == 0) {
             return 0;
         }
@@ -115,7 +119,7 @@ static int pmsgWrite(log_id_t logId, struct timespec *ts,
         }
     }
 
-    if (pmsgLoggerWrite.context.fd < 0) {
+    if (atomic_load(&pmsgLoggerWrite.context.fd) < 0) {
         return -EBADF;
     }
 
@@ -169,7 +173,8 @@ static int pmsgWrite(log_id_t logId, struct timespec *ts,
     }
     pmsgHeader.len += payloadSize;
 
-    ret = TEMP_FAILURE_RETRY(writev(pmsgLoggerWrite.context.fd, newVec, i));
+    ret = TEMP_FAILURE_RETRY(writev(atomic_load(&pmsgLoggerWrite.context.fd),
+                                    newVec, i));
     if (ret < 0) {
         ret = errno ? -errno : -ENOTCONN;
     }
@@ -228,7 +233,7 @@ LIBLOG_ABI_PRIVATE ssize_t __android_log_pmsg_file_write(
         return -ENOMEM;
     }
 
-    fd = pmsgLoggerWrite.context.fd;
+    fd = atomic_load(&pmsgLoggerWrite.context.fd);
     if (fd < 0) {
         __android_log_lock();
         fd = pmsgOpen();
@@ -290,4 +295,11 @@ LIBLOG_ABI_PRIVATE ssize_t __android_log_pmsg_file_write(
     }
     free(cp);
     return len;
+}
+
+/* Close the pmsg file operations */
+LIBLOG_ABI_PRIVATE void __android_log_pmsg_file_write_close() {
+    __android_log_lock();
+    pmsgClose();
+    __android_log_unlock();
 }

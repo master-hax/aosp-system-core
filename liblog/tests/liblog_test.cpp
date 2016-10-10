@@ -20,6 +20,7 @@
 #include <inttypes.h>
 #include <semaphore.h>
 #include <signal.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -129,6 +130,22 @@ TEST(liblog, concurrent_name(__android_log_buf_print, NUM_CONCURRENT)) {
     ASSERT_LT(0, ret);
 }
 
+static bool isPmsgActive() {
+    pid_t pid = getpid();
+
+    std::string command = android::base::StringPrintf("ls -l /proc/%d/fd", pid);
+
+    FILE* fp = popen(command.c_str(), "r");
+    if (!fp) return true; // guess it is?
+
+    std::string myPidFds;
+    bool ret = !android::base::ReadFdToString(fileno(fp), &myPidFds) ||
+               (std::string::npos != myPidFds.find(" -> /dev/pmsg0"));
+    pclose(fp);
+
+    return ret;
+}
+
 TEST(liblog, __android_log_btwrite__android_logger_list_read) {
     struct logger_list *logger_list;
 
@@ -140,10 +157,16 @@ TEST(liblog, __android_log_btwrite__android_logger_list_read) {
     // Check that we can close and reopen the logger
     log_time ts(CLOCK_MONOTONIC);
     ASSERT_LT(0, __android_log_btwrite(0, EVENT_TYPE_LONG, &ts, sizeof(ts)));
+    bool pmsgActiveAfter__android_log_btwrite = isPmsgActive();
+    EXPECT_TRUE(pmsgActiveAfter__android_log_btwrite);
     __android_log_close();
+    bool pmsgActiveAfter__android_log_close = isPmsgActive();
+    EXPECT_FALSE(pmsgActiveAfter__android_log_close);
 
     log_time ts1(CLOCK_MONOTONIC);
     ASSERT_LT(0, __android_log_btwrite(0, EVENT_TYPE_LONG, &ts1, sizeof(ts1)));
+    pmsgActiveAfter__android_log_btwrite = isPmsgActive();
+    EXPECT_TRUE(pmsgActiveAfter__android_log_btwrite);
     usleep(1000000);
 
     int count = 0;
@@ -2575,12 +2598,20 @@ static const char __pmsg_file[] =
         "/data/william-shakespeare/MuchAdoAboutNothing.txt";
 
 TEST(liblog, __android_log_pmsg_file_write) {
+    __android_log_close();
+    bool pmsgActiveAfter__android_log_close = isPmsgActive();
+    EXPECT_FALSE(pmsgActiveAfter__android_log_close);
     EXPECT_LT(0, __android_log_pmsg_file_write(
             LOG_ID_CRASH, ANDROID_LOG_VERBOSE,
             __pmsg_file, max_payload_buf, sizeof(max_payload_buf)));
     fprintf(stderr, "Reboot, ensure file %s matches\n"
                     "with liblog.__android_log_msg_file_read test\n",
                     __pmsg_file);
+    bool pmsgActiveAfter__android_pmsg_file_write = isPmsgActive();
+    EXPECT_TRUE(pmsgActiveAfter__android_pmsg_file_write);
+    __android_log_pmsg_file_write_close();
+    bool pmsgActiveAfter__android_pmsg_file_write_close = isPmsgActive();
+    EXPECT_FALSE(pmsgActiveAfter__android_pmsg_file_write_close);
 }
 
 ssize_t __pmsg_fn(log_id_t logId, char prio, const char *filename,
@@ -2608,13 +2639,20 @@ ssize_t __pmsg_fn(log_id_t logId, char prio, const char *filename,
 TEST(liblog, __android_log_pmsg_file_read) {
     signaled = 0;
 
+    __android_log_close();
+    bool pmsgActiveAfter__android_log_close = isPmsgActive();
+    EXPECT_FALSE(pmsgActiveAfter__android_log_close);
+
     ssize_t ret = __android_log_pmsg_file_read(
             LOG_ID_CRASH, ANDROID_LOG_VERBOSE,
             __pmsg_file, __pmsg_fn, NULL);
 
+    bool pmsgActiveAfter__android_log_pmsg_file_read = isPmsgActive();
+    EXPECT_FALSE(pmsgActiveAfter__android_log_pmsg_file_read);
+
     if (ret == -ENOENT) {
         fprintf(stderr,
-            "No pre-boot results of liblog.__android_log_mesg_file_write to "
+            "No pre-boot results of liblog.__android_log_pmsg_file_write to "
             "compare with,\n"
             "false positive test result.\n");
         return;

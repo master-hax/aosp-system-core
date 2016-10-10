@@ -112,6 +112,8 @@ ssize_t __android_log_pmsg_file_write(
         const char *filename,
         const char *buf, size_t len);
 
+void __android_log_pmsg_file_write_close();
+
 #define LOG_ID_ANY      ((log_id_t)-1)
 #define ANDROID_LOG_ANY ANDROID_LOG_UNKNOWN
 
