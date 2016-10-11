@@ -6,6 +6,7 @@ NAME
        liblog - Android NDK logger interfaces
 
 SYNOPSIS
+       #define LOG_TAG "your-log-tag" /* please limit to 24 characters */
        #include <android/log.h>
 
        ALOG(android_priority, tag, format, ...)
@@ -66,20 +67,45 @@ SYNOPSIS
        int android_logger_get_log_readable_size(struct logger *logger)
        int android_logger_get_log_version(struct logger *logger)
 
-       struct  logger_list  *android_logger_list_alloc(int  mode, unsigned int
-       tail, pid_t pid)
-       struct  logger  *android_logger_open(struct  logger_list  *logger_list,
-       log_id_t id)
-       struct  logger_list  *android_logger_list_open(log_id_t  id,  int mode,
-       unsigned int tail, pid_t pid)
+       struct logger_list *android_logger_list_alloc(int mode,
+                                                     unsigned int tail,
+						     pid_t pid)
+       struct logger *android_logger_open(struct logger_list *logger_list,
+                                          log_id_t id)
+       struct logger_list *android_logger_list_open(log_id_t id, int mode,
+                                                    unsigned int tail,
+						    pid_t pid)
 
-       int android_logger_list_read(struct  logger_list  *logger_list,  struct
-       log_msg *log_msg
+       int android_logger_list_read(struct logger_list *logger_list,
+                                    struct log_msg *log_msg)
 
        void android_logger_list_free(struct logger_list *logger_list)
 
        log_id_t android_name_to_log_id(const char *logName)
        const char *android_log_id_to_name(log_id_t log_id)
+
+       android_log_context create_android_logger(uint32_t tag)
+
+       int android_log_write_list_begin(android_log_context ctx)
+       int android_log_write_list_end(android_log_context ctx)
+
+       int android_log_write_int32(android_log_context ctx, int32_t value)
+       int android_log_write_int64(android_log_context ctx, int64_t value)
+       int android_log_write_string8(android_log_context ctx, const char *value)
+       int android_log_write_string8_len(android_log_context ctx,
+                                         const char *value, size_t maxlen)
+       int android_log_write_float32(android_log_context ctx, float value)
+
+       int android_log_write_list(android_log_context ctx,
+                                  log_id_t id = LOG_ID_EVENTS)
+
+       android_log_context create_android_log_parser(const char *msg,
+                                                     size_t len)
+
+       android_log_list_element android_log_read_next(android_log_context ctx)
+       android_log_list_element android_log_peek_next(android_log_context ctx)
+
+       int android_log_destroy(android_log_context *ctx)
 
        Link with -llog
 
