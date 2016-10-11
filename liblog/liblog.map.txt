@@ -1,6 +1,7 @@
 LIBLOG {
   global:
     __android_log_assert;
+    __android_log_bswrite;
     __android_log_btwrite;
     __android_log_buf_print; # introduced-arm=21 introduced-arm64=21 introduced-mips=9 introduced-mips64=21 introduced-x86=9 introduced-x86_64=21
     __android_log_buf_write; # introduced-arm=21 introduced-arm64=21 introduced-mips=9 introduced-mips64=21 introduced-x86=9 introduced-x86_64=21
@@ -9,6 +10,41 @@ LIBLOG {
     __android_log_print;
     __android_log_vprint;
     __android_log_write;
+    android_log_id_to_name;
+    android_name_to_log_id;
   local:
     *;
+};
+
+LIBLOG_K {
+  global:
+    __android_log_close;
+};
+
+LIBLOG_M {
+  global:
+    __android_log_error_write;
+    __android_log_is_loggable;
+};
+
+LIBLOG_N {
+  global:
+    android_log_destroy;
+    android_log_peek_next;
+    android_log_read_next;
+    android_log_write_float32;
+    android_log_write_int32;
+    android_log_write_int64;
+    android_log_write_list;
+    android_log_write_list_begin;
+    android_log_write_list_end;
+    android_log_write_string8;
+    android_log_write_string8_len;
+    create_android_logger;
+    create_android_log_parser;
+};
+
+LIBLOG_O {
+  global:
+    __android_log_is_loggable_len;
 };
