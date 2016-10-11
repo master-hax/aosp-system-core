@@ -152,22 +152,24 @@ void __android_log_assert(const char *cond, const char *tag,
 #endif
     ;
 
-//
-// C/C++ logging functions.  See the logging documentation for API details.
-//
-// We'd like these to be available from C code (in case we import some from
-// somewhere), so this has a C interface.
-//
-// The output will be correct when the log file is shared between multiple
-// threads and/or multiple processes so long as the operating system
-// supports O_APPEND.  These calls have mutex-protected data structures
-// and so are NOT reentrant.  Do not use LOG in a signal handler.
-//
+/*
+ * C/C++ logging functions.  See the logging documentation for API details.
+ *
+ * We'd like these to be available from C code (in case we import some from
+ * somewhere), so this has a C interface.
+ *
+ * The output will be correct when the log file is shared between multiple
+ * threads and/or multiple processes so long as the operating system
+ * supports O_APPEND.  These calls have mutex-protected data structures
+ * and so are NOT reentrant.  Do not use LOG in a signal handler.
+ */
 
-// This file uses ", ## __VA_ARGS__" zero-argument token pasting to
-// work around issues with debug-only syntax errors in assertions
-// that are missing format strings.  See commit
-// 19299904343daf191267564fe32e6cd5c165cd42
+/*
+ * This file uses ", ## __VA_ARGS__" zero-argument token pasting to
+ * work around issues with debug-only syntax errors in assertions
+ * that are missing format strings.  See commit
+ * 19299904343daf191267564fe32e6cd5c165cd42
+ */
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
@@ -178,13 +180,26 @@ int __android_log_btwrite(int32_t tag, char type, const void *payload,
                           size_t len);
 int __android_log_bswrite(int32_t tag, const char *payload);
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
+
+#ifndef __ANDROID_USE_LIBLOG_MACRO_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_MACRO_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 22 /* available since inception, exposed now */
+#define __ANDROID_USE_LIBLOG_MACRO_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_MACRO_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_MACRO_INTERFACE
 
 /*
  * Normally we strip ALOGV (VERBOSE messages) from release builds.
  * You can modify this (for example with "#define LOG_NDEBUG 0"
  * at the top of your source file) to change that behavior.
  */
+
 #ifndef LOG_NDEBUG
 #ifdef NDEBUG
 #define LOG_NDEBUG 1
@@ -198,11 +213,12 @@ int __android_log_bswrite(int32_t tag, const char *payload);
  * logging macros.  You can change this preprocessor definition
  * before using the other macros to change the tag.
  */
+
 #ifndef LOG_TAG
 #define LOG_TAG NULL
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 #ifndef __predict_false
 #define __predict_false(exp) __builtin_expect((exp) != 0, 0)
@@ -300,7 +316,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
     : (void)0 )
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Conditional based on whether the current LOG_TAG is enabled at
@@ -347,7 +363,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
 #endif
 
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Simplified macro to send a verbose system log message using the current LOG_TAG.
@@ -435,7 +451,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
 
 #endif /* !LINT_RLOG */
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Simplified macro to send a verbose radio log message using the current LOG_TAG.
@@ -522,7 +538,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
 #endif
 
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Log a fatal error.  If the given condition fails, this stops program
@@ -546,6 +562,7 @@ int __android_log_bswrite(int32_t tag, const char *payload);
  * Versions of LOG_ALWAYS_FATAL_IF and LOG_ALWAYS_FATAL that
  * are stripped out of release builds.
  */
+
 #if LOG_NDEBUG
 
 #ifndef LOG_FATAL_IF
@@ -572,10 +589,9 @@ int __android_log_bswrite(int32_t tag, const char *payload);
  */
 #ifndef ALOG_ASSERT
 #define ALOG_ASSERT(cond, ...) LOG_FATAL_IF(!(cond), ## __VA_ARGS__)
-//#define ALOG_ASSERT(cond) LOG_FATAL_IF(!(cond), "Assertion failed: " #cond)
 #endif
 
-// ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
 
 /*
  * Basic log message macro.
@@ -614,7 +630,9 @@ int __android_log_bswrite(int32_t tag, const char *payload);
     if (android_testLog(ANDROID_##priority, tag))
 #endif
 
-// ---------------------------------------------------------------------
+#endif /* __ANDROID_USE_LIBLOG_MACRO_INTERFACE */
+
+/* --------------------------------------------------------------------- */
 
 /*
  * Event logging.
@@ -684,6 +702,20 @@ typedef enum log_id {
 #define sizeof_log_id_t sizeof(typeof_log_id_t)
 #define typeof_log_id_t unsigned char
 
+/* --------------------------------------------------------------------- */
+
+#ifndef __ANDROID_USE_LIBLOG_EVENT_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 22
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_EVENT_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_EVENT_INTERFACE
+
 /* For manipulating lists of events. */
 
 #define ANDROID_MAX_LIST_NEST_DEPTH 8
@@ -745,9 +777,11 @@ android_log_list_element android_log_peek_next(android_log_context ctx);
 /* Finished with reader or writer context */
 int android_log_destroy(android_log_context *ctx);
 
+#endif /* __ANDROID_USE_LIBLOG_EVENT_INTERFACE */
+
+/* --------------------------------------------------------------------- */
+
 /*
- * ===========================================================================
- *
  * The stuff in the rest of this file should not be used directly.
  */
 
@@ -784,12 +818,6 @@ int android_log_destroy(android_log_context *ctx);
 #define android_btWriteLog(tag, type, payload, len) \
     __android_log_btwrite(tag, type, payload, len)
 
-#define android_errorWriteLog(tag, subTag) \
-    __android_log_error_write(tag, subTag, -1, NULL, 0)
-
-#define android_errorWriteWithInfoLog(tag, subTag, uid, data, dataLen) \
-    __android_log_error_write(tag, subTag, uid, data, dataLen)
-
 /*
  *    IF_ALOG uses android_testLog, but IF_ALOG can be overridden.
  *    android_testLog will remain constant in its purpose as a wrapper
@@ -808,6 +836,18 @@ int android_log_destroy(android_log_context *ctx);
                                    ANDROID_LOG_VERBOSE) != 0)
 #endif
 
+#ifndef __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 21
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE
+
 /*
  * Use the per-tag properties "log.tag.<tagname>" to generate a runtime
  * result of non-zero to expose a log. prio is ANDROID_LOG_VERBOSE to
@@ -817,8 +857,30 @@ int android_log_destroy(android_log_context *ctx);
 int __android_log_is_loggable(int prio, const char *tag, int default_prio);
 int __android_log_is_loggable_len(int prio, const char *tag, size_t len, int default_prio);
 
-int __android_log_error_write(int tag, const char *subTag, int32_t uid, const char *data,
-                              uint32_t dataLen);
+#endif /* __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE */
+
+#ifndef _ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE
+#ifndef ANDROID_NATIVE_API_LEVEL
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 1
+#elif ANDROID_NATIVE_API_LEVEL > 21
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE
+
+#define android_errorWriteLog(tag, subTag) \
+    __android_log_error_write(tag, subTag, -1, NULL, 0)
+
+#define android_errorWriteWithInfoLog(tag, subTag, uid, data, dataLen) \
+    __android_log_error_write(tag, subTag, uid, data, dataLen)
+
+int __android_log_error_write(int tag, const char *subTag, int32_t uid,
+                              const char *data, uint32_t dataLen);
+
+#endif /* __ANDROID_USE_LIBLOG_SAFETYNET_INTERFACE */
 
 /*
  * Send a simple string to the log.
