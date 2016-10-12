@@ -198,22 +198,6 @@ static bool have_siginfo(int signum) {
 }
 
 static void send_debuggerd_packet(pid_t crashing_tid, pid_t pseudothread_tid) {
-  // Mutex to prevent multiple crashing threads from trying to talk
-  // to debuggerd at the same time.
-  static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
-  int ret = pthread_mutex_trylock(&crash_mutex);
-  if (ret != 0) {
-    if (ret == EBUSY) {
-      __libc_format_log(ANDROID_LOG_INFO, "libc",
-                        "Another thread contacted debuggerd first; not contacting debuggerd.");
-      // This will never complete since the lock is never released.
-      pthread_mutex_lock(&crash_mutex);
-    } else {
-      __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_trylock failed: %s", strerror(ret));
-    }
-    return;
-  }
-
   int s = socket_abstract_client(SOCKET_NAME, SOCK_STREAM | SOCK_CLOEXEC);
   if (s == -1) {
     __libc_format_log(ANDROID_LOG_FATAL, "libc", "Unable to open connection to debuggerd: %s",
@@ -235,7 +219,7 @@ static void send_debuggerd_packet(pid_t crashing_tid, pid_t pseudothread_tid) {
     msg.abort_msg_address = reinterpret_cast<uintptr_t>(g_callbacks.get_abort_message());
   }
 
-  ret = TEMP_FAILURE_RETRY(write(s, &msg, sizeof(msg)));
+  ssize_t ret = TEMP_FAILURE_RETRY(write(s, &msg, sizeof(msg)));
   if (ret == sizeof(msg)) {
     char debuggerd_ack;
     ret = TEMP_FAILURE_RETRY(read(s, &debuggerd_ack, 1));
@@ -278,11 +262,28 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
   return 0;
 }
 
+// Mutex to prevent multiple crashing threads from trying to talk
+// to debuggerd at the same time.
+static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 /*
  * Catches fatal signals so we can ask debuggerd to ptrace us before
  * we crash.
  */
 static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) {
+  int ret = pthread_mutex_trylock(&crash_mutex);
+  if (ret != 0) {
+    if (ret == EBUSY) {
+      __libc_format_log(ANDROID_LOG_INFO, "libc",
+                        "Another thread contacted debuggerd first; not contacting debuggerd.");
+      // This will never complete since the lock is never released.
+      pthread_mutex_lock(&crash_mutex);
+    } else {
+      __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_trylock failed: %s", strerror(ret));
+    }
+    return;
+  }
+
   // It's possible somebody cleared the SA_SIGINFO flag, which would mean
   // our "info" arg holds an undefined value.
   if (!have_siginfo(signal_number)) {
@@ -360,7 +361,9 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
 
   struct sigaction action;
   memset(&action, 0, sizeof(action));
-  sigemptyset(&action.sa_mask);
+
+  // Block all signals on the thread that's executing the signal handler.
+  sigfillset(&action.sa_mask);
   action.sa_sigaction = debuggerd_signal_handler;
   action.sa_flags = SA_RESTART | SA_SIGINFO;
 
