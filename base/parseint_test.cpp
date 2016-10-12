@@ -76,3 +76,13 @@ TEST(parseint, explicit_hex) {
   ASSERT_TRUE(android::base::ParseUint("0x123", &u));
   ASSERT_EQ(0x123u, u);
 }
+
+TEST(parseint, string) {
+  int i;
+  ASSERT_TRUE(android::base::ParseInt(std::string("123"), &i));
+  ASSERT_EQ(123, i);
+
+  unsigned int u;
+  ASSERT_TRUE(android::base::ParseUint(std::string("123"), &u));
+  ASSERT_EQ(123u, u);
+}
