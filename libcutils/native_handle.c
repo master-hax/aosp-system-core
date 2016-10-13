@@ -87,3 +87,17 @@ int native_handle_close(const native_handle_t* h)
     }
     return 0;
 }
+
+int native_handle_close_and_delete(native_handle_t* h)
+{
+    if (!h || h->version != sizeof(native_handle_t))
+        return -EINVAL;
+
+    const int numFds = h->numFds;
+    int i;
+    for (i = 0; i < numFds; i++) {
+        close(h->data[i]);
+    }
+    free(h);
+    return 0;
+}

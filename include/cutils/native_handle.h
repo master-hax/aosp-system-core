@@ -77,6 +77,16 @@ native_handle_t* native_handle_clone(const native_handle_t* handle);
  */
 int native_handle_delete(native_handle_t* h);
 
+/*
+ * native_handle_close_and_delete
+ *
+ * performs both a native_handle_close() and a native_handle_delete().
+ * saves time in the likely scenario both need to be done at once.
+ *
+ * return 0 on success, or a negative error code on failure
+ *
+ */
+int native_handle_close_and_delete(native_handle_t* h);
 
 #ifdef __cplusplus
 }
