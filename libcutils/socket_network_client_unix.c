@@ -60,7 +60,16 @@ int socket_network_client_timeout(const char* host, int port, int type, int time
     }
 
     int result = -1;
-    for (struct addrinfo* addr = addrs; addr != NULL; addr = addr->ai_next) {
+    int family = AF_INET;
+    // Iterates addr 2 times to make sure we try IPv4 first for better backward compatibility.
+    for (struct addrinfo* addr = addrs; addr != NULL || family == AF_INET; addr = addr->ai_next) {
+	if (addr == NULL) {
+	    if (addrs == NULL) break;
+	    addr = addrs;
+	    family = AF_INET6;
+	}
+	if (family != addr->ai_family)
+	    continue;
         // The Mac doesn't have SOCK_NONBLOCK.
         int s = socket(addr->ai_family, type, addr->ai_protocol);
         if (s == -1 || toggle_O_NONBLOCK(s) == -1) return -1;
