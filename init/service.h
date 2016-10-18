@@ -17,6 +17,7 @@
 #ifndef _INIT_SERVICE_H
 #define _INIT_SERVICE_H
 
+#include <stdint.h>
 #include <sys/types.h>
 
 #include <cutils/iosched_policy.h>
@@ -116,6 +117,7 @@ private:
     void CreateSockets(const std::string& scon);
     void SetProcessAttributes();
 
+    bool ParseCapabilities(const std::vector<std::string>& args, std::string *err);
     bool ParseClass(const std::vector<std::string>& args, std::string* err);
     bool ParseConsole(const std::vector<std::string>& args, std::string* err);
     bool ParseCritical(const std::vector<std::string>& args, std::string* err);
@@ -147,6 +149,7 @@ private:
     uid_t uid_;
     gid_t gid_;
     std::vector<gid_t> supp_gids_;
+    uint64_t capabilities_;
     unsigned namespace_flags_;
 
     std::string seclabel_;
@@ -158,7 +161,7 @@ private:
 
     std::vector<std::string> writepid_files_;
 
-    // keycodes for triggering this service via /dev/keychord
+    // Keycodes for triggering this service via /dev/keychord.
     std::vector<int> keycodes_;
     int keychord_id_;
 

@@ -41,6 +41,7 @@
 #include <processgroup/processgroup.h>
 
 #include "action.h"
+#include "capabilities.h"
 #include "init.h"
 #include "init_parser.h"
 #include "log.h"
@@ -322,6 +323,20 @@ void Service::DumpState() const {
     }
 }
 
+bool Service::ParseCapabilities(const std::vector<std::string>& args, std::string *err) {
+    capabilities_ = 0;
+
+    for (const auto& arg : args) {
+        int cap =  lookup_cap(arg);
+        if (cap == -1) {
+            *err = "invalid capability";
+            return false;
+        }
+        capabilities_ |= 1ULL << cap;
+    }
+    return true;
+}
+
 bool Service::ParseClass(const std::vector<std::string>& args, std::string* err) {
     classname_ = args[1];
     return true;
@@ -478,6 +493,8 @@ private:
 Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
     static const Map option_parsers = {
+        {"capabilities",
+                        {1,     kMax, &Service::ParseCapabilities}},
         {"class",       {1,     1,    &Service::ParseClass}},
         {"console",     {0,     1,    &Service::ParseConsole}},
         {"critical",    {0,     0,    &Service::ParseCritical}},
