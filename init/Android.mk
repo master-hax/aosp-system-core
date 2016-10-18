@@ -45,6 +45,7 @@ include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     action.cpp \
+    capabilities.cpp \
     import_parser.cpp \
     init_parser.cpp \
     log.cpp \
@@ -102,7 +103,7 @@ LOCAL_STATIC_LIBRARIES := \
     libz \
     libprocessgroup
 
-# Create symlinks
+# Create symlinks.
 LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
     ln -sf ../init $(TARGET_ROOT_OUT)/sbin/ueventd; \
     ln -sf ../init $(TARGET_ROOT_OUT)/sbin/watchdogd
@@ -112,8 +113,8 @@ LOCAL_CLANG := true
 include $(BUILD_EXECUTABLE)
 
 
-
-
+# Unit tests.
+# =========================================================
 include $(CLEAR_VARS)
 LOCAL_MODULE := init_tests
 LOCAL_SRC_FILES := \

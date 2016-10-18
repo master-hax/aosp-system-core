@@ -17,7 +17,10 @@
 #include "service.h"
 
 #include <fcntl.h>
+#include <linux/capability.h>
+#include <linux/prctl.h>
 #include <sched.h>
+#include <sys/capability.h>
 #include <sys/mount.h>
 #include <sys/prctl.h>
 #include <sys/resource.h>
@@ -41,6 +44,7 @@
 #include <processgroup/processgroup.h>
 
 #include "action.h"
+#include "capabilities.h"
 #include "init.h"
 #include "init_parser.h"
 #include "log.h"
@@ -225,6 +229,11 @@ void Service::CreateSockets(const std::string& context) {
 }
 
 void Service::SetProcessAttributes() {
+    // Keep capabilites on uid change.
+    if (capabilities_ != 0 && prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) != 0) {
+        PLOG(FATAL) << "prtcl(PR_SET_KEEPCAPS) failed for " << name_;
+    }
+
     // TODO: work out why this fails for `console` then upgrade to FATAL.
     if (setpgid(0, getpid()) == -1) PLOG(ERROR) << "setpgid failed for " << name_;
 
@@ -251,6 +260,35 @@ void Service::SetProcessAttributes() {
     if (priority_ != 0) {
         if (setpriority(PRIO_PROCESS, 0, priority_) != 0) {
             PLOG(FATAL) << "setpriority failed for " << name_;
+        }
+    }
+    // Handle capabilities.
+    struct __user_cap_header_struct header;
+    struct __user_cap_data_struct caps[_LINUX_CAPABILITY_U32S_3];
+    if (capabilities_ != 0) {
+        header.version = _LINUX_CAPABILITY_VERSION_3;
+        header.pid = 0;
+        for (size_t cap = 0; cap <= CAP_LAST_CAP; ++cap) {
+            if (capabilities_ & (1LL << cap)) {
+                int idx = CAP_TO_INDEX(cap);
+                caps[idx].permitted |= CAP_TO_MASK(cap);
+                caps[idx].inheritable |= CAP_TO_MASK(cap);
+            }
+        }
+
+        if (capset(&header, caps) != 0) {
+            LOG(FATAL) << "capset failed for " << name_;
+        }
+
+        // Add the capabilities to the ambient set so they are preserved across
+        // execve(2).
+        // http://man7.org/linux/man-pages/man7/capabilities.7.html
+        for (size_t cap = 0; cap <= CAP_LAST_CAP; ++cap) {
+            if (capabilities_ & (1LL << cap)) {
+                if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0)) {
+                    LOG(FATAL) << "prctl(PR_CAP_AMBIENT) failed for " << name_;
+                }
+            }
         }
     }
 }
@@ -320,6 +358,23 @@ void Service::DumpState() const {
     for (const auto& si : sockets_) {
         LOG(INFO) << "  socket " << si.name << " " << si.type << " " << std::oct << si.perm;
     }
+}
+
+bool Service::ParseCapabilities(const std::vector<std::string>& args, std::string *err) {
+    capabilities_ = 0;
+
+    for (size_t i = 1; i < args.size(); i++) {
+        const std::string& arg = args[i];
+        LOG(INFO) << "capability " << arg;
+        int cap = lookup_cap(arg);
+        if (cap == -1) {
+            LOG(ERROR) << "invalid capability '" << arg << "'";
+            *err = "invalid capability";
+            return false;
+        }
+        capabilities_ |= 1ULL << cap;
+    }
+    return true;
 }
 
 bool Service::ParseClass(const std::vector<std::string>& args, std::string* err) {
@@ -478,6 +533,8 @@ private:
 Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
     static const Map option_parsers = {
+        {"capabilities",
+                        {1,     kMax, &Service::ParseCapabilities}},
         {"class",       {1,     1,    &Service::ParseClass}},
         {"console",     {0,     1,    &Service::ParseConsole}},
         {"critical",    {0,     0,    &Service::ParseCritical}},
