@@ -20,8 +20,6 @@
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
-#include "debuggerd/client.h"
-
 __BEGIN_DECLS
 
 /* Dumps a process backtrace, registers, and stack to a tombstone file (requires root).

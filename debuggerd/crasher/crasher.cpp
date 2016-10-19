@@ -36,7 +36,7 @@
 #include <cutils/sockets.h>
 
 #if defined(STATIC_CRASHER)
-#include "debuggerd/client.h"
+#include "debuggerd/handler.h"
 #endif
 
 #ifndef __unused
@@ -231,7 +231,7 @@ static int do_action(const char* arg)
     fprintf(stderr, "  LOG_ALWAYS_FATAL      call LOG_ALWAYS_FATAL\n");
     fprintf(stderr, "  LOG_ALWAYS_FATAL_IF   call LOG_ALWAYS_FATAL\n");
     fprintf(stderr, "  SIGFPE                cause a SIGFPE\n");
-    fprintf(stderr, "  SIGSEGV               cause a SIGSEGV at address 0x0 (synonym: crash)\n");
+    fprintf(stderr, "  SIGSEGV               cause a SIGSEGV at address 0xdead (synonym: crash)\n");
     fprintf(stderr, "  SIGSEGV-non-null      cause a SIGSEGV at a non-zero address\n");
     fprintf(stderr, "  SIGSEGV-unmapped      mmap/munmap a region of memory and then attempt to access it\n");
     fprintf(stderr, "  SIGTRAP               cause a SIGTRAP\n");
