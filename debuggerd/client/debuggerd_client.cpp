@@ -29,6 +29,7 @@
 #include "debuggerd/client.h"
 
 #include <errno.h>
+#include <fcntl.h>
 #include <inttypes.h>
 #include <pthread.h>
 #include <sched.h>
@@ -47,14 +48,16 @@
 
 #include "private/libc_logging.h"
 
-#if defined(TARGET_IS_64_BIT) && !defined(__LP64__)
-#define SOCKET_NAME "android:debuggerd32"
-#else
-#define SOCKET_NAME "android:debuggerd"
-#endif
-
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)
+
+#if defined(__LP64__)
+#define CRASH_DUMP_NAME "crash_dump64"
+#else
+#define CRASH_DUMP_NAME "crash_dump32"
+#endif
+
+#define CRASH_DUMP_PATH "/system/bin/" CRASH_DUMP_NAME
 
 static debuggerd_callbacks_t g_callbacks;
 
@@ -64,42 +67,6 @@ static debuggerd_callbacks_t g_callbacks;
     __libc_format_log(ANDROID_LOG_FATAL, "libc", __VA_ARGS__); \
     _exit(1);                                                  \
   } while (0)
-
-static int socket_abstract_client(const char* name, int type) {
-  sockaddr_un addr;
-
-  // Test with length +1 for the *initial* '\0'.
-  size_t namelen = strlen(name);
-  if ((namelen + 1) > sizeof(addr.sun_path)) {
-    errno = EINVAL;
-    return -1;
-  }
-
-  // This is used for abstract socket namespace, we need
-  // an initial '\0' at the start of the Unix socket path.
-  //
-  // Note: The path in this case is *not* supposed to be
-  // '\0'-terminated. ("man 7 unix" for the gory details.)
-  memset(&addr, 0, sizeof(addr));
-  addr.sun_family = AF_LOCAL;
-  addr.sun_path[0] = 0;
-  memcpy(addr.sun_path + 1, name, namelen);
-
-  socklen_t alen = namelen + offsetof(sockaddr_un, sun_path) + 1;
-
-  int s = socket(AF_LOCAL, type, 0);
-  if (s == -1) {
-    return -1;
-  }
-
-  int rc = TEMP_FAILURE_RETRY(connect(s, reinterpret_cast<sockaddr*>(&addr), alen));
-  if (rc == -1) {
-    close(s);
-    return -1;
-  }
-
-  return s;
-}
 
 /*
  * Writes a summary of the signal to the log file.  We do this so that, if
@@ -161,8 +128,6 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
   char addr_desc[32];  // ", fault addr 0x1234"
   addr_desc[0] = code_desc[0] = 0;
   if (info != nullptr) {
-    // For a rethrown signal, this si_code will be right and the one debuggerd shows will
-    // always be SI_TKILL.
     __libc_format_buffer(code_desc, sizeof(code_desc), ", code %d", info->si_code);
     if (has_address) {
       __libc_format_buffer(addr_desc, sizeof(addr_desc), ", fault addr %p", info->si_addr);
@@ -176,83 +141,18 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
  * Returns true if the handler for signal "signum" has SA_SIGINFO set.
  */
 static bool have_siginfo(int signum) {
-  struct sigaction old_action, new_action;
-
-  memset(&new_action, 0, sizeof(new_action));
-  new_action.sa_handler = SIG_DFL;
-  new_action.sa_flags = SA_RESTART;
-  sigemptyset(&new_action.sa_mask);
-
-  if (sigaction(signum, &new_action, &old_action) < 0) {
+  struct sigaction old_action;
+  if (sigaction(signum, nullptr, &old_action) < 0) {
     __libc_format_log(ANDROID_LOG_WARN, "libc", "Failed testing for SA_SIGINFO: %s",
                       strerror(errno));
     return false;
   }
-  bool result = (old_action.sa_flags & SA_SIGINFO) != 0;
-
-  if (sigaction(signum, &old_action, nullptr) == -1) {
-    __libc_format_log(ANDROID_LOG_WARN, "libc", "Restore failed in test for SA_SIGINFO: %s",
-                      strerror(errno));
-  }
-  return result;
-}
-
-static void send_debuggerd_packet(pid_t crashing_tid, pid_t pseudothread_tid) {
-  // Mutex to prevent multiple crashing threads from trying to talk
-  // to debuggerd at the same time.
-  static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
-  int ret = pthread_mutex_trylock(&crash_mutex);
-  if (ret != 0) {
-    if (ret == EBUSY) {
-      __libc_format_log(ANDROID_LOG_INFO, "libc",
-                        "Another thread contacted debuggerd first; not contacting debuggerd.");
-      // This will never complete since the lock is never released.
-      pthread_mutex_lock(&crash_mutex);
-    } else {
-      __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_trylock failed: %s", strerror(ret));
-    }
-    return;
-  }
-
-  int s = socket_abstract_client(SOCKET_NAME, SOCK_STREAM | SOCK_CLOEXEC);
-  if (s == -1) {
-    __libc_format_log(ANDROID_LOG_FATAL, "libc", "Unable to open connection to debuggerd: %s",
-                      strerror(errno));
-    return;
-  }
-
-  // debuggerd knows our pid from the credentials on the
-  // local socket but we need to tell it the tid of the crashing thread.
-  // debuggerd will be paranoid and verify that we sent a tid
-  // that's actually in our process.
-  debugger_msg_t msg;
-  msg.action = DEBUGGER_ACTION_CRASH;
-  msg.tid = crashing_tid;
-  msg.ignore_tid = pseudothread_tid;
-  msg.abort_msg_address = 0;
-
-  if (g_callbacks.get_abort_message) {
-    msg.abort_msg_address = reinterpret_cast<uintptr_t>(g_callbacks.get_abort_message());
-  }
-
-  ret = TEMP_FAILURE_RETRY(write(s, &msg, sizeof(msg)));
-  if (ret == sizeof(msg)) {
-    char debuggerd_ack;
-    ret = TEMP_FAILURE_RETRY(read(s, &debuggerd_ack, 1));
-    if (g_callbacks.post_dump) {
-      g_callbacks.post_dump();
-    }
-  } else {
-    // read or write failed -- broken connection?
-    __libc_format_log(ANDROID_LOG_FATAL, "libc", "Failed while talking to debuggerd: %s",
-                      strerror(errno));
-  }
-
-  close(s);
+  return (old_action.sa_flags & SA_SIGINFO) != 0;
 }
 
 struct debugger_thread_info {
   pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+  bool crash_dump_started = false;
   pid_t crashing_tid;
   pid_t pseudothread_tid;
   int signal_number;
@@ -265,23 +165,75 @@ struct debugger_thread_info {
 // process. Note that this doesn't go through pthread_create, so TLS is shared with the spawning
 // process.
 static void* pseudothread_stack;
+
 static int debuggerd_dispatch_pseudothread(void* arg) {
   debugger_thread_info* thread_info = static_cast<debugger_thread_info*>(arg);
 
-  for (int i = 3; i < 1024; ++i) {
+  for (int i = 0; i < 1024; ++i) {
     close(i);
   }
 
+  int devnull = TEMP_FAILURE_RETRY(open("/dev/null", O_RDWR));
+
+  // devnull will be 0.
+  TEMP_FAILURE_RETRY(dup2(devnull, STDOUT_FILENO));
+  TEMP_FAILURE_RETRY(dup2(devnull, STDERR_FILENO));
+
   log_signal_summary(thread_info->signal_number, thread_info->info);
-  send_debuggerd_packet(thread_info->crashing_tid, thread_info->pseudothread_tid);
-  pthread_mutex_unlock(&thread_info->mutex);
+  int pipefds[2];
+  if (pipe(pipefds) != 0) {
+    fatal("failed to create pipe");
+  }
+
+  // Don't use fork(2) to avoid calling pthread_atfork handlers.
+  int forkpid = clone(nullptr, nullptr, SIGCHLD, nullptr);
+  if (forkpid == -1) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to fork in debuggerd signal handler: %s",
+                      strerror(errno));
+  } else if (forkpid == 0) {
+    TEMP_FAILURE_RETRY(dup2(pipefds[1], STDOUT_FILENO));
+    close(pipefds[0]);
+    close(pipefds[1]);
+
+    char buf[10];
+    snprintf(buf, sizeof(buf), "%d", thread_info->crashing_tid);
+    execl(CRASH_DUMP_PATH, CRASH_DUMP_NAME, buf, nullptr);
+
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "exec failed: %s", strerror(errno));
+
+    // exec failed.
+    _exit(1);
+  } else {
+    close(pipefds[1]);
+    char buf[4];
+    ssize_t rc = TEMP_FAILURE_RETRY(read(pipefds[0], &buf, sizeof(buf)));
+    if (rc == -1) {
+      __libc_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe failed: %s",
+                        strerror(errno));
+    } else if (rc == 0) {
+      __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper failed to exec");
+    } else if (rc != 1) {
+      __libc_format_log(ANDROID_LOG_FATAL, "libc",
+                        "read of IPC pipe returned unexpected value: %zd", rc);
+    } else {
+      if (buf[0] != '\1') {
+        __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper reported failure");
+      } else {
+        thread_info->crash_dump_started = true;
+      }
+    }
+    close(pipefds[0]);
+
+    // Don't leave a zombie child.
+    int status;
+    waitpid(forkpid, &status, WNOHANG);
+    pthread_mutex_unlock(&thread_info->mutex);
+  }
   return 0;
 }
 
-/*
- * Catches fatal signals so we can ask debuggerd to ptrace us before
- * we crash.
- */
+// Handler that does crash dumping by forking and doing the processing in the child.
+// Do this by ptracing the relevant thread, and then execing debuggerd to do the actual dump.
 static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) {
   // It's possible somebody cleared the SA_SIGINFO flag, which would mean
   // our "info" arg holds an undefined value.
@@ -289,17 +241,20 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
     info = nullptr;
   }
 
+  void* abort_message = nullptr;
+  if (g_callbacks.get_abort_message) {
+    abort_message = g_callbacks.get_abort_message();
+  }
+
   debugger_thread_info thread_info = {
     .crashing_tid = gettid(),
     .signal_number = signal_number,
     .info = info
   };
-
   pthread_mutex_lock(&thread_info.mutex);
   pid_t child_pid = clone(debuggerd_dispatch_pseudothread, pseudothread_stack,
                           CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | CLONE_CHILD_SETTID,
                           &thread_info, nullptr, nullptr, &thread_info.pseudothread_tid);
-
   if (child_pid == -1) {
     fatal("failed to spawn debuggerd dispatch thread: %s", strerror(errno));
   }
@@ -308,14 +263,21 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
   // This relies on bionic behavior that isn't guaranteed by the standard.
   pthread_mutex_lock(&thread_info.mutex);
 
+  // Signals can either be fatal or nonfatal.
+  // For fatal signals, crash_dump will PTRACE_CONT us with the signal we
+  // crashed with, so that processes using waitpid on us will see that we
+  // exited with the correct exit status (e.g. so that sh will report
+  // "Segmentation fault" instead of "Killed"). For this to work, we need
+  // to deregister our signal handler for that signal before continuing.
+  if (signal_number != DEBUGGER_SIGNAL) {
+    signal(signal_number, SIG_DFL);
+  }
 
   // We need to return from the signal handler so that debuggerd can dump the
   // thread that crashed, but returning here does not guarantee that the signal
   // will be thrown again, even for SIGSEGV and friends, since the signal could
   // have been sent manually. Resend the signal with rt_tgsigqueueinfo(2) to
   // preserve the SA_SIGINFO contents.
-  signal(signal_number, SIG_DFL);
-
   struct siginfo si;
   if (!info) {
     memset(&si, 0, sizeof(si));
@@ -330,9 +292,18 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
     // check to allow all si_code values in calls coming from inside the house.
   }
 
-  int rc = syscall(SYS_rt_tgsigqueueinfo, getpid(), gettid(), signal_number, info);
-  if (rc != 0) {
-    fatal("failed to resend signal during crash: %s", strerror(errno));
+  // Populate si_value with the abort message address, if found.
+  if (abort_message) {
+    info->si_value.sival_ptr = abort_message;
+  }
+
+  // Only resend the signal if we know that either crash_dump has ptraced us or
+  // the signal was fatal.
+  if (thread_info.crash_dump_started || signal_number != DEBUGGER_SIGNAL) {
+    int rc = syscall(SYS_rt_tgsigqueueinfo, getpid(), gettid(), signal_number, info);
+    if (rc != 0) {
+      fatal("failed to resend signal during crash: %s", strerror(errno));
+    }
   }
 }
 
@@ -360,7 +331,7 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
 
   struct sigaction action;
   memset(&action, 0, sizeof(action));
-  sigemptyset(&action.sa_mask);
+  sigfillset(&action.sa_mask);
   action.sa_sigaction = debuggerd_signal_handler;
   action.sa_flags = SA_RESTART | SA_SIGINFO;
 
@@ -376,4 +347,5 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   sigaction(SIGSTKFLT, &action, nullptr);
 #endif
   sigaction(SIGTRAP, &action, nullptr);
+  sigaction(DEBUGGER_SIGNAL, &action, nullptr);
 }

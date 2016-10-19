@@ -16,36 +16,12 @@
 
 #pragma once
 
+#include <signal.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
-// On 32-bit devices, DEBUGGER_SOCKET_NAME is a 32-bit debuggerd.
-// On 64-bit devices, DEBUGGER_SOCKET_NAME is a 64-bit debuggerd.
-#define DEBUGGER_SOCKET_NAME "android:debuggerd"
-
-// Used only on 64-bit devices for debuggerd32.
-#define DEBUGGER32_SOCKET_NAME "android:debuggerd32"
-
 __BEGIN_DECLS
-
-typedef enum {
-  // dump a crash
-  DEBUGGER_ACTION_CRASH,
-  // dump a tombstone file
-  DEBUGGER_ACTION_DUMP_TOMBSTONE,
-  // dump a backtrace only back to the socket
-  DEBUGGER_ACTION_DUMP_BACKTRACE,
-} debugger_action_t;
-
-// Make sure that all values have a fixed size so that this structure
-// is the same for 32 bit and 64 bit processes.
-typedef struct __attribute__((packed)) {
-  int32_t action;
-  pid_t tid;
-  pid_t ignore_tid;
-  uint64_t abort_msg_address;
-} debugger_msg_t;
 
 // These callbacks are called in a signal handler, and thus must be async signal safe.
 // If null, the callbacks will not be called.
@@ -55,5 +31,12 @@ typedef struct {
 } debuggerd_callbacks_t;
 
 void debuggerd_init(debuggerd_callbacks_t* callbacks);
+
+// DEBUGGER_ACTION_DUMP_TOMBSTONE and DEBUGGER_ACTION_DUMP_BACKTRACE are both
+// triggered via DEBUGGER_SIGNAL. The debugger_action_t is sent via si_value
+// using sigqueue(2) or equivalent. If no si_value is specified (e.g. if the
+// signal is sent by kill(2)), the default behavior is to print the backtrace
+// to the log.
+#define DEBUGGER_SIGNAL (__SIGRTMIN + 3)
 
 __END_DECLS
