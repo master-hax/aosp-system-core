@@ -33,7 +33,7 @@
 #include <android-base/logging.h>
 
 #if defined(STATIC_CRASHER)
-#include "debuggerd/client.h"
+#include "debuggerd/handler.h"
 #endif
 
 #define noinline __attribute__((__noinline__))
