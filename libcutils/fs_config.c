@@ -143,12 +143,15 @@ static const struct fs_path_config android_files[] = {
     { 00700, AID_SYSTEM,    AID_SHELL,     CAP_MASK_LONG(CAP_BLOCK_SUSPEND), "system/bin/inputflinger" },
 
     /* Support hostapd administering a network interface. */
-    { 00755, AID_WIFI,      AID_WIFI,     CAP_MASK_LONG(CAP_NET_ADMIN) |
-                                          CAP_MASK_LONG(CAP_NET_RAW),    "system/bin/hostapd" },
+    { 00755, AID_WIFI,      AID_WIFI,      CAP_MASK_LONG(CAP_NET_ADMIN) |
+                                           CAP_MASK_LONG(CAP_NET_RAW),    "system/bin/hostapd" },
 
     /* Support wifi_hal_legacy administering a network interface. */
     { 00755, AID_WIFI,      AID_WIFI,     CAP_MASK_LONG(CAP_NET_ADMIN) | CAP_MASK_LONG(CAP_NET_RAW),    "system/bin/hw/android.hardware.wifi@1.0-service" },
 
+    { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump32" },
+    { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump64" },
+    { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/debuggerd" },
     { 00750, AID_ROOT,      AID_ROOT,      0, "system/bin/uncrypt" },
     { 00750, AID_ROOT,      AID_ROOT,      0, "system/bin/install-recovery.sh" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/*" },
