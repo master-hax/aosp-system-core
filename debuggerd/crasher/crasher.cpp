@@ -36,7 +36,7 @@
 #include <cutils/sockets.h>
 
 #if defined(STATIC_CRASHER)
-#include "debuggerd/client.h"
+#include "debuggerd/handler.h"
 #endif
 
 #ifndef __unused
