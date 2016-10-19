@@ -53,6 +53,7 @@ libbacktrace_offline_shared_libraries_target := \
 	libLLVM \
 
 libbacktrace_offline_static_libraries_target := \
+	libelf_reader \
 	libziparchive \
 	libz \
 
@@ -63,15 +64,10 @@ libbacktrace_offline_static_libraries_host := \
 	libunwind \
 	libziparchive \
 	libz \
+	libelf_reader \
 	libbase \
 	liblog \
 	libutils \
-	libLLVMObject \
-	libLLVMBitReader \
-	libLLVMMC \
-	libLLVMMCParser \
-	libLLVMCore \
-	libLLVMSupport \
 
 module := libbacktrace_offline
 build_type := target
@@ -107,6 +103,7 @@ backtrace_test_shared_libraries := \
 	libbacktrace \
 	libbase \
 	libcutils \
+	libelf_reader \
 	liblog \
 	libunwind \
 
@@ -126,12 +123,6 @@ backtrace_test_static_libraries_host := \
 	libziparchive \
 	libz \
 	libutils \
-	libLLVMObject \
-	libLLVMBitReader \
-	libLLVMMC \
-	libLLVMMCParser \
-	libLLVMCore \
-	libLLVMSupport \
 
 backtrace_test_ldlibs_host += \
 	-ldl \

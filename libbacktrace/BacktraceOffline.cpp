@@ -34,19 +34,12 @@ extern "C" {
 #include <vector>
 
 #include <android-base/file.h>
+#include <elf_reader/elf_reader.h>
 #include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
 #include <ziparchive/zip_archive.h>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-parameter"
-
-#include <llvm/ADT/StringRef.h>
-#include <llvm/Object/Binary.h>
-#include <llvm/Object/ELFObjectFile.h>
-#include <llvm/Object/ObjectFile.h>
-
-#pragma clang diagnostic pop
+using namespace android::libelf_reader;
 
 #include "BacktraceLog.h"
 
@@ -558,8 +551,8 @@ static bool GetFdeTableOffsetInEhFrameHdr(const std::vector<uint8_t>& data,
 
 using ProgramHeader = DebugFrameInfo::EhFrame::ProgramHeader;
 
-template <class ELFT>
-DebugFrameInfo* ReadDebugFrameFromELFFile(const llvm::object::ELFFile<ELFT>* elf) {
+template <typename ElfTypes>
+DebugFrameInfo* ReadDebugFrameFromELFFile(ElfReaderImpl<ElfTypes>* elf) {
   bool has_eh_frame_hdr = false;
   uint64_t eh_frame_hdr_vaddr = 0;
   std::vector<uint8_t> eh_frame_hdr_data;
@@ -567,33 +560,24 @@ DebugFrameInfo* ReadDebugFrameFromELFFile(const llvm::object::ELFFile<ELFT>* elf
   uint64_t eh_frame_vaddr = 0;
   std::vector<uint8_t> eh_frame_data;
 
-  for (auto it = elf->section_begin(); it != elf->section_end(); ++it) {
-    llvm::ErrorOr<llvm::StringRef> name = elf->getSectionName(&*it);
-    if (name) {
-      if (name.get() == ".debug_frame") {
-        DebugFrameInfo* debug_frame = new DebugFrameInfo;
-        debug_frame->is_eh_frame = false;
-        return debug_frame;
+  auto sec_headers = elf->ReadSectionHeaders();
+  for (auto& sec : *sec_headers) {
+    const char* name = elf->GetSectionName(sec);
+    if (strcmp(name, ".debug_frame") == 0) {
+      DebugFrameInfo* debug_frame = new DebugFrameInfo;
+      debug_frame->is_eh_frame = false;
+      return debug_frame;
+    } else if (strcmp(name, ".eh_frame_hdr") == 0) {
+      has_eh_frame_hdr = true;
+      eh_frame_hdr_vaddr = sec.sh_addr;
+      if (!elf->ReadSectionData(sec, &eh_frame_hdr_data)) {
+        return nullptr;
       }
-      if (name.get() == ".eh_frame_hdr") {
-        has_eh_frame_hdr = true;
-        eh_frame_hdr_vaddr = it->sh_addr;
-        llvm::ErrorOr<llvm::ArrayRef<uint8_t>> data = elf->getSectionContents(&*it);
-        if (data) {
-          eh_frame_hdr_data.insert(eh_frame_hdr_data.begin(), data->data(),
-                                   data->data() + data->size());
-        } else {
-          return nullptr;
-        }
-      } else if (name.get() == ".eh_frame") {
-        has_eh_frame = true;
-        eh_frame_vaddr = it->sh_addr;
-        llvm::ErrorOr<llvm::ArrayRef<uint8_t>> data = elf->getSectionContents(&*it);
-        if (data) {
-          eh_frame_data.insert(eh_frame_data.begin(), data->data(), data->data() + data->size());
-        } else {
-          return nullptr;
-        }
+    } else if (strcmp(name, ".eh_frame") == 0) {
+      has_eh_frame = true;
+      eh_frame_vaddr = sec.sh_addr;
+      if (!elf->ReadSectionData(sec, &eh_frame_data)) {
+        return nullptr;
       }
     }
   }
@@ -606,11 +590,15 @@ DebugFrameInfo* ReadDebugFrameFromELFFile(const llvm::object::ELFFile<ELFT>* elf
   }
 
   std::vector<ProgramHeader> program_headers;
-  for (auto it = elf->program_header_begin(); it != elf->program_header_end(); ++it) {
+  auto phs = elf->ReadProgramHeaders();
+  if (phs == nullptr) {
+    return nullptr;
+  }
+  for (auto& ph : *phs) {
     ProgramHeader header;
-    header.vaddr = it->p_vaddr;
-    header.file_offset = it->p_offset;
-    header.file_size = it->p_filesz;
+    header.vaddr = ph.p_vaddr;
+    header.file_offset = ph.p_offset;
+    header.file_size = ph.p_filesz;
     program_headers.push_back(header);
   }
   DebugFrameInfo* debug_frame = new DebugFrameInfo;
@@ -622,26 +610,6 @@ DebugFrameInfo* ReadDebugFrameFromELFFile(const llvm::object::ELFFile<ELFT>* elf
   debug_frame->eh_frame.eh_frame_data = std::move(eh_frame_data);
   debug_frame->eh_frame.program_headers = program_headers;
   return debug_frame;
-}
-
-static bool IsValidElfPath(const std::string& filename) {
-  static const char elf_magic[] = {0x7f, 'E', 'L', 'F'};
-
-  struct stat st;
-  if (stat(filename.c_str(), &st) != 0 || !S_ISREG(st.st_mode)) {
-    return false;
-  }
-  FILE* fp = fopen(filename.c_str(), "reb");
-  if (fp == nullptr) {
-    return false;
-  }
-  char buf[4];
-  if (fread(buf, 4, 1, fp) != 1) {
-    fclose(fp);
-    return false;
-  }
-  fclose(fp);
-  return memcmp(buf, elf_magic, 4) == 0;
 }
 
 static bool IsValidApkPath(const std::string& apk_path) {
@@ -676,24 +644,23 @@ class ScopedZiparchiveHandle {
   ZipArchiveHandle handle_;
 };
 
-llvm::object::OwningBinary<llvm::object::Binary> OpenEmbeddedElfFile(const std::string& filename) {
-  llvm::object::OwningBinary<llvm::object::Binary> nothing;
+std::unique_ptr<ElfReader> OpenEmbeddedElfFile(const std::string& filename) {
   size_t pos = filename.find("!/");
   if (pos == std::string::npos) {
-    return nothing;
+    return nullptr;
   }
   std::string apk_file = filename.substr(0, pos);
   std::string elf_file = filename.substr(pos + 2);
   if (!IsValidApkPath(apk_file)) {
     BACK_LOGW("%s is not a valid apk file", apk_file.c_str());
-    return nothing;
+    return nullptr;
   }
   ZipArchiveHandle handle;
   int32_t ret_code = OpenArchive(apk_file.c_str(), &handle);
   if (ret_code != 0) {
     CloseArchive(handle);
     BACK_LOGW("failed to open archive %s: %s", apk_file.c_str(), ErrorCodeString(ret_code));
-    return nothing;
+    return nullptr;
   }
   ScopedZiparchiveHandle scoped_handle(handle);
   ZipEntry zentry;
@@ -701,55 +668,42 @@ llvm::object::OwningBinary<llvm::object::Binary> OpenEmbeddedElfFile(const std::
   if (ret_code != 0) {
     BACK_LOGW("failed to find %s in %s: %s", elf_file.c_str(), apk_file.c_str(),
               ErrorCodeString(ret_code));
-    return nothing;
+    return nullptr;
   }
   if (zentry.method != kCompressStored || zentry.compressed_length != zentry.uncompressed_length) {
     BACK_LOGW("%s is compressed in %s, which doesn't support running directly", elf_file.c_str(),
               apk_file.c_str());
-    return nothing;
+    return nullptr;
   }
-  auto buffer_or_err = llvm::MemoryBuffer::getOpenFileSlice(GetFileDescriptor(handle), apk_file,
-                                                            zentry.uncompressed_length,
-                                                            zentry.offset);
-  if (!buffer_or_err) {
-    BACK_LOGW("failed to read %s in %s: %s", elf_file.c_str(), apk_file.c_str(),
-              buffer_or_err.getError().message().c_str());
-    return nothing;
+  std::string error_msg;
+  std::unique_ptr<ElfReader> elf = ElfReader::OpenFile(apk_file.c_str(), zentry.offset, &error_msg);
+  if (elf == nullptr) {
+    BACK_LOGW("can't open %s: %s", filename.c_str(), error_msg.c_str());
+    return nullptr;
   }
-  auto binary_or_err = llvm::object::createBinary(buffer_or_err.get()->getMemBufferRef());
-  if (!binary_or_err) {
-    BACK_LOGW("failed to create binary for %s in %s: %s", elf_file.c_str(), apk_file.c_str(),
-              llvm::toString(binary_or_err.takeError()).c_str());
-    return nothing;
-  }
-  return llvm::object::OwningBinary<llvm::object::Binary>(std::move(binary_or_err.get()),
-                                                          std::move(buffer_or_err.get()));
+  return elf;
 }
 
 static DebugFrameInfo* ReadDebugFrameFromFile(const std::string& filename) {
-  llvm::object::OwningBinary<llvm::object::Binary> owning_binary;
+  std::unique_ptr<ElfReader> elf;
   if (filename.find("!/") != std::string::npos) {
-    owning_binary = OpenEmbeddedElfFile(filename);
+    elf = OpenEmbeddedElfFile(filename);
+    if (elf == nullptr) {
+      return nullptr;
+    }
   } else {
-    if (!IsValidElfPath(filename)) {
+    std::string error_msg;
+    elf = ElfReader::OpenFile(filename.c_str(), 0, &error_msg);
+    if (elf == nullptr) {
+      BACK_LOGW("can't open %s: %s", filename.c_str(), error_msg.c_str());
       return nullptr;
     }
-    auto binary_or_err = llvm::object::createBinary(llvm::StringRef(filename));
-    if (!binary_or_err) {
-      return nullptr;
-    }
-    owning_binary = std::move(binary_or_err.get());
   }
-  llvm::object::Binary* binary = owning_binary.getBinary();
-  auto obj = llvm::dyn_cast<llvm::object::ObjectFile>(binary);
-  if (obj == nullptr) {
-    return nullptr;
+  if (elf->GetImpl32()) {
+    return ReadDebugFrameFromELFFile(elf->GetImpl32());
   }
-  if (auto elf = llvm::dyn_cast<llvm::object::ELF32LEObjectFile>(obj)) {
-    return ReadDebugFrameFromELFFile(elf->getELFFile());
-  }
-  if (auto elf = llvm::dyn_cast<llvm::object::ELF64LEObjectFile>(obj)) {
-    return ReadDebugFrameFromELFFile(elf->getELFFile());
+  if (elf->GetImpl64()) {
+    return ReadDebugFrameFromELFFile(elf->GetImpl64());
   }
   return nullptr;
 }
