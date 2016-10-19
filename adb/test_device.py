@@ -419,6 +419,15 @@ class ShellTest(DeviceTest):
         # -t -t: always allocate PTY.
         self.assertEqual((True, True), check_pty(['-t', '-t']))
 
+        # -tt: always allocate PTY, POSIX style (http://b/32216152).
+        self.assertEqual((True, True), check_pty(['-tt']))
+
+        # -Ttt: -tt cancels out -T.
+        self.assertEqual((True, True), check_pty(['-Ttt']))
+
+        # -ttT: -T cancels out -tt.
+        self.assertEqual((False, False), check_pty(['-ttT']))
+
     def test_shell_protocol(self):
         """Tests the shell protocol on the device.
 

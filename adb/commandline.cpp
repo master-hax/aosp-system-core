@@ -692,68 +692,67 @@ static int adb_shell(int argc, const char** argv) {
         return 1;
     }
 
-    bool use_shell_protocol = CanUseFeature(features, kFeatureShell2);
-    if (!use_shell_protocol) {
-        D("shell protocol not supported, using raw data transfer");
-    } else {
-        D("using shell protocol");
-    }
+    enum Tty { kTtyAuto, kTtyNo, kTtyYes, kTtyDefinitely };
+
+    // Defaults.
+    char escape_char = '~'; // -e
+    bool use_shell_protocol = CanUseFeature(features, kFeatureShell2); // -x
+    Tty tty = kTtyAuto; // -t/-T
 
     // Parse shell-specific command-line options.
-    // argv[0] is always "shell".
-    --argc;
-    ++argv;
-    int t_arg_count = 0;
-    char escape_char = '~';
-    while (argc) {
-        if (!strcmp(argv[0], "-e")) {
-            if (argc < 2 || !(strlen(argv[1]) == 1 || strcmp(argv[1], "none") == 0)) {
-                fprintf(stderr, "error: -e requires a single-character argument or 'none'\n");
+    argv[0] = "adb shell"; // So getopt(3) error messages start "adb shell".
+    optind = 1; // argv[0] is always "shell", so set `optind` appropriately.
+    int opt;
+    while ((opt = getopt(argc, const_cast<char**>(argv), "+e:ntTx")) != -1) {
+        switch (opt) {
+            case 'e':
+                if (!(strlen(optarg) == 1 || strcmp(optarg, "none") == 0)) {
+                    fprintf(stderr, "error: -e requires a single-character argument or 'none'\n");
+                    return 1;
+                }
+                escape_char = (strcmp(optarg, "none") == 0) ? 0 : optarg[0];
+                break;
+            case 'n':
+                close_stdin();
+                break;
+            case 'x':
+                use_shell_protocol = false;
+                break;
+            case 't':
+                // Like ssh, -t arguments are cumulative so that multiple -t's
+                // are needed to force a PTY.
+                tty = (tty == kTtyYes) ? kTtyDefinitely : kTtyYes;
+                break;
+            case 'T':
+                tty = kTtyNo;
+                break;
+            default: /* '?' */
                 return 1;
-            }
-            escape_char = (strcmp(argv[1], "none") == 0) ? 0 : argv[1][0];
-            argc -= 2;
-            argv += 2;
-        } else if (!strcmp(argv[0], "-T") || !strcmp(argv[0], "-t")) {
-            // Like ssh, -t arguments are cumulative so that multiple -t's
-            // are needed to force a PTY.
-            if (argv[0][1] == 't') {
-                ++t_arg_count;
-            } else {
-                t_arg_count = -1;
-            }
-            --argc;
-            ++argv;
-        } else if (!strcmp(argv[0], "-x")) {
-            use_shell_protocol = false;
-            --argc;
-            ++argv;
-        } else if (!strcmp(argv[0], "-n")) {
-            close_stdin();
-
-            --argc;
-            ++argv;
-        } else {
-            break;
         }
     }
 
-    // Legacy shell protocol requires a remote PTY to close the subprocess properly which creates
-    // some weird interactions with -tT.
-    if (!use_shell_protocol && t_arg_count != 0) {
+    D("shell -e 0x%x t=%d %s",
+      escape_char, tty, use_shell_protocol ? "shell protocol" : "raw");
+
+    if (!CanUseFeature(features, kFeatureShell2) && tty != kTtyNo) {
+        // http://b/32219151: old devices without the shell protocol are effectively
+        // hard-coded to -tt anyway, so just ignore -t for them.
+        tty = kTtyAuto;
+    }
+    if (!use_shell_protocol && tty != kTtyAuto) {
         if (!CanUseFeature(features, kFeatureShell2)) {
-            fprintf(stderr, "error: target doesn't support PTY args -Tt\n");
+            fprintf(stderr, "error: device doesn't support -T\n");
         } else {
-            fprintf(stderr, "error: PTY args -Tt cannot be used with -x\n");
+            fprintf(stderr, "error: PTY args -T/-t cannot be used with -x\n");
         }
         return 1;
     }
 
     std::string shell_type_arg;
     if (CanUseFeature(features, kFeatureShell2)) {
-        if (t_arg_count < 0) {
+        if (tty == kTtyNo) {
             shell_type_arg = kShellServiceArgRaw;
-        } else if (t_arg_count == 0) {
+        } else if (tty == kTtyAuto) {
             // If stdin isn't a TTY, default to a raw shell; this lets
             // things like `adb shell < my_script.sh` work as expected.
             // Otherwise leave |shell_type_arg| blank which uses PTY for
@@ -761,7 +760,7 @@ static int adb_shell(int argc, const char** argv) {
             if (!unix_isatty(STDIN_FILENO)) {
                 shell_type_arg = kShellServiceArgRaw;
             }
-        } else if (t_arg_count == 1) {
+        } else if (tty == kTtyYes) {
             // A single -t arg isn't enough to override implicit -T.
             if (!unix_isatty(STDIN_FILENO)) {
                 fprintf(stderr,
@@ -771,15 +770,15 @@ static int adb_shell(int argc, const char** argv) {
             } else {
                 shell_type_arg = kShellServiceArgPty;
             }
-        } else {
+        } else { // kTtyDefinitely
             shell_type_arg = kShellServiceArgPty;
         }
     }
 
     std::string command;
-    if (argc) {
+    if (optind < argc) {
         // We don't escape here, just like ssh(1). http://b/20564385.
-        command = android::base::Join(std::vector<const char*>(argv, argv + argc), ' ');
+        command = android::base::Join(std::vector<const char*>(argv + optind, argv + argc), ' ');
     }
 
     return RemoteShell(use_shell_protocol, shell_type_arg, escape_char, command);
@@ -1401,7 +1400,7 @@ static bool _use_legacy_install() {
     return !CanUseFeature(features, kFeatureCmd);
 }
 
-int adb_commandline(int argc, const char **argv) {
+int adb_commandline(int argc, const char** argv) {
     int no_daemon = 0;
     int is_daemon = 0;
     int is_server = 0;
