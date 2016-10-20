@@ -91,7 +91,7 @@ bool PacketEquals(const ShellProtocol* protocol, ShellProtocol::Id id,
                     const void* data, size_t data_length) {
     return (protocol->id() == id &&
             protocol->data_length() == data_length &&
-            !memcmp(data, protocol->data(), data_length));
+            (data_length == 0 || !memcmp(data, protocol->data(), data_length)));
 }
 
 }  // namespace
