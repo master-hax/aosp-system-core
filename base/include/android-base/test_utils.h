@@ -25,27 +25,43 @@ class TemporaryFile {
  public:
   TemporaryFile();
   ~TemporaryFile();
+  TemporaryFile(TemporaryFile const &) = delete;
+  void operator=(TemporaryFile const &) = delete;
 
   int fd;
   char path[1024];
 
  private:
   void init(const std::string& tmp_dir);
-
-  DISALLOW_COPY_AND_ASSIGN(TemporaryFile);
 };
 
 class TemporaryDir {
  public:
   TemporaryDir();
   ~TemporaryDir();
+  TemporaryDir(TemporaryDir const &) = delete;
+  void operator=(TemporaryDir const &) = delete;
 
   char path[1024];
 
  private:
   bool init(const std::string& tmp_dir);
+};
 
-  DISALLOW_COPY_AND_ASSIGN(TemporaryDir);
+class CapturedStderr {
+ public:
+  CapturedStderr();
+  ~CapturedStderr();
+  CapturedStderr(CapturedStderr const &) = delete;
+  void operator=(CapturedStderr const &) = delete;
+
+  int fd() const;
+ private:
+  void init();
+  void reset();
+
+  TemporaryFile temp_file_;
+  int old_stderr_;
 };
 
 #endif  // ANDROID_BASE_TEST_UTILS_H
