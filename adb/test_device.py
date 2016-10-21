@@ -473,6 +473,10 @@ class ShellTest(DeviceTest):
         self.device.shell(proc_query)
         os.kill(sleep_proc.pid, signal.SIGINT)
         sleep_proc.communicate()
+
+        # It can take some time for the process to receive the signal and die.
+        time.sleep(1)
+
         self.assertEqual(1, self.device.shell_nocheck(proc_query)[0],
                          'subprocess failed to terminate')
 
