@@ -21,6 +21,8 @@
 // following code to suppress the evil ERROR macro:
 #ifdef _WIN32
 // windows.h includes wingdi.h which defines an evil macro ERROR.
+// We include <windows.h> to avoid include order problems at the cost of namespace pollution.
+#include <windows.h>
 #ifdef ERROR
 #undef ERROR
 #endif
