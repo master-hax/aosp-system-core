@@ -1,0 +1,5 @@
+service test_service /system/bin/test_service
+    class main
+    user system
+    group system
+    capabilities NET_ADMIN NET_RAW
