@@ -45,6 +45,7 @@ include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     action.cpp \
+    capabilities.cpp \
     import_parser.cpp \
     init_parser.cpp \
     log.cpp \
@@ -53,6 +54,7 @@ LOCAL_SRC_FILES:= \
     util.cpp \
 
 LOCAL_STATIC_LIBRARIES := libbase libselinux liblog libprocessgroup
+LOCAL_WHOLE_STATIC_LIBRARIES := libcap
 LOCAL_MODULE := libinit
 LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
@@ -102,7 +104,7 @@ LOCAL_STATIC_LIBRARIES := \
     libz \
     libprocessgroup
 
-# Create symlinks
+# Create symlinks.
 LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
     ln -sf ../init $(TARGET_ROOT_OUT)/sbin/ueventd; \
     ln -sf ../init $(TARGET_ROOT_OUT)/sbin/watchdogd
@@ -112,8 +114,8 @@ LOCAL_CLANG := true
 include $(BUILD_EXECUTABLE)
 
 
-
-
+# Unit tests.
+# =========================================================
 include $(CLEAR_VARS)
 LOCAL_MODULE := init_tests
 LOCAL_SRC_FILES := \
@@ -128,3 +130,19 @@ LOCAL_STATIC_LIBRARIES := libinit
 LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
 include $(BUILD_NATIVE_TEST)
+
+
+# Test service.
+# =========================================================
+include $(CLEAR_VARS)
+LOCAL_MODULE := test_service
+LOCAL_SRC_FILES := \
+    test/test_service.cpp \
+
+LOCAL_SHARED_LIBRARIES += \
+    libbase
+
+LOCAL_INIT_RC := test/test_service.rc
+
+LOCAL_CLANG := true
+include $(BUILD_EXECUTABLE)
