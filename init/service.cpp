@@ -16,6 +16,7 @@
 
 #include "service.h"
 
+#include <ctype.h>
 #include <fcntl.h>
 #include <sched.h>
 #include <sys/mount.h>
@@ -35,6 +36,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <cutils/android_reboot.h>
+#include <cutils/files.h>
 #include <cutils/sockets.h>
 #include <system/thread_defs.h>
 
@@ -144,12 +146,17 @@ static void ExpandArgs(const std::vector<std::string>& args, std::vector<char*>*
     strs->push_back(nullptr);
 }
 
-SocketInfo::SocketInfo() : uid(0), gid(0), perm(0) {
+DescriptorInfo::DescriptorInfo()
+    : uid(0), gid(0), perm(0), signature(NO_SIGNATURE) {
 }
 
-SocketInfo::SocketInfo(const std::string& name, const std::string& type, uid_t uid,
-                       gid_t gid, int perm, const std::string& socketcon)
-    : name(name), type(type), uid(uid), gid(gid), perm(perm), socketcon(socketcon) {
+int DescriptorInfo::compare(const DescriptorInfo &other) const {
+    int ret = name.compare(other.name);
+    if (ret != 0) return ret;
+    ret = type.compare(other.type);
+    if (ret != 0) return ret;
+    ret = signature != other.signature;
+    return ret;
 }
 
 ServiceEnvironmentInfo::ServiceEnvironmentInfo() {
@@ -210,17 +217,59 @@ void Service::KillProcessGroup(int signal) {
     }
 }
 
-void Service::CreateSockets(const std::string& context) {
-    for (const auto& si : sockets_) {
-        int socket_type = ((si.type == "stream" ? SOCK_STREAM :
-                            (si.type == "dgram" ? SOCK_DGRAM :
-                             SOCK_SEQPACKET)));
-        const char* socketcon = !si.socketcon.empty() ? si.socketcon.c_str() : context.c_str();
+void DescriptorInfo::CreateAndPublish(const std::string& globalContext) const {
+    int flags, fd = -1;
+    const char* contextStr = context.empty() ?
+        globalContext.c_str() :
+        context.c_str();
+    std::string key;
 
-        int s = create_socket(si.name.c_str(), socket_type, si.perm, si.uid, si.gid, socketcon);
-        if (s >= 0) {
-            PublishSocket(si.name, s);
-        }
+    switch (signature) {
+    case SOCKET_SIGNATURE:
+        flags = ((type == "stream" ? SOCK_STREAM :
+                 (type == "dgram" ? SOCK_DGRAM :
+                     SOCK_SEQPACKET)));
+        fd = create_socket(name.c_str(), flags, perm, uid, gid, contextStr);
+        key = ANDROID_SOCKET_ENV_PREFIX;
+        break;
+    case FILE_SIGNATURE:
+        flags = ((type == "r" ? O_RDONLY :
+                 (type == "w" ? O_WRONLY | O_CREAT :
+                     O_RDWR | O_CREAT)));
+        fd = create_file(name.c_str(), flags, perm, uid, gid, contextStr);
+        key = ANDROID_FILE_ENV_PREFIX;
+        /* FALLTHRU */
+    default:
+        break;
+    }
+    if (fd >= 0) {
+        /* Publish */
+        key += name;
+        for (auto& c : key) if (!isalnum(c)) c = '_';
+        std::string val = StringPrintf("%d", fd);
+        add_environment(key.c_str(), val.c_str());
+
+        /* make sure we don't close on exec */
+        fcntl(fd, F_SETFD, 0);
+    }
+}
+
+void DescriptorInfo::Clean() const {
+    switch (signature) {
+    case SOCKET_SIGNATURE:
+        unlink(StringPrintf(ANDROID_SOCKET_DIR "/%s", name.c_str()).c_str());
+        /* FALLTHRU */
+    case FILE_SIGNATURE:
+        // Do not remove any files as we assume they are persistent
+        /* FALLTHRU */
+    default:
+        break;
+    }
+}
+
+void Service::CreateDescriptors(const std::string& context) {
+    for (const auto& di : descriptors_) {
+        di.CreateAndPublish(context);
     }
 }
 
@@ -258,10 +307,9 @@ bool Service::Reap() {
         KillProcessGroup(SIGKILL);
     }
 
-    // Remove any sockets we may have created.
-    for (const auto& si : sockets_) {
-        std::string tmp = StringPrintf(ANDROID_SOCKET_DIR "/%s", si.name.c_str());
-        unlink(tmp.c_str());
+    // Remove any descriptor resources we may have created.
+    for (const auto& di : descriptors_) {
+        di.Clean();
     }
 
     if (flags_ & SVC_EXEC) {
@@ -315,8 +363,8 @@ void Service::DumpState() const {
     LOG(INFO) << "service " << name_;
     LOG(INFO) << "  class '" << classname_ << "'";
     LOG(INFO) << "  exec "<< android::base::Join(args_, " ");
-    for (const auto& si : sockets_) {
-        LOG(INFO) << "  socket " << si.name << " " << si.type << " " << std::oct << si.perm;
+    for (const auto& di : descriptors_) {
+        LOG(INFO) << "  descriptors " << di.name << " " << di.type << " " << std::oct << di.perm;
     }
 }
 
@@ -451,7 +499,43 @@ bool Service::ParseSocket(const std::vector<std::string>& args, std::string* err
     gid_t gid = args.size() > 5 ? decode_uid(args[5].c_str()) : 0;
     std::string socketcon = args.size() > 6 ? args[6] : "";
 
-    sockets_.emplace_back(args[1], args[2], uid, gid, perm, socketcon);
+    DescriptorInfo info(args[1], args[2], uid, gid, perm, socketcon,
+                        DescriptorInfo::SOCKET_SIGNATURE);
+    for (const auto& di : descriptors_) {
+        if (di.compare(info) == 0) {
+            *err = "duplicate socket " + di.name;
+            return false;
+        }
+    }
+    descriptors_.emplace_back(info);
+    return true;
+}
+
+/* name type perm [ uid gid context ] */
+bool Service::ParseFile(const std::vector<std::string>& args, std::string* err) {
+    if (args[2] != "r" && args[2] != "w" && args[2] != "rw") {
+        *err = "file type must be 'r', 'w' or 'rw'";
+        return false;
+    }
+    if ((args[1][0] != '/') || (args[1].find("../") != std::string::npos)) {
+        *err = "file name must not be relative";
+        return false;
+    }
+
+    int perm = args[3].empty() ? -1 : std::strtoul(args[3].c_str(), 0, 8);
+    uid_t uid = args.size() > 4 ? decode_uid(args[4].c_str()) : 0;
+    gid_t gid = args.size() > 5 ? decode_uid(args[5].c_str()) : 0;
+    std::string filecon = args.size() > 6 ? args[6] : "";
+
+    DescriptorInfo info(args[1], args[2], uid, gid, perm, filecon,
+                        DescriptorInfo::FILE_SIGNATURE);
+    for (const auto& di : descriptors_) {
+        if (di.compare(info) == 0) {
+            *err = "duplicate file " + di.name;
+            return false;
+        }
+    }
+    descriptors_.emplace_back(info);
     return true;
 }
 
@@ -492,6 +576,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
         {"socket",      {3,     6,    &Service::ParseSocket}},
+        {"file",        {2,     6,    &Service::ParseFile}},
         {"user",        {1,     1,    &Service::ParseUser}},
         {"writepid",    {1,     kMax, &Service::ParseWritepid}},
     };
@@ -581,7 +666,7 @@ bool Service::Start() {
             add_environment(ei.name.c_str(), ei.value.c_str());
         }
 
-        CreateSockets(scon);
+        CreateDescriptors(scon);
 
         std::string pid_str = StringPrintf("%d", getpid());
         for (const auto& file : writepid_files_) {
@@ -753,15 +838,6 @@ void Service::OpenConsole() const {
     dup2(fd, 1);
     dup2(fd, 2);
     close(fd);
-}
-
-void Service::PublishSocket(const std::string& name, int fd) const {
-    std::string key = StringPrintf(ANDROID_SOCKET_ENV_PREFIX "%s", name.c_str());
-    std::string val = StringPrintf("%d", fd);
-    add_environment(key.c_str(), val.c_str());
-
-    /* make sure we don't close-on-exec */
-    fcntl(fd, F_SETFD, 0);
 }
 
 int ServiceManager::exec_count_ = 0;
