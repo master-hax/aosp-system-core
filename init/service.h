@@ -48,16 +48,28 @@
 class Action;
 class ServiceManager;
 
-struct SocketInfo {
-    SocketInfo();
-    SocketInfo(const std::string& name, const std::string& type, uid_t uid,
-                       gid_t gid, int perm, const std::string& socketcon);
-    std::string name;
-    std::string type;
-    uid_t uid;
-    gid_t gid;
-    int perm;
-    std::string socketcon;
+struct DescriptorInfo {
+    enum signature { NO_SIGNATURE, SOCKET_SIGNATURE, FILE_SIGNATURE };
+
+    DescriptorInfo();
+    DescriptorInfo(const std::string& name, const std::string& type, uid_t uid,
+                   gid_t gid, int perm, const std::string& context,
+                   enum signature signature)
+        : name(name), type(type), uid(uid), gid(gid), perm(perm),
+          context(context), signature(signature) { }
+    const std::string name;
+    const std::string type;
+    const uid_t uid;
+    const gid_t gid;
+    const int perm;
+    const std::string context;
+    // Used to switch in all methods, but also to aid compare accuracy.
+    const enum signature signature;
+
+    void CreateAndPublish(const std::string& context) const;
+    void Clean() const;
+
+    int compare(const struct DescriptorInfo& other) const;
 };
 
 struct ServiceEnvironmentInfo {
@@ -113,9 +125,8 @@ private:
     void StopOrReset(int how);
     void ZapStdio() const;
     void OpenConsole() const;
-    void PublishSocket(const std::string& name, int fd) const;
     void KillProcessGroup(int signal);
-    void CreateSockets(const std::string& scon);
+    void CreateDescriptors(const std::string& context);
     void SetProcessAttributes();
 
     bool ParseCapabilities(const std::vector<std::string>& args, std::string *err);
@@ -134,6 +145,7 @@ private:
     bool ParseSeclabel(const std::vector<std::string>& args, std::string* err);
     bool ParseSetenv(const std::vector<std::string>& args, std::string* err);
     bool ParseSocket(const std::vector<std::string>& args, std::string* err);
+    bool ParseFile(const std::vector<std::string>& args, std::string* err);
     bool ParseUser(const std::vector<std::string>& args, std::string* err);
     bool ParseWritepid(const std::vector<std::string>& args, std::string* err);
 
@@ -155,7 +167,7 @@ private:
 
     std::string seclabel_;
 
-    std::vector<SocketInfo> sockets_;
+    std::vector<DescriptorInfo> descriptors_;
     std::vector<ServiceEnvironmentInfo> envvars_;
 
     Action onrestart_;  // Commands to execute on restart.

@@ -125,8 +125,10 @@ LOCAL_SRC_FILES := \
 LOCAL_SHARED_LIBRARIES += \
     libcutils \
     libbase \
+    libselinux \
 
 LOCAL_STATIC_LIBRARIES := libinit
 LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
+LOCAL_CPPFLAGS := -Wall -Wextra -Werror
 include $(BUILD_NATIVE_TEST)
