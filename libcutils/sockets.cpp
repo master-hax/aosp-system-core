@@ -28,11 +28,36 @@
 
 // This file contains socket implementation that can be shared between
 // platforms as long as the correct headers are included.
+#define _GNU_SOURCE 1
+
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#if !defined(_WIN32)
+#include <netinet/in.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+#include <string>
 
 #include <cutils/sockets.h>
 
-#if !defined(_WIN32)
-#include <netinet/in.h>
+#ifndef TEMP_FAILURE_RETRY // _WIN32 does not define
+/* Used to retry syscalls that can return EINTR. */
+#define TEMP_FAILURE_RETRY(exp) ({         \
+    __typeof__(exp) _rc;                   \
+    do {                                   \
+        _rc = (exp);                       \
+    } while (_rc == -1 && errno == EINTR); \
+    _rc; })
 #endif
 
 int socket_get_local_port(cutils_socket_t sock) {
@@ -47,22 +72,54 @@ int socket_get_local_port(cutils_socket_t sock) {
 }
 
 int android_get_control_socket(const char* name) {
-    char key[64];
-    snprintf(key, sizeof(key), ANDROID_SOCKET_ENV_PREFIX "%s", name);
+    char *key = NULL;
+    if (asprintf(&key, ANDROID_SOCKET_ENV_PREFIX "%s", name) < 0) return -1;
+    if (!key) return -1;
+
+    char *cp = key;
+    while (*cp) {
+        if (!isalnum(*cp)) *cp = '_';
+        ++cp;
+    }
 
     const char* val = getenv(key);
-    if (!val) {
-        return -1;
-    }
+    free(key);
+    if (!val) return -1;
 
     errno = 0;
-    long ret = strtol(val, NULL, 10);
-    if (errno) {
-        return -1;
-    }
-    if (ret < 0 || ret > INT_MAX) {
-        return -1;
-    }
+    long fd = strtol(val, NULL, 10);
+    if (errno) return -1;
 
-    return static_cast<int>(ret);
+    // validity checking
+    if ((fd < 0) || (fd > INT_MAX)) return -1;
+#if defined(_SC_OPEN_MAX)
+    if (fd >= sysconf(_SC_OPEN_MAX)) return -1;
+#elif defined(OPEN_MAX)
+    if (fd >= OPEN_MAX) return -1;
+#elif defined(_POSIX_OPEN_MAX)
+    if (fd >= _POSIX_OPEN_MAX) return -1;
+#endif
+
+#if defined(F_GETFD)
+    if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFD)) < 0) return -1;
+#elif defined(F_GETFL)
+    if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFL)) < 0) return -1;
+#else
+    struct stat s;
+    if (TEMP_FAILURE_RETRY(fstat(fd, &s)) < 0) return -1;
+#endif
+
+    struct sockaddr_un addr;
+    socklen_t addrlen = sizeof(addr);
+    int ret = TEMP_FAILURE_RETRY(getsockname(fd, (struct sockaddr *)&addr, &addrlen));
+    if (ret < 0) return -1;
+    char *path = NULL;
+    if (asprintf(&path, ANDROID_SOCKET_DIR"/%s", name) < 0) return -1;
+    if (!path) return -1;
+    int cmp = strcmp(addr.sun_path, path);
+    free(path);
+    if (cmp != 0) return -1;
+
+    // It is what we think it is
+    return static_cast<int>(fd);
 }
