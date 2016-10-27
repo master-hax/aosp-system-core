@@ -78,6 +78,7 @@ cc_library {
                 "android_reboot.c",
                 "ashmem-dev.c",
                 "debugger.c",
+                "files.cpp",
                 "klog.cpp",
                 "partition_utils.c",
                 "properties.c",
