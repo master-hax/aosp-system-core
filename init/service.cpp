@@ -35,6 +35,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <cutils/android_reboot.h>
+#include <cutils/files.h>
 #include <cutils/sockets.h>
 #include <system/thread_defs.h>
 
@@ -152,6 +153,14 @@ SocketInfo::SocketInfo(const std::string& name, const std::string& type, uid_t u
     : name(name), type(type), uid(uid), gid(gid), perm(perm), socketcon(socketcon) {
 }
 
+FileInfo::FileInfo() : uid(0), gid(0), perm(0) {
+}
+
+FileInfo::FileInfo(const std::string& path, const std::string& type, uid_t uid,
+                       gid_t gid, int perm, const std::string& filecon)
+    : path(path), type(type), uid(uid), gid(gid), perm(perm), filecon(filecon) {
+}
+
 ServiceEnvironmentInfo::ServiceEnvironmentInfo() {
 }
 
@@ -220,6 +229,20 @@ void Service::CreateSockets(const std::string& context) {
         int s = create_socket(si.name.c_str(), socket_type, si.perm, si.uid, si.gid, socketcon);
         if (s >= 0) {
             PublishSocket(si.name, s);
+        }
+    }
+}
+
+void Service::CreateFiles(const std::string& context) {
+    for (const auto& si : files_) {
+        int flags = ((si.type == "r" ? O_RDONLY :
+                            (si.type == "w" ? O_WRONLY | O_CREAT :
+                             O_RDWR | O_CREAT)));
+        const char* filecon = si.filecon.empty() ? context.c_str() : si.filecon.c_str();
+
+        int s = create_file(si.path.c_str(), flags, si.perm, si.uid, si.gid, filecon);
+        if (s >= 0) {
+            PublishFile(si.path, s);
         }
     }
 }
@@ -319,6 +342,9 @@ void Service::DumpState() const {
     LOG(INFO) << "  exec "<< android::base::Join(args_, " ");
     for (const auto& si : sockets_) {
         LOG(INFO) << "  socket " << si.name << " " << si.type << " " << std::oct << si.perm;
+    }
+    for (const auto& si : files_) {
+        LOG(INFO) << "  file " << si.path << " " << si.type << " " << std::oct << si.perm;
     }
 }
 
@@ -457,6 +483,26 @@ bool Service::ParseSocket(const std::vector<std::string>& args, std::string* err
     return true;
 }
 
+/* name type perm [ uid gid context ] */
+bool Service::ParseFile(const std::vector<std::string>& args, std::string* err) {
+    if (args[2] != "r" && args[2] != "w" && args[2] != "rw") {
+        *err = "file type must be 'r', 'w' or 'rw'";
+        return false;
+    }
+    if ((args[1][0] != '/') || (args[1].find("../") != std::string::npos)) {
+        *err = "file name must be absolute";
+        return false;
+    }
+
+    int perm = std::strtoul(args[3].c_str(), 0, 8);
+    uid_t uid = args.size() > 4 ? decode_uid(args[4].c_str()) : 0;
+    gid_t gid = args.size() > 5 ? decode_uid(args[5].c_str()) : 0;
+    std::string filecon = args.size() > 6 ? args[6] : "";
+
+    files_.emplace_back(args[1], args[2], uid, gid, perm, filecon);
+    return true;
+}
+
 bool Service::ParseUser(const std::vector<std::string>& args, std::string* err) {
     uid_ = decode_uid(args[1].c_str());
     return true;
@@ -494,6 +540,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
         {"socket",      {3,     6,    &Service::ParseSocket}},
+        {"file",        {2,     5,    &Service::ParseFile}},
         {"user",        {1,     1,    &Service::ParseUser}},
         {"writepid",    {1,     kMax, &Service::ParseWritepid}},
     };
@@ -584,6 +631,7 @@ bool Service::Start() {
         }
 
         CreateSockets(scon);
+        CreateFiles(scon);
 
         std::string pid_str = StringPrintf("%d", getpid());
         for (const auto& file : writepid_files_) {
@@ -759,6 +807,18 @@ void Service::OpenConsole() const {
 
 void Service::PublishSocket(const std::string& name, int fd) const {
     std::string key = StringPrintf(ANDROID_SOCKET_ENV_PREFIX "%s", name.c_str());
+    std::string val = StringPrintf("%d", fd);
+    add_environment(key.c_str(), val.c_str());
+
+    /* make sure we don't close-on-exec */
+    fcntl(fd, F_SETFD, 0);
+}
+
+void Service::PublishFile(const std::string& path, int fd) const {
+    std::string key = ANDROID_FILE_ENV_PREFIX + path;
+    size_t pos;
+    while ((pos = key.find('/')) != std::string::npos) key[pos] = '_';
+    while ((pos = key.find('.')) != std::string::npos) key[pos] = '_';
     std::string val = StringPrintf("%d", fd);
     add_environment(key.c_str(), val.c_str());
 
