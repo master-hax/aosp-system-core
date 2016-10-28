@@ -588,12 +588,15 @@ int main(int argc, char** argv) {
         mount("sysfs", "/sys", "sysfs", 0, NULL);
         mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL);
         mknod("/dev/kmsg", S_IFCHR | 0600, makedev(1, 11));
-        early_mount();
     }
 
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
     // talk to the outside world...
     InitKernelLogging(argv);
+
+    if (is_first_stage) {
+        early_mount();
+    }
 
     LOG(INFO) << "init " << (is_first_stage ? "first stage" : "second stage") << " started!";
 
