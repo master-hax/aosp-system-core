@@ -35,7 +35,8 @@
 bool is_allowed_in_logcat(enum logtype ltype) {
   if ((ltype == HEADER)
    || (ltype == REGISTERS)
-   || (ltype == BACKTRACE)) {
+   || (ltype == BACKTRACE)
+   || (ltype == OPEN_FILES)) {
     return true;
   }
   return false;
