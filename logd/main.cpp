@@ -89,7 +89,7 @@
 //    logd
 //
 
-static int drop_privs() {
+static int drop_privs(bool klogd, bool auditd) {
     struct sched_param param;
     memset(&param, 0, sizeof(param));
 
@@ -123,8 +123,12 @@ static int drop_privs() {
     capheader.pid = 0;
 
     capdata[CAP_TO_INDEX(CAP_SETGID)].permitted |= CAP_TO_MASK(CAP_SETGID);
-    capdata[CAP_TO_INDEX(CAP_SYSLOG)].permitted |= CAP_TO_MASK(CAP_SYSLOG);
-    capdata[CAP_TO_INDEX(CAP_AUDIT_CONTROL)].permitted |= CAP_TO_MASK(CAP_AUDIT_CONTROL);
+    if (klogd) {
+        capdata[CAP_TO_INDEX(CAP_SYSLOG)].permitted |= CAP_TO_MASK(CAP_SYSLOG);
+    }
+    if (auditd) {
+        capdata[CAP_TO_INDEX(CAP_AUDIT_CONTROL)].permitted |= CAP_TO_MASK(CAP_AUDIT_CONTROL);
+    }
 
     capdata[0].effective = capdata[0].permitted;
     capdata[1].effective = capdata[1].permitted;
@@ -454,7 +458,10 @@ int main(int argc, char *argv[]) {
         pthread_attr_destroy(&attr);
     }
 
-    if (drop_privs() != 0) {
+    bool auditd = __android_logger_property_get_bool("logd.auditd",
+                                                     BOOL_DEFAULT_TRUE |
+                                                     BOOL_DEFAULT_FLAG_PERSIST);
+    if (drop_privs(klogd, auditd) != 0) {
         return -1;
     }
 
@@ -509,9 +516,6 @@ int main(int argc, char *argv[]) {
     // initiated log messages. New log entries are added to LogBuffer
     // and LogReader is notified to send updates to connected clients.
 
-    bool auditd = __android_logger_property_get_bool("logd.auditd",
-                                                     BOOL_DEFAULT_TRUE |
-                                                     BOOL_DEFAULT_FLAG_PERSIST);
     LogAudit *al = NULL;
     if (auditd) {
         al = new LogAudit(logBuf, reader,
