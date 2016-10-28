@@ -41,6 +41,7 @@ cc_library {
         android: {
             srcs: [
                 "errors_unix.cpp",
+                "process_info.cpp",
                 "properties.cpp",
             ],
             cppflags: ["-Wexit-time-destructors"],
@@ -50,7 +51,10 @@ cc_library {
             cppflags: ["-Wexit-time-destructors"],
         },
         linux: {
-            srcs: ["errors_unix.cpp"],
+            srcs: [
+                "errors_unix.cpp",
+                "process_info.cpp",
+            ],
             cppflags: ["-Wexit-time-destructors"],
         },
         windows: {
@@ -83,7 +87,15 @@ cc_test {
     ],
     target: {
         android: {
-            srcs: ["properties_test.cpp"],
+            srcs: [
+                "process_info_test.cpp",
+                "properties_test.cpp",
+            ],
+        },
+        linux: {
+            srcs: [
+                "process_info_test.cpp",
+            ],
         },
         windows: {
             srcs: ["utf8_test.cpp"],
