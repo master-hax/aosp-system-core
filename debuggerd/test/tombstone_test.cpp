@@ -34,6 +34,7 @@
 // Including it, also allows us to override the ptrace function.
 #define ptrace ptrace_fake
 
+#include "open_files_list.cpp"
 #include "tombstone.cpp"
 
 void dump_registers(log_t*, pid_t) {
