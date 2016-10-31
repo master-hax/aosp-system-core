@@ -21,9 +21,11 @@
 #include <sstream>
 #include <thread>
 
+#include <android-base/logging.h>
 #include <gtest/gtest.h>
 
 namespace android {
+namespace {
 
 class Callback : public FuseBridgeLoop::Callback {
  public:
@@ -44,7 +46,8 @@ class FuseBridgeLoopTest : public ::testing::Test {
   FuseRequest request_;
   FuseResponse response_;
 
-  void SetUp() {
+  void SetUp() override {
+    base::SetMinimumLogSeverity(base::VERBOSE);
     ASSERT_EQ(0, socketpair(AF_UNIX, SOCK_SEQPACKET, 0, dev_sockets_));
     ASSERT_EQ(0, socketpair(AF_UNIX, SOCK_SEQPACKET, 0, proxy_sockets_));
     thread_ = std::thread([this] {
@@ -103,19 +106,25 @@ class FuseBridgeLoopTest : public ::testing::Test {
   }
 
   void Close() {
-    close(dev_sockets_[0]);
-    close(dev_sockets_[1]);
-    close(proxy_sockets_[0]);
-    close(proxy_sockets_[1]);
+    if (dev_sockets_[0] != -1) {
+      close(dev_sockets_[0]);
+      dev_sockets_[0] = -1;
+    }
+    if (proxy_sockets_[1] != -1) {
+      close(proxy_sockets_[1]);
+      proxy_sockets_[1] = -1;
+    }
     if (thread_.joinable()) {
       thread_.join();
     }
   }
 
-  void TearDown() {
+  void TearDown() override {
     Close();
   }
 };
+
+} //  namespace
 
 TEST_F(FuseBridgeLoopTest, FuseInit) {
   SendInitRequest(1u);
@@ -156,11 +165,11 @@ TEST_F(FuseBridgeLoopTest, FuseNotImpl) {
   CheckNotImpl(FUSE_RENAME);
   CheckNotImpl(FUSE_LINK);
   CheckNotImpl(FUSE_STATFS);
-  CheckNotImpl(FUSE_FSYNC);
   CheckNotImpl(FUSE_SETXATTR);
   CheckNotImpl(FUSE_GETXATTR);
   CheckNotImpl(FUSE_LISTXATTR);
   CheckNotImpl(FUSE_REMOVEXATTR);
+  CheckNotImpl(FUSE_FLUSH);
   CheckNotImpl(FUSE_OPENDIR);
   CheckNotImpl(FUSE_READDIR);
   CheckNotImpl(FUSE_RELEASEDIR);
@@ -190,7 +199,7 @@ TEST_F(FuseBridgeLoopTest, Proxy) {
   CheckProxy(FUSE_READ);
   CheckProxy(FUSE_WRITE);
   CheckProxy(FUSE_RELEASE);
-  CheckProxy(FUSE_FLUSH);
+  CheckProxy(FUSE_FSYNC);
 }
 
 }  // android

@@ -68,6 +68,14 @@ bool FuseMessage<T, Header>::Write(int fd) const {
 template struct FuseMessage<FuseRequest, fuse_in_header>;
 template struct FuseMessage<FuseResponse, fuse_out_header>;
 
+void FuseRequest::Reset(
+    uint32_t data_length, uint32_t opcode, uint64_t unique) {
+  memset(this, 0, sizeof(fuse_in_header) + data_length);
+  header.len = sizeof(fuse_in_header) + data_length;
+  header.opcode = opcode;
+  header.unique = unique;
+}
+
 void FuseResponse::ResetHeader(
     uint32_t data_length, int32_t error, uint64_t unique) {
   CHECK_LE(error, 0) << "error should be zero or negative.";
