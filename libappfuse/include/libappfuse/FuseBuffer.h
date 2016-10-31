@@ -48,6 +48,7 @@ struct FuseRequest : public FuseMessage<FuseRequest, fuse_in_header> {
     fuse_read_in read_in;
     char lookup_name[0];
   };
+  void Reset(uint32_t data_length, uint32_t opcode, uint64_t unique);
 };
 
 struct FuseResponse : public FuseMessage<FuseResponse, fuse_out_header> {
