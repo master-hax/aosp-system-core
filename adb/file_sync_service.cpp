@@ -49,8 +49,8 @@ static bool should_use_fs_config(const std::string& path) {
            android::base::StartsWith(path, "/oem/");
 }
 
-static bool update_capabilities(const char* path, uint64_t capabilities) {
-    if (capabilities == 0) {
+static bool update_capabilities(const char* path, struct fs_capabilities *capabilities) {
+    if (!capabilities->permitted && !capabilities->inheritable) {
         // Ensure we clean up in case the capabilities weren't 0 in the past.
         removexattr(path, XATTR_NAME_CAPS);
         return true;
@@ -58,10 +58,10 @@ static bool update_capabilities(const char* path, uint64_t capabilities) {
 
     vfs_cap_data cap_data = {};
     cap_data.magic_etc = VFS_CAP_REVISION | VFS_CAP_FLAGS_EFFECTIVE;
-    cap_data.data[0].permitted = (capabilities & 0xffffffff);
-    cap_data.data[0].inheritable = 0;
-    cap_data.data[1].permitted = (capabilities >> 32);
-    cap_data.data[1].inheritable = 0;
+    cap_data.data[0].permitted = (capabilities->permitted & 0xffffffff);
+    cap_data.data[0].inheritable = (capabilities->inheritable & 0xffffffff);
+    cap_data.data[1].permitted = (capabilities->permitted >> 32);
+    cap_data.data[1].inheritable = (capabilities->inheritable >> 32);
     return setxattr(path, XATTR_NAME_CAPS, &cap_data, sizeof(cap_data), 0) != -1;
 }
 
@@ -69,7 +69,7 @@ static bool secure_mkdirs(const std::string& path) {
     uid_t uid = -1;
     gid_t gid = -1;
     unsigned int mode = 0775;
-    uint64_t capabilities = 0;
+    struct fs_capabilities capabilities = { 0 };
 
     if (path[0] != '/') return false;
 
@@ -92,7 +92,7 @@ static bool secure_mkdirs(const std::string& path) {
             // Not all filesystems support setting SELinux labels. http://b/23530370.
             selinux_android_restorecon(partial_path.c_str(), 0);
 
-            if (!update_capabilities(partial_path.c_str(), capabilities)) return false;
+            if (!update_capabilities(partial_path.c_str(), &capabilities)) return false;
         }
     }
     return true;
@@ -164,7 +164,7 @@ static bool SendSyncFailErrno(int fd, const std::string& reason) {
     return SendSyncFail(fd, android::base::StringPrintf("%s: %s", reason.c_str(), strerror(errno)));
 }
 
-static bool handle_send_file(int s, const char* path, uid_t uid, gid_t gid, uint64_t capabilities,
+static bool handle_send_file(int s, const char* path, uid_t uid, gid_t gid, struct fs_capabilities *capabilities,
                              mode_t mode, std::vector<char>& buffer, bool do_unlink) {
     syncmsg msg;
     unsigned int timestamp = 0;
@@ -361,13 +361,13 @@ static bool do_send(int s, const std::string& spec, std::vector<char>& buffer) {
 
     uid_t uid = -1;
     gid_t gid = -1;
-    uint64_t capabilities = 0;
+    struct fs_capabilities capabilities = { 0 };
     if (should_use_fs_config(path)) {
         unsigned int broken_api_hack = mode;
         fs_config(path.c_str(), 0, nullptr, &uid, &gid, &broken_api_hack, &capabilities);
         mode = broken_api_hack;
     }
-    return handle_send_file(s, path.c_str(), uid, gid, capabilities, mode, buffer, do_unlink);
+    return handle_send_file(s, path.c_str(), uid, gid, &capabilities, mode, buffer, do_unlink);
 }
 
 static bool do_recv(int s, const char* path, std::vector<char>& buffer) {

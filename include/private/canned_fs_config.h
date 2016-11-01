@@ -19,8 +19,10 @@
 
 #include <inttypes.h>
 
+#include <private/android_filesystem_config.h>
+
 int load_canned_fs_config(const char* fn);
 void canned_fs_config(const char* path, int dir, const char* target_out_path,
-                      unsigned* uid, unsigned* gid, unsigned* mode, uint64_t* capabilities);
+                      unsigned* uid, unsigned* gid, unsigned* mode, struct fs_capabilities *capabilities);
 
 #endif

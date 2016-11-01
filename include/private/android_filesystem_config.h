@@ -233,11 +233,16 @@ static const struct android_id_info android_ids[] = {
 #define android_id_count \
     (sizeof(android_ids) / sizeof(android_ids[0]))
 
+struct fs_capabilities {
+    uint64_t permitted;
+    uint64_t inheritable;
+};
+
 struct fs_path_config {
     unsigned mode;
     unsigned uid;
     unsigned gid;
-    uint64_t capabilities;
+    struct fs_capabilities capabilities;
     const char *prefix;
 };
 
@@ -253,10 +258,9 @@ __BEGIN_DECLS
  *  external/squashfs-tools/squashfs-tools/android.c
  *  system/core/cpio/mkbootfs.c
  *  system/core/adb/file_sync_service.cpp
- *  system/extras/ext4_utils/canned_fs_config.c
  */
 void fs_config(const char *path, int dir, const char *target_out_path,
-               unsigned *uid, unsigned *gid, unsigned *mode, uint64_t *capabilities);
+               unsigned *uid, unsigned *gid, unsigned *mode, struct fs_capabilities *capabilities);
 
 ssize_t fs_config_generate(char *buffer, size_t length, const struct fs_path_config *pc);
 
