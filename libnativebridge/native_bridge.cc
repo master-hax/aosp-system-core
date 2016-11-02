@@ -172,6 +172,12 @@ static bool isCompatibleWith(const uint32_t version) {
     return false;
   }
 
+  // if requested version is NAMESPACE_VERSION we should not call into NB
+  // if callbacks version is too old (< v3)
+  if (version >= NAMESPACE_VERSION && callbacks->version < NAMESPACE_VERSION) {
+    return false;
+  }
+
   // If this is a v2+ bridge, it may not be forwards- or backwards-compatible. Check.
   if (callbacks->version >= SIGNAL_VERSION) {
     return callbacks->isCompatibleWith(version);
