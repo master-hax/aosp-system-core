@@ -35,7 +35,8 @@ static void usage(void)
 static void parse_options(int argc, char *argv[], int *a_flag, int *u_flag, int *n_flag,
                      char **n_name, char **n_blk_dev)
 {
-    me = basename(strdup(argv[0]));
+    me = strrchr(argv[0], '/');
+    me = me ? me + 1 : argv[0];
 
     if (argc <= 1) {
         usage();
