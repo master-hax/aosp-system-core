@@ -142,6 +142,8 @@ static const struct fs_path_config android_files[] = {
     { 00750, AID_ROOT,      AID_SHELL,     CAP_MASK_LONG(CAP_SETUID) | CAP_MASK_LONG(CAP_SETGID), "system/bin/run-as" },
     { 00700, AID_SYSTEM,    AID_SHELL,     CAP_MASK_LONG(CAP_BLOCK_SUSPEND), "system/bin/inputflinger" },
 
+    { 00550, AID_LOGD,      AID_LOGD,      CAP_MASK_LONG(CAP_SYSLOG) | CAP_MASK_LONG(CAP_AUDIT_CONTROL) | CAP_MASK_LONG(CAP_SETGID), "system/bin/logd" },
+
     /* Support hostapd administering a network interface. */
     { 00755, AID_WIFI,      AID_WIFI,     CAP_MASK_LONG(CAP_NET_ADMIN) |
                                           CAP_MASK_LONG(CAP_NET_RAW),    "system/bin/hostapd" },

@@ -312,7 +312,7 @@ int LogAudit::log(char *buf, size_t len) {
 
     *audit = '\0';
 
-    int rc;
+    int rc = 0;
     char *type = strstr(buf, "type=");
     if (type && (type < &buf[len])) {
         rc = logPrint("%s %s", type, audit + 1);

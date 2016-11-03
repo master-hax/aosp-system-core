@@ -216,5 +216,7 @@ int LogReader::getLogSocket() {
                                    SOCK_SEQPACKET);
     }
 
+    android::prdebug("123213");
+
     return sock;
 }
