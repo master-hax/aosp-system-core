@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <libgen.h>
 #include "fs_mgr_priv.h"
+
+#ifdef _LIBGEN_H
+#warning "libgen.h must not be included"
+#endif
 
 char *me = "";
 
@@ -32,10 +37,10 @@ static void usage(void)
  * and exit the program, do not return to the caller.
  * Return the number of argv[] entries consumed.
  */
-static void parse_options(int argc, char *argv[], int *a_flag, int *u_flag, int *n_flag,
+static void parse_options(int argc, char * const argv[], int *a_flag, int *u_flag, int *n_flag,
                      char **n_name, char **n_blk_dev)
 {
-    me = basename(strdup(argv[0]));
+    me = basename(argv[0]);
 
     if (argc <= 1) {
         usage();
