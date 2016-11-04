@@ -239,6 +239,9 @@ void Service::SetProcessAttributes() {
     if (setpgid(0, getpid()) == -1) PLOG(ERROR) << "setpgid failed for " << name_;
 
     if (gid_) {
+        if (gid_ == UINT_MAX) {
+            ParseGroup(group_args_, NULL);
+        }
         if (setgid(gid_) != 0) {
             PLOG(FATAL) << "setgid failed for " << name_;
         }
@@ -247,6 +250,9 @@ void Service::SetProcessAttributes() {
         PLOG(FATAL) << "setgroups failed for " << name_;
     }
     if (uid_) {
+        if (uid_ == UINT_MAX) {
+            ParseUser(user_args_, NULL);
+        }
         if (setuid(uid_) != 0) {
             PLOG(FATAL) << "setuid failed for " << name_;
         }
@@ -373,9 +379,23 @@ bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* e
 }
 
 bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err) {
+    // A group id might not be available at time of init.rc parsing, as system is
+    // not avaialble. Store the args for decoding later.
     gid_ = decode_uid(args[1].c_str());
+    if (gid_ == UINT_MAX) {
+	group_args_ = args;
+	return true;
+    }
     for (std::size_t n = 2; n < args.size(); n++) {
-        supp_gids_.emplace_back(decode_uid(args[n].c_str()));
+        gid_t gid = decode_uid(args[n].c_str());
+        if (gid == UINT_MAX) {
+            group_args_ = args;
+            // Trip that full gid conversion did not occur by setting _gid to UINT_MAX
+            gid_ = UINT_MAX;
+            supp_gids_.clear();
+            return true;
+	}
+        supp_gids_.emplace_back(gid);
     }
     return true;
 }
@@ -486,7 +506,12 @@ bool Service::ParseSocket(const std::vector<std::string>& args, std::string* err
 }
 
 bool Service::ParseUser(const std::vector<std::string>& args, std::string* err) {
+    // A user id might not be available at time of init.rc parsing, as system is
+    // not avaialble. Store the args for decoding later.
     uid_ = decode_uid(args[1].c_str());
+    if (uid_ == UINT_MAX) {
+        user_args_ = args;
+    }
     return true;
 }
 
