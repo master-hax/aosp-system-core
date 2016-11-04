@@ -190,6 +190,29 @@ TEST(SocketsTest, TestSocketSendBuffersFailure) {
     EXPECT_EQ(-1, socket_send_buffers(INVALID_SOCKET, nullptr, 0));
 }
 
+#ifdef SOCK_NONBLOCK
+static int toggle_O_NONBLOCK(int s) { return s; }
+#else
+#ifdef G_GETFL
+static int toggle_O_NONBLOCK(int s) {
+    int flags = fcntl(s, F_GETFL);
+    if ((flags == -1) || (fcntl(s, F_SETFL, flags ^ O_NONBLOCK) == -1)) {
+        close(s);
+        return -1;
+    }
+    return s;
+}
+#else
+static int toggle_O_NONBLOCK(int) { return -1; }
+#endif
+
+#define SOCK_NONBLOCK 0
+#endif
+
+#ifndef SOCK_CLOEXEC
+#define SOCK_CLOEXEC 0
+#endif
+
 TEST(SocketsTest, android_get_control_socket) {
     static const char key[] = ANDROID_SOCKET_ENV_PREFIX "SocketsTest.android_get_control_socket";
     static const char* name = key + strlen(ANDROID_SOCKET_ENV_PREFIX);
@@ -199,6 +222,7 @@ TEST(SocketsTest, android_get_control_socket) {
 
     int fd;
     ASSERT_GE(fd = socket(PF_UNIX, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0), 0);
+    ASSERT_GE(toggle_O_NONBLOCK(fd), 0);
     EXPECT_EQ(android_get_control_socket(name), -1);
 
     struct sockaddr_un addr;
