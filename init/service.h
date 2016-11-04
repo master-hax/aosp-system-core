@@ -148,8 +148,10 @@ private:
     int nr_crashed_;         // number of times crashed within window
 
     uid_t uid_;
+    std::vector<std::string> user_args_;
     gid_t gid_;
     std::vector<gid_t> supp_gids_;
+    std::vector<std::string> group_args_;
     CapSet capabilities_;
     unsigned namespace_flags_;
 
