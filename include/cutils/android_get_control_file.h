@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef __CUTILS_FILES_H
-#define __CUTILS_FILES_H
+#ifndef __CUTILS_ANDROID_GET_CONTROL_FILE_H
+#define __CUTILS_ANDROID_GET_CONTROL_FILE_H
+
+/* To declare library function hidden and internal */
+#if defined(_WIN32)
+#define LIBCUTILS_HIDDEN
+#else
+#define LIBCUTILS_HIDDEN __attribute__((visibility("hidden")))
+#endif
 
 #define ANDROID_FILE_ENV_PREFIX "ANDROID_FILE_"
 
@@ -23,6 +30,8 @@
 extern "C" {
 #endif
 
+LIBCUTILS_HIDDEN int __android_get_control_from_env(const char* prefix,
+                                                    const char* name);
 /*
  * android_get_control_file - simple helper function to get the file
  * descriptor of our init-managed file. `path' is the filename path as
@@ -34,4 +43,4 @@ int android_get_control_file(const char* path);
 }
 #endif
 
-#endif /* __CUTILS_FILES_H */
+#endif /* __CUTILS_ANDROID_GET_CONTROL_FILE_H */
