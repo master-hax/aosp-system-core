@@ -28,84 +28,44 @@
 
 // This file contains files implementation that can be shared between
 // platforms as long as the correct headers are included.
-#define _GNU_SOURCE 1 // for asprintf
 
-#include <ctype.h>
 #include <errno.h>
-#include <fcntl.h>
-#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
-#include <cutils/files.h>
-
-#ifndef TEMP_FAILURE_RETRY // _WIN32 does not define
-#define TEMP_FAILURE_RETRY(exp) (exp)
-#endif
+#include <cutils/android_get_control_file.h>
+#include <cutils/sockets.h> // for __android_get_control_from_env()
 
 int android_get_control_file(const char* path) {
-    if (!path) return -1;
-
-    char *key = NULL;
-    if (asprintf(&key, ANDROID_FILE_ENV_PREFIX "%s", path) < 0) return -1;
-    if (!key) return -1;
-
-    char *cp = key;
-    while (*cp) {
-        if (!isalnum(*cp)) *cp = '_';
-        ++cp;
-    }
-
-    const char* val = getenv(key);
-    free(key);
-    if (!val) return -1;
-
-    errno = 0;
-    long fd = strtol(val, NULL, 10);
-    if (errno) return -1;
-
-    // validity checking
-    if ((fd < 0) || (fd > INT_MAX)) return -1;
-#if defined(_SC_OPEN_MAX)
-    if (fd >= sysconf(_SC_OPEN_MAX)) return -1;
-#elif defined(OPEN_MAX)
-    if (fd >= OPEN_MAX) return -1;
-#elif defined(_POSIX_OPEN_MAX)
-    if (fd >= _POSIX_OPEN_MAX) return -1;
-#endif
-
-#if defined(F_GETFD)
-    if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFD)) < 0) return -1;
-#elif defined(F_GETFL)
-    if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFL)) < 0) return -1;
-#else
-    struct stat s;
-    if (TEMP_FAILURE_RETRY(fstat(fd, &s)) < 0) return -1;
-#endif
+    int fd = __android_get_control_from_env(ANDROID_FILE_ENV_PREFIX, path);
 
 #if defined(__linux__)
+    // Find file path from /proc and make sure it is correct
     char *proc = NULL;
-    if (asprintf(&proc, "/proc/self/fd/%ld", fd) < 0) return -1;
+    if (asprintf(&proc, "/proc/self/fd/%d", fd) < 0) return -1;
     if (!proc) return -1;
 
     size_t len = strlen(path);
+    // readlink() does not guarantee a nul byte, len+2 so we catch truncation.
     char *buf = static_cast<char *>(calloc(1, len + 2));
+    int save_errno = errno;
     if (!buf) {
         free(proc);
+        errno = save_errno;
         return -1;
     }
     ssize_t ret = TEMP_FAILURE_RETRY(readlink(proc, buf, len + 1));
+    save_errno = errno;
     free(proc);
     int cmp = (len != static_cast<size_t>(ret)) || strcmp(buf, path);
     free(buf);
+    errno = save_errno;
     if (ret < 0) return -1;
     if (cmp != 0) return -1;
+    // It is what we think it is
 #endif
 
-    // It is what we think it is
-    return static_cast<int>(fd);
+    return fd;
 }

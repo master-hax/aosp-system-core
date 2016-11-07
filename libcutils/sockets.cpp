@@ -28,7 +28,7 @@
 
 // This file contains socket implementation that can be shared between
 // platforms as long as the correct headers are included.
-#define _GNU_SOURCE 1 // For asprintf
+#define _GNU_SOURCE 1 // For asprintf on Windows build
 
 #include <ctype.h>
 #include <errno.h>
@@ -66,9 +66,12 @@ int socket_get_local_port(cutils_socket_t sock) {
     return -1;
 }
 
-int android_get_control_socket(const char* name) {
+// libcutils internal helper to pull fd from environment
+int __android_get_control_from_env(const char* prefix, const char* name) {
+    if (!prefix || !name) return -1;
+
     char *key = NULL;
-    if (asprintf(&key, ANDROID_SOCKET_ENV_PREFIX "%s", name) < 0) return -1;
+    if (asprintf(&key, "%s%s", prefix, name) < 0) return -1;
     if (!key) return -1;
 
     char *cp = key;
@@ -87,24 +90,29 @@ int android_get_control_socket(const char* name) {
 
     // validity checking
     if ((fd < 0) || (fd > INT_MAX)) return -1;
-#if defined(_SC_OPEN_MAX)
-    if (fd >= sysconf(_SC_OPEN_MAX)) return -1;
-#elif defined(OPEN_MAX)
-    if (fd >= OPEN_MAX) return -1;
-#elif defined(_POSIX_OPEN_MAX)
-    if (fd >= _POSIX_OPEN_MAX) return -1;
-#endif
 
-#if defined(F_GETFD)
+    // Since we are inheriting an fd, it could legitimately exceed _SC_OPEN_MAX
+
+    // Still open?
+#if defined(F_GETFD) // Linux lowest overhead
     if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFD)) < 0) return -1;
-#elif defined(F_GETFL)
+#elif defined(F_GETFL) // Mac host lowest overhead
     if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFL)) < 0) return -1;
-#else
+#else // Windows host lowest overhead
     struct stat s;
     if (TEMP_FAILURE_RETRY(fstat(fd, &s)) < 0) return -1;
 #endif
 
+    return static_cast<int>(fd);
+}
+
+int android_get_control_socket(const char* name) {
+    int fd = __android_get_control_from_env(ANDROID_SOCKET_ENV_PREFIX, name);
+
 #if !defined(_WIN32)
+    if (fd < 0) return fd;
+
+    // Compare to UNIX domain socket name, must match!
     struct sockaddr_un addr;
     socklen_t addrlen = sizeof(addr);
     int ret = TEMP_FAILURE_RETRY(getsockname(fd, (struct sockaddr *)&addr, &addrlen));
@@ -118,5 +126,6 @@ int android_get_control_socket(const char* name) {
 #endif
 
     // It is what we think it is
-    return static_cast<int>(fd);
+    return fd;
+
 }

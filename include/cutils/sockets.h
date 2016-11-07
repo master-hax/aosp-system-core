@@ -44,6 +44,9 @@ typedef int cutils_socket_t;
 #define ANDROID_SOCKET_ENV_PREFIX	"ANDROID_SOCKET_"
 #define ANDROID_SOCKET_DIR		"/dev/socket"
 
+// internal helper, do not call directly.
+int __android_get_control_from_env(const char* prefix, const char*name);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
