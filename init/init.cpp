@@ -383,9 +383,10 @@ static selinux_enforcing_status selinux_status_from_cmdline() {
 static bool selinux_is_enforcing(void)
 {
     if (ALLOW_PERMISSIVE_SELINUX) {
-        return selinux_status_from_cmdline() == SELINUX_ENFORCING;
+        if (selinux_status_from_cmdline() == SELINUX_ENFORCING)
+            return false;
     }
-    return true;
+    return false;
 }
 
 static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_t len) {
