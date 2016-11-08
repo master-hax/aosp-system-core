@@ -45,7 +45,7 @@ bool FuseBridgeLoop::Start(
       case FUSE_READ:
       case FUSE_WRITE:
       case FUSE_RELEASE:
-      case FUSE_FLUSH:
+      case FUSE_FSYNC:
         if (!buffer_.request.Write(proxy_fd)) {
           LOG(ERROR) << "Failed to write a request to the proxy.";
           return false;
