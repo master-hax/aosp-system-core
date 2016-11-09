@@ -796,7 +796,14 @@ static int do_verity_update_state(const std::vector<std::string>& args) {
 static int do_write(const std::vector<std::string>& args) {
     const char* path = args[1].c_str();
     const char* value = args[2].c_str();
-    return write_file(path, value);
+    Timer t;
+    int ret = write_file(path, value);
+    double duration_ms = t.duration() * 1000;
+    // Any write longer than 50ms will be warned to user as slow operation
+    if (duration_ms > 50.0) {
+        LOG(WARNING) << "Slow writing to '" << path << "' took " << duration_ms << "ms.";
+    }
+    return ret;
 }
 
 static int do_copy(const std::vector<std::string>& args) {
