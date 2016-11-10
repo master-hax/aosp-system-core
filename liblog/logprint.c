@@ -326,6 +326,7 @@ android_log_formatFromString(const char* formatString) {
   else if (!strcmp(formatString, "uid")) format = FORMAT_MODIFIER_UID;
   else if (!strcmp(formatString, "descriptive")) format = FORMAT_MODIFIER_DESCRIPT;
   /* clang-format on */
+
 #ifndef __MINGW32__
   else {
     extern char* tzname[2];
@@ -637,7 +638,8 @@ enum objectType {
   TYPE_MILLISECONDS = '3',
   TYPE_ALLOCATIONS = '4',
   TYPE_ID = '5',
-  TYPE_PERCENT = '6'
+  TYPE_PERCENT = '6',
+  TYPE_MONOTONIC = 's'
 };
 
 static int android_log_printBinaryEvent(const unsigned char** pEventData,
@@ -651,7 +653,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData,
   size_t outBufLen = *pOutBufLen;
   size_t outBufLenSave = outBufLen;
   unsigned char type;
-  size_t outCount;
+  size_t outCount = 0;
   int result = 0;
   const char* cp;
   size_t len;
@@ -690,6 +692,7 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData,
    * 4: Number of allocations
    * 5: Id
    * 6: Percent
+   * s: Number of seconds (monotonic time)
    * Default value for data of type int/long is 2 (bytes).
    */
   if (!cp || !findChar(&cp, &len, '(')) {
@@ -920,6 +923,36 @@ static int android_log_printBinaryEvent(const unsigned char** pEventData,
           } else {
             outCount = snprintf(outBuf, outBufLen, "ms");
           }
+          break;
+        case TYPE_MONOTONIC:
+          /* Repaint as unsigned seconds, minutes, hours ... */
+          outBuf -= outCount;
+          outBufLen += outCount;
+          if ((uint64_t)lval >= 86400) {
+            outCount = snprintf(outBuf, outBufLen, "%" PRIu64 "d ",
+                                ((uint64_t)lval) / 86400);
+            if (outCount >= outBufLen) break;
+            outBuf += outCount;
+            outBufLen -= outCount;
+            lval = (((uint64_t)lval) % 86400) + 86400;
+          }
+          if (lval >= 60) {
+            if (lval >= 3600) {
+              outCount =
+                  snprintf(outBuf, outBufLen, "%d:", (int)((lval / 3600) % 24));
+              if (outCount >= outBufLen) break;
+              outBuf += outCount;
+              outBufLen -= outCount;
+            }
+            outCount =
+                snprintf(outBuf, outBufLen, (lval >= 3600) ? "%02d:" : "%d:",
+                         (int)((lval / 60) % 60));
+            if (outCount >= outBufLen) break;
+            outBuf += outCount;
+            outBufLen -= outCount;
+          }
+          outCount = snprintf(outBuf, outBufLen, (lval >= 60) ? "%02d" : "%ds",
+                              (int)(lval % 60));
           break;
         case TYPE_ALLOCATIONS:
           outCount = 0;
