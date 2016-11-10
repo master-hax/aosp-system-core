@@ -16,7 +16,9 @@
 
 #include <ctype.h>
 #include <dirent.h>
+#include <inttypes.h>
 #include <signal.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +33,7 @@
 
 #include <android-base/file.h>
 #include <gtest/gtest.h>
+#include <log/event_tag_map.h>
 #include <log/log.h>
 #include <log/log_event_list.h>
 
@@ -1476,8 +1479,7 @@ static bool End_to_End(const char* tag, const char* fmt, ...)
 
 static bool End_to_End(const char* tag, const char* fmt, ...) {
     logcat_define(ctx);
-    FILE* fp = logcat_popen(ctx,
-                            "logcat"
+    FILE* fp = logcat_popen(ctx, logcat_executable
                             " -v brief"
                             " -b events"
                             " -v descriptive"
@@ -1523,13 +1525,12 @@ static bool End_to_End(const char* tag, const char* fmt, ...) {
         // Help us pinpoint where things went wrong ...
         fprintf(stderr, "Closest match for\n    %s\n  is\n    %s",
                 expect.c_str(), lastMatch.c_str());
-    } else if (count > 2) {
+    } else if (count > 3) {
         fprintf(stderr, "Too many matches (%d) for %s\n", count, expect.c_str());
     }
 
-    // Expect one the first time around as either liblogcat.descriptive or
-    // logcat.descriptive.  Expect two the second time as the other.
-    return count == 1 || count == 2;
+    // Three different known tests, we can see pollution from the others
+    return count && (count <= 3);
 }
 
 TEST(logcat, descriptive) {
@@ -1537,24 +1538,27 @@ TEST(logcat, descriptive) {
         uint32_t tagNo;
         const char* tagStr;
     };
+    int ret;
 
     {
         static const struct tag hhgtg = { 42, "answer" };
         android_log_event_list ctx(hhgtg.tagNo);
         static const char theAnswer[] = "what is five by seven";
         ctx << theAnswer;
-        ctx.write();
+        for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+        EXPECT_LE(0, ret);
         EXPECT_TRUE(
             End_to_End(hhgtg.tagStr, "to life the universe etc=%s", theAnswer));
     }
 
     {
         static const struct tag sync = { 2720, "sync" };
-        static const char id[] = "logcat.decriptive";
+        static const char id[] = ___STRING(logcat) ".descriptive-sync";
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << id << (int32_t)42 << (int32_t)-1 << (int32_t)0;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr,
                                    "[id=%s,event=42,source=-1,account=0]", id));
         }
@@ -1563,7 +1567,8 @@ TEST(logcat, descriptive) {
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << id << (int32_t)43 << (int64_t)-1 << (int32_t)0;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "[id=%s,event=43,-1,0]", id));
         }
 
@@ -1571,7 +1576,8 @@ TEST(logcat, descriptive) {
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << id << (int32_t)44 << (int32_t)-1 << (int64_t)0;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             fprintf(stderr, "Expect a \"Closest match\" message\n");
             EXPECT_FALSE(End_to_End(
                 sync.tagStr, "[id=%s,event=44,source=-1,account=0]", id));
@@ -1583,7 +1589,8 @@ TEST(logcat, descriptive) {
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint64_t)30 << (int32_t)2;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(
                 End_to_End(sync.tagStr, "[aggregation time=30ms,count=2]"));
         }
@@ -1591,7 +1598,8 @@ TEST(logcat, descriptive) {
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint64_t)31570 << (int32_t)911;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(
                 End_to_End(sync.tagStr, "[aggregation time=31.57s,count=911]"));
         }
@@ -1602,42 +1610,48 @@ TEST(logcat, descriptive) {
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)512;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=512B"));
         }
 
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)3072;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=3KB"));
         }
 
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)2097152;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=2MB"));
         }
 
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)2097153;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=2097153B"));
         }
 
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)1073741824;
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=1GB"));
         }
 
         {
             android_log_event_list ctx(sync.tagNo);
             ctx << (uint32_t)3221225472;  // 3MB, but on purpose overflowed
-            ctx.write();
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
             EXPECT_TRUE(End_to_End(sync.tagStr, "current=-1GB"));
         }
     }
@@ -1645,8 +1659,51 @@ TEST(logcat, descriptive) {
     {
         static const struct tag sync = { 27501, "notification_panel_hidden" };
         android_log_event_list ctx(sync.tagNo);
-        ctx.write();
+        for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+        EXPECT_LE(0, ret);
         EXPECT_TRUE(End_to_End(sync.tagStr, ""));
+    }
+
+    {
+        // Invent new entries because existing can not serve
+        EventTagMap* map = android_openEventTagMap(nullptr);
+        ASSERT_TRUE(nullptr != map);
+        static const char name[] = ___STRING(logcat) "_descriptive_monotonic";
+        int myTag = android_lookupEventTagNum(map, name, "(new|1|s)",
+                                              ANDROID_LOG_UNKNOWN);
+        android_closeEventTagMap(map);
+        ASSERT_NE(-1, myTag);
+
+        const struct tag sync = { (uint32_t)myTag, name };
+
+        {
+            android_log_event_list ctx(sync.tagNo);
+            ctx << (uint32_t)7;
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
+            EXPECT_TRUE(End_to_End(sync.tagStr, "new=7s"));
+        }
+        {
+            android_log_event_list ctx(sync.tagNo);
+            ctx << (uint32_t)62;
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
+            EXPECT_TRUE(End_to_End(sync.tagStr, "new=1:02"));
+        }
+        {
+            android_log_event_list ctx(sync.tagNo);
+            ctx << (uint32_t)3673;
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
+            EXPECT_TRUE(End_to_End(sync.tagStr, "new=1:01:13"));
+        }
+        {
+            android_log_event_list ctx(sync.tagNo);
+            ctx << (uint32_t)(86400 + 7200 + 180 + 58);
+            for (ret = -EBUSY; ret == -EBUSY; sleep(1)) ret = ctx.write();
+            EXPECT_LE(0, ret);
+            EXPECT_TRUE(End_to_End(sync.tagStr, "new=1d 2:03:58"));
+        }
     }
 }
 
