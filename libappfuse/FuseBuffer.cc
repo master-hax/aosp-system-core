@@ -27,9 +27,11 @@
 
 namespace android {
 
-template <typename T, typename Header>
-bool FuseMessage<T, Header>::CheckHeaderLength() const {
-  if (sizeof(Header) <= header.len && header.len <= sizeof(T)) {
+template <typename T>
+bool FuseMessage<T>::CheckHeaderLength() const {
+  const auto& header = static_cast<const T*>(this)->header;
+  if (sizeof(header) <= header.len &&
+      header.len <= sizeof(T)) {
     return true;
   } else {
     LOG(ERROR) << "Packet size is invalid=" << header.len;
@@ -37,9 +39,10 @@ bool FuseMessage<T, Header>::CheckHeaderLength() const {
   }
 }
 
-template <typename T, typename Header>
-bool FuseMessage<T, Header>::CheckResult(
+template <typename T>
+bool FuseMessage<T>::CheckResult(
     int result, const char* operation_name) const {
+  const auto& header = static_cast<const T*>(this)->header;
   if (result >= 0 && static_cast<uint32_t>(result) == header.len) {
     return true;
   } else {
@@ -50,14 +53,16 @@ bool FuseMessage<T, Header>::CheckResult(
   }
 }
 
-template <typename T, typename Header>
-bool FuseMessage<T, Header>::Read(int fd) {
+template <typename T>
+bool FuseMessage<T>::Read(int fd) {
+//  LOG(VERBOSE) << "Call read " << fd << " " << this;
   const ssize_t result = TEMP_FAILURE_RETRY(::read(fd, this, sizeof(T)));
   return CheckHeaderLength() && CheckResult(result, "read");
 }
 
-template <typename T, typename Header>
-bool FuseMessage<T, Header>::Write(int fd) const {
+template <typename T>
+bool FuseMessage<T>::Write(int fd) const {
+  const auto& header = static_cast<const T*>(this)->header;
   if (!CheckHeaderLength()) {
     return false;
   }
@@ -65,8 +70,8 @@ bool FuseMessage<T, Header>::Write(int fd) const {
   return CheckResult(result, "write");
 }
 
-template struct FuseMessage<FuseRequest, fuse_in_header>;
-template struct FuseMessage<FuseResponse, fuse_out_header>;
+template class FuseMessage<FuseRequest>;
+template class FuseMessage<FuseResponse>;
 
 void FuseRequest::Reset(
     uint32_t data_length, uint32_t opcode, uint64_t unique) {
