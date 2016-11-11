@@ -256,7 +256,7 @@ at three times,
 Commands
 --------
 
-bootchart_init
+bootchart_init TODO
    Start bootcharting if configured (see below).
    This is included in the default init.rc.
 
