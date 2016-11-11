@@ -43,6 +43,7 @@
 
 #include "fs_mgr.h"
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_dm_ioctl.h"
 #include "fs_mgr_priv_verity.h"
 
 #define FSTAB_PREFIX "/fstab."
@@ -181,45 +182,6 @@ static int invalidate_table(char *table, size_t table_length)
     return -1;
 }
 
-static void verity_ioctl_init(struct dm_ioctl *io, const char *name, unsigned flags)
-{
-    memset(io, 0, DM_BUF_SIZE);
-    io->data_size = DM_BUF_SIZE;
-    io->data_start = sizeof(struct dm_ioctl);
-    io->version[0] = 4;
-    io->version[1] = 0;
-    io->version[2] = 0;
-    io->flags = flags | DM_READONLY_FLAG;
-    if (name) {
-        strlcpy(io->name, name, sizeof(io->name));
-    }
-}
-
-static int create_verity_device(struct dm_ioctl *io, char *name, int fd)
-{
-    verity_ioctl_init(io, name, 1);
-    if (ioctl(fd, DM_DEV_CREATE, io)) {
-        ERROR("Error creating device mapping (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
-static int get_verity_device_name(struct dm_ioctl *io, char *name, int fd, char **dev_name)
-{
-    verity_ioctl_init(io, name, 0);
-    if (ioctl(fd, DM_DEV_STATUS, io)) {
-        ERROR("Error fetching verity device number (%s)", strerror(errno));
-        return -1;
-    }
-    int dev_num = (io->dev & 0xff) | ((io->dev >> 12) & 0xfff00);
-    if (asprintf(dev_name, "/dev/block/dm-%u", dev_num) < 0) {
-        ERROR("Error getting verity block device name (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
 struct verity_table_params {
     char *table;
     int mode;
@@ -295,7 +257,7 @@ static int load_verity_table(struct dm_ioctl *io, char *name, uint64_t device_si
     char *buffer = (char*) io;
     size_t bufsize;
 
-    verity_ioctl_init(io, name, DM_STATUS_TABLE_FLAG);
+    fs_mgr_verity_ioctl_init(io, name, DM_STATUS_TABLE_FLAG);
 
     struct dm_target_spec *tgt = (struct dm_target_spec *) &buffer[sizeof(struct dm_ioctl)];
 
@@ -329,27 +291,6 @@ static int load_verity_table(struct dm_ioctl *io, char *name, uint64_t device_si
     }
 
     return 0;
-}
-
-static int resume_verity_table(struct dm_ioctl *io, char *name, int fd)
-{
-    verity_ioctl_init(io, name, 0);
-    if (ioctl(fd, DM_DEV_SUSPEND, io)) {
-        ERROR("Error activating verity device (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
-static int test_access(char *device) {
-    int tries = 25;
-    while (tries--) {
-        if (!access(device, F_OK) || errno != ENOENT) {
-            return 0;
-        }
-        usleep(40 * 1000);
-    }
-    return -1;
 }
 
 static int check_verity_restart(const char *fname)
@@ -835,7 +776,7 @@ int fs_mgr_update_verity_state(fs_mgr_verity_state_callback callback)
             mount_point = basename(fstab->recs[i].mount_point);
         }
 
-        verity_ioctl_init(io, mount_point, 0);
+        fs_mgr_verity_ioctl_init(io, mount_point, 0);
 
         if (ioctl(fd, DM_TABLE_STATUS, io)) {
             ERROR("Failed to query DM_TABLE_STATUS for %s (%s)\n", mount_point,
@@ -941,13 +882,13 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab)
     }
 
     // create the device
-    if (create_verity_device(io, mount_point, fd) < 0) {
+    if (fs_mgr_create_verity_device(io, mount_point, fd) < 0) {
         ERROR("Couldn't create verity device!\n");
         goto out;
     }
 
     // get the name of the device file
-    if (get_verity_device_name(io, mount_point, fd, &verity_blk_name) < 0) {
+    if (fs_mgr_get_verity_device_name(io, mount_point, fd, &verity_blk_name) < 0) {
         ERROR("Couldn't get verity device number!\n");
         goto out;
     }
@@ -1030,7 +971,7 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab)
 loaded:
 
     // activate the device
-    if (resume_verity_table(io, mount_point, fd) < 0) {
+    if (fs_mgr_resume_verity_table(io, mount_point, fd) < 0) {
         goto out;
     }
 
@@ -1043,7 +984,7 @@ loaded:
     verity_blk_name = 0;
 
     // make sure we've set everything up properly
-    if (test_access(fstab->blk_device) < 0) {
+    if (fs_mgr_test_access(fstab->blk_device) < 0) {
         goto out;
     }
 
