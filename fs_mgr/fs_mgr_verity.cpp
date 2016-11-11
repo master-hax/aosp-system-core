@@ -43,6 +43,7 @@
 
 #include "fs_mgr.h"
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_dm_ioctl.h"
 #include "fs_mgr_priv_verity.h"
 
 #define FSTAB_PREFIX "/fstab."
@@ -181,45 +182,6 @@ static int invalidate_table(char *table, size_t table_length)
     return -1;
 }
 
-static void verity_ioctl_init(struct dm_ioctl *io, const char *name, unsigned flags)
-{
-    memset(io, 0, DM_BUF_SIZE);
-    io->data_size = DM_BUF_SIZE;
-    io->data_start = sizeof(struct dm_ioctl);
-    io->version[0] = 4;
-    io->version[1] = 0;
-    io->version[2] = 0;
-    io->flags = flags | DM_READONLY_FLAG;
-    if (name) {
-        strlcpy(io->name, name, sizeof(io->name));
-    }
-}
-
-static int create_verity_device(struct dm_ioctl *io, char *name, int fd)
-{
-    verity_ioctl_init(io, name, 1);
-    if (ioctl(fd, DM_DEV_CREATE, io)) {
-        ERROR("Error creating device mapping (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
-static int get_verity_device_name(struct dm_ioctl *io, char *name, int fd, char **dev_name)
-{
-    verity_ioctl_init(io, name, 0);
-    if (ioctl(fd, DM_DEV_STATUS, io)) {
-        ERROR("Error fetching verity device number (%s)", strerror(errno));
-        return -1;
-    }
-    int dev_num = (io->dev & 0xff) | ((io->dev >> 12) & 0xfff00);
-    if (asprintf(dev_name, "/dev/block/dm-%u", dev_num) < 0) {
-        ERROR("Error getting verity block device name (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
 struct verity_table_params {
     char *table;
     int mode;
@@ -329,27 +291,6 @@ static int load_verity_table(struct dm_ioctl *io, char *name, uint64_t device_si
     }
 
     return 0;
-}
-
-static int resume_verity_table(struct dm_ioctl *io, char *name, int fd)
-{
-    verity_ioctl_init(io, name, 0);
-    if (ioctl(fd, DM_DEV_SUSPEND, io)) {
-        ERROR("Error activating verity device (%s)", strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
-static int test_access(char *device) {
-    int tries = 25;
-    while (tries--) {
-        if (!access(device, F_OK) || errno != ENOENT) {
-            return 0;
-        }
-        usleep(40 * 1000);
-    }
-    return -1;
 }
 
 static int check_verity_restart(const char *fname)

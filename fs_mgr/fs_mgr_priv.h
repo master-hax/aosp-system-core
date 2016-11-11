@@ -94,6 +94,7 @@ __BEGIN_DECLS
 
 int fs_mgr_set_blk_ro(const char *blockdev);
 int fs_mgr_update_for_slotselect(struct fstab *fstab);
+int test_access(char *device);
 
 __END_DECLS
 
