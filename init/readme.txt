@@ -440,8 +440,15 @@ Properties
 Init provides information about the services that it is responsible
 for via the below properties.
 
+init.start
+  Time in ns (via the CLOCK_BOOTTIME clock).
+
 init.svc.<name>
-   State of a named service ("stopped", "stopping", "running", "restarting")
+  State of a named service ("stopped", "stopping", "running", "restarting")
+
+init.svc.<name>.start
+  Time in ns (via the CLOCK_BOOTTIME clock) that the service was most recently
+  started.
 
 
 Bootcharting
