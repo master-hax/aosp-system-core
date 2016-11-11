@@ -256,9 +256,8 @@ at three times,
 Commands
 --------
 
-bootchart_init
-   Start bootcharting if configured (see below).
-   This is included in the default init.rc.
+bootchart [start|stop]
+   Start/stop bootcharting.
 
 chmod <octal-mode> <path>
    Change file access permissions.
