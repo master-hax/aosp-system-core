@@ -398,6 +398,12 @@ int restorecon_recursive(const char* pathname)
     return selinux_android_restorecon(pathname, SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
+int restorecon_recursive_inc_fs(const char* pathname)
+{
+    return selinux_android_restorecon(pathname,
+            SELINUX_ANDROID_RESTORECON_RECURSE | SELINUX_ANDROID_RESTORECON_INC_FS);
+}
+
 /*
  * Writes hex_len hex characters (1/2 byte) to hex from bytes.
  */

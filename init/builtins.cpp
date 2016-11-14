@@ -913,6 +913,19 @@ static int do_restorecon_recursive(const std::vector<std::string>& args) {
     return ret;
 }
 
+static int do_restorecon_recursive_inc_fs(const std::vector<std::string>& args) {
+    int ret = 0;
+
+    for (auto it = std::next(args.begin()); it != args.end(); ++it) {
+        /* Handle cases where we want to cross file system boundaries, like
+         * debugfs, which may or may not contain a tracefs filesystem. */
+        if (restorecon_recursive_inc_fs(it->c_str()) < 0) {
+            ret = -errno;
+        }
+    }
+    return ret;
+}
+
 static int do_loglevel(const std::vector<std::string>& args) {
     // TODO: support names instead/as well?
     int log_level = -1;
@@ -1014,6 +1027,7 @@ BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"restart",                 {1,     1,    do_restart}},
         {"restorecon",              {1,     kMax, do_restorecon}},
         {"restorecon_recursive",    {1,     kMax, do_restorecon_recursive}},
+        {"restorecon_recursive_fs", {1,     kMax, do_restorecon_recursive_inc_fs}},
         {"rm",                      {1,     1,    do_rm}},
         {"rmdir",                   {1,     1,    do_rmdir}},
         {"setprop",                 {2,     2,    do_setprop}},
