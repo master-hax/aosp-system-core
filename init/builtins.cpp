@@ -38,6 +38,9 @@
 #include <linux/loop.h>
 #include <linux/module.h>
 
+#include <thread>
+
+#include <selinux/android.h>
 #include <selinux/selinux.h>
 #include <selinux/label.h>
 
@@ -915,8 +918,30 @@ static int do_restorecon(const std::vector<std::string>& args) {
 static int do_restorecon_recursive(const std::vector<std::string>& args) {
     int ret = 0;
 
-    for (auto it = std::next(args.begin()); it != args.end(); ++it) {
-        if (restorecon_recursive(it->c_str()) < 0)
+    struct flag_type {const char* name; int value;};
+    static const flag_type flags[] = {
+        {"--skipce", SELINUX_ANDROID_RESTORECON_SKIPCE},
+        {"--cross-filesystems", SELINUX_ANDROID_RESTORECON_CROSS_FILESYSTEMS},
+        {0, 0}
+    };
+
+    int flag = SELINUX_ANDROID_RESTORECON_RECURSE;
+
+    for (size_t i = 1; i < args.size(); ++i) {
+        if (args[i][0] == '-' && args[i][1] == '-') {
+            bool found = false;
+            for (size_t j = 0; flags[j].name; ++j) {
+                if (strcmp(args[i].c_str(), flags[j].name) == 0) {
+                    flag |= flags[j].value;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                LOG(ERROR) << "Bad restorecon_recursive flags!";
+                return -1;
+            }
+        } else if (restorecon_recursive(args[i].c_str(), flag) < 0) {
             ret = -errno;
     }
     return ret;
