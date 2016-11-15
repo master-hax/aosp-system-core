@@ -26,6 +26,7 @@ bool FuseBridgeLoop::Start(
   base::unique_fd dev_fd(raw_dev_fd);
   base::unique_fd proxy_fd(raw_proxy_fd);
   fuse::FuseBuffer buffer;
+  int open_count = 0;
 
   LOG(DEBUG) << "Start fuse loop.";
   while (true) {
@@ -71,8 +72,21 @@ bool FuseBridgeLoop::Start(
       return false;
     }
 
-    if (opcode == FUSE_INIT) {
-      callback->OnMount();
+    switch (opcode) {
+      case FUSE_INIT:
+        callback->OnMount();
+        break;
+      case FUSE_OPEN:
+        if (buffer.response.header.error == fuse::kFuseSuccess) {
+          open_count++;
+        }
+        break;
+      case FUSE_RELEASE:
+        open_count--;
+        if (open_count == 0) {
+          return true;
+        }
+        break;
     }
   }
 }

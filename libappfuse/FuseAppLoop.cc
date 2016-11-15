@@ -214,6 +214,7 @@ bool StartFuseAppLoop(int raw_fd, FuseAppLoopCallback* callback) {
     }
   }
 
+  LOG(DEBUG) << "Stop StartFuseApploop.";
   return true;
 }
 
