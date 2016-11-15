@@ -176,9 +176,9 @@ void device_poll_thread(void*) {
   adb_thread_setname("Device Poll");
   D("Created device thread");
 
-  while(1) {
+  while (true) {
     find_devices();
-    adb_sleep_ms(1000);
+    std::this_thread::sleep_for(std::chrono::second(1));
   }
 }
 
