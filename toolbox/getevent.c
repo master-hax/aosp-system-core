@@ -109,11 +109,14 @@ static int print_possible_events(int fd, int print_flags)
             if(res < bits_size)
                 break;
             bits_size = res + 16;
-            bits = realloc(bits, bits_size * 2);
-            if(bits == NULL) {
+            // realloc leaves old block untouched when failed.
+            uint8_t *newbits = realloc(bits, bits_size * 2);
+            if(newbits == NULL) {
+                free(bits);
                 fprintf(stderr, "failed to allocate buffer of size %d\n", (int)bits_size);
                 return 1;
             }
+            bits = newbits;
         }
         res2 = 0;
         switch(i) {
