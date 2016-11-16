@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// For BacktraceOffline::SetTestOption.
+#include "BacktraceOffline.h"
+
 #include <libunwind.h>
 #include <pthread.h>
 #include <stdint.h>
@@ -74,7 +93,8 @@ static ucontext_t GetUContextFromUnwContext(const unw_context_t& unw_context) {
 }
 
 static void OfflineBacktraceFunctionCall(const std::function<int(void (*)(void*), void*)>& function,
-                                         std::vector<uintptr_t>* pc_values) {
+                                         std::vector<uintptr_t>* pc_values,
+                                         int test_option) {
   // Create a thread to generate the needed stack and registers information.
   g_exit_flag = false;
   const size_t stack_size = 1024 * 1024;
@@ -109,6 +129,9 @@ static void OfflineBacktraceFunctionCall(const std::function<int(void (*)(void*)
   std::unique_ptr<Backtrace> backtrace(
       Backtrace::CreateOffline(getpid(), arg.tid, map.get(), stack_info));
   ASSERT_TRUE(backtrace != nullptr);
+
+  BacktraceOffline* off = reinterpret_cast<BacktraceOffline*>(backtrace.get());
+  off->SetTestOption(test_option);
 
   ucontext_t ucontext = GetUContextFromUnwContext(arg.unw_context);
   ASSERT_TRUE(backtrace->Unwind(0, &ucontext));
@@ -155,11 +178,11 @@ static std::string FunctionNameForAddress(uintptr_t addr) {
   return "";
 }
 
-TEST(libbacktrace, offline) {
+static void BacktraceOfflineTest(int test_option) {
   std::function<int(void (*)(void*), void*)> function =
       std::bind(test_level_one, 1, 2, 3, 4, std::placeholders::_1, std::placeholders::_2);
   std::vector<uintptr_t> pc_values;
-  OfflineBacktraceFunctionCall(function, &pc_values);
+  OfflineBacktraceFunctionCall(function, &pc_values, test_option);
   ASSERT_FALSE(pc_values.empty());
   ASSERT_LE(pc_values.size(), static_cast<size_t>(MAX_BACKTRACE_FRAMES));
 
@@ -178,11 +201,27 @@ TEST(libbacktrace, offline) {
   ASSERT_EQ("test_level_four", FunctionNameForAddress(pc_values[test_one_index - 3]));
 }
 
+TEST(libbacktrace, offline) {
+  BacktraceOfflineTest(0);
+}
+
+TEST(libbacktrace, offline_debug_frame) {
+  BacktraceOfflineTest(BacktraceOffline::TEST_OPTION_NOT_USE_ARM_EXIDX);
+}
+
+TEST(libbacktrace, offline_arm_exidx) {
+#if defined(__arm__)
+  BacktraceOfflineTest(BacktraceOffline::TEST_OPTION_ONLY_USE_ARM_EXIDX);
+#else
+  GTEST_LOG_(INFO) << "This test only takes effect on arm.";
+#endif
+}
+
 TEST(libbacktrace, offline_max_trace) {
   std::function<int(void (*)(void*), void*)> function = std::bind(
       test_recursive_call, MAX_BACKTRACE_FRAMES + 10, std::placeholders::_1, std::placeholders::_2);
   std::vector<uintptr_t> pc_values;
-  OfflineBacktraceFunctionCall(function, &pc_values);
+  OfflineBacktraceFunctionCall(function, &pc_values, 0);
   ASSERT_FALSE(pc_values.empty());
   ASSERT_EQ(static_cast<size_t>(MAX_BACKTRACE_FRAMES), pc_values.size());
   ASSERT_EQ("test_recursive_call", FunctionNameForAddress(pc_values.back()));
