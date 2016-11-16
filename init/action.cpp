@@ -105,7 +105,8 @@ std::size_t Action::NumCommands() const {
 }
 
 void Action::ExecuteOneCommand(std::size_t command) const {
-    ExecuteCommand(commands_[command]);
+    Command cmd = commands_[command];
+    ExecuteCommand(cmd);
 }
 
 void Action::ExecuteAllCommands() const {
