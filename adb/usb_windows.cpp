@@ -28,12 +28,14 @@
 #include <stdlib.h>
 
 #include <mutex>
+#include <thread>
 
 #include <adb_api.h>
 
 #include <android-base/errors.h>
 
 #include "adb.h"
+#include "sysdeps/chrono.h"
 #include "transport.h"
 
 /** Structure usb_handle describes our connection to the usb device via
@@ -178,7 +180,7 @@ void device_poll_thread(void*) {
 
   while (true) {
     find_devices();
-    std::this_thread::sleep_for(std::chrono::second(1));
+    std::this_thread::sleep_for(1s);
   }
 }
 
