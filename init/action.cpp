@@ -252,9 +252,7 @@ std::string Action::BuildTriggersString() const {
         result += event_trigger_;
         result += ' ';
     }
-    if (!result.empty()) {
-        result.pop_back();
-    }
+    result.pop_back();
     return result;
 }
 
@@ -343,7 +341,7 @@ void ActionManager::QueueBuiltinAction(BuiltinFunction func,
     auto action = std::make_unique<Action>(true);
     std::vector<std::string> name_vector{name};
 
-    if (!action->InitSingleTrigger(name)) {
+    if (name.empty() || !action->InitSingleTrigger(name)) {
         return;
     }
 
