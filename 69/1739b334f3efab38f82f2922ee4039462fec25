@@ -1,0 +1,9 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Andreas Gampe <agampe@google.com>
+Autosubmit+1: Daichi Hirono <hirono@google.com>
+Verified+1: Daichi Hirono <hirono@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Thu, 17 Nov 2016 04:22:27 +0000
+Reviewed-on: https://android-review.googlesource.com/303738
+Project: platform/system/core
+Branch: refs/heads/master
