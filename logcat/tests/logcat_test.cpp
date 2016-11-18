@@ -29,6 +29,7 @@
 
 #include <gtest/gtest.h>
 #include <log/log.h>
+#include <log/log_event_list.h>
 
 #define BIG_BUFFER (5 * 1024)
 

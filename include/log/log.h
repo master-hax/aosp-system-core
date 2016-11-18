@@ -27,15 +27,8 @@
 #include <time.h>    /* clock_gettime */
 #include <unistd.h>
 
-#include <log/uio.h> /* helper to define iovec for portability */
-
-#if (defined(__cplusplus) && defined(_USING_LIBCXX))
-extern "C++" {
-#include <string>
-}
-#endif
-
 #include <android/log.h>
+#include <log/uio.h> /* helper to define iovec for portability */
 
 #ifdef __cplusplus
 extern "C" {
@@ -852,124 +845,6 @@ android_log_list_element android_log_peek_next(android_log_context ctx);
 
 /* Finished with reader or writer context */
 int android_log_destroy(android_log_context* ctx);
-
-#ifdef __cplusplus
-#ifndef __class_android_log_event_context
-#define __class_android_log_event_context
-/* android_log_context C++ helpers */
-extern "C++" {
-class android_log_event_context {
-    android_log_context ctx;
-    int ret;
-
-    android_log_event_context(const android_log_event_context&) = delete;
-    void operator =(const android_log_event_context&) = delete;
-
-public:
-    explicit android_log_event_context(int tag) : ret(0) {
-        ctx = create_android_logger(static_cast<uint32_t>(tag));
-    }
-    explicit android_log_event_context(log_msg& log_msg) : ret(0) {
-        ctx = create_android_log_parser(log_msg.msg() + sizeof(uint32_t),
-                                        log_msg.entry.len - sizeof(uint32_t));
-    }
-    ~android_log_event_context() { android_log_destroy(&ctx); }
-
-    int close() {
-        int retval = android_log_destroy(&ctx);
-        if (retval < 0) ret = retval;
-        return retval;
-    }
-
-    /* To allow above C calls to use this class as parameter */
-    operator android_log_context() const { return ctx; }
-
-    int status() const { return ret; }
-
-    int begin() {
-        int retval = android_log_write_list_begin(ctx);
-        if (retval < 0) ret = retval;
-        return ret;
-    }
-    int end() {
-        int retval = android_log_write_list_end(ctx);
-        if (retval < 0) ret = retval;
-        return ret;
-    }
-
-    android_log_event_context& operator <<(int32_t value) {
-        int retval = android_log_write_int32(ctx, value);
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-    android_log_event_context& operator <<(uint32_t value) {
-        int retval = android_log_write_int32(ctx, static_cast<int32_t>(value));
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-    android_log_event_context& operator <<(int64_t value) {
-        int retval = android_log_write_int64(ctx, value);
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-    android_log_event_context& operator <<(uint64_t value) {
-        int retval = android_log_write_int64(ctx, static_cast<int64_t>(value));
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-    android_log_event_context& operator <<(const char* value) {
-        int retval = android_log_write_string8(ctx, value);
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-#if defined(_USING_LIBCXX)
-    android_log_event_context& operator <<(const std::string& value) {
-        int retval = android_log_write_string8_len(ctx,
-                                                   value.data(),
-                                                   value.length());
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-#endif
-    android_log_event_context& operator <<(float value) {
-        int retval = android_log_write_float32(ctx, value);
-        if (retval < 0) ret = retval;
-        return *this;
-    }
-
-    int write(log_id_t id = LOG_ID_EVENTS) {
-        int retval = android_log_write_list(ctx, id);
-        if (retval < 0) ret = retval;
-        return ret;
-    }
-
-    int operator <<(log_id_t id) {
-        int retval = android_log_write_list(ctx, id);
-        if (retval < 0) ret = retval;
-        android_log_destroy(&ctx);
-        return ret;
-    }
-
-    /*
-     * Append should be a lesser-used interface, but adds
-     * access to string with length. So we offer all types.
-     */
-    template <typename Tvalue>
-    bool Append(Tvalue value) { *this << value; return ret >= 0; }
-
-    bool Append(const char* value, size_t len) {
-        int retval = android_log_write_string8_len(ctx, value, len);
-        if (retval < 0) ret = retval;
-        return ret >= 0;
-    }
-
-    android_log_list_element read() { return android_log_read_next(ctx); }
-    android_log_list_element peek() { return android_log_peek_next(ctx); }
-
-};
-}
-#endif
-#endif
 
 #endif /* __ANDROID_USE_LIBLOG_EVENT_INTERFACE */
 

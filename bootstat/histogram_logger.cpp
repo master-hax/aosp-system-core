@@ -20,6 +20,7 @@
 
 #include <android-base/logging.h>
 #include <log/log.h>
+#include <log/log_event_list.h>
 
 namespace bootstat {
 
