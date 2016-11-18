@@ -48,6 +48,26 @@
 #include <android-base/strings.h>
 #include <android-base/stringprintf.h>
 
+#if defined(_WIN32)
+// mingw doesn't define S_IFLNK, and defines S_ISLNK(x) to 0.
+#define S_IFLNK 0120000
+#undef S_ISLNK
+#define S_ISLNK(mode) (((mode) & S_IFMT) == S_IFLNK)
+
+// mingw defines S_IFBLK to a different value from bionic.
+#undef S_IFBLK
+#define S_IFBLK 0060000
+#undef S_ISBLK
+#define S_ISBLK(mode) (((mode) & S_IFMT) == S_IFBLK)
+#endif
+
+static_assert(S_IFMT == 00170000, "");
+static_assert(S_IFLNK == 0120000, "");
+static_assert(S_IFREG == 0100000, "");
+static_assert(S_IFBLK == 0060000, "");
+static_assert(S_IFDIR == 0040000, "");
+static_assert(S_IFCHR == 0020000, "");
+
 struct syncsendbuf {
     unsigned id;
     unsigned size;
@@ -64,15 +84,11 @@ static void ensure_trailing_separators(std::string& local_path, std::string& rem
 }
 
 static bool should_pull_file(mode_t mode) {
-    return mode & (S_IFREG | S_IFBLK | S_IFCHR);
+    return S_ISREG(mode) || S_ISBLK(mode) || S_ISCHR(mode);
 }
 
 static bool should_push_file(mode_t mode) {
-    mode_t mask = S_IFREG;
-#if !defined(_WIN32)
-    mask |= S_IFLNK;
-#endif
-    return mode & mask;
+    return S_ISREG(mode) || S_ISLNK(mode);
 }
 
 struct copyinfo {
