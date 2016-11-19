@@ -196,6 +196,10 @@ on init
     chmod 0664 /dev/cpuset/top-app/tasks
     chmod 0664 /dev/cpuset/tasks
 
+on fs
+    # Make sure /sys/kernel/debug (if present) is labeled properly
+    # Note that tracefs may be mounted under debug, so we need to cross filesystems
+    restorecon --recursive --cross-filesystems /sys/kernel/debug
 
     # qtaguid will limit access to specific data based on group memberships.
     #   net_bw_acct grants impersonation of socket owners.
@@ -291,10 +295,6 @@ on post-fs
     mount rootfs rootfs / shared rec
     # Mount default storage into root namespace
     mount none /mnt/runtime/default /storage slave bind rec
-
-    # Make sure /sys/kernel/debug (if present) is labeled properly
-    # Note that tracefs may be mounted under debug, so we need to cross filesystems
-    restorecon --recursive --cross-filesystems /sys/kernel/debug
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
