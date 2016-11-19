@@ -283,6 +283,11 @@ on late-init
     trigger early-boot
     trigger boot
 
+on fs
+    # Make sure /sys/kernel/debug (if present) is labeled properly
+    # Note that tracefs may be mounted under debug, so we need to cross filesystems
+    restorecon --recursive --cross-filesystems /sys/kernel/debug
+
 on post-fs
     start logd
     # once everything is setup, no need to modify /
@@ -291,10 +296,6 @@ on post-fs
     mount rootfs rootfs / shared rec
     # Mount default storage into root namespace
     mount none /mnt/runtime/default /storage slave bind rec
-
-    # Make sure /sys/kernel/debug (if present) is labeled properly
-    # Note that tracefs may be mounted under debug, so we need to cross filesystems
-    restorecon --recursive --cross-filesystems /sys/kernel/debug
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
