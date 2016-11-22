@@ -63,6 +63,9 @@ include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
+ifneq ($(filter marlin_kasan, $(TARGET_PRODUCT)),)
+    LOCAL_CPPFLAGS += -DKASAN_BUILD=1
+endif
 LOCAL_SRC_FILES:= \
     bootchart.cpp \
     builtins.cpp \

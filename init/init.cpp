@@ -163,10 +163,16 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
     LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE "...";
+#ifdef KASAN_BUILD
+    // KASan builds typically takes longer, therefore requires more time.
+    // Plus, KASan builds are *not* for production.
+    if (wait_for_file(COLDBOOT_DONE, 30s)) {
+#else
     // Any longer than 1s is an unreasonable length of time to delay booting.
     // If you're hitting this timeout, check that you didn't make your
     // sepolicy regular expressions too expensive (http://b/19899875).
     if (wait_for_file(COLDBOOT_DONE, 1s)) {
+#endif
         LOG(ERROR) << "Timed out waiting for " COLDBOOT_DONE;
     }
 
