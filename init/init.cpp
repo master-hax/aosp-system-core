@@ -36,6 +36,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cil/android.h>
+#include <cil/cil.h>
 #include <selinux/selinux.h>
 #include <selinux/label.h>
 #include <selinux/android.h>
@@ -409,18 +411,34 @@ static void security_failure() {
     while (true) { pause(); }  // never reached
 }
 
+/* policy is a combination of platform, non-platform and mapping policy files */
+static const char *pol_files[]  = {
+    "/plat_sepolicy.cil",
+    "/mapping_sepolicy.cil",
+    "/nonplat_sepolicy.cil"  // TODO, switch to /vendor or /odm when finalized.
+};
+
 static void selinux_initialize(bool in_kernel_domain) {
     Timer t;
 
+    void *pol_data = NULL;
+    size_t pol_len = 0;
     selinux_callback cb;
     cb.func_log = selinux_klog_callback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
     cb.func_audit = audit_callback;
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
+    cil_set_log_handler((void (*)(int, char *))selinux_klog_callback);
 
     if (in_kernel_domain) {
+        LOG(INFO) << "Compiling SELinux policy...";
+        if (cil_android_compile_policy(&pol_data, &pol_len, pol_files,
+                sizeof(pol_files)/sizeof(pol_files[0])) < 0) {
+            PLOG(ERROR) << "failed to compile policy";
+            security_failure();
+        }
         LOG(INFO) << "Loading SELinux policy...";
-        if (selinux_android_load_policy() < 0) {
+        if (selinux_android_load_policy(pol_data, pol_len) < 0) {
             PLOG(ERROR) << "failed to load policy";
             security_failure();
         }
@@ -443,6 +461,7 @@ static void selinux_initialize(bool in_kernel_domain) {
     } else {
         selinux_init_all_handles();
     }
+    free(pol_data);
 }
 
 // Set the UDC controller for the ConfigFS USB Gadgets.
@@ -483,6 +502,7 @@ static std::string import_cmdline_fstab() {
                 fstab = value;
             }
         });
+    LOG(INFO) << "DACASH fstab - prefix: " << prefix << " fstab: " << fstab << "\n";
     if (!fstab.empty()) {
         // Convert "mmcblk0p09+/odm+ext4+ro+verify" to "mmcblk0p09 /odm ext4 ro verify"
         std::replace(fstab.begin(), fstab.end(), '+', ' ');

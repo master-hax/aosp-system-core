@@ -916,9 +916,9 @@ int fs_mgr_early_setup_verity(struct fstab_rec *fstab_rec)
         } else {
             return FS_MGR_EARLY_SETUP_VERITY_FAIL;
         }
-    } else if (device_is_secure()) {
+        /*    } else if (device_is_secure()) {
         ERROR("Verity must be enabled for early mounted partitions on secured devices.\n");
-        return FS_MGR_EARLY_SETUP_VERITY_FAIL;
+        return FS_MGR_EARLY_SETUP_VERITY_FAIL; */
     }
     return FS_MGR_EARLY_SETUP_VERITY_NO_VERITY;
 }
