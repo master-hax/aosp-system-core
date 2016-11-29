@@ -43,7 +43,6 @@
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <cutils/android_reboot.h>
 #include <cutils/fs.h>
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
@@ -163,14 +162,27 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
     LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE "...";
+
+    // History:
     // Any longer than 1s is an unreasonable length of time to delay booting.
     // If you're hitting this timeout, check that you didn't make your
     // sepolicy regular expressions too expensive (http://b/19899875).
-    if (wait_for_file(COLDBOOT_DONE, 1s)) {
+    // Update:
+    // It is bad to allow device to randomly fail to boot. So, we should
+    // instead log an error and abandon boot process if we have waited
+    // for a *considerably* long period of time. For attempts that do not
+    // exceed the treshold, we keep a record of how long it took for further
+    // optimization work.
+    // Also, a longer wait period before timeout gives slower builds like
+    // heavily instrumented debug builds (e.g. KASan) a chance to fully boot.
+    if (wait_for_file(COLDBOOT_DONE, 45s) < 0) {
         LOG(ERROR) << "Timed out waiting for " COLDBOOT_DONE;
+        panic();
     }
 
-    LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE " took " << t.duration() << "s.";
+    double duration = t.duration();
+    property_set("ro.bootstats.cold_boot_duration", StringPrintf("%fs", duration).c_str());
+    LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE " took " << duration << "s.";
     return 0;
 }
 
@@ -409,9 +421,8 @@ static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_
 }
 
 static void security_failure() {
-    LOG(ERROR) << "Security failure; rebooting into recovery mode...";
-    android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
-    while (true) { pause(); }  // never reached
+    LOG(ERROR) << "Security failure...";
+    panic();
 }
 
 static void selinux_initialize(bool in_kernel_domain) {

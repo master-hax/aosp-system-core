@@ -36,7 +36,6 @@
 #include <android-base/parseint.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <cutils/android_reboot.h>
 #include <system/thread_defs.h>
 
 #include <processgroup/processgroup.h>
@@ -283,10 +282,8 @@ bool Service::Reap() {
     if ((flags_ & SVC_CRITICAL) && !(flags_ & SVC_RESTART)) {
         if (now < time_crashed_ + 4min) {
             if (++crash_count_ > 4) {
-                LOG(ERROR) << "critical process '" << name_ << "' exited 4 times in 4 minutes; "
-                           << "rebooting into recovery mode";
-                android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
-                return false;
+                LOG(ERROR) << "critical process '" << name_ << "' exited 4 times in 4 minutes";
+                panic();
             }
         } else {
             time_crashed_ = now;

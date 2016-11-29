@@ -146,8 +146,7 @@ static int wipe_data_via_recovery(const std::string& reason) {
         LOG(ERROR) << "failed to set bootloader message: " << err;
         return -1;
     }
-    android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
-    while (1) { pause(); }  // never reached
+    reboot("recovery");
 }
 
 static void unmount_and_fsck(const struct mntent *entry) {
@@ -754,8 +753,7 @@ static int do_powerctl(const std::vector<std::string>& args) {
         LOG(VERBOSE) << "Terminating running services took " << t.duration() << " seconds";
     }
 
-    return android_reboot_with_callback(cmd, 0, reboot_target,
-                                        callback_on_ro_remount);
+    return android_reboot_with_callback(cmd, 0, reboot_target, callback_on_ro_remount);
 }
 
 static int do_trigger(const std::vector<std::string>& args) {
