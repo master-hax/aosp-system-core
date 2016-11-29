@@ -38,6 +38,7 @@
 
 #include "adb.h"
 #include "adb_auth.h"
+#include "adb_trace.h"
 #include "adb_utils.h"
 #include "diagnose_usb.h"
 
@@ -91,6 +92,7 @@ static std::string dump_packet(const char* name, const char* func, apacket* p) {
 }
 
 static int read_packet(int fd, const char* name, apacket** ppacket) {
+    ATRACE_NAME("read_packet");
     char buff[8];
     if (!name) {
         snprintf(buff, sizeof buff, "fd=%d", fd);
@@ -114,6 +116,7 @@ static int read_packet(int fd, const char* name, apacket** ppacket) {
 }
 
 static int write_packet(int fd, const char* name, apacket** ppacket) {
+    ATRACE_NAME("write_packet");
     char buff[8];
     if (!name) {
         snprintf(buff, sizeof buff, "fd=%d", fd);
@@ -196,19 +199,23 @@ static void read_transport_thread(void* _t) {
 
     D("%s: data pump started", t->serial);
     for (;;) {
+        ATRACE_NAME("read_transport loop");
         p = get_apacket();
 
-        if (t->read_from_remote(p, t) == 0) {
-            D("%s: received remote packet, sending to transport", t->serial);
-            if (write_packet(t->fd, t->serial, &p)) {
+        {
+            ATRACE_NAME("read_transport read_remote");
+            if (t->read_from_remote(p, t) != 0) {
+                D("%s: remote read failed for transport", t->serial);
                 put_apacket(p);
-                D("%s: failed to write apacket to transport", t->serial);
-                goto oops;
+                break;
             }
-        } else {
-            D("%s: remote read failed for transport", t->serial);
+        }
+
+        D("%s: received remote packet, sending to transport", t->serial);
+        if (write_packet(t->fd, t->serial, &p)) {
             put_apacket(p);
-            break;
+            D("%s: failed to write apacket to transport", t->serial);
+            goto oops;
         }
     }
 
@@ -241,10 +248,12 @@ static void write_transport_thread(void* _t) {
     D("%s: starting write_transport thread, reading from fd %d", t->serial, t->fd);
 
     for (;;) {
+        ATRACE_NAME("write_transport loop");
         if (read_packet(t->fd, t->serial, &p)) {
             D("%s: failed to read apacket from transport on fd %d", t->serial, t->fd);
             break;
         }
+
         if (p->msg.command == A_SYNC) {
             if (p->msg.arg0 == 0) {
                 D("%s: transport SYNC offline", t->serial);
@@ -261,6 +270,7 @@ static void write_transport_thread(void* _t) {
         } else {
             if (active) {
                 D("%s: transport got packet, sending to remote", t->serial);
+                ATRACE_NAME("write_transport write_remote");
                 t->write_to_remote(p, t);
             } else {
                 D("%s: transport ignoring packet while offline", t->serial);
