@@ -154,10 +154,13 @@ static const struct fs_path_config android_files[] = {
                                            CAP_MASK_LONG(CAP_NET_RAW),
                                               "system/bin/hostapd" },
 
-    /* Support wifi_hal_legacy administering a network interface. */
+    /* Support wifi hal administering a network interface. */
     { 00755, AID_WIFI,      AID_WIFI,      CAP_MASK_LONG(CAP_NET_ADMIN) |
                                            CAP_MASK_LONG(CAP_NET_RAW),
                                               "system/bin/hw/android.hardware.wifi@1.0-service" },
+
+    /* suid helper for wifi hal to change ownership of firmware reload sysfs paths. */
+    { 04750, AID_ROOT,      AID_ROOT,      0, "system/bin/hw/wifi_firmware_reload_chown_helper" },
 
     /* A non-privileged zygote that spawns isolated processes for web rendering. */
     { 0750,  AID_ROOT,      AID_ROOT,      CAP_MASK_LONG(CAP_SETUID) |
