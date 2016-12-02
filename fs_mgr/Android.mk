@@ -9,7 +9,10 @@ common_static_libraries := \
     libbase \
     libcrypto_utils \
     libcrypto \
+    libext2fs \
+    libext2_uuid_static \
     libext4_utils_static \
+    libext4_crypt \
     libsquashfs_utils \
     libselinux
 
