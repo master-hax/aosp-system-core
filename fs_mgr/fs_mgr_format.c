@@ -25,7 +25,6 @@
 #include <sys/mount.h>
 
 #include <ext4_utils/ext4_utils.h>
-#include <ext4_utils/ext4.h>
 #include <ext4_utils/make_ext4fs.h>
 #include <selinux/selinux.h>
 #include <selinux/label.h>
@@ -33,9 +32,6 @@
 
 #include "fs_mgr_priv.h"
 #include "cryptfs.h"
-
-extern struct fs_info info;     /* magic global from ext4_utils */
-extern void reset_ext4fs_info();
 
 static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
 {
@@ -61,15 +57,11 @@ static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
         return -1;
     }
 
-    /* Format the partition using the calculated length */
-    reset_ext4fs_info();
-    info.len = (off64_t)dev_sz;
-    if (crypt_footer) {
-        info.len -= CRYPT_FOOTER_OFFSET;
-    }
+    if (crypt_footer)
+        dev_sz -= CRYPT_FOOTER_OFFSET;
 
-    /* Use make_ext4fs_internal to avoid wiping an already-wiped partition. */
-    rc = make_ext4fs_internal(fd, NULL, NULL, fs_mnt_point, 0, 0, 0, 0, 0, 0, sehandle, 0, 0, NULL, NULL, NULL);
+    rc = make_ext4fs_fd(fd, dev_sz, fs_mnt_point, sehandle);
+
     if (rc) {
         ERROR("make_ext4fs returned %d.\n", rc);
     }
