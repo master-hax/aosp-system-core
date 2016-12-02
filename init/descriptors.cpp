@@ -89,14 +89,15 @@ const std::string SocketInfo::key() const {
 
 FileInfo::FileInfo(const std::string& name, const std::string& type, uid_t uid,
                    gid_t gid, int perm, const std::string& context)
+        // defaults OK for uid,..., they are ignored for this class.
         : DescriptorInfo(name, type, uid, gid, perm, context) {
 }
 
-int FileInfo::Create(const std::string& context) const {
-  int flags = ((type() == "r" ? O_RDONLY :
-                (type() == "w" ? (O_WRONLY | O_CREAT) :
-                 (O_RDWR | O_CREAT))));
-  return create_file(name().c_str(), flags, perm(), uid(), gid(), context.c_str());
+int FileInfo::Create(const std::string&) const {
+  return open_file(name().c_str(),
+                   (type() == "r") ? O_RDONLY :
+                   (type() == "w") ? O_WRONLY :
+                                     O_RDWR);
 }
 
 const std::string FileInfo::key() const {
