@@ -159,64 +159,32 @@ out_unlink:
 }
 
 /*
- * create_file - opens and creates a file as dictated in init.rc.
+ * open_file - opens a file as dictated in init.rc.
  * This file is inherited by the daemon. We communicate the file
  * descriptor's value via the environment variable ANDROID_FILE_<basename>
  */
-int create_file(const char *path, int flags, mode_t perm, uid_t uid,
-                  gid_t gid, const char *filecon)
+int open_file(const char *path, int flags)
 {
-    char *secontext = NULL;
-
-    if (filecon) {
-        if (setsockcreatecon(filecon) == -1) {
-            PLOG(ERROR) << "setsockcreatecon(\"" << filecon << "\") failed";
-            return -1;
-        }
-    } else if (sehandle) {
-        if (selabel_lookup(sehandle, &secontext, path, perm) != -1) {
-            if (setfscreatecon(secontext) == -1) {
-                freecon(secontext); // does not upset errno value
-                PLOG(ERROR) << "setfscreatecon(\"" << secontext << "\") failed";
-                return -1;
-            }
-        }
+#ifndef NDEBUG
+    // Can not happen, here to catch us during development if another cook
+    // has a bright idea ...
+    if (flags & O_CREAT) {
+        PLOG(ERROR) << "Will not create file '" << path << "'";
+        return -1;
     }
+#endif
 
-    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path, flags | O_NDELAY, perm)));
-    int savederrno = errno;
-
-    if (filecon) {
-        setsockcreatecon(NULL);
-        lsetfilecon(path, filecon);
-    } else {
-        setfscreatecon(NULL);
-        freecon(secontext);
-    }
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path, flags | O_NDELAY)));
 
     if (fd < 0) {
-        errno = savederrno;
-        PLOG(ERROR) << "Failed to open/create file '" << path << "'";
+        PLOG(ERROR) << "Failed to open file '" << path << "'";
         return -1;
     }
 
     if (!(flags & O_NDELAY)) fcntl(fd, F_SETFD, flags);
 
-    if (lchown(path, uid, gid)) {
-        PLOG(ERROR) << "Failed to lchown file '" << path << "'";
-        return -1;
-    }
-    if (perm != static_cast<mode_t>(-1)) {
-        if (fchmodat(AT_FDCWD, path, perm, AT_SYMLINK_NOFOLLOW)) {
-            PLOG(ERROR) << "Failed to fchmodat file '" << path << "'";
-            return -1;
-        }
-    }
-
-    LOG(INFO) << "Created file '" << path << "'"
-              << ", mode " << std::oct << perm << std::dec
-              << ", user " << uid
-              << ", group " << gid;
+    LOG(INFO) << "Opened file '" << path << "'"
+              << ", flags " << std::oct;
 
     return fd.release();
 }
