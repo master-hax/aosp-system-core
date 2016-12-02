@@ -93,10 +93,10 @@ FileInfo::FileInfo(const std::string& name, const std::string& type, uid_t uid,
 }
 
 int FileInfo::Create(const std::string& context) const {
-  int flags = ((type() == "r" ? O_RDONLY :
-                (type() == "w" ? (O_WRONLY | O_CREAT) :
-                 (O_RDWR | O_CREAT))));
-  return create_file(name().c_str(), flags, perm(), uid(), gid(), context.c_str());
+  return open_file(name().c_str(),
+                   (type() == "r") ? O_RDONLY :
+                   (type() == "w") ? O_WRONLY :
+                                     O_RDWR);
 }
 
 const std::string FileInfo::key() const {
