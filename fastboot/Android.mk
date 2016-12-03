@@ -57,7 +57,6 @@ LOCAL_C_INCLUDES_windows := development/host/windows/usb/api
 
 LOCAL_STATIC_LIBRARIES := \
     libziparchive \
-    libext4_utils_host \
     libsparse_host \
     libutils \
     liblog \
@@ -66,6 +65,7 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
     libcutils \
     libgtest_host \
+    libext4_utils_host libcrypto libext2fs-host
 
 # libf2fs_dlutils_host will dlopen("libf2fs_fmt_host_dyn")
 LOCAL_CFLAGS_linux := -DUSE_F2FS
@@ -73,7 +73,9 @@ LOCAL_LDFLAGS_linux := -ldl -rdynamic -Wl,-rpath,.
 LOCAL_REQUIRED_MODULES_linux := libf2fs_fmt_host_dyn
 # The following libf2fs_* are from system/extras/f2fs_utils,
 # and do not use code in external/f2fs-tools.
-LOCAL_STATIC_LIBRARIES_linux += libf2fs_utils_host libf2fs_ioutils_host libf2fs_dlutils_host
+# DO NOT MERGE
+LOCAL_STATIC_LIBRARIES_linux += libf2fs_utils_host libf2fs_ioutils_host libf2fs_dlutils_host libext2_uuid-host
+# DO NOT MERGE
 
 LOCAL_CXX_STL := libc++_static
 
