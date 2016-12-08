@@ -34,57 +34,80 @@ static_assert(
     "FuseBuffer must be standard layout union.");
 
 template <typename T>
-bool FuseMessage<T>::CheckPacketSize(size_t size, const char* name) const {
+bool FuseMessage<T>::CheckHeaderLength(const char* name) const {
   const auto& header = static_cast<const T*>(this)->header;
-  if (sizeof(header) <= size && size <= sizeof(T)) {
+  if (sizeof(header) <= header.len && header.len <= sizeof(T)) {
     return true;
   } else {
-    LOG(ERROR) << name << " is invalid=" << header.len;
-    return false;
-  }
-}
-
-template <typename T>
-bool FuseMessage<T>::CheckResult(int result, const char* operation_name) const {
-  if (result == 0) {
-    // Expected close of other endpoints.
-    return false;
-  }
-  if (result < 0) {
-    PLOG(ERROR) << "Failed to " << operation_name << " a packet.";
-    return false;
-  }
-  return true;
-}
-
-template <typename T>
-bool FuseMessage<T>::CheckHeaderLength(int result, const char* operation_name) const {
-  const auto& header = static_cast<const T*>(this)->header;
-  if (static_cast<uint32_t>(result) == header.len) {
-    return true;
-  } else {
-    LOG(ERROR) << "Invalid header length: operation_name=" << operation_name
-               << " result=" << result
-               << " header.len=" << header.len;
+    LOG(ERROR) << "Invalid header length is found in " << name << ": " <<
+        header.len;
     return false;
   }
 }
 
 template <typename T>
 bool FuseMessage<T>::Read(int fd) {
-  const ssize_t result = TEMP_FAILURE_RETRY(::read(fd, this, sizeof(T)));
-  return CheckResult(result, "read") && CheckPacketSize(result, "read count") &&
-      CheckHeaderLength(result, "read");
+  const auto& header = static_cast<const T*>(this)->header;
+  char* const buf = reinterpret_cast<char*>(this);
+  uint32_t read_bytes = 0;
+  while (true) {
+    const ssize_t result = TEMP_FAILURE_RETRY(::read(
+        fd,
+        buf + read_bytes,
+        read_bytes ? header.len - read_bytes : sizeof(T)));
+    if (result < 0) {
+      PLOG(ERROR) << "Failed to read a FUSE message";
+      return false;
+    }
+    if (read_bytes == 0) {
+      if (result == 0) {
+        // Expected close of other endpoints.
+        return false;
+      }
+      if (result < static_cast<ssize_t>(sizeof(header))) {
+        LOG(ERROR) << "Read bytes are too short";
+        return false;
+      }
+      if (!CheckHeaderLength("Read")) {
+        return false;
+      }
+    }
+
+    read_bytes += result;
+    if (read_bytes > header.len) {
+      LOG(ERROR) << "Unexpected large reading << " <<
+          header.len << " " << read_bytes;
+      return false;
+    } else if (read_bytes == header.len) {
+      return true;
+    }
+  }
 }
 
 template <typename T>
 bool FuseMessage<T>::Write(int fd) const {
   const auto& header = static_cast<const T*>(this)->header;
-  if (!CheckPacketSize(header.len, "header.len")) {
+  const char* const buf = reinterpret_cast<const char*>(this);
+  uint32_t written_bytes = 0;
+  if (!CheckHeaderLength("Write")) {
     return false;
   }
-  const ssize_t result = TEMP_FAILURE_RETRY(::write(fd, this, header.len));
-  return CheckResult(result, "write") && CheckHeaderLength(result, "write");
+  while (true) {
+    const ssize_t result = TEMP_FAILURE_RETRY(
+        ::write(fd, buf + written_bytes, header.len - written_bytes));
+    if (result < 0) {
+      PLOG(ERROR) << "Failed to write a FUSE message";
+      return false;
+    }
+
+    written_bytes += result;
+    if (written_bytes > header.len) {
+      LOG(ERROR) << "Unexpected large writing";
+      return false;
+    } else if (written_bytes == header.len) {
+      return true;
+    }
+  }
 }
 
 template class FuseMessage<FuseRequest>;
