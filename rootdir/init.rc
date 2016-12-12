@@ -471,7 +471,7 @@ on post-fs-data
 
     mkdir /data/cache 0770 system cache
     mkdir /data/cache/recovery 0770 system cache
-    mkdir /data/cache/backup_stage 0700 system system
+    mkdir /data/cache/backup_stage 0750 system cache
     mkdir /data/cache/backup 0700 system system
 
     init_user0
