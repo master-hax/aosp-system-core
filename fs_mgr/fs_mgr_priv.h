@@ -89,11 +89,22 @@ __BEGIN_DECLS
 #define MF_MAX_COMP_STREAMS 0x100000
 #define MF_RESERVEDSIZE     0x200000
 #define MF_QUOTA            0x400000
+#define MF_AVB              0x800000
 
 #define DM_BUF_SIZE 4096
 
+#ifndef UNLIKELY
+    #define UNLIKELY(x)   __builtin_expect(!!(x), 0)
+#endif
+
+#define CHECK_AND_RETURN(condition, return_value) \
+    if (UNLIKELY(!(condition))) { \
+        ERROR("`%s' failed", #condition); \
+        return return_value; \
+    }
+
 int fs_mgr_set_blk_ro(const char *blockdev);
-int fs_mgr_test_access(char *device);
+int fs_mgr_test_access(const char *device);
 int fs_mgr_update_for_slotselect(struct fstab *fstab);
 
 __END_DECLS
