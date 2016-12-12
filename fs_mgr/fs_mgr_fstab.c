@@ -75,6 +75,7 @@ static struct flag_list fs_mgr_flags[] = {
     { "zramsize=",   MF_ZRAMSIZE },
     { "max_comp_streams=",   MF_MAX_COMP_STREAMS },
     { "verify",      MF_VERIFY },
+    { "avb",         MF_AVB },
     { "noemulatedsd", MF_NOEMULATEDSD },
     { "notrim",       MF_NOTRIM },
     { "formattable", MF_FORMATTABLE },

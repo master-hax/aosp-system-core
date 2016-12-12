@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <libgen.h>
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_avb.h"
 
 char *me = "";
 
@@ -84,8 +85,7 @@ int main(int argc, char *argv[])
     char *n_blk_dev=NULL;
     char *fstab_file=NULL;
     struct fstab *fstab=NULL;
-
-    klog_set_level(6);
+    struct fstab_rec* system_fstab = NULL;
 
     parse_options(argc, argv, &a_flag, &u_flag, &n_flag, &n_name, &n_blk_dev);
 
@@ -93,6 +93,20 @@ int main(int argc, char *argv[])
     fstab_file = argv[argc - 1];
 
     fstab = fs_mgr_read_fstab(fstab_file);
+    system_fstab = fs_mgr_get_entry_for_mount_point(fstab, "/system");
+
+    if (fs_mgr_load_vbmeta_images(fstab) == 0) {
+        if (fs_mgr_setup_avb(system_fstab) != 0)
+            printf("Failed to mount system\n");
+        else
+            printf("OK to mount system!\n");
+    } else
+        printf("cannot load main vbmeta\n");
+
+    fs_mgr_free_fstab(fstab);
+    fs_mgr_unload_vbmeta_images();
+    printf("early return avb yes!\n");
+    return 0;
 
     if (a_flag) {
         return fs_mgr_mount_all(fstab, MOUNT_MODE_DEFAULT);

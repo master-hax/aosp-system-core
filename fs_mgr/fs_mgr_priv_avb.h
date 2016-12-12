@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 
-#ifndef __CORE_FS_MGR_PRIV_DM_IOCTL_H
-#define __CORE_FS_MGR_PRIV_DM_IOCTL_H
+#ifndef __CORE_FS_MGR_PRIV_AVB_H
+#define __CORE_FS_MGR_PRIV_AVB_H
 
-#include <linux/dm-ioctl.h>
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
+
+#include "fs_mgr.h"
 
 __BEGIN_DECLS
 
-void verity_ioctl_init(struct dm_ioctl *io, const char *name, unsigned flags);
-int create_verity_device(struct dm_ioctl *io, char *name, int fd);
-int destroy_verity_device(struct dm_ioctl *io, char *name, int fd);
-int get_verity_device_name(struct dm_ioctl *io, char *name, int fd, char **dev_name);
-int resume_verity_table(struct dm_ioctl *io, char *name, int fd);
+#define FS_MGR_SETUP_AVB_HASHTREE_DISABLED (-2)
+#define FS_MGR_SETUP_AVB_FAIL (-1)
+#define FS_MGR_SETUP_AVB_SUCCESS 0
+
+struct vbmeta_digest_data {
+    size_t vbmeta_size;
+    uint32_t digest_len;
+    char hash_algorithm[32];
+    uint8_t* digest_value;
+};
+
+int fs_mgr_load_vbmeta_images(struct fstab* fstab);
+
+void fs_mgr_unload_vbmeta_images();
+
+int fs_mgr_setup_avb(struct fstab_rec* fstab_entry);
 
 __END_DECLS
 
-#endif /* __CORE_FS_MGR_PRIV_DM_IOCTL_H */
+#endif /* __CORE_FS_MGR_PRIV_AVB_H */

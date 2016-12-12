@@ -44,6 +44,7 @@
 #include <private/android_logger.h>
 
 #include "fs_mgr_priv.h"
+#include "fs_mgr_priv_avb.h"
 #include "fs_mgr_priv_verity.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
@@ -483,6 +484,39 @@ int test_access(char *device) {
     return -1;
 }
 
+static bool is_avb()
+{
+    int ret = -1;
+    char value[PROPERTY_VALUE_MAX];
+    static bool has_vbmeta = false;
+    static bool got_result = false;
+
+    if (got_result) {
+        return has_vbmeta;
+    }
+
+    /* When AVB is used, boot loader should set androidboot.vbmeta.{hash_alg,
+     * size, digest} in kernel cmdline. They will then be imported by init
+     * process to properties: ro.boot.vbmeta.{hash_alg, size, digest}.
+     *
+     * Checks hash_alg as an indicator for whether AVB is used.
+     * We don't have to parse and check all of them here. The check will
+     * be done in fs_mgr_load_vbmeta_images() and FS_MGR_SETUP_AVB_FAIL will
+     * be returned when there is an error.
+     */
+    ret = __system_property_get("ro.boot.vbmeta.hash_alg", value);
+    if (ret < 0) {
+        has_vbmeta = false;
+    } else if (!strcmp(value, "sha256") || !strcmp(value, "sha512")) {
+        has_vbmeta = true;
+    } else {
+        has_vbmeta = false;
+    }
+
+    got_result = true;
+    return has_vbmeta;
+}
+
 /* When multiple fstab records share the same mount_point, it will
  * try to mount each one in turn, and ignore any duplicates after a
  * first successful mount.
@@ -496,8 +530,14 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     int mret = -1;
     int mount_errno = 0;
     int attempted_idx = -1;
+    int avb_ret = FS_MGR_SETUP_AVB_FAIL;
 
     if (!fstab) {
+        return -1;
+    }
+
+    if (is_avb() &&
+        (avb_ret = fs_mgr_load_vbmeta_images(fstab)) == FS_MGR_SETUP_AVB_FAIL) {
         return -1;
     }
 
@@ -539,7 +579,19 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
         }
 
-        if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
+        if (is_avb() && (fstab->recs[i].fs_mgr_flags & MF_AVB)) {
+            /* FS_MGR_SETUP_AVB_HASHTREE_DISABLED implies device state is
+             * UNLOCK and HASHTREE_DISABLED flag is set on the main vbmeta.
+             * In this case, all HASHTREE should be ignored. */
+            if (avb_ret == FS_MGR_SETUP_AVB_HASHTREE_DISABLED) {
+                INFO("AVB HASHTREE disabled\n");
+            } else if (fs_mgr_setup_avb(&fstab->recs[i]) !=
+                       FS_MGR_SETUP_AVB_SUCCESS) {
+                ERROR("Failed to set up AVB on partition: %s, skipping!\n",
+                      fstab->recs[i].mount_point);
+                continue;
+            }
+        } else if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
             int rc = fs_mgr_setup_verity(&fstab->recs[i]);
             if (__android_log_is_debuggable() && rc == FS_MGR_SETUP_VERITY_DISABLED) {
                 INFO("Verity disabled");
@@ -548,6 +600,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
                 continue;
             }
         }
+
         int last_idx_inspected;
         int top_idx = i;
 
@@ -651,6 +704,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         }
     }
 
+    if (is_avb()) {
+        fs_mgr_unload_vbmeta_images();
+    }
+
     if (error_count) {
         return -1;
     } else {
@@ -671,8 +728,14 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
     int mount_errors = 0;
     int first_mount_errno = 0;
     char *m;
+    int avb_ret = FS_MGR_SETUP_AVB_FAIL;
 
     if (!fstab) {
+        return ret;
+    }
+
+    if (is_avb() &&
+        (avb_ret = fs_mgr_load_vbmeta_images(fstab)) == FS_MGR_SETUP_AVB_FAIL) {
         return ret;
     }
 
@@ -701,7 +764,19 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
                      fstab->recs[i].mount_point);
         }
 
-        if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
+        if (is_avb() && (fstab->recs[i].fs_mgr_flags & MF_AVB)) {
+            /* FS_MGR_SETUP_AVB_HASHTREE_DISABLED implies device state is
+             * UNLOCK and HASHTREE_DISABLED flag is set on the main vbmeta.
+             * In this case, all HASHTREE should be ignored. */
+            if (avb_ret == FS_MGR_SETUP_AVB_HASHTREE_DISABLED) {
+                INFO("AVB HASHTREE disabled\n");
+            } else if (fs_mgr_setup_avb(&fstab->recs[i]) !=
+                       FS_MGR_SETUP_AVB_SUCCESS) {
+                ERROR("Failed to set up AVB on partition: %s, skipping!\n",
+                      fstab->recs[i].mount_point);
+                continue;
+            }
+        } else if ((fstab->recs[i].fs_mgr_flags & MF_VERIFY) && device_is_secure()) {
             int rc = fs_mgr_setup_verity(&fstab->recs[i]);
             if (__android_log_is_debuggable() && rc == FS_MGR_SETUP_VERITY_DISABLED) {
                 INFO("Verity disabled");
@@ -740,6 +815,9 @@ int fs_mgr_do_mount(struct fstab *fstab, char *n_name, char *n_blk_device,
     }
 
 out:
+    if (is_avb()) {
+        fs_mgr_unload_vbmeta_images();
+    }
     return ret;
 }
 
