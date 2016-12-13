@@ -534,10 +534,10 @@ LogBufferElementCollection::iterator LogBuffer::erase(
 class LogBufferElementKey {
     const union {
         struct {
-            uint16_t uid;
+            uint32_t uid;
             uint16_t pid;
             uint16_t tid;
-            uint16_t padding;
+//          uint16_t padding;
         } __packed;
         uint64_t value;
     } __packed;
@@ -546,8 +546,9 @@ public:
     LogBufferElementKey(uid_t uid, pid_t pid, pid_t tid):
             uid(uid),
             pid(pid),
-            tid(tid),
-            padding(0) {
+            tid(tid)
+//          , padding(0)
+    {
     }
     explicit LogBufferElementKey(uint64_t key):value(key) { }
 
