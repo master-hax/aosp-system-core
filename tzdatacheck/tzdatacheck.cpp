@@ -29,6 +29,13 @@
 
 #include "android-base/logging.h"
 
+static const char* BUNDLE_VERSION_FILENAME = "/bundle_version";
+// bundle_version is a file consisting of 3 bytes representing the version in ASCII. e.g. 001.
+static const int BUNDLE_VERSION_LENGTH = 3;
+// The version of the bundle format supported. If it doesn't match the content of the bundle_version
+// file exactly then the bundle is considered incompatible and should be deleted.
+static const char* REQUIRED_BUNDLE_VERSION = "001";
+
 static const char* TZDATA_FILENAME = "/tzdata";
 // tzdata file header (as much as we need for the version):
 // byte[11] tzdata_version  -- e.g. "tzdata2012f"
@@ -37,39 +44,45 @@ static const int TZ_HEADER_LENGTH = 11;
 static void usage() {
     std::cerr << "Usage: tzdatacheck SYSTEM_TZ_DIR DATA_TZ_DIR\n"
             "\n"
-            "Compares the headers of two tzdata files. If the one in SYSTEM_TZ_DIR is the\n"
-            "same or a higher version than the one in DATA_TZ_DIR the DATA_TZ_DIR is renamed\n"
-            "and then deleted.\n";
+            "Checks whether any timezone update bundle in DATA_TZ_DIR is compatible with the\n"
+            "current Android release and better than or the same as base system timezone rules in\n"
+            "SYSTEM_TZ_DIR. If the timezone rules in SYSTEM_TZ_DIR are a higher version than the\n"
+            "one in DATA_TZ_DIR the DATA_TZ_DIR is renamed and then deleted.\n";
     exit(1);
 }
 
 /*
- * Opens a file and fills headerBytes with the first byteCount bytes from the file. It is a fatal
- * error if the file is too small or cannot be opened. If the file does not exist false is returned.
+ * Opens a file and fills buffer with the first byteCount bytes from the file.
+ * If the file does not exist or cannot be opened or is too short then false is returned.
  * If the bytes were read successfully then true is returned.
  */
-static bool readHeader(const std::string& tzDataFileName, char* headerBytes, size_t byteCount) {
-    FILE* tzDataFile = fopen(tzDataFileName.c_str(), "r");
-    if (tzDataFile == nullptr) {
-        if (errno == ENOENT) {
-            return false;
-        } else {
-            PLOG(FATAL) << "Error opening tzdata file " << tzDataFileName;
+static bool readBytes(const std::string& fileName, char* buffer, size_t byteCount) {
+    FILE* file = fopen(fileName.c_str(), "r");
+    if (file == nullptr) {
+        if (errno != ENOENT) {
+            PLOG(WARNING) << "Error opening file " << fileName;
         }
+        return false;
     }
-    size_t bytesRead = fread(headerBytes, 1, byteCount, tzDataFile);
+    size_t bytesRead = fread(buffer, 1, byteCount, file);
+    fclose(file);
     if (bytesRead != byteCount) {
-        LOG(FATAL) << tzDataFileName << " is too small. " << byteCount << " bytes required";
+        LOG(WARNING) << fileName << " is too small. " << byteCount << " bytes required";
+        return false;
     }
-    fclose(tzDataFile);
     return true;
 }
 
-/* Checks the contents of headerBytes. It is a fatal error if it not a tzdata header. */
-static void checkValidHeader(const std::string& fileName, char* headerBytes) {
+/*
+ * Checks the contents of headerBytes. Returns true if it is valid (starts with "tzdata"), false
+ * otherwise.
+ */
+static bool checkValidTzDataHeader(const std::string& fileName, char* headerBytes) {
     if (strncmp("tzdata", headerBytes, 6) != 0) {
-        LOG(FATAL) << fileName << " does not start with the expected bytes (tzdata)";
+        LOG(WARNING) << fileName << " does not start with the expected bytes (tzdata)";
+        return false;
     }
+    return true;
 }
 
 /* Return the parent directory of dirName. */
@@ -103,6 +116,21 @@ static int deleteFn(const char* fpath, const struct stat*, int typeflag, struct 
     return 0;
 }
 
+static bool dirExists(const std::string& dirName) {
+    struct stat buf;
+    if (stat(dirName.c_str(), &buf) == 0) {
+        if (!S_ISDIR(buf.st_mode)) {
+            PLOG(WARNING) << dirName << " exists but is not a directory";
+        }
+        return true;
+    } else {
+      if (errno != ENOENT) {
+          PLOG(WARNING) << "Unable to stat " << dirName;
+      }
+      return false;
+    }
+}
+
 /*
  * Deletes dirToDelete and returns true if it is successful in removing or moving the directory out
  * of the way. If dirToDelete does not exist this function does nothing and returns true.
@@ -114,20 +142,9 @@ static int deleteFn(const char* fpath, const struct stat*, int typeflag, struct 
  */
 static bool deleteDir(const std::string& dirToDelete) {
     // Check whether the dir exists.
-    struct stat buf;
-    if (stat(dirToDelete.c_str(), &buf) == 0) {
-      if (!S_ISDIR(buf.st_mode)) {
-        LOG(WARNING) << dirToDelete << " is not a directory";
+    if (!dirExists(dirToDelete)) {
+        LOG(INFO) << "Directory does not exist: " << dirToDelete;
         return false;
-      }
-    } else {
-      if (errno == ENOENT) {
-          PLOG(INFO) << "Directory does not exist: " << dirToDelete;
-          return true;
-      } else {
-          PLOG(WARNING) << "Unable to stat " << dirToDelete;
-          return false;
-      }
     }
 
     // First, rename dirToDelete.
@@ -160,9 +177,20 @@ static bool deleteDir(const std::string& dirToDelete) {
 }
 
 /*
+ * Deletes the timezone update bundle directory.
+ */
+static void deleteUpdateBundleDir(std::string& bundleDirName) {
+    LOG(INFO) << "Removing: " << bundleDirName;
+    bool deleted = deleteDir(bundleDirName);
+    if (!deleted) {
+        LOG(WARNING) << "Deletion of bundle dir " << bundleDirName << " was not successful";
+    }
+}
+
+/*
  * After a platform update it is likely that timezone data found on the system partition will be
  * newer than the version found in the data partition. This tool detects this case and removes the
- * version in /data along with any update metadata.
+ * version in /data.
  *
  * Note: This code is related to code in com.android.server.updates.TzDataInstallReceiver. The
  * paths for the metadata and current timezone data must match.
@@ -180,57 +208,80 @@ int main(int argc, char* argv[]) {
     const char* systemZoneInfoDir = argv[1];
     const char* dataZoneInfoDir = argv[2];
 
+    // Check the bundle directory exists. If it does not, exit quickly.
     std::string dataCurrentDirName(dataZoneInfoDir);
     dataCurrentDirName += "/current";
-    std::string dataTzDataFileName(dataCurrentDirName);
-    dataTzDataFileName += TZDATA_FILENAME;
-
-    std::vector<char> dataTzDataHeader;
-    dataTzDataHeader.reserve(TZ_HEADER_LENGTH);
-
-    bool dataFileExists = readHeader(dataTzDataFileName, dataTzDataHeader.data(), TZ_HEADER_LENGTH);
-    if (!dataFileExists) {
-        LOG(INFO) << "tzdata file " << dataTzDataFileName << " does not exist. No action required.";
+    if (!dirExists(dataCurrentDirName)) {
+        LOG(INFO) << "timezone bundle dir " << dataCurrentDirName
+                << " does not exist. No action required.";
         return 0;
     }
-    checkValidHeader(dataTzDataFileName, dataTzDataHeader.data());
+
+    // Check the installed bundle format version.
+    std::string bundleVersionFileName(dataCurrentDirName);
+    bundleVersionFileName += BUNDLE_VERSION_FILENAME;
+    std::vector<char> bundleVersionHeader;
+    bundleVersionHeader.reserve(BUNDLE_VERSION_LENGTH);
+    bool bundleVersionFileExists =
+            readBytes(bundleVersionFileName, bundleVersionHeader.data(), BUNDLE_VERSION_LENGTH);
+    if (!bundleVersionFileExists) {
+        LOG(WARNING) << "bundle version file " << bundleVersionFileName
+                << " does not exist. Deleting bundle dir.";
+        deleteUpdateBundleDir(dataCurrentDirName);
+        return 0;
+    }
+    if (strncmp(&bundleVersionHeader[0], REQUIRED_BUNDLE_VERSION, BUNDLE_VERSION_LENGTH) != 0) {
+        LOG(INFO) << "bundle version file " << bundleVersionFileName
+                << " is not the required version " << REQUIRED_BUNDLE_VERSION
+                << ". Deleting bundle dir..";
+        deleteUpdateBundleDir(dataCurrentDirName);
+        return 0;
+    }
+
+    // Now check the IANA rules version the data is for.
+    std::string dataTzDataFileName(dataCurrentDirName);
+    dataTzDataFileName += TZDATA_FILENAME;
+    std::vector<char> dataTzDataHeader;
+    dataTzDataHeader.reserve(TZ_HEADER_LENGTH);
+    bool dataFileExists = readBytes(dataTzDataFileName, dataTzDataHeader.data(), TZ_HEADER_LENGTH);
+    if (!dataFileExists) {
+        LOG(WARNING) << "tzdata file " << dataTzDataFileName
+                << " does not exist. Deleting bundle dir.";
+        // For safety, delete the update bundle.
+        deleteUpdateBundleDir(dataCurrentDirName);
+        return 0;
+    }
+    if (!checkValidTzDataHeader(dataTzDataFileName, dataTzDataHeader.data())) {
+        LOG(WARNING) << "tzdata file " << dataTzDataFileName
+                << " does not have a valid header. Deleting bundle dir.";
+        deleteUpdateBundleDir(dataCurrentDirName);
+        return 0;
+    }
 
     std::string systemTzDataFileName(systemZoneInfoDir);
     systemTzDataFileName += TZDATA_FILENAME;
     std::vector<char> systemTzDataHeader;
     systemTzDataHeader.reserve(TZ_HEADER_LENGTH);
     bool systemFileExists =
-            readHeader(systemTzDataFileName, systemTzDataHeader.data(), TZ_HEADER_LENGTH);
+            readBytes(systemTzDataFileName, systemTzDataHeader.data(), TZ_HEADER_LENGTH);
     if (!systemFileExists) {
         LOG(FATAL) << systemTzDataFileName << " does not exist or could not be opened";
     }
-    checkValidHeader(systemTzDataFileName, systemTzDataHeader.data());
-
-    if (strncmp(&systemTzDataHeader[0], &dataTzDataHeader[0], TZ_HEADER_LENGTH) < 0) {
-        LOG(INFO) << "tzdata file " << dataTzDataFileName << " is the newer than "
-                << systemTzDataFileName << ". No action required.";
-    } else {
-        // We have detected the case this tool is intended to prevent. Go fix it.
-        LOG(INFO) << "tzdata file " << dataTzDataFileName << " is the same as or older than "
-                << systemTzDataFileName << "; fixing...";
-
-        // Delete the update metadata
-        std::string dataUpdatesDirName(dataZoneInfoDir);
-        dataUpdatesDirName += "/updates";
-        LOG(INFO) << "Removing: " << dataUpdatesDirName;
-        bool deleted = deleteDir(dataUpdatesDirName);
-        if (!deleted) {
-            LOG(WARNING) << "Deletion of install metadata " << dataUpdatesDirName
-                    << " was not successful";
-        }
-
-        // Delete the TZ data
-        LOG(INFO) << "Removing: " << dataCurrentDirName;
-        deleted = deleteDir(dataCurrentDirName);
-        if (!deleted) {
-            LOG(WARNING) << "Deletion of tzdata " << dataCurrentDirName << " was not successful";
-        }
+    if (!checkValidTzDataHeader(systemTzDataFileName, systemTzDataHeader.data())) {
+        // Nothing we can do here. Something has gone very wrong.
+        LOG(FATAL) << systemTzDataFileName << " does not have a valid header.";
     }
 
+    if (strncmp(&systemTzDataHeader[0], &dataTzDataHeader[0], TZ_HEADER_LENGTH) <= 0) {
+        LOG(INFO) << "tzdata file " << dataTzDataFileName << " is the newer than or the same as "
+                << systemTzDataFileName << ". No action required.";
+        return 0;
+    }
+
+    // We have detected the case this tool is intended to prevent. Go fix it.
+    LOG(INFO) << "tzdata file " << dataTzDataFileName << " is older than "
+            << systemTzDataFileName << "; fixing...";
+
+    deleteUpdateBundleDir(dataCurrentDirName);
     return 0;
 }
