@@ -70,6 +70,9 @@ void LogStatistics::add(LogBufferElement *element) {
     unsigned short size = element->getMsgLen();
     mSizes[log_id] += size;
     ++mElements[log_id];
+    if (element->getDropped()) {
+        ++mDroppedElements[log_id];
+    }
 
     mSizesTotal[log_id] += size;
     ++mElementsTotal[log_id];
