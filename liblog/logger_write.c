@@ -370,9 +370,11 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     if (__android_log_is_debuggable()) {
         char c = __android_log_ratelimit_identical();
         switch (c) {
+        case 'c': /* crash */
         case 'd': /* drop */
         case 's': /* sleep */
             {
+                static atomic_int crashed_once;
                 static const time_t period = 1;
                 static const size_t number = 10;
                 static atomic_size_t last_hash;
@@ -388,7 +390,18 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
                 if (eagain) {
                     break;
                 }
-                sleep(period);
+                if (c == 's') {
+                    sleep(period);
+                    break;
+                }
+                if (!atomic_exchange(&crashed_once, 1)) {
+#if __BIONIC__
+                    android_set_abort_message(
+                        "chatty: ratelimit to 10 identical messages a second");
+#endif
+                    abort(); /* abort so we have a chance to debug the situation */
+                    /* NOTREACHED */
+                }
             }
             break;
         }
