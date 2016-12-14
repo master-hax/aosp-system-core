@@ -29,6 +29,7 @@
 #include <private/android_logger.h>
 
 #include "config_write.h"
+#include "log_hash.h"
 #include "log_portability.h"
 #include "logger.h"
 
@@ -259,6 +260,14 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     }
     if (!len) {
         return -EINVAL;
+    }
+
+    if (__android_log_is_debuggable()) {
+        static atomic_size_t last_hash;
+        size_t current_hash = __android_log_hash(vec, nr) ^ log_id;
+        if (current_hash == atomic_exchange(&last_hash, current_hash)) {
+            usleep(3333);
+        }
     }
 
 #if defined(__ANDROID__)

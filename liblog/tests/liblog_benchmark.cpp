@@ -78,6 +78,24 @@ static void BM_log_maximum(int iters) {
 BENCHMARK(BM_log_maximum);
 
 /*
+ *	Measure the fastest rate we can stuff print messages into the log
+ * at high pressure. Expect this to be ratelimited to above 3333000us.
+ */
+static void BM_log_maximum_identical(int iters) {
+    log_time ts(CLOCK_REALTIME);
+
+    StartBenchmarkTiming();
+
+    for (int i = 0; i < iters; ++i) {
+        __android_log_print(ANDROID_LOG_INFO, "BM_log_maximum_identical",
+                            "%" PRIu32 ".%09" PRIu32, ts.tv_sec, ts.tv_nsec);
+    }
+
+    StopBenchmarkTiming();
+}
+BENCHMARK(BM_log_maximum_identical);
+
+/*
  *	Measure the time it takes to submit the android logging call using
  * discrete acquisition under light load. Expect this to be a pair of
  * syscall periods (2us).
