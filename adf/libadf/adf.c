@@ -772,10 +772,12 @@ int adf_find_simple_post_configuration(struct adf_device *dev,
     adf_id_t *intfs = NULL;
     ssize_t n_intfs = adf_interfaces(dev, &intfs);
 
-    if (n_intfs < 0)
+    if (n_intfs < 0) {
         return n_intfs;
-    else if (!n_intfs)
+    } else if (!n_intfs) {
+        free(intfs);
         return -ENODEV;
+    }
 
     adf_id_t *primary_intfs;
     ssize_t n_primary_intfs = adf_interfaces_filter_by_flag(dev,
