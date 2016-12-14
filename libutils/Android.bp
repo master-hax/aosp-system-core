@@ -42,6 +42,7 @@ cc_library {
 
     cflags: ["-Werror"],
     include_dirs: ["external/safe-iop/include"],
+    export_include_dirs: ["include"],
 
     arch: {
         mips: {
