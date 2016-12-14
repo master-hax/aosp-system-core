@@ -44,6 +44,11 @@ persist.logd.timestamp     string  ro    The recording timestamp source.
                                          "m[onotonic]" is the only supported
                                          key character, otherwise realtime.
 ro.logd.timestamp        string realtime default for persist.logd.timestamp
+logd.ratelimit.identical   string        Action to take when identical log messages
+                                         arrive faster than 10 messages a second.
+					 Actions are sleep (1 second) or drop.
+					 Feature only active if ro.debuggable is
+					 set to 1.
 log.tag                   string persist The global logging level, VERBOSE,
                                          DEBUG, INFO, WARN, ERROR, ASSERT or
                                          SILENT. Only the first character is
