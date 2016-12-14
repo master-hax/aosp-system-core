@@ -51,6 +51,8 @@ cc_library {
         "threads.c",
     ],
 
+    export_include_dirs: ["include"],
+
     target: {
         host: {
             srcs: ["dlmalloc_stubs.c"],
