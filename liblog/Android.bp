@@ -47,6 +47,8 @@ cc_library {
 
     srcs: liblog_sources,
 
+    export_include_dirs: ["include"],
+
     target: {
         host: {
             srcs: liblog_host_sources,
