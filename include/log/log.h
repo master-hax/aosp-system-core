@@ -812,6 +812,60 @@ int __android_log_error_write(int tag, const char* subTag, int32_t uid,
 void __android_log_close();
 #endif
 
+#ifndef __ANDROID_USE_LIBLOG_RATELIMIT_INTERFACE
+#ifndef __ANDROID_API__
+#define __ANDROID_USE_LIBLOG_RATELIMIT_INTERFACE 1
+#elif __ANDROID_API__ > 25 /* > OC */
+#define __ANDROID_USE_LIBLOG_RATELIMIT_INTERFACE 1
+#else
+#define __ANDROID_USE_LIBLOG_LOGGABLE_INTERFACE 0
+#endif
+#endif
+
+#if __ANDROID_USE_LIBLOG_RATELIMIT_INTERFACE
+
+#ifdef __cplusplus
+extern "C++" {
+#include <stdatomic.h>
+}
+#else
+#include <stdatomic.h>
+#endif
+
+/*
+ * if last is NULL, caller _must_ provide a consistent value for seconds.
+ */
+int __android_log_ratelimit(time_t seconds, atomic_uint_fast64_t* last);
+
+/*
+ * Usage:
+ *
+ *   // Global default and state
+ *   IF_ALOG_RATELIMIT() {
+ *      ALOC*(...);
+ *   }
+ *
+ *   // local state, 10 seconds ratelimit
+ *   static atomic_unit_fast64_t local_state;
+ *   IF_ALOG_RATELIMIT_LOCAL(10, &local_state) {
+ *     ALOG*(...);
+ *   }
+ */
+
+#define IF_ALOG_RATELIMIT() \
+      if (__android_log_ratelimit(0, NULL))
+#define IF_ALOG_RATELIMIT_LOCAL(...) \
+      if (__android_log_ratelimit(__android_second(0, ## __VA_ARGS__, 0), \
+                                  __android_second(## __VA_ARGS__, NULL)))
+
+#else
+
+/* No ratelimiting as API unsupported */
+#define IF_ALOG_RATELIMIT() if (1)
+#define IF_ALOG_RATELIMIT_LOCAL(...) if (1)
+
+#endif
+
 #if defined(__clang__)
 #pragma clang diagnostic pop
 #endif

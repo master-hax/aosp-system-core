@@ -2870,3 +2870,20 @@ TEST(liblog, event_log_tags) {
     GTEST_LOG_(INFO) << "This test does nothing.\n";
 #endif
 }
+
+TEST(liblog, __android_log_ratelimit) {
+    atomic_uint_fast64_t state(0);
+
+    errno = 42;
+    // Prime
+    __android_log_ratelimit(2, &state);
+    EXPECT_EQ(errno, 42);
+    // Check
+    EXPECT_FALSE(__android_log_ratelimit(2, &state));
+    sleep(1);
+    EXPECT_FALSE(__android_log_ratelimit(2, &state));
+    sleep(2);
+    EXPECT_TRUE(__android_log_ratelimit(2, &state));
+    sleep(3);
+    EXPECT_TRUE(__android_log_ratelimit(2, &state));
+}
