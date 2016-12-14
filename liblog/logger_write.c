@@ -29,8 +29,10 @@
 #include <private/android_logger.h>
 
 #include "config_write.h"
+#include "log_hash.h"
 #include "log_portability.h"
 #include "logger.h"
+#include "properties.h"
 
 #define LOG_BUF_SIZE 1024
 
@@ -249,6 +251,8 @@ static inline uint32_t get4LE(const uint8_t* src)
 
 static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
 {
+    static atomic_int last_eagain;
+    int eagain = atomic_exchange(&last_eagain, 0);
     struct android_log_transport_write *node;
     int ret;
     struct timespec ts;
@@ -363,6 +367,33 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
     }
 #endif
 
+    if (__android_log_is_debuggable()) {
+        char c = __android_log_ratelimit_identical();
+        switch (c) {
+        case 'd': /* drop */
+        case 's': /* sleep */
+            {
+                static const time_t period = 1;
+                static const size_t number = 10;
+                static atomic_size_t last_hash;
+                size_t current_hash = __android_log_hash(vec, nr) ^ log_id;
+                if (__android_log_timestamp_ratelimit(&ts, number,
+                      (current_hash == atomic_exchange(&last_hash, current_hash)) ?
+                        period : 0) <= 0) {
+                    break;
+                }
+                if (c == 'd') {
+                    return -EBUSY;
+                }
+                if (eagain) {
+                    break;
+                }
+                sleep(period);
+            }
+            break;
+        }
+    }
+
     ret = 0;
     i = 1 << log_id;
     write_transport_for_each(node, &__android_log_transport_write) {
@@ -379,6 +410,11 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec *vec, size_t nr)
         if (node->logMask & i) {
             (void)(*node->write)(log_id, &ts, vec, nr);
         }
+    }
+
+    if (ret == -EAGAIN) {
+        /* offer some identical ratelimiting forgiveness should caller retry */
+        atomic_store(&last_eagain, 1);
     }
 
     return ret;
