@@ -37,6 +37,7 @@ liblog_target_sources = [
     "logd_reader.c",
     "logd_writer.c",
     "logger_read.c",
+    "log_hash.cpp",
 ]
 
 // Shared and static library for host and device

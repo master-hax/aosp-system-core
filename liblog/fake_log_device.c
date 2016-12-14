@@ -35,6 +35,7 @@
 #include <log/uio.h>
 
 #include "fake_log_device.h"
+#include "log_hash.h"
 #include "log_portability.h"
 
 #define kMaxTagLen  16      /* from the long-dead utils/Log.cpp */
@@ -735,4 +736,9 @@ LIBLOG_ABI_PUBLIC int __android_log_is_loggable_len(int prio,
 LIBLOG_ABI_PRIVATE int __android_log_is_debuggable()
 {
     return 1;
+}
+
+LIBLOG_HIDDEN size_t __android_log_hash(struct iovec* vecs, int count __unused)
+{
+    return (size_t)(uintptr_t)vecs;
 }
