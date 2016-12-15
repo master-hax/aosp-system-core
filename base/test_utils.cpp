@@ -57,7 +57,11 @@ char* mkdtemp(char* template_name) {
 
 static std::string GetSystemTempDir() {
 #if defined(__ANDROID__)
-  return "/data/local/tmp";
+  const char* tmpdir = "/data/local/tmp";
+  if (access(tmpdir, R_OK | W_OK | X_OK) == 0) {
+    return tmpdir;
+  }
+  return ".";
 #elif defined(_WIN32)
   char tmp_dir[MAX_PATH];
   DWORD result = GetTempPathA(sizeof(tmp_dir), tmp_dir);
