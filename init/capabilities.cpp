@@ -69,8 +69,19 @@ const std::map<std::string, int> cap_map = {
 
 static_assert(CAP_LAST_CAP == CAP_AUDIT_READ, "CAP_LAST_CAP is not CAP_AUDIT_READ");
 
-bool DropBoundingSet(const CapSet& to_keep) {
-    for (size_t cap = 0; cap < to_keep.size(); ++cap) {
+unsigned int GetLastValidCap() {
+    unsigned int last_valid_cap = 0;
+    for (; prctl(PR_CAPBSET_READ, last_valid_cap, 0, 0, 0) >= 0; ++last_valid_cap);
+
+    // |last_valid_cap| will be the first failing value.
+    if (last_valid_cap > 0) {
+        last_valid_cap--;
+    }
+    return last_valid_cap;
+}
+
+bool DropBoundingSet(const CapSet& to_keep, unsigned int last_valid_cap) {
+    for (size_t cap = 0; cap < to_keep.size() && cap <= last_valid_cap; ++cap) {
         if (to_keep.test(cap)) {
             // No need to drop this capability.
             continue;
@@ -83,14 +94,14 @@ bool DropBoundingSet(const CapSet& to_keep) {
     return true;
 }
 
-bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
+bool SetProcCaps(const CapSet& to_keep, unsigned int last_valid_cap, bool add_setpcap) {
     cap_t caps = cap_init();
     auto deleter = [](cap_t* p) { cap_free(*p); };
     std::unique_ptr<cap_t, decltype(deleter)> ptr_caps(&caps, deleter);
 
     cap_clear(caps);
     cap_value_t value[1];
-    for (size_t cap = 0; cap <= to_keep.size(); ++cap) {
+    for (size_t cap = 0; cap < to_keep.size() && cap <= last_valid_cap; ++cap) {
         if (to_keep.test(cap)) {
             value[0] = cap;
             if (cap_set_flag(caps, CAP_INHERITABLE, arraysize(value), value, CAP_SET) != 0 ||
@@ -117,8 +128,8 @@ bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
     return true;
 }
 
-bool SetAmbientCaps(const CapSet& to_raise) {
-    for (size_t cap = 0; cap < to_raise.size(); ++cap) {
+bool SetAmbientCaps(const CapSet& to_raise, unsigned int last_valid_cap) {
+    for (size_t cap = 0; cap < to_raise.size() && cap <= last_valid_cap; ++cap) {
         if (to_raise.test(cap)) {
             if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0) != 0) {
                 PLOG(ERROR) << "prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, " << cap << ") failed";
@@ -141,20 +152,31 @@ int LookupCap(const std::string& cap_name) {
 }
 
 bool SetCapsForExec(const CapSet& to_keep) {
+    unsigned int last_valid_cap = GetLastValidCap();
+
+    // Check whether the kernel headers this code was compiled against are older
+    // than the current kernel, enough to have capabilities at run-time that we don't know about.
+    // This is very unlikely because it would require replacing the kernel headers
+    // included in AOSP, which would likely make other things not even compile.
+    if (last_valid_cap >= to_keep.size()) {
+        LOG(ERROR) << "CAP_LAST_CAP reported at run-time is higher than compiled against";
+        return false;
+    }
+
     // Need to keep SETPCAP to drop bounding set below.
     bool add_setpcap = true;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, last_valid_cap, add_setpcap)) {
         LOG(ERROR) << "failed to apply initial capset";
         return false;
     }
 
-    if (!DropBoundingSet(to_keep)) {
+    if (!DropBoundingSet(to_keep, last_valid_cap)) {
         return false;
     }
 
     // If SETPCAP wasn't specifically requested, drop it now.
     add_setpcap = false;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, last_valid_cap, add_setpcap)) {
         LOG(ERROR) << "failed to apply final capset";
         return false;
     }
@@ -162,5 +184,5 @@ bool SetCapsForExec(const CapSet& to_keep) {
     // Add the capabilities to the ambient set so that they are preserved across
     // execve(2).
     // See http://man7.org/linux/man-pages/man7/capabilities.7.html.
-    return SetAmbientCaps(to_keep);
+    return SetAmbientCaps(to_keep, last_valid_cap);
 }
