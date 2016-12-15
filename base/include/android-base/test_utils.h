@@ -54,15 +54,18 @@ class CapturedStderr {
   ~CapturedStderr();
 
   int fd() const;
+  std::string output();
+  void reset();
 
  private:
   void init();
-  void reset();
 
   TemporaryFile temp_file_;
   int old_stderr_;
 
   DISALLOW_COPY_AND_ASSIGN(CapturedStderr);
 };
+
+void SetSystemTempDir(const std::string& path);
 
 #endif  // ANDROID_BASE_TEST_UTILS_H

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "android-base/file.h"
 #include "android-base/logging.h"
 #include "android-base/test_utils.h"
 
@@ -55,7 +56,16 @@ char* mkdtemp(char* template_name) {
 }
 #endif
 
+static std::string& system_tmpdir = *new std::string();
+
+void SetSystemTempDir(const std::string& path) {
+  system_tmpdir = path;
+}
+
 static std::string GetSystemTempDir() {
+  if (!system_tmpdir.empty()) {
+    return system_tmpdir;
+  }
 #if defined(__ANDROID__)
   return "/data/local/tmp";
 #elif defined(_WIN32)
@@ -115,6 +125,12 @@ int CapturedStderr::fd() const {
   return temp_file_.fd;
 }
 
+std::string CapturedStderr::output() {
+  std::string content;
+  android::base::ReadFileToString(temp_file_.path, &content);
+  return content;
+}
+
 void CapturedStderr::init() {
 #if defined(_WIN32)
   // On Windows, stderr is often buffered, so make sure it is unbuffered so
@@ -127,7 +143,10 @@ void CapturedStderr::init() {
 }
 
 void CapturedStderr::reset() {
-  CHECK_NE(-1, dup2(old_stderr_, STDERR_FILENO));
-  CHECK_EQ(0, close(old_stderr_));
-  // Note: cannot restore prior setvbuf() setting.
+  if (old_stderr_ != -1) {
+    CHECK_NE(-1, dup2(old_stderr_, STDERR_FILENO));
+    CHECK_EQ(0, close(old_stderr_));
+    // Note: cannot restore prior setvbuf() setting.
+    old_stderr_ = -1;
+  }
 }
