@@ -16,9 +16,13 @@
 
 #include "log_hash.h"
 
+#include <pthread.h>
+
 #include <experimental/string_view>
+#include <list>
 
 #include <log/uio.h>
+#include <private/android_logger.h>
 
 #include "log_portability.h"
 
@@ -35,4 +39,45 @@ LIBLOG_HIDDEN size_t __android_log_hash(struct iovec* vecs, int count) {
                            std::experimental::string_view(msg, len));
     }
     return total;
+}
+
+// Return number of timestamps recorded over a horizon.
+LIBLOG_HIDDEN int __android_log_timestamp_ratelimit(struct timespec* ts,
+                                                    size_t number,
+                                                    time_t period) {
+    static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+    static std::list<log_time> times;
+
+    log_time t(*ts);
+
+    if (period == 0) {
+        if (pthread_mutex_trylock(&lock)) return -1;
+
+        times.clear();
+        times.emplace_back(t);
+
+        pthread_mutex_unlock(&lock);
+        return 0;
+    }
+
+    log_time oldest(t - log_time(period, 0));
+
+    if (pthread_mutex_trylock(&lock)) return -1;
+
+    for (std::list<log_time>::const_iterator it = times.begin(); it != times.end(); ) {
+        if ((*it) < oldest) {
+            it = times.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    // Crude assumption that the oldest entries are first
+    while (times.size() > number) {
+        times.erase(times.begin());
+    }
+    times.emplace_back(t);
+    size_t ret = times.size();
+
+    pthread_mutex_unlock(&lock);
+    return ret > number;
 }
