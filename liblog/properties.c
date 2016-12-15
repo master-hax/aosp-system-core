@@ -25,6 +25,7 @@
 
 #include <private/android_logger.h>
 
+#include "properties.h"
 #include "log_portability.h"
 
 static pthread_mutex_t lock_loggable = PTHREAD_MUTEX_INITIALIZER;
@@ -309,6 +310,35 @@ LIBLOG_ABI_PRIVATE int __android_log_is_debuggable()
     }
 
     return ret;
+}
+
+LIBLOG_HIDDEN char __android_log_ratelimit_identical()
+{
+    static uint32_t serial;
+    static struct cache_char tag_cache;
+    static const char key[] = "logd.ratelimit.identical";
+    char ret;
+
+    if (lock()) {
+        struct cache_char temp_cache = { { NULL, -1 }, '\0' };
+        refresh_cache(&temp_cache, key);
+        ret = temp_cache.c;
+    } else {
+        int change_detected = check_cache(&tag_cache.cache);
+        uint32_t current_serial = __system_property_area_serial();
+        if (current_serial != serial) {
+            change_detected = 1;
+        }
+        if (change_detected) {
+            refresh_cache(&tag_cache, key);
+            serial = current_serial;
+        }
+        ret = tag_cache.c;
+
+        unlock();
+    }
+
+    return tolower(ret);
 }
 
 /*
