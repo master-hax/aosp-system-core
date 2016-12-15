@@ -312,6 +312,16 @@ void Service::DumpState() const {
 bool Service::ParseCapabilities(const std::vector<std::string>& args, std::string* err) {
     capabilities_ = 0;
 
+    if (!CapAmbientSupported()) {
+        *err = "capabilities requested but kernel does not support ambient capabilities";
+        return false;
+    }
+
+    if (GetLastValidCap() >= capabilities_.size()) {
+        *err = "last valid capability reported at run-time is higher than compiled against";
+        return false;
+    }
+
     for (size_t i = 1; i < args.size(); i++) {
         const std::string& arg = args[i];
         int cap = LookupCap(arg);

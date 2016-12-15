@@ -20,4 +20,6 @@
 using CapSet = std::bitset<CAP_LAST_CAP + 1>;
 
 int LookupCap(const std::string& cap_name);
+bool CapAmbientSupported();
+unsigned long GetLastValidCap();
 bool SetCapsForExec(const CapSet& to_keep);

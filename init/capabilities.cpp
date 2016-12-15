@@ -25,8 +25,7 @@
 
 #define CAP_MAP_ENTRY(cap) { #cap, CAP_##cap }
 
-namespace {
-const std::map<std::string, int> cap_map = {
+static const std::map<std::string, int> cap_map = {
     CAP_MAP_ENTRY(CHOWN),
     CAP_MAP_ENTRY(DAC_OVERRIDE),
     CAP_MAP_ENTRY(DAC_READ_SEARCH),
@@ -69,8 +68,25 @@ const std::map<std::string, int> cap_map = {
 
 static_assert(CAP_LAST_CAP == CAP_AUDIT_READ, "CAP_LAST_CAP is not CAP_AUDIT_READ");
 
-bool DropBoundingSet(const CapSet& to_keep) {
-    for (size_t cap = 0; cap < to_keep.size(); ++cap) {
+static bool ComputeCapAmbientSupported() {
+    return prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_IS_SET, CAP_CHOWN, 0, 0) >= 0;
+}
+
+static unsigned long ComputeLastValidCap() {
+    // Android does not support kernels < 3.8. 'CAP_WAKE_ALARM' has been present since 3.0, see
+    // http://lxr.free-electrons.com/source/include/linux/capability.h?v=3.0#L360.
+    unsigned long last_valid_cap = CAP_WAKE_ALARM;
+    for (; prctl(PR_CAPBSET_READ, last_valid_cap, 0, 0, 0) >= 0; ++last_valid_cap);
+
+    // |last_valid_cap| will be the first failing value.
+    if (last_valid_cap > 0) {
+        last_valid_cap--;
+    }
+    return last_valid_cap;
+}
+
+static bool DropBoundingSet(const CapSet& to_keep, unsigned long last_valid_cap) {
+    for (size_t cap = 0; cap < to_keep.size() && cap <= last_valid_cap; ++cap) {
         if (to_keep.test(cap)) {
             // No need to drop this capability.
             continue;
@@ -83,14 +99,14 @@ bool DropBoundingSet(const CapSet& to_keep) {
     return true;
 }
 
-bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
+static bool SetProcCaps(const CapSet& to_keep, unsigned long last_valid_cap, bool add_setpcap) {
     cap_t caps = cap_init();
     auto deleter = [](cap_t* p) { cap_free(*p); };
     std::unique_ptr<cap_t, decltype(deleter)> ptr_caps(&caps, deleter);
 
     cap_clear(caps);
     cap_value_t value[1];
-    for (size_t cap = 0; cap <= to_keep.size(); ++cap) {
+    for (size_t cap = 0; cap < to_keep.size() && cap <= last_valid_cap; ++cap) {
         if (to_keep.test(cap)) {
             value[0] = cap;
             if (cap_set_flag(caps, CAP_INHERITABLE, arraysize(value), value, CAP_SET) != 0 ||
@@ -117,8 +133,8 @@ bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
     return true;
 }
 
-bool SetAmbientCaps(const CapSet& to_raise) {
-    for (size_t cap = 0; cap < to_raise.size(); ++cap) {
+static bool SetAmbientCaps(const CapSet& to_raise, unsigned long last_valid_cap) {
+    for (size_t cap = 0; cap < to_raise.size() && cap <= last_valid_cap; ++cap) {
         if (to_raise.test(cap)) {
             if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0) != 0) {
                 PLOG(ERROR) << "prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, " << cap << ") failed";
@@ -129,8 +145,6 @@ bool SetAmbientCaps(const CapSet& to_raise) {
     return true;
 }
 
-}  // namespace anonymous
-
 int LookupCap(const std::string& cap_name) {
     auto e = cap_map.find(cap_name);
     if (e != cap_map.end()) {
@@ -140,21 +154,33 @@ int LookupCap(const std::string& cap_name) {
     }
 }
 
+bool CapAmbientSupported() {
+    static bool cap_ambient_supported = ComputeCapAmbientSupported();
+    return cap_ambient_supported;
+}
+
+unsigned long GetLastValidCap() {
+    static unsigned long last_valid_cap = ComputeLastValidCap();
+    return last_valid_cap;
+}
+
 bool SetCapsForExec(const CapSet& to_keep) {
+    unsigned long last_valid_cap = GetLastValidCap();
+
     // Need to keep SETPCAP to drop bounding set below.
     bool add_setpcap = true;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, last_valid_cap, add_setpcap)) {
         LOG(ERROR) << "failed to apply initial capset";
         return false;
     }
 
-    if (!DropBoundingSet(to_keep)) {
+    if (!DropBoundingSet(to_keep, last_valid_cap)) {
         return false;
     }
 
     // If SETPCAP wasn't specifically requested, drop it now.
     add_setpcap = false;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, last_valid_cap, add_setpcap)) {
         LOG(ERROR) << "failed to apply final capset";
         return false;
     }
@@ -162,5 +188,5 @@ bool SetCapsForExec(const CapSet& to_keep) {
     // Add the capabilities to the ambient set so that they are preserved across
     // execve(2).
     // See http://man7.org/linux/man-pages/man7/capabilities.7.html.
-    return SetAmbientCaps(to_keep);
+    return SetAmbientCaps(to_keep, last_valid_cap);
 }
