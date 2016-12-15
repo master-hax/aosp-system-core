@@ -748,3 +748,10 @@ LIBLOG_HIDDEN size_t __android_log_hash(struct iovec* vecs, int count __unused)
 {
     return (size_t)(uintptr_t)vecs;
 }
+
+LIBLOG_HIDDEN int __android_log_timestamp_ratelimit(struct timespec* ts __unused,
+                                                    size_t incidents __unused,
+                                                    time_t period __unused)
+{
+    return -1;
+}

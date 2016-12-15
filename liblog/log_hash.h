@@ -17,6 +17,8 @@
 #ifndef _LIBLOG_LOG_HASH_H__
 #define _LIBLOG_LOG_HASH_H__
 
+#include <time.h>
+
 #include <log/uio.h>
 
 #include "log_portability.h"
@@ -25,6 +27,9 @@ __BEGIN_DECLS
 
 LIBLOG_HIDDEN size_t __android_log_hash(struct iovec* vecs, int count);
 
+LIBLOG_HIDDEN int __android_log_timestamp_ratelimit(struct timespec* ts,
+                                                    size_t incidents,
+                                                    time_t period);
 __END_DECLS
 
 #endif /* _LIBLOG_LOG_HASH_H__ */
