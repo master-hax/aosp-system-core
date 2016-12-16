@@ -263,14 +263,16 @@ static void dump_stack_segment(
     backtrace->FillInMap(stack_data[i], &map);
     if (BacktraceMap::IsValid(map) && !map.name.empty()) {
       line += "  " + map.name;
-      uintptr_t offset = 0;
-      std::string func_name(backtrace->GetFunctionName(stack_data[i], &offset));
-      if (!func_name.empty()) {
-        line += " (" + func_name;
-        if (offset) {
-          line += android::base::StringPrintf("+%" PRIuPTR, offset);
+      if(map.flags & PROT_EXEC) {
+        uintptr_t offset = 0;
+        std::string func_name(backtrace->GetFunctionName(stack_data[i], &offset));
+        if (!func_name.empty()) {
+          line += " (" + func_name;
+          if (offset) {
+            line += android::base::StringPrintf("+%" PRIuPTR, offset);
+          }
+          line += ')';
         }
-        line += ')';
       }
     }
     _LOG(log, logtype::STACK, "%s\n", line.c_str());
