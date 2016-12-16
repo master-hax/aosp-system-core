@@ -305,14 +305,20 @@ static void dump_stack_segment(
     backtrace->FillInMap(stack_data[i], &map);
     if (BacktraceMap::IsValid(map) && !map.name.empty()) {
       line += "  " + map.name;
-      uintptr_t offset = 0;
-      std::string func_name(backtrace->GetFunctionName(stack_data[i], &offset));
-      if (!func_name.empty()) {
-        line += " (" + func_name;
-        if (offset) {
-          line += StringPrintf("+%" PRIuPTR, offset);
+      // Only attempt to find function names in executable maps.
+      // This avoids problems trying to open the file associated
+      // with the map that can cause a deadlock if the file is
+      // associated with a device and the driver is single-threaded.
+      if (map.flags & PROT_EXEC) {
+        uintptr_t offset = 0;
+        std::string func_name(backtrace->GetFunctionName(stack_data[i], &offset));
+        if (!func_name.empty()) {
+          line += " (" + func_name;
+          if (offset) {
+            line += StringPrintf("+%" PRIuPTR, offset);
+          }
+          line += ')';
         }
-        line += ')';
       }
     }
     _LOG(log, logtype::STACK, "%s\n", line.c_str());
