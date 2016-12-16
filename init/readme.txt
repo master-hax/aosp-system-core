@@ -558,3 +558,21 @@ For quicker turnaround when working on init itself, use:
 Alternatively, use the emulator:
 
   emulator -partition-size 1024 -verbose -show-kernel -no-window
+
+
+cpuset setting on boot complete
+-------------------------------
+cpuset is used to restrict less important tasks like background apps to
+specific CPU/CPUs so that they do not affect more important apps like
+fore-ground apps. As such configuration is up to each SOC, common init.rc
+does not handle it. It is up to each BSP implementation to add proper settings
+on boot complete.
+For exmaple, SOC specific init rc may do this:
+  on property:sys.boot_completed=1
+    write /dev/cpuset/top-app/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 0-2
+    write /dev/cpuset/foreground/cpus 0-2
+    write /dev/cpuset/background/cpus 0
+    write /dev/cpuset/system-background/cpus 0-2
+
+Note that background tasks are only allowed to CPU0 while top-apps are allowed to all CPUs.
