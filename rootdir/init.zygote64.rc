@@ -1,5 +1,6 @@
 service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server
     class main
+    disabled
     priority -20
     user root
     group root readproc
