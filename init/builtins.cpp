@@ -224,23 +224,37 @@ static void unmount_and_fsck(const struct mntent *entry) {
     }
 }
 
+static void set_init_class_prop(const std::string& name, const std::string& value) {
+    std::string prop_name = android::base::StringPrintf("init.class.%s", name.c_str());
+    if (prop_name.length() >= PROP_NAME_MAX) {
+        // If the property name would be too long, we can't set it.
+        LOG(ERROR) << "Property name \"init.class." << name
+                   << "\" too long; not setting to" << value;
+        return;
+    }
+    property_set(prop_name.c_str(), value.c_str());
+}
+
 static int do_class_start(const std::vector<std::string>& args) {
-        /* Starting a class does not start services
-         * which are explicitly disabled.  They must
-         * be started individually.
-         */
+    set_init_class_prop(args[1], "start");
+    /* Starting a class does not start services
+     * which are explicitly disabled.  They must
+     * be started individually.
+     */
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->StartIfNotDisabled(); });
     return 0;
 }
 
 static int do_class_stop(const std::vector<std::string>& args) {
+    set_init_class_prop(args[1], "stop");
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->Stop(); });
     return 0;
 }
 
 static int do_class_reset(const std::vector<std::string>& args) {
+    set_init_class_prop(args[1], "reset");
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->Reset(); });
     return 0;
