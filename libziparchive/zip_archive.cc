@@ -810,7 +810,7 @@ class FileWriter : public Writer {
       // EOPNOTSUPP error when issued in other filesystems.
       // Hence, check for the return error code before concluding that the
       // disk does not have enough space.
-      result = TEMP_FAILURE_RETRY(fallocate(fd, 0, current_offset, declared_length));
+      result = TEMP_FAILURE_RETRY(fallocate64(fd, 0, current_offset, declared_length));
       if (result == -1 && errno == ENOSPC) {
         ALOGW("Zip: unable to allocate  %" PRId64 " bytes at offset %" PRId64 " : %s",
               static_cast<int64_t>(declared_length), static_cast<int64_t>(current_offset),
@@ -828,7 +828,7 @@ class FileWriter : public Writer {
 
     // Block device doesn't support ftruncate(2).
     if (!S_ISBLK(sb.st_mode)) {
-      result = TEMP_FAILURE_RETRY(ftruncate(fd, declared_length + current_offset));
+      result = TEMP_FAILURE_RETRY(ftruncate64(fd, declared_length + current_offset));
       if (result == -1) {
         ALOGW("Zip: unable to truncate file to %" PRId64 ": %s",
               static_cast<int64_t>(declared_length + current_offset), strerror(errno));
