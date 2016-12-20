@@ -800,7 +800,13 @@ int main(int argc, char** argv) {
     parser.AddSectionParser("service",std::make_unique<ServiceParser>());
     parser.AddSectionParser("on", std::make_unique<ActionParser>());
     parser.AddSectionParser("import", std::make_unique<ImportParser>());
-    parser.ParseConfig("/init.rc");
+
+    std::string bootscript = property_get("ro.boot.init_rc");
+    if (bootscript.empty()) {
+        parser.ParseConfig("/init.rc");
+    } else {
+        parser.ParseConfig(bootscript);
+    }
 
     ActionManager& am = ActionManager::GetInstance();
 
@@ -825,7 +831,8 @@ int main(int argc, char** argv) {
     std::string bootmode = property_get("ro.bootmode");
     if (bootmode == "charger") {
         am.QueueEventTrigger("charger");
-    } else {
+    } else if (bootmode == "unknown") {
+        // only trigger late-init in normal boot
         am.QueueEventTrigger("late-init");
     }
 
