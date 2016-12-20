@@ -134,3 +134,7 @@ LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
 LOCAL_CPPFLAGS := -Wall -Wextra -Werror
 include $(BUILD_NATIVE_TEST)
+
+# Sample service for testing.
+# =========================================================
+include system/core/init/test_service/Android.mk
