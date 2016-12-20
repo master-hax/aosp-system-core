@@ -531,6 +531,8 @@ struct usb_descriptor_header *usb_descriptor_iter_next(struct usb_descriptor_ite
     if (iter->curr_desc >= iter->config_end)
         return NULL;
     next = (struct usb_descriptor_header*)iter->curr_desc;
+    if (next->bLength == 0)
+        return NULL;
     iter->curr_desc += next->bLength;
     return next;
 }
