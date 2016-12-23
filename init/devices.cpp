@@ -34,7 +34,10 @@
 
 #include <linux/netlink.h>
 
+#include <condition_variable>
+#include <deque>
 #include <memory>
+#include <mutex>
 #include <thread>
 
 #include <selinux/selinux.h>
@@ -912,6 +915,161 @@ void handle_device_fd()
         });
 }
 
+struct uevent_with_message {
+    struct uevent uevent;
+    char msg[UEVENT_MSG_LEN+2];
+};
+
+class sys_perms_message {
+public:
+    std::string upath;
+    std::string subsystem;
+
+    sys_perms_message(const char* upath_, const char* subsystem_) :
+        upath(upath_),
+        subsystem(subsystem_) {};
+};
+
+template <typename T> class uevent_handling_thread_info {
+public:
+    uevent_handling_thread_info(std::thread* thread) :
+        event_sctarch_buffer(nullptr),
+        should_stop_(false),
+        thread_(thread) {};
+
+    ~uevent_handling_thread_info() {
+        delete thread_;
+        delete event_sctarch_buffer;
+    };
+
+    void stop() {
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            should_stop_ = true;
+        }
+        cv_.notify_all();
+        thread_->join();
+    };
+
+    T* wait_for_event() {
+        std::unique_lock<std::mutex> lock(mutex_);
+        while (events_.size() == 0 && !should_stop_) {
+            cv_.wait(lock);
+        }
+        if (should_stop_ && events_.size() == 0) {
+            return nullptr;
+        }
+        T* event = events_.front();
+        events_.pop_front();
+        return event;
+    };
+
+    void queue_event(T* event) {
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            events_.push_back(event);
+        }
+        cv_.notify_one();
+    };
+
+public:
+    T* event_sctarch_buffer;
+
+private:
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    bool should_stop_;
+    std::thread* thread_;
+    std::deque<T*> events_;
+};
+
+static uevent_handling_thread_info<uevent_with_message>* g_uevent_device_handler_thread;
+static uevent_handling_thread_info<sys_perms_message>* g_uevent_sys_perms_handler_thread;
+
+static void handle_device_event_for_coldboot(struct uevent *uevent)
+{
+    // fixup_sys_perm is in separate thread which is queued from main thread.
+    if (!strncmp(uevent->subsystem, "block", 5)) {
+        handle_block_device_event(uevent);
+    } else if (!strncmp(uevent->subsystem, "platform", 8)) {
+        handle_platform_device_event(uevent);
+    } else {
+        handle_generic_device_event(uevent);
+    }
+}
+
+static void uevent_device_handler_thread_main() {
+    LOG(INFO) << "uevent_device_handler_thread_main start";
+    int handled = 0;
+    while (true) {
+        uevent_with_message* event = g_uevent_device_handler_thread->wait_for_event();
+        if (event == nullptr) {
+            break;
+        }
+        handle_device_event_for_coldboot(&event->uevent);
+        handle_firmware_event(&event->uevent);
+        delete event;
+        handled++;
+    }
+    LOG(INFO) << "uevent_device_handler_thread_main finish, handled:" << handled;
+}
+
+static void uevent_sys_perms_handler_thread_main() {
+    LOG(INFO) << "uevent_sys_perms_handler_thread_main start";
+    int handled = 0;
+    while (true) {
+        sys_perms_message* event = g_uevent_sys_perms_handler_thread->wait_for_event();
+        if (event == nullptr) {
+            break;
+        }
+        fixup_sys_perms(event->upath.c_str(), event->subsystem.c_str());
+        delete event;
+        handled++;
+    }
+    LOG(INFO) << "uevent_sys_perms_handler_thread_main finish, handled:" << handled;
+}
+
+static void start_uevent_handler_threads() {
+    g_uevent_device_handler_thread = new uevent_handling_thread_info<uevent_with_message>(
+            new std::thread(uevent_device_handler_thread_main));
+    g_uevent_sys_perms_handler_thread = new uevent_handling_thread_info<sys_perms_message>(
+                new std::thread(uevent_sys_perms_handler_thread_main));
+}
+
+static void wait_for_uevent_handler_threads() {
+    g_uevent_device_handler_thread->stop();
+    delete g_uevent_device_handler_thread;
+    g_uevent_sys_perms_handler_thread->stop();
+    delete g_uevent_sys_perms_handler_thread;
+}
+
+static void handle_device_fd_for_coldboot()
+{
+    // store allocated buffer to scratch buffer. Otherwise, new / delete can be wasted per
+    // each call of this method
+    if (g_uevent_device_handler_thread->event_sctarch_buffer == nullptr) {
+        g_uevent_device_handler_thread->event_sctarch_buffer = new uevent_with_message();
+    }
+    uevent_with_message* event = g_uevent_device_handler_thread->event_sctarch_buffer;
+    int n;
+    while ((n = uevent_kernel_multicast_recv(device_fd, event->msg, UEVENT_MSG_LEN)) > 0) {
+        if(n >= UEVENT_MSG_LEN)   /* overflow -- discard */
+            continue;
+
+        event->msg[n] = '\0';
+        event->msg[n+1] = '\0';
+        parse_event(event->msg, &event->uevent);
+        if (!strcmp(event->uevent.action,"add") || !strcmp(event->uevent.action, "change") ||
+                !strcmp(event->uevent.action, "online")) {
+            g_uevent_sys_perms_handler_thread->queue_event(new sys_perms_message(
+                    event->uevent.path, event->uevent.subsystem));
+        }
+        g_uevent_device_handler_thread->queue_event(event);
+        event = new uevent_with_message();
+        g_uevent_device_handler_thread->event_sctarch_buffer = event;
+    }
+}
+
 /* Coldboot walks parts of the /sys tree and pokes the uevent files
 ** to cause the kernel to regenerate device add events that happened
 ** before init's device manager was started
@@ -932,7 +1090,7 @@ static void do_coldboot(DIR *d)
     if(fd >= 0) {
         write(fd, "add\n", 4);
         close(fd);
-        handle_device_fd();
+        handle_device_fd_for_coldboot();
     }
 
     while((de = readdir(d))) {
@@ -1039,9 +1197,11 @@ void device_init() {
     }
 
     Timer t;
+    start_uevent_handler_threads();
     coldboot("/sys/class");
     coldboot("/sys/block");
     coldboot("/sys/devices");
+    wait_for_uevent_handler_threads();
     close(open(COLDBOOT_DONE, O_WRONLY|O_CREAT|O_CLOEXEC, 0000));
     LOG(INFO) << "Coldboot took " << t;
 }
