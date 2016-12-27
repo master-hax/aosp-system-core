@@ -517,6 +517,44 @@ static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_
     return 0;
 }
 
+#define POLICYVERS "30" // TODO pass in from build system
+static constexpr const char* pol_args[] = {
+    "/secilc",
+    "/plat_sepolicy.cil",
+    "-M", "true",
+    "-c", POLICYVERS,
+    "/mapping_sepolicy.cil",
+    "/nonplat_sepolicy.cil", // TODO (b/33642277) switch to final partition
+    "-o", "/sepolicy2"
+};
+// Launch secilc to compile policy from platform and non-platform policy source
+// files.
+static void selinux_compile_policy() {
+    struct stat sb;
+    if (stat(pol_args[0], &sb) == -1) {
+        PLOG(ERROR) << "cannot find '" << pol_args[0] << "'";
+        security_failure();
+    }
+    pid_t pid = -1;
+    pid = fork();
+    if (pid < 0) {
+        PLOG(ERROR) << "failed to fork for '" << pol_args[0] << "'";
+        security_failure();
+    } else if (pid == 0) {
+        umask(077);
+        if (execve(pol_args[0], (char **)pol_args, (char**) ENV) < 0) {
+            PLOG(ERROR) << "cannot execve('" << pol_args[0] << "')";
+        }
+        _exit(127);
+    } else {
+        int status;
+        if (waitpid(pid, &status, 0) != pid) {
+            PLOG(ERROR) << "waitpid failed for '" << pol_args[0] << "'";
+            security_failure();
+        }
+    }
+}
+
 static void selinux_initialize(bool in_kernel_domain) {
     Timer t;
 
@@ -527,10 +565,17 @@ static void selinux_initialize(bool in_kernel_domain) {
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
 
     if (in_kernel_domain) {
+        LOG(INFO) << "Compiling SELinux policy...";
+        selinux_compile_policy();
+
         LOG(INFO) << "Loading SELinux policy...";
         if (selinux_android_load_policy() < 0) {
             PLOG(ERROR) << "failed to load policy";
             security_failure();
+        }
+
+        if (unlink(pol_args[9]) == -1) {
+            PLOG(ERROR) << "failted to remove compiled policy file";
         }
 
         bool kernel_enforcing = (security_getenforce() == 1);

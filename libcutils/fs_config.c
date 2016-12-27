@@ -187,6 +187,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_ROOT,      0, "bin/*" },
     { 00750, AID_ROOT,      AID_SHELL,     0, "init*" },
     { 00750, AID_ROOT,      AID_SHELL,     0, "sbin/fs_mgr" },
+    { 00700, AID_ROOT,      AID_ROOT,      0, "secilc" },
     { 00640, AID_ROOT,      AID_SHELL,     0, "fstab.*" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "system/build.prop" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "vendor/build.prop" },
