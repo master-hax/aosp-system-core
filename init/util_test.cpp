@@ -17,6 +17,9 @@
 #include "util.h"
 
 #include <errno.h>
+#include <fcntl.h>
+
+#include <sys/stat.h>
 
 #include <gtest/gtest.h>
 
@@ -28,6 +31,45 @@ TEST(util, read_file_ENOENT) {
   EXPECT_EQ("", s); // s was cleared.
 }
 
+TEST(util, read_file_group_writeable) {
+    std::string s("hello");
+    char path[] = "/data/local/tmp/group_writeable";
+    unlink(path);
+    errno = 0;
+    int fd = open(path, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0620);
+    EXPECT_NE(-1, fd);
+    close(fd);
+    EXPECT_TRUE(write_file(path, s.c_str()));
+    EXPECT_FALSE(read_file(path, &s));
+    EXPECT_EQ(0, errno);
+    EXPECT_EQ("", s);  // s was cleared.
+    EXPECT_EQ(0, unlink(path));
+}
+
+TEST(util, read_file_world_writeable) {
+    std::string s("hello");
+    char path[] = "/data/local/tmp/world_writeable";
+    unlink(path);
+    errno = 0;
+    int fd = open(path, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0602);
+    EXPECT_NE(-1, fd);
+    close(fd);
+    EXPECT_TRUE(write_file(path, s.c_str()));
+    EXPECT_FALSE(read_file(path, &s));
+    EXPECT_EQ(0, errno);
+    EXPECT_EQ("", s);  // s was cleared.
+    EXPECT_EQ(0, unlink(path));
+}
+
+TEST(util, read_file_symbol_link) {
+    std::string s("hello");
+    errno = 0;
+    // lrwxrwxrwx 1 root root 13 1970-01-01 00:00 charger -> /sbin/healthd
+    EXPECT_FALSE(read_file("/charger", &s));
+    EXPECT_EQ(ELOOP, errno);
+    EXPECT_EQ("", s);  // s was cleared.
+}
+
 TEST(util, read_file_success) {
   std::string s("hello");
   EXPECT_TRUE(read_file("/proc/version", &s));
@@ -35,6 +77,41 @@ TEST(util, read_file_success) {
   EXPECT_EQ('\n', s[s.length() - 1]);
   s[5] = 0;
   EXPECT_STREQ("Linux", s.c_str());
+}
+
+TEST(util, write_file_not_exist) {
+    std::string s("hello");
+    std::string s2("hello");
+    char path[] = "/data/local/tmp/does-not-exist";
+    EXPECT_TRUE(write_file(path, s.c_str()));
+    EXPECT_TRUE(read_file(path, &s2));
+    EXPECT_EQ(s, s2);
+    struct stat sb;
+    int fd = open(path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    EXPECT_NE(-1, fd);
+    EXPECT_EQ(0, fstat(fd, &sb));
+    EXPECT_NE(0u, sb.st_mode & S_IRUSR);
+    EXPECT_NE(0u, sb.st_mode & S_IWUSR);
+    EXPECT_EQ(0u, sb.st_mode & S_IXUSR);
+    EXPECT_EQ(0u, sb.st_mode & S_IRGRP);
+    EXPECT_EQ(0u, sb.st_mode & S_IWGRP);
+    EXPECT_EQ(0u, sb.st_mode & S_IXGRP);
+    EXPECT_EQ(0u, sb.st_mode & S_IROTH);
+    EXPECT_EQ(0u, sb.st_mode & S_IWOTH);
+    EXPECT_EQ(0u, sb.st_mode & S_IXOTH);
+    EXPECT_EQ(0, unlink(path));
+}
+
+TEST(util, write_file_exist) {
+    std::string s2("");
+    char path[] = "/data/local/tmp/does-exist";
+    EXPECT_TRUE(write_file(path, "1hello1"));
+    EXPECT_TRUE(read_file(path, &s2));
+    EXPECT_STREQ("1hello1", s2.c_str());
+    EXPECT_TRUE(write_file(path, "2hello2"));
+    EXPECT_TRUE(read_file(path, &s2));
+    EXPECT_STREQ("2hello2", s2.c_str());
+    EXPECT_EQ(0, unlink(path));
 }
 
 TEST(util, decode_uid) {
