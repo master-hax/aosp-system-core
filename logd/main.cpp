@@ -451,9 +451,8 @@ int main(int argc, char *argv[]) {
         pthread_attr_destroy(&attr);
     }
 
-    bool auditd = __android_logger_property_get_bool("logd.auditd",
-                                                     BOOL_DEFAULT_TRUE |
-                                                     BOOL_DEFAULT_FLAG_PERSIST);
+    bool auditd = __android_logger_property_get_bool("ro.logd.auditd",
+                                                     BOOL_DEFAULT_TRUE);
     if (drop_privs(klogd, auditd) != 0) {
         return -1;
     }
