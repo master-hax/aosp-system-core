@@ -159,7 +159,7 @@ void handle_control_message(const std::string& msg, const std::string& name) {
     }
 }
 
-static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
+static bool wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
     LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE "...";
@@ -178,7 +178,7 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     }
 
     property_set("ro.boottime.init.cold_boot_wait", std::to_string(t.duration_ns()).c_str());
-    return 0;
+    return true;
 }
 
 /*
@@ -196,9 +196,9 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
  * time. We do not reboot or halt on failures, as this is a best-effort
  * attempt.
  */
-static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
+static bool mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
 {
-    int result = -1;
+    bool result = false;
     int hwrandom_fd = -1;
     int urandom_fd = -1;
     char buf[512];
@@ -211,7 +211,7 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
         if (errno == ENOENT) {
             LOG(ERROR) << "/dev/hw_random not found";
             // It's not an error to not have a Hardware RNG.
-            result = 0;
+            result = true;
         } else {
             PLOG(ERROR) << "Failed to open /dev/hw_random";
         }
@@ -245,7 +245,7 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
     }
 
     LOG(INFO) << "Mixed " << total_bytes_written << " bytes from /dev/hw_random into /dev/urandom";
-    result = 0;
+    result = true;
 
 ret:
     if (hwrandom_fd != -1) {
@@ -321,57 +321,57 @@ static bool __attribute__((unused)) set_mmap_rnd_bits_min(int start, int min, bo
  * ec9ee4acd97c drivers: char: random: add get_random_long()
  * 5ef11c35ce86 mm: ASLR: use get_random_long()
  */
-static int set_mmap_rnd_bits_action(const std::vector<std::string>& args)
+static bool set_mmap_rnd_bits_action(const std::vector<std::string>& args)
 {
-    int ret = -1;
+    bool ret = false;
 
     /* values are arch-dependent */
 #if defined(__aarch64__)
     /* arm64 supports 18 - 33 bits depending on pagesize and VA_SIZE */
     if (set_mmap_rnd_bits_min(33, 24, false)
             && set_mmap_rnd_bits_min(16, 16, true)) {
-        ret = 0;
+        ret = true;
     }
 #elif defined(__x86_64__)
     /* x86_64 supports 28 - 32 bits */
     if (set_mmap_rnd_bits_min(32, 32, false)
             && set_mmap_rnd_bits_min(16, 16, true)) {
-        ret = 0;
+        ret = true;
     }
 #elif defined(__arm__) || defined(__i386__)
     /* check to see if we're running on 64-bit kernel */
     bool h64 = !access(MMAP_RND_COMPAT_PATH, F_OK);
     /* supported 32-bit architecture must have 16 bits set */
     if (set_mmap_rnd_bits_min(16, 16, h64)) {
-        ret = 0;
+        ret = true;
     }
 #elif defined(__mips__) || defined(__mips64__)
     // TODO: add mips support b/27788820
-    ret = 0;
+    ret = true;
 #else
     LOG(ERROR) << "Unknown architecture";
 #endif
 
-    if (ret == -1) {
+    if (ret == false) {
         LOG(ERROR) << "Unable to set adequate mmap entropy value!";
         security_failure();
     }
     return ret;
 }
 
-static int keychord_init_action(const std::vector<std::string>& args)
+static bool keychord_init_action(const std::vector<std::string>& args)
 {
     keychord_init();
-    return 0;
+    return true;
 }
 
-static int console_init_action(const std::vector<std::string>& args)
+static bool console_init_action(const std::vector<std::string>& args)
 {
     std::string console = property_get("ro.boot.console");
     if (!console.empty()) {
         default_console = "/dev/" + console;
     }
-    return 0;
+    return true;
 }
 
 static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
@@ -460,18 +460,18 @@ static void process_kernel_cmdline() {
     if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
-static int property_enable_triggers_action(const std::vector<std::string>& args)
+static bool property_enable_triggers_action(const std::vector<std::string>& args)
 {
     /* Enable property triggers. */
     property_triggers_enabled = 1;
-    return 0;
+    return true;
 }
 
-static int queue_property_triggers_action(const std::vector<std::string>& args)
+static bool queue_property_triggers_action(const std::vector<std::string>& args)
 {
     ActionManager::GetInstance().QueueBuiltinAction(property_enable_triggers_action, "enable_property_trigger");
     ActionManager::GetInstance().QueueAllPropertyTriggers();
-    return 0;
+    return true;
 }
 
 static void selinux_init_all_handles(void)

@@ -20,6 +20,6 @@
 #include <string>
 #include <vector>
 
-int do_bootchart(const std::vector<std::string>& args);
+bool do_bootchart(const std::vector<std::string>& args);
 
 #endif /* _BOOTCHART_H */

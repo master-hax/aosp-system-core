@@ -69,8 +69,8 @@ public:
     }
 
 private:
-//Map of keyword ->
-//(minimum number of arguments, maximum number of arguments, function pointer)
+// Map of keyword ->
+// (minimum number of arguments, maximum number of arguments, function pointer).
     virtual Map& map() const = 0;
 };
 

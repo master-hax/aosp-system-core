@@ -23,7 +23,7 @@
 
 #include "keyword_map.h"
 
-using BuiltinFunction = int (*) (const std::vector<std::string>& args);
+using BuiltinFunction = bool (*) (const std::vector<std::string>& args);
 class BuiltinFunctionMap : public KeywordMap<BuiltinFunction> {
 public:
     BuiltinFunctionMap() {

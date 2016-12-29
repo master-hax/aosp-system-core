@@ -164,20 +164,20 @@ static void bootchart_thread_main() {
   LOG(INFO) << "Bootcharting finished";
 }
 
-static int do_bootchart_start() {
+static bool do_bootchart_start() {
   // We don't care about the content, but we do care that /data/bootchart/enabled actually exists.
   std::string start;
   if (!android::base::ReadFileToString("/data/bootchart/enabled", &start)) {
     LOG(VERBOSE) << "Not bootcharting";
-    return 0;
+    return true;
   }
 
   g_bootcharting_thread = new std::thread(bootchart_thread_main);
-  return 0;
+  return true;
 }
 
-static int do_bootchart_stop() {
-  if (!g_bootcharting_thread) return 0;
+static bool do_bootchart_stop() {
+  if (!g_bootcharting_thread) return true;
 
   // Tell the worker thread it's time to quit.
   {
@@ -189,10 +189,10 @@ static int do_bootchart_stop() {
   g_bootcharting_thread->join();
   delete g_bootcharting_thread;
   g_bootcharting_thread = nullptr;
-  return 0;
+  return true;
 }
 
-int do_bootchart(const std::vector<std::string>& args) {
+bool do_bootchart(const std::vector<std::string>& args) {
   if (args[1] == "start") return do_bootchart_start();
   return do_bootchart_stop();
 }

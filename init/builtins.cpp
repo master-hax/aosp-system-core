@@ -79,7 +79,7 @@ static int insmod(const char *filename, const char *options, int flags) {
     int fd = open(filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
     if (fd == -1) {
         PLOG(ERROR) << "insmod: open(\"" << filename << "\") failed";
-        return -1;
+        return false;
     }
     int rc = syscall(__NR_finit_module, fd, options, flags);
     if (rc == -1) {
@@ -97,7 +97,7 @@ static int __ifupdown(const char *interface, int up) {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s < 0)
-        return -1;
+        return false;
 
     ret = ioctl(s, SIOCGIFFLAGS, &ifr);
     if (ret < 0) {
@@ -146,7 +146,7 @@ static int reboot_into_recovery(const std::vector<std::string>& options) {
     std::string err;
     if (!write_bootloader_message(options, &err)) {
         LOG(ERROR) << "failed to set bootloader message: " << err;
-        return -1;
+        return false;
     }
     reboot("recovery");
 }
@@ -226,65 +226,65 @@ static void unmount_and_fsck(const struct mntent *entry) {
     }
 }
 
-static int do_class_start(const std::vector<std::string>& args) {
-        /* Starting a class does not start services
-         * which are explicitly disabled.  They must
-         * be started individually.
-         */
+static bool do_class_start(const std::vector<std::string>& args) {
+    /* Starting a class does not start services
+     * which are explicitly disabled.  They must
+     * be started individually.
+     */
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->StartIfNotDisabled(); });
-    return 0;
+    return true;
 }
 
-static int do_class_stop(const std::vector<std::string>& args) {
+static bool do_class_stop(const std::vector<std::string>& args) {
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->Stop(); });
-    return 0;
+    return true;
 }
 
-static int do_class_reset(const std::vector<std::string>& args) {
+static bool do_class_reset(const std::vector<std::string>& args) {
     ServiceManager::GetInstance().
         ForEachServiceInClass(args[1], [] (Service* s) { s->Reset(); });
-    return 0;
+    return true;
 }
 
-static int do_domainname(const std::vector<std::string>& args) {
-    return write_file("/proc/sys/kernel/domainname", args[1].c_str()) ? 0 : 1;
+static bool do_domainname(const std::vector<std::string>& args) {
+    return write_file("/proc/sys/kernel/domainname", args[1].c_str());
 }
 
-static int do_enable(const std::vector<std::string>& args) {
+static bool do_enable(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
     if (!svc) {
-        return -1;
+        return false;
     }
     return svc->Enable();
 }
 
-static int do_exec(const std::vector<std::string>& args) {
+static bool do_exec(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().MakeExecOneshotService(args);
     if (!svc) {
-        return -1;
+        return false;
     }
     if (!svc->Start()) {
-        return -1;
+        return false;
     }
     waiting_for_exec = true;
-    return 0;
+    return true;
 }
 
-static int do_export(const std::vector<std::string>& args) {
-    return add_environment(args[1].c_str(), args[2].c_str());
+static bool do_export(const std::vector<std::string>& args) {
+    return add_environment(args[1].c_str(), args[2].c_str()) == 0;
 }
 
-static int do_hostname(const std::vector<std::string>& args) {
-    return write_file("/proc/sys/kernel/hostname", args[1].c_str()) ? 0 : 1;
+static bool do_hostname(const std::vector<std::string>& args) {
+    return write_file("/proc/sys/kernel/hostname", args[1].c_str());
 }
 
-static int do_ifup(const std::vector<std::string>& args) {
-    return __ifupdown(args[1].c_str(), 1);
+static bool do_ifup(const std::vector<std::string>& args) {
+    return __ifupdown(args[1].c_str(), 1) >= 0;
 }
 
-static int do_insmod(const std::vector<std::string>& args) {
+static bool do_insmod(const std::vector<std::string>& args) {
     int flags = 0;
     auto it = args.begin() + 1;
 
@@ -295,10 +295,10 @@ static int do_insmod(const std::vector<std::string>& args) {
 
     std::string filename = *it++;
     std::string options = android::base::Join(std::vector<std::string>(it, args.end()), ' ');
-    return insmod(filename.c_str(), options.c_str(), flags);
+    return insmod(filename.c_str(), options.c_str(), flags) == 0;
 }
 
-static int do_mkdir(const std::vector<std::string>& args) {
+static bool do_mkdir(const std::vector<std::string>& args) {
     mode_t mode = 0755;
     int ret;
 
@@ -314,7 +314,7 @@ static int do_mkdir(const std::vector<std::string>& args) {
         ret = fchmodat(AT_FDCWD, args[1].c_str(), mode, AT_SYMLINK_NOFOLLOW);
     }
     if (ret == -1) {
-        return -errno;
+        return false;
     }
 
     if (args.size() >= 4) {
@@ -326,14 +326,14 @@ static int do_mkdir(const std::vector<std::string>& args) {
         }
 
         if (lchown(args[1].c_str(), uid, gid) == -1) {
-            return -errno;
+            return false;
         }
 
         /* chown may have cleared S_ISUID and S_ISGID, chmod again */
         if (mode & (S_ISUID | S_ISGID)) {
             ret = fchmodat(AT_FDCWD, args[1].c_str(), mode, AT_SYMLINK_NOFOLLOW);
             if (ret == -1) {
-                return -errno;
+                return false;
             }
         }
     }
@@ -344,15 +344,15 @@ static int do_mkdir(const std::vector<std::string>& args) {
                 "--prompt_and_wipe_data",
                 "--reason=set_policy_failed:"s + args[1]};
             reboot_into_recovery(options);
-            return -1;
+            return false;
         }
     }
-    return 0;
+    return true;
 }
 
 /* umount <path> */
-static int do_umount(const std::vector<std::string>& args) {
-  return umount(args[1].c_str());
+static bool do_umount(const std::vector<std::string>& args) {
+  return umount(args[1].c_str()) == 0;
 }
 
 static struct {
@@ -380,7 +380,7 @@ static struct {
 #define DATA_MNT_POINT "/data"
 
 /* mount <type> <device> <path> <flags ...> <options> */
-static int do_mount(const std::vector<std::string>& args) {
+static bool do_mount(const std::vector<std::string>& args) {
     char tmp[64];
     const char *source, *target, *system;
     const char *options = NULL;
@@ -417,7 +417,7 @@ static int do_mount(const std::vector<std::string>& args) {
         mode = (flags & MS_RDONLY) ? O_RDONLY : O_RDWR;
         fd = open(source + 5, mode | O_CLOEXEC);
         if (fd < 0) {
-            return -1;
+            return false;
         }
 
         for (n = 0; ; n++) {
@@ -425,7 +425,7 @@ static int do_mount(const std::vector<std::string>& args) {
             loop = open(tmp, mode | O_CLOEXEC);
             if (loop < 0) {
                 close(fd);
-                return -1;
+                return false;
             }
 
             /* if it is a blank loop device */
@@ -437,7 +437,7 @@ static int do_mount(const std::vector<std::string>& args) {
                     if (mount(tmp, target, system, flags, options) < 0) {
                         ioctl(loop, LOOP_CLR_FD, 0);
                         close(loop);
-                        return -1;
+                        return false;
                     }
 
                     close(loop);
@@ -450,19 +450,18 @@ static int do_mount(const std::vector<std::string>& args) {
 
         close(fd);
         LOG(ERROR) << "out of loopback devices";
-        return -1;
+        return false;
     } else {
         if (wait)
             wait_for_file(source, kCommandRetryTimeout);
         if (mount(source, target, system, flags, options) < 0) {
-            return -1;
+            return false;
         }
 
     }
 
 exit_success:
-    return 0;
-
+    return true;
 }
 
 /* Imports .rc files from the specified paths. Default ones are applied if none is given.
@@ -533,7 +532,7 @@ static int mount_fstab(const char* fstabfile, int mount_mode) {
         _exit(child_ret);
     } else {
         /* fork failed, return an error */
-        return -1;
+        return false;
     }
     return ret;
 }
@@ -569,7 +568,7 @@ static int queue_fs_event(int code) {
         /* If reboot worked, there is no return. */
     } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
         if (e4crypt_install_keyring()) {
-            return -1;
+            return false;
         }
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
@@ -590,7 +589,7 @@ static int queue_fs_event(int code) {
  * This function might request a reboot, in which case it will
  * not return.
  */
-static int do_mount_all(const std::vector<std::string>& args) {
+static bool do_mount_all(const std::vector<std::string>& args) {
     std::size_t na = 0;
     bool import_rc = true;
     bool queue_event = true;
@@ -610,7 +609,7 @@ static int do_mount_all(const std::vector<std::string>& args) {
         }
     }
 
-    int ret =  mount_fstab(fstabfile, mount_mode);
+    int ret = mount_fstab(fstabfile, mount_mode);
 
     if (import_rc) {
         /* Paths of .rc files are specified at the 2nd argument and beyond */
@@ -619,14 +618,14 @@ static int do_mount_all(const std::vector<std::string>& args) {
 
     if (queue_event) {
         /* queue_fs_event will queue event based on mount_fstab return code
-         * and return processed return code*/
+         * and return processed return code */
         ret = queue_fs_event(ret);
     }
 
-    return ret;
+    return ret >= 0 && ret <= FS_MGR_MNTALL_DEV_FILE_ENCRYPTED;
 }
 
-static int do_swapon_all(const std::vector<std::string>& args) {
+static bool do_swapon_all(const std::vector<std::string>& args) {
     struct fstab *fstab;
     int ret;
 
@@ -634,60 +633,59 @@ static int do_swapon_all(const std::vector<std::string>& args) {
     ret = fs_mgr_swapon_all(fstab);
     fs_mgr_free_fstab(fstab);
 
-    return ret;
+    return ret == 0;
 }
 
-static int do_setprop(const std::vector<std::string>& args) {
+static bool do_setprop(const std::vector<std::string>& args) {
     const char* name = args[1].c_str();
     const char* value = args[2].c_str();
-    property_set(name, value);
-    return 0;
+    return property_set(name, value) == 0;
 }
 
-static int do_setrlimit(const std::vector<std::string>& args) {
+static bool do_setrlimit(const std::vector<std::string>& args) {
     struct rlimit limit;
     int resource;
     if (android::base::ParseInt(args[1], &resource) &&
         android::base::ParseUint(args[2], &limit.rlim_cur) &&
         android::base::ParseUint(args[3], &limit.rlim_max)) {
-        return setrlimit(resource, &limit);
+        return setrlimit(resource, &limit) == 0;
     }
     LOG(WARNING) << "ignoring setrlimit " << args[1] << " " << args[2] << " " << args[3];
-    return -1;
+    return false;
 }
 
-static int do_start(const std::vector<std::string>& args) {
+static bool do_start(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
     if (!svc) {
         LOG(ERROR) << "do_start: Service " << args[1] << " not found";
-        return -1;
+        return false;
     }
     if (!svc->Start())
-        return -1;
-    return 0;
+        return false;
+    return true;
 }
 
-static int do_stop(const std::vector<std::string>& args) {
+static bool do_stop(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
     if (!svc) {
         LOG(ERROR) << "do_stop: Service " << args[1] << " not found";
-        return -1;
+        return false;
     }
     svc->Stop();
-    return 0;
+    return true;
 }
 
-static int do_restart(const std::vector<std::string>& args) {
+static bool do_restart(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
     if (!svc) {
         LOG(ERROR) << "do_restart: Service " << args[1] << " not found";
-        return -1;
+        return false;
     }
     svc->Restart();
-    return 0;
+    return true;
 }
 
-static int do_powerctl(const std::vector<std::string>& args) {
+static bool do_powerctl(const std::vector<std::string>& args) {
     const char* command = args[1].c_str();
     int len = 0;
     unsigned int cmd = 0;
@@ -702,7 +700,7 @@ static int do_powerctl(const std::vector<std::string>& args) {
         len = 6;
     } else {
         LOG(ERROR) << "powerctl: unrecognized command '" << command << "'";
-        return -EINVAL;
+        return false;
     }
 
     if (command[len] == ',') {
@@ -725,7 +723,7 @@ static int do_powerctl(const std::vector<std::string>& args) {
         }
     } else if (command[len] != '\0') {
         LOG(ERROR) << "powerctl: unrecognized reboot target '" << &command[len] << "'";
-        return -EINVAL;
+        return false;
     }
 
     std::string timeout = property_get("ro.build.shutdown_timeout");
@@ -764,41 +762,41 @@ static int do_powerctl(const std::vector<std::string>& args) {
         LOG(VERBOSE) << "Terminating running services took " << t;
     }
 
-    return android_reboot_with_callback(cmd, 0, reboot_target, callback_on_ro_remount);
+    return android_reboot_with_callback(cmd, 0, reboot_target, callback_on_ro_remount) == 0;
 }
 
-static int do_trigger(const std::vector<std::string>& args) {
+static bool do_trigger(const std::vector<std::string>& args) {
     ActionManager::GetInstance().QueueEventTrigger(args[1]);
-    return 0;
+    return true;
 }
 
-static int do_symlink(const std::vector<std::string>& args) {
-    return symlink(args[1].c_str(), args[2].c_str());
+static bool do_symlink(const std::vector<std::string>& args) {
+    return symlink(args[1].c_str(), args[2].c_str()) == 0;
 }
 
-static int do_rm(const std::vector<std::string>& args) {
-    return unlink(args[1].c_str());
+static bool do_rm(const std::vector<std::string>& args) {
+    return unlink(args[1].c_str()) == 0;
 }
 
-static int do_rmdir(const std::vector<std::string>& args) {
-    return rmdir(args[1].c_str());
+static bool do_rmdir(const std::vector<std::string>& args) {
+    return rmdir(args[1].c_str()) == 0;
 }
 
-static int do_sysclktz(const std::vector<std::string>& args) {
+static bool do_sysclktz(const std::vector<std::string>& args) {
     struct timezone tz = {};
     if (android::base::ParseInt(args[1], &tz.tz_minuteswest) && settimeofday(NULL, &tz) != -1) {
-        return 0;
+        return true;
     }
-    return -1;
+    return false;
 }
 
-static int do_verity_load_state(const std::vector<std::string>& args) {
+static bool do_verity_load_state(const std::vector<std::string>& args) {
     int mode = -1;
     int rc = fs_mgr_load_verity_state(&mode);
     if (rc == 0 && mode != VERITY_MODE_DEFAULT) {
         ActionManager::GetInstance().QueueEventTrigger("verity-logging");
     }
-    return rc;
+    return rc == 0;
 }
 
 static void verity_update_property(fstab_rec *fstab, const char *mount_point,
@@ -807,17 +805,17 @@ static void verity_update_property(fstab_rec *fstab, const char *mount_point,
                  android::base::StringPrintf("%d", mode).c_str());
 }
 
-static int do_verity_update_state(const std::vector<std::string>& args) {
-    return fs_mgr_update_verity_state(verity_update_property);
+static bool do_verity_update_state(const std::vector<std::string>& args) {
+    return fs_mgr_update_verity_state(verity_update_property) == 0;
 }
 
-static int do_write(const std::vector<std::string>& args) {
+static bool do_write(const std::vector<std::string>& args) {
     const char* path = args[1].c_str();
     const char* value = args[2].c_str();
-    return write_file(path, value) ? 0 : 1;
+    return write_file(path, value);
 }
 
-static int do_copy(const std::vector<std::string>& args) {
+static bool do_copy(const std::vector<std::string>& args) {
     char *buffer = NULL;
     int rc = 0;
     int fd1 = -1, fd2 = -1;
@@ -826,7 +824,7 @@ static int do_copy(const std::vector<std::string>& args) {
     char *p;
 
     if (stat(args[1].c_str(), &info) < 0)
-        return -1;
+        return false;
 
     if ((fd1 = open(args[1].c_str(), O_RDONLY|O_CLOEXEC)) < 0)
         goto out_err;
@@ -872,22 +870,22 @@ out:
         close(fd1);
     if (fd2 >= 0)
         close(fd2);
-    return rc;
+    return rc == 0;
 }
 
-static int do_chown(const std::vector<std::string>& args) {
+static bool do_chown(const std::vector<std::string>& args) {
     /* GID is optional. */
     if (args.size() == 3) {
         if (lchown(args[2].c_str(), decode_uid(args[1].c_str()), -1) == -1)
-            return -errno;
+            return false;
     } else if (args.size() == 4) {
         if (lchown(args[3].c_str(), decode_uid(args[1].c_str()),
                    decode_uid(args[2].c_str())) == -1)
-            return -errno;
+            return false;
     } else {
-        return -1;
+        return false;
     }
-    return 0;
+    return true;
 }
 
 static mode_t get_mode(const char *s) {
@@ -903,15 +901,15 @@ static mode_t get_mode(const char *s) {
     return mode;
 }
 
-static int do_chmod(const std::vector<std::string>& args) {
+static bool do_chmod(const std::vector<std::string>& args) {
     mode_t mode = get_mode(args[1].c_str());
     if (fchmodat(AT_FDCWD, args[2].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
-        return -errno;
+        return false;
     }
-    return 0;
+    return true;
 }
 
-static int do_restorecon(const std::vector<std::string>& args) {
+static bool do_restorecon(const std::vector<std::string>& args) {
     int ret = 0;
 
     struct flag_type {const char* name; int value;};
@@ -929,7 +927,7 @@ static int do_restorecon(const std::vector<std::string>& args) {
         if (android::base::StartsWith(args[i], "--")) {
             if (!in_flags) {
                 LOG(ERROR) << "restorecon - flags must precede paths";
-                return -1;
+                return false;
             }
             bool found = false;
             for (size_t j = 0; flags[j].name; ++j) {
@@ -941,25 +939,25 @@ static int do_restorecon(const std::vector<std::string>& args) {
             }
             if (!found) {
                 LOG(ERROR) << "restorecon - bad flag " << args[i];
-                return -1;
+                return false;
             }
         } else {
             in_flags = false;
             if (restorecon(args[i].c_str(), flag) < 0) {
-                ret = -errno;
+                ret = false;
             }
         }
     }
-    return ret;
+    return true;
 }
 
-static int do_restorecon_recursive(const std::vector<std::string>& args) {
+static bool do_restorecon_recursive(const std::vector<std::string>& args) {
     std::vector<std::string> non_const_args(args);
     non_const_args.insert(std::next(non_const_args.begin()), "--recursive");
     return do_restorecon(non_const_args);
 }
 
-static int do_loglevel(const std::vector<std::string>& args) {
+static bool do_loglevel(const std::vector<std::string>& args) {
     // TODO: support names instead/as well?
     int log_level = -1;
     android::base::ParseInt(args[1], &log_level);
@@ -975,32 +973,32 @@ static int do_loglevel(const std::vector<std::string>& args) {
         case 0: severity = android::base::FATAL; break;
         default:
             LOG(ERROR) << "loglevel: invalid log level " << log_level;
-            return -EINVAL;
+            return false;
     }
     android::base::SetMinimumLogSeverity(severity);
-    return 0;
+    return true;
 }
 
-static int do_load_persist_props(const std::vector<std::string>& args) {
+static bool do_load_persist_props(const std::vector<std::string>& args) {
     load_persist_props();
-    return 0;
+    return true;
 }
 
-static int do_load_system_props(const std::vector<std::string>& args) {
+static bool do_load_system_props(const std::vector<std::string>& args) {
     load_system_props();
-    return 0;
+    return true;
 }
 
-static int do_wait(const std::vector<std::string>& args) {
+static bool do_wait(const std::vector<std::string>& args) {
     if (args.size() == 2) {
         return wait_for_file(args[1].c_str(), kCommandRetryTimeout);
     } else if (args.size() == 3) {
         int timeout;
         if (android::base::ParseInt(args[2], &timeout)) {
-            return wait_for_file(args[1].c_str(), std::chrono::seconds(timeout));
+            return wait_for_file(args[1].c_str(), std::chrono::seconds(timeout)) == 0;
         }
     }
-    return -1;
+    return false;
 }
 
 /*
@@ -1019,16 +1017,16 @@ static bool is_file_crypto() {
     return value == "file";
 }
 
-static int do_installkey(const std::vector<std::string>& args) {
+static bool do_installkey(const std::vector<std::string>& args) {
     if (!is_file_crypto()) {
-        return 0;
+        return true;
     }
     return e4crypt_create_device_key(args[1].c_str(),
-                                     do_installkeys_ensure_dir_exists);
+                                     do_installkeys_ensure_dir_exists) == 0;
 }
 
-static int do_init_user0(const std::vector<std::string>& args) {
-    return e4crypt_do_init_user0();
+static bool do_init_user0(const std::vector<std::string>& args) {
+    return e4crypt_do_init_user0() == 0;
 }
 
 BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
