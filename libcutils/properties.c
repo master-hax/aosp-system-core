@@ -36,9 +36,9 @@ int8_t property_get_bool(const char *key, int8_t default_value) {
     }
 
     int8_t result = default_value;
-    char buf[PROPERTY_VALUE_MAX] = {'\0'};
-
-    int len = property_get(key, buf, "");
+    char *buf;
+    property_get2(key, &buf, "");
+    int len = strlen(buf);
     if (len == 1) {
         char ch = buf[0];
         if (ch == '0' || ch == 'n') {
@@ -53,6 +53,7 @@ int8_t property_get_bool(const char *key, int8_t default_value) {
             result = true;
         }
     }
+    free(buf);
 
     return result;
 }
@@ -65,10 +66,11 @@ static intmax_t property_get_imax(const char *key, intmax_t lower_bound, intmax_
     }
 
     intmax_t result = default_value;
-    char buf[PROPERTY_VALUE_MAX] = {'\0'};
+    char *buf;
     char *end = NULL;
 
-    int len = property_get(key, buf, "");
+    property_get2(key, &buf, "");
+    int len = strlen(buf);
     if (len > 0) {
         int tmp = errno;
         errno = 0;
@@ -92,6 +94,7 @@ static intmax_t property_get_imax(const char *key, intmax_t lower_bound, intmax_
 
         errno = tmp;
     }
+    free(buf);
 
     return result;
 }
@@ -124,6 +127,19 @@ int property_get(const char *key, char *value, const char *default_value) {
         value[len] = '\0';
     }
     return len;
+}
+
+int property_get2(const char *key, char **outvalue, const char *default_value) {
+    if (__system_property_get2(key, outvalue) == 0) {
+        return 0;
+    }
+    else if (default_value) {
+        if (outvalue) {
+            *outvalue = strdup(default_value);
+        }
+        return 0;
+    }
+    return -1;
 }
 
 struct property_list_callback_data {

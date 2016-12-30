@@ -45,6 +45,14 @@ extern "C" {
 */
 int property_get(const char *key, char *value, const char *default_value);
 
+/* property_get2: differences from property_get.
+ * value of the property is written to outval which is allocated by the callee.
+ * this must be freed by the caller.
+ *
+ * return 0 on success, -1 on fail.
+ */
+int property_get2(const char *key, char **outvalue, const char *default_value);
+
 /* property_get_bool: returns the value of key coerced into a
 ** boolean. If the property is not set, then the default value is returned.
 **
