@@ -29,9 +29,12 @@ std::string GetProperty(const std::string& key, const std::string& default_value
   const prop_info* pi = __system_property_find(key.c_str());
   if (pi == nullptr) return default_value;
 
-  char buf[PROP_VALUE_MAX];
-  if (__system_property_read(pi, nullptr, buf) > 0) return buf;
-
+  char* buf = __system_property_read_value(pi);
+  if (buf != NULL) {
+      std::string ret(buf);
+      free(buf);
+      return ret;
+  }
   // If the property exists but is empty, also return the default value.
   // Since we can't remove system properties, "empty" is traditionally
   // the same as "missing" (this was true for cutils' property_get).

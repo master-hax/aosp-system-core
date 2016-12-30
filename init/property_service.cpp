@@ -104,7 +104,7 @@ static int check_control_mac_perms(const char *name, char *sctx, struct ucred *c
      *  property service backend labeling while avoiding
      *  mislabels based on true property prefixes.
      */
-    char ctl_name[PROP_VALUE_MAX+4];
+    char ctl_name[PROP_VALUE_BUF_MAXSIZE+4];
     int ret = snprintf(ctl_name, sizeof(ctl_name), "ctl.%s", name);
 
     if (ret < 0 || (size_t) ret >= sizeof(ctl_name))
@@ -114,9 +114,15 @@ static int check_control_mac_perms(const char *name, char *sctx, struct ucred *c
 }
 
 std::string property_get(const char* name) {
-    char value[PROP_VALUE_MAX] = {0};
-    __system_property_get(name, value);
-    return value;
+    char* value = __system_property_get_string(name);
+    if (value != NULL) {
+        std::string ret(value);
+        free(value);
+        return ret;
+    }
+    else {
+        return std::string();
+    }
 }
 
 static void write_persistent_property(const char *name, const char *value)
@@ -146,7 +152,7 @@ bool is_legal_property_name(const std::string &name)
 {
     size_t namelen = name.size();
 
-    if (namelen >= PROP_NAME_MAX) return false;
+    if (namelen >= PROP_NAME_BUF_MAXSIZE) return false;
     if (namelen < 1) return false;
     if (name[0] == '.') return false;
     if (name[namelen - 1] == '.') return false;
@@ -176,7 +182,7 @@ int property_set(const char* name, const char* value) {
         LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: bad name";
         return -1;
     }
-    if (valuelen >= PROP_VALUE_MAX) {
+    if (valuelen >= PROP_VALUE_BUF_MAXSIZE) {
         LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
                    << "value too long";
         return -1;
@@ -261,8 +267,8 @@ static void handle_property_set_fd()
 
     switch(msg.cmd) {
     case PROP_MSG_SETPROP:
-        msg.name[PROP_NAME_MAX-1] = 0;
-        msg.value[PROP_VALUE_MAX-1] = 0;
+        msg.name[PROP_NAME_BUF_MAXSIZE - 1] = 0;
+        msg.value[PROP_VALUE_BUF_MAXSIZE - 1] = 0;
 
         if (!is_legal_property_name(msg.name)) {
             LOG(ERROR) << "sys_prop: illegal property name \"" << msg.name << "\"";
@@ -425,7 +431,7 @@ static void load_persistent_properties() {
             continue;
         }
 
-        char value[PROP_VALUE_MAX];
+        char value[PROP_VALUE_BUF_MAXSIZE];
         int length = read(fd, value, sizeof(value) - 1);
         if (length >= 0) {
             value[length] = 0;
