@@ -146,12 +146,12 @@ bool is_legal_property_name(const std::string &name)
 {
     size_t namelen = name.size();
 
-    if (namelen >= PROP_NAME_MAX) return false;
+//    if (namelen >= PROP_NAME_MAX) return false;
     if (namelen < 1) return false;
     if (name[0] == '.') return false;
     if (name[namelen - 1] == '.') return false;
 
-    /* Only allow alphanumeric, plus '.', '-', '@', or '_' */
+    /* Only allow alphanumeric, plus '.', '-', '@', '!', or '_' */
     /* Don't allow ".." to appear in a property name */
     for (size_t i = 0; i < namelen; i++) {
         if (name[i] == '.') {
@@ -159,7 +159,7 @@ bool is_legal_property_name(const std::string &name)
             if (name[i-1] == '.') return false;
             continue;
         }
-        if (name[i] == '_' || name[i] == '-' || name[i] == '@') continue;
+        if (name[i] == '_' || name[i] == '-' || name[i] == '@' || name[i] == '!') continue;
         if (name[i] >= 'a' && name[i] <= 'z') continue;
         if (name[i] >= 'A' && name[i] <= 'Z') continue;
         if (name[i] >= '0' && name[i] <= '9') continue;
@@ -176,11 +176,11 @@ int property_set(const char* name, const char* value) {
         LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: bad name";
         return -1;
     }
-    if (valuelen >= PROP_VALUE_MAX) {
-        LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
-                   << "value too long";
-        return -1;
-    }
+//    if (valuelen >= PROP_VALUE_MAX) {
+//        LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
+//                   << "value too long";
+//        return -1;
+//    }
 
     if (strcmp("selinux.restorecon_recursive", name) == 0 && valuelen > 0) {
         if (restorecon(value, SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
@@ -259,37 +259,52 @@ static void handle_property_set_fd()
         return;
     }
 
+    bool is_v2 = (msg.cmd & 0x80000000) != 0;
+    msg.cmd &= ~0x80000000;
+
     switch(msg.cmd) {
     case PROP_MSG_SETPROP:
-        msg.name[PROP_NAME_MAX-1] = 0;
-        msg.value[PROP_VALUE_MAX-1] = 0;
+        const char *name;
+        const char *value;
+        if (is_v2) {
+            name = msg.data.v2.name;
+            value = msg.data.v2.value;
+            msg.data.v2.name[PROP_NAME_MAX_V2] = 0;
+            msg.data.v2.value[PROP_RO_VALUE_MAX_V2] = 0;
+        }
+        else {
+            name = msg.data.v1.name;
+            value = msg.data.v1.value;
+            msg.data.v1.name[PROP_NAME_MAX-1] = 0;
+            msg.data.v1.value[PROP_VALUE_MAX-1] = 0;
+        }
 
-        if (!is_legal_property_name(msg.name)) {
-            LOG(ERROR) << "sys_prop: illegal property name \"" << msg.name << "\"";
+        if (!is_legal_property_name(name)) {
+            LOG(ERROR) << "sys_prop: illegal property name \"" << name << "\"";
             close(s);
             return;
         }
 
         getpeercon(s, &source_ctx);
 
-        if(memcmp(msg.name,"ctl.",4) == 0) {
+        if(memcmp(name,"ctl.",4) == 0) {
             // Keep the old close-socket-early behavior when handling
             // ctl.* properties.
             close(s);
-            if (check_control_mac_perms(msg.value, source_ctx, &cr)) {
-                handle_control_message((char*) msg.name + 4, (char*) msg.value);
+            if (check_control_mac_perms(value, source_ctx, &cr)) {
+                handle_control_message((char*) name + 4, (char*) value);
             } else {
-                LOG(ERROR) << "sys_prop: Unable to " << (msg.name + 4)
-                           << " service ctl [" << msg.value << "]"
+                LOG(ERROR) << "sys_prop: Unable to " << (name + 4)
+                           << " service ctl [" << value << "]"
                            << " uid:" << cr.uid
                            << " gid:" << cr.gid
                            << " pid:" << cr.pid;
             }
         } else {
-            if (check_mac_perms(msg.name, source_ctx, &cr)) {
-                property_set((char*) msg.name, (char*) msg.value);
+            if (check_mac_perms(name, source_ctx, &cr)) {
+                property_set((char*) name, (char*) value);
             } else {
-                LOG(ERROR) << "sys_prop: permission denied uid:" << cr.uid << " name:" << msg.name;
+                LOG(ERROR) << "sys_prop: permission denied uid:" << cr.uid << " name:" << name;
             }
 
             // Note: bionic's property client code assumes that the
