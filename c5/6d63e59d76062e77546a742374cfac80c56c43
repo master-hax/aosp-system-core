@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Code-Review+2: Rom Lemarchand <romlem@google.com>
+Verified+1: David Pursell <dpursell@google.com>
+Autosubmit+1: David Pursell <dpursell@google.com>
+Submitted-by: David Pursell <dpursell@google.com>
+Submitted-at: Tue, 03 Jan 2017 17:45:04 +0000
+Reviewed-on: https://android-review.googlesource.com/317109
+Project: platform/system/core
+Branch: refs/heads/master
