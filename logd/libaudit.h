@@ -87,10 +87,18 @@ extern int  audit_get_reply(int fd, struct audit_message *rep, reply_t block,
  *  The fd returned by a call to audit_open()
  * @param pid
  *  The pid whom to set as the reciever of audit messages
+ * @param max_rate
+ *  The cap of the maximum number of audit messages a second
  * @return
  *  This function returns 0 on success, -errno on error.
  */
-extern int  audit_setup(int fd, uint32_t pid);
+
+/* Guidelines to follow for dynamic rate_limit */
+#define AUDIT_RATE_LIMIT_DEFAULT 20        /* acceptable burst rate      */
+#define AUDIT_RATE_LIMIT_BURST_DURATION 10 /* number of seconds of burst */
+#define AUDIT_RATE_LIMIT_MAX     5         /* acceptable sustained rate  */
+
+extern int  audit_setup(int fd, pid_t pid, unsigned rate_limit);
 
 __END_DECLS
 

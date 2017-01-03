@@ -149,7 +149,7 @@ out:
     return rc;
 }
 
-int audit_setup(int fd, uint32_t pid)
+int audit_setup(int fd, pid_t pid, unsigned rate_limit)
 {
     int rc;
     struct audit_message rep;
@@ -164,7 +164,7 @@ int audit_setup(int fd, uint32_t pid)
      */
     status.pid = pid;
     status.mask = AUDIT_STATUS_PID | AUDIT_STATUS_RATE_LIMIT;
-    status.rate_limit = 20; // audit entries per second
+    status.rate_limit = rate_limit; // audit entries per second
 
     /* Let the kernel know this pid will be registering for audit events */
     rc = audit_send(fd, AUDIT_SET, &status, sizeof(status));

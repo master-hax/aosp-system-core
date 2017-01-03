@@ -43,7 +43,7 @@
     '>'
 
 LogAudit::LogAudit(LogBuffer *buf, LogReader *reader, int fdDmesg) :
-        SocketListener(getLogSocket(), false),
+        SocketListener(mSock = getLogSocket(), false),
         logbuf(buf),
         reader(reader),
         fdDmesg(fdDmesg),
@@ -51,7 +51,8 @@ LogAudit::LogAudit(LogBuffer *buf, LogReader *reader, int fdDmesg) :
                                                 BOOL_DEFAULT_TRUE)),
         events(__android_logger_property_get_bool("ro.logd.auditd.events",
                                                   BOOL_DEFAULT_TRUE)),
-        initialized(false) {
+        initialized(false),
+        tooFast(false) {
     static const char auditd_message[] = { KMSG_PRIORITY(LOG_INFO),
         'l', 'o', 'g', 'd', '.', 'a', 'u', 'd', 'i', 't', 'd', ':',
         ' ', 's', 't', 'a', 'r', 't', '\n' };
@@ -82,6 +83,33 @@ bool LogAudit::onDataAvailable(SocketClient *cli) {
 }
 
 int LogAudit::logPrint(const char *fmt, ...) {
+
+    log_time oldest(AUDIT_RATE_LIMIT_BURST_DURATION, 0);
+    bucket.emplace(android_log_clockid());
+    oldest = bucket.back() - oldest;
+    while (bucket.front() < oldest) bucket.pop();
+
+    if (bucket.size() >= (AUDIT_RATE_LIMIT_BURST_DURATION *
+                          AUDIT_RATE_LIMIT_DEFAULT)) {
+        // Hit peak, slow down source
+        if (!tooFast) {
+            tooFast = true;
+            audit_setup(mSock, getpid(), AUDIT_RATE_LIMIT_MAX);
+        }
+        // We do not need to hold on to the full set of timing data, let's
+        // ensure it does not grow without bounds.
+        do {
+            bucket.pop();
+        } while (bucket.size() >= (AUDIT_RATE_LIMIT_BURST_DURATION *
+                                   AUDIT_RATE_LIMIT_DEFAULT));
+    } else if (tooFast &&
+               (bucket.size() < (AUDIT_RATE_LIMIT_BURST_DURATION *
+                                 AUDIT_RATE_LIMIT_MAX))) {
+        tooFast = false;
+        // Went below max sustained rate, allow source to speed up
+        audit_setup(mSock, getpid(), AUDIT_RATE_LIMIT_DEFAULT);
+    }
+
     if (fmt == NULL) {
         return -EINVAL;
     }
@@ -333,6 +361,7 @@ int LogAudit::log(char *buf, size_t len) {
 
     int rc;
     char *type = strstr(buf, "type=");
+    while (bucket.size() > 0) bucket.pop();
     if (type && (type < &buf[len])) {
         rc = logPrint("%s %s", type, audit + 1);
     } else {
@@ -347,7 +376,7 @@ int LogAudit::getLogSocket() {
     if (fd < 0) {
         return fd;
     }
-    if (audit_setup(fd, getpid()) < 0) {
+    if (audit_setup(fd, getpid(), AUDIT_RATE_LIMIT_DEFAULT) < 0) {
         audit_close(fd);
         fd = -1;
     }
