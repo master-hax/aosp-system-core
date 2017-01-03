@@ -19,6 +19,8 @@
 #include <fcntl.h>
 #include <string.h>
 
+#include <linux/audit.h>
+#include <netlink/netlink.h>
 #include <selinux/selinux.h>
 
 void InitKernelLogging(char* argv[]) {
@@ -38,6 +40,19 @@ void InitKernelLogging(char* argv[]) {
     android::base::InitLogging(argv, &android::base::KernelLogger);
 }
 
+static void selinux_avc_log(char* buf) {
+    // trim newline at end of string
+    buf[strlen(buf) - 1] = '\0';
+
+    struct nl_sock* sk = nl_socket_alloc();
+    if (sk == NULL) {
+        return;
+    }
+    nl_connect(sk, NETLINK_AUDIT);
+    nl_send_simple(sk, AUDIT_USER_AVC, 0, buf, strlen(buf) + 1);
+    nl_socket_free(sk);
+}
+
 int selinux_klog_callback(int type, const char *fmt, ...) {
     android::base::LogSeverity severity = android::base::ERROR;
     if (type == SELINUX_WARNING) {
@@ -48,8 +63,15 @@ int selinux_klog_callback(int type, const char *fmt, ...) {
     char buf[1024];
     va_list ap;
     va_start(ap, fmt);
-    vsnprintf(buf, sizeof(buf), fmt, ap);
+    int res = vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
-    android::base::KernelLogger(android::base::MAIN, severity, "selinux", nullptr, 0, buf);
+    if (res <= 0) {
+        return 0;
+    }
+    if (type == SELINUX_AVC) {
+        selinux_avc_log(buf);
+    } else {
+        android::base::KernelLogger(android::base::MAIN, severity, "selinux", nullptr, 0, buf);
+    }
     return 0;
 }
