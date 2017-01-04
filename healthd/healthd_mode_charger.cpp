@@ -43,9 +43,7 @@
 #include <cutils/uevent.h>
 #include <cutils/properties.h>
 
-#ifdef CHARGER_ENABLE_SUSPEND
 #include <suspend/autosuspend.h>
-#endif
 
 #include "animation.h"
 #include "AnimationParser.h"
@@ -254,20 +252,17 @@ out:
     LOGW("\n");
 }
 
-#ifdef CHARGER_ENABLE_SUSPEND
 static int request_suspend(bool enable)
 {
+    if (!property_get_bool("ro.enable_charger_suspend", false)) {
+        return 0;
+    }
+
     if (enable)
         return autosuspend_enable();
     else
         return autosuspend_disable();
 }
-#else
-static int request_suspend(bool /*enable*/)
-{
-    return 0;
-}
-#endif
 
 static int draw_text(const char *str, int x, int y)
 {
@@ -471,9 +466,9 @@ static void update_screen_state(struct charger *charger, int64_t now)
         gr_font_size(gr_sys_font(), &char_width, &char_height);
         init_status_display(batt_anim);
 
-#ifndef CHARGER_DISABLE_INIT_BLANK
-        gr_fb_blank(true);
-#endif
+        if (!property_get_bool("ro.disable_charger_init_blank", false)) {
+            gr_fb_blank(true);
+        }
         minui_inited = true;
     }
 

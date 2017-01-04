@@ -23,7 +23,6 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
     healthd_mode_android.cpp \
-    healthd_mode_charger.cpp \
     AnimationParser.cpp \
     BatteryPropertiesRegistrar.cpp \
 
@@ -76,14 +75,6 @@ LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 
 LOCAL_CFLAGS := -D__STDC_LIMIT_MACROS -Werror
 
-ifeq ($(strip $(BOARD_CHARGER_DISABLE_INIT_BLANK)),true)
-LOCAL_CFLAGS += -DCHARGER_DISABLE_INIT_BLANK
-endif
-
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
-LOCAL_CFLAGS += -DCHARGER_ENABLE_SUSPEND
-endif
-
 ifeq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_CFLAGS += -DCHARGER_NO_UI
 endif
@@ -112,10 +103,7 @@ LOCAL_STATIC_LIBRARIES += \
     liblog \
     libm \
     libc \
-
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
-LOCAL_STATIC_LIBRARIES += libsuspend
-endif
+    libsuspend
 
 LOCAL_HAL_STATIC_LIBRARIES := libhealthd
 
