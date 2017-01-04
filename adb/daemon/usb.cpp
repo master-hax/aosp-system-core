@@ -49,15 +49,10 @@ using namespace std::chrono_literals;
 #define MAX_PACKET_SIZE_HS 512
 #define MAX_PACKET_SIZE_SS 1024
 
-// Writes larger than 16k fail on some devices (seed with 3.10.49-g209ea2f in particular).
-#define USB_FFS_MAX_WRITE 16384
-
-// The kernel allocates a contiguous buffer for reads, which can fail for large ones due to
-// fragmentation. 16k chosen arbitrarily to match the write limit.
-#define USB_FFS_MAX_READ 16384
-
 #define cpu_to_le16(x) htole16(x)
 #define cpu_to_le32(x) htole32(x)
+
+#define FUNCTIONFS_ENDPOINT_ALLOC       _IOR('g', 131, __u32)
 
 static int dummy_fd = -1;
 
@@ -287,6 +282,14 @@ bool init_functionfs(struct usb_handle* h) {
         goto err;
     }
 
+    if (ioctl(h->bulk_in, FUNCTIONFS_ENDPOINT_ALLOC, static_cast<__u32>(h->max_write))) {
+        D("[ %s: cannot call endpoint alloc: errno=%d ]", USB_FFS_ADB_IN, errno);
+    }
+
+    if (ioctl(h->bulk_out, FUNCTIONFS_ENDPOINT_ALLOC, static_cast<__u32>(h->max_read))) {
+        D("[ %s: cannot call endpoint alloc: errno=%d ]", USB_FFS_ADB_OUT, errno);
+    }
+
     return true;
 
 err:
@@ -340,7 +343,7 @@ static int usb_ffs_write(usb_handle* h, const void* data, int len) {
 
     const char* buf = static_cast<const char*>(data);
     while (len > 0) {
-        int write_len = std::min(USB_FFS_MAX_WRITE, len);
+        int write_len = std::min(h->max_write, len);
         int n = adb_write(h->bulk_in, buf, write_len);
         if (n < 0) {
             D("ERROR: fd = %d, n = %d: %s", h->bulk_in, n, strerror(errno));
@@ -359,7 +362,7 @@ static int usb_ffs_read(usb_handle* h, void* data, int len) {
 
     char* buf = static_cast<char*>(data);
     while (len > 0) {
-        int read_len = std::min(USB_FFS_MAX_READ, len);
+        int read_len = std::min(h->max_read, len);
         int n = adb_read(h->bulk_out, buf, read_len);
         if (n < 0) {
             D("ERROR: fd = %d, n = %d: %s", h->bulk_out, n, strerror(errno));
@@ -415,6 +418,8 @@ static void usb_ffs_init() {
     h->read = usb_ffs_read;
     h->kick = usb_ffs_kick;
     h->close = usb_ffs_close;
+    h->max_write = android::base::GetIntProperty("sys.usb.ffs.max_write", USB_FFS_MAX_WRITE);
+    h->max_read = android::base::GetIntProperty("sys.usb.ffs.max_read", USB_FFS_MAX_READ);
 
     D("[ usb_init - starting thread ]");
     if (!adb_thread_create(usb_ffs_open_thread, h)) {

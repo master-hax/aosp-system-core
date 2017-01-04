@@ -45,6 +45,9 @@ struct usb_handle {
     int control = -1;
     int bulk_out = -1; /* "out" from the host's perspective => source for adbd */
     int bulk_in = -1;  /* "in" from the host's perspective => sink for adbd */
+
+    int max_write;
+    int max_read;
 };
 
 bool init_functionfs(struct usb_handle* h);
