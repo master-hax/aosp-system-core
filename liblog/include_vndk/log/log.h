@@ -1,0 +1,16 @@
+/*Special log.h file for VNDK linking modules*/
+
+#include <android/log.h>
+//#include <log/log_id.h>
+//#include <log/log_radio.h>
+
+/*
+ * LOG_TAG is the local tag used for the following simplified
+ * logging macros.  You can change this preprocessor definition
+ * before using the other macros to change the tag.
+ */
+
+#ifndef LOG_TAG
+#define LOG_TAG NULL
+#endif
+
