@@ -275,13 +275,14 @@ TEST(liblog, __android_log_btwrite__android_logger_list_read) {
             continue;
         }
 
-        char *eventData = log_msg.msg();
+        android_log_event_long_t* eventData;
+        eventData = reinterpret_cast<android_log_event_long_t*>(log_msg.msg());
 
-        if (!eventData || (eventData[4] != EVENT_TYPE_LONG)) {
+        if (!eventData || (eventData->payload.type != EVENT_TYPE_LONG)) {
             continue;
         }
 
-        log_time tx(eventData + 4 + 1);
+        log_time tx(reinterpret_cast<char*>(&eventData->payload.data));
         if (ts == tx) {
             ++count;
         } else if (ts1 == tx) {
@@ -357,13 +358,14 @@ static void bswrite_test(const char *message) {
             continue;
         }
 
-        char *eventData = log_msg.msg();
+        android_log_event_string_t* eventData;
+        eventData = reinterpret_cast<android_log_event_string_t*>(log_msg.msg());
 
-        if (!eventData || (eventData[4] != EVENT_TYPE_STRING)) {
+        if (!eventData || (eventData->type != EVENT_TYPE_STRING)) {
             continue;
         }
 
-        size_t len = get4LE(eventData + 4 + 1);
+        size_t len = get4LE(reinterpret_cast<char*>(&eventData->length));
         if (len == total) {
             ++count;
 
@@ -655,13 +657,14 @@ TEST(liblog, __security_buffer) {
             continue;
         }
 
-        char *eventData = log_msg.msg();
+        android_log_event_long_t* eventData;
+        eventData = reinterpret_cast<android_log_event_long_t*>(log_msg.msg());
 
-        if (!eventData || (eventData[4] != EVENT_TYPE_LONG)) {
+        if (!eventData || (eventData->payload.type != EVENT_TYPE_LONG)) {
             continue;
         }
 
-        log_time tx(eventData + 4 + 1);
+        log_time tx(reinterpret_cast<char*>(&eventData->payload.data));
         if (ts == tx) {
             ++count;
         }
@@ -791,20 +794,22 @@ TEST(liblog, android_logger_list_read__cpu_signal) {
             continue;
         }
 
-        char *eventData = log_msg.msg();
+        android_log_event_long_t* eventData;
+        eventData = reinterpret_cast<android_log_event_long_t*>(log_msg.msg());
 
-        if (!eventData || (eventData[4] != EVENT_TYPE_LONG)) {
+        if (!eventData || (eventData->payload.type != EVENT_TYPE_LONG)) {
             continue;
         }
 
-        unsigned long long l = eventData[4 + 1 + 0] & 0xFF;
-        l |= (unsigned long long) (eventData[4 + 1 + 1] & 0xFF) << 8;
-        l |= (unsigned long long) (eventData[4 + 1 + 2] & 0xFF) << 16;
-        l |= (unsigned long long) (eventData[4 + 1 + 3] & 0xFF) << 24;
-        l |= (unsigned long long) (eventData[4 + 1 + 4] & 0xFF) << 32;
-        l |= (unsigned long long) (eventData[4 + 1 + 5] & 0xFF) << 40;
-        l |= (unsigned long long) (eventData[4 + 1 + 6] & 0xFF) << 48;
-        l |= (unsigned long long) (eventData[4 + 1 + 7] & 0xFF) << 56;
+        char* cp = reinterpret_cast<char*>(&eventData->payload.data);
+        unsigned long long l = cp[0] & 0xFF;
+        l |= (unsigned long long) (cp[1] & 0xFF) << 8;
+        l |= (unsigned long long) (cp[2] & 0xFF) << 16;
+        l |= (unsigned long long) (cp[3] & 0xFF) << 24;
+        l |= (unsigned long long) (cp[4] & 0xFF) << 32;
+        l |= (unsigned long long) (cp[5] & 0xFF) << 40;
+        l |= (unsigned long long) (cp[6] & 0xFF) << 48;
+        l |= (unsigned long long) (cp[7] & 0xFF) << 56;
 
         if (l == v) {
             ++signals;
@@ -948,20 +953,22 @@ TEST(liblog, android_logger_list_read__cpu_thread) {
             continue;
         }
 
-        char *eventData = log_msg.msg();
+        android_log_event_long_t* eventData;
+        eventData = reinterpret_cast<android_log_event_long_t*>(log_msg.msg());
 
-        if (!eventData || (eventData[4] != EVENT_TYPE_LONG)) {
+        if (!eventData || (eventData->payload.type != EVENT_TYPE_LONG)) {
             continue;
         }
 
-        unsigned long long l = eventData[4 + 1 + 0] & 0xFF;
-        l |= (unsigned long long) (eventData[4 + 1 + 1] & 0xFF) << 8;
-        l |= (unsigned long long) (eventData[4 + 1 + 2] & 0xFF) << 16;
-        l |= (unsigned long long) (eventData[4 + 1 + 3] & 0xFF) << 24;
-        l |= (unsigned long long) (eventData[4 + 1 + 4] & 0xFF) << 32;
-        l |= (unsigned long long) (eventData[4 + 1 + 5] & 0xFF) << 40;
-        l |= (unsigned long long) (eventData[4 + 1 + 6] & 0xFF) << 48;
-        l |= (unsigned long long) (eventData[4 + 1 + 7] & 0xFF) << 56;
+        char* cp = reinterpret_cast<char*>(&eventData->payload.data);
+        unsigned long long l = cp[0] & 0xFF;
+        l |= (unsigned long long) (cp[1] & 0xFF) << 8;
+        l |= (unsigned long long) (cp[2] & 0xFF) << 16;
+        l |= (unsigned long long) (cp[3] & 0xFF) << 24;
+        l |= (unsigned long long) (cp[4] & 0xFF) << 32;
+        l |= (unsigned long long) (cp[5] & 0xFF) << 40;
+        l |= (unsigned long long) (cp[6] & 0xFF) << 48;
+        l |= (unsigned long long) (cp[7] & 0xFF) << 56;
 
         if (l == v) {
             ++signals;
@@ -1842,7 +1849,7 @@ static void android_errorWriteWithInfoLog_helper(int TAG, const char* SUBTAG,
         int subtag_len = strlen(SUBTAG);
         if (subtag_len > 32) subtag_len = 32;
         ASSERT_EQ(subtag_len, get4LE(eventData));
-        eventData +=4;
+        eventData += 4;
 
         if (memcmp(SUBTAG, eventData, subtag_len)) {
             continue;
