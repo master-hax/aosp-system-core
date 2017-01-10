@@ -110,6 +110,7 @@ static int read_notify(const char* dirname, int nfd) {
   int res;
   char devname[PATH_MAX];
   char* filename;
+  int filename_max;
   char event_buf[512];
   int event_size;
   int event_pos = 0;
@@ -123,14 +124,15 @@ static int read_notify(const char* dirname, int nfd) {
     return 1;
   }
 
-  strcpy(devname, dirname);
+  strlcpy(devname, dirname, sizeof(devname));
+  strlcat(devname, "/", sizeof(devname));
   filename = devname + strlen(devname);
-  *filename++ = '/';
+  filename_max = sizeof(devname) - strlen(devname);
 
   while (res >= (int)sizeof(*event)) {
     event = reinterpret_cast<struct inotify_event*>(event_buf + event_pos);
     if (event->len) {
-      strcpy(filename, event->name);
+      strlcpy(filename, event->name, filename_max);
       if (event->mask & IN_CREATE) {
         open_device(devname);
       } else {
@@ -147,18 +149,20 @@ static int read_notify(const char* dirname, int nfd) {
 static int scan_dir(const char* dirname) {
   char devname[PATH_MAX];
   char* filename;
+  int filename_max;
   struct dirent* de;
   std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(dirname), closedir);
   if (dir == NULL)
     return -1;
-  strcpy(devname, dirname);
+  strlcpy(devname, dirname, sizeof(devname));
+  strlcat(devname, "/", sizeof(devname));
   filename = devname + strlen(devname);
-  *filename++ = '/';
+  filename_max = sizeof(devname) - strlen(devname);
   while ((de = readdir(dir.get()))) {
     if ((de->d_name[0] == '.' && de->d_name[1] == '\0') ||
         (de->d_name[1] == '.' && de->d_name[2] == '\0'))
       continue;
-    strcpy(filename, de->d_name);
+    strlcpy(filename, de->d_name, filename_max);
     open_device(devname);
   }
   return 0;
