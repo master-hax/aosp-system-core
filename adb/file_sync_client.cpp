@@ -438,10 +438,10 @@ class SyncConnection {
             return false;
         }
 
-        syncsendbuf sbuf;
-        sbuf.id = ID_DATA;
+        std::vector<char> buf(sizeof(SyncRequest) + SYNC_DATA_MAX * BUFFER_MULT);
         while (true) {
-            int bytes_read = adb_read(lfd, sbuf.data, max);
+            char* buffer = buf.data() + sizeof(SyncRequest);
+            int bytes_read = adb_read(lfd, buffer, SYNC_DATA_MAX * BUFFER_MULT);
             if (bytes_read == -1) {
                 Error("reading '%s' locally failed: %s", lpath, strerror(errno));
                 adb_close(lfd);
@@ -450,8 +450,16 @@ class SyncConnection {
                 break;
             }
 
-            sbuf.size = bytes_read;
-            WriteOrDie(lpath, rpath, &sbuf, sizeof(SyncRequest) + bytes_read);
+            int bytes_remaining = bytes_read;
+            while (bytes_remaining) {
+                int to_transfer = std::min(SYNC_DATA_MAX, bytes_remaining);
+                SyncRequest *sr = reinterpret_cast<SyncRequest*>(buffer - sizeof(SyncRequest));
+                sr->id = ID_DATA;
+                sr->path_length = to_transfer;
+                WriteOrDie(lpath, rpath, sr, sizeof(SyncRequest) + to_transfer);
+                buffer += to_transfer;
+                bytes_remaining -= to_transfer;
+            }
 
             RecordBytesTransferred(bytes_read);
             bytes_copied += bytes_read;
@@ -731,6 +739,9 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
     }
 
     uint64_t bytes_copied = 0;
+    int offs = 0;
+    std::vector<char> buf(SYNC_DATA_MAX * BUFFER_MULT);
+    char *buffer = buf.data();
     while (true) {
         syncmsg msg;
         if (!ReadFdExactly(sc.fd, &msg.data, sizeof(msg.data))) {
@@ -739,7 +750,15 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
             return false;
         }
 
-        if (msg.data.id == ID_DONE) break;
+        if (msg.data.id == ID_DONE) {
+            if (!WriteFdExactly(lfd, buffer, offs)) {
+                sc.Error("cannot write '%s': %s", lpath, strerror(errno));
+                adb_close(lfd);
+                adb_unlink(lpath);
+                return false;
+            }
+            break;
+        }
 
         if (msg.data.id != ID_DATA) {
             adb_close(lfd);
@@ -755,18 +774,21 @@ static bool sync_recv(SyncConnection& sc, const char* rpath, const char* lpath,
             return false;
         }
 
-        char buffer[SYNC_DATA_MAX];
-        if (!ReadFdExactly(sc.fd, buffer, msg.data.size)) {
+        if (!ReadFdExactly(sc.fd, buffer + offs, msg.data.size)) {
             adb_close(lfd);
             adb_unlink(lpath);
             return false;
         }
+        offs += msg.data.size;
 
-        if (!WriteFdExactly(lfd, buffer, msg.data.size)) {
-            sc.Error("cannot write '%s': %s", lpath, strerror(errno));
-            adb_close(lfd);
-            adb_unlink(lpath);
-            return false;
+        if (offs + SYNC_DATA_MAX > BUFFER_MULT * SYNC_DATA_MAX) {
+            if (!WriteFdExactly(lfd, buffer, offs)) {
+                sc.Error("cannot write '%s': %s", lpath, strerror(errno));
+                adb_close(lfd);
+                adb_unlink(lpath);
+                return false;
+            }
+            offs = 0;
         }
 
         bytes_copied += msg.data.size;
