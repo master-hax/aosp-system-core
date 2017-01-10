@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -201,6 +202,7 @@ static bool handle_send_file(int s, const char* path, uid_t uid, gid_t gid, uint
                              mode_t mode, std::vector<char>& buffer, bool do_unlink) {
     syncmsg msg;
     unsigned int timestamp = 0;
+    int offset = 0;
 
     __android_log_security_bswrite(SEC_TAG_ADB_SEND_FILE, path);
 
@@ -233,28 +235,38 @@ static bool handle_send_file(int s, const char* path, uid_t uid, gid_t gid, uint
         fchmod(fd, mode);
     }
 
+    posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE);
+
     while (true) {
         if (!ReadFdExactly(s, &msg.data, sizeof(msg.data))) goto fail;
 
         if (msg.data.id != ID_DATA) {
             if (msg.data.id == ID_DONE) {
                 timestamp = msg.data.size;
+                if (!WriteFdExactly(fd, &buffer[0], offset)) {
+                    SendSyncFailErrno(s, "write failed");
+                    goto fail;
+                }
                 break;
             }
             SendSyncFail(s, "invalid data message");
             goto abort;
         }
 
-        if (msg.data.size > buffer.size()) {  // TODO: resize buffer?
+        if (msg.data.size > SYNC_DATA_MAX) {  // TODO: resize buffer?
             SendSyncFail(s, "oversize data message");
             goto abort;
         }
 
-        if (!ReadFdExactly(s, &buffer[0], msg.data.size)) goto abort;
+        if (!ReadFdExactly(s, &buffer[offset], msg.data.size)) goto abort;
+        offset += msg.data.size;
 
-        if (!WriteFdExactly(fd, &buffer[0], msg.data.size)) {
-            SendSyncFailErrno(s, "write failed");
-            goto fail;
+        if (offset + SYNC_DATA_MAX > SYNC_DATA_MAX * BUFFER_MULT) {
+            if (!WriteFdExactly(fd, &buffer[0], offset)) {
+                SendSyncFailErrno(s, "write failed");
+                goto fail;
+            }
+            offset = 0;
         }
     }
 
@@ -411,6 +423,7 @@ static bool do_recv(int s, const char* path, std::vector<char>& buffer) {
         SendSyncFailErrno(s, "open failed");
         return false;
     }
+    posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE);
 
     syncmsg msg;
     msg.data.id = ID_DATA;
@@ -422,10 +435,16 @@ static bool do_recv(int s, const char* path, std::vector<char>& buffer) {
             adb_close(fd);
             return false;
         }
-        msg.data.size = r;
-        if (!WriteFdExactly(s, &msg.data, sizeof(msg.data)) || !WriteFdExactly(s, &buffer[0], r)) {
-            adb_close(fd);
-            return false;
+        int offs = 0;
+        while (r > 0) {
+            int len = std::min(SYNC_DATA_MAX, r);
+            msg.data.size = len;
+            if (!WriteFdExactly(s, &msg.data, sizeof(msg.data)) || !WriteFdExactly(s, &buffer[offs], len)) {
+                adb_close(fd);
+                return false;
+            }
+            offs += len;
+            r -= len;
         }
     }
 
@@ -511,7 +530,8 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
 }
 
 void file_sync_service(int fd, void*) {
-    std::vector<char> buffer(SYNC_DATA_MAX);
+    std::vector<char> buffer(SYNC_DATA_MAX * BUFFER_MULT);
+    posix_madvise(buffer.data(), SYNC_DATA_MAX * BUFFER_MULT, POSIX_MADV_SEQUENTIAL | POSIX_MADV_WILLNEED);
 
     while (handle_sync_command(fd, buffer)) {
     }

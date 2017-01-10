@@ -88,5 +88,6 @@ bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
 bool do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only);
 
 #define SYNC_DATA_MAX (64*1024)
+#define BUFFER_MULT 10
 
 #endif

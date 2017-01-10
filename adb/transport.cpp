@@ -498,6 +498,9 @@ static void transport_registration_func(int _fd, unsigned ev, void* data) {
         if (adb_socketpair(s)) {
             fatal_errno("cannot open transport socketpair");
         }
+        // Set socket to maximum size
+        const int max_buf = LINUX_MAX_SOCKET_SIZE;
+        adb_setsockopt(s[0], SOL_SOCKET, SO_SNDBUF, &max_buf, sizeof(max_buf));
 
         D("transport: %s socketpair: (%d,%d) starting", t->serial, s[0], s[1]);
 
