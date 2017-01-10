@@ -148,7 +148,7 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
 
   char thread_name[MAX_TASK_NAME_LEN + 1];  // one more for termination
   if (prctl(PR_GET_NAME, reinterpret_cast<unsigned long>(thread_name), 0, 0, 0) != 0) {
-    strcpy(thread_name, "<name unknown>");
+    strlcpy(thread_name, "<name unknown>", sizeof(thread_name));
   } else {
     // short names are null terminated by prctl, but the man page
     // implies that 16 byte names are not.
