@@ -89,6 +89,7 @@ __BEGIN_DECLS
 #define MF_MAX_COMP_STREAMS 0x100000
 #define MF_RESERVEDSIZE     0x200000
 #define MF_QUOTA            0x400000
+#define MF_AVB              0x800000
 
 #define DM_BUF_SIZE 4096
 
