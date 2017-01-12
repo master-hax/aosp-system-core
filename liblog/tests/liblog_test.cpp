@@ -1831,7 +1831,7 @@ TEST(liblog, __security_buffer) {
         return;
     }
 
-    setuid(AID_SYSTEM); // only one that can read security buffer
+    (void) setuid(AID_SYSTEM); // only one that can read security buffer
 
     pid_t pid = getpid();
 
