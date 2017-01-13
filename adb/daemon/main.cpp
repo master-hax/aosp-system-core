@@ -145,6 +145,31 @@ int adbd_main(int server_port) {
 
     signal(SIGPIPE, SIG_IGN);
 
+#if defined(ALLOW_ADBD_ROOT)
+    if (android::base::GetBoolProperty("persist.adb.bench", false)) {
+        // Execute /system/bin/bench_adbd and wait for it to finish before continuing.
+        pid_t pid = fork();
+        if (pid == 0) {
+            execl("/system/bin/bench_adbd", "/system/bin/bench_adbd", nullptr);
+            abort();
+        } else if (pid == -1) {
+            LOG(ERROR) << "failed to fork to start bench_adbd";
+        } else {
+            int status;
+            while (true) {
+                pid_t rc = TEMP_FAILURE_RETRY(waitpid(pid, &status, 0));
+                if (rc == -1 || rc == pid) {
+                    break;
+                }
+
+                if (WIFEXITED(status) || WIFSIGNALED(status)) {
+                    break;
+                }
+            }
+        }
+    }
+#endif
+
     init_transport_registration();
 
     // We need to call this even if auth isn't enabled because the file
