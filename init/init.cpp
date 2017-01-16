@@ -611,12 +611,25 @@ static std::string get_path(const std::string& base_path, const std::string& ref
 /* Imports the fstab info from cmdline. */
 static std::string import_cmdline_fstab() {
     std::string prefix, fstab, fstab_full;
+    std::string fstab_key = "android.early.fstab";
+    std::string slot_suffix = "";
+
+    import_kernel_cmdline(false,
+        [&](const std::string& key, const std::string& value, bool in_qemu __attribute__((__unused__))) {
+            if (key == "androidboot.slot_suffix") {
+                slot_suffix = value;
+            }
+        });
+
+    if (!slot_suffix.empty()) {
+        fstab_key += slot_suffix;
+    }
 
     import_kernel_cmdline(false,
         [&](const std::string& key, const std::string& value, bool in_qemu __attribute__((__unused__))) {
             if (key == "android.early.prefix") {
                 prefix = value;
-            } else if (key == "android.early.fstab") {
+            } else if (key == fstab_key) {
                 fstab = value;
             }
         });
