@@ -27,6 +27,7 @@
 #include <sys/poll.h>
 
 #include <memory>
+#include <set>
 
 #include <cutils/misc.h>
 #include <cutils/sockets.h>
@@ -306,14 +307,21 @@ static void handle_property_set_fd()
     }
 }
 
-static void load_properties_from_file(const char *, const char *);
+static void load_properties_from_file(const char *,
+                                      const char *,
+                                      std::set<std::string>*,
+                                      std::set<std::string>*);
 
 /*
  * Filter is used to decide which properties to load: NULL loads all keys,
  * "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
+ * Exclusive props set is used to keep properties included in the set from overriding.
+ * Newly added properties are stored in new props set.
  */
-static void load_properties(char *data, const char *filter)
-{
+static void load_properties(char *data,
+                            const char *filter,
+                            std::set<std::string>* exclusive_props_set,
+                            std::set<std::string>* new_props_set) {
     char *key, *value, *eol, *sol, *tmp, *fn;
     size_t flen = 0;
 
@@ -343,7 +351,7 @@ static void load_properties(char *data, const char *filter)
                 while (isspace(*key)) key++;
             }
 
-            load_properties_from_file(fn, key);
+            load_properties_from_file(fn, key, exclusive_props_set, new_props_set);
 
         } else {
             value = strchr(key, '=');
@@ -362,6 +370,11 @@ static void load_properties(char *data, const char *filter)
                     if (strcmp(key, filter)) continue;
                 }
             }
+            if (exclusive_props_set != NULL &&
+                exclusive_props_set->find(key) != exclusive_props_set->end()) continue;
+            if (new_props_set != NULL) {
+                new_props_set->insert(key);
+            }
 
             property_set(key, value);
         }
@@ -370,7 +383,12 @@ static void load_properties(char *data, const char *filter)
 
 // Filter is used to decide which properties to load: NULL loads all keys,
 // "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
-static void load_properties_from_file(const char* filename, const char* filter) {
+// Exclusive props set is used to keep properties included in the set from overriding.
+// Newly added properties are stored in new props set.
+static void load_properties_from_file(const char* filename,
+                                      const char* filter,
+                                      std::set<std::string>* exclusive_props_set,
+                                      std::set<std::string>* new_props_set) {
     Timer t;
     std::string data;
     if (!read_file(filename, &data)) {
@@ -378,8 +396,12 @@ static void load_properties_from_file(const char* filename, const char* filter) 
         return;
     }
     data.push_back('\n');
-    load_properties(&data[0], filter);
+    load_properties(&data[0], filter, exclusive_props_set, new_props_set);
     LOG(VERBOSE) << "(Loading properties from " << filename << " took " << t << ".)";
+}
+
+static void load_properties_from_file(const char* filename, const char* filter) {
+    load_properties_from_file(filename, filter, NULL, NULL);
 }
 
 static void load_persistent_properties() {
@@ -438,7 +460,22 @@ static void load_persistent_properties() {
 }
 
 void property_load_boot_defaults() {
-    load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, NULL);
+    std::set<std::string> exclusive_props_set;
+    std::set<std::string> new_props_set;
+
+    load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, NULL, NULL, &new_props_set);
+    if (!new_props_set.empty()) {
+        exclusive_props_set.insert(new_props_set.begin(), new_props_set.end());
+        new_props_set.clear();
+    }
+
+    load_properties_from_file(PROP_PATH_ODM_DEFAULT, NULL, &exclusive_props_set, &new_props_set);
+    if (!new_props_set.empty()) {
+        exclusive_props_set.insert(new_props_set.begin(), new_props_set.end());
+        new_props_set.clear();
+    }
+
+    load_properties_from_file(PROP_PATH_VENDOR_DEFAULT, NULL, &exclusive_props_set, NULL);
 }
 
 static void load_override_properties() {
@@ -500,8 +537,23 @@ void load_recovery_id_prop() {
 }
 
 void load_system_props() {
-    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL);
-    load_properties_from_file(PROP_PATH_VENDOR_BUILD, NULL);
+    std::set<std::string> exclusive_props_set;
+    std::set<std::string> new_props_set;
+
+    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL, NULL, &new_props_set);
+    if (!new_props_set.empty()) {
+        exclusive_props_set.insert(new_props_set.begin(), new_props_set.end());
+        new_props_set.clear();
+    }
+
+    load_properties_from_file(PROP_PATH_ODM_BUILD, NULL, &exclusive_props_set, &new_props_set);
+    if (!new_props_set.empty()) {
+        exclusive_props_set.insert(new_props_set.begin(), new_props_set.end());
+        new_props_set.clear();
+    }
+
+    load_properties_from_file(PROP_PATH_VENDOR_BUILD, NULL, &exclusive_props_set, NULL);
+
     load_properties_from_file(PROP_PATH_FACTORY, "ro.*");
     load_recovery_id_prop();
 }
