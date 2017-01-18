@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Verified+1: Dmitry Shmidt <dimitrysh@google.com>
+Code-Review+1: Dmitry Shmidt <dimitrysh@google.com>
+Code-Review+2: Badhri Jagan Sridharan <badhri@google.com>
+Autosubmit+1: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 18 Jan 2017 01:39:39 +0000
+Reviewed-on: https://android-review.googlesource.com/322433
+Project: platform/system/core
+Branch: refs/heads/master
