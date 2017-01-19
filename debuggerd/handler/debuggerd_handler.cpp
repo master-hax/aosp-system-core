@@ -46,10 +46,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <string>
+
 #include "private/libc_logging.h"
 
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)
+
+#define DEFAULT_ANDROID_ROOT "/system"
 
 #if defined(__LP64__)
 #define CRASH_DUMP_NAME "crash_dump64"
@@ -57,7 +61,7 @@
 #define CRASH_DUMP_NAME "crash_dump32"
 #endif
 
-#define CRASH_DUMP_PATH "/system/bin/" CRASH_DUMP_NAME
+#define CRASH_DUMP_RELATIVE_PATH "bin/" CRASH_DUMP_NAME
 
 static debuggerd_callbacks_t g_callbacks;
 
@@ -196,9 +200,15 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
 
     char buf[10];
     snprintf(buf, sizeof(buf), "%d", thread_info->crashing_tid);
-    execl(CRASH_DUMP_PATH, CRASH_DUMP_NAME, buf, nullptr);
 
-    fatal("exec failed: %s", strerror(errno));
+    // Honor ANDROID_ROOT if it is defined.
+    const char* android_root = getenv("ANDROID_ROOT");
+    std::string crash_dump_path =
+        (android_root == nullptr ? std::string(DEFAULT_ANDROID_ROOT) : std::string(android_root))
+        + "/" + CRASH_DUMP_RELATIVE_PATH;
+    execl(crash_dump_path.c_str(), CRASH_DUMP_NAME, buf, nullptr);
+
+    fatal("exec failed: %s (%s)", strerror(errno), crash_dump_path.c_str());
   } else {
     close(pipefds[1]);
     char buf[4];
