@@ -111,6 +111,9 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
     case SIGTRAP:
       signal_name = "SIGTRAP";
       break;
+    case DEBUGGER_SIGNAL:
+      signal_name "<requested dump>";
+      break;
   }
 
   char thread_name[MAX_TASK_NAME_LEN + 1];  // one more for termination
