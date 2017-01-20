@@ -356,9 +356,8 @@ on post-fs-data
     # We restorecon /data in case the userdata partition has been reset.
     restorecon /data
 
-    # start debuggerd to make debugging early-boot crashes easier.
-    start debuggerd
-    start debuggerd64
+    # start tombstoned to record early-boot crashes.
+    start tombstoned
 
     # Make sure we have the device encryption key.
     start vold
