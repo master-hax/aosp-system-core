@@ -153,7 +153,7 @@ static bool have_siginfo(int signum) {
 }
 
 struct debugger_thread_info {
-  bool crash_dump_started = false;
+  bool crash_dump_started;
   pid_t crashing_tid;
   pid_t pseudothread_tid;
   int signal_number;
@@ -239,6 +239,18 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
   // Mutex to prevent multiple crashing threads from trying to talk
   // to debuggerd at the same time.
   static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+  void* abort_message = nullptr;
+  debugger_thread_info thread_info = {
+    .crash_dump_started = false,
+    .pseudothread_tid = -1,
+    .crashing_tid = gettid(),
+    .signal_number = signal_number,
+    .info = info,
+  };
+  pid_t child_pid = -1;
+  struct siginfo si = {};
+
   int ret = pthread_mutex_lock(&crash_mutex);
   if (ret != 0) {
     __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_lock failed: %s", strerror(ret));
@@ -258,24 +270,18 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
     __libc_format_log(ANDROID_LOG_INFO, "libc",
                       "Suppressing debuggerd output because prctl(PR_GET_DUMPABLE)==0");
 
-    pthread_mutex_unlock(&crash_mutex);
-    return;
+    if (signal_number != DEBUGGER_SIGNAL) {
+      signal(signal_number, SIG_DFL);
+    }
+    goto resend;
   }
 
-  void* abort_message = nullptr;
   if (g_callbacks.get_abort_message) {
     abort_message = g_callbacks.get_abort_message();
   }
 
-  debugger_thread_info thread_info = {
-    .pseudothread_tid = -1,
-    .crashing_tid = gettid(),
-    .signal_number = signal_number,
-    .info = info
-  };
-
   // Essentially pthread_create without CLONE_FILES (see debuggerd_dispatch_pseudothread).
-  pid_t child_pid =
+  child_pid =
     clone(debuggerd_dispatch_pseudothread, pseudothread_stack,
           CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID,
           &thread_info, nullptr, nullptr, &thread_info.pseudothread_tid);
@@ -304,7 +310,6 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
   // will be thrown again, even for SIGSEGV and friends, since the signal could
   // have been sent manually. Resend the signal with rt_tgsigqueueinfo(2) to
   // preserve the SA_SIGINFO contents.
-  struct siginfo si;
   if (!info) {
     memset(&si, 0, sizeof(si));
     si.si_code = SI_USER;
@@ -323,6 +328,7 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
     info->si_value.sival_ptr = abort_message;
   }
 
+resend:
   // Only resend the signal if we know that either crash_dump has ptraced us or
   // the signal was fatal.
   if (thread_info.crash_dump_started || signal_number != DEBUGGER_SIGNAL) {
