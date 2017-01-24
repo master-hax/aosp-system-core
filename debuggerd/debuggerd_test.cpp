@@ -16,9 +16,10 @@
 
 #include <err.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/prctl.h>
+#include <sys/ptrace.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <chrono>
 #include <regex>
@@ -391,7 +392,7 @@ TEST_F(CrasherTest, backtrace) {
 
 TEST_F(CrasherTest, PR_SET_DUMPABLE_0_crash) {
   StartProcess([]() {
-    prctl(PR_SET_DUMPABLE, 0);
+    ASSERT_EQ(0, prctl(PR_SET_DUMPABLE, 0));
     volatile char* null = static_cast<char*>(nullptr);
     *null = '\0';
   });
@@ -404,4 +405,93 @@ TEST_F(CrasherTest, PR_SET_DUMPABLE_0_raise) {
     raise(SIGUSR1);
   });
   AssertDeath(SIGUSR1);
+}
+
+class PtraceResumptionTest : public ::testing::Test {
+ public:
+  pid_t worker = -1;
+  PtraceResumptionTest() {
+  }
+
+  ~PtraceResumptionTest() {
+  }
+
+  void AssertDeath(int signo);
+  void Start(std::function<void()> f) {
+    unique_fd worker_pipe_read, worker_pipe_write;
+    ASSERT_TRUE(Pipe(&worker_pipe_read, &worker_pipe_write));
+
+    worker = fork();
+    if (worker == 0) {
+      char buf;
+      worker_pipe_write.reset();
+      TEMP_FAILURE_RETRY(read(worker_pipe_read.get(), &buf, sizeof(buf)));
+      exit(0);
+    }
+
+    pid_t tracer = fork();
+    ASSERT_NE(tracer, -1);
+    if (tracer == 0) {
+      f();
+      if (HasFatalFailure()) {
+        exit(1);
+      }
+      exit(0);
+    }
+
+    int result;
+    pid_t rc = waitpid(tracer, &result, 0);
+    ASSERT_EQ(tracer, rc);
+    EXPECT_TRUE(WIFEXITED(result) || WIFSIGNALED(result));
+    if (WIFEXITED(result)) {
+      if (WEXITSTATUS(result) != 0) {
+        FAIL() << "tracer failed";
+      }
+    }
+
+    rc = waitpid(worker, &result, WNOHANG);
+    ASSERT_EQ(0, rc);
+
+    worker_pipe_write.reset();
+
+    rc = waitpid(worker, &result, 0);
+    ASSERT_EQ(worker, rc);
+    EXPECT_TRUE(WIFEXITED(result));
+    EXPECT_EQ(WEXITSTATUS(result), 0);
+  }
+};
+
+static void wait_for_ptrace_stop(pid_t pid) {
+  while (true) {
+    int status;
+    pid_t rc = TEMP_FAILURE_RETRY(waitpid(pid, &status, __WALL));
+    if (rc != pid) {
+      abort();
+    }
+    if (WIFSTOPPED(status)) {
+      return;
+    }
+  }
+}
+
+TEST_F(PtraceResumptionTest, seize) {
+  Start([this]() {
+    ASSERT_EQ(0, ptrace(PTRACE_SEIZE, worker, 0, 0)) << strerror(errno);
+  });
+}
+
+TEST_F(PtraceResumptionTest, seize_interrupt) {
+  Start([this]() {
+    ASSERT_EQ(0, ptrace(PTRACE_SEIZE, worker, 0, 0)) << strerror(errno);
+    ASSERT_EQ(0, ptrace(PTRACE_INTERRUPT, worker, 0, 0)) << strerror(errno);
+  });
+}
+
+TEST_F(PtraceResumptionTest, seize_interrupt_cont) {
+  Start([this]() {
+    ASSERT_EQ(0, ptrace(PTRACE_SEIZE, worker, 0, 0)) << strerror(errno);
+    ASSERT_EQ(0, ptrace(PTRACE_INTERRUPT, worker, 0, 0)) << strerror(errno);
+    wait_for_ptrace_stop(worker);
+    ASSERT_EQ(0, ptrace(PTRACE_CONT, worker, 0, 0)) << strerror(errno);
+  });
 }
