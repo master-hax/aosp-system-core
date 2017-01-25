@@ -323,6 +323,16 @@ static int try_device(io_service_t device, usb_handle *handle) {
         goto error;
     }
 
+    /*
+     * Apple touchbar will hang when we called SetConfiguration later,
+     * skip all apple vendor device id for now.
+     */
+    if (handle->info.dev_vendor == 0x5ac) {
+        handle->success = 0;
+        ERR("Skip Apple device");
+        goto out;
+    }
+
     kr = (*dev)->GetDeviceProduct(dev, &handle->info.dev_product);
     if (kr != 0) {
         ERR("GetDeviceProduct");
