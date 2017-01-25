@@ -102,13 +102,6 @@ static int try_interfaces(IOUSBDeviceInterface182 **dev, usb_handle *handle) {
     request.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
     request.bAlternateSetting = kIOUSBFindInterfaceDontCare;
 
-    // SetConfiguration will kill an existing UMS connection, so let's
-    // not do this if not necessary.
-    configuration = 0;
-    (*dev)->GetConfiguration(dev, &configuration);
-    if (configuration != 1)
-        (*dev)->SetConfiguration(dev, 1);
-
     // Get an iterator for the interfaces on the device
     kr = (*dev)->CreateInterfaceIterator(dev, &request, &iterator);
 
