@@ -87,6 +87,10 @@ bool waiting_for_exec = false;
 
 static int epoll_fd = -1;
 
+bool waiting_for_prop = false;
+std::string wait_prop_name;
+std::string wait_prop_value;
+
 void register_epoll_handler(int fd, void (*fn)()) {
     epoll_event ev;
     ev.events = EPOLLIN;
@@ -128,10 +132,26 @@ int add_environment(const char *key, const char *val)
     return -1;
 }
 
+void wait_property(const char *name, const char *value)
+{
+    LOG(INFO) << "Waiting for property: '" << name << "' to become: '" << value << "'";
+    wait_prop_name = name;
+    wait_prop_value = value;
+    waiting_for_prop = true;
+}
+
 void property_changed(const char *name, const char *value)
 {
     if (property_triggers_enabled)
         ActionManager::GetInstance().QueuePropertyTrigger(name, value);
+    if (waiting_for_prop) {
+        if (wait_prop_name == name && wait_prop_value == value) {
+            wait_prop_name.clear();
+            wait_prop_value.clear();
+            waiting_for_prop = false;
+            LOG(INFO) << "Waited property '" << name << "' changed";
+        }
+    }
 }
 
 static void restart_processes()
@@ -876,7 +896,7 @@ int main(int argc, char** argv) {
     am.QueueBuiltinAction(queue_property_triggers_action, "queue_property_triggers");
 
     while (true) {
-        if (!waiting_for_exec) {
+        if (!(waiting_for_exec || waiting_for_prop)) {
             am.ExecuteOneCommand();
             restart_processes();
         }
