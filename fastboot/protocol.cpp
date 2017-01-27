@@ -29,21 +29,29 @@
 #define round_down(a, b) \
     ({ typeof(a) _a = (a); typeof(b) _b = (b); _a - (_a % _b); })
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
 #include <algorithm>
+#include <vector>
 
+#include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
 #include <sparse/sparse.h>
 #include <utils/FileMap.h>
+#include <utils/Compat.h>
 
 #include "fastboot.h"
 #include "transport.h"
 
 static std::string g_error;
+
+using android::base::unique_fd;
+using android::base::WriteStringToFile;
 
 const std::string fb_get_error() {
     return g_error;
@@ -126,15 +134,30 @@ static int64_t _command_start(Transport* transport, const char* cmd, uint32_t si
     return check_response(transport, size, response);
 }
 
-static int64_t _command_data(Transport* transport, const void* data, uint32_t size) {
+static int64_t _command_write_data(Transport* transport, const void* data, uint32_t size) {
     int64_t r = transport->Write(data, size);
     if (r < 0) {
-        g_error = android::base::StringPrintf("data transfer failure (%s)", strerror(errno));
+        g_error = android::base::StringPrintf("data write failure (%s)", strerror(errno));
         transport->Close();
         return -1;
     }
     if (r != static_cast<int64_t>(size)) {
-        g_error = "data transfer failure (short transfer)";
+        g_error = "data write failure (short transfer)";
+        transport->Close();
+        return -1;
+    }
+    return r;
+}
+
+static int64_t _command_read_data(Transport* transport, void* data, uint32_t size) {
+    int64_t r = transport->Read(data, size);
+    if (r < 0) {
+        g_error = android::base::StringPrintf("data read failure (%s)", strerror(errno));
+        transport->Close();
+        return -1;
+    }
+    if (r != (static_cast<int64_t>(size))) {
+        g_error = "data read failure (short transfer)";
         transport->Close();
         return -1;
     }
@@ -155,8 +178,7 @@ static int64_t _command_send(Transport* transport, const char* cmd, const void* 
     if (r < 0) {
         return -1;
     }
-
-    r = _command_data(transport, data, size);
+    r = _command_write_data(transport, data, size);
     if (r < 0) {
         return -1;
     }
@@ -187,7 +209,7 @@ static int64_t _command_send_fd(Transport* transport, const char* cmd, int fd, u
             return -1;
         }
 
-        if (_command_data(transport, filemap.getDataPtr(), len) < 0) {
+        if (_command_write_data(transport, filemap.getDataPtr(), len) < 0) {
             return -1;
         }
 
@@ -224,6 +246,30 @@ int64_t fb_download_data_fd(Transport* transport, int fd, uint32_t size) {
     return _command_send_fd(transport, cmd.c_str(), fd, size, 0) < 0 ? -1 : 0;
 }
 
+int64_t fb_upload_data(Transport* transport, const char* outfile) {
+    int64_t r;
+
+    // positive return value is the upload size sent by the device
+    r = _command_start(transport, "upload", std::numeric_limits<int32_t>::max(), nullptr);
+    if (r <= 0) {
+        g_error = android::base::StringPrintf("command start failed (%s)", strerror(errno));
+        return r;
+    }
+
+    std::string data;
+    data.resize(r);
+    if ((r = _command_read_data(transport, &data[0], data.size())) == -1) {
+        return r;
+    }
+
+    if (!WriteStringToFile(data, outfile, true)) {
+        g_error = android::base::StringPrintf("write to '%s' failed", outfile);
+        return -1;
+    }
+
+    return _command_end(transport);
+}
+
 #define TRANSPORT_BUF_SIZE 1024
 static char transport_buf[TRANSPORT_BUF_SIZE];
 static int transport_buf_len;
@@ -245,7 +291,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
     }
 
     if (transport_buf_len == TRANSPORT_BUF_SIZE) {
-        r = _command_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
+        r = _command_write_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
         if (r != TRANSPORT_BUF_SIZE) {
             return -1;
         }
@@ -258,7 +304,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
             return -1;
         }
         to_write = round_down(len, TRANSPORT_BUF_SIZE);
-        r = _command_data(transport, ptr, to_write);
+        r = _command_write_data(transport, ptr, to_write);
         if (r != to_write) {
             return -1;
         }
@@ -280,7 +326,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
 
 static int fb_download_data_sparse_flush(Transport* transport) {
     if (transport_buf_len > 0) {
-        int64_t r = _command_data(transport, transport_buf, transport_buf_len);
+        int64_t r = _command_write_data(transport, transport_buf, transport_buf_len);
         if (r != static_cast<int64_t>(transport_buf_len)) {
             return -1;
         }
