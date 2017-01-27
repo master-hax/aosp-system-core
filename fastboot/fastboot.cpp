@@ -355,6 +355,8 @@ static void usage() {
             "  boot <kernel> [ <ramdisk> [ <second> ] ] Download and boot kernel.\n"
             "  flash:raw boot <kernel> [ <ramdisk> [ <second> ] ]\n"
             "                                           Create bootimage and flash it.\n"
+            "  stage [ <infile> ]                       Sends data in <infile> to the device to\n"
+            "                                           stage for use in the next command.\n"
             "  devices [-l]                             List all connected devices [with\n"
             "                                           device paths].\n"
             "  continue                                 Continue with autoboot.\n"
@@ -1785,6 +1787,16 @@ int main(int argc, char **argv)
             }
             fb_set_active(slot.c_str());
             skip(2);
+        } else if(!strcmp(*argv, "stage")) {
+            require(2);
+            char *infile = argv[1];
+            struct fastboot_buffer buf;
+            skip(2);
+
+            if (load_buf(transport, infile, &buf)) {
+                die("cannot load '%s'", infile);
+            }
+            fb_queue_download(infile, buf.data, buf.sz);
         } else if(!strcmp(*argv, "oem")) {
             argc = do_oem_command(argc, argv);
         } else if(!strcmp(*argv, "flashing")) {
