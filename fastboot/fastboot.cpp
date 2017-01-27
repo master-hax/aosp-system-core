@@ -357,6 +357,9 @@ static void usage() {
             "                                           Create bootimage and flash it.\n"
             "  stage [ <infile> ]                       Sends data in <infile> to the device to\n"
             "                                           stage for use in the next command.\n"
+            "  get_staged [ <outfile> ]                 Receives data to <outfile> from the\n"
+            "                                           device staged by the last command. May\n"
+            "                                           not be supported on all devices.\n"
             "  devices [-l]                             List all connected devices [with\n"
             "                                           device paths].\n"
             "  continue                                 Continue with autoboot.\n"
@@ -1797,6 +1800,11 @@ int main(int argc, char **argv)
                 die("cannot load '%s'", infile);
             }
             fb_queue_download(infile, buf.data, buf.sz);
+        } else if(!strcmp(*argv, "get_staged")) {
+            require(2);
+            char *outfile = argv[1];
+            skip(2);
+            fb_queue_upload(outfile);
         } else if(!strcmp(*argv, "oem")) {
             argc = do_oem_command(argc, argv);
         } else if(!strcmp(*argv, "flashing")) {
