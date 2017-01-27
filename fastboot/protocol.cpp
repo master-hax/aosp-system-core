@@ -29,20 +29,26 @@
 #define round_down(a, b) \
     ({ typeof(a) _a = (a); typeof(b) _b = (b); _a - (_a % _b); })
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
 #include <algorithm>
+#include <vector>
 
+#include <android-base/file.h>
 #include <android-base/stringprintf.h>
 #include <sparse/sparse.h>
+#include <utils/Compat.h>
 
 #include "fastboot.h"
 #include "transport.h"
 
 static std::string g_error;
+
+using android::base::WriteFully;
 
 const std::string fb_get_error() {
     return g_error;
@@ -125,8 +131,23 @@ static int _command_start(Transport* transport, const char* cmd, uint32_t size, 
     return check_response(transport, size, response);
 }
 
-static int _command_data(Transport* transport, const void* data, uint32_t size) {
+static int _command_write_data(Transport* transport, const void* data, uint32_t size) {
     int r = transport->Write(data, size);
+    if (r < 0) {
+        g_error = android::base::StringPrintf("data transfer failure (%s)", strerror(errno));
+        transport->Close();
+        return -1;
+    }
+    if (r != ((int) size)) {
+        g_error = "data transfer failure (short transfer)";
+        transport->Close();
+        return -1;
+    }
+    return r;
+}
+
+static int _command_read_data(Transport* transport, void* data, uint32_t size) {
+    int r = transport->Read(data, size);
     if (r < 0) {
         g_error = android::base::StringPrintf("data transfer failure (%s)", strerror(errno));
         transport->Close();
@@ -154,8 +175,7 @@ static int _command_send(Transport* transport, const char* cmd, const void* data
     if (r < 0) {
         return -1;
     }
-
-    r = _command_data(transport, data, size);
+    r = _command_write_data(transport, data, size);
     if (r < 0) {
         return -1;
     }
@@ -186,6 +206,38 @@ int fb_download_data(Transport* transport, const void* data, uint32_t size) {
     return _command_send(transport, cmd, data, size, 0) < 0 ? -1 : 0;
 }
 
+int fb_upload_data(Transport* transport, const char* outfile) {
+    char cmd[64];
+    int r;
+
+    snprintf(cmd, sizeof(cmd), "upload");
+    // positive return value is the upload size sent by the device
+    if ((r = _command_start(transport, cmd, std::numeric_limits<int32_t>::max(), 0)) <= 0) {
+        g_error = android::base::StringPrintf("command start failed (%s)", strerror(errno));
+        return r;
+    }
+
+    std::vector<uint8_t> data(r);
+    if ((r = _command_read_data(transport, data.data(), data.size())) <= 0) {
+        return r;
+    }
+
+    int flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY;
+    int fd = TEMP_FAILURE_RETRY(open(outfile, flags, DEFFILEMODE));
+    if (fd == -1) {
+        g_error = android::base::StringPrintf("could not open '%s'", outfile);
+        return -1;
+    }
+    if (!WriteFully(fd, data.data(), data.size())) {
+        g_error = android::base::StringPrintf("write to '%s' failed", outfile);
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
+    return _command_end(transport);
+}
+
 #define TRANSPORT_BUF_SIZE 1024
 static char transport_buf[TRANSPORT_BUF_SIZE];
 static int transport_buf_len;
@@ -207,7 +259,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
     }
 
     if (transport_buf_len == TRANSPORT_BUF_SIZE) {
-        r = _command_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
+        r = _command_write_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
         if (r != TRANSPORT_BUF_SIZE) {
             return -1;
         }
@@ -220,7 +272,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
             return -1;
         }
         to_write = round_down(len, TRANSPORT_BUF_SIZE);
-        r = _command_data(transport, ptr, to_write);
+        r = _command_write_data(transport, ptr, to_write);
         if (r != to_write) {
             return -1;
         }
@@ -242,7 +294,7 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
 
 static int fb_download_data_sparse_flush(Transport* transport) {
     if (transport_buf_len > 0) {
-        if (_command_data(transport, transport_buf, transport_buf_len) != transport_buf_len) {
+        if (_command_write_data(transport, transport_buf, transport_buf_len) != transport_buf_len) {
             return -1;
         }
         transport_buf_len = 0;
