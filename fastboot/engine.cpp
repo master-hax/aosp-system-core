@@ -44,6 +44,7 @@
 #define OP_NOTICE     4
 #define OP_DOWNLOAD_SPARSE 5
 #define OP_WAIT_FOR_DISCONNECT 6
+#define OP_UPLOAD 7
 
 typedef struct Action Action;
 
@@ -317,6 +318,13 @@ void fb_queue_download(const char *name, void *data, unsigned size)
     a->msg = mkmsg("downloading '%s'", name);
 }
 
+void fb_queue_upload(char *outfile)
+{
+    Action *a = queue_action(OP_UPLOAD, "");
+    a->data = outfile;
+    a->msg = mkmsg("uploading '%s'", outfile);
+}
+
 void fb_queue_notice(const char *notice)
 {
     Action *a = queue_action(OP_NOTICE, "");
@@ -367,6 +375,9 @@ int fb_execute_queue(Transport* transport)
             if (status) break;
         } else if (a->op == OP_WAIT_FOR_DISCONNECT) {
             transport->WaitForDisconnect();
+        } else if (a->op == OP_UPLOAD) {
+            status = fb_upload_data(transport, reinterpret_cast<char*>(a->data));
+            status = a->func(a, status, status ? fb_get_error().c_str() : "");
         } else {
             die("bogus action");
         }
