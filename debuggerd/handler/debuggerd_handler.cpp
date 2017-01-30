@@ -116,6 +116,8 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
     case SIGTRAP:
       signal_name = "SIGTRAP";
       break;
+    case DEBUGGER_SIGNAL:
+      signal_name = "requested dump";
   }
 
   char thread_name[MAX_TASK_NAME_LEN + 1];  // one more for termination
@@ -138,8 +140,9 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
       __libc_format_buffer(addr_desc, sizeof(addr_desc), ", fault addr %p", info->si_addr);
     }
   }
-  __libc_format_log(ANDROID_LOG_FATAL, "libc", "Fatal signal %d (%s)%s%s in tid %d (%s)", signum,
-                    signal_name, code_desc, addr_desc, gettid(), thread_name);
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "%s signal %d (%s)%s%s in tid %d (%s)",
+                    signum == DEBUGGER_SIGNAL ? "Nonfatal" : "Fatal", signum, signal_name,
+                    code_desc, addr_desc, gettid(), thread_name);
 }
 
 /*
