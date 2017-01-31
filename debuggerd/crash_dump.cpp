@@ -51,20 +51,21 @@
 using android::base::unique_fd;
 using android::base::StringPrintf;
 
-static bool pid_contains_tid(pid_t pid, pid_t tid) {
-  std::string task_path = StringPrintf("/proc/%d/task/%d", pid, tid);
-  return access(task_path.c_str(), F_OK) == 0;
+static bool pid_contains_tid(int pid_fd, pid_t tid) {
+  struct stat st;
+  std::string task_path = StringPrintf("task/%d", tid);
+  return fstatat(pid_fd, task_path.c_str(), &st, 0) == 0;
 }
 
 // Attach to a thread, and verify that it's still a member of the given process
-static bool ptrace_seize_thread(pid_t pid, pid_t tid, std::string* error) {
+static bool ptrace_seize_thread(pid_t pid, int pid_proc_fd, pid_t tid, std::string* error) {
   if (ptrace(PTRACE_SEIZE, tid, 0, 0) != 0) {
     *error = StringPrintf("failed to attach to thread %d: %s", tid, strerror(errno));
     return false;
   }
 
   // Make sure that the task we attached to is actually part of the pid we're dumping.
-  if (!pid_contains_tid(pid, tid)) {
+  if (!pid_contains_tid(pid_proc_fd, tid)) {
     if (ptrace(PTRACE_DETACH, tid, 0, 0) != 0) {
       PLOG(FATAL) << "failed to detach from thread " << tid;
     }
@@ -177,7 +178,7 @@ static void abort_handler(pid_t target, const bool& tombstoned_connected,
                           const char* abort_msg) {
   // If we abort before we get an output fd, contact tombstoned to let any
   // potential listeners know that we failed.
-  if (!tombstoned_connected) {
+  if (!tombstoned_connected && target != -1) {
     if (!tombstoned_connect(target, &tombstoned_socket, &output_fd)) {
       // We failed to connect, not much we can do.
       LOG(ERROR) << "failed to connected to tombstoned to report failure";
@@ -186,23 +187,18 @@ static void abort_handler(pid_t target, const bool& tombstoned_connected,
   }
 
   dprintf(output_fd.get(), "crash_dump failed to dump process %d: %s\n", target, abort_msg);
-
   _exit(1);
 }
 
-static void check_process(int proc_fd, pid_t expected_pid) {
-  android::procinfo::ProcessInfo proc_info;
-  if (!android::procinfo::GetProcessInfoFromProcPidFd(proc_fd, &proc_info)) {
-    LOG(FATAL) << "failed to fetch process info";
-  }
-
-  if (proc_info.pid != expected_pid) {
-    LOG(FATAL) << "pid mismatch: expected " << expected_pid << ", actual " << proc_info.ppid;
-  }
-}
-
 int main(int argc, char** argv) {
-  pid_t target = getppid();
+  if (argc != 2) {
+    return 1;
+  }
+
+  pid_t target = -1;
+  pid_t main_tid = -1;
+
+  // Set up logging.
   bool tombstoned_connected = false;
   unique_fd tombstoned_socket;
   unique_fd output_fd;
@@ -217,16 +213,10 @@ int main(int argc, char** argv) {
   action.sa_handler = signal_handler;
   debuggerd_register_handlers(&action);
 
-  if (argc != 2) {
-    return 1;
-  }
+  // Die if we take too long.
+  alarm(20);
 
-  pid_t main_tid;
-
-  if (target == 1) {
-    LOG(FATAL) << "target died before we could attach";
-  }
-
+  // Get the target's info.
   if (!android::base::ParseInt(argv[1], &main_tid, 1, std::numeric_limits<pid_t>::max())) {
     LOG(FATAL) << "invalid main tid: " << argv[1];
   }
@@ -236,41 +226,21 @@ int main(int argc, char** argv) {
     LOG(FATAL) << "failed to fetch process info for target " << main_tid;
   }
 
-  if (main_tid != target_info.tid || target != target_info.pid) {
-    LOG(FATAL) << "target info mismatch, expected pid " << target << ", tid " << main_tid
-               << ", received pid " << target_info.pid << ", tid " << target_info.tid;
-  }
+  target = target_info.pid;
 
-  // Open /proc/`getppid()` in the original process, and pass it down to the forked child.
+  // Open an fd pointing to /proc/<target>.
   std::string target_proc_path = "/proc/" + std::to_string(target);
   int target_proc_fd = open(target_proc_path.c_str(), O_DIRECTORY | O_RDONLY);
   if (target_proc_fd == -1) {
     PLOG(FATAL) << "failed to open " << target_proc_path;
   }
 
-  // Reparent ourselves to init, so that the signal handler can waitpid on the
-  // original process to avoid leaving a zombie for non-fatal dumps.
-  pid_t forkpid = fork();
-  if (forkpid == -1) {
-    PLOG(FATAL) << "fork failed";
-  } else if (forkpid != 0) {
-    exit(0);
-  }
-
-  // Die if we take too long.
-  alarm(20);
-
-  check_process(target_proc_fd, target);
-
-  std::string attach_error;
-  if (!ptrace_seize_thread(target, main_tid, &attach_error)) {
-    LOG(FATAL) << attach_error;
-  }
-
-  check_process(target_proc_fd, target);
-
   LOG(INFO) << "obtaining output fd from tombstoned";
   tombstoned_connected = tombstoned_connect(target, &tombstoned_socket, &output_fd);
+
+  if (ptrace(PTRACE_INTERRUPT, main_tid, 0, 0) != 0) {
+    PLOG(FATAL) << "failed to PTRACE_INTERRUPT target thread";
+  }
 
   // Write a '\1' to stdout to tell the crashing process to resume.
   if (TEMP_FAILURE_RETRY(write(STDOUT_FILENO, "\1", 1)) == -1) {
@@ -329,15 +299,14 @@ int main(int argc, char** argv) {
     siblings.erase(main_tid);
 
     for (pid_t sibling_tid : siblings) {
-      if (!ptrace_seize_thread(target, sibling_tid, &attach_error)) {
+      std::string attach_error;
+      if (!ptrace_seize_thread(target, target_proc_fd, sibling_tid, &attach_error)) {
         LOG(WARNING) << attach_error;
       } else {
         attached_siblings.insert(sibling_tid);
       }
     }
   }
-
-  check_process(target_proc_fd, target);
 
   // TODO: Use seccomp to lock ourselves down.
 

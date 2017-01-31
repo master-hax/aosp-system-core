@@ -41,6 +41,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/prctl.h>
+#include <sys/ptrace.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
 #include <sys/un.h>
@@ -188,6 +189,35 @@ struct debugger_thread_info {
 // process.
 static void* pseudothread_stack;
 
+static void start_crash_dump(const debugger_thread_info* thread_info, int status_write,
+                             int pid_write, int continue_read) {
+  // Now running in the orphan...
+  pid_t pid = syscall(__NR_getpid);
+  if (TEMP_FAILURE_RETRY(write(pid_write, &pid, sizeof(pid))) != sizeof(pid)) {
+    fatal("failed to write pid to fd %d in debuggerd signal handler: %s", pid_write, strerror(errno));
+  }
+
+  // Wait until the psuedothread tells us to continue.
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "reading continue");
+  char dummy;
+  TEMP_FAILURE_RETRY(read(continue_read, &dummy, sizeof(dummy)));
+
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "ptracing");
+  int rc = ptrace(PTRACE_SEIZE, thread_info->crashing_tid, 0, 0);
+  if (rc != 0) {
+    fatal("failed to PTRACE_SEIZE parent: %s", strerror(errno));
+  }
+
+  TEMP_FAILURE_RETRY(dup2(status_write, STDOUT_FILENO));
+  close(status_write);
+
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "execing");
+  char buf[10];
+  snprintf(buf, sizeof(buf), "%d", thread_info->crashing_tid);
+  execl(CRASH_DUMP_PATH, CRASH_DUMP_NAME, buf, nullptr);
+  fatal_errno("exec failed");
+}
+
 static int debuggerd_dispatch_pseudothread(void* arg) {
   debugger_thread_info* thread_info = static_cast<debugger_thread_info*>(arg);
 
@@ -201,56 +231,112 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
   TEMP_FAILURE_RETRY(dup2(devnull, STDOUT_FILENO));
   TEMP_FAILURE_RETRY(dup2(devnull, STDERR_FILENO));
 
-  int pipefds[2];
-  if (pipe(pipefds) != 0) {
-    fatal_errno("failed to create pipe");
+  // Fork twice to orphan the child we're creating, so that the parent doesn't
+  // get left with mysterious children it never created. (Except with clone
+  // instead of fork in order to avoid calling pthread_atfork handlers.)
+
+  // Create three pipes to communicate with the orphan.
+  //  status_pipe: pipe that's passed to crash_dump to report the dump status.
+  //  pid_pipe: pipe for the orphan to report its pid
+  //  continue_pipe: pipe for the psuedothread to tell the orphan to continue
+  int status_pipe[2];
+  int pid_pipe[2];
+  int continue_pipe[2];
+
+  // Explicitly not CLOEXEC, the write end gets passed to crash_dump.
+  if (pipe2(status_pipe, 0) != 0) {
+    fatal_errno("failed to create status pipe");
   }
 
-  // Don't use fork(2) to avoid calling pthread_atfork handlers.
-  int forkpid = clone(nullptr, nullptr, SIGCHLD, nullptr);
+  if (pipe2(pid_pipe, O_CLOEXEC) != 0) {
+    fatal_errno("failed to create pid pipe");
+  }
+
+  if (pipe2(continue_pipe, O_CLOEXEC) != 0) {
+    fatal_errno("failed to create continue pipe");
+  }
+
+  pid_t forkpid = clone(nullptr, nullptr, SIGCHLD, nullptr);
   if (forkpid == -1) {
     __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to fork in debuggerd signal handler: %s",
                       strerror(errno));
   } else if (forkpid == 0) {
-    TEMP_FAILURE_RETRY(dup2(pipefds[1], STDOUT_FILENO));
-    close(pipefds[0]);
-    close(pipefds[1]);
+    // Intermediate worker that dies immediately after forking.
+    close(status_pipe[0]);
+    close(pid_pipe[0]);
+    close(continue_pipe[1]);
 
-    char buf[10];
-    snprintf(buf, sizeof(buf), "%d", thread_info->crashing_tid);
-    execl(CRASH_DUMP_PATH, CRASH_DUMP_NAME, buf, nullptr);
-
-    fatal_errno("exec failed");
-  } else {
-    close(pipefds[1]);
-    char buf[4];
-    ssize_t rc = TEMP_FAILURE_RETRY(read(pipefds[0], &buf, sizeof(buf)));
-    if (rc == -1) {
-      __libc_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe failed: %s", strerror(errno));
-    } else if (rc == 0) {
-      __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper failed to exec");
-    } else if (rc != 1) {
-      __libc_format_log(ANDROID_LOG_FATAL, "libc",
-                        "read of IPC pipe returned unexpected value: %zd", rc);
-    } else {
-      if (buf[0] != '\1') {
-        __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper reported failure");
-      } else {
-        thread_info->crash_dump_started = true;
-      }
+    pid_t worker = clone(nullptr, nullptr, SIGCHLD, nullptr);
+    if (worker == -1) {
+      fatal("failed to fork again in debuggerd signal handler: %s", strerror(errno));
+    } else if (worker == 0) {
+      start_crash_dump(thread_info, status_pipe[1], pid_pipe[1], continue_pipe[0]);
+      fatal("unreachable");
     }
-    close(pipefds[0]);
+    _exit(0);
+  }
 
-    // Don't leave a zombie child.
-    siginfo_t child_siginfo;
-    if (TEMP_FAILURE_RETRY(waitid(P_PID, forkpid, &child_siginfo, WEXITED)) != 0) {
-      __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to wait for crash_dump helper: %s",
-                        strerror(errno));
-      thread_info->crash_dump_started = false;
+  // Original psuedothread:
+  pid_t worker;
+  ssize_t rc;
+
+  close(status_pipe[1]);
+  close(pid_pipe[1]);
+  close(continue_pipe[0]);
+
+  // Wait for the intermediate worker to exit.
+  siginfo_t child_siginfo;
+  if (TEMP_FAILURE_RETRY(waitid(P_PID, forkpid, &child_siginfo, WEXITED)) != 0) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to wait for crash_dump helper: %s",
+                      strerror(errno));
+    goto exit;
+  }
+
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "reading pid");
+
+  // Read the pid of the worker.
+  rc = TEMP_FAILURE_RETRY(read(pid_pipe[0], &worker, sizeof(worker)));
+  if (rc != sizeof(worker)) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to read worker pid");
+    goto exit;
+  }
+
+  if (prctl(PR_SET_PTRACER, worker) != 0) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to set ptracer: %s", strerror(errno));
+  }
+
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "writing continue");
+  if (TEMP_FAILURE_RETRY(write(continue_pipe[1], "", 1)) != 1) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "failed to tell worker to continue");
+    goto exit;
+  }
+
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "reading response");
+  // Read the response from crash_dump.
+  char buf[4];
+  rc = TEMP_FAILURE_RETRY(read(status_pipe[0], &buf, sizeof(buf)));
+  if (rc == -1) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe failed: %s", strerror(errno));
+  } else if (rc == 0) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper failed to exec");
+  } else if (rc != 1) {
+    __libc_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe returned unexpected value: %zd",
+                      rc);
+  } else {
+    if (buf[0] != '\1') {
+      __libc_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper reported failure");
+    } else {
+      thread_info->crash_dump_started = true;
     }
   }
 
-  syscall(__NR_exit, 0);
+  __libc_format_log(ANDROID_LOG_FATAL, "libc", "psuedothread done");
+exit:
+  close(status_pipe[0]);
+  close(pid_pipe[0]);
+  close(continue_pipe[1]);
+
+  syscall(__NR_exit, thread_info->crash_dump_started ? 0 : 1);
   return 0;
 }
 
