@@ -17,8 +17,9 @@
 #ifndef _LIBS_LOG_LOG_READ_H
 #define _LIBS_LOG_LOG_READ_H
 
-/* deal with possible sys/cdefs.h conflict with fcntl.h */
-#ifdef __unused
+/* deal with possible sys/cdefs.h conflict with fcntl.h. This isn't a problem if
+ * we're using Bionic */
+#if defined __unused && !defined __BIONIC__
 #define __unused_defined __unused
 #undef __unused
 #endif
