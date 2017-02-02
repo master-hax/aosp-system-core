@@ -168,6 +168,20 @@ void fb_queue_flash_sparse(const char* ptn, struct sparse_file* s, unsigned sz, 
     a->msg = mkmsg("writing '%s' %zu/%zu", ptn, current, total);
 }
 
+void fb_queue_partition(unsigned num, void *data, size_t sz)
+{
+    Action *a;
+
+    a = queue_action(OP_DOWNLOAD, "");
+
+    a->data = data;
+    a->size = (uint32_t)sz;
+    a->msg = mkmsg("sending partition table %u (%d B)", num, sz);
+
+    a = queue_action(OP_COMMAND, "partition");
+    a->msg = mkmsg("writing partition table %u ", num);
+}
+
 static int match(const char* str, const char** value, unsigned count) {
     unsigned n;
 
