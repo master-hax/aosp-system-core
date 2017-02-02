@@ -56,12 +56,14 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <sparse/sparse.h>
+#include <storage_info.h>
 #include <ziparchive/zip_archive.h>
 
 #include "bootimg_utils.h"
 #include "diagnose_usb.h"
 #include "fastboot.h"
 #include "fs.h"
+#include "partition.h"
 #include "tcp.h"
 #include "transport.h"
 #include "udp.h"
@@ -349,6 +351,8 @@ static void usage() {
             "                                           Format a flash partition. Can\n"
             "                                           override the fs type and/or size\n"
             "                                           the bootloader reports.\n"
+            "  partition <file.xml>                     Create new partition table\n"
+            "                                           based on xml file.\n"
             "  getvar <variable>                        Display a bootloader variable.\n"
             "  set_active <slot>                        Sets the active slot. If slots are\n"
             "                                           not supported, this does nothing.\n"
@@ -1423,6 +1427,25 @@ failed:
     fprintf(stderr, "FAILED (%s)\n", fb_get_error().c_str());
 }
 
+static int do_partition_table(const std::string& fname) {
+    auto info = StorageInfo::NewStorageInfo(fname);
+
+    if (info == nullptr) {
+        fprintf(stderr, "Error processing xml file %s\n", fname.c_str());
+        return -1;
+    }
+
+    for (auto& p : info->GetPartitionTables()) {
+        std::vector<uint8_t> data = fastboot_partition_table_data(p);
+        char* buf = new char[data.size()];
+
+        memcpy(buf, data.data(), data.size());
+        fb_queue_partition(p.lun, buf, data.size());
+    }
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     bool wants_wipe = false;
@@ -1713,6 +1736,10 @@ int main(int argc, char **argv)
             if (data == 0) return 1;
             fb_queue_download("boot.img", data, sz);
             fb_queue_command("boot", "booting");
+        } else if (!strcmp(*argv, "partition")) {
+            require(2);
+            if (do_partition_table(argv[1])) return -1;
+            skip(2);
         } else if(!strcmp(*argv, "flash")) {
             char* pname = argv[1];
             std::string fname;
