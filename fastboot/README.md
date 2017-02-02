@@ -134,6 +134,8 @@ The various currently defined commands are:
                        named partition (if possible).
 
     erase:%s           Erase the indicated partition (clear to 0xFFs)
+    partition          Create partition table using a xml file. Plase see
+                       section Partition Table Format for details.
 
     boot               The previously downloaded data is a boot.img
                        and should be booted according to the normal
@@ -451,3 +453,72 @@ In the examples below, S indicates the starting client sequence number.
     0x03  0x00  0x00  0x01
                                             0x03  0x00  0x00  0x01  OKAY0.4
     0x03  0x00  0x00  0x00  getvar:version [arrives late with old seq#, is ignored]
+
+## Partition Table Format
+Fastboot supports "partition" command which will parse a xml file and create
+a package message that will be sent to the device side. Device side needs to
+implement the command in order to partition its storage device.
+
+This is the format of the XML file:
+  <!DOCTYPE storage [
+    <!ELEMENT storage (volume*)>
+    <!ATTLIST storage type          CDATA #IMPLIED>
+    <!ELEMENT volume (partition*)>
+    <!ATTLIST volume  lun           CDATA #IMPLIED>
+    <!ATTLIST volume  type          CDATA #IMPLIED>
+    <!ATTLIST volume  pack          CDATA #IMPLIED>
+    <!ELEMENT partition (EMPTY)>
+    <!ATTLIST partition label       CDATA #REQUIRED>
+    <!ATTLIST partition type        CDATA #REQUIRED>
+    <!ATTLIST partition size_in_kb  CDATA #REQUIRED>
+    <!ATTLIST partition bootlable   CDATA #IMPLIED>
+    <!ATTLIST partition readonly    CDATA #IMPLIED>
+    <!ATTLIST partition filename    CDATA #IMPLIED>
+    <!ATTLIST partition extend      CDATA #IMPLIED>
+    <!ATTLIST partition pack        CDATA #IMPLIED>
+  ]>
+A description of the elements and their attributes follows.
+### Element storage
+The root element of the file.
+Attribute type:   memory technology, either "ufs", or "emmc". Defaults to ufs if
+                  not present
+
+### Element volume
+represents addressable physical instance on storage device
+Attribute type:   partition table type; currently only "gpt" is supported
+Attribute lun:    unique id of the physical instance for emmc device this is
+                  partition (Boot0/1, RPMB, GP0/1/2/3, USER) for ufs device this
+                  is UFS LUN# (0..7). if not present volumes will be enumerated
+                  in the order they are found in the XML
+Attribute pack:   if present, it is the name that groups all items with the same
+                  name into the "combined" image, such as bootloader
+### Element partition
+Attribute label:      unique id of the partition, string
+Attribute type:       partition type. In GPT case, it is a GUID string
+Attribute size_in_kb: size of partition in units of kilobytes (1024 bytes),
+                      decimal integer
+Attribute bootable:   is this partition bootable; boolean (true/false)
+Attribute readonly:   is this partition read-only; boolean (true/false)
+Attribute extend:     shall we extend this partition to the limits of the
+                      physical volume; boolean (true/false)
+Attribute filename:   image file, associated with this partition; path (string),
+                      relative to the xml location
+Attribute pack:       if present, it is the name that groups all items with the
+                      same name into the "combined" image, such as bootloader
+
+### Example
+-------
+<storage>
+  <volume lun="2" >
+    <partition label="part2A" size_in_kb="1024" type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98" bootable="false" readonly="true" />
+    <partition label="part2B" size_in_kb="1024" type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98" bootable="false" readonly="true" />
+  </volume>
+
+  <volume lun="3" >
+    <partition label="part3A" size_in_kb="1024" type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98" bootable="false" readonly="true" />
+    <partition label="part3B" size_in_kb="1024" type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98" bootable="false" readonly="true" />
+  </volume>
+</storage>
+
+This will create 2 partitions, part2A and part2B inside LUN 2 and 2 partitions,
+part3A and part3B inside LUN 3
