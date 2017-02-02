@@ -268,7 +268,10 @@ static int do_exec(const std::vector<std::string>& args) {
     if (!svc->Start()) {
         return -1;
     }
-    waiting_for_exec = true;
+    if (!start_waiting_for_exec()) {
+        LOG(ERROR) << "do_exec: failed: init already in waiting";
+        return -1;
+    }
     return 0;
 }
 
@@ -1018,7 +1021,7 @@ static int do_wait_for_prop(const std::vector<std::string>& args) {
                    << "\") failed: value too long";
         return -1;
     }
-    if (!wait_property(name, value)) {
+    if (!start_waiting_for_property(name, value)) {
         LOG(ERROR) << "do_wait_for_prop(\"" << name << "\", \"" << value
                    << "\") failed: init already in waiting";
         return -1;
