@@ -268,7 +268,10 @@ static int do_exec(const std::vector<std::string>& args) {
     if (!svc->Start()) {
         return -1;
     }
-    waiting_for_exec = true;
+    if (!wait_exec()) {
+        LOG(ERROR) << "do_exec: failed: init already in waiting";
+        return -1;
+    }
     return 0;
 }
 

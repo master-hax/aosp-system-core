@@ -23,7 +23,6 @@ class Action;
 class Service;
 
 extern const char *ENV[32];
-extern bool waiting_for_exec;
 extern std::string default_console;
 extern struct selabel_handle *sehandle;
 extern struct selabel_handle *sehandle_prop;
@@ -35,6 +34,10 @@ void property_changed(const char *name, const char *value);
 void register_epoll_handler(int fd, void (*fn)());
 
 int add_environment(const char* key, const char* val);
+
+bool wait_exec();
+
+void continue_exec();
 
 bool wait_property(const char *name, const char *value);
 

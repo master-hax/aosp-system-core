@@ -82,7 +82,7 @@ static time_t process_needs_restart_at;
 
 const char *ENV[32];
 
-bool waiting_for_exec = false;
+static std::unique_ptr<Timer> waiting_for_exec(nullptr);
 
 static int epoll_fd = -1;
 
@@ -129,6 +129,23 @@ int add_environment(const char *key, const char *val)
     LOG(ERROR) << "No env. room to store: '" << key << "':'" << val << "'";
 
     return -1;
+}
+
+bool wait_exec()
+{
+    if (waiting_for_exec) {
+        return false;
+    }
+    waiting_for_exec.reset(new Timer());
+    return true;
+}
+
+void continue_exec()
+{
+    if (waiting_for_exec) {
+        LOG(INFO) << "Wait for exec took " << *waiting_for_exec;
+        waiting_for_exec.reset();
+    }
 }
 
 bool wait_property(const char *name, const char *value)
