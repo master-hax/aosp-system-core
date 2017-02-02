@@ -21,6 +21,7 @@ extern "C" {
 #include <dwarf.h>
 }
 
+#include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -89,9 +90,6 @@ struct DebugFrameInfo {
   DebugFrameInfo() : has_arm_exidx(false), has_eh_frame(false),
       has_debug_frame(false), has_gnu_debugdata(false) { }
 };
-
-static std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>& g_debug_frames =
-    *new std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>;
 
 void Space::Clear() {
   start = 0;
@@ -282,6 +280,18 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
 
   // vaddr in the elf file.
   uint64_t ip_vaddr = ip - map.start + debug_frame->min_vaddr;
+
+  // The unwind info can come from .ARM.exidx or .eh_frame, or .debug_frame/.gnu_debugdata.
+  // We should choose the function with the nearest start address.
+  unw_proc_info_t tmp_pi;
+  unw_proc_info_t best_pi;
+  enum {
+    NO_SELECT = 0,
+    SELECT_ARM_EXIDX = 1,
+    SELECT_EH_FRAME = 2,
+    SELECT_DEBUG_FRAME = 3,
+  } best_select = NO_SELECT;
+
   if (debug_frame->has_arm_exidx) {
     auto& func_vaddrs = debug_frame->arm_exidx.func_vaddr_array;
     if (ip_vaddr >= func_vaddrs[0] && ip_vaddr < debug_frame->text_end_vaddr) {
@@ -292,29 +302,20 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
         --it;
         // Found the exidx entry.
         size_t index = it - func_vaddrs.begin();
-
-        proc_info->format = UNW_INFO_FORMAT_ARM_EXIDX;
-        proc_info->unwind_info = reinterpret_cast<void*>(
+        memcpy(&tmp_pi, proc_info, sizeof(*proc_info));
+        tmp_pi.start_ip = *it;
+        tmp_pi.format = UNW_INFO_FORMAT_ARM_EXIDX;
+        tmp_pi.unwind_info = reinterpret_cast<void*>(
             static_cast<uintptr_t>(index * sizeof(ArmIdxEntry) +
                                    debug_frame->arm_exidx.exidx_vaddr +
                                    debug_frame->min_vaddr));
-
-        // Prepare arm_exidx space and arm_extab space.
-        arm_exidx_space_.start = debug_frame->min_vaddr + debug_frame->arm_exidx.exidx_vaddr;
-        arm_exidx_space_.end = arm_exidx_space_.start +
-            debug_frame->arm_exidx.exidx_data.size() * sizeof(ArmIdxEntry);
-        arm_exidx_space_.data = reinterpret_cast<const uint8_t*>(
-            debug_frame->arm_exidx.exidx_data.data());
-
-        arm_extab_space_.start = debug_frame->min_vaddr + debug_frame->arm_exidx.extab_vaddr;
-        arm_extab_space_.end = arm_extab_space_.start +
-            debug_frame->arm_exidx.extab_data.size();
-        arm_extab_space_.data = debug_frame->arm_exidx.extab_data.data();
-        return true;
+        if (best_select == NO_SELECT || tmp_pi.start_ip > best_pi.start_ip) {
+          best_select = SELECT_ARM_EXIDX;
+          memcpy(&best_pi, &tmp_pi, sizeof(tmp_pi));
+        }
       }
     }
   }
-
   if (debug_frame->has_eh_frame) {
     if (ip_vaddr >= debug_frame->eh_frame.min_func_vaddr &&
         ip_vaddr < debug_frame->text_end_vaddr) {
@@ -323,7 +324,6 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
       eh_frame_hdr_space_.end =
           eh_frame_hdr_space_.start + debug_frame->eh_frame.hdr_data.size();
       eh_frame_hdr_space_.data = debug_frame->eh_frame.hdr_data.data();
-
       eh_frame_space_.start = ip - ip_vaddr + debug_frame->eh_frame.vaddr;
       eh_frame_space_.end = eh_frame_space_.start + debug_frame->eh_frame.data.size();
       eh_frame_space_.data = debug_frame->eh_frame.data.data();
@@ -339,9 +339,13 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
           eh_frame_hdr_space_.start + debug_frame->eh_frame.fde_table_offset;
       di.u.rti.table_len = (eh_frame_hdr_space_.end - di.u.rti.table_data) / sizeof(unw_word_t);
       // TODO: Do it ourselves is more efficient than calling this function.
-      int ret = dwarf_search_unwind_table(addr_space, ip, &di, proc_info, need_unwind_info, this);
+      memcpy(&tmp_pi, proc_info, sizeof(*proc_info));
+      int ret = dwarf_search_unwind_table(addr_space, ip, &di, &tmp_pi, need_unwind_info, this);
       if (ret == 0) {
-        return true;
+        if (best_select == NO_SELECT || tmp_pi.start_ip > best_pi.start_ip) {
+          best_select = SELECT_EH_FRAME;
+          memcpy(&best_pi, &tmp_pi, sizeof(tmp_pi));
+        }
       }
     }
   }
@@ -353,13 +357,37 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
     // TODO: Do it ourselves is more efficient than calling libunwind functions.
     int found = dwarf_find_debug_frame(0, &di, ip, segbase, filename.c_str(), map.start, map.end);
     if (found == 1) {
-      int ret = dwarf_search_unwind_table(addr_space, ip, &di, proc_info, need_unwind_info, this);
+      memcpy(&tmp_pi, proc_info, sizeof(*proc_info));
+      int ret = dwarf_search_unwind_table(addr_space, ip, &di, &tmp_pi, need_unwind_info, this);
       if (ret == 0) {
-        return true;
+        if (best_select == NO_SELECT || tmp_pi.start_ip > best_pi.start_ip) {
+          best_select = SELECT_DEBUG_FRAME;
+          memcpy(&best_pi, &tmp_pi, sizeof(tmp_pi));
+        }
       }
     }
   }
-  return false;
+
+  if (best_select == NO_SELECT) {
+    return false;
+  }
+  memcpy(proc_info, &best_pi, sizeof(*proc_info));
+  if (best_select == SELECT_ARM_EXIDX) {
+        eh_frame_hdr_space_.Clear();
+        eh_frame_space_.Clear();
+        // Prepare arm_exidx space and arm_extab space.
+        arm_exidx_space_.start = debug_frame->min_vaddr + debug_frame->arm_exidx.exidx_vaddr;
+        arm_exidx_space_.end = arm_exidx_space_.start +
+            debug_frame->arm_exidx.exidx_data.size() * sizeof(ArmIdxEntry);
+        arm_exidx_space_.data = reinterpret_cast<const uint8_t*>(
+            debug_frame->arm_exidx.exidx_data.data());
+
+        arm_extab_space_.start = debug_frame->min_vaddr + debug_frame->arm_exidx.extab_vaddr;
+        arm_extab_space_.end = arm_extab_space_.start +
+            debug_frame->arm_exidx.extab_data.size();
+        arm_extab_space_.data = debug_frame->arm_exidx.extab_data.data();
+  }
+  return true;
 }
 
 bool BacktraceOffline::ReadReg(size_t reg, uint64_t* value) {
@@ -551,16 +579,43 @@ std::string BacktraceOffline::GetFunctionNameRaw(uintptr_t, uintptr_t* offset) {
 
 static DebugFrameInfo* ReadDebugFrameFromFile(const std::string& filename);
 
+static pthread_rwlock_t g_lock = PTHREAD_RWLOCK_INITIALIZER;
+static std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>* g_debug_frames = nullptr;
+
+class ScopedLock {
+ public:
+  ScopedLock(bool read) {
+    if (read) {
+      pthread_rwlock_rdlock(&g_lock);
+    } else {
+      pthread_rwlock_wrlock(&g_lock);
+    }
+  }
+  ~ScopedLock() {
+    pthread_rwlock_unlock(&g_lock);
+  }
+};
+
 DebugFrameInfo* BacktraceOffline::GetDebugFrameInFile(const std::string& filename) {
   if (cache_file_) {
-    auto it = g_debug_frames.find(filename);
-    if (it != g_debug_frames.end()) {
-      return it->second.get();
+    ScopedLock lock(true);
+    if (g_debug_frames != nullptr) {
+      auto it = g_debug_frames->find(filename);
+      if (it != g_debug_frames->end()) {
+        return it->second.get();
+      }
     }
   }
   DebugFrameInfo* debug_frame = ReadDebugFrameFromFile(filename);
   if (cache_file_) {
-      g_debug_frames.emplace(filename, std::unique_ptr<DebugFrameInfo>(debug_frame));
+      ScopedLock lock(false);
+      if (g_debug_frames == nullptr) {
+        g_debug_frames = new std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>;
+      }
+      auto pair = g_debug_frames->emplace(filename, std::unique_ptr<DebugFrameInfo>(debug_frame));
+      if (!pair.second) {
+        debug_frame = pair.first->second.get();
+      }
   }
   return debug_frame;
 }
@@ -791,7 +846,6 @@ llvm::object::OwningBinary<llvm::object::Binary> OpenEmbeddedElfFile(const std::
   std::string apk_file = filename.substr(0, pos);
   std::string elf_file = filename.substr(pos + 2);
   if (!IsValidApkPath(apk_file)) {
-    BACK_LOGW("%s is not a valid apk file", apk_file.c_str());
     return nothing;
   }
   ZipArchiveHandle handle;
@@ -838,6 +892,7 @@ static DebugFrameInfo* ReadDebugFrameFromFile(const std::string& filename) {
     owning_binary = OpenEmbeddedElfFile(filename);
   } else {
     if (!IsValidElfPath(filename)) {
+      BACK_LOGW("%s isn't valid", filename.c_str());
       return nullptr;
     }
     auto binary_or_err = llvm::object::createBinary(llvm::StringRef(filename));
