@@ -1,0 +1,111 @@
+
+
+crasher_cppflags = [
+    "-std=gnu++14",
+    "-W",
+    "-Wall",
+    "-Wextra",
+    "-Wunused",
+    "-Werror",
+    "-O0",
+    "-fstack-protector-all",
+    "-Wno-free-nonheap-object",
+    "-Wno-date-time",
+]
+
+cc_binary {
+    srcs: ["crasher.cpp"],
+    arch: {
+        arm: {
+            srcs: ["arm/crashglue.S"],
+
+            armv7_a_neon: {
+                asflags: ["-DHAS_VFP_D32"],
+            },
+        },
+        arm64: {
+            srcs: ["arm64/crashglue.S"],
+        },
+        mips: {
+            srcs: ["mips/crashglue.S"],
+        },
+        mips64: {
+            srcs: ["mips64/crashglue.S"],
+        },
+        x86: {
+            srcs: ["x86/crashglue.S"],
+        },
+        x86_64: {
+            srcs: ["x86_64/crashglue.S"],
+        },
+    },
+
+    tags: ["optional"],
+    cppflags: crasher_cppflags,
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
+
+    name: "crasher",
+    multilib: {
+        lib32: {
+            stem: "crasher",
+        },
+        lib64: {
+            stem: "crasher64",
+        },
+    },
+    compile_multilib: "both",
+
+}
+
+cc_binary {
+    srcs: ["crasher.cpp"],
+    arch: {
+        arm: {
+            srcs: ["arm/crashglue.S"],
+
+            armv7_a_neon: {
+                asflags: ["-DHAS_VFP_D32"],
+            },
+        },
+        arm64: {
+            srcs: ["arm64/crashglue.S"],
+        },
+        mips: {
+            srcs: ["mips/crashglue.S"],
+        },
+        mips64: {
+            srcs: ["mips64/crashglue.S"],
+        },
+        x86: {
+            srcs: ["x86/crashglue.S"],
+        },
+        x86_64: {
+            srcs: ["x86_64/crashglue.S"],
+        },
+    },
+
+    tags: ["optional"],
+    cppflags: crasher_cppflags + ["-DSTATIC_CRASHER"],
+    static_executable: true,
+
+    name: "static_crasher",
+    multilib: {
+        lib32: {
+            stem: "static_crasher",
+        },
+        lib64: {
+            stem: "static_crasher64",
+        },
+    },
+    compile_multilib: "both",
+
+    static_libs: [
+        "libdebuggerd_handler",
+        "libbase",
+        "liblog",
+    ],
+
+}
