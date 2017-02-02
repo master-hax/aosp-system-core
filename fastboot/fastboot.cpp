@@ -66,6 +66,7 @@
 #include "transport.h"
 #include "udp.h"
 #include "usb.h"
+#include "partition.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -1423,6 +1424,35 @@ failed:
     fprintf(stderr, "FAILED (%s)\n", fb_get_error().c_str());
 }
 
+int do_partition_table(std::string fname)
+{
+    struct partition_table **tables;
+    struct partition_table **tmp;
+
+    tables = get_partition_table(fname);
+    if (!tables)
+        return -1;
+
+    for (tmp = tables; *tmp; ++tmp) {
+        struct partition_table *pt = *tmp;
+        struct fastboot_buffer buf;
+        std::string cmd("partition:");
+        unsigned sz = sizeof *pt + pt->num * sizeof pt->pe[0];
+
+        cmd += std::to_string(pt->lun);
+
+        fprintf(stderr, "flashing partition %s size %u\n", cmd.c_str(), sz);
+        buf.type = FB_BUFFER;
+        buf.data = pt;
+        buf.sz = sz;
+        flash_buf(cmd.c_str(), &buf);
+    }
+
+    free_partition_table(tables);
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     bool wants_wipe = false;
@@ -1726,13 +1756,18 @@ int main(int argc, char **argv)
             }
             if (fname.empty()) die("cannot determine image filename for '%s'", pname);
 
-            auto flash = [&](const std::string &partition) {
-                if (erase_first && needs_erase(transport, partition.c_str())) {
-                    fb_queue_erase(partition.c_str());
-                }
-                do_flash(transport, partition.c_str(), fname.c_str());
-            };
-            do_for_partitions(transport, pname, slot_override, flash, true);
+            if (!strcmp(pname, "partition")) {
+               if (do_partition_table(fname))
+                   return -1;
+            } else {
+                auto flash = [&](const std::string &partition) {
+                    if (erase_first && needs_erase(transport, partition.c_str())) {
+                        fb_queue_erase(partition.c_str());
+                    }
+                    do_flash(transport, partition.c_str(), fname.c_str());
+                };
+                do_for_partitions(transport, pname, slot_override, flash, true);
+            }
         } else if(!strcmp(*argv, "flash:raw")) {
             char *kname = argv[2];
             char *rname = 0;

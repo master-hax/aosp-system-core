@@ -33,10 +33,11 @@ LOCAL_SRC_FILES := \
     tcp.cpp \
     udp.cpp \
     util.cpp \
+    partition.cpp \
 
 LOCAL_MODULE := fastboot
 LOCAL_MODULE_TAGS := debug
-LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_MODULE_HOST_OS := darwin linux
 LOCAL_CFLAGS += -Wall -Wextra -Werror -Wunreachable-code
 
 LOCAL_CFLAGS += -DFASTBOOT_REVISION='"$(fastboot_version)"'
@@ -66,6 +67,9 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
     libcutils \
     libgtest_host \
+    libxml2 \
+    libicuuc_host \
+    libicuuc_stubdata \
 
 # libf2fs_dlutils_host will dlopen("libf2fs_fmt_host_dyn")
 LOCAL_CFLAGS_linux := -DUSE_F2FS
