@@ -33,6 +33,7 @@ LOCAL_SRC_FILES := \
     tcp.cpp \
     udp.cpp \
     util.cpp \
+    partition.cpp \
 
 LOCAL_MODULE := fastboot
 LOCAL_MODULE_TAGS := debug
@@ -66,6 +67,7 @@ LOCAL_STATIC_LIBRARIES := \
     libbase \
     libcutils \
     libgtest_host \
+    libexpat \
 
 # libf2fs_dlutils_host will dlopen("libf2fs_fmt_host_dyn")
 LOCAL_CFLAGS_linux := -DUSE_F2FS
