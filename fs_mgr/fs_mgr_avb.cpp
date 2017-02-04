@@ -491,6 +491,9 @@ static inline bool polling_vbmeta_blk_device(struct fstab *fstab)
     struct fstab_rec *fstab_entry =
         fs_mgr_get_entry_for_mount_point(fstab, "/vbmeta");
 
+    if (fstab_entry == NULL)
+        return false;
+
     // Makes sure /vbmeta block device is ready to access.
     if (fs_mgr_test_access(fstab_entry->blk_device) < 0) {
         return false;
