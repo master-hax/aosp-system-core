@@ -246,7 +246,10 @@ class LibraryNamespaces {
     // For now we rely on CTS test to catch things like this but
     // it should probably be addressed in the future.
     for (const auto& soname : sonames) {
-      dlopen(soname.c_str(), RTLD_NOW | RTLD_NODELETE);
+      void* loadedlib = dlopen(soname.c_str(), RTLD_NOW | RTLD_NODELETE);
+      if (loadedlib == NULL) {
+        ALOGE("Failed to open library %s: %s", soname.c_str(), dlerror());
+      }
     }
 
     public_libraries_ = base::Join(sonames, ':');
