@@ -17,11 +17,11 @@
 bootstat_lib_src_files = [
     "boot_event_record_store.cpp",
     "histogram_logger.cpp",
-    "uptime_parser.cpp",
 ]
 
 cc_defaults {
     name: "bootstat_defaults",
+    host_ldlibs: ["-lrt"], // remove?
 
     cflags: [
         "-Wall",
@@ -37,6 +37,7 @@ cc_defaults {
         "libcutils",
         "liblog",
     ],
+    static_libs: ["libutils"],
     whole_static_libs: ["libgtest_prod"],
     // Clang is required because of C++14
     clang: true,
@@ -56,6 +57,7 @@ cc_library_static {
     name: "libbootstat_debug",
     defaults: ["bootstat_defaults"],
     host_supported: true,
+    host_ldlibs: ["-lrt"],
     srcs: bootstat_lib_src_files,
 
     target: {
@@ -84,6 +86,7 @@ cc_test {
     static_libs: [
         "libbootstat_debug",
         "libgmock",
+        "libutils",
     ],
     srcs: [
         "boot_event_record_store_test.cpp",
