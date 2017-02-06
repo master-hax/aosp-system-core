@@ -1303,11 +1303,21 @@ static int64_t parse_num(const char *arg)
     return num;
 }
 
+static std::string fb_fix_numeric_var(std::string var) {
+    // Some bootloaders (angler, for example), send spurious leading whitespace.
+    var = android::base::Trim(var);
+    // Some bootloaders (hammerhead, for example) use implicit hex.
+    // This code used to use strtol with base 16.
+    if (!android::base::StartsWith(var, "0x"))
+        var = "0x" + var;
+    return var;
+}
+
 static void fb_perform_format(Transport* transport,
                               const char* partition, int skip_if_not_supported,
                               const char* type_override, const char* size_override,
                               const std::string& initial_dir) {
-    std::string partition_type, partition_size;
+    std::string partition_type, partition_size, erase_block_size, logical_block_size;
 
     struct fastboot_buffer buf;
     const char* errMsg = nullptr;
@@ -1345,11 +1355,7 @@ static void fb_perform_format(Transport* transport,
         }
         partition_size = size_override;
     }
-    // Some bootloaders (angler, for example), send spurious leading whitespace.
-    partition_size = android::base::Trim(partition_size);
-    // Some bootloaders (hammerhead, for example) use implicit hex.
-    // This code used to use strtol with base 16.
-    if (!android::base::StartsWith(partition_size, "0x")) partition_size = "0x" + partition_size;
+    partition_size = fb_fix_numeric_var(partition_size);
 
     gen = fs_get_generator(partition_type);
     if (!gen) {
@@ -1370,7 +1376,27 @@ static void fb_perform_format(Transport* transport,
     }
 
     fd = fileno(tmpfile());
-    if (fs_generator_generate(gen, fd, size, initial_dir)) {
+
+    unsigned eraseBlkSize, logicalBlkSize;
+    bool haveBlockSizes;
+    haveBlockSizes = false;
+    if (fb_getvar(transport, "erase-block-size", &erase_block_size) &&
+        fb_getvar(transport, "logical-block-size", &logical_block_size)) {
+        erase_block_size = fb_fix_numeric_var(erase_block_size);
+        logical_block_size = fb_fix_numeric_var(logical_block_size);
+        // Block sizes must be powers of 2 and at least 4096
+        haveBlockSizes = android::base::ParseUint(erase_block_size, &eraseBlkSize) &&
+            android::base::ParseUint(logical_block_size, &logicalBlkSize) &&
+            (eraseBlkSize >= 4096 && (eraseBlkSize & (eraseBlkSize - 1)) == 0) &&
+            (logicalBlkSize >= 4096 && (logicalBlkSize & (logicalBlkSize - 1)) == 0);
+    }
+    bool err;
+    if (haveBlockSizes) {
+        err = fs_generator_generate(gen, fd, size, initial_dir, eraseBlkSize, logicalBlkSize);
+    } else {
+        err = fs_generator_generate(gen, fd, size, initial_dir);
+    }
+    if (err) {
         fprintf(stderr, "Cannot generate image: %s\n", strerror(errno));
         close(fd);
         return;
