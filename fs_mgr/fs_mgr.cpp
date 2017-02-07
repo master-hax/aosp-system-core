@@ -663,6 +663,34 @@ static int handle_encryptable(const struct fstab_rec* rec)
     }
 }
 
+// Try to read entire partition as a check for the partition having
+// 'verityatboot' flag. The partition as a whole should be verified
+// in bootloader stage so dm-verity setup of it will be skipped if
+// the reads are successful here.
+int fs_mgr_verify_partition_at_boot(const char *path, uint64_t size)
+{
+    char buf[PAGE_SIZE];
+    ssize_t size_read;
+    android::base::unique_fd fd(
+        TEMP_FAILURE_RETRY(open(path, O_RDONLY | O_CLOEXEC)));
+
+    if (fd == -1) {
+        PERROR << "Failed to open " << path;
+        return -errno;
+    }
+
+    while (size) {
+        size_read = TEMP_FAILURE_RETRY(read(fd, buf, PAGE_SIZE));
+        if (size_read == -1) {
+            PERROR << "Error in reading partition " << path;
+            return -errno;
+        }
+        size -= size_read;
+    }
+
+    return 0;
+}
+
 int fs_mgr_test_access(const char *device) {
     int tries = 25;
     while (tries--) {

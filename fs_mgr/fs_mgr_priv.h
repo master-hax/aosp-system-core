@@ -114,6 +114,7 @@ __BEGIN_DECLS
 int fs_mgr_set_blk_ro(const char *blockdev);
 int fs_mgr_test_access(const char *device);
 int fs_mgr_update_for_slotselect(struct fstab *fstab);
+int fs_mgr_verify_partition_at_boot(const char *path, uint64_t size);
 
 __END_DECLS
 

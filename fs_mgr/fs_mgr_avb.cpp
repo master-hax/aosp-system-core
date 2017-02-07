@@ -390,13 +390,32 @@ static bool hashtree_dm_verity_setup(struct fstab_rec *fstab_entry,
     // Marks the underlying block device as read-only.
     fs_mgr_set_blk_ro(fstab_entry->blk_device);
 
-    // TODO(bowgotsai): support verified all partition at boot.
+    bool verified_at_boot = false;
+    // Verify the entire partition in one go.
+    // If there is an error, allow it to mount as a normal verity partition.
+    if (fstab_entry->fs_mgr_flags & MF_VERIFYATBOOT) {
+        LINFO << "Verifying partition "
+              << fstab_entry->blk_device << " at boot";
+        int err = fs_mgr_verify_partition_at_boot(verity_blk_name.c_str(),
+                                                  hashtree_desc.image_size);
+        if (!err) {
+            LINFO << "Verified verity partition "
+                  << fstab_entry->blk_device << " at boot";
+            verified_at_boot = true;
+        }
+    }
+
     // Updates fstab_rec->blk_device to verity device name.
-    free(fstab_entry->blk_device);
-    fstab_entry->blk_device = strdup(verity_blk_name.c_str());
+    if (!verified_at_boot) {
+        free(fstab_entry->blk_device);
+        fstab_entry->blk_device = strdup(verity_blk_name.c_str());
+    } else if (!fs_mgr_destroy_verity_device(io, mount_point, fd)) {
+        LERROR << "Failed to remove verity device " << mount_point.c_str();
+        return false;
+    }
 
     // Makes sure we've set everything up properly.
-    if (fs_mgr_test_access(verity_blk_name.c_str()) < 0) {
+    if (fs_mgr_test_access(fstab_entry->blk_device) < 0) {
         return false;
     }
 

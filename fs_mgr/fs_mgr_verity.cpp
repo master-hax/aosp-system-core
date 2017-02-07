@@ -75,8 +75,6 @@
 #define VERITY_KMSG_RESTART "dm-verity device corrupted"
 #define VERITY_KMSG_BUFSIZE 1024
 
-#define READ_BUF_SIZE 4096
-
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
 
@@ -548,29 +546,6 @@ out:
     return rc;
 }
 
-static int read_partition(const char *path, uint64_t size)
-{
-    char buf[READ_BUF_SIZE];
-    ssize_t size_read;
-    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path, O_RDONLY | O_CLOEXEC)));
-
-    if (fd == -1) {
-        PERROR << "Failed to open " << path;
-        return -errno;
-    }
-
-    while (size) {
-        size_read = TEMP_FAILURE_RETRY(read(fd, buf, READ_BUF_SIZE));
-        if (size_read == -1) {
-            PERROR << "Error in reading partition " << path;
-            return -errno;
-        }
-        size -= size_read;
-    }
-
-    return 0;
-}
-
 static int compare_last_signature(struct fstab_rec *fstab, int *match)
 {
     char tag[METADATA_TAG_MAX_LENGTH + 1];
@@ -1008,7 +983,8 @@ loaded:
     // If there is an error, allow it to mount as a normal verity partition.
     if (fstab->fs_mgr_flags & MF_VERIFYATBOOT) {
         LINFO << "Verifying partition " << fstab->blk_device << " at boot";
-        int err = read_partition(verity_blk_name.c_str(), verity.data_size);
+        int err = fs_mgr_verify_partition_at_boot(verity_blk_name.c_str(),
+                                                  verity.data_size);
         if (!err) {
             LINFO << "Verified verity partition "
                   << fstab->blk_device << " at boot";
