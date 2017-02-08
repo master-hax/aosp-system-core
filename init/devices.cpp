@@ -874,8 +874,8 @@ static bool inline should_stop_coldboot(coldboot_action_t act)
 
 #define UEVENT_MSG_LEN  2048
 
-template<typename T>
-static inline coldboot_action_t handle_device_fd_with(const T& handle_uevent)
+static inline coldboot_action_t handle_device_fd_with(
+        std::function<coldboot_action_t(uevent* uevent)> handle_uevent)
 {
     char msg[UEVENT_MSG_LEN+2];
     int n;
@@ -1009,41 +1009,6 @@ static coldboot_action_t early_uevent_handler(struct uevent *uevent, const char 
     mknod(devpath, mode, dev);
 
     return COLDBOOT_STOP;
-}
-
-void early_create_dev(const std::string& syspath, early_device_type dev_type)
-{
-    android::base::unique_fd dfd(open(syspath.c_str(), O_RDONLY));
-    if (dfd < 0) {
-        LOG(ERROR) << "Failed to open " << syspath;
-        return;
-    }
-
-    android::base::unique_fd fd(openat(dfd, "uevent", O_WRONLY));
-    if (fd < 0) {
-        LOG(ERROR) << "Failed to open " << syspath << "/uevent";
-        return;
-    }
-
-    fcntl(device_fd, F_SETFL, O_NONBLOCK);
-
-    write(fd, "add\n", 4);
-    handle_device_fd_with(dev_type == EARLY_BLOCK_DEV ?
-        [](uevent* uevent) -> coldboot_action_t {
-            return early_uevent_handler(uevent, "/dev/block/", true);
-        } :
-        [](uevent* uevent) -> coldboot_action_t {
-            return early_uevent_handler(uevent, "/dev/", false);
-        });
-}
-
-int early_device_socket_open() {
-    device_fd = uevent_open_socket(256*1024, true);
-    return device_fd < 0;
-}
-
-void early_device_socket_close() {
-    close(device_fd);
 }
 
 void device_init(const char* path, coldboot_callback fn) {
