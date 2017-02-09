@@ -1,0 +1,8 @@
+Presubmit-Ready+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Stephen Hines <srhines@google.com>
+Verified+1: James Hawkins <jhawkins@google.com>
+Submitted-by: James Hawkins <jhawkins@google.com>
+Submitted-at: Thu, 09 Feb 2017 00:12:54 +0000
+Reviewed-on: https://android-review.googlesource.com/335504
+Project: platform/system/core
+Branch: refs/heads/master
