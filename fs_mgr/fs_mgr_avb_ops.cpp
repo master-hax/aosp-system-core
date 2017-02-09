@@ -30,6 +30,7 @@
 #include <string>
 
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <libavb/libavb.h>
@@ -41,14 +42,23 @@
 
 static struct fstab *fs_mgr_fstab = nullptr;
 
-static AvbIOResult read_from_partition(AvbOps *ops ATTRIBUTE_UNUSED,
-                                       const char *partition,
-                                       int64_t offset,
-                                       size_t num_bytes,
-                                       void *buffer,
-                                       size_t *out_num_read)
+static std::string get_partition_path(const std::string &partition_name)
 {
-    // The input |partition| name is with ab_suffix, e.g. system_a.
+    std::string path;
+
+    // If the partition_name is vbmeta, we get the device file path
+    // from system property: "ro.boot.vbmeta.vbmeta_device", which is
+    // specified by bootloader via kernel cmdline.
+    if (android::base::StartsWith(partition_name, "vbmeta")) {
+        path = android::base::GetProperty("ro.boot.vbmeta.vbmeta_device",
+                                          "");
+        if (path.empty()) {
+            LERROR << "Missing property 'ro.boot.vbmeta.vbmeta_device'";
+        }
+        return path;
+    }
+
+    // The input |partition_name| is with ab_suffix, e.g. system_a.
     // Slot suffix (e.g. _a) will be appended to the device file path
     // for partitions having 'slotselect' optin in fstab file, but it
     // won't be appended to the mount point.
@@ -57,7 +67,7 @@ static AvbIOResult read_from_partition(AvbOps *ops ATTRIBUTE_UNUSED,
     // point and use that to get the device file for the misc partition.
     // From there we'll assume that a by-name scheme is used
     // so we can just replace the trailing "misc" by the given
-    // |partition|, e.g.
+    // |partition_name|, e.g.
     //
     //    - /dev/block/platform/soc.0/7824900.sdhci/by-name/misc ->
     //    - /dev/block/platform/soc.0/7824900.sdhci/by-name/system_a
@@ -66,17 +76,33 @@ static AvbIOResult read_from_partition(AvbOps *ops ATTRIBUTE_UNUSED,
         fs_mgr_get_entry_for_mount_point(fs_mgr_fstab, "/misc");
 
     if (fstab_entry == nullptr) {
-        LERROR << "Partition (" << partition << ") not found in fstab";
-        return AVB_IO_RESULT_ERROR_IO;
+        LERROR << "Partition (" << partition_name << ") not found in fstab";
+        return path;
     }
 
-    std::string partition_name(partition);
-    std::string path(fstab_entry->blk_device);
+    path = std::string(fstab_entry->blk_device);
     // Replaces the last field of device file if it's not misc.
     if (!android::base::StartsWith(partition_name, "misc")) {
         size_t end_slash = path.find_last_of("/");
         std::string by_name_prefix(path.substr(0, end_slash + 1));
         path = by_name_prefix + partition_name;
+    }
+
+    return path;
+}
+
+static AvbIOResult read_from_partition(AvbOps *ops ATTRIBUTE_UNUSED,
+                                       const char *partition,
+                                       int64_t offset,
+                                       size_t num_bytes,
+                                       void *buffer,
+                                       size_t *out_num_read)
+{
+    std::string path = get_partition_path(std::string(partition));
+
+    if (path.empty()) {
+        LERROR << "Failed to get partition path: " << partition;
+        return AVB_IO_RESULT_ERROR_IO;
     }
 
     android::base::unique_fd fd(
