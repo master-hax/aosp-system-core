@@ -19,7 +19,28 @@ cc_library_static {
     // libdebuggerd_handler gets async signal safe logging via libc_logging,
     // which defines its interface in bionic private headers.
     include_dirs: ["bionic/libc"],
-    static_libs: ["libc_logging"],
+    whole_static_libs: [
+        "libc_logging",
+        "libdebuggerd",
+    ],
+
+    export_include_dirs: ["include"],
+}
+
+cc_library_static {
+    name: "libdebuggerd_handler_fallback",
+    defaults: ["debuggerd_defaults"],
+    srcs: ["handler/debuggerd_handler.cpp"],
+
+    // libdebuggerd_handler gets async signal safe logging via libc_logging,
+    // which defines its interface in bionic private headers.
+    include_dirs: ["bionic/libc"],
+    static_libs: [
+        "libbacktrace",
+        "libunwind",
+        "liblzma",
+        "libcutils",
+    ],
 
     export_include_dirs: ["include"],
 }
@@ -39,7 +60,7 @@ cc_library {
     export_include_dirs: ["include"],
 }
 
-cc_library {
+cc_library_static {
     name: "libdebuggerd",
     defaults: ["debuggerd_defaults"],
 
@@ -75,8 +96,10 @@ cc_library {
     local_include_dirs: ["libdebuggerd/include"],
     export_include_dirs: ["libdebuggerd/include"],
 
-    shared_libs: [
+    static_libs: [
         "libbacktrace",
+        "libunwind",
+        "liblzma",
         "libbase",
         "libcutils",
         "liblog",
@@ -150,10 +173,14 @@ cc_binary {
         },
     },
 
+    static_libs: [
+        "libdebuggerd",
+        "libcutils",
+    ],
+
     shared_libs: [
         "libbacktrace",
         "libbase",
-        "libdebuggerd",
         "liblog",
         "libprocinfo",
         "libselinux",
