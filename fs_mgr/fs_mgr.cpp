@@ -198,17 +198,16 @@ static void check_fs(const char *blk_device, char *fs_type, char *target)
 static int read_super_block(int fd, struct ext4_super_block *sb)
 {
     off64_t ret;
-
     ret = lseek64(fd, 1024, SEEK_SET);
     if (ret < 0)
         return ret;
-
     ret = read(fd, sb, sizeof(*sb));
     if (ret < 0)
         return ret;
     if (ret != sizeof(*sb))
         return ret;
-
+    if (sb->s_magic != EXT4_SUPER_MAGIC)
+        return -EINVAL;
     return 0;
 }
 
@@ -324,7 +323,6 @@ static void do_reserved_size(char *blk_device, char *fs_type, struct fstab_rec *
                              << " is too large";
                     reserved_blocks = reserved_threshold;
                 }
-
                 if (ext4_r_blocks_count(&sb) == reserved_blocks) {
                     LINFO << "Have reserved same blocks";
                     return;
