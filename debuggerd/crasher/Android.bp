@@ -59,6 +59,8 @@ cc_binary {
     },
 }
 
+// Currently broken due to multiple symbol definition of dl_iterate_phdr in libc.a and libdl.a
+/*
 cc_binary {
     name: "static_crasher",
 
@@ -67,8 +69,13 @@ cc_binary {
     static_executable: true,
     static_libs: [
         "libdebuggerd_handler",
+        "libbacktrace",
+        "libunwind",
+        "liblzma",
+
         "libbase",
         "liblog",
+        "libcutils",
     ],
     multilib: {
         lib32: {
@@ -79,3 +86,4 @@ cc_binary {
         },
     },
 }
+*/

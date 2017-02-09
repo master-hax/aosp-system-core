@@ -371,6 +371,10 @@ LOCAL_STATIC_LIBRARIES := \
     libcrypto \
     libminijail \
     libdebuggerd_handler \
+    libbacktrace \
+    libunwind \
+    liblzma \
+    libcutils \
 
 include $(BUILD_EXECUTABLE)
 
