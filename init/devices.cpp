@@ -341,6 +341,18 @@ static void remove_platform_device(const char *path)
     }
 }
 
+static void destroy_platform_devices() {
+    struct listnode *node, *n;
+    struct platform_node *bus;
+
+    list_for_each_safe(node, n, &platform_names) {
+        list_remove(node);
+        bus = node_to_item(node, struct platform_node, list);
+        free(bus->path);
+        free(bus);
+    }
+}
+
 /* Given a path that may start with a PCI device, populate the supplied buffer
  * with the PCI domain/bus number and the peripheral ID and return 0.
  * If it doesn't start with a PCI device, or there is some error, return -1 */
@@ -1022,6 +1034,11 @@ void device_init(const char *path, coldboot_callback fn) {
     }
 
     LOG(INFO) << "Coldboot took " << t;
+}
+
+void device_close() {
+    destroy_platform_devices();
+    close(device_fd);
 }
 
 int get_device_fd() {
