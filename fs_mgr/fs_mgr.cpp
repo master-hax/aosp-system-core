@@ -195,20 +195,19 @@ static void check_fs(const char *blk_device, char *fs_type, char *target)
 }
 
 /* Function to read the primary superblock */
-static int read_super_block(int fd, struct ext4_super_block *sb)
+static int read_ext4_super_block(int fd, struct ext4_super_block *sb)
 {
     off64_t ret;
-
     ret = lseek64(fd, 1024, SEEK_SET);
     if (ret < 0)
         return ret;
-
     ret = read(fd, sb, sizeof(*sb));
     if (ret < 0)
         return ret;
     if (ret != sizeof(*sb))
         return ret;
-
+    if (sb->s_magic != EXT4_SUPER_MAGIC)
+        return -EINVAL;
     return 0;
 }
 
@@ -244,7 +243,7 @@ static int do_quota(char *blk_device, char *fs_type, struct fstab_rec *rec)
                 TEMP_FAILURE_RETRY(open(blk_device, O_RDONLY | O_CLOEXEC)));
             if (fd >= 0) {
                 struct ext4_super_block sb;
-                ret = read_super_block(fd, &sb);
+                ret = read_ext4_super_block(fd, &sb);
                 if (ret < 0) {
                     PERROR << "Can't read '" << blk_device << "' super block";
                     return force_check;
@@ -312,7 +311,7 @@ static void do_reserved_size(char *blk_device, char *fs_type, struct fstab_rec *
                 TEMP_FAILURE_RETRY(open(blk_device, O_RDONLY | O_CLOEXEC)));
             if (fd >= 0) {
                 struct ext4_super_block sb;
-                ret = read_super_block(fd, &sb);
+                ret = read_ext4_super_block(fd, &sb);
                 if (ret < 0) {
                     PERROR << "Can't read '" << blk_device << "' super block";
                     return;
@@ -324,7 +323,6 @@ static void do_reserved_size(char *blk_device, char *fs_type, struct fstab_rec *
                              << " is too large";
                     reserved_blocks = reserved_threshold;
                 }
-
                 if (ext4_r_blocks_count(&sb) == reserved_blocks) {
                     LINFO << "Have reserved same blocks";
                     return;
