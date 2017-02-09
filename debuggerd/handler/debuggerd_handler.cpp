@@ -226,7 +226,10 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
 
     // Set all of the ambient capability bits we can, so that crash_dump can ptrace us.
     for (unsigned long i = 0; prctl(PR_CAPBSET_READ, i, 0, 0, 0) != -1; ++i) {
-      prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, i, 0, 0);
+      if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, i, 0, 0) != 0 && errno != EPERM) {
+        __libc_format_log(ANDROID_LOG_ERROR, "libc", "failed to raise ambient capability %lu: %s",
+                          i, strerror(errno));
+      }
     }
 
     char buf[10];
@@ -406,7 +409,33 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   resend_signal(info, thread_info.crash_dump_started);
 }
 
+static void set_inheritable() {
+  __user_cap_header_struct capheader;
+  memset(&capheader, 0, sizeof(capheader));
+  capheader.version = _LINUX_CAPABILITY_VERSION_3;
+  capheader.pid = 0;
+
+  __user_cap_data_struct capdata[2];
+  if (capget(&capheader, &capdata[0]) == -1) {
+    fatal_errno("capget failed");
+  }
+
+  if (capdata[0].permitted == capdata[0].inheritable &&
+      capdata[1].permitted == capdata[1].inheritable) {
+    return;
+  }
+
+  capdata[0].inheritable = capdata[0].permitted;
+  capdata[1].inheritable = capdata[1].permitted >> 32;
+
+  if (capset(&capheader, &capdata[0]) == -1) {
+    __libc_format_log(ANDROID_LOG_ERROR, "libc", "capset failed: %s", strerror(errno));
+  }
+}
+
 void debuggerd_init(debuggerd_callbacks_t* callbacks) {
+  set_inheritable();
+
   if (prctl(PR_SET_DUMPABLE, 1) != 0) {
     __libc_format_log(ANDROID_LOG_ERROR, "libc", "prctl(PR_SET_DUMPABLE, 1) failed: %s",
                       strerror(errno));
