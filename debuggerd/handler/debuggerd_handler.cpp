@@ -51,6 +51,8 @@
 #include "private/bionic_futex.h"
 #include "private/libc_logging.h"
 
+#include "tombstone.h"
+
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)
 
@@ -294,7 +296,7 @@ static void resend_signal(siginfo_t* info, bool crash_dump_started) {
 
 // Handler that does crash dumping by forking and doing the processing in the child.
 // Do this by ptracing the relevant thread, and then execing debuggerd to do the actual dump.
-static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) {
+static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* context) {
   int ret = pthread_mutex_lock(&crash_mutex);
   if (ret != 0) {
     __libc_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_lock failed: %s", strerror(ret));
@@ -324,18 +326,30 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void*) 
 
   log_signal_summary(signal_number, info);
 
-  if (prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0) == 1) {
-    // The process has NO_NEW_PRIVS enabled, so we can't transition to the crash_dump context.
-    __libc_format_log(ANDROID_LOG_INFO, "libc",
-                      "Suppressing debuggerd output because prctl(PR_GET_NO_NEW_PRIVS)==1");
-    resend_signal(info, false);
-    return;
-  }
-
   void* abort_message = nullptr;
   if (g_callbacks.get_abort_message) {
     abort_message = g_callbacks.get_abort_message();
   }
+
+  if (prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0) == 1) {
+    if (signal_number == DEBUGGER_SIGNAL) {
+      // The process has NO_NEW_PRIVS enabled, so we can't transition to the crash_dump context.
+      __libc_format_log(ANDROID_LOG_INFO, "libc",
+                        "Suppressing debuggerd output because prctl(PR_GET_NO_NEW_PRIVS)==1");
+      resend_signal(info, false);
+      return;
+    } else {
+      // This is incredibly sketchy to do inside of a signal handler, especially when libbacktrace
+      // uses the C++ standard library throughout, but this code is usually linked into the
+      // dynamic linker, so we'll be using the linker's malloc instead of libc's.
+      // Spawn a thread to commit suicide just in case.
+      engrave_tombstone_ucontext(-1, getpid(), gettid(), reinterpret_cast<uintptr_t>(abort_message),
+                                 info, static_cast<ucontext_t*>(context));
+      resend_signal(info, false);
+      return;
+    }
+  }
+
   // Populate si_value with the abort message address, if found.
   if (abort_message) {
     info->si_value.sival_ptr = abort_message;
