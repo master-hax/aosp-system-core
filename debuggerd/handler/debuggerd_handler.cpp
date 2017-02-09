@@ -336,6 +336,13 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     abort_message = g_callbacks.get_abort_message();
   }
 
+  if (prctl(PR_GET_DUMPABLE) != 1) {
+      __libc_format_log(ANDROID_LOG_INFO, "libc",
+                        "Suppressing debuggerd output because prctl(PR_GET_DUMPABLE)!=1");
+      resend_signal(info, false);
+      return;
+  }
+
   if (prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0) == 1) {
     if (signal_number == DEBUGGER_SIGNAL) {
       // The process has NO_NEW_PRIVS enabled, so we can't transition to the crash_dump context.
@@ -400,6 +407,11 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
 }
 
 void debuggerd_init(debuggerd_callbacks_t* callbacks) {
+  if (prctl(PR_SET_DUMPABLE, 1) != 0) {
+    __libc_format_log(ANDROID_LOG_ERROR, "libc", "prctl(PR_SET_DUMPABLE, 1) failed: %s",
+                      strerror(errno));
+  }
+
   if (callbacks) {
     g_callbacks = *callbacks;
   }
