@@ -638,14 +638,99 @@ static std::string import_cmdline_fstab() {
 }
 
 /* Early mount vendor and ODM partitions. The fstab info is read from kernel cmdline. */
-static void early_mount() {
-    // TODO: read fstab entries from device tree, so early mount
-    // entries can be specified for A/B devices where system = root
-    std::string fstab = import_cmdline_fstab();
-    if (fstab.empty()) {
+static bool early_mount() {
+    // TODO:  read fstab entries from device tree instead of
+    // kernel cmdline
+    std::string fstab_file = import_cmdline_fstab();
+    if (fstab_file.empty()) {
         LOG(INFO) << "Early mount skipped (missing fstab argument)";
-        return;
+        return true;
     }
+
+    std::unique_ptr<struct fstab, void(*)(fstab*)> tab(fs_mgr_read_fstab(fstab_file.c_str()),
+                                                       fs_mgr_free_fstab);
+    if (!tab) {
+        LOG(ERROR) << "Early mount failed to read fstab: " << fstab_file;
+        // continue to allow booting normally if this happened.
+        return true;
+    }
+
+    // find out fstab records for odm, system and vendor
+    fstab_rec* odm_rec = fs_mgr_get_entry_for_mount_point(tab.get(), "/odm");
+    fstab_rec* system_rec = fs_mgr_get_entry_for_mount_point(tab.get(), "/system");
+    fstab_rec* vendor_rec = fs_mgr_get_entry_for_mount_point(tab.get(), "/vendor");
+    if (!odm_rec && !system_rec && !vendor_rec) {
+        // nothing to early mount
+        return true;
+    }
+
+    bool found_odm = !odm_rec;
+    bool found_system = !system_rec;
+    bool found_vendor = !vendor_rec;
+    // create the devices we need..
+    device_init(nullptr,
+        [&](uevent* uevent) -> coldboot_action_t {
+            if (!strncmp(uevent->subsystem, "firmware", 8)) {
+                return COLDBOOT_CONTINUE;
+            }
+
+            // we need platform devices to create symlinks
+            if (!strncmp(uevent->subsystem, "platform", 8)) {
+                return COLDBOOT_CREATE;
+            }
+
+            // Ignore everything that is not a block device
+            if (strncmp(uevent->subsystem, "block", 5)) {
+                return COLDBOOT_CONTINUE;
+            }
+
+            if (uevent->partition_name) {
+                // prefix match partition names so we create device nodes for
+                // A/B-ed partitions
+                // TODO: The following logic still to be fixed for A/B-ed partitions.
+                if (!found_odm && !strncmp(uevent->partition_name, "odm", 3)) {
+                    found_odm = true;
+                    LOG(VERBOSE) << "early_mount: found odm partition";
+                    if (found_system && found_vendor)
+                        return COLDBOOT_STOP;
+                    return COLDBOOT_CREATE;
+                } else if (!found_system && !strncmp(uevent->partition_name, "system", 6)) {
+                    found_system = true;
+                    LOG(VERBOSE) << "early_mount: found system partition";
+                    if (found_odm && found_vendor)
+                        return COLDBOOT_STOP;
+                    return COLDBOOT_CREATE;
+                } else if (!found_vendor && !strncmp(uevent->partition_name, "vendor", 6)) {
+                    found_vendor = true;
+                    LOG(VERBOSE) << "early_mount: found vendor partition";
+                    if (found_odm && found_system)
+                        return COLDBOOT_STOP;
+                    return COLDBOOT_CREATE;
+                }
+            }
+
+            // dont create any other block device.
+            return COLDBOOT_CONTINUE;
+        });
+
+    // TODO: add support to mount partitions w/ verity
+
+    int ret = 0;
+    if (odm_rec &&
+            (ret = fs_mgr_do_mount(tab.get(), odm_rec->mount_point, odm_rec->blk_device, NULL))) {
+        PLOG(ERROR) << "early_mount: fs_mgr_do_mount returned error for mounting odm";
+        return false;
+    }
+
+    if (vendor_rec &&
+            (ret = fs_mgr_do_mount(tab.get(), vendor_rec->mount_point, vendor_rec->blk_device, NULL))) {
+        PLOG(ERROR) << "early_mount: fs_mgr_do_mount returned error for mounting vendor";
+        return false;
+    }
+
+    device_close();
+
+    return true;
 }
 
 int main(int argc, char** argv) {
@@ -694,8 +779,10 @@ int main(int argc, char** argv) {
     LOG(INFO) << "init " << (is_first_stage ? "first" : "second") << " stage started!";
 
     if (is_first_stage) {
-        // Mount devices defined in android.early.* kernel commandline
-        early_mount();
+        if (!early_mount()) {
+            LOG(ERROR) << "Failed to mount required partitions early ...";
+            panic();
+        }
 
         // Set up SELinux, loading the SELinux policy.
         selinux_initialize(true);
