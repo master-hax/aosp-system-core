@@ -63,10 +63,19 @@ android_logcat_context create_android_logcat();
 int android_logcat_run_command(android_logcat_context ctx,
                                int output, int error,
                                int argc, char* const* argv);
+/* Will not block, performed in-process
+ *
+ * Starts a thread, opens a pipe, returns reading end fd, saves off argv.
+ * The command supports 2>&1 (mix content) and 2>/dev/null (drop content) for
+ * scripted error (stderr) redirection.
+ */
+int android_logcat_run_command_thread(android_logcat_context ctx,
+                                      int argc, char* const* argv);
+int android_logcat_run_command_thread_running(android_logcat_context ctx);
 
 /* Finished with context
  *
- * Free up all associated resources.
+ * Kill the thread ASAP, and free up all associated resources.
  */
 int android_logcat_destroy(android_logcat_context* ctx);
 

@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <math.h>
+#include <pthread.h>
 #include <sched.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -37,6 +38,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
@@ -59,14 +61,19 @@ struct android_logcat_context_internal {
     // Arguments passed in, or copies and storage thereof if a thread.
     int argc;
     char* const* argv;
+    std::vector<std::string> args;
+    std::vector<const char*> argv_hold;
     int output_fd;
     int error_fd;
     int outFD;
 
     // library
+    int fds[2]; // From popen call
     FILE* output; // everything writes to fileno(output), buffer unused
     FILE* error;  // unless error == output.
+    pthread_t thr;
     volatile bool stop;
+    volatile bool thread_stopped;
     bool stderr_null;
     bool stderr_stdout;
 
@@ -101,10 +108,15 @@ android_logcat_context create_android_logcat() {
     if (!context) {
         return NULL;
     }
+    context->fds[0] = -1;
+    context->fds[1] = -1;
     context->output_fd = -1;
     context->error_fd = -1;
     context->maxRotatedLogs = DEFAULT_MAX_ROTATED_LOGS;
     context->outFD = -1;
+
+    context->argv_hold.clear();
+    context->args.clear();
 
     return (android_logcat_context)context;
 }
@@ -1551,6 +1563,14 @@ exit:
         fclose(context->error);
         context->error = NULL;
     }
+    if (context->fds[1] >= 0) {
+        // NB: could be closed by the above fclose(s)
+        int save_errno = errno;
+        close(context->fds[1]);
+        errno = save_errno;
+        context->fds[1] = -1;
+    }
+    context->thread_stopped = true;
     return context->retval;
 }
 
@@ -1565,7 +1585,94 @@ int android_logcat_run_command(android_logcat_context ctx,
     context->argc = argc;
     context->argv = argv;
     context->stop = false;
+    context->thread_stopped = false;
     return __logcat(context);
+}
+
+// starts a thread, opens a pipe, returns reading end.
+int android_logcat_run_command_thread(android_logcat_context ctx,
+                                      int argc, char* const* argv) {
+    android_logcat_context_internal* context = ctx;
+
+    int save_errno = EBUSY;
+    if ((context->fds[0] >= 0) || (context->fds[1] >= 0)) {
+        goto exit;
+    }
+
+    if (pipe(context->fds) < 0) {
+        save_errno = errno;
+        goto exit;
+    }
+
+    pthread_attr_t attr;
+    if (pthread_attr_init(&attr)) {
+        save_errno = errno;
+        goto close_exit;
+    }
+
+    struct sched_param param;
+    memset(&param, 0, sizeof(param));
+    pthread_attr_setschedparam(&attr, &param);
+    pthread_attr_setschedpolicy(&attr, SCHED_BATCH);
+    if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) {
+        int save_errno = errno;
+        goto pthread_attr_exit;
+    }
+
+    context->stop = false;
+    context->thread_stopped = false;
+    context->output_fd = context->fds[1];
+    // save off arguments so they remain while thread is active.
+    for(int i = 0; i < argc; ++i) {
+        context->args.push_back(std::string(argv[i]));
+    }
+    for(auto& str : context->args) {
+        context->argv_hold.push_back(str.c_str());
+    }
+    context->argv_hold.push_back(NULL);
+    context->argc = context->argv_hold.size() - 1;
+    context->argv = (char* const*)&context->argv_hold[0];
+#ifdef DEBUG
+    fprintf(stderr, "argv[%d] = {", context->argc);
+    for(auto str : context->argv_hold) {
+        fprintf(stderr, " \"%s\"", str ?: "NULL");
+    }
+    fprintf(stderr, " }\n");
+    fflush(stderr);
+#endif
+    context->retval = EXIT_SUCCESS;
+    if (pthread_create(&context->thr, &attr,
+                       (void*(*)(void*))__logcat, context)) {
+        int save_errno = errno;
+        goto argv_exit;
+    }
+    pthread_attr_destroy(&attr);
+
+    return context->fds[0];
+
+argv_exit:
+    context->argv_hold.clear();
+    context->args.clear();
+pthread_attr_exit:
+    pthread_attr_destroy(&attr);
+close_exit:
+    close(context->fds[0]);
+    context->fds[0] = -1;
+    close(context->fds[1]);
+    context->fds[1] = -1;
+exit:
+    errno = save_errno;
+    context->stop = true;
+    context->thread_stopped = true;
+    context->retval = EXIT_FAILURE;
+    return -1;
+}
+
+// test if the thread is still doing 'stuff'
+int android_logcat_run_command_thread_running(android_logcat_context ctx) {
+    android_logcat_context_internal* context = ctx;
+
+    return context->thread_stopped == false;
 }
 
 // Finished with context
@@ -1575,7 +1682,16 @@ int android_logcat_destroy(android_logcat_context* ctx) {
     *ctx = NULL;
 
     context->stop = true;
+    while (context->thread_stopped == false) {
+        sched_yield();
+    }
 
+    context->argv_hold.clear();
+    context->args.clear();
+    if (context->fds[0] >= 0) {
+        close(context->fds[0]);
+        context->fds[0] = -1;
+    }
     if (context->output == context->error) context->error = NULL;
     if (context->outFD == fileno(stdout)) context->outFD = -1;
     if (context->output && (context->output != stdout)) {
@@ -1590,6 +1706,13 @@ int android_logcat_destroy(android_logcat_context* ctx) {
         fclose(context->error);
         context->error = NULL;
         context->error_fd = -1;
+    }
+    if (context->fds[1] >= 0) {
+        // NB: could be closed by the above fclose(s), ignore error.
+        int save_errno = errno;
+        close(context->fds[1]);
+        errno = save_errno;
+        context->fds[1] = -1;
     }
     if (context->outFD >= 0) {
         // NB: could be closed by the above fclose(s), ignore error.
