@@ -33,6 +33,13 @@
 #include <log/log.h>
 #include <log/log_event_list.h>
 
+#ifndef logcat_popen
+#define logcat_define(context)
+#define logcat_popen(context, command) popen((command), "r")
+#define logcat_pclose(context, fp)     pclose(fp)
+#define logcat_system(command)         system(command)
+#endif
+
 #define BIG_BUFFER (5 * 1024)
 
 // enhanced version of LOG_FAILURE_RETRY to add support for EAGAIN and
@@ -54,15 +61,15 @@ static const char begin[] = "--------- beginning of ";
 
 TEST(logcat, buckets) {
     FILE *fp;
+    logcat_define(ctx);
 
 #undef LOG_TAG
 #define LOG_TAG "inject"
     RLOGE("logcat.buckets");
     sleep(1);
 
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -b radio -b events -b system -b main -d 2>/dev/null",
-      "r")));
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+      "logcat -b radio -b events -b system -b main -d 2>/dev/null")));
 
     char buffer[BIG_BUFFER];
 
@@ -80,7 +87,7 @@ TEST(logcat, buckets) {
         }
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     EXPECT_EQ(15, ids);
 
@@ -89,10 +96,10 @@ TEST(logcat, buckets) {
 
 TEST(logcat, event_tag_filter) {
     FILE *fp;
+    logcat_define(ctx);
 
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -b events -d -s auditd am_proc_start am_pss am_proc_bound dvm_lock_sample am_wtf 2>/dev/null",
-      "r")));
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+      "logcat -b events -d -s auditd am_proc_start am_pss am_proc_bound dvm_lock_sample am_wtf 2>/dev/null")));
 
     char buffer[BIG_BUFFER];
 
@@ -102,7 +109,7 @@ TEST(logcat, event_tag_filter) {
         ++count;
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     EXPECT_LT(4, count);
 }
@@ -145,6 +152,7 @@ TEST(logcat, year) {
 
     do {
         FILE *fp;
+        logcat_define(ctx);
 
         char needle[32];
         time_t now;
@@ -158,9 +166,8 @@ TEST(logcat, year) {
 #endif
         strftime(needle, sizeof(needle), "[ %Y-", ptm);
 
-        ASSERT_TRUE(NULL != (fp = popen(
-          "logcat -v long -v year -b all -t 3 2>/dev/null",
-          "r")));
+        ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+          "logcat -v long -v year -b all -t 3 2>/dev/null")));
 
         char buffer[BIG_BUFFER];
 
@@ -171,7 +178,7 @@ TEST(logcat, year) {
                 ++count;
             }
         }
-        pclose(fp);
+        logcat_pclose(ctx, fp);
 
     } while ((count < 3) && --tries && inject(3 - count));
 
@@ -222,10 +229,10 @@ TEST(logcat, tz) {
 
     do {
         FILE *fp;
+        logcat_define(ctx);
 
-        ASSERT_TRUE(NULL != (fp = popen(
-          "logcat -v long -v America/Los_Angeles -b all -t 3 2>/dev/null",
-          "r")));
+        ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+          "logcat -v long -v America/Los_Angeles -b all -t 3 2>/dev/null")));
 
         char buffer[BIG_BUFFER];
 
@@ -239,7 +246,7 @@ TEST(logcat, tz) {
             }
         }
 
-        pclose(fp);
+        logcat_pclose(ctx, fp);
 
     } while ((count < 3) && --tries && inject(3 - count));
 
@@ -248,10 +255,10 @@ TEST(logcat, tz) {
 
 TEST(logcat, ntz) {
     FILE *fp;
+    logcat_define(ctx);
 
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -v long -v America/Los_Angeles -v zone -b all -t 3 2>/dev/null",
-      "r")));
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+      "logcat -v long -v America/Los_Angeles -v zone -b all -t 3 2>/dev/null")));
 
     char buffer[BIG_BUFFER];
 
@@ -263,7 +270,7 @@ TEST(logcat, ntz) {
         }
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     ASSERT_EQ(0, count);
 }
@@ -281,7 +288,8 @@ static void do_tail(int num) {
                  "logcat -v long -b all -t %d 2>/dev/null", num);
 
         FILE *fp;
-        ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+        logcat_define(ctx);
+        ASSERT_TRUE(NULL != (fp = logcat_popen(ctx, buffer)));
 
         count = 0;
 
@@ -289,7 +297,7 @@ static void do_tail(int num) {
             ++count;
         }
 
-        pclose(fp);
+        logcat_pclose(ctx, fp);
 
     } while ((count < num) && --tries && inject(num - count));
 
@@ -326,12 +334,14 @@ TEST(logcat, tail_time) {
     int tries = 4; // in case run too soon after system start or buffer clear
 
     do {
-        ASSERT_TRUE(NULL != (fp = popen("logcat"
-                                        " -v long"
-                                        " -v nsec"
-                                        " -b all"
-                                        " -t 10"
-                                        " 2>&1", "r")));
+        logcat_define(ctx);
+        ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+                                               "logcat"
+                                               " -v long"
+                                               " -v nsec"
+                                               " -b all"
+                                               " -t 10"
+                                               " 2>&1")));
         count = 0;
 
         while ((input = fgetLongTime(buffer, sizeof(buffer), fp))) {
@@ -344,7 +354,7 @@ TEST(logcat, tail_time) {
             free(last_timestamp);
             last_timestamp = strdup(input);
         }
-        pclose(fp);
+        logcat_pclose(ctx, fp);
 
     } while ((count < 10) && --tries && inject(10 - count));
 
@@ -360,7 +370,8 @@ TEST(logcat, tail_time) {
                                      " -t '%s'"
                                      " 2>&1",
                                      first_timestamp);
-    ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+    logcat_define(ctx);
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx, buffer)));
 
     int second_count = 0;
     int last_timestamp_count = -1;
@@ -404,7 +415,7 @@ TEST(logcat, tail_time) {
             last_timestamp_count = second_count;
         }
     }
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     EXPECT_TRUE(found);
     if (!found) {
@@ -437,9 +448,9 @@ TEST(logcat, End_to_End) {
     ASSERT_LT(0, __android_log_btwrite(0, EVENT_TYPE_LONG, &ts, sizeof(ts)));
 
     FILE *fp;
-    ASSERT_TRUE(NULL != (fp = popen(
-      "logcat -v brief -b events -t 100 2>/dev/null",
-      "r")));
+    logcat_define(ctx);
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx,
+      "logcat -v brief -b events -t 100 2>/dev/null")));
 
     char buffer[BIG_BUFFER];
 
@@ -460,16 +471,17 @@ TEST(logcat, End_to_End) {
         }
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     ASSERT_EQ(1, count);
 }
 
 static int get_groups(const char *cmd) {
     FILE *fp;
+    logcat_define(ctx);
 
     // NB: crash log only available in user space
-    EXPECT_TRUE(NULL != (fp = popen(cmd, "r")));
+    EXPECT_TRUE(NULL != (fp = logcat_popen(ctx, cmd)));
 
     if (fp == NULL) {
         return 0;
@@ -533,7 +545,7 @@ static int get_groups(const char *cmd) {
         }
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     return count;
 }
@@ -554,6 +566,7 @@ TEST(logcat, bad_buffer) {
       "logcat -v brief -b radio,events,bogo,system,main -g 2>/dev/null"));
 }
 
+#ifndef logcat
 static void caught_blocking(int signum)
 {
     unsigned long long v = 0xDEADBEEFA55A0000ULL;
@@ -695,6 +708,7 @@ TEST(logcat, blocking_tail) {
 
     EXPECT_EQ(1, signals);
 }
+#endif
 
 // meant to be handed to ASSERT_FALSE / EXPECT_FALSE to expand the message
 static testing::AssertionResult IsFalse(int ret, const char* command) {
@@ -715,7 +729,7 @@ TEST(logcat, logrotate) {
     snprintf(command, sizeof(command), comm, buf);
 
     int ret;
-    EXPECT_FALSE(IsFalse(ret = system(command), command));
+    EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
     if (!ret) {
         snprintf(command, sizeof(command), "ls -s %s 2>/dev/null", buf);
 
@@ -759,7 +773,7 @@ TEST(logcat, logrotate_suffix) {
     snprintf(command, sizeof(command), logcat_cmd, tmp_out_dir);
 
     int ret;
-    EXPECT_FALSE(IsFalse(ret = system(command), command));
+    EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
     if (!ret) {
         snprintf(command, sizeof(command), "ls %s 2>/dev/null", tmp_out_dir);
 
@@ -813,7 +827,7 @@ TEST(logcat, logrotate_continue) {
     snprintf(command, sizeof(command), logcat_cmd, tmp_out_dir, log_filename);
 
     int ret;
-    EXPECT_FALSE(IsFalse(ret = system(command), command));
+    EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
     if (ret) {
         snprintf(command, sizeof(command), cleanup_cmd, tmp_out_dir);
         EXPECT_FALSE(IsFalse(system(command), command));
@@ -861,7 +875,7 @@ TEST(logcat, logrotate_continue) {
     // re-run the command, it should only add a few lines more content if it
     // continues where it left off.
     snprintf(command, sizeof(command), logcat_cmd, tmp_out_dir, log_filename);
-    EXPECT_FALSE(IsFalse(ret = system(command), command));
+    EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
     if (ret) {
         snprintf(command, sizeof(command), cleanup_cmd, tmp_out_dir);
         EXPECT_FALSE(IsFalse(system(command), command));
@@ -940,7 +954,7 @@ TEST(logcat, logrotate_clear) {
                  logcat_cmd, tmp_out_dir, log_filename, num_val);
 
         int ret;
-        EXPECT_FALSE(IsFalse(ret = system(command), command));
+        EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
         if (ret) {
             snprintf(command, sizeof(command), cleanup_cmd, tmp_out_dir);
             EXPECT_FALSE(IsFalse(system(command), command));
@@ -969,7 +983,7 @@ TEST(logcat, logrotate_clear) {
         strcat(command, clear_cmd);
 
         int ret;
-        EXPECT_FALSE(IsFalse(ret = system(command), command));
+        EXPECT_FALSE(IsFalse(ret = logcat_system(command), command));
         if (ret) {
             snprintf(command, sizeof(command), cleanup_cmd, tmp_out_dir);
             EXPECT_FALSE(system(command));
@@ -1006,7 +1020,7 @@ static int logrotate_count_id(const char *logcat_cmd, const char *tmp_out_dir) {
 
     snprintf(command, sizeof(command), logcat_cmd, tmp_out_dir, log_filename);
 
-    int ret = system(command);
+    int ret = logcat_system(command);
     if (ret) {
         fprintf(stderr, "system(\"%s\")=%d", command, ret);
         return -1;
@@ -1073,9 +1087,10 @@ TEST(logcat, logrotate_nodir) {
     static const char command[] = "logcat -b all -d"
                      " -f /das/nein/gerfingerpoken/logcat/log.txt"
                      " -n 256 -r 1024";
-    EXPECT_FALSE(IsFalse(0 == system(command), command));
+    EXPECT_FALSE(IsFalse(0 == logcat_system(command), command));
 }
 
+#ifndef logcat
 static void caught_blocking_clear(int signum) {
     unsigned long long v = 0xDEADBEEFA55C0000ULL;
 
@@ -1199,11 +1214,13 @@ TEST(logcat, blocking_clear) {
 
     EXPECT_EQ(1, signals);
 }
+#endif
 
 static bool get_white_black(char **list) {
     FILE *fp;
+    logcat_define(ctx);
 
-    fp = popen("logcat -p 2>/dev/null", "r");
+    fp = logcat_popen(ctx, "logcat -p 2>/dev/null");
     if (fp == NULL) {
         fprintf(stderr, "ERROR: logcat -p 2>/dev/null\n");
         return false;
@@ -1231,17 +1248,18 @@ static bool get_white_black(char **list) {
             asprintf(list, "%s", buf);
         }
     }
-    pclose(fp);
+    logcat_pclose(ctx, fp);
     return *list != NULL;
 }
 
 static bool set_white_black(const char *list) {
     FILE *fp;
+    logcat_define(ctx);
 
     char buffer[BIG_BUFFER];
 
     snprintf(buffer, sizeof(buffer), "logcat -P '%s' 2>&1", list ? list : "");
-    fp = popen(buffer, "r");
+    fp = logcat_popen(ctx, buffer);
     if (fp == NULL) {
         fprintf(stderr, "ERROR: %s\n", buffer);
         return false;
@@ -1260,10 +1278,10 @@ static bool set_white_black(const char *list) {
             continue;
         }
         fprintf(stderr, "%s\n", buf);
-        pclose(fp);
+        logcat_pclose(ctx, fp);
         return false;
     }
-    return pclose(fp) == 0;
+    return logcat_pclose(ctx, fp) == 0;
 }
 
 TEST(logcat, white_black_adjust) {
@@ -1298,39 +1316,56 @@ TEST(logcat, white_black_adjust) {
 
 TEST(logcat, regex) {
     FILE *fp;
+    logcat_define(ctx);
     int count = 0;
 
     char buffer[BIG_BUFFER];
+    // Have to make liblogcat data unique from logcat data injection
+#ifdef logcat
+#   define logcat_regex_prefix "lolcat_test"
+#else
+#   define logcat_regex_prefix "logcat_test"
+#endif
 
-    snprintf(buffer, sizeof(buffer), "logcat --pid %d -d -e logcat_test_a+b", getpid());
+    snprintf(buffer, sizeof(buffer),
+             "logcat --pid %d -d -e " logcat_regex_prefix "_a+b",
+             getpid());
 
-    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_ab"));
-    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_b"));
-    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_aaaab"));
-    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN, "logcat_test", "logcat_test_aaaa"));
-
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN,
+                                          logcat_regex_prefix,
+                                          logcat_regex_prefix "_ab"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN,
+                                          logcat_regex_prefix,
+                                          logcat_regex_prefix "_b"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN,
+                                          logcat_regex_prefix,
+                                          logcat_regex_prefix "_aaaab"));
+    LOG_FAILURE_RETRY(__android_log_print(ANDROID_LOG_WARN,
+                                          logcat_regex_prefix,
+                                          logcat_regex_prefix "_aaaa"));
     // Let the logs settle
     sleep(1);
 
-    ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx, buffer)));
 
     while (fgets(buffer, sizeof(buffer), fp)) {
         if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
             continue;
         }
 
-        EXPECT_TRUE(strstr(buffer, "logcat_test_") != NULL);
+        EXPECT_TRUE(strstr(buffer, logcat_regex_prefix "_") != NULL);
 
         count++;
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     ASSERT_EQ(2, count);
 }
 
 TEST(logcat, maxcount) {
     FILE *fp;
+    logcat_define(ctx);
     int count = 0;
 
     char buffer[BIG_BUFFER];
@@ -1345,7 +1380,7 @@ TEST(logcat, maxcount) {
     // Let the logs settle
     sleep(1);
 
-    ASSERT_TRUE(NULL != (fp = popen(buffer, "r")));
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx, buffer)));
 
     while (fgets(buffer, sizeof(buffer), fp)) {
         if (!strncmp(begin, buffer, sizeof(begin) - 1)) {
@@ -1355,7 +1390,7 @@ TEST(logcat, maxcount) {
         count++;
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     ASSERT_EQ(3, count);
 }
@@ -1367,12 +1402,13 @@ static bool End_to_End(const char* tag, const char* fmt, ...)
     ;
 
 static bool End_to_End(const char* tag, const char* fmt, ...) {
-    FILE *fp = popen("logcat"
-                     " -v brief"
-                     " -b events"
-                     " -v descriptive"
-                     " -t 100"
-                     " 2>/dev/null", "r");
+    logcat_define(ctx);
+    FILE *fp = logcat_popen(ctx, "logcat"
+                                 " -v brief"
+                                 " -b events"
+                                 " -v descriptive"
+                                 " -t 100"
+                                 " 2>/dev/null");
     if (!fp) {
         fprintf(stderr, "End_to_End: popen failed");
         return false;
@@ -1407,18 +1443,20 @@ static bool End_to_End(const char* tag, const char* fmt, ...) {
         }
     }
 
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     if ((count == 0) && (lastMatch.length() > 0)) {
         // Help us pinpoint where things went wrong ...
         fprintf(stderr, "Closest match for\n    %s\n  is\n    %s",
                 expect.c_str(), lastMatch.c_str());
-    } else if (count > 1) {
+    } else if (count > 2) {
         fprintf(stderr, "Too many matches (%d) for %s\n",
                 count, expect.c_str());
     }
 
-    return count == 1;
+    // Expect one the first time around as either liblogcat.descriptive or
+    // logcat.descriptive.  Expect two the second time as the other.
+    return count == 1 || count == 2;
 }
 
 TEST(logcat, descriptive) {
@@ -1544,12 +1582,13 @@ TEST(logcat, descriptive) {
 }
 
 static bool reportedSecurity(const char* command) {
-    FILE* fp = popen(command, "r");
+    logcat_define(ctx);
+    FILE* fp = logcat_popen(ctx, command);
     if (!fp) return true;
 
     std::string ret;
     bool val = android::base::ReadFdToString(fileno(fp), &ret);
-    pclose(fp);
+    logcat_pclose(ctx, fp);
 
     if (!val) return true;
     return std::string::npos != ret.find("'security'");
