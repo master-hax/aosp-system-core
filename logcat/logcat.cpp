@@ -1,4 +1,18 @@
-// Copyright 2006-2015 The Android Open Source Project
+/*
+ * Copyright (C) 2006-2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <arpa/inet.h>
 #include <assert.h>
@@ -39,16 +53,16 @@
 
 #define DEFAULT_MAX_ROTATED_LOGS 4
 
-static AndroidLogFormat * g_logformat;
+static AndroidLogFormat* g_logformat;
 
-/* logd prefixes records with a length field */
+// logd prefixes records with a length field
 #define RECORD_LENGTH_FIELD_SIZE_BYTES sizeof(uint32_t)
 
 struct log_device_t {
     const char* device;
     bool binary;
-    struct logger *logger;
-    struct logger_list *logger_list;
+    struct logger* logger;
+    struct logger_list* logger_list;
     bool printed;
 
     log_device_t* next;
@@ -65,9 +79,9 @@ struct log_device_t {
 
 namespace android {
 
-/* Global Variables */
+// Global Variables
 
-static const char * g_outputFileName;
+static const char* g_outputFileName;
 // 0 means "no log rotation"
 static size_t g_logRotateSizeKBytes;
 // 0 means "unbounded"
@@ -90,9 +104,9 @@ enum helpType {
 };
 
 // if showHelp is set, newline required in fmt statement to transition to usage
-__noreturn static void logcat_panic(enum helpType showHelp, const char *fmt, ...) __printflike(2,3);
+__noreturn static void logcat_panic(enum helpType showHelp, const char* fmt, ...) __printflike(2,3);
 
-static int openLogFile (const char *pathname)
+static int openLogFile(const char* pathname)
 {
     return open(pathname, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
 }
@@ -108,10 +122,13 @@ static void rotateLogs()
 
     close(g_outFD);
 
-    // Compute the maximum number of digits needed to count up to g_maxRotatedLogs in decimal.
-    // eg: g_maxRotatedLogs == 30 -> log10(30) == 1.477 -> maxRotationCountDigits == 2
+    // Compute the maximum number of digits needed to count up to
+    // g_maxRotatedLogs in decimal.  eg:
+    // g_maxRotatedLogs == 30
+    //   -> log10(30) == 1.477
+    //   -> maxRotationCountDigits == 2
     int maxRotationCountDigits =
-            (g_maxRotatedLogs > 0) ? (int) (floor(log10(g_maxRotatedLogs) + 1)) : 0;
+            (g_maxRotatedLogs > 0) ? (int)(floor(log10(g_maxRotatedLogs) + 1)) : 0;
 
     for (int i = g_maxRotatedLogs ; i > 0 ; i--) {
         std::string file1 = android::base::StringPrintf(
@@ -147,7 +164,7 @@ static void rotateLogs()
 
 }
 
-void printBinary(struct log_msg *buf)
+void printBinary(struct log_msg* buf)
 {
     size_t size = buf->len();
 
@@ -165,7 +182,7 @@ static bool regexOk(const AndroidLogEntry& entry)
     return g_regex->PartialMatch(messageString);
 }
 
-static void processBuffer(log_device_t* dev, struct log_msg *buf)
+static void processBuffer(log_device_t* dev, struct log_msg* buf)
 {
     int bytesWritten = 0;
     int err;
@@ -174,7 +191,7 @@ static void processBuffer(log_device_t* dev, struct log_msg *buf)
 
     if (dev->binary) {
         static bool hasOpenedEventTagMap = false;
-        static EventTagMap *eventTagMap = NULL;
+        static EventTagMap* eventTagMap = NULL;
 
         if (!eventTagMap && !hasOpenedEventTagMap) {
             eventTagMap = android_openEventTagMap(NULL);
@@ -250,7 +267,7 @@ static void setupOutputAndSchedulingPolicy(bool blocking) {
 
         struct sched_param param;
         memset(&param, 0, sizeof(param));
-        if (sched_setscheduler((pid_t) 0, SCHED_BATCH, &param) < 0) {
+        if (sched_setscheduler((pid_t)0, SCHED_BATCH, &param) < 0) {
             fprintf(stderr, "failed to set to batch scheduler\n");
         }
 
@@ -271,7 +288,7 @@ static void setupOutputAndSchedulingPolicy(bool blocking) {
         logcat_panic(HELP_FALSE, "couldn't get output file stat\n");
     }
 
-    if ((size_t) statbuf.st_size > SIZE_MAX || statbuf.st_size < 0) {
+    if ((size_t)statbuf.st_size > SIZE_MAX || statbuf.st_size < 0) {
         close(g_outFD);
         logcat_panic(HELP_FALSE, "invalid output file stat\n");
     }
@@ -279,7 +296,7 @@ static void setupOutputAndSchedulingPolicy(bool blocking) {
     g_outByteCount = statbuf.st_size;
 }
 
-static void show_help(const char *cmd)
+static void show_help(const char* cmd)
 {
     fprintf(stderr,"Usage: %s [options] [filterspecs]\n", cmd);
 
@@ -399,9 +416,9 @@ static void show_format_help()
     );
 }
 
-static int setLogFormat(const char * formatString)
+static int setLogFormat(const char* formatString)
 {
-    static AndroidLogPrintFormat format;
+    AndroidLogPrintFormat format;
 
     format = android_log_formatFromString(formatString);
 
@@ -428,7 +445,7 @@ static unsigned long value_of_size(unsigned long value)
     return value;
 }
 
-static const char *multiplier_of_size(unsigned long value)
+static const char* multiplier_of_size(unsigned long value)
 {
     unsigned i;
     for (i = 0;
@@ -437,15 +454,15 @@ static const char *multiplier_of_size(unsigned long value)
     return multipliers[i];
 }
 
-/*String to unsigned int, returns -1 if it fails*/
-static bool getSizeTArg(const char *ptr, size_t *val, size_t min = 0,
+// String to unsigned int, returns -1 if it fails
+static bool getSizeTArg(const char* ptr, size_t* val, size_t min = 0,
                         size_t max = SIZE_MAX)
 {
     if (!ptr) {
         return false;
     }
 
-    char *endp;
+    char* endp;
     errno = 0;
     size_t ret = (size_t)strtoll(ptr, &endp, 0);
 
@@ -461,11 +478,11 @@ static bool getSizeTArg(const char *ptr, size_t *val, size_t min = 0,
     return true;
 }
 
-static void logcat_panic(enum helpType showHelp, const char *fmt, ...)
+static void logcat_panic(enum helpType showHelp, const char* fmt, ...)
 {
-    va_list  args;
+    va_list args;
     va_start(args, fmt);
-    vfprintf(stderr, fmt,  args);
+    vfprintf(stderr, fmt, args);
     va_end(args);
 
     switch (showHelp) {
@@ -483,9 +500,9 @@ static void logcat_panic(enum helpType showHelp, const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static char *parseTime(log_time &t, const char *cp) {
+static char* parseTime(log_time& t, const char* cp) {
 
-    char *ep = t.strptime(cp, "%m-%d %H:%M:%S.%q");
+    char* ep = t.strptime(cp, "%m-%d %H:%M:%S.%q");
     if (ep) {
         return ep;
     }
@@ -497,14 +514,14 @@ static char *parseTime(log_time &t, const char *cp) {
 }
 
 // Find last logged line in <outputFileName>, or <outputFileName>.1
-static log_time lastLogTime(char *outputFileName) {
+static log_time lastLogTime(char* outputFileName) {
     log_time retval(log_time::EPOCH);
     if (!outputFileName) {
         return retval;
     }
 
     std::string directory;
-    char *file = strrchr(outputFileName, '/');
+    char* file = strrchr(outputFileName, '/');
     if (!file) {
         directory = ".";
         file = outputFileName;
@@ -525,7 +542,7 @@ static log_time lastLogTime(char *outputFileName) {
 
     size_t len = strlen(file);
     log_time modulo(0, NS_PER_SEC);
-    struct dirent *dp;
+    struct dirent* dp;
 
     while ((dp = readdir(dir.get())) != NULL) {
         if ((dp->d_type != DT_REG) ||
@@ -547,7 +564,7 @@ static log_time lastLogTime(char *outputFileName) {
         bool found = false;
         for (const auto& line : android::base::Split(file, "\n")) {
             log_time t(log_time::EPOCH);
-            char *ep = parseTime(t, line.c_str());
+            char* ep = parseTime(t, line.c_str());
             if (!ep || (*ep != ' ')) {
                 continue;
             }
@@ -581,9 +598,9 @@ static log_time lastLogTime(char *outputFileName) {
     return retval;
 }
 
-} /* namespace android */
+} // namespace android
 
-void reportErrorName(const char **current,
+void reportErrorName(const char** current,
                      const char* name,
                      bool blockSecurity) {
     if (*current) {
@@ -595,7 +612,7 @@ void reportErrorName(const char **current,
     *current = name;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     using namespace android;
     int err;
@@ -607,13 +624,13 @@ int main(int argc, char **argv)
     bool printStatistics = false;
     bool printDividers = false;
     unsigned long setLogSize = 0;
-    char *setPruneList = NULL;
-    char *setId = NULL;
+    char* setPruneList = NULL;
+    char* setId = NULL;
     int mode = ANDROID_LOG_RDONLY;
-    const char *forceFilters = NULL;
+    const char* forceFilters = NULL;
     log_device_t* devices = NULL;
     log_device_t* dev;
-    struct logger_list *logger_list;
+    struct logger_list* logger_list;
     size_t tail_lines = 0;
     log_time tail_time(log_time::EPOCH);
     size_t pid = 0;
@@ -739,10 +756,10 @@ int main(int argc, char **argv)
             case 't':
                 got_t = true;
                 mode |= ANDROID_LOG_RDONLY | ANDROID_LOG_NONBLOCK;
-                /* FALLTHRU */
+                // FALLTHRU
             case 'T':
                 if (strspn(optarg, "0123456789") != strlen(optarg)) {
-                    char *cp = parseTime(tail_time, optarg);
+                    char* cp = parseTime(tail_time, optarg);
                     if (!cp) {
                         logcat_panic(HELP_FALSE,
                                      "-%c \"%s\" not in time format\n",
@@ -775,7 +792,7 @@ int main(int argc, char **argv)
             break;
 
             case 'm': {
-                char *end = NULL;
+                char* end = NULL;
                 if (!getSizeTArg(optarg, &g_maxCount)) {
                     logcat_panic(HELP_FALSE, "-%c \"%s\" isn't an "
                                  "integer greater than zero\n", ret, optarg);
@@ -791,7 +808,7 @@ int main(int argc, char **argv)
                 // FALLTHRU
 
             case 'G': {
-                char *cp;
+                char* cp;
                 if (strtoll(optarg, &cp, 0) > 0) {
                     setLogSize = strtoll(optarg, &cp, 0);
                 } else {
@@ -802,15 +819,15 @@ int main(int argc, char **argv)
                 case 'g':
                 case 'G':
                     setLogSize *= 1024;
-                /* FALLTHRU */
+                // FALLTHRU
                 case 'm':
                 case 'M':
                     setLogSize *= 1024;
-                /* FALLTHRU */
+                // FALLTHRU
                 case 'k':
                 case 'K':
                     setLogSize *= 1024;
-                /* FALLTHRU */
+                // FALLTHRU
                 case '\0':
                 break;
 
@@ -819,8 +836,7 @@ int main(int argc, char **argv)
                 }
 
                 if (!setLogSize) {
-                    fprintf(stderr, "ERROR: -G <num><multiplier>\n");
-                    return EXIT_FAILURE;
+                    logcat_panic(HELP_FALSE, "ERROR: -G <num><multiplier>\n");
                 }
             }
             break;
@@ -848,7 +864,7 @@ int main(int argc, char **argv)
                         idMask = (unsigned)-1;
                     } else {
                         log_id_t log_id = android_name_to_log_id(optarg);
-                        const char *name = android_log_id_to_name(log_id);
+                        const char* name = android_log_id_to_name(log_id);
 
                         if (strcmp(name, optarg) != 0) {
                             logcat_panic(HELP_TRUE,
@@ -861,7 +877,7 @@ int main(int argc, char **argv)
                 }
 
                 for (int i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
-                    const char *name = android_log_id_to_name((log_id_t)i);
+                    const char* name = android_log_id_to_name((log_id_t)i);
                     log_id_t log_id = android_name_to_log_id(name);
 
                     if (log_id != (log_id_t)i) {
@@ -940,23 +956,20 @@ int main(int argc, char **argv)
             break;
 
             case 'Q':
-                /* this is a *hidden* option used to start a version of logcat                 */
-                /* in an emulated device only. it basically looks for androidboot.logcat=      */
-                /* on the kernel command line. If something is found, it extracts a log filter */
-                /* and uses it to run the program. If nothing is found, the program should     */
-                /* quit immediately                                                            */
-#define  KERNEL_OPTION  "androidboot.logcat="
-#define  CONSOLE_OPTION "androidboot.console="
+                // This is a *hidden* option used to start a version of logcat
+                // in an emulated device only.  It basically looks for
+                // androidboot.logcat= on the kernel command line.  If
+                // something is found, it extracts a log filter and uses it to
+                // run the program.  If nothing is found, the program should
+                // quit immediately.
+#define KERNEL_OPTION  "androidboot.logcat="
+#define CONSOLE_OPTION "androidboot.console="
                 {
-                    int          fd;
-                    char*        logcat;
-                    char*        console;
-                    int          force_exit = 1;
-                    static char  cmdline[1024];
+                    static char cmdline[1024];
 
-                    fd = open("/proc/cmdline", O_RDONLY);
+                    int fd = open("/proc/cmdline", O_RDONLY);
                     if (fd >= 0) {
-                        int  n = read(fd, cmdline, sizeof(cmdline)-1 );
+                        int n = read(fd, cmdline, sizeof(cmdline) - 1);
                         if (n < 0) n = 0;
                         cmdline[n] = 0;
                         close(fd);
@@ -964,39 +977,39 @@ int main(int argc, char **argv)
                         cmdline[0] = 0;
                     }
 
-                    logcat  = strstr( cmdline, KERNEL_OPTION );
-                    console = strstr( cmdline, CONSOLE_OPTION );
+                    char* logcat  = strstr(cmdline, KERNEL_OPTION);
+                    char* console = strstr(cmdline, CONSOLE_OPTION);
+                    bool force_exit = true;
                     if (logcat != NULL) {
-                        char*  p = logcat + sizeof(KERNEL_OPTION)-1;;
-                        char*  q = strpbrk( p, " \t\n\r" );;
+                        char* p = logcat + sizeof(KERNEL_OPTION) - 1;
+                        char* q = strpbrk(p, " \t\n\r");
 
-                        if (q != NULL)
-                            *q = 0;
+                        if (q != NULL) *q = 0;
 
                         forceFilters = p;
-                        force_exit   = 0;
+                        force_exit = false;
                     }
-                    /* if nothing found or invalid filters, exit quietly */
-                    if (force_exit) {
-                        return EXIT_SUCCESS;
-                    }
+                    // if nothing found or invalid filters, exit quietly
+                    if (force_exit) return EXIT_SUCCESS;
 
-                    /* redirect our output to the emulator console */
+                    // redirect our output to the emulator console
                     if (console) {
-                        char*  p = console + sizeof(CONSOLE_OPTION)-1;
-                        char*  q = strpbrk( p, " \t\n\r" );
-                        char   devname[64];
-                        int    len;
+                        char* p = console + sizeof(CONSOLE_OPTION) - 1;
+                        char* q = strpbrk(p, " \t\n\r");
+                        char  devname[64];
+                        int   len;
 
                         if (q != NULL) {
                             len = q - p;
-                        } else
+                        } else {
                             len = strlen(p);
+                        }
 
-                        len = snprintf( devname, sizeof(devname), "/dev/%.*s", len, p );
+                        len = snprintf(devname, sizeof(devname),
+                                       "/dev/%.*s", len, p);
                         fprintf(stderr, "logcat using %s (%d)\n", devname, len);
                         if (len < (int)sizeof(devname)) {
-                            fd = open( devname, O_WRONLY );
+                            fd = open(devname, O_WRONLY);
                             if (fd >= 0) {
                                 dup2(fd, 1);
                                 dup2(fd, 2);
@@ -1091,7 +1104,7 @@ int main(int argc, char **argv)
         }
     } else if (argc == optind) {
         // Add from environment variable
-        char *env_tags_orig = getenv("ANDROID_LOG_TAGS");
+        char* env_tags_orig = getenv("ANDROID_LOG_TAGS");
 
         if (env_tags_orig != NULL) {
             err = android_log_addFilterString(g_logformat, env_tags_orig);
@@ -1119,10 +1132,10 @@ int main(int argc, char **argv)
     } else {
         logger_list = android_logger_list_alloc(mode, tail_lines, pid);
     }
-    const char *openDeviceFail = NULL;
-    const char *clearFail = NULL;
-    const char *setSizeFail = NULL;
-    const char *getSizeFail = NULL;
+    const char* openDeviceFail = NULL;
+    const char* clearFail = NULL;
+    const char* setSizeFail = NULL;
+    const char* getSizeFail = NULL;
     // We have three orthogonal actions below to clear, set log size and
     // get log size. All sharing the same iteration loop.
     while (dev) {
@@ -1138,7 +1151,7 @@ int main(int argc, char **argv)
         if (clearLog || setId) {
             if (g_outputFileName) {
                 int maxRotationCountDigits =
-                    (g_maxRotatedLogs > 0) ? (int) (floor(log10(g_maxRotatedLogs) + 1)) : 0;
+                    (g_maxRotatedLogs > 0) ? (int)(floor(log10(g_maxRotatedLogs) + 1)) : 0;
 
                 for (int i = g_maxRotatedLogs ; i >= 0 ; --i) {
                     std::string file;
@@ -1182,11 +1195,12 @@ int main(int argc, char **argv)
                 reportErrorName(&getSizeFail, dev->device, allSelected);
             } else {
                 printf("%s: ring buffer is %ld%sb (%ld%sb consumed), "
-                       "max entry is %db, max payload is %db\n", dev->device,
+                         "max entry is %db, max payload is %db\n",
+                       dev->device,
                        value_of_size(size), multiplier_of_size(size),
                        value_of_size(readable), multiplier_of_size(readable),
-                       (int) LOGGER_ENTRY_MAX_LEN,
-                       (int) LOGGER_ENTRY_MAX_PAYLOAD);
+                       (int)LOGGER_ENTRY_MAX_LEN,
+                       (int)LOGGER_ENTRY_MAX_PAYLOAD);
             }
         }
 
@@ -1212,9 +1226,9 @@ int main(int argc, char **argv)
 
     if (setPruneList) {
         size_t len = strlen(setPruneList);
-        /*extra 32 bytes are needed by  android_logger_set_prune_list */
+        // extra 32 bytes are needed by android_logger_set_prune_list
         size_t bLen = len + 32;
-        char *buf = NULL;
+        char* buf = NULL;
         if (asprintf(&buf, "%-*s", (int)(bLen - 1), setPruneList) > 0) {
             buf[len] = '\0';
             if (android_logger_set_prune_list(logger_list, buf, bLen)) {
@@ -1224,11 +1238,12 @@ int main(int argc, char **argv)
         } else {
             logcat_panic(HELP_FALSE, "failed to set the prune list (alloc)");
         }
+        return EXIT_SUCCESS;
     }
 
     if (printStatistics || getPruneList) {
         size_t len = 8192;
-        char *buf;
+        char* buf;
 
         for (int retry = 32;
                 (retry >= 0) && ((buf = new char [len]));
@@ -1238,7 +1253,7 @@ int main(int argc, char **argv)
             } else {
                 android_logger_get_statistics(logger_list, buf, len);
             }
-            buf[len-1] = '\0';
+            buf[len - 1] = '\0';
             if (atol(buf) < 3) {
                 delete [] buf;
                 buf = NULL;
@@ -1257,7 +1272,7 @@ int main(int argc, char **argv)
         }
 
         // remove trailing FF
-        char *cp = buf + len - 1;
+        char* cp = buf + len - 1;
         *cp = '\0';
         bool truncated = *--cp != '\f';
         if (!truncated) {
@@ -1280,13 +1295,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
     }
 
-    if (getLogSize) {
-        return EXIT_SUCCESS;
-    }
-    if (setLogSize || setPruneList) {
-        return EXIT_SUCCESS;
-    }
-    if (clearLog) {
+    if (getLogSize || setLogSize || clearLog) {
         return EXIT_SUCCESS;
     }
 
