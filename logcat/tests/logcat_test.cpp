@@ -179,7 +179,7 @@ TEST(logcat, year) {
 }
 
 // Return a pointer to each null terminated -v long time field.
-char *fgetLongTime(char *buffer, size_t buflen, FILE *fp) {
+static char *fgetLongTime(char *buffer, size_t buflen, FILE *fp) {
     while (fgets(buffer, buflen, fp)) {
         char *cp = buffer;
         if (*cp != '[') {
@@ -268,7 +268,7 @@ TEST(logcat, ntz) {
     ASSERT_EQ(0, count);
 }
 
-void do_tail(int num) {
+static void do_tail(int num) {
     int tries = 4; // in case run too soon after system start or buffer clear
     int count;
 
@@ -465,7 +465,7 @@ TEST(logcat, End_to_End) {
     ASSERT_EQ(1, count);
 }
 
-int get_groups(const char *cmd) {
+static int get_groups(const char *cmd) {
     FILE *fp;
 
     // NB: crash log only available in user space
@@ -1006,14 +1006,14 @@ static int logrotate_count_id(const char *logcat_cmd, const char *tmp_out_dir) {
 
     snprintf(command, sizeof(command), logcat_cmd, tmp_out_dir, log_filename);
 
-    int ret;
-    EXPECT_FALSE(IsFalse(ret = system(command), command));
+    int ret = system(command);
     if (ret) {
+        fprintf(stderr, "system(\"%s\")=%d", command, ret);
         return -1;
     }
     std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(tmp_out_dir), closedir);
-    EXPECT_NE(nullptr, dir);
     if (!dir) {
+        fprintf(stderr, "opendir(\"%s\") failed", tmp_out_dir);
         return -1;
     }
     struct dirent *entry;
@@ -1069,11 +1069,11 @@ TEST(logcat, logrotate_id) {
 }
 
 TEST(logcat, logrotate_nodir) {
-    // expect logcat to error out on writing content and exit(1) for nodir
-    EXPECT_EQ(W_EXITCODE(1, 0),
-              system("logcat -b all -d"
+    // expect logcat to error out on writing content and not exit(0) for nodir
+    static const char command[] = "logcat -b all -d"
                      " -f /das/nein/gerfingerpoken/logcat/log.txt"
-                     " -n 256 -r 1024"));
+                     " -n 256 -r 1024";
+    EXPECT_FALSE(IsFalse(0 == system(command), command));
 }
 
 static void caught_blocking_clear(int signum) {
@@ -1367,8 +1367,16 @@ static bool End_to_End(const char* tag, const char* fmt, ...)
     ;
 
 static bool End_to_End(const char* tag, const char* fmt, ...) {
-    FILE *fp = popen("logcat -v brief -b events -v descriptive -t 100 2>/dev/null", "r");
-    if (!fp) return false;
+    FILE *fp = popen("logcat"
+                     " -v brief"
+                     " -b events"
+                     " -v descriptive"
+                     " -t 100"
+                     " 2>/dev/null", "r");
+    if (!fp) {
+        fprintf(stderr, "End_to_End: popen failed");
+        return false;
+    }
 
     char buffer[BIG_BUFFER];
     va_list ap;
@@ -1405,6 +1413,9 @@ static bool End_to_End(const char* tag, const char* fmt, ...) {
         // Help us pinpoint where things went wrong ...
         fprintf(stderr, "Closest match for\n    %s\n  is\n    %s",
                 expect.c_str(), lastMatch.c_str());
+    } else if (count > 1) {
+        fprintf(stderr, "Too many matches (%d) for %s\n",
+                count, expect.c_str());
     }
 
     return count == 1;
