@@ -365,7 +365,7 @@ static void selinux_init_all_handles(void)
     sehandle_prop = selinux_android_prop_context_handle();
 }
 
-enum selinux_enforcing_status { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
+enum selinux_enforcing_status { SELINUX_PERMISSIVE, SELINUX_ENFORCING, SELINUX_DISABLED };
 
 static selinux_enforcing_status selinux_status_from_cmdline() {
     selinux_enforcing_status status = SELINUX_ENFORCING;
@@ -373,6 +373,8 @@ static selinux_enforcing_status selinux_status_from_cmdline() {
     import_kernel_cmdline(false, [&](const std::string& key, const std::string& value, bool in_qemu) {
         if (key == "androidboot.selinux" && value == "permissive") {
             status = SELINUX_PERMISSIVE;
+        } else if (key == "androidboot.selinux" && value == "disabled") {
+            status = SELINUX_DISABLED;
         }
     });
 
