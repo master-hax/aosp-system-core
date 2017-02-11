@@ -90,9 +90,6 @@ struct DebugFrameInfo {
       has_debug_frame(false), has_gnu_debugdata(false) { }
 };
 
-static std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>& g_debug_frames =
-    *new std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>;
-
 void Space::Clear() {
   start = 0;
   end = 0;
@@ -549,18 +546,45 @@ std::string BacktraceOffline::GetFunctionNameRaw(uintptr_t, uintptr_t* offset) {
   return "";
 }
 
+static pthread_rwlock_t g_lock = PTHREAD_RWLOCK_INITIALIZER;
+static std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>* g_debug_frames = nullptr;
+
+class ScopedLock {
+ public:
+  ScopedLock(bool read) {
+    if (read) {
+      pthread_rwlock_rdlock(&g_lock);
+    } else {
+      pthread_rwlock_wrlock(&g_lock);
+    }
+  }
+  ~ScopedLock() {
+    pthread_rwlock_unlock(&g_lock);
+  }
+};
+
 static DebugFrameInfo* ReadDebugFrameFromFile(const std::string& filename);
 
 DebugFrameInfo* BacktraceOffline::GetDebugFrameInFile(const std::string& filename) {
   if (cache_file_) {
-    auto it = g_debug_frames.find(filename);
-    if (it != g_debug_frames.end()) {
-      return it->second.get();
+    ScopedLock lock(true);
+    if (g_debug_frames != nullptr) {
+      auto it = g_debug_frames->find(filename);
+      if (it != g_debug_frames->end()) {
+        return it->second.get();
+      }
     }
   }
   DebugFrameInfo* debug_frame = ReadDebugFrameFromFile(filename);
   if (cache_file_) {
-      g_debug_frames.emplace(filename, std::unique_ptr<DebugFrameInfo>(debug_frame));
+    ScopedLock lock(false);
+    if (g_debug_frames == nullptr) {
+      g_debug_frames = new std::unordered_map<std::string, std::unique_ptr<DebugFrameInfo>>;
+    }
+    auto pair = g_debug_frames->emplace(filename, std::unique_ptr<DebugFrameInfo>(debug_frame));
+    if (!pair.second) {
+      debug_frame = pair.first->second.get();
+    }
   }
   return debug_frame;
 }
