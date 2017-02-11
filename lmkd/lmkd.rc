@@ -3,4 +3,4 @@ service lmkd /system/bin/lmkd
     group root readproc
     critical
     socket lmkd seqpacket 0660 system system
-    writepid /dev/cpuset/system-background/tasks
+    cpuset /system-background
