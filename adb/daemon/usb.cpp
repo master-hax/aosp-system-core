@@ -170,6 +170,7 @@ static struct ss_func_desc ss_descriptors = {
     .source_comp = {
         .bLength = sizeof(ss_descriptors.source_comp),
         .bDescriptorType = USB_DT_SS_ENDPOINT_COMP,
+        .bMaxBurst = 4;
     },
     .sink = {
         .bLength = sizeof(ss_descriptors.sink),
@@ -181,6 +182,7 @@ static struct ss_func_desc ss_descriptors = {
     .sink_comp = {
         .bLength = sizeof(ss_descriptors.sink_comp),
         .bDescriptorType = USB_DT_SS_ENDPOINT_COMP,
+        .bMaxBurst = 4;
     },
 };
 
