@@ -242,6 +242,10 @@ static int create_service_thread(void (*func)(int, void *), void *cookie)
     }
     D("socketpair: (%d,%d)", s[0], s[1]);
 
+    // Set socket to maximum size
+    int max_buf = LINUX_MAX_SOCKET_SIZE;
+    adb_setsockopt(s[0], SOL_SOCKET, SO_SNDBUF, &max_buf, sizeof(max_buf));
+
     stinfo* sti = reinterpret_cast<stinfo*>(malloc(sizeof(stinfo)));
     if (sti == nullptr) {
         fatal("cannot allocate stinfo");
