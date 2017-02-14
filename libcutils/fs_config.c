@@ -196,7 +196,7 @@ static const struct fs_path_config android_files[] = {
     /* Support hostapd administering a network interface. */
     { 00755, AID_WIFI,      AID_WIFI,      CAP_MASK_LONG(CAP_NET_ADMIN) |
                                            CAP_MASK_LONG(CAP_NET_RAW),
-                                              "system/bin/hostapd" },
+                                              "vendor/bin/hostapd" },
 
     /* Support Bluetooth legacy hal accessing /sys/class/rfkill */
     { 00700, AID_BLUETOOTH, AID_BLUETOOTH, CAP_MASK_LONG(CAP_NET_ADMIN),
