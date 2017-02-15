@@ -155,6 +155,10 @@ static bool tombstoned_connect(pid_t pid, unique_fd* tombstoned_socket, unique_f
     return false;
   }
 
+  // Make the fd O_APPEND.
+  int flags = fcntl(tmp_output_fd.get(), F_GETFL);
+  fcntl(tmp_output_fd.get(), F_SETFL, flags | O_APPEND);
+
   *tombstoned_socket = std::move(sockfd);
   *output_fd = std::move(tmp_output_fd);
   return true;
