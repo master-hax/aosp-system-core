@@ -36,6 +36,30 @@ extern "C" {
 #define PROPERTY_KEY_MAX   PROP_NAME_MAX
 #define PROPERTY_VALUE_MAX  PROP_VALUE_MAX
 
+/* Bionic definitions required for VNDK linking */
+/* from bionic/libc/include/sys/cdefs.h */
+#ifdef __clang__
+#  define __overloadable __attribute__((overloadable))
+// Don't use __RENAME directly because on gcc, this could result in a number
+// of unnecessary renames.
+#  define __RENAME_CLANG(x) __RENAME(x)
+#  define __errorattr(msg) __attribute__((unavailable(msg)))
+#  define __warnattr(msg) __attribute__((deprecated(msg)))
+#  define __warnattr_real(msg) __attribute__((deprecated(msg)))
+#  define __enable_if(cond, msg) __attribute__((enable_if(cond, msg)))
+#  define __BIONIC_ERROR_FUNCTION_VISIBILITY static
+#else
+#  define __overloadable
+#  define __RENAME_CLANG(x)
+#  define __errorattr(msg) __attribute__((__error__(msg)))
+#  define __warnattr(msg) __attribute__((__warning__(msg)))
+#  define __warnattr_real __warnattr
+  /* enable_if doesn't exist on other compilers; give an error if it's used. */
+
+  /* errordecls really don't work as well in clang as they do in GCC. */
+#  define __errordecl(name, msg) extern void name(void) __errorattr(msg)
+ #endif
+
 /* property_get: returns the length of the value which will never be
 ** greater than PROPERTY_VALUE_MAX - 1 and will always be zero terminated.
 ** (the length does not include the terminating zero).
