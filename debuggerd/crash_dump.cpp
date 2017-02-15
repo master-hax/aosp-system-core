@@ -254,7 +254,7 @@ int main(int argc, char** argv) {
   }
 
   if (!android::base::ParseInt(argv[2], &pseudothread_tid, 1, std::numeric_limits<pid_t>::max())) {
-    LOG(FATAL) << "invalid pseudothread tid: " << argv[1];
+    LOG(FATAL) << "invalid pseudothread tid: " << argv[2];
   }
 
   android::procinfo::ProcessInfo target_info;
