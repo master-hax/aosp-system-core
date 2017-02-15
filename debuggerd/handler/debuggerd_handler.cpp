@@ -85,6 +85,28 @@ static void __noreturn __printflike(1, 2) fatal_errno(const char* fmt, ...) {
   fatal("%s: %s", buf, strerror(err));
 }
 
+static char* utoa(unsigned value, char* buf, size_t len) {
+  if (len == 0) {
+    return nullptr;
+  }
+
+  char* cur = buf + len - 1;
+  *cur-- = '\0';
+  do {
+    *cur = '0' + value % 10;
+    value /= 10;
+
+    if (value) {
+      if (cur == buf) {
+        return nullptr;
+      }
+      --cur;
+    }
+  } while (value);
+
+  return cur;
+}
+
 /*
  * Writes a summary of the signal to the log file.  We do this so that, if
  * for some reason we're not able to contact debuggerd, there is still some
@@ -254,10 +276,12 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
 
     raise_caps();
 
-    char main_tid[10];
-    char pseudothread_tid[10];
-    snprintf(main_tid, sizeof(main_tid), "%d", thread_info->crashing_tid);
-    snprintf(pseudothread_tid, sizeof(pseudothread_tid), "%d", thread_info->pseudothread_tid);
+    char main_tid_buf[10];
+    char pseudothread_tid_buf[10];
+    char* main_tid = utoa(thread_info->crashing_tid, main_tid_buf, sizeof(main_tid_buf));
+    char* pseudothread_tid =
+      utoa(thread_info->pseudothread_tid, pseudothread_tid_buf, sizeof(pseudothread_tid_buf));
+
     execl(CRASH_DUMP_PATH, CRASH_DUMP_NAME, main_tid, pseudothread_tid, nullptr);
 
     fatal_errno("exec failed");
