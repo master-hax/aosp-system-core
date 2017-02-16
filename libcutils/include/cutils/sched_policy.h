@@ -21,6 +21,21 @@
 extern "C" {
 #endif
 
+/*
+ * Check if Linux kernel enables CPUSETS feature.
+ *
+ * Return value: 1 if Linux kernel CONFIG_CPUSETS=y; 0 otherwise.
+ */
+extern int cpusets_enabled();
+
+/*
+ * Check if Linux kernel enables SCHEDTUNE feature (only available in Android
+ * common kernel or Linaro LSK, not in mainline Linux as of v4.9)
+ *
+ * Return value: 1 if Linux kernel CONFIG_SCHEDTUNE=y; 0 otherwise.
+ */
+extern int schedboost_enabled();
+
 /* Keep in sync with THREAD_GROUP_* in frameworks/base/core/java/android/os/Process.java */
 typedef enum {
     SP_DEFAULT    = -1,

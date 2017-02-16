@@ -141,14 +141,6 @@ cc_library {
     header_libs: ["libcutils_headers"],
     export_header_lib_headers: ["libcutils_headers"],
 
-    product_variables: {
-        cpusets: {
-            cflags: ["-DUSE_CPUSETS"],
-        },
-        schedboost: {
-            cflags: ["-DUSE_SCHEDBOOST"],
-        },
-    },
     cflags: [
         "-Werror",
         "-Wall",
