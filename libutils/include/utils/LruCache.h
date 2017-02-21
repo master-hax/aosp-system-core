@@ -20,7 +20,7 @@
 #include <memory>
 #include <unordered_set>
 
-#include "utils/TypeHelpers.h"  // hash_t
+#include <utils/TypeHelpers.h>  // hash_t
 
 namespace android {
 

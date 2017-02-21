@@ -13,14 +13,51 @@
 // limitations under the License.
 
 cc_library_headers {
-    name: "libutils_headers",
+    name: "libutils-core_headers",
     host_supported: true,
-    export_include_dirs: ["include"],
+    export_include_dirs: ["core-include"],
+
     target: {
         windows: {
            enabled: true,
-      },
+        },
     },
+}
+
+cc_library_headers {
+    name: "libutils_headers",
+    host_supported: true,
+    export_include_dirs: ["include"],
+
+    header_libs: ["libutils-core_headers"],
+    export_header_lib_headers: ["libutils-core_headers"],
+
+    target: {
+        windows: {
+           enabled: true,
+        },
+    },
+}
+
+// VNDK-stable library.
+cc_library {
+    name: "libutils-core",
+    host_supported: true,
+
+    stl: "none",
+
+    srcs: [
+    ],
+
+    header_libs: ["libutils-core_headers"],
+    export_header_lib_headers: ["libutils-core_headers"],
+
+    target: {
+        windows: {
+            cflags: ["-DMB_CUR_MAX=1"],
+            enabled: true,
+        },
+    }
 }
 
 cc_library {
