@@ -17,12 +17,6 @@
 #ifndef _LIBS_LOGCAT_H /* header boilerplate */
 #define _LIBS_LOGCAT_H
 
-#include <stdio.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
 #ifndef __ANDROID_API__
 #define __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE 1
@@ -34,6 +28,18 @@ extern "C" {
 #endif
 
 #if __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
+
+#include <stdio.h>
+
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+#include <string>
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* For managing an in-process logcat function, rather than forking/execing
  *
@@ -55,7 +61,7 @@ typedef struct android_logcat_context_internal* android_logcat_context;
  *
  * Returns a pointer to the context, or a NULL on error.
  */
-android_logcat_context create_android_logcat();
+android_logcat_context create_android_logcat(void);
 
 /* Collects and outputs the logcat data to output and error file descriptors
  *
@@ -110,13 +116,25 @@ int android_logcat_destroy(android_logcat_context* ctx);
  * completion, fclose on the FILE pointer and the android_logcat_destroy API.
  */
 int android_logcat_system(const char* command);
+/* ctx is assumed uninitialized and completely managed by the following calls */
 FILE* android_logcat_popen(android_logcat_context* ctx, const char* command);
 int android_logcat_pclose(android_logcat_context* ctx, FILE* output);
 
-#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+namespace android {
+
+// NB: command and content can reference same std::string
+bool ReadLogcatToString(const std::string& command, std::string* content);
+
+}  // namespace android
+}  // extern "C++"
+#endif /* __cplusplus && _USING_LIBCXX */
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
 
 #endif /* _LIBS_LOGCAT_H */
