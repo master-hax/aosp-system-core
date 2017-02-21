@@ -1782,6 +1782,8 @@ int android_logcat_run_command_thread_running(android_logcat_context ctx) {
 int android_logcat_destroy(android_logcat_context* ctx) {
     android_logcat_context_internal* context = *ctx;
 
+    if (!context) return -EBADF;
+
     *ctx = NULL;
 
     context->stop = true;
