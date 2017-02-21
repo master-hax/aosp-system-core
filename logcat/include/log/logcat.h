@@ -204,6 +204,41 @@ class AndroidLogcat {
         return ret_;
     }
 };
+
+// Android coding standard requires headers to be in alphabetical order,
+// as such we can assume if #include <android-base/file.h> preceeds
+// #include <log/logcat.h> then we can add ReadLogcatToString helpers.
+#ifdef ANDROID_BASE_FILE_H
+namespace android {
+namespace base {
+
+bool ReadLogcatToString(const char* command, std::string* content) {
+    AndroidLogcat logcat(command);
+    FILE* fp = logcat.getFp();
+    if (fp == nullptr) return false;
+    auto ret = ReadFdToString(fileno(fp), content);
+    return (logcat.getRet() == 0) && ret;
+}
+
+bool ReadLogcatToString(const std::string& command, std::string* content) {
+    AndroidLogcat logcat(command);
+    FILE* fp = logcat.getFp();
+    if (fp == nullptr) return false;
+    auto ret = ReadFdToString(fileno(fp), content);
+    return (logcat.getRet() == 0) && ret;
+}
+
+bool ReadLogcatToString(std::string&& command, std::string* content) {
+    AndroidLogcat logcat(std::move(command));
+    FILE* fp = logcat.getFp();
+    if (fp == nullptr) return false;
+    auto ret = ReadFdToString(fileno(fp), content);
+    return (logcat.getRet() == 0) && ret;
+}
+
+}  // namespace base
+}  // namespace android
+#endif  // ANDROID_BASE_FILE_H
 }
 #endif /* __cplusplus && _UISNG_LIBCXX */
 

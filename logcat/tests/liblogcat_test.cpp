@@ -30,11 +30,8 @@ TEST(liblogcat, api_process) {
 }
 
 TEST(liblogcat, api_thread) {
-    AndroidLogcat logcat("logcat -b all -S");
-    ASSERT_NE(logcat.getFp(), static_cast<FILE*>(nullptr));
     std::string content;
-    ASSERT_TRUE(android::base::ReadFdToString(fileno(logcat.getFp()), &content));
-    ASSERT_EQ(logcat.getRet(), 0);
+    ASSERT_TRUE(android::base::ReadLogcatToString("logcat -b all -S", &content));
     ASSERT_NE(content.find("main"), std::string::npos);
 }
 
