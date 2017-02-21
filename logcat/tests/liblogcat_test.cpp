@@ -14,12 +14,26 @@
  * limitations under the License.
  */
 
+#include <android-base/file.h>
+#include <gtest/gtest.h>
 #include <log/logcat.h>
 
-#define logcat_define(context) android_logcat_context context
-#define logcat_popen(context, command) android_logcat_popen(&(context), command)
-#define logcat_pclose(context, fp) android_logcat_pclose(&(context), fp)
-#define logcat_system(command) android_logcat_system(command)
+#define logcat_define(context) AndroidLogcat context
+#define logcat_popen(context, command) (context = command)
+#define logcat_pclose(context, fp) context.getRet()
+#define logcat_system(command) AndroidLogcat(command).getRet()
 #define logcat liblogcat
+
+TEST(liblogcat, api_popen) {
+    std::string content;
+    android::base::ReadFdToString(fileno(AndroidLogcat("logcat -b all -S")),
+                                  &content);
+    ASSERT_FALSE(content.empty());
+    ASSERT_NE(content.find("main"), std::string::npos);
+}
+
+TEST(liblogcat, api_system) {
+    ASSERT_EQ(static_cast<int>(AndroidLogcat("logcat -b all -S >/dev/null")), 0);
+}
 
 #include "logcat_test.cpp"
