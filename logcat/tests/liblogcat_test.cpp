@@ -38,4 +38,10 @@ TEST(liblogcat, api_thread) {
     ASSERT_NE(content.find("main"), std::string::npos);
 }
 
+TEST(liblogcat, api_base) {
+    std::string content;
+    ASSERT_TRUE(android::base::ReadLogcatToString("logcat -b all -S", &content));
+    ASSERT_NE(content.find("main"), std::string::npos);
+}
+
 #include "logcat_test.cpp"
