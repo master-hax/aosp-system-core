@@ -17,12 +17,6 @@
 #ifndef _LIBS_LOGCAT_H /* header boilerplate */
 #define _LIBS_LOGCAT_H
 
-#include <stdio.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
 #ifndef __ANDROID_API__
 #define __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE 1
@@ -34,6 +28,20 @@ extern "C" {
 #endif
 
 #if __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
+
+#include <stdio.h>
+
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+#include <errno.h>
+
+#include <string>
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* For managing an in-process logcat function, rather than forking/execing
  *
@@ -55,7 +63,7 @@ typedef struct android_logcat_context_internal* android_logcat_context;
  *
  * Returns a pointer to the context, or a NULL on error.
  */
-android_logcat_context create_android_logcat();
+android_logcat_context create_android_logcat(void);
 
 /* Collects and outputs the logcat data to output and error file descriptors
  *
@@ -110,13 +118,99 @@ int android_logcat_destroy(android_logcat_context* ctx);
  * completion, fclose on the FILE pointer and the android_logcat_destroy API.
  */
 int android_logcat_system(const char* command);
+/* ctx is assumed uninitialized and completely managed by the following calls */
 FILE* android_logcat_popen(android_logcat_context* ctx, const char* command);
 int android_logcat_pclose(android_logcat_context* ctx, FILE* output);
 
-#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+
+class AndroidLogcat {
+   private:
+    std::string command_;         // command to execute (cleared after execute).
+    android_logcat_context ctx_;  // popen context.
+    FILE* fp_;                    // popen file descriptor.
+    int ret_;                     // if non-zero (failure) ret is assumed valid.
+    bool run_;                    // ret valid (for cases where ret == 0).
+
+   public:
+    AndroidLogcat() : ctx_(nullptr), fp_(nullptr), ret_(-EINVAL), run_(false) {
+    }
+
+    explicit AndroidLogcat(const std::string& command)
+        : command_(command),
+          ctx_(nullptr),
+          fp_(nullptr),
+          ret_(command.empty() ? -EINVAL : 0),
+          run_(false) {
+    }
+
+    // copy constructors lead to api confusion about
+    // state expectations, let's not go there.
+    AndroidLogcat(const AndroidLogcat&) = delete;
+    void operator=(const AndroidLogcat&) = delete;
+
+    ~AndroidLogcat() {
+        if (fp_) {
+            android_logcat_pclose(&ctx_, fp_);
+        } else if (!command_.empty()) {
+            android_logcat_system(command_.c_str());
+        }
+    }
+
+    // Can only be called after void constructor, or after getInt() completion.
+    AndroidLogcat& reset(const std::string& command) {
+        if (!command_.empty() || fp_) {
+            ret_ = -EBUSY;
+            return *this;
+        }
+        if (command.empty()) {
+            ret_ = -EINVAL;
+            return *this;
+        }
+        command_ = command;
+        ret_ = 0;
+        run_ = false;
+        return *this;
+    }
+
+    AndroidLogcat& operator=(const std::string& command) {
+        return reset(command);
+    }
+
+    // Start thread (popen)
+    FILE* getFp() {
+        if (run_ || ret_ || fp_) return fp_;
+        if (command_.empty()) return nullptr;
+        fp_ = android_logcat_popen(&ctx_, command_.c_str());
+        command_.erase();
+        return fp_;
+    }
+
+    // Finish thread (popen) or process (system)
+    int getRet() {
+        if (run_ || ret_) return ret_;
+        if (fp_) {
+            ret_ = android_logcat_pclose(&ctx_, fp_);
+            fp_ = nullptr;
+        } else if (command_.empty()) {
+            ret_ = -EINVAL;
+            return ret_;
+        } else {
+            ret_ = android_logcat_system(command_.c_str());
+            command_.erase();
+        }
+        run_ = true;
+        return ret_;
+    }
+};
+}
+#endif /* __cplusplus && _UISNG_LIBCXX */
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
 
 #endif /* _LIBS_LOGCAT_H */
