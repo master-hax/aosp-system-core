@@ -113,6 +113,37 @@ int android_logcat_system(const char* command);
 FILE* android_logcat_popen(android_logcat_context* ctx, const char* command);
 int android_logcat_pclose(android_logcat_context* ctx, FILE* output);
 
+#ifdef __cplusplus
+extern "C++" {
+
+class android_logcat {
+
+  private:
+    android_logcat_context _ctx;
+    FILE* _fp;
+
+  public:
+    android_logcat() : _ctx(NULL), _fp(NULL) { }
+    ~android_logcat() { android_logcat_pclose(&_ctx, _fp); }
+
+    FILE* popen(const char* command) {
+      return _fp = android_logcat_popen(&_ctx, command);
+    }
+    // destructor does not return the exit code, here we do.
+    int pclose(FILE* fp) {
+      int ret = android_logcat_pclose(&_ctx, _fp);
+      if (_fp != fp) fclose(fp); // WHAT! They expect it closed ...
+      _fp = NULL;
+      return ret;
+    }
+    int system(const char* command) {
+      return android_logcat_system(command);
+    }
+};
+
+}
+#endif
+
 #endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
 
 #ifdef __cplusplus
