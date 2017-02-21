@@ -45,7 +45,6 @@
 #include <packagelistparser/packagelistparser.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
-#include <utils/threads.h>
 
 #include "CommandListener.h"
 #include "LogBuffer.h"
