@@ -17,12 +17,6 @@
 #ifndef _LIBS_LOGCAT_H /* header boilerplate */
 #define _LIBS_LOGCAT_H
 
-#include <stdio.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
 #ifndef __ANDROID_API__
 #define __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE 1
@@ -34,6 +28,20 @@ extern "C" {
 #endif
 
 #if __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE
+
+#include <stdio.h>
+
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+#include <errno.h>
+
+#include <string>
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* For managing an in-process logcat function, rather than forking/execing
  *
@@ -110,13 +118,107 @@ int android_logcat_destroy(android_logcat_context* ctx);
  * completion, fclose on the FILE pointer and the android_logcat_destroy API.
  */
 int android_logcat_system(const char* command);
+/* ctx is assumed uninitialized and completely managed by the following calls */
 FILE* android_logcat_popen(android_logcat_context* ctx, const char* command);
 int android_logcat_pclose(android_logcat_context* ctx, FILE* output);
 
-#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
+#if (defined(__cplusplus) && defined(_USING_LIBCXX))
+extern "C++" {
+
+class AndroidLogcat {
+   private:
+    std::string command;         // command to execute (cleared after execute)
+    android_logcat_context ctx;  // popen context
+    FILE* fp;                    // popen file descriptor
+    int ret;                     // if non-zero (failure), ret assumed valid;
+    bool run;                    // ret valid
+
+   public:
+    AndroidLogcat(void) : ctx(nullptr), fp(nullptr), ret(0), run(false) {
+    }
+    explicit AndroidLogcat(const char* command)
+        : command(command ?: ""),
+          ctx(nullptr),
+          fp(nullptr),
+          ret(command && command[0] ? 0 : -EINVAL),
+          run(false) {
+    }
+    explicit AndroidLogcat(std::string&& command)
+        : command(command), ctx(nullptr), fp(nullptr), ret(0), run(false) {
+        if (command.empty()) ret = -EINVAL;
+    }
+    explicit AndroidLogcat(std::string& command)
+        : command(command),
+          ctx(nullptr),
+          fp(nullptr),
+          ret(command.empty() ? -EINVAL : 0),
+          run(false) {
+    }
+
+    AndroidLogcat(const AndroidLogcat&) = delete;
+    AndroidLogcat(AndroidLogcat&) = delete;
+    AndroidLogcat(AndroidLogcat&&) = delete;
+
+    ~AndroidLogcat() {
+        if (fp) {
+            android_logcat_pclose(&ctx, fp);
+        } else if (!command.empty()) {
+            android_logcat_system(command.c_str());
+        }
+    }
+
+    // Can only be called after void initializer, and before following operators
+    AndroidLogcat& setCommand(const char* command_) {
+        if (!command.empty() || fp) {
+            ret = -EBUSY;
+        } else if (!ret && run) {
+            ret = -EBUSY;
+        }
+        if (ret) return *this;
+        if (command_ && command_[0]) {
+            command = command_;
+        } else {
+            ret = -EINVAL;
+        }
+        return *this;
+    }
+
+    FILE* getFp(void) {
+        if (run || ret || fp) return fp;
+        if (command.empty()) return nullptr;
+        fp = android_logcat_popen(&ctx, command.c_str());
+        command.erase();
+        return fp;
+    }
+
+    operator FILE*() {
+        return getFp();
+    }
+
+    int getRet(void) {
+        if (run || ret) return ret;
+        if (fp) {
+            ret = android_logcat_pclose(&ctx, fp);
+            fp = nullptr;
+        } else {
+            ret = android_logcat_system(command.c_str());
+            command.erase();
+        }
+        run = true;
+        return ret;
+    }
+
+    operator int() {
+        return getRet();
+    }
+};
+}
+#endif /* __cplusplus && _UISNG_LIBCXX */
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* __ANDROID_USE_LIBLOG_LOGCAT_INTERFACE */
 
 #endif /* _LIBS_LOGCAT_H */
