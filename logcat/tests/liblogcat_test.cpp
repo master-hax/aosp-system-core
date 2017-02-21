@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include <log/logcat.h>
 
 #define logcat_define(context) android_logcat_context context
@@ -21,5 +22,21 @@
 #define logcat_pclose(context, fp) android_logcat_pclose(&(context), fp)
 #define logcat_system(command) android_logcat_system(command)
 #define logcat liblogcat
+
+TEST(liblogcat, ExecuteLogcatCommand) {
+    std::string content;
+
+    content = android::ExecuteLogcatCommand("logcat -b all -S 2>&1");
+    ASSERT_FALSE(content.empty());
+    ASSERT_NE(content.find("main"), std::string::npos)
+        << "content=\"" << content << "\"";
+    ASSERT_EQ(content.rfind("Error: "), std::string::npos)
+        << "content=\"..." << content.substr(content.rfind("ERROR: ")) << "\"";
+
+    content = android::ExecuteLogcatCommand("logcat -b bogusfoo -S 2>&1");
+    ASSERT_FALSE(content.empty());
+    ASSERT_NE(content.rfind("Error: "), std::string::npos)
+        << "content=\"" << content << "\"";
+}
 
 #include "logcat_test.cpp"

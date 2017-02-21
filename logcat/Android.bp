@@ -36,8 +36,9 @@ cc_library {
 
     defaults: ["logcat_defaults"],
     srcs: [
-        "logcat.cpp",
+        "execute.cpp",
         "getopt_long.cpp",
+        "logcat.cpp",
         "logcat_system.cpp",
     ],
     export_include_dirs: ["include"],
