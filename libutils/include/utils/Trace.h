@@ -28,7 +28,6 @@
 #include <unistd.h>
 
 #include <cutils/compiler.h>
-#include <utils/threads.h>
 #include <cutils/trace.h>
 
 // See <cutils/trace.h> for more ATRACE_* macros.
