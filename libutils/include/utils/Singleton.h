@@ -26,6 +26,14 @@
 namespace android {
 // ---------------------------------------------------------------------------
 
+// Singleton<TYPE> may be used in multiple libraries, only one of which should
+// define the static member variables using ANDROID_SINGLETON_STATIC_INSTANCE.
+// Turn off -Wundefined-var-template so other users don't get:
+// instantiation of variable 'android::Singleton<TYPE>::sLock' required here,
+// but no definition is available
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundefined-var-template"
+
 template <typename TYPE>
 class ANDROID_API Singleton
 {
@@ -56,11 +64,7 @@ private:
     static TYPE* sInstance;
 };
 
-template <typename TYPE>
-Mutex Singleton<TYPE>::sLock;
-
-template <typename TYPE>
-TYPE* Singleton<TYPE>::sInstance;
+#pragma clang diagnostic pop
 
 /*
  * use ANDROID_SINGLETON_STATIC_INSTANCE(TYPE) in your implementation file
