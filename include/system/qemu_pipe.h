@@ -28,6 +28,30 @@
 #  define  QEMU_PIPE_DEBUG(...)   (void)0
 #endif
 
+static bool ReadFully(int fd, void* data, size_t byte_count) {
+  uint8_t* p = (uint8_t*)(data);
+  size_t remaining = byte_count;
+  while (remaining > 0) {
+    ssize_t n = TEMP_FAILURE_RETRY(read(fd, p, remaining));
+    if (n <= 0) return false;
+    p += n;
+    remaining -= n;
+  }
+  return true;
+}
+
+static bool WriteFully(int fd, const void* data, size_t byte_count) {
+  const uint8_t* p = (const uint8_t*)(data);
+  size_t remaining = byte_count;
+  while (remaining > 0) {
+    ssize_t n = TEMP_FAILURE_RETRY(write(fd, p, remaining));
+    if (n == -1) return false;
+    p += n;
+    remaining -= n;
+  }
+  return true;
+}
+
 // Try to open a new Qemu fast-pipe. This function returns a file descriptor
 // that can be used to communicate with a named service managed by the
 // emulator.
@@ -64,15 +88,9 @@ static __inline__ int qemu_pipe_open(const char* pipeName) {
 
     // Write the pipe name, *including* the trailing zero which is necessary.
     size_t pipeNameLen = strlen(pipeName);
-    ssize_t ret = TEMP_FAILURE_RETRY(write(fd, pipeName, pipeNameLen + 1U));
-    if (ret != (ssize_t)pipeNameLen + 1) {
+    if (!WriteFully(fd, pipeName, pipeNameLen + 1U)) {
         QEMU_PIPE_DEBUG("%s: Could not connect to %s pipe service: %s",
                         __FUNCTION__, pipeName, strerror(errno));
-        if (ret == 0) {
-            errno = ECONNRESET;
-        } else if (ret > 0) {
-            errno = EINVAL;
-        }
         return -1;
     }
     return fd;
@@ -86,13 +104,11 @@ static int __inline__ qemu_pipe_frame_send(int fd,
                                            size_t len) {
     char header[5];
     snprintf(header, sizeof(header), "%04zx", len);
-    ssize_t ret = TEMP_FAILURE_RETRY(write(fd, header, 4));
-    if (ret != 4) {
+    if (!WriteFully(fd, header, 4)) {
         QEMU_PIPE_DEBUG("Can't write qemud frame header: %s", strerror(errno));
         return -1;
     }
-    ret = TEMP_FAILURE_RETRY(write(fd, buff, len));
-    if (ret != (ssize_t)len) {
+    if (!WriteFully(fd, buff, len)) {
         QEMU_PIPE_DEBUG("Can't write qemud frame payload: %s", strerror(errno));
         return -1;
     }
@@ -106,8 +122,7 @@ static int __inline__ qemu_pipe_frame_send(int fd,
 // end-of-stream.
 static int __inline__ qemu_pipe_frame_recv(int fd, void* buff, size_t len) {
     char header[5];
-    ssize_t ret = TEMP_FAILURE_RETRY(read(fd, header, 4));
-    if (ret != 4) {
+    if (!ReadFully(fd, header, 4)) {
         QEMU_PIPE_DEBUG("Can't read qemud frame header: %s", strerror(errno));
         return -1;
     }
@@ -122,8 +137,7 @@ static int __inline__ qemu_pipe_frame_recv(int fd, void* buff, size_t len) {
                         len);
         return -1;
     }
-    ret = TEMP_FAILURE_RETRY(read(fd, buff, size));
-    if (ret != (ssize_t)size) {
+    if (!ReadFully(fd, buff, size)) {
         QEMU_PIPE_DEBUG("Could not read qemud frame payload: %s",
                         strerror(errno));
         return -1;
