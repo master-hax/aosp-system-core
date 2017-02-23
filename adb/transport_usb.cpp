@@ -80,6 +80,12 @@ static void remote_kick(atransport *t)
     usb_kick(t->usb);
 }
 
+static void remote_reset(atransport *t) {
+#if ADB_HOST && defined(__linux__)
+    usb_reset(t->usb);
+#endif
+}
+
 void init_usb_transport(atransport *t, usb_handle *h, ConnectionState state)
 {
     D("transport: usb");
@@ -87,6 +93,7 @@ void init_usb_transport(atransport *t, usb_handle *h, ConnectionState state)
     t->SetKickFunction(remote_kick);
     t->read_from_remote = remote_read;
     t->write_to_remote = remote_write;
+    t->SetResetUsbFunction(remote_reset);
     t->sync_token = 1;
     t->connection_state = state;
     t->type = kTransportUsb;

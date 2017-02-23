@@ -699,6 +699,12 @@ void atransport::Kick() {
     }
 }
 
+void atransport::ResetUsbDevice() {
+    if (reset_usb_func_) {
+        reset_usb_func_(this);
+    }
+}
+
 const std::string atransport::connection_state_name() const {
     switch (connection_state) {
         case kCsOffline:

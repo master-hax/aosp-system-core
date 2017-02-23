@@ -401,6 +401,14 @@ static int usb_bulk_read(usb_handle* h, void* data, int len) {
     }
 }
 
+int usb_reset(usb_handle* h) {
+    D("++ usb_reset ++");
+    std::unique_lock<std::mutex> lock(h->mutex);
+    if (TEMP_FAILURE_RETRY(ioctl(h->fd, USBDEVFS_RESET)) == -1) {
+        return -1;
+    }
+    return 1;
+}
 
 int usb_write(usb_handle *h, const void *_data, int len)
 {

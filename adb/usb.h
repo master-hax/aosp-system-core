@@ -23,7 +23,8 @@
     int usb_write(handle_ref_type h, const void* data, int len); \
     int usb_read(handle_ref_type h, void* data, int len);        \
     int usb_close(handle_ref_type h);                            \
-    void usb_kick(handle_ref_type h)
+    void usb_kick(handle_ref_type h);                            \
+    int usb_reset(handle_ref_type h)
 
 #if defined(_WIN32) || !ADB_HOST
 // Windows and the daemon have a single implementation.

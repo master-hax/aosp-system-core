@@ -1106,6 +1106,12 @@ int handle_host_request(const char* service, TransportType type,
                         response += "<unknown>";
                     }
                     response += "\n";
+                    // https://b/issues/32952319
+                    // When the device is offline for a long time, just kick and reconnect
+                    // the device doesn't work. Ask the hub to reset the device to simulate
+                    // a manual plug out and plug in.
+                    // TODO: Reset offline device automatically.
+                    const_cast<atransport*>(transport)->ResetUsbDevice();
                     return true;
                 default:
                     return false;

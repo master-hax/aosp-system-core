@@ -74,6 +74,11 @@ public:
     }
     void Kick();
 
+    void SetResetUsbFunction(void (*reset_func)(atransport*)) {
+      reset_usb_func_ = reset_func;
+    }
+    void ResetUsbDevice();
+
     int fd = -1;
     int transport_socket = -1;
     fdevent transport_fde;
@@ -155,6 +160,7 @@ private:
     int local_port_for_emulator_ = -1;
     bool kicked_ = false;
     void (*kick_func_)(atransport*) = nullptr;
+    void (*reset_usb_func_)(atransport*) = nullptr;
 
     // A set of features transmitted in the banner with the initial connection.
     // This is stored in the banner as 'features=feature0,feature1,etc'.

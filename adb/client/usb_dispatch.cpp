@@ -53,3 +53,9 @@ void usb_kick(usb_handle* h) {
     should_use_libusb() ? libusb::usb_kick(reinterpret_cast<libusb::usb_handle*>(h))
                         : native::usb_kick(reinterpret_cast<native::usb_handle*>(h));
 }
+
+int usb_reset(usb_handle* h) {
+    // TODO: Support usb_reset() when using libusb and on non linux platforms.
+    return should_use_libusb() ? -1
+                               : native::usb_reset(reinterpret_cast<native::usb_handle*>(h));
+}
