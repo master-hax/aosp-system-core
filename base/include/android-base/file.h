@@ -51,6 +51,7 @@ bool Readlink(const std::string& path, std::string* result);
 #endif
 
 std::string GetExecutablePath();
+std::string GetExecutableDirectory();
 
 }  // namespace base
 }  // namespace android
