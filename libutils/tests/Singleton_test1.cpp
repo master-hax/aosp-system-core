@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_UTILS_SINGLETON_TEST_H
-#define ANDROID_UTILS_SINGLETON_TEST_H
-
-#include <sys/cdefs.h>
+#include <utils/Singleton.h>
 
 #include "Singleton_test.h"
 
 namespace android {
 
-struct SingletonTestData : Singleton<SingletonTestData> {
-    unsigned int contents;
-};
+// Singleton<SingletonTestStruct> is referenced in Singleton_test1.cpp and
+// Singleton_test2.cpp, but only defined in Singleton_test1.cpp.
+ANDROID_SINGLETON_STATIC_INSTANCE(SingletonTestData);
 
-__BEGIN_DECLS
-
-unsigned int singletonGetInstanceContents();
-void singletonSetInstanceContents(unsigned int);
-bool singletonHasInstance();
-
-__END_DECLS
-
+void singletonSetInstanceContents(unsigned int contents) {
+    SingletonTestData::getInstance().contents = contents;
 }
 
-#endif // ANDROID_UTILS_SINGLETON_TEST_H
+unsigned int singletonGetInstanceContents() {
+    return SingletonTestData::getInstance().contents;
+}
 
+bool singletonHasInstance() {
+    return SingletonTestData::hasInstance();
+}
+
+}
