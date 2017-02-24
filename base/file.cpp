@@ -238,6 +238,10 @@ std::string GetExecutablePath() {
 #endif
 }
 
+std::string GetExecutableDirectory() {
+    return Dirname(GetExecutablePath());
+}
+
 std::string Basename(const std::string& path) {
 
   // Copy path because basename may modify the string passed in.
