@@ -20,6 +20,13 @@
 
 namespace android {
 
+// Singleton<SingletonTestStruct> is referenced in Singleton_test1.cpp and
+// Singleton_test2.cpp, but only defined in Singleton_test1.cpp.
+
+void singletonSetInstanceContents(unsigned int contents) {
+    SingletonTestData::getInstance().contents = contents;
+}
+
 unsigned int singletonGetInstanceContents() {
     return SingletonTestData::getInstance().contents;
 }

@@ -15,6 +15,9 @@
  */
 
 #define LOG_TAG "Singleton_test"
+
+#include <dlfcn.h>
+
 #include <utils/Singleton.h>
 
 #include <gtest/gtest.h>
@@ -23,26 +26,39 @@
 
 namespace android {
 
-// Singleton<SingletonTestStruct> is referenced here and in Singleton_test2.cpp,
-// but only defined here.
-ANDROID_SINGLETON_STATIC_INSTANCE(SingletonTestData);
+TEST(SingletonTest, CrossLibrary) {
+    // libutils_tests_singleton1.so contains the ANDROID_SINGLETON_STATIC_INSTANCE
+    // definition of SingletonTestData, load it first.
+    void* handle1 = dlopen("libutils_tests_singleton1.so", RTLD_NOW);
+    ASSERT_TRUE(handle1 != nullptr) << dlerror();
 
-class SingletonTest : public testing::Test {
-protected:
-    virtual void SetUp() {
-    }
+    // libutils_tests_singleton2.so references SingletonTestData but should not
+    // have a definition
+    void* handle2 = dlopen("libutils_tests_singleton2.so", RTLD_NOW);
+    ASSERT_TRUE(handle2 != nullptr) << dlerror();
 
-    virtual void TearDown() {
-    }
-};
+    using has_fn_t = decltype(&singletonHasInstance);
+    using get_fn_t = decltype(&singletonGetInstanceContents);
+    using set_fn_t = decltype(&singletonSetInstanceContents);
 
-TEST_F(SingletonTest, CrossLibrary) {
-    EXPECT_FALSE(SingletonTestData::hasInstance());
-    EXPECT_FALSE(singletonHasInstance());
-    SingletonTestData::getInstance().contents = 0xdeadbeef;
-    EXPECT_TRUE(SingletonTestData::hasInstance());
-    EXPECT_TRUE(singletonHasInstance());
-    EXPECT_EQ(singletonGetInstanceContents(), 0xdeadbeef);
+    has_fn_t has1 = reinterpret_cast<has_fn_t>(dlsym(handle1, "singletonHasInstance"));
+    ASSERT_TRUE(has1 != nullptr) << dlerror();
+    has_fn_t has2 = reinterpret_cast<has_fn_t>(dlsym(handle2, "singletonHasInstance"));
+    ASSERT_TRUE(has2 != nullptr) << dlerror();
+    get_fn_t get1 = reinterpret_cast<get_fn_t>(dlsym(handle1, "singletonGetInstanceContents"));
+    ASSERT_TRUE(get1 != nullptr) << dlerror();
+    get_fn_t get2 = reinterpret_cast<get_fn_t>(dlsym(handle2, "singletonGetInstanceContents"));
+    ASSERT_TRUE(get2 != nullptr) << dlerror();
+    set_fn_t set1 = reinterpret_cast<set_fn_t>(dlsym(handle2, "singletonSetInstanceContents"));
+    ASSERT_TRUE(set1 != nullptr) << dlerror();
+
+    EXPECT_FALSE(has1());
+    EXPECT_FALSE(has2());
+    set1(12345678U);
+    EXPECT_TRUE(has1());
+    EXPECT_TRUE(has2());
+    EXPECT_EQ(12345678U, get1());
+    EXPECT_EQ(12345678U, get2());
 }
 
 }
