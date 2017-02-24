@@ -15,6 +15,9 @@
  */
 
 #define LOG_TAG "Singleton_test"
+
+#include <dlfcn.h>
+
 #include <utils/Singleton.h>
 
 #include <gtest/gtest.h>
@@ -22,10 +25,6 @@
 #include "Singleton_test.h"
 
 namespace android {
-
-// Singleton<SingletonTestStruct> is referenced here and in Singleton_test2.cpp,
-// but only defined here.
-ANDROID_SINGLETON_STATIC_INSTANCE(SingletonTestData);
 
 class SingletonTest : public testing::Test {
 protected:
@@ -37,12 +36,38 @@ protected:
 };
 
 TEST_F(SingletonTest, CrossLibrary) {
-    EXPECT_FALSE(SingletonTestData::hasInstance());
-    EXPECT_FALSE(singletonHasInstance());
-    SingletonTestData::getInstance().contents = 0xdeadbeef;
-    EXPECT_TRUE(SingletonTestData::hasInstance());
-    EXPECT_TRUE(singletonHasInstance());
-    EXPECT_EQ(singletonGetInstanceContents(), 0xdeadbeef);
+    // libutils_tests_singleton1.so contains the ANDROID_SINGLETON_STATIC_INSTANCE
+    // definition of SingletonTestData, load it first.
+    void* handle1 = dlopen("libutils_tests_singleton1.so", RTLD_NOW);
+    ASSERT_NE(handle1, nullptr) << dlerror();
+
+    // libutils_tests_singleton2.so references SingletonTestData but should not
+    // have a definition
+    void* handle2 = dlopen("libutils_tests_singleton2.so", RTLD_NOW);
+    ASSERT_NE(handle2, nullptr) << dlerror();
+
+    using has = typeof(singletonHasInstance);
+    using get = typeof(singletonGetInstanceContents);
+    using set = typeof(singletonSetInstanceContents);
+
+    has* has1 = reinterpret_cast<has*>(dlsym(handle1, "singletonHasInstance"));
+    ASSERT_NE(nullptr, has1) << dlerror();
+    has* has2 = reinterpret_cast<has*>(dlsym(handle2, "singletonHasInstance"));
+    ASSERT_NE(nullptr, has2) << dlerror();
+    get* get1 = reinterpret_cast<get*>(dlsym(handle1, "singletonGetInstanceContents"));
+    ASSERT_NE(nullptr, get1) << dlerror();
+    get* get2 = reinterpret_cast<get*>(dlsym(handle2, "singletonGetInstanceContents"));
+    ASSERT_NE(nullptr, get2) << dlerror();
+    set* set1 = reinterpret_cast<set*>(dlsym(handle2, "singletonSetInstanceContents"));
+    ASSERT_NE(nullptr, set1) << dlerror();
+
+    EXPECT_FALSE(has1());
+    EXPECT_FALSE(has2());
+    set1(12345678);
+    EXPECT_TRUE(has1());
+    EXPECT_TRUE(has2());
+    EXPECT_EQ(12345678U, get1());
+    EXPECT_EQ(12345678U, get2());
 }
 
 }
