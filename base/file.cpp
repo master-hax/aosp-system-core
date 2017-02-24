@@ -238,6 +238,10 @@ std::string GetExecutablePath() {
 #endif
 }
 
+std::string GetExecutableDirectory() {
+    return Dirname(GetExecutablePath());
+}
+
 std::string Basename(const std::string& path) {
   static std::mutex& basename_lock = *new std::mutex();
 
