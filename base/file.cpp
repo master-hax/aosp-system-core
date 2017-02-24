@@ -236,5 +236,14 @@ std::string GetExecutablePath() {
 #endif
 }
 
+std::string GetExecutableDirectory() {
+    std::string path = GetExecutablePath();
+    std::size_t slash = path.find_last_of('/');
+    if (slash != path.npos) {
+        path.erase(slash);
+    }
+    return path;
+}
+
 }  // namespace base
 }  // namespace android
