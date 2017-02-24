@@ -52,6 +52,9 @@ bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val) {
     std::string file_name = kAndroidDtDir + "/compatible";
     std::string dt_value;
     if (android::base::ReadFileToString(file_name, &dt_value)) {
+        // trim the trailing '\0' out, otherwise the comparison
+        // will produce false-negatives.
+        if (!dt_value.empty()) dt_value.pop_back();
         if (dt_value != "android,firmware") {
             LERROR << "Error finding compatible android DT node";
             return false;

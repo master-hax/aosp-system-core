@@ -454,7 +454,7 @@ static bool init_is_avb_used() {
     // be returned when there is an error.
 
     std::string hash_alg;
-    if (fs_mgr_get_boot_config("vbmeta.hash_alg", &hash_alg) == 0) {
+    if (fs_mgr_get_boot_config("vbmeta.hash_alg", &hash_alg)) {
         if (hash_alg == "sha256" || hash_alg == "sha512") {
             return true;
         }
