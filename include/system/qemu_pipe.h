@@ -74,7 +74,8 @@ static bool WriteFully(int fd, const void* data, size_t byte_count) {
 // returned if more than one client tries to connect to it.
 static __inline__ int qemu_pipe_open(const char* pipeName) {
     // Sanity check.
-    if (!pipeName || memcmp(pipeName, "pipe:", 5) != 0) {
+    const char pipe_prefix[] = "pipe:";
+    if (!pipeName) {
         errno = EINVAL;
         return -1;
     }
@@ -89,9 +90,13 @@ static __inline__ int qemu_pipe_open(const char* pipeName) {
     // Write the pipe name, *including* the trailing zero which is necessary.
     size_t pipeNameLen = strlen(pipeName);
     if (!WriteFully(fd, pipeName, pipeNameLen + 1U)) {
-        QEMU_PIPE_DEBUG("%s: Could not connect to %s pipe service: %s",
-                        __FUNCTION__, pipeName, strerror(errno));
-        return -1;
+        // now, add 'pipe:' prefix and try again
+        if (!WriteFully(fd, pipe_prefix, strlen(pipe_prefix)) ||
+                !WriteFully(fd, pipeName, pipeNameLen + 1U)) {
+            QEMU_PIPE_DEBUG("%s: Could not write to %s pipe service: %s",
+                    __FUNCTION__, pipeName, strerror(errno));
+            return -1;
+        }
     }
     return fd;
 }
@@ -145,4 +150,4 @@ static int __inline__ qemu_pipe_frame_recv(int fd, void* buff, size_t len) {
     return size;
 }
 
-#endif /* ANDROID_INCLUDE_HARDWARE_QEMUD_PIPE_H */
+#endif /* ANDROID_INCLUDE_SYSTEM_QEMU_PIPE_H */
