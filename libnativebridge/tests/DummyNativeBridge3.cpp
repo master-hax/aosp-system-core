@@ -76,7 +76,7 @@ extern "C" bool native_bridge3_isPathSupported(const char* /* path */) {
   return true;
 }
 
-extern "C" bool native_bridge3_initNamespace(const char* /* public_ns_sonames */,
+extern "C" bool native_bridge3_initAnonymousNamespace(const char* /* public_ns_sonames */,
                                         const char* /* anon_ns_library_path */) {
   return true;
 }
@@ -89,6 +89,12 @@ native_bridge3_createNamespace(const char* /* name */,
                                const char* /* permitted_when_isolated_path */,
                                android::native_bridge_namespace_t* /* parent_ns */) {
   return nullptr;
+}
+
+extern "C" bool native_bridge3_linkNamespaces(android::native_bridge_namespace_t* /* from */,
+                                             android::native_bridge_namespace_t* /* to */,
+                                             const char* /* shared_libs_soname */) {
+  return true;
 }
 
 extern "C" void* native_bridge3_loadLibraryExt(const char* /* libpath */,
@@ -113,8 +119,9 @@ android::NativeBridgeCallbacks NativeBridgeItf {
   .unloadLibrary = &native_bridge3_unloadLibrary,
   .getError = &native_bridge3_getError,
   .isPathSupported  = &native_bridge3_isPathSupported,
-  .initNamespace = &native_bridge3_initNamespace,
+  .initAnonymousNamespace = &native_bridge3_initAnonymousNamespace,
   .createNamespace = &native_bridge3_createNamespace,
+  .linkNamespaces = &native_bridge3_linkNamespaces,
   .loadLibraryExt = &native_bridge3_loadLibraryExt
 };
 
