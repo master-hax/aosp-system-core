@@ -28,26 +28,6 @@
 ServiceManager::ServiceManager() {
 }
 
-/* The service name should not exceed SERVICE_NAME_MAX to avoid
- * some weird things. This is due to the fact that:
- *
- * - Starting a service is done by writing its name to the "ctl.start"
- *   system property. This triggers the init daemon to actually start
- *   the service for us.
- *
- * - Stopping the service is done by writing its name to "ctl.stop"
- *   in a similar way.
- *
- * - Reading the status of a service is done by reading the property
- *   named "init.svc.<name>"
- *
- * If strlen(<name>) > (PROPERTY_KEY_MAX-1)-9, then you can start/stop
- * the service by writing to ctl.start/stop, but you won't be able to
- * read its state due to the truncation of "init.svc.<name>" into a
- * zero-terminated buffer of PROPERTY_KEY_MAX characters.
- */
-#define SERVICE_NAME_MAX  (PROPERTY_KEY_MAX-10)
-
 /* The maximum amount of time to wait for a service to start or stop,
  * in micro-seconds (really an approximation) */
 #define  SLEEP_MAX_USEC     2000000  /* 2 seconds */
@@ -57,10 +37,6 @@ ServiceManager::ServiceManager() {
 #define  SLEEP_MIN_USEC      200000  /* 200 msec */
 
 int ServiceManager::start(const char *name) {
-    if (strlen(name) > SERVICE_NAME_MAX) {
-        SLOGE("Service name '%s' is too long", name);
-        return 0;
-    }
     if (isRunning(name)) {
         SLOGW("Service '%s' is already running", name);
         return 0;
@@ -86,10 +62,6 @@ int ServiceManager::start(const char *name) {
 }
 
 int ServiceManager::stop(const char *name) {
-    if (strlen(name) > SERVICE_NAME_MAX) {
-        SLOGE("Service name '%s' is too long", name);
-        return 0;
-    }
     if (!isRunning(name)) {
         SLOGW("Service '%s' is already stopped", name);
         return 0;
