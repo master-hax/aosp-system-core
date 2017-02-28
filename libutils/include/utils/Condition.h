@@ -40,7 +40,9 @@ namespace android {
  * Condition variables are paired up with mutexes.  Lock the mutex,
  * call wait(), then either re-wait() if things aren't quite what you want,
  * or unlock the mutex and continue.  All threads calling wait() must
- * use the same mutex for a given Condition.
+ * use the same mutex for a given Condition.  Note that wait() may
+ * spuriously wake up, so you cannot rely on being woken alone; you
+ * must check the state of your program as well.
  */
 class Condition {
 public:
@@ -61,7 +63,7 @@ public:
     status_t wait(Mutex& mutex);
     // same with relative timeout
     status_t waitRelative(Mutex& mutex, nsecs_t reltime);
-    // Signal the condition variable, allowing exactly one thread to continue.
+    // Signal the condition variable, allowing one thread to continue.
     void signal();
     // Signal the condition variable, allowing one or all threads to continue.
     void signal(WakeUpType type) {
@@ -142,17 +144,6 @@ inline status_t Condition::waitRelative(Mutex& mutex, nsecs_t reltime) {
     return -pthread_cond_timedwait(&mCond, &mutex.mMutex, &ts);
 }
 inline void Condition::signal() {
-    /*
-     * POSIX says pthread_cond_signal wakes up "one or more" waiting threads.
-     * However bionic follows the glibc guarantee which wakes up "exactly one"
-     * waiting thread.
-     *
-     * man 3 pthread_cond_signal
-     *   pthread_cond_signal restarts one of the threads that are waiting on
-     *   the condition variable cond. If no threads are waiting on cond,
-     *   nothing happens. If several threads are waiting on cond, exactly one
-     *   is restarted, but it is not specified which.
-     */
     pthread_cond_signal(&mCond);
 }
 inline void Condition::broadcast() {
