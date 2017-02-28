@@ -43,6 +43,7 @@
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <cutils/fs.h>
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
@@ -616,6 +617,148 @@ static int audit_callback(void *data, security_class_t /*cls*/, char *buf, size_
     return 0;
 }
 
+#define POLICYVERS "30" // TODO pass in from build system
+#define PLAT_POLICY_CIL_FILE "/plat_sepolicy.cil"
+#define NONPLAT_POLICY_CIL_FILE "/nonplat_sepolicy.cil"
+#define MAPPING_POLICY_CIL_FILE "/mapping_sepolicy.cil"
+#define MONOLITHIC_POLICY_FILE  "/sepolicy"
+
+/*
+ * Loads SELinux policy split across platform/system and non-platform/vendor files. This is the new
+ * approach to shipping and loading policy introduced in Android O and is thus not yet available on
+ * all Android devices. See selinux_load_monolithic_policy for the legacy/fallback approach.
+ *
+ * Returns 0 upon success, 1 if policy not found, -1 if any other failure occurred (failure cause is
+ * logged).
+ */
+static int selinux_load_split_policy() {
+    // IMPLEMENTATION NOTE: Split policy consists of three CIL files:
+    // * platform -- policy needed due to logic contained in the system image,
+    // * non-platform -- policy needed due to logic contained in the vendor/oem/odm images,
+    // * mapping -- mapping policy which helps preserve forward-compatibility of non-platform policy
+    //   with newer versions of platform policy.
+    //
+    // secilc is invoked to compile the above three policy files into a single monolithic policy
+    // file. This file is then loaded into the kernel.
+    struct stat sb;
+    if (stat(PLAT_POLICY_CIL_FILE, &sb) == -1) {
+        PLOG(ERROR) << "Split policy file " << PLAT_POLICY_CIL_FILE << " not available";
+        return 1;
+    }
+    if (stat(NONPLAT_POLICY_CIL_FILE, &sb) == -1) {
+        PLOG(ERROR) << "Split policy file " << NONPLAT_POLICY_CIL_FILE << " not available";
+        return 1;
+    }
+    if (stat(MAPPING_POLICY_CIL_FILE, &sb) == -1) {
+        PLOG(ERROR) << "Split policy file " << MAPPING_POLICY_CIL_FILE << " not available";
+        return 1;
+    }
+
+    LOG(INFO) << "Compiling SELinux policy";
+
+    // We store the output of the compilation on /dev because this is the most convenient tmpfs
+    // storage mount available this early in the boot sequence.
+    char compiled_sepolicy[]  = "/dev/sepolicy.XXXXXX";
+    android::base::unique_fd compiled_sepolicy_fd(mkostemp(compiled_sepolicy, O_CLOEXEC));
+    if (compiled_sepolicy_fd < 0) {
+        PLOG(ERROR) << "Failed to create temporary file " << compiled_sepolicy;
+        return -1;
+    }
+
+    const char *compile_args[] = {
+        "/system/bin/secilc",
+        PLAT_POLICY_CIL_FILE,
+        "-M", "true",
+        "-c", POLICYVERS,
+        MAPPING_POLICY_CIL_FILE,
+        NONPLAT_POLICY_CIL_FILE,
+        "-o", compiled_sepolicy,
+        // We don't care about file_contexts output by the compiler
+        "-f", "/sys/fs/selinux/null", // /dev/null is not yet available
+        nullptr
+    };
+
+    pid_t child_pid = fork();
+    if (child_pid < 0) {
+        PLOG(ERROR) << "Failed to fork for '" << compile_args[0] << "'";
+        unlink(compiled_sepolicy);
+        return -1;
+    } else if (child_pid == 0) {
+        umask(077);
+        if (execve(compile_args[0], (char **) compile_args, (char**) ENV) < 0) {
+            PLOG(ERROR) << "Failed to execve('" << compile_args[0] << "')";
+            unlink(compiled_sepolicy);
+            return 1;
+        }
+        // Unreachable because execve will have succeeded and replaced this code
+        // with child process's code.
+        _exit(127);
+        return -1;
+    } else {
+        int child_status;
+        if (waitpid(child_pid, &child_status, 0) != child_pid) {
+            PLOG(ERROR) << "waitpid failed for '" << compile_args[0] << "'";
+            unlink(compiled_sepolicy);
+            return -1;
+        }
+        unlink(compiled_sepolicy);
+
+        int status_code = WEXITSTATUS(child_status);
+        if (status_code != 0) {
+            LOG(ERROR) << "Failed to compile policy. Compiler returned status code " << status_code;
+            return -1;
+        } else {
+            LOG(VERBOSE) << "Successfully compiled policy";
+        }
+    }
+
+    LOG(INFO) << "Loading compiled SELinux policy";
+    if (selinux_android_load_policy_from_fd(compiled_sepolicy_fd, compiled_sepolicy) < 0) {
+        LOG(ERROR) << "Failed to load SELinux policy from " << compiled_sepolicy;
+        return -1;
+    }
+    return 0;
+}
+
+/*
+ * Loads SELinux policy from a monolithic file. This is the approach which has been used in Android
+ * since day one of SELinux.
+ *
+ * Returns 0 upon success, -1 upon failure (failure cause is logged).
+ */
+static int selinux_load_monolithic_policy() {
+    LOG(VERBOSE) << "Loading SELinux policy from monolithic file";
+    if (selinux_android_load_policy()) {
+        PLOG(ERROR) << "Failed to load monolithic SELinux policy";
+        return -1;
+    }
+    return 0;
+}
+
+/*
+ * Loads SELinux policy into the kernel.
+ *
+ * Returns 0 upon success, -1 upon failure (failure cause is logged).
+ */
+static int selinux_load_policy() {
+    // Attempt to load the split policy first, since this is the approach to which we're moving all
+    // new devices. If the split policy is missing, fall back to the old/deprecated approach of
+    // loading the monolithic policy.
+    switch (selinux_load_split_policy()) {
+        case 0:
+            // Split policy loaded successfully
+            return 0;
+        case 1:
+            // Split policy missing. Fall back to monolithic policy.
+            return selinux_load_monolithic_policy();
+        default:
+            // Error while loading split policy. We don't fall back to monolithic policy because
+            // the split policy was there and thus the intention was that the split policy should've
+            // been used.
+            return -1;
+    }
+}
+
 static void selinux_initialize(bool in_kernel_domain) {
     Timer t;
 
@@ -626,11 +769,11 @@ static void selinux_initialize(bool in_kernel_domain) {
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
 
     if (in_kernel_domain) {
-        LOG(INFO) << "Loading SELinux policy...";
-        if (selinux_android_load_policy() < 0) {
-            PLOG(ERROR) << "failed to load policy";
-            security_failure();
+        LOG(INFO) << "Loading SELinux policy";
+        if (selinux_load_policy()) {
+            panic();
         }
+        LOG(INFO) << "Loaded SELinux policy";
 
         bool kernel_enforcing = (security_getenforce() == 1);
         bool is_enforcing = selinux_is_enforcing();
