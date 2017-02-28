@@ -793,7 +793,7 @@ static bool early_mount() {
     // first check if device tree fstab entries are compatible
     if (!is_dt_fstab_compatible()) {
         LOG(INFO) << "Early mount skipped (missing/incompatible fstab in device tree)";
-        return true;
+        return false;
     }
 
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> tab(
@@ -813,7 +813,7 @@ static bool early_mount() {
     }
 
     // nothing to early mount
-    if (early_fstab_recs.empty()) return true;
+    if (early_fstab_recs.empty()) return false;
 
     bool need_verity;
     std::set<std::string> partition_names;
@@ -897,9 +897,8 @@ int main(int argc, char** argv) {
     LOG(INFO) << "init " << (is_first_stage ? "first" : "second") << " stage started!";
 
     if (is_first_stage) {
-        if (!early_mount()) {
-            LOG(ERROR) << "Failed to mount required partitions early ...";
-            panic();
+        if (early_mount()) {
+            LOG(INFO) << "Successfully mounted required partitions early ...";
         }
 
         // Set up SELinux, loading the SELinux policy.
