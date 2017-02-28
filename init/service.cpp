@@ -180,12 +180,6 @@ void Service::NotifyStateChange(const std::string& new_state) const {
     }
 
     std::string prop_name = StringPrintf("init.svc.%s", name_.c_str());
-    if (prop_name.length() >= PROP_NAME_MAX) {
-        // If the property name would be too long, we can't set it.
-        LOG(ERROR) << "Property name \"init.svc." << name_ << "\" too long; not setting to " << new_state;
-        return;
-    }
-
     property_set(prop_name.c_str(), new_state.c_str());
 
     if (new_state == "running") {
