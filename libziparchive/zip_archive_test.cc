@@ -458,7 +458,7 @@ TEST(ziparchive, TrailerAfterEOCD) {
   ASSERT_TRUE(android::base::WriteFully(tmp_file.fd, trailer, sizeof(trailer)));
 
   ZipArchiveHandle handle;
-  ASSERT_GT(0, OpenArchiveFd(tmp_file.fd, "EmptyEntriesTest", &handle));
+  ASSERT_EQ(0, OpenArchiveFd(tmp_file.fd, "EmptyEntriesTest", &handle));
 }
 
 TEST(ziparchive, ExtractToFile) {

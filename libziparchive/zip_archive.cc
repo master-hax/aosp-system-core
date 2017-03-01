@@ -260,7 +260,6 @@ static int32_t MapCentralDirectory0(const char* debug_file_name, ZipArchive* arc
   if (calculated_length != file_length) {
     ALOGW("Zip: %" PRId64 " extraneous bytes at the end of the central directory",
           static_cast<int64_t>(file_length - calculated_length));
-    //return kInvalidFile;
   }
 
   /*
