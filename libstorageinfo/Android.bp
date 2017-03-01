@@ -1,0 +1,31 @@
+cc_defaults {
+    name: "libstorageinfo_defaults",
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+	"-fexceptions",
+    ],
+    clang: true,
+    whole_static_libs: [
+	"libexpat"
+    ],
+    target : {
+        windows: {
+            enabled: true,
+        }
+    },
+}
+
+cc_library {
+    name: "libstorageinfo",
+    host_supported: true,
+    unique_host_soname: true,
+    defaults: ["libstorageinfo_defaults"],
+    srcs: [
+        "storageinfo.cpp",
+    ],
+    export_include_dirs: ["include"],
+    local_include_dirs: ["include"],
+}
