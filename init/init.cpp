@@ -1077,7 +1077,8 @@ int main(int argc, char** argv) {
         property_set("ro.boottime.init.selinux", getenv("INIT_SELINUX_TOOK"));
 
         // Set libavb version for Framework-only OTA match in Treble build.
-        property_set("ro.boot.init.avb_version", std::to_string(AVB_MAJOR_VERSION).c_str());
+        property_set("ro.boot.init.avb_version",
+                     StringPrintf("%d.%d", AVB_VERSION_MAJOR, AVB_VERSION_MINOR).c_str());
 
         // Clean up our environment.
         unsetenv("INIT_SECOND_STAGE");
