@@ -20,9 +20,6 @@
 #define HAVE_STRSEP
 #endif
 
-//#ifndef __MINGW32__
-//#include <arpa/inet.h>
-//#endif
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -117,7 +114,7 @@ static android_LogPriority filterCharToPri (char c)
     c = tolower(c);
 
     if (c >= '0' && c <= '9') {
-        if (c >= ('0'+ANDROID_LOG_SILENT)) {
+        if (c >= ('0' + ANDROID_LOG_SILENT)) {
             pri = ANDROID_LOG_VERBOSE;
         } else {
             pri = (android_LogPriority)(c - '0');
@@ -397,7 +394,7 @@ LIBLOG_ABI_PUBLIC int android_log_addFilterRule(
     }
 
     if(filterExpression[tagNameLength] == ':') {
-        pri = filterCharToPri(filterExpression[tagNameLength+1]);
+        pri = filterCharToPri(filterExpression[tagNameLength + 1]);
 
         if (pri == ANDROID_LOG_UNKNOWN) {
             goto error;
@@ -521,6 +518,9 @@ LIBLOG_ABI_PUBLIC int android_log_processLogBuffer(
         struct logger_entry *buf,
         AndroidLogEntry *entry)
 {
+    entry->message = NULL;
+    entry->messageLen = 0;
+
     entry->tv_sec = buf->sec;
     entry->tv_nsec = buf->nsec;
     entry->uid = -1;
@@ -621,7 +621,7 @@ static inline uint64_t get8LE(const uint8_t* src)
 
     low = src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
     high = src[4] | (src[5] << 8) | (src[6] << 16) | (src[7] << 24);
-    return ((uint64_t) high << 32) | (uint64_t) low;
+    return ((uint64_t)high << 32) | (uint64_t)low;
 }
 
 static bool findChar(const char** cp, size_t* len, int c) {
@@ -991,12 +991,15 @@ no_room:
 LIBLOG_ABI_PUBLIC int android_log_processBinaryLogBuffer(
         struct logger_entry *buf,
         AndroidLogEntry *entry,
-        const EventTagMap *map __unused, // only on !__ANDROID__
+        const EventTagMap *map __unused, /* only on !__ANDROID__ */
         char *messageBuf, int messageBufLen)
 {
     size_t inCount;
     uint32_t tagIndex;
     const unsigned char* eventData;
+
+    entry->message = NULL;
+    entry->messageLen = 0;
 
     entry->tv_sec = buf->sec;
     entry->tv_nsec = buf->nsec;
@@ -1009,7 +1012,7 @@ LIBLOG_ABI_PUBLIC int android_log_processBinaryLogBuffer(
      * Pull the tag out, fill in some additional details based on incoming
      * buffer version (v3 adds lid, v4 adds uid).
      */
-    eventData = (const unsigned char*) buf->msg;
+    eventData = (const unsigned char*)buf->msg;
     struct logger_entry_v2 *buf2 = (struct logger_entry_v2 *)buf;
     if (buf2->hdr_size) {
         if ((buf2->hdr_size < sizeof(((struct log_msg *)NULL)->entry_v1)) ||
@@ -1122,7 +1125,7 @@ LIBLOG_ABI_PUBLIC int android_log_processBinaryLogBuffer(
      */
     *outBuf = '\0';
     entry->messageLen = outBuf - messageBuf;
-    assert(entry->messageLen == (messageBufLen-1) - outRemaining);
+    assert(entry->messageLen == (messageBufLen - 1) - outRemaining);
 
     entry->message = messageBuf;
 
@@ -1217,7 +1220,7 @@ static size_t convertPrintable(char *p, const char *message, size_t messageLen)
                 } else if (*message == '\b') {
                     strcpy(buf, "\\b");
                 } else if (*message == '\t') {
-                    strcpy(buf, "\t"); // Do not escape tabs
+                    strcpy(buf, "\t"); /* Do not escape tabs */
                 } else if (*message == '\v') {
                     strcpy(buf, "\\v");
                 } else if (*message == '\f') {
@@ -1574,7 +1577,7 @@ LIBLOG_ABI_PUBLIC char *android_log_formatLogLine (
     nsec = entry->tv_nsec;
 #if __ANDROID__
     if (p_format->monotonic_output) {
-        // prevent convertMonotonic from being called if logd is monotonic
+        /* prevent convertMonotonic from being called if logd is monotonic */
         if (android_log_clockid() != CLOCK_MONOTONIC) {
             struct timespec time;
             convertMonotonic(&time, entry);
@@ -1648,7 +1651,7 @@ LIBLOG_ABI_PUBLIC char *android_log_formatLogLine (
             } else
 #endif
             {
-                 // Not worth parsing package list, names all longer than 5
+                 /* Not worth parsing package list, names all longer than 5 */
                  snprintf(uid, sizeof(uid), "%5d:", entry->uid);
             }
         } else {
@@ -1758,7 +1761,7 @@ LIBLOG_ABI_PUBLIC char *android_log_formatLogLine (
             if (*pm++ == '\n') numLines++;
         }
         /* plus one line for anything not newline-terminated at the end */
-        if (pm > entry->message && *(pm-1) != '\n') numLines++;
+        if (pm > entry->message && *(pm - 1) != '\n') numLines++;
     }
 
     /*
