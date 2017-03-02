@@ -34,7 +34,6 @@
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
 
-#include "debuggerd/handler.h"
 #include "debuggerd/protocol.h"
 #include "debuggerd/util.h"
 
