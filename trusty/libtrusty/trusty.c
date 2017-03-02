@@ -39,7 +39,7 @@ int tipc_connect(const char *dev_name, const char *srv_name)
 		rc = -errno;
 		ALOGE("%s: cannot open tipc device \"%s\": %s\n",
 		      __func__, dev_name, strerror(errno));
-		return rc < 0 ? rc : -1;
+		return rc;
 	}
 
 	rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
@@ -48,7 +48,7 @@ int tipc_connect(const char *dev_name, const char *srv_name)
 		ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n",
 		      __func__, srv_name, errno);
 		close(fd);
-		return rc < 0 ? rc : -1;
+		return rc;
 	}
 
 	ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
