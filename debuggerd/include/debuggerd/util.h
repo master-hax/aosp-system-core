@@ -44,3 +44,8 @@ ssize_t recv_fd(int sockfd, void* _Nonnull data, size_t len,
                 android::base::unique_fd* _Nullable out_fd);
 
 bool Pipe(android::base::unique_fd* read, android::base::unique_fd* write);
+
+bool tombstoned_connect(pid_t pid, android::base::unique_fd* tombstoned_socket,
+                        android::base::unique_fd* output_fd);
+
+bool tombstoned_notify_completion(int tombstoned_socket);

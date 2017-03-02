@@ -128,55 +128,6 @@ static bool activity_manager_notify(int pid, int signal, const std::string& amfd
   return true;
 }
 
-static bool tombstoned_connect(pid_t pid, unique_fd* tombstoned_socket, unique_fd* output_fd) {
-  unique_fd sockfd(socket_local_client(kTombstonedCrashSocketName,
-                                       ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET));
-  if (sockfd == -1) {
-    PLOG(ERROR) << "failed to connect to tombstoned";
-    return false;
-  }
-
-  TombstonedCrashPacket packet = {};
-  packet.packet_type = CrashPacketType::kDumpRequest;
-  packet.packet.dump_request.pid = pid;
-  if (TEMP_FAILURE_RETRY(write(sockfd, &packet, sizeof(packet))) != sizeof(packet)) {
-    PLOG(ERROR) << "failed to write DumpRequest packet";
-    return false;
-  }
-
-  unique_fd tmp_output_fd;
-  ssize_t rc = recv_fd(sockfd, &packet, sizeof(packet), &tmp_output_fd);
-  if (rc == -1) {
-    PLOG(ERROR) << "failed to read response to DumpRequest packet";
-    return false;
-  } else if (rc != sizeof(packet)) {
-    LOG(ERROR) << "read DumpRequest response packet of incorrect length (expected "
-               << sizeof(packet) << ", got " << rc << ")";
-    return false;
-  }
-
-  // Make the fd O_APPEND so that our output is guaranteed to be at the end of a file.
-  // (This also makes selinux rules consistent, because selinux distinguishes between writing to
-  // a regular fd, and writing to an fd with O_APPEND).
-  int flags = fcntl(tmp_output_fd.get(), F_GETFL);
-  if (fcntl(tmp_output_fd.get(), F_SETFL, flags | O_APPEND) != 0) {
-    PLOG(WARNING) << "failed to set output fd flags";
-  }
-
-  *tombstoned_socket = std::move(sockfd);
-  *output_fd = std::move(tmp_output_fd);
-  return true;
-}
-
-static bool tombstoned_notify_completion(int tombstoned_socket) {
-  TombstonedCrashPacket packet = {};
-  packet.packet_type = CrashPacketType::kCompletedDump;
-  if (TEMP_FAILURE_RETRY(write(tombstoned_socket, &packet, sizeof(packet))) != sizeof(packet)) {
-    return false;
-  }
-  return true;
-}
-
 static void signal_handler(int) {
   // We can't log easily, because the heap might be corrupt.
   // Just die and let the surrounding log context explain things.

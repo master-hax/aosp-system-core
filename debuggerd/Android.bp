@@ -8,6 +8,10 @@ cc_defaults {
         "-Os",
     ],
 
+    // util.cpp gets async signal safe logging via libc_logging,
+    // which defines its interface in bionic private headers.
+    include_dirs: ["bionic/libc"],
+
     local_include_dirs: ["include"],
 }
 
@@ -16,9 +20,6 @@ cc_library_static {
     defaults: ["debuggerd_defaults"],
     srcs: ["handler/debuggerd_handler.cpp"],
 
-    // libdebuggerd_handler gets async signal safe logging via libc_logging,
-    // which defines its interface in bionic private headers.
-    include_dirs: ["bionic/libc"],
     whole_static_libs: [
         "libc_logging",
         "libdebuggerd",
@@ -42,12 +43,13 @@ cc_library_static {
 cc_library_static {
     name: "libdebuggerd_handler_fallback",
     defaults: ["debuggerd_defaults"],
-    srcs: ["handler/debuggerd_fallback.cpp"],
+    srcs: [
+        "handler/debuggerd_fallback.cpp",
+        "util.cpp",
+    ],
 
-    // libdebuggerd_handler gets async signal safe logging via libc_logging,
-    // which defines its interface in bionic private headers.
-    include_dirs: ["bionic/libc"],
     static_libs: [
+        "libbase",
         "libdebuggerd",
         "libbacktrace",
         "libunwind",
@@ -70,6 +72,7 @@ cc_library {
         "libbase",
         "libcutils",
     ],
+
     export_include_dirs: ["include"],
 }
 
