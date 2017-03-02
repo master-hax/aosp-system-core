@@ -52,7 +52,7 @@
 // returned if more than one client tries to connect to it.
 int qemu_pipe_open(const char* pipeName) {
     // Sanity check.
-    if (!pipeName || memcmp(pipeName, "pipe:", 5) != 0) {
+    if (!pipeName) {
         errno = EINVAL;
         return -1;
     }
@@ -67,10 +67,15 @@ int qemu_pipe_open(const char* pipeName) {
     // Write the pipe name, *including* the trailing zero which is necessary.
     size_t pipeNameLen = strlen(pipeName);
     if (!WriteFully(fd, pipeName, pipeNameLen + 1U)) {
-        QEMU_PIPE_DEBUG("%s: Could not connect to %s pipe service: %s",
-                        __FUNCTION__, pipeName, strerror(errno));
-        close(fd);
-        return -1;
+        // now, add 'pipe:' prefix and try again
+        const char pipe_prefix[] = "pipe:";
+        if (!WriteFully(fd, pipe_prefix, strlen(pipe_prefix)) ||
+                !WriteFully(fd, pipeName, pipeNameLen + 1U)) {
+            QEMU_PIPE_DEBUG("%s: Could not write to %s pipe service: %s",
+                    __FUNCTION__, pipeName, strerror(errno));
+            close(fd);
+            return -1;
+        }
     }
     return fd;
 }
