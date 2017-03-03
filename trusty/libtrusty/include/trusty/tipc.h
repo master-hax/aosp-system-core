@@ -17,6 +17,8 @@
 #ifndef _LIB_TIPC_H
 #define _LIB_TIPC_H
 
+#include <stdint.h>
+#include <sys/uio.h>
 #include <trusty/trusty_ipc_ioctl.h>
 
 #ifdef __cplusplus
@@ -25,6 +27,31 @@ extern "C" {
 
 int tipc_connect(const char *dev_name, const char *srv_name);
 int tipc_close(int fd);
+
+/* Helper functions to handle memory references */
+struct tipc_memref {
+    uintptr_t shr_base;
+    uint32_t shr_size;
+    uint32_t data_off;
+    uint32_t data_size;
+    uint32_t page_size;
+    struct tipc_shmem shmem;
+};
+
+int tipc_memref_init(struct tipc_memref *mr, uint32_t flags,
+                     const void *shr_base, uint32_t shr_size,
+                     uint32_t data_size, uint32_t data_off, uint32_t page_size);
+
+void tipc_memref_prepare(struct tipc_memref *mr, uint32_t *phsize,
+                         uint32_t *phoff, void **aux_pages);
+
+void tipc_memref_finish(const struct tipc_memref *mr, uint32_t size);
+
+/* Wrappers to send/recv messages */
+int tipc_send_msg(int fd, const struct iovec *iov, unsigned int iov_cnt,
+                  const struct tipc_memref *mrefv, unsigned int mrefv_cnt);
+
+int tipc_recv_msg(int fd, const struct iovec *iov, unsigned int iovcnt);
 
 #ifdef __cplusplus
 }
