@@ -20,3 +20,26 @@
 
 #define TIPC_IOC_MAGIC 'r'
 #define TIPC_IOC_CONNECT _IOW(TIPC_IOC_MAGIC, 0x80, char*)
+
+#define TIPC_MEMREF_DATA_OUT (0x1 << 0)
+#define TIPC_MEMREF_DATA_IN (0x1 << 1)
+
+#define TIPC_MAX_MEMREF_NUM (8)
+
+struct tipc_shmem {
+    struct {
+        __u64 base;
+        __u64 size;
+    } rgns[3];
+    __u32 flags;
+    __u32 reserved;
+};
+
+struct tipc_send_msg_req {
+    __u64 msgiov;
+    __u64 shmemv;
+    __u32 msgiov_cnt;
+    __u32 shmemv_cnt;
+};
+
+#define TIPC_IOC_SEND_MSG _IOW(TIPC_IOC_MAGIC, 0x81, struct tipc_send_msg_req)
