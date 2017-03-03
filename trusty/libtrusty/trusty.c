@@ -55,7 +55,7 @@ int tipc_connect(const char *dev_name, const char *srv_name)
     return fd;
 }
 
-void tipc_close(int fd)
+int tipc_close(int fd)
 {
-    close(fd);
+    return close(fd);
 }
