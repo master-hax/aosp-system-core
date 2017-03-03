@@ -41,7 +41,7 @@ class LogBufferElement {
     const uint32_t mUid;
     const uint32_t mPid;
     const uint32_t mTid;
-    const uint64_t mSequence;
+    uint64_t mSequence;
     log_time mRealTime;
     char *mMsg;
     union {
