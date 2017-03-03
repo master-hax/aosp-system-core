@@ -372,15 +372,9 @@ void LogBuffer::log(LogBufferElement* elem) {
     //  NB: if end is region locked, place element at end of list
     LogBufferElementCollection::iterator it = mLogElements.end();
     LogBufferElementCollection::iterator last = it;
-    while (last != mLogElements.begin()) {
-        --it;
-        if ((*it)->getRealTime() <= elem->getRealTime()) {
-            break;
-        }
-        last = it;
-    }
-
-    if (last == mLogElements.end()) {
+    --it;
+    if (__predict_false(it == mLogElements.begin()) ||
+        __predict_true((*it)->getRealTime() <= elem->getRealTime())) {
         mLogElements.push_back(elem);
     } else {
         uint64_t end = 1;
@@ -390,7 +384,7 @@ void LogBuffer::log(LogBufferElement* elem) {
         LogTimeEntry::lock();
 
         LastLogTimes::iterator times = mTimes.begin();
-        while(times != mTimes.end()) {
+        while (times != mTimes.end()) {
             LogTimeEntry* entry = (*times);
             if (entry->owned_Locked()) {
                 if (!entry->mNonBlock) {
@@ -405,13 +399,26 @@ void LogBuffer::log(LogBufferElement* elem) {
             times++;
         }
 
-        if (end_always
-                || (end_set && (end >= (*last)->getSequence()))) {
+        if (end_always || (end_set && (end > (*it)->getSequence()))) {
             mLogElements.push_back(elem);
         } else {
+            // should be short as timestamps are localized near end()
+            do {
+                last = it;
+                if (__predict_false(it == mLogElements.begin())) {
+                    break;
+                }
+
+                // swap sequence
+                uint64_t hold = (*it)->getSequence();
+                (*it)->mSequence = elem->getSequence();
+                elem->mSequence = hold;
+
+                --it;
+            } while (((*it)->getRealTime() > elem->getRealTime()) &&
+                     (!end_set || (end <= (*it)->getSequence())));
             mLogElements.insert(last, elem);
         }
-
         LogTimeEntry::unlock();
     }
 
