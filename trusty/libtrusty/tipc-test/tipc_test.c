@@ -39,6 +39,10 @@ static const char *closer1_name = "com.android.ipc-unittest.srv.closer1";
 static const char *closer2_name = "com.android.ipc-unittest.srv.closer2";
 static const char *closer3_name = "com.android.ipc-unittest.srv.closer3";
 static const char *main_ctrl_name = "com.android.ipc-unittest.ctrl";
+static const char *mref_ut_leaf_name =
+    "com.android.trusty.memref-unittest.leaf";
+static const char *mref_ut_proxy_name =
+    "com.android.trusty.memref-unittest.proxy";
 
 static const char *_sopts = "hsvD:t:r:m:b:";
 static const struct option _lopts[] = {{"help", no_argument, 0, 'h'},
@@ -65,24 +69,26 @@ static const char *usage =
 ;
 
 static const char *usage_long =
-"\n"
-"The following tests are available:\n"
-"   connect      - connect to datasink service\n"
-"   connect_foo  - connect to non existing service\n"
-"   burst_write  - send messages to datasink service\n"
-"   echo         - send/receive messages to echo service\n"
-"   select       - test select call\n"
-"   blocked_read - test blocked read\n"
-"   closer1      - connection closed by remote (test1)\n"
-"   closer2      - connection closed by remote (test2)\n"
-"   closer3      - connection closed by remote (test3)\n"
-"   ta2ta-ipc    - execute TA to TA unittest\n"
-"   dev-uuid     - print device uuid\n"
-"   ta-access    - test ta-access flags\n"
-"   writev       - writev test\n"
-"   readv        - readv test\n"
-"\n"
-;
+    "\n"
+    "The following tests are available:\n"
+    "   connect      - connect to datasink service\n"
+    "   connect_foo  - connect to non existing service\n"
+    "   burst_write  - send messages to datasink service\n"
+    "   echo         - send/receive messages to echo service\n"
+    "   select       - test select call\n"
+    "   blocked_read - test blocked read\n"
+    "   closer1      - connection closed by remote (test1)\n"
+    "   closer2      - connection closed by remote (test2)\n"
+    "   closer3      - connection closed by remote (test3)\n"
+    "   ta2ta-ipc    - execute TA to TA unittest\n"
+    "   dev-uuid     - print device uuid\n"
+    "   ta-access    - test ta-access flags\n"
+    "   writev       - writev test\n"
+    "   readv        - readv test\n"
+    "   send_msg     - tipc_send_msg test\n"
+    "   mref_ut_leaf - invoke memref leaf unittest\n"
+    "   mref_ut_proxy- invoke memref proxy unittest\n"
+    "\n";
 
 static uint opt_repeat  = 1;
 static uint opt_msgsize = 32;
@@ -826,6 +832,328 @@ static int readv_test(uint repeat, uint msgsz, bool var)
     return 0;
 }
 
+static int send_msg_test(uint repeat, uint msgsz, bool var)
+{
+    uint i;
+    ssize_t rc;
+    size_t msg_len;
+    int echo_fd = -1;
+    char tx0_buf[msgsz];
+    char tx1_buf[msgsz];
+    char rx_buf[msgsz];
+    struct iovec iovs[2] = {{tx0_buf, 0}, {tx1_buf, 0}};
+
+    if (!opt_silent) {
+        printf("%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat,
+               msgsz, var ? "true" : "false");
+    }
+
+    echo_fd = tipc_connect(dev_name, echo_name);
+    if (echo_fd < 0) {
+        fprintf(stderr, "Failed to connect to service\n");
+        return echo_fd;
+    }
+
+    for (i = 0; i < repeat; i++) {
+        msg_len = msgsz;
+        if (opt_variable && msgsz) {
+            msg_len = rand() % msgsz;
+        }
+
+        iovs[0].iov_len = msg_len / 3;
+        iovs[1].iov_len = msg_len - iovs[0].iov_len;
+
+        memset(tx0_buf, i + 1, iovs[0].iov_len);
+        memset(tx1_buf, i + 2, iovs[1].iov_len);
+        memset(rx_buf, i + 3, sizeof(rx_buf));
+
+        rc = tipc_send_msg(echo_fd, iovs, 2, NULL, 0);
+        if (rc < 0) {
+            perror("send_msg_test: send");
+            break;
+        }
+
+        if ((size_t)rc != msg_len) {
+            fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n",
+                    __func__, "send req", (size_t)rc, msg_len);
+            break;
+        }
+
+        rc = read(echo_fd, rx_buf, sizeof(rx_buf));
+        if (rc < 0) {
+            perror("send_msg_test: read reply");
+            break;
+        }
+
+        if ((size_t)rc != msg_len) {
+            fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n",
+                    __func__, "read reply", (size_t)rc, msg_len);
+            break;
+        }
+
+        if (memcmp(tx0_buf, rx_buf, iovs[0].iov_len)) {
+            fprintf(stderr, "%s: data mismatch: buf 0\n", __func__);
+            break;
+        }
+
+        if (memcmp(tx1_buf, rx_buf + iovs[0].iov_len, iovs[1].iov_len)) {
+            fprintf(stderr, "%s: data mismatch, buf 1\n", __func__);
+            break;
+        }
+    }
+
+    tipc_close(echo_fd);
+
+    if (!opt_silent) {
+        printf("%s: done\n", __func__);
+    }
+
+    return 0;
+}
+
+#define MEMREF_UT_CMD_FILL 1
+#define MEMREF_UT_CMD_CHECK 2
+
+struct memref_test_cmd {
+    uint16_t cmd;
+    uint16_t flags;
+    uint32_t arg;
+    uint32_t hsize;
+    uint32_t offset;
+    uint32_t dsize;
+    uint32_t status;
+};
+
+static int fill_memref(int fd, void *mrbuf, size_t mrsz, int v)
+{
+    ssize_t rc;
+    struct iovec iov;
+    struct tipc_memref mref;
+    struct memref_test_cmd cmd;
+    int ret = -1;
+    void *cur_page = NULL;
+    void *aux_pages = NULL;
+    uint32_t pgsz = getpagesize();
+
+    rc = tipc_memref_init(&mref, TIPC_MEMREF_PERM_RW, mrbuf, mrsz, mrsz, 0,
+                          pgsz);
+    if (rc < 0)
+        return (int)rc;
+
+    if (rc > 0) {
+        /* Allocate extra memory if needed */
+        rc = posix_memalign(&aux_pages, pgsz, rc * pgsz);
+        if (rc) {
+            return -1;
+        }
+        cur_page = aux_pages;
+    }
+
+    /* fill command request */
+    cmd.status = 0;
+    cmd.cmd = MEMREF_UT_CMD_FILL;
+    cmd.flags = 0;
+    cmd.arg = v;
+    cmd.dsize = mrsz;
+    tipc_memref_prepare(&mref, &cmd.hsize, &cmd.offset, &cur_page);
+
+    iov.iov_base = &cmd;
+    iov.iov_len = sizeof(cmd);
+
+    /* send message */
+    rc = tipc_send_msg(fd, &iov, 1, &mref, 1);
+    if (rc < 0) {
+        perror("fill memref: send req");
+        goto err;
+    }
+
+    if ((size_t)rc != sizeof(cmd)) {
+        fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n", __func__,
+                "send req", (size_t)rc, sizeof(cmd));
+        goto err;
+    }
+
+    /* read reply */
+    rc = read(fd, &cmd, sizeof(cmd));
+    if (rc < 0) {
+        perror("fill memref: read reply");
+        goto err;
+    }
+
+    if ((size_t)rc != sizeof(cmd)) {
+        fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n", __func__,
+                "read reply", (size_t)rc, sizeof(cmd));
+        goto err;
+    }
+
+    if (cmd.status) {
+        fprintf(stderr, "%s: cmd: status=%u\n", __func__, cmd.status);
+        goto err;
+    }
+
+    /* make sure all data are synced back */
+    tipc_memref_finish(&mref, cmd.dsize);
+    ret = 0;
+
+err:
+    if (aux_pages)
+        free(aux_pages);
+
+    return ret;
+}
+
+static int local_check_memref(uint8_t *mrbuf, size_t mrsz, int v)
+{
+    if (mrbuf[0] != (uint8_t)v) {
+        fprintf(stderr, "%x vs. %x\n", mrbuf[0], (uint8_t)v);
+        return mrbuf[0];
+    }
+
+    if (memcmp(mrbuf, mrbuf + 1, mrsz - 1)) {
+        fprintf(stderr, "other\n");
+        return -1;
+    }
+
+    return 0;
+}
+
+static int remote_check_memref(int fd, void *mrbuf, size_t mrsz, int v)
+{
+    ssize_t rc;
+    struct iovec iov;
+    struct tipc_memref mref;
+    struct memref_test_cmd cmd;
+    int ret = -1;
+    void *cur_page = NULL;
+    void *aux_pages = NULL;
+    uint32_t pgsz = getpagesize();
+
+    rc = tipc_memref_init(&mref, TIPC_MEMREF_PERM_RO, mrbuf, mrsz, mrsz, 0,
+                          pgsz);
+    if (rc < 0)
+        return (int)rc;
+
+    if (rc > 0) {
+        /* Allocate extra memory if needed */
+        rc = posix_memalign(&aux_pages, pgsz, rc * pgsz);
+        if (rc) {
+            return -1;
+        }
+        cur_page = aux_pages;
+    }
+
+    /* fill command request */
+    cmd.status = 0;
+    cmd.cmd = MEMREF_UT_CMD_CHECK;
+    cmd.flags = 0;
+    cmd.arg = v;
+    cmd.dsize = mrsz;
+    tipc_memref_prepare(&mref, &cmd.hsize, &cmd.offset, &cur_page);
+
+    iov.iov_base = &cmd;
+    iov.iov_len = sizeof(cmd);
+
+    /* send message */
+    rc = tipc_send_msg(fd, &iov, 1, &mref, 1);
+    if (rc < 0) {
+        perror("check memref: send req");
+        goto err;
+    }
+
+    if ((size_t)rc != sizeof(cmd)) {
+        fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n", __func__,
+                "send req", (size_t)rc, sizeof(cmd));
+        goto err;
+    }
+
+    /* read reply */
+    rc = read(fd, &cmd, sizeof(cmd));
+    if (rc < 0) {
+        perror("check memref: read reply");
+        goto err;
+    }
+
+    if ((size_t)rc != sizeof(cmd)) {
+        fprintf(stderr, "%s: %s: data size mismatch (%zd vs. %zd)\n", __func__,
+                "read reply", (size_t)rc, sizeof(cmd));
+        goto err;
+    }
+
+    if (cmd.status) {
+        fprintf(stderr, "%s: cmd: status=%u\n", __func__, cmd.status);
+        goto err;
+    }
+
+    ret = 0;
+err:
+    if (aux_pages)
+        free(aux_pages);
+
+    return ret;
+}
+
+static int memref_ut(const char *srv, uint repeat, uint msgsz, bool var)
+{
+    int rc;
+    int fd;
+    uint i;
+    int pgsz;
+    void *mrbuf;
+    size_t mrsz;
+
+    if (!opt_silent) {
+        printf("%s: repeat %u: msgsz %u: variable %s\n", __func__, repeat,
+               msgsz, var ? "true" : "false");
+    }
+
+    fd = tipc_connect(dev_name, srv);
+    if (fd < 0) {
+        fprintf(stderr, "Failed to connect to service\n");
+        return fd;
+    }
+
+    for (i = 0; i < repeat; i++) {
+        mrsz = msgsz;
+        if (opt_variable && msgsz) {
+            mrsz = rand() % msgsz;
+        }
+        if (mrsz == 0)
+            mrsz = 1;
+
+        mrbuf = malloc(mrsz);
+        if (!mrbuf) {
+            fprintf(stderr, "%s: out of memory\n", __func__);
+            break;
+        }
+
+        memset(mrbuf, i + 1, mrsz);
+
+        rc = fill_memref(fd, mrbuf, mrsz, (uint8_t)i);
+        if (rc)
+            break;
+
+        rc = local_check_memref(mrbuf, mrsz, (uint8_t)i);
+        if (rc) {
+            fprintf(stderr, "%s: %p: i=%d: local memcheck failed %d\n",
+                    __func__, mrbuf, i, rc);
+            break;
+        }
+
+        rc = remote_check_memref(fd, mrbuf, mrsz, (uint8_t)i);
+        if (rc)
+            break;
+
+        free(mrbuf);
+    }
+
+    tipc_close(fd);
+
+    if (!opt_silent) {
+        printf("%s: done\n", __func__);
+    }
+
+    return rc;
+}
 
 int main(int argc, char **argv)
 {
@@ -875,6 +1203,13 @@ int main(int argc, char **argv)
         rc = writev_test(opt_repeat, opt_msgsize, opt_variable);
     } else if (strcmp(test_name, "readv") == 0) {
         rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
+    } else if (strcmp(test_name, "send_msg") == 0) {
+        rc = send_msg_test(opt_repeat, opt_msgsize, opt_variable);
+    } else if (strcmp(test_name, "mref_ut_leaf") == 0) {
+        rc = memref_ut(mref_ut_leaf_name, opt_repeat, opt_msgsize, opt_variable);
+    } else if (strcmp(test_name, "mref_ut_proxy") == 0) {
+        rc = memref_ut(mref_ut_proxy_name, opt_repeat, opt_msgsize,
+                       opt_variable);
     } else {
         fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
         print_usage_and_exit(argv[0], EXIT_FAILURE, true);
