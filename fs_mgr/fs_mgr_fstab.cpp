@@ -404,7 +404,7 @@ bool is_dt_compatible() {
     return false;
 }
 
-struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
+static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
 {
     int cnt, entries;
     ssize_t len;
@@ -540,6 +540,39 @@ err:
     return NULL;
 }
 
+/* merges fstab entries from b into a and then returns a.
+ * it will destroy both input a and b if the merge fails. */
+static struct fstab *in_place_merge(struct fstab *a, struct fstab *b)
+{
+    if (!a) return b;
+    if (!b) return a;
+
+    int total_entries = a->num_entries + b->num_entries;
+    a->recs = static_cast<struct fstab_rec *>(realloc(
+        a->recs, total_entries * (sizeof(struct fstab_rec))));
+    if (!a->recs) {
+        LERROR << __FUNCTION__ << "(): failed to allocate fstab recs";
+        // If realloc() fails the original block is left untouched;
+        // it is not freed or moved. So we have to free both a and b here.
+        fs_mgr_free_fstab(a);
+        fs_mgr_free_fstab(b);
+        return nullptr;
+    }
+
+    for (int i = a->num_entries, j = 0; i < total_entries; i++, j++) {
+        // copy the pointer *without* strdup
+        a->recs[i] = b->recs[j];
+    }
+
+    // Frees up b, but don't free b->recs[X] to make sure they are
+    // accessible through a->recs[X].
+    free(b->fstab_filename);
+    free(b);
+
+    a->num_entries = total_entries;
+    return a;
+}
+
 struct fstab *fs_mgr_read_fstab(const char *fstab_path)
 {
     FILE *fstab_file;
@@ -584,56 +617,31 @@ struct fstab *fs_mgr_read_fstab_dt()
 }
 
 /* combines fstab entries passed in from device tree with
+ * the ones found from fstab_path
+ */
+struct fstab *fs_mgr_read_fstab_with_dt(const char *fstab_path)
+{
+    struct fstab *fstab_dt = fs_mgr_read_fstab_dt();
+    struct fstab *fstab = fs_mgr_read_fstab(fstab_path);
+
+    return in_place_merge(fstab_dt, fstab);
+}
+
+/* combines fstab entries passed in from device tree with
  * the ones found in /fstab.<hardware>
  */
 struct fstab *fs_mgr_read_fstab_default()
 {
-    struct fstab *fstab = fs_mgr_read_fstab_dt();
+    const char *fstab_path = nullptr;
+
     std::string hw;
-    if (!fs_mgr_get_boot_config("hardware", &hw)) {
-        // if we fail to find this, return whatever was found in device tree
-        LWARNING << "failed to find device hardware name";
-        return fstab;
-    }
-
-    std::string default_fstab = FSTAB_PREFIX + hw;
-    struct fstab *f = fs_mgr_read_fstab(default_fstab.c_str());
-    if (!f) {
-        // return what we have
-        LWARNING << "failed to read fstab entries from '" << default_fstab << "'";
-        return fstab;
-    }
-
-    // return the fstab read from file if device tree doesn't
-    // have one, other wise merge the two
-    if (!fstab) {
-        fstab = f;
+    if (fs_mgr_get_boot_config("hardware", &hw)) {
+        fstab_path = (FSTAB_PREFIX + hw).c_str();
     } else {
-        int total_entries = fstab->num_entries + f->num_entries;
-        fstab->recs = static_cast<struct fstab_rec *>(realloc(
-                        fstab->recs, total_entries * (sizeof(struct fstab_rec))));
-        if (!fstab->recs) {
-            LERROR << "failed to allocate fstab recs";
-            fstab->num_entries = 0;
-            fs_mgr_free_fstab(fstab);
-            return NULL;
-        }
-
-        for (int i = fstab->num_entries, j = 0; i < total_entries; i++, j++) {
-            // copy everything and *not* strdup
-            fstab->recs[i] = f->recs[j];
-        }
-
-        // free up fstab entries read from file, but don't cleanup
-        // the strings within f->recs[X] to make sure they are accessible
-        // through fstab->recs[X].
-        free(f->fstab_filename);
-        free(f);
-
-        fstab->num_entries = total_entries;
+        LWARNING << "failed to find device hardware name";
     }
 
-    return fstab;
+    return fs_mgr_read_fstab_with_dt(fstab_path);
 }
 
 void fs_mgr_free_fstab(struct fstab *fstab)
