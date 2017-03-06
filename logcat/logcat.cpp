@@ -91,15 +91,15 @@ struct android_logcat_context_internal {
     int printBinary;
     int devCount;  // >1 means multiple
     pcrecpp::RE* regex;
+    log_device_t* devices;
+    EventTagMap* eventTagMap;
     // 0 means "infinite"
     size_t maxCount;
     size_t printCount;
+
     bool printItAnyways;
     bool debug;
-
-    // static variables
     bool hasOpenedEventTagMap;
-    EventTagMap* eventTagMap;
 };
 
 // Creates a context associated with this logcat instance
@@ -738,7 +738,6 @@ static int __logcat(android_logcat_context_internal* context) {
     const char* setId = nullptr;
     int mode = ANDROID_LOG_RDONLY;
     std::string forceFilters;
-    log_device_t* devices = nullptr;
     log_device_t* dev;
     struct logger_list* logger_list;
     size_t tail_lines = 0;
@@ -1117,7 +1116,7 @@ static int __logcat(android_logcat_context_internal* context) {
                     if (!(idMask & (1 << i))) continue;
 
                     bool found = false;
-                    for (dev = devices; dev; dev = dev->next) {
+                    for (dev = context->devices; dev; dev = dev->next) {
                         if (!strcmp(name, dev->device)) {
                             found = true;
                             break;
@@ -1134,7 +1133,7 @@ static int __logcat(android_logcat_context_internal* context) {
                         dev->next = d;
                         dev = d;
                     } else {
-                        devices = dev = d;
+                        context->devices = dev = d;
                     }
                     context->devCount++;
                 }
@@ -1287,8 +1286,8 @@ static int __logcat(android_logcat_context_internal* context) {
         context->printItAnyways = false;
     }
 
-    if (!devices) {
-        dev = devices = new log_device_t("main", false);
+    if (!context->devices) {
+        dev = context->devices = new log_device_t("main", false);
         context->devCount = 1;
         if (android_name_to_log_id("system") == LOG_ID_SYSTEM) {
             dev = dev->next = new log_device_t("system", false);
@@ -1384,7 +1383,7 @@ static int __logcat(android_logcat_context_internal* context) {
         }
     }
 
-    dev = devices;
+    dev = context->devices;
     if (tail_time != log_time::EPOCH) {
         logger_list = android_logger_list_alloc_time(mode, tail_time, pid);
     } else {
@@ -1595,7 +1594,7 @@ static int __logcat(android_logcat_context_internal* context) {
         }
 
         log_device_t* d;
-        for (d = devices; d; d = d->next) {
+        for (d = context->devices; d; d = d->next) {
             if (android_name_to_log_id(d->device) == log_msg.id()) break;
         }
         if (!d) {
@@ -1617,6 +1616,10 @@ static int __logcat(android_logcat_context_internal* context) {
     }
 
 close:
+    while (!!(dev = context->devices)) {
+        context->devices = dev->next;
+        delete dev;
+    }
     android_logger_list_free(logger_list);
 
 exit:
@@ -1789,6 +1792,19 @@ int android_logcat_destroy(android_logcat_context* ctx) {
     }
 
     android_closeEventTagMap(context->eventTagMap);
+
+    log_device_t* dev;
+    while (!!(dev = context->devices)) {
+        struct logger_list* logger_list = dev->logger_list;
+        if (logger_list) {
+            for (log_device_t* d = dev; d; d = d->next) {
+                if (d->logger_list == logger_list) d->logger_list = nullptr;
+            }
+            android_logger_list_free(logger_list);
+        }
+        context->devices = dev->next;
+        delete dev;
+    }
 
     int retval = context->retval;
 
