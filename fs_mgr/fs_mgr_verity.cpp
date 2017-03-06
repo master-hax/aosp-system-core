@@ -30,6 +30,7 @@
 #include <unistd.h>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <crypto_utils/android_pubkey.h>
@@ -873,6 +874,12 @@ int fs_mgr_setup_verity(struct fstab_rec *fstab, bool wait_for_verity_dev)
 
     // read verity metadata
     if (fec_verity_get_metadata(f, &verity) < 0) {
+        // Allow verity disabled when the device is unlocked without metadata
+        if ("orange" == android::base::GetProperty("ro.boot.verifiedbootstate", "")) {
+            retval = FS_MGR_SETUP_VERITY_DISABLED;
+            LWARNING << "Allow invalid metadata when the device is unlocked";
+            goto out;
+        }
         PERROR << "Failed to get verity metadata '" << fstab->blk_device << "'";
         goto out;
     }
