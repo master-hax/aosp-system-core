@@ -636,6 +636,10 @@ struct fstab *fs_mgr_read_fstab_default()
 
     std::string hw;
     if (fs_mgr_get_boot_config("hardware", &hw)) {
+        for (std::string prefix : {"/odm/fstab.","/vendor/fstab.", "/fstab."}) {
+            fstab_path = (prefix + hw).c_str();
+            if (access(fstab_path, F_OK) == 0) break;
+        }
         fstab_path = (FSTAB_PREFIX + hw).c_str();
     } else {
         LWARNING << "failed to find device hardware name";
