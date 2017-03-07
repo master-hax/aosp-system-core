@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<storage type="ufs" >
+  <volume disk_guid="f91a098d-c3db-47ee-a4e1-ffcf432c1977" >
+    <partition label="v0p0" size_in_kb="1024" type="e213c3f0-a901-4351-baf6-404fbe9fbe3a" bootable="false" readonly="false" />
+  </volume>
+
+  <volume type="gpt" disk_guid="f80dfb18-9a0c-405a-99c3-be3950f92517" >
+    <partition label="v1p0" size_in_kb="1" type="b3bb9113-60b5-4c6c-bd46-2c7025294422" bootable="false" readonly="true" group="group1" />
+    <partition label="v1p1" size_in_kb="2048" type="b6eb6159-10ea-45f4-baaf-37d16aff7db5" bootable="true" readonly="false" erase-block-align="true" />
+    <partition label="v1pad" size_in_kb="0" type="00000000-0000-0000-0000-000000000000" extend="true" />
+  </volume>
+
+  <volume lun="5" type="gpt" >
+    <partition label="v5p0" size_in_kb="1234" type="b8fd47d5-598a-4abd-bfab-c8cf81b53339" filename="v5p0.img"/>
+    <partition label="v5p1" size_in_kb="2048" type="18c08f94-12ba-4159-bb8a-b4b15f01be67" filename="v5p1.img" group="group2"/>
+  </volume>
+
+  <volume>
+    <partition label="v6p0" size_in_kb="1024" type="79185d84-84b8-46a6-ba35-c857242ff917" />
+  </volume>
+</storage>

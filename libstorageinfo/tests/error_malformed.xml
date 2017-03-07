@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<storage type="ufs" >
+  <volume label="v0p0" disk_guid="f91a098d-c3db-47ee-a4e1-ffcf432c1977" >
+    <partition size_in_kb="1024" type="e213c3f0-a901-4351-baf6-404fbe9fbe3a" bootable="false" readonly="false" />
+    <!-- bad volume inside volume -->
+    <volume>
+      <partition label="v1p0" size_in_kb="1024" type="67b74746-dc82-46d3-9da5-1fad8c4ff303" bootable="false" readonly="false" />
+    </volume>
+  </volume>
+</storage>
