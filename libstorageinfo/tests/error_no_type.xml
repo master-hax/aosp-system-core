@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<storage type="ufs" >
+    <volume disk_guid="f91a098d-c3db-47ee-a4e1-ffcf432c1977" >
+      <partition label="v0p0" size_in_kb="1024" bootable="false" readonly="false" />
+    </volume>
+</storage>
