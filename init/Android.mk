@@ -119,10 +119,13 @@ LOCAL_REQUIRED_MODULES += \
     mapping_sepolicy.cil \
     nonplat_sepolicy.cil \
     plat_sepolicy.cil \
-    secilc
+    secilc \
+    nonplat_file_contexts \
+    plat_file_contexts
 else
 # Use monolithic SELinux policy
-LOCAL_REQUIRED_MODULES += sepolicy
+LOCAL_REQUIRED_MODULES += sepolicy \
+    file_contexts.bin
 endif
 
 # Create symlinks.
