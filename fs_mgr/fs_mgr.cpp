@@ -564,7 +564,9 @@ static int mount_with_alternatives(struct fstab *fstab, int start_idx, int *end_
             } else {
                 fs_stat |= FS_STAT_FULL_MOUNT_FAILED;
                 /* back up errno for crypto decisions */
-                mount_errno = errno;
+                if (i == start_idx) {
+                    mount_errno = errno;
+                }
             }
             log_fs_stat(fstab->recs[i].blk_device, fs_stat);
     }
