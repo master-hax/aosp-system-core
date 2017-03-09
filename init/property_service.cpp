@@ -62,7 +62,6 @@
 using android::base::StringPrintf;
 
 #define PERSISTENT_PROPERTY_DIR  "/data/property"
-#define FSTAB_PREFIX "/fstab."
 #define RECOVERY_MOUNT_POINT "/recovery"
 
 static int persistent_properties_loaded = 0;
@@ -613,17 +612,9 @@ void load_persist_props(void) {
 }
 
 void load_recovery_id_prop() {
-    std::string ro_hardware = property_get("ro.hardware");
-    if (ro_hardware.empty()) {
-        LOG(ERROR) << "ro.hardware not set - unable to load recovery id";
-        return;
-    }
-    std::string fstab_filename = FSTAB_PREFIX + ro_hardware;
-
-    std::unique_ptr<fstab, void(*)(fstab*)> tab(fs_mgr_read_fstab(fstab_filename.c_str()),
-                                                fs_mgr_free_fstab);
+    std::unique_ptr<fstab, void (*)(fstab*)> tab(fs_mgr_read_fstab_default(), fs_mgr_free_fstab);
     if (!tab) {
-        PLOG(ERROR) << "unable to read fstab " << fstab_filename;
+        PLOG(ERROR) << "unable to read default fstab";
         return;
     }
 
