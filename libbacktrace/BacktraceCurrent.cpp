@@ -95,11 +95,26 @@ bool BacktraceCurrent::DiscardFrame(const backtrace_frame_data_t& frame) {
 
 static pthread_mutex_t g_sigaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+class ErrnoRestorer {
+ public:
+  explicit ErrnoRestorer() : saved_errno_(errno) {}
+  ~ErrnoRestorer() {
+    errno = saved_errno_;
+  }
+
+ private:
+  int saved_errno_;
+};
+
 static void SignalLogOnly(int, siginfo_t*, void*) {
+  ErrnoRestorer restore;
+
   BACK_LOGE("pid %d, tid %d: Received a spurious signal %d\n", getpid(), gettid(), THREAD_SIGNAL);
 }
 
 static void SignalHandler(int, siginfo_t*, void* sigcontext) {
+  ErrnoRestorer restore;
+
   ThreadEntry* entry = ThreadEntry::Get(getpid(), gettid(), false);
   if (!entry) {
     BACK_LOGE("pid %d, tid %d entry not found", getpid(), gettid());
