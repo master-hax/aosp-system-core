@@ -48,6 +48,7 @@
 #include <cutils/iosched_policy.h>
 #include <cutils/list.h>
 #include <cutils/sockets.h>
+#include <debuggerd/handler.h>
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 
@@ -1041,6 +1042,21 @@ int main(int argc, char** argv) {
     }
 
     boot_clock::time_point start_time = boot_clock::now();
+
+    // Explicitly fork() so if init crashes we can allow the crash handler to execute and
+    // reboot into the bootloader, instead of having the kernel panic.
+    pid_t pid = fork();
+    if (pid < 0) {
+        panic();
+    } else if (pid > 0) {
+        // waitpid() should never return.  If it does, it's either due to an error, which
+        // should never happen, or because init crashed.  Either are catastrophic, therefore
+        // panic().
+        TEMP_FAILURE_RETRY(waitpid(pid, nullptr, 0));
+        panic();
+    }
+
+    debuggerd_init(nullptr);
 
     // Clear the umask.
     umask(0);

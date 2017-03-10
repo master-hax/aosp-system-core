@@ -105,7 +105,8 @@ LOCAL_STATIC_LIBRARIES := \
     libz \
     libprocessgroup \
     libnl \
-    libavb
+    libavb \
+    libdebuggerd_handler \
 
 # Include SELinux policy. We do this here because different modules
 # need to be included based on the value of PRODUCT_FULL_TREBLE. This
