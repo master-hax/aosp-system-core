@@ -108,6 +108,10 @@ LOCAL_STATIC_LIBRARIES := \
     libnl \
     libavb
 
+ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+    LOCAL_CFLAGS += -DREBOOT_BOOTLOADER_ON_PANIC=1
+endif
+
 # Include SELinux policy. We do this here because different modules
 # need to be included based on the value of PRODUCT_FULL_TREBLE. This
 # type of conditional inclusion cannot be done in top-level files such
