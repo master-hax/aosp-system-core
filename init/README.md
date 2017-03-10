@@ -279,6 +279,9 @@ Commands
   currently running, without disabling them. They can be restarted
   later using `class_start`.
 
+`class_restart <serviceclass>`
+> Like class_stop but doesn't disable the services.
+
 `copy <src> <dst>`
 > Copies a file. Similar to write, but useful for binary/large
   amounts of data.
