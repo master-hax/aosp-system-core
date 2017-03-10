@@ -15,6 +15,7 @@
  */
 
 #define __STDC_LIMIT_MACROS
+#include <ctype.h> // for tolower, toupper
 #include <stdint.h>
 
 #include <utils/String8.h>

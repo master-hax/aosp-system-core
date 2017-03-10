@@ -17,8 +17,6 @@
 #ifndef ANDROID_STRING16_H
 #define ANDROID_STRING16_H
 
-#include <string> // for std::string
-
 #include <utils/Errors.h>
 #include <utils/String8.h>
 #include <utils/TypeHelpers.h>
@@ -67,7 +65,6 @@ public:
 
     inline  const char16_t*     string() const;
 
-    static inline std::string   std_string(const String16& str);
             size_t              size() const;
             void                setTo(const String16& other);
             status_t            setTo(const char16_t* other);
@@ -145,11 +142,6 @@ inline int strictly_order_type(const String16& lhs, const String16& rhs)
 inline const char16_t* String16::string() const
 {
     return mString;
-}
-
-inline std::string String16::std_string(const String16& str)
-{
-    return std::string(String8(str).string());
 }
 
 inline String16& String16::operator=(const String16& other)
