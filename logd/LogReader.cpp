@@ -116,27 +116,46 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         nonBlock = true;
     }
 
-    uint64_t sequence = 1;
-    // Convert realtime to sequence number
+    log_time sequence = log_time::EPOCH;
+    // Find if time is really present in the logs, monotonic or real, implicit
+    // conversion from monotonic or real as necessary to perform the check.
+    // Exit ASAP as you find a transition from older to newer, but use the
+    // last entry found to ensure overlap as this is an API requirement.
+    //
+    // This somewhat expensive data validation operation is required for the
+    // following reasons:
+    //
+    // 1) On non-blocking reads if time is older than anything on the list,
+    //    we return immediately and close the socket.
+    // 2) On non-blocking reads if time is newer than anything on the list,
+    //    we have to start at the last entry recorded to report an overlap.
+    // 3) On blocking reads, if the time is older than anything on the list,
+    //    we want to use the oldest entry discovered as our starting point.
+    //    Especially if to trigger a wakeup on wrap.
+    // 4) on blocking reads, if the time is newer than anything on the list,
+    //    we want to report the last and overlaping entry, or use the current
+    //    time as our watermark, especially to trigger a wakeup on wrap.
+    //
     if (start != log_time::EPOCH) {
-        class LogFindStart {
+        class LogFindStart {  // A lambda by another name
+           private:
             const pid_t mPid;
             const unsigned mLogMask;
             bool startTimeSet;
             log_time& start;
-            uint64_t& sequence;
-            uint64_t last;
+            log_time& sequence;
+            log_time mLast;
             bool isMonotonic;
 
            public:
             LogFindStart(unsigned logMask, pid_t pid, log_time& start,
-                         uint64_t& sequence, bool isMonotonic)
+                         log_time& sequence, bool isMonotonic)
                 : mPid(pid),
                   mLogMask(logMask),
                   startTimeSet(false),
                   start(start),
                   sequence(sequence),
-                  last(sequence),
+                  mLast(sequence),
                   isMonotonic(isMonotonic) {
             }
 
@@ -144,20 +163,20 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
                 LogFindStart* me = reinterpret_cast<LogFindStart*>(obj);
                 if ((!me->mPid || (me->mPid == element->getPid())) &&
                     (me->mLogMask & (1 << element->getLogId()))) {
-                    if (me->start == element->getRealTime()) {
-                        me->sequence = element->getSequence();
+                    log_time real = element->getRealTime();
+                    if (me->start == real) {
+                        me->sequence = real;
                         me->startTimeSet = true;
                         return -1;
-                    } else if (!me->isMonotonic ||
-                               android::isMonotonic(element->getRealTime())) {
-                        if (me->start < element->getRealTime()) {
-                            me->sequence = me->last;
+                    } else if (!me->isMonotonic || android::isMonotonic(real)) {
+                        if (me->start < real) {
+                            me->sequence = me->mLast;
                             me->startTimeSet = true;
                             return -1;
                         }
-                        me->last = element->getSequence();
+                        me->mLast = real;
                     } else {
-                        me->last = element->getSequence();
+                        me->mLast = real;
                     }
                 }
                 return false;
@@ -166,6 +185,11 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
             bool found() {
                 return startTimeSet;
             }
+
+            log_time last() {
+                return mLast;
+            }
+
         } logFindStart(logMask, pid, start, sequence,
                        logbuf().isMonotonic() && android::isMonotonic(start));
 
@@ -178,7 +202,10 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
                 doSocketDelete(cli);
                 return false;
             }
-            sequence = LogBufferElement::getCurrentSequence();
+            sequence = logFindStart.last();
+            if (sequence == log_time::EPOCH) {
+                sequence = log_time(android_log_clockid());
+            }
         }
     }
 
