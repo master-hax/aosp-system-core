@@ -17,8 +17,6 @@
 #ifndef ANDROID_STRING8_H
 #define ANDROID_STRING8_H
 
-#include <string> // for std::string
-
 #include <utils/Errors.h>
 #include <utils/Unicode.h>
 #include <utils/TypeHelpers.h>
@@ -66,11 +64,6 @@ public:
 
     inline  const char*         c_str() const;
     inline  const char*         string() const;
-
-// TODO(b/35363681): remove
-private:
-    static inline std::string   std_string(const String8& str);
-public:
 
     inline  size_t              size() const;
     inline  size_t              bytes() const;
@@ -269,14 +262,10 @@ inline const char* String8::c_str() const
 {
     return mString;
 }
+
 inline const char* String8::string() const
 {
     return mString;
-}
-
-inline std::string String8::std_string(const String8& str)
-{
-    return std::string(str.string());
 }
 
 inline size_t String8::size() const
