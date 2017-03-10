@@ -279,6 +279,9 @@ Commands
   currently running, without disabling them. They can be restarted
   later using `class_start`.
 
+`class_restart <serviceclass>`
+> Restarts all services of the specified class.
+
 `copy <src> <dst>`
 > Copies a file. Similar to write, but useful for binary/large
   amounts of data.
@@ -358,7 +361,8 @@ Commands
   "sys.powerctl" system property, used to implement rebooting.
 
 `restart <service>`
-> Like stop, but doesn't disable the service.
+> Resets and starts a service if it is running or restarting. If a service is
+  not running, this will just start the service.
 
 `restorecon <path> [ <path>\* ]`
 > Restore the file named by _path_ to the security context specified
