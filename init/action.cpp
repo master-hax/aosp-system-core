@@ -31,10 +31,9 @@
 using android::base::Join;
 using android::base::StringPrintf;
 
-Command::Command(BuiltinFunction f, const std::vector<std::string>& args,
-                 const std::string& filename, int line)
-    : func_(f), args_(args), filename_(filename), line_(line) {
-}
+Command::Command(BuiltinFunction f, std::vector<std::string>&& args, const std::string&& filename,
+                 int line)
+    : func_(f), args_(std::move(args)), filename_(std::move(filename)), line_(line) {}
 
 int Command::InvokeFunc() const {
     std::vector<std::string> expanded_args;
@@ -67,8 +66,8 @@ Action::Action(bool oneshot) : oneshot_(oneshot) {
 
 const KeywordMap<BuiltinFunction>* Action::function_map_ = nullptr;
 
-bool Action::AddCommand(const std::vector<std::string>& args,
-                        const std::string& filename, int line, std::string* err) {
+bool Action::AddCommand(std::vector<std::string>&& args, const std::string&& filename, int line,
+                        std::string* err) {
     if (!function_map_) {
         *err = "no function map available";
         return false;
@@ -84,14 +83,13 @@ bool Action::AddCommand(const std::vector<std::string>& args,
         return false;
     }
 
-    AddCommand(function, args, filename, line);
+    AddCommand(function, std::move(args), std::move(filename), line);
     return true;
 }
 
-void Action::AddCommand(BuiltinFunction f,
-                        const std::vector<std::string>& args,
-                        const std::string& filename, int line) {
-    commands_.emplace_back(f, args, filename, line);
+void Action::AddCommand(BuiltinFunction f, std::vector<std::string>&& args,
+                        const std::string&& filename, int line) {
+    commands_.emplace_back(f, std::move(args), std::move(filename), line);
 }
 
 void Action::CombineAction(const Action& action) {
@@ -154,15 +152,15 @@ bool Action::ParsePropertyTrigger(const std::string& trigger, std::string* err) 
     return true;
 }
 
-bool Action::InitTriggers(const std::vector<std::string>& args, std::string* err) {
+bool Action::InitTriggers(std::vector<std::string>&& args, std::string* err) {
     const static std::string prop_str("property:");
-    for (std::size_t i = 0; i < args.size(); ++i) {
+    for (std::size_t i = 1; i < args.size(); ++i) {
         if (args[i].empty()) {
             *err = "empty trigger is not valid";
             return false;
         }
 
-        if (i % 2) {
+        if (i % 2 == 0) {
             if (args[i] != "&&") {
                 *err = "&& is the only symbol allowed to concatenate actions";
                 return false;
@@ -181,7 +179,7 @@ bool Action::InitTriggers(const std::vector<std::string>& args, std::string* err
                 return false;
             }
 
-            event_trigger_ = args[i];
+            event_trigger_ = std::move(args[i]);
         }
     }
 
@@ -189,9 +187,8 @@ bool Action::InitTriggers(const std::vector<std::string>& args, std::string* err
 }
 
 bool Action::InitSingleTrigger(const std::string& trigger) {
-    std::vector<std::string> name_vector{trigger};
     std::string err;
-    bool ret = InitTriggers(name_vector, &err);
+    bool ret = InitTriggers(std::vector<std::string>{"", trigger}, &err);
     if (!ret) {
         LOG(ERROR) << "InitSingleTrigger failed due to: " << err;
     }
@@ -348,13 +345,12 @@ void ActionManager::QueueAllPropertyTriggers() {
 void ActionManager::QueueBuiltinAction(BuiltinFunction func,
                                        const std::string& name) {
     auto action = std::make_unique<Action>(true);
-    std::vector<std::string> name_vector{name};
 
     if (!action->InitSingleTrigger(name)) {
         return;
     }
 
-    action->AddCommand(func, name_vector);
+    action->AddCommand(func, std::vector<std::string>{name});
 
     trigger_queue_.push(std::make_unique<BuiltinTrigger>(action.get()));
     actions_.emplace_back(std::move(action));
@@ -410,16 +406,14 @@ void ActionManager::DumpState() const {
     }
 }
 
-bool ActionParser::ParseSection(const std::vector<std::string>& args,
-                                std::string* err) {
-    std::vector<std::string> triggers(args.begin() + 1, args.end());
-    if (triggers.size() < 1) {
+bool ActionParser::ParseSection(std::vector<std::string>&& args, std::string* err) {
+    if (args.size() < 2) {
         *err = "actions must have a trigger";
         return false;
     }
 
     auto action = std::make_unique<Action>(false);
-    if (!action->InitTriggers(triggers, err)) {
+    if (!action->InitTriggers(std::move(args), err)) {
         return false;
     }
 
@@ -427,10 +421,9 @@ bool ActionParser::ParseSection(const std::vector<std::string>& args,
     return true;
 }
 
-bool ActionParser::ParseLineSection(const std::vector<std::string>& args,
-                                    const std::string& filename, int line,
-                                    std::string* err) const {
-    return action_ ? action_->AddCommand(args, filename, line, err) : false;
+bool ActionParser::ParseLineSection(std::vector<std::string>&& args, std::string&& filename,
+                                    int line, std::string* err) const {
+    return action_ ? action_->AddCommand(std::move(args), std::move(filename), line, err) : false;
 }
 
 void ActionParser::EndSection() {

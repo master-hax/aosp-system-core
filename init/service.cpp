@@ -149,27 +149,22 @@ ServiceEnvironmentInfo::ServiceEnvironmentInfo(const std::string& name,
     : name(name), value(value) {
 }
 
-Service::Service(const std::string& name, const std::string& classname,
-                 const std::vector<std::string>& args)
-    : name_(name), classname_(classname), flags_(0), pid_(0),
-      crash_count_(0), uid_(0), gid_(0), namespace_flags_(0),
-      seclabel_(""), ioprio_class_(IoSchedClass_NONE), ioprio_pri_(0),
-      priority_(0), oom_score_adjust_(-1000), args_(args) {
+Service::Service(const std::string&& name, const std::string&& classname,
+                 std::vector<std::string>&& args)
+    : name_(std::move(name)), classname_(std::move(classname)), flags_(0), pid_(0), crash_count_(0),
+      uid_(0), gid_(0), namespace_flags_(0), seclabel_(""), ioprio_class_(IoSchedClass_NONE),
+      ioprio_pri_(0), priority_(0), oom_score_adjust_(-1000), args_(std::move(args)) {
     onrestart_.InitSingleTrigger("onrestart");
 }
 
-Service::Service(const std::string& name, const std::string& classname,
-                 unsigned flags, uid_t uid, gid_t gid,
-                 const std::vector<gid_t>& supp_gids,
-                 const CapSet& capabilities, unsigned namespace_flags,
-                 const std::string& seclabel,
-                 const std::vector<std::string>& args)
-    : name_(name), classname_(classname), flags_(flags), pid_(0),
-      crash_count_(0), uid_(uid), gid_(gid),
-      supp_gids_(supp_gids), capabilities_(capabilities),
-      namespace_flags_(namespace_flags), seclabel_(seclabel),
-      ioprio_class_(IoSchedClass_NONE), ioprio_pri_(0), priority_(0),
-      oom_score_adjust_(-1000), args_(args) {
+Service::Service(const std::string&& name, const std::string&& classname, unsigned flags, uid_t uid,
+                 gid_t gid, const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
+                 unsigned namespace_flags, const std::string& seclabel,
+                 std::vector<std::string>&& args)
+    : name_(std::move(name)), classname_(std::move(classname)), flags_(flags), pid_(0),
+      crash_count_(0), uid_(uid), gid_(gid), supp_gids_(supp_gids), capabilities_(capabilities),
+      namespace_flags_(namespace_flags), seclabel_(seclabel), ioprio_class_(IoSchedClass_NONE),
+      ioprio_pri_(0), priority_(0), oom_score_adjust_(-1000), args_(std::move(args)) {
     onrestart_.InitSingleTrigger("onrestart");
 }
 
@@ -303,7 +298,7 @@ void Service::DumpState() const {
                   [] (const auto& info) { LOG(INFO) << *info; });
 }
 
-bool Service::ParseCapabilities(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseCapabilities(std::vector<std::string>&& args, std::string* err) {
     capabilities_ = 0;
 
     if (!CapAmbientSupported()) {
@@ -333,29 +328,29 @@ bool Service::ParseCapabilities(const std::vector<std::string>& args, std::strin
     return true;
 }
 
-bool Service::ParseClass(const std::vector<std::string>& args, std::string* err) {
-    classname_ = args[1];
+bool Service::ParseClass(std::vector<std::string>&& args, std::string* err) {
+    classname_ = std::move(args[1]);
     return true;
 }
 
-bool Service::ParseConsole(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseConsole(std::vector<std::string>&& args, std::string* err) {
     flags_ |= SVC_CONSOLE;
-    console_ = args.size() > 1 ? "/dev/" + args[1] : "";
+    console_ = args.size() > 1 ? "/dev/" + std::move(args[1]) : "";
     return true;
 }
 
-bool Service::ParseCritical(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseCritical(std::vector<std::string>&& args, std::string* err) {
     flags_ |= SVC_CRITICAL;
     return true;
 }
 
-bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseDisabled(std::vector<std::string>&& args, std::string* err) {
     flags_ |= SVC_DISABLED;
     flags_ |= SVC_RC_DISABLED;
     return true;
 }
 
-bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseGroup(std::vector<std::string>&& args, std::string* err) {
     gid_ = decode_uid(args[1].c_str());
     for (std::size_t n = 2; n < args.size(); n++) {
         supp_gids_.emplace_back(decode_uid(args[n].c_str()));
@@ -363,7 +358,7 @@ bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err)
     return true;
 }
 
-bool Service::ParsePriority(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParsePriority(std::vector<std::string>&& args, std::string* err) {
     priority_ = 0;
     if (!ParseInt(args[1], &priority_,
                   static_cast<int>(ANDROID_PRIORITY_HIGHEST), // highest is negative
@@ -375,7 +370,7 @@ bool Service::ParsePriority(const std::vector<std::string>& args, std::string* e
     return true;
 }
 
-bool Service::ParseIoprio(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseIoprio(std::vector<std::string>&& args, std::string* err) {
     if (!ParseInt(args[2], &ioprio_pri_, 0, 7)) {
         *err = "priority value must be range 0 - 7";
         return false;
@@ -395,7 +390,7 @@ bool Service::ParseIoprio(const std::vector<std::string>& args, std::string* err
     return true;
 }
 
-bool Service::ParseKeycodes(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseKeycodes(std::vector<std::string>&& args, std::string* err) {
     for (std::size_t i = 1; i < args.size(); i++) {
         int code;
         if (ParseInt(args[i], &code)) {
@@ -407,18 +402,18 @@ bool Service::ParseKeycodes(const std::vector<std::string>& args, std::string* e
     return true;
 }
 
-bool Service::ParseOneshot(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseOneshot(std::vector<std::string>&& args, std::string* err) {
     flags_ |= SVC_ONESHOT;
     return true;
 }
 
-bool Service::ParseOnrestart(const std::vector<std::string>& args, std::string* err) {
-    std::vector<std::string> str_args(args.begin() + 1, args.end());
-    onrestart_.AddCommand(str_args, "", 0, err);
+bool Service::ParseOnrestart(std::vector<std::string>&& args, std::string* err) {
+    args.erase(args.begin(), args.begin() + 1);
+    onrestart_.AddCommand(std::move(args), "", 0, err);
     return true;
 }
 
-bool Service::ParseNamespace(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseNamespace(std::vector<std::string>&& args, std::string* err) {
     for (size_t i = 1; i < args.size(); i++) {
         if (args[i] == "pid") {
             namespace_flags_ |= CLONE_NEWPID;
@@ -434,7 +429,7 @@ bool Service::ParseNamespace(const std::vector<std::string>& args, std::string* 
     return true;
 }
 
-bool Service::ParseOomScoreAdjust(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseOomScoreAdjust(std::vector<std::string>&& args, std::string* err) {
     if (!ParseInt(args[1], &oom_score_adjust_, -1000, 1000)) {
         *err = "oom_score_adjust value must be in range -1000 - +1000";
         return false;
@@ -442,23 +437,24 @@ bool Service::ParseOomScoreAdjust(const std::vector<std::string>& args, std::str
     return true;
 }
 
-bool Service::ParseSeclabel(const std::vector<std::string>& args, std::string* err) {
-    seclabel_ = args[1];
+bool Service::ParseSeclabel(std::vector<std::string>&& args, std::string* err) {
+    seclabel_ = std::move(args[1]);
     return true;
 }
 
-bool Service::ParseSetenv(const std::vector<std::string>& args, std::string* err) {
-    envvars_.emplace_back(args[1], args[2]);
+bool Service::ParseSetenv(std::vector<std::string>&& args, std::string* err) {
+    envvars_.emplace_back(std::move(args[1]), std::move(args[2]));
     return true;
 }
 
 template <typename T>
-bool Service::AddDescriptor(const std::vector<std::string>& args, std::string* err) {
+bool Service::AddDescriptor(std::vector<std::string>&& args, std::string* err) {
     int perm = args.size() > 3 ? std::strtoul(args[3].c_str(), 0, 8) : -1;
     uid_t uid = args.size() > 4 ? decode_uid(args[4].c_str()) : 0;
     gid_t gid = args.size() > 5 ? decode_uid(args[5].c_str()) : 0;
-    std::string context = args.size() > 6 ? args[6] : "";
+    std::string context = args.size() > 6 ? std::move(args[6]) : "";
 
+    // TODO: more moves
     auto descriptor = std::make_unique<T>(args[1], args[2], uid, gid, perm, context);
 
     auto old =
@@ -475,16 +471,16 @@ bool Service::AddDescriptor(const std::vector<std::string>& args, std::string* e
 }
 
 // name type perm [ uid gid context ]
-bool Service::ParseSocket(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseSocket(std::vector<std::string>&& args, std::string* err) {
     if (args[2] != "dgram" && args[2] != "stream" && args[2] != "seqpacket") {
         *err = "socket type must be 'dgram', 'stream' or 'seqpacket'";
         return false;
     }
-    return AddDescriptor<SocketInfo>(args, err);
+    return AddDescriptor<SocketInfo>(std::move(args), err);
 }
 
 // name type perm [ uid gid context ]
-bool Service::ParseFile(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseFile(std::vector<std::string>&& args, std::string* err) {
     if (args[2] != "r" && args[2] != "w" && args[2] != "rw") {
         *err = "file type must be 'r', 'w' or 'rw'";
         return false;
@@ -493,16 +489,17 @@ bool Service::ParseFile(const std::vector<std::string>& args, std::string* err) 
         *err = "file name must not be relative";
         return false;
     }
-    return AddDescriptor<FileInfo>(args, err);
+    return AddDescriptor<FileInfo>(std::move(args), err);
 }
 
-bool Service::ParseUser(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseUser(std::vector<std::string>&& args, std::string* err) {
     uid_ = decode_uid(args[1].c_str());
     return true;
 }
 
-bool Service::ParseWritepid(const std::vector<std::string>& args, std::string* err) {
-    writepid_files_.assign(args.begin() + 1, args.end());
+bool Service::ParseWritepid(std::vector<std::string>&& args, std::string* err) {
+    args.erase(args.begin(), args.begin() + 1);
+    writepid_files_ = std::move(args);
     return true;
 }
 
@@ -542,7 +539,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
     return option_parsers;
 }
 
-bool Service::ParseLine(const std::vector<std::string>& args, std::string* err) {
+bool Service::ParseLine(std::vector<std::string>&& args, std::string* err) {
     if (args.empty()) {
         *err = "option needed, but not provided";
         return false;
@@ -555,7 +552,7 @@ bool Service::ParseLine(const std::vector<std::string>& args, std::string* err) 
         return false;
     }
 
-    return (this->*parser)(args, err);
+    return (this->*parser)(std::move(args), err);
 }
 
 bool Service::Start() {
@@ -867,10 +864,11 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
         }
     }
 
-    std::unique_ptr<Service> svc_p(new Service(name, "default", flags, uid, gid, supp_gids,
-                                               no_capabilities, namespace_flags, seclabel,
-                                               str_args));
+    auto svc_p =
+        std::make_unique<Service>(std::move(name), "default", flags, uid, gid, supp_gids,
+                                  no_capabilities, namespace_flags, seclabel, std::move(str_args));
     if (!svc_p) {
+        // TODO: fix str_args[0] which is now cleared after the above move
         LOG(ERROR) << "Couldn't allocate service for exec of '" << str_args[0] << "'";
         return nullptr;
     }
@@ -1003,28 +1001,26 @@ void ServiceManager::ReapAnyOutstandingChildren() {
     }
 }
 
-bool ServiceParser::ParseSection(const std::vector<std::string>& args,
-                                 std::string* err) {
+bool ServiceParser::ParseSection(std::vector<std::string>&& args, std::string* err) {
     if (args.size() < 3) {
         *err = "services must have a name and a program";
         return false;
     }
 
-    const std::string& name = args[1];
+    std::string name = std::move(args[1]);
     if (!IsValidName(name)) {
         *err = StringPrintf("invalid service name '%s'", name.c_str());
         return false;
     }
 
-    std::vector<std::string> str_args(args.begin() + 2, args.end());
-    service_ = std::make_unique<Service>(name, "default", str_args);
+    args.erase(args.begin(), args.begin() + 2);
+    service_ = std::make_unique<Service>(std::move(name), "default", std::move(args));
     return true;
 }
 
-bool ServiceParser::ParseLineSection(const std::vector<std::string>& args,
-                                     const std::string& filename, int line,
-                                     std::string* err) const {
-    return service_ ? service_->ParseLine(args, err) : false;
+bool ServiceParser::ParseLineSection(std::vector<std::string>&& args, std::string&& filename,
+                                     int line, std::string* err) const {
+    return service_ ? service_->ParseLine(std::move(args), err) : false;
 }
 
 void ServiceParser::EndSection() {

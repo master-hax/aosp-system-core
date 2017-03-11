@@ -28,12 +28,12 @@
 
 class Command {
 public:
-    Command(BuiltinFunction f, const std::vector<std::string>& args,
-            const std::string& filename, int line);
+ Command(BuiltinFunction f, std::vector<std::string>&& args, const std::string&& filename,
+         int line);
 
-    int InvokeFunc() const;
-    std::string BuildCommandString() const;
-    std::string BuildSourceString() const;
+ int InvokeFunc() const;
+ std::string BuildCommandString() const;
+ std::string BuildSourceString() const;
 
 private:
     BuiltinFunction func_;
@@ -46,13 +46,12 @@ class Action {
 public:
     explicit Action(bool oneshot = false);
 
-    bool AddCommand(const std::vector<std::string>& args,
-                    const std::string& filename, int line, std::string* err);
-    void AddCommand(BuiltinFunction f,
-                    const std::vector<std::string>& args,
-                    const std::string& filename = "", int line = 0);
+    bool AddCommand(std::vector<std::string>&& args, const std::string&& filename, int line,
+                    std::string* err);
+    void AddCommand(BuiltinFunction f, std::vector<std::string>&& args,
+                    const std::string&& filename = "", int line = 0);
     void CombineAction(const Action& action);
-    bool InitTriggers(const std::vector<std::string>& args, std::string* err);
+    bool InitTriggers(std::vector<std::string>&& args, std::string* err);
     bool InitSingleTrigger(const std::string& trigger);
     std::size_t NumCommands() const;
     void ExecuteOneCommand(std::size_t command) const;
@@ -118,10 +117,8 @@ class ActionParser : public SectionParser {
 public:
     ActionParser() : action_(nullptr) {
     }
-    bool ParseSection(const std::vector<std::string>& args,
-                      std::string* err) override;
-    bool ParseLineSection(const std::vector<std::string>& args,
-                          const std::string& filename, int line,
+    bool ParseSection(std::vector<std::string>&& args, std::string* err) override;
+    bool ParseLineSection(std::vector<std::string>&& args, std::string&& filename, int line,
                           std::string* err) const override;
     void EndSection() override;
     void EndFile(const std::string&) override {

@@ -26,10 +26,8 @@ class ImportParser : public SectionParser {
 public:
     ImportParser()  {
     }
-    bool ParseSection(const std::vector<std::string>& args,
-                      std::string* err) override;
-    bool ParseLineSection(const std::vector<std::string>& args,
-                          const std::string& filename, int line,
+    bool ParseSection(std::vector<std::string>&& args, std::string* err) override;
+    bool ParseLineSection(std::vector<std::string>&& args, std::string&& filename, int line,
                           std::string* err) const override {
         return true;
     }
