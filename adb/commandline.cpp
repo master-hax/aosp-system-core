@@ -220,6 +220,7 @@ static void help() {
         " kill-server              kill the server if it is running\n"
         " reconnect                kick connection from host side to force reconnect\n"
         " reconnect device         kick connection from device side to force reconnect\n"
+        " reconnect offline        reset offline/unauthorized devices to force reconnect\n"
         "\n"
         "environment variables:\n"
         " $ADB_TRACE\n"

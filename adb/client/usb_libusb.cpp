@@ -516,4 +516,27 @@ int usb_close(usb_handle* h) {
 void usb_kick(usb_handle* h) {
     h->Close();
 }
+
+bool usb_reset(usb_handle* h) {
+    std::unique_lock<std::mutex> lock(h->device_handle_mutex);
+    int rc = libusb_reset_device(h->device_handle);
+#if defined(__APPLE__)
+    // On darwin, libusb_reset_device() calls ResetDevice() instead of USBDeviceReEnumerate(),
+    // which produces no action on device. Another way raising adbd's attention is by setting
+    // configuration to 0. According to usb specification, this puts device in Address state.
+    if (rc == LIBUSB_ERROR_NOT_FOUND) {
+      return true;  // device has been reenumerated.
+    }
+    if (rc == 0) {
+      LOG(DEBUG) << "reset configuration";
+      libusb_release_interface(h->device_handle, h->interface);
+      int config;
+      libusb_get_configuration(h->device_handle, &config);
+      libusb_set_configuration(h->device_handle, 0);
+      libusb_set_configuration(h->device_handle, config);
+    }
+#endif
+    return rc == 0;
+}
+
 } // namespace libusb

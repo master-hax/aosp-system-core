@@ -1188,6 +1188,49 @@ class FileOperationsTest(DeviceTest):
         self.device.shell(['rm', '-f', '/data/local/tmp/adb-test-*'])
 
 
+class ReconnectTest(DeviceTest):
+    def _get_device_state(self, serialno):
+        output = subprocess.check_output(self.device.adb_cmd + ['devices'])
+        for line in output.split('\n'):
+            m = re.match('(\S+)\s+(\S+)', line)
+            if m and m.group(1) == serialno:
+                return m.group(2)
+        return None
+
+    def test_reconnect_offline(self):
+        """Test adb reconnect offline:
+
+           While running adb push with a larget file, kill adb server.
+           Occasionally the device becomes offline. Because the device is still
+           reading data without realizing that the adb server has been restarted.
+           Test if we can bring the device online by `adb reconnect offline`.
+           It should work on linux host when not using libusb.
+           http://b/32952319
+        """
+        if sys.platform.find("linux") == -1 and sys.platform.find("darwin") == -1:
+            print('This test is skipped on windows')
+            return
+        serialno = subprocess.check_output(self.device.adb_cmd + ['get-serialno']).strip()
+        # 1. Push a large file
+        with tempfile.NamedTemporaryFile() as fh:
+          subprocess.check_call(['dd', 'if=/dev/zero', 'of=' + fh.name, 'bs=1000000', 'count=100'])
+          subproc = subprocess.Popen(self.device.adb_cmd + ['push', fh.name, '/data/local/tmp'])
+          time.sleep(0.1)
+          # 2. Kill the adb server
+          subprocess.check_call(self.device.adb_cmd + ['kill-server'])
+          subproc.terminate()
+        # 3. See if the device still exist.
+        # Sleep to wait for the adb server exit.
+        time.sleep(0.5)
+        if self._get_device_state(serialno) != 'offline':
+            print("This test is skipped because the device didn't go offline")
+            return
+        # 4. See if adb reconnect offline can bring the device online.
+        subprocess.check_call(self.device.adb_cmd + ['reconnect', 'offline'])
+        time.sleep(1)
+        self.assertEqual(self._get_device_state(serialno), 'device')
+
+
 def main():
     random.seed(0)
     if len(adb.get_devices()) > 0:

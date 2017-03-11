@@ -526,6 +526,11 @@ int usb_close(usb_handle* handle) {
   return 0;
 }
 
+bool usb_reset(usb_handle* handle) {
+  // TODO
+  return false;
+}
+
 int recognized_device(usb_handle* handle) {
   if (NULL == handle)
     return 0;
