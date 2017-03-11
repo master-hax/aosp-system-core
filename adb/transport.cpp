@@ -208,6 +208,11 @@ static void read_transport_thread(void* _t) {
                 put_apacket(p);
                 break;
             }
+#if ADB_HOST
+            if (p->msg.command == 0) {
+                continue;
+            }
+#endif
         }
 
         D("%s: received remote packet, sending to transport", t->serial);
@@ -604,7 +609,7 @@ static int qual_match(const char* to_test, const char* prefix, const char* qual,
 }
 
 atransport* acquire_one_transport(TransportType type, const char* serial, bool* is_ambiguous,
-                                  std::string* error_out) {
+                                  std::string* error_out, bool accept_any_state) {
     atransport* result = nullptr;
 
     if (serial) {
@@ -668,7 +673,7 @@ atransport* acquire_one_transport(TransportType type, const char* serial, bool* 
     lock.unlock();
 
     // Don't return unauthorized devices; the caller can't do anything with them.
-    if (result && result->connection_state == kCsUnauthorized) {
+    if (result && result->connection_state == kCsUnauthorized && !accept_any_state) {
         *error_out = "device unauthorized.\n";
         char* ADB_VENDOR_KEYS = getenv("ADB_VENDOR_KEYS");
         *error_out += "This adb server's $ADB_VENDOR_KEYS is ";
@@ -680,7 +685,7 @@ atransport* acquire_one_transport(TransportType type, const char* serial, bool* 
     }
 
     // Don't return offline devices; the caller can't do anything with them.
-    if (result && result->connection_state == kCsOffline) {
+    if (result && result->connection_state == kCsOffline && !accept_any_state) {
         *error_out = "device offline";
         result = nullptr;
     }
@@ -1023,5 +1028,17 @@ std::shared_ptr<RSA> atransport::NextKey() {
     std::shared_ptr<RSA> result = keys_[0];
     keys_.pop_front();
     return result;
+}
+
+bool atransport::NeedToSendPublicKey() {
+    // Add check here because we send more than one CNXN message to device.
+    if (connection_state != kCsUnauthorized) {
+        return false;
+    }
+    if (has_send_public_key_) {
+        return false;
+    }
+    has_send_public_key_ = true;
+    return true;
 }
 #endif

@@ -419,6 +419,7 @@ int usb_read(usb_handle *handle, void* data, int len) {
   unsigned long time_out = 0;
   unsigned long read = 0;
   int err = 0;
+  int orig_len = len;
 
   D("usb_read %d", len);
   if (NULL == handle) {
@@ -427,21 +428,20 @@ int usb_read(usb_handle *handle, void* data, int len) {
     goto fail;
   }
 
-  while (len > 0) {
-    if (!AdbReadEndpointSync(handle->adb_read_pipe, data, len, &read,
-                             time_out)) {
-      D("AdbReadEndpointSync failed: %s",
-        android::base::SystemErrorCodeToString(GetLastError()).c_str());
-      err = EIO;
-      goto fail;
-    }
-    D("usb_read got: %ld, expected: %d", read, len);
+  while (len == orig_len) {
+      if (!AdbReadEndpointSync(handle->adb_read_pipe, data, len, &read, time_out)) {
+          D("AdbReadEndpointSync failed: %s",
+            android::base::SystemErrorCodeToString(GetLastError()).c_str());
+          err = EIO;
+          goto fail;
+      }
+      D("usb_read got: %ld, expected: %d", read, len);
 
-    data = (char *)data + read;
-    len -= read;
+      data = (char*)data + read;
+      len -= read;
   }
 
-  return 0;
+  return orig_len - len;
 
 fail:
   // Any failure should cause us to kick the device instead of leaving it a

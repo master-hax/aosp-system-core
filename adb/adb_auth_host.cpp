@@ -458,8 +458,10 @@ static void send_auth_publickey(atransport* t) {
 void send_auth_response(const char* token, size_t token_size, atransport* t) {
     std::shared_ptr<RSA> key = t->NextKey();
     if (key == nullptr) {
-        // No more private keys to try, send the public key.
-        send_auth_publickey(t);
+        if (t->NeedToSendPublicKey()) {
+            // No more private keys to try, send the public key.
+            send_auth_publickey(t);
+        }
         return;
     }
 
