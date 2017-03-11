@@ -137,11 +137,12 @@ static void setup_trace_mask() {
             // -1 is used for the special values "1" and "all" that enable all
             // tracing.
             adb_trace_mask = ~0;
-            return;
+            break;
         } else {
             adb_trace_mask |= 1 << flag->second;
         }
     }
+    android::base::SetMinimumLogSeverity(android::base::VERBOSE);
 }
 
 void adb_trace_init(char** argv) {
@@ -155,7 +156,7 @@ void adb_trace_init(char** argv) {
     }
 #endif
 
-#if !defined(_WIN32)
+#if ADB_HOST && !defined(_WIN32)
     // adb historically ignored $ANDROID_LOG_TAGS but passed it through to logcat.
     // If set, move it out of the way so that libbase logging doesn't try to parse it.
     std::string log_tags;
@@ -168,7 +169,7 @@ void adb_trace_init(char** argv) {
 
     android::base::InitLogging(argv, &AdbLogger);
 
-#if !defined(_WIN32)
+#if ADB_HOST && !defined(_WIN32)
     // Put $ANDROID_LOG_TAGS back so we can pass it to logcat.
     if (!log_tags.empty()) setenv("ANDROID_LOG_TAGS", log_tags.c_str(), 1);
 #endif
