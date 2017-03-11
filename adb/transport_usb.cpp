@@ -25,9 +25,80 @@
 
 #include "adb.h"
 
+#if ADB_HOST
+
+static const size_t MaxUsbBulkPacketSize = 1024u;
+
+static int UsbReadMessage(usb_handle* h, amessage* msg) {
+    char buffer[MaxUsbBulkPacketSize];
+    int n = usb_read(h, buffer, sizeof(buffer));
+    if (n == sizeof(amessage)) {
+        memcpy(msg, buffer, sizeof(amessage));
+    }
+    return n;
+}
+
+static bool UsbReadUsingBuffer(usb_handle* h, char* data, size_t need_size) {
+    char buffer[MaxUsbBulkPacketSize];
+    while (need_size > 0u) {
+        if (need_size >= sizeof(buffer)) {
+            // Read directly to data.
+            size_t direct_read_size = need_size - need_size % sizeof(buffer);
+            int n = usb_read(h, data, direct_read_size);
+            if (n < 0) {
+                D("usb_read(size %zu) failed", direct_read_size);
+                return false;
+            }
+            data += n;
+            need_size -= n;
+        } else {
+            // Read indirectly using the buffer.
+            int n = usb_read(h, buffer, sizeof(buffer));
+            if (n < 0) {
+                D("usb_read(size %zu) failed", sizeof(buffer));
+                return false;
+            }
+            size_t read_size = static_cast<size_t>(n);
+            size_t copy_size = std::min(read_size, need_size);
+            D("buffer %zu bytes, read %zu bytes, copy %zu bytes", sizeof(buffer), read_size,
+              copy_size);
+            memcpy(data, buffer, copy_size);
+            data += copy_size;
+            need_size -= copy_size;
+        }
+    }
+    return true;
+}
+
+static int remote_read(apacket* p, atransport* t) {
+    int n = UsbReadMessage(t->usb, &p->msg);
+    if (n < 0) {
+        D("remote usb: read terminated (message)");
+        return -1;
+    }
+    if (static_cast<size_t>(n) != sizeof(p->msg) || check_header(p, t)) {
+        D("remote usb: check_header failed, skip it");
+        return 0;
+    }
+    if (p->msg.data_length) {
+        if (!UsbReadUsingBuffer(t->usb, p->data, p->msg.data_length)) {
+            D("remote usb: terminated (data)");
+            return -1;
+        }
+    }
+    if (check_data(p)) {
+        D("remote usb: check_data failed");
+        return -1;
+    }
+    return 0;
+}
+
+#else
+
+// TODO: also use buffered read on device.
 static int remote_read(apacket *p, atransport *t)
 {
-    if(usb_read(t->usb, &p->msg, sizeof(amessage))){
+    if (usb_read(t->usb, &p->msg, sizeof(amessage))) {
         D("remote usb: read terminated (message)");
         return -1;
     }
@@ -38,7 +109,7 @@ static int remote_read(apacket *p, atransport *t)
     }
 
     if(p->msg.data_length) {
-        if(usb_read(t->usb, p->data, p->msg.data_length)){
+        if (usb_read(t->usb, p->data, p->msg.data_length)) {
             D("remote usb: terminated (data)");
             return -1;
         }
@@ -51,17 +122,18 @@ static int remote_read(apacket *p, atransport *t)
 
     return 0;
 }
+#endif
 
 static int remote_write(apacket *p, atransport *t)
 {
     unsigned size = p->msg.data_length;
 
-    if(usb_write(t->usb, &p->msg, sizeof(amessage))) {
+    if (usb_write(t->usb, &p->msg, sizeof(amessage))) {
         D("remote usb: 1 - write terminated");
         return -1;
     }
     if(p->msg.data_length == 0) return 0;
-    if(usb_write(t->usb, &p->data, size)) {
+    if (usb_write(t->usb, &p->data, size)) {
         D("remote usb: 2 - write terminated");
         return -1;
     }
@@ -75,10 +147,7 @@ static void remote_close(atransport *t)
     t->usb = 0;
 }
 
-static void remote_kick(atransport *t)
-{
-    usb_kick(t->usb);
-}
+static void remote_kick(atransport* t) { usb_kick(t->usb); }
 
 void init_usb_transport(atransport *t, usb_handle *h, ConnectionState state)
 {
