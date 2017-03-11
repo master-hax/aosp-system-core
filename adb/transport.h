@@ -119,6 +119,7 @@ public:
     char token[TOKEN_SIZE] = {};
     size_t failed_auth_attempts = 0;
 
+    const std::string serial_name() const { return serial ? serial : "<unknown>"; }
     const std::string connection_state_name() const;
 
     void update_version(int version, size_t payload);
@@ -181,8 +182,8 @@ private:
  * is set to true and nullptr returned.
  * If no suitable transport is found, error is set and nullptr returned.
  */
-atransport* acquire_one_transport(TransportType type, const char* serial,
-                                  bool* is_ambiguous, std::string* error_out);
+atransport* acquire_one_transport(TransportType type, const char* serial, bool* is_ambiguous,
+                                  std::string* error_out, bool accept_any_state = false);
 void kick_transport(atransport* t);
 void update_transports(void);
 

@@ -1032,7 +1032,67 @@ static int SendOkay(int fd, const std::string& s) {
     SendProtocolString(fd, s);
     return 0;
 }
-#endif
+
+static bool ReconnectTransportFromOfflineState(atransport* t) {
+    // If a device stays in offline state, it means it never sends any reply message to host.
+    // One situation is the previous adb server was killed whiling sending an message, and
+    // now the device is still waiting for the message. The CNXN message sent by current adb
+    // server was received as part of the last unfinished message. However, there are almost
+    // no ways to ask the device to give up the last message except by re-enumerating the device.
+    // However, re-enumerating the device may have bad effects and is impossible on Windows AFAIK.
+    // See http://b/32952319.
+
+    // To solve this, the solution here is to first send a big message, so the device knows the
+    // last message has finished. After finishing the last message, the device begins to read new
+    // messages. Each time it reads a struct amessage, check its header. On host, we don't know
+    // which byte will be thought as the start byte of a new message. There are sizeof(amessage)
+    // possibilities: (0 - sizeof(amessage) - 1). To sync with device, we build a special CNXN
+    // message, which actually contains sizeof(amessage) CNXN messages, each tries a sync position.
+    // The detail is as below.
+
+    // 1. Send a big package to finish the last message.
+    apacket* p;
+    p = get_apacket();
+    if (p == nullptr) {
+        LOG(ERROR) << "failed to create flush message";
+        return false;
+    }
+    p->msg.command = A_CNXN;
+    p->msg.arg0 = t->get_protocol_version();
+    p->msg.arg1 = t->get_max_payload();
+    p->msg.data_length = sizeof(p->data);
+    memset(p->data, 0, sizeof(p->data));
+    send_packet(p, t);
+    // 2. Create a special CNXX message, send it on device. consider all sync situations.
+    p = get_apacket();
+    if (p == nullptr) {
+        LOG(ERROR) << "failed to create CNXX message";
+        return false;
+    }
+    amessage msg;
+    msg.command = A_CNXN;
+    msg.arg0 = t->get_protocol_version();
+    msg.arg1 = t->get_max_payload();
+    size_t sync_positions = sizeof(msg);
+    size_t pad_size = sync_positions * (sync_positions - 1);
+    size_t msg_count = sync_positions - 1;
+    CHECK_GE(sizeof(p->data), msg_count * sizeof(msg) + pad_size);
+
+    msg.data_length = msg_count * sizeof(msg) + pad_size;
+    memcpy(&p->msg, &msg, sizeof(msg));
+    memset(p->data, 0, sizeof(p->data));
+    char* addr = p->data;
+    for (size_t i = 0; i < msg_count; ++i) {
+        size_t pad = i + 1;
+        addr += pad;
+        msg.data_length -= pad + sizeof(msg);
+        memcpy(addr, &msg, sizeof(msg));
+    }
+    send_packet(p, t);
+    // 3. Send a normal CNXN message.
+    send_connect(t);
+    return true;
+}
 
 int handle_host_request(const char* service, TransportType type,
                         const char* serial, int reply_fd, asocket* s) {
@@ -1051,7 +1111,6 @@ int handle_host_request(const char* service, TransportType type,
         android::base::quick_exit(0);
     }
 
-#if ADB_HOST
     // "transport:" is used for switching transport with a specified serial number
     // "transport-usb:" is used for switching transport to the only USB transport
     // "transport-local:" is used for switching transport to the only local transport
@@ -1098,14 +1157,13 @@ int handle_host_request(const char* service, TransportType type,
         close_usb_devices([&response](const atransport* transport) {
             switch (transport->connection_state) {
                 case kCsOffline:
+                    response += "reconnecting " + transport->serial_name() + "\n";
+                    ReconnectTransportFromOfflineState(const_cast<atransport*>(transport));
+                    // Don't kick transport in offline state, because
+                    // ReconnectTransportFromOfflineState() is trying to send some packets.
+                    return false;
                 case kCsUnauthorized:
-                    response += "reconnecting ";
-                    if (transport->serial) {
-                        response += transport->serial;
-                    } else {
-                        response += "<unknown>";
-                    }
-                    response += "\n";
+                    response += "reconnecting " + transport->serial_name() + "\n";
                     return true;
                 default:
                     return false;
@@ -1129,7 +1187,6 @@ int handle_host_request(const char* service, TransportType type,
         return 0;
     }
 
-#if ADB_HOST
     if (!strcmp(service, "host-features")) {
         FeatureSet features = supported_features();
         // Abuse features to report libusb status.
@@ -1139,7 +1196,6 @@ int handle_host_request(const char* service, TransportType type,
         SendOkay(reply_fd, FeatureSetToString(features));
         return 0;
     }
-#endif
 
     // remove TCP transport
     if (!strncmp(service, "disconnect:", 11)) {
@@ -1209,15 +1265,23 @@ int handle_host_request(const char* service, TransportType type,
     }
 
     if (!strcmp(service, "reconnect")) {
-        if (s->transport != nullptr) {
-            kick_transport(s->transport);
+        std::string response;
+        atransport* t = acquire_one_transport(type, serial, nullptr, &response, true);
+        if (t != nullptr) {
+            if (t->connection_state == kCsOffline) {
+                ReconnectTransportFromOfflineState(t);
+            } else {
+                kick_transport(t);
+            }
+            response =
+                "reconnecting " + t->serial_name() + " [" + t->connection_state_name() + "]\n";
         }
-        return SendOkay(reply_fd, "done");
+        return SendOkay(reply_fd, response);
     }
-#endif // ADB_HOST
 
     int ret = handle_forward_request(service, type, serial, reply_fd);
     if (ret >= 0)
       return ret - 1;
     return -1;
 }
+#endif  // ADB_HOST

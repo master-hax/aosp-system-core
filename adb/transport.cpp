@@ -604,7 +604,7 @@ static int qual_match(const char* to_test, const char* prefix, const char* qual,
 }
 
 atransport* acquire_one_transport(TransportType type, const char* serial, bool* is_ambiguous,
-                                  std::string* error_out) {
+                                  std::string* error_out, bool accept_any_state) {
     atransport* result = nullptr;
 
     if (serial) {
@@ -668,7 +668,7 @@ atransport* acquire_one_transport(TransportType type, const char* serial, bool* 
     lock.unlock();
 
     // Don't return unauthorized devices; the caller can't do anything with them.
-    if (result && result->connection_state == kCsUnauthorized) {
+    if (result && result->connection_state == kCsUnauthorized && !accept_any_state) {
         *error_out = "device unauthorized.\n";
         char* ADB_VENDOR_KEYS = getenv("ADB_VENDOR_KEYS");
         *error_out += "This adb server's $ADB_VENDOR_KEYS is ";
@@ -680,7 +680,7 @@ atransport* acquire_one_transport(TransportType type, const char* serial, bool* 
     }
 
     // Don't return offline devices; the caller can't do anything with them.
-    if (result && result->connection_state == kCsOffline) {
+    if (result && result->connection_state == kCsOffline && !accept_any_state) {
         *error_out = "device offline";
         result = nullptr;
     }

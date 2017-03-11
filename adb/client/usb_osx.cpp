@@ -560,4 +560,5 @@ void usb_kick(usb_handle *handle) {
     std::lock_guard<std::mutex> lock_guard(g_usb_handles_mutex);
     usb_kick_locked(handle);
 }
+
 } // namespace native

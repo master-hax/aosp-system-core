@@ -516,4 +516,5 @@ int usb_close(usb_handle* h) {
 void usb_kick(usb_handle* h) {
     h->Close();
 }
+
 } // namespace libusb

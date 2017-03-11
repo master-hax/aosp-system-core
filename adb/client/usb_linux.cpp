@@ -401,7 +401,6 @@ static int usb_bulk_read(usb_handle* h, void* data, int len) {
     }
 }
 
-
 int usb_write(usb_handle *h, const void *_data, int len)
 {
     D("++ usb_write ++");
