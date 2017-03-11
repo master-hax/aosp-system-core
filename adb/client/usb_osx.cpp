@@ -520,7 +520,7 @@ int usb_read(usb_handle *handle, void *buf, int len)
     }
 
     if (kIOReturnSuccess == result)
-        return 0;
+        return numBytes;
     else {
         LOG(ERROR) << "usb_read failed with status: " << std::hex << result;
     }
@@ -560,4 +560,5 @@ void usb_kick(usb_handle *handle) {
     std::lock_guard<std::mutex> lock_guard(g_usb_handles_mutex);
     usb_kick_locked(handle);
 }
+
 } // namespace native
