@@ -151,30 +151,10 @@ static int reboot_into_recovery(const std::vector<std::string>& options) {
     reboot("recovery");
 }
 
-static void unmount_and_fsck(const struct mntent *entry) {
+static void fsck_after_umount(const struct mntent* entry) {
     if (strcmp(entry->mnt_type, "f2fs") && strcmp(entry->mnt_type, "ext4"))
         return;
-
-    /* First, lazily unmount the directory. This unmount request finishes when
-     * all processes that open a file or directory in |entry->mnt_dir| exit.
-     */
-    TEMP_FAILURE_RETRY(umount2(entry->mnt_dir, MNT_DETACH));
-
-    /* Next, kill all processes except init, kthreadd, and kthreadd's
-     * children to finish the lazy unmount. Killing all processes here is okay
-     * because this callback function is only called right before reboot().
-     * It might be cleaner to selectively kill processes that actually use
-     * |entry->mnt_dir| rather than killing all, probably by reusing a function
-     * like killProcessesWithOpenFiles() in vold/, but the selinux policy does
-     * not allow init to scan /proc/<pid> files which the utility function
-     * heavily relies on. The policy does not allow the process to execute
-     * killall/pkill binaries either. Note that some processes might
-     * automatically restart after kill(), but that is not really a problem
-     * because |entry->mnt_dir| is no longer visible to such new processes.
-     */
-    ServiceManager::GetInstance().ForEachService([] (Service* s) { s->Stop(); });
-    TEMP_FAILURE_RETRY(kill(-1, SIGKILL));
-
+    // android_reboot has killed all other processes
     // Restart Watchdogd to allow us to complete umounting and fsck
     Service *svc = ServiceManager::GetInstance().FindServiceByName("watchdogd");
     if (svc) {
@@ -695,6 +675,13 @@ static int do_stop(const std::vector<std::string>& args) {
     return 0;
 }
 
+static void shutdown_vold() {
+    const char* vdc_argv[] = {"/system/bin/vdc", "volume", "shutdown"};
+    int status;
+    android_fork_execvp_ext(arraysize(vdc_argv), (char**)vdc_argv, &status, true, LOG_KLOG, true,
+                            NULL, NULL, 0);
+}
+
 static int do_restart(const std::vector<std::string>& args) {
     Service* svc = ServiceManager::GetInstance().FindServiceByName(args[1]);
     if (!svc) {
@@ -710,7 +697,7 @@ static int do_powerctl(const std::vector<std::string>& args) {
     int len = 0;
     unsigned int cmd = 0;
     const char *reboot_target = "";
-    void (*callback_on_ro_remount)(const struct mntent*) = NULL;
+    void (*callback_on_umount)(const struct mntent*) = nullptr;
 
     if (strncmp(command, "shutdown", 8) == 0) {
         cmd = ANDROID_RB_POWEROFF;
@@ -728,7 +715,7 @@ static int do_powerctl(const std::vector<std::string>& args) {
             !strcmp(&command[len + 1], "userrequested")) {
             // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
             // Run fsck once the file system is remounted in read-only mode.
-            callback_on_ro_remount = unmount_and_fsck;
+            callback_on_umount = fsck_after_umount;
         } else if (cmd == ANDROID_RB_RESTART2) {
             reboot_target = &command[len + 1];
             // When rebooting to the bootloader notify the bootloader writing
@@ -748,28 +735,43 @@ static int do_powerctl(const std::vector<std::string>& args) {
 
     std::string timeout = property_get("ro.build.shutdown_timeout");
     unsigned int delay = 0;
+    if (!android::base::ParseUint(timeout, &delay)) {
+        delay = 3;  // force service termination by default
+    }
+    if (cmd == ANDROID_RB_THERMOFF) delay = 0;  // do not wait if it is thermal
 
-    if (android::base::ParseUint(timeout, &delay) && delay > 0) {
+    Service* voldService = ServiceManager::GetInstance().FindServiceByName("vold");
+    // optional shutdown step
+    // 1. terminate all services except vold. wait for delay to finish
+    if (delay > 0) {
+        LOG(INFO) << "terminating init services";
         Timer t;
-        // Ask all services to terminate.
-        ServiceManager::GetInstance().ForEachService(
-            [] (Service* s) { s->Terminate(); });
+        // tombstoned can write to data when other services are killed. so finish it first.
+        const char* first_to_kill[] = {"tombstoned"};
+        for (const char* name : first_to_kill) {
+            Service* s = ServiceManager::GetInstance().FindServiceByName(name);
+            if (s != nullptr) s->Stop();
+        }
+        // Ask all services to terminate except vold.
+        ServiceManager::GetInstance().ForEachService([voldService](Service* s) {
+            if (s != voldService) s->Terminate();
+        });
 
+        int service_count = 0;
         while (t.duration_s() < delay) {
             ServiceManager::GetInstance().ReapAnyOutstandingChildren();
 
-            int service_count = 0;
-            ServiceManager::GetInstance().ForEachService(
-                [&service_count] (Service* s) {
-                    // Count the number of services running.
-                    // Exclude the console as it will ignore the SIGTERM signal
-                    // and not exit.
-                    // Note: SVC_CONSOLE actually means "requires console" but
-                    // it is only used by the shell.
-                    if (s->pid() != 0 && (s->flags() & SVC_CONSOLE) == 0) {
-                        service_count++;
-                    }
-                });
+            service_count = 0;
+            ServiceManager::GetInstance().ForEachService([voldService, &service_count](Service* s) {
+                // Count the number of services running except vold.
+                // Exclude the console as it will ignore the SIGTERM signal
+                // and not exit.
+                // Note: SVC_CONSOLE actually means "requires console" but
+                // it is only used by the shell.
+                if (s != voldService && s->pid() != 0 && (s->flags() & SVC_CONSOLE) == 0) {
+                    service_count++;
+                }
+            });
 
             if (service_count == 0) {
                 // All terminable services terminated. We can exit early.
@@ -779,10 +781,27 @@ static int do_powerctl(const std::vector<std::string>& args) {
             // Wait a bit before recounting the number or running services.
             std::this_thread::sleep_for(50ms);
         }
-        LOG(VERBOSE) << "Terminating running services took " << t;
+        LOG(INFO) << "Terminating running services took " << t << " with remaining service "
+                  << service_count;
     }
 
-    return android_reboot_with_callback(cmd, 0, reboot_target, callback_on_ro_remount);
+    // minimum safety steps before restarting
+    // 2. kill all services except vold. This is for allowing vold to shutdown regardless of
+    //    other services.
+    // 3. send volume shutdown to vold and sync to flush what has been updated by vold
+    // -  Then pass to android_reboot to umount and reboot
+    if (voldService != nullptr && voldService->IsRunning() && (cmd != ANDROID_RB_THERMOFF)) {
+        ServiceManager::GetInstance().ForEachService([voldService](Service* s) {
+            if (s != voldService) s->Stop();
+        });
+        shutdown_vold();
+        voldService->Terminate();
+        sync();
+    } else {
+        LOG(INFO) << "vold not running or thermal shutdown, skipping vold shutdown";
+    }
+
+    return android_reboot_with_callback(cmd, 0, reboot_target, callback_on_umount);
 }
 
 static int do_trigger(const std::vector<std::string>& args) {
