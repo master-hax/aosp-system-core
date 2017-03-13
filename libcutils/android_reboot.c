@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <cutils/android_reboot.h>
@@ -40,6 +41,7 @@
 typedef struct {
     struct listnode list;
     struct mntent entry;
+    int is_mounted;
 } mntent_list;
 
 static bool is_block_device(const char* fsname)
@@ -47,11 +49,26 @@ static bool is_block_device(const char* fsname)
     return !strncmp(fsname, "/dev/block", 10);
 }
 
-/* Find all read+write block devices in /proc/mounts and add them to
- * |rw_entries|.
+static bool is_emulated_device(struct mntent* mentry) {
+    return !strncmp(mentry->mnt_fsname, "/data/", 6) && !strncmp(mentry->mnt_type, "sdcardfs", 8);
+}
+
+static void alloc_and_add(struct listnode* entries, struct mntent* mentry) {
+    mntent_list* item = (mntent_list*)calloc(1, sizeof(mntent_list));
+    item->entry = *mentry;
+    item->entry.mnt_fsname = strdup(mentry->mnt_fsname);
+    item->entry.mnt_dir = strdup(mentry->mnt_dir);
+    item->entry.mnt_type = strdup(mentry->mnt_type);
+    item->entry.mnt_opts = strdup(mentry->mnt_opts);
+    item->is_mounted = 1;
+    list_add_tail(entries, &item->list);
+}
+
+/* Find all read+write block devices and emulated devices in /proc/mounts
+ * and add them to correpsponding list.
  */
-static void find_rw(struct listnode* rw_entries)
-{
+static void find_partition_to_umount(struct listnode* entries_bdev_rw,
+                                     struct listnode* entries_emulated) {
     FILE* fp;
     struct mntent* mentry;
 
@@ -61,13 +78,9 @@ static void find_rw(struct listnode* rw_entries)
     }
     while ((mentry = getmntent(fp)) != NULL) {
         if (is_block_device(mentry->mnt_fsname) && hasmntopt(mentry, "rw")) {
-            mntent_list* item = (mntent_list*)calloc(1, sizeof(mntent_list));
-            item->entry = *mentry;
-            item->entry.mnt_fsname = strdup(mentry->mnt_fsname);
-            item->entry.mnt_dir = strdup(mentry->mnt_dir);
-            item->entry.mnt_type = strdup(mentry->mnt_type);
-            item->entry.mnt_opts = strdup(mentry->mnt_opts);
-            list_add_tail(rw_entries, &item->list);
+            alloc_and_add(entries_bdev_rw, mentry);
+        } else if (is_emulated_device(mentry)) {
+            alloc_and_add(entries_emulated, mentry);
         }
     }
     endmntent(fp);
@@ -87,114 +100,108 @@ static void free_entries(struct listnode* entries)
     }
 }
 
-static mntent_list* find_item(struct listnode* rw_entries, const char* fsname_to_find)
-{
+static bool umount_entries(struct listnode* entries, int max_retry, int flags) {
+    int umount_done;
+    int retry_counter = 0;
+    int r;
     struct listnode* node;
-    list_for_each(node, rw_entries) {
-        mntent_list* item = node_to_item(node, mntent_list, list);
-        if (!strcmp(item->entry.mnt_fsname, fsname_to_find)) {
-            return item;
+
+    while (1) {
+        umount_done = 1;
+        list_for_each(node, entries) {
+            mntent_list* item = node_to_item(node, mntent_list, list);
+            if (item->is_mounted) {
+                r = umount2(item->entry.mnt_dir, flags);
+                if (r == 0) {
+                    item->is_mounted = 0;
+                    KLOG_INFO(TAG, "umounted %s, flags:0x%x\n", item->entry.mnt_fsname, flags);
+                } else {
+                    umount_done = 0;
+                    KLOG_WARNING(TAG, "cannot umount %s, errno %d, flags:0x%x\n",
+                                 item->entry.mnt_fsname, errno, flags);
+                }
+            }
         }
+        if (umount_done) break;
+        retry_counter++;
+        if (retry_counter >= max_retry) break;
+        usleep(100000);
     }
-    return NULL;
+    return umount_done;
 }
 
-/* Remounting filesystems read-only is difficult when there are files
- * opened for writing or pending deletes on the filesystem.  There is
- * no way to force the remount with the mount(2) syscall.  The magic sysrq
- * 'u' command does an emergency remount read-only on all writable filesystems
- * that have a block device (i.e. not tmpfs filesystems) by calling
- * emergency_remount(), which knows how to force the remount to read-only.
- * Unfortunately, that is asynchronous, and just schedules the work and
- * returns.  The best way to determine if it is done is to read /proc/mounts
- * repeatedly until there are no more writable filesystems mounted on
- * block devices.
- */
-static void remount_ro(void (*cb_on_remount)(const struct mntent*))
-{
-    int fd, cnt;
-    FILE* fp;
-    struct mntent* mentry;
-    struct listnode* node;
+static void kill_all_other_processes() {
+    int fd;
+    int killed;
 
-    list_declare(rw_entries);
-    list_declare(ro_entries);
-
-    sync();
-    find_rw(&rw_entries);
-
-    /* Trigger the remount of the filesystems as read-only,
-     * which also marks them clean.
-     */
     fd = TEMP_FAILURE_RETRY(open("/proc/sysrq-trigger", O_WRONLY));
     if (fd < 0) {
         KLOG_WARNING(TAG, "Failed to open sysrq-trigger.\n");
-        /* TODO: Try to remount each rw parition manually in readonly mode.
-         * This may succeed if no process is using the partition.
-         */
-        goto out;
+        return;
     }
-    if (TEMP_FAILURE_RETRY(write(fd, "u", 1)) != 1) {
+    if (TEMP_FAILURE_RETRY(write(fd, "i", 1)) != 1) {
         close(fd);
         KLOG_WARNING(TAG, "Failed to write to sysrq-trigger.\n");
-        /* TODO: The same. Manually remount the paritions. */
-        goto out;
+        return;
     }
     close(fd);
 
-    /* Now poll /proc/mounts till it's done */
-    cnt = 0;
-    while (cnt < READONLY_CHECK_TIMES) {
-        if ((fp = setmntent("/proc/mounts", "r")) == NULL) {
-            /* If we can't read /proc/mounts, just give up. */
-            KLOG_WARNING(TAG, "Failed to open /proc/mounts.\n");
-            goto out;
-        }
-        while ((mentry = getmntent(fp)) != NULL) {
-            if (!is_block_device(mentry->mnt_fsname) || !hasmntopt(mentry, "ro")) {
-                continue;
-            }
-            mntent_list* item = find_item(&rw_entries, mentry->mnt_fsname);
-            if (item) {
-                /* |item| has now been ro remounted. */
-                list_remove(&item->list);
-                list_add_tail(&ro_entries, &item->list);
-            }
-        }
-        endmntent(fp);
-        if (list_empty(&rw_entries)) {
-            /* All rw block devices are now readonly. */
-            break;
-        }
-        TEMP_FAILURE_RETRY(
-            usleep(READONLY_CHECK_MS * 1000 / READONLY_CHECK_TIMES));
-        cnt++;
-    }
-
-    list_for_each(node, &rw_entries) {
-        mntent_list* item = node_to_item(node, mntent_list, list);
-        KLOG_WARNING(TAG, "Failed to remount %s in readonly mode.\n",
-                     item->entry.mnt_fsname);
-    }
-
-    if (cb_on_remount) {
-        list_for_each(node, &ro_entries) {
-            mntent_list* item = node_to_item(node, mntent_list, list);
-            cb_on_remount(&item->entry);
-        }
-    }
-
-out:
-    free_entries(&rw_entries);
-    free_entries(&ro_entries);
+    killed = 0;
+    while (waitpid(-1, NULL, WNOHANG) > 0) killed++;
+    if (killed > 0) KLOG_WARNING(TAG, "killed %d processes\n", killed);
 }
 
-int android_reboot_with_callback(
-    int cmd, int flags __unused, const char *arg,
-    void (*cb_on_remount)(const struct mntent*))
-{
+/* Try umounting all emulated file systems R/W block device cfile systems.
+ * This will just try umount and give it up if it fails.
+ * For fs like ext4, this is ok as file system will be marked as unclean shutdown
+ * and necessary check can be done at the next reboot.
+ * For safer shutdown, caller of android_reboot needs to make sure that
+ * all processes / emulated partition for the target fs are all cleaned-up.
+ */
+static void try_umount(void (*cb_on_umount)(const struct mntent*)) {
+    struct listnode* node;
+
+    list_declare(entries_emulated);
+    list_declare(entries_bdev_rw);
+
+    find_partition_to_umount(&entries_bdev_rw, &entries_emulated);
+    kill_all_other_processes();
+    sync();
+    /* Pending writes in emulated partitions can fail umount. After a few trials, detach it so
+     * that it can be umounted when all writes are done.
+     */
+    if (!umount_entries(&entries_emulated, 2, 0)) {
+        umount_entries(&entries_emulated, 1, MNT_DETACH);
+    }
+    sync();
+    /* data partition needs all pending writes to be completed and all emulated partitions
+     * umounted. If umount failed in the above step, it DETACH is requested, so umount can
+     * still happen while waiting for /data. If 5 secs waiting is not good enough, give up and
+     * leave it to e2fsck after reboot to fix it.
+     */
+    if (!umount_entries(&entries_bdev_rw, 50, 0)) {
+        /* Last resort, detach and hope it finish before shutdown. */
+        umount_entries(&entries_bdev_rw, 1, MNT_DETACH);
+    }
+    if (cb_on_umount) {
+        list_for_each(node, &entries_bdev_rw) {
+            mntent_list* item = node_to_item(node, mntent_list, list);
+            if (!item->is_mounted) cb_on_umount(&item->entry);
+        }
+    }
+
+    free_entries(&entries_emulated);
+    free_entries(&entries_bdev_rw);
+}
+
+int android_reboot_with_callback(int cmd, int flags __unused, const char* arg,
+                                 void (*cb_on_umount)(const struct mntent*)) {
     int ret;
-    remount_ro(cb_on_remount);
+
+    if (cmd !=
+        (int)ANDROID_RB_THERMOFF) {  // for thermal shutdown, just reboot. e2fsck will fix it.
+        try_umount(cb_on_umount);
+    }
     switch (cmd) {
         case ANDROID_RB_RESTART:
             ret = reboot(RB_AUTOBOOT);

@@ -68,6 +68,7 @@ public:
             unsigned namespace_flags, const std::string& seclabel,
             const std::vector<std::string>& args);
 
+    bool IsRunning() { return (flags_ & SVC_RUNNING) != 0; };
     bool ParseLine(const std::vector<std::string>& args, std::string* err);
     bool Start();
     bool StartIfNotDisabled();

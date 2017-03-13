@@ -29,10 +29,14 @@ __BEGIN_DECLS
 /* Properties */
 #define ANDROID_RB_PROPERTY "sys.powerctl"
 
+/* Reboot the system with umount of R/W file system.
+ * This should be called directly only for exceptional cases where file contents
+ * corruption is not an issue. For safer shutdown, should set ANDROID_RB_PROPERTY
+ * property rather than calling this directly.
+ */
 int android_reboot(int cmd, int flags, const char *arg);
-int android_reboot_with_callback(
-    int cmd, int flags, const char *arg,
-    void (*cb_on_remount)(const struct mntent*));
+int android_reboot_with_callback(int cmd, int flags, const char* arg,
+                                 void (*cb_on_umount)(const struct mntent*));
 
 __END_DECLS
 
