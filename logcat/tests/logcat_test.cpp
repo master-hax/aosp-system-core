@@ -210,7 +210,7 @@ static char* fgetLongTime(char* buffer, size_t buflen, FILE* fp) {
         }
         // Find PID field
         while (((ep = strchr(ep, ':'))) && (*++ep != ' ')) {
-            ;
+            if (isdigit(ep[0]) && isdigit(ep[1]) && isdigit(ep[2])) break;
         }
         if (!ep) {
             continue;
