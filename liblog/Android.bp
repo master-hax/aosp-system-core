@@ -96,6 +96,7 @@ cc_library {
         "-DSNET_EVENT_LOG_TAG=1397638484",
     ],
     logtags: ["event.logtags"],
+    shared_libs: ["libc++"],
     compile_multilib: "both",
 }
 
