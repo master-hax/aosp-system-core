@@ -40,6 +40,9 @@ liblog_target_sources = [
     "pmsg_writer.c",
     "logd_reader.c",
     "logd_writer.c",
+    // local implementations of hash and new
+    "libcxx_hash.cpp",
+    "libcxx_new.cpp",
 ]
 
 // Shared and static library for host and device
