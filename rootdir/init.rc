@@ -353,6 +353,9 @@ on post-fs-data
     # We restorecon /data in case the userdata partition has been reset.
     restorecon /data
 
+    # Start HAL services that are required to mount /data
+    class_start early_hal
+
     # Make sure we have the device encryption key.
     start vold
     installkey /data
