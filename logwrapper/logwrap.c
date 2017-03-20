@@ -469,18 +469,6 @@ err_poll:
     return rc;
 }
 
-static void child(int argc, char* argv[]) {
-    // create null terminated argv_child array
-    char* argv_child[argc + 1];
-    memcpy(argv_child, argv, argc * sizeof(char *));
-    argv_child[argc] = NULL;
-
-    if (execvp(argv_child[0], argv_child)) {
-        FATAL_CHILD("executing %s failed: %s\n", argv_child[0],
-                strerror(errno));
-    }
-}
-
 int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int_quit,
         int log_target, bool abbreviated, char *file_path,
         const struct AndroidForkExecvpOption* opts, size_t opts_len) {
@@ -489,9 +477,27 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
     int child_ptty;
     struct sigaction intact;
     struct sigaction quitact;
-    sigset_t blockset;
-    sigset_t oldset;
     int rc = 0;
+
+    // The signal mask at the point of entry into this method. Will be
+    // restored in the parent process before this method returns.
+    sigset_t oldset;
+
+    // The set of signals blocked prior to our vfork.
+    sigset_t blockset;
+
+    // The set of signals to restore in the parent after the call to vfork.
+    // This is a subset of the signals we blocked before the call to vfork;
+    // SIGINT and SIGQUIT remain blocked until the end of this method call.
+    sigset_t restoreset;
+
+    // Used by the child process. We're using vfork() so the child shares our
+    // address space so we make sure we don't write to anything on the stack
+    // or the heap. All writes to these values happen prior to the vfork.
+    bool option_input_set = false;
+    char* argv_child[argc + 1];
+    struct sigaction restore_dfl;
+    struct sigaction query;
 
     rc = pthread_mutex_lock(&fd_mutex);
     if (rc) {
@@ -500,7 +506,7 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
     }
 
     /* Use ptty instead of socketpair so that STDOUT is not buffered */
-    parent_ptty = TEMP_FAILURE_RETRY(open("/dev/ptmx", O_RDWR));
+    parent_ptty = TEMP_FAILURE_RETRY(open("/dev/ptmx", O_RDWR | O_CLOEXEC));
     if (parent_ptty < 0) {
         ERROR("Cannot create parent ptty\n");
         rc = -1;
@@ -515,43 +521,82 @@ int android_fork_execvp_ext(int argc, char* argv[], int *status, bool ignore_int
         goto err_ptty;
     }
 
-    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR));
+    child_ptty = TEMP_FAILURE_RETRY(open(child_devname, O_RDWR | O_CLOEXEC));
     if (child_ptty < 0) {
         ERROR("Cannot open child_ptty\n");
         rc = -1;
         goto err_child_ptty;
     }
 
+    for (size_t i = 0; i < opts_len; ++i) {
+        if (opts[i].opt_type == FORK_EXECVP_OPTION_INPUT) {
+            option_input_set = true;
+            break;
+        }
+    }
+
+    // We make a copy of the input args so that we can NULL terminate the array.
+    memcpy(argv_child, argv, argc * sizeof(char *));
+    argv_child[argc] = NULL;
+
+    // Set up a sigaction to restore the default handler.
+    memset(&restore_dfl, 0, sizeof(restore_dfl));
+    restore_dfl.sa_handler = SIG_DFL;
+    restore_dfl.sa_flags = 0;
+
+    // Clear out the 'query' action.
+    memset(&query, 0, sizeof(query));
+
+    // Block all signals before the vfork, we will unblock them
+    // after vfork has returned in the child. We do this because we don't
+    // want any signal handlers running in our child, since it shares its
+    // address space with us.
     sigemptyset(&blockset);
-    sigaddset(&blockset, SIGINT);
-    sigaddset(&blockset, SIGQUIT);
     pthread_sigmask(SIG_BLOCK, &blockset, &oldset);
 
-    pid = fork();
+    // Calculate the new signal mask in the parent process - this is the
+    // same as the original signal mask, but with SIGINT and SIGQUIT added
+    // to the block set.
+    restoreset = oldset;
+    sigaddset(&restoreset, SIGINT);
+    sigaddset(&restoreset, SIGQUIT);
+
+    pid = vfork();
     if (pid < 0) {
         close(child_ptty);
         ERROR("Failed to fork\n");
         rc = -1;
         goto err_fork;
     } else if (pid == 0) {
-        pthread_mutex_unlock(&fd_mutex);
-        pthread_sigmask(SIG_SETMASK, &oldset, NULL);
-        close(parent_ptty);
-
-        // redirect stdin, stdout and stderr
-        for (size_t i = 0; i < opts_len; ++i) {
-            if (opts[i].opt_type == FORK_EXECVP_OPTION_INPUT) {
-                dup2(child_ptty, 0);
-                break;
+        // Restore default handlers for all signals that aren't being ignored so
+        // that we're not calling any of the parents handlers in the child.
+        for (int i = 0; i < NSIG; ++i) {
+            sigaction(i, NULL, &query);
+            if (query.sa_handler != SIG_IGN) {
+                sigaction(i, &restore_dfl, NULL);
             }
         }
+
+        // Restore the old signal mask.
+        pthread_sigmask(SIG_SETMASK, &oldset, NULL);
+
+        // redirect stdin, stdout and stderr
+        if (option_input_set) {
+            dup2(child_ptty, 0);
+        }
+
         dup2(child_ptty, 1);
         dup2(child_ptty, 2);
+
+        if (execvp(argv_child[0], argv_child)) {
+            FATAL_CHILD("executing %s failed: %s\n", argv_child[0],
+                    strerror(errno));
+        }
+    } else {
+        pthread_sigmask(SIG_SETMASK, &restoreset, NULL);
+
         close(child_ptty);
 
-        child(argc, argv);
-    } else {
-        close(child_ptty);
         if (ignore_int_quit) {
             struct sigaction ignact;
 
