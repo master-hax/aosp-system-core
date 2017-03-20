@@ -15,5 +15,8 @@ LIBLOG_M {
 
 LIBLOG_O {
   global:
+    __android_log_buf_print; # vndk
+    __android_log_buf_write; # vndk
+    __android_log_is_debuggable; # vndk
     __android_log_is_loggable_len;
 };
