@@ -214,3 +214,24 @@ TEST(file, Dirname) {
   EXPECT_EQ(".", android::base::Dirname("sh"));
   EXPECT_EQ("/system/bin", android::base::Dirname("/system/bin/sh/"));
 }
+
+TEST(file, ReadFileToString_capacity) {
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+
+  // Because /proc reports its files as zero-length, we don't actually trust
+  // any file that claims to be zero-length. It seems like libc++ takes the
+  // argument to reserve as a lower bound and always allocates more.
+  ASSERT_TRUE(android::base::WriteStringToFile("", tf.path));
+  std::string s;
+  ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s));
+  EXPECT_EQ(0U, s.size());
+  EXPECT_LT(s.capacity(), 32U);
+
+  // For a huge file, the overhead should still be small.
+  size_t huge_size = 64 * 1024 * 1024;
+  ASSERT_TRUE(android::base::WriteStringToFile(std::string(huge_size, 'x'), tf.path));
+  ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s));
+  EXPECT_EQ(huge_size, s.size());
+  EXPECT_LT(s.capacity(), huge_size + 16);
+}
