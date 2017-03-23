@@ -141,6 +141,38 @@ static void ExpandArgs(const std::vector<std::string>& args, std::vector<char*>*
     strs->push_back(nullptr);
 }
 
+bool ParseIoprio(const std::string& ioclass_str, const std::string& ioprio_str,
+                 IoSchedClass* ioprio_class, int* ioprio_pri, std::string* err) {
+    if (!android::base::ParseInt(ioprio_str, ioprio_pri, 0, 7)) {
+        *err = "priority value must be range 0 - 7";
+        return false;
+    }
+
+    if (ioclass_str == "rt") {
+        *ioprio_class = IoSchedClass_RT;
+    } else if (ioclass_str == "be") {
+        *ioprio_class = IoSchedClass_BE;
+    } else if (ioclass_str == "idle") {
+        *ioprio_class = IoSchedClass_IDLE;
+    } else {
+        *err = "ioprio option usage: ioprio <rt|be|idle> <0-7>";
+        return false;
+    }
+    return true;
+}
+
+bool ParsePriority(const std::string& prio_str, int* prio, std::string* err) {
+    *prio = 0;
+    if (!android::base::ParseInt(prio_str, prio,
+                                 static_cast<int>(ANDROID_PRIORITY_HIGHEST),  // highest is negative
+                                 static_cast<int>(ANDROID_PRIORITY_LOWEST))) {
+        *err = StringPrintf("process priority value must be range %d - %d",
+                            ANDROID_PRIORITY_HIGHEST, ANDROID_PRIORITY_LOWEST);
+        return false;
+    }
+    return true;
+}
+
 ServiceEnvironmentInfo::ServiceEnvironmentInfo() {
 }
 
@@ -158,18 +190,27 @@ Service::Service(const std::string& name, const std::string& classname,
     onrestart_.InitSingleTrigger("onrestart");
 }
 
-Service::Service(const std::string& name, const std::string& classname,
-                 unsigned flags, uid_t uid, gid_t gid,
-                 const std::vector<gid_t>& supp_gids,
-                 const CapSet& capabilities, unsigned namespace_flags,
-                 const std::string& seclabel,
-                 const std::vector<std::string>& args)
-    : name_(name), classname_(classname), flags_(flags), pid_(0),
-      crash_count_(0), uid_(uid), gid_(gid),
-      supp_gids_(supp_gids), capabilities_(capabilities),
-      namespace_flags_(namespace_flags), seclabel_(seclabel),
-      ioprio_class_(IoSchedClass_NONE), ioprio_pri_(0), priority_(0),
-      oom_score_adjust_(-1000), args_(args) {
+Service::Service(const std::string& name, const std::string& classname, unsigned flags, uid_t uid,
+                 gid_t gid, const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
+                 unsigned namespace_flags, const std::string& seclabel,
+                 const std::vector<std::string>& args, int priority, IoSchedClass ioprio_class,
+                 int ioprio_prio)
+    : name_(name),
+      classname_(classname),
+      flags_(flags),
+      pid_(0),
+      crash_count_(0),
+      uid_(uid),
+      gid_(gid),
+      supp_gids_(supp_gids),
+      capabilities_(capabilities),
+      namespace_flags_(namespace_flags),
+      seclabel_(seclabel),
+      ioprio_class_(ioprio_class),
+      ioprio_pri_(ioprio_prio),
+      priority_(priority),
+      oom_score_adjust_(-1000),
+      args_(args) {
     onrestart_.InitSingleTrigger("onrestart");
 }
 
@@ -364,35 +405,11 @@ bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err)
 }
 
 bool Service::ParsePriority(const std::vector<std::string>& args, std::string* err) {
-    priority_ = 0;
-    if (!ParseInt(args[1], &priority_,
-                  static_cast<int>(ANDROID_PRIORITY_HIGHEST), // highest is negative
-                  static_cast<int>(ANDROID_PRIORITY_LOWEST))) {
-        *err = StringPrintf("process priority value must be range %d - %d",
-                ANDROID_PRIORITY_HIGHEST, ANDROID_PRIORITY_LOWEST);
-        return false;
-    }
-    return true;
+    return ::ParsePriority(args[1], &priority_, err);
 }
 
 bool Service::ParseIoprio(const std::vector<std::string>& args, std::string* err) {
-    if (!ParseInt(args[2], &ioprio_pri_, 0, 7)) {
-        *err = "priority value must be range 0 - 7";
-        return false;
-    }
-
-    if (args[1] == "rt") {
-        ioprio_class_ = IoSchedClass_RT;
-    } else if (args[1] == "be") {
-        ioprio_class_ = IoSchedClass_BE;
-    } else if (args[1] == "idle") {
-        ioprio_class_ = IoSchedClass_IDLE;
-    } else {
-        *err = "ioprio option usage: ioprio <rt|be|idle> <0-7>";
-        return false;
-    }
-
-    return true;
+    return ::ParseIoprio(args[1], args[2], &ioprio_class_, &ioprio_pri_, err);
 }
 
 bool Service::ParseKeycodes(const std::vector<std::string>& args, std::string* err) {
@@ -845,16 +862,27 @@ void ServiceManager::AddService(std::unique_ptr<Service> service) {
 }
 
 Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& args) {
-    // Parse the arguments: exec [SECLABEL [UID [GID]*] --] COMMAND ARGS...
+    // Parse the arguments: exec [SECLABEL [UID [GID]*] [--prio PRIO] [--ioprio IOCLASS IOPRIO]] --
+    // COMMAND ARGS...
     // SECLABEL can be a - to denote default
     std::size_t command_arg = 1;
+    std::size_t prio_arg = 0;
+    std::size_t ioprio_arg = 0;
     for (std::size_t i = 1; i < args.size(); ++i) {
         if (args[i] == "--") {
             command_arg = i + 1;
             break;
+        } else if (args[i] == "--prio") {
+            prio_arg = i + 1;
+        } else if (args[i] == "--ioprio") {
+            ioprio_arg = i + 1;
         }
     }
-    if (command_arg > 4 + NR_SVC_SUPP_GIDS) {
+    std::size_t start_arg = command_arg;
+    if (prio_arg) start_arg = std::min(prio_arg, start_arg);
+    if (ioprio_arg) start_arg = std::min(ioprio_arg, start_arg);
+
+    if (start_arg > 4 + NR_SVC_SUPP_GIDS) {
         LOG(ERROR) << "exec called with too many supplementary group ids";
         return nullptr;
     }
@@ -872,26 +900,44 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
     unsigned namespace_flags = 0;
 
     std::string seclabel = "";
-    if (command_arg > 2 && args[1] != "-") {
+    if (start_arg > 2 && args[1] != "-") {
         seclabel = args[1];
     }
     uid_t uid = 0;
-    if (command_arg > 3) {
+    if (start_arg > 3) {
         uid = decode_uid(args[2].c_str());
     }
     gid_t gid = 0;
     std::vector<gid_t> supp_gids;
-    if (command_arg > 4) {
+    if (start_arg > 4) {
         gid = decode_uid(args[3].c_str());
-        std::size_t nr_supp_gids = command_arg - 1 /* -- */ - 4 /* exec SECLABEL UID GID */;
+        std::size_t nr_supp_gids = start_arg - 1 /* -- */ - 4 /* exec SECLABEL UID GID */;
         for (size_t i = 0; i < nr_supp_gids; ++i) {
             supp_gids.push_back(decode_uid(args[4 + i].c_str()));
         }
     }
 
+    int prio = 0;
+    int ioprio_prio = 0;
+    IoSchedClass ioprio_class = IoSchedClass_NONE;
+    if (prio_arg) {
+        std::string err;
+        if (!::ParsePriority(args[prio_arg], &prio, &err)) {
+            LOG(ERROR) << err;
+            return nullptr;
+        }
+    }
+    if (ioprio_arg) {
+        std::string err;
+        if (!ParseIoprio(args[ioprio_arg], args[ioprio_arg + 1], &ioprio_class, &ioprio_prio, &err)) {
+            LOG(ERROR) << err;
+            return nullptr;
+        }
+    }
+
     std::unique_ptr<Service> svc_p(new Service(name, "default", flags, uid, gid, supp_gids,
-                                               no_capabilities, namespace_flags, seclabel,
-                                               str_args));
+                                               no_capabilities, namespace_flags, seclabel, str_args,
+                                               prio, ioprio_class, ioprio_prio));
     if (!svc_p) {
         LOG(ERROR) << "Couldn't allocate service for exec of '" << str_args[0] << "'";
         return nullptr;

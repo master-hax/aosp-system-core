@@ -65,11 +65,11 @@ public:
     Service(const std::string& name, const std::string& classname,
             const std::vector<std::string>& args);
 
-    Service(const std::string& name, const std::string& classname,
-            unsigned flags, uid_t uid, gid_t gid,
-            const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
+    Service(const std::string& name, const std::string& classname, unsigned flags, uid_t uid,
+            gid_t gid, const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
             unsigned namespace_flags, const std::string& seclabel,
-            const std::vector<std::string>& args);
+            const std::vector<std::string>& args, int priority = 0,
+            IoSchedClass ioprio_class = IoSchedClass_NONE, int ioprio_prio = 0);
 
     bool IsRunning() { return (flags_ & SVC_RUNNING) != 0; }
     bool ParseLine(const std::vector<std::string>& args, std::string* err);

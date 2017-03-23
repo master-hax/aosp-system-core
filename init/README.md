@@ -211,6 +211,10 @@ runs the service.
 > Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().
 
+`ioprio <ioclass> <ioprio>`
+> Set CFQ I/O priority of the service process. _ioclass_ has value from <rt|be|idle>,
+  and _ioprio_ has to be in range 0 to 7. Priority is set via ioprio_set().
+
 `namespace <pid|mnt>`
 > Enter a new PID or mount namespace when forking the service.
 
@@ -296,12 +300,14 @@ Commands
     on property:ro.boot.myfancyhardware=1
         enable my_fancy_service_for_my_fancy_hardware
 
-`exec [ <seclabel> [ <user> [ <group>\* ] ] ] -- <command> [ <argument>\* ]`
+`exec [ <seclabel> [ <user> [ <group>\* ] ] [--prio <prio>] [--ioprio <ioclass> <ioprio>] ] -- <command> [ <argument>\* ]`
 > Fork and execute command with the given arguments. The command starts
-  after "--" so that an optional security context, user, and supplementary
-  groups can be provided. No other commands will be run until this one
-  finishes. _seclabel_ can be a - to denote default. Properties are expanded
-  within _argument_.
+  after "--" so that an optional security context, user, supplementary
+  groups and priorities can be provided. No other commands will be run
+  until this one finishes. _seclabel_ can be a - to denote default.
+  Properties are expanded within _argument_. _prio_ is the process
+  priority range in -20 to 19, _ioclass_ has value from <rt|be|idle>,
+  and _ioprio_ has to be in range 0 to 7.
 
 `export <name> <value>`
 > Set the environment variable _name_ equal to _value_ in the
