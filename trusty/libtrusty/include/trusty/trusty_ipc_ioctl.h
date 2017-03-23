@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef _TIPC_IOCTL_H
-#define _TIPC_IOCTL_H
+#pragma once
 
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
 #define TIPC_IOC_MAGIC 'r'
 #define TIPC_IOC_CONNECT _IOW(TIPC_IOC_MAGIC, 0x80, char*)
-
-#endif
