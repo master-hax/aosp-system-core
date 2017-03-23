@@ -299,8 +299,10 @@ static void read_canned_config(char* filename)
         if (!line[0]) break;
         if (used >= allocated) {
             allocated *= 2;
-            canned_config = (struct fs_config_entry*)realloc(
+            struct fs_config_entry* r = (struct fs_config_entry*)realloc(
                 canned_config, allocated * sizeof(struct fs_config_entry));
+            if (r == NULL) die("failed to reallocate memory");
+            canned_config = r;
         }
 
         struct fs_config_entry* cc = canned_config + used;
@@ -318,8 +320,10 @@ static void read_canned_config(char* filename)
     }
     if (used >= allocated) {
         ++allocated;
-        canned_config = (struct fs_config_entry*)realloc(
+        struct fs_config_entry* r = (struct fs_config_entry*)realloc(
             canned_config, allocated * sizeof(struct fs_config_entry));
+        if (r == NULL) die("failed to reallocate memory");
+        canned_config = r;
     }
     canned_config[used].name = NULL;
 
