@@ -26,8 +26,7 @@
 #include <unistd.h>
 
 #include <log/log.h>
-
-#include "tipc_ioctl.h"
+#include <trusty/tipc.h>
 
 int tipc_connect(const char *dev_name, const char *srv_name)
 {

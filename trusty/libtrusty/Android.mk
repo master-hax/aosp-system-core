@@ -1,4 +1,4 @@
-# Copyright (C) 2015 The Android Open Source Project
+# Copyright (C) 2015-2017 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libtrusty
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := trusty.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 
 include $(BUILD_STATIC_LIBRARY)
@@ -30,6 +31,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libtrusty
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := trusty.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_SHARED_LIBRARIES := liblog
 
