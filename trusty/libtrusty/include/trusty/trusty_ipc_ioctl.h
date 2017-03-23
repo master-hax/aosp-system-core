@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _TIPC_IOCTL_H
-#define _TIPC_IOCTL_H
+#ifndef _TRUSTY_IPC_IOCTL_H
+#define _TRUSTY_IPC_IOCTL_H
 
 #include <linux/ioctl.h>
 #include <linux/types.h>
