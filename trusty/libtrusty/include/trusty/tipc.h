@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2015-2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 #ifndef _LIB_TIPC_H
 #define _LIB_TIPC_H
+
+#include <trusty/trusty_ipc_ioctl.h>
 
 #ifdef __cplusplus
 extern "C" {
