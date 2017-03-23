@@ -31,31 +31,31 @@
 
 int tipc_connect(const char *dev_name, const char *srv_name)
 {
-	int fd;
-	int rc;
+    int fd;
+    int rc;
 
-	fd = open(dev_name, O_RDWR);
-	if (fd < 0) {
-		rc = -errno;
-		ALOGE("%s: cannot open tipc device \"%s\": %s\n",
-		      __func__, dev_name, strerror(errno));
-		return rc < 0 ? rc : -1;
-	}
+    fd = open(dev_name, O_RDWR);
+    if (fd < 0) {
+        rc = -errno;
+        ALOGE("%s: cannot open tipc device \"%s\": %s\n", __func__, dev_name,
+              strerror(errno));
+        return rc < 0 ? rc : -1;
+    }
 
-	rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
-	if (rc < 0) {
-		rc = -errno;
-		ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n",
-		      __func__, srv_name, errno);
-		close(fd);
-		return rc < 0 ? rc : -1;
-	}
+    rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
+    if (rc < 0) {
+        rc = -errno;
+        ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n", __func__,
+              srv_name, errno);
+        close(fd);
+        return rc < 0 ? rc : -1;
+    }
 
-	ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
-	return fd;
+    ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
+    return fd;
 }
 
 void tipc_close(int fd)
 {
-	close(fd);
+    close(fd);
 }

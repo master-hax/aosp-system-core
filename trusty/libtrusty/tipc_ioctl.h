@@ -20,7 +20,7 @@
 #include <linux/ioctl.h>
 #include <linux/types.h>
 
-#define TIPC_IOC_MAGIC			'r'
-#define TIPC_IOC_CONNECT		_IOW(TIPC_IOC_MAGIC, 0x80, char *)
+#define TIPC_IOC_MAGIC 'r'
+#define TIPC_IOC_CONNECT _IOW(TIPC_IOC_MAGIC, 0x80, char *)
 
 #endif
