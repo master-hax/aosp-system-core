@@ -78,6 +78,7 @@ class TombstoneTest : public ::testing::Test {
     elf_set_fake_build_id("");
     siginfo_t si;
     si.si_signo = SIGABRT;
+    si.si_code = SI_KERNEL;
     ptrace_set_fake_getsiginfo(si);
   }
 
@@ -293,6 +294,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_before) {
 
   siginfo_t si;
   si.si_signo = SIGBUS;
+  si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0x1000);
   ptrace_set_fake_getsiginfo(si);
   dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
@@ -349,6 +351,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_between) {
 
   siginfo_t si;
   si.si_signo = SIGBUS;
+  si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0xa533000);
   ptrace_set_fake_getsiginfo(si);
   dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
@@ -405,6 +408,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_in_map) {
 
   siginfo_t si;
   si.si_signo = SIGBUS;
+  si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0xa534040);
   ptrace_set_fake_getsiginfo(si);
   dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
@@ -459,6 +463,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_after) {
 
   siginfo_t si;
   si.si_signo = SIGBUS;
+  si.si_code = SI_KERNEL;
 #if defined(__LP64__)
   si.si_addr = reinterpret_cast<void*>(0x12345a534040UL);
 #else
@@ -540,6 +545,7 @@ TEST_F(TombstoneTest, multiple_maps_check_signal_has_si_addr) {
 
     siginfo_t si;
     si.si_signo = i;
+    si.si_code = SI_KERNEL;
     si.si_addr = reinterpret_cast<void*>(0x1000);
     ptrace_set_fake_getsiginfo(si);
     dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
