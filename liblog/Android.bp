@@ -66,6 +66,10 @@ cc_library {
             // TODO: This is to work around b/24465209. Remove after root cause is fixed
             ldflags: ["-Wl,--hash-style=both"],
         },
+        android_x86: {
+            // TODO: This is to work around b/24465209. Remove after root cause is fixed
+            ldflags: ["-Wl,--hash-style=both"],
+        },
         windows: {
             srcs: ["uio.c"],
             enabled: true,
