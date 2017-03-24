@@ -62,15 +62,14 @@ bool SetProperty(const std::string& key, const std::string& value);
 // Waits for the system property `key` to have the value `expected_value`.
 // Times out after `relative_timeout`.
 // Returns true on success, false on timeout.
-bool WaitForProperty(const std::string& key,
-                     const std::string& expected_value,
-                     std::chrono::milliseconds relative_timeout);
+bool WaitForProperty(const std::string& key, const std::string& expected_value,
+                     const std::chrono::milliseconds relative_timeout);
 
 // Waits for the system property `key` to be created.
 // Times out after `relative_timeout`.
 // Returns true on success, false on timeout.
 bool WaitForPropertyCreation(const std::string& key,
-                             std::chrono::milliseconds relative_timeout);
+                             const std::chrono::milliseconds relative_timeout);
 
 } // namespace base
 } // namespace android
