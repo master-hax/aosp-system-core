@@ -500,40 +500,35 @@ int fs_mgr_load_vbmeta_images(struct fstab* fstab) {
         avb_slot_verify(fs_mgr_avb_ops, requested_partitions, ab_suffix.c_str(),
                         fs_mgr_vbmeta_prop.allow_verification_error, &fs_mgr_avb_verify_data);
 
-    // Only allow two verify results:
-    //   - AVB_SLOT_VERIFY_RESULT_OK.
-    //   - AVB_SLOT_VERIFY_RESULT_ERROR_VERIFICATION (for UNLOCKED state).
-    if (verify_result == AVB_SLOT_VERIFY_RESULT_ERROR_VERIFICATION) {
-        if (!fs_mgr_vbmeta_prop.allow_verification_error) {
-            LERROR << "ERROR_VERIFICATION isn't allowed";
-            goto fail;
-        }
-    } else if (verify_result != AVB_SLOT_VERIFY_RESULT_OK) {
+    // Gets HASHTREE_DISABLED flag.
+    bool hashtree_disabled = false;
+    if (!fs_mgr_avb_verify_data || !fs_mgr_avb_verify_data->vbmeta_images) {
+        goto fail;
+    }
+    AvbVBMetaImageHeader vbmeta_header;
+    avb_vbmeta_image_header_to_host_byte_order(
+        (AvbVBMetaImageHeader*)fs_mgr_avb_verify_data->vbmeta_images[0].vbmeta_data, &vbmeta_header);
+    hashtree_disabled =
+        ((AvbVBMetaImageFlags)vbmeta_header.flags & AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED);
+
+    // Allow disabling hashtree when device is unlocked and the flag is set.
+    if (fs_mgr_vbmeta_prop.allow_verification_error && hashtree_disabled) {
+        return FS_MGR_SETUP_AVB_HASHTREE_DISABLED;
+    }
+    if (verify_result != AVB_SLOT_VERIFY_RESULT_OK) {
         LERROR << "avb_slot_verify failed, result: " << verify_result;
         goto fail;
     }
-
     // Verifies vbmeta images against the digest passed from bootloader.
     if (!verify_vbmeta_images(*fs_mgr_avb_verify_data, fs_mgr_vbmeta_prop)) {
         LERROR << "verify_vbmeta_images failed";
         goto fail;
-    } else {
-        // Checks whether FLAGS_HASHTREE_DISABLED is set.
-        AvbVBMetaImageHeader vbmeta_header;
-        avb_vbmeta_image_header_to_host_byte_order(
-            (AvbVBMetaImageHeader*)fs_mgr_avb_verify_data->vbmeta_images[0].vbmeta_data,
-            &vbmeta_header);
-
-        bool hashtree_disabled =
-            ((AvbVBMetaImageFlags)vbmeta_header.flags & AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED);
-        if (hashtree_disabled) {
-            return FS_MGR_SETUP_AVB_HASHTREE_DISABLED;
-        }
     }
+    // It's possible that HASHTREE_DISABLED is set when vbmeta verification succeeds.
+    // e.g., the flag is set during build time.
+    if (hashtree_disabled) return FS_MGR_SETUP_AVB_HASHTREE_DISABLED;
 
-    if (verify_result == AVB_SLOT_VERIFY_RESULT_OK) {
-        return FS_MGR_SETUP_AVB_SUCCESS;
-    }
+    return FS_MGR_SETUP_AVB_SUCCESS;
 
 fail:
     fs_mgr_unload_vbmeta_images();
