@@ -62,15 +62,54 @@ bool SetProperty(const std::string& key, const std::string& value);
 // Waits for the system property `key` to have the value `expected_value`.
 // Times out after `relative_timeout`.
 // Returns true on success, false on timeout.
-bool WaitForProperty(const std::string& key,
-                     const std::string& expected_value,
-                     std::chrono::milliseconds relative_timeout);
+bool WaitForProperty(const std::string& key, const std::string& expected_value,
+                     std::chrono::milliseconds relative_timeout = std::chrono::milliseconds::max());
+
+template <class T>
+bool WaitForProperty(const std::string& key, const std::string& expected_value, T relative_timeout) {
+  using namespace std::chrono;
+  time_point<steady_clock, duration<long double, std::nano>> max_float =
+      time_point<steady_clock, nanoseconds>::max();
+  auto now = steady_clock::now();
+
+  milliseconds relative_timeout_ms;
+  if (max_float - relative_timeout > now) {
+    relative_timeout_ms = duration_cast<milliseconds>(relative_timeout);
+    if (relative_timeout_ms < relative_timeout) {
+      relative_timeout_ms += milliseconds(1);
+    }
+  } else {
+    relative_timeout_ms = std::chrono::milliseconds::max();
+  }
+
+  return WaitForProperty(key, expected_value, relative_timeout_ms);
+}
 
 // Waits for the system property `key` to be created.
 // Times out after `relative_timeout`.
 // Returns true on success, false on timeout.
-bool WaitForPropertyCreation(const std::string& key,
-                             std::chrono::milliseconds relative_timeout);
+bool WaitForPropertyCreation(const std::string& key, std::chrono::milliseconds relative_timeout =
+                                                         std::chrono::milliseconds::max());
+
+template <class T>
+bool WaitForPropertyCreation(const std::string& key, T relative_timeout) {
+  using namespace std::chrono;
+  time_point<steady_clock, duration<long double, std::nano>> max_float =
+      time_point<steady_clock, nanoseconds>::max();
+  auto now = steady_clock::now();
+
+  milliseconds relative_timeout_ms;
+  if (max_float - relative_timeout > now) {
+    relative_timeout_ms = duration_cast<milliseconds>(relative_timeout);
+    if (relative_timeout_ms < relative_timeout) {
+      relative_timeout_ms += milliseconds(1);
+    }
+  } else {
+    relative_timeout_ms = std::chrono::milliseconds::max();
+  }
+
+  return WaitForPropertyCreation(key, relative_timeout_ms);
+}
 
 } // namespace base
 } // namespace android

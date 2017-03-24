@@ -151,6 +151,71 @@ TEST(properties, WaitForProperty_timeout) {
   ASSERT_LT(std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0), 600ms);
 }
 
+TEST(properties, WaitForProperty_MaxTimeout) {
+  std::atomic<bool> flag{false};
+  std::thread thread([&]() {
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "a");
+    while (!flag) std::this_thread::yield();
+    std::this_thread::sleep_for(500ms);
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "b");
+  });
+
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "a", 1s));
+  flag = true;
+  // Test that this does not immediately return false due to overflow issues with the timeout.
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "b"));
+  thread.join();
+}
+
+TEST(properties, WaitForProperty_NegativeTimeout) {
+  std::atomic<bool> flag{false};
+  std::thread thread([&]() {
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "a");
+    while (!flag) std::this_thread::yield();
+    std::this_thread::sleep_for(500ms);
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "b");
+  });
+
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "a", 1s));
+  flag = true;
+  // Assert that this immediately returns with a negative timeout
+  ASSERT_FALSE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "b", -100ms));
+  thread.join();
+}
+
+TEST(properties, WaitForProperty_MaxTimeoutSeconds) {
+  std::atomic<bool> flag{false};
+  std::thread thread([&]() {
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "a");
+    while (!flag) std::this_thread::yield();
+    std::this_thread::sleep_for(500ms);
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "b");
+  });
+
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "a", 1s));
+  flag = true;
+  // The conversion from seconds to milliseconds overflows and we must handle this too.
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "b",
+                                             std::chrono::seconds::max()));
+  thread.join();
+}
+
+TEST(properties, WaitForProperty_NegativeTimeoutSeconds) {
+  std::atomic<bool> flag{false};
+  std::thread thread([&]() {
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "a");
+    while (!flag) std::this_thread::yield();
+    std::this_thread::sleep_for(500ms);
+    android::base::SetProperty("debug.libbase.WaitForProperty_test", "b");
+  });
+
+  ASSERT_TRUE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "a", 1s));
+  flag = true;
+  // Assert that this immediately returns with a negative timeout in seconds
+  ASSERT_FALSE(android::base::WaitForProperty("debug.libbase.WaitForProperty_test", "b", -100s));
+  thread.join();
+}
+
 TEST(properties, WaitForPropertyCreation) {
   std::thread thread([&]() {
     std::this_thread::sleep_for(100ms);
