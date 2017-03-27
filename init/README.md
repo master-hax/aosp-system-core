@@ -198,6 +198,11 @@ runs the service.
   is in the class "default" if one is not specified via the
   class option. Additional classnames beyond the (required) first
   one are used to group services.
+`shutdown_critical class`
+> 'shutdown_critical' class services are not killed during shutdown.
+  This service should not open files under /data for long time as
+  that can block umount of /data partition during shutdown. This service
+  should work even if /data after unmounted.
 
 `onrestart`
 > Execute a Command (see below) when service restarts.
