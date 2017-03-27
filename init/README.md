@@ -134,6 +134,25 @@ runs the service.
 > This is a device-critical service. If it exits more than four times in
   four minutes, the device will reboot into recovery mode.
 
+`shutdown_critical`
+> This service is not killed during shutdown. This process should not open
+  files under /data for long time as that can block umount of /data
+  partition during shutdown. This service should work even if /data after
+  unmounted.
+
+`shutdown_first_to_kill`
+> This service should be killed first before killing other services for
+  shutdown.
+
+`shutdown_start`
+> This service should be started before starting shutdown if it is not already
+  started. This should be combined with shutdown_critical or shutdown_kill_after_apps
+  to prevent killing by init.
+
+`shutdown_kill_after_apps`
+> This service is necessary for apps to shutdown and can be terminated after apps
+  are terminated. This service can access /data without restriction.
+
 `disabled`
 > This service will not automatically start with its class.
   It must be explicitly started by name.
