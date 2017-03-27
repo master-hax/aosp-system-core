@@ -896,6 +896,21 @@ static void selinux_initialize(bool in_kernel_domain) {
     }
 }
 
+// sets up appropriate file contexts for all selinux policy files
+// that are in rootfs.
+static void selinux_files_restorecon() {
+    restorecon("/file_contexts.bin");
+    restorecon("/plat_file_contexts");
+    restorecon("/nonplat_file_contexts");
+    restorecon("/plat_property_contexts");
+    restorecon("/nonplat_property_contexts");
+    restorecon("/plat_seapp_contexts");
+    restorecon("/nonplat_seapp_contexts");
+    restorecon("/plat_service_contexts");
+    restorecon("/nonplat_service_contexts");
+    restorecon("/sepolicy");
+}
+
 // Set the UDC controller for the ConfigFS USB Gadgets.
 // Read the UDC controller in use from "/sys/class/udc".
 // In case of multiple UDC controllers select the first one.
@@ -1245,8 +1260,7 @@ int main(int argc, char** argv) {
     restorecon("/dev/random");
     restorecon("/dev/urandom");
     restorecon("/dev/__properties__");
-    restorecon("/plat_property_contexts");
-    restorecon("/nonplat_property_contexts");
+    selinux_files_restorecon();
     restorecon("/sys", SELINUX_ANDROID_RESTORECON_RECURSE);
     restorecon("/dev/block", SELINUX_ANDROID_RESTORECON_RECURSE);
     restorecon("/dev/device-mapper");
