@@ -47,10 +47,22 @@
 #define SVC_EXEC 0x400  // This service was started by either 'exec' or 'exec_start' and stops
                         // init from processing more commands until it completes
 
-#define SVC_SHUTDOWN_CRITICAL 0x800  // This service is critical for shutdown and
-                                     // should not be killed during shutdown
-#define SVC_TEMPORARY 0x1000  // This service was started by 'exec' and should be removed from the
-                              // service list once it is reaped.
+#define SVC_TEMPORARY 0x800  // This service was started by 'exec' and should be removed from the
+                             // service list once it is reaped.
+
+#define SVC_SHUTDOWN_CRITICAL 0x1000       // This service is critical for shutdown and
+                                           // should not be killed during the whole shutdown. This
+                                           // service should not access /data permanently and should
+                                           // work even if /data is gone.
+#define SVC_SHUTDOWN_FIRST_TO_KILL 0x2000  // This service should be killed first before killing
+                                           // others during shutdown.
+#define SVC_SHUTDOWN_START 0x4000  // This service should be started, if not running, when shutdown
+                                   // is started. This flag should be combined with other flag
+                                   // like SHUTDOWN_CRITICAL or SHUTDOWN_KILL_AFTER_APPS to prevent
+                                   // killing from init in later stage.
+#define SVC_SHUTDOWN_KILL_AFTER_APPS 0x8000  // This service should be killed after all apps are
+                                             // killed. This service may be necessary for apps to
+                                             // shutdown. This service can access /data.
 
 #define NR_SVC_SUPP_GIDS 12    // twelve supplementary groups
 
@@ -88,6 +100,9 @@ class Service {
     void DumpState() const;
     void SetShutdownCritical() { flags_ |= SVC_SHUTDOWN_CRITICAL; }
     bool IsShutdownCritical() const { return (flags_ & SVC_SHUTDOWN_CRITICAL) != 0; }
+    bool IsShutdownFirstToKill() const { return (flags_ & SVC_SHUTDOWN_FIRST_TO_KILL) != 0; }
+    bool IsShutdownKillAfterApps() const { return (flags_ & SVC_SHUTDOWN_KILL_AFTER_APPS) != 0; }
+    bool IsShutdownStart() const { return (flags_ & SVC_SHUTDOWN_START) != 0; }
 
     const std::string& name() const { return name_; }
     const std::set<std::string>& classnames() const { return classnames_; }
@@ -119,6 +134,10 @@ class Service {
     bool ParseClass(const std::vector<std::string>& args, std::string* err);
     bool ParseConsole(const std::vector<std::string>& args, std::string* err);
     bool ParseCritical(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdownCritical(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdownFirstToKill(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdownStart(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdownKillAfterApps(const std::vector<std::string>& args, std::string* err);
     bool ParseDisabled(const std::vector<std::string>& args, std::string* err);
     bool ParseGroup(const std::vector<std::string>& args, std::string* err);
     bool ParsePriority(const std::vector<std::string>& args, std::string* err);

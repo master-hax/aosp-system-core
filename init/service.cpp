@@ -370,6 +370,26 @@ bool Service::ParseCritical(const std::vector<std::string>& args, std::string* e
     return true;
 }
 
+bool Service::ParseShutdownCritical(const std::vector<std::string>& args, std::string* err) {
+    flags_ |= SVC_SHUTDOWN_CRITICAL;
+    return true;
+}
+
+bool Service::ParseShutdownFirstToKill(const std::vector<std::string>& args, std::string* err) {
+    flags_ |= SVC_SHUTDOWN_FIRST_TO_KILL;
+    return true;
+}
+
+bool Service::ParseShutdownStart(const std::vector<std::string>& args, std::string* err) {
+    flags_ |= SVC_SHUTDOWN_START;
+    return true;
+}
+
+bool Service::ParseShutdownKillAfterApps(const std::vector<std::string>& args, std::string* err) {
+    flags_ |= SVC_SHUTDOWN_KILL_AFTER_APPS;
+    return true;
+}
+
 bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* err) {
     flags_ |= SVC_DISABLED;
     flags_ |= SVC_RC_DISABLED;
@@ -544,6 +564,14 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"class",       {1,     kMax, &Service::ParseClass}},
         {"console",     {0,     1,    &Service::ParseConsole}},
         {"critical",    {0,     0,    &Service::ParseCritical}},
+        {"shutdown_critical",
+                        {0, 0, &Service::ParseShutdownCritical}},
+        {"shutdown_first_to_kill",
+                        {0, 0, &Service::ParseShutdownFirstToKill}},
+        {"shutdown_start",
+                        {0, 0, &Service::ParseShutdownStart}},
+        {"shutdown_kill_after_apps",
+                        {0, 0, &Service::ParseShutdownKillAfterApps}},
         {"disabled",    {0,     0,    &Service::ParseDisabled}},
         {"group",       {1,     NR_SVC_SUPP_GIDS + 1, &Service::ParseGroup}},
         {"ioprio",      {2,     2,    &Service::ParseIoprio}},
