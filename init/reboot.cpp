@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -26,6 +27,7 @@
 #include <sys/wait.h>
 
 #include <memory>
+#include <set>
 #include <string>
 #include <thread>
 #include <vector>
@@ -41,6 +43,7 @@
 #include <logwrap/logwrap.h>
 
 #include "log.h"
+#include "property_service.h"
 #include "reboot.h"
 #include "service.h"
 #include "util.h"
@@ -248,8 +251,9 @@ static bool UmountPartitions(std::vector<MountEntry>* partitions, int maxRetry, 
                                               flags);
                 } else {
                     umountDone = false;
-                    PLOG(WARNING) << StringPrintf("cannot umount %s, flags:0x%x",
-                                                  entry.mnt_fsname().c_str(), flags);
+                    PLOG(WARNING) << StringPrintf("cannot umount %s, mnt_dir %s, flags:0x%x",
+                                                  entry.mnt_fsname().c_str(),
+                                                  entry.mnt_dir().c_str(), flags);
                 }
             }
         }
@@ -351,26 +355,40 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     }
     LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
 
-    static const constexpr char* shutdown_critical_services[] = {"vold", "watchdogd"};
-    for (const char* name : shutdown_critical_services) {
-        Service* s = ServiceManager::GetInstance().FindServiceByName(name);
-        if (s == nullptr) {
-            LOG(WARNING) << "Shutdown critical service not found:" << name;
-            continue;
+    // keep debugging tools until non critical ones are all gone.
+    const std::set<std::string> killAfterApps{"tombstoned", "logd", "adbd"};
+    // watchdogd is a vendor specific component but should be alive to complete shutdown safely.
+    const std::set<std::string> toStarts{"watchdogd", "vold"};
+    ServiceManager::GetInstance().ForEachService([&killAfterApps, &toStarts](Service* s) {
+        if (killAfterApps.count(s->name())) {
+            s->SetShutdownCritical();
+        } else if (toStarts.count(s->name())) {
+            s->Start();
+            s->SetShutdownCritical();
         }
-        s->Start();  // make sure that it is running.
-        s->SetShutdownCritical();
+    });
+
+    Service* bootAnim = ServiceManager::GetInstance().FindServiceByName("bootanim");
+    Service* surfaceFlinger = ServiceManager::GetInstance().FindServiceByName("surfaceflinger");
+    if (bootAnim != nullptr && surfaceFlinger != nullptr && surfaceFlinger->IsRunning()) {
+        property_set("service.bootanim.exit", "0");
+        // Could be in the middle of animation. Stop and start so that it can pick
+        // up the right mode.
+        bootAnim->Stop();
+        // start all animation classes if stopped.
+        ServiceManager::GetInstance().ForEachServiceInClass("animation", [](Service* s) {
+            s->Start();
+            s->SetShutdownCritical();  // will not check animation class separately
+        });
+        bootAnim->Start();
+        surfaceFlinger->SetShutdownCritical();
+        bootAnim->SetShutdownCritical();
     }
+
     // optional shutdown step
     // 1. terminate all services except shutdown critical ones. wait for delay to finish
     if (shutdownTimeout > 0) {
         LOG(INFO) << "terminating init services";
-        // tombstoned can write to data when other services are killed. so finish it first.
-        static const constexpr char* first_to_kill[] = {"tombstoned"};
-        for (const char* name : first_to_kill) {
-            Service* s = ServiceManager::GetInstance().FindServiceByName(name);
-            if (s != nullptr) s->Stop();
-        }
 
         // Ask all services to terminate except shutdown critical ones.
         ServiceManager::GetInstance().ForEachService([](Service* s) {
@@ -409,8 +427,8 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
 
     // minimum safety steps before restarting
     // 2. kill all services except ones that are necessary for the shutdown sequence.
-    ServiceManager::GetInstance().ForEachService([](Service* s) {
-        if (!s->IsShutdownCritical()) s->Stop();
+    ServiceManager::GetInstance().ForEachService([&killAfterApps](Service* s) {
+        if (!s->IsShutdownCritical() || killAfterApps.count(s->name())) s->Stop();
     });
     ServiceManager::GetInstance().ReapAnyOutstandingChildren();
 
