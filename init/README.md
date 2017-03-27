@@ -134,6 +134,12 @@ runs the service.
 > This is a device-critical service. If it exits more than four times in
   four minutes, the device will reboot into recovery mode.
 
+`shutdown_critical`
+> This service is not killed during shutdown. This process should not open
+  files under /data for long time as that can block umount of /data
+  partition during shutdown. This service should work even if /data after
+  unmounted.
+
 `disabled`
 > This service will not automatically start with its class.
   It must be explicitly started by name.

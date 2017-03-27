@@ -119,6 +119,7 @@ class Service {
     bool ParseClass(const std::vector<std::string>& args, std::string* err);
     bool ParseConsole(const std::vector<std::string>& args, std::string* err);
     bool ParseCritical(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdownCritical(const std::vector<std::string>& args, std::string* err);
     bool ParseDisabled(const std::vector<std::string>& args, std::string* err);
     bool ParseGroup(const std::vector<std::string>& args, std::string* err);
     bool ParsePriority(const std::vector<std::string>& args, std::string* err);
