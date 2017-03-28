@@ -341,8 +341,17 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     }
 
     /* TODO update default waiting time based on usage data */
-    unsigned int shutdownTimeout = android::base::GetUintProperty("ro.build.shutdown_timeout", 10u);
-    LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
+    constexpr unsigned int shutdownTimeoutDefault = 10;
+    unsigned int shutdownTimeout = shutdownTimeoutDefault;
+    if (SHUTDOWN_ZERO_TIMEOUT) {  // eng build
+        shutdownTimeout = 0;
+    } else {
+        shutdownTimeout =
+            android::base::GetUintProperty("ro.build.shutdown_timeout", shutdownTimeoutDefault);
+        if (shutdownTimeout != shutdownTimeoutDefault) {
+            LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
+        }
+    }
 
     static const constexpr char* shutdown_critical_services[] = {"vold", "watchdogd"};
     for (const char* name : shutdown_critical_services) {
