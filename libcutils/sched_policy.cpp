@@ -271,17 +271,8 @@ int get_sched_policy(int tid, SchedPolicy *policy)
             return -1;
         }
     } else {
-        int rc = sched_getscheduler(tid);
-        if (rc < 0)
-            return -1;
-        else if (rc == SCHED_NORMAL)
-            *policy = SP_FOREGROUND;
-        else if (rc == SCHED_BATCH)
-            *policy = SP_BACKGROUND;
-        else {
-            errno = ERANGE;
-            return -1;
-        }
+        // We removed bg cgroup, so all in FOREGROUND
+        *policy = SP_FOREGROUND;
     }
     return 0;
 }
@@ -428,14 +419,6 @@ int set_sched_policy(int tid, SchedPolicy policy)
                 return -errno;
         }
 
-    } else {
-        struct sched_param param;
-
-        param.sched_priority = 0;
-        sched_setscheduler(tid,
-                           (policy == SP_BACKGROUND) ?
-                           SCHED_BATCH : SCHED_NORMAL,
-                           &param);
     }
 
     if (__sys_supports_timerslack) {
