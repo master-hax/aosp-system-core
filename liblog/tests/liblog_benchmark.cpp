@@ -539,6 +539,21 @@ static void BM_log_event_overhead(int iters) {
 }
 BENCHMARK(BM_log_event_overhead);
 
+/*
+ *	Measure the time it takes to submit the android event logging call
+ * using discrete acquisition (StartBenchmarkTiming() -> StopBenchmarkTiming())
+ * under light load. Expect this to be a dozen or so syscall periods (40us)
+ */
+static void BM_log_event_overhead_42(int iters) {
+  for (unsigned long long i = 0; i < (unsigned)iters; ++i) {
+    StartBenchmarkTiming();
+    __android_log_btwrite(42, EVENT_TYPE_LONG, &i, sizeof(i));
+    StopBenchmarkTiming();
+    logd_yield();
+  }
+}
+BENCHMARK(BM_log_event_overhead_42);
+
 static void BM_log_event_overhead_null(int iters) {
   set_log_null();
   BM_log_event_overhead(iters);
