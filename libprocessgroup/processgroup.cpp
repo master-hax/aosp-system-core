@@ -256,6 +256,8 @@ static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
 {
     int processes = 0;
     struct ctx ctx;
+    struct stat stats;
+    char path[16] = {0};
     pid_t pid;
 
     ctx.initialized = false;
@@ -268,6 +270,15 @@ static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
             LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
             continue;
         }
+
+        snprintf(path, sizeof(path), "/proc/%d", pid);
+        if (stat(path, &stats) == 0 && stats.st_uid != uid) {
+            // Avoid killing the pid which has been reused by other process.
+            LOG(WARNING) << "Skip killing pid " << pid << " with uid " << uid
+                         << " that has different current uid " << stats.st_uid;
+            continue;
+        }
+
         LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid
                      << " as part of process group " << initialPid;
         if (kill(pid, signal) == -1) {
