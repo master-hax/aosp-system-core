@@ -42,6 +42,7 @@
 #include <logwrap/logwrap.h>
 
 #include "log.h"
+#include "property_service.h"
 #include "reboot.h"
 #include "service.h"
 #include "util.h"
@@ -370,6 +371,23 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
                 s->SetShutdownCritical();
             }
         });
+
+    Service* bootAnim = ServiceManager::GetInstance().FindServiceByName("bootanim");
+    Service* surfaceFlinger = ServiceManager::GetInstance().FindServiceByName("surfaceflinger");
+    if (bootAnim != nullptr && surfaceFlinger != nullptr && surfaceFlinger->IsRunning()) {
+        property_set("service.bootanim.exit", "0");
+        // Could be in the middle of animation. Stop and start so that it can pick
+        // up the right mode.
+        bootAnim->Stop();
+        // start all animation classes if stopped.
+        ServiceManager::GetInstance().ForEachServiceInClass("animation", [](Service* s) {
+            s->Start();
+            s->SetShutdownCritical();  // will not check animation class separately
+        });
+        bootAnim->Start();
+        surfaceFlinger->SetShutdownCritical();
+        bootAnim->SetShutdownCritical();
+    }
 
     // optional shutdown step
     // 1. terminate all services except shutdown critical ones. wait for delay to finish
