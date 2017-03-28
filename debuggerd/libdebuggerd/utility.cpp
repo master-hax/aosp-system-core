@@ -27,7 +27,10 @@
 
 #include <string>
 
+#include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <backtrace/Backtrace.h>
 #include <log/log.h>
@@ -49,6 +52,8 @@ void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
                       && log->crashed_tid != -1
                       && log->current_tid != -1
                       && (log->crashed_tid == log->current_tid);
+  bool write_to_kmsg =
+      is_allowed_in_logcat(ltype) && android::base::GetBoolProperty("ro.debuggable", false);
 
   char buf[512];
   va_list ap;
@@ -69,6 +74,19 @@ void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
     __android_log_buf_write(LOG_ID_CRASH, ANDROID_LOG_FATAL, LOG_TAG, buf);
     if (log->amfd_data != nullptr) {
       *log->amfd_data += buf;
+    }
+  }
+
+  if (write_to_kmsg) {
+    // The kernel logger doesn't like newlines, so manually split up the string.
+    if (buf[len - 1] == '\n') {
+      buf[len - 1] = '\0';
+    }
+
+    std::vector<std::string> fragments = android::base::Split(buf, "\n");
+    for (const std::string& fragment : fragments) {
+      android::base::KernelLogger(android::base::LogId::SYSTEM, android::base::ERROR, LOG_TAG,
+                                  nullptr, 0, fragment.c_str());
     }
   }
 }
