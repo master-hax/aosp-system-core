@@ -122,7 +122,7 @@ static int add_tid_to_cgroup(int tid, int fd)
  */
 
 bool cpusets_enabled() {
-    static bool enabled = (access("/dev/cpuset/tasks", F_OK) == 0);
+    static bool enabled = (access("/dev/cpuset/tasks", W_OK) == 0);
 
     return enabled;
 }
@@ -139,7 +139,7 @@ bool cpusets_enabled() {
  */
 
 bool schedboost_enabled() {
-    static bool enabled = (access("/dev/stune/tasks", F_OK) == 0);
+    static bool enabled = (access("/dev/stune/tasks", W_OK) == 0);
 
     return enabled;
 }
@@ -148,25 +148,22 @@ static void __initialize() {
     const char* filename;
 
     if (cpusets_enabled()) {
-        if (!access("/dev/cpuset/tasks", W_OK)) {
+        filename = "/dev/cpuset/foreground/tasks";
+        fg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
+        filename = "/dev/cpuset/background/tasks";
+        bg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
+        filename = "/dev/cpuset/system-background/tasks";
+        system_bg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
+        filename = "/dev/cpuset/top-app/tasks";
+        ta_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
 
-            filename = "/dev/cpuset/foreground/tasks";
-            fg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
-            filename = "/dev/cpuset/background/tasks";
-            bg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
-            filename = "/dev/cpuset/system-background/tasks";
-            system_bg_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
-            filename = "/dev/cpuset/top-app/tasks";
-            ta_cpuset_fd = open(filename, O_WRONLY | O_CLOEXEC);
-
-            if (schedboost_enabled()) {
-                filename = "/dev/stune/top-app/tasks";
-                ta_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
-                filename = "/dev/stune/foreground/tasks";
-                fg_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
-                filename = "/dev/stune/background/tasks";
-                bg_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
-            }
+        if (schedboost_enabled()) {
+            filename = "/dev/stune/top-app/tasks";
+            ta_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
+            filename = "/dev/stune/foreground/tasks";
+            fg_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
+            filename = "/dev/stune/background/tasks";
+            bg_schedboost_fd = open(filename, O_WRONLY | O_CLOEXEC);
         }
     }
 
@@ -428,7 +425,7 @@ int set_sched_policy(int tid, SchedPolicy policy)
                 return -errno;
         }
 
-    } else {
+    } else if (!cpusets_enabled()) {
         struct sched_param param;
 
         param.sched_priority = 0;
