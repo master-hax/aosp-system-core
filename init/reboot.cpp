@@ -345,6 +345,7 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     std::string timeout = property_get("ro.build.shutdown_timeout");
     /* TODO update default waiting time based on usage data */
     unsigned int shutdownTimeout = 10;  // default value
+    if (SHUTDOWN_ZERO_TIMEOUT) shutdownTimeout = 0;
     if (android::base::ParseUint(timeout, &shutdownTimeout)) {
         LOG(INFO) << "ro.build.shutdown_timeout set:" << shutdownTimeout;
     }
