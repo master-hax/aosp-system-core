@@ -428,7 +428,7 @@ int set_sched_policy(int tid, SchedPolicy policy)
                 return -errno;
         }
 
-    } else {
+    } else if (!cpusets_enabled()) {
         struct sched_param param;
 
         param.sched_priority = 0;
