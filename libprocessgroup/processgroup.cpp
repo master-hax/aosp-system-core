@@ -34,6 +34,7 @@
 #include <thread>
 
 #include <android-base/logging.h>
+#include <android-base/stringprintf.h>
 #include <private/android_filesystem_config.h>
 
 #include <processgroup/processgroup.h>
@@ -255,11 +256,11 @@ void removeAllProcessGroups()
 static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
 {
     int processes = 0;
-    struct ctx ctx;
-    pid_t pid;
 
+    struct ctx ctx;
     ctx.initialized = false;
 
+    pid_t pid;
     while ((pid = getOneAppProcess(uid, initialPid, &ctx)) >= 0) {
         processes++;
         if (pid == 0) {
@@ -268,6 +269,16 @@ static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
             LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
             continue;
         }
+
+        struct stat sb;
+        std::string path = android::base::StringPrintf("/proc/%d", pid);
+        if (stat(path.c_str(), &sb) == 0 && sb.st_uid != uid) {
+            // Avoid killing a pid which has been reused by another process.
+            LOG(WARNING) << "Skip killing pid " << pid << " with uid " << uid
+                         << " that has different current uid " << sb.st_uid;
+            continue;
+        }
+
         LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid
                      << " as part of process group " << initialPid;
         if (kill(pid, signal) == -1) {
