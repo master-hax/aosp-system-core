@@ -832,9 +832,9 @@ static int do_wait(const std::vector<std::string>& args) {
 }
 
 static int do_wait_for_prop(const std::vector<std::string>& args) {
-    const char* name = args[1].c_str();
-    const char* value = args[2].c_str();
-    size_t value_len = strlen(value);
+    const std::string& name = args[1];
+    const std::string& value = args[2];
+    size_t value_len = value.size();
 
     if (!is_legal_property_name(name)) {
         LOG(ERROR) << "do_wait_for_prop(\"" << name << "\", \"" << value
@@ -846,11 +846,8 @@ static int do_wait_for_prop(const std::vector<std::string>& args) {
                    << "\") failed: value too long";
         return -1;
     }
-    if (!start_waiting_for_property(name, value)) {
-        LOG(ERROR) << "do_wait_for_prop(\"" << name << "\", \"" << value
-                   << "\") failed: init already in waiting";
-        return -1;
-    }
+    PropertyWaiter::WaitForProperty(name, value);
+
     return 0;
 }
 

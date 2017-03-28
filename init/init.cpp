@@ -88,9 +88,29 @@ const char *ENV[32];
 
 static int epoll_fd = -1;
 
-static std::unique_ptr<Timer> waiting_for_prop(nullptr);
-static std::string wait_prop_name;
-static std::string wait_prop_value;
+void PropertyWaiter::WaitForProperty(const std::string& name, const std::string& value) {
+    if (property_get(name.c_str()) != value) {
+        // Current property value is not equal to expected value
+        waiter_.reset(new PropertyWaiter(name, value));
+    } else {
+        LOG(INFO) << "WaitForProperty(\"" << name << "\", \"" << value << "\"): already set";
+    }
+}
+
+void PropertyWaiter::CheckAndReleaseWaiter(const std::string& name, const std::string& value) {
+    if (!waiter_) return;
+    if (waiter_->name_ == name && waiter_->value_ == value) {
+        LOG(INFO) << "Wait for property took " << waiter_->timer_;
+        waiter_.reset();
+    }
+}
+
+bool PropertyWaiter::IsWaitingForProperty() { return waiter_ != nullptr; }
+
+PropertyWaiter::PropertyWaiter(const std::string name, const std::string value)
+    : name_(name), value_(value) {}
+
+std::unique_ptr<PropertyWaiter> PropertyWaiter::waiter_;
 
 void register_epoll_handler(int fd, void (*fn)()) {
     epoll_event ev;
@@ -133,35 +153,10 @@ int add_environment(const char *key, const char *val)
     return -1;
 }
 
-bool start_waiting_for_property(const char *name, const char *value)
-{
-    if (waiting_for_prop) {
-        return false;
-    }
-    if (property_get(name) != value) {
-        // Current property value is not equal to expected value
-        wait_prop_name = name;
-        wait_prop_value = value;
-        waiting_for_prop.reset(new Timer());
-    } else {
-        LOG(INFO) << "start_waiting_for_property(\""
-                  << name << "\", \"" << value << "\"): already set";
-    }
-    return true;
-}
-
-void property_changed(const char *name, const char *value)
-{
+void property_changed(const char* name, const char* value) {
     if (property_triggers_enabled)
         ActionManager::GetInstance().QueuePropertyTrigger(name, value);
-    if (waiting_for_prop) {
-        if (wait_prop_name == name && wait_prop_value == value) {
-            wait_prop_name.clear();
-            wait_prop_value.clear();
-            LOG(INFO) << "Wait for property took " << *waiting_for_prop;
-            waiting_for_prop.reset();
-        }
-    }
+    PropertyWaiter::CheckAndReleaseWaiter(name, value);
 }
 
 static void restart_processes()
@@ -1306,10 +1301,12 @@ int main(int argc, char** argv) {
         // By default, sleep until something happens.
         int epoll_timeout_ms = -1;
 
-        if (!(waiting_for_prop || ServiceManager::GetInstance().IsWaitingForExec())) {
+        if (!(PropertyWaiter::IsWaitingForProperty() ||
+              ServiceManager::GetInstance().IsWaitingForExec())) {
             am.ExecuteOneCommand();
         }
-        if (!(waiting_for_prop || ServiceManager::GetInstance().IsWaitingForExec())) {
+        if (!(PropertyWaiter::IsWaitingForProperty() ||
+              ServiceManager::GetInstance().IsWaitingForExec())) {
             restart_processes();
 
             // If there's a process that needs restarting, wake up in time for that.

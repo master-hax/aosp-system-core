@@ -19,6 +19,8 @@
 
 #include <string>
 
+#include "util.h"
+
 class Action;
 class Service;
 
@@ -35,6 +37,20 @@ void register_epoll_handler(int fd, void (*fn)());
 
 int add_environment(const char* key, const char* val);
 
-bool start_waiting_for_property(const char *name, const char *value);
+class PropertyWaiter {
+  public:
+    static void WaitForProperty(const std::string& name, const std::string& value);
+    static void CheckAndReleaseWaiter(const std::string& name, const std::string& value);
+    static bool IsWaitingForProperty();
+
+  private:
+    static std::unique_ptr<PropertyWaiter> waiter_;
+
+    PropertyWaiter(const std::string name, const std::string value);
+
+    Timer timer_;
+    std::string name_;
+    std::string value_;
+};
 
 #endif  /* _INIT_INIT_H */
