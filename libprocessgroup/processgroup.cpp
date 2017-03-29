@@ -252,8 +252,7 @@ void removeAllProcessGroups()
     }
 }
 
-static int killProcessGroupOnce(uid_t uid, int initialPid, int signal)
-{
+int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
     int processes = 0;
     struct ctx ctx;
     pid_t pid;
