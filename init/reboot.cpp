@@ -15,8 +15,10 @@
  */
 #include <dirent.h>
 #include <fcntl.h>
+#include <linux/fs.h>
 #include <mntent.h>
 #include <sys/cdefs.h>
+#include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/quota.h>
 #include <sys/reboot.h>
@@ -35,6 +37,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fs_mgr.h>
@@ -164,6 +167,17 @@ static void DoFsck(const MountEntry& entry) {
         };
         android_fork_execvp_ext(arraysize(ext4_argv), (char**)ext4_argv, &st, true, LOG_KLOG, true,
                                 nullptr, nullptr, 0);
+    }
+}
+
+static void FlushBlockDev(const MountEntry& entry) {
+    android::base::unique_fd fd(open(entry.mnt_fsname().c_str(), O_RDONLY | O_EXCL));
+    if (fd < 0) {
+        PLOG(ERROR) << "Cannot open block device:" << entry.mnt_fsname();
+        return;
+    }
+    if (ioctl(fd, BLKFLSBUF, 0) < 0) {
+        PLOG(ERROR) << "BLKFLSBUF ioctl failed for block device:" << entry.mnt_fsname();
     }
 }
 
@@ -310,11 +324,18 @@ static UmountStat TryUmountAndFsck(bool runFsck, int timeoutMs) {
             stat = UMOUNT_STAT_TIMEOUT;
         }
     }
-    // fsck part is excluded from timeout check. It only runs for user initiated shutdown
-    // and should not affect reboot time.
-    if (stat == UMOUNT_STAT_SUCCESS && runFsck) {
+
+    if (stat == UMOUNT_STAT_SUCCESS) {
+        // fsck part is excluded from timeout check. It only runs for user initiated shutdown
+        // and should not affect reboot time.
+        if (runFsck) {
+            for (auto& entry : blockDevRwPartitions) {
+                DoFsck(entry);
+            }
+        }
+        // now flush any pending writes in block device level
         for (auto& entry : blockDevRwPartitions) {
-            DoFsck(entry);
+            FlushBlockDev(entry);
         }
     }
 
