@@ -1338,6 +1338,7 @@ static void fb_perform_format(Transport* transport,
 
     struct fastboot_buffer buf;
     const char* errMsg = nullptr;
+    const char* plabel = partition;
     const struct fs_generator* gen = nullptr;
     int fd;
 
@@ -1398,7 +1399,12 @@ static void fb_perform_format(Transport* transport,
     eraseBlkSize = fb_get_flash_block_size(transport, "erase-block-size");
     logicalBlkSize = fb_get_flash_block_size(transport, "logical-block-size");
 
-    if (fs_generator_generate(gen, fd, size, initial_dir, eraseBlkSize, logicalBlkSize)) {
+    /* Special case, userdata partition is labeled "data" */
+    if(!strcmp(plabel,"userdata")) {
+	plabel += 4;
+    }
+
+    if (fs_generator_generate(gen, plabel, fd, size, initial_dir, eraseBlkSize, logicalBlkSize)) {
         fprintf(stderr, "Cannot generate image: %s\n", strerror(errno));
         close(fd);
         return;
