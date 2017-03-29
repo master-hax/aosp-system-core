@@ -77,7 +77,7 @@ class Service {
     bool Enable();
     void Reset();
     void Stop();
-    void Terminate();
+    void Terminate(bool retry = true);
     void Restart();
     void RestartIfNeeded(time_t* process_needs_restart_at);
     bool Reap();
@@ -105,10 +105,10 @@ class Service {
     class OptionParserMap;
 
     void NotifyStateChange(const std::string& new_state) const;
-    void StopOrReset(int how);
+    void StopOrReset(int how, bool retry = true);
     void ZapStdio() const;
     void OpenConsole() const;
-    void KillProcessGroup(int signal);
+    void KillProcessGroup(int signal, bool retry = true);
     void SetProcessAttributes();
 
     bool ParseCapabilities(const std::vector<std::string>& args, std::string *err);

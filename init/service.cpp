@@ -206,11 +206,17 @@ void Service::NotifyStateChange(const std::string& new_state) const {
     }
 }
 
-void Service::KillProcessGroup(int signal) {
+void Service::KillProcessGroup(int signal, bool retry) {
     LOG(INFO) << "Sending signal " << signal
               << " to service '" << name_
               << "' (pid " << pid_ << ") process group...";
-    if (killProcessGroup(uid_, pid_, signal) == -1) {
+    int r;
+    if (retry) {
+        r = killProcessGroup(uid_, pid_, signal);
+    } else {
+        r = killProcessGroupOnce(uid_, pid_, signal);
+    }
+    if (r == -1) {
         PLOG(ERROR) << "killProcessGroup(" << uid_ << ", " << pid_ << ", " << signal << ") failed";
     }
     if (kill(-pid_, signal) == -1) {
@@ -760,15 +766,13 @@ void Service::Reset() {
     StopOrReset(SVC_RESET);
 }
 
-void Service::Stop() {
-    StopOrReset(SVC_DISABLED);
-}
+void Service::Stop() { StopOrReset(SVC_DISABLED, true); }
 
-void Service::Terminate() {
+void Service::Terminate(bool retry) {
     flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
     flags_ |= SVC_DISABLED;
     if (pid_) {
-        KillProcessGroup(SIGTERM);
+        KillProcessGroup(SIGTERM, retry);
         NotifyStateChange("stopping");
     }
 }
@@ -800,7 +804,7 @@ void Service::RestartIfNeeded(time_t* process_needs_restart_at) {
 }
 
 // The how field should be either SVC_DISABLED, SVC_RESET, or SVC_RESTART.
-void Service::StopOrReset(int how) {
+void Service::StopOrReset(int how, bool retry) {
     // The service is still SVC_RUNNING until its process exits, but if it has
     // already exited it shoudn't attempt a restart yet.
     flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
@@ -818,7 +822,7 @@ void Service::StopOrReset(int how) {
     }
 
     if (pid_) {
-        KillProcessGroup(SIGKILL);
+        KillProcessGroup(SIGKILL, retry);
         NotifyStateChange("stopping");
     } else {
         NotifyStateChange("stopped");

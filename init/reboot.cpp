@@ -372,7 +372,7 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
 
         // Ask all services to terminate except shutdown critical ones.
         ServiceManager::GetInstance().ForEachService([](Service* s) {
-            if (!s->IsShutdownCritical()) s->Terminate();
+            if (!s->IsShutdownCritical()) s->Terminate(false);
         });
 
         int service_count = 0;
