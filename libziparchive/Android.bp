@@ -94,6 +94,7 @@ cc_library {
 // Tests.
 cc_test {
     name: "ziparchive-tests",
+    test_suites: ["device-tests"],
     host_supported: true,
     defaults: ["libziparchive_flags"],
 
