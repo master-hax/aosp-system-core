@@ -28,6 +28,7 @@
 #include <android-base/file.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/properties.h>
@@ -84,9 +85,6 @@
         hashtree_desc.fec_offset / hashtree_desc.data_block_size, /* fec_blocks */ \
         hashtree_desc.fec_offset / hashtree_desc.data_block_size, /* fec_start */  \
         VERITY_TABLE_OPT_IGNZERO, VERITY_TABLE_OPT_RESTART
-
-AvbSlotVerifyData* fs_mgr_avb_verify_data = nullptr;
-AvbOps* fs_mgr_avb_ops = nullptr;
 
 enum HashAlgorithm {
     kInvalid = 0,
@@ -408,8 +406,7 @@ static bool get_hashtree_descriptor(const std::string& partition_name,
                 continue;
             }
             if (desc.tag == AVB_DESCRIPTOR_TAG_HASHTREE) {
-                desc_partition_name =
-                    (const uint8_t*)descriptors[j] + sizeof(AvbHashtreeDescriptor);
+                desc_partition_name = (const uint8_t*)descriptors[j] + sizeof(AvbHashtreeDescriptor);
                 if (!avb_hashtree_descriptor_validate_and_byteswap(
                         (AvbHashtreeDescriptor*)descriptors[j], out_hashtree_desc)) {
                     continue;
@@ -441,55 +438,33 @@ static bool get_hashtree_descriptor(const std::string& partition_name,
     return true;
 }
 
-static bool init_is_avb_used() {
-    // When AVB is used, boot loader should set androidboot.vbmeta.{hash_alg,
-    // size, digest} in kernel cmdline or in device tree. They will then be
-    // imported by init process to system properties: ro.boot.vbmeta.{hash_alg, size, digest}.
-    //
-    // In case of early mount, init properties are not initialized, so we also
-    // ensure we look into kernel command line and device tree if the property is
-    // not found
-    //
-    // Checks hash_alg as an indicator for whether AVB is used.
-    // We don't have to parse and check all of them here. The check will
-    // be done in fs_mgr_load_vbmeta_images() and FS_MGR_SETUP_AVB_FAIL will
-    // be returned when there is an error.
-
-    std::string hash_alg;
-    if (!fs_mgr_get_boot_config("vbmeta.hash_alg", &hash_alg)) {
-        return false;
-    }
-    if (hash_alg == "sha256" || hash_alg == "sha512") {
-        return true;
-    }
-    return false;
-}
-
-bool fs_mgr_is_avb_used() {
-    static bool result = init_is_avb_used();
-    return result;
-}
-
-int fs_mgr_load_vbmeta_images(struct fstab* fstab) {
+struct fs_mgr_avb_handle* fs_mgr_avb_open(struct fstab* fstab) {
     FS_MGR_CHECK(fstab != nullptr);
 
     // Gets the expected hash value of vbmeta images from
     // kernel cmdline.
     if (!load_vbmeta_prop(&fs_mgr_vbmeta_prop)) {
-        return FS_MGR_SETUP_AVB_FAIL;
+        return nullptr;
     }
 
-    fs_mgr_avb_ops = fs_mgr_dummy_avb_ops_new(fstab);
-    if (fs_mgr_avb_ops == nullptr) {
+    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> h(
+        new (std::nothrow) fs_mgr_avb_handle, fs_mgr_avb_close);
+    if (!h) {
+        LERROR << "Failed to allocate fs_mgr_avb_handle";
+        return nullptr;
+    }
+
+    h->avb_ops = fs_mgr_dummy_avb_ops_new(fstab);
+    if (h->avb_ops == nullptr) {
         LERROR << "Failed to allocate dummy avb_ops";
-        return FS_MGR_SETUP_AVB_FAIL;
+        return nullptr;
     }
 
     // Invokes avb_slot_verify() to load and verify all vbmeta images.
     // Sets requested_partitions to nullptr as it's to copy the contents
-    // of HASH partitions into fs_mgr_avb_verify_data, which is not required as
+    // of HASH partitions into h->avb_slot_verify_data, which is not required as
     // fs_mgr only deals with HASHTREE partitions.
-    const char *requested_partitions[] = {nullptr};
+    const char* requested_partitions[] = {nullptr};
     std::string ab_suffix;
     std::string slot;
     if (fs_mgr_get_boot_config("slot", &slot)) {
@@ -499,8 +474,8 @@ int fs_mgr_load_vbmeta_images(struct fstab* fstab) {
         fs_mgr_get_boot_config("slot_suffix", &ab_suffix);
     }
     AvbSlotVerifyResult verify_result =
-        avb_slot_verify(fs_mgr_avb_ops, requested_partitions, ab_suffix.c_str(),
-                        fs_mgr_vbmeta_prop.allow_verification_error, &fs_mgr_avb_verify_data);
+        avb_slot_verify(h->avb_ops, requested_partitions, ab_suffix.c_str(),
+                        fs_mgr_vbmeta_prop.allow_verification_error, &h->avb_slot_verify_data);
 
     // Only allow two verify results:
     //   - AVB_SLOT_VERIFY_RESULT_OK.
@@ -508,73 +483,87 @@ int fs_mgr_load_vbmeta_images(struct fstab* fstab) {
     if (verify_result == AVB_SLOT_VERIFY_RESULT_ERROR_VERIFICATION) {
         if (!fs_mgr_vbmeta_prop.allow_verification_error) {
             LERROR << "ERROR_VERIFICATION isn't allowed";
-            goto fail;
+            return nullptr;
         }
     } else if (verify_result != AVB_SLOT_VERIFY_RESULT_OK) {
         LERROR << "avb_slot_verify failed, result: " << verify_result;
-        goto fail;
+        return nullptr;
     }
 
     // Verifies vbmeta images against the digest passed from bootloader.
-    if (!verify_vbmeta_images(*fs_mgr_avb_verify_data, fs_mgr_vbmeta_prop)) {
+    if (!verify_vbmeta_images(*h->avb_slot_verify_data, fs_mgr_vbmeta_prop)) {
         LERROR << "verify_vbmeta_images failed";
-        goto fail;
+        return nullptr;
     } else {
         // Checks whether FLAGS_HASHTREE_DISABLED is set.
         AvbVBMetaImageHeader vbmeta_header;
         avb_vbmeta_image_header_to_host_byte_order(
-            (AvbVBMetaImageHeader*)fs_mgr_avb_verify_data->vbmeta_images[0].vbmeta_data,
+            (AvbVBMetaImageHeader*)h->avb_slot_verify_data->vbmeta_images[0].vbmeta_data,
             &vbmeta_header);
 
         bool hashtree_disabled =
             ((AvbVBMetaImageFlags)vbmeta_header.flags & AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED);
         if (hashtree_disabled) {
-            return FS_MGR_SETUP_AVB_HASHTREE_DISABLED;
+            h->status = kFsMgrAvbHandleHashtreeDisabled;
+            return h.release();
         }
     }
 
     if (verify_result == AVB_SLOT_VERIFY_RESULT_OK) {
-        return FS_MGR_SETUP_AVB_SUCCESS;
+        h->status = kFsMgrAvbHandleSuccess;
+        h->avb_version = android::base::StringPrintf("%d.%d", AVB_VERSION_MAJOR, AVB_VERSION_MINOR);
+        return h.release();
     }
-
-fail:
-    fs_mgr_unload_vbmeta_images();
-    return FS_MGR_SETUP_AVB_FAIL;
+    return nullptr;
 }
 
-void fs_mgr_unload_vbmeta_images() {
-    if (fs_mgr_avb_verify_data != nullptr) {
-        avb_slot_verify_data_free(fs_mgr_avb_verify_data);
+void fs_mgr_avb_close(struct fs_mgr_avb_handle* handle) {
+    if (!handle) return;
+
+    if (handle->avb_slot_verify_data != nullptr) {
+        avb_slot_verify_data_free(handle->avb_slot_verify_data);
+    }
+    if (handle->avb_ops != nullptr) {
+        fs_mgr_dummy_avb_ops_free(handle->avb_ops);
     }
 
-    if (fs_mgr_avb_ops != nullptr) {
-        fs_mgr_dummy_avb_ops_free(fs_mgr_avb_ops);
-    }
+    handle->avb_version = "";
+    delete handle;
 }
 
-int fs_mgr_setup_avb(struct fstab_rec* fstab_entry) {
-    if (!fstab_entry || !fs_mgr_avb_verify_data || fs_mgr_avb_verify_data->num_vbmeta_images < 1) {
-        return FS_MGR_SETUP_AVB_FAIL;
+bool fs_mgr_setup_avb(struct fs_mgr_avb_handle* handle, struct fstab_rec* fstab_entry) {
+    if (!handle || !handle->avb_slot_verify_data ||
+        handle->avb_slot_verify_data->num_vbmeta_images < 1) {
+        LERROR << "Invalid avb handle, skip set up AVB on: " << fstab_entry->mount_point;
+        return false;
     }
+
+    if (!fstab_entry) return false;
+
+    if (handle->status == kFsMgrAvbHandleHashtreeDisabled) {
+        LINFO << "AVB HASHTREE disabled on:" << fstab_entry->mount_point;
+        return true;
+    }
+
+    if (handle->status != kFsMgrAvbHandleSuccess) return false;
 
     std::string partition_name(basename(fstab_entry->mount_point));
     if (!avb_validate_utf8((const uint8_t*)partition_name.c_str(), partition_name.length())) {
         LERROR << "Partition name: " << partition_name.c_str() << " is not valid UTF-8.";
-        return FS_MGR_SETUP_AVB_FAIL;
+        return false;
     }
 
     AvbHashtreeDescriptor hashtree_descriptor;
     std::string salt;
     std::string root_digest;
-    if (!get_hashtree_descriptor(partition_name, *fs_mgr_avb_verify_data, &hashtree_descriptor,
-                                 &salt, &root_digest)) {
-        return FS_MGR_SETUP_AVB_FAIL;
+    if (!get_hashtree_descriptor(partition_name, *handle->avb_slot_verify_data,
+                                 &hashtree_descriptor, &salt, &root_digest)) {
+        return false;
     }
 
     // Converts HASHTREE descriptor to verity_table_params.
     if (!hashtree_dm_verity_setup(fstab_entry, hashtree_descriptor, salt, root_digest)) {
-        return FS_MGR_SETUP_AVB_FAIL;
+        return false;
     }
-
-    return FS_MGR_SETUP_AVB_SUCCESS;
+    return true;
 }

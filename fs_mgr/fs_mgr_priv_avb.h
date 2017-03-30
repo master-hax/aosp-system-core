@@ -17,40 +17,40 @@
 #ifndef __CORE_FS_MGR_PRIV_AVB_H
 #define __CORE_FS_MGR_PRIV_AVB_H
 
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
-
+#include <libavb/libavb.h>
 #include "fs_mgr.h"
 
-__BEGIN_DECLS
+enum AvbHandleStatus {
+    kFsMgrAvbHandleSuccess = 0,
+    kFsMgrAvbHandleHashtreeDisabled = 1,
+};
 
-#define FS_MGR_SETUP_AVB_HASHTREE_DISABLED (-2)
-#define FS_MGR_SETUP_AVB_FAIL (-1)
-#define FS_MGR_SETUP_AVB_SUCCESS 0
-
-bool fs_mgr_is_avb_used();
+struct fs_mgr_avb_handle {
+    AvbSlotVerifyData* avb_slot_verify_data;
+    AvbOps* avb_ops;
+    AvbHandleStatus status;
+    std::string avb_version;
+};
 
 /* Gets AVB metadata through external/avb/libavb for all partitions:
  * AvbSlotVerifyData.vbmeta_images[] and checks their integrity
  * against the androidboot.vbmeta.{hash_alg, size, digest} values
  * from /proc/cmdline.
  *
- * Return values:
- *   - FS_MGR_SETUP_AVB_SUCCESS: the metadata cab be trusted.
- *   - FS_MGR_SETUP_AVB_FAIL: any error when reading and verifying the
+ * Possible values of out_result:
+ *   - kFsMgrAvbHandleSuccess: the metadata cab be trusted, and a
+ *     fs_mgr_avb_handle will be returned.
+ *   - kFsMgrAvbHandleFail: any error when reading and verifying the
  *     metadata, e.g. I/O error, digest value mismatch, size mismatch.
- *   - FS_MGR_SETUP_AVB_HASHTREE_DISABLED: to support the existing
+ *   - kFsMgrAvbHandleHashtreeDisabled: to support the existing
  *     'adb disable-verity' feature in Android. It's very helpful for
  *     developers to make the filesystem writable to allow replacing
  *     binaries on the device.
  */
-int fs_mgr_load_vbmeta_images(struct fstab* fstab);
+fs_mgr_avb_handle* fs_mgr_avb_open(fstab* fstab);
 
-void fs_mgr_unload_vbmeta_images();
+void fs_mgr_avb_close(fs_mgr_avb_handle* handle);
 
-int fs_mgr_setup_avb(struct fstab_rec* fstab_entry);
-
-__END_DECLS
+bool fs_mgr_setup_avb(fs_mgr_avb_handle* handle, fstab_rec* fstab_entry);
 
 #endif /* __CORE_FS_MGR_PRIV_AVB_H */
