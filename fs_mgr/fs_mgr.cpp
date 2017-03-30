@@ -747,14 +747,11 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     int mret = -1;
     int mount_errno = 0;
     int attempted_idx = -1;
-    int avb_ret = FS_MGR_SETUP_AVB_FAIL;
+    bool init_avb_handle = false;
+    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> avb_handle(nullptr,
+                                                                               fs_mgr_avb_close);
 
     if (!fstab) {
-        return -1;
-    }
-
-    if (fs_mgr_is_avb_used() &&
-        (avb_ret = fs_mgr_load_vbmeta_images(fstab)) == FS_MGR_SETUP_AVB_FAIL) {
         return -1;
     }
 
@@ -796,16 +793,13 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
         }
 
-        if (fs_mgr_is_avb_used() && (fstab->recs[i].fs_mgr_flags & MF_AVB)) {
-            /* If HASHTREE_DISABLED is set (cf. 'adb disable-verity'), we
-             * should set up the device without using dm-verity.
-             * The actual mounting still take place in the following
-             * mount_with_alternatives().
-             */
-            if (avb_ret == FS_MGR_SETUP_AVB_HASHTREE_DISABLED) {
-                LINFO << "AVB HASHTREE disabled";
-            } else if (fs_mgr_setup_avb(&fstab->recs[i]) !=
-                       FS_MGR_SETUP_AVB_SUCCESS) {
+        if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
+            // Initializes the avb_handle.
+            if (!init_avb_handle) {
+                avb_handle.reset(fs_mgr_avb_open(fstab));
+                init_avb_handle = true;
+            }
+            if (!fs_mgr_setup_avb(avb_handle.get(), &fstab->recs[i])) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
@@ -931,10 +925,6 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         }
     }
 
-    if (fs_mgr_is_avb_used()) {
-        fs_mgr_unload_vbmeta_images();
-    }
-
     if (error_count) {
         return -1;
     } else {
@@ -973,14 +963,11 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
     int mount_errors = 0;
     int first_mount_errno = 0;
     char *m;
-    int avb_ret = FS_MGR_SETUP_AVB_FAIL;
+    int init_avb_handle = false;
+    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> avb_handle(nullptr,
+                                                                               fs_mgr_avb_close);
 
     if (!fstab) {
-        return ret;
-    }
-
-    if (fs_mgr_is_avb_used() &&
-        (avb_ret = fs_mgr_load_vbmeta_images(fstab)) == FS_MGR_SETUP_AVB_FAIL) {
         return ret;
     }
 
@@ -1018,16 +1005,13 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
             do_reserved_size(n_blk_device, fstab->recs[i].fs_type, &fstab->recs[i], &fs_stat);
         }
 
-        if (fs_mgr_is_avb_used() && (fstab->recs[i].fs_mgr_flags & MF_AVB)) {
-            /* If HASHTREE_DISABLED is set (cf. 'adb disable-verity'), we
-             * should set up the device without using dm-verity.
-             * The actual mounting still take place in the following
-             * mount_with_alternatives().
-             */
-            if (avb_ret == FS_MGR_SETUP_AVB_HASHTREE_DISABLED) {
-                LINFO << "AVB HASHTREE disabled";
-            } else if (fs_mgr_setup_avb(&fstab->recs[i]) !=
-                       FS_MGR_SETUP_AVB_SUCCESS) {
+        if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
+            // Initializes the avb_handle.
+            if (!init_avb_handle) {
+                avb_handle.reset(fs_mgr_avb_open(fstab));
+                init_avb_handle = true;
+            }
+            if (!fs_mgr_setup_avb(avb_handle.get(), &fstab->recs[i])) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
@@ -1076,9 +1060,6 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
     }
 
 out:
-    if (fs_mgr_is_avb_used()) {
-        fs_mgr_unload_vbmeta_images();
-    }
     return ret;
 }
 
