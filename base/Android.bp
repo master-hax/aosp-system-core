@@ -75,6 +75,7 @@ cc_library {
 // ------------------------------------------------------------------------------
 cc_test {
     name: "libbase_test",
+    test_suites: ["device-tests"],
     host_supported: true,
     clang: true,
     srcs: [
