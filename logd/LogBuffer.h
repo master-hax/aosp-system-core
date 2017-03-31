@@ -115,7 +115,10 @@ class LogBuffer {
 
     int log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid, pid_t tid,
             const char* msg, unsigned short len);
+    // lastTid is a context to help detect if the valid message before is from
+    // the same source so we can differentiate chatty filter types.
     log_time flushTo(SocketClient* writer, const log_time& start,
+                     pid_t* lastTid,  // lastTid[LOG_ID_MAX]
                      bool privileged, bool security,
                      int (*filter)(const LogBufferElement* element,
                                    void* arg) = NULL,

@@ -47,6 +47,7 @@ LogTimeEntry::LogTimeEntry(LogReader& reader, SocketClient* client,
       mEnd(log_time(android_log_clockid())) {
     mTimeout.tv_sec = timeout / NS_PER_SEC;
     mTimeout.tv_nsec = timeout % NS_PER_SEC;
+    memset(mLastTid, 0, sizeof(mLastTid));
     pthread_cond_init(&threadTriggeredCondition, NULL);
     cleanSkip_Locked();
 }
@@ -151,12 +152,12 @@ void* LogTimeEntry::threadStart(void* obj) {
         unlock();
 
         if (me->mTail) {
-            logbuf.flushTo(client, start, privileged, security, FilterFirstPass,
-                           me);
+            logbuf.flushTo(client, start, NULL, privileged, security,
+                           FilterFirstPass, me);
             me->leadingDropped = true;
         }
-        start = logbuf.flushTo(client, start, privileged, security,
-                               FilterSecondPass, me);
+        start = logbuf.flushTo(client, start, me->mLastTid, privileged,
+                               security, FilterSecondPass, me);
 
         lock();
 
@@ -281,7 +282,5 @@ stop:
 }
 
 void LogTimeEntry::cleanSkip_Locked(void) {
-    for (log_id_t i = LOG_ID_MIN; i < LOG_ID_MAX; i = (log_id_t)(i + 1)) {
-        skipAhead[i] = 0;
-    }
+    memset(skipAhead, 0, sizeof(skipAhead));
 }
