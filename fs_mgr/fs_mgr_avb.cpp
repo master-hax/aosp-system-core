@@ -465,14 +465,7 @@ struct fs_mgr_avb_handle* fs_mgr_avb_open(struct fstab* fstab) {
     // of HASH partitions into h->avb_slot_verify_data, which is not required as
     // fs_mgr only deals with HASHTREE partitions.
     const char* requested_partitions[] = {nullptr};
-    std::string ab_suffix;
-    std::string slot;
-    if (fs_mgr_get_boot_config("slot", &slot)) {
-        ab_suffix = "_" + slot;
-    } else {
-        // remove slot_suffix once bootloaders update to new androidboot.slot param
-        fs_mgr_get_boot_config("slot_suffix", &ab_suffix);
-    }
+    std::string ab_suffix = fs_mgr_get_ab_suffix();
     AvbSlotVerifyResult verify_result =
         avb_slot_verify(h->avb_ops, requested_partitions, ab_suffix.c_str(),
                         fs_mgr_vbmeta_prop.allow_verification_error, &h->avb_slot_verify_data);
