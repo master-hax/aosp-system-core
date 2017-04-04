@@ -17,6 +17,12 @@
 #ifndef __CORE_FS_MGR_H
 #define __CORE_FS_MGR_H
 
+// C++ only headers
+// TODO: move this into separate header files under include/fs_mgr/*.h
+#ifdef __cplusplus
+#include <string>
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -29,9 +35,7 @@
 // turn verity off in userdebug builds.
 #define VERITY_METADATA_MAGIC_DISABLE 0x46464f56 // "VOFF"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+__BEGIN_DECLS
 
 // Verity modes
 enum verity_mode {
@@ -139,8 +143,12 @@ int fs_mgr_do_format(struct fstab_rec *fstab, bool reserve_footer);
 #define FS_MGR_SETUP_VERITY_SUCCESS 0
 int fs_mgr_setup_verity(struct fstab_rec *fstab, bool wait_for_verity_dev);
 
+__END_DECLS
+
+// C++ only functions
+// TODO: move this into separate header files under include/fs_mgr/*.h
 #ifdef __cplusplus
-}
+std::string fs_mgr_get_slot_suffix();
 #endif
 
 #endif /* __CORE_FS_MGR_H */
