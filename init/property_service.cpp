@@ -592,6 +592,8 @@ static void load_override_properties() {
  * has mounted /data.
  */
 void load_persist_props(void) {
+    /* Keep the persistent_properties_loaded is 0 before load persistent properties. */
+    persistent_properties_loaded = 0;
     load_override_properties();
     /* Read persistent properties after all default values have been loaded. */
     load_persistent_properties();
