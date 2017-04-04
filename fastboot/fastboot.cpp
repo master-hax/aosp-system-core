@@ -78,6 +78,10 @@ static const char* product = nullptr;
 static const char* cmdline = nullptr;
 static unsigned short vendor_id = 0;
 static int long_listing = 0;
+// Don't resparse files in too-big chunks.
+// libsparse will support INT_MAX, but this results in large allocations, so
+// let's keep it at 1GB to avoid memory pressure on the host.
+#define RESPARSE_LIMIT (1 * 1024 * 1024 * 1024)
 static int64_t sparse_limit = -1;
 static int64_t target_sparse_limit = -1;
 
@@ -788,8 +792,13 @@ static int64_t get_sparse_limit(Transport* transport, int64_t size) {
         }
     }
 
+    // Check for the case where we don't need to resparse first.
+    if (size < target_sparse_limit) {
+        return 0;
+    }
+
     if (size > limit) {
-        return limit;
+        return std::min(limit, (int64_t)RESPARSE_LIMIT);
     }
 
     return 0;
