@@ -520,6 +520,12 @@ static void load_properties_from_file(const char* filename, const char* filter) 
 }
 
 static void load_persistent_properties() {
+    // Return quickly in cryptkeeper mode.
+    std::string vold_status = property_get("vold.decrypt");
+    if (vold_status == "trigger_restart_min_framework") {
+        return;
+    }
+
     persistent_properties_loaded = 1;
 
     std::unique_ptr<DIR, int(*)(DIR*)> dir(opendir(PERSISTENT_PROPERTY_DIR), closedir);
