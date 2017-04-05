@@ -42,13 +42,13 @@
 #include <ext4_utils/ext4_sb.h>
 #include <ext4_utils/ext4_utils.h>
 #include <ext4_utils/wipe.h>
+#include <fs_mgr/avb.h>
 #include <linux/fs.h>
 #include <linux/loop.h>
 #include <logwrap/logwrap.h>
 #include <private/android_logger.h>  // for __android_log_is_debuggable()
 
 #include "fs_mgr_priv.h"
-#include "fs_mgr_priv_avb.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
 #define KEY_IN_FOOTER  "footer"
@@ -748,8 +748,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     int mount_errno = 0;
     int attempted_idx = -1;
     bool init_avb_handle = false;
-    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> avb_handle(nullptr,
-                                                                               fs_mgr_avb_close);
+    android::fs_mgr::avb_handle_ptr avb_handle(nullptr, android::fs_mgr::AvbClose);
 
     if (!fstab) {
         return -1;
@@ -796,10 +795,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
             // Initializes the avb_handle.
             if (!init_avb_handle) {
-                avb_handle.reset(fs_mgr_avb_open(fstab));
+                avb_handle.reset(android::fs_mgr::AvbOpen(fstab));
                 init_avb_handle = true;
             }
-            if (!fs_mgr_setup_avb(avb_handle.get(), &fstab->recs[i])) {
+            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i])) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
@@ -964,8 +963,7 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
     int first_mount_errno = 0;
     char *m;
     int init_avb_handle = false;
-    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> avb_handle(nullptr,
-                                                                               fs_mgr_avb_close);
+    android::fs_mgr::avb_handle_ptr avb_handle(nullptr, android::fs_mgr::AvbClose);
 
     if (!fstab) {
         return ret;
@@ -1008,10 +1006,10 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
         if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
             // Initializes the avb_handle.
             if (!init_avb_handle) {
-                avb_handle.reset(fs_mgr_avb_open(fstab));
+                avb_handle.reset(android::fs_mgr::AvbOpen(fstab));
                 init_avb_handle = true;
             }
-            if (!fs_mgr_setup_avb(avb_handle.get(), &fstab->recs[i])) {
+            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i])) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
