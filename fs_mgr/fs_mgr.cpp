@@ -798,7 +798,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
                 avb_handle.reset(android::fs_mgr::AvbOpen(fstab));
                 init_avb_handle = true;
             }
-            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i])) {
+            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i], true)) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
@@ -1009,7 +1009,7 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
                 avb_handle.reset(android::fs_mgr::AvbOpen(fstab));
                 init_avb_handle = true;
             }
-            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i])) {
+            if (!android::fs_mgr::AvbSetup(avb_handle.get(), &fstab->recs[i], true)) {
                 LERROR << "Failed to set up AVB on partition: "
                        << fstab->recs[i].mount_point << ", skipping!";
                 /* Skips mounting the device. */
