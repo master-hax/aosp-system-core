@@ -17,8 +17,11 @@
 #ifndef _INIT_DEVICES_H
 #define _INIT_DEVICES_H
 
-#include <functional>
 #include <sys/stat.h>
+
+#include <functional>
+#include <string>
+#include <vector>
 
 enum coldboot_action_t {
     // coldboot continues without creating the device for the uevent
@@ -58,8 +61,8 @@ int get_device_fd();
 // Exposed for testing
 void add_platform_device(const char* path);
 void remove_platform_device(const char* path);
-char** get_character_device_symlinks(uevent* uevent);
-char** get_block_device_symlinks(struct uevent* uevent);
-void sanitize_partition_name(char* s);
+std::vector<std::string> get_character_device_symlinks(uevent* uevent);
+std::vector<std::string> get_block_device_symlinks(uevent* uevent);
+void sanitize_partition_name(std::string* string);
 
 #endif /* _INIT_DEVICES_H */
