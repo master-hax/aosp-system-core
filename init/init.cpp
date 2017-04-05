@@ -46,6 +46,8 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <fs_mgr/avb.h>
+#include <fs_mgr/slotselect.h>
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 
@@ -482,15 +484,17 @@ static void export_kernel_boot_props() {
 
 static constexpr char android_dt_dir[] = "/proc/device-tree/firmware/android";
 
-static bool is_dt_compatible() {
-    std::string dt_value;
-    std::string file_name = StringPrintf("%s/compatible", android_dt_dir);
-
-    if (android::base::ReadFileToString(file_name, &dt_value)) {
-        // trim the trailing '\0' out, otherwise the comparison
-        // will produce false-negatives.
-        dt_value.resize(dt_value.size() - 1);
-        if (dt_value == "android,firmware") {
+/* fills 'dt_value' with the underlying device tree value string without
+ * the trailing '\0'. Returns true if 'dt_value' has a valid string, 'false'
+ * otherwise.
+ */
+static bool read_dt_file(const std::string& file_name, std::string* dt_value)
+{
+    if (android::base::ReadFileToString(file_name, dt_value)) {
+        if (!dt_value->empty()) {
+            // trim the trailing '\0' out, otherwise the comparison
+            // will produce false-negatives.
+            dt_value->resize(dt_value->size() - 1);
             return true;
         }
     }
@@ -498,17 +502,53 @@ static bool is_dt_compatible() {
     return false;
 }
 
+static bool is_dt_compatible() {
+    std::string dt_value;
+    std::string file_name = android_dt_dir + "/compatible";
+
+    if (read_dt_file(file_name, &dt_value)) {
+        if (dt_value == "android,firmware") {
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool is_dt_fstab_compatible() {
     std::string dt_value;
-    std::string file_name = StringPrintf("%s/%s/compatible", android_dt_dir, "fstab");
+    std::string file_name = android_dt_dir + "/fstab/compatible";
 
-    if (android::base::ReadFileToString(file_name, &dt_value)) {
-        dt_value.resize(dt_value.size() - 1);
+    if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,fstab") {
             return true;
         }
     }
+    return false;
+}
 
+// Reads the vbmeta partitions from device tree. The dt_value is the
+// partition names (withou ab_suffix) concatenated by comma. e.g.,
+// "boot,system,vendor".
+static std::string read_vbmeta_partitions_from_dt() {
+    std::string dt_value;
+    std::string file_name = android_dt_dir + "/vbmeta/parts";
+
+    if (!is_dt_vbmeta_compatible()) {
+        return "";
+    }
+    if (read_dt_file(file_name, &dt_value)) return dt_value
+    return "";
+}
+
+static bool is_dt_vbmeta_compatible() {
+    std::string dt_value;
+    std::string file_name = android_dt_dir + "/vbmeta/compatible";
+
+    if (read_dt_file(file_name, &dt_value)) {
+        if (dt_value == "android,vbmeta") {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -943,6 +983,65 @@ static bool early_mount_one(struct fstab_rec* rec) {
     return true;
 }
 
+static bool mount_early_partitions(const std::vector<fstab_rec*>& fstab_recs)
+{
+    bool init_avb_handle = false;
+    android::fs_mgr::avb_handle_ptr avb_handle(nullptr, android::fs_mgr::AvbClose);
+
+    for (auto rec : fstab_recs) {
+        bool need_create_dm_device = false;
+
+        if (fs_mgr_is_avb(rec)) {
+            if (!init_avb_handle) {
+                avb_handle.reset(android::fs_mgr::AvbOpen(fstab));
+                init_avb_handle = true;
+            }
+            if (android::fs_mgr::AvbHashtreeDisabled(avb_handle.get())) {
+                LOG(INFO) << "avb hashtree disabled for '" << rec->mount_point << "'";
+            } else if (android::fs_mgr::AvbSetup(avb_handle.get(), rec, false)) {
+                need_create_dm_device = true;
+            } else {
+                PLOG(ERROR) << "early_mount: failed to set up AVB on partition: '"
+                            << rec->mount_point << "'";
+                return false;
+            }
+        } else if (fs_mgr_is_verified(rec)) {
+            // setup verity and create the dm-XX block device
+            // needed to mount this partition
+            int ret = fs_mgr_setup_verity(rec, false);
+            if (ret == FS_MGR_SETUP_VERITY_FAIL) {
+                PLOG(ERROR) << "early_mount: failed to setup verity for '"
+                            << rec->mount_point << "'";
+                return false;
+            } else if (ret == FS_MGR_SETUP_VERITY_DISABLED) {
+                LOG(INFO) << "verity disabled for '" << rec->mount_point << "'";
+            } else if (ret == FS_MGR_SETUP_VERITY_SUCCESS) {
+                need_create_dm_device = true;
+            }
+        }
+
+        if (need_create_dm_device) {
+            // The exact block device name is added as a mount source by
+            // fs_mgr_setup_verity() in ->blk_device as "/dev/block/dm-XX"
+            // We create that device by running coldboot on /sys/block/dm-XX
+            std::string dm_device(basename(rec->blk_device));
+            std::string syspath = StringPrintf("/sys/block/%s", dm_device.c_str());
+            device_init(syspath.c_str(), [&](uevent* uevent) -> coldboot_action_t {
+                if (uevent->device_name && !strcmp(dm_device.c_str(), uevent->device_name)) {
+                    LOG(VERBOSE) << "early_mount: creating dm-verity device : " << dm_device;
+                    return COLDBOOT_STOP;
+                }
+                return COLDBOOT_CONTINUE;
+            });
+        }
+
+        if (fs_mgr_do_mount_one(rec)) {
+            PLOG(ERROR) << "early_mount: failed to mount '" << rec->mount_point << "'";
+            return false;
+        }
+    }
+}
+
 // Creates devices with uevent->partition_name matching one in the in/out
 // partition_names. Note that the partition_names MUST have A/B suffix
 // when A/B is used. Found partitions will then be removed from the
@@ -990,6 +1089,24 @@ static bool get_early_partitions(const std::vector<fstab_rec*>& early_fstab_recs
     std::string meta_partition;
     out_partitions->clear();
     *out_need_verity = false;
+
+    // AVB (external/avb/libavb) metadata is used to setup dm-verity.
+    // Note that libavb verifies AVB metadata on all partitions together,
+    // e.g., the read_vbmeta_partitions_from_dt() will return "vbmeta,boot,system,vendor"
+    // for libavb to verify metadata, even if we only need to early mount /vendor.
+    if (is_dt_vbmeta_compatible()) {
+        std::string vbmeta_parts = read_vbmeta_partitions_from_dt();
+        if (vbmeta_parts.empty()) {
+            return false;
+        }
+        std::vector<std::string> partitions = android::base::Split(vbmeta_parts, ",");
+        std::string ab_suffix = android::fs_mgr::GetSlotSuffix();
+        for (partition : partitions) {
+            out_partitions->emplace(partition + ab_suffix);
+        }
+        *out_need_verity = true;
+        return true;
+    }
 
     for (auto fstab_rec : early_fstab_recs) {
         // don't allow verifyatboot for early mounted partitions
@@ -1088,9 +1205,7 @@ static bool early_mount() {
                     [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
     }
 
-    for (auto fstab_rec : early_fstab_recs) {
-        if (!early_mount_one(fstab_rec)) goto done;
-    }
+    if (!mount_early_partitions(early_fstab_recs)) goto done;
     success = true;
 
 done:
