@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <fs_mgr/avb.h>
+
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -41,7 +43,6 @@
 #include "fs_mgr.h"
 #include "fs_mgr_avb_ops.h"
 #include "fs_mgr_priv.h"
-#include "fs_mgr_priv_avb.h"
 #include "fs_mgr_priv_dm_ioctl.h"
 #include "fs_mgr_priv_sha.h"
 
@@ -87,6 +88,8 @@
         hashtree_desc.fec_offset / hashtree_desc.data_block_size, /* fec_start */  \
         VERITY_TABLE_OPT_IGNZERO, VERITY_TABLE_OPT_RESTART
 
+namespace {
+
 enum HashAlgorithm {
     kInvalid = 0,
     kSHA256 = 1,
@@ -102,7 +105,7 @@ struct androidboot_vbmeta {
 
 androidboot_vbmeta fs_mgr_vbmeta_prop;
 
-static inline bool nibble_value(const char& c, uint8_t* value) {
+inline bool nibble_value(const char& c, uint8_t* value) {
     FS_MGR_CHECK(value != nullptr);
 
     switch (c) {
@@ -122,7 +125,7 @@ static inline bool nibble_value(const char& c, uint8_t* value) {
     return true;
 }
 
-static bool hex_to_bytes(uint8_t* bytes, size_t bytes_len, const std::string& hex) {
+bool hex_to_bytes(uint8_t* bytes, size_t bytes_len, const std::string& hex) {
     FS_MGR_CHECK(bytes != nullptr);
 
     if (hex.size() % 2 != 0) {
@@ -145,7 +148,7 @@ static bool hex_to_bytes(uint8_t* bytes, size_t bytes_len, const std::string& he
     return true;
 }
 
-static std::string bytes_to_hex(const uint8_t* bytes, size_t bytes_len) {
+std::string bytes_to_hex(const uint8_t* bytes, size_t bytes_len) {
     FS_MGR_CHECK(bytes != nullptr);
 
     static const char* hex_digits = "0123456789abcdef";
@@ -158,7 +161,7 @@ static std::string bytes_to_hex(const uint8_t* bytes, size_t bytes_len) {
     return hex;
 }
 
-static bool load_vbmeta_prop(androidboot_vbmeta* vbmeta_prop) {
+bool load_vbmeta_prop(androidboot_vbmeta* vbmeta_prop) {
     FS_MGR_CHECK(vbmeta_prop != nullptr);
 
     std::string cmdline;
@@ -214,8 +217,8 @@ static bool load_vbmeta_prop(androidboot_vbmeta* vbmeta_prop) {
 }
 
 template <typename Hasher>
-static std::pair<size_t, bool> verify_vbmeta_digest(const AvbSlotVerifyData& verify_data,
-                                                    const androidboot_vbmeta& vbmeta_prop) {
+std::pair<size_t, bool> verify_vbmeta_digest(const AvbSlotVerifyData& verify_data,
+                                             const androidboot_vbmeta& vbmeta_prop) {
     size_t total_size = 0;
     Hasher hasher;
     for (size_t n = 0; n < verify_data.num_vbmeta_images; n++) {
@@ -229,8 +232,8 @@ static std::pair<size_t, bool> verify_vbmeta_digest(const AvbSlotVerifyData& ver
     return std::make_pair(total_size, matched);
 }
 
-static bool verify_vbmeta_images(const AvbSlotVerifyData& verify_data,
-                                 const androidboot_vbmeta& vbmeta_prop) {
+bool verify_vbmeta_images(const AvbSlotVerifyData& verify_data,
+                          const androidboot_vbmeta& vbmeta_prop) {
     if (verify_data.num_vbmeta_images == 0) {
         LERROR << "No vbmeta images";
         return false;
@@ -261,10 +264,10 @@ static bool verify_vbmeta_images(const AvbSlotVerifyData& verify_data,
     return true;
 }
 
-static bool hashtree_load_verity_table(struct dm_ioctl* io, const std::string& dm_device_name,
-                                       int fd, const std::string& blk_device,
-                                       const AvbHashtreeDescriptor& hashtree_desc,
-                                       const std::string& salt, const std::string& root_digest) {
+bool hashtree_load_verity_table(struct dm_ioctl* io, const std::string& dm_device_name, int fd,
+                                const std::string& blk_device,
+                                const AvbHashtreeDescriptor& hashtree_desc, const std::string& salt,
+                                const std::string& root_digest) {
     fs_mgr_verity_ioctl_init(io, dm_device_name, DM_STATUS_TABLE_FLAG);
 
     // The buffer consists of [dm_ioctl][dm_target_spec][verity_params].
@@ -316,9 +319,9 @@ static bool hashtree_load_verity_table(struct dm_ioctl* io, const std::string& d
     return true;
 }
 
-static bool hashtree_dm_verity_setup(struct fstab_rec* fstab_entry,
-                                     const AvbHashtreeDescriptor& hashtree_desc,
-                                     const std::string& salt, const std::string& root_digest) {
+bool hashtree_dm_verity_setup(struct fstab_rec* fstab_entry,
+                              const AvbHashtreeDescriptor& hashtree_desc, const std::string& salt,
+                              const std::string& root_digest) {
     // Gets the device mapper fd.
     android::base::unique_fd fd(open("/dev/device-mapper", O_RDWR));
     if (fd < 0) {
@@ -370,10 +373,9 @@ static bool hashtree_dm_verity_setup(struct fstab_rec* fstab_entry,
     return true;
 }
 
-static bool get_hashtree_descriptor(const std::string& partition_name,
-                                    const AvbSlotVerifyData& verify_data,
-                                    AvbHashtreeDescriptor* out_hashtree_desc, std::string* out_salt,
-                                    std::string* out_digest) {
+bool get_hashtree_descriptor(const std::string& partition_name, const AvbSlotVerifyData& verify_data,
+                             AvbHashtreeDescriptor* out_hashtree_desc, std::string* out_salt,
+                             std::string* out_digest) {
     bool found = false;
     const uint8_t* desc_partition_name;
 
@@ -439,7 +441,12 @@ static bool get_hashtree_descriptor(const std::string& partition_name,
     return true;
 }
 
-struct fs_mgr_avb_handle* fs_mgr_avb_open(struct fstab* fstab) {
+}  // unnamed namespace
+
+namespace android {
+namespace fs_mgr {
+
+avb_handle* AvbOpen(struct fstab* fstab) {
     FS_MGR_CHECK(fstab != nullptr);
 
     // Gets the expected hash value of vbmeta images from
@@ -448,10 +455,9 @@ struct fs_mgr_avb_handle* fs_mgr_avb_open(struct fstab* fstab) {
         return nullptr;
     }
 
-    std::unique_ptr<fs_mgr_avb_handle, decltype(&fs_mgr_avb_close)> h(
-        new (std::nothrow) fs_mgr_avb_handle, fs_mgr_avb_close);
+    avb_handle_ptr h(new (std::nothrow) avb_handle, AvbClose);
     if (!h) {
-        LERROR << "Failed to allocate fs_mgr_avb_handle";
+        LERROR << "Failed to allocate avb_handle_ptr";
         return nullptr;
     }
 
@@ -511,7 +517,7 @@ struct fs_mgr_avb_handle* fs_mgr_avb_open(struct fstab* fstab) {
     return nullptr;
 }
 
-void fs_mgr_avb_close(struct fs_mgr_avb_handle* handle) {
+void AvbClose(avb_handle* handle) {
     if (!handle) return;
 
     if (handle->avb_slot_verify_data != nullptr) {
@@ -524,7 +530,7 @@ void fs_mgr_avb_close(struct fs_mgr_avb_handle* handle) {
     delete handle;
 }
 
-bool fs_mgr_setup_avb(struct fs_mgr_avb_handle* handle, struct fstab_rec* fstab_entry) {
+bool AvbSetup(avb_handle* handle, struct fstab_rec* fstab_entry) {
     if (!handle || !handle->avb_slot_verify_data ||
         handle->avb_slot_verify_data->num_vbmeta_images < 1) {
         return false;
@@ -559,3 +565,6 @@ bool fs_mgr_setup_avb(struct fs_mgr_avb_handle* handle, struct fstab_rec* fstab_
     }
     return true;
 }
+
+}  // namespace fs_mgr
+}  // namespace android
