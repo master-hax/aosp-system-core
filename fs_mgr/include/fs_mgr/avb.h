@@ -56,7 +56,9 @@ avb_handle* AvbOpen(fstab* fstab);
 
 void AvbClose(avb_handle* handle);
 
-bool AvbSetup(avb_handle* handle, fstab_rec* fstab_entry);
+bool AvbSetup(avb_handle* handle, fstab_rec* fstab_entry, bool wait_for_verity_dev);
+
+bool AvbHashtreeDisabled(avb_handle* handle);
 
 using avb_handle_ptr = std::unique_ptr<avb_handle, decltype(&AvbClose)>;
 
