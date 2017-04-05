@@ -64,6 +64,15 @@ TEST(AshmemTest, BasicTest) {
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ, &region2));
     ASSERT_EQ(0, memcmp(region2, &data, size));
     EXPECT_EQ(0, munmap(region2, size));
+
+    constexpr off_t offset = 1;
+    auto lseekOff = lseek(fd.get(), offset, SEEK_SET);
+    ASSERT_EQ(offset, lseekOff);
+
+    uint8_t readData[size - offset];
+    auto readSize = TEMP_FAILURE_RETRY(read(fd.get(), readData, sizeof(readData)));
+    ASSERT_EQ(static_cast<ssize_t>(sizeof(readData)), readSize);
+    EXPECT_EQ(0, memcmp(data + offset, readData, sizeof(readData)));
 }
 
 TEST(AshmemTest, ForkTest) {
