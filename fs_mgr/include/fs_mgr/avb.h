@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef __CORE_FS_MGR_PRIV_AVB_H
-#define __CORE_FS_MGR_PRIV_AVB_H
+#ifndef ANDROID_FS_MGR_AVB_H
+#define ANDROID_FS_MGR_AVB_H
+
+#include <memory>
 
 #include <libavb/libavb.h>
+
 #include "fs_mgr.h"
+
+namespace android {
+namespace fs_mgr {
 
 enum AvbHandleStatus {
     kFsMgrAvbHandleSuccess = 0,
     kFsMgrAvbHandleHashtreeDisabled = 1,
 };
 
-struct fs_mgr_avb_handle {
+struct avb_handle {
     AvbSlotVerifyData* avb_slot_verify_data;
     AvbOps* avb_ops;
     AvbHandleStatus status;
@@ -46,10 +52,15 @@ struct fs_mgr_avb_handle {
  *   - a valid handle with status kFsMgrAvbHandleSuccess: the metadata
  *     is verified and then can be trusted.
  */
-fs_mgr_avb_handle* fs_mgr_avb_open(fstab* fstab);
+avb_handle* AvbOpen(fstab* fstab);
 
-void fs_mgr_avb_close(fs_mgr_avb_handle* handle);
+void AvbClose(avb_handle* handle);
 
-bool fs_mgr_setup_avb(fs_mgr_avb_handle* handle, fstab_rec* fstab_entry);
+bool AvbSetup(avb_handle* handle, fstab_rec* fstab_entry);
 
-#endif /* __CORE_FS_MGR_PRIV_AVB_H */
+using avb_handle_ptr = std::unique_ptr<avb_handle, decltype(&AvbClose)>;
+
+}  // namespace fs_mgr
+}  // namespace android
+
+#endif /* ANDROID_FS_MGR_AVB_H */
