@@ -25,11 +25,11 @@
 #ifndef __CORE_FS_MGR_AVB_OPS_H
 #define __CORE_FS_MGR_AVB_OPS_H
 
+#include <string>
+
 #include <libavb/libavb.h>
 
 #include "fs_mgr.h"
-
-__BEGIN_DECLS
 
 /* Allocates a "dummy" AvbOps instance solely for use in user-space.
  * Returns nullptr on OOM.
@@ -47,13 +47,21 @@ __BEGIN_DECLS
  *  - returns device is unlocked regardless of the actual state.
  *  - returns a dummy guid for any partition.
  *
+ * Two overloaded fs_mgr_dummy_avb_ops_new() functions are provided:
+ *   - fs_mgr_dummy_avb_ops_new(fstab* fstab): need to contain a /misc
+ *     entry for it to extract by name prefix. e.g.,
+ *     /dev/block/platform/soc.0/7824900.sdhci/by-name/misc
+ *
+ *   - fs_mgr_dummy_avb_ops_new(const std::string&): need to provide the
+ *     device file by name prefix. e.g.,
+ *     /dev/block/platform/soc.0/7824900.sdhci/by-name
+ *
  * Frees with fs_mgr_dummy_avb_ops_free().
  */
 AvbOps* fs_mgr_dummy_avb_ops_new(struct fstab* fstab);
+AvbOps* fs_mgr_dummy_avb_ops_new(const std::string& device_file_by_name_prefix);
 
 /* Frees an AvbOps instance previously allocated with fs_mgr_avb_ops_new(). */
 void fs_mgr_dummy_avb_ops_free(AvbOps* ops);
-
-__END_DECLS
 
 #endif /* __CORE_FS_MGR_AVB_OPS_H */

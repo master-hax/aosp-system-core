@@ -170,11 +170,8 @@ static AvbIOResult dummy_get_unique_guid_for_partition(AvbOps* ops ATTRIBUTE_UNU
     return AVB_IO_RESULT_OK;
 }
 
-AvbOps* fs_mgr_dummy_avb_ops_new(struct fstab* fstab) {
+static AvbOps* do_dummy_avb_ops_new() {
     AvbOps* ops;
-
-    fstab_by_name_prefix = extract_by_name_prefix(fstab);
-    if (fstab_by_name_prefix.empty()) return nullptr;
 
     ops = (AvbOps*)calloc(1, sizeof(AvbOps));
     if (ops == nullptr) {
@@ -192,6 +189,24 @@ AvbOps* fs_mgr_dummy_avb_ops_new(struct fstab* fstab) {
     ops->get_unique_guid_for_partition = dummy_get_unique_guid_for_partition;
 
     return ops;
+}
+
+AvbOps* fs_mgr_dummy_avb_ops_new(const std::string& device_file_by_name_prefix) {
+    if (device_file_by_name_prefix.empty()) return nullptr;
+    fstab_by_name_prefix = device_file_by_name_prefix;
+
+    if (fstab_by_name_prefix.back() != '/') {
+        fstab_by_name_prefix += '/';
+    }
+
+    return do_dummy_avb_ops_new();
+}
+
+AvbOps* fs_mgr_dummy_avb_ops_new(struct fstab* fstab) {
+    fstab_by_name_prefix = extract_by_name_prefix(fstab);
+    if (fstab_by_name_prefix.empty()) return nullptr;
+
+    return do_dummy_avb_ops_new();
 }
 
 void fs_mgr_dummy_avb_ops_free(AvbOps* ops) { free(ops); }

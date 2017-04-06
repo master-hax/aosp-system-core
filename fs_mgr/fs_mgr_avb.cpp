@@ -321,7 +321,7 @@ bool hashtree_load_verity_table(struct dm_ioctl* io, const std::string& dm_devic
 
 bool hashtree_dm_verity_setup(struct fstab_rec* fstab_entry,
                               const AvbHashtreeDescriptor& hashtree_desc, const std::string& salt,
-                              const std::string& root_digest) {
+                              const std::string& root_digest, bool wait_for_verity_dev) {
     // Gets the device mapper fd.
     android::base::unique_fd fd(open("/dev/device-mapper", O_RDWR));
     if (fd < 0) {
@@ -366,7 +366,7 @@ bool hashtree_dm_verity_setup(struct fstab_rec* fstab_entry,
     fstab_entry->blk_device = strdup(verity_blk_name.c_str());
 
     // Makes sure we've set everything up properly.
-    if (fs_mgr_test_access(verity_blk_name.c_str()) < 0) {
+    if (wait_for_verity_dev && fs_mgr_test_access(verity_blk_name.c_str()) < 0) {
         return false;
     }
 
@@ -446,9 +446,7 @@ bool get_hashtree_descriptor(const std::string& partition_name, const AvbSlotVer
 namespace android {
 namespace fs_mgr {
 
-avb_handle* AvbOpen(struct fstab* fstab) {
-    FS_MGR_CHECK(fstab != nullptr);
-
+avb_handle* DoAvbOpen(struct fstab* fstab, const std::string& device_file_by_name_prefix) {
     // Gets the expected hash value of vbmeta images from
     // kernel cmdline.
     if (!load_vbmeta_prop(&fs_mgr_vbmeta_prop)) {
@@ -461,7 +459,12 @@ avb_handle* AvbOpen(struct fstab* fstab) {
         return nullptr;
     }
 
-    h->avb_ops = fs_mgr_dummy_avb_ops_new(fstab);
+    if (fstab) {
+        h->avb_ops = fs_mgr_dummy_avb_ops_new(fstab);
+    } else {
+        h->avb_ops = fs_mgr_dummy_avb_ops_new(device_file_by_name_prefix);
+    }
+
     if (h->avb_ops == nullptr) {
         LERROR << "Failed to allocate dummy avb_ops";
         return nullptr;
@@ -517,6 +520,14 @@ avb_handle* AvbOpen(struct fstab* fstab) {
     return nullptr;
 }
 
+avb_handle* AvbOpen(struct fstab* fstab) {
+    return DoAvbOpen(fstab, "");
+}
+
+avb_handle* AvbOpen(const std::string& device_file_by_name_prefix) {
+    return DoAvbOpen(nullptr, device_file_by_name_prefix);
+}
+
 void AvbClose(avb_handle* handle) {
     if (!handle) return;
 
@@ -530,7 +541,10 @@ void AvbClose(avb_handle* handle) {
     delete handle;
 }
 
-bool AvbSetup(avb_handle* handle, struct fstab_rec* fstab_entry) {
+// Prepares the AVB enabled (MF_AVB) fstab record for mount.
+// The 'wait_for_verity_dev' parameter makes this function wait for the
+// verity device to get created before return.
+bool AvbSetup(avb_handle* handle, struct fstab_rec* fstab_entry, bool wait_for_verity_dev) {
     if (!handle || !handle->avb_slot_verify_data ||
         handle->avb_slot_verify_data->num_vbmeta_images < 1) {
         return false;
@@ -560,10 +574,16 @@ bool AvbSetup(avb_handle* handle, struct fstab_rec* fstab_entry) {
     }
 
     // Converts HASHTREE descriptor to verity_table_params.
-    if (!hashtree_dm_verity_setup(fstab_entry, hashtree_descriptor, salt, root_digest)) {
+    if (!hashtree_dm_verity_setup(fstab_entry, hashtree_descriptor, salt, root_digest,
+                                  wait_for_verity_dev)) {
         return false;
     }
     return true;
+}
+
+bool AvbHashtreeDisabled(avb_handle* handle) {
+    if (!handle) return false;
+    return handle->status == kFsMgrAvbHandleHashtreeDisabled;
 }
 
 }  // namespace fs_mgr

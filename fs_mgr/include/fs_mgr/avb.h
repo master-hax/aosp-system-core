@@ -42,21 +42,36 @@ struct avb_handle {
  * against the androidboot.vbmeta.{hash_alg, size, digest} values
  * from /proc/cmdline.
  *
+ * Two overloaded AvbOpen() functions are provided:
+ *
+ *   - AvbOpen(fstab* fstab): need to contain a /misc entry for it to extract
+ *     by name prefix. e.g.,
+ *     /dev/block/platform/soc.0/7824900.sdhci/by-name/misc
+ *
+ *   - AvbOpen(const std::string&): need to provide the device file by name prefix. e.g.,
+ *     /dev/block/platform/soc.0/7824900.sdhci/by-name
+ *
  * Possible return values:
  *   - nullptr: any error when reading and verifying the metadata,
  *     e.g., I/O error, digest value mismatch, size mismatch, etc.
+ *
  *   - a valid handle with status kFsMgrAvbHandleHashtreeDisabled:
  *     to support the 'avbctl disable-verity' feature in Android.
  *     It's very helpful for developers to make the filesystem writable to
  *     allow replacing binaries on the device.
+ *
  *   - a valid handle with status kFsMgrAvbHandleSuccess: the metadata
  *     is verified and then can be trusted.
  */
 avb_handle* AvbOpen(fstab* fstab);
 
+avb_handle* AvbOpen(const std::string& device_file_by_name_prefix);
+
 void AvbClose(avb_handle* handle);
 
-bool AvbSetup(avb_handle* handle, fstab_rec* fstab_entry);
+bool AvbSetup(avb_handle* handle, fstab_rec* fstab_entry, bool wait_for_verity_dev);
+
+bool AvbHashtreeDisabled(avb_handle* handle);
 
 using avb_handle_ptr = std::unique_ptr<avb_handle, decltype(&AvbClose)>;
 
