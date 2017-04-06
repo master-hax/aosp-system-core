@@ -25,9 +25,9 @@
 template <std::vector<std::string> (*Function)(uevent*)>
 void test_get_symlinks(const std::string& platform_device_name, uevent* uevent,
                        const std::vector<std::string> expected_links) {
-    add_platform_device(platform_device_name.c_str());
-    auto platform_device_remover = android::base::make_scope_guard(
-        [&platform_device_name]() { remove_platform_device(platform_device_name.c_str()); });
+    platform_devices.emplace_back(platform_device_name);
+    auto platform_device_remover =
+        android::base::make_scope_guard([]() { platform_devices.clear(); });
 
     std::vector<std::string> result = Function(uevent);
 
