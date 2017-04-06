@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "init.h"
+
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -59,7 +61,6 @@
 #include "devices.h"
 #include "fs_mgr.h"
 #include "import_parser.h"
-#include "init.h"
 #include "init_parser.h"
 #include "keychords.h"
 #include "log.h"
