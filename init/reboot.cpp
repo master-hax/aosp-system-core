@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "reboot.h"
+
 #include <dirent.h>
 #include <fcntl.h>
 #include <mntent.h>
@@ -32,6 +35,7 @@
 #include <vector>
 
 #include <android-base/file.h>
+#include <android-base/logging.h>
 #include <android-base/macros.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
@@ -41,11 +45,8 @@
 #include <fs_mgr.h>
 #include <logwrap/logwrap.h>
 
-#include "log.h"
 #include "property_service.h"
-#include "reboot.h"
 #include "service.h"
-#include "util.h"
 
 using android::base::StringPrintf;
 
