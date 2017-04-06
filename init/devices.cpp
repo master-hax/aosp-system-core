@@ -79,16 +79,8 @@ struct perm_node {
     struct listnode plist;
 };
 
-struct platform_node {
-    char *name;
-    char *path;
-    int path_len;
-    struct listnode list;
-};
-
 static list_declare(sys_perms);
 static list_declare(dev_perms);
-static list_declare(platform_names);
 
 int add_dev_perms(const char *name, const char *attr,
                   mode_t perm, unsigned int uid, unsigned int gid,
@@ -273,75 +265,60 @@ out:
     }
 }
 
-void add_platform_device(const char* path) {
-    int path_len = strlen(path);
-    struct platform_node *bus;
-    const char *name = path;
+class PlatformDeviceList {
+  public:
+    void Add(const std::string& path);
+    bool Find(const std::string& path, std::string* name, std::string::size_type* path_length) const;
+    void Remove(const std::string& path);
 
-    if (!strncmp(path, "/devices/", 9)) {
-        name += 9;
-        if (!strncmp(name, "platform/", 9))
-            name += 9;
+  private:
+    struct DeviceEntry {
+        DeviceEntry::DeviceEntry(const std::string& name, const std::string& path)
+            : name(name), path(path) {}
+        std::string& name;
+        std::string& path;
+    };
+    std::vector<std::pair<std::string, std::string>> platform_devices_;
+};
+
+// TODO: This will become a class member at some point
+std::unique_ptr<PlatformDeviceList>* platform_devices;
+
+void PlatformDeviceList::Add(const std::string& path) {
+    static constexpr devices_platform_prefix = "/devices/platform";
+    static constexpr devices_prefix = "/devices/";
+
+    std::string name;
+    if (android::base::StartsWith(path, devices_platform_prefix)) {
+        name = path.substr(devices_platform_prefix.length());
+    } else if (android::base::StartsWith(path, devices_prefix)) {
+        name = path.substr(devices_prefix.length());
+    } else {
+        name = path;
     }
 
-    LOG(VERBOSE) << "adding platform device " << name << " (" << path << ")";
-
-    bus = (platform_node*) calloc(1, sizeof(struct platform_node));
-    bus->path = strdup(path);
-    bus->path_len = path_len;
-    bus->name = bus->path + (name - path);
-    list_add_tail(&platform_names, &bus->list);
+    platform_devices_.emplace_back(name, path);
 }
 
-/*
- * given a path that may start with a platform device, find the length of the
- * platform device prefix.  If it doesn't start with a platform device, return
- * 0.
- */
-static struct platform_node *find_platform_device(const char *path)
-{
-    int path_len = strlen(path);
-    struct listnode *node;
-    struct platform_node *bus;
-
-    list_for_each_reverse(node, &platform_names) {
-        bus = node_to_item(node, struct platform_node, list);
-        if ((bus->path_len < path_len) &&
-                (path[bus->path_len] == '/') &&
-                !strncmp(path, bus->path, bus->path_len))
-            return bus;
-    }
-
-    return NULL;
-}
-
-void remove_platform_device(const char* path) {
-    struct listnode *node;
-    struct platform_node *bus;
-
-    list_for_each_reverse(node, &platform_names) {
-        bus = node_to_item(node, struct platform_node, list);
-        if (!strcmp(path, bus->path)) {
-            LOG(INFO) << "removing platform device " << bus->name;
-            free(bus->path);
-            list_remove(node);
-            free(bus);
-            return;
+// Given a path that may start with a platform device, find the length of the
+// platform device prefix.  If it doesn't start with a platform device, return false
+bool PlatformDeviceList::Find(const std::string& path, std::string* name,
+                              std::string::size_type* path_length) {
+    for (auto it = platform_devices_.rbegin(); it != platform_devices_.rend(); ++it) {
+        auto platform_device_path_length = it->path.length();
+        if (platform_device_path_length < path.length() &&
+            path[platform_device_path_length] == '/' && android::base::StartsWith(path, it->path)) {
+            if (name) *name = it->name;
+            if (path_length) *path_length = it->path.length();
+            return true;
         }
     }
+    return false;
 }
 
-static void destroy_platform_devices() {
-    struct listnode* node;
-    struct listnode* n;
-    struct platform_node* bus;
-
-    list_for_each_safe(node, n, &platform_names) {
-        list_remove(node);
-        bus = node_to_item(node, struct platform_node, list);
-        free(bus->path);
-        free(bus);
-    }
+void PlatformDeviceList::Remove(const std::string& path) {
+    auto it = platform_devices_.find([&path](const auto& entry) { return path == entry->path; });
+    if (it != platform_devices_.end()) platform_devices_.remove(it);
 }
 
 /* Given a path that may start with a PCI device, populate the supplied buffer
@@ -454,12 +431,12 @@ static void parse_event(const char *msg, struct uevent *uevent)
 }
 
 std::vector<std::string> get_character_device_symlinks(uevent* uevent) {
-    platform_node* pdev = find_platform_device(uevent->path);
-    if (!pdev) return {};
+    std::string::size_type platform_device_length;
+    if (!platform_devices->Find(uevent->path, nullptr, &platform_device_length)) return {};
 
     /* skip "/devices/platform/<driver>" */
     std::string parent = std::string(uevent->path);
-    auto parent_start = parent.find('/', pdev->path_len);
+    auto parent_start = parent.find('/', platform_device_length);
     if (parent_start == std::string::npos) return {};
 
     parent.erase(0, parent_start);
@@ -516,12 +493,9 @@ void sanitize_partition_name(std::string* string) {
 
 std::vector<std::string> get_block_device_symlinks(uevent* uevent) {
     std::string device;
-    struct platform_node* pdev;
     std::string type;
 
-    pdev = find_platform_device(uevent->path);
-    if (pdev) {
-        device = pdev->name;
+    if (platform_devices->Find(uevent->path, &device, nullptr) {
         type = "platform";
     } else if (find_pci_device_prefix(uevent->path, &device)) {
         type = "pci";
@@ -599,9 +573,9 @@ static void handle_platform_device_event(struct uevent *uevent)
     const char *path = uevent->path;
 
     if (!strcmp(uevent->action, "add"))
-        add_platform_device(path);
+        platform_devices->Add(path);
     else if (!strcmp(uevent->action, "remove"))
-        remove_platform_device(path);
+        platform_devices->Remove(path);
 }
 
 static const char *parse_device_name(struct uevent *uevent, unsigned int len)
@@ -1012,6 +986,8 @@ void device_init(const char* path, coldboot_callback fn) {
         return;
     }
 
+    platform_devices.reset(new PlatformDeviceList);
+
     Timer t;
     coldboot_action_t act;
     if (!path) {
@@ -1036,7 +1012,7 @@ void device_init(const char* path, coldboot_callback fn) {
 }
 
 void device_close() {
-    destroy_platform_devices();
+    platform_devices.reset();
     device_fd.reset();
     selinux_status_close();
 }
