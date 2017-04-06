@@ -47,6 +47,44 @@ struct uevent {
     int minor;
 };
 
+class Permissions {
+  public:
+    Permissions(const std::string& name, mode_t perm, unsigned int uid, unsigned int gid);
+
+    bool Match(const std::string& path) const;
+
+    mode_t perm() const { return perm_; }
+    unsigned int uid() const { return uid_; }
+    unsigned int gid() const { return gid_; }
+
+  protected:
+    const std::string& name() const { return name_; }
+
+  private:
+    std::string name_;
+    mode_t perm_;
+    unsigned int uid_;
+    unsigned int gid_;
+    bool prefix_;
+    bool wildcard_;
+};
+
+class SysfsPermissions : public Permissions {
+  public:
+    SysfsPermissions(const std::string& name, const std::string& attribute, mode_t perm,
+                     unsigned int uid, unsigned int gid)
+        : Permissions(name, perm, uid, gid), attribute_(attribute) {}
+
+    bool MatchWithSubsystem(const std::string& path, const std::string& subsystem) const;
+    void SetPermissions(const std::string& path) const;
+
+  private:
+    const std::string attribute_;
+};
+
+extern std::vector<Permissions> dev_permissions;
+extern std::vector<SysfsPermissions> sysfs_permissions;
+
 typedef std::function<coldboot_action_t(struct uevent* uevent)> coldboot_callback;
 extern coldboot_action_t handle_device_fd(coldboot_callback fn = nullptr);
 extern void device_init(const char* path = nullptr, coldboot_callback fn = nullptr);
