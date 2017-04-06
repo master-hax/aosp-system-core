@@ -22,10 +22,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <android-base/logging.h>
+
 #include "ueventd.h"
 #include "ueventd_parser.h"
 #include "parser.h"
-#include "log.h"
 #include "util.h"
 
 static list_declare(subsystem_list);

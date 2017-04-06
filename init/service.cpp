@@ -30,22 +30,20 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <selinux/selinux.h>
-
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
+#include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <system/thread_defs.h>
-
 #include <processgroup/processgroup.h>
+#include <selinux/selinux.h>
+#include <system/thread_defs.h>
 
 #include "action.h"
 #include "init.h"
 #include "init_parser.h"
-#include "log.h"
 #include "property_service.h"
 #include "util.h"
 
