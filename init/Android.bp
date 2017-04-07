@@ -48,27 +48,41 @@ cc_defaults {
 cc_library_static {
     name: "libinit",
     defaults: ["init_defaults"],
+    host_supported: true,
     srcs: [
         "action.cpp",
-        "capabilities.cpp",
         "descriptors.cpp",
-        "devices.cpp",
         "import_parser.cpp",
         "init_parser.cpp",
-        "log.cpp",
         "parser.cpp",
         "service.cpp",
         "util.cpp",
     ],
-    whole_static_libs: ["libcap"],
-    static_libs: [
+    whole_static_libs: [ // Don't know why this has to be whole static
         "libbase",
         "libselinux",
+    ],
+    static_libs: [
+//        "libbase",
+//        "libselinux",
         "liblog",
         "libprocessgroup",
     ],
+    target: {
+        android: {
+            srcs: [
+                "capabilities.cpp",
+                "devices.cpp",
+                "log.cpp",
+            ],
+            whole_static_libs: ["libcap"],
+        },
+        linux_bionic: {
+            enabled: true,
+        },
+    },
 }
-
+/*
 cc_binary {
     // TODO: Missing,
     //LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
@@ -120,10 +134,33 @@ cc_binary {
         "sbin/watchdogd",
     ],
 }
+*/
+// Host Verifier
+// ------------------------------------------------------------------------------
+
+cc_binary_host {
+    name: "initrc_verifier",
+    defaults: ["init_defaults"],
+    static_executable: true,
+    srcs: ["host_initrc_verifier.cpp"],
+    static_libs: [
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libprocessgroup",
+        "libselinux",
+        "libinit",
+    ],
+    target: {
+        linux_bionic: { enabled: true },
+        linux: { enabled: false },
+    }
+}
+
 
 // Tests
 // ------------------------------------------------------------------------------
-
+/*
 cc_test {
     name: "init_tests",
     defaults: ["init_defaults"],
@@ -142,3 +179,4 @@ cc_test {
     ],
     static_libs: ["libinit"],
 }
+*/
