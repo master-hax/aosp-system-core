@@ -48,6 +48,7 @@ cc_defaults {
 cc_library_static {
     name: "libinit",
     defaults: ["init_defaults"],
+    host_supported: true,
     srcs: [
         "action.cpp",
         "capabilities.cpp",
@@ -60,13 +61,22 @@ cc_library_static {
         "service.cpp",
         "util.cpp",
     ],
-    whole_static_libs: ["libcap"],
-    static_libs: [
+    // Don't know why libbase or libselinux has to be whole static,
+    // but the linux_bionic build fails with them as 'static_libs'
+    whole_static_libs: [
         "libbase",
         "libselinux",
+        "libcap",
+    ],
+    static_libs: [
         "liblog",
         "libprocessgroup",
     ],
+    target: {
+        linux_bionic: {
+            enabled: true,
+        },
+    },
 }
 
 /*
@@ -125,9 +135,34 @@ cc_binary {
 }
 */
 
-// Tests
+// Host Verifier
 // ------------------------------------------------------------------------------
 
+cc_binary_host {
+    name: "initrc_verifier",
+    defaults: ["init_defaults"],
+    static_executable: true,
+    srcs: ["host_initrc_verifier.cpp"],
+    static_libs: [
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libprocessgroup",
+        "libselinux",
+        "libinit",
+    ],
+    target: {
+        linux_bionic: {
+            enabled: true,
+        },
+        linux: {
+            enabled: false,
+        },
+    },
+}
+
+// Tests
+// ------------------------------------------------------------------------------
 cc_test {
     name: "init_tests",
     defaults: ["init_defaults"],
