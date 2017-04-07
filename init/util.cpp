@@ -47,38 +47,25 @@
 
 using android::base::boot_clock;
 
-static unsigned int do_decode_uid(const char *s)
-{
-    unsigned int v;
+// decode_uid - decodes and returns the given string, which can be either the
+// numeric or name representation, into the integer uid or gid.
+bool decode_uid(const std::string& text, unsigned int* uid) {
+    if (text.empty()) return false;
 
-    if (!s || *s == '\0')
-        return UINT_MAX;
+    if (isalpha(text[0])) {
+        passwd* pwd = getpwnam(text.c_str());
+        if (!pwd) return false;
 
-    if (isalpha(s[0])) {
-        struct passwd* pwd = getpwnam(s);
-        if (!pwd)
-            return UINT_MAX;
-        return pwd->pw_uid;
+        *uid = pwd->pw_uid;
+        return true;
     }
 
     errno = 0;
-    v = (unsigned int) strtoul(s, 0, 0);
-    if (errno)
-        return UINT_MAX;
-    return v;
-}
+    unsigned int value = static_cast<unsigned int>(std::stoul(text));
+    if (errno) return false;
 
-/*
- * decode_uid - decodes and returns the given string, which can be either the
- * numeric or name representation, into the integer uid or gid. Returns
- * UINT_MAX on error.
- */
-unsigned int decode_uid(const char *s) {
-    unsigned int v = do_decode_uid(s);
-    if (v == UINT_MAX) {
-        LOG(ERROR) << "decode_uid: Unable to find UID for '" << s << "'; returning UINT_MAX";
-    }
-    return v;
+    *uid = value;
+    return true;
 }
 
 /*
@@ -298,7 +285,11 @@ int make_dir(const char *path, mode_t mode)
 
 int restorecon(const char* pathname, int flags)
 {
+#ifdef selinux_android_restorecon
     return selinux_android_restorecon(pathname, flags);
+#else
+    return 0;
+#endif
 }
 
 /*

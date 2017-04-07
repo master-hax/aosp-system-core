@@ -69,12 +69,38 @@ LOCAL_SRC_FILES:= \
     service.cpp \
     util.cpp \
 
-LOCAL_STATIC_LIBRARIES := libbase libselinux liblog libprocessgroup libnl
+LOCAL_STATIC_LIBRARIES := \
+    libbase \
+    liblog \
+    libnl \
+    libprocessgroup \
+    libselinux \
+
 LOCAL_WHOLE_STATIC_LIBRARIES := libcap
 LOCAL_MODULE := libinit
 LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
 include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_CPPFLAGS := $(init_cflags)
+LOCAL_SRC_FILES:= \
+    action.cpp \
+    descriptors.cpp \
+    import_parser.cpp \
+    init_parser.cpp \
+    parser.cpp \
+    service.cpp \
+    util.cpp \
+
+LOCAL_SHARED_LIBRARIES := \
+    libbase \
+    liblog \
+    libselinux \
+
+LOCAL_MODULE := libinit
+LOCAL_CLANG := true
+include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
@@ -151,6 +177,20 @@ LOCAL_SANITIZE := integer
 LOCAL_CLANG := true
 LOCAL_CPPFLAGS := -Wall -Wextra -Werror
 include $(BUILD_NATIVE_TEST)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := initrc_verifier
+LOCAL_SRC_FILES := host_initrc_verifier.cpp
+
+LOCAL_SHARED_LIBRARIES := \
+    libbase \
+    liblog \
+    libselinux \
+
+LOCAL_STATIC_LIBRARIES := libinit
+
+LOCAL_CLANG := true
+include $(BUILD_HOST_EXECUTABLE)
 
 
 # Include targets in subdirs.

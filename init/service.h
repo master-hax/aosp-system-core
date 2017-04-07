@@ -181,7 +181,7 @@ class ServiceManager {
 public:
     static ServiceManager& GetInstance();
 
-    void AddService(std::unique_ptr<Service> service);
+    bool AddService(std::unique_ptr<Service> service, std::string* err);
     Service* MakeExecOneshotService(const std::vector<std::string>& args);
     bool Exec(const std::vector<std::string>& args);
     bool ExecStart(const std::string& name);
@@ -217,13 +217,11 @@ public:
     }
     bool ParseSection(const std::vector<std::string>& args,
                       std::string* err) override;
-    bool ParseLineSection(const std::vector<std::string>& args,
-                          const std::string& filename, int line,
-                          std::string* err) const override;
-    void EndSection() override;
-    void EndFile(const std::string&) override {
-    }
-private:
+    bool ParseLineSection(const std::vector<std::string>& args, const std::string& filename,
+                          int line, std::string* err) override;
+    bool EndSection(std::string* err) override;
+
+  private:
     bool IsValidName(const std::string& name) const;
 
     std::unique_ptr<Service> service_;

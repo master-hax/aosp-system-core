@@ -415,13 +415,13 @@ bool ActionParser::ParseSection(const std::vector<std::string>& args,
 }
 
 bool ActionParser::ParseLineSection(const std::vector<std::string>& args,
-                                    const std::string& filename, int line,
-                                    std::string* err) const {
+                                    const std::string& filename, int line, std::string* err) {
     return action_ ? action_->AddCommand(args, filename, line, err) : false;
 }
 
-void ActionParser::EndSection() {
+bool ActionParser::EndSection(std::string* err) {
     if (action_ && action_->NumCommands() > 0) {
         ActionManager::GetInstance().AddAction(std::move(action_));
     }
+    return true;
 }

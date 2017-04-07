@@ -116,7 +116,10 @@ TEST(util, write_file_exist) {
 }
 
 TEST(util, decode_uid) {
-  EXPECT_EQ(0U, decode_uid("root"));
-  EXPECT_EQ(UINT_MAX, decode_uid("toot"));
-  EXPECT_EQ(123U, decode_uid("123"));
+    uid_t uid;
+    ASSERT_TRUE(decode_uid("root", &uid));
+    EXPECT_EQ(0U, uid);
+    ASSERT_FALSE(decode_uid("toot", &uid));
+    ASSERT_TRUE(decode_uid("123", &uid));
+    EXPECT_EQ(123U, uid);
 }

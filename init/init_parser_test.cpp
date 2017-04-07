@@ -86,19 +86,26 @@ static void Test_make_exec_oneshot_service(bool dash_dash, bool seclabel, bool u
         ASSERT_EQ("", svc->seclabel());
     }
     if (uid) {
-        ASSERT_EQ(decode_uid("log"), svc->uid());
+        uid_t uid;
+        ASSERT_TRUE(decode_uid("log", &uid));
+        ASSERT_EQ(uid, svc->uid());
     } else {
         ASSERT_EQ(0U, svc->uid());
     }
     if (gid) {
-        ASSERT_EQ(decode_uid("shell"), svc->gid());
+        uid_t uid;
+        ASSERT_TRUE(decode_uid("shell", &uid));
+        ASSERT_EQ(uid, svc->gid());
     } else {
         ASSERT_EQ(0U, svc->gid());
     }
     if (supplementary_gids) {
         ASSERT_EQ(2U, svc->supp_gids().size());
-        ASSERT_EQ(decode_uid("system"), svc->supp_gids()[0]);
-        ASSERT_EQ(decode_uid("adb"), svc->supp_gids()[1]);
+        uid_t uid;
+        ASSERT_TRUE(decode_uid("system", &uid));
+        ASSERT_EQ(uid, svc->supp_gids()[0]);
+        ASSERT_TRUE(decode_uid("adb", &uid));
+        ASSERT_EQ(uid, svc->supp_gids()[1]);
     } else {
         ASSERT_EQ(0U, svc->supp_gids().size());
     }

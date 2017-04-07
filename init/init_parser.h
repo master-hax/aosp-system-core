@@ -22,17 +22,40 @@
 #include <string>
 #include <vector>
 
+//  SectionParser is an interface that can parse a given 'section' in init.
+//
+//  You can implement up to 4 functions below, with ParseSection() being mandatory.
+//  Each function returns bool with false indicating a failure and has a std::string* err parameter
+//  into which an error string can be written.  It will be reported along with the filename and
+//  line number of where the error occurred.
+//
+//  1)  bool ParseSection(const std::vector<std::string>& args, std::string* err)
+//    This function is called when a section is first encountered.
+//
+//  2) bool ParseLineSection(const std::vector<std::string>& args, const std::string& filename,
+//                           int line, std::string* err)
+//    This function is called on each subsequent line until the next section is encountered.
+//
+//  3) bool EndSection(std::string* err)
+//    This function is called either when a new section is found or at the end of the file.
+//    It indicates that parsing of the current section is complete and any relevant objects should
+//    be committed.
+//
+//  4) bool EndFile(const std::string& filename, std::string* err)
+//    This function is called at the end of the file.
+//    It indicates that the parsing has completed and any relevant objects should be committed.
+
 class SectionParser {
 public:
     virtual ~SectionParser() {
     }
-    virtual bool ParseSection(const std::vector<std::string>& args,
-                              std::string* err) = 0;
-    virtual bool ParseLineSection(const std::vector<std::string>& args,
-                                  const std::string& filename, int line,
-                                  std::string* err) const = 0;
-    virtual void EndSection() = 0;
-    virtual void EndFile(const std::string& filename) = 0;
+    virtual bool ParseSection(const std::vector<std::string>&, std::string*) = 0;
+    virtual bool ParseLineSection(const std::vector<std::string>&, const std::string&, int,
+                                  std::string*) {
+        return true;
+    }
+    virtual bool EndSection(std::string*) { return true; }
+    virtual bool EndFile(const std::string&, std::string*) { return true; }
 };
 
 class Parser {
@@ -58,7 +81,7 @@ public:
 private:
     Parser();
 
-    void ParseData(const std::string& filename, const std::string& data);
+    bool ParseData(const std::string& filename, const std::string& data);
     bool ParseConfigFile(const std::string& path);
     bool ParseConfigDir(const std::string& path);
 

@@ -58,7 +58,7 @@ class Timer {
 
 std::ostream& operator<<(std::ostream& os, const Timer& t);
 
-unsigned int decode_uid(const char *s);
+bool decode_uid(const std::string& text, unsigned int* uid);
 
 int mkdir_recursive(const char *pathname, mode_t mode);
 void sanitize(char *p);

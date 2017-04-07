@@ -39,7 +39,7 @@ void Parser::AddSectionParser(const std::string& name,
     section_parsers_[name] = std::move(parser);
 }
 
-void Parser::ParseData(const std::string& filename, const std::string& data) {
+bool Parser::ParseData(const std::string& filename, const std::string& data) {
     //TODO: Use a parser with const input and remove this copy
     std::vector<char> data_copy(data.begin(), data.end());
     data_copy.push_back('\0');
@@ -53,13 +53,21 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
     SectionParser* section_parser = nullptr;
     std::vector<std::string> args;
 
+    bool error_seen = false;
+
+    int section_start_line = 0;
+
     for (;;) {
         switch (next_token(&state)) {
         case T_EOF:
             if (section_parser) {
-                section_parser->EndSection();
+                std::string ret_err;
+                if (!section_parser->EndSection(&ret_err)) {
+                    LOG(ERROR) << state.filename << ": " << section_start_line << ": " << ret_err;
+                    error_seen = true;
+                }
             }
-            return;
+            return !error_seen;
         case T_NEWLINE:
             state.line++;
             if (args.empty()) {
@@ -67,19 +75,27 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
             }
             if (section_parsers_.count(args[0])) {
                 if (section_parser) {
-                    section_parser->EndSection();
+                    std::string ret_err;
+                    if (!section_parser->EndSection(&ret_err)) {
+                        LOG(ERROR) << state.filename << ": " << section_start_line << ": "
+                                   << ret_err;
+                        error_seen = true;
+                    }
                 }
                 section_parser = section_parsers_[args[0]].get();
                 std::string ret_err;
                 if (!section_parser->ParseSection(args, &ret_err)) {
                     parse_error(&state, "%s\n", ret_err.c_str());
                     section_parser = nullptr;
+                    error_seen = true;
                 }
+                section_start_line = state.line;
             } else if (section_parser) {
                 std::string ret_err;
                 if (!section_parser->ParseLineSection(args, state.filename,
                                                       state.line, &ret_err)) {
                     parse_error(&state, "%s\n", ret_err.c_str());
+                    error_seen = true;
                 }
             }
             args.clear();
@@ -100,13 +116,16 @@ bool Parser::ParseConfigFile(const std::string& path) {
     }
 
     data.push_back('\n'); // TODO: fix parse_config.
-    ParseData(path, data);
-    for (const auto& sp : section_parsers_) {
-        sp.second->EndFile(path);
+    bool result = ParseData(path, data);
+    for (const auto & [ section_name, section_parser ] : section_parsers_) {
+        std::string ret_err;
+        if (!section_parser->EndFile(path, &ret_err)) {
+            LOG(ERROR) << path << ": " << ret_err;
+        }
     }
 
     LOG(VERBOSE) << "(Parsing " << path << " took " << t << ".)";
-    return true;
+    return result;
 }
 
 bool Parser::ParseConfigDir(const std::string& path) {

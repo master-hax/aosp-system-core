@@ -39,12 +39,15 @@ bool ImportParser::ParseSection(const std::vector<std::string>& args,
     return true;
 }
 
-void ImportParser::EndFile(const std::string& filename) {
+bool ImportParser::EndFile(const std::string& filename, std::string* err) {
     auto current_imports = std::move(imports_);
+    bool ret = true;  // Continue to import all that we can, but return false on a failure
     imports_.clear();
     for (const auto& s : current_imports) {
         if (!Parser::GetInstance().ParseConfig(s)) {
-            PLOG(ERROR) << "could not import file '" << s << "' from '" << filename << "'";
+            *err = "could not import file '" + s + "'";
+            ret = false;
         }
     }
+    return ret;
 }

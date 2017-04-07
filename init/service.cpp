@@ -24,7 +24,6 @@
 #include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
-#include <sys/system_properties.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <termios.h>
@@ -36,13 +35,37 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <processgroup/processgroup.h>
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
 
 #include "init.h"
 #include "property_service.h"
 #include "util.h"
+
+#if !defined(BIONIC)
+// Due to no <sys/system_properties.h> in gblic
+#define PROP_VALUE_MAX 92
+
+// Missing from unistd.h in glibc
+int setgroups(size_t __size, const gid_t* __list) {
+    return 0;
+}
+
+// No host libprocessgroup
+int killProcessGroup(uid_t uid, int initialPid, int signal) {
+    return 0;
+}
+int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
+    return 0;
+}
+int createProcessGroup(uid_t uid, int initialPid) {
+    return 0;
+}
+#else
+#include <sys/system_properties.h>
+
+#include <processgroup/processgroup.h>
+#endif
 
 using android::base::boot_clock;
 using android::base::ParseInt;
@@ -380,9 +403,17 @@ bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* e
 }
 
 bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err) {
-    gid_ = decode_uid(args[1].c_str());
+    if (!decode_uid(args[1], &gid_)) {
+        *err = "Unable to find GID for '" + args[1] + "'";
+        return false;
+    }
     for (std::size_t n = 2; n < args.size(); n++) {
-        supp_gids_.emplace_back(decode_uid(args[n].c_str()));
+        gid_t gid;
+        if (!decode_uid(args[n], &gid)) {
+            *err = "Unable to find GID for '" + args[n] + "'";
+            return false;
+        }
+        supp_gids_.emplace_back(gid);
     }
     return true;
 }
@@ -479,9 +510,23 @@ bool Service::ParseSetenv(const std::vector<std::string>& args, std::string* err
 template <typename T>
 bool Service::AddDescriptor(const std::vector<std::string>& args, std::string* err) {
     int perm = args.size() > 3 ? std::strtoul(args[3].c_str(), 0, 8) : -1;
-    uid_t uid = args.size() > 4 ? decode_uid(args[4].c_str()) : 0;
-    gid_t gid = args.size() > 5 ? decode_uid(args[5].c_str()) : 0;
+    uid_t uid = 0;
+    gid_t gid = 0;
     std::string context = args.size() > 6 ? args[6] : "";
+
+    if (args.size() > 4) {
+        if (!decode_uid(args[4], &uid)) {
+            *err = "Unable to find UID for '" + args[4] + "'";
+            return false;
+        }
+    }
+
+    if (args.size() > 5) {
+        if (!decode_uid(args[5], &gid)) {
+            *err = "Unable to find GID for '" + args[5] + "'";
+            return false;
+        }
+    }
 
     auto descriptor = std::make_unique<T>(args[1], args[2], uid, gid, perm, context);
 
@@ -521,7 +566,10 @@ bool Service::ParseFile(const std::vector<std::string>& args, std::string* err) 
 }
 
 bool Service::ParseUser(const std::vector<std::string>& args, std::string* err) {
-    uid_ = decode_uid(args[1].c_str());
+    if (!decode_uid(args[1], &uid_)) {
+        *err = "Unable to find UID for '" + args[1] + "'";
+        return false;
+    }
     return true;
 }
 
@@ -873,13 +921,14 @@ ServiceManager& ServiceManager::GetInstance() {
     return instance;
 }
 
-void ServiceManager::AddService(std::unique_ptr<Service> service) {
+bool ServiceManager::AddService(std::unique_ptr<Service> service, std::string* err) {
     Service* old_service = FindServiceByName(service->name());
     if (old_service) {
-        LOG(ERROR) << "ignored duplicate definition of service '" << service->name() << "'";
-        return;
+        *err = "ignored duplicate definition of service '" + service->name() + "'";
+        return false;
     }
     services_.emplace_back(std::move(service));
+    return true;
 }
 
 bool ServiceManager::Exec(const std::vector<std::string>& args) {
@@ -944,15 +993,25 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
     }
     uid_t uid = 0;
     if (command_arg > 3) {
-        uid = decode_uid(args[2].c_str());
+        if (!decode_uid(args[2], &uid)) {
+            LOG(ERROR) << "Unable to find UID for '" << args[2] << "'";
+            return nullptr;
+        }
     }
     gid_t gid = 0;
     std::vector<gid_t> supp_gids;
     if (command_arg > 4) {
-        gid = decode_uid(args[3].c_str());
+        if (!decode_uid(args[3], &gid)) {
+            LOG(ERROR) << "Unable to find GID for '" << args[3] << "'";
+            return nullptr;
+        }
         std::size_t nr_supp_gids = command_arg - 1 /* -- */ - 4 /* exec SECLABEL UID GID */;
         for (size_t i = 0; i < nr_supp_gids; ++i) {
-            supp_gids.push_back(decode_uid(args[4 + i].c_str()));
+            gid_t supp_gid;
+            if (!decode_uid(args[4 + i], &supp_gid)) {
+                LOG(ERROR) << "Unable to find UID for '" << args[4 + i] << "'";
+                return nullptr;
+            }
         }
     }
 
@@ -1111,15 +1170,15 @@ bool ServiceParser::ParseSection(const std::vector<std::string>& args,
 }
 
 bool ServiceParser::ParseLineSection(const std::vector<std::string>& args,
-                                     const std::string& filename, int line,
-                                     std::string* err) const {
+                                     const std::string& filename, int line, std::string* err) {
     return service_ ? service_->ParseLine(args, err) : false;
 }
 
-void ServiceParser::EndSection() {
+bool ServiceParser::EndSection(std::string* err) {
     if (service_) {
-        ServiceManager::GetInstance().AddService(std::move(service_));
+        return ServiceManager::GetInstance().AddService(std::move(service_), err);
     }
+    return true;
 }
 
 bool ServiceParser::IsValidName(const std::string& name) const {

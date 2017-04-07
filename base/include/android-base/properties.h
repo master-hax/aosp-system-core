@@ -19,10 +19,6 @@
 
 #include <sys/cdefs.h>
 
-#if !defined(__BIONIC__)
-#error Only bionic supports system properties.
-#endif
-
 #include <chrono>
 #include <limits>
 #include <string>
