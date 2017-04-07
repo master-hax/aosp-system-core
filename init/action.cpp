@@ -347,7 +347,7 @@ bool ActionParser::ParseLineSection(std::vector<std::string>&& args, int line, s
 }
 
 void ActionParser::EndSection() {
-    if (action_ && action_->NumCommands() > 0) {
+    if (action_manager_ && action_ && action_->NumCommands() > 0) {
         action_manager_->AddAction(std::move(action_));
     }
 }

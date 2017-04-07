@@ -1157,10 +1157,12 @@ bool ServiceParser::ParseSection(std::vector<std::string>&& args, const std::str
         return false;
     }
 
-    Service* old_service = service_manager_->FindServiceByName(name);
-    if (old_service) {
-        *err = "ignored duplicate definition of service '" + name + "'";
-        return false;
+    if (service_manager_) {
+        Service* old_service = service_manager_->FindServiceByName(name);
+        if (old_service) {
+            *err = "ignored duplicate definition of service '" + name + "'";
+            return false;
+        }
     }
 
     std::vector<std::string> str_args(args.begin() + 2, args.end());
@@ -1173,7 +1175,7 @@ bool ServiceParser::ParseLineSection(std::vector<std::string>&& args, int line, 
 }
 
 void ServiceParser::EndSection() {
-    if (service_) {
+    if (service_manager_ && service_) {
         service_manager_->AddService(std::move(service_));
     }
 }
