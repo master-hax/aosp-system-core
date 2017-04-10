@@ -160,7 +160,50 @@ static uint32_t ComputeHash(const ZipString& name) {
   uint32_t hash = 0;
   uint16_t len = name.name_length;
   const uint8_t* str = name.name;
+  __uint128_t chunk16;
+  uint64_t chunk8;
+  uint32_t chunk4;
+  constexpr unsigned sz16 = sizeof(chunk16);
+  constexpr unsigned sz8 = sizeof(chunk8);
+  constexpr unsigned sz4 = sizeof(chunk4);
 
+  /* Heavy weight loop: this will process LEN - LEN % SZ bytes. */
+  while (len >= sz16) {
+    __builtin_memcpy(&chunk16, str, sz16);
+
+    for (int i = 0; i < sz16; i++) {
+      hash = hash * 31 + ((chunk16 >> (8*i)) & 0xff);
+    }
+
+    str += sz16;
+    len -= sz16;
+  }
+
+  /* Left over bytes: LEN % SZ16, i.e., at most 15 bytes. */
+  if (len >= sz8) {
+    __builtin_memcpy(&chunk8, str, sz8);
+
+    for (int i = 0; i < sz8; i++) {
+      hash = hash * 31 + ((chunk8 >> (8*i)) & 0xff);
+    }
+
+    str += sz8;
+    len -= sz8;
+  }
+
+  /* Left over bytes: LEN % SZ8, i.e., at most 7 bytes. */
+  if (len >= sz4) {
+    __builtin_memcpy(&chunk4, str, sz4);
+
+    for (int i = 0; i < sz4; i++) {
+      hash = hash * 31 + ((chunk4 >> (8*i)) & 0xff);
+    }
+
+    str += sz4;
+    len -= sz4;
+  }
+
+  /* Left over bytes: LEN % SZ4, i.e., at most 3 bytes. */
   while (len--) {
     hash = hash * 31 + *str++;
   }
