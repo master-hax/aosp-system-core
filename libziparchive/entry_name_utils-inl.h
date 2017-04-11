@@ -20,9 +20,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// Check if |length| bytes at |entry_name| constitute a valid entry name.
-// Entry names must be valid UTF-8 and must not contain '0'.
-inline bool IsValidEntryName(const uint8_t* entry_name, const size_t length) {
+// This is a specialized version of IsValidEntryName when the name contains
+// UTF-8 characters.
+static inline bool IsValidUTF8(const uint8_t* entry_name, const size_t length) {
   for (size_t i = 0; i < length; ++i) {
     const uint8_t byte = entry_name[i];
     if (byte == 0) {
@@ -49,6 +49,28 @@ inline bool IsValidEntryName(const uint8_t* entry_name, const size_t length) {
           return false;
         }
       }
+    }
+  }
+
+  return true;
+}
+
+// Check if |length| bytes at |entry_name| constitute a valid entry name.
+// Entry names must be valid UTF-8 and must not contain '0'.
+inline bool IsValidEntryName(const uint8_t* entry_name, const size_t length) {
+  for (size_t i = 0; i < length; ++i) {
+    const uint8_t byte = entry_name[i];
+    if (byte == 0) {
+      return false;
+    } else if ((byte & 0x80) == 0) {
+      // Single byte sequence.
+      continue;
+    } else if ((byte & 0xc0) == 0x80 || (byte & 0xfe) == 0xfe) {
+      // Invalid sequence.
+      return false;
+    } else {
+      // Validate this entry with the UTF-8 validator.
+      return IsValidUTF8(entry_name + i, length - i);
     }
   }
 
