@@ -936,7 +936,7 @@ static bool early_mount_one(struct fstab_rec* rec) {
         std::string dm_device(basename(rec->blk_device));
         std::string syspath = StringPrintf("/sys/block/%s", dm_device.c_str());
         device_init(syspath.c_str(), [&](uevent* uevent) -> coldboot_action_t {
-            if (uevent->device_name && !strcmp(dm_device.c_str(), uevent->device_name)) {
+            if (dm_device == uevent->device_name) {
                 LOG(VERBOSE) << "early_mount: creating dm-verity device : " << dm_device;
                 return COLDBOOT_STOP;
             }
@@ -961,21 +961,17 @@ static void early_device_init(std::set<std::string>* partition_names) {
         return;
     }
     device_init(nullptr, [=](uevent* uevent) -> coldboot_action_t {
-        if (!strncmp(uevent->subsystem, "firmware", 8)) {
-            return COLDBOOT_CONTINUE;
-        }
-
         // we need platform devices to create symlinks
-        if (!strncmp(uevent->subsystem, "platform", 8)) {
+        if (android::base::StartsWith(uevent->subsystem, "platform")) {
             return COLDBOOT_CREATE;
         }
 
         // Ignore everything that is not a block device
-        if (strncmp(uevent->subsystem, "block", 5)) {
+        if (!android::base::StartsWith(uevent->subsystem, "block")) {
             return COLDBOOT_CONTINUE;
         }
 
-        if (uevent->partition_name) {
+        if (!uevent->partition_name.empty()) {
             // match partition names to create device nodes for partitions
             // both partition_names and uevent->partition_name have A/B suffix when A/B is used
             auto iter = partition_names->find(uevent->partition_name);
