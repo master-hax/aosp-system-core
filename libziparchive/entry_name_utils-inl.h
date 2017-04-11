@@ -58,23 +58,37 @@ static inline bool IsValidUTF8(const uint8_t* entry_name, const size_t length) {
 // Check if |length| bytes at |entry_name| constitute a valid entry name.
 // Entry names must be valid UTF-8 and must not contain '0'.
 inline bool IsValidEntryName(const uint8_t* entry_name, const size_t length) {
-  for (size_t i = 0; i < length; ++i) {
-    const uint8_t byte = entry_name[i];
-    if (byte == 0) {
-      return false;
-    } else if ((byte & 0x80) == 0) {
-      // Single byte sequence.
-      continue;
-    } else if ((byte & 0xc0) == 0x80 || (byte & 0xfe) == 0xfe) {
-      // Invalid sequence.
-      return false;
-    } else {
-      // Validate this entry with the UTF-8 validator.
-      return IsValidUTF8(entry_name + i, length - i);
+  uint8_t *str = const_cast<uint8_t *>(entry_name);
+  size_t len = length;
+  uint64_t chunk8;
+  constexpr unsigned sz8 = sizeof(chunk8);
+
+  /* Heavy weight loop: this will process LEN - LEN % SZ bytes. */
+  while (len >= sz8) {
+    __builtin_memcpy(&chunk8, str, sz8);
+
+    for (int i = 0; i < sz8; i++) {
+      const uint8_t byte = ((chunk8 >> (8 * i)) & 0xff);
+      if (byte == 0) {
+        return false;
+      } else if ((byte & 0x80) == 0) {
+        // Single byte sequence.
+        continue;
+      } else if ((byte & 0xc0) == 0x80 || (byte & 0xfe) == 0xfe) {
+        // Invalid sequence.
+        return false;
+      } else {
+        // Validate the rest of this entry with the UTF-8 validator.
+        return IsValidUTF8(str + i, len - i);
+      }
     }
+
+    str += sz8;
+    len -= sz8;
   }
 
-  return true;
+  // Process the remaining (at most 7) bytes with the scalar byte by byte loop.
+  return IsValidUTF8(str, len);
 }
 
 
