@@ -274,13 +274,14 @@ static int scanTagLine(EventTagMap* map, char** pData, int lineNum) {
 
   const char* tag = cp;
   // Determine whether "c" is a valid tag char.
-  while (isalnum(*++cp) || (*cp == '_')) {
+  while (isalnum(*++cp) || strchr("_.-@,", *cp)) {
   }
   size_t tagLen = cp - tag;
 
   if (!isspace(*cp)) {
     if (lineNum) {
-      fprintf(stderr, OUT_TAG ": invalid tag chars on line %d\n", lineNum);
+      fprintf(stderr, OUT_TAG ": invalid tag char %c on line %d\n", *cp,
+              lineNum);
     }
     errno = EINVAL;
     return -1;
