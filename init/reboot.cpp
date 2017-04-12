@@ -328,6 +328,10 @@ static void __attribute__((noreturn)) DoThermalOff() {
     abort();
 }
 
+static void OonShutdownCritical(Service* svc) {
+    svc->Start();
+}
+
 void DoReboot(unsigned int cmd, const std::string& reason, const std::string& rebootTarget,
               bool runFsck) {
     Timer t;
@@ -351,16 +355,10 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     }
     LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
 
-    static const constexpr char* shutdown_critical_services[] = {"vold", "watchdogd"};
-    for (const char* name : shutdown_critical_services) {
-        Service* s = ServiceManager::GetInstance().FindServiceByName(name);
-        if (s == nullptr) {
-            LOG(WARNING) << "Shutdown critical service not found:" << name;
-            continue;
-        }
-        s->Start();  // make sure that it is running.
-        s->SetShutdownCritical();
-    }
+    // For each service marked as shutdown critical, start them up, later we keep
+    // these alive through reboot process.
+    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_SHUTDOWN_CRITICAL, onShutdownCritical);
+
     // optional shutdown step
     // 1. terminate all services except shutdown critical ones. wait for delay to finish
     if (shutdownTimeout > 0) {

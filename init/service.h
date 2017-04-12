@@ -86,7 +86,6 @@ class Service {
     void RestartIfNeeded(time_t* process_needs_restart_at);
     void Reap();
     void DumpState() const;
-    void SetShutdownCritical() { flags_ |= SVC_SHUTDOWN_CRITICAL; }
     bool IsShutdownCritical() const { return (flags_ & SVC_SHUTDOWN_CRITICAL) != 0; }
 
     const std::string& name() const { return name_; }
@@ -130,6 +129,7 @@ class Service {
     bool ParseNamespace(const std::vector<std::string>& args, std::string* err);
     bool ParseSeclabel(const std::vector<std::string>& args, std::string* err);
     bool ParseSetenv(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdown(const std::vector<std::string>& args, std::string* err);
     bool ParseSocket(const std::vector<std::string>& args, std::string* err);
     bool ParseFile(const std::vector<std::string>& args, std::string* err);
     bool ParseUser(const std::vector<std::string>& args, std::string* err);
