@@ -226,6 +226,14 @@ runs the service.
 > Sets the child's /proc/self/oom\_score\_adj to the specified value,
   which must range from -1000 to 1000.
 
+`shutdown <value>`
+> Sets the services shutdown attributes.
+  The value must be one of:
+  * never - Mark the service not to shut down by init during the reboot process.
+            This will cause init to start the service when a reboot command is
+            executed and a stop command will never be issued.
+  * after_apps - Mark the service to be shutdown after apps. This will not start
+                 the service if it is not running.
 
 Triggers
 --------

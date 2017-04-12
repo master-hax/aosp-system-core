@@ -323,16 +323,12 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     }
     LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
 
-    // keep debugging tools until non critical ones are all gone.
-    const std::set<std::string> kill_after_apps{"tombstoned", "logd", "adbd"};
-    // watchdogd is a vendor specific component but should be alive to complete shutdown safely.
-    const std::set<std::string> to_starts{"watchdogd", "vold"};
-    ServiceManager::GetInstance().ForEachService([&kill_after_apps, &to_starts](Service* s) {
-        if (kill_after_apps.count(s->name())) {
-            s->SetShutdownCritical();
-        } else if (to_starts.count(s->name())) {
+    // Process each shutdown service marked shutdown critical, starting up one's not marked
+    // after_apps.
+    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_SHUTDOWN_CRITICAL, [](Service* s) {
+        if (!(s->shutdownFlags() & SVC_SHUTDOWN_FLAGS_AFTER_APPS)) {
+            LOG(INFO) << "Starting shutdown never service: " << s->name();
             s->Start();
-            s->SetShutdownCritical();
         }
     });
 
@@ -408,9 +404,12 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     } else {
         LOG(INFO) << "vold not running, skipping vold shutdown";
     }
-    // logcat stopped here
-    ServiceManager::GetInstance().ForEachService([&kill_after_apps](Service* s) {
-        if (kill_after_apps.count(s->name())) s->Stop();
+    // Kill after_apps services.
+    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_SHUTDOWN_CRITICAL, [](Service* s) {
+        if (s->shutdownFlags() & SVC_SHUTDOWN_FLAGS_AFTER_APPS) {
+            s->Stop();
+            LOG(INFO) << "Stoping shutdown after_apps service: " << s->name();
+        }
     });
     // 4. sync, try umount, and optionally run fsck for user shutdown
     sync();
