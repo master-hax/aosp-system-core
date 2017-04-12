@@ -148,13 +148,6 @@ static void TurnOffBacklight() {
     }
 }
 
-static void ShutdownVold() {
-    const char* vdc_argv[] = {"/system/bin/vdc", "volume", "shutdown"};
-    int status;
-    android_fork_execvp_ext(arraysize(vdc_argv), (char**)vdc_argv, &status, true, LOG_KLOG, true,
-                            nullptr, nullptr, 0);
-}
-
 static void LogShutdownTime(UmountStat stat, Timer* t) {
     LOG(WARNING) << "powerctl_shutdown_time_ms:" << std::to_string(t->duration_ms()) << ":" << stat;
 }
@@ -325,19 +318,30 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     }
     LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
 
-    // keep debugging tools until non critical ones are all gone.
-    const std::set<std::string> kill_after_apps{"tombstoned", "logd", "adbd"};
-    // watchdogd is a vendor specific component but should be alive to complete shutdown safely.
-    const std::set<std::string> to_starts{"watchdogd", "vold"};
-    ServiceManager::GetInstance().ForEachService([&kill_after_apps, &to_starts](Service* s) {
-        if (kill_after_apps.count(s->name())) {
-            s->SetShutdownCritical();
-        } else if (to_starts.count(s->name())) {
+    // Process each shutdown service marked shutdown never|after_apps start.
+    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_SHUTDOWN_CRITICAL, [](Service* s) {
+        if (s->shutdownFlags() & SVC_SHUTDOWN_FLAGS_START) {
+            // XXX REMOVE ME
+            LOG(INFO) << "BILL: Starting shutdown service: " << s->name();
             s->Start();
-            s->SetShutdownCritical();
         }
     });
 
+    /*
+     * TODO: What todo here? Looks like we want surfaceflinger to be marked shutdown never,
+     * and we would want bootanim marked:
+     *   shutdown toggle startclass=animation running=surfaceflinger trigger="service.bootanim.exit
+     * 0"
+     *
+     *   Where:
+     *     toggle: Stop then Start the service.
+     *     startclass: before starting the service again, start the class given.
+     *     running: requires the service to be running before performing action.
+     *     trigger: set a property given by name and value. This could be used in a compound
+     *              ways for on property triggers, ala property_changed() in init.cpp.
+     *
+     * This all seems complicated though.. thoughts??
+     */
     Service* bootAnim = ServiceManager::GetInstance().FindServiceByName("bootanim");
     Service* surfaceFlinger = ServiceManager::GetInstance().FindServiceByName("surfaceflinger");
     if (bootAnim != nullptr && surfaceFlinger != nullptr && surfaceFlinger->IsRunning()) {
@@ -402,17 +406,27 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     });
     ServiceManager::GetInstance().ReapAnyOutstandingChildren();
 
-    // 3. send volume shutdown to vold
-    Service* voldService = ServiceManager::GetInstance().FindServiceByName("vold");
-    if (voldService != nullptr && voldService->IsRunning()) {
-        ShutdownVold();
-        voldService->Stop();
-    } else {
-        LOG(INFO) << "vold not running, skipping vold shutdown";
-    }
-    // logcat stopped here
-    ServiceManager::GetInstance().ForEachService([&kill_after_apps](Service* s) {
-        if (kill_after_apps.count(s->name())) s->Stop();
+    // 3. Kill after_apps services.
+    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_SHUTDOWN_CRITICAL, [](Service* s) {
+        // XXX REMOVE ME
+        LOG(INFO) << "BILL: Checking shutdown after_apps service: " << s->name()
+                  << " flags: " << s->shutdownFlags();
+        if (s->shutdownFlags() & SVC_SHUTDOWN_FLAGS_AFTER_APPS) {
+            if (s->shutdownFlags() & SVC_SHUTDOWN_FLAGS_AFTER_APPS_SIGTERM) {
+                // XXX REMOVE ME
+                LOG(INFO) << "BILL: Terminating shutdown after_apps service: " << s->name();
+                s->Terminate();
+                std::this_thread::sleep_for(50ms);
+                ServiceManager::GetInstance().ReapAnyOutstandingChildren();
+                if (s->IsRunning()) {
+                    LOG(WARNING) << "Service still running, terminating: " << s->name();
+                    s->Stop();
+                }
+            } else {
+                LOG(INFO) << "Stopping shutdown after_apps service: " << s->name();
+                s->Stop();
+            }
+        }
     });
     // 4. sync, try umount, and optionally run fsck for user shutdown
     sync();

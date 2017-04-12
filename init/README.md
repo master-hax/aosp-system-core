@@ -260,6 +260,17 @@ runs the service.
 > Sets the child's /proc/self/oom\_score\_adj to the specified value,
   which must range from -1000 to 1000.
 
+`shutdown <value> [<modifier>{0, 2}]`
+> Sets the services shutdown attributes.
+  The value must be one of:
+  * never - Mark the service not to be shut down by init at all during the shutdown process.
+  ** never accepts the "start" modifier.
+  * after_apps - Mark the service to be shutdown after applications.
+  ** after_apps accepts the "start" and "sigterm" modifiers.
+> Modifiers:
+  * start - Indicate the service should be started during the shutdown process.
+  * sigterm - Indicate the service should receive sigterm versus sigkill, the service
+    has 50ms to shutdown before receiving sigkill.
 
 Triggers
 --------
