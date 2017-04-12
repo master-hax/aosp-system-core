@@ -69,7 +69,19 @@ struct UnreachableMemoryInfo {
   std::string ToString(bool log_contents) const;
 };
 
-bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit = 100);
+enum MEMUNREACHABLE_FLAGS : uint64_t {
+  MEMUNREACHABLE_FLAG_NONE = 0x00,
+  MEMUNREACHABLE_FLAG_SKIP_GLOBAL = 0x01,
+  MEMUNREACHABLE_FLAG_SKIP_STACK = 0x02,
+  MEMUNREACHABLE_FLAG_SKIP_KEYS = 0x04,
+  MEMUNREACHABLE_FLAG_SKIP_ALL = 0x07,
+  MEMUNREACHABLE_FLAG_GLOBAL_ONLY = MEMUNREACHABLE_FLAG_SKIP_ALL & ~MEMUNREACHABLE_FLAG_SKIP_GLOBAL,
+  MEMUNREACHABLE_FLAG_STACK_ONLY = MEMUNREACHABLE_FLAG_SKIP_ALL & ~MEMUNREACHABLE_FLAG_SKIP_STACK,
+  MEMUNREACHABLE_FLAG_KEYS_ONLY = MEMUNREACHABLE_FLAG_SKIP_ALL & ~MEMUNREACHABLE_FLAG_SKIP_KEYS,
+};
+
+bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit = 100,
+                          uint64_t flags = MEMUNREACHABLE_FLAG_NONE);
 
 std::string GetUnreachableMemoryString(bool log_contents = false, size_t limit = 100);
 

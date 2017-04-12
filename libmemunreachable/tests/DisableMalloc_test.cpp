@@ -74,7 +74,7 @@ TEST_F(DisableMallocTest, deadlock_new) {
     {
       alarm(100ms);
       ScopedDisableMalloc disable_malloc;
-      char* ptr = new(char);
+      char* ptr = new (std::nothrow)(char);
       ASSERT_NE(ptr, nullptr);
       delete(ptr);
     }
@@ -89,6 +89,7 @@ TEST_F(DisableMallocTest, deadlock_delete) {
       alarm(250ms);
       ScopedDisableMalloc disable_malloc;
       delete(ptr);
+      ASSERT_NE(ptr, nullptr);
     }
   }, "");
 }

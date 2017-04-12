@@ -19,11 +19,29 @@
 #include <unistd.h>
 #include <sys/prctl.h>
 
+#include <sstream>
+#include <string>
+
 #include <gtest/gtest.h>
 
 #include <memunreachable/memunreachable.h>
 
-void* ptr;
+static void Ref(void* ptr) {
+  write(0, ptr, 0);
+}
+
+class MemUnreachableTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    // Clear the stack between tests just in case a pointer winds up on
+    // the stack and causes weird failures.
+    char buffer[8192];
+    memset(buffer, 0, sizeof(buffer));
+    Ref(buffer);
+  }
+};
+
+void* g_ptr;
 
 class HiddenPointer {
  public:
@@ -47,132 +65,251 @@ class HiddenPointer {
   volatile uintptr_t ptr_;
 };
 
-static void Ref(void* ptr) {
-  write(0, ptr, 0);
+static std::string MapsToString() {
+  std::string map_str;
+  int fd = TEMP_FAILURE_RETRY(open("/proc/self/maps", O_RDONLY | O_CLOEXEC));
+  if (fd != -1) {
+    char buffer[1025];
+    while (true) {
+      ssize_t length = TEMP_FAILURE_RETRY(read(fd, buffer, sizeof(buffer) - 1));
+      if (length <= 0) {
+        break;
+      }
+      buffer[length] = '\0';
+      map_str += buffer;
+    }
+    close(fd);
+  }
+  return map_str;
 }
 
-TEST(MemunreachableTest, clean) {
+static std::string InfoToString(const UnreachableMemoryInfo& info) {
+  std::string info_str;
+
+  info_str += "Info Dump:\n";
+  info_str += "  num_leaks " + std::to_string(info.num_leaks) + '\n';
+  info_str += "  leak_bytes " + std::to_string(info.leak_bytes) + '\n';
+  info_str += "  num_allocations " + std::to_string(info.num_allocations) + '\n';
+  info_str += "  allocation_bytes " + std::to_string(info.allocation_bytes) + "\n\n";
+  for (const auto leak : info.leaks) {
+    info_str += leak.ToString(true);
+  }
+  return info_str;
+}
+
+static std::string ErrorToString(void** value, const UnreachableMemoryInfo& info) {
+  std::string error_str;
+
+  if (value != nullptr) {
+    std::stringstream stream;
+    stream << std::hex << value;
+    error_str += "  Address of value " + stream.str() + '\n';
+    stream.str(std::string());
+    stream.clear();
+    stream << std::hex << *value;
+    error_str += "  value " + stream.str() + '\n';
+  }
+  error_str += MapsToString();
+  error_str += InfoToString(info);
+  return error_str;
+}
+
+static void FindLeakedPointer(void** pointer, bool expect_leaked,
+                              const UnreachableMemoryInfo& info) {
+  // Make sure that our hidden pointer can be found in the list of leaks.
+  void* value = *pointer;
+  bool found = false;
+  for (const auto leak : info.leaks) {
+    if (leak.begin == reinterpret_cast<uintptr_t>(value)) {
+      found = true;
+      break;
+    }
+  }
+  if (expect_leaked) {
+    ASSERT_TRUE(found) << "Expected pointer " << std::hex << value << " to be leaked.\n"
+                       << ErrorToString(pointer, info);
+  } else {
+    ASSERT_FALSE(found) << "Pointer " << std::hex << value
+                        << " has been leaked, this is not expected.\n"
+                        << ErrorToString(pointer, info);
+  }
+}
+
+static void ExpectPointerLeaked(void** pointer, const UnreachableMemoryInfo& info) {
+  FindLeakedPointer(pointer, true, info);
+}
+
+static void ExpectPointerNotLeaked(void** pointer, const UnreachableMemoryInfo& info) {
+  FindLeakedPointer(pointer, false, info);
+}
+
+TEST_F(MemUnreachableTest, clean) {
   UnreachableMemoryInfo info;
 
   ASSERT_TRUE(LogUnreachableMemory(true, 100));
 
   ASSERT_TRUE(GetUnreachableMemory(info));
-  ASSERT_EQ(0U, info.leaks.size());
+  ASSERT_EQ(0U, info.leaks.size()) << ErrorToString(nullptr, info);
 }
 
-TEST(MemunreachableTest, stack) {
+TEST_F(MemUnreachableTest, stack) {
+  // Do not use hidden pointer to try and avoid any chance the pointer
+  // winds up on the stack.
+  g_ptr = malloc(256);
+  ASSERT_TRUE(g_ptr != nullptr);
+
+  {
+    UnreachableMemoryInfo info;
+
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_STACK_ONLY));
+    ExpectPointerLeaked(&g_ptr, info);
+  }
+
+  {
+    void* ptr = g_ptr;
+    g_ptr = nullptr;
+    Ref(ptr);
+
+    UnreachableMemoryInfo info;
+
+    // Only look on the stack for these pointers.
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_STACK_ONLY));
+    ExpectPointerNotLeaked(&ptr, info);
+
+    // Need to clear out the value since nothing below guarantees that
+    // something will overwrite the stack value.
+    g_ptr = ptr;
+    ptr = nullptr;
+    Ref(ptr);
+  }
+
+  {
+    UnreachableMemoryInfo info;
+
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_STACK_ONLY));
+    ExpectPointerLeaked(&g_ptr, info);
+  }
+
+  free(g_ptr);
+  g_ptr = nullptr;
+}
+
+TEST_F(MemUnreachableTest, global) {
   HiddenPointer hidden_ptr;
 
   {
+    UnreachableMemoryInfo info;
+
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
     void* ptr = hidden_ptr.Get();
-    Ref(ptr);
-
-    UnreachableMemoryInfo info;
-
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
-
-    Ref(ptr);
+    ExpectPointerLeaked(&ptr, info);
   }
+
+  g_ptr = hidden_ptr.Get();
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(1U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
+    ExpectPointerNotLeaked(&g_ptr, info);
   }
 
-  hidden_ptr.Free();
+  g_ptr = nullptr;
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
+    void* ptr = hidden_ptr.Get();
+    ExpectPointerLeaked(&ptr, info);
   }
 }
 
-TEST(MemunreachableTest, global) {
+TEST_F(MemUnreachableTest, static_function_variable) {
   HiddenPointer hidden_ptr;
 
-  ptr = hidden_ptr.Get();
-
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
+    void* ptr = hidden_ptr.Get();
+    ExpectPointerLeaked(&ptr, info);
   }
 
-  ptr = NULL;
+  static void* static_ptr = nullptr;
+  static_ptr = hidden_ptr.Get();
+  ASSERT_NE(nullptr, static_ptr);
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(1U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
+    ExpectPointerNotLeaked(&static_ptr, info);
   }
 
-  hidden_ptr.Free();
+  static_ptr = nullptr;
+  ASSERT_EQ(nullptr, static_ptr);
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_GLOBAL_ONLY));
+    void* ptr = hidden_ptr.Get();
+    ExpectPointerLeaked(&ptr, info);
   }
 }
 
-TEST(MemunreachableTest, tls) {
+TEST_F(MemUnreachableTest, tls) {
   HiddenPointer hidden_ptr;
   pthread_key_t key;
-  pthread_key_create(&key, NULL);
-
-  pthread_setspecific(key, hidden_ptr.Get());
+  ASSERT_EQ(0, pthread_key_create(&key, nullptr));
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_KEYS_ONLY));
+    void* pointer = hidden_ptr.Get();
+    ExpectPointerLeaked(&pointer, info);
   }
 
-  pthread_setspecific(key, nullptr);
+  ASSERT_EQ(0, pthread_setspecific(key, hidden_ptr.Get()));
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(1U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_KEYS_ONLY));
+    void* pointer = hidden_ptr.Get();
+    ExpectPointerNotLeaked(&pointer, info);
   }
 
-  hidden_ptr.Free();
+  ASSERT_EQ(0, pthread_setspecific(key, nullptr));
 
   {
     UnreachableMemoryInfo info;
 
-    ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_TRUE(GetUnreachableMemory(info, 1000, MEMUNREACHABLE_FLAG_KEYS_ONLY));
+    void* pointer = hidden_ptr.Get();
+    ExpectPointerLeaked(&pointer, info);
   }
 
-  pthread_key_delete(key);
+  ASSERT_EQ(0, pthread_key_delete(key));
 }
 
-TEST(MemunreachableTest, twice) {
+TEST_F(MemUnreachableTest, twice) {
   HiddenPointer hidden_ptr;
 
   {
     UnreachableMemoryInfo info;
 
     ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(1U, info.leaks.size());
+    ASSERT_EQ(1U, info.leaks.size()) << ErrorToString(nullptr, info);
   }
 
   {
     UnreachableMemoryInfo info;
 
     ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(1U, info.leaks.size());
+    ASSERT_EQ(1U, info.leaks.size()) << ErrorToString(nullptr, info);
   }
 
   hidden_ptr.Free();
@@ -181,11 +318,11 @@ TEST(MemunreachableTest, twice) {
     UnreachableMemoryInfo info;
 
     ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_EQ(0U, info.leaks.size()) << ErrorToString(nullptr, info);
   }
 }
 
-TEST(MemunreachableTest, log) {
+TEST_F(MemUnreachableTest, log) {
   HiddenPointer hidden_ptr;
 
   ASSERT_TRUE(LogUnreachableMemory(true, 100));
@@ -196,11 +333,11 @@ TEST(MemunreachableTest, log) {
     UnreachableMemoryInfo info;
 
     ASSERT_TRUE(GetUnreachableMemory(info));
-    ASSERT_EQ(0U, info.leaks.size());
+    ASSERT_EQ(0U, info.leaks.size()) << ErrorToString(nullptr, info);
   }
 }
 
-TEST(MemunreachableTest, notdumpable) {
+TEST_F(MemUnreachableTest, notdumpable) {
   ASSERT_EQ(0, prctl(PR_SET_DUMPABLE, 0));
 
   HiddenPointer hidden_ptr;
@@ -210,7 +347,7 @@ TEST(MemunreachableTest, notdumpable) {
   ASSERT_EQ(0, prctl(PR_SET_DUMPABLE, 1));
 }
 
-TEST(MemunreachableTest, leak_lots) {
+TEST_F(MemUnreachableTest, leak_lots) {
   std::vector<HiddenPointer> hidden_ptrs;
   hidden_ptrs.resize(1024);
 

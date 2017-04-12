@@ -50,7 +50,7 @@ class MemUnreachable {
   MemUnreachable(pid_t pid, Allocator<void> allocator) : pid_(pid), allocator_(allocator),
       heap_walker_(allocator_) {}
   bool CollectAllocations(const allocator::vector<ThreadInfo>& threads,
-      const allocator::vector<Mapping>& mappings);
+                          const allocator::vector<Mapping>& mappings, uint64_t flags);
   bool GetUnreachableMemory(allocator::vector<Leak>& leaks, size_t limit,
       size_t* num_leaks, size_t* leak_bytes);
   size_t Allocations() { return heap_walker_.Allocations(); }
@@ -77,8 +77,8 @@ static void HeapIterate(const Mapping& heap_mapping,
 }
 
 bool MemUnreachable::CollectAllocations(const allocator::vector<ThreadInfo>& threads,
-    const allocator::vector<Mapping>& mappings) {
-  ALOGI("searching process %d for allocations", pid_);
+                                        const allocator::vector<Mapping>& mappings, uint64_t flags) {
+  MEM_ALOGI("searching process %d for allocations", pid_);
   allocator::vector<Mapping> heap_mappings{mappings};
   allocator::vector<Mapping> anon_mappings{mappings};
   allocator::vector<Mapping> globals_mappings{mappings};
@@ -89,40 +89,58 @@ bool MemUnreachable::CollectAllocations(const allocator::vector<ThreadInfo>& thr
   }
 
   for (auto it = heap_mappings.begin(); it != heap_mappings.end(); it++) {
-    ALOGV("Heap mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
+    MEM_ALOGV("Heap mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
     HeapIterate(*it, [&](uintptr_t base, size_t size) {
       heap_walker_.Allocation(base, base + size);
     });
   }
 
   for (auto it = anon_mappings.begin(); it != anon_mappings.end(); it++) {
-    ALOGV("Anon mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
+    MEM_ALOGV("Anon mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
     heap_walker_.Allocation(it->begin, it->end);
   }
 
-  for (auto it = globals_mappings.begin(); it != globals_mappings.end(); it++) {
-    ALOGV("Globals mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
-    heap_walker_.Root(it->begin, it->end);
+  if (!(flags & MEMUNREACHABLE_FLAG_SKIP_GLOBAL)) {
+    for (auto it = globals_mappings.begin(); it != globals_mappings.end(); it++) {
+      MEM_ALOGV("Globals mapping %" PRIxPTR "-%" PRIxPTR " %s", it->begin, it->end, it->name);
+      heap_walker_.Root(it->begin, it->end);
+    }
   }
 
-  for (auto thread_it = threads.begin(); thread_it != threads.end(); thread_it++) {
-    for (auto it = stack_mappings.begin(); it != stack_mappings.end(); it++) {
-      if (thread_it->stack.first >= it->begin && thread_it->stack.first <= it->end) {
-        ALOGV("Stack %" PRIxPTR "-%" PRIxPTR " %s", thread_it->stack.first, it->end, it->name);
-        heap_walker_.Root(thread_it->stack.first, it->end);
+  if (!(flags & MEMUNREACHABLE_FLAG_SKIP_STACK)) {
+    for (auto thread_it = threads.begin(); thread_it != threads.end(); thread_it++) {
+      for (auto it = stack_mappings.begin(); it != stack_mappings.end(); it++) {
+        if (thread_it->stack.first >= it->begin && thread_it->stack.first <= it->end) {
+          MEM_ALOGV("Stack %" PRIxPTR "-%" PRIxPTR " %s", thread_it->stack.first, it->end, it->name);
+          heap_walker_.Root(thread_it->stack.first, it->end);
+        }
+      }
+      heap_walker_.Root(thread_it->regs);
+    }
+  }
+
+  // On the main thread, there is no way to get the tls data.
+  // As a quick fix, loop through the keys and add each one as a root.
+  // This depends on the bionic implementation of pthread_key_t,
+  // and will need to be changed if that implementation changes.
+  if (!(flags & MEMUNREACHABLE_FLAG_SKIP_KEYS)) {
+    for (size_t i = 0; i < PTHREAD_KEYS_MAX; i++) {
+      pthread_key_t key = 1 << 31;
+      uintptr_t pointer = reinterpret_cast<uintptr_t>(pthread_getspecific(key | i));
+      if (pointer) {
+        heap_walker_.RootVal(pointer);
       }
     }
-    heap_walker_.Root(thread_it->regs);
   }
 
-  ALOGI("searching done");
+  MEM_ALOGI("searching done");
 
   return true;
 }
 
 bool MemUnreachable::GetUnreachableMemory(allocator::vector<Leak>& leaks,
     size_t limit, size_t* num_leaks, size_t* leak_bytes) {
-  ALOGI("sweeping process %d for unreachable memory", pid_);
+  MEM_ALOGI("sweeping process %d for unreachable memory", pid_);
   leaks.clear();
 
   if (!heap_walker_.DetectLeaks()) {
@@ -133,9 +151,9 @@ bool MemUnreachable::GetUnreachableMemory(allocator::vector<Leak>& leaks,
   allocator::vector<Range> leaked1{allocator_};
   heap_walker_.Leaked(leaked1, 0, num_leaks, leak_bytes);
 
-  ALOGI("sweeping done");
+  MEM_ALOGI("sweeping done");
 
-  ALOGI("folding related leaks");
+  MEM_ALOGI("folding related leaks");
 
   LeakFolding folding(allocator_, heap_walker_);
   if (!folding.FoldLeaks()) {
@@ -188,7 +206,7 @@ bool MemUnreachable::GetUnreachableMemory(allocator::vector<Leak>& leaks,
         std::min(leak->size, Leak::contents_length));
   }
 
-  ALOGI("folding done");
+  MEM_ALOGI("folding done");
 
   std::sort(leaks.begin(), leaks.end(), [](const Leak& a, const Leak& b) {
     return a.total_size > b.total_size;
@@ -263,7 +281,7 @@ static inline const char* plural(T val) {
   return (val == 1) ? "" : "s";
 }
 
-bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit) {
+bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit, uint64_t flags) {
   int parent_pid = getpid();
   int parent_tid = gettid();
 
@@ -276,7 +294,7 @@ bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit) {
     /////////////////////////////////////////////
     // Collection thread
     /////////////////////////////////////////////
-    ALOGI("collecting thread info for process %d...", parent_pid);
+    MEM_ALOGI("collecting thread info for process %d...", parent_pid);
 
     ThreadCapture thread_capture(parent_pid, heap);
     allocator::vector<ThreadInfo> thread_info(heap);
@@ -325,7 +343,7 @@ bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit) {
 
       MemUnreachable unreachable{parent_pid, heap};
 
-      if (!unreachable.CollectAllocations(thread_info, mappings)) {
+      if (!unreachable.CollectAllocations(thread_info, mappings, flags)) {
         _exit(2);
       }
       size_t num_allocations = unreachable.Allocations();
@@ -351,7 +369,7 @@ bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit) {
     } else {
       // Nothing left to do in the collection thread, return immediately,
       // releasing all the captured threads.
-      ALOGI("collection thread done");
+      MEM_ALOGI("collection thread done");
       return 0;
     }
   }};
@@ -397,10 +415,10 @@ bool GetUnreachableMemory(UnreachableMemoryInfo& info, size_t limit) {
     return false;
   }
 
-  ALOGI("unreachable memory detection done");
-  ALOGE("%zu bytes in %zu allocation%s unreachable out of %zu bytes in %zu allocation%s",
-      info.leak_bytes, info.num_leaks, plural(info.num_leaks),
-      info.allocation_bytes, info.num_allocations, plural(info.num_allocations));
+  MEM_ALOGI("unreachable memory detection done");
+  MEM_ALOGE("%zu bytes in %zu allocation%s unreachable out of %zu bytes in %zu allocation%s",
+            info.leak_bytes, info.num_leaks, plural(info.num_leaks), info.allocation_bytes,
+            info.num_allocations, plural(info.num_allocations));
   return true;
 }
 
@@ -517,7 +535,7 @@ bool LogUnreachableMemory(bool log_contents, size_t limit) {
   }
 
   for (auto it = info.leaks.begin(); it != info.leaks.end(); it++) {
-    ALOGE("%s", it->ToString(log_contents).c_str());
+    MEM_ALOGE("%s", it->ToString(log_contents).c_str());
   }
   return true;
 }

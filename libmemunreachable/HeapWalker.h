@@ -48,10 +48,14 @@ struct compare_range {
 
 class HeapWalker {
  public:
-  explicit HeapWalker(Allocator<HeapWalker> allocator) : allocator_(allocator),
-    allocations_(allocator), allocation_bytes_(0),
-	roots_(allocator), root_vals_(allocator),
-	segv_handler_(allocator), walking_ptr_(0) {
+  explicit HeapWalker(Allocator<HeapWalker> allocator)
+      : allocator_(allocator),
+        allocations_(allocator),
+        allocation_bytes_(0),
+        roots_(allocator),
+        root_vals_(allocator),
+        segv_handler_(allocator),
+        walking_ptr_(0) {
     valid_allocations_range_.end = 0;
     valid_allocations_range_.begin = ~valid_allocations_range_.end;
 
@@ -65,6 +69,7 @@ class HeapWalker {
   bool Allocation(uintptr_t begin, uintptr_t end);
   void Root(uintptr_t begin, uintptr_t end);
   void Root(const allocator::vector<uintptr_t>& vals);
+  void RootVal(uintptr_t val);
 
   bool DetectLeaks();
 
@@ -84,7 +89,6 @@ class HeapWalker {
   };
 
  private:
-
   void RecurseRoot(const Range& root);
   bool WordContainsAllocationPtr(uintptr_t ptr, Range* range, AllocationInfo** info);
   void HandleSegFault(ScopedSignalHandler&, int, siginfo_t*, void*);
