@@ -20,6 +20,7 @@
 
 #include <fcntl.h>
 #include <inttypes.h>
+#include <libavb_user/libavb_user.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -90,8 +91,53 @@ static int set_verity_enabled_state(int fd, const char *block_device,
     return 0;
 }
 
+/* Helper function to get A/B suffix, if any. If the device isn't
+ * using A/B the empty string is returned. Otherwise either "_a",
+ * "_b", ... is returned.
+ *
+ * Note that since sometime in O androidboot.slot_suffix is deprecated
+ * and androidboot.slot should be used instead. Since bootloaders may
+ * be out of sync with the OS, we check both and for extra safety
+ * prepend a leading underscore if there isn't one already.
+ */
+static std::string get_ab_suffix() {
+    std::string ab_suffix = android::base::GetProperty("ro.boot.slot_suffix", "");
+    if (ab_suffix == "") {
+        ab_suffix = android::base::GetProperty("ro.boot.slot", "");
+    }
+    if (ab_suffix.size() > 0 && ab_suffix[0] != '_') {
+        ab_suffix = std::string("_") + ab_suffix;
+    }
+    return ab_suffix;
+}
+
+/* Use AVB to turn verity on/off */
+static int set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity) {
+    std::string ab_suffix = get_ab_suffix();
+
+    bool verity_enabled;
+    if (!avb_user_verity_get(ops, ab_suffix.c_str(), &verity_enabled)) {
+        WriteFdFmt(fd, "Error getting whether verity is enabled\n");
+        return -1;
+    }
+
+    if ((verity_enabled && enable_verity) || (!verity_enabled && !enable_verity)) {
+        WriteFdFmt(fd, "verity is already %s\n", verity_enabled ? "enabled" : "disabled");
+        return -1;
+    }
+
+    if (!avb_user_verity_set(ops, ab_suffix.c_str(), enable_verity)) {
+        WriteFdFmt(fd, "Error setting verity\n");
+        return -1;
+    }
+
+    WriteFdFmt(fd, "Successfully %s verity\n", enable_verity ? "enabled" : "disabled");
+    return 0;
+}
+
 void set_verity_enabled_state_service(int fd, void* cookie) {
     unique_fd closer(fd);
+    bool any_changed = false;
 
     bool enable = (cookie != NULL);
     if (!kAllowDisableVerity) {
@@ -108,21 +154,37 @@ void set_verity_enabled_state_service(int fd, void* cookie) {
         return;
     }
 
-    // read all fstab entries at once from all sources
-    fstab = fs_mgr_read_fstab_default();
-    if (!fstab) {
-        WriteFdFmt(fd, "Failed to read fstab\nMaybe run adb root?\n");
-        return;
-    }
+    // Figure out if we're using VB1.0 or VB2.0 (aka AVB).
+    std::string vbmeta_hash = android::base::GetProperty("ro.boot.vbmeta.digest", "");
+    if (vbmeta_hash != "") {
+        // Yep, the system is using AVB (by contract, androidboot.vbmeta.hash is
+        // set by the bootloader when using AVB).
+        AvbOps* ops = avb_ops_user_new();
+        if (ops == nullptr) {
+            WriteFdFmt(fd, "Error getting AVB ops\n");
+            return;
+        }
+        if (!set_avb_verity_enabled_state(fd, ops, enable)) {
+            any_changed = true;
+        }
+        avb_ops_user_free(ops);
+    } else {
+        // Not using AVB - assume VB1.0.
 
-    // Loop through entries looking for ones that vold manages.
-    bool any_changed = false;
-    for (int i = 0; i < fstab->num_entries; i++) {
-        if (fs_mgr_is_verified(&fstab->recs[i])) {
-            if (!set_verity_enabled_state(fd, fstab->recs[i].blk_device,
-                                          fstab->recs[i].mount_point,
-                                          enable)) {
-                any_changed = true;
+        // read all fstab entries at once from all sources
+        fstab = fs_mgr_read_fstab_default();
+        if (!fstab) {
+            WriteFdFmt(fd, "Failed to read fstab\nMaybe run adb root?\n");
+            return;
+        }
+
+        // Loop through entries looking for ones that vold manages.
+        for (int i = 0; i < fstab->num_entries; i++) {
+            if (fs_mgr_is_verified(&fstab->recs[i])) {
+                if (!set_verity_enabled_state(fd, fstab->recs[i].blk_device,
+                                              fstab->recs[i].mount_point, enable)) {
+                    any_changed = true;
+                }
             }
         }
     }
