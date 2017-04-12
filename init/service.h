@@ -55,6 +55,11 @@
 
 #define NR_SVC_SUPP_GIDS 12    // twelve supplementary groups
 
+// Flags for shutdown_flags_ member, services may have these flags set if the flags_ member contains
+// SVC_SHUTDOWN_CRITICAL
+#define SVC_SHUTDOWN_FLAGS_AFTER_APPS 0x1  // Whether or not the service should be shutdown after
+// apps or not.
+
 class Action;
 class ServiceManager;
 
@@ -103,6 +108,7 @@ class Service {
     int keychord_id() const { return keychord_id_; }
     void set_keychord_id(int keychord_id) { keychord_id_ = keychord_id; }
     const std::vector<std::string>& args() const { return args_; }
+    unsigned shutdownFlags() const { return shutdown_flags_; }
 
   private:
     using OptionParser = bool (Service::*) (const std::vector<std::string>& args,
@@ -131,6 +137,7 @@ class Service {
     bool ParseNamespace(const std::vector<std::string>& args, std::string* err);
     bool ParseSeclabel(const std::vector<std::string>& args, std::string* err);
     bool ParseSetenv(const std::vector<std::string>& args, std::string* err);
+    bool ParseShutdown(const std::vector<std::string>& args, std::string* err);
     bool ParseSocket(const std::vector<std::string>& args, std::string* err);
     bool ParseFile(const std::vector<std::string>& args, std::string* err);
     bool ParseUser(const std::vector<std::string>& args, std::string* err);
@@ -154,6 +161,7 @@ class Service {
     std::vector<gid_t> supp_gids_;
     CapSet capabilities_;
     unsigned namespace_flags_;
+    unsigned shutdown_flags_;
 
     std::string seclabel_;
 

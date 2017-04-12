@@ -8,3 +8,5 @@ service tombstoned /system/bin/tombstoned
     socket tombstoned_crash seqpacket 0666 system system
     socket tombstoned_intercept seqpacket 0666 system system
     writepid /dev/cpuset/system-background/tasks
+
+    shutdown after_apps

@@ -156,6 +156,7 @@ Service::Service(const std::string& name, const std::vector<std::string>& args)
       uid_(0),
       gid_(0),
       namespace_flags_(0),
+      shutdown_flags_(0),
       seclabel_(""),
       ioprio_class_(IoSchedClass_NONE),
       ioprio_pri_(0),
@@ -179,6 +180,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       supp_gids_(supp_gids),
       capabilities_(capabilities),
       namespace_flags_(namespace_flags),
+      shutdown_flags_(0),
       seclabel_(seclabel),
       ioprio_class_(IoSchedClass_NONE),
       ioprio_pri_(0),
@@ -476,6 +478,22 @@ bool Service::ParseSetenv(const std::vector<std::string>& args, std::string* err
     return true;
 }
 
+bool Service::ParseShutdown(const std::vector<std::string>& args, std::string* err) {
+    if (!args[1].compare("never")) {
+        flags_ |= SVC_SHUTDOWN_CRITICAL;
+        return true;
+    }
+
+    if (!args[1].compare("after_apps")) {
+        flags_ |= SVC_SHUTDOWN_CRITICAL;
+        shutdown_flags_ |= SVC_SHUTDOWN_FLAGS_AFTER_APPS;
+        return true;
+    }
+
+    *err = "shutdown accepts the following arguments, \"critical\", got: " + args[1];
+    return false;
+}
+
 template <typename T>
 bool Service::AddDescriptor(const std::vector<std::string>& args, std::string* err) {
     int perm = args.size() > 3 ? std::strtoul(args[3].c_str(), 0, 8) : -1;
@@ -559,6 +577,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"namespace",   {1,     2,    &Service::ParseNamespace}},
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
+        {"shutdown",    {1,     1,    &Service::ParseShutdown}},
         {"socket",      {3,     6,    &Service::ParseSocket}},
         {"file",        {2,     2,    &Service::ParseFile}},
         {"user",        {1,     1,    &Service::ParseUser}},
