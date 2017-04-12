@@ -95,7 +95,7 @@ static unsigned tags_offset    = 0x00000100;
 static const std::string convert_fbe_marker_filename("convert_fbe");
 
 enum fb_buffer_type {
-    FB_BUFFER,
+    FB_BUFFER_FD,
     FB_BUFFER_SPARSE,
 };
 
@@ -103,6 +103,7 @@ struct fastboot_buffer {
     enum fb_buffer_type type;
     void* data;
     int64_t sz;
+    int fd;
 };
 
 static struct {
@@ -831,10 +832,9 @@ static bool load_buf_fd(Transport* transport, int fd, struct fastboot_buffer* bu
         buf->type = FB_BUFFER_SPARSE;
         buf->data = s;
     } else {
-        void* data = load_fd(fd, &sz);
-        if (data == nullptr) return -1;
-        buf->type = FB_BUFFER;
-        buf->data = data;
+        buf->type = FB_BUFFER_FD;
+        buf->data = nullptr;
+        buf->fd = fd;
         buf->sz = sz;
     }
 
@@ -842,10 +842,23 @@ static bool load_buf_fd(Transport* transport, int fd, struct fastboot_buffer* bu
 }
 
 static bool load_buf(Transport* transport, const char* fname, struct fastboot_buffer* buf) {
-    int fd = open(fname, O_RDONLY | O_BINARY);
+    int fd;
+    struct stat s;
+
+    fd = open(fname, O_RDONLY | O_BINARY);
     if (fd == -1) {
         return false;
     }
+    if (fstat(fd, &s)) {
+        close(fd);
+        return false;
+    }
+    if (!S_ISREG(s.st_mode)) {
+        close(fd);
+        errno = S_ISDIR(s.st_mode) ? EISDIR : EINVAL;
+        return false;
+    }
+
     return load_buf_fd(transport, fd, buf);
 }
 
@@ -869,9 +882,8 @@ static void flash_buf(const char *pname, struct fastboot_buffer *buf)
             }
             break;
         }
-
-        case FB_BUFFER:
-            fb_queue_flash(pname, buf->data, buf->sz);
+        case FB_BUFFER_FD:
+            fb_queue_flash_fd(pname, buf->fd, buf->sz);
             break;
         default:
             die("unknown buffer type: %d", buf->type);
