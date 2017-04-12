@@ -156,6 +156,7 @@ Service::Service(const std::string& name, const std::vector<std::string>& args)
       uid_(0),
       gid_(0),
       namespace_flags_(0),
+      shutdown_flags_(0),
       seclabel_(""),
       onrestart_(false, "<Service '" + name + "' onrestart>", 0),
       ioprio_class_(IoSchedClass_NONE),
@@ -180,6 +181,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       supp_gids_(supp_gids),
       capabilities_(capabilities),
       namespace_flags_(namespace_flags),
+      shutdown_flags_(0),
       seclabel_(seclabel),
       onrestart_(false, "<Service '" + name + "' onrestart>", 0),
       ioprio_class_(IoSchedClass_NONE),
@@ -479,6 +481,105 @@ bool Service::ParseSetenv(const std::vector<std::string>& args, std::string* err
     return true;
 }
 
+static bool shutdown_on_never(unsigned& tmp_flags, bool& is_never_service, std::string* err) {
+    // "never" keyword can be used by itself, or with start|nostart modifier.
+    // ie NO: duplicate specifications, after_apps or terminate modifier.
+    if (is_never_service) {
+        *err = "Multiple specifications of shutdown keyword \"never\".";
+        return false;
+    }
+    if (tmp_flags & SVC_SHUTDOWN_FLAGS_AFTER_APPS) {
+        *err = "Mutually exclusive shutdown options \"never\" and \"after_apps\" specified.";
+        return false;
+    }
+    if (tmp_flags & SVC_SHUTDOWN_FLAGS_AFTER_APPS_SIGTERM) {
+        *err = "Mutually exclusive shutdown options \"never\" and \"sigterm\" specified.";
+        return false;
+    }
+    is_never_service = true;
+
+    return true;
+}
+
+static bool shutdown_on_after_apps(unsigned& tmp_flags, bool& is_never_service, std::string* err) {
+    // "after_apps" keyword can be used by itself, the start|nostart and sigterm modifiers.
+    // ie NO: duplicate specifications, or never usage with it.
+    if (is_never_service) {
+        *err = "Mutually exclusive shutdown options \"never\" and \"after_apps\" specified.";
+        return false;
+    }
+    if (tmp_flags & SVC_SHUTDOWN_FLAGS_AFTER_APPS) {
+        *err = "Multiple specifications of shutdown keyword \"after_apps\".";
+        return false;
+    }
+    tmp_flags |= SVC_SHUTDOWN_FLAGS_AFTER_APPS;
+
+    return true;
+}
+
+static bool shutdown_on_start(unsigned& tmp_flags, bool& is_never_service, std::string* err) {
+    // "start" keyword can be used by itself, with all modifiers but no duplicates.
+    if (tmp_flags & SVC_SHUTDOWN_FLAGS_START) {
+        *err = "Multiple specifications of shutdown keyword \"start\".";
+        return false;
+    }
+
+    tmp_flags |= SVC_SHUTDOWN_FLAGS_START;
+
+    return true;
+}
+
+static bool shutdown_on_sigterm(unsigned& tmp_flags, bool& is_never_service, std::string* err) {
+    // "sigterm" can only be used on things not marked never.
+    if (is_never_service) {
+        *err = "Mutually exclusive shutdown options \"never\" and \"sigterm\" specified.";
+        return false;
+    }
+    if (tmp_flags & SVC_SHUTDOWN_FLAGS_AFTER_APPS_SIGTERM) {
+        *err = "Multiple specifications of shutdown keyword \"sigterm\".";
+        return false;
+    }
+    tmp_flags |= SVC_SHUTDOWN_FLAGS_AFTER_APPS_SIGTERM;
+
+    return true;
+}
+
+bool Service::ParseShutdown(const std::vector<std::string>& args, std::string* err) {
+    static const std::map<std::string, bool (*)(unsigned&, bool&, std::string*)> shutdown_state_map = {
+        {"never", shutdown_on_never},
+        {"after_apps", shutdown_on_after_apps},
+        {"start", shutdown_on_start},
+        {"sigterm", shutdown_on_sigterm},
+    };
+
+    unsigned tmp_flags = 0;
+    bool is_never_service = false;
+
+    for (unsigned i = 1; i < args.size(); i++) {
+        auto it = shutdown_state_map.find(args[i]);
+        if (it == shutdown_state_map.end()) {
+            *err = "Unknown shutdown keyword, got: \"" + args[i] + "\"";
+            return false;
+        }
+
+        // XXX REMOVE ME
+        LOG(INFO) << "BILL: Setting service \"" << name_ << "\" as: \"" << args[i] << "\"";
+
+        bool result = it->second(tmp_flags, is_never_service, err);
+        if (!result) {
+            return false;
+        }
+    }
+
+    flags_ |= SVC_SHUTDOWN_CRITICAL;
+    shutdown_flags_ |= tmp_flags;
+
+    // XXX REMOVE ME
+    LOG(INFO) << "BILL: Setting service \"" << name_ << "\" flags: \"" << shutdown_flags_ << "\"";
+
+    return true;
+}
+
 template <typename T>
 bool Service::AddDescriptor(const std::vector<std::string>& args, std::string* err) {
     int perm = args.size() > 3 ? std::strtoul(args[3].c_str(), 0, 8) : -1;
@@ -562,6 +663,7 @@ Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"namespace",   {1,     2,    &Service::ParseNamespace}},
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
+        {"shutdown",    {1,     3,    &Service::ParseShutdown}},
         {"socket",      {3,     6,    &Service::ParseSocket}},
         {"file",        {2,     2,    &Service::ParseFile}},
         {"user",        {1,     1,    &Service::ParseUser}},
