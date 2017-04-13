@@ -74,6 +74,8 @@ class FsManagerAvbHandle {
 
     bool AvbHashtreeDisabled() { return status_ == kFsManagerAvbHandleHashtreeDisabled; }
 
+    std::string AvbVersion() { return avb_version_; }
+
     FsManagerAvbHandle(const FsManagerAvbHandle&) = delete;             // no copy
     FsManagerAvbHandle& operator=(const FsManagerAvbHandle&) = delete;  // no assignment
 
@@ -92,6 +94,7 @@ class FsManagerAvbHandle {
   private:
     AvbSlotVerifyData* avb_slot_data_;
     FsManagerAvbHandleStatus status_;
+    std::string avb_version_;
 };
 
 #endif /* __CORE_FS_MGR_AVB_H */
