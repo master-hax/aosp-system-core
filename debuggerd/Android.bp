@@ -145,6 +145,7 @@ cc_library_static {
 
 cc_test {
     name: "debuggerd_test",
+    test_suites: ["device-tests"],
     defaults: ["debuggerd_defaults"],
 
     cflags: ["-Wno-missing-field-initializers"],
