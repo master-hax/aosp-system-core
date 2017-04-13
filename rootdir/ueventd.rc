@@ -101,6 +101,26 @@ subsystem adf
 /sys/devices/virtual/usb_composite/*   enable      0664  root   system
 /sys/devices/system/cpu/cpu*   cpufreq/scaling_max_freq   0664  system system
 /sys/devices/system/cpu/cpu*   cpufreq/scaling_min_freq   0664  system system
+# BT DualShock4 LED example sysfs path: /sys/devices/virtual/misc/uhid/0005:054C:05C4.0001/leds/0005:054C:05C4.0001:event2:*
+/sys/devices/*/*/*/*/leds/*             brightness  0664 system system
+/sys/devices/*/*/*/*/leds/*             trigger     0664 system system
+/sys/devices/*/*/*/*/leds/*             delay_on    0664 system system
+/sys/devices/*/*/*/*/leds/*             delay_off   0664 system system
+# Built-in LED example sysfs path: /sys/devices/platform/intel_rproc_scu/remoteproc0/virtio0/rpmsg0/leds/white
+/sys/devices/*/*/*/*/*/leds/*           brightness  0664 system system
+/sys/devices/*/*/*/*/*/leds/*           trigger     0664 system system
+/sys/devices/*/*/*/*/*/leds/*           delay_on    0664 system system
+/sys/devices/*/*/*/*/*/leds/*           delay_off   0664 system system
+# USB Xinput LED example sysfs path: /sys/devices/pci0000:00/0000:00:11.0/dwc3-host.2/usb2/2-1/2-1.3/leds/xpad0
+/sys/devices/*/*/*/*/*/*/leds/*         brightness  0664 system system
+/sys/devices/*/*/*/*/*/*/leds/*         trigger     0664 system system
+/sys/devices/*/*/*/*/*/*/leds/*         delay_on    0664 system system
+/sys/devices/*/*/*/*/*/*/leds/*         delay_off   0664 system system
+# USB DualShock4 LED example sysfs path: /sys/devices/pci0000:00/0000:00:11.0/dwc3-host.2/usb2/2-1/2-1.3/2-1.3:1.0/0003:054C:05C4.0001/leds/0003:054C:05C4.0001:event2:*
+/sys/devices/*/*/*/*/*/*/*/*/leds/*     brightness  0664 system system
+/sys/devices/*/*/*/*/*/*/*/*/leds/*     trigger     0664 system system
+/sys/devices/*/*/*/*/*/*/*/*/leds/*     delay_on    0664 system system
+/sys/devices/*/*/*/*/*/*/*/*/leds/*     delay_off   0664 system system
 
 # DVB API device nodes
 /dev/dvb*                 0660   root       system
