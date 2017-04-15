@@ -120,13 +120,12 @@ public:
     }
     bool ParseSection(const std::vector<std::string>& args,
                       std::string* err) override;
-    bool ParseLineSection(const std::vector<std::string>& args,
-                          const std::string& filename, int line,
-                          std::string* err) const override;
+    bool ParseLineSection(const std::vector<std::string>& args, const std::string& filename,
+                          int line, std::string* err) override;
     void EndSection() override;
-    void EndFile(const std::string&) override {
-    }
-private:
+    void EndFile(const std::string&) override {}
+
+  private:
     std::unique_ptr<Action> action_;
 };
 

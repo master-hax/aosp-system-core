@@ -23,39 +23,34 @@
 #include <vector>
 
 class SectionParser {
-public:
+  public:
     virtual ~SectionParser() {
     }
     virtual bool ParseSection(const std::vector<std::string>& args,
                               std::string* err) = 0;
-    virtual bool ParseLineSection(const std::vector<std::string>& args,
-                                  const std::string& filename, int line,
-                                  std::string* err) const = 0;
+    virtual bool ParseLineSection(const std::vector<std::string>& args, const std::string& filename,
+                                  int line, std::string* err) = 0;
     virtual void EndSection() = 0;
     virtual void EndFile(const std::string& filename) = 0;
 };
 
 class Parser {
-public:
+  public:
+    using LineCallback = bool (*)(std::vector<std::string>&& args, std::string* err);
+
     static Parser& GetInstance();
     void DumpState() const;
     bool ParseConfig(const std::string& path);
-    void AddSectionParser(const std::string& name,
-                          std::unique_ptr<SectionParser> parser);
-    void set_is_system_etc_init_loaded(bool loaded) {
-        is_system_etc_init_loaded_ = loaded;
-    }
-    void set_is_vendor_etc_init_loaded(bool loaded) {
-        is_vendor_etc_init_loaded_ = loaded;
-    }
-    void set_is_odm_etc_init_loaded(bool loaded) {
-        is_odm_etc_init_loaded_ = loaded;
-    }
+    void AddSectionParser(const std::string& name, std::unique_ptr<SectionParser> parser);
+    void AddSingleLineParser(const std::string& prefix, LineCallback callback);
+    void set_is_system_etc_init_loaded(bool loaded) { is_system_etc_init_loaded_ = loaded; }
+    void set_is_vendor_etc_init_loaded(bool loaded) { is_vendor_etc_init_loaded_ = loaded; }
+    void set_is_odm_etc_init_loaded(bool loaded) { is_odm_etc_init_loaded_ = loaded; }
     bool is_system_etc_init_loaded() { return is_system_etc_init_loaded_; }
     bool is_vendor_etc_init_loaded() { return is_vendor_etc_init_loaded_; }
     bool is_odm_etc_init_loaded() { return is_odm_etc_init_loaded_; }
 
-private:
+  private:
     Parser();
 
     void ParseData(const std::string& filename, const std::string& data);
@@ -63,6 +58,7 @@ private:
     bool ParseConfigDir(const std::string& path);
 
     std::map<std::string, std::unique_ptr<SectionParser>> section_parsers_;
+    std::vector<std::pair<std::string, LineCallback>> line_callbacks_;
     bool is_system_etc_init_loaded_ = false;
     bool is_vendor_etc_init_loaded_ = false;
     bool is_odm_etc_init_loaded_ = false;

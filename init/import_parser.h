@@ -28,13 +28,11 @@ public:
     }
     bool ParseSection(const std::vector<std::string>& args,
                       std::string* err) override;
-    bool ParseLineSection(const std::vector<std::string>& args,
-                          const std::string& filename, int line,
-                          std::string* err) const override {
+    bool ParseLineSection(const std::vector<std::string>&, const std::string&, int,
+                          std::string*) override {
         return true;
     }
-    void EndSection() override {
-    }
+    void EndSection() override {}
     void EndFile(const std::string& filename) override;
 private:
     std::vector<std::string> imports_;

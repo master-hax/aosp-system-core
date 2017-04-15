@@ -1111,8 +1111,7 @@ bool ServiceParser::ParseSection(const std::vector<std::string>& args,
 }
 
 bool ServiceParser::ParseLineSection(const std::vector<std::string>& args,
-                                     const std::string& filename, int line,
-                                     std::string* err) const {
+                                     const std::string& filename, int line, std::string* err) {
     return service_ ? service_->ParseLine(args, err) : false;
 }
 

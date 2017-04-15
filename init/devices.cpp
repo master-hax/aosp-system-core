@@ -49,7 +49,7 @@
 #include <selinux/label.h>
 #include <selinux/selinux.h>
 
-#include "ueventd_parser.h"
+#include "ueventd.h"
 #include "util.h"
 
 extern struct selabel_handle *sehandle;
@@ -483,30 +483,21 @@ static void handle_generic_device_event(uevent* uevent) {
     // if it's not a /dev device, nothing to do
     if (uevent->major < 0 || uevent->minor < 0) return;
 
-    std::string name = android::base::Basename(uevent->path);
-    ueventd_subsystem* subsystem = ueventd_subsystem_find_by_name(uevent->subsystem.c_str());
-
     std::string devpath;
 
-    if (subsystem) {
+    std::string name = android::base::Basename(uevent->path);
+
+    auto subsystem_it = std::find(subsystems.begin(), subsystems.end(), uevent->subsystem);
+    if (subsystem_it != subsystems.end()) {
         std::string devname;
 
-        switch (subsystem->devname_src) {
-        case DEVNAME_UEVENT_DEVNAME:
+        if (subsystem_it->devname_source == Subsystem::DevnameSource::DEVNAME_UEVENT_DEVNAME) {
             devname = uevent->device_name;
-            break;
-
-        case DEVNAME_UEVENT_DEVPATH:
+        } else {
             devname = name;
-            break;
-
-        default:
-            LOG(ERROR) << uevent->subsystem << " subsystem's devpath option is not set; ignoring event";
-            return;
         }
 
-        // TODO: Remove std::string()
-        devpath = std::string(subsystem->dirname) + "/" + devname;
+        devpath = subsystem_it->dir_name + "/" + devname;
         mkdir_recursive(android::base::Dirname(devpath), 0755);
     } else if (android::base::StartsWith(uevent->subsystem, "usb")) {
         if (uevent->subsystem == "usb") {

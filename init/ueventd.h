@@ -17,24 +17,39 @@
 #ifndef _INIT_UEVENTD_H_
 #define _INIT_UEVENTD_H_
 
-#include <sys/types.h>
+#include <string>
+#include <vector>
 
-#include <cutils/list.h>
+#include "init_parser.h"
 
-enum devname_src_t {
-    DEVNAME_UNKNOWN = 0,
-    DEVNAME_UEVENT_DEVNAME,
-    DEVNAME_UEVENT_DEVPATH,
+int ueventd_main(int argc, char** argv);
+
+struct Subsystem {
+    enum class DevnameSource {
+        DEVNAME_UEVENT_DEVNAME,
+        DEVNAME_UEVENT_DEVPATH,
+    };
+
+    bool operator==(const std::string& string_name) { return name == string_name; }
+
+    std::string name;
+    std::string dir_name;
+    DevnameSource devname_source;
 };
 
-struct ueventd_subsystem {
-    struct listnode slist;
+class SubsystemParser : public SectionParser {
+  public:
+    SubsystemParser() {}
+    bool ParseSection(const std::vector<std::string>& args, std::string* err) override;
+    bool ParseLineSection(const std::vector<std::string>& args, const std::string& filename,
+                          int line, std::string* err) override;
+    void EndSection() override;
+    void EndFile(const std::string&) override {}
 
-    const char *name;
-    const char *dirname;
-    devname_src_t devname_src;
+  private:
+    Subsystem subsystem_;
 };
 
-int ueventd_main(int argc, char **argv);
+extern std::vector<Subsystem> subsystems;
 
 #endif
