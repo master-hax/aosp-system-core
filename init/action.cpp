@@ -47,6 +47,51 @@ std::string Command::BuildCommandString() const {
     return Join(args_, ' ');
 }
 
+bool PropertyTrigger::Parse(const std::string& trigger, std::string* err) {
+    const static std::string prop_str("property:");
+    std::string without_prefix(trigger.substr(prop_str.length()));
+
+    auto parts = android::base::Split(without_prefix, "=");
+    if (parts.size() != 2 || parts[0].empty() || parts[1].empty()) {
+        *err = "ill-formed property trigger";
+        return false;
+    }
+
+    name_ = parts[0];
+    value_ = parts[1];
+
+    return true;
+}
+
+bool PropertyTrigger::Overlaps(const PropertyTrigger& other, std::string* err) const {
+    if (other.name_ == name_) {
+        *err = "multiple property triggers found for same property";
+        return true;
+    }
+
+    return false;
+}
+
+bool PropertyTrigger::IsTrue(const std::string& name, const std::string& value) const {
+    if (name_ == name) return IsTrue(value);
+
+    return IsTrue(android::base::GetProperty(name_, ""));
+}
+
+bool PropertyTrigger::IsTrue(const std::string& value) const {
+   if (value.empty()) return false;
+
+   return value_ == "*" || value_ == value;
+}
+
+bool PropertyTrigger::IsTriggeredBy(const std::string& name) const {
+    return name_ == name;
+}
+
+std::string PropertyTrigger::ToString() const {
+    return "property:" + name_ + "=" + value_;
+}
+
 Action::Action(bool oneshot, const std::string& filename, int line)
     : oneshot_(oneshot), filename_(filename), line_(line) {}
 
@@ -110,27 +155,7 @@ void Action::ExecuteCommand(const Command& command) const {
     }
 }
 
-bool Action::ParsePropertyTrigger(const std::string& trigger, std::string* err) {
-    const static std::string prop_str("property:");
-    std::string prop_name(trigger.substr(prop_str.length()));
-    size_t equal_pos = prop_name.find('=');
-    if (equal_pos == std::string::npos) {
-        *err = "property trigger found without matching '='";
-        return false;
-    }
-
-    std::string prop_value(prop_name.substr(equal_pos + 1));
-    prop_name.erase(equal_pos);
-
-    if (auto [it, inserted] = property_triggers_.emplace(prop_name, prop_value); !inserted) {
-        *err = "multiple property triggers found for same property";
-        return false;
-    }
-    return true;
-}
-
 bool Action::InitTriggers(const std::vector<std::string>& args, std::string* err) {
-    const static std::string prop_str("property:");
     for (std::size_t i = 0; i < args.size(); ++i) {
         if (args[i].empty()) {
             *err = "empty trigger is not valid";
@@ -146,10 +171,18 @@ bool Action::InitTriggers(const std::vector<std::string>& args, std::string* err
             }
         }
 
-        if (!args[i].compare(0, prop_str.length(), prop_str)) {
-            if (!ParsePropertyTrigger(args[i], err)) {
+        if (android::base::StartsWith(args[i], "property:")) {
+            PropertyTrigger property_trigger;
+            if (!property_trigger.Parse(args[i], err)) {
                 return false;
             }
+            if (std::any_of(property_triggers_.begin(), property_triggers_.end(),
+                            [&err, &property_trigger](const auto& other_trigger) {
+                                return property_trigger.Overlaps(other_trigger, err);
+                            })) {
+                return false;
+            }
+            property_triggers_.emplace_back(property_trigger);
         } else {
             if (!event_trigger_.empty()) {
                 *err = "multiple event triggers are not allowed";
@@ -173,35 +206,11 @@ bool Action::InitSingleTrigger(const std::string& trigger) {
     return ret;
 }
 
-// This function checks that all property triggers are satisfied, that is
-// for each (name, value) in property_triggers_, check that the current
-// value of the property 'name' == value.
-//
-// It takes an optional (name, value) pair, which if provided must
-// be present in property_triggers_; it skips the check of the current
-// property value for this pair.
-bool Action::CheckPropertyTriggers(const std::string& name,
-                                   const std::string& value) const {
-    if (property_triggers_.empty()) {
-        return true;
-    }
-
-    bool found = name.empty();
-    for (const auto& [trigger_name, trigger_value] : property_triggers_) {
-        if (trigger_name == name) {
-            if (trigger_value != "*" && trigger_value != value) {
-                return false;
-            } else {
-                found = true;
-            }
-        } else {
-            std::string prop_val = android::base::GetProperty(trigger_name, "");
-            if (prop_val.empty() || (trigger_value != "*" && trigger_value != prop_val)) {
-                return false;
-            }
-        }
-    }
-    return found;
+bool Action::CheckPropertyTriggers(const std::string& name, const std::string& value) const {
+    return std::all_of(property_triggers_.begin(), property_triggers_.end(),
+                       [&name, &value](const auto& property_trigger) {
+                               return property_trigger.IsTrue(name, value);
+                       });
 }
 
 bool Action::CheckEvent(const EventTrigger& event_trigger) const {
@@ -209,8 +218,24 @@ bool Action::CheckEvent(const EventTrigger& event_trigger) const {
 }
 
 bool Action::CheckEvent(const PropertyChange& property_change) const {
-    const auto& [name, value] = property_change;
-    return event_trigger_.empty() && CheckPropertyTriggers(name, value);
+    // Cannot use structured bindings as lambda captures
+    const auto& name = property_change.first;
+    const auto& value = property_change.second;
+
+    // If this action has an event trigger then it is not triggered by property changes
+    if (!event_trigger_.empty()) return false;
+
+    // If none of this action's property triggers correspond to 'name', then it will not be
+    // triggered by this property change.
+    if (std::none_of(
+            property_triggers_.begin(), property_triggers_.end(),
+            [&name](const auto& property_trigger) {
+                return property_trigger.IsTriggeredBy(name);
+            })) {
+        return false;
+    }
+
+    return CheckPropertyTriggers(name, value);
 }
 
 bool Action::CheckEvent(const BuiltinAction& builtin_action) const {
@@ -220,11 +245,11 @@ bool Action::CheckEvent(const BuiltinAction& builtin_action) const {
 std::string Action::BuildTriggersString() const {
     std::vector<std::string> triggers;
 
-    for (const auto& [trigger_name, trigger_value] : property_triggers_) {
-        triggers.emplace_back(trigger_name + '=' + trigger_value);
-    }
     if (!event_trigger_.empty()) {
         triggers.emplace_back(event_trigger_);
+    }
+    for (const auto& property_trigger : property_triggers_) {
+        triggers.emplace_back(property_trigger.ToString());
     }
 
     return Join(triggers, " && ");
@@ -261,7 +286,10 @@ void ActionManager::QueuePropertyChange(const std::string& name, const std::stri
 }
 
 void ActionManager::QueueAllPropertyActions() {
-    QueuePropertyChange("", "");
+    // Property Actions have an empty event trigger and checking event triggers also checks,
+    // that all associated property triggers are true, so this will match all true property
+    // triggers.
+    event_queue_.emplace("");
 }
 
 void ActionManager::QueueBuiltinAction(BuiltinFunction func, const std::string& name) {

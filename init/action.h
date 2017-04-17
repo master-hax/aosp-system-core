@@ -42,6 +42,26 @@ class Command {
     int line_;
 };
 
+class PropertyTrigger {
+  public:
+    PropertyTrigger() {}
+    bool Parse(const std::string& trigger, std::string* err);
+    bool Overlaps(const PropertyTrigger& other, std::string* err) const;
+
+    // Given a change of the property 'name' to 'value', is this trigger true?
+    // If this trigger (name_) corresponds to 'name' then check if 'value' makes us true,
+    // otherwise simply check if GetProperty(name_) is true for value_
+    bool IsTrue(const std::string& name, const std::string& value) const;
+    bool IsTriggeredBy(const std::string& name) const;
+    std::string ToString() const;
+
+  private:
+    bool IsTrue(const std::string& value) const;
+
+    std::string name_;
+    std::string value_;
+};
+
 using EventTrigger = std::string;
 using PropertyChange = std::pair<std::string, std::string>;
 using BuiltinAction = class Action*;
@@ -73,11 +93,9 @@ class Action {
 
 private:
     void ExecuteCommand(const Command& command) const;
-    bool CheckPropertyTriggers(const std::string& name = "",
-                               const std::string& value = "") const;
-    bool ParsePropertyTrigger(const std::string& trigger, std::string* err);
+    bool CheckPropertyTriggers(const std::string& name = "", const std::string& value = "") const;
 
-    std::map<std::string, std::string> property_triggers_;
+    std::vector<PropertyTrigger> property_triggers_;
     std::string event_trigger_;
     std::vector<Command> commands_;
     bool oneshot_;
