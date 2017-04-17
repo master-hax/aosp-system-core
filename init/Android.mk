@@ -86,6 +86,7 @@ LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     bootchart.cpp \
     builtins.cpp \
+    early_mount.cpp \
     init.cpp \
     keychords.cpp \
     property_service.cpp \
