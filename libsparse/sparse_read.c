@@ -60,14 +60,14 @@ static void verbose_error(bool verbose, int err, const char *fmt, ...)
 		int size;
 
 		va_start(argp, fmt);
-		size = vsnprintf(NULL, 0, fmt, argp);
+		size = vsnprintf(NULL, 0, fmt, argp) + 1;
 		va_end(argp);
 
 		if (size < 0) {
 			return;
 		}
 
-		at = malloc(size + 1);
+		at = malloc(size);
 		if (at == NULL) {
 			return;
 		}
