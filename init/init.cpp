@@ -1231,6 +1231,35 @@ done:
     return success;
 }
 
+static constexpr const char avb_version_prop_name[] = "ro.boot.avb_version";
+
+bool set_avb_version_under_recovery() {
+    if (access("/sbin/recovery", F_OK) != 0) {
+        PLOG(INFO) << __FUNCTION__ << "() skipped, not in recovery";
+        return false;
+    }
+
+    if (!is_dt_vbmeta_compatible()) {
+        PLOG(INFO) << __FUNCTION__ << "() skipped, isn't dt_vbmeta_compatible";
+        return false;
+    }
+
+    const std::string file_name = kAndroidDtDir + "vbmeta/by_name_prefix";
+    std::string device_file_by_name_prefix;
+    if (!read_dt_file(file_name, &device_file_by_name_prefix)) {
+        PLOG(ERROR) << __FUNCTION__ << "() skipped, failed to read " << file_name;
+        return false;
+    }
+
+    FsManagerAvbUniquePtr avb_handle = FsManagerAvbHandle::Open(device_file_by_name_prefix);
+    if (!avb_handle) {
+        PLOG(ERROR) << __FUNCTION__ << "(): failed to Open FsManagerAvbHandle";
+        return false;
+    }
+
+    return property_set(avb_version_prop_name, avb_handle->avb_version().c_str()) == 0;
+}
+
 static void install_reboot_signal_handlers() {
     // Instead of panic'ing the kernel as is the default behavior when init crashes,
     // we prefer to reboot to bootloader on development builds, as this will prevent
@@ -1364,7 +1393,7 @@ int main(int argc, char** argv) {
 
     // Set libavb version for Framework-only OTA match in Treble build.
     const char* avb_version = getenv("INIT_AVB_VERSION");
-    if (avb_version) property_set("ro.boot.avb_version", avb_version);
+    if (avb_version) property_set(avb_version_prop_name, avb_version);
 
     // Clean up our environment.
     unsetenv("INIT_SECOND_STAGE");
@@ -1427,6 +1456,8 @@ int main(int argc, char** argv) {
     am.QueueBuiltinAction(set_kptr_restrict_action, "set_kptr_restrict");
     am.QueueBuiltinAction(keychord_init_action, "keychord_init");
     am.QueueBuiltinAction(console_init_action, "console_init");
+
+    set_avb_version_under_recovery();
 
     // Trigger all the boot actions to get us started.
     am.QueueEventTrigger("init");
