@@ -73,7 +73,7 @@ static void verbose_error(bool verbose, int err, const char *fmt, ...)
 		}
 
 		va_start(argp, fmt);
-		vsnprintf(at, size, fmt, argp);
+		vsnprintf(at, size + 1, fmt, argp);
 		va_end(argp);
 		at[size] = 0;
 		s = " at ";
