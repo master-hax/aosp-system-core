@@ -1,9 +1,12 @@
+#define _LARGEFILE64_SOURCE
+
 #include "fs.h"
 
 #include "fastboot.h"
 #include "make_f2fs.h"
 
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,27 +17,32 @@
 #include <ext4_utils/make_ext4fs.h>
 #include <sparse/sparse.h>
 
-static int generate_ext4_image(int fd, long long partSize, const std::string& initial_dir,
+static int generate_ext4_image(const char* fileName, long long partSize, const std::string& initial_dir,
                                        unsigned eraseBlkSize, unsigned logicalBlkSize)
 {
+    int fd = open(fileName, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
     if (initial_dir.empty()) {
         make_ext4fs_sparse_fd_align(fd, partSize, NULL, NULL, eraseBlkSize, logicalBlkSize);
     } else {
         make_ext4fs_sparse_fd_directory_align(fd, partSize, NULL, NULL, initial_dir.c_str(),
                                               eraseBlkSize, logicalBlkSize);
     }
+    close(fd);
     return 0;
 }
 
 #ifdef USE_F2FS
-static int generate_f2fs_image(int fd, long long partSize, const std::string& initial_dir,
+static int generate_f2fs_image(const char* fileName, long long partSize, const std::string& initial_dir,
                                unsigned /* unused */, unsigned /* unused */)
 {
     if (!initial_dir.empty()) {
         fprintf(stderr, "Unable to set initial directory on F2FS filesystem\n");
         return -1;
     }
-    return make_f2fs_sparse_fd(fd, partSize, NULL, NULL);
+    int fd = open(fileName, O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    int ret = make_f2fs_sparse_fd(fd, partSize, NULL, NULL);
+    close(fd);
+    return ret;
 }
 #endif
 
@@ -42,7 +50,7 @@ static const struct fs_generator {
     const char* fs_type;  //must match what fastboot reports for partition type
 
     //returns 0 or error value
-    int (*generate)(int fd, long long partSize, const std::string& initial_dir,
+    int (*generate)(const char* fileName, long long partSize, const std::string& initial_dir,
                     unsigned eraseBlkSize, unsigned logicalBlkSize);
 
 } generators[] = {
@@ -61,8 +69,8 @@ const struct fs_generator* fs_get_generator(const std::string& fs_type) {
     return nullptr;
 }
 
-int fs_generator_generate(const struct fs_generator* gen, int tmpFileNo, long long partSize,
+int fs_generator_generate(const struct fs_generator* gen, const char* fileName, long long partSize,
     const std::string& initial_dir, unsigned eraseBlkSize, unsigned logicalBlkSize)
 {
-    return gen->generate(tmpFileNo, partSize, initial_dir, eraseBlkSize, logicalBlkSize);
+    return gen->generate(fileName, partSize, initial_dir, eraseBlkSize, logicalBlkSize);
 }

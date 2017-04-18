@@ -536,21 +536,21 @@ static void* unzip_file(ZipArchiveHandle zip, const char* entry_name, int64_t* s
 
 // Windows' tmpfile(3) requires administrator rights because
 // it creates temporary files in the root directory.
-static FILE* win32_tmpfile() {
+static std::string win32_tmpfile() {
     char temp_path[PATH_MAX];
     DWORD nchars = GetTempPath(sizeof(temp_path), temp_path);
     if (nchars == 0 || nchars >= sizeof(temp_path)) {
         fprintf(stderr, "GetTempPath failed, error %ld\n", GetLastError());
-        return nullptr;
+        return "";
     }
 
     char filename[PATH_MAX];
     if (GetTempFileName(temp_path, "fastboot", 0, filename) == 0) {
         fprintf(stderr, "GetTempFileName failed, error %ld\n", GetLastError());
-        return nullptr;
+        return "";
     }
 
-    return fopen(filename, "w+bTD");
+    return filename;
 }
 
 #define tmpfile win32_tmpfile
@@ -562,7 +562,14 @@ static std::string make_temporary_directory() {
 
 static int make_temporary_fd() {
     // TODO: reimplement to avoid leaking a FILE*.
-    return fileno(tmpfile());
+    FILE *fp = fopen(tmpfile().c_str(), "w+bTD");
+    if (fp == NULL)
+        return -1;
+    return fileno(fp);
+}
+
+static std::string make_temporary_filename(int* fd) {
+    return tmpfile();
 }
 
 #else
@@ -591,6 +598,16 @@ static int make_temporary_fd() {
     }
     unlink(path_template.c_str());
     return fd;
+}
+
+static std::string make_temporary_filename(int *fd) {
+    std::string path_template(make_temporary_template());
+    *fd = mkstemp(&path_template[0]);
+    if (*fd == -1) {
+        fprintf(stderr, "Unable to create temporary file: %s\n", strerror(errno));
+        return "";
+    }
+    return path_template;
 }
 
 #endif
@@ -1382,7 +1399,8 @@ static void fb_perform_format(Transport* transport,
     struct fastboot_buffer buf;
     const char* errMsg = nullptr;
     const struct fs_generator* gen = nullptr;
-    int fd;
+    std::string fs_output;
+    int fd = -1;
 
     unsigned int limit = INT_MAX;
     if (target_sparse_limit > 0 && target_sparse_limit < limit) {
@@ -1435,25 +1453,30 @@ static void fb_perform_format(Transport* transport,
         return;
     }
 
-    fd = make_temporary_fd();
-    if (fd == -1) return;
+    fs_output = make_temporary_filename(&fd);
+    if (fs_output.empty()) {
+        fprintf(stderr, "Cannot generate tmp filename: %s\n", strerror(errno));
+        return;
+    }
 
     unsigned eraseBlkSize, logicalBlkSize;
     eraseBlkSize = fb_get_flash_block_size(transport, "erase-block-size");
     logicalBlkSize = fb_get_flash_block_size(transport, "logical-block-size");
 
-    if (fs_generator_generate(gen, fd, size, initial_dir, eraseBlkSize, logicalBlkSize)) {
+    if (fs_generator_generate(gen, fs_output.c_str(), size, initial_dir,
+            eraseBlkSize, logicalBlkSize)) {
         fprintf(stderr, "Cannot generate image: %s\n", strerror(errno));
-        close(fd);
-        return;
+        goto format_failed;
     }
 
     if (!load_buf_fd(transport, fd, &buf)) {
         fprintf(stderr, "Cannot read image: %s\n", strerror(errno));
-        close(fd);
-        return;
+        goto format_failed;
     }
     flash_buf(partition, &buf);
+
+format_failed:
+    unlink(fs_output.c_str());
     return;
 
 failed:
