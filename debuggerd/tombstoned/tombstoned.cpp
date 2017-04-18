@@ -1,5 +1,6 @@
 /*
  * Copyright 2016, The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #include <fcntl.h>
@@ -201,6 +205,23 @@ static void crash_accept_cb(evconnlistener* listener, evutil_socket_t sockfd, so
 static void crash_request_cb(evutil_socket_t sockfd, short ev, void* arg);
 static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg);
 
+/* Trigger System Dump from /proc/sysrq-trigger */
+static void do_system_dump() {
+  int fd = TEMP_FAILURE_RETRY(open("/proc/sysrq-trigger", O_WRONLY));
+  if (fd >= 0) {
+    int result=0;
+    if ((result = TEMP_FAILURE_RETRY(write(fd, "c", 1)) != 1)) {
+      PLOG(DEBUG) << "Sysrq-trigger is set, crash triggerred";
+      close(fd);
+    } else {
+      PLOG(ERROR) << "Failed set sysrq-trigger:" << result;
+      close(fd);
+    }
+  } else {
+    PLOG(ERROR) << "Failed to open sysrq-trigger";
+  }
+}
+
 static void perform_request(Crash* crash) {
   unique_fd output_fd;
   if (!intercept_manager->GetIntercept(crash->crash_pid, crash->crash_type, &output_fd)) {
@@ -334,6 +355,12 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
     LOG(WARNING) << "crash socket received short read of length " << rc << " (expected "
                  << sizeof(request) << ")";
     goto fail;
+  }
+
+  /* Handling new CrashPacketType:kSystemDump to trigger system crash */
+  if (request.packet_type == CrashPacketType::kSystemDump) {
+    LOG(WARNING) << "kSystemDump received " << uint32_t(request.packet_type);
+    do_system_dump();
   }
 
   if (request.packet_type != CrashPacketType::kCompletedDump) {
