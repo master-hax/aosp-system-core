@@ -2,6 +2,7 @@
 
 /*
  * Copyright 2017, The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +15,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #include <sys/types.h>
@@ -26,3 +30,4 @@ bool tombstoned_connect(pid_t pid, android::base::unique_fd* tombstoned_socket,
                         android::base::unique_fd* output_fd, DebuggerdDumpType dump_type);
 
 bool tombstoned_notify_completion(int tombstoned_socket);
+bool tombstoned_notify_systemdump(int tombstoned_socket);

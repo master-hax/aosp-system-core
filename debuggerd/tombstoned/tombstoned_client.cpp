@@ -1,5 +1,6 @@
 /*
  * Copyright 2017, The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #include "tombstoned/tombstoned.h"
@@ -86,5 +90,16 @@ bool tombstoned_notify_completion(int tombstoned_socket) {
   if (TEMP_FAILURE_RETRY(write(tombstoned_socket, &packet, sizeof(packet))) != sizeof(packet)) {
     return false;
   }
+  return true;
+}
+
+bool tombstoned_notify_systemdump(int tombstoned_socket) {
+  TombstonedCrashPacket packet = {};
+  packet.packet_type = CrashPacketType::kSystemDump;
+  if (TEMP_FAILURE_RETRY(write(tombstoned_socket, &packet, sizeof(packet))) != sizeof(packet)) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc", "Failed to notify tomstoned for system dump");
+    return false;
+  }
+  async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "Successfully notifed tombstoned for system dump");
   return true;
 }
