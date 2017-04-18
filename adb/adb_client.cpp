@@ -213,21 +213,29 @@ int adb_connect(const std::string& service, std::string* error) {
         }
 
         if (version != ADB_SERVER_VERSION) {
-            printf("adb server version (%d) doesn't match this client (%d); killing...\n",
-                   version, ADB_SERVER_VERSION);
-            fd = _adb_connect("host:kill", error);
-            if (fd >= 0) {
-                ReadOrderlyShutdown(fd);
-                adb_close(fd);
+            const char* env = "ADB_IGNORE_VERSION_MISMATCH";
+            if (NULL != getenv(env)) {
+                printf(
+                    "adb server version (%d) doesn't match this client (%d)\n"
+                    "Ignoring because of %s. Take your own risk for any bugs!\n",
+                    version, ADB_SERVER_VERSION, env);
             } else {
-                // If we couldn't connect to the server or had some other error,
-                // report it, but still try to start the server.
-                fprintf(stderr, "error: %s\n", error->c_str());
-            }
+                printf("adb server version (%d) doesn't match this client (%d); killing...\n",
+                       version, ADB_SERVER_VERSION);
+                fd = _adb_connect("host:kill", error);
+                if (fd >= 0) {
+                    ReadOrderlyShutdown(fd);
+                    adb_close(fd);
+                } else {
+                    // If we couldn't connect to the server or had some other error,
+                    // report it, but still try to start the server.
+                    fprintf(stderr, "error: %s\n", error->c_str());
+                }
 
-            /* XXX can we better detect its death? */
-            std::this_thread::sleep_for(2s);
-            goto start_server;
+                /* XXX can we better detect its death? */
+                std::this_thread::sleep_for(2s);
+                goto start_server;
+            }
         }
     }
 
