@@ -88,3 +88,14 @@ bool tombstoned_notify_completion(int tombstoned_socket) {
   }
   return true;
 }
+
+bool tombstoned_notify_systemdump(int tombstoned_socket) {
+  TombstonedCrashPacket packet = {};
+  packet.packet_type = CrashPacketType::kSystemDump;
+  if (TEMP_FAILURE_RETRY(write(tombstoned_socket, &packet, sizeof(packet))) != sizeof(packet)) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc", "Failed to notify tomstoned for system dump");
+    return false;
+  }
+  async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "Successfully notifed tombstoned for system dump");
+  return true;
+}
