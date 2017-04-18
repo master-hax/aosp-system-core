@@ -1,5 +1,6 @@
 /*
  * Copyright 2016, The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #include <arpa/inet.h>
@@ -72,6 +76,42 @@ static std::string get_thread_name(pid_t tid) {
   std::string result = "<unknown>";
   ReadFileToString(StringPrintf("/proc/%d/comm", tid), &result);
   return Trim(result);
+}
+
+static bool is_system_dump(std::string process_name) {
+  /* Hardcoding for now to identify the system processess */
+  /* Garbage characters are observer from get_process_name, removing them */
+  process_name.resize(process_name.find_last_not_of('\0') + 1);  // trim trailing '\0's
+  std::replace(process_name.begin(), process_name.end(), '\0', ' ');
+
+  if (process_name.compare("system_server") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else if (process_name.compare("/system/bin/servicemanager") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else if (process_name.compare("/system/bin/surfaceflinger") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else if (process_name.compare("zygote") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else if (process_name.compare("zygote64") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else if (process_name.compare("/init") == 0) {
+    LOG(DEBUG) << "SystemDump found:" << process_name;
+    return true;
+  }
+  else {
+    LOG(DEBUG) << "Normal dump:" << process_name;
+    return false;
+  }
 }
 
 static bool pid_contains_tid(int pid_proc_fd, pid_t tid) {
@@ -474,7 +514,21 @@ int main(int argc, char** argv) {
   }
 
   // Close stdout before we notify tombstoned of completion.
+  fsync(STDOUT_FILENO);
   close(STDOUT_FILENO);
+
+  if (fatal_signal) {
+    bool system_dump = is_system_dump(process_name);
+    if (true == system_dump) {
+      if (tombstoned_connected && !tombstoned_notify_systemdump(tombstoned_socket.get())) {
+        LOG(ERROR) << "Failed to notify tombstoned of SystemDump";
+      } else {
+        LOG(DEBUG) << "Notified tombstoned of SystemDump, sleep!!";
+        sleep(10);
+      }
+    }
+  }
+
   if (tombstoned_connected && !tombstoned_notify_completion(tombstoned_socket.get())) {
     LOG(ERROR) << "failed to notify tombstoned of completion";
   }
