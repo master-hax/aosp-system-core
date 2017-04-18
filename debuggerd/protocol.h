@@ -1,5 +1,6 @@
 /*
  * Copyright 2016, The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #pragma once
@@ -39,6 +43,9 @@ enum class CrashPacketType : uint8_t {
   // kPerformDump sends along an output fd via cmsg(3).
   kPerformDump = 128,
   kAbortDump,
+
+  // Added to trigger system dump from tombstoned
+  kSystemDump,
 };
 
 struct DumpRequest {
