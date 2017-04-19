@@ -602,7 +602,7 @@ on boot
 
 on nonencrypted
     # A/B update verifier that marks a successful boot.
-    exec_start update_verifier_nonencrypted
+    # exec_start update_verifier_nonencrypted
     class_start main
     class_start late_start
 
