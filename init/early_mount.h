@@ -25,4 +25,7 @@ bool is_dt_value_expected(const std::string& dt_file_suffix, const std::string& 
 
 bool early_mount();
 
+// Invokes setenv("INIT_AVB_VERSION", avb_version) in init first stage under recovery.
+void set_init_avb_version_in_recovery();
+
 #endif
