@@ -16,12 +16,9 @@
 
 #define _FILE_OFFSET_BITS 64
 #define _LARGEFILE64_SOURCE 1
-#define _GNU_SOURCE
 
-#include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <sparse/sparse.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +26,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <sparse/sparse.h>
 
 #include "backed_block.h"
 #include "sparse_file.h"
