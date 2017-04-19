@@ -477,6 +477,57 @@ struct TagEntry : public EntryBaseDropped {
     std::string format(const LogStatistics& stat, log_id_t id) const;
 };
 
+struct TagNameEntry : public EntryBaseDropped {
+    pid_t tid;
+    pid_t pid;
+    uid_t uid;
+    const std::string name;
+
+    explicit TagNameEntry(LogBufferElement* element)
+        : EntryBaseDropped(element),
+          tid(element->getTid()),
+          pid(element->getPid()),
+          uid(element->getUid()),
+          name(element->isBinary() ? element->getTag() ?
+               android::tagToName(element->getTag()) ?:
+               android::base::StringPrintf("[%d]", element->getTag()).c_str() :
+               "[0]" : element->getMsg() ? element->getMsg()[1] ?
+               element->getMsg() + 1 : "<NULL>" : "chatty") {
+    }
+
+    const std::string& getKey() const {
+        return name;
+    }
+    const pid_t& getTid() const {
+        return tid;
+    }
+    const pid_t& getPid() const {
+        return pid;
+    }
+    const uid_t& getUid() const {
+        return uid;
+    }
+    const char* getName() const {
+        return name.c_str();
+    }
+
+    inline void add(LogBufferElement* element) {
+        if (uid != element->getUid()) {
+            uid = -1;
+        }
+        if (pid != element->getPid()) {
+            pid = -1;
+        }
+        if (tid != element->getTid()) {
+            tid = -1;
+        }
+        EntryBaseDropped::add(element);
+    }
+
+    std::string formatHeader(const std::string& name, log_id_t id) const;
+    std::string format(const LogStatistics& stat, log_id_t id) const;
+};
+
 template <typename TEntry>
 class LogFindWorst {
     std::unique_ptr<const TEntry* []> sorted;
@@ -550,9 +601,14 @@ class LogStatistics {
     // security tag list
     tagTable_t securityTagTable;
 
+    // global tag list
+    typedef LogHashtable<std::string, TagNameEntry> tagNameTable_t;
+    tagNameTable_t tagNameTable;
+
     size_t sizeOf() const {
         size_t size = sizeof(*this) + pidTable.sizeOf() + tidTable.sizeOf() +
                       tagTable.sizeOf() + securityTagTable.sizeOf() +
+                      tagNameTable.sizeOf() +
                       (pidTable.size() * sizeof(pidTable_t::iterator)) +
                       (tagTable.size() * sizeof(tagTable_t::iterator));
         for (auto it : pidTable) {
@@ -563,6 +619,11 @@ class LogStatistics {
             const char* name = it.second.getName();
             if (name) size += strlen(name) + 1;
         }
+        for (auto it : tagNameTable) {
+            const char* name = it.second.getName();
+            if (name) size += strlen(name) + 1;
+        }
+
         log_id_for_each(id) {
             size += uidTable[id].sizeOf();
             size += uidTable[id].size() * sizeof(uidTable_t::iterator);
