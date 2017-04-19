@@ -39,7 +39,8 @@ class EarlyMountManager {
     EarlyMountManager();
     virtual ~EarlyMountManager() = default;
 
-    bool StartEarlyMount();
+    bool StartEarlyMount();  // It consists of EarlyDeviceInit() + MountEarlyPartitions().
+    bool EarlyDeviceInit();
     bool MountEarlyPartitions();
 
   protected:
@@ -68,6 +69,8 @@ class EarlyMountVBootV2 : public EarlyMountManager {
   public:
     EarlyMountVBootV2();
     ~EarlyMountVBootV2() override = default;
+
+    const std::string& by_name_prefix() const { return device_tree_by_name_prefix_; }
 
   protected:
     bool GetDeviceInitPartitions(std::set<std::string>* out_partitions,
@@ -168,10 +171,14 @@ static void early_device_init(std::set<std::string>* partition_names) {
     });
 }
 
+static bool inline is_recovery_mode() {
+    return access("/sbin/recovery", F_OK) == 0;
+}
+
 // Early mounts /vendor, /odm or /system. The fstab is read from device-tree.
 bool early_mount() {
     // Skips early mount if we're in recovery mode.
-    if (access("/sbin/recovery", F_OK) == 0) {
+    if (is_recovery_mode()) {
         LOG(INFO) << "early_mount skipped (recovery mode)";
         return true;
     }
@@ -197,6 +204,31 @@ bool early_mount() {
     return early_mount_handle->StartEarlyMount();
 }
 
+// Invokes setenv("INIT_AVB_VERSION", avb_version) in init first stage under recovery.
+// init will set ro.boot.avb_version to INIT_AVB_VERSION in the second stage.
+void set_init_avb_version_in_recovery() {
+    // Skips if we're NOT in recovery mode.
+    if (!is_recovery_mode()) {
+        LOG(INFO) << __FUNCTION__ << "(): skipped (not in recovery mode)";
+        return;
+    }
+
+    if (!is_dt_vbmeta_compatible()) {
+        LOG(INFO) << __FUNCTION__ << "(): skipped (not vbmeta compatible)";
+        return;
+    }
+
+    EarlyMountVBootV2 avb_early_mount;
+    if (!avb_early_mount.EarlyDeviceInit()) return;
+
+    FsManagerAvbUniquePtr avb_handle = FsManagerAvbHandle::Open(avb_early_mount.by_name_prefix());
+    if (!avb_handle) {
+        PLOG(ERROR) << __FUNCTION__ << "(): failed to open FsManagerAvbHandle";
+        return;
+    }
+    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
+}
+
 // Early Mount Class Definitions
 // -----------------------------
 EarlyMountManager::EarlyMountManager()
@@ -218,11 +250,25 @@ bool EarlyMountManager::StartEarlyMount() {
     // Nothing to early mount.
     if (early_fstab_recs_.empty()) return true;
 
+    if (!EarlyDeviceInit()) return false;
+
+    if (!MountEarlyPartitions()) return false;
+
+    return true;
+}
+
+bool EarlyMountManager::EarlyDeviceInit() {
     bool need_verity;
     std::set<std::string> partition_names;
 
     // partition_names MUST have A/B suffix when A/B is used.
     if (!GetDeviceInitPartitions(&partition_names, &need_verity)) return false;
+
+    if (need_verity) {
+        // Creates /dev/device-mapper.
+        device_init("/sys/devices/virtual/misc/device-mapper",
+                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
+    }
 
     bool success = false;
     early_device_init(&partition_names);  // Creates the devices we need.
@@ -233,18 +279,10 @@ bool EarlyMountManager::StartEarlyMount() {
     if (!partition_names.empty()) {
         LOG(ERROR) << "early_mount: partition(s) not found: "
                    << android::base::Join(partition_names, ", ");
-        goto done;
+    } else {
+        success = true;
     }
 
-    if (need_verity) {
-        // Creates /dev/device-mapper.
-        device_init("/sys/devices/virtual/misc/device-mapper",
-                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
-    }
-
-    if (MountEarlyPartitions()) success = true;
-
-done:
     device_close();
     return success;
 }
