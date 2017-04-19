@@ -74,3 +74,5 @@ cc_binary_host {
 
     cflags: ["-Werror"],
 }
+
+subdirs = ["tests"]
