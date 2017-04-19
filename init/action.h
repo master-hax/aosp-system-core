@@ -44,7 +44,7 @@ class Command {
 
 class PropertyTrigger {
   public:
-    PropertyTrigger() {}
+    PropertyTrigger() : negative_(false) {}
     bool Parse(const std::string& trigger, std::string* err);
     bool Overlaps(const PropertyTrigger& other, std::string* err) const;
 
@@ -60,6 +60,7 @@ class PropertyTrigger {
 
     std::string name_;
     std::string value_;
+    bool negative_;
 };
 
 using EventTrigger = std::string;

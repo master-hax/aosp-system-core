@@ -17,6 +17,7 @@
 #include <functional>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/test_utils.h>
 #include <gtest/gtest.h>
 
@@ -183,4 +184,45 @@ TEST(init, EventTriggerOrderMultipleFiles) {
     TestInit(start.path, test_function_map, commands);
 
     EXPECT_EQ(6, num_executed);
+}
+
+TEST(init, NegativePropertyTriggers) {
+    std::string init_script =
+        R"init(
+on boot
+pass_test 1
+
+on boot && property:test.init.true=true
+pass_test 2
+
+on boot && property:test.init.true!=true
+fail_test
+
+on boot && property:test.init.false=true
+fail_test
+
+on boot && property:test.init.false!=true
+pass_test 3
+
+)init";
+
+    android::base::SetProperty("test.init.true", "true");
+    android::base::SetProperty("test.init.false", "false");
+
+    std::string pass_string;
+    auto pass_test_command = [&pass_string](const std::vector<std::string>& args) {
+        pass_string += args[1];
+        return 0;
+    };
+
+    TestFunctionMap test_function_map;
+    test_function_map.Add("pass_test", 1, 1, pass_test_command);
+    test_function_map.Add("fail_test", [] { ADD_FAILURE(); });
+
+    ActionManagerCommand trigger_boot = [](ActionManager& am) { am.QueueEventTrigger("boot"); };
+    std::vector<ActionManagerCommand> commands{trigger_boot};
+
+    TestInitText(init_script, test_function_map, commands);
+
+    EXPECT_EQ("123", pass_string);
 }

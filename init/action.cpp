@@ -60,13 +60,59 @@ bool PropertyTrigger::Parse(const std::string& trigger, std::string* err) {
     name_ = parts[0];
     value_ = parts[1];
 
+    if (name_.back() == '!') {
+        negative_ = true;
+        name_.pop_back();
+        if (name_.empty()) {
+            *err = "ill-formed property trigger";
+            return false;
+        }
+    }
+
     return true;
 }
 
+// Table of potential overlaps
+// Trigger     Other        Overlap?
+// value =/!   value  =/!
+// X     =     X      =     Y - Cannot have two positive triggers
+// X     =     X      !     Y - Cannot match and not match the same value
+// X     =     Y      =     Y - Cannot have two positive triggers
+// X     =     Y      !     N
+
+// X     !     X      =     Y - Cannot match and not match the same value
+// X     !     X      !     Y - Cannot have two negative triggers for the same value
+// X     !     Y      =     N
+// X     !     Y      !     N
+
+// Y     =     X      =     Y - Cannot have two positive triggers
+// Y     =     X      !     N
+// Y     =     Y      =     Y - Cannot have two positive triggers
+// Y     =     Y      !     Y - Cannot match and not match the same value
+
+// Y     !     X      =     N
+// Y     !     X      !     N
+// Y     !     Y      =     Y - Cannot match and not match the same value
+// Y     !     Y      !     Y - Cannot have two negative triggers for the same value
+
 bool PropertyTrigger::Overlaps(const PropertyTrigger& other, std::string* err) const {
-    if (other.name_ == name_) {
-        *err = "multiple property triggers found for same property";
+    if (other.name_ != name_) return false;
+
+    if (!negative_ && other.negative_ == negative_) {
+        *err = "cannot have two positive triggers for the same property name";
         return true;
+    }
+
+    if (other.value_ == value_) {
+        if (other.negative_ != negative_) {
+            *err = "cannot match and not match the same value for the same property name";
+            return true;
+        }
+        if (other.negative_ == negative_) {
+            *err =
+                "cannot have two negative triggers for the same value for the same property name";
+            return true;
+        }
     }
 
     return false;
@@ -79,17 +125,29 @@ bool PropertyTrigger::IsTrue(const std::string& name, const std::string& value) 
 }
 
 bool PropertyTrigger::IsTrue(const std::string& value) const {
-   if (value.empty()) return false;
-
-   return value_ == "*" || value_ == value;
+    if (negative_) {
+        // on property:a!=* means that property a has not been set or is set to an empty value.
+        if (value_ == "*") return value.empty();
+        // on property a!=b: return that our value isn't the current value
+        return value_ != value;
+    } else {
+        // on property:a=* means that a property has been set to any non-empty value
+        if (value_ == "*") return !value.empty();
+        // on property:a=b: return that our value is the current value
+        return value_ == value;
+    }
 }
 
 bool PropertyTrigger::IsTriggeredBy(const std::string& name) const {
-    return name_ == name;
+    // Only changes to positive triggers cause an action to be triggered
+    // If someone wants to trigger on all changes to a property that are not equal to a
+    // certain value, they can use
+    // on property:a=* && property:a!=b
+    return name_ == name && !negative_;
 }
 
 std::string PropertyTrigger::ToString() const {
-    return "property:" + name_ + "=" + value_;
+    return "property:" + name_ + (negative_ ? "!=" : "=") + value_;
 }
 
 Action::Action(bool oneshot, const std::string& filename, int line)
