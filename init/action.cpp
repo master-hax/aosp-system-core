@@ -387,6 +387,6 @@ bool ActionParser::ParseLineSection(const std::vector<std::string>& args, int li
 
 void ActionParser::EndSection() {
     if (action_ && action_->NumCommands() > 0) {
-        ActionManager::GetInstance().AddAction(std::move(action_));
+        action_manager_->AddAction(std::move(action_));
     }
 }

@@ -37,7 +37,6 @@ public:
 class Parser {
 public:
     static Parser& GetInstance();
-    void DumpState() const;
     bool ParseConfig(const std::string& path);
     void AddSectionParser(const std::string& name,
                           std::unique_ptr<SectionParser> parser);

@@ -43,7 +43,7 @@ void ImportParser::EndFile(const std::string& filename) {
     auto current_imports = std::move(imports_);
     imports_.clear();
     for (const auto& s : current_imports) {
-        if (!Parser::GetInstance().ParseConfig(s)) {
+        if (!parser_->ParseConfig(s)) {
             PLOG(ERROR) << "could not import file '" << s << "' from '" << filename << "'";
         }
     }

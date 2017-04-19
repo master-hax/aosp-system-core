@@ -114,8 +114,8 @@ private:
 
 class ActionParser : public SectionParser {
   public:
-    ActionParser() : action_(nullptr) {
-    }
+    ActionParser(ActionManager* action_manager)
+        : action_manager_(action_manager), action_(nullptr) {}
     bool ParseSection(const std::vector<std::string>& args, const std::string& filename, int line,
                       std::string* err) override;
     bool ParseLineSection(const std::vector<std::string>& args, int line, std::string* err) override;
@@ -124,6 +124,7 @@ class ActionParser : public SectionParser {
     }
 
   private:
+    ActionManager* action_manager_;
     std::unique_ptr<Action> action_;
 };
 

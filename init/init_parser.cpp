@@ -17,14 +17,12 @@
 #include "init_parser.h"
 
 #include <dirent.h>
-#include <fcntl.h>
 
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 
-#include "action.h"
 #include "parser.h"
-#include "service.h"
+#include "util.h"
 
 Parser::Parser() {
 }
@@ -140,9 +138,4 @@ bool Parser::ParseConfig(const std::string& path) {
         return ParseConfigDir(path);
     }
     return ParseConfigFile(path);
-}
-
-void Parser::DumpState() const {
-    ServiceManager::GetInstance().DumpState();
-    ActionManager::GetInstance().DumpState();
 }

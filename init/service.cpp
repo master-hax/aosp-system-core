@@ -1120,7 +1120,7 @@ bool ServiceParser::ParseLineSection(const std::vector<std::string>& args, int l
 
 void ServiceParser::EndSection() {
     if (service_) {
-        ServiceManager::GetInstance().AddService(std::move(service_));
+        service_manager_->AddService(std::move(service_));
     }
 }
 
