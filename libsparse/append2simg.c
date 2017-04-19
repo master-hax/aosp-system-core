@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Couldn't get input file length (%s)\n", strerror(errno));
         exit(-1);
     } else if (input_len % sparse_output->block_size) {
-        fprintf(stderr, "Input file is not a multiple of the output file's block size");
+        fprintf(stderr, "Input file is not a multiple of the output file's block size\n");
         exit(-1);
     }
     lseek64(input, 0, SEEK_SET);
