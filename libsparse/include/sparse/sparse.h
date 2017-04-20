@@ -303,6 +303,99 @@ void sparse_file_verbose(struct sparse_file *s);
  */
 extern void (*sparse_print_verbose)(const char *fmt, ...);
 
+/**
+ * img2simg - Convert a normal file into a sparse file with 4K block size
+ *
+ * @input : input (normal) path
+ * @output : output (sparse) path
+ *
+ * Converts a normal file into a sparse file.  Returns 0 on success.
+ */
+int img2simg(const char *input, const char *output);
+
+/**
+ * img2simg_size - Convert a normal file into a sparse file
+ *
+ * @input : input (normal) path
+ * @output : output (sparse) path
+ * @block_size : Minimum chunk size
+ *
+ * Converts a normal file into a sparse file.  Returns 0 on success.
+ */
+int img2simg_size(const char *input, const char *output, unsigned int block_size);
+
+/**
+ * img2simg_size_fd - Convert a normal file into a sparse file
+ *
+ * @in : input (normal) file descriptor
+ * @out : output (sparse) file descriptor
+ * @block_size : Minimum chunk size
+ *
+ * Converts a normal file into a sparse file.  Returns 0 on success.
+ */
+int img2simg_size_fd(int in, int out, int block_size);
+
+/**
+ * simg2img - Convert some sparse files into a normal file
+ *
+ * @num_input : number of input files
+ * @input : array of sparse file paths for input
+ * @output : output path
+ *
+ * simg2img takes multiple input sparse files, and writes the result
+ * to a normal (unsparse) file at output.  Returns 0 on success.
+ */
+int simg2img(int num_input, const char *input[], const char *output);
+
+/**
+ * simg2img_fd - Convert some sparse files into a normal file
+ *
+ * @num_input : number of input files
+ * @input : array of sparse file descriptors for input
+ * @output : output file descriptor
+ *
+ * simg2img_fd takes multiple input sparse files, and writes the result
+ * to a normal (unsparse) file at output.  Returns 0 on success.
+ */
+int simg2img_fd(int num_input, int *ifd, int ofd);
+
+/**
+ * append2simg - Append data to the end of a sparse image
+ *
+ * @output : output path (sparse file to be appended)
+ * @input : path of file to append
+ *
+ * append2simg takes a single input file (sized as a multiple of block_size)
+ * and appends it to sparse output.  Returns 0 on success.
+ */
+int append2simg(const char *output, const char *input);
+
+/**
+ * append2simg_fd - Append data to the end of a sparse image
+ *
+ * @ofd : output file descriptor (sparse file to be appended)
+ * @ifd : file descriptor of file to append
+ * @tmpfd : descriptor of temporary (read/write) file
+ *
+ * append2simg_fd takes a single input file (sized as a multiple of block_size)
+ * and appends it to sparse output.  append2simg_fd also requires a tmpfile
+ * to be created and passed in as a file descriptor.
+ *
+ * Returns 0 on success.
+ */
+int append2simg_fd(int ofd, int ifd, int tmpfd);
+
+/**
+ * simg2simg - Resparse a sparse file into smaller files
+ *
+ * @input : path to sparse input file
+ * @output : base file path for multiple sparse output files
+ * @max_size : maximum file size
+ *
+ *  Takes input file, output base path, and max_size.
+ */
+int simg2simg(const char* input, const char* output, int64_t max_size);
+
 #ifdef	__cplusplus
 }
 #endif
