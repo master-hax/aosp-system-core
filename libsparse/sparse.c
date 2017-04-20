@@ -24,8 +24,8 @@
 
 #include "output_file.h"
 #include "backed_block.h"
-#include "sparse_defs.h"
-#include "sparse_format.h"
+#include "private/sparse/sparse_defs.h"
+#include "private/sparse/sparse_format.h"
 
 struct sparse_file *sparse_file_new(unsigned int block_size, int64_t len)
 {
