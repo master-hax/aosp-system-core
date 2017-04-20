@@ -47,7 +47,9 @@ class FirstStageMount {
     bool StartMount();  // Starts to mount device tree fstab entries.
 
   protected:
+    bool DeviceInitPartitions();
     bool MountPartitions();
+
     virtual bool GetDeviceInitPartitions(std::set<std::string>* out_partitions,
                                          bool* out_need_verity) = 0;
     virtual bool SetUpDmVerity(fstab_rec* fstab_rec, bool* out_need_create_verity_dev) = 0;
@@ -71,6 +73,8 @@ class FirstStageMountVBootV1 : public FirstStageMount {
 
 class FirstStageMountVBootV2 : public FirstStageMount {
   public:
+    friend void set_init_avb_version_in_recovery();
+
     FirstStageMountVBootV2();
     ~FirstStageMountVBootV2() override = default;
 
@@ -93,6 +97,10 @@ static inline bool is_dt_fstab_compatible() {
 
 static inline bool is_dt_vbmeta_compatible() {
     return is_android_dt_value_expected("vbmeta/compatible", "android,vbmeta");
+}
+
+static bool inline is_recovery_mode() {
+    return access("/sbin/recovery", F_OK) == 0;
 }
 
 // Creates "/dev/block/dm-XX" for dm-verity by running coldboot on /sys/block/dm-XX.
@@ -177,11 +185,25 @@ bool FirstStageMount::StartMount() {
     // Nothing to mount.
     if (mount_fstab_recs_.empty()) return true;
 
+    if (!DeviceInitPartitions()) return false;
+
+    if (!MountPartitions()) return false;
+
+    return true;
+}
+
+bool FirstStageMount::DeviceInitPartitions() {
     bool need_verity;
     std::set<std::string> partition_names;
 
     // partition_names MUST have A/B suffix when A/B is used.
     if (!GetDeviceInitPartitions(&partition_names, &need_verity)) return false;
+
+    if (need_verity) {
+        // Creates /dev/device-mapper.
+        device_init("/sys/devices/virtual/misc/device-mapper",
+                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
+    }
 
     bool success = false;
     device_init_partitions(&partition_names);  // Creates the devices we need.
@@ -192,18 +214,10 @@ bool FirstStageMount::StartMount() {
     if (!partition_names.empty()) {
         LOG(ERROR) << __FUNCTION__
                    << "(): partition(s) not found: " << android::base::Join(partition_names, ", ");
-        goto done;
+    } else {
+        success = true;
     }
 
-    if (need_verity) {
-        // Creates /dev/device-mapper.
-        device_init("/sys/devices/virtual/misc/device-mapper",
-                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
-    }
-
-    if (MountPartitions()) success = true;
-
-done:
     device_close();
     return success;
 }
@@ -383,7 +397,7 @@ bool FirstStageMountVBootV2::InitAvbHandle() {
 // The fstab is read from device-tree.
 bool first_stage_mount() {
     // Skips first stage mount if we're in recovery mode.
-    if (access("/sbin/recovery", F_OK) == 0) {
+    if (is_recovery_mode()) {
         LOG(INFO) << "First stage mount skipped (recovery mode)";
         return true;
     }
@@ -396,4 +410,32 @@ bool first_stage_mount() {
 
     std::unique_ptr<FirstStageMount> handle = FirstStageMount::Create();
     return handle->StartMount();
+}
+
+// Invokes setenv("INIT_AVB_VERSION", avb_version) in init first stage under recovery.
+// init will set ro.boot.avb_version to INIT_AVB_VERSION in the second stage.
+void set_init_avb_version_in_recovery() {
+    if (!is_recovery_mode()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not in recovery mode)";
+        return;
+    }
+
+    if (!is_dt_vbmeta_compatible()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
+        return;
+    }
+
+    FirstStageMountVBootV2 avb_first_mount;
+    if (!avb_first_mount.DeviceInitPartitions()) {
+        LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
+        return;
+    }
+
+    FsManagerAvbUniquePtr avb_handle =
+        FsManagerAvbHandle::Open(avb_first_mount.device_tree_by_name_prefix_);
+    if (!avb_handle) {
+        PLOG(ERROR) << "Failed to open FsManagerAvbHandle for INIT_AVB_VERSION";
+        return;
+    }
+    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
 }

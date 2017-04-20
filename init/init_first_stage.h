@@ -19,4 +19,6 @@
 
 bool first_stage_mount();
 
+void set_init_avb_version_in_recovery();
+
 #endif
