@@ -16,7 +16,7 @@
 
 #ifndef _LIBSPARSE_SPARSE_FORMAT_H_
 #define _LIBSPARSE_SPARSE_FORMAT_H_
-#include "sparse_defs.h"
+#include <private/sparse/sparse_defs.h>
 
 #ifdef __cplusplus
 extern "C" {
