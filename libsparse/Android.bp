@@ -75,3 +75,15 @@ cc_binary_host {
 
     cflags: ["-Werror"],
 }
+
+cc_binary_host {
+    name: "simg2simg",
+    srcs: ["simg2simg.c"],
+    static_libs: [
+        "libsparse",
+        "libz",
+        "libbase",
+    ],
+
+    cflags: ["-Werror"],
+}
