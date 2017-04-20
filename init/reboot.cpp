@@ -442,12 +442,13 @@ bool HandlePowerctlMessage(const std::string& command) {
             // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
             // Run fsck once the file system is remounted in read-only mode.
             run_fsck = true;
-            reason_string = cmd_params[1];
         }
     } else if (cmd_params[0] == "reboot") {
         cmd = ANDROID_RB_RESTART2;
         if (cmd_params.size() >= 2) {
             reboot_target = cmd_params[1];
+            // reason_string is everything that comes after "reboot,"
+            reason_string = command.substr(cmd_params[0].size() + 1);
             // When rebooting to the bootloader notify the bootloader writing
             // also the BCB.
             if (reboot_target == "bootloader") {
