@@ -43,7 +43,7 @@
 #define lseek64 lseek
 #define off64_t off_t
 #endif
-/* todo: migrate img2simg.c */
+
 int img2simg(const char* input, const char* output) {
     return img2simg_size(input, output, 4096);
 }
@@ -113,7 +113,6 @@ int img2simg_size_fd(int in, int out, int block_size) {
     return ret;
 }
 
-/* todo: migrate simg2img.c */
 int simg2img(int num_input, const char* input[], const char* output) {
     int* ifd = malloc(num_input * sizeof(*ifd));
     int ofd = -1;
@@ -176,7 +175,6 @@ int simg2img_fd(int num_input, int* ifd, int ofd) {
     return 0;
 }
 
-/* todo: migrate append2simg.c */
 int append2simg(const char* output, const char* input) {
     int ofd;
     int ifd;
@@ -271,7 +269,6 @@ int append2simg_fd(int ofd, int ifd, int tmpfd) {
     return 0;
 }
 
-/* todo: migrate simg2simg.c */
 int simg2simg(const char* input, const char* output, int64_t max_size) {
     int in;
     int out;
