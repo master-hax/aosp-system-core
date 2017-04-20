@@ -35,7 +35,7 @@
 #include "output_file.h"
 #include "sparse_crc32.h"
 #include "sparse_file.h"
-#include "sparse_format.h"
+#include "private/sparse/sparse_format.h"
 
 
 #if defined(__APPLE__) && defined(__MACH__)
