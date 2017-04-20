@@ -670,7 +670,7 @@ static void dump_crash(log_t* log, BacktraceMap* map, const OpenFilesList* open_
   dump_header_info(log);
   dump_thread(log, pid, tid, process_name, threads.find(tid)->second, map, abort_msg_address, true);
   if (want_logs) {
-    dump_logs(log, pid, 5);
+    dump_logs(log, pid, 50);
   }
 
   for (const auto& it : threads) {
