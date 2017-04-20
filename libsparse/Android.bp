@@ -11,6 +11,7 @@ cc_library {
         "sparse_crc32.c",
         "sparse_err.c",
         "sparse_read.cpp",
+        "sparse_utils.c",
     ],
     cflags: ["-Werror"],
     local_include_dirs: ["include"],
@@ -74,3 +75,5 @@ cc_binary_host {
 
     cflags: ["-Werror"],
 }
+
+subdirs = ["tests"]
