@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012-2014 The Android Open Source Project
+ * Copyright (c) 2017 Sony Mobile Communications Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are licensed under the License.
  */
 
 #define LOG_TAG "DEBUG"
@@ -670,7 +674,7 @@ static void dump_crash(log_t* log, BacktraceMap* map, const OpenFilesList* open_
   dump_header_info(log);
   dump_thread(log, pid, tid, process_name, threads.find(tid)->second, map, abort_msg_address, true);
   if (want_logs) {
-    dump_logs(log, pid, 5);
+    dump_logs(log, pid, 50);
   }
 
   for (const auto& it : threads) {
