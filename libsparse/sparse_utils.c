@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,12 @@
 #define _FILE_OFFSET_BITS 64
 #define _LARGEFILE64_SOURCE 1
 
+#include <android-base/file.h>
+#include <android-base/logging.h>
+#include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
+#include <assert.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -26,7 +32,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <sparse/sparse.h>
+#include "backed_block.h"
+#include "private/sparse/sparse_utils.h"
+#include "sparse/sparse.h"
+#include "sparse_file.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -36,315 +45,236 @@
 #define lseek64 lseek
 #define off64_t off_t
 #endif
-
-void usage() {
-    fprintf(stderr, "Usage: img2simg <raw_image_file> <sparse_image_file> [<block_size>]\n");
-}
+typedef std::unique_ptr<struct sparse_file, decltype(&sparse_file_destroy)> unique_sparse_file_p;
 
 /* todo: migrate img2simg.c */
 
-int main(int argc, char* argv[]) {
+int img2simg(const char* input, const char* output, unsigned int block_size) {
     int in;
     int out;
-    int ret;
-    struct sparse_file* s;
-    unsigned int block_size = 4096;
-    off64_t len;
+    android::base::unique_fd unique_fdin, unique_fdout;
 
-    if (argc < 3 || argc > 4) {
-        usage();
-        exit(-1);
-    }
-
-    if (argc == 4) {
-        block_size = atoi(argv[3]);
-    }
-
-    if (block_size < 1024 || block_size % 4 != 0) {
-        usage();
-        exit(-1);
-    }
-
-    if (strcmp(argv[1], "-") == 0) {
+    if (strcmp(input, "-") == 0) {
         in = STDIN_FILENO;
     } else {
-        in = open(argv[1], O_RDONLY | O_BINARY);
+        unique_fdin.reset(open(input, O_RDONLY | O_BINARY));
+        in = unique_fdin;
         if (in < 0) {
-            fprintf(stderr, "Cannot open input file %s\n", argv[1]);
-            exit(-1);
+            LOG(ERROR) << "Cannot open input file " << input << " : " << strerror(errno);
+            return -errno;
         }
     }
 
-    if (strcmp(argv[2], "-") == 0) {
+    if (strcmp(output, "-") == 0) {
         out = STDOUT_FILENO;
     } else {
-        out = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664);
+        unique_fdout.reset(open(output, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664));
+        out = unique_fdout;
         if (out < 0) {
-            fprintf(stderr, "Cannot open output file %s\n", argv[2]);
-            exit(-1);
+            LOG(ERROR) << "Cannot open output file " << output << " : " << strerror(errno);
+            return -errno;
         }
     }
 
-    len = lseek64(in, 0, SEEK_END);
-    lseek64(in, 0, SEEK_SET);
-
-    s = sparse_file_new(block_size, len);
-    if (!s) {
-        fprintf(stderr, "Failed to create sparse file\n");
-        exit(-1);
-    }
-
-    sparse_file_verbose(s);
-    ret = sparse_file_read(s, in, false, false);
-    if (ret) {
-        fprintf(stderr, "Failed to read file\n");
-        exit(-1);
-    }
-
-    ret = sparse_file_write(s, out, false, true, false);
-    if (ret) {
-        fprintf(stderr, "Failed to write sparse file\n");
-        exit(-1);
-    }
-
-    close(in);
-    close(out);
-
-    exit(0);
+    return img2simg_fd(in, out, block_size);
 }
 
-void usage() {
-    fprintf(stderr, "Usage: simg2img <sparse_image_files> <raw_image_file>\n");
+int img2simg_fd(int in, int out, unsigned int block_size) {
+    assert(block_size >= 1024);
+    assert(block_size % 4 == 0);
+
+    off64_t len = lseek64(in, 0, SEEK_END);
+    lseek64(in, 0, SEEK_SET);
+
+    unique_sparse_file_p s(sparse_file_new(block_size, len), sparse_file_destroy);
+
+    if (!s) {
+        LOG(ERROR) << "Failed to create sparse file : " << strerror(errno);
+        return -errno;
+    }
+
+    sparse_file_verbose(s.get());
+    int ret = sparse_file_read(s.get(), in, false, false);
+    if (!ret) {
+        ret = sparse_file_write(s.get(), out, false, true, false);
+        if (ret) {
+            LOG(ERROR) << "Failed to write sparse file : " << strerror(errno);
+        }
+    } else {
+        LOG(ERROR) << "Failed to read file : " << strerror(errno);
+    }
+
+    return ret;
 }
 
 /* todo: migrate simg2img.c */
 
-int main(int argc, char* argv[]) {
-    int in;
-    int out;
-    int i;
-    struct sparse_file* s;
+int simg2img(int num_input, const char* input[], const char* output) {
+    int ifd[num_input];
+    android::base::unique_fd unique_ifd[num_input];
 
-    if (argc < 3) {
-        usage();
-        exit(-1);
+    android::base::unique_fd ofd(open(output, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664));
+    if (ofd < 0) {
+        LOG(ERROR) << "Cannot open output file" << output << " : " << strerror(errno);
+        return -errno;
     }
 
-    out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664);
-    if (out < 0) {
-        fprintf(stderr, "Cannot open output file %s\n", argv[argc - 1]);
-        exit(-1);
-    }
-
-    for (i = 1; i < argc - 1; i++) {
-        if (strcmp(argv[i], "-") == 0) {
-            in = STDIN_FILENO;
+    assert(ifd != NULL);
+    for (int i = 0; i < num_input; i++) {
+        if (strcmp(input[i], "-") == 0) {
+            ifd[i] = STDIN_FILENO;
         } else {
-            in = open(argv[i], O_RDONLY | O_BINARY);
-            if (in < 0) {
-                fprintf(stderr, "Cannot open input file %s\n", argv[i]);
-                exit(-1);
-            }
+            unique_ifd[i].reset(open(input[i], O_RDONLY | O_BINARY));
+            ifd[i] = unique_ifd[i];
         }
-
-        s = sparse_file_import(in, true, false);
-        if (!s) {
-            fprintf(stderr, "Failed to read sparse file\n");
-            exit(-1);
+        if (ifd[i] < 0) {
+            LOG(ERROR) << "Cannot open " << input[i] << " : " << strerror(errno);
+            return -errno;
         }
-
-        if (lseek(out, 0, SEEK_SET) == -1) {
-            perror("lseek failed");
-            exit(EXIT_FAILURE);
-        }
-
-        if (sparse_file_write(s, out, false, false, false) < 0) {
-            fprintf(stderr, "Cannot write output file\n");
-            exit(-1);
-        }
-        sparse_file_destroy(s);
-        close(in);
     }
 
-    close(out);
-
-    exit(0);
+    return simg2img_fd(num_input, ifd, ofd);
 }
 
-void usage() {
-    fprintf(stderr, "Usage: append2simg <output> <input>\n");
+int simg2img_fd(int num_input, int ifd[], int ofd) {
+    for (int i = 0; i < num_input; i++) {
+        unique_sparse_file_p s(sparse_file_import(ifd[i], true, false), sparse_file_destroy);
+        if (lseek(ofd, 0, SEEK_SET) < 0) {
+            LOG(ERROR) << "seek failed : " << strerror(errno);
+            return -errno;
+        }
+
+        int ret = sparse_file_write(s.get(), ofd, false, false, false);
+        if (ret < 0) {
+            LOG(ERROR) << "Cannot write output file";
+            return ret;
+        }
+    }
+
+    return 0;
 }
 
 /* todo: migrate append2simg.c */
 
-int main(int argc, char* argv[]) {
-    int output;
-    int output_block;
-    char* output_path;
-    struct sparse_file* sparse_output;
+int append2simg(const char* output, const char* input) {
+    android::base::unique_fd ofd(open(output, O_RDWR | O_BINARY));
 
-    int input;
-    char* input_path;
-    off64_t input_len;
-
-    int tmp_fd;
-    char* tmp_path;
-
-    int ret;
-
-    if (argc == 3) {
-        output_path = argv[1];
-        input_path = argv[2];
-    } else {
-        usage();
-        exit(-1);
+    if (ofd < 0) {
+        LOG(ERROR) << "Couldn't open output file " << output << " : " << strerror(errno);
+        return -errno;
     }
 
-    ret = asprintf(&tmp_path, "%s.append2simg", output_path);
-    if (ret < 0) {
-        fprintf(stderr, "Couldn't allocate filename\n");
-        exit(-1);
+    android::base::unique_fd ifd(open(input, O_RDONLY | O_BINARY));
+    if (ifd < 0) {
+        LOG(ERROR) << "Couldn't open input file" << input << " : " << strerror(errno);
+        return -errno;
     }
 
-    output = open(output_path, O_RDWR | O_BINARY);
-    if (output < 0) {
-        fprintf(stderr, "Couldn't open output file (%s)\n", strerror(errno));
-        exit(-1);
+    std::string tmp_path = android::base::StringPrintf("%s.append2simg", output);
+
+    android::base::unique_fd tmpfd(open(tmp_path.c_str(), O_WRONLY | O_CREAT | O_BINARY, 0664));
+    if (tmpfd < 0) {
+        LOG(ERROR) << "Couldn't open temporary file " << tmp_path << " : " << strerror(errno);
+        return -errno;
     }
+    int ret = append2simg_fd(ofd, ifd, tmpfd);
 
-    sparse_output = sparse_file_import_auto(output, false, true);
-    if (!sparse_output) {
-        fprintf(stderr, "Couldn't import output file\n");
-        exit(-1);
+    if (!ret) {
+        ret = rename(tmp_path.c_str(), output);
+        if (ret < 0) {
+            LOG(ERROR) << "Failed to rename temporary file " << strerror(errno);
+        }
     }
+    android::base::RemoveFileIfExists(tmp_path, NULL);
 
-    input = open(input_path, O_RDONLY | O_BINARY);
-    if (input < 0) {
-        fprintf(stderr, "Couldn't open input file (%s)\n", strerror(errno));
-        exit(-1);
-    }
-
-    input_len = lseek64(input, 0, SEEK_END);
-    if (input_len < 0) {
-        fprintf(stderr, "Couldn't get input file length (%s)\n", strerror(errno));
-        exit(-1);
-    } else if (input_len % sparse_output->block_size) {
-        fprintf(stderr, "Input file is not a multiple of the output file's block size");
-        exit(-1);
-    }
-    lseek64(input, 0, SEEK_SET);
-
-    output_block = sparse_output->len / sparse_output->block_size;
-    if (sparse_file_add_fd(sparse_output, input, 0, input_len, output_block) < 0) {
-        fprintf(stderr, "Couldn't add input file\n");
-        exit(-1);
-    }
-    sparse_output->len += input_len;
-
-    tmp_fd = open(tmp_path, O_WRONLY | O_CREAT | O_BINARY, 0664);
-    if (tmp_fd < 0) {
-        fprintf(stderr, "Couldn't open temporary file (%s)\n", strerror(errno));
-        exit(-1);
-    }
-
-    lseek64(output, 0, SEEK_SET);
-    if (sparse_file_write(sparse_output, tmp_fd, false, true, false) < 0) {
-        fprintf(stderr, "Failed to write sparse file\n");
-        exit(-1);
-    }
-
-    sparse_file_destroy(sparse_output);
-    close(tmp_fd);
-    close(output);
-    close(input);
-
-    ret = rename(tmp_path, output_path);
-    if (ret < 0) {
-        fprintf(stderr, "Failed to rename temporary file (%s)\n", strerror(errno));
-        exit(-1);
-    }
-
-    free(tmp_path);
-
-    exit(0);
+    return ret;
 }
 
-void usage() {
-    fprintf(stderr, "Usage: simg2simg <sparse image file> <sparse_image_file> <max_size>\n");
+int append2simg_fd(int ofd, int ifd, int tmpfd) {
+    unique_sparse_file_p s(sparse_file_import_auto(ofd, false, true), sparse_file_destroy);
+    if (!s) {
+        LOG(ERROR) << "Couldn't import output file";
+        return -EINVAL;
+    }
+
+    off64_t input_len = lseek64(ifd, 0, SEEK_END);
+    if (input_len < 0) {
+        LOG(ERROR) << "Couldn't get input file length : " << strerror(errno);
+        return -errno;
+    } else if (input_len % s->block_size) {
+        LOG(ERROR) << "Input file is not a multiple of the output file's block size";
+        return -EINVAL;
+    }
+    lseek64(ifd, 0, SEEK_SET);
+
+    int output_block = s->len / s->block_size;
+    int ret = sparse_file_add_fd(s.get(), ifd, 0, input_len, output_block);
+    if (ret < 0) {
+        LOG(ERROR) << "Couldn't add input file";
+        return ret;
+    }
+    s->len += input_len;
+
+    lseek64(ofd, 0, SEEK_SET);
+    ret = sparse_file_write(s.get(), tmpfd, false, true, false);
+    if (ret < 0) {
+        LOG(ERROR) << "Failed to write sparse file";
+    }
+
+    return ret;
 }
 
 /* todo: migrate simg2simg.c */
 
-int main(int argc, char* argv[]) {
-    int in;
-    int out;
-    int i;
-    int ret;
-    struct sparse_file* s;
-    int64_t max_size;
-    struct sparse_file** out_s;
-    int files;
-    char filename[4096];
-
-    if (argc != 4) {
-        usage();
-        exit(-1);
-    }
-
-    max_size = atoll(argv[3]);
-
-    in = open(argv[1], O_RDONLY | O_BINARY);
+int simg2simg(const char* input, const char* output, int64_t max_size) {
+    android::base::unique_fd in(open(input, O_RDONLY | O_BINARY));
     if (in < 0) {
-        fprintf(stderr, "Cannot open input file %s\n", argv[1]);
-        exit(-1);
+        LOG(ERROR) << "Cannot open input file" << input << " : " << strerror(errno);
+        return -errno;
     }
 
-    s = sparse_file_import(in, true, false);
+    unique_sparse_file_p s(sparse_file_import(in, true, false), sparse_file_destroy);
     if (!s) {
-        fprintf(stderr, "Failed to import sparse file\n");
-        exit(-1);
+        LOG(ERROR) << "Failed to import sparse file";
+        return -EINVAL;
     }
 
-    files = sparse_file_resparse(s, max_size, NULL, 0);
+    int files = sparse_file_resparse(s.get(), max_size, NULL, 0);
     if (files < 0) {
-        fprintf(stderr, "Failed to resparse\n");
-        exit(-1);
+        LOG(ERROR) << "Failed to resparse";
+        return files;
     }
 
-    out_s = calloc(sizeof(struct sparse_file*), files);
-    if (!out_s) {
-        fprintf(stderr, "Failed to allocate sparse file array\n");
-        exit(-1);
-    }
+    struct sparse_file* out_s[files];
 
-    files = sparse_file_resparse(s, max_size, out_s, files);
+    files = sparse_file_resparse(s.get(), max_size, out_s, files);
     if (files < 0) {
-        fprintf(stderr, "Failed to resparse\n");
-        exit(-1);
+        LOG(ERROR) << "Failed to resparse";
+        return files;
     }
 
-    for (i = 0; i < files; i++) {
-        ret = snprintf(filename, sizeof(filename), "%s.%d", argv[2], i);
-        if (ret >= (int)sizeof(filename)) {
-            fprintf(stderr, "Filename too long\n");
-            exit(-1);
-        }
-
-        out = open(filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664);
+    int ret = 0;
+    for (int i = 0; i < files; i++) {
+        std::string filename = android::base::StringPrintf("%s.%d", output, i);
+        android::base::unique_fd out(
+            open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0664));
         if (out < 0) {
-            fprintf(stderr, "Cannot open output file %s\n", argv[2]);
-            exit(-1);
+            ret = -errno;
+            LOG(ERROR) << "Cannot open output file " << filename << " : " << strerror(errno);
+            break;
         }
 
         ret = sparse_file_write(out_s[i], out, false, true, false);
         if (ret) {
-            fprintf(stderr, "Failed to write sparse file\n");
-            exit(-1);
+            LOG(ERROR) << "Failed to write sparse file";
+            break;
         }
-        close(out);
     }
 
-    close(in);
+    for (int i = 0; i < files; i++) {
+        sparse_file_destroy(out_s[i]);
+    }
 
-    exit(0);
+    if (!ret) return files;
+    return ret;
 }
