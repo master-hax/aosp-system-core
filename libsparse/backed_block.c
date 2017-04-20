@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include "backed_block.h"
-#include "sparse_defs.h"
+#include "private/sparse/sparse_defs.h"
 
 struct backed_block {
 	unsigned int block;
