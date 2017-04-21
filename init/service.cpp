@@ -207,19 +207,31 @@ void Service::NotifyStateChange(const std::string& new_state) const {
 }
 
 void Service::KillProcessGroup(int signal) {
-    LOG(INFO) << "Sending signal " << signal
-              << " to service '" << name_
-              << "' (pid " << pid_ << ") process group...";
-    int r;
+    // If this process group is already empty then there's nothing to do.
+    // Therefore we remove it and return.
+    LOG(INFO) << "grep: before count: " << name_;
+    int process_count = countProcessesInProcessGroup(uid_, pid_);
+    if (process_count == 0) {
+        removeProcessGroup(uid_, pid_);
+        return;
+    }
+
+    LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
+              << ") process group containing " << process_count << " processes";
+
     if (signal == SIGTERM) {
-        r = killProcessGroupOnce(uid_, pid_, signal);
+        // If we're sending SIGTERM, then we're not forcibly requesting that the service
+        // and its process group exit therefore we don't wait to see if they do.
+        // Use SIGKILL if that behavior is desired.
+        killProcessGroupOnce(uid_, pid_, signal);
     } else {
-        r = killProcessGroup(uid_, pid_, signal);
+        // killProcessGroup() reports its own errors if it encounters any, so no need to
+        // report anything ourselves.
+        killProcessGroup(uid_, pid_, signal);
     }
-    if (r == -1) {
-        PLOG(ERROR) << "killProcessGroup(" << uid_ << ", " << pid_ << ", " << signal << ") failed";
-    }
-    if (kill(-pid_, signal) == -1) {
+    if (kill(-pid_, signal) == -1 && errno != ESRCH) {
+        // If errno is ESRCH, then there's no reason to report an error, as it just means
+        // the process has already been killed, likely through the above calls.
         PLOG(ERROR) << "kill(" << pid_ << ", " << signal << ") failed";
     }
 }
