@@ -207,20 +207,35 @@ void Service::NotifyStateChange(const std::string& new_state) const {
 }
 
 void Service::KillProcessGroup(int signal) {
-    LOG(INFO) << "Sending signal " << signal
-              << " to service '" << name_
-              << "' (pid " << pid_ << ") process group...";
-    int r;
-    if (signal == SIGTERM) {
-        r = killProcessGroupOnce(uid_, pid_, signal);
-    } else {
-        r = killProcessGroup(uid_, pid_, signal);
+    bool process_group_empty = isProcessGroupEmpty(uid_, pid_);
+    if (!process_group_empty) {
+        LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
+                  << ") process group";
+
+        // killProcessGroup*() report their own errors, so no need to here.
+        if (signal == SIGTERM) {
+            killProcessGroupOnce(uid_, pid_, signal);
+        } else {
+            killProcessGroup(uid_, pid_, signal);
+        }
     }
-    if (r == -1) {
-        LOG(ERROR) << "killProcessGroup(" << uid_ << ", " << pid_ << ", " << signal << ") failed";
-    }
+
+    // There are a few cases that require this explicit kill:
+    // 1) ueventd is started before cgroups are mounted, so it never has a process group.
+    // 2) zygote and netd seem to live past their process group's lifetime when restarting.
     if (kill(-pid_, signal) == -1) {
-        PLOG(ERROR) << "kill(" << pid_ << ", " << signal << ") failed";
+        if (errno != ESRCH) {
+            // If errno is ESRCH, then there's no reason to report an error, as it just means
+            // the process has already been killed.
+            PLOG(ERROR) << "kill(" << pid_ << ", " << signal << ") failed";
+        }
+    } else if (process_group_empty) {
+        // We want to explicitly log if we were able to successfully kill a process that
+        // did not belong to a process group because we won't have printed the above
+        // "Sending signal" message, and want at least one print from this function if
+        // a service was successfully killed by it.
+        LOG(INFO) << "Killed service '" << name_ << "' (pid " << pid_
+                  << ") from empty process group";
     }
 }
 
