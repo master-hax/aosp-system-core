@@ -43,7 +43,6 @@
 
 typedef std::unique_ptr<struct sparse_file, decltype(&sparse_file_destroy)> unique_sparse_file_p;
 
-/* todo: migrate img2simg.c */
 
 int img2simg(const char* input, const char* output, unsigned int block_size) {
     int in;
@@ -103,8 +102,6 @@ int img2simg_fd(int in, int out, unsigned int block_size) {
     return ret;
 }
 
-/* todo: migrate simg2img.c */
-
 int simg2img(int num_input, const char* input[], const char* output) {
     int ifd[num_input];
     android::base::unique_fd unique_ifd[num_input];
@@ -149,8 +146,6 @@ int simg2img_fd(int num_input, int ifd[], int ofd) {
 
     return 0;
 }
-
-/* todo: migrate append2simg.c */
 
 int append2simg(const char* output, const char* input) {
     android::base::unique_fd ofd(open(output, O_RDWR | O_BINARY));
@@ -219,8 +214,6 @@ int append2simg_fd(int ofd, int ifd, int tmpfd) {
 
     return ret;
 }
-
-/* todo: migrate simg2simg.c */
 
 int simg2simg(const char* input, const char* output, int64_t max_size) {
     android::base::unique_fd in(open(input, O_RDONLY | O_BINARY));
