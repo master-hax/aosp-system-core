@@ -22,6 +22,8 @@
 
 __BEGIN_DECLS
 
+bool isProcessGroupEmpty(uid_t uid, int initialPid);
+
 int killProcessGroup(uid_t uid, int initialPid, int signal);
 
 int killProcessGroupOnce(uid_t uid, int initialPid, int signal);
