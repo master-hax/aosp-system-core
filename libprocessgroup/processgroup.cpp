@@ -188,8 +188,7 @@ static pid_t getOneAppProcess(uid_t uid, int appProcessPid, struct ctx *ctx)
     return (pid_t)pid;
 }
 
-static int removeProcessGroup(uid_t uid, int pid)
-{
+int removeProcessGroup(uid_t uid, int pid) {
     int ret;
     char path[PROCESSGROUP_MAX_PATH_LEN] = {0};
 
@@ -252,38 +251,55 @@ void removeAllProcessGroups()
     }
 }
 
-static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
-    int processes = 0;
+template <typename F>
+static void forEachProcessInProcessGroup(uid_t uid, int initialPid, F function) {
     struct ctx ctx;
     pid_t pid;
 
     ctx.initialized = false;
 
     while ((pid = getOneAppProcess(uid, initialPid, &ctx)) >= 0) {
+        function(pid);
+    }
+
+    if (ctx.initialized) {
+        close(ctx.fd);
+    }
+}
+
+int countProcessesInProcessGroup(uid_t uid, int initialPid) {
+    int processes = 0;
+    auto count_processes = [&processes](pid_t) { processes++; };
+    forEachProcessInProcessGroup(uid, initialPid, count_processes);
+    return processes;
+}
+
+static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
+    int processes = 0;
+    auto kill_process = [&processes, uid, initialPid, signal](pid_t pid) {
         processes++;
         if (pid == 0) {
             // Should never happen...  but if it does, trying to kill this
             // will boomerang right back and kill us!  Let's not let that happen.
             LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
-            continue;
+            return;
         }
         LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid
                      << " as part of process group " << initialPid;
         if (kill(pid, signal) == -1) {
             PLOG(WARNING) << "kill(" << pid << ", " << signal << ") failed";
         }
-    }
+    };
 
-    if (ctx.initialized) {
-        close(ctx.fd);
-    }
+    forEachProcessInProcessGroup(uid, initialPid, kill_process);
 
     return processes;
 }
 
-static int killProcessGroup(uid_t uid, int initialPid, int signal, int retry) {
+static int killProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
+    int retry = retries;
     int processes;
     while ((processes = doKillProcessGroupOnce(uid, initialPid, signal)) > 0) {
         LOG(VERBOSE) << "killed " << processes << " processes for processgroup " << initialPid;
@@ -291,21 +307,29 @@ static int killProcessGroup(uid_t uid, int initialPid, int signal, int retry) {
             std::this_thread::sleep_for(5ms);
             --retry;
         } else {
-            LOG(ERROR) << "failed to kill " << processes << " processes for processgroup "
-                       << initialPid;
             break;
         }
     }
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    if (retries == 0) {
+        // We only calculate the number of 'processes' when killing the processes.
+        // In the retries == 0 case, we only kill the processes once and therefore
+        // will not have waited then recalculated how many processes are remaining
+        // after the first signals have been sent.
+        // Reporting an error in this case does not make sense.
+        return 0;
+    }
 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    LOG(VERBOSE) << "Killed process group uid " << uid << " pid " << initialPid << " in "
-                 << static_cast<int>(ms) << "ms, " << processes << " procs remain";
 
     if (processes == 0) {
+        LOG(INFO) << "Successfully killed process group uid " << uid << " pid " << initialPid
+                  << " in " << static_cast<int>(ms) << "ms";
         return removeProcessGroup(uid, initialPid);
     } else {
+        LOG(ERROR) << "Failed to kill process group uid " << uid << " pid " << initialPid << " in "
+                   << static_cast<int>(ms) << "ms, " << processes << " procs remain";
         return -1;
     }
 }
@@ -314,8 +338,8 @@ int killProcessGroup(uid_t uid, int initialPid, int signal) {
     return killProcessGroup(uid, initialPid, signal, 40 /*maxRetry*/);
 }
 
-int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
-    return killProcessGroup(uid, initialPid, signal, 0 /*maxRetry*/);
+void killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
+    killProcessGroup(uid, initialPid, signal, 0 /*maxRetry*/);
 }
 
 static bool mkdirAndChown(const char *path, mode_t mode, uid_t uid, gid_t gid)
