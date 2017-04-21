@@ -207,20 +207,39 @@ void Service::NotifyStateChange(const std::string& new_state) const {
 }
 
 void Service::KillProcessGroup(int signal) {
-    LOG(INFO) << "Sending signal " << signal
-              << " to service '" << name_
-              << "' (pid " << pid_ << ") process group...";
-    int r;
-    if (signal == SIGTERM) {
-        r = killProcessGroupOnce(uid_, pid_, signal);
-    } else {
-        r = killProcessGroup(uid_, pid_, signal);
+    bool process_group_empty = isProcessGroupEmpty(uid_, pid_);
+    if (!process_group_empty) {
+        LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
+                  << ") process group";
+
+        if (signal == SIGTERM) {
+            // If we're sending SIGTERM, then we're not forcibly requesting that the service
+            // and its process group exit therefore we don't wait to see if they do.
+            // Use SIGKILL if that behavior is desired.
+            killProcessGroupOnce(uid_, pid_, signal);
+        } else {
+            // killProcessGroup() reports its own errors if it encounters any, so no need to
+            // report anything ourselves.
+            killProcessGroup(uid_, pid_, signal);
+        }
     }
-    if (r == -1) {
-        PLOG(ERROR) << "killProcessGroup(" << uid_ << ", " << pid_ << ", " << signal << ") failed";
-    }
+
+    // We always kill just to be safe.
     if (kill(-pid_, signal) == -1) {
-        PLOG(ERROR) << "kill(" << pid_ << ", " << signal << ") failed";
+        if (errno != ESRCH) {
+            // If errno is ESRCH, then there's no reason to report an error, as it just means
+            // the process has already been killed, likely through the above calls.
+            PLOG(ERROR) << "kill(" << pid_ << ", " << signal << ") failed";
+        }
+    } else if (process_group_empty) {
+        // It's may be possible the process group was removed but the process still exists.
+        // We want to log this event, especially since we'll have not sent the above
+        // "Sending signal" message for services with empty process groups.
+        //
+        // This is particularly known to be true for ueventd that is created before cgroups are
+        // mounted, meaning that it never belongs to a process group.
+        LOG(INFO) << "Killed service '" << name_ << "' (pid " << pid_
+                  << ") from empty process group";
     }
 }
 
