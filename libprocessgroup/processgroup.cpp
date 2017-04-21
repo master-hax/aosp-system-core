@@ -248,6 +248,19 @@ void removeAllProcessGroups()
     }
 }
 
+bool isProcessGroupEmpty(uid_t uid, int initialPid) {
+    ProcessGroup process_group;
+    if (!process_group.Open(uid, initialPid)) return true;
+
+    pid_t pid;
+    if (process_group.GetOneAppProcess(&pid) > 0) return false;
+
+    // We don't want empty process groups lying around, so if someone queries one and it
+    // is empty, remove it.
+    removeProcessGroup(uid, initialPid);
+    return true;
+}
+
 // Returns number of processes killed on success
 // Returns 0 if there are no processes in the process group left to kill
 // Returns -errno on error
