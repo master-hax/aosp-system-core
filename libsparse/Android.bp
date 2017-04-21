@@ -41,13 +41,13 @@ cc_binary {
     name: "simg2img",
     host_supported: true,
     srcs: [
-        "simg2img.c",
-        "sparse_crc32.c",
+        "simg2img.cpp",
     ],
     static_libs: [
         "libsparse",
         "libz",
         "libbase",
+        "liblog",
     ],
 
     cflags: ["-Werror"],
@@ -56,11 +56,12 @@ cc_binary {
 cc_binary {
     name: "img2simg",
     host_supported: true,
-    srcs: ["img2simg.c"],
+    srcs: ["img2simg.cpp"],
     static_libs: [
         "libsparse",
         "libz",
         "libbase",
+        "liblog",
     ],
 
     cflags: ["-Werror"],
@@ -68,11 +69,25 @@ cc_binary {
 
 cc_binary_host {
     name: "append2simg",
-    srcs: ["append2simg.c"],
+    srcs: ["append2simg.cpp"],
     static_libs: [
         "libsparse",
         "libz",
         "libbase",
+        "liblog",
+    ],
+
+    cflags: ["-Werror"],
+}
+
+cc_binary_host {
+    name: "simg2simg",
+    srcs: ["simg2simg.cpp"],
+    static_libs: [
+        "libsparse",
+        "libz",
+        "libbase",
+        "liblog",
     ],
 
     cflags: ["-Werror"],
