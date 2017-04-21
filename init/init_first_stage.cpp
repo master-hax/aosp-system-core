@@ -33,6 +33,8 @@
 #include "fs_mgr_avb.h"
 #include "util.h"
 
+// Class Declarations
+// ------------------
 class FirstStageMount {
   public:
     FirstStageMount();
@@ -42,6 +44,7 @@ class FirstStageMount {
     // based on device tree configurations.
     static std::unique_ptr<FirstStageMount> Create();
     bool DoFirstStageMount();  // Mounts fstab entries read from device tree.
+    bool InitDevices();
 
   protected:
     void InitRequiredDevices();
@@ -75,6 +78,8 @@ class FirstStageMountVBootV2 : public FirstStageMount {
     FirstStageMountVBootV2();
     ~FirstStageMountVBootV2() override = default;
 
+    const std::string& by_name_prefix() const { return device_tree_by_name_prefix_; }
+
   protected:
     bool GetRequiredDevices() override;
     bool SetUpDmVerity(fstab_rec* fstab_rec) override;
@@ -85,6 +90,18 @@ class FirstStageMountVBootV2 : public FirstStageMount {
     FsManagerAvbUniquePtr avb_handle_;
 };
 
+// Static Functions
+// ----------------
+static inline bool IsDtVbmetaCompatible() {
+    return is_android_dt_value_expected("vbmeta/compatible", "android,vbmeta");
+}
+
+static bool inline IsRecoveryMode() {
+    return access("/sbin/recovery", F_OK) == 0;
+}
+
+// Class Definitions
+// -----------------
 FirstStageMount::FirstStageMount()
     : need_dm_verity_(false), device_tree_fstab_(fs_mgr_read_fstab_dt(), fs_mgr_free_fstab) {
     if (!device_tree_fstab_) {
@@ -102,7 +119,7 @@ FirstStageMount::FirstStageMount()
 }
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
-    if (is_android_dt_value_expected("vbmeta/compatible", "android,vbmeta")) {
+    if (IsDtVbmetaCompatible()) {
         return std::make_unique<FirstStageMountVBootV2>();
     } else {
         return std::make_unique<FirstStageMountVBootV1>();
@@ -113,9 +130,23 @@ bool FirstStageMount::DoFirstStageMount() {
     // Nothing to mount.
     if (mount_fstab_recs_.empty()) return true;
 
+    if (!InitDevices()) return false;
+
+    if (!MountPartitions()) return false;
+
+    return true;
+}
+
+bool FirstStageMount::InitDevices() {
     // Gets required partition names to device_init() in device_init_partitions_.
     // The partition name MUST have A/B suffix when A/B is used.
     if (!GetRequiredDevices()) return false;
+
+    if (need_dm_verity_) {
+        // Creates /dev/device-mapper.
+        device_init("/sys/devices/virtual/misc/device-mapper",
+                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
+    }
 
     bool success = false;
     InitRequiredDevices();  // Creates the devices we need.
@@ -125,18 +156,10 @@ bool FirstStageMount::DoFirstStageMount() {
     if (!device_init_partitions_.empty()) {
         LOG(ERROR) << __FUNCTION__ << "(): partition(s) not found: "
                    << android::base::Join(device_init_partitions_, ", ");
-        goto done;
+    } else {
+        success = true;
     }
 
-    if (need_dm_verity_) {
-        // Creates /dev/device-mapper.
-        device_init("/sys/devices/virtual/misc/device-mapper",
-                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
-    }
-
-    if (MountPartitions()) success = true;
-
-done:
     device_close();
     return success;
 }
@@ -358,7 +381,7 @@ bool FirstStageMountVBootV2::InitAvbHandle() {
 // The fstab is read from device-tree.
 bool InitFirstStageMount() {
     // Skips first stage mount if we're in recovery mode.
-    if (access("/sbin/recovery", F_OK) == 0) {
+    if (IsRecoveryMode()) {
         LOG(INFO) << "First stage mount skipped (recovery mode)";
         return true;
     }
@@ -375,4 +398,34 @@ bool InitFirstStageMount() {
         return false;
     }
     return handle->DoFirstStageMount();
+}
+
+void SetInitAvbVersionInRecovery() {
+    if (!IsRecoveryMode()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not in recovery mode)";
+        return;
+    }
+
+    if (!IsDtVbmetaCompatible()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
+        return;
+    }
+
+    // Initializes required devices for the subsequent FsManagerAvbHandle::Open()
+    // to verify AVB metadata on all partitions in the verified chain.
+    // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
+    // Open() function returns a valid handle.
+    // We don't need to mount partitions here in recovery mode.
+    FirstStageMountVBootV2 avb_first_mount;
+    if (!avb_first_mount.InitDevices()) {
+        LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
+        return;
+    }
+
+    FsManagerAvbUniquePtr avb_handle = FsManagerAvbHandle::Open(avb_first_mount.by_name_prefix());
+    if (!avb_handle) {
+        PLOG(ERROR) << "Failed to open FsManagerAvbHandle for INIT_AVB_VERSION";
+        return;
+    }
+    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
 }

@@ -18,5 +18,6 @@
 #define _INIT_FIRST_STAGE_H
 
 bool InitFirstStageMount();
+void SetInitAvbVersionInRecovery();
 
 #endif
