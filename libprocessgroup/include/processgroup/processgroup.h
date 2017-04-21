@@ -22,13 +22,19 @@
 
 __BEGIN_DECLS
 
+int countProcessesInProcessGroup(uid_t uid, int initialPid);
+
 int killProcessGroup(uid_t uid, int initialPid, int signal);
 
-int killProcessGroupOnce(uid_t uid, int initialPid, int signal);
+// killProcessGroupOnce sends its signal but doesn't wait to see if any processes were
+// killed due to it, therefore it returns no error code.
+void killProcessGroupOnce(uid_t uid, int initialPid, int signal);
 
 int createProcessGroup(uid_t uid, int initialPid);
 
 void removeAllProcessGroups(void);
+
+int removeProcessGroup(uid_t uid, int pid);
 
 __END_DECLS
 
