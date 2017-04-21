@@ -34,6 +34,7 @@
 #include <thread>
 
 #include <android-base/logging.h>
+#include <android-base/scopeguard.h>
 #include <private/android_filesystem_config.h>
 
 #include <processgroup/processgroup.h>
@@ -252,6 +253,30 @@ void removeAllProcessGroups()
     }
 }
 
+bool isProcessGroupEmpty(uid_t uid, int initialPid) {
+    char path[PROCESSGROUP_MAX_PATH_LEN] = {0};
+    convertUidPidToPath(path, sizeof(path), uid, initialPid);
+    strlcat(path, PROCESSGROUP_CGROUP_PROCS_FILE, sizeof(path));
+
+    // First stat to see if the process group even exists, this is to suppress unwanted
+    // error messages from initCtx.
+    struct stat sb;
+    if (stat(path, &sb) == -1) return true;
+
+    struct ctx ctx;
+    ctx.initialized = false;
+    auto guard = android::base::make_scope_guard([&ctx] {
+        if (ctx.initialized) close(ctx.fd);
+    });
+
+    if (getOneAppProcess(uid, initialPid, &ctx) >= 0) return false;
+
+    // We don't want empty process groups lying around, so if someone queries one and it
+    // is empty, remove it.
+    removeProcessGroup(uid, initialPid);
+    return true;
+}
+
 static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
     int processes = 0;
     struct ctx ctx;
@@ -281,9 +306,10 @@ static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
     return processes;
 }
 
-static int killProcessGroup(uid_t uid, int initialPid, int signal, int retry) {
+static int killProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
+    int retry = retries;
     int processes;
     while ((processes = doKillProcessGroupOnce(uid, initialPid, signal)) > 0) {
         LOG(VERBOSE) << "killed " << processes << " processes for processgroup " << initialPid;
@@ -291,21 +317,29 @@ static int killProcessGroup(uid_t uid, int initialPid, int signal, int retry) {
             std::this_thread::sleep_for(5ms);
             --retry;
         } else {
-            LOG(ERROR) << "failed to kill " << processes << " processes for processgroup "
-                       << initialPid;
             break;
         }
     }
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    if (retries == 0) {
+        // We only calculate the number of 'processes' when killing the processes.
+        // In the retries == 0 case, we only kill the processes once and therefore
+        // will not have waited then recalculated how many processes are remaining
+        // after the first signals have been sent.
+        // Reporting an error in this case does not make sense.
+        return 0;
+    }
 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    LOG(VERBOSE) << "Killed process group uid " << uid << " pid " << initialPid << " in "
-                 << static_cast<int>(ms) << "ms, " << processes << " procs remain";
 
     if (processes == 0) {
+        LOG(INFO) << "Successfully killed process group uid " << uid << " pid " << initialPid
+                  << " in " << static_cast<int>(ms) << "ms";
         return removeProcessGroup(uid, initialPid);
     } else {
+        LOG(ERROR) << "Failed to kill process group uid " << uid << " pid " << initialPid << " in "
+                   << static_cast<int>(ms) << "ms, " << processes << " procs remain";
         return -1;
     }
 }
@@ -314,8 +348,8 @@ int killProcessGroup(uid_t uid, int initialPid, int signal) {
     return killProcessGroup(uid, initialPid, signal, 40 /*maxRetry*/);
 }
 
-int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
-    return killProcessGroup(uid, initialPid, signal, 0 /*maxRetry*/);
+void killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
+    killProcessGroup(uid, initialPid, signal, 0 /*maxRetry*/);
 }
 
 static bool mkdirAndChown(const char *path, mode_t mode, uid_t uid, gid_t gid)
