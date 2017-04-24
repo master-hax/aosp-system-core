@@ -15,12 +15,16 @@
  */
 
 #include <fcntl.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include <sys/mman.h>
 #include <fstream>
 #include <random>
 #include <string>
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
 #include <private/sparse/sparse_format.h>
 #include <private/sparse/sparse_utils.h>
@@ -77,7 +81,7 @@ class SparseTest : public testing::Test {
     // UnsparseCmp compares two buffers, ignoring trailing zeroes in the larger buffer.
     // return 0 if buffers are equivalent, otherwise -1.
     int UnsparseCmp(const char* p1, size_t s1, const char* p2, size_t s2) {
-        int validsize = std::min(s1, s2);
+        size_t validsize = std::min(s1, s2);
 
         int ret = memcmp(p1, p2, validsize);
         if (ret) return -1;
@@ -103,10 +107,15 @@ class SparseTest : public testing::Test {
     }
 
     int UnsparseCmpFile(const std::string& file1, const std::string& file2) {
-        std::string s1, s2;
-        android::base::ReadFileToString(file1, &s1, true);
-        android::base::ReadFileToString(file2, &s2, true);
-        return UnsparseCmp(s1.data(), s1.size(), s2.data(), s2.size());
+        off64_t len1 = GetFileSize(file1);
+        off64_t len2 = GetFileSize(file2);
+        android::base::unique_fd fd1(open(file1.c_str(), O_RDONLY | O_BINARY));
+        android::base::unique_fd fd2(open(file2.c_str(), O_RDONLY | O_BINARY));
+        char* data1 = (char*)mmap64(NULL, len1, PROT_READ, MAP_SHARED, fd1, 0);
+        char* data2 = (char*)mmap64(NULL, len2, PROT_READ, MAP_SHARED, fd2, 0);
+        if (data1 == 0) return -1;
+        if (data2 == 0) return -1;
+        return UnsparseCmp(data1, len1, data2, len2);
     }
 
     int RunSImg2Img(const std::string& in, const std::string& out) {
@@ -278,6 +287,39 @@ TEST_F(SparseTest, ResparseFile) {
     AddPadding("bigfile", kBlockSize * 8, 0);
     EXPECT_TRUE(!RunImg2SImg("bigfile", "sbigfile"));
     EXPECT_TRUE(!RunSImg2SImg2Img("sbigfile", "tmpout", "unsparse", 64 * 1024 * 1024));
+    EXPECT_TRUE(!UnsparseCmpFile("bigfile", "unsparse"));
+}
+
+TEST_F(SparseTest, HugeChunk) {
+    // Try a bigger than 2G image.
+    size_t bigsize = (size_t)2 * 1024 * 1024 * 1024 + kBlockSize;
+    CreateTestFile("bigfile", bigsize, true);
+    EXPECT_TRUE(!RunImg2SImg("bigfile", "sparse"));
+    EXPECT_TRUE(!RunSImg2Img("sparse", "unsparse"));
+    EXPECT_TRUE(!UnsparseCmpFile("bigfile", "unsparse"));
+
+    AddPadding("bigfile", kBlockSize * 8, 0);
+    AddPadding("bigfile", kBlockSize * 8, 0xff);
+    AddPadding("bigfile", kBlockSize * 8, 0);
+    EXPECT_TRUE(!RunImg2SImg("bigfile", "sbigfile"));
+    EXPECT_TRUE(!RunSImg2SImg2Img("sbigfile", "tmpout", "unsparse", 2 * 1024 * 1024 * 1024));
+    EXPECT_TRUE(!UnsparseCmpFile("bigfile", "unsparse"));
+}  // namespace android
+
+TEST_F(SparseTest, HugeAppend) {
+    // Try a bigger than 2G image.
+    size_t bigsize = (size_t)2 * 1024 * 1024 * 1024 + kBlockSize;
+    CreateTestFile("bigfile", bigsize, true);
+    EXPECT_TRUE(!RunImg2SImg("bigfile", "sparse"));
+    AddPadding("bigfile", kBlockSize, 0xaa);
+    AddPadding("bigfile", kBlockSize, 0x00);
+    CreateTestFile("pad1", 0, false);
+    CreateTestFile("pad2", 0, false);
+    AddPadding("pad1", kBlockSize, 0xaa);
+    AddPadding("pad2", kBlockSize, 0x00);
+    EXPECT_TRUE(!RunAppend2SImg("sparse", "pad1"));
+    EXPECT_TRUE(!RunAppend2SImg("sparse", "pad2"));
+    EXPECT_TRUE(!RunSImg2Img("sparse", "unsparse"));
     EXPECT_TRUE(!UnsparseCmpFile("bigfile", "unsparse"));
 }
 
