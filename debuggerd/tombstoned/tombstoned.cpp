@@ -44,6 +44,11 @@
 
 #include "intercept_manager.h"
 
+#define MAX_LINE_LENGTH 256
+#define MAX_LINES_TO_PARSE 10
+#define MAX_PATH_LENGTH 1024
+#define MAX_PROCESS_NAME_LENGTH 128
+
 using android::base::GetIntProperty;
 using android::base::StringPrintf;
 using android::base::unique_fd;
@@ -107,6 +112,16 @@ class CrashQueue {
                             GetIntProperty("tombstoned.max_anr_count", 64),
                             4 /* max_concurrent_dumps */);
     return &queue;
+  }
+
+  std::string get_tombstone_path() {
+    int fileno = -1;
+    if (next_artifact_ != 0)
+      fileno = (next_artifact_ - 1) % max_artifacts_;
+    else
+      fileno = max_artifacts_ - 1;
+
+    return(android::base::StringPrintf("%stombstone_%02d", dir_path_.c_str(), fileno));
   }
 
   std::pair<unique_fd, std::string> get_output() {
@@ -215,6 +230,36 @@ static void do_system_dump() {
     }
   } else {
     PLOG(ERROR) << "Failed to open sysrq-trigger";
+  }
+}
+
+static bool get_process_name(FILE *fp_tombstone, char* process_name) {
+
+  char line_buf[MAX_LINE_LENGTH] = {'\0'};
+  if (fp_tombstone != NULL) {
+    /* Parsing tombstone to get the process name */
+    for(int i = 0; i < MAX_LINES_TO_PARSE; i++) {
+      if (fgets(line_buf, MAX_LINE_LENGTH, fp_tombstone) != NULL) {
+        if (strstr(line_buf, "pid:") != NULL) {
+          if (sscanf(line_buf, "pid: %*d, tid: %*d, name: %*[^>] >>> %128s <<<",
+                    process_name) != 0) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
+/* Function to write to rdtags */
+static void write_to_rdtag(std::string rdTag) {
+  FILE *fp_rdtag = fopen("/proc/rdtag", "w");
+  if (fp_rdtag != NULL) {
+    fprintf(fp_rdtag, "%s", rdTag.c_str());
+    fclose(fp_rdtag);
+  } else {
+    PLOG(ERROR) << "Failed to write rdtag:"<< rdTag;
   }
 }
 
@@ -356,6 +401,27 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
   /* Handling new CrashPacketType:kSystemDump to trigger system crash */
   if (request.packet_type == CrashPacketType::kSystemDump) {
     LOG(WARNING) << "kSystemDump received " << uint32_t(request.packet_type);
+    std::string tombstone_path = CrashQueue::for_crash(crash)->get_tombstone_path();
+
+    /* Opening tombstone file */
+    FILE* fp_tombstone = fopen(tombstone_path.c_str(), "r");
+    if (fp_tombstone != NULL) {
+      /* Writing tombstone to rdtags */
+      write_to_rdtag(StringPrintf("append rd_target t:r:tombstone:%s\n", tombstone_path.c_str()));
+
+      char process_name[MAX_PROCESS_NAME_LENGTH] = {'\0'};
+      if (get_process_name(fp_tombstone, process_name) == true) {
+        /* Writing crashing process name to rdtags */
+        write_to_rdtag(StringPrintf("rdinfo_processname %s", process_name));
+      }
+      fclose(fp_tombstone);
+    } else {
+      PLOG(ERROR) << "Failed to open tombstone";
+    }
+
+    /* writing crahType to 10(SDTYPE_SYSTEM_CRASH) */
+    write_to_rdtag(StringPrintf("rdinfo_type %d", 10));
+
     do_system_dump();
   }
 
