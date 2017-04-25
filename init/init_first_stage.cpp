@@ -252,7 +252,7 @@ bool FirstStageMountVBootV1::GetRequiredDevices(std::set<std::string>* out_devic
         if (fstab_rec->verity_loc) {
             if (meta_partition.empty()) {
                 meta_partition = basename(fstab_rec->verity_loc);
-            } else if (meta_partition != fstab_rec->verity_loc) {
+            } else if (meta_partition != basename(fstab_rec->verity_loc)) {
                 LOG(ERROR) << "More than one meta partition found: " << meta_partition << ", "
                            << basename(fstab_rec->verity_loc);
                 return false;
