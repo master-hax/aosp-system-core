@@ -48,8 +48,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <libc_log/log.h>
+
 #include "private/bionic_futex.h"
-#include "private/libc_logging.h"
 
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)

@@ -39,6 +39,7 @@
 
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
+#include <libc_log/log.h>
 
 #include "debuggerd/handler.h"
 #include "debuggerd/tombstoned.h"
@@ -46,8 +47,6 @@
 
 #include "backtrace.h"
 #include "tombstone.h"
-
-#include "private/libc_logging.h"
 
 using android::base::unique_fd;
 

@@ -9,10 +9,6 @@ cc_defaults {
         "-Os",
     ],
 
-    // util.cpp gets async signal safe logging via libc_logging,
-    // which defines its interface in bionic private headers.
-    include_dirs: ["bionic/libc"],
-
     local_include_dirs: ["include"],
 }
 
@@ -26,7 +22,7 @@ cc_library_static {
     ],
 
     whole_static_libs: [
-        "libc_logging",
+        "libc_log",
         "libcutils",
         "libbase",
     ],
@@ -39,7 +35,7 @@ cc_library_static {
     srcs: ["handler/debuggerd_handler.cpp"],
 
     whole_static_libs: [
-        "libc_logging",
+        "libc_log",
         "libdebuggerd",
     ],
 
@@ -92,6 +88,10 @@ cc_library {
     shared_libs: [
         "libbase",
         "libcutils",
+    ],
+
+    static_libs: [
+        "libc_log",
     ],
 
     export_include_dirs: ["include"],
@@ -166,6 +166,9 @@ cc_test {
                 "tombstoned_client.cpp",
                 "util.cpp"
             ],
+            static_libs: [
+                "libc_log",
+            ],
         },
     },
 
@@ -178,7 +181,6 @@ cc_test {
 
     static_libs: [
         "libdebuggerd",
-        "libc_logging",
     ],
 
     local_include_dirs: [
@@ -215,6 +217,7 @@ cc_binary {
     },
 
     static_libs: [
+        "libc_log",
         "libtombstoned_client",
         "libdebuggerd",
         "libcutils",
@@ -257,6 +260,7 @@ cc_binary {
 
     static_libs: [
         "libbase",
+        "libc_log",
         "libcutils",
         "libevent",
         "liblog",

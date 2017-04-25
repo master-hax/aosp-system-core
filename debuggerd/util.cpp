@@ -23,8 +23,7 @@
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
 #include <debuggerd/protocol.h>
-
-#include "private/libc_logging.h"
+#include <libc_log/log.h>
 
 using android::base::unique_fd;
 
