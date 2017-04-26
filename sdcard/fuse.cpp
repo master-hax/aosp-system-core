@@ -1096,16 +1096,16 @@ static int handle_statfs(struct fuse* fuse, struct fuse_handler* handler,
     char path[PATH_MAX];
     struct statfs stat;
     struct fuse_statfs_out out;
-    int res;
+    struct node* node;
 
     pthread_mutex_lock(&fuse->global->lock);
     DLOG(INFO) << "[" << handler->token << "] STATFS";
-    res = get_node_path_locked(&fuse->global->root, path, sizeof(path));
+    node = lookup_node_and_path_by_id_locked(fuse, hdr->nodeid, path, sizeof(path));
     pthread_mutex_unlock(&fuse->global->lock);
-    if (res < 0) {
+    if (!node) {
         return -ENOENT;
     }
-    if (TEMP_FAILURE_RETRY(statfs(fuse->global->root.name, &stat)) == -1) {
+    if (TEMP_FAILURE_RETRY(statfs(path, &stat)) == -1) {
         return -errno;
     }
     memset(&out, 0, sizeof(out));
