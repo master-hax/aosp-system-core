@@ -705,3 +705,6 @@ on property:ro.debuggable=1
 service flash_recovery /system/bin/install-recovery.sh
     class main
     oneshot
+
+on property:ro.boot.slot=*
+    setprop ro.boot.slot_suffix _${ro.boot.slot}
