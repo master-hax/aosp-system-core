@@ -452,7 +452,8 @@ on post-fs-data
     # the following directory.
     mkdir /data/mediadrm 0770 mediadrm mediadrm
 
-    mkdir /data/anr 0775 system system
+    mkdir /data/anr 0777 system system
+    chmod 0777 /data/anr
 
     # Create all remaining /data root dirs so that they are made through init
     # and get proper encryption policy installed
