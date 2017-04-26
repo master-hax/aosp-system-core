@@ -49,6 +49,8 @@
 #define MAX_PATH_LENGTH 1024
 #define MAX_PROCESS_NAME_LENGTH 128
 
+#define CRASHDUMP_DIR_PATH "/data/crashdump/tombstones/"
+
 using android::base::GetIntProperty;
 using android::base::StringPrintf;
 using android::base::unique_fd;
@@ -263,6 +265,39 @@ static void write_to_rdtag(std::string rdTag) {
   }
 }
 
+static void create_tombstone_shadow(std::string tombstone_path) {
+  std::size_t pos = tombstone_path.find("tombstone_");
+  std::string tombstone_file_name = tombstone_path.substr(pos);
+  std::string tombstone_shadow_path = CRASHDUMP_DIR_PATH + tombstone_file_name;
+  FILE* fp_tombstone = fopen(tombstone_path.c_str(), "r");
+  if (fp_tombstone != NULL) {
+    FILE* fp_tombstone_shadow = fopen(tombstone_shadow_path.c_str(), "w");
+    if (fp_tombstone_shadow != NULL) {
+      char c;
+      while (fread(&c, sizeof(char), 1, fp_tombstone) > 0) {
+        fwrite(&c, sizeof(char), 1, fp_tombstone_shadow);
+      }
+      fclose(fp_tombstone_shadow);
+      sync();
+    } else {
+      PLOG(ERROR) << "failed to create " << tombstone_shadow_path;
+    }
+    fclose(fp_tombstone);
+  } else {
+    PLOG(ERROR) << "failed to open " << tombstone_path;
+  }
+}
+
+static bool crashdump_dir_exists() {
+  struct stat sb = {};
+  if (stat(CRASHDUMP_DIR_PATH, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+    return true;
+  } else {
+    PLOG(ERROR) << "failed to access " << CRASHDUMP_DIR_PATH;
+    return false;
+  }
+}
+
 static void perform_request(Crash* crash) {
   unique_fd output_fd;
   if (!intercept_manager->GetIntercept(crash->crash_pid, crash->crash_type, &output_fd)) {
@@ -415,6 +450,10 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
         write_to_rdtag(StringPrintf("rdinfo_processname %s", process_name));
       }
       fclose(fp_tombstone);
+      // copying tombstone to /data/crashdump/tombstones
+      if (crashdump_dir_exists()) {
+        create_tombstone_shadow(tombstone_path);
+      }
     } else {
       PLOG(ERROR) << "Failed to open tombstone";
     }
