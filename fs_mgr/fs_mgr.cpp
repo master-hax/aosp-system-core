@@ -799,6 +799,7 @@ bool is_device_secure() {
 int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
 {
     int i = 0;
+    int ret = FS_MGR_MNTALL_FAIL;
     int encryptable = FS_MGR_MNTALL_DEV_NOT_ENCRYPTABLE;
     int error_count = 0;
     int mret = -1;
@@ -807,7 +808,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     FsManagerAvbUniquePtr avb_handle(nullptr);
 
     if (!fstab) {
-        return -1;
+        return ret;
     }
 
     for (i = 0; i < fstab->num_entries; i++) {
@@ -853,7 +854,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
                 avb_handle = FsManagerAvbHandle::Open(extract_by_name_prefix(fstab));
                 if (!avb_handle) {
                     LERROR << "Failed to open FsManagerAvbHandle";
-                    return -1;
+                    return ret;
                 }
             }
             if (!avb_handle->SetUpAvb(&fstab->recs[i], true /* wait_for_verity_dev */)) {
@@ -983,7 +984,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     }
 
     if (error_count) {
-        return -1;
+        return ret;
     } else {
         return encryptable;
     }
@@ -1038,7 +1039,7 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
             !strcmp(fstab->recs[i].fs_type, "mtd")) {
             LERROR << "Cannot mount filesystem of type "
                    << fstab->recs[i].fs_type << " on " << n_blk_device;
-            goto out;
+            return ret;
         }
 
         /* First check the filesystem if requested */
@@ -1065,7 +1066,7 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
                 avb_handle = FsManagerAvbHandle::Open(extract_by_name_prefix(fstab));
                 if (!avb_handle) {
                     LERROR << "Failed to open FsManagerAvbHandle";
-                    return -1;
+                    return ret;
                 }
             }
             if (!avb_handle->SetUpAvb(&fstab->recs[i], true /* wait_for_verity_dev */)) {
@@ -1095,7 +1096,7 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
             if (!__mount(n_blk_device, m, &fstab->recs[i])) {
                 ret = 0;
                 fs_stat &= ~FS_STAT_FULL_MOUNT_FAILED;
-                goto out;
+                return ret;
             } else {
                 if (retry_count <= 0) break;  // run check_fs only once
                 if (!first_mount_errno) first_mount_errno = errno;
@@ -1121,7 +1122,6 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
                << " in fstab";
     }
 
-out:
     return ret;
 }
 
