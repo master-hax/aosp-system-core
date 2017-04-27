@@ -44,6 +44,7 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
+#include <cutils/properties.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
 #include <procinfo/process.h>
@@ -60,6 +61,9 @@
 
 #include "protocol.h"
 #include "util.h"
+
+#define DEFAULT_CRASHLEVEL "0"
+#define CRASHLEVEL_PROPERTY_NAME "persist.sys.semc.crashlevel"
 
 using android::base::unique_fd;
 using android::base::ReadFileToString;
@@ -78,7 +82,38 @@ static std::string get_thread_name(pid_t tid) {
   return Trim(result);
 }
 
+static int get_crash_level() {
+  int level = atoi(DEFAULT_CRASHLEVEL);
+  char buf[PROPERTY_VALUE_MAX] = {'\0'};
+  int len = 0;
+
+  len = property_get(CRASHLEVEL_PROPERTY_NAME, buf, DEFAULT_CRASHLEVEL);
+  if (len > 0) {
+    long l = strtol(buf, NULL, 10);
+    if ((errno == ERANGE && (l == LONG_MIN || l == LONG_MAX))
+        || (errno != 0 && l == 0)) {
+      PLOG(ERROR) << "Couldn't convert crashlevel";
+    } else if (l != 0) {
+      level = (int)l;
+    }
+  }
+  return level;
+}
+
 static bool is_system_dump(std::string process_name) {
+  /* Checking crash level range(-2 to 2) */
+  int crash_level = get_crash_level();
+  if (crash_level < 0) {
+    LOG(INFO) << "crash_level:" << crash_level << " skip system dump";
+    return false;
+  }
+
+  if (crash_level > 0) {
+    /* crashlevel is set */
+    LOG(INFO) << "crash_level:" << crash_level << " Requesting system dump";
+    return true;
+  }
+
   /* Hardcoding for now to identify the system processess */
   /* Garbage characters are observer from get_process_name, removing them */
   process_name.resize(process_name.find_last_not_of('\0') + 1);  // trim trailing '\0's
