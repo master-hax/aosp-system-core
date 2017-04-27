@@ -1,0 +1,8 @@
+Presubmit-Ready+1: Jerry Zhang <zhangjerry@google.com>
+Code-Review+2: Badhri Jagan Sridharan <badhri@google.com>
+Verified+1: Jerry Zhang <zhangjerry@google.com>
+Submitted-by: Jerry Zhang <zhangjerry@google.com>
+Submitted-at: Thu, 27 Apr 2017 21:58:43 +0000
+Reviewed-on: https://android-review.googlesource.com/375079
+Project: platform/system/core
+Branch: refs/heads/master
