@@ -1,0 +1,91 @@
+//
+// Copyright (C) 2017 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+libfdemu_cppflags = [
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+]
+
+libfdemu_posix_cppflags = [
+    "-Wexit-time-destructors",
+    "-Wthread-safety",
+    // TODO: -Wthread-safety-negative
+]
+
+libfdemu_windows_cppflags = [
+    "-DUNICODE=1",
+    "-D_UNICODE=1",
+]
+
+cc_library {
+    name: "libfdemu",
+    host_supported: true,
+    srcs: ["fdemu.cpp"],
+
+    local_include_dirs: ["include"],
+    export_include_dirs: ["include"],
+
+    cppflags: libfdemu_cppflags,
+    shared_libs: ["libbase"],
+    target: {
+        android: {
+            enabled: false,
+        },
+        darwin: {
+            cppflags: libfdemu_posix_cppflags,
+            srcs: ["posix/fdemu.cpp"],
+        },
+        linux: {
+            cppflags: libfdemu_posix_cppflags,
+            srcs: ["posix/fdemu.cpp"],
+        },
+        windows: {
+            enabled: true,
+            cppflags: libfdemu_windows_cppflags,
+            srcs: ["win32/fdemu.cpp"],
+        },
+    },
+}
+
+// Tests
+// ------------------------------------------------------------------------------
+cc_test {
+    name: "libfdemu_test",
+    host_supported: true,
+    srcs: [
+        "fdemu_test.cpp",
+    ],
+    target: {
+        android: {
+            enabled: false,
+        },
+        linux: {
+            whole_static_libs: ["libBionicGtestMain"],
+        },
+        windows: {
+            enabled: true,
+            cppflags: libfdemu_windows_cppflags,
+        },
+    },
+
+    local_include_dirs: ["include"],
+    cppflags: libfdemu_cppflags,
+    static_libs: [
+        "libfdemu",
+        "libbase"
+    ],
+}
