@@ -1071,7 +1071,7 @@ bool ServiceManager::ReapOneProcess() {
     svc->Reap();
 
     if (svc->flags() & SVC_EXEC) {
-        LOG(INFO) << "Wait for exec took " << *exec_waiter_;
+        LOG(INFO) << "Wait for " << svc->name() << " took " << *exec_waiter_;
         exec_waiter_.reset();
     }
     if (svc->flags() & SVC_TEMPORARY) {
