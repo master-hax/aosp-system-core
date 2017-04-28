@@ -179,9 +179,8 @@ void property_changed(const std::string& name, const std::string& value) {
 static void restart_processes()
 {
     process_needs_restart_at = 0;
-    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_RESTARTING, [](Service* s) {
-        s->RestartIfNeeded(&process_needs_restart_at);
-    });
+    ServiceManager::GetInstance().ForEachService(
+        [](Service* s) { s->RestartIfNeeded(&process_needs_restart_at); });
 }
 
 void handle_control_message(const std::string& msg, const std::string& name) {

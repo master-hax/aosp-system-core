@@ -34,25 +34,6 @@
 #include "keyword_map.h"
 #include "util.h"
 
-#define SVC_DISABLED 0x001        // do not autostart with class
-#define SVC_ONESHOT 0x002         // do not restart on exit
-#define SVC_RUNNING 0x004         // currently active
-#define SVC_RESTARTING 0x008      // waiting to restart
-#define SVC_CONSOLE 0x010         // requires console
-#define SVC_CRITICAL 0x020        // will reboot into recovery if keeps crashing
-#define SVC_RESET 0x040           // Use when stopping a process,
-                                  // but not disabling so it can be restarted with its class.
-#define SVC_RC_DISABLED 0x080     // Remember if the disabled flag was set in the rc script.
-#define SVC_RESTART 0x100         // Use to safely restart (stop, wait, start) a service.
-#define SVC_DISABLED_START 0x200  // A start was requested but it was disabled at the time.
-#define SVC_EXEC 0x400  // This service was started by either 'exec' or 'exec_start' and stops
-                        // init from processing more commands until it completes
-
-#define SVC_SHUTDOWN_CRITICAL 0x800  // This service is critical for shutdown and
-                                     // should not be killed during shutdown
-#define SVC_TEMPORARY 0x1000  // This service was started by 'exec' and should be removed from the
-                              // service list once it is reaped.
-
 #define NR_SVC_SUPP_GIDS 12    // twelve supplementary groups
 
 class Action;
@@ -67,14 +48,35 @@ struct ServiceEnvironmentInfo {
 
 class Service {
   public:
+    enum class RunningState {
+        kStopped = 0,
+        kRunning,
+        kRestarting,
+        kPendingRestart,
+    };
+
+    enum class DisabledState {
+        kEnabled = 0,
+        kDisabled,
+        kDisabledClassStarted,  // This service is disabled, but its class has started; it will be
+                                // started once enabled
+    };
+
+    enum class OneShotExecState {  // Exec implies OneShot, TemporaryExec implies Exec, etc.
+        kNormal = 0,
+        kOneShot = 1,
+        kExec = 2,
+        kTemporaryExec = 3,
+    };
+
     Service(const std::string& name, const std::vector<std::string>& args);
 
-    Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
+    Service(const std::string& name, OneShotExecState one_shot_exec_state, uid_t uid, gid_t gid,
             const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
             unsigned namespace_flags, const std::string& seclabel,
             const std::vector<std::string>& args);
 
-    bool IsRunning() { return (flags_ & SVC_RUNNING) != 0; }
+    bool IsRunning() { return running_state_ == RunningState::kRunning; }
     bool ParseLine(const std::vector<std::string>& args, std::string* err);
     bool ExecStart(std::unique_ptr<Timer>* exec_waiter);
     bool Start();
@@ -87,12 +89,13 @@ class Service {
     void RestartIfNeeded(time_t* process_needs_restart_at);
     void Reap();
     void DumpState() const;
-    void SetShutdownCritical() { flags_ |= SVC_SHUTDOWN_CRITICAL; }
-    bool IsShutdownCritical() const { return (flags_ & SVC_SHUTDOWN_CRITICAL) != 0; }
+    void SetShutdownCritical() { shutdown_critical_ = true; }
+    bool IsShutdownCritical() const { return shutdown_critical_; }
 
     const std::string& name() const { return name_; }
     const std::set<std::string>& classnames() const { return classnames_; }
-    unsigned flags() const { return flags_; }
+    OneShotExecState one_shot_exec_state() const { return one_shot_exec_state_; }
+    bool has_console() const { return has_console_; }
     pid_t pid() const { return pid_; }
     uid_t uid() const { return uid_; }
     gid_t gid() const { return gid_; }
@@ -110,7 +113,7 @@ class Service {
     class OptionParserMap;
 
     void NotifyStateChange(const std::string& new_state) const;
-    void StopOrReset(int how);
+    void StopService(int signal);
     void ZapStdio() const;
     void OpenConsole() const;
     void KillProcessGroup(int signal);
@@ -143,7 +146,15 @@ class Service {
     std::set<std::string> classnames_;
     std::string console_;
 
-    unsigned flags_;
+    RunningState running_state_;
+    DisabledState disabled_state_;
+    OneShotExecState one_shot_exec_state_;
+
+    bool rc_disabled_;
+    bool has_console_;
+    bool critical_;
+    bool shutdown_critical_;
+
     pid_t pid_;
     android::base::boot_clock::time_point time_started_;  // time of last start
     android::base::boot_clock::time_point time_crashed_;  // first crash within inspection window
@@ -190,10 +201,7 @@ public:
     Service* FindServiceByPid(pid_t pid) const;
     Service* FindServiceByKeychord(int keychord_id) const;
     void ForEachService(const std::function<void(Service*)>& callback) const;
-    void ForEachServiceInClass(const std::string& classname,
-                               void (*func)(Service* svc)) const;
-    void ForEachServiceWithFlags(unsigned matchflags,
-                             void (*func)(Service* svc)) const;
+    void ForEachServiceInClass(const std::string& classname, void (*func)(Service* svc)) const;
     void ReapAnyOutstandingChildren();
     void RemoveService(const Service& svc);
     void DumpState() const;

@@ -150,7 +150,9 @@ ServiceEnvironmentInfo::ServiceEnvironmentInfo(const std::string& name,
 Service::Service(const std::string& name, const std::vector<std::string>& args)
     : name_(name),
       classnames_({"default"}),
-      flags_(0),
+      running_state_(RunningState::kStopped),
+      disabled_state_(DisabledState::kEnabled),
+      one_shot_exec_state_(OneShotExecState::kNormal),
       pid_(0),
       crash_count_(0),
       uid_(0),
@@ -166,13 +168,15 @@ Service::Service(const std::string& name, const std::vector<std::string>& args)
     onrestart_.InitSingleTrigger("onrestart");
 }
 
-Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
-                 const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
+Service::Service(const std::string& name, OneShotExecState one_shot_exec_state, uid_t uid,
+                 gid_t gid, const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
                  unsigned namespace_flags, const std::string& seclabel,
                  const std::vector<std::string>& args)
     : name_(name),
       classnames_({"default"}),
-      flags_(flags),
+      running_state_(RunningState::kStopped),
+      disabled_state_(DisabledState::kEnabled),
+      one_shot_exec_state_(one_shot_exec_state),
       pid_(0),
       crash_count_(0),
       uid_(uid),
@@ -191,7 +195,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
 }
 
 void Service::NotifyStateChange(const std::string& new_state) const {
-    if ((flags_ & SVC_TEMPORARY) != 0) {
+    if (one_shot_exec_state_ >= OneShotExecState::kTemporaryExec) {
         // Services created by 'exec' are temporary and don't have properties tracking their state.
         return;
     }
@@ -266,7 +270,8 @@ void Service::SetProcessAttributes() {
 }
 
 void Service::Reap() {
-    if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
+    if (!(one_shot_exec_state_ >= OneShotExecState::kOneShot ||
+          running_state_ == RunningState::kPendingRestart)) {
         KillProcessGroup(SIGKILL);
     }
 
@@ -274,28 +279,27 @@ void Service::Reap() {
     std::for_each(descriptors_.begin(), descriptors_.end(),
                   std::bind(&DescriptorInfo::Clean, std::placeholders::_1));
 
-    if (flags_ & SVC_TEMPORARY) {
-        return;
-    }
+    if (one_shot_exec_state_ >= OneShotExecState::kTemporaryExec) return;
 
     pid_ = 0;
-    flags_ &= (~SVC_RUNNING);
 
     // Oneshot processes go into the disabled state on exit,
     // except when manually restarted.
-    if ((flags_ & SVC_ONESHOT) && !(flags_ & SVC_RESTART)) {
-        flags_ |= SVC_DISABLED;
+    if (one_shot_exec_state_ >= OneShotExecState::kOneShot &&
+        running_state_ != RunningState::kPendingRestart) {
+        disabled_state_ = DisabledState::kDisabled;
     }
 
     // Disabled and reset processes do not get restarted automatically.
-    if (flags_ & (SVC_DISABLED | SVC_RESET))  {
+    if (disabled_state_ == DisabledState::kDisabled || running_state_ == RunningState::kStopped) {
+        running_state_ = RunningState::kStopped;
         NotifyStateChange("stopped");
         return;
     }
 
     // If we crash > 4 times in 4 minutes, reboot into recovery.
     boot_clock::time_point now = boot_clock::now();
-    if ((flags_ & SVC_CRITICAL) && !(flags_ & SVC_RESTART)) {
+    if (critical_ && running_state_ != RunningState::kPendingRestart) {
         if (now < time_crashed_ + 4min) {
             if (++crash_count_ > 4) {
                 LOG(ERROR) << "critical process '" << name_ << "' exited 4 times in 4 minutes";
@@ -307,8 +311,7 @@ void Service::Reap() {
         }
     }
 
-    flags_ &= (~SVC_RESTART);
-    flags_ |= SVC_RESTARTING;
+    running_state_ = RunningState::kRestarting;
 
     // Execute all onrestart commands for this service.
     onrestart_.ExecuteAllCommands();
@@ -361,19 +364,19 @@ bool Service::ParseClass(const std::vector<std::string>& args, std::string* err)
 }
 
 bool Service::ParseConsole(const std::vector<std::string>& args, std::string* err) {
-    flags_ |= SVC_CONSOLE;
+    has_console_ = true;
     console_ = args.size() > 1 ? "/dev/" + args[1] : "";
     return true;
 }
 
 bool Service::ParseCritical(const std::vector<std::string>& args, std::string* err) {
-    flags_ |= SVC_CRITICAL;
+    critical_ = true;
     return true;
 }
 
 bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* err) {
-    flags_ |= SVC_DISABLED;
-    flags_ |= SVC_RC_DISABLED;
+    disabled_state_ = DisabledState::kDisabled;
+    rc_disabled_ = true;
     return true;
 }
 
@@ -430,7 +433,7 @@ bool Service::ParseKeycodes(const std::vector<std::string>& args, std::string* e
 }
 
 bool Service::ParseOneshot(const std::vector<std::string>& args, std::string* err) {
-    flags_ |= SVC_ONESHOT;
+    one_shot_exec_state_ = OneShotExecState::kOneShot;
     return true;
 }
 
@@ -579,7 +582,7 @@ bool Service::ParseLine(const std::vector<std::string>& args, std::string* err) 
 }
 
 bool Service::ExecStart(std::unique_ptr<Timer>* exec_waiter) {
-    flags_ |= SVC_EXEC | SVC_ONESHOT;
+    one_shot_exec_state_ = OneShotExecState::kExec;
 
     exec_waiter->reset(new Timer);
 
@@ -593,17 +596,18 @@ bool Service::ExecStart(std::unique_ptr<Timer>* exec_waiter) {
 bool Service::Start() {
     // Starting a service removes it from the disabled or reset state and
     // immediately takes it out of the restarting state if it was in there.
-    flags_ &= (~(SVC_DISABLED|SVC_RESTARTING|SVC_RESET|SVC_RESTART|SVC_DISABLED_START));
+    disabled_state_ = DisabledState::kEnabled;
 
     // Running processes require no additional work --- if they're in the
     // process of exiting, we've ensured that they will immediately restart
     // on exit, unless they are ONESHOT.
-    if (flags_ & SVC_RUNNING) {
+    if (running_state_ == RunningState::kRunning) {
         return false;
     }
 
-    bool needs_console = (flags_ & SVC_CONSOLE);
-    if (needs_console) {
+    running_state_ = RunningState::kStopped;
+
+    if (has_console_) {
         if (console_.empty()) {
             console_ = default_console;
         }
@@ -613,7 +617,7 @@ bool Service::Start() {
         int console_fd = open(console_.c_str(), O_RDWR | O_CLOEXEC);
         if (console_fd < 0) {
             PLOG(ERROR) << "service '" << name_ << "' couldn't open console '" << console_ << "'";
-            flags_ |= SVC_DISABLED;
+            disabled_state_ = DisabledState::kDisabled;
             return false;
         }
         close(console_fd);
@@ -622,7 +626,7 @@ bool Service::Start() {
     struct stat sb;
     if (stat(args_[0].c_str(), &sb) == -1) {
         PLOG(ERROR) << "cannot find '" << args_[0] << "', disabling '" << name_ << "'";
-        flags_ |= SVC_DISABLED;
+        disabled_state_ = DisabledState::kDisabled;
         return false;
     }
 
@@ -697,7 +701,7 @@ bool Service::Start() {
             }
         }
 
-        if (needs_console) {
+        if (has_console_) {
             setsid();
             OpenConsole();
         } else {
@@ -733,7 +737,7 @@ bool Service::Start() {
 
     time_started_ = boot_clock::now();
     pid_ = pid;
-    flags_ |= SVC_RUNNING;
+    running_state_ = RunningState::kRunning;
 
     errno = -createProcessGroup(uid_, pid_);
     if (errno != 0) {
@@ -741,7 +745,7 @@ bool Service::Start() {
                     << name_ << "'";
     }
 
-    if ((flags_ & SVC_EXEC) != 0) {
+    if (one_shot_exec_state_ >= OneShotExecState::kExec) {
         LOG(INFO) << android::base::StringPrintf(
             "SVC_EXEC pid %d (uid %d gid %d+%zu context %s) started; waiting...", pid_, uid_, gid_,
             supp_gids_.size(), !seclabel_.empty() ? seclabel_.c_str() : "default");
@@ -752,54 +756,58 @@ bool Service::Start() {
 }
 
 bool Service::StartIfNotDisabled() {
-    if (!(flags_ & SVC_DISABLED)) {
-        return Start();
-    } else {
-        flags_ |= SVC_DISABLED_START;
+    if (disabled_state_ == DisabledState::kDisabled) {
+        disabled_state_ = DisabledState::kDisabledClassStarted;
+        return true;
     }
-    return true;
+    return Start();
 }
 
 bool Service::Enable() {
-    flags_ &= ~(SVC_DISABLED | SVC_RC_DISABLED);
-    if (flags_ & SVC_DISABLED_START) {
+    rc_disabled_ = false;
+    if (disabled_state_ == DisabledState::kDisabledClassStarted) {
         return Start();
     }
+    disabled_state_ = DisabledState::kEnabled;
     return true;
 }
 
 void Service::Reset() {
-    StopOrReset(SVC_RESET);
+    if (rc_disabled_ || disabled_state_ == DisabledState::kDisabledClassStarted) {
+        disabled_state_ = DisabledState::kDisabled;
+    }
+    running_state_ = RunningState::kStopped;
+    StopService(SIGKILL);
 }
 
 void Service::Stop() {
-    StopOrReset(SVC_DISABLED);
+    disabled_state_ = DisabledState::kDisabled;
+    running_state_ = RunningState::kStopped;
+    StopService(SIGKILL);
 }
 
 void Service::Terminate() {
-    flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
-    flags_ |= SVC_DISABLED;
-    if (pid_) {
-        KillProcessGroup(SIGTERM);
-        NotifyStateChange("stopping");
-    }
+    disabled_state_ = DisabledState::kDisabled;
+    running_state_ = RunningState::kStopped;
+    StopService(SIGTERM);
 }
 
 void Service::Restart() {
-    if (flags_ & SVC_RUNNING) {
+    if (running_state_ == RunningState::kRunning) {
         /* Stop, wait, then start the service. */
-        StopOrReset(SVC_RESTART);
-    } else if (!(flags_ & SVC_RESTARTING)) {
+        running_state_ = RunningState::kPendingRestart;
+        StopService(SIGKILL);
+    } else if (running_state_ != RunningState::kRestarting) {
         /* Just start the service since it's not running. */
         Start();
     } /* else: Service is restarting anyways. */
 }
 
 void Service::RestartIfNeeded(time_t* process_needs_restart_at) {
+    if (running_state_ != RunningState::kPendingRestart) return;
     boot_clock::time_point now = boot_clock::now();
     boot_clock::time_point next_start = time_started_ + 5s;
     if (now > next_start) {
-        flags_ &= (~SVC_RESTARTING);
         Start();
         return;
     }
@@ -811,24 +819,7 @@ void Service::RestartIfNeeded(time_t* process_needs_restart_at) {
     }
 }
 
-// The how field should be either SVC_DISABLED, SVC_RESET, or SVC_RESTART.
-void Service::StopOrReset(int how) {
-    // The service is still SVC_RUNNING until its process exits, but if it has
-    // already exited it shoudn't attempt a restart yet.
-    flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
-
-    if ((how != SVC_DISABLED) && (how != SVC_RESET) && (how != SVC_RESTART)) {
-        // An illegal flag: default to SVC_DISABLED.
-        how = SVC_DISABLED;
-    }
-
-    // If the service has not yet started, prevent it from auto-starting with its class.
-    if (how == SVC_RESET) {
-        flags_ |= (flags_ & SVC_RC_DISABLED) ? SVC_DISABLED : SVC_RESET;
-    } else {
-        flags_ |= how;
-    }
-
+void Service::StopService(int signal) {
     if (pid_) {
         KillProcessGroup(SIGKILL);
         NotifyStateChange("stopping");
@@ -924,7 +915,6 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
     std::string name =
         "exec " + std::to_string(exec_count_) + " (" + android::base::Join(str_args, " ") + ")";
 
-    unsigned flags = SVC_EXEC | SVC_ONESHOT | SVC_TEMPORARY;
     CapSet no_capabilities;
     unsigned namespace_flags = 0;
 
@@ -946,8 +936,9 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
         }
     }
 
-    auto svc_p = std::make_unique<Service>(name, flags, uid, gid, supp_gids, no_capabilities,
-                                           namespace_flags, seclabel, str_args);
+    auto svc_p =
+        std::make_unique<Service>(name, Service::OneShotExecState::kTemporaryExec, uid, gid,
+                                  supp_gids, no_capabilities, namespace_flags, seclabel, str_args);
     Service* svc = svc_p.get();
     services_.emplace_back(std::move(svc_p));
 
@@ -1003,15 +994,6 @@ void ServiceManager::ForEachServiceInClass(const std::string& classname,
     }
 }
 
-void ServiceManager::ForEachServiceWithFlags(unsigned matchflags,
-                                             void (*func)(Service* svc)) const {
-    for (const auto& s : services_) {
-        if (s->flags() & matchflags) {
-            func(s.get());
-        }
-    }
-}
-
 void ServiceManager::RemoveService(const Service& svc) {
     auto svc_it = std::find_if(services_.begin(), services_.end(),
                                [&svc] (const std::unique_ptr<Service>& s) {
@@ -1047,7 +1029,7 @@ bool ServiceManager::ReapOneProcess() {
     if (svc) {
         name = android::base::StringPrintf("Service '%s' (pid %d)",
                                            svc->name().c_str(), pid);
-        if (svc->flags() & SVC_EXEC) {
+        if (svc->one_shot_exec_state() >= Service::OneShotExecState::kExec) {
             wait_string =
                 android::base::StringPrintf(" waiting took %f seconds", exec_waiter_->duration_s());
         }
@@ -1071,10 +1053,10 @@ bool ServiceManager::ReapOneProcess() {
 
     svc->Reap();
 
-    if (svc->flags() & SVC_EXEC) {
+    if (svc->one_shot_exec_state() >= Service::OneShotExecState::kExec) {
         exec_waiter_.reset();
     }
-    if (svc->flags() & SVC_TEMPORARY) {
+    if (svc->one_shot_exec_state() >= Service::OneShotExecState::kTemporaryExec) {
         RemoveService(*svc);
     }
 

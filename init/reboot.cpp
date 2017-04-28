@@ -372,7 +372,7 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
                 // and not exit.
                 // Note: SVC_CONSOLE actually means "requires console" but
                 // it is only used by the shell.
-                if (!s->IsShutdownCritical() && s->pid() != 0 && (s->flags() & SVC_CONSOLE) == 0) {
+                if (!s->IsShutdownCritical() && s->pid() != 0 && (s->has_console()) == 0) {
                     service_count++;
                 }
             });
