@@ -17,6 +17,7 @@
 #ifndef ANDROID_BASE_TEST_UTILS_H
 #define ANDROID_BASE_TEST_UTILS_H
 
+#include <regex>
 #include <string>
 
 #include <android-base/macros.h>
@@ -64,5 +65,37 @@ class CapturedStderr {
 
   DISALLOW_COPY_AND_ASSIGN(CapturedStderr);
 };
+
+#define ASSERT_MATCH(str, pattern)                                              \
+  do {                                                                          \
+    std::regex r((pattern));                                                    \
+    if (!std::regex_search((str), r)) {                                         \
+      FAIL() << "regex mismatch: expected " << (pattern) << " in: \n" << (str); \
+    }                                                                           \
+  } while (0)
+
+#define ASSERT_NOT_MATCH(str, pattern)                                                      \
+  do {                                                                                      \
+    std::regex r((pattern));                                                                \
+    if (std::regex_search((str), r)) {                                                      \
+      FAIL() << "regex mismatch: expected to not find " << (pattern) << " in: \n" << (str); \
+    }                                                                                       \
+  } while (0)
+
+#define EXPECT_MATCH(str, pattern)                                                     \
+  do {                                                                                 \
+    std::regex r((pattern));                                                           \
+    if (!std::regex_search((str), r)) {                                                \
+      ADD_FAILURE() << "regex mismatch: expected " << (pattern) << " in: \n" << (str); \
+    }                                                                                  \
+  } while (0)
+
+#define EXPECT_NOT_MATCH(str, pattern)                                                             \
+  do {                                                                                             \
+    std::regex r((pattern));                                                                       \
+    if (std::regex_search((str), r)) {                                                             \
+      ADD_FAILURE() << "regex mismatch: expected to not find " << (pattern) << " in: \n" << (str); \
+    }                                                                                              \
+  } while (0)
 
 #endif  // ANDROID_BASE_TEST_UTILS_H

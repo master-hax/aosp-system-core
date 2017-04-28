@@ -32,6 +32,7 @@
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <android-base/test_utils.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
 #include <debuggerd/handler.h>
@@ -69,22 +70,6 @@ constexpr char kWaitForGdbKey[] = "debug.debuggerd.wait_for_gdb";
     errno = saved_errno;                                           \
     return value;                                                  \
   }()
-
-#define ASSERT_MATCH(str, pattern)                                              \
-  do {                                                                          \
-    std::regex r((pattern));                                                    \
-    if (!std::regex_search((str), r)) {                                         \
-      FAIL() << "regex mismatch: expected " << (pattern) << " in: \n" << (str); \
-    }                                                                           \
-  } while (0)
-
-#define ASSERT_NOT_MATCH(str, pattern)                                                      \
-  do {                                                                                      \
-    std::regex r((pattern));                                                                \
-    if (std::regex_search((str), r)) {                                                      \
-      FAIL() << "regex mismatch: expected to not find " << (pattern) << " in: \n" << (str); \
-    }                                                                                       \
-  } while (0)
 
 static void tombstoned_intercept(pid_t target_pid, unique_fd* intercept_fd, unique_fd* output_fd) {
   intercept_fd->reset(socket_local_client(kTombstonedInterceptSocketName,
