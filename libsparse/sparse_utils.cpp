@@ -43,7 +43,6 @@
 
 typedef std::unique_ptr<struct sparse_file, decltype(&sparse_file_destroy)> unique_sparse_file_p;
 
-
 int img2simg(const char* input, const char* output, unsigned int block_size) {
     int in;
     int out;
