@@ -202,6 +202,25 @@ bool BatteryMonitor::update(void) {
     else
         props.batteryPresent = mBatteryDevicePresent;
 
+    if(!props.batteryPresent)
+            mAlwaysPluggedDevice = true;
+        else
+            mAlwaysPluggedDevice = false;
+
+    // For devices which do not have battery and are always plugged
+    // into power souce.
+    if (mAlwaysPluggedDevice) {
+        props.chargerAcOnline = true;
+        props.batteryPresent = false;
+        props.batteryStatus = BATTERY_STATUS_FULL;
+        props.batteryHealth = BATTERY_HEALTH_GOOD;
+        props.batteryLevel = ALWAYS_PLUGGED_CAPACITY;
+        healthd_mode_ops->battery_update(&props);
+
+        return props.chargerAcOnline | props.chargerUsbOnline |
+        props.chargerWirelessOnline;
+    }
+
     props.batteryLevel = mBatteryFixedCapacity ?
         mBatteryFixedCapacity :
         getIntField(mHealthdConfig->batteryCapacityPath);
@@ -222,15 +241,6 @@ bool BatteryMonitor::update(void) {
     props.batteryTemperature = mBatteryFixedTemperature ?
         mBatteryFixedTemperature :
         getIntField(mHealthdConfig->batteryTemperaturePath);
-
-    // For devices which do not have battery and are always plugged
-    // into power souce.
-    if (mAlwaysPluggedDevice) {
-        props.chargerAcOnline = true;
-        props.batteryPresent = true;
-        props.batteryStatus = BATTERY_STATUS_CHARGING;
-        props.batteryHealth = BATTERY_HEALTH_GOOD;
-    }
 
     std::string buf;
 
