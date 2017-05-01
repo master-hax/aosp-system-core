@@ -27,6 +27,7 @@
 #include <string.h>
 #include <sys/limits.h>
 
+#include <cutils/android_get_control_file.h>
 #include <log/log.h>
 #include <packagelistparser/packagelistparser.h>
 
@@ -103,14 +104,18 @@ extern bool packagelist_parse(pfn_on_package callback, void *userdata)
     unsigned long lineno = 1;
     const char *errmsg = NULL;
     struct pkg_info *pkg_info = NULL;
+    int fd;
 
-    fp = fopen(PACKAGES_LIST_FILE, "re");
+    fd = android_get_control_file(PACKAGES_LIST_FILE);
+    if (fd >= 0) fd = dup(fd);
+    fp = (fd >= 0) ? fdopen(fd, "re") : fopen(PACKAGES_LIST_FILE, "re");
     if (!fp) {
         CLOGE("Could not open: \"%s\", error: \"%s\"\n", PACKAGES_LIST_FILE,
                 strerror(errno));
         return false;
     }
 
+    rewind(fp);
     while ((bytesread = getline(&buf, &buflen, fp)) > 0) {
 
         pkg_info = calloc(1, sizeof(*pkg_info));
