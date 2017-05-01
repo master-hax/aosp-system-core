@@ -21,7 +21,9 @@
 
 #define LOG_TAG "fs_config"
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 #include <errno.h>
 #include <fcntl.h>
@@ -314,7 +316,7 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
                 ALOGE("%s len is corrupted", conf[which][dir]);
                 break;
             }
-            prefix = calloc(1, remainder);
+            prefix = (char*)calloc(1, remainder);
             if (!prefix) {
                 ALOGE("%s out of memory", conf[which][dir]);
                 break;
