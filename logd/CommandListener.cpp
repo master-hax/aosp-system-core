@@ -25,6 +25,7 @@
 #include <sys/prctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <string>
 
@@ -51,6 +52,42 @@ CommandListener::CommandListener(LogBuffer* buf, LogReader* /*reader*/,
     registerCmd(new GetEventTagCmd(buf));
     registerCmd(new ReinitCmd());
     registerCmd(new ExitCmd(this));
+}
+
+static const int CMD_BUF_SIZE = 1024;
+
+bool CommandListener::onDataAvailable(SocketClient* cli) {
+    char buffer[CMD_BUF_SIZE];
+    int len;
+
+    len = TEMP_FAILURE_RETRY(read(cli->getSocket(), buffer, sizeof(buffer)));
+    if (len < 0) {
+        return false;
+    } else if (!len) {
+        return false;
+    } else if (buffer[len - 1] != '\0') {
+        cli->sendMsg(500, "Command too large for buffer", false);
+        FrameworkListener::mSkipToNextNullByte = true;
+        return false;
+    }
+
+    int offset = 0;
+    int i;
+
+    for (i = 0; i < len; i++) {
+        if (buffer[i] == '\0') {
+            /* IMPORTANT: dispatchCommand() expects a zero-terminated string */
+            if (FrameworkListener::mSkipToNextNullByte) {
+                FrameworkListener::mSkipToNextNullByte = false;
+            } else {
+                FrameworkListener::dispatchCommand(cli, buffer + offset);
+            }
+            offset = i + 1;
+        }
+    }
+
+    FrameworkListener::mSkipToNextNullByte = false;
+    return true;
 }
 
 CommandListener::ShutdownCmd::ShutdownCmd(LogReader* reader, LogListener* swl)
