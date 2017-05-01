@@ -30,6 +30,7 @@
 #include <string>
 
 #include <android-base/stringprintf.h>
+#include <cutils/android_get_control_file.h>
 #include <cutils/sockets.h>
 #include <private/android_filesystem_config.h>
 #include <sysutils/SocketClient.h>
@@ -37,6 +38,8 @@
 #include "CommandListener.h"
 #include "LogCommand.h"
 #include "LogUtils.h"
+
+int CommandListener::fd = -1;
 
 CommandListener::CommandListener(LogBuffer* buf, LogReader* /*reader*/,
                                  LogListener* /*swl*/)
@@ -50,24 +53,49 @@ CommandListener::CommandListener(LogBuffer* buf, LogReader* /*reader*/,
     registerCmd(new SetPruneListCmd(buf));
     registerCmd(new GetPruneListCmd(buf));
     registerCmd(new GetEventTagCmd(buf));
-    registerCmd(new ReinitCmd());
+    registerCmd(new ReinitCmd(&fd));
     registerCmd(new ExitCmd(this));
 }
 
 static const int CMD_BUF_SIZE = 1024;
+static const int CTL_BUF_SIZE = 256;
 
 bool CommandListener::onDataAvailable(SocketClient* cli) {
-    char buffer[CMD_BUF_SIZE];
-    int len;
+    struct msghdr msg;
+    memset(&msg, 0, sizeof(msg));
 
-    len = TEMP_FAILURE_RETRY(read(cli->getSocket(), buffer, sizeof(buffer)));
+    char buffer[CMD_BUF_SIZE];
+    struct iovec io = {.iov_base = buffer, .iov_len = sizeof(buffer) };
+    msg.msg_iov = &io;
+    msg.msg_iovlen = 1;
+
+    char c_buffer[CTL_BUF_SIZE];
+    msg.msg_control = c_buffer;
+    msg.msg_controllen = sizeof(c_buffer);
+
+    int len = TEMP_FAILURE_RETRY(recvmsg(cli->getSocket(), &msg, 0));
     if (len < 0) {
         return false;
-    } else if (!len) {
+    }
+
+    struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+    fd = -1;
+    if (cmsg && (cmsg->cmsg_level == SOL_SOCKET) &&
+        (cmsg->cmsg_type == SCM_RIGHTS) &&
+        (cmsg->cmsg_len == CMSG_LEN(sizeof(fd)))) {
+        unsigned char* data = CMSG_DATA(cmsg);
+        fd = *((int*)data);
+    }
+
+    if (!len) {
+        if (fd >= 0) close(fd);
+        fd = -1;
         return false;
     } else if (buffer[len - 1] != '\0') {
         cli->sendMsg(500, "Command too large for buffer", false);
         FrameworkListener::mSkipToNextNullByte = true;
+        if (fd >= 0) close(fd);
+        fd = -1;
         return false;
     }
 
@@ -87,6 +115,8 @@ bool CommandListener::onDataAvailable(SocketClient* cli) {
     }
 
     FrameworkListener::mSkipToNextNullByte = false;
+    if (fd >= 0) close(fd);
+    fd = -1;
     return true;
 }
 
@@ -363,12 +393,25 @@ int CommandListener::GetEventTagCmd::runCommand(SocketClient* cli, int argc,
     return 0;
 }
 
-CommandListener::ReinitCmd::ReinitCmd() : LogCommand("reinit") {
+CommandListener::ReinitCmd::ReinitCmd(int* fd)
+    : LogCommand("reinit"), mFd(*fd) {
 }
 
 int CommandListener::ReinitCmd::runCommand(SocketClient* cli, int /*argc*/,
                                            char** /*argv*/) {
     setname();
+
+    if (mFd >= 0) {
+        int fd = android_get_control_file("/data/system/packages.list");
+        if (fd >= 0) close(fd);
+
+        char buffer[16];
+        snprintf(buffer, sizeof(buffer), "%d", mFd);
+        if (!setenv(ANDROID_FILE_ENV_PREFIX "_data_system_packages_list",
+                    buffer, 1)) {
+            mFd = -1;
+        }
+    }
 
     reinit_signal_handler(SIGHUP);
 
