@@ -2,7 +2,7 @@ cc_library {
 
     name: "libpackagelistparser",
     srcs: ["packagelistparser.c"],
-    shared_libs: ["liblog"],
+    shared_libs: ["liblog", "libcutils"],
     local_include_dirs: ["include"],
     export_include_dirs: ["include"],
 
