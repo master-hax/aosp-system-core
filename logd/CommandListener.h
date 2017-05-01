@@ -34,6 +34,7 @@ class CommandListener : public FrameworkListener {
     }
 
    private:
+    static int fd;  // if socket control message hands us a file descriptor
     static int getLogSocket();
 
     class ShutdownCmd : public LogCommand {
@@ -69,8 +70,10 @@ class CommandListener : public FrameworkListener {
 
 #define LogCmd(name)                                            \
     class name##Cmd : public LogCommand {                       \
+        int& mFd;                                               \
+                                                                \
        public:                                                  \
-        name##Cmd();                                            \
+        name##Cmd(int* fd);                                     \
         virtual ~name##Cmd() {                                  \
         }                                                       \
         int runCommand(SocketClient* c, int argc, char** argv); \

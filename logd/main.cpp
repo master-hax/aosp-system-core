@@ -389,12 +389,42 @@ static int issueReinit() {
     (void)cap_set_proc(caps);
     (void)cap_free(caps);
 
+    static const char socketName[] = "logd";
     int sock = TEMP_FAILURE_RETRY(socket_local_client(
-        "logd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM));
+        socketName, ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM));
+
     if (sock < 0) return -errno;
 
+    static const char packages[] = "/data/system/packages.list";
+    int fd = TEMP_FAILURE_RETRY(open(packages, O_RDONLY));
+    if (fd < 0) {
+        android::prdebug("logd-reinit: Failed to open %s %s\n", packages,
+                         strerror(errno));
+    }
+
+    struct msghdr msg;
+    memset(&msg, 0, sizeof(msg));
+    char c_buffer[CMSG_SPACE(sizeof(fd))];
+    memset(c_buffer, 0, sizeof(c_buffer));
     static const char reinitStr[] = "reinit";
-    ssize_t ret = TEMP_FAILURE_RETRY(write(sock, reinitStr, sizeof(reinitStr)));
+    struct iovec io = {.iov_base = const_cast<char*>(reinitStr),
+                       .iov_len = sizeof(reinitStr) };
+
+    msg.msg_iov = &io;
+    msg.msg_iovlen = 1;
+    if (fd >= 0) {
+        msg.msg_control = c_buffer;
+        msg.msg_controllen = sizeof(c_buffer);
+
+        struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+        cmsg->cmsg_level = SOL_SOCKET;
+        cmsg->cmsg_type = SCM_RIGHTS;
+        cmsg->cmsg_len = CMSG_LEN(sizeof(fd));
+
+        *((int*)CMSG_DATA(cmsg)) = fd;
+    }
+
+    ssize_t ret = TEMP_FAILURE_RETRY(sendmsg(sock, &msg, 0));
     if (ret < 0) return -errno;
 
     struct pollfd p;
