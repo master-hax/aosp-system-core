@@ -93,6 +93,9 @@ static bool write_public_keyfile(RSA* private_key, const std::string& private_ke
     base64_key_length = EVP_EncodeBlock(reinterpret_cast<uint8_t*>(&content[0]), binary_key_data,
                                         sizeof(binary_key_data));
 
+    // EVP_EncodeBlock includes a terminating NUL that we don't want to write into the key file.
+    content.pop_back();
+
     content += get_user_info();
 
     std::string path(private_key_path + ".pub");
