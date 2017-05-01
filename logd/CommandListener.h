@@ -29,6 +29,7 @@ void reinit_signal_handler(int /*signal*/);
 class CommandListener : public FrameworkListener {
    public:
     CommandListener(LogBuffer* buf, LogReader* reader, LogListener* swl);
+    virtual bool onDataAvailable(SocketClient* cli);
     virtual ~CommandListener() {
     }
 
