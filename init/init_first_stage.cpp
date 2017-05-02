@@ -143,8 +143,18 @@ bool FirstStageMount::InitDevices() {
     if (!GetRequiredDevices(&devices_partition_names, &need_dm_verity)) return false;
 
     if (need_dm_verity) {
-        device_init("/sys/devices/virtual/misc/device-mapper",
-                    [&](uevent* uevent) -> coldboot_action_t { return COLDBOOT_STOP; });
+        const std::string path = "/devices/virtual/misc/device-mapper";
+        device_init(std::string("/sys" + path).c_str(), [=](uevent* uevent) -> coldboot_action_t {
+            if (!uevent->path.empty()) {
+                // TODO: switch back to LOG(VERBOSE) after confirming the root cause
+                // of failing to open /dev/device-mapper
+                LOG(INFO) << "Found uevent path: '" << uevent->path
+                          << "' while initializing device-mapper";
+                if (uevent->path == path) return COLDBOOT_STOP;
+            }
+            // Not found the path, continue to find it.
+            return COLDBOOT_CONTINUE;
+        });
     }
 
     bool success = false;
