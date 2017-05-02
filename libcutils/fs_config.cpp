@@ -92,6 +92,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00755, AID_ROOT,         AID_ROOT,         0, 0 },
     // clang-format on
 };
+auto __for_testing_only__android_dirs = android_dirs;
 
 // Rules for files.
 // These rules are applied based on "first match", so they
@@ -238,6 +239,7 @@ static const struct fs_path_config android_files[] = {
     { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
     // clang-format on
 };
+auto __for_testing_only__android_files = android_files;
 
 static size_t strip(const char* path, size_t len, const char suffix[]) {
     if (len < strlen(suffix)) return len;
