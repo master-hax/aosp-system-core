@@ -472,7 +472,7 @@ static int queue_fs_event(int code) {
         ret = reboot_into_recovery(options);
         /* If reboot worked, there is no return. */
     } else if (code == FS_MGR_MNTALL_DEV_FILE_ENCRYPTED) {
-        if (e4crypt_install_keyring()) {
+        if (install_keyring()) {
             return -1;
         }
         property_set("ro.crypto.state", "encrypted");

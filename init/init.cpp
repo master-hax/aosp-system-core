@@ -49,6 +49,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <ext4_utils/ext4_crypt_init_extensions.h>
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 
@@ -97,6 +98,15 @@ static std::string wait_prop_value;
 void DumpState() {
     ServiceManager::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
+}
+
+// Ensures keyring is only installed once, and retried when requested if it
+// failed previously.  Also serves the purpose of propagating early errors
+// or successes installing the keyring to other later optioned callers.
+int install_keyring() {
+    static int once = -1;  // e4crypt returns 0 for success, -1 for failure
+    if (once != -1) return once;
+    return once = e4crypt_install_keyring();
 }
 
 void register_epoll_handler(int fd, void (*fn)()) {
@@ -1014,6 +1024,14 @@ int main(int argc, char** argv) {
     // At this point we're in the second stage of init.
     InitKernelLogging(argv);
     LOG(INFO) << "init second stage started!";
+
+    // Set up a session keyring that all processes will have access to. It
+    // will hold things like FBE encryption keys. No process should override
+    // its session keyrings.  Ignore failure, optioned code later that uses
+    // the keyring will propagate failures accordingly.  If configuration
+    // does not use a keyring, or another issue interrupts the proper flow,
+    // then the error we had here is rightfully meaningless.
+    (void)install_keyring();
 
     // Indicate that booting is in progress to background fw loaders, etc.
     close(open("/dev/.booting", O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
