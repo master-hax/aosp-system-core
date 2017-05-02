@@ -65,13 +65,16 @@ LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     action.cpp \
     capabilities.cpp \
+    coldboot.cpp \
     descriptors.cpp \
-    devices.cpp \
     import_parser.cpp \
     init_parser.cpp \
     log.cpp \
     parser.cpp \
     service.cpp \
+    uevent_handler.cpp \
+    uevent_listener.cpp \
+    ueventd_parser.cpp \
     util.cpp \
 
 LOCAL_STATIC_LIBRARIES := libbase libselinux liblog libprocessgroup
@@ -141,11 +144,11 @@ include $(BUILD_EXECUTABLE)
 include $(CLEAR_VARS)
 LOCAL_MODULE := init_tests
 LOCAL_SRC_FILES := \
-    devices_test.cpp \
     init_parser_test.cpp \
     init_test.cpp \
     property_service_test.cpp \
     service_test.cpp \
+    uevent_handler_test.cpp \
     util_test.cpp \
 
 LOCAL_SHARED_LIBRARIES += \
