@@ -19,6 +19,8 @@
 
 #include <stdint.h>
 
+#include <private/android_filesystem_config.h>
+
 /*
  * binary format for the runtime <partition>/etc/fs_config_(dirs|files)
  * filesystem override files.
@@ -33,5 +35,8 @@ struct fs_path_config_from_file {
     uint64_t capabilities;
     char prefix[];
 } __attribute__((__aligned__(sizeof(uint64_t))));
+
+extern const struct fs_path_config __android_dirs[];
+extern const struct fs_path_config __android_files[];
 
 #endif /* _LIBS_CUTILS_PRIVATE_FS_CONFIG_H */
