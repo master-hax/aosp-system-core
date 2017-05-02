@@ -39,4 +39,6 @@ bool start_waiting_for_property(const char *name, const char *value);
 
 void DumpState();
 
+int install_keyring();
+
 #endif  /* _INIT_INIT_H */
