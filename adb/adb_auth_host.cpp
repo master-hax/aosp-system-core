@@ -92,6 +92,7 @@ static bool write_public_keyfile(RSA* private_key, const std::string& private_ke
     content.resize(base64_key_length);
     base64_key_length = EVP_EncodeBlock(reinterpret_cast<uint8_t*>(&content[0]), binary_key_data,
                                         sizeof(binary_key_data));
+    content.resize(base64_key_length);
 
     content += get_user_info();
 
