@@ -59,7 +59,7 @@ static inline uint64_t get8LE(const uint8_t* src) {
 // should start with the most specific path and work their
 // way up to the root.
 
-static const struct fs_path_config android_dirs[] = {
+const struct fs_path_config __android_dirs[] = {
     // clang-format off
     { 00770, AID_SYSTEM,       AID_CACHE,        0, "cache" },
     { 00500, AID_ROOT,         AID_ROOT,         0, "config" },
@@ -120,7 +120,7 @@ static const char* conf[][2] = {
     {odm_conf_file, odm_conf_dir},
 };
 
-static const struct fs_path_config android_files[] = {
+const struct fs_path_config __android_files[] = {
     // clang-format off
     { 00644, AID_SYSTEM,    AID_SYSTEM,    0, "data/app/*" },
     { 00644, AID_SYSTEM,    AID_SYSTEM,    0, "data/app-ephemeral/*" },
@@ -339,7 +339,7 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
         close(fd);
     }
 
-    for (pc = dir ? android_dirs : android_files; pc->prefix; pc++) {
+    for (pc = dir ? __android_dirs : __android_files; pc->prefix; pc++) {
         if (fs_config_cmp(dir, pc->prefix, strlen(pc->prefix), path, plen)) {
             break;
         }
