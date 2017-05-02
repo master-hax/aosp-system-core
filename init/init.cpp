@@ -49,6 +49,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <ext4_utils/ext4_crypt_init_extensions.h>
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 
@@ -1014,6 +1015,11 @@ int main(int argc, char** argv) {
     // At this point we're in the second stage of init.
     InitKernelLogging(argv);
     LOG(INFO) << "init second stage started!";
+
+    // Set up a session keyring that all processes will have access to. It
+    // will hold things like FBE encryption keys. No process should override
+    // its session keyrings.
+    (void)e4crypt_install_keyring();
 
     // Indicate that booting is in progress to background fw loaders, etc.
     close(open("/dev/.booting", O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
