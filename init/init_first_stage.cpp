@@ -28,17 +28,31 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 
-#include "devices.h"
+#include "coldboot.h"
+#include "device_handler.h"
 #include "fs_mgr.h"
 #include "fs_mgr_avb.h"
+#include "uevent.h"
+#include "uevent_listener.h"
 #include "util.h"
+
+enum class ColdBootAction {
+    // coldboot continues without creating the device for the uevent
+    kContinue = 0,
+    // coldboot continues after creating the device for the uevent
+    kCreate,
+    // coldboot stops after creating the device for uevent
+    kStop,
+};
 
 // Class Declarations
 // ------------------
 class FirstStageMount {
   public:
+    using UeventCallback = std::function<ColdBootAction(const Uevent& uevent)>;
+
     FirstStageMount();
-    virtual ~FirstStageMount() = default;
+    virtual ~FirstStageMount();
 
     // The factory method to create either FirstStageMountVBootV1 or FirstStageMountVBootV2
     // based on device tree configurations.
@@ -51,7 +65,9 @@ class FirstStageMount {
     void InitVerityDevice(const std::string& verity_device);
     bool MountPartitions();
 
-    virtual coldboot_action_t ColdbootCallback(uevent* uevent);
+    bool HandleUevents(UeventCallback callback);
+
+    virtual ColdBootAction ColdbootCallback(const Uevent& uevent);
 
     // Pure virtual functions.
     virtual bool GetRequiredDevices() = 0;
@@ -63,6 +79,8 @@ class FirstStageMount {
     // Eligible first stage mount candidates, only allow /system, /vendor and/or /odm.
     std::vector<fstab_rec*> mount_fstab_recs_;
     std::set<std::string> required_devices_partition_names_;
+    DeviceHandler device_handler_;
+    UeventListener uevent_listener_;
 };
 
 class FirstStageMountVBootV1 : public FirstStageMount {
@@ -83,7 +101,7 @@ class FirstStageMountVBootV2 : public FirstStageMount {
     ~FirstStageMountVBootV2() override = default;
 
   protected:
-    coldboot_action_t ColdbootCallback(uevent* uevent) override;
+    ColdBootAction ColdbootCallback(const Uevent& uevent) override;
     bool GetRequiredDevices() override;
     bool SetUpDmVerity(fstab_rec* fstab_rec) override;
     bool InitAvbHandle();
@@ -119,6 +137,8 @@ FirstStageMount::FirstStageMount()
         }
     }
 }
+
+FirstStageMount::~FirstStageMount() {}
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
     if (IsDtVbmetaCompatible()) {
@@ -165,46 +185,61 @@ void FirstStageMount::InitRequiredDevices() {
 
     if (need_dm_verity_) {
         const std::string dm_path = "/devices/virtual/misc/device-mapper";
-        device_init(("/sys" + dm_path).c_str(), [&dm_path](uevent* uevent) -> coldboot_action_t {
-            if (uevent->path == dm_path) return COLDBOOT_STOP;
-            return COLDBOOT_CONTINUE;  // dm_path not found, continue to find it.
+        ColdBootPath("/sys" + dm_path, [&dm_path, this]() {
+            return HandleUevents([&dm_path](const Uevent& uevent) {
+                if (uevent.path == dm_path) return ColdBootAction::kStop;
+                return ColdBootAction::kContinue;  // dm_path not found, continue to find it.
+            });
         });
     }
 
-    device_init(nullptr,
-                [this](uevent* uevent) -> coldboot_action_t { return ColdbootCallback(uevent); });
-
-    device_close();
+    ColdBoot([this]() {
+        return HandleUevents(
+            [this](const Uevent& uevent) -> ColdBootAction { return ColdbootCallback(uevent); });
+    });
 }
 
-coldboot_action_t FirstStageMount::ColdbootCallback(uevent* uevent) {
+bool FirstStageMount::HandleUevents(UeventCallback callback) {
+    Uevent uevent;
+    ColdBootAction act = ColdBootAction::kCreate;
+    while (uevent_listener_.ReadUevent(&uevent) && act != ColdBootAction::kStop) {
+        act = callback(uevent);
+
+        if (act != ColdBootAction::kContinue) {
+            device_handler_.HandleDeviceEvent(uevent);
+        }
+    }
+    return act == ColdBootAction::kStop;
+}
+
+ColdBootAction FirstStageMount::ColdbootCallback(const Uevent& uevent) {
     // We need platform devices to create symlinks.
-    if (uevent->subsystem == "platform") {
-        return COLDBOOT_CREATE;
+    if (uevent.subsystem == "platform") {
+        return ColdBootAction::kCreate;
     }
 
     // Ignores everything that is not a block device.
-    if (uevent->subsystem != "block") {
-        return COLDBOOT_CONTINUE;
+    if (uevent.subsystem != "block") {
+        return ColdBootAction::kContinue;
     }
 
-    if (!uevent->partition_name.empty()) {
+    if (!uevent.partition_name.empty()) {
         // Matches partition name to create device nodes.
         // Both required_devices_partition_names_ and uevent->partition_name have A/B
         // suffix when A/B is used.
-        auto iter = required_devices_partition_names_.find(uevent->partition_name);
+        auto iter = required_devices_partition_names_.find(uevent.partition_name);
         if (iter != required_devices_partition_names_.end()) {
             LOG(VERBOSE) << __FUNCTION__ << "(): found partition: " << *iter;
             required_devices_partition_names_.erase(iter);
             if (required_devices_partition_names_.empty()) {
-                return COLDBOOT_STOP;  // Found all partitions, stop coldboot.
+                return ColdBootAction::kStop;  // Found all partitions, stop coldboot.
             } else {
-                return COLDBOOT_CREATE;  // Creates this device and continue to find others.
+                return ColdBootAction::kCreate;  // Creates this device and continue to find others.
             }
         }
     }
     // Not found a partition or find an unneeded partition, continue to find others.
-    return COLDBOOT_CONTINUE;
+    return ColdBootAction::kContinue;
 }
 
 // Creates "/dev/block/dm-XX" for dm-verity by running coldboot on /sys/block/dm-XX.
@@ -212,14 +247,15 @@ void FirstStageMount::InitVerityDevice(const std::string& verity_device) {
     const std::string device_name(basename(verity_device.c_str()));
     const std::string syspath = "/sys/block/" + device_name;
 
-    device_init(syspath.c_str(), [&](uevent* uevent) -> coldboot_action_t {
-        if (uevent->device_name == device_name) {
-            LOG(VERBOSE) << "Creating dm-verity device : " << verity_device;
-            return COLDBOOT_STOP;
-        }
-        return COLDBOOT_CONTINUE;
+    ColdBootPath(syspath, [&device_name, &verity_device, this]() {
+        return HandleUevents([&device_name, &verity_device](const Uevent& uevent) -> ColdBootAction {
+            if (uevent.device_name == device_name) {
+                LOG(VERBOSE) << "Creating dm-verity device : " << verity_device;
+                return ColdBootAction::kStop;
+            }
+            return ColdBootAction::kContinue;
+        });
     });
-    device_close();
 }
 
 bool FirstStageMount::MountPartitions() {
@@ -345,26 +381,26 @@ bool FirstStageMountVBootV2::GetRequiredDevices() {
     return true;
 }
 
-coldboot_action_t FirstStageMountVBootV2::ColdbootCallback(uevent* uevent) {
+ColdBootAction FirstStageMountVBootV2::ColdbootCallback(const Uevent& uevent) {
     // Invokes the parent function to see if any desired partition has been found.
     // If yes, record the by-name symlink for creating FsManagerAvbHandle later.
-    coldboot_action_t parent_callback_ret = FirstStageMount::ColdbootCallback(uevent);
+    ColdBootAction parent_callback_ret = FirstStageMount::ColdbootCallback(uevent);
 
     // Skips the uevent if the parent function returns COLDBOOT_CONTINUE (meaning
     // that the uevent was skipped) or there is no uevent->partition_name to
     // create the by-name symlink.
-    if (parent_callback_ret != COLDBOOT_CONTINUE && !uevent->partition_name.empty()) {
+    if (parent_callback_ret != ColdBootAction::kContinue && !uevent.partition_name.empty()) {
         // get_block_device_symlinks() will return three symlinks at most, depending on
         // the content of uevent. by-name symlink will be at [0] if uevent->partition_name
         // is not empty. e.g.,
         //   - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
         //   - /dev/block/platform/soc.0/f9824900.sdhci/by-num/p1
         //   - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
-        std::vector<std::string> links = get_block_device_symlinks(uevent);
+        std::vector<std::string> links = device_handler_.GetBlockDeviceSymlinks(uevent);
         if (!links.empty()) {
-            auto[it, inserted] = by_name_symlink_map_.emplace(uevent->partition_name, links[0]);
+            auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[0]);
             if (!inserted) {
-                LOG(ERROR) << "Partition '" << uevent->partition_name
+                LOG(ERROR) << "Partition '" << uevent.partition_name
                            << "' already existed in the by-name symlink map with a value of '"
                            << it->second << "', new value '" << links[0] << "' will be ignored.";
             }
