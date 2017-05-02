@@ -21,7 +21,9 @@
 
 #define LOG_TAG "fs_config"
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 #include <errno.h>
 #include <fcntl.h>
@@ -43,7 +45,9 @@
 #endif
 
 /* My kingdom for <endian.h> */
-static inline uint16_t get2LE(const uint8_t* src) { return src[0] | (src[1] << 8); }
+static inline uint16_t get2LE(const uint8_t* src) {
+    return src[0] | (src[1] << 8);
+}
 
 static inline uint64_t get8LE(const uint8_t* src) {
     uint32_t low, high;
@@ -314,7 +318,7 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
                 ALOGE("%s len is corrupted", conf[which][dir]);
                 break;
             }
-            prefix = calloc(1, remainder);
+            prefix = static_cast<char*>(calloc(1, remainder));
             if (!prefix) {
                 ALOGE("%s out of memory", conf[which][dir]);
                 break;
