@@ -18,59 +18,128 @@
 
 #include <gtest/gtest.h>
 
+#include <android-base/file.h>
 #include <android-base/strings.h>
 
 #include <private/android_filesystem_config.h>
+#include <private/fs_config.h>
 
 extern const struct fs_path_config* __for_testing_only__android_dirs;
 extern const struct fs_path_config* __for_testing_only__android_files;
 
-static void check_one(const struct fs_path_config* paths, const std::string& prefix,
-                      const std::string& alternate) {
-    for (size_t idx = 0; paths[idx].prefix; ++idx) {
-        std::string path(paths[idx].prefix);
+static bool check_unique(std::vector<const char*>& paths, const std::string& name,
+                         const std::string& prefix) {
+    bool retval = false;
+
+    std::string alternate = "system/" + prefix;
+
+    for (size_t second, idx = 0; idx < paths.size(); ++idx) {
+        std::string path(paths[idx]);
         if (android::base::StartsWith(path, prefix.c_str())) {
-            path = alternate + path.substr(prefix.length());
-            size_t second;
-            for (second = 0; paths[second].prefix; ++second) {
-                if (path == paths[second].prefix) break;
+            path = alternate + path.substr(prefix.size());
+            for (second = 0; second < paths.size(); ++second) {
+                if (path == paths[second]) {
+                    GTEST_LOG_(ERROR) << "duplicate alias paths in " << name << ": " << paths[idx]
+                                      << " and " << paths[second] << " (remove latter)";
+                    retval = true;
+                    break;
+                }
             }
-            if (!paths[second].prefix) {
-                // guaranteed to fail expectations, trigger test failure with
-                // a message that reports the violation as an inequality.
-                EXPECT_STREQ((prefix + path.substr(alternate.length())).c_str(), path.c_str());
+        } else if (android::base::StartsWith(path, alternate.c_str())) {
+            path = prefix + path.substr(alternate.size());
+            for (second = 0; second < paths.size(); ++second) {
+                if (path == paths[second]) break;
+            }
+            if (second >= paths.size()) {
+                GTEST_LOG_(ERROR) << "replace path in " << name << ": " << paths[idx] << " with "
+                                  << path;
+                retval = true;
             }
         }
     }
+    return retval;
 }
 
-static void check_two(const struct fs_path_config* paths, const std::string& prefix) {
+static bool check_unique(const struct fs_path_config* paths, const char* type_name,
+                         const std::string& prefix) {
+    std::string name("system/core/libcutils/fs_config.cpp:android_");
+    name += type_name;
+    name += "[]";
+
+    bool retval = false;
+    static constexpr size_t max_idx = 4096;
+    std::vector<const char*> paths_tmp;
+    for (size_t idx = 0; paths[idx].prefix; ++idx) {
+        if (idx > max_idx) {
+            GTEST_LOG_(WARNING) << name << ": has no end (missing null prefix)";
+            retval = true;
+            break;
+        }
+        paths_tmp.push_back(paths[idx].prefix);
+    }
+
+    return check_unique(paths_tmp, name, prefix) || retval;
+}
+
+static bool check_unique(const std::string& config, const std::string& prefix) {
+    int retval = false;
+
+    std::string data;
+    if (!android::base::ReadFileToString(config, &data)) return retval;
+
+    const struct fs_path_config_from_file* pc =
+        reinterpret_cast<const fs_path_config_from_file*>(data.c_str());
+    size_t len = data.size();
+
+    std::vector<const char*> paths_tmp;
+    while (len > 0) {
+        uint16_t host_len = pc->len;
+        if (host_len > len) {
+            GTEST_LOG_(WARNING) << config << ": corrupted";
+            retval = true;
+            break;
+        }
+        paths_tmp.push_back(pc->prefix);
+
+        pc = reinterpret_cast<const fs_path_config_from_file*>(reinterpret_cast<const char*>(pc) +
+                                                               host_len);
+        len -= host_len;
+    }
+
+    return check_unique(paths_tmp, config, prefix) || retval;
+}
+
+void check_two(const struct fs_path_config* paths, const char* type_name, const char* prefix) {
     ASSERT_FALSE(paths == nullptr);
-    std::string alternate = "system/" + prefix;
-    check_one(paths, prefix, alternate);
-    check_one(paths, alternate, prefix);
+    ASSERT_FALSE(type_name == nullptr);
+    ASSERT_FALSE(prefix == nullptr);
+    bool check_internal = check_unique(paths, type_name, prefix);
+    EXPECT_FALSE(check_internal);
+    bool check_overrides =
+        check_unique(std::string("/") + prefix + "etc/fs_config_" + type_name, prefix);
+    EXPECT_FALSE(check_overrides);
 }
 
 TEST(fs_config, vendor_dirs_alias) {
-    check_two(__for_testing_only__android_dirs, "vendor/");
+    check_two(__for_testing_only__android_dirs, "dirs", "vendor/");
 }
 
 TEST(fs_config, vendor_files_alias) {
-    check_two(__for_testing_only__android_files, "vendor/");
+    check_two(__for_testing_only__android_files, "files", "vendor/");
 }
 
 TEST(fs_config, oem_dirs_alias) {
-    check_two(__for_testing_only__android_dirs, "oem/");
+    check_two(__for_testing_only__android_dirs, "dirs", "oem/");
 }
 
 TEST(fs_config, oem_files_alias) {
-    check_two(__for_testing_only__android_files, "oem/");
+    check_two(__for_testing_only__android_files, "files", "oem/");
 }
 
 TEST(fs_config, odm_dirs_alias) {
-    check_two(__for_testing_only__android_dirs, "odm/");
+    check_two(__for_testing_only__android_dirs, "dirs", "odm/");
 }
 
 TEST(fs_config, odm_files_alias) {
-    check_two(__for_testing_only__android_files, "odm/");
+    check_two(__for_testing_only__android_files, "files", "odm/");
 }
