@@ -882,6 +882,9 @@ static void selinux_restore_context() {
     restorecon("/sys", SELINUX_ANDROID_RESTORECON_RECURSE);
     restorecon("/dev/block", SELINUX_ANDROID_RESTORECON_RECURSE);
     restorecon("/dev/device-mapper");
+
+    restorecon("/sbin/mke2fs");
+    restorecon("/sbin/e2fsdroid");
 }
 
 // Set the UDC controller for the ConfigFS USB Gadgets.
