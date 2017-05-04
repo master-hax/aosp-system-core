@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
 #include <limits.h>
+#include <stdio.h>
 #include <sys/cdefs.h>
 #include <sys/prctl.h>
 #include <sys/socket.h>
@@ -72,8 +74,11 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
         cmsg = CMSG_NXTHDR(&hdr, cmsg);
     }
 
+    struct ucred fake_cred;
     if (cred == NULL) {
-        return false;
+        cred = &fake_cred;
+        cred->pid = 0;
+        cred->uid = DEFAULT_OVERFLOWUID;
     }
 
     if (cred->uid == AID_LOGD) {
@@ -94,6 +99,24 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
         (!__android_log_security() ||
          !clientHasLogCredentials(cred->uid, cred->gid, cred->pid))) {
         return false;
+    }
+
+    // Check credential validity, acquire corrected details.
+    if (cred->pid == 0) {
+        cred->pid = logbuf ? logbuf->tidToPid(header->tid)
+                           : android::tidToPid(header->tid);
+        if ((cred->pid == getpid()) || (cred->pid == header->tid)) {
+            return false;  // ignore self (see above)
+        }
+    }
+    if (cred->uid == DEFAULT_OVERFLOWUID) {
+        uid_t uid =
+            logbuf ? logbuf->pidToUid(cred->pid) : android::pidToUid(cred->pid);
+        if (uid == AID_LOGD) {
+            uid = logbuf ? logbuf->pidToUid(header->tid)
+                         : android::pidToUid(cred->pid);
+        }
+        if (uid != AID_LOGD) cred->uid = uid;
     }
 
     char* msg = ((char*)buffer) + sizeof(android_log_header_t);
