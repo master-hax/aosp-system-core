@@ -23,6 +23,10 @@
 #include <log/log_id.h>
 #include <log/log_time.h>
 
+#ifndef DEFAULT_OVERFLOWUID  // defined in linux/highuid.h (Not Available)
+#define DEFAULT_OVERFLOWUID 65534
+#endif
+
 // Abstract interface that handles log when log available.
 class LogBufferInterface {
    public:
@@ -32,6 +36,9 @@ class LogBufferInterface {
     // Returns the size of the handled log message.
     virtual int log(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
                     pid_t tid, const char* msg, unsigned short len) = 0;
+
+    virtual uid_t pidToUid(pid_t pid);
+    virtual pid_t tidToPid(pid_t tid);
 
    private:
     DISALLOW_COPY_AND_ASSIGN(LogBufferInterface);
