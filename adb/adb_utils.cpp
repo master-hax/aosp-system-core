@@ -67,10 +67,15 @@ void close_stdin() {
 }
 
 bool getcwd(std::string* s) {
-  char* cwd = getcwd(nullptr, 0);
-  if (cwd != nullptr) *s = cwd;
-  free(cwd);
-  return (cwd != nullptr);
+    bool ret = false;
+    char* cwd = getcwd(nullptr, 0);
+    if (cwd != nullptr) {
+        *s = cwd;
+        free(cwd);
+    }
+    ret = (cwd != nullptr);
+    cwd = nullptr;
+    return ret;
 }
 
 bool directory_exists(const std::string& path) {
