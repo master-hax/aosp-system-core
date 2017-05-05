@@ -527,6 +527,29 @@ TEST_F(CrasherTest, capabilities) {
   ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
 }
 
+#include "bionic/pthread_internal.h"
+TEST_F(CrasherTest, fake_pid) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    pthread_internal_t* self = __get_thread();
+    self->tid = 1234567890;
+    self->set_cached_pid(1234567890);
+    abort();
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+}
+
 TEST(crash_dump, zombie) {
   pid_t forkpid = fork();
 

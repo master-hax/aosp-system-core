@@ -178,6 +178,10 @@ cc_test {
         "libdebuggerd",
     ],
 
+    include_dirs: [
+        "bionic/libc",
+    ],
+
     local_include_dirs: [
         "libdebuggerd",
     ],
