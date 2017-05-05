@@ -23,6 +23,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/android_get_control_file.h>
 #include <cutils/sockets.h>
@@ -77,10 +78,23 @@ void SocketInfo::Clean() const {
 }
 
 int SocketInfo::Create(const std::string& context) const {
-  int flags = ((type() == "stream" ? SOCK_STREAM :
-                (type() == "dgram" ? SOCK_DGRAM :
-                 SOCK_SEQPACKET)));
-  return create_socket(name().c_str(), flags, perm(), uid(), gid(), context.c_str(), sehandle);
+    int flags;
+    std::string more;
+    if (android::base::StartsWith(type(), "stream")) {
+        flags = SOCK_STREAM;
+        more = type().substr(strlen("stream"));
+    } else if (android::base::StartsWith(type(), "dgram")) {
+        flags = SOCK_DGRAM;
+        more = type().substr(strlen("dgram"));
+    } else if (android::base::StartsWith(type(), "seqpacket")) {
+        flags = SOCK_SEQPACKET;
+        more = type().substr(strlen("seqpacket"));
+    } else {
+        flags = SOCK_SEQPACKET;  // default
+    }
+    if (android::base::StartsWith(more, "+passcred")) flags |= INIT_SOCK_PASSCRED;
+
+    return create_socket(name().c_str(), flags, perm(), uid(), gid(), context.c_str(), sehandle);
 }
 
 const std::string SocketInfo::key() const {

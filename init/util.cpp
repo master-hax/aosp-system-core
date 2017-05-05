@@ -92,7 +92,7 @@ int create_socket(const char* name, int type, mode_t perm, uid_t uid, gid_t gid,
         }
     }
 
-    android::base::unique_fd fd(socket(PF_UNIX, type, 0));
+    android::base::unique_fd fd(socket(PF_UNIX, type & ~INIT_SOCK_PASSCRED, 0));
     if (fd < 0) {
         PLOG(ERROR) << "Failed to open socket '" << name << "'";
         return -1;
@@ -115,6 +115,14 @@ int create_socket(const char* name, int type, mode_t perm, uid_t uid, gid_t gid,
     if (sehandle) {
         if (selabel_lookup(sehandle, &filecon, addr.sun_path, S_IFSOCK) == 0) {
             setfscreatecon(filecon);
+        }
+    }
+
+    if (type & INIT_SOCK_PASSCRED) {
+        int on = 1;
+        if (setsockopt(fd, SOL_SOCKET, SO_PASSCRED, &on, sizeof(on))) {
+            PLOG(ERROR) << "Failed to set SO_PASSCRED '" << name << "'";
+            return -1;
         }
     }
 
