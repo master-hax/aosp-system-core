@@ -31,6 +31,7 @@
 #include <string>
 
 #include <android-base/file.h>
+#include <android-base/stringprintf.h>
 #include <gtest/gtest.h>
 #include <log/event_tag_map.h>
 #include <log/log.h>
@@ -80,8 +81,11 @@ TEST(logcat, buckets) {
     logcat_define(ctx);
 
 #undef LOG_TAG
-#define LOG_TAG "inject"
-    RLOGE(logcat_executable ".buckets");
+#define LOG_TAG "inject.buckets"
+    RLOGE(logcat_executable);
+    SLOGE(logcat_executable);
+    ALOGE(logcat_executable);
+    __android_log_bswrite(0, logcat_executable ".inject.buckets");
     rest();
 
     ASSERT_TRUE(NULL !=
@@ -116,23 +120,33 @@ TEST(logcat, event_tag_filter) {
     FILE* fp;
     logcat_define(ctx);
 
-    ASSERT_TRUE(NULL !=
-                (fp = logcat_popen(ctx, logcat_executable
-                                   " -b events -d -s auditd "
-                                   "am_proc_start am_pss am_proc_bound "
-                                   "dvm_lock_sample am_wtf 2>/dev/null")));
+#undef LOG_TAG
+#define LOG_TAG "inject.filter"
+    RLOGE(logcat_executable);
+    SLOGE(logcat_executable);
+    ALOGE(logcat_executable);
+    rest();
+
+    std::string command = android::base::StringPrintf(
+        logcat_executable
+        " -b radio -b system -b main --pid=%d -d -s inject.filter 2>/dev/null",
+        getpid());
+    ASSERT_TRUE(NULL != (fp = logcat_popen(ctx, command.c_str())));
 
     char buffer[BIG_BUFFER];
 
     int count = 0;
 
     while (fgets(buffer, sizeof(buffer), fp)) {
-        ++count;
+        if (strncmp(begin, buffer, sizeof(begin) - 1)) ++count;
     }
 
     logcat_pclose(ctx, fp);
 
-    EXPECT_LT(4, count);
+    // logcat, liblogcat and logcatd test instances: 3, 6 and 9
+    EXPECT_LE(3, count);
+    EXPECT_GE(9, count);
+    EXPECT_EQ(0, count % 3);
 }
 
 // If there is not enough background noise in the logs, then spam the logs to
