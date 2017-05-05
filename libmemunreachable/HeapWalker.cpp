@@ -91,6 +91,10 @@ void HeapWalker::Root(const allocator::vector<uintptr_t>& vals) {
   root_vals_.insert(root_vals_.end(), vals.begin(), vals.end());
 }
 
+void HeapWalker::Root(uintptr_t val) {
+  root_vals_.push_back(val);
+}
+
 size_t HeapWalker::Allocations() {
   return allocations_.size();
 }

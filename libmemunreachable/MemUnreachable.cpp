@@ -113,6 +113,18 @@ bool MemUnreachable::CollectAllocations(const allocator::vector<ThreadInfo>& thr
     heap_walker_.Root(thread_it->regs);
   }
 
+  // On the main thread, there is no way to get the tls data.
+  // As a quick fix, loop through the keys and add each one as a root.
+  // This depends on the bionic implementation of pthread_key_t,
+  // and will need to be changed if that implementation changes.
+  for (size_t i = 0; i < PTHREAD_KEYS_MAX; i++) {
+    pthread_key_t key = 1 << 31;
+    uintptr_t pointer = reinterpret_cast<uintptr_t>(pthread_getspecific(key | i));
+    if (pointer) {
+      heap_walker_.Root(pointer);
+    }
+  }
+
   MEM_ALOGI("searching done");
 
   return true;
@@ -126,7 +138,6 @@ bool MemUnreachable::GetUnreachableMemory(allocator::vector<Leak>& leaks,
   if (!heap_walker_.DetectLeaks()) {
     return false;
   }
-
 
   allocator::vector<Range> leaked1{allocator_};
   heap_walker_.Leaked(leaked1, 0, num_leaks, leak_bytes);

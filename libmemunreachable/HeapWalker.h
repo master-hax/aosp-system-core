@@ -65,6 +65,7 @@ class HeapWalker {
   bool Allocation(uintptr_t begin, uintptr_t end);
   void Root(uintptr_t begin, uintptr_t end);
   void Root(const allocator::vector<uintptr_t>& vals);
+  void Root(uintptr_t val);
 
   bool DetectLeaks();
 
