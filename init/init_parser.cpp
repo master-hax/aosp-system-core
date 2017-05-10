@@ -42,7 +42,7 @@ void Parser::AddSingleLineParser(const std::string& prefix, LineCallback callbac
     line_callbacks_.emplace_back(prefix, callback);
 }
 
-void Parser::ParseData(const std::string& filename, const std::string& data) {
+bool Parser::ParseData(const std::string& filename, const std::string& data) {
     //TODO: Use a parser with const input and remove this copy
     std::vector<char> data_copy(data.begin(), data.end());
     data_copy.push_back('\0');
@@ -55,13 +55,15 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
     SectionParser* section_parser = nullptr;
     std::vector<std::string> args;
 
+    bool error_seen = false;
+
     for (;;) {
         switch (next_token(&state)) {
         case T_EOF:
             if (section_parser) {
                 section_parser->EndSection();
             }
-            return;
+            return !error_seen;
         case T_NEWLINE:
             state.line++;
             if (args.empty()) {
@@ -90,11 +92,13 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
                 if (!section_parser->ParseSection(std::move(args), filename, state.line, &ret_err)) {
                     LOG(ERROR) << filename << ": " << state.line << ": " << ret_err;
                     section_parser = nullptr;
+                    error_seen = true;
                 }
             } else if (section_parser) {
                 std::string ret_err;
                 if (!section_parser->ParseLineSection(std::move(args), state.line, &ret_err)) {
                     LOG(ERROR) << filename << ": " << state.line << ": " << ret_err;
+                    error_seen = true;
                 }
             }
             args.clear();
@@ -117,13 +121,13 @@ bool Parser::ParseConfigFile(const std::string& path) {
     }
 
     data.push_back('\n'); // TODO: fix parse_config.
-    ParseData(path, data);
+    bool result = ParseData(path, data);
     for (const auto& [section_name, section_parser] : section_parsers_) {
         section_parser->EndFile();
     }
 
     LOG(VERBOSE) << "(Parsing " << path << " took " << t << ".)";
-    return true;
+    return result;
 }
 
 bool Parser::ParseConfigDir(const std::string& path) {

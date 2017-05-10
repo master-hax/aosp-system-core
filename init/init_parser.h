@@ -82,7 +82,7 @@ class Parser {
     bool is_odm_etc_init_loaded() { return is_odm_etc_init_loaded_; }
 
   private:
-    void ParseData(const std::string& filename, const std::string& data);
+    bool ParseData(const std::string& filename, const std::string& data);
     bool ParseConfigFile(const std::string& path);
     bool ParseConfigDir(const std::string& path);
 
