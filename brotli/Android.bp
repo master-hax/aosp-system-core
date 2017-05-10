@@ -1,0 +1,21 @@
+cc_library {
+    name: "libbrotli",
+    cflags: ["-Werror", "-O2"],
+    defaults: ["linux_bionic_supported"],
+    export_include_dirs: ["c/include/"],
+    local_include_dirs: ["c/include/"],
+    srcs: [
+        "c/common/*.c",
+        "c/dec/*.c",
+        "c/enc/*.c",
+    ],
+    stl: "none",
+}
+
+cc_binary {
+    name: "bro",
+    cflags: ["-Werror"],
+    defaults: ["linux_bionic_supported"],
+    srcs: ["c/tools/bro.c"],
+    shared_libs: ["libbrotli"],
+}
