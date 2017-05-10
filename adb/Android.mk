@@ -387,4 +387,34 @@ LOCAL_STATIC_LIBRARIES := \
 
 include $(BUILD_EXECUTABLE)
 
+# adb integration test
+# =========================================================
+#TODO: build executable python binary
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := adb_integration_test
+LOCAL_MODULE_TAGS := tests
+
+py_files := \
+    test_adb.py \
+    test_device.py \
+
+dest_dir := $(TARGET_OUT_DATA)/nativetest/adb_integration_test
+
+GEN := $(addprefix $(dest_dir)/, $(py_files))
+$(GEN) : PRIVATE_PATH := $(LOCAL_PATH)
+$(GEN) : PRIVATE_CUSTOM_TOOL = cp $< $@
+$(GEN) : $(dest_dir)/% : $(LOCAL_PATH)/%
+	$(transform-generated-source)
+
+LOCAL_PICKUP_FILES := dest_dir
+LOCAL_ADDITIONAL_DEPENDENCIES := $(GEN)
+
+include $(BUILD_PHONY_PACKAGE)
+
+# clean up additional variables that are not part of CLEAR_VARS
+py_files :=
+dest_dir :=
+
 include $(call first-makefiles-under,$(LOCAL_PATH))
