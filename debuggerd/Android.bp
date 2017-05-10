@@ -11,9 +11,31 @@ cc_defaults {
     local_include_dirs: ["include"],
 }
 
+cc_library_shared {
+    name: "libtombstoned_client",
+    defaults: ["debuggerd_defaults"],
+    srcs: [
+        "tombstoned_client.cpp",
+        "util.cpp",
+    ],
+
+    static_libs: [
+        "libasync_safe"
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libbase",
+    ],
+
+    // TODO: This is incorrect - this library should only export the
+    // one header file : include/debuggerd/tombstone.h.
+    export_include_dirs: ["include"]
+}
+
 // Utility library to tombstoned and get an output fd.
 cc_library_static {
-    name: "libtombstoned_client",
+    name: "libtombstoned_client_static",
     defaults: ["debuggerd_defaults"],
     srcs: [
         "tombstoned_client.cpp",
@@ -64,7 +86,7 @@ cc_library_static {
 
     whole_static_libs: [
         "libdebuggerd_handler_core",
-        "libtombstoned_client",
+        "libtombstoned_client_static",
         "libasync_safe",
         "libbase",
         "libdebuggerd",
@@ -211,7 +233,7 @@ cc_binary {
     },
 
     static_libs: [
-        "libtombstoned_client",
+        "libtombstoned_client_static",
         "libdebuggerd",
         "libcutils",
     ],
