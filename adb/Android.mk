@@ -324,6 +324,14 @@ ifdef HOST_CROSS_OS
 $(call dist-for-goals,win_sdk,$(ALL_MODULES.host_cross_adb.BUILT))
 endif
 
+# copy adb and python test scripts to DIST_DIR
+py_files := \
+    $(LOCAL_PATH)/test_adb.py \
+        $(LOCAL_PATH)/test_device.py \
+
+$(call dist-for-goals,adb_integration_test,$(LOCAL_BUILT_MODULE) $(py_files))
+py_files :=
+
 
 # adbd device daemon
 # =========================================================
