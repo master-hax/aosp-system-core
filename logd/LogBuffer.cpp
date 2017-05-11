@@ -605,6 +605,25 @@ class LogBufferElementLast {
     }
 };
 
+bool LogBuffer::isBusy(log_time watermark) {
+    LogBufferElementCollection::iterator ei = mLogElements.end();
+    --ei;
+    return watermark < ((*ei)->getRealTime() - pruneMargin - log_time(1, 0));
+}
+
+void LogBuffer::kickMe(LogTimeEntry* me, log_id_t id, unsigned long pruneRows) {
+    if (stats.sizes(id) > (2 * log_buffer_size(id))) {
+        // kick a misbehaving slow log reader client off the island
+        me->release_Locked();
+    } else if (me->mTimeout.tv_sec || me->mTimeout.tv_nsec) {
+        // release a --wrap timeout reader
+        me->triggerReader_Locked();
+    } else {
+        // tell slow reader to skip entries
+        me->triggerSkip_Locked(id, pruneRows);
+    }
+}
+
 // prune "pruneRows" of type "id" from the buffer.
 //
 // This garbage collection task is used to expire log entries. It is called to
@@ -695,12 +714,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
 
             if (oldest && (watermark <= element->getRealTime())) {
-                busy = true;
-                if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
-                    oldest->triggerReader_Locked();
-                } else {
-                    oldest->triggerSkip_Locked(id, pruneRows);
-                }
+                if (!(busy = isBusy(watermark))) break;
+                kickMe(oldest, id, pruneRows);
                 break;
             }
 
@@ -787,10 +802,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             LogBufferElement* element = *it;
 
             if (oldest && (watermark <= element->getRealTime())) {
-                busy = true;
-                if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
-                    oldest->triggerReader_Locked();
-                }
+                if (!(busy = isBusy(watermark))) break;
+                kickMe(oldest, id, pruneRows);
                 break;
             }
 
@@ -941,19 +954,9 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
         }
 
         if (oldest && (watermark <= element->getRealTime())) {
-            busy = true;
-            if (whitelist) {
-                break;
-            }
-
-            if (stats.sizes(id) > (2 * log_buffer_size(id))) {
-                // kick a misbehaving log reader client off the island
-                oldest->release_Locked();
-            } else if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
-                oldest->triggerReader_Locked();
-            } else {
-                oldest->triggerSkip_Locked(id, pruneRows);
-            }
+            if (!(busy = isBusy(watermark))) break;
+            if (whitelist) break;
+            kickMe(oldest, id, pruneRows);
             break;
         }
 
@@ -985,15 +988,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
 
             if (oldest && (watermark <= element->getRealTime())) {
-                busy = true;
-                if (stats.sizes(id) > (2 * log_buffer_size(id))) {
-                    // kick a misbehaving log reader client off the island
-                    oldest->release_Locked();
-                } else if (oldest->mTimeout.tv_sec || oldest->mTimeout.tv_nsec) {
-                    oldest->triggerReader_Locked();
-                } else {
-                    oldest->triggerSkip_Locked(id, pruneRows);
-                }
+                if (!(busy = isBusy(watermark))) break;
+                kickMe(oldest, id, pruneRows);
                 break;
             }
 
