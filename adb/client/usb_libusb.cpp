@@ -89,20 +89,29 @@ struct transfer_info {
 };
 
 namespace libusb {
+
+struct AdbInterface {
+    std::string device_address;
+    size_t interface_num;
+    uint16_t zero_mask;
+    uint8_t bulk_in;
+    uint8_t bulk_out;
+    size_t packet_size;
+};
+
 struct usb_handle : public ::usb_handle {
     usb_handle(const std::string& device_address, const std::string& serial,
-               unique_device_handle&& device_handle, uint8_t interface, uint8_t bulk_in,
-               uint8_t bulk_out, size_t zero_mask, size_t max_packet_size)
+               unique_device_handle&& device_handle, const AdbInterface& adb_interface)
         : device_address(device_address),
           serial(serial),
           closing(false),
           device_handle(device_handle.release()),
-          read("read", zero_mask, false),
-          write("write", zero_mask, true),
-          interface(interface),
-          bulk_in(bulk_in),
-          bulk_out(bulk_out),
-          max_packet_size(max_packet_size) {}
+          read("read", adb_interface.zero_mask, false),
+          write("write", adb_interface.zero_mask, true),
+          interface(adb_interface.interface_num),
+          bulk_in(adb_interface.bulk_in),
+          bulk_out(adb_interface.bulk_out),
+          max_packet_size(adb_interface.packet_size) {}
 
     ~usb_handle() {
         Close();
@@ -191,24 +200,134 @@ static bool should_perform_zero_transfer(uint8_t endpoint, size_t write_length, 
            (write_length & zero_mask) == 0;
 }
 
-static void process_device(libusb_device* device) {
-    std::string device_address = get_device_address(device);
-    std::string device_serial;
+static bool check_adb_interface(const libusb_interface& interface, AdbInterface* adb_interface) {
+    if (interface.num_altsetting != 1) {
+        // Assume that interfaces with alternate settings aren't adb interfaces.
+        // TODO: Is this assumption valid?
+        LOG(WARNING) << "skipping interface with unexpected num_altsetting";
+        return false;
+    }
 
+    const libusb_interface_descriptor& interface_desc = interface.altsetting[0];
+    if (!is_adb_interface(interface_desc.bInterfaceClass, interface_desc.bInterfaceSubClass,
+                          interface_desc.bInterfaceProtocol)) {
+        LOG(WARNING) << "skipping non-adb interface";
+        return false;
+    }
+
+    bool found_in = false;
+    bool found_out = false;
+    adb_interface->packet_size = 0;
+    for (size_t endpoint_num = 0; endpoint_num < interface_desc.bNumEndpoints; ++endpoint_num) {
+        const auto& endpoint_desc = interface_desc.endpoint[endpoint_num];
+        const uint8_t endpoint_addr = endpoint_desc.bEndpointAddress;
+        const uint8_t endpoint_attr = endpoint_desc.bmAttributes;
+
+        const uint8_t transfer_type = endpoint_attr & LIBUSB_TRANSFER_TYPE_MASK;
+
+        if (transfer_type != LIBUSB_TRANSFER_TYPE_BULK) {
+            LOG(WARNING) << "found non-bulk endpoint in interface";
+            return false;
+        }
+
+        if (endpoint_is_output(endpoint_addr)) {
+            if (found_out) {
+                LOG(WARNING) << "found multiple bulk out endpoints in interface";
+                return false;
+            }
+
+            found_out = true;
+            adb_interface->bulk_out = endpoint_addr;
+            adb_interface->zero_mask = endpoint_desc.wMaxPacketSize - 1;
+        } else {
+            if (found_in) {
+                LOG(WARNING) << "found multiple bulk in endpoints in interface";
+                return false;
+            }
+
+            found_in = true;
+            adb_interface->bulk_in = endpoint_addr;
+        }
+
+        size_t endpoint_packet_size = endpoint_desc.wMaxPacketSize;
+        CHECK(endpoint_packet_size != 0);
+        if (adb_interface->packet_size == 0) {
+            adb_interface->packet_size = endpoint_packet_size;
+        } else if (adb_interface->packet_size != endpoint_packet_size) {
+            LOG(WARNING) << "interfaces disagree about endpoint packet size";
+            return false;
+        }
+    }
+
+    if (found_in && found_out) {
+        LOG(DEBUG) << "accepting potential adb interface";
+        return true;
+    }
+
+    LOG(WARNING) << "rejecting potential adb interface: missing bulk endpoints "
+                 << "(found_in = " << found_in << ", found_out = " << found_out << ")";
+    return false;
+}
+
+static std::string get_device_serial(libusb_device* device, libusb_device_handle* device_handle) {
+    std::string result;
+
+    if (device_handle != nullptr) {
+        libusb_device_descriptor device_desc;
+        int rc = libusb_get_device_descriptor(device, &device_desc);
+        CHECK(rc == 0);  // libusb documents that this should always succeed.
+
+        result.resize(255);
+        rc = libusb_get_string_descriptor_ascii(device_handle, device_desc.iSerialNumber,
+                                                reinterpret_cast<unsigned char*>(&result[0]),
+                                                result.length());
+        if (rc == 0) {
+            LOG(ERROR) << "received empty serial from device";
+            return "unknown";
+        } else if (rc < 0) {
+            LOG(ERROR) << "failed to get serial from device" << libusb_error_name(rc);
+            return "unknown";
+        }
+        result.resize(rc);
+        return result;
+    } else {
+#if defined(__linux__)
+        // libusb doesn't think we should be messing around with devices we don't have
+        // write access to, but Linux at least lets us get the serial number anyway.
+        if (!android::base::ReadFileToString(get_device_serial_path(device), &result)) {
+            // We don't actually want to treat an unknown serial as an error because
+            // devices aren't able to communicate a serial number in early bringup.
+            // http://b/20883914
+            return "unknown";
+        }
+
+        return android::base::Trim(result);
+#else
+        // On Mac OS and Windows, we're screwed. But I don't think this situation actually
+        // happens on those OSes.
+        return "unknown";
+#endif
+    }
+}
+
+static bool find_adb_interface(libusb_device* device, AdbInterface* adb_interface) {
     // Figure out if we want to open the device.
+    std::string device_address = get_device_address(device);
+    adb_interface->device_address = device_address;
+
     libusb_device_descriptor device_desc;
     int rc = libusb_get_device_descriptor(device, &device_desc);
     if (rc != 0) {
         LOG(WARNING) << "failed to get device descriptor for device at " << device_address << ": "
                      << libusb_error_name(rc);
-        return;
+        return false;
     }
 
     if (device_desc.bDeviceClass != LIBUSB_CLASS_PER_INTERFACE) {
         // Assume that all Android devices have the device class set to per interface.
         // TODO: Is this assumption valid?
-        LOG(VERBOSE) << "skipping device with incorrect class at " << device_address;
-        return;
+        LOG(WARNING) << "skipping device with incorrect class at " << device_address;
+        return false;
     }
 
     libusb_config_descriptor* config_raw;
@@ -216,137 +335,74 @@ static void process_device(libusb_device* device) {
     if (rc != 0) {
         LOG(WARNING) << "failed to get active config descriptor for device at " << device_address
                      << ": " << libusb_error_name(rc);
-        return;
+        return false;
     }
+
     const unique_config_descriptor config(config_raw);
 
     // Use size_t for interface_num so <iostream>s don't mangle it.
-    size_t interface_num;
-    uint16_t zero_mask;
-    uint8_t bulk_in = 0, bulk_out = 0;
-    size_t packet_size = 0;
-    bool found_adb = false;
-
-    for (interface_num = 0; interface_num < config->bNumInterfaces; ++interface_num) {
-        const libusb_interface& interface = config->interface[interface_num];
-        if (interface.num_altsetting != 1) {
-            // Assume that interfaces with alternate settings aren't adb interfaces.
-            // TODO: Is this assumption valid?
-            LOG(VERBOSE) << "skipping interface with incorrect num_altsetting at " << device_address
-                         << " (interface " << interface_num << ")";
-            continue;
-        }
-
-        const libusb_interface_descriptor& interface_desc = interface.altsetting[0];
-        if (!is_adb_interface(interface_desc.bInterfaceClass, interface_desc.bInterfaceSubClass,
-                              interface_desc.bInterfaceProtocol)) {
-            LOG(VERBOSE) << "skipping non-adb interface at " << device_address << " (interface "
-                         << interface_num << ")";
-            continue;
-        }
-
-        LOG(VERBOSE) << "found potential adb interface at " << device_address << " (interface "
-                     << interface_num << ")";
-
-        bool found_in = false;
-        bool found_out = false;
-        for (size_t endpoint_num = 0; endpoint_num < interface_desc.bNumEndpoints; ++endpoint_num) {
-            const auto& endpoint_desc = interface_desc.endpoint[endpoint_num];
-            const uint8_t endpoint_addr = endpoint_desc.bEndpointAddress;
-            const uint8_t endpoint_attr = endpoint_desc.bmAttributes;
-
-            const uint8_t transfer_type = endpoint_attr & LIBUSB_TRANSFER_TYPE_MASK;
-
-            if (transfer_type != LIBUSB_TRANSFER_TYPE_BULK) {
-                continue;
-            }
-
-            if (endpoint_is_output(endpoint_addr) && !found_out) {
-                found_out = true;
-                bulk_out = endpoint_addr;
-                zero_mask = endpoint_desc.wMaxPacketSize - 1;
-            } else if (!endpoint_is_output(endpoint_addr) && !found_in) {
-                found_in = true;
-                bulk_in = endpoint_addr;
-            }
-
-            size_t endpoint_packet_size = endpoint_desc.wMaxPacketSize;
-            CHECK(endpoint_packet_size != 0);
-            if (packet_size == 0) {
-                packet_size = endpoint_packet_size;
-            } else {
-                CHECK(packet_size == endpoint_packet_size);
-            }
-        }
-
-        if (found_in && found_out) {
-            found_adb = true;
-            break;
-        } else {
-            LOG(VERBOSE) << "rejecting potential adb interface at " << device_address
-                         << "(interface " << interface_num << "): missing bulk endpoints "
-                         << "(found_in = " << found_in << ", found_out = " << found_out << ")";
+    for (size_t interface_num = 0; interface_num < config->bNumInterfaces; ++interface_num) {
+        LOG(DEBUG) << "checking potential usb interface, device = " << device_address
+                   << ", interface = " << interface_num;
+        if (check_adb_interface(config->interface[interface_num], adb_interface)) {
+            adb_interface->interface_num = interface_num;
+            return true;
         }
     }
 
-    if (!found_adb) {
-        LOG(VERBOSE) << "skipping device with no adb interfaces at " << device_address;
+    return false;
+}
+
+static void process_device(libusb_device* device) {
+    AdbInterface adb_interface;
+    if (!find_adb_interface(device, &adb_interface)) {
         return;
     }
+
+    std::string& device_address = adb_interface.device_address;
 
     {
         std::unique_lock<std::mutex> lock(usb_handles_mutex);
         if (usb_handles.find(device_address) != usb_handles.end()) {
-            LOG(VERBOSE) << "device at " << device_address
-                         << " has already been registered, skipping";
+            LOG(DEBUG) << "device at " << device_address << " has already been registered, skipping";
             return;
         }
     }
 
     bool writable = true;
     libusb_device_handle* handle_raw = nullptr;
-    rc = libusb_open(device, &handle_raw);
+    int rc = libusb_open(device, &handle_raw);
     unique_device_handle handle(handle_raw);
-    if (rc == 0) {
-        LOG(DEBUG) << "successfully opened adb device at " << device_address << ", "
-                   << StringPrintf("bulk_in = %#x, bulk_out = %#x", bulk_in, bulk_out);
 
-        device_serial.resize(255);
-        rc = libusb_get_string_descriptor_ascii(handle_raw, device_desc.iSerialNumber,
-                                                reinterpret_cast<unsigned char*>(&device_serial[0]),
-                                                device_serial.length());
-        if (rc == 0) {
-            LOG(WARNING) << "received empty serial from device at " << device_address;
-            return;
-        } else if (rc < 0) {
-            LOG(WARNING) << "failed to get serial from device at " << device_address
-                         << libusb_error_name(rc);
-            return;
-        }
-        device_serial.resize(rc);
+    std::string device_serial = get_device_serial(device, handle.get());
+
+    if (rc == 0) {
+        LOG(DEBUG) << "successfully opened adb device at " << device_address;
 
         // WARNING: this isn't released via RAII.
-        rc = libusb_claim_interface(handle.get(), interface_num);
+        rc = libusb_claim_interface(handle.get(), adb_interface.interface_num);
         if (rc != 0) {
             LOG(WARNING) << "failed to claim adb interface for device '" << device_serial << "'"
                          << libusb_error_name(rc);
             return;
         }
 
-        rc = libusb_set_interface_alt_setting(handle.get(), interface_num, 0);
+        rc = libusb_set_interface_alt_setting(handle.get(), adb_interface.interface_num, 0);
         if (rc != 0) {
             LOG(WARNING) << "failed to set interface alt setting for device '" << device_serial
                          << "'" << libusb_error_name(rc);
             return;
         }
 
-        for (uint8_t endpoint : {bulk_in, bulk_out}) {
+        for (uint8_t endpoint : {adb_interface.bulk_in, adb_interface.bulk_out}) {
             rc = libusb_clear_halt(handle.get(), endpoint);
             if (rc != 0) {
                 LOG(WARNING) << "failed to clear halt on device '" << device_serial
                              << "' endpoint 0x" << std::hex << endpoint << ": "
                              << libusb_error_name(rc);
-                libusb_release_interface(handle.get(), interface_num);
+                libusb_release_interface(handle.get(), adb_interface.interface_num);
+
+                // TODO: Report this somehow?
                 return;
             }
         }
@@ -354,27 +410,10 @@ static void process_device(libusb_device* device) {
         LOG(WARNING) << "failed to open usb device at " << device_address << ": "
                      << libusb_error_name(rc);
         writable = false;
-
-#if defined(__linux__)
-        // libusb doesn't think we should be messing around with devices we don't have
-        // write access to, but Linux at least lets us get the serial number anyway.
-        if (!android::base::ReadFileToString(get_device_serial_path(device), &device_serial)) {
-            // We don't actually want to treat an unknown serial as an error because
-            // devices aren't able to communicate a serial number in early bringup.
-            // http://b/20883914
-            device_serial = "unknown";
-        }
-        device_serial = android::base::Trim(device_serial);
-#else
-        // On Mac OS and Windows, we're screwed. But I don't think this situation actually
-        // happens on those OSes.
-        return;
-#endif
     }
 
-    auto result =
-        std::make_unique<usb_handle>(device_address, device_serial, std::move(handle),
-                                     interface_num, bulk_in, bulk_out, zero_mask, packet_size);
+    auto result = std::make_unique<usb_handle>(device_address, device_serial, std::move(handle),
+                                               adb_interface);
     usb_handle* usb_handle_raw = result.get();
 
     {
