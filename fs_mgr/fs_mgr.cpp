@@ -86,6 +86,7 @@ enum FsStatFlags {
     FS_STAT_EXT4_INVALID_MAGIC = 0x0800,
     FS_STAT_TOGGLE_QUOTAS_FAILED = 0x10000,
     FS_STAT_SET_RESERVED_BLOCKS_FAILED = 0x20000,
+    FS_STAT_ENABLE_ENCRYPTION_FAILED = 0x40000,
 };
 
 /*
@@ -141,6 +142,7 @@ static bool should_force_check(int fs_stat) {
                       FS_STAT_UNCLEAN_SHUTDOWN |
                       FS_STAT_QUOTA_ENABLED |
                       FS_STAT_TOGGLE_QUOTAS_FAILED |
+                      FS_STAT_ENABLE_ENCRYPTION_FAILED |
                       FS_STAT_SET_RESERVED_BLOCKS_FAILED |
                       FS_STAT_RO_MOUNT_FAILED |
                       FS_STAT_RO_UNMOUNT_FAILED |
@@ -395,6 +397,29 @@ static void do_late_tune2fs(const char *blk_device, const struct fstab_rec *rec,
             }
         }
     }
+
+    // Enable file-based encryption if needed.
+    if (rec->fs_mgr_flags & MF_FILEENCRYPTION) {
+        bool has_encrypt = (sb->s_feature_incompat &
+                            cpu_to_le32(EXT4_FEATURE_INCOMPAT_ENCRYPT)) != 0;
+        bool want_encrypt = fs_mgr_is_file_encrypted(rec) != 0;
+
+        if (want_encrypt && !has_encrypt) {
+            if (tune2fs_available()) {
+                const char *argv[] = { TUNE2FS_BIN, "-Oencrypt", blk_device };
+
+                LINFO << "Enabling ext4 encryption on " << blk_device;
+                if (!run_tune2fs(argv, ARRAY_SIZE(argv))) {
+                    LERROR << "Failed to run " TUNE2FS_BIN " to enable "
+                           << "ext4 encryption on " << blk_device;
+                    *fs_stat |= FS_STAT_ENABLE_ENCRYPTION_FAILED;
+                }
+            } else {
+                LERROR << "Unable to enable ext4 encryption on "
+                       << blk_device << " because " TUNE2FS_BIN " is missing";
+            }
+        }
+    }
 }
 
 //
@@ -435,7 +460,8 @@ static int prepare_fs_for_mount(const char *blk_device,
         check_fs(blk_device, rec->fs_type, rec->mount_point, &fs_stat);
     }
 
-    if (is_extfs(rec->fs_type) && (rec->fs_mgr_flags & MF_RESERVEDSIZE)) {
+    if (is_extfs(rec->fs_type) &&
+        (rec->fs_mgr_flags & (MF_RESERVEDSIZE | MF_FILEENCRYPTION))) {
         struct ext4_super_block sb;
 
         if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
