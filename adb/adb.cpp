@@ -259,11 +259,15 @@ void send_connect(atransport* t) {
 #if ADB_HOST
 
 void SendConnectOnHost(atransport* t) {
-    // Send an empty message before A_CNXN message. This is because the data toggle of the ep_out on
-    // host and ep_in on device may not be the same.
+    // If the USB data toggle bits are desynchronized between the device and the host, the first
+    // packet in each direction might be garbage. From the host, send an empty packet, followed by
+    // two connect packets. The empty packet will either be ignored or mangled (and then ignored),
+    // so the device will get two connect packets. It'll respond with two CNXN or AUTH packets, the
+    // first of which might be mangled.
     apacket* p = get_apacket();
     CHECK(p);
     send_packet(p, t);
+    send_connect(t);
     send_connect(t);
 }
 
