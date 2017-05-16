@@ -120,7 +120,6 @@ public:
 
 #if ADB_HOST
     std::shared_ptr<RSA> NextKey();
-    bool SetSendConnectOnError();
 #endif
 
     char token[TOKEN_SIZE] = {};
@@ -180,7 +179,6 @@ private:
 #if ADB_HOST
     std::deque<std::shared_ptr<RSA>> keys_;
     std::mutex write_msg_lock_;
-    bool has_send_connect_on_error_ = false;
 #endif
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
