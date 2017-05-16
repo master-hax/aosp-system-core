@@ -103,13 +103,20 @@ void HandleFirmwareEvent(const Uevent& uevent) {
     if (uevent.subsystem != "firmware" || uevent.action != "add") return;
 
     // Loading the firmware in a child means we can do that in parallel...
-    // (We ignore SIGCHLD rather than wait for our children.)
+    // We double fork instead of waiting for these processes.
     pid_t pid = fork();
     if (pid == 0) {
-        Timer t;
-        ProcessFirmwareEvent(uevent);
-        LOG(INFO) << "loading " << uevent.path << " took " << t;
-        _exit(EXIT_SUCCESS);
+        pid = fork();
+        if (pid == 0) {
+            Timer t;
+            ProcessFirmwareEvent(uevent);
+            LOG(INFO) << "loading " << uevent.path << " took " << t;
+            _exit(EXIT_SUCCESS);
+        } else if (pid == -1) {
+            PLOG(ERROR) << "could not fork to process firmware event for " << uevent.firmware;
+        } else {
+            _exit(EXIT_SUCCESS);
+        }
     } else if (pid == -1) {
         PLOG(ERROR) << "could not fork to process firmware event for " << uevent.firmware;
     }
