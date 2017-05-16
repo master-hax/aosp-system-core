@@ -113,6 +113,55 @@ err_msg:
     return 0;
 }
 
+// If the device we're connecting to was already connected to adb before we started, there could be
+// stale packets in our input queue. Read and throw away until we hit a CNXN packet.
+static int initial_read(apacket* p, atransport* t) {
+    usb_handle* h = t->usb;
+    while (true) {
+        size_t usb_packet_size = usb_get_max_packet_size(h);
+        char buffer[4096];
+
+        CHECK(usb_packet_size >= sizeof(amessage));
+        CHECK(usb_packet_size < 4096);
+
+        int n = usb_read(h, buffer, usb_packet_size);
+        if (n == -1) {
+            return -1;
+        } else if (n != sizeof(amessage)) {
+            LOG(WARNING) << "skipping " << n << " byte packet";
+            continue;
+        }
+
+        amessage* msg = reinterpret_cast<amessage*>(buffer);
+        p->msg = *msg;
+        if (p->msg.command != A_CNXN) {
+            LOG(WARNING) << "skipping non-CNXN probable amessage";
+            continue;
+        }
+
+        // The CNXN packet doesn't have a valid header.
+        if (!check_header(p, t)) {
+            LOG(WARNING) << "skipping invalid amessage";
+            continue;
+        }
+
+        n = UsbReadPayload(h, p);
+        if (n == -1) {
+            LOG(WARNING) << "failed to read payload for CNXN";
+            return -1;
+        }
+
+        if (!check_data(p)) {
+            LOG(WARNING) << "payload checksum validation failed, skipping";
+            continue;
+        }
+
+        // Switch over to the regular read function now.
+        t->read_from_remote = remote_read;
+        return 0;
+    }
+}
+
 #else
 
 // On Android devices, we rely on the kernel to provide buffered read.
@@ -177,7 +226,11 @@ void init_usb_transport(atransport* t, usb_handle* h) {
     t->close = remote_close;
     t->SetKickFunction(remote_kick);
     t->SetWriteFunction(remote_write);
+#if ADB_HOST
+    t->read_from_remote = initial_read;
+#else
     t->read_from_remote = remote_read;
+#endif
     t->sync_token = 1;
     t->type = kTransportUsb;
     t->usb = h;
