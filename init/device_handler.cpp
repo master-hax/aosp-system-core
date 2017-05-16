@@ -130,8 +130,6 @@ bool SysfsPermissions::MatchWithSubsystem(const std::string& path,
 
 void SysfsPermissions::SetPermissions(const std::string& path) const {
     std::string attribute_file = path + "/" + attribute_;
-    LOG(INFO) << "fixup " << attribute_file << " " << uid() << " " << gid() << " " << std::oct
-              << perm();
     chown(attribute_file.c_str(), uid(), gid());
     chmod(attribute_file.c_str(), perm());
 }
@@ -164,7 +162,7 @@ void DeviceHandler::FixupSysPermissions(const std::string& upath,
         if (s.MatchWithSubsystem(path, subsystem)) s.SetPermissions(path);
     }
 
-    if (access(path.c_str(), F_OK) == 0) {
+    if (!is_booting_ && access(path.c_str(), F_OK) == 0) {
         LOG(VERBOSE) << "restorecon_recursive: " << path;
         selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
     }
@@ -454,12 +452,13 @@ void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
 
 DeviceHandler::DeviceHandler(std::vector<Permissions> dev_permissions,
                              std::vector<SysfsPermissions> sysfs_permissions,
-                             std::vector<Subsystem> subsystems)
+                             std::vector<Subsystem> subsystems, bool is_booting)
     : dev_permissions_(std::move(dev_permissions)),
       sysfs_permissions_(std::move(sysfs_permissions)),
       subsystems_(std::move(subsystems)),
-      sehandle_(selinux_android_file_context_handle()) {}
+      sehandle_(selinux_android_file_context_handle()),
+      is_booting_(is_booting) {}
 
 DeviceHandler::DeviceHandler()
     : DeviceHandler(std::vector<Permissions>{}, std::vector<SysfsPermissions>{},
-                    std::vector<Subsystem>{}) {}
+                    std::vector<Subsystem>{}, false) {}
