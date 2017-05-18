@@ -1,5 +1,5 @@
 cc_library_headers {
-    name: "libsystem_headers",
+    name: "libgraphics_headers",
     vendor_available: true,
     host_supported: true,
     export_include_dirs: ["include"],

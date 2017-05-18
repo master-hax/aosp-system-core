@@ -17,11 +17,26 @@
 #ifndef ANDROID_THREAD_DEFS_H
 #define ANDROID_THREAD_DEFS_H
 
-#include "graphics.h"
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
+/**********************************************************************
+ * Keep in sync with system/thread_defs.h
+ * ********************************************************************
+ *
+ * If the HAL needs to create service threads to handle graphics related
+ * tasks, these threads need to run at HAL_PRIORITY_URGENT_DISPLAY priority
+ * if they can block the main rendering thread in any way.
+ *
+ * the priority of the current thread can be set with:
+ *
+ *      #include <sys/resource.h>
+ *      setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
+ *
+ */
+
+#define HAL_PRIORITY_URGENT_DISPLAY     (-8)
 
 enum {
     /*

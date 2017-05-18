@@ -24,7 +24,11 @@
 extern "C" {
 #endif
 
-/*
+
+/**********************************************************************
+ * Keep in sync with system/thread_defs.h
+ * ********************************************************************
+ *
  * If the HAL needs to create service threads to handle graphics related
  * tasks, these threads need to run at HAL_PRIORITY_URGENT_DISPLAY priority
  * if they can block the main rendering thread in any way.
