@@ -176,27 +176,35 @@ void Ueventd::UeventHandlerMain(unsigned int process_num) {
 void Ueventd::DoColdBoot() {
     Timer cold_boot_timer;
 
-    int uevents_seen = 0;
+    std::atomic<bool> cold_boot_done(false);
 
-    ColdBoot([this, &uevents_seen]() {
-        Uevent uevent;
-        while (uevent_listener_.ReadUevent(&uevent)) {
-            ++uevents_seen;
-            HandleFirmwareEvent(uevent);
+    std::thread uevent_listener_thread([this, &cold_boot_done]() {
+        int uevents_seen = 0;
+        // Boot is essentially blocked on us finishing at this point, so busy-waiting is fine.
+        while (!cold_boot_done) {
+            Uevent uevent;
+            while (uevent_listener_.ReadUevent(&uevent)) {
+                ++uevents_seen;
+                HandleFirmwareEvent(uevent);
 
-            // This is the one mutable part of DeviceHandler, in which platform devices are
-            // added to a vector for later reference.  Since there is no communication after
-            // fork()'ing subprocess handlers, all platform devices must be in the vector before
-            // we fork, and therefore they must be handled in this loop.
-            if (uevent.subsystem == "platform") {
-                device_handler_.HandlePlatformDeviceEvent(uevent);
+                // This is the one mutable part of DeviceHandler, in which platform devices are
+                // added to a vector for later reference.  Since there is no communication after
+                // fork()'ing subprocess handlers, all platform devices must be in the vector before
+                // we fork, and therefore they must be handled in this loop.
+                if (uevent.subsystem == "platform") {
+                    device_handler_.HandlePlatformDeviceEvent(uevent);
+                }
+
+                unsigned int queue_num = uevents_seen % num_handler_subprocesses_;
+                uevent_queue_per_process_[queue_num].emplace_back(std::move(uevent));
             }
-
-            unsigned int queue_num = uevents_seen % num_handler_subprocesses_;
-            uevent_queue_per_process_[queue_num].emplace_back(std::move(uevent));
         }
-        return false;
     });
+
+    ColdBoot(nullptr);
+
+    cold_boot_done = true;
+    uevent_listener_thread.join();
 
     for (unsigned int i = 0; i < num_handler_subprocesses_; ++i) {
         auto pid = fork();
