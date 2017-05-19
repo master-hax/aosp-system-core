@@ -66,9 +66,9 @@ class Parser {
     //  be written.
     using LineCallback = std::function<bool(std::vector<std::string>&&, std::string*)>;
 
+    // Only init should use this singleton; ueventd is sane enough to use this as a proper class.
     static Parser& GetInstance();
 
-    // Exposed for testing
     Parser();
 
     bool ParseConfig(const std::string& path);
