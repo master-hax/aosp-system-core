@@ -260,6 +260,34 @@ cc_binary {
     init_rc: ["tombstoned/tombstoned.rc"]
 }
 
+cc_binary {
+    name: "static_binary_crash_dump",
+    host_supported: false,
+    static_executable: true,
+    srcs: [
+        "static_binary_crash_dump.cpp",
+    ],
+    defaults: ["debuggerd_defaults"],
+    compile_multilib: "both",
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
+    static_libs: [
+        "libbacktrace",
+        "libunwind",
+        "libbase",
+        "liblog",
+        "liblzma",
+        "libcutils",
+        "libc",
+    ],
+}
+
 subdirs = [
     "crasher",
 ]
