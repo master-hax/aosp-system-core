@@ -67,13 +67,17 @@ LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     action.cpp \
     capabilities.cpp \
+    coldboot.cpp \
     descriptors.cpp \
     devices.cpp \
+    firmware_handler.cpp \
     import_parser.cpp \
     init_parser.cpp \
     log.cpp \
     parser.cpp \
     service.cpp \
+    uevent_listener.cpp \
+    ueventd_parser.cpp \
     util.cpp \
 
 LOCAL_STATIC_LIBRARIES := libbase libselinux liblog libprocessgroup
