@@ -206,6 +206,12 @@ static bool handle_send_file(int s, const char* path, uid_t uid, gid_t gid, uint
     __android_log_security_bswrite(SEC_TAG_ADB_SEND_FILE, path);
 
     int fd = adb_open_mode(path, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, mode);
+
+    if (posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE | POSIX_FADV_WILLNEED) <
+        0) {
+        D("[ Failed to fadvise: %d ]", errno);
+    }
+
     if (fd < 0 && errno == ENOENT) {
         if (!secure_mkdirs(android::base::Dirname(path))) {
             SendSyncFailErrno(s, "secure_mkdirs failed");
@@ -411,6 +417,11 @@ static bool do_recv(int s, const char* path, std::vector<char>& buffer) {
     if (fd < 0) {
         SendSyncFailErrno(s, "open failed");
         return false;
+    }
+
+    if (posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE | POSIX_FADV_WILLNEED) <
+        0) {
+        D("[ Failed to fadvise: %d ]", errno);
     }
 
     syncmsg msg;
