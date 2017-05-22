@@ -22,6 +22,7 @@
 #else
 // Bring in prototypes for standard APIs so that we can import them into the utf8 namespace.
 #include <fcntl.h>      // open
+#include <stdio.h>      // fopen
 #include <unistd.h>     // unlink
 #endif
 
@@ -53,6 +54,19 @@ bool UTF8ToWide(const char* utf8, std::wstring* utf16);
 // Convert a UTF-8 std::string (including any embedded NULL characters) to
 // UTF-16. Returns whether the conversion was done successfully.
 bool UTF8ToWide(const std::string& utf8, std::wstring* utf16);
+
+// Convert a file system path, represented as a NULL-terminated string of
+// UTF-8 characters, to a UTF-16 string representing the same file system
+// path using the Windows extended-lengh path representation.
+//
+// See https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx#MAXPATH:
+//   ```The Windows API has many functions that also have Unicode versions to
+//   permit an extended-length path for a maximum total path length of 32,767
+//   characters. To specify an extended-length path, use the "\\?\" prefix.
+//   For example, "\\?\D:\very long path".```
+//
+// Returns whether the conversion was done successfully.
+bool UTF8PathToWindowsLongPath(const char* utf8, std::wstring* utf16);
 #endif
 
 // The functions in the utf8 namespace take UTF-8 strings. For Windows, these
@@ -73,9 +87,11 @@ bool UTF8ToWide(const std::string& utf8, std::wstring* utf16);
 namespace utf8 {
 
 #ifdef _WIN32
+FILE* fopen(const char* name, const char* mode);
 int open(const char* name, int flags, ...);
 int unlink(const char* name);
 #else
+using ::fopen;
 using ::open;
 using ::unlink;
 #endif

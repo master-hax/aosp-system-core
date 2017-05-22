@@ -19,7 +19,9 @@
 #include "android-base/utf8.h"
 
 #include <fcntl.h>
+#include <stdio.h>
 
+#include <algorithm>
 #include <string>
 
 #include "android-base/logging.h"
@@ -153,12 +155,46 @@ bool UTF8ToWide(const std::string& utf8, std::wstring* utf16) {
   return UTF8ToWide(utf8.c_str(), utf8.length(), utf16);
 }
 
+static bool isDriveLetter(int c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+bool UTF8PathToWindowsLongPath(const char* utf8, std::wstring* utf16) {
+  if (!UTF8ToWide(utf8, utf16)) {
+    return false;
+  }
+  if (utf16->length() >= MAX_PATH) {
+    // If path is of the form "x:\"
+    if (isDriveLetter((*utf16)[0]) && (*utf16)[1] == ':' && (*utf16)[2] == '\\') {
+      // Append long path prefix, and make sure there are no unix-style
+      // separators to ensure a fully compliant Win32 long path string.
+      utf16->insert(0, L"\\\\?\\");
+      std::replace(utf16->begin(), utf16->end(), '/', '\\');
+    }
+  }
+  return true;
+}
+
 // Versions of standard library APIs that support UTF-8 strings.
 namespace utf8 {
 
+FILE* fopen(const char* name, const char* mode) {
+  std::wstring name_utf16;
+  if (!UTF8PathToWindowsLongPath(name, &name_utf16)) {
+    return nullptr;
+  }
+
+  std::wstring mode_utf16;
+  if (!UTF8ToWide(mode, &mode_utf16)) {
+    return nullptr;
+  }
+
+  return _wfopen(name_utf16.c_str(), mode_utf16.c_str());
+}
+
 int open(const char* name, int flags, ...) {
   std::wstring name_utf16;
-  if (!UTF8ToWide(name, &name_utf16)) {
+  if (!UTF8PathToWindowsLongPath(name, &name_utf16)) {
     return -1;
   }
 
@@ -175,7 +211,7 @@ int open(const char* name, int flags, ...) {
 
 int unlink(const char* name) {
   std::wstring name_utf16;
-  if (!UTF8ToWide(name, &name_utf16)) {
+  if (!UTF8PathToWindowsLongPath(name, &name_utf16)) {
     return -1;
   }
 
