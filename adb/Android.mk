@@ -111,7 +111,9 @@ include $(CLEAR_VARS)
 LOCAL_CLANG := true
 LOCAL_MODULE := libadbd_usb
 LOCAL_CFLAGS := $(LIBADB_CFLAGS) -DADB_HOST=0
-LOCAL_SRC_FILES := daemon/usb.cpp
+LOCAL_SRC_FILES := \
+	daemon/usb.cpp \
+	daemon/AsyncIO.cpp \
 
 LOCAL_SANITIZE := $(adb_target_sanitize)
 

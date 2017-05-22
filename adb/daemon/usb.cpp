@@ -49,15 +49,10 @@ using namespace std::chrono_literals;
 #define MAX_PACKET_SIZE_HS 512
 #define MAX_PACKET_SIZE_SS 1024
 
-// Kernels before 3.3 have a 16KiB transfer limit  That limit was replaced
-// with a 16MiB global limit in 3.3, but each URB submitted required a
-// contiguous kernel allocation, so you would get ENOMEM if you tried to
-// send something larger than the biggest available contiguous kernel
-// memory region. Large contiguous allocations could be unreliable
-// on a device kernel that has been running for a while fragmenting its
-// memory so we start with a larger allocation, and shrink the amount if
-// necessary.
 #define USB_FFS_BULK_SIZE 16384
+
+// Number of buffers needed to fit MAX_PAYLOAD, with an extra for ZLPs.
+#define USB_FFS_NUM_BUFS ((MAX_PAYLOAD / USB_FFS_BULK_SIZE) + 1)
 
 #define cpu_to_le16(x) htole16(x)
 #define cpu_to_le32(x) htole32(x)
@@ -234,7 +229,27 @@ static const struct {
     },
 };
 
-bool init_functionfs(struct usb_handle* h) {
+static void aio_block_init(struct aio_block* aiob) {
+    aiob->iocb.resize(USB_FFS_NUM_BUFS);
+    aiob->iocbs.resize(USB_FFS_NUM_BUFS);
+    aiob->events.resize(USB_FFS_NUM_BUFS);
+    aiob->num_submitted = 0;
+    for (unsigned i = 0; i < USB_FFS_NUM_BUFS; i++) {
+        aiob->iocbs[i] = &aiob->iocb[i];
+    }
+}
+
+static int getMaxPacketSize(int ffs_fd) {
+    struct usb_endpoint_descriptor desc;
+    if (ioctl(ffs_fd, FUNCTIONFS_ENDPOINT_DESC, reinterpret_cast<unsigned long>(&desc))) {
+        D("[ could not get endpoint descriptor! (%d) ]", errno);
+        return MAX_PACKET_SIZE_HS;
+    } else {
+        return desc.wMaxPacketSize;
+    }
+}
+
+static bool init_functionfs(struct usb_handle* h) {
     ssize_t ret;
     struct desc_v1 v1_descriptor;
     struct desc_v2 v2_descriptor;
@@ -298,6 +313,13 @@ bool init_functionfs(struct usb_handle* h) {
         D("[ %s: cannot open bulk-in ep: errno=%d ]", USB_FFS_ADB_IN, errno);
         goto err;
     }
+
+    if (io_setup(USB_FFS_NUM_BUFS, &h->aiob[0].ctx) || io_setup(USB_FFS_NUM_BUFS, &h->aiob[1].ctx)) {
+        D("[ aio: got error on io_setup (%d) ]", errno);
+    }
+
+    h->aiob[0].fd = h->bulk_in;
+    h->aiob[1].fd = h->bulk_out;
 
     h->max_rw = MAX_PAYLOAD;
     while (h->max_rw >= USB_FFS_BULK_SIZE && retries < ENDPOINT_ALLOC_RETRIES) {
@@ -407,6 +429,60 @@ static int usb_ffs_read(usb_handle* h, void* data, int len) {
     return 0;
 }
 
+static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, int read) {
+    struct aio_block* aiob = &h->aiob[read];
+    bool zero_packet = false;
+
+    int num_bufs = len / USB_FFS_BULK_SIZE + (len % USB_FFS_BULK_SIZE == 0 ? 0 : 1);
+    const char* cur_data = reinterpret_cast<const char*>(data);
+    int packet_size = getMaxPacketSize(aiob->fd);
+
+    for (int i = 0; i < num_bufs; i++) {
+        int length = std::min(len, USB_FFS_BULK_SIZE);
+        io_prep(&aiob->iocb[i], aiob->fd, reinterpret_cast<const void*>(cur_data), length, 0, read);
+
+        len -= length;
+        cur_data += length;
+
+        if (len == 0 && length % packet_size == 0 && read) {
+            // adb does not expect the device to send a zero packet after data transfer,
+            // but the host *does* send a zero packet for the device to read.
+            zero_packet = true;
+        }
+    }
+    if (zero_packet) {
+        io_prep(&aiob->iocb[num_bufs], aiob->fd, reinterpret_cast<const void*>(cur_data),
+                packet_size, 0, read);
+        num_bufs += 1;
+    }
+
+    if (io_submit(aiob->ctx, num_bufs, aiob->iocbs.data()) < num_bufs) {
+        D("[ aio: got error submitting %s (%d) ]", read ? "read" : "write", errno);
+        return -1;
+    }
+    if (TEMP_FAILURE_RETRY(
+            io_getevents(aiob->ctx, num_bufs, num_bufs, aiob->events.data(), nullptr)) < num_bufs) {
+        D("[ aio: got error waiting %s (%d) ]", read ? "read" : "write", errno);
+        return -1;
+    }
+    for (int i = 0; i < num_bufs; i++) {
+        if (aiob->events[i].res < 0) {
+            errno = aiob->events[i].res;
+            D("[ aio: got error event on %s (%d) ]", read ? "read" : "write", errno);
+            return -1;
+        }
+    }
+    return 0;
+}
+
+static int usb_ffs_aio_read(usb_handle* h, void* data, int len) {
+    return usb_ffs_do_aio(h, data, len, 1);
+}
+
+static int usb_ffs_aio_write(usb_handle* h, const void* data, int len) {
+    return usb_ffs_do_aio(h, data, len, 0);
+}
+
 static void usb_ffs_kick(usb_handle* h) {
     int err;
 
@@ -433,6 +509,9 @@ static void usb_ffs_close(usb_handle* h) {
     h->kicked = false;
     adb_close(h->bulk_out);
     adb_close(h->bulk_in);
+    io_destroy(h->aiob[0].ctx);
+    io_destroy(h->aiob[1].ctx);
+
     // Notify usb_adb_open_thread to open a new connection.
     h->lock.lock();
     h->open_new_connection = true;
@@ -445,8 +524,15 @@ static void usb_ffs_init() {
 
     usb_handle* h = new usb_handle();
 
-    h->write = usb_ffs_write;
-    h->read = usb_ffs_read;
+    if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false)) {
+        h->write = usb_ffs_write;
+        h->read = usb_ffs_read;
+    } else {
+        h->write = usb_ffs_aio_write;
+        h->read = usb_ffs_aio_read;
+        aio_block_init(&h->aiob[0]);
+        aio_block_init(&h->aiob[1]);
+    }
     h->kick = usb_ffs_kick;
     h->close = usb_ffs_close;
 
