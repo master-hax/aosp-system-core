@@ -58,6 +58,11 @@ static void populate_timeval(struct timeval* tv, const Duration& duration) {
   tv->tv_usec = static_cast<long>(microseconds.count());
 }
 
+bool debuggerd_initiate_dump(pid_t pid, DebuggerdDumpType dump_type) {
+  const bool backtrace = dump_type == kDebuggerdBacktrace;
+  return send_signal(pid, backtrace);
+}
+
 bool debuggerd_trigger_dump(pid_t pid, unique_fd output_fd, DebuggerdDumpType dump_type,
                             unsigned int timeout_ms) {
   LOG(INFO) << "libdebuggerd_client: started dumping process " << pid;
