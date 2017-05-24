@@ -18,6 +18,8 @@
 
 #include <stdint.h>
 
+#include "dump_type.h"
+
 // Sockets in the ANDROID_SOCKET_NAMESPACE_RESERVED namespace.
 // Both sockets are SOCK_SEQPACKET sockets, so no explicit length field is needed.
 constexpr char kTombstonedCrashSocketName[] = "tombstoned_crash";
@@ -40,6 +42,7 @@ enum class CrashPacketType : uint8_t {
 };
 
 struct DumpRequest {
+  DebuggerdDumpType dump_type;
   int32_t pid;
 };
 
@@ -54,6 +57,7 @@ struct TombstonedCrashPacket {
 // Comes with a file descriptor via SCM_RIGHTS.
 // This packet should be sent before an actual dump happens.
 struct InterceptRequest {
+  DebuggerdDumpType dump_type;
   int32_t pid;
 };
 

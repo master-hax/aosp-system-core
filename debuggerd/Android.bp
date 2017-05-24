@@ -11,6 +11,16 @@ cc_defaults {
     local_include_dirs: ["include"],
 }
 
+// TODO: This is a kludge : this is a header-only library that contains
+// a header that's included by both tombstoned as well as debuggerd's
+// public API. What is the best way to do this ? We have precisely one
+// header file here that's included by both tombstoned headers as well
+// as debuggerd headers.
+cc_library_static {
+    name: "libdebuggerd_common",
+    export_include_dirs: ["common/include"]
+}
+
 cc_library_shared {
     name: "libtombstoned_client",
     defaults: ["debuggerd_defaults"],
@@ -20,12 +30,13 @@ cc_library_shared {
     ],
 
     static_libs: [
-        "libasync_safe"
+        "libasync_safe",
+        "libdebuggerd_common"
     ],
 
     shared_libs: [
-        "libcutils",
         "libbase",
+        "libcutils",
     ],
 
     export_include_dirs: ["tombstoned/include"]
@@ -44,6 +55,7 @@ cc_library_static {
         "libasync_safe",
         "libcutils",
         "libbase",
+        "libdebuggerd_common"
     ],
 
     export_include_dirs: ["tombstoned/include"]
@@ -58,6 +70,7 @@ cc_library_static {
     whole_static_libs: [
         "libasync_safe",
         "libdebuggerd",
+        "libdebuggerd_common",
     ],
 
     export_include_dirs: ["include"],
@@ -110,6 +123,10 @@ cc_library {
     shared_libs: [
         "libbase",
         "libcutils",
+    ],
+
+    static_libs: [
+        "libdebuggerd_common"
     ],
 
     export_include_dirs: ["include"],
@@ -191,7 +208,8 @@ cc_test {
         "libbase",
         "libcutils",
         "libdebuggerd_client",
-        "liblog"
+        "liblog",
+        "libnativehelper"
     ],
 
     static_libs: [
@@ -234,6 +252,7 @@ cc_binary {
     static_libs: [
         "libtombstoned_client_static",
         "libdebuggerd",
+        "libdebuggerd_common",
         "libcutils",
     ],
 
@@ -259,6 +278,10 @@ cc_binary {
         "libselinux",
     ],
 
+    static_libs: [
+        "libdebuggerd_common",
+    ],
+
     local_include_dirs: ["include"],
 }
 
@@ -274,6 +297,7 @@ cc_binary {
     static_libs: [
         "libbase",
         "libcutils",
+        "libdebuggerd_common",
         "libevent",
         "liblog",
     ],
