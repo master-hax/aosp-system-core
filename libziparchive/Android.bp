@@ -122,3 +122,14 @@ cc_test {
         },
     },
 }
+
+cc_binary {
+  name: "unzip",
+  host_supported: true,
+  defaults: ["libziparchive_flags"],
+  srcs: ["unzip.cpp"],
+  shared_libs: [
+    "libbase",
+    "libziparchive",
+  ],
+}
