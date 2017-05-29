@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <memory>
@@ -1226,4 +1227,18 @@ bool ZipArchive::InitializeCentralDirectory(const char* debug_file_name, off64_t
     central_directory.Initialize(mapped_zip.GetBasePtr(), cd_start_offset, cd_size);
   }
   return true;
+}
+
+tm ZipEntry::GetModificationTime() const {
+  tm t = {};
+
+  t.tm_hour = (mod_time >> 11) & 0x1f;
+  t.tm_min = (mod_time >> 5) & 0x3f;
+  t.tm_sec = (mod_time & 0x1f) << 1;
+
+  t.tm_year = ((mod_time >> 25) & 0x7f) + 80;
+  t.tm_mon = ((mod_time >> 21) & 0xf) - 1;
+  t.tm_mday = (mod_time >> 16) & 0x1f;
+
+  return t;
 }
