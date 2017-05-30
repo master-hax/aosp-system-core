@@ -160,7 +160,18 @@ static uint32_t ComputeHash(const ZipString& name) {
   uint32_t hash = 0;
   uint16_t len = name.name_length;
   const uint8_t* str = name.name;
+  unsigned chunk;
+  const unsigned sz = sizeof(chunk);
 
+  // Hash 4 bytes at a time.
+  while (len > sz) {
+    __builtin_memcpy(&chunk, str, sz);
+    hash = hash * 31 + chunk;
+    len -= sz;
+    str += sz;
+  }
+
+  // Hash the left-over bytes.
   while (len--) {
     hash = hash * 31 + *str++;
   }
