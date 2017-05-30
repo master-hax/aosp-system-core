@@ -160,10 +160,42 @@ static uint32_t ComputeHash(const ZipString& name) {
   uint32_t hash = 0;
   uint16_t len = name.name_length;
   const uint8_t* str = name.name;
+  unsigned chunk;
+  static constexpr unsigned kChunkSize = sizeof(chunk);
 
-  while (len--) {
-    hash = hash * 31 + *str++;
+  // Hash 2*kChunkSize bytes at a time. Unrolled by 2.
+  while (len > 4 * kChunkSize) {
+    uint64_t hash_long;
+    unsigned chunk1;
+    __builtin_memcpy(&chunk, str, kChunkSize);
+    __builtin_memcpy(&chunk1, str + kChunkSize, kChunkSize);
+    hash_long = hash * 31 * 31 + chunk * 31 + chunk1;
+    hash = static_cast<unsigned int>(hash_long);
+
+    len -= 2 * kChunkSize;
+    str += 2 * kChunkSize;
+
+    __builtin_memcpy(&chunk, str, kChunkSize);
+    __builtin_memcpy(&chunk1, str + kChunkSize, kChunkSize);
+    hash_long = hash * 31 * 31 + chunk * 31 + chunk1;
+    hash = static_cast<unsigned int>(hash_long);
+
+    len -= 2 * kChunkSize;
+    str += 2 * kChunkSize;
+
   }
+
+  // Leftover pass-1: Hash kChunkSize bytes at a time.
+  while (len > kChunkSize) {
+    __builtin_memcpy(&chunk, str, kChunkSize);
+    hash = hash * 31 + chunk;
+    len -= kChunkSize;
+    str += kChunkSize;
+  }
+
+  // Hash the left-over bytes.
+  while (len--)
+    hash = hash * 31 + *str++;
 
   return hash;
 }
