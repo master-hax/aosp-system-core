@@ -202,11 +202,15 @@ static const struct fs_path_config android_files[] = {
     // A non-privileged zygote that spawns isolated processes for web rendering.
     { 0750,  AID_ROOT,      AID_ROOT,      CAP_MASK_LONG(CAP_SETUID) |
                                            CAP_MASK_LONG(CAP_SETGID) |
-                                           CAP_MASK_LONG(CAP_SETPCAP),
+                                           CAP_MASK_LONG(CAP_SETPCAP) |
+                                           CAP_MASK_LONG(CAP_CHOWN) |
+                                           CAP_MASK_LONG(CAP_DAC_OVERRIDE),
                                               "system/bin/webview_zygote32" },
     { 0750,  AID_ROOT,      AID_ROOT,      CAP_MASK_LONG(CAP_SETUID) |
                                            CAP_MASK_LONG(CAP_SETGID) |
-                                           CAP_MASK_LONG(CAP_SETPCAP),
+                                           CAP_MASK_LONG(CAP_SETPCAP) |
+                                           CAP_MASK_LONG(CAP_CHOWN) |
+                                           CAP_MASK_LONG(CAP_DAC_OVERRIDE),
                                               "system/bin/webview_zygote64" },
 
     // generic defaults
