@@ -179,10 +179,6 @@ static std::string get_device_dev_path(libusb_device* device) {
     if (port_count < 0) return "";
     return StringPrintf("/dev/bus/usb/%03u/%03u", libusb_get_bus_number(device), ports[0]);
 }
-
-static bool is_device_accessible(libusb_device* device) {
-    return access(get_device_dev_path(device).c_str(), R_OK | W_OK) == 0;
-}
 #endif
 
 static bool endpoint_is_output(uint8_t endpoint) {
@@ -390,17 +386,11 @@ static void device_connected(libusb_device* device) {
     // Android's host linux libusb uses netlink instead of udev for device hotplug notification,
     // which means we can get hotplug notifications before udev has updated ownership/perms on the
     // device. Since we're not going to be able to link against the system's libudev any time soon,
-    // hack around this by checking for accessibility in a loop.
+    // hack around this by inserting a sleep.
     ++connecting_devices;
     auto thread = std::thread([device]() {
         std::string device_path = get_device_dev_path(device);
-        auto start = std::chrono::steady_clock::now();
-        while (std::chrono::steady_clock::now() - start < 500ms) {
-            if (is_device_accessible(device)) {
-                break;
-            }
-            std::this_thread::sleep_for(10ms);
-        }
+        std::this_thread::sleep_for(1s);
 
         process_device(device);
         --connecting_devices;
