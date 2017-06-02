@@ -75,7 +75,7 @@ class CrashQueue {
     find_oldest_artifact();
   }
 
-  unique_fd get_output_fd() {
+  std::pair<unique_fd, std::string> get_output() {
     unique_fd result;
     char buf[PATH_MAX];
     snprintf(buf, sizeof(buf), "%s%02d", file_name_prefix_.c_str(), next_artifact_);
@@ -91,7 +91,7 @@ class CrashQueue {
     }
 
     next_artifact_ = (next_artifact_ + 1) % max_artifacts_;
-    return result;
+    return {std::move(result), dir_path_ + "/" + buf};
   }
 
   bool maybe_enqueue_crash(Crash* crash) {
@@ -183,6 +183,7 @@ struct Crash {
   unique_fd crash_fd;
   pid_t crash_pid;
   event* crash_event = nullptr;
+  std::string crash_path;
 
   DebuggerdDumpType crash_type;
 };
@@ -203,7 +204,7 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg);
 static void perform_request(Crash* crash) {
   unique_fd output_fd;
   if (!intercept_manager->GetIntercept(crash->crash_pid, crash->crash_type, &output_fd)) {
-    output_fd = get_crash_queue(crash)->get_output_fd();
+    std::tie(output_fd, crash->crash_path) = get_crash_queue(crash)->get_output();
   }
 
   TombstonedCrashPacket response = {
@@ -339,6 +340,10 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
     LOG(WARNING) << "unexpected crash packet type, expected kCompletedDump, received "
                  << uint32_t(request.packet_type);
     goto fail;
+  }
+
+  if (!crash->crash_path.empty()) {
+    LOG(ERROR) << "wrote tombstone to " << crash->crash_path;
   }
 
 fail:
