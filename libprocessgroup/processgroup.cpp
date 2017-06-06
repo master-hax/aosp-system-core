@@ -269,10 +269,10 @@ static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
             LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
             continue;
         }
-        LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid << " as part of process cgroup "
+        LOG(VERBOSE) << "Killing pid " << -pid << " in uid " << uid << " as part of process cgroup "
                      << initialPid;
-        if (kill(pid, signal) == -1) {
-            PLOG(WARNING) << "kill(" << pid << ", " << signal << ") failed";
+        if (kill(-pid, signal) == -1) {
+            PLOG(WARNING) << "kill(" << -pid << ", " << signal << ") failed";
         }
     }
 
