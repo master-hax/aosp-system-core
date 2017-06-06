@@ -359,7 +359,7 @@ static void set_timerslack_ns(int tid, unsigned long long slack) {
 
     // TODO: Remove when /proc/<tid>/timerslack_ns interface is backported.
     if ((tid == 0) || (tid == gettid())) {
-        if (prctl(PR_SET_TIMERSLACK, slack) == -1) {
+        if (prctl(PR_SET_TIMERSLACK, static_cast<unsigned long>(slack)) == -1) {
             SLOGE("set_timerslack_ns prctl failed: %s\n", strerror(errno));
         }
     }
