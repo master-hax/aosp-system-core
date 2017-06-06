@@ -27,11 +27,15 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <mutex>
+#include <set>
 #include <thread>
+#include <vector>
 
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
@@ -258,6 +262,10 @@ static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
         return -errno;
     }
 
+    std::set<pid_t> pgids;
+    pgids.emplace(initialPid);
+    std::set<pid_t> pids;
+
     int ret;
     pid_t pid;
     int processes = 0;
@@ -269,10 +277,33 @@ static int doKillProcessGroupOnce(uid_t uid, int initialPid, int signal) {
             LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
             continue;
         }
-        LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid << " as part of process cgroup "
-                     << initialPid;
-        if (kill(pid, signal) == -1) {
-            PLOG(WARNING) << "kill(" << pid << ", " << signal << ") failed";
+        pid_t pgid = getpgid(pid);
+        if (pgid == pid) {
+            pgids.emplace(pid);
+        } else {
+            pids.emplace(pid);
+        }
+    }
+
+    for (const auto pgid : pgids) {
+        LOG(VERBOSE) << "Killing process group " << -pgid << " in uid " << uid
+                     << " as part of process cgroup " << initialPid;
+
+        if (kill(-pgid, signal) == -1) {
+            PLOG(WARNING) << "kill(" << -pgid << ", " << signal << ") failed";
+        }
+    }
+
+    for (const auto pid : pids) {
+        pid_t pgid = getpgid(pid);
+        if (pgid == -1 || pgids.count(pgid) == 0) {
+            if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
+            LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid
+                         << " as part of process cgroup " << initialPid;
+
+            if (kill(pid, signal) == -1) {
+                PLOG(WARNING) << "kill(" << pid << ", " << signal << ") failed";
+            }
         }
     }
 
