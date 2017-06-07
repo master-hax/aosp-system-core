@@ -155,8 +155,25 @@ static int remote_write(apacket* p, atransport* t) {
     return 0;
 }
 
-static void remote_close(atransport *t)
-{
+#if ADB_HOST
+static int initial_write(apacket* p, atransport* t) {
+    // If the USB data toggle bits are desynchronized between the device and the host, the first
+    // packet in each direction might be garbage. From the host, send an empty packet, followed by
+    // two connect packets. The empty packet will either be ignored or mangled (and then ignored),
+    // so the device will get two connect packets.
+    apacket* empty = get_apacket();
+    if (remote_write(empty, t) == -1) {
+        return -1;
+    }
+    put_apacket(empty);
+
+    int rc = remote_write(p, t);
+    t->SetWriteFunction(initial_write);
+    return rc;
+}
+#endif
+
+static void remote_close(atransport* t) {
     usb_close(t->usb);
     t->usb = 0;
 }
@@ -169,11 +186,12 @@ void init_usb_transport(atransport* t, usb_handle* h) {
     D("transport: usb");
     t->close = remote_close;
     t->SetKickFunction(remote_kick);
-    t->SetWriteFunction(remote_write);
 #if ADB_HOST
     t->read_from_remote = initial_read;
+    t->SetWriteFunction(initial_write);
 #else
     t->read_from_remote = remote_read;
+    t->SetWriteFunction(remote_write);
 #endif
     t->sync_token = 1;
     t->type = kTransportUsb;
