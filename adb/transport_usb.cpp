@@ -155,8 +155,7 @@ static int remote_write(apacket* p, atransport* t) {
     return 0;
 }
 
-static void remote_close(atransport *t)
-{
+static void remote_close(atransport* t) {
     usb_close(t->usb);
     t->usb = 0;
 }
