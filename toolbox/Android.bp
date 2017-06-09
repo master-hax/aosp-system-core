@@ -42,3 +42,23 @@ cc_binary {
     symlinks: ["egrep", "fgrep"],
 
 }
+
+// Build vendor grep.
+// TODO: Add vendor_available to "grep" module and remove "grep_vendor" module
+//       when vendor_available is fully supported.
+cc_binary {
+    name: "grep_vendor",
+    stem: "grep",
+    vendor: true,
+    srcs: [
+        "upstream-netbsd/usr.bin/grep/fastgrep.c",
+        "upstream-netbsd/usr.bin/grep/file.c",
+        "upstream-netbsd/usr.bin/grep/grep.c",
+        "upstream-netbsd/usr.bin/grep/queue.c",
+        "upstream-netbsd/usr.bin/grep/util.c",
+    ],
+    cflags: common_cflags,
+    local_include_dirs: ["upstream-netbsd/include/"],
+    symlinks: ["egrep", "fgrep"],
+
+}
