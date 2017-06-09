@@ -162,7 +162,7 @@ bool is_legal_property_name(const std::string& name) {
     return true;
 }
 
-uint32_t property_set(const std::string& name, const std::string& value) {
+static uint32_t property_set_impl(const std::string& name, const std::string& value) {
     size_t valuelen = value.size();
 
     if (!is_legal_property_name(name)) {
@@ -174,12 +174,6 @@ uint32_t property_set(const std::string& name, const std::string& value) {
         LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
                    << "value too long";
         return PROP_ERROR_INVALID_VALUE;
-    }
-
-    if (name == "selinux.restorecon_recursive" && valuelen > 0) {
-        if (selinux_android_restorecon(value.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
-            LOG(ERROR) << "Failed to restorecon_recursive " << value;
-        }
     }
 
     prop_info* pi = (prop_info*) __system_property_find(name.c_str());
@@ -208,6 +202,45 @@ uint32_t property_set(const std::string& name, const std::string& value) {
     }
     property_changed(name, value);
     return PROP_SUCCESS;
+}
+
+pid_t restorecon_recursive_pid;
+static void restorecon_recursive_async(const std::string& path)
+{
+    static const std::string name = "selinux.restorecon_recursive";
+
+    while (restorecon_recursive_pid) {
+        usleep(100000); // 100ms
+    }
+    pid_t pid = fork();
+    if (pid < 0) {
+        LOGG(ERROR) << "Failed to fork for restorecon_recursive " << path;
+        return;
+    }
+    if (pid != 0) {
+        restorecon_recursive_pid = pid;
+        return;
+    }
+
+    if (path.size() > 0) {
+        if (selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
+            LOG(ERROR) << "Failed to restorecon_recursive " << path;
+        }
+    }
+    int rc = property_set_impl(name, path);
+    if (rc != PROP_SUCCESS) {
+        LOG(ERROR) << "property_set(\"" << name << "\", \"" << path << "\") failed";
+    }
+    exit(0);
+}
+
+uint32_t property_set(const std::string& name, const std::string& value) {
+    if (name == "selinux.restorecon_recursive") {
+        restorecon_recursive_async(value);
+        return PROP_SUCCESS;
+    }
+
+    return property_set_impl(name, value);
 }
 
 class SocketConnection {
