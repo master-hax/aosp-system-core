@@ -40,6 +40,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -162,7 +163,7 @@ bool is_legal_property_name(const std::string& name) {
     return true;
 }
 
-uint32_t property_set(const std::string& name, const std::string& value) {
+static uint32_t property_set_impl(const std::string& name, const std::string& value) {
     size_t valuelen = value.size();
 
     if (!is_legal_property_name(name)) {
@@ -174,12 +175,6 @@ uint32_t property_set(const std::string& name, const std::string& value) {
         LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
                    << "value too long";
         return PROP_ERROR_INVALID_VALUE;
-    }
-
-    if (name == "selinux.restorecon_recursive" && valuelen > 0) {
-        if (selinux_android_restorecon(value.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
-            LOG(ERROR) << "Failed to restorecon_recursive " << value;
-        }
     }
 
     prop_info* pi = (prop_info*) __system_property_find(name.c_str());
@@ -208,6 +203,102 @@ uint32_t property_set(const std::string& name, const std::string& value) {
     }
     property_changed(name, value);
     return PROP_SUCCESS;
+}
+
+typedef int (*property_async_func_t)(const std::string&, const std::string&);
+
+struct property_child_info {
+    std::string name;
+    std::string value;
+};
+
+static std::map<pid_t, struct property_child_info> property_children;
+
+bool property_child_exists(pid_t pid)
+{
+    return property_children.find(pid) != property_children.end();
+}
+
+void property_child_reaped(pid_t pid)
+{
+    auto i = property_children.find(pid);
+    if (i == property_children.end()) {
+        LOG(ERROR) << "Failed to find child pid " << pid;
+        return;
+    }
+    const property_child_info& info = i->second;
+    property_set_impl(info.name, info.value);
+    property_children.erase(pid);
+}
+
+static bool property_pending(const std::string& name)
+{
+    for (const auto& val : property_children) {
+        const property_child_info& info = val.second;
+        if (info.name == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static uint32_t property_set_async(const std::string& name,
+                                   const std::string& value,
+                                   property_async_func_t func)
+{
+    if (!is_legal_property_name(name)) {
+        LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: bad name";
+        return PROP_ERROR_INVALID_NAME;
+    }
+
+    if (value.size() >= PROP_VALUE_MAX) {
+        LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
+                   << "value too long";
+        return PROP_ERROR_INVALID_VALUE;
+    }
+
+    while (property_pending(name)) {
+        pause();
+    }
+
+    if (name.size() == 0) {
+        return property_set_impl(name, value);
+    }
+
+    pid_t pid = fork();
+    if (pid < 0) {
+        LOGG(ERROR) << "Failed to fork for property_set_async";
+        return PROP_ERROR_SET_FAILED;
+    }
+    if (pid != 0) {
+        property_child_info info;
+        info.name = name;
+        info.value = value;
+        property_children[pid] = info;
+        return PROP_SUCCESS;
+    }
+
+    int rc = func(name, value);
+    if (rc) {
+        LOG(ERROR) << "property_set_async(\"" << name << "\", \"" << value << "\") failed";
+    }
+    exit(0);
+    return PROP_SUCCESS; //NOTREACHED
+}
+
+static int restorecon_recursive_async(const std::string& name,
+                                      const std::string& value)
+{
+    return selinux_android_restorecon(value.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
+}
+
+uint32_t property_set(const std::string& name, const std::string& value) {
+    if (name == "selinux.restorecon_recursive" ||
+            name.find("selinux.restorecon_recursive.") == 0) {
+        return property_set_async(name, value, restorecon_recursive_async);
+    }
+
+    return property_set_impl(name, value);
 }
 
 class SocketConnection {
