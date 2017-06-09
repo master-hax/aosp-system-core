@@ -26,6 +26,8 @@ struct property_audit_data {
     const char* name;
 };
 
+extern pid_t restorecon_recursive_pid;
+
 void property_init(void);
 void property_load_boot_defaults(void);
 void load_persist_props(void);
