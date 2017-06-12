@@ -142,7 +142,7 @@ void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_pr
 }
 
 void ColdBoot::RegenerateUevents() {
-    uevent_listener_.RegenerateUevents([this](const Uevent& uevent) {
+    uevent_listener_.RegenerateUevents([this](const Uevent& uevent, const std::string&) {
         HandleFirmwareEvent(uevent);
 
         // This is the one mutable part of DeviceHandler, in which platform devices are
