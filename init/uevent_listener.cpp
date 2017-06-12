@@ -121,8 +121,8 @@ bool UeventListener::ReadUevent(Uevent* uevent) const {
 // make sure we don't overrun the socket's buffer.
 //
 
-RegenerationAction UeventListener::RegenerateUeventsForDir(DIR* d,
-                                                           RegenerateCallback callback) const {
+RegenerationAction UeventListener::RegenerateUeventsForDir(DIR* d, RegenerateCallback callback,
+                                                           const std::string& path) const {
     int dfd = dirfd(d);
 
     int fd = openat(dfd, "uevent", O_WRONLY);
@@ -132,7 +132,8 @@ RegenerationAction UeventListener::RegenerateUeventsForDir(DIR* d,
 
         Uevent uevent;
         while (ReadUevent(&uevent)) {
-            if (callback(uevent) == RegenerationAction::kStop) return RegenerationAction::kStop;
+            if (callback(uevent, path) == RegenerationAction::kStop)
+                return RegenerationAction::kStop;
         }
     }
 
@@ -147,7 +148,8 @@ RegenerationAction UeventListener::RegenerateUeventsForDir(DIR* d,
         if (d2 == 0) {
             close(fd);
         } else {
-            if (RegenerateUeventsForDir(d2.get(), callback) == RegenerationAction::kStop) {
+            std::string full_path = path + "/" + de->d_name;
+            if (RegenerateUeventsForDir(d2.get(), callback, full_path) == RegenerationAction::kStop) {
                 return RegenerationAction::kStop;
             }
         }
@@ -162,7 +164,7 @@ RegenerationAction UeventListener::RegenerateUeventsForPath(const std::string& p
     std::unique_ptr<DIR, decltype(&closedir)> d(opendir(path.c_str()), closedir);
     if (!d) return RegenerationAction::kContinue;
 
-    return RegenerateUeventsForDir(d.get(), callback);
+    return RegenerateUeventsForDir(d.get(), callback, path);
 }
 
 const char* kRegenerationPaths[] = {"/sys/class", "/sys/block", "/sys/devices"};

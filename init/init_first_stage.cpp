@@ -53,7 +53,7 @@ class FirstStageMount {
     void InitVerityDevice(const std::string& verity_device);
     bool MountPartitions();
 
-    virtual RegenerationAction UeventCallback(const Uevent& uevent);
+    virtual RegenerationAction UeventCallback(const Uevent& uevent, const std::string& path);
 
     // Pure virtual functions.
     virtual bool GetRequiredDevices() = 0;
@@ -87,7 +87,7 @@ class FirstStageMountVBootV2 : public FirstStageMount {
     ~FirstStageMountVBootV2() override = default;
 
   protected:
-    RegenerationAction UeventCallback(const Uevent& uevent) override;
+    RegenerationAction UeventCallback(const Uevent& uevent, const std::string& path) override;
     bool GetRequiredDevices() override;
     bool SetUpDmVerity(fstab_rec* fstab_rec) override;
     bool InitAvbHandle();
@@ -169,21 +169,30 @@ void FirstStageMount::InitRequiredDevices() {
 
     if (need_dm_verity_) {
         const std::string dm_path = "/devices/virtual/misc/device-mapper";
-        uevent_listener_.RegenerateUeventsForPath("/sys" + dm_path,
-                                                  [this, &dm_path](const Uevent& uevent) {
-                                                      if (uevent.path == dm_path) {
-                                                          device_handler_.HandleDeviceEvent(uevent);
-                                                          return RegenerationAction::kStop;
-                                                      }
-                                                      return RegenerationAction::kContinue;
-                                                  });
+        uevent_listener_.RegenerateUeventsForPath(
+            "/sys" + dm_path, [this, &dm_path](const Uevent& uevent, const std::string&) {
+                if (uevent.path == dm_path) {
+                    device_handler_.HandleDeviceEvent(uevent);
+                    return RegenerationAction::kStop;
+                }
+                return RegenerationAction::kContinue;
+            });
     }
 
-    uevent_listener_.RegenerateUevents(
-        [this](const Uevent& uevent) { return UeventCallback(uevent); });
+    uevent_listener_.RegenerateUevents([this](const Uevent& uevent, const std::string& path) {
+        return UeventCallback(uevent, path);
+    });
 }
 
-RegenerationAction FirstStageMount::UeventCallback(const Uevent& uevent) {
+RegenerationAction FirstStageMount::UeventCallback(const Uevent& uevent, const std::string& path) {
+    // This happens early enough that we may see uevents that we didn't request to be regenerated
+    // as the kernel continues to initialize its drivers.  To ensure that we don't see uevents out
+    // of order (e.g. partitions before their parent platform device), we skip uevents that we did
+    // not cause to be regenerated.
+    if (!android::base::StartsWith(uevent.path, path.c_str())) {
+        return RegenerationAction::kContinue;
+    }
+
     // We need platform devices to create symlinks.
     if (uevent.subsystem == "platform") {
         device_handler_.HandleDeviceEvent(uevent);
@@ -221,7 +230,7 @@ void FirstStageMount::InitVerityDevice(const std::string& verity_device) {
     const std::string syspath = "/sys/block/" + device_name;
 
     uevent_listener_.RegenerateUeventsForPath(
-        syspath, [&device_name, &verity_device, this](const Uevent& uevent) {
+        syspath, [&device_name, &verity_device, this](const Uevent& uevent, const std::string&) {
             if (uevent.device_name == device_name) {
                 LOG(VERBOSE) << "Creating dm-verity device : " << verity_device;
                 device_handler_.HandleDeviceEvent(uevent);
@@ -354,7 +363,8 @@ bool FirstStageMountVBootV2::GetRequiredDevices() {
     return true;
 }
 
-RegenerationAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
+RegenerationAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent,
+                                                          const std::string& path) {
     // Check if this uevent corresponds to one of the required partitions and store its symlinks if
     // so, in order to create FsManagerAvbHandle later.
     // Note that the parent callback removes partitions from the list of required partitions
@@ -379,7 +389,7 @@ RegenerationAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) 
         }
     }
 
-    return FirstStageMount::UeventCallback(uevent);
+    return FirstStageMount::UeventCallback(uevent, path);
 }
 
 bool FirstStageMountVBootV2::SetUpDmVerity(fstab_rec* fstab_rec) {

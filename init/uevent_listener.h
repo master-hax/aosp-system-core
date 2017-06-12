@@ -32,7 +32,7 @@ enum class RegenerationAction {
     kContinue,  // Continue regenerating uevents as we haven't seen the one(s) we're interested in.
 };
 
-using RegenerateCallback = std::function<RegenerationAction(const Uevent&)>;
+using RegenerateCallback = std::function<RegenerationAction(const Uevent&, const std::string&)>;
 using PollCallback = std::function<void(const Uevent&)>;
 
 extern const char* kRegenerationPaths[3];
@@ -48,7 +48,8 @@ class UeventListener {
 
   private:
     bool ReadUevent(Uevent* uevent) const;
-    RegenerationAction RegenerateUeventsForDir(DIR* d, RegenerateCallback callback) const;
+    RegenerationAction RegenerateUeventsForDir(DIR* d, RegenerateCallback callback,
+                                               const std::string& path) const;
 
     android::base::unique_fd device_fd_;
 };
