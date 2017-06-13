@@ -113,6 +113,9 @@ static int wait_for_file(const char *filename, int timeout)
 
     while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
         usleep(10000);
+    if (ret < 0) {
+        LERROR << __func__ << " '" << filename << "' failed (timeout: " << timeout << " secs).";
+    }
 
     return ret;
 }
