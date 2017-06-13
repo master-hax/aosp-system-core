@@ -113,6 +113,10 @@ static int wait_for_file(const char *filename, int timeout)
 
     while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
         usleep(10000);
+    if (gettime() >= timeout_time) {
+        LERROR << __func__ << " timeout! Wait for " << timeout << "sec to mount node of "
+               << filename << ",please check the partition table of mounting node";
+    }
 
     return ret;
 }
