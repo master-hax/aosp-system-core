@@ -3,4 +3,5 @@ subdirs = [
     "keymaster",
     "libtrusty",
     "storage/*",
+    "tests/*",
 ]
