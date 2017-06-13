@@ -19,6 +19,7 @@
 
 #include <android-base/logging.h>
 #include <fs_mgr.h>
+#include <chrono>
 #include "fs_mgr_priv_boot_config.h"
 
 /* The CHECK() in logging.h will use program invocation name as the tag.
@@ -43,7 +44,7 @@
 
 #define CRYPTO_TMPFS_OPTIONS "size=256m,mode=0771,uid=1000,gid=1000"
 
-#define WAIT_TIMEOUT 20
+#define WAIT_TIMEOUT 200
 
 /* fstab has the following format:
  *

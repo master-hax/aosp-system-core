@@ -105,16 +105,21 @@ static time_t gettime(void)
     return ts.tv_sec;
 }
 
-static int wait_for_file(const char *filename, int timeout)
-{
-    struct stat info;
-    time_t timeout_time = gettime() + timeout;
-    int ret = -1;
+static bool wait_for_file(const char* filename, int timeout) {
+    int time_elapsed = 0;
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point end;
 
-    while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
-        usleep(10000);
-
-    return ret;
+    do {
+        if (!access(filename, F_OK) || errno != ENOENT) {
+            return true;
+        }
+        usleep(1000);  // about 1 msecs
+        end = std::chrono::steady_clock::now();
+        time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    } while (time_elapsed < timeout);
+    LERROR << __func__ << " '" << filename << "' failed (timeout: " << timeout << " msecs)";
+    return false;
 }
 
 static void log_fs_stat(const char* blk_device, int fs_stat)
@@ -827,8 +832,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             }
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping '" << fstab->recs[i].blk_device << "' during mount_all";
+            continue;
         }
 
         if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
@@ -1030,8 +1037,9 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
         }
 
         /* First check the filesystem if requested */
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(n_blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT && !wait_for_file(n_blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mounting '" << n_blk_device << "'";
+            continue;
         }
 
         int fs_stat = 0;
@@ -1203,8 +1211,11 @@ int fs_mgr_swapon_all(struct fstab *fstab)
             fclose(zram_fp);
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mkswap for '" << fstab->recs[i].blk_device << "'";
+            ret = -1;
+            continue;
         }
 
         /* Initialize the swap area */
