@@ -44,6 +44,7 @@
 #define CRYPTO_TMPFS_OPTIONS "size=256m,mode=0771,uid=1000,gid=1000"
 
 #define WAIT_TIMEOUT 20
+#define WAIT_TIMEOUT_1S 100
 
 /* fstab has the following format:
  *
@@ -111,7 +112,7 @@
 #define DM_BUF_SIZE 4096
 
 int fs_mgr_set_blk_ro(const char *blockdev);
-int fs_mgr_test_access(const char *device);
+bool fs_mgr_wait_for_file(const char* filename, unsigned int timeout);
 bool fs_mgr_update_for_slotselect(struct fstab *fstab);
 bool is_dt_compatible();
 bool is_device_secure();

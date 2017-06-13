@@ -105,18 +105,6 @@ static time_t gettime(void)
     return ts.tv_sec;
 }
 
-static int wait_for_file(const char *filename, int timeout)
-{
-    struct stat info;
-    time_t timeout_time = gettime() + timeout;
-    int ret = -1;
-
-    while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
-        usleep(10000);
-
-    return ret;
-}
-
 static void log_fs_stat(const char* blk_device, int fs_stat)
 {
     if ((fs_stat & FS_STAT_IS_EXT4) == 0) return; // only log ext4
@@ -745,16 +733,17 @@ static int handle_encryptable(const struct fstab_rec* rec)
 }
 
 // TODO: add ueventd notifiers if they don't exist.
-// This is just doing a wait_for_device for maximum of 1s
-int fs_mgr_test_access(const char *device) {
-    int tries = 25;
-    while (tries--) {
-        if (!access(device, F_OK) || errno != ENOENT) {
-            return 0;
+// This is just doing a wait_for_device for maximum of timeout
+bool fs_mgr_wait_for_file(const char* filename, unsigned int timeout) {
+    time_t timeout_time = gettime() + timeout;
+    while (gettime() < timeout_time) {
+        if (!access(filename, F_OK) || errno != ENOENT) {
+            return true;
         }
-        usleep(40 * 1000);
+        usleep(10000);
     }
-    return -1;
+    LERROR << __func__ << " '" << filename << "' failed (timeout: " << timeout << " secs)";
+    return false;
 }
 
 bool is_device_secure() {
@@ -827,8 +816,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             }
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping '" << fstab->recs[i].blk_device << "' during mount_all";
+            continue;
         }
 
         if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
@@ -1028,8 +1019,10 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
         }
 
         /* First check the filesystem if requested */
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(n_blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(n_blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mounting '" << n_blk_device << "'";
+            continue;
         }
 
         int fs_stat = 0;
@@ -1199,8 +1192,11 @@ int fs_mgr_swapon_all(struct fstab *fstab)
             fclose(zram_fp);
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mkswap for '" << fstab->recs[i].blk_device << "'";
+            ret = -1;
+            continue;
         }
 
         /* Initialize the swap area */
