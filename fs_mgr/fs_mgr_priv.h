@@ -19,7 +19,10 @@
 
 #include <android-base/logging.h>
 #include <fs_mgr.h>
+#include <chrono>
 #include "fs_mgr_priv_boot_config.h"
+
+using namespace std::chrono_literals;
 
 /* The CHECK() in logging.h will use program invocation name as the tag.
  * Thus, the log will have prefix "init: " when libfs_mgr is statically
@@ -43,7 +46,8 @@
 
 #define CRYPTO_TMPFS_OPTIONS "size=256m,mode=0771,uid=1000,gid=1000"
 
-#define WAIT_TIMEOUT 20
+#define WAIT_TIMEOUT 20s
+#define WAIT_TIMEOUT_1S 1s
 
 /* fstab has the following format:
  *
@@ -111,7 +115,7 @@
 #define DM_BUF_SIZE 4096
 
 int fs_mgr_set_blk_ro(const char *blockdev);
-int fs_mgr_test_access(const char *device);
+bool fs_mgr_wait_for_file(const char* filename, const std::chrono::milliseconds relative_timeout);
 bool fs_mgr_update_for_slotselect(struct fstab *fstab);
 bool is_dt_compatible();
 bool is_device_secure();

@@ -133,9 +133,9 @@ AvbIOResult FsManagerAvbOps::ReadFromPartition(const char* partition, int64_t of
     std::string path = iter->second;
 
     // Ensures the device path (a symlink created by init) is ready to
-    // access. fs_mgr_test_access() will test a few iterations if the
+    // access. fs_mgr_wait_for_file() will test a few iterations if the
     // path doesn't exist yet.
-    if (fs_mgr_test_access(path.c_str()) < 0) {
+    if (!fs_mgr_wait_for_file(path.c_str(), WAIT_TIMEOUT_1S)) {
         return AVB_IO_RESULT_ERROR_NO_SUCH_PARTITION;
     }
 

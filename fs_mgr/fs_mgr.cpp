@@ -31,8 +31,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <memory>
-
 #include <android-base/file.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
@@ -50,6 +48,8 @@
 #include <linux/magic.h>
 #include <log/log_properties.h>
 #include <logwrap/logwrap.h>
+#include <memory>
+#include <thread>
 
 #include "fs_mgr.h"
 #include "fs_mgr_avb.h"
@@ -87,34 +87,30 @@ enum FsStatFlags {
     FS_STAT_EXT4_INVALID_MAGIC = 0x0800,
 };
 
-/*
- * gettime() - returns the time in seconds of the system's monotonic clock or
- * zero on error.
- */
-static time_t gettime(void)
-{
-    struct timespec ts;
-    int ret;
+bool fs_mgr_wait_for_file(const char* filename, const std::chrono::milliseconds relative_timeout) {
+    using namespace std::chrono;
+    auto start_time = std::chrono::steady_clock::now();
+    bool loop_flag = true;
+    do {
+        if (!access(filename, F_OK) || errno != ENOENT) {
+            return true;
+        }
 
-    ret = clock_gettime(CLOCK_MONOTONIC, &ts);
-    if (ret < 0) {
-        PERROR << "clock_gettime(CLOCK_MONOTONIC) failed";
-        return 0;
-    }
+        std::this_thread::sleep_for(50ms);  // sleep 50 msecs
+        auto now = std::chrono::steady_clock::now();
+        auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
 
-    return ts.tv_sec;
-}
+        if (time_elapsed < relative_timeout) {
+            loop_flag = true;
+        } else {
+            loop_flag = false;
+        }
 
-static int wait_for_file(const char *filename, int timeout)
-{
-    struct stat info;
-    time_t timeout_time = gettime() + timeout;
-    int ret = -1;
+    } while (loop_flag);
 
-    while (gettime() < timeout_time && ((ret = stat(filename, &info)) < 0))
-        usleep(10000);
-
-    return ret;
+    LERROR << __func__ << " '" << filename
+           << "' failed (relative_timeout: " << relative_timeout.count() << " msecs)";
+    return false;
 }
 
 static void log_fs_stat(const char* blk_device, int fs_stat)
@@ -744,19 +740,6 @@ static int handle_encryptable(const struct fstab_rec* rec)
     }
 }
 
-// TODO: add ueventd notifiers if they don't exist.
-// This is just doing a wait_for_device for maximum of 1s
-int fs_mgr_test_access(const char *device) {
-    int tries = 25;
-    while (tries--) {
-        if (!access(device, F_OK) || errno != ENOENT) {
-            return 0;
-        }
-        usleep(40 * 1000);
-    }
-    return -1;
-}
-
 bool is_device_secure() {
     int ret = -1;
     char value[PROP_VALUE_MAX];
@@ -827,8 +810,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             }
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping '" << fstab->recs[i].blk_device << "' during mount_all";
+            continue;
         }
 
         if (fstab->recs[i].fs_mgr_flags & MF_AVB) {
@@ -1030,8 +1015,10 @@ int fs_mgr_do_mount(struct fstab *fstab, const char *n_name, char *n_blk_device,
         }
 
         /* First check the filesystem if requested */
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(n_blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(n_blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mounting '" << n_blk_device << "'";
+            continue;
         }
 
         int fs_stat = 0;
@@ -1203,8 +1190,11 @@ int fs_mgr_swapon_all(struct fstab *fstab)
             fclose(zram_fp);
         }
 
-        if (fstab->recs[i].fs_mgr_flags & MF_WAIT) {
-            wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT);
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !fs_mgr_wait_for_file(fstab->recs[i].blk_device, WAIT_TIMEOUT)) {
+            LERROR << "Skipping mkswap for '" << fstab->recs[i].blk_device << "'";
+            ret = -1;
+            continue;
         }
 
         /* Initialize the swap area */
