@@ -1327,6 +1327,10 @@ int adb_commandline(int argc, const char** argv) {
     signal(SIGPIPE, SIG_IGN);
 #endif
 
+    // The server needs to ensure this directory exists, but you won't see errors
+    // if it fails, so do it here.
+    adb_get_android_dir_path();
+
     const char* server_host_str = nullptr;
     const char* server_port_str = nullptr;
     const char* server_socket_str = nullptr;
