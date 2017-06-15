@@ -27,6 +27,68 @@
 #include <utils/FileMap.h>
 #include <ziparchive/zip_archive.h>
 
+static const char* kErrorMessages[] = {
+  "Unknown return code.",
+  "Iteration ended",
+  "Zlib error",
+  "Invalid file",
+  "Invalid handle",
+  "Duplicate entries in archive",
+  "Empty archive",
+  "Entry not found",
+  "Invalid offset",
+  "Inconsistent information",
+  "Invalid entry name",
+  "I/O Error",
+  "File mapping failed"
+};
+
+static const int32_t kErrorMessageUpperBound = 0;
+
+static const int32_t kIterationEnd = -1;
+
+// We encountered a Zlib error when inflating a stream from this file.
+// Usually indicates file corruption.
+static const int32_t kZlibError = -2;
+
+// The input file cannot be processed as a zip archive. Usually because
+// it's too small, too large or does not have a valid signature.
+static const int32_t kInvalidFile = -3;
+
+// An invalid iteration / ziparchive handle was passed in as an input
+// argument.
+static const int32_t kInvalidHandle = -4;
+
+// The zip archive contained two (or possibly more) entries with the same
+// name.
+static const int32_t kDuplicateEntry = -5;
+
+// The zip archive contains no entries.
+static const int32_t kEmptyArchive = -6;
+
+// The specified entry was not found in the archive.
+static const int32_t kEntryNotFound = -7;
+
+// The zip archive contained an invalid local file header pointer.
+static const int32_t kInvalidOffset = -8;
+
+// The zip archive contained inconsistent entry information. This could
+// be because the central directory & local file header did not agree, or
+// if the actual uncompressed length or crc32 do not match their declared
+// values.
+static const int32_t kInconsistentInformation = -9;
+
+// An invalid entry name was encountered.
+static const int32_t kInvalidEntryName = -10;
+
+// An I/O related system call (read, lseek, ftruncate, map) failed.
+static const int32_t kIoError = -11;
+
+// We were not able to mmap the central directory or entry contents.
+static const int32_t kMmapFailed = -12;
+
+static const int32_t kErrorMessageLowerBound = -13;
+
 class MappedZipFile {
  public:
   explicit MappedZipFile(const int fd) :
