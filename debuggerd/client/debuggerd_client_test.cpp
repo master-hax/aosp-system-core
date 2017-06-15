@@ -37,7 +37,7 @@ using namespace std::chrono_literals;
 using android::base::unique_fd;
 
 TEST(debuggerd_client, race) {
-  static constexpr int THREAD_COUNT = 1024;
+  static constexpr int THREAD_COUNT = 128;
   pid_t forkpid = fork();
 
   ASSERT_NE(-1, forkpid);
