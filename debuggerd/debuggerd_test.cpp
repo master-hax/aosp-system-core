@@ -51,6 +51,9 @@ using android::base::unique_fd;
 #define ARCH_SUFFIX ""
 #endif
 
+#define FRAME_READ   "read"
+#define FRAME_TGKILL "tgkill"
+
 constexpr char kWaitForGdbKey[] = "debug.debuggerd.wait_for_gdb";
 
 #define TIMEOUT(seconds, expr)                                     \
@@ -87,6 +90,8 @@ constexpr char kWaitForGdbKey[] = "debug.debuggerd.wait_for_gdb";
       FAIL() << "regex mismatch: expected to not find " << (pattern) << " in: \n" << (str); \
     }                                                                                       \
   } while (0)
+
+#define ASSERT_BACKTRACE_FRAME(result, frame_name) ASSERT_MATCH(result, R"((#\d\d pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \()" frame_name R"())")
 
 static void tombstoned_intercept(pid_t target_pid, unique_fd* intercept_fd, unique_fd* output_fd,
                                  InterceptStatus* status, DebuggerdDumpType intercept_type) {
@@ -307,7 +312,7 @@ TEST_F(CrasherTest, abort) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_TGKILL);
 }
 
 TEST_F(CrasherTest, signal) {
@@ -443,7 +448,7 @@ TEST_F(CrasherTest, backtrace) {
   FinishIntercept(&intercept_result);
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+  /system/lib)" ARCH_SUFFIX R"(/libc.so \(read\+)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_READ);
 
   int status;
   ASSERT_EQ(0, waitpid(crasher_pid, &status, WNOHANG | WUNTRACED));
@@ -454,7 +459,7 @@ TEST_F(CrasherTest, backtrace) {
   FinishIntercept(&intercept_result);
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_TGKILL);
 }
 
 TEST_F(CrasherTest, PR_SET_DUMPABLE_0_crash) {
@@ -474,7 +479,7 @@ TEST_F(CrasherTest, PR_SET_DUMPABLE_0_crash) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_TGKILL);
 }
 
 TEST_F(CrasherTest, capabilities) {
@@ -531,7 +536,7 @@ TEST_F(CrasherTest, capabilities) {
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
   ConsumeFd(std::move(output_fd), &result);
   ASSERT_MATCH(result, R"(name: thread_name\s+>>> .+debuggerd_test(32|64) <<<)");
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_TGKILL);
 }
 
 TEST_F(CrasherTest, fake_pid) {
@@ -562,7 +567,7 @@ TEST_F(CrasherTest, fake_pid) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(#00 pc [0-9a-f]+\s+ /system/lib)" ARCH_SUFFIX R"(/libc.so \(tgkill)");
+  ASSERT_BACKTRACE_FRAME(result, FRAME_TGKILL);
 }
 
 TEST(crash_dump, zombie) {
