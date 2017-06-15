@@ -1,0 +1,9 @@
+Presubmit-Ready+1: Colin Cross <ccross@android.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Verified+1: Colin Cross <ccross@android.com>
+Autosubmit+1: Colin Cross <ccross@android.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Thu, 15 Jun 2017 23:10:14 +0000
+Reviewed-on: https://android-review.googlesource.com/415041
+Project: platform/system/core
+Branch: refs/heads/master
