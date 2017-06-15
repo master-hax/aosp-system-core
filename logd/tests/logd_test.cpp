@@ -933,8 +933,8 @@ TEST(logd, getEventTag_newentry) {
 }
 
 #ifdef __ANDROID__
-static inline int32_t get4LE(const char* src) {
-    return src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+static inline int32_t getLogTag(const char* src) {
+    return le32toh(*(reinterpret_cast<const uint32_t*>(src)));
 }
 #endif
 
@@ -995,7 +995,7 @@ void __android_log_btwrite_multiple__helper(int count) {
         char* eventData = log_msg.msg();
         if (!eventData) continue;
 
-        uint32_t tag = get4LE(eventData);
+        uint32_t tag = getLogTag(eventData);
 
         if ((eventData[4] == EVENT_TYPE_LONG) &&
             (log_msg.entry.len == (4 + 1 + 8))) {
@@ -1151,7 +1151,7 @@ static int count_avc(pid_t pid) {
         char* eventData = log_msg.msg();
         if (!eventData) continue;
 
-        uint32_t tag = get4LE(eventData);
+        uint32_t tag = getLogTag(eventData);
         if (tag != AUDITD_LOG_TAG) continue;
 
         if (eventData[4] != EVENT_TYPE_STRING) continue;
