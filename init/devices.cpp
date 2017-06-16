@@ -91,6 +91,38 @@ static bool FindVbdDevicePrefix(const std::string& path, std::string* result) {
     return true;
 }
 
+// Given a path that may start with a platform device, find the parent platform device by finding a
+// parent directory with a 'subsystem' symlink that points to the platform bus.
+// If it doesn't start with a platform device, return false
+static bool FindPlatformDevice(std::string path, std::string* platform_device_path) {
+    platform_device_path->clear();
+
+    static const std::string kSysMountPoint = "/sys";
+    // Uevents don't contain the mount point, so we need to add it here.
+    path.insert(0, kSysMountPoint);
+
+    std::string directory = android::base::Dirname(path);
+
+    while (directory != "/" && directory != ".") {
+        std::string subsystem_link_path;
+        if (android::base::Realpath(directory + "/subsystem", &subsystem_link_path) &&
+            subsystem_link_path == "/sys/bus/platform") {
+            // We need to remove the mount point that we added above before returning.
+            directory.erase(0, kSysMountPoint.size());
+            *platform_device_path = directory;
+            return true;
+        }
+
+        auto last_slash = path.rfind('/');
+        if (last_slash == std::string::npos) return false;
+
+        path.erase(last_slash);
+        directory = android::base::Dirname(path);
+    }
+
+    return false;
+}
+
 Permissions::Permissions(const std::string& name, mode_t perm, uid_t uid, gid_t gid)
     : name_(name), perm_(perm), uid_(uid), gid_(gid), prefix_(false), wildcard_(false) {
     // Set 'prefix_' or 'wildcard_' based on the below cases:
@@ -145,24 +177,6 @@ void SysfsPermissions::SetPermissions(const std::string& path) const {
             PLOG(ERROR) << "chmod(" << attribute_file << ", " << perm() << ") failed";
         }
     }
-}
-
-// Given a path that may start with a platform device, find the length of the
-// platform device prefix.  If it doesn't start with a platform device, return false
-bool PlatformDeviceList::Find(const std::string& path, std::string* out_path) const {
-    out_path->clear();
-    // platform_devices is searched backwards, since parents are added before their children,
-    // and we want to match as deep of a child as we can.
-    for (auto it = platform_devices_.crbegin(); it != platform_devices_.crend(); ++it) {
-        auto platform_device_path_length = it->length();
-        if (platform_device_path_length < path.length() &&
-            path[platform_device_path_length] == '/' &&
-            android::base::StartsWith(path, it->c_str())) {
-            *out_path = *it;
-            return true;
-        }
-    }
-    return false;
 }
 
 void DeviceHandler::FixupSysPermissions(const std::string& upath,
@@ -258,7 +272,7 @@ out:
 
 std::vector<std::string> DeviceHandler::GetCharacterDeviceSymlinks(const Uevent& uevent) const {
     std::string parent_device;
-    if (!platform_devices_.Find(uevent.path, &parent_device)) return {};
+    if (!FindPlatformDevice(uevent.path, &parent_device)) return {};
 
     // skip path to the parent driver
     std::string path = uevent.path.substr(parent_device.length());
@@ -316,7 +330,7 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
     std::string device;
     std::string type;
 
-    if (platform_devices_.Find(uevent.path, &device)) {
+    if (FindPlatformDevice(uevent.path, &device)) {
         // Skip /devices/platform or /devices/ if present
         static const std::string devices_platform_prefix = "/devices/platform/";
         static const std::string devices_prefix = "/devices/";
@@ -388,14 +402,6 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
     }
 }
 
-void DeviceHandler::HandlePlatformDeviceEvent(const Uevent& uevent) {
-    if (uevent.action == "add") {
-        platform_devices_.Add(uevent.path);
-    } else if (uevent.action == "remove") {
-        platform_devices_.Remove(uevent.path);
-    }
-}
-
 void DeviceHandler::HandleBlockDeviceEvent(const Uevent& uevent) const {
     // if it's not a /dev device, nothing to do
     if (uevent.major < 0 || uevent.minor < 0) return;
@@ -458,8 +464,6 @@ void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
 
     if (uevent.subsystem == "block") {
         HandleBlockDeviceEvent(uevent);
-    } else if (uevent.subsystem == "platform") {
-        HandlePlatformDeviceEvent(uevent);
     } else {
         HandleGenericDeviceEvent(uevent);
     }

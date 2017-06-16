@@ -20,30 +20,13 @@
 #include <vector>
 
 #include <android-base/scopeguard.h>
+#include <android-base/test_utils.h>
 #include <gtest/gtest.h>
 
 class DeviceHandlerTester {
   public:
-    void AddPlatformDevice(const std::string& path) {
-        Uevent uevent = {
-            .action = "add", .subsystem = "platform", .path = path,
-        };
-        device_handler_.HandlePlatformDeviceEvent(uevent);
-    }
-
-    void RemovePlatformDevice(const std::string& path) {
-        Uevent uevent = {
-            .action = "remove", .subsystem = "platform", .path = path,
-        };
-        device_handler_.HandlePlatformDeviceEvent(uevent);
-    }
-
-    void TestGetSymlinks(const std::string& platform_device_name, const Uevent& uevent,
+    void TestGetSymlinks(const std::string&, const Uevent& uevent,
                          const std::vector<std::string> expected_links, bool block) {
-        AddPlatformDevice(platform_device_name);
-        auto platform_device_remover = android::base::make_scope_guard(
-            [this, &platform_device_name]() { RemovePlatformDevice(platform_device_name); });
-
         std::vector<std::string> result;
         if (block) {
             result = device_handler_.GetBlockDeviceSymlinks(uevent);
@@ -64,30 +47,6 @@ class DeviceHandlerTester {
   private:
     DeviceHandler device_handler_;
 };
-
-TEST(device_handler, PlatformDeviceList) {
-    PlatformDeviceList platform_device_list;
-
-    platform_device_list.Add("/devices/platform/some_device_name");
-    platform_device_list.Add("/devices/platform/some_device_name/longer");
-    platform_device_list.Add("/devices/platform/other_device_name");
-    EXPECT_EQ(3U, platform_device_list.size());
-
-    std::string out_path;
-    EXPECT_FALSE(platform_device_list.Find("/devices/platform/not_found", &out_path));
-    EXPECT_EQ("", out_path);
-
-    EXPECT_FALSE(platform_device_list.Find("/devices/platform/some_device_name_with_same_prefix",
-                                           &out_path));
-
-    EXPECT_TRUE(platform_device_list.Find("/devices/platform/some_device_name/longer/longer_child",
-                                          &out_path));
-    EXPECT_EQ("/devices/platform/some_device_name/longer", out_path);
-
-    EXPECT_TRUE(
-        platform_device_list.Find("/devices/platform/some_device_name/other_child", &out_path));
-    EXPECT_EQ("/devices/platform/some_device_name", out_path);
-}
 
 TEST(device_handler, get_character_device_symlinks_success) {
     const char* platform_device = "/devices/platform/some_device_name";
