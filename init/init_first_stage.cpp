@@ -176,17 +176,11 @@ void FirstStageMount::InitRequiredDevices() {
                                                   });
     }
 
-    uevent_listener_.RegenerateUevents(
-        [this](const Uevent& uevent) { return UeventCallback(uevent); });
+    uevent_listener_.RegenerateUeventsForPath(
+        "/sys/block", [this](const Uevent& uevent) { return UeventCallback(uevent); });
 }
 
 RegenerationAction FirstStageMount::UeventCallback(const Uevent& uevent) {
-    // We need platform devices to create symlinks.
-    if (uevent.subsystem == "platform") {
-        device_handler_.HandleDeviceEvent(uevent);
-        return RegenerationAction::kContinue;
-    }
-
     // Ignores everything that is not a block device.
     if (uevent.subsystem != "block") {
         return RegenerationAction::kContinue;
