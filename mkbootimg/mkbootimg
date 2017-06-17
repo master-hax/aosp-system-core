@@ -17,6 +17,7 @@ from __future__ import print_function
 from sys import argv, exit, stderr
 from argparse import ArgumentParser, FileType, Action
 from os import fstat
+from os.path import basename
 from struct import pack
 from hashlib import sha1
 import sys
@@ -47,6 +48,7 @@ def pad_file(f, padding):
 
 def write_header(args):
     BOOT_MAGIC = 'ANDROID!'.encode()
+    flag = 1 if basename(args.second.name) == "dtb" else 0
     args.output.write(pack('8s', BOOT_MAGIC))
     args.output.write(pack('10I',
         filesize(args.kernel),                          # size in bytes
@@ -57,7 +59,7 @@ def write_header(args):
         args.base + args.second_offset,                 # physical load addr
         args.base + args.tags_offset,                   # physical addr for kernel tags
         args.pagesize,                                  # flash page size we assume
-        0,                                              # future expansion: MUST be 0
+        flag,                                           # flag
         (args.os_version << 11) | args.os_patch_level)) # os version and patch level
     args.output.write(pack('16s', args.board.encode())) # asciiz product name
     args.output.write(pack('512s', args.cmdline[:512].encode()))

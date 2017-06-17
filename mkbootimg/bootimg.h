@@ -28,6 +28,10 @@ typedef struct boot_img_hdr boot_img_hdr;
 #define BOOT_ARGS_SIZE 512
 #define BOOT_EXTRA_ARGS_SIZE 1024
 
+enum {
+    FLAG_DTB_IN_SECOND = 0x01
+};
+
 struct boot_img_hdr
 {
     uint8_t magic[BOOT_MAGIC_SIZE];
@@ -43,7 +47,7 @@ struct boot_img_hdr
 
     uint32_t tags_addr;    /* physical addr for kernel tags */
     uint32_t page_size;    /* flash page size we assume */
-    uint32_t unused;       /* reserved for future expansion: MUST be 0 */
+    uint32_t flag;         /* see FLAG_XXX */
 
     /* operating system version and security patch level; for
      * version "A.B.C" and patch level "Y-M-D":
