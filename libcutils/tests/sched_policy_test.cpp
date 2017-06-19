@@ -91,7 +91,7 @@ TEST(SchedPolicy, get_sched_policy) {
     EXPECT_NE(nullptr, policyName);
     EXPECT_STRNE("error", policyName);
 
-    ASSERT_EQ(0, set_sched_policy(0, SP_BACKGROUND));
+    ASSERT_EQ(0, set_cpuset_policy(0, SP_BACKGROUND));
     SchedPolicy newPolicy;
     ASSERT_EQ(0, get_sched_policy(0, &newPolicy));
     EXPECT_EQ(SP_BACKGROUND, newPolicy);
