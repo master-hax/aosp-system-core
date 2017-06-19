@@ -437,7 +437,34 @@ int set_sched_policy(int tid, SchedPolicy policy)
             if (errno != ESRCH && errno != ENOENT)
                 return -errno;
         }
+    }
 
+    if (cpusets_enabled()) {
+        int fd = -1;
+        switch (policy) {
+        case SP_BACKGROUND:
+            fd = bg_cpuset_fd;
+            break;
+        case SP_FOREGROUND:
+        case SP_AUDIO_APP:
+        case SP_AUDIO_SYS:
+            fd = fg_cpuset_fd;
+            break;
+        case SP_TOP_APP :
+            fd = ta_cpuset_fd;
+            break;
+        case SP_SYSTEM:
+            fd = system_bg_cpuset_fd;
+            break;
+        default:
+            fd = -1;
+            break;
+        }
+
+        if (fd > 0 && add_tid_to_cgroup(tid, fd) != 0) {
+            if (errno != ESRCH && errno != ENOENT)
+                return -errno;
+        }
     }
 
     set_timerslack_ns(tid, policy == SP_BACKGROUND ? TIMER_SLACK_BG : TIMER_SLACK_FG);
