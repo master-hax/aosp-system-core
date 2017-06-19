@@ -153,6 +153,34 @@ bool ReadFully(int fd, void* data, size_t byte_count) {
   return true;
 }
 
+bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off64_t offset) {
+  uint8_t* p = reinterpret_cast<uint8_t*>(data);
+  while (byte_count > 0) {
+#if !defined(_WIN32)
+    ssize_t n = TEMP_FAILURE_RETRY(pread(fd, p, byte_count, offset));
+    if (n <= 0) return false;
+    p += n;
+    byte_count -= n;
+    offset += n;
+#else
+    const size_t bytes_to_read = std::min<size_t>(std::numeric_limits<DWORD>::max(), byte_count);
+    DWORD bytes_read;
+    OVERLAPPED overlapped;
+    memset(&overlapped, 0, sizeof(OVERLAPPED));
+    overlapped.Offset = static_cast<DWORD>(offset);
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+    if (!ReadFile(reinterpret_cast<HANDLE>(_get_osfhandle(fd)), p,
+                  static_cast<DWORD>(bytes_to_read), &bytes_read, &overlapped)) {
+      return false;
+    }
+    p += static_cast<size_t>(bytes_read);
+    byte_count -= static_cast<size_t>(bytes_read);
+    offset += static_cast<size_t>(bytes_read);
+#endif
+  }
+  return true;
+}
+
 bool WriteFully(int fd, const void* data, size_t byte_count) {
   const uint8_t* p = reinterpret_cast<const uint8_t*>(data);
   size_t remaining = byte_count;
