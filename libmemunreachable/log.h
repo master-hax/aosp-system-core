@@ -27,6 +27,7 @@
 #define MEM_ALOGW(...) async_safe_format_log(ANDROID_LOG_WARN, LOG_TAG, ##__VA_ARGS__)
 #define MEM_ALOGI(...) async_safe_format_log(ANDROID_LOG_INFO, LOG_TAG, ##__VA_ARGS__)
 #define MEM_ALOGV(...) async_safe_format_log(ANDROID_LOG_VERBOSE, LOG_TAG, ##__VA_ARGS__)
+#define MEM_ALOGD(...)
 
 #define MEM_LOG_ALWAYS_FATAL(...) async_safe_fatal(__VA_ARGS__)
 
@@ -38,6 +39,7 @@
 #define MEM_ALOGE ALOGE
 #define MEM_ALOGV ALOGV
 #define MEM_ALOGI ALOGI
+#define MEM_ALOGD(...)
 
 #define MEM_LOG_ALWAYS_FATAL LOG_ALWAYS_FATAL
 
