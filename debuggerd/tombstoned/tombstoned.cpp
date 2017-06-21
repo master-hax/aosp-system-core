@@ -345,7 +345,8 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
   }
 
   if (!crash->crash_path.empty()) {
-    LOG(ERROR) << "Tombstone written to: " << crash->crash_path;
+    LOG(ERROR) << ((crash->crash_type == kDebuggerdJavaBacktrace) ? "Traces" : "Tombstone")
+               << " for pid " << crash->crash_pid << " written to: " << crash->crash_path;
   }
 
 fail:
