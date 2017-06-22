@@ -14,5 +14,6 @@ phony {
         "toolbox",
         "toybox",
         "toybox_vendor",
+        "logcat_vendor",
     ],
 }
