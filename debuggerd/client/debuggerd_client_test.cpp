@@ -27,6 +27,7 @@
 #include <gtest/gtest.h>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -37,7 +38,11 @@ using namespace std::chrono_literals;
 using android::base::unique_fd;
 
 TEST(debuggerd_client, race) {
-  static constexpr int THREAD_COUNT = 1024;
+  static int THREAD_COUNT = 1024;
+  if (android::base::GetProperty("ro.build.characteristics", "") == "embedded") {
+    // 128 is the realistic number for iot devices.
+    THREAD_COUNT = 128;
+  }
   pid_t forkpid = fork();
 
   ASSERT_NE(-1, forkpid);
