@@ -47,8 +47,11 @@
 #error "Do not include init.h in files used by ueventd or watchdogd; it will expose init's globals"
 #endif
 
-using android::base::boot_clock;
-using namespace std::literals::string_literals;
+using namespace std::chrono_literals;
+using namespace std::string_literals;
+
+namespace android {
+namespace init {
 
 // DecodeUid() - decodes and returns the given string, which can be either the
 // numeric or name representation, into the integer uid or gid. Returns
@@ -92,7 +95,7 @@ int CreateSocket(const char* name, int type, bool passcred, mode_t perm, uid_t u
         }
     }
 
-    android::base::unique_fd fd(socket(PF_UNIX, type, 0));
+    base::unique_fd fd(socket(PF_UNIX, type, 0));
     if (fd < 0) {
         PLOG(ERROR) << "Failed to open socket '" << name << "'";
         return -1;
@@ -163,8 +166,7 @@ bool ReadFile(const std::string& path, std::string* content, std::string* err) {
     content->clear();
     *err = "";
 
-    android::base::unique_fd fd(
-        TEMP_FAILURE_RETRY(open(path.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC)));
+    base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC)));
     if (fd == -1) {
         *err = "Unable to open '" + path + "': " + strerror(errno);
         return false;
@@ -182,7 +184,7 @@ bool ReadFile(const std::string& path, std::string* content, std::string* err) {
         return false;
     }
 
-    if (!android::base::ReadFdToString(fd, content)) {
+    if (!base::ReadFdToString(fd, content)) {
         *err = "Unable to read '" + path + "': " + strerror(errno);
         return false;
     }
@@ -192,13 +194,13 @@ bool ReadFile(const std::string& path, std::string* content, std::string* err) {
 bool WriteFile(const std::string& path, const std::string& content, std::string* err) {
     *err = "";
 
-    android::base::unique_fd fd(TEMP_FAILURE_RETRY(
+    base::unique_fd fd(TEMP_FAILURE_RETRY(
         open(path.c_str(), O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0600)));
     if (fd == -1) {
         *err = "Unable to open '" + path + "': " + strerror(errno);
         return false;
     }
-    if (!android::base::WriteStringToFd(content, fd)) {
+    if (!base::WriteStringToFd(content, fd)) {
         *err = "Unable to write to '" + path + "': " + strerror(errno);
         return false;
     }
@@ -221,8 +223,8 @@ int mkdir_recursive(const std::string& path, mode_t mode, selabel_handle* sehand
 }
 
 int wait_for_file(const char* filename, std::chrono::nanoseconds timeout) {
-    boot_clock::time_point timeout_time = boot_clock::now() + timeout;
-    while (boot_clock::now() < timeout_time) {
+    base::boot_clock::time_point timeout_time = base::boot_clock::now() + timeout;
+    while (base::boot_clock::now() < timeout_time) {
         struct stat sb;
         if (stat(filename, &sb) != -1) return 0;
 
@@ -234,10 +236,10 @@ int wait_for_file(const char* filename, std::chrono::nanoseconds timeout) {
 void import_kernel_cmdline(bool in_qemu,
                            const std::function<void(const std::string&, const std::string&, bool)>& fn) {
     std::string cmdline;
-    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    base::ReadFileToString("/proc/cmdline", &cmdline);
 
-    for (const auto& entry : android::base::Split(android::base::Trim(cmdline), " ")) {
-        std::vector<std::string> pieces = android::base::Split(entry, "=");
+    for (const auto& entry : base::Split(base::Trim(cmdline), " ")) {
+        std::vector<std::string> pieces = base::Split(entry, "=");
         if (pieces.size() == 2) {
             fn(pieces[0], pieces[1], in_qemu);
         }
@@ -271,8 +273,7 @@ int make_dir(const char* path, mode_t mode, selabel_handle* sehandle) {
  */
 std::string bytes_to_hex(const uint8_t* bytes, size_t bytes_len) {
     std::string hex("0x");
-    for (size_t i = 0; i < bytes_len; i++)
-        android::base::StringAppendF(&hex, "%02x", bytes[i]);
+    for (size_t i = 0; i < bytes_len; i++) base::StringAppendF(&hex, "%02x", bytes[i]);
     return hex;
 }
 
@@ -349,7 +350,7 @@ bool expand_props(const std::string& src, std::string* dst) {
             return false;
         }
 
-        std::string prop_val = android::base::GetProperty(prop_name, "");
+        std::string prop_val = base::GetProperty(prop_name, "");
         if (prop_val.empty()) {
             if (def_val.empty()) {
                 LOG(ERROR) << "property '" << prop_name << "' doesn't exist while expanding '" << src << "'";
@@ -379,7 +380,7 @@ std::ostream& operator<<(std::ostream& os, const Timer& t) {
 // Returns true if the read is success, false otherwise.
 bool read_android_dt_file(const std::string& sub_path, std::string* dt_content) {
     const std::string file_name = kAndroidDtDir + sub_path;
-    if (android::base::ReadFileToString(file_name, dt_content)) {
+    if (base::ReadFileToString(file_name, dt_content)) {
         if (!dt_content->empty()) {
             dt_content->pop_back();  // Trims the trailing '\0' out.
             return true;
@@ -397,3 +398,6 @@ bool is_android_dt_value_expected(const std::string& sub_path, const std::string
     }
     return false;
 }
+
+}  // namespace init
+}  // namespace android

@@ -38,6 +38,9 @@
 
 using namespace std::chrono_literals;
 
+namespace android {
+namespace init {
+
 // Class Declarations
 // ------------------
 class FirstStageMount {
@@ -187,7 +190,7 @@ bool FirstStageMount::InitRequiredDevices() {
 
     if (!required_devices_partition_names_.empty()) {
         LOG(ERROR) << __PRETTY_FUNCTION__ << ": partition(s) not found: "
-                   << android::base::Join(required_devices_partition_names_, ", ");
+                   << base::Join(required_devices_partition_names_, ", ");
         return false;
     }
 
@@ -362,7 +365,7 @@ bool FirstStageMountVBootV2::GetRequiredDevices() {
             LOG(ERROR) << "Missing vbmeta parts in device tree";
             return false;
         }
-        std::vector<std::string> partitions = android::base::Split(device_tree_vbmeta_parts_, ",");
+        std::vector<std::string> partitions = base::Split(device_tree_vbmeta_parts_, ",");
         std::string ab_suffix = fs_mgr_get_slot_suffix();
         for (const auto& partition : partitions) {
             // required_devices_partition_names_ is of type std::set so it's not an issue
@@ -493,3 +496,6 @@ void SetInitAvbVersionInRecovery() {
     }
     setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
 }
+
+}  // namespace init
+}  // namespace android

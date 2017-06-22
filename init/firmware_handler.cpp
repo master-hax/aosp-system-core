@@ -30,10 +30,15 @@
 
 #include "util.h"
 
+using namespace std::chrono_literals;
+
+namespace android {
+namespace init {
+
 static void LoadFirmware(const Uevent& uevent, const std::string& root, int fw_fd, size_t fw_size,
                          int loading_fd, int data_fd) {
     // Start transfer.
-    android::base::WriteFully(loading_fd, "1", 1);
+    base::WriteFully(loading_fd, "1", 1);
 
     // Copy the firmware.
     int rc = sendfile(data_fd, fw_fd, nullptr, fw_size);
@@ -44,7 +49,7 @@ static void LoadFirmware(const Uevent& uevent, const std::string& root, int fw_f
 
     // Tell the firmware whether to abort or commit.
     const char* response = (rc != -1) ? "0" : "-1";
-    android::base::WriteFully(loading_fd, response, strlen(response));
+    base::WriteFully(loading_fd, response, strlen(response));
 }
 
 static bool IsBooting() {
@@ -60,13 +65,13 @@ static void ProcessFirmwareEvent(const Uevent& uevent) {
     std::string loading = root + "/loading";
     std::string data = root + "/data";
 
-    android::base::unique_fd loading_fd(open(loading.c_str(), O_WRONLY | O_CLOEXEC));
+    base::unique_fd loading_fd(open(loading.c_str(), O_WRONLY | O_CLOEXEC));
     if (loading_fd == -1) {
         PLOG(ERROR) << "couldn't open firmware loading fd for " << uevent.firmware;
         return;
     }
 
-    android::base::unique_fd data_fd(open(data.c_str(), O_WRONLY | O_CLOEXEC));
+    base::unique_fd data_fd(open(data.c_str(), O_WRONLY | O_CLOEXEC));
     if (data_fd == -1) {
         PLOG(ERROR) << "couldn't open firmware data fd for " << uevent.firmware;
         return;
@@ -78,7 +83,7 @@ static void ProcessFirmwareEvent(const Uevent& uevent) {
 try_loading_again:
     for (size_t i = 0; i < arraysize(firmware_dirs); i++) {
         std::string file = firmware_dirs[i] + uevent.firmware;
-        android::base::unique_fd fw_fd(open(file.c_str(), O_RDONLY | O_CLOEXEC));
+        base::unique_fd fw_fd(open(file.c_str(), O_RDONLY | O_CLOEXEC));
         struct stat sb;
         if (fw_fd != -1 && fstat(fw_fd, &sb) != -1) {
             LoadFirmware(uevent, root, fw_fd, sb.st_size, loading_fd, data_fd);
@@ -130,3 +135,6 @@ void HandleFirmwareEvent(const Uevent& uevent) {
 
     waitpid(pid, nullptr, 0);
 }
+
+}  // namespace init
+}  // namespace android

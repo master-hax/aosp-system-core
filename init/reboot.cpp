@@ -51,7 +51,10 @@
 #include "property_service.h"
 #include "service.h"
 
-using android::base::StringPrintf;
+using namespace std::chrono_literals;
+
+namespace android {
+namespace init {
 
 // represents umount status during reboot / shutdown.
 enum UmountStat {
@@ -107,11 +110,11 @@ class MountEntry {
     }
 
     static bool IsBlockDevice(const struct mntent& mntent) {
-        return android::base::StartsWith(mntent.mnt_fsname, "/dev/block");
+        return base::StartsWith(mntent.mnt_fsname, "/dev/block");
     }
 
     static bool IsEmulatedDevice(const struct mntent& mntent) {
-        return android::base::StartsWith(mntent.mnt_fsname, "/data/");
+        return base::StartsWith(mntent.mnt_fsname, "/data/");
     }
 
   private:
@@ -129,7 +132,7 @@ class MountEntry {
 static void TurnOffBacklight() {
     static constexpr char OFF[] = "0";
 
-    android::base::WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
+    base::WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
 
     static const char backlightDir[] = "/sys/class/backlight";
     std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(backlightDir), closedir);
@@ -143,8 +146,8 @@ static void TurnOffBacklight() {
             continue;
         }
 
-        std::string fileName = StringPrintf("%s/%s/brightness", backlightDir, dp->d_name);
-        android::base::WriteStringToFile(OFF, fileName);
+        std::string fileName = base::StringPrintf("%s/%s/brightness", backlightDir, dp->d_name);
+        base::WriteStringToFile(OFF, fileName);
     }
 }
 
@@ -216,7 +219,7 @@ static void DumpUmountDebuggingInfo(bool dump_all) {
     FindPartitionsToUmount(nullptr, nullptr, true);
     if (dump_all) {
         // dump current tasks, this log can be lengthy, so only dump with dump_all
-        android::base::WriteStringToFile("t", "/proc/sysrq-trigger");
+        base::WriteStringToFile("t", "/proc/sysrq-trigger");
     }
 }
 
@@ -256,7 +259,9 @@ static UmountStat UmountPartitions(int timeoutMs) {
     return stat;
 }
 
-static void KillAllProcesses() { android::base::WriteStringToFile("i", "/proc/sysrq-trigger"); }
+static void KillAllProcesses() {
+    base::WriteStringToFile("i", "/proc/sysrq-trigger");
+}
 
 /* Try umounting all emulated file systems R/W block device cfile systems.
  * This will just try umount and give it up if it fails.
@@ -310,8 +315,8 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     Timer t;
     LOG(INFO) << "Reboot start, reason: " << reason << ", rebootTarget: " << rebootTarget;
 
-    android::base::WriteStringToFile(StringPrintf("%s\n", reason.c_str()), LAST_REBOOT_REASON_FILE,
-                                     S_IRUSR | S_IWUSR, AID_SYSTEM, AID_SYSTEM);
+    base::WriteStringToFile(base::StringPrintf("%s\n", reason.c_str()), LAST_REBOOT_REASON_FILE,
+                            S_IRUSR | S_IWUSR, AID_SYSTEM, AID_SYSTEM);
 
     if (cmd == ANDROID_RB_THERMOFF) {  // do not wait if it is thermal
         DoThermalOff();
@@ -323,8 +328,7 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     if (SHUTDOWN_ZERO_TIMEOUT) {  // eng build
         shutdownTimeout = 0;
     } else {
-        shutdownTimeout =
-            android::base::GetUintProperty("ro.build.shutdown_timeout", shutdownTimeoutDefault);
+        shutdownTimeout = base::GetUintProperty("ro.build.shutdown_timeout", shutdownTimeoutDefault);
     }
     LOG(INFO) << "Shutdown timeout: " << shutdownTimeout;
 
@@ -422,7 +426,7 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
 
 bool HandlePowerctlMessage(const std::string& command) {
     unsigned int cmd = 0;
-    std::vector<std::string> cmd_params = android::base::Split(command, ",");
+    std::vector<std::string> cmd_params = base::Split(command, ",");
     std::string reboot_target = "";
     bool run_fsck = false;
     bool command_invalid = false;
@@ -468,3 +472,6 @@ bool HandlePowerctlMessage(const std::string& command) {
     DoReboot(cmd, command, reboot_target, run_fsck);
     return true;
 }
+
+}  // namespace init
+}  // namespace android

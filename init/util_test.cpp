@@ -26,6 +26,9 @@
 
 using namespace std::literals::string_literals;
 
+namespace android {
+namespace init {
+
 TEST(util, ReadFile_ENOENT) {
     std::string s("hello");
     std::string err;
@@ -108,7 +111,7 @@ TEST(util, WriteFileNotExist) {
     std::string s("hello");
     std::string s2("hello");
     TemporaryDir test_dir;
-    std::string path = android::base::StringPrintf("%s/does-not-exist", test_dir.path);
+    std::string path = base::StringPrintf("%s/does-not-exist", test_dir.path);
     std::string err;
     EXPECT_TRUE(WriteFile(path, s, &err));
     EXPECT_EQ("", err);
@@ -166,24 +169,27 @@ TEST(util, is_dir) {
 
 TEST(util, mkdir_recursive) {
     TemporaryDir test_dir;
-    std::string path = android::base::StringPrintf("%s/three/directories/deep", test_dir.path);
+    std::string path = base::StringPrintf("%s/three/directories/deep", test_dir.path);
     EXPECT_EQ(0, mkdir_recursive(path, 0755, nullptr));
-    std::string path1 = android::base::StringPrintf("%s/three", test_dir.path);
+    std::string path1 = base::StringPrintf("%s/three", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
-    std::string path2 = android::base::StringPrintf("%s/three/directories", test_dir.path);
+    std::string path2 = base::StringPrintf("%s/three/directories", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
-    std::string path3 = android::base::StringPrintf("%s/three/directories/deep", test_dir.path);
+    std::string path3 = base::StringPrintf("%s/three/directories/deep", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
 }
 
 TEST(util, mkdir_recursive_extra_slashes) {
     TemporaryDir test_dir;
-    std::string path = android::base::StringPrintf("%s/three////directories/deep//", test_dir.path);
+    std::string path = base::StringPrintf("%s/three////directories/deep//", test_dir.path);
     EXPECT_EQ(0, mkdir_recursive(path, 0755, nullptr));
-    std::string path1 = android::base::StringPrintf("%s/three", test_dir.path);
+    std::string path1 = base::StringPrintf("%s/three", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
-    std::string path2 = android::base::StringPrintf("%s/three/directories", test_dir.path);
+    std::string path2 = base::StringPrintf("%s/three/directories", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
-    std::string path3 = android::base::StringPrintf("%s/three/directories/deep", test_dir.path);
+    std::string path3 = base::StringPrintf("%s/three/directories/deep", test_dir.path);
     EXPECT_TRUE(is_dir(path1.c_str()));
 }
+
+}  // namespace init
+}  // namespace android

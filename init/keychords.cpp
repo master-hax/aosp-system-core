@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "keychords.h"
+
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -25,7 +27,9 @@
 #include <android-base/properties.h>
 
 #include "init.h"
-#include "service.h"
+
+namespace android {
+namespace init {
 
 static struct input_keychord *keychords = 0;
 static int keychords_count = 0;
@@ -73,7 +77,7 @@ static void handle_keychord() {
     }
 
     // Only handle keychords if adb is enabled.
-    std::string adb_enabled = android::base::GetProperty("init.svc.adbd", "");
+    std::string adb_enabled = base::GetProperty("init.svc.adbd", "");
     if (adb_enabled == "running") {
         Service* svc = ServiceManager::GetInstance().FindServiceByKeychord(id);
         if (svc) {
@@ -112,3 +116,6 @@ void keychord_init() {
 
     register_epoll_handler(keychord_fd, handle_keychord);
 }
+
+}  // namespace init
+}  // namespace android

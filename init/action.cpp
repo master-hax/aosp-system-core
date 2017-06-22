@@ -22,7 +22,8 @@
 
 #include "util.h"
 
-using android::base::Join;
+namespace android {
+namespace init {
 
 Command::Command(BuiltinFunction f, const std::vector<std::string>& args, int line)
     : func_(f), args_(args), line_(line) {}
@@ -42,7 +43,7 @@ int Command::InvokeFunc() const {
 }
 
 std::string Command::BuildCommandString() const {
-    return Join(args_, ' ');
+    return base::Join(args_, ' ');
 }
 
 Action::Action(bool oneshot, const std::string& filename, int line)
@@ -92,8 +93,7 @@ void Action::ExecuteCommand(const Command& command) const {
 
     double duration_ms = t.duration_s() * 1000;
     // Any action longer than 50ms will be warned to user as slow operation
-    if (duration_ms > 50.0 ||
-        android::base::GetMinimumLogSeverity() <= android::base::DEBUG) {
+    if (duration_ms > 50.0 || base::GetMinimumLogSeverity() <= base::DEBUG) {
         std::string trigger_name = BuildTriggersString();
         std::string cmd_str = command.BuildCommandString();
 
@@ -188,7 +188,7 @@ bool Action::CheckPropertyTriggers(const std::string& name,
                 found = true;
             }
         } else {
-            std::string prop_val = android::base::GetProperty(trigger_name, "");
+            std::string prop_val = base::GetProperty(trigger_name, "");
             if (prop_val.empty() || (trigger_value != "*" && trigger_value != prop_val)) {
                 return false;
             }
@@ -220,7 +220,7 @@ std::string Action::BuildTriggersString() const {
         triggers.emplace_back(event_trigger_);
     }
 
-    return Join(triggers, " && ");
+    return base::Join(triggers, " && ");
 }
 
 void Action::DumpState() const {
@@ -349,3 +349,6 @@ void ActionParser::EndSection() {
         action_manager_->AddAction(std::move(action_));
     }
 }
+
+}  // namespace init
+}  // namespace android
