@@ -29,11 +29,33 @@
 
 extern const fs_path_config* __for_testing_only__android_dirs;
 extern const fs_path_config* __for_testing_only__android_files;
+extern bool (*__for_testing_only__fs_config_cmp)(bool, const char*, size_t, const char*, size_t);
 
 // Maximum entries in system/core/libcutils/fs_config.cpp:android_* before we
 // hit a nullptr termination, before we declare the list is just too big or
 // could be missing the nullptr.
 static constexpr size_t max_idx = 4096;
+
+struct fs_config_cmp_test {
+    bool dir;
+    const char *prefix;
+    const char *path;
+    bool match;
+} fs_config_cmp_tests[] = {
+    { true,  "system/lib",          "system/lib/hw",           true  },
+    { true,  "vendor/lib",          "system/vendor/lib/hw",    true  },
+    { true,  "system/vendor/lib",   "vendor/lib/hw",           true  },
+    { false, "vendor/bin/wifi",     "system/vendor/bin/w",     false },
+    { false, "vendor/bin/wifi",     "system/vendor/bin/wifi",  true  },
+    { false, "vendor/bin/wifi",     "system/vendor/bin/wifi2", false },
+    { false, "odm/bin/wifi",        "system/odm/bin/wifi",     true  },
+    { false, "oem/bin/wifi",        "system/oem/bin/wifi",     true  },
+    { false, "data/bin/wifi",       "system/data/bin/wifi",    false },
+    { false, "system/bin/*",        "system/bin/wifi",         true  },
+    { false, "vendor/bin/*",        "system/vendor/bin/wifi",  true  },
+    { false, "system/vendor/bin/*", "vendor/bin/wifi",         true  },
+    { false, NULL,                  NULL,                      false },
+};
 
 static bool check_unique(std::vector<const char*>& paths, const std::string& config_name,
                          const std::string& prefix) {
@@ -104,6 +126,27 @@ static bool check_unique(const fs_path_config* paths, const char* type_name,
     }
 
     return check_unique(paths_tmp, config, prefix) || retval;
+}
+
+static bool check_fs_config_cmp(const fs_config_cmp_test* tests) {
+    std::string config("system/core/libcutils/fs_config.cpp");
+
+    bool match, retval = false;
+    for (size_t idx = 0; tests[idx].prefix; ++idx) {
+        match = __for_testing_only__fs_config_cmp(tests[idx].dir,
+                                                  tests[idx].prefix,
+                                                  strlen(tests[idx].prefix),
+                                                  tests[idx].path,
+                                                  strlen(tests[idx].path));
+        if (match != tests[idx].match) {
+            GTEST_LOG_(ERROR) << tests[idx].path
+                              << (match ? " matched " : " didn't match ")
+                              << tests[idx].prefix;
+            retval = true;
+            break;
+        }
+    }
+    return retval;
 }
 
 #define endof(pointer, field) (offsetof(typeof(*(pointer)), field) + sizeof((pointer)->field))
@@ -198,4 +241,9 @@ TEST(fs_config, odm_dirs_alias) {
 
 TEST(fs_config, odm_files_alias) {
     check_two(__for_testing_only__android_files, "files", "odm/");
+}
+
+TEST(fs_config, system_alias) {
+    bool check_cmp = check_fs_config_cmp(fs_config_cmp_tests);
+    EXPECT_FALSE(check_cmp);
 }
