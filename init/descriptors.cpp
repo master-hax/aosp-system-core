@@ -22,7 +22,6 @@
 #include <unistd.h>
 
 #include <android-base/logging.h>
-#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/android_get_control_file.h>
@@ -58,7 +57,7 @@ void DescriptorInfo::CreateAndPublish(const std::string& globalContext) const {
   std::for_each(publishedName.begin(), publishedName.end(),
                 [] (char& c) { c = isalnum(c) ? c : '_'; });
 
-  std::string val = android::base::StringPrintf("%d", fd);
+  std::string val = std::to_string(fd);
   add_environment(publishedName.c_str(), val.c_str());
 
   // make sure we don't close on exec
@@ -74,7 +73,7 @@ SocketInfo::SocketInfo(const std::string& name, const std::string& type, uid_t u
 }
 
 void SocketInfo::Clean() const {
-  unlink(android::base::StringPrintf(ANDROID_SOCKET_DIR "/%s", name().c_str()).c_str());
+    unlink((ANDROID_SOCKET_DIR "/%s" + name()).c_str());
 }
 
 int SocketInfo::Create(const std::string& context) const {
