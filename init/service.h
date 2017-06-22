@@ -55,8 +55,8 @@
 
 #define NR_SVC_SUPP_GIDS 12    // twelve supplementary groups
 
-class Action;
-class ServiceManager;
+namespace android {
+namespace init {
 
 struct ServiceEnvironmentInfo {
     ServiceEnvironmentInfo();
@@ -151,8 +151,8 @@ class Service {
 
     unsigned flags_;
     pid_t pid_;
-    android::base::boot_clock::time_point time_started_;  // time of last start
-    android::base::boot_clock::time_point time_crashed_;  // first crash within inspection window
+    base::boot_clock::time_point time_started_;  // time of last start
+    base::boot_clock::time_point time_crashed_;  // first crash within inspection window
     int crash_count_;                     // number of times crashed within window
 
     uid_t uid_;
@@ -235,5 +235,8 @@ class ServiceParser : public SectionParser {
     ServiceManager* service_manager_;
     std::unique_ptr<Service> service_;
 };
+
+}  // namespace init
+}  // namespace android
 
 #endif

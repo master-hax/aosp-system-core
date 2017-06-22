@@ -30,6 +30,9 @@
 #include "init.h"
 #include "util.h"
 
+namespace android {
+namespace init {
+
 DescriptorInfo::DescriptorInfo(const std::string& name, const std::string& type, uid_t uid,
                                gid_t gid, int perm, const std::string& context)
         : name_(name), type_(type), uid_(uid), gid_(gid), perm_(perm), context_(context) {
@@ -77,7 +80,7 @@ void SocketInfo::Clean() const {
 }
 
 int SocketInfo::Create(const std::string& context) const {
-    auto types = android::base::Split(type(), "+");
+    auto types = base::Split(type(), "+");
     int flags =
         ((types[0] == "stream" ? SOCK_STREAM : (types[0] == "dgram" ? SOCK_DGRAM : SOCK_SEQPACKET)));
     bool passcred = types.size() > 1 && types[1] == "passcred";
@@ -104,8 +107,7 @@ int FileInfo::Create(const std::string&) const {
   // carrier detect).  Our intention is never to delay launch of a service
   // for such a condition.  The service can perform its own blocking on
   // carrier detect.
-  android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(name().c_str(),
-                                                      flags | O_NONBLOCK)));
+  base::unique_fd fd(TEMP_FAILURE_RETRY(open(name().c_str(), flags | O_NONBLOCK)));
 
   if (fd < 0) {
     PLOG(ERROR) << "Failed to open file '" << name().c_str() << "'";
@@ -124,3 +126,6 @@ int FileInfo::Create(const std::string&) const {
 const std::string FileInfo::key() const {
   return ANDROID_FILE_ENV_PREFIX;
 }
+
+}  // namespace init
+}  // namespace android

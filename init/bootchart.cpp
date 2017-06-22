@@ -37,8 +37,10 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 
-using android::base::StringPrintf;
 using namespace std::chrono_literals;
+
+namespace android {
+namespace init {
 
 static std::thread* g_bootcharting_thread;
 
@@ -48,7 +50,7 @@ static bool g_bootcharting_finished;
 
 static long long get_uptime_jiffies() {
   std::string uptime;
-  if (!android::base::ReadFileToString("/proc/uptime", &uptime)) return 0;
+  if (!base::ReadFileToString("/proc/uptime", &uptime)) return 0;
   return 100LL * strtod(uptime.c_str(), NULL);
 }
 
@@ -68,11 +70,11 @@ static void log_header() {
   utsname uts;
   if (uname(&uts) == -1) return;
 
-  std::string fingerprint = android::base::GetProperty("ro.build.fingerprint", "");
+  std::string fingerprint = base::GetProperty("ro.build.fingerprint", "");
   if (fingerprint.empty()) return;
 
   std::string kernel_cmdline;
-  android::base::ReadFileToString("/proc/cmdline", &kernel_cmdline);
+  base::ReadFileToString("/proc/cmdline", &kernel_cmdline);
 
   auto fp = fopen_unique("/data/bootchart/header", "we");
   if (!fp) return;
@@ -93,8 +95,8 @@ static void log_file(FILE* log, const char* procfile) {
   log_uptime(log);
 
   std::string content;
-  if (android::base::ReadFileToString(procfile, &content)) {
-    fprintf(log, "%s\n", content.c_str());
+  if (base::ReadFileToString(procfile, &content)) {
+      fprintf(log, "%s\n", content.c_str());
   }
 }
 
@@ -111,21 +113,21 @@ static void log_processes(FILE* log) {
     // /proc/<pid>/stat only has truncated task names, so get the full
     // name from /proc/<pid>/cmdline.
     std::string cmdline;
-    android::base::ReadFileToString(StringPrintf("/proc/%d/cmdline", pid), &cmdline);
+    base::ReadFileToString(base::StringPrintf("/proc/%d/cmdline", pid), &cmdline);
     const char* full_name = cmdline.c_str(); // So we stop at the first NUL.
 
     // Read process stat line.
     std::string stat;
-    if (android::base::ReadFileToString(StringPrintf("/proc/%d/stat", pid), &stat)) {
-      if (!cmdline.empty()) {
-        // Substitute the process name with its real name.
-        size_t open = stat.find('(');
-        size_t close = stat.find_last_of(')');
-        if (open != std::string::npos && close != std::string::npos) {
-          stat.replace(open + 1, close - open - 1, full_name);
+    if (base::ReadFileToString(base::StringPrintf("/proc/%d/stat", pid), &stat)) {
+        if (!cmdline.empty()) {
+            // Substitute the process name with its real name.
+            size_t open = stat.find('(');
+            size_t close = stat.find_last_of(')');
+            if (open != std::string::npos && close != std::string::npos) {
+                stat.replace(open + 1, close - open - 1, full_name);
+            }
         }
-      }
-      fputs(stat.c_str(), log);
+        fputs(stat.c_str(), log);
     }
   }
 
@@ -163,9 +165,9 @@ static void bootchart_thread_main() {
 static int do_bootchart_start() {
   // We don't care about the content, but we do care that /data/bootchart/enabled actually exists.
   std::string start;
-  if (!android::base::ReadFileToString("/data/bootchart/enabled", &start)) {
-    LOG(VERBOSE) << "Not bootcharting";
-    return 0;
+  if (!base::ReadFileToString("/data/bootchart/enabled", &start)) {
+      LOG(VERBOSE) << "Not bootcharting";
+      return 0;
   }
 
   g_bootcharting_thread = new std::thread(bootchart_thread_main);
@@ -192,3 +194,6 @@ int do_bootchart(const std::vector<std::string>& args) {
   if (args[1] == "start") return do_bootchart_start();
   return do_bootchart_stop();
 }
+
+}  // namespace init
+}  // namespace android

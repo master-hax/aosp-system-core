@@ -24,6 +24,9 @@
 
 using namespace std::string_literals;
 
+namespace android {
+namespace init {
+
 class DeviceHandlerTester {
   public:
     void TestGetSymlinks(const std::string& platform_device, const Uevent& uevent,
@@ -38,7 +41,7 @@ class DeviceHandlerTester {
         mkdir_recursive(platform_bus, 0777, nullptr);
         symlink(platform_bus.c_str(), (platform_device_dir + "/subsystem").c_str());
 
-        mkdir_recursive(android::base::Dirname(fake_sys_root.path + uevent.path), 0777, nullptr);
+        mkdir_recursive(base::Dirname(fake_sys_root.path + uevent.path), 0777, nullptr);
 
         std::vector<std::string> result;
         if (block) {
@@ -400,3 +403,6 @@ TEST(device_handler, SysfsPermissionsMatchWithSubsystemBus) {
     EXPECT_EQ(0U, permissions.uid());
     EXPECT_EQ(1001U, permissions.gid());
 }
+
+}  // namespace init
+}  // namespace android

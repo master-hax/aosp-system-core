@@ -48,7 +48,6 @@
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
-#include <selinux/label.h>
 #include <selinux/selinux.h>
 
 #include <fstream>
@@ -70,10 +69,11 @@
 #include "util.h"
 #include "watchdogd.h"
 
+using namespace std::chrono_literals;
 using namespace std::string_literals;
 
-using android::base::boot_clock;
-using android::base::GetProperty;
+namespace android {
+namespace init {
 
 struct selabel_handle *sehandle;
 struct selabel_handle *sehandle_prop;
@@ -144,7 +144,7 @@ bool start_waiting_for_property(const char *name, const char *value)
     if (waiting_for_prop) {
         return false;
     }
-    if (GetProperty(name, "") != value) {
+    if (base::GetProperty(name, "") != value) {
         // Current property value is not equal to expected value
         wait_prop_name = name;
         wait_prop_value = value;
@@ -437,7 +437,7 @@ static int keychord_init_action(const std::vector<std::string>& args)
 
 static int console_init_action(const std::vector<std::string>& args)
 {
-    std::string console = GetProperty("ro.boot.console", "");
+    std::string console = base::GetProperty("ro.boot.console", "");
     if (!console.empty()) {
         default_console = "/dev/" + console;
     }
@@ -455,17 +455,17 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
 
     if (key == "qemu") {
         strlcpy(qemu, value.c_str(), sizeof(qemu));
-    } else if (android::base::StartsWith(key, "androidboot.")) {
+    } else if (base::StartsWith(key, "androidboot.")) {
         property_set("ro.boot." + key.substr(12), value);
     }
 }
 
 static void export_oem_lock_status() {
-    if (!android::base::GetBoolProperty("ro.oem_unlock_supported", false)) {
+    if (!base::GetBoolProperty("ro.oem_unlock_supported", false)) {
         return;
     }
 
-    std::string value = GetProperty("ro.boot.verifiedbootstate", "");
+    std::string value = base::GetProperty("ro.boot.verifiedbootstate", "");
 
     if (!value.empty()) {
         property_set("ro.boot.flash.locked", value == "orange" ? "0" : "1");
@@ -486,7 +486,7 @@ static void export_kernel_boot_props() {
         { "ro.boot.revision",   "ro.revision",   "0", },
     };
     for (size_t i = 0; i < arraysize(prop_map); i++) {
-        std::string value = GetProperty(prop_map[i].src_prop, "");
+        std::string value = base::GetProperty(prop_map[i].src_prop, "");
         property_set(prop_map[i].dst_prop, (!value.empty()) ? value : prop_map[i].default_value);
     }
 }
@@ -508,7 +508,7 @@ static void process_kernel_dt() {
 
         std::string file_name = kAndroidDtDir + dp->d_name;
 
-        android::base::ReadFileToString(file_name, &dt_file);
+        base::ReadFileToString(file_name, &dt_file);
         std::replace(dt_file.begin(), dt_file.end(), ',', '.');
 
         property_set("ro.boot."s + dp->d_name, dt_file);
@@ -637,7 +637,7 @@ static bool fork_execve_and_wait_for_completion(const char* filename, char* cons
         // invocation, instead of logging it as it comes in.
         const int child_out_fd = pipe_fds[0];
         std::string child_output;
-        if (!android::base::ReadFdToString(child_out_fd, &child_output)) {
+        if (!base::ReadFdToString(child_out_fd, &child_output)) {
             PLOG(ERROR) << "Failed to capture full output of " << filename;
         }
         TEMP_FAILURE_RETRY(close(child_out_fd));
@@ -680,7 +680,7 @@ static bool read_first_line(const char* file, std::string* line) {
     line->clear();
 
     std::string contents;
-    if (!android::base::ReadFileToString(file, &contents, true /* follow symlinks */)) {
+    if (!base::ReadFileToString(file, &contents, true /* follow symlinks */)) {
         return false;
     }
     std::istringstream in(contents);
@@ -741,8 +741,7 @@ static bool selinux_load_split_policy() {
     // must match the platform policy on the system image.
     std::string precompiled_sepolicy_file;
     if (selinux_find_precompiled_split_policy(&precompiled_sepolicy_file)) {
-        android::base::unique_fd fd(
-            open(precompiled_sepolicy_file.c_str(), O_RDONLY | O_CLOEXEC | O_BINARY));
+        base::unique_fd fd(open(precompiled_sepolicy_file.c_str(), O_RDONLY | O_CLOEXEC | O_BINARY));
         if (fd != -1) {
             if (selinux_android_load_policy_from_fd(fd, precompiled_sepolicy_file.c_str()) < 0) {
                 LOG(ERROR) << "Failed to load SELinux policy from " << precompiled_sepolicy_file;
@@ -766,7 +765,7 @@ static bool selinux_load_split_policy() {
     // We store the output of the compilation on /dev because this is the most convenient tmpfs
     // storage mount available this early in the boot sequence.
     char compiled_sepolicy[] = "/dev/sepolicy.XXXXXX";
-    android::base::unique_fd compiled_sepolicy_fd(mkostemp(compiled_sepolicy, O_CLOEXEC));
+    base::unique_fd compiled_sepolicy_fd(mkostemp(compiled_sepolicy, O_CLOEXEC));
     if (compiled_sepolicy_fd < 0) {
         PLOG(ERROR) << "Failed to create temporary file " << compiled_sepolicy;
         return false;
@@ -945,7 +944,7 @@ int main(int argc, char** argv) {
     bool is_first_stage = (getenv("INIT_SECOND_STAGE") == nullptr);
 
     if (is_first_stage) {
-        boot_clock::time_point start_time = boot_clock::now();
+        base::boot_clock::time_point start_time = base::boot_clock::now();
 
         // Clear the umask.
         umask(0);
@@ -1077,7 +1076,7 @@ int main(int argc, char** argv) {
     parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sm));
     parser.AddSectionParser("on", std::make_unique<ActionParser>(&am));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
-    std::string bootscript = GetProperty("ro.boot.init_rc", "");
+    std::string bootscript = base::GetProperty("ro.boot.init_rc", "");
     if (bootscript.empty()) {
         parser.ParseConfig("/init.rc");
         parser.set_is_system_etc_init_loaded(
@@ -1115,7 +1114,7 @@ int main(int argc, char** argv) {
     am.QueueBuiltinAction(mix_hwrng_into_linux_rng_action, "mix_hwrng_into_linux_rng");
 
     // Don't mount filesystems or start core system services in charger mode.
-    std::string bootmode = GetProperty("ro.bootmode", "");
+    std::string bootmode = base::GetProperty("ro.bootmode", "");
     if (bootmode == "charger") {
         am.QueueEventTrigger("charger");
     } else {
@@ -1155,4 +1154,11 @@ int main(int argc, char** argv) {
     }
 
     return 0;
+}
+
+}  // namespace init
+}  // namespace android
+
+int main(int argc, char** argv) {
+    android::init::main(argc, argv);
 }

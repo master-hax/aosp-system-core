@@ -58,6 +58,9 @@
 #define PERSISTENT_PROPERTY_DIR  "/data/property"
 #define RECOVERY_MOUNT_POINT "/recovery"
 
+namespace android {
+namespace init {
+
 static int persistent_properties_loaded = 0;
 
 static int property_set_fd = -1;
@@ -177,7 +180,7 @@ static uint32_t PropertySetImpl(const std::string& name, const std::string& valu
     prop_info* pi = (prop_info*) __system_property_find(name.c_str());
     if (pi != nullptr) {
         // ro.* properties are actually "write-once".
-        if (android::base::StartsWith(name, "ro.")) {
+        if (base::StartsWith(name, "ro.")) {
             LOG(ERROR) << "property_set(\"" << name << "\", \"" << value << "\") failed: "
                        << "property already set";
             return PROP_ERROR_READ_ONLY_PROPERTY;
@@ -195,7 +198,7 @@ static uint32_t PropertySetImpl(const std::string& name, const std::string& valu
 
     // Don't write properties to disk until after we have read all default
     // properties to prevent them from being overwritten by default values.
-    if (persistent_properties_loaded && android::base::StartsWith(name, "persist.")) {
+    if (persistent_properties_loaded && base::StartsWith(name, "persist.")) {
         write_persistent_property(name.c_str(), value.c_str());
     }
     property_changed(name, value);
@@ -416,22 +419,20 @@ static void handle_property_set(SocketConnection& socket,
   char* source_ctx = nullptr;
   getpeercon(socket.socket(), &source_ctx);
 
-  if (android::base::StartsWith(name, "ctl.")) {
-    if (check_control_mac_perms(value.c_str(), source_ctx, &cr)) {
-      handle_control_message(name.c_str() + 4, value.c_str());
-      if (!legacy_protocol) {
-        socket.SendUint32(PROP_SUCCESS);
+  if (base::StartsWith(name, "ctl.")) {
+      if (check_control_mac_perms(value.c_str(), source_ctx, &cr)) {
+          handle_control_message(name.c_str() + 4, value.c_str());
+          if (!legacy_protocol) {
+              socket.SendUint32(PROP_SUCCESS);
+          }
+      } else {
+          LOG(ERROR) << "sys_prop(" << cmd_name << "): Unable to " << (name.c_str() + 4)
+                     << " service ctl [" << value << "]"
+                     << " uid:" << cr.uid << " gid:" << cr.gid << " pid:" << cr.pid;
+          if (!legacy_protocol) {
+              socket.SendUint32(PROP_ERROR_HANDLE_CONTROL_MESSAGE);
+          }
       }
-    } else {
-      LOG(ERROR) << "sys_prop(" << cmd_name << "): Unable to " << (name.c_str() + 4)
-                 << " service ctl [" << value << "]"
-                 << " uid:" << cr.uid
-                 << " gid:" << cr.gid
-                 << " pid:" << cr.pid;
-      if (!legacy_protocol) {
-        socket.SendUint32(PROP_ERROR_HANDLE_CONTROL_MESSAGE);
-      }
-    }
   } else {
     if (check_mac_perms(name, source_ctx, &cr)) {
       uint32_t result = property_set(name, value);
@@ -651,8 +652,8 @@ static void load_persistent_properties() {
 // So we need to apply the same rule of build/make/tools/post_process_props.py
 // on runtime.
 static void update_sys_usb_config() {
-    bool is_debuggable = android::base::GetBoolProperty("ro.debuggable", false);
-    std::string config = android::base::GetProperty("persist.sys.usb.config", "");
+    bool is_debuggable = base::GetBoolProperty("ro.debuggable", false);
+    std::string config = base::GetProperty("persist.sys.usb.config", "");
     if (config.empty()) {
         property_set("persist.sys.usb.config", is_debuggable ? "adb" : "none");
     } else if (is_debuggable && config.find("adb") == std::string::npos &&
@@ -709,7 +710,7 @@ void load_recovery_id_prop() {
     }
 
     boot_img_hdr hdr;
-    if (android::base::ReadFully(fd, &hdr, sizeof(hdr))) {
+    if (base::ReadFully(fd, &hdr, sizeof(hdr))) {
         std::string hex = bytes_to_hex(reinterpret_cast<uint8_t*>(hdr.id), sizeof(hdr.id));
         property_set("ro.recovery_id", hex);
     } else {
@@ -741,3 +742,6 @@ void start_property_service() {
 
     register_epoll_handler(property_set_fd, handle_property_set_fd);
 }
+
+}  // namespace init
+}  // namespace android

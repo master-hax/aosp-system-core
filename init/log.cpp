@@ -23,12 +23,15 @@
 #include <android-base/logging.h>
 #include <selinux/selinux.h>
 
+namespace android {
+namespace init {
+
 void InitKernelLogging(char* argv[]) {
     // Make stdin/stdout/stderr all point to /dev/null.
     int fd = open("/sys/fs/selinux/null", O_RDWR);
     if (fd == -1) {
         int saved_errno = errno;
-        android::base::InitLogging(argv, &android::base::KernelLogger);
+        base::InitLogging(argv, &base::KernelLogger);
         errno = saved_errno;
         PLOG(FATAL) << "Couldn't open /sys/fs/selinux/null";
     }
@@ -37,21 +40,24 @@ void InitKernelLogging(char* argv[]) {
     dup2(fd, 2);
     if (fd > 2) close(fd);
 
-    android::base::InitLogging(argv, &android::base::KernelLogger);
+    base::InitLogging(argv, &base::KernelLogger);
 }
 
 int selinux_klog_callback(int type, const char *fmt, ...) {
-    android::base::LogSeverity severity = android::base::ERROR;
+    base::LogSeverity severity = base::ERROR;
     if (type == SELINUX_WARNING) {
-        severity = android::base::WARNING;
+        severity = base::WARNING;
     } else if (type == SELINUX_INFO) {
-        severity = android::base::INFO;
+        severity = base::INFO;
     }
     char buf[1024];
     va_list ap;
     va_start(ap, fmt);
     vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
-    android::base::KernelLogger(android::base::MAIN, severity, "selinux", nullptr, 0, buf);
+    base::KernelLogger(base::MAIN, severity, "selinux", nullptr, 0, buf);
     return 0;
 }
+
+}  // namespace init
+}  // namespace android

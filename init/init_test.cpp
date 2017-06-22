@@ -27,6 +27,9 @@
 #include "keyword_map.h"
 #include "util.h"
 
+namespace android {
+namespace init {
+
 class TestFunctionMap : public KeywordMap<BuiltinFunction> {
   public:
     // Helper for argument-less functions
@@ -76,7 +79,7 @@ void TestInitText(const std::string& init_script, const TestFunctionMap& test_fu
                   const std::vector<ActionManagerCommand>& commands) {
     TemporaryFile tf;
     ASSERT_TRUE(tf.fd != -1);
-    ASSERT_TRUE(android::base::WriteStringToFd(init_script, tf.fd));
+    ASSERT_TRUE(base::WriteStringToFd(init_script, tf.fd));
     TestInit(tf.path, test_function_map, commands);
 }
 
@@ -136,15 +139,15 @@ TEST(init, EventTriggerOrderMultipleFiles) {
 
     TemporaryFile first_import;
     ASSERT_TRUE(first_import.fd != -1);
-    ASSERT_TRUE(android::base::WriteStringToFd("on boot\nexecute 2", first_import.fd));
+    ASSERT_TRUE(base::WriteStringToFd("on boot\nexecute 2", first_import.fd));
 
     TemporaryFile dir_a_import;
     ASSERT_TRUE(dir_a_import.fd != -1);
-    ASSERT_TRUE(android::base::WriteStringToFd("on boot\nexecute 4", dir_a_import.fd));
+    ASSERT_TRUE(base::WriteStringToFd("on boot\nexecute 4", dir_a_import.fd));
 
     TemporaryFile last_import;
     ASSERT_TRUE(last_import.fd != -1);
-    ASSERT_TRUE(android::base::WriteStringToFd("on boot\nexecute 6", last_import.fd));
+    ASSERT_TRUE(base::WriteStringToFd("on boot\nexecute 6", last_import.fd));
 
     TemporaryDir dir;
     // clang-format off
@@ -166,7 +169,7 @@ TEST(init, EventTriggerOrderMultipleFiles) {
                                "execute 1";
     // clang-format on
     TemporaryFile start;
-    ASSERT_TRUE(android::base::WriteStringToFd(start_script, start.fd));
+    ASSERT_TRUE(base::WriteStringToFd(start_script, start.fd));
 
     int num_executed = 0;
     auto execute_command = [&num_executed](const std::vector<std::string>& args) {
@@ -185,3 +188,6 @@ TEST(init, EventTriggerOrderMultipleFiles) {
 
     EXPECT_EQ(6, num_executed);
 }
+
+}  // namespace init
+}  // namespace android

@@ -99,6 +99,9 @@
 // the uevent listener resumes in polling mode and will handle the uevents that occurred during
 // coldboot.
 
+namespace android {
+namespace init {
+
 class ColdBoot {
   public:
     ColdBoot(UeventListener& uevent_listener, DeviceHandler& device_handler)
@@ -234,7 +237,7 @@ DeviceHandler CreateDeviceHandler() {
      * TODO: cleanup platform ueventd.rc to remove vendor specific
      * device node entries (b/34968103)
      */
-    std::string hardware = android::base::GetProperty("ro.hardware", "");
+    std::string hardware = base::GetProperty("ro.hardware", "");
     parser.ParseConfig("/ueventd." + hardware + ".rc");
 
     return DeviceHandler(std::move(dev_permissions), std::move(sysfs_permissions),
@@ -273,3 +276,6 @@ int ueventd_main(int argc, char** argv) {
 
     return 0;
 }
+
+}  // namespace init
+}  // namespace android

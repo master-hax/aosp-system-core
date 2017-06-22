@@ -25,6 +25,9 @@
 #include "parser.h"
 #include "util.h"
 
+namespace android {
+namespace init {
+
 Parser::Parser() {
 }
 
@@ -70,7 +73,7 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
             // If we have a line matching a prefix we recognize, call its callback and unset any
             // current section parsers.  This is meant for /sys/ and /dev/ line entries for uevent.
             for (const auto& [prefix, callback] : line_callbacks_) {
-                if (android::base::StartsWith(args[0], prefix.c_str())) {
+                if (base::StartsWith(args[0], prefix.c_str())) {
                     if (section_parser) section_parser->EndSection();
 
                     std::string ret_err;
@@ -139,7 +142,7 @@ bool Parser::ParseConfigDir(const std::string& path) {
         // Ignore directories and only process regular files.
         if (current_file->d_type == DT_REG) {
             std::string current_path =
-                android::base::StringPrintf("%s/%s", path.c_str(), current_file->d_name);
+                base::StringPrintf("%s/%s", path.c_str(), current_file->d_name);
             files.emplace_back(current_path);
         }
     }
@@ -159,3 +162,6 @@ bool Parser::ParseConfig(const std::string& path) {
     }
     return ParseConfigFile(path);
 }
+
+}  // namespace init
+}  // namespace android

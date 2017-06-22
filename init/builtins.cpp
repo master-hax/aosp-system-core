@@ -63,9 +63,13 @@
 #include "signal_handler.h"
 #include "util.h"
 
-using namespace std::literals::string_literals;
+using namespace std::chrono_literals;
+using namespace std::string_literals;
 
 #define chmod DO_NOT_USE_CHMOD_USE_FCHMODAT_SYMLINK_NOFOLLOW
+
+namespace android {
+namespace init {
 
 static constexpr std::chrono::nanoseconds kCommandRetryTimeout = 5s;
 
@@ -200,7 +204,7 @@ static int do_insmod(const std::vector<std::string>& args) {
     }
 
     std::string filename = *it++;
-    std::string options = android::base::Join(std::vector<std::string>(it, args.end()), ' ');
+    std::string options = base::Join(std::vector<std::string>(it, args.end()), ' ');
     return insmod(filename.c_str(), options.c_str(), flags);
 }
 
@@ -443,7 +447,7 @@ static int mount_fstab(const char* fstabfile, int mount_mode) {
 
         // So we can always see what fs_mgr_mount_all() does.
         // Only needed if someone explicitly changes the default log level in their init.rc.
-        android::base::ScopedLogSeverity info(android::base::INFO);
+        base::ScopedLogSeverity info(base::INFO);
 
         struct fstab* fstab = fs_mgr_read_fstab(fstabfile);
         int child_ret = fs_mgr_mount_all(fstab, mount_mode);
@@ -572,9 +576,8 @@ static int do_setprop(const std::vector<std::string>& args) {
 static int do_setrlimit(const std::vector<std::string>& args) {
     struct rlimit limit;
     int resource;
-    if (android::base::ParseInt(args[1], &resource) &&
-        android::base::ParseUint(args[2], &limit.rlim_cur) &&
-        android::base::ParseUint(args[3], &limit.rlim_max)) {
+    if (base::ParseInt(args[1], &resource) && base::ParseUint(args[2], &limit.rlim_cur) &&
+        base::ParseUint(args[3], &limit.rlim_max)) {
         return setrlimit(resource, &limit);
     }
     LOG(WARNING) << "ignoring setrlimit " << args[1] << " " << args[2] << " " << args[3];
@@ -631,7 +634,7 @@ static int do_rmdir(const std::vector<std::string>& args) {
 
 static int do_sysclktz(const std::vector<std::string>& args) {
     struct timezone tz = {};
-    if (android::base::ParseInt(args[1], &tz.tz_minuteswest) && settimeofday(NULL, &tz) != -1) {
+    if (base::ParseInt(args[1], &tz.tz_minuteswest) && settimeofday(NULL, &tz) != -1) {
         return 0;
     }
     return -1;
@@ -738,7 +741,7 @@ static int do_restorecon(const std::vector<std::string>& args) {
 
     bool in_flags = true;
     for (size_t i = 1; i < args.size(); ++i) {
-        if (android::base::StartsWith(args[i], "--")) {
+        if (base::StartsWith(args[i], "--")) {
             if (!in_flags) {
                 LOG(ERROR) << "restorecon - flags must precede paths";
                 return -1;
@@ -774,22 +777,32 @@ static int do_restorecon_recursive(const std::vector<std::string>& args) {
 static int do_loglevel(const std::vector<std::string>& args) {
     // TODO: support names instead/as well?
     int log_level = -1;
-    android::base::ParseInt(args[1], &log_level);
-    android::base::LogSeverity severity;
+    base::ParseInt(args[1], &log_level);
+    base::LogSeverity severity;
     switch (log_level) {
-        case 7: severity = android::base::DEBUG; break;
-        case 6: severity = android::base::INFO; break;
+        case 7:
+            severity = base::DEBUG;
+            break;
+        case 6:
+            severity = base::INFO;
+            break;
         case 5:
-        case 4: severity = android::base::WARNING; break;
-        case 3: severity = android::base::ERROR; break;
+        case 4:
+            severity = base::WARNING;
+            break;
+        case 3:
+            severity = base::ERROR;
+            break;
         case 2:
         case 1:
-        case 0: severity = android::base::FATAL; break;
+        case 0:
+            severity = base::FATAL;
+            break;
         default:
             LOG(ERROR) << "loglevel: invalid log level " << log_level;
             return -EINVAL;
     }
-    android::base::SetMinimumLogSeverity(severity);
+    base::SetMinimumLogSeverity(severity);
     return 0;
 }
 
@@ -808,7 +821,7 @@ static int do_wait(const std::vector<std::string>& args) {
         return wait_for_file(args[1].c_str(), kCommandRetryTimeout);
     } else if (args.size() == 3) {
         int timeout;
-        if (android::base::ParseInt(args[2], &timeout)) {
+        if (base::ParseInt(args[2], &timeout)) {
             return wait_for_file(args[1].c_str(), std::chrono::seconds(timeout));
         }
     }
@@ -850,7 +863,7 @@ static int do_installkeys_ensure_dir_exists(const char* dir) {
 }
 
 static bool is_file_crypto() {
-    return android::base::GetProperty("ro.crypto.type", "") == "file";
+    return base::GetProperty("ro.crypto.type", "") == "file";
 }
 
 static int do_installkey(const std::vector<std::string>& args) {
@@ -924,3 +937,6 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     // clang-format on
     return builtin_functions;
 }
+
+}  // namespace init
+}  // namespace android
