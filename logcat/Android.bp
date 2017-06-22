@@ -73,3 +73,14 @@ cc_prebuilt_binary {
         none: true,
     }
 }
+
+cc_binary {
+    name: "logcat_vendor",
+    stem: "logcat",
+    vendor: true,
+    defaults: ["logcat_defaults"],
+    shared_libs: ["liblogcat"],
+    srcs: [
+        "logcat_main.cpp",
+    ],
+}
