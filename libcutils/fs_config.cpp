@@ -268,12 +268,12 @@ static bool is_partition(const char* path, size_t len) {
 
 // alias prefixes of "<partition>/<stuff>" to "system/<partition>/<stuff>" or
 // "system/<partition>/<stuff>" to "<partition>/<stuff>"
-static bool prefix_cmp(const char* prefix, const char* path, size_t len) {
-    if (!strncmp(prefix, path, len)) return true;
-
+static bool prefix_cmp(bool partial, const char* prefix, size_t len, const char* path, size_t plen) {
+    if ((partial || plen == len) && !strncmp(prefix, path, len)) return true;
     static const char system[] = "system/";
     if (!strncmp(path, system, strlen(system))) {
         path += strlen(system);
+        plen -= strlen(system);
     } else if (len <= strlen(system)) {
         return false;
     } else if (strncmp(prefix, system, strlen(system))) {
@@ -282,7 +282,7 @@ static bool prefix_cmp(const char* prefix, const char* path, size_t len) {
         prefix += strlen(system);
         len -= strlen(system);
     }
-    return is_partition(prefix, len) && !strncmp(prefix, path, len);
+    return is_partition(prefix, len) && (partial || plen == len) && !strncmp(prefix, path, len);
 }
 
 static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* path, size_t plen) {
@@ -293,13 +293,10 @@ static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* 
     } else {
         // If name ends in * then allow partial matches.
         if (prefix[len - 1] == '*') {
-            return prefix_cmp(prefix, path, len - 1);
-        }
-        if (plen != len) {
-            return false;
+            return prefix_cmp(true, prefix, len - 1, path, plen);
         }
     }
-    return prefix_cmp(prefix, path, len);
+    return prefix_cmp(dir, prefix, len, path, plen);
 }
 
 void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
