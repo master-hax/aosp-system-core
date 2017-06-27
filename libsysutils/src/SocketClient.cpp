@@ -30,6 +30,15 @@
 #include <log/log.h>
 #include <sysutils/SocketClient.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGW
+#define SLOGW ALOGW
+#endif  // SLOGW
+#ifndef SLOGE
+#define SLOGE ALOGE
+#endif  // SLOGE
+#endif  // __ANDROID_VNDK__
+
 SocketClient::SocketClient(int socket, bool owned) {
     init(socket, owned, false);
 }

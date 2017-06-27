@@ -28,6 +28,15 @@
 #include <log/log.h>
 #include <sysutils/NetlinkEvent.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGE
+#define SLOGE ALOGE
+#endif  // SLOGE
+#ifndef LOG_EVENT_INT
+#define LOG_EVENT_INT(...)
+#endif  // LOG_EVENT_INT
+#endif  // __ANDROID_VNDK__
+
 #if 1
 /* temporary version until we can get Motorola to update their
  * ril.so.  Their prebuilt ril.so is using this private class

@@ -44,6 +44,15 @@ const int LOCAL_NFLOG_PACKET = NFNL_SUBSYS_ULOG << 8 | NFULNL_MSG_PACKET;
 #include <log/log.h>
 #include <sysutils/NetlinkEvent.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGD
+#define SLOGD ALOGD
+#endif  // SLOGD
+#ifndef SLOGE
+#define SLOGE ALOGE
+#endif  // SLOGE
+#endif  // __ANDROID_VNDK__
+
 NetlinkEvent::NetlinkEvent() {
     mAction = Action::kUnknown;
     memset(mParams, 0, sizeof(mParams));

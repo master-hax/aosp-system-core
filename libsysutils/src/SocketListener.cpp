@@ -31,6 +31,18 @@
 #include <sysutils/SocketListener.h>
 #include <sysutils/SocketClient.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGV
+#define SLOGV ALOGV
+#endif  // SLOGV
+#ifndef SLOGW
+#define SLOGW ALOGW
+#endif  // SLOGW
+#ifndef SLOGE
+#define SLOGE ALOGE
+#endif  // SLOGE
+#endif  // __ANDROID_VNDK__
+
 #define CtrlPipe_Shutdown 0
 #define CtrlPipe_Wakeup   1
 

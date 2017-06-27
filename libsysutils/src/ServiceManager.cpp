@@ -27,6 +27,18 @@
 #include <log/log.h>
 #include <sysutils/ServiceManager.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGD
+#define SLOGD ALOGD
+#endif  // SLOGD
+#ifndef SLOGW
+#define SLOGW ALOGW
+#endif  // SLOGW
+#ifndef SLOGE
+#define SLOGE ALOGE
+#endif  // SLOGE
+#endif  // __ANDROID_VNDK__
+
 ServiceManager::ServiceManager() {
 }
 

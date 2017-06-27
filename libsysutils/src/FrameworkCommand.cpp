@@ -21,6 +21,12 @@
 #include <log/log.h>
 #include <sysutils/FrameworkCommand.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef SLOGW
+#define SLOGW ALOGW
+#endif  // SLOGW
+#endif  // __ANDROID_VNDK__
+
 #define UNUSED __attribute__((unused))
 
 FrameworkCommand::FrameworkCommand(const char *cmd) {
