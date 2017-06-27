@@ -30,10 +30,10 @@ class BacktraceMap;
 
 // Dumps a backtrace using a format similar to what Dalvik uses so that the result
 // can be intermixed in a bug report.
-void dump_backtrace(int fd, BacktraceMap* map, pid_t pid, pid_t tid, const std::string& process_name,
+void dump_backtrace(int fd, BacktraceMap* map, pid_t pid, pid_t tid,
                     const std::map<pid_t, std::string>& threads, std::string* amfd_data);
 
-/* Dumps the backtrace in the backtrace data structure to the log. */
+// Dumps the backtrace in the backtrace data structure to the log.
 void dump_backtrace_to_log(Backtrace* backtrace, log_t* log, const char* prefix);
 
 void dump_backtrace_ucontext(int output_fd, ucontext_t* ucontext);

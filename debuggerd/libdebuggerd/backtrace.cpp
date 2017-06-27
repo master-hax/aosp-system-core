@@ -38,17 +38,15 @@
 
 #include "utility.h"
 
-static void dump_process_header(log_t* log, pid_t pid, const char* process_name) {
+static void dump_process_header(log_t* log, pid_t pid) {
   time_t t = time(NULL);
-  struct tm tm;
+  struct tm tm = {};
   localtime_r(&t, &tm);
   char timestr[64];
   strftime(timestr, sizeof(timestr), "%F %T", &tm);
-  _LOG(log, logtype::BACKTRACE, "\n\n----- pid %d at %s -----\n", pid, timestr);
 
-  if (process_name) {
-    _LOG(log, logtype::BACKTRACE, "Cmd line: %s\n", process_name);
-  }
+  _LOG(log, logtype::BACKTRACE, "\n\n----- pid %d at %s -----\n", pid, timestr);
+  _LOG(log, logtype::BACKTRACE, "Cmd line: %s\n", GetCmdLine(pid).c_str());
   _LOG(log, logtype::BACKTRACE, "ABI: '%s'\n", ABI_STRING);
 }
 
@@ -56,13 +54,13 @@ static void dump_process_footer(log_t* log, pid_t pid) {
   _LOG(log, logtype::BACKTRACE, "\n----- end %d -----\n", pid);
 }
 
-static void log_thread_name(log_t* log, pid_t tid, const char* thread_name) {
-  _LOG(log, logtype::BACKTRACE, "\n\"%s\" sysTid=%d\n", thread_name, tid);
+static void log_thread_name(log_t* log, pid_t tid, const std::string& thread_name) {
+  _LOG(log, logtype::BACKTRACE, "\n\"%s\" sysTid=%d\n", thread_name.c_str(), tid);
 }
 
 static void dump_thread(log_t* log, BacktraceMap* map, pid_t pid, pid_t tid,
                         const std::string& thread_name) {
-  log_thread_name(log, tid, thread_name.c_str());
+  log_thread_name(log, tid, thread_name);
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid, map));
   if (backtrace->Unwind(0)) {
@@ -73,13 +71,13 @@ static void dump_thread(log_t* log, BacktraceMap* map, pid_t pid, pid_t tid,
   }
 }
 
-void dump_backtrace(int fd, BacktraceMap* map, pid_t pid, pid_t tid, const std::string& process_name,
+void dump_backtrace(int fd, BacktraceMap* map, pid_t pid, pid_t tid,
                     const std::map<pid_t, std::string>& threads, std::string* amfd_data) {
   log_t log;
   log.tfd = fd;
   log.amfd_data = amfd_data;
 
-  dump_process_header(&log, pid, process_name.c_str());
+  dump_process_header(&log, pid);
   dump_thread(&log, map, pid, tid, threads.find(tid)->second.c_str());
 
   for (const auto& it : threads) {
@@ -101,9 +99,7 @@ void dump_backtrace_ucontext(int output_fd, ucontext_t* ucontext) {
   log.tfd = output_fd;
   log.amfd_data = nullptr;
 
-  char thread_name[16];
-  read_with_default("/proc/self/comm", thread_name, sizeof(thread_name), "<unknown>");
-  log_thread_name(&log, tid, thread_name);
+  log_thread_name(&log, tid, GetThreadName(tid));
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid));
   if (backtrace->Unwind(0, ucontext)) {
@@ -119,9 +115,7 @@ void dump_backtrace_header(int output_fd) {
   log.tfd = output_fd;
   log.amfd_data = nullptr;
 
-  char process_name[128];
-  read_with_default("/proc/self/cmdline", process_name, sizeof(process_name), "<unknown>");
-  dump_process_header(&log, getpid(), process_name);
+  dump_process_header(&log, getpid());
 }
 
 void dump_backtrace_footer(int output_fd) {

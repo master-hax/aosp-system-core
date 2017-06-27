@@ -34,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <android/log.h>
 #include <backtrace/Backtrace.h>
@@ -51,6 +52,7 @@
 #include "open_files_list.h"
 #include "tombstone.h"
 
+using android::base::StartsWith;
 using android::base::StringPrintf;
 
 #define STACK_WORDS 16
@@ -207,7 +209,7 @@ static const char* get_sigcode(int signo, int code) {
   return "?";
 }
 
-static void dump_header_info(log_t* log) {
+static void dump_header_info(log_t* log, pid_t pid) {
   char fingerprint[PROPERTY_VALUE_MAX];
   char revision[PROPERTY_VALUE_MAX];
 
@@ -217,6 +219,7 @@ static void dump_header_info(log_t* log) {
   _LOG(log, logtype::HEADER, "Build fingerprint: '%s'\n", fingerprint);
   _LOG(log, logtype::HEADER, "Revision: '%s'\n", revision);
   _LOG(log, logtype::HEADER, "ABI: '%s'\n", ABI_STRING);
+  _LOG(log, logtype::HEADER, "Cmd line: '%s'\n", GetCmdLine(pid).c_str());
 }
 
 static void dump_probable_cause(log_t* log, const siginfo_t& si) {
@@ -269,16 +272,16 @@ static void dump_signal_info(log_t* log, pid_t tid) {
   dump_signal_info(log, &si);
 }
 
-static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, const char* process_name,
-                             const char* thread_name) {
+static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, const std::string& process_name,
+                             const std::string& thread_name) {
   // Blacklist logd, logd.reader, logd.writer, logd.auditd, logd.control ...
   // TODO: Why is this controlled by thread name?
-  if (strcmp(thread_name, "logd") == 0 || strncmp(thread_name, "logd.", 4) == 0) {
+  if (thread_name == "logd" || StartsWith(thread_name, "logd.")) {
     log->should_retrieve_logcat = false;
   }
 
-  _LOG(log, logtype::HEADER, "pid: %d, tid: %d, name: %s  >>> %s <<<\n", pid, tid, thread_name,
-       process_name);
+  _LOG(log, logtype::HEADER, "pid: %d, tid: %d, name: %s  >>> %s <<<\n", pid, tid,
+       thread_name.c_str(), process_name.c_str());
 }
 
 static void dump_stack_segment(
@@ -502,7 +505,7 @@ static void dump_thread(log_t* log, pid_t pid, pid_t tid, const std::string& pro
   if (!primary_thread) {
     _LOG(log, logtype::THREAD, "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---\n");
   }
-  dump_thread_info(log, pid, tid, process_name.c_str(), thread_name.c_str());
+  dump_thread_info(log, pid, tid, process_name, thread_name);
   dump_signal_info(log, tid);
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid, map));
@@ -658,16 +661,17 @@ static void dump_logs(log_t* log, pid_t pid, unsigned int tail) {
 
 // Dumps all information about the specified pid to the tombstone.
 static void dump_crash(log_t* log, BacktraceMap* map, const OpenFilesList* open_files, pid_t pid,
-                       pid_t tid, const std::string& process_name,
-                       const std::map<pid_t, std::string>& threads, uintptr_t abort_msg_address) {
+                       pid_t tid, const std::map<pid_t, std::string>& threads,
+                       uintptr_t abort_msg_address) {
   // don't copy log messages to tombstone unless this is a dev device
   char value[PROPERTY_VALUE_MAX];
   property_get("ro.debuggable", value, "0");
   bool want_logs = (value[0] == '1');
 
-  _LOG(log, logtype::HEADER,
-       "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
-  dump_header_info(log);
+  std::string process_name(GetProcessName(pid));
+
+  _LOG(log, logtype::HEADER, "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
+  dump_header_info(log, pid);
   dump_thread(log, pid, tid, process_name, threads.find(tid)->second, map, abort_msg_address, true);
   if (want_logs) {
     dump_logs(log, pid, 5);
@@ -746,15 +750,14 @@ int open_tombstone(std::string* out_path) {
 }
 
 void engrave_tombstone(int tombstone_fd, BacktraceMap* map, const OpenFilesList* open_files,
-                       pid_t pid, pid_t tid, const std::string& process_name,
-                       const std::map<pid_t, std::string>& threads, uintptr_t abort_msg_address,
-                       std::string* amfd_data) {
+                       pid_t pid, pid_t tid, const std::map<pid_t, std::string>& threads,
+                       uintptr_t abort_msg_address, std::string* amfd_data) {
   log_t log;
   log.current_tid = tid;
   log.crashed_tid = tid;
   log.tfd = tombstone_fd;
   log.amfd_data = amfd_data;
-  dump_crash(&log, map, open_files, pid, tid, process_name, threads, abort_msg_address);
+  dump_crash(&log, map, open_files, pid, tid, threads, abort_msg_address);
 }
 
 void engrave_tombstone_ucontext(int tombstone_fd, uintptr_t abort_msg_address, siginfo_t* siginfo,
@@ -768,15 +771,9 @@ void engrave_tombstone_ucontext(int tombstone_fd, uintptr_t abort_msg_address, s
   log.tfd = tombstone_fd;
   log.amfd_data = nullptr;
 
-  char thread_name[16];
-  char process_name[128];
-
-  read_with_default("/proc/self/comm", thread_name, sizeof(thread_name), "<unknown>");
-  read_with_default("/proc/self/cmdline", process_name, sizeof(process_name), "<unknown>");
-
   _LOG(&log, logtype::HEADER, "*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\n");
-  dump_header_info(&log);
-  dump_thread_info(&log, pid, tid, thread_name, process_name);
+  dump_header_info(&log, pid);
+  dump_thread_info(&log, pid, tid, GetProcessName(pid), GetThreadName(tid));
   dump_signal_info(&log, siginfo);
 
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid));

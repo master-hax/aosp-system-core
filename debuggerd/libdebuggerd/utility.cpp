@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
@@ -36,6 +37,9 @@
 #include <backtrace/Backtrace.h>
 #include <log/log.h>
 
+using android::base::ReadFileToString;
+using android::base::StringPrintf;
+using android::base::Trim;
 using android::base::unique_fd;
 
 // Whitelist output desired in the logcat output.
@@ -248,19 +252,25 @@ void dump_memory(log_t* log, Backtrace* backtrace, uintptr_t addr, const char* f
   }
 }
 
-void read_with_default(const char* path, char* buf, size_t len, const char* default_value) {
-  unique_fd fd(open(path, O_RDONLY | O_CLOEXEC));
-  if (fd != -1) {
-    int rc = TEMP_FAILURE_RETRY(read(fd.get(), buf, len - 1));
-    if (rc != -1) {
-      buf[rc] = '\0';
+std::string GetThreadName(pid_t tid) {
+  std::string name = "<unknown>";
+  ReadFileToString(StringPrintf("/proc/%d/comm", tid), &name);
+  return Trim(name);
+}
 
-      // Trim trailing newlines.
-      if (rc > 0 && buf[rc - 1] == '\n') {
-        buf[rc - 1] = '\0';
-      }
-      return;
-    }
-  }
-  strcpy(buf, default_value);
+std::string GetProcessName(pid_t pid) {
+  std::string path(StringPrintf("/proc/%d/cmdline", pid));
+  std::string cmd;
+  if (!ReadFileToString(path, &cmd) || cmd.empty()) return "<unknown>";
+  size_t first_null = cmd.find_first_of('\0');
+  if (first_null != std::string::npos) cmd.resize(first_null);  // Trim everything after the name.
+  return cmd;
+}
+
+std::string GetCmdLine(pid_t pid) {
+  std::string path(StringPrintf("/proc/%d/cmdline", pid));
+  std::string cmd;
+  if (!ReadFileToString(path, &cmd) || cmd.empty()) return "<unknown>";
+  std::replace(cmd.begin(), cmd.end(), '\0', ' ');
+  return Trim(cmd);
 }
