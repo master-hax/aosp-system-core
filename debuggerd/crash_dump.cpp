@@ -57,21 +57,7 @@
 #include "util.h"
 
 using android::base::unique_fd;
-using android::base::ReadFileToString;
 using android::base::StringPrintf;
-using android::base::Trim;
-
-static std::string get_process_name(pid_t pid) {
-  std::string result = "<unknown>";
-  ReadFileToString(StringPrintf("/proc/%d/cmdline", pid), &result);
-  return result;
-}
-
-static std::string get_thread_name(pid_t tid) {
-  std::string result = "<unknown>";
-  ReadFileToString(StringPrintf("/proc/%d/comm", tid), &result);
-  return Trim(result);
-}
 
 static bool pid_contains_tid(int pid_proc_fd, pid_t tid) {
   struct stat st;
@@ -314,7 +300,7 @@ int main(int argc, char** argv) {
         if (!ptrace_seize_thread(target_proc_fd, sibling_tid, &attach_error)) {
           LOG(WARNING) << attach_error;
         } else {
-          threads.emplace(sibling_tid, get_thread_name(sibling_tid));
+          threads.emplace(sibling_tid, GetThreadName(sibling_tid));
         }
       }
     }
@@ -337,8 +323,7 @@ int main(int argc, char** argv) {
     populate_open_files_list(target, &open_files);
   }
 
-  std::string process_name = get_process_name(main_tid);
-  threads.emplace(main_tid, get_thread_name(main_tid));
+  threads.emplace(main_tid, GetThreadName(main_tid));
 
   // Drop our capabilities now that we've attached to the threads we care about.
   drop_capabilities();
@@ -405,11 +390,11 @@ int main(int argc, char** argv) {
   std::string amfd_data;
   if (backtrace) {
     ATRACE_NAME("dump_backtrace");
-    dump_backtrace(output_fd.get(), backtrace_map.get(), target, main_tid, process_name, threads, 0);
+    dump_backtrace(output_fd.get(), backtrace_map.get(), target, main_tid, threads, 0);
   } else {
     ATRACE_NAME("engrave_tombstone");
-    engrave_tombstone(output_fd.get(), backtrace_map.get(), &open_files, target, main_tid,
-                      process_name, threads, abort_address, fatal_signal ? &amfd_data : nullptr);
+    engrave_tombstone(output_fd.get(), backtrace_map.get(), &open_files, target, main_tid, threads,
+                      abort_address, fatal_signal ? &amfd_data : nullptr);
   }
 
   // We don't actually need to PTRACE_DETACH, as long as our tracees aren't in

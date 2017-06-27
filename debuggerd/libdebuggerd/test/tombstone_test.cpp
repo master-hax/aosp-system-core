@@ -637,9 +637,10 @@ TEST_F(TombstoneTest, dump_log_file_error) {
 }
 
 TEST_F(TombstoneTest, dump_header_info) {
-  dump_header_info(&log_);
+  dump_header_info(&log_, getpid());
 
   std::string expected = "Build fingerprint: 'unknown'\nRevision: 'unknown'\n";
   expected += android::base::StringPrintf("ABI: '%s'\n", ABI_STRING);
+  expected += "Cmd line: '" + GetCmdLine(getpid()) + "'\n";
   ASSERT_STREQ(expected.c_str(), amfd_data_.c_str());
 }

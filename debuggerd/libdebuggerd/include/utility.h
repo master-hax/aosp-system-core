@@ -83,6 +83,8 @@ bool wait_for_signal(pid_t tid, siginfo_t* siginfo);
 
 void dump_memory(log_t* log, Backtrace* backtrace, uintptr_t addr, const char* fmt, ...);
 
-void read_with_default(const char* path, char* buf, size_t len, const char* default_value);
+std::string GetCmdLine(pid_t pid);
+std::string GetProcessName(pid_t pid);
+std::string GetThreadName(pid_t tid);
 
 #endif // _DEBUGGERD_UTILITY_H
