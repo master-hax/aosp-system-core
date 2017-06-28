@@ -65,12 +65,14 @@ cc_library {
         "liblog",
         "libbase",
     ],
+    export_include_dirs: ["include"],
     target: {
         android: {
             shared_libs: [
                 "libz",
                 "libutils",
             ],
+            export_shared_lib_headers: ["libz"],
         },
         host: {
             static_libs: ["libutils"],
