@@ -423,29 +423,40 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     abort();
 }
 
-bool HandlePowerctlMessage(const std::string& command) {
-    unsigned int cmd = 0;
+static int do_shutdown_done(const std::vector<std::string>& args) {
+    RebootHandler::GetInstance().Reboot();
+    return 0;
+}
+
+RebootHandler::RebootHandler() : command_invalid_(false) {}
+
+void RebootHandler::Reboot() const {
+    if (!command_invalid_) DoReboot(cmd_, reason_, reboot_target_, run_fsck_);
+}
+
+bool RebootHandler::HandlePowerctlMessage(const std::string& command) {
     std::vector<std::string> cmd_params = android::base::Split(command, ",");
-    std::string reboot_target = "";
-    bool run_fsck = false;
-    bool command_invalid = false;
+    command_invalid_ = false;
+    run_fsck_ = false;
+    cmd_ = 0;
+    reboot_target_ = "";
 
     if (cmd_params.size() > 3) {
-        command_invalid = true;
+        command_invalid_ = true;
     } else if (cmd_params[0] == "shutdown") {
-        cmd = ANDROID_RB_POWEROFF;
+        cmd_ = ANDROID_RB_POWEROFF;
         if (cmd_params.size() == 2 && cmd_params[1] == "userrequested") {
             // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
             // Run fsck once the file system is remounted in read-only mode.
-            run_fsck = true;
+            run_fsck_ = true;
         }
     } else if (cmd_params[0] == "reboot") {
-        cmd = ANDROID_RB_RESTART2;
+        cmd_ = ANDROID_RB_RESTART2;
         if (cmd_params.size() >= 2) {
-            reboot_target = cmd_params[1];
+            reboot_target_ = cmd_params[1];
             // When rebooting to the bootloader notify the bootloader writing
             // also the BCB.
-            if (reboot_target == "bootloader") {
+            if (reboot_target_ == "bootloader") {
                 std::string err;
                 if (!write_reboot_bootloader(&err)) {
                     LOG(ERROR) << "reboot-bootloader: Error writing "
@@ -455,21 +466,35 @@ bool HandlePowerctlMessage(const std::string& command) {
             }
             // If there is an additional bootloader parameter, pass it along
             if (cmd_params.size() == 3) {
-                reboot_target += "," + cmd_params[2];
+                reboot_target_ += "," + cmd_params[2];
             }
         }
     } else if (command == "thermal-shutdown") {  // no additional parameter allowed
-        cmd = ANDROID_RB_THERMOFF;
+        cmd_ = ANDROID_RB_THERMOFF;
+        /* Do not queue "shutdown" trigger since we want to shutdown immediately */
+        Reboot();
+        return true;
     } else {
-        command_invalid = true;
+        command_invalid_ = true;
     }
-    if (command_invalid) {
+    if (command_invalid_) {
         LOG(ERROR) << "powerctl: unrecognized command '" << command << "'";
         return false;
     }
 
-    DoReboot(cmd, command, reboot_target, run_fsck);
+    LOG(INFO) << "Clear action queue and start shutdown trigger";
+    ActionManager::GetInstance().ClearQueue();
+    /* Queue shutdown trigger first */
+    ActionManager::GetInstance().QueueEventTrigger("shutdown");
+    /* Queue built-in shutdown_done */
+    ActionManager::GetInstance().QueueBuiltinAction(do_shutdown_done, "shutdown_done");
+
     return true;
+}
+
+RebootHandler& RebootHandler::GetInstance() {
+    static RebootHandler instance;
+    return instance;
 }
 
 }  // namespace init

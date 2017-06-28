@@ -326,6 +326,11 @@ void ActionManager::DumpState() const {
     }
 }
 
+void ActionManager::ClearQueue() {
+    current_executing_actions_ = {};
+    event_queue_ = {};
+}
+
 bool ActionParser::ParseSection(std::vector<std::string>&& args, const std::string& filename,
                                 int line, std::string* err) {
     std::vector<std::string> triggers(args.begin() + 1, args.end());
