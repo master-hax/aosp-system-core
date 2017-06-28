@@ -35,6 +35,9 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
 // Parses and handles a setprop sys.powerctl message.
 bool HandlePowerctlMessage(const std::string& command);
 
+// Tests if shutdown in progress
+bool IsShuttingDown();
+
 }  // namespace init
 }  // namespace android
 
