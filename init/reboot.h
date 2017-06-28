@@ -32,10 +32,29 @@ namespace init {
 void DoReboot(unsigned int cmd, const std::string& reason, const std::string& rebootTarget,
               bool runFsck) __attribute__((__noreturn__));
 
-// Parses and handles a setprop sys.powerctl message.
-bool HandlePowerctlMessage(const std::string& command);
+class RebootHandler {
+  public:
+    // Parses and handles a set prop sys.powerctl message.
+    bool HandlePowerctlMessage(const std::string& command);
+
+    // Do reboot with the parsed information
+    void Reboot() const;
+
+    // Singleton
+    static RebootHandler& GetInstance();
+
+  private:
+    RebootHandler();
+    RebootHandler(RebootHandler const&) = delete;
+    void operator=(RebootHandler const&) = delete;
+
+    unsigned int cmd_;
+    bool run_fsck_;
+    std::string reason_;
+    std::string reboot_target_;
+    bool command_invalid_;
+};
 
 }  // namespace init
 }  // namespace android
-
 #endif

@@ -119,6 +119,7 @@ static int reboot_into_recovery(const std::vector<std::string>& options) {
         LOG(ERROR) << "failed to set bootloader message: " << err;
         return -1;
     }
+    /* Do not queue "shutdown" trigger since we want to shutdown immediately */
     DoReboot(ANDROID_RB_RESTART2, "reboot", "recovery", false);
     return 0;
 }
