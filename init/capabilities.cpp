@@ -22,6 +22,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/scopeguard.h>
 
 #define CAP_MAP_ENTRY(cap) { #cap, CAP_##cap }
 
@@ -108,8 +109,7 @@ static bool DropBoundingSet(const CapSet& to_keep) {
 
 static bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
     cap_t caps = cap_init();
-    auto deleter = [](cap_t* p) { cap_free(*p); };
-    std::unique_ptr<cap_t, decltype(deleter)> ptr_caps(&caps, deleter);
+    auto scopeguard = android::base::make_scope_guard([&caps] { cap_free(caps); });
 
     cap_clear(caps);
     cap_value_t value[1];
