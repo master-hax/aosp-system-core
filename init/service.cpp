@@ -235,7 +235,12 @@ void Service::KillProcessGroup(int signal) {
 void Service::SetProcessAttributes() {
     // Keep capabilites on uid change.
     if (capabilities_.any() && uid_) {
-        if (prctl(PR_SET_SECUREBITS, SECBIT_KEEP_CAPS | SECBIT_KEEP_CAPS_LOCKED) != 0) {
+        int64_t securebits = prctl(PR_GET_SECUREBITS);
+        if (securebits == -1) {
+            PLOG(FATAL) << "prtcl(PR_GET_SECUREBITS) failed for " << name_;
+        }
+        securebits |= SECBIT_KEEP_CAPS | SECBIT_KEEP_CAPS_LOCKED;
+        if (prctl(PR_SET_SECUREBITS, securebits) != 0) {
             PLOG(FATAL) << "prtcl(PR_SET_KEEPCAPS) failed for " << name_;
         }
     }
