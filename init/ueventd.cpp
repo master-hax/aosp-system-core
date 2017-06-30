@@ -244,6 +244,21 @@ DeviceHandler CreateDeviceHandler() {
                          std::move(subsystems), true);
 }
 
+void SetupSigChldHandler() {
+    struct sigaction act = {};
+    act.sa_handler = [](int) {
+        while (waitpid(-1, nullptr, WNOHANG) > 0)
+            ;
+    };
+    act.sa_flags = SA_NOCLDSTOP;
+    sigaction(SIGCHLD, &act, 0);
+
+    // Reap and pending children that exited between the last call to waitpid() and installing the
+    // signal handler above.
+    while (waitpid(-1, nullptr, WNOHANG) > 0)
+        ;
+}
+
 int ueventd_main(int argc, char** argv) {
     /*
      * init sets the umask to 077 for forked processes. We need to
@@ -267,6 +282,10 @@ int ueventd_main(int argc, char** argv) {
         ColdBoot cold_boot(uevent_listener, device_handler);
         cold_boot.Run();
     }
+
+    // We use waitpid() in ColdBoot, so we set up the sigchld handler for reaping firmware handler
+    // processes after it has completed.
+    SetupSigChldHandler();
 
     uevent_listener.Poll([&device_handler](const Uevent& uevent) {
         HandleFirmwareEvent(uevent);
