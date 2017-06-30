@@ -30,13 +30,28 @@
 #include <unistd.h>
 
 #include <ion/ion.h>
+#include <ion/ion_4.12.h>
+
 #include <log/log.h>
+
+static int __sys_legacy_ion = 0;
 
 int ion_open()
 {
+    ion_user_handle_t handle = (ion_user_handle_t)NULL;
+    int ret;
+
     int fd = open("/dev/ion", O_RDONLY | O_CLOEXEC);
     if (fd < 0)
         ALOGE("open /dev/ion failed!\n");
+
+    /**
+      * Check for FREE IOCTL here; it is available only in the old
+      * kernels, not the new ones.
+      */
+    ret = ion_free(fd, handle);
+    __sys_legacy_ion = !(-ENOTTY == ret);
+
     return fd;
 }
 
@@ -62,21 +77,27 @@ static int ion_ioctl(int fd, int req, void *arg)
 int ion_alloc(int fd, size_t len, size_t align, unsigned int heap_mask,
               unsigned int flags, ion_user_handle_t *handle)
 {
-    int ret;
-    struct ion_allocation_data data = {
-        .len = len,
-        .align = align,
-        .heap_id_mask = heap_mask,
-        .flags = flags,
-    };
+    int ret = 0;
 
-    if (handle == NULL)
-        return -EINVAL;
+    if (handle == NULL) return -EINVAL;
 
-    ret = ion_ioctl(fd, ION_IOC_ALLOC, &data);
-    if (ret < 0)
-        return ret;
-    *handle = data.handle;
+    if (__sys_legacy_ion) {
+        struct ion_allocation_data data = {
+            .len = len, .align = align, .heap_id_mask = heap_mask, .flags = flags,
+        };
+
+        ret = ion_ioctl(fd, ION_IOC_ALLOC, &data);
+        if (ret < 0) return ret;
+        *handle = data.handle;
+    } else {
+        struct ion_new_allocation_data data = {
+            .len = len, .heap_id_mask = heap_mask, .flags = flags,
+        };
+
+        ret = ion_ioctl(fd, ION_IOC_NEW_ALLOC, &data);
+        if (ret < 0) return ret;
+        *handle = data.fd;
+    }
     return ret;
 }
 
@@ -96,6 +117,8 @@ int ion_map(int fd, ion_user_handle_t handle, size_t length, int prot,
     struct ion_fd_data data = {
         .handle = handle,
     };
+
+    if (!__sys_legacy_ion) return -EINVAL;
 
     if (map_fd == NULL)
         return -EINVAL;
@@ -126,6 +149,7 @@ int ion_share(int fd, ion_user_handle_t handle, int *share_fd)
         .handle = handle,
     };
 
+    if (!__sys_legacy_ion) return -EINVAL;
     if (share_fd == NULL)
         return -EINVAL;
 
@@ -145,6 +169,8 @@ int ion_alloc_fd(int fd, size_t len, size_t align, unsigned int heap_mask,
     ion_user_handle_t handle;
     int ret;
 
+    if (!__sys_legacy_ion) return -EINVAL;
+
     ret = ion_alloc(fd, len, align, heap_mask, flags, &handle);
     if (ret < 0)
         return ret;
@@ -159,6 +185,8 @@ int ion_import(int fd, int share_fd, ion_user_handle_t *handle)
     struct ion_fd_data data = {
         .fd = share_fd,
     };
+
+    if (!__sys_legacy_ion) return -EINVAL;
 
     if (handle == NULL)
         return -EINVAL;
@@ -175,5 +203,35 @@ int ion_sync_fd(int fd, int handle_fd)
     struct ion_fd_data data = {
         .fd = handle_fd,
     };
+
+    if (!__sys_legacy_ion) return -EINVAL;
+
     return ion_ioctl(fd, ION_IOC_SYNC, &data);
+}
+
+int ion_query_heap_cnt(int fd, int* cnt) {
+    int ret;
+    struct ion_heap_query query;
+
+    memset(&query, 0, sizeof(query));
+
+    ret = ion_ioctl(fd, ION_IOC_HEAP_QUERY, &query);
+    if (ret < 0) return ret;
+
+    *cnt = query.cnt;
+    return ret;
+}
+
+int ion_query_get_heaps(int fd, int cnt, void* buffers) {
+    int ret;
+    struct ion_heap_query query = {
+        .cnt = cnt, .heaps = (uintptr_t)buffers,
+    };
+
+    ret = ion_ioctl(fd, ION_IOC_HEAP_QUERY, &query);
+    return ret;
+}
+
+int ion_is_legacy() {
+    return __sys_legacy_ion;
 }
