@@ -17,7 +17,6 @@
 #ifndef LIBZIPARCHIVE_ZIPWRITER_H_
 #define LIBZIPARCHIVE_ZIPWRITER_H_
 
-#include <zlib.h>
 #include <cstdio>
 #include <ctime>
 
@@ -28,6 +27,8 @@
 #include "android-base/macros.h"
 #include "utils/Compat.h"
 
+struct z_stream_s;
+typedef struct z_stream_s z_stream;
 /**
  * Writes a Zip file via a stateful interface.
  *
