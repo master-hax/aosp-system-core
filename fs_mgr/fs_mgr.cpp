@@ -242,6 +242,13 @@ static void check_fs(const char *blk_device, char *fs_type, char *target, int *f
     return;
 }
 
+static bool is_ext4_superblock_valid(const ext4_super_block& es) {
+    if (es->s_magic != EXT4_SUPER_MAGIC) return false;
+    if (es->s_rev_level != EXT4_DYNAMIC_REV && es->s_rev_level != EXT4_GOOD_OLD_REV) return false;
+    if (EXT4_INODES_PER_GROUP(es) == 0) return false;
+    return true;
+}
+
 /* Function to read the primary superblock */
 static int read_super_block(int fd, struct ext4_super_block *sb)
 {
@@ -256,6 +263,7 @@ static int read_super_block(int fd, struct ext4_super_block *sb)
         return ret;
     if (ret != sizeof(*sb))
         return ret;
+    if (is_ext4_superblock_valid(sb)) return -EINVAL;
 
     return 0;
 }
