@@ -57,6 +57,10 @@
 #include "fs_mgr_priv.h"
 #include "fs_mgr_priv_dm_ioctl.h"
 
+#ifndef EXT4_MAX_BLOCK_LOG_SIZE
+#define EXT4_MAX_BLOCK_LOG_SIZE 16
+#endif
+
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
 #define KEY_IN_FOOTER  "footer"
 
@@ -245,6 +249,12 @@ static int read_super_block(int fd, struct ext4_super_block *sb)
         return ret;
     if (ret != sizeof(*sb))
         return ret;
+    if (sb->s_magic != EXT4_SUPER_MAGIC) return -EINVAL;
+    if (sb->s_rev_level != EXT4_DYNAMIC_REV && sb->s_rev_level != EXT4_GOOD_OLD_REV) return -EINVAL;
+    // The correctness of the raw data needs to be checked,
+    // so we check s_log_block_size instead of EXT4_BLOCK_SIZE.
+    if ((sb->s_log_block_size + EXT4_MIN_BLOCK_LOG_SIZE) > EXT4_MAX_BLOCK_LOG_SIZE) return -EINVAL;
+    if (EXT4_INODES_PER_GROUP(sb) == 0) return -EINVAL;
 
     return 0;
 }
