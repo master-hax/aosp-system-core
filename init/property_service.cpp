@@ -42,6 +42,7 @@
 #include <queue>
 #include <vector>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -348,9 +349,9 @@ class SocketConnection {
     ufds[0].events = POLLIN;
     ufds[0].revents = 0;
     while (*timeout_ms > 0) {
-      Timer timer;
+      android::base::Timer timer;
       int nr = poll(ufds, 1, *timeout_ms);
-      uint64_t millis = timer.duration_ms();
+      uint64_t millis = timer.duration().count();
       *timeout_ms = (millis > *timeout_ms) ? 0 : *timeout_ms - millis;
 
       if (nr > 0) {
@@ -582,7 +583,7 @@ static void load_properties(char *data, const char *filter)
 // Filter is used to decide which properties to load: NULL loads all keys,
 // "ro.foo.*" is a prefix match, and "ro.foo.bar" is an exact match.
 static void load_properties_from_file(const char* filename, const char* filter) {
-    Timer t;
+    android::base::Timer t;
     std::string data;
     std::string err;
     if (!ReadFile(filename, &data, &err)) {
