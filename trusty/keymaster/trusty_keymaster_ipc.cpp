@@ -62,27 +62,36 @@ int trusty_keymaster_call(uint32_t cmd, void* in, uint32_t in_size, uint8_t* out
         ALOGE("failed to send cmd (%d) to %s: %s\n", cmd, KEYMASTER_PORT, strerror(errno));
         return -errno;
     }
+    *out_size = 0;
+    ssize_t bytes_read = 0;
+    uint8_t recv_buf[4096];
+    while (true) {
+        rc = read(handle_, recv_buf, 4096);
+        if (rc < 0) {
+            ALOGE("failed to retrieve response for cmd (%d) to %s: %s\n", cmd, KEYMASTER_PORT,
+                  strerror(errno));
+            return -errno;
+        }
 
-    rc = read(handle_, out, *out_size);
-    if (rc < 0) {
-        ALOGE("failed to retrieve response for cmd (%d) to %s: %s\n", cmd, KEYMASTER_PORT,
-              strerror(errno));
-        return -errno;
+        if ((size_t)rc < sizeof(struct keymaster_message)) {
+            ALOGE("invalid response size (%d)\n", (int)rc);
+            return -EINVAL;
+        }
+
+        msg = (struct keymaster_message*)recv_buf;
+
+        if ((cmd | KEYMASTER_RESP_BIT) != (msg->cmd & ~(KEYMASTER_STOP_BIT))) {
+            ALOGE("invalid command (%d)", msg->cmd);
+            return -EINVAL;
+        }
+        bytes_read = (size_t)rc - sizeof(struct keymaster_message);
+        memcpy(out + *out_size, recv_buf + sizeof(struct keymaster_message), bytes_read);
+        *out_size += bytes_read;
+        if (msg->cmd & KEYMASTER_STOP_BIT) {
+            break;
+        }
     }
 
-    if ((size_t)rc < sizeof(struct keymaster_message)) {
-        ALOGE("invalid response size (%d)\n", (int)rc);
-        return -EINVAL;
-    }
-
-    msg = (struct keymaster_message*)out;
-
-    if ((cmd | KEYMASTER_RESP_BIT) != msg->cmd) {
-        ALOGE("invalid command (%d)", msg->cmd);
-        return -EINVAL;
-    }
-
-    *out_size = ((size_t)rc) - sizeof(struct keymaster_message);
     return rc;
 }
 
