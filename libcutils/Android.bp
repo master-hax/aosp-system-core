@@ -150,6 +150,7 @@ cc_library {
         "libutils_headers",
     ],
     export_header_lib_headers: ["libcutils_headers"],
+    export_shared_lib_headers: ["liblog"],
 
     cflags: [
         "-Werror",
