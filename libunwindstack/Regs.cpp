@@ -27,6 +27,7 @@
 #include "Machine.h"
 #include "MapInfo.h"
 #include "Regs.h"
+#include "Ucontext.h"
 #include "User.h"
 
 template <typename AddressType>
@@ -88,6 +89,11 @@ uint64_t RegsArm::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
   return rel_pc - 4;
 }
 
+void RegsArm::SetFromRaw() {
+  set_pc(regs_[ARM_REG_PC]);
+  set_sp(regs_[ARM_REG_SP]);
+}
+
 RegsArm64::RegsArm64()
     : RegsImpl<uint64_t>(ARM64_REG_LAST, ARM64_REG_SP, Location(LOCATION_REGISTER, ARM64_REG_LR)) {}
 
@@ -102,6 +108,11 @@ uint64_t RegsArm64::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
   return rel_pc - 4;
 }
 
+void RegsArm64::SetFromRaw() {
+  set_pc(regs_[ARM64_REG_PC]);
+  set_sp(regs_[ARM64_REG_SP]);
+}
+
 RegsX86::RegsX86()
     : RegsImpl<uint32_t>(X86_REG_LAST, X86_REG_SP, Location(LOCATION_SP_OFFSET, -4)) {}
 
@@ -114,6 +125,11 @@ uint64_t RegsX86::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
     return 0;
   }
   return rel_pc - 1;
+}
+
+void RegsX86::SetFromRaw() {
+  set_pc(regs_[X86_REG_PC]);
+  set_sp(regs_[X86_REG_SP]);
 }
 
 RegsX86_64::RegsX86_64()
@@ -131,15 +147,17 @@ uint64_t RegsX86_64::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
   return rel_pc - 1;
 }
 
+void RegsX86_64::SetFromRaw() {
+  set_pc(regs_[X86_64_REG_PC]);
+  set_sp(regs_[X86_64_REG_SP]);
+}
+
 static Regs* ReadArm(void* remote_data) {
   arm_user_regs* user = reinterpret_cast<arm_user_regs*>(remote_data);
 
   RegsArm* regs = new RegsArm();
   memcpy(regs->RawData(), &user->regs[0], ARM_REG_LAST * sizeof(uint32_t));
-
-  regs->set_pc(user->regs[ARM_REG_PC]);
-  regs->set_sp(user->regs[ARM_REG_SP]);
-
+  regs->SetFromRaw();
   return regs;
 }
 
@@ -148,9 +166,7 @@ static Regs* ReadArm64(void* remote_data) {
 
   RegsArm64* regs = new RegsArm64();
   memcpy(regs->RawData(), &user->regs[0], (ARM64_REG_R31 + 1) * sizeof(uint64_t));
-  regs->set_pc(user->pc);
-  regs->set_sp(user->sp);
-
+  regs->SetFromRaw();
   return regs;
 }
 
@@ -168,9 +184,7 @@ static Regs* ReadX86(void* remote_data) {
   (*regs)[X86_REG_ESP] = user->esp;
   (*regs)[X86_REG_EIP] = user->eip;
 
-  regs->set_pc(user->eip);
-  regs->set_sp(user->esp);
-
+  regs->SetFromRaw();
   return regs;
 }
 
@@ -196,9 +210,7 @@ static Regs* ReadX86_64(void* remote_data) {
   (*regs)[X86_64_REG_RSP] = user->rsp;
   (*regs)[X86_64_REG_RIP] = user->rip;
 
-  regs->set_pc(user->rip);
-  regs->set_sp(user->rsp);
-
+  regs->SetFromRaw();
   return regs;
 }
 
@@ -230,4 +242,70 @@ Regs* Regs::RemoteGet(pid_t pid, uint32_t* machine_type) {
     return ReadArm64(buffer.data());
   }
   return nullptr;
+}
+
+static Regs* CreateFromArmUcontext(void* ucontext) {
+  arm_ucontext_t* arm_ucontext = reinterpret_cast<arm_ucontext_t*>(ucontext);
+
+  RegsArm* regs = new RegsArm();
+  memcpy(regs->RawData(), &arm_ucontext->uc_mcontext.regs[0], ARM_REG_LAST * sizeof(uint32_t));
+  regs->SetFromRaw();
+  return regs;
+}
+
+static Regs* CreateFromArm64Ucontext(void* ucontext) {
+  arm64_ucontext_t* arm64_ucontext = reinterpret_cast<arm64_ucontext_t*>(ucontext);
+
+  RegsArm64* regs = new RegsArm64();
+  memcpy(regs->RawData(), &arm64_ucontext->uc_mcontext.regs[0], ARM64_REG_LAST * sizeof(uint64_t));
+  regs->SetFromRaw();
+  return regs;
+}
+
+static Regs* CreateFromX86Ucontext(void* ucontext) {
+  x86_ucontext_t* x86_ucontext = reinterpret_cast<x86_ucontext_t*>(ucontext);
+
+  RegsX86* regs = new RegsX86();
+  memcpy(regs->RawData(), &x86_ucontext->uc_mcontext.regs[0], X86_REG_LAST * sizeof(uint64_t));
+  regs->SetFromRaw();
+  return regs;
+}
+
+static Regs* CreateFromX86_64Ucontext(void* ucontext) {
+  x86_64_ucontext_t* x86_64_ucontext = reinterpret_cast<x86_64_ucontext_t*>(ucontext);
+
+  RegsX86_64* regs = new RegsX86_64();
+  memcpy(regs->RawData(), &x86_64_ucontext->uc_mcontext.regs[0], X86_64_REG_LAST * sizeof(uint64_t));
+  regs->SetFromRaw();
+  return regs;
+}
+
+Regs* Regs::CreateFromUcontext(uint32_t machine_type, void* ucontext) {
+  switch (machine_type) {
+    case EM_386:
+      return CreateFromX86Ucontext(ucontext);
+    case EM_X86_64:
+      return CreateFromX86_64Ucontext(ucontext);
+    case EM_ARM:
+      return CreateFromArmUcontext(ucontext);
+    case EM_AARCH64:
+      return CreateFromArm64Ucontext(ucontext);
+  }
+  return nullptr;
+}
+
+Regs* Regs::CreateFromLocal() {
+  Regs* regs;
+#if defined(__arm__)
+  regs = new RegsArm();
+#elif defined(__aarch64__)
+  regs = new RegsArm64();
+#elif defined(__i386__)
+  regs = new RegsX86();
+#elif defined(__x86_64__)
+  regs = new RegsX86_64();
+#else
+  abort();
+#endif
+  return regs;
 }
