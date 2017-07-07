@@ -299,10 +299,8 @@ void RecordBootComplete() {
 
   if (boot_event_store.GetBootEvent("last_boot_time_utc", &record)) {
     time_t last_boot_time_utc = record.second;
-    time_t time_since_last_boot = difftime(current_time_utc,
-                                           last_boot_time_utc);
-    boot_event_store.AddBootEventWithValue("time_since_last_boot",
-                                           time_since_last_boot);
+    time_t time_diff_last_boot = difftime(current_time_utc, last_boot_time_utc);
+    boot_event_store.AddBootEventWithValue("time_diff_last_boot", time_diff_last_boot);
   }
 
   boot_event_store.AddBootEventWithValue("last_boot_time_utc", current_time_utc);
