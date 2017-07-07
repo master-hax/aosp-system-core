@@ -26,6 +26,12 @@
 #include <sysutils/FrameworkListener.h>
 #include <sysutils/SocketClient.h>
 
+#ifdef __ANDROID_VNDK__
+#ifndef LOG_EVENT_INT
+#define LOG_EVENT_INT(...)
+#endif  // LOG_EVENT_INT
+#endif  // __ANDROID_VNDK__
+
 static const int CMD_BUF_SIZE = 1024;
 
 #define UNUSED __attribute__((unused))
