@@ -402,11 +402,6 @@ void RecordFactoryReset() {
   // is losing records somehow.
   boot_event_store.AddBootEventWithValue(
       "factory_reset_record_value", factory_reset_utc);
-
-  time_t time_since_factory_reset = difftime(current_time_utc,
-                                             factory_reset_utc);
-  boot_event_store.AddBootEventWithValue("time_since_factory_reset",
-                                         time_since_factory_reset);
 }
 
 }  // namespace
