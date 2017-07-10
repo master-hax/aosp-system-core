@@ -14,59 +14,15 @@
  * limitations under the License.
  */
 
-//
-// C/C++ logging functions.  See the logging documentation for API details.
-//
-// We'd like these to be available from C code (in case we import some from
-// somewhere), so this has a C interface.
-//
-// The output will be correct when the log file is shared between multiple
-// threads and/or multiple processes so long as the operating system
-// supports O_APPEND.  These calls have mutex-protected data structures
-// and so are NOT reentrant.  Do not use LOG in a signal handler.
-//
 #ifndef _LIBS_UTILS_LOG_H
 #define _LIBS_UTILS_LOG_H
 
-#include <sys/types.h>
+// DO NOT INCLUDE ANYTHING NEW IN THIS FILE.
+
+// <log/log.h> has replaced this file and all changes should go there instead.
+// This path remains strictly to include that header as there are thousands of
+// references to <utils/Log.h> in the tree.
 
 #include <log/log.h>
-
-#ifdef __cplusplus
-
-namespace android {
-
-/*
- * A very simple utility that yells in the log when an operation takes too long.
- */
-class LogIfSlow {
-public:
-    LogIfSlow(const char* tag, android_LogPriority priority,
-            int timeoutMillis, const char* message);
-    ~LogIfSlow();
-
-private:
-    const char* const mTag;
-    const android_LogPriority mPriority;
-    const int mTimeoutMillis;
-    const char* const mMessage;
-    const int64_t mStart;
-};
-
-/*
- * Writes the specified debug log message if this block takes longer than the
- * specified number of milliseconds to run.  Includes the time actually taken.
- *
- * {
- *     ALOGD_IF_SLOW(50, "Excessive delay doing something.");
- *     doSomething();
- * }
- */
-#define ALOGD_IF_SLOW(timeoutMillis, message) \
-    android::LogIfSlow _logIfSlow(LOG_TAG, ANDROID_LOG_DEBUG, timeoutMillis, message);
-
-} // namespace android
-
-#endif // __cplusplus
 
 #endif // _LIBS_UTILS_LOG_H
