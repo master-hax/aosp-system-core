@@ -179,4 +179,23 @@ void UNUSED(const T&...) {
   } while (0)
 #endif
 
+// Align address/type up and down to specified alignment
+static constexpr uintptr_t align_down(uintptr_t p, size_t align) {
+  return p & ~(align - 1);
+}
+
+static constexpr uintptr_t align_up(uintptr_t p, size_t align) {
+  return (p + align - 1) & ~(align - 1);
+}
+
+template <typename T>
+static inline T* align_down(T* p, size_t align) {
+  return reinterpret_cast<T*>(align_down(reinterpret_cast<uintptr_t>(p), align));
+}
+
+template <typename T>
+static inline T* align_up(T* p, size_t align) {
+  return reinterpret_cast<T*>(align_up(reinterpret_cast<uintptr_t>(p), align));
+}
+
 #endif  // ANDROID_BASE_MACROS_H
