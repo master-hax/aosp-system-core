@@ -1,0 +1,33 @@
+gettimeofday: 1
+
+# Get process info
+getpid: 1
+gettid: 1
+getuid32: 1
+prctl: 1
+
+# Generic file descriptor stuff.
+openat: 1
+close: 1
+faccessat: 1
+fstat64: 1
+read: 1
+write: 1
+lseek: 1
+_llseek: 1
+getdents64: 1
+
+mmap2: 1
+mincore: 1
+munmap: 1
+futex: 1
+
+# Send signals to itself.
+rt_tgsigprocmask: 1
+sigaction: 1
+tgkill: 1
+rt_tgsigqueueinfo: 1
+rt_sigreturn: 1
+
+# Talk to tombstoned.
+recvmsg: 1

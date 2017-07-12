@@ -16,16 +16,14 @@
 
 #include <err.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/capability.h>
 #include <sys/prctl.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <chrono>
 #include <regex>
 #include <thread>
-
-#include <android/set_abort_message.h>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -34,9 +32,12 @@
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <android/set_abort_message.h>
 #include <cutils/sockets.h>
 #include <gtest/gtest.h>
+#include <libminijail.h>
 
+#include "debuggerd/client.h"
 #include "debuggerd/handler.h"
 #include "protocol.h"
 #include "tombstoned/tombstoned.h"
@@ -51,7 +52,21 @@ using android::base::unique_fd;
 #define ARCH_SUFFIX ""
 #endif
 
+#if defined(__arm__)
+#define ARCH_NAME "arm"
+#elif defined(__aarch64__)
+#define ARCH_NAME "arm64"
+#elif defined(__i386__)
+#define ARCH_NAME "x86"
+#elif defined(__x86_64__)
+#define ARCH_NAME "x86_64"
+#else
+#define ARCH_NAME "unknown"
+#endif
+
 constexpr char kWaitForGdbKey[] = "debug.debuggerd.wait_for_gdb";
+constexpr char kSeccompPolicyPath[] =
+    "/data/nativetest" ARCH_SUFFIX "/debuggerd_test/debuggerd_fallback_test." ARCH_NAME ".policy";
 
 #define TIMEOUT(seconds, expr)                                     \
   [&]() {                                                          \
@@ -158,9 +173,9 @@ class CrasherTest : public ::testing::Test {
   // Returns -1 if we fail to read a response from tombstoned, otherwise the received return code.
   void FinishIntercept(int* result);
 
-  void StartProcess(std::function<void()> function, std::function<pid_t()> forker = fork);
+  void LaunchProcess(std::function<void()> function, std::function<pid_t()> forker = fork);
   void StartCrasher(const std::string& crash_type);
-  void FinishCrasher();
+  void StartProcess();
   void AssertDeath(int signo);
 };
 
@@ -206,7 +221,7 @@ void CrasherTest::FinishIntercept(int* result) {
   }
 }
 
-void CrasherTest::StartProcess(std::function<void()> function, std::function<pid_t()> forker) {
+void CrasherTest::LaunchProcess(std::function<void()> function, std::function<pid_t()> forker) {
   unique_fd read_pipe;
   unique_fd crasher_read_pipe;
   if (!Pipe(&crasher_read_pipe, &crasher_pipe)) {
@@ -225,7 +240,7 @@ void CrasherTest::StartProcess(std::function<void()> function, std::function<pid
   }
 }
 
-void CrasherTest::FinishCrasher() {
+void CrasherTest::StartProcess() {
   if (crasher_pipe == -1) {
     FAIL() << "crasher pipe uninitialized";
   }
@@ -280,12 +295,12 @@ static void ConsumeFd(unique_fd fd, std::string* output) {
 TEST_F(CrasherTest, smoke) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     *reinterpret_cast<volatile char*>(0xdead) = '1';
   });
 
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGSEGV);
   FinishIntercept(&intercept_result);
 
@@ -299,11 +314,11 @@ TEST_F(CrasherTest, smoke) {
 TEST_F(CrasherTest, abort) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGABRT);
   FinishIntercept(&intercept_result);
 
@@ -317,7 +332,7 @@ TEST_F(CrasherTest, abort) {
 TEST_F(CrasherTest, signal) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
   StartIntercept(&output_fd);
@@ -341,12 +356,12 @@ TEST_F(CrasherTest, signal) {
 TEST_F(CrasherTest, abort_message) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     android_set_abort_message("abort message goes here");
     abort();
   });
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGABRT);
   FinishIntercept(&intercept_result);
 
@@ -360,13 +375,13 @@ TEST_F(CrasherTest, abort_message) {
 TEST_F(CrasherTest, abort_message_backtrace) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     android_set_abort_message("not actually aborting");
     raise(DEBUGGER_SIGNAL);
     exit(0);
   });
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(0);
   FinishIntercept(&intercept_result);
 
@@ -380,7 +395,7 @@ TEST_F(CrasherTest, abort_message_backtrace) {
 TEST_F(CrasherTest, intercept_timeout) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
   StartIntercept(&output_fd);
@@ -391,7 +406,7 @@ TEST_F(CrasherTest, intercept_timeout) {
   ASSERT_NE(1, intercept_result) << "tombstoned reported success? (intercept_result = "
                                  << intercept_result << ")";
 
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGABRT);
 }
 
@@ -401,10 +416,10 @@ TEST_F(CrasherTest, wait_for_gdb) {
   }
   sleep(1);
 
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
-  FinishCrasher();
+  StartProcess();
 
   int status;
   ASSERT_EQ(crasher_pid, waitpid(crasher_pid, &status, WUNTRACED));
@@ -422,7 +437,7 @@ TEST_F(CrasherTest, wait_for_gdb_signal) {
     FAIL() << "failed to enable wait_for_gdb";
   }
 
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
   ASSERT_EQ(0, kill(crasher_pid, SIGSEGV)) << strerror(errno);
@@ -434,7 +449,7 @@ TEST_F(CrasherTest, backtrace) {
   int intercept_result;
   unique_fd output_fd;
 
-  StartProcess([]() {
+  LaunchProcess([]() {
     abort();
   });
   StartIntercept(&output_fd, kDebuggerdNativeBacktrace);
@@ -453,7 +468,7 @@ TEST_F(CrasherTest, backtrace) {
   ASSERT_EQ(0, waitpid(crasher_pid, &status, WNOHANG | WUNTRACED));
 
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGABRT);
   FinishIntercept(&intercept_result);
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
@@ -464,13 +479,13 @@ TEST_F(CrasherTest, backtrace) {
 TEST_F(CrasherTest, PR_SET_DUMPABLE_0_crash) {
   int intercept_result;
   unique_fd output_fd;
-  StartProcess([]() {
+  LaunchProcess([]() {
     prctl(PR_SET_DUMPABLE, 0);
     abort();
   });
 
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGABRT);
   FinishIntercept(&intercept_result);
 
@@ -484,7 +499,7 @@ TEST_F(CrasherTest, PR_SET_DUMPABLE_0_crash) {
 TEST_F(CrasherTest, capabilities) {
   ASSERT_EQ(0U, getuid()) << "capability test requires root";
 
-  StartProcess([]() {
+  LaunchProcess([]() {
     if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) != 0) {
       err(1, "failed to set PR_SET_KEEPCAPS");
     }
@@ -526,7 +541,7 @@ TEST_F(CrasherTest, capabilities) {
 
   unique_fd output_fd;
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
   AssertDeath(SIGSYS);
 
   std::string result;
@@ -549,7 +564,7 @@ TEST_F(CrasherTest, fake_pid) {
   std::function<pid_t()> clone_fn = []() {
     return syscall(__NR_clone, SIGCHLD, nullptr, nullptr, nullptr, nullptr);
   };
-  StartProcess(
+  LaunchProcess(
       []() {
         ASSERT_NE(getpid(), syscall(__NR_getpid));
         ASSERT_NE(gettid(), syscall(__NR_gettid));
@@ -558,7 +573,62 @@ TEST_F(CrasherTest, fake_pid) {
       clone_fn);
 
   StartIntercept(&output_fd);
-  FinishCrasher();
+  StartProcess();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_BACKTRACE_FRAME(result, "tgkill");
+}
+
+TEST_F(CrasherTest, seccomp) {
+  ASSERT_EQ(0, access(kSeccompPolicyPath, R_OK))
+      << "no seccomp filter defined for this architecture (expected at " << kSeccompPolicyPath << ")";
+
+  int intercept_result;
+  unique_fd output_fd;
+
+  std::function<pid_t()> minijail_clone = []() -> pid_t {
+    pid_t forkpid = fork();
+    if (forkpid == 0) {
+      struct minijail* jail = minijail_new();
+      if (!jail) {
+        err(1, "failed to create minijail");
+      }
+      minijail_no_new_privs(jail);
+      minijail_log_seccomp_filter_failures(jail);
+      minijail_use_seccomp_filter(jail);
+      minijail_parse_seccomp_filters(jail, kSeccompPolicyPath);
+      minijail_enter(jail);
+      minijail_destroy(jail);
+      raise(SIGSTOP);
+    }
+    return forkpid;
+  };
+
+  LaunchProcess([]() {
+    raise(SIGSEGV);
+  }, minijail_clone);
+
+  int status;
+  ASSERT_EQ(crasher_pid, waitpid(crasher_pid, &status, WUNTRACED));
+  ASSERT_TRUE(WIFSTOPPED(status));
+  ASSERT_EQ(0, kill(crasher_pid, SIGCONT));
+
+  // Try to get a backtrace from the process.
+  unique_fd output_read, output_write;
+  ASSERT_TRUE(Pipe(&output_read, &output_write));
+  ASSERT_TRUE(
+      debuggerd_trigger_dump(crasher_pid, kDebuggerdNativeBacktrace, 0, std::move(output_write)));
+
+  // Make sure the process didn't die.
+  ASSERT_EQ(0, kill(crasher_pid, 0));
+
+  StartIntercept(&output_fd);
+  StartProcess();
   AssertDeath(SIGSEGV);
   FinishIntercept(&intercept_result);
 
