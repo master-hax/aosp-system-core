@@ -94,6 +94,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <private/android_logger.h>
@@ -304,6 +305,14 @@ bool Subprocess::ForkAndExec(std::string* error) {
     if (pid_ == 0) {
         // Subprocess child.
         setsid();
+
+        // Increase our oom_score_adj, so that processes started via `adb shell` aren't invisible
+        // to the oom killer. Otherwise, running a process that consumes all memory will result in
+        // the kernel killing the rest of the system before killing it.
+        if (!android::base::WriteStringToFile("0" /* TODO: what should this actually be? */,
+                                              "/proc/self/oom_score_adj", false)) {
+            PLOG(WARNING) << "failed to set oom_score_adj";
+        }
 
         if (type_ == SubprocessType::kPty) {
             child_stdinout_sfd.reset(OpenPtyChildFd(pts_name, &child_error_sfd));
