@@ -52,6 +52,7 @@ using namespace std::chrono_literals;
 #define PROCESSGROUP_CGROUP_PROCS_FILE "/cgroup.procs"
 #define PROCESSGROUP_MAX_UID_LEN 11
 #define PROCESSGROUP_MAX_PID_LEN 11
+#define MAX_DATA_LEN 31
 #define PROCESSGROUP_MAX_PATH_LEN \
         ((sizeof(MEM_CGROUP_PATH) > sizeof(ACCT_CGROUP_PATH) ? \
           sizeof(MEM_CGROUP_PATH) : sizeof(ACCT_CGROUP_PATH)) + \
@@ -420,4 +421,43 @@ int createProcessGroup(uid_t uid, int initialPid)
 
     close(fd);
     return ret;
+}
+
+static int setProcessGroupValue(uid_t uid, int pid, const char *fileName, int64_t value) {
+    char path[PROCESSGROUP_MAX_PATH_LEN] = {0};
+    int ret = 0;
+    if (strcmp(getCgroupRootPath(), MEM_CGROUP_PATH)) {
+        PLOG(ERROR) << "Memcg is not mounted." << path;
+        return -1;
+    }
+    convertUidPidToPath(path, sizeof(path), uid, pid);
+    strlcat(path, fileName, sizeof(path));
+
+    int fd = open(path, O_WRONLY);
+    if (fd == -1) {
+        ret = -errno;
+        PLOG(ERROR) << "Failed to open " << path;
+        return ret;
+    }
+    char data[MAX_DATA_LEN + 1] = {0};
+    int len = snprintf(data, sizeof(data), "%" PRId64, value);
+
+    if (write(fd, data, len) < 0) {
+        ret = -errno;
+        PLOG(ERROR) << "Failed to write '" << pid << "' to " << path;
+    }
+    close(fd);
+    return ret;
+}
+
+int setProcessGroupSwappiness(uid_t uid, int pid, int swappiness) {
+    return setProcessGroupValue(uid, pid, "/memory.swappiness", swappiness);
+}
+
+int setProcessGroupSoftLimit(uid_t uid, int pid, int64_t soft_limit_in_bytes) {
+    return setProcessGroupValue(uid, pid, "/memory.soft_limit_in_bytes", soft_limit_in_bytes);
+}
+
+int setProcessGroupLimit(uid_t uid, int pid, int64_t limit_in_bytes) {
+    return setProcessGroupValue(uid, pid, "/memory.limit_in_bytes", limit_in_bytes);
 }
