@@ -234,7 +234,14 @@ static bool FindPartitionsToUmount(std::vector<MountEntry>* blockDevPartitions,
             LOG(INFO) << "mount entry " << mentry->mnt_fsname << ":" << mentry->mnt_dir << " opts "
                       << mentry->mnt_opts << " type " << mentry->mnt_type;
         } else if (MountEntry::IsBlockDevice(*mentry) && hasmntopt(mentry, "rw")) {
-            blockDevPartitions->emplace(blockDevPartitions->begin(), *mentry);
+            std::string mount_dir(mentry->mnt_dir);
+            if (mount_dir == "/vendor" || mount_dir == "/system") {
+                if (dump) {
+                    LOG(INFO) << mount_dir << " R/W mounted, skip umount.";
+                }
+            } else {
+                blockDevPartitions->emplace(blockDevPartitions->begin(), *mentry);
+            }
         } else if (MountEntry::IsEmulatedDevice(*mentry)) {
             emulatedPartitions->emplace(emulatedPartitions->begin(), *mentry);
         }
