@@ -48,9 +48,11 @@ class UeventListener {
                                             const ListenerCallback& callback) const;
     void Poll(const ListenerCallback& callback,
               const std::optional<std::chrono::milliseconds> relative_timeout = {}) const;
+    bool ReadUevent(Uevent* uevent) const;
+
+    int device_fd() const { return device_fd_; }
 
   private:
-    bool ReadUevent(Uevent* uevent) const;
     ListenerAction RegenerateUeventsForDir(DIR* d, const ListenerCallback& callback) const;
 
     android::base::unique_fd device_fd_;

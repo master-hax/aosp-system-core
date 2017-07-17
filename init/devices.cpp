@@ -422,17 +422,17 @@ void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
 
 DeviceHandler::DeviceHandler(std::vector<Permissions> dev_permissions,
                              std::vector<SysfsPermissions> sysfs_permissions,
-                             std::vector<Subsystem> subsystems, bool skip_restorecon)
+                             std::vector<Subsystem> subsystems)
     : dev_permissions_(std::move(dev_permissions)),
       sysfs_permissions_(std::move(sysfs_permissions)),
       subsystems_(std::move(subsystems)),
       sehandle_(selinux_android_file_context_handle()),
-      skip_restorecon_(skip_restorecon),
+      skip_restorecon_(false),
       sysfs_mount_point_("/sys") {}
 
 DeviceHandler::DeviceHandler()
     : DeviceHandler(std::vector<Permissions>{}, std::vector<SysfsPermissions>{},
-                    std::vector<Subsystem>{}, false) {}
+                    std::vector<Subsystem>{}) {}
 
 }  // namespace init
 }  // namespace android

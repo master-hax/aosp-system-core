@@ -39,7 +39,6 @@ static void ParseEvent(const char* msg, Uevent* uevent) {
     uevent->firmware.clear();
     uevent->partition_name.clear();
     uevent->device_name.clear();
-    // currently ignoring SEQNUM
     while (*msg) {
         if (!strncmp(msg, "ACTION=", 7)) {
             msg += 7;
@@ -68,6 +67,9 @@ static void ParseEvent(const char* msg, Uevent* uevent) {
         } else if (!strncmp(msg, "DEVNAME=", 8)) {
             msg += 8;
             uevent->device_name = msg;
+        } else if (!strncmp(msg, "SEQNUM=", 7)) {
+            msg += 7;
+            uevent->seq_num = strtoll(msg, nullptr, 10);
         }
 
         // advance to after the next \0
@@ -133,9 +135,11 @@ ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
         write(fd, "add\n", 4);
         close(fd);
 
-        Uevent uevent;
-        while (ReadUevent(&uevent)) {
-            if (callback(uevent) == ListenerAction::kStop) return ListenerAction::kStop;
+        if (callback) {
+            Uevent uevent;
+            while (ReadUevent(&uevent)) {
+                if (callback(uevent) == ListenerAction::kStop) return ListenerAction::kStop;
+            }
         }
     }
 

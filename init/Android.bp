@@ -63,6 +63,7 @@ cc_library_static {
     srcs: [
         "action.cpp",
         "capabilities.cpp",
+        "coldboot.cpp",
         "descriptors.cpp",
         "devices.cpp",
         "firmware_handler.cpp",
@@ -148,6 +149,7 @@ cc_test {
     name: "init_tests",
     defaults: ["init_defaults"],
     srcs: [
+        "coldboot_test.cpp",
         "devices_test.cpp",
         "init_parser_test.cpp",
         "init_test.cpp",

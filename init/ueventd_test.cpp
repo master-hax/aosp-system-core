@@ -50,7 +50,7 @@ void WriteFromMultipleThreads(std::vector<std::pair<std::string, T>>& files_and_
 
     std::vector<std::thread> threads;
     // TODO(b/63712782): Structured bindings + templated containers are broken in clang :(
-    // for (const auto& [file, parameter] : files_and_parameters) {
+    //  for (const auto& [file, parameter] : files_and_parameters) {
     for (const auto& pair : files_and_parameters) {
         const auto& file = pair.first;
         const auto& parameter = pair.second;
@@ -78,7 +78,7 @@ TEST(ueventd, setegid_IsPerThread) {
 
     for (const auto& [file, expected_gid] : files_and_gids) {
         struct stat info;
-        EXPECT_EQ(0, stat(file.c_str(), &info));
+        ASSERT_EQ(0, stat(file.c_str(), &info));
         EXPECT_EQ(expected_gid, info.st_gid);
     }
 }
@@ -105,7 +105,7 @@ TEST(ueventd, setfscreatecon_IsPerThread) {
 
     for (const auto& [file, expected_context] : files_and_contexts) {
         char* file_context;
-        EXPECT_GT(getfilecon(file.c_str(), &file_context), 0);
+        ASSERT_GT(getfilecon(file.c_str(), &file_context), 0);
         EXPECT_EQ(expected_context, file_context);
         freecon(file_context);
     }

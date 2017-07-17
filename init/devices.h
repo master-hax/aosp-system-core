@@ -103,7 +103,7 @@ class DeviceHandler {
     DeviceHandler();
     DeviceHandler(std::vector<Permissions> dev_permissions,
                   std::vector<SysfsPermissions> sysfs_permissions,
-                  std::vector<Subsystem> subsystems, bool skip_restorecon);
+                  std::vector<Subsystem> subsystems);
     ~DeviceHandler(){};
 
     void HandleDeviceEvent(const Uevent& uevent);
