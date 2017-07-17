@@ -33,6 +33,10 @@ int killProcessGroupOnce(uid_t uid, int initialPid, int signal);
 
 int createProcessGroup(uid_t uid, int initialPid);
 
+int setProcessGroupSwappiness(uid_t uid, int initialPid, int swappiness);
+int setProcessGroupSoftLimit(uid_t uid, int initialPid, int64_t softLimitInBytes);
+int setProcessGroupLimit(uid_t uid, int initialPid, int64_t limitInBytes);
+
 void removeAllProcessGroups(void);
 
 __END_DECLS
