@@ -37,6 +37,10 @@ init_cflags += \
     -Werror \
     -std=gnu++1z \
 
+ifeq ($(TARGET_UML), true)
+    init_cflags += -D__uml__
+endif
+
 # --
 
 include $(CLEAR_VARS)
