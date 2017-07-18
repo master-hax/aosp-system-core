@@ -24,6 +24,8 @@
 #include <string.h>
 #include <sys/wait.h>
 
+#include <deque>
+#include <mutex>
 #include <set>
 #include <thread>
 
@@ -108,12 +110,14 @@ class ColdBoot {
     ColdBoot(UeventListener& uevent_listener, DeviceHandler& device_handler)
         : uevent_listener_(uevent_listener),
           device_handler_(device_handler),
-          num_handler_threads_(std::thread::hardware_concurrency() ?: 4) {}
+          num_handler_threads_(std::thread::hardware_concurrency() ?: 4),
+          uevent_head_(0),
+          regeneration_done_(false) {}
 
     void Run();
 
   private:
-    void ThreadFunction(unsigned int start, unsigned int stride) const;
+    void ThreadFunction();
     void RegenerateUevents();
     void ForkThreads();
     void DoRestoreCon();
@@ -123,14 +127,32 @@ class ColdBoot {
     DeviceHandler& device_handler_;
 
     unsigned int num_handler_threads_;
-    std::vector<Uevent> uevent_queue_;
+
+    std::deque<Uevent> uevent_queue_;
+    size_t uevent_head_;
+    std::mutex iterator_mutex_;
+    std::condition_variable iterator_cv_;
+    bool regeneration_done_;
 
     std::vector<std::thread> threads_;
 };
 
-void ColdBoot::ThreadFunction(unsigned int start, unsigned int stride) const {
-    for (unsigned int i = start; i < uevent_queue_.size(); i += stride) {
-        const auto& uevent = uevent_queue_[i];
+void ColdBoot::ThreadFunction() {
+    while (true) {
+        std::unique_lock<std::mutex> lock(iterator_mutex_);
+        while (uevent_head_ == uevent_queue_.size()) {
+            if (regeneration_done_) {
+                return;
+            } else {
+                iterator_cv_.wait(lock, [this]() {
+                        return uevent_head_ == uevent_queue_.size() || regeneration_done_; });
+            }
+        }
+
+        const auto& uevent = uevent_queue_[uevent_head_++];
+        lock.unlock();
+        //iterator_cv_.notify_all(); // We may advance the iterator to the end and we need to wake CV's.
+
         device_handler_.HandleDeviceEvent(uevent);
     }
 }
@@ -139,14 +161,24 @@ void ColdBoot::RegenerateUevents() {
     uevent_listener_.RegenerateUevents([this](const Uevent& uevent) {
         HandleFirmwareEvent(uevent);
 
-        uevent_queue_.emplace_back(std::move(uevent));
+        {
+            std::lock_guard<std::mutex> lock(iterator_mutex_);
+            uevent_queue_.emplace_back(std::move(uevent));
+        }
+
+        iterator_cv_.notify_all();
         return ListenerAction::kContinue;
     });
+    {
+        std::lock_guard<std::mutex> lock(iterator_mutex_);
+        regeneration_done_ = true;
+    }
+    iterator_cv_.notify_all();
 }
 
 void ColdBoot::ForkThreads() {
     for (unsigned int i = 0; i < num_handler_threads_; ++i) {
-        threads_.emplace_back([this, i]() { ThreadFunction(i, num_handler_threads_); });
+        threads_.emplace_back([this]() { ThreadFunction(); });
     }
 }
 
@@ -166,9 +198,15 @@ void ColdBoot::Run() {
 
     RegenerateUevents();
 
+    LOG(ERROR) << "Regeneration: " << cold_boot_timer;
+
     ForkThreads();
 
+    LOG(ERROR) << "ForkThreads: " << cold_boot_timer;
+
     DoRestoreCon();
+
+    LOG(ERROR) << "DoRestoreCon: " << cold_boot_timer;
 
     WaitForThreads();
 
