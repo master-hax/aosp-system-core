@@ -108,32 +108,31 @@ class ColdBoot {
     ColdBoot(UeventListener& uevent_listener, DeviceHandler& device_handler)
         : uevent_listener_(uevent_listener),
           device_handler_(device_handler),
-          num_handler_subprocesses_(std::thread::hardware_concurrency() ?: 4) {}
+          num_handler_threads_(std::thread::hardware_concurrency() ?: 4) {}
 
     void Run();
 
   private:
-    void UeventHandlerMain(unsigned int process_num, unsigned int total_processes);
+    void ThreadFunction(unsigned int start, unsigned int stride) const;
     void RegenerateUevents();
-    void ForkSubProcesses();
+    void ForkThreads();
     void DoRestoreCon();
-    void WaitForSubProcesses();
+    void WaitForThreads();
 
     UeventListener& uevent_listener_;
     DeviceHandler& device_handler_;
 
-    unsigned int num_handler_subprocesses_;
+    unsigned int num_handler_threads_;
     std::vector<Uevent> uevent_queue_;
 
-    std::set<pid_t> subprocess_pids_;
+    std::vector<std::thread> threads_;
 };
 
-void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_processes) {
-    for (unsigned int i = process_num; i < uevent_queue_.size(); i += total_processes) {
-        auto& uevent = uevent_queue_[i];
+void ColdBoot::ThreadFunction(unsigned int start, unsigned int stride) const {
+    for (unsigned int i = start; i < uevent_queue_.size(); i += stride) {
+        const auto& uevent = uevent_queue_[i];
         device_handler_.HandleDeviceEvent(uevent);
     }
-    _exit(EXIT_SUCCESS);
 }
 
 void ColdBoot::RegenerateUevents() {
@@ -145,18 +144,9 @@ void ColdBoot::RegenerateUevents() {
     });
 }
 
-void ColdBoot::ForkSubProcesses() {
-    for (unsigned int i = 0; i < num_handler_subprocesses_; ++i) {
-        auto pid = fork();
-        if (pid < 0) {
-            PLOG(FATAL) << "fork() failed!";
-        }
-
-        if (pid == 0) {
-            UeventHandlerMain(i, num_handler_subprocesses_);
-        }
-
-        subprocess_pids_.emplace(pid);
+void ColdBoot::ForkThreads() {
+    for (unsigned int i = 0; i < num_handler_threads_; ++i) {
+        threads_.emplace_back([this, i]() { ThreadFunction(i, num_handler_threads_); });
     }
 }
 
@@ -165,36 +155,9 @@ void ColdBoot::DoRestoreCon() {
     device_handler_.set_skip_restorecon(false);
 }
 
-void ColdBoot::WaitForSubProcesses() {
-    // Treat subprocesses that crash or get stuck the same as if ueventd itself has crashed or gets
-    // stuck.
-    //
-    // When a subprocess crashes, we fatally abort from ueventd.  init will restart ueventd when
-    // init reaps it, and the cold boot process will start again.  If this continues to fail, then
-    // since ueventd is marked as a critical service, init will reboot to recovery.
-    //
-    // When a subprocess gets stuck, keep ueventd spinning waiting for it.  init has a timeout for
-    // cold boot and will reboot to the bootloader if ueventd does not complete in time.
-    while (!subprocess_pids_.empty()) {
-        int status;
-        pid_t pid = TEMP_FAILURE_RETRY(waitpid(-1, &status, 0));
-        if (pid == -1) {
-            PLOG(ERROR) << "waitpid() failed";
-            continue;
-        }
-
-        auto it = std::find(subprocess_pids_.begin(), subprocess_pids_.end(), pid);
-        if (it == subprocess_pids_.end()) continue;
-
-        if (WIFEXITED(status)) {
-            if (WEXITSTATUS(status) == EXIT_SUCCESS) {
-                subprocess_pids_.erase(it);
-            } else {
-                LOG(FATAL) << "subprocess exited with status " << WEXITSTATUS(status);
-            }
-        } else if (WIFSIGNALED(status)) {
-            LOG(FATAL) << "subprocess killed by signal " << WTERMSIG(status);
-        }
+void ColdBoot::WaitForThreads() {
+    for (auto& thread : threads_) {
+        thread.join();
     }
 }
 
@@ -203,11 +166,17 @@ void ColdBoot::Run() {
 
     RegenerateUevents();
 
-    ForkSubProcesses();
+    LOG(ERROR) << "Regeneration: " << cold_boot_timer;
+
+    ForkThreads();
+
+    LOG(ERROR) << "ForkThreads: " << cold_boot_timer;
 
     DoRestoreCon();
 
-    WaitForSubProcesses();
+    LOG(ERROR) << "DoRestoreCon: " << cold_boot_timer;
+
+    WaitForThreads();
 
     close(open(COLDBOOT_DONE, O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";

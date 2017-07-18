@@ -372,7 +372,7 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
     }
 }
 
-void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
+void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) const {
     if (uevent.action == "add" || uevent.action == "change" || uevent.action == "online") {
         FixupSysPermissions(uevent.path, uevent.subsystem);
     }
