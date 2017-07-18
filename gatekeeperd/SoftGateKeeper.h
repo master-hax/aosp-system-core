@@ -26,7 +26,7 @@ extern "C" {
 }
 
 #include <android-base/memory.h>
-#include <UniquePtr.h>
+#include <nativehelper/UniquePtr.h>
 #include <gatekeeper/gatekeeper.h>
 
 #include <iostream>
