@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -379,7 +379,10 @@ static int set_mmap_rnd_bits_action(const std::vector<std::string>& args)
     int ret = -1;
 
     /* values are arch-dependent */
-#if defined(__aarch64__)
+#if defined(__uml__)
+    /* uml doesn't support mmap_rnd_bits, but init would crash without this */
+    ret = 0;
+#elif defined(__aarch64__)
     /* arm64 supports 18 - 33 bits depending on pagesize and VA_SIZE */
     if (set_mmap_rnd_bits_min(33, 24, false)
             && set_mmap_rnd_bits_min(16, 16, true)) {
