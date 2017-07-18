@@ -106,7 +106,7 @@ class DeviceHandler {
                   std::vector<Subsystem> subsystems, bool skip_restorecon);
     ~DeviceHandler(){};
 
-    void HandleDeviceEvent(const Uevent& uevent);
+    void HandleDeviceEvent(const Uevent& uevent) const;
 
     std::vector<std::string> GetBlockDeviceSymlinks(const Uevent& uevent) const;
     void set_skip_restorecon(bool value) { skip_restorecon_ = value; }
