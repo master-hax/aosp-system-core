@@ -19,14 +19,19 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <atomic>
+#include <chrono>
 #include <string>
 #include <thread>
 #include <vector>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/scopeguard.h>
 #include <android-base/test_utils.h>
 #include <gtest/gtest.h>
+#include <selinux/android.h>
+#include <selinux/label.h>
 #include <selinux/selinux.h>
 
 using namespace std::string_literals;
@@ -119,4 +124,98 @@ TEST(ueventd, setfscreatecon_IsPerThread) {
         EXPECT_EQ(expected_context, file_context);
         freecon(file_context);
     }
+}
+
+void SelabelLookupCheck(bool multithreaded) {
+    if (getuid() != 0) {
+        GTEST_LOG_(INFO) << "Skipping test, must be run as root.";
+        return;
+    }
+
+    // Parameters
+    constexpr int num_threads = 10;
+    constexpr auto runtime = 200ms;
+
+    std::unique_ptr<selabel_handle, decltype(&selabel_close)> sehandle(
+        selinux_android_file_context_handle(), &selabel_close);
+
+    ASSERT_TRUE(sehandle);
+
+    struct {
+        const char* file;
+        int mode;
+        std::string expected_context;
+    } files_and_modes[] = {
+        {"/dev/zero", 020666, ""},
+        {"/dev/null", 020666, ""},
+        {"/dev/random", 020666, ""},
+        {"/dev/urandom", 020666, ""},
+    };
+
+    // Precondition, ensure that we can lookup all of these from a single thread, and store the
+    // expected context for each.
+    for (size_t i = 0; i < arraysize(files_and_modes); ++i) {
+        char* secontext;
+        ASSERT_EQ(0, selabel_lookup(sehandle.get(), &secontext, files_and_modes[i].file,
+                                    files_and_modes[i].mode));
+        files_and_modes[i].expected_context = secontext;
+        freecon(secontext);
+    }
+
+    std::atomic_uint num_api_failures = 0;
+    std::atomic_uint num_context_check_failures = 0;
+    std::atomic_uint num_successes = 0;
+
+    auto check_contexts = [&]() {
+        for (size_t i = 0; i < arraysize(files_and_modes); ++i) {
+            char* secontext;
+            int result = selabel_lookup(sehandle.get(), &secontext, files_and_modes[i].file,
+                                        files_and_modes[i].mode);
+            if (result != 0) {
+                num_api_failures++;
+            } else {
+                if (files_and_modes[i].expected_context != secontext) {
+                    num_context_check_failures++;
+                } else {
+                    num_successes++;
+                }
+                freecon(secontext);
+            }
+        }
+    };
+
+    if (multithreaded) {
+        std::vector<std::thread> threads;
+        std::atomic_bool stopped = false;
+        std::generate_n(back_inserter(threads), num_threads, [&]() {
+            return std::thread([&]() {
+                while (!stopped) {
+                    check_contexts();
+                }
+            });
+        });
+
+        std::this_thread::sleep_for(runtime);
+        stopped = true;
+        for (auto& thread : threads) {
+            thread.join();
+        }
+    } else {
+        android::base::Timer t;
+        while (t.duration() < runtime * num_threads) {
+            check_contexts();
+        }
+    }
+
+    EXPECT_EQ(0U, num_api_failures);
+    EXPECT_EQ(0U, num_context_check_failures);
+    EXPECT_GT(num_successes, 0U);
+}
+
+TEST(ueventd, selabel_lookup_SanityCheck) {
+    SelabelLookupCheck(false);
+}
+
+TEST(ueventd, selabel_lookup_MultiThreaded) {
+    SelabelLookupCheck(true);
 }
