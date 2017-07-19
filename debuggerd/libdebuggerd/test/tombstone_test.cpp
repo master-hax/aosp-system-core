@@ -220,21 +220,21 @@ TEST_F(TombstoneTest, multiple_maps) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
   map.start = 0xa534000;
   map.end = 0xa535000;
   map.offset = 0x3000;
-  map.load_base = 0x2000;
+  map.load_bias = 0x2000;
   map.flags = PROT_EXEC;
   map_mock_->AddMap(map);
 
   map.start = 0xa634000;
   map.end = 0xa635000;
   map.offset = 0;
-  map.load_base = 0;
+  map.load_bias = 0;
   map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
@@ -274,21 +274,21 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_before) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
   map.start = 0xa534000;
   map.end = 0xa535000;
   map.offset = 0x3000;
-  map.load_base = 0x2000;
+  map.load_bias = 0x2000;
   map.flags = PROT_EXEC;
   map_mock_->AddMap(map);
 
   map.start = 0xa634000;
   map.end = 0xa635000;
   map.offset = 0;
-  map.load_base = 0;
+  map.load_bias = 0;
   map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
@@ -332,21 +332,21 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_between) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
   map.start = 0xa534000;
   map.end = 0xa535000;
   map.offset = 0x3000;
-  map.load_base = 0x2000;
+  map.load_bias = 0x2000;
   map.flags = PROT_EXEC;
   map_mock_->AddMap(map);
 
   map.start = 0xa634000;
   map.end = 0xa635000;
   map.offset = 0;
-  map.load_base = 0;
+  map.load_bias = 0;
   map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
@@ -390,21 +390,21 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_in_map) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
   map.start = 0xa534000;
   map.end = 0xa535000;
   map.offset = 0x3000;
-  map.load_base = 0x2000;
+  map.load_bias = 0x2000;
   map.flags = PROT_EXEC;
   map_mock_->AddMap(map);
 
   map.start = 0xa634000;
   map.end = 0xa635000;
   map.offset = 0;
-  map.load_base = 0;
+  map.load_bias = 0;
   map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
@@ -446,21 +446,21 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_after) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
   map.start = 0xa534000;
   map.end = 0xa535000;
   map.offset = 0x3000;
-  map.load_base = 0x2000;
+  map.load_bias = 0x2000;
   map.flags = PROT_EXEC;
   map_mock_->AddMap(map);
 
   map.start = 0xa634000;
   map.end = 0xa635000;
   map.offset = 0;
-  map.load_base = 0;
+  map.load_bias = 0;
   map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
@@ -508,7 +508,7 @@ TEST_F(TombstoneTest, multiple_maps_getsiginfo_fail) {
   map.start = 0xa434000;
   map.end = 0xa435000;
   map.offset = 0x1000;
-  map.load_base = 0xd000;
+  map.load_bias = 0xd000;
   map.flags = PROT_WRITE;
   map_mock_->AddMap(map);
 
