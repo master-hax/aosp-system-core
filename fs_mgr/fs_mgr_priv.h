@@ -114,6 +114,8 @@
 
 using namespace std::chrono_literals;
 
+extern std::string dt_rootdir;
+
 int fs_mgr_set_blk_ro(const char *blockdev);
 bool fs_mgr_wait_for_file(const std::string& filename,
                           const std::chrono::milliseconds relative_timeout);

@@ -93,6 +93,7 @@ __END_DECLS
 // TODO: move this into separate header files under include/fs_mgr/*.h
 #ifdef __cplusplus
 std::string fs_mgr_get_slot_suffix();
+void fs_mgr_set_dt_rootdir(const std::string& dt_root_path);
 #endif
 
 #endif /* __CORE_FS_TAB_H */

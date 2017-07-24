@@ -994,6 +994,7 @@ int main(int argc, char** argv) {
 
         LOG(INFO) << "init first stage started!";
 
+        InitDtRootDir();
         if (!DoFirstStageMount()) {
             LOG(ERROR) << "Failed to mount required partitions early ...";
             panic();

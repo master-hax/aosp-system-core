@@ -313,9 +313,18 @@ static int parse_flags(char *flags, struct flag_list *fl,
     return f;
 }
 
+std::string dt_rootdir = kAndroidDtDir;
+
+// Sets the global Android DT root path (dt_rootdir).
+// Should be called before any of the functions that read from DT, e.g.
+// is_dt_compatible(), etc.
+void fs_mgr_set_dt_rootdir(const std::string& dt_root_path) {
+    dt_rootdir = dt_root_path;
+}
+
 static bool is_dt_fstab_compatible() {
     std::string dt_value;
-    std::string file_name = kAndroidDtDir + "/fstab/compatible";
+    std::string file_name = dt_rootdir + "/fstab/compatible";
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,fstab") {
             return true;
@@ -331,7 +340,7 @@ static std::string read_fstab_from_dt() {
         return fstab;
     }
 
-    std::string fstabdir_name = kAndroidDtDir + "/fstab";
+    std::string fstabdir_name = dt_rootdir + "/fstab";
     std::unique_ptr<DIR, int (*)(DIR*)> fstabdir(opendir(fstabdir_name.c_str()), closedir);
     if (!fstabdir) return fstab;
 
@@ -394,7 +403,7 @@ static std::string read_fstab_from_dt() {
 }
 
 bool is_dt_compatible() {
-    std::string file_name = kAndroidDtDir + "/compatible";
+    std::string file_name = dt_rootdir + "/compatible";
     std::string dt_value;
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,firmware") {

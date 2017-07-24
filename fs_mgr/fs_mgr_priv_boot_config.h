@@ -20,6 +20,7 @@
 #include <sys/cdefs.h>
 #include <string>
 
+// FIXME: The same constant is also defined in system/core/init/util.h
 const std::string kAndroidDtDir("/proc/device-tree/firmware/android");
 
 bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val);

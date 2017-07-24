@@ -129,6 +129,11 @@ FirstStageMount::FirstStageMount()
 }
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
+    // The DT root path (dt_rootdir) used across system/core/init/ has been
+    // initialized prior to this call. However, system/core/fs_mgr/ has its own
+    // copy of it, which also needs to be initialized early enough.
+    fs_mgr_set_dt_rootdir(dt_rootdir);
+
     if (IsDtVbmetaCompatible()) {
         return std::make_unique<FirstStageMountVBootV2>();
     } else {

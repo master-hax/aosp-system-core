@@ -50,7 +50,7 @@ bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val) {
 
     // lastly, check the device tree
     if (is_dt_compatible()) {
-        std::string file_name = kAndroidDtDir + "/" + key;
+        std::string file_name = dt_rootdir + "/" + key;
         // DT entries terminate with '\0' but so do the properties
         if (android::base::ReadFileToString(file_name, out_val)) {
             return true;

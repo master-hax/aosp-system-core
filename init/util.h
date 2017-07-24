@@ -38,6 +38,10 @@ using namespace std::chrono_literals;
 namespace android {
 namespace init {
 
+extern std::string dt_rootdir;
+
+void InitDtRootDir();
+
 int CreateSocket(const char* name, int type, bool passcred, mode_t perm, uid_t uid, gid_t gid,
                  const char* socketcon, selabel_handle* sehandle);
 
@@ -57,7 +61,7 @@ bool expand_props(const std::string& src, std::string* dst);
 
 void panic() __attribute__((__noreturn__));
 
-// Reads or compares the content of device tree file under kAndroidDtDir directory.
+// Reads or compares the content of device tree file under dt_rootdir directory.
 bool read_android_dt_file(const std::string& sub_path, std::string* dt_content);
 bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content);
 

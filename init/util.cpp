@@ -53,6 +53,22 @@ using namespace std::literals::string_literals;
 namespace android {
 namespace init {
 
+std::string dt_rootdir;
+
+void InitDtRootDir() {
+    dt_rootdir.clear();
+    import_kernel_cmdline(false,
+                          [&](const std::string& key, const std::string& value, bool in_qemu) {
+                              if (key == "android.dt_rootdir") {
+                                  dt_rootdir = value;
+                              }
+                          });
+    if (dt_rootdir.empty()) {
+        dt_rootdir = kAndroidDtDir;
+    }
+    LOG(INFO) << "Using DT rootdir " << dt_rootdir;
+}
+
 // DecodeUid() - decodes and returns the given string, which can be either the
 // numeric or name representation, into the integer uid or gid. Returns
 // UINT_MAX on error.
@@ -374,10 +390,10 @@ void panic() {
     DoReboot(ANDROID_RB_RESTART2, "reboot", "bootloader", false);
 }
 
-// Reads the content of device tree file under kAndroidDtDir directory.
+// Reads the content of device tree file under dt_rootdir directory.
 // Returns true if the read is success, false otherwise.
 bool read_android_dt_file(const std::string& sub_path, std::string* dt_content) {
-    const std::string file_name = kAndroidDtDir + sub_path;
+    const std::string file_name = dt_rootdir + sub_path;
     if (android::base::ReadFileToString(file_name, dt_content)) {
         if (!dt_content->empty()) {
             dt_content->pop_back();  // Trims the trailing '\0' out.
