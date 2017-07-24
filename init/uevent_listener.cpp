@@ -75,6 +75,11 @@ static void ParseEvent(const char* msg, Uevent* uevent) {
             ;
     }
 
+    // for emulator, this does happen
+    if (uevent->partition_name == NULL) {
+        uevent->partition_name = uevent->device_name;
+    }
+
     if (LOG_UEVENTS) {
         LOG(INFO) << "event { '" << uevent->action << "', '" << uevent->path << "', '"
                   << uevent->subsystem << "', '" << uevent->firmware << "', " << uevent->major

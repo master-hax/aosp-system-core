@@ -376,8 +376,9 @@ void panic() {
 
 // Reads the content of device tree file under kAndroidDtDir directory.
 // Returns true if the read is success, false otherwise.
-bool read_android_dt_file(const std::string& sub_path, std::string* dt_content) {
-    const std::string file_name = kAndroidDtDir + sub_path;
+bool read_android_dt_file(const std::string& sub_path, std::string* dt_content,
+                          const std::string& root_path) {
+    const std::string file_name = root_path + sub_path;
     if (android::base::ReadFileToString(file_name, dt_content)) {
         if (!dt_content->empty()) {
             dt_content->pop_back();  // Trims the trailing '\0' out.
@@ -387,9 +388,10 @@ bool read_android_dt_file(const std::string& sub_path, std::string* dt_content) 
     return false;
 }
 
-bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content) {
+bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content,
+                                  const std::string& root_path) {
     std::string dt_content;
-    if (read_android_dt_file(sub_path, &dt_content)) {
+    if (read_android_dt_file(sub_path, &dt_content, root_path)) {
         if (dt_content == expected_content) {
             return true;
         }

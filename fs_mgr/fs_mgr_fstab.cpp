@@ -313,9 +313,9 @@ static int parse_flags(char *flags, struct flag_list *fl,
     return f;
 }
 
-static bool is_dt_fstab_compatible() {
+static bool is_dt_fstab_compatible(const std::string& android_dt_root_path) {
     std::string dt_value;
-    std::string file_name = kAndroidDtDir + "/fstab/compatible";
+    std::string file_name = android_dt_root_path + "/fstab/compatible";
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,fstab") {
             return true;
@@ -325,13 +325,13 @@ static bool is_dt_fstab_compatible() {
     return false;
 }
 
-static std::string read_fstab_from_dt() {
+static std::string read_fstab_from_dt(const std::string& android_dt_root_path) {
     std::string fstab;
-    if (!is_dt_compatible() || !is_dt_fstab_compatible()) {
+    if (!is_dt_compatible(android_dt_root_path) || !is_dt_fstab_compatible(android_dt_root_path)) {
         return fstab;
     }
 
-    std::string fstabdir_name = kAndroidDtDir + "/fstab";
+    std::string fstabdir_name = android_dt_root_path + "/fstab";
     std::unique_ptr<DIR, int (*)(DIR*)> fstabdir(opendir(fstabdir_name.c_str()), closedir);
     if (!fstabdir) return fstab;
 
@@ -393,8 +393,8 @@ static std::string read_fstab_from_dt() {
     return fstab;
 }
 
-bool is_dt_compatible() {
-    std::string file_name = kAndroidDtDir + "/compatible";
+bool is_dt_compatible(const std::string& android_dt_root_path) {
+    std::string file_name = android_dt_root_path + "/compatible";
     std::string dt_value;
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,firmware") {
@@ -603,7 +603,10 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
  */
 struct fstab *fs_mgr_read_fstab_dt()
 {
-    std::string fstab_buf = read_fstab_from_dt();
+    std::string fstab_buf = read_fstab_from_dt(kAndroidDtDir);
+    if (fstab_buf.empty()) {
+        fstab_buf = read_fstab_from_dt(kSysfsAndroidDtDir);
+    }
     if (fstab_buf.empty()) {
         LINFO << __FUNCTION__ << "(): failed to read fstab from dt";
         return nullptr;

@@ -31,6 +31,7 @@
 #define COLDBOOT_DONE "/dev/.coldboot_done"
 
 const std::string kAndroidDtDir("/proc/device-tree/firmware/android/");
+const std::string kSysfsAndroidDtDir("/sys/devices/platform/ANDR0001:00/properties/android/");
 
 using android::base::boot_clock;
 using namespace std::chrono_literals;
@@ -58,8 +59,10 @@ bool expand_props(const std::string& src, std::string* dst);
 void panic() __attribute__((__noreturn__));
 
 // Reads or compares the content of device tree file under kAndroidDtDir directory.
-bool read_android_dt_file(const std::string& sub_path, std::string* dt_content);
-bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content);
+bool read_android_dt_file(const std::string& sub_path, std::string* dt_content,
+                          const std::string& root_path = kAndroidDtDir);
+bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content,
+                                  const std::string& root_path = kAndroidDtDir);
 
 }  // namespace init
 }  // namespace android
