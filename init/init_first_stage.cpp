@@ -469,7 +469,8 @@ bool DoFirstStageMount() {
     }
 
     // Firstly checks if device tree fstab entries are compatible.
-    if (!is_android_dt_value_expected("fstab/compatible", "android,fstab")) {
+    if (!is_android_dt_value_expected("fstab/compatible", "android,fstab") &&
+        !is_android_dt_value_expected("fstab/compatible", "android,fstab", kSysfsAndroidDtDir)) {
         LOG(INFO) << "First stage mount skipped (missing/incompatible fstab in device tree)";
         return true;
     }
