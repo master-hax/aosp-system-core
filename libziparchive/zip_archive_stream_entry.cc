@@ -38,8 +38,13 @@
 static constexpr size_t kBufSize = 65535;
 
 bool ZipArchiveStreamEntry::Init(const ZipEntry& entry) {
+  ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle_);
+  off64_t data_offset = entry.offset;
+  if (!archive->mapped_zip.SeekToOffset(data_offset)) {
+    ALOGW("lseek to data at %" PRId64 " failed: %s", data_offset, strerror(errno));
+    return false;
+  }
   crc32_ = entry.crc32;
-  offset_ = entry.offset;
   return true;
 }
 
@@ -56,11 +61,11 @@ class ZipArchiveStreamEntryUncompressed : public ZipArchiveStreamEntry {
  protected:
   bool Init(const ZipEntry& entry) override;
 
-  uint32_t length_ = 0u;
+  uint32_t length_;
 
  private:
   std::vector<uint8_t> data_;
-  uint32_t computed_crc32_ = 0u;
+  uint32_t computed_crc32_;
 };
 
 bool ZipArchiveStreamEntryUncompressed::Init(const ZipEntry& entry) {
@@ -84,7 +89,7 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryUncompressed::Read() {
   size_t bytes = (length_ > data_.size()) ? data_.size() : length_;
   ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle_);
   errno = 0;
-  if (!archive->mapped_zip.ReadAtOffset(data_.data(), bytes, offset_)) {
+  if (!archive->mapped_zip.ReadData(data_.data(), bytes)) {
     if (errno != 0) {
       ALOGE("Error reading from archive fd: %s", strerror(errno));
     } else {
@@ -99,7 +104,6 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryUncompressed::Read() {
   }
   computed_crc32_ = crc32(computed_crc32_, data_.data(), data_.size());
   length_ -= bytes;
-  offset_ += bytes;
   return &data_;
 }
 
@@ -125,9 +129,9 @@ class ZipArchiveStreamEntryCompressed : public ZipArchiveStreamEntry {
   z_stream z_stream_;
   std::vector<uint8_t> in_;
   std::vector<uint8_t> out_;
-  uint32_t uncompressed_length_ = 0u;
-  uint32_t compressed_length_ = 0u;
-  uint32_t computed_crc32_ = 0u;
+  uint32_t uncompressed_length_;
+  uint32_t compressed_length_;
+  uint32_t computed_crc32_;
 };
 
 // This method is using libz macros with old-style-casts
@@ -206,7 +210,7 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryCompressed::Read() {
       size_t bytes = (compressed_length_ > in_.size()) ? in_.size() : compressed_length_;
       ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle_);
       errno = 0;
-      if (!archive->mapped_zip.ReadAtOffset(in_.data(), bytes, offset_)) {
+      if (!archive->mapped_zip.ReadData(in_.data(), bytes)) {
         if (errno != 0) {
           ALOGE("Error reading from archive fd: %s", strerror(errno));
         } else {
@@ -216,7 +220,6 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryCompressed::Read() {
       }
 
       compressed_length_ -= bytes;
-      offset_ += bytes;
       z_stream_.next_in = in_.data();
       z_stream_.avail_in = bytes;
     }

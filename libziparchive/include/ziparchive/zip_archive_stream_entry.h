@@ -40,8 +40,7 @@ class ZipArchiveStreamEntry {
 
   ZipArchiveHandle handle_;
 
-  off64_t offset_ = 0;
-  uint32_t crc32_ = 0u;
+  uint32_t crc32_;
 };
 
 #endif  // LIBZIPARCHIVE_ZIPARCHIVESTREAMENTRY_H_
