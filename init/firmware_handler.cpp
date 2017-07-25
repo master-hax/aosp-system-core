@@ -109,17 +109,12 @@ try_loading_again:
 void HandleFirmwareEvent(const Uevent& uevent) {
     if (uevent.subsystem != "firmware" || uevent.action != "add") return;
 
-    // Loading the firmware in a child means we can do that in parallel...
-    auto pid = fork();
-    if (pid == -1) {
-        PLOG(ERROR) << "could not fork to process firmware event for " << uevent.firmware;
-    }
-    if (pid == 0) {
+    auto thread = std::thread([&uevent]() {
         Timer t;
         ProcessFirmwareEvent(uevent);
         LOG(INFO) << "loading " << uevent.path << " took " << t;
-        _exit(EXIT_SUCCESS);
-    }
+    });
+    thread.detach();
 }
 
 }  // namespace init

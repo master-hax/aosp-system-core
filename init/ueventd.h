@@ -17,8 +17,30 @@
 #ifndef _INIT_UEVENTD_H_
 #define _INIT_UEVENTD_H_
 
+#include <semaphore.h>
+
+#include <thread>
+
+#include "devices.h"
+#include "uevent_listener.h"
+
 namespace android {
 namespace init {
+
+class Ueventd {
+  public:
+    Ueventd();
+    ~Ueventd();
+
+    void Run();
+    void WaitForColdBoot() { sem_wait(&cold_boot_done_); }
+
+  private:
+    DeviceHandler device_handler_;
+    UeventListener uevent_listener_;
+    std::thread thread_;
+    sem_t cold_boot_done_;
+};
 
 int ueventd_main(int argc, char** argv);
 

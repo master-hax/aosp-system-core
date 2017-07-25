@@ -33,10 +33,8 @@
 #include <selinux/android.h>
 #include <selinux/selinux.h>
 
-#include "devices.h"
 #include "firmware_handler.h"
 #include "log.h"
-#include "uevent_listener.h"
 #include "ueventd_parser.h"
 #include "util.h"
 
@@ -178,11 +176,10 @@ void ColdBoot::Run() {
 
     WaitForThreads();
 
-    close(open(COLDBOOT_DONE, O_WRONLY | O_CREAT | O_CLOEXEC, 0000));
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";
 }
 
-DeviceHandler CreateDeviceHandler() {
+static DeviceHandler CreateDeviceHandler() {
     Parser parser;
 
     std::vector<Subsystem> subsystems;
@@ -214,44 +211,29 @@ DeviceHandler CreateDeviceHandler() {
                          std::move(subsystems), true);
 }
 
-int ueventd_main(int argc, char** argv) {
-    /*
-     * init sets the umask to 077 for forked processes. We need to
-     * create files with exact permissions, without modification by
-     * the umask.
-     */
-    umask(000);
+Ueventd::Ueventd() : device_handler_(CreateDeviceHandler()) {
+    sem_init(&cold_boot_done_, 0, 0);
+}
 
-    InitKernelLogging(argv);
+Ueventd::~Ueventd() {
+    thread_.join();
+}
 
+void Ueventd::Run() {
     LOG(INFO) << "ueventd started!";
+    thread_ = std::thread([&]() {
+        {
+            ColdBoot cold_boot(uevent_listener_, device_handler_);
+            cold_boot.Run();
+            sem_post(&cold_boot_done_);
+        }
 
-    selinux_callback cb;
-    cb.func_log = selinux_klog_callback;
-    selinux_set_callback(SELINUX_CB_LOG, cb);
-
-    DeviceHandler device_handler = CreateDeviceHandler();
-    UeventListener uevent_listener;
-
-    if (access(COLDBOOT_DONE, F_OK) != 0) {
-        ColdBoot cold_boot(uevent_listener, device_handler);
-        cold_boot.Run();
-    }
-
-    // We use waitpid() in ColdBoot, so we can't ignore SIGCHLD until now.
-    signal(SIGCHLD, SIG_IGN);
-    // Reap and pending children that exited between the last call to waitpid() and setting SIG_IGN
-    // for SIGCHLD above.
-    while (waitpid(-1, nullptr, WNOHANG) > 0) {
-    }
-
-    uevent_listener.Poll([&device_handler](const Uevent& uevent) {
-        HandleFirmwareEvent(uevent);
-        device_handler.HandleDeviceEvent(uevent);
-        return ListenerAction::kContinue;
+        uevent_listener_.Poll([this](const Uevent& uevent) {
+            HandleFirmwareEvent(uevent);
+            device_handler_.HandleDeviceEvent(uevent);
+            return ListenerAction::kContinue;
+        });
     });
-
-    return 0;
 }
 
 }  // namespace init

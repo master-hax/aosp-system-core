@@ -28,8 +28,6 @@
 #include <android-base/chrono_utils.h>
 #include <selinux/label.h>
 
-#define COLDBOOT_DONE "/dev/.coldboot_done"
-
 const std::string kAndroidDtDir("/proc/device-tree/firmware/android/");
 
 using android::base::boot_clock;

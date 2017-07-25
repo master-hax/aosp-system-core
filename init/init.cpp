@@ -215,6 +215,7 @@ void handle_control_message(const std::string& msg, const std::string& name) {
     }
 }
 
+/*
 static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
@@ -236,6 +237,7 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     property_set("ro.boottime.init.cold_boot_wait", std::to_string(t.duration().count()));
     return 0;
 }
+*/
 
 /*
  * Writes 512 bytes of output from Hardware RNG (/dev/hw_random, backed
@@ -945,10 +947,6 @@ static void install_reboot_signal_handlers() {
 }
 
 int main(int argc, char** argv) {
-    if (!strcmp(basename(argv[0]), "ueventd")) {
-        return ueventd_main(argc, argv);
-    }
-
     if (!strcmp(basename(argv[0]), "watchdogd")) {
         return watchdogd_main(argc, argv);
     }
@@ -1084,6 +1082,9 @@ int main(int argc, char** argv) {
     start_property_service();
     set_usb_controller();
 
+    Ueventd ueventd;
+    ueventd.Run();
+
     const BuiltinFunctionMap function_map;
     Action::set_function_map(&function_map);
 
@@ -1116,7 +1117,12 @@ int main(int argc, char** argv) {
     am.QueueEventTrigger("early-init");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
-    am.QueueBuiltinAction(wait_for_coldboot_done_action, "wait_for_coldboot_done");
+    am.QueueBuiltinAction(
+        [&ueventd](const std::vector<std::string>& args) {
+            ueventd.WaitForColdBoot();
+            return 0;
+        },
+        "wait_for_coldboot_done");
     // ... so that we can start queuing up actions that require stuff from /dev.
     am.QueueBuiltinAction(mix_hwrng_into_linux_rng_action, "mix_hwrng_into_linux_rng");
     am.QueueBuiltinAction(set_mmap_rnd_bits_action, "set_mmap_rnd_bits");
