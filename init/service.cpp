@@ -225,8 +225,9 @@ void Service::SetProcessAttributes() {
     if (capabilities_.any() && uid_) {
         // If Android is running in a container, some securebits might already
         // be locked, so don't change those.
-        int64_t securebits = prctl(PR_GET_SECUREBITS);
-        if (securebits == -1) {
+        int result;
+        unsigned long securebits = result = prctl(PR_GET_SECUREBITS);
+        if (result == -1) {
             PLOG(FATAL) << "prctl(PR_GET_SECUREBITS) failed for " << name_;
         }
         securebits |= SECBIT_KEEP_CAPS | SECBIT_KEEP_CAPS_LOCKED;
