@@ -75,6 +75,12 @@ static void ParseEvent(const char* msg, Uevent* uevent) {
             ;
     }
 
+    // FIXME: Figure out why emulator's virtio-blk devices do not receive PARTNAME uevents
+    if (uevent->partition_name.empty() && uevent->device_name.substr(0, 2) == "vd") {
+        LOG(WARNING) << "No PARTNAME uevent received for device '" << uevent->device_name << "'";
+        uevent->partition_name = uevent->device_name;
+    }
+
     if (LOG_UEVENTS) {
         LOG(INFO) << "event { '" << uevent->action << "', '" << uevent->path << "', '"
                   << uevent->subsystem << "', '" << uevent->firmware << "', " << uevent->major
