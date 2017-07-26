@@ -29,6 +29,8 @@
 
 #include "fs_mgr_priv.h"
 
+const std::string kAndroidDtDir("/proc/device-tree/firmware/android");
+
 struct fs_mgr_flag_values {
     char *key_loc;
     char *verity_loc;
@@ -313,9 +315,23 @@ static int parse_flags(char *flags, struct flag_list *fl,
     return f;
 }
 
+// FIXME: The same logic is duplicated in system/core/init/
+const std::string& get_android_dt_dir() {
+    // Set once and saves time for subsequent calls to this function
+    static std::string android_dt_dir;
+    if (android_dt_dir.empty()) {
+        // A custom Android DT path can be specified in kernel cmdline
+        if (!fs_mgr_get_boot_config_from_kernel_cmdline("android_dt_dir", &android_dt_dir)) {
+            // Fall back to the standard procfs-based path
+            android_dt_dir = kAndroidDtDir;
+        }
+    }
+    return android_dt_dir;
+}
+
 static bool is_dt_fstab_compatible() {
     std::string dt_value;
-    std::string file_name = kAndroidDtDir + "/fstab/compatible";
+    std::string file_name = get_android_dt_dir() + "/fstab/compatible";
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,fstab") {
             return true;
@@ -331,7 +347,7 @@ static std::string read_fstab_from_dt() {
         return fstab;
     }
 
-    std::string fstabdir_name = kAndroidDtDir + "/fstab";
+    std::string fstabdir_name = get_android_dt_dir() + "/fstab";
     std::unique_ptr<DIR, int (*)(DIR*)> fstabdir(opendir(fstabdir_name.c_str()), closedir);
     if (!fstabdir) return fstab;
 
@@ -394,7 +410,7 @@ static std::string read_fstab_from_dt() {
 }
 
 bool is_dt_compatible() {
-    std::string file_name = kAndroidDtDir + "/compatible";
+    std::string file_name = get_android_dt_dir() + "/compatible";
     std::string dt_value;
     if (read_dt_file(file_name, &dt_value)) {
         if (dt_value == "android,firmware") {
