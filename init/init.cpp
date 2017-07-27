@@ -98,22 +98,22 @@ static bool shutting_down;
 std::vector<std::string> late_import_paths;
 
 void DumpState() {
-    ServiceManager::GetInstance().DumpState();
+    ServiceList::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
 }
 
-Parser CreateParser(ActionManager& action_manager, ServiceManager& service_manager) {
+Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
     Parser parser;
 
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_manager));
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list));
     parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     return parser;
 }
 
-static void LoadBootScripts(ActionManager& action_manager, ServiceManager& service_manager) {
-    Parser parser = CreateParser(action_manager, service_manager);
+static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_list) {
+    Parser parser = CreateParser(action_manager, service_list);
 
     std::string bootscript = GetProperty("ro.boot.init_rc", "");
     if (bootscript.empty()) {
@@ -220,23 +220,22 @@ void property_changed(const std::string& name, const std::string& value) {
 }
 
 static bool IsWaitingForExec() {
-    bool ret = false;
-    ServiceManager::GetInstance().ForEachService([&ret](Service* s) {
-        if (s->flags() & SVC_EXEC) ret = true;
-    });
-    return ret;
+    for (const auto& s : ServiceList::GetInstance()) {
+        if (s->flags() & SVC_EXEC) return true;
+    }
+    return false;
 }
 
 static void restart_processes()
 {
     process_needs_restart_at = 0;
-    ServiceManager::GetInstance().ForEachServiceWithFlags(SVC_RESTARTING, [](Service* s) {
-        s->RestartIfNeeded(&process_needs_restart_at);
-    });
+    for (const auto& s : ServiceList::GetInstance()) {
+        if (s->flags() & SVC_RESTARTING) s->RestartIfNeeded(&process_needs_restart_at);
+    }
 }
 
 void handle_control_message(const std::string& msg, const std::string& name) {
-    Service* svc = ServiceManager::GetInstance().FindServiceByName(name);
+    Service* svc = ServiceList::GetInstance().FindService(name);
     if (svc == nullptr) {
         LOG(ERROR) << "no such service '" << name << "'";
         return;
@@ -1138,7 +1137,7 @@ int main(int argc, char** argv) {
     Action::set_function_map(&function_map);
 
     ActionManager& am = ActionManager::GetInstance();
-    ServiceManager& sm = ServiceManager::GetInstance();
+    ServiceList& sm = ServiceList::GetInstance();
 
     LoadBootScripts(am, sm);
 
