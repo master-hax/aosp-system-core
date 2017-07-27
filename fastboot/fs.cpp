@@ -114,7 +114,7 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     std::string block_size_str = std::to_string(block_size);
     mke2fs_args.push_back(block_size_str.c_str());
 
-    std::string ext_attr = "android_sparse";
+    std::string ext_attr = "android_sparse,lazy_journal_init=1";
     if (eraseBlkSize != 0 && logicalBlkSize != 0) {
         int raid_stride = logicalBlkSize / block_size;
         int raid_stripe_width = eraseBlkSize / block_size;
@@ -124,6 +124,8 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     }
     mke2fs_args.push_back("-E");
     mke2fs_args.push_back(ext_attr.c_str());
+    mke2fs_args.push_back("-O");
+    mke2fs_args.push_back("uninit_bg");
     mke2fs_args.push_back(fileName);
 
     std::string size_str = std::to_string(partSize / block_size);
