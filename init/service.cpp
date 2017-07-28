@@ -156,6 +156,7 @@ ServiceEnvironmentInfo::ServiceEnvironmentInfo(const std::string& name,
 }
 
 unsigned long Service::next_start_order_ = 1;
+bool Service::is_waiting_for_exec_ = false;
 
 Service::Service(const std::string& name, const std::vector<std::string>& args)
     : Service(name, 0, 0, 0, {}, 0, 0, "", args) {}
@@ -653,15 +654,14 @@ bool Service::ParseLine(const std::vector<std::string>& args, std::string* err) 
     return (this->*parser)(args, err);
 }
 
-bool Service::ExecStart(std::unique_ptr<android::base::Timer>* exec_waiter) {
-    flags_ |= SVC_EXEC | SVC_ONESHOT;
-
-    exec_waiter->reset(new android::base::Timer);
+bool Service::ExecStart() {
+    flags_ |= SVC_ONESHOT;
 
     if (!Start()) {
-        exec_waiter->reset();
         return false;
     }
+
+    SetExec();
     return true;
 }
 
@@ -951,8 +951,6 @@ void Service::OpenConsole() const {
     close(fd);
 }
 
-int ServiceManager::exec_count_ = 0;
-
 ServiceManager::ServiceManager() {
 }
 
@@ -965,36 +963,7 @@ void ServiceManager::AddService(std::unique_ptr<Service> service) {
     services_.emplace_back(std::move(service));
 }
 
-bool ServiceManager::Exec(const std::vector<std::string>& args) {
-    Service* svc = MakeExecOneshotService(args);
-    if (!svc) {
-        LOG(ERROR) << "Could not create exec service";
-        return false;
-    }
-    if (!svc->ExecStart(&exec_waiter_)) {
-        LOG(ERROR) << "Could not start exec service";
-        ServiceManager::GetInstance().RemoveService(*svc);
-        return false;
-    }
-    return true;
-}
-
-bool ServiceManager::ExecStart(const std::string& name) {
-    Service* svc = FindServiceByName(name);
-    if (!svc) {
-        LOG(ERROR) << "ExecStart(" << name << "): Service not found";
-        return false;
-    }
-    if (!svc->ExecStart(&exec_waiter_)) {
-        LOG(ERROR) << "ExecStart(" << name << "): Could not start Service";
-        return false;
-    }
-    return true;
-}
-
-bool ServiceManager::IsWaitingForExec() const { return exec_waiter_ != nullptr; }
-
-Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& args) {
+std::unique_ptr<Service> Service::MakeTemporaryService(const std::vector<std::string>& args) {
     // Parse the arguments: exec [SECLABEL [UID [GID]*] --] COMMAND ARGS...
     // SECLABEL can be a - to denote default
     std::size_t command_arg = 1;
@@ -1015,10 +984,11 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
     }
     std::vector<std::string> str_args(args.begin() + command_arg, args.end());
 
-    exec_count_++;
-    std::string name = "exec " + std::to_string(exec_count_) + " (" + Join(str_args, " ") + ")";
+    static size_t exec_count = 0;
+    exec_count++;
+    std::string name = "exec " + std::to_string(exec_count) + " (" + Join(str_args, " ") + ")";
 
-    unsigned flags = SVC_EXEC | SVC_ONESHOT | SVC_TEMPORARY;
+    unsigned flags = SVC_ONESHOT | SVC_TEMPORARY;
     CapSet no_capabilities;
     unsigned namespace_flags = 0;
 
@@ -1053,12 +1023,8 @@ Service* ServiceManager::MakeExecOneshotService(const std::vector<std::string>& 
         }
     }
 
-    auto svc_p = std::make_unique<Service>(name, flags, uid, gid, supp_gids, no_capabilities,
-                                           namespace_flags, seclabel, str_args);
-    Service* svc = svc_p.get();
-    services_.emplace_back(std::move(svc_p));
-
-    return svc;
+    return std::make_unique<Service>(name, flags, uid, gid, supp_gids, no_capabilities,
+                                     namespace_flags, seclabel, str_args);
 }
 
 Service* ServiceManager::FindServiceByName(const std::string& name) const {
@@ -1179,8 +1145,10 @@ bool ServiceManager::ReapOneProcess() {
     if (svc) {
         name = StringPrintf("Service '%s' (pid %d)", svc->name().c_str(), pid);
         if (svc->flags() & SVC_EXEC) {
-            wait_string = StringPrintf(" waiting took %f seconds",
-                                       exec_waiter_->duration().count() / 1000.0f);
+            auto exec_duration = boot_clock::now() - svc->time_started();
+            auto exec_duration_ms =
+                std::chrono::duration_cast<std::chrono::milliseconds>(exec_duration).count();
+            wait_string = StringPrintf(" waiting took %f seconds", exec_duration_ms / 1000.0f);
         }
     } else {
         name = StringPrintf("Untracked pid %d", pid);
@@ -1200,7 +1168,7 @@ bool ServiceManager::ReapOneProcess() {
     svc->Reap();
 
     if (svc->flags() & SVC_EXEC) {
-        exec_waiter_.reset();
+        svc->UnSetExec();
     }
     if (svc->flags() & SVC_TEMPORARY) {
         RemoveService(*svc);
@@ -1212,15 +1180,6 @@ bool ServiceManager::ReapOneProcess() {
 void ServiceManager::ReapAnyOutstandingChildren() {
     while (ReapOneProcess()) {
     }
-}
-
-void ServiceManager::ClearExecWait() {
-    // Clear EXEC flag if there is one pending
-    // And clear the wait flag
-    for (const auto& s : services_) {
-        s->UnSetExec();
-    }
-    exec_waiter_.reset();
 }
 
 bool ServiceParser::ParseSection(std::vector<std::string>&& args, const std::string& filename,
