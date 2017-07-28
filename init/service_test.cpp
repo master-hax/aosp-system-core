@@ -74,22 +74,20 @@ TEST(service, pod_initialized) {
 }
 
 TEST(service, make_exec_oneshot_service_invalid_syntax) {
-    ServiceManager& sm = ServiceManager::GetInstance();
     std::vector<std::string> args;
     // Nothing.
-    ASSERT_EQ(nullptr, sm.MakeExecOneshotService(args));
+    ASSERT_EQ(nullptr, Service::MakeExecOneshotService(args));
 
     // No arguments to 'exec'.
     args.push_back("exec");
-    ASSERT_EQ(nullptr, sm.MakeExecOneshotService(args));
+    ASSERT_EQ(nullptr, Service::MakeExecOneshotService(args));
 
     // No command in "exec --".
     args.push_back("--");
-    ASSERT_EQ(nullptr, sm.MakeExecOneshotService(args));
+    ASSERT_EQ(nullptr, Service::MakeExecOneshotService(args));
 }
 
 TEST(service, make_exec_oneshot_service_too_many_supplementary_gids) {
-    ServiceManager& sm = ServiceManager::GetInstance();
     std::vector<std::string> args;
     args.push_back("exec");
     args.push_back("seclabel");
@@ -100,12 +98,11 @@ TEST(service, make_exec_oneshot_service_too_many_supplementary_gids) {
     }
     args.push_back("--");
     args.push_back("/system/bin/id");
-    ASSERT_EQ(nullptr, sm.MakeExecOneshotService(args));
+    ASSERT_EQ(nullptr, Service::MakeExecOneshotService(args));
 }
 
 static void Test_make_exec_oneshot_service(bool dash_dash, bool seclabel, bool uid, bool gid,
                                            bool supplementary_gids) {
-    ServiceManager& sm = ServiceManager::GetInstance();
     std::vector<std::string> args;
     args.push_back("exec");
     if (seclabel) {
@@ -126,7 +123,7 @@ static void Test_make_exec_oneshot_service(bool dash_dash, bool seclabel, bool u
     }
     args.push_back("/system/bin/toybox");
     args.push_back("id");
-    Service* svc = sm.MakeExecOneshotService(args);
+    auto svc = Service::MakeExecOneshotService(args);
     ASSERT_NE(nullptr, svc);
 
     if (seclabel) {

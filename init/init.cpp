@@ -219,6 +219,14 @@ void property_changed(const std::string& name, const std::string& value) {
     }
 }
 
+static bool IsWaitingForExec() {
+    bool ret = false;
+    ServiceManager::GetInstance().ForEachService([&ret](Service* s) {
+        if (s->flags() & SVC_EXEC) ret = true;
+    });
+    return ret;
+}
+
 static void restart_processes()
 {
     process_needs_restart_at = 0;
@@ -1171,10 +1179,10 @@ int main(int argc, char** argv) {
         // By default, sleep until something happens.
         int epoll_timeout_ms = -1;
 
-        if (!(waiting_for_prop || sm.IsWaitingForExec())) {
+        if (!(waiting_for_prop || IsWaitingForExec())) {
             am.ExecuteOneCommand();
         }
-        if (!(waiting_for_prop || sm.IsWaitingForExec())) {
+        if (!(waiting_for_prop || IsWaitingForExec())) {
             if (!shutting_down) restart_processes();
 
             // If there's a process that needs restarting, wake up in time for that.

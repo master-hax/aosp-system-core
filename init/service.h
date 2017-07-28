@@ -73,9 +73,11 @@ class Service {
             unsigned namespace_flags, const std::string& seclabel,
             const std::vector<std::string>& args);
 
+    static std::unique_ptr<Service> MakeExecOneshotService(const std::vector<std::string>& args);
+
     bool IsRunning() { return (flags_ & SVC_RUNNING) != 0; }
     bool ParseLine(const std::vector<std::string>& args, std::string* err);
-    bool ExecStart(std::unique_ptr<android::base::Timer>* exec_waiter);
+    bool ExecStart();
     bool Start();
     bool StartIfNotDisabled();
     bool Enable();
@@ -94,6 +96,7 @@ class Service {
     const std::set<std::string>& classnames() const { return classnames_; }
     unsigned flags() const { return flags_; }
     pid_t pid() const { return pid_; }
+    android::base::boot_clock::time_point time_started() const { return time_started_; }
     int crash_count() const { return crash_count_; }
     uid_t uid() const { return uid_; }
     gid_t gid() const { return gid_; }
@@ -206,10 +209,6 @@ class ServiceManager {
     ServiceManager();
 
     void AddService(std::unique_ptr<Service> service);
-    Service* MakeExecOneshotService(const std::vector<std::string>& args);
-    bool Exec(const std::vector<std::string>& args);
-    bool ExecStart(const std::string& name);
-    bool IsWaitingForExec() const;
     Service* FindServiceByName(const std::string& name) const;
     Service* FindServiceByPid(pid_t pid) const;
     Service* FindServiceByKeychord(int keychord_id) const;
@@ -222,15 +221,11 @@ class ServiceManager {
     void ReapAnyOutstandingChildren();
     void RemoveService(const Service& svc);
     void DumpState() const;
-    void ClearExecWait();
 
   private:
     // Cleans up a child process that exited.
     // Returns true iff a children was cleaned up.
     bool ReapOneProcess();
-
-    static int exec_count_; // Every service needs a unique name.
-    std::unique_ptr<android::base::Timer> exec_waiter_;
 
     std::vector<std::unique_ptr<Service>> services_;
 };
