@@ -593,7 +593,7 @@ bool NetlinkEvent::parseAsciiNetlinkMessage(char *buffer, int size) {
     buffer[size-1] = '\0';
 
     end = s + size;
-    while (s < end) {
+    while (s && s < end) {
         if (first) {
             const char *p;
             /* buffer is 0-terminated, no need to check p < end */
