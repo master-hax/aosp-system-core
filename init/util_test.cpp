@@ -144,20 +144,17 @@ TEST(util, WriteFileExist) {
 }
 
 TEST(util, DecodeUid) {
-    uid_t decoded_uid;
-    std::string err;
+    auto decoded_uid = DecodeUid("root");
+    EXPECT_TRUE(decoded_uid);
+    EXPECT_EQ(0U, *decoded_uid);
 
-    EXPECT_TRUE(DecodeUid("root", &decoded_uid, &err));
-    EXPECT_EQ("", err);
-    EXPECT_EQ(0U, decoded_uid);
+    decoded_uid = DecodeUid("toot");
+    EXPECT_FALSE(decoded_uid);
+    EXPECT_EQ("getpwnam failed: No such file or directory", decoded_uid.error());
 
-    EXPECT_FALSE(DecodeUid("toot", &decoded_uid, &err));
-    EXPECT_EQ("getpwnam failed: No such file or directory", err);
-    EXPECT_EQ(UINT_MAX, decoded_uid);
-
-    EXPECT_TRUE(DecodeUid("123", &decoded_uid, &err));
-    EXPECT_EQ("", err);
-    EXPECT_EQ(123U, decoded_uid);
+    decoded_uid = DecodeUid("123");
+    EXPECT_TRUE(decoded_uid);
+    EXPECT_EQ(123U, *decoded_uid);
 }
 
 TEST(util, is_dir) {
