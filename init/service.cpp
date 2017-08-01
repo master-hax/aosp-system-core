@@ -385,6 +385,21 @@ bool Service::ParseDisabled(const std::vector<std::string>& args, std::string* e
     return true;
 }
 
+/*
+SuccessOrErr Service::ParseGroup(const std::vector<std::string>& args) {
+    auto gid = DecodeUid(args[1]);
+    if (!gid) return Fail() << "Unable to find GID for '" << args[1] << "': " << gid.error();
+    gid_ = *gid;
+
+    for (std::size_t n = 2; n < args.size(); n++) {
+        gid = DecodeUid(args[n]);
+        if (!gid) return Fail() << "Unable to find GID for '" << args[n] << "': " << gid.error();
+        supp_gids_.emplace_back(*gid);
+    }
+    return Success();
+}
+*/
+
 bool Service::ParseGroup(const std::vector<std::string>& args, std::string* err) {
     std::string decode_uid_err;
     if (!DecodeUid(args[1], &gid_, &decode_uid_err)) {
