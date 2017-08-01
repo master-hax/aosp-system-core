@@ -255,7 +255,7 @@ void handle_control_message(const std::string& msg, const std::string& name) {
     }
 }
 
-static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
+static Result<Success> wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     Timer t;
 
     LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE "...";
@@ -274,7 +274,7 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
     }
 
     property_set("ro.boottime.init.cold_boot_wait", std::to_string(t.duration().count()));
-    return 0;
+    return Success();
 }
 
 /*
@@ -292,24 +292,22 @@ static int wait_for_coldboot_done_action(const std::vector<std::string>& args) {
  * time. We do not reboot or halt on failures, as this is a best-effort
  * attempt.
  */
-static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args) {
+static Result<Success> mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args) {
     unique_fd hwrandom_fd(
         TEMP_FAILURE_RETRY(open("/dev/hw_random", O_RDONLY | O_NOFOLLOW | O_CLOEXEC)));
     if (hwrandom_fd == -1) {
         if (errno == ENOENT) {
             LOG(INFO) << "/dev/hw_random not found";
             // It's not an error to not have a Hardware RNG.
-            return 0;
+            return Success();
         }
-        PLOG(ERROR) << "Failed to open /dev/hw_random";
-        return -1;
+        return ErrnoError() << "Failed to open /dev/hw_random";
     }
 
     unique_fd urandom_fd(
         TEMP_FAILURE_RETRY(open("/dev/urandom", O_WRONLY | O_NOFOLLOW | O_CLOEXEC)));
     if (urandom_fd == -1) {
-        PLOG(ERROR) << "Failed to open /dev/urandom";
-        return -1;
+        return ErrnoError() << "Failed to open /dev/urandom";
     }
 
     char buf[512];
@@ -318,23 +316,20 @@ static int mix_hwrng_into_linux_rng_action(const std::vector<std::string>& args)
         ssize_t chunk_size =
             TEMP_FAILURE_RETRY(read(hwrandom_fd, buf, sizeof(buf) - total_bytes_written));
         if (chunk_size == -1) {
-            PLOG(ERROR) << "Failed to read from /dev/hw_random";
-            return -1;
+            return ErrnoError() << "Failed to read from /dev/hw_random";
         } else if (chunk_size == 0) {
-            LOG(ERROR) << "Failed to read from /dev/hw_random: EOF";
-            return -1;
+            return Error() << "Failed to read from /dev/hw_random: EOF";
         }
 
         chunk_size = TEMP_FAILURE_RETRY(write(urandom_fd, buf, chunk_size));
         if (chunk_size == -1) {
-            PLOG(ERROR) << "Failed to write to /dev/urandom";
-            return -1;
+            return ErrnoError() << "Failed to write to /dev/urandom";
         }
         total_bytes_written += chunk_size;
     }
 
     LOG(INFO) << "Mixed " << total_bytes_written << " bytes from /dev/hw_random into /dev/urandom";
-    return 0;
+    return Success();
 }
 
 static void security_failure() {
@@ -410,40 +405,40 @@ static bool __attribute__((unused)) set_mmap_rnd_bits_min(int start, int min, bo
  * ec9ee4acd97c drivers: char: random: add get_random_long()
  * 5ef11c35ce86 mm: ASLR: use get_random_long()
  */
-static int set_mmap_rnd_bits_action(const std::vector<std::string>& args) {
+static Result<Success> set_mmap_rnd_bits_action(const std::vector<std::string>& args) {
 /* values are arch-dependent */
 #if defined(USER_MODE_LINUX)
     /* uml does not support mmap_rnd_bits */
-    return 0;
+    return Success();
 #elif defined(__aarch64__)
     /* arm64 supports 18 - 33 bits depending on pagesize and VA_SIZE */
     if (set_mmap_rnd_bits_min(33, 24, false)
             && set_mmap_rnd_bits_min(16, 16, true)) {
-        return 0;
+        return Success();
     }
 #elif defined(__x86_64__)
     /* x86_64 supports 28 - 32 bits */
     if (set_mmap_rnd_bits_min(32, 32, false)
             && set_mmap_rnd_bits_min(16, 16, true)) {
-        return 0;
+        return Success();
     }
 #elif defined(__arm__) || defined(__i386__)
     /* check to see if we're running on 64-bit kernel */
     bool h64 = !access(MMAP_RND_COMPAT_PATH, F_OK);
     /* supported 32-bit architecture must have 16 bits set */
     if (set_mmap_rnd_bits_min(16, 16, h64)) {
-        return 0;
+        return Success();
     }
 #elif defined(__mips__) || defined(__mips64__)
     // TODO: add mips support b/27788820
-    return 0;
+    return Success()
 #else
     LOG(ERROR) << "Unknown architecture";
 #endif
 
     LOG(ERROR) << "Unable to set adequate mmap entropy value!";
     security_failure();
-    return -1;
+    return Error();
 }
 
 #define KPTR_RESTRICT_PATH "/proc/sys/kernel/kptr_restrict"
@@ -454,30 +449,28 @@ static int set_mmap_rnd_bits_action(const std::vector<std::string>& args) {
  *
  * Aborts if unable to set this to an acceptable value.
  */
-static int set_kptr_restrict_action(const std::vector<std::string>& args)
-{
+static Result<Success> set_kptr_restrict_action(const std::vector<std::string>& args) {
     std::string path = KPTR_RESTRICT_PATH;
 
     if (!set_highest_available_option_value(path, KPTR_RESTRICT_MINVALUE, KPTR_RESTRICT_MAXVALUE)) {
         LOG(ERROR) << "Unable to set adequate kptr_restrict value!";
         security_failure();
+        return Error();
     }
-    return 0;
+    return Success();
 }
 
-static int keychord_init_action(const std::vector<std::string>& args)
-{
+static Result<Success> keychord_init_action(const std::vector<std::string>& args) {
     keychord_init();
-    return 0;
+    return Success();
 }
 
-static int console_init_action(const std::vector<std::string>& args)
-{
+static Result<Success> console_init_action(const std::vector<std::string>& args) {
     std::string console = GetProperty("ro.boot.console", "");
     if (!console.empty()) {
         default_console = "/dev/" + console;
     }
-    return 0;
+    return Success();
 }
 
 static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
@@ -559,18 +552,16 @@ static void process_kernel_cmdline() {
     if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
-static int property_enable_triggers_action(const std::vector<std::string>& args)
-{
+static Result<Success> property_enable_triggers_action(const std::vector<std::string>& args) {
     /* Enable property triggers. */
     property_triggers_enabled = 1;
-    return 0;
+    return Success();
 }
 
-static int queue_property_triggers_action(const std::vector<std::string>& args)
-{
+static Result<Success> queue_property_triggers_action(const std::vector<std::string>& args) {
     ActionManager::GetInstance().QueueBuiltinAction(property_enable_triggers_action, "enable_property_trigger");
     ActionManager::GetInstance().QueueAllPropertyActions();
-    return 0;
+    return Success();
 }
 
 static void global_seccomp() {
