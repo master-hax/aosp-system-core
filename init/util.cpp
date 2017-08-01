@@ -58,6 +58,22 @@ const std::string kDefaultAndroidDtDir("/proc/device-tree/firmware/android/");
 // DecodeUid() - decodes and returns the given string, which can be either the
 // numeric or name representation, into the integer uid or gid. Returns
 // UINT_MAX on error.
+/*
+Result<uid_t> DecodeUid(const std::string& name) {
+    if (isalpha(name[0])) {
+        passwd* pwd = getpwnam(name.c_str());
+        if (!pwd) return Fail() << "getpwnam failed: " << strerror(errno);
+
+        return pwd->pw_uid;
+    }
+
+    errno = 0;
+    uid_t result = static_cast<uid_t>(strtoul(name.c_str(), 0, 0));
+    if (errno) return Fail() << "strtoul failed: " << strerror(errno);
+
+    return result;
+}
+*/
 bool DecodeUid(const std::string& name, uid_t* uid, std::string* err) {
     *uid = UINT_MAX;
     *err = "";
