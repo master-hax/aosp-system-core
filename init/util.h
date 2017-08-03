@@ -28,6 +28,8 @@
 #include <android-base/chrono_utils.h>
 #include <selinux/label.h>
 
+#include "result.h"
+
 #define COLDBOOT_DONE "/dev/.coldboot_done"
 
 using android::base::boot_clock;
@@ -42,7 +44,7 @@ int CreateSocket(const char* name, int type, bool passcred, mode_t perm, uid_t u
 bool ReadFile(const std::string& path, std::string* content, std::string* err);
 bool WriteFile(const std::string& path, const std::string& content, std::string* err);
 
-bool DecodeUid(const std::string& name, uid_t* uid, std::string* err);
+Result<uid_t> DecodeUid(const std::string& name);
 
 int mkdir_recursive(const std::string& pathname, mode_t mode, selabel_handle* sehandle);
 int wait_for_file(const char *filename, std::chrono::nanoseconds timeout);
