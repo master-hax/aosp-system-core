@@ -32,25 +32,25 @@ class LogBuffer;
                                   // chatty for the temporal expire messages
 #define EXPIRE_RATELIMIT 10  // maximum rate in seconds to report expiration
 
-class LogBufferElement {
+class __attribute__((packed)) LogBufferElement {
     friend LogBuffer;
 
     // sized to match reality of incoming log packets
-    uint32_t mTag;  // only valid for isBinary()
     const uint32_t mUid;
     const uint32_t mPid;
     const uint32_t mTid;
     log_time mRealTime;
     char* mMsg;
     union {
-        const uint16_t mMsgLen;  // mMSg != NULL
-        uint16_t mDropped;       // mMsg == NULL
+        const uint16_t mMsgLen;  // mDropped == false
+        uint16_t mDroppedCount;  // mDropped == true
     };
     const uint8_t mLogId;
+    bool mDropped;
 
     static atomic_int_fast64_t sequence;
 
-    // assumption: mMsg == NULL
+    // assumption: mDropped == true
     size_t populateDroppedMessage(char*& buffer, LogBuffer* parent,
                                   bool lastSame);
 
@@ -58,7 +58,7 @@ class LogBufferElement {
     LogBufferElement(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
                      pid_t tid, const char* msg, unsigned short len);
     LogBufferElement(const LogBufferElement& elem);
-    virtual ~LogBufferElement();
+    ~LogBufferElement();
 
     bool isBinary(void) const {
         return (mLogId == LOG_ID_EVENTS) || (mLogId == LOG_ID_SECURITY);
@@ -76,24 +76,25 @@ class LogBufferElement {
     pid_t getTid(void) const {
         return mTid;
     }
-    uint32_t getTag() const {
-        return mTag;
-    }
+    uint32_t getTag() const;
     unsigned short getDropped(void) const {
-        return mMsg ? 0 : mDropped;
+        return mDropped ? mDroppedCount : 0;
     }
     unsigned short setDropped(unsigned short value) {
-        if (mMsg) {
+        // The tag information is saved in mMsg data, if this is binary
+        // and the tag is valid, leave the mMsg data alone.
+        if (!isBinary() || mMsgLen < sizeof(uint32_t)) {
             delete[] mMsg;
-            mMsg = NULL;
+            mMsg = nullptr;
         }
-        return mDropped = value;
+        mDropped = true;
+        return mDroppedCount = value;
     }
     unsigned short getMsgLen() const {
-        return mMsg ? mMsgLen : 0;
+        return mDropped ? 0 : mMsgLen;
     }
     const char* getMsg() const {
-        return mMsg;
+        return mDropped ? nullptr : mMsg;
     }
     log_time getRealTime(void) const {
         return mRealTime;
