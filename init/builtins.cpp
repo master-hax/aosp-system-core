@@ -244,22 +244,22 @@ static int do_mkdir(const std::vector<std::string>& args) {
     }
 
     if (args.size() >= 4) {
-        uid_t uid;
-        std::string decode_uid_err;
-        if (!DecodeUid(args[3], &uid, &decode_uid_err)) {
-            LOG(ERROR) << "Unable to find UID for '" << args[3] << "': " << decode_uid_err;
+        auto uid = DecodeUid(args[3]);
+        if (!uid) {
+            LOG(ERROR) << "Unable to decode UID for '" << args[3] << "': " << uid.error();
             return -1;
         }
-        gid_t gid = -1;
+        Result<gid_t> gid = -1;
 
         if (args.size() == 5) {
-            if (!DecodeUid(args[4], &gid, &decode_uid_err)) {
-                LOG(ERROR) << "Unable to find GID for '" << args[3] << "': " << decode_uid_err;
+            gid = DecodeUid(args[4]);
+            if (!gid) {
+                LOG(ERROR) << "Unable to decode GID for '" << args[3] << "': " << gid.error();
                 return -1;
             }
         }
 
-        if (lchown(args[1].c_str(), uid, gid) == -1) {
+        if (lchown(args[1].c_str(), *uid, *gid) == -1) {
             return -errno;
         }
 
@@ -675,25 +675,25 @@ static int do_copy(const std::vector<std::string>& args) {
 }
 
 static int do_chown(const std::vector<std::string>& args) {
-    uid_t uid;
-    std::string decode_uid_err;
-    if (!DecodeUid(args[1], &uid, &decode_uid_err)) {
-        LOG(ERROR) << "Unable to find UID for '" << args[1] << "': " << decode_uid_err;
+    auto uid = DecodeUid(args[1]);
+    if (!uid) {
+        LOG(ERROR) << "Unable to decode UID for '" << args[1] << "': " << uid.error();
         return -1;
     }
 
     // GID is optional and pushes the index of path out by one if specified.
     const std::string& path = (args.size() == 4) ? args[3] : args[2];
-    gid_t gid = -1;
+    Result<gid_t> gid = -1;
 
     if (args.size() == 4) {
-        if (!DecodeUid(args[2], &gid, &decode_uid_err)) {
-            LOG(ERROR) << "Unable to find GID for '" << args[2] << "': " << decode_uid_err;
+        gid = DecodeUid(args[2]);
+        if (!gid) {
+            LOG(ERROR) << "Unable to decode GID for '" << args[2] << "': " << gid.error();
             return -1;
         }
     }
 
-    if (lchown(path.c_str(), uid, gid) == -1) return -errno;
+    if (lchown(path.c_str(), *uid, *gid) == -1) return -errno;
 
     return 0;
 }
