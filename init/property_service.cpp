@@ -47,6 +47,7 @@
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <bootimg.h>
 #include <fs_mgr.h>
 #include <selinux/android.h>
@@ -67,6 +68,8 @@ namespace init {
 static int persistent_properties_loaded = 0;
 
 static int property_set_fd = -1;
+
+static void WritePersistentProperty(const std::string& name, const std::string& value);
 
 void property_init() {
     if (__system_property_area_init()) {
@@ -116,29 +119,6 @@ static int check_control_mac_perms(const char *name, char *sctx, struct ucred *c
         return 0;
 
     return check_mac_perms(ctl_name, sctx, cr);
-}
-
-static void write_persistent_property(const char *name, const char *value)
-{
-    char tempPath[PATH_MAX];
-    char path[PATH_MAX];
-    int fd;
-
-    snprintf(tempPath, sizeof(tempPath), "%s/.temp.XXXXXX", PERSISTENT_PROPERTY_DIR);
-    fd = mkstemp(tempPath);
-    if (fd < 0) {
-        PLOG(ERROR) << "Unable to write persistent property to temp file " << tempPath;
-        return;
-    }
-    write(fd, value, strlen(value));
-    fsync(fd);
-    close(fd);
-
-    snprintf(path, sizeof(path), "%s/%s", PERSISTENT_PROPERTY_DIR, name);
-    if (rename(tempPath, path)) {
-        PLOG(ERROR) << "Unable to rename persistent property file " << tempPath << " to " << path;
-        unlink(tempPath);
-    }
 }
 
 bool is_legal_property_name(const std::string& name) {
@@ -202,7 +182,7 @@ static uint32_t PropertySetImpl(const std::string& name, const std::string& valu
     // Don't write properties to disk until after we have read all default
     // properties to prevent them from being overwritten by default values.
     if (persistent_properties_loaded && android::base::StartsWith(name, "persist.")) {
-        write_persistent_property(name.c_str(), value.c_str());
+        WritePersistentProperty(name, value);
     }
     property_changed(name, value);
     return PROP_SUCCESS;
@@ -597,16 +577,14 @@ static void load_properties_from_file(const char* filename, const char* filter) 
     LOG(VERBOSE) << "(Loading properties from " << filename << " took " << t << ".)";
 }
 
-static void load_persistent_properties() {
-    persistent_properties_loaded = 1;
-
+static Result<std::vector<std::pair<std::string, std::string>>> LoadLegacyPersistentProperties() {
     std::unique_ptr<DIR, int(*)(DIR*)> dir(opendir(PERSISTENT_PROPERTY_DIR), closedir);
     if (!dir) {
-        PLOG(ERROR) << "Unable to open persistent property directory \""
-                    << PERSISTENT_PROPERTY_DIR << "\"";
-        return;
+        return ErrnoError() << "Unable to open persistent property directory \""
+                            << PERSISTENT_PROPERTY_DIR << "\"";
     }
 
+    std::vector<std::pair<std::string, std::string>> persistent_properties;
     struct dirent* entry;
     while ((entry = readdir(dir.get())) != NULL) {
         if (strncmp("persist.", entry->d_name, strlen("persist."))) {
@@ -644,11 +622,221 @@ static void load_persistent_properties() {
         int length = read(fd, value, sizeof(value) - 1);
         if (length >= 0) {
             value[length] = 0;
-            property_set(entry->d_name, value);
+            persistent_properties.emplace_back(entry->d_name, value);
         } else {
             PLOG(ERROR) << "Unable to read persistent property file " << entry->d_name;
         }
         close(fd);
+    }
+    return persistent_properties;
+}
+
+class PersistentPropertyFileParser {
+  public:
+    PersistentPropertyFileParser(std::string& contents) : contents_(contents), position_(0) {}
+    Result<std::vector<std::pair<std::string, std::string>>> Parse();
+
+  private:
+    Result<std::string> ReadString();
+    Result<uint32_t> ReadUint32();
+
+    const std::string& contents_;
+    size_t position_;
+};
+
+Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFileParser::Parse() {
+    std::vector<std::pair<std::string, std::string>> result;
+
+    if (auto magic = ReadUint32(); magic) {
+        if (*magic != PersistentPropertyFile::kMagic) {
+            return Error() << "Magic value '0x" << std::hex << *magic
+                           << "' does not match expected value '0x"
+                           << PersistentPropertyFile::kMagic << "'";
+        }
+    } else {
+        return Error() << "Could not read magic value: " << magic.error();
+    }
+
+    if (auto version = ReadUint32(); version) {
+        if (*version != 1) {
+            return Error() << "Version '" << *version
+                           << "' does not match any compatible version: (1)";
+        }
+    } else {
+        return Error() << "Could not read version: " << version.error();
+    }
+
+    auto num_properties = ReadUint32();
+    if (!num_properties) {
+        return Error() << "Could not read num_properties: " << num_properties.error();
+    }
+
+    while (position_ < contents_.size()) {
+        auto key = ReadString();
+        if (!key) {
+            return Error() << "Could not read key: " << key.error();
+        }
+        if (!android::base::StartsWith(*key, "persist.")) {
+            return Error() << "Property '" << *key << "' does not starts with 'persist.', skipping";
+        }
+        auto value = ReadString();
+        if (!value) {
+            return Error() << "Could not read value: " << value.error();
+        }
+        result.emplace_back(*key, *value);
+    }
+
+    if (result.size() != *num_properties) {
+        return Error() << "Mismatch of number of persistent properties read, " << result.size()
+                       << " and number of persistent properties expected, " << *num_properties;
+    }
+
+    return result;
+}
+
+Result<std::string> PersistentPropertyFileParser::ReadString() {
+    auto string_length = ReadUint32();
+    if (!string_length) {
+        return Error() << "Could not read size for string";
+    }
+
+    if (position_ + *string_length > contents_.size()) {
+        return Error() << "String size would cause it to overflow the input buffer";
+    }
+    auto result = std::string(contents_, position_, *string_length);
+    position_ += *string_length;
+    return result;
+}
+
+Result<uint32_t> PersistentPropertyFileParser::ReadUint32() {
+    if (position_ + 3 > contents_.size()) {
+        return Error() << "Input buffer not large enough to read uint32_t";
+    }
+    uint32_t result = *reinterpret_cast<const uint32_t*>(&contents_[position_]);
+    position_ += sizeof(uint32_t);
+    return result;
+}
+
+Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFile::Load() const {
+    auto file_contents = ReadFile(filename_);
+    if (!file_contents) {
+        return ErrnoError() << "Unable to read persistent property file: " << file_contents.error();
+    }
+    return PersistentPropertyFileParser(*file_contents).Parse();
+}
+
+std::string PersistentPropertyFile::GenerateFileContents(
+    const std::vector<std::pair<std::string, std::string>>& persistent_properties) const {
+    std::string result;
+
+    uint32_t magic = kMagic;
+    result.append(reinterpret_cast<char*>(&magic), sizeof(uint32_t));
+
+    uint32_t version = 1;
+    result.append(reinterpret_cast<char*>(&version), sizeof(uint32_t));
+
+    uint32_t num_properties = persistent_properties.size();
+    result.append(reinterpret_cast<char*>(&num_properties), sizeof(uint32_t));
+
+    for (const auto & [ key, value ] : persistent_properties) {
+        uint32_t key_length = key.length();
+        result.append(reinterpret_cast<char*>(&key_length), sizeof(uint32_t));
+        result.append(key);
+        uint32_t value_length = value.length();
+        result.append(reinterpret_cast<char*>(&value_length), sizeof(uint32_t));
+        result.append(value);
+    }
+    return result;
+}
+
+Result<Success> PersistentPropertyFile::WriteFile(const std::string& file_contents) const {
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(
+        open(temp_filename_.c_str(), O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0600)));
+    if (fd == -1) {
+        return ErrnoError() << "Could not open temporary properties file";
+    }
+    if (!android::base::WriteStringToFd(file_contents, fd)) {
+        return ErrnoError() << "Unable to write file contents";
+    }
+    fsync(fd);
+    fd.reset();
+
+    if (rename(temp_filename_.c_str(), filename_.c_str())) {
+        unlink(temp_filename_.c_str());
+        return ErrnoError() << "Unable to rename persistent property file";
+    }
+    return Success();
+}
+
+Result<Success> PersistentPropertyFile::Write(
+    const std::vector<std::pair<std::string, std::string>>& persistent_properties) {
+    auto file_contents = GenerateFileContents(persistent_properties);
+    return WriteFile(file_contents);
+}
+
+// Persistent properties are not written often, so we rather not keep any data in memory and read
+// then rewrite the persistent property file for each update.
+static void WritePersistentProperty(const std::string& name, const std::string& value) {
+    PersistentPropertyFile persistent_property_file;
+    auto persistent_properties = persistent_property_file.Load();
+    if (!persistent_properties) {
+        LOG(ERROR) << "Could not store persistent property: " << persistent_properties.error();
+        return;
+    }
+    bool replaced = false;
+    for (auto & [ key, old_value ] : *persistent_properties) {
+        if (key == name) {
+            old_value = value;
+            replaced = true;
+        }
+    }
+    if (!replaced) {
+        persistent_properties->emplace_back(name, value);
+    }
+    persistent_property_file.Write(*persistent_properties);
+}
+
+void RemoveLegacyPersistentPropertyFiles() {
+    std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(PERSISTENT_PROPERTY_DIR), closedir);
+    if (!dir) {
+        PLOG(ERROR) << "Unable to open persistent property directory \"" << PERSISTENT_PROPERTY_DIR
+                    << "\"";
+        return;
+    }
+
+    struct dirent* entry;
+    while ((entry = readdir(dir.get())) != NULL) {
+        if (strncmp("persist.", entry->d_name, strlen("persist."))) {
+            continue;
+        }
+        if (entry->d_type != DT_REG) {
+            continue;
+        }
+        unlinkat(dirfd(dir.get()), entry->d_name, 0);
+    }
+}
+
+static void LoadPersistentProperties() {
+    persistent_properties_loaded = 1;
+
+    PersistentPropertyFile persistent_property_file;
+    auto persistent_properties = persistent_property_file.Load();
+
+    if (!persistent_properties) {
+        LOG(ERROR) << "Could not load single persistent property file, trying legacy directory: "
+                   << persistent_properties.error();
+        persistent_properties = LoadLegacyPersistentProperties();
+        if (!persistent_properties) {
+            LOG(ERROR) << "Unable to load legacy persistent properties: "
+                       << persistent_properties.error();
+            return;
+        }
+        persistent_property_file.Write(*persistent_properties);
+        RemoveLegacyPersistentPropertyFiles();
+    }
+
+    for (const auto & [ key, value ] : *persistent_properties) {
+        property_set(key, value);
     }
 }
 
@@ -690,7 +878,7 @@ static void load_override_properties() {
 void load_persist_props(void) {
     load_override_properties();
     /* Read persistent properties after all default values have been loaded. */
-    load_persistent_properties();
+    LoadPersistentProperties();
     property_set("ro.persistent_properties.ready", "true");
 }
 
