@@ -20,6 +20,7 @@
 
 #include <getopt.h>
 #include <unistd.h>
+#include <sys/klog.h>
 
 #include <chrono>
 #include <cmath>
@@ -32,11 +33,13 @@
 #include <vector>
 
 #include <android-base/chrono_utils.h>
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <android/log.h>
 #include <cutils/properties.h>
+#include <log/logcat.h>
 #include <metricslogger/metrics_logger.h>
 
 #include "boot_event_record_store.h"
@@ -174,8 +177,12 @@ const std::map<std::string, int32_t> kBootReasonMap = {
   {"reboot,bootloader", 47},
   {"reboot,cold", 48},
   {"reboot,recovery", 49},
+  {"thermal-shutdown", 50},
   {"thermal_shutdown", 50},
-  {"s3_wakeup", 51}
+  {"s3_wakeup", 51},
+  {"ota", 52},
+  {"factory_reset", 53},
+  {"shutdown,battery", 54},
 };
 
 // Converts a string value representing the reason the system booted to an
@@ -189,6 +196,315 @@ int32_t BootReasonStrToEnum(const std::string& boot_reason) {
 
   LOG(INFO) << "Unknown boot reason: " << boot_reason;
   return kUnknownBootReason;
+}
+
+// Canonical list of supported primary reboot reasons
+const std::vector<const std::string> knownReasons = {
+  // kernel
+  "watchdog",
+  "kernel_panic",
+  // strong
+  "ota",           // Can not happen from ro.boot.bootreason
+  "factory_reset", // Can not happen from ro.boot.bootreason
+  "recovery",      // Should not happen from ro.boot.bootreason
+  "bootloader",    // Should not happen from ro.boot.bootreason
+  // weak
+  "cold",
+  "hard",
+  "warm",
+  "shutdown",      // Can not happen from ro.boot.bootreason
+  "reboot",        // Default catch-all for anything unknown
+};
+
+// Return true if the supplied reason prefix is considered detailed enough
+bool isStrongRebootReason(const std::string& r) {
+  for (auto &s : knownReasons) {
+    if (s == "cold") break;
+    // prefix means nul or comma (,) terminated
+    if (android::base::StartsWith(r, s.c_str()) &&
+        ((r.length() == s.length()) || (r[s.length()] == ','))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Return true if the supplied reason prefix is associated with the kernel
+bool isKernelRebootReason(const std::string& r) {
+  for (auto &s : knownReasons) {
+    if (s == "ota") break;
+    // prefix means nul or comma (,) terminated
+    if (android::base::StartsWith(r, s.c_str()) &&
+        ((r.length() == s.length()) || (r[s.length()] == ','))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Return true if the supplied reason prefix is considered known
+bool isKnownRebootReason(const std::string& r) {
+  for (auto &s : knownReasons) {
+    // prefix means nul or comma (,) terminated
+    if (android::base::StartsWith(r, s.c_str()) &&
+        ((r.length() == s.length()) || (r[s.length()] == ','))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// if the reboot reason should be improved, report true if too blunt.
+bool isBluntRebootReason(const std::string& r) {
+  if (isStrongRebootReason(r)) return false;
+
+  if (!isKnownRebootReason(r)) return true; // can not support unknown as detail
+
+  size_t pos = 0;
+  while ((pos = r.find(',', pos)) != std::string::npos) {
+    ++pos;
+    std::string next(r.substr(pos));
+    if (next.length() == 0) break;
+    if (next[0] == ',') continue;
+    if (!isKnownRebootReason(next)) return false; // unknown subreason good
+    if (isStrongRebootReason(next)) return false; // eg: reboot,reboot
+  }
+  return true;
+}
+
+// std::transform Helper callback functions:
+// Converts a string value representing the reason the system booted to a
+// string complying with Android system standard reason.
+char tounderline(char c) { return ::isblank(c) ? '_' : c; }
+char toprintable(char c) { return ::isprint(c) ? c : '?'; }
+
+// Sanitize, Standardize and Enhance the boot reason string supplied
+std::string BootReasonStrToReason(const std::string& boot_reason) {
+  std::string ret(GetProperty("sys.boot.reason"));
+  std::string reason(boot_reason);
+  // if sys.boot.reason == ro.boot.bootreason, let's re-evaluate
+  if (reason == ret) ret = "";
+
+  // cleanup boot_reason
+  std::transform(reason.begin(), reason.end(), reason.begin(), ::tolower);
+  std::transform(reason.begin(), reason.end(), reason.begin(), tounderline);
+  std::transform(reason.begin(), reason.end(), reason.begin(), toprintable);
+
+  // is current system boot reason sys.boot.reason valid?
+  if (!isKnownRebootReason(ret)) ret = "";
+
+  if (ret == "") {
+    // is bootloader boot reason ro.boot.bootreason known?
+    std::vector<std::string> words(android::base::Split(reason, ",_-"));
+    for (auto &s : knownReasons) {
+      std::string blunt;
+      for (auto &r : words) {
+        if (r == s) {
+          if (isBluntRebootReason(s)) {
+            blunt = s;
+          } else {
+            ret = s;
+            break;
+          }
+        }
+      }
+      if (ret == "") ret = blunt;
+      if (ret != "") break;
+    }
+  }
+
+  if (ret == "") {
+    // A series of checks to take some unsupported reasons reported by the
+    // bootloader and find some logical sense.  In an ideal world, we would
+    // require those bootloaders to behave and follow our standards.
+    static const std::vector<std::pair<const std::string, const std::string>> aliasReasons = {
+      {"watchdog", "wdog"},
+      {"cold", "powerkey"},
+      {"kernel_panic", "panic"},
+      {"shutdown,thermal-shutdown", "thermal"},
+    };
+
+    // either primary or alias is found _somewhere_
+    for (auto &s : aliasReasons) {
+      if ((reason.find(s.first) != std::string::npos) ||
+          (reason.find(s.second) != std::string::npos)) {
+        ret = s.first;
+        break;
+      }
+    }
+  }
+
+  // if watchdog, see if there is a security angle?
+  if (ret == "watchdog") {
+    if (reason.find("sec") != std::string::npos) {
+      ret += ",security";
+    }
+  }
+
+  // check other reason resources if the reason is still blunt.
+  if (isBluntRebootReason(ret)) {
+    // Check to see if last klog has some refinement hints
+    std::string content;
+    if (!android::base::ReadFileToString("/sys/fs/pstore/console-ramoops-0",
+                                         &content)) {
+        android::base::ReadFileToString("/sys/fs/pstore/console-ramoops",
+                                         &content);
+    }
+
+    // toybox reboot command being used directly (unlikely)? But also
+    // catches init's response to the Android's more controlled reboot command.
+    if (content.find("reboot: Power down") != std::string::npos) {
+      ret = "shutdown"; // still blunt, but possibly more accurate
+    }
+
+    static const char cmd[] = "reboot: Restarting system with command '";
+    size_t pos = content.find(cmd);
+    if (pos != std::string::npos) {
+      pos += strlen(cmd);
+      std::string subReason(content.substr(pos));
+      pos = subReason.find('\'');
+      if (pos != std::string::npos) subReason.erase(pos);
+      if (subReason != "") { // will not land "reboot" as that is too blunt
+        if (isKernelRebootReason(subReason)) {
+          ret = "reboot," + subReason; // block user space talking kernel
+        } else {
+          ret = subReason;
+        }
+      }
+    }
+
+    // Check for kernel panics (allowed to override reboot command)
+    if (content.find("sysrq: SysRq : Trigger a crash") != std::string::npos) {
+      // Can not happen, except on userdebug, during testing/debugging
+      ret = "kernel_panic,sysrq";
+    } else if (content.find(
+        "Unable to handle kernel NULL pointer dereference at virtual address")
+               != std::string::npos) {
+      ret = "kernel_panic,NULL";
+    } else if (content.find("Kernel BUG at ") != std::string::npos) {
+      ret = "kernel_panic,BUG";
+    } else if ((content.find("Power held for ") != std::string::npos) ||
+        (content.find("charger: [") != std::string::npos)) {
+      ret = "cold";
+    }
+
+    // The following battery test should migrate to a default system health HAL
+
+    // Let us not worry if the reboot command was issued, for the cases of
+    // reboot -p, reboot <no reason>, reboot cold, reboot warm and reboot hard.
+    // Same for bootloader and ro.boot.bootreasons of this set, but a dead
+    // battery could conceivably lead to these, so worthy of override.
+    if (isBluntRebootReason(ret)) {
+      // Heuristic to determine if shutdown possibly because of a dead battery?
+      // Really a hail-mary pass to find it in last klog content ...
+      static const int battery_dead_threshold = 2; // percent
+      static const char battery[] = "healthd: battery l=";
+      pos = content.rfind(battery); // last one
+      if (pos != std::string::npos) {
+        int level = atoi(content.substr(pos + strlen(battery)).c_str());
+        LOG(INFO) << "Battery level at shutdown " << level << "%";
+        if (level <= battery_dead_threshold) {
+          ret = "shutdown,battery";
+        }
+      } else { // most likely
+        // content buffer no longer will have console data. Beware if more
+        // checks added below that depend on parsing console content.
+        content = "";
+
+        LOG(DEBUG) << "Can not find last low battery in last console messages";
+        android_logcat_context ctx = create_android_logcat();
+        FILE *fp = android_logcat_popen(&ctx, "logcat -b kernel -v brief -d");
+        if (fp != nullptr) {
+          android::base::ReadFdToString(fileno(fp), &content);
+        }
+        android_logcat_pclose(&ctx, fp);
+        android_logcat_destroy(&ctx);
+        static const char logcat_battery[] = "W/healthd (    0): battery l=";
+        const char* match = logcat_battery;
+
+        if (content == "") {
+          // logd.klog not running, go to the smaller buffer in the kernel
+          int rc = klogctl(KLOG_SIZE_BUFFER, nullptr, 0);
+          if (rc > 0) {
+            ssize_t len = rc + 1024; // margin
+            std::unique_ptr<char[]> buf(new char[len]);
+            rc = klogctl(KLOG_READ_ALL, buf.get(), len);
+            if (rc < len) {
+              len = rc + 1;
+            }
+            buf[--len] = '\0';
+            content = buf.get();
+          }
+          match = battery;
+        }
+
+        pos = content.find(match); // first one
+        if (pos != std::string::npos) {
+          pos += strlen(match);
+          int level = atoi(content.substr(pos).c_str());
+          LOG(INFO) << "Battery level at startup " << level << "%";
+          if (level <= battery_dead_threshold) {
+            ret = "shutdown,battery";
+          }
+        } else {
+          LOG(DEBUG) << "Can not find first battery level in dmesg or logcat";
+        }
+      }
+    }
+
+    // Is there a controlled shutdown hint in last_reboot_reason?
+    if (isBluntRebootReason(ret)) {
+      // content buffer no longer will have console data. Beware if more
+      // checks added below that depend on parsing console content.
+      content = "";
+
+      if (android::base::ReadFileToString(
+          "/data/misc/reboot/last_reboot_reason", &content)) {
+
+        // Only one line, remove newline
+        size_t pos = content.find('\n');
+        if (pos != std::string::npos) content.erase(pos);
+        // string is "reboot,<reason>" or "shutdown,<reason>"
+        // We will set if default reasons, only override with detail if thermal.
+        if (!isBluntRebootReason(content)) {
+          // Ok, we want it, let's squash it if secondReason is known
+          pos = content.find(',');
+          if (pos != std::string::npos) {
+            ++pos;
+            std::string secondReason(content.substr(pos));
+            ret = isKnownRebootReason(secondReason) ? secondReason : content;
+          } else {
+            ret = content;
+          }
+        }
+      } else {
+        PLOG(DEBUG) << "Can not read last_reboot_reason";
+      }
+    }
+
+    // Other System Health HAL reasons?
+
+    // ToDo: /proc/sys/kernel/boot_reason needs a HAL interface to
+    //       possibly offer hardware-specific clues from the PMIC.
+  }
+
+  // If unknown left over from above, make it "reboot,<boot_reason>"
+  if (ret == "") {
+    ret = "reboot";
+    if (android::base::StartsWith(reason, "reboot")) {
+      reason = reason.substr(strlen("reboot"));
+      while (reason[0] == ',') {
+        reason = reason.substr(1);
+      }
+    }
+    if (reason != "") {
+      ret += ",";
+      ret += reason;
+    }
+  }
+
+  LOG(INFO) << "Canonical boot reason: " << ret;
+  return ret;
 }
 
 // Returns the appropriate metric key prefix for the boot_complete metric such
@@ -212,9 +528,13 @@ std::string CalculateBootCompletePrefix() {
   if (!boot_event_store.GetBootEvent(kBuildDateKey, &record)) {
     boot_complete_prefix = "factory_reset_" + boot_complete_prefix;
     boot_event_store.AddBootEventWithValue(kBuildDateKey, build_date);
+    LOG(INFO) << "Canonical boot reason: " << "factory_reset";
+    property_set("sys.boot.reason", "factory_reset");
   } else if (build_date != record.second) {
     boot_complete_prefix = "ota_" + boot_complete_prefix;
     boot_event_store.AddBootEventWithValue(kBuildDateKey, build_date);
+    LOG(INFO) << "Canonical boot reason: " << "ota";
+    property_set("sys.boot.reason", "ota");
   }
 
   return boot_complete_prefix;
@@ -358,9 +678,20 @@ void RecordBootComplete() {
 // Records the boot_reason metric by querying the ro.boot.bootreason system
 // property.
 void RecordBootReason() {
-  int32_t boot_reason = BootReasonStrToEnum(GetProperty("ro.boot.bootreason"));
+  const std::string reason(GetProperty("ro.boot.bootreason"));
+  int32_t boot_reason = BootReasonStrToEnum(reason);
+  const std::string system_reason(BootReasonStrToReason(reason));
+  int32_t system_boot_reason = BootReasonStrToEnum(system_reason);
+
+  // Added-value when unknown Enum, land Canonical reason
+  // b/63584589 should remove this temporary enhancement.
+  if ((boot_reason == kUnknownBootReason) && (system_reason != "reboot")) {
+    boot_reason = system_boot_reason;
+  }
+
   BootEventRecordStore boot_event_store;
   boot_event_store.AddBootEventWithValue("boot_reason", boot_reason);
+  property_set("sys.boot.reason", system_reason.c_str());
 }
 
 // Records two metrics related to the user resetting a device: the time at
