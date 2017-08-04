@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include "result.h"
+
 namespace android {
 namespace init {
 
@@ -38,6 +40,27 @@ void load_system_props(void);
 void start_property_service(void);
 uint32_t property_set(const std::string& name, const std::string& value);
 bool is_legal_property_name(const std::string& name);
+
+// Exposed for testing
+class PersistentPropertyFile {
+  public:
+    PersistentPropertyFile(std::string filename = "/data/property/persistent_properties")
+        : filename_(std::move(filename)), temp_filename_(filename_ + ".tmp") {}
+
+    Result<std::vector<std::pair<std::string, std::string>>> Load() const;
+    Result<Success> Write(
+        const std::vector<std::pair<std::string, std::string>>& persistent_properties);
+
+    static constexpr const uint32_t kMagic = 0x8495E0B4;
+
+  private:
+    std::string GenerateFileContents(
+        const std::vector<std::pair<std::string, std::string>>& persistent_properties) const;
+    Result<Success> WriteFile(const std::string& file_contents) const;
+
+    std::string filename_;
+    std::string temp_filename_;
+};
 
 }  // namespace init
 }  // namespace android

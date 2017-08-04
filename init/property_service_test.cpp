@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "property_service.h"
+
 #include <errno.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -21,7 +23,12 @@
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
+#include <android-base/test_utils.h>
 #include <gtest/gtest.h>
+
+#include "util.h"
+
+using namespace std::string_literals;
 
 namespace android {
 namespace init {
@@ -48,6 +55,86 @@ TEST(property_service, very_long_name_35166374) {
   ASSERT_EQ(static_cast<ssize_t>(sizeof(size)), send(fd, &size, sizeof(size), 0));
   ASSERT_EQ(static_cast<ssize_t>(sizeof(data)), send(fd, &data, sizeof(data), 0));
   ASSERT_EQ(0, close(fd));
+}
+
+TEST(property_service, PersistentPropertyFile_EndToEnd) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    std::vector<std::pair<std::string, std::string>> persistent_properties = {
+        {"persist.sys.locale", "en-US"},
+        {"persist.sys.timezone", "America/Los_Angeles"},
+        {"persist.test.empty.value", ""},
+        {"persist.test.new.line", "abc\n\n\nabc"},
+        {"persist.test.numbers", "1234567890"},
+        {"persist.test.non.ascii", "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"},
+        // We don't currently allow for non-ascii keys for system properties, but this is a policy
+        // decision, not a technical limitation.
+        {"persist.\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F", "non-ascii-key"},
+    };
+    auto persistent_property_file = PersistentPropertyFile(tf.path);
+    persistent_property_file.Write(persistent_properties);
+    auto read_back_properties = persistent_property_file.Load();
+    ASSERT_TRUE(read_back_properties) << read_back_properties.error();
+    EXPECT_EQ(persistent_properties, *read_back_properties);
+}
+
+TEST(property_service, PersistentPropertyFile) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+
+    const std::vector<std::pair<std::string, std::string>> persistent_properties = {
+        {"persist.abc", ""}, {"persist.def", "test_success"},
+    };
+
+    // Manually serialized contents below:
+    std::string file_contents;
+    // All values below are written and read as little endian.
+    // Add magic value: 0x8495E0B4
+    file_contents += "\xB4\xE0\x95\x84"s;
+    // Add version: 1
+    file_contents += "\x01\x00\x00\x00"s;
+    // Add number of properties: 2
+    file_contents += "\x02\x00\x00\x00"s;
+
+    // Add first key: persist.abc
+    file_contents += "\x0B\x00\x00\x00persist.abc"s;
+    // Add first value: (empty string)
+    file_contents += "\x00\x00\x00\x00"s;
+
+    // Add second key: persist.def
+    file_contents += "\x0B\x00\x00\x00persist.def"s;
+    // Add second value: test_success
+    file_contents += "\x0C\x00\x00\x00test_success"s;
+
+    ASSERT_TRUE(WriteFile(tf.path, file_contents));
+
+    auto persistent_property_file = PersistentPropertyFile(tf.path);
+    auto read_back_properties = persistent_property_file.Load();
+    ASSERT_TRUE(read_back_properties) << read_back_properties.error();
+
+    EXPECT_EQ(persistent_properties, *read_back_properties);
+}
+
+TEST(property_service, PersistentPropertyFile_BadMagic) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+
+    ASSERT_TRUE(WriteFile(tf.path, "ab"));
+
+    auto persistent_property_file = PersistentPropertyFile(tf.path);
+    auto read_back_properties = persistent_property_file.Load();
+
+    ASSERT_FALSE(read_back_properties);
+    EXPECT_EQ("Could not read magic value: Input buffer not large enough to read uint32_t",
+              read_back_properties.error_string());
+
+    ASSERT_TRUE(WriteFile(tf.path, "\xFF\xFF\xFF\xFF"));
+
+    read_back_properties = persistent_property_file.Load();
+
+    ASSERT_FALSE(read_back_properties);
+    EXPECT_EQ("Magic value '0xffffffff' does not match expected value '0x8495e0b4'",
+              read_back_properties.error_string());
 }
 
 }  // namespace init
