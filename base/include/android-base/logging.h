@@ -164,7 +164,7 @@ class ErrnoRestorer {
   using ::android::base::FATAL;               \
   return (severity); }())
 
-#ifdef __clang_analyzer__
+#if defined(__clang_analyzer__) || defined(__CLION_IDE__)
 // Clang's static analyzer does not see the conditional statement inside
 // LogMessage's destructor that will abort on FATAL severity.
 #define ABORT_AFTER_LOG_FATAL for (;; abort())
@@ -178,10 +178,13 @@ struct LogAbortAfterFullExpr {
 #define ABORT_AFTER_LOG_EXPR_IF(c, x) (((c) && ::android::base::LogAbortAfterFullExpr()) || (x))
 // Note to the static analyzer that we always execute FATAL logs in practice.
 #define MUST_LOG_MESSAGE(severity) (SEVERITY_LAMBDA(severity) == ::android::base::FATAL)
-#else
+// Analyzer falsely believes that the expression "x" in e.g. "x || cout << x" is an unused value.
+#define EVAL_EXPR_UNLESS(x) if (!LIKELY((x)))
+#else // regular #defines
 #define ABORT_AFTER_LOG_FATAL
 #define ABORT_AFTER_LOG_EXPR_IF(c, x) (x)
 #define MUST_LOG_MESSAGE(severity) false
+#define EVAL_EXPR_UNLESS(x) LIKELY((x)) ||
 #endif
 #define ABORT_AFTER_LOG_FATAL_EXPR(x) ABORT_AFTER_LOG_EXPR_IF(true, x)
 
@@ -245,10 +248,9 @@ struct LogAbortAfterFullExpr {
 // expression x is only evaluated once. Extra logging can be appended using <<
 // after. For example:
 //
-//     CHECK(false == true) results in a log message of
-//       "Check failed: false == true".
+//     CHECK(false == true) results in a log message of "Check failed: false == true".
 #define CHECK(x)                                                                \
-  LIKELY((x)) || ABORT_AFTER_LOG_FATAL_EXPR(false) ||                           \
+  EVAL_EXPR_UNLESS(x) EVAL_EXPR_UNLESS(ABORT_AFTER_LOG_FATAL_EXPR(false))       \
       ::android::base::LogMessage(                                              \
           __FILE__, __LINE__, ::android::base::DEFAULT, ::android::base::FATAL, \
           -1).stream()                                                          \
@@ -319,7 +321,7 @@ struct LogAbortAfterFullExpr {
 // DCHECKs are debug variants of CHECKs only enabled in debug builds. Generally
 // CHECK should be used unless profiling identifies a CHECK as being in
 // performance critical code.
-#if defined(NDEBUG) && !defined(__clang_analyzer__)
+#if defined(NDEBUG) && !defined(__clang_analyzer__) && !defined(__CLION_IDE__)
 static constexpr bool kEnableDChecks = false;
 #else
 static constexpr bool kEnableDChecks = true;
@@ -343,7 +345,7 @@ static constexpr bool kEnableDChecks = true;
   if (::android::base::kEnableDChecks) CHECK_STREQ(s1, s2)
 #define DCHECK_STRNE(s1, s2) \
   if (::android::base::kEnableDChecks) CHECK_STRNE(s1, s2)
-#if defined(NDEBUG) && !defined(__clang_analyzer__)
+#if defined(NDEBUG) && !defined(__clang_analyzer__) && !defined(__CLION_IDE__)
 #define DCHECK_CONSTEXPR(x, out, dummy)
 #else
 #define DCHECK_CONSTEXPR(x, out, dummy) CHECK_CONSTEXPR(x, out, dummy)
