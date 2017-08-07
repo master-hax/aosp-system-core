@@ -183,6 +183,20 @@ struct LogAbortAfterFullExpr {
 #define ABORT_AFTER_LOG_EXPR_IF(c, x) (x)
 #define MUST_LOG_MESSAGE(severity) false
 #endif
+
+// Workarounds for CLion inspection analyzer. It makes some false warnings. b/64455231
+// TODO: CLion 2017.2 will have clang-tidy support, fall-back to __clang_analyzer__ use only.
+#ifdef __CLION_IDE__
+// Analyzer falsely believes that the expression "x" in e.g. "x || cout << x" is an unused value.
+#define EVAL_EXPR_UNLESS(x) if ((x)) (void)0; else
+// Clion inspection falsely believes that e.g. "x && cout << x" that 'x' is an unused value.
+#define EVAL_EXPR_AND3(x,y,z) if (!((x) && (y) && (z))) (void)0; else
+#else
+// Original implementation (does not use 'if'/'else').
+#define EVAL_EXPR_UNLESS(x) (x) ||
+#define EVAL_EXPR_AND3(x, y, z) ((x) && (y) && (z)) &&
+#endif
+
 #define ABORT_AFTER_LOG_FATAL_EXPR(x) ABORT_AFTER_LOG_EXPR_IF(true, x)
 
 // Defines whether the given severity will be logged or silently swallowed.
@@ -215,16 +229,16 @@ struct LogAbortAfterFullExpr {
 // Checks if we want to log something, and sets up appropriate RAII objects if
 // so.
 // Note: DO NOT USE DIRECTLY. This is an implementation detail.
-#define LOGGING_PREAMBLE(severity)                                                         \
-  (WOULD_LOG(severity) &&                                                                  \
-   ABORT_AFTER_LOG_EXPR_IF((SEVERITY_LAMBDA(severity)) == ::android::base::FATAL, true) && \
+#define LOGGING_PREAMBLE_AND(severity)                                                     \
+  EVAL_EXPR_AND3(WOULD_LOG(severity),                                                      \
+   ABORT_AFTER_LOG_EXPR_IF((SEVERITY_LAMBDA(severity)) == ::android::base::FATAL, true),   \
    ::android::base::ErrnoRestorer())
 
 // Logs a message to logcat with the specified log ID on Android otherwise to
 // stderr. If the severity is FATAL it also causes an abort.
 // Use an expression here so we can support the << operator following the macro,
 // like "LOG(DEBUG) << xxx;".
-#define LOG_TO(dest, severity) LOGGING_PREAMBLE(severity) && LOG_STREAM_TO(dest, severity)
+#define LOG_TO(dest, severity) LOGGING_PREAMBLE_AND(severity) LOG_STREAM_TO(dest, severity)
 
 // A variant of LOG that also logs the current errno value. To be used when
 // library calls fail.
@@ -232,7 +246,7 @@ struct LogAbortAfterFullExpr {
 
 // Behaves like PLOG, but logs to the specified log ID.
 #define PLOG_TO(dest, severity)                                              \
-  LOGGING_PREAMBLE(severity) &&                                              \
+  LOGGING_PREAMBLE_AND(severity)                                             \
       ::android::base::LogMessage(__FILE__, __LINE__, ::android::base::dest, \
                                   SEVERITY_LAMBDA(severity), errno)          \
           .stream()
@@ -248,7 +262,7 @@ struct LogAbortAfterFullExpr {
 //     CHECK(false == true) results in a log message of
 //       "Check failed: false == true".
 #define CHECK(x)                                                                \
-  LIKELY((x)) || ABORT_AFTER_LOG_FATAL_EXPR(false) ||                           \
+  EVAL_EXPR_UNLESS(LIKELY((x))) EVAL_EXPR_UNLESS(ABORT_AFTER_LOG_FATAL_EXPR(false))       \
       ::android::base::LogMessage(                                              \
           __FILE__, __LINE__, ::android::base::DEFAULT, ::android::base::FATAL, \
           -1).stream()                                                          \
@@ -319,7 +333,7 @@ struct LogAbortAfterFullExpr {
 // DCHECKs are debug variants of CHECKs only enabled in debug builds. Generally
 // CHECK should be used unless profiling identifies a CHECK as being in
 // performance critical code.
-#if defined(NDEBUG) && !defined(__clang_analyzer__)
+#if defined(NDEBUG) && !defined(__clang_analyzer__) && !defined(__CLION_IDE__)
 static constexpr bool kEnableDChecks = false;
 #else
 static constexpr bool kEnableDChecks = true;
@@ -343,7 +357,7 @@ static constexpr bool kEnableDChecks = true;
   if (::android::base::kEnableDChecks) CHECK_STREQ(s1, s2)
 #define DCHECK_STRNE(s1, s2) \
   if (::android::base::kEnableDChecks) CHECK_STRNE(s1, s2)
-#if defined(NDEBUG) && !defined(__clang_analyzer__)
+#if defined(NDEBUG) && !defined(__clang_analyzer__) && !defined(__CLION_IDE__)
 #define DCHECK_CONSTEXPR(x, out, dummy)
 #else
 #define DCHECK_CONSTEXPR(x, out, dummy) CHECK_CONSTEXPR(x, out, dummy)
