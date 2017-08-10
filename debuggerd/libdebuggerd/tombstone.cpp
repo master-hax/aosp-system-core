@@ -41,6 +41,7 @@
 #include <cutils/properties.h>
 #include <log/log.h>
 #include <log/logprint.h>
+#include <pagemap/pagemap.h>
 #include <private/android_filesystem_config.h>
 
 #include "debuggerd/handler.h"
@@ -495,6 +496,29 @@ __attribute__((weak)) void dump_registers(log_t* log, const ucontext_t*) {
   _LOG(log, logtype::REGISTERS, "    register dumping unimplemented on this architecture");
 }
 
+static void dump_pss(log_t* log, pid_t pid) {
+  // FIXME: This compiles, but it doesn't have the permissions to run correctly.
+  pm_kernel_t* kernel;
+  int err;
+
+  // SElinux rules allowing reads to /proc/kpagemap and /proc/kpagecount are needed to
+  // run this function.
+  err = pm_kernel_create(&kernel);
+
+  pm_process* proc;
+  // This function call requires a read to /proc/<PID>/maps, which will throw an error 1 as of
+  // 9/9/17 because /proc is mounted with hidepid=2.
+  err = pm_process_create(kernel, pid, &proc);
+
+  pm_memusage_t memusage;
+  pm_process_usage(proc, &memusage);
+  _LOG(log, logtype::THREAD, "Total thread PSS: %zu\n", memusage.pss);
+
+  pm_process_destroy(proc);
+  pm_kernel_destroy(kernel);
+}
+
+
 static void dump_thread(log_t* log, pid_t pid, pid_t tid, const std::string& process_name,
                         const std::string& thread_name, BacktraceMap* map,
                         uintptr_t abort_msg_address, bool primary_thread) {
@@ -502,6 +526,7 @@ static void dump_thread(log_t* log, pid_t pid, pid_t tid, const std::string& pro
   if (!primary_thread) {
     _LOG(log, logtype::THREAD, "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---\n");
   }
+  dump_pss(log, pid);
   dump_thread_info(log, pid, tid, process_name.c_str(), thread_name.c_str());
   dump_signal_info(log, tid);
 

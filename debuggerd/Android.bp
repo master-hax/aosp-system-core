@@ -168,6 +168,9 @@ cc_library_static {
     local_include_dirs: ["libdebuggerd/include"],
     export_include_dirs: ["libdebuggerd/include"],
 
+
+    whole_static_libs: ["libpagemap"],
+
     static_libs: [
         "libbacktrace",
         "libunwind",
