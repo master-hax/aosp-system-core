@@ -1,3 +1,10 @@
+cc_library_headers {
+    name: "sysutils_headers",
+    host_supported: true,
+    vendor_available: true,
+    export_include_dirs: ["include"],
+}
+
 cc_library_shared {
     name: "libsysutils",
     vendor_available: true,

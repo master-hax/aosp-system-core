@@ -54,6 +54,8 @@ cc_library_static {
 
     export_include_dirs: ["."],
 
+    header_libs: ["sysutils_headers"],
+
     cflags: ["-Werror"] + event_flag,
 }
 
