@@ -116,6 +116,29 @@ static void __noreturn __printflike(1, 2) fatal_errno(const char* fmt, ...) {
   fatal("%s: %s", buf, strerror(err));
 }
 
+static void get_main_thread_name(char* buf, size_t len) {
+  ssize_t rc;
+  int fd = open("/proc/self/comm", O_RDONLY | O_CLOEXEC);
+  if (fd == -1) {
+    goto fail;
+  }
+
+  rc = read(fd, buf, len);
+  if (rc == -1) {
+    goto fail;
+  } else if (rc == 0) {
+    // Should never happen?
+    goto fail;
+  }
+
+  // There's a trailing newline, replace it with a NUL.
+  buf[rc - 1] = '\0';
+  return;
+
+fail:
+  strncpy(buf, "<unknown>", len);
+}
+
 /*
  * Writes a summary of the signal to the log file.  We do this so that, if
  * for some reason we're not able to contact debuggerd, there is still some
@@ -188,8 +211,11 @@ static void log_signal_summary(int signum, const siginfo_t* info) {
     }
   }
 
-  async_safe_format_log(ANDROID_LOG_FATAL, "libc", "Fatal signal %d (%s)%s%s in tid %d (%s)",
-                        signum, signal_name, code_desc, addr_desc, __gettid(), thread_name);
+  char main_thread_name[MAX_TASK_NAME_LEN + 1];
+  get_main_thread_name(main_thread_name, sizeof(main_thread_name));
+  async_safe_format_log(
+      ANDROID_LOG_FATAL, "libc", "Fatal signal %d (%s)%s%s in tid %d (%s), pid %d (%s)", signum,
+      signal_name, code_desc, addr_desc, __gettid(), thread_name, __getpid(), main_thread_name);
 }
 
 /*
