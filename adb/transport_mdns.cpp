@@ -34,6 +34,15 @@
 #include "fdevent.h"
 #include "sysdeps.h"
 
+// The static analyzer need some hints to avoid false alarms.
+#ifdef __clang_analyzer__
+static void* _escaped_pointer;
+#define HINT_ESCAPED(x) \
+    { _escaped_pointer = x; }
+#else
+#define HINT_ESCAPED(x)
+#endif
+
 static DNSServiceRef service_ref;
 static fdevent service_ref_fde;
 
@@ -238,6 +247,7 @@ static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
     if (flags) { /* Only ever equals MoreComing or 0 */
         discovered.release();
     }
+    HINT_ESCAPED(resolved);
 }
 
 static void DNSSD_API register_mdns_transport(DNSServiceRef sdRef,
@@ -262,6 +272,7 @@ static void DNSSD_API register_mdns_transport(DNSServiceRef sdRef,
     if (! discovered->Initialized()) {
         delete discovered;
     }
+    HINT_ESCAPED(discovered);
 }
 
 void init_mdns_transport_discovery_thread(void) {
