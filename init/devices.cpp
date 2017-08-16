@@ -398,6 +398,8 @@ void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
                 int device_id = uevent.minor % 128 + 1;
                 devpath = StringPrintf("/dev/bus/usb/%03d/%03d", bus_id, device_id);
             }
+        } else if (uevent.subsystem == "usbmisc") {
+            devpath = "/dev/" + uevent.device_name;
         } else {
             // ignore other USB events
             return;
