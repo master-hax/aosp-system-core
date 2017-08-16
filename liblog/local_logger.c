@@ -201,6 +201,7 @@ static int LogBufferLog(struct LogBuffer* log,
 
     e = node_to_item(node, struct LogBufferElement, node);
     log->number[logId]--;
+    // NOLINTNEXTLINE false use-after-free from the free(e) below.
     log->size[logId] -= e->len;
     logger_list_rdlock();
     logger_list_for_each(logger_list) {
