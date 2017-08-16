@@ -40,6 +40,9 @@ struct MapInfo {
   // instead of a portion of the file.
   uint64_t elf_offset;
 
+  // This function will work if elf exists or is null. If elf has not been
+  // created yet, then read only the information needed to get the load bias.
+  uint64_t GetLoadBias(pid_t pid);
   Memory* CreateMemory(pid_t pid);
   // This function guarantees it will never return nullptr.
   Elf* GetElf(pid_t pid, bool init_gnu_debugdata = false);

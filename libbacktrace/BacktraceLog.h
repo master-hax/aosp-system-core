@@ -28,4 +28,6 @@
 #define BACK_LOGE(format, ...) \
   ALOGE("%s: " format, __PRETTY_FUNCTION__, ##__VA_ARGS__)
 
+#define BACK_LOGV(format, ...) ALOGV("%s: " format, __PRETTY_FUNCTION__, ##__VA_ARGS__)
+
 #endif // _LIBBACKTRACE_BACKTRACE_LOG_H

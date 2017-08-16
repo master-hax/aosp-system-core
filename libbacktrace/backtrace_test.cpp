@@ -137,8 +137,8 @@ static void FinishRemoteProcess(pid_t pid) {
 static bool ReadyLevelBacktrace(Backtrace* backtrace) {
   // See if test_level_four is in the backtrace.
   bool found = false;
-  for (Backtrace::const_iterator it = backtrace->begin(); it != backtrace->end(); ++it) {
-    if (it->func_name == "test_level_four") {
+  for (const auto& frame : *backtrace) {
+    if (frame.func_name == "test_level_four") {
       found = true;
       break;
     }
@@ -902,11 +902,11 @@ static void VerifyMap(pid_t pid) {
 
   // Basic test that verifies that the map is in the expected order.
   ScopedBacktraceMapIteratorLock lock(map.get());
-  std::vector<map_test_t>::const_iterator test_it = test_maps.begin();
-  for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
+  auto test_it = test_maps.begin();
+  for (auto map : *map.get()) {
     ASSERT_TRUE(test_it != test_maps.end());
-    ASSERT_EQ(test_it->start, it->start);
-    ASSERT_EQ(test_it->end, it->end);
+    ASSERT_EQ(test_it->start, map.start);
+    ASSERT_EQ(test_it->end, map.end);
     ++test_it;
   }
   ASSERT_TRUE(test_it == test_maps.end());
@@ -1294,10 +1294,9 @@ static bool FindFuncFrameInBacktrace(Backtrace* backtrace, uintptr_t test_func, 
 
   // Loop through the frames, and find the one that is in the map.
   *frame_num = 0;
-  for (Backtrace::const_iterator it = backtrace->begin(); it != backtrace->end(); ++it) {
-    if (BacktraceMap::IsValid(it->map) && map.start == it->map.start &&
-        it->pc >= test_func) {
-      *frame_num = it->num;
+  for (const auto& frame : *backtrace) {
+    if (BacktraceMap::IsValid(frame.map) && map.start == frame.map.start && frame.pc >= test_func) {
+      *frame_num = frame.num;
       return true;
     }
   }
@@ -1675,7 +1674,7 @@ static void UnwindThroughSignal(bool use_action) {
   kill(pid, SIGUSR1);
 
   // Wait for the process to get to the signal handler loop.
-  Backtrace::const_iterator frame_iter;
+  Backtrace::iterator frame_iter;
   start = NanoTime();
   std::unique_ptr<Backtrace> backtrace;
   while (true) {
@@ -1754,10 +1753,17 @@ TEST(libbacktrace, unwind_remote_through_signal_using_action) {
 
 #define MAX_LEAK_BYTES (32*1024UL)
 
-static void CheckForLeak(pid_t pid, pid_t tid) {
+static void CheckForLeak(pid_t pid, pid_t tid, Backtrace* (*back_func)(pid_t, pid_t, BacktraceMap*),
+                         BacktraceMap* (*map_func)(pid_t, bool)) {
+  std::unique_ptr<BacktraceMap> map;
+  if (map_func != nullptr) {
+    map.reset(map_func(pid, false));
+    ASSERT_TRUE(map.get() != nullptr);
+  }
+
   // Do a few runs to get the PSS stable.
   for (size_t i = 0; i < 100; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = back_func(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());
@@ -1768,7 +1774,7 @@ static void CheckForLeak(pid_t pid, pid_t tid) {
 
   // Loop enough that even a small leak should be detectable.
   for (size_t i = 0; i < 4096; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = back_func(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());
@@ -1782,7 +1788,7 @@ static void CheckForLeak(pid_t pid, pid_t tid) {
 }
 
 TEST(libbacktrace, check_for_leak_local) {
-  CheckForLeak(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD);
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD, Backtrace::Create, nullptr);
 }
 
 TEST(libbacktrace, check_for_leak_local_thread) {
@@ -1793,7 +1799,7 @@ TEST(libbacktrace, check_for_leak_local_thread) {
   // Wait up to 2 seconds for the tid to be set.
   ASSERT_TRUE(WaitForNonZero(&thread_data.state, 2));
 
-  CheckForLeak(BACKTRACE_CURRENT_PROCESS, thread_data.tid);
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, thread_data.tid, Backtrace::Create, nullptr);
 
   // Tell the thread to exit its infinite loop.
   android_atomic_acquire_store(0, &thread_data.state);
@@ -1805,8 +1811,70 @@ TEST(libbacktrace, check_for_leak_remote) {
   pid_t pid;
   CreateRemoteProcess(&pid);
 
-  CheckForLeak(pid, BACKTRACE_CURRENT_THREAD);
+  CheckForLeak(pid, BACKTRACE_CURRENT_THREAD, Backtrace::Create, nullptr);
 
   FinishRemoteProcess(pid);
 }
+
+TEST(libbacktrace, check_for_leak_local_same_map) {
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD, Backtrace::Create,
+               BacktraceMap::Create);
+}
+
+TEST(libbacktrace, check_for_leak_local_thread_same_map) {
+  thread_t thread_data = {0, 0, 0, nullptr};
+  pthread_t thread;
+  ASSERT_TRUE(pthread_create(&thread, nullptr, ThreadLevelRun, &thread_data) == 0);
+
+  // Wait up to 2 seconds for the tid to be set.
+  ASSERT_TRUE(WaitForNonZero(&thread_data.state, 2));
+
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, thread_data.tid, Backtrace::Create, BacktraceMap::Create);
+
+  // Tell the thread to exit its infinite loop.
+  android_atomic_acquire_store(0, &thread_data.state);
+
+  ASSERT_TRUE(pthread_join(thread, nullptr) == 0);
+}
+
+TEST(libbacktrace, check_for_leak_remote_same_map) {
+  pid_t pid;
+  CreateRemoteProcess(&pid);
+
+  CheckForLeak(pid, BACKTRACE_CURRENT_THREAD, Backtrace::Create, BacktraceMap::Create);
+
+  FinishRemoteProcess(pid);
+}
+
+TEST(libbacktrace, check_for_leak_local_new_same_map) {
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD, Backtrace::CreateNew,
+               BacktraceMap::CreateNew);
+}
+
+TEST(libbacktrace, check_for_leak_local_thread_new_same_map) {
+  thread_t thread_data = {0, 0, 0, nullptr};
+  pthread_t thread;
+  ASSERT_TRUE(pthread_create(&thread, nullptr, ThreadLevelRun, &thread_data) == 0);
+
+  // Wait up to 2 seconds for the tid to be set.
+  ASSERT_TRUE(WaitForNonZero(&thread_data.state, 2));
+
+  CheckForLeak(BACKTRACE_CURRENT_PROCESS, thread_data.tid, Backtrace::CreateNew,
+               BacktraceMap::CreateNew);
+
+  // Tell the thread to exit its infinite loop.
+  android_atomic_acquire_store(0, &thread_data.state);
+
+  ASSERT_TRUE(pthread_join(thread, nullptr) == 0);
+}
+
+TEST(libbacktrace, check_for_leak_remote_new_same_map) {
+  pid_t pid;
+  CreateRemoteProcess(&pid);
+
+  CheckForLeak(pid, BACKTRACE_CURRENT_THREAD, Backtrace::CreateNew, BacktraceMap::CreateNew);
+
+  FinishRemoteProcess(pid);
+}
+
 #endif

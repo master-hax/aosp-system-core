@@ -54,7 +54,7 @@ class Elf {
 
   ElfInterface* CreateInterfaceFromMemory(Memory* memory);
 
-  uint64_t GetLoadBias();
+  uint64_t GetLoadBias() const;
 
   bool valid() { return valid_; }
 
@@ -69,6 +69,9 @@ class Elf {
   ElfInterface* gnu_debugdata_interface() { return gnu_debugdata_interface_.get(); }
 
   static bool IsValidElf(Memory* memory);
+
+  // This function does not create any elf data, it should be used.
+  static uint64_t ReadLoadBiasOnly(Memory* memory);
 
  protected:
   bool valid_ = false;

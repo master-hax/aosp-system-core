@@ -66,17 +66,17 @@ class ElfInterface {
   Memory* memory() { return memory_; }
 
   const std::unordered_map<uint64_t, LoadInfo>& pt_loads() { return pt_loads_; }
-  uint64_t load_bias() { return load_bias_; }
+  uint64_t load_bias() const { return load_bias_; }
   void set_load_bias(uint64_t load_bias) { load_bias_ = load_bias; }
 
-  uint64_t dynamic_offset() { return dynamic_offset_; }
-  uint64_t dynamic_size() { return dynamic_size_; }
-  uint64_t eh_frame_offset() { return eh_frame_offset_; }
-  uint64_t eh_frame_size() { return eh_frame_size_; }
-  uint64_t debug_frame_offset() { return debug_frame_offset_; }
-  uint64_t debug_frame_size() { return debug_frame_size_; }
-  uint64_t gnu_debugdata_offset() { return gnu_debugdata_offset_; }
-  uint64_t gnu_debugdata_size() { return gnu_debugdata_size_; }
+  uint64_t dynamic_offset() const { return dynamic_offset_; }
+  uint64_t dynamic_size() const { return dynamic_size_; }
+  uint64_t eh_frame_offset() const { return eh_frame_offset_; }
+  uint64_t eh_frame_size() const { return eh_frame_size_; }
+  uint64_t debug_frame_offset() const { return debug_frame_offset_; }
+  uint64_t debug_frame_size() const { return debug_frame_size_; }
+  uint64_t gnu_debugdata_offset() const { return gnu_debugdata_offset_; }
+  uint64_t gnu_debugdata_size() const { return gnu_debugdata_size_; }
 
   DwarfSection* eh_frame() { return eh_frame_.get(); }
   DwarfSection* debug_frame() { return debug_frame_.get(); }

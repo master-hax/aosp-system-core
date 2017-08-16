@@ -21,13 +21,13 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-#include <backtrace/BacktraceMap.h>
+#include "BacktraceMapBasic.h"
 
 // The unw_map_cursor_t structure is different depending on whether it is
 // the local or remote version. In order to get the correct version, include
 // libunwind.h first then this header.
 
-class UnwindMap : public BacktraceMap {
+class UnwindMap : public BacktraceMapBasic {
  public:
   explicit UnwindMap(pid_t pid);
 

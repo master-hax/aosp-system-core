@@ -30,6 +30,7 @@
 #endif
 
 #include <deque>
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -57,10 +58,10 @@ public:
 
   static BacktraceMap* Create(pid_t pid, const std::vector<backtrace_map_t>& maps);
 
-  virtual ~BacktraceMap();
+  virtual ~BacktraceMap() = default;
 
   // Fill in the map data structure for the given address.
-  virtual void FillIn(uintptr_t addr, backtrace_map_t* map);
+  virtual void FillIn(uintptr_t addr, backtrace_map_t* map) = 0;
 
   // The flags returned are the same flags as used by the mmap call.
   // The values are PROT_*.
@@ -83,26 +84,49 @@ public:
   virtual void LockIterator() {}
   virtual void UnlockIterator() {}
 
-  typedef std::deque<backtrace_map_t>::iterator iterator;
-  iterator begin() { return maps_.begin(); }
-  iterator end() { return maps_.end(); }
+  class Iterator : public std::iterator<std::bidirectional_iterator_tag, backtrace_map_t> {
+   public:
+    Iterator(BacktraceMap* map, size_t index) : map_(map), index_(index) {}
 
-  typedef std::deque<backtrace_map_t>::const_iterator const_iterator;
-  const_iterator begin() const { return maps_.begin(); }
-  const_iterator end() const { return maps_.end(); }
+    Iterator& operator++() {
+      index_++;
+      return *this;
+    }
+    Iterator& operator++(int increment) {
+      index_ += increment;
+      return *this;
+    }
+    Iterator& operator--() {
+      index_--;
+      return *this;
+    }
+    Iterator& operator--(int decrement) {
+      index_ -= decrement;
+      return *this;
+    }
 
-  virtual bool Build();
+    bool operator==(const Iterator& rhs) { return this->index_ == rhs.index_; }
+    bool operator!=(const Iterator& rhs) { return this->index_ != rhs.index_; }
 
-  static inline bool IsValid(const backtrace_map_t& map) {
-    return map.end > 0;
-  }
+    backtrace_map_t operator*() { return map_->Get(index_); }
 
-protected:
+   private:
+    BacktraceMap* map_;
+    size_t index_;
+  };
+
+  Iterator begin() { return Iterator(this, 0); }
+  Iterator end() { return Iterator(this, NumMaps()); }
+
+  virtual backtrace_map_t Get(size_t index) = 0;
+  virtual size_t NumMaps() = 0;
+  virtual bool Build() = 0;
+
+  static inline bool IsValid(const backtrace_map_t& map) { return map.end > 0; }
+
+ protected:
   BacktraceMap(pid_t pid);
 
-  virtual bool ParseLine(const char* line, backtrace_map_t* map);
-
-  std::deque<backtrace_map_t> maps_;
   pid_t pid_;
 };
 

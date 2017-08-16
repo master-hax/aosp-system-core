@@ -102,7 +102,7 @@ bool Elf::Step(uint64_t rel_pc, Regs* regs, Memory* process_memory) {
                      gnu_debugdata_interface_->Step(rel_pc, regs, process_memory)));
 }
 
-uint64_t Elf::GetLoadBias() {
+uint64_t Elf::GetLoadBias() const {
   if (!valid_) return 0;
   return interface_->load_bias();
 }
@@ -169,6 +169,57 @@ ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {
   }
 
   return interface.release();
+}
+
+template <typename EhdrType, typename PhdrType>
+static uint64_t ReadLoadBias(Memory* memory) {
+  EhdrType ehdr;
+  if (!memory->ReadField(0, &ehdr, &ehdr.e_phnum, sizeof(ehdr.e_phnum))) {
+    return 0;
+  }
+  if (!memory->ReadField(0, &ehdr, &ehdr.e_phentsize, sizeof(ehdr.e_phnum))) {
+    return 0;
+  }
+  if (!memory->ReadField(0, &ehdr, &ehdr.e_phoff, sizeof(ehdr.e_phnum))) {
+    return 0;
+  }
+
+  uint64_t offset = ehdr.e_phoff;
+  for (size_t i = 0; i < ehdr.e_phnum; i++, offset += ehdr.e_phentsize) {
+    PhdrType phdr;
+    if (!memory->ReadField(offset, &phdr, &phdr.p_type, sizeof(phdr.p_type))) {
+      return 0;
+    }
+    if (phdr.p_type == PT_LOAD) {
+      if (!memory->ReadField(offset, &phdr, &phdr.p_offset, sizeof(phdr.p_offset))) {
+        return 0;
+      }
+      if (phdr.p_offset == 0) {
+        if (!memory->ReadField(offset, &phdr, &phdr.p_vaddr, sizeof(phdr.p_vaddr))) {
+          return 0;
+        }
+        return phdr.p_vaddr;
+      }
+    }
+  }
+  return 0;
+}
+
+uint64_t Elf::ReadLoadBiasOnly(Memory* memory) {
+  if (!IsValidElf(memory)) {
+    return 0;
+  }
+
+  uint8_t class_type;
+  if (!memory->Read(EI_CLASS, &class_type, 1)) {
+    return 0;
+  }
+  if (class_type == ELFCLASS32) {
+    return ReadLoadBias<Elf32_Ehdr, Elf32_Phdr>(memory);
+  } else if (class_type == ELFCLASS64) {
+    return ReadLoadBias<Elf64_Ehdr, Elf64_Phdr>(memory);
+  }
+  return 0;
 }
 
 }  // namespace unwindstack

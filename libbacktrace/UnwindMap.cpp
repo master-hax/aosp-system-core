@@ -25,6 +25,7 @@
 #include <libunwind.h>
 
 #include "BacktraceLog.h"
+#include "BacktraceMapBasic.h"
 #include "UnwindMap.h"
 
 //-------------------------------------------------------------------------
@@ -33,7 +34,7 @@
 // only update the local address space once, and keep a reference count
 // of maps using the same map cursor.
 //-------------------------------------------------------------------------
-UnwindMap::UnwindMap(pid_t pid) : BacktraceMap(pid) {
+UnwindMap::UnwindMap(pid_t pid) : BacktraceMapBasic(pid) {
   unw_map_cursor_clear(&map_cursor_);
 }
 
@@ -135,13 +136,13 @@ bool UnwindMapLocal::Build() {
 }
 
 void UnwindMapLocal::FillIn(uintptr_t addr, backtrace_map_t* map) {
-  BacktraceMap::FillIn(addr, map);
+  BacktraceMapBasic::FillIn(addr, map);
   if (!IsValid(*map)) {
     // Check to see if the underlying map changed and regenerate the map
     // if it did.
     if (unw_map_local_cursor_valid(&map_cursor_) < 0) {
       if (GenerateMap()) {
-        BacktraceMap::FillIn(addr, map);
+        BacktraceMapBasic::FillIn(addr, map);
       }
     }
   }
@@ -155,7 +156,7 @@ BacktraceMap* BacktraceMap::Create(pid_t pid, bool uncached) {
 
   if (uncached) {
     // Force use of the base class to parse the maps when this call is made.
-    map = new BacktraceMap(pid);
+    map = new BacktraceMapBasic(pid);
   } else if (pid == getpid()) {
     map = new UnwindMapLocal();
   } else {

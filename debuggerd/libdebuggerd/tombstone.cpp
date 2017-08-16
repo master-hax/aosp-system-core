@@ -420,7 +420,7 @@ static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, p
     _LOG(log, logtype::MAPS, "memory map:\n");
   } else {
     _LOG(log, logtype::MAPS, "memory map: (fault address prefixed with --->)\n");
-    if (map->begin() != map->end() && addr < map->begin()->start) {
+    if (map->begin() != map->end() && addr < (*map->begin()).start) {
       _LOG(log, logtype::MAPS, "--->Fault address falls at %s before any mapped regions\n",
            get_addr_string(addr).c_str());
       print_fault_address_marker = false;
@@ -428,49 +428,49 @@ static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, p
   }
 
   std::string line;
-  for (BacktraceMap::const_iterator it = map->begin(); it != map->end(); ++it) {
+  for (auto cur_map : *map) {
     line = "    ";
     if (print_fault_address_marker) {
-      if (addr < it->start) {
+      if (addr < cur_map.start) {
         _LOG(log, logtype::MAPS, "--->Fault address falls at %s between mapped regions\n",
              get_addr_string(addr).c_str());
         print_fault_address_marker = false;
-      } else if (addr >= it->start && addr < it->end) {
+      } else if (addr >= cur_map.start && addr < cur_map.end) {
         line = "--->";
         print_fault_address_marker = false;
       }
     }
-    line += get_addr_string(it->start) + '-' + get_addr_string(it->end - 1) + ' ';
-    if (it->flags & PROT_READ) {
+    line += get_addr_string(cur_map.start) + '-' + get_addr_string(cur_map.end - 1) + ' ';
+    if (cur_map.flags & PROT_READ) {
       line += 'r';
     } else {
       line += '-';
     }
-    if (it->flags & PROT_WRITE) {
+    if (cur_map.flags & PROT_WRITE) {
       line += 'w';
     } else {
       line += '-';
     }
-    if (it->flags & PROT_EXEC) {
+    if (cur_map.flags & PROT_EXEC) {
       line += 'x';
     } else {
       line += '-';
     }
-    line += StringPrintf("  %8" PRIxPTR "  %8" PRIxPTR, it->offset, it->end - it->start);
+    line += StringPrintf("  %8" PRIxPTR "  %8" PRIxPTR, cur_map.offset, cur_map.end - cur_map.start);
     bool space_needed = true;
-    if (it->name.length() > 0) {
+    if (cur_map.name.length() > 0) {
       space_needed = false;
-      line += "  " + it->name;
+      line += "  " + cur_map.name;
       std::string build_id;
-      if ((it->flags & PROT_READ) && elf_get_build_id(backtrace, it->start, &build_id)) {
+      if ((cur_map.flags & PROT_READ) && elf_get_build_id(backtrace, cur_map.start, &build_id)) {
         line += " (BuildId: " + build_id + ")";
       }
     }
-    if (it->load_bias != 0) {
+    if (cur_map.load_bias != 0) {
       if (space_needed) {
         line += ' ';
       }
-      line += StringPrintf(" (load bias 0x%" PRIxPTR ")", it->load_bias);
+      line += StringPrintf(" (load bias 0x%" PRIxPTR ")", cur_map.load_bias);
     }
     _LOG(log, logtype::MAPS, "%s\n", line.c_str());
   }

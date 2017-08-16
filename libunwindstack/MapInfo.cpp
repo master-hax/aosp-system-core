@@ -89,4 +89,16 @@ Elf* MapInfo::GetElf(pid_t pid, bool init_gnu_debugdata) {
   return elf;
 }
 
+uint64_t MapInfo::GetLoadBias(pid_t pid) {
+  if (elf != nullptr) {
+    return elf->GetLoadBias();
+  }
+  std::unique_ptr<Memory> memory(CreateMemory(pid));
+
+  if (memory.get() == nullptr) {
+    return 0;
+  }
+  return Elf::ReadLoadBiasOnly(memory.get());
+}
+
 }  // namespace unwindstack

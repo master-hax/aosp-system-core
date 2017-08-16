@@ -71,6 +71,7 @@ cc_library {
 
     srcs: [
         "BacktraceMap.cpp",
+        "BacktraceMapBasic.cpp",
     ],
 
     export_include_dirs: ["include"],
@@ -239,4 +240,18 @@ cc_test {
             static_libs: ["libutils"],
         },
     },
+}
+
+cc_benchmark {
+    name: "backtrace_benchmarks",
+    defaults: ["libbacktrace_common"],
+
+    srcs: [
+        "backtrace_benchmarks.cpp",
+    ],
+
+    shared_libs: [
+        "libbacktrace",
+        "libbase",
+    ],
 }

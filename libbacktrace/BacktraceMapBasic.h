@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef _LIBBACKTRACE_UNWINDSTACK_MAP_H
-#define _LIBBACKTRACE_UNWINDSTACK_MAP_H
+#ifndef _BACKTRACE_BACKTRACE_MAP_BASIC_H
+#define _BACKTRACE_BACKTRACE_MAP_BASIC_H
 
-#include <stdint.h>
-#include <sys/types.h>
-
-#include <iterator>
+#include <deque>
 
 #include <backtrace/BacktraceMap.h>
-#include <unwindstack/Maps.h>
 
-class UnwindStackMap : public BacktraceMap {
+class BacktraceMapBasic : public BacktraceMap {
  public:
-  explicit UnwindStackMap(pid_t pid);
-  ~UnwindStackMap() = default;
+  BacktraceMapBasic(pid_t pid, const std::vector<backtrace_map_t>& maps);
+  BacktraceMapBasic(pid_t pid) : BacktraceMap(pid) {}
+  virtual ~BacktraceMapBasic() = default;
 
+  backtrace_map_t Get(size_t index) override { return maps_[index]; }
+  size_t NumMaps() override { return maps_.size(); }
+  void FillIn(uintptr_t addr, backtrace_map_t* map) override;
   bool Build() override;
 
-  void FillIn(uintptr_t addr, backtrace_map_t* map) override;
-
-  backtrace_map_t Get(size_t index) override;
-
-  void FillInMap(unwindstack::MapInfo* info, backtrace_map_t* map);
-
-  size_t NumMaps() override { return stack_maps_.get() ? stack_maps_->Total() : 0; }
-  unwindstack::Maps* stack_maps() { return stack_maps_.get(); }
-
  protected:
-  std::unique_ptr<unwindstack::Maps> stack_maps_;
+  virtual bool ParseLine(const char* line, backtrace_map_t* map);
+
+  std::deque<backtrace_map_t> maps_;
 };
 
-#endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H
+#endif  // _BACKTRACE_BACKTRACE_MAP_H

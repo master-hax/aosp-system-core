@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -23,10 +24,28 @@
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Maps.h>
 
+#include "BacktraceLog.h"
 #include "UnwindStackMap.h"
 
 //-------------------------------------------------------------------------
 UnwindStackMap::UnwindStackMap(pid_t pid) : BacktraceMap(pid) {}
+
+void UnwindStackMap::FillInMap(unwindstack::MapInfo* info, backtrace_map_t* map) {
+  map->start = info->start;
+  map->end = info->end;
+  map->offset = info->offset;
+  map->load_bias = info->GetLoadBias(pid_);
+  map->flags = info->flags;
+  map->name = info->name;
+}
+
+backtrace_map_t UnwindStackMap::Get(size_t index) {
+  unwindstack::MapInfo* info = stack_maps_->Get(index);
+  backtrace_map_t map;
+  FillInMap(info, &map);
+
+  return map;
+}
 
 bool UnwindStackMap::Build() {
   if (pid_ == 0) {
@@ -36,40 +55,18 @@ bool UnwindStackMap::Build() {
     stack_maps_.reset(new unwindstack::RemoteMaps(pid_));
   }
 
-  if (!stack_maps_->Parse()) {
-    return false;
-  }
-
-  // Iterate through the maps and fill in the backtrace_map_t structure.
-  for (auto& map_info : *stack_maps_) {
-    backtrace_map_t map;
-    map.start = map_info.start;
-    map.end = map_info.end;
-    map.offset = map_info.offset;
-    // Set to -1 so that it is demand loaded.
-    map.load_bias = static_cast<uintptr_t>(-1);
-    map.flags = map_info.flags;
-    map.name = map_info.name;
-
-    maps_.push_back(map);
-  }
-
-  return true;
+  return stack_maps_->Parse();
 }
 
 void UnwindStackMap::FillIn(uintptr_t addr, backtrace_map_t* map) {
-  BacktraceMap::FillIn(addr, map);
-  if (map->load_bias != static_cast<uintptr_t>(-1)) {
+  unwindstack::MapInfo* info = stack_maps_->Find(addr);
+  if (info == nullptr) {
+    map->start = 0;
+    map->end = 0;
     return;
   }
 
-  // Fill in the load_bias.
-  unwindstack::MapInfo* map_info = stack_maps_->Find(addr);
-  if (map_info == nullptr) {
-    return;
-  }
-  unwindstack::Elf* elf = map_info->GetElf(pid_, true);
-  map->load_bias = elf->GetLoadBias();
+  FillInMap(info, map);
 }
 
 //-------------------------------------------------------------------------
@@ -79,8 +76,14 @@ BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached) {
   BacktraceMap* map;
 
   if (uncached) {
-    // Force use of the base class to parse the maps when this call is made.
-    map = new BacktraceMap(pid);
+// Not allowed right now.
+#if defined(__ANDROID__)
+    __assert2(__FILE__, __LINE__, __PRETTY_FUNCTION__,
+              "BacktraceMap::CreateNew() cannot be called with uncached true.");
+#else
+    BACK_LOGE("BacktraceMap::CreateNew() cannot be called with uncached true.");
+    abort();
+#endif
   } else if (pid == getpid()) {
     map = new UnwindStackMap(0);
   } else {
