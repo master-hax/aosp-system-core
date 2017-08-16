@@ -387,7 +387,7 @@ void DeviceHandler::HandleDeviceEvent(const Uevent& uevent) {
             links = GetBlockDeviceSymlinks(uevent);
         }
     } else if (StartsWith(uevent.subsystem, "usb")) {
-        if (uevent.subsystem == "usb") {
+        if (uevent.subsystem == "usb" || uevent.subsystem == "usbmisc") {
             if (!uevent.device_name.empty()) {
                 devpath = "/dev/" + uevent.device_name;
             } else {
