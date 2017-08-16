@@ -249,7 +249,7 @@ LIBLOG_ABI_PUBLIC void android_log_format_free(AndroidLogFormat* p_format) {
   /* Free conversion resource, can always be reconstructed */
   while (!list_empty(&convertHead)) {
     struct listnode* node = list_head(&convertHead);
-    list_remove(node);
+    list_remove(node);  // NOLINT false alarm: use-after-free
     free(node);
   }
 }
