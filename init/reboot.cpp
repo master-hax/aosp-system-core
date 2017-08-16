@@ -268,7 +268,6 @@ static void DumpUmountDebuggingInfo(bool dump_all) {
 static UmountStat UmountPartitions(std::chrono::milliseconds timeout) {
     Timer t;
     UmountStat stat = UMOUNT_STAT_TIMEOUT;
-    int retry = 0;
     /* data partition needs all pending writes to be completed and all emulated partitions
      * umounted.If the current waiting is not good enough, give
      * up and leave it to e2fsck after reboot to fix it.
@@ -283,10 +282,6 @@ static UmountStat UmountPartitions(std::chrono::milliseconds timeout) {
             stat = UMOUNT_STAT_SUCCESS;
             break;
         }
-        if ((timeout < t.duration()) && retry > 0) {  // try umount at least once
-            stat = UMOUNT_STAT_TIMEOUT;
-            break;
-        }
         if (emulated_devices.size() > 0 &&
             std::all_of(emulated_devices.begin(), emulated_devices.end(),
                         [](auto& entry) { return entry.Umount(); })) {
@@ -295,7 +290,10 @@ static UmountStat UmountPartitions(std::chrono::milliseconds timeout) {
         for (auto& entry : block_devices) {
             entry.Umount();
         }
-        retry++;
+        if ((timeout < t.duration())) {  // try umount at least once
+            stat = UMOUNT_STAT_TIMEOUT;
+            break;
+        }
         std::this_thread::sleep_for(100ms);
     }
     return stat;
