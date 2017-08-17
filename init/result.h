@@ -66,6 +66,25 @@
 namespace android {
 namespace init {
 
+struct ResultError {
+    template <typename T>
+    ResultError(T&& error_string, int error_errno)
+        : error_string(std::forward<T>(error_string)), error_errno(error_errno) {}
+
+    std::string error_string;
+    int error_errno;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const ResultError& t) {
+    os << t.error_string;
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, ResultError&& t) {
+    os << std::move(t.error_string);
+    return os;
+}
+
 class Error {
   public:
     Error() : append_errno_(0) {}
@@ -76,12 +95,30 @@ class Error {
         return std::move(*this);
     }
 
-    const std::string str() const {
-        if (append_errno_) {
-            return ss_.str() + ": " + strerror(append_errno_);
-        }
-        return ss_.str();
+    Error&& operator<<(const ResultError& result_error) {
+        ss_ << result_error.error_string;
+        append_errno_ = result_error.error_errno;
+        return std::move(*this);
     }
+
+    Error&& operator<<(ResultError&& result_error) {
+        ss_ << std::move(result_error.error_string);
+        append_errno_ = result_error.error_errno;
+        return std::move(*this);
+    }
+
+    const std::string str() const {
+        std::string str = ss_.str();
+        if (append_errno_) {
+            if (str.empty()) {
+                return strerror(append_errno_);
+            }
+            return str + ": " + strerror(append_errno_);
+        }
+        return str;
+    }
+
+    int append_errno() const { return append_errno_; }
 
     Error(const Error&) = delete;
     Error(Error&&) = delete;
@@ -93,6 +130,7 @@ class Error {
 
   private:
     std::stringstream ss_;
+    std::string prev_result_error_;
     int append_errno_;
 };
 
@@ -107,7 +145,16 @@ class Result {
     template <typename... U>
     Result(U&&... result) : contents_(std::in_place_index_t<0>(), std::forward<U>(result)...) {}
 
-    Result(Error&& fb) : contents_(std::in_place_index_t<1>(), fb.str()) {}
+    Result(Error&& error)
+        : contents_(std::in_place_index_t<1>(), error.str(), error.append_errno()) {}
+    Result(ErrnoError&& error)
+        : contents_(std::in_place_index_t<1>(), error.str(), error.append_errno()) {}
+    Result(const ResultError& result_error)
+        : contents_(std::in_place_index_t<1>(), result_error.error_string,
+                    result_error.error_errno) {}
+    Result(ResultError&& result_error)
+        : contents_(std::in_place_index_t<1>(), std::move(result_error.error_string),
+                    result_error.error_errno) {}
 
     bool has_value() const { return contents_.index() == 0; }
 
@@ -116,9 +163,17 @@ class Result {
     T&& value() && { return std::get<0>(std::move(contents_)); }
     const T&& value() const && { return std::get<0>(std::move(contents_)); }
 
-    const std::string& error() const & { return std::get<1>(contents_); }
-    std::string&& error() && { return std::get<1>(std::move(contents_)); }
-    const std::string&& error() const && { return std::get<1>(std::move(contents_)); }
+    const ResultError& error() const & { return std::get<1>(contents_); }
+    ResultError&& error() && { return std::get<1>(std::move(contents_)); }
+    const ResultError&& error() const && { return std::get<1>(std::move(contents_)); }
+
+    const std::string& error_string() const & { return std::get<1>(contents_).error_string; }
+    std::string&& error_string() && { return std::get<1>(std::move(contents_)).error_string; }
+    const std::string&& error_string() const && {
+        return std::get<1>(std::move(contents_)).error_string;
+    }
+
+    int error_errno() const { return std::get<1>(contents_).error_errno; }
 
     explicit operator bool() const { return has_value(); }
 
@@ -131,7 +186,7 @@ class Result {
     const T* operator->() const { return &value(); }
 
   private:
-    std::variant<T, std::string> contents_;
+    std::variant<T, ResultError> contents_;
 };
 
 using Success = std::monostate;
