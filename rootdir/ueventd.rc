@@ -1,6 +1,9 @@
 subsystem adf
     devname uevent_devname
 
+subsystem usbmisc
+    devname uevent_devname
+
 subsystem graphics
     devname uevent_devpath
     dirname /dev/graphics
