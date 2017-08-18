@@ -379,7 +379,8 @@ int main(int argc, char** argv) {
   //
   // Note: processes with many threads and minidebug-info can take a bit to
   //       unwind, do not make this too small. b/62828735
-  alarm(5);
+  //  alarm(5);
+  alarm(10);
 
   std::string attach_error;
 
