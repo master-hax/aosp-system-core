@@ -25,11 +25,26 @@ ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
 LOCAL_CFLAGS += -DCHARGER_ENABLE_SUSPEND
 LOCAL_SHARED_LIBRARIES += libsuspend
 endif
+
+ifeq ($(strip $(BOARD_CHARGER_DISABLE_INIT_BLANK)),true)
+LOCAL_CFLAGS += -DCHARGER_DISABLE_INIT_BLANK
+endif
+
+ifeq ($(strip $(BOARD_CHARGER_NO_UI)),true)
+LOCAL_CHARGER_NO_UI := true
+endif
+ifdef BRILLO
+LOCAL_CHARGER_NO_UI := true
+endif
+
 LOCAL_SRC_FILES := \
     healthd_mode_android.cpp \
-    healthd_mode_charger.cpp \
     AnimationParser.cpp \
     BatteryPropertiesRegistrar.cpp \
+
+ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
+LOCAL_SRC_FILES += healthd_mode_charger.cpp
+endif
 
 LOCAL_MODULE := libhealthd_internal
 LOCAL_C_INCLUDES := bootable/recovery
@@ -41,9 +56,16 @@ LOCAL_STATIC_LIBRARIES := \
     libbatterymonitor \
     libbatteryservice \
     libbinder \
+
+ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
+LOCAL_STATIC_LIBRARIES += \
     libminui \
     libpng \
     libz \
+
+endif
+
+LOCAL_STATIC_LIBRARIES += \
     libutils \
     libbase \
     libcutils \
@@ -64,13 +86,7 @@ LOCAL_CHARGER_NO_UI := true
 endif
 
 LOCAL_SRC_FILES := \
-	healthd.cpp \
-	healthd_mode_android.cpp \
-	BatteryPropertiesRegistrar.cpp \
-
-ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
-LOCAL_SRC_FILES += healthd_mode_charger.cpp
-endif
+    healthd.cpp
 
 LOCAL_MODULE := healthd
 LOCAL_MODULE_TAGS := optional
@@ -79,14 +95,6 @@ LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
 
 LOCAL_CFLAGS := -D__STDC_LIMIT_MACROS -Werror
-
-ifeq ($(strip $(BOARD_CHARGER_DISABLE_INIT_BLANK)),true)
-LOCAL_CFLAGS += -DCHARGER_DISABLE_INIT_BLANK
-endif
-
-ifeq ($(strip $(BOARD_CHARGER_ENABLE_SUSPEND)),true)
-LOCAL_CFLAGS += -DCHARGER_ENABLE_SUSPEND
-endif
 
 ifeq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_CFLAGS += -DCHARGER_NO_UI
@@ -111,9 +119,9 @@ LOCAL_STATIC_LIBRARIES := \
 
 ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_STATIC_LIBRARIES += \
-   libminui \
-   libpng \
-   libz \
+    libminui \
+    libpng \
+    libz \
 
 endif
 
