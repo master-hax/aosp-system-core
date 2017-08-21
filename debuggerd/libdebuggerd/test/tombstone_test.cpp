@@ -49,7 +49,6 @@ class TombstoneTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
     map_mock_.reset(new BacktraceMapMock());
-    backtrace_mock_.reset(new BacktraceMock(map_mock_.get()));
 
     char tmp_file[256];
     const char data_template[] = "/data/local/tmp/debuggerd_memory_testXXXXXX";
@@ -90,7 +89,6 @@ class TombstoneTest : public ::testing::Test {
   }
 
   std::unique_ptr<BacktraceMapMock> map_mock_;
-  std::unique_ptr<BacktraceMock> backtrace_mock_;
 
   log_t log_;
   std::string amfd_data_;
@@ -107,7 +105,7 @@ TEST_F(TombstoneTest, single_map) {
 #endif
   map_mock_->AddMap(map);
 
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -142,7 +140,7 @@ TEST_F(TombstoneTest, single_map_elf_build_id) {
   map_mock_->AddMap(map);
 
   elf_set_fake_build_id("abcdef1234567890abcdef1234567890");
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -181,7 +179,7 @@ TEST_F(TombstoneTest, single_map_no_build_id) {
   map_mock_->AddMap(map);
 
   elf_set_fake_build_id("abcdef1234567890abcdef1234567890");
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -239,7 +237,7 @@ TEST_F(TombstoneTest, multiple_maps) {
   map.name = "/system/lib/fake.so";
   map_mock_->AddMap(map);
 
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -299,7 +297,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_before) {
   si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0x1000);
   ptrace_set_fake_getsiginfo(si);
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -357,7 +355,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_between) {
   si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0xa533000);
   ptrace_set_fake_getsiginfo(si);
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -415,7 +413,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_in_map) {
   si.si_code = SI_KERNEL;
   si.si_addr = reinterpret_cast<void*>(0xa534040);
   ptrace_set_fake_getsiginfo(si);
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -475,7 +473,7 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_after) {
   si.si_addr = reinterpret_cast<void*>(0xf534040UL);
 #endif
   ptrace_set_fake_getsiginfo(si);
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -515,7 +513,7 @@ TEST_F(TombstoneTest, multiple_maps_getsiginfo_fail) {
   siginfo_t si;
   memset(&si, 0, sizeof(si));
   ptrace_set_fake_getsiginfo(si);
-  dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+  dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -554,7 +552,7 @@ TEST_F(TombstoneTest, multiple_maps_check_signal_has_si_addr) {
     si.si_code = SI_KERNEL;
     si.si_addr = reinterpret_cast<void*>(0x1000);
     ptrace_set_fake_getsiginfo(si);
-    dump_all_maps(backtrace_mock_.get(), map_mock_.get(), &log_, 100);
+    dump_all_maps(&log_, map_mock_.get(), nullptr, 100);
 
     std::string tombstone_contents;
     ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -600,24 +598,6 @@ TEST_F(TombstoneTest, multiple_maps_check_signal_has_si_addr) {
     ASSERT_STREQ("", getFakeLogBuf().c_str());
     ASSERT_STREQ("", getFakeLogPrint().c_str());
   }
-}
-
-TEST_F(TombstoneTest, dump_signal_info_error) {
-  siginfo_t si;
-  memset(&si, 0, sizeof(si));
-  ptrace_set_fake_getsiginfo(si);
-
-  dump_signal_info(&log_, 123);
-
-  std::string tombstone_contents;
-  ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
-  ASSERT_TRUE(android::base::ReadFdToString(log_.tfd, &tombstone_contents));
-  ASSERT_STREQ("", tombstone_contents.c_str());
-
-  ASSERT_STREQ("", getFakeLogBuf().c_str());
-  ASSERT_STREQ("6 DEBUG cannot get siginfo: Bad address\n\n", getFakeLogPrint().c_str());
-
-  ASSERT_STREQ("", amfd_data_.c_str());
 }
 
 TEST_F(TombstoneTest, dump_log_file_error) {

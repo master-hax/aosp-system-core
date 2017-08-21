@@ -23,8 +23,12 @@
 
 #include "utility.h"
 
-void dump_memory_and_code(log_t* log, Backtrace* backtrace);
-void dump_registers(log_t* log, pid_t tid);
-void dump_registers(log_t* log, const ucontext_t* uc);
+namespace unwindstack {
+class Memory;
+class Regs;
+}  // namespace unwindstack
+
+void dump_memory_and_code(log_t* log, unwindstack::Memory* process_memory, unwindstack::Regs* regs);
+void dump_registers(log_t* log, unwindstack::Regs* regs);
 
 #endif // _DEBUGGERD_MACHINE_H
