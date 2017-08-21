@@ -605,9 +605,8 @@ TEST_F(TombstoneTest, multiple_maps_check_signal_has_si_addr) {
 TEST_F(TombstoneTest, dump_signal_info_error) {
   siginfo_t si;
   memset(&si, 0, sizeof(si));
-  ptrace_set_fake_getsiginfo(si);
 
-  dump_signal_info(&log_, 123);
+  dump_signal_info(&log_, &si);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);

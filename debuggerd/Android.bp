@@ -4,9 +4,12 @@ cc_defaults {
         "-Wall",
         "-Wextra",
         "-Werror",
+        "-Wno-unused-argument",
+        "-Wno-unused-function",
         "-Wno-nullability-completeness",
         "-Os",
     ],
+    cpp_std: "experimental",
 
     local_include_dirs: ["include"],
 }
@@ -219,6 +222,7 @@ cc_test {
 
     static_libs: [
         "libdebuggerd",
+        "libunwindstack",
     ],
 
     local_include_dirs: [
@@ -265,6 +269,7 @@ cc_binary {
         "libbase",
         "liblog",
         "libprocinfo",
+        "libunwindstack",
     ],
 }
 

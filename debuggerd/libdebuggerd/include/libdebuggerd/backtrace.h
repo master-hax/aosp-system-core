@@ -24,6 +24,7 @@
 #include <string>
 
 #include "utility.h"
+#include "types.h"
 
 class Backtrace;
 class BacktraceMap;
