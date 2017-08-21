@@ -53,6 +53,7 @@
 
 #include "dump_type.h"
 
+using android::base::Pipe;
 using android::base::unique_fd;
 
 // see man(2) prctl, specifically the section about PR_GET_NAME
@@ -268,6 +269,60 @@ static void raise_caps() {
   }
 }
 
+static pid_t __fork() {
+  return clone(nullptr, nullptr, 0, nullptr);
+}
+
+// Double-fork (except with clone(), to not trigger pthread_atfork handlers).
+// Returns 0 in the orphaned child, the pid of the orphan in the original process, or -1 on failure.
+static pid_t double_fork() {
+  unique_fd pipe_read, pipe_write;
+  if (!Pipe(&pipe_read, &pipe_write)) {
+    return -1;
+  }
+
+  pid_t first = __fork();
+  if (first == -1) {
+    return -1;
+  } else if (first == 0) {
+    pipe_read.reset();
+
+    pid_t second = __fork();
+    if (second == 0) {
+      return 0;
+    } else if (second == -1) {
+      pid_t error = -errno;
+      TEMP_FAILURE_RETRY(write(pipe_write.get(), &error, sizeof(error)));
+    } else {
+      TEMP_FAILURE_RETRY(write(pipe_write.get(), &second, sizeof(second)));
+    }
+    _exit(0);
+  }
+
+  int status;
+  if (TEMP_FAILURE_RETRY(waitpid(first, &status, 0)) != first) {
+    fatal_errno("failed to waitpid in double fork");
+  } else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+    fatal("intermediate process didn't exit cleanly in double fork (status = %d)", status);
+  }
+
+  pid_t result;
+  ssize_t rc = TEMP_FAILURE_RETRY(read(pipe_read.get(), &result, sizeof(result)));
+  if (rc == -1) {
+    fatal_errno("failed to read from pipe in double fork");
+  } else if (rc != sizeof(result)) {
+    fatal("pipe read returned %zd in double fork", rc);
+  } else if (result == 0) {
+    fatal("double fork returned 0?");
+  }
+
+  if (result < 0) {
+    errno = -result;
+    return -1;
+  }
+  return result;
+}
+
 struct debugger_thread_info {
   bool crash_dump_started;
   pid_t crashing_tid;
@@ -299,25 +354,34 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
   }
 
   int devnull = TEMP_FAILURE_RETRY(open("/dev/null", O_RDWR));
+  if (devnull == -1) {
+    fatal_errno("failed to open /dev/null");
+  } else if (devnull != 0) {
+    fatal_errno("expected /dev/null fd to be 0, actually %d", devnull);
+  }
 
   // devnull will be 0.
-  TEMP_FAILURE_RETRY(dup2(devnull, STDOUT_FILENO));
-  TEMP_FAILURE_RETRY(dup2(devnull, STDERR_FILENO));
+  TEMP_FAILURE_RETRY(dup2(devnull, 1));
+  TEMP_FAILURE_RETRY(dup2(devnull, 2));
 
-  unique_fd pipe_read, pipe_write;
-  if (!android::base::Pipe(&pipe_read, &pipe_write)) {
+  unique_fd input_read, input_write;
+  unique_fd output_read, output_write;
+  if (!Pipe(&input_read, &input_write) != 0 || Pipe(&output_read, &output_write) != 0) {
     fatal_errno("failed to create pipe");
   }
 
   // Don't use fork(2) to avoid calling pthread_atfork handlers.
-  int forkpid = clone(nullptr, nullptr, 0, nullptr);
-  if (forkpid == -1) {
+  pid_t crash_dump_pid = __fork();
+  if (crash_dump_pid == -1) {
     async_safe_format_log(ANDROID_LOG_FATAL, "libc",
                           "failed to fork in debuggerd signal handler: %s", strerror(errno));
-  } else if (forkpid == 0) {
-    TEMP_FAILURE_RETRY(dup2(pipe_write.get(), STDOUT_FILENO));
-    pipe_write.reset();
-    pipe_read.reset();
+  } else if (crash_dump_pid == 0) {
+    TEMP_FAILURE_RETRY(dup2(input_write.get(), STDOUT_FILENO));
+    TEMP_FAILURE_RETRY(dup2(output_read.get(), STDIN_FILENO));
+    input_read.reset();
+    input_write.reset();
+    output_read.reset();
+    output_write.reset();
 
     raise_caps();
 
@@ -334,39 +398,61 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
           nullptr);
 
     fatal_errno("exec failed");
-  } else {
-    pipe_write.reset();
-    char buf[4];
-    ssize_t rc = TEMP_FAILURE_RETRY(read(pipe_read.get(), &buf, sizeof(buf)));
-    if (rc == -1) {
-      async_safe_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe failed: %s",
-                            strerror(errno));
-    } else if (rc == 0) {
-      async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper failed to exec");
-    } else if (rc != 1) {
-      async_safe_format_log(ANDROID_LOG_FATAL, "libc",
-                            "read of IPC pipe returned unexpected value: %zd", rc);
-    } else {
-      if (buf[0] != '\1') {
-        async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper reported failure");
-      } else {
-        thread_info->crash_dump_started = true;
-      }
-    }
-    pipe_read.reset();
-
-    // Don't leave a zombie child.
-    int status;
-    if (TEMP_FAILURE_RETRY(waitpid(forkpid, &status, 0)) == -1) {
-      async_safe_format_log(ANDROID_LOG_FATAL, "libc", "failed to wait for crash_dump helper: %s",
-                            strerror(errno));
-    } else if (WIFSTOPPED(status) || WIFSIGNALED(status)) {
-      async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper crashed or stopped");
-      thread_info->crash_dump_started = false;
-    }
   }
 
-  syscall(__NR_exit, 0);
+  input_write.reset();
+  output_read.reset();
+
+  // crash_dump will ptrace and pause all of our threads, and then write to the pipe to tell
+  // us to fork off a process to read memory from.
+  char buf[4];
+  ssize_t rc = TEMP_FAILURE_RETRY(read(input_read.get(), &buf, sizeof(buf)));
+  if (rc == -1) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "read of IPC pipe failed: %s", strerror(errno));
+    return 1;
+  } else if (rc == 0) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper failed to exec");
+    return 1;
+  } else if (rc != 1) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc",
+                          "read of IPC pipe returned unexpected value: %zd", rc);
+    return 1;
+  } else if (buf[0] != '\1') {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper reported failure");
+    return 1;
+  }
+
+  pid_t vm_pid = double_fork();
+  if (vm_pid == -1) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "failed to fork vm: %s", strerror(errno));
+    return 1;
+  } else if (vm_pid == 0) {
+    TEMP_FAILURE_RETRY(read(input_read.get(), buf, 1));
+    _exit(0);
+  }
+
+  rc = TEMP_FAILURE_RETRY(write(output_write.get(), &vm_pid, sizeof(vm_pid)));
+  if (rc == -1) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "failed to send vm pid: %s", strerror(errno));
+    return 1;
+  } else if (rc != sizeof(vm_pid)) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "vm pid write returned %zd", rc);
+    return 1;
+  }
+
+  thread_info->crash_dump_started = true;
+  input_read.reset();
+  input_write.reset();
+
+  // Don't leave a zombie child.
+  int status;
+  if (TEMP_FAILURE_RETRY(waitpid(crash_dump_pid, &status, 0)) == -1) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "failed to wait for crash_dump helper: %s",
+                          strerror(errno));
+  } else if (WIFSTOPPED(status) || WIFSIGNALED(status)) {
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "crash_dump helper crashed or stopped");
+    thread_info->crash_dump_started = false;
+  }
   return 0;
 }
 
@@ -467,7 +553,8 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     fatal_errno("failed to set dumpable");
   }
 
-  // Essentially pthread_create without CLONE_FILES (see debuggerd_dispatch_pseudothread).
+  // Essentially pthread_create without CLONE_FILES, so we still work during file descriptor
+  // exhaustion.
   pid_t child_pid =
     clone(debuggerd_dispatch_pseudothread, pseudothread_stack,
           CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID,
@@ -479,7 +566,7 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   // Wait for the child to start...
   futex_wait(&thread_info.pseudothread_tid, -1);
 
-  // and then wait for it to finish.
+  // and then wait for it to terminate.
   futex_wait(&thread_info.pseudothread_tid, child_pid);
 
   // Restore PR_SET_DUMPABLE to its original value.
