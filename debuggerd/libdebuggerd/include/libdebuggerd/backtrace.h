@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 
+#include "types.h"
 #include "utility.h"
 
 class Backtrace;

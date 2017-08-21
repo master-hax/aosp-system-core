@@ -30,12 +30,15 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <map>
 #include <memory>
 #include <string>
 
+#include <android-base/unique_fd.h>
 #include <backtrace/Backtrace.h>
 #include <log/log.h>
 
+#include "libdebuggerd/types.h"
 #include "libdebuggerd/utility.h"
 
 static void dump_process_header(log_t* log, pid_t pid, const char* process_name) {
@@ -112,6 +115,14 @@ void dump_backtrace_ucontext(int output_fd, ucontext_t* ucontext) {
     ALOGE("Unwind failed: tid = %d: %s", tid,
           backtrace->GetErrorString(backtrace->GetError()).c_str());
   }
+}
+
+void dump_backtrace(android::base::unique_fd output_fd, BacktraceMap* map, unwindstack::Memory* process_memory,
+                    const std::map<pid_t, ThreadInfo>& thread_info, pid_t target_thread,
+                    uintptr_t abort_address) {
+  (void) output_fd; (void)map; (void)process_memory; (void)thread_info; (void)target_thread; (void)abort_address;
+  
+
 }
 
 void dump_backtrace_header(int output_fd) {

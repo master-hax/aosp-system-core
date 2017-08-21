@@ -1,5 +1,7 @@
+#pragma once
+
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +16,18 @@
  * limitations under the License.
  */
 
-#ifndef _DEBUGGERD_OPEN_FILES_LIST_H
-#define _DEBUGGERD_OPEN_FILES_LIST_H
-
-#include <sys/types.h>
-
+#include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
-#include "utility.h"
+#include <unwindstack/Regs.h>
 
-typedef std::vector<std::pair<int, std::string>> OpenFilesList;
+struct ThreadInfo {
+  std::unique_ptr<unwindstack::Regs> registers;
+  pid_t tid;
+  std::string thread_name;
 
-/* Populates the given list with open files for the given process. */
-void populate_open_files_list(pid_t pid, OpenFilesList* list);
+  pid_t pid;
+  std::string process_name;
 
-/* Dumps the open files list to the log. */
-void dump_open_files_list(log_t* log, const OpenFilesList& files, const char* prefix);
-
-#endif // _DEBUGGERD_OPEN_FILES_LIST_H
+  siginfo_t* siginfo = nullptr;
+};
