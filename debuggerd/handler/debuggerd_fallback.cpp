@@ -36,10 +36,14 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <memory>
 
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
+#include <backtrace/BacktraceMap.h>
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
 
 #include "debuggerd/handler.h"
 #include "tombstoned/tombstoned.h"
@@ -49,9 +53,26 @@
 #include "libdebuggerd/tombstone.h"
 
 using android::base::unique_fd;
+using unwindstack::Regs;
 
 extern "C" void __linker_enable_fallback_allocator();
 extern "C" void __linker_disable_fallback_allocator();
+
+static std::string get_thread_name() {
+  int fd = open("/proc/self/comm", O_RDONLY | O_CLOEXEC);
+  if (fd == -1) {
+    return "<unknown>";
+  }
+
+  char buf[16];
+  ssize_t rc = read(fd, buf, sizeof(buf));
+  if (rc <= 0) {
+    return "<unknown>";
+  }
+
+  // /proc/self/comm has a trailing newline.
+  return std::string(buf, buf + rc - 1);
+}
 
 // This is incredibly sketchy to do inside of a signal handler, especially when libbacktrace
 // uses the C++ standard library throughout, but this code runs in the linker, so we'll be using
@@ -61,7 +82,19 @@ extern "C" void __linker_disable_fallback_allocator();
 // exhaustion.
 static void debuggerd_fallback_trace(int output_fd, ucontext_t* ucontext) {
   __linker_enable_fallback_allocator();
-  dump_backtrace_ucontext(output_fd, ucontext);
+  {
+    std::unique_ptr<Regs> regs;
+
+    ThreadInfo thread;
+    thread.pid = getpid();
+    thread.tid = gettid();
+    thread.thread_name = get_thread_name();
+    thread.registers.reset(Regs::CreateFromUcontext(Regs::CurrentMachineType(), ucontext));
+
+    // TODO: Create this once and store it in a global?
+    std::unique_ptr<BacktraceMap> map(BacktraceMap::CreateNew(getpid()));
+    dump_backtrace_thread(output_fd, map.get(), thread);
+  }
   __linker_disable_fallback_allocator();
 }
 
@@ -225,7 +258,7 @@ static void crash_handler(siginfo_t* info, ucontext_t* ucontext, void* abort_mes
 
 extern "C" void debuggerd_fallback_handler(siginfo_t* info, ucontext_t* ucontext,
                                            void* abort_message) {
-  if (info->si_signo == DEBUGGER_SIGNAL) {
+  if (info->si_signo == DEBUGGER_SIGNAL && info->si_value.sival_int == 1) {
     return trace_handler(info, ucontext);
   } else {
     return crash_handler(info, ucontext, abort_message);
