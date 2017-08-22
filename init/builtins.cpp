@@ -127,7 +127,9 @@ static Result<Success> do_enable(const std::vector<std::string>& args) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "Could not find service";
 
-    if (!svc->Enable()) return Error() << "Could not enable service";
+    if (auto result = svc->Enable(); !result) {
+        return Error() << "Could not enable service: " << result.error();
+    }
 
     return Success();
 }
@@ -583,7 +585,9 @@ static Result<Success> do_setrlimit(const std::vector<std::string>& args) {
 static Result<Success> do_start(const std::vector<std::string>& args) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
-    if (!svc->Start()) return Error() << "failed to start service";
+    if (auto result = svc->Start(); !result) {
+        return Error() << "Could not start service: " << result.error();
+    }
     return Success();
 }
 
