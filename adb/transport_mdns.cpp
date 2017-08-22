@@ -226,10 +226,10 @@ static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
         return;
     }
 
-
-    auto resolved =
-        new ResolvedService(discovered->ServiceName(),
-                            interfaceIndex, hosttarget, ntohs(port));
+    // The static analyzer can't figure out this will escape and complains that
+    // it is not freed.  "static" is used to hint the analyzer.
+    static auto resolved =
+        new ResolvedService(discovered->ServiceName(), interfaceIndex, hosttarget, ntohs(port));
 
     if (! resolved->Initialized()) {
         delete resolved;
@@ -256,8 +256,9 @@ static void DNSSD_API register_mdns_transport(DNSServiceRef sdRef,
         return;
     }
 
-    auto discovered = new DiscoveredService(interfaceIndex, serviceName,
-                                            regtype, domain);
+    // The static analyzer can't figure out this will escape and complains that
+    // it is not freed.  "static" is used to hint the analyzer.
+    static auto discovered = new DiscoveredService(interfaceIndex, serviceName, regtype, domain);
 
     if (! discovered->Initialized()) {
         delete discovered;
