@@ -295,24 +295,55 @@ bool LoadSplitPolicy() {
         return false;
     }
     std::string mapping_file("/system/etc/selinux/mapping/" + vend_plat_vers + ".cil");
+
+    // vendor_sepolicy.cil and nonplat_filter.cil are the new design to replace
+    // nonplat_sepolicy.cil.
+    std::string nonplat_filter_cil_file("/vendor/etc/selinux/filter/nonplat_filter.cil");
+    std::string vendor_policy_cil_file("/vendor/etc/selinux/vendor_sepolicy.cil");
+
+    if (access(vendor_policy_cil_file.c_str(), F_OK) == -1) {
+        // For backward compatibility.
+        // TODO: remove this after no device is using nonplat_sepolicy.cil.
+        vendor_policy_cil_file = "/vendor/etc/selinux/nonplat_sepolicy.cil";
+        nonplat_filter_cil_file.clear();
+    } else if (access(nonplat_filter_cil_file.c_str(), F_OK) == -1) {
+        LOG(ERROR) << "Missing /vendor/etc/selinux/filter/nonplat_filter.cil";
+        return false;
+    }
+
+    // odm_sepolicy.cil is default but optional.
+    std::string odm_policy_cil_file("/odm/etc/selinux/odm_sepolicy.cil");
+    if (access(odm_policy_cil_file.c_str(), F_OK) == -1) {
+        odm_policy_cil_file.clear();
+    }
     const std::string version_as_string = std::to_string(max_policy_version);
 
     // clang-format off
-    const char* compile_args[] = {
+    std::vector<const char*> compile_args {
         "/system/bin/secilc",
         plat_policy_cil_file,
         "-M", "true", "-G", "-N",
         // Target the highest policy language version supported by the kernel
         "-c", version_as_string.c_str(),
         mapping_file.c_str(),
-        "/vendor/etc/selinux/nonplat_sepolicy.cil",
         "-o", compiled_sepolicy,
         // We don't care about file_contexts output by the compiler
         "-f", "/sys/fs/selinux/null",  // /dev/null is not yet available
-        nullptr};
+    };
     // clang-format on
 
-    if (!ForkExecveAndWaitForCompletion(compile_args[0], (char**)compile_args)) {
+    if (!nonplat_filter_cil_file.empty()) {
+        compile_args.push_back(nonplat_filter_cil_file.c_str());
+    }
+    if (!vendor_policy_cil_file.empty()) {
+        compile_args.push_back(vendor_policy_cil_file.c_str());
+    }
+    if (!odm_policy_cil_file.empty()) {
+        compile_args.push_back(odm_policy_cil_file.c_str());
+    }
+    compile_args.push_back(nullptr);
+
+    if (!ForkExecveAndWaitForCompletion(compile_args[0], (char**)compile_args.data())) {
         unlink(compiled_sepolicy);
         return false;
     }
