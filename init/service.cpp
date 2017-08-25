@@ -82,7 +82,11 @@ static Result<std::string> ComputeContextFromExecutable(std::string& service_nam
         free(new_con);
     }
     if (rc == 0 && computed_context == mycon.get()) {
-        return Error() << "Service does not have an SELinux domain defined";
+        return Error() << "No defined domain transition from " << mycon.get()
+                       << " to another SELinux domain. "
+                       << "Have you defined a new domain and transition rule? "
+                       << "https://source.android.com/security/selinux/"
+                          "device-policy#label_new_services_and_address_denials";
     }
     if (rc < 0) {
         return Error() << "Could not get process context";
