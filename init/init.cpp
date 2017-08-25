@@ -195,7 +195,9 @@ void handle_control_message(const std::string& msg, const std::string& name) {
     }
 
     if (msg == "start") {
-        svc->Start();
+        if (auto result = svc->Start(); !result) {
+            LOG(ERROR) << "Could not start service '" << name << "': " << result.error();
+        }
     } else if (msg == "stop") {
         svc->Stop();
     } else if (msg == "restart") {
