@@ -24,6 +24,7 @@
 #include <unwindstack/Regs.h>
 
 #include "MemoryFake.h"
+#include "RegsFake.h"
 
 namespace unwindstack {
 
@@ -49,20 +50,6 @@ class ElfInterfaceFake : public ElfInterface {
   bool Step(uint64_t, Regs*, Memory*) override { return false; }
 };
 
-template <typename TypeParam>
-class RegsTestImpl : public RegsImpl<TypeParam> {
- public:
-  RegsTestImpl(uint16_t total_regs, uint16_t regs_sp)
-      : RegsImpl<TypeParam>(total_regs, regs_sp, Regs::Location(Regs::LOCATION_UNKNOWN, 0)) {}
-  RegsTestImpl(uint16_t total_regs, uint16_t regs_sp, Regs::Location return_loc)
-      : RegsImpl<TypeParam>(total_regs, regs_sp, return_loc) {}
-  virtual ~RegsTestImpl() = default;
-
-  uint64_t GetAdjustedPc(uint64_t, Elf*) override { return 0; }
-  void SetFromRaw() override {}
-  bool StepIfSignalHandler(uint64_t, Elf*, Memory*) override { return false; }
-};
-
 class RegsTest : public ::testing::Test {
  protected:
   void SetUp() override {
@@ -81,7 +68,7 @@ class RegsTest : public ::testing::Test {
 };
 
 TEST_F(RegsTest, regs32) {
-  RegsTestImpl<uint32_t> regs32(50, 10);
+  RegsFake<uint32_t> regs32(50, 10);
   ASSERT_EQ(50U, regs32.total_regs());
   ASSERT_EQ(10U, regs32.sp_reg());
 
@@ -104,7 +91,7 @@ TEST_F(RegsTest, regs32) {
 }
 
 TEST_F(RegsTest, regs64) {
-  RegsTestImpl<uint64_t> regs64(30, 12);
+  RegsFake<uint64_t> regs64(30, 12);
   ASSERT_EQ(30U, regs64.total_regs());
   ASSERT_EQ(12U, regs64.sp_reg());
 
@@ -128,7 +115,7 @@ TEST_F(RegsTest, regs64) {
 
 template <typename AddressType>
 void RegsTest::RegsReturnAddressRegister() {
-  RegsTestImpl<AddressType> regs(20, 10, Regs::Location(Regs::LOCATION_REGISTER, 5));
+  RegsFake<AddressType> regs(20, 10, Regs::Location(Regs::LOCATION_REGISTER, 5));
 
   regs[5] = 0x12345;
   uint64_t value;
@@ -145,7 +132,7 @@ TEST_F(RegsTest, regs64_return_address_register) {
 }
 
 TEST_F(RegsTest, regs32_return_address_sp_offset) {
-  RegsTestImpl<uint32_t> regs(20, 10, Regs::Location(Regs::LOCATION_SP_OFFSET, -2));
+  RegsFake<uint32_t> regs(20, 10, Regs::Location(Regs::LOCATION_SP_OFFSET, -2));
 
   regs.set_sp(0x2002);
   memory_->SetData32(0x2000, 0x12345678);
@@ -155,7 +142,7 @@ TEST_F(RegsTest, regs32_return_address_sp_offset) {
 }
 
 TEST_F(RegsTest, regs64_return_address_sp_offset) {
-  RegsTestImpl<uint64_t> regs(20, 10, Regs::Location(Regs::LOCATION_SP_OFFSET, -8));
+  RegsFake<uint64_t> regs(20, 10, Regs::Location(Regs::LOCATION_SP_OFFSET, -8));
 
   regs.set_sp(0x2008);
   memory_->SetData64(0x2000, 0x12345678aabbccddULL);
