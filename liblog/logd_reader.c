@@ -461,9 +461,6 @@ static void caught_signal(int signum __unused) {
 static int logdOpen(struct android_log_logger_list* logger_list,
                     struct android_log_transport_context* transp) {
   struct android_log_logger* logger;
-  struct sigaction ignore;
-  struct sigaction old_sigaction;
-  unsigned int old_alarm = 0;
   char buffer[256], *cp, c;
   int e, ret, remaining, sock;
 
@@ -538,22 +535,22 @@ static int logdOpen(struct android_log_logger_list* logger_list,
   }
 
   if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
-    /* Deal with an unresponsive logd */
-    memset(&ignore, 0, sizeof(ignore));
-    ignore.sa_handler = caught_signal;
-    sigemptyset(&ignore.sa_mask);
-    /* particularily useful if tombstone is reporting for logd */
-    sigaction(SIGALRM, &ignore, &old_sigaction);
-    old_alarm = alarm(30);
+    struct timeval timeout;
+    timeout.tv_sec = 30;
+    timeout.tv_usec = 0;
+    ret = setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+    e = errno;
+    if (ret < 0) {
+      close(sock);
+      return e ? -e : -EIO;
+    }
   }
   ret = write(sock, buffer, cp - buffer);
   e = errno;
   if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
-    if (e == EINTR) {
+    if (e == EAGAIN) {
       e = ETIMEDOUT;
     }
-    alarm(old_alarm);
-    sigaction(SIGALRM, &old_sigaction, NULL);
   }
 
   if (ret <= 0) {
@@ -578,49 +575,48 @@ static int logdOpen(struct android_log_logger_list* logger_list,
 static int logdRead(struct android_log_logger_list* logger_list,
                     struct android_log_transport_context* transp,
                     struct log_msg* log_msg) {
-  int ret, e;
-  struct sigaction ignore;
-  struct sigaction old_sigaction;
-  unsigned int old_alarm = 0;
+  int ret, fd, e;
 
-  ret = logdOpen(logger_list, transp);
-  if (ret < 0) {
-    return ret;
+  fd = logdOpen(logger_list, transp);
+  if (fd < 0) {
+    return fd;
   }
 
   memset(log_msg, 0, sizeof(*log_msg));
 
-  unsigned int new_alarm = 0;
   if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
+    int timeout;
+    struct pollfd p;
+
     if ((logger_list->mode & ANDROID_LOG_WRAP) &&
         (logger_list->start.tv_sec || logger_list->start.tv_nsec)) {
       /* b/64143705 */
-      new_alarm = (ANDROID_LOG_WRAP_DEFAULT_TIMEOUT * 11) / 10 + 10;
+      timeout = (ANDROID_LOG_WRAP_DEFAULT_TIMEOUT * 11) / 10 + 10;
       logger_list->mode &= ~ANDROID_LOG_WRAP;
     } else {
-      new_alarm = 30;
+      timeout = 30;
     }
+    memset(&p, 0, sizeof(p));
+    p.fd = fd;
+    p.events = POLLIN;
 
-    memset(&ignore, 0, sizeof(ignore));
-    ignore.sa_handler = caught_signal;
-    sigemptyset(&ignore.sa_mask);
-    /* particularily useful if tombstone is reporting for logd */
-    sigaction(SIGALRM, &ignore, &old_sigaction);
-    old_alarm = alarm(new_alarm);
+    ret = poll(&p, 1, timeout * MS_PER_SEC);
+    e = errno;
+
+    if (ret < 0 && e == EINTR) {
+      return -EAGAIN;
+    }
+    if (ret < 0) {
+      return e ? -e : ret;
+    }
+    if (ret == 0 || !(p.revents & POLLIN)) {
+      return -EAGAIN;
+    }
   }
 
   /* NOTE: SOCK_SEQPACKET guarantees we read exactly one full entry */
-  ret = recv(ret, log_msg, LOGGER_ENTRY_MAX_LEN, 0);
+  ret = recv(fd, log_msg, LOGGER_ENTRY_MAX_LEN, 0);
   e = errno;
-
-  if (new_alarm) {
-    if ((ret == 0) || (e == EINTR)) {
-      e = EAGAIN;
-      ret = -1;
-    }
-    alarm(old_alarm);
-    sigaction(SIGALRM, &old_sigaction, NULL);
-  }
 
   if ((ret == -1) && e) {
     return -e;

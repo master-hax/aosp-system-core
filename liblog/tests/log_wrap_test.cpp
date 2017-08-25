@@ -70,20 +70,9 @@ static void caught_signal(int /* signum */) {
 TEST(liblog, wrap_mode_blocks) {
 #ifdef __ANDROID__
 
-  android::base::Timer timer;
-
   // The read call is expected to take up to 2 hours in the happy case.
-  // We only want to make sure it waits for longer than 30s, but we can't
-  // use an alarm as the implementation uses it. So we run the test in
-  // a separate process.
-  pid_t pid = fork();
-
-  if (pid == 0) {
-    // child
-    read_with_wrap();
-    _exit(0);
-  }
-
+  // We only want to make sure it waits for longer than 30s, so we use an
+  // alarm to interrupt the call some time after that.
   struct sigaction ignore, old_sigaction;
   memset(&ignore, 0, sizeof(ignore));
   ignore.sa_handler = caught_signal;
@@ -91,30 +80,13 @@ TEST(liblog, wrap_mode_blocks) {
   sigaction(SIGALRM, &ignore, &old_sigaction);
   alarm(45);
 
-  bool killed = false;
-  for (;;) {
-    siginfo_t info = {};
-    // This wait will succeed if the child exits, or fail with EINTR if the
-    // alarm goes off first - a loose approximation to a timed wait.
-    int ret = waitid(P_PID, pid, &info, WEXITED);
-    if (ret >= 0 || errno != EINTR) {
-      EXPECT_EQ(ret, 0);
-      if (!killed) {
-        EXPECT_EQ(info.si_status, 0);
-      }
-      break;
-    }
-    unsigned int alarm_left = alarm(0);
-    if (alarm_left > 0) {
-      alarm(alarm_left);
-    } else {
-      kill(pid, SIGTERM);
-      killed = true;
-    }
-  }
+  android::base::Timer timer;
+  read_with_wrap();
+  EXPECT_GT(timer.duration(), std::chrono::seconds(40));
 
   alarm(0);
-  EXPECT_GT(timer.duration(), std::chrono::seconds(40));
+  sigaction(SIGALRM, &old_sigaction, NULL);
+
 #else
   GTEST_LOG_(INFO) << "This test does nothing.\n";
 #endif
