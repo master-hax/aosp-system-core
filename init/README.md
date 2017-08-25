@@ -216,6 +216,12 @@ runs the service.
   http://man7.org/linux/man-pages/man7/capabilities.7.html for a list of Linux
   capabilities.
 
+`setrlimit <resource> <cur> <max>`
+> This applies the given rlimit to the service. rlimits are inherited by child
+  processes, so this effectively applies the given rlimit to the process tree
+  started by this service.
+  It is parsed similarly to the setrlimit command specified below.
+
 `seclabel <seclabel>`
 > Change to 'seclabel' before exec'ing this service.
   Primarily for use by services run from the rootfs, e.g. ueventd, adbd.
@@ -455,7 +461,10 @@ Commands
   within _value_.
 
 `setrlimit <resource> <cur> <max>`
-> Set the rlimit for a resource.
+> Set the rlimit for a resource. This applies to all processes launched after
+  the limit is set. It is intended to be set early in init and applied globally.
+  _resource_ may be specified as either the int value that the resource
+  corresponds to or its text representation, e.g. 'cpu', 'rtprio', etc.
 
 `start <service>`
 > Start a service running if it is not already running.
