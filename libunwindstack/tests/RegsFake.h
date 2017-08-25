@@ -29,7 +29,11 @@ class RegsFake : public RegsImpl<TypeParam> {
  public:
   RegsFake(uint16_t total_regs, uint16_t sp_reg)
       : RegsImpl<TypeParam>(total_regs, sp_reg, Regs::Location(Regs::LOCATION_UNKNOWN, 0)) {}
+  RegsFake(uint16_t total_regs, uint16_t sp_reg, Regs::Location return_loc)
+      : RegsImpl<TypeParam>(total_regs, sp_reg, return_loc) {}
   virtual ~RegsFake() = default;
+
+  uint32_t MachineType() override final { return 0; }
 
   uint64_t GetAdjustedPc(uint64_t, Elf*) override { return 0; }
   void SetFromRaw() override {}
