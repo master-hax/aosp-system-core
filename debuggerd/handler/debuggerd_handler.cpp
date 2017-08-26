@@ -48,9 +48,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <android-base/unique_fd.h>
 #include <async_safe/log.h>
 
 #include "dump_type.h"
+
+using android::base::unique_fd;
 
 // see man(2) prctl, specifically the section about PR_GET_NAME
 #define MAX_TASK_NAME_LEN (16)
@@ -117,13 +120,12 @@ static void __noreturn __printflike(1, 2) fatal_errno(const char* fmt, ...) {
 }
 
 static bool get_main_thread_name(char* buf, size_t len) {
-  int fd = open("/proc/self/comm", O_RDONLY | O_CLOEXEC);
+  unique_fd fd(open("/proc/self/comm", O_RDONLY | O_CLOEXEC));
   if (fd == -1) {
     return false;
   }
 
   ssize_t rc = read(fd, buf, len);
-  close(fd);
   if (rc == -1) {
     return false;
   } else if (rc == 0) {
