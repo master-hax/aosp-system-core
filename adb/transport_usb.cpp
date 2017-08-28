@@ -32,11 +32,12 @@
 static int UsbReadMessage(usb_handle* h, amessage* msg) {
     D("UsbReadMessage");
 
+    // USB 3.0 allows bursts of up to 16 1024 byte packets.
+    char buffer[1024 * 16];
     size_t usb_packet_size = usb_get_max_packet_size(h);
     CHECK_GE(usb_packet_size, sizeof(*msg));
-    CHECK_LT(usb_packet_size, 4096ULL);
+    CHECK_LE(usb_packet_size, sizeof(buffer));
 
-    char buffer[4096];
     int n = usb_read(h, buffer, usb_packet_size);
     if (n != sizeof(*msg)) {
         D("usb_read returned unexpected length %d (expected %zu)", n, sizeof(*msg));
