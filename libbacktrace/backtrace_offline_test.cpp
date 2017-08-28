@@ -129,6 +129,24 @@ static void* OfflineThreadFunc(void* arg) {
   return nullptr;
 }
 
+static std::string GetArch() {
+#if defined(__arm__)
+  return "arm";
+#elif defined(__aarch64__)
+  return "aarch64";
+#elif defined(__i386__)
+  return "x86";
+#elif defined(__x86_64__)
+  return "x86_64";
+#else
+  return "";
+#endif
+}
+
+std::string GetTestPath(std::string path) {
+  return android::base::GetExecutableDirectory() + "/testdata/" + GetArch() + '/' + path;
+}
+
 // This test is disable because it is for generating test data.
 TEST(libbacktrace, DISABLED_generate_offline_testdata) {
   // Create a thread to generate the needed stack and registers information.
@@ -206,20 +224,6 @@ static std::string FunctionNameForAddress(uintptr_t addr,
   return "";
 }
 
-static std::string GetArch() {
-#if defined(__arm__)
-  return "arm";
-#elif defined(__aarch64__)
-  return "aarch64";
-#elif defined(__i386__)
-  return "x86";
-#elif defined(__x86_64__)
-  return "x86_64";
-#else
-  return "";
-#endif
-}
-
 struct OfflineTestData {
   int pid;
   int tid;
@@ -280,20 +284,15 @@ bool ReadOfflineTestData(const std::string offline_testdata_path, OfflineTestDat
   return true;
 }
 
-static void BacktraceOfflineTest(const std::string& testlib_name) {
-  const std::string arch = GetArch();
-  if (arch.empty()) {
-    GTEST_LOG_(INFO) << "This test does nothing on current arch.";
-    return;
-  }
-  const std::string testlib_path = "testdata/" + arch + "/" + testlib_name;
-  struct stat st;
-  if (stat(testlib_path.c_str(), &st) == -1) {
-    GTEST_LOG_(INFO) << "This test is skipped as " << testlib_path << " doesn't exist.";
+static void BacktraceOfflineTest(const char* arch, const std::string& testlib_name) {
+  // TODO: For now, we can only run this on the same arch as the library arch.
+  if (arch != GetArch()) {
+    GTEST_LOG_(INFO) << "Ignoring arch " << arch << " for lib " << testlib_name;
     return;
   }
 
-  const std::string offline_testdata_path = "testdata/" + arch + "/offline_testdata";
+  const std::string testlib_path(GetTestPath(testlib_name));
+  const std::string offline_testdata_path(GetTestPath("offline_testdata"));
   OfflineTestData testdata;
   ASSERT_TRUE(ReadOfflineTestData(offline_testdata_path, &testdata));
 
@@ -339,35 +338,40 @@ static void BacktraceOfflineTest(const std::string& testlib_name) {
                                                       testdata.symbols));
 }
 
+// For now, these tests can only run on the given architectures.
 TEST(libbacktrace, offline_eh_frame) {
-  BacktraceOfflineTest("libbacktrace_test_eh_frame.so");
+  BacktraceOfflineTest("aarch64", "libbacktrace_test_eh_frame.so");
+  BacktraceOfflineTest("x86_64", "libbacktrace_test_eh_frame.so");
 }
 
 TEST(libbacktrace, offline_debug_frame) {
-  BacktraceOfflineTest("libbacktrace_test_debug_frame.so");
+  BacktraceOfflineTest("arm", "libbacktrace_test_debug_frame.so");
+  BacktraceOfflineTest("x86", "libbacktrace_test_debug_frame.so");
 }
 
 TEST(libbacktrace, offline_gnu_debugdata) {
-  BacktraceOfflineTest("libbacktrace_test_gnu_debugdata.so");
+  BacktraceOfflineTest("arm", "libbacktrace_test_gnu_debugdata.so");
+  BacktraceOfflineTest("x86", "libbacktrace_test_gnu_debugdata.so");
 }
 
 TEST(libbacktrace, offline_arm_exidx) {
-  BacktraceOfflineTest("libbacktrace_test_arm_exidx.so");
+  BacktraceOfflineTest("arm", "libbacktrace_test_arm_exidx.so");
 }
 
 // This test tests the situation that ranges of functions covered by .eh_frame and .ARM.exidx
 // overlap with each other, which appears in /system/lib/libart.so.
 TEST(libbacktrace, offline_unwind_mix_eh_frame_and_arm_exidx) {
-  const std::string arch = GetArch();
-  if (arch.empty() || arch != "arm") {
-    GTEST_LOG_(INFO) << "This test does nothing on current arch.";
+  // TODO: For now, only run on the given arch.
+  if (GetArch() != "arm") {
+    GTEST_LOG_(INFO) << "Skipping test since offline for arm on " << GetArch()
+                     << " isn't supported.";
     return;
   }
-  const std::string testlib_path = "testdata/" + arch + "/libart.so";
+  const std::string testlib_path(GetTestPath("libart.so"));
   struct stat st;
   ASSERT_EQ(0, stat(testlib_path.c_str(), &st)) << "can't find testlib " << testlib_path;
 
-  const std::string offline_testdata_path = "testdata/" + arch + "/offline_testdata_for_libart";
+  const std::string offline_testdata_path(GetTestPath("offline_testdata_for_libart"));
   OfflineTestData testdata;
   ASSERT_TRUE(ReadOfflineTestData(offline_testdata_path, &testdata));
 
