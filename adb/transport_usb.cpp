@@ -27,16 +27,29 @@
 
 #if ADB_HOST
 
+static size_t UsbGetPacketSize(usb_handle* handle) {
+    // OS X appears to sometimes report bMaxBurst * wMaxPacketSize as the max
+    // packet size for a USB 3.0 endpoint. Clamp to the USB 3.0 maximum and
+    // make sure it's actually a multiple.
+    size_t size = usb_get_max_packet_size(handle);
+    if (size > 1024) {
+        CHECK_EQ(0ULL, size % 1024ULL)
+            << "USB max packet size " << size << " is not a multiple of 1024";
+        size = 1024;
+    }
+    return size;
+}
+
 // Call usb_read using a buffer having a multiple of usb_get_max_packet_size() bytes
 // to avoid overflow. See http://libusb.sourceforge.net/api-1.0/packetoverflow.html.
 static int UsbReadMessage(usb_handle* h, amessage* msg) {
     D("UsbReadMessage");
 
-    size_t usb_packet_size = usb_get_max_packet_size(h);
+    char buffer[1024];
+    size_t usb_packet_size = UsbGetPacketSize(h);
     CHECK_GE(usb_packet_size, sizeof(*msg));
-    CHECK_LT(usb_packet_size, 4096ULL);
+    CHECK_LE(usb_packet_size, sizeof(buffer));
 
-    char buffer[4096];
     int n = usb_read(h, buffer, usb_packet_size);
     if (n != sizeof(*msg)) {
         D("usb_read returned unexpected length %d (expected %zu)", n, sizeof(*msg));
@@ -51,8 +64,7 @@ static int UsbReadMessage(usb_handle* h, amessage* msg) {
 static int UsbReadPayload(usb_handle* h, apacket* p) {
     D("UsbReadPayload(%d)", p->msg.data_length);
 
-    size_t usb_packet_size = usb_get_max_packet_size(h);
-    CHECK_EQ(0ULL, sizeof(p->data) % usb_packet_size);
+    size_t usb_packet_size = UsbGetPacketSize(h);
 
     // Round the data length up to the nearest packet size boundary.
     // The device won't send a zero packet for packet size aligned payloads,
