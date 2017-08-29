@@ -24,8 +24,8 @@
 #include <backtrace/Backtrace.h>
 #include <log/log.h>
 
-#include "machine.h"
-#include "utility.h"
+#include "libdebuggerd/machine.h"
+#include "libdebuggerd/utility.h"
 
 void dump_memory_and_code(log_t* log, Backtrace* backtrace) {
   struct pt_regs r;
