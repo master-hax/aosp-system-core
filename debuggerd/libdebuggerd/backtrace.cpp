@@ -64,7 +64,7 @@ static void dump_thread(log_t* log, BacktraceMap* map, pid_t pid, pid_t tid,
                         const std::string& thread_name) {
   log_thread_name(log, tid, thread_name.c_str());
 
-  std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid, map));
+  std::unique_ptr<Backtrace> backtrace(Backtrace::CreateNew(pid, tid, map));
   if (backtrace->Unwind(0)) {
     dump_backtrace_to_log(backtrace.get(), log, "  ");
   } else {
@@ -105,7 +105,12 @@ void dump_backtrace_ucontext(int output_fd, ucontext_t* ucontext) {
   read_with_default("/proc/self/comm", thread_name, sizeof(thread_name), "<unknown>");
   log_thread_name(&log, tid, thread_name);
 
-  std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, tid));
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::CreateNew(pid));
+  if (map.get() == nullptr) {
+    ALOGE("Unwind failed: map could not be created.");
+    return;
+  }
+  std::unique_ptr<Backtrace> backtrace(Backtrace::CreateNew(pid, tid, map.get()));
   if (backtrace->Unwind(0, ucontext)) {
     dump_backtrace_to_log(backtrace.get(), &log, "  ");
   } else {
