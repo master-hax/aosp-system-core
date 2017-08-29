@@ -23,8 +23,8 @@
 #include <android-base/file.h>
 
 #include "BacktraceMock.h"
-#include "log_fake.h"
-#include "utility.h"
+#include "libdebuggerd/log_fake.h"
+#include "libdebuggerd/utility.h"
 
 const char g_expected_full_dump[] =
 "\nmemory near r1:\n"
