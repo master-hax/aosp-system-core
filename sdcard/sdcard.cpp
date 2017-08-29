@@ -232,6 +232,8 @@ static void run(const char* source_path, const char* label, uid_t uid,
     memset(&handler_read, 0, sizeof(handler_read));
     memset(&handler_write, 0, sizeof(handler_write));
 
+    strcpy(global.source_path, source_path);
+
     pthread_mutex_init(&global.lock, NULL);
     global.package_to_appid = new AppIdMap;
     global.uid = uid;
@@ -248,8 +250,6 @@ static void run(const char* source_path, const char* label, uid_t uid,
     global.root.userid = userid;
     global.root.uid = AID_ROOT;
     global.root.under_android = false;
-
-    strcpy(global.source_path, source_path);
 
     if (multi_user) {
         global.root.perm = PERM_PRE_ROOT;
