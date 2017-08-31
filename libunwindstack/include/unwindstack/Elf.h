@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include <unwindstack/ElfInterface.h>
 #include <unwindstack/Memory.h>
@@ -37,7 +38,7 @@ class Regs;
 
 class Elf {
  public:
-  Elf(Memory* memory) : memory_(memory) {}
+  explicit Elf(std::shared_ptr<Memory> memory) : memory_(std::move(memory)) {}
   virtual ~Elf() = default;
 
   bool Init();
@@ -73,11 +74,11 @@ class Elf {
  protected:
   bool valid_ = false;
   std::unique_ptr<ElfInterface> interface_;
-  std::unique_ptr<Memory> memory_;
+  std::shared_ptr<Memory> memory_;
   uint32_t machine_type_;
   uint8_t class_type_;
 
-  std::unique_ptr<Memory> gnu_debugdata_memory_;
+  std::shared_ptr<Memory> gnu_debugdata_memory_;
   std::unique_ptr<ElfInterface> gnu_debugdata_interface_;
 };
 

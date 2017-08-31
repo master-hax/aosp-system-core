@@ -36,6 +36,7 @@ class UnwindStackMap : public BacktraceMap {
 
  protected:
   std::unique_ptr<unwindstack::Maps> stack_maps_;
+  std::shared_ptr<unwindstack::Memory> memory_;
 };
 
 #endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H

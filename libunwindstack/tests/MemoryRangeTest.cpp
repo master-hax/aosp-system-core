@@ -31,7 +31,7 @@ namespace unwindstack {
 TEST(MemoryRangeTest, read) {
   std::vector<uint8_t> src(1024);
   memset(src.data(), 0x4c, 1024);
-  MemoryFake* memory = new MemoryFake;
+  std::shared_ptr<MemoryFake> memory = std::make_shared<MemoryFake>();
   memory->SetMemory(9001, src);
 
   MemoryRange range(memory, 9001, 9001 + src.size());
@@ -46,7 +46,7 @@ TEST(MemoryRangeTest, read) {
 TEST(MemoryRangeTest, read_near_limit) {
   std::vector<uint8_t> src(4096);
   memset(src.data(), 0x4c, 4096);
-  MemoryFake* memory = new MemoryFake;
+  std::shared_ptr<MemoryFake> memory = std::make_shared<MemoryFake>();
   memory->SetMemory(1000, src);
 
   MemoryRange range(memory, 1000, 2024);
@@ -69,7 +69,8 @@ TEST(MemoryRangeTest, read_near_limit) {
 TEST(MemoryRangeTest, read_overflow) {
   std::vector<uint8_t> buffer(100);
 
-  std::unique_ptr<MemoryRange> overflow(new MemoryRange(new MemoryFakeAlwaysReadZero, 100, 200));
+  std::shared_ptr<Memory> memory = std::make_shared<MemoryFakeAlwaysReadZero>();
+  std::unique_ptr<MemoryRange> overflow(new MemoryRange(memory, 100, 200));
   ASSERT_FALSE(overflow->Read(UINT64_MAX - 10, buffer.data(), 100));
 }
 

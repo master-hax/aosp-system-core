@@ -38,6 +38,10 @@ namespace unwindstack {
 
 class MapInfoCreateMemoryTest : public ::testing::Test {
  protected:
+  void SetUp() override { memory_ = Memory::FromPid(getpid()); }
+
+  void TearDown() override { memory_.reset(); }
+
   static void SetUpTestCase() {
     std::vector<uint8_t> buffer(1024);
     memcpy(buffer.data(), ELFMAG, SELFMAG);
@@ -56,6 +60,8 @@ class MapInfoCreateMemoryTest : public ::testing::Test {
     ASSERT_TRUE(android::base::WriteFully(elf_at_100_.fd, buffer.data(), buffer.size()));
   }
 
+  std::shared_ptr<Memory> memory_;
+
   static TemporaryFile elf_;
 
   static TemporaryFile elf_at_100_;
@@ -66,17 +72,17 @@ TemporaryFile MapInfoCreateMemoryTest::elf_at_100_;
 TEST_F(MapInfoCreateMemoryTest, end_le_start) {
   MapInfo info{.start = 0x100, .end = 0x100, .offset = 0, .name = elf_.path};
 
-  std::unique_ptr<Memory> memory;
-  memory.reset(info.CreateMemory(getpid()));
+  std::shared_ptr<Memory> memory;
+  memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() == nullptr);
 
   info.end = 0xff;
-  memory.reset(info.CreateMemory(getpid()));
+  memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() == nullptr);
 
   // Make sure this test is valid.
   info.end = 0x101;
-  memory.reset(info.CreateMemory(getpid()));
+  memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() != nullptr);
 }
 
@@ -85,7 +91,7 @@ TEST_F(MapInfoCreateMemoryTest, end_le_start) {
 TEST_F(MapInfoCreateMemoryTest, file_backed_non_zero_offset_full_file) {
   MapInfo info{.start = 0x100, .end = 0x200, .offset = 0x100, .name = elf_.path};
 
-  std::unique_ptr<Memory> memory(info.CreateMemory(getpid()));
+  std::shared_ptr<Memory> memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() != nullptr);
   ASSERT_EQ(0x100U, info.elf_offset);
 
@@ -105,7 +111,7 @@ TEST_F(MapInfoCreateMemoryTest, file_backed_non_zero_offset_full_file) {
 TEST_F(MapInfoCreateMemoryTest, file_backed_non_zero_offset_partial_file) {
   MapInfo info{.start = 0x100, .end = 0x200, .offset = 0x100, .name = elf_at_100_.path};
 
-  std::unique_ptr<Memory> memory(info.CreateMemory(getpid()));
+  std::shared_ptr<Memory> memory(info.CreateMemory(memory_));
   ASSERT_TRUE(memory.get() != nullptr);
   ASSERT_EQ(0U, info.elf_offset);
 
@@ -129,11 +135,11 @@ TEST_F(MapInfoCreateMemoryTest, check_device_maps) {
   info.start = reinterpret_cast<uint64_t>(buffer.data());
   info.end = info.start + buffer.size();
   info.offset = 0;
-  std::unique_ptr<Memory> memory;
+  std::shared_ptr<Memory> memory;
 
   info.flags = 0x8000;
   info.name = "/dev/something";
-  memory.reset(info.CreateMemory(getpid()));
+  memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() == nullptr);
 }
 
@@ -149,8 +155,8 @@ TEST_F(MapInfoCreateMemoryTest, local_memory) {
   info.end = info.start + buffer.size();
   info.offset = 0;
 
-  std::unique_ptr<Memory> memory;
-  memory.reset(info.CreateMemory(getpid()));
+  std::shared_ptr<Memory> memory;
+  memory = info.CreateMemory(memory_);
   ASSERT_TRUE(memory.get() != nullptr);
 
   std::vector<uint8_t> read_buffer(1024);
@@ -188,8 +194,8 @@ TEST_F(MapInfoCreateMemoryTest, remote_memory) {
   info.end = info.start + buffer.size();
   info.offset = 0;
 
-  std::unique_ptr<Memory> memory;
-  memory.reset(info.CreateMemory(pid));
+  std::shared_ptr<Memory> base_memory = Memory::FromPid(pid);
+  std::shared_ptr<Memory> memory = info.CreateMemory(base_memory);
   ASSERT_TRUE(memory.get() != nullptr);
   // Set the local memory to a different value to guarantee we are reading
   // from the remote process.

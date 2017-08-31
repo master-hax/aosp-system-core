@@ -26,7 +26,8 @@
 #include "UnwindStackMap.h"
 
 //-------------------------------------------------------------------------
-UnwindStackMap::UnwindStackMap(pid_t pid) : BacktraceMap(pid) {}
+UnwindStackMap::UnwindStackMap(pid_t pid)
+    : BacktraceMap(pid), memory_(unwindstack::Memory::FromPid(pid)) {}
 
 bool UnwindStackMap::Build() {
   if (pid_ == 0) {
@@ -68,7 +69,8 @@ void UnwindStackMap::FillIn(uintptr_t addr, backtrace_map_t* map) {
   if (map_info == nullptr) {
     return;
   }
-  unwindstack::Elf* elf = map_info->GetElf(pid_, true);
+
+  unwindstack::Elf* elf = map_info->GetElf(memory_, true);
   map->load_bias = elf->GetLoadBias();
 }
 

@@ -29,7 +29,7 @@ namespace unwindstack {
 
 class ElfFake : public Elf {
  public:
-  ElfFake(Memory* memory) : Elf(memory) { valid_ = true; }
+  ElfFake(std::shared_ptr<Memory> memory) : Elf(std::move(memory)) { valid_ = true; }
   virtual ~ElfFake() = default;
 
   void set_elf_interface(ElfInterface* interface) { interface_.reset(interface); }
@@ -69,7 +69,7 @@ class RegsTest : public ::testing::Test {
  protected:
   void SetUp() override {
     memory_ = new MemoryFake;
-    elf_.reset(new ElfFake(memory_));
+    elf_.reset(new ElfFake(std::shared_ptr<Memory>(memory_)));
     elf_interface_ = new ElfInterfaceFake(elf_->memory());
     elf_->set_elf_interface(elf_interface_);
   }
@@ -224,7 +224,7 @@ TEST_F(RegsTest, rel_pc_arm) {
 }
 
 TEST_F(RegsTest, elf_invalid) {
-  Elf invalid_elf(new MemoryFake);
+  Elf invalid_elf(std::make_unique<MemoryFake>());
   RegsArm regs_arm;
   RegsArm64 regs_arm64;
   RegsX86 regs_x86;

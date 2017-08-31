@@ -31,7 +31,7 @@ class RegsStepIfSignalHandlerTest : public ::testing::Test {
  protected:
   void SetUp() override {
     elf_memory_ = new MemoryFake;
-    elf_.reset(new Elf(elf_memory_));
+    elf_.reset(new Elf(std::shared_ptr<Memory>(elf_memory_)));
   }
 
   void ArmStepIfSignalHandlerNonRt(uint32_t pc_data);

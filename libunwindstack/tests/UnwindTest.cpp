@@ -85,7 +85,7 @@ static std::string ErrorMsg(const std::vector<const char*>& function_names, size
          function_names[index] + "\n" + "Unwind data:\n" + unwind_stream.str();
 }
 
-static void VerifyUnwind(pid_t pid, Memory* memory, Maps* maps, Regs* regs,
+static void VerifyUnwind(std::shared_ptr<Memory> memory, Maps* maps, Regs* regs,
                          std::vector<const char*>& function_names) {
   size_t function_name_index = 0;
 
@@ -96,7 +96,7 @@ static void VerifyUnwind(pid_t pid, Memory* memory, Maps* maps, Regs* regs,
     MapInfo* map_info = maps->Find(regs->pc());
     ASSERT_TRUE(map_info != nullptr) << ErrorMsg(function_names, function_name_index, unwind_stream);
 
-    Elf* elf = map_info->GetElf(pid, true);
+    Elf* elf = map_info->GetElf(memory, true);
     uint64_t rel_pc = elf->GetRelPc(regs->pc(), map_info);
     uint64_t adjusted_rel_pc = rel_pc;
     if (frame_num != 0) {
@@ -122,7 +122,7 @@ static void VerifyUnwind(pid_t pid, Memory* memory, Maps* maps, Regs* regs,
       unwind_stream << " " << name;
     }
     unwind_stream << "\n";
-    ASSERT_TRUE(elf->Step(rel_pc + map_info->elf_offset, regs, memory))
+    ASSERT_TRUE(elf->Step(rel_pc + map_info->elf_offset, regs, memory.get()))
         << ErrorMsg(function_names, function_name_index, unwind_stream);
   }
   ASSERT_TRUE(false) << ErrorMsg(function_names, function_name_index, unwind_stream);
@@ -137,9 +137,9 @@ extern "C" void InnerFunction(bool local) {
     ASSERT_TRUE(maps.Parse());
     std::unique_ptr<Regs> regs(Regs::CreateFromLocal());
     RegsGetLocal(regs.get());
-    MemoryLocal memory;
+    std::shared_ptr<MemoryLocal> memory = std::make_shared<MemoryLocal>();
 
-    VerifyUnwind(getpid(), &memory, &maps, regs.get(), kFunctionOrder);
+    VerifyUnwind(memory, &maps, regs.get(), kFunctionOrder);
   } else {
     g_ready_for_remote = true;
     g_ready = true;
@@ -205,11 +205,11 @@ TEST(UnwindTest, remote) {
 
   RemoteMaps maps(pid);
   ASSERT_TRUE(maps.Parse());
-  MemoryRemote memory(pid);
+  std::shared_ptr<MemoryRemote> memory = std::make_shared<MemoryRemote>(pid);
   std::unique_ptr<Regs> regs(Regs::RemoteGet(pid));
   ASSERT_TRUE(regs.get() != nullptr);
 
-  VerifyUnwind(pid, &memory, &maps, regs.get(), kFunctionOrder);
+  VerifyUnwind(memory, &maps, regs.get(), kFunctionOrder);
 
   ASSERT_EQ(0, ptrace(PTRACE_DETACH, pid, 0, 0));
 
@@ -254,9 +254,9 @@ TEST(UnwindTest, from_context) {
   LocalMaps maps;
   ASSERT_TRUE(maps.Parse());
   std::unique_ptr<Regs> regs(Regs::CreateFromUcontext(Regs::CurrentMachineType(), ucontext));
-  MemoryLocal memory;
+  std::shared_ptr<MemoryLocal> memory = std::make_shared<MemoryLocal>();
 
-  VerifyUnwind(tid.load(), &memory, &maps, regs.get(), kFunctionOrder);
+  VerifyUnwind(memory, &maps, regs.get(), kFunctionOrder);
 
   ASSERT_EQ(0, sigaction(SIGUSR1, &oldact, nullptr));
 
@@ -291,11 +291,11 @@ static void RemoteThroughSignal(unsigned int sa_flags) {
 
   RemoteMaps maps(pid);
   ASSERT_TRUE(maps.Parse());
-  MemoryRemote memory(pid);
+  std::shared_ptr<MemoryRemote> memory = std::make_shared<MemoryRemote>(pid);
   std::unique_ptr<Regs> regs(Regs::RemoteGet(pid));
   ASSERT_TRUE(regs.get() != nullptr);
 
-  VerifyUnwind(pid, &memory, &maps, regs.get(), kFunctionSignalOrder);
+  VerifyUnwind(memory, &maps, regs.get(), kFunctionSignalOrder);
 
   ASSERT_EQ(0, ptrace(PTRACE_DETACH, pid, 0, 0));
 

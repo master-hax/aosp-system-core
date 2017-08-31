@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include <memory>
 #include <string>
 
 namespace unwindstack {
@@ -40,9 +41,9 @@ struct MapInfo {
   // instead of a portion of the file.
   uint64_t elf_offset;
 
-  Memory* CreateMemory(pid_t pid);
+  std::shared_ptr<Memory> CreateMemory(std::shared_ptr<Memory> base);
   // This function guarantees it will never return nullptr.
-  Elf* GetElf(pid_t pid, bool init_gnu_debugdata = false);
+  Elf* GetElf(std::shared_ptr<Memory> base, bool init_gnu_debugdata = false);
 };
 
 }  // namespace unwindstack

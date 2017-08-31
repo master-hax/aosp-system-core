@@ -71,8 +71,8 @@ void Elf::InitGnuDebugdata() {
     gnu->InitHeaders();
   } else {
     // Free all of the memory associated with the gnu_debugdata section.
-    gnu_debugdata_memory_.reset(nullptr);
-    gnu_debugdata_interface_.reset(nullptr);
+    gnu_debugdata_memory_.reset();
+    gnu_debugdata_interface_.reset();
   }
 }
 

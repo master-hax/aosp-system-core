@@ -34,6 +34,14 @@
 
 namespace unwindstack {
 
+std::unique_ptr<Memory> Memory::FromPid(pid_t pid) {
+  if (pid == getpid()) {
+    return std::make_unique<MemoryLocal>();
+  } else {
+    return std::make_unique<MemoryRemote>(pid);
+  }
+}
+
 bool Memory::ReadString(uint64_t addr, std::string* string, uint64_t max_read) {
   string->clear();
   uint64_t bytes_read = 0;
@@ -249,7 +257,7 @@ bool MemoryOffline::Read(uint64_t addr, void* dst, size_t size) {
   return true;
 }
 
-MemoryRange::MemoryRange(Memory* memory, uint64_t begin, uint64_t end)
+MemoryRange::MemoryRange(std::shared_ptr<Memory> memory, uint64_t begin, uint64_t end)
     : memory_(memory), begin_(begin), length_(end - begin) {
   CHECK(end > begin);
 }

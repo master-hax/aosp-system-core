@@ -37,9 +37,9 @@ namespace unwindstack {
 
 class ElfTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-    memory_ = new MemoryFake;
-  }
+  void SetUp() override { memory_ = std::make_shared<MemoryFake>(); }
+
+  void TearDown() override { memory_.reset(); }
 
   void InitElf32(uint32_t machine_type) {
     Elf32_Ehdr ehdr;
@@ -101,7 +101,7 @@ class ElfTest : public ::testing::Test {
     memory_->SetMemory(0x100, &phdr, sizeof(phdr));
   }
 
-  MemoryFake* memory_;
+  std::shared_ptr<MemoryFake> memory_;
 };
 
 TEST_F(ElfTest, invalid_memory) {
@@ -270,7 +270,7 @@ TEST_F(ElfTest, gnu_debugdata_init64) {
 
 class MockElf : public Elf {
  public:
-  MockElf(Memory* memory) : Elf(memory) {}
+  MockElf(std::shared_ptr<Memory> memory) : Elf(std::move(memory)) {}
   virtual ~MockElf() = default;
 
   void set_valid(bool valid) { valid_ = valid; }
@@ -280,7 +280,7 @@ class MockElf : public Elf {
 TEST_F(ElfTest, rel_pc) {
   MockElf elf(memory_);
 
-  ElfInterface* interface = new ElfInterface32(memory_);
+  ElfInterface* interface = new ElfInterface32(memory_.get());
   elf.set_elf_interface(interface);
 
   elf.set_valid(true);

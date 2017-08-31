@@ -27,7 +27,7 @@
 
 namespace unwindstack {
 
-Memory* MapInfo::CreateMemory(pid_t pid) {
+std::shared_ptr<Memory> MapInfo::CreateMemory(std::shared_ptr<Memory> base) {
   if (end <= start) {
     return nullptr;
   }
@@ -57,30 +57,24 @@ Memory* MapInfo::CreateMemory(pid_t pid) {
         // Don't bother checking the validity that will happen on the elf init.
         if (file_memory->Init(name, 0)) {
           elf_offset = offset;
-          return file_memory.release();
+          return file_memory;
         }
         // Fall through if the init fails.
       } else {
-        return file_memory.release();
+        return file_memory;
       }
     }
   }
 
-  Memory* memory = nullptr;
-  if (pid == getpid()) {
-    memory = new MemoryLocal();
-  } else {
-    memory = new MemoryRemote(pid);
-  }
-  return new MemoryRange(memory, start, end);
+  return std::make_unique<MemoryRange>(base, start, end);
 }
 
-Elf* MapInfo::GetElf(pid_t pid, bool init_gnu_debugdata) {
+Elf* MapInfo::GetElf(std::shared_ptr<Memory> base, bool init_gnu_debugdata) {
   if (elf) {
     return elf;
   }
 
-  elf = new Elf(CreateMemory(pid));
+  elf = new Elf(CreateMemory(base));
   if (elf->Init() && init_gnu_debugdata) {
     elf->InitGnuDebugdata();
   }

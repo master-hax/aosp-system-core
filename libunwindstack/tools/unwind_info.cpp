@@ -107,14 +107,14 @@ int GetElfInfo(const char* file) {
   // Send all log messages to stdout.
   log_to_stdout(true);
 
-  MemoryFileAtOffset* memory = new MemoryFileAtOffset;
+  auto memory = std::make_unique<MemoryFileAtOffset>();
   if (!memory->Init(file, 0)) {
     // Initializatation failed.
     printf("Failed to init\n");
     return 1;
   }
 
-  Elf elf(memory);
+  Elf elf(std::move(memory));
   if (!elf.Init() || !elf.valid()) {
     printf("%s is not a valid elf file.\n", file);
     return 1;
