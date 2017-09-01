@@ -41,9 +41,9 @@ struct MapInfo {
   uint64_t elf_offset;
 
   Memory* GetFileMemory();
-  Memory* CreateMemory(pid_t pid);
+  Memory* CreateMemory(std::shared_ptr<Memory>& process_memory);
   // This function guarantees it will never return nullptr.
-  Elf* GetElf(pid_t pid, bool init_gnu_debugdata = false);
+  Elf* GetElf(std::shared_ptr<Memory>& process_memory, bool init_gnu_debugdata = false);
 };
 
 }  // namespace unwindstack
