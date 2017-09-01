@@ -166,7 +166,7 @@ void WaitForRemote(pid_t pid, uint64_t addr, bool leave_attached, bool* complete
   // host it becomes impossible to attach and ptrace set errno to EPERM.
   usleep(1000);
   for (size_t i = 0; i < 100; i++) {
-    ASSERT_EQ(0, ptrace(PTRACE_ATTACH, pid, 0, 0));
+    ASSERT_EQ(0, ptrace(PTRACE_ATTACH, pid, 0, 0)) << strerror(errno);
     for (size_t j = 0; j < 100; j++) {
       siginfo_t si;
       if (ptrace(PTRACE_GETSIGINFO, pid, 0, &si) == 0) {
@@ -183,7 +183,7 @@ void WaitForRemote(pid_t pid, uint64_t addr, bool leave_attached, bool* complete
     if (leave_attached && *completed) {
       break;
     }
-    ASSERT_EQ(0, ptrace(PTRACE_DETACH, pid, 0, 0));
+    ASSERT_EQ(0, ptrace(PTRACE_DETACH, pid, 0, 0)) << strerror(errno);
     if (*completed) {
       break;
     }
