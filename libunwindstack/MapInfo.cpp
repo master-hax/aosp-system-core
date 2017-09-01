@@ -76,7 +76,7 @@ Memory* MapInfo::GetFileMemory() {
   return memory.release();
 }
 
-Memory* MapInfo::CreateMemory(pid_t pid) {
+Memory* MapInfo::CreateMemory(std::shared_ptr<Memory>& process_memory) {
   if (end <= start) {
     return nullptr;
   }
@@ -95,21 +95,15 @@ Memory* MapInfo::CreateMemory(pid_t pid) {
     }
   }
 
-  Memory* memory;
-  if (pid == getpid()) {
-    memory = new MemoryLocal();
-  } else {
-    memory = new MemoryRemote(pid);
-  }
-  return new MemoryRange(memory, start, end);
+  return new MemoryRange(process_memory, start, end);
 }
 
-Elf* MapInfo::GetElf(pid_t pid, bool init_gnu_debugdata) {
+Elf* MapInfo::GetElf(std::shared_ptr<Memory>& process_memory, bool init_gnu_debugdata) {
   if (elf) {
     return elf;
   }
 
-  elf = new Elf(CreateMemory(pid));
+  elf = new Elf(CreateMemory(process_memory));
   if (elf->Init() && init_gnu_debugdata) {
     elf->InitGnuDebugdata();
   }

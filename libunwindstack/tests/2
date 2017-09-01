@@ -87,10 +87,10 @@ TEST_F(MapInfoGetElfTest, valid64) {
 }
 
 TEST_F(MapInfoGetElfTest, gnu_debugdata_do_not_init32) {
-  TestInitGnuDebugdata<Elf32_Ehdr, Elf32_Shdr>(ELFCLASS32, EM_ARM, false,
-                                               [&](uint64_t offset, const void* ptr, size_t size) {
-                                                 memory_->SetMemory(0x1000 + offset, ptr, size);
-                                               });
+  TestInitGnuDebugdata<Elf32_Ehdr, Elf32_Shdr>(
+      ELFCLASS32, EM_ARM, false, [&](uint64_t offset, const void* ptr, size_t size) {
+        memory_->SetMemory(0x1000 + offset, ptr, size);
+      });
 
   std::unique_ptr<Elf> elf(info_->GetElf(process_memory_, false));
   ASSERT_TRUE(elf.get() != nullptr);
@@ -101,10 +101,10 @@ TEST_F(MapInfoGetElfTest, gnu_debugdata_do_not_init32) {
 }
 
 TEST_F(MapInfoGetElfTest, gnu_debugdata_do_not_init64) {
-  TestInitGnuDebugdata<Elf64_Ehdr, Elf64_Shdr>(ELFCLASS64, EM_AARCH64, false,
-                                               [&](uint64_t offset, const void* ptr, size_t size) {
-                                                 memory_->SetMemory(0x1000 + offset, ptr, size);
-                                               });
+  TestInitGnuDebugdata<Elf64_Ehdr, Elf64_Shdr>(
+      ELFCLASS64, EM_AARCH64, false, [&](uint64_t offset, const void* ptr, size_t size) {
+        memory_->SetMemory(0x1000 + offset, ptr, size);
+      });
 
   std::unique_ptr<Elf> elf(info_->GetElf(process_memory_, false));
   ASSERT_TRUE(elf.get() != nullptr);
@@ -115,10 +115,10 @@ TEST_F(MapInfoGetElfTest, gnu_debugdata_do_not_init64) {
 }
 
 TEST_F(MapInfoGetElfTest, gnu_debugdata_init32) {
-  TestInitGnuDebugdata<Elf32_Ehdr, Elf32_Shdr>(ELFCLASS32, EM_ARM, true,
-                                               [&](uint64_t offset, const void* ptr, size_t size) {
-                                                 memory_->SetMemory(0x1000 + offset, ptr, size);
-                                               });
+  TestInitGnuDebugdata<Elf32_Ehdr, Elf32_Shdr>(
+      ELFCLASS32, EM_ARM, true, [&](uint64_t offset, const void* ptr, size_t size) {
+        memory_->SetMemory(0x1000 + offset, ptr, size);
+      });
 
   std::unique_ptr<Elf> elf(info_->GetElf(process_memory_, true));
   ASSERT_TRUE(elf.get() != nullptr);
@@ -129,10 +129,10 @@ TEST_F(MapInfoGetElfTest, gnu_debugdata_init32) {
 }
 
 TEST_F(MapInfoGetElfTest, gnu_debugdata_init64) {
-  TestInitGnuDebugdata<Elf64_Ehdr, Elf64_Shdr>(ELFCLASS64, EM_AARCH64, true,
-                                               [&](uint64_t offset, const void* ptr, size_t size) {
-                                                 memory_->SetMemory(0x1000 + offset, ptr, size);
-                                               });
+  TestInitGnuDebugdata<Elf64_Ehdr, Elf64_Shdr>(
+      ELFCLASS64, EM_AARCH64, true, [&](uint64_t offset, const void* ptr, size_t size) {
+        memory_->SetMemory(0x1000 + offset, ptr, size);
+      });
 
   std::unique_ptr<Elf> elf(info_->GetElf(process_memory_, true));
   ASSERT_TRUE(elf.get() != nullptr);
@@ -141,5 +141,6 @@ TEST_F(MapInfoGetElfTest, gnu_debugdata_init64) {
   EXPECT_EQ(ELFCLASS64, elf->class_type());
   EXPECT_TRUE(elf->gnu_debugdata_interface() != nullptr);
 }
+#endif
 
 }  // namespace unwindstack
