@@ -25,6 +25,7 @@
 
 #include <list>
 
+#include <packagelistparser/packagelistparser.h>
 #include <private/android_logger.h>
 
 #include "LogStatistics.h"
@@ -33,6 +34,40 @@ static const uint64_t hourSec = 60 * 60;
 static const uint64_t monthSec = 31 * 24 * hourSec;
 
 size_t LogStatistics::SizesTotal;
+
+namespace {
+
+char* UidToPackageUserName(uid_t uid) {
+    if (!uid) {
+        return nullptr;
+    }
+
+    struct Userdata {
+        uid_t uid;
+        char* name;
+    } userdata = {
+        .uid = uid,
+        .name = nullptr,
+    };
+
+    packagelist_parse(
+        [](pkg_info* info, void* callback_parameter) {
+            auto userdata = reinterpret_cast<Userdata*>(callback_parameter);
+            bool result = true;
+            if (info->uid == userdata->uid) {
+                userdata->name = strdup(info->name);
+                // false to stop processing
+                result = false;
+            }
+            packagelist_free(info);
+            return result;
+        },
+        &userdata);
+
+    return userdata.name;
+}
+
+}  // namespace
 
 LogStatistics::LogStatistics() : enable(false) {
     log_time now(CLOCK_REALTIME);
@@ -257,9 +292,9 @@ const char* LogStatistics::uidToName(uid_t uid) const {
 
     // Parse /data/system/packages.list
     uid_t userId = uid % AID_USER_OFFSET;
-    const char* name = android::uidToName(userId);
+    const char* name = UidToPackageUserName(userId);
     if (!name && (userId > (AID_SHARED_GID_START - AID_APP))) {
-        name = android::uidToName(userId - (AID_SHARED_GID_START - AID_APP));
+        name = UidToPackageUserName(userId - (AID_SHARED_GID_START - AID_APP));
     }
     if (name) {
         return name;
