@@ -28,6 +28,14 @@ init_options += \
     -DSHUTDOWN_ZERO_TIMEOUT=0
 endif
 
+ifeq (true,$(TARGET_CONTAINER))
+init_options += \
+    -DALLOW_HANDLING_SIGTERM=1
+else
+init_options += \
+    -DALLOW_HANDLING_SIGTERM=0
+endif
+
 init_options += -DLOG_UEVENTS=0
 
 init_cflags += \
@@ -48,7 +56,7 @@ LOCAL_SRC_FILES:= \
     init_first_stage.cpp \
     keychords.cpp \
     reboot.cpp \
-    signal_handler.cpp \
+    sigchld_handler.cpp \
     ueventd.cpp \
     watchdogd.cpp \
 
