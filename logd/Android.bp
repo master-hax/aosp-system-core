@@ -50,7 +50,10 @@ cc_library_static {
     ],
     logtags: ["event.logtags"],
 
-    shared_libs: ["libbase"],
+    shared_libs: [
+        "libbase",
+        "libpackagelistparser",
+    ],
 
     export_include_dirs: ["."],
 

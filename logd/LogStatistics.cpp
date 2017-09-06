@@ -25,6 +25,7 @@
 
 #include <list>
 
+#include <packagelistparser/packagelistparser.h>
 #include <private/android_logger.h>
 
 #include "LogStatistics.h"
@@ -49,6 +50,32 @@ LogStatistics::LogStatistics() : enable(false) {
 }
 
 namespace android {
+
+char* uidToName(uid_t uid) {
+    struct Userdata {
+        uid_t uid;
+        char* name;
+    } userdata = {
+            .uid = uid,
+            .name = nullptr,
+    };
+
+    packagelist_parse(
+            [](pkg_info* info, void* callback_parameter) {
+                auto userdata = reinterpret_cast<Userdata*>(callback_parameter);
+                bool result = true;
+                if (info->uid == userdata->uid) {
+                    userdata->name = strdup(info->name);
+                    // false to stop processing
+                    result = false;
+                }
+                packagelist_free(info);
+                return result;
+            },
+            &userdata);
+
+    return userdata.name;
+}
 
 size_t sizesTotal() {
     return LogStatistics::sizesTotal();
