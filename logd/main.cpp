@@ -35,8 +35,10 @@
 
 #include <cstdbool>
 #include <memory>
+#include <thread>
 
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <cutils/android_get_control_file.h>
 #include <cutils/properties.h>
 #include <cutils/sched_policy.h>
@@ -219,50 +221,19 @@ void android::prdebug(const char* fmt, ...) {
     }
 }
 
-static sem_t reinit;
-static bool reinit_running = false;
-static LogBuffer* logBuf = nullptr;
+static void ReinitThread(LogBuffer* logBuf) {
+    android::base::WaitForProperty("ro.persistent_properties.ready", "true");
 
-static void* reinit_thread_start(void* /*obj*/) {
-    prctl(PR_SET_NAME, "logd.daemon");
-    set_sched_policy(0, SP_BACKGROUND);
-    setpriority(PRIO_PROCESS, 0, ANDROID_PRIORITY_BACKGROUND);
-
-    while (reinit_running && !sem_wait(&reinit) && reinit_running) {
-        if (fdDmesg >= 0) {
-            static const char reinit_message[] = { KMSG_PRIORITY(LOG_INFO),
-                                                   'l',
-                                                   'o',
-                                                   'g',
-                                                   'd',
-                                                   '.',
-                                                   'd',
-                                                   'a',
-                                                   'e',
-                                                   'm',
-                                                   'o',
-                                                   'n',
-                                                   ':',
-                                                   ' ',
-                                                   'r',
-                                                   'e',
-                                                   'i',
-                                                   'n',
-                                                   'i',
-                                                   't',
-                                                   '\n' };
-            write(fdDmesg, reinit_message, sizeof(reinit_message));
-        }
-
-        // Anything that reads persist.<property>
-        if (logBuf) {
-            logBuf->init();
-            logBuf->initPrune(nullptr);
-        }
-        android::ReReadEventLogTags();
+    if (fdDmesg >= 0) {
+        std::string reinit_message = { KMSG_PRIORITY(LOG_INFO) };
+        reinit_message += "logd: reinit\n";
+        write(fdDmesg, reinit_message.c_str(), reinit_message.size());
     }
 
-    return nullptr;
+    // Anything that reads persist.<property>
+    logBuf->init();
+    logBuf->initPrune(nullptr);
+    android::ReReadEventLogTags();
 }
 
 char* android::uidToName(uid_t uid) {
@@ -292,12 +263,6 @@ char* android::uidToName(uid_t uid) {
         &userdata);
 
     return userdata.name;
-}
-
-// Serves as a global method to trigger reinitialization
-// and as a function that can be provided to signal().
-void reinit_signal_handler(int /*signal*/) {
-    sem_post(&reinit);
 }
 
 static void readDmesg(LogAudit* al, LogKlog* kl) {
@@ -342,53 +307,18 @@ static void readDmesg(LogAudit* al, LogKlog* kl) {
     }
 }
 
-static int issueReinit() {
-    cap_t caps = cap_init();
-    (void)cap_clear(caps);
-    (void)cap_set_proc(caps);
-    (void)cap_free(caps);
-
-    int sock = TEMP_FAILURE_RETRY(socket_local_client(
-        "logd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM));
-    if (sock < 0) return -errno;
-
-    static const char reinitStr[] = "reinit";
-    ssize_t ret = TEMP_FAILURE_RETRY(write(sock, reinitStr, sizeof(reinitStr)));
-    if (ret < 0) return -errno;
-
-    struct pollfd p;
-    memset(&p, 0, sizeof(p));
-    p.fd = sock;
-    p.events = POLLIN;
-    ret = TEMP_FAILURE_RETRY(poll(&p, 1, 1000));
-    if (ret < 0) return -errno;
-    if ((ret == 0) || !(p.revents & POLLIN)) return -ETIME;
-
-    static const char success[] = "success";
-    char buffer[sizeof(success) - 1];
-    memset(buffer, 0, sizeof(buffer));
-    ret = TEMP_FAILURE_RETRY(read(sock, buffer, sizeof(buffer)));
-    if (ret < 0) return -errno;
-
-    return strncmp(buffer, success, sizeof(success) - 1) != 0;
-}
-
 // Foreground waits for exit of the main persistent threads
 // that are started here. The threads are created to manage
 // UNIX domain client sockets for writing, reading and
 // controlling the user space logger, and for any additional
 // logging plugins like auditd and restart control. Additional
 // transitory per-client threads are created for each reader.
-int main(int argc, char* argv[]) {
+int main() {
     // logd is written under the assumption that the timezone is UTC.
     // If TZ is not set, persist.sys.timezone is looked up in some time utility
     // libc functions, including mktime. It confuses the logd time handling,
     // so here explicitly set TZ to UTC, which overrides the property.
     setenv("TZ", "UTC", 1);
-    // issue reinit command. KISS argument parsing.
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        return issueReinit();
-    }
 
     static const char dev_kmsg[] = "/dev/kmsg";
     fdDmesg = android_get_control_file(dev_kmsg);
@@ -425,28 +355,10 @@ int main(int argc, char* argv[]) {
     // LogBuffer is the object which is responsible for holding all
     // log entries.
 
-    logBuf = new LogBuffer(times);
+    LogBuffer* logBuf = new LogBuffer(times);
 
-    // Reinit Thread
-    sem_init(&reinit, 0, 0);
-    pthread_attr_t attr;
-    if (!pthread_attr_init(&attr)) {
-        struct sched_param param;
-
-        memset(&param, 0, sizeof(param));
-        pthread_attr_setschedparam(&attr, &param);
-        pthread_attr_setschedpolicy(&attr, SCHED_BATCH);
-        if (!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) {
-            pthread_t thread;
-            reinit_running = true;
-            if (pthread_create(&thread, &attr, reinit_thread_start, nullptr)) {
-                reinit_running = false;
-            }
-        }
-        pthread_attr_destroy(&attr);
-    }
-
-    signal(SIGHUP, reinit_signal_handler);
+    auto reinit_thread = std::thread([logBuf]() { ReinitThread(logBuf); });
+    reinit_thread.detach();
 
     if (__android_logger_property_get_bool(
             "logd.statistics", BOOL_DEFAULT_TRUE | BOOL_DEFAULT_FLAG_PERSIST |
