@@ -34,6 +34,8 @@
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Memory.h>
 
+#include "TestUtils.h"
+
 namespace unwindstack {
 
 class MapInfoCreateMemoryTest : public ::testing::Test {
@@ -231,15 +233,11 @@ TEST_F(MapInfoCreateMemoryTest, remote_memory) {
     exit(1);
   }
   ASSERT_LT(0, pid);
+  TestScopedPidReaper reap(pid);
 
-  ASSERT_TRUE(ptrace(PTRACE_ATTACH, pid, 0, 0) != -1);
-  uint64_t iterations = 0;
-  siginfo_t si;
-  while (TEMP_FAILURE_RETRY(ptrace(PTRACE_GETSIGINFO, pid, 0, &si)) < 0 && errno == ESRCH) {
-    usleep(30);
-    iterations++;
-    ASSERT_LT(iterations, 500000000ULL);
-  }
+  ASSERT_EQ(0, ptrace(PTRACE_ATTACH, pid, 0, 0))
+      << "ptrace attach failed with unexpected error: " << strerror(errno);
+  ASSERT_TRUE(TestQuiescePid(pid)) << "Failed to quiesce the forked process: " << strerror(errno);
 
   MapInfo info;
   info.start = reinterpret_cast<uint64_t>(buffer.data());
@@ -259,9 +257,6 @@ TEST_F(MapInfoCreateMemoryTest, remote_memory) {
   }
 
   ASSERT_TRUE(ptrace(PTRACE_DETACH, pid, 0, 0) == 0);
-
-  kill(pid, SIGKILL);
-  ASSERT_EQ(pid, wait(nullptr));
 }
 
 }  // namespace unwindstack
