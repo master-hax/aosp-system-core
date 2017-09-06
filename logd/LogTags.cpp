@@ -349,9 +349,6 @@ LogTags::LogTags() {
     ReadFileEventLogTags(system_event_log_tags);
     // Following will likely fail on boot, but is required if logd restarts
     ReadFileEventLogTags(dynamic_event_log_tags, false);
-    if (__android_log_is_debuggable()) {
-        ReadFileEventLogTags(debug_event_log_tags, false);
-    }
     ReadPersistEventLogTags();
 
     logtags = this;
