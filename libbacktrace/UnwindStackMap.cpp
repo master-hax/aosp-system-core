@@ -99,7 +99,8 @@ std::string UnwindStackMap::GetFunctionName(uintptr_t pc, uintptr_t* offset) {
 //-------------------------------------------------------------------------
 // BacktraceMap create function.
 //-------------------------------------------------------------------------
-BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached) {
+BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached,
+                                      std::shared_ptr<unwindstack::Memory>* process_memory) {
   BacktraceMap* map;
 
   if (uncached) {
@@ -114,5 +115,10 @@ BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached) {
     delete map;
     return nullptr;
   }
+
+  if (!uncached && process_memory) {
+    *process_memory = static_cast<UnwindStackMap*>(map)->process_memory();
+  }
+
   return map;
 }

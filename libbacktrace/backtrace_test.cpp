@@ -85,6 +85,10 @@ struct dump_thread_t {
 typedef Backtrace* (*create_func_t)(pid_t, pid_t, BacktraceMap*);
 typedef BacktraceMap* (*map_create_func_t)(pid_t, bool);
 
+static BacktraceMap* BacktraceMapCreateNew(pid_t pid, bool uncached) {
+  return BacktraceMap::CreateNew(pid, uncached);
+}
+
 static void VerifyLevelDump(Backtrace* backtrace, create_func_t create_func = nullptr,
                             map_create_func_t map_func = nullptr);
 static void VerifyMaxDump(Backtrace* backtrace, create_func_t create_func = nullptr,
@@ -375,7 +379,7 @@ TEST(libbacktrace, ptrace_trace_new) {
     _exit(1);
   }
   VerifyProcTest(pid, BACKTRACE_CURRENT_THREAD, ReadyLevelBacktrace, VerifyLevelDump,
-                 Backtrace::CreateNew, BacktraceMap::CreateNew);
+                 Backtrace::CreateNew, BacktraceMapCreateNew);
 
   kill(pid, SIGKILL);
   int status;
@@ -403,7 +407,7 @@ TEST(libbacktrace, ptrace_max_trace_new) {
     _exit(1);
   }
   VerifyProcTest(pid, BACKTRACE_CURRENT_THREAD, ReadyMaxBacktrace, VerifyMaxDump,
-                 Backtrace::CreateNew, BacktraceMap::CreateNew);
+                 Backtrace::CreateNew, BacktraceMapCreateNew);
 
   kill(pid, SIGKILL);
   int status;
@@ -447,7 +451,7 @@ TEST(libbacktrace, ptrace_ignore_frames_new) {
     _exit(1);
   }
   VerifyProcTest(pid, BACKTRACE_CURRENT_THREAD, ReadyLevelBacktrace, VerifyProcessIgnoreFrames,
-                 Backtrace::CreateNew, BacktraceMap::CreateNew);
+                 Backtrace::CreateNew, BacktraceMapCreateNew);
 
   kill(pid, SIGKILL);
   int status;
@@ -550,7 +554,7 @@ TEST(libbacktrace, ptrace_threads_new) {
       continue;
     }
     VerifyProcTest(pid, *it, ReadyLevelBacktrace, VerifyLevelDump, Backtrace::CreateNew,
-                   BacktraceMap::CreateNew);
+                   BacktraceMapCreateNew);
   }
 
   FinishRemoteProcess(pid);
@@ -1833,7 +1837,7 @@ TEST(libbacktrace, unwind_remote_through_signal_using_handler) {
 }
 
 TEST(libbacktrace, unwind_remote_through_signal_using_handler_new) {
-  UnwindThroughSignal(false, Backtrace::CreateNew, BacktraceMap::CreateNew);
+  UnwindThroughSignal(false, Backtrace::CreateNew, BacktraceMapCreateNew);
 }
 
 TEST(libbacktrace, unwind_remote_through_signal_using_action) {
@@ -1841,7 +1845,7 @@ TEST(libbacktrace, unwind_remote_through_signal_using_action) {
 }
 
 TEST(libbacktrace, unwind_remote_through_signal_using_action_new) {
-  UnwindThroughSignal(true, Backtrace::CreateNew, BacktraceMap::CreateNew);
+  UnwindThroughSignal(true, Backtrace::CreateNew, BacktraceMapCreateNew);
 }
 
 #if defined(ENABLE_PSS_TESTS)

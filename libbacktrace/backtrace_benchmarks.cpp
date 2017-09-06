@@ -154,8 +154,12 @@ static void BM_create_map(benchmark::State& state) {
 }
 BENCHMARK(BM_create_map)->Arg(kNumIterations);
 
+static BacktraceMap* BacktraceMapCreateNew(pid_t pid, bool uncached) {
+  return BacktraceMap::CreateNew(pid, uncached);
+}
+
 static void BM_create_map_new(benchmark::State& state) {
-  CreateMap(state, BacktraceMap::CreateNew);
+  CreateMap(state, BacktraceMapCreateNew);
 }
 BENCHMARK(BM_create_map_new)->Arg(kNumIterations);
 
