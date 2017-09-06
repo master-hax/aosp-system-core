@@ -41,7 +41,6 @@
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <log/event_tag_map.h>
-#include <packagelistparser/packagelistparser.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 #include <processgroup/sched_policy.h>
@@ -150,43 +149,14 @@ void android::prdebug(const char* fmt, ...) {
     }
 }
 
-static sem_t uidName;
-static uid_t uid;
-static char* name;
-
 static sem_t reinit;
 static bool reinit_running = false;
 static LogBuffer* logBuf = nullptr;
-
-static bool package_list_parser_cb(pkg_info* info, void* /* userdata */) {
-    bool rc = true;
-    if (info->uid == uid) {
-        name = strdup(info->name);
-        // false to stop processing
-        rc = false;
-    }
-
-    packagelist_free(info);
-    return rc;
-}
 
 static void* reinit_thread_start(void* /*obj*/) {
     prctl(PR_SET_NAME, "logd.daemon");
 
     while (reinit_running && !sem_wait(&reinit) && reinit_running) {
-        // uidToName Privileged Worker
-        if (uid) {
-            name = nullptr;
-
-            // if we got the perms wrong above, this would spam if we reported
-            // problems with acquisition of an uid name from the packages.
-            (void)packagelist_parse(package_list_parser_cb, nullptr);
-
-            uid = 0;
-            sem_post(&uidName);
-            continue;
-        }
-
         if (fdDmesg >= 0) {
             static const char reinit_message[] = { KMSG_PRIORITY(LOG_INFO),
                                                    'l',
@@ -221,28 +191,6 @@ static void* reinit_thread_start(void* /*obj*/) {
     }
 
     return nullptr;
-}
-
-static sem_t sem_name;
-
-char* android::uidToName(uid_t u) {
-    if (!u || !reinit_running) {
-        return nullptr;
-    }
-
-    sem_wait(&sem_name);
-
-    // Not multi-thread safe, we use sem_name to protect
-    uid = u;
-
-    name = nullptr;
-    sem_post(&reinit);
-    sem_wait(&uidName);
-    char* ret = name;
-
-    sem_post(&sem_name);
-
-    return ret;
 }
 
 // Serves as a global method to trigger reinitialization
@@ -363,8 +311,6 @@ int main(int argc, char* argv[]) {
 
     // Reinit Thread
     sem_init(&reinit, 0, 0);
-    sem_init(&uidName, 0, 0);
-    sem_init(&sem_name, 0, 1);
     pthread_attr_t attr;
     if (!pthread_attr_init(&attr)) {
         struct sched_param param;

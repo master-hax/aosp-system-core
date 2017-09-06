@@ -29,8 +29,6 @@
 
 namespace android {
 
-// Furnished in main.cpp. Caller must own and free returned value
-char* uidToName(uid_t uid);
 void prdebug(const char* fmt, ...) __printflike(1, 2);
 
 // Furnished in LogStatistics.cpp.
@@ -40,6 +38,7 @@ char* pidToName(pid_t pid);
 char* tidToName(pid_t tid);
 uid_t pidToUid(pid_t pid);
 pid_t tidToPid(pid_t tid);
+char* uidToName(uid_t uid);
 
 // Furnished in LogTags.cpp. Thread safe.
 const char* tagToName(uint32_t tag);
