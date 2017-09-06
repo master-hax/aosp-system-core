@@ -18,6 +18,7 @@
 
 #include <signal.h>
 #include <string.h>
+#include <sys/signalfd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -30,6 +31,7 @@
 
 #include "init.h"
 #include "property_service.h"
+#include "reboot.h"
 #include "service.h"
 
 using android::base::StringPrintf;
@@ -41,6 +43,8 @@ namespace init {
 
 static int signal_write_fd = -1;
 static int signal_read_fd = -1;
+
+static void HandleSigterm(struct signalfd_siginfo* siginfo);
 
 static bool ReapOneProcess() {
     siginfo_t siginfo = {};
@@ -97,15 +101,28 @@ static bool ReapOneProcess() {
 }
 
 static void handle_signal() {
-    // Clear outstanding requests.
-    char buf[32];
-    read(signal_read_fd, buf, sizeof(buf));
+    struct signalfd_siginfo siginfo;
+    ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_read_fd, &siginfo, sizeof(siginfo)));
+    if (bytes_read != sizeof(siginfo)) {
+        // Even if we failed to read the whole information about the signal, we
+        // still want to reap any outstanding children.
+        ReapAnyOutstandingChildren();
+        return;
+    }
 
-    ReapAnyOutstandingChildren();
+    switch (siginfo.ssi_signo) {
+        case SIGCHLD:
+            ReapAnyOutstandingChildren();
+            break;
+
+        case SIGTERM:
+            HandleSigterm(&siginfo);
+            break;
+    }
 }
 
-static void SIGCHLD_handler(int) {
-    if (TEMP_FAILURE_RETRY(write(signal_write_fd, "1", 1)) == -1) {
+static void signal_handler(int, siginfo_t* siginfo, void*) {
+    if (TEMP_FAILURE_RETRY(write(signal_write_fd, siginfo, sizeof(siginfo_t))) == -1) {
         PLOG(ERROR) << "write(signal_write_fd) failed";
     }
 }
@@ -113,6 +130,16 @@ static void SIGCHLD_handler(int) {
 void ReapAnyOutstandingChildren() {
     while (ReapOneProcess()) {
     }
+}
+
+static void HandleSigterm(struct signalfd_siginfo* siginfo) {
+    if (siginfo->ssi_pid != 0) {
+        // Drop any userspace SIGTERM requests.
+        LOG(DEBUG) << "Ignoring SIGTERM from pid " << siginfo->ssi_pid;
+        return;
+    }
+
+    HandlePowerctlMessage("shutdown");
 }
 
 void signal_handler_init() {
@@ -129,9 +156,17 @@ void signal_handler_init() {
     // Write to signal_write_fd if we catch SIGCHLD.
     struct sigaction act;
     memset(&act, 0, sizeof(act));
-    act.sa_handler = SIGCHLD_handler;
-    act.sa_flags = SA_NOCLDSTOP;
-    sigaction(SIGCHLD, &act, 0);
+    act.sa_sigaction = signal_handler;
+    act.sa_flags = SA_NOCLDSTOP | SA_SIGINFO;
+    sigaction(SIGCHLD, &act, nullptr);
+
+    // Also write to signal_write_fd if we catch SIGTERM.
+    if (ALLOW_HANDLING_SIGTERM) {
+        memset(&act, 0, sizeof(act));
+        act.sa_sigaction = signal_handler;
+        act.sa_flags = SA_SIGINFO;
+        sigaction(SIGTERM, &act, nullptr);
+    }
 
     ReapAnyOutstandingChildren();
 
