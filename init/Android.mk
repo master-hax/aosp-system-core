@@ -8,6 +8,7 @@ ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
 init_options += \
     -DALLOW_LOCAL_PROP_OVERRIDE=1 \
     -DALLOW_PERMISSIVE_SELINUX=1 \
+    -DALLOW_HANDLING_SIGTERM=1 \
     -DREBOOT_BOOTLOADER_ON_PANIC=1 \
     -DWORLD_WRITABLE_KMSG=1 \
     -DDUMP_ON_UMOUNT_FAILURE=1
@@ -15,6 +16,7 @@ else
 init_options += \
     -DALLOW_LOCAL_PROP_OVERRIDE=0 \
     -DALLOW_PERMISSIVE_SELINUX=0 \
+    -DALLOW_HANDLING_SIGTERM=0 \
     -DREBOOT_BOOTLOADER_ON_PANIC=0 \
     -DWORLD_WRITABLE_KMSG=0 \
     -DDUMP_ON_UMOUNT_FAILURE=0
@@ -48,7 +50,7 @@ LOCAL_SRC_FILES:= \
     init_first_stage.cpp \
     keychords.cpp \
     reboot.cpp \
-    signal_handler.cpp \
+    sigchld_handler.cpp \
     ueventd.cpp \
     watchdogd.cpp \
 
