@@ -49,7 +49,6 @@ CommandListener::CommandListener(LogBuffer* buf, LogReader* /*reader*/,
     registerCmd(new SetPruneListCmd(buf));
     registerCmd(new GetPruneListCmd(buf));
     registerCmd(new GetEventTagCmd(buf));
-    registerCmd(new ReinitCmd());
     registerCmd(new ExitCmd(this));
 }
 
@@ -322,20 +321,6 @@ int CommandListener::GetEventTagCmd::runCommand(SocketClient* cli, int argc,
 
     cli->sendMsg(
         package_string(mBuf.formatGetEventTag(uid, name, format)).c_str());
-
-    return 0;
-}
-
-CommandListener::ReinitCmd::ReinitCmd() : LogCommand("reinit") {
-}
-
-int CommandListener::ReinitCmd::runCommand(SocketClient* cli, int /*argc*/,
-                                           char** /*argv*/) {
-    setname();
-
-    reinit_signal_handler(SIGHUP);
-
-    cli->sendMsg("success");
 
     return 0;
 }
