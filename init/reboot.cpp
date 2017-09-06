@@ -54,7 +54,7 @@
 #include "init.h"
 #include "property_service.h"
 #include "service.h"
-#include "signal_handler.h"
+#include "sigchld_handler.h"
 
 using android::base::StringPrintf;
 using android::base::Timer;
