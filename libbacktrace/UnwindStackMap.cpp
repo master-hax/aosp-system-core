@@ -78,20 +78,29 @@ void UnwindStackMap::FillIn(uintptr_t addr, backtrace_map_t* map) {
 //-------------------------------------------------------------------------
 // BacktraceMap create function.
 //-------------------------------------------------------------------------
-BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached) {
+BacktraceMap* BacktraceMap::CreateNew(pid_t pid, bool uncached,
+                                      std::shared_ptr<unwindstack::Memory>* process_memory) {
   BacktraceMap* map;
+  std::shared_ptr<unwindstack::Memory> memory;
 
   if (uncached) {
     // Force use of the base class to parse the maps when this call is made.
     map = new BacktraceMap(pid);
   } else if (pid == getpid()) {
     map = new UnwindStackMap(0);
+    memory = static_cast<UnwindStackMap*>(map)->process_memory();
   } else {
     map = new UnwindStackMap(pid);
+    memory = static_cast<UnwindStackMap*>(map)->process_memory();
   }
   if (!map->Build()) {
     delete map;
     return nullptr;
   }
+
+  if (process_memory) {
+    *process_memory = memory;
+  }
+
   return map;
 }
