@@ -42,7 +42,6 @@
 #include <cutils/sched_policy.h>
 #include <cutils/sockets.h>
 #include <log/event_tag_map.h>
-#include <packagelistparser/packagelistparser.h>
 #include <private/android_filesystem_config.h>
 #include <private/android_logger.h>
 #include <utils/threads.h>
@@ -142,7 +141,11 @@ static int drop_privs(bool klogd, bool auditd) {
         if (!eng) return -1;
     }
 
-    gid_t groups[] = { AID_READPROC };
+    gid_t groups[] = {
+        AID_READPROC,
+        AID_SYSTEM,        // search access to /data/system path
+        AID_PACKAGE_INFO,  // readonly access to /data/system/packages.list
+    };
 
     if (setgroups(arraysize(groups), groups) == -1) {
         android::prdebug("failed to set AID_READPROC groups");
@@ -215,67 +218,16 @@ void android::prdebug(const char* fmt, ...) {
     }
 }
 
-static sem_t uidName;
-static uid_t uid;
-static char* name;
-
 static sem_t reinit;
 static bool reinit_running = false;
 static LogBuffer* logBuf = nullptr;
-
-static bool package_list_parser_cb(pkg_info* info, void* /* userdata */) {
-    bool rc = true;
-    if (info->uid == uid) {
-        name = strdup(info->name);
-        // false to stop processing
-        rc = false;
-    }
-
-    packagelist_free(info);
-    return rc;
-}
 
 static void* reinit_thread_start(void* /*obj*/) {
     prctl(PR_SET_NAME, "logd.daemon");
     set_sched_policy(0, SP_BACKGROUND);
     setpriority(PRIO_PROCESS, 0, ANDROID_PRIORITY_BACKGROUND);
 
-    // We should drop to AID_LOGD, if we are anything else, we have
-    // even lesser privileges and accept our fate.
-    gid_t groups[] = {
-        AID_SYSTEM,        // search access to /data/system path
-        AID_PACKAGE_INFO,  // readonly access to /data/system/packages.list
-    };
-    if (setgroups(arraysize(groups), groups) == -1) {
-        android::prdebug(
-            "logd.daemon: failed to set AID_SYSTEM AID_PACKAGE_INFO groups");
-    }
-    if (setgid(AID_LOGD) != 0) {
-        android::prdebug("logd.daemon: failed to set AID_LOGD gid");
-    }
-    if (setuid(AID_LOGD) != 0) {
-        android::prdebug("logd.daemon: failed to set AID_LOGD uid");
-    }
-
-    cap_t caps = cap_init();
-    (void)cap_clear(caps);
-    (void)cap_set_proc(caps);
-    (void)cap_free(caps);
-
     while (reinit_running && !sem_wait(&reinit) && reinit_running) {
-        // uidToName Privileged Worker
-        if (uid) {
-            name = nullptr;
-
-            // if we got the perms wrong above, this would spam if we reported
-            // problems with acquisition of an uid name from the packages.
-            (void)packagelist_parse(package_list_parser_cb, nullptr);
-
-            uid = 0;
-            sem_post(&uidName);
-            continue;
-        }
-
         if (fdDmesg >= 0) {
             static const char reinit_message[] = { KMSG_PRIORITY(LOG_INFO),
                                                    'l',
@@ -310,28 +262,6 @@ static void* reinit_thread_start(void* /*obj*/) {
     }
 
     return nullptr;
-}
-
-static sem_t sem_name;
-
-char* android::uidToName(uid_t u) {
-    if (!u || !reinit_running) {
-        return nullptr;
-    }
-
-    sem_wait(&sem_name);
-
-    // Not multi-thread safe, we use sem_name to protect
-    uid = u;
-
-    name = nullptr;
-    sem_post(&reinit);
-    sem_wait(&uidName);
-    char* ret = name;
-
-    sem_post(&sem_name);
-
-    return ret;
 }
 
 // Serves as a global method to trigger reinitialization
@@ -450,27 +380,6 @@ int main(int argc, char* argv[]) {
         if (fdPmesg < 0) android::prdebug("Failed to open %s\n", proc_kmsg);
     }
 
-    // Reinit Thread
-    sem_init(&reinit, 0, 0);
-    sem_init(&uidName, 0, 0);
-    sem_init(&sem_name, 0, 1);
-    pthread_attr_t attr;
-    if (!pthread_attr_init(&attr)) {
-        struct sched_param param;
-
-        memset(&param, 0, sizeof(param));
-        pthread_attr_setschedparam(&attr, &param);
-        pthread_attr_setschedpolicy(&attr, SCHED_BATCH);
-        if (!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) {
-            pthread_t thread;
-            reinit_running = true;
-            if (pthread_create(&thread, &attr, reinit_thread_start, nullptr)) {
-                reinit_running = false;
-            }
-        }
-        pthread_attr_destroy(&attr);
-    }
-
     bool auditd =
         __android_logger_property_get_bool("ro.logd.auditd", BOOL_DEFAULT_TRUE);
     if (drop_privs(klogd, auditd) != 0) {
@@ -487,6 +396,25 @@ int main(int argc, char* argv[]) {
     // log entries.
 
     logBuf = new LogBuffer(times);
+
+    // Reinit Thread
+    sem_init(&reinit, 0, 0);
+    pthread_attr_t attr;
+    if (!pthread_attr_init(&attr)) {
+        struct sched_param param;
+
+        memset(&param, 0, sizeof(param));
+        pthread_attr_setschedparam(&attr, &param);
+        pthread_attr_setschedpolicy(&attr, SCHED_BATCH);
+        if (!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) {
+            pthread_t thread;
+            reinit_running = true;
+            if (pthread_create(&thread, &attr, reinit_thread_start, nullptr)) {
+                reinit_running = false;
+            }
+        }
+        pthread_attr_destroy(&attr);
+    }
 
     signal(SIGHUP, reinit_signal_handler);
 

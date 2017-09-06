@@ -29,8 +29,6 @@
 
 namespace android {
 
-// Furnished in main.cpp. Caller must own and free returned value
-char* uidToName(uid_t uid);
 void prdebug(const char* fmt, ...) __printflike(1, 2);
 
 // Furnished in LogStatistics.cpp.
