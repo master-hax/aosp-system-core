@@ -46,6 +46,10 @@ struct backtrace_map_t {
   std::string name;
 };
 
+namespace unwindstack {
+class Memory;
+}
+
 class BacktraceMap {
 public:
   // If uncached is true, then parse the current process map as of the call.
@@ -53,7 +57,8 @@ public:
   // is unsupported.
   static BacktraceMap* Create(pid_t pid, bool uncached = false);
   // Same as above, but is compatible with the new unwinder.
-  static BacktraceMap* CreateNew(pid_t pid, bool uncached = false);
+  static BacktraceMap* CreateNew(pid_t pid, bool uncached = false,
+                                 std::shared_ptr<unwindstack::Memory>* process_memory = nullptr);
 
   static BacktraceMap* Create(pid_t pid, const std::vector<backtrace_map_t>& maps);
 
