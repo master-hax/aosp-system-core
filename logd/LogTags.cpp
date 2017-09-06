@@ -349,9 +349,6 @@ LogTags::LogTags() {
     ReadFileEventLogTags(system_event_log_tags);
     // Following will likely fail on boot, but is required if logd restarts
     ReadFileEventLogTags(dynamic_event_log_tags, false);
-    if (__android_log_is_debuggable()) {
-        ReadFileEventLogTags(debug_event_log_tags, false);
-    }
     ReadPersistEventLogTags();
 
     logtags = this;
@@ -386,23 +383,6 @@ const char* android::tagToName(uint32_t tag) {
     if (!me) return NULL;
     me->WritePmsgEventLogTags(tag);
     return me->tagToName(tag);
-}
-
-// Prototype in LogUtils.h allowing external access to our database.
-//
-// This only works on userdebug and eng devices to re-read the
-// /data/misc/logd/event-log-tags file right after /data is mounted.
-// The operation is near to boot and should only happen once.  There
-// are races associated with its use since it can trigger a Rebuild
-// of the file, but that is a can-not-happen since the file was not
-// read yet.  More dangerous if called later, but if all is well it
-// should just skip over everything and not write any new entries.
-void android::ReReadEventLogTags() {
-    LogTags* me = logtags;
-
-    if (me && __android_log_is_debuggable()) {
-        me->ReadFileEventLogTags(me->debug_event_log_tags);
-    }
 }
 
 // converts an event tag into a format

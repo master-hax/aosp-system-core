@@ -41,7 +41,6 @@ pid_t tidToPid(pid_t tid);
 
 // Furnished in LogTags.cpp. Thread safe.
 const char* tagToName(uint32_t tag);
-void ReReadEventLogTags();
 
 // Furnished by LogKlog.cpp
 char* log_strntok_r(char* s, ssize_t& len, char*& saveptr, ssize_t& sublen);

@@ -255,8 +255,6 @@ on property:sys.boot_from_charger_mode=1
 
 on load_persist_props_action
     load_persist_props
-    start logd
-    start logd-reinit
 
 # Indicate to fw loaders that the relevant mounts are up.
 on firmware_mounts_complete
@@ -657,8 +655,6 @@ on property:vold.decrypt=trigger_reset_main
 
 on property:vold.decrypt=trigger_load_persist_props
     load_persist_props
-    start logd
-    start logd-reinit
 
 on property:vold.decrypt=trigger_post_fs_data
     trigger post-fs-data

@@ -28,7 +28,8 @@
 
 #include <unordered_map>
 
-#include <cutils/properties.h>
+#include <android-base/properties.h>
+#include <log/log_properties.h>
 #include <private/android_logger.h>
 
 #include "LogBuffer.h"
@@ -46,6 +47,11 @@
 const log_time LogBuffer::pruneMargin(3, 0);
 
 void LogBuffer::init() {
+    if (__android_log_is_debuggable() &&
+        android::base::GetBoolProperty("ro.persistent_properties.ready", false)) {
+        tags.ReadFileEventLogTags(tags.debug_event_log_tags);
+    }
+
     log_id_for_each(i) {
         mLastSet[i] = false;
         mLast[i] = mLogElements.begin();
