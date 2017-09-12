@@ -276,6 +276,28 @@ TEST(result, no_copy_on_return) {
     EXPECT_EQ(0U, ConstructorTracker::move_assignment_called);
 }
 
+TEST(result, result_result_with_success) {
+    auto return_result_result_with_error = []() -> Result<Result<Success>> {
+        return Result<Success>();
+    };
+    auto result = return_result_result_with_error();
+    ASSERT_TRUE(result);
+    ASSERT_TRUE(*result);
+
+    auto inner_result = result.value();
+    ASSERT_TRUE(inner_result);
+}
+
+TEST(result, result_result_with_failure) {
+    auto return_result_result_with_error = []() -> Result<Result<Success>> {
+        return Result<Success>(ResultError("failure string", 6));
+    };
+    auto result = return_result_result_with_error();
+    ASSERT_TRUE(result);
+    EXPECT_EQ("failure string", result->error_string());
+    EXPECT_EQ(6, result->error_errno());
+}
+
 TEST(result, die_on_access_failed_result) {
     Result<std::string> result = Error();
     ASSERT_DEATH(*result, "");
