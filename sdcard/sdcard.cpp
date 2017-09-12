@@ -354,6 +354,28 @@ static bool sdcardfs_setup_bind_remount(const std::string& source_path, const st
     return true;
 }
 
+static bool should_use_bind_remount(const std::string& default_path)
+{
+    std::string features;
+    /* For the sake of AOSP sdcardfs only has configfs,
+       so put 'features' in configfs interface.
+       If 'features' doesn't exist, use bind remount by default */
+    if (!android::base::ReadFileToString("/config/sdcardfs/features", &features)) {
+        PLOG(DEBUG) << "/config/sdcardfs/features is not found";
+        return true;
+    }
+
+    return features.find("bindremount") != std::string::npos;
+}
+
+static int sdcardfs_derive_view(const std::string& source_path, const std::string& default_path,
+        const std::string& dest_path, uid_t fsuid, gid_t fsgid, bool multi_user,
+        userid_t userid, gid_t gid, mode_t mask) {
+    return should_use_bind_remount(default_path) ?
+        sdcardfs_setup_bind_remount(default_path, dest_path, gid, mask) :
+        sdcardfs_setup(source_path, dest_path, fsuid, fsgid, multi_user, userid, gid, mask);
+}
+
 static void run_sdcardfs(const std::string& source_path, const std::string& label, uid_t uid,
         gid_t gid, userid_t userid, bool multi_user, bool full_write) {
     std::string dest_path_default = "/mnt/runtime/default/" + label;
@@ -366,8 +388,11 @@ static void run_sdcardfs(const std::string& source_path, const std::string& labe
         // permissions are completely masked off.
         if (!sdcardfs_setup(source_path, dest_path_default, uid, gid, multi_user, userid,
                                                       AID_SDCARD_RW, 0006)
-                || !sdcardfs_setup_bind_remount(dest_path_default, dest_path_read, AID_EVERYBODY, 0027)
-                || !sdcardfs_setup_bind_remount(dest_path_default, dest_path_write,
+                || !sdcardfs_derive_view(source_path, dest_path_default, dest_path_read,
+                                                      uid, gid, multi_user, userid,
+                                                      AID_EVERYBODY, 0027)
+                || !sdcardfs_derive_view(source_path, dest_path_default, dest_path_write,
+                                                      uid, gid, multi_user, userid,
                                                       AID_EVERYBODY, full_write ? 0007 : 0027)) {
             LOG(FATAL) << "failed to sdcardfs_setup";
         }
