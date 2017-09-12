@@ -62,6 +62,33 @@ const std::string& get_android_dt_dir();
 bool read_android_dt_file(const std::string& sub_path, std::string* dt_content);
 bool is_android_dt_value_expected(const std::string& sub_path, const std::string& expected_content);
 
+class Deserializer {
+  public:
+    Deserializer(const std::string& contents) : contents_(contents), position_(0) {}
+
+    Result<std::vector<std::string>> ReadStrings();
+    Result<std::string> ReadString();
+    Result<uint32_t> ReadUint32();
+
+  private:
+    const std::string& contents_;
+    size_t position_;
+};
+
+class Serializer {
+  public:
+    Serializer() {}
+
+    void WriteStrings(const std::vector<std::string>& strings);
+    void WriteString(const std::string& string);
+    void WriteUint32(uint32_t value);
+
+    const std::string& contents() const { return contents_; }
+
+  private:
+    std::string contents_;
+};
+
 }  // namespace init
 }  // namespace android
 

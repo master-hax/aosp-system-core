@@ -392,5 +392,59 @@ bool is_android_dt_value_expected(const std::string& sub_path, const std::string
     return false;
 }
 
+Result<std::vector<std::string>> Deserializer::ReadStrings() {
+    auto num_strings = ReadUint32();
+    if (!num_strings) return Error() << "Could not read number of strings: " << num_strings.error();
+
+    std::vector<std::string> result;
+    for (uint32_t i = 0; i < *num_strings; ++i) {
+        auto string = ReadString();
+        if (!string) {
+            return Error() << "Could not read string " << i << ": " << string.error();
+        }
+        result.emplace_back(std::move(*string));
+    }
+    return result;
+}
+
+Result<std::string> Deserializer::ReadString() {
+    auto string_length = ReadUint32();
+    if (!string_length) {
+        return Error() << "Could not read size for string";
+    }
+
+    if (position_ + *string_length > contents_.size()) {
+        return Error() << "String size would cause it to overflow the input buffer";
+    }
+    auto result = std::string(contents_, position_, *string_length);
+    position_ += *string_length;
+    return result;
+}
+
+Result<uint32_t> Deserializer::ReadUint32() {
+    if (position_ + 3 > contents_.size()) {
+        return Error() << "Input buffer not large enough to read uint32_t";
+    }
+    uint32_t result = *reinterpret_cast<const uint32_t*>(&contents_[position_]);
+    position_ += sizeof(uint32_t);
+    return result;
+}
+
+void Serializer::WriteStrings(const std::vector<std::string>& strings) {
+    WriteUint32(strings.size());
+    for (const auto& string : strings) {
+        WriteString(string);
+    }
+}
+
+void Serializer::WriteString(const std::string& string) {
+    WriteUint32(string.length());
+    contents_.append(string);
+}
+
+void Serializer::WriteUint32(uint32_t value) {
+    contents_.append(reinterpret_cast<char*>(&value), sizeof(value));
+}
+
 }  // namespace init
 }  // namespace android
