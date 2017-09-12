@@ -135,23 +135,12 @@ std::vector<std::pair<std::string, std::string>> LoadPersistentPropertiesFromMem
     return properties;
 }
 
-class PersistentPropertyFileParser {
-  public:
-    PersistentPropertyFileParser(const std::string& contents) : contents_(contents), position_(0) {}
-    Result<std::vector<std::pair<std::string, std::string>>> Parse();
-
-  private:
-    Result<std::string> ReadString();
-    Result<uint32_t> ReadUint32();
-
-    const std::string& contents_;
-    size_t position_;
-};
-
-Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFileParser::Parse() {
+Result<std::vector<std::pair<std::string, std::string>>> ParsePersistentPropertyFile(
+    const std::string& contents) {
+    auto deserializer = Deserializer(contents);
     std::vector<std::pair<std::string, std::string>> result;
 
-    if (auto magic = ReadUint32(); magic) {
+    if (auto magic = deserializer.ReadUint32(); magic) {
         if (*magic != kMagic) {
             return Error() << "Magic value '0x" << std::hex << *magic
                            << "' does not match expected value '0x" << kMagic << "'";
@@ -160,7 +149,7 @@ Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFileP
         return Error() << "Could not read magic value: " << magic.error();
     }
 
-    if (auto version = ReadUint32(); version) {
+    if (auto version = deserializer.ReadUint32(); version) {
         if (*version != 1) {
             return Error() << "Version '" << *version
                            << "' does not match any compatible version: (1)";
@@ -169,20 +158,20 @@ Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFileP
         return Error() << "Could not read version: " << version.error();
     }
 
-    auto num_properties = ReadUint32();
+    auto num_properties = deserializer.ReadUint32();
     if (!num_properties) {
         return Error() << "Could not read num_properties: " << num_properties.error();
     }
 
-    while (position_ < contents_.size()) {
-        auto key = ReadString();
+    while (result.size() != *num_properties) {
+        auto key = deserializer.ReadString();
         if (!key) {
             return Error() << "Could not read key: " << key.error();
         }
         if (!StartsWith(*key, "persist.")) {
             return Error() << "Property '" << *key << "' does not starts with 'persist.'";
         }
-        auto value = ReadString();
+        auto value = deserializer.ReadString();
         if (!value) {
             return Error() << "Could not read value: " << value.error();
         }
@@ -194,29 +183,6 @@ Result<std::vector<std::pair<std::string, std::string>>> PersistentPropertyFileP
                        << " and number of persistent properties expected, " << *num_properties;
     }
 
-    return result;
-}
-
-Result<std::string> PersistentPropertyFileParser::ReadString() {
-    auto string_length = ReadUint32();
-    if (!string_length) {
-        return Error() << "Could not read size for string";
-    }
-
-    if (position_ + *string_length > contents_.size()) {
-        return Error() << "String size would cause it to overflow the input buffer";
-    }
-    auto result = std::string(contents_, position_, *string_length);
-    position_ += *string_length;
-    return result;
-}
-
-Result<uint32_t> PersistentPropertyFileParser::ReadUint32() {
-    if (position_ + 3 > contents_.size()) {
-        return Error() << "Input buffer not large enough to read uint32_t";
-    }
-    uint32_t result = *reinterpret_cast<const uint32_t*>(&contents_[position_]);
-    position_ += sizeof(uint32_t);
     return result;
 }
 
@@ -234,7 +200,7 @@ Result<std::vector<std::pair<std::string, std::string>>> LoadPersistentPropertyF
     if (!file_contents) {
         return Error() << "Unable to read persistent property file: " << file_contents.error();
     }
-    auto parsed_contents = PersistentPropertyFileParser(*file_contents).Parse();
+    auto parsed_contents = ParsePersistentPropertyFile(*file_contents);
     if (!parsed_contents) {
         // If the file cannot be parsed, then we don't have any recovery mechanisms, so we delete
         // it to allow for future writes to take place successfully.
@@ -246,26 +212,17 @@ Result<std::vector<std::pair<std::string, std::string>>> LoadPersistentPropertyF
 
 std::string GenerateFileContents(
     const std::vector<std::pair<std::string, std::string>>& persistent_properties) {
-    std::string result;
+    auto serializer = Serializer();
 
-    uint32_t magic = kMagic;
-    result.append(reinterpret_cast<char*>(&magic), sizeof(uint32_t));
-
-    uint32_t version = 1;
-    result.append(reinterpret_cast<char*>(&version), sizeof(uint32_t));
-
-    uint32_t num_properties = persistent_properties.size();
-    result.append(reinterpret_cast<char*>(&num_properties), sizeof(uint32_t));
+    serializer.WriteUint32(kMagic);
+    serializer.WriteUint32(1);  // Version
+    serializer.WriteUint32(persistent_properties.size());
 
     for (const auto& [key, value] : persistent_properties) {
-        uint32_t key_length = key.length();
-        result.append(reinterpret_cast<char*>(&key_length), sizeof(uint32_t));
-        result.append(key);
-        uint32_t value_length = value.length();
-        result.append(reinterpret_cast<char*>(&value_length), sizeof(uint32_t));
-        result.append(value);
+        serializer.WriteString(key);
+        serializer.WriteString(value);
     }
-    return result;
+    return serializer.contents();
 }
 
 Result<Success> WritePersistentPropertyFile(

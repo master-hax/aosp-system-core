@@ -168,5 +168,154 @@ TEST(util, mkdir_recursive_extra_slashes) {
     EXPECT_TRUE(is_dir(path1.c_str()));
 }
 
+TEST(util, Serialization) {
+    auto serializer = Serializer();
+    std::string hand_generated_contents;
+
+    serializer.WriteUint32(0x235C41F8);
+    hand_generated_contents += "\xF8\x41\x5C\x23"s;
+
+    serializer.WriteString("test string"s);
+    hand_generated_contents += "\x0B\x00\x00\x00"s;
+    hand_generated_contents += "test string";
+
+    serializer.WriteString("\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"s);
+    hand_generated_contents += "\x09\x00\x00\x00"s;
+    hand_generated_contents += "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"s;
+
+    serializer.WriteString("");
+    hand_generated_contents += "\x00\x00\x00\x00"s;
+
+    serializer.WriteStrings(std::vector<std::string>{"these", "are", "strings"});
+    hand_generated_contents += "\x03\x00\x00\x00"s;
+    hand_generated_contents += "\x05\x00\x00\x00"s;
+    hand_generated_contents += "these";
+    hand_generated_contents += "\x03\x00\x00\x00"s;
+    hand_generated_contents += "are";
+    hand_generated_contents += "\x07\x00\x00\x00"s;
+    hand_generated_contents += "strings";
+
+    EXPECT_EQ(hand_generated_contents, serializer.contents());
+}
+
+TEST(util, Deserialization) {
+    std::string hand_generated_contents;
+
+    uint32_t int_value = 0x235C41F8;
+    hand_generated_contents += "\xF8\x41\x5C\x23"s;
+
+    auto test_string = "test string"s;
+    hand_generated_contents += "\x0B\x00\x00\x00"s;
+    hand_generated_contents += "test string";
+
+    auto hex_string_with_null = "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"s;
+    hand_generated_contents += "\x09\x00\x00\x00"s;
+    hand_generated_contents += "\x00\x01\x02\xFF\xFE\xFD\x7F\x8F\x9F"s;
+
+    auto empty_string = std::string();
+    hand_generated_contents += "\x00\x00\x00\x00"s;
+
+    auto strings = std::vector<std::string>{"these", "are", "strings"};
+    hand_generated_contents += "\x03\x00\x00\x00"s;
+    hand_generated_contents += "\x05\x00\x00\x00"s;
+    hand_generated_contents += "these";
+    hand_generated_contents += "\x03\x00\x00\x00"s;
+    hand_generated_contents += "are";
+    hand_generated_contents += "\x07\x00\x00\x00"s;
+    hand_generated_contents += "strings";
+
+    auto deserializer = Deserializer(hand_generated_contents);
+
+    auto checker = [&deserializer](auto expected, auto read_function) {
+        auto result = std::invoke(read_function, deserializer);
+        ASSERT_TRUE(result);
+        EXPECT_EQ(expected, *result);
+    };
+
+    checker(int_value, &Deserializer::ReadUint32);
+    checker(test_string, &Deserializer::ReadString);
+    checker(hex_string_with_null, &Deserializer::ReadString);
+    checker(empty_string, &Deserializer::ReadString);
+    checker(strings, &Deserializer::ReadStrings);
+}
+
+TEST(util, SerializationDeserialization) {
+    auto command1 = std::vector<std::string>{"mkdir", "/dev/something"};
+    auto command2 = std::vector<std::string>{"write", "/dev/something", "/something_else"};
+    auto command3 = std::vector<std::string>{"other command", "do something\"quoted\""};
+    auto result = "this failed"s;
+    uint32_t result_errno = 6;
+
+    auto serializer = Serializer();
+    serializer.WriteStrings(command1);
+    serializer.WriteStrings(command2);
+    serializer.WriteStrings(command3);
+    serializer.WriteString(result);
+    serializer.WriteUint32(result_errno);
+
+    auto deserializer = Deserializer(serializer.contents());
+
+    auto checker = [&deserializer](auto expected, auto read_function) {
+        auto result = std::invoke(read_function, deserializer);
+        ASSERT_TRUE(result);
+        EXPECT_EQ(expected, *result);
+    };
+
+    checker(command1, &Deserializer::ReadStrings);
+    checker(command2, &Deserializer::ReadStrings);
+    checker(command3, &Deserializer::ReadStrings);
+    checker(result, &Deserializer::ReadString);
+    checker(result_errno, &Deserializer::ReadUint32);
+}
+
+TEST(util, DeserializationFailures) {
+    auto tester = [](auto read_function, auto input, auto expected_error) {
+        auto deserializer = Deserializer(input);
+        auto result = std::invoke(read_function, deserializer);
+        ASSERT_FALSE(result);
+        EXPECT_EQ(expected_error, result.error_string());
+    };
+
+    tester(&Deserializer::ReadUint32, ""s, "Input buffer not large enough to read uint32_t");
+    tester(&Deserializer::ReadUint32, "\x55\x66"s, "Input buffer not large enough to read uint32_t");
+
+    tester(&Deserializer::ReadString, ""s,
+           "Could not read size for string: Input buffer not large enough to read uint32_t");
+    tester(&Deserializer::ReadString, "\x12\x34"s,
+           "Could not read size for string: Input buffer not large enough to read uint32_t");
+    tester(&Deserializer::ReadString, "\x12\x34\x00\x00"s,
+           "String size would cause it to overflow the input buffer");
+    tester(&Deserializer::ReadString, "\x12\x34\x00\x00string not long enough"s,
+           "String size would cause it to overflow the input buffer");
+
+    tester(&Deserializer::ReadStrings, ""s,
+           "Could not read number of strings: Input buffer not large enough to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x12\x34"s,
+           "Could not read number of strings: Input buffer not large enough to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x01\x00\x00\x00"s,
+           "Could not read string 0: Could not read size for string: Input buffer not large enough "
+           "to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x01\x00\x00\x00\x01\x23"s,
+           "Could not read string 0: Could not read size for string: Input buffer not large enough "
+           "to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x01\x00\x00\x00\x01\x23\x00\x00"s,
+           "Could not read string 0: String size would cause it to overflow the input buffer");
+    tester(&Deserializer::ReadStrings, "\x01\x00\x00\x00\x01\x23\x00\x00string not long enough"s,
+           "Could not read string 0: String size would cause it to overflow the input buffer");
+    tester(&Deserializer::ReadStrings, "\x02\x00\x00\x00\x06\x00\x00\x00string"s,
+           "Could not read string 1: Could not read size for string: Input buffer not large enough "
+           "to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x02\x00\x00\x00\x06\x00\x00\x00string\x12\x00"s,
+           "Could not read string 1: Could not read size for string: Input buffer not large enough "
+           "to read uint32_t");
+    tester(&Deserializer::ReadStrings, "\x02\x00\x00\x00\x06\x00\x00\x00string\x01\x00\x00\x00"s,
+           "Could not read string 1: String size would cause it to overflow the input buffer");
+
+    tester(
+        &Deserializer::ReadStrings,
+        "\xA\x00\x00\x00\x06\x00\x00\x00string\x00\x00\x00\x00just a bunch of garbage here; let it fail"s,
+        "Could not read string 2: String size would cause it to overflow the input buffer");
+}
+
 }  // namespace init
 }  // namespace android
