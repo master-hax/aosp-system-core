@@ -132,26 +132,29 @@ time timeout touch tr true truncate tty ulimit umount uname uniq unix2dos
 uptime usleep vmstat wc which whoami xargs xxd yes
 
 
-Current AOSP
-------------
+Android 8.0 (Oreo)
+------------------
 
 BSD: dd grep
 
 bzip2: bzcat bzip2 bunzip2
 
-toolbox: getevent gzip newfs\_msdos gunzip zcat
+toolbox: getevent newfs\_msdos
 
-toybox: acpi base64 basename blockdev cal cat chcon chgrp chmod chown
-chroot chrt cksum clear cmp comm cp cpio cut date df diff dirname dmesg
-dos2unix du echo env expand expr fallocate false file find flock free
-getenforce getprop groups head hostname hwclock id ifconfig inotifyd
-insmod ionice iorenice kill killall ln load\_policy log logname losetup
-ls lsmod lsof lsusb md5sum microcom mkdir mknod mkswap mktemp modinfo
-modprobe more mount mountpoint mv netstat nice nl nohup od paste patch
-pgrep pidof pkill pmap printenv printf ps pwd readlink realpath renice
-restorecon rm rmdir rmmod runcon sed sendevent seq setenforce setprop
-setsid sha1sum sha224sum sha256sum sha384sum sha512sum sleep sort split
-start stat stop strings swapoff swapon sync sysctl tac tail tar taskset
-tee time timeout top touch tr true truncate tty ulimit umount uname uniq
-unix2dos uptime usleep uudecode uuencode vmstat wc which whoami xargs
-xxd yes
+toybox: acpi base64 basename blkid blockdev cal cat chattr chcon chgrp
+chmod chown chroot chrt cksum clear cmp comm cp cpio cut date dd df diff
+dirname dmesg dos2unix du echo egrep env expand expr fallocate false
+fgrep file find flock free freeramdisk fsfreeze getenforce getfattr
+getprop grep groups gunzip gzip head help hostname hwclock id ifconfig
+inotifyd insmod install ionice iorenice kill killall ln load\_policy
+log logname losetup ls lsattr lsmod lsof lspci lsusb makedevs md5sum
+microcom mkdir mkfifo mknod mkswap mktemp modinfo modprobe more mount
+mountpoint mv nbd-client nc netcat netstat nice nl nohup od partprobe
+paste patch pgrep pidof pivot\_root pkill pmap printenv printf ps pwd
+pwdx readlink realpath renice restorecon rev rfkill rm rmdir rmmod runcon
+sed sendevent seq setenforce setfattr setprop setsid sha1sum sha224sum
+sha256sum sha384sum sha512sum sleep sort split start stat stop strings
+swapoff swapon sync sysctl tac tail tar taskset tee time timeout top
+touch tr traceroute traceroute6 true truncate tty tunctl ulimit umount
+uname uniq unix2dos uptime usleep uudecode uuencode vconfig vmstat wc
+which whoami xargs xxd yes zcat
