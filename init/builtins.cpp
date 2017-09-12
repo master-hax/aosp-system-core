@@ -66,6 +66,7 @@
 #include "reboot.h"
 #include "rlimit_parser.h"
 #include "service.h"
+#include "subcontext.h"
 #include "util.h"
 
 using namespace std::literals::string_literals;
@@ -95,36 +96,41 @@ static void ForEachServiceInClass(const std::string& classname, F function) {
     }
 }
 
-static Result<Success> do_class_start(const std::vector<std::string>& args) {
+static Result<Success> do_class_start(const std::vector<std::string>& args,
+                                      const std::string& context) {
     // Starting a class does not start services which are explicitly disabled.
     // They must  be started individually.
     ForEachServiceInClass(args[1], &Service::StartIfNotDisabled);
     return Success();
 }
 
-static Result<Success> do_class_stop(const std::vector<std::string>& args) {
+static Result<Success> do_class_stop(const std::vector<std::string>& args,
+                                     const std::string& context) {
     ForEachServiceInClass(args[1], &Service::Stop);
     return Success();
 }
 
-static Result<Success> do_class_reset(const std::vector<std::string>& args) {
+static Result<Success> do_class_reset(const std::vector<std::string>& args,
+                                      const std::string& context) {
     ForEachServiceInClass(args[1], &Service::Reset);
     return Success();
 }
 
-static Result<Success> do_class_restart(const std::vector<std::string>& args) {
+static Result<Success> do_class_restart(const std::vector<std::string>& args,
+                                        const std::string& context) {
     ForEachServiceInClass(args[1], &Service::Restart);
     return Success();
 }
 
-static Result<Success> do_domainname(const std::vector<std::string>& args) {
+static Result<Success> do_domainname(const std::vector<std::string>& args,
+                                     const std::string& context) {
     if (auto result = WriteFile("/proc/sys/kernel/domainname", args[1]); !result) {
         return Error() << "Unable to write to /proc/sys/kernel/domainname: " << result.error();
     }
     return Success();
 }
 
-static Result<Success> do_enable(const std::vector<std::string>& args) {
+static Result<Success> do_enable(const std::vector<std::string>& args, const std::string& context) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "Could not find service";
 
@@ -135,7 +141,7 @@ static Result<Success> do_enable(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_exec(const std::vector<std::string>& args) {
+static Result<Success> do_exec(const std::vector<std::string>& args, const std::string& context) {
     auto service = Service::MakeTemporaryOneshotService(args);
     if (!service) {
         return Error() << "Could not create exec service";
@@ -148,7 +154,8 @@ static Result<Success> do_exec(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_exec_background(const std::vector<std::string>& args) {
+static Result<Success> do_exec_background(const std::vector<std::string>& args,
+                                          const std::string& context) {
     auto service = Service::MakeTemporaryOneshotService(args);
     if (!service) {
         return Error() << "Could not create exec background service";
@@ -161,7 +168,8 @@ static Result<Success> do_exec_background(const std::vector<std::string>& args) 
     return Success();
 }
 
-static Result<Success> do_exec_start(const std::vector<std::string>& args) {
+static Result<Success> do_exec_start(const std::vector<std::string>& args,
+                                     const std::string& context) {
     Service* service = ServiceList::GetInstance().FindService(args[1]);
     if (!service) {
         return Error() << "Service not found";
@@ -174,21 +182,22 @@ static Result<Success> do_exec_start(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_export(const std::vector<std::string>& args) {
+static Result<Success> do_export(const std::vector<std::string>& args, const std::string& context) {
     if (setenv(args[1].c_str(), args[2].c_str(), 1) == -1) {
         return ErrnoError() << "setenv() failed";
     }
     return Success();
 }
 
-static Result<Success> do_hostname(const std::vector<std::string>& args) {
+static Result<Success> do_hostname(const std::vector<std::string>& args,
+                                   const std::string& context) {
     if (auto result = WriteFile("/proc/sys/kernel/hostname", args[1]); !result) {
         return Error() << "Unable to write to /proc/sys/kernel/hostname: " << result.error();
     }
     return Success();
 }
 
-static Result<Success> do_ifup(const std::vector<std::string>& args) {
+static Result<Success> do_ifup(const std::vector<std::string>& args, const std::string& context) {
     struct ifreq ifr;
 
     strlcpy(ifr.ifr_name, args[1].c_str(), IFNAMSIZ);
@@ -209,7 +218,7 @@ static Result<Success> do_ifup(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_insmod(const std::vector<std::string>& args) {
+static Result<Success> do_insmod(const std::vector<std::string>& args, const std::string& context) {
     int flags = 0;
     auto it = args.begin() + 1;
 
@@ -231,7 +240,7 @@ static Result<Success> do_insmod(const std::vector<std::string>& args) {
 }
 
 // mkdir <path> [mode] [owner] [group]
-static Result<Success> do_mkdir(const std::vector<std::string>& args) {
+static Result<Success> do_mkdir(const std::vector<std::string>& args, const std::string& context) {
     mode_t mode = 0755;
     if (args.size() >= 3) {
         mode = std::strtoul(args[2].c_str(), 0, 8);
@@ -287,7 +296,7 @@ static Result<Success> do_mkdir(const std::vector<std::string>& args) {
 }
 
 /* umount <path> */
-static Result<Success> do_umount(const std::vector<std::string>& args) {
+static Result<Success> do_umount(const std::vector<std::string>& args, const std::string& context) {
     if (umount(args[1].c_str()) < 0) {
         return ErrnoError() << "umount() failed";
     }
@@ -319,7 +328,7 @@ static struct {
 #define DATA_MNT_POINT "/data"
 
 /* mount <type> <device> <path> <flags ...> <options> */
-static Result<Success> do_mount(const std::vector<std::string>& args) {
+static Result<Success> do_mount(const std::vector<std::string>& args, const std::string& context) {
     const char* options = nullptr;
     unsigned flags = 0;
     bool wait = false;
@@ -388,7 +397,8 @@ static Result<Success> do_mount(const std::vector<std::string>& args) {
  *
  * start_index: index of the first path in the args list
  */
-static void import_late(const std::vector<std::string>& args, size_t start_index, size_t end_index) {
+static void import_late(const std::vector<std::string>& args, const std::string& context,
+                        size_t start_index, size_t end_index) {
     auto& action_manager = ActionManager::GetInstance();
     auto& service_list = ServiceList::GetInstance();
     Parser parser = CreateParser(action_manager, service_list);
@@ -511,7 +521,8 @@ static Result<Success> queue_fs_event(int code) {
  * This function might request a reboot, in which case it will
  * not return.
  */
-static Result<Success> do_mount_all(const std::vector<std::string>& args) {
+static Result<Success> do_mount_all(const std::vector<std::string>& args,
+                                    const std::string& context) {
     std::size_t na = 0;
     bool import_rc = true;
     bool queue_event = true;
@@ -544,7 +555,7 @@ static Result<Success> do_mount_all(const std::vector<std::string>& args) {
 
     if (import_rc) {
         /* Paths of .rc files are specified at the 2nd argument and beyond */
-        import_late(args, 2, path_arg_end);
+        import_late(args, context, 2, path_arg_end);
     }
 
     if (queue_event) {
@@ -559,7 +570,8 @@ static Result<Success> do_mount_all(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_swapon_all(const std::vector<std::string>& args) {
+static Result<Success> do_swapon_all(const std::vector<std::string>& args,
+                                     const std::string& context) {
     struct fstab *fstab;
     int ret;
 
@@ -571,12 +583,13 @@ static Result<Success> do_swapon_all(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_setprop(const std::vector<std::string>& args) {
+static Result<Success> do_setprop(const std::vector<std::string>& args, const std::string& context) {
     property_set(args[1], args[2]);
     return Success();
 }
 
-static Result<Success> do_setrlimit(const std::vector<std::string>& args) {
+static Result<Success> do_setrlimit(const std::vector<std::string>& args,
+                                    const std::string& context) {
     auto rlimit = ParseRlimit(args);
     if (!rlimit) return rlimit.error();
 
@@ -586,7 +599,7 @@ static Result<Success> do_setrlimit(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_start(const std::vector<std::string>& args) {
+static Result<Success> do_start(const std::vector<std::string>& args, const std::string& context) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     if (auto result = svc->Start(); !result) {
@@ -595,26 +608,26 @@ static Result<Success> do_start(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_stop(const std::vector<std::string>& args) {
+static Result<Success> do_stop(const std::vector<std::string>& args, const std::string& context) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     svc->Stop();
     return Success();
 }
 
-static Result<Success> do_restart(const std::vector<std::string>& args) {
+static Result<Success> do_restart(const std::vector<std::string>& args, const std::string& context) {
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     svc->Restart();
     return Success();
 }
 
-static Result<Success> do_trigger(const std::vector<std::string>& args) {
+static Result<Success> do_trigger(const std::vector<std::string>& args, const std::string& context) {
     ActionManager::GetInstance().QueueEventTrigger(args[1]);
     return Success();
 }
 
-static Result<Success> do_symlink(const std::vector<std::string>& args) {
+static Result<Success> do_symlink(const std::vector<std::string>& args, const std::string& context) {
     if (symlink(args[1].c_str(), args[2].c_str()) < 0) {
         // The symlink builtin is often used to create symlinks for older devices to be backwards
         // compatible with new paths, therefore we skip reporting this error.
@@ -626,21 +639,22 @@ static Result<Success> do_symlink(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_rm(const std::vector<std::string>& args) {
+static Result<Success> do_rm(const std::vector<std::string>& args, const std::string& context) {
     if (unlink(args[1].c_str()) < 0) {
         return ErrnoError() << "unlink() failed";
     }
     return Success();
 }
 
-static Result<Success> do_rmdir(const std::vector<std::string>& args) {
+static Result<Success> do_rmdir(const std::vector<std::string>& args, const std::string& context) {
     if (rmdir(args[1].c_str()) < 0) {
         return ErrnoError() << "rmdir() failed";
     }
     return Success();
 }
 
-static Result<Success> do_sysclktz(const std::vector<std::string>& args) {
+static Result<Success> do_sysclktz(const std::vector<std::string>& args,
+                                   const std::string& context) {
     struct timezone tz = {};
     if (!android::base::ParseInt(args[1], &tz.tz_minuteswest)) {
         return Error() << "Unable to parse mins_west_of_gmt";
@@ -652,7 +666,8 @@ static Result<Success> do_sysclktz(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_verity_load_state(const std::vector<std::string>& args) {
+static Result<Success> do_verity_load_state(const std::vector<std::string>& args,
+                                            const std::string& context) {
     int mode = -1;
     bool loaded = fs_mgr_load_verity_state(&mode);
     if (loaded && mode != VERITY_MODE_DEFAULT) {
@@ -668,14 +683,15 @@ static void verity_update_property(fstab_rec *fstab, const char *mount_point,
     property_set("partition."s + mount_point + ".verified", std::to_string(mode));
 }
 
-static Result<Success> do_verity_update_state(const std::vector<std::string>& args) {
+static Result<Success> do_verity_update_state(const std::vector<std::string>& args,
+                                              const std::string& context) {
     if (!fs_mgr_update_verity_state(verity_update_property)) {
         return Error() << "fs_mgr_update_verity_state() failed";
     }
     return Success();
 }
 
-static Result<Success> do_write(const std::vector<std::string>& args) {
+static Result<Success> do_write(const std::vector<std::string>& args, const std::string& context) {
     if (auto result = WriteFile(args[1], args[2]); !result) {
         return Error() << "Unable to write to file '" << args[1] << "': " << result.error();
     }
@@ -706,7 +722,8 @@ static Result<Success> readahead_file(const std::string& filename, bool fully) {
     return Success();
 }
 
-static Result<Success> do_readahead(const std::vector<std::string>& args) {
+static Result<Success> do_readahead(const std::vector<std::string>& args,
+                                    const std::string& context) {
     struct stat sb;
 
     if (stat(args[1].c_str(), &sb)) {
@@ -765,7 +782,7 @@ static Result<Success> do_readahead(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_copy(const std::vector<std::string>& args) {
+static Result<Success> do_copy(const std::vector<std::string>& args, const std::string& context) {
     auto file_contents = ReadFile(args[1]);
     if (!file_contents) {
         return Error() << "Could not read input file '" << args[1] << "': " << file_contents.error();
@@ -777,7 +794,7 @@ static Result<Success> do_copy(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_chown(const std::vector<std::string>& args) {
+static Result<Success> do_chown(const std::vector<std::string>& args, const std::string& context) {
     auto uid = DecodeUid(args[1]);
     if (!uid) {
         return Error() << "Unable to decode UID for '" << args[1] << "': " << uid.error();
@@ -814,7 +831,7 @@ static mode_t get_mode(const char *s) {
     return mode;
 }
 
-static Result<Success> do_chmod(const std::vector<std::string>& args) {
+static Result<Success> do_chmod(const std::vector<std::string>& args, const std::string& context) {
     mode_t mode = get_mode(args[1].c_str());
     if (fchmodat(AT_FDCWD, args[2].c_str(), mode, AT_SYMLINK_NOFOLLOW) < 0) {
         return ErrnoError() << "fchmodat() failed";
@@ -822,7 +839,8 @@ static Result<Success> do_chmod(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_restorecon(const std::vector<std::string>& args) {
+static Result<Success> do_restorecon(const std::vector<std::string>& args,
+                                     const std::string& context) {
     int ret = 0;
 
     struct flag_type {const char* name; int value;};
@@ -864,13 +882,15 @@ static Result<Success> do_restorecon(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_restorecon_recursive(const std::vector<std::string>& args) {
+static Result<Success> do_restorecon_recursive(const std::vector<std::string>& args,
+                                               const std::string& context) {
     std::vector<std::string> non_const_args(args);
     non_const_args.insert(std::next(non_const_args.begin()), "--recursive");
-    return do_restorecon(non_const_args);
+    return do_restorecon(non_const_args, context);
 }
 
-static Result<Success> do_loglevel(const std::vector<std::string>& args) {
+static Result<Success> do_loglevel(const std::vector<std::string>& args,
+                                   const std::string& context) {
     // TODO: support names instead/as well?
     int log_level = -1;
     android::base::ParseInt(args[1], &log_level);
@@ -891,17 +911,19 @@ static Result<Success> do_loglevel(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_load_persist_props(const std::vector<std::string>& args) {
+static Result<Success> do_load_persist_props(const std::vector<std::string>& args,
+                                             const std::string& context) {
     load_persist_props();
     return Success();
 }
 
-static Result<Success> do_load_system_props(const std::vector<std::string>& args) {
+static Result<Success> do_load_system_props(const std::vector<std::string>& args,
+                                            const std::string& context) {
     load_system_props();
     return Success();
 }
 
-static Result<Success> do_wait(const std::vector<std::string>& args) {
+static Result<Success> do_wait(const std::vector<std::string>& args, const std::string& context) {
     auto timeout = kCommandRetryTimeout;
     if (args.size() == 3) {
         int timeout_int;
@@ -918,7 +940,8 @@ static Result<Success> do_wait(const std::vector<std::string>& args) {
     return Success();
 }
 
-static Result<Success> do_wait_for_prop(const std::vector<std::string>& args) {
+static Result<Success> do_wait_for_prop(const std::vector<std::string>& args,
+                                        const std::string& context) {
     const char* name = args[1].c_str();
     const char* value = args[2].c_str();
     size_t value_len = strlen(value);
@@ -939,7 +962,8 @@ static bool is_file_crypto() {
     return android::base::GetProperty("ro.crypto.type", "") == "file";
 }
 
-static Result<Success> do_installkey(const std::vector<std::string>& args) {
+static Result<Success> do_installkey(const std::vector<std::string>& args,
+                                     const std::string& context) {
     if (!is_file_crypto()) return Success();
 
     auto unencrypted_dir = args[1] + e4crypt_unencrypted_folder;
@@ -948,64 +972,67 @@ static Result<Success> do_installkey(const std::vector<std::string>& args) {
     }
     std::vector<std::string> exec_args = {"exec", "/system/bin/vdc", "--wait", "cryptfs",
                                           "enablefilecrypto"};
-    return do_exec(exec_args);
+    return do_exec(exec_args, context);
 }
 
-static Result<Success> do_init_user0(const std::vector<std::string>& args) {
+static Result<Success> do_init_user0(const std::vector<std::string>& args,
+                                     const std::string& context) {
     std::vector<std::string> exec_args = {"exec", "/system/bin/vdc", "--wait", "cryptfs",
                                           "init_user0"};
-    return do_exec(exec_args);
+    return do_exec(exec_args, context);
 }
 
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
     // clang-format off
     static const Map builtin_functions = {
-        {"bootchart",               {1,     1,    do_bootchart}},
-        {"chmod",                   {2,     2,    do_chmod}},
-        {"chown",                   {2,     3,    do_chown}},
-        {"class_reset",             {1,     1,    do_class_reset}},
-        {"class_restart",           {1,     1,    do_class_restart}},
-        {"class_start",             {1,     1,    do_class_start}},
-        {"class_stop",              {1,     1,    do_class_stop}},
-        {"copy",                    {2,     2,    do_copy}},
-        {"domainname",              {1,     1,    do_domainname}},
-        {"enable",                  {1,     1,    do_enable}},
-        {"exec",                    {1,     kMax, do_exec}},
-        {"exec_background",         {1,     kMax, do_exec_background}},
-        {"exec_start",              {1,     1,    do_exec_start}},
-        {"export",                  {2,     2,    do_export}},
-        {"hostname",                {1,     1,    do_hostname}},
-        {"ifup",                    {1,     1,    do_ifup}},
-        {"init_user0",              {0,     0,    do_init_user0}},
-        {"insmod",                  {1,     kMax, do_insmod}},
-        {"installkey",              {1,     1,    do_installkey}},
-        {"load_persist_props",      {0,     0,    do_load_persist_props}},
-        {"load_system_props",       {0,     0,    do_load_system_props}},
-        {"loglevel",                {1,     1,    do_loglevel}},
-        {"mkdir",                   {1,     4,    do_mkdir}},
-        {"mount_all",               {1,     kMax, do_mount_all}},
-        {"mount",                   {3,     kMax, do_mount}},
-        {"umount",                  {1,     1,    do_umount}},
-        {"readahead",               {1,     2,    do_readahead}},
-        {"restart",                 {1,     1,    do_restart}},
-        {"restorecon",              {1,     kMax, do_restorecon}},
-        {"restorecon_recursive",    {1,     kMax, do_restorecon_recursive}},
-        {"rm",                      {1,     1,    do_rm}},
-        {"rmdir",                   {1,     1,    do_rmdir}},
-        {"setprop",                 {2,     2,    do_setprop}},
-        {"setrlimit",               {3,     3,    do_setrlimit}},
-        {"start",                   {1,     1,    do_start}},
-        {"stop",                    {1,     1,    do_stop}},
-        {"swapon_all",              {1,     1,    do_swapon_all}},
-        {"symlink",                 {2,     2,    do_symlink}},
-        {"sysclktz",                {1,     1,    do_sysclktz}},
-        {"trigger",                 {1,     1,    do_trigger}},
-        {"verity_load_state",       {0,     0,    do_verity_load_state}},
-        {"verity_update_state",     {0,     0,    do_verity_update_state}},
-        {"wait",                    {1,     2,    do_wait}},
-        {"wait_for_prop",           {2,     2,    do_wait_for_prop}},
-        {"write",                   {2,     2,    do_write}},
+        {"bootchart",               {1,     1,    {false,  do_bootchart}}},
+        {"chmod",                   {2,     2,    {true,   do_chmod}}},
+        {"chown",                   {2,     3,    {true,   do_chown}}},
+        {"class_reset",             {1,     1,    {false,  do_class_reset}}},
+        {"class_restart",           {1,     1,    {false,  do_class_restart}}},
+        {"class_start",             {1,     1,    {false,  do_class_start}}},
+        {"class_stop",              {1,     1,    {false,  do_class_stop}}},
+        {"copy",                    {2,     2,    {true,   do_copy}}},
+        {"domainname",              {1,     1,    {true,   do_domainname}}},
+        {"enable",                  {1,     1,    {false,  do_enable}}},
+        {"exec",                    {1,     kMax, {false,  do_exec}}},
+        {"exec_background",         {1,     kMax, {false,  do_exec_background}}},
+        {"exec_start",              {1,     1,    {false,  do_exec_start}}},
+        {"export",                  {2,     2,    {false,  do_export}}},
+        {"hostname",                {1,     1,    {true,   do_hostname}}},
+        {"ifup",                    {1,     1,    {true,   do_ifup}}},
+        {"init_user0",              {0,     0,    {false,  do_init_user0}}},
+        {"insmod",                  {1,     kMax, {true,   do_insmod}}},
+        {"installkey",              {1,     1,    {false,  do_installkey}}},
+        {"load_persist_props",      {0,     0,    {false,  do_load_persist_props}}},
+        {"load_system_props",       {0,     0,    {false,  do_load_system_props}}},
+        {"loglevel",                {1,     1,    {false,  do_loglevel}}},
+        {"mkdir",                   {1,     4,    {true,   do_mkdir}}},
+        {"mount_all",               {1,     kMax, {false,  do_mount_all}}},
+        {"mount",                   {3,     kMax, {false,  do_mount}}},
+        {"umount",                  {1,     1,    {false,  do_umount}}},
+        {"readahead",               {1,     2,    {true,   do_readahead}}},
+        {"restart",                 {1,     1,    {false,  do_restart}}},
+        {"restorecon",              {1,     kMax, {true,   do_restorecon}}},
+        {"restorecon_recursive",    {1,     kMax, {true,   do_restorecon_recursive}}},
+        {"rm",                      {1,     1,    {true,   do_rm}}},
+        {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
+        //  TODO: setprop should be run in the subcontext, but property service needs to be split
+        //        out from init before that is possible.
+        {"setprop",                 {2,     2,    {false,  do_setprop}}},
+        {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
+        {"start",                   {1,     1,    {false,  do_start}}},
+        {"stop",                    {1,     1,    {false,  do_stop}}},
+        {"swapon_all",              {1,     1,    {false,  do_swapon_all}}},
+        {"symlink",                 {2,     2,    {true,   do_symlink}}},
+        {"sysclktz",                {1,     1,    {false,  do_sysclktz}}},
+        {"trigger",                 {1,     1,    {false,  do_trigger}}},
+        {"verity_load_state",       {0,     0,    {false,  do_verity_load_state}}},
+        {"verity_update_state",     {0,     0,    {false,  do_verity_update_state}}},
+        {"wait",                    {1,     2,    {true,   do_wait}}},
+        {"wait_for_prop",           {2,     2,    {true,   do_wait_for_prop}}},
+        {"write",                   {2,     2,    {true,   do_write}}},
     };
     // clang-format on
     return builtin_functions;
