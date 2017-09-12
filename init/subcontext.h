@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,34 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_BUILTINS_H
-#define _INIT_BUILTINS_H
+#ifndef _INIT_SUBCONTEXT_H
+#define _INIT_SUBCONTEXT_H
 
-#include <functional>
-#include <map>
 #include <string>
 #include <vector>
 
-#include "keyword_map.h"
-#include "result.h"
+#include <android-base/unique_fd.h>
+
+#include "builtins.h"
 
 namespace android {
 namespace init {
 
-using BuiltinFunction = std::function<Result<Success>(const std::vector<std::string>&)>;
+extern const KeywordFunctionMap* subcontext_function_map;
 
-using KeywordFunctionMap = KeywordMap<std::pair<bool, BuiltinFunction>>;
-class BuiltinFunctionMap : public KeywordFunctionMap {
+class Subcontext {
   public:
-    BuiltinFunctionMap() {}
+    Subcontext(std::string context) : context_(std::move(context)) { Fork(); }
+    ~Subcontext();
+
+    Result<Success> Execute(const std::vector<std::string>& command);
 
   private:
-    const Map& map() const override;
+    void Fork();
+
+    std::string context_;
+    pid_t pid_;
+    android::base::unique_fd socket_;
 };
 
 }  // namespace init
