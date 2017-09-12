@@ -61,6 +61,7 @@ static bool ReapOneProcess() {
     auto reaper = make_scope_guard([pid] { TEMP_FAILURE_RETRY(waitpid(pid, nullptr, WNOHANG)); });
 
     if (PropertyChildReap(pid)) return true;
+    if (SubcontextChildReap(pid)) return true;
 
     Service* service = ServiceList::GetInstance().FindService(pid, &Service::pid);
 
