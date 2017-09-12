@@ -84,6 +84,8 @@ static bool do_shutdown = false;
 
 std::vector<std::string> late_import_paths;
 
+static std::vector<Subcontext>* subcontexts;
+
 void DumpState() {
     ServiceList::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
@@ -92,8 +94,8 @@ void DumpState() {
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
     Parser parser;
 
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager));
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list, subcontexts));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, subcontexts));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     return parser;
@@ -587,6 +589,9 @@ int main(int argc, char** argv) {
 
     const BuiltinFunctionMap function_map;
     Action::set_function_map(&function_map);
+    subcontext_function_map = &function_map;
+
+    subcontexts = InitializeSubcontexts();
 
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sm = ServiceList::GetInstance();
