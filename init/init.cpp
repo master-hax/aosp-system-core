@@ -89,11 +89,15 @@ void DumpState() {
     ActionManager::GetInstance().DumpState();
 }
 
+Subcontext* vendor_subcontext;
+
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
     Parser parser;
 
+    std::vector<std::pair<std::string, Subcontext*>> subcontexts = {{"/vendor", vendor_subcontext}};
+
     parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, subcontexts));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     return parser;
@@ -586,8 +590,11 @@ int main(int argc, char** argv) {
     start_property_service();
     set_usb_controller();
 
+    vendor_subcontext = new Subcontext("u:object_r:init:s0");
+
     const BuiltinFunctionMap function_map;
     Action::set_function_map(&function_map);
+    subcontext_function_map = &function_map;
 
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sm = ServiceList::GetInstance();
