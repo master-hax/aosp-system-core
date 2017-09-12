@@ -25,6 +25,10 @@ over the years. Gingerbread's rm, for example, supported `-r`/`-R` but not
 `-f`. But this gives you an idea of what was available in any given release,
 and how usable it was likely to be.
 
+Also note that in any given release `toybox` probably contains more
+commands than there are symlinks for in `/system/bin`. You can get the
+full list for a release by running `toybox` directly.
+
 
 Android 2.3 (Gingerbread)
 -------------------------
@@ -132,26 +136,26 @@ time timeout touch tr true truncate tty ulimit umount uname uniq unix2dos
 uptime usleep vmstat wc which whoami xargs xxd yes
 
 
-Current AOSP
-------------
+Android 8.0 (Oreo)
+------------------
 
 BSD: dd grep
 
 bzip2: bzcat bzip2 bunzip2
 
-toolbox: getevent gzip newfs\_msdos gunzip zcat
+toolbox: getevent newfs\_msdos
 
 toybox: acpi base64 basename blockdev cal cat chcon chgrp chmod chown
 chroot chrt cksum clear cmp comm cp cpio cut date df diff dirname dmesg
 dos2unix du echo env expand expr fallocate false file find flock free
-getenforce getprop groups head hostname hwclock id ifconfig inotifyd
-insmod ionice iorenice kill killall ln load\_policy log logname losetup
-ls lsmod lsof lsusb md5sum microcom mkdir mknod mkswap mktemp modinfo
-modprobe more mount mountpoint mv netstat nice nl nohup od paste patch
-pgrep pidof pkill pmap printenv printf ps pwd readlink realpath renice
-restorecon rm rmdir rmmod runcon sed sendevent seq setenforce setprop
-setsid sha1sum sha224sum sha256sum sha384sum sha512sum sleep sort split
-start stat stop strings swapoff swapon sync sysctl tac tail tar taskset
-tee time timeout top touch tr true truncate tty ulimit umount uname uniq
-unix2dos uptime usleep uudecode uuencode vmstat wc which whoami xargs
-xxd yes
+getenforce getprop groups gunzip gzip head hostname hwclock id ifconfig
+inotifyd insmod ionice iorenice kill killall ln load\_policy log logname
+losetup ls lsmod lsof lspci lsusb md5sum microcom mkdir mkfifo mknod
+mkswap mktemp modinfo modprobe more mount mountpoint mv netstat nice
+nl nohup od paste patch pgrep pidof pkill pmap printenv printf ps pwd
+readlink realpath renice restorecon rm rmdir rmmod runcon sed sendevent
+seq setenforce setprop setsid sha1sum sha224sum sha256sum sha384sum
+sha512sum sleep sort split start stat stop strings swapoff swapon sync
+sysctl tac tail tar taskset tee time timeout top touch tr true truncate
+tty ulimit umount uname uniq unix2dos uptime usleep uudecode uuencode
+vmstat wc which whoami xargs xxd yes zcat
