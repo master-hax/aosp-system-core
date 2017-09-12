@@ -43,7 +43,6 @@ include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     bootchart.cpp \
-    builtins.cpp \
     init.cpp \
     init_first_stage.cpp \
     keychords.cpp \
@@ -69,14 +68,11 @@ LOCAL_STATIC_LIBRARIES := \
     libext4_utils \
     libcutils \
     libbase \
-    libc \
     libseccomp_policy \
     libselinux \
     liblog \
     libcrypto_utils \
     libcrypto \
-    libc++_static \
-    libdl \
     libsparse \
     libz \
     libprocessgroup \
