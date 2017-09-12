@@ -25,9 +25,12 @@
 namespace android {
 namespace init {
 
-Result<Success> MixHwrngIntoLinuxRngAction(const std::vector<std::string>& args);
-Result<Success> SetMmapRndBitsAction(const std::vector<std::string>& args);
-Result<Success> SetKptrRestrictAction(const std::vector<std::string>& args);
+Result<Success> MixHwrngIntoLinuxRngAction(const std::vector<std::string>& args,
+                                           const std::string& context);
+Result<Success> SetMmapRndBitsAction(const std::vector<std::string>& args,
+                                     const std::string& context);
+Result<Success> SetKptrRestrictAction(const std::vector<std::string>& args,
+                                      const std::string& context);
 
 }  // namespace init
 }  // namespace android

@@ -84,6 +84,8 @@ static bool do_shutdown = false;
 
 std::vector<std::string> late_import_paths;
 
+static std::vector<Subcontext>* subcontexts;
+
 void DumpState() {
     ServiceList::GetInstance().DumpState();
     ActionManager::GetInstance().DumpState();
@@ -92,8 +94,8 @@ void DumpState() {
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
     Parser parser;
 
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager));
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list, subcontexts));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, subcontexts));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     return parser;
@@ -220,7 +222,8 @@ void handle_control_message(const std::string& msg, const std::string& name) {
     }
 }
 
-static Result<Success> wait_for_coldboot_done_action(const std::vector<std::string>& args) {
+static Result<Success> wait_for_coldboot_done_action(const std::vector<std::string>& args,
+                                                     const std::string& context) {
     Timer t;
 
     LOG(VERBOSE) << "Waiting for " COLDBOOT_DONE "...";
@@ -241,12 +244,14 @@ static Result<Success> wait_for_coldboot_done_action(const std::vector<std::stri
     return Success();
 }
 
-static Result<Success> keychord_init_action(const std::vector<std::string>& args) {
+static Result<Success> keychord_init_action(const std::vector<std::string>& args,
+                                            const std::string& context) {
     keychord_init();
     return Success();
 }
 
-static Result<Success> console_init_action(const std::vector<std::string>& args) {
+static Result<Success> console_init_action(const std::vector<std::string>& args,
+                                           const std::string& context) {
     std::string console = GetProperty("ro.boot.console", "");
     if (!console.empty()) {
         default_console = "/dev/" + console;
@@ -333,13 +338,15 @@ static void process_kernel_cmdline() {
     if (qemu[0]) import_kernel_cmdline(true, import_kernel_nv);
 }
 
-static Result<Success> property_enable_triggers_action(const std::vector<std::string>& args) {
+static Result<Success> property_enable_triggers_action(const std::vector<std::string>& args,
+                                                       const std::string& context) {
     /* Enable property triggers. */
     property_triggers_enabled = 1;
     return Success();
 }
 
-static Result<Success> queue_property_triggers_action(const std::vector<std::string>& args) {
+static Result<Success> queue_property_triggers_action(const std::vector<std::string>& args,
+                                                      const std::string& context) {
     ActionManager::GetInstance().QueueBuiltinAction(property_enable_triggers_action, "enable_property_trigger");
     ActionManager::GetInstance().QueueAllPropertyActions();
     return Success();
@@ -445,6 +452,12 @@ int main(int argc, char** argv) {
 
     if (!strcmp(basename(argv[0]), "watchdogd")) {
         return watchdogd_main(argc, argv);
+    }
+
+    if (argc > 1 && !strcmp(argv[1], "subcontext")) {
+        InitKernelLogging(argv);
+        const BuiltinFunctionMap function_map;
+        return SubcontextMain(argc, argv, &function_map);
     }
 
     if (REBOOT_BOOTLOADER_ON_PANIC) {
@@ -587,6 +600,8 @@ int main(int argc, char** argv) {
 
     const BuiltinFunctionMap function_map;
     Action::set_function_map(&function_map);
+
+    subcontexts = InitializeSubcontexts();
 
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sm = ServiceList::GetInstance();

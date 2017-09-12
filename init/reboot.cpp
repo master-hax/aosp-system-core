@@ -521,8 +521,8 @@ bool HandlePowerctlMessage(const std::string& command) {
     // Queue shutdown trigger first
     ActionManager::GetInstance().QueueEventTrigger("shutdown");
     // Queue built-in shutdown_done
-    auto shutdown_handler = [cmd, command, reboot_target,
-                             run_fsck](const std::vector<std::string>&) {
+    auto shutdown_handler = [cmd, command, reboot_target, run_fsck](const std::vector<std::string>&,
+                                                                    const std::string&) {
         DoReboot(cmd, command, reboot_target, run_fsck);
         return Success();
     };
