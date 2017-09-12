@@ -43,7 +43,6 @@ include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES:= \
     bootchart.cpp \
-    builtins.cpp \
     init.cpp \
     init_first_stage.cpp \
     keychords.cpp \

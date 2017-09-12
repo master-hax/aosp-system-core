@@ -65,6 +65,7 @@ cc_library_static {
     defaults: ["init_defaults"],
     srcs: [
         "action.cpp",
+        "builtins.cpp",
         "capabilities.cpp",
         "descriptors.cpp",
         "devices.cpp",
@@ -90,6 +91,8 @@ cc_library_static {
         "liblog",
         "libprocessgroup",
         "libfs_mgr",
+        "libbootloader_message",
+        "libext4_utils",
     ],
     include_dirs: [
         "system/core/mkbootimg",
@@ -114,7 +117,6 @@ cc_binary {
     static_executable: true,
     srcs: [
         "bootchart.cpp",
-        "builtins.cpp",
         "init.cpp",
         "init_first_stage.cpp",
         "keychords.cpp",
