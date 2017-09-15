@@ -176,6 +176,10 @@ init    : processing action (post-fs-data) from (/system/etc/init/bootstat.rc
 init    : processing action (boot) from (/system/etc/init/bootstat.rc
 init    : processing action (ro.boot.bootreason=*) from (/system/etc/init/bootstat.rc
 init    : processing action (sys.boot_completed=1 && sys.logbootcomplete=1) from (/system/etc/init/bootstat.rc
+init    : starting service 'bootstat-record-decrypt-time' ...
+init    : Service 'bootstat-record-decrypt-time' (pid${SPACE}
+init    : starting service 'bootstat-record-boot' ...
+init    : Service 'bootstat-record-boot' (pid${SPACE}
 init    : Command 'exec - system log -- /system/bin/bootstat --record_boot_complete' action=sys.boot_completed=1 && sys.logbootcomplete=1 (/system/etc/init/bootstat.rc:
 init    : Command 'exec - system log -- /system/bin/bootstat --record_boot_reason' action=sys.boot_completed=1 && sys.logbootcomplete=1 (/system/etc/init/bootstat.rc:
 init    : Command 'exec - system log -- /system/bin/bootstat --record_time_since_factory_reset' action=sys.boot_completed=1 && sys.logbootcomplete=1 (/system/etc/init/bootstat.rc:
