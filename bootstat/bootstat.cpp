@@ -371,14 +371,31 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
     }
   }
 
+  if (ret == "kernel_panic") {
+    // Check to see if last klog has some refinement hints.
+    std::string content;
+    if (!android::base::ReadFileToString("/sys/fs/pstore/console-ramoops-0", &content)) {
+      android::base::ReadFileToString("/sys/fs/pstore/console-ramoops", &content);
+    }
+    // Check for kernel panic types to refine information
+    if (content.rfind("SysRq : Trigger a crash") != std::string::npos) {
+      // Can not happen, except on userdebug, during testing/debugging.
+      ret = "kernel_panic,sysrq";
+    } else if (content.rfind(
+                   "Unable to handle kernel NULL pointer dereference at virtual address") !=
+               std::string::npos) {
+      ret = "kernel_panic,NULL";
+    } else if (content.rfind("Kernel BUG at ") != std::string::npos) {
+      ret = "kernel_panic,BUG";
+    }
+  }
+
   // Check the other reason resources if the reason is still blunt.
   if (isBluntRebootReason(ret)) {
     // Check to see if last klog has some refinement hints.
     std::string content;
-    if (!android::base::ReadFileToString("/sys/fs/pstore/console-ramoops-0",
-                                         &content)) {
-        android::base::ReadFileToString("/sys/fs/pstore/console-ramoops",
-                                         &content);
+    if (!android::base::ReadFileToString("/sys/fs/pstore/console-ramoops-0", &content)) {
+      android::base::ReadFileToString("/sys/fs/pstore/console-ramoops", &content);
     }
 
     // The toybox reboot command used directly (unlikely)? But also
@@ -408,7 +425,7 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
     }
 
     // Check for kernel panics, but allowed to override reboot command.
-    if (content.rfind("sysrq: SysRq : Trigger a crash") != std::string::npos) {
+    if (content.rfind("SysRq : Trigger a crash") != std::string::npos) {
       // Can not happen, except on userdebug, during testing/debugging.
       ret = "kernel_panic,sysrq";
     } else if (content.rfind(
