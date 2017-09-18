@@ -658,6 +658,9 @@ int main(int argc, char** argv) {
             if (am.HasMoreCommands()) epoll_timeout_ms = 0;
         }
 
+        // If we need to process shutdown, wake up again immediately.
+        if (do_shutdown) epoll_timeout_ms = 0;
+
         epoll_event ev;
         int nr = TEMP_FAILURE_RETRY(epoll_wait(epoll_fd, &ev, 1, epoll_timeout_ms));
         if (nr == -1) {
