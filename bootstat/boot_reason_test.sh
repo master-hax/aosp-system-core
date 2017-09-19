@@ -479,7 +479,8 @@ test_hard() {
 [ "USAGE: test_battery
 
 battery test (trick):
-- echo healthd: battery l=2 | adb shell su root tee /dev/kmsg ; adb reboot cold
+- echo healthd: battery l=2<space> | adb shell su root tee /dev/kmsg
+- adb reboot cold
 - (wait until screen is up, boot has completed)
 - adb shell getprop sys.boot.reason
 - NB: should report reboot,battery, unless healthd managed to log
@@ -491,7 +492,7 @@ battery test (trick):
     +    setprop logd.kernel false
     +    rm /sys/fs/pstore/console-ramoops
     +    rm /sys/fs/pstore/console-ramoops-0
-    +    write /dev/kmsg \"healthd: battery l=2
+    +    write /dev/kmsg \"healthd: battery l=2${SPACE}
     +\"
 - adb reboot fs
 - (wait until screen is up, boot has completed)
@@ -502,7 +503,7 @@ test_battery() {
   echo "INFO: expected duration of ${TEST} test roughly two minutes" >&2
   # Send it _many_ times to combat devices with flakey pstore
   for i in a b c d e f g h i j k l m n o p q r s t u v w x y z; do
-    echo healthd: battery l=2 | adb shell su root tee /dev/kmsg >/dev/null
+    echo 'healthd: battery l=2 ' | adb shell su root tee /dev/kmsg >/dev/null
   done
   adb reboot cold >&2
   adb wait-for-device
@@ -512,11 +513,11 @@ test_battery() {
         /proc/fs/pstore/console-ramoops-0 2>/dev/null |
     grep 'healthd: battery l=' |
     tail -1 |
-    grep 'healthd: battery l=2' >/dev/null || (
+    grep 'healthd: battery l=2 ' >/dev/null || (
       if ! EXPECT_PROPERTY sys.boot.reason reboot,battery >/dev/null 2>/dev/null; then
         # retry
         for i in a b c d e f g h i j k l m n o p q r s t u v w x y z; do
-          echo healthd: battery l=2 | adb shell su root tee /dev/kmsg >/dev/null
+          echo 'healthd: battery l=2 ' | adb shell su root tee /dev/kmsg >/dev/null
         done
         adb reboot cold >&2
         adb wait-for-device
