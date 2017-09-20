@@ -95,11 +95,22 @@ bool Elf::GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offse
                      gnu_debugdata_interface_->GetFunctionName(addr, name, func_offset)));
 }
 
-bool Elf::Step(uint64_t rel_pc, Regs* regs, Memory* process_memory) {
-  return valid_ && (regs->StepIfSignalHandler(rel_pc, this, process_memory) ||
-                    interface_->Step(rel_pc, regs, process_memory) ||
-                    (gnu_debugdata_interface_ &&
-                     gnu_debugdata_interface_->Step(rel_pc, regs, process_memory)));
+bool Elf::Step(uint64_t rel_pc, Regs* regs, Memory* process_memory, bool* finished) {
+  if (!valid_) {
+    return false;
+  }
+  if (regs->StepIfSignalHandler(rel_pc, this, process_memory)) {
+    *finished = false;
+    return true;
+  }
+  if (interface_->Step(rel_pc, regs, process_memory, finished)) {
+    return true;
+  }
+  if (gnu_debugdata_interface_ &&
+      gnu_debugdata_interface_->Step(rel_pc, regs, process_memory, finished)) {
+    return true;
+  }
+  return false;
 }
 
 uint64_t Elf::GetLoadBias() {

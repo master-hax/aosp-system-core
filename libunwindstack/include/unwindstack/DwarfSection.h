@@ -76,7 +76,7 @@ class DwarfSection {
 
   virtual bool Init(uint64_t offset, uint64_t size) = 0;
 
-  virtual bool Eval(const DwarfCie*, Memory*, const dwarf_loc_regs_t&, Regs*) = 0;
+  virtual bool Eval(const DwarfCie*, Memory*, const dwarf_loc_regs_t&, Regs*, bool*) = 0;
 
   virtual bool GetFdeOffsetFromPc(uint64_t pc, uint64_t* fde_offset) = 0;
 
@@ -100,11 +100,14 @@ class DwarfSection {
 
   virtual uint64_t AdjustPcFromFde(uint64_t pc) = 0;
 
-  bool Step(uint64_t pc, Regs* regs, Memory* process_memory);
+  bool Step(uint64_t pc, Regs* regs, Memory* process_memory, bool* finished);
+
+  bool step_finished() { return step_finished_; }
 
  protected:
   DwarfMemory memory_;
   DwarfError last_error_;
+  bool step_finished_;
 
   uint64_t fde_count_ = 0;
   std::unordered_map<uint64_t, DwarfFde> fde_entries_;
@@ -119,7 +122,7 @@ class DwarfSectionImpl : public DwarfSection {
   virtual ~DwarfSectionImpl() = default;
 
   bool Eval(const DwarfCie* cie, Memory* regular_memory, const dwarf_loc_regs_t& loc_regs,
-            Regs* regs) override;
+            Regs* regs, bool* finished) override;
 
   const DwarfCie* GetCie(uint64_t offset);
   bool FillInCie(DwarfCie* cie);
