@@ -328,7 +328,86 @@ bool readPstoreConsole(std::string& console) {
   return android::base::ReadFileToString("/sys/fs/pstore/console-ramoops", &console);
 }
 
-bool addKernelPanicSubReason(const std::string& console, std::string& ret) {
+// Implement a variant of std::string::rfind that is resilient to errors in
+// the data stream being inspected.
+class pstoreConsole {
+ private:
+  const size_t kBitErrorRate = 8;  // number of bits per error
+  const std::string& console;
+
+  // Number of bits that differ between the two arguments l and r.
+  // Returns zero if the values for l and r are identical.
+  size_t numError(uint8_t l, uint8_t r) const { return std::bitset<8>(l ^ r).count(); }
+
+  // A string comparison function, reports the number of errors discovered
+  // in the match to a maximum of the bitLength / kBitErrorRate, at that
+  // point returning npos to indicate match is too poor.
+  //
+  // Since called in rfind which works backwards, expect cache locality will
+  // help if we check in reverse here as well for performance.
+  //
+  // Assumption: l is long enough to house _r.length(), checked in rfind
+  //             caller below.
+  //
+  size_t numError(const char* l, const std::string& _r) const {
+    const char* r = _r.c_str();
+    size_t n = _r.length();
+    const uint8_t* le = reinterpret_cast<const uint8_t*>(l) + n;
+    const uint8_t* re = reinterpret_cast<const uint8_t*>(r) + n;
+    size_t count = 0;
+    n = 0;
+    do {
+      // individual character bit error rate > threshold + slop
+      size_t num = numError(*--le, *--re);
+      if (num > ((8 + kBitErrorRate) / kBitErrorRate)) return std::string::npos;
+      // total bit error rate > threshold + slop
+      count += num;
+      ++n;
+      if (count > ((n * 8 + kBitErrorRate - (n > 2)) / kBitErrorRate)) {
+        return std::string::npos;
+      }
+    } while (le != reinterpret_cast<const uint8_t*>(l));
+    return count;
+  }
+
+ public:
+  pstoreConsole(const std::string& console) : console(console) {}
+
+  // Our implementation of rfind, use exact match first, then resort to fuzzy.
+  size_t rfind(const std::string& needle) const {
+    size_t pos = console.rfind(needle);  // exact match?
+    if (pos != std::string::npos) return pos;
+
+    // Check to make sure needle fits in console string.
+    pos = console.length();
+    if (needle.length() > pos) return std::string::npos;
+    pos -= needle.length();
+    // fuzzy match to maximum kBitErrorRate
+    for (const char* p = console.c_str() + pos;; --p) {
+      if (numError(p, needle) != std::string::npos) return p - console.c_str();
+      if (p == console.c_str()) break;
+    }
+    return std::string::npos;
+  }
+};
+
+// if needle, with a bit error match occurs anywhere in reason, correct it
+bool correctForBer(std::string& reason, const std::string& needle) {
+  bool corrected = false;
+  for (size_t len = needle.length(); len <= reason.length(); ++len) {
+    std::string prefix(reason.substr(0, len));
+    const pstoreConsole check(prefix);
+
+    size_t pos = check.rfind(needle);
+    if (pos == std::string::npos) continue;
+    if (needle == reason.substr(pos, needle.length())) continue;
+    corrected = true;
+    reason = reason.substr(0, pos) + needle + reason.substr(pos + needle.length());
+  }
+  return corrected;
+}
+
+bool addKernelPanicSubReason(const pstoreConsole& console, std::string& ret) {
   // Check for kernel panic types to refine information
   if (console.rfind("SysRq : Trigger a crash") != std::string::npos) {
     // Can not happen, except on userdebug, during testing/debugging.
@@ -347,14 +426,26 @@ bool addKernelPanicSubReason(const std::string& console, std::string& ret) {
   return false;
 }
 
+bool addKernelPanicSubReason(const std::string& content, std::string& ret) {
+  return addKernelPanicSubReason(pstoreConsole(content), ret);
+}
+
 // std::transform Helper callback functions:
 // Converts a string value representing the reason the system booted to a
 // string complying with Android system standard reason.
 char tounderline(char c) {
   return ::isblank(c) ? '_' : c;
 }
+
 char toprintable(char c) {
   return ::isprint(c) ? c : '?';
+}
+
+// Cleanup boot_reason regarding acceptable character set
+void transformReason(std::string& reason) {
+  std::transform(reason.begin(), reason.end(), reason.begin(), ::tolower);
+  std::transform(reason.begin(), reason.end(), reason.begin(), tounderline);
+  std::transform(reason.begin(), reason.end(), reason.begin(), toprintable);
 }
 
 const char system_reboot_reason_property[] = "sys.boot.reason";
@@ -370,10 +461,7 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
   // If sys.boot.reason == ro.boot.bootreason, let's re-evaluate
   if (reason == ret) ret = "";
 
-  // Cleanup boot_reason regarding acceptable character set
-  std::transform(reason.begin(), reason.end(), reason.begin(), ::tolower);
-  std::transform(reason.begin(), reason.end(), reason.begin(), tounderline);
-  std::transform(reason.begin(), reason.end(), reason.begin(), toprintable);
+  transformReason(reason);
 
   // Is the current system boot reason sys.boot.reason valid?
   if (!isKnownRebootReason(ret)) ret = "";
@@ -446,9 +534,10 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
     // Check to see if last klog has some refinement hints.
     std::string content;
     if (readPstoreConsole(content)) {
+      const pstoreConsole console(content);
       // The toybox reboot command used directly (unlikely)? But also
       // catches init's response to Android's more controlled reboot command.
-      if (content.rfind("reboot: Power down") != std::string::npos) {
+      if (console.rfind("reboot: Power down") != std::string::npos) {
         ret = "shutdown";  // Still too blunt, but more accurate.
         // ToDo: init should record the shutdown reason to kernel messages ala:
         //           init: shutdown system with command 'last_reboot_reason'
@@ -457,32 +546,46 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       }
 
       static const char cmd[] = "reboot: Restarting system with command '";
-      size_t pos = content.rfind(cmd);
+      size_t pos = console.rfind(cmd);
       if (pos != std::string::npos) {
         pos += strlen(cmd);
         std::string subReason(content.substr(pos, max_reason_length));
+        // Correct against any known strings that Bit Error Match
+        for (const auto& s : knownReasons) {
+          correctForBer(subReason, s);
+        }
+        for (const auto& m : kBootReasonMap) {
+          if (m.first.length() <= strlen("cold")) continue;  // too short?
+          if (correctForBer(subReason, m.first + "'")) continue;
+          if (m.first.length() <= strlen("reboot,cold")) continue;  // short?
+          if (!android::base::StartsWith(m.first, "reboot,")) continue;
+          correctForBer(subReason, m.first.substr(strlen("reboot,")) + "'");
+        }
         for (pos = 0; pos < subReason.length(); ++pos) {
           char c = tounderline(subReason[pos]);
-          if (!::isprint(c) || (c == '\'')) {
+          // #, &, %, / are common single bit error for ' that we can block
+          if (!::isprint(c) || (c == '\'') || (c == '#') || (c == '&') || (c == '%') || (c == '/')) {
             subReason.erase(pos);
             break;
           }
-          subReason[pos] = ::tolower(c);
         }
+        transformReason(subReason);
         if (subReason != "") {  // Will not land "reboot" as that is too blunt.
           if (isKernelRebootReason(subReason)) {
             ret = "reboot," + subReason;  // User space can't talk kernel reasons.
-          } else {
+          } else if (isKnownRebootReason(subReason)) {
             ret = subReason;
+          } else {
+            ret = "reboot," + subReason;  // legitimize unknown reasons
           }
         }
       }
 
       // Check for kernel panics, allowed to override reboot command.
-      if (!addKernelPanicSubReason(content, ret) &&
+      if (!addKernelPanicSubReason(console, ret) &&
           // check for long-press power down
-          ((content.rfind("Power held for ") != std::string::npos) ||
-           (content.rfind("charger: [") != std::string::npos))) {
+          ((console.rfind("Power held for ") != std::string::npos) ||
+           (console.rfind("charger: [") != std::string::npos))) {
         ret = "cold";
       }
     }
@@ -498,14 +601,33 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       // Really a hail-mary pass to find it in last klog content ...
       static const int battery_dead_threshold = 2;  // percent
       static const char battery[] = "healthd: battery l=";
-      size_t pos = content.rfind(battery);  // last one
+      const pstoreConsole console(content);
+      size_t pos = console.rfind(battery);  // last one
       std::string digits;
       if (pos != std::string::npos) {
-        digits = content.substr(pos + strlen(battery));
+        digits = content.substr(pos + strlen(battery), strlen("100 "));
+        // correct common errors
+        correctForBer(digits, "100 ");
+        if (digits[0] == '!') digits[0] = '1';
+        if (digits[1] == '!') digits[1] = '1';
       }
       char* endptr = NULL;
       unsigned long long level = strtoull(digits.c_str(), &endptr, 10);
-      if ((level <= 100) && (endptr != digits.c_str()) && (*endptr == ' ')) {
+      if (((level < 10) && (endptr != (digits.c_str() + 1))) ||
+          ((level >= 10) && (level < 100) && (endptr != (digits.c_str() + 2))) ||
+          ((level >= 100) && (endptr != (digits.c_str() + 3))) || (endptr > (digits.c_str() + 3))) {
+        // corrupted by leading zeros, mark invalid conversion
+        endptr = const_cast<char*>(digits.c_str());
+      }
+      // example bit error rate issues for 10%
+      //   'l=10 ' no bits in error
+      //   'l=00 ' single bit error (fails above)
+      //   'l=1  ' single bit error
+      //   'l=0  ' double bit error
+      // There are others, not typically critical because of 2%
+      // battery_dead_threshold. KISS check, make sure second
+      // character after digit sequence is not a space.
+      if ((level <= 100) && (endptr != digits.c_str()) && (endptr[0] == ' ') && (endptr[1] != ' ')) {
         LOG(INFO) << "Battery level at shutdown " << level << "%";
         if (level <= battery_dead_threshold) {
           ret = "shutdown,battery";
@@ -565,10 +687,7 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       // Content buffer no longer will have console data. Beware if more
       // checks added below, that depend on parsing console content.
       content = GetProperty(last_reboot_reason_property);
-      // Cleanup last_boot_reason regarding acceptable character set
-      std::transform(content.begin(), content.end(), content.begin(), ::tolower);
-      std::transform(content.begin(), content.end(), content.begin(), tounderline);
-      std::transform(content.begin(), content.end(), content.begin(), toprintable);
+      transformReason(content);
 
       // Anything in last is better than 'super-blunt' reboot or shutdown.
       if ((ret == "") || (ret == "reboot") || (ret == "shutdown") || !isBluntRebootReason(content)) {
