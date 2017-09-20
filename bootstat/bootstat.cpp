@@ -424,8 +424,14 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       if (pos != std::string::npos) {
         pos += strlen(cmd);
         std::string subReason(content.substr(pos));
-        pos = subReason.find('\'');
-        if (pos != std::string::npos) subReason.erase(pos);
+        for (auto it = subReason.begin(); it != subReason.end(); ++it) {
+          char c = tounderline(*it);
+          if (!::isprint(c) || (c == '\'')) {
+            subReason.erase(it);
+            break;
+          }
+          *it = ::tolower(c);
+        }
         if (subReason != "") {  // Will not land "reboot" as that is too blunt.
           if (isKernelRebootReason(subReason)) {
             ret = "reboot," + subReason;  // User space can't talk kernel reasons.
@@ -456,13 +462,20 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       static const int battery_dead_threshold = 2;  // percent
       static const char battery[] = "healthd: battery l=";
       size_t pos = content.rfind(battery);  // last one
+      std::string digits;
       if (pos != std::string::npos) {
-        int level = atoi(content.substr(pos + strlen(battery)).c_str());
+        digits = content.substr(pos + strlen(battery));
+      }
+      char* endptr = NULL;
+      unsigned long long level = strtoull(digits.c_str(), &endptr, 10);
+      if ((level <= 100) && (endptr != digits.c_str()) && (*endptr == ' ')) {
         LOG(INFO) << "Battery level at shutdown " << level << "%";
         if (level <= battery_dead_threshold) {
           ret = "shutdown,battery";
         }
-      } else {  // Most likely
+      } else {        // Most likely
+        digits = "";  // reset digits
+
         // Content buffer no longer will have console data. Beware if more
         // checks added below, that depend on parsing console content.
         content = "";
@@ -496,8 +509,11 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
 
         pos = content.find(match);  // The first one it finds.
         if (pos != std::string::npos) {
-          pos += strlen(match);
-          int level = atoi(content.substr(pos).c_str());
+          digits = content.substr(pos + strlen(match));
+        }
+        endptr = NULL;
+        level = strtoull(digits.c_str(), &endptr, 10);
+        if ((level <= 100) && (endptr != digits.c_str()) && (*endptr == ' ')) {
           LOG(INFO) << "Battery level at startup " << level << "%";
           if (level <= battery_dead_threshold) {
             ret = "shutdown,battery";
@@ -513,6 +529,10 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       // Content buffer no longer will have console data. Beware if more
       // checks added below, that depend on parsing console content.
       content = GetProperty(last_reboot_reason_property);
+      // Cleanup last_boot_reason regarding acceptable character set
+      std::transform(content.begin(), content.end(), content.begin(), ::tolower);
+      std::transform(content.begin(), content.end(), content.begin(), tounderline);
+      std::transform(content.begin(), content.end(), content.begin(), toprintable);
 
       // String is either "reboot,<reason>" or "shutdown,<reason>".
       // We will set if default reasons, only override with detail if thermal.
