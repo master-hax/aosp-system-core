@@ -19,6 +19,7 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <chrono>
 #include <string>
 
 #if !defined(_WIN32) && !defined(O_BINARY)
@@ -34,6 +35,7 @@ namespace android {
 namespace base {
 
 bool ReadFdToString(int fd, std::string* content);
+bool ReadFdToString(int fd, std::string* content, std::chrono::milliseconds timeout);
 bool ReadFileToString(const std::string& path, std::string* content,
                       bool follow_symlinks = false);
 
