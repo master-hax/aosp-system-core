@@ -102,6 +102,7 @@ cc_library {
                 "errors_windows.cpp",
                 "utf8.cpp",
             ],
+            host_ldlibs: ["-lws2_32"],
             enabled: true,
         },
     },

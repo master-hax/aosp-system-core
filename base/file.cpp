@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
+#if defined(__CYGWIN__)
+#undef _WIN32
+#endif
+
 #include "android-base/file.h"
 
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
+#if !defined(_WIN32)
+#include <poll.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -37,6 +45,9 @@
 #include <mach-o/dyld.h>
 #endif
 #if defined(_WIN32)
+// clang-format off
+#include <winsock2.h> // winsock.h *must* be included before windows.h
+// clang-format on
 #include <windows.h>
 #define O_CLOEXEC O_NOINHERIT
 #define O_NOFOLLOW 0
@@ -65,6 +76,69 @@ bool ReadFdToString(int fd, std::string* content) {
     content->append(buf, n);
   }
   return (n == 0) ? true : false;
+}
+
+using namespace std::chrono;
+
+bool ReadFdToString(int fd, std::string* content, size_t max_size, milliseconds relative_timeout) {
+  content->clear();
+
+  struct stat sb;
+  if (fstat(fd, &sb) != -1 && sb.st_size > 0) {
+    content->reserve(std::min(max_size, static_cast<size_t>(sb.st_size)));
+  }
+
+  bool skip_poll = relative_timeout == milliseconds::max();
+
+#if defined(_WIN32)
+  WSAPOLLFD pfd = {.fd = static_cast<SOCKET>(fd), .events = POLLIN, .revents = 0};
+#else
+  struct pollfd pfd = {.fd = fd, .events = POLLIN};
+#endif
+
+  auto start = steady_clock::now();
+
+  for (;;) {
+    static constexpr milliseconds zero(0);
+    milliseconds remaining_timeout;
+
+    if (!skip_poll) {
+      auto diff = steady_clock::now() - start;
+      auto time_elapsed = duration_cast<milliseconds>(diff);
+      remaining_timeout = relative_timeout - time_elapsed;
+
+#if defined(_WIN32)
+      auto rc = WSAPoll(&pfd, 1, std::max(remaining_timeout, zero).count());
+      if (rc == SOCKET_ERROR) {
+        rc = WSAGetLastError();
+        if (rc == WSAEINTR) continue;
+        if ((rc != WSAEINVAL) && (rc != WSAENOTSOCK)) return false;
+        skip_poll = true;
+      } else if (pfd.revents == 0) {
+        return remaining_timeout >= zero;
+      }
+#else
+      auto rc = poll(&pfd, 1, std::max(remaining_timeout, zero).count());
+      if ((rc == -1) && (errno == EINTR)) continue;
+      if (rc < 0) return false;
+      if (rc == 0) return remaining_timeout >= zero;
+#endif
+    }
+
+    ssize_t remaining_file_size = max_size - content->length();
+    if (remaining_file_size <= 0) return true;
+
+    char buf[BUFSIZ];
+    auto n = TEMP_FAILURE_RETRY(
+        read(fd, &buf[0], std::min(static_cast<size_t>(remaining_file_size), sizeof(buf))));
+    if (n == 0) return true;
+    if (n < 0) return false;
+    content->append(buf, n);
+
+    if (content->length() >= max_size) return true;
+
+    if (!skip_poll && (remaining_timeout <= zero)) return false;
+  }
 }
 
 bool ReadFileToString(const std::string& path, std::string* content, bool follow_symlinks) {

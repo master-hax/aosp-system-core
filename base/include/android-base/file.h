@@ -17,8 +17,10 @@
 #ifndef ANDROID_BASE_FILE_H
 #define ANDROID_BASE_FILE_H
 
+#include <stdint.h>  // SIZE_MAX
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <chrono>
 #include <string>
 
 #if !defined(_WIN32) && !defined(O_BINARY)
@@ -34,6 +36,14 @@ namespace android {
 namespace base {
 
 bool ReadFdToString(int fd, std::string* content);
+bool ReadFdToString(int fd, std::string* content, size_t maximum_size,
+                    std::chrono::milliseconds relative_timeout = std::chrono::milliseconds::max());
+static inline bool ReadFdToString(int fd, std::string* content,
+                                  std::chrono::milliseconds relative_timeout,
+                                  size_t maximum_size = SIZE_MAX) {
+  return ReadFdToString(fd, content, maximum_size, relative_timeout);
+}
+
 bool ReadFileToString(const std::string& path, std::string* content,
                       bool follow_symlinks = false);
 
