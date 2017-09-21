@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
+#include <poll.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -48,6 +49,9 @@ namespace base {
 // Versions of standard library APIs that support UTF-8 strings.
 using namespace android::base::utf8;
 
+using namespace std::chrono;
+using namespace std::literals;
+
 bool ReadFdToString(int fd, std::string* content) {
   content->clear();
 
@@ -65,6 +69,37 @@ bool ReadFdToString(int fd, std::string* content) {
     content->append(buf, n);
   }
   return (n == 0) ? true : false;
+}
+
+bool ReadFdToString(int fd, std::string* content, milliseconds timeout) {
+  if (timeout == 0ms) return ReadFdToString(fd, content);
+
+  content->clear();
+
+  // unlikely because if we have a timeout, we also do not expect size ...
+  struct stat sb;
+  if (fstat(fd, &sb) != -1 && sb.st_size > 0) content->reserve(sb.st_size);
+
+  auto start = steady_clock::now();
+  struct pollfd pfd = {.fd = fd, .events = POLLIN};
+
+  for (;;) {
+    auto diff = steady_clock::now() - start;
+    auto time_elapsed = duration_cast<milliseconds>(diff);
+    auto remaining_timeout = (time_elapsed < timeout) ? timeout - time_elapsed : 0ms;
+
+    auto rc = poll(&pfd, 1, remaining_timeout.count());
+    if ((rc == -1) && (errno == EINTR)) continue;
+    if (rc <= 0) return false;
+
+    char buf[BUFSIZ];
+    auto n = TEMP_FAILURE_RETRY(read(fd, &buf[0], sizeof(buf)));
+    if (n == 0) return true;
+    if (n < 0) return false;
+    content->append(buf, n);
+
+    if (remaining_timeout.count() <= 0) return false;
+  }
 }
 
 bool ReadFileToString(const std::string& path, std::string* content, bool follow_symlinks) {
