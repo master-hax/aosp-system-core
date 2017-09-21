@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
+#include <poll.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -65,6 +66,38 @@ bool ReadFdToString(int fd, std::string* content) {
     content->append(buf, n);
   }
   return (n == 0) ? true : false;
+}
+
+bool ReadFdToString(int fd, std::string* content, std::chrono::milliseconds timeout) {
+  if (timeout == std::chrono::milliseconds(0)) return ReadFdToString(fd, content);
+
+  content->clear();
+
+  // unlikely because if we have a timeout, we also do not expect size ...
+  struct stat sb;
+  if (fstat(fd, &sb) != -1 && sb.st_size > 0) content->reserve(sb.st_size);
+
+  auto start = std::chrono::steady_clock::now();
+  struct pollfd pfd = {.fd = fd, .events = POLLIN};
+
+  for (;;) {
+    auto diff = std::chrono::steady_clock::now() - start;
+    auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+    auto remaining_timeout =
+        (time_elapsed < timeout) ? timeout - time_elapsed : std::chrono::milliseconds(0);
+
+    auto rc = poll(&pfd, 1, remaining_timeout.count());
+    if ((rc == -1) && (errno == EINTR)) continue;
+    if (rc <= 0) return false;
+
+    char buf[BUFSIZ];
+    auto n = TEMP_FAILURE_RETRY(read(fd, &buf[0], sizeof(buf)));
+    if (n == 0) return true;
+    if (n < 0) return false;
+    content->append(buf, n);
+
+    if (!remaining_timeout.count()) return false;
+  }
 }
 
 bool ReadFileToString(const std::string& path, std::string* content, bool follow_symlinks) {
