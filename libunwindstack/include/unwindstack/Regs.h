@@ -19,6 +19,8 @@
 
 #include <stdint.h>
 
+#include <functional>
+#include <string>
 #include <vector>
 
 namespace unwindstack {
@@ -65,6 +67,8 @@ class Regs {
 
   virtual bool SetPcFromReturnAddress(Memory* process_memory) = 0;
 
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) = 0;
+
   uint16_t sp_reg() { return sp_reg_; }
   uint16_t total_regs() { return total_regs_; }
 
@@ -98,6 +102,12 @@ class RegsImpl : public Regs {
 
   void* RawData() override { return regs_.data(); }
 
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)> fn) override {
+    for (size_t i = 0; i < regs_.size(); ++i) {
+      fn(std::to_string(i).c_str(), regs_[i]);
+    }
+  }
+
  protected:
   AddressType pc_;
   AddressType sp_;
@@ -118,6 +128,8 @@ class RegsArm : public RegsImpl<uint32_t> {
   bool SetPcFromReturnAddress(Memory* process_memory) override;
 
   bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
 };
 
 class RegsArm64 : public RegsImpl<uint64_t> {
@@ -134,6 +146,8 @@ class RegsArm64 : public RegsImpl<uint64_t> {
   bool SetPcFromReturnAddress(Memory* process_memory) override;
 
   bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
 };
 
 class RegsX86 : public RegsImpl<uint32_t> {
@@ -152,6 +166,8 @@ class RegsX86 : public RegsImpl<uint32_t> {
   bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
 
   void SetFromUcontext(x86_ucontext_t* ucontext);
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
 };
 
 class RegsX86_64 : public RegsImpl<uint64_t> {
@@ -170,6 +186,8 @@ class RegsX86_64 : public RegsImpl<uint64_t> {
   bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
 
   void SetFromUcontext(x86_64_ucontext_t* ucontext);
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
 };
 
 }  // namespace unwindstack
