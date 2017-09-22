@@ -438,4 +438,18 @@ class ScopedLogSeverity {
 }  // namespace base
 }  // namespace android
 
+namespace std {
+
+// Emit a warning of ostream<< with std::string*. tThe intention was most likely to print *string.
+//
+// Note: for this to work, we need to have this in a namespace.
+// Note: using diagnose_if(true) as warning() is not supported by Clang.
+// Note: To ignore the warning, add -Wno-user-defined-warnings to CPPFLAGS.
+inline std::ostream& operator<<(std::ostream& stream, const std::string* string_pointer)
+    __attribute__((diagnose_if(true, "Unexpected logging of string pointer", "warning"))) {
+  return stream << static_cast<const void*>(string_pointer);
+}
+
+}  // namespace std
+
 #endif  // ANDROID_BASE_LOGGING_H
