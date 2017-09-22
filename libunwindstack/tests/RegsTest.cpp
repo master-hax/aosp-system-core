@@ -23,6 +23,7 @@
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Regs.h>
 
+#include "Machine.h"
 #include "MemoryFake.h"
 
 namespace unwindstack {
@@ -287,6 +288,114 @@ TEST_F(RegsTest, x86_64_set_from_raw) {
   x86_64.SetFromRaw();
   EXPECT_EQ(0x1200000000U, x86_64.sp());
   EXPECT_EQ(0x4900000000U, x86_64.pc());
+}
+
+#define ITERATE_TEST_PROLOGUE(RegsType) \
+  RegsType regs;                        \
+  std::unordered_map<std::string, uint64_t> expected
+
+#define REG(name, offset)    \
+  expected[name] = __LINE__; \
+  regs[offset] = __LINE__
+
+#define ITERATE_TEST_EPILOGUE()                                                                 \
+  std::unordered_map<std::string, uint64_t> actual;                                             \
+  regs.IterateRegisters([&actual](const char* name, uint64_t value) { actual[name] = value; }); \
+  ASSERT_EQ(expected, actual)
+
+TEST_F(RegsTest, arm_iterate) {
+  ITERATE_TEST_PROLOGUE(RegsArm);
+  REG("r0", ARM_REG_R0);
+  REG("r1", ARM_REG_R1);
+  REG("r2", ARM_REG_R2);
+  REG("r3", ARM_REG_R3);
+  REG("r4", ARM_REG_R4);
+  REG("r5", ARM_REG_R5);
+  REG("r6", ARM_REG_R6);
+  REG("r7", ARM_REG_R7);
+  REG("r8", ARM_REG_R8);
+  REG("r9", ARM_REG_R9);
+  REG("r10", ARM_REG_R10);
+  REG("r11", ARM_REG_R11);
+  REG("ip", ARM_REG_R12);
+  REG("sp", ARM_REG_SP);
+  REG("lr", ARM_REG_LR);
+  REG("pc", ARM_REG_PC);
+  ITERATE_TEST_EPILOGUE();
+}
+
+TEST_F(RegsTest, arm64_iterate) {
+  ITERATE_TEST_PROLOGUE(RegsArm64);
+  REG("x0", ARM64_REG_R0);
+  REG("x1", ARM64_REG_R1);
+  REG("x2", ARM64_REG_R2);
+  REG("x3", ARM64_REG_R3);
+  REG("x4", ARM64_REG_R4);
+  REG("x5", ARM64_REG_R5);
+  REG("x6", ARM64_REG_R6);
+  REG("x7", ARM64_REG_R7);
+  REG("x8", ARM64_REG_R8);
+  REG("x9", ARM64_REG_R9);
+  REG("x10", ARM64_REG_R10);
+  REG("x11", ARM64_REG_R11);
+  REG("x12", ARM64_REG_R12);
+  REG("x13", ARM64_REG_R13);
+  REG("x14", ARM64_REG_R14);
+  REG("x15", ARM64_REG_R15);
+  REG("x16", ARM64_REG_R16);
+  REG("x17", ARM64_REG_R17);
+  REG("x18", ARM64_REG_R18);
+  REG("x19", ARM64_REG_R19);
+  REG("x20", ARM64_REG_R20);
+  REG("x21", ARM64_REG_R21);
+  REG("x22", ARM64_REG_R22);
+  REG("x23", ARM64_REG_R23);
+  REG("x24", ARM64_REG_R24);
+  REG("x25", ARM64_REG_R25);
+  REG("x26", ARM64_REG_R26);
+  REG("x27", ARM64_REG_R27);
+  REG("x28", ARM64_REG_R28);
+  REG("x29", ARM64_REG_R29);
+  REG("sp", ARM64_REG_SP);
+  REG("lr", ARM64_REG_LR);
+  REG("pc", ARM64_REG_PC);
+  ITERATE_TEST_EPILOGUE();
+}
+
+TEST_F(RegsTest, x86_iterate) {
+  ITERATE_TEST_PROLOGUE(RegsX86);
+  REG("eax", X86_REG_EAX);
+  REG("ebx", X86_REG_EBX);
+  REG("ecx", X86_REG_ECX);
+  REG("edx", X86_REG_EDX);
+  REG("ebp", X86_REG_EBP);
+  REG("edi", X86_REG_EDI);
+  REG("esi", X86_REG_ESI);
+  REG("esp", X86_REG_ESP);
+  REG("eip", X86_REG_EIP);
+  ITERATE_TEST_EPILOGUE();
+}
+
+TEST_F(RegsTest, x86_64_iterate) {
+  ITERATE_TEST_PROLOGUE(RegsX86_64);
+  REG("rax", X86_64_REG_RAX);
+  REG("rbx", X86_64_REG_RBX);
+  REG("rcx", X86_64_REG_RCX);
+  REG("rdx", X86_64_REG_RDX);
+  REG("r8", X86_64_REG_R8);
+  REG("r9", X86_64_REG_R9);
+  REG("r10", X86_64_REG_R10);
+  REG("r11", X86_64_REG_R11);
+  REG("r12", X86_64_REG_R12);
+  REG("r13", X86_64_REG_R13);
+  REG("r14", X86_64_REG_R14);
+  REG("r15", X86_64_REG_R15);
+  REG("rdi", X86_64_REG_RDI);
+  REG("rsi", X86_64_REG_RSI);
+  REG("rbp", X86_64_REG_RBP);
+  REG("rsp", X86_64_REG_RSP);
+  REG("rip", X86_64_REG_RIP);
+  ITERATE_TEST_EPILOGUE();
 }
 
 }  // namespace unwindstack
