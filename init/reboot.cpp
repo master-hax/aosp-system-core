@@ -478,7 +478,30 @@ bool HandlePowerctlMessage(const std::string& command) {
     } else if (cmd_params[0] == "shutdown") {
         cmd = ANDROID_RB_POWEROFF;
         if (cmd_params.size() == 2) {
-            if (cmd_params[1] == "userrequested") {
+            constexpr unsigned int support_default = 0;
+            if (cmd_params[1] == "suspend") {
+                auto supported =
+                    android::base::GetUintProperty("ro.support.suspend", support_default);
+                LOG(INFO) << command << " support.suspend=" << supported;
+                // Suspend to RAM if supported, or do nothing and assume we did.
+                if (!supported) return false;
+                bool sent = android::base::WriteStringToFile("mem", "/sys/power/state");
+                LOG(INFO) << command << " return " << sent;
+                return false;  // Not a real shutdown, continue running.
+            } else if (cmd_params[1] == "hibernate") {
+                auto supported =
+                    android::base::GetUintProperty("ro.support.hibernate", support_default);
+                LOG(INFO) << command << " support.hibernate=" << supported;
+                // Suspend to DISK if supported, or long full shutdown with
+                // fsck cleanup for quicker boot up.
+                if (supported != 0 &&
+                    android::base::WriteStringToFile("shutdown", "/sys/power/disk") &&
+                    android::base::WriteStringToFile("disk", "/sys/power/state")) {
+                    LOG(INFO) << command << " return true";
+                    return false;  // Not a real shutdown, continue running.
+                }
+                run_fsck = true;
+            } else if (cmd_params[1] == "userrequested") {
                 // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
                 // Run fsck once the file system is remounted in read-only mode.
                 run_fsck = true;
