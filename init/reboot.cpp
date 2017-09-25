@@ -502,12 +502,16 @@ bool HandlePowerctlMessage(const std::string& command) {
                 LOG(INFO) << "Suspend to RAM support=" << supported;
                 // Suspend to RAM if supported, or do nothing and assume we did.
                 if (!supported) return false;
+                property_set(LAST_REBOOT_REASON_PROPERTY, command);
+                sync();
                 bool sent = SetStateToFile("mem", "/sys/power/state");
                 LOG(INFO) << "Return " << sent << " from suspend to RAM";
                 return false;  // Not a real shutdown, continue running.
             } else if (cmd_params[1] == "hibernate") {
                 auto supported = GetBoolProperty("ro.support.hibernate", false);
                 LOG(INFO) << "Suspend to DISK support=" << supported;
+                property_set(LAST_REBOOT_REASON_PROPERTY, command);
+                sync();
                 if (supported && SetStateToFile("shutdown", "/sys/power/disk") &&
                     SetStateToFile("disk", "/sys/power/state")) {
                     LOG(INFO) << "Return true from suspend to DISK";
