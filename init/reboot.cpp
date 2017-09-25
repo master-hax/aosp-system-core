@@ -56,8 +56,15 @@
 #include "service.h"
 #include "sigchld_handler.h"
 
+using android::base::GetBoolProperty;
+using android::base::GetUintProperty;
+using android::base::ReadFileToString;
+using android::base::Split;
+using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::Timer;
+using android::base::Trim;
+using android::base::WriteStringToFile;
 
 namespace android {
 namespace init {
@@ -116,11 +123,11 @@ class MountEntry {
     }
 
     static bool IsBlockDevice(const struct mntent& mntent) {
-        return android::base::StartsWith(mntent.mnt_fsname, "/dev/block");
+        return StartsWith(mntent.mnt_fsname, "/dev/block");
     }
 
     static bool IsEmulatedDevice(const struct mntent& mntent) {
-        return android::base::StartsWith(mntent.mnt_fsname, "/data/");
+        return StartsWith(mntent.mnt_fsname, "/data/");
     }
 
   private:
@@ -138,7 +145,7 @@ class MountEntry {
 static void TurnOffBacklight() {
     static constexpr char OFF[] = "0";
 
-    android::base::WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
+    WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
 
     static const char backlightDir[] = "/sys/class/backlight";
     std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(backlightDir), closedir);
@@ -153,7 +160,7 @@ static void TurnOffBacklight() {
         }
 
         std::string fileName = StringPrintf("%s/%s/brightness", backlightDir, dp->d_name);
-        android::base::WriteStringToFile(OFF, fileName);
+        WriteStringToFile(OFF, fileName);
     }
 }
 
@@ -258,7 +265,7 @@ static void DumpUmountDebuggingInfo(bool dump_all) {
     FindPartitionsToUmount(nullptr, nullptr, true);
     if (dump_all) {
         // dump current tasks, this log can be lengthy, so only dump with dump_all
-        android::base::WriteStringToFile("t", "/proc/sysrq-trigger");
+        WriteStringToFile("t", "/proc/sysrq-trigger");
     }
 }
 
@@ -298,7 +305,9 @@ static UmountStat UmountPartitions(std::chrono::milliseconds timeout) {
     }
 }
 
-static void KillAllProcesses() { android::base::WriteStringToFile("i", "/proc/sysrq-trigger"); }
+static void KillAllProcesses() {
+    WriteStringToFile("i", "/proc/sysrq-trigger");
+}
 
 /* Try umounting all emulated file systems R/W block device cfile systems.
  * This will just try umount and give it up if it fails.
@@ -357,8 +366,8 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
             shutdown_timeout = std::chrono::seconds(thermal_shutdown_timeout);
         } else {
             constexpr unsigned int shutdown_timeout_default = 6;
-            auto shutdown_timeout_property = android::base::GetUintProperty(
-                "ro.build.shutdown_timeout", shutdown_timeout_default);
+            auto shutdown_timeout_property =
+                GetUintProperty("ro.build.shutdown_timeout", shutdown_timeout_default);
             shutdown_timeout = std::chrono::seconds(shutdown_timeout_property);
         }
     }
@@ -466,9 +475,21 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     abort();
 }
 
+static bool SetStateToFile(const std::string& state, const std::string& file) {
+    std::string states;
+    if (!ReadFileToString(file, &states)) return false;
+    std::vector<std::string> available_states = Split(Trim(states), "[ ]");
+    for (auto& available_state : available_states) {
+        if (state == available_state) {
+            return WriteStringToFile(state, file);
+        }
+    }
+    return false;
+}
+
 bool HandlePowerctlMessage(const std::string& command) {
     unsigned int cmd = 0;
-    std::vector<std::string> cmd_params = android::base::Split(command, ",");
+    std::vector<std::string> cmd_params = Split(command, ",");
     std::string reboot_target = "";
     bool run_fsck = false;
     bool command_invalid = false;
@@ -478,7 +499,25 @@ bool HandlePowerctlMessage(const std::string& command) {
     } else if (cmd_params[0] == "shutdown") {
         cmd = ANDROID_RB_POWEROFF;
         if (cmd_params.size() == 2) {
-            if (cmd_params[1] == "userrequested") {
+            if (cmd_params[1] == "suspend") {
+                auto supported = GetBoolProperty("ro.support.suspend", false);
+                LOG(INFO) << "Suspend to RAM support=" << supported;
+                // Suspend to RAM if supported, or do nothing and assume we did.
+                if (!supported) return false;
+                bool sent = SetStateToFile("mem", "/sys/power/state");
+                LOG(INFO) << "Return " << sent << " from suspend to RAM";
+                return false;  // Not a real shutdown, continue running.
+            } else if (cmd_params[1] == "hibernate") {
+                auto supported = GetBoolProperty("ro.support.hibernate", false);
+                LOG(INFO) << "Suspend to DISK support=" << supported;
+                if (supported && SetStateToFile("shutdown", "/sys/power/disk") &&
+                    SetStateToFile("disk", "/sys/power/state")) {
+                    LOG(INFO) << "Return true from suspend to DISK";
+                    return false;  // Not a real shutdown, continue running.
+                }
+                // FALLTHRU to full shutdown with fsck cleanup for quicker boot
+                run_fsck = true;
+            } else if (cmd_params[1] == "userrequested") {
                 // The shutdown reason is PowerManager.SHUTDOWN_USER_REQUESTED.
                 // Run fsck once the file system is remounted in read-only mode.
                 run_fsck = true;
