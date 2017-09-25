@@ -205,6 +205,8 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"reboot,adb", 67},
     {"reboot,userrequested", 68},
     {"shutdown,sigterm", 69},
+    {"shutdown,suspend", 70},    // Suspend to RAM
+    {"shutdown,hibernate", 71},  // Suspend to disk
 };
 
 // Converts a string value representing the reason the system booted to an
