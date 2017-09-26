@@ -58,10 +58,12 @@
 
 using android::base::GetBoolProperty;
 using android::base::GetUintProperty;
+using android::base::ReadFileToString;
 using android::base::Split;
 using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::Timer;
+using android::base::Trim;
 using android::base::WriteStringToFile;
 
 namespace android {
@@ -140,16 +142,16 @@ class MountEntry {
 };
 
 // Turn off backlight while we are performing power down cleanup activities.
-static void TurnOffBacklight() {
-    static constexpr char OFF[] = "0";
+static std::string SetBacklight(const std::string& value) {
+    static constexpr char lcd[] = "/sys/class/leds/lcd-backlight/brightness";
 
-    WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
+    std::string previous_brightness;
+    ReadFileToString(lcd, &previous_brightness);
+    if (!value.empty()) WriteStringToFile(value, lcd);
 
     static const char backlightDir[] = "/sys/class/backlight";
     std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(backlightDir), closedir);
-    if (!dir) {
-        return;
-    }
+    if (!dir) return Trim(previous_brightness);
 
     struct dirent* dp;
     while ((dp = readdir(dir.get())) != nullptr) {
@@ -158,8 +160,14 @@ static void TurnOffBacklight() {
         }
 
         std::string fileName = StringPrintf("%s/%s/brightness", backlightDir, dp->d_name);
-        WriteStringToFile(OFF, fileName);
+        if (previous_brightness.empty()) ReadFileToString(fileName, &previous_brightness);
+        if (!value.empty()) WriteStringToFile(value, fileName);
     }
+    return Trim(previous_brightness);
+}
+
+static std::string TurnOffBacklight() {
+    return SetBacklight("0");
 }
 
 static void ShutdownVold() {
@@ -504,18 +512,26 @@ bool HandlePowerctlMessage(const std::string& command) {
                 if (!supported) return false;
                 property_set(LAST_REBOOT_REASON_PROPERTY, command);
                 sync();
+                std::string old_backlight_value = TurnOffBacklight();
                 bool sent = SetStateToFile("mem", "/sys/power/state");
-                LOG(INFO) << "Return " << sent << " from suspend to RAM";
+                LOG(INFO) << "Return " << sent
+                          << " from suspend to RAM brightness=" << old_backlight_value;
+                SetBacklight(old_backlight_value);
                 return false;  // Not a real shutdown, continue running.
             } else if (cmd_params[1] == "hibernate") {
                 auto supported = GetBoolProperty("ro.support.hibernate", false);
                 LOG(INFO) << "Suspend to DISK support=" << supported;
-                property_set(LAST_REBOOT_REASON_PROPERTY, command);
-                sync();
-                if (supported && SetStateToFile("shutdown", "/sys/power/disk") &&
-                    SetStateToFile("disk", "/sys/power/state")) {
-                    LOG(INFO) << "Return true from suspend to DISK";
-                    return false;  // Not a real shutdown, continue running.
+                if (supported) {
+                    property_set(LAST_REBOOT_REASON_PROPERTY, command);
+                    sync();
+                    std::string old_backlight_value = TurnOffBacklight();
+                    if (SetStateToFile("shutdown", "/sys/power/disk") &&
+                        SetStateToFile("disk", "/sys/power/state")) {
+                        LOG(INFO) << "Return true from suspend to DISK brightness="
+                                  << old_backlight_value;
+                        SetBacklight(old_backlight_value);
+                        return false;  // Not a real shutdown, continue running.
+                    }
                 }
                 // FALLTHRU to full shutdown with fsck cleanup for quicker boot
                 run_fsck = true;
