@@ -16,6 +16,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #include <vector>
 
@@ -66,5 +67,27 @@ TEST(MemoryLocalTest, read_overflow) {
   uint64_t value;
   ASSERT_FALSE(local.Read(reinterpret_cast<uint64_t>(&value), dst.data(), SIZE_MAX));
 }
+
+TEST(MemoryLocalTest, PartialRead) {
+  char* mapping = static_cast<char*>(
+      mmap(nullptr, 2 * getpagesize(), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+
+  ASSERT_NE(MAP_FAILED, mapping);
+
+  mprotect(mapping + getpagesize(), getpagesize(), PROT_NONE);
+  memset(mapping + getpagesize() - 1024, 0x4c, 1024);
+
+  MemoryLocal local;
+
+  std::vector<uint8_t> dst(4096);
+  ASSERT_EQ(1024, local.PartialRead(reinterpret_cast<uint64_t>(mapping + getpagesize() - 1024),
+                                    dst.data(), 4096));
+  for (size_t i = 0; i < 1024; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+
+  ASSERT_EQ(0, munmap(mapping, 2 * getpagesize()));
+}
+
 
 }  // namespace unwindstack

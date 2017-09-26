@@ -76,4 +76,19 @@ TEST(MemoryRangeTest, read_overflow) {
   ASSERT_FALSE(overflow->Read(UINT64_MAX - 10, buffer.data(), 100));
 }
 
+TEST(MemoryRangeTest, PartialRead) {
+  std::vector<uint8_t> src(4096);
+  memset(src.data(), 0x4c, 4096);
+  MemoryFake* memory_fake = new MemoryFake;
+  std::shared_ptr<Memory> process_memory(memory_fake);
+  memory_fake->SetMemory(1000, src);
+
+  MemoryRange range(process_memory, 1000, 2024);
+  std::vector<uint8_t> dst(1024);
+  ASSERT_EQ(4, range.PartialRead(1020, dst.data(), 1024));
+  for (size_t i = 0; i < 4; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+}
+
 }  // namespace unwindstack
