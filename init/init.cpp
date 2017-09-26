@@ -418,7 +418,7 @@ static void HandleSigtermSignal() {
     }
 
     LOG(INFO) << "Handling SIGTERM, shutting system down";
-    HandlePowerctlMessage("shutdown");
+    HandlePowerctlMessage("shutdown,sigterm");
 }
 
 static void InstallSigtermHandler() {
