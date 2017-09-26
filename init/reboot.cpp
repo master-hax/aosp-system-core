@@ -135,15 +135,17 @@ class MountEntry {
 };
 
 // Turn off backlight while we are performing power down cleanup activities.
-static void TurnOffBacklight() {
-    static constexpr char OFF[] = "0";
+static std::string SetBacklight(const char value[]) {
+    static constexpr char lcd[] = "/sys/class/leds/lcd-backlight/brightness";
 
-    android::base::WriteStringToFile(OFF, "/sys/class/leds/lcd-backlight/brightness");
+    std::string retval;
+    android::base::ReadFileToString(lcd, &retval);
+    if (value[0] != '\0') android::base::WriteStringToFile(value, lcd);
 
     static const char backlightDir[] = "/sys/class/backlight";
     std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(backlightDir), closedir);
     if (!dir) {
-        return;
+        return retval;
     }
 
     struct dirent* dp;
@@ -153,8 +155,21 @@ static void TurnOffBacklight() {
         }
 
         std::string fileName = StringPrintf("%s/%s/brightness", backlightDir, dp->d_name);
-        android::base::WriteStringToFile(OFF, fileName);
+        if (retval.length() == 0) {
+            android::base::ReadFileToString(fileName, &retval);
+        }
+        if (value[0] != '\0') android::base::WriteStringToFile(value, fileName);
     }
+    return retval;
+}
+
+static std::string SetBacklight(const std::string& value) {
+    return SetBacklight(value.c_str());
+}
+
+static std::string TurnOffBacklight() {
+    static constexpr char OFF[] = "0";
+    return SetBacklight(OFF);
 }
 
 static void ShutdownVold() {
@@ -485,8 +500,10 @@ bool HandlePowerctlMessage(const std::string& command) {
                 LOG(INFO) << command << " support.suspend=" << supported;
                 // Suspend to RAM if supported, or do nothing and assume we did.
                 if (!supported) return false;
+                std::string old = TurnOffBacklight();
                 bool sent = android::base::WriteStringToFile("mem", "/sys/power/state");
-                LOG(INFO) << command << " return " << sent;
+                LOG(INFO) << command << " return " << sent << " brightness=" << old;
+                SetBacklight(old);
                 return false;  // Not a real shutdown, continue running.
             } else if (cmd_params[1] == "hibernate") {
                 auto supported =
@@ -494,11 +511,14 @@ bool HandlePowerctlMessage(const std::string& command) {
                 LOG(INFO) << command << " support.hibernate=" << supported;
                 // Suspend to DISK if supported, or long full shutdown with
                 // fsck cleanup for quicker boot up.
-                if (supported != 0 &&
-                    android::base::WriteStringToFile("shutdown", "/sys/power/disk") &&
-                    android::base::WriteStringToFile("disk", "/sys/power/state")) {
-                    LOG(INFO) << command << " return true";
-                    return false;  // Not a real shutdown, continue running.
+                if (supported) {
+                    std::string old = TurnOffBacklight();
+                    if (android::base::WriteStringToFile("shutdown", "/sys/power/disk") &&
+                        android::base::WriteStringToFile("disk", "/sys/power/state")) {
+                        LOG(INFO) << command << " return true brightness=" << old;
+                        SetBacklight(old);
+                        return false;  // Not a real shutdown, continue running.
+                    }
                 }
                 run_fsck = true;
             } else if (cmd_params[1] == "userrequested") {
