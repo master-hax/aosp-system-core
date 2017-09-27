@@ -32,6 +32,7 @@
 
 #include <memory>
 #include <set>
+#include <stack>
 #include <thread>
 #include <vector>
 
@@ -56,6 +57,7 @@
 #include "service.h"
 #include "sigchld_handler.h"
 
+using android::base::EndsWith;
 using android::base::GetBoolProperty;
 using android::base::GetUintProperty;
 using android::base::ReadFileToString;
@@ -481,6 +483,80 @@ void DoReboot(unsigned int cmd, const std::string& reason, const std::string& re
     abort();
 }
 
+// Turn off all wake sources (expect power switch), return rules to reset back
+static std::vector<const std::string> TurnOffWakeSources() {
+    std::vector<const std::string> rules;
+
+    std::string locks;
+    ReadFileToString("/sys/power/wake_lock", &locks);
+    std::vector<std::string> wakelocks = Split(Trim(locks), " ");
+    for (auto& lock : wakelocks) {
+        if (lock.empty()) continue;
+        rules.emplace_back("/sys/power/wake_lock=" + lock);
+        WriteStringToFile(lock, "/sys/power/wake_unlock");
+    }
+    wakelocks.empty();
+
+    class _dir {
+        std::pair<const std::string, std::unique_ptr<DIR, int (*)(DIR*)>> data;
+
+      public:
+        _dir(std::string&& name)
+            : data(std::make_pair(
+                  name, std::unique_ptr<DIR, int (*)(DIR*)>(opendir(name.c_str()), closedir))) {}
+        DIR* get() { return data.second.get(); }
+        const std::string& name() { return data.first; }
+    };
+    std::stack<_dir> dir;
+    dir.emplace("/sys/devices/");
+
+    if (!dir.top().get()) return rules;
+
+    while (dir.size()) {
+        struct dirent* dp = readdir(dir.top().get());
+        if (dp == nullptr) {
+            dir.pop();
+            continue;
+        }
+        if (dp->d_name[0] == '.') continue;
+        if (dp->d_type == DT_LNK) continue;
+
+        std::string name(dp->d_name);
+
+        if (dp->d_type == DT_DIR) {
+            // skip any popular button sources as each needs evaluation
+            if (strstr(name.c_str(), "powerkey")) continue;
+            if (strstr(name.c_str(), "power-on")) continue;
+            if (strstr(name.c_str(), "keys")) continue;
+
+            dir.emplace(dir.top().name() + "/" + name);
+            if (!dir.top().get()) {
+                dir.pop();
+            }
+            continue;
+        }
+
+        if (name != "wakeup") continue;
+        if (!EndsWith(dir.top().name(), "/power")) continue;
+
+        std::string fileName = dir.top().name() + "/" + name;
+        std::string value;
+        ReadFileToString(fileName, &value);
+        if (Trim(value) == "enabled") {
+            rules.emplace_back(fileName + "=enabled");
+            WriteStringToFile("disabled", fileName);
+        }
+    }
+    return rules;
+}
+
+static void SetWakeSources(const std::vector<const std::string>& rules) {
+    for (auto& rule : rules) {
+        std::vector<std::string> cmd = Split(rule, "=");
+        WriteStringToFile(cmd[1], cmd[0]);
+    }
+}
+
 static bool SetStateToFile(const std::string& state, const std::string& file) {
     std::string states;
     if (!ReadFileToString(file, &states)) return false;
@@ -512,11 +588,13 @@ bool HandlePowerctlMessage(const std::string& command) {
                 if (!supported) return false;
                 property_set(LAST_REBOOT_REASON_PROPERTY, command);
                 sync();
+                std::vector<const std::string> old_wake_sources = TurnOffWakeSources();
                 std::string old_backlight_value = TurnOffBacklight();
                 bool sent = SetStateToFile("mem", "/sys/power/state");
                 LOG(INFO) << "Return " << sent
                           << " from suspend to RAM brightness=" << old_backlight_value;
                 SetBacklight(old_backlight_value);
+                SetWakeSources(old_wake_sources);
                 return false;  // Not a real shutdown, continue running.
             } else if (cmd_params[1] == "hibernate") {
                 auto supported = GetBoolProperty("ro.support.hibernate", false);
@@ -524,14 +602,18 @@ bool HandlePowerctlMessage(const std::string& command) {
                 if (supported) {
                     property_set(LAST_REBOOT_REASON_PROPERTY, command);
                     sync();
+                    std::vector<const std::string> old_wake_sources = TurnOffWakeSources();
                     std::string old_backlight_value = TurnOffBacklight();
                     if (SetStateToFile("shutdown", "/sys/power/disk") &&
                         SetStateToFile("disk", "/sys/power/state")) {
                         LOG(INFO) << "Return true from suspend to DISK brightness="
                                   << old_backlight_value;
                         SetBacklight(old_backlight_value);
+                        SetWakeSources(old_wake_sources);
                         return false;  // Not a real shutdown, continue running.
                     }
+                    // FALLTHRU to full shutdown
+                    // Not resetting wake sources as full boot up will restore.
                 }
                 // FALLTHRU to full shutdown with fsck cleanup for quicker boot
                 run_fsck = true;
