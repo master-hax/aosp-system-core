@@ -235,6 +235,7 @@ static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
         delete resolved;
     }
 
+    // NOLINTNEXTLINE: resolved is designed to leak from this function.
     if (flags) { /* Only ever equals MoreComing or 0 */
         discovered.release();
     }
@@ -262,6 +263,7 @@ static void DNSSD_API register_mdns_transport(DNSServiceRef sdRef,
     if (! discovered->Initialized()) {
         delete discovered;
     }
+    // NOLINTNEXTLINE: discovered is designed to leak from this function.
 }
 
 void init_mdns_transport_discovery_thread(void) {
