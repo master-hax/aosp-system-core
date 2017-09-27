@@ -260,11 +260,9 @@ void send_connect(atransport* t) {
 #if ADB_HOST
 
 void SendConnectOnHost(atransport* t) {
-    // Send an empty message before A_CNXN message. This is because the data toggle of the ep_out on
-    // host and ep_in on device may not be the same.
-    apacket* p = get_apacket();
-    CHECK(p);
-    send_packet(p, t);
+    // Send an A_OKAY message before A_CNXN message. This is because the data toggle of the ep_out
+    // on host and ep_in on device may not be the same.
+    send_ready(0, 0, t);
     send_connect(t);
 }
 
