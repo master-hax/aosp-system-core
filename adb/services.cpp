@@ -340,6 +340,7 @@ struct state_info {
     std::string serial;
     TransportId transport_id;
     ConnectionState state;
+    bool not_state;
 };
 
 static void wait_for_state(int fd, void* data) {
@@ -353,7 +354,17 @@ static void wait_for_state(int fd, void* data) {
         const char* serial = sinfo->serial.length() ? sinfo->serial.c_str() : NULL;
         atransport* t = acquire_one_transport(sinfo->transport_type, serial, sinfo->transport_id,
                                               &is_ambiguous, &error);
-        if (t != nullptr && (sinfo->state == kCsAny || sinfo->state == t->GetConnectionState())) {
+        if ((t == nullptr) && (sinfo->state == kCsAny) && sinfo->not_state) {
+            SendOkay(fd);
+            break;
+        } else if (((sinfo->state == kCsBootloader) || (sinfo->state == kCsDevice) ||
+                    (sinfo->state == kCsRecovery) || (sinfo->state == kCsSideload)) &&
+                   sinfo->not_state &&
+                   ((t == nullptr) || (t->GetConnectionState() != -sinfo->state))) {
+            SendOkay(fd);
+            break;
+        } else if (t != nullptr &&
+                   (sinfo->state == kCsAny || sinfo->state == t->GetConnectionState())) {
             SendOkay(fd);
             break;
         } else if (!is_ambiguous) {
@@ -365,6 +376,12 @@ static void wait_for_state(int fd, void* data) {
             } else if (rc > 0 && (pfd.revents & POLLHUP) != 0) {
                 // The other end of the socket is closed, probably because the other side was
                 // terminated, bail out.
+                if (((sinfo->state == kCsAny) || (sinfo->state == kCsBootloader) ||
+                     (sinfo->state == kCsDevice) || (sinfo->state == kCsRecovery) ||
+                     (sinfo->state == kCsSideload)) &&
+                    sinfo->not_state) {
+                    SendOkay(fd);
+                }
                 break;
             }
 
@@ -472,6 +489,9 @@ asocket* host_service_to_socket(const char* name, const char* serial, TransportI
         } else {
             return nullptr;
         }
+
+        sinfo->not_state = android::base::StartsWith(name, "-not");
+        if (sinfo->not_state) name += strlen("-not");
 
         if (!strcmp(name, "-device")) {
             sinfo->state = kCsDevice;
