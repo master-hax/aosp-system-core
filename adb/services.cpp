@@ -353,7 +353,16 @@ static void wait_for_state(int fd, void* data) {
         const char* serial = sinfo->serial.length() ? sinfo->serial.c_str() : NULL;
         atransport* t = acquire_one_transport(sinfo->transport_type, serial, sinfo->transport_id,
                                               &is_ambiguous, &error);
-        if (t != nullptr && (sinfo->state == kCsAny || sinfo->state == t->GetConnectionState())) {
+        if ((t == nullptr) && (sinfo->state == kCsNotAny)) {
+            SendOkay(fd);
+            break;
+        } else if (((sinfo->state == kCsNotBootloader) || (sinfo->state == kCsNotDevice) ||
+                    (sinfo->state == kCsNotRecovery) || (sinfo->state == kCsNotSideload)) &&
+                   ((t == nullptr) || (t->GetConnectionState() != -sinfo->state))) {
+            SendOkay(fd);
+            break;
+        } else if (t != nullptr &&
+                   (sinfo->state == kCsAny || sinfo->state == t->GetConnectionState())) {
             SendOkay(fd);
             break;
         } else if (!is_ambiguous) {
@@ -365,6 +374,11 @@ static void wait_for_state(int fd, void* data) {
             } else if (rc > 0 && (pfd.revents & POLLHUP) != 0) {
                 // The other end of the socket is closed, probably because the other side was
                 // terminated, bail out.
+                if ((sinfo->state == kCsNotAny) || (sinfo->state == kCsNotBootloader) ||
+                    (sinfo->state == kCsNotDevice) || (sinfo->state == kCsNotRecovery) ||
+                    (sinfo->state == kCsNotSideload)) {
+                    SendOkay(fd);
+                }
                 break;
             }
 
@@ -473,16 +487,19 @@ asocket* host_service_to_socket(const char* name, const char* serial, TransportI
             return nullptr;
         }
 
+        bool check_not_state = android::base::StartsWith(name, "-not");
+        if (check_not_state) name += strlen("-not");
+
         if (!strcmp(name, "-device")) {
-            sinfo->state = kCsDevice;
+            sinfo->state = check_not_state ? kCsNotDevice : kCsDevice;
         } else if (!strcmp(name, "-recovery")) {
-            sinfo->state = kCsRecovery;
+            sinfo->state = check_not_state ? kCsNotRecovery : kCsRecovery;
         } else if (!strcmp(name, "-sideload")) {
-            sinfo->state = kCsSideload;
+            sinfo->state = check_not_state ? kCsNotSideload : kCsSideload;
         } else if (!strcmp(name, "-bootloader")) {
-            sinfo->state = kCsBootloader;
+            sinfo->state = check_not_state ? kCsNotBootloader : kCsBootloader;
         } else if (!strcmp(name, "-any")) {
-            sinfo->state = kCsAny;
+            sinfo->state = check_not_state ? kCsNotAny : kCsAny;
         } else {
             return nullptr;
         }

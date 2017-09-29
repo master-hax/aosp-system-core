@@ -181,9 +181,9 @@ static void help() {
         "     public key stored in FILE.pub (existing files overwritten)\n"
         "\n"
         "scripting:\n"
-        " wait-for[-TRANSPORT]-STATE\n"
-        "     wait for device to be in the given state\n"
-        "     State: device, recovery, sideload, or bootloader\n"
+        " wait-for[-TRANSPORT][-not]-STATE\n"
+        "     wait for device to be in, or not in, the given state\n"
+        "     State: device, recovery, sideload, bootloader or any\n"
         "     Transport: usb, local, or any [default=any]\n"
         " get-state                print offline | bootloader | device\n"
         " get-serialno             print <serial-number>\n"
@@ -993,6 +993,14 @@ static int ppp(int argc, const char** argv) {
 
 static bool wait_for_device(const char* service) {
     std::vector<std::string> components = android::base::Split(service, "-");
+
+    bool check_false_state = false;
+    if (components.size() > 3) {
+        auto it = components.end() - 2;
+        check_false_state = *it == "not";
+        if (check_false_state) components.erase(it);
+    }
+
     if (components.size() < 3 || components.size() > 4) {
         fprintf(stderr, "adb: couldn't parse 'wait-for' command: %s\n", service);
         return false;
@@ -1027,6 +1035,7 @@ static bool wait_for_device(const char* service) {
         return false;
     }
 
+    if (check_false_state) components.insert(components.end() - 1, "not");
     std::string cmd = format_host_command(android::base::Join(components, "-").c_str());
     return adb_command(cmd);
 }
