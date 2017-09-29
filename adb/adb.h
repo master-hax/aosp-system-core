@@ -110,8 +110,8 @@ enum TransportType {
 #define TOKEN_SIZE 20
 
 enum ConnectionState {
-    kCsAny = -1,
     kCsOffline = 0,
+    kCsAny,
     kCsBootloader,
     kCsDevice,
     kCsHost,
@@ -119,8 +119,13 @@ enum ConnectionState {
     kCsNoPerm,  // Insufficient permissions to communicate with the device.
     kCsSideload,
     kCsUnauthorized,
-};
 
+    kCsNotAny = -kCsAny,
+    kCsNotBootloader = -kCsBootloader,
+    kCsNotDevice = -kCsDevice,
+    kCsNotRecovery = -kCsRecovery,
+    kCsNotSideload = -kCsSideload,
+};
 
 void print_packet(const char *label, apacket *p);
 
