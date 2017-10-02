@@ -14,10 +14,13 @@
 // limitations under the License.
 //
 
-libasyncio_cppflags = [
+libasyncio_cflags = [
     "-Wall",
-    "-Wextra",
     "-Werror",
+]
+
+libasyncio_cppflags = [
+    "-Wextra",
 ]
 
 cc_library {
@@ -27,6 +30,7 @@ cc_library {
     srcs: [
         "AsyncIO.cpp",
     ],
+    cflags: libasyncio_cflags,
     cppflags: libasyncio_cppflags,
 
     export_include_dirs: ["include"],

@@ -20,12 +20,14 @@ cc_defaults {
     sanitize: {
         misc_undefined: ["signed-integer-overflow"],
     },
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
     cppflags: [
         "-DLOG_UEVENTS=0",
-        "-Wall",
         "-Wextra",
         "-Wno-unused-parameter",
-        "-Werror",
         "-DALLOW_LOCAL_PROP_OVERRIDE=0",
         "-DALLOW_PERMISSIVE_SELINUX=0",
         "-DREBOOT_BOOTLOADER_ON_PANIC=0",
