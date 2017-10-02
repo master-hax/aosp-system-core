@@ -43,7 +43,6 @@ public:
 private:
     const char*     mName;
     int             mClock;
-    uint32_t        mFlags;
     
     struct lap_t {
         nsecs_t     soFar;
