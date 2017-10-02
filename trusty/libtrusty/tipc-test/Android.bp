@@ -17,6 +17,7 @@ cc_test {
     static_executable: true,
 
     srcs: ["tipc_test.c"],
+    cflags: ["-Wall", "-Werror"],
     static_libs: [
         "libc",
         "libtrusty",

@@ -1,12 +1,14 @@
 cc_defaults {
     name: "crasher-defaults",
 
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
     cppflags: [
         "-W",
-        "-Wall",
         "-Wextra",
         "-Wunused",
-        "-Werror",
         "-O0",
         "-fstack-protector-all",
         "-Wno-free-nonheap-object",
