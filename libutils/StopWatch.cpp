@@ -35,6 +35,7 @@ StopWatch::StopWatch(const char *name, int clock, uint32_t flags)
     :   mName(name), mClock(clock), mFlags(flags)
 {
     reset();
+    (void)mFlags;  // suppress warning of unused private field
 }
 
 StopWatch::~StopWatch()
