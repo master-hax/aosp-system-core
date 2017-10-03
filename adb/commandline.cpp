@@ -181,10 +181,14 @@ static void help() {
         "     public key stored in FILE.pub (existing files overwritten)\n"
         "\n"
         "scripting:\n"
-        " wait-for[-TRANSPORT][-not]-STATE\n"
+        " wait-for[-TRANSPORT][-not]-STATE[-TIMEOUTms]\n"
         "     wait for device to be in, or not in, the given state\n"
         "     State: device, recovery, sideload, bootloader or any\n"
         "     Transport: usb, local, or any [default=any]\n"
+        "     Timeout: numerical in milliseconds [default=\xE2\x88\x9E]\n"
+        " test-for[-TRANSPORT][-not]-STATE\n"
+        "     return success or failure for device to be in, or not in,\n"
+        "     the given state.  State and Transport as above.\n"
         " get-state                print offline | bootloader | device\n"
         " get-serialno             print <serial-number>\n"
         " get-devpath              print <device-path>\n"
@@ -994,6 +998,23 @@ static int ppp(int argc, const char** argv) {
 static bool wait_for_device(const char* service) {
     std::vector<std::string> components = android::base::Split(service, "-");
 
+    unsigned long long timeout = ULLONG_MAX;
+    if ((components.size() > 3) && (components[0] == "wait")) {
+        auto it = components.end() - 1;
+        char* ep;
+        unsigned long long val = ::strtoull((*it).c_str(), &ep, 10);
+        if (ep != (*it).c_str()) {
+            if (*ep == 'm') {
+                ++ep;
+                if (*ep == 's') ++ep;
+            }
+            if (!*ep) {
+                timeout = val;
+                components.erase(it);
+            }
+        }
+    }
+
     bool check_false_state = false;
     if (components.size() > 3) {
         auto it = components.end() - 2;
@@ -1036,6 +1057,7 @@ static bool wait_for_device(const char* service) {
     }
 
     if (check_false_state) components.insert(components.end() - 1, "not");
+    if (timeout < ULLONG_MAX) components.emplace_back(android::base::StringPrintf("%llu", timeout));
     std::string cmd = format_host_command(android::base::Join(components, "-").c_str());
     return adb_command(cmd);
 }
@@ -1505,16 +1527,18 @@ int adb_commandline(int argc, const char** argv) {
         return 1;
     }
 
-    /* handle wait-for-* prefix */
-    if (!strncmp(argv[0], "wait-for-", strlen("wait-for-"))) {
+    /* handle test-for-* or wait-for-* prefix */
+    if (android::base::StartsWith(argv[0], "wait-for-") ||
+        android::base::StartsWith(argv[0], "test-for-")) {
         const char* service = argv[0];
 
         if (!wait_for_device(service)) {
             return 1;
         }
 
-        // Allow a command to be run after wait-for-device,
-        // e.g. 'adb wait-for-device shell'.
+        // Allow a command to be run after wait-for-device(), e.g.
+        //    'adb wait-for-device shell'.
+        //    'adb test-for-not-bootloader reboot bootloader'.
         if (argc == 1) {
             return 0;
         }
