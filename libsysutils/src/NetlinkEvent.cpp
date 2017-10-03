@@ -17,6 +17,7 @@
 #define LOG_TAG "NetlinkEvent"
 
 #include <arpa/inet.h>
+#include <linux/genetlink.h>
 #include <linux/if.h>
 #include <linux/if_addr.h>
 #include <linux/if_link.h>
@@ -26,12 +27,8 @@
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
 #include <net/if.h>
-#include <netinet/in.h>
 #include <netinet/icmp6.h>
-#include <netlink/attr.h>
-#include <netlink/genl/genl.h>
-#include <netlink/handlers.h>
-#include <netlink/msg.h>
+#include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -271,17 +268,17 @@ bool NetlinkEvent::parseNfPacketMessage(struct nlmsghdr *nh) {
     int len = 0;
     char* raw = NULL;
 
-    struct nlattr *uid_attr = nlmsg_find_attr(nh, sizeof(struct genlmsghdr), NFULA_UID);
+    struct nlattr* uid_attr = findNlAttr(nh, sizeof(struct genlmsghdr), NFULA_UID);
     if (uid_attr) {
-        uid = ntohl(nla_get_u32(uid_attr));
+        uid = ntohl(nlAttrU32(uid_attr));
     }
 
-    struct nlattr *payload = nlmsg_find_attr(nh, sizeof(struct genlmsghdr), NFULA_PAYLOAD);
+    struct nlattr* payload = findNlAttr(nh, sizeof(struct genlmsghdr), NFULA_PAYLOAD);
     if (payload) {
         /* First 256 bytes is plenty */
-        len = nla_len(payload);
+        len = nlAttrLen(payload);
         if (len > 256) len = 256;
-        raw = (char*) nla_data(payload);
+        raw = (char*)nlAttrData(payload);
     }
 
     char* hex = (char*) calloc(1, 5 + (len * 2));
@@ -645,4 +642,28 @@ const char *NetlinkEvent::findParam(const char *paramName) {
 
     SLOGE("NetlinkEvent::FindParam(): Parameter '%s' not found", paramName);
     return NULL;
+}
+
+nlattr* NetlinkEvent::findNlAttr(const nlmsghdr* nh, size_t hdrlen, uint16_t attr) {
+    const size_t NLA_START = NLMSG_HDRLEN + NLMSG_ALIGN(hdrlen);
+
+    if (nh == nullptr || NLA_START < NLMSG_HDRLEN || nh->nlmsg_len < NLA_START) {
+        return nullptr;
+    }
+
+    // Skip header, padding, and family header.
+    size_t left = nh->nlmsg_len - NLA_START;
+    uint8_t* hdr = ((uint8_t*)nh) + NLA_START;
+
+    while (left >= NLA_HDRLEN) {
+        nlattr* nla = (nlattr*)hdr;
+        if (nla->nla_type == attr) {
+            return nla;
+        }
+
+        hdr += NLA_ALIGN(nla->nla_len);
+        left -= NLA_ALIGN(nla->nla_len);
+    }
+
+    return nullptr;
 }

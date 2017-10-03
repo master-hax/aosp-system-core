@@ -16,6 +16,8 @@
 #ifndef _NETLINKEVENT_H
 #define _NETLINKEVENT_H
 
+#include <linux/netlink.h>
+
 #include <sysutils/NetlinkListener.h>
 
 #define NL_PARAMS_MAX 32
@@ -64,6 +66,10 @@ public:
     bool parseNfPacketMessage(struct nlmsghdr *nh);
     bool parseRtMessage(const struct nlmsghdr *nh);
     bool parseNdUserOptMessage(const struct nlmsghdr *nh);
+    struct nlattr* findNlAttr(const nlmsghdr* nl, size_t hdrlen, uint16_t attr);
+    size_t nlAttrLen(const nlattr* nla) { return nla->nla_len - NLA_HDRLEN; }
+    uint8_t* nlAttrData(const nlattr* nla) { return ((uint8_t*)nla) + NLA_HDRLEN; }
+    uint32_t nlAttrU32(const nlattr* nla) { return *(uint32_t*)nlAttrData(nla); }
 };
 
 #endif
