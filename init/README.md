@@ -687,8 +687,17 @@ By default, programs executed by init will drop stdout and stderr into
 Android program logwrapper. This will redirect stdout/stderr into the
 Android logging system (accessed via logcat).
 
+Note that due to SELinux, two things must be done to use logwrapper
+1. The `seclabel` option must be used to provide the original SELabel for the
+   service that logwrapper runs.
+2. SELinux must either be run in permissive mode (recommended) or the domain
+   transitions from init to logwrapper and from logwrapper to the service it
+   runs must be added to their respective SEPolicy files.
+
 For example
-service akmd /system/bin/logwrapper /sbin/akmd
+
+    service akmd /system/bin/logwrapper /sbin/akmd
+        seclabel u:r:akmd:s0
 
 For quicker turnaround when working on init itself, use:
 
