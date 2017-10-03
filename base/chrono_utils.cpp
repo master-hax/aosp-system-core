@@ -22,7 +22,7 @@ namespace android {
 namespace base {
 
 boot_clock::time_point boot_clock::now() {
-#ifdef __ANDROID__
+#ifdef __linux__
   timespec ts;
   clock_gettime(CLOCK_BOOTTIME, &ts);
   return boot_clock::time_point(std::chrono::seconds(ts.tv_sec) +
