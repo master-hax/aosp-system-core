@@ -680,25 +680,21 @@ Zygote initialization and the processes that are forked from the zygote are not
 affected.
 
 
-Debugging init
---------------
+Debugging services init run by init
+-----------------------------------
 By default, programs executed by init will drop stdout and stderr into
 /dev/null. To help with debugging, you can execute your program via the
 Android program logwrapper. This will redirect stdout/stderr into the
 Android logging system (accessed via logcat).
 
+Note that due to SELinux, two things must be done to use logwrapper
+1. The `seclabel` option must be used to provide the original SELabel for the
+   service that logwrapper runs.
+2. SELinux must be run in permissive mode. To do this, add
+   `androidboot.selinux=permissive` to the kernel commandline for your device,
+   `BOARD_KERNEL_CMDLINE` within `BoardConfig.mk`
+
 For example
-service akmd /system/bin/logwrapper /sbin/akmd
 
-For quicker turnaround when working on init itself, use:
-
-    mm -j &&
-    m ramdisk-nodeps &&
-    m bootimage-nodeps &&
-    adb reboot bootloader &&
-    fastboot boot $ANDROID_PRODUCT_OUT/boot.img
-
-Alternatively, use the emulator:
-
-    emulator -partition-size 1024 \
-        -verbose -show-kernel -no-window
+    service akmd /system/bin/logwrapper /sbin/akmd
+        seclabel u:r:akmd:s0
