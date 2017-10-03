@@ -31,8 +31,10 @@
 #include <unistd.h>
 #endif
 
+#include <chrono>
 #include <thread>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/parsenetaddress.h>
 #include <android-base/stringprintf.h>
@@ -340,6 +342,7 @@ struct state_info {
     std::string serial;
     TransportId transport_id;
     ConnectionState state;
+    std::chrono::milliseconds timeout;
 };
 
 static void wait_for_state(int fd, void* data) {
@@ -347,6 +350,7 @@ static void wait_for_state(int fd, void* data) {
 
     D("wait_for_state %d", sinfo->state);
 
+    android::base::Timer start;
     while (true) {
         bool is_ambiguous = false;
         std::string error = "unknown error";
@@ -366,9 +370,16 @@ static void wait_for_state(int fd, void* data) {
             SendOkay(fd);
             break;
         } else if (!is_ambiguous) {
+            auto remainder = sinfo->timeout.count() - start.duration().count();
+            if (remainder < 0) {
+                SendFail(fd, sinfo->timeout != 0ms ? "timeout" : "does not match");
+                break;
+            }
             adb_pollfd pfd = {.fd = fd, .events = POLLIN };
-            int rc = adb_poll(&pfd, 1, 1000);
+            errno = 0;
+            int rc = adb_poll(&pfd, 1, std::max((int)(std::max(remainder, 0LL) % 1000), 1));
             if (rc < 0) {
+                if (errno) error = strerror(errno);
                 SendFail(fd, error);
                 break;
             } else if (rc > 0 && (pfd.revents & POLLHUP) != 0) {
@@ -462,8 +473,11 @@ asocket* host_service_to_socket(const char* name, const char* serial, TransportI
         return create_device_tracker(false);
     } else if (!strcmp(name, "track-devices-l")) {
         return create_device_tracker(true);
-    } else if (android::base::StartsWith(name, "wait-for-")) {
-        name += strlen("wait-for-");
+    } else if (android::base::StartsWith(name, "wait-for-") ||
+               android::base::StartsWith(name, "test-for-")) {
+        bool test_for = android::base::StartsWith(name, "test-for-");
+        // compiler will optimize the branch out, pedantic charm only
+        name += test_for ? strlen("test-for-") : strlen("wait-for-");
 
         std::unique_ptr<state_info> sinfo(new state_info);
         if (sinfo == nullptr) {
@@ -490,19 +504,42 @@ asocket* host_service_to_socket(const char* name, const char* serial, TransportI
         bool check_not_state = android::base::StartsWith(name, "-not");
         if (check_not_state) name += strlen("-not");
 
-        if (!strcmp(name, "-device")) {
+        if (android::base::StartsWith(name, "-device")) {
+            name += strlen("-device");
             sinfo->state = check_not_state ? kCsNotDevice : kCsDevice;
-        } else if (!strcmp(name, "-recovery")) {
+        } else if (android::base::StartsWith(name, "-recovery")) {
+            name += strlen("-recovery");
             sinfo->state = check_not_state ? kCsNotRecovery : kCsRecovery;
-        } else if (!strcmp(name, "-sideload")) {
+        } else if (android::base::StartsWith(name, "-sideload")) {
+            name += strlen("-sideload");
             sinfo->state = check_not_state ? kCsNotSideload : kCsSideload;
-        } else if (!strcmp(name, "-bootloader")) {
+        } else if (android::base::StartsWith(name, "-bootloader")) {
+            name += strlen("-bootloader");
             sinfo->state = check_not_state ? kCsNotBootloader : kCsBootloader;
-        } else if (!strcmp(name, "-any")) {
+        } else if (android::base::StartsWith(name, "-any")) {
+            name += strlen("-any");
             sinfo->state = check_not_state ? kCsNotAny : kCsAny;
         } else {
             return nullptr;
         }
+
+        if (test_for) {
+            sinfo->timeout = 0ms;
+        } else {
+            sinfo->timeout = std::chrono::milliseconds::max();
+            if (*name == '-') {
+                char* ep;
+                sinfo->timeout = std::chrono::milliseconds(::strtoull(name + 1, &ep, 10));
+                if ((name + 1) != ep) {
+                    name = ep;
+                    if (*name == 'm') {
+                        ++name;
+                        if (*name == 's') ++name;
+                    }
+                }
+            }
+        }
+        if (*name) return nullptr;
 
         int fd = create_service_thread("wait", wait_for_state, sinfo.get());
         if (fd != -1) {
