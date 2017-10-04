@@ -59,5 +59,6 @@ ADB_USB_INTERFACE(::usb_handle*);
 
 // USB device detection.
 int is_adb_interface(int usb_class, int usb_subclass, int usb_protocol);
+int is_fastboot_interface(int usb_class, int usb_subclass, int usb_protocol);
 
 bool should_use_libusb();

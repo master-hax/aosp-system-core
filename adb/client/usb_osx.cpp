@@ -174,7 +174,8 @@ AndroidInterfaceAdded(io_iterator_t iterator)
         kr = (*iface)->GetInterfaceClass(iface, &if_class);
         kr = (*iface)->GetInterfaceSubClass(iface, &subclass);
         kr = (*iface)->GetInterfaceProtocol(iface, &protocol);
-        if(if_class != ADB_CLASS || subclass != ADB_SUBCLASS || protocol != ADB_PROTOCOL) {
+        if (!is_adb_interface(if_class, subclass, protocol) &&
+            !is_fastboot_interface(if_class, subclass, protocol)) {
             // Ignore non-ADB devices.
             LOG(DEBUG) << "Ignoring interface with incorrect class/subclass/protocol - " << if_class
                        << ", " << subclass << ", " << protocol;
@@ -307,7 +308,7 @@ AndroidInterfaceAdded(io_iterator_t iterator)
         VLOG(USB) << "Add usb device " << serial;
         AddDevice(std::move(handle));
         register_usb_transport(reinterpret_cast<::usb_handle*>(handle_p), serial, devpath.c_str(),
-                               1);
+                               true, is_fastboot_interface(if_class, subclass, protocol));
     }
 }
 
@@ -358,7 +359,8 @@ CheckInterface(IOUSBInterfaceInterface190 **interface, UInt16 vendor, UInt16 pro
 
     //* check to make sure interface class, subclass and protocol match ADB
     //* avoid opening mass storage endpoints
-    if (!is_adb_interface(interfaceClass, interfaceSubClass, interfaceProtocol)) {
+    if (!is_adb_interface(interfaceClass, interfaceSubClass, interfaceProtocol) &&
+        !is_fastboot_interface(interfaceClass, interfaceSubClass, interfaceProtocol)) {
         goto err_bad_adb_interface;
     }
 

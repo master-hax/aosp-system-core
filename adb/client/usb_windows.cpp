@@ -562,17 +562,17 @@ int recognized_device(usb_handle* handle) {
 
   if (is_adb_interface(interf_desc.bInterfaceClass, interf_desc.bInterfaceSubClass,
                        interf_desc.bInterfaceProtocol)) {
-    if (interf_desc.bInterfaceProtocol == 0x01) {
-      AdbEndpointInformation endpoint_info;
-      // assuming zero is a valid bulk endpoint ID
-      if (AdbGetEndpointInformation(handle->adb_interface, 0, &endpoint_info)) {
-        handle->max_packet_size = endpoint_info.max_packet_size;
-        handle->zero_mask = endpoint_info.max_packet_size - 1;
-        D("device zero_mask: 0x%x", handle->zero_mask);
-      } else {
-        D("AdbGetEndpointInformation failed: %s",
-          android::base::SystemErrorCodeToString(GetLastError()).c_str());
-      }
+      if (interf_desc.bInterfaceProtocol == ADB_PROTOCOL) {
+          AdbEndpointInformation endpoint_info;
+          // assuming zero is a valid bulk endpoint ID
+          if (AdbGetEndpointInformation(handle->adb_interface, 0, &endpoint_info)) {
+              handle->max_packet_size = endpoint_info.max_packet_size;
+              handle->zero_mask = endpoint_info.max_packet_size - 1;
+              D("device zero_mask: 0x%x", handle->zero_mask);
+          } else {
+              D("AdbGetEndpointInformation failed: %s",
+                android::base::SystemErrorCodeToString(GetLastError()).c_str());
+          }
     }
 
     return 1;
@@ -621,7 +621,7 @@ void find_devices() {
                                 true)) {
             // Lets make sure that we don't duplicate this device
             if (register_new_device(handle)) {
-              register_usb_transport(handle, serial_number, NULL, 1);
+                register_usb_transport(handle, serial_number, NULL, true, false);
             } else {
               D("register_new_device failed for %ls", next_interface->device_name);
               usb_cleanup_handle(handle);

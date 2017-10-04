@@ -239,7 +239,9 @@ static void process_device(libusb_device* device) {
 
         const libusb_interface_descriptor& interface_desc = interface.altsetting[0];
         if (!is_adb_interface(interface_desc.bInterfaceClass, interface_desc.bInterfaceSubClass,
-                              interface_desc.bInterfaceProtocol)) {
+                              interface_desc.bInterfaceProtocol) &&
+            !is_fastboot_interface(interface_desc.bInterfaceClass, interface_desc.bInterfaceSubClass,
+                                   interface_desc.bInterfaceProtocol)) {
             LOG(VERBOSE) << "skipping non-adb interface at " << device_address << " (interface "
                          << interface_num << ")";
             continue;
@@ -378,11 +380,15 @@ static void process_device(libusb_device* device) {
     usb_handle* usb_handle_raw = result.get();
 
     {
+        const libusb_interface& interface = config->interface[interface_num];
+        const libusb_interface_descriptor& interface_desc = interface.altsetting[0];
         std::unique_lock<std::mutex> lock(usb_handles_mutex);
         usb_handles[device_address] = std::move(result);
 
-        register_usb_transport(usb_handle_raw, device_serial.c_str(), device_address.c_str(),
-                               writable);
+        register_usb_transport(
+            usb_handle_raw, device_serial.c_str(), device_address.c_str(), writable,
+            is_fastboot_interface(interface_desc.bInterfaceClass, interface_desc.bInterfaceSubClass,
+                                  interface_desc.bInterfaceProtocol));
     }
     LOG(INFO) << "registered new usb device '" << device_serial << "'";
 }

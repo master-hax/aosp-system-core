@@ -1045,8 +1045,9 @@ void kick_all_tcp_devices() {
 #endif
 
 void register_usb_transport(usb_handle* usb, const char* serial, const char* devpath,
-                            unsigned writeable) {
-    atransport* t = new atransport((writeable ? kCsOffline : kCsNoPerm));
+                            bool writeable, bool bootloader) {
+    atransport* t =
+        new atransport(bootloader ? kCsBootloader : (writeable ? kCsOffline : kCsNoPerm));
 
     D("transport: %p init'ing for usb_handle %p (sn='%s')", t, usb, serial ? serial : "");
     init_usb_transport(t, usb);
