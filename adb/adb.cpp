@@ -354,6 +354,7 @@ void handle_packet(apacket *p, atransport *t)
 
     switch(p->msg.command){
     case A_SYNC:
+        if (t->GetConnectionState() == kCsBootloader) return;
         if (p->msg.arg0){
             send_packet(p, t);
 #if ADB_HOST

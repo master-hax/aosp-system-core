@@ -96,7 +96,10 @@ int known_device_locked(const wchar_t* dev_name);
 int register_new_device(usb_handle* handle);
 
 /// Checks if interface (device) matches certain criteria
-int recognized_device(usb_handle* handle);
+/// return 0 - not recognized
+///        1 - adb device
+///        2 - fastboot device
+int recognized_device_type(usb_handle* handle);
 
 /// Enumerates present and available interfaces (devices), opens new ones and
 /// registers usb transport for them.
@@ -505,8 +508,10 @@ size_t usb_get_max_packet_size(usb_handle* handle) {
     return handle->max_packet_size;
 }
 
-int recognized_device(usb_handle* handle) {
-    if (NULL == handle) return 0;
+int recognized_device_type(usb_handle* handle) {
+    int ret = 0;
+
+    if (NULL == handle) return ret;
 
     // Check vendor and product id first
     USB_DEVICE_DESCRIPTOR device_desc;
@@ -514,7 +519,7 @@ int recognized_device(usb_handle* handle) {
     if (!AdbGetUsbDeviceDescriptor(handle->adb_interface, &device_desc)) {
         D("AdbGetUsbDeviceDescriptor failed: %s",
           android::base::SystemErrorCodeToString(GetLastError()).c_str());
-        return 0;
+        return ret;
     }
 
     // Then check interface properties
@@ -523,7 +528,7 @@ int recognized_device(usb_handle* handle) {
     if (!AdbGetUsbInterfaceDescriptor(handle->adb_interface, &interf_desc)) {
         D("AdbGetUsbInterfaceDescriptor failed: %s",
           android::base::SystemErrorCodeToString(GetLastError()).c_str());
-        return 0;
+        return ret;
     }
 
     // Must have two endpoints
@@ -531,25 +536,27 @@ int recognized_device(usb_handle* handle) {
         return 0;
     }
 
-    if (is_adb_interface(interf_desc.bInterfaceClass, interf_desc.bInterfaceSubClass,
-                         interf_desc.bInterfaceProtocol)) {
-        if (interf_desc.bInterfaceProtocol == 0x01) {
-            AdbEndpointInformation endpoint_info;
-            // assuming zero is a valid bulk endpoint ID
-            if (AdbGetEndpointInformation(handle->adb_interface, 0, &endpoint_info)) {
-                handle->max_packet_size = endpoint_info.max_packet_size;
-                handle->zero_mask = endpoint_info.max_packet_size - 1;
-                D("device zero_mask: 0x%x", handle->zero_mask);
-            } else {
-                D("AdbGetEndpointInformation failed: %s",
-                  android::base::SystemErrorCodeToString(GetLastError()).c_str());
-            }
-        }
-
-        return 1;
+    ret = is_adb_interface(interf_desc.bInterfaceClass, interf_desc.bInterfaceSubClass,
+                           interf_desc.bInterfaceProtocol);
+    if (!ret) {
+        if (!is_adb_interface(interf_desc.bInterfaceClass, interf_desc.bInterfaceSubClass,
+                              interf_desc.bInterfaceProtocol))
+            return ret;
+        ret = 2;
     }
 
-    return 0;
+    AdbEndpointInformation endpoint_info;
+    // assuming zero is a valid bulk endpoint ID
+    if (AdbGetEndpointInformation(handle->adb_interface, 0, &endpoint_info)) {
+        handle->max_packet_size = endpoint_info.max_packet_size;
+        handle->zero_mask = endpoint_info.max_packet_size - 1;
+        D("device zero_mask: 0x%x", handle->zero_mask);
+    } else {
+        D("AdbGetEndpointInformation failed: %s",
+          android::base::SystemErrorCodeToString(GetLastError()).c_str());
+    }
+
+    return ret;
 }
 
 void find_devices() {
@@ -574,7 +581,8 @@ void find_devices() {
             handle = do_usb_open(next_interface->device_name);
             if (NULL != handle) {
                 // Lets see if this interface (device) belongs to us
-                if (recognized_device(handle)) {
+                int device_type = recognized_device_type(handle);
+                if (device_type) {
                     D("adding a new device %ls", next_interface->device_name);
 
                     // We don't request a wchar_t string from AdbGetSerialNumber() because of a bug
@@ -590,7 +598,8 @@ void find_devices() {
                                            true)) {
                         // Lets make sure that we don't duplicate this device
                         if (register_new_device(handle)) {
-                            register_usb_transport(handle, serial_number, NULL, 1);
+                            register_usb_transport(handle, serial_number, NULL, device_type == 1,
+                                                   device_type == 2);
                         } else {
                             D("register_new_device failed for %ls", next_interface->device_name);
                             usb_cleanup_handle(handle);

@@ -389,7 +389,7 @@ static void usb_ffs_open_thread(void* x) {
         }
 
         LOG(INFO) << "registering usb transport";
-        register_usb_transport(usb, 0, 0, 1);
+        register_usb_transport(usb, 0, 0, true, false);
     }
 
     // never gets here

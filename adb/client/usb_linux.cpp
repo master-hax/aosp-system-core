@@ -123,7 +123,7 @@ static inline bool contains_non_digit(const char* name) {
 static void find_usb_device(const std::string& base,
                             void (*register_device_callback)(const char*, const char*,
                                                              unsigned char, unsigned char, int, int,
-                                                             unsigned, size_t)) {
+                                                             unsigned, size_t, bool)) {
     std::unique_ptr<DIR, int(*)(DIR*)> bus_dir(opendir(base.c_str()), closedir);
     if (!bus_dir) return;
 
@@ -211,8 +211,11 @@ static void find_usb_device(const std::string& base,
                          interface->bInterfaceProtocol, interface->bNumEndpoints);
 
                     if (interface->bNumEndpoints == 2 &&
-                        is_adb_interface(interface->bInterfaceClass, interface->bInterfaceSubClass,
-                                         interface->bInterfaceProtocol)) {
+                        (is_adb_interface(interface->bInterfaceClass, interface->bInterfaceSubClass,
+                                          interface->bInterfaceProtocol) ||
+                         is_fastboot_interface(interface->bInterfaceClass,
+                                               interface->bInterfaceSubClass,
+                                               interface->bInterfaceProtocol))) {
                         struct stat st;
                         char pathbuf[128];
                         char link[256];
@@ -253,7 +256,8 @@ static void find_usb_device(const std::string& base,
                             continue;
                         }
                             /* aproto 01 needs 0 termination */
-                        if (interface->bInterfaceProtocol == 0x01) {
+                        if ((interface->bInterfaceProtocol == ADB_PROTOCOL) ||
+                            (interface->bInterfaceProtocol == FASTBOOT_PROTOCOL)) {
                             max_packet_size = ep1->wMaxPacketSize;
                             zero_mask = ep1->wMaxPacketSize - 1;
                         }
@@ -284,9 +288,13 @@ static void find_usb_device(const std::string& base,
                             }
                         }
 
-                        register_device_callback(dev_name.c_str(), devpath, local_ep_in,
-                                                 local_ep_out, interface->bInterfaceNumber,
-                                                 device->iSerialNumber, zero_mask, max_packet_size);
+                        register_device_callback(
+                            dev_name.c_str(), devpath, local_ep_in, local_ep_out,
+                            interface->bInterfaceNumber, device->iSerialNumber, zero_mask,
+                            max_packet_size,
+                            is_fastboot_interface(interface->bInterfaceClass,
+                                                  interface->bInterfaceSubClass,
+                                                  interface->bInterfaceProtocol));
                         break;
                     }
                 } else {
@@ -506,7 +514,7 @@ size_t usb_get_max_packet_size(usb_handle* h) {
 
 static void register_device(const char* dev_name, const char* dev_path, unsigned char ep_in,
                             unsigned char ep_out, int interface, int serial_index,
-                            unsigned zero_mask, size_t max_packet_size) {
+                            unsigned zero_mask, size_t max_packet_size, bool bootloader) {
     // Since Linux will not reassign the device ID (and dev_name) as long as the
     // device is open, we can add to the list here once we open it and remove
     // from the list when we're finally closed and everything will work out
@@ -574,7 +582,8 @@ static void register_device(const char* dev_name, const char* dev_path, unsigned
         std::lock_guard<std::mutex> lock(g_usb_handles_mutex);
         g_usb_handles.push_back(done_usb);
     }
-    register_usb_transport(done_usb, serial.c_str(), dev_path, done_usb->writeable);
+    if (bootloader) done_usb->writeable = 0;
+    register_usb_transport(done_usb, serial.c_str(), dev_path, done_usb->writeable, bootloader);
 }
 
 static void device_poll_thread() {

@@ -190,6 +190,7 @@ void put_apacket(apacket* p);
 #define ADB_CLASS 0xff
 #define ADB_SUBCLASS 0x42
 #define ADB_PROTOCOL 0x1
+#define FASTBOOT_PROTOCOL 0x3
 
 void local_init(int port);
 bool local_connect(int port);
