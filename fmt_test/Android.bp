@@ -1,0 +1,18 @@
+cc_defaults {
+    name: "wtf_fmt",
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror=format-security",
+        "-Wformat-nonliteral",
+    ],
+}
+
+cc_library_shared {
+    name: "wtf",
+    defaults: ["wtf_fmt"],
+
+    srcs: ["test.cpp"],
+    static_libs: ["libasync_safe"],
+}
