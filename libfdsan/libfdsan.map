@@ -1,0 +1,61 @@
+LIBC {
+  global:
+    dlopen;
+    android_dlopen_ext;
+
+    close;
+
+    dup;
+    dup2;
+    dup3;
+    fcntl;
+
+    __open_2;
+    __openat;
+    __openat_2;
+    openat;
+    openat64;
+    open;
+    open64;
+    creat;
+    creat64;
+
+    mkstemp;
+    mkstemp64;
+    mkostemp;
+    mkostemp64;
+    mkstemps;
+    mkstemps64;
+    mkostemps;
+    mkostemps64;
+
+    pipe;
+    pipe2;
+
+    socket;
+    socketpair;
+    accept;
+    accept4;
+#   recvmsg;
+#   recvmmsg;
+
+    eventfd;
+    epoll_create;
+    epoll_create1;
+    inotify_init;
+    inotify_init1;
+    signalfd;
+    timerfd_create;
+#   openpty;
+#   posix_openpt;
+#   shm_open;
+
+    fdsan_clear_history;
+    fdsan_iterate_history;
+    fdsan_configure;
+    fdsan_set_reporter;
+    fdsan_reset_reporter;
+
+  local:
+    *;
+};
