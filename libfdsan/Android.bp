@@ -1,0 +1,133 @@
+cc_defaults {
+    name: "libfdsan_defaults",
+
+    cpp_std: "gnu++17",
+    compile_multilib: "both",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wformat-nonliteral",
+        "-U_FORTIFY_SOURCE",
+    ],
+
+    local_include_dirs: ["include"],
+
+    strip: {
+        keep_symbols: true,
+    },
+}
+
+cc_library_shared {
+    name: "libfdsan_standalone",
+    defaults: ["libfdsan_defaults"],
+    stl: "none",
+
+    ldflags: ["-Wl,--exclude-libs,ALL"],
+
+    srcs: [
+        "standalone/backtrace.cpp",
+        "standalone/wrappers.cpp"
+    ],
+
+    local_include_dirs: ["standalone/include"],
+    export_include_dirs: ["standalone/include"],
+
+    version_script: "standalone/libfdsan_standalone.map",
+
+    static_libs: [
+        "libbacktrace",
+        "libunwindstack",
+        "liblzma",
+
+        // libbacktrace dependencies that will hopefully go away...
+        "libunwind",
+        "liblog",
+        "libbase",
+
+        "libasync_safe",
+
+        "libc++_static",
+
+        // Statically link libc, except for pthread internals, which we have to get
+        // from libc.so, so we don't stomp on existing pthread_keys.
+        "libc_pthread_types",
+        "libc_malloc",
+        "libc_nopthread",
+    ],
+}
+
+cc_library_shared {
+    name: "libfdsan",
+    defaults: ["libfdsan_defaults"],
+    stl: "none",
+
+    // Many of our wrappers tail call an fdsan_record function, resulting in
+    // their frames being elided.
+    cflags: ["-fno-optimize-sibling-calls"],
+    ldflags: ["-Wl,--exclude-libs,ALL"],
+
+    srcs: [
+        "fdsan.cpp",
+        "wrappers/close.cpp",
+        "wrappers/dlopen.cpp",
+        "wrappers/dup.cpp",
+        "wrappers/open.cpp",
+        "wrappers/misc.cpp",
+        "wrappers/mkstemp.cpp",
+        "wrappers/socket.cpp",
+    ],
+
+    version_script: "libfdsan.map",
+
+    shared_libs: [
+        "libfdsan_standalone",
+    ],
+
+    static_libs: [
+        "libasync_safe",
+
+        "libc++_static",
+        "libc_pthread_types",
+    ],
+
+    header_libs: [
+        "libbase_headers",
+    ],
+
+    export_include_dirs: ["include"],
+}
+
+cc_library_static {
+    name: "libfdsan_test",
+    defaults: ["libfdsan_defaults"],
+    srcs: [
+        "test/fdsan_test.cpp",
+        "test/fdsan_wrapper_test.cpp",
+    ],
+
+    static_libs: [
+        "libbase",
+        "libgtest",
+    ],
+
+    shared_libs: [
+        "libfdsan",
+    ]
+}
+
+cc_test {
+    name: "fdsan_test",
+    defaults: ["libfdsan_defaults"],
+
+    whole_static_libs: ["libfdsan_test"],
+    shared_libs: ["libfdsan"],
+}
+
+cc_test {
+    name: "fdsan_test_preload",
+    defaults: ["libfdsan_defaults"],
+
+    srcs: ["test/fdsan_preload.cpp"],
+
+    whole_static_libs: ["libfdsan_test"],
+}

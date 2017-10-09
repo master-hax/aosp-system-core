@@ -1,0 +1,43 @@
+LIBC {
+  global:
+    __real_close;
+    __real_openat;
+
+    __real_dup;
+    __real_dup2;
+    __real_dup3;
+    __real_fcntl;
+
+    __real_mkstemp;
+    __real_mkstemp64;
+    __real_mkostemp;
+    __real_mkostemp64;
+    __real_mkstemps;
+    __real_mkstemps64;
+    __real_mkostemps;
+    __real_mkostemps64;
+
+    __real_pipe;
+    __real_pipe2;
+
+    __real_socket;
+    __real_socketpair;
+    __real_accept;
+    __real_accept4;
+
+    __real_epoll_create;
+    __real_epoll_create1;
+    __real_eventfd;
+    __real_inotify_init;
+    __real_inotify_init1;
+    __real_signalfd;
+    __real_timerfd_create;
+
+    fdsan_update_map;
+    fdsan_free;
+    fdsan_record_backtrace;
+    fdsan_report_backtrace;
+
+  local:
+    *;
+};
