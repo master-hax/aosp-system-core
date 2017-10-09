@@ -1,0 +1,91 @@
+cc_defaults {
+    name: "libfdsan_defaults",
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wformat-nonliteral",
+    ],
+
+    local_include_dirs: ["include"],
+
+    strip: {
+        keep_symbols: true,
+    },
+
+    cpp_std: "gnu++17",
+
+    target: {
+        host: {
+            shared_libs: ["liblog"],
+        }
+    },
+}
+
+cc_library_shared {
+    name: "libfdsan_standalone",
+    defaults: ["libfdsan_defaults"],
+
+    ldflags: ["-Wl,--exclude-libs,ALL"],
+
+    srcs: [
+        "standalone/backtrace.cpp",
+        "standalone/wrappers.cpp"
+    ],
+
+    local_include_dirs: ["standalone/include"],
+    export_include_dirs: ["standalone/include"],
+
+    version_script: "standalone/libfdsan_standalone.map",
+
+    static_libs: [
+        "libbacktrace",
+        "libunwindstack",
+        "liblzma",
+
+        // libbacktrace dependencies that will hopefully go away...
+        "libunwind",
+        "liblog",
+        "libbase",
+
+        "libasync_safe",
+
+        // Link libc last, we want its malloc and syscall wrappers.
+        "libc",
+    ],
+}
+
+cc_library_shared {
+    name: "libfdsan",
+    defaults: ["libfdsan_defaults"],
+
+    ldflags: ["-Wl,--exclude-libs,ALL"],
+
+    srcs: [
+        "fdsan.cpp",
+    ],
+
+    version_script: "libfdsan.map",
+
+    shared_libs: [
+        "libfdsan_standalone",
+    ],
+
+    static_libs: [
+        "libasync_safe",
+    ],
+
+    header_libs: [
+        "libbase_headers",
+    ],
+
+    export_include_dirs: ["include"],
+}
+
+cc_binary {
+    name: "fdsan_test",
+    defaults: ["libfdsan_defaults"],
+
+    srcs: ["fdsan_test.cpp"],
+    shared_libs: ["libfdsan"],
+}
