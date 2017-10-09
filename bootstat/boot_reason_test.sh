@@ -32,6 +32,13 @@ inFastboot() {
   fastboot devices | grep "^${ANDROID_SERIAL}[${SPACE}${TAB}]" > /dev/null
 }
 
+[ "USAGE: inAdb
+
+Returns: true if device is in adb mode" ]
+inAdb() {
+  adb devices | grep -v 'List of devices attached' | grep "^${ANDROID_SERIAL}[${SPACE}${TAB}]" > /dev/null
+}
+
 [ "USAGE: format_duration <seconds>
 
 human readable output whole seconds, whole minutes or mm:ss" ]
@@ -77,12 +84,16 @@ wait_for_screen() {
   fi
   counter=0
   while true; do
-    [ 0 = ${counter} ] ||
-      adb wait-for-device </dev/null >/dev/null 2>/dev/null
-    vals=`adb shell getprop </dev/null 2>/dev/null |
-          sed -n 's/[[]sys[.]\(boot_completed\|logbootcomplete\)[]]: [[]\([01]\)[]]$/\1=\2/p'`
-    [ 0 = ${counter} ] ||
-      sleep 1
+    vals=
+    if inFastboot; then
+      fastboot reboot
+    elif inAdb; then
+      if [ 0 != ${counter} ]; then
+        adb wait-for-device </dev/null >/dev/null 2>/dev/null
+      fi
+      vals=`adb shell getprop </dev/null 2>/dev/null |
+            sed -n 's/[[]sys[.]\(boot_completed\|logbootcomplete\)[]]: [[]\([01]\)[]]$/\1=\2/p'`
+    fi
     if [ "${vals}" = "`echo boot_completed=1 ; echo logbootcomplete=1`" ]; then
       break
     fi
@@ -95,6 +106,7 @@ wait_for_screen() {
       echo "ERROR: wait_for_screen() timed out (`format_duration ${timeout}`)" >&2
       return 1
     fi
+    sleep 1
   done
   ${exit_function}
 }
@@ -152,7 +164,7 @@ Report any logs, minus a known blacklist, preserve the current exit status" ]
 report_bootstat_logs() {
   save_ret=${?}
   match=
-  for i in ${*}; do
+  for i in "${@}"; do
     if [ X"${i}" != X"${i#-}" ] ; then
       match="${match}
 ${i#-}"
@@ -361,7 +373,7 @@ test_ota() {
   popd >&2
   wait_for_screen
   EXPECT_PROPERTY sys.boot.reason "\(reboot,ota\|bootloader\)"
-  EXPECT_PROPERTY persist.sys.boot.reason reboot,bootloader
+  EXPECT_PROPERTY persist.sys.boot.reason bootloader
   report_bootstat_logs reboot,ota bootloader
 }
 
@@ -379,27 +391,28 @@ test_optional_ota() {
   report_bootstat_logs reboot,ota
 }
 
-[ "USAGE: [TEST=<test>] blind_reboot_test [<match>]
+[ "USAGE: [TEST=<test>] blind_reboot_test
 
 Simple tests helper
 - adb reboot <test>
 - (wait until screen is up, boot has completed)
 - adb shell getprop sys.boot.reason
-- NB: should report <test>, or overriden <match>
+- NB: should report <test>, or reboot,<test> depending on canonical rules
 
 We interleave the simple reboot tests between the hard/complex ones
 as a means of checking sanity and any persistent side effect of the
 other tests." ]
 blind_reboot_test() {
-  if [ -z "${1}" ]; then
-    set ${TEST}
-  fi
+  case ${TEST} in
+    bootloader | recovery | cold | hard | warm ) reason=${TEST} ;;
+    *)                                           reason=reboot,${TEST} ;;
+  esac
   echo "INFO: expected duration of ${TEST} test roughly 45 seconds" >&2
   adb reboot ${TEST}
   wait_for_screen
-  EXPECT_PROPERTY sys.boot.reason ${1}
-  EXPECT_PROPERTY persist.sys.boot.reason reboot,${TEST}
-  report_bootstat_logs ${1}
+  EXPECT_PROPERTY sys.boot.reason ${reason}
+  EXPECT_PROPERTY persist.sys.boot.reason ${reason}
+  report_bootstat_logs ${reason}
 }
 
 [ "USAGE: test_cold
@@ -504,6 +517,11 @@ battery test (trick):
 test_battery() {
   echo "INFO: expected duration of ${TEST} test roughly two minutes" >&2
   echo "WARNING: ${TEST} requires userdebug build" >&2
+  pstore_ok=true
+  if [ `adb shell su root ls /sys/fs/pstore | wc -l` -eq 0 ]; then
+    echo "WARNING: ${TEST} requires functional pstore" >&2
+    pstore_ok=false
+  fi
   # Send it _many_ times to combat devices with flakey pstore
   for i in a b c d e f g h i j k l m n o p q r s t u v w x y z; do
     echo 'healthd: battery l=2 ' | adb shell su root tee /dev/kmsg >/dev/null
@@ -529,8 +547,18 @@ test_battery() {
     )
 
   EXPECT_PROPERTY sys.boot.reason shutdown,battery
-  EXPECT_PROPERTY persist.sys.boot.reason reboot,cold
+  EXPECT_PROPERTY persist.sys.boot.reason cold
   report_bootstat_logs shutdown,battery "-bootstat: Battery level at shutdown 2%"
+  if [ $? != 0 ]; then
+    if [ `adb shell su root ls /sys/fs/pstore | wc -l` -eq 0 ]; then
+      if [ false = ${pstore_ok} ]; then
+        echo "ERROR: ${TEST} requires functional pstore, skipping FAILURE" >&2
+        return
+      fi
+      echo "WARNING: ${TEST} requires functional pstore" >&2
+    fi
+    false
+  fi
 }
 
 [ "USAGE: test_unknown
@@ -542,7 +570,7 @@ unknown test
 - NB: should report reboot,unknown
 - NB: expect log \"... I bootstat: Unknown boot reason: reboot,unknown\"" ]
 test_unknown() {
-  blind_reboot_test reboot,unknown
+  blind_reboot_test
 }
 
 [ "USAGE: test_kernel_panic
@@ -555,11 +583,28 @@ kernel_panic test:
 test_kernel_panic() {
   echo "INFO: expected duration of ${TEST} test > 2 minutes" >&2
   echo "WARNING: ${TEST} requires userdebug build" >&2
+  panic_msg="kernel_panic,sysrq"
+  pstore_ok=true
+  if [ `adb shell su root ls /sys/fs/pstore | wc -l` -eq 0 ]; then
+    echo "WARNING: ${TEST} requires functional pstore" >&2
+    panic_msg="\(kernel_panic,sysrq\|kernel_panic\)"
+    pstore_ok=false
+  fi
   echo c | adb shell su root tee /proc/sysrq-trigger >/dev/null
   wait_for_screen
-  EXPECT_PROPERTY sys.boot.reason kernel_panic,sysrq
-  EXPECT_PROPERTY persist.sys.boot.reason kernel_panic,sysrq
+  EXPECT_PROPERTY sys.boot.reason ${panic_msg}
+  EXPECT_PROPERTY persist.sys.boot.reason ${panic_msg}
   report_bootstat_logs kernel_panic,sysrq
+  if [ $? != 0 ]; then
+    if [ `adb shell su root ls /sys/fs/pstore | wc -l` -eq 0 ]; then
+      if [ false = "${pstore_ok}" ]; then
+        echo "ERROR: ${TEST} requires functional pstore, skipping FAILURE" >&2
+        return
+      fi
+      echo "WARNING: ${TEST} requires functional pstore" >&2
+    fi
+    false
+  fi
 }
 
 [ "USAGE: test_warm
