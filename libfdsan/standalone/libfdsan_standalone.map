@@ -1,0 +1,15 @@
+LIBC {
+  global:
+    __real___openat;
+    __real_close;
+    __real_dup;
+    __real_dup3;
+    __real_fcntl;
+    __real_socket;
+    fdsan_free;
+    fdsan_record_backtrace;
+    fdsan_report_backtrace;
+
+  local:
+    *;
+};

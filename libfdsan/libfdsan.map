@@ -1,0 +1,12 @@
+LIBC {
+  global:
+    __openat;
+    close;
+    dup;
+    dup3;
+    fcntl;
+    socket;
+
+  local:
+    *;
+};
