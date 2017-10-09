@@ -1,0 +1,7 @@
+LIBC {
+  global:
+    close;
+
+  local:
+    __fdsan_close;
+};
