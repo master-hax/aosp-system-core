@@ -83,6 +83,9 @@ class ElfInterface {
   DwarfSection* debug_frame() { return debug_frame_.get(); }
 
   template <typename EhdrType, typename PhdrType>
+  bool ReadProgramHeaders(const EhdrType& ehdr);
+
+  template <typename EhdrType, typename PhdrType>
   static uint64_t GetLoadBias(Memory* memory);
 
  protected:
@@ -92,8 +95,8 @@ class ElfInterface {
   template <typename EhdrType, typename PhdrType, typename ShdrType>
   bool ReadAllHeaders(uint64_t* load_bias);
 
-  template <typename EhdrType, typename PhdrType>
-  bool ReadProgramHeaders(const EhdrType& ehdr, uint64_t* load_bias);
+  // template <typename EhdrType, typename PhdrType>
+  // bool ReadProgramHeaders(const EhdrType& ehdr);
 
   template <typename EhdrType, typename ShdrType>
   bool ReadSectionHeaders(const EhdrType& ehdr);

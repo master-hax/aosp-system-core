@@ -55,12 +55,12 @@ class Elf {
 
   bool GetSoname(std::string* name);
 
-  bool GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offset);
+  virtual bool GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offset);
 
   uint64_t GetRelPc(uint64_t pc, const MapInfo* map_info);
 
-  bool Step(uint64_t rel_pc, uint64_t adjusted_rel_pc, uint64_t elf_offset, Regs* regs,
-            Memory* process_memory, bool* finished);
+  virtual bool Step(uint64_t rel_pc, uint64_t adjusted_rel_pc, uint64_t elf_offset, Regs* regs,
+                    Memory* process_memory, bool* finished);
 
   ElfInterface* CreateInterfaceFromMemory(Memory* memory);
 

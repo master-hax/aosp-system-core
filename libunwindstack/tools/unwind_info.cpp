@@ -90,6 +90,7 @@ void DumpDwarfSection(ElfInterface* interface, DwarfSection* section, uint64_t l
     if (fde->pc_start == fde->pc_end) {
       continue;
     }
+    printf("\n  return address register %" PRId64 "\n", fde->cie->return_address_register);
     printf("\n  PC 0x%" PRIx64, fde->pc_start + load_bias);
     std::string name;
     uint64_t func_offset;

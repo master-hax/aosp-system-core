@@ -47,6 +47,7 @@ cc_library {
 
     srcs: [
         "ArmExidx.cpp",
+        "DlPhdrMaps.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
         "DwarfMemory.cpp",
@@ -55,6 +56,7 @@ cc_library {
         "Elf.cpp",
         "ElfInterface.cpp",
         "ElfInterfaceArm.cpp",
+        "ElfLocal.cpp",
         "Log.cpp",
         "MapInfo.cpp",
         "Maps.cpp",
@@ -185,6 +187,59 @@ cc_binary {
     srcs: [
         "tools/unwind.cpp",
     ],
+}
+
+cc_binary {
+    name: "unwind_dl",
+    defaults: ["libunwindstack_tools"],
+
+    cflags: ["-O0", "-g"],
+
+    srcs: [
+        "tools/unwind_dl.cpp",
+    ],
+
+    compile_multilib: "both",
+
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
+}
+
+cc_binary {
+    name: "unwind_dl_static",
+    defaults: ["libunwindstack_flags"],
+
+    static_libs: [
+        "libunwindstack",
+        "libbase",
+        "liblzma",
+        "liblog",
+    ],
+
+    cflags: ["-O0", "-g"],
+
+    srcs: [
+        "tools/unwind_dl.cpp",
+    ],
+
+    static_executable: true,
+
+    compile_multilib: "both",
+
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
 }
 
 cc_binary {
