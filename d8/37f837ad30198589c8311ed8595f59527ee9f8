@@ -1,0 +1,9 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Tom Cherry <tomcherry@google.com>
+Autosubmit+1: Bowgo Tsai <bowgotsai@google.com>
+Verified+1: Bowgo Tsai <bowgotsai@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 11 Oct 2017 01:43:10 +0000
+Reviewed-on: https://android-review.googlesource.com/497913
+Project: platform/system/core
+Branch: refs/heads/master
