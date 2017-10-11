@@ -59,9 +59,6 @@ cc_library_static {
         debuggable: {
             cppflags: ["-DALLOW_ADBD_DISABLE_VERITY=1"],
         },
-        eng: {
-            cppflags: ["-DALLOW_SKIP_SECURE_CHECK=1"],
-        },
     },
 }
 
