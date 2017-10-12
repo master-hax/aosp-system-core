@@ -1,0 +1,39 @@
+cc_defaults {
+    name: "foo_defaults",
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wformat-nonliteral",
+    ],
+
+    strip: {
+        keep_symbols: true,
+    },
+
+    cpp_std: "gnu++17",
+}
+
+cc_library_shared {
+    name: "libfoo",
+    defaults: ["foo_defaults"],
+    srcs: ["libfoo.cpp"],
+    version_script: "libfoo.map",
+}
+
+cc_binary {
+    name: "foo",
+    defaults: ["foo_defaults"],
+    srcs: ["foo.cpp"],
+    shared_libs: ["libfoo"],
+
+    compile_multilib: "both",
+    multilib: {
+        lib32: {
+            stem: "foo32",
+        },
+        lib64: {
+            stem: "foo64",
+        },
+    },
+}

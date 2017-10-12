@@ -1,0 +1,8 @@
+LIBC {
+  global:
+    __openat;
+    __openat_2;
+
+  local:
+    *;
+};
