@@ -42,6 +42,10 @@ public:
 
 static void ggl_test_codegen(uint32_t n, uint32_t p, uint32_t t0, uint32_t t1)
 {
+    (void)n;   // suppress unused warning
+    (void)p;   // suppress unused warning
+    (void)t0;  // suppress unused warning
+    (void)t1;  // suppress unused warning
 #if ANDROID_ARM_CODEGEN
     GGLContext* c;
     gglInit(&c);

@@ -1002,6 +1002,7 @@ uint32_t ArmToArm64Assembler::A64_LDRSTR_Wm_SXTW_0(uint32_t op,
                             uint32_t size, uint32_t Rt,
                             uint32_t Rn, uint32_t Rm)
 {
+    (void)dataTransferOpName;  // suppress warning of unused variable
     if(size == 32)
     {
         LOG_INSTR("%s W%d, [X%d, W%d, SXTW #0]\n",
@@ -1073,6 +1074,7 @@ uint32_t ArmToArm64Assembler::A64_ADD_X(uint32_t Rd, uint32_t Rn,
                                           uint32_t Rm, uint32_t shift,
                                           uint32_t amount)
 {
+    (void)shift_codes;  // suppress warning of unused variable
     LOG_INSTR("ADD X%d, X%d, X%d, %s #%d\n",
                Rd, Rn, Rm, shift_codes[shift], amount);
     return ((0x8B << 24) | (shift << 22) | ( Rm << 16) |
@@ -1156,6 +1158,7 @@ uint32_t ArmToArm64Assembler::A64_ORN_W(uint32_t Rd, uint32_t Rn,
 uint32_t ArmToArm64Assembler::A64_CSEL_X(uint32_t Rd, uint32_t Rn,
                                            uint32_t Rm, uint32_t cond)
 {
+    (void)cc_codes;  // suppress warning of unused variable
     LOG_INSTR("CSEL X%d, X%d, X%d, %s\n", Rd, Rn, Rm, cc_codes[cond]);
     return ((0x9A << 24)|(0x1 << 23)|(Rm << 16) |(cond << 12)| (Rn << 5) | Rd);
 }

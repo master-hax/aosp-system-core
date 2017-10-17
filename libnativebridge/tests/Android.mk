@@ -38,6 +38,7 @@ $(foreach file,$(test_src_files), \
     $(eval LOCAL_SHARED_LIBRARIES := $(shared_libraries)) \
     $(eval LOCAL_SRC_FILES := $(file)) \
     $(eval LOCAL_MODULE := $(notdir $(file:%.cpp=%))) \
+    $(eval LOCAL_CFLAGS := -Werror -Wall) \
     $(eval include $(BUILD_NATIVE_TEST)) \
 )
 
@@ -46,5 +47,6 @@ $(foreach file,$(test_src_files), \
     $(eval LOCAL_SHARED_LIBRARIES := $(shared_libraries)) \
     $(eval LOCAL_SRC_FILES := $(file)) \
     $(eval LOCAL_MODULE := $(notdir $(file:%.cpp=%))) \
+    $(eval LOCAL_CFLAGS := -Werror -Wall) \
     $(eval include $(BUILD_HOST_NATIVE_TEST)) \
 )
