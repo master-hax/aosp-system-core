@@ -136,9 +136,9 @@ Backtrace* Backtrace::Create(pid_t pid, pid_t tid, BacktraceMap* map) {
   }
 
   if (pid == getpid()) {
-    return new UnwindCurrent(pid, tid, map);
+    return new UnwindStackCurrent(pid, tid, map);
   } else {
-    return new UnwindPtrace(pid, tid, map);
+    return new UnwindStackPtrace(pid, tid, map);
   }
 }
 
@@ -164,9 +164,9 @@ Backtrace* Backtrace::CreateNew(pid_t pid, pid_t tid, BacktraceMap* map) {
   }
 
   if (pid == getpid()) {
-    return new UnwindStackCurrent(pid, tid, map);
+    return new UnwindCurrent(pid, tid, map);
   } else {
-    return new UnwindStackPtrace(pid, tid, map);
+    return new UnwindPtrace(pid, tid, map);
   }
 }
 

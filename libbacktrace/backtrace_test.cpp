@@ -1663,7 +1663,7 @@ TEST(libbacktrace, unwind_disallow_device_map_local) {
   munmap(device_map, DEVICE_MAP_SIZE);
 }
 
-TEST(libbacktrace, unwind_disallow_device_map_remote_new) {
+TEST(libbacktrace, unwind_disallow_device_map_remote) {
   void* device_map;
   SetupDeviceMap(&device_map);
 
@@ -1672,9 +1672,7 @@ TEST(libbacktrace, unwind_disallow_device_map_remote_new) {
   CreateRemoteProcess(&pid);
 
   // Now create an unwind object.
-  std::unique_ptr<BacktraceMap> map(BacktraceMap::CreateNew(pid));
-  ASSERT_TRUE(map.get() != nullptr);
-  std::unique_ptr<Backtrace> backtrace(Backtrace::CreateNew(pid, pid, map.get()));
+  std::unique_ptr<Backtrace> backtrace(Backtrace::Create(pid, pid));
 
   UnwindFromDevice(backtrace.get(), device_map);
 
@@ -1866,9 +1864,11 @@ TEST(libbacktrace, unwind_frame_skip_numbering_new) {
 #define MAX_LEAK_BYTES (32*1024UL)
 
 static void CheckForLeak(pid_t pid, pid_t tid) {
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(pid));
+
   // Do a few runs to get the PSS stable.
   for (size_t i = 0; i < 100; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = Backtrace::Create(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());
@@ -1879,7 +1879,7 @@ static void CheckForLeak(pid_t pid, pid_t tid) {
 
   // Loop enough that even a small leak should be detectable.
   for (size_t i = 0; i < 4096; i++) {
-    Backtrace* backtrace = Backtrace::Create(pid, tid);
+    Backtrace* backtrace = Backtrace::Create(pid, tid, map.get());
     ASSERT_TRUE(backtrace != nullptr);
     ASSERT_TRUE(backtrace->Unwind(0));
     ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError());
