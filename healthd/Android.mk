@@ -5,6 +5,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := BatteryMonitor.cpp
 LOCAL_MODULE := libbatterymonitor
+LOCAL_CFLAGS := -Wall -Werror
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
 LOCAL_STATIC_LIBRARIES := libutils libbase libbinder
@@ -16,6 +17,7 @@ LOCAL_SRC_FILES := \
     BatteryPropertiesRegistrar.cpp
 
 LOCAL_MODULE := libhealthd_android
+LOCAL_CFLAGS := -Wall -Werror
 LOCAL_EXPORT_C_INCLUDE_DIRS := \
     $(LOCAL_PATH) \
     $(LOCAL_PATH)/include
@@ -167,6 +169,7 @@ LOCAL_SRC_FILES := \
 LOCAL_MODULE := healthd
 LOCAL_MODULE_TAGS := optional
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_CFLAGS := -Wall -Werror
 
 ifneq ($(BOARD_PERIODIC_CHORES_INTERVAL_FAST),)
 LOCAL_CFLAGS += -DBOARD_PERIODIC_CHORES_INTERVAL_FAST=$(BOARD_PERIODIC_CHORES_INTERVAL_FAST)
