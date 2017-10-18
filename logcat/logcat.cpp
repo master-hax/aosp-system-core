@@ -1825,17 +1825,18 @@ int android_logcat_destroy(android_logcat_context* ctx) {
     context->args.clear();
     context->envp_hold.clear();
     context->envs.clear();
+
+    android::close_output(context);
+    android::close_error(context);
+
+    // NB: These should be closed by close_output and close_error, but just in case...
     if (context->fds[0] >= 0) {
         close(context->fds[0]);
         context->fds[0] = -1;
     }
-    android::close_output(context);
-    android::close_error(context);
+
     if (context->fds[1] >= 0) {
-        // NB: could be closed by the above fclose(s), ignore error.
-        int save_errno = errno;
         close(context->fds[1]);
-        errno = save_errno;
         context->fds[1] = -1;
     }
 
