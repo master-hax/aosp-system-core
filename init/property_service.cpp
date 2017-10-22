@@ -692,6 +692,12 @@ void load_system_props() {
     load_properties_from_file("/vendor/build.prop", NULL);
     load_properties_from_file("/factory/factory.prop", "ro.*");
     load_recovery_id_prop();
+
+    std::string first_api_level =
+        android::base::GetProperty("ro.vendor.product.first_api_level", "");
+    if (!first_api_level.empty()) {
+        android::base::SetProperty("ro.product.first_api_level", first_api_level);
+    }
 }
 
 static int SelinuxAuditCallback(void* data, security_class_t /*cls*/, char* buf, size_t len) {
