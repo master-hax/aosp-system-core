@@ -18,6 +18,7 @@
 
 #define LOG_TAG "qtaguid"
 
+#include <dlfcn.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -29,8 +30,6 @@
 #include <log/log.h>
 #include <cutils/qtaguid.h>
 
-static const char* CTRL_PROCPATH = "/proc/net/xt_qtaguid/ctrl";
-static const int CTRL_MAX_INPUT_LEN = 128;
 static const char *GLOBAL_PACIFIER_PARAM = "/sys/module/xt_qtaguid/parameters/passive";
 static const char *TAG_PACIFIER_PARAM = "/sys/module/xt_qtaguid/parameters/tag_tracking_passive";
 
@@ -42,41 +41,37 @@ static const char *TAG_PACIFIER_PARAM = "/sys/module/xt_qtaguid/parameters/tag_t
  * It should not close it unless it is really done with all the socket tags.
  * Failure to open it will be visible when socket tagging will be attempted.
  */
-static int resTrackFd = -1;
 pthread_once_t resTrackInitDone = PTHREAD_ONCE_INIT;
 
 /* Only call once per process. */
 void qtaguid_resTrack(void) {
-    resTrackFd = TEMP_FAILURE_RETRY(open("/dev/xt_qtaguid", O_RDONLY | O_CLOEXEC));
-}
-
-/*
- * Returns:
- *   0 on success.
- *   -errno on failure.
- */
-static int write_ctrl(const char *cmd) {
-    int fd, res, savedErrno;
-
-    ALOGV("write_ctrl(%s)", cmd);
-
-    fd = TEMP_FAILURE_RETRY(open(CTRL_PROCPATH, O_WRONLY | O_CLOEXEC));
-    if (fd < 0) {
-        return -errno;
+    char* error;
+    void* netdClientHandle = dlopen("libnetd_client.so", RTLD_NOW);
+    if (!netdClientHandle) {
+        ALOGE("Fail to open netd file\n");
+        return;
     }
-
-    res = TEMP_FAILURE_RETRY(write(fd, cmd, strlen(cmd)));
-    if (res < 0) {
-        savedErrno = errno;
-    } else {
-        savedErrno = 0;
+    dlerror();
+    netdTagSocket = (int (*)(int, uint32_t, uid_t))dlsym(netdClientHandle, "tagSocket");
+    error = dlerror();
+    if (error != NULL) {
+        ALOGE("load netdTagSocket handler failed: %s\n", error);
     }
-    if (res < 0) {
-        // ALOGV is enough because all the callers also log failures
-        ALOGV("Failed write_ctrl(%s) res=%d errno=%d", cmd, res, savedErrno);
+    netdUntagSocket = (int (*)(int))dlsym(netdClientHandle, "untagSocket");
+    error = dlerror();
+    if (error != NULL) {
+        ALOGE("load netdUntagSocket handler failed: %s\n", error);
     }
-    close(fd);
-    return -savedErrno;
+    netdSetCounterSet = (int (*)(uint32_t, uid_t))dlsym(netdClientHandle, "setCounterSet");
+    error = dlerror();
+    if (error != NULL) {
+        ALOGE("load netdSetCounterSet handler failed: %s\n", error);
+    }
+    netdDeleteTagData = (int (*)(uint32_t, uid_t))dlsym(netdClientHandle, "deleteTagData");
+    error = dlerror();
+    if (error != NULL) {
+        ALOGE("load netdDeleteTagData handler failed: %s\n", error);
+    }
 }
 
 static int write_param(const char *param_path, const char *value) {
@@ -96,65 +91,55 @@ static int write_param(const char *param_path, const char *value) {
 }
 
 int qtaguid_tagSocket(int sockfd, int tag, uid_t uid) {
-    char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
-    uint64_t kTag = ((uint64_t)tag << 32);
 
-    pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    if (!netdTagSocket) pthread_once(&resTrackInitDone, qtaguid_resTrack);
 
-    snprintf(lineBuf, sizeof(lineBuf), "t %d %" PRIu64 " %d", sockfd, kTag, uid);
-
-    ALOGV("Tagging socket %d with tag %" PRIx64 "{%u,0} for uid %d", sockfd, kTag, tag, uid);
-
-    res = write_ctrl(lineBuf);
+    ALOGV("Tagging socket %d with tag %u for uid %d", sockfd, tag, uid);
+    res = netdTagSocket(sockfd, tag, uid);
     if (res < 0) {
-        ALOGI("Tagging socket %d with tag %" PRIx64 "(%d) for uid %d failed errno=%d",
-             sockfd, kTag, tag, uid, res);
+        ALOGE("netd tag failed\n");
     }
 
     return res;
 }
 
 int qtaguid_untagSocket(int sockfd) {
-    char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
 
     ALOGV("Untagging socket %d", sockfd);
 
-    snprintf(lineBuf, sizeof(lineBuf), "u %d", sockfd);
-    res = write_ctrl(lineBuf);
+    if (!netdUntagSocket) pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    res = netdUntagSocket(sockfd);
     if (res < 0) {
-        ALOGI("Untagging socket %d failed errno=%d", sockfd, res);
+        ALOGE("netd untag failed\n");
     }
 
     return res;
 }
 
 int qtaguid_setCounterSet(int counterSetNum, uid_t uid) {
-    char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
 
     ALOGV("Setting counters to set %d for uid %d", counterSetNum, uid);
 
-    snprintf(lineBuf, sizeof(lineBuf), "s %d %d", counterSetNum, uid);
-    res = write_ctrl(lineBuf);
+    if (!netdSetCounterSet) pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    res = netdSetCounterSet(counterSetNum, uid);
+    if (res < 0) {
+        ALOGE("netd setCounterSet failed\n");
+    }
     return res;
 }
 
 int qtaguid_deleteTagData(int tag, uid_t uid) {
-    char lineBuf[CTRL_MAX_INPUT_LEN];
-    int cnt = 0, res = 0;
-    uint64_t kTag = (uint64_t)tag << 32;
+    int res;
 
-    ALOGV("Deleting tag data with tag %" PRIx64 "{%d,0} for uid %d", kTag, tag, uid);
+    ALOGV("Deleting tag data with tag %u for uid %d", tag, uid);
 
-    pthread_once(&resTrackInitDone, qtaguid_resTrack);
-
-    snprintf(lineBuf, sizeof(lineBuf), "d %" PRIu64 " %d", kTag, uid);
-    res = write_ctrl(lineBuf);
+    if (!netdDeleteTagData) pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    res = netdDeleteTagData(tag, uid);
     if (res < 0) {
-        ALOGI("Deleting tag data with tag %" PRIx64 "/%d for uid %d failed with cnt=%d errno=%d",
-             kTag, tag, uid, cnt, errno);
+        ALOGE("netd delete data failed\n");
     }
 
     return res;

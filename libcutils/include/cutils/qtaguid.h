@@ -25,6 +25,10 @@
 extern "C" {
 #endif
 
+int (*netdTagSocket)(int, uint32_t, uid_t);
+int (*netdUntagSocket)(int);
+int (*netdSetCounterSet)(uint32_t, uid_t);
+int (*netdDeleteTagData)(uint32_t, uid_t);
 /*
  * Set tags (and owning UIDs) for network sockets. The socket must be untagged
  * by calling qtaguid_untagSocket() before closing it, otherwise the qtaguid
