@@ -83,12 +83,17 @@ void qtaguid_resTrack(void) {
 int qtaguid_tagSocket(int sockfd, int tag, uid_t uid) {
     int res;
 
+    // Check the socket fd passed to us is still valid before we load the netd
+    // client. Pass a already closed socket fd to netd client may let netd open
+    // the unix socket with the same fd number and pass it to server for
+    // tagging.
+    res = fcntl(sockfd, F_GETFD);
+    if (res < 0) return res;
+
     pthread_once(&resTrackInitDone, qtaguid_resTrack);
 
     ALOGV("Tagging socket %d with tag %u for uid %d", sockfd, tag, uid);
 
-    res = fcntl(sockfd, F_GETFD);
-    if (res < 0) return res;
     res = netdTagSocket(sockfd, tag, uid);
 
     return res;
