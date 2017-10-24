@@ -70,7 +70,9 @@ static bool CountMaps(pid_t pid, size_t* num_maps) {
 }
 
 static void CreateMap(benchmark::State& state, BacktraceMap* (*map_func)(pid_t, bool)) {
-  state.PauseTiming();
+  sleep(1);
+  return;
+  // state.PauseTiming();
   // Create a remote process so that the map data is exactly the same.
   // Also, so that we can create a set number of maps.
   pid_t pid;
@@ -132,7 +134,7 @@ static void CreateMap(benchmark::State& state, BacktraceMap* (*map_func)(pid_t, 
     return;
   }
 
-  state.ResumeTiming();
+  // state.ResumeTiming();
   while (state.KeepRunning()) {
     for (size_t i = 0; i < static_cast<size_t>(state.range(0)); i++) {
       BacktraceMap* map = map_func(pid, false);
@@ -143,10 +145,12 @@ static void CreateMap(benchmark::State& state, BacktraceMap* (*map_func)(pid_t, 
       delete map;
     }
   }
-  state.PauseTiming();
+  // state.PauseTiming();
 
   kill(pid, SIGKILL);
   waitpid(pid, nullptr, 0);
+
+  // state.ResumeTiming();
 }
 
 static void BM_create_map(benchmark::State& state) {

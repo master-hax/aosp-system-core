@@ -20,6 +20,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 
+#include <set>
 #include <string>
 #include <vector>
 
