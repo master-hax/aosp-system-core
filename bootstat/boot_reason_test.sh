@@ -878,12 +878,14 @@ test_Its_Just_So_Hard_reboot() {
   wait_for_screen
   EXPECT_PROPERTY sys.boot.reason reboot,its_just_so_hard
   EXPECT_PROPERTY persist.sys.boot.reason "reboot,Its Just So Hard"
+  save_the_return_value=${?}
   adb shell su root setprop persist.sys.boot.reason reboot,its_just_so_hard
   if checkDebugBuild; then
     flag=""
   else
     flag="--allow_failure"
   fi
+  ( exit ${save_the_return_value} )
   EXPECT_PROPERTY persist.sys.boot.reason reboot,its_just_so_hard ${flag}
   report_bootstat_logs reboot,its_just_so_hard
 }
