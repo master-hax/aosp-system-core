@@ -41,7 +41,12 @@ class UnwindStackMap : public BacktraceMap {
   explicit UnwindStackMap(pid_t pid);
   ~UnwindStackMap() = default;
 
+ private:
+  bool Build(bool local_unsafe);
+
+ public:
   bool Build() override;
+  bool BuildLocalUnsafe();
 
   void FillIn(uint64_t addr, backtrace_map_t* map) override;
 
