@@ -176,4 +176,12 @@ static void BM_create_backtrace_new(benchmark::State& state) {
 }
 BENCHMARK(BM_create_backtrace_new);
 
+static void BM_create_backtrace_new_unsafe(benchmark::State& state) {
+  std::unique_ptr<BacktraceMap> backtrace_map(BacktraceMap::CreateNew(getpid()));
+  std::shared_ptr<unwindstack::Memory> memory = backtrace_map->GetProcessMemory();
+  memory->SetUnsafe();
+  CreateBacktrace(state, backtrace_map.get(), Backtrace::CreateNew);
+}
+BENCHMARK(BM_create_backtrace_new_unsafe);
+
 BENCHMARK_MAIN();

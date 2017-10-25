@@ -203,6 +203,11 @@ size_t MemoryRemote::Read(uint64_t addr, void* dst, size_t size) {
 }
 
 size_t MemoryLocal::Read(uint64_t addr, void* dst, size_t size) {
+  if (unsafe_) {
+    memcpy(dst, reinterpret_cast<void*>(addr), size);
+    return size;
+  }
+
   return ProcessVmRead(getpid(), dst, addr, size);
 }
 
