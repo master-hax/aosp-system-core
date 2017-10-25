@@ -149,19 +149,24 @@ static void BM_create_map(benchmark::State& state) {
 }
 BENCHMARK(BM_create_map);
 
-using BacktraceCreateFn = decltype(Backtrace::Create);
-
-static void CreateBacktrace(benchmark::State& state, BacktraceMap* map, BacktraceCreateFn fn) {
+static void BM_create_backtrace(benchmark::State& state) {
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(getpid()));
   while (state.KeepRunning()) {
-    std::unique_ptr<Backtrace> backtrace(fn(getpid(), gettid(), map));
+    std::unique_ptr<Backtrace> backtrace(Backtrace::Create(getpid(), gettid(), map.get()));
     backtrace->Unwind(0);
   }
 }
-
-static void BM_create_backtrace(benchmark::State& state) {
-  std::unique_ptr<BacktraceMap> backtrace_map(BacktraceMap::Create(getpid()));
-  CreateBacktrace(state, backtrace_map.get(), Backtrace::Create);
-}
 BENCHMARK(BM_create_backtrace);
+
+static void BM_create_backtrace_new_unsafe(benchmark::State& state) {
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(getpid()));
+  std::shared_ptr<unwindstack::Memory> memory = map->GetProcessMemory();
+  memory->SetUnsafe();
+  while (state.KeepRunning()) {
+    std::unique_ptr<Backtrace> backtrace(Backtrace::Create(getpid(), gettid(), map.get()));
+    backtrace->Unwind(0);
+  }
+}
+BENCHMARK(BM_create_backtrace_new_unsafe);
 
 BENCHMARK_MAIN();
