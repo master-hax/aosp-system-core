@@ -120,6 +120,15 @@ class MemoryLocal : public Memory {
   size_t Read(uint64_t addr, void* dst, size_t size) override;
 };
 
+// An unsafe version of MemoryLocalUnsafe, useful for faster non-crash unwinds.
+class MemoryLocalUnsafe : public Memory {
+ public:
+  MemoryLocalUnsafe() = default;
+  virtual ~MemoryLocalUnsafe() = default;
+
+  size_t Read(uint64_t addr, void* dst, size_t size) override;
+};
+
 // MemoryRange maps one address range onto another.
 // The range [src_begin, src_begin + length) in the underlying Memory is mapped onto offset,
 // such that range.read(offset) is equivalent to underlying.read(src_begin).

@@ -68,6 +68,8 @@ public:
   // is unsupported.
   static BacktraceMap* Create(pid_t pid, bool uncached = false);
 
+  static BacktraceMap* CreateLocalUnsafe();
+
   static BacktraceMap* CreateOffline(pid_t pid, const std::vector<backtrace_map_t>& maps);
 
   virtual ~BacktraceMap();
