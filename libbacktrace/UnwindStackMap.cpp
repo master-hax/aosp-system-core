@@ -32,6 +32,14 @@
 UnwindStackMap::UnwindStackMap(pid_t pid) : BacktraceMap(pid) {}
 
 bool UnwindStackMap::Build() {
+  return UnwindStackMap::Build(false);
+}
+
+bool UnwindStackMap::BuildLocalUnsafe() {
+  return UnwindStackMap::Build(true);
+}
+
+bool UnwindStackMap::Build(bool local_unsafe) {
   if (pid_ == 0) {
     pid_ = getpid();
     stack_maps_.reset(new unwindstack::LocalMaps);
@@ -40,7 +48,14 @@ bool UnwindStackMap::Build() {
   }
 
   // Create the process memory object.
-  process_memory_ = unwindstack::Memory::CreateProcessMemory(pid_);
+  if (local_unsafe) {
+    if (pid_ != getpid()) {
+      return false;
+    }
+    process_memory_.reset(new unwindstack::MemoryLocalUnsafe());
+  } else {
+    process_memory_ = unwindstack::Memory::CreateProcessMemory(pid_);
+  }
 
   // Create a JitDebug object for getting jit unwind information.
   std::vector<std::string> search_libs_{"libart.so", "libartd.so"};
@@ -178,6 +193,19 @@ BacktraceMap* BacktraceMap::Create(pid_t pid, bool uncached) {
   }
   return map;
 }
+
+//-------------------------------------------------------------------------
+// BacktraceMap create local unsafe function.
+//-------------------------------------------------------------------------
+BacktraceMap* BacktraceMap::CreateLocalUnsafe() {
+   UnwindStackMap* map = new UnwindStackMap(0);
+   if (!map->BuildLocalUnsafe()) {
+     delete map;
+     return nullptr;
+   }
+   return map;
+}
+
 
 //-------------------------------------------------------------------------
 // BacktraceMap create offline function.

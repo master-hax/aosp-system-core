@@ -293,6 +293,11 @@ size_t MemoryLocal::Read(uint64_t addr, void* dst, size_t size) {
   return ProcessVmRead(getpid(), addr, dst, size);
 }
 
+size_t MemoryLocalUnsafe::Read(uint64_t addr, void* dst, size_t size) {
+  memcpy(dst, reinterpret_cast<void*>(addr), size);
+  return size;
+}
+
 MemoryRange::MemoryRange(const std::shared_ptr<Memory>& memory, uint64_t begin, uint64_t length,
                          uint64_t offset)
     : memory_(memory), begin_(begin), length_(length), offset_(offset) {}
