@@ -35,6 +35,8 @@ class Memory {
 
   static std::shared_ptr<Memory> CreateProcessMemory(pid_t pid);
 
+  virtual bool SetUnsafe() { return false; }
+
   virtual bool ReadString(uint64_t addr, std::string* string, uint64_t max_read = UINT64_MAX);
 
   virtual size_t Read(uint64_t addr, void* dst, size_t size) = 0;
@@ -117,7 +119,15 @@ class MemoryLocal : public Memory {
   MemoryLocal() = default;
   virtual ~MemoryLocal() = default;
 
+  bool SetUnsafe() override final {
+    unsafe_ = true;
+    return true;
+  }
+
   size_t Read(uint64_t addr, void* dst, size_t size) override;
+
+ private:
+  bool unsafe_ = false;
 };
 
 // MemoryRange maps one address range onto another.
