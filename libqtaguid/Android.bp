@@ -47,9 +47,9 @@ cc_library {
 
     shared_libs: ["liblog"],
     header_libs: [
-        "libcutils_headers",
-        "libutils_headers",
+	"libqtaguid_headers"
     ],
+    export_header_lib_headers: ["libqtaguid_headers"],
     local_include_dirs: ["include"],
 
     cflags: [

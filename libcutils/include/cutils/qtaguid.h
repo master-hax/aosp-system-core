@@ -25,24 +25,29 @@
 extern "C" {
 #endif
 
+int (*netdTagSocket)(int, uint32_t, uid_t);
+int (*netdUntagSocket)(int);
+int (*netdSetCounterSet)(uint32_t, uid_t);
+int (*netdDeleteTagData)(uint32_t, uid_t);
+int (*netdSetPacifier)(uint32_t);
 /*
  * Set tags (and owning UIDs) for network sockets. The socket must be untagged
  * by calling qtaguid_untagSocket() before closing it, otherwise the qtaguid
  * module will keep a reference to it even after close.
  */
-extern int legacy_tagSocket(int sockfd, int tag, uid_t uid);
+extern int qtaguid_tagSocket(int sockfd, int tag, uid_t uid);
 
 /*
  * Untag a network socket before closing.
  */
-extern int legacy_untagSocket(int sockfd);
+extern int qtaguid_untagSocket(int sockfd);
 
 /*
  * For the given uid, switch counter sets.
  * The kernel only keeps a limited number of sets.
  * 2 for now.
  */
-extern int legacy_setCounterSet(int counterSetNum, uid_t uid);
+extern int qtaguid_setCounterSet(int counterSetNum, uid_t uid);
 
 /*
  * Delete all tag info that relates to the given tag an uid.
@@ -53,13 +58,13 @@ extern int legacy_setCounterSet(int counterSetNum, uid_t uid);
  * Unless it is part of the happy AID_NET_BW_ACCT group.
  * In which case it can clobber everything.
  */
-extern int legacy_deleteTagData(int tag, uid_t uid);
+extern int qtaguid_deleteTagData(int tag, uid_t uid);
 
 /*
  * Enable/disable qtaguid functionnality at a lower level.
  * When pacified, the kernel will accept commands but do nothing.
  */
-extern int legacy_setPacifier(int on);
+extern int qtaguid_setPacifier(int on);
 
 #ifdef __cplusplus
 }

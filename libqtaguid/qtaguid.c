@@ -26,8 +26,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <cutils/qtaguid.h>
 #include <log/log.h>
+#include <qtaguid/qtaguid.h>
 
 static const char* CTRL_PROCPATH = "/proc/net/xt_qtaguid/ctrl";
 static const int CTRL_MAX_INPUT_LEN = 128;
@@ -46,7 +46,7 @@ static int resTrackFd = -1;
 pthread_once_t resTrackInitDone = PTHREAD_ONCE_INIT;
 
 /* Only call once per process. */
-void qtaguid_resTrack(void) {
+void legacy_resTrack(void) {
     resTrackFd = TEMP_FAILURE_RETRY(open("/dev/xt_qtaguid", O_RDONLY | O_CLOEXEC));
 }
 
@@ -95,12 +95,12 @@ static int write_param(const char* param_path, const char* value) {
     return 0;
 }
 
-int qtaguid_tagSocket(int sockfd, int tag, uid_t uid) {
+int legacy_tagSocket(int sockfd, int tag, uid_t uid) {
     char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
     uint64_t kTag = ((uint64_t)tag << 32);
 
-    pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    pthread_once(&resTrackInitDone, legacy_resTrack);
 
     snprintf(lineBuf, sizeof(lineBuf), "t %d %" PRIu64 " %d", sockfd, kTag, uid);
 
@@ -115,7 +115,7 @@ int qtaguid_tagSocket(int sockfd, int tag, uid_t uid) {
     return res;
 }
 
-int qtaguid_untagSocket(int sockfd) {
+int legacy_untagSocket(int sockfd) {
     char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
 
@@ -130,7 +130,7 @@ int qtaguid_untagSocket(int sockfd) {
     return res;
 }
 
-int qtaguid_setCounterSet(int counterSetNum, uid_t uid) {
+int legacy_setCounterSet(int counterSetNum, uid_t uid) {
     char lineBuf[CTRL_MAX_INPUT_LEN];
     int res;
 
@@ -141,14 +141,14 @@ int qtaguid_setCounterSet(int counterSetNum, uid_t uid) {
     return res;
 }
 
-int qtaguid_deleteTagData(int tag, uid_t uid) {
+int legacy_deleteTagData(int tag, uid_t uid) {
     char lineBuf[CTRL_MAX_INPUT_LEN];
     int cnt = 0, res = 0;
     uint64_t kTag = (uint64_t)tag << 32;
 
     ALOGV("Deleting tag data with tag %" PRIx64 "{%d,0} for uid %d", kTag, tag, uid);
 
-    pthread_once(&resTrackInitDone, qtaguid_resTrack);
+    pthread_once(&resTrackInitDone, legacy_resTrack);
 
     snprintf(lineBuf, sizeof(lineBuf), "d %" PRIu64 " %d", kTag, uid);
     res = write_ctrl(lineBuf);
@@ -160,7 +160,7 @@ int qtaguid_deleteTagData(int tag, uid_t uid) {
     return res;
 }
 
-int qtaguid_setPacifier(int on) {
+int legacy_setPacifier(int on) {
     const char* value;
 
     value = on ? "Y" : "N";
