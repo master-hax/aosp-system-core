@@ -74,6 +74,10 @@ static void ggl_test_codegen(uint32_t n, uint32_t p, uint32_t t0, uint32_t t1)
     }
     gglUninit(c);
 #else
+    (void)n;   // suppress unused warning
+    (void)p;   // suppress unused warning
+    (void)t0;  // suppress unused warning
+    (void)t1;  // suppress unused warning
     printf("This test runs only on ARM, Arm64 or MIPS\n");
 #endif
 }
