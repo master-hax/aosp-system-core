@@ -119,7 +119,7 @@ class Service {
     using OptionParser = Result<Success> (Service::*)(const std::vector<std::string>& args);
     class OptionParserMap;
 
-    void NotifyStateChange(const std::string& new_state) const;
+    void NotifyStateChange(const std::string& new_state);
     void StopOrReset(int how);
     void ZapStdio() const;
     void OpenConsole() const;
@@ -167,6 +167,7 @@ class Service {
     android::base::boot_clock::time_point time_started_;  // time of last start
     android::base::boot_clock::time_point time_crashed_;  // first crash within inspection window
     int crash_count_;                     // number of times crashed within window
+    std::string status_;
 
     uid_t uid_;
     gid_t gid_;

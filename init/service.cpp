@@ -189,7 +189,8 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
     onrestart_.InitSingleTrigger("onrestart");
 }
 
-void Service::NotifyStateChange(const std::string& new_state) const {
+void Service::NotifyStateChange(const std::string& new_state) {
+    status_.assign(new_state);
     if ((flags_ & SVC_TEMPORARY) != 0) {
         // Services created by 'exec' are temporary and don't have properties tracking their state.
         return;
@@ -712,8 +713,13 @@ Result<Success> Service::Start() {
 
     // Running processes require no additional work --- if they're in the
     // process of exiting, we've ensured that they will immediately restart
-    // on exit, unless they are ONESHOT.
+    // on exit, unless they are ONESHOT. For ONESHOT service, if it's in
+    // stopping status, we just set SVC_RESTART flag so it will get restarted
+    // in ::Reap()
     if (flags_ & SVC_RUNNING) {
+        if (status_ == "stopping" && (flags_ & SVC_ONESHOT)) {
+            flags_ |= SVC_RESTART;
+        }
         // It is not an error to try to start a service that is already running.
         return Success();
     }
