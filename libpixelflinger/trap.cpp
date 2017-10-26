@@ -350,6 +350,7 @@ void linex_validate(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord 
 static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
     GGL_CONTEXT(c, con);
+    (void)c;  // suppress unused warning
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
@@ -378,6 +379,7 @@ static void linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord wi
 static void aa_linex(void *con, const GGLcoord* v0, const GGLcoord* v1, GGLcoord width)
 {
     GGL_CONTEXT(c, con);
+    (void)c;  // suppress unused warning
     GGLcoord v[4][2];
     v[0][0] = v0[0];    v[0][1] = v0[1];
     v[1][0] = v1[0];    v[1][1] = v1[1];
