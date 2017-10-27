@@ -1,0 +1,24 @@
+cc_library_static {
+    name: "libpropertycontextserializer",
+    srcs: [
+        "property_context_serializer.cpp",
+	"trie_builder.cpp",
+	"trie_serializer.cpp",
+    ],
+    
+    cpp_std: "experimental",
+    sanitize: {
+        misc_undefined: ["signed-integer-overflow"],
+    },
+    cppflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    static_libs: [
+        "libpropertycontextparser",
+        "libbase",
+    ],
+    export_include_dirs: ["include"],
+}
+
