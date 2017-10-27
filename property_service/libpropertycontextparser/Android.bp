@@ -1,0 +1,16 @@
+cc_library_static {
+    name: "libpropertycontextparser",
+    srcs: ["property_context_parser.cpp"],
+    
+    cpp_std: "experimental",
+    sanitize: {
+        misc_undefined: ["signed-integer-overflow"],
+    },
+    cppflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    stl: "none",
+    export_include_dirs: ["include"],
+}

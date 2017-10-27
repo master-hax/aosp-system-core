@@ -1,0 +1,39 @@
+cc_defaults {
+    name: "propertycontextserializer_defaults",
+    cpp_std: "experimental",
+    sanitize: {
+        misc_undefined: ["signed-integer-overflow"],
+    },
+    cppflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    static_libs: [
+        "libpropertycontextparser",
+        "libbase",
+    ],
+}
+
+cc_library_static {
+    name: "libpropertycontextserializer",
+    defaults: ["propertycontextserializer_defaults"],
+    srcs: [
+        "property_context_serializer.cpp",
+	"trie_builder.cpp",
+	"trie_serializer.cpp",
+    ],
+
+    export_include_dirs: ["include"],
+}
+
+
+cc_test {
+    name: "propertycontextserializer_tests",
+    defaults: ["propertycontextserializer_defaults"],
+    srcs: [
+        "trie_builder_test.cpp",
+	"property_context_serializer_test.cpp",
+    ],
+    static_libs: ["libpropertycontextserializer",],
+}
