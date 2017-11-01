@@ -32,11 +32,11 @@
 const std::string kDefaultAndroidDtDir("/proc/device-tree/firmware/android");
 
 struct fs_mgr_flag_values {
-    char *key_loc;
+    char* key_loc;
     char* key_dir;
-    char *verity_loc;
+    char* verity_loc;
     long long part_length;
-    char *label;
+    char* label;
     int partnum;
     int swap_prio;
     int max_comp_streams;
@@ -49,27 +49,27 @@ struct fs_mgr_flag_values {
 };
 
 struct flag_list {
-    const char *name;
+    const char* name;
     unsigned int flag;
 };
 
 static struct flag_list mount_flags[] = {
-    { "noatime",    MS_NOATIME },
-    { "noexec",     MS_NOEXEC },
-    { "nosuid",     MS_NOSUID },
-    { "nodev",      MS_NODEV },
-    { "nodiratime", MS_NODIRATIME },
-    { "ro",         MS_RDONLY },
-    { "rw",         0 },
-    { "remount",    MS_REMOUNT },
-    { "bind",       MS_BIND },
-    { "rec",        MS_REC },
-    { "unbindable", MS_UNBINDABLE },
-    { "private",    MS_PRIVATE },
-    { "slave",      MS_SLAVE },
-    { "shared",     MS_SHARED },
-    { "defaults",   0 },
-    { 0,            0 },
+    {"noatime", MS_NOATIME},
+    {"noexec", MS_NOEXEC},
+    {"nosuid", MS_NOSUID},
+    {"nodev", MS_NODEV},
+    {"nodiratime", MS_NODIRATIME},
+    {"ro", MS_RDONLY},
+    {"rw", 0},
+    {"remount", MS_REMOUNT},
+    {"bind", MS_BIND},
+    {"rec", MS_REC},
+    {"unbindable", MS_UNBINDABLE},
+    {"private", MS_PRIVATE},
+    {"slave", MS_SLAVE},
+    {"shared", MS_SHARED},
+    {"defaults", 0},
+    {0, 0},
 };
 
 static struct flag_list fs_mgr_flags[] = {
@@ -104,15 +104,15 @@ static struct flag_list fs_mgr_flags[] = {
     {0, 0},
 };
 
-#define EM_AES_256_XTS  1
-#define EM_ICE          2
-#define EM_AES_256_CTS  3
-#define EM_AES_256_HEH  4
+#define EM_AES_256_XTS 1
+#define EM_ICE 2
+#define EM_AES_256_CTS 3
+#define EM_AES_256_HEH 4
 
 static const struct flag_list file_contents_encryption_modes[] = {
     {"aes-256-xts", EM_AES_256_XTS},
     {"software", EM_AES_256_XTS}, /* alias for backwards compatibility */
-    {"ice", EM_ICE}, /* hardware-specific inline cryptographic engine */
+    {"ice", EM_ICE},              /* hardware-specific inline cryptographic engine */
     {0, 0},
 };
 
@@ -122,10 +122,9 @@ static const struct flag_list file_names_encryption_modes[] = {
     {0, 0},
 };
 
-static unsigned int encryption_mode_to_flag(const struct flag_list *list,
-                                            const char *mode, const char *type)
-{
-    const struct flag_list *j;
+static unsigned int encryption_mode_to_flag(const struct flag_list* list, const char* mode,
+                                            const char* type) {
+    const struct flag_list* j;
 
     for (j = list; j->name; ++j) {
         if (!strcmp(mode, j->name)) {
@@ -136,10 +135,8 @@ static unsigned int encryption_mode_to_flag(const struct flag_list *list,
     return 0;
 }
 
-static const char *flag_to_encryption_mode(const struct flag_list *list,
-                                           unsigned int flag)
-{
-    const struct flag_list *j;
+static const char* flag_to_encryption_mode(const struct flag_list* list, unsigned int flag) {
+    const struct flag_list* j;
 
     for (j = list; j->name; ++j) {
         if (flag == j->flag) {
@@ -149,11 +146,10 @@ static const char *flag_to_encryption_mode(const struct flag_list *list,
     return nullptr;
 }
 
-static uint64_t calculate_zram_size(unsigned int percentage)
-{
+static uint64_t calculate_zram_size(unsigned int percentage) {
     uint64_t total;
 
-    total  = sysconf(_SC_PHYS_PAGES);
+    total = sysconf(_SC_PHYS_PAGES);
     total *= percentage;
     total /= 100;
 
@@ -162,9 +158,8 @@ static uint64_t calculate_zram_size(unsigned int percentage)
     return total;
 }
 
-static uint64_t parse_size(const char *arg)
-{
-    char *endptr;
+static uint64_t parse_size(const char* arg) {
+    char* endptr;
     uint64_t size = strtoull(arg, &endptr, 10);
     if (*endptr == 'k' || *endptr == 'K')
         size *= 1024LL;
@@ -180,8 +175,7 @@ static uint64_t parse_size(const char *arg)
  * the trailing '\0'. Returns true if 'dt_value' has a valid string, 'false'
  * otherwise.
  */
-static bool read_dt_file(const std::string& file_name, std::string* dt_value)
-{
+static bool read_dt_file(const std::string& file_name, std::string* dt_value) {
     if (android::base::ReadFileToString(file_name, dt_value)) {
         if (!dt_value->empty()) {
             // trim the trailing '\0' out, otherwise the comparison
@@ -194,14 +188,12 @@ static bool read_dt_file(const std::string& file_name, std::string* dt_value)
     return false;
 }
 
-static int parse_flags(char *flags, struct flag_list *fl,
-                       struct fs_mgr_flag_values *flag_vals,
-                       char *fs_options, int fs_options_len)
-{
+static int parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_flag_values* flag_vals,
+                       char* fs_options, int fs_options_len) {
     int f = 0;
     int i;
-    char *p;
-    char *savep;
+    char* p;
+    char* savep;
 
     /* initialize flag values.  If we find a relevant flag, we'll
      * update the value */
@@ -233,7 +225,7 @@ static int parse_flags(char *flags, struct flag_list *fl,
                     /* If the verify flag is followed by an = and the
                      * location for the verity state,  get it and return it.
                      */
-                    char *start = strchr(p, '=');
+                    char* start = strchr(p, '=');
                     if (start) {
                         flag_vals->verity_loc = strdup(start + 1);
                     }
@@ -255,18 +247,16 @@ static int parse_flags(char *flags, struct flag_list *fl,
                      * : and the mode of filenames encryption (defaults
                      * to aes-256-cts).  Get it and return it.
                      */
-                    char *mode = strchr(p, '=') + 1;
-                    char *colon = strchr(mode, ':');
+                    char* mode = strchr(p, '=') + 1;
+                    char* colon = strchr(mode, ':');
                     if (colon) {
                         *colon = '\0';
                     }
-                    flag_vals->file_contents_mode =
-                        encryption_mode_to_flag(file_contents_encryption_modes,
-                                                mode, "file contents");
+                    flag_vals->file_contents_mode = encryption_mode_to_flag(
+                        file_contents_encryption_modes, mode, "file contents");
                     if (colon) {
-                        flag_vals->file_names_mode =
-                            encryption_mode_to_flag(file_names_encryption_modes,
-                                                    colon + 1, "file names");
+                        flag_vals->file_names_mode = encryption_mode_to_flag(
+                            file_names_encryption_modes, colon + 1, "file names");
                     } else {
                         flag_vals->file_names_mode = EM_AES_256_CTS;
                     }
@@ -287,15 +277,14 @@ static int parse_flags(char *flags, struct flag_list *fl,
                      *   voldmanaged=sdcard:3
                      * Get and return them.
                      */
-                    char *label_start;
-                    char *label_end;
-                    char *part_start;
+                    char* label_start;
+                    char* label_end;
+                    char* part_start;
 
                     label_start = strchr(p, '=') + 1;
                     label_end = strchr(p, ':');
                     if (label_end) {
-                        flag_vals->label = strndup(label_start,
-                                                   (int) (label_end - label_start));
+                        flag_vals->label = strndup(label_start, (int)(label_end - label_start));
                         part_start = strchr(p, ':') + 1;
                         if (!strcmp(part_start, "auto")) {
                             flag_vals->partnum = -1;
@@ -327,16 +316,14 @@ static int parse_flags(char *flags, struct flag_list *fl,
                      * at least 4096, and return it.
                      */
                     unsigned int val = strtoul(strchr(p, '=') + 1, NULL, 0);
-                    if (val >= 4096 && (val & (val - 1)) == 0)
-                        flag_vals->erase_blk_size = val;
+                    if (val >= 4096 && (val & (val - 1)) == 0) flag_vals->erase_blk_size = val;
                 } else if ((fl[i].flag == MF_LOGICALBLKSIZE) && flag_vals) {
                     /* The logical block size flag is followed by an = and the flash
                      * logical block size. Get it, check that it is a power of 2 and
                      * at least 4096, and return it.
                      */
                     unsigned int val = strtoul(strchr(p, '=') + 1, NULL, 0);
-                    if (val >= 4096 && (val & (val - 1)) == 0)
-                        flag_vals->logical_blk_size = val;
+                    if (val >= 4096 && (val & (val - 1)) == 0) flag_vals->logical_blk_size = val;
                 }
                 break;
             }
@@ -441,7 +428,8 @@ static std::string read_fstab_from_dt() {
         }
         fstab_entry.push_back(value);
 
-        file_name = android::base::StringPrintf("%s/%s/mnt_flags", fstabdir_name.c_str(), dp->d_name);
+        file_name =
+            android::base::StringPrintf("%s/%s/mnt_flags", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
             fstab.clear();
@@ -449,7 +437,8 @@ static std::string read_fstab_from_dt() {
         }
         fstab_entry.push_back(value);
 
-        file_name = android::base::StringPrintf("%s/%s/fsmgr_flags", fstabdir_name.c_str(), dp->d_name);
+        file_name =
+            android::base::StringPrintf("%s/%s/fsmgr_flags", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
             fstab.clear();
@@ -476,15 +465,14 @@ bool is_dt_compatible() {
     return false;
 }
 
-static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
-{
+static struct fstab* fs_mgr_read_fstab_file(FILE* fstab_file) {
     int cnt, entries;
     ssize_t len;
     size_t alloc_len = 0;
-    char *line = NULL;
-    const char *delim = " \t";
+    char* line = NULL;
+    const char* delim = " \t";
     char *save_ptr, *p;
-    struct fstab *fstab = NULL;
+    struct fstab* fstab = NULL;
     struct fs_mgr_flag_values flag_vals;
 #define FS_OPTIONS_LEN 1024
     char tmp_fs_options[FS_OPTIONS_LEN];
@@ -501,8 +489,7 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
             p++;
         }
         /* ignore comments or empty lines */
-        if (*p == '#' || *p == '\0')
-            continue;
+        if (*p == '#' || *p == '\0') continue;
         entries++;
     }
 
@@ -512,10 +499,10 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
     }
 
     /* Allocate and init the fstab structure */
-    fstab = static_cast<struct fstab *>(calloc(1, sizeof(struct fstab)));
+    fstab = static_cast<struct fstab*>(calloc(1, sizeof(struct fstab)));
     fstab->num_entries = entries;
-    fstab->recs = static_cast<struct fstab_rec *>(
-        calloc(fstab->num_entries, sizeof(struct fstab_rec)));
+    fstab->recs =
+        static_cast<struct fstab_rec*>(calloc(fstab->num_entries, sizeof(struct fstab_rec)));
 
     fseek(fstab_file, 0, SEEK_SET);
 
@@ -532,8 +519,7 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
             p++;
         }
         /* ignore comments or empty lines */
-        if (*p == '#' || *p == '\0')
-            continue;
+        if (*p == '#' || *p == '\0') continue;
 
         /* If a non-comment entry is greater than the size we allocated, give an
          * error and quit.  This can happen in the unlikely case the file changes
@@ -567,8 +553,7 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
             goto err;
         }
         tmp_fs_options[0] = '\0';
-        fstab->recs[cnt].flags = parse_flags(p, mount_flags, NULL,
-                                       tmp_fs_options, FS_OPTIONS_LEN);
+        fstab->recs[cnt].flags = parse_flags(p, mount_flags, NULL, tmp_fs_options, FS_OPTIONS_LEN);
 
         /* fs_options are optional */
         if (tmp_fs_options[0]) {
@@ -581,8 +566,7 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
             LERROR << "Error parsing fs_mgr_options";
             goto err;
         }
-        fstab->recs[cnt].fs_mgr_flags = parse_flags(p, fs_mgr_flags,
-                                                    &flag_vals, NULL, 0);
+        fstab->recs[cnt].fs_mgr_flags = parse_flags(p, fs_mgr_flags, &flag_vals, NULL, 0);
         fstab->recs[cnt].key_loc = flag_vals.key_loc;
         fstab->recs[cnt].key_dir = flag_vals.key_dir;
         fstab->recs[cnt].verity_loc = flag_vals.verity_loc;
@@ -609,8 +593,7 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
 
 err:
     free(line);
-    if (fstab)
-        fs_mgr_free_fstab(fstab);
+    if (fstab) fs_mgr_free_fstab(fstab);
     return NULL;
 }
 
@@ -618,14 +601,13 @@ err:
  * note that the caller should only manage the return pointer without
  * doing further memory management for the two inputs, i.e. only need to
  * frees up memory of the return value without touching a and b. */
-static struct fstab *in_place_merge(struct fstab *a, struct fstab *b)
-{
+static struct fstab* in_place_merge(struct fstab* a, struct fstab* b) {
     if (!a) return b;
     if (!b) return a;
 
     int total_entries = a->num_entries + b->num_entries;
-    a->recs = static_cast<struct fstab_rec *>(realloc(
-        a->recs, total_entries * (sizeof(struct fstab_rec))));
+    a->recs =
+        static_cast<struct fstab_rec*>(realloc(a->recs, total_entries * (sizeof(struct fstab_rec))));
     if (!a->recs) {
         LERROR << __FUNCTION__ << "(): failed to allocate fstab recs";
         // If realloc() fails the original block is left untouched;
@@ -649,14 +631,13 @@ static struct fstab *in_place_merge(struct fstab *a, struct fstab *b)
     return a;
 }
 
-struct fstab *fs_mgr_read_fstab(const char *fstab_path)
-{
-    FILE *fstab_file;
-    struct fstab *fstab;
+struct fstab* fs_mgr_read_fstab(const char* fstab_path) {
+    FILE* fstab_file;
+    struct fstab* fstab;
 
     fstab_file = fopen(fstab_path, "r");
     if (!fstab_file) {
-        PERROR << __FUNCTION__<< "(): cannot open file: '" << fstab_path << "'";
+        PERROR << __FUNCTION__ << "(): cannot open file: '" << fstab_path << "'";
         return nullptr;
     }
 
@@ -674,8 +655,7 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
 /* Returns fstab entries parsed from the device tree if they
  * exist
  */
-struct fstab *fs_mgr_read_fstab_dt()
-{
+struct fstab* fs_mgr_read_fstab_dt() {
     std::string fstab_buf = read_fstab_from_dt();
     if (fstab_buf.empty()) {
         LINFO << __FUNCTION__ << "(): failed to read fstab from dt";
@@ -683,17 +663,16 @@ struct fstab *fs_mgr_read_fstab_dt()
     }
 
     std::unique_ptr<FILE, decltype(&fclose)> fstab_file(
-        fmemopen(static_cast<void*>(const_cast<char*>(fstab_buf.c_str())),
-                 fstab_buf.length(), "r"), fclose);
+        fmemopen(static_cast<void*>(const_cast<char*>(fstab_buf.c_str())), fstab_buf.length(), "r"),
+        fclose);
     if (!fstab_file) {
         PERROR << __FUNCTION__ << "(): failed to create a file stream for fstab dt";
         return nullptr;
     }
 
-    struct fstab *fstab = fs_mgr_read_fstab_file(fstab_file.get());
+    struct fstab* fstab = fs_mgr_read_fstab_file(fstab_file.get());
     if (!fstab) {
-        LERROR << __FUNCTION__ << "(): failed to load fstab from kernel:"
-               << std::endl << fstab_buf;
+        LERROR << __FUNCTION__ << "(): failed to load fstab from kernel:" << std::endl << fstab_buf;
     }
 
     return fstab;
@@ -704,8 +683,7 @@ struct fstab *fs_mgr_read_fstab_dt()
  * fstab.<hardware>, fstab.<hardware.platform> in folders
    /odm/etc, vendor/etc, or /.
  */
-static std::string get_fstab_path()
-{
+static std::string get_fstab_path() {
     for (const char* prop : {"hardware", "hardware.platform"}) {
         std::string hw;
 
@@ -725,8 +703,7 @@ static std::string get_fstab_path()
 /*
  * loads the fstab file and combines with fstab entries passed in from device tree.
  */
-struct fstab *fs_mgr_read_fstab_default()
-{
+struct fstab* fs_mgr_read_fstab_default() {
     std::string default_fstab;
 
     // Use different fstab paths for normal boot and recovery boot, respectively
@@ -742,14 +719,13 @@ struct fstab *fs_mgr_read_fstab_default()
 
     // combines fstab entries passed in from device tree with
     // the ones found from default_fstab file
-    struct fstab *fstab_dt = fs_mgr_read_fstab_dt();
-    struct fstab *fstab = fs_mgr_read_fstab(default_fstab.c_str());
+    struct fstab* fstab_dt = fs_mgr_read_fstab_dt();
+    struct fstab* fstab = fs_mgr_read_fstab(default_fstab.c_str());
 
     return in_place_merge(fstab_dt, fstab);
 }
 
-void fs_mgr_free_fstab(struct fstab *fstab)
-{
+void fs_mgr_free_fstab(struct fstab* fstab) {
     int i;
 
     if (!fstab) {
@@ -778,32 +754,29 @@ void fs_mgr_free_fstab(struct fstab *fstab)
 }
 
 /* Add an entry to the fstab, and return 0 on success or -1 on error */
-int fs_mgr_add_entry(struct fstab *fstab,
-                     const char *mount_point, const char *fs_type,
-                     const char *blk_device)
-{
-    struct fstab_rec *new_fstab_recs;
+int fs_mgr_add_entry(struct fstab* fstab, const char* mount_point, const char* fs_type,
+                     const char* blk_device) {
+    struct fstab_rec* new_fstab_recs;
     int n = fstab->num_entries;
 
-    new_fstab_recs = (struct fstab_rec *)
-                     realloc(fstab->recs, sizeof(struct fstab_rec) * (n + 1));
+    new_fstab_recs = (struct fstab_rec*)realloc(fstab->recs, sizeof(struct fstab_rec) * (n + 1));
 
     if (!new_fstab_recs) {
         return -1;
     }
 
     /* A new entry was added, so initialize it */
-     memset(&new_fstab_recs[n], 0, sizeof(struct fstab_rec));
-     new_fstab_recs[n].mount_point = strdup(mount_point);
-     new_fstab_recs[n].fs_type = strdup(fs_type);
-     new_fstab_recs[n].blk_device = strdup(blk_device);
-     new_fstab_recs[n].length = 0;
+    memset(&new_fstab_recs[n], 0, sizeof(struct fstab_rec));
+    new_fstab_recs[n].mount_point = strdup(mount_point);
+    new_fstab_recs[n].fs_type = strdup(fs_type);
+    new_fstab_recs[n].blk_device = strdup(blk_device);
+    new_fstab_recs[n].length = 0;
 
-     /* Update the fstab struct */
-     fstab->recs = new_fstab_recs;
-     fstab->num_entries++;
+    /* Update the fstab struct */
+    fstab->recs = new_fstab_recs;
+    fstab->num_entries++;
 
-     return 0;
+    return 0;
 }
 
 /*
@@ -822,58 +795,47 @@ struct fstab_rec* fs_mgr_get_entry_for_mount_point(struct fstab* fstab, const st
     return nullptr;
 }
 
-int fs_mgr_is_voldmanaged(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_voldmanaged(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_VOLDMANAGED;
 }
 
-int fs_mgr_is_nonremovable(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_nonremovable(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_NONREMOVABLE;
 }
 
-int fs_mgr_is_verified(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_verified(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_VERIFY;
 }
 
-int fs_mgr_is_avb(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_avb(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_AVB;
 }
 
-int fs_mgr_is_verifyatboot(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_verifyatboot(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_VERIFYATBOOT;
 }
 
-int fs_mgr_is_encryptable(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_encryptable(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & (MF_CRYPT | MF_FORCECRYPT | MF_FORCEFDEORFBE);
 }
 
-int fs_mgr_is_file_encrypted(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_file_encrypted(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_FILEENCRYPTION;
 }
 
-void fs_mgr_get_file_encryption_modes(const struct fstab_rec *fstab,
-                                      const char **contents_mode_ret,
-                                      const char **filenames_mode_ret)
-{
-    *contents_mode_ret = flag_to_encryption_mode(file_contents_encryption_modes,
-                                                 fstab->file_contents_mode);
-    *filenames_mode_ret = flag_to_encryption_mode(file_names_encryption_modes,
-                                                  fstab->file_names_mode);
+void fs_mgr_get_file_encryption_modes(const struct fstab_rec* fstab, const char** contents_mode_ret,
+                                      const char** filenames_mode_ret) {
+    *contents_mode_ret =
+        flag_to_encryption_mode(file_contents_encryption_modes, fstab->file_contents_mode);
+    *filenames_mode_ret =
+        flag_to_encryption_mode(file_names_encryption_modes, fstab->file_names_mode);
 }
 
-int fs_mgr_is_convertible_to_fbe(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_convertible_to_fbe(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_FORCEFDEORFBE;
 }
 
-int fs_mgr_is_noemulatedsd(const struct fstab_rec *fstab)
-{
+int fs_mgr_is_noemulatedsd(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_NOEMULATEDSD;
 }
 
