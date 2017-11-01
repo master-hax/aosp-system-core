@@ -20,6 +20,7 @@
 #include <condition_variable>
 #include <mutex>
 
+<<<<<<< HEAD   (9dc087 Merge "fastboot: gracefully handle failure to open a USB dev)
 // Writes larger than 16k fail on some devices (seed with 3.10.49-g209ea2f in particular).
 #define USB_FFS_MAX_WRITE 16384
 
@@ -48,3 +49,43 @@ struct usb_handle {
 };
 
 bool init_functionfs(struct usb_handle* h);
+=======
+#include <asyncio/AsyncIO.h>
+
+struct aio_block {
+    std::vector<struct iocb> iocb;
+    std::vector<struct iocb*> iocbs;
+    std::vector<struct io_event> events;
+    aio_context_t ctx;
+    int num_submitted;
+    int fd;
+};
+
+struct usb_handle {
+    usb_handle() : kicked(false) {
+    }
+
+    std::condition_variable notify;
+    std::mutex lock;
+    std::atomic<bool> kicked;
+    bool open_new_connection = true;
+
+    int (*write)(usb_handle* h, const void* data, int len);
+    int (*read)(usb_handle* h, void* data, int len);
+    void (*kick)(usb_handle* h);
+    void (*close)(usb_handle* h);
+
+    // FunctionFS
+    int control = -1;
+    int bulk_out = -1; /* "out" from the host's perspective => source for adbd */
+    int bulk_in = -1;  /* "in" from the host's perspective => sink for adbd */
+
+    // Access to these blocks is very not thread safe. Have one block for both the
+    // read and write threads.
+    struct aio_block read_aiob;
+    struct aio_block write_aiob;
+
+    int max_rw;
+};
+
+>>>>>>> BRANCH (3d879b Merge "fs_mgr: support reading fstab based on ro.boot.hardwa)

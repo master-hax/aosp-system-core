@@ -27,6 +27,7 @@ void usb_init() {
     }
 }
 
+<<<<<<< HEAD   (9dc087 Merge "fastboot: gracefully handle failure to open a USB dev)
 int usb_write(usb_handle* h, const void* data, int len) {
     return should_use_libusb()
                ? libusb::usb_write(reinterpret_cast<libusb::usb_handle*>(h), data, len)
@@ -47,4 +48,40 @@ int usb_close(usb_handle* h) {
 void usb_kick(usb_handle* h) {
     should_use_libusb() ? libusb::usb_kick(reinterpret_cast<libusb::usb_handle*>(h))
                         : native::usb_kick(reinterpret_cast<native::usb_handle*>(h));
+=======
+void usb_cleanup() {
+    if (should_use_libusb()) {
+        libusb::usb_cleanup();
+    } else {
+        native::usb_cleanup();
+    }
+}
+
+int usb_write(usb_handle* h, const void* data, int len) {
+    return should_use_libusb()
+               ? libusb::usb_write(reinterpret_cast<libusb::usb_handle*>(h), data, len)
+               : native::usb_write(reinterpret_cast<native::usb_handle*>(h), data, len);
+}
+
+int usb_read(usb_handle* h, void* data, int len) {
+    return should_use_libusb()
+               ? libusb::usb_read(reinterpret_cast<libusb::usb_handle*>(h), data, len)
+               : native::usb_read(reinterpret_cast<native::usb_handle*>(h), data, len);
+}
+
+int usb_close(usb_handle* h) {
+    return should_use_libusb() ? libusb::usb_close(reinterpret_cast<libusb::usb_handle*>(h))
+                               : native::usb_close(reinterpret_cast<native::usb_handle*>(h));
+}
+
+void usb_kick(usb_handle* h) {
+    should_use_libusb() ? libusb::usb_kick(reinterpret_cast<libusb::usb_handle*>(h))
+                        : native::usb_kick(reinterpret_cast<native::usb_handle*>(h));
+}
+
+size_t usb_get_max_packet_size(usb_handle* h) {
+    return should_use_libusb()
+               ? libusb::usb_get_max_packet_size(reinterpret_cast<libusb::usb_handle*>(h))
+               : native::usb_get_max_packet_size(reinterpret_cast<native::usb_handle*>(h));
+>>>>>>> BRANCH (3d879b Merge "fs_mgr: support reading fstab based on ro.boot.hardwa)
 }
