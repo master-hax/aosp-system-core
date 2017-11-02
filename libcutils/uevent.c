@@ -18,6 +18,8 @@
 
 #include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 #include <strings.h>
 #include <sys/socket.h>
@@ -26,13 +28,58 @@
 
 #include <linux/netlink.h>
 
+#include <private/android_filesystem_config.h>
+
+/**
+ * Gets the uid of root in the current user namespace. Returns AID_OVERFLOWUID
+ * if the root user is not mapped in the current namespace.
+ */
+uid_t uevent_root_uid() {
+    const uid_t parent_root_uid = 0;
+    uid_t current_root_uid = parent_root_uid;
+    uid_t current_namespace_uid, parent_namespace_uid, kernel_overflow_uid;
+    uint32_t length;
+    FILE *uid_map_file = NULL, *overflowuid_file = NULL;
+
+    uid_map_file = fopen("/proc/self/uid_map", "r");
+    if (!uid_map_file) {
+        /* the kernel does not support user namespaces */
+        goto out;
+    }
+
+    /* sanity check. verify that the overflow UID is the expected one */
+    overflowuid_file = fopen("/proc/sys/kernel/overflowuid", "r");
+    if (!overflowuid_file) {
+        goto out;
+    }
+    if (fscanf(overflowuid_file, "%u", &kernel_overflow_uid) != 1 ||
+        kernel_overflow_uid != AID_OVERFLOWUID) {
+        goto out;
+    }
+
+    /* in case root is unmapped, return the kernel "overflow" uid */
+    current_root_uid = AID_OVERFLOWUID;
+    while (fscanf(uid_map_file, "%u %u %u\n", &current_namespace_uid, &parent_namespace_uid,
+                  &length) == 3) {
+        if (parent_namespace_uid != parent_root_uid || length < 1) {
+            continue;
+        }
+        current_root_uid = current_namespace_uid;
+        break;
+    }
+
+out:
+    if (uid_map_file) fclose(uid_map_file);
+    if (overflowuid_file) fclose(overflowuid_file);
+    return current_root_uid;
+}
+
 /**
  * Like recv(), but checks that messages actually originate from the kernel.
  */
-ssize_t uevent_kernel_multicast_recv(int socket, void *buffer, size_t length)
-{
+ssize_t uevent_kernel_multicast_recv(int socket, void* buffer, size_t length, uid_t root_uid) {
     uid_t uid = -1;
-    return uevent_kernel_multicast_uid_recv(socket, buffer, length, &uid);
+    return uevent_kernel_multicast_uid_recv(socket, buffer, length, root_uid, &uid);
 }
 
 /**
@@ -44,13 +91,13 @@ ssize_t uevent_kernel_multicast_recv(int socket, void *buffer, size_t length)
  * returns -1, sets errno to EIO, and sets "user" to the UID associated with the
  * message. If the peer UID cannot be determined, "user" is set to -1."
  */
-ssize_t uevent_kernel_multicast_uid_recv(int socket, void *buffer, size_t length, uid_t *uid)
-{
-    return uevent_kernel_recv(socket, buffer, length, true, uid);
+ssize_t uevent_kernel_multicast_uid_recv(int socket, void* buffer, size_t length, uid_t root_uid,
+                                         uid_t* uid) {
+    return uevent_kernel_recv(socket, buffer, length, true, root_uid, uid);
 }
 
-ssize_t uevent_kernel_recv(int socket, void *buffer, size_t length, bool require_group, uid_t *uid)
-{
+ssize_t uevent_kernel_recv(int socket, void* buffer, size_t length, bool require_group,
+                           uid_t root_uid, uid_t* uid) {
     struct iovec iov = { buffer, length };
     struct sockaddr_nl addr;
     char control[CMSG_SPACE(sizeof(struct ucred))];
@@ -78,7 +125,7 @@ ssize_t uevent_kernel_recv(int socket, void *buffer, size_t length, bool require
 
     struct ucred *cred = (struct ucred *)CMSG_DATA(cmsg);
     *uid = cred->uid;
-    if (cred->uid != 0) {
+    if (cred->uid != root_uid) {
         /* ignoring netlink message from non-root user */
         goto out;
     }

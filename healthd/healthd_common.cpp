@@ -166,11 +166,12 @@ static void periodic_chores() {
 
 #define UEVENT_MSG_LEN 2048
 static void uevent_event(uint32_t /*epevents*/) {
+    static const uid_t root_uid = uevent_root_uid();
     char msg[UEVENT_MSG_LEN+2];
     char *cp;
     int n;
 
-    n = uevent_kernel_multicast_recv(uevent_fd, msg, UEVENT_MSG_LEN);
+    n = uevent_kernel_multicast_recv(uevent_fd, msg, UEVENT_MSG_LEN, root_uid);
     if (n <= 0)
         return;
     if (n >= UEVENT_MSG_LEN)   /* overflow -- discard */

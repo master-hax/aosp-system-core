@@ -170,6 +170,9 @@
 #define AID_SHARED_GID_START 50000 /* start of gids for apps in each user to share */
 #define AID_SHARED_GID_END 59999   /* end of gids for apps in each user to share */
 
+#define AID_OVERFLOWUID \
+    65534 /* uid that is returned by the kernel when a user is not mapped in the user namespace */
+
 #define AID_ISOLATED_START 99000 /* start of uids for fully isolated sandboxed processes */
 #define AID_ISOLATED_END 99999   /* end of uids for fully isolated sandboxed processes */
 
