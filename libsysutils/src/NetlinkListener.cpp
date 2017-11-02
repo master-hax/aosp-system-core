@@ -48,14 +48,15 @@ bool NetlinkListener::onDataAvailable(SocketClient *cli)
     int socket = cli->getSocket();
     ssize_t count;
     uid_t uid = -1;
+    static const uid_t root_uid = uevent_root_uid();
 
     bool require_group = true;
     if (mFormat == NETLINK_FORMAT_BINARY_UNICAST) {
         require_group = false;
     }
 
-    count = TEMP_FAILURE_RETRY(uevent_kernel_recv(socket,
-            mBuffer, sizeof(mBuffer), require_group, &uid));
+    count = TEMP_FAILURE_RETRY(
+        uevent_kernel_recv(socket, mBuffer, sizeof(mBuffer), require_group, root_uid, &uid));
     if (count < 0) {
         SLOGE("recvmsg failed (%s)", strerror(errno));
         return false;

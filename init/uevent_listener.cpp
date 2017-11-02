@@ -93,8 +93,9 @@ UeventListener::UeventListener() {
 }
 
 bool UeventListener::ReadUevent(Uevent* uevent) const {
+    static const uid_t root_uid = uevent_root_uid();
     char msg[UEVENT_MSG_LEN + 2];
-    int n = uevent_kernel_multicast_recv(device_fd_, msg, UEVENT_MSG_LEN);
+    int n = uevent_kernel_multicast_recv(device_fd_, msg, UEVENT_MSG_LEN, root_uid);
     if (n <= 0) {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {
             LOG(ERROR) << "Error reading from Uevent Fd";
