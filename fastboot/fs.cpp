@@ -116,6 +116,10 @@ static int generate_ext4_image(const char* fileName, long long partSize,
 
     std::string ext_attr = "android_sparse";
     if (eraseBlkSize != 0 && logicalBlkSize != 0) {
+        // avoid incorrectly setting raid_stripe_width to 0
+        if (eraseBlkSize < block_size) {
+            eraseBlkSize = block_size;
+        }
         int raid_stride = logicalBlkSize / block_size;
         int raid_stripe_width = eraseBlkSize / block_size;
         // stride should be the max of 8kb and logical block size
