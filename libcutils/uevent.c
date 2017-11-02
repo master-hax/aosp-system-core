@@ -17,7 +17,10 @@
 #include <cutils/uevent.h>
 
 #include <errno.h>
+#include <pthread.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 #include <strings.h>
 #include <sys/socket.h>
@@ -25,6 +28,58 @@
 #include <unistd.h>
 
 #include <linux/netlink.h>
+
+#include <private/android_filesystem_config.h>
+
+/*
+ * The uid of root in the current user namespace. Uses 0 if the kernel is not
+ * user namespace-aware (for backwards compatibility). Uses AID_OVERFLOWUID if
+ * the root user is not mapped in the current namespace.
+ */
+static uid_t root_uid = 0;
+static pthread_once_t root_uid_once_control = PTHREAD_ONCE_INIT;
+
+static void init_root_uid() {
+    const uid_t parent_root_uid = 0;
+    uid_t current_namespace_uid, parent_namespace_uid, kernel_overflow_uid;
+    uint32_t length;
+    FILE *uid_map_file = NULL, *overflowuid_file = NULL;
+
+    uid_map_file = fopen("/proc/self/uid_map", "r");
+    if (!uid_map_file) {
+        /* the kernel does not support user namespaces */
+        root_uid = parent_root_uid;
+        goto out;
+    }
+
+    /* sanity check. verify that the overflow UID is the one to be returned by the kernel */
+    overflowuid_file = fopen("/proc/sys/kernel/overflowuid", "r");
+    if (!overflowuid_file) {
+        root_uid = parent_root_uid;
+        goto out;
+    }
+    if (fscanf(overflowuid_file, "%u", &kernel_overflow_uid) != 1 ||
+        kernel_overflow_uid != AID_OVERFLOWUID) {
+        root_uid = parent_root_uid;
+        goto out;
+    }
+
+    while (fscanf(uid_map_file, "%u %u %u\n", &current_namespace_uid, &parent_namespace_uid,
+                  &length) == 3) {
+        if (parent_namespace_uid != parent_root_uid || length < 1) {
+            continue;
+        }
+        root_uid = current_namespace_uid;
+        goto out;
+    }
+
+    /* root is unmapped, use the kernel "overflow" uid */
+    root_uid = AID_OVERFLOWUID;
+
+out:
+    if (uid_map_file) fclose(uid_map_file);
+    if (overflowuid_file) fclose(overflowuid_file);
+}
 
 /**
  * Like recv(), but checks that messages actually originate from the kernel.
@@ -51,6 +106,7 @@ ssize_t uevent_kernel_multicast_uid_recv(int socket, void *buffer, size_t length
 
 ssize_t uevent_kernel_recv(int socket, void *buffer, size_t length, bool require_group, uid_t *uid)
 {
+    pthread_once(&root_uid_once_control, init_root_uid);
     struct iovec iov = { buffer, length };
     struct sockaddr_nl addr;
     char control[CMSG_SPACE(sizeof(struct ucred))];
@@ -78,7 +134,7 @@ ssize_t uevent_kernel_recv(int socket, void *buffer, size_t length, bool require
 
     struct ucred *cred = (struct ucred *)CMSG_DATA(cmsg);
     *uid = cred->uid;
-    if (cred->uid != 0) {
+    if (cred->uid != root_uid) {
         /* ignoring netlink message from non-root user */
         goto out;
     }
