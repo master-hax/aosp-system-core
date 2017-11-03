@@ -50,6 +50,7 @@
 #include <android-base/strings.h>
 #include <bootimg.h>
 #include <fs_mgr.h>
+#include <property_info_serializer/property_info_serializer.h>
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
@@ -58,9 +59,15 @@
 #include "persistent_properties.h"
 #include "util.h"
 
+using android::base::ReadFileToString;
+using android::base::Split;
 using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::Timer;
+using android::base::Trim;
+using android::base::WriteStringToFile;
+using android::properties::BuildTrie;
+using android::properties::PropertyInfoEntry;
 
 #define RECOVERY_MOUNT_POINT "/recovery"
 
@@ -73,7 +80,11 @@ static int property_set_fd = -1;
 
 static struct selabel_handle* sehandle_prop;
 
+void CreateSerializedPropertyInfo();
+
 void property_init() {
+    mkdir("/dev/__properties__", S_IRWXU | S_IXGRP | S_IXOTH);
+    CreateSerializedPropertyInfo();
     if (__system_property_area_init()) {
         LOG(FATAL) << "Failed to initialize property area";
     }
@@ -433,7 +444,7 @@ static void handle_property_set(SocketConnection& socket,
         std::string cmdline_path = StringPrintf("proc/%d/cmdline", cr.pid);
         std::string process_cmdline;
         std::string process_log_string;
-        if (android::base::ReadFileToString(cmdline_path, &process_cmdline)) {
+        if (ReadFileToString(cmdline_path, &process_cmdline)) {
           // Since cmdline is null deliminated, .c_str() conveniently gives us just the process path.
           process_log_string = StringPrintf(" (%s)", process_cmdline.c_str());
         }
@@ -712,6 +723,97 @@ static int SelinuxAuditCallback(void* data, security_class_t /*cls*/, char* buf,
     snprintf(buf, len, "property=%s pid=%d uid=%d gid=%d", d->name, d->cr->pid, d->cr->uid,
              d->cr->gid);
     return 0;
+}
+
+Result<PropertyInfoEntry> ParsePropertyInfoLine(const std::string& line) {
+    auto it = line.begin();
+    auto end = line.end();
+
+    auto capture_word = [&]() {
+        auto word = std::string();
+        while (it != end && !isspace(*it)) {
+            word.push_back(*it++);
+        }
+        return word;
+    };
+
+    auto advance_spaces = [&]() {
+        while (it != end && isspace(*it)) {
+            it++;
+        }
+    };
+
+    auto property = capture_word();
+    if (property.empty()) return Error() << "Did not find a property entry in '" << line << "'";
+    advance_spaces();
+
+    auto context = capture_word();
+    if (context.empty()) return Error() << "Did not find a context entry in '" << line << "'";
+    advance_spaces();
+
+    // It is not an error to not find these, as older files will not contain them.
+    auto exact_match = capture_word();
+    advance_spaces();
+    auto regex = std::string(it, line.end());
+
+    return {property, context, regex, exact_match == "exact"};
+}
+
+bool LoadPropertyInfoFromFile(const std::string& filename,
+                              std::vector<PropertyInfoEntry>* property_infos) {
+    auto file_contents = std::string();
+    if (!ReadFileToString(filename, &file_contents)) {
+        PLOG(ERROR) << "Could not read properties from '" << filename << "'";
+        return false;
+    }
+
+    for (const auto& line : Split(file_contents, "\n")) {
+        auto trimmed_line = Trim(line);
+        if (trimmed_line.empty() || StartsWith(trimmed_line, "#")) {
+            continue;
+        }
+
+        auto property_info = ParsePropertyInfoLine(line);
+        if (!property_info) {
+            LOG(ERROR) << "Could not read line from '" << filename << "': " << property_info.error();
+            continue;
+        }
+
+        property_infos->emplace_back(*property_info);
+    }
+    return true;
+}
+
+void CreateSerializedPropertyInfo() {
+    auto property_infos = std::vector<PropertyInfoEntry>();
+    if (access("/system/etc/selinux/plat_property_contexts", R_OK) != -1) {
+        if (!LoadPropertyInfoFromFile("/system/etc/selinux/plat_property_contexts",
+                                      &property_infos)) {
+            return;
+        }
+        // Don't check for failure here, so we always have a sane list of properties.
+        // E.g. In case of recovery, the vendor partition will not have mounted and we
+        // still need the system / platform properties to function.
+        LoadPropertyInfoFromFile("/vendor/etc/selinux/nonplat_property_contexts", &property_infos);
+    } else {
+        if (!LoadPropertyInfoFromFile("/plat_property_contexts", &property_infos)) {
+            return;
+        }
+        LoadPropertyInfoFromFile("/nonplat_property_contexts", &property_infos);
+    }
+    auto serialized_contexts = std::string();
+    auto error = std::string();
+    if (!BuildTrie(property_infos, "u:object_r:default_prop:s0", "\\s*", &serialized_contexts,
+                   &error)) {
+        LOG(ERROR) << "Unable to serialize property contexts: " << error;
+        return;
+    }
+
+    constexpr static const char kPropertyInfosPath[] = "/dev/__properties__/property_info";
+    if (!WriteStringToFile(serialized_contexts, kPropertyInfosPath, 0444, 0, 0, false)) {
+        PLOG(ERROR) << "Unable to write serialized property infos to file";
+    }
+    selinux_android_restorecon(kPropertyInfosPath, 0);
 }
 
 void start_property_service() {
