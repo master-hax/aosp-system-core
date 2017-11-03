@@ -95,6 +95,7 @@ cc_library_static {
         "libprocessgroup",
         "libfs_mgr",
         "libprotobuf-cpp-lite",
+        "libpropertycontextserializer",
     ],
     include_dirs: [
         "system/core/mkbootimg",
