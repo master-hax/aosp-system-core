@@ -84,6 +84,8 @@ LOCAL_STATIC_LIBRARIES := \
     libavb \
     libkeyutils \
     libprotobuf-cpp-lite \
+    libpropertycontextserializer \
+    libpropertycontextparser \
 
 LOCAL_REQUIRED_MODULES := \
     e2fsdroid \
