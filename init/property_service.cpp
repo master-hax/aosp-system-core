@@ -50,6 +50,7 @@
 #include <android-base/strings.h>
 #include <bootimg.h>
 #include <fs_mgr.h>
+#include <property_context_serializer/property_context_serializer.h>
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
@@ -58,9 +59,14 @@
 #include "persistent_properties.h"
 #include "util.h"
 
+using android::base::ReadFileToString;
+using android::base::Split;
 using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::Timer;
+using android::base::Trim;
+using android::base::WriteStringToFile;
+using android::properties::BuildTrie;
 
 #define RECOVERY_MOUNT_POINT "/recovery"
 
@@ -73,7 +79,11 @@ static int property_set_fd = -1;
 
 static struct selabel_handle* sehandle_prop;
 
+void CreateSerializedPropertyContext();
+
 void property_init() {
+    mkdir("/dev/__properties__", S_IRWXU | S_IXGRP | S_IXOTH);
+    CreateSerializedPropertyContext();
     if (__system_property_area_init()) {
         LOG(FATAL) << "Failed to initialize property area";
     }
@@ -433,7 +443,7 @@ static void handle_property_set(SocketConnection& socket,
         std::string cmdline_path = StringPrintf("proc/%d/cmdline", cr.pid);
         std::string process_cmdline;
         std::string process_log_string;
-        if (android::base::ReadFileToString(cmdline_path, &process_cmdline)) {
+        if (ReadFileToString(cmdline_path, &process_cmdline)) {
           // Since cmdline is null deliminated, .c_str() conveniently gives us just the process path.
           process_log_string = StringPrintf(" (%s)", process_cmdline.c_str());
         }
@@ -712,6 +722,95 @@ static int SelinuxAuditCallback(void* data, security_class_t /*cls*/, char* buf,
     snprintf(buf, len, "property=%s pid=%d uid=%d gid=%d", d->name, d->cr->pid, d->cr->uid,
              d->cr->gid);
     return 0;
+}
+
+Result<std::pair<std::string, std::string>> ParsePropertyContextLine(const std::string& line) {
+    auto it = line.begin();
+
+    auto property = std::string();
+    while (it != line.end() && !isspace(*it)) {
+        property.push_back(*it++);
+    }
+    if (it == line.end()) {
+        return Error() << "Less than two strings found on line, '" << line << "'";
+    }
+
+    while (it != line.end() && isspace(*it)) {
+        it++;
+    }
+    if (it == line.end()) {
+        return Error() << "Less than two strings found on line, '" << line << "'";
+    }
+
+    auto context = std::string();
+    while (it != line.end() && !isspace(*it)) {
+        context.push_back(*it++);
+    }
+    if (it != line.end()) {
+        return Error() << "More than two strings found on line, '" << line << "'";
+    }
+
+    return {property, context};
+}
+
+bool LoadPropertyContextsFromFile(
+    const std::string& filename,
+    std::vector<std::pair<std::string, std::string>>* properties_and_contexts) {
+    auto file_contents = std::string();
+    if (!ReadFileToString(filename, &file_contents)) {
+        PLOG(ERROR) << "Could not read properties from '" << filename << "'";
+        return false;
+    }
+
+    for (const auto& line : Split(file_contents, "\n")) {
+        auto trimmed_line = Trim(line);
+        if (trimmed_line.empty() || StartsWith(trimmed_line, "#")) {
+            continue;
+        }
+
+        auto property_and_context = ParsePropertyContextLine(line);
+        if (!property_and_context) {
+            LOG(ERROR) << "Could not read line from '" << filename
+                       << "': " << property_and_context.error();
+            continue;
+        }
+
+        properties_and_contexts->emplace_back(*property_and_context);
+    }
+    return true;
+}
+
+void CreateSerializedPropertyContext() {
+    auto properties_and_contexts = std::vector<std::pair<std::string, std::string>>();
+    if (access("/system/etc/selinux/plat_property_contexts", R_OK) != -1) {
+        if (!LoadPropertyContextsFromFile("/system/etc/selinux/plat_property_contexts",
+                                          &properties_and_contexts)) {
+            return;
+        }
+        // Don't check for failure here, so we always have a sane list of properties.
+        // E.g. In case of recovery, the vendor partition will not have mounted and we
+        // still need the system / platform properties to function.
+        LoadPropertyContextsFromFile("/vendor/etc/selinux/nonplat_property_contexts",
+                                     &properties_and_contexts);
+    } else {
+        if (!LoadPropertyContextsFromFile("/plat_property_contexts", &properties_and_contexts)) {
+            return;
+        }
+        LoadPropertyContextsFromFile("/nonplat_property_contexts", &properties_and_contexts);
+    }
+    auto serialized_contexts = std::string();
+    auto error = std::string();
+    if (!BuildTrie(properties_and_contexts, std::vector<std::pair<std::string, std::string>>(),
+                   "u:object_r:default_prop:s0", &serialized_contexts, &error)) {
+        LOG(ERROR) << "Unable to serialize property contexts: " << error;
+        return;
+    }
+
+    constexpr static const char kPropertyContextsPath[] = "/dev/__properties__/property_contexts";
+    if (!WriteStringToFile(serialized_contexts, kPropertyContextsPath, 0444, 0, 0, false)) {
+        PLOG(ERROR) << "Unable to write serialized property contexts to file";
+    }
+    selinux_android_restorecon(kPropertyContextsPath, 0);
 }
 
 void start_property_service() {
