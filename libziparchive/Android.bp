@@ -78,7 +78,11 @@ cc_library {
             ],
         },
         host: {
-            static_libs: ["libutils"],
+            static_libs: [
+	        "libbase",
+	        "libutils",
+		"libz"
+	    ],
         },
         linux_bionic: {
             enabled: true,
