@@ -101,11 +101,10 @@ static bool CleanUpAfterFailedWrite(const std::string& path) {
 }
 
 #if !defined(_WIN32)
-bool WriteStringToFile(const std::string& content, const std::string& path,
-                       mode_t mode, uid_t owner, gid_t group,
-                       bool follow_symlinks) {
+bool WriteStringToFile(const std::string& content, const std::string& path, mode_t mode,
+                       uid_t owner, gid_t group, bool follow_symlinks, bool sync) {
   int flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY |
-              (follow_symlinks ? 0 : O_NOFOLLOW);
+              (follow_symlinks ? 0 : O_NOFOLLOW | (sync ? 0 : O_SYNC));
   android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), flags, mode)));
   if (fd == -1) {
     PLOG(ERROR) << "android::WriteStringToFile open failed";
@@ -130,10 +129,10 @@ bool WriteStringToFile(const std::string& content, const std::string& path,
 }
 #endif
 
-bool WriteStringToFile(const std::string& content, const std::string& path,
-                       bool follow_symlinks) {
+bool WriteStringToFile(const std::string& content, const std::string& path, bool follow_symlinks,
+                       bool sync) {
   int flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY |
-              (follow_symlinks ? 0 : O_NOFOLLOW);
+              (follow_symlinks ? 0 : O_NOFOLLOW) | (sync ? 0 : O_SYNC);
   android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), flags, 0666)));
   if (fd == -1) {
     return false;
