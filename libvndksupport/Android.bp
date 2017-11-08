@@ -14,3 +14,11 @@ llndk_library {
     symbol_file: "libvndksupport.map.txt",
     export_include_dirs: ["include"],
 }
+
+// For static executables that doesn't have libdl
+cc_library_static {
+    name: "libvndksupport_stub",
+    srcs: ["linker_stub.c"],
+    local_include_dirs: ["include/vndksupport"],
+    export_include_dirs: ["include"],
+}
