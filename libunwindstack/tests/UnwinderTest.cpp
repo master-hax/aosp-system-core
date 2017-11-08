@@ -706,10 +706,14 @@ TEST_F(UnwinderTest, format_frame) {
   EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
   regs_.FakeSetArch(ARCH_X86);
   EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+  regs_.FakeSetArch(ARCH_MIPS);
+  EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
 
   regs_.FakeSetArch(ARCH_ARM64);
   EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
   regs_.FakeSetArch(ARCH_X86_64);
+  EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+  regs_.FakeSetArch(ARCH_MIPS64);
   EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
 
   EXPECT_EQ("", unwinder.FormatFrame(1));

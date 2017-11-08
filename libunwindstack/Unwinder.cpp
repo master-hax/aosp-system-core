@@ -174,7 +174,8 @@ std::string Unwinder::FormatFrame(size_t frame_num) {
   if (frame_num >= frames_.size()) {
     return "";
   }
-  return FormatFrame(frames_[frame_num], regs_->Arch() == ARCH_ARM || regs_->Arch() == ARCH_X86);
+  return FormatFrame(frames_[frame_num], regs_->Arch() == ARCH_ARM || regs_->Arch() == ARCH_X86 ||
+                     regs_->Arch() == ARCH_MIPS);
 }
 
 std::string Unwinder::FormatFrame(const FrameData& frame, bool bits32) {
