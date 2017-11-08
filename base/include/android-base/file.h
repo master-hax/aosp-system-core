@@ -37,14 +37,16 @@ bool ReadFdToString(int fd, std::string* content);
 bool ReadFileToString(const std::string& path, std::string* content,
                       bool follow_symlinks = false);
 
+bool WriteStringToFile(const std::string& content, const std::string& path, int flags);
 bool WriteStringToFile(const std::string& content, const std::string& path,
                        bool follow_symlinks = false);
 bool WriteStringToFd(const std::string& content, int fd);
 
 #if !defined(_WIN32)
-bool WriteStringToFile(const std::string& content, const std::string& path,
-                       mode_t mode, uid_t owner, gid_t group,
-                       bool follow_symlinks = false);
+bool WriteStringToFile(const std::string& content, const std::string& path, mode_t mode,
+                       uid_t owner, gid_t group, int flags);
+bool WriteStringToFile(const std::string& content, const std::string& path, mode_t mode,
+                       uid_t owner, gid_t group, bool follow_symlinks = false);
 #endif
 
 bool ReadFully(int fd, void* data, size_t byte_count);
