@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 
-void* android_load_sphal_library(const char* name, int flag);
+__attribute__((weak)) void* android_load_sphal_library(const char* name, int flag);
 
 int android_unload_sphal_library(void* handle);
 
