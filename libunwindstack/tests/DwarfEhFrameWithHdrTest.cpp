@@ -182,6 +182,7 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetFdeOffsetBinary_verify) {
   // Even number of elements.
   for (size_t i = 0; i < 10; i++) {
     TypeParam pc = 0x1000 * (i + 1);
+    printf("pc %d\n", (int)pc);
     EXPECT_TRUE(this->eh_frame_->GetFdeOffsetBinary(pc, &fde_offset, 10)) << "Failed at index " << i;
     EXPECT_EQ(0x5000 + i * 0x20, fde_offset) << "Failed at index " << i;
     EXPECT_TRUE(this->eh_frame_->GetFdeOffsetBinary(pc + 1, &fde_offset, 10))
@@ -203,6 +204,14 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetFdeOffsetBinary_verify) {
         << "Failed at index " << i;
     EXPECT_EQ(0x5000 + i * 0x20, fde_offset) << "Failed at index " << i;
   }
+}
+
+TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetFdeOffsetBinary_index_fail) {
+  this->eh_frame_->TestSetTableEntrySize(0x10);
+  this->eh_frame_->TestSetFdeCount(10);
+
+  uint64_t fde_offset;
+  EXPECT_FALSE(this->eh_frame_->GetFdeOffsetBinary(0x1000, &fde_offset, 10));
 }
 
 TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetFdeOffsetSequential) {
@@ -414,10 +423,11 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetFdeFromPc_fde_not_found) {
 REGISTER_TYPED_TEST_CASE_P(DwarfEhFrameWithHdrTest, Init, GetFdeInfoFromIndex_expect_cache_fail,
                            GetFdeInfoFromIndex_read_pcrel, GetFdeInfoFromIndex_read_datarel,
                            GetFdeInfoFromIndex_cached, GetFdeOffsetBinary_verify,
-                           GetFdeOffsetSequential, GetFdeOffsetSequential_last_element,
-                           GetFdeOffsetSequential_end_check, GetFdeOffsetFromPc_fail_fde_count,
-                           GetFdeOffsetFromPc_binary_search, GetFdeOffsetFromPc_sequential_search,
-                           GetCieFde32, GetCieFde64, GetFdeFromPc_fde_not_found);
+                           GetFdeOffsetBinary_index_fail, GetFdeOffsetSequential,
+                           GetFdeOffsetSequential_last_element, GetFdeOffsetSequential_end_check,
+                           GetFdeOffsetFromPc_fail_fde_count, GetFdeOffsetFromPc_binary_search,
+                           GetFdeOffsetFromPc_sequential_search, GetCieFde32, GetCieFde64,
+                           GetFdeFromPc_fde_not_found);
 
 typedef ::testing::Types<uint32_t, uint64_t> DwarfEhFrameWithHdrTestTypes;
 INSTANTIATE_TYPED_TEST_CASE_P(, DwarfEhFrameWithHdrTest, DwarfEhFrameWithHdrTestTypes);
