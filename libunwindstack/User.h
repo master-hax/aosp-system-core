@@ -92,8 +92,26 @@ struct arm64_user_regs {
   uint64_t pstate;
 };
 
+enum Mips32UserReg : uint16_t {
+  MIPS32_EF_R0 = 6,
+  MIPS32_EF_CP0_EPC = 40,
+};
+
+struct mips_user_regs {
+  uint32_t regs[45];
+};
+
+enum Mips64UserReg : uint16_t {
+  MIPS64_EF_R0 = 0,
+  MIPS64_EF_CP0_EPC = 34,
+};
+
+struct mips64_user_regs {
+  uint64_t regs[45];
+};
+
 // The largest user structure.
-constexpr size_t MAX_USER_REGS_SIZE = sizeof(arm64_user_regs) + 10;
+constexpr size_t MAX_USER_REGS_SIZE = sizeof(mips64_user_regs) + 10;
 
 }  // namespace unwindstack
 

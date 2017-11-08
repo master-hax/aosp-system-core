@@ -737,11 +737,23 @@ TEST_F(UnwinderTest, format_frame) {
   EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
   regs_.FakeSetMachineType(EM_386);
   EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+  // Mips doesn't have unique machine types for 32bit and 64bit architectures
+  // Execute 32bit test only on mips32
+  regs_.FakeSetMachineType(EM_MIPS);
+#if !defined(__LP64__)
+  EXPECT_EQ("  #00 pc 00001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+#endif
 
   regs_.FakeSetMachineType(EM_AARCH64);
   EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
   regs_.FakeSetMachineType(EM_X86_64);
   EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+  // Mips doesn't have unique machine types for 32bit and 64bit architectures
+  // Execute 64bit test only on mips64
+  regs_.FakeSetMachineType(EM_MIPS);
+#if defined(__LP64__)
+  EXPECT_EQ("  #00 pc 0000000000001300  /system/fake/libc.so (Frame0+10)", unwinder.FormatFrame(0));
+#endif
 
   EXPECT_EQ("", unwinder.FormatFrame(1));
 }

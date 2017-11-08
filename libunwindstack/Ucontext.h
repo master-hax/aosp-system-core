@@ -179,6 +179,65 @@ struct x86_64_ucontext_t {
 };
 //-------------------------------------------------------------------
 
+//-------------------------------------------------------------------
+// MIPS ucontext structures
+//-------------------------------------------------------------------
+struct mips_stack_t {
+  uint32_t ss_sp;    // void __user*
+  uint32_t ss_size;  // size_t
+  int32_t ss_flags;  // int
+};
+
+struct mips_mcontext_t {
+  uint32_t sc_regmask;
+  uint32_t sc_status;
+  uint64_t sc_pc;
+  uint64_t sc_regs[32];
+  // Nothing else is used, so don't define it.
+};
+
+struct mips_ucontext_t {
+  uint32_t uc_flags;  // unsigned long
+  uint32_t uc_link;   // struct ucontext*
+  mips_stack_t uc_stack;
+  mips_mcontext_t uc_mcontext;
+  // Nothing else is used, so don't define it.
+};
+//-------------------------------------------------------------------
+
+//-------------------------------------------------------------------
+// MIPS64 ucontext structures
+//-------------------------------------------------------------------
+struct mips64_stack_t {
+  uint64_t ss_sp;    // void __user*
+  uint64_t ss_size;  // size_t
+  int32_t ss_flags;  // int
+};
+
+struct mips64_mcontext_t {
+  uint64_t sc_regs[32];
+  uint64_t sc_fpregs[32];
+  uint64_t sc_mdhi;
+  uint64_t sc_hi1;
+  uint64_t sc_hi2;
+  uint64_t sc_hi3;
+  uint64_t sc_mdlo;
+  uint64_t sc_lo1;
+  uint64_t sc_lo2;
+  uint64_t sc_lo3;
+  uint64_t sc_pc;
+  // Nothing else is used, so don't define it.
+};
+
+struct mips64_ucontext_t {
+  uint64_t uc_flags;  // unsigned long
+  uint64_t uc_link;   // struct ucontext*
+  mips64_stack_t uc_stack;
+  mips64_mcontext_t uc_mcontext;
+  // Nothing else is used, so don't define it.
+};
+//-------------------------------------------------------------------
+
 }  // namespace unwindstack
 
 #endif  // _LIBUNWINDSTACK_UCONTEXT_H

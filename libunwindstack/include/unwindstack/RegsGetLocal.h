@@ -99,8 +99,13 @@ inline void RegsGetLocal(Regs* regs) {
 
 #elif defined(__mips__)
 
-// Stub to allow mips to build.
-void RegsGetLocal(Regs*) {}
+extern "C" void AsmGetRegs(void* regs);
+
+inline void RegsGetLocal(Regs* regs) {
+  AsmGetRegs(regs->RawData());
+
+  regs->SetFromRaw();
+}
 
 #endif
 

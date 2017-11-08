@@ -250,7 +250,8 @@ TEST_F(UnwindTest, from_context) {
 
   LocalMaps maps;
   ASSERT_TRUE(maps.Parse());
-  std::unique_ptr<Regs> regs(Regs::CreateFromUcontext(Regs::CurrentMachineType(), ucontext));
+  std::unique_ptr<Regs> regs(Regs::CreateFromUcontext(Regs::CurrentMachineType(),
+                             Regs::GetMachineWidth(), ucontext));
 
   VerifyUnwind(getpid(), &maps, regs.get(), kFunctionOrder);
 

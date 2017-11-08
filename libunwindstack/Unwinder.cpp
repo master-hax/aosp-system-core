@@ -173,7 +173,8 @@ std::string Unwinder::FormatFrame(size_t frame_num) {
     return "";
   }
   return FormatFrame(frames_[frame_num],
-                     regs_->MachineType() == EM_ARM || regs_->MachineType() == EM_386);
+                     regs_->MachineType() == EM_ARM || regs_->MachineType() == EM_386 ||
+                     (regs_->MachineType() == EM_MIPS && Regs::GetMachineWidth() == 32));
 }
 
 std::string Unwinder::FormatFrame(const FrameData& frame, bool bits32) {
