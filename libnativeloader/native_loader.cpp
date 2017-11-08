@@ -24,12 +24,16 @@
 #include "cutils/properties.h"
 #include "log/log.h"
 #endif
+#include <dirent.h>
+#include <sys/types.h>
 #include "nativebridge/native_bridge.h"
 
 #include <algorithm>
-#include <vector>
-#include <string>
+#include <memory>
 #include <mutex>
+#include <regex>
+#include <string>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/macros.h>
@@ -80,6 +84,8 @@ class NativeLoaderNamespace {
 
 static constexpr const char* kPublicNativeLibrariesSystemConfigPathFromRoot =
                                   "/etc/public.libraries.txt";
+static constexpr const char* kPublicNativeLibrariesExtensionConfigPattern =
+    "public\\.libraries-([A-Za-z0-9-_]+)\\.txt";
 static constexpr const char* kPublicNativeLibrariesVendorConfig =
                                   "/vendor/etc/public.libraries.txt";
 static constexpr const char* kLlndkNativeLibrariesSystemConfigPathFromRoot =
@@ -314,9 +320,34 @@ class LibraryNamespaces {
             root_dir + kVndkspNativeLibrariesSystemConfigPathFromRoot;
 
     std::string error_msg;
-    LOG_ALWAYS_FATAL_IF(!ReadConfig(public_native_libraries_system_config, &sonames, &error_msg),
-                        "Error reading public native library list from \"%s\": %s",
-                        public_native_libraries_system_config.c_str(), error_msg.c_str());
+    LOG_ALWAYS_FATAL_IF(
+        !ReadConfig(public_native_libraries_system_config, &sonames, nullptr, &error_msg),
+        "Error reading public native library list from \"%s\": %s",
+        public_native_libraries_system_config.c_str(), error_msg.c_str());
+
+    // read /system/etc/public.libraries-<companyname>.txt which contain partner defined
+    // system libs that are exposed to apps. The libs in the txt files must be
+    // named as lib<name>.<companyname>.so.
+    std::string dirname = base::Dirname(public_native_libraries_system_config);
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(dirname.c_str()), closedir);
+    LOG_ALWAYS_FATAL_IF(dir == nullptr, "Error reading directory \"%s\": %s", dirname.c_str(),
+                        strerror(errno));
+    struct dirent* ent;
+    std::regex config_file_pattern(kPublicNativeLibrariesExtensionConfigPattern);
+    std::smatch match;
+    while ((ent = readdir(dir.get())) != nullptr) {
+      const std::string filename(ent->d_name);
+      if (std::regex_match(filename, match, config_file_pattern)) {
+        if (match.size() == 2) {
+          std::string company_name = match.str(1);
+          std::string config_file_path = dirname + "/" + filename;
+          std::regex lib_file_pattern(std::string("lib.*\\.") + company_name + std::string("\\.so"));
+          LOG_ALWAYS_FATAL_IF(!ReadConfig(config_file_path, &sonames, &lib_file_pattern, &error_msg),
+                              "Error reading public native library list from \"%s\": %s",
+                              config_file_path.c_str(), error_msg.c_str());
+        }
+      }
+    }
 
     // For debuggable platform builds use ANDROID_ADDITIONAL_PUBLIC_LIBRARIES environment
     // variable to add libraries to the list. This is intended for platform tests only.
@@ -347,16 +378,16 @@ class LibraryNamespaces {
     system_public_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kLlndkNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(kLlndkNativeLibrariesSystemConfigPathFromRoot, &sonames, nullptr);
     system_llndk_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kVndkspNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(kVndkspNativeLibrariesSystemConfigPathFromRoot, &sonames, nullptr);
     system_vndksp_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
     // This file is optional, quietly ignore if the file does not exist.
-    ReadConfig(kPublicNativeLibrariesVendorConfig, &sonames);
+    ReadConfig(kPublicNativeLibrariesVendorConfig, &sonames, nullptr, nullptr);
 
     vendor_public_libraries_ = base::Join(sonames, ':');
   }
@@ -367,7 +398,7 @@ class LibraryNamespaces {
 
  private:
   bool ReadConfig(const std::string& configFile, std::vector<std::string>* sonames,
-                  std::string* error_msg = nullptr) {
+                  std::regex* libname_pattern, std::string* error_msg = nullptr) {
     // Read list of public native libraries from the config file.
     std::string file_content;
     if(!base::ReadFileToString(configFile, &file_content)) {
@@ -403,7 +434,17 @@ class LibraryNamespaces {
         trimmed_line.resize(space_pos);
       }
 
-      sonames->push_back(trimmed_line);
+      if (libname_pattern != nullptr) {
+        if (std::regex_match(trimmed_line, *libname_pattern)) {
+          sonames->push_back(trimmed_line);
+        } else {
+          if (error_msg)
+            *error_msg = "Library name \"" + trimmed_line + "\" does not end with the company name.";
+          return false;
+        }
+      } else {
+        sonames->push_back(trimmed_line);
+      }
     }
 
     return true;
