@@ -101,12 +101,17 @@ static bool CleanUpAfterFailedWrite(const std::string& path) {
 }
 
 #if !defined(_WIN32)
-bool WriteStringToFile(const std::string& content, const std::string& path,
-                       mode_t mode, uid_t owner, gid_t group,
-                       bool follow_symlinks) {
-  int flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY |
-              (follow_symlinks ? 0 : O_NOFOLLOW);
-  android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), flags, mode)));
+bool WriteStringToFile(const std::string& content, const std::string& path, mode_t mode,
+                       uid_t owner, gid_t group, int flags) {
+  int supported_flags = O_SYNC | O_DSYNC | O_NOFOLLOW;
+  if (flags & ~supported_flags) {
+    LOG(ERROR) << "android::WriteStringToFile unsupported flags";
+    errno = EINVAL;
+    return false;
+  }
+  int open_flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY | flags;
+
+  android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), open_flags, mode)));
   if (fd == -1) {
     PLOG(ERROR) << "android::WriteStringToFile open failed";
     return false;
@@ -130,11 +135,18 @@ bool WriteStringToFile(const std::string& content, const std::string& path,
 }
 #endif
 
-bool WriteStringToFile(const std::string& content, const std::string& path,
-                       bool follow_symlinks) {
-  int flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY |
-              (follow_symlinks ? 0 : O_NOFOLLOW);
-  android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), flags, 0666)));
+bool WriteStringToFile(const std::string& content, const std::string& path, int flags) {
+  int supported_flags = O_NOFOLLOW;
+#if !defined(_WIN32)
+  supported_flags |= O_SYNC | O_DSYNC;
+#endif
+  if (flags & ~supported_flags) {
+    errno = EINVAL;
+    return false;
+  }
+  int open_flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY | flags;
+
+  android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path.c_str(), open_flags, 0666)));
   if (fd == -1) {
     return false;
   }

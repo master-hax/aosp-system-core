@@ -51,9 +51,9 @@ TEST(file, ReadFileToString_WriteStringToFile_symlink) {
   TemporaryFile target, link;
   ASSERT_EQ(0, unlink(link.path));
   ASSERT_EQ(0, symlink(target.path, link.path));
-  ASSERT_FALSE(android::base::WriteStringToFile("foo", link.path, false));
+  ASSERT_FALSE(android::base::WriteStringToFile("foo", link.path, O_NOFOLLOW));
   ASSERT_EQ(ELOOP, errno);
-  ASSERT_TRUE(android::base::WriteStringToFile("foo", link.path, true));
+  ASSERT_TRUE(android::base::WriteStringToFile("foo", link.path, O_NOFOLLOW));
 
   std::string s;
   ASSERT_FALSE(android::base::ReadFileToString(link.path, &s));
@@ -69,8 +69,7 @@ TEST(file, ReadFileToString_WriteStringToFile_symlink) {
 TEST(file, WriteStringToFile2) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
-  ASSERT_TRUE(android::base::WriteStringToFile("abc", tf.path, 0660,
-                                               getuid(), getgid()))
+  ASSERT_TRUE(android::base::WriteStringToFile("abc", tf.path, 0660, getuid(), getgid()))
       << strerror(errno);
   struct stat sb;
   ASSERT_EQ(0, stat(tf.path, &sb));
@@ -78,11 +77,16 @@ TEST(file, WriteStringToFile2) {
   ASSERT_EQ(getuid(), sb.st_uid);
   ASSERT_EQ(getgid(), sb.st_gid);
   std::string s;
-  ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s))
-    << strerror(errno);
+  ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s)) << strerror(errno);
   EXPECT_EQ("abc", s);
 }
 #endif
+
+TEST(file, WriteStringToFileInvalidFlags) {
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+  ASSERT_FALSE(android::base::WriteStringToFile("abc", tf.path, O_RDONLY));
+}
 
 TEST(file, WriteStringToFd) {
   TemporaryFile tf;
