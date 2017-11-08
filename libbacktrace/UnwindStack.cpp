@@ -100,7 +100,9 @@ bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, ucontext_t*
     unwindstack::RegsGetLocal(regs.get());
   } else {
     regs.reset(
-        unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentMachineType(), ucontext));
+        unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentMachineType(),
+                                              unwindstack::Regs::GetMachineWidth(),
+                                              ucontext));
   }
 
   error_ = BACKTRACE_UNWIND_NO_ERROR;
@@ -121,7 +123,12 @@ bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, ucontext_t* context) {
     regs.reset(unwindstack::Regs::RemoteGet(Tid()));
   } else {
     regs.reset(
-        unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentMachineType(), context));
+        unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentMachineType(),
+                                              unwindstack::Regs::GetMachineWidth(),
+                                              context));
+    regs.reset(unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentMachineType(),
+                                                     unwindstack::Regs::GetMachineWidth(),
+                                                     context));
   }
 
   error_ = BACKTRACE_UNWIND_NO_ERROR;

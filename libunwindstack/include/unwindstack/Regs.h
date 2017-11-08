@@ -71,8 +71,10 @@ class Regs {
   uint16_t total_regs() { return total_regs_; }
 
   static uint32_t CurrentMachineType();
+  static uint32_t GetMachineWidth();
   static Regs* RemoteGet(pid_t pid);
-  static Regs* CreateFromUcontext(uint32_t machine_type, void* ucontext);
+  static Regs* CreateFromUcontext(uint32_t machine_type,
+        uint32_t machine_width, void* ucontext);
   static Regs* CreateFromLocal();
 
  protected:
@@ -182,6 +184,42 @@ class RegsX86_64 : public RegsImpl<uint64_t> {
   bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
 
   void SetFromUcontext(x86_64_ucontext_t* ucontext);
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
+};
+
+class RegsMips : public RegsImpl<uint32_t> {
+ public:
+  RegsMips();
+  virtual ~RegsMips() = default;
+
+  virtual uint32_t MachineType() override final;
+
+  uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) override;
+
+  void SetFromRaw() override;
+
+  bool SetPcFromReturnAddress(Memory* process_memory) override;
+
+  bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
+
+  virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
+};
+
+class RegsMips64 : public RegsImpl<uint64_t> {
+ public:
+  RegsMips64();
+  virtual ~RegsMips64() = default;
+
+  virtual uint32_t MachineType() override final;
+
+  uint64_t GetAdjustedPc(uint64_t rel_pc, Elf* elf) override;
+
+  void SetFromRaw() override;
+
+  bool SetPcFromReturnAddress(Memory* process_memory) override;
+
+  bool StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) override;
 
   virtual void IterateRegisters(std::function<void(const char*, uint64_t)>) override final;
 };

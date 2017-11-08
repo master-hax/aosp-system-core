@@ -268,6 +268,145 @@ void RegsX86_64::IterateRegisters(std::function<void(const char*, uint64_t)> fn)
   fn("rip", regs_[X86_64_REG_RIP]);
 }
 
+RegsMips::RegsMips()
+    : RegsImpl<uint32_t>(MIPS_REG_LAST, MIPS_REG_SP, Location(LOCATION_REGISTER, MIPS_REG_RA)) {}
+
+uint32_t RegsMips::MachineType() {
+  return EM_MIPS;
+}
+
+uint64_t RegsMips::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
+  if (!elf->valid()) {
+    return rel_pc;
+  }
+
+  // For now, just assuming no compact branches
+  if (rel_pc < 8) {
+    return rel_pc;
+  }
+  return rel_pc - 8;
+}
+
+void RegsMips::SetFromRaw() {
+  set_pc(regs_[MIPS_REG_PC]);
+  set_sp(regs_[MIPS_REG_SP]);
+}
+
+bool RegsMips::SetPcFromReturnAddress(Memory*) {
+  if (pc() == regs_[MIPS_REG_RA]) {
+    return false;
+  }
+
+  set_pc(regs_[MIPS_REG_RA]);
+  return true;
+}
+
+void RegsMips::IterateRegisters(std::function<void(const char*, uint64_t)> fn) {
+  fn("r0", regs_[MIPS_REG_R0]);
+  fn("r1", regs_[MIPS_REG_R1]);
+  fn("r2", regs_[MIPS_REG_R2]);
+  fn("r3", regs_[MIPS_REG_R3]);
+  fn("r4", regs_[MIPS_REG_R4]);
+  fn("r5", regs_[MIPS_REG_R5]);
+  fn("r6", regs_[MIPS_REG_R6]);
+  fn("r7", regs_[MIPS_REG_R7]);
+  fn("r8", regs_[MIPS_REG_R8]);
+  fn("r9", regs_[MIPS_REG_R9]);
+  fn("r10", regs_[MIPS_REG_R10]);
+  fn("r11", regs_[MIPS_REG_R11]);
+  fn("r12", regs_[MIPS_REG_R12]);
+  fn("r13", regs_[MIPS_REG_R13]);
+  fn("r14", regs_[MIPS_REG_R14]);
+  fn("r15", regs_[MIPS_REG_R15]);
+  fn("r16", regs_[MIPS_REG_R16]);
+  fn("r17", regs_[MIPS_REG_R17]);
+  fn("r18", regs_[MIPS_REG_R18]);
+  fn("r19", regs_[MIPS_REG_R19]);
+  fn("r20", regs_[MIPS_REG_R20]);
+  fn("r21", regs_[MIPS_REG_R21]);
+  fn("r22", regs_[MIPS_REG_R22]);
+  fn("r23", regs_[MIPS_REG_R23]);
+  fn("r24", regs_[MIPS_REG_R24]);
+  fn("r25", regs_[MIPS_REG_R25]);
+  fn("r26", regs_[MIPS_REG_R26]);
+  fn("r27", regs_[MIPS_REG_R27]);
+  fn("r28", regs_[MIPS_REG_R28]);
+  fn("sp", regs_[MIPS_REG_SP]);
+  fn("r30", regs_[MIPS_REG_R30]);
+  fn("ra", regs_[MIPS_REG_RA]);
+  fn("pc", regs_[MIPS_REG_PC]);
+}
+
+RegsMips64::RegsMips64()
+    : RegsImpl<uint64_t>(MIPS64_REG_LAST, MIPS64_REG_SP,
+                         Location(LOCATION_REGISTER, MIPS64_REG_RA)) {}
+
+uint32_t RegsMips64::MachineType() {
+  return EM_MIPS;
+}
+
+uint64_t RegsMips64::GetAdjustedPc(uint64_t rel_pc, Elf* elf) {
+  if (!elf->valid()) {
+    return rel_pc;
+  }
+
+  // For now, just assuming no compact branches
+  if (rel_pc < 8) {
+    return rel_pc;
+  }
+  return rel_pc - 8;
+}
+
+void RegsMips64::SetFromRaw() {
+  set_pc(regs_[MIPS64_REG_PC]);
+  set_sp(regs_[MIPS64_REG_SP]);
+}
+
+bool RegsMips64::SetPcFromReturnAddress(Memory*) {
+  if (pc() == regs_[MIPS64_REG_RA]) {
+    return false;
+  }
+
+  set_pc(regs_[MIPS64_REG_RA]);
+  return true;
+}
+
+void RegsMips64::IterateRegisters(std::function<void(const char*, uint64_t)> fn) {
+  fn("r0", regs_[MIPS64_REG_R0]);
+  fn("r1", regs_[MIPS64_REG_R1]);
+  fn("r2", regs_[MIPS64_REG_R2]);
+  fn("r3", regs_[MIPS64_REG_R3]);
+  fn("r4", regs_[MIPS64_REG_R4]);
+  fn("r5", regs_[MIPS64_REG_R5]);
+  fn("r6", regs_[MIPS64_REG_R6]);
+  fn("r7", regs_[MIPS64_REG_R7]);
+  fn("r8", regs_[MIPS64_REG_R8]);
+  fn("r9", regs_[MIPS64_REG_R9]);
+  fn("r10", regs_[MIPS64_REG_R10]);
+  fn("r11", regs_[MIPS64_REG_R11]);
+  fn("r12", regs_[MIPS64_REG_R12]);
+  fn("r13", regs_[MIPS64_REG_R13]);
+  fn("r14", regs_[MIPS64_REG_R14]);
+  fn("r15", regs_[MIPS64_REG_R15]);
+  fn("r16", regs_[MIPS64_REG_R16]);
+  fn("r17", regs_[MIPS64_REG_R17]);
+  fn("r18", regs_[MIPS64_REG_R18]);
+  fn("r19", regs_[MIPS64_REG_R19]);
+  fn("r20", regs_[MIPS64_REG_R20]);
+  fn("r21", regs_[MIPS64_REG_R21]);
+  fn("r22", regs_[MIPS64_REG_R22]);
+  fn("r23", regs_[MIPS64_REG_R23]);
+  fn("r24", regs_[MIPS64_REG_R24]);
+  fn("r25", regs_[MIPS64_REG_R25]);
+  fn("r26", regs_[MIPS64_REG_R26]);
+  fn("r27", regs_[MIPS64_REG_R27]);
+  fn("r28", regs_[MIPS64_REG_R28]);
+  fn("sp", regs_[MIPS64_REG_SP]);
+  fn("r30", regs_[MIPS64_REG_R30]);
+  fn("ra", regs_[MIPS64_REG_RA]);
+  fn("pc", regs_[MIPS64_REG_PC]);
+}
+
 static Regs* ReadArm(void* remote_data) {
   arm_user_regs* user = reinterpret_cast<arm_user_regs*>(remote_data);
 
@@ -333,6 +472,30 @@ static Regs* ReadX86_64(void* remote_data) {
   return regs;
 }
 
+static Regs* ReadMips(void* remote_data) {
+  mips_user_regs* user = reinterpret_cast<mips_user_regs*>(remote_data);
+  RegsMips* regs = new RegsMips();
+  uint32_t* reg_data = reinterpret_cast<uint32_t*>(regs->RawData());
+
+  memcpy(regs->RawData(), &user->regs[MIPS32_EF_R0], (MIPS_REG_R31 + 1) * sizeof(uint32_t));
+
+  reg_data[MIPS_REG_PC] = user->regs[MIPS32_EF_CP0_EPC];
+  regs->SetFromRaw();
+  return regs;
+}
+
+static Regs* ReadMips64(void* remote_data) {
+  mips64_user_regs* user = reinterpret_cast<mips64_user_regs*>(remote_data);
+  RegsMips64* regs = new RegsMips64();
+  uint64_t* reg_data = reinterpret_cast<uint64_t*>(regs->RawData());
+
+  memcpy(regs->RawData(), &user->regs[MIPS64_EF_R0], (MIPS64_REG_R31 + 1) * sizeof(uint64_t));
+
+  reg_data[MIPS64_REG_PC] = user->regs[MIPS64_EF_CP0_EPC];
+  regs->SetFromRaw();
+  return regs;
+}
+
 // This function assumes that reg_data is already aligned to a 64 bit value.
 // If not this could crash with an unaligned access.
 Regs* Regs::RemoteGet(pid_t pid) {
@@ -355,6 +518,10 @@ Regs* Regs::RemoteGet(pid_t pid) {
     return ReadArm(buffer.data());
   case sizeof(arm64_user_regs):
     return ReadArm64(buffer.data());
+  case sizeof(mips_user_regs):
+    return ReadMips(buffer.data());
+  case sizeof(mips64_user_regs):
+    return ReadMips64(buffer.data());
   }
   return nullptr;
 }
@@ -425,7 +592,32 @@ static Regs* CreateFromX86_64Ucontext(void* ucontext) {
   return regs;
 }
 
-Regs* Regs::CreateFromUcontext(uint32_t machine_type, void* ucontext) {
+static Regs* CreateFromMipsUcontext(void* ucontext) {
+  mips_ucontext_t* mips_ucontext = reinterpret_cast<mips_ucontext_t*>(ucontext);
+
+  RegsMips* regs = new RegsMips();
+  // Copy 64 bit sc_regs over to 32 bit regs
+  for (int i = 0; i < 32; i++) {
+      (*regs)[MIPS_REG_R0 + i] = mips_ucontext->uc_mcontext.sc_regs[i];
+  }
+  (*regs)[MIPS_REG_PC] = mips_ucontext->uc_mcontext.sc_pc;
+  regs->SetFromRaw();
+  return regs;
+}
+
+static Regs* CreateFromMips64Ucontext(void* ucontext) {
+  mips64_ucontext_t* mips64_ucontext = reinterpret_cast<mips64_ucontext_t*>(ucontext);
+
+  RegsMips64* regs = new RegsMips64();
+  // Copy 64 bit sc_regs over to 64 bit regs
+  memcpy(regs->RawData(), &mips64_ucontext->uc_mcontext.sc_regs[0], 32 * sizeof(uint64_t));
+  (*regs)[MIPS64_REG_PC] = mips64_ucontext->uc_mcontext.sc_pc;
+  regs->SetFromRaw();
+  return regs;
+}
+
+Regs* Regs::CreateFromUcontext(uint32_t machine_type,
+                               uint32_t machine_width, void* ucontext) {
   switch (machine_type) {
     case EM_386:
       return CreateFromX86Ucontext(ucontext);
@@ -435,6 +627,11 @@ Regs* Regs::CreateFromUcontext(uint32_t machine_type, void* ucontext) {
       return CreateFromArmUcontext(ucontext);
     case EM_AARCH64:
       return CreateFromArm64Ucontext(ucontext);
+    case EM_MIPS:
+      if (machine_width == 32)
+          return CreateFromMipsUcontext(ucontext);
+      else
+          return CreateFromMips64Ucontext(ucontext);
   }
   return nullptr;
 }
@@ -448,6 +645,26 @@ uint32_t Regs::CurrentMachineType() {
   return EM_386;
 #elif defined(__x86_64__)
   return EM_X86_64;
+#elif defined(__mips__)
+  return EM_MIPS;
+#else
+  abort();
+#endif
+}
+
+uint32_t Regs::GetMachineWidth() {
+#if defined(__arm__)
+  return 32;
+#elif defined(__aarch64__)
+  return 64;
+#elif defined(__i386__)
+  return 32;
+#elif defined(__x86_64__)
+  return 64;
+#elif defined(__mips__) && !defined(__LP64__)
+  return 32;
+#elif defined(__mips__) && defined(__LP64__)
+  return 64;
 #else
   abort();
 #endif
@@ -463,6 +680,10 @@ Regs* Regs::CreateFromLocal() {
   regs = new RegsX86();
 #elif defined(__x86_64__)
   regs = new RegsX86_64();
+#elif defined(__mips__) && !defined(__LP64__)
+  regs = new RegsMips();
+#elif defined(__mips__) && defined(__LP64__)
+  regs = new RegsMips64();
 #else
   abort();
 #endif
@@ -653,6 +874,89 @@ bool RegsX86_64::StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_
     return false;
   }
   SetFromUcontext(&x86_64_ucontext);
+  return true;
+}
+
+bool RegsMips::StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) {
+  uint64_t data;
+  uint64_t offset = 0;
+  Memory* elf_memory = elf->memory();
+  // Read from elf memory since it is usually more expensive to read from
+  // process memory.
+  if (!elf_memory->Read(rel_pc, &data, sizeof(data))) {
+    return false;
+  }
+
+  // Look for the kernel sigreturn functions.
+  // __vdso_rt_sigreturn:
+  // 0x24021061     li  v0, 0x1061
+  // 0x0000000c     syscall
+  // __vdso_sigreturn:
+  // 0x24021017     li  v0, 0x1017
+  // 0x0000000c     syscall
+  if (data == 0x0000000c24021061ULL) {
+    // vdso_rt_sigreturn => read rt_sigframe
+    // offset = siginfo offset + sizeof(siginfo) + uc_mcontext offset + sc_pc offset
+    offset = 24 + 128 + 24 + 8;
+  } else if (data == 0x0000000c24021017LL) {
+    // vdso_sigreturn => read sigframe
+    // offset = sigcontext offset + sc_pc offset
+    offset = 24 + 8;
+  } else {
+    return false;
+  }
+
+  // read sc_pc and sc_regs[32] from stack
+  uint64_t values[MIPS_REG_LAST];
+  if (!process_memory->Read(sp() + offset, values, sizeof(values))) {
+    return false;
+  }
+
+  // Copy 64 bit sc_pc over to 32 bit regs_[MIPS_REG_PC]
+  regs_[MIPS_REG_PC] = values[0];
+
+  // Copy 64 bit sc_regs over to 32 bit regs
+  for (int i = 0; i < 32; i++) {
+      regs_[MIPS_REG_R0 + i] = values[1 + i];
+  }
+
+  SetFromRaw();
+  return true;
+}
+
+bool RegsMips64::StepIfSignalHandler(uint64_t rel_pc, Elf* elf, Memory* process_memory) {
+  uint64_t data;
+  Memory* elf_memory = elf->memory();
+  // Read from elf memory since it is usually more expensive to read from
+  // process memory.
+  if (!elf_memory->Read(rel_pc, &data, sizeof(data))) {
+    return false;
+  }
+
+  // Look for the kernel sigreturn function.
+  // __vdso_rt_sigreturn:
+  // 0x2402145b     li  v0, 0x145b
+  // 0x0000000c     syscall
+  if (data != 0x0000000c2402145bULL) {
+    return false;
+  }
+
+  // vdso_rt_sigreturn => read rt_sigframe
+  // offset = siginfo offset + sizeof(siginfo) + uc_mcontext offset
+  // read 64 bit sc_regs[32] from stack into 64 bit regs_
+  if (!process_memory->Read(sp() + 24 + 128 + 40, regs_.data(),
+                            sizeof(uint64_t) * (MIPS64_REG_LAST - 1))) {
+    return false;
+  }
+
+  // offset = siginfo offset + sizeof(siginfo) + uc_mcontext offset + sc_pc offset
+  // read 64 bit sc_pc from stack into 64 bit regs_[MIPS64_REG_PC]
+  if (!process_memory->Read(sp() + 24 + 128 + 40 + 576, &regs_[MIPS64_REG_PC],
+                            sizeof(uint64_t))) {
+    return false;
+  }
+
+  SetFromRaw();
   return true;
 }
 

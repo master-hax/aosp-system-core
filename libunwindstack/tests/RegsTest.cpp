@@ -109,6 +109,30 @@ TEST_F(RegsTest, rel_pc) {
   ASSERT_EQ(0x1U,  x86_64.GetAdjustedPc(0x2, elf_.get()));
   ASSERT_EQ(0x0U,  x86_64.GetAdjustedPc(0x1, elf_.get()));
   ASSERT_EQ(0x0U,  x86_64.GetAdjustedPc(0x0, elf_.get()));
+
+  RegsMips mips;
+  ASSERT_EQ(0x8U, mips.GetAdjustedPc(0x10, elf_.get()));
+  ASSERT_EQ(0x0U, mips.GetAdjustedPc(0x8, elf_.get()));
+  ASSERT_EQ(0x7U, mips.GetAdjustedPc(0x7, elf_.get()));
+  ASSERT_EQ(0x6U, mips.GetAdjustedPc(0x6, elf_.get()));
+  ASSERT_EQ(0x5U, mips.GetAdjustedPc(0x5, elf_.get()));
+  ASSERT_EQ(0x4U, mips.GetAdjustedPc(0x4, elf_.get()));
+  ASSERT_EQ(0x3U, mips.GetAdjustedPc(0x3, elf_.get()));
+  ASSERT_EQ(0x2U, mips.GetAdjustedPc(0x2, elf_.get()));
+  ASSERT_EQ(0x1U, mips.GetAdjustedPc(0x1, elf_.get()));
+  ASSERT_EQ(0x0U, mips.GetAdjustedPc(0x0, elf_.get()));
+
+  RegsMips64 mips64;
+  ASSERT_EQ(0x8U, mips64.GetAdjustedPc(0x10, elf_.get()));
+  ASSERT_EQ(0x0U, mips64.GetAdjustedPc(0x8, elf_.get()));
+  ASSERT_EQ(0x7U, mips64.GetAdjustedPc(0x7, elf_.get()));
+  ASSERT_EQ(0x6U, mips64.GetAdjustedPc(0x6, elf_.get()));
+  ASSERT_EQ(0x5U, mips64.GetAdjustedPc(0x5, elf_.get()));
+  ASSERT_EQ(0x4U, mips64.GetAdjustedPc(0x4, elf_.get()));
+  ASSERT_EQ(0x3U, mips64.GetAdjustedPc(0x3, elf_.get()));
+  ASSERT_EQ(0x2U, mips64.GetAdjustedPc(0x2, elf_.get()));
+  ASSERT_EQ(0x1U, mips64.GetAdjustedPc(0x1, elf_.get()));
+  ASSERT_EQ(0x0U, mips64.GetAdjustedPc(0x0, elf_.get()));
 }
 
 TEST_F(RegsTest, rel_pc_arm) {
@@ -151,9 +175,12 @@ TEST_F(RegsTest, elf_invalid) {
   RegsArm64 regs_arm64;
   RegsX86 regs_x86;
   RegsX86_64 regs_x86_64;
+  RegsMips regs_mips;
+  RegsMips64 regs_mips64;
   MapInfo map_info(0x1000, 0x2000);
   Elf* invalid_elf = new Elf(new MemoryFake);
   map_info.elf = invalid_elf;
+
 
   regs_arm.set_pc(0x1500);
   EXPECT_EQ(0x500U, invalid_elf->GetRelPc(regs_arm.pc(), &map_info));
@@ -170,6 +197,14 @@ TEST_F(RegsTest, elf_invalid) {
   regs_x86_64.set_pc(0x1800);
   EXPECT_EQ(0x800U, invalid_elf->GetRelPc(regs_x86_64.pc(), &map_info));
   EXPECT_EQ(0x800U, regs_x86_64.GetAdjustedPc(0x800U, invalid_elf));
+
+  regs_mips.set_pc(0x1900);
+  EXPECT_EQ(0x900U, invalid_elf.GetRelPc(regs_mips.pc(), &map_info));
+  EXPECT_EQ(0x900U, regs_mips.GetAdjustedPc(0x900U, &invalid_elf));
+
+  regs_mips64.set_pc(0x1a00);
+  EXPECT_EQ(0xa00U, invalid_elf.GetRelPc(regs_mips64.pc(), &map_info));
+  EXPECT_EQ(0xa00U, regs_mips64.GetAdjustedPc(0xa00U, &invalid_elf));
 }
 
 TEST_F(RegsTest, arm_set_from_raw) {
@@ -210,6 +245,26 @@ TEST_F(RegsTest, x86_64_set_from_raw) {
   x86_64.SetFromRaw();
   EXPECT_EQ(0x1200000000U, x86_64.sp());
   EXPECT_EQ(0x4900000000U, x86_64.pc());
+}
+
+TEST_F(RegsTest, mips_set_from_raw) {
+  RegsMips mips;
+  uint32_t* regs = reinterpret_cast<uint32_t*>(mips.RawData());
+  regs[29] = 0x100;
+  regs[32] = 0x200;
+  mips.SetFromRaw();
+  EXPECT_EQ(0x100U, mips.sp());
+  EXPECT_EQ(0x200U, mips.pc());
+}
+
+TEST_F(RegsTest, mips64_set_from_raw) {
+  RegsMips64 mips64;
+  uint64_t* regs = reinterpret_cast<uint64_t*>(mips64.RawData());
+  regs[29] = 0xb100000000ULL;
+  regs[32] = 0xc200000000ULL;
+  mips64.SetFromRaw();
+  EXPECT_EQ(0xb100000000U, mips64.sp());
+  EXPECT_EQ(0xc200000000U, mips64.pc());
 }
 
 }  // namespace unwindstack

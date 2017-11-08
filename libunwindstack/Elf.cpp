@@ -183,19 +183,19 @@ ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {
       return nullptr;
     }
 
-    if (e_machine != EM_ARM && e_machine != EM_386) {
+    if (e_machine != EM_ARM && e_machine != EM_386 && e_machine != EM_MIPS) {
       // Unsupported.
-      ALOGI("32 bit elf that is neither arm nor x86: e_machine = %d\n", e_machine);
+      ALOGI("32 bit elf that is neither arm nor x86 nor mips: e_machine = %d\n", e_machine);
       return nullptr;
     }
 
     machine_type_ = e_machine;
     if (e_machine == EM_ARM) {
       interface.reset(new ElfInterfaceArm(memory));
-    } else if (e_machine == EM_386) {
+    } else if (e_machine == EM_386 || e_machine == EM_MIPS) {
       interface.reset(new ElfInterface32(memory));
     } else {
-      ALOGI("32 bit elf that is neither arm nor x86: e_machine = %d\n", e_machine);
+      ALOGI("32 bit elf that is neither arm nor x86 nor mips: e_machine = %d\n", e_machine);
       return nullptr;
     }
   } else if (class_type_ == ELFCLASS64) {
@@ -203,9 +203,10 @@ ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {
     if (!memory->Read(EI_NIDENT + sizeof(Elf64_Half), &e_machine, sizeof(e_machine))) {
       return nullptr;
     }
-    if (e_machine != EM_AARCH64 && e_machine != EM_X86_64) {
+    if (e_machine != EM_AARCH64 && e_machine != EM_X86_64 && e_machine != EM_MIPS) {
       // Unsupported.
-      ALOGI("64 bit elf that is neither aarch64 nor x86_64: e_machine = %d\n", e_machine);
+      ALOGI("64 bit elf that is neither aarch64 nor x86_64 nor mips64: e_machine = %d\n",
+            e_machine);
       return nullptr;
     }
     machine_type_ = e_machine;

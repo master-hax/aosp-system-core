@@ -144,7 +144,7 @@ TEST_F(ElfTest, elf32_invalid_machine) {
   ASSERT_FALSE(elf.Init(false));
 
   ASSERT_EQ("", GetFakeLogBuf());
-  ASSERT_EQ("4 unwind 32 bit elf that is neither arm nor x86: e_machine = 20\n\n",
+  ASSERT_EQ("4 unwind 32 bit elf that is neither arm nor x86 nor mips: e_machine = 20\n\n",
             GetFakeLogPrint());
 }
 
@@ -157,7 +157,7 @@ TEST_F(ElfTest, elf64_invalid_machine) {
   ASSERT_FALSE(elf.Init(false));
 
   ASSERT_EQ("", GetFakeLogBuf());
-  ASSERT_EQ("4 unwind 64 bit elf that is neither aarch64 nor x86_64: e_machine = 21\n\n",
+  ASSERT_EQ("4 unwind 64 bit elf that is neither aarch64 nor x86_64 nor mips64: e_machine = 21\n\n",
             GetFakeLogPrint());
 }
 
@@ -169,6 +169,18 @@ TEST_F(ElfTest, elf_arm) {
   ASSERT_TRUE(elf.Init(false));
   ASSERT_TRUE(elf.valid());
   ASSERT_EQ(static_cast<uint32_t>(EM_ARM), elf.machine_type());
+  ASSERT_EQ(ELFCLASS32, elf.class_type());
+  ASSERT_TRUE(elf.interface() != nullptr);
+}
+
+TEST_F(ElfTest, elf_mips) {
+  Elf elf(memory_);
+
+  InitElf32(EM_MIPS);
+
+  ASSERT_TRUE(elf.Init(false));
+  ASSERT_TRUE(elf.valid());
+  ASSERT_EQ(static_cast<uint32_t>(EM_MIPS), elf.machine_type());
   ASSERT_EQ(ELFCLASS32, elf.class_type());
   ASSERT_TRUE(elf.interface() != nullptr);
 }
@@ -205,6 +217,18 @@ TEST_F(ElfTest, elf_x86_64) {
   ASSERT_TRUE(elf.Init(false));
   ASSERT_TRUE(elf.valid());
   ASSERT_EQ(static_cast<uint32_t>(EM_X86_64), elf.machine_type());
+  ASSERT_EQ(ELFCLASS64, elf.class_type());
+  ASSERT_TRUE(elf.interface() != nullptr);
+}
+
+TEST_F(ElfTest, elf_mips64) {
+  Elf elf(memory_);
+
+  InitElf64(EM_MIPS);
+
+  ASSERT_TRUE(elf.Init(false));
+  ASSERT_TRUE(elf.valid());
+  ASSERT_EQ(static_cast<uint32_t>(EM_MIPS), elf.machine_type());
   ASSERT_EQ(ELFCLASS64, elf.class_type());
   ASSERT_TRUE(elf.interface() != nullptr);
 }
