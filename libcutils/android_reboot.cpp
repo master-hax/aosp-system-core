@@ -26,7 +26,7 @@ int android_reboot(int cmd, int flags __unused, const char* arg) {
     const char* restart_cmd = NULL;
     char* prop_value;
 
-    switch (cmd) {
+    switch (static_cast<unsigned>(cmd)) {
         case ANDROID_RB_RESTART:  // deprecated
         case ANDROID_RB_RESTART2:
             restart_cmd = "reboot";
