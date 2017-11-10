@@ -17,6 +17,8 @@
 #include <cutils/multiuser.h>
 #include <private/android_filesystem_config.h>
 
+#define __android_unused __attribute__((__unused__))
+
 userid_t multiuser_get_user_id(uid_t uid) {
     return uid / AID_USER_OFFSET;
 }
@@ -53,9 +55,11 @@ gid_t multiuser_get_ext_cache_gid(userid_t user_id, appid_t app_id) {
     }
 }
 
-gid_t multiuser_get_shared_gid(userid_t user_id, appid_t app_id) {
+gid_t multiuser_get_shared_gid(userid_t user_id __android_unused, appid_t app_id) {
     if (app_id >= AID_APP_START && app_id <= AID_APP_END) {
-        return multiuser_get_uid(user_id, (app_id - AID_APP_START) + AID_SHARED_GID_START);
+        return (app_id - AID_APP_START) + AID_SHARED_GID_START;
+    } else if (app_id >= AID_ROOT && app_id <= AID_APP_START) {
+        return app_id;
     } else {
         return -1;
     }
