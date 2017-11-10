@@ -96,6 +96,28 @@ static unsigned tags_offset    = 0x00000100;
 static bool g_disable_verity = false;
 static bool g_disable_verification = false;
 
+class Timer {
+  public:
+    Timer() { start(); }
+
+    ~Timer() { stop(); }
+
+    void start() {
+        running_ = true;
+        begin_ = now();
+    }
+
+    void stop() {
+        if (!running_) return;
+        running_ = false;
+        fprintf(stderr, " took %.3fs\n", now() - begin_);
+    }
+
+  private:
+    bool running_ = true;
+    double begin_ = now();
+};
+
 static const std::string convert_fbe_marker_filename("convert_fbe");
 
 enum fb_buffer_type {
@@ -485,7 +507,7 @@ static void* load_bootable_image(const std::string& kernel, const std::string& r
     return bdata;
 }
 
-static void* unzip_file(ZipArchiveHandle zip, const char* entry_name, int64_t* sz) {
+static void* unzip_to_memory(ZipArchiveHandle zip, const char* entry_name, int64_t* sz) {
     ZipString zip_entry_name(entry_name);
     ZipEntry zip_entry;
     if (FindEntry(zip, zip_entry_name, &zip_entry) != 0) {
@@ -495,12 +517,13 @@ static void* unzip_file(ZipArchiveHandle zip, const char* entry_name, int64_t* s
 
     *sz = zip_entry.uncompressed_length;
 
-    fprintf(stderr, "extracting %s (%" PRId64 " MB)...\n", entry_name, *sz / 1024 / 1024);
+    fprintf(stderr, "extracting %s (%" PRId64 " MB) to RAM...", entry_name, *sz / 1024 / 1024);
+    Timer timer;
     uint8_t* data = reinterpret_cast<uint8_t*>(malloc(zip_entry.uncompressed_length));
-    if (data == nullptr) die("failed to allocate %" PRId64 " bytes for '%s'", *sz, entry_name);
+    if (data == nullptr) die("\nfailed to allocate %" PRId64 " bytes for '%s'", *sz, entry_name);
 
     int error = ExtractToMemory(zip, &zip_entry, data, zip_entry.uncompressed_length);
-    if (error != 0) die("failed to extract '%s': %s", entry_name, ErrorCodeString(error));
+    if (error != 0) die("\nfailed to extract '%s': %s", entry_name, ErrorCodeString(error));
 
     return data;
 }
@@ -613,17 +636,17 @@ static int unzip_to_file(ZipArchiveHandle zip, const char* entry_name) {
         return -1;
     }
 
-    fprintf(stderr, "extracting %s (%" PRIu32 " MB)...\n", entry_name,
+    fprintf(stderr, "extracting %s (%" PRIu32 " MB) to disk...", entry_name,
             zip_entry.uncompressed_length / 1024 / 1024);
+    Timer timer;
     int error = ExtractEntryToFile(zip, &zip_entry, fd);
     if (error != 0) {
-        die("failed to extract '%s': %s", entry_name, ErrorCodeString(error));
+        die("\nfailed to extract '%s': %s", entry_name, ErrorCodeString(error));
     }
 
     if (lseek(fd, 0, SEEK_SET) != 0) {
-        die("lseek on extracted file '%s' failed: %s", entry_name, strerror(errno));
+        die("\nlseek on extracted file '%s' failed: %s", entry_name, strerror(errno));
     }
-
     return fd.release();
 }
 
@@ -1091,7 +1114,7 @@ static void do_flash(Transport* transport, const char* pname, const char* fname)
 
 static void do_update_signature(ZipArchiveHandle zip, const char* filename) {
     int64_t sz;
-    void* data = unzip_file(zip, filename, &sz);
+    void* data = unzip_to_memory(zip, filename, &sz);
     if (data == nullptr) return;
     fb_queue_download("signature", data, sz);
     fb_queue_command("signature", "installing signature");
@@ -1130,7 +1153,7 @@ static void do_update(Transport* transport, const char* filename, const std::str
     }
 
     int64_t sz;
-    void* data = unzip_file(zip, "android-info.txt", &sz);
+    void* data = unzip_to_memory(zip, "android-info.txt", &sz);
     if (data == nullptr) {
         die("update package '%s' has no android-info.txt", filename);
     }
@@ -1169,17 +1192,33 @@ static void do_update(Transport* transport, const char* filename, const std::str
             die("non-optional file %s missing", images[i].img_name);
         }
 
+        fprintf(stderr, "loading buffer...");
+        Timer timer;
         fastboot_buffer buf;
         if (!load_buf_fd(transport, fd, &buf)) {
-            die("cannot load %s from flash: %s", images[i].img_name, strerror(errno));
+            die("\ncannot load %s from flash: %s", images[i].img_name, strerror(errno));
         }
+        load_buf_timer.stop();
+        fprintf(stderr, "\n");
 
         auto update = [&](const std::string& partition) {
+            fprintf(stderr, "updating signature...");
+            timer.start();
             do_update_signature(zip, images[i].sig_name);
+            timer.stop();
+
             if (erase_first && needs_erase(transport, partition.c_str())) {
+                fprintf(stderr, "erasing partition...");
+                timer.start();
                 fb_queue_erase(partition.c_str());
+                timer.stop();
             }
+
+            fprintf(stderr, "flashing buffer...");
+            timer.start();
             flash_buf(partition.c_str(), &buf);
+            timer.stop();
+
             /* not closing the fd here since the sparse code keeps the fd around
              * but hasn't mmaped data yet. The temporary file will get cleaned up when the
              * program exits.
