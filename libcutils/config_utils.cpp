@@ -25,9 +25,7 @@
 
 cnode* config_node(const char *name, const char *value)
 {
-    cnode *node;
-
-    node = calloc(sizeof(cnode), 1);
+    cnode* node = static_cast<cnode*>(calloc(sizeof(cnode), 1));
     if(node) {
         node->name = name ? name : "";
         node->value = value ? value : "";
@@ -311,9 +309,9 @@ void config_load(cnode *root, char *data)
 
 void config_load_file(cnode *root, const char *fn)
 {
-    char *data;
-    data = load_file(fn, 0);
+    char* data = static_cast<char*>(load_file(fn, nullptr));
     config_load(root, data);
+    // TODO: deliberate leak :-/
 }
 
 void config_free(cnode *root)

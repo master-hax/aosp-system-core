@@ -49,7 +49,7 @@ int android_get_ioprio(int pid __android_unused, IoSchedClass *clazz, int *iopri
         return -1;
     }
 
-    *clazz = (rc >> IOPRIO_CLASS_SHIFT);
+    *clazz = static_cast<IoSchedClass>(rc >> IOPRIO_CLASS_SHIFT);
     *ioprio = (rc & 0xff);
 #else
     *clazz = IoSchedClass_NONE;
