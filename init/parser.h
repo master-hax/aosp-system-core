@@ -37,7 +37,7 @@
 //  2) Result<Success> ParseLineSection(std::vector<std::string>&& args, int line, std::string* err)
 //    This function is called on each subsequent line until the next section is encountered.
 //
-//  3) void EndSection()
+//  3) Result<Success> EndSection()
 //    This function is called either when a new section is found or at the end of the file.
 //    It indicates that parsing of the current section is complete and any relevant objects should
 //    be committed.
@@ -55,7 +55,7 @@ class SectionParser {
     virtual Result<Success> ParseSection(std::vector<std::string>&& args,
                                          const std::string& filename, int line) = 0;
     virtual Result<Success> ParseLineSection(std::vector<std::string>&&, int) { return Success(); };
-    virtual void EndSection(){};
+    virtual Result<Success> EndSection() { return Success(); };
     virtual void EndFile(){};
 };
 
