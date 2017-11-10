@@ -23,12 +23,11 @@
 
 #include <cutils/properties.h>
 
-static int only_one_char(char *buf, int len, char c)
-{
+static int only_one_char(char* buf, int len, char c) {
     int i, ret;
 
     ret = 1;
-    for (i=0; i<len; i++) {
+    for (i = 0; i < len; i++) {
         if (buf[i] != c) {
             ret = 0;
             break;
@@ -37,8 +36,7 @@ static int only_one_char(char *buf, int len, char c)
     return ret;
 }
 
-int partition_wiped(char *source)
-{
+int partition_wiped(char* source) {
     char buf[4096];
     int fd, ret;
 
@@ -55,14 +53,13 @@ int partition_wiped(char *source)
 
     /* Check for all zeros */
     if (only_one_char(buf, sizeof(buf), 0)) {
-       return 1;
+        return 1;
     }
 
     /* Check for all ones */
     if (only_one_char(buf, sizeof(buf), 0xff)) {
-       return 1;
+        return 1;
     }
 
     return 0;
 }
-

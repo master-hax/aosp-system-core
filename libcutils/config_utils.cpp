@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-#include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <cutils/config_utils.h>
 #include <cutils/misc.h>
 
-cnode* config_node(const char *name, const char *value)
-{
+cnode* config_node(const char* name, const char* value) {
     cnode* node = static_cast<cnode*>(calloc(sizeof(cnode), 1));
-    if(node) {
+    if (node) {
         node->name = name ? name : "";
         node->value = value ? value : "";
     }
@@ -34,25 +33,22 @@ cnode* config_node(const char *name, const char *value)
     return node;
 }
 
-cnode* config_find(cnode *root, const char *name)
-{
+cnode* config_find(cnode* root, const char* name) {
     cnode *node, *match = NULL;
 
     /* we walk the whole list, as we need to return the last (newest) entry */
-    for(node = root->first_child; node; node = node->next)
-        if(!strcmp(node->name, name))
-            match = node;
+    for (node = root->first_child; node; node = node->next)
+        if (!strcmp(node->name, name)) match = node;
 
     return match;
 }
 
-static cnode* _config_create(cnode *root, const char *name)
-{
-    cnode *node;
+static cnode* _config_create(cnode* root, const char* name) {
+    cnode* node;
 
     node = config_node(name, NULL);
 
-    if(root->last_child)
+    if (root->last_child)
         root->last_child->next = node;
     else
         root->first_child = node;
@@ -62,40 +58,35 @@ static cnode* _config_create(cnode *root, const char *name)
     return node;
 }
 
-int config_bool(cnode *root, const char *name, int _default)
-{
-    cnode *node;
-        
-    node = config_find(root, name);
-    if(!node)
-        return _default;
+int config_bool(cnode* root, const char* name, int _default) {
+    cnode* node;
 
-    switch(node->value[0]) {
-    case 'y':
-    case 'Y':
-    case '1':
-        return 1;
-    default:
-        return 0;
+    node = config_find(root, name);
+    if (!node) return _default;
+
+    switch (node->value[0]) {
+        case 'y':
+        case 'Y':
+        case '1':
+            return 1;
+        default:
+            return 0;
     }
 }
 
-const char* config_str(cnode *root, const char *name, const char *_default)
-{
-    cnode *node;
+const char* config_str(cnode* root, const char* name, const char* _default) {
+    cnode* node;
 
     node = config_find(root, name);
-    if(!node)
-        return _default;
+    if (!node) return _default;
     return node->value;
 }
 
-void config_set(cnode *root, const char *name, const char *value)
-{
-    cnode *node;
+void config_set(cnode* root, const char* name, const char* value) {
+    cnode* node;
 
     node = config_find(root, name);
-    if(node)
+    if (node)
         node->value = value;
     else {
         node = _config_create(root, name);
@@ -109,113 +100,110 @@ void config_set(cnode *root, const char *name, const char *value)
 #define T_OBRACE 3
 #define T_CBRACE 4
 
-typedef struct
-{
-    char *data;
-    char *text;
+typedef struct {
+    char* data;
+    char* text;
     int len;
     char next;
 } cstate;
 
-static int _lex(cstate *cs, int value)
-{
+static int _lex(cstate* cs, int value) {
     char c;
-    char *s;
-    char *data;
+    char* s;
+    char* data;
 
     data = cs->data;
 
-    if(cs->next != 0) {
+    if (cs->next != 0) {
         c = cs->next;
         cs->next = 0;
         goto got_c;
     }
 
 restart:
-    for(;;) {
+    for (;;) {
         c = *data++;
     got_c:
-        if(isspace(c))
-            continue;
+        if (isspace(c)) continue;
 
-        switch(c) {
-        case 0:
-            return T_EOF;
+        switch (c) {
+            case 0:
+                return T_EOF;
 
-        case '#':
-            for(;;) {
-                switch(*data) {
-                case 0:
-                    cs->data = data;
-                    return T_EOF;
-                case '\n':
-                    cs->data = data + 1;
-                    goto restart;
-                default:
-                    data++;
-                }
-            }
-            break;
-            
-        case '.':
-            cs->data = data;
-            return T_DOT;
-
-        case '{':
-            cs->data = data;
-            return T_OBRACE;
-
-        case '}':
-            cs->data = data;
-            return T_CBRACE;
-
-        default:
-            s = data - 1;
-
-            if(value) {
-                for(;;) {
-                    if(*data == 0) {
-                        cs->data = data;
-                        break;
+            case '#':
+                for (;;) {
+                    switch (*data) {
+                        case 0:
+                            cs->data = data;
+                            return T_EOF;
+                        case '\n':
+                            cs->data = data + 1;
+                            goto restart;
+                        default:
+                            data++;
                     }
-                    if(*data == '\n') {
-                        cs->data = data + 1;
-                        *data-- = 0;
-                        break;
-                    }
-                    data++;
                 }
+                break;
 
-                    /* strip trailing whitespace */
-                while(data > s){
-                    if(!isspace(*data)) break;
-                    *data-- = 0;
-                }
+            case '.':
+                cs->data = data;
+                return T_DOT;
 
-                goto got_text;                
-            } else {
-                for(;;) {
-                    if(isspace(*data)) {
-                        *data = 0;
-                        cs->data = data + 1;
-                        goto got_text;
-                    }
-                    switch(*data) {
-                    case 0:
-                        cs->data = data;
-                        goto got_text;
-                    case '.':
-                    case '{':
-                    case '}':
-                        cs->next = *data;
-                        *data = 0;
-                        cs->data = data + 1;
-                        goto got_text;
-                    default:
+            case '{':
+                cs->data = data;
+                return T_OBRACE;
+
+            case '}':
+                cs->data = data;
+                return T_CBRACE;
+
+            default:
+                s = data - 1;
+
+                if (value) {
+                    for (;;) {
+                        if (*data == 0) {
+                            cs->data = data;
+                            break;
+                        }
+                        if (*data == '\n') {
+                            cs->data = data + 1;
+                            *data-- = 0;
+                            break;
+                        }
                         data++;
                     }
+
+                    /* strip trailing whitespace */
+                    while (data > s) {
+                        if (!isspace(*data)) break;
+                        *data-- = 0;
+                    }
+
+                    goto got_text;
+                } else {
+                    for (;;) {
+                        if (isspace(*data)) {
+                            *data = 0;
+                            cs->data = data + 1;
+                            goto got_text;
+                        }
+                        switch (*data) {
+                            case 0:
+                                cs->data = data;
+                                goto got_text;
+                            case '.':
+                            case '{':
+                            case '}':
+                                cs->next = *data;
+                                *data = 0;
+                                cs->data = data + 1;
+                                goto got_text;
+                            default:
+                                data++;
+                        }
+                    }
                 }
-            }
         }
     }
 
@@ -235,91 +223,83 @@ static int lex(cstate *cs, int value)
     return tok;
 }
 #else
-#define lex(cs,v) _lex(cs,v)
+#define lex(cs, v) _lex(cs, v)
 #endif
 
-static int parse_expr(cstate *cs, cnode *node);
+static int parse_expr(cstate* cs, cnode* node);
 
-static int parse_block(cstate *cs, cnode *node)
-{
-    for(;;){
-        switch(lex(cs, 0)){
-        case T_TEXT:
-            if(parse_expr(cs, node)) return -1;
-            continue;
+static int parse_block(cstate* cs, cnode* node) {
+    for (;;) {
+        switch (lex(cs, 0)) {
+            case T_TEXT:
+                if (parse_expr(cs, node)) return -1;
+                continue;
 
-        case T_CBRACE:
-            return 0;
+            case T_CBRACE:
+                return 0;
 
-        default:
-            return -1;
-        }
-    }
-}
-
-static int parse_expr(cstate *cs, cnode *root)
-{
-    cnode *node;
-
-        /* last token was T_TEXT */
-    node = config_find(root, cs->text);
-    if(!node || *node->value)
-        node = _config_create(root, cs->text);
-
-    for(;;) {
-        switch(lex(cs, 1)) {
-        case T_DOT:
-            if(lex(cs, 0) != T_TEXT)
+            default:
                 return -1;
-            node = _config_create(node, cs->text);
-            continue;
-
-        case T_TEXT:
-            node->value = cs->text;
-            return 0;
-
-        case T_OBRACE:
-            return parse_block(cs, node);
-
-        default:
-            return -1;
         }
     }
 }
 
-void config_load(cnode *root, char *data)
-{
-    if(data != 0) {
+static int parse_expr(cstate* cs, cnode* root) {
+    cnode* node;
+
+    /* last token was T_TEXT */
+    node = config_find(root, cs->text);
+    if (!node || *node->value) node = _config_create(root, cs->text);
+
+    for (;;) {
+        switch (lex(cs, 1)) {
+            case T_DOT:
+                if (lex(cs, 0) != T_TEXT) return -1;
+                node = _config_create(node, cs->text);
+                continue;
+
+            case T_TEXT:
+                node->value = cs->text;
+                return 0;
+
+            case T_OBRACE:
+                return parse_block(cs, node);
+
+            default:
+                return -1;
+        }
+    }
+}
+
+void config_load(cnode* root, char* data) {
+    if (data != 0) {
         cstate cs;
         cs.data = data;
         cs.next = 0;
 
-        for(;;) {
-            switch(lex(&cs, 0)) {
-            case T_TEXT:
-                if(parse_expr(&cs, root))
+        for (;;) {
+            switch (lex(&cs, 0)) {
+                case T_TEXT:
+                    if (parse_expr(&cs, root)) return;
+                    break;
+                default:
                     return;
-                break;
-            default:
-                return;
             }
         }
     }
 }
 
-void config_load_file(cnode *root, const char *fn)
-{
+void config_load_file(cnode* root, const char* fn) {
     char* data = static_cast<char*>(load_file(fn, nullptr));
     config_load(root, data);
     // TODO: deliberate leak :-/
 }
 
-void config_free(cnode *root)
-{
-    cnode *cur = root->first_child;
+void config_free(cnode* root) {
+    cnode* cur = root->first_child;
 
     while (cur) {
-        cnode *prev = cur;
+        cnode* prev = cur;
         config_free(cur);
         cur = cur->next;
         free(prev);

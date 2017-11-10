@@ -32,13 +32,12 @@ static pthread_once_t atrace_once_control = PTHREAD_ONCE_INIT;
 // Note that we need to manually close and reopen socket when Zygote is forking. This requires
 // writing and closing sockets on multiple threads. A rwlock is used for avoiding concurrent
 // operation on the file descriptor.
-static bool             atrace_use_container_sock    = false;
-static int              atrace_container_sock_fd     = -1;
-static pthread_mutex_t  atrace_enabling_mutex        = PTHREAD_MUTEX_INITIALIZER;
+static bool atrace_use_container_sock = false;
+static int atrace_container_sock_fd = -1;
+static pthread_mutex_t atrace_enabling_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_rwlock_t atrace_container_sock_rwlock = PTHREAD_RWLOCK_INITIALIZER;
 
-static bool atrace_init_container_sock()
-{
+static bool atrace_init_container_sock() {
     pthread_rwlock_wrlock(&atrace_container_sock_rwlock);
     atrace_container_sock_fd =
         socket_local_client("trace", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET);
@@ -49,8 +48,7 @@ static bool atrace_init_container_sock()
     return atrace_container_sock_fd != -1;
 }
 
-static void atrace_close_container_sock()
-{
+static void atrace_close_container_sock() {
     pthread_rwlock_wrlock(&atrace_container_sock_rwlock);
     if (atrace_container_sock_fd != -1) close(atrace_container_sock_fd);
     atrace_container_sock_fd = -1;
@@ -60,8 +58,7 @@ static void atrace_close_container_sock()
 // Set whether tracing is enabled in this process.  This is used to prevent
 // the Zygote process from tracing.  We need to close the socket in the container when tracing is
 // disabled, and reopen it again after Zygote forking.
-void atrace_set_tracing_enabled(bool enabled)
-{
+void atrace_set_tracing_enabled(bool enabled) {
     pthread_mutex_lock(&atrace_enabling_mutex);
     if (atrace_use_container_sock) {
         bool already_enabled = atomic_load_explicit(&atrace_is_enabled, memory_order_acquire);
@@ -78,8 +75,7 @@ void atrace_set_tracing_enabled(bool enabled)
     atrace_update_tags();
 }
 
-static void atrace_init_once()
-{
+static void atrace_init_once() {
     atrace_marker_fd = open("/sys/kernel/debug/tracing/trace_marker", O_WRONLY | O_CLOEXEC);
     if (atrace_marker_fd < 0) {
         // We're in container, ftrace may be disabled. In such case, we use the
@@ -106,13 +102,11 @@ done:
     atomic_store_explicit(&atrace_is_ready, true, memory_order_release);
 }
 
-void atrace_setup()
-{
+void atrace_setup() {
     pthread_once(&atrace_once_control, atrace_init_once);
 }
 
-static inline uint64_t gettime(clockid_t clk_id)
-{
+static inline uint64_t gettime(clockid_t clk_id) {
     struct timespec ts;
     clock_gettime(clk_id, &ts);
     return ts.tv_sec * 1000000 + ts.tv_nsec / 1000;
@@ -120,46 +114,46 @@ static inline uint64_t gettime(clockid_t clk_id)
 
 // Write trace events to container trace file. Note that we need to amend tid and time information
 // here comparing to normal ftrace, where those informations are added by kernel.
-#define WRITE_MSG_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, name, value) { \
-    char buf[CONTAINER_ATRACE_MESSAGE_LENGTH]; \
-    int pid = getpid(); \
-    int tid = gettid(); \
-    uint64_t ts = gettime(CLOCK_MONOTONIC); \
-    uint64_t tts = gettime(CLOCK_THREAD_CPUTIME_ID); \
-    int len = snprintf( \
-            buf, sizeof(buf), \
-            ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name "%s" value_format, \
-            pid, tid, ts, tts, name, value); \
-    if (len >= (int) sizeof(buf)) { \
-        int name_len = strlen(name) - (len - sizeof(buf)) - 1; \
-        /* Truncate the name to make the message fit. */ \
-        if (name_len > 0) { \
-            ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name); \
-            len = snprintf( \
-                    buf, sizeof(buf), \
-                    ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name "%.*s" value_format, \
-                    pid, tid, ts, tts, name_len, name, value); \
-        } else { \
-            /* Data is still too long. Drop it. */ \
-            ALOGW("Data is too long in %s: %s\n", __FUNCTION__, name); \
-            len = 0; \
-        } \
-    } \
-    if (len > 0) { \
-        write(atrace_container_sock_fd, buf, len); \
-    } \
-}
+#define WRITE_MSG_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, name, value)              \
+    {                                                                                              \
+        char buf[CONTAINER_ATRACE_MESSAGE_LENGTH];                                                 \
+        int pid = getpid();                                                                        \
+        int tid = gettid();                                                                        \
+        uint64_t ts = gettime(CLOCK_MONOTONIC);                                                    \
+        uint64_t tts = gettime(CLOCK_THREAD_CPUTIME_ID);                                           \
+        int len = snprintf(buf, sizeof(buf),                                                       \
+                           ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name "%s" value_format,     \
+                           pid, tid, ts, tts, name, value);                                        \
+        if (len >= (int)sizeof(buf)) {                                                             \
+            int name_len = strlen(name) - (len - sizeof(buf)) - 1;                                 \
+            /* Truncate the name to make the message fit. */                                       \
+            if (name_len > 0) {                                                                    \
+                ALOGW("Truncated name in %s: %s\n", __FUNCTION__, name);                           \
+                len =                                                                              \
+                    snprintf(buf, sizeof(buf),                                                     \
+                             ph "|%d|%d|%" PRIu64 "|%" PRIu64 sep_before_name "%.*s" value_format, \
+                             pid, tid, ts, tts, name_len, name, value);                            \
+            } else {                                                                               \
+                /* Data is still too long. Drop it. */                                             \
+                ALOGW("Data is too long in %s: %s\n", __FUNCTION__, name);                         \
+                len = 0;                                                                           \
+            }                                                                                      \
+        }                                                                                          \
+        if (len > 0) {                                                                             \
+            write(atrace_container_sock_fd, buf, len);                                             \
+        }                                                                                          \
+    }
 
-#define WRITE_MSG_IN_CONTAINER(ph, sep_before_name, value_format, name, value) { \
-    pthread_rwlock_rdlock(&atrace_container_sock_rwlock); \
-    if (atrace_container_sock_fd != -1) { \
-       WRITE_MSG_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, name, value); \
-    } \
-    pthread_rwlock_unlock(&atrace_container_sock_rwlock); \
-}
+#define WRITE_MSG_IN_CONTAINER(ph, sep_before_name, value_format, name, value)             \
+    {                                                                                      \
+        pthread_rwlock_rdlock(&atrace_container_sock_rwlock);                              \
+        if (atrace_container_sock_fd != -1) {                                              \
+            WRITE_MSG_IN_CONTAINER_LOCKED(ph, sep_before_name, value_format, name, value); \
+        }                                                                                  \
+        pthread_rwlock_unlock(&atrace_container_sock_rwlock);                              \
+    }
 
-void atrace_begin_body(const char* name)
-{
+void atrace_begin_body(const char* name) {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("B", "|", "%s", name, "");
         return;
@@ -170,8 +164,7 @@ void atrace_begin_body(const char* name)
     WRITE_MSG("B|%d|", "%s", name, "");
 }
 
-void atrace_end_body()
-{
+void atrace_end_body() {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("E", "", "%s", "", "");
         return;
@@ -182,8 +175,7 @@ void atrace_end_body()
     WRITE_MSG("E|%d", "%s", "", "");
 }
 
-void atrace_async_begin_body(const char* name, int32_t cookie)
-{
+void atrace_async_begin_body(const char* name, int32_t cookie) {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("S", "|", "|%d", name, cookie);
         return;
@@ -194,8 +186,7 @@ void atrace_async_begin_body(const char* name, int32_t cookie)
     WRITE_MSG("S|%d|", "|%" PRId32, name, cookie);
 }
 
-void atrace_async_end_body(const char* name, int32_t cookie)
-{
+void atrace_async_end_body(const char* name, int32_t cookie) {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("F", "|", "|%d", name, cookie);
         return;
@@ -206,8 +197,7 @@ void atrace_async_end_body(const char* name, int32_t cookie)
     WRITE_MSG("F|%d|", "|%" PRId32, name, cookie);
 }
 
-void atrace_int_body(const char* name, int32_t value)
-{
+void atrace_int_body(const char* name, int32_t value) {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("C", "|", "|%" PRId32, name, value);
         return;
@@ -218,8 +208,7 @@ void atrace_int_body(const char* name, int32_t value)
     WRITE_MSG("C|%d|", "|%" PRId32, name, value);
 }
 
-void atrace_int64_body(const char* name, int64_t value)
-{
+void atrace_int64_body(const char* name, int64_t value) {
     if (CC_LIKELY(atrace_use_container_sock)) {
         WRITE_MSG_IN_CONTAINER("C", "|", "|%" PRId64, name, value);
         return;

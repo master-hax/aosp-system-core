@@ -18,12 +18,12 @@
 
 // For gettid.
 #if defined(__APPLE__)
-#include "AvailabilityMacros.h"  // For MAC_OS_X_VERSION_MAX_ALLOWED
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "AvailabilityMacros.h"  // For MAC_OS_X_VERSION_MAX_ALLOWED
 #elif defined(__linux__) && !defined(__ANDROID__)
 #include <syscall.h>
 #include <unistd.h>
@@ -35,77 +35,68 @@
 #ifndef __ANDROID__
 pid_t gettid() {
 #if defined(__APPLE__)
-  uint64_t tid;
-  pthread_threadid_np(NULL, &tid);
-  return tid;
+    uint64_t tid;
+    pthread_threadid_np(NULL, &tid);
+    return tid;
 #elif defined(__linux__)
-  return syscall(__NR_gettid);
+    return syscall(__NR_gettid);
 #elif defined(_WIN32)
-  return GetCurrentThreadId();
+    return GetCurrentThreadId();
 #endif
 }
 #endif  // __ANDROID__
 
 #if !defined(_WIN32)
 
-void*  thread_store_get( thread_store_t*  store )
-{
-    if (!store->has_tls)
-        return NULL;
+void* thread_store_get(thread_store_t* store) {
+    if (!store->has_tls) return NULL;
 
-    return pthread_getspecific( store->tls );
+    return pthread_getspecific(store->tls);
 }
 
-extern void   thread_store_set( thread_store_t*          store,
-                                void*                    value,
-                                thread_store_destruct_t  destroy)
-{
-    pthread_mutex_lock( &store->lock );
+extern void thread_store_set(thread_store_t* store, void* value, thread_store_destruct_t destroy) {
+    pthread_mutex_lock(&store->lock);
     if (!store->has_tls) {
-        if (pthread_key_create( &store->tls, destroy) != 0) {
+        if (pthread_key_create(&store->tls, destroy) != 0) {
             pthread_mutex_unlock(&store->lock);
             return;
         }
         store->has_tls = 1;
     }
-    pthread_mutex_unlock( &store->lock );
+    pthread_mutex_unlock(&store->lock);
 
-    pthread_setspecific( store->tls, value );
+    pthread_setspecific(store->tls, value);
 }
 
-#else /* !defined(_WIN32) */
-void*  thread_store_get( thread_store_t*  store )
-{
-    if (!store->has_tls)
-        return NULL;
+#else  /* !defined(_WIN32) */
+void* thread_store_get(thread_store_t* store) {
+    if (!store->has_tls) return NULL;
 
-    return (void*) TlsGetValue( store->tls );
+    return (void*)TlsGetValue(store->tls);
 }
 
-void   thread_store_set( thread_store_t*          store,
-                         void*                    value,
-                         thread_store_destruct_t  destroy )
-{
+void thread_store_set(thread_store_t* store, void* value, thread_store_destruct_t destroy) {
     /* XXX: can't use destructor on thread exit */
     if (!store->lock_init) {
         store->lock_init = -1;
-        InitializeCriticalSection( &store->lock );
+        InitializeCriticalSection(&store->lock);
         store->lock_init = -2;
-    } else while (store->lock_init != -2) {
-        Sleep(10); /* 10ms */
-    }
+    } else
+        while (store->lock_init != -2) {
+            Sleep(10); /* 10ms */
+        }
 
-    EnterCriticalSection( &store->lock );
+    EnterCriticalSection(&store->lock);
     if (!store->has_tls) {
         store->tls = TlsAlloc();
         if (store->tls == TLS_OUT_OF_INDEXES) {
-            LeaveCriticalSection( &store->lock );
+            LeaveCriticalSection(&store->lock);
             return;
         }
         store->has_tls = 1;
     }
-    LeaveCriticalSection( &store->lock );
+    LeaveCriticalSection(&store->lock);
 
-    TlsSetValue( store->tls, value );
+    TlsSetValue(store->tls, value);
 }
 #endif /* !defined(_WIN32) */

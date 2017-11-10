@@ -20,14 +20,12 @@ static pthread_once_t atrace_once_control = PTHREAD_ONCE_INIT;
 
 // Set whether tracing is enabled in this process.  This is used to prevent
 // the Zygote process from tracing.
-void atrace_set_tracing_enabled(bool enabled)
-{
+void atrace_set_tracing_enabled(bool enabled) {
     atomic_store_explicit(&atrace_is_enabled, enabled, memory_order_release);
     atrace_update_tags();
 }
 
-static void atrace_init_once()
-{
+static void atrace_init_once() {
     atrace_marker_fd = open("/sys/kernel/debug/tracing/trace_marker", O_WRONLY | O_CLOEXEC);
     if (atrace_marker_fd == -1) {
         ALOGE("Error opening trace file: %s (%d)", strerror(errno), errno);
@@ -41,37 +39,30 @@ done:
     atomic_store_explicit(&atrace_is_ready, true, memory_order_release);
 }
 
-void atrace_setup()
-{
+void atrace_setup() {
     pthread_once(&atrace_once_control, atrace_init_once);
 }
 
-void atrace_begin_body(const char* name)
-{
+void atrace_begin_body(const char* name) {
     WRITE_MSG("B|%d|", "%s", name, "");
 }
 
-void atrace_end_body()
-{
+void atrace_end_body() {
     WRITE_MSG("E|%d", "%s", "", "");
 }
 
-void atrace_async_begin_body(const char* name, int32_t cookie)
-{
+void atrace_async_begin_body(const char* name, int32_t cookie) {
     WRITE_MSG("S|%d|", "|%" PRId32, name, cookie);
 }
 
-void atrace_async_end_body(const char* name, int32_t cookie)
-{
+void atrace_async_end_body(const char* name, int32_t cookie) {
     WRITE_MSG("F|%d|", "|%" PRId32, name, cookie);
 }
 
-void atrace_int_body(const char* name, int32_t value)
-{
+void atrace_int_body(const char* name, int32_t value) {
     WRITE_MSG("C|%d|", "|%" PRId32, name, value);
 }
 
-void atrace_int64_body(const char* name, int64_t value)
-{
+void atrace_int64_body(const char* name, int64_t value) {
     WRITE_MSG("C|%d|", "|%" PRId64, name, value);
 }

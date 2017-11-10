@@ -51,8 +51,7 @@ SOCKET socket_network_client(const char* host, int port, int type) {
     }
 
     // Now create and connect the socket.
-    SOCKET sock = socket(address->ai_family, address->ai_socktype,
-                         address->ai_protocol);
+    SOCKET sock = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
     if (sock == INVALID_SOCKET) {
         freeaddrinfo(address);
         return INVALID_SOCKET;

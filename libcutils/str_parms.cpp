@@ -39,37 +39,37 @@
  * is enough to confuse the clang static analyzer.
  */
 #ifdef __clang_analyzer__
-static void *released_pointer;
-#define RELEASE_OWNERSHIP(x) { released_pointer = x; released_pointer = 0; }
+static void* released_pointer;
+#define RELEASE_OWNERSHIP(x)  \
+    {                         \
+        released_pointer = x; \
+        released_pointer = 0; \
+    }
 #else
 #define RELEASE_OWNERSHIP(x)
 #endif
 
 struct str_parms {
-    Hashmap *map;
+    Hashmap* map;
 };
 
-
-static bool str_eq(void *key_a, void *key_b)
-{
-    return !strcmp((const char *)key_a, (const char *)key_b);
+static bool str_eq(void* key_a, void* key_b) {
+    return !strcmp((const char*)key_a, (const char*)key_b);
 }
 
 /* use djb hash unless we find it inadequate */
 #ifdef __clang__
 __attribute__((no_sanitize("integer")))
 #endif
-static int str_hash_fn(void *str)
-{
+static int
+str_hash_fn(void* str) {
     uint32_t hash = 5381;
 
-    for (char* p = static_cast<char*>(str); p && *p; p++)
-        hash = ((hash << 5) + hash) + *p;
+    for (char* p = static_cast<char*>(str); p && *p; p++) hash = ((hash << 5) + hash) + *p;
     return (int)hash;
 }
 
-struct str_parms *str_parms_create(void)
-{
+struct str_parms* str_parms_create(void) {
     str_parms* s = static_cast<str_parms*>(calloc(1, sizeof(str_parms)));
     if (!s) return NULL;
 
@@ -83,12 +83,11 @@ struct str_parms *str_parms_create(void)
 }
 
 struct remove_ctxt {
-    struct str_parms *str_parms;
-    const char *key;
+    struct str_parms* str_parms;
+    const char* key;
 };
 
-static bool remove_pair(void *key, void *value, void *context)
-{
+static bool remove_pair(void* key, void* value, void* context) {
     remove_ctxt* ctxt = static_cast<remove_ctxt*>(context);
     bool should_continue;
 
@@ -117,17 +116,14 @@ do_remove:
     return should_continue;
 }
 
-void str_parms_del(struct str_parms *str_parms, const char *key)
-{
+void str_parms_del(struct str_parms* str_parms, const char* key) {
     struct remove_ctxt ctxt = {
-        .str_parms = str_parms,
-        .key = key,
+        .str_parms = str_parms, .key = key,
     };
     hashmapForEach(str_parms->map, remove_pair, &ctxt);
 }
 
-void str_parms_destroy(struct str_parms *str_parms)
-{
+void str_parms_destroy(struct str_parms* str_parms) {
     struct remove_ctxt ctxt = {
         .str_parms = str_parms,
     };
@@ -137,33 +133,29 @@ void str_parms_destroy(struct str_parms *str_parms)
     free(str_parms);
 }
 
-struct str_parms *str_parms_create_str(const char *_string)
-{
-    struct str_parms *str_parms;
-    char *str;
-    char *kvpair;
-    char *tmpstr;
+struct str_parms* str_parms_create_str(const char* _string) {
+    struct str_parms* str_parms;
+    char* str;
+    char* kvpair;
+    char* tmpstr;
     int items = 0;
 
     str_parms = str_parms_create();
-    if (!str_parms)
-        goto err_create_str_parms;
+    if (!str_parms) goto err_create_str_parms;
 
     str = strdup(_string);
-    if (!str)
-        goto err_strdup;
+    if (!str) goto err_strdup;
 
     ALOGV("%s: source string == '%s'\n", __func__, _string);
 
     kvpair = strtok_r(str, ";", &tmpstr);
     while (kvpair && *kvpair) {
-        char *eq = strchr(kvpair, '='); /* would love strchrnul */
-        char *value;
-        char *key;
-        void *old_val;
+        char* eq = strchr(kvpair, '='); /* would love strchrnul */
+        char* value;
+        char* key;
+        void* old_val;
 
-        if (eq == kvpair)
-            goto next_pair;
+        if (eq == kvpair) goto next_pair;
 
         if (eq) {
             key = strndup(kvpair, eq - kvpair);
@@ -187,12 +179,11 @@ struct str_parms *str_parms_create_str(const char *_string)
         }
 
         items++;
-next_pair:
+    next_pair:
         kvpair = strtok_r(NULL, ";", &tmpstr);
     }
 
-    if (!items)
-        ALOGV("%s: no items found in string\n", __func__);
+    if (!items) ALOGV("%s: no items found in string\n", __func__);
 
     free(str);
 
@@ -204,12 +195,10 @@ err_create_str_parms:
     return NULL;
 }
 
-int str_parms_add_str(struct str_parms *str_parms, const char *key,
-                      const char *value)
-{
-    void *tmp_key = NULL;
-    void *tmp_val = NULL;
-    void *old_val = NULL;
+int str_parms_add_str(struct str_parms* str_parms, const char* key, const char* value) {
+    void* tmp_key = NULL;
+    void* tmp_val = NULL;
+    void* old_val = NULL;
 
     // strdup and hashmapPut both set errno on failure.
     // Set errno to 0 so we can recognize whether anything went wrong.
@@ -252,96 +241,76 @@ clean_up:
     return result;
 }
 
-int str_parms_add_int(struct str_parms *str_parms, const char *key, int value)
-{
+int str_parms_add_int(struct str_parms* str_parms, const char* key, int value) {
     char val_str[12];
     int ret;
 
     ret = snprintf(val_str, sizeof(val_str), "%d", value);
-    if (ret < 0)
-        return -EINVAL;
+    if (ret < 0) return -EINVAL;
 
     ret = str_parms_add_str(str_parms, key, val_str);
     return ret;
 }
 
-int str_parms_add_float(struct str_parms *str_parms, const char *key,
-                        float value)
-{
+int str_parms_add_float(struct str_parms* str_parms, const char* key, float value) {
     char val_str[23];
     int ret;
 
     ret = snprintf(val_str, sizeof(val_str), "%.10f", value);
-    if (ret < 0)
-        return -EINVAL;
+    if (ret < 0) return -EINVAL;
 
     ret = str_parms_add_str(str_parms, key, val_str);
     return ret;
 }
 
-int str_parms_has_key(struct str_parms *str_parms, const char *key) {
-    return hashmapGet(str_parms->map, (void *)key) != NULL;
+int str_parms_has_key(struct str_parms* str_parms, const char* key) {
+    return hashmapGet(str_parms->map, (void*)key) != NULL;
 }
 
-int str_parms_get_str(struct str_parms *str_parms, const char *key, char *val,
-                      int len)
-{
+int str_parms_get_str(struct str_parms* str_parms, const char* key, char* val, int len) {
     // TODO: hashmapGet should take a const* key.
     char* value = static_cast<char*>(hashmapGet(str_parms->map, (void*)key));
-    if (value)
-        return strlcpy(val, value, len);
+    if (value) return strlcpy(val, value, len);
 
     return -ENOENT;
 }
 
-int str_parms_get_int(struct str_parms *str_parms, const char *key, int *val)
-{
-    char *end;
+int str_parms_get_int(struct str_parms* str_parms, const char* key, int* val) {
+    char* end;
 
     // TODO: hashmapGet should take a const* key.
     char* value = static_cast<char*>(hashmapGet(str_parms->map, (void*)key));
-    if (!value)
-        return -ENOENT;
+    if (!value) return -ENOENT;
 
     *val = (int)strtol(value, &end, 0);
-    if (*value != '\0' && *end == '\0')
-        return 0;
+    if (*value != '\0' && *end == '\0') return 0;
 
     return -EINVAL;
 }
 
-int str_parms_get_float(struct str_parms *str_parms, const char *key,
-                        float *val)
-{
+int str_parms_get_float(struct str_parms* str_parms, const char* key, float* val) {
     float out;
-    char *end;
+    char* end;
 
     // TODO: hashmapGet should take a const* key.
     char* value = static_cast<char*>(hashmapGet(str_parms->map, (void*)(key)));
-    if (!value)
-        return -ENOENT;
+    if (!value) return -ENOENT;
 
     out = strtof(value, &end);
-    if (*value == '\0' || *end != '\0')
-        return -EINVAL;
+    if (*value == '\0' || *end != '\0') return -EINVAL;
 
     *val = out;
     return 0;
 }
 
-static bool combine_strings(void *key, void *value, void *context)
-{
+static bool combine_strings(void* key, void* value, void* context) {
     char** old_str = static_cast<char**>(context);
-    char *new_str;
+    char* new_str;
     int ret;
 
-    ret = asprintf(&new_str, "%s%s%s=%s",
-                   *old_str ? *old_str : "",
-                   *old_str ? ";" : "",
-                   (char *)key,
-                   (char *)value);
-    if (*old_str)
-        free(*old_str);
+    ret = asprintf(&new_str, "%s%s%s=%s", *old_str ? *old_str : "", *old_str ? ";" : "", (char*)key,
+                   (char*)value);
+    if (*old_str) free(*old_str);
 
     if (ret >= 0) {
         *old_str = new_str;
@@ -352,9 +321,8 @@ static bool combine_strings(void *key, void *value, void *context)
     return false;
 }
 
-char *str_parms_to_str(struct str_parms *str_parms)
-{
-    char *str = NULL;
+char* str_parms_to_str(struct str_parms* str_parms) {
+    char* str = NULL;
 
     if (hashmapSize(str_parms->map) > 0)
         hashmapForEach(str_parms->map, combine_strings, &str);
@@ -363,13 +331,11 @@ char *str_parms_to_str(struct str_parms *str_parms)
     return str;
 }
 
-static bool dump_entry(void *key, void *value, void *context UNUSED)
-{
-    ALOGI("key: '%s' value: '%s'\n", (char *)key, (char *)value);
+static bool dump_entry(void* key, void* value, void* context UNUSED) {
+    ALOGI("key: '%s' value: '%s'\n", (char*)key, (char*)value);
     return true;
 }
 
-void str_parms_dump(struct str_parms *str_parms)
-{
+void str_parms_dump(struct str_parms* str_parms) {
     hashmapForEach(str_parms->map, dump_entry, str_parms);
 }

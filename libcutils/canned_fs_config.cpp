@@ -23,8 +23,8 @@
 #include <string.h>
 
 #include <private/android_filesystem_config.h>
-#include <private/fs_config.h>
 #include <private/canned_fs_config.h>
+#include <private/fs_config.h>
 
 typedef struct {
     const char* path;
@@ -59,8 +59,8 @@ int load_canned_fs_config(const char* fn) {
         bool rootdir;
 
         while (canned_used >= canned_alloc) {
-            canned_alloc = (canned_alloc+1) * 2;
-            canned_data = (Path*) realloc(canned_data, canned_alloc * sizeof(Path));
+            canned_alloc = (canned_alloc + 1) * 2;
+            canned_data = (Path*)realloc(canned_data, canned_alloc * sizeof(Path));
         }
         p = canned_data + canned_used;
         if (line[0] == '/') line++;
@@ -68,13 +68,13 @@ int load_canned_fs_config(const char* fn) {
         p->path = strdup(rootdir ? "" : strtok(line, " "));
         p->uid = atoi(strtok(rootdir ? line : NULL, " "));
         p->gid = atoi(strtok(NULL, " "));
-        p->mode = strtol(strtok(NULL, " "), NULL, 8);   // mode is in octal
+        p->mode = strtol(strtok(NULL, " "), NULL, 8);  // mode is in octal
         p->capabilities = 0;
 
         do {
             token = strtok(NULL, " ");
             if (token && strncmp(token, "capabilities=", 13) == 0) {
-                p->capabilities = strtoll(token+13, NULL, 0);
+                p->capabilities = strtoll(token + 13, NULL, 0);
                 break;
             }
         } while (token);
@@ -92,13 +92,13 @@ int load_canned_fs_config(const char* fn) {
 
 static const int kDebugCannedFsConfig = 0;
 
-void canned_fs_config(const char* path, int dir, const char* target_out_path,
-                      unsigned* uid, unsigned* gid, unsigned* mode, uint64_t* capabilities) {
+void canned_fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid,
+                      unsigned* gid, unsigned* mode, uint64_t* capabilities) {
     Path key, *p;
 
     key.path = path;
-    if (path[0] == '/') key.path++; // canned paths lack the leading '/'
-    p = (Path*) bsearch(&key, canned_data, canned_used, sizeof(Path), path_compare);
+    if (path[0] == '/') key.path++;  // canned paths lack the leading '/'
+    p = (Path*)bsearch(&key, canned_data, canned_used, sizeof(Path), path_compare);
     if (p == NULL) {
         fprintf(stderr, "failed to find [%s] in canned fs_config\n", path);
         exit(1);
@@ -120,10 +120,7 @@ void canned_fs_config(const char* path, int dir, const char* target_out_path,
         if (c_gid != *gid) printf("%s gid %d %d\n", path, *gid, c_gid);
         if (c_mode != *mode) printf("%s mode 0%o 0%o\n", path, *mode, c_mode);
         if (c_capabilities != *capabilities) {
-            printf("%s capabilities %" PRIx64 " %" PRIx64 "\n",
-                path,
-                *capabilities,
-                c_capabilities);
+            printf("%s capabilities %" PRIx64 " %" PRIx64 "\n", path, *capabilities, c_capabilities);
         }
     }
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#include <cutils/hashmap.h>
 #include <assert.h>
-#include <errno.h>
+#include <cutils/hashmap.h>
 #include <cutils/threads.h>
+#include <errno.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <sys/types.h>
 
 typedef struct Entry Entry;
@@ -36,26 +36,26 @@ struct Hashmap {
     size_t bucketCount;
     int (*hash)(void* key);
     bool (*equals)(void* keyA, void* keyB);
-    mutex_t lock; 
+    mutex_t lock;
     size_t size;
 };
 
-Hashmap* hashmapCreate(size_t initialCapacity,
-        int (*hash)(void* key), bool (*equals)(void* keyA, void* keyB)) {
+Hashmap* hashmapCreate(size_t initialCapacity, int (*hash)(void* key),
+                       bool (*equals)(void* keyA, void* keyB)) {
     assert(hash != NULL);
     assert(equals != NULL);
-    
+
     Hashmap* map = static_cast<Hashmap*>(malloc(sizeof(Hashmap)));
     if (map == NULL) {
         return NULL;
     }
-    
+
     // 0.75 load factor.
     size_t minimumBucketCount = initialCapacity * 4 / 3;
     map->bucketCount = 1;
     while (map->bucketCount <= minimumBucketCount) {
         // Bucket count must be power of 2.
-        map->bucketCount <<= 1; 
+        map->bucketCount <<= 1;
     }
 
     map->buckets = static_cast<Entry**>(calloc(map->bucketCount, sizeof(Entry*)));
@@ -63,14 +63,14 @@ Hashmap* hashmapCreate(size_t initialCapacity,
         free(map);
         return NULL;
     }
-    
+
     map->size = 0;
 
     map->hash = hash;
     map->equals = equals;
-    
+
     mutex_init(&map->lock);
-    
+
     return map;
 }
 
@@ -80,16 +80,17 @@ Hashmap* hashmapCreate(size_t initialCapacity,
 #ifdef __clang__
 __attribute__((no_sanitize("integer")))
 #endif
-static inline int hashKey(Hashmap* map, void* key) {
+static inline int
+hashKey(Hashmap* map, void* key) {
     int h = map->hash(key);
 
     // We apply this secondary hashing discovered by Doug Lea to defend
     // against bad hashes.
     h += ~(h << 9);
-    h ^= (((unsigned int) h) >> 14);
+    h ^= (((unsigned int)h) >> 14);
     h += (h << 4);
-    h ^= (((unsigned int) h) >> 10);
-       
+    h ^= (((unsigned int)h) >> 10);
+
     return h;
 }
 
@@ -98,7 +99,7 @@ size_t hashmapSize(Hashmap* map) {
 }
 
 static inline size_t calculateIndex(size_t bucketCount, int hash) {
-    return ((size_t) hash) & (bucketCount - 1);
+    return ((size_t)hash) & (bucketCount - 1);
 }
 
 static void expandIfNecessary(Hashmap* map) {
@@ -111,7 +112,7 @@ static void expandIfNecessary(Hashmap* map) {
             // Abort expansion.
             return;
         }
-        
+
         // Move over existing entries.
         size_t i;
         for (i = 0; i < map->bucketCount; i++) {
@@ -161,7 +162,7 @@ __attribute__((no_sanitize("integer")))
 /* FIXME: relies on signed integer overflow, which is undefined behavior */
 int hashmapHash(void* key, size_t keySize) {
     int h = keySize;
-    char* data = (char*) key;
+    char* data = (char*)key;
     size_t i;
     for (i = 0; i < keySize; i++) {
         h = h * 31 + *data;
@@ -183,7 +184,7 @@ static Entry* createEntry(void* key, int hash, void* value) {
 }
 
 static inline bool equalKeys(void* keyA, int hashA, void* keyB, int hashB,
-        bool (*equals)(void*, void*)) {
+                             bool (*equals)(void*, void*)) {
     if (keyA == keyB) {
         return true;
     }
@@ -255,8 +256,8 @@ bool hashmapContainsKey(Hashmap* map, void* key) {
     return false;
 }
 
-void* hashmapMemoize(Hashmap* map, void* key, 
-        void* (*initialValue)(void* key, void* context), void* context) {
+void* hashmapMemoize(Hashmap* map, void* key, void* (*initialValue)(void* key, void* context),
+                     void* context) {
     int hash = hashKey(map, key);
     size_t index = calculateIndex(map->bucketCount, hash);
 
@@ -310,14 +311,13 @@ void* hashmapRemove(Hashmap* map, void* key) {
     return NULL;
 }
 
-void hashmapForEach(Hashmap* map, 
-        bool (*callback)(void* key, void* value, void* context),
-        void* context) {
+void hashmapForEach(Hashmap* map, bool (*callback)(void* key, void* value, void* context),
+                    void* context) {
     size_t i;
     for (i = 0; i < map->bucketCount; i++) {
         Entry* entry = map->buckets[i];
         while (entry != NULL) {
-            Entry *next = entry->next;
+            Entry* next = entry->next;
             if (!callback(entry->key, entry->value, context)) {
                 return;
             }
@@ -348,11 +348,11 @@ size_t hashmapCountCollisions(Hashmap* map) {
 
 int hashmapIntHash(void* key) {
     // Return the key value itself.
-    return *((int*) key);
+    return *((int*)key);
 }
 
 bool hashmapIntEquals(void* keyA, void* keyB) {
-    int a = *((int*) keyA);
-    int b = *((int*) keyB);
+    int a = *((int*)keyA);
+    int b = *((int*)keyB);
     return a == b;
 }

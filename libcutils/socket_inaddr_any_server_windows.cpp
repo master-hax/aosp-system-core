@@ -36,7 +36,7 @@ extern bool initialize_windows_sockets();
 
 SOCKET socket_inaddr_any_server(int port, int type) {
     if (!initialize_windows_sockets()) {
-      return INVALID_SOCKET;
+        return INVALID_SOCKET;
     }
 
     SOCKET sock = socket(AF_INET6, type, 0);
@@ -50,10 +50,10 @@ SOCKET socket_inaddr_any_server(int port, int type) {
     // (2) https://msdn.microsoft.com/en-us/library/windows/desktop/bb513665(v=vs.85).aspx.
     int exclusive = 1;
     DWORD v6_only = 0;
-    if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&exclusive,
-                   sizeof(exclusive)) == SOCKET_ERROR ||
-        setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (char*)&v6_only,
-                   sizeof(v6_only)) == SOCKET_ERROR) {
+    if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&exclusive, sizeof(exclusive)) ==
+            SOCKET_ERROR ||
+        setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (char*)&v6_only, sizeof(v6_only)) ==
+            SOCKET_ERROR) {
         closesocket(sock);
         return INVALID_SOCKET;
     }

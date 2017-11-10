@@ -1,16 +1,16 @@
 /*
 ** Copyright 2007, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 
@@ -32,7 +32,8 @@
 #define __android_unused __attribute__((__unused__))
 #endif
 
-int android_set_ioprio(int pid __android_unused, IoSchedClass clazz __android_unused, int ioprio __android_unused) {
+int android_set_ioprio(int pid __android_unused, IoSchedClass clazz __android_unused,
+                       int ioprio __android_unused) {
 #if defined(__ANDROID__)
     if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, pid, ioprio | (clazz << IOPRIO_CLASS_SHIFT))) {
         return -1;
@@ -41,7 +42,7 @@ int android_set_ioprio(int pid __android_unused, IoSchedClass clazz __android_un
     return 0;
 }
 
-int android_get_ioprio(int pid __android_unused, IoSchedClass *clazz, int *ioprio) {
+int android_get_ioprio(int pid __android_unused, IoSchedClass* clazz, int* ioprio) {
 #if defined(__ANDROID__)
     int rc;
 

@@ -24,18 +24,17 @@
 
 #if defined(_WIN32)
 
-int socket_local_client(const char *name, int namespaceId, int type)
-{
+int socket_local_client(const char* name, int namespaceId, int type) {
     errno = ENOSYS;
     return -1;
 }
 
 #else /* !_WIN32 */
 
-#include <sys/socket.h>
-#include <sys/un.h>
 #include <sys/select.h>
+#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/un.h>
 
 #include "socket_local_unix.h"
 
@@ -44,16 +43,15 @@ int socket_local_client(const char *name, int namespaceId, int type)
 #define LISTEN_BACKLOG 4
 
 /* Documented in header file. */
-int socket_make_sockaddr_un(const char *name, int namespaceId, 
-        struct sockaddr_un *p_addr, socklen_t *alen)
-{
-    memset (p_addr, 0, sizeof (*p_addr));
+int socket_make_sockaddr_un(const char* name, int namespaceId, struct sockaddr_un* p_addr,
+                            socklen_t* alen) {
+    memset(p_addr, 0, sizeof(*p_addr));
     size_t namelen;
 
     switch (namespaceId) {
         case ANDROID_SOCKET_NAMESPACE_ABSTRACT:
 #if defined(__linux__)
-            namelen  = strlen(name);
+            namelen = strlen(name);
 
             // Test with length +1 for the *initial* '\0'.
             if ((namelen + 1) > sizeof(p_addr->sun_path)) {
@@ -64,7 +62,7 @@ int socket_make_sockaddr_un(const char *name, int namespaceId,
              * Note: The path in this case is *not* supposed to be
              * '\0'-terminated. ("man 7 unix" for the gory details.)
              */
-            
+
             p_addr->sun_path[0] = 0;
             memcpy(p_addr->sun_path + 1, name, namelen);
 #else
@@ -72,38 +70,35 @@ int socket_make_sockaddr_un(const char *name, int namespaceId,
 
             namelen = strlen(name) + strlen(FILESYSTEM_SOCKET_PREFIX);
             /* unix_path_max appears to be missing on linux */
-            if (namelen > sizeof(*p_addr) 
-                    - offsetof(struct sockaddr_un, sun_path) - 1) {
+            if (namelen > sizeof(*p_addr) - offsetof(struct sockaddr_un, sun_path) - 1) {
                 goto error;
             }
 
             strcpy(p_addr->sun_path, FILESYSTEM_SOCKET_PREFIX);
             strcat(p_addr->sun_path, name);
 #endif
-        break;
+            break;
 
         case ANDROID_SOCKET_NAMESPACE_RESERVED:
             namelen = strlen(name) + strlen(ANDROID_RESERVED_SOCKET_PREFIX);
             /* unix_path_max appears to be missing on linux */
-            if (namelen > sizeof(*p_addr) 
-                    - offsetof(struct sockaddr_un, sun_path) - 1) {
+            if (namelen > sizeof(*p_addr) - offsetof(struct sockaddr_un, sun_path) - 1) {
                 goto error;
             }
 
             strcpy(p_addr->sun_path, ANDROID_RESERVED_SOCKET_PREFIX);
             strcat(p_addr->sun_path, name);
-        break;
+            break;
 
         case ANDROID_SOCKET_NAMESPACE_FILESYSTEM:
             namelen = strlen(name);
             /* unix_path_max appears to be missing on linux */
-            if (namelen > sizeof(*p_addr) 
-                    - offsetof(struct sockaddr_un, sun_path) - 1) {
+            if (namelen > sizeof(*p_addr) - offsetof(struct sockaddr_un, sun_path) - 1) {
                 goto error;
             }
 
             strcpy(p_addr->sun_path, name);
-        break;
+            break;
         default:
             // invalid namespace id
             return -1;
@@ -120,12 +115,10 @@ error:
  * connect to peer named "name" on fd
  * returns same fd or -1 on error.
  * fd is not closed on error. that's your job.
- * 
+ *
  * Used by AndroidSocketImpl
  */
-int socket_local_client_connect(int fd, const char *name, int namespaceId, 
-        int type UNUSED)
-{
+int socket_local_client_connect(int fd, const char* name, int namespaceId, int type UNUSED) {
     struct sockaddr_un addr;
     socklen_t alen;
     int err;
@@ -136,7 +129,7 @@ int socket_local_client_connect(int fd, const char *name, int namespaceId,
         goto error;
     }
 
-    if(connect(fd, (struct sockaddr *) &addr, alen) < 0) {
+    if (connect(fd, (struct sockaddr*)&addr, alen) < 0) {
         goto error;
     }
 
@@ -146,18 +139,17 @@ error:
     return -1;
 }
 
-/** 
+/**
  * connect to peer named "name"
  * returns fd or -1 on error
  */
-int socket_local_client(const char *name, int namespaceId, int type)
-{
+int socket_local_client(const char* name, int namespaceId, int type) {
     int s;
 
     s = socket(AF_LOCAL, type, 0);
-    if(s < 0) return -1;
+    if (s < 0) return -1;
 
-    if ( 0 > socket_local_client_connect(s, name, namespaceId, type)) {
+    if (0 > socket_local_client_connect(s, name, namespaceId, type)) {
         close(s);
         return -1;
     }
