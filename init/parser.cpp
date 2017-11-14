@@ -44,10 +44,7 @@ void Parser::ParseData(const std::string& filename, const std::string& data) {
     std::vector<char> data_copy(data.begin(), data.end());
     data_copy.push_back('\0');
 
-    parse_state state;
-    state.line = 0;
-    state.ptr = &data_copy[0];
-    state.nexttoken = 0;
+    parse_state state = init_parser(data_copy.data());
 
     SectionParser* section_parser = nullptr;
     std::vector<std::string> args;
