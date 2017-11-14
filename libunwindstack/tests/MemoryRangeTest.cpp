@@ -28,7 +28,7 @@
 
 namespace unwindstack {
 
-TEST(MemoryRangeTest, read) {
+TEST(MemoryRangeTest, ReadFully) {
   std::vector<uint8_t> src(1024);
   memset(src.data(), 0x4c, 1024);
   MemoryFake* memory_fake = new MemoryFake;
@@ -39,6 +39,23 @@ TEST(MemoryRangeTest, read) {
 
   std::vector<uint8_t> dst(1024);
   ASSERT_TRUE(range.ReadFully(0, dst.data(), src.size()));
+  for (size_t i = 0; i < 1024; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+}
+
+TEST(MemoryRangeTest, ReadFully_offset) {
+  std::vector<uint8_t> src(1024);
+  memset(src.data(), 0x4c, 1024);
+  MemoryFake* memory_fake = new MemoryFake;
+  std::shared_ptr<Memory> process_memory(memory_fake);
+  memory_fake->SetMemory(9001, src);
+
+  size_t offset = 4096;
+  MemoryRange range(process_memory, 9001, src.size(), offset);
+
+  std::vector<uint8_t> dst(1024);
+  ASSERT_TRUE(range.ReadFully(offset, dst.data(), src.size()));
   for (size_t i = 0; i < 1024; i++) {
     ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
   }
@@ -68,12 +85,45 @@ TEST(MemoryRangeTest, read_near_limit) {
   ASSERT_TRUE(range.ReadFully(1020, dst.data(), 4));
 }
 
+TEST(MemoryRangeTest, read_near_limit_offset) {
+  std::vector<uint8_t> src(4096);
+  memset(src.data(), 0x4c, 4096);
+  MemoryFake* memory_fake = new MemoryFake;
+  std::shared_ptr<Memory> process_memory(memory_fake);
+  memory_fake->SetMemory(1000, src);
+
+  size_t offset = 4096;
+  MemoryRange range(process_memory, 1000, 1024, offset);
+
+  std::vector<uint8_t> dst(1024);
+  ASSERT_TRUE(range.ReadFully(offset + 1020, dst.data(), 4));
+  for (size_t i = 0; i < 4; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+
+  // Verify that reads outside of the range will fail.
+  ASSERT_FALSE(range.ReadFully(offset + 1020, dst.data(), 5));
+  ASSERT_FALSE(range.ReadFully(offset + 1024, dst.data(), 1));
+  ASSERT_FALSE(range.ReadFully(offset + 1024, dst.data(), 1024));
+
+  // Verify that reading up to the end works.
+  ASSERT_TRUE(range.ReadFully(offset + 1020, dst.data(), 4));
+}
+
 TEST(MemoryRangeTest, read_overflow) {
   std::vector<uint8_t> buffer(100);
 
   std::shared_ptr<Memory> process_memory(new MemoryFakeAlwaysReadZero);
   std::unique_ptr<MemoryRange> overflow(new MemoryRange(process_memory, 100, 200, 0));
   ASSERT_FALSE(overflow->ReadFully(UINT64_MAX - 10, buffer.data(), 100));
+}
+
+TEST(MemoryRangeTest, read_overfow_offset) {
+  std::vector<uint8_t> buffer(100);
+
+  std::shared_ptr<Memory> process_memory(new MemoryFakeAlwaysReadZero);
+  std::unique_ptr<MemoryRange> overflow(new MemoryRange(process_memory, 100, 200, 1024));
+  ASSERT_FALSE(overflow->ReadFully(UINT64_MAX - 1024 - 10, buffer.data(), 100));
 }
 
 TEST(MemoryRangeTest, Read) {
@@ -86,6 +136,22 @@ TEST(MemoryRangeTest, Read) {
   MemoryRange range(process_memory, 1000, 1024, 0);
   std::vector<uint8_t> dst(1024);
   ASSERT_EQ(4U, range.Read(1020, dst.data(), 1024));
+  for (size_t i = 0; i < 4; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+}
+
+TEST(MemoryRangeTest, Read_offset) {
+  std::vector<uint8_t> src(4096);
+  memset(src.data(), 0x4c, 4096);
+  MemoryFake* memory_fake = new MemoryFake;
+  std::shared_ptr<Memory> process_memory(memory_fake);
+  memory_fake->SetMemory(1000, src);
+
+  size_t offset = 4096;
+  MemoryRange range(process_memory, 1000, 1024, offset);
+  std::vector<uint8_t> dst(1024);
+  ASSERT_EQ(4U, range.Read(offset + 1020, dst.data(), 1024));
   for (size_t i = 0; i < 4; i++) {
     ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
   }
