@@ -142,3 +142,4 @@
 
 # NOTE - the range 1000000-2000000 is reserved for partners and others who
 # want to define their own log tags without conflicting with the core platform.
+1990000000 stats_log (subtag|3) (data|4)
