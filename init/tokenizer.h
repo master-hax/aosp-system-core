@@ -32,6 +32,7 @@ struct parse_state
     int nexttoken;
 };
 
+parse_state init_parser(char* text);
 int next_token(struct parse_state *state);
 
 }  // namespace init
