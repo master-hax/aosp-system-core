@@ -3,6 +3,12 @@
 namespace android {
 namespace init {
 
+parse_state init_parser(char* text) {
+    return {
+        .ptr = text, .text = nullptr, .line = 0, .nexttoken = 0,
+    };
+}
+
 int next_token(struct parse_state *state)
 {
     char *x = state->ptr;
