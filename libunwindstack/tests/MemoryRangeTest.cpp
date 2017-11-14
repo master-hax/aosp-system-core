@@ -28,7 +28,7 @@
 
 namespace unwindstack {
 
-TEST(MemoryRangeTest, read) {
+TEST(MemoryRangeTest, ReadFully) {
   std::vector<uint8_t> src(1024);
   memset(src.data(), 0x4c, 1024);
   MemoryFake* memory_fake = new MemoryFake;
@@ -42,6 +42,27 @@ TEST(MemoryRangeTest, read) {
   for (size_t i = 0; i < 1024; i++) {
     ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
   }
+}
+
+TEST(MemoryRangeTest, ReadFully_offset) {
+  std::vector<uint8_t> src(1024);
+  memset(src.data(), 0x4c, 1024);
+  MemoryFake* memory_fake = new MemoryFake;
+  std::shared_ptr<Memory> process_memory(memory_fake);
+  memory_fake->SetMemory(9001, src);
+
+  size_t offset = 4096;
+  MemoryRange range(process_memory, 9001, src.size(), offset);
+
+  std::vector<uint8_t> dst(1024);
+  ASSERT_TRUE(range.ReadFully(offset, dst.data(), src.size()));
+  for (size_t i = 0; i < 1024; i++) {
+    ASSERT_EQ(0x4cU, dst[i]) << "Failed at byte " << i;
+  }
+
+  char buf;
+  ASSERT_EQ(0U, range.Read(offset - 1, &buf, 1));
+  ASSERT_EQ(0U, range.Read(offset + src.size(), &buf, 1));
 }
 
 TEST(MemoryRangeTest, read_near_limit) {
