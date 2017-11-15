@@ -100,6 +100,7 @@ static struct flag_list fs_mgr_flags[] = {
     {"quota", MF_QUOTA},
     {"eraseblk=", MF_ERASEBLKSIZE},
     {"logicalblk=", MF_LOGICALBLKSIZE},
+    {"visible", MF_VISIBLE},
     {"defaults", 0},
     {0, 0},
 };
@@ -899,4 +900,8 @@ int fs_mgr_is_latemount(const struct fstab_rec* fstab) {
 
 int fs_mgr_is_quota(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_QUOTA;
+}
+
+int fs_mgr_is_visible(const struct fstab_rec* fstab) {
+    return fstab->fs_mgr_flags & MF_VISIBLE;
 }

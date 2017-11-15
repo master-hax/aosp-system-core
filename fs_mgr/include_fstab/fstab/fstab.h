@@ -83,6 +83,7 @@ int fs_mgr_is_slotselect(const struct fstab_rec* fstab);
 int fs_mgr_is_nofail(const struct fstab_rec* fstab);
 int fs_mgr_is_latemount(const struct fstab_rec* fstab);
 int fs_mgr_is_quota(const struct fstab_rec* fstab);
+int fs_mgr_is_visible(const struct fstab_rec* fstab);
 
 std::string fs_mgr_get_slot_suffix();
 
