@@ -151,6 +151,11 @@ ifdef BOARD_USES_VENDORIMAGE
 else
   LOCAL_POST_INSTALL_CMD += ; ln -sf /system/vendor $(TARGET_ROOT_OUT)/vendor
 endif
+ifdef BOARD_USES_ODMIMAGE
+  LOCAL_POST_INSTALL_CMD += ; mkdir -p $(TARGET_ROOT_OUT)/odm
+else
+  LOCAL_POST_INSTALL_CMD += ; ln -sf /vendor/odm $(TARGET_ROOT_OUT)/odm
+endif
 ifdef BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE
   LOCAL_POST_INSTALL_CMD += ; mkdir -p $(TARGET_ROOT_OUT)/cache
 else
