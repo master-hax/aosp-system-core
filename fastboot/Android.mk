@@ -41,6 +41,12 @@ LOCAL_MODULE_HOST_OS := darwin linux windows
 LOCAL_CFLAGS += -Wall -Wextra -Werror -Wunreachable-code
 LOCAL_REQUIRED_MODULES := mke2fs e2fsdroid
 
+ifneq (,$filter linux darwin,$(HOST_OS))
+LOCAL_REQUIRED_MODULES += make_f2fs
+LOCAL_CFLAGS_linux := -DUSE_F2FS
+LOCAL_CFLAGS_darwin := -DUSE_F2FS
+endif
+
 LOCAL_SRC_FILES_linux := usb_linux.cpp
 LOCAL_STATIC_LIBRARIES_linux := libselinux
 
@@ -66,8 +72,6 @@ LOCAL_STATIC_LIBRARIES := \
     libcutils \
     libgtest_host \
 
-LOCAL_CFLAGS_linux := -DUSE_F2FS
-
 LOCAL_CXX_STL := libc++_static
 
 # Don't add anything here, we don't want additional shared dependencies
@@ -80,6 +84,9 @@ include $(BUILD_HOST_EXECUTABLE)
 my_dist_files := $(LOCAL_BUILT_MODULE)
 my_dist_files += $(HOST_OUT_EXECUTABLES)/mke2fs$(HOST_EXECUTABLE_SUFFIX)
 my_dist_files += $(HOST_OUT_EXECUTABLES)/e2fsdroid$(HOST_EXECUTABLE_SUFFIX)
+ifneq (,$filter linux darwin,$(HOST_OS))
+my_dist_files += $(HOST_OUT_EXECUTABLES)/make_f2fs$(HOST_EXECUTABLE_SUFFIX)
+endif
 $(call dist-for-goals,dist_files sdk win_sdk,$(my_dist_files))
 ifdef HOST_CROSS_OS
 # Archive fastboot.exe for win_sdk build.

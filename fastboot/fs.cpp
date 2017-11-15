@@ -154,10 +154,10 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     return 0;
 }
 
-#ifdef USE_F2FS
 static int generate_f2fs_image(const char* fileName, long long partSize, const std::string& initial_dir,
                                unsigned /* unused */, unsigned /* unused */)
 {
+#ifdef USE_F2FS
     const std::string exec_dir = android::base::GetExecutableDirectory();
     const std::string mkf2fs_path = exec_dir + "/make_f2fs";
     std::vector<const char*> mkf2fs_args = {mkf2fs_path.c_str()};
@@ -184,8 +184,11 @@ static int generate_f2fs_image(const char* fileName, long long partSize, const s
         return -1;
     }
     return 0;
-}
+#else
+    fprintf(stderr, "make_f2fs not supported on Windows\n");
+    return -1;
 #endif
+}
 
 static const struct fs_generator {
     const char* fs_type;  //must match what fastboot reports for partition type
@@ -196,9 +199,7 @@ static const struct fs_generator {
 
 } generators[] = {
     { "ext4", generate_ext4_image},
-#ifdef USE_F2FS
     { "f2fs", generate_f2fs_image},
-#endif
 };
 
 const struct fs_generator* fs_get_generator(const std::string& fs_type) {
