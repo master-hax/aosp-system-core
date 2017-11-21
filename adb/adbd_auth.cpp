@@ -44,7 +44,7 @@ static struct adisconnect usb_disconnect = { usb_disconnected, nullptr};
 static atransport* usb_transport;
 static bool needs_retry = false;
 
-bool auth_required = true;
+bool auth_required = false;
 
 bool adbd_auth_verify(const char* token, size_t token_size, const char* sig, int sig_len) {
     static constexpr const char* key_paths[] = { "/adb_keys", "/data/misc/adb/adb_keys", nullptr };
