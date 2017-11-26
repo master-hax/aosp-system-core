@@ -321,6 +321,9 @@ static int set_mmap_rnd_bits_action(const std::vector<std::string>& args)
         ret = 0;
     }
 #elif defined(__arm__) || defined(__i386__)
+#ifdef NOTSET_MMAP_RND_BITS_ACTION
+    return 0;
+#endif
     /* check to see if we're running on 64-bit kernel */
     bool h64 = !access(MMAP_RND_COMPAT_PATH, F_OK);
     /* supported 32-bit architecture must have 16 bits set */
@@ -402,6 +405,8 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
     } else if (android::base::StartsWith(key, "androidboot.")) {
         property_set(android::base::StringPrintf("ro.boot.%s", key.c_str() + 12).c_str(),
                      value.c_str());
+    } else if (key == "serialno") {
+        property_set(android::base::StringPrintf("ro.boot.%s", key.c_str()).c_str(), value.c_str());
     }
 }
 

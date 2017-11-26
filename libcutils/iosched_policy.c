@@ -56,3 +56,8 @@ int android_get_ioprio(int pid __android_unused, IoSchedClass *clazz, int *iopri
 #endif
     return 0;
 }
+
+int android_set_rt_ioprio(int tid, int rt) {
+    printf("android_set_rt_ioprio tid=%d,rt=%d\n", tid, rt);
+    return -1;
+}
