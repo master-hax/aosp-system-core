@@ -110,6 +110,16 @@ static bool is_debuggable() {
   return std::string(debuggable) == "1";
 }
 
+static std::string vndk_version_str() {
+  char version[1 + PROP_VALUE_MAX];
+  if (property_get("ro.vndk.version", version + 1, "") > 0 && strcmp(version + 1, "current") != 0) {
+    version[0] = '-';
+  } else {
+    version[0] = '\0';
+  }
+  return std::string(version);
+}
+
 class LibraryNamespaces {
  public:
   LibraryNamespaces() : initialized_(false) { }
@@ -307,11 +317,11 @@ class LibraryNamespaces {
     const char* android_root_env = getenv("ANDROID_ROOT");
     std::string root_dir = android_root_env != nullptr ? android_root_env : "/system";
     std::string public_native_libraries_system_config =
-            root_dir + kPublicNativeLibrariesSystemConfigPathFromRoot;
+        root_dir + kPublicNativeLibrariesSystemConfigPathFromRoot;
     std::string llndk_native_libraries_system_config =
-            root_dir + kLlndkNativeLibrariesSystemConfigPathFromRoot;
+        root_dir + kLlndkNativeLibrariesSystemConfigPathFromRoot + vndk_version_str();
     std::string vndksp_native_libraries_system_config =
-            root_dir + kVndkspNativeLibrariesSystemConfigPathFromRoot;
+        root_dir + kVndkspNativeLibrariesSystemConfigPathFromRoot + vndk_version_str();
 
     std::string error_msg;
     LOG_ALWAYS_FATAL_IF(!ReadConfig(public_native_libraries_system_config, &sonames, &error_msg),
@@ -347,11 +357,11 @@ class LibraryNamespaces {
     system_public_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kLlndkNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(llndk_native_libraries_system_config, &sonames);
     system_llndk_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kVndkspNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(vndksp_native_libraries_system_config, &sonames);
     system_vndksp_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
