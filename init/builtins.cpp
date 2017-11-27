@@ -642,13 +642,16 @@ static Result<Success> do_trigger(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_symlink(const BuiltinArguments& args) {
-    if (symlink(args[1].c_str(), args[2].c_str()) < 0) {
+    const char* linkpath = args[2].c_str();
+    if (symlink(args[1].c_str(), linkpath) < 0) {
         // The symlink builtin is often used to create symlinks for older devices to be backwards
         // compatible with new paths, therefore we skip reporting this error.
         if (errno == EEXIST && android::base::GetMinimumLogSeverity() > android::base::DEBUG) {
             return Success();
         }
         return ErrnoError() << "symlink() failed";
+    } else if (selinux_android_restorecon(linkpath, 0) < 0) {
+        return ErrnoError() << "selinux_android_restorecon() failed";
     }
     return Success();
 }
