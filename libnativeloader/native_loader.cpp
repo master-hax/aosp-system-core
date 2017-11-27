@@ -110,6 +110,26 @@ static bool is_debuggable() {
   return std::string(debuggable) == "1";
 }
 
+static std::string vndk_version_str(const char delimiter = '-') {
+  char version_prop[PROP_VALUE_MAX];
+  property_get("ro.vndk.version", version_prop, "");
+  std::string version = version_prop;
+  if (version != "" && version != "current") {
+    //add the delimiter char in front of the string and return it.
+    return version.insert(0, 1, delimiter);
+  } else {
+    return "";
+  }
+}
+
+static void insert_vndk_version_str(std::string& file_name) {
+  size_t insert_pos = file_name.find_last_of(".");
+  if (insert_pos == std::string::npos) {
+    insert_pos = file_name.length();
+  }
+  file_name.insert(insert_pos, vndk_version_str('.'));
+}
+
 class LibraryNamespaces {
  public:
   LibraryNamespaces() : initialized_(false) { }
@@ -318,6 +338,10 @@ class LibraryNamespaces {
                         "Error reading public native library list from \"%s\": %s",
                         public_native_libraries_system_config.c_str(), error_msg.c_str());
 
+    // Insert VNDK version to llndk and vndksp config file names.
+    insert_vndk_version_str(llndk_native_libraries_system_config);
+    insert_vndk_version_str(vndksp_native_libraries_system_config);
+
     // For debuggable platform builds use ANDROID_ADDITIONAL_PUBLIC_LIBRARIES environment
     // variable to add libraries to the list. This is intended for platform tests only.
     if (is_debuggable()) {
@@ -347,11 +371,11 @@ class LibraryNamespaces {
     system_public_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kLlndkNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(llndk_native_libraries_system_config, &sonames);
     system_llndk_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
-    ReadConfig(kVndkspNativeLibrariesSystemConfigPathFromRoot, &sonames);
+    ReadConfig(vndksp_native_libraries_system_config, &sonames);
     system_vndksp_libraries_ = base::Join(sonames, ':');
 
     sonames.clear();
