@@ -178,9 +178,26 @@ Result<std::string> ReadFile(const std::string& path) {
     return content;
 }
 
+static int open_file(const char* path, int flags, mode_t mode) {
+    std::string secontext;
+    if (SelabelLookupFileContext(path, mode, &secontext) && !secontext.empty()) {
+        setfscreatecon(secontext.c_str());
+    }
+
+    int rc = open(path, flags, mode);
+
+    if (!secontext.empty()) {
+        int save_errno = errno;
+        setfscreatecon(nullptr);
+        errno = save_errno;
+    }
+
+    return rc;
+}
+
 Result<Success> WriteFile(const std::string& path, const std::string& content) {
     android::base::unique_fd fd(TEMP_FAILURE_RETRY(
-        open(path.c_str(), O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0600)));
+        open_file(path.c_str(), O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC | O_CLOEXEC, 0600)));
     if (fd == -1) {
         return ErrnoError() << "open() failed";
     }

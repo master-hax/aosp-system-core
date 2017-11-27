@@ -65,6 +65,7 @@
 #include "property_service.h"
 #include "reboot.h"
 #include "rlimit_parser.h"
+#include "selinux.h"
 #include "service.h"
 #include "subcontext.h"
 #include "util.h"
@@ -641,8 +642,26 @@ static Result<Success> do_trigger(const BuiltinArguments& args) {
     return Success();
 }
 
+static int make_symlink(const char* target, const char* linkpath) {
+    std::string secontext;
+    // Passing 0 for mode should work.
+    if (SelabelLookupFileContext(linkpath, 0, &secontext) && !secontext.empty()) {
+        setfscreatecon(secontext.c_str());
+    }
+
+    int rc = symlink(target, linkpath);
+
+    if (!secontext.empty()) {
+        int save_errno = errno;
+        setfscreatecon(nullptr);
+        errno = save_errno;
+    }
+
+    return rc;
+}
+
 static Result<Success> do_symlink(const BuiltinArguments& args) {
-    if (symlink(args[1].c_str(), args[2].c_str()) < 0) {
+    if (make_symlink(args[1].c_str(), args[2].c_str()) < 0) {
         // The symlink builtin is often used to create symlinks for older devices to be backwards
         // compatible with new paths, therefore we skip reporting this error.
         if (errno == EEXIST && android::base::GetMinimumLogSeverity() > android::base::DEBUG) {
