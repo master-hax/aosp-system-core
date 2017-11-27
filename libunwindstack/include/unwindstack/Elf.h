@@ -20,6 +20,7 @@
 #include <stddef.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include <unwindstack/ElfInterface.h>
@@ -80,6 +81,7 @@ class Elf {
   std::unique_ptr<Memory> memory_;
   uint32_t machine_type_;
   uint8_t class_type_;
+  std::mutex lock_;
 
   std::unique_ptr<Memory> gnu_debugdata_memory_;
   std::unique_ptr<ElfInterface> gnu_debugdata_interface_;
