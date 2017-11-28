@@ -88,6 +88,15 @@ ifdef BOARD_USES_VENDORIMAGE
 else
   LOCAL_POST_INSTALL_CMD += ; ln -sf /system/vendor $(TARGET_ROOT_OUT)/vendor
 endif
+ifdef BOARD_USES_OEMIMAGE
+  LOCAL_POST_INSTALL_CMD += ; mkdir -p $(TARGET_ROOT_OUT)/oem
+else
+  # If BOARD_OEMIMAGE_PARTITION_SIZE is defined even though BOARD_USES_OEMIMAGE
+  # isn't set, that is considered as the case of using legacy 'oem_image'.
+  ifndef BOARD_OEMIMAGE_PARTITION_SIZE
+    LOCAL_POST_INSTALL_CMD += ; ln -sf /system/oem $(TARGET_ROOT_OUT)/oem
+  endif
+endif
 ifdef BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE
   LOCAL_POST_INSTALL_CMD += ; mkdir -p $(TARGET_ROOT_OUT)/cache
 else
