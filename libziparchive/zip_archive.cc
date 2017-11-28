@@ -100,15 +100,11 @@ static uint32_t RoundUpPower2(uint32_t val) {
 }
 
 static uint32_t ComputeHash(const ZipString& name) {
-  uint32_t hash = 0;
   uint16_t len = name.name_length;
   const uint8_t* str = name.name;
 
-  while (len--) {
-    hash = hash * 31 + *str++;
-  }
-
-  return hash;
+  std::string x(str, str + len);
+  return std::hash<std::string>{}(x);
 }
 
 /*
