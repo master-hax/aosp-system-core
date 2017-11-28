@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -136,6 +137,8 @@ class CentralDirectory {
   size_t length_;
 };
 
+typedef std::map<std::string, ZipString*> ZipMap;
+
 struct ZipArchive {
   // open Zip archive
   mutable MappedZipFile mapped_zip;
@@ -149,12 +152,7 @@ struct ZipArchive {
   // number of entries in the Zip archive
   uint16_t num_entries;
 
-  // We know how many entries are in the Zip archive, so we can have a
-  // fixed-size hash table. We define a load factor of 0.75 and over
-  // allocate so the maximum number entries can never be higher than
-  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
-  uint32_t hash_table_size;
-  ZipString* hash_table;
+  ZipMap hash_table;
 
   ZipArchive(const int fd, bool assume_ownership)
       : mapped_zip(fd),
@@ -163,8 +161,7 @@ struct ZipArchive {
         central_directory(),
         directory_map(new android::FileMap()),
         num_entries(0),
-        hash_table_size(0),
-        hash_table(nullptr) {}
+        hash_table(ZipMap()) {}
 
   ZipArchive(void* address, size_t length)
       : mapped_zip(address, length),
@@ -173,15 +170,12 @@ struct ZipArchive {
         central_directory(),
         directory_map(new android::FileMap()),
         num_entries(0),
-        hash_table_size(0),
-        hash_table(nullptr) {}
+        hash_table(ZipMap()) {}
 
   ~ZipArchive() {
     if (close_file && mapped_zip.GetFileDescriptor() >= 0) {
       close(mapped_zip.GetFileDescriptor());
     }
-
-    free(hash_table);
   }
 
   bool InitializeCentralDirectory(const char* debug_file_name, off64_t cd_start_offset,

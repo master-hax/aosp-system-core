@@ -32,11 +32,14 @@
 
 #include <memory>
 #include <vector>
+#include <map>
+#include <string>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>  // TEMP_FAILURE_RETRY may or may not be in unistd
 #include <android-base/memory.h>
+#include <android-base/strings.h>
 #include <log/log.h>
 #include <utils/Compat.h>
 #include <utils/FileMap.h>
@@ -81,83 +84,6 @@ static const uint32_t kMaxEOCDSearch = kMaxCommentLen + sizeof(EocdRecord);
  * every page that the Central Directory touches.  Easier to tuck a copy
  * of the string length into the hash table entry.
  */
-
-/*
- * Round up to the next highest power of 2.
- *
- * Found on http://graphics.stanford.edu/~seander/bithacks.html.
- */
-static uint32_t RoundUpPower2(uint32_t val) {
-  val--;
-  val |= val >> 1;
-  val |= val >> 2;
-  val |= val >> 4;
-  val |= val >> 8;
-  val |= val >> 16;
-  val++;
-
-  return val;
-}
-
-static uint32_t ComputeHash(const ZipString& name) {
-  uint32_t hash = 0;
-  uint16_t len = name.name_length;
-  const uint8_t* str = name.name;
-
-  while (len--) {
-    hash = hash * 31 + *str++;
-  }
-
-  return hash;
-}
-
-/*
- * Convert a ZipEntry to a hash table index, verifying that it's in a
- * valid range.
- */
-static int64_t EntryToIndex(const ZipString* hash_table, const uint32_t hash_table_size,
-                            const ZipString& name) {
-  const uint32_t hash = ComputeHash(name);
-
-  // NOTE: (hash_table_size - 1) is guaranteed to be non-negative.
-  uint32_t ent = hash & (hash_table_size - 1);
-  while (hash_table[ent].name != NULL) {
-    if (hash_table[ent] == name) {
-      return ent;
-    }
-
-    ent = (ent + 1) & (hash_table_size - 1);
-  }
-
-  ALOGV("Zip: Unable to find entry %.*s", name.name_length, name.name);
-  return kEntryNotFound;
-}
-
-/*
- * Add a new entry to the hash table.
- */
-static int32_t AddToHash(ZipString* hash_table, const uint64_t hash_table_size,
-                         const ZipString& name) {
-  const uint64_t hash = ComputeHash(name);
-  uint32_t ent = hash & (hash_table_size - 1);
-
-  /*
-   * We over-allocated the table, so we're guaranteed to find an empty slot.
-   * Further, we guarantee that the hashtable size is not 0.
-   */
-  while (hash_table[ent].name != NULL) {
-    if (hash_table[ent] == name) {
-      // We've found a duplicate entry. We don't accept it
-      ALOGW("Zip: Found duplicate entry %.*s", name.name_length, name.name);
-      return kDuplicateEntry;
-    }
-    ent = (ent + 1) & (hash_table_size - 1);
-  }
-
-  hash_table[ent].name = name.name;
-  hash_table[ent].name_length = name.name_length;
-  return 0;
-}
 
 static int32_t MapCentralDirectory0(const char* debug_file_name, ZipArchive* archive,
                                     off64_t file_length, off64_t read_amount, uint8_t* scan_buffer) {
@@ -305,20 +231,6 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   const uint16_t num_entries = archive->num_entries;
 
   /*
-   * Create hash table.  We have a minimum 75% load factor, possibly as
-   * low as 50% after we round off to a power of 2.  There must be at
-   * least one unused entry to avoid an infinite loop during creation.
-   */
-  archive->hash_table_size = RoundUpPower2(1 + (num_entries * 4) / 3);
-  archive->hash_table =
-      reinterpret_cast<ZipString*>(calloc(archive->hash_table_size, sizeof(ZipString)));
-  if (archive->hash_table == nullptr) {
-    ALOGW("Zip: unable to allocate the %u-entry hash_table, entry size: %zu",
-          archive->hash_table_size, sizeof(ZipString));
-    return -1;
-  }
-
-  /*
    * Walk through the central directory, adding entries to the hash
    * table and verifying values.
    */
@@ -364,14 +276,12 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     }
 
     /* add the CDE filename to the hash table */
-    ZipString entry_name;
-    entry_name.name = file_name;
-    entry_name.name_length = file_name_length;
-    const int add_result = AddToHash(archive->hash_table, archive->hash_table_size, entry_name);
-    if (add_result != 0) {
-      ALOGW("Zip: Error adding entry to hash table %d", add_result);
-      return add_result;
-    }
+    ZipString *entry_name = new ZipString();
+    entry_name->name = file_name;
+    entry_name->name_length = file_name_length;
+
+    std::string x(file_name, file_name + file_name_length);
+    archive->hash_table[x] = entry_name;
 
     ptr += sizeof(CentralDirectoryRecord) + file_name_length + extra_length + comment_length;
     if ((ptr - cd_ptr) > static_cast<int64_t>(cd_length)) {
@@ -465,13 +375,13 @@ static int32_t ValidateDataDescriptor(MappedZipFile& mapped_zip, ZipEntry* entry
   return 0;
 }
 
-static int32_t FindEntry(const ZipArchive* archive, const int ent, ZipEntry* data) {
-  const uint16_t nameLen = archive->hash_table[ent].name_length;
+static int32_t FindEntry(const ZipArchive* archive, ZipString *ent, ZipEntry* data) {
+  const uint16_t nameLen = ent->name_length;
 
   // Recover the start of the central directory entry from the filename
   // pointer.  The filename is the first entry past the fixed-size data,
   // so we can just subtract back from that.
-  const uint8_t* ptr = archive->hash_table[ent].name;
+  const uint8_t* ptr = ent->name;
   ptr -= sizeof(CentralDirectoryRecord);
 
   // This is the base of our mmapped region, we have to sanity check that
@@ -582,7 +492,7 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent, ZipEntry* dat
       return kIoError;
     }
 
-    if (memcmp(archive->hash_table[ent].name, name_buf.data(), nameLen)) {
+    if (memcmp(ent->name, name_buf.data(), nameLen)) {
       return kInconsistentInformation;
     }
 
@@ -618,9 +528,7 @@ static int32_t FindEntry(const ZipArchive* archive, const int ent, ZipEntry* dat
 }
 
 struct IterationHandle {
-  uint32_t position;
-  // We're not using vector here because this code is used in the Windows SDK
-  // where the STL is not available.
+  ZipMap::iterator it;
   ZipString prefix;
   ZipString suffix;
   ZipArchive* archive;
@@ -656,13 +564,13 @@ int32_t StartIteration(ZipArchiveHandle handle, void** cookie_ptr, const ZipStri
                        const ZipString* optional_suffix) {
   ZipArchive* archive = reinterpret_cast<ZipArchive*>(handle);
 
-  if (archive == NULL || archive->hash_table == NULL) {
+  if (archive == NULL) {
     ALOGW("Zip: Invalid ZipArchiveHandle");
     return kInvalidHandle;
   }
 
   IterationHandle* cookie = new IterationHandle(optional_prefix, optional_suffix);
-  cookie->position = 0;
+  cookie->it = archive->hash_table.begin();
   cookie->archive = archive;
 
   *cookie_ptr = cookie;
@@ -679,15 +587,14 @@ int32_t FindEntry(const ZipArchiveHandle handle, const ZipString& entryName, Zip
     ALOGW("Zip: Invalid filename %.*s", entryName.name_length, entryName.name);
     return kInvalidEntryName;
   }
-
-  const int64_t ent = EntryToIndex(archive->hash_table, archive->hash_table_size, entryName);
-
-  if (ent < 0) {
+  std::string x(entryName.name, entryName.name + entryName.name_length);
+  auto search = archive->hash_table.find(x);
+  if(search == archive->hash_table.end()) {
     ALOGV("Zip: Could not find entry %.*s", entryName.name_length, entryName.name);
-    return ent;
+    return kEntryNotFound;
   }
 
-  return FindEntry(archive, ent, data);
+  return FindEntry(archive, search->second, data);
 }
 
 int32_t Next(void* cookie, ZipEntry* data, ZipString* name) {
@@ -697,31 +604,30 @@ int32_t Next(void* cookie, ZipEntry* data, ZipString* name) {
   }
 
   ZipArchive* archive = handle->archive;
-  if (archive == NULL || archive->hash_table == NULL) {
+  if (archive == NULL) {
     ALOGW("Zip: Invalid ZipArchiveHandle");
     return kInvalidHandle;
   }
 
-  const uint32_t currentOffset = handle->position;
-  const uint32_t hash_table_length = archive->hash_table_size;
-  const ZipString* hash_table = archive->hash_table;
+  for (auto it = handle->it, end = archive->hash_table.end(); it != end; it++) {
+    std::string s = it->first;
+    ZipString *z = it->second;
+    if ((handle->prefix.name_length == 0 || z->StartsWith(handle->prefix)) &&
+        (handle->suffix.name_length == 0 || z->EndsWith(handle->suffix))) {
 
-  for (uint32_t i = currentOffset; i < hash_table_length; ++i) {
-    if (hash_table[i].name != NULL &&
-        (handle->prefix.name_length == 0 || hash_table[i].StartsWith(handle->prefix)) &&
-        (handle->suffix.name_length == 0 || hash_table[i].EndsWith(handle->suffix))) {
-      handle->position = (i + 1);
-      const int error = FindEntry(archive, i, data);
+      ZipString *ent = it->second;
+      const int error = FindEntry(archive, ent, data);
       if (!error) {
-        name->name = hash_table[i].name;
-        name->name_length = hash_table[i].name_length;
+        name->name = ent->name;
+        name->name_length = ent->name_length;
       }
 
+      handle->it = ++it;
       return error;
     }
   }
 
-  handle->position = 0;
+  handle->it = archive->hash_table.begin();
   return kIterationEnd;
 }
 
