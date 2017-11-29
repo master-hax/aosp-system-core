@@ -179,10 +179,20 @@ static int generate_f2fs_image(const char* fileName, long long partSize, const s
         return -1;
     }
 
-    if (!initial_dir.empty()) {
-        fprintf(stderr, "sload.f2s not supported yet\n");
+    if (initial_dir.empty()) {
         return 0;
     }
+
+    const std::string sload_path = exec_dir + "/sload_f2fs";
+    std::vector<const char*> sload_args = {sload_path.c_str(), "-S",
+                                       "-f", initial_dir.c_str(), fileName, nullptr};
+
+    ret = exec_e2fs_cmd(sload_args[0], const_cast<char**>(sload_args.data()));
+    if (ret != 0) {
+        fprintf(stderr, "sload_f2fs failed: %d\n", ret);
+        return -1;
+    }
+
     return 0;
 #else
     fprintf(stderr, "make_f2fs not supported on Windows\n");
