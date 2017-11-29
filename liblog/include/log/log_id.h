@@ -35,7 +35,8 @@ typedef enum log_id {
   LOG_ID_SECURITY = 6,
   LOG_ID_KERNEL = 7, /* place last, third-parties can not use it */
 
-  LOG_ID_MAX
+  LOG_ID_MAX,
+  LOG_ID_NONSKIP = LOG_ID_MAX
 } log_id_t;
 #endif
 #define sizeof_log_id_t sizeof(typeof_log_id_t)

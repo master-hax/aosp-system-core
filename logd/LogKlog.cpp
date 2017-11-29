@@ -826,7 +826,7 @@ int LogKlog::log(const char* buf, ssize_t len) {
 
     // notify readers
     if (!rc) {
-        reader->notifyNewLog();
+        reader->notifyNewLog(LOG_ID_KERNEL);
     }
 
     return rc;

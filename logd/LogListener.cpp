@@ -138,7 +138,7 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
             header->tid, msg,
             ((size_t)n <= USHRT_MAX) ? (unsigned short)n : USHRT_MAX);
         if (res > 0 && reader != nullptr) {
-            reader->notifyNewLog();
+            reader->notifyNewLog((log_id_t)header->id);
         }
     }
 

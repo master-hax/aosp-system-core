@@ -27,6 +27,7 @@ class LogReader;
 
 class FlushCommand : public SocketClientCommand {
     LogReader& mReader;
+    log_id_t mLogid;
     bool mNonBlock;
     unsigned long mTail;
     unsigned int mLogMask;
@@ -35,9 +36,10 @@ class FlushCommand : public SocketClientCommand {
     uint64_t mTimeout;
 
    public:
-    explicit FlushCommand(LogReader& mReader, bool nonBlock = false,
-                          unsigned long tail = -1, unsigned int logMask = -1,
-                          pid_t pid = 0, log_time start = log_time::EPOCH,
+    explicit FlushCommand(LogReader& mReader, log_id_t logid = LOG_ID_NONSKIP,
+                          bool nonBlock = false, unsigned long tail = -1,
+                          unsigned int logMask = -1, pid_t pid = 0,
+                          log_time start = log_time::EPOCH,
                           uint64_t timeout = 0);
     virtual void runSocketCommand(SocketClient* client);
 

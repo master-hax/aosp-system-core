@@ -449,7 +449,12 @@ int LogAudit::logPrint(const char* fmt, ...) {
     free(str);
 
     if (notify) {
-        reader->notifyNewLog();
+        if (events) {
+            reader->notifyNewLog(LOG_ID_EVENTS);
+        }
+        if (main) {
+            reader->notifyNewLog(LOG_ID_MAIN);
+        }
         if (rc < 0) {
             rc = message_len;
         }

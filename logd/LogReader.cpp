@@ -35,9 +35,9 @@ LogReader::LogReader(LogBuffer* logbuf)
 }
 
 // When we are notified a new log entry is available, inform
-// all of our listening sockets.
-void LogReader::notifyNewLog() {
-    FlushCommand command(*this);
+// listening sockets who are watching this entry's log id.
+void LogReader::notifyNewLog(log_id_t logid) {
+    FlushCommand command(*this, logid);
     runOnEachSocket(&command);
 }
 
@@ -199,7 +199,8 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         cli->getUid(), cli->getGid(), cli->getPid(), nonBlock ? 'n' : 'b', tail,
         logMask, (int)pid, sequence.nsec(), timeout);
 
-    FlushCommand command(*this, nonBlock, tail, logMask, pid, sequence, timeout);
+    FlushCommand command(*this, LOG_ID_NONSKIP, nonBlock, tail, logMask, pid,
+                         sequence, timeout);
 
     // Set acceptable upper limit to wait for slow reader processing b/27242723
     struct timeval t = { LOGD_SNDTIMEO, 0 };
