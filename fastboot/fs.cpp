@@ -26,8 +26,11 @@
 using android::base::StringPrintf;
 using android::base::unique_fd;
 
+#define EXT4_FS 0x0
+#define F2FS_FS 0x1
+
 #ifdef WIN32
-static int exec_e2fs_cmd(const char* /*path*/, char* const argv[]) {
+static int exec_cmd(const char* path, char* const argv[], const char fstype) {
     std::string cmd;
     int i = 0;
     while (argv[i] != nullptr) {
@@ -44,7 +47,9 @@ static int exec_e2fs_cmd(const char* /*path*/, char* const argv[]) {
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    SetEnvironmentVariableA("MKE2FS_CONFIG", "");
+    if (fstype == EXT4_FS) {
+        SetEnvironmentVariableA("MKE2FS_CONFIG", "");
+    }
 
     if (!CreateProcessA(nullptr,                         // No module name (use command line)
                         const_cast<char*>(cmd.c_str()),  // Command line
@@ -69,14 +74,19 @@ static int exec_e2fs_cmd(const char* /*path*/, char* const argv[]) {
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
-    return exit_code != 0;
+    if (exit_code != 0) {
+        fprintf(stderr, "%s failed: %lu\n", path, exit_code);
+        return -1;
+    }
+    return 0;
 }
 #else
-static int exec_e2fs_cmd(const char* path, char* const argv[]) {
+static int exec_cmd(const char* path, char* const argv[], const char fstype) {
     int status;
     pid_t child;
     if ((child = fork()) == 0) {
-        setenv("MKE2FS_CONFIG", "", 1);
+        if (fstype == EXT4_FS)
+            setenv("MKE2FS_CONFIG", "", 1);
         execvp(path, argv);
         _exit(EXIT_FAILURE);
     }
@@ -91,11 +101,13 @@ static int exec_e2fs_cmd(const char* path, char* const argv[]) {
     int ret = -1;
     if (WIFEXITED(status)) {
         ret = WEXITSTATUS(status);
-        if (ret != 0) {
-            fprintf(stderr, "%s failed with status %d\n", path, ret);
-        }
     }
-    return ret;
+
+    if (ret != 0) {
+        fprintf(stderr, "%s failed with status %d\n", path, ret);
+        return -1;
+    }
+    return 0;
 }
 #endif
 
@@ -131,9 +143,8 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     mke2fs_args.push_back(size_str.c_str());
     mke2fs_args.push_back(nullptr);
 
-    int ret = exec_e2fs_cmd(mke2fs_args[0], const_cast<char**>(mke2fs_args.data()));
+    int ret = exec_cmd(mke2fs_args[0], const_cast<char**>(mke2fs_args.data()), EXT4_FS);
     if (ret != 0) {
-        fprintf(stderr, "mke2fs failed: %d\n", ret);
         return -1;
     }
 
@@ -145,13 +156,7 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     std::vector<const char*> e2fsdroid_args = {e2fsdroid_path.c_str(), "-f", initial_dir.c_str(),
                                                fileName, nullptr};
 
-    ret = exec_e2fs_cmd(e2fsdroid_args[0], const_cast<char**>(e2fsdroid_args.data()));
-    if (ret != 0) {
-        fprintf(stderr, "e2fsdroid failed: %d\n", ret);
-        return -1;
-    }
-
-    return 0;
+    return exec_cmd(e2fsdroid_args[0], const_cast<char**>(e2fsdroid_args.data()), EXT4_FS);
 }
 
 static int generate_f2fs_image(const char* fileName, long long partSize, const std::string& initial_dir,
@@ -173,17 +178,20 @@ static int generate_f2fs_image(const char* fileName, long long partSize, const s
     mkf2fs_args.push_back(fileName);
     mkf2fs_args.push_back(nullptr);
 
-    int ret = exec_e2fs_cmd(mkf2fs_args[0], const_cast<char**>(mkf2fs_args.data()));
+    int ret = exec_cmd(mkf2fs_args[0], const_cast<char**>(mkf2fs_args.data()), F2FS_FS);
     if (ret != 0) {
-        fprintf(stderr, "mkf2fs failed: %d\n", ret);
         return -1;
     }
 
-    if (!initial_dir.empty()) {
-        fprintf(stderr, "sload.f2s not supported yet\n");
+    if (initial_dir.empty()) {
         return 0;
     }
-    return 0;
+
+    const std::string sload_path = exec_dir + "/sload_f2fs";
+    std::vector<const char*> sload_args = {sload_path.c_str(), "-S",
+                                       "-f", initial_dir.c_str(), fileName, nullptr};
+
+    return exec_cmd(sload_args[0], const_cast<char**>(sload_args.data()), F2FS_FS);
 #else
     UNUSED(fileName, partSize, initial_dir);
     fprintf(stderr, "make_f2fs not supported on Windows\n");
