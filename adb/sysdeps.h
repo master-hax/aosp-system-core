@@ -46,7 +46,7 @@
 // and PRIu64 (and related) to be recognized by the compile-time checking.
 #define ADB_FORMAT_ARCHETYPE __printf__
 #ifdef __USE_MINGW_ANSI_STDIO
-#if __USE_MINGW_ANSI_STDIO
+#if !defined(__clang__) && __USE_MINGW_ANSI_STDIO
 #undef ADB_FORMAT_ARCHETYPE
 #define ADB_FORMAT_ARCHETYPE gnu_printf
 #endif
