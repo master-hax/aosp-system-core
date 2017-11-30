@@ -30,7 +30,7 @@ namespace base {
 // checking.
 #define FORMAT_ARCHETYPE __printf__
 #ifdef __USE_MINGW_ANSI_STDIO
-#if __USE_MINGW_ANSI_STDIO
+#if !defined(__clang__) && __USE_MINGW_ANSI_STDIO
 #undef FORMAT_ARCHETYPE
 #define FORMAT_ARCHETYPE gnu_printf
 #endif
