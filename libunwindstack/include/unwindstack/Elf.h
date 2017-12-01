@@ -38,6 +38,14 @@ class Regs;
 
 class Elf {
  public:
+  enum TypeEnum : uint8_t {
+    UNKNOWN = 0,
+    ARM,
+    ARM64,
+    X86,
+    X86_64,
+  };
+
   Elf(Memory* memory) : memory_(memory) {}
   virtual ~Elf() = default;
 
@@ -64,6 +72,8 @@ class Elf {
 
   uint8_t class_type() { return class_type_; }
 
+  TypeEnum type() { return type_; }
+
   Memory* memory() { return memory_.get(); }
 
   ElfInterface* interface() { return interface_.get(); }
@@ -83,6 +93,7 @@ class Elf {
   std::unique_ptr<Memory> memory_;
   uint32_t machine_type_;
   uint8_t class_type_;
+  TypeEnum type_;
   // Protect calls that can modify internal state of the interface object.
   std::mutex lock_;
 

@@ -63,17 +63,17 @@ void DoUnwind(pid_t pid) {
   }
 
   printf("ABI: ");
-  switch (regs->MachineType()) {
-    case EM_ARM:
+  switch (regs->Type()) {
+    case unwindstack::Elf::ARM:
       printf("arm");
       break;
-    case EM_386:
+    case unwindstack::Elf::X86:
       printf("x86");
       break;
-    case EM_AARCH64:
+    case unwindstack::Elf::ARM64:
       printf("arm64");
       break;
-    case EM_X86_64:
+    case unwindstack::Elf::X86_64:
       printf("x86_64");
       break;
     default:
