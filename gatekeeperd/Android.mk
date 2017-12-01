@@ -16,6 +16,8 @@
 
 LOCAL_PATH := $(call my-dir)
 
+ifneq ($(TARGET_BUILD_PDK),true)
+
 include $(CLEAR_VARS)
 LOCAL_CFLAGS := -Wall -Wextra -Werror -Wunused
 LOCAL_SRC_FILES := \
@@ -42,5 +44,7 @@ LOCAL_STATIC_LIBRARIES := libscrypt_static
 LOCAL_C_INCLUDES := external/scrypt/lib/crypto
 LOCAL_INIT_RC := gatekeeperd.rc
 include $(BUILD_EXECUTABLE)
+
+endif # ifneq ($(TARGET_BUILD_PDK),true)
 
 include $(call first-makefiles-under,$(LOCAL_PATH))
