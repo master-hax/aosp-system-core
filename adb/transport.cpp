@@ -763,13 +763,7 @@ ConnectionState atransport::GetConnectionState() const {
     return connection_state_;
 }
 
-void atransport::SetConnectionState(ConnectionState state) {
-    check_main_thread();
-    connection_state_ = state;
-}
-
-const std::string atransport::connection_state_name() const {
-    ConnectionState state = GetConnectionState();
+static std::string get_connection_state_name(ConnectionState state) {
     switch (state) {
         case kCsOffline:
             return "offline";
@@ -781,8 +775,10 @@ const std::string atransport::connection_state_name() const {
             return "host";
         case kCsRecovery:
             return "recovery";
+#if ADB_HOST
         case kCsNoPerm:
             return UsbNoPermissionsShortHelpText();
+#endif
         case kCsSideload:
             return "sideload";
         case kCsUnauthorized:
@@ -790,6 +786,19 @@ const std::string atransport::connection_state_name() const {
         default:
             return "unknown";
     }
+}
+
+void atransport::SetConnectionState(ConnectionState state) {
+    check_main_thread();
+    ConnectionState previous_state = connection_state_.exchange(state);
+    LOG(INFO) << "transport " << this->serial << " changing state from "
+              << get_connection_state_name(previous_state) << " to "
+              << get_connection_state_name(state);
+}
+
+const std::string atransport::connection_state_name() const {
+    ConnectionState state = GetConnectionState();
+    return get_connection_state_name(state);
 }
 
 void atransport::update_version(int version, size_t payload) {
