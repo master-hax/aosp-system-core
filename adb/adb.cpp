@@ -320,7 +320,8 @@ void parse_banner(const std::string& banner, atransport* t) {
 }
 
 static void handle_new_connection(atransport* t, apacket* p) {
-    if (t->GetConnectionState() != kCsOffline) {
+    ConnectionState state = t->GetConnectionState();
+    if (state != kCsOffline && state != kCsUnauthorized) {
         t->SetConnectionState(kCsOffline);
         handle_offline(t);
     }
