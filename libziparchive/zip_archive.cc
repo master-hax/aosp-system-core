@@ -299,13 +299,15 @@ static int32_t MapCentralDirectory(const char* debug_file_name, ZipArchive* arch
   return result;
 }
 
+static int32_t FindEntry(const ZipArchive* archive, const int ent, ZipEntry* data);
+
 /*
  * Parses the Zip archive's Central Directory.  Allocates and populates the
  * hash table.
  *
  * Returns 0 on success.
  */
-static int32_t ParseZipArchive(ZipArchive* archive) {
+static int32_t ParseZipArchive(ZipArchive* archive, const ZipString* FindOneEntry, ZipEntry* data) {
   const uint8_t* const cd_ptr = archive->central_directory.GetBasePtr();
   const size_t cd_length = archive->central_directory.GetMapLength();
   const uint16_t num_entries = archive->num_entries;
@@ -315,13 +317,15 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
    * low as 50% after we round off to a power of 2.  There must be at
    * least one unused entry to avoid an infinite loop during creation.
    */
-  archive->hash_table_size = RoundUpPower2(1 + (num_entries * 4) / 3);
-  archive->hash_table =
-      reinterpret_cast<ZipString*>(calloc(archive->hash_table_size, sizeof(ZipString)));
-  if (archive->hash_table == nullptr) {
-    ALOGW("Zip: unable to allocate the %u-entry hash_table, entry size: %zu",
-          archive->hash_table_size, sizeof(ZipString));
-    return -1;
+  if (!FindOneEntry) {
+    archive->hash_table_size = RoundUpPower2(1 + (num_entries * 4) / 3);
+    archive->hash_table =
+        reinterpret_cast<ZipString*>(calloc(archive->hash_table_size, sizeof(ZipString)));
+    if (archive->hash_table == nullptr) {
+      ALOGW("Zip: unable to allocate the %u-entry hash_table, entry size: %zu",
+            archive->hash_table_size, sizeof(ZipString));
+      return -1;
+    }
   }
 
   /*
@@ -353,6 +357,10 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
     }
 
     const uint16_t file_name_length = cdr->file_name_length;
+    if (FindOneEntry && FindOneEntry->name_length != file_name_length) {
+      continue;
+    }
+
     const uint16_t extra_length = cdr->extra_field_length;
     const uint16_t comment_length = cdr->comment_length;
     const uint8_t* file_name = ptr + sizeof(CentralDirectoryRecord);
@@ -364,6 +372,23 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
           file_name_length, cd_length);
       return -1;
     }
+
+    if (FindOneEntry) {
+      if (memcmp(file_name, FindOneEntry->name, file_name_length)) {
+        continue;
+      }
+
+      /* check that file name is valid UTF-8 and doesn't contain NUL (U+0000) characters */
+      if (!IsValidEntryName(file_name, file_name_length)) {
+        return -1;
+      }
+
+      archive->hash_table = reinterpret_cast<ZipString*>(calloc(1, sizeof(ZipString)));
+      archive->hash_table[0].name = file_name;
+      archive->hash_table[0].name_length = file_name_length;
+      return FindEntry(archive, 0, data);
+    }
+
     /* check that file name is valid UTF-8 and doesn't contain NUL (U+0000) characters */
     if (!IsValidEntryName(file_name, file_name_length)) {
       return -1;
@@ -387,6 +412,10 @@ static int32_t ParseZipArchive(ZipArchive* archive) {
   }
   ALOGV("+++ zip good scan %" PRIu16 " entries", num_entries);
 
+  if (FindOneEntry) {
+    return kEntryNotFound;
+  }
+
   return 0;
 }
 
@@ -396,7 +425,7 @@ static int32_t OpenArchiveInternal(ZipArchive* archive, const char* debug_file_n
     return result;
   }
 
-  if ((result = ParseZipArchive(archive))) {
+  if ((result = ParseZipArchive(archive, NULL, NULL))) {
     return result;
   }
 
@@ -428,6 +457,21 @@ int32_t OpenArchiveFromMemory(void* address, size_t length, const char* debug_fi
   ZipArchive* archive = new ZipArchive(address, length);
   *handle = archive;
   return OpenArchiveInternal(archive, debug_file_name);
+}
+
+int32_t FindOneEntry(const char* fileName, const ZipString& entryName, ZipEntry* data) {
+  const int fd = open(fileName, O_RDONLY | O_BINARY, 0);
+  ZipArchive* archive = new ZipArchive(fd, true);
+
+  int32_t result = -1;
+  if ((result = MapCentralDirectory(fileName, archive)) != 0) {
+    CloseArchive(archive);
+    return result;
+  }
+
+  result = ParseZipArchive(archive, &entryName, data);
+  CloseArchive(archive);
+  return result;
 }
 
 /*

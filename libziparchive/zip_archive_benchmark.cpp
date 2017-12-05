@@ -47,6 +47,22 @@ static TemporaryFile* CreateZip() {
   return result;
 }
 
+static void FindOneEntry_no_match(benchmark::State& state) {
+  // Create a temporary zip archive.
+  std::unique_ptr<TemporaryFile> temp_file(CreateZip());
+  ZipEntry data;
+
+  // In order to walk through all file names in the archive, look for a name
+  // that does not exist in the archive.
+  const ZipString kName("thisFileNameDoesNotExist");
+
+  // Start the benchmark.
+  while (state.KeepRunning()) {
+    FindOneEntry(temp_file->path, kName, &data);
+  }
+}
+BENCHMARK(FindOneEntry_no_match);
+
 static void FindEntry_no_match(benchmark::State& state) {
   // Create a temporary zip archive.
   std::unique_ptr<TemporaryFile> temp_file(CreateZip());
