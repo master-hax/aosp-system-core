@@ -165,6 +165,15 @@ void CloseArchive(ZipArchiveHandle handle);
 int32_t FindEntry(const ZipArchiveHandle handle, const ZipString& entryName, ZipEntry* data);
 
 /*
+ * Fast version of OpenArchive, followed by FindEntry, followed by CloseArchive.
+ *
+ * Returns 0 if an entry is found, and populates |data| with information
+ * about this entry. Returns negative values otherwise.
+ */
+int32_t FindOneEntry(const char* fileName, const ZipString& entryName, ZipArchiveHandle* handle,
+                     ZipEntry* data);
+
+/*
  * Start iterating over all entries of a zip file. The order of iteration
  * is not guaranteed to be the same as the order of elements
  * in the central directory but is stable for a given zip file. |cookie| will
