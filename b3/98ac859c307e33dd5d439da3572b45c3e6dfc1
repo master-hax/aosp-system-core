@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+1: Jiyong Park <jiyong@google.com>
+Code-Review+2: Tom Cherry <tomcherry@google.com>
+Verified+1: Tom Cherry <tomcherry@google.com>
+Autosubmit+1: Tom Cherry <tomcherry@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 06 Dec 2017 04:03:05 +0000
+Reviewed-on: https://android-review.googlesource.com/501741
+Project: platform/system/core
+Branch: refs/heads/master
