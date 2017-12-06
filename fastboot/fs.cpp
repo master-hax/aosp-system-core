@@ -23,12 +23,11 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 
-using android::base::GetExecutableDirectory;
 using android::base::StringPrintf;
 using android::base::unique_fd;
 
 #ifdef WIN32
-static int exec_e2fs_cmd(const char* /*path*/, const char** argv, const char** envp) {
+static int exec_e2fs_cmd(const char* /*path*/, char* const argv[]) {
     std::string cmd;
     int i = 0;
     while (argv[i] != nullptr) {
@@ -45,13 +44,7 @@ static int exec_e2fs_cmd(const char* /*path*/, const char** argv, const char** e
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    std::string env_str;
-    if (envp != nullptr) {
-        while (*envp != nullptr) {
-            env_str += std::string(*envp) + std::string("\0", 1);
-            envp++;
-        }
-    }
+    SetEnvironmentVariableA("MKE2FS_CONFIG", "");
 
     if (!CreateProcessA(nullptr,                         // No module name (use command line)
                         const_cast<char*>(cmd.c_str()),  // Command line
@@ -59,10 +52,10 @@ static int exec_e2fs_cmd(const char* /*path*/, const char** argv, const char** e
                         nullptr,                         // Thread handle not inheritable
                         FALSE,                           // Set handle inheritance to FALSE
                         0,                               // No creation flags
-                        env_str.empty() ? nullptr : LPSTR(env_str.c_str()),
-                        nullptr,  // Use parent's starting directory
-                        &si,      // Pointer to STARTUPINFO structure
-                        &pi)      // Pointer to PROCESS_INFORMATION structure
+                        nullptr,                         // Use parent's environment block
+                        nullptr,                         // Use parent's starting directory
+                        &si,                             // Pointer to STARTUPINFO structure
+                        &pi)                             // Pointer to PROCESS_INFORMATION structure
     ) {
         fprintf(stderr, "CreateProcess failed: %s\n",
                 android::base::SystemErrorCodeToString(GetLastError()).c_str());
@@ -79,11 +72,12 @@ static int exec_e2fs_cmd(const char* /*path*/, const char** argv, const char** e
     return exit_code != 0;
 }
 #else
-static int exec_e2fs_cmd(const char* path, const char** argv, const char** envp) {
+static int exec_e2fs_cmd(const char* path, char* const argv[]) {
     int status;
     pid_t child;
     if ((child = fork()) == 0) {
-        execvpe(path, const_cast<char**>(argv), const_cast<char**>(envp));
+        setenv("MKE2FS_CONFIG", "", 1);
+        execvp(path, argv);
         _exit(EXIT_FAILURE);
     }
     if (child < 0) {
@@ -137,10 +131,7 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     mke2fs_args.push_back(size_str.c_str());
     mke2fs_args.push_back(nullptr);
 
-    const std::string mke2fs_env = "MKE2FS_CONFIG=" + GetExecutableDirectory() + "/mke2fs.conf";
-    std::vector<const char*> mke2fs_envp = {mke2fs_env.c_str(), nullptr};
-
-    int ret = exec_e2fs_cmd(mke2fs_args[0], mke2fs_args.data(), mke2fs_envp.data());
+    int ret = exec_e2fs_cmd(mke2fs_args[0], const_cast<char**>(mke2fs_args.data()));
     if (ret != 0) {
         fprintf(stderr, "mke2fs failed: %d\n", ret);
         return -1;
@@ -154,7 +145,7 @@ static int generate_ext4_image(const char* fileName, long long partSize,
     std::vector<const char*> e2fsdroid_args = {e2fsdroid_path.c_str(), "-f", initial_dir.c_str(),
                                                fileName, nullptr};
 
-    ret = exec_e2fs_cmd(e2fsdroid_args[0], e2fsdroid_args.data(), nullptr);
+    ret = exec_e2fs_cmd(e2fsdroid_args[0], const_cast<char**>(e2fsdroid_args.data()));
     if (ret != 0) {
         fprintf(stderr, "e2fsdroid failed: %d\n", ret);
         return -1;
@@ -182,7 +173,7 @@ static int generate_f2fs_image(const char* fileName, long long partSize, const s
     mkf2fs_args.push_back(fileName);
     mkf2fs_args.push_back(nullptr);
 
-    int ret = exec_e2fs_cmd(mkf2fs_args[0], mkf2fs_args.data(), nullptr);
+    int ret = exec_e2fs_cmd(mkf2fs_args[0], const_cast<char**>(mkf2fs_args.data()));
     if (ret != 0) {
         fprintf(stderr, "mkf2fs failed: %d\n", ret);
         return -1;
