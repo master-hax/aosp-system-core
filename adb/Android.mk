@@ -321,6 +321,140 @@ ifdef HOST_CROSS_OS
 $(call dist-for-goals,win_sdk,$(ALL_MODULES.host_cross_adb.BUILT))
 endif
 
+include $(CLEAR_VARS)
+LOCAL_MODULE := libadb2
+LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_CFLAGS := $(LIBADB_CFLAGS) -DADB_HOST=1 -DADB_HOST_ON_TARGET=1
+LOCAL_CFLAGS_windows := $(LIBADB_windows_CFLAGS)
+LOCAL_CFLAGS_linux := $(LIBADB_linux_CFLAGS)
+LOCAL_CFLAGS_darwin := $(LIBADB_darwin_CFLAGS)
+LOCAL_SRC_FILES := \
+    $(LIBADB_SRC_FILES) \
+    adb_auth_host.cpp \
+    transport_mdns.cpp \
+    $(LIBADB_linux_SRC_FILES) \
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../qemu_pipe/include/ $(LOCAL_PATH)/../../../external/libusb/include/
+LOCAL_SRC_FILES_darwin := $(LIBADB_darwin_SRC_FILES)
+LOCAL_SRC_FILES_linux := $(LIBADB_linux_SRC_FILES)
+LOCAL_SRC_FILES_windows := $(LIBADB_windows_SRC_FILES)
+
+#LOCAL_SANITIZE := $(adb_host_sanitize)
+LOCAL_SANITIZE := $(adb_target_sanitize)
+
+# Even though we're building a static library (and thus there's no link step for
+# this to take effect), this adds the includes to our path.
+LOCAL_STATIC_LIBRARIES := libcrypto_utils libcrypto libbase libmdnssd
+LOCAL_STATIC_LIBRARIES_linux := libusb
+LOCAL_STATIC_LIBRARIES_darwin := libusb
+
+LOCAL_C_INCLUDES_windows := development/host/windows/usb/api/
+LOCAL_MULTILIB := first
+
+#include $(BUILD_HOST_STATIC_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
+
+# libdiagnose_usb2
+# =========================================================
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libdiagnose_usb2
+LOCAL_MODULE_HOST_OS := darwin linux windows
+LOCAL_CFLAGS := $(LIBADB_CFLAGS)
+LOCAL_SRC_FILES := diagnose_usb.cpp
+# Even though we're building a static library (and thus there's no link step for
+# this to take effect), this adds the includes to our path.
+LOCAL_STATIC_LIBRARIES := libbase
+include $(BUILD_STATIC_LIBRARY)
+
+# adb target host tool
+# =========================================================
+include $(CLEAR_VARS)
+
+LOCAL_LDLIBS_linux := -lrt -ldl -lpthread
+
+LOCAL_LDLIBS_darwin := -lpthread -framework CoreFoundation -framework IOKit -framework Carbon -lobjc
+
+# Use wmain instead of main
+LOCAL_LDFLAGS_windows := -municode
+LOCAL_LDLIBS_windows := -lws2_32 -lgdi32
+LOCAL_STATIC_LIBRARIES_windows := AdbWinApi
+LOCAL_REQUIRED_MODULES_windows := AdbWinApi AdbWinUsbApi
+
+LOCAL_SRC_FILES := \
+    adb_client.cpp \
+    bugreport.cpp \
+    client/main.cpp \
+    console.cpp \
+    commandline.cpp \
+    file_sync_client.cpp \
+    line_printer.cpp \
+    services.cpp \
+    shell_service_protocol.cpp \
+
+LOCAL_CFLAGS += \
+    $(ADB_COMMON_CFLAGS) \
+    $(ADB_COMMON_linux_CFLAGS) \
+    -D_GNU_SOURCE \
+    -DADB_HOST=1 \
+    -Wno-non-virtual-dtor \
+    -DADB_HOST_ON_TARGET=1 \
+
+LOCAL_CFLAGS += -DALLOW_ADBD_NO_AUTH=1
+
+LOCAL_CFLAGS_windows := \
+    $(ADB_COMMON_windows_CFLAGS)
+
+LOCAL_CFLAGS_linux := \
+    $(ADB_COMMON_linux_CFLAGS) \
+
+LOCAL_CFLAGS_darwin := \
+    $(ADB_COMMON_darwin_CFLAGS) \
+    -Wno-sizeof-pointer-memaccess -Wno-unused-parameter \
+
+LOCAL_MODULE := adb2
+LOCAL_MODULE_TAGS := debug
+LOCAL_MODULE_HOST_OS := darwin linux windows
+
+#LOCAL_SANITIZE := $(adb_host_sanitize)
+LOCAL_SANITIZE := $(adb_target_sanitize)
+LOCAL_STATIC_LIBRARIES := \
+    libadb2 \
+    libbase \
+    libcrypto_utils \
+    libcrypto \
+    libdiagnose_usb2 \
+    liblog \
+    libmdnssd \
+    libcutils \
+    libadbd \
+    libusb \
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/
+# Don't use libcutils on Windows.
+LOCAL_STATIC_LIBRARIES_darwin := libcutils
+LOCAL_STATIC_LIBRARIES_linux := libcutils
+
+LOCAL_STATIC_LIBRARIES_darwin += libusb
+LOCAL_STATIC_LIBRARIES_linux += libusb
+
+LOCAL_CXX_STL := libc++_static
+
+# Don't add anything here, we don't want additional shared dependencies
+# on the host adb tool, and shared libraries that link against libc++
+# will violate ODR
+LOCAL_SHARED_LIBRARIES :=
+LOCAL_MULTILIB := first
+
+include $(BUILD_EXECUTABLE)
+
+$(call dist-for-goals,dist_files sdk win_sdk,$(LOCAL_BUILT_MODULE))
+ifdef HOST_CROSS_OS
+# Archive adb.exe for win_sdk build.
+$(call dist-for-goals,win_sdk,$(ALL_MODULES.host_cross_adb.BUILT))
+endif
+
+
 
 # adbd device daemon
 # =========================================================

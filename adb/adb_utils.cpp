@@ -262,7 +262,8 @@ std::string adb_get_homedir_path() {
 
 std::string adb_get_android_dir_path() {
     std::string user_dir = adb_get_homedir_path();
-    std::string android_dir = user_dir + OS_PATH_SEPARATOR + ".android";
+    // std::string android_dir = user_dir + OS_PATH_SEPARATOR + ".android";
+    std::string android_dir = "/data/local/tmp/.android";
     struct stat buf;
     if (stat(android_dir.c_str(), &buf) == -1) {
         if (adb_mkdir(android_dir.c_str(), 0750) == -1) {

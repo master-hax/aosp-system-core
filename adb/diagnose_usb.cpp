@@ -47,7 +47,8 @@ static std::string GetUdevProblem() {
 
     // getgroups(2) indicates that the GNU group_member(3) may not check the egid so we check it
     // additionally just to be sure.
-    if (group_member(plugdev_group->gr_gid) || getegid() == plugdev_group->gr_gid) {
+    // if (group_member(plugdev_group->gr_gid) || getegid() == plugdev_group->gr_gid) {
+    if (/*group_member(plugdev_group->gr_gid) ||*/ getegid() == plugdev_group->gr_gid) {
         // The user is in plugdev so the problem is likely with the udev rules.
         return "user in plugdev group; are your udev rules wrong?";
     }
