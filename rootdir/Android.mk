@@ -204,7 +204,11 @@ ifeq ($(_enforce_vndk_at_runtime),true)
 LOCAL_MODULE := ld.config.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := ld.config.$(PLATFORM_VNDK_VERSION).txt
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 vndk_lib_md5 := $(word 1, $(shell echo $(LLNDK_LIBRARIES) $(VNDK_SAMEPROCESS_LIBRARIES) | $(MD5SUM)))
 vndk_lib_dep := $(intermediates)/$(vndk_lib_md5).dep
@@ -249,12 +253,17 @@ else # if _enforce_vndk_at_runtime is not true
 LOCAL_MODULE := ld.config.txt
 ifeq ($(PRODUCT_TREBLE_LINKER_NAMESPACES)|$(SANITIZE_TARGET),true|)
 LOCAL_SRC_FILES := etc/ld.config.txt
+ifeq (current,$(PLATFORM_VNDK_VERSION))
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := ld.config.$(PLATFORM_VNDK_VERSION).txt
+endif
 else
 LOCAL_SRC_FILES := etc/ld.config.legacy.txt
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
 endif
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
 endif
 
@@ -264,7 +273,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := llndk.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := llndk.libraries.$(PLATFORM_VNDK_VERSION).txt
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 llndk_md5 = $(word 1, $(shell echo $(LLNDK_LIBRARIES) | $(MD5SUM)))
 llndk_dep = $(intermediates)/$(llndk_md5).dep
@@ -285,7 +298,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := vndksp.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := vndksp.libraries.$(PLATFORM_VNDK_VERSION).txt
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 vndksp_md5 = $(word 1, $(shell echo $(LLNDK_LIBRARIES) | $(MD5SUM)))
 vndksp_dep = $(intermediates)/$(vndksp_md5).dep
