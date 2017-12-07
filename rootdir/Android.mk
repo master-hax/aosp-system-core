@@ -205,7 +205,12 @@ ifeq ($(_enforce_vndk_at_runtime),true)
 LOCAL_MODULE := ld.config.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := $(addsuffix $(suffix $(LOCAL_MODULE)),\
+	$(join $(basename $(LOCAL_MODULE)),.$(PLATFORM_VNDK_VERSION)))
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 
 llndk_libraries := $(subst $(space),:,$(addsuffix .so,\
@@ -252,12 +257,18 @@ else # if _enforce_vndk_at_runtime is not true
 LOCAL_MODULE := ld.config.txt
 ifeq ($(PRODUCT_TREBLE_LINKER_NAMESPACES)|$(SANITIZE_TARGET),true|)
 LOCAL_SRC_FILES := etc/ld.config.txt
+ifeq (current,$(PLATFORM_VNDK_VERSION))
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := $(addsuffix $(suffix $(LOCAL_MODULE)),\
+	$(join $(basename $(LOCAL_MODULE)),.$(PLATFORM_VNDK_VERSION)))
+endif
 else
 LOCAL_SRC_FILES := etc/ld.config.legacy.txt
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
 endif
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
 endif
 
@@ -267,7 +278,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := llndk.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := $(addsuffix $(suffix $(LOCAL_MODULE)),\
+	$(join $(basename $(LOCAL_MODULE)),.$(PLATFORM_VNDK_VERSION)))
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): PRIVATE_LLNDK_LIBRARIES := $(LLNDK_LIBRARIES)
 $(LOCAL_BUILT_MODULE):
@@ -283,7 +299,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := vndksp.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
 LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+else
+LOCAL_MODULE_STEM := $(addsuffix $(suffix $(LOCAL_MODULE)),\
+	$(join $(basename $(LOCAL_MODULE)),.$(PLATFORM_VNDK_VERSION)))
+endif
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): PRIVATE_VNDK_SAMEPROCESS_LIBRARIES := $(VNDK_SAMEPROCESS_LIBRARIES)
 $(LOCAL_BUILT_MODULE):
