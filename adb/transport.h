@@ -66,7 +66,9 @@ class atransport {
     atransport(ConnectionState state = kCsOffline)
         : id(NextTransportId()), connection_state_(state) {
         transport_fde = {};
-        protocol_version = A_VERSION;
+        // Initialize protocol to min version for compatibility with older versions.
+        // Version will be updated post-connect.
+        protocol_version = A_VERSION_MIN;
         max_payload = MAX_PAYLOAD;
     }
     virtual ~atransport() {}
