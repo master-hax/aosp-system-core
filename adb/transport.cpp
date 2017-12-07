@@ -163,7 +163,12 @@ static void transport_socket_events(int fd, unsigned events, void* _t) {
 
 void send_packet(apacket* p, atransport* t) {
     p->msg.magic = p->msg.command ^ 0xffffffff;
-    p->msg.data_check = calculate_apacket_checksum(p);
+    // compute a checksum for connection/auth packets for compatibility reasons
+    if (t->get_protocol_version() >= A_VERSION_SKIP_CHECKSUM) {
+        p->msg.data_check = 0;
+    } else {
+        p->msg.data_check = calculate_apacket_checksum(p);
+    }
 
     print_packet("send", p);
 
@@ -795,6 +800,7 @@ const std::string atransport::connection_state_name() const {
 void atransport::update_version(int version, size_t payload) {
     protocol_version = std::min(version, A_VERSION);
     max_payload = std::min(payload, MAX_PAYLOAD);
+    D("TIM: new version is %d", protocol_version);
 }
 
 int atransport::get_protocol_version() const {
