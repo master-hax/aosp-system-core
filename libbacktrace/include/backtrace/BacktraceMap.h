@@ -159,18 +159,4 @@ public:
   std::vector<std::string> suffixes_to_ignore_;
 };
 
-class ScopedBacktraceMapIteratorLock {
-public:
-  explicit ScopedBacktraceMapIteratorLock(BacktraceMap* map) : map_(map) {
-    map->LockIterator();
-  }
-
-  ~ScopedBacktraceMapIteratorLock() {
-    map_->UnlockIterator();
-  }
-
-private:
-  BacktraceMap* map_;
-};
-
 #endif // _BACKTRACE_BACKTRACE_MAP_H

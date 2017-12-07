@@ -254,7 +254,6 @@ static void dump_abort_message(log_t* log, Memory* process_memory, uintptr_t add
 static void dump_all_maps(log_t* log, BacktraceMap* map, Memory* process_memory, uintptr_t addr) {
   bool print_fault_address_marker = addr;
 
-  ScopedBacktraceMapIteratorLock lock(map);
   _LOG(log, logtype::MAPS,
        "\n"
        "memory map (%zu entr%s):",
