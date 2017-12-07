@@ -163,7 +163,13 @@ static void transport_socket_events(int fd, unsigned events, void* _t) {
 
 void send_packet(apacket* p, atransport* t) {
     p->msg.magic = p->msg.command ^ 0xffffffff;
-    p->msg.data_check = calculate_apacket_checksum(p);
+    // compute a checksum for connection/auth packets for compatibility reasons
+    if (p->msg.command != A_CNXN && p->msg.command != A_AUTH &&
+        t->get_protocol_version() >= A_VERSION_SKIP_CHECKSUM) {
+        p->msg.data_check = 0;
+    } else {
+        p->msg.data_check = calculate_apacket_checksum(p);
+    }
 
     print_packet("send", p);
 

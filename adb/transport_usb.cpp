@@ -109,7 +109,7 @@ static int remote_read(apacket* p, atransport* t) {
             goto err_msg;
         }
     }
-    if (!check_data(p)) {
+    if (t->get_protocol_version() < A_VERSION_SKIP_CHECKSUM && !check_data(p)) {
         D("remote usb: check_data failed, skip it");
         goto err_msg;
     }
@@ -143,7 +143,7 @@ static int remote_read(apacket *p, atransport *t)
         }
     }
 
-    if (!check_data(p)) {
+    if (t->get_protocol_version() < A_VERSION_SKIP_CHECKSUM && !check_data(p)) {
         LOG(ERROR) << "remote usb: check_data failed";
         return -1;
     }
