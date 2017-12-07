@@ -205,7 +205,12 @@ ifeq ($(_enforce_vndk_at_runtime),true)
 LOCAL_MODULE := ld.config.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
+  vndk_stem := $(LOCAL_MODULE)
+else
+  vndk_stem := $(basename $(LOCAL_MODULE)).$(PLATFORM_VNDK_VERSION)$(suffix $(LOCAL_MODULE))
+endif
+LOCAL_MODULE_STEM := $(vndk_stem)
 include $(BUILD_SYSTEM)/base_rules.mk
 
 llndk_libraries := $(subst $(space),:,$(addsuffix .so,\
@@ -251,15 +256,22 @@ else # if _enforce_vndk_at_runtime is not true
 
 LOCAL_MODULE := ld.config.txt
 ifeq ($(PRODUCT_TREBLE_LINKER_NAMESPACES)|$(SANITIZE_TARGET),true|)
-LOCAL_SRC_FILES := etc/ld.config.txt
+  LOCAL_SRC_FILES := etc/ld.config.txt
+  ifeq (current,$(PLATFORM_VNDK_VERSION))
+    vndk_stem := $(LOCAL_MODULE)
+  else
+    vndk_stem := $(basename $(LOCAL_MODULE)).$(PLATFORM_VNDK_VERSION)$(suffix $(LOCAL_MODULE))
+  endif
 else
-LOCAL_SRC_FILES := etc/ld.config.legacy.txt
+  LOCAL_SRC_FILES := etc/ld.config.legacy.txt
+  vndk_stem := $(LOCAL_MODULE)
 endif
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+LOCAL_MODULE_STEM := $(vndk_stem)
 include $(BUILD_PREBUILT)
 endif
+vndk_stem :=
 
 #######################################
 # llndk.libraries.txt
@@ -267,7 +279,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := llndk.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
+  vndk_stem := $(LOCAL_MODULE)
+else
+  vndk_stem := $(basename $(LOCAL_MODULE)).$(PLATFORM_VNDK_VERSION)$(suffix $(LOCAL_MODULE))
+endif
+LOCAL_MODULE_STEM := $(vndk_stem)
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): PRIVATE_LLNDK_LIBRARIES := $(LLNDK_LIBRARIES)
 $(LOCAL_BUILT_MODULE):
@@ -277,13 +294,20 @@ $(LOCAL_BUILT_MODULE):
 	$(hide) $(foreach lib,$(PRIVATE_LLNDK_LIBRARIES), \
 		echo $(lib).so >> $@;)
 
+vndk_stem :=
+
 #######################################
 # vndksp.libraries.txt
 include $(CLEAR_VARS)
 LOCAL_MODULE := vndksp.libraries.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+ifeq (current,$(PLATFORM_VNDK_VERSION))
+  vndk_stem := $(LOCAL_MODULE)
+else
+  vndk_stem := $(basename $(LOCAL_MODULE)).$(PLATFORM_VNDK_VERSION)$(suffix $(LOCAL_MODULE))
+endif
+LOCAL_MODULE_STEM := $(vndk_stem)
 include $(BUILD_SYSTEM)/base_rules.mk
 $(LOCAL_BUILT_MODULE): PRIVATE_VNDK_SAMEPROCESS_LIBRARIES := $(VNDK_SAMEPROCESS_LIBRARIES)
 $(LOCAL_BUILT_MODULE):
@@ -292,3 +316,5 @@ $(LOCAL_BUILT_MODULE):
 	$(hide) echo -n > $@
 	$(hide) $(foreach lib,$(PRIVATE_VNDK_SAMEPROCESS_LIBRARIES), \
 		echo $(lib).so >> $@;)
+
+vndk_stem :=
