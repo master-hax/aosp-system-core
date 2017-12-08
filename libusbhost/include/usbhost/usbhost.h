@@ -140,8 +140,16 @@ uint16_t usb_device_get_product_id(struct usb_device *device);
 const struct usb_device_descriptor* usb_device_get_device_descriptor(struct usb_device *device);
 
 /* Returns a USB descriptor string for the given string ID.
+ * Returns the string in USB-native UCS-2 encoding.
+ * Call free() to free the result when you are done with it.
+ */
+int usb_device_get_string_ucs2(struct usb_device* device, int id, int timeout, void** ucs2_out,
+                               int* buffer_size);
+
+/* Returns a USB descriptor string for the given string ID.
  * Used to implement usb_device_get_manufacturer_name,
  * usb_device_get_product_name and usb_device_get_serial.
+ * Returns ascii - non ascii characters will be replaced with '?'.
  * Call free() to free the result when you are done with it.
  */
 char* usb_device_get_string(struct usb_device *device, int id, int timeout);
