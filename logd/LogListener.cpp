@@ -106,6 +106,15 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
         return false;
     }
 
+    if (header->id == LOG_ID_STATS) {
+        // Only accept logging from root, system uid or those who are granted
+        // the LOG_STATS permission. Note that most of the logs are coming
+        // from system, so the permission check shouldn't happen often.
+        if (!clientHasStatsCredentials(cred->uid, cred->gid, cred->pid)) {
+            return false;
+        }
+    }
+
     // Check credential validity, acquire corrected details if not supplied.
     if (cred->pid == 0) {
         cred->pid = logbuf ? logbuf->tidToPid(header->tid)
