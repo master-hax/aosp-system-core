@@ -69,6 +69,7 @@ static inline const char* strnstr(const char* s, ssize_t len,
 // Furnished in LogCommand.cpp
 bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid);
 bool clientHasLogCredentials(SocketClient* cli);
+bool clientHasStatsCredentials(uid_t uid, gid_t gid, pid_t pid);
 
 static inline bool worstUidEnabledForLogid(log_id_t id) {
     return (id == LOG_ID_MAIN) || (id == LOG_ID_SYSTEM) ||

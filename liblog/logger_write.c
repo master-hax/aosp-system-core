@@ -51,18 +51,17 @@ static enum {
   kLogAvailable
 } g_log_status = kLogUninitialized;
 
-static int check_log_uid_permissions() {
-#if defined(__ANDROID__)
+static int check_uid_permissions(uid_t allowedUid, gid_t allowedGid) {
   uid_t uid = __android_log_uid();
 
-  /* Matches clientHasLogCredentials() in logd */
-  if ((uid != AID_SYSTEM) && (uid != AID_ROOT) && (uid != AID_LOG)) {
+  /* Matches clientHasCredentials() in logd */
+  if ((uid != AID_SYSTEM) && (uid != AID_ROOT) && (uid != allowedUid)) {
     uid = geteuid();
-    if ((uid != AID_SYSTEM) && (uid != AID_ROOT) && (uid != AID_LOG)) {
+    if ((uid != AID_SYSTEM) && (uid != AID_ROOT) && (uid != allowedUid)) {
       gid_t gid = getgid();
-      if ((gid != AID_SYSTEM) && (gid != AID_ROOT) && (gid != AID_LOG)) {
+      if ((gid != AID_SYSTEM) && (gid != AID_ROOT) && (gid != allowedGid)) {
         gid = getegid();
-        if ((gid != AID_SYSTEM) && (gid != AID_ROOT) && (gid != AID_LOG)) {
+        if ((gid != AID_SYSTEM) && (gid != AID_ROOT) && (gid != allowedGid)) {
           int num_groups;
           gid_t* groups;
 
@@ -76,7 +75,7 @@ static int check_log_uid_permissions() {
           }
           num_groups = getgroups(num_groups, groups);
           while (num_groups > 0) {
-            if (groups[num_groups - 1] == AID_LOG) {
+            if (groups[num_groups - 1] == allowedGid) {
               break;
             }
             --num_groups;
@@ -89,6 +88,19 @@ static int check_log_uid_permissions() {
       }
     }
   }
+  return 0;
+}
+
+static int check_log_uid_permissions() {
+#if defined(__ANDROID__)
+  return check_uid_permissions(AID_LOG, AID_LOG);
+#endif
+  return 0;
+}
+
+static int check_stats_uid_permissions() {
+#if defined(__ANDROID__)
+  return check_uid_permissions(AID_STATS, AID_STATS);
 #endif
   return 0;
 }
@@ -104,6 +116,7 @@ static void __android_log_cache_available(
   for (i = LOG_ID_MIN; i < LOG_ID_MAX; ++i) {
     if (node->write && (i != LOG_ID_KERNEL) &&
         ((i != LOG_ID_SECURITY) || (check_log_uid_permissions() == 0)) &&
+        ((i != LOG_ID_STATS) || (check_stats_uid_permissions() == 0)) &&
         (!node->available || ((*node->available)(i) >= 0))) {
       node->logMask |= 1 << i;
     }
@@ -271,6 +284,12 @@ static int __write_to_log_daemon(log_id_t log_id, struct iovec* vec, size_t nr) 
       return -EPERM;
     }
   } else if (log_id == LOG_ID_EVENTS || log_id == LOG_ID_STATS) {
+    if (log_id == LOG_ID_STATS) {
+      ret = check_stats_uid_permissions();
+      if (ret < 0) {
+        return ret;
+      }
+    }
     const char* tag;
     size_t len;
     EventTagMap *m, *f;
