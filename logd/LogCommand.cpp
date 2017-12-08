@@ -40,7 +40,7 @@ LogCommand::LogCommand(const char* cmd) : FrameworkCommand(cmd) {
 // has open permissions, and one that has restricted
 // permissions.
 
-static bool groupIsLog(char* buf) {
+static bool checkGroupExists(char* buf, gid_t allowedGid) {
     char* ptr;
     static const char ws[] = " \n";
 
@@ -50,19 +50,28 @@ static bool groupIsLog(char* buf) {
         if (errno != 0) {
             return false;
         }
-        if (Gid == AID_LOG) {
+        if (Gid == allowedGid) {
             return true;
         }
     }
     return false;
 }
 
-bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
-    if ((uid == AID_ROOT) || (uid == AID_SYSTEM) || (uid == AID_LOG)) {
+static bool groupIsLog(char* buf) {
+    return checkGroupExists(buf, AID_LOG);
+}
+
+static bool groupIsStats(char* buf) {
+    return checkGroupExists(buf, AID_STATS);
+}
+
+bool clientHasCredentials(uid_t uid, gid_t gid, pid_t pid, uid_t allowedUid,
+                          gid_t allowedGid) {
+    if ((uid == AID_ROOT) || (uid == AID_SYSTEM) || (uid == allowedUid)) {
         return true;
     }
 
-    if ((gid == AID_ROOT) || (gid == AID_SYSTEM) || (gid == AID_LOG)) {
+    if ((gid == AID_ROOT) || (gid == AID_SYSTEM) || (gid == allowedGid)) {
         return true;
     }
 
@@ -71,7 +80,7 @@ bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
     snprintf(filename, sizeof(filename), "/proc/%u/status", pid);
 
     bool ret;
-    bool foundLog = false;
+    bool foundSupplementaryGid = false;
     bool foundGid = false;
     bool foundUid = false;
 
@@ -91,7 +100,8 @@ bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
     // doubt, but we expect the falses  should be reduced significantly as
     // three times is a charm.
     //
-    for (int retry = 3; !(ret = foundGid && foundUid && foundLog) && retry;
+    for (int retry = 3;
+         !(ret = foundGid && foundUid && foundSupplementaryGid) && retry;
          --retry) {
         FILE* file = fopen(filename, "r");
         if (!file) {
@@ -106,8 +116,9 @@ bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
             static const char gid_string[] = "Gid:\t";
 
             if (strncmp(groups_string, line, sizeof(groups_string) - 1) == 0) {
-                if (groupIsLog(line + sizeof(groups_string) - 1)) {
-                    foundLog = true;
+                if (checkGroupExists(line + sizeof(groups_string) - 1,
+                                     allowedGid)) {
+                    foundSupplementaryGid = true;
                 }
             } else if (strncmp(uid_string, line, sizeof(uid_string) - 1) == 0) {
                 uid_t u[4] = { (uid_t)-1, (uid_t)-1, (uid_t)-1, (uid_t)-1 };
@@ -138,6 +149,14 @@ bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
     }
 
     return ret;
+}
+
+bool clientHasLogCredentials(uid_t uid, gid_t gid, pid_t pid) {
+    return clientHasCredentials(uid, gid, pid, AID_LOG, AID_LOG);
+}
+
+bool clientHasStatsCredentials(uid_t uid, gid_t gid, pid_t pid) {
+    return clientHasCredentials(uid, gid, pid, AID_STATS, AID_STATS);
 }
 
 bool clientHasLogCredentials(SocketClient* cli) {
