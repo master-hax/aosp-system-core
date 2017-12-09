@@ -251,6 +251,11 @@ on init
     # that they can be chown'd to system:system later on boot
     write /sys/class/leds/vibrator/trigger "transient"
 
+    # Create UDS structure for bufferhubd
+    mkdir /dev/socket/pdx 0775 system system
+    mkdir /dev/socket/pdx/system 0775 system system
+    mkdir /dev/socket/pdx/system/buffer_hub 0775 system system
+
 # Healthd can trigger a full boot from charger mode by signaling this
 # property when the power button is held.
 on property:sys.boot_from_charger_mode=1
