@@ -23,6 +23,9 @@
 #include <sys/mount.h>
 #include <unistd.h>
 
+#include <list>
+#include <utility>
+
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -396,17 +399,25 @@ static bool is_dt_fstab_compatible() {
     return false;
 }
 
+// <mount point, the line format in a fstab file>
+using FstabDtEntry = std::pair<std::string, std::string>;
+
+static bool CompareFstabDtEntry(const FstabDtEntry& a, const FstabDtEntry& b) {
+    // Sort by the mount point path (the first element of FstabDtEntry).
+    return (a.first < b.first);
+}
+
 static std::string read_fstab_from_dt() {
-    std::string fstab;
     if (!is_dt_compatible() || !is_dt_fstab_compatible()) {
-        return fstab;
+        return std::string();
     }
 
     std::string fstabdir_name = get_android_dt_dir() + "/fstab";
     std::unique_ptr<DIR, int (*)(DIR*)> fstabdir(opendir(fstabdir_name.c_str()), closedir);
-    if (!fstabdir) return fstab;
+    if (!fstabdir) return std::string();
 
     dirent* dp;
+    std::list<FstabDtEntry> fstab_dt_entries;
     while ((dp = readdir(fstabdir.get())) != NULL) {
         // skip over name, compatible and .
         if (dp->d_type != DT_DIR || dp->d_name[0] == '.') continue;
@@ -427,16 +438,26 @@ static std::string read_fstab_from_dt() {
         file_name = android::base::StringPrintf("%s/%s/dev", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find device for partition " << dp->d_name;
-            fstab.clear();
+            fstab_dt_entries.clear();
             break;
         }
         fstab_entry.push_back(value);
-        fstab_entry.push_back(android::base::StringPrintf("/%s", dp->d_name));
+
+        std::string mount_point;
+        file_name =
+            android::base::StringPrintf("%s/%s/mnt_point", fstabdir_name.c_str(), dp->d_name);
+        if (read_dt_file(file_name, &value)) {
+            LINFO << "dt_fstab: Using a specified mount point " << value << " for " << dp->d_name;
+            mount_point = value;
+        } else {
+            mount_point = android::base::StringPrintf("/%s", dp->d_name);
+        }
+        fstab_entry.push_back(mount_point);
 
         file_name = android::base::StringPrintf("%s/%s/type", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            fstab.clear();
+            fstab_dt_entries.clear();
             break;
         }
         fstab_entry.push_back(value);
@@ -444,7 +465,7 @@ static std::string read_fstab_from_dt() {
         file_name = android::base::StringPrintf("%s/%s/mnt_flags", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            fstab.clear();
+            fstab_dt_entries.clear();
             break;
         }
         fstab_entry.push_back(value);
@@ -452,16 +473,20 @@ static std::string read_fstab_from_dt() {
         file_name = android::base::StringPrintf("%s/%s/fsmgr_flags", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            fstab.clear();
+            fstab_dt_entries.clear();
             break;
         }
         fstab_entry.push_back(value);
-
-        fstab += android::base::Join(fstab_entry, " ");
-        fstab += '\n';
+        // Add the single fstab_entry to fstab_dt_entries, to be sorted by mount_point.
+        fstab_dt_entries.push_back(FstabDtEntry(mount_point, android::base::Join(fstab_entry, " ")));
     }
 
-    return fstab;
+    // Sort fstab_dt entries, to ensure /vendor is mounted before /vendor/abc is attempted.
+    fstab_dt_entries.sort(CompareFstabDtEntry);
+    std::ostringstream fstab_result;
+    for (auto it = fstab_dt_entries.begin(); it != fstab_dt_entries.end(); ++it)
+        fstab_result << it->second << "\n";
+    return fstab_result.str();
 }
 
 bool is_dt_compatible() {
