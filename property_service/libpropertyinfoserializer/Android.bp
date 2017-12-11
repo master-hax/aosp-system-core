@@ -26,6 +26,7 @@ cc_library_static {
     srcs: [
         "property_info_file.cpp",
         "property_info_serializer.cpp",
+        "property_schema.cpp",
         "trie_builder.cpp",
         "trie_serializer.cpp",
     ],
@@ -39,6 +40,7 @@ cc_test {
     srcs: [
         "trie_builder_test.cpp",
         "property_info_serializer_test.cpp",
+        "property_schema_test.cpp",
     ],
     static_libs: ["libpropertyinfoserializer"],
 }
