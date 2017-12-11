@@ -784,9 +784,10 @@ void CreateSerializedPropertyInfo() {
         }
         LoadPropertyInfoFromFile("/nonplat_property_contexts", &property_infos);
     }
+
     auto serialized_contexts = std::string();
     auto error = std::string();
-    if (!BuildTrie(property_infos, "u:object_r:default_prop:s0", "\\s*", &serialized_contexts,
+    if (!BuildTrie(property_infos, "u:object_r:default_prop:s0", "any", &serialized_contexts,
                    &error)) {
         LOG(ERROR) << "Unable to serialize property contexts: " << error;
         return;
