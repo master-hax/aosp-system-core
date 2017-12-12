@@ -64,6 +64,7 @@
 #define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
 #define MKSWAP_BIN      "/system/bin/mkswap"
 #define TUNE2FS_BIN     "/system/bin/tune2fs"
+#define F2FS_RESIZE_BIN "/system/bin/resize_f2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
 
@@ -236,6 +237,34 @@ static void check_fs(const char *blk_device, char *fs_type, char *target, int *f
         }
     }
 
+    return;
+}
+
+static void resize_fs(const char *blk_device, char *fs_type)
+{
+    int status;
+    int ret;
+
+    /* Check for the types of filesystems we know how to check */
+    if (is_extfs(fs_type)) {
+        return;
+    } else if (!strcmp(fs_type, "f2fs")) {
+        const char *f2fs_resize_argv[] = {
+                F2FS_RESIZE_BIN,
+                blk_device
+        };
+        LINFO << "Running " << F2FS_RESIZE_BIN << blk_device;
+
+        ret = android_fork_execvp_ext(ARRAY_SIZE(f2fs_resize_argv),
+                                      const_cast<char **>(f2fs_resize_argv),
+                                      &status, true, LOG_KLOG | LOG_FILE,
+                                      true, const_cast<char *>(FSCK_LOG_FILE),
+                                      NULL, 0);
+        if (ret < 0) {
+            /* No need to check for error in fork, we can't really handle it now */
+            LERROR << "Failed trying to run " << F2FS_RESIZE_BIN;
+        }
+    }
     return;
 }
 
@@ -430,6 +459,9 @@ static int prepare_fs_for_mount(const char* blk_device, const struct fstab_rec* 
         } else {
             return fs_stat;
         }
+    }
+    if (rec->fs_mgr_flags & MF_RESIZE) {
+        resize_fs(blk_device, rec->fs_type);
     }
 
     if ((rec->fs_mgr_flags & MF_CHECK) ||
