@@ -18,6 +18,11 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
 #include <unwindstack/Elf.h>
 #include <unwindstack/MapInfo.h>
@@ -50,7 +55,7 @@ bool UnwindStackMap::Build() {
     map.end = map_info->end;
     map.offset = map_info->offset;
     // Set to -1 so that it is demand loaded.
-    map.load_bias = static_cast<uintptr_t>(-1);
+    map.load_bias = static_cast<uint64_t>(-1);
     map.flags = map_info->flags;
     map.name = map_info->name;
 
@@ -60,9 +65,9 @@ bool UnwindStackMap::Build() {
   return true;
 }
 
-void UnwindStackMap::FillIn(uintptr_t addr, backtrace_map_t* map) {
+void UnwindStackMap::FillIn(uint64_t addr, backtrace_map_t* map) {
   BacktraceMap::FillIn(addr, map);
-  if (map->load_bias != static_cast<uintptr_t>(-1)) {
+  if (map->load_bias != static_cast<uint64_t>(-1)) {
     return;
   }
 
@@ -86,7 +91,7 @@ uint64_t UnwindStackMap::GetLoadBias(size_t index) {
   return map_info->GetLoadBias(process_memory_);
 }
 
-std::string UnwindStackMap::GetFunctionName(uintptr_t pc, uintptr_t* offset) {
+std::string UnwindStackMap::GetFunctionName(uint64_t pc, uint64_t* offset) {
   *offset = 0;
   unwindstack::Maps* maps = stack_maps();
 
@@ -111,6 +116,43 @@ std::shared_ptr<unwindstack::Memory> UnwindStackMap::GetProcessMemory() {
   return process_memory_;
 }
 
+UnwindStackOfflineMap::UnwindStackOfflineMap(pid_t pid) : UnwindStackMap(pid) {}
+
+bool UnwindStackOfflineMap::Build() {
+  return false;
+}
+
+bool UnwindStackOfflineMap::Build(const std::vector<backtrace_map_t>& backtrace_maps,
+                                  const backtrace_stackinfo_t& stack) {
+  if (stack.start >= stack.end) {
+    return false;
+  }
+
+  for (const backtrace_map_t& map : backtrace_maps) {
+    maps_.push_back(map);
+  }
+
+  std::sort(maps_.begin(), maps_.end(),
+            [](const backtrace_map_t& a, const backtrace_map_t& b) { return a.start < b.start; });
+
+  unwindstack::Maps* maps = new unwindstack::Maps;
+  stack_maps_.reset(maps);
+  for (const backtrace_map_t& map : maps_) {
+    maps->Add(map.start, map.end, map.offset, map.flags, map.name, map.load_bias);
+  }
+
+  // Create the process memory from the stack data.
+  uint64_t size = stack.end - stack.start;
+  unwindstack::MemoryBuffer* memory = new unwindstack::MemoryBuffer;
+  memory->Resize(size);
+  memcpy(memory->GetPtr(0), stack.data, size);
+  std::shared_ptr<unwindstack::Memory> shared_memory(memory);
+
+  process_memory_.reset(new unwindstack::MemoryRange(shared_memory, 0, size, stack.start));
+
+  return true;
+}
+
 //-------------------------------------------------------------------------
 // BacktraceMap create function.
 //-------------------------------------------------------------------------
@@ -126,6 +168,19 @@ BacktraceMap* BacktraceMap::Create(pid_t pid, bool uncached) {
     map = new UnwindStackMap(pid);
   }
   if (!map->Build()) {
+    delete map;
+    return nullptr;
+  }
+  return map;
+}
+
+//-------------------------------------------------------------------------
+// BacktraceMap create offline function.
+//-------------------------------------------------------------------------
+BacktraceMap* BacktraceMap::CreateOffline(pid_t pid, const std::vector<backtrace_map_t>& maps,
+                                          const backtrace_stackinfo_t& stack) {
+  UnwindStackOfflineMap* map = new UnwindStackOfflineMap(pid);
+  if (!map->Build(maps, stack)) {
     delete map;
     return nullptr;
   }

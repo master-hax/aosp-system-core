@@ -144,7 +144,7 @@ bool wait_for_signal(pid_t tid, siginfo_t* siginfo) {
 #define MEMORY_BYTES_TO_DUMP 256
 #define MEMORY_BYTES_PER_LINE 16
 
-void dump_memory(log_t* log, Backtrace* backtrace, uintptr_t addr, const char* fmt, ...) {
+void dump_memory(log_t* log, Backtrace* backtrace, uint64_t addr, const char* fmt, ...) {
   std::string log_msg;
   va_list ap;
   va_start(ap, fmt);
@@ -220,13 +220,13 @@ void dump_memory(log_t* log, Backtrace* backtrace, uintptr_t addr, const char* f
   size_t total_bytes = start + bytes;
   for (size_t line = 0; line < MEMORY_BYTES_TO_DUMP / MEMORY_BYTES_PER_LINE; line++) {
     std::string logline;
-    android::base::StringAppendF(&logline, "    %" PRIPTR, addr);
+    android::base::StringAppendF(&logline, "    %" PRIPTR, static_cast<uint64_t>(addr));
 
     addr += MEMORY_BYTES_PER_LINE;
     std::string ascii;
     for (size_t i = 0; i < MEMORY_BYTES_PER_LINE / sizeof(uintptr_t); i++) {
       if (current >= start && current + sizeof(uintptr_t) <= total_bytes) {
-        android::base::StringAppendF(&logline, " %" PRIPTR, *data_ptr);
+        android::base::StringAppendF(&logline, " %" PRIPTR, static_cast<uint64_t>(*data_ptr));
 
         // Fill out the ascii string from the data.
         uint8_t* ptr = reinterpret_cast<uint8_t*>(data_ptr);
