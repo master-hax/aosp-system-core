@@ -200,7 +200,7 @@ void dump_memory(log_t* log, unwindstack::Memory* memory, uint64_t addr, const c
   size_t total_bytes = start + bytes;
   for (size_t line = 0; line < MEMORY_BYTES_TO_DUMP / MEMORY_BYTES_PER_LINE; line++) {
     std::string logline;
-    android::base::StringAppendF(&logline, "    %" PRIPTR, addr);
+    android::base::StringAppendF(&logline, "    %" PRIPTR, static_cast<uint64_t>(addr));
 
     addr += MEMORY_BYTES_PER_LINE;
     std::string ascii;

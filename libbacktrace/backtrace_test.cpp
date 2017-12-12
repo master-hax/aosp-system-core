@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
+#include <ucontext.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -991,7 +992,7 @@ static void RunReadTest(Backtrace* backtrace, uint64_t read_addr) {
   uint8_t* expected = new uint8_t[pagesize];
   InitMemory(expected, pagesize);
 
-  uint8_t* data = new uint8_t[2*pagesize];
+  uint8_t* data = new uint8_t[2 * pagesize];
   // Verify that we can only read one page worth of data.
   size_t bytes_read = backtrace->Read(read_addr, data, 2 * pagesize);
   ASSERT_EQ(pagesize, bytes_read);
@@ -1042,8 +1043,10 @@ TEST(libbacktrace, thread_read) {
   ASSERT_TRUE(WaitForNonZero(&thread_data.state, 10));
 }
 
+// The code requires these variables are the same size.
 volatile uint64_t g_ready = 0;
 volatile uint64_t g_addr = 0;
+static_assert(sizeof(g_ready) == sizeof(g_addr), "g_ready/g_addr must be same size");
 
 static void ForkedReadTest() {
   // Create two map pages.
@@ -1091,13 +1094,13 @@ TEST(libbacktrace, process_read) {
 
       uint64_t read_addr;
       size_t bytes_read = backtrace->Read(reinterpret_cast<uint64_t>(&g_ready),
-                                          reinterpret_cast<uint8_t*>(&read_addr), sizeof(uint64_t));
-      ASSERT_EQ(sizeof(uint64_t), bytes_read);
+                                          reinterpret_cast<uint8_t*>(&read_addr), sizeof(g_ready));
+      ASSERT_EQ(sizeof(g_ready), bytes_read);
       if (read_addr) {
         // The forked process is ready to be read.
         bytes_read = backtrace->Read(reinterpret_cast<uint64_t>(&g_addr),
-                                     reinterpret_cast<uint8_t*>(&read_addr), sizeof(uint64_t));
-        ASSERT_EQ(sizeof(uint64_t), bytes_read);
+                                     reinterpret_cast<uint8_t*>(&read_addr), sizeof(g_addr));
+        ASSERT_EQ(sizeof(g_addr), bytes_read);
 
         RunReadTest(backtrace.get(), read_addr);
 
@@ -1176,7 +1179,7 @@ TEST(libbacktrace, check_unreadable_elf_local) {
   int fd = open(tmp_so_name, O_RDONLY);
   ASSERT_TRUE(fd != -1);
 
-  void* map = mmap(NULL, map_size, PROT_READ | PROT_EXEC, MAP_PRIVATE, fd, 0);
+  void* map = mmap(nullptr, map_size, PROT_READ | PROT_EXEC, MAP_PRIVATE, fd, 0);
   ASSERT_TRUE(map != MAP_FAILED);
   close(fd);
   ASSERT_TRUE(unlink(tmp_so_name) != -1);
@@ -1225,7 +1228,7 @@ TEST(libbacktrace, check_unreadable_elf_remote) {
       exit(0);
     }
 
-    void* map = mmap(NULL, map_size, PROT_READ | PROT_EXEC, MAP_PRIVATE, fd, 0);
+    void* map = mmap(nullptr, map_size, PROT_READ | PROT_EXEC, MAP_PRIVATE, fd, 0);
     if (map == MAP_FAILED) {
       fprintf(stderr, "Failed to map in memory: %s\n", strerror(errno));
       unlink(tmp_so_name);
@@ -1258,11 +1261,11 @@ TEST(libbacktrace, check_unreadable_elf_remote) {
     ASSERT_TRUE(backtrace.get() != nullptr);
 
     uint64_t read_addr;
-    ASSERT_EQ(sizeof(uint64_t),
+    ASSERT_EQ(sizeof(g_ready),
               backtrace->Read(reinterpret_cast<uint64_t>(&g_ready),
-                              reinterpret_cast<uint8_t*>(&read_addr), sizeof(uint64_t)));
+                              reinterpret_cast<uint8_t*>(&read_addr), sizeof(g_ready)));
     if (read_addr) {
-      ASSERT_EQ(sizeof(uint64_t),
+      ASSERT_EQ(sizeof(g_addr),
                 backtrace->Read(reinterpret_cast<uint64_t>(&g_addr),
                                 reinterpret_cast<uint8_t*>(&read_addr), sizeof(uint64_t)));
 
@@ -1328,7 +1331,6 @@ static void VerifyUnreadableElfFrame(Backtrace* backtrace, uint64_t test_func, s
 }
 
 static void VerifyUnreadableElfBacktrace(void* func) {
-  uint64_t test_func = reinterpret_cast<uint64_t>(func);
   std::unique_ptr<Backtrace> backtrace(Backtrace::Create(BACKTRACE_CURRENT_PROCESS,
                                                          BACKTRACE_CURRENT_THREAD));
   ASSERT_TRUE(backtrace.get() != nullptr);
@@ -1336,7 +1338,9 @@ static void VerifyUnreadableElfBacktrace(void* func) {
   ASSERT_EQ(BACKTRACE_UNWIND_NO_ERROR, backtrace->GetError().error_code);
 
   size_t frame_num;
-  ASSERT_TRUE(FindFuncFrameInBacktrace(backtrace.get(), test_func, &frame_num));
+  uint64_t test_func = reinterpret_cast<uint64_t>(func);
+  ASSERT_TRUE(FindFuncFrameInBacktrace(backtrace.get(), test_func, &frame_num))
+      << DumpFrames(backtrace.get());
 
   VerifyUnreadableElfFrame(backtrace.get(), test_func, frame_num);
 }

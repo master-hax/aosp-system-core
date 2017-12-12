@@ -21,7 +21,9 @@
 #include <sys/types.h>
 
 #include <memory>
+#include <vector>
 
+#include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
@@ -50,6 +52,16 @@ class UnwindStackMap : public BacktraceMap {
   std::unique_ptr<unwindstack::Maps> stack_maps_;
   std::shared_ptr<unwindstack::Memory> process_memory_;
   std::unique_ptr<unwindstack::JitDebug> jit_debug_;
+};
+
+class UnwindStackOfflineMap : public UnwindStackMap {
+ public:
+  UnwindStackOfflineMap(pid_t pid);
+  ~UnwindStackOfflineMap() = default;
+
+  bool Build() override;
+
+  bool Build(const std::vector<backtrace_map_t>& maps, const backtrace_stackinfo_t& stack);
 };
 
 #endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H
