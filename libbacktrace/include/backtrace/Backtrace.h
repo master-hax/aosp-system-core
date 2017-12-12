@@ -60,6 +60,10 @@ enum BacktraceUnwindErrorCode : uint32_t {
   BACKTRACE_UNWIND_ERROR_FIND_PROC_INFO_FAILED,
   // Failed to execute dwarf instructions in debug sections.
   BACKTRACE_UNWIND_ERROR_EXECUTE_DWARF_INSTRUCTION_FAILED,
+  // Unwind information is incorrect.
+  BACKTRACE_UNWIND_ERROR_UNWIND_INFO,
+  // Unwind information stopped due to sp/pc repeating.
+  BACKTRACE_UNWIND_ERROR_REPEATED_FRAME,
 };
 
 struct BacktraceUnwindError {
@@ -87,14 +91,6 @@ struct backtrace_frame_data_t {
                          // NULL.
 };
 
-#if defined(__APPLE__)
-struct __darwin_ucontext;
-typedef __darwin_ucontext ucontext_t;
-#else
-struct ucontext;
-typedef ucontext ucontext_t;
-#endif
-
 struct backtrace_stackinfo_t {
   uint64_t start;
   uint64_t end;
@@ -107,67 +103,86 @@ class Regs;
 
 class Backtrace {
 public:
-  // Create the correct Backtrace object based on what is to be unwound.
-  // If pid < 0 or equals the current pid, then the Backtrace object
-  // corresponds to the current process.
-  // If pid < 0 or equals the current pid and tid >= 0, then the Backtrace
-  // object corresponds to a thread in the current process.
-  // If pid >= 0 and tid < 0, then the Backtrace object corresponds to a
-  // different process.
-  // Tracing a thread in a different process is not supported.
-  // If map is NULL, then create the map and manage it internally.
-  // If map is not NULL, the map is still owned by the caller.
-  static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
+ enum ArchEnum : uint8_t {
+   ARCH_ARM,
+   ARCH_ARM64,
+   ARCH_X86,
+   ARCH_X86_64,
+ };
 
-  // Create an offline Backtrace object that can be used to do an unwind without a process
-  // that is still running. If cache_file is set to true, then elf information will be cached
-  // for this call. The cached information survives until the calling process ends. This means
-  // that subsequent calls to create offline Backtrace objects will continue to use the same
-  // cache. It also assumes that the elf files used for each offline unwind are the same.
-  static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
-                                  const backtrace_stackinfo_t& stack, bool cache_file = false);
+ static void SetGlobalElfCache(bool enable);
 
-  virtual ~Backtrace();
+ // Create the correct Backtrace object based on what is to be unwound.
+ // If pid < 0 or equals the current pid, then the Backtrace object
+ // corresponds to the current process.
+ // If pid < 0 or equals the current pid and tid >= 0, then the Backtrace
+ // object corresponds to a thread in the current process.
+ // If pid >= 0 and tid < 0, then the Backtrace object corresponds to a
+ // different process.
+ // Tracing a thread in a different process is not supported.
+ // If map is NULL, then create the map and manage it internally.
+ // If map is not NULL, the map is still owned by the caller.
+ static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
 
-  // Get the current stack trace and store in the backtrace_ structure.
-  virtual bool Unwind(size_t num_ignore_frames, ucontext_t* context = NULL) = 0;
+ // Create an offline Backtrace object that can be used to do an unwind without a process
+ // that is still running. By default, information is only cached in the map
+ // file. If the calling code creates the map, data can be cached between
+ // unwinds. If not, all cached data will be destroyed when the Backtrace
+ // object is destroyed.
+ static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid,
+                                 const std::vector<backtrace_map_t>& maps,
+                                 const backtrace_stackinfo_t& stack);
+ static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map);
 
-  static bool Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
-                     std::vector<backtrace_frame_data_t>* frames, size_t num_ignore_frames,
-                     std::vector<std::string>* skip_names);
+ // Create an offline Backtrace object that can be used to do an unwind without a process
+ // that is still running. If cache_file is set to true, then elf information will be cached
+ // for this call. The cached information survives until the calling process ends. This means
+ // that subsequent calls to create offline Backtrace objects will continue to use the same
+ // cache. It also assumes that the elf files used for each offline unwind are the same.
+ static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                 const backtrace_stackinfo_t& stack, bool cache_file = false);
 
-  // Get the function name and offset into the function given the pc.
-  // If the string is empty, then no valid function name was found,
-  // or the pc is not in any valid map.
-  virtual std::string GetFunctionName(uint64_t pc, uint64_t* offset,
-                                      const backtrace_map_t* map = NULL);
+ virtual ~Backtrace();
 
-  // Fill in the map data associated with the given pc.
-  virtual void FillInMap(uint64_t pc, backtrace_map_t* map);
+ // Get the current stack trace and store in the backtrace_ structure.
+ virtual bool Unwind(size_t num_ignore_frames, void* context = NULL) = 0;
 
-  // Read the data at a specific address.
-  virtual bool ReadWord(uint64_t ptr, word_t* out_value) = 0;
+ static bool Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
+                    std::vector<backtrace_frame_data_t>* frames, size_t num_ignore_frames,
+                    std::vector<std::string>* skip_names, BacktraceUnwindError* error = nullptr);
 
-  // Read arbitrary data from a specific address. If a read request would
-  // span from one map to another, this call only reads up until the end
-  // of the current map.
-  // Returns the total number of bytes actually read.
-  virtual size_t Read(uint64_t addr, uint8_t* buffer, size_t bytes) = 0;
+ // Get the function name and offset into the function given the pc.
+ // If the string is empty, then no valid function name was found,
+ // or the pc is not in any valid map.
+ virtual std::string GetFunctionName(uint64_t pc, uint64_t* offset,
+                                     const backtrace_map_t* map = NULL);
 
-  // Create a string representing the formatted line of backtrace information
-  // for a single frame.
-  virtual std::string FormatFrameData(size_t frame_num);
-  static std::string FormatFrameData(const backtrace_frame_data_t* frame);
+ // Fill in the map data associated with the given pc.
+ virtual void FillInMap(uint64_t pc, backtrace_map_t* map);
 
-  pid_t Pid() const { return pid_; }
-  pid_t Tid() const { return tid_; }
-  size_t NumFrames() const { return frames_.size(); }
+ // Read the data at a specific address.
+ virtual bool ReadWord(uint64_t ptr, word_t* out_value) = 0;
 
-  const backtrace_frame_data_t* GetFrame(size_t frame_num) {
-    if (frame_num >= frames_.size()) {
-      return NULL;
-    }
-    return &frames_[frame_num];
+ // Read arbitrary data from a specific address. If a read request would
+ // span from one map to another, this call only reads up until the end
+ // of the current map.
+ // Returns the total number of bytes actually read.
+ virtual size_t Read(uint64_t addr, uint8_t* buffer, size_t bytes) = 0;
+
+ // Create a string representing the formatted line of backtrace information
+ // for a single frame.
+ virtual std::string FormatFrameData(size_t frame_num);
+ static std::string FormatFrameData(const backtrace_frame_data_t* frame);
+
+ pid_t Pid() const { return pid_; }
+ pid_t Tid() const { return tid_; }
+ size_t NumFrames() const { return frames_.size(); }
+
+ const backtrace_frame_data_t* GetFrame(size_t frame_num) {
+   if (frame_num >= frames_.size()) {
+     return NULL;
+   }
+   return &frames_[frame_num];
   }
 
   typedef std::vector<backtrace_frame_data_t>::iterator iterator;
