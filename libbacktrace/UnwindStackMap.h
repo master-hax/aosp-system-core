@@ -21,7 +21,9 @@
 #include <sys/types.h>
 
 #include <memory>
+#include <vector>
 
+#include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
 #include <unwindstack/Maps.h>
 
@@ -32,9 +34,9 @@ class UnwindStackMap : public BacktraceMap {
 
   bool Build() override;
 
-  void FillIn(uintptr_t addr, backtrace_map_t* map) override;
+  void FillIn(uint64_t addr, backtrace_map_t* map) override;
 
-  virtual std::string GetFunctionName(uintptr_t pc, uintptr_t* offset) override;
+  virtual std::string GetFunctionName(uint64_t pc, uint64_t* offset) override;
   virtual std::shared_ptr<unwindstack::Memory> GetProcessMemory() override final;
 
   unwindstack::Maps* stack_maps() { return stack_maps_.get(); }
@@ -46,6 +48,16 @@ class UnwindStackMap : public BacktraceMap {
 
   std::unique_ptr<unwindstack::Maps> stack_maps_;
   std::shared_ptr<unwindstack::Memory> process_memory_;
+};
+
+class UnwindStackOfflineMap : public UnwindStackMap {
+ public:
+  UnwindStackOfflineMap(pid_t pid);
+  ~UnwindStackOfflineMap() = default;
+
+  bool Build() override;
+
+  bool Build(const std::vector<backtrace_map_t>& maps, const backtrace_stackinfo_t& stack);
 };
 
 #endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H

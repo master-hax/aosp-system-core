@@ -48,12 +48,12 @@ class BacktraceMock : public Backtrace {
   }
   virtual ~BacktraceMock() {}
 
-  virtual bool Unwind(size_t, ucontext_t*) { return false; }
-  virtual bool ReadWord(uintptr_t, word_t*) { return false;}
+  bool Unwind(size_t, void*) override { return false; }
+  bool ReadWord(uint64_t, word_t*) override { return false; }
 
-  virtual std::string GetFunctionNameRaw(uintptr_t, uintptr_t*) { return ""; }
+  std::string GetFunctionNameRaw(uint64_t, uint64_t*) override { return ""; }
 
-  virtual size_t Read(uintptr_t addr, uint8_t* buffer, size_t bytes) {
+  size_t Read(uint64_t addr, uint8_t* buffer, size_t bytes) override {
     size_t offset = 0;
     if (last_read_addr_ > 0) {
       offset = addr - last_read_addr_;
@@ -99,7 +99,7 @@ class BacktraceMock : public Backtrace {
  private:
   std::vector<uint8_t> buffer_;
   size_t bytes_partial_read_ = 0;
-  uintptr_t last_read_addr_ = 0;
+  uint64_t last_read_addr_ = 0;
   bool do_partial_read_ = false;
 };
 
