@@ -64,7 +64,7 @@ void _LOG(log_t* log, logtype ltype, const char *fmt, ...)
 
 bool wait_for_signal(pid_t tid, siginfo_t* siginfo);
 
-void dump_memory(log_t* log, Backtrace* backtrace, uintptr_t addr, const char* fmt, ...);
+void dump_memory(log_t* log, Backtrace* backtrace, uint64_t addr, const char* fmt, ...);
 
 void read_with_default(const char* path, char* buf, size_t len, const char* default_value);
 

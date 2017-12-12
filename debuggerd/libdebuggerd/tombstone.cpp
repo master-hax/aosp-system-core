@@ -278,8 +278,8 @@ static void dump_thread_info(log_t* log, pid_t pid, pid_t tid, const char* proce
        process_name);
 }
 
-static void dump_stack_segment(
-    Backtrace* backtrace, log_t* log, uintptr_t* sp, size_t words, int label) {
+static void dump_stack_segment(Backtrace* backtrace, log_t* log, word_t* sp, size_t words,
+                               int label) {
   // Read the data all at once.
   word_t stack_data[words];
   size_t bytes_read = backtrace->Read(*sp, reinterpret_cast<uint8_t*>(&stack_data[0]), sizeof(word_t) * words);
@@ -293,18 +293,19 @@ static void dump_stack_segment(
     } else {
       line += "     ";
     }
-    line += StringPrintf("%" PRIPTR "  %" PRIPTR, *sp, stack_data[i]);
+    line += StringPrintf("%" PRIPTR "  %" PRIPTR, static_cast<uint64_t>(*sp),
+                         static_cast<uint64_t>(stack_data[i]));
 
     backtrace_map_t map;
     backtrace->FillInMap(stack_data[i], &map);
     if (BacktraceMap::IsValid(map) && !map.name.empty()) {
       line += "  " + map.name;
-      uintptr_t offset = 0;
+      uint64_t offset = 0;
       std::string func_name(backtrace->GetFunctionName(stack_data[i], &offset, &map));
       if (!func_name.empty()) {
         line += " (" + func_name;
         if (offset) {
-          line += StringPrintf("+%" PRIuPTR, offset);
+          line += StringPrintf("+%" PRIu64, offset);
         }
         line += ')';
       }
@@ -360,19 +361,19 @@ static void dump_stack(Backtrace* backtrace, log_t* log) {
   }
 }
 
-static std::string get_addr_string(uintptr_t addr) {
+static std::string get_addr_string(uint64_t addr) {
   std::string addr_str;
 #if defined(__LP64__)
   addr_str = StringPrintf("%08x'%08x",
                           static_cast<uint32_t>(addr >> 32),
                           static_cast<uint32_t>(addr & 0xffffffff));
 #else
-  addr_str = StringPrintf("%08x", addr);
+  addr_str = StringPrintf("%08x", static_cast<uint32_t>(addr));
 #endif
   return addr_str;
 }
 
-static void dump_abort_message(Backtrace* backtrace, log_t* log, uintptr_t address) {
+static void dump_abort_message(Backtrace* backtrace, log_t* log, uint64_t address) {
   if (address == 0) {
     return;
   }
@@ -401,12 +402,12 @@ static void dump_abort_message(Backtrace* backtrace, log_t* log, uintptr_t addre
 
 static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, pid_t tid) {
   bool print_fault_address_marker = false;
-  uintptr_t addr = 0;
+  uint64_t addr = 0;
   siginfo_t si;
   memset(&si, 0, sizeof(si));
   if (ptrace(PTRACE_GETSIGINFO, tid, 0, &si) != -1) {
     print_fault_address_marker = signal_has_si_addr(si.si_signo, si.si_code);
-    addr = reinterpret_cast<uintptr_t>(si.si_addr);
+    addr = reinterpret_cast<uint64_t>(si.si_addr);
   } else {
     ALOGE("Cannot get siginfo for %d: %s\n", tid, strerror(errno));
   }
@@ -458,7 +459,7 @@ static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, p
     } else {
       line += '-';
     }
-    line += StringPrintf("  %8" PRIxPTR "  %8" PRIxPTR, entry->offset, entry->end - entry->start);
+    line += StringPrintf("  %8" PRIx64 "  %8" PRIx64, entry->offset, entry->end - entry->start);
     bool space_needed = true;
     if (entry->name.length() > 0) {
       space_needed = false;
@@ -472,7 +473,7 @@ static void dump_all_maps(Backtrace* backtrace, BacktraceMap* map, log_t* log, p
       if (space_needed) {
         line += ' ';
       }
-      line += StringPrintf(" (load bias 0x%" PRIxPTR ")", entry->load_bias);
+      line += StringPrintf(" (load bias 0x%" PRIx64 ")", entry->load_bias);
     }
     _LOG(log, logtype::MAPS, "%s\n", line.c_str());
   }

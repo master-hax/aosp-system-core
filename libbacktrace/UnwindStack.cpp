@@ -18,7 +18,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ucontext.h>
 
 #include <memory>
 #include <set>
@@ -87,11 +86,11 @@ bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
 UnwindStackCurrent::UnwindStackCurrent(pid_t pid, pid_t tid, BacktraceMap* map)
     : BacktraceCurrent(pid, tid, map) {}
 
-std::string UnwindStackCurrent::GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset) {
+std::string UnwindStackCurrent::GetFunctionNameRaw(uint64_t pc, uint64_t* offset) {
   return GetMap()->GetFunctionName(pc, offset);
 }
 
-bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, ucontext_t* ucontext) {
+bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, void* ucontext) {
   std::unique_ptr<unwindstack::Regs> regs;
   if (ucontext == nullptr) {
     regs.reset(unwindstack::Regs::CreateFromLocal());
@@ -110,11 +109,11 @@ bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, ucontext_t*
 UnwindStackPtrace::UnwindStackPtrace(pid_t pid, pid_t tid, BacktraceMap* map)
     : BacktracePtrace(pid, tid, map), memory_(pid) {}
 
-std::string UnwindStackPtrace::GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset) {
+std::string UnwindStackPtrace::GetFunctionNameRaw(uint64_t pc, uint64_t* offset) {
   return GetMap()->GetFunctionName(pc, offset);
 }
 
-bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, ucontext_t* context) {
+bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, void* context) {
   std::unique_ptr<unwindstack::Regs> regs;
   if (context == nullptr) {
     regs.reset(unwindstack::Regs::RemoteGet(Tid()));
@@ -126,6 +125,52 @@ bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, ucontext_t* context) {
   return Backtrace::Unwind(regs.get(), GetMap(), &frames_, num_ignore_frames, nullptr);
 }
 
-size_t UnwindStackPtrace::Read(uintptr_t addr, uint8_t* buffer, size_t bytes) {
+size_t UnwindStackPtrace::Read(uint64_t addr, uint8_t* buffer, size_t bytes) {
   return memory_.Read(addr, buffer, bytes);
+}
+
+UnwindStackOffline::UnwindStackOffline(pid_t pid, pid_t tid, BacktraceMap* map, bool map_shared)
+    : BacktraceOffline(pid, tid, map) {
+  map_shared_ = map_shared;
+}
+
+bool UnwindStackOffline::Unwind(size_t num_ignore_frames, void* ucontext) {
+  if (ucontext == nullptr) {
+    return false;
+  }
+
+  unwindstack::ArchEnum arch;
+  switch (arch_) {
+    case ARCH_ARM:
+      arch = unwindstack::ARCH_ARM;
+      break;
+    case ARCH_ARM64:
+      arch = unwindstack::ARCH_ARM64;
+      break;
+    case ARCH_X86:
+      arch = unwindstack::ARCH_X86;
+      break;
+    case ARCH_X86_64:
+      arch = unwindstack::ARCH_X86_64;
+      break;
+    default:
+      return false;
+  }
+
+  std::unique_ptr<unwindstack::Regs> regs(unwindstack::Regs::CreateFromUcontext(arch, ucontext));
+
+  error_ = BACKTRACE_UNWIND_NO_ERROR;
+  return Backtrace::Unwind(regs.get(), GetMap(), &frames_, num_ignore_frames, nullptr);
+}
+
+std::string UnwindStackOffline::GetFunctionNameRaw(uint64_t, uint64_t*) {
+  return "";
+}
+
+size_t UnwindStackOffline::Read(uint64_t, uint8_t*, size_t) {
+  return 0;
+}
+
+bool UnwindStackOffline::ReadWord(uint64_t, word_t*) {
+  return false;
 }
