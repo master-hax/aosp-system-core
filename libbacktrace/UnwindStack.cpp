@@ -18,7 +18,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ucontext.h>
 
 #include <memory>
 #include <set>
@@ -93,7 +92,7 @@ std::string UnwindStackCurrent::GetFunctionNameRaw(uint64_t pc, uint64_t* offset
   return GetMap()->GetFunctionName(pc, offset);
 }
 
-bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, ucontext_t* ucontext) {
+bool UnwindStackCurrent::UnwindFromContext(size_t num_ignore_frames, void* ucontext) {
   std::unique_ptr<unwindstack::Regs> regs;
   if (ucontext == nullptr) {
     regs.reset(unwindstack::Regs::CreateFromLocal());
@@ -116,7 +115,7 @@ std::string UnwindStackPtrace::GetFunctionNameRaw(uint64_t pc, uint64_t* offset)
   return GetMap()->GetFunctionName(pc, offset);
 }
 
-bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, ucontext_t* context) {
+bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, void* context) {
   std::unique_ptr<unwindstack::Regs> regs;
   if (context == nullptr) {
     regs.reset(unwindstack::Regs::RemoteGet(Tid()));
@@ -130,4 +129,69 @@ bool UnwindStackPtrace::Unwind(size_t num_ignore_frames, ucontext_t* context) {
 
 size_t UnwindStackPtrace::Read(uint64_t addr, uint8_t* buffer, size_t bytes) {
   return memory_.Read(addr, buffer, bytes);
+}
+
+UnwindStackOffline::UnwindStackOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map,
+                                       bool map_shared)
+    : Backtrace(pid, tid, map), arch_(arch) {
+  map_shared_ = map_shared;
+}
+
+bool UnwindStackOffline::Unwind(size_t num_ignore_frames, void* ucontext) {
+  if (ucontext == nullptr) {
+    return false;
+  }
+
+  unwindstack::ArchEnum arch;
+  switch (arch_) {
+    case ARCH_ARM:
+      arch = unwindstack::ARCH_ARM;
+      break;
+    case ARCH_ARM64:
+      arch = unwindstack::ARCH_ARM64;
+      break;
+    case ARCH_X86:
+      arch = unwindstack::ARCH_X86;
+      break;
+    case ARCH_X86_64:
+      arch = unwindstack::ARCH_X86_64;
+      break;
+    default:
+      return false;
+  }
+
+  std::unique_ptr<unwindstack::Regs> regs(unwindstack::Regs::CreateFromUcontext(arch, ucontext));
+
+  error_.error_code = BACKTRACE_UNWIND_NO_ERROR;
+  return Backtrace::Unwind(regs.get(), GetMap(), &frames_, num_ignore_frames, nullptr);
+}
+
+std::string UnwindStackOffline::GetFunctionNameRaw(uint64_t, uint64_t*) {
+  return "";
+}
+
+size_t UnwindStackOffline::Read(uint64_t, uint8_t*, size_t) {
+  return 0;
+}
+
+bool UnwindStackOffline::ReadWord(uint64_t, word_t*) {
+  return false;
+}
+
+Backtrace* Backtrace::CreateOffline(ArchEnum arch, pid_t pid, pid_t tid,
+                                    const std::vector<backtrace_map_t>& maps,
+                                    const backtrace_stackinfo_t& stack) {
+  BacktraceMap* map = BacktraceMap::CreateOffline(pid, maps, stack);
+  if (map == nullptr) {
+    return nullptr;
+  }
+
+  return new UnwindStackOffline(arch, pid, tid, map, false);
+}
+
+Backtrace* Backtrace::CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map) {
+  if (map == nullptr) {
+    return nullptr;
+  }
+  return new UnwindStackOffline(arch, pid, tid, map, true);
 }

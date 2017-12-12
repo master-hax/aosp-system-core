@@ -436,15 +436,16 @@ bool ElfInterface::Step(uint64_t pc, uint64_t load_bias, Regs* regs, Memory* pro
   }
   uint64_t adjusted_pc = pc - load_bias;
 
-  // Try the eh_frame first.
-  DwarfSection* eh_frame = eh_frame_.get();
-  if (eh_frame != nullptr && eh_frame->Step(adjusted_pc, regs, process_memory, finished)) {
+  // Try the debug_frame first since it contains the most specific unwind
+  // information.
+  DwarfSection* debug_frame = debug_frame_.get();
+  if (debug_frame != nullptr && debug_frame->Step(adjusted_pc, regs, process_memory, finished)) {
     return true;
   }
 
-  // Try the debug_frame next.
-  DwarfSection* debug_frame = debug_frame_.get();
-  if (debug_frame != nullptr && debug_frame->Step(adjusted_pc, regs, process_memory, finished)) {
+  // Try the eh_frame next.
+  DwarfSection* eh_frame = eh_frame_.get();
+  if (eh_frame != nullptr && eh_frame->Step(adjusted_pc, regs, process_memory, finished)) {
     return true;
   }
 
