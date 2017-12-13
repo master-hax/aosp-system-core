@@ -27,20 +27,40 @@
 
 #include <backtrace/Backtrace.h>
 
+namespace libbacktrace {
+
 struct Space {
   uint64_t start;
   uint64_t end;
   const uint8_t* data;
 
-  Space() {
-    Clear();
-  }
+  Space() { Clear(); }
 
   void Clear();
   size_t Read(uint64_t addr, uint8_t* buffer, size_t size);
 };
 
 struct DebugFrameInfo;
+
+struct BacktraceOfflineFailure {
+  enum {
+    UNKNOWN_REASON,
+    UNW_STEP_STOPPED,
+    MAX_FRAMES_LIMIT,
+    ACCESS_REG_FAILED,
+    ACCESS_MEM_FAILED,
+    FIND_PROC_INFO_FAILED,
+    EXECUTE_DWARF_INSTRUCTION_FAILED,
+  } reason;
+  union {
+    // For ACCESS_REG_FAILED
+    uint64_t regno;
+    // For ACCESS_MEM_FAILED
+    uint64_t addr;
+    // For EXECUTE_DWARF_INSTRUCTION_FAILED
+    uint64_t execute_result;
+  };
+};
 
 class BacktraceOffline : public Backtrace {
  public:
@@ -53,6 +73,7 @@ class BacktraceOffline : public Backtrace {
     stack_space_.start = stack.start;
     stack_space_.end = stack.end;
     stack_space_.data = stack.data;
+    offline_failure_.reason = BacktraceOfflineFailure::UNKNOWN_REASON;
   }
 
   virtual ~BacktraceOffline() = default;
@@ -67,6 +88,8 @@ class BacktraceOffline : public Backtrace {
                     int need_unwind_info);
 
   bool ReadReg(size_t reg_index, uint64_t* value);
+
+  const BacktraceOfflineFailure& GetBacktraceOfflineFailure() { return offline_failure_; }
 
  protected:
   std::string GetFunctionNameRaw(uintptr_t pc, uintptr_t* offset) override;
@@ -87,6 +110,9 @@ class BacktraceOffline : public Backtrace {
   // "DW_CFA_offset_extended: r265 at cfa-48". So we need to try .ARM.exidx to unwind that
   // function.
   bool is_debug_frame_used_;
+  BacktraceOfflineFailure offline_failure_;
 };
+
+}  // namespace libbacktrace
 
 #endif  // _LIBBACKTRACE_BACKTRACE_OFFLINE_H

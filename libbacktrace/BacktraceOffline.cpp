@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "BacktraceOffline.h"
+#include <backtrace/BacktraceOffline.h>
 
 extern "C" {
 #define UNW_REMOTE_ONLY
@@ -52,6 +52,8 @@ extern "C" {
 #pragma clang diagnostic pop
 
 #include "BacktraceLog.h"
+
+namespace libbacktrace {
 
 struct EhFrame {
   uint64_t hdr_vaddr;
@@ -190,7 +192,7 @@ bool BacktraceOffline::Unwind(size_t num_ignore_frames, ucontext_t* context) {
     return false;
   }
   size_t num_frames = 0;
-  do {
+  while (true) {
     unw_word_t pc;
     ret = unw_get_reg(&cursor, UNW_REG_IP, &pc);
     if (ret < 0) {
@@ -223,8 +225,20 @@ bool BacktraceOffline::Unwind(size_t num_ignore_frames, ucontext_t* context) {
       num_ignore_frames--;
     }
     is_debug_frame_used_ = false;
+    offline_failure_.reason = BacktraceOfflineFailure::UNKNOWN_REASON;
     ret = unw_step(&cursor);
-  } while (ret > 0 && num_frames < MAX_BACKTRACE_FRAMES);
+    if (ret <= 0) {
+      if (offline_failure_.reason == BacktraceOfflineFailure::UNKNOWN_REASON) {
+        offline_failure_.reason = BacktraceOfflineFailure::EXECUTE_DWARF_INSTRUCTION_FAILED;
+        offline_failure_.execute_result = -ret;
+      }
+      break;
+    }
+    if (num_frames == MAX_BACKTRACE_FRAMES) {
+      offline_failure_.reason = BacktraceOfflineFailure::MAX_FRAMES_LIMIT;
+      break;
+    }
+  }
 
   unw_destroy_addr_space(addr_space);
   context_ = nullptr;
@@ -259,7 +273,12 @@ size_t BacktraceOffline::Read(uintptr_t addr, uint8_t* buffer, size_t bytes) {
     return read_size;
   }
   read_size = stack_space_.Read(addr, buffer, bytes);
-  return read_size;
+  if (read_size != 0) {
+    return read_size;
+  }
+  offline_failure_.reason = BacktraceOfflineFailure::ACCESS_MEM_FAILED;
+  offline_failure_.addr = addr;
+  return 0;
 }
 
 bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
@@ -267,13 +286,17 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
   backtrace_map_t map;
   FillInMap(ip, &map);
   if (!BacktraceMap::IsValid(map)) {
+    offline_failure_.reason = BacktraceOfflineFailure::FIND_PROC_INFO_FAILED;
     return false;
   }
   const std::string& filename = map.name;
   DebugFrameInfo* debug_frame = GetDebugFrameInFile(filename);
   if (debug_frame == nullptr) {
+    offline_failure_.reason = BacktraceOfflineFailure::FIND_PROC_INFO_FAILED;
     return false;
   }
+  // Each FindProcInfo() is a new attempt to unwind, so reset the reason.
+  offline_failure_.reason = BacktraceOfflineFailure::UNKNOWN_REASON;
 
   eh_frame_hdr_space_.Clear();
   eh_frame_space_.Clear();
@@ -367,6 +390,7 @@ bool BacktraceOffline::FindProcInfo(unw_addr_space_t addr_space, uint64_t ip,
       }
     }
   }
+  offline_failure_.reason = BacktraceOfflineFailure::FIND_PROC_INFO_FAILED;
   return false;
 }
 
@@ -548,6 +572,10 @@ bool BacktraceOffline::ReadReg(size_t reg, uint64_t* value) {
   UNUSED(value);
   result = false;
 #endif
+  if (!result) {
+    offline_failure_.reason = BacktraceOfflineFailure::ACCESS_REG_FAILED;
+    offline_failure_.regno = reg;
+  }
   return result;
 }
 
@@ -881,7 +909,9 @@ static DebugFrameInfo* ReadDebugFrameFromFile(const std::string& filename) {
   return nullptr;
 }
 
+}  // namespace libbacktrace
+
 Backtrace* Backtrace::CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
                                     const backtrace_stackinfo_t& stack, bool cache_file) {
-  return new BacktraceOffline(pid, tid, map, stack, cache_file);
+  return new libbacktrace::BacktraceOffline(pid, tid, map, stack, cache_file);
 }

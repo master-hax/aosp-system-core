@@ -33,9 +33,12 @@
 #include <android-base/strings.h>
 #include <backtrace/Backtrace.h>
 #include <backtrace/BacktraceMap.h>
+#include <backtrace/BacktraceOffline.h>
 #include <cutils/threads.h>
 
 #include <gtest/gtest.h>
+
+using namespace libbacktrace;
 
 extern "C" {
 // Prototypes for functions in the test library.
@@ -397,6 +400,8 @@ static void LibUnwindingTest(const std::string& arch, const std::string& testdat
     std::string name = FunctionNameForAddress(vaddr_in_file, testdata.symbols);
     ASSERT_EQ(name, testdata.symbols[i].name);
   }
+  BacktraceOffline* bt = static_cast<BacktraceOffline*>(backtrace.get());
+  ASSERT_EQ(bt->GetBacktraceOfflineFailure().reason, BacktraceOfflineFailure::ACCESS_MEM_FAILED);
 }
 
 // This test tests the situation that ranges of functions covered by .eh_frame and .ARM.exidx
