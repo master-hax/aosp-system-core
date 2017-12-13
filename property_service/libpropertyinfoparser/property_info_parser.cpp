@@ -114,6 +114,20 @@ void PropertyInfoArea::GetPropertyInfoIndexes(const char* name, uint32_t* contex
       break;
     }
 
+    // Update return_context_index and return_schema_index if prefix matches.
+    const uint32_t remaining_name_size = strlen(remaining_name);
+    uint32_t matched_size = 0;
+    for (uint32_t i = 0; i < trie_node.num_prefixes(); ++i) {
+      auto prefix_len = trie_node.prefix(i)->namelen;
+      if (prefix_len > remaining_name_size || prefix_len < matched_size) continue;
+
+      if (!strncmp(c_string(trie_node.prefix(i)->name_offset), remaining_name, prefix_len)) {
+        return_context_index = trie_node.prefix(i)->context_index;
+        return_schema_index = trie_node.prefix(i)->schema_index;
+        matched_size = prefix_len;
+      }
+    }
+
     trie_node = child_node;
     remaining_name = sep + 1;
   }
