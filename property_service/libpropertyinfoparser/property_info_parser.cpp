@@ -87,6 +87,21 @@ bool TrieNode::FindChildForString(const char* name, uint32_t namelen, TrieNode* 
   return true;
 }
 
+void PropertyInfoArea::CheckPrefixMatch(const char* remaining_name, const TrieNode& trie_node,
+                                        uint32_t* context_index, uint32_t* schema_index) const {
+  const uint32_t remaining_name_size = strlen(remaining_name);
+  for (uint32_t i = 0; i < trie_node.num_prefixes(); ++i) {
+    auto prefix_len = trie_node.prefix(i)->namelen;
+    if (prefix_len > remaining_name_size) continue;
+
+    if (!strncmp(c_string(trie_node.prefix(i)->name_offset), remaining_name, prefix_len)) {
+      *context_index = trie_node.prefix(i)->context_index;
+      *schema_index = trie_node.prefix(i)->schema_index;
+      return;
+    }
+  }
+}
+
 void PropertyInfoArea::GetPropertyInfoIndexes(const char* name, uint32_t* context_index,
                                               uint32_t* schema_index) const {
   uint32_t return_context_index = ~0u;
@@ -96,7 +111,11 @@ void PropertyInfoArea::GetPropertyInfoIndexes(const char* name, uint32_t* contex
   while (true) {
     const char* sep = strchr(remaining_name, '.');
 
+    CheckPrefixMatch(remaining_name, trie_node, &return_context_index, &return_schema_index);
+
     // Apply prefix match for prefix deliminated with '.'
+    // This comes after the prefix match array, since 'radio.' with the dot is longer than
+    // 'radio' without.
     if (trie_node.context_index() != ~0u) {
       return_context_index = trie_node.context_index();
     }
@@ -128,18 +147,8 @@ void PropertyInfoArea::GetPropertyInfoIndexes(const char* name, uint32_t* contex
     }
   }
   // Check prefix matches for prefixes not deliminated with '.'
-  const uint32_t remaining_name_size = strlen(remaining_name);
-  for (uint32_t i = 0; i < trie_node.num_prefixes(); ++i) {
-    auto prefix_len = trie_node.prefix(i)->namelen;
-    if (prefix_len > remaining_name_size) continue;
-
-    if (!strncmp(c_string(trie_node.prefix(i)->name_offset), remaining_name, prefix_len)) {
-      if (context_index != nullptr) *context_index = trie_node.prefix(i)->context_index;
-      if (schema_index != nullptr) *schema_index = trie_node.prefix(i)->schema_index;
-      return;
-    }
-  }
-  // Return previously found '.' deliminated prefix match.
+  CheckPrefixMatch(remaining_name, trie_node, &return_context_index, &return_schema_index);
+  // Return previously found prefix match.
   if (context_index != nullptr) *context_index = return_context_index;
   if (schema_index != nullptr) *schema_index = return_schema_index;
   return;
