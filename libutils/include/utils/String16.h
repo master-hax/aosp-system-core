@@ -37,6 +37,8 @@ namespace android {
 
 class String8;
 
+// DO NOT USE: please use std::wstring
+
 //! This is a string holding UTF-16 characters.
 class String16
 {

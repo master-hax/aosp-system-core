@@ -17,6 +17,9 @@
 #ifndef ANDROID_UTILS_ATOMIC_H
 #define ANDROID_UTILS_ATOMIC_H
 
+// DO NOT USE: Please instead use std::atomic or (in the worst case)
+// cutils/atomic.h directly.
+
 #include <cutils/atomic.h>
 
 #endif // ANDROID_UTILS_ATOMIC_H
