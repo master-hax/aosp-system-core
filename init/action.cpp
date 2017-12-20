@@ -105,15 +105,7 @@ void Action::ExecuteCommand(const Command& command) const {
     auto result = command.InvokeFunc(subcontext_);
     auto duration = t.duration();
 
-    // There are many legacy paths in rootdir/init.rc that will virtually never exist on a new
-    // device, such as '/sys/class/leds/jogball-backlight/brightness'.  As of this writing, there
-    // are 198 such failures on bullhead.  Instead of spamming the log reporting them, we do not
-    // report such failures unless we're running at the DEBUG log level.
     bool report_failure = !result.has_value();
-    if (report_failure && android::base::GetMinimumLogSeverity() > android::base::DEBUG &&
-        result.error_errno() == ENOENT) {
-        report_failure = false;
-    }
 
     // Any action longer than 50ms will be warned to user as slow operation
     if (report_failure || duration > 50ms ||
