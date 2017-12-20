@@ -37,6 +37,7 @@
 #define SYS_POWER_WAKEUP_COUNT "/sys/power/wakeup_count"
 
 #define BASE_SLEEP_TIME 100000
+#define MAX_SLEEP_TIME 60000000
 
 static int state_fd;
 static int wakeup_count_fd;
@@ -52,17 +53,17 @@ static void update_sleep_time(bool success) {
         return;
     }
     // double sleep time after each failure up to one minute
-    sleep_time = MIN(sleep_time * 2, 60000000);
+    sleep_time = MIN(sleep_time * 2, MAX_SLEEP_TIME);
 }
 
 static void* suspend_thread_func(void* arg __attribute__((unused))) {
-    char buf[80];
-    char wakeup_count[20];
-    int wakeup_count_len;
-    int ret;
     bool success = true;
 
     while (1) {
+        char wakeup_count[20];
+        int wakeup_count_len;
+        int ret;
+
         update_sleep_time(success);
         usleep(sleep_time);
         success = false;
@@ -71,9 +72,7 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
         wakeup_count_len = TEMP_FAILURE_RETRY(read(wakeup_count_fd, wakeup_count,
                 sizeof(wakeup_count)));
         if (wakeup_count_len < 0) {
-            strerror_r(errno, buf, sizeof(buf));
-            ALOGE("Error reading from %s: %s", SYS_POWER_WAKEUP_COUNT, buf);
-            wakeup_count_len = 0;
+            ALOGE("Error reading from %s", SYS_POWER_WAKEUP_COUNT);
             continue;
         }
         if (!wakeup_count_len) {
@@ -84,16 +83,14 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
         ALOGV("%s: wait", __func__);
         ret = sem_wait(&suspend_lockout);
         if (ret < 0) {
-            strerror_r(errno, buf, sizeof(buf));
-            ALOGE("Error waiting on semaphore: %s", buf);
+            ALOGE("Error waiting on semaphore");
             continue;
         }
 
         ALOGV("%s: write %*s to wakeup_count", __func__, wakeup_count_len, wakeup_count);
         ret = TEMP_FAILURE_RETRY(write(wakeup_count_fd, wakeup_count, wakeup_count_len));
         if (ret < 0) {
-            strerror_r(errno, buf, sizeof(buf));
-            ALOGE("Error writing to %s: %s", SYS_POWER_WAKEUP_COUNT, buf);
+            ALOGE("Error writing to %s", SYS_POWER_WAKEUP_COUNT);
         } else {
             ALOGV("%s: write %s to %s", __func__, sleep_state, SYS_POWER_STATE);
             ret = TEMP_FAILURE_RETRY(write(state_fd, sleep_state, strlen(sleep_state)));
@@ -109,15 +106,13 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
         ALOGV("%s: release sem", __func__);
         ret = sem_post(&suspend_lockout);
         if (ret < 0) {
-            strerror_r(errno, buf, sizeof(buf));
-            ALOGE("Error releasing semaphore: %s", buf);
+            ALOGE("Error releasing semaphore");
         }
     }
     return NULL;
 }
 
 static int autosuspend_wakeup_count_enable(void) {
-    char buf[80];
     int ret;
 
     ALOGV("autosuspend_wakeup_count_enable");
@@ -125,8 +120,7 @@ static int autosuspend_wakeup_count_enable(void) {
     ret = sem_post(&suspend_lockout);
 
     if (ret < 0) {
-        strerror_r(errno, buf, sizeof(buf));
-        ALOGE("Error changing semaphore: %s", buf);
+        ALOGE("Error changing semaphore");
     }
 
     ALOGV("autosuspend_wakeup_count_enable done");
@@ -135,7 +129,6 @@ static int autosuspend_wakeup_count_enable(void) {
 }
 
 static int autosuspend_wakeup_count_disable(void) {
-    char buf[80];
     int ret;
 
     ALOGV("autosuspend_wakeup_count_disable");
@@ -143,8 +136,7 @@ static int autosuspend_wakeup_count_disable(void) {
     ret = sem_wait(&suspend_lockout);
 
     if (ret < 0) {
-        strerror_r(errno, buf, sizeof(buf));
-        ALOGE("Error changing semaphore: %s", buf);
+        ALOGE("Error changing semaphore");
     }
 
     ALOGV("autosuspend_wakeup_count_disable done");
@@ -168,32 +160,27 @@ struct autosuspend_ops autosuspend_wakeup_count_ops = {
 
 struct autosuspend_ops* autosuspend_wakeup_count_init(void) {
     int ret;
-    char buf[80];
 
     state_fd = TEMP_FAILURE_RETRY(open(SYS_POWER_STATE, O_RDWR));
     if (state_fd < 0) {
-        strerror_r(errno, buf, sizeof(buf));
-        ALOGE("Error opening %s: %s", SYS_POWER_STATE, buf);
+        ALOGE("Error opening %s", SYS_POWER_STATE);
         goto err_open_state;
     }
 
     wakeup_count_fd = TEMP_FAILURE_RETRY(open(SYS_POWER_WAKEUP_COUNT, O_RDWR));
     if (wakeup_count_fd < 0) {
-        strerror_r(errno, buf, sizeof(buf));
-        ALOGE("Error opening %s: %s", SYS_POWER_WAKEUP_COUNT, buf);
+        ALOGE("Error opening %s", SYS_POWER_WAKEUP_COUNT);
         goto err_open_wakeup_count;
     }
 
     ret = sem_init(&suspend_lockout, 0, 0);
     if (ret < 0) {
-        strerror_r(errno, buf, sizeof(buf));
-        ALOGE("Error creating semaphore: %s", buf);
+        ALOGE("Error creating semaphore");
         goto err_sem_init;
     }
     ret = pthread_create(&suspend_thread, NULL, suspend_thread_func, NULL);
     if (ret) {
-        strerror_r(ret, buf, sizeof(buf));
-        ALOGE("Error creating thread: %s", buf);
+        ALOGE("Error creating thread");
         goto err_pthread_create;
     }
 
