@@ -21,8 +21,8 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <string.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -32,6 +32,8 @@
 #include <log/log.h>
 
 #include "autosuspend_ops.h"
+
+namespace {
 
 #define SYS_POWER_STATE "/sys/power/state"
 #define SYS_POWER_WAKEUP_COUNT "/sys/power/wakeup_count"
@@ -68,8 +70,8 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
         success = false;
         ALOGV("%s: read wakeup_count", __func__);
         lseek(wakeup_count_fd, 0, SEEK_SET);
-        wakeup_count_len = TEMP_FAILURE_RETRY(read(wakeup_count_fd, wakeup_count,
-                sizeof(wakeup_count)));
+        wakeup_count_len =
+            TEMP_FAILURE_RETRY(read(wakeup_count_fd, wakeup_count, sizeof(wakeup_count)));
         if (wakeup_count_len < 0) {
             strerror_r(errno, buf, sizeof(buf));
             ALOGE("Error reading from %s: %s", SYS_POWER_WAKEUP_COUNT, buf);
@@ -166,6 +168,7 @@ struct autosuspend_ops autosuspend_wakeup_count_ops = {
     .set_wakeup_callback = autosuspend_set_wakeup_callback,
 };
 
+__BEGIN_DECLS
 struct autosuspend_ops* autosuspend_wakeup_count_init(void) {
     int ret;
     char buf[80];
@@ -208,4 +211,6 @@ err_open_wakeup_count:
     close(state_fd);
 err_open_state:
     return NULL;
+}
+__END_DECLS
 }
