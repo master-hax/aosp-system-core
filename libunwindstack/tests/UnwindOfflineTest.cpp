@@ -92,7 +92,7 @@ TEST(UnwindOfflineTest, pc_straddle_arm32) {
       "  #00 pc 0001a9f8  libc.so (abort+63)\n"
       "  #01 pc 00006a1b  libbase.so (_ZN7android4base14DefaultAborterEPKc+6)\n"
       "  #02 pc 00007441  libbase.so (_ZN7android4base10LogMessageD2Ev+748)\n"
-      "  #03 pc 00015149  /does/not/exist/libhidlbase.so\n",
+      "  #03 pc 00015147  /does/not/exist/libhidlbase.so\n",
       frame_info);
 }
 

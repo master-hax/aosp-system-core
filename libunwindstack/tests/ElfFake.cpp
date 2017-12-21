@@ -43,6 +43,10 @@ bool ElfInterfaceFake::GetFunctionName(uint64_t, uint64_t, std::string* name, ui
   return true;
 }
 
+bool ElfInterfaceFake::GetGlobalVariable(const std::string&, uint64_t*) {
+  return false;
+}
+
 bool ElfInterfaceFake::Step(uint64_t, uint64_t, Regs* regs, Memory*, bool* finished) {
   if (steps_.empty()) {
     return false;

@@ -55,6 +55,7 @@ cc_library {
         "Elf.cpp",
         "ElfInterface.cpp",
         "ElfInterfaceArm.cpp",
+        "JitDebug.cpp",
         "Log.cpp",
         "MapInfo.cpp",
         "Maps.cpp",

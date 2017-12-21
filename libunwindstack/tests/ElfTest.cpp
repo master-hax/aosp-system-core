@@ -346,6 +346,7 @@ class ElfInterfaceMock : public ElfInterface {
   void InitHeaders() override {}
   bool GetSoname(std::string*) override { return false; }
   bool GetFunctionName(uint64_t, uint64_t, std::string*, uint64_t*) override { return false; }
+  bool GetGlobalVariable(const std::string&, uint64_t*) override { return false; }
   MOCK_METHOD5(Step, bool(uint64_t, uint64_t, Regs*, Memory*, bool*));
 };
 
