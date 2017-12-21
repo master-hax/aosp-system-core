@@ -32,6 +32,7 @@ namespace unwindstack {
 
 // Forward declarations.
 class Elf;
+class JitDebug;
 
 struct FrameData {
   size_t num;
@@ -69,14 +70,17 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num);
   static std::string FormatFrame(const FrameData& frame, bool bits32);
 
+  void SetJitDebug(JitDebug* jit_debug, bool bits32);
+
  private:
-  void FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc);
+  void FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc, uint64_t adjusted_pc);
 
   size_t max_frames_;
   Maps* maps_;
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
+  JitDebug* jit_debug_ = nullptr;
 };
 
 }  // namespace unwindstack
