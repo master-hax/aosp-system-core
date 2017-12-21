@@ -103,6 +103,38 @@ bool Elf::GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offse
                                                      addr, load_bias_, name, func_offset)));
 }
 
+bool Elf::GetGlobalVariable(const std::string& name, uint64_t* offset) {
+  if (!valid_) {
+    return false;
+  }
+
+  if (!interface_->GetGlobalVariable(name, offset) &&
+      (gnu_debugdata_interface_ == nullptr ||
+       !gnu_debugdata_interface_->GetGlobalVariable(name, offset))) {
+    return false;
+  }
+
+  // Adjust by the load bias.
+  if (*offset < load_bias_) {
+    return false;
+  }
+
+  *offset -= load_bias_;
+
+  // If this winds up in the dynamic section, then we might need to adjust
+  // the offset.
+  uint64_t dynamic_end = interface_->dynamic_vaddr() + interface_->dynamic_size();
+  if (*offset >= interface_->dynamic_vaddr() && *offset < dynamic_end) {
+    // Adjust the relative address based on the offset.
+    if (interface_->dynamic_vaddr() > interface_->dynamic_offset()) {
+      *offset -= interface_->dynamic_vaddr() - interface_->dynamic_offset();
+    } else {
+      *offset += interface_->dynamic_offset() - interface_->dynamic_vaddr();
+    }
+  }
+  return true;
+}
+
 // The relative pc is always relative to the start of the map from which it comes.
 bool Elf::Step(uint64_t rel_pc, uint64_t adjusted_rel_pc, uint64_t elf_offset, Regs* regs,
                Memory* process_memory, bool* finished) {
@@ -158,6 +190,37 @@ void Elf::GetInfo(Memory* memory, bool* valid, uint64_t* size) {
   } else {
     *valid = false;
   }
+}
+
+bool Elf::IsValidPc(uint64_t pc) {
+  if (!valid_ || pc < load_bias_) {
+    return false;
+  }
+  pc -= load_bias_;
+
+  if (interface_->pt_loads().size() != 0) {
+    for (auto& entry : interface_->pt_loads()) {
+      uint64_t start = entry.second.table_offset;
+      uint64_t end = start + entry.second.table_size;
+      if (pc >= start && pc < end) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // No PT_LOAD data, look for a fde for this pc in the section data.
+  DwarfSection* debug_frame = interface_->debug_frame();
+  if (debug_frame != nullptr && debug_frame->GetFdeFromPc(pc) != nullptr) {
+    return true;
+  }
+
+  DwarfSection* eh_frame = interface_->eh_frame();
+  if (eh_frame != nullptr && eh_frame->GetFdeFromPc(pc) != nullptr) {
+    return true;
+  }
+
+  return false;
 }
 
 ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {

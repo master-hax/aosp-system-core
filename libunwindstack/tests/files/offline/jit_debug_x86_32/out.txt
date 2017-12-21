@@ -1,0 +1,100 @@
+dump binary value descriptor.data 0xf7334024ULL
+append binary memory descriptor.data 0xf7334024 0xf7334034
+dump binary value entry0.data 0x5716e460ULL
+append binary memory entry0.data 0x5716e460 0x5716e474
+dump binary value jit0.data 0x57170e38ULL
+append binary memory jit0.data 0x57170e38 0x57171288
+dump binary value entry1.data 0x5716e318ULL
+append binary memory entry1.data 0x5716e318 0x5716e32c
+dump binary value jit1.data 0x57170998ULL
+append binary memory jit1.data 0x57170998 0x57170e30
+dump binary value entry2.data 0x5716e298ULL
+append binary memory entry2.data 0x5716e298 0x5716e2ac
+dump binary value jit2.data 0x57170490ULL
+append binary memory jit2.data 0x57170490 0x57170990
+dump binary value entry3.data 0x57123c08ULL
+append binary memory entry3.data 0x57123c08 0x57123c1c
+dump binary value jit3.data 0x5716fcd0ULL
+append binary memory jit3.data 0x5716fcd0 0x5717048c
+dump binary value entry4.data 0x57168c38ULL
+append binary memory entry4.data 0x57168c38 0x57168c4c
+dump binary value jit4.data 0x5716f118ULL
+append binary memory jit4.data 0x5716f118 0x5716f588
+dump binary value entry5.data 0x57123ce8ULL
+append binary memory entry5.data 0x57123ce8 0x57123cfc
+dump binary value jit5.data 0x5716e7a0ULL
+append binary memory jit5.data 0x5716e7a0 0x5716f0cc
+dump binary value entry6.data 0x570dbca0ULL
+append binary memory entry6.data 0x570dbca0 0x570dbcb4
+dump binary value jit6.data 0x57167bb0ULL
+append binary memory jit6.data 0x57167bb0 0x57168018
+  #00 pc 00068fb8  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/nativetest/libarttestd.so (_ZN3artL13CauseSegfaultEv+72)
+  #01 pc 00067f00  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/nativetest/libarttestd.so (Java_Main_unwindInProcess+10032)
+  #02 pc 000021a8 (offset 0x2000)  /tmp/test-art-i1lonwd4/tmp47by50d_/oat/x86/137-cfi.odex (boolean Main.unwindInProcess(boolean, int, boolean)+136)
+  #03 pc 0000fe81  <anonymous:ee74c000> (boolean Main.bar(boolean)+65)
+  #04 pc 006ad4d2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_stub+338)
+  #05 pc 00146ab5  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+885)
+  #06 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #07 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #08 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #09 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #10 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #11 pc 0000fe04  <anonymous:ee74c000> (int Main.compare(Main, Main)+52)
+  #12 pc 006ad4d2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_stub+338)
+  #13 pc 00146ab5  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+885)
+  #14 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #15 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #16 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #17 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #18 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #19 pc 0000fd3c  <anonymous:ee74c000> (int Main.compare(java.lang.Object, java.lang.Object)+108)
+  #20 pc 006ad4d2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_stub+338)
+  #21 pc 00146ab5  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+885)
+  #22 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #23 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #24 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #25 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #26 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #27 pc 0000fbdc  <anonymous:ee74c000> (int java.util.Arrays.binarySearch0(java.lang.Object[], int, int, java.lang.Object, java.util.Comparator)+332)
+  #28 pc 006ad6a2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_static_stub+418)
+  #29 pc 00146acb  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+907)
+  #30 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #31 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #32 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #33 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #34 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #35 pc 0000f625  <anonymous:ee74c000> (boolean Main.foo()+165)
+  #36 pc 006ad4d2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_stub+338)
+  #37 pc 00146ab5  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+885)
+  #38 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #39 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #40 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #41 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #42 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #43 pc 0000eedc  <anonymous:ee74c000> (void Main.runPrimary()+60)
+  #44 pc 006ad4d2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_stub+338)
+  #45 pc 00146ab5  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+885)
+  #46 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #47 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #48 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #49 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #50 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #51 pc 0000ac22  <anonymous:ee74c000> (void Main.main(java.lang.String[])+98)
+  #52 pc 006ad6a2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_static_stub+418)
+  #53 pc 00146acb  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+907)
+  #54 pc 0039cf0d  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter34ArtInterpreterToCompiledCodeBridgeEPNS_6ThreadEPNS_9ArtMethodEPNS_11ShadowFrameEtPNS_6JValueE+653)
+  #55 pc 00392552  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreterL7ExecuteEPNS_6ThreadERKNS_20CodeItemDataAccessorERNS_11ShadowFrameENS_6JValueEb+354)
+  #56 pc 0039399a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art11interpreter30EnterInterpreterFromEntryPointEPNS_6ThreadERKNS_20CodeItemDataAccessorEPNS_11ShadowFrameE+234)
+  #57 pc 00684362  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (artQuickToInterpreterBridge+1058)
+  #58 pc 006b35bd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_to_interpreter_bridge+77)
+  #59 pc 006ad6a2  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (art_quick_invoke_static_stub+418)
+  #60 pc 00146acb  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art9ArtMethod6InvokeEPNS_6ThreadEPjjPNS_6JValueEPKc+907)
+  #61 pc 005aac95  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3artL18InvokeWithArgArrayERKNS_33ScopedObjectAccessAlreadyRunnableEPNS_9ArtMethodEPNS_8ArgArrayEPNS_6JValueEPKc+85)
+  #62 pc 005aab5a  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art17InvokeWithVarArgsERKNS_33ScopedObjectAccessAlreadyRunnableEP8_jobjectP10_jmethodIDPc+362)
+  #63 pc 0048a3dd  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art3JNI21CallStaticVoidMethodVEP7_JNIEnvP7_jclassP10_jmethodIDPc+125)
+  #64 pc 0018448c  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art8CheckJNI11CallMethodVEPKcP7_JNIEnvP8_jobjectP7_jclassP10_jmethodIDPcNS_9Primitive4TypeENS_10InvokeTypeE+1964)
+  #65 pc 0017cf06  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/lib/libartd.so (_ZN3art8CheckJNI21CallStaticVoidMethodVEP7_JNIEnvP7_jclassP10_jmethodIDPc+70)
+  #66 pc 00001d8c  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/bin/dalvikvm32 (_ZN7_JNIEnv20CallStaticVoidMethodEP7_jclassP10_jmethodIDz+60)
+  #67 pc 00001a80  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/bin/dalvikvm32 (main+1312)
+  #68 pc 00018275  /lib/i386-linux-gnu/libc-2.24.so (__libc_start_main+245)
+  #69 pc 00001414  /usr/local/google/home/cferris/ssd2/aosp2/master/out/host/linux-x86/bin/dalvikvm32
