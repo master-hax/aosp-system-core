@@ -587,10 +587,11 @@ static void ExtractEntryToMemory(const std::vector<uint8_t>& zip_data,
   // an entry whose name is "name" and whose size is 12 (contents =
   // "abdcdefghijk").
   ZipEntry entry;
-  ZipString empty_name;
-  SetZipString(&empty_name, "name");
+  ZipString name;
+  std::string name_str = "name";
+  SetZipString(&name, name_str);
 
-  ASSERT_EQ(0, FindEntry(handle, empty_name, &entry));
+  ASSERT_EQ(0, FindEntry(handle, name, &entry));
   ASSERT_EQ(static_cast<uint32_t>(12), entry.uncompressed_length);
 
   entry_out->resize(12);
@@ -621,11 +622,11 @@ TEST(ziparchive, InvalidDataDescriptors) {
   ASSERT_EQ(kInconsistentInformation, error_code);
 
   std::vector<uint8_t> invalid_size = kDataDescriptorZipFile;
-  invalid_csize[kSizeOffset] = 0xfe;
+  invalid_size[kSizeOffset] = 0xfe;
 
   error_code = 0;
   entry.clear();
-  ExtractEntryToMemory(invalid_csize, &entry, &error_code);
+  ExtractEntryToMemory(invalid_size, &entry, &error_code);
 
   ASSERT_EQ(kInconsistentInformation, error_code);
 }
