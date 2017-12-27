@@ -29,6 +29,7 @@
 #include "nativebridge/native_bridge.h"
 
 #include <algorithm>
+#include <fstream>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -139,6 +140,22 @@ static void insert_vndk_version_str(std::string* file_name) {
     insert_pos = file_name->length();
   }
   file_name->insert(insert_pos, vndk_version_str());
+}
+
+static std::string get_proc_name() {
+  std::ifstream ifs("/proc/self/cmdline");
+  std::string cmdline;
+  if (!ifs.is_open()) {
+    return "";
+  }
+  ifs >> cmdline;
+
+  size_t idx = cmdline.rfind('/');
+  if (idx != std::string::npos) {
+    cmdline = cmdline.substr(idx + 1);
+  }
+
+  return cmdline;
 }
 
 static const std::function<bool(const std::string&, std::string*)> always_true =
@@ -353,14 +370,15 @@ class LibraryNamespaces {
         "Error reading public native library list from \"%s\": %s",
         public_native_libraries_system_config.c_str(), error_msg.c_str());
 
-    // read /system/etc/public.libraries-<companyname>.txt which contain partner defined
-    // system libs that are exposed to apps. The libs in the txt files must be
-    // named as lib<name>.<companyname>.so.
-    std::string dirname = base::Dirname(public_native_libraries_system_config);
-    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(dirname.c_str()), closedir);
-    if (dir != nullptr) {
-      // Failing to opening the dir is not an error, which can happen in
-      // webview_zygote.
+    // webview_zygote isn't allowed to read /system/etc. Skipping is okay since
+    // partner defined libs are for third-party apps but not for webview processes.
+    if (!android::base::StartsWith(get_proc_name(), "webview_zygote")) {
+      // read /system/etc/public.libraries-<companyname>.txt which contain partner defined
+      // system libs that are exposed to apps. The libs in the txt files must be
+      // named as lib<name>.<companyname>.so.
+      std::string dirname = base::Dirname(public_native_libraries_system_config);
+      std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(dirname.c_str()), closedir);
+      LOG_ALWAYS_FATAL_IF(dir == nullptr, "Fail to read dir \"%s\"", dirname.c_str());
       struct dirent* ent;
       while ((ent = readdir(dir.get())) != nullptr) {
         if (ent->d_type != DT_REG && ent->d_type != DT_LNK) {
