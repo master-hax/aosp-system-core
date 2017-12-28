@@ -58,6 +58,8 @@
     '<', '0' + LOG_MAKEPRI(LOG_DAEMON, LOG_PRI(PRI)) / 10, \
         '0' + LOG_MAKEPRI(LOG_DAEMON, LOG_PRI(PRI)) % 10, '>'
 
+static constexpr const char* PROPERTY_LOG_PERSIST = "ro.logd.kernel";
+
 //
 // The service is designed to be run by init, it does not respond well
 // to starting up manually. When starting up manually the sockets will
@@ -438,8 +440,8 @@ int main(int argc, char* argv[]) {
 
     int fdPmesg = -1;
     bool klogd = __android_logger_property_get_bool(
-        "logd.kernel", BOOL_DEFAULT_TRUE | BOOL_DEFAULT_FLAG_PERSIST |
-                           BOOL_DEFAULT_FLAG_ENG | BOOL_DEFAULT_FLAG_SVELTE);
+        PROPERTY_LOG_PERSIST,
+        BOOL_DEFAULT_TRUE | BOOL_DEFAULT_FLAG_ENG | BOOL_DEFAULT_FLAG_SVELTE);
     if (klogd) {
         static const char proc_kmsg[] = "/proc/kmsg";
         fdPmesg = android_get_control_file(proc_kmsg);
