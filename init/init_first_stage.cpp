@@ -409,6 +409,23 @@ ListenerAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
         //   - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
         std::vector<std::string> links = device_handler_.GetBlockDeviceSymlinks(uevent);
         if (!links.empty()) {
+            // get the information of detail block device node: f9824900.sdhci, compare it
+            // with the uevent information.
+            // - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
+            int by_name_offset;
+            bool valide_uevent = false;
+            for (auto fstab_rec : mount_fstab_recs_) {
+                std::string blk_devices = fstab_rec->blk_device;
+                std::string mount_point = fstab_rec->mount_point;
+                by_name_offset =  blk_devices.find("/by-name");
+                std::string blk_path = blk_devices.substr(blk_devices.rfind("/", by_name_offset - 1) + 1,
+                                by_name_offset - blk_devices.rfind("/", by_name_offset - 1) -1 );
+                if ( uevent.partition_name.find(mount_point.substr(1)) != std::string::npos &&
+                                               uevent.path.find(blk_path) != std::string::npos)
+                    valide_uevent = true;
+            }
+	    if (!valide_uevent)
+                return ListenerAction::kContinue;
             auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[0]);
             if (!inserted) {
                 LOG(ERROR) << "Partition '" << uevent.partition_name
