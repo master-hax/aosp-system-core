@@ -71,6 +71,7 @@ class FirstStageMount {
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> device_tree_fstab_;
     std::vector<fstab_rec*> mount_fstab_recs_;
     std::set<std::string> required_devices_partition_names_;
+    std::string devices_partition_path;
     DeviceHandler device_handler_;
     UeventListener uevent_listener_;
 };
@@ -318,6 +319,17 @@ bool FirstStageMountVBootV1::GetRequiredDevices() {
         required_devices_partition_names_.emplace(basename(verity_loc_device.c_str()));
     }
 
+    if (!mount_fstab_recs_.empty()) {
+        // suppose all android images are on the same flash.
+        // add devices_partition_path which record the boot up block device node.
+        fstab_rec* fstab_rec = mount_fstab_recs_[0];
+        std::string blk_devices = fstab_rec->blk_device;
+        std::string mount_point = fstab_rec->mount_point;
+        int by_name_pos = blk_devices.find("/by-name");
+        devices_partition_path = blk_devices.substr(blk_devices.rfind("/",
+                       by_name_pos - 1) + 1, by_name_pos - blk_devices.rfind("/",
+                       by_name_pos - 1) -1 );
+    }
     return true;
 }
 
@@ -398,7 +410,7 @@ ListenerAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
     // so, in order to create FsManagerAvbHandle later.
     // Note that the parent callback removes partitions from the list of required partitions
     // as it finds them, so this must happen first.
-    if (!uevent.partition_name.empty() &&
+    if (!uevent.partition_name.empty() && strstr(uevent.path.c_str(), devices_partition_path.c_str())  &&
         required_devices_partition_names_.find(uevent.partition_name) !=
             required_devices_partition_names_.end()) {
         // GetBlockDeviceSymlinks() will return three symlinks at most, depending on
