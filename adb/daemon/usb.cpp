@@ -531,14 +531,28 @@ static void usb_ffs_close(usb_handle* h) {
     h->notify.notify_one();
 }
 
+static bool is_aio_available(void) {
+    aio_context_t ctx_id = 0;
+    if (io_setup(1, &ctx_id) == 0) {
+        io_destroy(ctx_id);
+        return true;
+    } else if (errno == ENOSYS) {
+        return false;
+    } else {
+        // Could be a transient error, but better safe than sorry:
+        return false;
+    }
+}
+
 static void usb_ffs_init() {
     D("[ usb_init - using FunctionFS ]");
 
     usb_handle* h = new usb_handle();
 
-    if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false)) {
+    if (android::base::GetBoolProperty("sys.usb.ffs.aio_compat", false) || !is_aio_available()) {
         // Devices on older kernels (< 3.18) will not have aio support for ffs
-        // unless backported. Fall back on the non-aio functions instead.
+        // unless backported, and newer devices are recommended not to support
+        // aio at all. Fall back on the non-aio functions instead.
         h->write = usb_ffs_write;
         h->read = usb_ffs_read;
     } else {
