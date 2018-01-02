@@ -4,6 +4,8 @@ phony {
         "awk",
         "awk_vendor",
         "bzip2",
+        "getprop",
+        "getprop_vendor",
         "grep",
         "grep_vendor",
         "mkshrc",
