@@ -24,7 +24,7 @@ namespace base {
 boot_clock::time_point boot_clock::now() {
 #ifdef __linux__
   timespec ts;
-  clock_gettime(CLOCK_BOOTTIME, &ts);
+  clock_gettime(CLOCK_MONOTONIC, &ts);
   return boot_clock::time_point(std::chrono::seconds(ts.tv_sec) +
                                 std::chrono::nanoseconds(ts.tv_nsec));
 #else
