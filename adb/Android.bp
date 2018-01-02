@@ -12,40 +12,359 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-python_binary_host {
-  name: "adb_integration_test_adb",
-  main: "test_adb.py",
-  srcs: [
-    "test_adb.py",
-  ],
-  libs: [
-    "adb_py",
-  ],
-  version: {
-    py2: {
-      enabled: true,
+cc_defaults {
+    name: "__adb_defaults",
+
+    cpp_std: "gnu++14",
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-Wvla",
+        "-DADB_VERSION=\"FIXME\""
+    ],
+
+    clang_cflags: [
+       "-Wexit-time-destructors",
+       "-Wthread-safety",
+    ],
+
+    target: {
+        windows: {
+            cflags: [
+                // Define windows.h and tchar.h Unicode preprocessor symbols so that
+                // CreateFile(), _tfopen(), etc. map to versions that take wchar_t*, breaking the
+                // build if you accidentally pass char*. Fix by calling like:
+                //   std::wstring path_wide;
+                //   if (!android::base::UTF8ToWide(path_utf8, &path_wide)) { /* error handling */ }
+                //   CreateFileW(path_wide.c_str());
+                "-DUNICODE=1",
+                "-D_UNICODE=1",
+
+                // -std=gnu++14 doesn't set _GNU_SOURCE on Windows.
+                "-D_GNU_SOURCE",
+            ],
+        }
+    }
+}
+
+cc_defaults {
+    name: "adb_host_defaults",
+    defaults: ["__adb_defaults"],
+    cflags: ["-DADB_HOST=1"],
+    compile_multilib: "first",
+}
+
+cc_defaults {
+    name: "adbd_defaults",
+    defaults: ["__adb_defaults"],
+    cflags: ["-DADB_HOST=0"],
+}
+
+// libadb
+// =========================================================
+// These files are compiled for both the host and the device.
+libadb_srcs = [
+    "adb.cpp",
+    "adb_io.cpp",
+    "adb_listeners.cpp",
+    "adb_trace.cpp",
+    "adb_utils.cpp",
+    "fdevent.cpp",
+    "services.cpp",
+    "sockets.cpp",
+    "socket_spec.cpp",
+    "sysdeps/errno.cpp",
+    "transport.cpp",
+    "transport_local.cpp",
+    "transport_usb.cpp",
+]
+
+libadb_posix_srcs = [
+    "sysdeps_unix.cpp",
+    "sysdeps/posix/network.cpp",
+]
+
+libadb_windows_srcs = [
+    "sysdeps_win32.cpp",
+    "sysdeps/win32/errno.cpp",
+    "sysdeps/win32/stat.cpp"
+]
+
+libadb_test_srcs = [
+    "adb_io_test.cpp",
+    "adb_listeners_test.cpp",
+    "adb_utils_test.cpp",
+    "fdevent_test.cpp",
+    "socket_spec_test.cpp",
+    "socket_test.cpp",
+    "sysdeps_test.cpp",
+    "sysdeps/stat_test.cpp",
+    "transport_test.cpp",
+]
+
+cc_library_host_static {
+    name: "libadb_host",
+    defaults: ["adb_host_defaults"],
+
+    srcs: libadb_srcs + [
+        "client/auth.cpp",
+        "client/usb_libusb.cpp",
+        "client/usb_dispatch.cpp",
+        "client/transport_mdns.cpp",
+    ],
+
+    target: {
+        linux: {
+            srcs: libadb_posix_srcs + [
+                "client/usb_linux.cpp"
+            ],
+        },
+        darwin: {
+            srcs: libadb_posix_srcs + [
+                "client/usb_darwin.cpp"
+            ],
+        },
+        windows: {
+            srcs: libadb_windows_srcs + [
+                "client/usb_windows.cpp"
+            ],
+            static_libs: ["AdbWinApi"],
+            enabled: true,
+        },
     },
-    py3: {
-      enabled: false,
+
+    static_libs: [
+        "libcrypto_utils",
+        "libcrypto",
+        "libbase",
+        "libmdnssd",
+        "libusb",
+    ],
+}
+
+cc_library_host_static {
+    name: "libdiagnose_usb",
+    defaults: ["adb_host_defaults"],
+    target: {
+        windows: {
+            enabled: true,
+        },
     },
-  },
+    srcs: ["diagnose_usb.cpp"],
+    static_libs: ["libbase"],
+}
+
+cc_test_host {
+    name: "adb_test",
+    defaults: ["adb_host_defaults"],
+    srcs: libadb_test_srcs,
+    static_libs: [
+        "libadb_host",
+        "libbase",
+        "libcutils",
+        "libcrypto_utils",
+        "libcrypto",
+        "libmdnssd",
+        "libdiagnose_usb",
+        "libusb",
+    ],
+}
+
+cc_binary_host {
+    name: "adb",
+    tags: ["debug"],
+
+    defaults: ["adb_host_defaults"],
+
+    srcs: [
+        "adb_client.cpp",
+        "bugreport.cpp",
+        "client/main.cpp",
+        "console.cpp",
+        "commandline.cpp",
+        "file_sync_client.cpp",
+        "line_printer.cpp",
+        "shell_service_protocol.cpp",
+    ],
+
+    static_libs: [
+        "libadb_host",
+        "libbase",
+        "libcutils",
+        "libcrypto_utils",
+        "libcrypto",
+        "libdiagnose_usb",
+        "liblog",
+        "libmdnssd",
+        "libusb",
+    ],
+
+    stl: "libc++_static",
+
+    // Don't add anything here, we don't want additional shared dependencies
+    // on the host adb tool, and shared libraries that link against libc++
+    // will violate ODR
+    shared_libs: [],
+
+    target: {
+        darwin: {
+            host_ldlibs: [
+                "-lpthread",
+                "-framework", "CoreFoundation",
+                "-framework", "IOKit",
+                "-framework", "Carbon",
+                "-lobjc",
+            ],
+
+            cflags: [
+                "-Wno-sizeof-pointer-memaccess",
+            ],
+
+            static_libs: ["libcutils"],
+        },
+        windows: {
+            ldflags: ["-municode"],
+            host_ldlibs: [
+                "-lws2_32",
+                "-lgdi32",
+            ],
+
+            static_libs: ["AdbWinApi"],
+            required: [
+                "AdbWinApi",
+                "AdbWinUsbApi",
+            ],
+        },
+    },
+}
+
+cc_library_static {
+    name: "libadbd",
+    defaults: ["adbd_defaults"],
+
+    srcs: libadb_srcs + libadb_posix_srcs + [
+        "daemon/auth.cpp",
+        "daemon/usb.cpp",
+        "daemon/jdwp_service.cpp",
+    ],
+
+    static_libs: [
+        "libasyncio",
+        "libbootloader_message",
+        "libcrypto_utils",
+        "libcrypto",
+        "libqemu_pipe",
+        "libbase",
+    ],
+}
+
+cc_binary {
+    name: "adbd",
+    defaults: ["adbd_defaults"],
+
+    srcs: [
+        "daemon/main.cpp",
+        "daemon/mdns.cpp",
+        "daemon/file_sync_service.cpp",
+        "daemon/framebuffer_service.cpp",
+        "daemon/remount_service.cpp",
+        "daemon/set_verity_enable_state_service.cpp",
+        "daemon/shell_service.cpp",
+        "shell_service_protocol.cpp",
+    ],
+
+    cflags: [
+        "-D_GNU_SOURCE",
+        "-Wno-deprecated-declarations",
+    ],
+
+    strip: {
+        keep_symbols: true
+    },
+
+    static_libs: [
+        "libadbd",
+        "libasyncio",
+        "libavb_user",
+        "libbase",
+        "libqemu_pipe",
+        "libbootloader_message",
+        "libfs_mgr",
+        "libfec",
+        "libfec_rs",
+        "libselinux",
+        "liblog",
+        "libext4_utils",
+        "libsquashfs_utils",
+        "libcutils",
+        "libbase",
+        "libcrypto_utils",
+        "libcrypto",
+        "libminijail",
+        "libmdnssd",
+        "libdebuggerd_handler",
+    ],
+}
+
+cc_test {
+    name: "adbd_test",
+    defaults: ["adbd_defaults"],
+    srcs: libadb_test_srcs + [
+        "daemon/shell_service.cpp",
+        "daemon/shell_service_test.cpp",
+        "shell_service_protocol.cpp",
+        "shell_service_protocol_test.cpp",
+    ],
+
+    static_libs: [
+        "libadbd",
+        "libbase",
+        "libcutils",
+        "libcrypto_utils",
+        "libcrypto",
+        "liblog",
+        "libusb",
+        "libmdnssd",
+    ],
 }
 
 python_binary_host {
-  name: "adb_integration_test_device",
-  main: "test_device.py",
-  srcs: [
-    "test_device.py",
-  ],
-  libs: [
-    "adb_py",
-  ],
-  version: {
-    py2: {
-      enabled: true,
+    name: "adb_integration_test_adb",
+    main: "test_adb.py",
+    srcs: [
+        "test_adb.py",
+    ],
+    libs: [
+        "adb_py",
+    ],
+    version: {
+        py2: {
+            enabled: true,
+        },
+        py3: {
+            enabled: false,
+        },
     },
-    py3: {
-      enabled: false,
+}
+
+python_binary_host {
+    name: "adb_integration_test_device",
+    main: "test_device.py",
+    srcs: [
+        "test_device.py",
+    ],
+    libs: [
+        "adb_py",
+    ],
+    version: {
+        py2: {
+            enabled: true,
+        },
+        py3: {
+            enabled: false,
+        },
     },
-  },
 }
