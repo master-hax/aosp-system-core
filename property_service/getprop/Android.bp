@@ -1,0 +1,12 @@
+cc_binary {
+    name: "getprop",
+    vendor_available: true,
+    cpp_std: "experimental",
+    srcs: ["getprop.cpp"],
+    shared_libs: [
+        "libbase",
+    ],
+    static_libs: [
+        "libpropertyinfoparser",
+    ],
+}
