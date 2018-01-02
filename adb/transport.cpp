@@ -40,12 +40,13 @@
 #include <android-base/strings.h>
 #include <android-base/thread_annotations.h>
 
+#include <diagnose_usb.h>
+
 #include "adb.h"
 #include "adb_auth.h"
 #include "adb_io.h"
 #include "adb_trace.h"
 #include "adb_utils.h"
-#include "diagnose_usb.h"
 #include "fdevent.h"
 
 static void transport_unref(atransport *t);
@@ -613,9 +614,7 @@ atransport* acquire_one_transport(TransportType type, const char* serial, Transp
     std::unique_lock<std::recursive_mutex> lock(transport_lock);
     for (const auto& t : transport_list) {
         if (t->GetConnectionState() == kCsNoPerm) {
-#if ADB_HOST
             *error_out = UsbNoPermissionsLongHelpText();
-#endif
             continue;
         }
 
