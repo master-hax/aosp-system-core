@@ -900,7 +900,11 @@ int main(int argc __unused, char **argv __unused) {
     downgrade_pressure = (int64_t)property_get_int32("ro.lmk.downgrade_pressure", 60);
     is_go_device = property_get_bool("ro.config.low_ram", false);
 
-    mlockall(MCL_FUTURE);
+    if (mlockall(MCL_CURRENT | MCL_FUTURE)) {
+        ALOGE("mlockall failed: errno=%d", errno);
+        return 1;
+    }
+
     sched_setscheduler(0, SCHED_FIFO, &param);
     if (!init())
         mainloop();
