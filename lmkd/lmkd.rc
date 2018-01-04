@@ -2,5 +2,6 @@ service lmkd /system/bin/lmkd
     class core
     group root readproc
     critical
+    rlimit stack 128
     socket lmkd seqpacket 0660 system system
     writepid /dev/cpuset/system-background/tasks
