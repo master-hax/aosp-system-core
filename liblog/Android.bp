@@ -60,6 +60,40 @@ cc_library_headers {
     },
 }
 
+liblog_cflags_common = [
+    "-Werror",
+    "-fvisibility=hidden",
+    // This is what we want to do:
+    //  liblog_cflags := $(shell \
+    //   sed -n \
+    //       's/^\([0-9]*\)[ \t]*liblog[ \t].*/-DLIBLOG_LOG_TAG=\1/p' \
+    //       $(LOCAL_PATH)/event.logtags)
+    // so make sure we do not regret hard-coding it as follows:
+    "-DLIBLOG_LOG_TAG=1006",
+    "-DSNET_EVENT_LOG_TAG=1397638484",
+
+]
+
+// Minimal static library for device; attempts to minimize
+// code size.
+// ========================================================
+cc_library_static {
+    name: "liblog_minimal",
+    srcs: liblog_sources,
+    target: {
+        android: {
+            srcs: liblog_target_sources,
+            // AddressSanitizer runtime library depends on liblog.
+            sanitize: {
+                address: false,
+            },
+        },
+    },
+    cflags: liblog_cflags_common + [
+        "-DLIBLOG_MINIMAL=1",
+    ],
+}
+
 // Shared and static library for host and device
 // ========================================================
 cc_library {
@@ -99,18 +133,7 @@ cc_library {
     header_libs: ["liblog_headers"],
     export_header_lib_headers: ["liblog_headers"],
 
-    cflags: [
-        "-Werror",
-        "-fvisibility=hidden",
-        // This is what we want to do:
-        //  liblog_cflags := $(shell \
-        //   sed -n \
-        //       's/^\([0-9]*\)[ \t]*liblog[ \t].*/-DLIBLOG_LOG_TAG=\1/p' \
-        //       $(LOCAL_PATH)/event.logtags)
-        // so make sure we do not regret hard-coding it as follows:
-        "-DLIBLOG_LOG_TAG=1006",
-        "-DSNET_EVENT_LOG_TAG=1397638484",
-    ],
+    cflags: liblog_cflags_common,
     logtags: ["event.logtags"],
     compile_multilib: "both",
 }
