@@ -1,13 +1,15 @@
 cc_binary {
     name: "lmkd",
-
     srcs: ["lmkd.c"],
-    shared_libs: [
+    static_executable: true,
+    static_libs: [
+        "libc_nomalloc",
         "liblog",
         "libprocessgroup",
         "libcutils",
+        "liblinker_malloc",
+        
     ],
     cflags: ["-Werror"],
-
     init_rc: ["lmkd.rc"],
 }
