@@ -2,9 +2,10 @@ cc_binary {
     name: "lmkd",
     srcs: ["lmkd.c"],
     static_executable: true,
+    stl: "none",
     static_libs: [
         "libc_nomalloc",
-        "liblog",
+        "liblog_minimal",
         "libcutils",
         "liblinker_malloc",
         
