@@ -41,6 +41,8 @@
 
 #define OUT_TAG "EventTagMap"
 
+#ifndef LIBLOG_MINIMAL
+
 class MapString {
  private:
   const std::string* alloc;                  // HAS-AN
@@ -403,11 +405,16 @@ static int parseMapLines(EventTagMap* map, size_t which) {
   return 0;
 }
 
+#endif // ifndef LIBLOG_MINIMAL
+
 // Open the map file and allocate a structure to manage it.
 //
 // We create a private mapping because we want to terminate the log tag
 // strings with '\0'.
 LIBLOG_ABI_PUBLIC EventTagMap* android_openEventTagMap(const char* fileName) {
+#ifdef LIBLOG_MINIMAL
+  return NULL;
+#else
   EventTagMap* newTagMap;
   off_t end[NUM_MAPS];
   int save_errno, fd[NUM_MAPS];
@@ -485,13 +492,19 @@ fail_close:
 fail_errno:
   errno = save_errno;
   return NULL;
+#endif  // LIBLOG_MINIMAL
 }
 
 // Close the map.
 LIBLOG_ABI_PUBLIC void android_closeEventTagMap(EventTagMap* map) {
+#ifdef LIBLOG_MINIMAL
+  (void) map;
+#else
   if (map) delete map;
+#endif
 }
 
+#ifndef LIBLOG_MINIMAL
 // Cache miss, go to logd to acquire a public reference.
 // Because we lack access to a SHARED PUBLIC /dev/event-log-tags file map?
 static const TagFmt* __getEventTag(EventTagMap* map, unsigned int tag) {
@@ -533,11 +546,15 @@ static const TagFmt* __getEventTag(EventTagMap* map, unsigned int tag) {
   }
   return NULL;
 }
+#endif
 
 // Look up an entry in the map.
 LIBLOG_ABI_PUBLIC const char* android_lookupEventTag_len(const EventTagMap* map,
                                                          size_t* len,
                                                          unsigned int tag) {
+#ifdef LIBLOG_MINIMAL
+  return NULL;
+#else
   if (len) *len = 0;
   const TagFmt* str = map->find(tag);
   if (!str) {
@@ -546,11 +563,15 @@ LIBLOG_ABI_PUBLIC const char* android_lookupEventTag_len(const EventTagMap* map,
   if (!str) return NULL;
   if (len) *len = str->first.length();
   return str->first.data();
+#endif
 }
 
 // Look up an entry in the map.
 LIBLOG_ABI_PUBLIC const char* android_lookupEventFormat_len(
     const EventTagMap* map, size_t* len, unsigned int tag) {
+#ifdef LIBLOG_MINIMAL
+  return NULL;
+#else
   if (len) *len = 0;
   const TagFmt* str = map->find(tag);
   if (!str) {
@@ -559,6 +580,7 @@ LIBLOG_ABI_PUBLIC const char* android_lookupEventFormat_len(
   if (!str) return NULL;
   if (len) *len = str->second.length();
   return str->second.data();
+#endif
 }
 
 // This function is deprecated and replaced with android_lookupEventTag_len
@@ -567,6 +589,9 @@ LIBLOG_ABI_PUBLIC const char* android_lookupEventFormat_len(
 // deprecating this function everywhere, we save 100s of MB of memory space.
 LIBLOG_ABI_PUBLIC const char* android_lookupEventTag(const EventTagMap* map,
                                                      unsigned int tag) {
+#ifdef LIBLOG_MINIMAL
+  return NULL;
+#else
   size_t len;
   const char* tagStr = android_lookupEventTag_len(map, &len, tag);
 
@@ -575,12 +600,16 @@ LIBLOG_ABI_PUBLIC const char* android_lookupEventTag(const EventTagMap* map,
   cp += len;
   if (*cp) *cp = '\0';  // Trigger copy on write :-( and why deprecated.
   return tagStr;
+#endif
 }
 
 // Look up tagname, generate one if necessary, and return a tag
 LIBLOG_ABI_PUBLIC int android_lookupEventTagNum(EventTagMap* map,
                                                 const char* tagname,
                                                 const char* format, int prio) {
+#ifdef LIBLOG_MINIMAL
+  return -1;
+#else
   const char* ep = endOfTag(tagname);
   size_t len = ep - tagname;
   if (!len || *ep) {
@@ -648,4 +677,5 @@ LIBLOG_ABI_PUBLIC int android_lookupEventTagNum(EventTagMap* map,
   ret = map->find(MapString(tagname, len));
   if (ret == -1) errno = ESRCH;
   return ret;
+#endif  // LIBLOG_MINIMAL
 }
