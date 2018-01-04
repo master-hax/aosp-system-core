@@ -29,13 +29,21 @@
 #include <sys/mman.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
+#include <log/log.h>
 
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
-#include <log/log.h>
-#include <processgroup/processgroup.h>
+
+#ifndef ALOGE
+#define ALOGE(...) (void)(0)
+#define ALOGW(...) (void)(0)
+#define ALOGI(...) (void)(0)
+#define ALOGD(...) (void)(0)
+#define ALOG_ASSERT(...) (void)(0)
+#endif
 
 #ifndef __unused
 #define __unused __attribute__((__unused__))
@@ -54,6 +62,7 @@
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*(x)))
 #define EIGHT_MEGA (1 << 23)
+#define LMKD_STACK_LIMIT_KB 64
 
 enum lmk_cmd {
     LMK_TARGET,
@@ -594,6 +603,9 @@ static int kill_one_process(struct proc* procp, int min_score_adj, bool is_criti
     int tasksize;
     int r;
 
+    (void) is_critical;
+    (void) min_score_adj;
+
     taskname = proc_get_name(pid);
     if (!taskname) {
         pid_remove(pid);
@@ -887,10 +899,28 @@ static void mainloop(void) {
     }
 }
 
-int main(int argc __unused, char **argv __unused) {
+int main(int argc __unused, char **argv) {
     struct sched_param param = {
             .sched_priority = 1,
     };
+
+    // Set a small stack rlimit and re-exec before locking
+    // memory. This way, we don't attempt to mlockall a potentially
+    // big default stack that we'll never need.
+    const char* lmkd_no_re_exec = "LMKD_NO_RE_EXEC";
+    if (!getenv(lmkd_no_re_exec)) {
+        const struct rlimit stack_limit = {
+            .rlim_cur = LMKD_STACK_LIMIT_KB * 1024,
+            .rlim_max = LMKD_STACK_LIMIT_KB * 1024,
+        };
+        if (setrlimit(RLIMIT_STACK, &stack_limit)) {
+            ALOGW("setrlimit failed: errno=%d", errno);
+        } else {
+            setenv(lmkd_no_re_exec, "1", 1);
+            execve("/proc/self/exe", argv, environ);
+            ALOGW("self-execve failed: errno=%d", errno);
+        }
+    }
 
     medium_oomadj = property_get_int32("ro.lmk.medium", 800);
     critical_oomadj = property_get_int32("ro.lmk.critical", 0);
@@ -900,7 +930,7 @@ int main(int argc __unused, char **argv __unused) {
     downgrade_pressure = (int64_t)property_get_int32("ro.lmk.downgrade_pressure", 60);
     is_go_device = property_get_bool("ro.config.low_ram", false);
 
-    if (mlockall(MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT))
+    if (mlockall(MCL_CURRENT | MCL_FUTURE))
         ALOGW("mlockall failed: errno=%d", errno);
 
     sched_setscheduler(0, SCHED_FIFO, &param);
