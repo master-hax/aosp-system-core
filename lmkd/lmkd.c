@@ -31,11 +31,18 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include <log/log.h>
 
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
-#include <log/log.h>
-#include <processgroup/processgroup.h>
+
+#ifndef ALOGE
+#define ALOGE(...) (void)(0)
+#define ALOGW(...) (void)(0)
+#define ALOGI(...) (void)(0)
+#define ALOGD(...) (void)(0)
+#define ALOG_ASSERT(...) (void)(0)
+#endif
 
 #ifndef __unused
 #define __unused __attribute__((__unused__))
@@ -593,6 +600,9 @@ static int kill_one_process(struct proc* procp, int min_score_adj, bool is_criti
     char *taskname;
     int tasksize;
     int r;
+
+    (void) is_critical;
+    (void) min_score_adj;
 
     taskname = proc_get_name(pid);
     if (!taskname) {
