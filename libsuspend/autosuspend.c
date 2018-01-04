@@ -96,6 +96,20 @@ int autosuspend_disable(void) {
     return 0;
 }
 
+int autosuspend_force_suspend(unsigned int timeout_ms) {
+    int ret;
+
+    ret = autosuspend_init();
+    if (ret) {
+        return ret;
+    }
+
+    ALOGV("autosuspend_force_suspend");
+
+    ret = autosuspend_ops->force_suspend(timeout_ms);
+    return ret;
+}
+
 void autosuspend_set_wakeup_callback(void (*func)(bool success)) {
     int ret;
 
