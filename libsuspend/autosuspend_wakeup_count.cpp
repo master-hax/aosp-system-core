@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <mutex>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -45,12 +46,15 @@ using android::base::Trim;
 using android::base::WriteStringToFd;
 
 static pthread_t suspend_thread;
+static sem_t forcesuspend_return;
 static sem_t suspend_lockout;
 static const char* sleep_state = "mem";
 static void (*wakeup_func)(bool success) = NULL;
 static int sleep_time = BASE_SLEEP_TIME;
 static constexpr char sys_power_state[] = "/sys/power/state";
 static constexpr char sys_power_wakeup_count[] = "/sys/power/wakeup_count";
+static std::mutex sem_post_mutex;
+static bool forcesuspend_enable = false;
 
 static void update_sleep_time(bool success) {
     if (success) {
@@ -62,16 +66,19 @@ static void update_sleep_time(bool success) {
 }
 
 static void* suspend_thread_func(void* arg __attribute__((unused))) {
-    int ret;
     bool success = true;
 
     while (1) {
+        bool forcesuspend_enable_old = false;
+        int ret;
+
         update_sleep_time(success);
         usleep(sleep_time);
         success = false;
         LOG(VERBOSE) << "read wakeup_count";
         lseek(wakeup_count_fd, 0, SEEK_SET);
         std::string wakeup_count;
+
         if (!ReadFdToString(wakeup_count_fd, &wakeup_count)) {
             PLOG(ERROR) << "error reading from " << sys_power_wakeup_count;
             continue;
@@ -90,10 +97,29 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
             continue;
         }
 
+        // Cache forcesuspend_enable value
+        sem_post_mutex.lock();
+        forcesuspend_enable_old = forcesuspend_enable;
+        sem_post_mutex.unlock();
+
         LOG(VERBOSE) << "write " << wakeup_count << " to wakeup_count";
         if (WriteStringToFd(wakeup_count, wakeup_count_fd)) {
+            // Put system to suspend now
             LOG(VERBOSE) << "write " << sleep_state << " to " << sys_power_state;
             success = WriteStringToFd(sleep_state, state_fd);
+
+            sem_post_mutex.lock();
+            if (success && forcesuspend_enable && forcesuspend_enable_old) {
+                // Disable forcesuspend_enable only if force suspend actually happened
+                forcesuspend_enable = false;
+                LOG(VERBOSE) << "forcesuspend_enable = false";
+                // Allow forcesuspend to return
+                ret = sem_post(&forcesuspend_return);
+                if (ret < 0) {
+                    PLOG(ERROR) << "error releasing forcesuspend_return semaphore";
+                }
+            }
+            sem_post_mutex.unlock();
 
             void (*func)(bool success) = wakeup_func;
             if (func != NULL) {
@@ -103,10 +129,14 @@ static void* suspend_thread_func(void* arg __attribute__((unused))) {
             PLOG(ERROR) << "error writing to " << sys_power_wakeup_count;
         }
 
-        LOG(VERBOSE) << "release sem";
-        ret = sem_post(&suspend_lockout);
-        if (ret < 0) {
-            PLOG(ERROR) << "error releasing semaphore";
+        // If forcesuspend was set, the forcesuspend function already posted the semaphore here.
+        //  Thus, only post it if forcesuspend was NOT set.
+        if (!forcesuspend_enable_old) {
+            LOG(VERBOSE) << "release sem";
+            ret = sem_post(&suspend_lockout);
+            if (ret < 0) {
+                PLOG(ERROR) << "error releasing semaphore";
+            }
         }
     }
     return NULL;
@@ -144,6 +174,44 @@ static int autosuspend_wakeup_count_disable(void) {
     return ret;
 }
 
+static const int32_t NANOS_PER_SECOND = 1000 * 1000 * 1000;
+static int force_suspend(int timeout_ms) {
+    int ret = 0;
+    struct timespec tv;
+
+    // TODO:  Take a wakelock to prevent libsuspend from doing its thing
+
+    // Calculate when suspend should timeout
+    clock_gettime(CLOCK_MONOTONIC, &tv);
+    tv.tv_nsec += timeout_ms * 1000 * 1000;
+    tv.tv_sec += tv.tv_nsec / NANOS_PER_SECOND;
+    tv.tv_nsec = tv.tv_nsec % NANOS_PER_SECOND;
+
+    // TODO:  Disable all wakelocks and wakesources
+
+    sem_post_mutex.lock();
+    forcesuspend_enable = true;
+    sem_post_mutex.unlock();
+    ret = sem_post(&suspend_lockout);
+
+    // TODO:  Release the wakelock from beginning of this function to allow libsuspend to run
+
+    // Wait for suspend to return or timeout
+    if (ret >= 0) {
+        ret = sem_timedwait(&forcesuspend_return, &tv);
+        sem_post_mutex.lock();
+        forcesuspend_enable = false;
+        sem_post_mutex.unlock();
+        if (ret < 0) {
+            PLOG(ERROR) << "error waiting for forcesuspend_return";
+        }
+    }
+
+    // TODO:  Re-enable wakelocks and wakesources
+
+    return ret;
+}
+
 static void autosuspend_set_wakeup_callback(void (*func)(bool success)) {
     if (wakeup_func != NULL) {
         LOG(ERROR) << "duplicate wakeup callback applied, keeping original";
@@ -155,6 +223,7 @@ static void autosuspend_set_wakeup_callback(void (*func)(bool success)) {
 struct autosuspend_ops autosuspend_wakeup_count_ops = {
     .enable = autosuspend_wakeup_count_enable,
     .disable = autosuspend_wakeup_count_disable,
+    .force_suspend = force_suspend,
     .set_wakeup_callback = autosuspend_set_wakeup_callback,
 };
 
@@ -175,9 +244,16 @@ struct autosuspend_ops* autosuspend_wakeup_count_init(void) {
 
     ret = sem_init(&suspend_lockout, 0, 0);
     if (ret < 0) {
-        PLOG(ERROR) << "error creating semaphore";
+        PLOG(ERROR) << "error creating suspend_lockout semaphore";
         goto err_sem_init;
     }
+
+    ret = sem_init(&forcesuspend_return, 0, 0);
+    if (ret < 0) {
+        PLOG(ERROR) << "error creating forcesuspend_return semaphore";
+        goto err_force_sem_init;
+    }
+
     ret = pthread_create(&suspend_thread, NULL, suspend_thread_func, NULL);
     if (ret) {
         LOG(ERROR) << "error creating thread: " << strerror(ret);
@@ -188,6 +264,8 @@ struct autosuspend_ops* autosuspend_wakeup_count_init(void) {
     return &autosuspend_wakeup_count_ops;
 
 err_pthread_create:
+    sem_destroy(&forcesuspend_return);
+err_force_sem_init:
     sem_destroy(&suspend_lockout);
 err_sem_init:
     close(wakeup_count_fd);
