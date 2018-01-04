@@ -144,6 +144,70 @@ static int autosuspend_wakeup_count_disable(void) {
     return ret;
 }
 
+static const int32_t NANOS_PER_SECOND = 1000 * 1000 * 1000;
+static int force_suspend(int timeout_ms) {
+    int ret = 0;
+    bool success;
+    // struct timespec tv;
+
+    LOG(VERBOSE) << "force_suspend called with timeout: " << timeout_ms;
+
+#if 0
+    // TODO:  use timeout parameter when trying to suspend
+    // Calculate when suspend should timeout
+    clock_gettime(CLOCK_REALTIME, &tv);
+    tv.tv_nsec += timeout_ms * 1000 * 1000;
+    tv.tv_sec += tv.tv_nsec / NANOS_PER_SECOND;
+    tv.tv_nsec = tv.tv_nsec % NANOS_PER_SECOND;
+#endif
+
+    success = WriteStringToFd(sleep_state, state_fd);
+
+    if (success == false) {
+        ret = -1;
+    }
+    return ret;
+}
+
+// Second level init to start suspend_thread if necessary
+static int autosuspend_init(void) {
+    static bool autosuspend_is_init = false;
+    int ret;
+
+    if (autosuspend_is_init) {
+        return 0;
+    }
+
+    wakeup_count_fd = TEMP_FAILURE_RETRY(open(sys_power_wakeup_count, O_RDWR));
+    if (wakeup_count_fd < 0) {
+        PLOG(ERROR) << "error opening " << sys_power_wakeup_count;
+        goto err_open_wakeup_count;
+    }
+
+    ret = sem_init(&suspend_lockout, 0, 0);
+    if (ret < 0) {
+        PLOG(ERROR) << "error creating suspend_lockout semaphore";
+        goto err_sem_init;
+    }
+
+    ret = pthread_create(&suspend_thread, NULL, suspend_thread_func, NULL);
+    if (ret) {
+        LOG(ERROR) << "error creating thread: " << strerror(ret);
+        goto err_pthread_create;
+    }
+
+    LOG(INFO) << "autosuspend_init success";
+    autosuspend_is_init = true;
+    return 0;
+
+err_pthread_create:
+    sem_destroy(&suspend_lockout);
+err_sem_init:
+    close(wakeup_count_fd);
+err_open_wakeup_count:
+    return -1;
+}
+
 static void autosuspend_set_wakeup_callback(void (*func)(bool success)) {
     if (wakeup_func != NULL) {
         LOG(ERROR) << "duplicate wakeup callback applied, keeping original";
@@ -155,44 +219,18 @@ static void autosuspend_set_wakeup_callback(void (*func)(bool success)) {
 struct autosuspend_ops autosuspend_wakeup_count_ops = {
     .enable = autosuspend_wakeup_count_enable,
     .disable = autosuspend_wakeup_count_disable,
+    .force_suspend = force_suspend,
+    .init = autosuspend_init,
     .set_wakeup_callback = autosuspend_set_wakeup_callback,
 };
 
 struct autosuspend_ops* autosuspend_wakeup_count_init(void) {
-    int ret;
-
     state_fd = TEMP_FAILURE_RETRY(open(sys_power_state, O_RDWR));
     if (state_fd < 0) {
         PLOG(ERROR) << "error opening " << sys_power_state;
-        goto err_open_state;
+        return NULL;
     }
 
-    wakeup_count_fd = TEMP_FAILURE_RETRY(open(sys_power_wakeup_count, O_RDWR));
-    if (wakeup_count_fd < 0) {
-        PLOG(ERROR) << "error opening " << sys_power_wakeup_count;
-        goto err_open_wakeup_count;
-    }
-
-    ret = sem_init(&suspend_lockout, 0, 0);
-    if (ret < 0) {
-        PLOG(ERROR) << "error creating semaphore";
-        goto err_sem_init;
-    }
-    ret = pthread_create(&suspend_thread, NULL, suspend_thread_func, NULL);
-    if (ret) {
-        LOG(ERROR) << "error creating thread: " << strerror(ret);
-        goto err_pthread_create;
-    }
-
-    LOG(INFO) << "selected wakeup count";
+    LOG(INFO) << "autosuspend_wakeup_count_init success";
     return &autosuspend_wakeup_count_ops;
-
-err_pthread_create:
-    sem_destroy(&suspend_lockout);
-err_sem_init:
-    close(wakeup_count_fd);
-err_open_wakeup_count:
-    close(state_fd);
-err_open_state:
-    return NULL;
 }
