@@ -1,0 +1,9 @@
+Presubmit-Ready+1: Benoit Lamarche <benoitlamarche@google.com>
+Code-Review+1: Yohann Roussel <yroussel@google.com>
+Verified+1: Benoit Lamarche <benoitlamarche@google.com>
+Build-Cop-Override+1: Benoit Lamarche <benoitlamarche@google.com>
+Submitted-by: Benoit Lamarche <benoitlamarche@google.com>
+Submitted-at: Tue, 09 Jan 2018 15:06:05 +0000
+Reviewed-on: https://android-review.googlesource.com/583390
+Project: platform/system/core
+Branch: refs/heads/master
