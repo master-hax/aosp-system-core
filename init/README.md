@@ -462,9 +462,9 @@ Commands
 > Calls readahead(2) on the file or files within given directory.
   Use option --fully to read the full file content.
 
-`setprop <name> <value>`
+`setprop <name> [<value>]`
 > Set system property _name_ to _value_. Properties are expanded
-  within _value_.
+  within _value_. If _value_ is not given, property will be set to empty.
 
 `setrlimit <resource> <cur> <max>`
 > Set the rlimit for a resource. This applies to all processes launched after

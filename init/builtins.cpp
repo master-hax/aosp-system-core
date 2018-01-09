@@ -600,7 +600,11 @@ static Result<Success> do_swapon_all(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_setprop(const BuiltinArguments& args) {
-    property_set(args[1], args[2]);
+    std::string value;
+    if (args.size() == 3) {
+        value = args[2];
+    }
+    property_set(args[1], value);
     return Success();
 }
 
@@ -1041,7 +1045,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
         //  TODO: setprop should be run in the subcontext, but property service needs to be split
         //        out from init before that is possible.
-        {"setprop",                 {2,     2,    {false,  do_setprop}}},
+        {"setprop",                 {1,     2,    {false,  do_setprop}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
         {"start",                   {1,     1,    {false,  do_start}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},
