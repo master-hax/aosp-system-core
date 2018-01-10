@@ -1,0 +1,12 @@
+Code-Review+2: yaochen <yaochen@google.com>
+Code-Review+1: Yi Jin <jinyithu@google.com>
+Code-Review+2: Joe Onorato <joeo@google.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Autosubmit+1: Yi Jin <jinyithu@google.com>
+Verified+1: Yi Jin <jinyithu@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 10 Jan 2018 02:51:19 +0000
+Reviewed-on: https://android-review.googlesource.com/584367
+Project: platform/system/core
+Branch: refs/heads/master
