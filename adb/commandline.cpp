@@ -57,6 +57,7 @@
 #include "adb_utils.h"
 #include "bugreport.h"
 #include "commandline.h"
+#include "fastdeploy.h"
 #include "file_sync_service.h"
 #include "services.h"
 #include "shell_service.h"
@@ -1320,6 +1321,9 @@ static bool _is_valid_ack_reply_fd(const int ack_reply_fd) {
 }
 
 static bool _use_legacy_install() {
+    return true;
+
+    /*
     FeatureSet features;
     std::string error;
     if (!adb_get_feature_set(&features, &error)) {
@@ -1327,6 +1331,7 @@ static bool _use_legacy_install() {
         return true;
     }
     return !CanUseFeature(features, kFeatureCmd);
+    */
 }
 
 int adb_commandline(int argc, const char** argv) {
@@ -2099,10 +2104,13 @@ static int install_app_legacy(int argc, const char** argv) {
     static const char *const DATA_DEST = "/data/local/tmp/%s";
     static const char *const SD_DEST = "/sdcard/tmp/%s";
     const char* where = DATA_DEST;
+    bool use_fastdeploy = false;
 
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-s")) {
             where = SD_DEST;
+        } else if (!strcmp(argv[i], "-r")) {
+            use_fastdeploy = true;
         }
     }
 
@@ -2118,13 +2126,51 @@ static int install_app_legacy(int argc, const char** argv) {
 
     if (last_apk == -1) return syntax_error("need APK file on command line");
 
+    if (use_fastdeploy == true) {
+        use_fastdeploy =
+            update_agent(FastDeploy_AgentUpdateAlways);  // if the agent can't be brought up to date
+                                                         // then fallback to non-agent operation
+    }
+
     int result = -1;
     std::vector<const char*> apk_file = {argv[last_apk]};
     std::string apk_dest = android::base::StringPrintf(
         where, android::base::Basename(argv[last_apk]).c_str());
-    if (!do_sync_push(apk_file, apk_dest.c_str(), false)) goto cleanup_apk;
-    argv[last_apk] = apk_dest.c_str(); /* destination name, not source location */
-    result = pm_command(argc, argv);
+
+    if (use_fastdeploy == true && apk_file.size() > 1) {
+        use_fastdeploy = false;
+    }
+
+    if (use_fastdeploy == true) {
+        std::string metadataTmpPath = std::tmpnam(nullptr);
+        FILE* metadataFile = fopen(metadataTmpPath.c_str(), "wb");
+        int metadata_len = extract_metadata(apk_file[0], metadataFile);
+        fclose(metadataFile);
+
+        if (metadata_len <= 0) {
+            use_fastdeploy = false;
+        } else {
+            std::string patchTmpPath = std::tmpnam(nullptr);
+            int patch_return =
+                create_patch(apk_file[0], metadataTmpPath.c_str(), patchTmpPath.c_str());
+            if (patch_return != 0) {
+                use_fastdeploy = false;
+            } else {
+                int ret = install_patch(apk_file[0], patchTmpPath.c_str());
+                if (ret == 0) {
+                    printf("Patch Success!\n");
+                } else {
+                    printf("Patch Failed!\n");
+                }
+            }
+        }
+    }
+
+    if (use_fastdeploy == false) {
+        if (!do_sync_push(apk_file, apk_dest.c_str(), false)) goto cleanup_apk;
+        argv[last_apk] = apk_dest.c_str(); /* destination name, not source location */
+        result = pm_command(argc, argv);
+    }
 
 cleanup_apk:
     delete_file(apk_dest);
