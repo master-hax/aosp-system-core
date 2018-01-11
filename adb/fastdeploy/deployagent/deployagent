@@ -1,0 +1,14 @@
+# Script to start "deployagent" on the device, which has a very rudimentary
+# shell.
+#
+base=/data/local/tmp
+export CLASSPATH=$base/guava-22.0.jar:$base/builder-3.0.1.jar:$base/deploylib.jar:$base/deployagent.jar
+exec app_process $base com.android.fastdeploy.DeployAgent "$@"
+
+#base=/system/framework
+#export CLASSPATH=$base/pm.jar
+#export IHCMD="exec app_process $base com.android.commands.pm.Pm"
+#echo CLASSPATH=$CLASSPATH
+#echo $IHCMD
+#$IHCMD
+
