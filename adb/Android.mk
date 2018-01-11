@@ -262,6 +262,8 @@ LOCAL_SRC_FILES := \
     bugreport.cpp \
     client/main.cpp \
     console.cpp \
+    fastdeploy.cpp \
+    fastdeploycallbacks.cpp \
     commandline.cpp \
     file_sync_client.cpp \
     line_printer.cpp \
