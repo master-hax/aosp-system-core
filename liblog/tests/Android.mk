@@ -67,6 +67,7 @@ cts_src_files := \
     log_wrap_test.cpp
 
 test_src_files := \
+    liblog_time.cpp \
     $(cts_src_files) \
 
 # Build tests for the device (with .so). Run with:
@@ -76,6 +77,7 @@ LOCAL_MODULE := $(test_module_prefix)unit-tests
 LOCAL_MODULE_TAGS := $(test_tags)
 LOCAL_CFLAGS += $(test_c_flags)
 LOCAL_SHARED_LIBRARIES := liblog libcutils libbase
+LOCAL_STATIC_LIBRARIES := libgoogle-benchmark
 LOCAL_SRC_FILES := $(test_src_files)
 include $(BUILD_NATIVE_TEST)
 
@@ -103,7 +105,7 @@ LOCAL_MODULE := $(cts_executable)_list
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := $(test_c_flags) -DHOST
 LOCAL_C_INCLUDES := external/gtest/include
-LOCAL_SRC_FILES := $(test_src_files)
+LOCAL_SRC_FILES := $(cts_src_files)
 LOCAL_MULTILIB := both
 LOCAL_MODULE_STEM_32 := $(LOCAL_MODULE)
 LOCAL_MODULE_STEM_64 := $(LOCAL_MODULE)64
