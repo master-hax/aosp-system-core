@@ -15,11 +15,15 @@
  */
 
 #include <ctype.h>
+#include <link.h>
+#include <linux/elf.h>
 #include <sched.h>
 #include <stdio.h>
+#include <sys/auxv.h>
 #include <unistd.h>
 
 #include <string>
+#include <unordered_map>
 
 #include <android-base/file.h>
 #include <gtest/gtest.h>
@@ -36,6 +40,88 @@ namespace {
 
 constexpr char warning[] = "[ WARNING  ] ";
 constexpr char info[] = "[ INFO     ] ";
+
+// mostly borrowed from bionic/lbic/bionic/vdso.cpp
+bool getVdsoSymbol(const char* symbol) {
+  static std::unordered_map<std::string, bool> found;
+
+  auto it = found.find(symbol);
+  if (it != found.end()) {
+    return it->second;
+  }
+
+  uintptr_t vdso_ehdr_addr = getauxval(AT_SYSINFO_EHDR);
+  ElfW(Ehdr)* vdso_ehdr = reinterpret_cast<ElfW(Ehdr)*>(vdso_ehdr_addr);
+  if (vdso_ehdr == nullptr) {
+    std::cerr << warning << "AT_SYSINFO_EHDR not found\n";
+    found.emplace(std::make_pair(std::string(symbol), false));
+    return false;
+  }
+
+  // How many symbols does it have?
+  size_t symbol_count = 0;
+  ElfW(Shdr)* vdso_shdr =
+      reinterpret_cast<ElfW(Shdr)*>(vdso_ehdr_addr + vdso_ehdr->e_shoff);
+  for (size_t i = 0; i < vdso_ehdr->e_shnum; ++i) {
+    if (vdso_shdr[i].sh_type == SHT_DYNSYM) {
+      symbol_count = vdso_shdr[i].sh_size / sizeof(ElfW(Sym));
+    }
+  }
+  if (symbol_count == 0) {
+    std::cerr << warning << "AT_SYSINFO_EHDR has no symbols\n";
+    found.emplace(std::make_pair(std::string(symbol), false));
+    return false;
+  }
+
+  // Where's the dynamic table?
+  ElfW(Addr) vdso_addr = 0;
+  ElfW(Dyn)* vdso_dyn = nullptr;
+  ElfW(Phdr)* vdso_phdr =
+      reinterpret_cast<ElfW(Phdr)*>(vdso_ehdr_addr + vdso_ehdr->e_phoff);
+  for (size_t i = 0; i < vdso_ehdr->e_phnum; ++i) {
+    if (vdso_phdr[i].p_type == PT_DYNAMIC) {
+      vdso_dyn =
+          reinterpret_cast<ElfW(Dyn)*>(vdso_ehdr_addr + vdso_phdr[i].p_offset);
+    } else if (vdso_phdr[i].p_type == PT_LOAD) {
+      vdso_addr = vdso_ehdr_addr + vdso_phdr[i].p_offset - vdso_phdr[i].p_vaddr;
+    }
+  }
+  if (vdso_addr == 0 || vdso_dyn == nullptr) {
+    std::cerr << warning << "no vdso page\n";
+    found.emplace(std::make_pair(std::string(symbol), false));
+    return false;
+  }
+
+  // Where are the string and symbol tables?
+  const char* strtab = nullptr;
+  ElfW(Sym)* symtab = nullptr;
+  for (ElfW(Dyn)* d = vdso_dyn; d->d_tag != DT_NULL; ++d) {
+    if (d->d_tag == DT_STRTAB) {
+      strtab = reinterpret_cast<const char*>(vdso_addr + d->d_un.d_ptr);
+    } else if (d->d_tag == DT_SYMTAB) {
+      symtab = reinterpret_cast<ElfW(Sym)*>(vdso_addr + d->d_un.d_ptr);
+    }
+  }
+  if (strtab == nullptr || symtab == nullptr) {
+    std::cerr << warning << "no vdso symtab\n";
+    found.emplace(std::make_pair(std::string(symbol), false));
+    return false;
+  }
+
+  // Are there any symbols we want?
+  for (size_t i = 0; i < symbol_count; ++i) {
+    if (((std::string("__kernel_") + symbol) == (strtab + symtab[i].st_name)) ||
+        ((std::string("__vdso_") + symbol) == (strtab + symtab[i].st_name))) {
+      std::cerr << info << (strtab + symtab[i].st_name) << "=" << std::hex
+                << (vdso_addr + symtab[i].st_value) << "\n";
+      found.emplace(std::make_pair(std::string(symbol), true));
+      return true;
+    }
+  }
+  std::cerr << warning << symbol << " not found in vdso\n";
+  found.emplace(std::make_pair(std::string(symbol), false));
+  return false;
+}
 
 // More consistent measurement/benchmarking result if we
 // do not hop from cpu to cpu to perform the iterations.
@@ -199,6 +285,7 @@ long getBenchmark_BM_time_clock_gettime_MONOTONIC_RAW() {
 }  // namespace
 
 TEST(liblog, time_clock_gettime_MONOTONIC_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("clock_gettime"));
   ASSERT_TRUE(benchmarkAccess());
 
   ASSERT_GT(getBenchmark_BM_time_clock_gettime_syscall(), 0);
@@ -208,6 +295,7 @@ TEST(liblog, time_clock_gettime_MONOTONIC_is_vdso) {
 }
 
 TEST(liblog, time_clock_gettime_REALTIME_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("clock_gettime"));
   ASSERT_TRUE(benchmarkAccess());
 
   ASSERT_GT(getBenchmark_BM_time_clock_gettime_syscall(), 0);
@@ -217,6 +305,7 @@ TEST(liblog, time_clock_gettime_REALTIME_is_vdso) {
 }
 
 TEST(liblog, time_clock_gettime_BOOTTIME_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("clock_gettime"));
   ASSERT_TRUE(benchmarkAccess());
 
   ASSERT_GT(getBenchmark_BM_time_clock_gettime_syscall(), 0);
@@ -226,6 +315,7 @@ TEST(liblog, time_clock_gettime_BOOTTIME_is_vdso) {
 }
 
 TEST(liblog, time_clock_gettime_MONOTONIC_RAW_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("clock_gettime"));
   ASSERT_TRUE(benchmarkAccess());
 
   ASSERT_GT(getBenchmark_BM_time_clock_gettime_syscall(), 0);
@@ -235,6 +325,7 @@ TEST(liblog, time_clock_gettime_MONOTONIC_RAW_is_vdso) {
 }
 
 TEST(liblog, time_clock_getres_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("clock_getres"));
   ASSERT_TRUE(benchmarkAccess());
 
   long BM_time_clock_getres_MONOTONIC_syscall =
@@ -248,6 +339,7 @@ TEST(liblog, time_clock_getres_is_vdso) {
 }
 
 TEST(liblog, time_time_is_vdso) {
+  ASSERT_TRUE(getVdsoSymbol("time"));
   ASSERT_TRUE(benchmarkAccess());
 
   long BM_time_clock_gettime_FASTEST =
