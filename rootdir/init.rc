@@ -446,6 +446,8 @@ on post-fs-data
     mkdir /data/misc/profiles/ref 0771 system system
     mkdir /data/misc/profman 0770 system shell
     mkdir /data/misc/gcov 0770 root root
+    mkdir /data/misc/stats-data/ 0770 statsd statsd
+    mkdir /data/misc/stats-service/ 0770 statsd statsd
 
     mkdir /data/vendor 0771 root root
     mkdir /data/vendor/hardware 0771 root root
