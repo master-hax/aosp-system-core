@@ -88,12 +88,11 @@ public final class DeployAgent {
         InputStream deltaStream = System.in;
 
         try (OutputStream out = System.out) {
-            applyPatch(new RandomAccessFile(deviceFile, "r"),
-                    deltaStream, out);
+            applyPatch(new RandomAccessFile(deviceFile, "r"), deltaStream, out);
         } catch (PatchFormatException x) {
             System.err.println(x);
             x.printStackTrace();
-        }   
+        }
     }
 
     private static void applyPatch(RandomAccessFile oldData, InputStream patchData,
@@ -135,7 +134,7 @@ public final class DeployAgent {
         }
     }
 
-    private static String getPathFromPackageName(String packageName ) {
+    private static String getPathFromPackageName(String packageName) {
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("pm list packages -f " + packageName);
 
@@ -143,21 +142,17 @@ public final class DeployAgent {
         try {
             p = Runtime.getRuntime().exec(commandBuilder.toString());
             p.waitFor();
-            BufferedReader reader =
-                new BufferedReader(new
-                        InputStreamReader(p.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String packagePrefix = "package:";
-            
+
             String line = "";
-            while ((line = reader.readLine())!= null)
-            {
+            while ((line = reader.readLine()) != null) {
                 int packageIndex = line.indexOf(packagePrefix);
-                int equalsIndex = line.indexOf("="+packageName);
-                return line.substring(packageIndex+packagePrefix.length(), equalsIndex);
+                int equalsIndex = line.indexOf("=" + packageName);
+                return line.substring(packageIndex + packagePrefix.length(), equalsIndex);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -171,5 +166,3 @@ public final class DeployAgent {
         apkMetaData.writeDelimitedTo(System.out);
     }
 }
-
-

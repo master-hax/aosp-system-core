@@ -5,9 +5,7 @@ class PatchFormatException extends Exception {
      * Constructs a new exception with the specified message.
      * @param message the message
      */
-    public PatchFormatException(String message) {
-        super(message);
-    }
+    public PatchFormatException(String message) { super(message); }
 
     /**
      * Constructs a new exception with the specified message and cause.
@@ -19,4 +17,3 @@ class PatchFormatException extends Exception {
         initCause(cause);
     }
 }
-

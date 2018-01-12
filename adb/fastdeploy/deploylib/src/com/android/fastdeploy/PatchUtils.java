@@ -52,8 +52,7 @@ class PatchUtils {
      * @param value the value to write
      * @param outputStream the stream to write to
      */
-    static void writeFormattedLong(final long value, OutputStream outputStream)
-      throws IOException {
+    static void writeFormattedLong(final long value, OutputStream outputStream) throws IOException {
         long y = value;
         if (y < 0) {
             y = (-y) | NEGATIVE_MASK;
@@ -101,9 +100,8 @@ class PatchUtils {
         return result;
     }
 
-    static void readFully(
-        final InputStream in, final byte[] destination, final int startAt, final int numBytes)
-        throws IOException {
+    static void readFully(final InputStream in, final byte[] destination, final int startAt,
+        final int numBytes) throws IOException {
         int numRead = 0;
         while (numRead < numBytes) {
             int readNow = in.read(destination, startAt + numRead, numBytes - numRead);
@@ -114,9 +112,8 @@ class PatchUtils {
         }
     }
 
-    static void pipe(
-        final InputStream in, final OutputStream out, final byte[] buffer, long copyLength)
-        throws IOException {
+    static void pipe(final InputStream in, final OutputStream out, final byte[] buffer,
+        long copyLength) throws IOException {
         while (copyLength > 0) {
             int maxCopy = Math.min(buffer.length, (int) copyLength);
             readFully(in, buffer, 0, maxCopy);
@@ -125,9 +122,8 @@ class PatchUtils {
         }
     }
 
-    static void pipe(
-        final RandomAccessFile in, final OutputStream out, final byte[] buffer, long copyLength)
-        throws IOException {
+    static void pipe(final RandomAccessFile in, final OutputStream out, final byte[] buffer,
+        long copyLength) throws IOException {
         while (copyLength > 0) {
             int maxCopy = Math.min(buffer.length, (int) copyLength);
             in.readFully(buffer, 0, maxCopy);
@@ -136,8 +132,7 @@ class PatchUtils {
         }
     }
 
-    static void fill(
-        byte value, final OutputStream out, final byte[] buffer, long fillLength)
+    static void fill(byte value, final OutputStream out, final byte[] buffer, long fillLength)
         throws IOException {
         while (fillLength > 0) {
             int maxCopy = Math.min(buffer.length, (int) fillLength);
@@ -147,4 +142,3 @@ class PatchUtils {
         }
     }
 }
-

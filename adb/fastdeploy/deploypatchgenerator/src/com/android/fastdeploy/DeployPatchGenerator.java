@@ -80,8 +80,7 @@ public final class DeployPatchGenerator {
         return 1;
     }
 
-    public int run(String[] args) throws IOException, PatchFormatException
-    {
+    public int run(String[] args) throws IOException, PatchFormatException {
         if (args.length < 2) {
             showUsage();
             return 1;
@@ -111,30 +110,27 @@ public final class DeployPatchGenerator {
     }
 
     private static SortedSet<SimpleEntry<APKEntry, APKEntry>> getIdenticalContents(
-            List<APKEntry> deviceZipEntries, File hostFile) throws IOException {
+        List<APKEntry> deviceZipEntries, File hostFile) throws IOException {
         List<APKEntry> hostFileEntries = PatchUtils.getAPKMetaData(hostFile).getEntriesList();
         return getIdenticalContents(deviceZipEntries, hostFileEntries);
     }
 
     private static SortedSet<SimpleEntry<APKEntry, APKEntry>> getIdenticalContents(
-            List<APKEntry> deviceZipEntries, 
-            List<APKEntry> hostZipEntries) 
-        throws IOException {
-        SortedSet<SimpleEntry<APKEntry, APKEntry>> identicalContentsEntrySet = 
+        List<APKEntry> deviceZipEntries, List<APKEntry> hostZipEntries) throws IOException {
+        SortedSet<SimpleEntry<APKEntry, APKEntry>> identicalContentsEntrySet =
             new TreeSet<SimpleEntry<APKEntry, APKEntry>>(
-                    new Comparator<SimpleEntry<APKEntry, APKEntry>>() {
+                new Comparator<SimpleEntry<APKEntry, APKEntry>>() {
                     @Override
-                    public int compare(SimpleEntry<APKEntry, APKEntry> p1, 
-                            SimpleEntry<APKEntry, APKEntry> p2) {
-                    return Long.compare(p1.getValue().getDataOffset(),
-                            p2.getValue().getDataOffset());
+                    public int compare(
+                        SimpleEntry<APKEntry, APKEntry> p1, SimpleEntry<APKEntry, APKEntry> p2) {
+                        return Long.compare(
+                            p1.getValue().getDataOffset(), p2.getValue().getDataOffset());
                     }
-                    });
+                });
 
         for (APKEntry deviceZipEntry : deviceZipEntries) {
             for (APKEntry hostZipEntry : hostZipEntries) {
-                if (deviceZipEntry.getCrc32() 
-                        == hostZipEntry.getCrc32()) {
+                if (deviceZipEntry.getCrc32() == hostZipEntry.getCrc32()) {
                     identicalContentsEntrySet.add(new SimpleEntry(deviceZipEntry, hostZipEntry));
                 }
             }
@@ -144,27 +140,25 @@ public final class DeployPatchGenerator {
     }
 
     private static void reportIdenticalContents(
-            SortedSet<SimpleEntry<APKEntry, APKEntry>> identicalContentsEntrySet, 
-            File hostFile) throws IOException {
+        SortedSet<SimpleEntry<APKEntry, APKEntry>> identicalContentsEntrySet, File hostFile)
+        throws IOException {
         long totalEqualBytes = 0;
         int totalEqualFiles = 0;
         for (SimpleEntry<APKEntry, APKEntry> entries : identicalContentsEntrySet) {
             APKEntry hostAPKEntry = entries.getValue();
             totalEqualBytes += hostAPKEntry.getCompressedSize();
             totalEqualFiles++;
-        } 
+        }
 
         float savingPercent = (float) (totalEqualBytes * 100) / hostFile.length();
 
         System.err.println("Detected " + totalEqualFiles + " equal APK entries");
-        System.err.println(totalEqualBytes + " bytes are equal out of " + hostFile.length() 
-            + " (" + savingPercent + "%)");
+        System.err.println(totalEqualBytes + " bytes are equal out of " + hostFile.length() + " ("
+            + savingPercent + "%)");
     }
 
-    static void createPatch(
-            SortedSet<SimpleEntry<APKEntry, APKEntry>> zipEntrySimpleEntrys, 
-            File hostFile,
-            OutputStream patchStream) throws IOException, PatchFormatException {
+    static void createPatch(SortedSet<SimpleEntry<APKEntry, APKEntry>> zipEntrySimpleEntrys,
+        File hostFile, OutputStream patchStream) throws IOException, PatchFormatException {
         FileInputStream hostFileInputStream = new FileInputStream(hostFile);
 
         patchStream.write(PatchUtils.SIGNATURE.getBytes(StandardCharsets.US_ASCII));
@@ -172,15 +166,14 @@ public final class DeployPatchGenerator {
 
         byte[] buffer = new byte[BUFFER_SIZE];
         long totalBytesWritten = 0;
-        Iterator<SimpleEntry<APKEntry, APKEntry>> entrySimpleEntryIterator = 
+        Iterator<SimpleEntry<APKEntry, APKEntry>> entrySimpleEntryIterator =
             zipEntrySimpleEntrys.iterator();
         while (entrySimpleEntryIterator.hasNext()) {
             SimpleEntry<APKEntry, APKEntry> entrySimpleEntry = entrySimpleEntryIterator.next();
             APKEntry deviceAPKEntry = entrySimpleEntry.getKey();
             APKEntry hostAPKEntry = entrySimpleEntry.getValue();
 
-            long newDataLen = hostAPKEntry.getDataOffset() 
-                - totalBytesWritten;
+            long newDataLen = hostAPKEntry.getDataOffset() - totalBytesWritten;
             long oldDataOffset = deviceAPKEntry.getDataOffset();
             long oldDataLen = deviceAPKEntry.getCompressedSize();
 
@@ -191,8 +184,8 @@ public final class DeployPatchGenerator {
 
             long skip = hostFileInputStream.skip(oldDataLen);
             if (skip != oldDataLen) {
-                throw new PatchFormatException("skip error: attempted to skip " + oldDataLen 
-                        + " bytes but return code was " + skip);
+                throw new PatchFormatException("skip error: attempted to skip " + oldDataLen
+                    + " bytes but return code was " + skip);
             }
             totalBytesWritten += oldDataLen + newDataLen;
         }
@@ -204,4 +197,3 @@ public final class DeployPatchGenerator {
         patchStream.flush();
     }
 }
-
