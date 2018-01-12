@@ -67,6 +67,7 @@ cts_src_files := \
     log_wrap_test.cpp
 
 test_src_files := \
+    liblog_time.cpp \
     $(cts_src_files) \
 
 # Build tests for the device (with .so). Run with:
@@ -76,6 +77,7 @@ LOCAL_MODULE := $(test_module_prefix)unit-tests
 LOCAL_MODULE_TAGS := $(test_tags)
 LOCAL_CFLAGS += $(test_c_flags)
 LOCAL_SHARED_LIBRARIES := liblog libcutils libbase
+LOCAL_REQUIRED_MODULES := $(test_module_prefix)benchmarks
 LOCAL_SRC_FILES := $(test_src_files)
 include $(BUILD_NATIVE_TEST)
 
