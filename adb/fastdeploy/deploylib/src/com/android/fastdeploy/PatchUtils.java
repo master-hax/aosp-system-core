@@ -23,7 +23,7 @@ class PatchUtils {
     public static final String SIGNATURE = "HAMADI/IHD";
 
     public static APKMetaData getAPKMetaData(File apkFile) throws IOException {
-        APKMetaData.Builder apkEntiresBuilder = APKMetaData.newBuilder();
+        APKMetaData.Builder apkEntriesBuilder = APKMetaData.newBuilder();
         ZFileOptions options = new ZFileOptions();
         ZFile zFile = new ZFile(apkFile, options);
         for (StoredEntry entry : zFile.entries()) {
@@ -40,10 +40,10 @@ class PatchUtils {
             entryBuilder.setUncompressedSize(cdh.getUncompressedSize());
             entryBuilder.setDataOffset(cdh.getOffset());
 
-            apkEntiresBuilder.addEntries(entryBuilder);
-            apkEntiresBuilder.build();
+            apkEntriesBuilder.addEntries(entryBuilder);
+            apkEntriesBuilder.build();
         }
-        return apkEntiresBuilder.build();
+        return apkEntriesBuilder.build();
     }
 
     /**

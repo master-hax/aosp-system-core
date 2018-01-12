@@ -83,8 +83,7 @@ public final class DeployAgent {
     }
 
     private static void applyPatch(String packageName) throws IOException {
-        String apkPath = getPathFromPackageName(packageName);
-        File deviceFile = new File(apkPath);
+        File deviceFile = getFileFromPackageName(packageName);
         InputStream deltaStream = System.in;
 
         try (OutputStream out = System.out) {
@@ -134,7 +133,7 @@ public final class DeployAgent {
         }
     }
 
-    private static String getPathFromPackageName(String packageName) {
+    private static File getFileFromPackageName(String packageName) {
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("pm list packages -f " + packageName);
 
@@ -150,7 +149,7 @@ public final class DeployAgent {
             while ((line = reader.readLine()) != null) {
                 int packageIndex = line.indexOf(packagePrefix);
                 int equalsIndex = line.indexOf("=" + packageName);
-                return line.substring(packageIndex + packagePrefix.length(), equalsIndex);
+                return new File(line.substring(packageIndex + packagePrefix.length(), equalsIndex));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,8 +159,7 @@ public final class DeployAgent {
     }
 
     private static void extractMetaData(String packageName) throws IOException {
-        String apkPath = getPathFromPackageName(packageName);
-        File apkFile = new File(apkPath);
+        File apkFile = getFileFromPackageName(packageName);
         APKMetaData apkMetaData = PatchUtils.getAPKMetaData(apkFile);
         apkMetaData.writeDelimitedTo(System.out);
     }
