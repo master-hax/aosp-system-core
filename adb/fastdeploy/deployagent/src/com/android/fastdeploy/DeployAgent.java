@@ -96,11 +96,8 @@ public final class DeployAgent {
         }   
     }
 
-    private static void applyPatch(
-            RandomAccessFile oldData,
-            InputStream patchData,
-            OutputStream newData)
-        throws IOException, PatchFormatException {
+    private static void applyPatch(RandomAccessFile oldData, InputStream patchData,
+        OutputStream newData) throws IOException, PatchFormatException {
         byte[] signatureBuffer = new byte[PatchUtils.SIGNATURE.length()];
         try {
             PatchUtils.readFully(patchData, signatureBuffer, 0, signatureBuffer.length);
