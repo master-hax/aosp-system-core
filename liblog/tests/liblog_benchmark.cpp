@@ -32,7 +32,9 @@
 #include <log/log_transport.h>
 #include <private/android_logger.h>
 
+#ifndef INCLUDED_IN_GTEST
 BENCHMARK_MAIN();
+#endif
 
 // enhanced version of LOG_FAILURE_RETRY to add support for EAGAIN and
 // non-syscall libs. Since we are benchmarking, or using this in the emergency
