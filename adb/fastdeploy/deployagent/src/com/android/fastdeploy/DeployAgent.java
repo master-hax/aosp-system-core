@@ -53,7 +53,23 @@ public final class DeployAgent {
     public static void main(String[] args) {
         int exitCode = 1;
         try {
-            exitCode = new DeployAgent().run(args);
+            if (args.length < 2) {
+                showUsage();
+            } else {
+                String commandString = args[0];
+                String packageName = args[1];
+
+                if (commandString.equals("extract")) {
+                    extractMetaData(packageName);
+                    exitCode = 0;
+                } else if (commandString.equals("apply")) {
+                    System.err.println("Applying to " + packageName);
+                    applyPatch(packageName);
+                    exitCode = 0;
+                } else {
+                    showUsage();
+                }
+            }
         } catch (Exception e) {
             System.err.println("Error: " + e);
         }
@@ -64,32 +80,6 @@ public final class DeployAgent {
         System.err.println("usage: deployagent [extract|apply] <packagename>");
         System.err.println("");
         return 1;
-    }
-
-    public int run(String[] args)
-    {
-        try {
-            if (args.length < 2) {
-                showUsage();
-                return 1;
-            }
-
-            String commandString = args[0];
-            String packageName = args[1];
-
-            if (commandString.equals("extract")) {
-                extractMetaData(packageName);
-            } else if (commandString.equals("apply")) {
-                System.err.println("Applying to " + packageName);
-                applyPatch(packageName);
-            } else {
-                showUsage();
-                return 1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     private static void applyPatch(String packageName) throws IOException {
@@ -106,7 +96,7 @@ public final class DeployAgent {
         }   
     }
 
-    static void applyPatch(
+    private static void applyPatch(
             RandomAccessFile oldData,
             InputStream patchData,
             OutputStream newData)
