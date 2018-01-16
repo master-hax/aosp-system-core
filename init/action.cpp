@@ -21,6 +21,7 @@
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 
+#include "stable_properties.h"
 #include "util.h"
 
 using android::base::Join;
@@ -144,6 +145,12 @@ Result<Success> Action::ParsePropertyTrigger(const std::string& trigger) {
 
     std::string prop_value(prop_name.substr(equal_pos + 1));
     prop_name.erase(equal_pos);
+
+    if (subcontext_ != nullptr) {
+        if (!StableActionablePropertyManager::GetInstance().IsActionable(prop_name)) {
+            return Error() << "unexported property tigger found: " << prop_name;
+        }
+    }
 
     if (auto [it, inserted] = property_triggers_.emplace(prop_name, prop_value); !inserted) {
         return Error() << "multiple property triggers found for same property";
