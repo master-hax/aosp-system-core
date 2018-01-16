@@ -7,6 +7,8 @@ cc_defaults {
         "-Wno-unused-argument",
         "-Wno-unused-function",
         "-Wno-nullability-completeness",
+        "-Wno-tautological-type-limit-compare",
+        "-Wno-tautological-unsigned-enum-zero-compare",
         "-Os",
     ],
     cpp_std: "gnu++17",
