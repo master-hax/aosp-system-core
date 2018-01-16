@@ -78,6 +78,7 @@ cc_library_static {
         "security.cpp",
         "selinux.cpp",
         "service.cpp",
+        "stable_properties.cpp",
         "subcontext.cpp",
         "subcontext.proto",
         "rlimit_parser.cpp",
