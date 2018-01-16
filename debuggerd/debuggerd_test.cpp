@@ -41,6 +41,9 @@
 #include <cutils/sockets.h>
 #include <gtest/gtest.h>
 
+#include <libminijail.h>
+#include <scoped_minijail.h>
+
 #include "debuggerd/handler.h"
 #include "protocol.h"
 #include "tombstoned/tombstoned.h"
@@ -558,6 +561,84 @@ TEST_F(CrasherTest, fake_pid) {
   AssertDeath(SIGSEGV);
   FinishIntercept(&intercept_result);
 
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_BACKTRACE_FRAME(result, "tgkill");
+}
+
+static const char* const kDebuggerdSeccompPolicy =
+#if defined(__arm__)
+    "/system/etc/seccomp_policy/debuggerd.arm.policy";
+#elif defined(__aarch64__)
+    "/system/etc/seccomp_policy/debuggerd.arm.policy";
+#elif defined(__i386__)
+    "/system/etc/seccomp_policy/debuggerd.x86.policy";
+#elif defined(__x86_64__)
+    "/system/etc/seccomp_policy/debuggerd.x86_64.policy";
+#endif
+
+pid_t seccomp_fork() {
+  unique_fd policy_fd(open(kDebuggerdSeccompPolicy, O_RDONLY | O_CLOEXEC));
+  if (policy_fd == -1) {
+    LOG(FATAL) << "failed to open policy";
+  }
+
+  ScopedMinijail jail{minijail_new()};
+  if (!jail) {
+    LOG(FATAL) << "failed to create minijail";
+  }
+
+  minijail_no_new_privs(jail.get());
+  minijail_log_seccomp_filter_failures(jail.get());
+  minijail_use_seccomp_filter(jail.get());
+  minijail_parse_seccomp_filters_from_fd(jail.get(), policy_fd.release());
+
+  pid_t result = fork();
+  if (result == -1) {
+    return result;
+  } else if (result != 0) {
+    return result;
+  }
+
+  minijail_enter(jail.get());
+
+  return result;
+}
+
+TEST_F(CrasherTest, seccomp_crash) {
+  int intercept_result;
+  unique_fd output_fd;
+
+  StartProcess([]() { abort(); }, &seccomp_fork);
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_BACKTRACE_FRAME(result, "abort");
+}
+
+TEST_F(CrasherTest, seccomp_backtrace) {
+  int intercept_result;
+  unique_fd output_fd;
+
+  StartProcess(
+      []() {
+        raise(DEBUGGER_SIGNAL);
+        exit(0);
+      },
+      &seccomp_fork);
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(0);
+  FinishIntercept(&intercept_result);
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
 
   std::string result;
