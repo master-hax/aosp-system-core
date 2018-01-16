@@ -138,9 +138,11 @@ endef
 #######################################
 # ld.config.txt
 include $(CLEAR_VARS)
+LOCAL_MODULE := ld.config.txt
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
 
 _enforce_vndk_at_runtime := false
-
 ifdef BOARD_VNDK_VERSION
 ifneq ($(BOARD_VNDK_RUNTIME_DISABLE),true)
   _enforce_vndk_at_runtime := true
@@ -148,9 +150,6 @@ endif
 endif
 
 ifeq ($(_enforce_vndk_at_runtime),true)
-LOCAL_MODULE := ld.config.txt
-LOCAL_MODULE_CLASS := ETC
-LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
 LOCAL_MODULE_STEM := $(call append_vndk_version,$(LOCAL_MODULE))
 include $(BUILD_SYSTEM)/base_rules.mk
 
@@ -177,9 +176,9 @@ $(2ND_TSAN_RUNTIME_LIBRARY)))
 $(LOCAL_BUILT_MODULE): PRIVATE_LLNDK_LIBRARIES := $(llndk_libraries)
 $(LOCAL_BUILT_MODULE): PRIVATE_PRIVATE_LLNDK_LIBRARIES := $(private_llndk_libraries)
 $(LOCAL_BUILT_MODULE): PRIVATE_VNDK_SAMEPROCESS_LIBRARIES := $(vndk_sameprocess_libraries)
-$(LOCAL_BUILT_MODULE): PRIVATE_LLNDK_PRIVATE_LIBRARIES := $(llndk_private_libraries)
 $(LOCAL_BUILT_MODULE): PRIVATE_VNDK_CORE_LIBRARIES := $(vndk_core_libraries)
 $(LOCAL_BUILT_MODULE): PRIVATE_SANITIZER_RUNTIME_LIBRARIES := $(sanitizer_runtime_libraries)
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_VERSION := -$(PLATFORM_VNDK_VERSION)
 $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/etc/ld.config.txt.in
 	@echo "Generate: $< -> $@"
 	@mkdir -p $(dir $@)
@@ -188,25 +187,51 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/etc/ld.config.txt.in
 	$(hide) sed -i -e 's?%VNDK_SAMEPROCESS_LIBRARIES%?$(PRIVATE_VNDK_SAMEPROCESS_LIBRARIES)?g' $@
 	$(hide) sed -i -e 's?%VNDK_CORE_LIBRARIES%?$(PRIVATE_VNDK_CORE_LIBRARIES)?g' $@
 	$(hide) sed -i -e 's?%SANITIZER_RUNTIME_LIBRARIES%?$(PRIVATE_SANITIZER_RUNTIME_LIBRARIES)?g' $@
+	$(hide) sed -i -e 's?%VNDK_VER%?$(PRIVATE_VNDK_VERSION)?g' $@
 
 llndk_libraries :=
+private_llndk_libraries :=
 vndk_sameprocess_libraries :=
 vndk_core_libraries :=
 sanitizer_runtime_libraries :=
-else # if _enforce_vndk_at_runtime is not true
 
-LOCAL_MODULE := ld.config.txt
+else # if _enforce_vndk_at_runtime is not true
 ifeq ($(PRODUCT_TREBLE_LINKER_NAMESPACES)|$(SANITIZE_TARGET),true|)
-  LOCAL_SRC_FILES := etc/ld.config.txt
-  LOCAL_MODULE_STEM := $(call append_vndk_version,$(LOCAL_MODULE))
+LOCAL_MODULE_STEM := $(call append_vndk_version,$(LOCAL_MODULE))
+include $(BUILD_SYSTEM)/base_rules.mk
+ifdef BOARD_VNDK_VERSION
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_VERSION := -$(PLATFORM_VNDK_VERSION)
 else
-  LOCAL_SRC_FILES := etc/ld.config.legacy.txt
-  LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_VERSION :=
 endif
+$(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/etc/ld.config.txt
+	@echo "Generate: $< -> $@"
+	@mkdir -p $(dir $@)
+	$(hide) sed -e 's?%VNDK_VER%?$(PRIVATE_VNDK_VERSION)?g' $< >$@
+
+else # for non-treble devices
+LOCAL_SRC_FILES := etc/ld.config.legacy.txt
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+include $(BUILD_PREBUILT)
+
+endif # if treble device
+endif # if _enforce_vndk_at_runtime is true
+
+_enforce_vndk_at_runtime :=
+
+#######################################
+# ld.config.noenforce.txt
+include $(CLEAR_VARS)
+LOCAL_MODULE := ld.config.noenforce.txt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
-include $(BUILD_PREBUILT)
-endif
+LOCAL_MODULE_STEM := $(LOCAL_MODULE)
+include $(BUILD_SYSTEM)/base_rules.mk
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_VERSION := -$(PLATFORM_VNDK_VERSION)
+$(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/etc/ld.config.txt
+	@echo "Generate: $< -> $@"
+	@mkdir -p $(dir $@)
+	$(hide) sed -e 's?%VNDK_VER%?$(PRIVATE_VNDK_VERSION)?g' $< >$@
 
 #######################################
 # llndk.libraries.txt
