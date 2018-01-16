@@ -18,15 +18,16 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := demangle_fuzzer
-LOCAL_MODULE_TAGS := optional
-LOCAL_SRC_FILES := \
-    Demangler.cpp \
-    demangle_fuzzer.cpp \
-
-LOCAL_CFLAGS := \
-    -Wall \
-    -Werror \
-    -Wextra \
-
-include $(BUILD_FUZZ_TEST)
+# This module does not build with clang 7.0 yet.
+#LOCAL_MODULE := demangle_fuzzer
+#LOCAL_MODULE_TAGS := optional
+#LOCAL_SRC_FILES := \
+#    Demangler.cpp \
+#    demangle_fuzzer.cpp \
+#
+#LOCAL_CFLAGS := \
+#    -Wall \
+#    -Werror \
+#    -Wextra \
+#
+#include $(BUILD_FUZZ_TEST)
