@@ -69,6 +69,9 @@ bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
     back_frame->rel_pc = frame->rel_pc;
     back_frame->pc = frame->pc;
     back_frame->sp = frame->sp;
+    back_frame->dex_pc = frame->dex_pc;
+    back_frame->dex_method_name = frame->dex_method_name;
+    back_frame->dex_method_offset = frame->dex_method_offset;
 
     back_frame->func_name = demangle(frame->function_name.c_str());
     back_frame->func_offset = frame->function_offset;
