@@ -26,6 +26,11 @@
 
 #include <android-base/stringprintf.h>
 
+#include <dex/code_item_accessors-no_art-inl.h>
+#include <dex/compact_dex_file.h>
+#include <dex/dex_file_loader.h>
+#include <dex/standard_dex_file.h>
+
 #include <unwindstack/Elf.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/MapInfo.h>
@@ -57,6 +62,54 @@ void Unwinder::FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc
   if (!elf->GetFunctionName(func_pc, &frame->function_name, &frame->function_offset)) {
     frame->function_name = "";
     frame->function_offset = 0;
+  }
+
+  if (frame->function_name == "$dexfile") {
+    uint64_t dex_file_address = func_pc - frame->function_offset;
+    uint64_t dex_pc_offset = adjusted_rel_pc;
+    if (loaded_dexfiles_.count(dex_file_address) == 0) {
+      art::DexFile::Header header;
+      process_memory_->ReadFully(dex_file_address, &header, sizeof(header));
+      if (art::StandardDexFile::IsMagicValid(header.magic_) ||
+          art::CompactDexFile::IsMagicValid(header.magic_)) {
+        std::vector<uint8_t> buffer(header.file_size_);
+        process_memory_->ReadFully(dex_file_address, buffer.data(), buffer.size());
+        loaded_dexfiles_.emplace(dex_file_address, std::move(buffer));
+      }
+    }
+    auto it = loaded_dexfiles_.find(dex_file_address);  // TODO: Mutex?
+    if (it != loaded_dexfiles_.end()) {
+      art::DexFileLoader loader;
+      std::string error_msg;
+      auto dex_file = loader.Open(it->second.data(), it->second.size(), "", 0, nullptr, false,
+                                  false, &error_msg);
+      if (dex_file != nullptr) {
+        for (uint32_t i = 0; i < dex_file->NumClassDefs(); ++i) {
+          const art::DexFile::ClassDef& class_def = dex_file->GetClassDef(i);
+          const uint8_t* class_data = dex_file->GetClassData(class_def);
+          if (class_data == nullptr) {
+            continue;
+          }
+          for (art::ClassDataItemIterator it(*dex_file, class_data); it.HasNext(); it.Next()) {
+            if (!it.IsAtMethod()) {
+              continue;
+            }
+            const art::DexFile::CodeItem* code_item = it.GetMethodCodeItem();
+            if (code_item == nullptr) {
+              continue;
+            }
+            art::CodeItemInstructionAccessor code(*dex_file, code_item);
+            DCHECK(code.HasCodeItem());
+            uint64_t offset = reinterpret_cast<const uint8_t*>(code.Insns()) - dex_file->Begin();
+            size_t size = code.InsnsSizeInCodeUnits() * sizeof(uint16_t);
+            if (offset <= dex_pc_offset && dex_pc_offset < offset + size) {
+              frame->function_name = dex_file->PrettyMethod(it.GetMemberIndex(), false);
+              break;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
