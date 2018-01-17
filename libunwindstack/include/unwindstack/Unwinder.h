@@ -21,7 +21,9 @@
 #include <sys/types.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <unwindstack/Maps.h>
@@ -83,6 +85,8 @@ class Unwinder {
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
   JitDebug* jit_debug_ = nullptr;
+  std::unordered_map<uint64_t, std::vector<uint8_t>> loaded_dexfiles_;
+  std::mutex loaded_dexfiles_mutex_;
 };
 
 }  // namespace unwindstack
