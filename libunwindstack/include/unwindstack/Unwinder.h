@@ -39,9 +39,13 @@ struct FrameData {
   uint64_t rel_pc;
   uint64_t pc;
   uint64_t sp;
+  uint64_t dex_pc;
 
   std::string function_name;
   uint64_t function_offset;
+
+  std::string dex_method_name;
+  uint64_t dex_method_offset;
 
   std::string map_name;
   uint64_t map_offset;
