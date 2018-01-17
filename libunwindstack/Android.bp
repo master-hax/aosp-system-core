@@ -80,6 +80,10 @@ cc_library {
         host: {
             cflags: ["-O0", "-g"],
         },
+        vendor: {
+            cflags: ["-DDISABLE_DEX_READING"],
+            exclude_shared_libs: ["libdexfile"],
+        },
     },
 
     arch: {
@@ -98,9 +102,18 @@ cc_library {
     },
 
     shared_libs: [
+        "libdexfile",
         "libbase",
         "liblog",
         "liblzma",
+    ],
+
+    include_dirs: [
+        "art/runtime"  // dex utils.
+    ],
+
+    header_libs: [
+        "jni_headers",
     ],
 }
 
