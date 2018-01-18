@@ -14,18 +14,37 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
+#include <dirent.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <linux/fs.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
+#include <sys/cdefs.h>
 #include <sys/mman.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/un.h>
 #include <unistd.h>
 
+#include <memory>
+#include <unordered_set>
+
+#include <android-base/macros.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/ashmem.h>
 #include <gtest/gtest.h>
 
+// not so much a speedup, as a way of annotating impossible/unexpected paths
+#ifndef __predict_false
+#define __predict_false(exp) __builtin_expect((exp) != 0, 0)
+#endif
+
+using android::base::StartsWith;
 using android::base::unique_fd;
 
 void TestCreateRegion(size_t size, unique_fd &fd, int prot) {
@@ -273,4 +292,196 @@ TEST(AshmemTest, ForkMultiRegionTest) {
         ASSERT_EQ(0, memcmp(region, &data, size));
         EXPECT_EQ(0, munmap(region, size));
     }
+}
+
+namespace {
+
+// Report name we intent to operate on just in case kernel panics
+// on a false positive and sends an ill advised ioctl to that node.
+void reportName(const std::string& name) {
+    int len = 79 - name.size();
+    if (len <= 0) {
+        len = 1;
+    }
+    fprintf(stderr, "\r%s%*s", name.c_str(), len, "");
+    fflush(stderr);
+    usleep(20000);
+}
+
+void clearName() {
+    fprintf(stderr, "\r%*s\r", 79, "");
+    fflush(stderr);
+    usleep(20000);
+}
+
+void caught_signal(int /* signum */) {}
+
+void checkAshmem(std::unordered_set<std::string>& checked, const std::string& name) {
+    if (checked.find(name) != checked.end()) {
+        return;
+    }
+    checked.insert(name);
+
+    // Try to open it as a socket first
+    unique_fd fd(-1);
+    struct sockaddr_un un;
+    int errorNumber = 0;
+    if (name.size() <= sizeof(un.sun_path)) {
+        int types[] = {SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW, SOCK_RDM};
+        errorNumber = EPROTOTYPE;
+        for (size_t t = 0; (fd < 0) && (errorNumber == EPROTOTYPE) && (t < arraysize(types)); ++t) {
+            fd.reset(socket(PF_UNIX, types[t] | SOCK_CLOEXEC | SOCK_NONBLOCK, 0));
+            if (fd < 0) {
+                errorNumber = errno;
+                continue;
+            }
+            memset(&un, 0, sizeof(struct sockaddr_un));
+            un.sun_family = AF_UNIX;
+            strncpy(un.sun_path, name.c_str(), sizeof(un.sun_path));
+            if (TEMP_FAILURE_RETRY(connect(fd, (struct sockaddr*)&un, sizeof(struct sockaddr_un))) <
+                0) {
+                errorNumber = errno;
+                fd.reset(-1);
+            }
+        }
+    }
+    EXPECT_TRUE((fd >= 0) || !StartsWith(name, "/dev/socket/"))
+        << "[  FAILED  ] " << name << " " << strerror(errorNumber);
+
+    if (fd < 0) {
+        // protect ourselves from bad device drivers in the kernel
+        struct sigaction ignore, old_sigaction;
+        memset(&ignore, 0, sizeof(ignore));
+        ignore.sa_handler = caught_signal;
+        sigemptyset(&ignore.sa_mask);
+        sigaction(SIGALRM, &ignore, &old_sigaction);
+        unsigned int old_alarm = alarm(1);
+
+        fd.reset(open(name.c_str(), O_RDONLY | O_CLOEXEC | O_NONBLOCK));
+
+        alarm(old_alarm);
+        sigaction(SIGALRM, &old_sigaction, nullptr);
+    }
+
+    if ((fd < 0) || !ashmem_valid(fd)) {
+        return;
+    }
+
+    reportName(name);
+
+    EXPECT_GT(ashmem_get_size_region(fd), (name == "/dev/ashmem") ? -1 : 0)
+        << "[  FAILED  ] " << name;
+}
+
+void recurseAshmem(std::unordered_set<std::string>& checked, const std::string& directory) {
+    std::unique_ptr<DIR, decltype(&closedir)> d(opendir(directory.c_str()), closedir);
+    if (d.get() == nullptr) {
+        return;
+    }
+
+    dirent* dp;
+    while ((dp = readdir(d.get())) != nullptr) {
+        if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, "..")) {
+            continue;
+        }
+
+        std::string name = directory;
+        name += dp->d_name;
+        if (__predict_false(dp->d_type == DT_UNKNOWN)) {
+            struct stat st;
+            if (!lstat(name.c_str(), &st) && (st.st_mode & S_IFDIR)) {
+                dp->d_type = DT_DIR;
+            }
+        }
+        if (dp->d_type == DT_DIR) {
+            name += "/";
+            recurseAshmem(checked, name);
+            continue;
+        }
+        checkAshmem(checked, name);
+    }
+}
+
+}  // namespace
+
+TEST(AshmemTest, scan_valid) {
+    static constexpr char procdir[] = "/proc/";
+    std::unique_ptr<DIR, decltype(&closedir)> d(opendir(procdir), closedir);
+
+    std::unordered_set<std::string> checked;
+    dirent* dp;
+    if (d.get() != nullptr) {
+        while ((dp = readdir(d.get())) != nullptr) {
+            if (!isdigit(dp->d_name[0])) {
+                continue;
+            }
+            std::string fddir = procdir;
+            fddir += dp->d_name;
+            if (__predict_false(dp->d_type == DT_UNKNOWN)) {
+                struct stat st;
+                if (lstat(fddir.c_str(), &st) || !(st.st_mode & S_IFDIR)) {
+                    continue;
+                }
+            } else if (dp->d_type != DT_DIR) {
+                continue;
+            }
+            fddir += "/fd/";
+            std::unique_ptr<DIR, decltype(&closedir)> fdd(opendir(fddir.c_str()), closedir);
+            if (fdd.get() == nullptr) {
+                continue;
+            }
+            while ((dp = readdir(fdd.get())) != nullptr) {
+                if (!isdigit(dp->d_name[0])) {
+                    continue;
+                }
+                std::string name = fddir + "/" + dp->d_name;
+                if (__predict_false(dp->d_type == DT_UNKNOWN)) {
+                    struct stat st;
+                    if (lstat(name.c_str(), &st) || !(st.st_mode & S_IFLNK)) {
+                        continue;
+                    }
+                } else if (dp->d_type != DT_LNK) {
+                    continue;
+                }
+                char buf[PATH_MAX];
+                ssize_t ret = TEMP_FAILURE_RETRY(readlink(name.c_str(), buf, sizeof(buf)));
+                // use _real_ path to node
+                if ((ret > 0) && (static_cast<size_t>(ret) < sizeof(buf))) {
+                    name = std::string(buf, ret);
+                }
+
+                checkAshmem(checked, name);
+            }
+        }
+    }
+
+    // Let's abuse the device directory
+    static constexpr char devicedir[] = "/dev/";
+    d.reset(opendir(devicedir));
+    if (d.get() != nullptr) {
+        while ((dp = readdir(d.get())) != nullptr) {
+            if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, "..")) {
+                continue;
+            }
+
+            std::string name = devicedir;
+            name += dp->d_name;
+
+            if (__predict_false(dp->d_type == DT_UNKNOWN)) {
+                struct stat st;
+                if (!lstat(name.c_str(), &st) && (st.st_mode & S_IFDIR)) {
+                    dp->d_type = DT_DIR;
+                }
+            }
+            if (dp->d_type == DT_DIR) {
+                name += "/";
+                recurseAshmem(checked, name);
+                continue;
+            }
+
+            checkAshmem(checked, name);
+        }
+    }
+    clearName();
+    fprintf(stderr, "\r[   INFO   ] %zu files checked\n", checked.size());
 }
