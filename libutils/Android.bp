@@ -53,7 +53,6 @@ cc_library {
     host_supported: true,
 
     srcs: [
-        "CallStack.cpp",
         "FileMap.cpp",
         "JenkinsHash.cpp",
         "NativeHandle.cpp",
@@ -103,7 +102,6 @@ cc_library {
             cflags: ["-fvisibility=protected"],
 
             shared_libs: [
-                "libbacktrace",
                 "libcutils",
                 "libdl",
                 "libvndksupport",
@@ -116,6 +114,87 @@ cc_library {
         linux: {
             srcs: [
                 "Looper.cpp",
+            ],
+        },
+
+        host: {
+            cflags: ["-DLIBUTILS_NATIVE=1"],
+
+            shared: {
+                enabled: false,
+            },
+        },
+
+        linux_bionic: {
+            enabled: true,
+        },
+
+        darwin: {
+            cflags: ["-Wno-unused-parameter"],
+        },
+
+        windows: {
+            cflags: [
+                // Under MinGW, ctype.h doesn't need multi-byte support
+                "-DMB_CUR_MAX=1",
+                "-Wno-unused-private-field",
+            ],
+
+            enabled: true,
+        },
+    },
+}
+
+cc_library {
+    name: "libutilscallstack",
+    vendor_available: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
+    host_supported: true,
+
+    srcs: [
+        "CallStack.cpp",
+    ],
+
+    cflags: ["-Wall", "-Werror"],
+    include_dirs: ["external/safe-iop/include"],
+    header_libs: [
+        "libutils_headers",
+    ],
+    export_header_lib_headers: [
+        "libutils_headers",
+    ],
+
+    shared_libs: [
+        "liblog",
+    ],
+
+    arch: {
+        mips: {
+            cflags: ["-DALIGN_DOUBLE"],
+        },
+    },
+
+    target: {
+        android: {
+            cflags: ["-fvisibility=protected"],
+
+            shared_libs: [
+                "libutils",
+                "libbacktrace",
+                "libcutils",
+                "libdl",
+                "libvndksupport",
+            ],
+
+            sanitize: {
+                misc_undefined: ["integer"],
+            },
+        },
+        linux: {
+            srcs: [
                 "ProcessCallStack.cpp",
             ],
         },
