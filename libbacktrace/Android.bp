@@ -50,6 +50,7 @@ libbacktrace_sources = [
     "BacktracePtrace.cpp",
     "thread_utils.c",
     "ThreadEntry.cpp",
+    "UnwindDexFile.cpp",
     "UnwindStack.cpp",
     "UnwindStackMap.cpp",
 ]
@@ -92,9 +93,16 @@ cc_library {
                 "liblog",
                 "libunwind",
                 "libunwindstack",
+                "libdexfile",
             ],
 
             static_libs: ["libcutils"],
+
+            include_dirs: [
+                "art/runtime",
+            ],
+
+            header_libs: [ "jni_headers", ],
         },
         android: {
             static_libs: ["libasync_safe"],
