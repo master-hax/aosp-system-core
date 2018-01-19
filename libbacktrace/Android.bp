@@ -50,6 +50,7 @@ libbacktrace_sources = [
     "BacktracePtrace.cpp",
     "thread_utils.c",
     "ThreadEntry.cpp",
+    "UnwindDexFile.cpp",
     "UnwindStack.cpp",
     "UnwindStackMap.cpp",
 ]
@@ -100,7 +101,13 @@ cc_library {
             static_libs: ["libasync_safe"],
         },
     },
-    whole_static_libs: ["libdemangle"],
+    whole_static_libs: ["libdemangle", "libdexfile", "libz"],
+
+    include_dirs: [
+        "art/runtime",
+    ],
+
+    header_libs: [ "jni_headers", ],
 }
 
 cc_library_shared {
@@ -227,6 +234,21 @@ cc_benchmark {
     srcs: [
         "backtrace_benchmarks.cpp",
         "backtrace_read_benchmarks.cpp",
+    ],
+
+    shared_libs: [
+        "libbacktrace",
+        "libbase",
+        "libunwindstack",
+    ],
+}
+
+cc_binary {
+    name: "back_unwind",
+    defaults: ["libbacktrace_common"],
+    host_supported: true,
+    srcs: [
+        "back_unwind.cpp",
     ],
 
     shared_libs: [
