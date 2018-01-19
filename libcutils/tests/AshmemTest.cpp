@@ -33,6 +33,7 @@
 #include <memory>
 #include <unordered_set>
 
+#include <android-base/file.h>
 #include <android-base/macros.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -44,6 +45,7 @@
 #define __predict_false(exp) __builtin_expect((exp) != 0, 0)
 #endif
 
+using android::base::ReadFdToString;
 using android::base::StartsWith;
 using android::base::unique_fd;
 
@@ -299,6 +301,7 @@ namespace {
 constexpr size_t maxLineWidth = 80;
 constexpr char infoPrefix[] = "\r[   INFO   ] ";
 constexpr char failedPrefix[] = "[  FAILED  ] ";
+constexpr char securityPrefix[] = "[ SECURITY ] ";
 
 // Report name we intent to operate on just in case kernel panics
 // on a false positive and sends an ill advised ioctl to that node.
@@ -324,7 +327,27 @@ void clearName() {
 
 void caught_signal(int /* signum */) {}
 
-void checkAshmem(std::unordered_set<std::string>& checked, const std::string& name) {
+bool enforcing() {
+    static int state = -1;
+    if (state != -1) {
+        return state;
+    }
+
+    std::unique_ptr<FILE, decltype(&pclose)> fp(popen("/system/bin/getenforce", "r"), pclose);
+    if (!fp.get()) {
+        state = -2;
+    } else {
+        std::string content;
+        ReadFdToString(fileno(fp.get()), &content);
+        state = StartsWith(content, "Enforcing");
+    }
+    if (state) {
+        std::cerr << "\r[ WARNING ] rerun test w/o selinux protection\n";
+    }
+    return state;
+}
+
+void checkAshmem(std::unordered_set<std::string>& checked, const std::string& name, bool direct) {
     if (checked.find(name) != checked.end()) {
         return;
     }
@@ -379,16 +402,66 @@ void checkAshmem(std::unordered_set<std::string>& checked, const std::string& na
         sigaction(SIGALRM, &old_sigaction, nullptr);
     }
 
-    if ((fd < 0) || !ashmem_valid(fd)) {
+    if (fd < 0) {
         return;
     }
 
-    reportName(name);
+    if (direct) {
+        reportName(name);
+        int ashmem_get_size = ioctl(fd, ASHMEM_GET_SIZE, NULL);
+        int ashmem_get_size_errno = (ashmem_get_size == -1) ? errno : 0;
+        if (ashmem_valid(fd)) {
+            EXPECT_GT(ashmem_get_size, (name == "/dev/ashmem") ? -1 : 0)
+                << failedPrefix << name << " " << strerror(ashmem_get_size_errno);
+        } else {
+            // Test Failures (ie, ioctl reports success) should be noted as
+            // that means the device being accessed can be possible be used
+            // as a security exploit.
+            EXPECT_EQ(ashmem_get_size, -1)
+                << securityPrefix << name << " ASHMEM_GET_SIZE ioctl unexpected success";
+            if (ashmem_get_size == -1) {
+                // Limited set of acceptable errno values:
+                //    EINVAL
+                // Limited set of worrisome, but likely protected errno values,
+                // good if whitelisted/blacklisted, but not if selinux.
+                //    ENOTTY, EBADFD or ENOSYS
+                //
+                // For example EFAULT means the cmd overlaps supported
+                // and thus a risk of security exploit. Kernel driver
+                // needs fixing to use a whitelist of known ioctls.
+                //
+                // For example ENOTTY is returned if selinux protected, but
+                // we find a troublesome _success_ with protection turned off!
+                int expected_ashmem_get_size_errno = ENOTTY;
+                switch (ashmem_get_size_errno) {
+                    case ENOSYS:  // ioctl blocked     (blacklist, or selinux?)
+                    case EBADFD:  // fd state          (not properly initialized)
+                    case ENOTTY:  // ioctl unsupported (no ioctl, or selinux?)
+                        enforcing();
+                    // FALLTHRU
+                    case EINVAL:  // invalid cmd       (whitelist)
+                        expected_ashmem_get_size_errno = ashmem_get_size_errno;
+                        break;
+                }
+                EXPECT_EQ(ashmem_get_size_errno, expected_ashmem_get_size_errno)
+                    << securityPrefix << name << " ASHMEM_GET_SIZE ioctl "
+                    << strerror(ashmem_get_size_errno) << " unexpected, inspect driver";
+            }
+        }
+    } else {
+        if (!ashmem_valid(fd)) {
+            return;
+        }
 
-    EXPECT_GT(ashmem_get_size_region(fd), (name == "/dev/ashmem") ? -1 : 0) << failedPrefix << name;
+        reportName(name);
+
+        EXPECT_GT(ashmem_get_size_region(fd), (name == "/dev/ashmem") ? -1 : 0)
+            << failedPrefix << name;
+    }
 }
 
-void recurseAshmem(std::unordered_set<std::string>& checked, const std::string& directory) {
+void recurseAshmem(std::unordered_set<std::string>& checked, const std::string& directory,
+                   bool direct) {
     std::unique_ptr<DIR, decltype(&closedir)> d(opendir(directory.c_str()), closedir);
     if (d.get() == nullptr) {
         return;
@@ -410,16 +483,14 @@ void recurseAshmem(std::unordered_set<std::string>& checked, const std::string& 
         }
         if (dp->d_type == DT_DIR) {
             name += "/";
-            recurseAshmem(checked, name);
+            recurseAshmem(checked, name, direct);
             continue;
         }
-        checkAshmem(checked, name);
+        checkAshmem(checked, name, direct);
     }
 }
 
-}  // namespace
-
-TEST(AshmemTest, scan_valid) {
+void attackAshmem(bool direct) {
     static constexpr char procdir[] = "/proc/";
     std::unique_ptr<DIR, decltype(&closedir)> d(opendir(procdir), closedir);
 
@@ -465,14 +536,25 @@ TEST(AshmemTest, scan_valid) {
                     name = std::string(buf, ret);
                 }
 
-                checkAshmem(checked, name);
+                checkAshmem(checked, name, direct);
             }
         }
         d.reset(nullptr);
     }
 
     // Let's abuse the device directory too
-    recurseAshmem(checked, "/dev/");
+    recurseAshmem(checked, "/dev/", direct);
     clearName();
     std::cerr << infoPrefix << checked.size() << " files checked\n";
+}
+
+}  // namespace
+
+TEST(AshmemTest, scan_valid) {
+    attackAshmem(false);
+}
+
+TEST(AshmemTest, scan_direct) {
+    // b/72021458 indicates some older kernels could panic
+    attackAshmem(true);
 }
