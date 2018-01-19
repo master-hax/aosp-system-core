@@ -50,6 +50,7 @@ libbacktrace_sources = [
     "BacktracePtrace.cpp",
     "thread_utils.c",
     "ThreadEntry.cpp",
+    "UnwindDexFile.cpp",
     "UnwindStack.cpp",
     "UnwindStackMap.cpp",
 ]
@@ -100,7 +101,13 @@ cc_library {
             static_libs: ["libasync_safe"],
         },
     },
-    whole_static_libs: ["libdemangle"],
+    whole_static_libs: ["libdemangle", "libdexfile", "libz"],
+
+    include_dirs: [
+        "art/runtime",
+    ],
+
+    header_libs: [ "jni_headers", ],
 }
 
 cc_library_shared {
