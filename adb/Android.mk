@@ -350,31 +350,31 @@ endif
 
 LOCAL_MODULE := adbd
 
-LOCAL_FORCE_STATIC_EXECUTABLE := true
-
 LOCAL_SANITIZE := $(adb_target_sanitize)
 LOCAL_STRIP_MODULE := keep_symbols
+
 LOCAL_STATIC_LIBRARIES := \
     libadbd \
-    libasyncio \
     libavb_user \
-    libbase \
-    libqemu_pipe \
     libbootloader_message \
     libfs_mgr \
+    libqemu_pipe \
+    libselinux \
     libfec \
     libfec_rs \
-    libselinux \
+    libsquashfs_utils \
+
+LOCAL_SHARED_LIBRARIES := \
+    libasyncio \
+    libbase \
     liblog \
     libext4_utils \
-    libsquashfs_utils \
     libcutils \
     libbase \
     libcrypto_utils \
     libcrypto \
     libminijail \
     libmdnssd \
-    libdebuggerd_handler \
 
 include $(BUILD_EXECUTABLE)
 
