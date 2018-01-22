@@ -149,7 +149,15 @@ static void trace_handler(siginfo_t* info, ucontext_t* ucontext) {
 
   if (info->si_value.sival_int == ~0) {
     // Asked to dump by the original signal recipient.
-    debuggerd_fallback_trace(trace_output_fd, ucontext);
+    static pthread_mutex_t trace_fallback_mutex = PTHREAD_MUTEX_INITIALIZER;
+    int ret_t = pthread_mutex_trylock(&trace_fallback_mutex);
+    if (ret_t == 0) {
+      debuggerd_fallback_trace(trace_output_fd, ucontext);
+      pthread_mutex_unlock(&trace_fallback_mutex);
+    } else {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc", "lock trace_fallback_mutex failed: %s",
+                            strerror(ret_t));
+    }
 
     int tmp = trace_output_fd.load();
     trace_output_fd.store(-1);
