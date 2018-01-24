@@ -24,6 +24,7 @@
 #include <Xz.h>
 #include <XzCrc64.h>
 
+#include <unwindstack/DwarfError.h>
 #include <unwindstack/DwarfSection.h>
 #include <unwindstack/ElfInterface.h>
 #include <unwindstack/Log.h>
@@ -126,20 +127,24 @@ void ElfInterface::InitHeadersWithTemplate() {
   if (eh_frame_hdr_offset_ != 0) {
     eh_frame_.reset(new DwarfEhFrameWithHdr<AddressType>(memory_));
     if (!eh_frame_->Init(eh_frame_hdr_offset_, eh_frame_hdr_size_)) {
-      // Even if the eh_frame_offset_ is non-zero, do not bother
-      // trying to read that since something has gone wrong.
       eh_frame_.reset(nullptr);
-      eh_frame_hdr_offset_ = 0;
-      eh_frame_hdr_size_ = static_cast<uint64_t>(-1);
     }
-  } else if (eh_frame_offset_ != 0) {
-    // If there is a eh_frame section without a eh_frame_hdr section.
+  }
+
+  if (eh_frame_.get() == nullptr && eh_frame_offset_ != 0) {
+    // If there is a eh_frame section without a eh_frame_hdr section,
+    // or using the frame hdr is failed to init.
     eh_frame_.reset(new DwarfEhFrame<AddressType>(memory_));
     if (!eh_frame_->Init(eh_frame_offset_, eh_frame_size_)) {
       eh_frame_.reset(nullptr);
-      eh_frame_offset_ = 0;
-      eh_frame_size_ = static_cast<uint64_t>(-1);
     }
+  }
+
+  if (eh_frame_.get() == nullptr) {
+    eh_frame_hdr_offset_ = 0;
+    eh_frame_hdr_size_ = static_cast<uint64_t>(-1);
+    eh_frame_offset_ = 0;
+    eh_frame_size_ = static_cast<uint64_t>(-1);
   }
 
   if (debug_frame_offset_ != 0) {
@@ -430,21 +435,28 @@ bool ElfInterface::GetGlobalVariableWithTemplate(const std::string& name, uint64
 
 bool ElfInterface::Step(uint64_t pc, uint64_t load_bias, Regs* regs, Memory* process_memory,
                         bool* finished) {
+  last_error_.code = ERROR_NONE;
+  last_error_.address = 0;
+
   // Adjust the load bias to get the real relative pc.
   if (pc < load_bias) {
+    last_error_.code = ERROR_BAD_UNWIND_INFO;
     return false;
   }
   uint64_t adjusted_pc = pc - load_bias;
 
-  // Try the eh_frame first.
-  DwarfSection* eh_frame = eh_frame_.get();
-  if (eh_frame != nullptr && eh_frame->Step(adjusted_pc, regs, process_memory, finished)) {
-    return true;
+  // Try the debug_frame first since it contains the most specific unwind
+  // information.
+  DwarfSection* debug_frame = debug_frame_.get();
+  if (debug_frame != nullptr) {
+    if (debug_frame->Step(adjusted_pc, regs, process_memory, finished)) {
+      return true;
+    }
   }
 
-  // Try the debug_frame next.
-  DwarfSection* debug_frame = debug_frame_.get();
-  if (debug_frame != nullptr && debug_frame->Step(adjusted_pc, regs, process_memory, finished)) {
+  // Try the eh_frame next.
+  DwarfSection* eh_frame = eh_frame_.get();
+  if (eh_frame != nullptr && eh_frame->Step(adjusted_pc, regs, process_memory, finished)) {
     return true;
   }
 
@@ -452,6 +464,45 @@ bool ElfInterface::Step(uint64_t pc, uint64_t load_bias, Regs* regs, Memory* pro
   if (gnu_debugdata_interface_ != nullptr &&
       gnu_debugdata_interface_->Step(pc, 0, regs, process_memory, finished)) {
     return true;
+  }
+
+  // Set the error code based on the first error encountered.
+  DwarfSection* section = nullptr;
+  if (debug_frame_ != nullptr) {
+    section = debug_frame_.get();
+  } else if (eh_frame_ != nullptr) {
+    section = eh_frame_.get();
+  } else if (gnu_debugdata_interface_ != nullptr) {
+    last_error_ = gnu_debugdata_interface_->last_error();
+    return false;
+  } else {
+    return false;
+  }
+
+  // Convert the DWARF ERROR to an external error.
+  DwarfErrorCode code = section->LastErrorCode();
+  switch (code) {
+    case DWARF_ERROR_NONE:
+      last_error_.code = ERROR_NONE;
+      break;
+
+    case DWARF_ERROR_MEMORY_INVALID:
+      last_error_.code = ERROR_MEMORY_INVALID;
+      last_error_.address = section->LastErrorAddress();
+      break;
+
+    case DWARF_ERROR_ILLEGAL_VALUE:
+    case DWARF_ERROR_ILLEGAL_STATE:
+    case DWARF_ERROR_STACK_INDEX_NOT_VALID:
+    case DWARF_ERROR_TOO_MANY_ITERATIONS:
+    case DWARF_ERROR_CFA_NOT_DEFINED:
+      last_error_.code = ERROR_BAD_UNWIND_INFO;
+      break;
+
+    case DWARF_ERROR_NOT_IMPLEMENTED:
+    case DWARF_ERROR_UNSUPPORTED_VERSION:
+      last_error_.code = ERROR_UNSUPPORTED;
+      break;
   }
   return false;
 }
