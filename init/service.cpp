@@ -692,6 +692,7 @@ const Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
                         {1,     1,    &Service::ParseMemcgLimitInBytes}},
         {"namespace",   {1,     2,    &Service::ParseNamespace}},
         {"rlimit",      {3,     3,    &Service::ParseProcessRlimit}},
+        {"setrlimit",   {3,     3,    &Service::ParseProcessRlimit}},
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
         {"shutdown",    {1,     1,    &Service::ParseShutdown}},
