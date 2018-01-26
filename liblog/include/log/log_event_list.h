@@ -23,6 +23,9 @@
 #if (defined(__cplusplus) && defined(_USING_LIBCXX))
 extern "C++" {
 #include <string>
+
+#include <utils/String16.h>
+#include <utils/String8.h>
 }
 #endif
 
@@ -210,6 +213,25 @@ class android_log_event_list {
   }
 #endif
 
+#if defined(ANDROID_STRING8_H)
+  android_log_event_list& operator<<(const android::String8& value) {
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
+    if (retval < 0) ret = retval;
+    return *this;
+  }
+#endif
+
+#if defined(ANDROID_STRING16_H)
+  android_log_event_list& operator<<(const android::String16& v) {
+    android::String8 value(v);
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
+    if (retval < 0) ret = retval;
+    return *this;
+  }
+#endif
+
   android_log_event_list& operator<<(float value) {
     int retval = android_log_write_float32(ctx, value);
     if (retval < 0) ret = retval;
@@ -273,6 +295,40 @@ class android_log_event_list {
   bool Append(const std::string& value) {
     int retval =
         android_log_write_string8_len(ctx, value.data(), value.length());
+    if (retval < 0) ret = retval;
+    return ret;
+  }
+#endif
+
+#if defined(ANDROID_STRING8_H)
+  bool AppendString(const android::String8& value) {
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
+    if (retval < 0) ret = retval;
+    return ret;
+  }
+
+  bool Append(const android::String8& value) {
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
+    if (retval < 0) ret = retval;
+    return ret;
+  }
+#endif
+
+#if defined(ANDROID_STRING16_H)
+  bool AppendString(const android::String16& v) {
+    android::String8 value(v);
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
+    if (retval < 0) ret = retval;
+    return ret;
+  }
+
+  bool Append(const android::String16& v) {
+    android::String8 value(v);
+    int retval =
+        android_log_write_string8_len(ctx, value.c_str(), value.length());
     if (retval < 0) ret = retval;
     return ret;
   }
