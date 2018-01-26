@@ -31,7 +31,74 @@
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Unwinder.h>
 
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+#include <unwindstack/DexFiles.h>
+#endif
+
 namespace unwindstack {
+
+// Inject extra 'virtual' frame that represents the dex pc data.
+// The dex pc is a magic register defined in the Mterp interpreter,
+// and thus it will be restored/observed in the frame after it.
+// Adding the dex frame first here will create something like:
+//   #7 pc 0015fa20 core.vdex   java.util.Arrays.binarySearch+8
+//   #8 pc 006b1ba1 libartd.so  ExecuteMterpImpl+14625
+//   #9 pc 0039a1ef libartd.so  art::interpreter::Execute+719
+void Unwinder::FillInDexFrame() {
+  size_t frame_num = frames_.size();
+  frames_.resize(frame_num + 1);
+  FrameData* frame = &frames_.at(frame_num);
+
+  uint64_t dex_pc = regs_->dex_pc();
+  frame->pc = dex_pc;
+  frame->sp = regs_->sp();
+
+  auto it = maps_->begin();
+  uint64_t rel_dex_pc;
+  MapInfo* info;
+  for (; it != maps_->end(); ++it) {
+    auto entry = *it;
+    if (dex_pc >= entry->start && dex_pc < entry->end) {
+      info = entry;
+      rel_dex_pc = dex_pc - entry->start;
+      frame->map_start = entry->start;
+      frame->map_end = entry->end;
+      frame->map_offset = entry->offset;
+      frame->map_load_bias = entry->load_bias;
+      frame->map_flags = entry->flags;
+      frame->map_name = entry->name;
+      frame->rel_pc = rel_dex_pc;
+      break;
+    }
+  }
+
+  if (it == maps_->end() || ++it == maps_->end()) {
+    return;
+  }
+
+  auto entry = *it;
+  unwindstack::Elf* elf = entry->GetElf(process_memory_, true);
+  if (!elf->valid()) {
+    return;
+  }
+
+  // Adjust the relative dex by the offset.
+  rel_dex_pc += entry->elf_offset;
+
+  uint64_t dex_offset;
+  if (!elf->GetFunctionName(rel_dex_pc, &frame->function_name, &dex_offset)) {
+    return;
+  }
+  frame->function_offset = dex_offset;
+  if (frame->function_name != "$dexfile") {
+    return;
+  }
+
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+  dex_files_->GetMethodInformation(dex_pc - dex_offset, dex_offset, info, &frame->function_name,
+                                   &frame->function_offset);
+#endif
+}
 
 void Unwinder::FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc, uint64_t func_pc) {
   size_t frame_num = frames_.size();
@@ -40,7 +107,6 @@ void Unwinder::FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc
   frame->num = frame_num;
   frame->sp = regs_->sp();
   frame->rel_pc = adjusted_rel_pc;
-  frame->dex_pc = regs_->dex_pc();
 
   if (map_info == nullptr) {
     frame->pc = regs_->pc();
@@ -78,6 +144,8 @@ static bool ShouldStop(const std::vector<std::string>* map_suffixes_to_ignore,
 void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
                       const std::vector<std::string>* map_suffixes_to_ignore) {
   frames_.clear();
+  last_error_.code = ERROR_NONE;
+  last_error_.address = 0;
 
   bool return_address_attempt = false;
   bool adjust_pc = false;
@@ -95,6 +163,7 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
       rel_pc = regs_->pc();
       adjusted_rel_pc = rel_pc;
       adjusted_pc = rel_pc;
+      last_error_.code = ERROR_INVALID_MAP;
     } else {
       if (ShouldStop(map_suffixes_to_ignore, map_info->name)) {
         break;
@@ -125,6 +194,11 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
     if (map_info == nullptr || initial_map_names_to_skip == nullptr ||
         std::find(initial_map_names_to_skip->begin(), initial_map_names_to_skip->end(),
                   basename(map_info->name.c_str())) == initial_map_names_to_skip->end()) {
+      if (regs_->dex_pc() != 0) {
+        // Add a frame to represent the dex file.
+        FillInDexFrame();
+      }
+
       FillInFrame(map_info, elf, adjusted_rel_pc, adjusted_pc);
 
       // Once a frame is added, stop skipping frames.
@@ -155,6 +229,7 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
           bool finished;
           stepped = elf->Step(rel_pc, adjusted_pc, map_info->elf_offset, regs_,
                               process_memory_.get(), &finished);
+          elf->GetLastError(&last_error_);
           if (stepped && finished) {
             break;
           }
@@ -180,10 +255,14 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
       }
     } else {
       return_address_attempt = false;
+      if (max_frames_ == frames_.size()) {
+        last_error_.code = ERROR_MAX_FRAMES_EXCEEDED;
+      }
     }
 
     // If the pc and sp didn't change, then consider everything stopped.
     if (cur_pc == regs_->pc() && cur_sp == regs_->sp()) {
+      last_error_.code = ERROR_REPEATED_FRAME;
       break;
     }
   }
@@ -231,5 +310,12 @@ void Unwinder::SetJitDebug(JitDebug* jit_debug, ArchEnum arch) {
   jit_debug->SetArch(arch);
   jit_debug_ = jit_debug;
 }
+
+#if !defined(NO_LIBDEXFILE_SUPPORT)
+void Unwinder::SetDexFiles(DexFiles* dex_files, ArchEnum arch) {
+  dex_files->SetArch(arch);
+  dex_files_ = dex_files;
+}
+#endif
 
 }  // namespace unwindstack

@@ -60,6 +60,10 @@ enum BacktraceUnwindErrorCode : uint32_t {
   BACKTRACE_UNWIND_ERROR_FIND_PROC_INFO_FAILED,
   // Failed to execute dwarf instructions in debug sections.
   BACKTRACE_UNWIND_ERROR_EXECUTE_DWARF_INSTRUCTION_FAILED,
+  // Unwind information is incorrect.
+  BACKTRACE_UNWIND_ERROR_UNWIND_INFO,
+  // Unwind information stopped due to sp/pc repeating.
+  BACKTRACE_UNWIND_ERROR_REPEATED_FRAME,
 };
 
 struct BacktraceUnwindError {
@@ -81,20 +85,11 @@ struct backtrace_frame_data_t {
   uint64_t rel_pc;        // The relative pc.
   uint64_t sp;            // The top of the stack.
   size_t stack_size;      // The size of the stack, zero indicate an unknown stack size.
-  uint64_t dex_pc;        // If non-zero, the Dex PC for the ART interpreter.
   backtrace_map_t map;    // The map associated with the given pc.
   std::string func_name;  // The function name associated with this pc, NULL if not found.
   uint64_t func_offset;  // pc relative to the start of the function, only valid if func_name is not
                          // NULL.
 };
-
-#if defined(__APPLE__)
-struct __darwin_ucontext;
-typedef __darwin_ucontext ucontext_t;
-#else
-struct ucontext;
-typedef ucontext ucontext_t;
-#endif
 
 struct backtrace_stackinfo_t {
   uint64_t start;
@@ -107,7 +102,16 @@ class Regs;
 }
 
 class Backtrace {
-public:
+ public:
+  enum ArchEnum : uint8_t {
+    ARCH_ARM,
+    ARCH_ARM64,
+    ARCH_X86,
+    ARCH_X86_64,
+  };
+
+  static void SetGlobalElfCache(bool enable);
+
   // Create the correct Backtrace object based on what is to be unwound.
   // If pid < 0 or equals the current pid, then the Backtrace object
   // corresponds to the current process.
@@ -121,6 +125,16 @@ public:
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
 
   // Create an offline Backtrace object that can be used to do an unwind without a process
+  // that is still running. By default, information is only cached in the map
+  // file. If the calling code creates the map, data can be cached between
+  // unwinds. If not, all cached data will be destroyed when the Backtrace
+  // object is destroyed.
+  static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid,
+                                  const std::vector<backtrace_map_t>& maps,
+                                  const backtrace_stackinfo_t& stack);
+  static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map);
+
+  // Create an offline Backtrace object that can be used to do an unwind without a process
   // that is still running. If cache_file is set to true, then elf information will be cached
   // for this call. The cached information survives until the calling process ends. This means
   // that subsequent calls to create offline Backtrace objects will continue to use the same
@@ -131,11 +145,11 @@ public:
   virtual ~Backtrace();
 
   // Get the current stack trace and store in the backtrace_ structure.
-  virtual bool Unwind(size_t num_ignore_frames, ucontext_t* context = NULL) = 0;
+  virtual bool Unwind(size_t num_ignore_frames, void* context = NULL) = 0;
 
   static bool Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
                      std::vector<backtrace_frame_data_t>* frames, size_t num_ignore_frames,
-                     std::vector<std::string>* skip_names);
+                     std::vector<std::string>* skip_names, BacktraceUnwindError* error = nullptr);
 
   // Get the function name and offset into the function given the pc.
   // If the string is empty, then no valid function name was found,
@@ -185,7 +199,7 @@ public:
 
   std::string GetErrorString(BacktraceUnwindError error);
 
-protected:
+ protected:
   Backtrace(pid_t pid, pid_t tid, BacktraceMap* map);
 
   // The name returned is not demangled, GetFunctionName() takes care of

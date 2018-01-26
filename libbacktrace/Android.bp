@@ -92,13 +92,26 @@ cc_library {
                 "liblog",
                 "libunwind",
                 "libunwindstack",
+                "libdexfile",
             ],
 
             static_libs: ["libcutils"],
+
+            // libdexfile will eventually properly export headers, for now
+            // include these directly.
+            include_dirs: [
+                "art/runtime",
+            ],
+
+            header_libs: [ "jni_headers", ],
         },
         android: {
             static_libs: ["libasync_safe"],
         },
+        vendor: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: ["libdexfile"],
+        }
     },
     whole_static_libs: ["libdemangle"],
 }
@@ -113,39 +126,8 @@ cc_library_shared {
     cflags: ["-O0"],
     srcs: ["backtrace_testlib.cpp"],
 
-    target: {
-        linux: {
-            shared_libs: [
-                "libunwind",
-                "libunwindstack",
-            ],
-        },
-    }
-}
-
-//-------------------------------------------------------------------------
-// The libbacktrace_offline static library.
-//-------------------------------------------------------------------------
-cc_library_static {
-    name: "libbacktrace_offline",
-    defaults: ["libbacktrace_common"],
-    host_supported: true,
-    srcs: ["BacktraceOffline.cpp"],
-
-    cflags: [
-        "-D__STDC_CONSTANT_MACROS",
-        "-D__STDC_LIMIT_MACROS",
-        "-D__STDC_FORMAT_MACROS",
-    ],
-
-    header_libs: ["llvm-headers"],
-
-    // Use shared libraries so their headers get included during build.
-    shared_libs = [
-        "libbase",
-        "libunwind",
-        "libunwindstack",
-        "libziparchive",
+    shared_libs: [
+      "libunwindstack",
     ],
 }
 
@@ -172,30 +154,14 @@ cc_test {
     shared_libs: [
         "libbacktrace_test",
         "libbacktrace",
+        "libdexfile",
         "libbase",
         "libcutils",
         "liblog",
-        "libunwind",
         "libunwindstack",
     ],
 
     group_static_libs: true,
-
-    // Statically link LLVMlibraries to remove dependency on llvm shared library.
-    static_libs = [
-        "libbacktrace_offline",
-        "libLLVMObject",
-        "libLLVMBitReader",
-        "libLLVMMC",
-        "libLLVMMCParser",
-        "libLLVMCore",
-        "libLLVMSupport",
-
-        "libziparchive",
-        "libz",
-    ],
-
-    header_libs: ["llvm-headers"],
 
     target: {
         android: {
@@ -205,12 +171,15 @@ cc_test {
             ],
         },
         linux_glibc: {
-            host_ldlibs: [
-                "-lncurses",
-            ],
             static_libs: ["libutils"],
         },
     },
+
+    // libdexfile will eventually properly export headers, for now
+    // include these directly.
+    include_dirs: [
+        "art/runtime",
+    ],
 
     data: [
         "testdata/arm/*",

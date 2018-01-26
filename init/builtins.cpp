@@ -514,8 +514,9 @@ static Result<Success> queue_fs_event(int code) {
         property_set("ro.crypto.state", "encrypted");
         property_set("ro.crypto.type", "file");
 
-        // defaultcrypto detects file/block encryption. init flow is same for each.
-        ActionManager::GetInstance().QueueEventTrigger("defaultcrypto");
+        // Although encrypted, vold has already set the device up, so we do not need to
+        // do anything different from the nonencrypted case.
+        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return Success();
     } else if (code == FS_MGR_MNTALL_DEV_NEEDS_METADATA_ENCRYPTION) {
         if (e4crypt_install_keyring()) {
@@ -523,8 +524,9 @@ static Result<Success> queue_fs_event(int code) {
         }
         property_set("ro.crypto.type", "file");
 
-        // encrypt detects file/block encryption. init flow is same for each.
-        ActionManager::GetInstance().QueueEventTrigger("encrypt");
+        // Although encrypted, vold has already set the device up, so we do not need to
+        // do anything different from the nonencrypted case.
+        ActionManager::GetInstance().QueueEventTrigger("nonencrypted");
         return Success();
     } else if (code > 0) {
         Error() << "fs_mgr_mount_all() returned unexpected error " << code;
@@ -1039,9 +1041,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"restorecon_recursive",    {1,     kMax, {true,   do_restorecon_recursive}}},
         {"rm",                      {1,     1,    {true,   do_rm}}},
         {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
-        //  TODO: setprop should be run in the subcontext, but property service needs to be split
-        //        out from init before that is possible.
-        {"setprop",                 {2,     2,    {false,  do_setprop}}},
+        {"setprop",                 {2,     2,    {true,   do_setprop}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
         {"start",                   {1,     1,    {false,  do_start}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},
