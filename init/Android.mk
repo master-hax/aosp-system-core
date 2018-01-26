@@ -41,6 +41,9 @@ init_cflags += \
 
 include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
+
+LOCAL_LDFLAGS := -Wl,@bionic/libc/wrap_functions.rsp
+
 LOCAL_SRC_FILES := main.cpp
 
 LOCAL_MODULE:= init
