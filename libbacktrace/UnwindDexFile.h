@@ -35,7 +35,7 @@ class UnwindDexFile {
   UnwindDexFile() = default;
   virtual ~UnwindDexFile() = default;
 
-  void GetMethodInformation(uint64_t dex_offset, std::string* method_name, uint64_t* method_offset);
+  bool GetMethodInformation(uint64_t dex_offset, std::string* method_name, uint64_t* method_offset);
 
   static UnwindDexFile* Create(uint64_t dex_file_offset_in_memory, unwindstack::Memory* memory,
                                unwindstack::MapInfo* info);

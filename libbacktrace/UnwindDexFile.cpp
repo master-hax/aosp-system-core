@@ -51,10 +51,13 @@ UnwindDexFile* UnwindDexFile::Create(uint64_t dex_file_offset_in_memory,
   return nullptr;
 }
 
-void UnwindDexFile::GetMethodInformation(uint64_t dex_offset, std::string* method_name,
+bool UnwindDexFile::GetMethodInformation(uint64_t dex_offset, std::string* method_name,
                                          uint64_t* method_offset) {
   if (dex_file_ == nullptr) {
-    return;
+    return false;
+  }
+  if (!dex_file_->IsInDataSection(dex_file_->Begin() + dex_offset)) {
+    return false;  // The DEX offset in not within the bytecode range of this dex file.
   }
 
   for (uint32_t i = 0; i < dex_file_->NumClassDefs(); ++i) {
@@ -81,10 +84,11 @@ void UnwindDexFile::GetMethodInformation(uint64_t dex_offset, std::string* metho
       if (offset <= dex_offset && dex_offset < offset + size) {
         *method_name = dex_file_->PrettyMethod(it.GetMemberIndex(), false);
         *method_offset = dex_offset - offset;
-        return;
+        return true;
       }
     }
   }
+  return false;
 }
 
 UnwindDexFileFromFile::~UnwindDexFileFromFile() {
@@ -151,6 +155,15 @@ bool UnwindDexFileFromMemory::Open(uint64_t dex_file_offset_in_memory, unwindsta
   memory_.resize(header.file_size_);
   if (!memory->ReadFully(dex_file_offset_in_memory, memory_.data(), header.file_size_)) {
     return false;
+  }
+  if (art::CompactDexFile::IsMagicValid(header.magic_) &&
+      header.data_off_ + header.data_size_ > header.file_size_) {
+    memory_.resize(header.file_size_ + header.data_size_);
+    if (!memory->ReadFully(dex_file_offset_in_memory + header.data_off_,
+                           memory_.data() + header.file_size_, header.data_size_)) {
+      return false;
+    }
+    reinterpret_cast<art::DexFile::Header*>(memory_.data())->data_off_ = header.file_size_;
   }
 
   art::DexFileLoader loader;
