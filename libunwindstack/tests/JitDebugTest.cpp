@@ -62,6 +62,7 @@ class JitDebugTest : public ::testing::Test {
     ElfInterfaceFake* interface = new ElfInterfaceFake(elf_memories_.back());
     elf->FakeSetInterface(interface);
     interface->FakeSetGlobalVariable("__jit_debug_descriptor", 0x800);
+    interface->FakeSetGlobalVariable("__art_debug_dexfiles", 0xD00);
     map_info->elf.reset(elf);
 
     map_info = maps_->Get(5);
@@ -72,6 +73,7 @@ class JitDebugTest : public ::testing::Test {
     interface = new ElfInterfaceFake(elf_memories_.back());
     elf->FakeSetInterface(interface);
     interface->FakeSetGlobalVariable("__jit_debug_descriptor", 0x800);
+    interface->FakeSetGlobalVariable("__art_debug_dexfiles", 0xD00);
     map_info->elf.reset(elf);
 
     map_info = maps_->Get(6);
@@ -82,6 +84,7 @@ class JitDebugTest : public ::testing::Test {
     interface = new ElfInterfaceFake(elf_memories_.back());
     elf->FakeSetInterface(interface);
     interface->FakeSetGlobalVariable("__jit_debug_descriptor", 0x800);
+    interface->FakeSetGlobalVariable("__art_debug_dexfiles", 0xD00);
     map_info->elf.reset(elf);
   }
 
@@ -168,6 +171,8 @@ class JitDebugTest : public ::testing::Test {
                        uint64_t elf_size);
   void WriteEntry64(uint64_t addr, uint64_t prev, uint64_t next, uint64_t elf_addr,
                     uint64_t elf_size);
+  void WriteDexEntry32(uint64_t addr, uint32_t prev, uint32_t next, uint32_t dex);
+  void WriteDexEntry64(uint64_t addr, uint64_t prev, uint64_t next, uint64_t dex);
 
   std::shared_ptr<Memory> process_memory_;
   MemoryFake* memory_;
@@ -239,6 +244,26 @@ void JitDebugTest::WriteEntry64(uint64_t addr, uint64_t prev, uint64_t next, uin
   memory_->SetData64(addr + 16, elf_addr);
   //   uint64_t symfile_size
   memory_->SetData64(addr + 24, elf_size);
+}
+
+void JitDebugTest::WriteDexEntry32(uint64_t addr, uint32_t prev, uint32_t next, uint32_t dex) {
+  // Format of the 32 bit DEXFileEntry32 structure:
+  //   uint32_t next
+  memory_->SetData32(addr, next);
+  //   uint32_t prev
+  memory_->SetData32(addr + 4, prev);
+  //   uint32_t dex
+  memory_->SetData32(addr + 8, dex);
+}
+
+void JitDebugTest::WriteDexEntry64(uint64_t addr, uint64_t prev, uint64_t next, uint64_t dex) {
+  // Format of the 64 bit DEXFileEntry64 structure:
+  //   uint64_t next
+  memory_->SetData64(addr, next);
+  //   uint64_t prev
+  memory_->SetData64(addr + 8, prev);
+  //   uint64_t dex
+  memory_->SetData64(addr + 16, dex);
 }
 
 TEST_F(JitDebugTest, get_elf_invalid) {
@@ -323,6 +348,59 @@ TEST_F(JitDebugTest, get_multiple_jit_debug_descriptors_valid) {
 
   ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x1500) == nullptr);
   ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x2000) != nullptr);
+}
+
+TEST_F(JitDebugTest, get_no_dexfile_entries_32) {
+  CreateElf<Elf32_Ehdr, Elf32_Shdr>(0x4000, ELFCLASS32, EM_ARM, 0x1500, 0x200);
+
+  memory_->SetData32(0xfd00, 0);  // Head pointer of the linked-list.
+
+  auto dexfiles = jit_debug_->GetDexFiles(maps_.get());
+
+  ASSERT_EQ(dexfiles.size(), 0u);
+}
+
+TEST_F(JitDebugTest, get_single_dexfile_entry_32) {
+  CreateElf<Elf32_Ehdr, Elf32_Shdr>(0x4000, ELFCLASS32, EM_ARM, 0x1500, 0x200);
+
+  memory_->SetData32(0xfd00, 0xfe00);  // Head pointer of the linked-list.
+  WriteDexEntry32(0xfe00, 0, 0, 0x200000);
+
+  auto dexfiles = jit_debug_->GetDexFiles(maps_.get());
+
+  ASSERT_EQ(dexfiles.size(), 1u);
+  ASSERT_EQ(dexfiles.count(0x200000), 1u);
+}
+
+TEST_F(JitDebugTest, get_multiple_dexfile_entries_32) {
+  CreateElf<Elf32_Ehdr, Elf32_Shdr>(0x4000, ELFCLASS32, EM_ARM, 0x1500, 0x200);
+  CreateElf<Elf32_Ehdr, Elf32_Shdr>(0x5000, ELFCLASS32, EM_ARM, 0x2000, 0x300);
+
+  memory_->SetData32(0xfd00, 0xfe00);  // Head pointer of the linked-list.
+  WriteDexEntry32(0xfe00, 0, 0xff00, 0x200000);  // 1st entry.
+  WriteDexEntry32(0xff00, 0xfe00, 0, 0x210000);  // 2nd entry.
+
+  auto dexfiles = jit_debug_->GetDexFiles(maps_.get());
+
+  ASSERT_EQ(dexfiles.size(), 2u);
+  ASSERT_EQ(dexfiles.count(0x200000), 1u);
+  ASSERT_EQ(dexfiles.count(0x210000), 1u);
+}
+
+TEST_F(JitDebugTest, get_multiple_dexfile_entries_64) {
+  CreateElf<Elf64_Ehdr, Elf64_Shdr>(0x4000, ELFCLASS64, EM_AARCH64, 0x1500, 0x200);
+  CreateElf<Elf64_Ehdr, Elf64_Shdr>(0x5000, ELFCLASS64, EM_AARCH64, 0x2000, 0x300);
+  jit_debug_->SetArch(ARCH_ARM64);
+
+  memory_->SetData64(0xfd00, 0xfe00);  // Head pointer of the linked-list.
+  WriteDexEntry64(0xfe00, 0, 0xff00, 0x200000);  // 1st entry.
+  WriteDexEntry64(0xff00, 0xfe00, 0, 0x210000);  // 2nd entry.
+
+  auto dexfiles = jit_debug_->GetDexFiles(maps_.get());
+
+  ASSERT_EQ(dexfiles.size(), 2u);
+  ASSERT_EQ(dexfiles.count(0x200000), 1u);
+  ASSERT_EQ(dexfiles.count(0x210000), 1u);
 }
 
 TEST_F(JitDebugTest, get_elf_x86) {

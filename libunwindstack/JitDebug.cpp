@@ -30,6 +30,18 @@
 
 namespace unwindstack {
 
+struct DEXFileEntry32 {
+  uint32_t next;
+  uint32_t prev;
+  uint32_t dex_file;
+};
+
+struct DEXFileEntry64 {
+  uint64_t next;
+  uint64_t prev;
+  uint64_t dex_file;
+};
+
 struct JITCodeEntry32Pack {
   uint32_t next;
   uint32_t prev;
@@ -78,6 +90,34 @@ JitDebug::~JitDebug() {
   for (auto* elf : elf_list_) {
     delete elf;
   }
+}
+
+// Reads DEX file from DEXFileEntry** and moves to the next entry in the linked list.
+bool JitDebug::ReadDexFileEntry32(uint64_t* entry_ptr_ptr, uint64_t* dex_file) {
+  uint32_t entry_ptr;
+  if (memory_->Read32(*entry_ptr_ptr, &entry_ptr)) {
+    DEXFileEntry32 entry;
+    if (entry_ptr != 0 && memory_->ReadFully(entry_ptr, &entry, sizeof(entry))) {
+      *dex_file = entry.dex_file;
+      *entry_ptr_ptr = entry_ptr;
+      return true;
+    }
+  }
+  return false;
+}
+
+// Reads DEX file from DEXFileEntry** and moves to the next entry in the linked list.
+bool JitDebug::ReadDexFileEntry64(uint64_t* entry_ptr_ptr, uint64_t* dex_file) {
+  uint64_t entry_ptr;
+  if (memory_->Read64(*entry_ptr_ptr, &entry_ptr)) {
+    DEXFileEntry64 entry;
+    if (entry_ptr != 0 && memory_->ReadFully(entry_ptr, &entry, sizeof(entry))) {
+      *dex_file = entry.dex_file;
+      *entry_ptr_ptr = entry_ptr;
+      return true;
+    }
+  }
+  return false;
 }
 
 uint64_t JitDebug::ReadDescriptor32(uint64_t addr) {
@@ -144,12 +184,14 @@ uint64_t JitDebug::ReadEntry64(uint64_t* start, uint64_t* size) {
 void JitDebug::SetArch(ArchEnum arch) {
   switch (arch) {
     case ARCH_X86:
+      read_dex_file_entry = &JitDebug::ReadDexFileEntry32;
       read_descriptor_func_ = &JitDebug::ReadDescriptor32;
       read_entry_func_ = &JitDebug::ReadEntry32Pack;
       break;
 
     case ARCH_ARM:
     case ARCH_MIPS:
+      read_dex_file_entry = &JitDebug::ReadDexFileEntry32;
       read_descriptor_func_ = &JitDebug::ReadDescriptor32;
       read_entry_func_ = &JitDebug::ReadEntry32Pad;
       break;
@@ -157,6 +199,7 @@ void JitDebug::SetArch(ArchEnum arch) {
     case ARCH_ARM64:
     case ARCH_X86_64:
     case ARCH_MIPS64:
+      read_dex_file_entry = &JitDebug::ReadDexFileEntry64;
       read_descriptor_func_ = &JitDebug::ReadDescriptor64;
       read_entry_func_ = &JitDebug::ReadEntry64;
       break;
@@ -172,7 +215,8 @@ void JitDebug::Init(Maps* maps) {
   // Regardless of what happens below, consider the init finished.
   initialized_ = true;
 
-  std::string descriptor_name("__jit_debug_descriptor");
+  std::string jit_debug_name("__jit_debug_descriptor");
+  std::string dex_debug_name("__art_debug_dexfiles");
   for (MapInfo* info : *maps) {
     if (!(info->flags & PROT_EXEC) || !(info->flags & PROT_READ) || info->offset != 0) {
       continue;
@@ -194,15 +238,31 @@ void JitDebug::Init(Maps* maps) {
 
     Elf* elf = info->GetElf(memory_, true);
     uint64_t descriptor_addr;
-    if (elf->GetGlobalVariable(descriptor_name, &descriptor_addr)) {
-      // Search for the first non-zero entry.
-      descriptor_addr += info->start;
-      entry_addr_ = (this->*read_descriptor_func_)(descriptor_addr);
-      if (entry_addr_ != 0) {
-        break;
+    if (elf->GetGlobalVariable(jit_debug_name, &descriptor_addr)) {
+      if (entry_addr_ == 0) {  // Use the first non-zero entry.
+        descriptor_addr += info->start;
+        entry_addr_ = (this->*read_descriptor_func_)(descriptor_addr);
+      }
+    }
+    uint64_t entry_ptr_ptr;
+    if (elf->GetGlobalVariable(dex_debug_name, &entry_ptr_ptr)) {
+      entry_ptr_ptr += info->start;
+      uint64_t dex_addr;
+      while ((this->*read_dex_file_entry)(&entry_ptr_ptr, &dex_addr)) {
+        dex_files_.emplace(dex_addr);
       }
     }
   }
+}
+
+const std::set<uint64_t>& JitDebug::GetDexFiles(Maps* maps) {
+  // Use a single lock, this object should be used so infrequently that
+  // a fine grain lock is unnecessary.
+  std::lock_guard<std::mutex> guard(lock_);
+  if (!initialized_) {
+    Init(maps);
+  }
+  return dex_files_;
 }
 
 Elf* JitDebug::GetElf(Maps* maps, uint64_t pc) {

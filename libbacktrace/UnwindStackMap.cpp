@@ -52,7 +52,7 @@ bool UnwindStackMap::Build() {
   process_memory_ = unwindstack::Memory::CreateProcessMemory(pid_);
 
   // Create a JitDebug object for getting jit unwind information.
-  std::vector<std::string> search_libs_{"libart.so", "libartd.so"};
+  std::vector<std::string> search_libs_{"libart.so", "libartd.so", "libdexfile.so"};
   jit_debug_.reset(new unwindstack::JitDebug(process_memory_, search_libs_));
 
   if (!stack_maps_->Parse()) {

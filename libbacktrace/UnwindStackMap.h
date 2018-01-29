@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <mutex>
+#include <set>
 #include <unordered_map>
 
 #include <backtrace/BacktraceMap.h>
@@ -60,6 +61,7 @@ class UnwindStackMap : public BacktraceMap {
 #ifndef NO_LIBDEXFILE
   std::mutex dex_lock_;
   std::unordered_map<uint64_t, UnwindDexFile*> dex_files_;
+  std::set<uint64_t> dex_file_headers_;
 #endif
 };
 
