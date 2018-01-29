@@ -262,6 +262,9 @@ LOCAL_SRC_FILES := \
     bugreport.cpp \
     client/main.cpp \
     console.cpp \
+    adb_install.cpp \
+    fastdeploy.cpp \
+    fastdeploycallbacks.cpp \
     commandline.cpp \
     file_sync_client.cpp \
     line_printer.cpp \
@@ -297,6 +300,12 @@ LOCAL_STATIC_LIBRARIES := \
     liblog \
     libmdnssd \
     libusb \
+    libandroidfw \
+    libziparchive \
+    libz \
+    libutils \
+    liblog \
+    libcutils \
 
 # Don't use libcutils on Windows.
 LOCAL_STATIC_LIBRARIES_darwin := libcutils
