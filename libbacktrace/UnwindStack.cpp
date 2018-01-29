@@ -31,6 +31,7 @@
 #include <backtrace/Backtrace.h>
 #include <demangle.h>
 #include <unwindstack/Elf.h>
+#include <unwindstack/JitDebug.h>
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
@@ -48,55 +49,32 @@
 
 static void FillInDexFrame(UnwindStackMap* stack_map, uint64_t dex_pc,
                            backtrace_frame_data_t* frame) {
-  // The DEX PC points into the .dex section within an ELF file.
-  // However, this is a BBS section manually mmaped to a .vdex file,
-  // so we need to get the following map to find the ELF data.
   unwindstack::Maps* maps = stack_map->stack_maps();
-  auto it = maps->begin();
-  uint64_t rel_dex_pc;
-  unwindstack::MapInfo* info;
-  for (; it != maps->end(); ++it) {
-    auto entry = *it;
-    if (dex_pc >= entry->start && dex_pc < entry->end) {
-      info = entry;
-      rel_dex_pc = dex_pc - entry->start;
-      frame->map.start = entry->start;
-      frame->map.end = entry->end;
-      frame->map.offset = entry->offset;
-      frame->map.load_bias = entry->load_bias;
-      frame->map.flags = entry->flags;
-      frame->map.name = entry->name;
-      frame->rel_pc = rel_dex_pc;
-      break;
-    }
-  }
-  if (it == maps->end() || ++it == maps->end()) {
-    return;
-  }
-
-  auto entry = *it;
-  auto process_memory = stack_map->process_memory();
-  unwindstack::Elf* elf = entry->GetElf(process_memory, true);
-  if (!elf->valid()) {
-    return;
-  }
-
-  // Adjust the relative dex by the offset.
-  rel_dex_pc += entry->elf_offset;
-
-  uint64_t dex_offset;
-  if (!elf->GetFunctionName(rel_dex_pc, &frame->func_name, &dex_offset)) {
-    return;
-  }
-  frame->func_offset = dex_offset;
-  if (frame->func_name != "$dexfile") {
-    return;
+  unwindstack::MapInfo* info = maps->Find(dex_pc);
+  if (info != nullptr) {
+    frame->map.start = info->start;
+    frame->map.end = info->end;
+    frame->map.offset = info->offset;
+    frame->map.load_bias = info->load_bias;
+    frame->map.flags = info->flags;
+    frame->map.name = info->name;
+    frame->rel_pc = dex_pc - info->start;
   }
 
 #ifndef NO_LIBDEXFILE
-  UnwindDexFile* dex_file = stack_map->GetDexFile(dex_pc - dex_offset, info);
-  if (dex_file != nullptr) {
-    dex_file->GetMethodInformation(dex_offset, &frame->func_name, &frame->func_offset);
+  unwindstack::JitDebug* jit = stack_map->GetJitDebug();
+  if (jit != nullptr) {
+    const std::set<uint64_t>& dex_files = jit->GetDexFiles(maps);
+    auto start = dex_files.lower_bound(info->start);
+    auto end = dex_files.lower_bound(info->end);
+    for (auto it = start; it != end; it++) {
+      UnwindDexFile* dex_file = stack_map->GetDexFile(*it, info);
+      uint64_t dex_offset = dex_pc - *it;
+      if (dex_file != nullptr &&
+          dex_file->GetMethodInformation(dex_offset, &frame->func_name, &frame->func_offset)) {
+        break;
+      }
+    }
   }
 #endif
 }

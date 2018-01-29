@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <mutex>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -38,6 +39,7 @@ class JitDebug {
   JitDebug(std::shared_ptr<Memory>& memory, std::vector<std::string>& search_libs);
   ~JitDebug();
 
+  const std::set<uint64_t>& GetDexFiles(Maps* maps);
   Elf* GetElf(Maps* maps, uint64_t pc);
 
   void SetArch(ArchEnum arch);
@@ -49,12 +51,17 @@ class JitDebug {
   uint64_t entry_addr_ = 0;
   bool initialized_ = false;
   std::vector<Elf*> elf_list_;
+  std::set<uint64_t> dex_files_;
   std::vector<std::string> search_libs_;
 
   std::mutex lock_;
 
   uint64_t (JitDebug::*read_descriptor_func_)(uint64_t) = nullptr;
   uint64_t (JitDebug::*read_entry_func_)(uint64_t*, uint64_t*) = nullptr;
+  bool (JitDebug::*read_dex_file_entry)(uint64_t*, uint64_t*) = nullptr;
+
+  bool ReadDexFileEntry32(uint64_t*, uint64_t*);
+  bool ReadDexFileEntry64(uint64_t*, uint64_t*);
 
   uint64_t ReadDescriptor32(uint64_t);
   uint64_t ReadDescriptor64(uint64_t);
