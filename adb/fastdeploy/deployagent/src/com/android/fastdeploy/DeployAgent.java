@@ -86,6 +86,7 @@ public final class DeployAgent {
                 if (args.length == 3) {
                     applyPatch(packageName, deltaInputStream);
                 } else {
+<<<<<<< HEAD   (970de3 DO NOT MERGE)
                     String oFlag = args[3];
                     if (oFlag.compareTo("-o") != 0) {
                         showUsage(1);
@@ -95,6 +96,18 @@ public final class DeployAgent {
                     OutputStream outputStream = System.out;
                     if (args.length > 4) {
                         outputStream = new FileOutputStream(args[4]);
+=======
+                    String oFlag = args[2];
+
+                    if (oFlag.compareTo("-o") != 0) {
+                        showUsage(1);
+                    }
+
+                    File deviceFile = getFileFromPackageName(packageName);
+                    OutputStream outputStream = System.out;
+                    if (args.length > 4) {
+                        outputStream = new FileOutputStream(args[2]);
+>>>>>>> BRANCH (fee4a3 Added fast deploy tool source)
                     }
                     writePatchToStream(
                         new RandomAccessFile(deviceFile, "r"), deltaInputStream, outputStream);

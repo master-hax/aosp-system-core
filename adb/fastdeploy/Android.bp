@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 
+<<<<<<< HEAD   (970de3 DO NOT MERGE)
 java_library {
     name: "deployagent",
     srcs: ["deployagent/src/**/*.java", "deploylib/src/**/*.java", "proto/**/*.proto"],
@@ -28,6 +29,21 @@ java_binary_host {
     srcs: ["deploypatchgenerator/src/**/*.java", "deploylib/src/**/*.java", "proto/**/*.proto"],
     static_libs: ["apkzlib"],
     manifest: "deploypatchgenerator/manifest.txt",
+=======
+java_binary {
+    name: "deployagent",
+    srcs: ["deployagent/src/**/*.java", "deploylib/src/**/*.java", "proto/**/*.proto"],
+    static_libs: ["apkzlib_zip"],
+    proto: {
+        type: "lite",
+    }
+}
+
+java_binary_host {
+    name: "deploypatchgenerator",
+    srcs: ["deploypatchgenerator/src/**/*.java", "deploylib/src/**/*.java", "proto/**/*.proto"],
+    static_libs: ["apkzlib"],
+>>>>>>> BRANCH (fee4a3 Added fast deploy tool source)
     proto: {
         type: "full",
     }
