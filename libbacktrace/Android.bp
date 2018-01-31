@@ -50,7 +50,6 @@ libbacktrace_sources = [
     "BacktracePtrace.cpp",
     "thread_utils.c",
     "ThreadEntry.cpp",
-    "UnwindDexFile.cpp",
     "UnwindStack.cpp",
     "UnwindStackMap.cpp",
 ]
@@ -110,10 +109,8 @@ cc_library {
             static_libs: ["libasync_safe"],
         },
         vendor: {
-            cflags: ["-DNO_LIBDEXFILE"],
-            exclude_srcs: ["UnwindDexFile.cpp"],
-            exclude_shared_libs: ["libdexfile"],
-        },
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+        }
     },
     whole_static_libs: ["libdemangle"],
 }
@@ -145,8 +142,6 @@ cc_test {
         "backtrace_test.cpp",
         "GetPss.cpp",
         "thread_utils.c",
-
-        "unwind_dex_test.cpp",
     ],
 
     cflags: [

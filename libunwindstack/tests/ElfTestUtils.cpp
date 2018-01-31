@@ -39,7 +39,7 @@ void TestInitEhdr(Ehdr* ehdr, uint32_t elf_class, uint32_t machine_type) {
   memcpy(&ehdr->e_ident[0], ELFMAG, SELFMAG);
   ehdr->e_ident[EI_DATA] = ELFDATA2LSB;
   ehdr->e_ident[EI_VERSION] = EV_CURRENT;
-  ehdr->e_ident[EI_OSABI] = ELFOSABI_SYSV;
+  ehdr->e_ident[EI_OSABI] = ELFOSABI_LINUX;
   ehdr->e_ident[EI_CLASS] = elf_class;
   ehdr->e_type = ET_DYN;
   ehdr->e_machine = machine_type;
