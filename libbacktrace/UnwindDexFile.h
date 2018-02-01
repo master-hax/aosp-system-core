@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _LIBUNWINDSTACK_DEX_FILE_H
-#define _LIBUNWINDSTACK_DEX_FILE_H
+#ifndef _LIBBACKTRACE_UNWIND_DEX_FILE_H
+#define _LIBBACKTRACE_UNWIND_DEX_FILE_H
 
 #include <stdint.h>
 
@@ -26,24 +26,28 @@
 #include <dex/dex_file-inl.h>
 
 namespace unwindstack {
+class Memory;
+struct MapInfo;
+}  // namespace unwindstack
 
-class DexFile {
+class UnwindDexFile {
  public:
-  DexFile() = default;
-  virtual ~DexFile() = default;
+  UnwindDexFile() = default;
+  virtual ~UnwindDexFile() = default;
 
   void GetMethodInformation(uint64_t dex_offset, std::string* method_name, uint64_t* method_offset);
 
-  static DexFile* Create(uint64_t dex_file_offset_in_memory, Memory* memory, MapInfo* info);
+  static UnwindDexFile* Create(uint64_t dex_file_offset_in_memory, unwindstack::Memory* memory,
+                               unwindstack::MapInfo* info);
 
  protected:
   std::unique_ptr<const art::DexFile> dex_file_;
 };
 
-class DexFileFromFile : public DexFile {
+class UnwindDexFileFromFile : public UnwindDexFile {
  public:
-  DexFileFromFile() = default;
-  virtual ~DexFileFromFile();
+  UnwindDexFileFromFile() = default;
+  virtual ~UnwindDexFileFromFile();
 
   bool Open(uint64_t dex_file_offset_in_file, const std::string& name);
 
@@ -52,17 +56,15 @@ class DexFileFromFile : public DexFile {
   size_t size_ = 0;
 };
 
-class DexFileFromMemory : public DexFile {
+class UnwindDexFileFromMemory : public UnwindDexFile {
  public:
-  DexFileFromMemory() = default;
-  virtual ~DexFileFromMemory() = default;
+  UnwindDexFileFromMemory() = default;
+  virtual ~UnwindDexFileFromMemory() = default;
 
-  bool Open(uint64_t dex_file_offset_in_memory, Memory* memory);
+  bool Open(uint64_t dex_file_offset_in_memory, unwindstack::Memory* memory);
 
  private:
   std::vector<uint8_t> memory_;
 };
 
-}  // namespace unwindstack
-
-#endif  // _LIBUNWINDSTACK_DEX_FILE_H
+#endif  // _LIBBACKTRACE_UNWIND_DEX_FILE_H

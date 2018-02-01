@@ -32,7 +32,6 @@
 namespace unwindstack {
 
 // Forward declarations.
-class DexFiles;
 class Elf;
 class JitDebug;
 enum ArchEnum : uint8_t;
@@ -43,6 +42,7 @@ struct FrameData {
   uint64_t rel_pc;
   uint64_t pc;
   uint64_t sp;
+  uint64_t dex_pc;
 
   std::string function_name;
   uint64_t function_offset;
@@ -75,15 +75,10 @@ class Unwinder {
 
   void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
 
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-  void SetDexFiles(DexFiles* dex_files, ArchEnum arch);
-#endif
-
   ErrorCode LastErrorCode() { return last_error_.code; }
   uint64_t LastErrorAddress() { return last_error_.address; }
 
  private:
-  void FillInDexFrame();
   void FillInFrame(MapInfo* map_info, Elf* elf, uint64_t adjusted_rel_pc, uint64_t adjusted_pc);
 
   size_t max_frames_;
@@ -92,9 +87,6 @@ class Unwinder {
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
   JitDebug* jit_debug_ = nullptr;
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-  DexFiles* dex_files_ = nullptr;
-#endif
   ErrorData last_error_;
 };
 
