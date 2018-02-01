@@ -95,7 +95,12 @@ void Unwinder::FillInDexFrame() {
   }
 
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  dex_files_->GetMethodInformation(dex_offset, info, &frame->function_name, &frame->function_offset);
+  if (dex_files_ == nullptr) {
+    return;
+  }
+
+  dex_files_->GetMethodInformation(maps_, info, dex_offset, &frame->function_name,
+                                   &frame->function_offset);
 #endif
 }
 

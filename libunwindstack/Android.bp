@@ -151,6 +151,10 @@ cc_test_library {
     vendor_available: false,
     defaults: ["libunwindstack_flags"],
 
+    shared: {
+        enabled: false,
+    },
+
     srcs: [
         "tests/DexFileTest.cpp",
     ],
