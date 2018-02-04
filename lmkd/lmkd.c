@@ -589,10 +589,10 @@ static struct proc *proc_adj_lru(int oomadj) {
 /* Kill one process specified by procp.  Returns the size of the process killed */
 static int kill_one_process(struct proc* procp, int min_score_adj, bool is_critical) {
     int pid = procp->pid;
-    uid_t uid = procp->uid;
     char *taskname;
     int tasksize;
     int r;
+    int save_errno;
 
     taskname = proc_get_name(pid);
     if (!taskname) {
@@ -606,20 +606,21 @@ static int kill_one_process(struct proc* procp, int min_score_adj, bool is_criti
         return -1;
     }
 
+    r = kill(pid, SIGKILL);
+    save_errno = errno;
     ALOGI(
         "Killing '%s' (%d), uid %d, adj %d\n"
         "   to free %ldkB because system is under %s memory pressure oom_adj %d\n",
-        taskname, pid, uid, procp->oomadj, tasksize * page_k, is_critical ? "critical" : "medium",
-        min_score_adj);
-    r = kill(pid, SIGKILL);
+        taskname, pid, procp->uid, procp->oomadj, tasksize * page_k,
+        is_critical ? "critical" : "medium", min_score_adj);
     pid_remove(pid);
 
     if (r) {
-        ALOGE("kill(%d): errno=%d", procp->pid, errno);
+        ALOGE("kill(%d): errno=%d", pid, save_errno);
         return -1;
-    } else {
-        return tasksize;
     }
+
+    return tasksize;
 }
 
 /*
