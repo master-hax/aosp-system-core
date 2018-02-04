@@ -53,15 +53,16 @@ static int get_dev_sz(char *fs_blkdev, uint64_t *dev_sz)
     return 0;
 }
 
-static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
+static int format_ext4(char *fs_blkdev, char *fs_mnt_point, uint64_t dev_sz, bool crypt_footer)
 {
-    uint64_t dev_sz;
     int rc = 0;
     int status;
 
-    rc = get_dev_sz(fs_blkdev, &dev_sz);
-    if (rc) {
-        return rc;
+    if (!dev_sz) {
+        rc = get_dev_sz(fs_blkdev, &dev_sz);
+        if (rc) {
+            return rc;
+        }
     }
 
     /* Format the partition using the calculated length */
@@ -143,7 +144,7 @@ int fs_mgr_do_format(struct fstab_rec *fstab, bool crypt_footer)
     if (!strncmp(fstab->fs_type, "f2fs", 4)) {
         rc = format_f2fs(fstab->blk_device, fstab->length, crypt_footer);
     } else if (!strncmp(fstab->fs_type, "ext4", 4)) {
-        rc = format_ext4(fstab->blk_device, fstab->mount_point, crypt_footer);
+        rc = format_ext4(fstab->blk_device, fstab->mount_point, fstab->length, crypt_footer);
     } else {
         LERROR << "File system type '" << fstab->fs_type << "' is not supported";
     }

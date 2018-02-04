@@ -46,7 +46,7 @@ struct fstab_rec {
     char* key_loc;
     char* key_dir;
     char* verity_loc;
-    long long length;
+    uint64_t length;
     char* label;
     int partnum;
     int swap_prio;

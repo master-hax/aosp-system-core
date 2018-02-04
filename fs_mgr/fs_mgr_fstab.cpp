@@ -42,7 +42,7 @@ struct fs_mgr_flag_values {
     char* key_dir;
     char *verity_loc;
     char *sysfs_path;
-    long long part_length;
+    uint64_t part_length;
     char *label;
     int partnum;
     int swap_prio;
@@ -295,7 +295,7 @@ static int parse_flags(char *flags, struct flag_list *fl,
                     /* The length flag is followed by an = and the
                      * size of the partition.  Get it and return it.
                      */
-                    flag_vals->part_length = strtoll(arg, NULL, 0);
+                    flag_vals->part_length = parse_size(strchr(p, '=') + 1);
                 } else if (flag == MF_VOLDMANAGED) {
                     /* The voldmanaged flag is followed by an = and the
                      * label, a colon and the partition number or the
