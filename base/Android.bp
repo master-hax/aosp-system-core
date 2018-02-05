@@ -89,6 +89,7 @@ cc_library {
         },
         windows: {
             srcs: [
+                "chrono_utils.cpp",
                 "errors_windows.cpp",
                 "utf8.cpp",
             ],
