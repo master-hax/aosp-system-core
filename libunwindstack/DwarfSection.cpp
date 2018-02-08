@@ -34,7 +34,7 @@
 
 namespace unwindstack {
 
-constexpr uint64_t DEX_PC_REG = 0x20444558;
+constexpr uint8_t DEX_PC_MAGIC[] = {0x0c /* OP_const4u */, 'D', 'E', 'X', '1', 0x13 /* OP_drop */};
 
 DwarfSection::DwarfSection(Memory* memory) : memory_(memory) {}
 
@@ -76,13 +76,15 @@ bool DwarfSection::Step(uint64_t pc, Regs* regs, Memory* process_memory, bool* f
 
 template <typename AddressType>
 bool DwarfSectionImpl<AddressType>::EvalExpression(const DwarfLocation& loc, uint8_t version,
-                                                   Memory* regular_memory, AddressType* value) {
+                                                   Memory* regular_memory, AddressType* value,
+                                                   RegsImpl<AddressType>* regs) {
   DwarfOp<AddressType> op(&memory_, regular_memory);
+  op.set_regs(regs);
 
   // Need to evaluate the op data.
-  uint64_t start = loc.values[1];
-  uint64_t end = start + loc.values[0];
-  if (!op.Eval(start, end, version)) {
+  uint64_t len = loc.values[0];
+  uint64_t end = loc.values[1];
+  if (!op.Eval(end - len, end, version)) {
     last_error_ = op.last_error();
     return false;
   }
@@ -154,7 +156,8 @@ bool DwarfSectionImpl<AddressType>::EvalRegister(const DwarfLocation* loc, uint3
     case DWARF_LOCATION_EXPRESSION:
     case DWARF_LOCATION_VAL_EXPRESSION: {
       AddressType value;
-      if (!EvalExpression(*loc, eval_info->cie->version, regular_memory, &value)) {
+      if (!EvalExpression(*loc, eval_info->cie->version, regular_memory, &value,
+                          eval_info->cur_regs)) {
         return false;
       }
       if (loc->type == DWARF_LOCATION_EXPRESSION) {
@@ -224,7 +227,7 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
     case DWARF_LOCATION_EXPRESSION:
     case DWARF_LOCATION_VAL_EXPRESSION: {
       AddressType value;
-      if (!EvalExpression(*loc, cie->version, regular_memory, &value)) {
+      if (!EvalExpression(*loc, cie->version, regular_memory, &value, cur_regs)) {
         return false;
       }
       if (loc->type == DWARF_LOCATION_EXPRESSION) {
@@ -243,33 +246,48 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
       return false;
   }
 
+  // Find DEX PC based on magic header in the expression.
+  // This needs to be done first, as it refers to another register,
+  // which consequently means, depending on interation order,
+  // we might be the new/current value as opposed to the old value we want.
+  // TODO: Add double buffering to fix registers which depend on registers.
   for (const auto& entry : loc_regs) {
     uint32_t reg = entry.first;
+    const DwarfLocation& loc = entry.second;
+    if (loc.type == DWARF_LOCATION_VAL_EXPRESSION) {
+      uint64_t len = loc.values[0];
+      uint64_t end = loc.values[1];
+      uint8_t buffer[sizeof(DEX_PC_MAGIC)];
+      memory_.set_cur_offset(end - len);
+      if (len >= sizeof(DEX_PC_MAGIC) && memory_.ReadBytes(&buffer, sizeof(buffer))) {
+        if (memcmp(DEX_PC_MAGIC, buffer, sizeof(buffer)) == 0) {
+          AddressType dex_pc;
+          if (!EvalRegister(&loc, reg, &dex_pc, &eval_info)) {
+            return false;
+          }
+          cur_regs->set_dex_pc(dex_pc);
+        }
+      }
+    }
+  }
+
+  for (const auto& entry : loc_regs) {
+    uint32_t reg = entry.first;
+    const DwarfLocation& loc = entry.second;
     // Already handled the CFA register.
     if (reg == CFA_REG) continue;
 
-    AddressType* reg_ptr;
-    AddressType dex_pc = 0;
-    if (reg == DEX_PC_REG) {
-      // Special register that indicates this is a dex pc.
-      dex_pc = 0;
-      reg_ptr = &dex_pc;
-    } else if (reg >= cur_regs->total_regs() || eval_info.reg_map & (1 << reg)) {
+    if (reg >= cur_regs->total_regs() || eval_info.reg_map & (1 << reg)) {
       // Skip this unknown register, or a register that has already been
       // processed.
       continue;
-    } else {
-      reg_ptr = &(*cur_regs)[reg];
-      eval_info.reg_map |= 1 << reg;
-      eval_info.reg_values[reg] = *reg_ptr;
     }
+    AddressType* reg_ptr = &(*cur_regs)[reg];
+    eval_info.reg_map |= 1 << reg;
+    eval_info.reg_values[reg] = *reg_ptr;
 
-    if (!EvalRegister(&entry.second, reg, reg_ptr, &eval_info)) {
+    if (!EvalRegister(&loc, reg, reg_ptr, &eval_info)) {
       return false;
-    }
-
-    if (reg == DEX_PC_REG) {
-      cur_regs->set_dex_pc(dex_pc);
     }
   }
 
