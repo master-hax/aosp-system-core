@@ -56,7 +56,7 @@ bool DwarfOp<AddressType>::Eval(uint64_t start, uint64_t end, uint8_t dwarf_vers
 }
 
 template <typename AddressType>
-bool DwarfOp<AddressType>::Decode(uint8_t dwarf_version) {
+bool DwarfOp<AddressType>::Decode(uint8_t) {
   last_error_.code = DWARF_ERROR_NONE;
   if (!memory_->ReadBytes(&cur_op_, 1)) {
     last_error_.code = DWARF_ERROR_MEMORY_INVALID;
@@ -67,12 +67,6 @@ bool DwarfOp<AddressType>::Decode(uint8_t dwarf_version) {
   const auto* op = &kCallbackTable[cur_op_];
   const auto handle_func = op->handle_func;
   if (handle_func == nullptr) {
-    last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
-    return false;
-  }
-
-  // Check for an unsupported opcode.
-  if (dwarf_version < op->supported_version) {
     last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
     return false;
   }

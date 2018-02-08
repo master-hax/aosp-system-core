@@ -54,6 +54,9 @@ void Unwinder::FillInDexFrame() {
   frame->sp = regs_->sp();
 
   MapInfo* info = maps_->Find(dex_pc);
+  if (info == nullptr) {
+    return;
+  }
   frame->map_start = info->start;
   frame->map_end = info->end;
   frame->map_offset = info->offset;
