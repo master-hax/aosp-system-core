@@ -424,16 +424,18 @@ bool DwarfCfa<AddressType>::cfa_def_cfa_offset(dwarf_loc_regs_t* loc_regs) {
 
 template <typename AddressType>
 bool DwarfCfa<AddressType>::cfa_def_cfa_expression(dwarf_loc_regs_t* loc_regs) {
+  uint32_t len = operands_[0];
   (*loc_regs)[CFA_REG] = {.type = DWARF_LOCATION_EXPRESSION,
-                          .values = {operands_[0], memory_->cur_offset()}};
+                          .values = {len, memory_->cur_offset() - len}};
   return true;
 }
 
 template <typename AddressType>
 bool DwarfCfa<AddressType>::cfa_expression(dwarf_loc_regs_t* loc_regs) {
   AddressType reg = operands_[0];
+  uint32_t len = operands_[1];
   (*loc_regs)[reg] = {.type = DWARF_LOCATION_EXPRESSION,
-                      .values = {operands_[1], memory_->cur_offset()}};
+                      .values = {len, memory_->cur_offset() - len}};
   return true;
 }
 
@@ -486,8 +488,9 @@ bool DwarfCfa<AddressType>::cfa_val_offset_sf(dwarf_loc_regs_t* loc_regs) {
 template <typename AddressType>
 bool DwarfCfa<AddressType>::cfa_val_expression(dwarf_loc_regs_t* loc_regs) {
   AddressType reg = operands_[0];
+  uint32_t len = operands_[1];
   (*loc_regs)[reg] = {.type = DWARF_LOCATION_VAL_EXPRESSION,
-                      .values = {operands_[1], memory_->cur_offset()}};
+                      .values = {len, memory_->cur_offset() - len}};
   return true;
 }
 

@@ -753,7 +753,7 @@ TYPED_TEST_P(DwarfCfaTest, cfa_expression) {
   ASSERT_NE(loc_regs.end(), location);
   ASSERT_EQ(DWARF_LOCATION_EXPRESSION, location->second.type);
   ASSERT_EQ(2U, location->second.values[0]);
-  ASSERT_EQ(0x105U, location->second.values[1]);
+  ASSERT_EQ(0x103U, location->second.values[1]);
 
   ASSERT_EQ("", GetFakeLogPrint());
   ASSERT_EQ("", GetFakeLogBuf());
@@ -773,7 +773,7 @@ TYPED_TEST_P(DwarfCfaTest, cfa_expression) {
   ASSERT_NE(loc_regs.end(), location);
   ASSERT_EQ(DWARF_LOCATION_EXPRESSION, location->second.type);
   ASSERT_EQ(130U, location->second.values[0]);
-  ASSERT_EQ(0x287U, location->second.values[1]);
+  ASSERT_EQ(0x205U, location->second.values[1]);
 
   ASSERT_EQ("", GetFakeLogPrint());
   ASSERT_EQ("", GetFakeLogBuf());
@@ -853,7 +853,7 @@ TYPED_TEST_P(DwarfCfaTest, cfa_val_expression) {
   ASSERT_NE(loc_regs.end(), location);
   ASSERT_EQ(DWARF_LOCATION_VAL_EXPRESSION, location->second.type);
   ASSERT_EQ(2U, location->second.values[0]);
-  ASSERT_EQ(0x105U, location->second.values[1]);
+  ASSERT_EQ(0x103U, location->second.values[1]);
 
   ASSERT_EQ("", GetFakeLogPrint());
   ASSERT_EQ("", GetFakeLogBuf());
@@ -874,7 +874,7 @@ TYPED_TEST_P(DwarfCfaTest, cfa_val_expression) {
   ASSERT_NE(loc_regs.end(), location);
   ASSERT_EQ(DWARF_LOCATION_VAL_EXPRESSION, location->second.type);
   ASSERT_EQ(168U, location->second.values[0]);
-  ASSERT_EQ(0xaadU, location->second.values[1]);
+  ASSERT_EQ(0xa05U, location->second.values[1]);
 
   ASSERT_EQ("", GetFakeLogPrint());
   ASSERT_EQ("", GetFakeLogBuf());

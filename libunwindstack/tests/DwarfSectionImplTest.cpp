@@ -320,14 +320,20 @@ TYPED_TEST_P(DwarfSectionImplTest, Eval_dex_pc) {
   regs.set_pc(0x100);
   regs.set_sp(0x2000);
   regs[0] = 0x10;
+  regs[4] = 0x18;
   regs[8] = 0x20;
+  regs[9] = 0xD000;
+  this->memory_.SetMemory(
+      0x5000, std::vector<uint8_t>{
+                  0x0c, 0x44, 0x45, 0x58, 0x31, 0x13, 0x92, 9 /* dex-pc */, 0x10 /* offset */
+              });
   loc_regs[CFA_REG] = DwarfLocation{DWARF_LOCATION_REGISTER, {8, 0}};
-  loc_regs[0x20444558] = DwarfLocation{DWARF_LOCATION_REGISTER, {0, 1}};
+  loc_regs[4] = DwarfLocation{DWARF_LOCATION_VAL_EXPRESSION, {9, 0x5000}};
   bool finished;
   ASSERT_TRUE(this->section_->Eval(&cie, &this->memory_, loc_regs, &regs, &finished));
   EXPECT_EQ(0x10U, regs[0]);
   EXPECT_EQ(0x20U, regs[8]);
-  EXPECT_EQ(0x11U, regs.dex_pc());
+  EXPECT_EQ(0xD010U, regs.dex_pc());
 }
 
 TYPED_TEST_P(DwarfSectionImplTest, Eval_invalid_register) {
@@ -371,7 +377,7 @@ TYPED_TEST_P(DwarfSectionImplTest, Eval_different_reg_locations) {
   EXPECT_EQ(0x10U, regs.pc());
   EXPECT_EQ(0x2100U, regs.sp());
   EXPECT_EQ(0x2200U, regs[1]);
-  EXPECT_EQ(0x234U, regs[3]);
+  EXPECT_EQ(0U, regs[3]);
   if (sizeof(TypeParam) == sizeof(uint64_t)) {
     EXPECT_EQ(0x12345678abcdef00ULL, regs[2]);
   } else {
