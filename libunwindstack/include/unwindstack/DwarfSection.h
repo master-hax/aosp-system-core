@@ -32,6 +32,8 @@ namespace unwindstack {
 // Forward declarations.
 class Memory;
 class Regs;
+template <typename AddressType>
+class RegsImpl;
 
 class DwarfSection {
  public:
@@ -150,7 +152,7 @@ class DwarfSectionImpl : public DwarfSection {
 
  protected:
   bool EvalExpression(const DwarfLocation& loc, uint8_t version, Memory* regular_memory,
-                      AddressType* value);
+                      AddressType* value, RegsImpl<AddressType>* regs);
 
   bool GetCieInfo(uint8_t* segment_size, uint8_t* encoding);
 
