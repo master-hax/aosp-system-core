@@ -29,11 +29,13 @@
 #include <unwindstack/MachineArm.h>
 #include <unwindstack/MachineArm64.h>
 #include <unwindstack/MachineX86.h>
+#include <unwindstack/MachineX86_64.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/RegsArm.h>
 #include <unwindstack/RegsArm64.h>
 #include <unwindstack/RegsX86.h>
+#include <unwindstack/RegsX86_64.h>
 #include <unwindstack/Unwinder.h>
 
 #include "ElfTestUtils.h"
@@ -744,6 +746,74 @@ TEST(UnwindOfflineTest, debug_frame_first_x86) {
       "  #02 pc 000006d7  waiter (call_level1+23)\n"
       "  #03 pc 000006f7  waiter (main+23)\n"
       "  #04 pc 00018275  libc.so\n",
+      frame_info);
+}
+
+// Make sure that a pc that is at the beginning of an fde unwinds correctly.
+TEST(UnwindOfflineTest, eh_frame_hdr_begin_x86_64) {
+  std::string dir(TestGetFileDirectory() + "offline/eh_frame_hdr_begin_x86_64/");
+
+  MemoryOffline* memory = new MemoryOffline;
+  ASSERT_TRUE(memory->Init((dir + "stack.data").c_str(), 0));
+
+  FILE* fp = fopen((dir + "regs.txt").c_str(), "r");
+  ASSERT_TRUE(fp != nullptr);
+  RegsX86_64 regs;
+  uint64_t reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rax: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RAX] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rbx: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RBX] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rcx: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RCX] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rdx: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RDX] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "r8: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_R8] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "r12: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_R12] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "r13: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_R13] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rsi: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RSI] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rbp: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RBP] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rsp: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RSP] = reg_value;
+  ASSERT_EQ(1, fscanf(fp, "rip: %" SCNx64 "\n", &reg_value));
+  regs[X86_64_REG_RIP] = reg_value;
+  regs.SetFromRaw();
+  fclose(fp);
+
+  fp = fopen((dir + "maps.txt").c_str(), "r");
+  ASSERT_TRUE(fp != nullptr);
+  // The file is guaranteed to be less than 4096 bytes.
+  std::vector<char> buffer(4096);
+  ASSERT_NE(0U, fread(buffer.data(), 1, buffer.size(), fp));
+  fclose(fp);
+
+  BufferMaps maps(buffer.data());
+  ASSERT_TRUE(maps.Parse());
+
+  ASSERT_EQ(ARCH_X86_64, regs.Arch());
+
+  std::shared_ptr<Memory> process_memory(memory);
+
+  char* cwd = getcwd(nullptr, 0);
+  ASSERT_EQ(0, chdir(dir.c_str()));
+  Unwinder unwinder(128, &maps, &regs, process_memory);
+  unwinder.Unwind();
+  ASSERT_EQ(0, chdir(cwd));
+  free(cwd);
+
+  std::string frame_info(DumpFrames(unwinder));
+  ASSERT_EQ(5U, unwinder.NumFrames()) << "Unwind:\n" << frame_info;
+  EXPECT_EQ(
+      "  #00 pc 0000000000000a80  unwind_test64 (calling3)\n"
+      "  #01 pc 0000000000000dd9  unwind_test64 (calling2+633)\n"
+      "  #02 pc 000000000000121e  unwind_test64 (calling1+638)\n"
+      "  #03 pc 00000000000013ed  unwind_test64 (main+13)\n"
+      "  #04 pc 00000000000202b0  libc.so\n",
       frame_info);
 }
 
