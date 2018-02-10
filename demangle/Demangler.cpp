@@ -580,6 +580,10 @@ const char* Demangler::ParseArguments(const char* name) {
     }
     return name + 1;
 
+  case 'O':
+    cur_state_.suffixes.push_back("&&");
+    return name + 1;
+
   case 'K':
   case 'V': {
     const char* suffix;
@@ -701,6 +705,9 @@ const char* Demangler::ParseArguments(const char* name) {
         cur_state_.str.clear();
       }
       return name;
+    } else if (strcmp(name, ".cfi") == 0) {
+      function_suffix_ += " [clone .cfi]";
+      return name + 4;
     }
   }
   return nullptr;
@@ -816,6 +823,16 @@ const char* Demangler::FindFunctionName(const char* name) {
     return name + 1;
   }
 
+  if (*name == 'S') {
+    name++;
+    if (*name == 't') {
+      function_name_ = "std::";
+      name++;
+    } else {
+      return nullptr;
+    }
+  }
+
   if (std::isdigit(*name)) {
     name = GetStringFromLength(name, &function_name_);
   } else if (*name == 'L' && std::isdigit(name[1])) {
@@ -868,6 +885,7 @@ std::string Demangler::Parse(const char* name, size_t max_length) {
       && static_cast<size_t>(cur_name - name) < max_length) {
     cur_name = (this->*parse_func_)(cur_name);
   }
+
   if (cur_name == nullptr || *cur_name != '\0' || function_name_.empty() ||
       !cur_state_.suffixes.empty()) {
     return name;
