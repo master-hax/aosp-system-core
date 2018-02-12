@@ -103,6 +103,7 @@ void DoUnwind(pid_t pid) {
 
   // Print the frames.
   for (size_t i = 0; i < unwinder.NumFrames(); i++) {
+    printf("  pc %" PRIx64 "\n", unwinder.frames()[i].pc);
     printf("%s\n", unwinder.FormatFrame(i).c_str());
   }
 }
