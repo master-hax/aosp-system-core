@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <linux/securebits.h>
+#include <paths.h>
 #include <sched.h>
 #include <sys/mount.h>
 #include <sys/prctl.h>
@@ -799,6 +800,11 @@ Result<Success> Service::Start() {
             // namespace.
             SetUpPidNamespace(name_);
         }
+
+        // Set $PATH appropriately for the executable (http://b/67975799).
+        const char* path = StartsWith(args_[0], "/system/") ? __BIONIC_PATH_BSHELL_SYSTEM
+                                                            : __BIONIC_PATH_BSHELL_VENDOR;
+        setenv("PATH", path, 1);
 
         for (const auto& [key, value] : environment_vars_) {
             setenv(key.c_str(), value.c_str(), 1);
