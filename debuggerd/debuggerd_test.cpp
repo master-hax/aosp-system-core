@@ -353,7 +353,10 @@ TEST_F(CrasherTest, abort_message) {
   int intercept_result;
   unique_fd output_fd;
   StartProcess([]() {
-    android_set_abort_message("abort message goes here");
+    char buf[1024];
+    memset(buf, 'x', 1024);
+    buf[1023] = '\0';
+    android_set_abort_message(buf);
     abort();
   });
   StartIntercept(&output_fd);
@@ -365,7 +368,7 @@ TEST_F(CrasherTest, abort_message) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(Abort message: 'abort message goes here')");
+  ASSERT_MATCH(result, R"(Abort message: 'x{1023}')");
 }
 
 TEST_F(CrasherTest, abort_message_backtrace) {

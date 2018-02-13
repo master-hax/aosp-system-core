@@ -74,7 +74,7 @@ void _LOG(log_t* log, enum logtype ltype, const char* fmt, ...) {
                       && (log->crashed_tid == log->current_tid);
   static bool write_to_kmsg = should_write_to_kmsg();
 
-  char buf[512];
+  char buf[1536];
   va_list ap;
   va_start(ap, fmt);
   vsnprintf(buf, sizeof(buf), fmt, ap);
