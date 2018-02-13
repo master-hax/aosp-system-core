@@ -36,13 +36,13 @@ template <typename AddressType>
 constexpr typename DwarfOp<AddressType>::OpCallback DwarfOp<AddressType>::kCallbackTable[256];
 
 template <typename AddressType>
-bool DwarfOp<AddressType>::Eval(uint64_t start, uint64_t end, uint8_t dwarf_version) {
+bool DwarfOp<AddressType>::Eval(uint64_t start, uint64_t end) {
   uint32_t iterations = 0;
   is_register_ = false;
   stack_.clear();
   memory_->set_cur_offset(start);
   while (memory_->cur_offset() < end) {
-    if (!Decode(dwarf_version)) {
+    if (!Decode()) {
       return false;
     }
     // To protect against a branch that creates an infinite loop,
@@ -56,7 +56,7 @@ bool DwarfOp<AddressType>::Eval(uint64_t start, uint64_t end, uint8_t dwarf_vers
 }
 
 template <typename AddressType>
-bool DwarfOp<AddressType>::Decode(uint8_t dwarf_version) {
+bool DwarfOp<AddressType>::Decode() {
   last_error_.code = DWARF_ERROR_NONE;
   if (!memory_->ReadBytes(&cur_op_, 1)) {
     last_error_.code = DWARF_ERROR_MEMORY_INVALID;
@@ -67,12 +67,6 @@ bool DwarfOp<AddressType>::Decode(uint8_t dwarf_version) {
   const auto* op = &kCallbackTable[cur_op_];
   const auto handle_func = op->handle_func;
   if (handle_func == nullptr) {
-    last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
-    return false;
-  }
-
-  // Check for an unsupported opcode.
-  if (dwarf_version < op->supported_version) {
     last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
     return false;
   }
@@ -434,22 +428,22 @@ bool DwarfOp<AddressType>::op_regx() {
 template <typename AddressType>
 bool DwarfOp<AddressType>::op_breg() {
   uint16_t reg = cur_op() - 0x70;
-  if (reg >= regs_->total_regs()) {
+  if (reg >= regs_info_->Total()) {
     last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
     return false;
   }
-  stack_.push_front((*regs_)[reg] + OperandAt(0));
+  stack_.push_front(regs_info_->Get(reg) + OperandAt(0));
   return true;
 }
 
 template <typename AddressType>
 bool DwarfOp<AddressType>::op_bregx() {
   AddressType reg = OperandAt(0);
-  if (reg >= regs_->total_regs()) {
+  if (reg >= regs_info_->Total()) {
     last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
     return false;
   }
-  stack_.push_front((*regs_)[reg] + OperandAt(1));
+  stack_.push_front(regs_info_->Get(reg) + OperandAt(1));
   return true;
 }
 
