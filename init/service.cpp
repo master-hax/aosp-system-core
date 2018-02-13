@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <linux/securebits.h>
+#include <paths.h>
 #include <sched.h>
 #include <sys/mount.h>
 #include <sys/prctl.h>
@@ -803,6 +804,11 @@ Result<Success> Service::Start() {
         for (const auto& [key, value] : environment_vars_) {
             setenv(key.c_str(), value.c_str(), 1);
         }
+
+        setenv("PATH",
+               StartsWith(args_[0], "/system/") ? __BIONIC_PATH_BSHELL_SYSTEM
+                                                : __BIONIC_PATH_BSHELL_VENDOR,
+               1);
 
         std::for_each(descriptors_.begin(), descriptors_.end(),
                       std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));

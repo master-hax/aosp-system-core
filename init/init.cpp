@@ -552,8 +552,9 @@ int main(int argc, char** argv) {
         // Clear the umask.
         umask(0);
 
+        // Clear the environment.
         clearenv();
-        setenv("PATH", _PATH_DEFPATH, 1);
+
         // Get the basic filesystem setup we need put together in the initramdisk
         // on / and then we'll let the rc file figure out the rest.
         mount("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755");
