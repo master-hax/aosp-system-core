@@ -36,31 +36,31 @@ class atransport;
 struct asocket {
     /* the unique identifier for this asocket
      */
-    unsigned id = 0;
+    unsigned id;
 
     /* flag: set when the socket's peer has closed
      * but packets are still queued for delivery
      */
-    int closing = 0;
+    int closing;
 
     // flag: set when the socket failed to write, so the socket will not wait to
     // write packets and close directly.
-    bool has_write_error = 0;
+    bool has_write_error;
 
     /* flag: quit adbd when both ends close the
      * local service socket
      */
-    int exit_on_close = 0;
+    int exit_on_close;
 
     // the asocket we are connected to
-    asocket* peer = nullptr;
+    asocket* peer;
 
     /* For local asockets, the fde is used to bind
      * us to our fd event system.  For remote asockets
      * these fields are not used.
      */
-    fdevent fde = {0};
-    int fd = 0;
+    fdevent fde;
+    int fd;
 
     // queue of data waiting to be written
     std::deque<Range> packet_queue;
@@ -73,27 +73,27 @@ struct asocket {
      * peer->ready() when we once again are ready to
      * receive data.
      */
-    int (*enqueue)(asocket* s, std::string data) = nullptr;
+    int (*enqueue)(asocket* s, std::string data);
 
     /* ready is called by the peer when it is ready for
      * us to send data via enqueue again
      */
-    void (*ready)(asocket* s) = nullptr;
+    void (*ready)(asocket* s);
 
     /* shutdown is called by the peer before it goes away.
      * the socket should not do any further calls on its peer.
      * Always followed by a call to close. Optional, i.e. can be NULL.
      */
-    void (*shutdown)(asocket* s) = nullptr;
+    void (*shutdown)(asocket* s);
 
     /* close is called by the peer when it has gone away.
      * we are not allowed to make any further calls on the
      * peer once our close method is called.
      */
-    void (*close)(asocket* s) = nullptr;
+    void (*close)(asocket* s);
 
     /* A socket is bound to atransport */
-    atransport* transport = nullptr;
+    atransport* transport;
 
     size_t get_max_payload() const;
 };
