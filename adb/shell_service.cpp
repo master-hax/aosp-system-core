@@ -334,13 +334,13 @@ bool Subprocess::ForkAndExec(std::string* error) {
         // processes, so we need to manually reset back to SIG_DFL here (http://b/35209888).
         signal(SIGPIPE, SIG_DFL);
 
+        const char* argv0 = _PATH_BSHELL;
         if (command_.empty()) {
-            execle(_PATH_BSHELL, _PATH_BSHELL, "-", nullptr, cenv.data());
+            execle(argv0, argv0, "-", nullptr, cenv.data());
         } else {
-            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
+            execle(argv0, argv0, "-c", command_.c_str(), nullptr, cenv.data());
         }
-        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
-        WriteFdExactly(child_error_sfd, strerror(errno));
+        WriteFdFmt(child_error_sfd, "exec '%s' failed: %s", argv0, strerror(errno));
         child_error_sfd.reset(-1);
         _Exit(1);
     }
