@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <limits>
 #include <string>
 
 #include <android-base/parseint.h>
@@ -109,8 +110,8 @@ static void WaitForPropertyCallback(void* data_ptr, const char*, const char* val
 static void DurationToTimeSpec(timespec& ts, const std::chrono::milliseconds d) {
   auto s = std::chrono::duration_cast<std::chrono::seconds>(d);
   auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(d - s);
-  ts.tv_sec = s.count();
-  ts.tv_nsec = ns.count();
+  ts.tv_sec = std::min<std::chrono::seconds::rep>(s.count(), std::numeric_limits<time_t>::max());
+  ts.tv_nsec = std::min<std::chrono::nanoseconds::rep>(ns.count(), std::numeric_limits<long>::max());
 }
 
 // TODO: boot_clock?
