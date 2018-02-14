@@ -109,6 +109,11 @@ cc_library {
         "liblog",
         "liblzma",
     ],
+    // libdexfile will eventually properly export headers, for now include
+    // these directly.
+    include_dirs: [
+        //"art/runtime",
+    ],
 }
 
 // Isolate the dex file processing into a separate library. Currently,
@@ -145,7 +150,7 @@ cc_library_static {
     // libdexfile will eventually properly export headers, for now include
     // these directly.
     include_dirs: [
-        "art/runtime",
+        //"art/runtime",
     ],
 }
 
@@ -177,6 +182,7 @@ cc_test_library {
     // these directly.
     include_dirs: [
         "art/runtime",
+        "art/libdexfile",
     ],
 }
 
