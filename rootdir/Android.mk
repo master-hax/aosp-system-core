@@ -146,12 +146,19 @@ endef
 # $(2): Output built module
 # $(3): VNDK version suffix
 define update_and_install_ld_config
+# If the default namespace is not isolated, move libz to llndk from vndk-sp.
+$(if $(shell sed -n '/namespace\.default\.isolated/{p;q}' $(1) | grep true),\
+  $(eval llndk_libraries_list := $(LLNDK_LIBRARIES)) \
+  $(eval vndksp_libraries_list := $(VNDK_SAMEPROCESS_LIBRARIES)),\
+  $(eval llndk_libraries_list := $(LLNDK_LIBRARIES) libz) \
+  $(eval vndksp_libraries_list := $(filter-out libz,$(VNDK_SAMEPROCESS_LIBRARIES))))
+
 llndk_libraries := $(call normalize-path-list,$(addsuffix .so,\
-  $(filter-out $(VNDK_PRIVATE_LIBRARIES),$(LLNDK_LIBRARIES))))
+  $(filter-out $(VNDK_PRIVATE_LIBRARIES),$(llndk_libraries_list))))
 private_llndk_libraries := $(call normalize-path-list,$(addsuffix .so,\
-  $(filter $(VNDK_PRIVATE_LIBRARIES),$(LLNDK_LIBRARIES))))
+  $(filter $(VNDK_PRIVATE_LIBRARIES),$(llndk_libraries_list))))
 vndk_sameprocess_libraries := $(call normalize-path-list,$(addsuffix .so,\
-  $(filter-out $(VNDK_PRIVATE_LIBRARIES),$(VNDK_SAMEPROCESS_LIBRARIES))))
+  $(filter-out $(VNDK_PRIVATE_LIBRARIES),$(vndksp_libraries_list))))
 vndk_core_libraries := $(call normalize-path-list,$(addsuffix .so,\
   $(filter-out $(VNDK_PRIVATE_LIBRARIES),$(VNDK_CORE_LIBRARIES))))
 sanitizer_runtime_libraries := $(call normalize-path-list,$(addsuffix .so,\
@@ -180,6 +187,8 @@ $(2): $(1)
 	$$(hide) sed -i -e 's?%SANITIZER_RUNTIME_LIBRARIES%?$$(PRIVATE_SANITIZER_RUNTIME_LIBRARIES)?g' $$@
 	$$(hide) sed -i -e 's?%VNDK_VER%?$$(PRIVATE_VNDK_VERSION)?g' $$@
 
+llndk_libraries_list :=
+vndksp_libraries_list :=
 llndk_libraries :=
 private_llndk_libraries :=
 vndk_sameprocess_libraries :=
