@@ -33,7 +33,6 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
-#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
@@ -43,6 +42,12 @@
 
 #include "reboot.h"
 #include "selinux.h"
+
+#if defined(__BIONIC__)
+#include <android-base/properties.h>
+#else
+#include "host_init_stubs.h"
+#endif
 
 #ifdef _INIT_INIT_H
 #error "Do not include init.h in files used by ueventd or watchdogd; it will expose init's globals"
