@@ -45,7 +45,11 @@
 
 // Headers for LogMessage::LogLine.
 #ifdef __ANDROID__
+#if __ANDROID_NDK__
+#include <android/log.h>
+#else
 #include <log/log.h>
+#endif
 #include <android/set_abort_message.h>
 #else
 #include <sys/types.h>
@@ -222,6 +226,24 @@ void DefaultAborter(const char* abort_message) {
 #ifdef __ANDROID__
 LogdLogger::LogdLogger(LogId default_log_id) : default_log_id_(default_log_id) {
 }
+
+#if __ANDROID_NDK__
+// NDK compat shim, ignores undefined log_id.
+namespace {
+using log_id = int;
+void __android_log_buf_print(log_id bufID ATTRIBUTE_UNUSED, int prio, const char* tag,
+                             const char* fmt, ...) {
+  // TODO: Does prio need to be translated?
+  va_list ap;
+  va_start(ap, fmt);
+  __android_log_vprint(prio, tag, fmt, ap);
+  va_end(ap);
+}
+static constexpr log_id LOG_ID_MAX = 0;
+static constexpr log_id LOG_ID_MAIN = 1;
+static constexpr log_id LOG_ID_SYSTEM = 2;
+}  // namespace
+#endif
 
 void LogdLogger::operator()(LogId id, LogSeverity severity, const char* tag,
                             const char* file, unsigned int line,
