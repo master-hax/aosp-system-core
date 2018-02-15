@@ -65,6 +65,8 @@ using android::base::unique_fd;
 using unwindstack::Memory;
 using unwindstack::Regs;
 
+using namespace std::literals::string_literals;
+
 #define STACK_WORDS 16
 
 static void dump_header_info(log_t* log) {
@@ -382,9 +384,14 @@ void dump_registers(log_t* log, Regs* regs) {
   print_register_row(log, special_row);
 }
 
-void dump_memory_and_code(log_t* log, Memory* memory, Regs* regs) {
-  regs->IterateRegisters([log, memory](const char* name, uint64_t value) {
-    dump_memory(log, memory, value, "memory near %s:", name);
+void dump_memory_and_code(log_t* log, BacktraceMap* map, Memory* memory, Regs* regs) {
+  regs->IterateRegisters([log, map, memory](const char* reg_name, uint64_t reg_value) {
+    backtrace_map_t map_info;
+    if (map) map->FillIn(reg_value, &map_info);
+
+    std::string label{"memory near "s + reg_name};
+    if (!map_info.name.empty()) label += " (" + map_info.name + ")";
+    dump_memory(log, memory, reg_value, label);
   });
 }
 
@@ -423,7 +430,7 @@ static bool dump_thread(log_t* log, BacktraceMap* map, Memory* process_memory,
   }
 
   if (primary_thread) {
-    dump_memory_and_code(log, process_memory, thread_info.registers.get());
+    dump_memory_and_code(log, map, process_memory, thread_info.registers.get());
     if (map) {
       uint64_t addr = 0;
       siginfo_t* si = thread_info.siginfo;
