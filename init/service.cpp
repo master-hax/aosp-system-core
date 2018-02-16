@@ -170,14 +170,15 @@ static bool ExpandArgsAndExecv(const std::vector<std::string>& args) {
 unsigned long Service::next_start_order_ = 1;
 bool Service::is_exec_service_running_ = false;
 
-Service::Service(const std::string& name, Subcontext* subcontext_for_restart_commands,
+Service::Service(const std::string& name, ContextInterface* context_for_restart_commands,
                  const std::vector<std::string>& args)
-    : Service(name, 0, 0, 0, {}, 0, 0, "", subcontext_for_restart_commands, args) {}
+    : Service(name, 0, 0, 0, {}, 0, 0, "", context_for_restart_commands, args) {}
 
 Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
                  const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
                  unsigned namespace_flags, const std::string& seclabel,
-                 Subcontext* subcontext_for_restart_commands, const std::vector<std::string>& args)
+                 ContextInterface* context_for_restart_commands,
+                 const std::vector<std::string>& args)
     : name_(name),
       classnames_({"default"}),
       flags_(flags),
@@ -189,7 +190,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       capabilities_(capabilities),
       namespace_flags_(namespace_flags),
       seclabel_(seclabel),
-      onrestart_(false, subcontext_for_restart_commands, "<Service '" + name + "' onrestart>", 0,
+      onrestart_(false, context_for_restart_commands, "<Service '" + name + "' onrestart>", 0,
                  "onrestart", {}),
       keychord_id_(0),
       ioprio_class_(IoSchedClass_NONE),
@@ -1121,18 +1122,10 @@ Result<Success> ServiceParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "invalid service name '" << name << "'";
     }
 
-    Subcontext* restart_action_subcontext = nullptr;
-    if (subcontexts_) {
-        for (auto& subcontext : *subcontexts_) {
-            if (StartsWith(filename, subcontext.path_prefix())) {
-                restart_action_subcontext = &subcontext;
-                break;
-            }
-        }
-    }
+    ContextInterface* restart_action_context = context_list_->GetContext(filename);
 
     std::vector<std::string> str_args(args.begin() + 2, args.end());
-    service_ = std::make_unique<Service>(name, restart_action_subcontext, str_args);
+    service_ = std::make_unique<Service>(name, restart_action_context, str_args);
     return Success();
 }
 

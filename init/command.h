@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_SIGCHLD_HANDLER_H_
-#define _INIT_SIGCHLD_HANDLER_H_
+#ifndef _INIT_COMMAND_H
+#define _INIT_COMMAND_H
 
-#include "context_list.h"
+#include <functional>
+#include <string>
+#include <vector>
+
+#include "builtin_arguments.h"
+#include "builtins.h"
+#include "result.h"
 
 namespace android {
 namespace init {
 
-void ReapAnyOutstandingChildren();
+struct Command {
+    Command(BuiltinFunction f, bool execute_in_subcontext, const std::vector<std::string>& args,
+            int line)
+        : func(std::move(f)), execute_in_subcontext(execute_in_subcontext), args(args), line(line) {}
 
-void SigchldHandlerInit(ContextList* context_list);
+    const BuiltinFunction func;
+    const bool execute_in_subcontext;
+    const std::vector<std::string> args;
+    const int line;
+};
 
 }  // namespace init
 }  // namespace android

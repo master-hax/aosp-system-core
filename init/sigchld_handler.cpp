@@ -42,6 +42,8 @@ namespace init {
 static int signal_write_fd = -1;
 static int signal_read_fd = -1;
 
+ContextList* context_list;
+
 static bool ReapOneProcess() {
     siginfo_t siginfo = {};
     // This returns a zombie pid or informs us that there are no zombies left to be reaped.
@@ -66,7 +68,7 @@ static bool ReapOneProcess() {
 
     if (PropertyChildReap(pid)) {
         name = "Async property child";
-    } else if (SubcontextChildReap(pid)) {
+    } else if (context_list->ReapChild(pid)) {
         name = "Subcontext";
     } else {
         service = ServiceList::GetInstance().FindService(pid, &Service::pid);
@@ -121,12 +123,14 @@ void ReapAnyOutstandingChildren() {
     }
 }
 
-void sigchld_handler_init() {
+void SigchldHandlerInit(ContextList* context_list_in) {
     // Create a signalling mechanism for SIGCHLD.
     int s[2];
     if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0, s) == -1) {
         PLOG(FATAL) << "socketpair failed in sigchld_handler_init";
     }
+
+    context_list = context_list_in;
 
     signal_write_fd = s[0];
     signal_read_fd = s[1];

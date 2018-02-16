@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,35 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_SIGCHLD_HANDLER_H_
-#define _INIT_SIGCHLD_HANDLER_H_
+#ifndef _INIT_CONTEXT_LIST_H
+#define _INIT_CONTEXT_LIST_H
 
-#include "context_list.h"
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "context_interface.h"
 
 namespace android {
 namespace init {
 
-void ReapAnyOutstandingChildren();
+extern const std::string kVendorContext;
 
-void SigchldHandlerInit(ContextList* context_list);
+class ContextList {
+  public:
+    ~ContextList() {}
+
+    void Initialize();
+    void AddContext(std::unique_ptr<ContextInterface> context) {
+        contexts_.emplace_back(std::move(context));
+    }
+    ContextInterface* GetContext(const std::string& path);
+    bool ReapChild(pid_t pid);
+
+  private:
+    std::vector<std::unique_ptr<ContextInterface>> contexts_;
+    std::unique_ptr<ContextInterface> init_context_;
+};
 
 }  // namespace init
 }  // namespace android

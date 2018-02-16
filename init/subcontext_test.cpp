@@ -66,7 +66,7 @@ void RunTest(F&& test_function) {
 
 TEST(subcontext, CheckDifferentPid) {
     RunTest([](auto& subcontext, auto& context_string) {
-        auto result = subcontext.Execute(std::vector<std::string>{"return_pids_as_error"});
+        auto result = subcontext.ExecuteCommand(std::vector<std::string>{"return_pids_as_error"});
         ASSERT_FALSE(result);
 
         auto pids = Split(result.error_string(), " ");
@@ -87,7 +87,7 @@ TEST(subcontext, SetProp) {
             "init.test.subcontext",
             "success",
         };
-        auto result = subcontext.Execute(args);
+        auto result = subcontext.ExecuteCommand(args);
         ASSERT_TRUE(result) << result.error();
 
         EXPECT_TRUE(WaitForProperty("init.test.subcontext", "success", 10s));
@@ -110,11 +110,11 @@ TEST(subcontext, MultipleCommands) {
                 "add_word",
                 word,
             };
-            auto result = subcontext.Execute(args);
+            auto result = subcontext.ExecuteCommand(args);
             ASSERT_TRUE(result) << result.error();
         }
 
-        auto result = subcontext.Execute(std::vector<std::string>{"return_words_as_error"});
+        auto result = subcontext.ExecuteCommand(std::vector<std::string>{"return_words_as_error"});
         ASSERT_FALSE(result);
         EXPECT_EQ(Join(expected_words, " "), result.error_string());
         EXPECT_EQ(first_pid, subcontext.pid());
@@ -125,10 +125,10 @@ TEST(subcontext, RecoverAfterAbort) {
     RunTest([](auto& subcontext, auto& context_string) {
         auto first_pid = subcontext.pid();
 
-        auto result = subcontext.Execute(std::vector<std::string>{"cause_log_fatal"});
+        auto result = subcontext.ExecuteCommand(std::vector<std::string>{"cause_log_fatal"});
         ASSERT_FALSE(result);
 
-        auto result2 = subcontext.Execute(std::vector<std::string>{"generate_sane_error"});
+        auto result2 = subcontext.ExecuteCommand(std::vector<std::string>{"generate_sane_error"});
         ASSERT_FALSE(result2);
         EXPECT_EQ("Sane error!", result2.error_string());
         EXPECT_NE(subcontext.pid(), first_pid);
@@ -137,7 +137,8 @@ TEST(subcontext, RecoverAfterAbort) {
 
 TEST(subcontext, ContextString) {
     RunTest([](auto& subcontext, auto& context_string) {
-        auto result = subcontext.Execute(std::vector<std::string>{"return_context_as_error"});
+        auto result =
+            subcontext.ExecuteCommand(std::vector<std::string>{"return_context_as_error"});
         ASSERT_FALSE(result);
         ASSERT_EQ(context_string, result.error_string());
     });

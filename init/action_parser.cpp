@@ -19,6 +19,7 @@
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 
+#include "init_context.h"
 #include "stable_properties.h"
 
 using android::base::GetBoolProperty;
@@ -29,10 +30,10 @@ namespace init {
 
 namespace {
 
-bool IsActionableProperty(Subcontext* subcontext, const std::string& prop_name) {
+bool IsActionableProperty(ContextInterface* context, const std::string& prop_name) {
     static bool enabled = GetBoolProperty("ro.actionable_compatible_property.enabled", false);
 
-    if (subcontext == nullptr || !enabled) {
+    if (context->context() == InitContext::kInitContext || !enabled) {
         return true;
     }
 
@@ -47,7 +48,7 @@ bool IsActionableProperty(Subcontext* subcontext, const std::string& prop_name) 
     return false;
 }
 
-Result<Success> ParsePropertyTrigger(const std::string& trigger, Subcontext* subcontext,
+Result<Success> ParsePropertyTrigger(const std::string& trigger, ContextInterface* context,
                                      std::map<std::string, std::string>* property_triggers) {
     const static std::string prop_str("property:");
     std::string prop_name(trigger.substr(prop_str.length()));
@@ -59,7 +60,7 @@ Result<Success> ParsePropertyTrigger(const std::string& trigger, Subcontext* sub
     std::string prop_value(prop_name.substr(equal_pos + 1));
     prop_name.erase(equal_pos);
 
-    if (!IsActionableProperty(subcontext, prop_name)) {
+    if (!IsActionableProperty(context, prop_name)) {
         return Error() << "unexported property tigger found: " << prop_name;
     }
 
@@ -69,7 +70,7 @@ Result<Success> ParsePropertyTrigger(const std::string& trigger, Subcontext* sub
     return Success();
 }
 
-Result<Success> ParseTriggers(const std::vector<std::string>& args, Subcontext* subcontext,
+Result<Success> ParseTriggers(const std::vector<std::string>& args, ContextInterface* context,
                               std::string* event_trigger,
                               std::map<std::string, std::string>* property_triggers) {
     const static std::string prop_str("property:");
@@ -87,8 +88,7 @@ Result<Success> ParseTriggers(const std::vector<std::string>& args, Subcontext* 
         }
 
         if (!args[i].compare(0, prop_str.length(), prop_str)) {
-            if (auto result = ParsePropertyTrigger(args[i], subcontext, property_triggers);
-                !result) {
+            if (auto result = ParsePropertyTrigger(args[i], context, property_triggers); !result) {
                 return result;
             }
         } else {
@@ -112,26 +112,18 @@ Result<Success> ActionParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "Actions must have a trigger";
     }
 
-    Subcontext* action_subcontext = nullptr;
-    if (subcontexts_) {
-        for (auto& subcontext : *subcontexts_) {
-            if (StartsWith(filename, subcontext.path_prefix())) {
-                action_subcontext = &subcontext;
-                break;
-            }
-        }
-    }
+    ContextInterface* context = context_list_->GetContext(filename);
 
     std::string event_trigger;
     std::map<std::string, std::string> property_triggers;
 
-    if (auto result = ParseTriggers(triggers, action_subcontext, &event_trigger, &property_triggers);
+    if (auto result = ParseTriggers(triggers, context, &event_trigger, &property_triggers);
         !result) {
         return Error() << "ParseTriggers() failed: " << result.error();
     }
 
-    auto action = std::make_unique<Action>(false, action_subcontext, filename, line, event_trigger,
-                                           property_triggers);
+    auto action =
+        std::make_unique<Action>(false, context, filename, line, event_trigger, property_triggers);
 
     action_ = std::move(action);
     return Success();

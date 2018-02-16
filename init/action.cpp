@@ -28,53 +28,13 @@ using android::base::Join;
 namespace android {
 namespace init {
 
-Result<Success> RunBuiltinFunction(const BuiltinFunction& function,
-                                   const std::vector<std::string>& args,
-                                   const std::string& context) {
-    auto builtin_arguments = BuiltinArguments(context);
-
-    builtin_arguments.args.resize(args.size());
-    builtin_arguments.args[0] = args[0];
-    for (std::size_t i = 1; i < args.size(); ++i) {
-        if (!expand_props(args[i], &builtin_arguments.args[i])) {
-            return Error() << "cannot expand '" << args[i] << "'";
-        }
-    }
-
-    return function(builtin_arguments);
-}
-
-Command::Command(BuiltinFunction f, bool execute_in_subcontext,
-                 const std::vector<std::string>& args, int line)
-    : func_(std::move(f)), execute_in_subcontext_(execute_in_subcontext), args_(args), line_(line) {}
-
-Result<Success> Command::InvokeFunc(Subcontext* subcontext) const {
-    if (subcontext) {
-        if (execute_in_subcontext_) {
-            return subcontext->Execute(args_);
-        }
-
-        auto expanded_args = subcontext->ExpandArgs(args_);
-        if (!expanded_args) {
-            return expanded_args.error();
-        }
-        return RunBuiltinFunction(func_, *expanded_args, subcontext->context());
-    }
-
-    return RunBuiltinFunction(func_, args_, kInitContext);
-}
-
-std::string Command::BuildCommandString() const {
-    return Join(args_, ' ');
-}
-
-Action::Action(bool oneshot, Subcontext* subcontext, const std::string& filename, int line,
+Action::Action(bool oneshot, ContextInterface* context, const std::string& filename, int line,
                const std::string& event_trigger,
                const std::map<std::string, std::string>& property_triggers)
     : property_triggers_(property_triggers),
       event_trigger_(event_trigger),
       oneshot_(oneshot),
-      subcontext_(subcontext),
+      context_(context),
       filename_(filename),
       line_(line) {}
 
@@ -115,7 +75,7 @@ void Action::ExecuteAllCommands() const {
 
 void Action::ExecuteCommand(const Command& command) const {
     android::base::Timer t;
-    auto result = command.InvokeFunc(subcontext_);
+    auto result = context_->Execute(command);
     auto duration = t.duration();
 
     // There are many legacy paths in rootdir/init.rc that will virtually never exist on a new
@@ -132,10 +92,10 @@ void Action::ExecuteCommand(const Command& command) const {
     if (report_failure || duration > 50ms ||
         android::base::GetMinimumLogSeverity() <= android::base::DEBUG) {
         std::string trigger_name = BuildTriggersString();
-        std::string cmd_str = command.BuildCommandString();
+        std::string cmd_str = Join(command.args, ' ');
 
         LOG(INFO) << "Command '" << cmd_str << "' action=" << trigger_name << " (" << filename_
-                  << ":" << command.line() << ") took " << duration.count() << "ms and "
+                  << ":" << command.line << ") took " << duration.count() << "ms and "
                   << (result ? "succeeded" : "failed: " + result.error_string());
     }
 }
@@ -202,7 +162,7 @@ void Action::DumpState() const {
     LOG(INFO) << "on " << trigger_name;
 
     for (const auto& c : commands_) {
-        std::string cmd_str = c.BuildCommandString();
+        std::string cmd_str = Join(c.args, ' ');
         LOG(INFO) << "  " << cmd_str;
     }
 }

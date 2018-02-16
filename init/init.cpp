@@ -46,6 +46,7 @@
 #include <optional>
 
 #include "action_parser.h"
+#include "context_list.h"
 #include "import_parser.h"
 #include "init_first_stage.h"
 #include "keychords.h"
@@ -55,6 +56,7 @@
 #include "security.h"
 #include "selinux.h"
 #include "sigchld_handler.h"
+#include "subcontext.h"
 #include "ueventd.h"
 #include "util.h"
 #include "watchdogd.h"
@@ -86,7 +88,7 @@ static bool do_shutdown = false;
 
 std::vector<std::string> late_import_paths;
 
-static std::vector<Subcontext>* subcontexts;
+static ContextList context_list;
 
 void DumpState() {
     ServiceList::GetInstance().DumpState();
@@ -96,8 +98,9 @@ void DumpState() {
 Parser CreateParser(ActionManager& action_manager, ServiceList& service_list) {
     Parser parser;
 
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(&service_list, subcontexts));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, subcontexts));
+    parser.AddSectionParser("service",
+                            std::make_unique<ServiceParser>(&service_list, &context_list));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&action_manager, &context_list));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     return parser;
@@ -123,6 +126,18 @@ static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_
         }
     } else {
         parser.ParseConfig(bootscript);
+    }
+}
+
+static void InitializeContexts() {
+    context_list.Initialize();
+
+    static const char* const paths_and_secontexts[][2] = {
+        {"/vendor", Subcontext::kVendorContext.c_str()},
+    };
+
+    for (const auto& [path_prefix, secontext] : paths_and_secontexts) {
+        context_list.AddContext(std::make_unique<Subcontext>(path_prefix, secontext));
     }
 }
 
@@ -666,7 +681,9 @@ int main(int argc, char** argv) {
         PLOG(FATAL) << "epoll_create1 failed";
     }
 
-    sigchld_handler_init();
+    InitializeContexts();
+
+    SigchldHandlerInit(&context_list);
 
     if (!IsRebootCapable()) {
         // If init does not have the CAP_SYS_BOOT capability, it is running in a container.
@@ -681,8 +698,6 @@ int main(int argc, char** argv) {
 
     const BuiltinFunctionMap function_map;
     Action::set_function_map(&function_map);
-
-    subcontexts = InitializeSubcontexts();
 
     ActionManager& am = ActionManager::GetInstance();
     ServiceList& sm = ServiceList::GetInstance();

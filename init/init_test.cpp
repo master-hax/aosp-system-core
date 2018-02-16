@@ -24,6 +24,7 @@
 #include "action_manager.h"
 #include "action_parser.h"
 #include "builtins.h"
+#include "context_list.h"
 #include "import_parser.h"
 #include "keyword_map.h"
 #include "parser.h"
@@ -42,9 +43,12 @@ void TestInit(const std::string& init_script_file, const TestFunctionMap& test_f
 
     Action::set_function_map(&test_function_map);
 
+    ContextList context_list;
+    context_list.Initialize();
+
     Parser parser;
-    parser.AddSectionParser("service", std::make_unique<ServiceParser>(service_list, nullptr));
-    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+    parser.AddSectionParser("service", std::make_unique<ServiceParser>(service_list, &context_list));
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, &context_list));
     parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
 
     ASSERT_TRUE(parser.ParseConfig(init_script_file));

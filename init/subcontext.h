@@ -24,30 +24,33 @@
 
 #include <android-base/unique_fd.h>
 
-#include "builtins.h"
+#include "command.h"
+#include "context_interface.h"
 #include "result.h"
 #include "system/core/init/subcontext.pb.h"
 
 namespace android {
 namespace init {
 
-extern const std::string kInitContext;
-extern const std::string kVendorContext;
-
-class Subcontext {
+class Subcontext : public ContextInterface {
   public:
     Subcontext(std::string path_prefix, std::string context)
         : path_prefix_(std::move(path_prefix)), context_(std::move(context)), pid_(0) {
         Fork();
     }
 
-    Result<Success> Execute(const std::vector<std::string>& args);
-    Result<std::vector<std::string>> ExpandArgs(const std::vector<std::string>& args);
-    void Restart();
+    Result<Success> Execute(const Command& command) override;
+    void Restart() override;
 
-    const std::string& path_prefix() const { return path_prefix_; }
-    const std::string& context() const { return context_; }
-    pid_t pid() const { return pid_; }
+    // Exposed for Testing
+    Result<Success> ExecuteCommand(const std::vector<std::string>& args);
+    Result<std::vector<std::string>> ExpandArgs(const std::vector<std::string>& args);
+
+    const std::string& path_prefix() const override { return path_prefix_; }
+    const std::string& context() const override { return context_; }
+    pid_t pid() const override { return pid_; }
+
+    static const std::string kVendorContext;
 
   private:
     void Fork();

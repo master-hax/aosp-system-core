@@ -24,32 +24,12 @@
 #include <vector>
 
 #include "builtins.h"
+#include "context_interface.h"
 #include "keyword_map.h"
 #include "result.h"
-#include "subcontext.h"
 
 namespace android {
 namespace init {
-
-Result<Success> RunBuiltinFunction(const BuiltinFunction& function,
-                                   const std::vector<std::string>& args, const std::string& context);
-
-class Command {
-  public:
-    Command(BuiltinFunction f, bool execute_in_subcontext, const std::vector<std::string>& args,
-            int line);
-
-    Result<Success> InvokeFunc(Subcontext* subcontext) const;
-    std::string BuildCommandString() const;
-
-    int line() const { return line_; }
-
-  private:
-    BuiltinFunction func_;
-    bool execute_in_subcontext_;
-    std::vector<std::string> args_;
-    int line_;
-};
 
 using EventTrigger = std::string;
 using PropertyChange = std::pair<std::string, std::string>;
@@ -57,7 +37,7 @@ using BuiltinAction = class Action*;
 
 class Action {
   public:
-    Action(bool oneshot, Subcontext* subcontext, const std::string& filename, int line,
+    Action(bool oneshot, ContextInterface* context, const std::string& filename, int line,
            const std::string& event_trigger,
            const std::map<std::string, std::string>& property_triggers);
 
@@ -88,7 +68,7 @@ class Action {
     std::string event_trigger_;
     std::vector<Command> commands_;
     bool oneshot_;
-    Subcontext* subcontext_;
+    ContextInterface* context_;
     std::string filename_;
     int line_;
     static const KeywordFunctionMap* function_map_;

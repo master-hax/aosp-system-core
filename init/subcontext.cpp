@@ -27,6 +27,7 @@
 #include <selinux/android.h>
 
 #include "action.h"
+#include "builtin_arguments.h"
 #include "property_service.h"
 #include "selinux.h"
 #include "util.h"
@@ -43,9 +44,6 @@ using android::base::unique_fd;
 
 namespace android {
 namespace init {
-
-const std::string kInitContext = "u:r:init:s0";
-const std::string kVendorContext = "u:r:vendor_init:s0";
 
 namespace {
 
@@ -86,6 +84,22 @@ uint32_t SubcontextPropertySet(const std::string& name, const std::string& value
     return PROP_SUCCESS;
 }
 
+Result<Success> ExpandAndRunCommand(const BuiltinFunction& function,
+                                    const std::vector<std::string>& args,
+                                    const std::string& context) {
+    auto builtin_arguments = BuiltinArguments(context);
+
+    builtin_arguments.args.resize(args.size());
+    builtin_arguments.args[0] = args[0];
+    for (std::size_t i = 1; i < args.size(); ++i) {
+        if (!expand_props(args[i], &builtin_arguments.args[i])) {
+            return Error() << "cannot expand '" << args[i] << "'";
+        }
+    }
+
+    return std::invoke(function, builtin_arguments);
+}
+
 class SubcontextProcess {
   public:
     SubcontextProcess(const KeywordFunctionMap* function_map, std::string context, int init_fd)
@@ -116,7 +130,7 @@ void SubcontextProcess::RunCommand(const SubcontextCommand::ExecuteCommand& exec
     if (!map_result) {
         result = Error() << "Cannot find command: " << map_result.error();
     } else {
-        result = RunBuiltinFunction(map_result->second, args, context_);
+        result = ExpandAndRunCommand(map_result->second, args, context_);
     }
 
     for (const auto& [name, value] : properties_to_set) {
@@ -197,6 +211,8 @@ void SubcontextProcess::MainLoop() {
 }
 
 }  // namespace
+
+const std::string Subcontext::kVendorContext = "u:r:vendor_init:s0";
 
 int SubcontextMain(int argc, char** argv, const KeywordFunctionMap* function_map) {
     if (argc < 4) LOG(FATAL) << "Fewer than 4 args specified to subcontext (" << argc << ")";
@@ -282,7 +298,24 @@ Result<SubcontextReply> Subcontext::TransmitMessage(const SubcontextCommand& sub
     return subcontext_reply;
 }
 
-Result<Success> Subcontext::Execute(const std::vector<std::string>& args) {
+Result<Success> Subcontext::Execute(const Command& command) {
+    if (command.execute_in_subcontext) {
+        return ExecuteCommand(command.args);
+    }
+
+    auto expanded_args = ExpandArgs(command.args);
+
+    if (!expanded_args) {
+        return expanded_args.error();
+    }
+
+    auto builtin_arguments = BuiltinArguments(context());
+    builtin_arguments.args = std::move(*expanded_args);
+
+    return command.func(builtin_arguments);
+}
+
+Result<Success> Subcontext::ExecuteCommand(const std::vector<std::string>& args) {
     auto subcontext_command = SubcontextCommand();
     std::copy(
         args.begin(), args.end(),
@@ -338,28 +371,6 @@ Result<std::vector<std::string>> Subcontext::ExpandArgs(const std::vector<std::s
         expanded_args.emplace_back(string);
     }
     return expanded_args;
-}
-
-static std::vector<Subcontext> subcontexts;
-
-std::vector<Subcontext>* InitializeSubcontexts() {
-    static const char* const paths_and_secontexts[][2] = {
-        {"/vendor", kVendorContext.c_str()},
-    };
-    for (const auto& [path_prefix, secontext] : paths_and_secontexts) {
-        subcontexts.emplace_back(path_prefix, secontext);
-    }
-    return &subcontexts;
-}
-
-bool SubcontextChildReap(pid_t pid) {
-    for (auto& subcontext : subcontexts) {
-        if (subcontext.pid() == pid) {
-            subcontext.Restart();
-            return true;
-        }
-    }
-    return false;
 }
 
 }  // namespace init

@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_ACTION_PARSER_H
-#define _INIT_ACTION_PARSER_H
+#ifndef _INIT_INIT_CONTEXT_H
+#define _INIT_INIT_CONTEXT_H
 
 #include <string>
 #include <vector>
 
-#include "action.h"
-#include "action_manager.h"
-#include "context_list.h"
-#include "parser.h"
+#include "command.h"
+#include "context_interface.h"
+#include "result.h"
 
 namespace android {
 namespace init {
 
-class ActionParser : public SectionParser {
+class InitContext : public ContextInterface {
   public:
-    ActionParser(ActionManager* action_manager, ContextList* context_list)
-        : action_manager_(action_manager), context_list_(context_list), action_(nullptr) {}
-    Result<Success> ParseSection(std::vector<std::string>&& args, const std::string& filename,
-                                 int line) override;
-    Result<Success> ParseLineSection(std::vector<std::string>&& args, int line) override;
-    Result<Success> EndSection() override;
+    virtual ~InitContext() {}
+    Result<Success> Execute(const Command& command) override;
+    void Restart() override {}
 
-  private:
-    ActionManager* action_manager_;
-    ContextList* context_list_;
-    std::unique_ptr<Action> action_;
+    const std::string& path_prefix() const override {
+        static const std::string default_path = "*";
+        return default_path;
+    }
+    const std::string& context() const override { return kInitContext; }
+    pid_t pid() const override { return 1; }
+
+    static const std::string kInitContext;
 };
 
 }  // namespace init
