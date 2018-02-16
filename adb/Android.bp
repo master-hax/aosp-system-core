@@ -52,6 +52,12 @@ cc_defaults {
             cflags: ["-DADB_HOST=1"],
         },
 
+        linux_glibc: {
+            sanitize: {
+                address: true,
+            },
+        },
+
         windows: {
             cflags: [
                 // Define windows.h and tchar.h Unicode preprocessor symbols so that
