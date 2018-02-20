@@ -184,6 +184,9 @@ static const struct fs_path_config android_files[] = {
                                            CAP_MASK_LONG(CAP_SYS_NICE) |
                                            CAP_MASK_LONG(CAP_SYS_RESOURCE),
                                               "system/bin/lmkd" },
+    { 00550, AID_LMKD,      AID_LMKD,      CAP_MASK_LONG(CAP_KILL) |
+                                           CAP_MASK_LONG(CAP_IPC_LOCK),
+                                              "system/bin/llkd" },
     { 00550, AID_LOGD,      AID_LOGD,      CAP_MASK_LONG(CAP_SYSLOG) |
                                            CAP_MASK_LONG(CAP_AUDIT_CONTROL) |
                                            CAP_MASK_LONG(CAP_SETGID),
