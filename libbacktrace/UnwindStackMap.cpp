@@ -127,12 +127,7 @@ bool UnwindStackOfflineMap::Build() {
   return false;
 }
 
-bool UnwindStackOfflineMap::Build(const std::vector<backtrace_map_t>& backtrace_maps,
-                                  const backtrace_stackinfo_t& stack) {
-  if (stack.start >= stack.end) {
-    return false;
-  }
-
+bool UnwindStackOfflineMap::Build(const std::vector<backtrace_map_t>& backtrace_maps) {
   for (const backtrace_map_t& map : backtrace_maps) {
     maps_.push_back(map);
   }
@@ -144,6 +139,14 @@ bool UnwindStackOfflineMap::Build(const std::vector<backtrace_map_t>& backtrace_
   stack_maps_.reset(maps);
   for (const backtrace_map_t& map : maps_) {
     maps->Add(map.start, map.end, map.offset, map.flags, map.name, map.load_bias);
+  }
+
+  return true;
+}
+
+bool UnwindStackOfflineMap::SetStack(const backtrace_stackinfo_t& stack) {
+  if (stack.start >= stack.end) {
+    return false;
   }
 
   // Create the process memory from the stack data.
@@ -182,12 +185,10 @@ BacktraceMap* BacktraceMap::Create(pid_t pid, bool uncached) {
 //-------------------------------------------------------------------------
 // BacktraceMap create offline function.
 //-------------------------------------------------------------------------
-BacktraceMap* BacktraceMap::CreateOffline(pid_t pid, const std::vector<backtrace_map_t>& maps,
-                                          const backtrace_stackinfo_t& stack) {
-  UnwindStackOfflineMap* map = new UnwindStackOfflineMap(pid);
-  if (!map->Build(maps, stack)) {
-    delete map;
+BacktraceMap* BacktraceMap::Create(pid_t pid, const std::vector<backtrace_map_t>& maps) {
+  std::unique_ptr<UnwindStackOfflineMap> map(new UnwindStackOfflineMap(pid));
+  if (!map->Build(maps)) {
     return nullptr;
   }
-  return map;
+  return map.release();
 }

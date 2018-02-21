@@ -76,7 +76,9 @@ class UnwindStackOfflineMap : public UnwindStackMap {
 
   bool Build() override;
 
-  bool Build(const std::vector<backtrace_map_t>& maps, const backtrace_stackinfo_t& stack);
+  bool Build(const std::vector<backtrace_map_t>& maps);
+
+  virtual bool SetStack(const backtrace_stackinfo_t&) override;
 };
 
 #endif  // _LIBBACKTRACE_UNWINDSTACK_MAP_H

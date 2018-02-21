@@ -184,6 +184,9 @@ bool UnwindStackOffline::Unwind(size_t num_ignore_frames, void* ucontext) {
 
   unwindstack::ArchEnum arch;
   switch (arch_) {
+    case ARCH_UNKNOWN:
+      arch = unwindstack::Regs::CurrentArch();
+      break;
     case ARCH_ARM:
       arch = unwindstack::ARCH_ARM;
       break;
@@ -217,22 +220,24 @@ bool UnwindStackOffline::ReadWord(uint64_t, word_t*) {
   return false;
 }
 
-Backtrace* Backtrace::CreateOffline(ArchEnum arch, pid_t pid, pid_t tid,
-                                    const std::vector<backtrace_map_t>& maps,
-                                    const backtrace_stackinfo_t& stack) {
-  BacktraceMap* map = BacktraceMap::CreateOffline(pid, maps, stack);
+Backtrace* Backtrace::CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map,
+                                    const backtrace_stackinfo_t& stack, bool cache_file) {
   if (map == nullptr) {
     return nullptr;
   }
-
-  return new UnwindStackOffline(arch, pid, tid, map, false);
+  if (!map->SetStack(stack)) {
+    return nullptr;
+  }
+  std::unique_ptr<UnwindStackOffline> unwind(new UnwindStackOffline(arch, pid, tid, map, true));
+  if (cache_file) {
+    SetGlobalElfCache(true);
+  }
+  return unwind.release();
 }
 
-Backtrace* Backtrace::CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map) {
-  if (map == nullptr) {
-    return nullptr;
-  }
-  return new UnwindStackOffline(arch, pid, tid, map, true);
+Backtrace* Backtrace::CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
+                                    const backtrace_stackinfo_t& stack, bool cache_file) {
+  return CreateOffline(ARCH_UNKNOWN, pid, tid, map, stack, cache_file);
 }
 
 void Backtrace::SetGlobalElfCache(bool enable) {

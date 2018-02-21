@@ -270,8 +270,9 @@ static void BacktraceOfflineTest(std::string arch_str, const std::string& testli
     abort();
   }
 
-  std::unique_ptr<Backtrace> backtrace(Backtrace::CreateOffline(
-      arch, testdata.pid, testdata.tid, testdata.maps, testdata.stack_info));
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(testdata.pid, testdata.maps));
+  std::unique_ptr<Backtrace> backtrace(
+      Backtrace::CreateOffline(arch, testdata.pid, testdata.tid, map.get(), testdata.stack_info));
   ASSERT_TRUE(backtrace != nullptr) << "Failed " << arch_str;
 
   ASSERT_TRUE(backtrace->Unwind(0, testdata.ucontext.data())) << "Failed " << arch_str;
@@ -355,8 +356,9 @@ static void LibUnwindingTest(const std::string& arch_str, const std::string& tes
   }
 
   // Do offline backtrace.
-  std::unique_ptr<Backtrace> backtrace(Backtrace::CreateOffline(
-      arch, testdata.pid, testdata.tid, testdata.maps, testdata.stack_info));
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(testdata.pid, testdata.maps));
+  std::unique_ptr<Backtrace> backtrace(
+      Backtrace::CreateOffline(arch, testdata.pid, testdata.tid, map.get(), testdata.stack_info));
   ASSERT_TRUE(backtrace != nullptr);
 
   ASSERT_TRUE(backtrace->Unwind(0, testdata.ucontext.data()));

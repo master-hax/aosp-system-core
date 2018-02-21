@@ -104,6 +104,7 @@ class Regs;
 class Backtrace {
  public:
   enum ArchEnum : uint8_t {
+    ARCH_UNKNOWN,
     ARCH_ARM,
     ARCH_ARM64,
     ARCH_X86,
@@ -125,20 +126,14 @@ class Backtrace {
   static Backtrace* Create(pid_t pid, pid_t tid, BacktraceMap* map = NULL);
 
   // Create an offline Backtrace object that can be used to do an unwind without a process
-  // that is still running. By default, information is only cached in the map
-  // file. If the calling code creates the map, data can be cached between
-  // unwinds. If not, all cached data will be destroyed when the Backtrace
-  // object is destroyed.
-  static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid,
-                                  const std::vector<backtrace_map_t>& maps,
-                                  const backtrace_stackinfo_t& stack);
-  static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map);
-
-  // Create an offline Backtrace object that can be used to do an unwind without a process
   // that is still running. If cache_file is set to true, then elf information will be cached
   // for this call. The cached information survives until the calling process ends. This means
   // that subsequent calls to create offline Backtrace objects will continue to use the same
   // cache. It also assumes that the elf files used for each offline unwind are the same.
+  static Backtrace* CreateOffline(ArchEnum arch, pid_t pid, pid_t tid, BacktraceMap* map,
+                                  const backtrace_stackinfo_t& stack, bool cache_file = false);
+
+  // Same as the previous CreateOffline overload, but it uses the current architecture.
   static Backtrace* CreateOffline(pid_t pid, pid_t tid, BacktraceMap* map,
                                   const backtrace_stackinfo_t& stack, bool cache_file = false);
 

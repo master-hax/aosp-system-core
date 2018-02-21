@@ -61,8 +61,7 @@ public:
   // is unsupported.
   static BacktraceMap* Create(pid_t pid, bool uncached = false);
 
-  static BacktraceMap* CreateOffline(pid_t pid, const std::vector<backtrace_map_t>& maps,
-                                     const backtrace_stackinfo_t& stack);
+  static BacktraceMap* Create(pid_t pid, const std::vector<backtrace_map_t>& maps);
 
   virtual ~BacktraceMap();
 
@@ -140,6 +139,8 @@ public:
   size_t size() const { return maps_.size(); }
 
   virtual bool Build();
+
+  virtual bool SetStack(const backtrace_stackinfo_t&) { return false; }
 
   static inline bool IsValid(const backtrace_map_t& map) {
     return map.end > 0;
