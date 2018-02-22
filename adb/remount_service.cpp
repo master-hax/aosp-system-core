@@ -95,7 +95,7 @@ static bool remount_partition(int fd, const char* dir) {
                    dir, dev.c_str(), strerror(errno));
         return false;
     }
-    if (mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr) == -1) {
+    if (mount(dev.c_str(), dir, "none", MS_REMOUNT | MS_BIND, nullptr) == -1) {
         WriteFdFmt(fd, "remount of %s failed: %s\n", dir, strerror(errno));
         return false;
     }
