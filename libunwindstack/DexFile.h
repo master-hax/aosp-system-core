@@ -28,18 +28,26 @@
 
 namespace unwindstack {
 
+class Memory;
+struct MapInfo;
+
 class DexFile {
  public:
+  static constexpr const char* kJitDebugDescriptorName = "__dex_debug_descriptor";
+
   DexFile() = default;
   virtual ~DexFile() = default;
 
-  bool GetMethodInformation(uint64_t dex_offset, std::string* method_name, uint64_t* method_offset);
+  bool GetFunctionName(uint64_t dex_pc, std::string* method_name, uint64_t* method_offset);
 
   static DexFile* Create(uint64_t dex_file_offset_in_memory, Memory* memory, MapInfo* info);
+
+  void GetValidPcRange(uint64_t* begin, uint64_t* end);
 
  protected:
   void Init();
 
+  uint64_t addr_ = 0;
   std::unique_ptr<const art::DexFile> dex_file_;
   std::map<uint32_t, uint32_t> method_cache_;  // dex offset to method index.
   bool initialized_ = false;

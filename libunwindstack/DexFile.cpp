@@ -41,12 +41,14 @@ DexFile* DexFile::Create(uint64_t dex_file_offset_in_memory, Memory* memory, Map
   if (!info->name.empty()) {
     std::unique_ptr<DexFileFromFile> dex_file(new DexFileFromFile);
     if (dex_file->Open(dex_file_offset_in_memory - info->start + info->offset, info->name)) {
+      dex_file->addr_ = dex_file_offset_in_memory;
       return dex_file.release();
     }
   }
 
   std::unique_ptr<DexFileFromMemory> dex_file(new DexFileFromMemory);
   if (dex_file->Open(dex_file_offset_in_memory, memory)) {
+    dex_file->addr_ = dex_file_offset_in_memory;
     return dex_file.release();
   }
   return nullptr;
@@ -58,12 +60,12 @@ DexFileFromFile::~DexFileFromFile() {
   }
 }
 
-bool DexFile::GetMethodInformation(uint64_t dex_offset, std::string* method_name,
-                                   uint64_t* method_offset) {
+bool DexFile::GetFunctionName(uint64_t dex_pc, std::string* method_name, uint64_t* method_offset) {
   if (dex_file_ == nullptr) {
     return false;
   }
 
+  uint64_t dex_offset = dex_pc - this->addr_;
   if (!dex_file_->IsInDataSection(dex_file_->Begin() + dex_offset)) {
     return false;  // The DEX offset is not within the bytecode of this dex file.
   }
@@ -203,6 +205,20 @@ bool DexFileFromMemory::Open(uint64_t dex_file_offset_in_memory, Memory* memory)
       loader.Open(memory_.data(), header->file_size_, "", 0, nullptr, false, false, &error_msg);
   dex_file_.reset(dex.release());
   return dex_file_ != nullptr;
+}
+
+void DexFile::GetValidPcRange(uint64_t* begin, uint64_t* end) {
+  if (dex_file_->IsCompactDexFile()) {
+    // The data section of compact dex files might be shared.
+    // Narrow the range down to the subrange unique to this compact dex.
+    const auto& header = dex_file_->AsCompactDexFile()->GetHeader();
+    *begin = addr_ + header.data_off_ + header.OwnedDataBegin();
+    *end = addr_ + header.data_off_ + header.OwnedDataEnd();
+  } else {
+    const art::DexFile::Header& header = dex_file_->GetHeader();
+    *begin = addr_ + header.data_off_;
+    *end = addr_ + header.data_off_ + header.data_size_;
+  }
 }
 
 }  // namespace unwindstack

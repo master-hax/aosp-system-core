@@ -36,30 +36,29 @@
 #include <unwindstack/Regs.h>
 #include <unwindstack/RegsGetLocal.h>
 
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-#include <unwindstack/DexFiles.h>
-#endif
 #include <unwindstack/Unwinder.h>
 
 #include "BacktraceLog.h"
 #include "UnwindStack.h"
 #include "UnwindStackMap.h"
 
+namespace unwindstack {
+class DexFile;
+}
+
 bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
                        std::vector<backtrace_frame_data_t>* frames, size_t num_ignore_frames,
                        std::vector<std::string>* skip_names, BacktraceUnwindError* error) {
+  using namespace unwindstack;
   UnwindStackMap* stack_map = reinterpret_cast<UnwindStackMap*>(back_map);
   auto process_memory = stack_map->process_memory();
-  unwindstack::Unwinder unwinder(MAX_BACKTRACE_FRAMES + num_ignore_frames, stack_map->stack_maps(),
-                                 regs, stack_map->process_memory());
+  Unwinder unwinder(MAX_BACKTRACE_FRAMES + num_ignore_frames, stack_map->stack_maps(), regs,
+                    stack_map->process_memory());
   unwinder.SetResolveNames(stack_map->ResolveNames());
-  if (stack_map->GetJitDebug() != nullptr) {
-    unwinder.SetJitDebug(stack_map->GetJitDebug(), regs->Arch());
-  }
+  std::vector<std::string> search_libs_{"libart.so", "libartd.so"};
+  unwinder.SetJitDebug(JitDebug<Elf>::Create(regs->Arch(), process_memory, search_libs_));
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  if (stack_map->GetDexFiles() != nullptr) {
-    unwinder.SetDexFiles(stack_map->GetDexFiles(), regs->Arch());
-  }
+  unwinder.SetDexFiles(JitDebug<DexFile>::Create(regs->Arch(), process_memory, search_libs_));
 #endif
   unwinder.Unwind(skip_names, &stack_map->GetSuffixesToIgnore());
   if (error != nullptr) {

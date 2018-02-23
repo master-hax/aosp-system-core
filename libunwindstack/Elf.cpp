@@ -233,6 +233,26 @@ bool Elf::IsValidPc(uint64_t pc) {
   return false;
 }
 
+bool Elf::GetValidPcRange(uint64_t* begin, uint64_t* end) {
+  if (!valid_) {
+    return false;
+  }
+
+  if (interface_->GetValidPcRange(begin, end)) {
+    *begin += load_bias_;
+    *end += load_bias_;
+    return true;
+  }
+
+  if (gnu_debugdata_interface_ != nullptr && gnu_debugdata_interface_->GetValidPcRange(begin, end)) {
+    *begin += load_bias_;
+    *end += load_bias_;
+    return true;
+  }
+
+  return false;
+}
+
 ElfInterface* Elf::CreateInterfaceFromMemory(Memory* memory) {
   if (!IsValidElf(memory)) {
     return nullptr;
