@@ -349,6 +349,11 @@ static void import_kernel_nv(const std::string& key, const std::string& value, b
     if (for_emulator) {
         // In the emulator, export any kernel option with the "ro.kernel." prefix.
         property_set("ro.kernel." + key, value);
+        // emulator's opengles version changes depending on host machine, cannot
+        // preset it in the device.mk file
+        if (key == "qemu.opengles.version") {
+            property_set("ro.opengles.version" , value);
+        }
         return;
     }
 
