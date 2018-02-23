@@ -26,7 +26,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/Elf.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>

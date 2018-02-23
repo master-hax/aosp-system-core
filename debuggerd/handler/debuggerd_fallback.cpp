@@ -42,7 +42,6 @@
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>

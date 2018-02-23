@@ -48,7 +48,6 @@
 #define ATRACE_TAG ATRACE_TAG_BIONIC
 #include <utils/Trace.h>
 
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
