@@ -28,6 +28,7 @@
 #include <unwindstack/Elf.h>
 #include <unwindstack/ElfInterface.h>
 #include <unwindstack/MapInfo.h>
+#include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/Regs.h>
 
@@ -98,6 +99,10 @@ bool Elf::GetSoname(std::string* name) {
 }
 
 uint64_t Elf::GetRelPc(uint64_t pc, const MapInfo* map_info) {
+  if (map_info->flags & MAPS_FLAGS_JIT_SYMFILE_MAP) {
+    // This is a map mapping to JIT symfile.
+    return pc;
+  }
   return pc - map_info->start + load_bias_ + map_info->elf_offset;
 }
 
