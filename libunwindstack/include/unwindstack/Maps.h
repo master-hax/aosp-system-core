@@ -30,6 +30,7 @@ namespace unwindstack {
 // Special flag to indicate a map is in /dev/. However, a map in
 // /dev/ashmem/... does not set this flag.
 static constexpr int MAPS_FLAGS_DEVICE_MAP = 0x8000;
+static constexpr int MAPS_FLAGS_JIT_SYMFILE_MAP = 0x4000;
 
 class Maps {
  public:
