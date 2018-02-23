@@ -44,7 +44,6 @@
 #include <log/log.h>
 #include <log/logprint.h>
 #include <private/android_filesystem_config.h>
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
