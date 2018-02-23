@@ -19,6 +19,7 @@
 
 // DO NOT USE: Please instead use std::atomic
 
+#warning "Using deprecated utils/atomic.h header. Use cutils/atomic.h or std::atomic instead."
 #include <cutils/atomic.h>
 
 #endif // ANDROID_UTILS_ATOMIC_H
