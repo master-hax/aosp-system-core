@@ -290,8 +290,7 @@ std::string Unwinder::FormatFrame(const FrameData& frame, bool is32bit) {
   return data;
 }
 
-void Unwinder::SetJitDebug(JitDebug* jit_debug, ArchEnum arch) {
-  jit_debug->SetArch(arch);
+void Unwinder::SetJitDebug(JitDebug* jit_debug) {
   jit_debug_ = jit_debug;
 }
 

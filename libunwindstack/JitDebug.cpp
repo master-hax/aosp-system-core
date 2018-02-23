@@ -16,8 +16,12 @@
 
 #include <stdint.h>
 #include <sys/mman.h>
+#include <cstddef>
 
+#include <atomic>
+#include <map>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 #include <unwindstack/Elf.h>
@@ -30,142 +34,112 @@
 
 namespace unwindstack {
 
-struct JITCodeEntry32Pack {
-  uint32_t next;
-  uint32_t prev;
-  uint32_t symfile_addr;
-  uint64_t symfile_size;
+// 32-bit platforms may differ in alignment of uint64_t.
+struct Uint64_P {
+  uint64_t value;
 } __attribute__((packed));
+struct Uint64_A {
+  uint64_t value;
+} __attribute__((aligned(8)));
 
-struct JITCodeEntry32Pad {
-  uint32_t next;
-  uint32_t prev;
-  uint32_t symfile_addr;
-  uint32_t pad;
-  uint64_t symfile_size;
+template <typename PointerT, typename Uint64_T>
+class JitDebugImpl : public JitDebug {
+ public:
+  static constexpr const char* kDescriptorMagic = "Android1";
+  static constexpr int kMaxRaceRetries = 16;
+
+  struct JITCodeEntry {
+    PointerT next;
+    PointerT prev;
+    PointerT symfile_addr;
+    Uint64_T symfile_size;
+    // Android-specific extensions.
+    Uint64_T register_timestamp;
+  };
+
+  struct JITDescriptor {
+    uint32_t version;
+    uint32_t action_flag;
+    PointerT relevant_entry;
+    PointerT first_entry;
+    // Android-specific extensions:
+    uint8_t magic[8];
+    uint32_t flags;
+    uint32_t sizeof_descriptor;
+    uint32_t sizeof_entry;
+    uint32_t action_counter;
+    uint64_t action_timestamp;
+  };
+
+  Elf* GetElf(Maps* maps, uint64_t pc) override;
+
+  void Init(Maps* maps);
+  bool SafeRead(uint64_t addr, void* dst, size_t size, bool* race, uint32_t counter);
+  bool ReadEntries(bool* race);
+  bool ReadEntries(bool detect_races = true);
+
+  bool initialized_ = false;
+  uint64_t descriptor_addr_ = 0;
+  uint64_t counter_addr_ = 0;
+
+  struct CacheEntry {
+    uint64_t timestamp_ = 0;
+    uint64_t text_addr_ = 0;
+    uint64_t text_size_ = 0;
+    std::unique_ptr<Elf> elf_;
+    std::unique_ptr<MemoryBuffer> buffer_;
+  };
+  // Cached entries sorted by the *end* address of the valid PC range.
+  std::map<uint64_t, std::unique_ptr<CacheEntry>> entries_;
+  // All entries at or before this timestamp have been already cached.
+  uint64_t max_timestamp;
 };
 
-struct JITCodeEntry64 {
-  uint64_t next;
-  uint64_t prev;
-  uint64_t symfile_addr;
-  uint64_t symfile_size;
-};
-
-struct JITDescriptorHeader {
-  uint32_t version;
-  uint32_t action_flag;
-};
-
-struct JITDescriptor32 {
-  JITDescriptorHeader header;
-  uint32_t relevant_entry;
-  uint32_t first_entry;
-};
-
-struct JITDescriptor64 {
-  JITDescriptorHeader header;
-  uint64_t relevant_entry;
-  uint64_t first_entry;
-};
-
-JitDebug::JitDebug(std::shared_ptr<Memory>& memory) : memory_(memory) {}
-
-JitDebug::JitDebug(std::shared_ptr<Memory>& memory, std::vector<std::string>& search_libs)
-    : memory_(memory), search_libs_(search_libs) {}
-
-JitDebug::~JitDebug() {
-  for (auto* elf : elf_list_) {
-    delete elf;
-  }
-}
-
-uint64_t JitDebug::ReadDescriptor32(uint64_t addr) {
-  JITDescriptor32 desc;
-  if (!memory_->ReadFully(addr, &desc, sizeof(desc))) {
-    return 0;
-  }
-
-  if (desc.header.version != 1 || desc.first_entry == 0) {
-    // Either unknown version, or no jit entries.
-    return 0;
-  }
-
-  return desc.first_entry;
-}
-
-uint64_t JitDebug::ReadDescriptor64(uint64_t addr) {
-  JITDescriptor64 desc;
-  if (!memory_->ReadFully(addr, &desc, sizeof(desc))) {
-    return 0;
-  }
-
-  if (desc.header.version != 1 || desc.first_entry == 0) {
-    // Either unknown version, or no jit entries.
-    return 0;
-  }
-
-  return desc.first_entry;
-}
-
-uint64_t JitDebug::ReadEntry32Pack(uint64_t* start, uint64_t* size) {
-  JITCodeEntry32Pack code;
-  if (!memory_->ReadFully(entry_addr_, &code, sizeof(code))) {
-    return 0;
-  }
-
-  *start = code.symfile_addr;
-  *size = code.symfile_size;
-  return code.next;
-}
-
-uint64_t JitDebug::ReadEntry32Pad(uint64_t* start, uint64_t* size) {
-  JITCodeEntry32Pad code;
-  if (!memory_->ReadFully(entry_addr_, &code, sizeof(code))) {
-    return 0;
-  }
-
-  *start = code.symfile_addr;
-  *size = code.symfile_size;
-  return code.next;
-}
-
-uint64_t JitDebug::ReadEntry64(uint64_t* start, uint64_t* size) {
-  JITCodeEntry64 code;
-  if (!memory_->ReadFully(entry_addr_, &code, sizeof(code))) {
-    return 0;
-  }
-
-  *start = code.symfile_addr;
-  *size = code.symfile_size;
-  return code.next;
-}
-
-void JitDebug::SetArch(ArchEnum arch) {
+std::unique_ptr<JitDebug> JitDebug::Create(ArchEnum arch, std::shared_ptr<Memory>& memory,
+                                           std::vector<std::string> search_libs) {
+  std::unique_ptr<JitDebug> jit;
   switch (arch) {
     case ARCH_X86:
-      read_descriptor_func_ = &JitDebug::ReadDescriptor32;
-      read_entry_func_ = &JitDebug::ReadEntry32Pack;
+      static_assert(sizeof(JitDebugImpl<uint32_t, Uint64_P>::JITCodeEntry) == 28, "layout");
+      jit.reset(new JitDebugImpl<uint32_t, Uint64_P>());
       break;
-
     case ARCH_ARM:
     case ARCH_MIPS:
-      read_descriptor_func_ = &JitDebug::ReadDescriptor32;
-      read_entry_func_ = &JitDebug::ReadEntry32Pad;
+      static_assert(sizeof(JitDebugImpl<uint32_t, Uint64_A>::JITCodeEntry) == 32, "layout");
+      jit.reset(new JitDebugImpl<uint32_t, Uint64_A>());
       break;
-
     case ARCH_ARM64:
     case ARCH_X86_64:
     case ARCH_MIPS64:
-      read_descriptor_func_ = &JitDebug::ReadDescriptor64;
-      read_entry_func_ = &JitDebug::ReadEntry64;
+      static_assert(sizeof(JitDebugImpl<uint64_t, Uint64_A>::JITCodeEntry) == 40, "layout");
+      jit.reset(new JitDebugImpl<uint64_t, Uint64_A>());
       break;
-    case ARCH_UNKNOWN:
+    default:
       abort();
   }
+  jit->arch_ = arch;
+  jit->memory_ = memory;
+  jit->search_libs_ = std::move(search_libs);
+  return jit;
 }
 
-void JitDebug::Init(Maps* maps) {
+template <typename PointerT, typename SymSizeT>
+Elf* JitDebugImpl<PointerT, SymSizeT>::GetElf(Maps* maps, uint64_t pc) {
+  std::lock_guard<std::mutex> guard(lock_);
+  Init(maps);
+  if (!ReadEntries()) {
+    return nullptr;
+  }
+  // Upper bound returns the first entry for which (end > pc).
+  auto ub = entries_.upper_bound(pc);
+  if (ub != entries_.end() && ub->second->elf_->IsValidPc(pc)) {
+    return ub->second->elf_.get();
+  }
+  return nullptr;
+}
+
+template <typename PointerT, typename SymSizeT>
+void JitDebugImpl<PointerT, SymSizeT>::Init(Maps* maps) {
   if (initialized_) {
     return;
   }
@@ -195,52 +169,137 @@ void JitDebug::Init(Maps* maps) {
     Elf* elf = info->GetElf(memory_, true);
     uint64_t descriptor_addr;
     if (elf->GetGlobalVariable(descriptor_name, &descriptor_addr)) {
-      // Search for the first non-zero entry.
+      JITDescriptor desc;
       descriptor_addr += info->start;
-      entry_addr_ = (this->*read_descriptor_func_)(descriptor_addr);
-      if (entry_addr_ != 0) {
+      if (!memory_->ReadFully(descriptor_addr, &desc, sizeof(desc))) {
+        continue;
+      }
+      // Find the first descriptor that has any entries.
+      if (desc.first_entry != 0) {
+        descriptor_addr_ = descriptor_addr;
+        counter_addr_ = descriptor_addr_ + offsetof(JITDescriptor, action_counter);
         break;
       }
     }
   }
 }
 
-Elf* JitDebug::GetElf(Maps* maps, uint64_t pc) {
-  // Use a single lock, this object should be used so infrequently that
-  // a fine grain lock is unnecessary.
-  std::lock_guard<std::mutex> guard(lock_);
-  if (!initialized_) {
-    Init(maps);
-  }
-
-  // Search the existing elf object first.
-  for (Elf* elf : elf_list_) {
-    if (elf->IsValidPc(pc)) {
-      return elf;
+// Check for race: with a live process it is possible that the memory of the entry
+// has been freed and reused for something else before we have managed to read it.
+// We can use the action counter to check whether such race might have occurred.
+template <typename PointerT, typename SymSizeT>
+bool JitDebugImpl<PointerT, SymSizeT>::SafeRead(uint64_t addr, void* dst, size_t size, bool* race,
+                                                uint32_t expected_counter) {
+  bool ok = memory_->ReadFully(addr, dst, size);
+  if (race != nullptr) {
+    uint32_t seen_counter;
+    std::atomic_thread_fence(std::memory_order_acquire);
+    if (!memory_->Read32(counter_addr_, &seen_counter)) {
+      return false;
+    }
+    if (seen_counter != expected_counter) {
+      *race = true;
+      return false;
     }
   }
+  return ok;
+}
 
-  while (entry_addr_ != 0) {
-    uint64_t start;
-    uint64_t size;
-    entry_addr_ = (this->*read_entry_func_)(&start, &size);
+template <typename PointerT, typename SymSizeT>
+bool JitDebugImpl<PointerT, SymSizeT>::ReadEntries(bool* race) {
+  std::unordered_set<uint64_t> seen_entry_addr;
+  std::vector<std::unique_ptr<CacheEntry>> new_entries;
 
-    Elf* elf = new Elf(new MemoryRange(memory_, start, size, 0));
-    elf->Init(true);
-    if (!elf->valid()) {
-      // The data is not formatted in a way we understand, do not attempt
-      // to process any other entries.
-      entry_addr_ = 0;
-      delete elf;
-      return nullptr;
+  // We need to read the counter before we read desc.first_entry to ensure race safety.
+  uint32_t counter;
+  if (!memory_->Read32(counter_addr_, &counter)) {
+    return false;
+  }
+  std::atomic_thread_fence(std::memory_order_acquire);
+
+  // Read and verify the descriptor.
+  JITDescriptor desc;
+  if (!(memory_->ReadFully(descriptor_addr_, &desc, sizeof(desc)) && desc.version == 1 &&
+        memcmp(desc.magic, kDescriptorMagic, 8) == 0)) {
+    return false;
+  }
+
+  // Keep reading entries until we find one that we have seen before.
+  // Entries are always added at the head of the list so this should work.
+  JITCodeEntry entry;
+  for (uint64_t entry_addr = desc.first_entry; entry_addr != 0; entry_addr = entry.next) {
+    // Check for infinite loops in the lined list.
+    if (!seen_entry_addr.emplace(entry_addr).second) {
+      return false;
     }
-    elf_list_.push_back(elf);
 
-    if (elf->IsValidPc(pc)) {
-      return elf;
+    // Read the entry (while checking for data races).
+    if (!SafeRead(entry_addr, &entry, sizeof(entry), race, counter)) {
+      return false;
+    }
+
+    // Check whether we have reached an entry which has been already cached.
+    if (entry.register_timestamp.value <= max_timestamp) {
+      break;
+    }
+
+    // Make a copy of the in-memory ELF file (while checking for data races).
+    std::unique_ptr<MemoryBuffer> buffer(new MemoryBuffer());
+    buffer->Resize(entry.symfile_size.value);
+    if (!SafeRead(entry.symfile_addr, buffer->GetPtr(0), buffer->Size(), race, counter)) {
+      return false;
+    }
+
+    new_entries.push_back(std::unique_ptr<CacheEntry>(new CacheEntry{
+        .timestamp_ = entry.register_timestamp.value, .buffer_ = std::move(buffer)}));
+  }
+
+  // Load and validate the ELF files (outside the critical loop).
+  for (auto& it : new_entries) {
+    it->elf_.reset(new Elf(it->buffer_.release()));
+    it->elf_->Init(true);
+    if (!it->elf_->valid()) {
+      return false;
+    }
+    it->elf_->GetValidPcRange(&it->text_addr_, &it->text_size_);
+  }
+
+  // Save the results. We need to iterate in reverse (chronological) order.
+  for (; !new_entries.empty(); new_entries.pop_back()) {
+    std::unique_ptr<CacheEntry> it(std::move(new_entries.back()));
+    max_timestamp = std::max(max_timestamp, it->timestamp_);
+
+    // It is possible for ELF entry to have no executable code (e.g. type info).
+    if (it->text_size_ != 0) {
+      // Remove all old overlapping entries (presumably referring to GCed code).
+      while (true) {
+        // Upper bound returns the first entry for which (end > it->text_addr).
+        auto ub = entries_.upper_bound(it->text_addr_);
+        if (ub != entries_.end() && ub->second->text_addr_ < it->text_addr_ + it->text_size_) {
+          entries_.erase(ub);
+        } else {
+          break;
+        }
+      }
+      entries_.emplace(it->text_addr_ + it->text_size_, std::move(it));
     }
   }
-  return nullptr;
+  return true;
+}
+
+template <typename PointerT, typename SymSizeT>
+bool JitDebugImpl<PointerT, SymSizeT>::ReadEntries(bool detect_races) {
+  for (int i = 0; i < kMaxRaceRetries; i++) {
+    bool race = false;  // Set to true if we detect data race.
+    if (!ReadEntries(detect_races ? &race : nullptr)) {
+      if (race) {
+        continue;  // Try again (there was a data race).
+      }
+      return false;  // Proper failure (we could not read the data).
+    }
+    return true;  // Success.
+  }
+  return false;  // Too many retries.
 }
 
 }  // namespace unwindstack

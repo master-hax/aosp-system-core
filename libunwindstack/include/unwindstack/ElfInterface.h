@@ -68,6 +68,8 @@ class ElfInterface {
 
   virtual bool IsValidPc(uint64_t pc);
 
+  bool GetValidPcRange(uint64_t* addr, uint64_t* size);
+
   Memory* CreateGnuDebugdataMemory();
 
   Memory* memory() { return memory_; }
@@ -145,6 +147,9 @@ class ElfInterface {
 
   uint64_t gnu_debugdata_offset_ = 0;
   uint64_t gnu_debugdata_size_ = 0;
+
+  uint64_t text_addr_ = 0;
+  uint64_t text_size_ = 0;
 
   uint8_t soname_type_ = SONAME_UNKNOWN;
   std::string soname_;

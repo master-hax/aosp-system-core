@@ -53,13 +53,11 @@ bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
   unwindstack::Unwinder unwinder(MAX_BACKTRACE_FRAMES + num_ignore_frames, stack_map->stack_maps(),
                                  regs, stack_map->process_memory());
   unwinder.SetResolveNames(stack_map->ResolveNames());
-  if (stack_map->GetJitDebug() != nullptr) {
-    unwinder.SetJitDebug(stack_map->GetJitDebug(), regs->Arch());
-  }
+  std::vector<std::string> search_libs_{"libart.so", "libartd.so"};
+  unwinder.SetJitDebug(
+      unwindstack::JitDebug::Create(regs->Arch(), process_memory, search_libs_).release());
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  if (stack_map->GetDexFiles() != nullptr) {
-    unwinder.SetDexFiles(stack_map->GetDexFiles(), regs->Arch());
-  }
+  unwinder.SetDexFiles(new unwindstack::DexFiles(process_memory, search_libs_), regs->Arch());
 #endif
   unwinder.Unwind(skip_names, &stack_map->GetSuffixesToIgnore());
   if (error != nullptr) {
