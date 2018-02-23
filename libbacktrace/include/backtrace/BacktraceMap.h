@@ -40,6 +40,7 @@ struct backtrace_stackinfo_t;
 // Special flag to indicate a map is in /dev/. However, a map in
 // /dev/ashmem/... does not set this flag.
 static constexpr int PROT_DEVICE_MAP = 0x8000;
+static constexpr int PROT_JIT_SYMFILE_MAP = 0x4000;
 
 struct backtrace_map_t {
   uint64_t start = 0;
