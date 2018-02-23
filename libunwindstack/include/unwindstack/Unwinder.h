@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include <unwindstack/DexFiles.h>
 #include <unwindstack/Error.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
@@ -34,6 +33,7 @@
 namespace unwindstack {
 
 // Forward declarations.
+class DexFile;
 class Elf;
 enum ArchEnum : uint8_t;
 
@@ -72,6 +72,11 @@ class Unwinder {
     frames_.reserve(max_frames);
   }
 
+  Unwinder(const Unwinder&) = delete;
+  Unwinder& operator=(const Unwinder&) = delete;
+  Unwinder(Unwinder&&) = default;
+  Unwinder& operator=(Unwinder&&) = default;
+
   virtual ~Unwinder() = default;
 
   void Unwind(const std::vector<std::string>* initial_map_names_to_skip = nullptr,
@@ -90,8 +95,6 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num);
   static std::string FormatFrame(const FrameData& frame, bool is32bit);
 
-  void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
-
   void SetRegs(Regs* regs) { regs_ = regs; }
   Maps* GetMaps() { return maps_; }
   std::shared_ptr<Memory>& GetProcessMemory() { return process_memory_; }
@@ -104,10 +107,6 @@ class Unwinder {
   // embedded in a file. This is enabled by default.
   // NOTE: This does nothing unless resolving names is enabled.
   void SetEmbeddedSoname(bool embedded_soname) { embedded_soname_ = embedded_soname; }
-
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-  void SetDexFiles(DexFiles* dex_files, ArchEnum arch);
-#endif
 
   ErrorCode LastErrorCode() { return last_error_.code; }
   uint64_t LastErrorAddress() { return last_error_.address; }
@@ -124,9 +123,9 @@ class Unwinder {
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
-  JitDebug* jit_debug_ = nullptr;
+  std::unique_ptr<JitDebug<Elf>> jit_debug_;
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  DexFiles* dex_files_ = nullptr;
+  std::unique_ptr<JitDebug<DexFile>> dex_files_;
 #endif
   bool resolve_names_ = true;
   bool embedded_soname_ = true;
@@ -138,15 +137,11 @@ class UnwinderFromPid : public Unwinder {
   UnwinderFromPid(size_t max_frames, pid_t pid) : Unwinder(max_frames), pid_(pid) {}
   virtual ~UnwinderFromPid() = default;
 
-  bool Init(ArchEnum arch);
+  bool Init();
 
  private:
   pid_t pid_;
   std::unique_ptr<Maps> maps_ptr_;
-  std::unique_ptr<JitDebug> jit_debug_ptr_;
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-  std::unique_ptr<DexFiles> dex_files_ptr_;
-#endif
 };
 
 }  // namespace unwindstack
