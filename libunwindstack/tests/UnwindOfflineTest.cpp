@@ -272,9 +272,8 @@ TEST_F(UnwindOfflineTest, jit_debug_x86) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
+  unwinder.SetJitDebug(JitDebug<Elf>::Create(regs_->Arch(), process_memory_));
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));
@@ -566,9 +565,8 @@ TEST_F(UnwindOfflineTest, jit_debug_arm) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
+  unwinder.SetJitDebug(JitDebug<Elf>::Create(regs_->Arch(), process_memory_));
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));
@@ -967,9 +965,8 @@ TEST_F(UnwindOfflineTest, art_quick_osr_stub_arm) {
   }
   process_memory_.reset(memory);
 
-  JitDebug jit_debug(process_memory_);
   Unwinder unwinder(128, maps_.get(), regs_.get(), process_memory_);
-  unwinder.SetJitDebug(&jit_debug, regs_->Arch());
+  unwinder.SetJitDebug(JitDebug<Elf>::Create(regs_->Arch(), process_memory_));
   unwinder.Unwind();
 
   std::string frame_info(DumpFrames(unwinder));

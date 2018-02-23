@@ -26,14 +26,11 @@
 
 #include <android-base/stringprintf.h>
 
+#include <DexFile.h>
 #include <unwindstack/Elf.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Unwinder.h>
-
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-#include <unwindstack/DexFiles.h>
-#endif
 
 namespace unwindstack {
 
@@ -79,8 +76,7 @@ void Unwinder::FillInDexFrame() {
     return;
   }
 
-  dex_files_->GetMethodInformation(maps_, info, dex_pc, &frame->function_name,
-                                   &frame->function_offset);
+  dex_files_->GetFunctionName(maps_, dex_pc, &frame->function_name, &frame->function_offset);
 #endif
 }
 
@@ -136,7 +132,6 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
 
   bool return_address_attempt = false;
   bool adjust_pc = false;
-  std::unique_ptr<JitDebug> jit_debug;
   for (; frames_.size() < max_frames_;) {
     uint64_t cur_pc = regs_->pc();
     uint64_t cur_sp = regs_->sp();
@@ -167,7 +162,7 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
       // using the jit debug information.
       if (!elf->valid() && jit_debug_ != nullptr) {
         uint64_t adjusted_jit_pc = regs_->pc() - pc_adjustment;
-        Elf* jit_elf = jit_debug_->GetElf(maps_, adjusted_jit_pc);
+        Elf* jit_elf = jit_debug_->Get(maps_, adjusted_jit_pc);
         if (jit_elf != nullptr) {
           // The jit debug information requires a non relative adjusted pc.
           step_pc = adjusted_jit_pc;
@@ -292,17 +287,5 @@ std::string Unwinder::FormatFrame(const FrameData& frame, bool is32bit) {
   }
   return data;
 }
-
-void Unwinder::SetJitDebug(JitDebug* jit_debug, ArchEnum arch) {
-  jit_debug->SetArch(arch);
-  jit_debug_ = jit_debug;
-}
-
-#if !defined(NO_LIBDEXFILE_SUPPORT)
-void Unwinder::SetDexFiles(DexFiles* dex_files, ArchEnum arch) {
-  dex_files->SetArch(arch);
-  dex_files_ = dex_files;
-}
-#endif
 
 }  // namespace unwindstack

@@ -192,7 +192,7 @@ TEST(DexFileTest, get_method_not_opened) {
   std::string method("something");
   uint64_t method_offset = 100;
   DexFile dex_file;
-  dex_file.GetMethodInformation(0x100, &method, &method_offset);
+  dex_file.GetFunctionName(0x100, &method, &method_offset);
   EXPECT_EQ("something", method);
   EXPECT_EQ(100U, method_offset);
 }
@@ -206,13 +206,13 @@ TEST(DexFileTest, get_method) {
 
   std::string method;
   uint64_t method_offset;
-  dex_file->GetMethodInformation(0x102, &method, &method_offset);
+  dex_file->GetFunctionName(0x4102, &method, &method_offset);
   EXPECT_EQ("Main.<init>", method);
   EXPECT_EQ(2U, method_offset);
 
   method = "not_in_a_method";
   method_offset = 0x123;
-  dex_file->GetMethodInformation(0x100000, &method, &method_offset);
+  dex_file->GetFunctionName(0x100000, &method, &method_offset);
   EXPECT_EQ("not_in_a_method", method);
   EXPECT_EQ(0x123U, method_offset);
 }

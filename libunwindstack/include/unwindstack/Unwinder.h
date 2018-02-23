@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <unwindstack/Error.h>
+#include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/Regs.h>
@@ -32,9 +33,8 @@
 namespace unwindstack {
 
 // Forward declarations.
-class DexFiles;
+class DexFile;
 class Elf;
-class JitDebug;
 enum ArchEnum : uint8_t;
 
 struct FrameData {
@@ -73,14 +73,16 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num);
   static std::string FormatFrame(const FrameData& frame, bool is32bit);
 
-  void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
+  void SetJitDebug(std::unique_ptr<JitDebug<Elf>> jit_debug) { jit_debug_ = std::move(jit_debug); }
 
   // Disabling the resolving of names results in the function name being
   // set to an empty string and the function offset being set to zero.
   void SetResolveNames(bool resolve) { resolve_names_ = resolve; }
 
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  void SetDexFiles(DexFiles* dex_files, ArchEnum arch);
+  void SetDexFiles(std::unique_ptr<JitDebug<DexFile>> dex_files) {
+    dex_files_ = std::move(dex_files);
+  }
 #endif
 
   ErrorCode LastErrorCode() { return last_error_.code; }
@@ -96,9 +98,9 @@ class Unwinder {
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
-  JitDebug* jit_debug_ = nullptr;
+  std::unique_ptr<JitDebug<Elf>> jit_debug_;
 #if !defined(NO_LIBDEXFILE_SUPPORT)
-  DexFiles* dex_files_ = nullptr;
+  std::unique_ptr<JitDebug<DexFile>> dex_files_;
 #endif
   bool resolve_names_ = true;
   ErrorData last_error_;

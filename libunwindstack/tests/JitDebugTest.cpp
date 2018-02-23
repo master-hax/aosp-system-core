@@ -39,8 +39,7 @@ class JitDebugTest : public ::testing::Test {
     memory_ = new MemoryFake;
     process_memory_.reset(memory_);
 
-    jit_debug_.reset(new JitDebug(process_memory_));
-    jit_debug_->SetArch(ARCH_ARM);
+    jit_debug_ = JitDebug<Elf>::Create(ARCH_ARM, process_memory_);
 
     maps_.reset(
         new BufferMaps("1000-4000 ---s 00000000 00:00 0\n"
@@ -53,6 +52,10 @@ class JitDebugTest : public ::testing::Test {
                        "100000-110000 rw-p 0000000 00:00 0\n"
                        "200000-210000 rw-p 0000000 00:00 0\n"));
     ASSERT_TRUE(maps_->Parse());
+
+    for (uint64_t addr = 0x4000; addr < 0x6000; addr += 8) {
+      memory_->SetData64(addr, 0);
+    }
 
     MapInfo* map_info = maps_->Get(3);
     ASSERT_TRUE(map_info != nullptr);
@@ -97,7 +100,7 @@ class JitDebugTest : public ::testing::Test {
     ehdr.e_shstrndx = 1;
     ehdr.e_shoff = sh_offset;
     ehdr.e_shentsize = sizeof(ShdrType);
-    ehdr.e_shnum = 3;
+    ehdr.e_shnum = 4;
     memory_->SetMemory(offset, &ehdr, sizeof(ehdr));
 
     ShdrType shdr;
@@ -113,6 +116,7 @@ class JitDebugTest : public ::testing::Test {
     shdr.sh_size = 0x100;
     memory_->SetMemory(offset + sh_offset, &shdr, sizeof(shdr));
     memory_->SetMemory(offset + 0x500, ".debug_frame");
+    memory_->SetMemory(offset + 0x550, ".text");
 
     sh_offset += sizeof(shdr);
     memset(&shdr, 0, sizeof(shdr));
@@ -121,6 +125,15 @@ class JitDebugTest : public ::testing::Test {
     shdr.sh_addr = 0x600;
     shdr.sh_offset = 0x600;
     shdr.sh_size = 0x200;
+    memory_->SetMemory(offset + sh_offset, &shdr, sizeof(shdr));
+
+    sh_offset += sizeof(shdr);
+    memset(&shdr, 0, sizeof(shdr));
+    shdr.sh_type = SHT_NOBITS;
+    shdr.sh_name = 0x50;
+    shdr.sh_addr = pc;
+    shdr.sh_offset = 0;
+    shdr.sh_size = size;
     memory_->SetMemory(offset + sh_offset, &shdr, sizeof(shdr));
 
     // Now add a single cie/fde.
@@ -163,15 +176,15 @@ class JitDebugTest : public ::testing::Test {
   void WriteDescriptor32(uint64_t addr, uint32_t entry);
   void WriteDescriptor64(uint64_t addr, uint64_t entry);
   void WriteEntry32Pack(uint64_t addr, uint32_t prev, uint32_t next, uint32_t elf_addr,
-                        uint64_t elf_size);
+                        uint64_t elf_size, uint64_t timestamp = 1);
   void WriteEntry32Pad(uint64_t addr, uint32_t prev, uint32_t next, uint32_t elf_addr,
-                       uint64_t elf_size);
+                       uint64_t elf_size, uint64_t timestamp = 1);
   void WriteEntry64(uint64_t addr, uint64_t prev, uint64_t next, uint64_t elf_addr,
-                    uint64_t elf_size);
+                    uint64_t elf_size, uint64_t timestamp = 1);
 
   std::shared_ptr<Memory> process_memory_;
   MemoryFake* memory_;
-  std::unique_ptr<JitDebug> jit_debug_;
+  std::unique_ptr<JitDebug<Elf>> jit_debug_;
   std::unique_ptr<BufferMaps> maps_;
 };
 
@@ -185,6 +198,18 @@ void JitDebugTest::WriteDescriptor32(uint64_t addr, uint32_t entry) {
   memory_->SetData32(addr + 8, 0);
   //   uint32_t first_entry
   memory_->SetData32(addr + 12, entry);
+  //   uint8_t magic_
+  memory_->SetMemory(addr + 16, "Android1");
+  //   uint32_t flags_
+  memory_->SetData32(addr + 24, 0);
+  //   uint32_t sizeof_descriptor
+  memory_->SetData32(addr + 28, 0);
+  //   uint32_t sizeof_entry
+  memory_->SetData32(addr + 32, 0);
+  //   uint32_t action_seqlock_
+  memory_->SetData32(addr + 36, 0);
+  //   uint64_t action_timestamp_
+  memory_->SetData64(addr + 40, 0);
 }
 
 void JitDebugTest::WriteDescriptor64(uint64_t addr, uint64_t entry) {
@@ -197,10 +222,22 @@ void JitDebugTest::WriteDescriptor64(uint64_t addr, uint64_t entry) {
   memory_->SetData64(addr + 8, 0);
   //   uint64_t first_entry
   memory_->SetData64(addr + 16, entry);
+  //   uint8_t magic_
+  memory_->SetMemory(addr + 24, "Android1");
+  //   uint32_t flags_
+  memory_->SetData32(addr + 32, 0);
+  //   uint32_t sizeof_descriptor
+  memory_->SetData32(addr + 36, 0);
+  //   uint32_t sizeof_entry
+  memory_->SetData32(addr + 40, 0);
+  //   uint32_t action_seqlock_
+  memory_->SetData32(addr + 44, 0);
+  //   uint64_t action_timestamp_
+  memory_->SetData64(addr + 48, 0);
 }
 
 void JitDebugTest::WriteEntry32Pack(uint64_t addr, uint32_t prev, uint32_t next, uint32_t elf_addr,
-                                    uint64_t elf_size) {
+                                    uint64_t elf_size, uint64_t timestamp) {
   // Format of the 32 bit JITCodeEntry structure:
   //   uint32_t next
   memory_->SetData32(addr, next);
@@ -210,10 +247,12 @@ void JitDebugTest::WriteEntry32Pack(uint64_t addr, uint32_t prev, uint32_t next,
   memory_->SetData32(addr + 8, elf_addr);
   //   uint64_t symfile_size
   memory_->SetData64(addr + 12, elf_size);
+  //   uint64_t timestamp
+  memory_->SetData64(addr + 20, timestamp);
 }
 
 void JitDebugTest::WriteEntry32Pad(uint64_t addr, uint32_t prev, uint32_t next, uint32_t elf_addr,
-                                   uint64_t elf_size) {
+                                   uint64_t elf_size, uint64_t timestamp) {
   // Format of the 32 bit JITCodeEntry structure:
   //   uint32_t next
   memory_->SetData32(addr, next);
@@ -225,10 +264,12 @@ void JitDebugTest::WriteEntry32Pad(uint64_t addr, uint32_t prev, uint32_t next, 
   memory_->SetData32(addr + 12, 0);
   //   uint64_t symfile_size
   memory_->SetData64(addr + 16, elf_size);
+  //   uint64_t timestamp
+  memory_->SetData64(addr + 24, timestamp);
 }
 
 void JitDebugTest::WriteEntry64(uint64_t addr, uint64_t prev, uint64_t next, uint64_t elf_addr,
-                                uint64_t elf_size) {
+                                uint64_t elf_size, uint64_t timestamp) {
   // Format of the 64 bit JITCodeEntry structure:
   //   uint64_t next
   memory_->SetData64(addr, next);
@@ -238,23 +279,25 @@ void JitDebugTest::WriteEntry64(uint64_t addr, uint64_t prev, uint64_t next, uin
   memory_->SetData64(addr + 16, elf_addr);
   //   uint64_t symfile_size
   memory_->SetData64(addr + 24, elf_size);
+  //   uint64_t timestamp
+  memory_->SetData64(addr + 32, timestamp);
 }
 
 TEST_F(JitDebugTest, get_elf_invalid) {
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
 TEST_F(JitDebugTest, get_elf_no_global_variable) {
   maps_.reset(new BufferMaps(""));
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
 TEST_F(JitDebugTest, get_elf_no_valid_descriptor_in_memory) {
   CreateElf<Elf32_Ehdr, Elf32_Shdr>(0x4000, ELFCLASS32, EM_ARM, 0x1500, 0x200);
 
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
@@ -263,7 +306,7 @@ TEST_F(JitDebugTest, get_elf_no_valid_code_entry) {
 
   WriteDescriptor32(0xf800, 0x200000);
 
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
@@ -272,7 +315,7 @@ TEST_F(JitDebugTest, get_elf_invalid_descriptor_first_entry) {
 
   WriteDescriptor32(0xf800, 0);
 
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
@@ -283,7 +326,7 @@ TEST_F(JitDebugTest, get_elf_invalid_descriptor_version) {
   // Set the version to an invalid value.
   memory_->SetData32(0xf800, 2);
 
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf == nullptr);
 }
 
@@ -293,12 +336,18 @@ TEST_F(JitDebugTest, get_elf_32) {
   WriteDescriptor32(0xf800, 0x200000);
   WriteEntry32Pad(0x200000, 0, 0, 0x4000, 0x1000);
 
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf != nullptr);
+  uint64_t pc_begin;
+  uint64_t pc_end;
+  ASSERT_TRUE(elf->GetValidPcRange(&pc_begin, &pc_end));
+  ASSERT_EQ(pc_begin, 0x1500u);
+  ASSERT_EQ(pc_end, 0x1700u);
 
   // Clear the memory and verify all of the data is cached.
   memory_->Clear();
-  Elf* elf2 = jit_debug_->GetElf(maps_.get(), 0x1500);
+  WriteDescriptor32(0xf800, 0);
+  Elf* elf2 = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf2 != nullptr);
   EXPECT_EQ(elf, elf2);
 }
@@ -312,16 +361,15 @@ TEST_F(JitDebugTest, get_multiple_jit_debug_descriptors_valid) {
   WriteDescriptor32(0x12800, 0x201000);
   WriteEntry32Pad(0x201000, 0, 0, 0x5000, 0x1000);
 
-  ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x1500) != nullptr);
-  ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x2000) == nullptr);
+  ASSERT_TRUE(jit_debug_->Get(maps_.get(), 0x1500) != nullptr);
+  ASSERT_TRUE(jit_debug_->Get(maps_.get(), 0x2000) == nullptr);
 
   // Now clear the descriptor entry for the first one.
   WriteDescriptor32(0xf800, 0);
-  jit_debug_.reset(new JitDebug(process_memory_));
-  jit_debug_->SetArch(ARCH_ARM);
+  jit_debug_ = JitDebug<Elf>::Create(ARCH_ARM, process_memory_);
 
-  ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x1500) == nullptr);
-  ASSERT_TRUE(jit_debug_->GetElf(maps_.get(), 0x2000) != nullptr);
+  ASSERT_TRUE(jit_debug_->Get(maps_.get(), 0x1500) == nullptr);
+  ASSERT_TRUE(jit_debug_->Get(maps_.get(), 0x2000) != nullptr);
 }
 
 TEST_F(JitDebugTest, get_elf_x86) {
@@ -330,13 +378,14 @@ TEST_F(JitDebugTest, get_elf_x86) {
   WriteDescriptor32(0xf800, 0x200000);
   WriteEntry32Pack(0x200000, 0, 0, 0x4000, 0x1000);
 
-  jit_debug_->SetArch(ARCH_X86);
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  jit_debug_ = JitDebug<Elf>::Create(ARCH_X86, process_memory_);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf != nullptr);
 
   // Clear the memory and verify all of the data is cached.
   memory_->Clear();
-  Elf* elf2 = jit_debug_->GetElf(maps_.get(), 0x1500);
+  WriteDescriptor32(0xf800, 0);
+  Elf* elf2 = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf2 != nullptr);
   EXPECT_EQ(elf, elf2);
 }
@@ -347,13 +396,14 @@ TEST_F(JitDebugTest, get_elf_64) {
   WriteDescriptor64(0xf800, 0x200000);
   WriteEntry64(0x200000, 0, 0, 0x4000, 0x1000);
 
-  jit_debug_->SetArch(ARCH_ARM64);
-  Elf* elf = jit_debug_->GetElf(maps_.get(), 0x1500);
+  jit_debug_ = JitDebug<Elf>::Create(ARCH_ARM64, process_memory_);
+  Elf* elf = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf != nullptr);
 
   // Clear the memory and verify all of the data is cached.
   memory_->Clear();
-  Elf* elf2 = jit_debug_->GetElf(maps_.get(), 0x1500);
+  WriteDescriptor64(0xf800, 0);
+  Elf* elf2 = jit_debug_->Get(maps_.get(), 0x1500);
   ASSERT_TRUE(elf2 != nullptr);
   EXPECT_EQ(elf, elf2);
 }
@@ -366,20 +416,21 @@ TEST_F(JitDebugTest, get_elf_multiple_entries) {
   WriteEntry32Pad(0x200000, 0, 0x200100, 0x4000, 0x1000);
   WriteEntry32Pad(0x200100, 0x200100, 0, 0x5000, 0x1000);
 
-  Elf* elf_2 = jit_debug_->GetElf(maps_.get(), 0x2400);
+  Elf* elf_2 = jit_debug_->Get(maps_.get(), 0x2400);
   ASSERT_TRUE(elf_2 != nullptr);
 
-  Elf* elf_1 = jit_debug_->GetElf(maps_.get(), 0x1600);
+  Elf* elf_1 = jit_debug_->Get(maps_.get(), 0x1600);
   ASSERT_TRUE(elf_1 != nullptr);
 
   // Clear the memory and verify all of the data is cached.
   memory_->Clear();
-  EXPECT_EQ(elf_1, jit_debug_->GetElf(maps_.get(), 0x1500));
-  EXPECT_EQ(elf_1, jit_debug_->GetElf(maps_.get(), 0x16ff));
-  EXPECT_EQ(elf_2, jit_debug_->GetElf(maps_.get(), 0x2300));
-  EXPECT_EQ(elf_2, jit_debug_->GetElf(maps_.get(), 0x26ff));
-  EXPECT_EQ(nullptr, jit_debug_->GetElf(maps_.get(), 0x1700));
-  EXPECT_EQ(nullptr, jit_debug_->GetElf(maps_.get(), 0x2700));
+  WriteDescriptor32(0xf800, 0);
+  EXPECT_EQ(elf_1, jit_debug_->Get(maps_.get(), 0x1500));
+  EXPECT_EQ(elf_1, jit_debug_->Get(maps_.get(), 0x16ff));
+  EXPECT_EQ(elf_2, jit_debug_->Get(maps_.get(), 0x2300));
+  EXPECT_EQ(elf_2, jit_debug_->Get(maps_.get(), 0x26ff));
+  EXPECT_EQ(nullptr, jit_debug_->Get(maps_.get(), 0x1700));
+  EXPECT_EQ(nullptr, jit_debug_->Get(maps_.get(), 0x2700));
 }
 
 TEST_F(JitDebugTest, get_elf_search_libs) {
@@ -390,19 +441,17 @@ TEST_F(JitDebugTest, get_elf_search_libs) {
 
   // Only search a given named list of libs.
   std::vector<std::string> libs{"libart.so"};
-  jit_debug_.reset(new JitDebug(process_memory_, libs));
-  jit_debug_->SetArch(ARCH_ARM);
-  EXPECT_TRUE(jit_debug_->GetElf(maps_.get(), 0x1500) == nullptr);
+  jit_debug_ = JitDebug<Elf>::Create(ARCH_ARM, process_memory_, libs);
+  EXPECT_TRUE(jit_debug_->Get(maps_.get(), 0x1500) == nullptr);
 
   // Change the name of the map that includes the value and verify this works.
   MapInfo* map_info = maps_->Get(5);
   map_info->name = "/system/lib/libart.so";
-  jit_debug_.reset(new JitDebug(process_memory_, libs));
+  jit_debug_ = JitDebug<Elf>::Create(ARCH_ARM, process_memory_, libs);
   // Make sure that clearing our copy of the libs doesn't affect the
   // JitDebug object.
   libs.clear();
-  jit_debug_->SetArch(ARCH_ARM);
-  EXPECT_TRUE(jit_debug_->GetElf(maps_.get(), 0x1500) != nullptr);
+  EXPECT_TRUE(jit_debug_->Get(maps_.get(), 0x1500) != nullptr);
 }
 
 }  // namespace unwindstack

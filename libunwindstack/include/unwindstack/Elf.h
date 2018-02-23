@@ -50,6 +50,8 @@ enum ArchEnum : uint8_t {
 
 class Elf {
  public:
+  static constexpr const char* kJitDebugDescriptorName = "__jit_debug_descriptor";
+
   Elf(Memory* memory) : memory_(memory) {}
   virtual ~Elf() = default;
 
@@ -73,6 +75,8 @@ class Elf {
   uint64_t GetLoadBias() { return load_bias_; }
 
   bool IsValidPc(uint64_t pc);
+
+  bool GetValidPcRange(uint64_t* begin, uint64_t* end);
 
   void GetLastError(ErrorData* data);
   ErrorCode GetLastErrorCode();
