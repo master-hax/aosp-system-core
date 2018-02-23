@@ -73,7 +73,7 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num);
   static std::string FormatFrame(const FrameData& frame, bool is32bit);
 
-  void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
+  void SetJitDebug(JitDebug* jit_debug);
 
   // Disabling the resolving of names results in the function name being
   // set to an empty string and the function offset being set to zero.

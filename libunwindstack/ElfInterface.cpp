@@ -69,6 +69,15 @@ bool ElfInterface::IsValidPc(uint64_t pc) {
   return false;
 }
 
+bool ElfInterface::GetValidPcRange(uint64_t* addr, uint64_t* size) {
+  if (text_size_ != 0) {
+    *addr = text_addr_;
+    *size = text_size_;
+    return true;
+  }
+  return false;
+}
+
 Memory* ElfInterface::CreateGnuDebugdataMemory() {
   if (gnu_debugdata_offset_ == 0 || gnu_debugdata_size_ == 0) {
     return nullptr;
@@ -368,6 +377,9 @@ bool ElfInterface::ReadSectionHeaders(const EhdrType& ehdr) {
           } else if (eh_frame_hdr_offset_ == 0 && name == ".eh_frame_hdr") {
             offset_ptr = &eh_frame_hdr_offset_;
             size_ptr = &eh_frame_hdr_size_;
+          } else if (name == ".text") {
+            text_addr_ = shdr.sh_addr;
+            text_size_ = shdr.sh_size;
           }
           if (offset_ptr != nullptr) {
             *offset_ptr = shdr.sh_offset;
