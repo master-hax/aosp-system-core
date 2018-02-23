@@ -29,6 +29,8 @@ namespace unwindstack {
 
 class DexFile {
  public:
+  static constexpr const char* kJitDebugDescriptorName = "__dex_debug_descriptor";
+
   DexFile() = default;
   virtual ~DexFile() = default;
 

@@ -34,6 +34,7 @@ namespace unwindstack {
 // Forward declarations.
 class DexFiles;
 class Elf;
+template <typename Symfile>
 class JitDebug;
 enum ArchEnum : uint8_t;
 
@@ -73,7 +74,7 @@ class Unwinder {
   std::string FormatFrame(size_t frame_num);
   static std::string FormatFrame(const FrameData& frame, bool is32bit);
 
-  void SetJitDebug(JitDebug* jit_debug, ArchEnum arch);
+  void SetJitDebug(std::unique_ptr<JitDebug<Elf>> jit_debug);
 
   // Disabling the resolving of names results in the function name being
   // set to an empty string and the function offset being set to zero.
@@ -96,7 +97,7 @@ class Unwinder {
   Regs* regs_;
   std::vector<FrameData> frames_;
   std::shared_ptr<Memory> process_memory_;
-  JitDebug* jit_debug_ = nullptr;
+  std::unique_ptr<JitDebug<Elf>> jit_debug_;
 #if !defined(NO_LIBDEXFILE_SUPPORT)
   DexFiles* dex_files_ = nullptr;
 #endif
