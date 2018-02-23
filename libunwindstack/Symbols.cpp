@@ -61,7 +61,11 @@ bool Symbols::GetName(uint64_t addr, Memory* elf_memory, std::string* name, uint
     if (info) {
       CHECK(addr >= info->start_offset && addr <= info->end_offset);
       *func_offset = addr - info->start_offset;
-      return elf_memory->ReadString(info->str_offset, name, str_end_ - info->str_offset);
+      if (name != nullptr) {
+        return elf_memory->ReadString(info->str_offset, name, str_end_ - info->str_offset);
+      } else {
+        return true;
+      }
     }
   }
 
@@ -89,7 +93,11 @@ bool Symbols::GetName(uint64_t addr, Memory* elf_memory, std::string* name, uint
         *func_offset = addr - start_offset;
         uint64_t offset = str_offset_ + entry.st_name;
         if (offset < str_end_) {
-          return_value = elf_memory->ReadString(offset, name, str_end_ - offset);
+          if (name != nullptr) {
+            return_value = elf_memory->ReadString(offset, name, str_end_ - offset);
+          } else {
+            return_value = true;
+          }
         }
         break;
       }
