@@ -45,6 +45,7 @@ static const std::set<std::string> kExportedActionableProperties = {
     "sys.usb.ffs.ready",
     "sys.user.0.ce_available",
     "sys.vdso",
+    "vold.decrypt",
     "vts.native_server.on",
 };
 
