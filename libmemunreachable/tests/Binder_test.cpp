@@ -110,12 +110,14 @@ class ServiceProcess {
   pid_t child_;
 };
 
-class BinderTest : public ::testing::Test {
+class MemunreachableBinderTest : public ::testing::Test {
  protected:
   ServiceProcess service_process_;
 };
 
-TEST_F(BinderTest, binder) {
+TEST_F(MemunreachableBinderTest, binder) {
+  ASSERT_EQ(static_cast<uid_t>(0), getuid()) << "This test must be run as root.";
+
   ServiceProcess service_process;
   ASSERT_TRUE(service_process.Run());
 

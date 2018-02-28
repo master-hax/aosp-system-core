@@ -88,14 +88,15 @@ cc_test {
 cc_test {
     name: "memunreachable_binder_test",
     defaults: ["libmemunreachable_defaults"],
+    test_suites: ["vts"],
     srcs: [
         "tests/Binder_test.cpp",
-        "tests/MemUnreachable_test.cpp",
+        "Allocator.cpp",
+        "Binder.cpp",
     ],
     shared_libs: [
         "libbinder",
         "libhwbinder",
-        "libmemunreachable",
         "libutils",
     ],
 }
