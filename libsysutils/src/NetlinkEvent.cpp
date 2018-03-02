@@ -137,6 +137,7 @@ bool NetlinkEvent::parseIfInfoMessage(const struct nlmsghdr *nh) {
         switch(rta->rta_type) {
             case IFLA_IFNAME:
                 asprintf(&mParams[0], "INTERFACE=%s", (char *) RTA_DATA(rta));
+                asprintf(&mParams[1], "IFACEINDEX=%d", ifi->ifi_index);
                 mAction = (ifi->ifi_flags & IFF_LOWER_UP) ? Action::kLinkUp :
                                                             Action::kLinkDown;
                 mSubsystem = strdup("net");
