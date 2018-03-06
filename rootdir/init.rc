@@ -80,6 +80,8 @@ on init
     chmod 0664 /dev/stune/top-app/tasks
     chmod 0664 /dev/stune/rt/tasks
 
+    write /sys/bus/pci/devices/0000\:00\:14.0/dbc "enable"
+
     # Mount staging areas for devices managed by vold
     # See storage config details at http://source.android.com/tech/storage/
     mount tmpfs tmpfs /mnt nodev noexec nosuid mode=0755,uid=0,gid=1000

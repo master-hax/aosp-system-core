@@ -188,6 +188,10 @@ void put_apacket(apacket* p);
 #define ADB_SUBCLASS 0x42
 #define ADB_PROTOCOL 0x1
 
+#define ADB_DBC_CLASS 0xDC
+#define ADB_DBC_SUBCLASS 0x2
+#define ADB_DBC_PROTOCOL 0x1
+
 void local_init(int port);
 bool local_connect(int port);
 int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* error);
@@ -205,6 +209,7 @@ extern int SHELL_EXIT_NOTIFY_FD;
 #if !ADB_HOST
 #define USB_FFS_ADB_PATH "/dev/usb-ffs/adb/"
 #define USB_FFS_ADB_EP(x) USB_FFS_ADB_PATH #x
+#define USB_DBC_ADB_PATH  "/dev/dbc_raw"
 
 #define USB_FFS_ADB_EP0 USB_FFS_ADB_EP(ep0)
 #define USB_FFS_ADB_OUT USB_FFS_ADB_EP(ep1)
