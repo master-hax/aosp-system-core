@@ -439,6 +439,10 @@ static std::string read_fstab_from_dt() {
             LERROR << "dt_fstab: Failed to find device for partition " << dp->d_name;
             return {};
         }
+        if (value.size() < 4 || value.substr(0, 4) != "/dev") {
+            LERROR << "dt_fstab: Invalid device node for partition " << dp->d_name;
+            return {};
+        }
         fstab_entry.push_back(value);
 
         std::string mount_point;
