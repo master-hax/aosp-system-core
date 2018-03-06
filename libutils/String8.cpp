@@ -44,7 +44,7 @@ static SharedBuffer* gEmptyStringBuf = NULL;
 static char* gEmptyString = NULL;
 
 extern int gDarwinCantLoadAllObjects;
-int gDarwinIsReallyAnnoying;
+static int gDarwinIsReallyAnnoying;
 
 void initialize_string8();
 
