@@ -220,15 +220,9 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
       if (!EvalExpression(*loc, regular_memory, &value, &eval_info.regs_info, nullptr)) {
         return false;
       }
-      if (loc->type == DWARF_LOCATION_EXPRESSION) {
-        if (!regular_memory->ReadFully(value, &eval_info.cfa, sizeof(AddressType))) {
-          last_error_.code = DWARF_ERROR_MEMORY_INVALID;
-          last_error_.address = value;
-          return false;
-        }
-      } else {
-        eval_info.cfa = value;
-      }
+      // There is only one type of expression for CFA evaluation and DWARF specification is unclear
+      // whether it returns the address or the value. GDB expects value, which makes sense for CFA.
+      eval_info.cfa = value;
       break;
     }
     default:
