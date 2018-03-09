@@ -46,6 +46,8 @@ cc_library {
             static_libs: ["libunwind_llvm"],
         },
     },
+    // Maybe only arm cannot use lld, but now disable lld for all.
+    use_clang_lld: false,
     export_include_dirs: ["include"],
     local_include_dirs: ["include"],
 }
