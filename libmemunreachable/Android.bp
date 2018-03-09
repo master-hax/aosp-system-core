@@ -36,16 +36,23 @@ cc_library {
         "ThreadCapture.cpp",
     ],
 
-    static_libs: [
-        "libc_malloc_debug_backtrace",
-    ],
     // Only need this for arm since libc++ uses its own unwind code that
     // doesn't mix with the other default unwind code.
     arch: {
+        mips:   { static_libs: ["libc_malloc_debug_backtrace"] },
+        mips64: { static_libs: ["libc_malloc_debug_backtrace"] },
+        x86:    { static_libs: ["libc_malloc_debug_backtrace"] },
+        x86_64: { static_libs: ["libc_malloc_debug_backtrace"] },
+        arm64:  { static_libs: ["libc_malloc_debug_backtrace"] },
         arm: {
-            static_libs: ["libunwind_llvm"],
+            static_libs: [
+                "libc_malloc_debug_backtrace",
+                "libunwind_llvm"
+            ],
         },
     },
+    // Maybe only arm cannot use lld, but now disable lld for all.
+    use_clang_lld: false,
     export_include_dirs: ["include"],
     local_include_dirs: ["include"],
 }
