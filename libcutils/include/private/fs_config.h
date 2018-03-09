@@ -71,8 +71,8 @@ __BEGIN_DECLS
  *  system/core/adb/file_sync_service.cpp
  *  system/extras/ext4_utils/canned_fs_config.c
  */
-void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
-               unsigned* mode, uint64_t* capabilities);
+void fs_config(const char* path, int dir, const char* target_out_path, uid_t* uid, gid_t* gid,
+               mode_t* mode, uint64_t* capabilities);
 
 ssize_t fs_config_generate(char* buffer, size_t length, const struct fs_path_config* pc);
 

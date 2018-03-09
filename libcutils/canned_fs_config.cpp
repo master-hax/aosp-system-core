@@ -25,12 +25,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 typedef struct {
     const char* path;
-    unsigned uid;
-    unsigned gid;
-    unsigned mode;
+    uid_t uid;
+    gid_t gid;
+    mode_t mode;
     uint64_t capabilities;
 } Path;
 
@@ -92,8 +93,8 @@ int load_canned_fs_config(const char* fn) {
 
 static const int kDebugCannedFsConfig = 0;
 
-void canned_fs_config(const char* path, int dir, const char* target_out_path,
-                      unsigned* uid, unsigned* gid, unsigned* mode, uint64_t* capabilities) {
+void canned_fs_config(const char* path, int dir, const char* target_out_path, uid_t* uid,
+                      gid_t* gid, mode_t* mode, uint64_t* capabilities) {
     Path key, *p;
 
     key.path = path;
@@ -111,7 +112,9 @@ void canned_fs_config(const char* path, int dir, const char* target_out_path,
     if (kDebugCannedFsConfig) {
         // for debugging, run the built-in fs_config and compare the results.
 
-        unsigned c_uid, c_gid, c_mode;
+        uid_t c_uid;
+        gid_t c_gid;
+        mode_t c_mode;
         uint64_t c_capabilities;
 
         fs_config(path, dir, target_out_path, &c_uid, &c_gid, &c_mode, &c_capabilities);

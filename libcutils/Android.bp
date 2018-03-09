@@ -57,8 +57,6 @@ cc_library {
     host_supported: true,
     srcs: [
         "config_utils.cpp",
-        "fs_config.cpp",
-        "canned_fs_config.cpp",
         "hashmap.cpp",
         "iosched_policy.cpp",
         "load_file.cpp",
@@ -103,6 +101,8 @@ cc_library {
             srcs: libcutils_nonwindows_sources + [
                 "android_reboot.cpp",
                 "ashmem-dev.cpp",
+                "fs_config.cpp",
+                "canned_fs_config.cpp",
                 "klog.cpp",
                 "partition_utils.cpp",
                 "properties.cpp",

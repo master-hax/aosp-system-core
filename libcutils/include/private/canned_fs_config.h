@@ -18,12 +18,13 @@
 #define _CANNED_FS_CONFIG_H
 
 #include <inttypes.h>
+#include <sys/types.h>
 
 __BEGIN_DECLS
 
 int load_canned_fs_config(const char* fn);
-void canned_fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid,
-                      unsigned* gid, unsigned* mode, uint64_t* capabilities);
+void canned_fs_config(const char* path, int dir, const char* target_out_path, uid_t* uid,
+                      gid_t* gid, mode_t* mode, uint64_t* capabilities);
 
 __END_DECLS
 
