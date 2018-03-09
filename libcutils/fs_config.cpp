@@ -294,8 +294,8 @@ static bool fs_config_cmp(bool partial, const char* prefix, size_t len, const ch
 auto __for_testing_only__fs_config_cmp = fs_config_cmp;
 #endif
 
-void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
-               unsigned* mode, uint64_t* capabilities) {
+void fs_config(const char* path, int dir, const char* target_out_path, uid_t* uid, gid_t* gid,
+               mode_t* mode, uint64_t* capabilities) {
     const struct fs_path_config* pc;
     size_t which, plen;
 
