@@ -110,14 +110,7 @@ std::string getTextAround(const std::string& text, size_t pos,
 }
 
 bool getExecPath(std::string &path) {
-    char buf[PATH_MAX + 1];
-    int ret = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
-    if (ret < 0) {
-        return false;
-    }
-    buf[ret] = '\0';
-    path = buf;
-    return true;
+    return android::base::ReadFileToString("/proc/self/cmdline", &path);
 }
 
 /* Child synchronization primitives */
