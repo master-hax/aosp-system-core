@@ -125,8 +125,8 @@ bool NativeBridgeIsPathSupported(const char* path);
 //
 // Starting with v3, NativeBridge has two scenarios: with/without namespace.
 // Should not use in non-namespace scenario.
-bool NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
-                                        const char* anon_ns_library_path);
+native_bridge_namespace_t* NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
+                                                              const char* anon_ns_library_path);
 
 // Create new namespace in which native libraries will be loaded.
 // NativeBridge's peer of android_create_namespace() of dynamic linker.
@@ -292,11 +292,11 @@ struct NativeBridgeCallbacks {
   //   public_ns_sonames [IN] the name of "public" libraries.
   //   anon_ns_library_path [IN] the library search path of (anonymous) namespace.
   // Returns:
-  //   true if the pass is ok.
-  //   Otherwise, false.
+  //   true if initialization is successful and false otherwise.
   //
   // Starting with v3, NativeBridge has two scenarios: with/without namespace.
   // Should not use in non-namespace scenario.
+  // This function is deprecated in NB v5, please use initAnonymousNamespace2 instead
   bool (*initAnonymousNamespace)(const char* public_ns_sonames, const char* anon_ns_library_path);
 
   // Create new namespace in which native libraries will be loaded.
@@ -360,6 +360,25 @@ struct NativeBridgeCallbacks {
   // Returns:
   //   vendor namespace or null if it was not set up for the device
   native_bridge_namespace_t* (*getVendorNamespace)();
+
+  // Initializes anonymous namespace at native bridge side.
+  // NativeBridge's peer of android_init_anonymous_namespace() of dynamic linker.
+  //
+  // The anonymous namespace is used in the case when a NativeBridge implementation
+  // cannot identify the caller of dlopen/dlsym which happens for the code not loaded
+  // by dynamic linker; for example calls from the mono-compiled code.
+  //
+  // Parameters:
+  //   public_ns_sonames [IN] the name of "public" libraries.
+  //   anon_ns_library_path [IN] the library search path of (anonymous) namespace.
+  // Returns:
+  //   pointer to anonymous namespace on successful initialization and false otherwise.
+  //
+  // Starting with v3, NativeBridge has two scenarios: with/without namespace.
+  // Should not use in non-namespace scenario.
+  // This function was introduced in v5 to replace initAnonymousNamespace.
+  native_bridge_namespace_t* (*initAnonymousNamespace2)(const char* public_ns_sonames,
+                                                        const char* anon_ns_library_path);
 };
 
 // Runtime interfaces to native bridge.

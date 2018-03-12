@@ -79,6 +79,8 @@ class NativeLoaderNamespace {
     return native_bridge_ns_ == nullptr;
   }
 
+  bool initialized() const { return android_ns_ != nullptr || native_bridge_ns_ != nullptr; }
+
  private:
   // Only one of them can be not null
   android_namespace_t* android_ns_;
@@ -146,7 +148,7 @@ static const std::function<bool(const std::string&, std::string*)> always_true =
 
 class LibraryNamespaces {
  public:
-  LibraryNamespaces() : initialized_(false) { }
+  LibraryNamespaces() = default;
 
   bool Create(JNIEnv* env,
               uint32_t target_sdk_version,
@@ -179,7 +181,8 @@ class LibraryNamespaces {
       }
     }
 
-    if (!initialized_ && !InitPublicNamespace(library_path.c_str(), error_msg)) {
+    if (!anonymous_namespace_.initialized() &&
+        !InitPublicNamespace(library_path.c_str(), error_msg)) {
       return false;
     }
 
@@ -189,6 +192,7 @@ class LibraryNamespaces {
                         "There is already a namespace associated with this classloader");
 
     uint64_t namespace_type = ANDROID_NAMESPACE_TYPE_ISOLATED;
+
     if (is_shared) {
       namespace_type |= ANDROID_NAMESPACE_TYPE_SHARED;
     }
@@ -334,10 +338,10 @@ class LibraryNamespaces {
   }
 
   void Initialize() {
-    // Once public namespace is initialized there is no
+    // Once namespaces are initialized there is no
     // point in running this code - it will have no effect
     // on the current list of public libraries.
-    if (initialized_) {
+    if (anonymous_namespace_.initialized()) {
       return;
     }
 
@@ -510,23 +514,24 @@ class LibraryNamespaces {
     // code is one example) unknown to linker in which  case linker uses anonymous
     // namespace. The second argument specifies the search path for the anonymous
     // namespace which is the library_path of the classloader.
-    initialized_ = android_init_anonymous_namespace(system_public_libraries_.c_str(),
-                                                    is_native_bridge ? nullptr : library_path);
-    if (!initialized_) {
+    anonymous_namespace_ = NativeLoaderNamespace(android_init_anonymous_namespace(
+        system_public_libraries_.c_str(), is_native_bridge ? nullptr : library_path));
+
+    if (!anonymous_namespace_.initialized()) {
       *error_msg = dlerror();
       return false;
     }
 
     // and now initialize native bridge namespaces if necessary.
     if (NativeBridgeInitialized()) {
-      initialized_ = NativeBridgeInitAnonymousNamespace(system_public_libraries_.c_str(),
-                                                        is_native_bridge ? library_path : nullptr);
-      if (!initialized_) {
+      anonymous_namespace_ = NativeLoaderNamespace(NativeBridgeInitAnonymousNamespace(
+          system_public_libraries_.c_str(), is_native_bridge ? library_path : nullptr));
+      if (!anonymous_namespace_.initialized()) {
         *error_msg = NativeBridgeGetError();
       }
     }
 
-    return initialized_;
+    return anonymous_namespace_.initialized();
   }
 
   jobject GetParentClassLoader(JNIEnv* env, jobject class_loader) {
@@ -554,7 +559,7 @@ class LibraryNamespaces {
     return false;
   }
 
-  bool initialized_;
+  NativeLoaderNamespace anonymous_namespace_;
   std::vector<std::pair<jweak, NativeLoaderNamespace>> namespaces_;
   std::string system_public_libraries_;
   std::string vendor_public_libraries_;

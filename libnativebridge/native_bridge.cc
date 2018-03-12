@@ -94,6 +94,8 @@ enum NativeBridgeImplementationVersion {
   NAMESPACE_VERSION = 3,
   // The version with vendor namespaces
   VENDOR_NAMESPACE_VERSION = 4,
+  // The version with extended namespaces
+  NAMESPACE_VERSION_EXTENDABLE_PATHS = 5,
 };
 
 // Whether we had an error at some point.
@@ -559,17 +561,24 @@ bool NativeBridgeIsPathSupported(const char* path) {
   return false;
 }
 
-bool NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
-                                        const char* anon_ns_library_path) {
+native_bridge_namespace_t* NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
+                                                              const char* anon_ns_library_path) {
   if (NativeBridgeInitialized()) {
     if (isCompatibleWith(NAMESPACE_VERSION)) {
-      return callbacks->initAnonymousNamespace(public_ns_sonames, anon_ns_library_path);
+      if (isCompatibleWith(NAMESPACE_VERSION_EXTENDABLE_PATHS)) {
+        return callbacks->initAnonymousNamespace2(public_ns_sonames, anon_ns_library_path);
+      } else {
+        // return dummy pointer in the case when NAMESPACE_VERSION_EXTENDABLE_PATHS is not supported
+        return callbacks->initAnonymousNamespace(public_ns_sonames, anon_ns_library_path)
+                   ? reinterpret_cast<native_bridge_namespace_t*>(0x6c1)
+                   : nullptr;
+      }
     } else {
       ALOGE("not compatible with version %d, cannot init namespace", NAMESPACE_VERSION);
     }
   }
 
-  return false;
+  return nullptr;
 }
 
 native_bridge_namespace_t* NativeBridgeCreateNamespace(const char* name,
