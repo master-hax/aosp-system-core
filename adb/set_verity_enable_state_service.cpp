@@ -98,13 +98,22 @@ static std::string get_ab_suffix() {
     return android::base::GetProperty("ro.boot.slot_suffix", "");
 }
 
+static bool is_device_unlocked() {
+    return android::base::GetProperty("ro.boot.verifiedbootstate", "") == "orange";
+}
+
 /* Use AVB to turn verity on/off */
 static bool set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity) {
     std::string ab_suffix = get_ab_suffix();
-
     bool verity_enabled;
+
+    if (!is_device_unlocked()) {
+        WriteFdFmt(fd, "Device is locked. Please unlock the device first\n");
+        return false;
+    }
+
     if (!avb_user_verity_get(ops, ab_suffix.c_str(), &verity_enabled)) {
-        WriteFdFmt(fd, "Error getting verity state\n");
+        WriteFdFmt(fd, "Error getting verity state. Try adb root first?\n");
         return false;
     }
 
