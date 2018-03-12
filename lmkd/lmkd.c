@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <pwd.h>
 #include <sched.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -28,13 +29,14 @@
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <sys/sysinfo.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <log/log.h>
+#include <private/android_filesystem_config.h>
 
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
@@ -263,17 +265,17 @@ static int pid_remove(int pid) {
     return 0;
 }
 
-static void writefilestring(const char *path, char *s) {
+static void writefilestring(const char* path, char* s, int prio) {
     int fd = open(path, O_WRONLY | O_CLOEXEC);
     int len = strlen(s);
     int ret;
 
     if (fd < 0) {
-        ALOGE("Error opening %s; errno=%d", path, errno);
+        LOG_PRI(prio, LOG_TAG, "Error opening %s; errno=%d", path, errno);
         return;
     }
 
-    ret = write(fd, s, len);
+    ret = TEMP_FAILURE_RETRY(write(fd, s, len));
     if (ret < 0) {
         ALOGE("Error writing %s; errno=%d", path, errno);
     } else if (ret < len) {
@@ -281,6 +283,16 @@ static void writefilestring(const char *path, char *s) {
     }
 
     close(fd);
+}
+
+static uid_t get_system_uid(void) {
+    static uid_t system_uid;
+
+    if (!system_uid) {
+        struct passwd* pwd = getpwnam("system");
+        system_uid = pwd ? pwd->pw_uid : AID_SYSTEM;
+    }
+    return system_uid;
 }
 
 static void cmd_procprio(int pid, int uid, int oomadj) {
@@ -296,7 +308,7 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
 
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", pid);
     snprintf(val, sizeof(val), "%d", oomadj);
-    writefilestring(path, val);
+    writefilestring(path, val, ANDROID_LOG_ERROR);
 
     if (use_inkernel_interface)
         return;
@@ -331,7 +343,8 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
 
     snprintf(path, sizeof(path), "/dev/memcg/apps/uid_%d/pid_%d/memory.soft_limit_in_bytes", uid, pid);
     snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
-    writefilestring(path, val);
+    writefilestring(path, val,
+                    (params.uid == get_system_uid()) ? ANDROID_LOG_WARN : ANDROID_LOG_ERROR);
 
     procp = pid_lookup(pid);
     if (!procp) {
@@ -393,8 +406,8 @@ static void cmd_target(int ntargets, int *params) {
             strlcat(killpriostr, val, sizeof(killpriostr));
         }
 
-        writefilestring(INKERNEL_MINFREE_PATH, minfreestr);
-        writefilestring(INKERNEL_ADJ_PATH, killpriostr);
+        writefilestring(INKERNEL_MINFREE_PATH, minfreestr, ANDROID_LOG_ERROR);
+        writefilestring(INKERNEL_ADJ_PATH, killpriostr, ANDROID_LOG_ERROR);
     }
 }
 
