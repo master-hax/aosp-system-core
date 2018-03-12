@@ -37,10 +37,6 @@ extern "C" void* native_bridge3_getTrampoline(void* /* handle */, const char* /*
   return nullptr;
 }
 
-extern "C" bool native_bridge3_isSupported(const char* /* libpath */) {
-  return false;
-}
-
 extern "C" const struct android::NativeBridgeRuntimeValues* native_bridge3_getAppEnv(
     const char* /* abi */) {
   return nullptr;
@@ -109,7 +105,6 @@ android::NativeBridgeCallbacks NativeBridgeItf{
     .initialize = &native_bridge3_initialize,
     .loadLibrary = &native_bridge3_loadLibrary,
     .getTrampoline = &native_bridge3_getTrampoline,
-    .isSupported = &native_bridge3_isSupported,
     .getAppEnv = &native_bridge3_getAppEnv,
     // v2
     .isCompatibleWith = &native_bridge3_isCompatibleWith,
@@ -118,7 +113,10 @@ android::NativeBridgeCallbacks NativeBridgeItf{
     .unloadLibrary = &native_bridge3_unloadLibrary,
     .getError = &native_bridge3_getError,
     .isPathSupported = &native_bridge3_isPathSupported,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     .initAnonymousNamespace = &native_bridge3_initAnonymousNamespace,
+#pragma clang diagnostic pop
     .createNamespace = &native_bridge3_createNamespace,
     .linkNamespaces = &native_bridge3_linkNamespaces,
     .loadLibraryExt = &native_bridge3_loadLibraryExt};

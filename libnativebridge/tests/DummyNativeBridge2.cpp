@@ -63,14 +63,15 @@ extern "C" android::NativeBridgeSignalHandlerFn native_bridge2_get_signal_handle
   return nullptr;
 }
 
-android::NativeBridgeCallbacks NativeBridgeItf {
-  .version = 2,
-  .initialize = &native_bridge2_initialize,
-  .loadLibrary = &native_bridge2_loadLibrary,
-  .getTrampoline = &native_bridge2_getTrampoline,
-  .isSupported = &native_bridge2_isSupported,
-  .getAppEnv = &native_bridge2_getAppEnv,
-  .isCompatibleWith = &native_bridge2_is_compatible_compatible_with,
-  .getSignalHandler = &native_bridge2_get_signal_handler
-};
-
+android::NativeBridgeCallbacks NativeBridgeItf{
+    .version = 2,
+    .initialize = &native_bridge2_initialize,
+    .loadLibrary = &native_bridge2_loadLibrary,
+    .getTrampoline = &native_bridge2_getTrampoline,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    .isSupported = &native_bridge2_isSupported,
+#pragma clang diagnostic pop
+    .getAppEnv = &native_bridge2_getAppEnv,
+    .isCompatibleWith = &native_bridge2_is_compatible_compatible_with,
+    .getSignalHandler = &native_bridge2_get_signal_handler};

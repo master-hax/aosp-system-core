@@ -30,7 +30,7 @@ TEST_F(NativeBridgeTest, CompleteFlow) {
     ASSERT_TRUE(NativeBridgeAvailable());
 
     // Basic calls to check that nothing crashes
-    ASSERT_FALSE(NativeBridgeIsSupported(nullptr));
+    ASSERT_FALSE(NativeBridgeIsPathSupported(nullptr));
     ASSERT_EQ(nullptr, NativeBridgeLoadLibrary(nullptr, 0));
     ASSERT_EQ(nullptr, NativeBridgeGetTrampoline(nullptr, nullptr, nullptr, 0));
 

@@ -43,11 +43,12 @@ extern "C" const struct android::NativeBridgeRuntimeValues* native_bridge_getApp
   return nullptr;
 }
 
-android::NativeBridgeCallbacks NativeBridgeItf {
-  .version = 1,
-  .initialize = &native_bridge_initialize,
-  .loadLibrary = &native_bridge_loadLibrary,
-  .getTrampoline = &native_bridge_getTrampoline,
-  .isSupported = &native_bridge_isSupported,
-  .getAppEnv = &native_bridge_getAppEnv
-};
+android::NativeBridgeCallbacks NativeBridgeItf{.version = 1,
+                                               .initialize = &native_bridge_initialize,
+                                               .loadLibrary = &native_bridge_loadLibrary,
+                                               .getTrampoline = &native_bridge_getTrampoline,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                                               .isSupported = &native_bridge_isSupported,
+#pragma clang diagnostic pop
+                                               .getAppEnv = &native_bridge_getAppEnv};
