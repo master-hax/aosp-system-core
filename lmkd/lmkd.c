@@ -35,6 +35,7 @@
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <log/log.h>
+#include <private/android_filesystem_config.h>
 
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
@@ -291,6 +292,10 @@ static void cmd_procprio(int pid, int uid, int oomadj) {
 
     if (oomadj < OOM_SCORE_ADJ_MIN || oomadj > OOM_SCORE_ADJ_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", oomadj);
+        return;
+    }
+    if (params.uid == AID_SYSTEM) {
+        ALOGW("Invalid PROCPRIO uid argument %d", params.uid);
         return;
     }
 
