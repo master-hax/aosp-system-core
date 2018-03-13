@@ -145,6 +145,14 @@ native_bridge_namespace_t* NativeBridgeCreateNamespace(const char* name,
                                                        const char* permitted_when_isolated_path,
                                                        native_bridge_namespace_t* parent_ns);
 
+// Add paths to exiting namespace.
+// NativeBridge's peer of android_update_namespace_add_search_path() of dynamic linker.
+//
+// This method was introduced in NativeBridge v5, does nothing for earlier
+// versions of nb implementations.
+bool NativeBridgeUpdateNamespaceAddSearchPath(native_bridge_namespace_t* ns,
+                                              const char* default_library_path);
+
 // Creates a link which shares some libraries from one namespace to another.
 // NativeBridge's peer of android_link_namespaces() of dynamic linker.
 //
@@ -379,6 +387,18 @@ struct NativeBridgeCallbacks {
   // This function was introduced in v5 to replace initAnonymousNamespace.
   native_bridge_namespace_t* (*initAnonymousNamespace2)(const char* public_ns_sonames,
                                                         const char* anon_ns_library_path);
+
+  // Adds paths to default_library_path of the namespace
+  //
+  // Parameters:
+  //   ns [IN] the namespace
+  //   default_library_path [IN] colon-separated search paths for the namespace.
+  // Returns:
+  //    true on success and false otherwise.
+  //
+  // This function was introduced in v5 of NativeBridge.
+  bool (*updateNamespaceAddSearchPath)(native_bridge_namespace_t* ns,
+                                       const char* default_library_path);
 };
 
 // Runtime interfaces to native bridge.
