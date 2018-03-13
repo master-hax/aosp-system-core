@@ -83,12 +83,15 @@ enum {
  * If a library or any of its dependencies are outside of the permitted_when_isolated_path
  * and search_path, and it is not part of the public namespace dlopen will fail.
  */
-extern struct android_namespace_t* android_create_namespace(const char* name,
-                                                            const char* ld_library_path,
-                                                            const char* default_library_path,
-                                                            uint64_t type,
-                                                            const char* permitted_when_isolated_path,
-                                                            android_namespace_t* parent);
+extern android_namespace_t* android_create_namespace(const char* name, const char* ld_library_path,
+                                                     const char* default_library_path, uint64_t type,
+                                                     const char* permitted_when_isolated_path,
+                                                     android_namespace_t* parent);
+/*
+ * Add search paths to the namespace.
+ */
+extern bool android_update_namespace_add_search_path(android_namespace_t* ns,
+                                                     const char* default_library_path);
 
 /*
  * Creates a link between namespaces. Every link has list of sonames of

@@ -321,6 +321,52 @@ class LibraryNamespaces {
     return true;
   }
 
+  bool UpdateAddSearchPath(JNIEnv* env, jobject class_loader, jstring java_library_search_path,
+                           bool update_anonymous_namespace, std::string* error_msg) {
+    NativeLoaderNamespace ns;
+    if (!FindParentNamespaceByClassLoader(env, class_loader, &ns)) {
+      *error_msg =
+          "UpdateAddSearchPath couldn't find a namespace for the classloader. "
+          "Did you call CrateClassLoaderNamespace?";
+      return false;
+    }
+
+    if (java_library_search_path == nullptr) {
+      return true;
+    }
+
+    ScopedUtfChars library_path_utf_chars(env, java_library_search_path);
+    std::string library_path = library_path_utf_chars.c_str();
+
+    if (ns.is_android_namespace()) {
+      if (!android_update_namespace_add_search_path(ns.get_android_ns(), library_path.c_str())) {
+        *error_msg = dlerror();
+        return false;
+      }
+
+      if (update_anonymous_namespace &&
+          !android_update_namespace_add_search_path(anonymous_namespace_.get_android_ns(),
+                                                    library_path.c_str())) {
+        *error_msg = dlerror();
+        return false;
+      }
+    } else {
+      if (!NativeBridgeUpdateNamespaceAddSearchPath(ns.get_native_bridge_ns(),
+                                                    library_path.c_str())) {
+        *error_msg = NativeBridgeGetError();
+        return false;
+      }
+      if (update_anonymous_namespace &&
+          !NativeBridgeUpdateNamespaceAddSearchPath(anonymous_namespace_.get_native_bridge_ns(),
+                                                    library_path.c_str())) {
+        *error_msg = NativeBridgeGetError();
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   bool FindNamespaceByClassLoader(JNIEnv* env, jobject class_loader, NativeLoaderNamespace* ns) {
     auto it = std::find_if(namespaces_.begin(), namespaces_.end(),
                 [&](const std::pair<jweak, NativeLoaderNamespace>& value) {
@@ -588,33 +634,40 @@ void ResetNativeLoader() {
 #endif
 }
 
-jstring CreateClassLoaderNamespace(JNIEnv* env,
-                                   int32_t target_sdk_version,
-                                   jobject class_loader,
-                                   bool is_shared,
-                                   bool is_for_vendor,
-                                   jstring library_path,
-                                   jstring permitted_path) {
+jstring CreateClassLoaderNamespace(JNIEnv* env, int32_t target_sdk_version, jobject class_loader,
+                                   bool is_shared, bool is_for_vendor, jstring library_search_path,
+                                   jstring library_permitted_path) {
 #if defined(__ANDROID__)
   std::lock_guard<std::mutex> guard(g_namespaces_mutex);
 
   std::string error_msg;
   NativeLoaderNamespace ns;
-  bool success = g_namespaces->Create(env,
-                                      target_sdk_version,
-                                      class_loader,
-                                      is_shared,
-                                      is_for_vendor,
-                                      library_path,
-                                      permitted_path,
-                                      &ns,
-                                      &error_msg);
+  bool success =
+      g_namespaces->Create(env, target_sdk_version, class_loader, is_shared, is_for_vendor,
+                           library_search_path, library_permitted_path, &ns, &error_msg);
   if (!success) {
     return env->NewStringUTF(error_msg.c_str());
   }
 #else
-  UNUSED(env, target_sdk_version, class_loader, is_shared, is_for_vendor,
-         library_path, permitted_path);
+  UNUSED(env, target_sdk_version, class_loader, is_shared, is_for_vendor, library_search_path,
+         library_permitted_path);
+#endif
+  return nullptr;
+}
+
+jstring UpdateClassLoaderNamespaceAddLibrarySearchPath(JNIEnv* env, jobject class_loader,
+                                                       jstring library_search_path,
+                                                       bool update_anonymous_namespace) {
+#if defined(__ANDROID__)
+  std::lock_guard<std::mutex> guard(g_namespaces_mutex);
+  std::string error_msg;
+  bool success = g_namespaces->UpdateAddSearchPath(env, class_loader, library_search_path,
+                                                   update_anonymous_namespace, &error_msg);
+  if (!success) {
+    return env->NewStringUTF(error_msg.c_str());
+  }
+#else
+  UNUSED(env, class_loader, library_search_path, update_anonymous_namespace);
 #endif
   return nullptr;
 }

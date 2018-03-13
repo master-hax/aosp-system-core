@@ -609,6 +609,17 @@ native_bridge_namespace_t* NativeBridgeCreateNamespace(const char* name,
   return nullptr;
 }
 
+bool NativeBridgeUpdateNamespaceAddSearchPath(native_bridge_namespace_t* ns,
+                                              const char* default_library_path) {
+  if (NativeBridgeInitialized()) {
+    if (isCompatibleWith(NAMESPACE_VERSION_APPENDABLE_PATHS)) {
+      return callbacks->updateNamespaceAddSearchPath(ns, default_library_path);
+    }
+  }
+
+  return true;
+}
+
 bool NativeBridgeLinkNamespaces(native_bridge_namespace_t* from, native_bridge_namespace_t* to,
                                 const char* shared_libs_sonames) {
   if (NativeBridgeInitialized()) {

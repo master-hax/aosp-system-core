@@ -29,14 +29,12 @@ namespace android {
 __attribute__((visibility("default")))
 void InitializeNativeLoader();
 
-__attribute__((visibility("default")))
-jstring CreateClassLoaderNamespace(JNIEnv* env,
-                                   int32_t target_sdk_version,
-                                   jobject class_loader,
-                                   bool is_shared,
-                                   bool is_for_vendor,
-                                   jstring library_path,
-                                   jstring permitted_path);
+__attribute__((visibility("default"))) jstring CreateClassLoaderNamespace(
+    JNIEnv* env, int32_t target_sdk_version, jobject class_loader, bool is_shared,
+    bool is_for_vendor, jstring library_search_path, jstring library_permitted_path);
+
+__attribute__((visibility("default"))) jstring UpdateClassLoaderNamespaceAddLibrarySearchPath(
+    JNIEnv* env, jobject class_loader, jstring library_search_path, bool update_anonymous_namespace);
 
 __attribute__((visibility("default")))
 void* OpenNativeLibrary(JNIEnv* env,
