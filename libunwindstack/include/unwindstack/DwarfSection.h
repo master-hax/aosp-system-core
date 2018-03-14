@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include <iterator>
+#include <map>
 #include <unordered_map>
 
 #include <unwindstack/DwarfError.h>
@@ -110,8 +111,9 @@ class DwarfSection {
 
   uint64_t fde_count_ = 0;
   std::unordered_map<uint64_t, DwarfFde> fde_entries_;
-  std::unordered_map<uint64_t, DwarfCie> cie_entries_;
+  std::unordered_map<uint64_t, std::unique_ptr<DwarfCie>> cie_entries_;
   std::unordered_map<uint64_t, dwarf_loc_regs_t> cie_loc_regs_;
+  std::map<uint64_t, dwarf_loc_regs_t> loc_regs_;  // Single row indexed by pc_end.
 };
 
 template <typename AddressType>
