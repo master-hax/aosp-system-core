@@ -53,7 +53,7 @@ class MockDwarfSectionImpl : public DwarfSectionImpl<TypeParam> {
   void TestSetCie64Value(uint64_t value64) { this->cie64_value_ = value64; }
 
   void TestSetCachedCieEntry(uint64_t offset, const DwarfCie& cie) {
-    this->cie_entries_[offset] = cie;
+    this->cie_entries_[offset].reset(new DwarfCie(cie));
   }
   void TestClearCachedCieEntry() { this->cie_entries_.clear(); }
 
@@ -853,7 +853,8 @@ TYPED_TEST_P(DwarfSectionImplTest, GetCfaLocationInfo_cie_cached) {
   fde.cfa_instructions_offset = 0x6000;
   fde.cfa_instructions_end = 0x6002;
 
-  dwarf_loc_regs_t cie_loc_regs{{6, {DWARF_LOCATION_REGISTER, {4, 0}}}};
+  dwarf_loc_regs_t cie_loc_regs;
+  cie_loc_regs[6] = DwarfLocation{DWARF_LOCATION_REGISTER, {4, 0}};
   this->section_->TestSetCachedCieLocRegs(0x8000, cie_loc_regs);
   this->memory_.SetMemory(0x6000, std::vector<uint8_t>{0x09, 0x04, 0x03});
 
