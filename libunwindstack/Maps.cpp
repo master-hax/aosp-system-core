@@ -84,6 +84,10 @@ static MapInfo* InternalParseLine(const char* line) {
     return nullptr;
   }
   uint16_t flags = 0;
+  if (*str == 'j') {
+    flags |= MAPS_FLAGS_JIT_SYMFILE_MAP;
+    str++;
+  }
   if (*str == 'r') {
     flags |= PROT_READ;
   } else if (*str != '-') {

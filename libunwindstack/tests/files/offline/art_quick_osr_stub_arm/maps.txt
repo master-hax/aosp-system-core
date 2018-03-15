@@ -1,0 +1,4 @@
+d025c788-d025c7c2 jr-xp 0 00:00 0 TemporaryFile-duoIaS
+d025c898-d025c912 jr-xp 0 00:00 0 TemporaryFile-WaYRUW
+e466e000-e4ae8000 r-xp 0 00:00 0 libart.so
+e7d91000-e7e31000 r-xp 0 00:00 0 libc.so

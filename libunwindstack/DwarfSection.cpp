@@ -191,6 +191,7 @@ bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_me
   cur_regs->set_dex_pc(0);
 
   AddressType prev_cfa = regs->sp();
+  (*cur_regs)[cur_regs->sp_reg()] = prev_cfa;
 
   EvalInfo<AddressType> eval_info{.loc_regs = &loc_regs,
                                   .cie = cie,
