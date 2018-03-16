@@ -199,7 +199,7 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"cold", 56},
     {"hard", 57},
     {"warm", 58},
-    {"recovery", 59},
+    // {"recovery", 59},  // Duplicate of enum 3 above. Immediate reuse possible.
     {"thermal-shutdown", 60},
     {"shutdown,thermal", 61},
     {"shutdown,battery", 62},
@@ -230,7 +230,7 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"shutdown,thermal,battery", 87},
     {"reboot,its_just_so_hard", 88},  // produced by boot_reason_test
     {"reboot,Its Just So Hard", 89},  // produced by boot_reason_test
-    {"usb", 90},
+    // {"usb", 90},  // Duplicate of enum 80 above. Immediate reuse possible.
     {"charge", 91},
     {"oem_tz_crash", 92},
     {"uvlo", 93},
@@ -271,7 +271,7 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"oem_thermal_bite_reset", 128},
     {"charger", 129},
     {"pon1", 130},
-    {"unknown", 131},
+    // {"unknown", 131},  // Duplicate of kUnknownBootReason above, Reuse!
     {"reboot_rtc", 132},
     {"cold_boot", 133},
     {"hard_rst", 134},
