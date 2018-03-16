@@ -468,7 +468,7 @@ class pstoreConsole {
 
 // If bit error match to needle, correct it.
 // Return true if any corrections were discovered and applied.
-bool correctForBer(std::string& reason, const std::string& needle) {
+bool correctForBitError(std::string& reason, const std::string& needle) {
   bool corrected = false;
   if (reason.length() < needle.length()) return corrected;
   const pstoreConsole console(reason);
@@ -482,6 +482,23 @@ bool correctForBer(std::string& reason, const std::string& needle) {
 
     corrected = true;
     reason = reason.substr(0, pos) + needle + reason.substr(pos + needle.length());
+  }
+  return corrected;
+}
+
+char toNotUnderline(char c) {
+  return (c == '_') ? ' ' : c;
+}
+
+// If bit error match to needle, correct it.
+// Return true if any corrections were discovered and applied.
+// Try again if we can replace underline with spaces.
+bool correctForBitErrorOrUnderline(std::string& reason, const std::string& needle) {
+  bool corrected = correctForBitError(reason, needle);
+  std::string _needle(needle);
+  std::transform(_needle.begin(), _needle.end(), _needle.begin(), toNotUnderline);
+  if (needle != _needle) {
+    corrected |= correctForBitError(reason, _needle);
   }
   return corrected;
 }
@@ -632,14 +649,14 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
         std::string subReason(content.substr(pos, max_reason_length));
         // Correct against any known strings that Bit Error Match
         for (const auto& s : knownReasons) {
-          correctForBer(subReason, s);
+          correctForBitErrorOrUnderline(subReason, s);
         }
         for (const auto& m : kBootReasonMap) {
           if (m.first.length() <= strlen("cold")) continue;  // too short?
-          if (correctForBer(subReason, m.first + "'")) continue;
+          if (correctForBitErrorOrUnderline(subReason, m.first + "'")) continue;
           if (m.first.length() <= strlen("reboot,cold")) continue;  // short?
           if (!android::base::StartsWith(m.first, "reboot,")) continue;
-          correctForBer(subReason, m.first.substr(strlen("reboot,")) + "'");
+          correctForBitErrorOrUnderline(subReason, m.first.substr(strlen("reboot,")) + "'");
         }
         for (pos = 0; pos < subReason.length(); ++pos) {
           char c = subReason[pos];
@@ -687,7 +704,7 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       if (pos != std::string::npos) {
         digits = content.substr(pos + strlen(battery), strlen("100 "));
         // correct common errors
-        correctForBer(digits, "100 ");
+        correctForBitError(digits, "100 ");
         if (digits[0] == '!') digits[0] = '1';
         if (digits[1] == '!') digits[1] = '1';
       }
