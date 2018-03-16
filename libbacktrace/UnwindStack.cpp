@@ -117,7 +117,7 @@ bool Backtrace::Unwind(unwindstack::Regs* regs, BacktraceMap* back_map,
     back_frame->func_name = demangle(frame->function_name.c_str());
     back_frame->func_offset = frame->function_offset;
 
-    back_frame->map.name = frame->map_name;
+    back_frame->map.name = frame->map_name != nullptr ? *frame->map_name : "";
     back_frame->map.start = frame->map_start;
     back_frame->map.end = frame->map_end;
     back_frame->map.offset = frame->map_offset;

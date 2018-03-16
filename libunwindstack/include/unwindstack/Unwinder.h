@@ -47,7 +47,7 @@ struct FrameData {
   std::string function_name;
   uint64_t function_offset = 0;
 
-  std::string map_name;
+  const std::string* map_name = nullptr;
   uint64_t map_offset = 0;
   uint64_t map_start = 0;
   uint64_t map_end = 0;
