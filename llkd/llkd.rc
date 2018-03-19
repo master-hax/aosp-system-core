@@ -43,5 +43,6 @@ service llkd /system/bin/llkd
     disabled
     user lmkd
     group lmkd readproc
+    file /dev/kmsg w
     file /proc/sysrq-trigger w
     writepid /dev/cpuset/system-background/tasks
