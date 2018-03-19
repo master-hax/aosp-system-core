@@ -246,6 +246,7 @@ bool NetlinkEvent::parseIfAddrMessage(const struct nlmsghdr *nh) {
         asprintf(&mParams[6], "CSTAMP=%u", cacheinfo->cstamp);
         asprintf(&mParams[7], "TSTAMP=%u", cacheinfo->tstamp);
     }
+    asprintf(&mParams[8], "IFINDEX=%d", ifaddr->ifa_index);
 
     return true;
 }
@@ -402,6 +403,9 @@ bool NetlinkEvent::parseRtMessage(const struct nlmsghdr *nh) {
     asprintf(&mParams[0], "ROUTE=%s/%d", dst, prefixLength);
     asprintf(&mParams[1], "GATEWAY=%s", (*gw) ? gw : "");
     asprintf(&mParams[2], "INTERFACE=%s", (*dev) ? dev : "");
+    if (*dev) {
+        asprintf(&mParams[3], "IFINDEX=%d", *(int*)RTA_DATA(rta));
+    }
 
     return true;
 }
@@ -507,6 +511,7 @@ bool NetlinkEvent::parseNdUserOptMessage(const struct nlmsghdr *nh) {
         asprintf(&mParams[0], "INTERFACE=%s", ifname);
         asprintf(&mParams[1], "LIFETIME=%u", lifetime);
         mParams[2] = buf;
+        asprintf(&mParams[3], "IFINDEX=%d", msg->nduseropt_ifindex);
     } else if (opthdr->nd_opt_type == ND_OPT_DNSSL) {
         // TODO: support DNSSL.
     } else {
