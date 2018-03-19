@@ -24,6 +24,8 @@ dir.system = /data/nativetest64
 dir.system = /data/benchmarktest
 dir.system = /data/benchmarktest64
 
+dir.system = /postinstall
+
 [system]
 additional.namespaces = sphal,vndk,rs
 

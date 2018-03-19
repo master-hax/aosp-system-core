@@ -10,6 +10,9 @@ dir.legacy = /vendor
 dir.legacy = /odm
 dir.legacy = /sbin
 
+# Except for /postinstall, where only /system is searched
+dir.postinstall = /postinstall
+
 [legacy]
 namespace.default.isolated = false
 
@@ -23,3 +26,11 @@ namespace.default.asan.search.paths += /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
+
+[postinstall]
+namespace.default.isolated = false
+
+namespace.default.search.paths  = /system/${LIB}
+
+namespace.default.asan.search.paths  = /data/asan/system/${LIB}
+namespace.default.asan.search.paths +=           /system/${LIB}
