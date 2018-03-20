@@ -43,7 +43,7 @@ struct boot_img_hdr
 
     uint32_t tags_addr;    /* physical addr for kernel tags */
     uint32_t page_size;    /* flash page size we assume */
-    uint32_t unused;       /* reserved for future expansion: MUST be 0 */
+    uint32_t header_version; /* revision for the boot image header  */
 
     /* operating system version and security patch level; for
      * version "A.B.C" and patch level "Y-M-D":
@@ -61,27 +61,34 @@ struct boot_img_hdr
     /* Supplemental command line data; kept here to maintain
      * binary compatibility with older versions of mkbootimg */
     uint8_t extra_cmdline[BOOT_EXTRA_ARGS_SIZE];
+    uint32_t recovery_dtbo_size;   /* size in bytes for recovery DTBO image */
+    uint32_t recovery_dtbo_offset; /* physical load addr */
+    uint32_t header_size;
 } __attribute__((packed));
 
 /*
-** +-----------------+ 
+** +-----------------+
 ** | boot header     | 1 page
 ** +-----------------+
-** | kernel          | n pages  
+** | kernel          | n pages
 ** +-----------------+
-** | ramdisk         | m pages  
+** | ramdisk         | m pages
 ** +-----------------+
 ** | second stage    | o pages
 ** +-----------------+
-**
+** | recovery dtbo   | p pages
+** +-----------------+
+*
 ** n = (kernel_size + page_size - 1) / page_size
 ** m = (ramdisk_size + page_size - 1) / page_size
 ** o = (second_size + page_size - 1) / page_size
+** p = (recovery_dtbo_size + page_size - 1) / page_size
 **
 ** 0. all entities are page_size aligned in flash
 ** 1. kernel and ramdisk are required (size != 0)
+** 2. recovery_dtbo is required for recovery.img in non-A/B devices(recovery_dtbo_size != 0)
 ** 2. second is optional (second_size == 0 -> no second)
-** 3. load each element (kernel, ramdisk, second) at
+** 3. load each element (kernel, ramdisk, second, recovery_dtbo) at
 **    the specified physical address (kernel_addr, etc)
 ** 4. prepare tags at tag_addr.  kernel_args[] is
 **    appended to the kernel commandline in the tags.
