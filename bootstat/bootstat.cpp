@@ -295,6 +295,13 @@ const std::map<std::string, int32_t> kBootReasonMap = {
     {"reboot,tool", 151},
     {"reboot,wdt", 152},
     {"reboot,unknown", 153},
+    {"kernel_panic,audit", 154},
+    {"kernel_panic,atomic", 155},
+    {"kernel_panic,hung", 156},
+    {"kernel_panic,hung,rcu", 157},
+    {"kernel_panic,init", 158},
+    {"kernel_panic,oom", 159},
+    {"kernel_panic,stack", 160},
 };
 
 // Converts a string value representing the reason the system booted to an
@@ -572,6 +579,43 @@ bool addKernelPanicSubReason(const pstoreConsole& console, std::string& ret) {
   }
   if (console.rfind("Kernel BUG at ") != std::string::npos) {
     ret = "kernel_panic,bug";
+    return true;
+  }
+
+  std::string panic("Kernel panic - not syncing: ");
+  auto pos = console.rfind(panic);
+  if (pos != std::string::npos) {
+    static const std::vector<std::pair<const std::string, const std::string>> panicReasons = {
+        {"Out of memory", "oom"},
+        {"out of memory", "oom"},
+        {"Oh boy, that early out of memory", "oom"},
+        {"BUG!", "bug"},
+        {"hung_task: blocked tasks", "hung"},
+        {"audit: ", "audit"},
+        {"scheduling while atomic", "atomic"},
+        {"Attempted to kill init!", "init"},
+        {"Requested init", "init"},
+        {"No working init", "init"},
+        {"Could not decompress init", "init"},
+        {"RCU Stall", "hung,rcu"},
+        {"stack-protector", "stack"},
+        {"kernel stack overflow", "stack"},
+        {"Corrupt kernel stack", "stack"},
+        {"low stack detected", "stack"},
+        {"corrupted stack end", "stack"},
+    };
+
+    ret = "kernel_panic";
+    for (auto& s : panicReasons) {
+      if (console.find(panic + s.first, pos) != std::string::npos) {
+        ret += "," + s.second;
+        return true;
+      }
+    }
+    auto reason = getSubreason(console, pos + panic.length());
+    if (reason.length() > 14) {  // filter messages that contain truncating '
+      ret += "," + reason;
+    }
     return true;
   }
   return false;
