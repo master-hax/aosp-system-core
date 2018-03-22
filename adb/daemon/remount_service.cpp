@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mount.h>
+#include <sys/vfs.h>
 #include <unistd.h>
 
 #include <string>
@@ -35,6 +36,8 @@
 #include "adb_io.h"
 #include "adb_utils.h"
 #include "fs_mgr.h"
+
+#define E2FSCK_BIN "/system/bin/e2fsck"
 
 // Returns the device used to mount a directory in /proc/mounts.
 static std::string find_proc_mount(const char* dir) {
@@ -82,7 +85,72 @@ bool make_block_device_writable(const std::string& dev) {
     return result;
 }
 
-static bool remount_partition(int fd, const char* dir) {
+static bool is_ext2fs(int fd, const char* dir) {
+    struct statfs fs;
+    if (statfs(dir, &fs)) {
+        return false;
+    }
+    return fs.f_type == EXT4_SUPER_MAGIC;
+}
+
+static bool fsck_and_remount(int fd, const std::string& dev, const char* dir) {
+    if (!is_ext2fs(fd, dir)) {
+        return false;
+    }
+    if (access(E2FSCK_BIN, X_OK)) {
+        WriteFdFmt(fd, "could not find e2fsck to attempt deduplication: %s\n", strerror(errno));
+        return false;
+    }
+
+    WriteFdExactly(fd, "Attempting to run e2fsck to undo deduplication.\n");
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        return false;
+    }
+    if (pid == 0) {
+        // Arguments to e2fsck.
+        // We need -f since the filesystem is live (mounted readonly), and
+        // otherwise, e2fsck will immediately fail. We also need -p, otherwise
+        // e2fsck can stop and prompt on details we don't care about (like the
+        // timestamp of the superblock). We don't want to pass -y and have it
+        // fix more serious issues, so we pass -p instead.
+        const char* argv[] = {E2FSCK_BIN, "-f", "-p", "-E", "unshare_blocks", dev.c_str(), nullptr};
+        if (execvp(E2FSCK_BIN, const_cast<char**>(argv))) {
+            _exit(-1);
+        }
+    } else {
+        int status = 0;
+        int ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, 0));
+        if (ret < 0) {
+            WriteFdFmt(fd, "could not determine the status of e2fsck: %s\n", strerror(errno));
+            return false;
+        }
+        if (!WIFEXITED(status)) {
+            WriteFdFmt(fd, "e2fsck exited abnormally with status %x\n", status);
+            return false;
+        }
+        int rc = WEXITSTATUS(status);
+        // e2fsck returns a bitstring as an exit code; bits 3 and higher indicate
+        // series errors.
+        if (rc >= 8) {
+            WriteFdFmt(fd, "e2fsck exited with error code %d\n", rc);
+            return false;
+        }
+    }
+
+    // Finally, try to mount again.
+    if (mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr)) {
+        return false;
+    }
+
+    // We want the device to reboot before actually letting the user write
+    // to the partition, so re-mount it again read-only.
+    mount(dev.c_str(), dir, "none", MS_REMOUNT | MS_RDONLY, nullptr);
+    return true;
+}
+
+static bool remount_partition(int fd, const char* dir, bool* reboot) {
     if (!directory_exists(dir)) {
         return true;
     }
@@ -107,11 +175,21 @@ static bool remount_partition(int fd, const char* dir) {
         WriteFdFmt(fd, "remount of the %s mount failed: %s.\n", dir, strerror(errno));
         return false;
     }
-    if (mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr) == -1) {
-        WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir, strerror(errno));
-        return false;
+    int rv = mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr);
+    if (!rv) {
+        return true;
     }
-    return true;
+    // If we failed to remount due to a read-only file system, then it could
+    // be due to ext4 deduplication, so we try to fsck and remount.
+    if (errno == EROFS) {
+        if (fsck_and_remount(fd, dev, dir)) {
+            *reboot |= true;
+            return true;
+        }
+        errno = EROFS;
+    }
+    WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir, strerror(errno));
+    return false;
 }
 
 void remount_service(int fd, void* cookie) {
@@ -140,15 +218,22 @@ void remount_service(int fd, void* cookie) {
     }
 
     bool success = true;
+    bool reboot = false;
     if (android::base::GetBoolProperty("ro.build.system_root_image", false)) {
-        success &= remount_partition(fd, "/");
+        success &= remount_partition(fd, "/", &reboot);
     } else {
-        success &= remount_partition(fd, "/system");
+        success &= remount_partition(fd, "/system", &reboot);
     }
-    success &= remount_partition(fd, "/vendor");
-    success &= remount_partition(fd, "/oem");
+    success &= remount_partition(fd, "/vendor", &reboot);
+    success &= remount_partition(fd, "/oem", &reboot);
 
-    WriteFdExactly(fd, success ? "remount succeeded\n" : "remount failed\n");
+    if (!success) {
+        WriteFdExactly(fd, "remount failed\n");
+    } else if (reboot) {
+        WriteFdExactly(fd, "reboot needed; please reboot and try adb remount again\n");
+    } else {
+        WriteFdExactly(fd, "remount succeeded\n");
+    }
 
     adb_close(fd);
 }
