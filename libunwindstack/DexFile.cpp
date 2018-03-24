@@ -68,6 +68,35 @@ bool DexFile::GetMethodInformation(uint64_t dex_offset, std::string* method_name
     return false;  // The DEX offset is not within the bytecode of this dex file.
   }
 
+  if (dex_file_->IsCompactDexFile()) {
+    // The data section of compact dex files might be shared.
+    // Check the subrange unique to this compact dex.
+    const auto& cdex_header = dex_file_->AsCompactDexFile()->GetHeader();
+    uint32_t begin = cdex_header.data_off_ + cdex_header.OwnedDataBegin();
+    uint32_t end = cdex_header.data_off_ + cdex_header.OwnedDataEnd();
+    if (!(begin <= dex_offset && dex_offset < end)) {
+      return false;  // The DEX offset is not within the bytecode of this dex file.
+    }
+  }
+
+  if (!initialized_) {
+    Init();
+    initialized_ = true;
+  }
+
+  // Find the entry one-past the one we are interested in.
+  auto ub = method_cache_.upper_bound(dex_offset);
+  if (ub != method_cache_.begin()) {
+    ub--;  // Go back one step to find the entry we want.
+    *method_name = dex_file_->PrettyMethod(ub->second, false);
+    *method_offset = dex_offset - ub->first;
+    return true;
+  }
+
+  return false;
+}
+
+void DexFile::Init() {
   for (uint32_t i = 0; i < dex_file_->NumClassDefs(); ++i) {
     const art::DexFile::ClassDef& class_def = dex_file_->GetClassDef(i);
     const uint8_t* class_data = dex_file_->GetClassData(class_def);
@@ -88,15 +117,9 @@ bool DexFile::GetMethodInformation(uint64_t dex_offset, std::string* method_name
       }
 
       uint64_t offset = reinterpret_cast<const uint8_t*>(code.Insns()) - dex_file_->Begin();
-      size_t size = code.InsnsSizeInCodeUnits() * sizeof(uint16_t);
-      if (offset <= dex_offset && dex_offset < offset + size) {
-        *method_name = dex_file_->PrettyMethod(it.GetMemberIndex(), false);
-        *method_offset = dex_offset - offset;
-        return true;
-      }
+      method_cache_[offset] = it.GetMemberIndex();
     }
   }
-  return false;
 }
 
 bool DexFileFromFile::Open(uint64_t dex_file_offset_in_file, const std::string& file) {

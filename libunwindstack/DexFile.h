@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -37,7 +38,11 @@ class DexFile {
   static DexFile* Create(uint64_t dex_file_offset_in_memory, Memory* memory, MapInfo* info);
 
  protected:
+  void Init();
+
   std::unique_ptr<const art::DexFile> dex_file_;
+  std::map<uint32_t, uint32_t> method_cache_;  // dex offset to method index.
+  bool initialized_ = false;
 };
 
 class DexFileFromFile : public DexFile {
