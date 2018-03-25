@@ -97,12 +97,13 @@ static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
     return rc;
 }
 
-static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
+static int format_f2fs(char *fs_blkdev, char *fs_mnt_point, uint64_t dev_sz, bool crypt_footer)
 {
+    int rc = 0;
     int status;
 
     if (!dev_sz) {
-        int rc = get_dev_sz(fs_blkdev, &dev_sz);
+        rc = get_dev_sz(fs_blkdev, &dev_sz);
         if (rc) {
             return rc;
         }
@@ -117,8 +118,28 @@ static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
     const char* const args[] = {
         "/system/bin/make_f2fs", "-f", "-O", "encrypt", fs_blkdev, size_str.c_str(), nullptr};
 
-    return android_fork_execvp_ext(arraysize(args), const_cast<char**>(args), NULL, true,
+    rc = android_fork_execvp_ext(arraysize(args), const_cast<char**>(args), NULL, true,
                                    LOG_KLOG, true, nullptr, nullptr, 0);
+
+    if (rc) {
+        LERROR << "make_f2fs returned " << rc;
+        return rc;
+    }
+
+    const char* const sload_f2fs_args[] = {
+        "/system/bin/sload_f2fs",
+        "-t",
+        fs_mnt_point,
+        fs_blkdev,
+        nullptr };
+
+    rc = android_fork_execvp_ext(arraysize(sload_f2fs_args), const_cast<char**>(sload_f2fs_args),
+                                 NULL, true, LOG_KLOG, true, nullptr, nullptr, 0);
+    if (rc) {
+        LERROR << "sload_f2fs returned " << rc;
+    }
+
+    return rc;
 }
 
 int fs_mgr_do_format(struct fstab_rec *fstab, bool crypt_footer)
@@ -129,7 +150,7 @@ int fs_mgr_do_format(struct fstab_rec *fstab, bool crypt_footer)
            << " as '" << fstab->fs_type << "'";
 
     if (!strncmp(fstab->fs_type, "f2fs", 4)) {
-        rc = format_f2fs(fstab->blk_device, fstab->length, crypt_footer);
+        rc = format_f2fs(fstab->blk_device, fstab->mount_point, fstab->length, crypt_footer);
     } else if (!strncmp(fstab->fs_type, "ext4", 4)) {
         rc = format_ext4(fstab->blk_device, fstab->mount_point, crypt_footer);
     } else {
