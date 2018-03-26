@@ -47,6 +47,8 @@ Android Properties llkd respond to (*_ms parms are in milliseconds):
 - ro.config.low_ram default false, if true do not sysrq t (dump all threads).
 - ro.llk.enable default false, allow live-lock daemon to be enabled.
 - ro.khungtask.enable default false, allow [khungtask] daemon to be enabled.
+- llk.enable default ro.llk.enable, and evaluated for eng.
+- khungtask.enable default ro.khungtask.enable and evaluated for eng.
 - ro.llk.mlockall default false, enable call to mlockall().
 - ro.khungtask.timeout default value 12 minutes, [khungtask] maximum timelimit.
 - ro.llk.timeout_ms default 10 minutes, D or Z maximum timelimit,

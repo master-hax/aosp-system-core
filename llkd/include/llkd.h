@@ -31,7 +31,8 @@ unsigned llkCheckMilliseconds(void);
 
 /* clang-format off */
 #define LLK_ENABLE_PROPERTY            "ro.llk.enable"
-#define LLK_ENABLE_DEFAULT             false
+#define LLK_ENABLE_DEFAULT             false /* "eng" and userdebug true */
+#define LLK_ENABLE_WRITEABLE_PROPERTY  "llk.enable"
 #define KHT_ENABLE_PROPERTY            "ro.khungtask.enable"
 #define LLK_MLOCKALL_PROPERTY          "ro.llk.mlockall"
 #define LLK_MLOCKALL_DEFAULT           true
