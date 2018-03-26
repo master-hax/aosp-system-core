@@ -1027,6 +1027,10 @@ unsigned llkCheckMilliseconds() {
 
 bool llkInit(const char* threadname) {
     llkLowRam = GetBoolProperty("ro.config.low_ram", false);
+    if (!LLK_ENABLE_DEFAULT && GetBoolProperty("ro.debuggable", false)) {
+        llkEnable = GetProperty(LLK_ENABLE_PROPERTY, "eng") == "eng";
+        khtEnable = GetProperty(KHT_ENABLE_PROPERTY, "eng") == "eng";
+    }
     llkEnable = GetBoolProperty(LLK_ENABLE_PROPERTY, llkEnable);
     if (llkEnable && !llkTopDirectory.reset(procdir)) {
         // Most likely reason we could be here is llkd was started
