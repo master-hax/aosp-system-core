@@ -74,7 +74,8 @@ void fb_set_active(const char *slot);
 
 /* util stuff */
 double now();
-char *mkmsg(const char *fmt, ...);
+char* mkmsg(const char* fmt, ...);
+char* xstrdup(const char*);
 
 // These printf-like functions are implemented in terms of vsnprintf, so they
 // use the same attribute for compile-time format string checking. On Windows,

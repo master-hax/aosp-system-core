@@ -633,27 +633,31 @@ static int unzip_to_file(ZipArchiveHandle zip, const char* entry_name) {
     return fd.release();
 }
 
-static char *strip(char *s)
-{
-    int n;
-    while(*s && isspace(*s)) s++;
-    n = strlen(s);
-    while(n-- > 0) {
-        if(!isspace(s[n])) break;
+static char* strip(char* s) {
+    while (*s && isspace(*s)) s++;
+
+    int n = strlen(s);
+    while (n-- > 0) {
+        if (!isspace(s[n])) break;
         s[n] = 0;
     }
     return s;
 }
 
 #define MAX_OPTIONS 32
-static int setup_requirement_line(char *name)
-{
+static int check_requirement(Transport* transport, char* line) {
     char *val[MAX_OPTIONS];
     char *prod = nullptr;
-    unsigned n, count;
+    unsigned count;
     char *x;
     int invert = 0;
 
+    // "require product=alpha|beta|gamma"
+    // "require version-bootloader=1234"
+    // "require-for-product:gamma version-bootloader=istanbul|constantinople"
+    // "require partition-exists=vendor"
+
+    char* name = line;
     if (!strncmp(name, "reject ", 7)) {
         name += 7;
         invert = 1;
@@ -675,6 +679,27 @@ static int setup_requirement_line(char *name)
     *x = 0;
     val[0] = x + 1;
 
+    name = strip(name);
+
+    // "require partition-exists=x" is a special case, added because of the trouble we had when
+    // Pixel 2 shipped with new partitions and users used old versions of fastboot to flash them,
+    // missing out new partitions. A device with new partitions can use "partition-exists" to
+    // override the `is_optional` field in the `images` array.
+    if (!strcmp(name, "partition-exists")) {
+        const char* partition_name = val[0];
+        std::string has_slot;
+        if (!fb_getvar(transport, std::string("has-slot:") + partition_name, &has_slot) ||
+            (has_slot != "yes" && has_slot != "no")) {
+            die("device doesn't have required partition %s!", partition_name);
+        }
+        for (size_t i = 0; i < arraysize(images); ++i) {
+            if (images[i].nickname && !strcmp(images[i].nickname, partition_name)) {
+                images[i].is_optional = false;
+            }
+        }
+        return 0;
+    }
+
     for(count = 1; count < MAX_OPTIONS; count++) {
         x = strchr(val[count - 1],'|');
         if (x == 0) break;
@@ -682,40 +707,27 @@ static int setup_requirement_line(char *name)
         val[count] = x + 1;
     }
 
-    name = strip(name);
-    for(n = 0; n < count; n++) val[n] = strip(val[n]);
-
-    name = strip(name);
-    if (name == 0) return -1;
-
-    const char* var = name;
     // Work around an unfortunate name mismatch.
-    if (!strcmp(name,"board")) var = "product";
+    const char* var = name;
+    if (!strcmp(name, "board")) var = "product";
 
     const char** out = reinterpret_cast<const char**>(malloc(sizeof(char*) * count));
-    if (out == 0) return -1;
+    if (out == nullptr) die("out of memory");
 
-    for(n = 0; n < count; n++) {
-        out[n] = strdup(strip(val[n]));
-        if (out[n] == 0) {
-            for(size_t i = 0; i < n; ++i) {
-                free((char*) out[i]);
-            }
-            free(out);
-            return -1;
-        }
+    for (size_t i = 0; i < count; ++i) {
+        out[i] = xstrdup(strip(val[i]));
     }
 
-    fb_queue_require(prod, var, invert, n, out);
+    fb_queue_require(prod, var, invert, count, out);
     return 0;
 }
 
-static void setup_requirements(char* data, int64_t sz) {
+static void check_requirements(Transport* transport, char* data, int64_t sz) {
     char* s = data;
     while (sz-- > 0) {
         if (*s == '\n') {
             *s++ = 0;
-            if (setup_requirement_line(data)) {
+            if (check_requirement(transport, data)) {
                 die("out of memory");
             }
             data = s;
@@ -723,6 +735,7 @@ static void setup_requirements(char* data, int64_t sz) {
             s++;
         }
     }
+    if (fb_execute_queue(transport)) die("requirements not met!");
 }
 
 static void queue_info_dump() {
@@ -1141,7 +1154,7 @@ static void do_update(Transport* transport, const char* filename, const std::str
         die("update package '%s' has no android-info.txt", filename);
     }
 
-    setup_requirements(reinterpret_cast<char*>(data), sz);
+    check_requirements(transport, reinterpret_cast<char*>(data), sz);
 
     std::string secondary;
     if (!skip_secondary) {
@@ -1230,7 +1243,7 @@ static void do_flashall(Transport* transport, const std::string& slot_override, 
     void* data = load_file(fname.c_str(), &sz);
     if (data == nullptr) die("could not load android-info.txt: %s", strerror(errno));
 
-    setup_requirements(reinterpret_cast<char*>(data), sz);
+    check_requirements(transport, reinterpret_cast<char*>(data), sz);
 
     std::string secondary;
     if (!skip_secondary) {
@@ -1866,5 +1879,8 @@ int main(int argc, char **argv)
         fb_queue_wait_for_disconnect();
     }
 
-    return fb_execute_queue(transport) ? EXIT_FAILURE : EXIT_SUCCESS;
+    double start = now();
+    int status = fb_execute_queue(transport) ? EXIT_FAILURE : EXIT_SUCCESS;
+    fprintf(stderr, "finished. total time: %.3fs\n", (now() - start));
+    return status;
 }
