@@ -49,6 +49,7 @@ class RegsFake : public Regs {
 
   bool Is32Bit() { return false; }
 
+  uint64_t GetMinimumPcAdjustment() override { return 2; }
   uint64_t GetPcAdjustment(uint64_t, Elf*) override { return 2; }
 
   bool StepIfSignalHandler(uint64_t, Elf*, Memory*) override { return false; }
@@ -79,6 +80,7 @@ class RegsImplFake : public RegsImpl<TypeParam> {
   void set_pc(uint64_t pc) override { fake_pc_ = pc; }
   void set_sp(uint64_t sp) override { fake_sp_ = sp; }
 
+  uint64_t GetMinimumPcAdjustment() override { return 0; }
   uint64_t GetPcAdjustment(uint64_t, Elf*) override { return 0; }
   bool SetPcFromReturnAddress(Memory*) override { return false; }
   bool StepIfSignalHandler(uint64_t, Elf*, Memory*) override { return false; }

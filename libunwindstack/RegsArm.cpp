@@ -50,9 +50,13 @@ void RegsArm::set_sp(uint64_t sp) {
   regs_[ARM_REG_SP] = sp;
 }
 
+uint64_t RegsArm::GetMinimumPcAdjustment() {
+  return 2;
+}
+
 uint64_t RegsArm::GetPcAdjustment(uint64_t rel_pc, Elf* elf) {
   uint64_t load_bias = elf->GetLoadBias();
-  if (rel_pc < load_bias) {
+  if (!elf->valid() || rel_pc < load_bias) {
     return 0;
   }
   uint64_t adjusted_rel_pc = rel_pc - load_bias;

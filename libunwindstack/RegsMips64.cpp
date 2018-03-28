@@ -51,6 +51,10 @@ void RegsMips64::set_sp(uint64_t sp) {
   regs_[MIPS64_REG_SP] = sp;
 }
 
+uint64_t RegsMips64::GetMinimumPcAdjustment() {
+  return 8;
+}
+
 uint64_t RegsMips64::GetPcAdjustment(uint64_t rel_pc, Elf* elf) {
   if (!elf->valid() || rel_pc < 8) {
     return 0;

@@ -163,7 +163,13 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
         step_pc = rel_pc;
       }
       if (adjust_pc) {
-        pc_adjustment = regs_->GetPcAdjustment(rel_pc, elf);
+        if (elf->valid()) {
+          pc_adjustment = regs_->GetPcAdjustment(rel_pc, elf);
+        } else {
+          // To make sure we are always on the previous instruction,
+          // subtract a minimum amount to get there.
+          pc_adjustment = regs_->GetMinimumPcAdjustment();
+        }
       } else {
         pc_adjustment = 0;
       }

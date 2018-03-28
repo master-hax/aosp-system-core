@@ -51,6 +51,10 @@ void RegsArm64::set_sp(uint64_t sp) {
   regs_[ARM64_REG_SP] = sp;
 }
 
+uint64_t RegsArm64::GetMinimumPcAdjustment() {
+  return 4;
+}
+
 uint64_t RegsArm64::GetPcAdjustment(uint64_t rel_pc, Elf* elf) {
   if (!elf->valid() || rel_pc < 4) {
     return 0;

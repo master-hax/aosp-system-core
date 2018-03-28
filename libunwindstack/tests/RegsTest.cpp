@@ -181,12 +181,13 @@ TEST_F(RegsTest, elf_invalid) {
   RegsMips regs_mips;
   RegsMips64 regs_mips64;
   MapInfo map_info(0x1000, 0x2000);
-  Elf* invalid_elf = new Elf(new MemoryFake);
+  Elf* invalid_elf = new Elf(nullptr);
   map_info.elf.reset(invalid_elf);
 
   regs_arm.set_pc(0x1500);
   EXPECT_EQ(0x500U, invalid_elf->GetRelPc(regs_arm.pc(), &map_info));
-  EXPECT_EQ(4U, regs_arm.GetPcAdjustment(0x500U, invalid_elf));
+  EXPECT_EQ(0U, regs_arm.GetPcAdjustment(0x500U, invalid_elf));
+  EXPECT_EQ(0U, regs_arm.GetPcAdjustment(0x511U, invalid_elf));
 
   regs_arm64.set_pc(0x1600);
   EXPECT_EQ(0x600U, invalid_elf->GetRelPc(regs_arm64.pc(), &map_info));
@@ -207,6 +208,26 @@ TEST_F(RegsTest, elf_invalid) {
   regs_mips64.set_pc(0x1a00);
   EXPECT_EQ(0xa00U, invalid_elf->GetRelPc(regs_mips64.pc(), &map_info));
   EXPECT_EQ(0U, regs_mips64.GetPcAdjustment(0xa00U, invalid_elf));
+}
+
+TEST_F(RegsTest, minimum_pc_adjustment) {
+  RegsArm regs_arm;
+  EXPECT_EQ(2U, regs_arm.GetMinimumPcAdjustment());
+
+  RegsArm64 regs_arm64;
+  EXPECT_EQ(4U, regs_arm64.GetMinimumPcAdjustment());
+
+  RegsX86 regs_x86;
+  EXPECT_EQ(1U, regs_x86.GetMinimumPcAdjustment());
+
+  RegsX86_64 regs_x86_64;
+  EXPECT_EQ(1U, regs_x86_64.GetMinimumPcAdjustment());
+
+  RegsMips regs_mips;
+  EXPECT_EQ(8U, regs_mips.GetMinimumPcAdjustment());
+
+  RegsMips64 regs_mips64;
+  EXPECT_EQ(8U, regs_mips64.GetMinimumPcAdjustment());
 }
 
 TEST_F(RegsTest, arm_verify_sp_pc) {
