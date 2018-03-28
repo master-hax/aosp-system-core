@@ -142,23 +142,4 @@ struct boot_img_hdr_v1 : public boot_img_hdr_v0 {
  * 7. if second_size != 0: jump to second_addr
  *    else: jump to kernel_addr
  */
-
-#if 0
-typedef struct ptentry ptentry;
-
-struct ptentry {
-    char name[16];      /* asciiz partition name    */
-    unsigned start;     /* starting block number    */
-    unsigned length;    /* length in blocks         */
-    unsigned flags;     /* set to zero              */
-};
-
-/* MSM Partition Table ATAG
-**
-** length: 2 + 7 * n
-** atag:   0x4d534d70
-**         <ptentry> x n
-*/
-#endif
-
 #endif
