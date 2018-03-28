@@ -163,16 +163,29 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
         step_pc = rel_pc;
       }
       if (adjust_pc) {
-        pc_adjustment = regs_->GetPcAdjustment(rel_pc, elf);
+        if (elf->valid()) {
+          pc_adjustment = regs_->GetPcAdjustment(rel_pc, elf);
+        } else {
+          // To make sure we are always on the previous instruction,
+          // subtract a minimum amount to get there.
+          pc_adjustment = regs_->GetMinimumPcAdjustment();
+        }
       } else {
         pc_adjustment = 0;
       }
-      step_pc -= pc_adjustment;
+      if (step_pc >= pc_adjustment) {
+        step_pc -= pc_adjustment;
+      } else {
+        pc_adjustment = 0;
+      }
 
       // If the pc is in an invalid elf file, try and get an Elf object
       // using the jit debug information.
       if (!elf->valid() && jit_debug_ != nullptr) {
-        uint64_t adjusted_jit_pc = regs_->pc() - pc_adjustment;
+        uint64_t adjusted_jit_pc = regs_->pc();
+        if (adjusted_jit_pc >= pc_adjustment) {
+          adjusted_jit_pc -= pc_adjustment;
+        }
         Elf* jit_elf = jit_debug_->GetElf(maps_, adjusted_jit_pc);
         if (jit_elf != nullptr) {
           // The jit debug information requires a non relative adjusted pc.

@@ -36,6 +36,7 @@ class RegsMips : public RegsImpl<uint32_t> {
 
   ArchEnum Arch() override final;
 
+  uint64_t GetMinimumPcAdjustment() override;
   uint64_t GetPcAdjustment(uint64_t rel_pc, Elf* elf) override;
 
   bool SetPcFromReturnAddress(Memory* process_memory) override;
