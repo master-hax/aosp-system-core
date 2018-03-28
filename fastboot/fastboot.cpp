@@ -121,6 +121,7 @@ static struct {
     // clang-format off
     { "boot",     "boot.img",         "boot.sig",     "boot",     false, false },
     { nullptr,    "boot_other.img",   "boot.sig",     "boot",     true,  true  },
+    { "odm",      "odm.img",          "odm.sig",      "odm",      true,  false },
     { "dtbo",     "dtbo.img",         "dtbo.sig",     "dtbo",     true,  false },
     { "dts",      "dt.img",           "dt.sig",       "dts",      true,  false },
     { "product",  "product.img",      "product.sig",  "product",  true,  false },
