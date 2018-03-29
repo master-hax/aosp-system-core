@@ -95,6 +95,7 @@ static unsigned tags_offset    = 0x00000100;
 
 static bool g_disable_verity = false;
 static bool g_disable_verification = false;
+static bool g_verbose = false;
 
 static const std::string convert_fbe_marker_filename("convert_fbe");
 
@@ -783,8 +784,8 @@ static int64_t get_target_sparse_limit(Transport* transport) {
         fprintf(stderr, "couldn't parse max-download-size '%s'\n", max_download_size.c_str());
         return 0;
     }
-    if (limit > 0) {
-        fprintf(stderr, "target reported max download size of %" PRId64 " bytes\n", limit);
+    if (g_verbose && limit > 0) {
+        fprintf(stderr, "Target reported max download size of %" PRId64 " bytes\n", limit);
     }
     return limit;
 }
@@ -1517,12 +1518,13 @@ int main(int argc, char **argv)
         {"tags-offset", required_argument, 0, 't'},
         {"help", no_argument, 0, 'h'},
         {"unbuffered", no_argument, 0, 0},
-        {"version", no_argument, 0, 0},
         {"slot", required_argument, 0, 0},
         {"set_active", optional_argument, 0, 'a'},
         {"set-active", optional_argument, 0, 'a'},
         {"skip-secondary", no_argument, 0, 0},
         {"skip-reboot", no_argument, 0, 0},
+        {"verbose", no_argument, 0, 'v'},
+        {"version", no_argument, 0, 0},
         {"disable-verity", no_argument, 0, 0},
         {"disable-verification", no_argument, 0, 0},
 #if !defined(_WIN32)
@@ -1588,6 +1590,9 @@ int main(int argc, char **argv)
             break;
         case 'u':
             erase_first = false;
+            break;
+        case 'v':
+            g_verbose = true;
             break;
         case 'w':
             wants_wipe = true;
