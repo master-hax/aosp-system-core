@@ -120,7 +120,7 @@ static void CloseWithPacketThreadFunc(CloseWithPacketArg* arg) {
     data.resize(MAX_PAYLOAD);
     arg->bytes_written += data.size();
     int ret = s->enqueue(s, std::move(data));
-    ASSERT_EQ(1, ret);
+    ASSERT_NE(-1, ret);
 
     asocket* cause_close_s = create_local_socket(arg->cause_close_fd);
     ASSERT_TRUE(cause_close_s != nullptr);
