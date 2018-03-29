@@ -529,6 +529,11 @@ extern int adb_poll(adb_pollfd* fds, size_t nfds, int timeout) {
     int skipped = 0;
     std::vector<WSAPOLLFD> sockets;
     std::vector<adb_pollfd*> original;
+
+    for (size_t i = 0; i < nfds; ++i) {
+        fds[i].revents = 0;
+    }
+
     for (size_t i = 0; i < nfds; ++i) {
         FH fh = _fh_from_int(fds[i].fd, __func__);
         if (!fh || !fh->used || fh->clazz != &_fh_socket_class) {
@@ -545,7 +550,7 @@ extern int adb_poll(adb_pollfd* fds, size_t nfds, int timeout) {
         }
     }
 
-    if (sockets.empty()) {
+    if (sockets.empty() || skipped > 0) {
         return skipped;
     }
 
