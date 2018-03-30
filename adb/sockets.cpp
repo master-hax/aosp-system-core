@@ -119,6 +119,7 @@ static SocketFlushResult local_socket_flush_incoming(asocket* s) {
         int rc = adb_write(s->fd, r.data(), r.size());
         if (rc == static_cast<int>(r.size())) {
             s->packet_queue.pop_front();
+            continue;
         } else if (rc > 0) {
             r.drop_front(rc);
             fdevent_add(&s->fde, FDE_WRITE);
