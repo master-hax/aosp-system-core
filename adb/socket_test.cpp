@@ -112,11 +112,21 @@ static void CreateCloser(CloseWithPacketArg* arg) {
         ASSERT_TRUE(s != nullptr);
         arg->bytes_written = 0;
 
-        std::string data;
-        data.resize(MAX_PAYLOAD);
-        arg->bytes_written += data.size();
-        int ret = s->enqueue(s, std::move(data));
-        ASSERT_EQ(1, ret);
+        bool socket_filled = false;
+        for (int i = 0; i < 128; ++i) {
+            std::string data;
+            data.resize(MAX_PAYLOAD);
+            arg->bytes_written += data.size();
+            int ret = s->enqueue(s, std::move(data));
+            if (ret == 1) {
+                socket_filled = true;
+                break;
+            }
+            ASSERT_NE(-1, ret);
+
+            std::this_thread::sleep_for(250ms);
+        }
+        ASSERT_TRUE(socket_filled);
 
         asocket* cause_close_s = create_local_socket(arg->cause_close_fd);
         ASSERT_TRUE(cause_close_s != nullptr);
