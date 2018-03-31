@@ -83,6 +83,19 @@ bool khtEnable = LLK_ENABLE_DEFAULT;                 // [khungtaskd] panic
 seconds khtTimeout = duration_cast<seconds>(llkTimeoutMs * (1 + LLK_CHECKS_PER_TIMEOUT_DEFAULT) /
                                             LLK_CHECKS_PER_TIMEOUT_DEFAULT);
 
+bool llkCacheAll = true;
+bool llkCacheMost = true;
+size_t llkNumDirectories;
+
+// Reserve from llkOpenMax for other non-managed file descriptors
+constexpr int llkOpenReserved = 32;
+// Reduce llkOpenMax by llkOpenNumerator / llkOpenDenominator
+constexpr int llkOpenNumerator = 7;  // must be < llkOpenDenominator
+constexpr int llkOpenDenominator = 8;
+
+auto llkOpenMax =
+    ((sysconf(_SC_OPEN_MAX) - llkOpenReserved) * llkOpenNumerator) / llkOpenDenominator;
+
 // Blacklist variables, initialized with comma separated lists of high false
 // positive and/or dangerous references, e.g. without self restart, for pid,
 // ppid, name and uid:
@@ -108,6 +121,8 @@ class dir {
     // each directory level picked to be just north of 4K in size
     static constexpr size_t buffEntries = 15;
     static dirent buff[numLevels][buffEntries];
+    size_t sz;   // historical maximum number of tasks
+    size_t cnt;  // incremental counter of number of tasks
 
     bool fill(enum level index) {
         if (index >= numLevels) return false;
@@ -122,29 +137,54 @@ class dir {
     }
 
   public:
-    dir() : fd(-1), available_bytes(0), next(nullptr) {}
+    dir() : fd(-1), available_bytes(0), next(nullptr), sz(0), cnt(0) {}
 
     explicit dir(const char* directory)
         : fd(__predict_true(directory != nullptr)
                  ? ::open(directory, O_CLOEXEC | O_DIRECTORY | O_RDONLY)
                  : -1),
           available_bytes(0),
-          next(nullptr) {}
+          next(nullptr),
+          sz(0),
+          cnt(0) {}
 
     explicit dir(const std::string&& directory)
         : fd(::open(directory.c_str(), O_CLOEXEC | O_DIRECTORY | O_RDONLY)),
           available_bytes(0),
-          next(nullptr) {}
+          next(nullptr),
+          sz(0),
+          cnt(0) {}
 
     explicit dir(const std::string& directory)
         : fd(::open(directory.c_str(), O_CLOEXEC | O_DIRECTORY | O_RDONLY)),
           available_bytes(0),
-          next(nullptr) {}
+          next(nullptr),
+          sz(0),
+          cnt(0) {}
 
     // Don't need any copy or move constructors.
     explicit dir(const dir& c) = delete;
     explicit dir(dir& c) = delete;
-    explicit dir(dir&& c) = delete;
+
+    // Move and assignment constructors are needed.
+    explicit dir(dir&& c)
+        : fd(c.fd), available_bytes(c.available_bytes), next(c.next), sz(c.sz), cnt(c.cnt) {
+        c.fd = -1;
+        c.available_bytes = 0;
+        c.next = nullptr;
+    }
+
+    dir& operator=(dir&& c) {
+        fd = c.fd;
+        available_bytes = c.available_bytes;
+        next = c.next;
+        sz = c.sz;
+        cnt = c.cnt;
+        c.fd = -1;
+        c.available_bytes = 0;
+        c.next = nullptr;
+        return *this;
+    }
 
     ~dir() {
         if (fd >= 0) {
@@ -154,6 +194,8 @@ class dir {
 
     operator bool() const { return fd >= 0; }
 
+    size_t size() const { return sz; }
+
     void reset(void) {
         if (fd >= 0) {
             ::close(fd);
@@ -161,6 +203,8 @@ class dir {
             available_bytes = 0;
             next = nullptr;
         }
+        sz = 0;
+        cnt = 0;
     }
 
     dir& reset(const char* directory) {
@@ -171,7 +215,16 @@ class dir {
         return *this;
     }
 
+    dir& reset(std::string& directory) {
+        reset();
+        // available_bytes will _always_ be zero here as its value is
+        // intimately tied to fd < 0 or not.
+        fd = ::open(directory.c_str(), O_CLOEXEC | O_DIRECTORY | O_RDONLY);
+        return *this;
+    }
+
     void rewind(void) {
+        cnt = 0;
         if (fd >= 0) {
             ::lseek(fd, off_t(0), SEEK_SET);
             available_bytes = 0;
@@ -184,6 +237,9 @@ class dir {
         auto ret = next;
         available_bytes -= next->d_reclen;
         next = reinterpret_cast<dirent*>(reinterpret_cast<char*>(next) + next->d_reclen);
+        if ((ret->d_name[0] != '.') && (++cnt > sz)) {
+            sz = cnt;
+        }
         return ret;
     }
 } llkTopDirectory;
@@ -269,6 +325,7 @@ struct proc {
     unsigned time;                 // sum of /proc/<tid>/stat field 14 utime &
                                    // 15 stime for coarse ABA problem detection.
     std::string cmdline;           // cached /cmdline content
+    dir directory;                 // cached directory entries.
     char state;                    // /proc/<tid>/stat field 3: Z or D
                                    // (others we do not monitor: S, R, T or ?)
     char comm[TASK_COMM_LEN + 3];  // space for adding '[' and ']'
@@ -803,6 +860,7 @@ milliseconds llkCheck(bool checkRunning) {
     ms -= llkCycle;
     auto myPid = ::getpid();
     auto myTid = ::gettid();
+    bool maxedOut = false;
     for (auto dp = llkTopDirectory.read(); dp != nullptr; dp = llkTopDirectory.read()) {
         std::string piddir;
 
@@ -814,12 +872,26 @@ milliseconds llkCheck(bool checkRunning) {
         std::string taskdir = piddir + "/task/";
         int pid = -1;
         LOG(VERBOSE) << "+opendir(\"" << taskdir << "\")";
-        dir taskDirectory(taskdir);
-        if (__predict_false(!taskDirectory)) {
+        dir *taskDirectoryPointer, taskDirectory;
+        pid_t processId;
+        proc* p = nullptr;
+        if (android::base::ParseInt(dp->d_name, &processId, pid_t(1))) {
+            p = llkTidLookup(processId);
+        }
+        if (p) {
+            taskDirectoryPointer = &p->directory;
+        } else {
+            taskDirectoryPointer = &taskDirectory;
+        }
+        if (!*taskDirectoryPointer) {
+            taskDirectoryPointer->reset(taskdir);
+            ++llkNumDirectories;
+        }
+        if (__predict_false(!*taskDirectoryPointer)) {
             LOG(DEBUG) << "+opendir(\"" << taskdir << "\") failed";
         }
-        for (auto tp = taskDirectory.read(dir::task, dp); tp != nullptr;
-             tp = taskDirectory.read(dir::task)) {
+        for (auto tp = taskDirectoryPointer->read(dir::task, dp); tp != nullptr;
+             tp = taskDirectoryPointer->read(dir::task)) {
             if (!getValidTidDir(tp, &piddir)) {
                 continue;
             }
@@ -855,6 +927,15 @@ milliseconds llkCheck(bool checkRunning) {
             auto procp = llkTidLookup(tid);
             if (procp == nullptr) {
                 procp = llkTidAlloc(tid, pid, ppid, pdir, utime + stime, state);
+                if ((tid == pid) && !procp->directory) {
+                    if (llkNumDirectories > llkOpenMax) {
+                        maxedOut = true;
+                    } else {
+                        procp->directory = std::move(taskDirectory);
+                        taskDirectoryPointer = &procp->directory;
+                        p = procp;
+                    }
+                }
             } else {
                 // comm can change ...
                 procp->setComm(pdir);
@@ -979,7 +1060,27 @@ milliseconds llkCheck(bool checkRunning) {
                        << "->" << tid << ' ' << procp->getComm() << " [panic]";
             llkPanicKernel(true, tid, (state == 'Z') ? "zombie" : "driver");
         }
+        if (p) {
+            if (maxedOut) {
+                p->directory.reset();
+                --llkNumDirectories;
+            } else if (llkCacheAll || (p->directory.size() > 1)) {
+                p->directory.rewind();
+            } else {
+                p->directory.reset();
+                --llkNumDirectories;
+            }
+        } else {
+            --llkNumDirectories;
+        }
         LOG(VERBOSE) << "+closedir()";
+    }
+    if (maxedOut) {
+        if (llkCacheAll) {
+            llkCacheAll = false;
+        } else {
+            llkCacheMost = false;
+        }
     }
     llkTopDirectory.rewind();
     LOG(VERBOSE) << "closedir()";
@@ -1007,8 +1108,16 @@ milliseconds llkCheck(bool checkRunning) {
                 LOG(VERBOSE) << "thread " << p->second.ppid << ppidCmdline << "->" << p->second.pid
                              << pidCmdline << "->" << p->second.tid << tidCmdline << " removed";
             }
+            if (p->second.directory) {
+                --llkNumDirectories;
+            }
             p = tids.erase(p);
         } else {
+            if (p->second.directory && (__predict_false(p->second.directory.size() == 0) ||
+                                        (!llkCacheAll && (p->second.directory.size() == 1)))) {
+                p->second.directory.reset();
+                --llkNumDirectories;
+            }
             ++p;
         }
     }
@@ -1036,6 +1145,9 @@ unsigned llkCheckMilliseconds() {
 
 bool llkInit(const char* threadname) {
     llkLowRam = android::base::GetBoolProperty("ro.config.low_ram", false);
+    if (llkLowRam) {
+        llkOpenMax /= 2;
+    }
     if (!LLK_ENABLE_DEFAULT && android::base::GetBoolProperty("ro.debuggable", false)) {
         llkEnable = android::base::GetProperty(LLK_ENABLE_PROPERTY, "eng") == "eng";
         khtEnable = android::base::GetProperty(KHT_ENABLE_PROPERTY, "eng") == "eng";
