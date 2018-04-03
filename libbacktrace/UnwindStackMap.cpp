@@ -143,19 +143,42 @@ bool UnwindStackOfflineMap::Build(const std::vector<backtrace_map_t>& backtrace_
   return true;
 }
 
+class StackOfflineMemory : public unwindstack::Memory {
+ public:
+  StackOfflineMemory() = default;
+  virtual ~StackOfflineMemory() = default;
+
+  void Reset(uint64_t start_addr, uint64_t end_addr, const uint8_t* data) {
+    start_addr_ = start_addr;
+    end_addr_ = end_addr;
+    data_ = data;
+  }
+
+  size_t Read(uint64_t addr, void* dst, size_t size) override {
+    if (addr < start_addr_ || addr >= end_addr_) {
+      return 0;
+    }
+    size_t actual_len = std::min(size, static_cast<size_t>(end_addr_ - addr));
+    memcpy(dst, addr - start_addr_ + data_, actual_len);
+    return actual_len;
+  }
+
+ private:
+  uint64_t start_addr_;
+  uint64_t end_addr_;
+  const uint8_t* data_;
+};
+
 bool UnwindStackOfflineMap::CreateProcessMemory(const backtrace_stackinfo_t& stack) {
   if (stack.start >= stack.end) {
     return false;
   }
 
   // Create the process memory from the stack data.
-  uint64_t size = stack.end - stack.start;
-  unwindstack::MemoryBuffer* memory = new unwindstack::MemoryBuffer;
-  memory->Resize(size);
-  memcpy(memory->GetPtr(0), stack.data, size);
-  std::shared_ptr<unwindstack::Memory> shared_memory(memory);
-
-  process_memory_.reset(new unwindstack::MemoryRange(shared_memory, 0, size, stack.start));
+  if (!process_memory_) {
+    process_memory_.reset(new StackOfflineMemory);
+  }
+  static_cast<StackOfflineMemory*>(process_memory_.get())->Reset(stack.start, stack.end, stack.data);
   return true;
 }
 
