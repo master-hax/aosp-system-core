@@ -62,7 +62,7 @@ struct asocket {
     int fd = 0;
 
     // queue of data waiting to be written
-    std::deque<Range> packet_queue;
+    IOVector packet_queue;
 
     std::string smart_socket_data;
 
