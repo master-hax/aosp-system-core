@@ -34,15 +34,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-void bootimg_set_cmdline(boot_img_hdr_v1* h, const char* cmdline) {
-    if (strlen(cmdline) >= sizeof(h->cmdline)) die("command line too large: %zu", strlen(cmdline));
-    strcpy(reinterpret_cast<char*>(h->cmdline), cmdline);
+void bootimg_set_cmdline(boot_img_hdr_v1* h, const std::string& cmdline) {
+    if (cmdline.size() >= sizeof(h->cmdline)) die("command line too large: %zu", cmdline.size());
+    strcpy(reinterpret_cast<char*>(h->cmdline), cmdline.c_str());
 }
 
 boot_img_hdr_v1* mkbootimg(void* kernel, int64_t kernel_size, off_t kernel_offset, void* ramdisk,
                            int64_t ramdisk_size, off_t ramdisk_offset, void* second,
                            int64_t second_size, off_t second_offset, size_t page_size, size_t base,
-                           off_t tags_offset, uint32_t header_version, int64_t* bootimg_size) {
+                           off_t tags_offset, uint32_t header_version, uint32_t os_version,
+                           int64_t* bootimg_size) {
     size_t page_mask = page_size - 1;
 
     int64_t header_actual = sizeof(boot_img_hdr_v1) & (~page_mask);
@@ -53,9 +54,7 @@ boot_img_hdr_v1* mkbootimg(void* kernel, int64_t kernel_size, off_t kernel_offse
     *bootimg_size = header_actual + kernel_actual + ramdisk_actual + second_actual;
 
     boot_img_hdr_v1* hdr = reinterpret_cast<boot_img_hdr_v1*>(calloc(*bootimg_size, 1));
-    if (hdr == nullptr) {
-        return hdr;
-    }
+    if (hdr == nullptr) die("couldn't allocate boot image: %" PRId64 " bytes", *bootimg_size);
 
     memcpy(hdr->magic, BOOT_MAGIC, BOOT_MAGIC_SIZE);
 
@@ -74,6 +73,8 @@ boot_img_hdr_v1* mkbootimg(void* kernel, int64_t kernel_size, off_t kernel_offse
         hdr->header_version = header_version;
         hdr->header_size = sizeof(boot_img_hdr_v1);
     }
+
+    hdr->os_version = os_version;
 
     memcpy(hdr->magic + page_size, kernel, kernel_size);
     memcpy(hdr->magic + page_size + kernel_actual, ramdisk, ramdisk_size);
