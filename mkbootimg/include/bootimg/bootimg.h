@@ -1,24 +1,22 @@
-/* tools/mkbootimg/bootimg.h
-**
-** Copyright 2007, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+/*
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#pragma once
 
 #include <stdint.h>
-
-#ifndef _BOOT_IMAGE_H_
-#define _BOOT_IMAGE_H_
 
 #define BOOT_MAGIC "ANDROID!"
 #define BOOT_MAGIC_SIZE 8
@@ -27,10 +25,9 @@
 #define BOOT_EXTRA_ARGS_SIZE 1024
 
 #define BOOT_HEADER_VERSION_ZERO 0
-/*
- *  Bootloader expects the structure of boot_img_hdr with header version
- *  BOOT_HEADER_VERSION_ZERO to be as follows:
- */
+
+// The bootloader expects the structure of boot_img_hdr with header version
+// BOOT_HEADER_VERSION_ZERO to be as follows:
 struct boot_img_hdr_v0 {
     uint8_t magic[BOOT_MAGIC_SIZE];
 
@@ -50,11 +47,11 @@ struct boot_img_hdr_v0 {
      */
     uint32_t header_version;
 
-    /* operating system version and security patch level; for
-     * version "A.B.C" and patch level "Y-M-D":
-     * ver = A << 14 | B << 7 | C         (7 bits for each of A, B, C)
-     * lvl = ((Y - 2000) & 127) << 4 | M  (7 bits for Y, 4 bits for M)
-     * os_version = ver << 11 | lvl */
+    // Operating system version and security patch level.
+    // For version "A.B.C" and patch level "Y-M-D":
+    //   version = (A & 0x7f) << 14 | (B & 0x7f) << 7 | (C & 0x7f)   (7 bits for each of A, B, C)
+    //   level   = ((Y - 2000) & 0x7f) << 4 | (M & 0xf)              (7 bits for Y, 4 bits for M)
+    //   os_version = version << 11 | level
     uint32_t os_version;
 
     uint8_t name[BOOT_NAME_SIZE]; /* asciiz product name */
@@ -63,8 +60,8 @@ struct boot_img_hdr_v0 {
 
     uint32_t id[8]; /* timestamp / checksum / sha1 / etc */
 
-    /* Supplemental command line data; kept here to maintain
-     * binary compatibility with older versions of mkbootimg */
+    // Supplemental command line data; kept here to maintain
+    // binary compatibility with older versions of mkbootimg.
     uint8_t extra_cmdline[BOOT_EXTRA_ARGS_SIZE];
 } __attribute__((packed));
 
@@ -142,23 +139,3 @@ struct boot_img_hdr_v1 : public boot_img_hdr_v0 {
  * 7. if second_size != 0: jump to second_addr
  *    else: jump to kernel_addr
  */
-
-#if 0
-typedef struct ptentry ptentry;
-
-struct ptentry {
-    char name[16];      /* asciiz partition name    */
-    unsigned start;     /* starting block number    */
-    unsigned length;    /* length in blocks         */
-    unsigned flags;     /* set to zero              */
-};
-
-/* MSM Partition Table ATAG
-**
-** length: 2 + 7 * n
-** atag:   0x4d534d70
-**         <ptentry> x n
-*/
-#endif
-
-#endif
