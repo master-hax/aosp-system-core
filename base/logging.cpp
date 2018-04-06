@@ -82,6 +82,27 @@ const char* getprogname() {
   return progname;
 }
 #endif
+
+#if defined(__linux__)
+int OpenKmsg() {
+#if defined(__ANDROID__)
+  // pick up 'file w /dev/kmsg' environment from daemon's init rc file
+  const auto val = getenv("ANDROID_FILE__dev_kmsg");
+  if (val != nullptr) {
+    char* endptr;
+    errno = 0;
+    auto fd = strtol(val, &endptr, 10);
+    if (!errno && (val != endptr) && (fd >= 0) && (fd < INT_MAX)) {
+      auto flags = fcntl(fd, F_GETFL);
+      if ((flags != -1) && ((flags & O_ACCMODE) == O_WRONLY)) {
+        return static_cast<int>(fd);
+      }
+    }
+  }
+#endif
+  return TEMP_FAILURE_RETRY(open("/dev/kmsg", O_WRONLY | O_CLOEXEC));
+}
+#endif
 } // namespace
 
 namespace android {
@@ -150,7 +171,7 @@ void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
   static_assert(arraysize(kLogSeverityToKernelLogLevel) == android::base::FATAL + 1,
                 "Mismatch in size of kLogSeverityToKernelLogLevel and values in LogSeverity");
 
-  static int klog_fd = TEMP_FAILURE_RETRY(open("/dev/kmsg", O_WRONLY | O_CLOEXEC));
+  static int klog_fd = OpenKmsg();
   if (klog_fd == -1) return;
 
   int level = kLogSeverityToKernelLogLevel[severity];
