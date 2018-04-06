@@ -1,7 +1,8 @@
 service storaged /system/bin/storaged
     class main
+    capabilities DAC_OVERRIDE
     priority 10
     file /d/mmc0/mmc0:0001/ext_csd r
     writepid /dev/cpuset/system-background/tasks
-    user root
+    user storaged
     group package_info
