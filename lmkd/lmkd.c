@@ -1224,7 +1224,9 @@ int main(int argc __unused, char **argv __unused) {
                 ALOGW("mlockall failed %s", strerror(errno));
             }
 
-            sched_setscheduler(0, SCHED_FIFO, &param);
+            if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+                ALOGW("set SCHED_FIFO failed %s", strerror(errno));
+            }
         }
 
         mainloop();
