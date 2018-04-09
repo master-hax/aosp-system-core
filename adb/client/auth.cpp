@@ -455,7 +455,8 @@ static void send_auth_publickey(atransport* t) {
     p->msg.arg0 = ADB_AUTH_RSAPUBLICKEY;
 
     // adbd expects a null-terminated string.
-    p->payload.assign(key.data(), key.data() + key.size() + 1);
+    auto payload = std::make_unique<apacket::block_type>(key.data(), key.data() + key.size() + 1);
+    p->payload.append(std::move(payload));
     p->msg.data_length = p->payload.size();
     send_packet(p, t);
 }
@@ -480,7 +481,9 @@ void send_auth_response(const char* token, size_t token_size, atransport* t) {
 
     p->msg.command = A_AUTH;
     p->msg.arg0 = ADB_AUTH_SIGNATURE;
-    p->payload.assign(result.begin(), result.end());
+
+    auto payload = std::make_unique<apacket::block_type>(result.begin(), result.end());
+    p->payload.append(std::move(payload));
     p->msg.data_length = p->payload.size();
     send_packet(p, t);
 }
