@@ -1109,7 +1109,7 @@ static int init(void) {
     }
     maxevents++;
 
-    has_inkernel_module = !access(INKERNEL_MINFREE_PATH, W_OK);
+    has_inkernel_module = !access(INKERNEL_MINFREE_PATH, W_OK) || (errno != ENOENT);
     use_inkernel_interface = has_inkernel_module;
 
     if (use_inkernel_interface) {
@@ -1224,7 +1224,9 @@ int main(int argc __unused, char **argv __unused) {
                 ALOGW("mlockall failed %s", strerror(errno));
             }
 
-            sched_setscheduler(0, SCHED_FIFO, &param);
+            if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+                ALOGW("set SCHED_FIFO failed %s", strerror(errno));
+            }
         }
 
         mainloop();
