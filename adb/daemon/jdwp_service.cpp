@@ -474,11 +474,12 @@ static void jdwp_socket_ready(asocket* s) {
      * on the second one, close the connection
      */
     if (!jdwp->pass) {
-        apacket::payload_type data;
-        data.resize(s->get_max_payload());
-        size_t len = jdwp_process_list(&data[0], data.size());
-        data.resize(len);
-        peer->enqueue(peer, std::move(data));
+        // TODO: Get this from a free list?
+        auto block = std::make_unique<apacket::block_type>(s->get_max_payload());
+        size_t len = jdwp_process_list(block->data(), block->size());
+        block->resize(len);
+
+        peer->enqueue(peer, IOVector(std::move(block)));
         jdwp->pass = true;
     } else {
         peer->close(peer);
@@ -521,8 +522,8 @@ static void jdwp_process_list_updated(void) {
     for (auto& t : _jdwp_trackers) {
         if (t->peer) {
             // The tracker might not have been connected yet.
-            apacket::payload_type payload(data.begin(), data.end());
-            t->peer->enqueue(t->peer, std::move(payload));
+            auto payload = std::make_unique<apacket::block_type>(data.begin(), data.end());
+            t->peer->enqueue(t->peer, IOVector(std::move(payload)));
         }
     }
 }
@@ -548,11 +549,10 @@ static void jdwp_tracker_ready(asocket* s) {
     JdwpTracker* t = (JdwpTracker*)s;
 
     if (t->need_initial) {
-        apacket::payload_type data;
-        data.resize(s->get_max_payload());
-        data.resize(jdwp_process_list_msg(&data[0], data.size()));
+        auto data = std::make_unique<apacket::block_type>(s->get_max_payload());
+        data->resize(jdwp_process_list_msg(data->data(), data->size()));
         t->need_initial = false;
-        s->peer->enqueue(s->peer, std::move(data));
+        s->peer->enqueue(s->peer, IOVector(std::move(data)));
     }
 }
 
