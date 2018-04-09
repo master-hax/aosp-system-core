@@ -83,9 +83,11 @@ void BM_Connection_Unidirectional(benchmark::State& state) {
         memset(&packet->msg, 0, sizeof(packet->msg));
         packet->msg.command = A_WRTE;
         packet->msg.data_length = data_size;
-        packet->payload.resize(data_size);
 
-        memset(&packet->payload[0], 0xff, data_size);
+        auto block = std::make_unique<apacket::block_type>(data_size);
+        memset(block->data(), 0xff, block->size());
+
+        packet->payload.append(std::move(block));
 
         received_bytes = 0;
         client->Write(std::move(packet));
@@ -157,9 +159,11 @@ void BM_Connection_Echo(benchmark::State& state) {
         memset(&packet->msg, 0, sizeof(packet->msg));
         packet->msg.command = A_WRTE;
         packet->msg.data_length = data_size;
-        packet->payload.resize(data_size);
 
-        memset(&packet->payload[0], 0xff, data_size);
+        auto block = std::make_unique<apacket::block_type>(data_size);
+        memset(block->data(), 0xff, block->size());
+
+        packet->payload.append(std::move(block));
 
         received_bytes = 0;
         client->Write(std::move(packet));
