@@ -1004,6 +1004,50 @@ static Result<Success> do_init_user0(const BuiltinArguments& args) {
                                           "init_user0"};
     return do_exec({std::move(exec_args), args.context});
 }
+static std::string get_ra_path(std::string link_path) {
+    char path[64] = {0};
+    int ret = readlink(link_path.c_str(), path, sizeof(path));
+    if (ret < 0) {
+        PLOG(ERROR) << __FUNCTION__ << " : readlink to " << link_path << " failed!";
+        return "";
+    }
+
+    char* partition = basename(path);
+    if (!partition) {
+        LOG(ERROR) << __FUNCTION__ << " : search partition in  " << path << " failed!";
+        return "";
+    }
+
+    return std::string("/sys/fs/f2fs/") + std::string(partition) + std::string("/readdir_ra");
+}
+
+static Result<Success> do_set_readdir_ra(const BuiltinArguments& args) {
+    if (args.size() != 3) {
+        LOG(ERROR) << __FUNCTION__ << " : invalid parameter num!";
+        return Error();
+    }
+
+    std::string link_path = "/dev/block/bootdevice/by-name/" + args[1];
+    std::string path = get_ra_path(link_path);
+    if (0 == path.length()) {
+        return Error();
+    }
+
+    int fd = open(path.c_str(), O_WRONLY);
+    if (fd < 0) {
+        PLOG(ERROR) << __FUNCTION__ << " : open " << path << " failed!";
+        return Error();
+    }
+
+    bool ret = android::base::WriteStringToFd(args[2], fd);
+    close(fd);
+
+    if (ret) {
+        return Success();
+    } else {
+        return Error();
+    }
+}
 
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
@@ -1059,6 +1103,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
         {"write",                   {2,     2,    {true,   do_write}}},
+        {"set_readdir_ra",          {2,     2,    {false,  do_set_readdir_ra}}},
     };
     // clang-format on
     return builtin_functions;
