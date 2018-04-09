@@ -1,6 +1,8 @@
 service lmkd /system/bin/lmkd
     class core
+    user root
     group root readproc
+    capabilities DAC_OVERRIDE IPC_LOCK KILL SYS_NICE SYS_PTRACE SYS_RESOURCE
     critical
     socket lmkd seqpacket 0660 system system
     writepid /dev/cpuset/system-background/tasks
