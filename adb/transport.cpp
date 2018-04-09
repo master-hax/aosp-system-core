@@ -187,12 +187,18 @@ bool FdConnection::Read(apacket* packet) {
         return false;
     }
 
-    packet->payload.resize(packet->msg.data_length);
+    if (packet->msg.data_length == 0) {
+        return true;
+    }
 
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    auto payload = std::make_unique<apacket::block_type>(packet->msg.data_length);
+    if (!ReadFdExactly(fd_.get(), payload->data(), payload->size())) {
         D("remote local: terminated (data)");
         return false;
     }
+
+    CHECK(packet->payload.empty());
+    packet->payload.append(std::move(payload));
 
     return true;
 }
@@ -203,10 +209,18 @@ bool FdConnection::Write(apacket* packet) {
         return false;
     }
 
-    if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
-            D("remote local: write terminated");
+    while (!packet->payload.empty()) {
+        std::vector<adb_iovec> iov = packet->payload.iovecs();
+        ssize_t rc = adb_writev(fd_.get(), iov.data(), iov.size());
+        if (rc == -1) {
+            PLOG(WARNING) << "remote local: write failed";
             return false;
+        } else if (rc == 0) {
+            LOG(WARNING) << "remote local: write hit EOF";
+            return false;
+        } else {
+            // TODO: Implement a more efficient drop_front?
+            packet->payload.take_front(rc);
         }
     }
 
@@ -250,7 +264,8 @@ static std::string dump_packet(const char* name, const char* func, apacket* p) {
 
     std::string result = android::base::StringPrintf("%s: %s: [%s] arg0=%s arg1=%s (len=%d) ", name,
                                                      func, cmd, arg0, arg1, len);
-    result += dump_hex(p->payload.data(), p->payload.size());
+    auto data = p->payload.coalesce();
+    result += dump_hex(data.data(), data.size());
     return result;
 }
 
@@ -344,13 +359,12 @@ static int device_tracker_enqueue(asocket* socket, apacket::payload_type) {
 static int device_tracker_send(device_tracker* tracker, const std::string& string) {
     asocket* peer = tracker->socket.peer;
 
-    apacket::payload_type data;
-    data.resize(4 + string.size());
+    auto data = std::make_unique<apacket::block_type>(4 + string.size());
     char buf[5];
     snprintf(buf, sizeof(buf), "%04x", static_cast<int>(string.size()));
-    memcpy(&data[0], buf, 4);
-    memcpy(&data[4], string.data(), string.size());
-    return peer->enqueue(peer, std::move(data));
+    memcpy(data->data(), buf, 4);
+    memcpy(data->data() + 4, string.data(), string.size());
+    return peer->enqueue(peer, IOVector(std::move(data)));
 }
 
 static void device_tracker_ready(asocket* socket) {

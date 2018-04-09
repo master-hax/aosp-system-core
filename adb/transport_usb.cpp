@@ -66,6 +66,9 @@ static int UsbReadPayload(usb_handle* h, apacket* p) {
         return -1;
     }
 
+    auto payload = std::make_unique<apacket::block_type>();
+    CHECK(p->payload.empty());
+
 #if CHECK_PACKET_OVERFLOW
     size_t usb_packet_size = usb_get_max_packet_size(h);
 
@@ -78,17 +81,19 @@ static int UsbReadPayload(usb_handle* h, apacket* p) {
         len += usb_packet_size - rem_size;
     }
 
-    p->payload.resize(len);
-    int rc = usb_read(h, &p->payload[0], p->payload.size());
+    payload->resize(len);
+    int rc = usb_read(h, payload->data(), payload->size());
     if (rc != static_cast<int>(p->msg.data_length)) {
         return -1;
     }
-
-    p->payload.resize(rc);
+    payload->resize(rc);
+    p->payload.append(std::move(payload));
     return rc;
 #else
-    p->payload.resize(p->msg.data_length);
-    return usb_read(h, &p->payload[0], p->payload.size());
+    payload->resize(p->msg.data_length);
+    int rc = usb_read(h, payload->data(), payload->size());
+    p->payload.append(std::move(payload));
+    return rc;
 #endif
 }
 
@@ -133,11 +138,15 @@ static int remote_read(apacket* p, usb_handle* usb) {
             return -1;
         }
 
-        p->payload.resize(p->msg.data_length);
-        if (usb_read(usb, &p->payload[0], p->payload.size())) {
+        // TODO: Get this from a free list?
+        auto block = std::make_unique<IOVector::block_type>(p->msg.data_length);
+        if (usb_read(usb, block->data(), block->size())) {
             PLOG(ERROR) << "remote usb: terminated (data)";
             return -1;
         }
+
+        CHECK(p->payload.empty());
+        p->payload.append(std::move(block));
     }
 
     return 0;
@@ -154,16 +163,19 @@ bool UsbConnection::Read(apacket* packet) {
 }
 
 bool UsbConnection::Write(apacket* packet) {
-    unsigned size = packet->msg.data_length;
-
     if (usb_write(handle_, &packet->msg, sizeof(packet->msg)) != 0) {
         PLOG(ERROR) << "remote usb: 1 - write terminated";
         return false;
     }
 
-    if (packet->msg.data_length != 0 && usb_write(handle_, packet->payload.data(), size) != 0) {
-        PLOG(ERROR) << "remote usb: 2 - write terminated";
-        return false;
+    if (packet->msg.data_length != 0) {
+        return packet->payload.coalesced([this](const char* data, size_t len) {
+            if (usb_write(handle_, data, len) != 0) {
+                PLOG(ERROR) << "remote usb: 2 - write terminated";
+                return false;
+            }
+            return true;
+        });
     }
 
     return true;
