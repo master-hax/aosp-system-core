@@ -1,5 +1,3 @@
-
-
 // ========================================================
 // Static and shared library
 // ========================================================
@@ -11,7 +9,6 @@ cc_library {
         "liblog",
     ],
     export_include_dirs: ["include"],
-    local_include_dirs: ["include"],
     cflags: [
         "-Werror",
     ],
@@ -23,7 +20,7 @@ cc_library {
 cc_binary {
     name: "logwrapper",
     srcs: ["logwrapper.c"],
-    static_libs: [
+    shared_libs: [
         "liblog",
         "liblogwrap",
         "libcutils",

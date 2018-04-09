@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "logwrap/logwrap.h"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
@@ -23,15 +25,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include <cutils/klog.h>
 #include <log/log.h>
-#include <logwrap/logwrap.h>
-#include <private/android_filesystem_config.h>
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*(x)))
 #define MIN(a,b) (((a)<(b))?(a):(b))
