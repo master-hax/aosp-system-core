@@ -3,6 +3,7 @@
 // ========================================================
 cc_library {
     name: "liblogwrap",
+    vendor_available: true,
     srcs: ["logwrap.c"],
     shared_libs: [
         "libcutils",
