@@ -119,21 +119,6 @@ struct Block {
     size_t size_ = 0;
 };
 
-struct amessage {
-    uint32_t command;     /* command identifier constant      */
-    uint32_t arg0;        /* first argument                   */
-    uint32_t arg1;        /* second argument                  */
-    uint32_t data_length; /* length of payload (0 is allowed) */
-    uint32_t data_check;  /* checksum of data payload         */
-    uint32_t magic;       /* command ^ 0xffffffff             */
-};
-
-struct apacket {
-    using payload_type = Block;
-    amessage msg;
-    payload_type payload;
-};
-
 struct IOVector {
     using value_type = char;
     using block_type = Block;
@@ -212,6 +197,18 @@ struct IOVector {
         return head;
     }
 
+    void append(IOVector tail) {
+        CHECK_EQ(0ULL, end_offset_);
+        tail.trim_front();
+
+        for (auto& block : tail.chain_) {
+            chain_.emplace_back(std::move(block));
+        }
+
+        chain_length_ += tail.chain_length_;
+        end_offset_ = tail.end_offset_;
+    }
+
     // Add a nonempty block to the chain.
     // The end of the chain must be a complete block (i.e. end_offset_ == 0).
     void append(std::unique_ptr<const block_type> block) {
@@ -254,6 +251,7 @@ struct IOVector {
         chain_.pop_front();
     }
 
+  public:
     // Iterate over the blocks with a callback with an operator()(const char*, size_t).
     template <typename Fn>
     void iterate_blocks(Fn&& callback) const {
@@ -282,7 +280,6 @@ struct IOVector {
         }
     }
 
-  public:
     // Copy all of the blocks into a single block.
     template <typename CollectionType = block_type>
     CollectionType coalesce() const {
@@ -335,4 +332,21 @@ struct IOVector {
     size_t begin_offset_ = 0;
     size_t end_offset_ = 0;
     std::deque<std::shared_ptr<const block_type>> chain_;
+};
+
+struct amessage {
+    uint32_t command;     /* command identifier constant      */
+    uint32_t arg0;        /* first argument                   */
+    uint32_t arg1;        /* second argument                  */
+    uint32_t data_length; /* length of payload (0 is allowed) */
+    uint32_t data_check;  /* checksum of data payload         */
+    uint32_t magic;       /* command ^ 0xffffffff             */
+};
+
+struct apacket {
+    using payload_type = IOVector;
+    using block_type = payload_type::block_type;
+
+    amessage msg;
+    payload_type payload;
 };
