@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <deque>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -257,6 +258,19 @@ struct IOVector {
         });
 
         return result;
+    }
+
+    template <typename FunctionType>
+    auto coalesced(FunctionType&& f) const ->
+        typename std::result_of<FunctionType(const char*, size_t)>::type {
+        if (chain_.size() == 1) {
+            // If we only have one block, we can use it directly.
+            return f(chain_.front()->data() + begin_offset_, size());
+        } else {
+            // Otherwise, copy to a single block.
+            auto data = coalesce();
+            return f(data.data(), data.size());
+        }
     }
 
     // Get a list of iovecs that can be used to write out all of the blocks.
