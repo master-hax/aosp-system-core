@@ -449,7 +449,7 @@ static void jdwp_socket_close(asocket* s) {
     D("LS(%d): closing jdwp socket", s->id);
 
     if (s->peer) {
-        D("LS(%d) peer->close()ing peer->id=%d peer->fd=%d", s->id, s->peer->id, s->peer->fd);
+        D("LS(%d) peer->close()ing peer->id=%d", s->id, s->peer->id);
         s->peer->peer = nullptr;
         s->peer->close(s->peer);
         s->peer = nullptr;
@@ -493,7 +493,7 @@ asocket* create_jdwp_service_socket(void) {
         fatal("failed to allocate JdwpSocket");
     }
 
-    install_local_socket(s);
+    install_socket(s);
 
     s->ready = jdwp_socket_ready;
     s->enqueue = jdwp_socket_enqueue;
@@ -509,7 +509,7 @@ asocket* create_jdwp_service_socket(void) {
  **/
 
 struct JdwpTracker : public asocket {
-    bool need_initial;
+    bool need_initial = false;
 };
 
 static auto& _jdwp_trackers = *new std::vector<std::unique_ptr<JdwpTracker>>();
@@ -532,7 +532,7 @@ static void jdwp_tracker_close(asocket* s) {
     D("LS(%d): destroying jdwp tracker service", s->id);
 
     if (s->peer) {
-        D("LS(%d) peer->close()ing peer->id=%d peer->fd=%d", s->id, s->peer->id, s->peer->fd);
+        D("LS(%d) peer->close()ing peer->id=%d", s->id, s->peer->id);
         s->peer->peer = nullptr;
         s->peer->close(s->peer);
         s->peer = nullptr;
@@ -569,9 +569,7 @@ asocket* create_jdwp_tracker_service_socket(void) {
         fatal("failed to allocate JdwpTracker");
     }
 
-    memset(t.get(), 0, sizeof(asocket));
-
-    install_local_socket(t.get());
+    install_socket(t.get());
     D("LS(%d): created new jdwp tracker service", t->id);
 
     t->ready = jdwp_tracker_ready;
