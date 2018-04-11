@@ -41,6 +41,21 @@ bool SendProtocolString(int fd, const std::string& s) {
     return WriteFdFmt(fd, "%04x%.*s", length, length, s.c_str());
 }
 
+bool SendProtocolString(asocket* socket, const std::string& s) {
+    if (s.size() > MAX_PAYLOAD - 4) {
+        errno = EMSGSIZE;
+        return false;
+    }
+
+    IOVector vec;
+    auto data = std::make_unique<apacket::block_type>(4 + s.size());
+    char buf[5];
+    snprintf(buf, sizeof(buf), "%04x", static_cast<int>(s.size()));
+    memcpy(data->data(), buf, 4);
+    memcpy(data->data() + 4, s.data(), s.size());
+    return socket->enqueue(socket, IOVector(std::move(data)));
+}
+
 bool ReadProtocolString(int fd, std::string* s, std::string* error) {
     char buf[5];
     if (!ReadFdExactly(fd, buf, 4)) {
@@ -63,8 +78,24 @@ bool SendOkay(int fd) {
     return WriteFdExactly(fd, "OKAY", 4);
 }
 
+bool SendOkay(asocket* socket) {
+    IOVector vec;
+    const char* okay = "OKAY";
+    vec.append(std::make_unique<apacket::block_type>(okay, okay + 4));
+    return socket->enqueue(socket, std::move(vec)) != -1;
+}
+
 bool SendFail(int fd, const std::string& reason) {
     return WriteFdExactly(fd, "FAIL", 4) && SendProtocolString(fd, reason);
+}
+
+bool SendFail(asocket* socket, const std::string& reason) {
+    IOVector vec;
+    char buf[9];
+    snprintf(buf, sizeof(buf), "FAIL%04x", static_cast<int>(reason.size()));
+    vec.append(std::make_unique<apacket::block_type>(buf, buf + 8));
+    vec.append(std::make_unique<apacket::block_type>(reason.begin(), reason.end()));
+    return socket->enqueue(socket, std::move(vec)) != -1;
 }
 
 bool ReadFdExactly(int fd, void* buf, size_t len) {

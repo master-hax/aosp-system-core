@@ -63,6 +63,7 @@ std::string adb_version();
 
 using TransportId = uint64_t;
 class atransport;
+struct asocket;
 
 uint32_t calculate_apacket_checksum(const apacket* packet);
 
@@ -211,7 +212,7 @@ extern const char* adb_device_banner;
 #endif
 
 int handle_host_request(const char* service, TransportType type, const char* serial,
-                        TransportId transport_id, int reply_fd, asocket* s);
+                        TransportId transport_id, asocket* reply_socket, asocket* s);
 
 void handle_online(atransport* t);
 void handle_offline(atransport* t);
