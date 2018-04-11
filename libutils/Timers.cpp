@@ -23,6 +23,17 @@
 #include <time.h>
 
 #if defined(__ANDROID__)
+#include <cutils/properties.h>
+
+namespace {
+
+int64_t GetBootTimeOffsetInNanoseconds() {
+    static const int64_t boottime_offset = property_get_int64("ro.boot.boottime_offset", 0);
+    return boottime_offset;
+}
+
+}  // namespace
+
 nsecs_t systemTime(int clock)
 {
     static const clockid_t clocks[] = {
@@ -35,7 +46,11 @@ nsecs_t systemTime(int clock)
     struct timespec t;
     t.tv_sec = t.tv_nsec = 0;
     clock_gettime(clocks[clock], &t);
-    return nsecs_t(t.tv_sec)*1000000000LL + t.tv_nsec;
+    nsecs_t nsecs = seconds_to_nanoseconds(static_cast<nsecs_t>(t.tv_sec)) + t.tv_nsec;
+    if (clock == SYSTEM_TIME_BOOTTIME) {
+        nsecs -= GetBootTimeOffsetInNanoseconds();
+    }
+    return nsecs;
 }
 #else
 nsecs_t systemTime(int /*clock*/)

@@ -56,16 +56,8 @@ int64_t elapsedRealtime()
  */
 int64_t elapsedRealtimeNano()
 {
-#if defined(__linux__)
-    struct timespec ts;
-    int err = clock_gettime(CLOCK_BOOTTIME, &ts);
-    if (CC_UNLIKELY(err)) {
-        // This should never happen, but just in case ...
-        ALOGE("clock_gettime(CLOCK_BOOTTIME) failed: %s", strerror(errno));
-        return 0;
-    }
-
-    return seconds_to_nanoseconds(ts.tv_sec) + ts.tv_nsec;
+#if defined(__ANDROID__)
+    return systemTime(SYSTEM_TIME_BOOTTIME);
 #else
     return systemTime(SYSTEM_TIME_MONOTONIC);
 #endif
