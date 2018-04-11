@@ -40,25 +40,22 @@
 #include "transport.h"
 #include "types.h"
 
-static std::recursive_mutex& local_socket_list_lock = *new std::recursive_mutex();
-static unsigned local_socket_next_id = 1;
+static std::recursive_mutex& socket_list_lock = *new std::recursive_mutex();
+static unsigned socket_next_id = 1;
 
-static auto& local_socket_list = *new std::vector<asocket*>();
+static auto& socket_list = *new std::vector<asocket*>();
 
-/* the the list of currently closing local sockets.
-** these have no peer anymore, but still packets to
-** write to their fd.
-*/
-static auto& local_socket_closing_list = *new std::vector<asocket*>();
+// List of closing sockets that have no peer but packets to write still.
+static auto& socket_closing_list = *new std::vector<asocket*>();
 
 // Parse the global list of sockets to find one with id |local_id|.
 // If |peer_id| is not 0, also check that it is connected to a peer
 // with id |peer_id|. Returns an asocket handle on success, NULL on failure.
-asocket* find_local_socket(unsigned local_id, unsigned peer_id) {
+asocket* find_socket(unsigned local_id, unsigned peer_id) {
     asocket* result = nullptr;
 
-    std::lock_guard<std::recursive_mutex> lock(local_socket_list_lock);
-    for (asocket* s : local_socket_list) {
+    std::lock_guard<std::recursive_mutex> lock(socket_list_lock);
+    for (asocket* s : socket_list) {
         if (s->id != local_id) {
             continue;
         }
@@ -71,22 +68,22 @@ asocket* find_local_socket(unsigned local_id, unsigned peer_id) {
     return result;
 }
 
-void install_local_socket(asocket* s) {
-    std::lock_guard<std::recursive_mutex> lock(local_socket_list_lock);
+void install_socket(asocket* s) {
+    std::lock_guard<std::recursive_mutex> lock(socket_list_lock);
 
-    s->id = local_socket_next_id++;
+    s->id = socket_next_id++;
 
     // Socket ids should never be 0.
-    if (local_socket_next_id == 0) {
+    if (socket_next_id == 0) {
         fatal("local socket id overflow");
     }
 
-    local_socket_list.push_back(s);
+    socket_list.push_back(s);
 }
 
 void remove_socket(asocket* s) {
-    std::lock_guard<std::recursive_mutex> lock(local_socket_list_lock);
-    for (auto list : { &local_socket_list, &local_socket_closing_list }) {
+    std::lock_guard<std::recursive_mutex> lock(socket_list_lock);
+    for (auto list : { &socket_list, &socket_closing_list }) {
         list->erase(std::remove_if(list->begin(), list->end(), [s](asocket* x) { return x == s; }),
                     list->end());
     }
@@ -96,9 +93,9 @@ void close_all_sockets(atransport* t) {
     /* this is a little gross, but since s->close() *will* modify
     ** the list out from under you, your options are limited.
     */
-    std::lock_guard<std::recursive_mutex> lock(local_socket_list_lock);
+    std::lock_guard<std::recursive_mutex> lock(socket_list_lock);
 restart:
-    for (asocket* s : local_socket_list) {
+    for (asocket* s : socket_list) {
         if (s->transport == t || (s->peer && s->peer->transport == t)) {
             s->close(s);
             goto restart;
@@ -112,7 +109,7 @@ enum class SocketFlushResult {
     Completed,
 };
 
-static SocketFlushResult local_socket_flush_incoming(asocket* s) {
+static SocketFlushResult local_socket_flush_incoming(LocalSocket* s) {
     if (!s->packet_queue.empty()) {
         std::vector<adb_iovec> iov = s->packet_queue.iovecs();
         ssize_t rc = adb_writev(s->fd, iov.data(), iov.size());
@@ -144,7 +141,7 @@ static SocketFlushResult local_socket_flush_incoming(asocket* s) {
 }
 
 // Returns false if the socket has been closed and destroyed as a side-effect of this function.
-static bool local_socket_flush_outgoing(asocket* s) {
+static bool local_socket_flush_outgoing(LocalSocket* s) {
     const size_t max_payload = s->get_max_payload();
     auto data = std::make_unique<apacket::block_type>(max_payload);
     char* x = data->data();
@@ -212,7 +209,8 @@ static bool local_socket_flush_outgoing(asocket* s) {
     return true;
 }
 
-static int local_socket_enqueue(asocket* s, apacket::payload_type data) {
+static int local_socket_enqueue(asocket* socket, apacket::payload_type data) {
+    LocalSocket* s = static_cast<LocalSocket*>(socket);
     D("LS(%d): enqueue %zu", s->id, data.size());
 
     s->packet_queue.append(std::move(data));
@@ -230,15 +228,15 @@ static int local_socket_enqueue(asocket* s, apacket::payload_type data) {
     return !s->packet_queue.empty();
 }
 
-static void local_socket_ready(asocket* s) {
-    /* far side is ready for data, pay attention to
-       readable events */
+static void local_socket_ready(asocket* socket) {
+    // Far side is ready for data, pay attention to readable events
+    LocalSocket* s = static_cast<LocalSocket*>(socket);
     fdevent_add(s->fde, FDE_READ);
 }
 
 // be sure to hold the socket list lock when calling this
-static void local_socket_destroy(asocket* s) {
-    int exit_on_close = s->exit_on_close;
+static void local_socket_destroy(LocalSocket* s) {
+    bool exit_on_close = s->exit_on_close;
 
     D("LS(%d): destroying fde.fd=%d", s->id, s->fd);
 
@@ -256,11 +254,12 @@ static void local_socket_destroy(asocket* s) {
     }
 }
 
-static void local_socket_close(asocket* s) {
+static void local_socket_close(asocket* socket) {
+    LocalSocket* s = static_cast<LocalSocket*>(socket);
     D("entered local_socket_close. LS(%d) fd=%d", s->id, s->fd);
-    std::lock_guard<std::recursive_mutex> lock(local_socket_list_lock);
+    std::lock_guard<std::recursive_mutex> lock(socket_list_lock);
     if (s->peer) {
-        D("LS(%d): closing peer. peer->id=%d peer->fd=%d", s->id, s->peer->id, s->peer->fd);
+        D("LS(%d): closing peer. peer->id=%d", s->id, s->peer->id);
         /* Note: it's important to call shutdown before disconnecting from
          * the peer, this ensures that remote sockets can still get the id
          * of the local socket they're connected to, to send a CLOSE()
@@ -290,12 +289,12 @@ static void local_socket_close(asocket* s) {
     fdevent_del(s->fde, FDE_READ);
     remove_socket(s);
     D("LS(%d): put on socket_closing_list fd=%d", s->id, s->fd);
-    local_socket_closing_list.push_back(s);
+    socket_closing_list.push_back(s);
     CHECK_EQ(FDE_WRITE, s->fde->state & FDE_WRITE);
 }
 
 static void local_socket_event_func(int fd, unsigned ev, void* _s) {
-    asocket* s = reinterpret_cast<asocket*>(_s);
+    LocalSocket* s = reinterpret_cast<LocalSocket*>(_s);
     D("LS(%d): event_func(fd=%d(==%d), ev=%04x)", s->id, s->fd, fd, ev);
 
     /* put the FDE_WRITE processing before the FDE_READ
@@ -331,14 +330,14 @@ static void local_socket_event_func(int fd, unsigned ev, void* _s) {
     }
 }
 
-asocket* create_local_socket(int fd) {
-    asocket* s = new asocket();
+LocalSocket* create_local_socket(int fd) {
+    LocalSocket* s = new LocalSocket();
     s->fd = fd;
     s->enqueue = local_socket_enqueue;
     s->ready = local_socket_ready;
     s->shutdown = NULL;
     s->close = local_socket_close;
-    install_local_socket(s);
+    install_socket(s);
 
     s->fde = fdevent_create(fd, local_socket_event_func, s);
     D("LS(%d): created (fd=%d)", s->id, s->fd);
@@ -359,7 +358,7 @@ asocket* create_local_service_socket(const char* name, atransport* transport) {
         return nullptr;
     }
 
-    asocket* s = create_local_socket(fd);
+    LocalSocket* s = create_local_socket(fd);
     D("LS(%d): bound to '%s' via %d", s->id, name, fd);
 
 #if !ADB_HOST
@@ -368,7 +367,7 @@ asocket* create_local_service_socket(const char* name, atransport* transport) {
         !strncmp(name, "usb:", 4) ||
         !strncmp(name, "tcpip:", 6)) {
         D("LS(%d): enabling exit_on_close", s->id);
-        s->exit_on_close = 1;
+        s->exit_on_close = true;
     }
 #endif
 
@@ -378,9 +377,7 @@ asocket* create_local_service_socket(const char* name, atransport* transport) {
 #if ADB_HOST
 static asocket* create_host_service_socket(const char* name, const char* serial,
                                            TransportId transport_id) {
-    asocket* s;
-
-    s = host_service_to_socket(name, serial, transport_id);
+    asocket* s = host_service_to_socket(name, serial, transport_id);
 
     if (s != NULL) {
         D("LS(%d) bound to '%s'", s->id, name);
@@ -392,7 +389,7 @@ static asocket* create_host_service_socket(const char* name, const char* serial,
 #endif /* ADB_HOST */
 
 static int remote_socket_enqueue(asocket* s, apacket::payload_type data) {
-    D("entered remote_socket_enqueue RS(%d) WRITE fd=%d peer.fd=%d", s->id, s->fd, s->peer->fd);
+    D("entered remote_socket_enqueue RS(%d) WRITE", s->id);
     apacket* p = get_apacket();
 
     p->msg.command = A_WRTE;
@@ -412,7 +409,7 @@ static int remote_socket_enqueue(asocket* s, apacket::payload_type data) {
 }
 
 static void remote_socket_ready(asocket* s) {
-    D("entered remote_socket_ready RS(%d) OKAY fd=%d peer.fd=%d", s->id, s->fd, s->peer->fd);
+    D("entered remote_socket_ready RS(%d) OKAY", s->id);
     apacket* p = get_apacket();
     p->msg.command = A_OKAY;
     p->msg.arg0 = s->peer->id;
@@ -421,8 +418,7 @@ static void remote_socket_ready(asocket* s) {
 }
 
 static void remote_socket_shutdown(asocket* s) {
-    D("entered remote_socket_shutdown RS(%d) CLOSE fd=%d peer->fd=%d", s->id, s->fd,
-      s->peer ? s->peer->fd : -1);
+    D("entered remote_socket_shutdown RS(%d) CLOSE", s->id);
     apacket* p = get_apacket();
     p->msg.command = A_CLSE;
     if (s->peer) {
@@ -435,11 +431,9 @@ static void remote_socket_shutdown(asocket* s) {
 static void remote_socket_close(asocket* s) {
     if (s->peer) {
         s->peer->peer = 0;
-        D("RS(%d) peer->close()ing peer->id=%d peer->fd=%d", s->id, s->peer->id, s->peer->fd);
+        D("RS(%d) peer->close()ing peer->id=%d", s->id, s->peer->id);
         s->peer->close(s->peer);
     }
-    D("entered remote_socket_close RS(%d) CLOSE fd=%d peer->fd=%d", s->id, s->fd,
-      s->peer ? s->peer->fd : -1);
     D("RS(%d): closed", s->id);
     delete s;
 }
@@ -465,7 +459,7 @@ asocket* create_remote_socket(unsigned id, atransport* t) {
 }
 
 void connect_to_remote(asocket* s, const char* destination) {
-    D("Connect_to_remote call RS(%d) fd=%d", s->id, s->fd);
+    D("Connect_to_remote call RS(%d)", s->id);
     apacket* p = get_apacket();
 
     D("LS(%d): connect('%s')", s->id, destination);
@@ -486,7 +480,8 @@ void connect_to_remote(asocket* s, const char* destination) {
 
 /* this is used by magic sockets to rig local sockets to
    send the go-ahead message when they connect */
-static void local_socket_ready_notify(asocket* s) {
+static void local_socket_ready_notify(asocket* socket) {
+    LocalSocket* s = static_cast<LocalSocket*>(socket);
     s->ready = local_socket_ready;
     s->shutdown = NULL;
     s->close = local_socket_close;
@@ -497,11 +492,12 @@ static void local_socket_ready_notify(asocket* s) {
 /* this is used by magic sockets to rig local sockets to
    send the failure message if they are closed before
    connected (to avoid closing them without a status message) */
-static void local_socket_close_notify(asocket* s) {
+static void local_socket_close_notify(asocket* socket) {
+    LocalSocket* s = static_cast<LocalSocket*>(socket);
     s->ready = local_socket_ready;
     s->shutdown = NULL;
     s->close = local_socket_close;
-    SendFail(s->fd, "closed");
+    SendFail(s, "closed");
     s->close(s);
 }
 
@@ -609,13 +605,15 @@ char* skip_host_serial(char* service) {
 
 #endif  // ADB_HOST
 
-static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
+static int smart_socket_enqueue(asocket* socket, apacket::payload_type data) {
 #if ADB_HOST
     char* service = nullptr;
     char* serial = nullptr;
     TransportId transport_id = 0;
     TransportType type = kTransportAny;
 #endif
+
+    SmartSocket* s = static_cast<SmartSocket*>(socket);
 
     D("SS(%d): enqueue %zu", s->id, data.size());
 
@@ -691,7 +689,7 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
         ** the OKAY or FAIL message and all we have to do
         ** is clean up.
         */
-        if (handle_host_request(service, type, serial, transport_id, s->peer->fd, s) == 0) {
+        if (handle_host_request(service, type, serial, transport_id, s->peer, s) == 0) {
             /* XXX fail message? */
             D("SS(%d): handled host service '%s'", s->id, service);
             goto fail;
@@ -709,7 +707,7 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
         s2 = create_host_service_socket(service, serial, transport_id);
         if (s2 == 0) {
             D("SS(%d): couldn't create host service '%s'", s->id, service);
-            SendFail(s->peer->fd, "unknown host service");
+            SendFail(s->peer, "unknown host service");
             goto fail;
         }
 
@@ -720,7 +718,7 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
         ** connection, and close this smart socket now
         ** that its work is done.
         */
-        SendOkay(s->peer->fd);
+        SendOkay(s->peer);
 
         s->peer->ready = local_socket_ready;
         s->peer->shutdown = nullptr;
@@ -740,20 +738,20 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
         std::string error_msg = "unknown failure";
         s->transport = acquire_one_transport(kTransportAny, nullptr, 0, nullptr, &error_msg);
         if (s->transport == nullptr) {
-            SendFail(s->peer->fd, error_msg);
+            SendFail(s->peer, error_msg);
             goto fail;
         }
     }
 #endif
 
     if (!s->transport) {
-        SendFail(s->peer->fd, "device offline (no transport)");
+        SendFail(s->peer, "device offline (no transport)");
         goto fail;
     } else if (!ConnectionStateIsOnline(s->transport->GetConnectionState())) {
         /* if there's no remote we fail the connection
          ** right here and terminate it
          */
-        SendFail(s->peer->fd, "device offline (transport offline)");
+        SendFail(s->peer, "device offline (transport offline)");
         goto fail;
     }
 
@@ -799,7 +797,7 @@ static void smart_socket_close(asocket* s) {
 
 static asocket* create_smart_socket(void) {
     D("Creating smart socket");
-    asocket* s = new asocket();
+    asocket* s = new SmartSocket();
     s->enqueue = smart_socket_enqueue;
     s->ready = smart_socket_ready;
     s->shutdown = NULL;

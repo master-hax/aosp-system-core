@@ -21,14 +21,19 @@
 
 #include <string>
 
+struct asocket;
+
 // Sends the protocol "OKAY" message.
 bool SendOkay(int fd);
+bool SendOkay(asocket* socket);
 
 // Sends the protocol "FAIL" message, with the given failure reason.
 bool SendFail(int fd, const std::string& reason);
+bool SendFail(asocket* socket, const std::string& reason);
 
 // Writes a protocol-format string; a four hex digit length followed by the string data.
 bool SendProtocolString(int fd, const std::string& s);
+bool SendProtocolString(asocket* socket, const std::string& s);
 
 // Reads a protocol-format string; a four hex digit length followed by the string data.
 bool ReadProtocolString(int fd, std::string* s, std::string* error);

@@ -33,38 +33,7 @@ class atransport;
  * remote asocket is bound to the protocol engine.
  */
 struct asocket {
-    /* the unique identifier for this asocket
-     */
-    unsigned id = 0;
-
-    /* flag: set when the socket's peer has closed
-     * but packets are still queued for delivery
-     */
-    int closing = 0;
-
-    // flag: set when the socket failed to write, so the socket will not wait to
-    // write packets and close directly.
-    bool has_write_error = 0;
-
-    /* flag: quit adbd when both ends close the
-     * local service socket
-     */
-    int exit_on_close = 0;
-
-    // the asocket we are connected to
-    asocket* peer = nullptr;
-
-    /* For local asockets, the fde is used to bind
-     * us to our fd event system.  For remote asockets
-     * these fields are not used.
-     */
-    fdevent* fde = nullptr;
-    int fd = -1;
-
-    // queue of data waiting to be written
-    IOVector packet_queue;
-
-    std::string smart_socket_data;
+    virtual ~asocket() = default;
 
     /* enqueue is called by our peer when it has data
      * for us.  It should return 0 if we can accept more
@@ -91,18 +60,50 @@ struct asocket {
      */
     void (*close)(asocket* s) = nullptr;
 
+    size_t get_max_payload() const;
+
     /* A socket is bound to atransport */
     atransport* transport = nullptr;
 
-    size_t get_max_payload() const;
+    /* the unique identifier for this asocket
+     */
+    unsigned id = 0;
+
+    /* flag: set when the socket's peer has closed
+     * but packets are still queued for delivery
+     */
+    int closing = 0;
+
+    // flag: set when the socket failed to write, so the socket will not wait to
+    // write packets and close directly.
+    bool has_write_error = false;
+
+    // the asocket we are connected to
+    asocket* peer = nullptr;
 };
 
-asocket *find_local_socket(unsigned local_id, unsigned remote_id);
-void install_local_socket(asocket *s);
+struct LocalSocket : public asocket {
+    fdevent *fde = nullptr;
+    int fd = -1;
+
+    // Data waiting to be written to fd.
+    IOVector packet_queue;
+
+    // Only used in adbd (for root, unroot, etc.):
+    // Quit adbd when both ends close the local service socket
+    bool exit_on_close = false;
+};
+
+struct SmartSocket : public asocket {
+    std::string smart_socket_data;
+};
+
+asocket* find_socket(unsigned local_id, unsigned remote_id);
+void install_socket(asocket* s);
 void remove_socket(asocket *s);
 void close_all_sockets(atransport *t);
 
-asocket *create_local_socket(int fd);
+LocalSocket* create_local_socket(int fd);
 asocket* create_local_service_socket(const char* destination, atransport* transport);
 
 asocket *create_remote_socket(unsigned id, atransport *t);
