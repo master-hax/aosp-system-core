@@ -18,13 +18,55 @@
 
 #include <time.h>
 
+#if defined(__BIONIC__)
+#include "android-base/properties.h"
+#endif
+
 namespace android {
 namespace base {
+
+namespace {
+
+int64_t GetBootTimeOffsetInNanoseconds() {
+#if defined(__BIONIC__)
+  static const int64_t boottime_offset = GetIntProperty<int64_t>("ro.boot.boottime_offset", 0);
+#else
+  static constexpr const int64_t boottime_offset = 0;
+#endif
+  return boottime_offset;
+}
+
+void OffsetTime(timespec* ts) {
+  int64_t boottime_offset = GetBootTimeOffsetInNanoseconds();
+  int64_t sign = 1;
+  constexpr int64_t kNanosecondsPerSecond = 1000000000ll;
+  if (boottime_offset < 0) {
+    // In order to avoid performing modular arithmetic with negative values
+    // (since the behavior or the % and / operators are not consistent with each
+    // other), we always have |boottime_offset| be positive and then change the
+    // sign of the resulting value.
+    boottime_offset *= -1;
+    sign = -1;
+  }
+  ts->tv_nsec -= sign * (boottime_offset % kNanosecondsPerSecond);
+  ts->tv_sec -= sign * (boottime_offset / kNanosecondsPerSecond);
+  if (ts->tv_nsec < 0) {
+    ts->tv_nsec += kNanosecondsPerSecond;
+    ts->tv_sec--;
+  }
+  if (ts->tv_nsec >= kNanosecondsPerSecond) {
+    ts->tv_nsec -= kNanosecondsPerSecond;
+    ts->tv_sec++;
+  }
+}
+
+}  // namespace
 
 boot_clock::time_point boot_clock::now() {
 #ifdef __linux__
   timespec ts;
   clock_gettime(CLOCK_BOOTTIME, &ts);
+  OffsetTime(&ts);
   return boot_clock::time_point(std::chrono::seconds(ts.tv_sec) +
                                 std::chrono::nanoseconds(ts.tv_nsec));
 #else
