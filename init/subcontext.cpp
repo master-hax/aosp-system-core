@@ -23,6 +23,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <selinux/android.h>
 
@@ -37,6 +38,7 @@
 #endif
 
 using android::base::GetExecutablePath;
+using android::base::GetIntProperty;
 using android::base::Join;
 using android::base::Socketpair;
 using android::base::Split;
@@ -354,8 +356,10 @@ Result<std::vector<std::string>> Subcontext::ExpandArgs(const std::vector<std::s
 static std::vector<Subcontext> subcontexts;
 
 std::vector<Subcontext>* InitializeSubcontexts() {
-    for (const auto& [path_prefix, secontext] : paths_and_secontexts) {
-        subcontexts.emplace_back(path_prefix, secontext);
+    if (GetIntProperty("ro.vndk.version", 28) >= 28) {
+        for (const auto& [path_prefix, secontext] : paths_and_secontexts) {
+            subcontexts.emplace_back(path_prefix, secontext);
+        }
     }
     return &subcontexts;
 }
