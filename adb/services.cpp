@@ -49,6 +49,7 @@
 #include "adb.h"
 #include "adb_io.h"
 #include "adb_utils.h"
+#include "fdevent.h"
 #include "file_sync_service.h"
 #include "remount_service.h"
 #include "services.h"
@@ -69,6 +70,167 @@ static void service_bootstrap_func(void* x) {
     adb_thread_setname(android::base::StringPrintf("%s svc %d", sti->service_name, sti->fd));
     sti->func(sti->fd, sti->cookie);
     free(sti);
+}
+
+ServiceSocket::ServiceSocket() : closed_(false) {
+    this->enqueue = [](asocket* s, apacket::payload_type data) {
+        auto self = static_cast<ServiceSocket*>(s);
+
+        self->peer->ready(self->peer);
+
+        {
+            std::lock_guard<std::mutex> lock(self->mutex_);
+            self->input_queue_.append(std::move(data));
+        }
+
+        self->Notify();
+        return 0;
+    };
+
+    this->ready = [](asocket* s) {
+        auto self = static_cast<ServiceSocket*>(s);
+        self->mutex_.lock();
+        CHECK(!self->ready_);
+        if (!self->output_queue_.empty()) {
+            size_t len = std::min(s->get_max_payload(), self->output_queue_.size());
+            IOVector head = self->output_queue_.take_front(len);
+            self->mutex_.unlock();
+            if (self->peer->enqueue(self->peer, std::move(head)) == -1) {
+                D("SRV(%u): closing because enqueue failed", s->id);
+                self->Close();
+            }
+        } else {
+            self->ready_ = true;
+            self->mutex_.unlock();
+        }
+    };
+
+    this->close = [](asocket* s) {
+        D("SRV(%u): closing because socket::close called", s->id);
+        auto self = static_cast<ServiceSocket*>(s);
+        self->Close();
+    };
+
+    int fds[2];
+    if (adb_socketpair(fds) != 0) {
+        PLOG(FATAL) << "adb_socketpair failed";
+    }
+
+    set_file_block_mode(fds[0], false);
+    set_file_block_mode(fds[1], false);
+    thread_notify_read_.reset(fds[0]);
+    thread_notify_write_.reset(fds[1]);
+
+    thread_ = std::thread([this]() {
+        while (!closed_) {
+            Wait();
+
+            bool empty;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                empty = input_queue_.empty();
+            }
+
+            if (!empty) {
+                if (!HandleInput()) {
+                    D("SRV(%u): closing because HandleInput returned false", this->id);
+                    this->Close();
+                    return;
+                }
+            }
+        }
+    });
+}
+
+ServiceSocket::~ServiceSocket() {
+    CHECK(closed_);
+}
+
+bool ServiceSocket::InputEmpty() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return input_queue_.empty();
+}
+
+bool ServiceSocket::ReadInput(IOVector* out, size_t len) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (input_queue_.size() < len) {
+        return false;
+    }
+
+    *out = input_queue_.take_front(len);
+    return true;
+}
+
+void ServiceSocket::Write(IOVector data) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (ready_) {
+        D("SRV(%u): direct write of length %zu", this->id, data.size());
+        CHECK(output_queue_.empty());
+        if (this->peer->enqueue(this->peer, std::move(data)) == -1) {
+            D("SRV(%u): write failed", this->id);
+            Close();
+        }
+        ready_ = false;
+    } else {
+        D("SRV(%u): enqueued write of length %zu", this->id, data.size());
+        output_queue_.append(std::move(data));
+    }
+}
+
+void ServiceSocket::Close() {
+    if (closed_) {
+        return;
+    }
+
+    closed_ = true;
+    Notify();
+
+    // thread_ might be std::this_thread, if the thread is the one to initiate the Close.
+    // If so, detach ourselves instead.
+    if (thread_.get_id() == std::this_thread::get_id()) {
+        thread_.detach();
+    } else {
+        thread_.join();
+    }
+
+    // Socket closure needs to happen on the main thread.
+    fdevent_run_on_main_thread([this]() {
+        D("SRV(%u) destroying", this->id);
+        if (this->peer) {
+            CHECK(this->peer->shutdown);
+            this->peer->shutdown(this->peer);
+
+            this->peer->peer = nullptr;
+            this->peer->close(this->peer);
+
+            this->peer = nullptr;
+        }
+
+        delete this;
+    });
+}
+
+void ServiceSocket::Wait() {
+    adb_pollfd pfd = {.fd = thread_notify_read_.get(), .events = POLLIN};
+
+    int rc = TEMP_FAILURE_RETRY(adb_poll(&pfd, 1, -1));
+    if (rc != 1) {
+        PLOG(FATAL) << "adb_poll returned " << rc;
+    }
+
+    // Coalesce multiple notifications into one.
+    std::lock_guard<std::mutex> lock(mutex_);
+    rc = 0;
+    char buf[128];
+    while (adb_read(thread_notify_read_.get(), buf, sizeof(buf)) != -1) {
+        continue;
+    }
+}
+
+void ServiceSocket::Notify() {
+    // Take the mutex while reading and writing, to ensure we don't drop notifications.
+    std::lock_guard<std::mutex> lock(mutex_);
+    TEMP_FAILURE_RETRY(adb_write(thread_notify_write_.get(), "", 1));
 }
 
 #if !ADB_HOST
