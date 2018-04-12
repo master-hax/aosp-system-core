@@ -113,6 +113,7 @@ static SocketFlushResult local_socket_flush_incoming(LocalSocket* s) {
     if (!s->packet_queue.empty()) {
         std::vector<adb_iovec> iov = s->packet_queue.iovecs();
         ssize_t rc = adb_writev(s->fd, iov.data(), iov.size());
+        D("LS(%d): writev returned %zd", s->id, rc);
         if (rc > 0 && static_cast<size_t>(rc) == s->packet_queue.size()) {
             s->packet_queue.clear();
         } else if (rc > 0) {
@@ -216,12 +217,15 @@ static int local_socket_enqueue(asocket* socket, apacket::payload_type data) {
     s->packet_queue.append(std::move(data));
     switch (local_socket_flush_incoming(s)) {
         case SocketFlushResult::Destroyed:
+            D("LS(%d): write failed, socket closed", s->id);
             return -1;
 
         case SocketFlushResult::TryAgain:
+            D("LS(%d): write queued", s->id);
             return 1;
 
         case SocketFlushResult::Completed:
+            D("LS(%d): write succeeded", s->id);
             return 0;
     }
 
@@ -275,10 +279,22 @@ static void local_socket_close(asocket* socket) {
     /* If we are already closing, or if there are no
     ** pending packets, destroy immediately
     */
-    if (s->closing || s->has_write_error || s->packet_queue.empty()) {
-        int id = s->id;
+    bool destroy = false;
+    if (s->closing) {
+        D("LS(%d): destroying immediately because already closing", s->id);
+        destroy = true;
+    }
+    if (s->has_write_error) {
+        D("LS(%d): destroying immediately because of write error", s->id);
+        destroy = true;
+    }
+    if (s->packet_queue.empty()) {
+        D("LS(%d): destroying immediately because of no data", s->id);
+        destroy = true;
+    }
+
+    if (destroy) {
         local_socket_destroy(s);
-        D("LS(%d): closed", id);
         return;
     }
 
