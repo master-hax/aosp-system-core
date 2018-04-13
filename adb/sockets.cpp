@@ -369,6 +369,14 @@ asocket* create_local_service_socket(const char* name, atransport* transport) {
         return create_jdwp_tracker_service_socket();
     }
 #endif
+
+    asocket* service_socket = service_to_socket(name, transport);
+    if (service_socket) {
+        install_socket(service_socket);
+        D("SRV(%d) created for '%s'", service_socket->id, name);
+        return service_socket;
+    }
+
     int fd = service_to_fd(name, transport);
     if (fd < 0) {
         return nullptr;

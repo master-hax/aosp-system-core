@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include "services.h"
+
 #define MKID(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((d) << 24))
 
 #define ID_LSTAT_V1 MKID('S','T','A','T')
@@ -79,13 +81,34 @@ union syncmsg {
     } status;
 };
 
-void file_sync_service(int fd, void* cookie);
+asocket* create_file_sync_service();
 bool do_sync_ls(const char* path);
 bool do_sync_push(const std::vector<const char*>& srcs, const char* dst, bool sync);
 bool do_sync_pull(const std::vector<const char*>& srcs, const char* dst,
                   bool copy_attrs, const char* name=nullptr);
 
 bool do_sync_sync(const std::string& lpath, const std::string& rpath, bool list_only);
+
+struct FileSyncSocket;
+
+enum class HandlerResult {
+    Success,
+    TryAgain,
+    Error,
+};
+
+struct FileSyncSocketHandler {
+    virtual ~FileSyncSocketHandler() = default;
+    virtual HandlerResult HandleInput(FileSyncSocket* socket) = 0;
+};
+
+struct FileSyncSocket : public ServiceSocket {
+    FileSyncSocket();
+
+    virtual bool HandleInput() EXCLUDES(mutex_) override final;
+
+    std::unique_ptr<FileSyncSocketHandler> input_handler_;
+};
 
 #define SYNC_DATA_MAX (64*1024)
 

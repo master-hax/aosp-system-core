@@ -128,7 +128,9 @@ atransport* find_emulator_transport_by_adb_port(int adb_port);
 atransport* find_emulator_transport_by_console_port(int console_port);
 #endif
 
+asocket* service_to_socket(const char* name, atransport* transport);
 int service_to_fd(const char* name, atransport* transport);
+
 #if ADB_HOST
 asocket* host_service_to_socket(const char* name, const char* serial, TransportId transport_id);
 #endif

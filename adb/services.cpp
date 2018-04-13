@@ -406,15 +406,6 @@ static int create_service_thread(const char* service_name, void (*func)(int, voi
     }
     D("socketpair: (%d,%d)", s[0], s[1]);
 
-#if !ADB_HOST
-    if (func == &file_sync_service) {
-        // Set file sync service socket to maximum size
-        int max_buf = LINUX_MAX_SOCKET_SIZE;
-        adb_setsockopt(s[0], SOL_SOCKET, SO_SNDBUF, &max_buf, sizeof(max_buf));
-        adb_setsockopt(s[1], SOL_SOCKET, SO_SNDBUF, &max_buf, sizeof(max_buf));
-    }
-#endif // !ADB_HOST
-
     stinfo* sti = reinterpret_cast<stinfo*>(malloc(sizeof(stinfo)));
     if (sti == nullptr) {
         fatal("cannot allocate stinfo");
@@ -428,6 +419,15 @@ static int create_service_thread(const char* service_name, void (*func)(int, voi
 
     D("service thread started, %d:%d",s[0], s[1]);
     return s[0];
+}
+
+asocket* service_to_socket(const char* name, atransport*) {
+#if !ADB_HOST
+    if (!strncmp(name, "sync:", 5)) {
+        return create_file_sync_service();
+    }
+#endif
+    return nullptr;
 }
 
 int service_to_fd(const char* name, atransport* transport) {
@@ -450,9 +450,7 @@ int service_to_fd(const char* name, atransport* transport) {
         ret = ShellService(name + 5, transport);
     } else if(!strncmp(name, "exec:", 5)) {
         ret = StartSubprocess(name + 5, nullptr, SubprocessType::kRaw, SubprocessProtocol::kNone);
-    } else if(!strncmp(name, "sync:", 5)) {
-        ret = create_service_thread("sync", file_sync_service, nullptr);
-    } else if(!strncmp(name, "remount:", 8)) {
+    } else if (!strncmp(name, "remount:", 8)) {
         ret = create_service_thread("remount", remount_service, nullptr);
     } else if(!strncmp(name, "reboot:", 7)) {
         void* arg = strdup(name + 7);

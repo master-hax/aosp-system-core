@@ -43,7 +43,9 @@
 #include "adb_trace.h"
 #include "adb_utils.h"
 #include "security_log_tags.h"
+#include "services.h"
 #include "sysdeps/errno.h"
+#include "types.h"
 
 using android::base::StringPrintf;
 
@@ -101,19 +103,20 @@ static bool secure_mkdirs(const std::string& path) {
     return true;
 }
 
-static bool do_lstat_v1(int s, const char* path) {
+static bool do_lstat_v1(FileSyncSocket* s, const std::string& path) {
     syncmsg msg = {};
     msg.stat_v1.id = ID_LSTAT_V1;
 
     struct stat st = {};
-    lstat(path, &st);
+    lstat(path.c_str(), &st);
     msg.stat_v1.mode = st.st_mode;
     msg.stat_v1.size = st.st_size;
     msg.stat_v1.time = st.st_mtime;
-    return WriteFdExactly(s, &msg.stat_v1, sizeof(msg.stat_v1));
+    s->Write(IOVector::from_bytes(&msg.stat_v1, sizeof(msg.stat_v1)));
+    return true;
 }
 
-static bool do_stat_v2(int s, uint32_t id, const char* path) {
+static bool do_stat_v2(FileSyncSocket* s, uint32_t id, const std::string& path) {
     syncmsg msg = {};
     msg.stat_v2.id = id;
 
@@ -125,7 +128,8 @@ static bool do_stat_v2(int s, uint32_t id, const char* path) {
     }
 
     struct stat st = {};
-    int rc = stat_fn(path, &st);
+    int rc = stat_fn(path.c_str(), &st);
+
     if (rc == -1) {
         msg.stat_v2.error = errno_to_wire(errno);
     } else {
@@ -141,20 +145,21 @@ static bool do_stat_v2(int s, uint32_t id, const char* path) {
         msg.stat_v2.ctime = st.st_ctime;
     }
 
-    return WriteFdExactly(s, &msg.stat_v2, sizeof(msg.stat_v2));
+    s->Write(IOVector::from_bytes(&msg.stat_v2, sizeof(msg.stat_v2)));
+    return true;
 }
 
-static bool do_list(int s, const char* path) {
+static bool do_list(FileSyncSocket* s, const std::string& path) {
     dirent* de;
 
     syncmsg msg;
     msg.dent.id = ID_DENT;
 
-    std::unique_ptr<DIR, int(*)(DIR*)> d(opendir(path), closedir);
+    std::unique_ptr<DIR, int (*)(DIR*)> d(opendir(path.c_str()), closedir);
     if (!d) goto done;
 
     while ((de = readdir(d.get()))) {
-        std::string filename(StringPrintf("%s/%s", path, de->d_name));
+        std::string filename = path + "/" + de->d_name;
 
         struct stat st;
         if (lstat(filename.c_str(), &st) == 0) {
@@ -164,10 +169,8 @@ static bool do_list(int s, const char* path) {
             msg.dent.time = st.st_mtime;
             msg.dent.namelen = d_name_length;
 
-            if (!WriteFdExactly(s, &msg.dent, sizeof(msg.dent)) ||
-                    !WriteFdExactly(s, de->d_name, d_name_length)) {
-                return false;
-            }
+            s->Write(IOVector::from_bytes(&msg.dent, sizeof(msg.dent)));
+            s->Write(IOVector::from_bytes(de->d_name, d_name_length));
         }
     }
 
@@ -177,11 +180,23 @@ done:
     msg.dent.size = 0;
     msg.dent.time = 0;
     msg.dent.namelen = 0;
-    return WriteFdExactly(s, &msg.dent, sizeof(msg.dent));
+    s->Write(IOVector::from_bytes(&msg.dent, sizeof(msg.dent)));
+    return true;
 }
 
 // Make sure that SendFail from adb_io.cpp isn't accidentally used in this file.
 #pragma GCC poison SendFail
+
+static bool SendSyncFail(FileSyncSocket* s, const std::string& reason) {
+    D("sync: failure: %s", reason.c_str());
+
+    syncmsg msg;
+    msg.data.id = ID_FAIL;
+    msg.data.size = reason.size();
+    s->Write(IOVector::from_bytes(&msg.data, sizeof(msg.data)));
+    s->Write(IOVector::from_bytes(reason.data(), reason.size()));
+    return true;
+}
 
 static bool SendSyncFail(int fd, const std::string& reason) {
     D("sync: failure: %s", reason.c_str());
@@ -190,6 +205,10 @@ static bool SendSyncFail(int fd, const std::string& reason) {
     msg.data.id = ID_FAIL;
     msg.data.size = reason.size();
     return WriteFdExactly(fd, &msg.data, sizeof(msg.data)) && WriteFdExactly(fd, reason);
+}
+
+static bool SendSyncFailErrno(FileSyncSocket* s, const std::string& reason) {
+    return SendSyncFail(s, StringPrintf("%s: %s", reason.c_str(), strerror(errno)));
 }
 
 static bool SendSyncFailErrno(int fd, const std::string& reason) {
@@ -408,41 +427,42 @@ static bool do_send(int s, const std::string& spec, std::vector<char>& buffer) {
     return handle_send_file(s, path.c_str(), uid, gid, capabilities, mode, buffer, do_unlink);
 }
 
-static bool do_recv(int s, const char* path, std::vector<char>& buffer) {
-    __android_log_security_bswrite(SEC_TAG_ADB_RECV_FILE, path);
+static bool do_recv(FileSyncSocket* s, const std::string& path) {
+    __android_log_security_bswrite(SEC_TAG_ADB_RECV_FILE, path.c_str());
 
-    int fd = adb_open(path, O_RDONLY | O_CLOEXEC);
+    D("recv(%s)", path.c_str());
+    unique_fd fd(adb_open(path.c_str(), O_RDONLY | O_CLOEXEC));
     if (fd < 0) {
         SendSyncFailErrno(s, "open failed");
         return false;
     }
 
-    if (posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE) < 0) {
+    if (posix_fadvise(fd.get(), 0, 0, POSIX_FADV_SEQUENTIAL | POSIX_FADV_NOREUSE) < 0) {
         D("[ Failed to fadvise: %d ]", errno);
     }
 
     syncmsg msg;
     msg.data.id = ID_DATA;
     while (true) {
-        int r = adb_read(fd, &buffer[0], buffer.size() - sizeof(msg.data));
+        auto block = std::make_unique<apacket::block_type>(SYNC_DATA_MAX);
+        int r = block->size() - sizeof(msg.data);
+        r = adb_read(fd, block->data() + sizeof(msg.data), r);
         if (r <= 0) {
             if (r == 0) break;
             SendSyncFailErrno(s, "read failed");
-            adb_close(fd);
             return false;
         }
         msg.data.size = r;
-        if (!WriteFdExactly(s, &msg.data, sizeof(msg.data)) || !WriteFdExactly(s, &buffer[0], r)) {
-            adb_close(fd);
-            return false;
-        }
+        memcpy(block->data(), &msg.data, sizeof(msg.data));
+        block->resize(r + sizeof(msg.data));
+        s->Write(IOVector(std::move(block)));
     }
 
-    adb_close(fd);
-
+    D("recv(%s): done", path.c_str());
     msg.data.id = ID_DONE;
     msg.data.size = 0;
-    return WriteFdExactly(s, &msg.data, sizeof(msg.data));
+    s->Write(IOVector::from_bytes(&msg.data, sizeof(msg.data)));
+    return true;
 }
 
 static const char* sync_id_to_name(uint32_t id) {
@@ -466,65 +486,97 @@ static const char* sync_id_to_name(uint32_t id) {
   }
 }
 
-static bool handle_sync_command(int fd, std::vector<char>& buffer) {
-    D("sync: waiting for request");
+struct SyncRequestHandler : public FileSyncSocketHandler {
+    virtual ~SyncRequestHandler() = default;
 
-    ATRACE_CALL();
-    SyncRequest request;
-    if (!ReadFdExactly(fd, &request, sizeof(request))) {
-        SendSyncFail(fd, "command read failure");
-        return false;
-    }
-    size_t path_length = request.path_length;
-    if (path_length > 1024) {
-        SendSyncFail(fd, "path too long");
-        return false;
-    }
-    char name[1025];
-    if (!ReadFdExactly(fd, name, path_length)) {
-        SendSyncFail(fd, "filename read failure");
-        return false;
-    }
-    name[path_length] = 0;
+    virtual HandlerResult HandleInput(FileSyncSocket* s) override final {
+        if (!have_sync_request_) {
+            IOVector request;
+            if (!s->ReadInput(&request, sizeof(SyncRequest))) {
+                // Not enough data for a SyncRequest yet.
+                return HandlerResult::TryAgain;
+            }
 
-    std::string id_name = sync_id_to_name(request.id);
-    std::string trace_name = StringPrintf("%s(%s)", id_name.c_str(), name);
-    ATRACE_NAME(trace_name.c_str());
+            auto bytes = request.coalesce();
+            memcpy(&sync_request_, bytes.data(), request.size());
+            have_sync_request_ = true;
+        }
 
-    D("sync: %s('%s')", id_name.c_str(), name);
-    switch (request.id) {
-        case ID_LSTAT_V1:
-            if (!do_lstat_v1(fd, name)) return false;
-            break;
-        case ID_LSTAT_V2:
-        case ID_STAT_V2:
-            if (!do_stat_v2(fd, request.id, name)) return false;
-            break;
-        case ID_LIST:
-            if (!do_list(fd, name)) return false;
-            break;
-        case ID_SEND:
-            if (!do_send(fd, name, buffer)) return false;
-            break;
-        case ID_RECV:
-            if (!do_recv(fd, name, buffer)) return false;
-            break;
-        case ID_QUIT:
-            return false;
-        default:
-            SendSyncFail(fd, StringPrintf("unknown command %08x", request.id));
-            return false;
+        if (sync_request_.path_length > 1024) {
+            SendSyncFail(s, "path too long");
+            return HandlerResult::Error;
+        }
+
+        IOVector path_iovec;
+        if (!s->ReadInput(&path_iovec, sync_request_.path_length)) {
+            // Not enough data for the path.
+            return HandlerResult::TryAgain;
+        }
+
+        auto path = path_iovec.coalesce<std::string>();
+        const char* id_name = sync_id_to_name(sync_request_.id);
+        D("sync: %s('%s')", id_name, path.c_str());
+
+        switch (sync_request_.id) {
+            case ID_LSTAT_V1:
+                if (!do_lstat_v1(s, path)) return HandlerResult::Error;
+                break;
+            case ID_LSTAT_V2:
+            case ID_STAT_V2:
+                if (!do_stat_v2(s, sync_request_.id, path)) return HandlerResult::Error;
+                break;
+            case ID_LIST:
+                if (!do_list(s, path)) return HandlerResult::Error;
+                break;
+
+            case ID_RECV:
+                if (!do_recv(s, path)) return HandlerResult::Error;
+                break;
+
+            case ID_SEND:
+                (void)do_send;
+                errno = ENOTSUP;
+                SendSyncFailErrno(s, "unimplemented");
+                return HandlerResult::Error;
+            case ID_QUIT:
+                return HandlerResult::Error;
+            default:
+                SendSyncFail(s, StringPrintf("unknown command %08x", sync_request_.id));
+                return HandlerResult::Error;
+        }
+
+        have_sync_request_ = false;
+        return HandlerResult::Success;
+    }
+
+    bool have_sync_request_ = false;
+    SyncRequest sync_request_;
+    IOVector::block_type sync_request_data_;
+};
+
+FileSyncSocket::FileSyncSocket() {
+    this->input_handler_ = std::make_unique<SyncRequestHandler>();
+}
+
+bool FileSyncSocket::HandleInput() {
+    D("sync(%d): handling input", this->id);
+    while (!InputEmpty()) {
+        HandlerResult result = this->input_handler_->HandleInput(this);
+        switch (result) {
+            case HandlerResult::Error:
+                return false;
+
+            case HandlerResult::Success:
+                continue;
+
+            case HandlerResult::TryAgain:
+                break;
+        }
     }
 
     return true;
 }
 
-void file_sync_service(int fd, void*) {
-    std::vector<char> buffer(SYNC_DATA_MAX);
-
-    while (handle_sync_command(fd, buffer)) {
-    }
-
-    D("sync: done");
-    adb_close(fd);
+asocket* create_file_sync_service() {
+    return new FileSyncSocket();
 }

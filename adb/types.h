@@ -325,6 +325,12 @@ struct IOVector {
         return result;
     }
 
+    static IOVector from_bytes(const void* begin, size_t len) {
+        const char* p = static_cast<const char*>(begin);
+        auto block = std::make_unique<block_type>(p, p + len);
+        return IOVector(std::move(block));
+    }
+
   private:
     // Total length of all of the blocks in the chain.
     size_t chain_length_ = 0;
