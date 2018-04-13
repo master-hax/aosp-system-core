@@ -68,12 +68,14 @@ cc_defaults {
         linux: {
             srcs: [
                 "errors_unix.cpp",
+                "process.cpp",
             ],
             cppflags: ["-Wexit-time-destructors"],
         },
         darwin: {
             srcs: [
                 "errors_unix.cpp",
+                "process.cpp",
             ],
             cppflags: ["-Wexit-time-destructors"],
         },
@@ -143,7 +145,10 @@ cc_test {
             },
         },
         linux: {
-            srcs: ["chrono_utils_test.cpp"],
+            srcs: [
+                "chrono_utils_test.cpp",
+                "process_test.cpp",
+            ],
         },
         windows: {
             srcs: ["utf8_test.cpp"],

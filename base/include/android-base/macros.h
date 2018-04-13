@@ -17,6 +17,7 @@
 #ifndef ANDROID_BASE_MACROS_H
 #define ANDROID_BASE_MACROS_H
 
+#include <errno.h>  // for EINTR
 #include <stddef.h>  // for size_t
 #include <unistd.h>  // for TEMP_FAILURE_RETRY
 
