@@ -39,6 +39,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/process.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -46,7 +47,6 @@
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fs_mgr.h>
-#include <logwrap/logwrap.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/selinux.h>
 
@@ -102,19 +102,14 @@ class MountEntry {
     }
 
     void DoFsck() {
-        int st;
         if (IsF2Fs()) {
-            const char* f2fs_argv[] = {
-                "/system/bin/fsck.f2fs", "-f", mnt_fsname_.c_str(),
-            };
-            android_fork_execvp_ext(arraysize(f2fs_argv), (char**)f2fs_argv, &st, true, LOG_KLOG,
-                                    true, nullptr, nullptr, 0);
+            android::base::ProcessBuilder{"/system/bin/logwrapper", "-k", "/system/bin/fsck.f2fs",
+                                          "-f", mnt_fsname_}
+                .RunAndWait();
         } else if (IsExt4()) {
-            const char* ext4_argv[] = {
-                "/system/bin/e2fsck", "-f", "-y", mnt_fsname_.c_str(),
-            };
-            android_fork_execvp_ext(arraysize(ext4_argv), (char**)ext4_argv, &st, true, LOG_KLOG,
-                                    true, nullptr, nullptr, 0);
+            android::base::ProcessBuilder{
+                "/system/bin/logwrapper", "-k", "/system/bin/e2fsck", "-f", "-y", mnt_fsname_}
+                .RunAndWait();
         }
     }
 
@@ -148,10 +143,9 @@ static void TurnOffBacklight() {
 }
 
 static void ShutdownVold() {
-    const char* vdc_argv[] = {"/system/bin/vdc", "volume", "shutdown"};
-    int status;
-    android_fork_execvp_ext(arraysize(vdc_argv), (char**)vdc_argv, &status, true, LOG_KLOG, true,
-                            nullptr, nullptr, 0);
+    android::base::ProcessBuilder{"/system/bin/logwrapper", "-k", "/system/bin/vdc", "volume",
+                                  "shutdown"}
+        .RunAndWait();
 }
 
 static void LogShutdownTime(UmountStat stat, Timer* t) {
@@ -238,12 +232,11 @@ static bool FindPartitionsToUmount(std::vector<MountEntry>* blockDevPartitions,
 }
 
 static void DumpUmountDebuggingInfo(bool dump_all) {
-    int status;
     if (!security_getenforce()) {
+        // TODO: seriously? that's a *lot* of output!
         LOG(INFO) << "Run lsof";
-        const char* lsof_argv[] = {"/system/bin/lsof"};
-        android_fork_execvp_ext(arraysize(lsof_argv), (char**)lsof_argv, &status, true, LOG_KLOG,
-                                true, nullptr, nullptr, 0);
+        android::base::ProcessBuilder{"/system/bin/logwrapper", "-k", "/system/bin/lsof"}
+            .RunAndWait();
     }
     FindPartitionsToUmount(nullptr, nullptr, true);
     if (dump_all) {
