@@ -422,14 +422,14 @@ static bool writefilestring(const char *path, const char *s,
 
     if (fd < 0) {
         if (err_if_missing) {
-            ALOGE("Error opening %s; errno=%d", path, errno);
+            ALOGE("Error opening %s; %s", path, strerror(errno));
         }
         return false;
     }
 
     ret = TEMP_FAILURE_RETRY(write(fd, s, len));
     if (ret < 0) {
-        ALOGE("Error writing %s; errno=%d", path, errno);
+        ALOGE("Error writing %s; %s", path, strerror(errno));
     } else if (ret < len) {
         ALOGE("Short write on %s; length=%zd", path, ret);
     }
@@ -458,8 +458,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet) {
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", params.pid);
     snprintf(val, sizeof(val), "%d", params.oomadj);
     if (!writefilestring(path, val, false)) {
-        ALOGW("Failed to open %s; errno=%d: process %d might have been killed",
-              path, errno, params.pid);
+        ALOGW("Failed to open %s; %s: process %d might have been killed",
+              path, strerror(errno), params.pid);
         /* If this file does not exist the process is dead. */
         return;
     }
@@ -587,7 +587,8 @@ static void ctrl_data_close(int dsock_idx) {
     ALOGI("closing lmkd data connection");
     if (epoll_ctl(epollfd, EPOLL_CTL_DEL, data_sock[dsock_idx].sock, &epev) == -1) {
         // Log a warning and keep going
-        ALOGW("epoll_ctl for data connection socket failed; errno=%d", errno);
+        ALOGW("epoll_ctl for data connection socket failed; %s",
+            strerror(errno));
     }
     maxevents--;
 
@@ -601,7 +602,7 @@ static int ctrl_data_read(int dsock_idx, char *buf, size_t bufsz) {
     ret = TEMP_FAILURE_RETRY(read(data_sock[dsock_idx].sock, buf, bufsz));
 
     if (ret == -1) {
-        ALOGE("control data socket read failed; errno=%d", errno);
+        ALOGE("control data socket read failed; %s", strerror(errno));
     } else if (ret == 0) {
         ALOGE("Got EOF on control data socket");
         ret = -1;
@@ -694,7 +695,7 @@ static void ctrl_connect_handler(int data __unused, uint32_t events __unused) {
 
     data_sock[free_dscock_idx].sock = accept(ctrl_sock.sock, NULL, NULL);
     if (data_sock[free_dscock_idx].sock < 0) {
-        ALOGE("lmkd control socket accept failed; errno=%d", errno);
+        ALOGE("lmkd control socket accept failed; %s", strerror(errno));
         return;
     }
 
@@ -705,7 +706,8 @@ static void ctrl_connect_handler(int data __unused, uint32_t events __unused) {
     epev.events = EPOLLIN;
     epev.data.ptr = (void *)&(data_sock[free_dscock_idx].handler_info);
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, data_sock[free_dscock_idx].sock, &epev) == -1) {
-        ALOGE("epoll_ctl for data connection socket failed; errno=%d", errno);
+        ALOGE("epoll_ctl for data connection socket failed; %s",
+            strerror(errno));
         ctrl_data_close(free_dscock_idx);
         return;
     }
@@ -960,7 +962,7 @@ static int kill_one_process(struct proc* procp, int min_score_adj,
     TRACE_KILL_END();
 
     if (r) {
-        ALOGE("kill(%d): errno=%d", pid, errno);
+        ALOGE("kill(%d): %s", pid, strerror(errno));
         return -1;
     }
 
@@ -1268,19 +1270,19 @@ static bool init_mp_common(enum vmpressure_level level) {
 
     mpfd = open(MEMCG_SYSFS_PATH "memory.pressure_level", O_RDONLY | O_CLOEXEC);
     if (mpfd < 0) {
-        ALOGI("No kernel memory.pressure_level support (errno=%d)", errno);
+        ALOGI("No kernel memory.pressure_level support (%s)", strerror(errno));
         goto err_open_mpfd;
     }
 
     evctlfd = open(MEMCG_SYSFS_PATH "cgroup.event_control", O_WRONLY | O_CLOEXEC);
     if (evctlfd < 0) {
-        ALOGI("No kernel memory cgroup event control (errno=%d)", errno);
+        ALOGI("No kernel memory cgroup event control (%s)", strerror(errno));
         goto err_open_evctlfd;
     }
 
     evfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if (evfd < 0) {
-        ALOGE("eventfd failed for level %s; errno=%d", levelstr, errno);
+        ALOGE("eventfd failed for level %s; %s", levelstr, strerror(errno));
         goto err_eventfd;
     }
 
@@ -1292,8 +1294,8 @@ static bool init_mp_common(enum vmpressure_level level) {
 
     ret = TEMP_FAILURE_RETRY(write(evctlfd, buf, strlen(buf) + 1));
     if (ret == -1) {
-        ALOGE("cgroup.event_control write failed for level %s; errno=%d",
-              levelstr, errno);
+        ALOGE("cgroup.event_control write failed for level %s; %s",
+              levelstr, strerror(errno));
         goto err;
     }
 
@@ -1304,7 +1306,7 @@ static bool init_mp_common(enum vmpressure_level level) {
     epev.data.ptr = (void *)&vmpressure_hinfo[level_idx];
     ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, evfd, &epev);
     if (ret == -1) {
-        ALOGE("epoll_ctl for level %s failed; errno=%d", levelstr, errno);
+        ALOGE("epoll_ctl for level %s failed; %s", levelstr, strerror(errno));
         goto err;
     }
     maxevents++;
@@ -1334,7 +1336,7 @@ static int init(void) {
 
     epollfd = epoll_create(MAX_EPOLL_EVENTS);
     if (epollfd == -1) {
-        ALOGE("epoll_create failed (errno=%d)", errno);
+        ALOGE("epoll_create failed (%s)", strerror(errno));
         return -1;
     }
 
@@ -1351,7 +1353,7 @@ static int init(void) {
 
     ret = listen(ctrl_sock.sock, MAX_DATA_CONN);
     if (ret < 0) {
-        ALOGE("lmkd control socket listen failed (errno=%d)", errno);
+        ALOGE("lmkd control socket listen failed (%s)", strerror(errno));
         return -1;
     }
 
@@ -1359,7 +1361,8 @@ static int init(void) {
     ctrl_sock.handler_info.handler = ctrl_connect_handler;
     epev.data.ptr = (void *)&(ctrl_sock.handler_info);
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, ctrl_sock.sock, &epev) == -1) {
-        ALOGE("epoll_ctl for lmkd control socket failed (errno=%d)", errno);
+        ALOGE("epoll_ctl for lmkd control socket failed (%s)",
+            strerror(errno));
         return -1;
     }
     maxevents++;
@@ -1400,7 +1403,7 @@ static void mainloop(void) {
         if (nevents == -1) {
             if (errno == EINTR)
                 continue;
-            ALOGE("epoll_wait failed (errno=%d)", errno);
+            ALOGE("epoll_wait failed (%s)", strerror(errno));
             continue;
         }
 
