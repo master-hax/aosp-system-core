@@ -24,6 +24,7 @@
 #include <cutils/partition_utils.h>
 #include <sys/mount.h>
 
+#include <android-base/process.h>
 #include <ext4_utils/ext4.h>
 #include <ext4_utils/ext4_utils.h>
 #include <logwrap/logwrap.h>
@@ -56,10 +57,7 @@ static int get_dev_sz(char *fs_blkdev, uint64_t *dev_sz)
 static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
 {
     uint64_t dev_sz;
-    int rc = 0;
-    int status;
-
-    rc = get_dev_sz(fs_blkdev, &dev_sz);
+    int rc = get_dev_sz(fs_blkdev, &dev_sz);
     if (rc) {
         return rc;
     }
@@ -69,38 +67,43 @@ static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
         dev_sz -= CRYPT_FOOTER_OFFSET;
     }
 
-    std::string size_str = std::to_string(dev_sz / 4096);
-    const char* const mke2fs_args[] = {
-        "/system/bin/mke2fs", "-t", "ext4", "-b", "4096", fs_blkdev, size_str.c_str(), nullptr};
-
-    rc = android_fork_execvp_ext(arraysize(mke2fs_args), const_cast<char**>(mke2fs_args), NULL,
-                                 true, LOG_KLOG, true, nullptr, nullptr, 0);
-    if (rc) {
-        LERROR << "mke2fs returned " << rc;
+    android::base::ProcessBuilder mke2fs{
+        // clang-format off
+        "/system/bin/logwrapper", "-k",
+        "/system/bin/mke2fs",
+        "-t", "ext4",
+        "-b", "4096",
+        fs_blkdev,
+        std::to_string(dev_sz / 4096)
+        // clang-format on
+    };
+    rc = mke2fs.RunAndWait();
+    if (rc != 0) {
+        LERROR << "mke2fs failed: " << android::base::ExitStatusToString(rc);
         return rc;
     }
 
-    const char* const e2fsdroid_args[] = {
+    android::base::ProcessBuilder e2fsdroid{
+        // clang-format off
+        "/system/bin/logwrapper", "-k",
         "/system/bin/e2fsdroid",
         "-e",
         "-a",
         fs_mnt_point,
         fs_blkdev,
-        nullptr};
-
-    rc = android_fork_execvp_ext(arraysize(e2fsdroid_args), const_cast<char**>(e2fsdroid_args),
-                                 NULL, true, LOG_KLOG, true, nullptr, nullptr, 0);
-    if (rc) {
-        LERROR << "e2fsdroid returned " << rc;
+        // clang-format on
+    };
+    rc = e2fsdroid.RunAndWait();
+    if (rc != 0) {
+        LERROR << "e2fsdroid failed: " << android::base::ExitStatusToString(rc);
+        return rc;
     }
 
-    return rc;
+    return 0;
 }
 
 static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
 {
-    int status;
-
     if (!dev_sz) {
         int rc = get_dev_sz(fs_blkdev, &dev_sz);
         if (rc) {
@@ -113,9 +116,9 @@ static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
         dev_sz -= CRYPT_FOOTER_OFFSET;
     }
 
-    std::string size_str = std::to_string(dev_sz / 4096);
-    // clang-format off
-    const char* const args[] = {
+    android::base::ProcessBuilder pb{
+        // clang-format off
+        "/system/bin/logwrapper", "-k",
         "/system/bin/make_f2fs",
         "-d1",
         "-f",
@@ -123,13 +126,10 @@ static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
         "-O", "quota",
         "-w", "4096",
         fs_blkdev,
-        size_str.c_str(),
-        nullptr
+        std::to_string(dev_sz / 4096),
+        // clang-format on
     };
-    // clang-format on
-
-    return android_fork_execvp_ext(arraysize(args), const_cast<char**>(args), NULL, true,
-                                   LOG_KLOG, true, nullptr, nullptr, 0);
+    return pb.RunAndWait();
 }
 
 int fs_mgr_do_format(struct fstab_rec *fstab, bool crypt_footer)
