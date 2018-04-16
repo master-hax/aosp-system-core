@@ -103,6 +103,7 @@ class Service {
     unsigned namespace_flags() const { return namespace_flags_; }
     const std::vector<gid_t>& supp_gids() const { return supp_gids_; }
     const std::string& seclabel() const { return seclabel_; }
+    void set_onrestart(const Action& action) { onrestart_ = action; }
     const std::vector<int>& keycodes() const { return keycodes_; }
     int keychord_id() const { return keychord_id_; }
     void set_keychord_id(int keychord_id) { keychord_id_ = keychord_id; }

@@ -77,6 +77,7 @@ LOCAL_STATIC_LIBRARIES := \
     libprotobuf-cpp-lite \
     libpropertyinfoserializer \
     libpropertyinfoparser \
+    libcap \
 
 LOCAL_REQUIRED_MODULES := \
     e2fsdroid \
