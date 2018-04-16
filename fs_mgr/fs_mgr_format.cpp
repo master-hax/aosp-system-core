@@ -53,6 +53,10 @@ static int get_dev_sz(char *fs_blkdev, uint64_t *dev_sz)
     return 0;
 }
 
+static bool is_recovery() {
+    return access("/sbin/recovery", F_OK) == 0;
+}
+
 static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
 {
     uint64_t dev_sz;
@@ -69,9 +73,21 @@ static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
         dev_sz -= CRYPT_FOOTER_OFFSET;
     }
 
+    // We have different binaries under normal boot (dynamically linked) and recovery (statically
+    // linked).
+    static constexpr const char* kMke2fsExecutable = "/system/bin/mke2fs";
+    static constexpr const char* kMke2fsStaticExecutable = "/sbin/mke2fs_static";
     std::string size_str = std::to_string(dev_sz / 4096);
+    // clang-format off
     const char* const mke2fs_args[] = {
-        "/system/bin/mke2fs", "-t", "ext4", "-b", "4096", fs_blkdev, size_str.c_str(), nullptr};
+        is_recovery() ? kMke2fsStaticExecutable : kMke2fsExecutable,
+        "-t", "ext4",
+        "-b", "4096",
+        fs_blkdev,
+        size_str.c_str(),
+        nullptr
+    };
+    // clang-format on
 
     rc = android_fork_execvp_ext(arraysize(mke2fs_args), const_cast<char**>(mke2fs_args), NULL,
                                  true, LOG_KLOG, true, nullptr, nullptr, 0);
@@ -80,14 +96,17 @@ static int format_ext4(char *fs_blkdev, char *fs_mnt_point, bool crypt_footer)
         return rc;
     }
 
+    static constexpr const char* kE2fsdroidExecutable = "/system/bin/e2fsdroid";
+    static constexpr const char* kE2fsdroidStaticExecutable = "/sbin/e2fsdroid_static";
+    // clang-format off
     const char* const e2fsdroid_args[] = {
-        "/system/bin/e2fsdroid",
+        is_recovery() ? kE2fsdroidStaticExecutable : kE2fsdroidExecutable,
         "-e",
-        "-a",
-        fs_mnt_point,
+        "-a", fs_mnt_point,
         fs_blkdev,
-        nullptr};
-
+        nullptr
+    };
+    // clang-format on
     rc = android_fork_execvp_ext(arraysize(e2fsdroid_args), const_cast<char**>(e2fsdroid_args),
                                  NULL, true, LOG_KLOG, true, nullptr, nullptr, 0);
     if (rc) {
@@ -113,10 +132,14 @@ static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
         dev_sz -= CRYPT_FOOTER_OFFSET;
     }
 
+    // We have different binaries under normal boot (dynamically linked) and recovery (statically
+    // linked).
+    static constexpr const char* kMakeF2fsExecutable = "/system/bin/make_f2fs";
+    static constexpr const char* kMakeF2fsStaticExecutable = "/sbin/mkfs.f2fs";
     std::string size_str = std::to_string(dev_sz / 4096);
     // clang-format off
     const char* const args[] = {
-        "/system/bin/make_f2fs",
+        is_recovery() ? kMakeF2fsStaticExecutable : kMakeF2fsExecutable,
         "-d1",
         "-f",
         "-O", "encrypt",
