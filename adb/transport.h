@@ -174,7 +174,7 @@ class atransport {
         protocol_version = A_VERSION_MIN;
         max_payload = MAX_PAYLOAD;
     }
-    virtual ~atransport() {}
+    virtual ~atransport();
 
     int Write(apacket* p);
     void Kick();
@@ -226,6 +226,15 @@ class atransport {
     void RemoveDisconnect(adisconnect* disconnect);
     void RunDisconnects();
 
+    // Sets a connection callback that will be run exactly once when the
+    // connection has been completely established (i.e. when the device is
+    // online for the first time) or if it is closed before establishing.
+    //
+    // This avoids situations where the first CNXN packet is sent but the reply
+    // is never received.
+    void SetConnectionCallback(std::function<void(bool)> callback);
+    void RunConnectionCallbackOnce(bool success);
+
     // Returns true if |target| matches this transport. A matching |target| can be any of:
     //   * <serial>
     //   * <devpath>
@@ -257,6 +266,11 @@ private:
 #if ADB_HOST
     std::deque<std::shared_ptr<RSA>> keys_;
 #endif
+
+    // A callback that is invoked when the connection stops being pending. The
+    // callback can be run on any thread.
+    std::function<void(bool)> connection_callback_;
+    std::mutex connection_callback_mutex_;
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };

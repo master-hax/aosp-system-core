@@ -30,7 +30,9 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <deque>
+#include <future>
 #include <list>
 #include <mutex>
 #include <thread>
@@ -721,6 +723,11 @@ atransport* acquire_one_transport(TransportType type, const char* serial, Transp
     return result;
 }
 
+atransport::~atransport() {
+    // If the connection callback had not been run before, run it now.
+    RunConnectionCallbackOnce(false);
+}
+
 int atransport::Write(apacket* p) {
     return this->connection->Write(std::unique_ptr<apacket>(p)) ? 0 : -1;
 }
@@ -835,6 +842,19 @@ void atransport::RunDisconnects() {
         disconnect->func(disconnect->opaque, this);
     }
     disconnects_.clear();
+}
+
+void atransport::SetConnectionCallback(std::function<void(bool)> callback) {
+    std::unique_lock<std::mutex> lk(connection_callback_mutex_);
+    connection_callback_ = callback;
+}
+
+void atransport::RunConnectionCallbackOnce(bool success) {
+    std::unique_lock<std::mutex> lk(connection_callback_mutex_);
+    if (!connection_callback_) return;
+    D("running connection callback once with %d", success);
+    connection_callback_(success);
+    connection_callback_ = nullptr;
 }
 
 bool atransport::MatchesTarget(const std::string& target) const {
@@ -992,8 +1012,18 @@ int register_socket_transport(int s, const char* serial, int port, int local) {
 
     lock.unlock();
 
+    auto connection_promise = std::make_shared<std::promise<bool>>();
+    std::future<bool> connection_future = connection_promise->get_future();
+    t->SetConnectionCallback(
+        [connection_promise](bool success) { connection_promise->set_value(success); });
+
     register_transport(t);
-    return 0;
+
+    if (connection_future.wait_for(std::chrono::seconds(10)) != std::future_status::ready) {
+        VLOG(TRANSPORT) << "socket transport " << serial << " timed out";
+        return -1;
+    }
+    return connection_future.get() ? 0 : -1;
 }
 
 #if ADB_HOST
