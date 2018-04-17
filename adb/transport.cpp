@@ -721,6 +721,32 @@ atransport* acquire_one_transport(TransportType type, const char* serial, Transp
     return result;
 }
 
+ConnectionWaitable::ConnectionWaitable() = default;
+ConnectionWaitable::~ConnectionWaitable() = default;
+
+bool ConnectionWaitable::WaitForConnection(std::chrono::milliseconds timeout) {
+    std::unique_lock<std::mutex> lock(connection_established_mutex_);
+    return connection_established_cv_.wait_for(lock, timeout, [&]() {
+        return connection_established_ready_;
+    }) && connection_established_;
+}
+
+void ConnectionWaitable::SetConnectionEstablished(bool success) {
+    {
+        std::unique_lock<std::mutex> lock(connection_established_mutex_);
+        if (connection_established_ready_) return;
+        connection_established_ready_ = true;
+        connection_established_ = success;
+        D("connection established with %d", success);
+    }
+    connection_established_cv_.notify_one();
+}
+
+atransport::~atransport() {
+    // If the connection callback had not been run before, run it now.
+    SetConnectionEstablished(false);
+}
+
 int atransport::Write(apacket* p) {
     return this->connection->Write(std::unique_ptr<apacket>(p)) ? 0 : -1;
 }
@@ -873,6 +899,10 @@ bool atransport::MatchesTarget(const std::string& target) const {
            qual_match(target.c_str(), "device:", device, false);
 }
 
+void atransport::SetConnectionEstablished(bool success) {
+    connection_waitable_->SetConnectionEstablished(success);
+}
+
 #if ADB_HOST
 
 // We use newline as our delimiter, make sure to never output it.
@@ -992,8 +1022,10 @@ int register_socket_transport(int s, const char* serial, int port, int local) {
 
     lock.unlock();
 
+    auto waitable = t->connection_waitable();
     register_transport(t);
-    return 0;
+
+    return waitable->WaitForConnection(std::chrono::seconds(10)) ? 0 : -1;
 }
 
 #if ADB_HOST
