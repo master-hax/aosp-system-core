@@ -126,6 +126,10 @@ class android_log_event_list {
   android_log_event_list(const android_log_event_list&) = delete;
   void operator=(const android_log_event_list&) = delete;
 
+  virtual int write_to_logger(android_log_context context, log_id_t id) {
+    return android_log_write_list(context, id);
+  }
+
  public:
   explicit android_log_event_list(int tag) : ret(0) {
     ctx = create_android_logger(static_cast<uint32_t>(tag));
@@ -134,7 +138,7 @@ class android_log_event_list {
     ctx = create_android_log_parser(log_msg.msg() + sizeof(uint32_t),
                                     log_msg.entry.len - sizeof(uint32_t));
   }
-  ~android_log_event_list() {
+  virtual ~android_log_event_list() {
     android_log_destroy(&ctx);
   }
 
@@ -219,7 +223,7 @@ class android_log_event_list {
   int write(log_id_t id = LOG_ID_EVENTS) {
     /* facilitate -EBUSY retry */
     if ((ret == -EBUSY) || (ret > 0)) ret = 0;
-    int retval = android_log_write_list(ctx, id);
+    int retval = write_to_logger(ctx, id);
     /* existing errors trump transmission errors */
     if (!ret) ret = retval;
     return ret;
