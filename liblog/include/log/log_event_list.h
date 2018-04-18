@@ -119,10 +119,11 @@ extern "C++" {
 class android_log_event_list {
   friend class __android_log_event_list;
 
- private:
+ protected:
   android_log_context ctx;
   int ret;
 
+ private:
   android_log_event_list(const android_log_event_list&) = delete;
   void operator=(const android_log_event_list&) = delete;
 
