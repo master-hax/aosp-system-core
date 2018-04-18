@@ -521,8 +521,6 @@ static int select_test(uint repeat, uint msgburst, uint msgsz)
 
 	for (i = 0; i < repeat; i++) {
 
-		_wait_for_msg(fd, msgsz, 1);
-
 		if (!opt_silent) {
 			printf("sending burst: %u msg\n", msgburst);
 		}
@@ -535,6 +533,8 @@ static int select_test(uint repeat, uint msgburst, uint msgsz)
 				break;
 			}
 		}
+
+		_wait_for_msg(fd, msgsz, 1);
 	}
 
 	tipc_close(fd);
