@@ -216,6 +216,10 @@ runs the service.
 > Sets the IO priority and IO priority class for this service via the SYS_ioprio_set syscall.
   _class_ must be one of "rt", "be", or "idle". _priority_ must be an integer in the range 0 - 7.
 
+`join_namespace <type> <path>`
+> Joins the a namespace of type _type_ located at _path_. Note that currently only network
+  namespaces are supported with _type_ set to "net".
+
 `keycodes <keycode> [ <keycode>\* ]`
 > Sets the keycodes that will trigger this service. If all of the keys corresponding to the passed
   keycodes are pressed at once, the service will start. This is typically used to start the

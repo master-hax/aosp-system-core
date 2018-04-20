@@ -125,6 +125,9 @@ class Service {
     using OptionParser = Result<Success> (Service::*)(const std::vector<std::string>& args);
     class OptionParserMap;
 
+    Result<Success> SetUpMountNamespace() const;
+    Result<Success> SetUpPidNamespace() const;
+    Result<Success> JoinNamespaces() const;
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void ZapStdio() const;
@@ -141,6 +144,7 @@ class Service {
     Result<Success> ParsePriority(const std::vector<std::string>& args);
     Result<Success> ParseInterface(const std::vector<std::string>& args);
     Result<Success> ParseIoprio(const std::vector<std::string>& args);
+    Result<Success> ParseJoinNamespace(const std::vector<std::string>& args);
     Result<Success> ParseKeycodes(const std::vector<std::string>& args);
     Result<Success> ParseOneshot(const std::vector<std::string>& args);
     Result<Success> ParseOnrestart(const std::vector<std::string>& args);
@@ -181,6 +185,8 @@ class Service {
     std::vector<gid_t> supp_gids_;
     CapSet capabilities_;
     unsigned namespace_flags_;
+    // Pair of namespace type, path to namespace.
+    std::vector<std::pair<int, std::string>> namespaces_to_join_;
 
     std::string seclabel_;
 
