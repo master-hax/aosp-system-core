@@ -198,10 +198,14 @@ class atransport {
     // class in one go is a very large change. Given how bad our testing is,
     // it's better to do this piece by piece.
 
-    atransport(ConnectionState state = kCsOffline)
+    using ReconnectCallback = std::function<bool(atransport*)>;
+
+    atransport(ReconnectCallback reconnect, ConnectionState state = kCsOffline)
         : id(NextTransportId()),
+          kicked_(false),
           connection_state_(state),
-          connection_waitable_(std::make_shared<ConnectionWaitable>()) {
+          connection_waitable_(std::make_shared<ConnectionWaitable>()),
+          reconnect_(std::move(reconnect)) {
         // Initialize protocol to min version for compatibility with older versions.
         // Version will be updated post-connect.
         protocol_version = A_VERSION_MIN;
@@ -211,6 +215,7 @@ class atransport {
 
     int Write(apacket* p);
     void Kick();
+    bool kicked() const { return kicked_; }
 
     // ConnectionState can be read by all threads, but can only be written in the main thread.
     ConnectionState GetConnectionState() const;
@@ -282,7 +287,11 @@ class atransport {
     std::shared_ptr<ConnectionWaitable> connection_waitable() { return connection_waitable_; }
 
   private:
-    bool kicked_ = false;
+    std::atomic<bool> kicked_;
+
+    // Attempts to reconnect with the underlying Connection. Returns true if the
+    // reconnection attempt succeeded.
+    bool Reconnect();
 
     // A set of features transmitted in the banner with the initial connection.
     // This is stored in the banner as 'features=feature0,feature1,etc'.
@@ -301,6 +310,8 @@ class atransport {
     // A sharable object that can be used to wait for the atransport's
     // connection to be established.
     std::shared_ptr<ConnectionWaitable> connection_waitable_;
+
+    ReconnectCallback reconnect_;
 
     DISALLOW_COPY_AND_ASSIGN(atransport);
 };
@@ -323,6 +334,7 @@ void update_transports(void);
 // Stops iteration and returns false if fn returns false, otherwise returns true.
 bool iterate_transports(std::function<bool(const atransport*)> fn);
 
+void init_reconnect_handler(void);
 void init_transport_registration(void);
 void init_mdns_transport_discovery(void);
 std::string list_transports(bool long_listing);
@@ -336,8 +348,11 @@ void register_usb_transport(usb_handle* h, const char* serial,
 /* Connect to a network address and register it as a device */
 void connect_device(const std::string& address, std::string* response);
 
+bool reconnect_socket_transport(atransport* t, unique_fd fd, int port);
+
 /* cause new transports to be init'd and added to the list */
-int register_socket_transport(int s, const char* serial, int port, int local);
+int register_socket_transport(int s, const char* serial, int port, int local,
+                              atransport::ReconnectCallback reconnect);
 
 // This should only be used for transports with connection_state == kCsNoPerm.
 void unregister_usb_transport(usb_handle* usb);
