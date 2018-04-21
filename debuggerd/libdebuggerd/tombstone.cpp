@@ -254,7 +254,9 @@ static void dump_abort_message(log_t* log, Memory* process_memory, uint64_t addr
   }
 
   // The abort message should be null terminated already, but just in case...
-  msg[length] = '\0';
+  if (!msg.empty()) {
+    msg.back() = '\0';
+  }
   _LOG(log, logtype::HEADER, "Abort message: '%s'\n", &msg[0]);
 }
 
