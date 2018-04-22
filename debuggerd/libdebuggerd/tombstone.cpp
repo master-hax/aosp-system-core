@@ -247,13 +247,14 @@ static void dump_abort_message(log_t* log, Memory* process_memory, uint64_t addr
 
   length -= sizeof(size_t);
 
-  // The abort message should be null terminated already, but reserve a spot for NUL just in case.
-  std::vector<char> msg(length + 1);
+  std::vector<char> msg(length);
   if (!process_memory->ReadFully(address + sizeof(length), &msg[0], length)) {
     _LOG(log, logtype::HEADER, "Failed to read abort message: %s\n", strerror(errno));
     return;
   }
 
+  // The abort message should be null terminated already, but just in case...
+  msg[length] = '\0';
   _LOG(log, logtype::HEADER, "Abort message: '%s'\n", &msg[0]);
 }
 
