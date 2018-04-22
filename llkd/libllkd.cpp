@@ -70,7 +70,6 @@ milliseconds llkCycle;                               // ms to next thread check
 bool llkEnable = LLK_ENABLE_DEFAULT;                 // llk daemon enabled
 bool llkRunning = false;                             // thread is running
 bool llkMlockall = LLK_MLOCKALL_DEFAULT;             // run mlocked
-bool llkTestWithKill = LLK_KILLTEST_DEFAULT;         // issue test kills
 milliseconds llkTimeoutMs = LLK_TIMEOUT_MS_DEFAULT;  // default timeout
 enum { llkStateD, llkStateZ, llkNumStates };         // state indexes
 milliseconds llkStateTimeoutMs[llkNumStates];        // timeout override for each detection state
@@ -293,7 +292,7 @@ struct proc {
           exeMissingValid(false),
           cmdlineValid(false),
           updated(true),
-          killed(!llkTestWithKill) {
+          killed(false) {
         memset(comm, '\0', sizeof(comm));
         setComm(_comm);
     }
@@ -476,8 +475,8 @@ bool llkWriteStringToFileConfirm(const std::string& string, const std::string& f
     return android::base::Trim(content) == string;
 }
 
-void llkPanicKernel(bool dump, pid_t tid, const char* state) __noreturn;
-void llkPanicKernel(bool dump, pid_t tid, const char* state) {
+void llkPanicKernel(bool dump, pid_t tid) __noreturn;
+void llkPanicKernel(bool dump, pid_t tid) {
     auto sysrqTriggerFd = llkFileToWriteFd("/proc/sysrq-trigger");
     if (sysrqTriggerFd < 0) {
         // DYB
@@ -497,8 +496,6 @@ void llkPanicKernel(bool dump, pid_t tid, const char* state) {
         }
         ::usleep(200000);  // let everything settle
     }
-    llkWriteStringToFile(std::string("SysRq : Trigger a crash : 'livelock,") + state + "'\n",
-                         "/dev/kmsg");
     android::base::WriteStringToFd("c", sysrqTriggerFd);
     // NOTREACHED
     // DYB
@@ -510,7 +507,7 @@ void llkPanicKernel(bool dump, pid_t tid, const char* state) {
 }
 
 void llkAlarmHandler(int) {
-    llkPanicKernel(false, ::getpid(), "alarm");
+    llkPanicKernel(false, ::getpid());
 }
 
 milliseconds GetUintProperty(const std::string& key, milliseconds def) {
@@ -689,7 +686,7 @@ void llkCheckSchedUpdate(proc* procp, const std::string& piddir) {
             (val != procp->nrSwitches)) {
             procp->nrSwitches = val;
             procp->count = 0ms;
-            procp->killed = !llkTestWithKill;
+            procp->killed = false;
         }
         return;
     }
@@ -703,7 +700,7 @@ void llkCheckSchedUpdate(proc* procp, const std::string& piddir) {
         if (schedUpdate != procp->schedUpdate) {
             procp->schedUpdate = schedUpdate;
             procp->count = 0ms;
-            procp->killed = !llkTestWithKill;
+            procp->killed = false;
         }
     }
 
@@ -712,7 +709,7 @@ void llkCheckSchedUpdate(proc* procp, const std::string& piddir) {
         if (static_cast<uint64_t>(val) != procp->nrSwitches) {
             procp->nrSwitches = val;
             procp->count = 0ms;
-            procp->killed = !llkTestWithKill;
+            procp->killed = false;
         }
     }
 }
@@ -722,7 +719,6 @@ void llkLogConfig(void) {
               << LLK_ENABLE_PROPERTY "=" << llkFormat(llkEnable) << "\n"
               << KHT_ENABLE_PROPERTY "=" << llkFormat(khtEnable) << "\n"
               << LLK_MLOCKALL_PROPERTY "=" << llkFormat(llkMlockall) << "\n"
-              << LLK_KILLTEST_PROPERTY "=" << llkFormat(llkTestWithKill) << "\n"
               << KHT_TIMEOUT_PROPERTY "=" << llkFormat(khtTimeout) << "\n"
               << LLK_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkTimeoutMs) << "\n"
               << LLK_D_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkStateTimeoutMs[llkStateD]) << "\n"
@@ -873,7 +869,7 @@ milliseconds llkCheck(bool checkRunning) {
                 procp->time = utime + stime;
                 if (procp->state != state) {
                     procp->count = 0ms;
-                    procp->killed = !llkTestWithKill;
+                    procp->killed = false;
                     procp->state = state;
                 } else {
                     procp->count += llkCycle;
@@ -977,7 +973,7 @@ milliseconds llkCheck(bool checkRunning) {
             // We are here because we have confirmed kernel live-lock
             LOG(ERROR) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->" << pid
                        << "->" << tid << ' ' << procp->getComm() << " [panic]";
-            llkPanicKernel(true, tid, (state == 'Z') ? "zombie" : "driver");
+            llkPanicKernel(true, tid);
         }
         LOG(VERBOSE) << "+closedir()";
     }
@@ -1049,7 +1045,6 @@ bool llkInit(const char* threadname) {
     }
     khtEnable = android::base::GetBoolProperty(KHT_ENABLE_PROPERTY, khtEnable);
     llkMlockall = android::base::GetBoolProperty(LLK_MLOCKALL_PROPERTY, llkMlockall);
-    llkTestWithKill = android::base::GetBoolProperty(LLK_KILLTEST_PROPERTY, llkTestWithKill);
     // if LLK_TIMOUT_MS_PROPERTY was not set, we will use a set
     // KHT_TIMEOUT_PROPERTY as co-operative guidance for the default value.
     khtTimeout = GetUintProperty(KHT_TIMEOUT_PROPERTY, khtTimeout);
