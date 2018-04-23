@@ -179,7 +179,7 @@ int sparse_file_write(struct sparse_file *s, int fd, bool gz, bool sparse,
 }
 
 int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
-		int (*write)(void *priv, const void *data, int len), void *priv)
+		int (*write)(void *priv, const void *data, unsigned int len), void *priv)
 {
 	int ret;
 	int chunks;
@@ -203,11 +203,11 @@ struct chunk_data {
 	void		*priv;
 	unsigned int	block;
 	unsigned int	nr_blocks;
-	int (*write)(void *priv, const void *data, int len, unsigned int block,
-		     unsigned int nr_blocks);
+	int (*write)(void *priv, const void *data, unsigned int len,
+		     unsigned int block, unsigned int nr_blocks);
 };
 
-static int foreach_chunk_write(void *priv, const void *data, int len)
+static int foreach_chunk_write(void *priv, const void *data, unsigned int len)
 {
 	struct chunk_data *chk = priv;
 
@@ -215,8 +215,8 @@ static int foreach_chunk_write(void *priv, const void *data, int len)
 }
 
 int sparse_file_foreach_chunk(struct sparse_file *s, bool sparse, bool crc,
-	int (*write)(void *priv, const void *data, int len, unsigned int block,
-		     unsigned int nr_blocks),
+	int (*write)(void *priv, const void *data, unsigned int len,
+		     unsigned int block, unsigned int nr_blocks),
 	void *priv)
 {
 	int ret;
@@ -250,7 +250,8 @@ int sparse_file_foreach_chunk(struct sparse_file *s, bool sparse, bool crc,
 	return ret;
 }
 
-static int out_counter_write(void *priv, const void *data __unused, int len)
+static int out_counter_write(void *priv, const void *data __unused,
+	unsigned int len)
 {
 	int64_t *count = priv;
 	*count += len;

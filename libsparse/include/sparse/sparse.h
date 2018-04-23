@@ -201,7 +201,7 @@ unsigned int sparse_file_block_size(struct sparse_file *s);
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
-		int (*write)(void *priv, const void *data, int len), void *priv);
+		int (*write)(void *priv, const void *data, unsigned int len), void *priv);
 
 /**
  * sparse_file_foreach_chunk - call a callback for data blocks in sparse file
@@ -218,8 +218,8 @@ int sparse_file_callback(struct sparse_file *s, bool sparse, bool crc,
  * Returns 0 on success, negative errno on error.
  */
 int sparse_file_foreach_chunk(struct sparse_file *s, bool sparse, bool crc,
-	int (*write)(void *priv, const void *data, int len, unsigned int block,
-		     unsigned int nr_blocks),
+	int (*write)(void *priv, const void *data, unsigned int len,
+		     unsigned int block, unsigned int nr_blocks),
 	void *priv);
 /**
  * sparse_file_read - read a file into a sparse file cookie
