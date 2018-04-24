@@ -278,19 +278,14 @@ int64_t fb_upload_data(Transport* transport, const char* outfile) {
     return _command_end(transport);
 }
 
-#define TRANSPORT_BUF_SIZE 1024
+static constexpr unsigned int TRANSPORT_BUF_SIZE = 1024;
 static char transport_buf[TRANSPORT_BUF_SIZE];
-static int transport_buf_len;
+static unsigned int transport_buf_len;
 
-static int fb_download_data_sparse_write(void *priv, const void *data, int len)
-{
-    int r;
-    Transport* transport = reinterpret_cast<Transport*>(priv);
-    int to_write;
-    const char* ptr = reinterpret_cast<const char*>(data);
-
+static int fb_download_data_sparse_write(void* priv, const void* data, unsigned int len) {
+    const char* ptr = static_cast<const char*>(data);
     if (transport_buf_len) {
-        to_write = std::min(TRANSPORT_BUF_SIZE - transport_buf_len, len);
+        unsigned int to_write = std::min(TRANSPORT_BUF_SIZE - transport_buf_len, len);
 
         memcpy(transport_buf + transport_buf_len, ptr, to_write);
         transport_buf_len += to_write;
@@ -298,8 +293,9 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
         len -= to_write;
     }
 
+    Transport* transport = static_cast<Transport*>(priv);
     if (transport_buf_len == TRANSPORT_BUF_SIZE) {
-        r = _command_write_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
+        int64_t r = _command_write_data(transport, transport_buf, TRANSPORT_BUF_SIZE);
         if (r != TRANSPORT_BUF_SIZE) {
             return -1;
         }
@@ -311,8 +307,8 @@ static int fb_download_data_sparse_write(void *priv, const void *data, int len)
             g_error = "internal error: transport_buf not empty";
             return -1;
         }
-        to_write = round_down(len, TRANSPORT_BUF_SIZE);
-        r = _command_write_data(transport, ptr, to_write);
+        unsigned int to_write = round_down(len, TRANSPORT_BUF_SIZE);
+        int64_t r = _command_write_data(transport, ptr, to_write);
         if (r != to_write) {
             return -1;
         }
