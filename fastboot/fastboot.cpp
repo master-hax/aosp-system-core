@@ -67,6 +67,8 @@
 #include "udp.h"
 #include "usb.h"
 
+using namespace std::literals;
+
 using android::base::unique_fd;
 
 #ifndef O_BINARY
@@ -1650,10 +1652,14 @@ int FastBoot::Main(int argc, char* argv[]) {
             fb_perform_format(transport, "userdata", 1, "", "", "");
         }
 
-        std::string cache_type;
-        if (fb_getvar(transport, "partition-type:cache", &cache_type) && !cache_type.empty()) {
-            fb_queue_erase("cache");
-            fb_perform_format(transport, "cache", 1, "", "", "");
+        std::vector<std::string> partitions = { "cache", "metadata" };
+        for (const auto& partition : partitions) {
+            std::string partition_type;
+            if (fb_getvar(transport, "partition-type:"s + partition, &partition_type) && !partition_type.empty()) {
+                fprintf(stderr, "wiping %s...\n", partition.c_str());
+                fb_queue_erase(partition);
+                fb_perform_format(transport, partition, 1, "", "", "");
+            }
         }
     }
     if (wants_set_active) {
