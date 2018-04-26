@@ -23,6 +23,9 @@ LIBSYNC {
     sync_fence_info; # vndk
     sync_pt_info; # vndk
     sync_fence_info_free; # vndk
+    sw_sync_timeline_create; #?
+    sw_sync_fence_create;
+    sw_sync_timeline_inc;
   local:
     *;
 };
