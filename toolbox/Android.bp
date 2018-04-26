@@ -24,27 +24,37 @@ cc_defaults {
     cpp_std: "experimental",
     srcs: [
         "toolbox.c",
-        "getevent.c",
-        "getprop.cpp",
         "newfs_msdos.c",
     ],
-    generated_headers: [
-        "toolbox_input_labels",
-    ],
-    shared_libs: [
-        "libbase",
-    ],
-    static_libs: ["libpropertyinfoparser"],
-
     symlinks: [
-        "getevent",
-        "getprop",
         "newfs_msdos",
     ],
+
+    target: {
+        android: {
+            srcs: [
+                "getevent.c",
+                "getprop.cpp",
+            ],
+            generated_headers: [
+                "toolbox_input_labels",
+            ],
+            shared_libs: [
+                "libbase",
+            ],
+            static_libs: ["libpropertyinfoparser"],
+
+            symlinks: [
+                "getevent",
+                "getprop",
+            ],
+        },
+    },
 }
 
 cc_binary {
     name: "toolbox",
+    host_supported: true,
     defaults: ["toolbox_binary_defaults"],
 }
 
