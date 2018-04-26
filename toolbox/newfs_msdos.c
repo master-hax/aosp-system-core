@@ -38,9 +38,10 @@ static const char rcsid[] =
 #include <sys/disklabel.h>
 #include <sys/mount.h>
 #else
-#include <stdarg.h>
 #include <linux/fs.h>
 #include <linux/hdreg.h>
+#include <stdarg.h>
+#include <sys/ioctl.h>
 #endif
 
 #include <sys/stat.h>
@@ -57,6 +58,10 @@ static const char rcsid[] =
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+
+#ifndef __unused
+#define __unused __attribute__((__unused__))
+#endif
 
 #define MAXU16   0xffff     /* maximum unsigned 16-bit quantity */
 #define BPN      4          /* bits per nibble */
