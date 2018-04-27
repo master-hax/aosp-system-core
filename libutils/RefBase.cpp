@@ -703,13 +703,7 @@ RefBase::~RefBase()
     } else if (mRefs->mStrong.load(std::memory_order_relaxed)
             == INITIAL_STRONG_VALUE) {
         // We never acquired a strong reference on this object.
-        LOG_ALWAYS_FATAL_IF(mRefs->mWeak.load() != 0,
-                "RefBase: Explicit destruction with non-zero weak "
-                "reference count");
-        // TODO: Always report if we get here. Currently MediaMetadataRetriever
-        // C++ objects are inconsistently managed and sometimes get here.
-        // There may be other cases, but we believe they should all be fixed.
-        delete mRefs;
+        LOG_ALWAYS_FATAL("RefBase: Explicit destruction, weak count = %d", mRefs->mWeak.load());
     }
     // For debugging purposes, clear mRefs.  Ineffective against outstanding wp's.
     const_cast<weakref_impl*&>(mRefs) = NULL;
