@@ -26,6 +26,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <fstab/fstab.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
 #include <selinux/selinux.h>
@@ -329,6 +330,25 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
                          << partition_name_sanitized << "'";
         }
         links.emplace_back(link_path + "/by-name/" + partition_name_sanitized);
+
+        if (type == "platform") {
+            int str_len = 0;
+            char partition_name_tmp[36];
+            std::string ab_suffix = fs_mgr_get_slot_suffix();
+            std::string partition_name_bak;
+
+            str_len = strlen(partition_name_sanitized.c_str());
+            strncpy(partition_name_tmp, partition_name_sanitized.c_str(), str_len);
+
+            if (!ab_suffix.empty())
+                partition_name_tmp[str_len - 2] = '\0';
+            else
+                partition_name_tmp[str_len] = '\0';
+            partition_name_bak = partition_name_tmp;
+
+            LOG(DEBUG) << "bootdevice get partition : '" << partition_name_tmp << "' ";
+            links.emplace_back("/dev/block/bootdevice/by-name/" + partition_name_bak);
+        }
     }
 
     if (uevent.partition_num >= 0) {

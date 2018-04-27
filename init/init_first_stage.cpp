@@ -373,13 +373,14 @@ FirstStageMountVBootV2::FirstStageMountVBootV2() : avb_handle_(nullptr) {
 
 bool FirstStageMountVBootV2::GetRequiredDevices() {
     need_dm_verity_ = false;
+    std::string ab_suffix = fs_mgr_get_slot_suffix();
 
     // fstab_rec->blk_device has A/B suffix.
     for (auto fstab_rec : mount_fstab_recs_) {
         if (fs_mgr_is_avb(fstab_rec)) {
             need_dm_verity_ = true;
         }
-        required_devices_partition_names_.emplace(basename(fstab_rec->blk_device));
+        required_devices_partition_names_.emplace(basename(fstab_rec->blk_device) + ab_suffix);
     }
 
     // libavb verifies AVB metadata on all verified partitions at once.
@@ -392,7 +393,6 @@ bool FirstStageMountVBootV2::GetRequiredDevices() {
             return false;
         }
         std::vector<std::string> partitions = android::base::Split(device_tree_vbmeta_parts_, ",");
-        std::string ab_suffix = fs_mgr_get_slot_suffix();
         for (const auto& partition : partitions) {
             // required_devices_partition_names_ is of type std::set so it's not an issue
             // to emplace a partition twice. e.g., /vendor might be in both places:
@@ -415,12 +415,13 @@ ListenerAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
         // GetBlockDeviceSymlinks() will return three symlinks at most, depending on
         // the content of uevent. by-name symlink will be at [0] if uevent->partition_name
         // is not empty. e.g.,
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/by-num/p1
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
+        // links[0]  - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
+        // links[1]  - /dev/block/platform/bootdevice/by-name/modem
+        // links[2]  - /dev/block/platform/soc.0/f9824900.sdhci/by-num/p1
+        // links[3]  - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
         std::vector<std::string> links = device_handler_.GetBlockDeviceSymlinks(uevent);
         if (!links.empty()) {
-            auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[0]);
+            auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[1]);
             if (!inserted) {
                 LOG(ERROR) << "Partition '" << uevent.partition_name
                            << "' already existed in the by-name symlink map with a value of '"
