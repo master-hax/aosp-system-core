@@ -32,3 +32,26 @@ cc_library_static {
         },
     },
 }
+
+cc_binary {
+    name: "getchord",
+    host_supported: true,
+
+    srcs: [
+        "getchord.cpp",
+        "main.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+    ],
+    static_libs: [
+        "libkeychord",
+    ],
+    cflags: ["-Werror"],
+
+    target: {
+        windows: {
+            enabled: false,
+        },
+    },
+}
