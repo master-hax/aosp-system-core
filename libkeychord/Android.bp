@@ -1,0 +1,34 @@
+cc_library_static {
+    name: "libkeychord",
+    host_supported: true,
+
+    srcs: [
+        "epollfd.cpp",
+        "getevent.cpp",
+        "libkeychord.cpp",
+    ],
+
+    shared_libs: [
+        "libbase",
+    ],
+
+    export_include_dirs: ["include"],
+
+    cflags: ["-Werror"],
+
+    target: {
+        android: {
+            srcs: [
+                "kernel_keychord.cpp",
+            ],
+        },
+        windows: {
+            enabled: false,
+        },
+        linux: {
+            srcs: [
+                "dummy_keychord.cpp",
+            ],
+        },
+    },
+}
