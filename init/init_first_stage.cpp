@@ -412,12 +412,13 @@ ListenerAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
         // GetBlockDeviceSymlinks() will return three symlinks at most, depending on
         // the content of uevent. by-name symlink will be at [0] if uevent->partition_name
         // is not empty. e.g.,
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/by-num/p1
-        //   - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
+        // links[0]  - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
+        // links[1]  - /dev/block/bootdevice/by-name/modem
+        // links[2]  - /dev/block/platform/soc.0/f9824900.sdhci/by-num/p1
+        // links[3]  - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
         std::vector<std::string> links = device_handler_.GetBlockDeviceSymlinks(uevent);
         if (!links.empty()) {
-            auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[0]);
+            auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[1]);
             if (!inserted) {
                 LOG(ERROR) << "Partition '" << uevent.partition_name
                            << "' already existed in the by-name symlink map with a value of '"

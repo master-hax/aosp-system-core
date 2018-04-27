@@ -26,6 +26,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <fstab/fstab.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
 #include <selinux/selinux.h>
@@ -329,6 +330,44 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
                          << partition_name_sanitized << "'";
         }
         links.emplace_back(link_path + "/by-name/" + partition_name_sanitized);
+
+        if (type == "platform") {
+            size_t length = partition_name_sanitized.length();
+            std::string ab_suffix = fs_mgr_get_slot_suffix();
+
+            /*
+             * Here bootdevice links only link to the device as below
+             * When A/B devices enabled:
+             * 1. partitions which has A/B suffix,
+             *    and the partition's suffix string equal to ab_suffix;
+             * 2. partitions which has no A/B suffix when A/B devices enabled;
+             *
+             * e.g.
+             * There are three partitions, "system_a" "vendor_b" "userdata"
+             * , need to link to bootdevice.
+             * And now the ab_suffix is "_a", meaning this is A devices boot.
+             * So, the links[1] will be:
+             * /dev/block/bootdevice/by-name/system
+             * /dev/block/bootdevice/by-name/userdata
+             *
+             *
+             * When A/B devices disbaled, bootdevice links to every block dev!
+             */
+            if (!ab_suffix.empty() && length > 2) {
+                std::string partition_suffix = partition_name_sanitized.substr(length - 2, length);
+                if (ab_suffix == partition_suffix) {
+                    partition_name_sanitized = partition_name_sanitized.substr(0, length - 2);
+                    LOG(DEBUG) << "bootdevice get partition : '" << partition_name_sanitized << "' ";
+                    links.emplace_back("/dev/block/bootdevice/by-name/" + partition_name_sanitized);
+                } else if (partition_suffix != "_a" && partition_suffix != "_b") {
+                    LOG(DEBUG) << "bootdevice get partition : '" << partition_name_sanitized << "' ";
+                    links.emplace_back("/dev/block/bootdevice/by-name/" + partition_name_sanitized);
+                }
+            } else {
+                LOG(DEBUG) << "bootdevice get partition : '" << partition_name_sanitized << "' ";
+                links.emplace_back("/dev/block/bootdevice/by-name/" + partition_name_sanitized);
+            }
+        }
     }
 
     if (uevent.partition_num >= 0) {
