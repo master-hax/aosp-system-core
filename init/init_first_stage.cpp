@@ -68,6 +68,7 @@ class FirstStageMount {
     virtual bool SetUpDmVerity(fstab_rec* fstab_rec) = 0;
 
     bool need_dm_verity_;
+    bool skipped_any_dt_nodes_;
 
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> device_tree_fstab_;
     std::vector<fstab_rec*> mount_fstab_recs_;
@@ -117,12 +118,21 @@ static bool inline IsRecoveryMode() {
 // Class Definitions
 // -----------------
 FirstStageMount::FirstStageMount()
-    : need_dm_verity_(false), device_tree_fstab_(fs_mgr_read_fstab_dt(), fs_mgr_free_fstab) {
+    : need_dm_verity_(false),
+      device_tree_fstab_(fs_mgr_read_fstab_dt(&skipped_any_dt_nodes_), fs_mgr_free_fstab) {
     if (!device_tree_fstab_) {
         // The client of FirstStageMount should check the existence of fstab in device-tree
         // in advance, without parsing it. Reaching here means there is a FATAL error when
         // parsing the fstab. So stop here to expose the failure.
-        LOG(FATAL) << "Failed to read fstab from device tree";
+        // One exception is that all all fstab-DT nodes might be disabled by bootloader at runtime.
+        // e.g., to skip mounting /vendor on a upgrading device that doesn't have a vendor
+        // partition. In this case, just use LOG(ERROR) to output the message.
+        auto error_msg = "Failed to read fstab from device tree";
+        if (!skipped_any_dt_nodes_) {
+            LOG(FATAL) << error_msg;
+        } else {
+            LOG(ERROR) << error_msg;
+        }
         return;
     }
     // Stores device_tree_fstab_->recs[] into mount_fstab_recs_ (vector<fstab_rec*>)

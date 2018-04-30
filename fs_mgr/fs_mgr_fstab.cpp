@@ -33,8 +33,6 @@
 
 #include "fs_mgr_priv.h"
 
-using android::base::StartsWith;
-
 const std::string kDefaultAndroidDtDir("/proc/device-tree/firmware/android");
 
 struct fs_mgr_flag_values {
@@ -411,7 +409,8 @@ static bool is_dt_fstab_compatible() {
     return false;
 }
 
-static std::string read_fstab_from_dt() {
+static std::string read_fstab_from_dt(bool* out_has_skipped_any_nodes = nullptr) {
+    if (out_has_skipped_any_nodes != nullptr) *out_has_skipped_any_nodes = false;
     if (!is_dt_compatible() || !is_dt_fstab_compatible()) {
         return {};
     }
@@ -427,8 +426,6 @@ static std::string read_fstab_from_dt() {
         // skip over name, compatible and .
         if (dp->d_type != DT_DIR || dp->d_name[0] == '.') continue;
 
-        // create <dev> <mnt_point>  <type>  <mnt_flags>  <fsmgr_flags>\n
-        std::vector<std::string> fstab_entry;
         std::string file_name;
         std::string value;
         // skip a partition entry if the status property is present and not set to ok
@@ -436,52 +433,37 @@ static std::string read_fstab_from_dt() {
         if (read_dt_file(file_name, &value)) {
             if (value != "okay" && value != "ok") {
                 LINFO << "dt_fstab: Skip disabled entry for partition " << dp->d_name;
+                if (out_has_skipped_any_nodes != nullptr) *out_has_skipped_any_nodes = true;
                 continue;
             }
         }
 
-        file_name = android::base::StringPrintf("%s/%s/dev", fstabdir_name.c_str(), dp->d_name);
-        if (!read_dt_file(file_name, &value)) {
-            LERROR << "dt_fstab: Failed to find device for partition " << dp->d_name;
-            return {};
-        }
-        if (!StartsWith(value, "/dev")) {
-            LERROR << "dt_fstab: Invalid device node for partition " << dp->d_name;
-            return {};
-        }
-        fstab_entry.push_back(value);
-
+        // create <dev> <mnt_point> <type> <mnt_flags> <fsmgr_flags>\n
         std::string mount_point;
-        file_name =
-            android::base::StringPrintf("%s/%s/mnt_point", fstabdir_name.c_str(), dp->d_name);
-        if (read_dt_file(file_name, &value)) {
-            LINFO << "dt_fstab: Using a specified mount point " << value << " for " << dp->d_name;
-            mount_point = value;
-        } else {
-            mount_point = android::base::StringPrintf("/%s", dp->d_name);
-        }
-        fstab_entry.push_back(mount_point);
+        std::vector<std::string> fstab_entry;
+        for (auto field : {"dev", "mnt_point", "type", "mnt_flags", "fsmgr_flags"}) {
+            file_name =
+                android::base::StringPrintf("%s/%s/%s", fstabdir_name.c_str(), dp->d_name, field);
 
-        file_name = android::base::StringPrintf("%s/%s/type", fstabdir_name.c_str(), dp->d_name);
-        if (!read_dt_file(file_name, &value)) {
-            LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            return {};
-        }
-        fstab_entry.push_back(value);
+            // mnt_point is allowed to be absent and defaults to d_name, e.g., /vendor, /product,
+            // etc.
+            if (std::string("mnt_point") == field) {
+                if (read_dt_file(file_name, &value)) {
+                    mount_point = value;
+                } else {
+                    mount_point = android::base::StringPrintf("/%s", dp->d_name);
+                }
+                fstab_entry.push_back(mount_point);
+                continue;
+            }
 
-        file_name = android::base::StringPrintf("%s/%s/mnt_flags", fstabdir_name.c_str(), dp->d_name);
-        if (!read_dt_file(file_name, &value)) {
-            LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            return {};
+            if (!read_dt_file(file_name, &value)) {
+                LERROR << "dt_fstab: Failed to find '" << field << "' for partition " << dp->d_name;
+                return {};
+            }
+            fstab_entry.push_back(value);
         }
-        fstab_entry.push_back(value);
 
-        file_name = android::base::StringPrintf("%s/%s/fsmgr_flags", fstabdir_name.c_str(), dp->d_name);
-        if (!read_dt_file(file_name, &value)) {
-            LERROR << "dt_fstab: Failed to find type for partition " << dp->d_name;
-            return {};
-        }
-        fstab_entry.push_back(value);
         // Adds a fstab_entry to fstab_dt_entries, to be sorted by mount_point later.
         fstab_dt_entries.emplace_back(mount_point, android::base::Join(fstab_entry, " "));
     }
@@ -710,9 +692,8 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
 /* Returns fstab entries parsed from the device tree if they
  * exist
  */
-struct fstab *fs_mgr_read_fstab_dt()
-{
-    std::string fstab_buf = read_fstab_from_dt();
+struct fstab* fs_mgr_read_fstab_dt(bool* out_has_skipped_any_nodes) {
+    std::string fstab_buf = read_fstab_from_dt(out_has_skipped_any_nodes);
     if (fstab_buf.empty()) {
         LINFO << __FUNCTION__ << "(): failed to read fstab from dt";
         return nullptr;
