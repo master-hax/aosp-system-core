@@ -22,7 +22,6 @@
 namespace android {
 namespace init {
 
-void add_service_keycodes(Service* svc);
 void keychord_init();
 
 }  // namespace init
