@@ -139,6 +139,12 @@ void register_epoll_handler(int fd, void (*fn)()) {
     }
 }
 
+void unregister_epoll_handler(int fd) {
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr) == -1) {
+        PLOG(ERROR) << "epoll_ctl failed";
+    }
+}
+
 bool start_waiting_for_property(const char *name, const char *value)
 {
     if (waiting_for_prop) {

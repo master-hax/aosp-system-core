@@ -127,6 +127,7 @@ cc_library_static {
         "watchdogd.cpp",
     ],
     whole_static_libs: ["libcap"],
+    static_libs: ["libkeychord"],
     header_libs: ["bootimg_headers"],
     proto: {
         type: "lite",
