@@ -329,6 +329,9 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
                          << partition_name_sanitized << "'";
         }
         links.emplace_back(link_path + "/by-name/" + partition_name_sanitized);
+        if (type == "platform") {
+            links.emplace_back("/dev/block/by-name/" + partition_name_sanitized);
+        }
     }
 
     if (uevent.partition_num >= 0) {
