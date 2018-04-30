@@ -60,7 +60,7 @@ struct fstab_rec {
 };
 
 struct fstab* fs_mgr_read_fstab_default();
-struct fstab* fs_mgr_read_fstab_dt();
+struct fstab* fs_mgr_read_fstab_dt(bool* out_has_skipped_any_nodes = nullptr);
 struct fstab* fs_mgr_read_fstab(const char* fstab_path);
 void fs_mgr_free_fstab(struct fstab* fstab);
 
