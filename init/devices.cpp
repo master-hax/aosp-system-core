@@ -329,6 +329,11 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
                          << partition_name_sanitized << "'";
         }
         links.emplace_back(link_path + "/by-name/" + partition_name_sanitized);
+
+        // Adds the symlink of /dev/block/by-name/partition_name for platform devices.
+        if (type == "platform") {
+            links.emplace_back("/dev/block/by-name/" + partition_name_sanitized);
+        }
     }
 
     if (uevent.partition_num >= 0) {
@@ -350,8 +355,18 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
                 PLOG(ERROR) << "Failed to create directory " << Dirname(link);
             }
 
-            if (symlink(devpath.c_str(), link.c_str()) && errno != EEXIST) {
-                PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link;
+            if (symlink(devpath.c_str(), link.c_str())) {
+                if (errno != EEXIST) {
+                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link;
+                } else if (size_t pos = link.find("by-name");
+                           pos == std::string("/dev/block/").size()) {
+                    // Checks clashing symlink: /dev/block/by-name/<partition_name>
+                    std::string link_path;
+                    if (Readlink(link, &link_path) && link_path != devpath) {
+                        PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link
+                                    << ", which already targets to: " << link_path;
+                    }
+                }
             }
         }
     }
