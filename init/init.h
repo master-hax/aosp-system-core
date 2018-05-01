@@ -19,6 +19,7 @@
 
 #include <sys/types.h>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -43,6 +44,7 @@ void HandleControlMessage(const std::string& msg, const std::string& arg, pid_t 
 void property_changed(const std::string& name, const std::string& value);
 
 void register_epoll_handler(int fd, void (*fn)());
+void register_epoll_handler(int fd, std::function<void()>* fn);
 
 bool start_waiting_for_property(const char *name, const char *value);
 

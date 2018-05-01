@@ -31,6 +31,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <functional>
+#include <memory>
+#include <optional>
+
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -42,9 +46,6 @@
 #include <libavb/libavb.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
-
-#include <memory>
-#include <optional>
 
 #include "action_parser.h"
 #include "import_parser.h"
@@ -130,13 +131,17 @@ static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_
     }
 }
 
-void register_epoll_handler(int fd, void (*fn)()) {
+void register_epoll_handler(int fd, std::function<void()>* fn) {
     epoll_event ev;
     ev.events = EPOLLIN;
     ev.data.ptr = reinterpret_cast<void*>(fn);
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
         PLOG(ERROR) << "epoll_ctl failed";
     }
+}
+
+void register_epoll_handler(int fd, void (*fn)()) {
+    return register_epoll_handler(int fd, new std::function<void()>([fn]() { (*fn)(); }));
 }
 
 bool start_waiting_for_property(const char *name, const char *value)
@@ -809,7 +814,7 @@ int main(int argc, char** argv) {
         if (nr == -1) {
             PLOG(ERROR) << "epoll_wait failed";
         } else if (nr == 1) {
-            ((void (*)()) ev.data.ptr)();
+            (*reinterpret_cast<std::function<void()>*>(ev.data.ptr))();
         }
     }
 
