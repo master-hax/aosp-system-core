@@ -130,12 +130,31 @@ static void LoadBootScripts(ActionManager& action_manager, ServiceList& service_
     }
 }
 
-void register_epoll_handler(int fd, void (*fn)()) {
+static std::map<int, std::function<void()>> epoll_handlers;
+
+void register_epoll_handler(int fd, std::function<void()> handler) {
+    auto [it, inserted] = epoll_handlers.emplace(fd, std::move(handler));
+    if (!inserted) {
+        LOG(ERROR) << "Cannot specify two epoll handlers for a given FD";
+        return;
+    }
     epoll_event ev;
     ev.events = EPOLLIN;
-    ev.data.ptr = reinterpret_cast<void*>(fn);
+    // std::map's iterators do not get invalidated until erased, so we use the pointer to the
+    // std::function in the map directly for epoll_ctl.
+    ev.data.ptr = reinterpret_cast<void*>(&it->second);
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
-        PLOG(ERROR) << "epoll_ctl failed";
+        PLOG(ERROR) << "epoll_ctl failed to add fd";
+        epoll_handlers.erase(fd);
+    }
+}
+
+void unregister_epoll_handler(int fd) {
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr) == -1) {
+        PLOG(ERROR) << "epoll_ctl failed to remove fd";
+    }
+    if (epoll_handlers.erase(fd) != 1) {
+        LOG(ERROR) << "Attempting to remove epoll handler for FD without an existing handler";
     }
 }
 
@@ -809,7 +828,7 @@ int main(int argc, char** argv) {
         if (nr == -1) {
             PLOG(ERROR) << "epoll_wait failed";
         } else if (nr == 1) {
-            ((void (*)()) ev.data.ptr)();
+            std::invoke(*reinterpret_cast<std::function<void()>*>(ev.data.ptr));
         }
     }
 
