@@ -34,6 +34,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <unordered_map>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
@@ -140,8 +141,23 @@ void register_epoll_handler(int fd, std::function<void()>* fn) {
     }
 }
 
+static std::unordered_map<int, std::function<void()>> dynamic_registered_epoll_functions;
+
 void register_epoll_handler(int fd, void (*fn)()) {
-    return register_epoll_handler(int fd, new std::function<void()>([fn]() { (*fn)(); }));
+    auto ret = dynamic_registered_epoll_functions.emplace(
+        std::make_pair(fd, std::function<void()>([fn]() { (*fn)(); })));
+    auto* func = ret.second ? &ret.first->second : new std::function<void()>([fn]() { (*fn)(); });
+    return register_epoll_handler(fd, func);
+}
+
+void unregister_epoll_handler(int fd) {
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, nullptr) == -1) {
+        PLOG(ERROR) << "epoll_ctl failed";
+    }
+    auto it = dynamic_registered_epoll_functions.find(fd);
+    if (it != dynamic_registered_epoll_functions.end()) {
+        dynamic_registered_epoll_functions.erase(it);
+    }
 }
 
 bool start_waiting_for_property(const char *name, const char *value)
