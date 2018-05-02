@@ -109,6 +109,7 @@ static struct flag_list fs_mgr_flags[] = {
     {"logicalblk=", MF_LOGICALBLKSIZE},
     {"sysfs_path=", MF_SYSFS},
     {"defaults", 0},
+    {"logical", MF_LOGICAL},
     {0, 0},
 };
 
@@ -443,10 +444,6 @@ static std::string read_fstab_from_dt() {
         file_name = android::base::StringPrintf("%s/%s/dev", fstabdir_name.c_str(), dp->d_name);
         if (!read_dt_file(file_name, &value)) {
             LERROR << "dt_fstab: Failed to find device for partition " << dp->d_name;
-            return {};
-        }
-        if (!StartsWith(value, "/dev")) {
-            LERROR << "dt_fstab: Invalid device node for partition " << dp->d_name;
             return {};
         }
         fstab_entry.push_back(value);
@@ -943,4 +940,8 @@ int fs_mgr_is_quota(const struct fstab_rec* fstab) {
 int fs_mgr_has_sysfs_path(const struct fstab_rec *fstab)
 {
     return fstab->fs_mgr_flags & MF_SYSFS;
+}
+
+int fs_mgr_is_logical(const struct fstab_rec* fstab) {
+    return fstab->fs_mgr_flags & MF_LOGICAL;
 }
