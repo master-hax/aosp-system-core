@@ -22,6 +22,7 @@
 #include <linux/input.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
+#include <sys/inotify.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <time.h>
@@ -186,7 +187,14 @@ static int KeychordEnable(KeychordEntry&& entry) {
 
 static constexpr char DevicePath[] = "/dev/input";
 
-static std::unordered_map<int, bool> KeychordState;
+struct KeychordStateRegistration {
+    const std::string name;
+    bool registered;
+
+    KeychordStateRegistration(std::string& name) : name(name), registered(false) {}
+};
+
+std::unordered_map<int, KeychordStateRegistration> KeychordState;
 
 static std::vector<bool> KeychordCurrent;
 
@@ -208,7 +216,14 @@ static void KeychordLambdaHandler(int fd) {
     auto& state = *it;
     input_event event;
     auto res = TEMP_FAILURE_RETRY(::read(state.first, &event, sizeof(event)));
-    if ((res == sizeof(event)) && (event.type == EV_KEY)) {
+    if (res == -1) {
+        time_t now = time(nullptr);
+        static time_t last;
+        if ((last + 30) < now) {  // ratelimit to once every 30 seconds
+            last = now;
+            PLOG(WARNING) << "could not get event from " << state.second.name;
+        }
+    } else if ((res == sizeof(event)) && (event.type == EV_KEY)) {
         if (event.code >= KeychordCurrent.size()) {
             if (event.value) {
                 KeychordCurrent.resize(event.code + 1, false);
@@ -235,6 +250,12 @@ static void KeychordLambdaHandler(int fd) {
 }
 
 static bool GeteventOpenDevice(std::string& device) {
+    for (auto& state : KeychordState) {
+        if (device == state.second.name) {
+            LOG(WARNING) << "Device " << device << " already open";
+            return false;
+        }
+    }
     auto fd = TEMP_FAILURE_RETRY(::open(device.c_str(), O_RDWR | O_CLOEXEC));
     if (fd == -1) {
         PLOG(ERROR) << "Can not open " << device;
@@ -246,11 +267,28 @@ static bool GeteventOpenDevice(std::string& device) {
         ::close(fd);
         return false;
     }
-    if (!KeychordState.emplace(std::make_pair(fd, false)).second) {
+    if (!KeychordState.emplace(std::make_pair(fd, KeychordStateRegistration(device))).second) {
         LOG(ERROR) << "Can not open " << device;
         return false;
     }
     return true;
+}
+
+void GeteventCloseDevice(const std::string& device) {
+    if (device.size() == 0) return;
+    for (auto it = KeychordState.begin(); it != KeychordState.end(); ++it) {
+        auto& state = (*it);
+        if (device == state.second.name) {
+            auto fd = state.first;
+            if (state.second.registered) {
+                unregister_epoll_handler(fd);
+            }
+            KeychordState.erase(it);
+            ::close(fd);
+            return;
+        }
+    }
+    LOG(ERROR) << "Device " << device << " not registered";
 }
 
 static void KeychordGeteventEnable() {
@@ -293,23 +331,62 @@ static void KeychordGeteventEnable() {
     }
     for (auto& state : KeychordState) {
         auto found = something.find(state.first) != something.end();
-        if (found && !state.second) {
+        if (found && !state.second.registered) {
             auto fd = state.first;
             register_epoll_handler(fd, [fd]() { KeychordLambdaHandler(fd); });
-            state.second = true;
-        } else if (!found && state.second) {
+            state.second.registered = true;
+        } else if (!found && state.second.registered) {
             unregister_epoll_handler(state.first);
-            state.second = false;
+            state.second.registered = false;
         }
     }
 }
 
+int InotifyFd = -1;
+
+void InotifyHandler() {
+    uint8_t buf[512];
+
+    auto res = TEMP_FAILURE_RETRY(::read(InotifyFd, buf, sizeof(buf)));
+    if (res < 0) {
+        if (errno != EINTR) PLOG(WARNING) << "could not get event";
+        return;
+    }
+
+    uint8_t* EventBuf = buf;
+    bool deviceAdded = false;
+    while (static_cast<size_t>(res) >= sizeof(buf)) {
+        auto event = reinterpret_cast<inotify_event*>(EventBuf);
+        if (event->len) {
+            std::string devname(DevicePath);
+            devname += '/';
+            devname += event->name;
+            if (event->mask & IN_CREATE) {
+                if (GeteventOpenDevice(devname)) deviceAdded = true;
+            } else {
+                GeteventCloseDevice(devname);
+            }
+        }
+        auto event_size = sizeof(inotify_event) + event->len;
+        res -= event_size;
+        EventBuf += event_size;
+    }
+    if (deviceAdded) KeychordGeteventEnable();
+}
+
 static void KeychordStatusChange() {
-    static bool first;
+    if (InotifyFd != -1) return;
 
-    if (first) return;
-
-    first = true;
+    InotifyFd = inotify_init();
+    bool WatchAdded = false;
+    if (InotifyFd < 0) {
+        PLOG(WARNING) << "Could not instantiate inotify for " << DevicePath;
+    } else {
+        WatchAdded = inotify_add_watch(InotifyFd, DevicePath, IN_DELETE | IN_CREATE) >= 0;
+        if (!WatchAdded) {
+            PLOG(WARNING) << "Could not add watch for " << DevicePath;
+        }
+    }
     bool deviceAdded = false;
     std::unique_ptr<DIR, int (*)(DIR*)> device(opendir(DevicePath), closedir);
     if (device) {
@@ -322,6 +399,7 @@ static void KeychordStatusChange() {
             if (GeteventOpenDevice(devname)) deviceAdded = true;
         }
     }
+    if (WatchAdded) register_epoll_handler(InotifyFd, InotifyHandler);
     if (deviceAdded) return KeychordGeteventEnable();
 }
 
