@@ -20,12 +20,14 @@
 #include <fcntl.h>
 #include <linux/input.h>
 #include <sys/cdefs.h>
+#include <sys/inotify.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <algorithm>
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -57,6 +59,8 @@ struct KeychordEntry {
 
 std::vector<KeychordEntry> KeychordEntries;
 std::vector<mask_t> KeychordCurrent;
+
+std::map<std::string, int> KeychordRegistration;
 
 constexpr char DevicePath[] = "/dev/input";
 
@@ -182,6 +186,7 @@ bool KeychordGeteventEnable(int fd) {
 }
 
 void GeteventOpenDevice(std::string& device) {
+    if (KeychordRegistration.find(device) != KeychordRegistration.end()) return;
     auto fd = TEMP_FAILURE_RETRY(::open(device.c_str(), O_RDWR | O_CLOEXEC));
     if (fd == -1) {
         PLOG(ERROR) << "Can not open " << device;
@@ -189,10 +194,63 @@ void GeteventOpenDevice(std::string& device) {
     }
     if (!KeychordGeteventEnable(fd)) {
         ::close(fd);
+    } else {
+        KeychordRegistration.emplace(device, fd);
+    }
+}
+
+void GeteventCloseDevice(const std::string& device) {
+    auto it = KeychordRegistration.find(device);
+    if (it == KeychordRegistration.end()) {
+        LOG(ERROR) << "Device " << device << " not registered";
+        return;
+    }
+    auto fd = (*it).second;
+    unregister_epoll_handler(fd);
+    KeychordRegistration.erase(it);
+    ::close(fd);
+}
+
+int InotifyFd = -1;
+
+void InotifyHandler() {
+    unsigned char buf[512];
+
+    auto res = TEMP_FAILURE_RETRY(::read(InotifyFd, buf, sizeof(buf)));
+    if (res < 0) {
+        PLOG(WARNING) << "could not get event";
+        return;
+    }
+
+    auto EventBuf = buf;
+    while (static_cast<size_t>(res) >= sizeof(buf)) {
+        auto event = reinterpret_cast<inotify_event*>(EventBuf);
+        if (event->len) {
+            std::string devname(DevicePath);
+            devname += '/';
+            devname += event->name;
+            if (event->mask & IN_CREATE) {
+                GeteventOpenDevice(devname);
+            } else {
+                GeteventCloseDevice(devname);
+            }
+        }
+        auto event_size = sizeof(inotify_event) + event->len;
+        res -= event_size;
+        EventBuf += event_size;
     }
 }
 
 void GeteventOpenDevice() {
+    InotifyFd = ::inotify_init();
+    if (InotifyFd < 0) {
+        PLOG(WARNING) << "Could not instantiate inotify for " << DevicePath;
+    } else if (inotify_add_watch(InotifyFd, DevicePath, IN_DELETE | IN_CREATE) < 0) {
+        PLOG(WARNING) << "Could not add watch for " << DevicePath;
+        ::close(InotifyFd);
+        InotifyFd = -1;
+    }
+
     std::unique_ptr<DIR, int (*)(DIR*)> device(opendir(DevicePath), closedir);
     if (!device) return;
     dirent* entry;
@@ -203,6 +261,7 @@ void GeteventOpenDevice() {
         devname += entry->d_name;
         GeteventOpenDevice(devname);
     }
+    if (InotifyFd >= 0) register_epoll_handler(InotifyFd, InotifyHandler);
 }
 
 void add_service_keycodes(Service* svc) {
