@@ -20,7 +20,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/input.h>
-#include <linux/keychord.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
 #include <sys/ioctl.h>
@@ -250,78 +249,6 @@ void KeychordStatusChange() {
     if (deviceAdded) return KeychordGeteventEnable();
 }
 
-// keychord driver interface
-
-constexpr char KeychordDevice[] = "/dev/keychord";
-int KeychordFd = -1;
-
-int KeychordKernelEnable() {
-    std::vector<uint16_t> buffer;
-
-    for (auto& e : KeychordEntries) {
-        if (!e.second.valid()) continue;
-        buffer.push_back(KEYCHORD_VERSION);
-        buffer.push_back(e.first);
-        buffer.push_back(e.second.keycodes.size());
-        for (auto& c : e.second.keycodes) {
-            buffer.push_back(c);
-        }
-    }
-    ssize_t totalsize = buffer.size() * sizeof(uint16_t);
-    if (totalsize == 0) return -1;
-    auto ret = pwrite(KeychordFd, buffer.data(), totalsize, 0);
-    if (ret != totalsize) {
-        PLOG(ERROR) << "could not configure " << KeychordDevice << " " << ret << " != " << totalsize;
-        return -1;
-    }
-    return ret;
-}
-
-void KeychordKernelHandler() {
-    uint16_t id;
-    auto ret = ::read(KeychordFd, &id, sizeof(id));
-    if (ret != sizeof(id)) {
-        PLOG(ERROR) << "could not read " << KeychordDevice;
-        return;
-    }
-    auto search = KeychordEntries.find(id);
-    if (search != KeychordEntries.end()) {
-        (*search).second.match = true;
-    } else {
-        LOG(WARNING) << "received unregistered id " << id;
-    }
-    handle_keychord(id);
-}
-
-void KeychordEnable() {
-    if (KeychordFd == -1) {
-        KeychordFd = TEMP_FAILURE_RETRY(::open(KeychordDevice, O_RDWR | O_CLOEXEC));
-        if (KeychordFd == -1) {
-            PLOG(ERROR) << "could not open " << KeychordDevice;
-            KeychordFd = -2;
-        }
-    }
-    bool KeychordKernelWorks = KeychordFd >= 0;
-    if (KeychordKernelWorks) {
-        static bool KeychordKernelWatch;
-
-        if (KeychordKernelEnable() < 0) {
-            KeychordKernelWorks = false;
-            if (KeychordKernelWatch) {
-                unregister_epoll_handler(KeychordFd);
-                KeychordKernelWatch = false;
-            }
-            auto fd = KeychordFd;
-            KeychordFd = -2;
-            ::close(fd);
-        } else if (!KeychordKernelWatch) {
-            register_epoll_handler(KeychordFd, KeychordKernelHandler);
-            KeychordKernelWatch = true;
-        }
-    }
-    if (!KeychordKernelWorks) KeychordStatusChange();
-}
-
 int KeychordEnable(KeychordEntry&& entry) {
     if (!entry.valid()) return -1;
     auto id = UniqueId();
@@ -329,7 +256,7 @@ int KeychordEnable(KeychordEntry&& entry) {
     auto[it, emplaced] = KeychordEntries.emplace(std::make_pair(id, std::move(entry)));
     if (!emplaced) return -1;
     id = (*it).first;
-    KeychordEnable();
+    KeychordStatusChange();
     return id;
 }
 
