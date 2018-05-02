@@ -29,10 +29,12 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 
 #include "devices.h"
 #include "fs_mgr.h"
 #include "fs_mgr_avb.h"
+#include "fs_mgr_lrap.h"
 #include "uevent.h"
 #include "uevent_listener.h"
 #include "util.h"
@@ -70,6 +72,7 @@ class FirstStageMount {
     bool need_dm_verity_;
 
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> device_tree_fstab_;
+    std::unique_ptr<lrap::PartitionTable> dm_linear_table_;
     std::vector<fstab_rec*> mount_fstab_recs_;
     std::set<std::string> required_devices_partition_names_;
     DeviceHandler device_handler_;
@@ -134,6 +137,10 @@ FirstStageMount::FirstStageMount()
             mount_fstab_recs_.push_back(&device_tree_fstab_->recs[i]);
         }
     }
+
+    if (is_android_dt_value_expected("lrap/version", "1")) {
+        dm_linear_table_ = lrap::LoadPartitionsFromDeviceTree();
+    }
 }
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
@@ -145,7 +152,7 @@ std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
 }
 
 bool FirstStageMount::DoFirstStageMount() {
-    if (mount_fstab_recs_.empty()) {
+    if (!dm_linear_table_ && mount_fstab_recs_.empty()) {
         // Nothing to mount.
         LOG(INFO) << "First stage mount skipped (missing/incompatible/empty fstab in device tree)";
         return true;
@@ -159,7 +166,17 @@ bool FirstStageMount::DoFirstStageMount() {
 }
 
 bool FirstStageMount::InitDevices() {
-    return GetRequiredDevices() && InitRequiredDevices();
+    if (!GetRequiredDevices()) return false;
+
+    // Add any additional devices required by LRAP.
+    if (dm_linear_table_) {
+        for (size_t i = 0; i < dm_linear_table_->num_block_devices; i++) {
+            const std::string& block_device = dm_linear_table_->block_devices[i];
+            required_devices_partition_names_.emplace(basename(block_device.c_str()));
+        }
+    }
+
+    return InitRequiredDevices();
 }
 
 // Creates devices with uevent->partition_name matching one in the member variable
@@ -170,7 +187,7 @@ bool FirstStageMount::InitRequiredDevices() {
         return true;
     }
 
-    if (need_dm_verity_) {
+    if (dm_linear_table_ || need_dm_verity_) {
         const std::string dm_path = "/devices/virtual/misc/device-mapper";
         bool found = false;
         auto dm_callback = [this, &dm_path, &found](const Uevent& uevent) {
@@ -212,6 +229,22 @@ bool FirstStageMount::InitRequiredDevices() {
         LOG(ERROR) << __PRETTY_FUNCTION__ << ": partition(s) not found after polling timeout: "
                    << android::base::Join(required_devices_partition_names_, ", ");
         return false;
+    }
+
+    if (dm_linear_table_) {
+        base::unique_fd dm_fd(open("/dev/device-mapper", O_RDWR));
+        if (dm_fd < 0) {
+            PLOG(ERROR) << __PRETTY_FUNCTION__ << ": open failed on /dev/device-mapper";
+            return false;
+        }
+        for (size_t i = 0; i < dm_linear_table_->num_partitions; i++) {
+            const lrap::Partition* pt = &dm_linear_table_->partitions[i];
+            if (!lrap::CreateDmDeviceForPartition(dm_fd, pt)) {
+                LOG(ERROR) << __PRETTY_FUNCTION__
+                           << ": could not create dm-linear device for partition: " << pt->name;
+                return false;
+            }
+        }
     }
 
     return true;
