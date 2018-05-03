@@ -48,7 +48,7 @@ class LogAudit : public SocketListener {
     std::map<std::string, std::string> populateDenialMap();
     std::string denialParse(const std::string& denial, char terminator,
                             const std::string& search_term);
-    void logParse(const std::string& string, std::string* bug_num);
+    void auditParse(const std::string& string, std::string* bug_num, uid_t uid);
     int logPrint(const char* fmt, ...)
         __attribute__((__format__(__printf__, 2, 3)));
 };
