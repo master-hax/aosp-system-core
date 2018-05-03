@@ -141,7 +141,7 @@ bool debuggerd_trigger_dump(pid_t pid, DebuggerdDumpType dump_type, unsigned int
   // Check to make sure we've successfully registered.
   InterceptResponse response;
   ssize_t rc =
-      TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), MSG_TRUNC));
+      TEMP_FAILURE_RETRY(recv(set_timeout(sockfd.get()), &response, sizeof(response), 0));
   if (rc == 0) {
     LOG(ERROR) << "libdebuggerd_client: failed to read response from tombstoned: timeout reached?";
     return false;
