@@ -453,6 +453,23 @@ void SelinuxSetupKernelLogging() {
     selinux_set_callback(SELINUX_CB_LOG, cb);
 }
 
+// This function checks whether the sepolicy supports vendor init.
+bool SelinuxHasVendorInit() {
+    if (!IsSplitPolicyDevice()) {
+        // If this device does not split sepolicy files, vendor_init will be available in the latest
+        // monolithic sepolicy file.
+        return true;
+    }
+
+    std::string version;
+    if (!GetVendorMappingVersion(&version)) {
+        // Return true as default if we cannot load vendor sepolicy file version.
+        return true;
+    }
+
+    return std::stoi(version.substr(0, version.find('.'))) >= 28;
+}
+
 // selinux_android_file_context_handle() takes on the order of 10+ms to run, so we want to cache
 // its value.  selinux_android_restorecon() also needs an sehandle for file context look up.  It
 // will create and store its own copy, but selinux_android_set_sehandle() can be used to provide
