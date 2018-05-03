@@ -55,12 +55,14 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/unique_fd.h>
 #include <selinux/android.h>
 
 #include "log.h"
 #include "util.h"
 
+using android::base::ParseInt;
 using android::base::Timer;
 using android::base::unique_fd;
 
@@ -451,6 +453,29 @@ void SelinuxSetupKernelLogging() {
     selinux_callback cb;
     cb.func_log = selinux_klog_callback;
     selinux_set_callback(SELINUX_CB_LOG, cb);
+}
+
+// This function checks whether the sepolicy supports vendor init.
+bool SelinuxHasVendorInit() {
+    if (!IsSplitPolicyDevice()) {
+        // If this device does not split sepolicy files, vendor_init will be available in the latest
+        // monolithic sepolicy file.
+        return true;
+    }
+
+    std::string version;
+    if (!GetVendorMappingVersion(&version)) {
+        // Return true as default if we cannot load vendor sepolicy file version.
+        return true;
+    }
+
+    int major_version;
+    if (!ParseInt(version.substr(0, version.find('.')), &major_version)) {
+        // Return true as default if we cannot parse the version number.
+        return true;
+    }
+
+    return major_version >= 28;
 }
 
 // selinux_android_file_context_handle() takes on the order of 10+ms to run, so we want to cache
