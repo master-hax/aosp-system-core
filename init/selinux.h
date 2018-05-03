@@ -34,6 +34,8 @@ bool SelabelLookupFileContextBestMatch(const std::string& key,
                                        const std::vector<std::string>& aliases, int type,
                                        std::string* result);
 
+bool SelabelHasVendorInit();
+
 }  // namespace init
 }  // namespace android
 

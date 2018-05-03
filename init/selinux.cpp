@@ -502,5 +502,22 @@ bool SelabelLookupFileContextBestMatch(const std::string& key,
     return true;
 }
 
+// This function checks whether the sepolicy supports vendor init.
+bool SelabelHasVendorInit() {
+    if (!IsSplitPolicyDevice()) {
+        // If this device does not split sepolicy files, vendor_init will be available in the latest
+        // monolithic sepolicy file.
+        return true;
+    }
+
+    std::string version;
+    if (!GetVendorMappingVersion(&version)) {
+        // Return true as default if we cannot load vendor sepolicy file version.
+        return true;
+    }
+
+    return std::stoi(version.substr(0, version.find('.'))) >= 28;
+}
+
 }  // namespace init
 }  // namespace android
