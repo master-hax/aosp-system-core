@@ -23,9 +23,7 @@ cc_defaults {
     ],
 
     // The latest clang (r230699) does not allow SP/PC to be declared in inline asm lists.
-    clang_cflags: ["-Wno-inline-asm"],
-
-    include_dirs: ["external/libunwind/include/tdep"],
+    //clang_cflags: ["-Wno-inline-asm"],
 
     target: {
         darwin: {
@@ -92,7 +90,6 @@ cc_library {
             shared_libs: [
                 "libbase",
                 "liblog",
-                "libunwind",
                 "libunwindstack",
                 "libdexfile",
             ],
