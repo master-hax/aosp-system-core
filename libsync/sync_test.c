@@ -35,7 +35,7 @@ struct sync_thread_data {
 void *sync_thread(void *data)
 {
     struct sync_thread_data *sync_data = data;
-    struct sync_fence_info_data *info;
+    struct sync_file_info* info;
     int err;
     int i;
 
@@ -49,23 +49,18 @@ void *sync_thread(void *data)
         } else {
             printf("thread %d wait %d done\n", sync_data->thread_no, i);
         }
-        info = sync_fence_info(sync_data->fd[i]);
+        info = sync_file_info(sync_data->fd[i]);
         if (info) {
-            struct sync_pt_info *pt_info = NULL;
+            struct sync_fence_info* pt_info = sync_get_fence_info(info);
             printf("  fence %s %d\n", info->name, info->status);
 
-            while ((pt_info = sync_pt_info(info, pt_info))) {
+            for (i = 0; i < info->num_fences; i++) {
                 int ts_sec = pt_info->timestamp_ns / 1000000000LL;
                 int ts_usec = (pt_info->timestamp_ns % 1000000000LL) / 1000LL;
-                printf("    pt %s %s %d %d.%06d", pt_info->obj_name,
-                       pt_info->driver_name, pt_info->status,
-                       ts_sec, ts_usec);
-                if (!strcmp(pt_info->driver_name, "sw_sync"))
-                    printf(" val=%d\n", *(uint32_t *)pt_info->driver_data);
-                else
-                    printf("\n");
+                printf("    pt %s %s %d %d.%06d\n", pt_info->obj_name, pt_info->driver_name,
+                       pt_info->status, ts_sec, ts_usec);
             }
-            sync_fence_info_free(info);
+            sync_file_info_free(info);
         }
         pthread_mutex_unlock(&printf_mutex);
     }
