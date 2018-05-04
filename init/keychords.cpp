@@ -19,6 +19,8 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <linux/input.h>
+#include <linux/keychord.h>
+#include <stdint.h>
 #include <sys/cdefs.h>
 #include <sys/inotify.h>
 #include <sys/ioctl.h>
@@ -241,7 +243,51 @@ void InotifyHandler() {
     }
 }
 
+constexpr char KeychordDevice[] = "/dev/keychord";
+int KeychordFd = -1;
+
+int KeychordKernelEnable() {
+    std::vector<uint16_t> buffer;
+
+    for (auto& e : KeychordEntries) {
+        buffer.push_back(KEYCHORD_VERSION);
+        buffer.push_back(e.id);
+        buffer.push_back(e.keycodes.size());
+        for (auto& code : e.keycodes) {
+            buffer.push_back(code);
+        }
+    }
+    ssize_t totalsize = buffer.size() * sizeof(uint16_t);
+    if (totalsize == 0) return -1;
+    auto ret = ::pwrite(KeychordFd, buffer.data(), totalsize, 0);
+    if (ret != totalsize) {
+        PLOG(ERROR) << "could not configure " << KeychordDevice << " " << ret << " != " << totalsize;
+        return -1;
+    }
+    return ret;
+}
+
+void KeychordKernelHandler() {
+    uint16_t id;
+    auto ret = ::read(KeychordFd, &id, sizeof(id));
+    if (ret != sizeof(id)) {
+        PLOG(ERROR) << "could not read " << KeychordDevice;
+        return;
+    }
+    handle_keychord(id);
+}
+
 void GeteventOpenDevice() {
+    KeychordFd = TEMP_FAILURE_RETRY(::open(KeychordDevice, O_RDWR | O_CLOEXEC));
+    if (KeychordFd < 0) {
+        PLOG(ERROR) << "could not open " << KeychordDevice;
+    } else if (KeychordKernelEnable() < 0) {
+        ::close(KeychordFd);
+        KeychordFd = -1;
+    } else {
+        register_epoll_handler(KeychordFd, KeychordKernelHandler);
+        return;
+    }
     InotifyFd = ::inotify_init();
     if (InotifyFd < 0) {
         PLOG(WARNING) << "Could not instantiate inotify for " << DevicePath;
