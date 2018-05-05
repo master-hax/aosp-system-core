@@ -430,7 +430,10 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
         if (fs_mgr_is_avb(fstab_rec)) {
             need_dm_verity_ = true;
         }
-        required_devices_partition_names_.emplace(basename(fstab_rec->blk_device));
+        std::string name = basename(fstab_rec->blk_device);
+        if (!android::base::StartsWith(name, "dm-")) {
+            required_devices_partition_names_.emplace(name);
+        }
     }
 
     // libavb verifies AVB metadata on all verified partitions at once.
@@ -445,6 +448,9 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
         std::vector<std::string> partitions = android::base::Split(device_tree_vbmeta_parts_, ",");
         std::string ab_suffix = fs_mgr_get_slot_suffix();
         for (const auto& partition : partitions) {
+            if (android::base::StartsWith(partition, "dm-")) {
+                continue;
+            }
             // required_devices_partition_names_ is of type std::set so it's not an issue
             // to emplace a partition twice. e.g., /vendor might be in both places:
             //   - device_tree_vbmeta_parts_ = "vbmeta,boot,system,vendor"
