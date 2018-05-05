@@ -24,15 +24,19 @@
 
 #include "fs_mgr_dm_linear.h"
 
+#include <dirent.h>
 #include <inttypes.h>
 #include <linux/dm-ioctl.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <sstream>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -154,8 +158,95 @@ bool MapLogicalPartitions(const PartitionTable& table) {
     return true;
 }
 
+static bool ReadDtString(const std::string& file, std::string* value) {
+    if (!android::base::ReadFileToString(file, value)) {
+        return false;
+    }
+    if (value->empty()) {
+        return false;
+    }
+    // Trim the trailing '\0' out.
+    value->resize(value->size() - 1);
+    return true;
+}
+
+static bool ReadDtUint64(const std::string& file, uint64_t* value) {
+    std::string text;
+    if (!ReadDtString(file, &text)) {
+        return false;
+    }
+    char* endptr;
+    long long int out = strtoll(text.c_str(), &endptr, 10);
+    if (endptr == text.c_str() || endptr != text.c_str() + text.size()) {
+        return false;
+    }
+    *value = out;
+    return true;
+}
+
+static bool ReadPartitionFromDeviceTree(Partition& partition) {
+    std::string extent_dir_prefix =
+        get_android_dt_dir() + "/logical_partitions/" + partition.name + "/extent@";
+    for (unsigned index = 0;; index++) {
+        std::string extent_dir =
+            android::base::StringPrintf("%s%d", extent_dir_prefix.c_str(), index);
+        if (access(extent_dir.c_str(), F_OK)) {
+            break;
+        }
+
+        PartitionExtent extent;
+        std::string file_name = extent_dir + "/block_device";
+        if (!ReadDtString(file_name, &extent.block_device)) {
+            LERROR << "dm_linear_dt: block_device missing, partition " << partition.name;
+            return false;
+        }
+
+        file_name = extent_dir + "/first_sector";
+        if (!ReadDtUint64(file_name, &extent.first_sector)) {
+            LERROR << "dm_linear_dt: first_sector missing, partition " << partition.name;
+            return false;
+        }
+
+        file_name = extent_dir + "/num_sectors";
+        if (!ReadDtUint64(file_name, &extent.num_sectors)) {
+            LERROR << "dm_linear_dt: num_sectors missing, partition " << partition.name;
+            return false;
+        }
+        partition.extents.push_back(extent);
+    }
+
+    if (partition.extents.empty()) {
+        LERROR << "dm_linear_dt: Failed to find any extents for " << partition.name;
+        return false;
+    }
+    return true;
+}
+
 std::unique_ptr<PartitionTable> LoadPartitionsFromDeviceTree() {
-    return nullptr;
+    if (!is_dt_compatible()) return nullptr;
+
+    std::string dt_dir = get_android_dt_dir() + "/logical_partitions";
+    std::unique_ptr<DIR, int (*)(DIR*)> dir(opendir(dt_dir.c_str()), closedir);
+    if (!dir) {
+        return nullptr;
+    }
+
+    std::unique_ptr<PartitionTable> table = std::make_unique<PartitionTable>();
+
+    while (dirent* dp = readdir(dir.get())) {
+        // Skip over name, compatible, and .
+        if (dp->d_type != DT_DIR || dp->d_name[0] == '.') {
+            continue;
+        }
+
+        Partition partition;
+        partition.name = dp->d_name;
+        if (!ReadPartitionFromDeviceTree(partition)) {
+            return nullptr;
+        }
+        table->partitions.push_back(partition);
+    }
+    return table;
 }
 
 }  // namespace fs_mgr
