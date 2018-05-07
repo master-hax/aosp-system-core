@@ -19,6 +19,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
+#include <vector>
 
 #include <asyncio/AsyncIO.h>
 
@@ -32,8 +33,7 @@ struct aio_block {
 };
 
 struct usb_handle {
-    usb_handle() : kicked(false) {
-    }
+    usb_handle() : kicked(false) {}
 
     std::condition_variable notify;
     std::mutex lock;
@@ -56,3 +56,4 @@ struct usb_handle {
     struct aio_block write_aiob;
 };
 
+usb_handle* get_usb_handle();
