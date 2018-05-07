@@ -312,6 +312,7 @@ init    : processing action (boot) from (/system/etc/init/bootstat.rc
 init    : processing action (ro.boot.bootreason=*) from (/system/etc/init/bootstat.rc
 init    : processing action (sys.boot_completed=1 && sys.logbootcomplete=1) from (/system/etc/init/bootstat.rc
  (/system/bin/bootstat --record_boot_complete --record_boot_reason --record_time_since_factory_reset -l)'
+ (/system/bin/bootstat --set_system_boot_reason --record_boot_complete --record_boot_reason --record_time_since_factory_reset -l)'
  (/system/bin/bootstat -r post_decrypt_time_elapsed)'
 init    : Command 'exec - system log -- /system/bin/bootstat --record_boot_complete' action=sys.boot_completed=1 && sys.logbootcomplete=1 (/system/etc/init/bootstat.rc:
 init    : Command 'exec - system log -- /system/bin/bootstat --record_boot_reason' action=sys.boot_completed=1 && sys.logbootcomplete=1 (/system/etc/init/bootstat.rc:
@@ -580,6 +581,7 @@ as a means of checking sanity and any persistent side effect of the
 other tests." ]
 blind_reboot_test() {
   duration_test
+  TEST=${TEST#optional_}
   case ${TEST} in
     bootloader | recovery | cold | hard | warm ) reason=${TEST} ;;
     *)                                           reason=reboot,${TEST} ;;
@@ -946,6 +948,20 @@ test_adb_reboot() {
   EXPECT_PROPERTY sys.boot.reason reboot,adb
   EXPECT_PROPERTY persist.sys.boot.reason reboot,adb
   report_bootstat_logs reboot,adb
+}
+
+[ "USAGE: test_rescueparty
+
+rescueparty test
+- adb reboot rescueparty
+- (wait until screen is up, boot has completed)
+- adb shell getprop sys.boot.reason
+- adb shell getprop ro.boot.bootreason
+- NB: should report reboot,rescueparty" ]
+test_optional_rescueparty() {
+  blind_reboot_test
+  echo "WARNING: legacy devices are allowed to fail following ro.boot.bootreason result" >&2
+  EXPECT_PROPERTY ro.boot.bootreason reboot,rescueparty
 }
 
 [ "USAGE: test_Its_Just_So_Hard_reboot
