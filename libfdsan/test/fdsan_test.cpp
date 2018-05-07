@@ -25,6 +25,8 @@
 
 #include <gtest/gtest.h>
 
+#include <android-base/unique_fd.h>
+
 #include "fdsan.h"
 
 using namespace std::chrono_literals;
@@ -124,6 +126,28 @@ TEST_F(FdsanTest, tagged_close_fail) {
   void* tag = reinterpret_cast<void*>(0xdeadbeef);
   ASSERT_EQ(nullptr, set_close_tag(fd, tag));
   close_with_tag(fd, reinterpret_cast<void*>(0xbadc0de));
+  ASSERT_TRUE(HasReported());
+}
+
+static void* get_close_tag(int fd) {
+  void* tag = set_close_tag(fd, nullptr);
+  set_close_tag(fd, tag);
+  return tag;
+}
+
+TEST_F(FdsanTest, tagged_unique_fd) {
+  android::base::unique_fd fd(open("/dev/null", O_WRONLY | O_CLOEXEC));
+  ASSERT_NE(-1, fd.get());
+  ASSERT_FALSE(HasReported());
+
+  ASSERT_EQ(&fd, get_close_tag(fd.get()));
+  ASSERT_FALSE(HasReported());
+
+  android::base::unique_fd move = std::move(fd);
+  ASSERT_EQ(&move, get_close_tag(move.get()));
+  ASSERT_FALSE(HasReported());
+
+  close(move.get());
   ASSERT_TRUE(HasReported());
 }
 
