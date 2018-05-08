@@ -637,6 +637,44 @@ static Result<Success> do_restart(const BuiltinArguments& args) {
     return Success();
 }
 
+static Result<Success> do_interface_start(const BuiltinArguments& args) {
+    for (const auto& svc : ServiceList::GetInstance()) {
+        if (svc->interfaces().count(args[1]) == 0) {
+            continue;
+        }
+
+        if (auto result = svc->Start(); !result) {
+            return Error() << "Could not start service: " << result.error();
+        }
+        return Success();
+    }
+    return Error() << "interface " << args[1] << " not found";
+}
+
+static Result<Success> do_interface_stop(const BuiltinArguments& args) {
+    for (const auto& svc : ServiceList::GetInstance()) {
+        if (svc->interfaces().count(args[1]) == 0) {
+            continue;
+        }
+
+        svc->Stop();
+        return Success();
+    }
+    return Error() << "interface " << args[1] << " not found";
+}
+
+static Result<Success> do_interface_restart(const BuiltinArguments& args) {
+    for (const auto& svc : ServiceList::GetInstance()) {
+        if (svc->interfaces().count(args[1]) == 0) {
+            continue;
+        }
+
+        svc->Restart();
+        return Success();
+    }
+    return Error() << "interface " << args[1] << " not found";
+}
+
 static Result<Success> do_trigger(const BuiltinArguments& args) {
     ActionManager::GetInstance().QueueEventTrigger(args[1]);
     return Success();
@@ -1050,6 +1088,9 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"init_user0",              {0,     0,    {false,  do_init_user0}}},
         {"insmod",                  {1,     kMax, {true,   do_insmod}}},
         {"installkey",              {1,     1,    {false,  do_installkey}}},
+        {"interface_start",         {1,     1,    {false,  do_interface_start}}},
+        {"interface_stop",          {1,     1,    {false,  do_interface_stop}}},
+        {"interface_restart",       {1,     1,    {false,  do_interface_restart}}},
         {"load_persist_props",      {0,     0,    {false,  do_load_persist_props}}},
         {"load_system_props",       {0,     0,    {false,  do_load_system_props}}},
         {"loglevel",                {1,     1,    {false,  do_loglevel}}},
