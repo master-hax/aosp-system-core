@@ -16,19 +16,33 @@
 
 #include "host_init_stubs.h"
 
+#include <map>
+
 // unistd.h
 int setgroups(size_t __size, const gid_t* __list) {
     return 0;
 }
 
+static std::map<std::string, std::string> properties;
+
 namespace android {
 namespace base {
 
-std::string GetProperty(const std::string&, const std::string& default_value) {
-    return default_value;
+std::string GetProperty(const std::string& name, const std::string& default_value) {
+    auto it = properties.find(name);
+    if (it == properties.end()) {
+        return default_value;
+    }
+    return it->second;
 }
 
-bool GetBoolProperty(const std::string&, bool default_value) {
+bool GetBoolProperty(const std::string& name, bool default_value) {
+    std::string value = GetProperty(name, "");
+    if (value == "1" || value == "y" || value == "yes" || value == "on" || value == "true") {
+        return true;
+    } else if (value == "0" || value == "n" || value == "no" || value == "off" || value == "false") {
+        return false;
+    }
     return default_value;
 }
 
@@ -42,7 +56,11 @@ namespace init {
 std::string default_console = "/dev/console";
 
 // property_service.h
-uint32_t (*property_set)(const std::string& name, const std::string& value) = nullptr;
+uint32_t SetProperty(const std::string& key, const std::string& value) {
+    properties[key] = value;
+    return 0;
+}
+uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
 uint32_t HandlePropertySet(const std::string&, const std::string&, const std::string&, const ucred&,
                            std::string*) {
     return 0;
