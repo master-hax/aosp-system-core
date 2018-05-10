@@ -59,7 +59,7 @@ class FirstStageMount {
   protected:
     ListenerAction HandleBlockDevice(const std::string& name, const Uevent&);
     bool InitRequiredDevices();
-    bool InitVerityDevice(const std::string& verity_device);
+    bool InitMappedDevice(const std::string& verity_device);
     bool MapLogicalPartitions();
     bool MountPartitions();
     bool GetDmLinearDevices();
@@ -290,14 +290,14 @@ ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
 }
 
 // Creates "/dev/block/dm-XX" for dm-verity by running coldboot on /sys/block/dm-XX.
-bool FirstStageMount::InitVerityDevice(const std::string& verity_device) {
-    const std::string device_name(basename(verity_device.c_str()));
+bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
+    const std::string device_name(basename(dm_device.c_str()));
     const std::string syspath = "/sys/block/" + device_name;
     bool found = false;
 
-    auto verity_callback = [&device_name, &verity_device, this, &found](const Uevent& uevent) {
+    auto verity_callback = [&device_name, &dm_device, this, &found](const Uevent& uevent) {
         if (uevent.device_name == device_name) {
-            LOG(VERBOSE) << "Creating dm-verity device : " << verity_device;
+            LOG(VERBOSE) << "Creating device-mapper device : " << dm_device;
             device_handler_.HandleDeviceEvent(uevent);
             found = true;
             return ListenerAction::kStop;
@@ -322,6 +322,14 @@ bool FirstStageMount::InitVerityDevice(const std::string& verity_device) {
 
 bool FirstStageMount::MountPartitions() {
     for (auto fstab_rec : mount_fstab_recs_) {
+        if (fs_mgr_is_logical(fstab_rec)) {
+            if (!fs_mgr_update_logical_partition(fstab_rec)) {
+                return false;
+            }
+            if (!InitMappedDevice(fstab_rec->blk_device)) {
+                return false;
+            }
+        }
         if (!SetUpDmVerity(fstab_rec)) {
             PLOG(ERROR) << "Failed to setup verity for '" << fstab_rec->mount_point << "'";
             return false;
@@ -387,7 +395,7 @@ bool FirstStageMountVBootV1::SetUpDmVerity(fstab_rec* fstab_rec) {
                 // The exact block device name (fstab_rec->blk_device) is changed to
                 // "/dev/block/dm-XX". Needs to create it because ueventd isn't started in init
                 // first stage.
-                return InitVerityDevice(fstab_rec->blk_device);
+                return InitMappedDevice(fstab_rec->blk_device);
             default:
                 return false;
         }
@@ -487,7 +495,7 @@ bool FirstStageMountVBootV2::SetUpDmVerity(fstab_rec* fstab_rec) {
                 // The exact block device name (fstab_rec->blk_device) is changed to
                 // "/dev/block/dm-XX". Needs to create it because ueventd isn't started in init
                 // first stage.
-                return InitVerityDevice(fstab_rec->blk_device);
+                return InitMappedDevice(fstab_rec->blk_device);
             default:
                 return false;
         }

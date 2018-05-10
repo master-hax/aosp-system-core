@@ -628,6 +628,10 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
         fstab->recs[cnt].erase_blk_size = flag_vals.erase_blk_size;
         fstab->recs[cnt].logical_blk_size = flag_vals.logical_blk_size;
         fstab->recs[cnt].sysfs_path = flag_vals.sysfs_path;
+        if (fstab->recs[cnt].fs_mgr_flags & MF_LOGICAL) {
+            fstab->recs[cnt].partition_name = strdup(fstab->recs[cnt].blk_device);
+        }
+
         cnt++;
     }
     /* If an A/B partition, modify block device to be the real block device */
@@ -794,6 +798,7 @@ void fs_mgr_free_fstab(struct fstab *fstab)
     for (i = 0; i < fstab->num_entries; i++) {
         /* Free the pointers return by strdup(3) */
         free(fstab->recs[i].blk_device);
+        free(fstab->recs[i].partition_name);
         free(fstab->recs[i].mount_point);
         free(fstab->recs[i].fs_type);
         free(fstab->recs[i].fs_options);

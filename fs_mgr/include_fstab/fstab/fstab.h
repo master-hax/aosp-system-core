@@ -37,6 +37,7 @@ struct fstab {
 
 struct fstab_rec {
     char* blk_device;
+    char* partition_name;
     char* mount_point;
     char* fs_type;
     unsigned long flags;
