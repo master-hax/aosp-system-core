@@ -30,6 +30,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <android-base/logging.h>
@@ -276,7 +277,7 @@ void GeteventOpenDevice() {
     inotify_fd = ::inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
     if (inotify_fd < 0) {
         PLOG(WARNING) << "Could not instantiate inotify for " << kDevicePath;
-    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE) < 0) {
+    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE | IN_ONLYDIR) < 0) {
         PLOG(WARNING) << "Could not add watch for " << kDevicePath;
         ::close(inotify_fd);
         inotify_fd = -1;
@@ -313,7 +314,7 @@ void KeychordInit() {
     for (const auto& service : ServiceList::GetInstance()) {
         AddServiceKeycodes(service.get());
     }
-    if (keychords_count) GeteventOpenDevice();
+    if (keychords_count) std::thread(static_cast<void (*)()>(GeteventOpenDevice)).detach();
 }
 
 }  // namespace init
