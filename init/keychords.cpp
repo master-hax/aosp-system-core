@@ -272,28 +272,56 @@ void InotifyHandler() {
     }
 }
 
+int defer_fd = -1;
+
+void DirectoryHandler() {
+    static DIR* input_directory;
+    if (input_directory == nullptr) {
+        input_directory = opendir(kDevicePath);
+        if (input_directory == nullptr) {
+            unregister_epoll_handler(defer_fd);
+            ::close(defer_fd);
+            defer_fd = -1;
+            return;
+        }
+        if (defer_fd >= 0) return;
+    }
+
+    do {
+        auto entry = readdir(input_directory);
+        if (entry == nullptr) {
+            closedir(input_directory);
+            input_directory = nullptr;
+            unregister_epoll_handler(defer_fd);
+            ::close(defer_fd);
+            defer_fd = -1;
+            return;
+        }
+
+        if (entry->d_name[0] == '.') continue;
+
+        std::string devname(kDevicePath);
+        devname += '/';
+        devname += entry->d_name;
+        GeteventOpenDevice(devname);
+    } while (defer_fd < 0);
+}
+
 void GeteventOpenDevice() {
     inotify_fd = ::inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
     if (inotify_fd < 0) {
         PLOG(WARNING) << "Could not instantiate inotify for " << kDevicePath;
-    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE) < 0) {
+    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE | IN_ONLYDIR) < 0) {
         PLOG(WARNING) << "Could not add watch for " << kDevicePath;
         ::close(inotify_fd);
         inotify_fd = -1;
     }
-
-    std::unique_ptr<DIR, decltype(&closedir)> device(opendir(kDevicePath), closedir);
-    if (device) {
-        dirent* entry;
-        while ((entry = readdir(device.get()))) {
-            if (entry->d_name[0] == '.') continue;
-            std::string devname(kDevicePath);
-            devname += '/';
-            devname += entry->d_name;
-            GeteventOpenDevice(devname);
-        }
+    defer_fd = TEMP_FAILURE_RETRY(::open("/dev/random", O_RDONLY | O_CLOEXEC));
+    if (defer_fd >= 0) {
+        register_epoll_handler(defer_fd, DirectoryHandler);
+    } else {
+        DirectoryHandler();
     }
-
     if (inotify_fd >= 0) register_epoll_handler(inotify_fd, InotifyHandler);
 }
 
