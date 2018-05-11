@@ -27,7 +27,6 @@ struct Mapping {
   bool read;
   bool write;
   bool execute;
-  bool priv;
   char name[96];
 };
 
