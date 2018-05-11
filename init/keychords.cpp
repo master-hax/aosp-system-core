@@ -263,9 +263,9 @@ void InotifyHandler() {
             devname += '/';
             devname += event->name;
             if (event->mask & IN_CREATE) {
-                GeteventOpenDevice(devname);
+                PushbackWorkItem([devname]() { GeteventOpenDevice(devname); });
             } else {
-                GeteventCloseDevice(devname);
+                PushbackWorkItem([devname]() { GeteventCloseDevice(devname); });
             }
         }
         res -= event_size;
@@ -291,7 +291,7 @@ void GeteventOpenDevice() {
             std::string devname(kDevicePath);
             devname += '/';
             devname += entry->d_name;
-            GeteventOpenDevice(devname);
+            PushbackWorkItem([devname]() { GeteventOpenDevice(devname); });
         }
     }
 
