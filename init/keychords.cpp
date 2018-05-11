@@ -220,6 +220,7 @@ bool KeychordGeteventEnable(int fd) {
 
 void GeteventOpenDevice(const std::string& device) {
     if (keychord_registration.count(device)) return;
+    if (device == "/dev/input/mice") return;
     auto fd = TEMP_FAILURE_RETRY(::open(device.c_str(), O_RDWR | O_CLOEXEC));
     if (fd == -1) {
         PLOG(ERROR) << "Can not open " << device;
@@ -276,7 +277,7 @@ void GeteventOpenDevice() {
     inotify_fd = ::inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
     if (inotify_fd < 0) {
         PLOG(WARNING) << "Could not instantiate inotify for " << kDevicePath;
-    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE) < 0) {
+    } else if (::inotify_add_watch(inotify_fd, kDevicePath, IN_DELETE | IN_CREATE | IN_ONLYDIR) < 0) {
         PLOG(WARNING) << "Could not add watch for " << kDevicePath;
         ::close(inotify_fd);
         inotify_fd = -1;
