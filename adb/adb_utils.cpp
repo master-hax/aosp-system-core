@@ -272,9 +272,33 @@ std::string adb_get_android_dir_path() {
     return android_dir;
 }
 
-void AdbCloser::Close(int fd) {
+#if defined(_WIN32)
+void AdbCloser::Tag(int fd, void* tag_value) {
+}
+
+void AdbCloser::Close(int fd, void* tag) {
     adb_close(fd);
 }
+#else
+extern "C" __attribute__((weak)) void* fdsan_set_close_tag(int fd, void* tag);
+extern "C" __attribute__((weak)) int fdsan_close_with_tag(int fd, void* tag);
+
+void AdbCloser::Tag(int fd, void* tag_value) {
+    if (fdsan_set_close_tag) {
+        LOG(INFO) << "tagging fd " << fd;
+        fdsan_set_close_tag(fd, tag_value);
+    } else {
+    }
+}
+
+void AdbCloser::Close(int fd, void* tag) {
+    if (fdsan_close_with_tag) {
+        fdsan_close_with_tag(fd, tag);
+    } else {
+        adb_close(fd);
+    }
+}
+#endif
 
 int syntax_error(const char* fmt, ...) {
     fprintf(stderr, "adb: usage: ");
