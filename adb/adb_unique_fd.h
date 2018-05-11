@@ -22,7 +22,8 @@
 
 // Helper to automatically close an FD when it goes out of scope.
 struct AdbCloser {
-    static void Close(int fd);
+    static void Tag(int fd, void* tag);
+    static void Close(int fd, void* tag);
 };
 
 using unique_fd = android::base::unique_fd_impl<AdbCloser>;
