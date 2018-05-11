@@ -584,6 +584,36 @@ static void InstallSignalFdHandler() {
     register_epoll_handler(signal_fd, HandleSignalFd);
 }
 
+static int work_queue_fd = -1;
+
+void PushbackWorkItem(std::function<void()> handler) {
+    auto fn = new std::function<void()>(std::move(handler));
+    if (TEMP_FAILURE_RETRY(::write(work_queue_fd, &fn, sizeof(fn))) == -1) {
+        PLOG(ERROR) << "failed to pushback into work queue";
+    }
+}
+
+static void InstallWorkqueueHandler() {
+    int pipefd[2];
+    if (::pipe2(pipefd, O_CLOEXEC | O_DIRECT) == -1) {
+        PLOG(FATAL) << "failed to create work queue fd";
+    }
+
+    work_queue_fd = pipefd[1];
+    auto fd = pipefd[0];
+    register_epoll_handler(pipefd[0], [fd]() {
+        std::function<void()>* fn;
+        auto ret = TEMP_FAILURE_RETRY(::read(fd, &fn, sizeof(fn)));
+        if (ret == -1) {
+            PLOG(ERROR) << "failed to read from work queue";
+            return;
+        }
+        if (ret != sizeof(fn)) return;
+        std::invoke(*fn);
+        delete fn;
+    });
+}
+
 int main(int argc, char** argv) {
     if (!strcmp(basename(argv[0]), "ueventd")) {
         return ueventd_main(argc, argv);
@@ -733,6 +763,7 @@ int main(int argc, char** argv) {
     }
 
     InstallSignalFdHandler();
+    InstallWorkqueueHandler();
 
     property_load_boot_defaults();
     export_oem_lock_status();
