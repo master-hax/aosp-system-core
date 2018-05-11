@@ -59,6 +59,7 @@ cc_test {
     host_supported: true,
     srcs: [
         "process_test.cpp",
+        "process_map_test.cpp",
     ],
     target: {
         darwin: {
@@ -83,6 +84,10 @@ cc_test {
             suffix: "64",
         },
     },
+
+    data: [
+        "testdata/*",
+    ],
 
     test_suites: ["device-tests"],
 }
