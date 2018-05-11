@@ -34,7 +34,7 @@ class Memory;
 struct MapInfo {
   MapInfo() = default;
   MapInfo(uint64_t start, uint64_t end) : start(start), end(end) {}
-  MapInfo(uint64_t start, uint64_t end, uint64_t offset, uint64_t flags, const std::string& name)
+  MapInfo(uint64_t start, uint64_t end, uint64_t offset, uint64_t flags, const char* name)
       : start(start),
         end(end),
         offset(offset),
