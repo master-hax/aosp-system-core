@@ -24,7 +24,6 @@
 #include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
-#include <sys/system_properties.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <termios.h>
@@ -33,8 +32,6 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
-#include <android-base/properties.h>
-#include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <hidl-util/FQName.h>
@@ -42,15 +39,23 @@
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
 
-#include "init.h"
-#include "property_service.h"
 #include "rlimit_parser.h"
 #include "util.h"
+
+#if defined(__ANDROID__)
+#include <sys/system_properties.h>
+
+#include <android-base/properties.h>
+
+#include "init.h"
+#include "property_service.h"
+#else
+#include "host_init_stubs.h"
+#endif
 
 using android::base::boot_clock;
 using android::base::GetProperty;
 using android::base::Join;
-using android::base::make_scope_guard;
 using android::base::ParseInt;
 using android::base::StartsWith;
 using android::base::StringPrintf;
@@ -150,7 +155,7 @@ static void SetUpPidNamespace(const std::string& service_name) {
     }
 }
 
-static bool ExpandArgsAndExecv(const std::vector<std::string>& args) {
+static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigstop) {
     std::vector<std::string> expanded_args;
     std::vector<char*> c_strings;
 
@@ -163,6 +168,10 @@ static bool ExpandArgsAndExecv(const std::vector<std::string>& args) {
         c_strings.push_back(expanded_args[i].data());
     }
     c_strings.push_back(nullptr);
+
+    if (sigstop) {
+        kill(getpid(), SIGSTOP);
+    }
 
     return execv(c_strings[0], c_strings.data()) == 0;
 }
@@ -189,7 +198,8 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       capabilities_(capabilities),
       namespace_flags_(namespace_flags),
       seclabel_(seclabel),
-      onrestart_(false, subcontext_for_restart_commands, "<Service '" + name + "' onrestart>", 0),
+      onrestart_(false, subcontext_for_restart_commands, "<Service '" + name + "' onrestart>", 0,
+                 "onrestart", {}),
       keychord_id_(0),
       ioprio_class_(IoSchedClass_NONE),
       ioprio_pri_(0),
@@ -199,9 +209,7 @@ Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
       soft_limit_in_bytes_(-1),
       limit_in_bytes_(-1),
       start_order_(0),
-      args_(args) {
-    onrestart_.InitSingleTrigger("onrestart");
-}
+      args_(args) {}
 
 void Service::NotifyStateChange(const std::string& new_state) const {
     if ((flags_ & SVC_TEMPORARY) != 0) {
@@ -299,7 +307,7 @@ void Service::SetProcessAttributes() {
     }
 }
 
-void Service::Reap() {
+void Service::Reap(const siginfo_t& siginfo) {
     if (!(flags_ & SVC_ONESHOT) || (flags_ & SVC_RESTART)) {
         KillProcessGroup(SIGKILL);
     }
@@ -307,6 +315,10 @@ void Service::Reap() {
     // Remove any descriptor resources we may have created.
     std::for_each(descriptors_.begin(), descriptors_.end(),
                   std::bind(&DescriptorInfo::Clean, std::placeholders::_1));
+
+    for (const auto& f : reap_callbacks_) {
+        f(siginfo);
+    }
 
     if (flags_ & SVC_EXEC) UnSetExec();
 
@@ -442,8 +454,8 @@ Result<Success> Service::ParseInterface(const std::vector<std::string>& args) {
     const std::string& interface_name = args[1];
     const std::string& instance_name = args[2];
 
-    const FQName fq_name = FQName(interface_name);
-    if (!fq_name.isValid()) {
+    FQName fq_name;
+    if (!FQName::parse(interface_name, &fq_name)) {
         return Error() << "Invalid fully-qualified name for interface '" << interface_name << "'";
     }
 
@@ -574,6 +586,11 @@ Result<Success> Service::ParseSeclabel(const std::vector<std::string>& args) {
     return Success();
 }
 
+Result<Success> Service::ParseSigstop(const std::vector<std::string>& args) {
+    sigstop_ = true;
+    return Success();
+}
+
 Result<Success> Service::ParseSetenv(const std::vector<std::string>& args) {
     environment_vars_.emplace_back(args[1], args[2]);
     return Success();
@@ -674,29 +691,30 @@ const Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
         {"console",     {0,     1,    &Service::ParseConsole}},
         {"critical",    {0,     0,    &Service::ParseCritical}},
         {"disabled",    {0,     0,    &Service::ParseDisabled}},
+        {"file",        {2,     2,    &Service::ParseFile}},
         {"group",       {1,     NR_SVC_SUPP_GIDS + 1, &Service::ParseGroup}},
         {"interface",   {2,     2,    &Service::ParseInterface}},
         {"ioprio",      {2,     2,    &Service::ParseIoprio}},
-        {"priority",    {1,     1,    &Service::ParsePriority}},
         {"keycodes",    {1,     kMax, &Service::ParseKeycodes}},
-        {"oneshot",     {0,     0,    &Service::ParseOneshot}},
-        {"onrestart",   {1,     kMax, &Service::ParseOnrestart}},
-        {"override",    {0,     0,    &Service::ParseOverride}},
-        {"oom_score_adjust",
-                        {1,     1,    &Service::ParseOomScoreAdjust}},
-        {"memcg.swappiness",
-                        {1,     1,    &Service::ParseMemcgSwappiness}},
-        {"memcg.soft_limit_in_bytes",
-                        {1,     1,    &Service::ParseMemcgSoftLimitInBytes}},
         {"memcg.limit_in_bytes",
                         {1,     1,    &Service::ParseMemcgLimitInBytes}},
+        {"memcg.soft_limit_in_bytes",
+                        {1,     1,    &Service::ParseMemcgSoftLimitInBytes}},
+        {"memcg.swappiness",
+                        {1,     1,    &Service::ParseMemcgSwappiness}},
         {"namespace",   {1,     2,    &Service::ParseNamespace}},
+        {"oneshot",     {0,     0,    &Service::ParseOneshot}},
+        {"onrestart",   {1,     kMax, &Service::ParseOnrestart}},
+        {"oom_score_adjust",
+                        {1,     1,    &Service::ParseOomScoreAdjust}},
+        {"override",    {0,     0,    &Service::ParseOverride}},
+        {"priority",    {1,     1,    &Service::ParsePriority}},
         {"rlimit",      {3,     3,    &Service::ParseProcessRlimit}},
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},
         {"shutdown",    {1,     1,    &Service::ParseShutdown}},
+        {"sigstop",     {0,     0,    &Service::ParseSigstop}},
         {"socket",      {3,     6,    &Service::ParseSocket}},
-        {"file",        {2,     2,    &Service::ParseFile}},
         {"user",        {1,     1,    &Service::ParseUser}},
         {"writepid",    {1,     kMax, &Service::ParseWritepid}},
     };
@@ -854,7 +872,7 @@ Result<Success> Service::Start() {
         // priority. Aborts on failure.
         SetProcessAttributes();
 
-        if (!ExpandArgsAndExecv(args_)) {
+        if (!ExpandArgsAndExecv(args_, sigstop_)) {
             PLOG(ERROR) << "cannot execve('" << args_[0] << "')";
         }
 
@@ -1125,7 +1143,7 @@ Result<Success> ServiceParser::ParseSection(std::vector<std::string>&& args,
     Subcontext* restart_action_subcontext = nullptr;
     if (subcontexts_) {
         for (auto& subcontext : *subcontexts_) {
-            if (StartsWith(filename, subcontext.path_prefix().c_str())) {
+            if (StartsWith(filename, subcontext.path_prefix())) {
                 restart_action_subcontext = &subcontext;
                 break;
             }
@@ -1165,7 +1183,7 @@ bool ServiceParser::IsValidName(const std::string& name) const {
     // Property values can contain any characters, but may only be a certain length.
     // (The latter restriction is needed because `start` and `stop` work by writing
     // the service name to the "ctl.start" and "ctl.stop" properties.)
-    return is_legal_property_name("init.svc." + name) && name.size() <= PROP_VALUE_MAX;
+    return IsLegalPropertyName("init.svc." + name) && name.size() <= PROP_VALUE_MAX;
 }
 
 }  // namespace init

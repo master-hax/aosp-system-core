@@ -56,6 +56,7 @@ class FirstStageMount {
     bool InitDevices();
 
   protected:
+    ListenerAction HandleBlockDevice(const std::string& name, const Uevent&);
     bool InitRequiredDevices();
     bool InitVerityDevice(const std::string& verity_device);
     bool MountPartitions();
@@ -117,17 +118,14 @@ static bool inline IsRecoveryMode() {
 // -----------------
 FirstStageMount::FirstStageMount()
     : need_dm_verity_(false), device_tree_fstab_(fs_mgr_read_fstab_dt(), fs_mgr_free_fstab) {
-    if (!device_tree_fstab_) {
-        // The client of FirstStageMount should check the existence of fstab in device-tree
-        // in advance, without parsing it. Reaching here means there is a FATAL error when
-        // parsing the fstab. So stop here to expose the failure.
-        LOG(FATAL) << "Failed to read fstab from device tree";
-        return;
-    }
-    // Stores device_tree_fstab_->recs[] into mount_fstab_recs_ (vector<fstab_rec*>)
-    // for easier manipulation later, e.g., range-base for loop.
-    for (int i = 0; i < device_tree_fstab_->num_entries; i++) {
-        mount_fstab_recs_.push_back(&device_tree_fstab_->recs[i]);
+    if (device_tree_fstab_) {
+        // Stores device_tree_fstab_->recs[] into mount_fstab_recs_ (vector<fstab_rec*>)
+        // for easier manipulation later, e.g., range-base for loop.
+        for (int i = 0; i < device_tree_fstab_->num_entries; i++) {
+            mount_fstab_recs_.push_back(&device_tree_fstab_->recs[i]);
+        }
+    } else {
+        LOG(INFO) << "Failed to read fstab from device tree";
     }
 }
 
@@ -140,8 +138,11 @@ std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
 }
 
 bool FirstStageMount::DoFirstStageMount() {
-    // Nothing to mount.
-    if (mount_fstab_recs_.empty()) return true;
+    if (mount_fstab_recs_.empty()) {
+        // Nothing to mount.
+        LOG(INFO) << "First stage mount skipped (missing/incompatible/empty fstab in device tree)";
+        return true;
+    }
 
     if (!InitDevices()) return false;
 
@@ -209,6 +210,24 @@ bool FirstStageMount::InitRequiredDevices() {
     return true;
 }
 
+ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const Uevent& uevent) {
+    // Matches partition name to create device nodes.
+    // Both required_devices_partition_names_ and uevent->partition_name have A/B
+    // suffix when A/B is used.
+    auto iter = required_devices_partition_names_.find(name);
+    if (iter != required_devices_partition_names_.end()) {
+        LOG(VERBOSE) << __PRETTY_FUNCTION__ << ": found partition: " << *iter;
+        required_devices_partition_names_.erase(iter);
+        device_handler_.HandleDeviceEvent(uevent);
+        if (required_devices_partition_names_.empty()) {
+            return ListenerAction::kStop;
+        } else {
+            return ListenerAction::kContinue;
+        }
+    }
+    return ListenerAction::kContinue;
+}
+
 ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
     // Ignores everything that is not a block device.
     if (uevent.subsystem != "block") {
@@ -216,19 +235,11 @@ ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
     }
 
     if (!uevent.partition_name.empty()) {
-        // Matches partition name to create device nodes.
-        // Both required_devices_partition_names_ and uevent->partition_name have A/B
-        // suffix when A/B is used.
-        auto iter = required_devices_partition_names_.find(uevent.partition_name);
-        if (iter != required_devices_partition_names_.end()) {
-            LOG(VERBOSE) << __PRETTY_FUNCTION__ << ": found partition: " << *iter;
-            required_devices_partition_names_.erase(iter);
-            device_handler_.HandleDeviceEvent(uevent);
-            if (required_devices_partition_names_.empty()) {
-                return ListenerAction::kStop;
-            } else {
-                return ListenerAction::kContinue;
-            }
+        return HandleBlockDevice(uevent.partition_name, uevent);
+    } else {
+        size_t base_idx = uevent.path.rfind('/');
+        if (base_idx != std::string::npos) {
+            return HandleBlockDevice(uevent.path.substr(base_idx + 1), uevent);
         }
     }
     // Not found a partition or find an unneeded partition, continue to find others.
@@ -468,12 +479,6 @@ bool DoFirstStageMount() {
     // Skips first stage mount if we're in recovery mode.
     if (IsRecoveryMode()) {
         LOG(INFO) << "First stage mount skipped (recovery mode)";
-        return true;
-    }
-
-    // Firstly checks if device tree fstab entries are compatible.
-    if (!is_android_dt_value_expected("fstab/compatible", "android,fstab")) {
-        LOG(INFO) << "First stage mount skipped (missing/incompatible fstab in device tree)";
         return true;
     }
 
