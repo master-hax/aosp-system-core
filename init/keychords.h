@@ -17,15 +17,21 @@
 #ifndef _INIT_KEYCHORDS_H_
 #define _INIT_KEYCHORDS_H_
 
+#include <chrono>
 #include <functional>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
+
+#include <android-base/chrono_utils.h>
 
 #include "epoll.h"
 
 namespace android {
 namespace init {
+
+#define KEYCODES_MAXIMUM_TIMEOUT 30000
 
 class Keychords {
   public:
@@ -37,6 +43,8 @@ class Keychords {
 
     void Register(const std::vector<int>& keycodes);
     void Start(Epoll* epoll, std::function<void(const std::vector<int>&)> handler);
+    std::optional<std::chrono::milliseconds> CheckAndCalculateNextIfLess(
+        std::optional<std::chrono::milliseconds> wait);
 
   private:
     // Bit management
@@ -64,9 +72,14 @@ class Keychords {
     };
 
     struct Entry {
-        Entry();
+        static constexpr std::chrono::milliseconds kDurationOff = {};
+        static constexpr android::base::boot_clock::time_point kMatchedOff = {};
+
+        Entry(std::chrono::milliseconds duration);
 
         bool notified_;
+        const std::chrono::milliseconds duration_;
+        android::base::boot_clock::time_point matched_;
     };
 
     static constexpr char kDevicePath[] = "/dev/input";

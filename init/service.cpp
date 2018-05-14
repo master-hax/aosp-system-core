@@ -55,6 +55,8 @@
 #include "host_init_stubs.h"
 #endif
 
+#include "keychords.h"
+
 using android::base::boot_clock;
 using android::base::GetProperty;
 using android::base::Join;
@@ -543,19 +545,26 @@ Result<Success> Service::ParseIoprio(const std::vector<std::string>& args) {
 
 Result<Success> Service::ParseKeycodes(const std::vector<std::string>& args) {
     if (args.size() <= 1) return Error() << "missing keycode arguments";
-    for (std::size_t i = 1; i < args.size(); i++) {
-        int code;
-        if (ParseInt(args[i], &code, 0, KEY_MAX)) {
-            auto found = false;
-            for (auto& key : keycodes_) {
-                if (key == code) found = true;
-            }
-            if (found) continue;
-            keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
-        } else {
-            return Error() << "invalid keycode: " << args[i];
+    int code;
+    std::size_t i = 1;
+    do {
+        if (!ParseInt(args[i], &code, 0, KEY_MAX)) return Error() << "invalid keycode: " << args[i];
+        auto found = false;
+        for (auto& key : keycodes_) {
+            if (key == code) found = true;
         }
+        if (!found) {
+            keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
+        }
+        if (++i >= args.size()) return Success();
+    } while (i < args.size() - 1);
+    if (!ParseInt(args[i], &code, -KEYCODES_MAXIMUM_TIMEOUT, KEY_MAX)) {
+        return Error() << "invalid keycode (or timeout): " << args[i];
     }
+    for (auto& key : keycodes_) {
+        if (key == code) return Success();
+    }
+    keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
     return Success();
 }
 
