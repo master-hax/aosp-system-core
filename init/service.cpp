@@ -542,17 +542,25 @@ Result<Success> Service::ParseIoprio(const std::vector<std::string>& args) {
 }
 
 Result<Success> Service::ParseKeycodes(const std::vector<std::string>& args) {
-    for (std::size_t i = 1; i < args.size(); i++) {
-        int code;
-        if (ParseInt(args[i], &code, 0, KEY_MAX)) {
-            for (auto& key : keycodes_) {
-                if (key == code) return Error() << "duplicate keycode: " << args[i];
-            }
-            keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
-        } else {
-            return Error() << "invalid keycode: " << args[i];
+    int code;
+    std::size_t i = 1;
+    do {
+        if (!ParseInt(args[i], &code, 0, KEY_MAX)) return Error() << "invalid keycode: " << args[i];
+        for (auto& key : keycodes_) {
+            if (key == code) return Error() << "duplicate keycode: " << args[i];
         }
+        keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
+        if (++i >= args.size()) return Success();
+    } while (i < (args.size() - 1));
+
+    static constexpr int kKeycodesMaximumTimeout = 30000;
+    if (!ParseInt(args[i], &code, -kKeycodesMaximumTimeout, KEY_MAX)) {
+        return Error() << "invalid keycode (or timeout): " << args[i];
     }
+    for (auto& key : keycodes_) {
+        if (key == code) return Error() << "duplicate keycode: " << args[i];
+    }
+    keycodes_.insert(std::upper_bound(keycodes_.begin(), keycodes_.end(), code), code);
     return Success();
 }
 
