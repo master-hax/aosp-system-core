@@ -542,8 +542,13 @@ Result<Success> Service::ParseIoprio(const std::vector<std::string>& args) {
 }
 
 Result<Success> Service::ParseKeycodes(const std::vector<std::string>& args) {
-    for (std::size_t i = 1; i < args.size(); i++) {
-        int code;
+    auto end = args.size();
+    int code;
+    if ((end > 2) && ParseInt(args.back(), &code, INT_MIN, 0)) {
+        keycodes_.push_back(code);
+        --end;
+    }
+    for (std::size_t i = 1; i < end; i++) {
         if (ParseInt(args[i], &code, 0, KEY_MAX)) {
             for (auto& key : keycodes_) {
                 if (key == code) return Error() << "duplicate keycode: " << args[i];

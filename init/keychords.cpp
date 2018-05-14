@@ -26,13 +26,17 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
+
+using namespace std::chrono_literals;
 
 namespace android {
 namespace init {
@@ -108,20 +112,27 @@ void Keychords::Mask::operator|=(const Keychords::Mask& rval) {
     }
 }
 
-Keychords::Entry::Entry() : notified(false) {}
+Keychords::Entry::Entry(std::optional<std::chrono::milliseconds> duration)
+    : notified(false), duration(duration), matched() {}
 
 void Keychords::LambdaCheck() {
     for (auto& [keycodes, entry] : entries_) {
         auto found = true;
         for (auto& code : keycodes) {
+            if (code < 0) continue;
             if (!current_.GetBit(code)) {
                 entry.notified = false;
+                entry.matched = std::nullopt;
                 found = false;
                 break;
             }
         }
         if (!found) continue;
         if (entry.notified) continue;
+        if (entry.duration) {
+            entry.matched = android::base::boot_clock::now() + *entry.duration;
+            continue;
+        }
         entry.notified = true;
         handler_(keycodes);
     }
@@ -159,6 +170,7 @@ bool Keychords::GeteventEnable(int fd) {
     Keychords::Mask mask;
     for (auto& [keycodes, entry] : entries_) {
         for (auto& code : keycodes) {
+            if (code < 0) continue;
             mask.resize(code);
             mask.SetBit(code);
         }
@@ -272,13 +284,40 @@ void Keychords::GeteventOpenDevice() {
 
 void Keychords::Register(const std::vector<int>& keycodes) {
     if (keycodes.empty()) return;
-    entries_.try_emplace(keycodes, Entry());
+    std::optional<std::chrono::milliseconds> duration;
+    auto code = keycodes.front();
+    if (code < 0) duration = std::chrono::milliseconds(-code);
+    entries_.try_emplace(keycodes, Entry(duration));
 }
 
 void Keychords::Start(Epoll* epoll, std::function<void(const std::vector<int>&)> handler) {
     epoll_ = epoll;
     handler_ = handler;
     if (entries_.size()) GeteventOpenDevice();
+}
+
+// Caller should skip calling us if active/busy (eg: activities in queue)
+std::optional<std::chrono::milliseconds> Keychords::CheckAndCalculateNextIfLess(
+    std::optional<std::chrono::milliseconds> wait) {
+    if (entries_.empty()) return wait;
+
+    // android::base::boot_clock::now CLOCK_BOOTTIME can take 300ns++ in a
+    // syscall.  Recognize this is _hot_ code and only pickup when needed.
+    std::optional<android::base::boot_clock::time_point> now;
+    for (auto& [keycodes, entry] : entries_) {
+        if (entry.notified || !entry.duration || !entry.matched) continue;
+        if (!now) now = android::base::boot_clock::now();
+        if (*entry.matched > now) {
+            auto duration =
+                std::chrono::duration_cast<std::chrono::milliseconds>(*entry.matched - *now);
+            if (!wait || (wait > duration)) wait = duration;
+            continue;
+        }
+        entry.matched = std::nullopt;
+        entry.notified = true;
+        handler_(keycodes);
+    }
+    return wait;
 }
 
 }  // namespace init

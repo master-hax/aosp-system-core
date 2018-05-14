@@ -168,12 +168,16 @@ std::string InitInotifyFds() {
 const std::vector<int> escape_chord = {KEY_ESC};
 const std::vector<int> triple1_chord = {KEY_BACKSPACE, KEY_VOLUMEDOWN, KEY_VOLUMEUP};
 const std::vector<int> triple2_chord = {KEY_VOLUMEDOWN, KEY_VOLUMEUP, KEY_BACK};
+const std::vector<int> escape_3s_chord = {-3000, KEY_ESC};
+const std::vector<int> leftalt_3s_chord = {-3000, KEY_LEFTALT};
 
 const std::vector<const std::vector<int>> empty_chords;
 const std::vector<const std::vector<int>> chords = {
+    escape_chord, triple1_chord, triple2_chord, escape_3s_chord, leftalt_3s_chord,
+};
+const std::vector<const std::vector<int>> escape_chords = {
     escape_chord,
-    triple1_chord,
-    triple2_chord,
+    escape_3s_chord,
 };
 
 class TestFrame {
@@ -188,15 +192,15 @@ class TestFrame {
     void ClrChords(const std::vector<int>& chord);
 
     bool IsOnlyChord(const std::vector<int>& chord) const;
+    bool IsOnlyChord(const std::vector<const std::vector<int>>& chords) const;
     bool IsNoChord() const;
     bool IsChord(const std::vector<int>& chord) const;
     void WaitForChord(const std::vector<int>& chord);
 
+    static std::string Format(const std::vector<const std::vector<int>>& chords);
     std::string Format() const;
 
   private:
-    static std::string Format(const std::vector<const std::vector<int>>& chords);
-
     Epoll epoll_;
     Keychords keychords_;
     std::vector<const std::vector<int>> keycodes_;
@@ -213,7 +217,7 @@ TestFrame::TestFrame(const std::vector<const std::vector<int>>& chords, EventHan
 }
 
 void TestFrame::RelaxForMs(std::chrono::milliseconds wait) {
-    epoll_.Wait(wait);
+    epoll_.Wait(keychords_.CheckAndCalculateNextIfLess(wait));
 }
 
 void TestFrame::SetChord(int key, bool value) {
@@ -224,7 +228,9 @@ void TestFrame::SetChord(int key, bool value) {
 
 void TestFrame::SetChords(const std::vector<int>& chord, bool value) {
     ASSERT_TRUE(!!ev_);
-    for (auto& key : chord) SetChord(key, value);
+    for (auto& key : chord) {
+        if (key >= 0) SetChord(key, value);
+    }
     RelaxForMs();
 }
 
@@ -245,6 +251,22 @@ bool TestFrame::IsOnlyChord(const std::vector<int>& chord) const {
         ret = true;
     }
     return ret;
+}
+
+bool TestFrame::IsOnlyChord(const std::vector<const std::vector<int>>& chords) const {
+    for (const auto& chord : chords) {
+        if (!IsChord(chord)) return false;
+    }
+
+    for (const auto& keycode : keycodes_) {
+        auto found = false;
+        for (const auto& chord : chords) {
+            if (keycode == chord) found = true;
+        }
+        if (!found) return false;
+    }
+
+    return true;
 }
 
 bool TestFrame::IsNoChord() const {
@@ -276,6 +298,40 @@ std::string TestFrame::Format(const std::vector<const std::vector<int>>& chords)
 
 std::string TestFrame::Format() const {
     return Format(keycodes_);
+}
+
+void duration_test(const std::vector<int>& chord, std::chrono::milliseconds margin) {
+    EventHandler ev;
+    EXPECT_TRUE(ev.init());
+    TestFrame test_frame(chords, &ev);
+
+    auto end = android::base::boot_clock::now();
+    end += std::chrono::milliseconds(-chord.front()) + margin;
+    test_frame.SetChords(chord);
+    while ((android::base::boot_clock::now() < end) && !test_frame.IsChord(chord)) {
+        test_frame.RelaxForMs();
+    }
+    test_frame.ClrChords(chord);
+    if (margin < 0ms) {
+        if (chord == escape_3s_chord) {
+            EXPECT_TRUE(test_frame.IsOnlyChord(escape_chord))
+                << "expected only " << android::base::Join(escape_chord, ' ') << " got "
+                << test_frame.Format();
+        } else {
+            EXPECT_TRUE(test_frame.IsNoChord()) << "expected nothing got " << test_frame.Format();
+        }
+    } else {
+        EXPECT_GT(android::base::boot_clock::now(), end - 2 * margin);
+        if (chord == escape_3s_chord) {
+            EXPECT_TRUE(test_frame.IsOnlyChord(escape_chords))
+                << "expected only " << test_frame.Format(escape_chords) << " got "
+                << test_frame.Format();
+        } else {
+            EXPECT_TRUE(test_frame.IsOnlyChord(chord))
+                << "expected only " << android::base::Join(chord, ' ') << " got "
+                << test_frame.Format();
+        }
+    }
 }
 
 }  // namespace
@@ -342,6 +398,18 @@ TEST(keychords, keys_in_parallel) {
     EXPECT_TRUE(test_frame.IsOnlyChord(triple2_chord))
         << "expected only " << android::base::Join(triple2_chord, ' ') << " got "
         << test_frame.Format();
+}
+
+TEST(keychords, esc_too_short) {
+    duration_test(escape_3s_chord, -250ms);
+}
+
+TEST(keychords, esc_too_long) {
+    duration_test(escape_3s_chord, 250ms);
+}
+
+TEST(keychords, leftalt_too_long) {
+    duration_test(leftalt_3s_chord, 250ms);
 }
 
 }  // namespace init
