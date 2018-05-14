@@ -139,11 +139,11 @@ std::string InitInotifyFds() {
 const std::set<int> escape_chord = {KEY_ESC};
 const std::set<int> triple1_chord = {KEY_VOLUMEDOWN, KEY_BACKSPACE, KEY_VOLUMEUP};
 const std::set<int> triple2_chord = {KEY_VOLUMEUP, KEY_BACK, KEY_VOLUMEDOWN};
+const std::set<int> escape_3s_chord = {KEY_ESC, -3000};
+const std::set<int> leftalt_3s_chord = {KEY_LEFTALT, -3000};
 
 std::vector<const std::set<int>*> chords = {
-    &escape_chord,
-    &triple1_chord,
-    &triple2_chord,
+    &escape_chord, &triple1_chord, &triple2_chord, &escape_3s_chord, &leftalt_3s_chord,
 };
 
 class TestFrame {
@@ -157,7 +157,7 @@ class TestFrame {
         });
     }
 
-    void RelaxForMs(std::chrono::milliseconds wait = 1ms) { epoll.Wait(wait); }
+    void RelaxForMs(std::chrono::milliseconds wait = 1ms) { epoll.Wait(keychords.Wait(wait)); }
 
     void SetChord(int key, bool value = true) {
         if (!ev) return;
@@ -167,7 +167,9 @@ class TestFrame {
 
     void SetChords(const std::set<int>& chord, bool value = true) {
         if (!ev) return;
-        for (auto& key : chord) SetChord(key, value);
+        for (auto& key : chord) {
+            if (key >= 0) SetChord(key, value);
+        }
         RelaxForMs();
     }
 
@@ -206,6 +208,29 @@ class TestFrame {
     EventHandler* ev;
 };
 
+void duration_test(const std::set<int>& chord, std::chrono::milliseconds margin) {
+    EventHandler ev;
+    EXPECT_TRUE(ev.init());
+    TestFrame test_frame(chords, &ev);
+
+    auto end = android::base::boot_clock::now();
+    end += std::chrono::milliseconds(-*chord.begin()) + margin;
+    test_frame.SetChords(chord);
+    while ((android::base::boot_clock::now() < end) && !test_frame.IsChord(chord)) {
+        test_frame.RelaxForMs();
+    }
+    test_frame.ClrChords(chord);
+    if (chord == escape_3s_chord) {
+        EXPECT_TRUE(test_frame.IsChord(escape_chord));
+    }
+    if (margin < 0ms) {
+        EXPECT_FALSE(test_frame.IsChord(chord));
+    } else {
+        EXPECT_GT(android::base::boot_clock::now(), end - 2 * margin);
+        EXPECT_TRUE(test_frame.IsChord(chord));
+    }
+}
+
 }  // namespace
 
 TEST(keychords, init_instantiated) {
@@ -235,6 +260,7 @@ TEST(keychords, key) {
     test_frame.WaitForChord(escape_chord);
     test_frame.ClrChords(escape_chord);
     EXPECT_TRUE(test_frame.IsChord(escape_chord));
+    EXPECT_FALSE(test_frame.IsChord(escape_3s_chord));
 }
 
 TEST(keychords, keys_in_series) {
@@ -259,6 +285,18 @@ TEST(keychords, keys_in_parallel) {
     test_frame.WaitForChord(triple2_chord);
     test_frame.ClrChords(triple2_chord);
     EXPECT_TRUE(test_frame.IsChord(triple2_chord));
+}
+
+TEST(keychords, esc_too_short) {
+    duration_test(escape_3s_chord, -250ms);
+}
+
+TEST(keychords, esc_too_long) {
+    duration_test(escape_3s_chord, 250ms);
+}
+
+TEST(keychords, leftalt_too_long) {
+    duration_test(leftalt_3s_chord, 250ms);
 }
 
 }  // namespace init

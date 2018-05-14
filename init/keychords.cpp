@@ -26,6 +26,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
@@ -33,7 +34,10 @@
 #include <string>
 #include <vector>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
+
+using namespace std::chrono_literals;
 
 namespace android {
 namespace init {
@@ -109,20 +113,27 @@ void Keychords::Mask::operator|=(const Keychords::Mask& rval) {
     }
 }
 
-Keychords::Entry::Entry() : notified(false) {}
+Keychords::Entry::Entry(std::chrono::milliseconds duration)
+    : notified(false), duration(duration), matched(kMatchedOff) {}
 
 void Keychords::LambdaCheck() {
     for (auto& e : entries) {
         auto found = true;
         for (auto& code : e.first) {
+            if (code < 0) continue;
             if (!current.GetBit(code)) {
                 e.second.notified = false;
+                e.second.matched = e.second.kMatchedOff;
                 found = false;
                 break;
             }
         }
         if (!found) continue;
         if (e.second.notified) continue;
+        if (e.second.duration != e.second.kDurationOff) {
+            e.second.matched = android::base::boot_clock::now() + e.second.duration;
+            continue;
+        }
         e.second.notified = true;
         std::invoke(handler, e.first);
     }
@@ -160,6 +171,7 @@ bool Keychords::GeteventEnable(int fd) {
     Keychords::Mask mask;
     for (auto& e : entries) {
         for (auto& code : e.first) {
+            if (code < 0) continue;
             mask.resize(code);
             mask.SetBit(code);
         }
@@ -270,13 +282,38 @@ void Keychords::GeteventOpenDevice() {
 
 void Keychords::Register(const std::set<int>& keycodes) {
     if (keycodes.empty()) return;
-    entries.try_emplace(keycodes, Entry());
+    auto code = *keycodes.begin();
+    auto duration = (code < 0) ? std::chrono::milliseconds(-code) : Entry::Entry::kDurationOff;
+    entries.try_emplace(keycodes, Entry(duration));
 }
 
 void Keychords::Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler) {
     epoll = init_epoll;
     handler = init_handler;
     if (entries.size()) GeteventOpenDevice();
+}
+
+std::optional<std::chrono::milliseconds> Keychords::Wait(
+    std::optional<std::chrono::milliseconds> wait) {
+    if (entries.empty()) return wait;
+
+    android::base::boot_clock::time_point now = Entry::Entry::kMatchedOff;
+    for (auto& e : entries) {
+        if (e.second.notified || (e.second.duration == e.second.kDurationOff) ||
+            (e.second.matched == e.second.kMatchedOff))
+            continue;
+        if (now == e.second.kMatchedOff) now = android::base::boot_clock::now();
+        if (e.second.matched > now) {
+            auto duration =
+                std::chrono::duration_cast<std::chrono::milliseconds>(e.second.matched - now);
+            if (!wait || (wait > duration)) wait = duration;
+            continue;
+        }
+        e.second.matched = e.second.kMatchedOff;
+        e.second.notified = true;
+        std::invoke(handler, e.first);
+    }
+    return wait;
 }
 
 }  // namespace init

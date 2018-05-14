@@ -544,7 +544,7 @@ Result<Success> Service::ParseIoprio(const std::vector<std::string>& args) {
 Result<Success> Service::ParseKeycodes(const std::vector<std::string>& args) {
     for (std::size_t i = 1; i < args.size(); i++) {
         int code;
-        if (ParseInt(args[i], &code, 0, KEY_MAX)) {
+        if (ParseInt(args[i], &code, ((i != 1) && (i == (args.size() - 1))) ? INT_MIN : 0, KEY_MAX)) {
             keycodes_.emplace(code);
         } else {
             return Error() << "invalid keycode: " << args[i];
