@@ -144,11 +144,12 @@ std::string InitInotifyFds() {
 const std::vector<int> escape_chord = {KEY_ESC};
 const std::vector<int> triple1_chord = {KEY_VOLUMEDOWN, KEY_BACKSPACE, KEY_VOLUMEUP};
 const std::vector<int> triple2_chord = {KEY_VOLUMEUP, KEY_BACK, KEY_VOLUMEDOWN};
+const std::vector<int> escape_3s_chord = {KEY_ESC, -3000};
+const std::vector<int> leftalt_3s_chord = {KEY_LEFTALT, -3000};
 
 std::map<const std::vector<int>*, int> chord_map = {
-    {&escape_chord, 0},
-    {&triple1_chord, 0},
-    {&triple2_chord, 0},
+    {&escape_chord, 0},    {&triple1_chord, 0},    {&triple2_chord, 0},
+    {&escape_3s_chord, 0}, {&leftalt_3s_chord, 0},
 };
 
 int GetChordId(const std::vector<int>& chord) {
@@ -158,7 +159,7 @@ int GetChordId(const std::vector<int>& chord) {
 }
 
 void RelaxForMs(std::chrono::milliseconds wait = 1ms) {
-    epoll.Wait(wait);
+    epoll.Wait(KeychordWait(wait));
 }
 
 void SetChord(int key, bool value = true) {
@@ -167,7 +168,9 @@ void SetChord(int key, bool value = true) {
 }
 
 void SetChords(const std::vector<int>& chord, bool value = true) {
-    for (auto& key : chord) SetChord(key, value);
+    for (auto& key : chord) {
+        if (key >= 0) SetChord(key, value);
+    }
     RelaxForMs();
 }
 
@@ -255,6 +258,37 @@ TEST(keychords, keys_in_parallel) {
     SetChords(triple2_chord);
     for (int retry = 1000; retry && (last_keychord_id != keychord_id); --retry) RelaxForMs();
     ClrChords(triple2_chord);
+    EXPECT_EQ(last_keychord_id, keychord_id);
+    EXPECT_NE(last_keychord_id, -1);
+}
+
+TEST(keychords, esc_too_short) {
+    last_keychord_id = -1;
+    instantiate();
+    EXPECT_TRUE(ev.init());
+    int keychord_id = GetChordId(escape_3s_chord);
+    EXPECT_NE(keychord_id, 0);
+    SetChords(escape_3s_chord);
+    for (int retry = -800 - escape_3s_chord[1]; retry && (last_keychord_id != keychord_id);
+         --retry) {
+        RelaxForMs();
+    }
+    ClrChords(escape_3s_chord);
+    EXPECT_NE(last_keychord_id, keychord_id);
+}
+
+TEST(keychords, leftalt_too_long) {
+    last_keychord_id = -1;
+    instantiate();
+    EXPECT_TRUE(ev.init());
+    int keychord_id = GetChordId(leftalt_3s_chord);
+    EXPECT_NE(keychord_id, 0);
+    SetChords(leftalt_3s_chord);
+    for (int retry = 300 - leftalt_3s_chord[1]; retry && (last_keychord_id != keychord_id);
+         --retry) {
+        RelaxForMs();
+    }
+    ClrChords(leftalt_3s_chord);
     EXPECT_EQ(last_keychord_id, keychord_id);
     EXPECT_NE(last_keychord_id, -1);
 }
