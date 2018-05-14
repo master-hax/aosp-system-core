@@ -17,6 +17,8 @@
 #ifndef _INIT_KEYCHORDS_H_
 #define _INIT_KEYCHORDS_H_
 
+#include <chrono>
+#include <optional>
 #include <set>
 
 #include "epoll.h"
@@ -28,6 +30,7 @@ void HandleKeychord(const std::set<int>& keycodes);
 
 void KeychordInit(Epoll* init_epoll);
 bool RegisterKeychord(const std::set<int>& keycodes);
+std::optional<std::chrono::milliseconds> KeychordWait(std::optional<std::chrono::milliseconds> wait);
 
 }  // namespace init
 }  // namespace android

@@ -26,6 +26,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
@@ -33,9 +34,12 @@
 #include <string>
 #include <vector>
 
+#include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
 
 #include "init.h"
+
+using namespace std::chrono_literals;
 
 namespace android {
 namespace init {
@@ -45,10 +49,15 @@ namespace {
 Epoll* epoll;
 
 struct KeychordEntry {
+    const std::chrono::milliseconds duration;
+    static constexpr std::chrono::milliseconds duration_off = {};
+    android::base::boot_clock::time_point matched;
+    static constexpr android::base::boot_clock::time_point matched_off = {};
     const std::set<int> keycodes;
     bool notified;
 
-    KeychordEntry(const std::set<int>& keycodes) : keycodes(keycodes), notified(false) {}
+    KeychordEntry(std::chrono::milliseconds duration, const std::set<int>& keycodes)
+        : duration(duration), matched(matched_off), keycodes(keycodes), notified(false) {}
 };
 
 std::vector<KeychordEntry> keychord_entries;
@@ -124,14 +133,20 @@ void KeychordLambdaCheck() {
     for (auto& e : keychord_entries) {
         bool found = true;
         for (auto& code : e.keycodes) {
+            if (code < 0) continue;
             if (!keychord_current.GetBit(code)) {
                 e.notified = false;
+                e.matched = e.matched_off;
                 found = false;
                 break;
             }
         }
         if (!found) continue;
         if (e.notified) continue;
+        if (e.duration != e.duration_off) {
+            e.matched = android::base::boot_clock::now() + e.duration;
+            continue;
+        }
         e.notified = true;
         HandleKeychord(e.keycodes);
     }
@@ -169,6 +184,7 @@ bool KeychordGeteventEnable(int fd) {
     KeychordMask mask;
     for (auto& e : keychord_entries) {
         for (auto& code : e.keycodes) {
+            if (code < 0) continue;
             mask.resize(code);
             mask.SetBit(code);
         }
@@ -283,13 +299,34 @@ void GeteventOpenDevice() {
 
 bool RegisterKeychord(const std::set<int>& keycodes) {
     if (keycodes.empty()) return false;
-    keychord_entries.emplace_back(KeychordEntry(keycodes));
+    auto code = *keycodes.begin();
+    keychord_entries.emplace_back(KeychordEntry(
+        (code < 0) ? std::chrono::milliseconds(-code) : KeychordEntry::duration_off, keycodes));
     return true;
 }
 
 void KeychordInit(Epoll* init_epoll) {
     epoll = init_epoll;
     if (keychord_entries.size()) GeteventOpenDevice();
+}
+
+std::optional<std::chrono::milliseconds> KeychordWait(std::optional<std::chrono::milliseconds> wait) {
+    if (keychord_entries.empty()) return wait;
+
+    android::base::boot_clock::time_point now = KeychordEntry::matched_off;
+    for (auto& e : keychord_entries) {
+        if (e.notified || (e.duration == e.duration_off) || (e.matched == e.matched_off)) continue;
+        if (now == e.matched_off) now = android::base::boot_clock::now();
+        if (e.matched > now) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(e.matched - now);
+            if (!wait || (wait > duration)) wait = duration;
+            continue;
+        }
+        e.matched = e.matched_off;
+        e.notified = true;
+        HandleKeychord(e.keycodes);
+    }
+    return wait;
 }
 
 }  // namespace init

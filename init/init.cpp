@@ -789,7 +789,7 @@ int main(int argc, char** argv) {
             if (am.HasMoreCommands()) epoll_timeout = 0ms;
         }
 
-        if (auto result = epoll.Wait(epoll_timeout); !result) {
+        if (auto result = epoll.Wait(KeychordWait(epoll_timeout)); !result) {
             LOG(ERROR) << result.error();
         }
     }
