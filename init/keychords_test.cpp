@@ -145,15 +145,15 @@ std::string InitInotifyFds() {
 const std::set<int> escape_chord = {KEY_ESC};
 const std::set<int> triple1_chord = {KEY_VOLUMEDOWN, KEY_BACKSPACE, KEY_VOLUMEUP};
 const std::set<int> triple2_chord = {KEY_VOLUMEUP, KEY_BACK, KEY_VOLUMEDOWN};
+const std::set<int> escape_3s_chord = {KEY_ESC, -3000};
+const std::set<int> leftalt_3s_chord = {KEY_LEFTALT, -3000};
 
 std::vector<const std::set<int>*> chords = {
-    &escape_chord,
-    &triple1_chord,
-    &triple2_chord,
+    &escape_chord, &triple1_chord, &triple2_chord, &escape_3s_chord, &leftalt_3s_chord,
 };
 
 void RelaxForMs(std::chrono::milliseconds wait = 1ms) {
-    epoll.Wait(wait);
+    epoll.Wait(keychords.Wait(wait));
 }
 
 void SetChord(int key, bool value = true) {
@@ -162,7 +162,9 @@ void SetChord(int key, bool value = true) {
 }
 
 void SetChords(const std::set<int>& chord, bool value = true) {
-    for (auto& key : chord) SetChord(key, value);
+    for (auto& key : chord) {
+        if (key >= 0) SetChord(key, value);
+    }
     RelaxForMs();
 }
 
@@ -236,6 +238,34 @@ TEST(keychords, keys_in_parallel) {
     for (int retry = 1000; retry && triple2_chord != last_keycodes; --retry) RelaxForMs();
     ClrChords(triple2_chord);
     EXPECT_EQ(last_keycodes, triple2_chord);
+}
+
+TEST(keychords, esc_too_short) {
+    last_keycodes.clear();
+    instantiate();
+    EXPECT_TRUE(ev.init());
+    SetChords(escape_3s_chord);
+    for (int retry = -800 - *escape_3s_chord.begin(); retry && last_keycodes != escape_3s_chord;
+         --retry) {
+        RelaxForMs();
+    }
+    ClrChords(escape_3s_chord);
+    EXPECT_NE(last_keycodes, escape_3s_chord);
+}
+
+TEST(keychords, leftalt_too_long) {
+    last_keycodes.clear();
+    instantiate();
+    EXPECT_TRUE(ev.init());
+    SetChords(leftalt_3s_chord);
+    static constexpr int margin = 500;
+    int retry = margin - *leftalt_3s_chord.begin();
+    for (; retry && last_keycodes != leftalt_3s_chord; --retry) {
+        RelaxForMs();
+    }
+    ClrChords(leftalt_3s_chord);
+    EXPECT_LT(retry, 2 * margin);
+    EXPECT_EQ(last_keycodes, leftalt_3s_chord);
 }
 
 }  // namespace init

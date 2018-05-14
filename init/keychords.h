@@ -17,11 +17,15 @@
 #ifndef _INIT_KEYCHORDS_H_
 #define _INIT_KEYCHORDS_H_
 
+#include <chrono>
 #include <functional>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
 #include <vector>
+
+#include <android-base/chrono_utils.h>
 
 #include "epoll.h"
 
@@ -34,6 +38,10 @@ class Keychords {
     std::function<void(const std::set<int>&)> handler;
 
     struct Entry {
+        const std::chrono::milliseconds duration;
+        static constexpr std::chrono::milliseconds duration_off = {};
+        android::base::boot_clock::time_point matched;
+        static constexpr android::base::boot_clock::time_point matched_off = {};
         const std::set<int> keycodes;
         bool notified;
 
@@ -86,6 +94,7 @@ class Keychords {
 
     bool Register(const std::set<int>& keycodes);
     void Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler);
+    std::optional<std::chrono::milliseconds> Wait(std::optional<std::chrono::milliseconds> wait);
 };
 
 }  // namespace init
