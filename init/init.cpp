@@ -828,6 +828,10 @@ int main(int argc, char** argv) {
             // If there's more work to do, wake up again immediately.
             if (am.HasMoreCommands()) epoll_timeout = 0ms;
         }
+        // If not busy, perform or calculate next Keychords background activity.
+        if (!epoll_timeout || epoll_timeout != 0ms) {
+            epoll_timeout = keychords.CheckAndCalculateNextIfLess(epoll_timeout);
+        }
 
         if (auto result = epoll.Wait(epoll_timeout); !result) {
             LOG(ERROR) << result.error();
