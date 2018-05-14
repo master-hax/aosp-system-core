@@ -17,6 +17,8 @@
 #ifndef _INIT_KEYCHORDS_H_
 #define _INIT_KEYCHORDS_H_
 
+#include <chrono>
+#include <optional>
 #include <vector>
 
 #include "epoll.h"
@@ -28,6 +30,7 @@ void HandleKeychord(int id);
 
 void KeychordInit(Epoll* init_epoll);
 int GetKeychordId(const std::vector<int>& keycodes);
+std::optional<std::chrono::milliseconds> KeychordWait(std::optional<std::chrono::milliseconds> wait);
 
 }  // namespace init
 }  // namespace android
