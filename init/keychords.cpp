@@ -270,9 +270,10 @@ void Keychords::GeteventOpenDevice() {
     if (inotify_fd >= 0) epoll->RegisterHandler(inotify_fd, [this]() { this->InotifyHandler(); });
 }
 
-void Keychords::Register(const std::set<int>& keycodes) {
-    if (keycodes.empty()) return;
+bool Keychords::Register(const std::set<int>& keycodes) {
+    if (keycodes.empty()) return false;
     entries.emplace_back(Entry(keycodes));
+    return true;
 }
 
 void Keychords::Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler) {

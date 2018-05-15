@@ -84,7 +84,7 @@ class Keychords {
     Keychords();
     ~Keychords();
 
-    void Register(const std::set<int>& keycodes);
+    bool Register(const std::set<int>& keycodes);
     void Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler);
 };
 
