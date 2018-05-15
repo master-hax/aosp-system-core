@@ -422,7 +422,7 @@ int usb_write(usb_handle *h, const void *_data, int len)
     }
 
     D("-- usb_write --");
-    return 0;
+    return n;
 }
 
 int usb_read(usb_handle *h, void *_data, int len)
