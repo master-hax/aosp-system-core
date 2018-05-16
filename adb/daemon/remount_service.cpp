@@ -33,6 +33,8 @@
 #include <vector>
 
 #include <android-base/properties.h>
+#include <bootloader_message/bootloader_message.h>
+#include <cutils/android_reboot.h>
 #include <ext4_utils/ext4_utils.h>
 
 #include "adb.h"
@@ -183,7 +185,26 @@ static bool remount_partition(int fd, const char* dir, std::vector<std::string>&
     return true;
 }
 
+static void reboot_for_fsck(int fd) {
+    const std::vector<std::string> options = {"--fsck_unshare_blocks"};
+    std::string err;
+    if (!write_bootloader_message(options, &err)) {
+        WriteFdFmt(fd, "Failed to set bootloader message: %s\n", err.c_str());
+        return;
+    }
+
+    WriteFdExactly(fd,
+                   "The device will now reboot to recovery and attempt "
+                   "un-deduplication.\n");
+
+    sync();
+    android::base::SetProperty(ANDROID_RB_PROPERTY, "reboot,recovery");
+}
+
 void remount_service(int fd, void* cookie) {
+    const char* cmd = reinterpret_cast<const char*>(cookie);
+    bool requested_reboot = cmd && !strcmp(cmd, "-R");
+
     if (getuid() != 0) {
         WriteFdExactly(fd, "Not running as root. Try \"adb root\" first.\n");
         adb_close(fd);
@@ -230,6 +251,13 @@ void remount_service(int fd, void* cookie) {
                        "not be remounted:\n");
         for (const std::string& name : dedup) {
             WriteFdFmt(fd, "  %s\n", name.c_str());
+        }
+        if (requested_reboot) {
+            reboot_for_fsck(fd);
+        } else {
+            WriteFdExactly(fd,
+                           "To reboot and un-deduplicate these partitions, "
+                           "please retry with adb remount -R.\n");
         }
     }
 
