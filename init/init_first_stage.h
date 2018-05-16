@@ -20,8 +20,7 @@
 namespace android {
 namespace init {
 
-bool DoFirstStageMount();
-void SetInitAvbVersionInRecovery();
+void first_stage_main(int argc, char** argv);
 
 }  // namespace init
 }  // namespace android

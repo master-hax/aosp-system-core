@@ -16,7 +16,14 @@
 
 #include "init_first_stage.h"
 
+#include <fcntl.h>
+#include <paths.h>
+#include <seccomp_policy.h>
 #include <stdlib.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/sysmacros.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -29,11 +36,15 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <cutils/android_filesystem_config.h>
+#include <selinux/android.h>
 
 #include "devices.h"
 #include "fs_mgr.h"
 #include "fs_mgr_avb.h"
 #include "fs_mgr_dm_linear.h"
+#include "log.h"
+#include "selinux.h"
 #include "uevent.h"
 #include "uevent_listener.h"
 #include "util.h"
@@ -91,6 +102,8 @@ class FirstStageMountVBootV1 : public FirstStageMount {
     bool SetUpDmVerity(fstab_rec* fstab_rec) override;
 };
 
+static void SetInitAvbVersionInRecovery();
+
 class FirstStageMountVBootV2 : public FirstStageMount {
   public:
     friend void SetInitAvbVersionInRecovery();
@@ -128,6 +141,45 @@ static inline bool IsDmLinearEnabled() {
             }
         });
     return enabled;
+}
+
+static void SetInitAvbVersionInRecovery() {
+    if (!IsRecoveryMode()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not in recovery mode)";
+        return;
+    }
+
+    if (!IsDtVbmetaCompatible()) {
+        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
+        return;
+    }
+
+    // Initializes required devices for the subsequent FsManagerAvbHandle::Open()
+    // to verify AVB metadata on all partitions in the verified chain.
+    // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
+    // Open() function returns a valid handle.
+    // We don't need to mount partitions here in recovery mode.
+    FirstStageMountVBootV2 avb_first_mount;
+    if (!avb_first_mount.InitDevices()) {
+        LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
+        return;
+    }
+
+    FsManagerAvbUniquePtr avb_handle =
+        FsManagerAvbHandle::Open(std::move(avb_first_mount.by_name_symlink_map_));
+    if (!avb_handle) {
+        PLOG(ERROR) << "Failed to open FsManagerAvbHandle for INIT_AVB_VERSION";
+        return;
+    }
+    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
+}
+
+static void global_seccomp() {
+    import_kernel_cmdline(false, [](const std::string& key, const std::string& value, bool in_qemu) {
+        if (key == "androidboot.seccomp" && value == "global" && !set_global_seccomp_filter()) {
+            LOG(FATAL) << "Failed to globally enable seccomp!";
+        }
+    });
 }
 
 // Class Definitions
@@ -526,51 +578,90 @@ bool FirstStageMountVBootV2::InitAvbHandle() {
 
 // Public functions
 // ----------------
-// Mounts partitions specified by fstab in device tree.
-bool DoFirstStageMount() {
+// First stage init entry
+void first_stage_main(int argc, char** argv) {
+    boot_clock::time_point start_time = boot_clock::now();
+
+    // Clear the umask.
+    umask(0);
+
+    clearenv();
+    setenv("PATH", _PATH_DEFPATH, 1);
+    // Get the basic filesystem setup we need put together in the initramdisk
+    // on / and then we'll let the rc file figure out the rest.
+    mount("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755");
+    mkdir("/dev/pts", 0755);
+    mkdir("/dev/socket", 0755);
+    mount("devpts", "/dev/pts", "devpts", 0, NULL);
+#define MAKE_STR(x) __STRING(x)
+    mount("proc", "/proc", "proc", 0, "hidepid=2,gid=" MAKE_STR(AID_READPROC));
+    // Don't expose the raw commandline to unprivileged processes.
+    chmod("/proc/cmdline", 0440);
+    gid_t groups[] = {AID_READPROC};
+    setgroups(arraysize(groups), groups);
+    mount("sysfs", "/sys", "sysfs", 0, NULL);
+    mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL);
+
+    mknod("/dev/kmsg", S_IFCHR | 0600, makedev(1, 11));
+
+    if constexpr (WORLD_WRITABLE_KMSG) {
+        mknod("/dev/kmsg_debug", S_IFCHR | 0622, makedev(1, 11));
+    }
+
+    mknod("/dev/random", S_IFCHR | 0666, makedev(1, 8));
+    mknod("/dev/urandom", S_IFCHR | 0666, makedev(1, 9));
+
+    // Mount staging areas for devices managed by vold
+    // See storage config details at http://source.android.com/devices/storage/
+    mount("tmpfs", "/mnt", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV, "mode=0755,uid=0,gid=1000");
+    // /mnt/vendor is used to mount vendor-specific partitions that can not be
+    // part of the vendor partition, e.g. because they are mounted read-write.
+    mkdir("/mnt/vendor", 0755);
+
+    // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
+    // talk to the outside world...
+    InitKernelLogging(argv);
+
+    LOG(INFO) << "init first stage started!";
+
     // Skips first stage mount if we're in recovery mode.
-    if (IsRecoveryMode()) {
-        LOG(INFO) << "First stage mount skipped (recovery mode)";
-        return true;
-    }
-
-    std::unique_ptr<FirstStageMount> handle = FirstStageMount::Create();
-    if (!handle) {
-        LOG(ERROR) << "Failed to create FirstStageMount";
-        return false;
-    }
-    return handle->DoFirstStageMount();
-}
-
-void SetInitAvbVersionInRecovery() {
     if (!IsRecoveryMode()) {
-        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not in recovery mode)";
-        return;
+        std::unique_ptr<FirstStageMount> handle = FirstStageMount::Create();
+        if (!handle || !handle->DoFirstStageMount()) {
+            LOG(FATAL) << "Failed to mount required partitions in first stage...";
+        }
+    } else {
+        LOG(INFO) << "First stage mount skipped (recovery mode)";
     }
 
-    if (!IsDtVbmetaCompatible()) {
-        LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
-        return;
+    SetInitAvbVersionInRecovery();
+
+    // Enable seccomp if global boot option was passed (otherwise it is enabled in zygote).
+    global_seccomp();
+
+    // Set up SELinux, loading the SELinux policy.
+    SelinuxSetupKernelLogging();
+    SelinuxInitialize();
+
+    // We're in the kernel domain, so re-exec init to transition to the init domain now
+    // that the SELinux policy has been loaded.
+    if (selinux_android_restorecon("/init", 0) == -1) {
+        PLOG(FATAL) << "restorecon failed of /init failed";
     }
 
-    // Initializes required devices for the subsequent FsManagerAvbHandle::Open()
-    // to verify AVB metadata on all partitions in the verified chain.
-    // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
-    // Open() function returns a valid handle.
-    // We don't need to mount partitions here in recovery mode.
-    FirstStageMountVBootV2 avb_first_mount;
-    if (!avb_first_mount.InitDevices()) {
-        LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
-        return;
-    }
+    setenv("INIT_SECOND_STAGE", "true", 1);
 
-    FsManagerAvbUniquePtr avb_handle =
-        FsManagerAvbHandle::Open(std::move(avb_first_mount.by_name_symlink_map_));
-    if (!avb_handle) {
-        PLOG(ERROR) << "Failed to open FsManagerAvbHandle for INIT_AVB_VERSION";
-        return;
-    }
-    setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
+    static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
+    uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
+    setenv("INIT_STARTED_AT", std::to_string(start_ms).c_str(), 1);
+
+    char* path = argv[0];
+    char* args[] = {path, nullptr};
+    execv(path, args);
+
+    // execv() only returns if an error happened, in which case we
+    // panic and never fall through this conditional.
+    PLOG(FATAL) << "execv(\"" << path << "\") failed";
 }
 
 }  // namespace init

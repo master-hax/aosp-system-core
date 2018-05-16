@@ -20,7 +20,6 @@
 #include <fcntl.h>
 #include <paths.h>
 #include <pthread.h>
-#include <seccomp_policy.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -447,14 +446,6 @@ static Result<Success> queue_property_triggers_action(const BuiltinArguments& ar
     return Success();
 }
 
-static void global_seccomp() {
-    import_kernel_cmdline(false, [](const std::string& key, const std::string& value, bool in_qemu) {
-        if (key == "androidboot.seccomp" && value == "global" && !set_global_seccomp_filter()) {
-            LOG(FATAL) << "Failed to globally enable seccomp!";
-        }
-    });
-}
-
 // Set the UDC controller for the ConfigFS USB Gadgets.
 // Read the UDC controller in use from "/sys/class/udc".
 // In case of multiple UDC controllers select the first one.
@@ -606,83 +597,8 @@ int main(int argc, char** argv) {
     bool is_first_stage = (getenv("INIT_SECOND_STAGE") == nullptr);
 
     if (is_first_stage) {
-        boot_clock::time_point start_time = boot_clock::now();
-
-        // Clear the umask.
-        umask(0);
-
-        clearenv();
-        setenv("PATH", _PATH_DEFPATH, 1);
-        // Get the basic filesystem setup we need put together in the initramdisk
-        // on / and then we'll let the rc file figure out the rest.
-        mount("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755");
-        mkdir("/dev/pts", 0755);
-        mkdir("/dev/socket", 0755);
-        mount("devpts", "/dev/pts", "devpts", 0, NULL);
-        #define MAKE_STR(x) __STRING(x)
-        mount("proc", "/proc", "proc", 0, "hidepid=2,gid=" MAKE_STR(AID_READPROC));
-        // Don't expose the raw commandline to unprivileged processes.
-        chmod("/proc/cmdline", 0440);
-        gid_t groups[] = { AID_READPROC };
-        setgroups(arraysize(groups), groups);
-        mount("sysfs", "/sys", "sysfs", 0, NULL);
-        mount("selinuxfs", "/sys/fs/selinux", "selinuxfs", 0, NULL);
-
-        mknod("/dev/kmsg", S_IFCHR | 0600, makedev(1, 11));
-
-        if constexpr (WORLD_WRITABLE_KMSG) {
-            mknod("/dev/kmsg_debug", S_IFCHR | 0622, makedev(1, 11));
-        }
-
-        mknod("/dev/random", S_IFCHR | 0666, makedev(1, 8));
-        mknod("/dev/urandom", S_IFCHR | 0666, makedev(1, 9));
-
-        // Mount staging areas for devices managed by vold
-        // See storage config details at http://source.android.com/devices/storage/
-        mount("tmpfs", "/mnt", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
-              "mode=0755,uid=0,gid=1000");
-        // /mnt/vendor is used to mount vendor-specific partitions that can not be
-        // part of the vendor partition, e.g. because they are mounted read-write.
-        mkdir("/mnt/vendor", 0755);
-
-        // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
-        // talk to the outside world...
-        InitKernelLogging(argv);
-
-        LOG(INFO) << "init first stage started!";
-
-        if (!DoFirstStageMount()) {
-            LOG(FATAL) << "Failed to mount required partitions early ...";
-        }
-
-        SetInitAvbVersionInRecovery();
-
-        // Enable seccomp if global boot option was passed (otherwise it is enabled in zygote).
-        global_seccomp();
-
-        // Set up SELinux, loading the SELinux policy.
-        SelinuxSetupKernelLogging();
-        SelinuxInitialize();
-
-        // We're in the kernel domain, so re-exec init to transition to the init domain now
-        // that the SELinux policy has been loaded.
-        if (selinux_android_restorecon("/init", 0) == -1) {
-            PLOG(FATAL) << "restorecon failed of /init failed";
-        }
-
-        setenv("INIT_SECOND_STAGE", "true", 1);
-
-        static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
-        uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
-        setenv("INIT_STARTED_AT", std::to_string(start_ms).c_str(), 1);
-
-        char* path = argv[0];
-        char* args[] = { path, nullptr };
-        execv(path, args);
-
-        // execv() only returns if an error happened, in which case we
-        // panic and never fall through this conditional.
-        PLOG(FATAL) << "execv(\"" << path << "\") failed";
+        // this never returns ..
+        first_stage_main(argc, argv);
     }
 
     // At this point we're in the second stage of init.
