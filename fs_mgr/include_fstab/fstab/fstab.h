@@ -22,7 +22,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <set>
 #include <string>
+#include <vector>
+
+enum class FsManagerMountStage {
+    kFirstStageMount = 0,
+    kSecondStageMount,
+};
 
 /*
  * The entries must be kept in the same order as they were seen in the fstab.
@@ -89,5 +96,6 @@ int fs_mgr_is_logical(const struct fstab_rec* fstab);
 int fs_mgr_has_sysfs_path(const struct fstab_rec* fstab);
 
 std::string fs_mgr_get_slot_suffix();
+std::set<std::string> fs_mgr_get_boot_devices(FsManagerMountStage mount_stage);
 
 #endif /* __CORE_FS_TAB_H */
