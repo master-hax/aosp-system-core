@@ -44,6 +44,7 @@
 #include <sparse/sparse.h>
 #include <utils/FileMap.h>
 
+#include "constants.h"
 #include "fastboot.h"
 #include "transport.h"
 
@@ -74,13 +75,13 @@ static int64_t check_response(Transport* transport, uint32_t size, char* respons
             return -1;
         }
 
-        if (!memcmp(status, "INFO", 4)) {
+        if (!memcmp(status, RESPONSE_INFO, 4)) {
             verbose("received INFO \"%s\"", status + 4);
             fprintf(stderr, "(bootloader) %s\n", status + 4);
             continue;
         }
 
-        if (!memcmp(status, "OKAY", 4)) {
+        if (!memcmp(status, RESPONSE_OKAY, 4)) {
             verbose("received OKAY \"%s\"", status + 4);
             if (response) {
                 strcpy(response, status + 4);
@@ -88,7 +89,7 @@ static int64_t check_response(Transport* transport, uint32_t size, char* respons
             return 0;
         }
 
-        if (!memcmp(status, "FAIL", 4)) {
+        if (!memcmp(status, RESPONSE_FAIL, 4)) {
             verbose("received FAIL \"%s\"", status + 4);
             if (r > 4) {
                 g_error = android::base::StringPrintf("remote: %s", status + 4);
@@ -98,7 +99,7 @@ static int64_t check_response(Transport* transport, uint32_t size, char* respons
             return -1;
         }
 
-        if (!memcmp(status, "DATA", 4) && size > 0){
+        if (!memcmp(status, RESPONSE_DATA, 4) && size > 0) {
             verbose("received DATA %s", status + 4);
             uint32_t dsize = strtol(status + 4, 0, 16);
             if (dsize > size) {
@@ -247,18 +248,18 @@ int fb_command_response(Transport* transport, const std::string& cmd, char* resp
 }
 
 int64_t fb_download_data(Transport* transport, const void* data, uint32_t size) {
-    std::string cmd(android::base::StringPrintf("download:%08x", size));
+    std::string cmd(android::base::StringPrintf(CMD_DOWNLOAD FB_SEPARATOR "%08x", size));
     return _command_send(transport, cmd.c_str(), data, size, 0) < 0 ? -1 : 0;
 }
 
 int64_t fb_download_data_fd(Transport* transport, int fd, uint32_t size) {
-    std::string cmd(android::base::StringPrintf("download:%08x", size));
+    std::string cmd(android::base::StringPrintf(CMD_DOWNLOAD FB_SEPARATOR "%08x", size));
     return _command_send_fd(transport, cmd.c_str(), fd, size, 0) < 0 ? -1 : 0;
 }
 
 int64_t fb_upload_data(Transport* transport, const char* outfile) {
     // positive return value is the upload size sent by the device
-    int64_t r = _command_start(transport, "upload", std::numeric_limits<int32_t>::max(), nullptr);
+    int64_t r = _command_start(transport, CMD_UPLOAD, std::numeric_limits<int32_t>::max(), nullptr);
     if (r <= 0) {
         g_error = android::base::StringPrintf("command start failed (%s)", strerror(errno));
         return r;
@@ -345,7 +346,7 @@ int fb_download_data_sparse(Transport* transport, struct sparse_file* s) {
         return -1;
     }
 
-    std::string cmd(android::base::StringPrintf("download:%08" PRIx64, size));
+    std::string cmd(android::base::StringPrintf(CMD_DOWNLOAD FB_SEPARATOR "%08" PRIx64, size));
     int r = _command_start(transport, cmd, size, 0);
     if (r < 0) {
         return -1;
