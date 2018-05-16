@@ -77,7 +77,7 @@ class FirstStageMount {
     std::unique_ptr<LogicalPartitionTable> dm_linear_table_;
     std::vector<fstab_rec*> mount_fstab_recs_;
     std::set<std::string> required_devices_partition_names_;
-    DeviceHandler device_handler_;
+    std::unique_ptr<DeviceHandler> device_handler_;
     UeventListener uevent_listener_;
 };
 
@@ -147,6 +147,15 @@ FirstStageMount::FirstStageMount()
     if (IsDmLinearEnabled()) {
         dm_linear_table_ = android::fs_mgr::LoadPartitionsFromDeviceTree();
     }
+
+    std::string dt_value;
+    std::vector<std::string> boot_devices;
+    if (read_android_dt_file("boot_devices", &dt_value)) {
+        boot_devices = android::base::Split(dt_value, ",");
+    }
+    device_handler_ =
+        std::make_unique<DeviceHandler>(std::vector<Permissions>{}, std::vector<SysfsPermissions>{},
+                                        std::vector<Subsystem>{}, boot_devices, false);
 }
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
@@ -205,7 +214,7 @@ bool FirstStageMount::InitRequiredDevices() {
         bool found = false;
         auto dm_callback = [this, &dm_path, &found](const Uevent& uevent) {
             if (uevent.path == dm_path) {
-                device_handler_.HandleDeviceEvent(uevent);
+                device_handler_->HandleDeviceEvent(uevent);
                 found = true;
                 return ListenerAction::kStop;
             }
@@ -262,7 +271,7 @@ ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const
     if (iter != required_devices_partition_names_.end()) {
         LOG(VERBOSE) << __PRETTY_FUNCTION__ << ": found partition: " << *iter;
         required_devices_partition_names_.erase(iter);
-        device_handler_.HandleDeviceEvent(uevent);
+        device_handler_->HandleDeviceEvent(uevent);
         if (required_devices_partition_names_.empty()) {
             return ListenerAction::kStop;
         } else {
@@ -299,7 +308,7 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
     auto verity_callback = [&device_name, &dm_device, this, &found](const Uevent& uevent) {
         if (uevent.device_name == device_name) {
             LOG(VERBOSE) << "Creating device-mapper device : " << dm_device;
-            device_handler_.HandleDeviceEvent(uevent);
+            device_handler_->HandleDeviceEvent(uevent);
             found = true;
             return ListenerAction::kStop;
         }
@@ -469,7 +478,7 @@ ListenerAction FirstStageMountVBootV2::UeventCallback(const Uevent& uevent) {
         // is not empty. e.g.,
         //   - /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem
         //   - /dev/block/platform/soc.0/f9824900.sdhci/mmcblk0p1
-        std::vector<std::string> links = device_handler_.GetBlockDeviceSymlinks(uevent);
+        std::vector<std::string> links = device_handler_->GetBlockDeviceSymlinks(uevent);
         if (!links.empty()) {
             auto[it, inserted] = by_name_symlink_map_.emplace(uevent.partition_name, links[0]);
             if (!inserted) {
