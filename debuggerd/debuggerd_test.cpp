@@ -152,6 +152,8 @@ class CrasherTest : public ::testing::Test {
   void StartProcess(std::function<void()> function, std::function<pid_t()> forker = fork);
   void StartCrasher(const std::string& crash_type);
   void FinishCrasher();
+
+  bool Waitpid(int* status);
   void AssertDeath(int signo);
 };
 
@@ -229,13 +231,20 @@ void CrasherTest::FinishCrasher() {
   }
 }
 
+bool CrasherTest::Waitpid(int* status) {
+  pid_t pid = TIMEOUT(5, waitpid(crasher_pid, status, 0));
+  if (pid != crasher_pid) {
+    ADD_FAILURE() << "failed to wait for crasher: " << strerror(errno);
+    return false;
+  }
+  crasher_pid = -1;
+  return true;
+}
+
 void CrasherTest::AssertDeath(int signo) {
   int status;
-  pid_t pid = TIMEOUT(5, waitpid(crasher_pid, &status, 0));
-  if (pid != crasher_pid) {
-    printf("failed to wait for crasher (pid %d)\n", crasher_pid);
-    sleep(100);
-    FAIL() << "failed to wait for crasher: " << strerror(errno);
+  if (!Waitpid(&status)) {
+    return;
   }
 
   if (signo == 0) {
@@ -246,7 +255,6 @@ void CrasherTest::AssertDeath(int signo) {
     ASSERT_TRUE(WIFSIGNALED(status)) << "crasher didn't terminate via a signal";
     ASSERT_EQ(signo, WTERMSIG(status));
   }
-  crasher_pid = -1;
 }
 
 static void ConsumeFd(unique_fd fd, std::string* output) {
@@ -679,7 +687,10 @@ TEST_F(CrasherTest, seccomp_crash_oom) {
 
   StartIntercept(&output_fd);
   FinishCrasher();
-  AssertDeath(SIGABRT);
+
+  int status;
+  ASSERT_TRUE(Waitpid(&status));
+  ASSERT_TRUE(WIFEXITED(status));
   FinishIntercept(&intercept_result);
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
 
