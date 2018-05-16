@@ -17,12 +17,17 @@
 #ifndef _INIT_KEYCHORDS_H_
 #define _INIT_KEYCHORDS_H_
 
+#include <vector>
+
 #include "epoll.h"
 
 namespace android {
 namespace init {
 
+void HandleKeychord(int id);
+
 void KeychordInit(Epoll* init_epoll);
+int GetKeychordId(const std::vector<int>& keycodes);
 
 }  // namespace init
 }  // namespace android

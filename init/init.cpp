@@ -732,6 +732,10 @@ int main(int argc, char** argv) {
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
     am.QueueBuiltinAction(
         [&epoll](const BuiltinArguments& args) -> Result<Success> {
+            for (const auto& service : ServiceList::GetInstance()) {
+                auto* svc = service.get();
+                svc->set_keychord_id(GetKeychordId(svc->keycodes()));
+            }
             KeychordInit(&epoll);
             return Success();
         },
