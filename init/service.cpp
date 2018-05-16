@@ -39,6 +39,7 @@
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
 
+#include "keychords.h"
 #include "rlimit_parser.h"
 #include "util.h"
 
@@ -1172,6 +1173,7 @@ Result<Success> ServiceParser::EndSection() {
             old_service = nullptr;
         }
 
+        service_->set_keychord_id(GetKeychordId(service_->keycodes()));
         service_list_->AddService(std::move(service_));
     }
 

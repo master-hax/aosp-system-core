@@ -106,6 +106,7 @@ cc_library_static {
         "init.cpp",
         "init_first_stage.cpp",
         "keychords.cpp",
+        "keychords_handler.cpp",
         "log.cpp",
         "parser.cpp",
         "persistent_properties.cpp",

@@ -59,5 +59,9 @@ bool SelabelLookupFileContext(const std::string& key, int type, std::string* res
     return false;
 }
 
+int GetKeychordId(const std::vector<int>& keycodes) {
+    return 0;
+}
+
 }  // namespace init
 }  // namespace android

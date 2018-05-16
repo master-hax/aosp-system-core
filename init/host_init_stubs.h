@@ -55,6 +55,9 @@ bool SelinuxHasVendorInit();
 void SelabelInitialize();
 bool SelabelLookupFileContext(const std::string& key, int type, std::string* result);
 
+// keychords.h
+int GetKeychordId(const std::vector<int>& keycodes);
+
 }  // namespace init
 }  // namespace android
 
