@@ -37,7 +37,7 @@
 namespace android {
 namespace init {
 
-Keychords::Keychords() : epoll_(nullptr), count_(0), inotify_fd_(-1) {}
+Keychords::Keychords() : epoll_(nullptr), inotify_fd_(-1) {}
 
 Keychords::~Keychords() noexcept {
     if (inotify_fd_ >= 0) {
@@ -108,23 +108,22 @@ void Keychords::Mask::operator|=(const Keychords::Mask& rval) {
     }
 }
 
-Keychords::Entry::Entry(const std::vector<int>& keycodes, int id)
-    : keycodes_(keycodes), id_(id), notified_(false) {}
+Keychords::Entry::Entry() : notified_(false) {}
 
 void Keychords::LambdaCheck() {
     for (auto& e : entries_) {
         auto found = true;
-        for (auto& code : e.keycodes_) {
+        for (auto& code : e.first) {
             if (!current_.GetBit(code)) {
-                e.notified_ = false;
+                e.second.notified_ = false;
                 found = false;
                 break;
             }
         }
         if (!found) continue;
-        if (e.notified_) continue;
-        e.notified_ = true;
-        handler_(e.id_);
+        if (e.second.notified_) continue;
+        e.second.notified_ = true;
+        handler_(e.first);
     }
 }
 
@@ -159,7 +158,7 @@ bool Keychords::GeteventEnable(int fd) {
 
     Keychords::Mask mask;
     for (auto& e : entries_) {
-        for (auto& code : e.keycodes_) {
+        for (auto& code : e.first) {
             mask.resize(code);
             mask.SetBit(code);
         }
@@ -271,17 +270,15 @@ void Keychords::GeteventOpenDevice() {
     }
 }
 
-int Keychords::GetId(const std::vector<int>& keycodes) {
-    if (keycodes.empty()) return 0;
-    ++count_;
-    entries_.emplace_back(Entry(keycodes, count_));
-    return count_;
+void Keychords::Register(const std::vector<int>& keycodes) {
+    if (keycodes.empty()) return;
+    entries_.try_emplace(keycodes, Entry());
 }
 
-void Keychords::Start(Epoll* epoll, std::function<void(int)> handler) {
+void Keychords::Start(Epoll* epoll, std::function<void(const std::vector<int>&)> handler) {
     epoll_ = epoll;
     handler_ = handler;
-    if (count_) GeteventOpenDevice();
+    if (entries_.size()) GeteventOpenDevice();
 }
 
 }  // namespace init
