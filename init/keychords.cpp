@@ -29,6 +29,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -37,7 +38,7 @@
 namespace android {
 namespace init {
 
-Keychords::Keychords() : count(0), epoll(nullptr), inotify_fd(-1) {}
+Keychords::Keychords() : epoll(nullptr), inotify_fd(-1) {}
 
 Keychords::~Keychords() {
     if (inotify_fd >= 0) {
@@ -110,8 +111,7 @@ void Keychords::Mask::operator|=(const Keychords::Mask& rval) {
     }
 }
 
-Keychords::Entry::Entry(const std::vector<int>& keycodes, int id)
-    : keycodes(keycodes), notified(false), id(id) {}
+Keychords::Entry::Entry(const std::set<int>& keycodes) : keycodes(keycodes), notified(false) {}
 
 void Keychords::LambdaCheck() {
     for (auto& e : entries) {
@@ -126,7 +126,7 @@ void Keychords::LambdaCheck() {
         if (!found) continue;
         if (e.notified) continue;
         e.notified = true;
-        std::invoke(handler, e.id);
+        std::invoke(handler, e.keycodes);
     }
 }
 
@@ -270,17 +270,15 @@ void Keychords::GeteventOpenDevice() {
     if (inotify_fd >= 0) epoll->RegisterHandler(inotify_fd, [this]() { this->InotifyHandler(); });
 }
 
-int Keychords::GetId(const std::vector<int>& keycodes) {
-    if (keycodes.empty()) return 0;
-    ++count;
-    entries.emplace_back(Entry(keycodes, count));
-    return count;
+void Keychords::Register(const std::set<int>& keycodes) {
+    if (keycodes.empty()) return;
+    entries.emplace_back(Entry(keycodes));
 }
 
-void Keychords::Start(Epoll* init_epoll, std::function<void(int)> init_handler) {
+void Keychords::Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler) {
     epoll = init_epoll;
     handler = init_handler;
-    if (count) GeteventOpenDevice();
+    if (entries.size()) GeteventOpenDevice();
 }
 
 }  // namespace init

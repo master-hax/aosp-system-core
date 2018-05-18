@@ -19,6 +19,7 @@
 
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -29,16 +30,14 @@ namespace init {
 
 class Keychords {
   private:
-    int count;
     Epoll* epoll;
-    std::function<void(int)> handler;
+    std::function<void(const std::set<int>&)> handler;
 
     struct Entry {
-        const std::vector<int> keycodes;
+        const std::set<int> keycodes;
         bool notified;
-        int id;
 
-        Entry(const std::vector<int>& keycodes, int id);
+        Entry(const std::set<int>& keycodes);
     };
     std::vector<Entry> entries;
 
@@ -85,8 +84,8 @@ class Keychords {
     Keychords();
     ~Keychords();
 
-    int GetId(const std::vector<int>& keycodes);
-    void Start(Epoll* init_epoll, std::function<void(int)> init_handler);
+    void Register(const std::set<int>& keycodes);
+    void Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler);
 };
 
 }  // namespace init
