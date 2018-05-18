@@ -18,15 +18,15 @@
 #define _INIT_KEYCHORDS_H_
 
 #include <functional>
-#include <vector>
+#include <set>
 
 #include "epoll.h"
 
 namespace android {
 namespace init {
 
-void KeychordInit(Epoll* init_epoll, std::function<void(int)> handler);
-int GetKeychordId(const std::vector<int>& keycodes);
+void KeychordInit(Epoll* init_epoll, std::function<void(const std::set<int>&)>);
+bool RegisterKeychord(const std::set<int>& keycodes);
 
 }  // namespace init
 }  // namespace android
