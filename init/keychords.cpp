@@ -37,95 +37,85 @@
 namespace android {
 namespace init {
 
-namespace {
+Keychords::Keychords() : epoll(nullptr), count(0), inotify_fd(-1) {}
 
-int keychords_count;
-Epoll* epoll;
-std::function<void(int)> handle_keychord;
-
-struct KeychordEntry {
-    const std::vector<int> keycodes;
-    bool notified;
-    int id;
-
-    KeychordEntry(const std::vector<int>& keycodes, int id)
-        : keycodes(keycodes), notified(false), id(id) {}
-};
-
-std::vector<KeychordEntry> keychord_entries;
-
-// Bit management
-class KeychordMask {
-  private:
-    typedef unsigned int mask_t;
-    std::vector<mask_t> bits;
-    static constexpr size_t bits_per_byte = 8;
-
-  public:
-    explicit KeychordMask(size_t bit = 0) : bits((bit + sizeof(mask_t) - 1) / sizeof(mask_t), 0) {}
-
-    void SetBit(size_t bit, bool value = true) {
-        auto idx = bit / (bits_per_byte * sizeof(mask_t));
-        if (idx >= bits.size()) return;
-        if (value) {
-            bits[idx] |= mask_t(1) << (bit % (bits_per_byte * sizeof(mask_t)));
-        } else {
-            bits[idx] &= ~(mask_t(1) << (bit % (bits_per_byte * sizeof(mask_t))));
-        }
+Keychords::~Keychords() noexcept {
+    if (inotify_fd >= 0) {
+        epoll->UnregisterHandler(inotify_fd);
+        ::close(inotify_fd);
     }
+    while (!registration.empty()) GeteventCloseDevice(registration.begin()->first);
+}
 
-    bool GetBit(size_t bit) const {
-        auto idx = bit / (bits_per_byte * sizeof(mask_t));
-        return bits[idx] & (mask_t(1) << (bit % (bits_per_byte * sizeof(mask_t))));
+Keychords::Mask::Mask(size_t bit) : bits((bit + sizeof(mask_t) - 1) / sizeof(mask_t), 0) {}
+
+void Keychords::Mask::SetBit(size_t bit, bool value) {
+    auto idx = bit / (kBitsPerByte * sizeof(mask_t));
+    if (idx >= bits.size()) return;
+    if (value) {
+        bits[idx] |= mask_t(1) << (bit % (kBitsPerByte * sizeof(mask_t)));
+    } else {
+        bits[idx] &= ~(mask_t(1) << (bit % (kBitsPerByte * sizeof(mask_t))));
     }
+}
 
-    size_t bytesize() const { return bits.size() * sizeof(mask_t); }
-    void* data() { return bits.data(); }
-    size_t size() const { return bits.size() * sizeof(mask_t) * bits_per_byte; }
-    void resize(size_t bit) {
-        auto idx = bit / (bits_per_byte * sizeof(mask_t));
-        if (idx >= bits.size()) {
-            bits.resize(idx + 1, 0);
-        }
+bool Keychords::Mask::GetBit(size_t bit) const {
+    auto idx = bit / (kBitsPerByte * sizeof(mask_t));
+    return bits[idx] & (mask_t(1) << (bit % (kBitsPerByte * sizeof(mask_t))));
+}
+
+size_t Keychords::Mask::bytesize() const {
+    return bits.size() * sizeof(mask_t);
+}
+
+void* Keychords::Mask::data() {
+    return bits.data();
+}
+
+size_t Keychords::Mask::size() const {
+    return bits.size() * sizeof(mask_t) * kBitsPerByte;
+}
+
+void Keychords::Mask::resize(size_t bit) {
+    auto idx = bit / (kBitsPerByte * sizeof(mask_t));
+    if (idx >= bits.size()) {
+        bits.resize(idx + 1, 0);
     }
+}
 
-    operator bool() const {
-        for (size_t i = 0; i < bits.size(); ++i) {
-            if (bits[i]) return true;
-        }
-        return false;
+Keychords::Mask::operator bool() const {
+    for (size_t i = 0; i < bits.size(); ++i) {
+        if (bits[i]) return true;
     }
+    return false;
+}
 
-    KeychordMask operator&(const KeychordMask& rval) const {
-        auto len = std::min(bits.size(), rval.bits.size());
-        KeychordMask ret;
-        ret.bits.resize(len);
-        for (size_t i = 0; i < len; ++i) {
-            ret.bits[i] = bits[i] & rval.bits[i];
-        }
-        return ret;
+Keychords::Mask Keychords::Mask::operator&(const Keychords::Mask& rval) const {
+    auto len = std::min(bits.size(), rval.bits.size());
+    Keychords::Mask ret;
+    ret.bits.resize(len);
+    for (size_t i = 0; i < len; ++i) {
+        ret.bits[i] = bits[i] & rval.bits[i];
     }
+    return ret;
+}
 
-    void operator|=(const KeychordMask& rval) {
-        size_t len = rval.bits.size();
-        bits.resize(len);
-        for (size_t i = 0; i < len; ++i) {
-            bits[i] |= rval.bits[i];
-        }
+void Keychords::Mask::operator|=(const Keychords::Mask& rval) {
+    auto len = rval.bits.size();
+    bits.resize(len);
+    for (size_t i = 0; i < len; ++i) {
+        bits[i] |= rval.bits[i];
     }
-};
+}
 
-KeychordMask keychord_current;
+Keychords::Entry::Entry(const std::vector<int>& keycodes, int id)
+    : keycodes(keycodes), id(id), notified(false) {}
 
-constexpr char kDevicePath[] = "/dev/input";
-
-std::map<std::string, int> keychord_registration;
-
-void KeychordLambdaCheck() {
-    for (auto& e : keychord_entries) {
-        bool found = true;
+void Keychords::LambdaCheck() {
+    for (auto& e : entries) {
+        auto found = true;
         for (auto& code : e.keycodes) {
-            if (!keychord_current.GetBit(code)) {
+            if (!current.GetBit(code)) {
                 e.notified = false;
                 found = false;
                 break;
@@ -134,19 +124,19 @@ void KeychordLambdaCheck() {
         if (!found) continue;
         if (e.notified) continue;
         e.notified = true;
-        std::invoke(handle_keychord, e.id);
+        std::invoke(handler, e.id);
     }
 }
 
-void KeychordLambdaHandler(int fd) {
+void Keychords::LambdaHandler(int fd) {
     input_event event;
     auto res = TEMP_FAILURE_RETRY(::read(fd, &event, sizeof(event)));
     if ((res != sizeof(event)) || (event.type != EV_KEY)) return;
-    keychord_current.SetBit(event.code, event.value);
-    KeychordLambdaCheck();
+    current.SetBit(event.code, event.value);
+    LambdaCheck();
 }
 
-bool KeychordGeteventEnable(int fd) {
+bool Keychords::GeteventEnable(int fd) {
     // Make sure it is an event channel, should pass this ioctl call
     int version;
     if (::ioctl(fd, EVIOCGVERSION, &version)) return false;
@@ -154,7 +144,7 @@ bool KeychordGeteventEnable(int fd) {
 #ifdef EVIOCSMASK
     static auto EviocsmaskSupported = true;
     if (EviocsmaskSupported) {
-        KeychordMask mask(EV_KEY);
+        Keychords::Mask mask(EV_KEY);
         mask.SetBit(EV_KEY);
         input_mask msg = {};
         msg.type = EV_SYN;
@@ -167,16 +157,16 @@ bool KeychordGeteventEnable(int fd) {
     }
 #endif
 
-    KeychordMask mask;
-    for (auto& e : keychord_entries) {
+    Keychords::Mask mask;
+    for (auto& e : entries) {
         for (auto& code : e.keycodes) {
             mask.resize(code);
             mask.SetBit(code);
         }
     }
 
-    keychord_current.resize(mask.size());
-    KeychordMask available(mask.size());
+    current.resize(mask.size());
+    Keychords::Mask available(mask.size());
     auto res = ::ioctl(fd, EVIOCGBIT(EV_KEY, available.bytesize()), available.data());
     if (res == -1) return false;
     if (!(available & mask)) return false;
@@ -191,43 +181,41 @@ bool KeychordGeteventEnable(int fd) {
     }
 #endif
 
-    KeychordMask set(mask.size());
+    Keychords::Mask set(mask.size());
     res = ::ioctl(fd, EVIOCGKEY(res), set.data());
     if (res > 0) {
-        keychord_current |= mask & available & set;
-        KeychordLambdaCheck();
+        current |= mask & available & set;
+        LambdaCheck();
     }
-    epoll->RegisterHandler(fd, [fd]() { KeychordLambdaHandler(fd); });
+    epoll->RegisterHandler(fd, [this, fd]() { this->LambdaHandler(fd); });
     return true;
 }
 
-void GeteventOpenDevice(const std::string& device) {
-    if (keychord_registration.count(device)) return;
+void Keychords::GeteventOpenDevice(const std::string& device) {
+    if (registration.count(device)) return;
     auto fd = TEMP_FAILURE_RETRY(::open(device.c_str(), O_RDWR | O_CLOEXEC));
     if (fd == -1) {
         PLOG(ERROR) << "Can not open " << device;
         return;
     }
-    if (!KeychordGeteventEnable(fd)) {
+    if (!GeteventEnable(fd)) {
         ::close(fd);
     } else {
-        keychord_registration.emplace(device, fd);
+        registration.emplace(device, fd);
     }
 }
 
-void GeteventCloseDevice(const std::string& device) {
-    auto it = keychord_registration.find(device);
-    if (it == keychord_registration.end()) return;
+void Keychords::GeteventCloseDevice(const std::string& device) {
+    auto it = registration.find(device);
+    if (it == registration.end()) return;
     auto fd = (*it).second;
     epoll->UnregisterHandler(fd);
-    keychord_registration.erase(it);
+    registration.erase(it);
     ::close(fd);
 }
 
-int inotify_fd = -1;
-
-void InotifyHandler() {
-    unsigned char buf[512];
+void Keychords::InotifyHandler() {
+    unsigned char buf[512];  // History shows 32-64 bytes typical
 
     auto res = TEMP_FAILURE_RETRY(::read(inotify_fd, buf, sizeof(buf)));
     if (res < 0) {
@@ -255,7 +243,7 @@ void InotifyHandler() {
     }
 }
 
-void GeteventOpenDevice() {
+void Keychords::GeteventOpenDevice() {
     inotify_fd = ::inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
     if (inotify_fd < 0) {
         PLOG(WARNING) << "Could not instantiate inotify for " << kDevicePath;
@@ -277,22 +265,20 @@ void GeteventOpenDevice() {
         }
     }
 
-    if (inotify_fd >= 0) epoll->RegisterHandler(inotify_fd, InotifyHandler);
+    if (inotify_fd >= 0) epoll->RegisterHandler(inotify_fd, [this]() { this->InotifyHandler(); });
 }
 
-}  // namespace
-
-int GetKeychordId(const std::vector<int>& keycodes) {
+int Keychords::GetId(const std::vector<int>& keycodes) {
     if (keycodes.empty()) return 0;
-    ++keychords_count;
-    keychord_entries.emplace_back(KeychordEntry(keycodes, keychords_count));
-    return keychords_count;
+    ++count;
+    entries.emplace_back(Entry(keycodes, count));
+    return count;
 }
 
-void KeychordInit(Epoll* init_epoll, std::function<void(int)> handler) {
+void Keychords::Start(Epoll* init_epoll, std::function<void(int)> init_handler) {
     epoll = init_epoll;
-    handle_keychord = handler;
-    if (keychords_count) GeteventOpenDevice();
+    handler = init_handler;
+    if (count) GeteventOpenDevice();
 }
 
 }  // namespace init
