@@ -19,6 +19,7 @@
 
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -35,8 +36,8 @@ class Keychords {
     Keychords& operator=(Keychords&) = delete;
     ~Keychords() noexcept;
 
-    int GetId(const std::vector<int>& keycodes);
-    void Start(Epoll* init_epoll, std::function<void(int)> init_handler);
+    void Register(const std::set<int>& keycodes);
+    void Start(Epoll* init_epoll, std::function<void(const std::set<int>&)> init_handler);
 
   private:
     // Bit management
@@ -64,10 +65,8 @@ class Keychords {
     };
 
     struct Entry {
-        Entry(const std::vector<int>& keycodes, int id);
+        Entry();
 
-        const std::vector<int> keycodes;
-        const int id;
         bool notified;
     };
 
@@ -83,12 +82,11 @@ class Keychords {
     void GeteventCloseDevice(const std::string& device);
 
     Epoll* epoll;
-    std::function<void(int)> handler;
+    std::function<void(const std::set<int>&)> handler;
 
     std::map<std::string, int> registration;
 
-    int count;
-    std::vector<Entry> entries;
+    std::map<const std::set<int>, Entry> entries;
 
     Mask current;
 
