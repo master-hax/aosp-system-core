@@ -21,6 +21,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#include <set>
 #include <string>
 
 // sys/system_properties.h
@@ -56,7 +57,7 @@ void SelabelInitialize();
 bool SelabelLookupFileContext(const std::string& key, int type, std::string* result);
 
 // keychords.h
-void HandleKeychord(int id);
+void HandleKeychord(const std::set<int>& keycodes);
 
 }  // namespace init
 }  // namespace android

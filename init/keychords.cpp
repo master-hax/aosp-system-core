@@ -29,6 +29,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -41,16 +42,13 @@ namespace init {
 
 namespace {
 
-int keychords_count;
 Epoll* epoll;
 
 struct KeychordEntry {
-    const std::vector<int> keycodes;
+    const std::set<int> keycodes;
     bool notified;
-    int id;
 
-    KeychordEntry(const std::vector<int>& keycodes, int id)
-        : keycodes(keycodes), notified(false), id(id) {}
+    KeychordEntry(const std::set<int>& keycodes) : keycodes(keycodes), notified(false) {}
 };
 
 std::vector<KeychordEntry> keychord_entries;
@@ -135,7 +133,7 @@ void KeychordLambdaCheck() {
         if (!found) continue;
         if (e.notified) continue;
         e.notified = true;
-        HandleKeychord(e.id);
+        HandleKeychord(e.keycodes);
     }
 }
 
@@ -283,16 +281,15 @@ void GeteventOpenDevice() {
 
 }  // namespace
 
-int GetKeychordId(const std::vector<int>& keycodes) {
-    if (keycodes.empty()) return 0;
-    ++keychords_count;
-    keychord_entries.emplace_back(KeychordEntry(keycodes, keychords_count));
-    return keychords_count;
+bool RegisterKeychord(const std::set<int>& keycodes) {
+    if (keycodes.empty()) return false;
+    keychord_entries.emplace_back(KeychordEntry(keycodes));
+    return true;
 }
 
 void KeychordInit(Epoll* init_epoll) {
     epoll = init_epoll;
-    if (keychords_count) GeteventOpenDevice();
+    if (keychord_entries.size()) GeteventOpenDevice();
 }
 
 }  // namespace init

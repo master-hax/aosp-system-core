@@ -60,7 +60,7 @@ bool SelabelLookupFileContext(const std::string& key, int type, std::string* res
 }
 
 // keychords.h
-void HandleKeychord(int) {}
+void HandleKeychord(const std::set<int>&) {}
 
 }  // namespace init
 }  // namespace android
