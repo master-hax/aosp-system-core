@@ -353,6 +353,8 @@ class ElfInterfaceMock : public ElfInterface {
   void MockSetDynamicOffset(uint64_t offset) { dynamic_offset_ = offset; }
   void MockSetDynamicVaddr(uint64_t vaddr) { dynamic_vaddr_ = vaddr; }
   void MockSetDynamicSize(uint64_t size) { dynamic_size_ = size; }
+
+  uint64_t GetLowestExecutableSegment() override { return 0; }
 };
 
 TEST_F(ElfTest, step_in_interface) {

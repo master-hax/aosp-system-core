@@ -91,6 +91,8 @@ class ElfInterfaceFake : public ElfInterface {
 
   void FakeSetErrorAddress(uint64_t address) { last_error_.address = address; }
 
+  uint64_t GetLowestExecutableSegment() override { return 0; }
+
  private:
   std::unordered_map<std::string, uint64_t> globals_;
 
