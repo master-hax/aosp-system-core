@@ -98,6 +98,8 @@ class ElfInterface {
   template <typename EhdrType, typename PhdrType>
   static uint64_t GetLoadBias(Memory* memory);
 
+  virtual uint64_t GetLowestExecutableSegment() = 0;
+
  protected:
   template <typename AddressType>
   void InitHeadersWithTemplate();
@@ -125,6 +127,9 @@ class ElfInterface {
 
   template <typename EhdrType>
   static void GetMaxSizeWithTemplate(Memory* memory, uint64_t* size);
+
+  template <typename EhdrType, typename PhdrType>
+  static uint64_t GetLowestExecutableSegment(Memory* memory);
 
   Memory* memory_;
   std::unordered_map<uint64_t, LoadInfo> pt_loads_;
@@ -187,6 +192,10 @@ class ElfInterface32 : public ElfInterface {
   static void GetMaxSize(Memory* memory, uint64_t* size) {
     GetMaxSizeWithTemplate<Elf32_Ehdr>(memory, size);
   }
+
+  uint64_t GetLowestExecutableSegment() override {
+    return ElfInterface::GetLowestExecutableSegment<Elf32_Ehdr, Elf32_Phdr>(memory_);
+  }
 };
 
 class ElfInterface64 : public ElfInterface {
@@ -215,6 +224,10 @@ class ElfInterface64 : public ElfInterface {
 
   static void GetMaxSize(Memory* memory, uint64_t* size) {
     GetMaxSizeWithTemplate<Elf64_Ehdr>(memory, size);
+  }
+
+  uint64_t GetLowestExecutableSegment() override {
+    return ElfInterface::GetLowestExecutableSegment<Elf64_Ehdr, Elf64_Phdr>(memory_);
   }
 };
 

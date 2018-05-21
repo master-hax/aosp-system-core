@@ -17,6 +17,7 @@
 #include <elf.h>
 #include <stdint.h>
 
+#include <limits>
 #include <memory>
 #include <string>
 #include <utility>
@@ -197,6 +198,29 @@ uint64_t ElfInterface::GetLoadBias(Memory* memory) {
     }
   }
   return 0;
+}
+
+template <typename EhdrType, typename PhdrType>
+uint64_t ElfInterface::GetLowestExecutableSegment(Memory* memory) {
+  EhdrType ehdr;
+  if (!memory->Read(0, &ehdr, sizeof(ehdr))) {
+    return std::numeric_limits<uint64_t>::max();
+  }
+
+  uint64_t offset = ehdr.e_phoff;
+  uint64_t smallest = std::numeric_limits<uint64_t>::max();
+  for (size_t i = 0; i < ehdr.e_phnum; i++, offset += ehdr.e_phentsize) {
+    PhdrType phdr;
+    if (!memory->Read(offset, &phdr, sizeof(phdr))) {
+      return std::numeric_limits<uint64_t>::max();
+    }
+    if (phdr.p_type == PT_LOAD && (phdr.p_flags & PF_X) != 0) {
+      if (phdr.p_vaddr < smallest) {
+        smallest = phdr.p_vaddr;
+      }
+    }
+  }
+  return smallest;
 }
 
 template <typename EhdrType, typename PhdrType>
@@ -587,5 +611,8 @@ template void ElfInterface::GetMaxSizeWithTemplate<Elf64_Ehdr>(Memory*, uint64_t
 
 template uint64_t ElfInterface::GetLoadBias<Elf32_Ehdr, Elf32_Phdr>(Memory*);
 template uint64_t ElfInterface::GetLoadBias<Elf64_Ehdr, Elf64_Phdr>(Memory*);
+
+template uint64_t ElfInterface::GetLowestExecutableSegment<Elf32_Ehdr, Elf32_Phdr>(Memory*);
+template uint64_t ElfInterface::GetLowestExecutableSegment<Elf64_Ehdr, Elf64_Phdr>(Memory*);
 
 }  // namespace unwindstack
