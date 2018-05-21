@@ -318,6 +318,7 @@ static bool init_functionfs(struct usb_handle* h) {
 
     h->read_aiob.fd = h->bulk_out;
     h->write_aiob.fd = h->bulk_in;
+    h->reads_zero_packets = true;
     return true;
 
 err:
@@ -427,7 +428,7 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
         if (len == 0 && buf_len % packet_size == 0 && read) {
             // adb does not expect the device to send a zero packet after data transfer,
             // but the host *does* send a zero packet for the device to read.
-            zero_packet = true;
+            zero_packet = h->reads_zero_packets;
         }
     }
     if (zero_packet) {
@@ -520,6 +521,7 @@ usb_handle* get_usb_handle() {
         h->read = usb_ffs_aio_read;
         aio_block_init(&h->read_aiob);
         aio_block_init(&h->write_aiob);
+        h->max_io_size = MAX_PAYLOAD;
     }
     h->kick = usb_ffs_kick;
     h->close = usb_ffs_close;
