@@ -356,8 +356,8 @@ class SocketConnection {
             }
         }
 
-        LOG(ERROR) << "sys_prop: timeout waiting for uid " << cred_.uid
-                   << " to send property message.";
+        PLOG(ERROR) << "sys_prop: timeout waiting for uid " << cred_.uid
+                    << " to send property message.";
         return false;
     }
 
@@ -366,18 +366,22 @@ class SocketConnection {
         char* data = static_cast<char*>(data_ptr);
         while (*timeout_ms > 0 && bytes_left > 0) {
             if (!PollIn(timeout_ms)) {
+                PLOG(ERROR) << "sys_prop: PollIn timeout ";
                 return false;
             }
 
             int result = TEMP_FAILURE_RETRY(recv(socket_, data, bytes_left, MSG_DONTWAIT));
             if (result <= 0) {
+                PLOG(ERROR) << "sys_prop: recv err ";
                 return false;
             }
 
             bytes_left -= result;
             data += result;
         }
-
+        if (bytes_left != 0) {
+            PLOG(ERROR) << "sys_prop: recv data is not properly obtained ";
+        }
         return bytes_left == 0;
     }
 
