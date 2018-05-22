@@ -696,6 +696,9 @@ void init_transport_registration(void) {
     D("socketpair: (%d,%d)", s[0], s[1]);
 
     transport_registration_send = s[0];
+    if (fdsan_set_close_tag) {
+        fdsan_set_close_tag(transport_registration_send, reinterpret_cast<void*>(~0UL));
+    }
     transport_registration_recv = s[1];
 
     transport_registration_fde =
