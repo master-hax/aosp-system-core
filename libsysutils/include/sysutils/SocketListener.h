@@ -18,6 +18,8 @@
 
 #include <pthread.h>
 
+#include <map>
+
 #include <sysutils/SocketClient.h>
 #include "SocketClientCommand.h"
 
@@ -25,7 +27,7 @@ class SocketListener {
     bool                    mListen;
     const char              *mSocketName;
     int                     mSock;
-    SocketClientCollection  *mClients;
+    std::map<int, SocketClient*> mClients;
     pthread_mutex_t         mClientsLock;
     int                     mCtrlPipe[2];
     pthread_t               mThread;
