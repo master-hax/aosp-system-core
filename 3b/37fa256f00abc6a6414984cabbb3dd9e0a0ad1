@@ -1,0 +1,8 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Elliott Hughes <enh@google.com>
+Verified+1: Josh Gao <jmgao@google.com>
+Submitted-by: Josh Gao <jmgao@google.com>
+Submitted-at: Wed, 23 May 2018 00:01:28 +0000
+Reviewed-on: https://android-review.googlesource.com/687860
+Project: platform/system/core
+Branch: refs/heads/master
