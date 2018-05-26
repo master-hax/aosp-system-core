@@ -19,7 +19,7 @@
 
 #include <assert.h>
 #include <utils/Errors.h>
-#include <utils/FileMap.h>
+#include <filemap/FileMap.h>
 #include <utils/String8.h>
 
 namespace android {

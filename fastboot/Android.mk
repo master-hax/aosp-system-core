@@ -28,7 +28,7 @@ fastboot_shared_libs :=
 fastboot_static_libs := \
     libziparchive \
     libsparse \
-    libutils \
+    libfilemap \
     liblog \
     libz \
     libdiagnose_usb \
