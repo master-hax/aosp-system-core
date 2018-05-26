@@ -53,6 +53,7 @@
 // case.
 #define DEBUG_REFBASE_DESTRUCTION 1
 
+
 // ---------------------------------------------------------------------------
 
 namespace android {
@@ -183,7 +184,7 @@ public:
         , mRetain(false)
     {
     }
-    
+
     ~weakref_impl()
     {
         bool dumpStack = false;
@@ -260,7 +261,7 @@ public:
     }
 
     void trackMe(bool track, bool retain)
-    { 
+    {
         mTrackEnabled = track;
         mRetain = retain;
     }
@@ -333,7 +334,7 @@ private:
     {
         if (mTrackEnabled) {
             AutoMutex _l(mMutex);
-            
+
             ref_entry* const head = *refs;
             ref_entry* ref = head;
             while (ref != NULL) {
@@ -406,11 +407,12 @@ private:
 
 // ---------------------------------------------------------------------------
 
+
 void RefBase::incStrong(const void* id) const
 {
     weakref_impl* const refs = mRefs;
     refs->incWeak(id);
-    
+
     refs->addStrongRef(id);
     const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
     ALOG_ASSERT(c > 0, "incStrong() called on %p after last strong ref", refs);
@@ -466,7 +468,7 @@ void RefBase::forceIncStrong(const void* id) const
     // TODO: Better document assumptions.
     weakref_impl* const refs = mRefs;
     refs->incWeak(id);
-    
+
     refs->addStrongRef(id);
     const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
     ALOG_ASSERT(c >= 0, "forceIncStrong called on %p after ref count underflow",
@@ -548,7 +550,7 @@ void RefBase::weakref_type::decWeak(const void* id)
 bool RefBase::weakref_type::attemptIncStrong(const void* id)
 {
     incWeak(id);
-    
+
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
     int32_t curCount = impl->mStrong.load(std::memory_order_relaxed);
 
@@ -565,7 +567,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
         // the strong count has changed on us, we need to re-assert our
         // situation. curCount was updated by compare_exchange_weak.
     }
-    
+
     if (curCount <= 0 || curCount == INITIAL_STRONG_VALUE) {
         // we're now in the harder case of either:
         // - there never was a strong reference on us
@@ -622,7 +624,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
             }
         }
     }
-    
+
     impl->addStrongRef(id);
 
 #if PRINT_REFS

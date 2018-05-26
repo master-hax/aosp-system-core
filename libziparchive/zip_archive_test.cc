@@ -30,7 +30,7 @@
 #include <android-base/test_utils.h>
 #include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
-#include <utils/FileMap.h>
+#include <filemap/FileMap.h>
 #include <ziparchive/zip_archive.h>
 #include <ziparchive/zip_archive_stream_entry.h>
 
