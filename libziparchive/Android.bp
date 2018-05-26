@@ -76,11 +76,11 @@ cc_library {
     target: {
         android: {
             shared_libs: [
-                "libutils",
+                "libfilemap",
             ],
         },
         host: {
-            static_libs: ["libutils"],
+            static_libs: ["libfilemap"],
         },
         linux_bionic: {
             enabled: true,
@@ -111,7 +111,7 @@ cc_test {
     static_libs: [
         "libziparchive",
         "libz",
-        "libutils",
+        "libfilemap",
     ],
 
     target: {
@@ -141,6 +141,7 @@ cc_benchmark {
         "libziparchive",
         "libz",
         "libutils",
+        "libfilemap",
     ],
 
     target: {
@@ -157,5 +158,6 @@ cc_binary {
     shared_libs: [
         "libbase",
         "libziparchive",
+        "libfilemap",
     ],
 }
