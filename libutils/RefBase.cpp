@@ -17,22 +17,28 @@
 #define LOG_TAG "RefBase"
 // #define LOG_NDEBUG 0
 
+#include <log/log.h>
+
 #include <utils/RefBase.h>
 
-#include <utils/CallStack.h>
+#include <utils/Mutex.h>
 
 #ifndef __unused
 #define __unused __attribute__((__unused__))
 #endif
 
-// compile with refcounting debugging enabled
-#define DEBUG_REFS                      0
+// Compile with refcounting debugging enabled.
+#define DEBUG_REFS                      1
+
+// The following three are ignored unless DEBUG_REFS is set.
 
 // whether ref-tracking is enabled by default, if not, trackMe(true, false)
 // needs to be called explicitly
 #define DEBUG_REFS_ENABLED_BY_DEFAULT   0
 
-// whether callstack are collected (significantly slows things down)
+// Collect callstacks. (Significantly slows things down.)
+// Turning this on (together with DEBUG_REFS) requires that a dependency from libutils on
+// libbacktrace be added to libutils/Android.bp, as indicated there.
 #define DEBUG_REFS_CALLSTACK_ENABLED    1
 
 // folder where stack traces are saved when DEBUG_REFS is enabled
@@ -41,6 +47,63 @@
 
 // log all reference counting operations
 #define PRINT_REFS                      0
+
+#if DEBUG_REFS && DEBUG_REFS_CALLSTACK_ENABLED
+
+// Define our own primitive stack trace generation facility. It would be cleaner to use CallStack
+// from libutils, but that results in a circular libutils<->libutilscallstack build dependency.
+
+#include <string>
+
+#ifdef __ANDROID__
+
+#include <vector>
+#include <backtrace/Backtrace.h>
+
+typedef std::vector<std::string> StackTrace;
+
+static StackTrace getStackTrace(int32_t ignoreDepth = 1) {
+    std::unique_ptr<Backtrace> trace(Backtrace::Create(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD));
+    if (!trace->Unwind(ignoreDepth)) {
+        ALOGW("%s: Failed to unwind callstack.", __FUNCTION__);
+    }
+    StackTrace result;
+    for (const backtrace_frame_data_t& frame : *trace) {
+        result.push_back(Backtrace::FormatFrameData(&frame));
+    }
+    return result;
+}
+
+static void logStackTrace(StackTrace trace) {
+    for (const std::string& s : trace) {
+        ALOGW("%s", s.c_str());
+    }
+}
+
+static std::string stringFromStackTrace(StackTrace trace, std::string prefix) {
+
+    std::string result;
+    for (std::string s : trace) {
+        result += prefix + s + "\n";
+    }
+    return result;
+}
+
+#else // Not ANDROID: Punt.
+
+typedef short StackTrace;
+
+static inline StackTrace getStackTrace(int32_t = 1) {
+  return 0;
+}
+static void logStackTrace(StackTrace) {}
+static std::string stringFromStackTrace(StackTrace, std::string) {
+  return "";
+}
+
+#endif // Not ANDROID
+
+#endif /* DEBUG_REFS && DEBUG_REFS_CALLSTACK_ENABLED */
 
 // ---------------------------------------------------------------------------
 
@@ -172,7 +235,7 @@ public:
         , mRetain(false)
     {
     }
-    
+
     ~weakref_impl()
     {
         bool dumpStack = false;
@@ -184,7 +247,7 @@ public:
                 char inc = refs->ref >= 0 ? '+' : '-';
                 ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
 #if DEBUG_REFS_CALLSTACK_ENABLED
-                refs->stack.log(LOG_TAG);
+                logStackTrace(refs->stack);
 #endif
                 refs = refs->next;
             }
@@ -198,14 +261,14 @@ public:
                 char inc = refs->ref >= 0 ? '+' : '-';
                 ALOGD("\t%c ID %p (ref %d):", inc, refs->id, refs->ref);
 #if DEBUG_REFS_CALLSTACK_ENABLED
-                refs->stack.log(LOG_TAG);
+                logStackTrace(refs->stack);
 #endif
                 refs = refs->next;
             }
         }
         if (dumpStack) {
             ALOGE("above errors at:");
-            CallStack stack(LOG_TAG);
+            logStackTrace(getStackTrace());
         }
     }
 
@@ -249,14 +312,14 @@ public:
     }
 
     void trackMe(bool track, bool retain)
-    { 
+    {
         mTrackEnabled = track;
         mRetain = retain;
     }
 
     void printRefs() const
     {
-        String8 text;
+        std::string text;
 
         {
             Mutex::Autolock _l(mMutex);
@@ -279,7 +342,7 @@ public:
                      this);
             int rc = open(name, O_RDWR | O_CREAT | O_APPEND, 644);
             if (rc >= 0) {
-                write(rc, text.string(), text.length());
+                (void) write(rc, text.c_str(), text.length());
                 close(rc);
                 ALOGD("STACK TRACE for %p saved in %s", this, name);
             }
@@ -294,7 +357,7 @@ private:
         ref_entry* next;
         const void* id;
 #if DEBUG_REFS_CALLSTACK_ENABLED
-        CallStack stack;
+        StackTrace stack;
 #endif
         int32_t ref;
     };
@@ -311,7 +374,7 @@ private:
             ref->ref = mRef;
             ref->id = id;
 #if DEBUG_REFS_CALLSTACK_ENABLED
-            ref->stack.update(2);
+            ref->stack = getStackTrace(2);
 #endif
             ref->next = *refs;
             *refs = ref;
@@ -322,7 +385,7 @@ private:
     {
         if (mTrackEnabled) {
             AutoMutex _l(mMutex);
-            
+
             ref_entry* const head = *refs;
             ref_entry* ref = head;
             while (ref != NULL) {
@@ -346,7 +409,7 @@ private:
                 ref = ref->next;
             }
 
-            CallStack stack(LOG_TAG);
+            logStackTrace(getStackTrace());
         }
     }
 
@@ -364,7 +427,7 @@ private:
         }
     }
 
-    void printRefsLocked(String8* out, const ref_entry* refs) const
+    void printRefsLocked(std::string* out, const ref_entry* refs) const
     {
         char buf[128];
         while (refs) {
@@ -373,7 +436,7 @@ private:
                      inc, refs->id, refs->ref);
             out->append(buf);
 #if DEBUG_REFS_CALLSTACK_ENABLED
-            out->append(refs->stack.toString("\t\t"));
+            out->append(stringFromStackTrace(refs->stack, "\t\t"));
 #else
             out->append("\t\t(call stacks disabled)");
 #endif
@@ -395,11 +458,12 @@ private:
 
 // ---------------------------------------------------------------------------
 
+
 void RefBase::incStrong(const void* id) const
 {
     weakref_impl* const refs = mRefs;
     refs->incWeak(id);
-    
+
     refs->addStrongRef(id);
     const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
     ALOG_ASSERT(c > 0, "incStrong() called on %p after last strong ref", refs);
@@ -455,7 +519,7 @@ void RefBase::forceIncStrong(const void* id) const
     // TODO: Better document assumptions.
     weakref_impl* const refs = mRefs;
     refs->incWeak(id);
-    
+
     refs->addStrongRef(id);
     const int32_t c = refs->mStrong.fetch_add(1, std::memory_order_relaxed);
     ALOG_ASSERT(c >= 0, "forceIncStrong called on %p after ref count underflow",
@@ -537,7 +601,7 @@ void RefBase::weakref_type::decWeak(const void* id)
 bool RefBase::weakref_type::attemptIncStrong(const void* id)
 {
     incWeak(id);
-    
+
     weakref_impl* const impl = static_cast<weakref_impl*>(this);
     int32_t curCount = impl->mStrong.load(std::memory_order_relaxed);
 
@@ -554,7 +618,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
         // the strong count has changed on us, we need to re-assert our
         // situation. curCount was updated by compare_exchange_weak.
     }
-    
+
     if (curCount <= 0 || curCount == INITIAL_STRONG_VALUE) {
         // we're now in the harder case of either:
         // - there never was a strong reference on us
@@ -611,7 +675,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
             }
         }
     }
-    
+
     impl->addStrongRef(id);
 
 #if PRINT_REFS
