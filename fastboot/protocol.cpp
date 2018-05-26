@@ -42,7 +42,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <sparse/sparse.h>
-#include <utils/FileMap.h>
+#include <filemap/FileMap.h>
 
 #include "fastboot.h"
 #include "transport.h"

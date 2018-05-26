@@ -20,8 +20,8 @@
 
 #define LOG_TAG "filemap"
 
-#include <utils/FileMap.h>
-#include <utils/Log.h>
+#include <filemap/FileMap.h>
+#include <log/log.h>
 
 #if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
 # define PRId32 "I32d"
