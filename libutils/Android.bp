@@ -122,7 +122,6 @@ cc_library {
     defaults: ["libutils_defaults"],
 
     srcs: [
-        "FileMap.cpp",
         "JenkinsHash.cpp",
         "NativeHandle.cpp",
         "Printer.cpp",
@@ -147,10 +146,17 @@ cc_library {
             srcs: [
                 "Trace.cpp",
             ],
+            shared_libs: [
+                "libfilemap",
+                // For debugging purposes, libbacktrace may need to be added here.
+            ],
         },
         linux: {
             srcs: [
                 "Looper.cpp",
+            ],
+            shared_libs: [
+                "libfilemap",
             ],
         },
     },
