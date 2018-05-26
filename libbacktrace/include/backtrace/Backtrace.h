@@ -80,7 +80,7 @@ struct BacktraceUnwindError {
 };
 
 struct backtrace_frame_data_t {
-  size_t num;             // The current fame number.
+  size_t num;             // The current frame number.
   uint64_t pc;            // The absolute pc.
   uint64_t rel_pc;        // The relative pc.
   uint64_t sp;            // The top of the stack.
