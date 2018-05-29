@@ -439,5 +439,9 @@ bool IsLegalPropertyName(const std::string& name) {
     return true;
 }
 
+bool IsRecoveryMode() {
+    return access("/sbin/recovery", F_OK) == 0;
+}
+
 }  // namespace init
 }  // namespace android

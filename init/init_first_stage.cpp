@@ -115,10 +115,6 @@ static inline bool IsDtVbmetaCompatible() {
     return is_android_dt_value_expected("vbmeta/compatible", "android,vbmeta");
 }
 
-static bool inline IsRecoveryMode() {
-    return access("/sbin/recovery", F_OK) == 0;
-}
-
 static inline bool IsDmLinearEnabled() {
     bool enabled = false;
     import_kernel_cmdline(
