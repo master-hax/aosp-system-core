@@ -641,6 +641,11 @@ int main(int argc, char** argv) {
         // part of the vendor partition, e.g. because they are mounted read-write.
         mkdir("/mnt/vendor", 0755);
 
+        // /mnt/system is used to mount the real system.img in the recovery mode
+        if (IsRecoveryMode()) {
+            mkdir("/mnt/system", 0755);
+        }
+
         // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
         // talk to the outside world...
         InitKernelLogging(argv);
