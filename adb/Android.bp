@@ -302,8 +302,6 @@ cc_binary {
     name: "adbd",
     defaults: ["adb_defaults"],
 
-    // adbd must be static, as it is copied into the recovery image.
-    static_executable: true,
     recovery_available: true,
 
     srcs: [
@@ -344,11 +342,16 @@ cc_binary {
         "libselinux",
         "libsquashfs_utils",
         "libqemu_pipe",
-        "libdebuggerd_handler",
 
         "libbase",
         "libcutils",
     ],
+
+    target: {
+        recovery: {
+            cflags: ["-DRECOVERY_MODE"],
+        },
+    },
 }
 
 cc_test {
@@ -371,6 +374,7 @@ cc_test {
         "liblog",
         "libusb",
         "libmdnssd",
+        "libselinux",
     ],
     test_suites: ["device-tests"],
 }
