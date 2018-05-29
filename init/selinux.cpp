@@ -410,6 +410,7 @@ void SelinuxInitialize() {
 // value. This must happen before /dev is populated by ueventd.
 void SelinuxRestoreContext() {
     LOG(INFO) << "Running restorecon...";
+
     selinux_android_restorecon("/dev", 0);
     selinux_android_restorecon("/dev/kmsg", 0);
     if constexpr (WORLD_WRITABLE_KMSG) {
@@ -446,6 +447,16 @@ void SelinuxRestoreContext() {
 
     selinux_android_restorecon("/sbin/mkfs.f2fs", 0);
     selinux_android_restorecon("/sbin/sload.f2fs", 0);
+
+    // Special routine for recovery mode. Recovery partition now includes
+    // /system and files under the directory must be labeled. However since
+    // rootfs (the file system that recovery ramdisk is formatted) does not
+    // support xattr that is required for labeling, we can't label the partition at
+    // build-time unlike other partitions. Instead we explicitly label them at
+    // runtime.
+    if (access("/sbin/recovery", F_OK) == 0) {
+        selinux_android_restorecon("/system", SELINUX_ANDROID_RESTORECON_RECURSE);
+    }
 }
 
 // This function sets up SELinux logging to be written to kmsg, to match init's logging.
