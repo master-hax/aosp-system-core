@@ -91,3 +91,13 @@ LOCAL_POST_INSTALL_CMD := $(hide) mkdir -p $(TARGET_ROOT_OUT)/sbin; \
 
 LOCAL_SANITIZE := signed-integer-overflow
 include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := init_scripts_verified
+LOCAL_MODULE_CLASS := ETC
+
+include $(BUILD_SYSTEM)/base_rules.mk
+
+$(LOCAL_BUILT_MODULE): systemimage $(INSTALLED_BOOTIMAGE_TARGET) $(INSTALLED_VENDORIMAGE_TARGET) $(INSTALLED_PRODUCTIMAGE_TARGET) $(HOST_OUT_EXECUTABLES)/host_init_verifier
+	$(hide) $(HOST_OUT_EXECUTABLES)/host_init_verifier $(OUT_DIR) ro.hardware=bullhead,ro.zygote=zygote64_32
