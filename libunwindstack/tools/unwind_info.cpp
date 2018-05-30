@@ -63,7 +63,7 @@ void DumpArm(ElfInterfaceArm* interface) {
         continue;
       }
       ArmExidx arm(nullptr, interface->memory(), nullptr);
-      arm.set_log(true);
+      arm.set_log(ARM_LOG_FULL);
       arm.set_log_skip_execution(true);
       arm.set_log_indent(2);
       if (!arm.ExtractEntryData(entry)) {
@@ -72,10 +72,8 @@ void DumpArm(ElfInterfaceArm* interface) {
         }
         continue;
       }
-      if (arm.data()->size() > 0) {
-        if (!arm.Eval() && arm.status() != ARM_STATUS_NO_UNWIND) {
-          printf("      Error trying to evaluate dwarf data.\n");
-        }
+      if (arm.data()->size() == 0 || !arm.Eval()) {
+        printf("      Error trying to evaluate exidx data.\n");
       }
     }
   }
