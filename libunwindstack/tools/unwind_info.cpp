@@ -52,8 +52,9 @@ void DumpArm(ElfInterfaceArm* interface) {
       std::string name;
       printf("  PC 0x%" PRIx64, addr + load_bias);
       uint64_t func_offset;
-      uint64_t pc = addr + load_bias;
-      if (interface->GetFunctionName(pc, load_bias, &name, &func_offset) && !name.empty()) {
+      uint64_t pc = addr;
+      if (interface->GetFunctionName(pc + load_bias, load_bias, &name, &func_offset) &&
+          !name.empty()) {
         printf(" <%s>", name.c_str());
       }
       printf("\n");
@@ -63,7 +64,7 @@ void DumpArm(ElfInterfaceArm* interface) {
         continue;
       }
       ArmExidx arm(nullptr, interface->memory(), nullptr);
-      arm.set_log(true);
+      arm.set_log(ARM_LOG_FULL);
       arm.set_log_skip_execution(true);
       arm.set_log_indent(2);
       if (!arm.ExtractEntryData(entry)) {
@@ -72,10 +73,8 @@ void DumpArm(ElfInterfaceArm* interface) {
         }
         continue;
       }
-      if (arm.data()->size() > 0) {
-        if (!arm.Eval() && arm.status() != ARM_STATUS_NO_UNWIND) {
-          printf("      Error trying to evaluate dwarf data.\n");
-        }
+      if (arm.data()->size() == 0 || !arm.Eval()) {
+        printf("      Error trying to evaluate exidx data.\n");
       }
     }
   }
@@ -89,7 +88,7 @@ void DumpDwarfSection(ElfInterface* interface, DwarfSection* section, uint64_t l
     if (fde == nullptr || fde->pc_start == fde->pc_end) {
       continue;
     }
-    printf("\n  PC 0x%" PRIx64, fde->pc_start + load_bias);
+    printf("\n  PC 0x%" PRIx64, fde->pc_start);
     std::string name;
     uint64_t func_offset;
     if (interface->GetFunctionName(fde->pc_start, load_bias, &name, &func_offset) && !name.empty()) {
