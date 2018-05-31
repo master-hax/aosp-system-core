@@ -121,6 +121,7 @@ cc_defaults {
 cc_library {
     name: "libutils",
     defaults: ["libutils_defaults"],
+    recovery_available: true,
 
     srcs: [
         "FileMap.cpp",
