@@ -88,6 +88,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00755, AID_ROOT,         AID_SHELL,        0, "system/vendor" },
     { 00755, AID_ROOT,         AID_SHELL,        0, "system/xbin" },
     { 00755, AID_ROOT,         AID_SHELL,        0, "vendor" },
+    { 00755, AID_ROOT,         AID_SHELL,        0, "product/bin" },
     { 00755, AID_ROOT,         AID_ROOT,         0, 0 },
     // clang-format on
 };
@@ -202,6 +203,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/xbin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
+    { 00755, AID_ROOT,      AID_SHELL,     0, "product/bin/*" },
     { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
     // clang-format on
 };
@@ -239,7 +241,7 @@ static int fs_config_open(int dir, int which, const char* target_out_path) {
 
 // if path is "vendor/<stuff>", "oem/<stuff>" or "odm/<stuff>"
 static bool is_partition(const char* path, size_t len) {
-    static const char* partitions[] = {"vendor/", "oem/", "odm/"};
+    static const char* partitions[] = {"vendor/", "oem/", "odm/", "product/"};
     for (size_t i = 0; i < (sizeof(partitions) / sizeof(partitions[0])); ++i) {
         size_t plen = strlen(partitions[i]);
         if (len <= plen) continue;
