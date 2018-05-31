@@ -46,6 +46,7 @@ cc_library_headers {
 
 cc_defaults {
     name: "libutils_defaults",
+    recovery_available: true,
     vendor_available: true,
     vndk: {
         enabled: true,
