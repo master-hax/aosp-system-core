@@ -2,6 +2,7 @@ subdirs = ["tests"]
 
 cc_library {
     name: "libvndksupport",
+    recovery_available: true,
     srcs: ["linker.c"],
     cflags: [
         "-Wall",
