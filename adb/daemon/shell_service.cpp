@@ -343,13 +343,16 @@ bool Subprocess::ForkAndExec(std::string* error) {
                 adb_write(oom_score_adj_fd, oom_score_adj_value, strlen(oom_score_adj_value)));
         }
 
+        const char* path_shell = access("/sbin/recovery", F_OK) ? _PATH_BSHELL : "/sbin/sh";
         if (command_.empty()) {
             // Spawn a login shell if we don't have a command.
-            execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
+            execle(path_shell, "--login", nullptr, cenv.data());
         } else {
-            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
+            execle(path_shell, path_shell, "-c", command_.c_str(), nullptr, cenv.data());
         }
-        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
+        WriteFdExactly(child_error_sfd, "exec '");
+        WriteFdExactly(child_error_sfd, path_shell);
+        WriteFdExactly(child_error_sfd, "' failed: ");
         WriteFdExactly(child_error_sfd, strerror(errno));
         child_error_sfd.reset(-1);
         _Exit(1);
