@@ -1327,6 +1327,8 @@ int FastBoot::Main(int argc, char* argv[]) {
     bool wants_wipe = false;
     bool wants_reboot = false;
     bool wants_reboot_bootloader = false;
+    bool wants_reboot_recovery = false;
+    bool wants_reboot_fastboot = false;
     bool skip_reboot = false;
     bool wants_set_active = false;
     bool skip_secondary = false;
@@ -1547,6 +1549,12 @@ int FastBoot::Main(int argc, char* argv[]) {
                 if (what == "bootloader") {
                     wants_reboot = false;
                     wants_reboot_bootloader = true;
+                } else if (what == "recovery") {
+                    wants_reboot = false;
+                    wants_reboot_recovery = true;
+                } else if (what == "fastboot") {
+                    wants_reboot = false;
+                    wants_reboot_fastboot = true;
                 } else {
                     syntax_error("unknown reboot target %s", what.c_str());
                 }
@@ -1555,6 +1563,10 @@ int FastBoot::Main(int argc, char* argv[]) {
             if (!args.empty()) syntax_error("junk after reboot command");
         } else if (command == "reboot-bootloader") {
             wants_reboot_bootloader = true;
+        } else if (command == "reboot-recovery") {
+            wants_reboot_recovery = true;
+        } else if (command == "reboot-fastboot") {
+            wants_reboot_fastboot = true;
         } else if (command == "continue") {
             fb_queue_command("continue", "resuming boot");
         } else if (command == "boot") {
@@ -1671,6 +1683,12 @@ int FastBoot::Main(int argc, char* argv[]) {
         fb_queue_wait_for_disconnect();
     } else if (wants_reboot_bootloader) {
         fb_queue_command("reboot-bootloader", "rebooting into bootloader");
+        fb_queue_wait_for_disconnect();
+    } else if (wants_reboot_recovery) {
+        fb_queue_command("reboot-recovery", "rebooting into recovery");
+        fb_queue_wait_for_disconnect();
+    } else if (wants_reboot_fastboot) {
+        fb_queue_command("reboot-fastboot", "rebooting into fastboot");
         fb_queue_wait_for_disconnect();
     }
 
