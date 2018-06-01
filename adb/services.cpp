@@ -40,6 +40,9 @@
 #include <cutils/sockets.h>
 
 #if !ADB_HOST
+#include <sys/socket.h>
+#include <sys/un.h>
+
 #include <android-base/properties.h>
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
@@ -122,37 +125,39 @@ void restart_usb_service(int fd, void *cookie) {
 
 static bool reboot_service_impl(int fd, const char* arg) {
     const char* reboot_arg = arg;
-    bool auto_reboot = false;
-
-    if (strcmp(reboot_arg, "sideload-auto-reboot") == 0) {
-        auto_reboot = true;
-        reboot_arg = "sideload";
-    }
-
-    // It reboots into sideload mode by setting "--sideload" or "--sideload_auto_reboot"
-    // in the command file.
-    if (strcmp(reboot_arg, "sideload") == 0) {
-        if (getuid() != 0) {
-            WriteFdExactly(fd, "'adb root' is required for 'adb reboot sideload'.\n");
-            return false;
-        }
-
-        const std::vector<std::string> options = {
-            auto_reboot ? "--sideload_auto_reboot" : "--sideload"
-        };
-        std::string err;
-        if (!write_bootloader_message(options, &err)) {
-            D("Failed to set bootloader message: %s", err.c_str());
-            return false;
-        }
-
-        reboot_arg = "recovery";
-    }
-
     sync();
 
     if (!reboot_arg || !reboot_arg[0]) reboot_arg = "adb";
     std::string reboot_string = android::base::StringPrintf("reboot,%s", reboot_arg);
+
+    if (strncmp(reboot_arg, "fastboot", 8) == 0 && access("/dev/socket/recovery", F_OK) == 0) {
+        LOG(ERROR) << "Recovery specific reboot fastboot";
+        struct sockaddr_un addr;
+        const char msg = 'f';
+        android::base::unique_fd sock(socket(AF_UNIX, SOCK_STREAM, 0));
+        if (sock < 0) {
+            WriteFdFmt(fd, "reboot (%s) create\n", strerror(errno));
+            PLOG(ERROR) << "Couldn't create sock";
+            return false;
+        }
+
+        memset(&addr, 0, sizeof(addr));
+        addr.sun_family = AF_UNIX;
+        strncpy(addr.sun_path, "/dev/socket/recovery", sizeof(addr.sun_path) - 1);
+        if (connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+            WriteFdFmt(fd, "reboot (%s) connect\n", strerror(errno));
+            PLOG(ERROR) << "Couldn't connect to recovery";
+            return false;
+        }
+        int ret = adb_write(sock, &msg, sizeof(msg));
+        if (ret != sizeof(msg)) {
+            WriteFdFmt(fd, "reboot (%s) write\n", strerror(errno));
+            PLOG(ERROR) << "Couldn't write msg";
+            return false;
+        }
+        return true;
+    }
+
     if (!android::base::SetProperty(ANDROID_RB_PROPERTY, reboot_string)) {
         WriteFdFmt(fd, "reboot (%s) failed\n", reboot_string.c_str());
         return false;
