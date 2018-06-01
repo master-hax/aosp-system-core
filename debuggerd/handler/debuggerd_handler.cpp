@@ -299,7 +299,8 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
   debugger_thread_info* thread_info = static_cast<debugger_thread_info*>(arg);
 
   for (int i = 0; i < 1024; ++i) {
-    close(i);
+    // Don't use close to avoid bionic's file descriptor ownership checks.
+    syscall(__NR_close, i);
   }
 
   int devnull = TEMP_FAILURE_RETRY(open("/dev/null", O_RDWR));
