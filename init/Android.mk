@@ -45,7 +45,6 @@ LOCAL_SRC_FILES := main.cpp
 
 LOCAL_MODULE:= init
 
-LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_UNSTRIPPED)
 
@@ -59,24 +58,28 @@ LOCAL_STATIC_LIBRARIES := \
     libsquashfs_utils \
     liblogwrap \
     libext4_utils \
-    libcutils \
-    libbase \
-    libc \
     libseccomp_policy \
-    libselinux \
-    liblog \
     libcrypto_utils \
-    libcrypto \
-    libc++_static \
-    libdl \
     libsparse \
-    libz \
+    libselinux \
     libprocessgroup \
     libavb \
     libkeyutils \
     libprotobuf-cpp-lite \
     libpropertyinfoserializer \
     libpropertyinfoparser \
+
+LOCAL_SHARED_LIBRARIES := \
+    libcutils \
+    libbase \
+    liblog \
+    libcrypto \
+    libdl \
+    libz \
+    libc++ \
+
+LOCAL_LDFLAGS := -Wl,--rpath,/system/lib64
+
 
 LOCAL_REQUIRED_MODULES := \
     e2fsdroid \
