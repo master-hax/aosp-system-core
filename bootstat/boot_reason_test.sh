@@ -223,7 +223,8 @@ EXPECT_EQ() {
   rval="${2}"
   shift 2
   if ! ( echo X"${rval}" | grep '^X'"${lval}"'$' >/dev/null 2>/dev/null ); then
-    echo "ERROR: expected \"${lval}\" got \"${rval}\"" >&2
+    echo -n "ERROR: expected \"${lval}\" got \"${rval}\"" | tr '\n' '^' >&2
+    echo >&2
     if [ -n "${*}" ] ; then
       echo "       ${*}" >&2
     fi
@@ -231,7 +232,8 @@ EXPECT_EQ() {
   fi
   if [ -n "${*}" ] ; then
     if [ X"${lval}" != X"${rval}" ]; then
-      echo "INFO: ok \"${lval}\"(=\"${rval}\") ${*}" >&2
+      echo -n "INFO: ok \"${lval}\"(=\"${rval}\") ${*}" | tr '\n' '^' >&2
+      echo >&2
     else
       echo "INFO: ok \"${lval}\" ${*}" >&2
     fi
@@ -463,11 +465,22 @@ string representing what is acceptable.
 NB: must also roughly match heuristics in system/core/bootstat/bootstat.cpp" ]
 validate_property() {
   val="`adb shell getprop ${1} 2>&1`"
-  ret=`validate_reason "${val}"`
-  if [ "reboot" = "${ret}" ]; then
-    ret=`validate_reason "reboot,${val}"`
+  if [ "${1}" = "persist.sys.boot.reason" ]; then
+    val_BOOTSTAT="${val%
+BOOTSTAT}"
+  else
+    val_BOOTSTAT="${val}"
   fi
-  echo ${ret}
+  ret=`validate_reason "${val_BOOTSTAT}"`
+  if [ "reboot" = "${ret}" ]; then
+    ret=`validate_reason "reboot,${val_BOOTSTAT}"`
+  fi
+  if [ "${val}" = "${val_BOOTSTAT}" ]; then
+    echo ${ret}
+  else
+    echo "${ret}
+BOOTSTAT"
+  fi
 }
 
 #
@@ -984,23 +997,30 @@ test_Its_Just_So_Hard_reboot() {
   adb shell 'reboot "Its Just So Hard"'
   wait_for_screen
   EXPECT_PROPERTY sys.boot.reason reboot,its_just_so_hard
-  EXPECT_PROPERTY persist.sys.boot.reason "reboot,Its Just So Hard"
+  expect_persist_boot_reason="reboot,Its Just So Hard"
+  val="`adb shell getprop persist.sys.boot.reason 2>/dev/null`"
+  if [ "${val#reboot,its_just_so_hard}" != "${val}" ]; then
+    expect_persist_boot_reason="reboot,its_just_so_hard"
+  fi
+  EXPECT_PROPERTY persist.sys.boot.reason "${expect_persist_boot_reason}"
   # Do not leave this test with an illegal value in persist.sys.boot.reason
   save_ret=${?}           # hold on to error code from above two lines
-  if isDebuggable; then   # can do this easy, or we can do this hard.
-    adb shell su root setprop persist.sys.boot.reason reboot,its_just_so_hard
-    ( exit ${save_ret} )  # because one can not just do ?=${save_ret}
-  else
-    report_bootstat_logs reboot,its_just_so_hard  # report what we have so far
-    # user build mitigation
-    adb shell reboot its_just_so_hard
-    wait_for_screen
-    ( exit ${save_ret} )  # because one can not just do ?=${save_ret}
-    EXPECT_PROPERTY sys.boot.reason reboot,its_just_so_hard
+  if [ "${expect_persist_boot_reason}" != "reboot,its_just_so_hard" ]; then
+    if isDebuggable; then   # can do this easy, or we can do this hard.
+      adb shell su root setprop persist.sys.boot.reason reboot,its_just_so_hard
+      ( exit ${save_ret} )  # because one can not just do ?=${save_ret}
+    else
+      report_bootstat_logs reboot,its_just_so_hard  # report what we have so far
+      # user build mitigation
+      adb shell reboot its_just_so_hard
+      wait_for_screen
+      ( exit ${save_ret} )  # because one can not just do ?=${save_ret}
+      EXPECT_PROPERTY sys.boot.reason reboot,its_just_so_hard
+    fi
+    # Ensure persist.sys.boot.reason now valid, failure here acts as a signal
+    # that we could choke up following tests.  For example test_properties.
+    EXPECT_PROPERTY persist.sys.boot.reason reboot,its_just_so_hard ${flag}
   fi
-  # Ensure persist.sys.boot.reason now valid, failure here acts as a signal
-  # that we could choke up following tests.  For example test_properties.
-  EXPECT_PROPERTY persist.sys.boot.reason reboot,its_just_so_hard ${flag}
   report_bootstat_logs reboot,its_just_so_hard
 }
 

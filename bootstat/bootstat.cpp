@@ -734,6 +734,7 @@ bool addKernelPanicSubReason(const std::string& content, std::string& ret) {
 
 const char system_reboot_reason_property[] = "sys.boot.reason";
 const char last_reboot_reason_property[] = LAST_REBOOT_REASON_PROPERTY;
+const char invalidate_last_reboot_reason_property_suffix[] = "\nBOOTSTAT";
 const char bootloader_reboot_reason_property[] = "ro.boot.bootreason";
 
 // Scrub, Sanitize, Standardize and Enhance the boot reason string supplied.
@@ -971,6 +972,9 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       // Content buffer no longer will have console data. Beware if more
       // checks added below, that depend on parsing console content.
       content = GetProperty(last_reboot_reason_property);
+      if (android::base::EndsWithIgnoreCase(content, invalidate_last_reboot_reason_property_suffix)) {
+        content = "";
+      }
       transformReason(content);
 
       // Anything in last is better than 'super-blunt' reboot or shutdown.
@@ -1001,10 +1005,6 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
   }
 
   LOG(INFO) << "Canonical boot reason: " << ret;
-  if (isKernelRebootReason(ret) && (GetProperty(last_reboot_reason_property) != "")) {
-    // Rewrite as it must be old news, kernel reasons trump user space.
-    SetProperty(last_reboot_reason_property, ret);
-  }
   return ret;
 }
 
@@ -1134,6 +1134,24 @@ void SetSystemBootReason() {
   const std::string system_boot_reason(BootReasonStrToReason(bootloader_boot_reason));
   // Record the scrubbed system_boot_reason to the property
   SetProperty(system_reboot_reason_property, system_boot_reason);
+
+  // Last reboot reason validation or rewrite as it is now old news,
+  // kernel reasons trump user space.
+  std::string last_boot_reason;
+  if (isKernelRebootReason(system_boot_reason)) {
+    last_boot_reason = system_boot_reason;
+  } else {
+    last_boot_reason = GetProperty(last_reboot_reason_property);
+    if (android::base::EndsWithIgnoreCase(last_boot_reason,
+                                          invalidate_last_reboot_reason_property_suffix) ||
+        (last_boot_reason == "")) {
+      last_boot_reason = system_boot_reason;
+    } else {
+      transformReason(last_boot_reason);
+    }
+  }
+  SetProperty(last_reboot_reason_property,
+              last_boot_reason + invalidate_last_reboot_reason_property_suffix);
 }
 
 // Records several metrics related to the time it takes to boot the device,
