@@ -43,51 +43,102 @@
 //
 // unique_fd is also known as ScopedFd/ScopedFD/scoped_fd; mentioned here to help
 // you find this class if you're searching for one of those names.
+
+#if defined(__BIONIC__)
+extern "C" int __libc_close_with_tag(int fd, void* tag);
+extern "C" void __libc_exchange_close_tag(int fd, void* old_tag, void* new_tag);
+#endif
+
 namespace android {
 namespace base {
 
 struct DefaultCloser {
-  static void Close(int fd) {
+  static void Tag(int fd, void* expected_tag, void* new_tag) {
+#if defined(__BIONIC__)
+    __libc_exchange_close_tag(fd, expected_tag, new_tag);
+#else
+    UNUSED(fd, old_tag, new_tag);
+#endif
+  }
+
+  static void Close(int fd, void* tag) {
+#if defined(__BIONIC__)
+    __libc_close_with_tag(fd, tag);
+#else
     // Even if close(2) fails with EINTR, the fd will have been closed.
     // Using TEMP_FAILURE_RETRY will either lead to EBADF or closing someone
     // else's fd.
     // http://lkml.indiana.edu/hypermail/linux/kernel/0509.1/0877.html
     ::close(fd);
+#endif
   }
 };
 
 template <typename Closer>
 class unique_fd_impl final {
  public:
-  unique_fd_impl() : value_(-1) {}
+  unique_fd_impl() {}
 
-  explicit unique_fd_impl(int value) : value_(value) {}
+  explicit unique_fd_impl(int fd) { reset(fd); }
   ~unique_fd_impl() { reset(); }
 
-  unique_fd_impl(unique_fd_impl&& other) : value_(other.release()) {}
+  unique_fd_impl(unique_fd_impl&& other) { reset(other.release()); }
   unique_fd_impl& operator=(unique_fd_impl&& s) {
-    reset(s.release());
+    int fd = s._fd_;
+    s.fd_ = -1;
+    if (fd != -1) {
+      retag(fd, &s, this);
+    }
     return *this;
   }
 
   void reset(int new_value = -1) {
-    if (value_ != -1) {
-      Closer::Close(value_);
+    if (fd_ != -1) {
+      Closer::Close(fd_, this);
     }
-    value_ = new_value;
+    fd_ = new_value;
+    retag(fd_, nullptr, this);
   }
 
-  int get() const { return value_; }
+  int get() const { return fd_; }
   operator int() const { return get(); }
 
   int release() __attribute__((warn_unused_result)) {
-    int ret = value_;
-    value_ = -1;
+    retag(fd_, this, nullptr);
+    int ret = fd_;
+    fd_ = -1;
     return ret;
   }
 
  private:
-  int value_;
+  int fd_ = -1;
+
+  // Template magic to use Closer::Tag if available, and do nothing if not.
+  // If Closer::Tag exists, this implementation is preferred, because int is a better match.
+  // If not, this implementation is SFINAEd away, and the no-op below is the only one that exists.
+  template <typename T = Closer>
+  static auto retag(int fd, void* old_tag, void* new_tag)
+      -> decltype(T::Tag(fd, old_tag, new_tag), void()) {
+    T::Tag(fd, old_tag, new_tag);
+  }
+
+  template <typename T = Closer>
+  static void retag(long, void*) {
+    // No-op.
+  }
+
+  // Same as above, to select between Closer::Close(int) and Closer::Close(int, void*).
+  template <typename T = Closer>
+  static auto close(int fd, void* tag_value) -> decltype(T::Close(fd, tag_value), void()) {
+    T::Close(fd, tag_value);
+  }
+
+  template <typename T = Closer>
+  static auto close(int fd, void*) -> decltype(T::Close(fd), void()) {
+    T::Close(fd);
+  }
+
+  static void close(int fd, void* tag_value) { close(fd, tag_value); }
 
   unique_fd_impl(const unique_fd_impl&);
   void operator=(const unique_fd_impl&);
