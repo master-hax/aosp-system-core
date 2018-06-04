@@ -1404,6 +1404,17 @@ TEST(libbacktrace, unwind_through_unreadable_elf_local) {
   test_func = reinterpret_cast<test_func_t>(dlsym(lib_handle, "test_level_one"));
   ASSERT_TRUE(test_func != nullptr);
 
+  // If we are using the clang lld linker, then skip this test.
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(getpid()));
+  ASSERT_TRUE(map.get() != nullptr);
+  backtrace_map_t map_info;
+  map->FillIn(reinterpret_cast<uint64_t>(test_func), &map_info);
+  ASSERT_NE(0U, map_info.end);
+  if (map_info.offset != 0) {
+    GTEST_LOG_(INFO) << "Skipping this test, does not work if dlopen'd map is at non-zero offset.";
+    return;
+  }
+
   ASSERT_NE(test_func(1, 2, 3, 4, VerifyUnreadableElfBacktrace, reinterpret_cast<void*>(test_func)),
             0);
 
@@ -1430,6 +1441,17 @@ TEST(libbacktrace, unwind_through_unreadable_elf_remote) {
   }
   ASSERT_TRUE(pid > 0);
   ASSERT_TRUE(dlclose(lib_handle) == 0);
+
+  // If we are using the clang lld linker, then skip this test.
+  std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(pid));
+  ASSERT_TRUE(map.get() != nullptr);
+  backtrace_map_t map_info;
+  map->FillIn(reinterpret_cast<uint64_t>(test_func), &map_info);
+  ASSERT_NE(0U, map_info.end);
+  if (map_info.offset != 0) {
+    GTEST_LOG_(INFO) << "Skipping this test, does not work if dlopen'd map is at non-zero offset.";
+    return;
+  }
 
   uint64_t start = NanoTime();
   bool done = false;
