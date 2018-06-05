@@ -1,0 +1,12 @@
+Presubmit-Ready+1: Marissa Wall <marissaw@google.com>
+Presubmit-Ready+1: Kevin Rocard <krocard@google.com>
+Code-Review+2: Daniel Cardenas <danielcar@google.com>
+Code-Review+1: Marissa Wall <marissaw@google.com>
+Autosubmit+1: Kevin Rocard <krocard@google.com>
+Verified+1: Kevin Rocard <krocard@google.com>
+Build-Cop-Override+1: Kevin Rocard <krocard@google.com>
+Submitted-by: Kevin Rocard <krocard@google.com>
+Submitted-at: Tue, 05 Jun 2018 17:58:31 +0000
+Reviewed-on: https://android-review.googlesource.com/699864
+Project: platform/system/core
+Branch: refs/heads/master
