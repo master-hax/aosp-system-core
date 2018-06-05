@@ -261,12 +261,25 @@ runs the service.
 `priority <priority>`
 > Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().
+  This only applies to the non-realtime scheduler policies; it is an error to try to set this and
+  use a real time scheduler.
 
 `rlimit <resource> <cur> <max>`
 > This applies the given rlimit to the service. rlimits are inherited by child
   processes, so this effectively applies the given rlimit to the process tree
   started by this service.
   It is parsed similarly to the setrlimit command specified below.
+
+`scheduler <policy> [ <sched_priority> ]`
+> Use the provided scheduler policy for this process. Effectively, this calls sched_setscheduler()
+  with the provided policy and param. See the associated man page for full details on the provided
+  options. _policy_ takes the form of either 'fifo', 'rr', 'batch' or 'idle'. _sched\_priority_
+  takes the form of an integer from 1 to 99 if 'fifo' or 'rr' is used for _policy_. It is an
+  error to provide this value otherwise.
+  Note: SCHED_RESET_ON_FORK is intentionally set.
+  Note: take caution when using the real time policies ('fifo' and 'rr') as they can easily starve
+  other processes from getting CPU time.
+  Note: _policy_ does not take 'other' as a parameter as doing so would be a no-op.
 
 `seclabel <seclabel>`
 > Change to 'seclabel' before exec'ing this service.

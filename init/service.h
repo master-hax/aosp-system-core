@@ -17,6 +17,7 @@
 #ifndef _INIT_SERVICE_H
 #define _INIT_SERVICE_H
 
+#include <sched.h>
 #include <signal.h>
 #include <sys/resource.h>
 #include <sys/types.h>
@@ -153,6 +154,7 @@ class Service {
     Result<Success> ParseMemcgSwappiness(const std::vector<std::string>& args);
     Result<Success> ParseNamespace(const std::vector<std::string>& args);
     Result<Success> ParseProcessRlimit(const std::vector<std::string>& args);
+    Result<Success> ParseScheduler(const std::vector<std::string>& args);
     Result<Success> ParseSeclabel(const std::vector<std::string>& args);
     Result<Success> ParseSetenv(const std::vector<std::string>& args);
     Result<Success> ParseShutdown(const std::vector<std::string>& args);
@@ -203,6 +205,8 @@ class Service {
     IoSchedClass ioprio_class_;
     int ioprio_pri_;
     int priority_;
+    int sched_policy_ = SCHED_OTHER;
+    int sched_priority_ = 0;
 
     int oom_score_adjust_;
 

@@ -20,7 +20,6 @@
 #include <inttypes.h>
 #include <linux/input.h>
 #include <linux/securebits.h>
-#include <sched.h>
 #include <sys/mount.h>
 #include <sys/prctl.h>
 #include <sys/resource.h>
@@ -317,6 +316,13 @@ void Service::SetProcessAttributes() {
             PLOG(FATAL) << "cannot setexeccon('" << seclabel_ << "') for " << name_;
         }
     }
+    if (sched_policy_ != SCHED_OTHER) {
+        sched_param param = {0};
+        param.sched_priority = sched_priority_;
+        if (sched_setscheduler(0, sched_policy_ | SCHED_RESET_ON_FORK, &param) != 0) {
+            PLOG(FATAL) << "sched_setscheduler failed for " << name_;
+        }
+    }
     if (priority_ != 0) {
         if (setpriority(PRIO_PROCESS, 0, priority_) != 0) {
             PLOG(FATAL) << "setpriority failed for " << name_;
@@ -481,6 +487,11 @@ Result<Success> Service::ParseGroup(const std::vector<std::string>& args) {
 }
 
 Result<Success> Service::ParsePriority(const std::vector<std::string>& args) {
+    if (sched_policy_ == SCHED_FIFO || sched_policy_ == SCHED_RR) {
+        return Error()
+               << "It is an error to specify a 'priority' when using a real time scheduler policy";
+    }
+
     priority_ = 0;
     if (!ParseInt(args[1], &priority_,
                   static_cast<int>(ANDROID_PRIORITY_HIGHEST), // highest is negative
@@ -488,6 +499,7 @@ Result<Success> Service::ParsePriority(const std::vector<std::string>& args) {
         return Error() << StringPrintf("process priority value must be range %d - %d",
                                        ANDROID_PRIORITY_HIGHEST, ANDROID_PRIORITY_LOWEST);
     }
+
     return Success();
 }
 
@@ -622,6 +634,39 @@ Result<Success> Service::ParseProcessRlimit(const std::vector<std::string>& args
     if (!rlimit) return rlimit.error();
 
     rlimits_.emplace_back(*rlimit);
+    return Success();
+}
+
+Result<Success> Service::ParseScheduler(const std::vector<std::string>& args) {
+    const static std::map<std::string, int> policies = {
+        {"batch", SCHED_BATCH},
+        {"fifo", SCHED_FIFO},
+        {"idle", SCHED_IDLE},
+        {"rr", SCHED_RR},
+    };
+    auto policy_it = policies.find(args[1]);
+    if (policy_it == policies.end()) {
+        return Error() << "Could not find scheduling policy for '" << args[1] << "'";
+    }
+    auto sched_policy = policy_it->second;
+    int sched_priority = 0;
+    if (sched_policy == SCHED_BATCH || sched_policy == SCHED_IDLE) {
+        if (args.size() != 2) {
+            return Error() << "sched_param was provided, but the scheduler was '" << args[1]
+                           << "' which does not take this option";
+        }
+    } else {
+        if (priority_ != 0) {
+            return Error() << "It is an error to specify a 'priority' when using a real time "
+                              "scheduler policy";
+        }
+        if (!ParseInt(args[2], &sched_priority, 1, 99)) {
+            return Error() << "sched_param must be within the range 1 - 99";
+        }
+    }
+
+    sched_policy_ = sched_policy;
+    sched_priority_ = sched_priority;
     return Success();
 }
 
