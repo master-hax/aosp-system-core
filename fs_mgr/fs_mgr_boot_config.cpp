@@ -15,6 +15,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
@@ -22,6 +23,41 @@
 #include <android-base/properties.h>
 
 #include "fs_mgr_priv.h"
+
+std::vector<std::string> SplitWithQuote(const std::string& s, const std::string& delimiters) {
+    std::vector<std::string> result;
+
+    if (delimiters.empty()) return result;
+
+    static constexpr char quote = '"';
+    if (delimiters.find(quote) != delimiters.npos) return result;
+
+    size_t base = 0;
+    while (true) {
+        // skip quoted spans
+        auto found = base;
+        while (((found = s.find_first_of(delimiters + quote, found)) != s.npos) &&
+               (s[found] == quote)) {
+            if ((found = s.find(quote, found + 1)) == s.npos) break;
+            ++found;
+        }
+        auto piece = s.substr(base, found - base);
+
+        // strip quoted fragments from piece
+        for (size_t begin = 0, end; ((begin = piece.find(quote, begin)) != piece.npos) &&
+                                    ((end = piece.find(quote, begin + 1)) != piece.npos);
+             begin = end - 1) {
+            piece.erase(end, 1);
+            piece.erase(begin, 1);
+        }
+
+        result.emplace_back(std::move(piece));
+        if (found == s.npos) break;
+        base = found + 1;
+    }
+
+    return result;
+}
 
 // Tries to get the given boot config value from kernel cmdline.
 // Returns true if successfully found, false otherwise.
@@ -31,8 +67,8 @@ bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::str
     std::string cmdline;
     std::string cmdline_key("androidboot." + key);
     if (android::base::ReadFileToString("/proc/cmdline", &cmdline)) {
-        for (const auto& entry : android::base::Split(android::base::Trim(cmdline), " ")) {
-            std::vector<std::string> pieces = android::base::Split(entry, "=");
+        for (const auto& entry : SplitWithQuote(android::base::Trim(cmdline), " ")) {
+            std::vector<std::string> pieces = SplitWithQuote(entry, "=");
             if (pieces.size() == 2) {
                 if (pieces[0] == cmdline_key) {
                     *out_val = pieces[1];
@@ -42,6 +78,7 @@ bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::str
         }
     }
 
+    *out_val = "";
     return false;
 }
 
