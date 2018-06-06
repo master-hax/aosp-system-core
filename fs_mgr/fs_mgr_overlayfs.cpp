@@ -174,6 +174,12 @@ bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
            !fs_mgr_filesystem_has_space(fsrec->mount_point);
 }
 
+size_t fs_mgr_free_space(const std::string& path) {
+    struct statvfs vst;
+    if (statvfs(path.c_str(), &vst)) return 0;
+    return vst.f_bsize / DEV_BSIZE * vst.f_bfree;
+}
+
 constexpr char upper_name[] = "upper";
 constexpr char work_name[] = "work";
 
@@ -194,7 +200,7 @@ constexpr char work_name[] = "work";
 // _not_ override.
 //
 // Goal is to stick with _one_ active candidate, if non are active, select
-// read-writable candidate available at the instant of mount phase.
+// largest read-writable candidate available at the instant of mount phase.
 // Return empty string to indicate non candidates are found.
 //
 std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
@@ -236,11 +242,13 @@ std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
         return active[0];
     }
     if (rw.empty()) return "";
-    if (rw.size() > 1) {  // ToDo: Repair the situation?
-        LERROR << "multiple overlayfs:" << android::base::Join(rw, ',');
-        return "";
-    }
-    return rw[0];
+
+    // If multiple, select one with largest free space
+    auto it =
+            std::max_element(rw.begin(), rw.end(), [](const std::string& l, const std::string& r) {
+                return fs_mgr_free_space(l) < fs_mgr_free_space(r);
+            });
+    return *it;
 }
 
 constexpr char lowerdir_option[] = "lowerdir=";
