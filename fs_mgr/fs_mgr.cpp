@@ -60,6 +60,7 @@
 #include "fs_mgr_avb.h"
 #include "fs_mgr_priv.h"
 #include "fs_mgr_priv_dm_ioctl.h"
+#include "fs_mgr_priv_overlayfs.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
 #define KEY_IN_FOOTER  "footer"
@@ -1048,6 +1049,10 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     std::vector<std::string> mounts;
     for (auto& fsrec : mounted) {
         mounts.emplace_back(std::string(fsrec->mount_point) + '(' + fsrec->fs_type + ')');
+#if ALLOW_ADBD_DISABLE_VERITY == 1  // "userdebug" build
+        if (!fs_mgr_overlayfs_mount(fstab, fsrec)) continue;
+        mounts.emplace_back(std::string(fsrec->mount_point) + "(overlayfs)");
+#endif
     }
     LINFO << "fs_mgr_mount_all " << android::base::Join(mounts, ' ');
 
