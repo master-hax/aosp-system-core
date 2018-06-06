@@ -68,8 +68,8 @@ bool fs_mgr_overlayfs_teardown(const char*, bool* change) {
 
 namespace {
 
-// acceptable overlayfs backing storage
-const auto kOverlayMountPoint = "/cache"s;
+// list of acceptable overlayfs backing storage
+const std::vector<std::string> kOverlayMountPoints = {"/data", "/cache"};
 
 // Return true if everything is mounted, but before adb is started.  Right
 // after 'trigger load_persist_props_action' is done.
@@ -80,6 +80,16 @@ bool fs_mgr_boot_completed() {
 bool fs_mgr_is_dir(const std::string& path) {
     struct stat st;
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
+}
+
+bool fs_mgr_dir_has_content(const std::string& path) {
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(path.c_str()), closedir);
+    if (!dir) return false;
+    dirent* entry;
+    while ((entry = readdir(dir.get()))) {
+        if (("."s != entry->d_name) && (".."s != entry->d_name)) return true;
+    }
+    return false;
 }
 
 // Similar test as overlayfs workdir= validation in the kernel for read-write
@@ -140,15 +150,65 @@ bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
 constexpr char upper_name[] = "upper";
 constexpr char work_name[] = "work";
 
+//
+// Essentially the basis of a probe function to determine what to overlay
+// mount, it must survive with no product knowledge as it might be called
+// at init first_stage_mount.  Then inspecting for matching available
+// overrides in a known list.  The override directory(s) would be setup at
+// runtime (eg: adb disable-verity) leaving the necessary droppings for this
+// function to make a deterministic decision.
+//
+// Assumption is caller has already checked that no overlay is currently
+// mounted yet.  That blocks calling this probe for later mount phases.
+//
+// Only error, a corner case that would require outside interference of the
+// storage, is if we find _two_ active overrides.  Report an error log and do
+// _not_ override.
+//
+// Goal is to stick with _one_ active candidate, if non are active, select
+// read-writable candidate available at the instant of mount phase.
+// Return empty string to indicate non candidates are found.
+//
 std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
     if (!fs_mgr_is_dir(mount_point)) return "";
-    auto dir = kOverlayMountPoint + "/overlay/" + android::base::Basename(mount_point) + "/";
-    auto upper = dir + upper_name;
-    if (!fs_mgr_is_dir(upper)) return "";
-    auto work = dir + work_name;
-    if (!fs_mgr_is_dir(work)) return "";
-    if (!fs_mgr_dir_is_writable(work)) return "";
-    return dir;
+    const auto base = android::base::Basename(mount_point) + "/";
+    // 1) list of r/w candidates
+    std::vector<std::string> rw;
+    // 2) list of override content (priority, stick to this _one_)
+    std::vector<std::string> active;
+    for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        auto dir = overlay_mount_point + "/overlay/" + base;
+        auto upper = dir + upper_name;
+        if (!fs_mgr_is_dir(upper)) continue;
+        if (fs_mgr_dir_has_content(upper)) {
+            active.push_back(dir);
+        }
+        auto work = dir + work_name;
+        if (!fs_mgr_is_dir(work)) continue;
+        if (fs_mgr_dir_is_writable(work)) {
+            rw.emplace_back(std::move(dir));
+        }
+    }
+    if (active.size() > 1) {  // ToDo: Repair the situation?
+        LERROR << "multiple active overlayfs:" << android::base::Join(active, ',');
+        return "";
+    }
+    if (!active.empty()) {
+        if (std::find(rw.begin(), rw.end(), active[0]) == rw.end()) {
+            auto writable = android::base::Join(rw, ',');
+            if (!writable.empty()) {
+                writable = " when alternate writable backing is available:"s + writable;
+            }
+            LOG(WARNING) << "active overlayfs read-only" << writable;
+        }
+        return active[0];
+    }
+    if (rw.empty()) return "";
+    if (rw.size() > 1) {  // ToDo: Repair the situation?
+        LERROR << "multiple overlayfs:" << android::base::Join(rw, ',');
+        return "";
+    }
+    return rw[0];
 }
 
 constexpr char lowerdir_option[] = "lowerdir=";
@@ -322,6 +382,44 @@ bool fs_mgr_overlayfs_setup_one(const std::string& overlay, const std::string& m
     return ret;
 }
 
+bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string& mount_point,
+                                   bool* change) {
+    const auto oldpath = overlay + mount_point;
+    const auto newpath = oldpath + ".teardown";
+    auto ret = fs_mgr_rm_all(newpath);
+    auto save_errno = errno;
+    if (!rename(oldpath.c_str(), newpath.c_str())) {
+        if (change) *change = true;
+    } else if (errno != ENOENT) {
+        ret = false;
+        PERROR << "overlayfs mv " << oldpath << " " << newpath;
+    } else {
+        errno = save_errno;
+    }
+    ret &= fs_mgr_rm_all(newpath, change);
+    save_errno = errno;
+    if (!rmdir(newpath.c_str())) {
+        if (change) *change = true;
+    } else if (errno != ENOENT) {
+        ret = false;
+        PERROR << "overlayfs rmdir " << newpath;
+    } else {
+        errno = save_errno;
+    }
+    if (!mount_point.empty()) {
+        save_errno = errno;
+        if (!rmdir(overlay.c_str())) {
+            if (change) *change = true;
+        } else if ((errno != ENOENT) && (errno != ENOTEMPTY)) {
+            ret = false;
+            PERROR << "overlayfs rmdir " << overlay;
+        } else {
+            errno = save_errno;
+        }
+    }
+    return ret;
+}
+
 bool fs_mgr_overlayfs_mount(const fstab* fstab, const fstab_rec* fsrec) {
     if (!fs_mgr_wants_overlayfs(fsrec)) return false;
     auto fsrec_mount_point = fsrec->mount_point;
@@ -404,10 +502,6 @@ bool fs_mgr_overlayfs_mount_all() {
 bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* change) {
     if (change) *change = false;
     auto ret = false;
-    if (backing && (kOverlayMountPoint != backing)) {
-        errno = EINVAL;
-        return ret;
-    }
     if (!fs_mgr_wants_overlayfs()) return ret;
     if (!fs_mgr_boot_completed()) {
         errno = EBUSY;
@@ -419,7 +513,6 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
                                                                       fs_mgr_free_fstab);
     std::vector<std::string> mounts;
     if (fstab) {
-        if (!fs_mgr_get_entry_for_mount_point(fstab.get(), kOverlayMountPoint)) return ret;
         for (auto i = 0; i < fstab->num_entries; i++) {
             const auto fsrec = &fstab->recs[i];
             auto fsrec_mount_point = fsrec->mount_point;
@@ -431,23 +524,50 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
         if (mounts.empty()) return ret;
     }
 
+    std::vector<const std::string> dirs;
+    std::vector<const std::string> undirs;
+    auto backing_match = false;
+    for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        if (backing && (overlay_mount_point != backing)) {
+            undirs.emplace_back(overlay_mount_point);
+            continue;
+        }
+        backing_match = true;
+        if (!fstab || fs_mgr_get_entry_for_mount_point(fstab.get(), overlay_mount_point)) {
+            dirs.emplace_back(overlay_mount_point);
+        }
+    }
+    if (!backing_match) {
+        errno = EINVAL;
+        return ret;
+    }
+
     if (mount_point && ("/"s == mount_point) && fs_mgr_system_root_image(fstab.get())) {
         mount_point = "/system";
     }
-    auto overlay = kOverlayMountPoint + "/overlay/";
+
     auto save_errno = errno;
-    if (!mkdir(overlay.c_str(), 0755)) {
-        if (change) *change = true;
-    } else if (errno != EEXIST) {
-        PERROR << "overlayfs mkdir " << overlay;
-    } else {
-        errno = save_errno;
+    for (const auto& undir : undirs) {
+        fs_mgr_overlayfs_teardown_one(undir, mount_point ?: "", change);
     }
-    if (!fstab && mount_point && fs_mgr_overlayfs_setup_one(overlay, mount_point, change)) {
-        ret = true;
-    }
-    for (const auto& fsrec_mount_point : mounts) {
-        ret |= fs_mgr_overlayfs_setup_one(overlay, fsrec_mount_point, change);
+    errno = save_errno;
+
+    for (const auto& dir : dirs) {
+        auto overlay = dir + "/overlay/";
+        save_errno = errno;
+        if (!mkdir(overlay.c_str(), 0755)) {
+            if (change) *change = true;
+        } else if (errno != EEXIST) {
+            PERROR << "overlayfs mkdir " << overlay;
+        } else {
+            errno = save_errno;
+        }
+        if (!fstab && mount_point && fs_mgr_overlayfs_setup_one(overlay, mount_point, change)) {
+            ret = true;
+        }
+        for (const auto& fsrec_mount_point : mounts) {
+            ret |= fs_mgr_overlayfs_setup_one(overlay, fsrec_mount_point, change);
+        }
     }
     return ret;
 }
@@ -462,39 +582,8 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
         if (fs_mgr_system_root_image(fstab.get())) mount_point = "/system";
     }
     auto ret = true;
-    const auto overlay = kOverlayMountPoint + "/overlay";
-    const auto oldpath = overlay + (mount_point ?: "");
-    const auto newpath = oldpath + ".teardown";
-    ret &= fs_mgr_rm_all(newpath);
-    auto save_errno = errno;
-    if (!rename(oldpath.c_str(), newpath.c_str())) {
-        if (change) *change = true;
-    } else if (errno != ENOENT) {
-        ret = false;
-        PERROR << "overlayfs mv " << oldpath << " " << newpath;
-    } else {
-        errno = save_errno;
-    }
-    ret &= fs_mgr_rm_all(newpath, change);
-    save_errno = errno;
-    if (!rmdir(newpath.c_str())) {
-        if (change) *change = true;
-    } else if (errno != ENOENT) {
-        ret = false;
-        PERROR << "overlayfs rmdir " << newpath;
-    } else {
-        errno = save_errno;
-    }
-    if (mount_point) {
-        save_errno = errno;
-        if (!rmdir(overlay.c_str())) {
-            if (change) *change = true;
-        } else if ((errno != ENOENT) && (errno != ENOTEMPTY)) {
-            ret = false;
-            PERROR << "overlayfs rmdir " << overlay;
-        } else {
-            errno = save_errno;
-        }
+    for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        ret &= fs_mgr_overlayfs_teardown_one(overlay_mount_point, mount_point ?: "", change);
     }
     if (!fs_mgr_wants_overlayfs()) {
         // After obligatory teardown to make sure everything is clean, but if
