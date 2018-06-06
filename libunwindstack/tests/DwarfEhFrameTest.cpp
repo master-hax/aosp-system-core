@@ -103,7 +103,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init32) {
   this->memory_.SetData32(0x5508, 0x4500);
   this->memory_.SetData32(0x550c, 0x500);
 
-  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x600));
+  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x600, 0));
   ASSERT_EQ(4U, this->eh_frame_->TestGetFdeCount());
 
   typename DwarfEhFrame<TypeParam>::FdeInfo info(0, 0, 0);
@@ -142,7 +142,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init32_fde_not_following_cie) {
   this->memory_.SetData32(0x5108, 0x1500);
   this->memory_.SetData32(0x510c, 0x200);
 
-  ASSERT_FALSE(this->eh_frame_->Init(0x5000, 0x600));
+  ASSERT_FALSE(this->eh_frame_->Init(0x5000, 0x600, 0));
   ASSERT_EQ(DWARF_ERROR_ILLEGAL_VALUE, this->eh_frame_->LastErrorCode());
 }
 
@@ -187,7 +187,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init64) {
   this->memory_.SetData64(0x5514, 0x4500);
   this->memory_.SetData64(0x551c, 0x500);
 
-  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x600));
+  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x600, 0));
   ASSERT_EQ(4U, this->eh_frame_->TestGetFdeCount());
 
   typename DwarfEhFrame<TypeParam>::FdeInfo info(0, 0, 0);
@@ -228,7 +228,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init64_fde_not_following_cie) {
   this->memory_.SetData64(0x5114, 0x1500);
   this->memory_.SetData64(0x511c, 0x200);
 
-  ASSERT_FALSE(this->eh_frame_->Init(0x5000, 0x600));
+  ASSERT_FALSE(this->eh_frame_->Init(0x5000, 0x600, 0));
   ASSERT_EQ(DWARF_ERROR_ILLEGAL_VALUE, this->eh_frame_->LastErrorCode());
 }
 
@@ -256,7 +256,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init_version1) {
   this->memory_.SetData16(0x5108, 0x1500);
   this->memory_.SetData16(0x510a, 0x200);
 
-  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x200));
+  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x200, 0));
   ASSERT_EQ(1U, this->eh_frame_->TestGetFdeCount());
 
   typename DwarfEhFrame<TypeParam>::FdeInfo info(0, 0, 0);
@@ -299,7 +299,7 @@ TYPED_TEST_P(DwarfEhFrameTest, Init_version4) {
   this->memory_.SetData16(0x5108, 0x1500);
   this->memory_.SetData16(0x510a, 0x200);
 
-  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x200));
+  ASSERT_TRUE(this->eh_frame_->Init(0x5000, 0x200, 0));
   ASSERT_EQ(1U, this->eh_frame_->TestGetFdeCount());
 
   typename DwarfEhFrame<TypeParam>::FdeInfo info(0, 0, 0);

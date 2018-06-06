@@ -51,6 +51,7 @@ class DwarfMemory {
 
   void set_pc_offset(uint64_t offset) { pc_offset_ = offset; }
   void clear_pc_offset() { pc_offset_ = static_cast<uint64_t>(-1); }
+  uint64_t pc_offset() { return pc_offset_; }
 
   void set_data_offset(uint64_t offset) { data_offset_ = offset; }
   void clear_data_offset() { data_offset_ = static_cast<uint64_t>(-1); }

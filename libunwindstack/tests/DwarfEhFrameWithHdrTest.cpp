@@ -83,7 +83,7 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, Init) {
   this->memory_.SetData16(0x1004, 0x500);
   this->memory_.SetData32(0x1006, 126);
 
-  ASSERT_TRUE(this->eh_frame_->Init(0x1000, 0x100));
+  ASSERT_TRUE(this->eh_frame_->Init(0x1000, 0x100, 0));
   EXPECT_EQ(1U, this->eh_frame_->TestGetVersion());
   EXPECT_EQ(DW_EH_PE_udata2, this->eh_frame_->TestGetPtrEncoding());
   EXPECT_EQ(DW_EH_PE_sdata4, this->eh_frame_->TestGetTableEncoding());
@@ -97,16 +97,16 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, Init) {
 
   // Verify a zero fde count fails to init.
   this->memory_.SetData32(0x1006, 0);
-  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100));
+  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100, 0));
   ASSERT_EQ(DWARF_ERROR_NO_FDES, this->eh_frame_->LastErrorCode());
 
   // Verify an unexpected version will cause a fail.
   this->memory_.SetData32(0x1006, 126);
   this->memory_.SetData8(0x1000, 0);
-  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100));
+  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100, 0));
   ASSERT_EQ(DWARF_ERROR_UNSUPPORTED_VERSION, this->eh_frame_->LastErrorCode());
   this->memory_.SetData8(0x1000, 2);
-  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100));
+  ASSERT_FALSE(this->eh_frame_->Init(0x1000, 0x100, 0));
   ASSERT_EQ(DWARF_ERROR_UNSUPPORTED_VERSION, this->eh_frame_->LastErrorCode());
 }
 
