@@ -19,6 +19,15 @@
 
 #include <sys/cdefs.h>
 #include <string>
+#include <vector>
+
+#ifndef __ANDROID_VNDK__
+extern std::vector<std::string> (*__for_testing_only__SplitWithQuote)(const std::string& s,
+                                                                      const std::string& delimiters);
+extern bool (*__for_testing_only__fs_mgr_get_boot_config_from_kernel)(const std::string& cmdline,
+                                                                      const std::string& key,
+                                                                      std::string* out_val);
+#endif
 
 bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::string* out_val);
 bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val);
