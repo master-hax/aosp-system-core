@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <sys/cdefs.h>  // __predict_true() and _predict_false()
+
 #include <string>
 
 #include <android-base/file.h>
@@ -23,6 +25,41 @@
 
 #include "fs_mgr_priv.h"
 
+std::vector<std::string> SplitWithQuotes(const std::string& s, const std::string& delimiters) {
+    std::vector<std::string> result;
+
+    if (__predict_false(delimiters.empty())) return result;
+
+    static const std::string quotes = "\"'`";
+    if (__predict_false(delimiters.find_first_of(quotes) != delimiters.npos)) return result;
+
+    size_t base = 0;
+    while (true) {
+        // skip quoted spans
+        auto found = base;
+        while (((found = s.find_first_of(delimiters + quotes, found)) != s.npos) &&
+               (quotes.find(s[found]) != quotes.npos)) {
+            if ((found = s.find_first_of(s[found], found + 1)) == s.npos) break;
+            ++found;
+        }
+        auto piece = s.substr(base, found - base);
+
+        // strip quoted fragments from piece
+        for (size_t begin = 0, end; ((begin = piece.find_first_of(quotes, begin)) != piece.npos) &&
+                                    ((end = piece.find(piece[begin], begin + 1)) != piece.npos);
+             begin = end - 1) {
+            piece.erase(end, 1);
+            piece.erase(begin, 1);
+        }
+
+        result.emplace_back(std::move(piece));
+        if (found == s.npos) break;
+        base = found + 1;
+    }
+
+    return result;
+}
+
 // Tries to get the given boot config value from kernel cmdline.
 // Returns true if successfully found, false otherwise.
 bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::string* out_val) {
@@ -31,8 +68,8 @@ bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::str
     std::string cmdline;
     std::string cmdline_key("androidboot." + key);
     if (android::base::ReadFileToString("/proc/cmdline", &cmdline)) {
-        for (const auto& entry : android::base::Split(android::base::Trim(cmdline), " ")) {
-            std::vector<std::string> pieces = android::base::Split(entry, "=");
+        for (const auto& entry : SplitWithQuotes(android::base::Trim(cmdline), " ")) {
+            std::vector<std::string> pieces = SplitWithQuotes(entry, "=");
             if (pieces.size() == 2) {
                 if (pieces[0] == cmdline_key) {
                     *out_val = pieces[1];
