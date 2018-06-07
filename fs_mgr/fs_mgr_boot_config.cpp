@@ -48,10 +48,15 @@ std::vector<std::pair<std::string, std::string>> fs_mgr_parse_boot_config(const 
         if ((equal_sign == piece.npos) || (piece.size() <= equal_sign)) {
             if (!piece.empty()) {
                 // no difference between <key> and <key>=
+                std::transform(piece.begin(), piece.end(), piece.begin(),
+                               [](char c) { return (c == '-') ? '_' : c; });
                 result.emplace_back(std::move(piece), "");
             }
         } else {
-            result.emplace_back(piece.substr(0, equal_sign), piece.substr(equal_sign + 1));
+            auto key = piece.substr(0, equal_sign);
+            std::transform(key.begin(), key.end(), key.begin(),
+                           [](char c) { return (c == '-') ? '_' : c; });
+            result.emplace_back(std::move(key), piece.substr(equal_sign + 1));
         }
         if (found == cmdline.npos) break;
         base = found + 1;
@@ -64,7 +69,9 @@ bool fs_mgr_get_boot_config_from_kernel(const std::string& cmdline, const std::s
                                         std::string* out_val) {
     FS_MGR_CHECK(out_val != nullptr);
 
-    const std::string cmdline_key("androidboot." + android_key);
+    std::string cmdline_key("androidboot." + android_key);
+    std::transform(cmdline_key.begin(), cmdline_key.end(), cmdline_key.begin(),
+                   [](char c) { return (c == '-') ? '_' : c; });
     for (const auto& [key, value] : fs_mgr_parse_boot_config(cmdline)) {
         if (key == cmdline_key) {
             *out_val = value;

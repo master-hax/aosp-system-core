@@ -98,7 +98,7 @@ const std::vector<std::pair<std::string, std::string>> result_space = {
         {"androidboot.space", "sha256 5248 androidboot.nospace=nope"},
         {"printk.devkmsg", "on"},
         {"msm_rtb.filter", "0x237"},
-        {"ehci-hcd.park", "3"},
+        {"ehci_hcd.park", "3"},
         {"string ", "string '"},
         {"service_locator.enable", "1"},
         {"firmware_class.path", "/vendor/firmware"},
@@ -121,6 +121,12 @@ TEST(fs_mgr, fs_mgr_get_boot_config_from_kernel_cmdline) {
         static constexpr char androidboot[] = "androidboot.";
         if (!android::base::StartsWith(entry.first, androidboot)) continue;
         auto key = entry.first.substr(strlen(androidboot));
+        std::transform(key.begin(), key.end(), key.begin(),
+                       [](char c) { return (c == '-') ? '_' : c; });
+        EXPECT_TRUE(fs_mgr_get_boot_config_from_kernel(cmdline, key, &content)) << " for " << key;
+        EXPECT_EQ(entry.second, content);
+        std::transform(key.begin(), key.end(), key.begin(),
+                       [](char c) { return (c == '_') ? '-' : c; });
         EXPECT_TRUE(fs_mgr_get_boot_config_from_kernel(cmdline, key, &content)) << " for " << key;
         EXPECT_EQ(entry.second, content);
     }
