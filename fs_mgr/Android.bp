@@ -56,11 +56,14 @@ cc_library_static {
         "libselinux",
         "libavb",
         "libfstab",
+        "liblp",
     ],
     export_static_lib_headers: [
         "libfstab",
+        "liblp",
     ],
     whole_static_libs: [
+        "liblp",
         "liblogwrap",
         "libfstab",
     ],
