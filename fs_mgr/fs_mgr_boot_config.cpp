@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -65,13 +66,19 @@ bool fs_mgr_get_boot_config_from_kernel(const std::string& cmdline, const std::s
                                         std::string* out_val) {
     FS_MGR_CHECK(out_val != nullptr);
 
-    const std::string cmdline_key("androidboot." + key);
+    std::string cmdline_key("androidboot." + key);
+    std::transform(cmdline_key.begin(), cmdline_key.end(), cmdline_key.begin(),
+                   [](char c) { return (c == '-') ? '_' : c; });
     for (const auto& entry : SplitWithQuote(cmdline, " ")) {
         auto equal_sign = entry.find('=');
-        if ((equal_sign != entry.npos) && (entry.size() > equal_sign) &&
-            (entry.substr(0, equal_sign) == cmdline_key)) {
-            *out_val = entry.substr(equal_sign + 1);
-            return true;
+        if ((equal_sign != entry.npos) && (entry.size() > equal_sign)) {
+            auto piece = entry.substr(0, equal_sign);
+            std::transform(piece.begin(), piece.end(), piece.begin(),
+                           [](char c) { return (c == '-') ? '_' : c; });
+            if (piece == cmdline_key) {
+                *out_val = entry.substr(equal_sign + 1);
+                return true;
+            }
         }
     }
 

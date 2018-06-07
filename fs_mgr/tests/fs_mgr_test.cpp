@@ -122,10 +122,16 @@ TEST(fs_mgr, fs_mgr_get_boot_config_from_kernel_cmdline) {
                     cmdline, str.substr(strlen(androidboot)), &content));
             EXPECT_TRUE(content.empty()) << content;
         } else {
-            EXPECT_TRUE(__for_testing_only__fs_mgr_get_boot_config_from_kernel(
-                    cmdline, str.substr(strlen(androidboot), equal_sign - strlen(androidboot)),
-                    &content))
-                    << " for " << str;
+            auto key = str.substr(strlen(androidboot), equal_sign - strlen(androidboot));
+            std::transform(key.begin(), key.end(), key.begin(),
+                           [](char c) { return (c == '-') ? '_' : c; });
+            EXPECT_TRUE(__for_testing_only__fs_mgr_get_boot_config_from_kernel(cmdline, key, &content))
+                    << " for " << key;
+            EXPECT_EQ(str.substr(equal_sign + 1), content);
+            std::transform(key.begin(), key.end(), key.begin(),
+                           [](char c) { return (c == '_') ? '-' : c; });
+            EXPECT_TRUE(__for_testing_only__fs_mgr_get_boot_config_from_kernel(cmdline, key, &content))
+                    << " for " << key;
             EXPECT_EQ(str.substr(equal_sign + 1), content);
         }
     }
