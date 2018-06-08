@@ -27,3 +27,11 @@ Default ro.adb.remount.overlayfs.maxfree, if 0 (0%) turns off automation,
 if 100 (100%) enforces for all.
 This property is for allowing development control over this feature,
 timing and logistics may not be ideal.
+
+#### ro.adb.remount.overlayfs
+Only enabled on debug builds, ro.debuggable = 1.
+Board Configuration parameter.
+Globally enable or disable overlayfs handling for adb remount.
+Default "auto", if "false" disable overlayfs handling, if "true" always,
+and if "/cache" or "/data" will stick to and enforce use of that specific
+backing directory for overlayfs for system partitions.
