@@ -25,3 +25,11 @@ Enable overlayfs for limited space filesystems, treat them like read-only if
 the percentage space remaining is less than this paramter.
 Default ro.adb.remount.overlayfs.minfree, if 0 (0%) turns off automation,
 if 100 (100%) enforces for all.
+
+#### ro.adb.remount.overlayfs
+Only enabled on debug builds, ro.debuggable = 1.
+Board Configuration parameter.
+Globally enable or disable overlayfs handling for adb remount.
+Default "auto", if "false" disable overlayfs handling, if "true" always,
+and if "/cache" or "/data" will stick to and enforce use of that specific
+backing directory for overlayfs for system partitions.
