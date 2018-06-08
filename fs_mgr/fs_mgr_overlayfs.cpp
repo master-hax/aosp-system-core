@@ -136,9 +136,30 @@ std::string fs_mgr_get_overlayfs_options(const fstab* fstab, const char* mount_p
     return fs_mgr_get_overlayfs_options(mount_point);
 }
 
+//
+// ro.adbd.remount.overlayfs overrides automatic decision.
+// remount_overlayfs values:
+//    -2 - ro.adbd.remount.overlayfs not set, use automatic decision.
+//    -1 - uninitialized (facilitates cache)
+//     0 - ro.adbd.remount.overlayfs = false
+//     1 - ro.adbd.remount.overlayfs = true
+int fs_mgr_overlayfs_enabled() {
+    static signed char remount_overlayfs = -1;
+    if (remount_overlayfs == -1) {
+        remount_overlayfs = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", true);
+        auto remount_false = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", false);
+        if (remount_overlayfs != remount_false) remount_overlayfs = -2;
+    }
+    return remount_overlayfs;
+}
+
 // return true if system supports overlayfs
 bool fs_mgr_wants_overlayfs() {
     if (!__android_log_is_debuggable()) {
+        return false;
+    }
+
+    if (!fs_mgr_overlayfs_enabled()) {
         return false;
     }
 
@@ -171,7 +192,14 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     // if free space is (near) zero.
     auto fs_type = fsrec->fs_type;
     if (!fs_type) return false;
-    if (("squashfs"s != fs_type) || fs_mgr_filesystem_has_space(fsrec_mount_point)) return false;
+
+    auto enabled = fs_mgr_overlayfs_enabled();
+    if (!enabled) return false;
+    if (enabled < 0) {
+        if (("squashfs"s != fs_type) || fs_mgr_filesystem_has_space(fsrec_mount_point)) {
+            return false;
+        }
+    }
 
     // Verity enabled?
     const auto basename_mount_point(android::base::Basename(fsrec_mount_point));
