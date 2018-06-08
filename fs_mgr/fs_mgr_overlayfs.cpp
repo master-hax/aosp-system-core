@@ -214,10 +214,27 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
 
     // readonly filesystem, can not be mount -o remount,rw with any luck.
     // if free space is (near) zero.
-    struct statvfs vst;
-    if (("squashfs"s != fsrec->fs_type) &&
-        (statvfs(fsrec->mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks / 100)))) {
-        return false;
+    //
+    // ro.adbd.remount.overlayfs overrides automatic decision.
+    // remount_overlayfs values:
+    //    -2 - ro.adbd.remount.overlayfs not set, use automatic decision.
+    //    -1 - uninitialized (facilitates cache)
+    //     0 - ro.adbd.remount.overlayfs = false
+    //     1 - ro.adbd.remount.overlayfs = true
+    static signed char remount_overlayfs = -1;
+    if (remount_overlayfs == -1) {
+        remount_overlayfs = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", true);
+        auto remount_false = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", false);
+        if (remount_overlayfs != remount_false) remount_overlayfs = -2;
+    }
+    if (!remount_overlayfs) return false;
+    if (remount_overlayfs < 0) {
+        // If squashfs, or if free space is (near) zero, default to use overlayfs
+        struct statvfs vst;
+        if (("squashfs"s != fsrec->fs_type) &&
+            (statvfs(fsrec->mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks / 100)))) {
+            return false;
+        }
     }
 
     // Verity enabled? (not thread safe)
