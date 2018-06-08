@@ -97,7 +97,9 @@ fs_mgr_overlayfs_enabled_enum fs_mgr_overlayfs_enabled() {
     // inspect any of the properties to make a determination.
     if (!fs_mgr_boot_completed()) return OVL_REMOUNT_ENABLE;
 
-    auto value = android::base::GetProperty("ro.adb.remount.overlayfs", "auto");
+    auto value = android::base::GetProperty(
+            "persist.adb.remount.overlayfs",
+            android::base::GetProperty("ro.adb.remount.overlayfs", "auto"));
 
     auto i = -1;
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
