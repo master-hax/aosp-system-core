@@ -64,6 +64,39 @@ namespace {
 // list of acceptable overlayfs backing storage
 const char* overlay_mount_point[] = {"/data", "/cache"};
 
+enum fs_mgr_overlayfs_enabled_enum {
+    OVL_REMOUNT_DISABLE = -1,
+    OVL_REMOUNT_DATA = 0,   // match index in overlay_mount_point
+    OVL_REMOUNT_CACHE = 1,  // match index in overlay_mount_point
+    OVL_REMOUNT_AUTOMATIC = arraysize(overlay_mount_point),
+    OVL_REMOUNT_ENABLE,
+};
+fs_mgr_overlayfs_enabled_enum fs_mgr_overlayfs_enabled() {
+    // This will return a counter-intuitive "true" on init
+    // first_stage_mount because too early for property services,
+    // including ro.debuggable which is used to detect this.  When
+    // property services are available, the default will be "auto".
+    // Caveat is that we must rely on fs_mgr_overlayfs_setup being
+    // called at runtime before reboot to properly evaluate all
+    // directory population.
+    auto value = android::base::GetProperty(
+            "persist.adbd.remount.overlayfs",
+            android::base::GetProperty(
+                    "ro.adbd.remount.overlayfs",
+                    (android::base::GetProperty("ro.debuggable", "<empty>") == "<empty>")
+                            ? "true"
+                            : "auto"));
+
+    for (size_t i = 0; i < arraysize(overlay_mount_point); ++i) {
+        if (value == overlay_mount_point[i]) return fs_mgr_overlayfs_enabled_enum(i);
+    }
+    if ((value == "1") || (value == "y") || (value == "yes") || (value == "on") || (value == "true"))
+        return OVL_REMOUNT_ENABLE;
+    if ((value == "0") || (value == "n") || (value == "no") || (value == "false"))
+        return OVL_REMOUNT_DISABLE;
+    return OVL_REMOUNT_AUTOMATIC;
+}
+
 bool fs_mgr_is_dir(const std::string& path) {
     struct stat st;
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
@@ -100,6 +133,14 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
 }
 
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
+    switch (fs_mgr_overlayfs_enabled()) {
+        case OVL_REMOUNT_DISABLE:
+            return false;
+        case OVL_REMOUNT_ENABLE:
+            return true;
+        default:
+            break;
+    }
     // readonly filesystem, can not be mount -o remount,rw
     // with any luck.
     return "squashfs"s == fsrec->fs_type;
@@ -119,11 +160,13 @@ constexpr char work_name[] = "work";
 std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
     if (!fs_mgr_is_dir(mount_point)) return "";
     const auto base = android::base::Basename(mount_point) + "/";
+    auto enabled = fs_mgr_overlayfs_enabled();
     // 1) list of r/w candidates
     std::vector<std::string> rw;
     // 2) list of override content (priority, stick to this _one_)
     std::vector<std::string> active;
     for (size_t i = 0; i < arraysize(overlay_mount_point); ++i) {
+        if ((enabled < OVL_REMOUNT_AUTOMATIC) && (i != enabled)) continue;
         auto dir = std::string(overlay_mount_point[i]) + "/overlay/" + base;
         auto upper = dir + upper_name;
         if (!fs_mgr_is_dir(upper)) continue;
@@ -202,6 +245,10 @@ bool fs_mgr_wants_overlayfs() {
     // protect us from false in any case, so this is insurance.
     auto debuggable = android::base::GetProperty("ro.debuggable", "1");
     if (debuggable != "1") return false;
+
+    if (fs_mgr_overlayfs_enabled() == OVL_REMOUNT_DISABLE) {
+        return false;
+    }
 
     // Overlayfs available in the kernel, and patched for override_creds?
     static signed char overlayfs_in_kernel = -1;  // cache for constant condition
@@ -390,8 +437,10 @@ bool fs_mgr_overlayfs_setup(const char* mount_point, bool* change) {
         if (mounts.empty()) return ret;
     }
 
+    auto enabled = fs_mgr_overlayfs_enabled();
     std::vector<const std::string> dirs;
     for (auto i = 0; i < arraysize(overlay_mount_point); ++i) {
+        if ((enabled < OVL_REMOUNT_AUTOMATIC) && (i != enabled)) continue;
         std::string dir(overlay_mount_point[i]);
         if (!fstab || fs_mgr_get_entry_for_mount_point(fstab.get(), dir)) {
             dirs.emplace_back(std::move(dir));
