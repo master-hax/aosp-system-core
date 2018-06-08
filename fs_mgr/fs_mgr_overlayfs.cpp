@@ -245,7 +245,25 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     // if free space is (near) zero.
     auto fs_type = fsrec->fs_type;
     if (!fs_type) return false;
-    if (("squashfs"s != fs_type) || fs_mgr_filesystem_has_space(fsrec_mount_point)) return false;
+    //
+    // ro.adbd.remount.overlayfs overrides automatic decision.
+    // remount_overlayfs values:
+    //    -2 - ro.adbd.remount.overlayfs not set, use automatic decision.
+    //    -1 - uninitialized (facilitates cache)
+    //     0 - ro.adbd.remount.overlayfs = false
+    //     1 - ro.adbd.remount.overlayfs = true
+    static signed char remount_overlayfs = -1;
+    if (remount_overlayfs == -1) {
+        remount_overlayfs = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", true);
+        auto remount_false = android::base::GetBoolProperty("ro.adbd.remount.overlayfs", false);
+        if (remount_overlayfs != remount_false) remount_overlayfs = -2;
+    }
+    if (!remount_overlayfs) return false;
+    if (remount_overlayfs < 0) {
+        if (("squashfs"s != fs_type) || fs_mgr_filesystem_has_space(fsrec_mount_point)) {
+            return false;
+        }
+    }
 
     // Verity enabled? (not thread safe)
     fs_mgr_verity_mode.clear();
