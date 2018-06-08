@@ -33,3 +33,11 @@ Globally enable or disable overlayfs handling for adb remount.
 Default "auto", if "false" disable overlayfs handling, if "true" always,
 and if "/cache" or "/data" will stick to and enforce use of that specific
 backing directory for overlayfs for system partitions.
+
+#### persist.adb.remount.overlayfs
+Only enabled on debug builds, ro.debuggable = 1.
+Globally override ro.adb.remount.overlayfs, and enable or disable overlayfs
+handling for adb remount.
+Default "auto", if "false" disable overlayfs handling, if "true" always,
+and if "/cache" or "/data" will stick to and enforce use of that specific
+backing directory for overlayfs for system partitions.
