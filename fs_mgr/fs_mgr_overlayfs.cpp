@@ -77,6 +77,31 @@ bool fs_mgr_boot_completed() {
     return android::base::GetBoolProperty("ro.persistent_properties.ready", false);
 }
 
+enum fs_mgr_overlayfs_enabled_enum {
+    OVL_REMOUNT_DISABLE = -1,
+    OVL_REMOUNT_DATA = 0,   // match index in overlay_mount_point
+    OVL_REMOUNT_CACHE = 1,  // match index in overlay_mount_point
+    OVL_REMOUNT_AUTOMATIC,
+    OVL_REMOUNT_ENABLE,
+};
+fs_mgr_overlayfs_enabled_enum fs_mgr_overlayfs_enabled() {
+    // If checked during boot up, always report true because we can not
+    // inspect any of the properties to make a determination.
+    if (!fs_mgr_boot_completed()) return OVL_REMOUNT_ENABLE;
+
+    auto value = android::base::GetProperty("ro.adb.remount.overlayfs", "auto");
+
+    auto i = -1;
+    for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        ++i;
+        if (value == overlay_mount_point) return fs_mgr_overlayfs_enabled_enum(i);
+    }
+    // And then boolean evaluation, true or false or default (automatic).
+    if (value == "true") return OVL_REMOUNT_ENABLE;
+    if (value == "false") return OVL_REMOUNT_DISABLE;
+    return OVL_REMOUNT_AUTOMATIC;
+}
+
 bool fs_mgr_is_dir(const std::string& path) {
     struct stat st;
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
@@ -139,6 +164,14 @@ bool fs_mgr_filesystem_has_space(const char* mount_point) {
 }
 
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
+    switch (fs_mgr_overlayfs_enabled()) {
+        case OVL_REMOUNT_DISABLE:
+            return false;
+        case OVL_REMOUNT_ENABLE:
+            return true;
+        default:
+            break;
+    }
     // readonly filesystem, can not be mount -o remount,rw
     // if squashfs or if free space is (near) zero making such a remount
     // virtually useless, or if there are shared blocks that prevent remount,rw
@@ -153,7 +186,8 @@ constexpr char work_name[] = "work";
 //
 // Essentially the basis of a probe function to determine what to overlay
 // mount, it must survive with no product knowledge as it might be called
-// at init first_stage_mount.  Then inspecting for matching available
+// at init first_stage_mount.  Thus some care with respect to what
+// fs_mgr_overlayfs_enabled() reports.  Then inspecting for matching available
 // overrides in a known list.  The override directory(s) would be setup at
 // runtime (eg: adb disable-verity) leaving the necessary droppings for this
 // function to make a deterministic decision.
@@ -172,11 +206,15 @@ constexpr char work_name[] = "work";
 std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point) {
     if (!fs_mgr_is_dir(mount_point)) return "";
     const auto base = android::base::Basename(mount_point) + "/";
+    auto enabled = fs_mgr_overlayfs_enabled();
     // 1) list of r/w candidates
     std::vector<std::string> rw;
     // 2) list of override content (priority, stick to this _one_)
     std::vector<std::string> active;
+    auto i = -1;
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        ++i;
+        if ((enabled < OVL_REMOUNT_AUTOMATIC) && (i != enabled)) continue;
         auto dir = overlay_mount_point + "/overlay/" + base;
         auto upper = dir + upper_name;
         if (!fs_mgr_is_dir(upper)) continue;
@@ -255,6 +293,10 @@ bool fs_mgr_wants_overlayfs() {
     // protect us from false in any case, so this is insurance.
     auto debuggable = android::base::GetProperty("ro.debuggable", "1");
     if (debuggable != "1") return false;
+
+    if (fs_mgr_overlayfs_enabled() == OVL_REMOUNT_DISABLE) {
+        return false;
+    }
 
     // Overlayfs available in the kernel, and patched for override_creds?
     static signed char overlayfs_in_kernel = -1;  // cache for constant condition
@@ -524,15 +566,22 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
         if (mounts.empty()) return ret;
     }
 
+    auto enabled = fs_mgr_overlayfs_enabled();
     std::vector<const std::string> dirs;
     std::vector<const std::string> undirs;
     auto backing_match = false;
+    auto i = -1;
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
+        ++i;
         if (backing && (overlay_mount_point != backing)) {
             undirs.emplace_back(overlay_mount_point);
             continue;
         }
         backing_match = true;
+        if ((enabled < OVL_REMOUNT_AUTOMATIC) && (i != enabled)) {
+            undirs.emplace_back(overlay_mount_point);
+            continue;
+        }
         if (!fstab || fs_mgr_get_entry_for_mount_point(fstab.get(), overlay_mount_point)) {
             dirs.emplace_back(overlay_mount_point);
         }
