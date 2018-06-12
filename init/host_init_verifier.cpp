@@ -45,11 +45,11 @@ using android::base::ParseInt;
 using android::base::ReadFileToString;
 using android::base::Split;
 
-static std::string out_dir;
+static std::string passwd_file;
 
 static std::vector<std::pair<std::string, int>> GetVendorPasswd() {
     std::string passwd;
-    if (!ReadFileToString(out_dir + "/vendor/etc/passwd", &passwd)) {
+    if (!ReadFileToString(passwd_file, &passwd)) {
         return {};
     }
 
@@ -118,20 +118,14 @@ static Result<Success> do_stub(const BuiltinArguments& args) {
 int main(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StdioLogger);
     android::base::SetMinimumLogSeverity(android::base::ERROR);
-    if (argc != 3) {
-        LOG(ERROR) << "Usage: " << argv[0] << " <out directory> <properties>";
+
+    if (argc != 2 && argc != 3) {
+        LOG(ERROR) << "Usage: " << argv[0] << " <init rc file> [passwd file]";
         return -1;
     }
 
-    out_dir = argv[1];
-
-    auto properties = Split(argv[2], ",");
-    for (const auto& property : properties) {
-        auto split_property = Split(property, "=");
-        if (split_property.size() != 2) {
-            continue;
-        }
-        property_set(split_property[0], split_property[1]);
+    if (argc == 3) {
+        passwd_file = argv[2];
     }
 
     const BuiltinFunctionMap function_map;
@@ -141,14 +135,15 @@ int main(int argc, char** argv) {
     Parser parser;
     parser.AddSectionParser("service", std::make_unique<ServiceParser>(&sl, nullptr));
     parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
-    parser.AddSectionParser("import", std::make_unique<HostImportParser>(out_dir, &parser));
+    parser.AddSectionParser("import", std::make_unique<HostImportParser>());
 
-    if (!parser.ParseConfig(argv[1] + "/root/init.rc"s)) {
-        LOG(ERROR) << "Failed to find root init.rc script";
+    if (!parser.ParseConfig(argv[1])) {
+        LOG(ERROR) << "Failed to open init rc script '" << argv[1] << "'";
         return -1;
     }
     if (parser.parse_error_count() > 0) {
-        LOG(ERROR) << "Init script parsing failed with " << parser.parse_error_count() << " errors";
+        LOG(ERROR) << "Failed to parse init script '" << argv[1] << "' with "
+                   << parser.parse_error_count() << " errors";
         return -1;
     }
     return 0;
@@ -158,5 +153,5 @@ int main(int argc, char** argv) {
 }  // namespace android
 
 int main(int argc, char** argv) {
-    android::init::main(argc, argv);
+    return android::init::main(argc, argv);
 }
