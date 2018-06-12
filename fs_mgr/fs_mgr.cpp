@@ -848,6 +848,11 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             continue;
         }
 
+        if (fstab->recs[i].fs_mgr_flags & MF_WAIT &&
+            !strncmp(fstab->recs[i].fs_type, "overlay", strlen("overlay"))) {
+            continue;
+        }
+
         /* Skip mounting the root partition, as it will already have been mounted */
         if (!strcmp(fstab->recs[i].mount_point, "/")) {
             if ((fstab->recs[i].fs_mgr_flags & MS_RDONLY) != 0) {
