@@ -836,6 +836,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
         return FS_MGR_MNTALL_FAIL;
     }
 
+    std::vector<const fstab_rec*> mounted;
     for (i = 0; i < fstab->num_entries; i++) {
         /* Don't mount entries that are managed by vold or not for the mount mode*/
         if ((fstab->recs[i].fs_mgr_flags & (MF_VOLDMANAGED | MF_RECOVERYONLY)) ||
@@ -940,6 +941,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             }
 
             /* Success!  Go get the next one */
+            mounted.push_back(&fstab->recs[attempted_idx]);
             continue;
         }
 
@@ -1036,6 +1038,13 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
             continue;
         }
     }
+
+    // Report summary
+    std::vector<std::string> mounts;
+    for (auto& fsrec : mounted) {
+        mounts.emplace_back(std::string(fsrec->mount_point) + '(' + fsrec->fs_type + ')');
+    }
+    LINFO << "fs_mgr_mount_all " << android::base::Join(mounts, ' ');
 
     if (error_count) {
         return FS_MGR_MNTALL_FAIL;
