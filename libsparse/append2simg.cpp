@@ -26,8 +26,8 @@
 #include <unistd.h>
 
 #include <sparse/sparse.h>
-#include "sparse_file.h"
 #include "backed_block.h"
+#include "sparse_file.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -41,24 +41,22 @@
 #define off64_t off_t
 #endif
 
-void usage()
-{
+void usage() {
     fprintf(stderr, "Usage: append2simg <output> <input>\n");
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     int output;
     int output_block;
-    char *output_path;
-    struct sparse_file *sparse_output;
+    char* output_path;
+    struct sparse_file* sparse_output;
 
     int input;
-    char *input_path;
+    char* input_path;
     off64_t input_len;
 
     int tmp_fd;
-    char *tmp_path;
+    char* tmp_path;
 
     int ret;
 
