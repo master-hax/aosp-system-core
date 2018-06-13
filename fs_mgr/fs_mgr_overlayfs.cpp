@@ -23,6 +23,7 @@
 #include <sys/mount.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -33,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/macros.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr_overlayfs.h>
@@ -67,6 +69,7 @@ const auto kOverlayMountPoint = "/cache"s;
 
 // return true if everything is mounted, but before adb is started.  At
 // 'trigger firmware_mounts_complete' after 'trigger load_persist_props_action'.
+// Thus property service is active and persist.* has been populated.
 bool fs_mgr_boot_completed() {
     return !android::base::GetProperty("ro.boottime.init", "").empty() &&
            !!access("/dev/.booting", F_OK);
@@ -97,9 +100,27 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return "";
 }
 
+// > $ro.adb.remount.overlayfs.minfree in percent, default 1% free space
+bool fs_mgr_filesystem_has_space(const char* mount_point) {
+    // If checked during boot up, always report false because we can not
+    // inspect any of the properties to make a determination.
+    if (!fs_mgr_boot_completed()) return false;
+
+    auto value = android::base::GetProperty(
+            "persist.adb.remount.overlayfs.minfree",
+            android::base::GetProperty("ro.adb.remount.overlayfs.minfree", "1"));
+    int percent;
+    if (!android::base::ParseInt(value, &percent, 0, 100)) return false;
+
+    struct statvfs vst;
+    return statvfs(mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks * percent / 100));
+}
+
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
     // readonly filesystem, can not be mount -o remount,rw
-    return "squashfs"s == fsrec->fs_type;
+    // if squashfs or if free space is (near) zero making
+    // such a remount virtually useless.
+    return ("squashfs"s == fsrec->fs_type) || !fs_mgr_filesystem_has_space(fsrec->mount_point);
 }
 
 constexpr char upper_name[] = "upper";
