@@ -23,6 +23,7 @@
 #include <sys/mount.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -33,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/macros.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr_overlayfs.h>
@@ -96,9 +98,37 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return "";
 }
 
+// > $ro.adb.remount.overlayfs.maxfree in percent, default 1% free space
+// A return value of false, means we will try to wrap with overlayfs.
+bool fs_mgr_filesystem_has_space(const char* mount_point) {
+    // If we have access issues to find out space remaining, return true
+    // to prevent us trying to override with overlayfs.
+    struct statvfs vst;
+    if (statvfs(mount_point, &vst)) return true;
+
+    // If checked during boot up, only during mounting check for overlayfs,
+    // always report false if we can not read the properties to make a clear
+    // determination.  Assuming we do not have a space because at
+    // adb disable-verity time we would have known what to do with clear
+    // knowledge to create the associated storage.
+    if (!fs_mgr_boot_completed()) return false;
+
+    auto value = android::base::GetProperty(
+            "persist.adb.remount.overlayfs.maxfree",
+            android::base::GetProperty("ro.adb.remount.overlayfs.maxfree", "1"));
+    int percent;
+    // If we can not parse it, assume it is "false"
+    // because empty will result in default of "1".
+    if (!android::base::ParseInt(value, &percent, 0, 100)) return true;
+
+    return (vst.f_bfree >= (vst.f_blocks * percent / 100));
+}
+
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
     // readonly filesystem, can not be mount -o remount,rw
-    return "squashfs"s == fsrec->fs_type;
+    // if squashfs or if free space is (near) zero making
+    // such a remount virtually useless.
+    return ("squashfs"s == fsrec->fs_type) || !fs_mgr_filesystem_has_space(fsrec->mount_point);
 }
 
 constexpr char upper_name[] = "upper";
@@ -170,7 +200,7 @@ bool fs_mgr_wants_overlayfs() {
     return overlayfs_in_kernel;
 }
 
-bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
+bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec, bool during_setup = false) {
     if (!fsrec) return false;
 
     auto fsrec_mount_point = fsrec->mount_point;
@@ -190,7 +220,7 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     // /system and /vendor are never bound(sic) to.
     if (fsrec->flags & MS_UNBINDABLE) return false;
 
-    if (!fs_mgr_overlayfs_enabled(fsrec)) return false;
+    if (during_setup && !fs_mgr_overlayfs_enabled(fsrec, during_setup)) return false;
 
     // Verity enabled?
     const auto basename_mount_point(android::base::Basename(fsrec_mount_point));
@@ -389,7 +419,7 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
             auto fsrec_mount_point = fsrec->mount_point;
             if (!fsrec_mount_point) continue;
             if (mount_point && strcmp(fsrec_mount_point, mount_point)) continue;
-            if (!fs_mgr_wants_overlayfs(fsrec)) continue;
+            if (!fs_mgr_wants_overlayfs(fsrec, during_setup)) continue;
             mounts.emplace_back(fsrec_mount_point);
         }
         if (mounts.empty()) return ret;
