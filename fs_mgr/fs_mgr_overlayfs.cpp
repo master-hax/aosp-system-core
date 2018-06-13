@@ -23,6 +23,7 @@
 #include <sys/mount.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -33,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/macros.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr_overlayfs.h>
@@ -67,9 +69,16 @@ const auto kOverlayMountPoint = "/cache"s;
 
 // return true if everything is mounted, but before adb is started.  At
 // 'trigger firmware_mounts_complete' after 'trigger load_persist_props_action'.
+// Thus property service is active and persist.* has been populated.
 bool fs_mgr_boot_completed() {
-    return !android::base::GetProperty("ro.boottime.init", "").empty() &&
-           !!access("/dev/.booting", F_OK);
+    auto save_errno = errno;
+    if (android::base::GetProperty("ro.boottime.init", "").empty()) {
+        errno = save_errno;
+        return false;
+    }
+    if (!access("/dev/.booting", F_OK)) return false;
+    errno = save_errno;
+    return true;
 }
 
 bool fs_mgr_is_dir(const std::string& path) {
@@ -97,9 +106,37 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return "";
 }
 
+// > $ro.adb.remount.overlayfs.minfree in percent, default 1% free space
+// A return value of false, means we will try to wrap with overlayfs.
+bool fs_mgr_filesystem_has_space(const char* mount_point) {
+    // If we have access issues to find out space remaining, return true
+    // to prevent us trying to override with overlayfs.
+    struct statvfs vst;
+    if (statvfs(mount_point, &vst)) return true;
+
+    // If checked during boot up, only during mounting check for overlayfs,
+    // always report false if we can not read the properties to make a clear
+    // determination.  Assuming we do not have a space because at
+    // adb disable-verity time we would have known what to do with clear
+    // knowledge to create the associated storage.
+    if (!fs_mgr_boot_completed()) return false;
+
+    auto value = android::base::GetProperty(
+            "persist.adb.remount.overlayfs.minfree",
+            android::base::GetProperty("ro.adb.remount.overlayfs.minfree", "1"));
+    int percent;
+    // If we can not parse it, assume it is "false"
+    // because empty will result in default of "1".
+    if (!android::base::ParseInt(value, &percent, 0, 100)) return true;
+
+    return (vst.f_bfree >= (vst.f_blocks * percent / 100));
+}
+
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
     // readonly filesystem, can not be mount -o remount,rw
-    return "squashfs"s == fsrec->fs_type;
+    // if squashfs or if free space is (near) zero making
+    // such a remount virtually useless.
+    return ("squashfs"s == fsrec->fs_type) || !fs_mgr_filesystem_has_space(fsrec->mount_point);
 }
 
 constexpr char upper_name[] = "upper";
@@ -164,7 +201,9 @@ bool fs_mgr_wants_overlayfs() {
     // Overlayfs available in the kernel, and patched for override_creds?
     static signed char overlayfs_in_kernel = -1;  // cache for constant condition
     if (overlayfs_in_kernel == -1) {
+        auto save_errno = errno;
         overlayfs_in_kernel = !access("/sys/module/overlay/parameters/override_creds", F_OK);
+        errno = save_errno;
     }
     return overlayfs_in_kernel;
 }
@@ -430,7 +469,7 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
     const auto newpath = oldpath + ".teardown";
     ret &= fs_mgr_rm_all(newpath);
     auto save_errno = errno;
-    if (rename(oldpath.c_str(), newpath.c_str())) {
+    if (!rename(oldpath.c_str(), newpath.c_str())) {
         if (change) *change = true;
     } else if (errno != ENOENT) {
         ret = false;
