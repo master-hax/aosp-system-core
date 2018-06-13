@@ -22,6 +22,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -149,6 +150,11 @@ bool fs_mgr_wants_overlayfs() {
     return overlayfs_in_kernel;
 }
 
+bool fs_mgr_filesystem_has_space(const char* mount_point) {
+    struct statvfs vst;
+    return statvfs(mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks / 100));
+}
+
 bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     if (!fsrec) return false;
 
@@ -162,9 +168,10 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     if (!(fsrec->flags & MS_RDONLY)) return false;
 
     // readonly filesystem, can not be mount -o remount,rw with any luck.
+    // if free space is (near) zero.
     auto fs_type = fsrec->fs_type;
     if (!fs_type) return false;
-    if ("squashfs"s != fs_type) return false;
+    if (("squashfs"s != fs_type) || fs_mgr_filesystem_has_space(fsrec_mount_point)) return false;
 
     // Verity enabled?
     const auto basename_mount_point(android::base::Basename(fsrec_mount_point));
