@@ -188,6 +188,7 @@ adb_su ls /sys/module/overlay/parameters/override_creds </dev/null ||
   die "overlay module can not be used on ANDROID"
 adb_root &&
   adb_wait &&
+  adb_sh setprop persist.adb.remount.overlayfs.maxfree 100 < /dev/null &&
   D=`adb disable-verity 2>&1` ||
     die "setup for overlay"
 echo "${D}"
