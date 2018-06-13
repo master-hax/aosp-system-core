@@ -19,6 +19,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -212,7 +213,12 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     if (!(fsrec->flags & MS_RDONLY)) return false;
 
     // readonly filesystem, can not be mount -o remount,rw with any luck.
-    if ("squashfs"s != fsrec->fs_type) return false;
+    // if free space is (near) zero.
+    struct statvfs vst;
+    if (("squashfs"s != fsrec->fs_type) &&
+        (statvfs(fsrec->mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks / 100)))) {
+        return false;
+    }
 
     // Verity enabled? (not thread safe)
     fs_mgr_verity_mode.clear();
