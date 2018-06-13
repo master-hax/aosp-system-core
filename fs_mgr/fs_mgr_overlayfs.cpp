@@ -132,6 +132,12 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return "";
 }
 
+// > 1% free space
+bool fs_mgr_filesystem_has_space(const char* mount_point) {
+    struct statvfs vst;
+    return statvfs(mount_point, &vst) || (vst.f_bfree >= (vst.f_blocks / 100));
+}
+
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
     switch (fs_mgr_overlayfs_enabled()) {
         case OVL_REMOUNT_DISABLE:
@@ -142,8 +148,8 @@ bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
             break;
     }
     // readonly filesystem, can not be mount -o remount,rw
-    // with any luck.
-    return "squashfs"s == fsrec->fs_type;
+    // with any luck.  if free space is (near) zero.
+    return ("squashfs"s == fsrec->fs_type) || !fs_mgr_filesystem_has_space(fsrec->mount_point);
 }
 
 size_t fs_mgr_free_space(const std::string& path) {
