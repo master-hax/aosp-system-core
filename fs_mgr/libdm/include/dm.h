@@ -108,14 +108,12 @@ class DeviceMapper final {
     // 'name'.
     std::string GetDmDevicePathByName(const std::string& name);
 
-    // The only way to create a DeviceMapper object.
-    static DeviceMapper& Instance();
+    // The only way to create a DeviceMapper object. The cleanup argument
+    // tells DeviceMapper whether or not it should delete all the unconfigured
+    // devices it created
+    static DeviceMapper& Instance(bool cleanup = true);
 
-    ~DeviceMapper() {
-        if (fd_ != -1) {
-            ::close(fd_);
-        }
-    }
+    ~DeviceMapper();
 
   private:
     // Maximum possible device mapper targets registered in the kernel.
@@ -130,8 +128,9 @@ class DeviceMapper final {
     static constexpr uint32_t kMaxPossibleDmDevices = 256;
 
     void InitIo(struct dm_ioctl* io, const std::string& name = std::string()) const;
+    bool DevGetStatus(struct dm_ioctl* io, const std::string& name) const;
 
-    DeviceMapper() : fd_(-1) {
+    DeviceMapper(bool cleanup) : fd_(-1), cleanup_(cleanup) {
         fd_ = TEMP_FAILURE_RETRY(open("/dev/device-mapper", O_RDWR | O_CLOEXEC));
         if (fd_ < 0) {
             PLOG(ERROR) << "Failed to open device-mapper";
@@ -139,6 +138,16 @@ class DeviceMapper final {
     }
 
     int fd_;
+
+    // List of device-mapper devices created by this instance
+    // This list is then used to clean up / delete devices that
+    // are not *active*. The status for each of them is read from the kernel
+    std::vector<std::string> devices_;
+
+    // Should the destructor delete all inactive device mapper devices
+    // that were created through this instance.
+    bool cleanup_;
+
     // Non-copyable & Non-movable
     DeviceMapper(const DeviceMapper&) = delete;
     DeviceMapper& operator=(const DeviceMapper&) = delete;

@@ -28,6 +28,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 
 #include "dm.h"
@@ -35,10 +36,68 @@
 namespace android {
 namespace dm {
 
-DeviceMapper& DeviceMapper::Instance() {
-    static DeviceMapper instance;
+DeviceMapper& DeviceMapper::Instance(bool cleanup) {
+    static DeviceMapper instance(cleanup);
     return instance;
 }
+
+DeviceMapper::~DeviceMapper() {
+    if (fd_ == -1) {
+        return;
+    }
+
+    std::unique_ptr<struct dm_ioctl, decltype(&free)> io(
+            static_cast<struct dm_ioctl*>(malloc(sizeof(struct dm_ioctl))), free);
+    if (io == nullptr) {
+        LOG(ERROR) << "Failed to allocate memory. Possibly leaking : "
+                   << ::android::base::Join(devices_, ",");
+        return;
+    }
+
+    // List that tracks the not-suspended devices here
+    std::vector<std::string> active_devs;
+    for (auto dev = devices_.begin(); dev != devices_.end();) {
+        if (!DevGetStatus(io.get(), *dev)) {
+            // failed to read the status of the device, nothing we can do here.
+            LOG(ERROR) << "Failed to get the status of dm-" << *dev;
+            ++dev;
+            continue;
+        }
+
+        // - For each device we created, check if the device is active.
+        //   If yes,
+        //   - Check if the device is suspended, warn if yes, and skip
+        //     to the next device in the list.
+        //
+        //   If no,
+        //   - continue to check another device.
+        if (io->flags & DM_ACTIVE_PRESENT_FLAG) {
+            if (io->flags & DM_SUSPEND_FLAG) {
+                LOG(ERROR) << "Leaking suspended dm device [" << *dev << "] open:" << io->open_count
+                           << " targets:" << io->target_count;
+                ++dev;
+                continue;
+            }
+            // Add to a separate list to check against our own at the end
+            active_devs.push_back(*dev);
+            ++dev;
+        } else {
+            if (!DeleteDevice(*dev)) {
+                LOG(ERROR) << "Leaking dm device [" << *dev << "], failed to delete";
+                ++dev;
+                continue;
+            }
+            // Remove from internal list, it will be checked for active devices at the end
+            dev = devices_.erase(dev);
+        }
+    }
+
+    // If we leak devices, consider it to be FATAL.
+    CHECK(active_devs == devices_) << "Leaked device mapper devices";
+
+    ::close(fd_);
+}
+
 // Creates a new device mapper device
 bool DeviceMapper::CreateDevice(const std::string& name) {
     if (name.empty()) {
@@ -60,7 +119,7 @@ bool DeviceMapper::CreateDevice(const std::string& name) {
     InitIo(io.get(), name);
 
     if (ioctl(fd_, DM_DEV_CREATE, io.get())) {
-        PLOG(ERROR) << "DM_DEV_CREATE failed to create [" << name << "]";
+        PLOG(ERROR) << "DM_DEV_CREATE failed for [" << name << "]";
         return false;
     }
 
@@ -69,7 +128,9 @@ bool DeviceMapper::CreateDevice(const std::string& name) {
     CHECK(io->target_count == 0) << "Unexpected targets for newly created [" << name << "] device";
     CHECK(io->open_count == 0) << "Unexpected opens for newly created [" << name << "] device";
 
-    // Creates a new device mapper device with the name passed in
+    // add the device to own list to track their deletion if we are configured
+    // for the same
+    if (cleanup_) devices_.push_back(name);
     return true;
 }
 
@@ -93,7 +154,7 @@ bool DeviceMapper::DeleteDevice(const std::string& name) {
     InitIo(io.get(), name);
 
     if (ioctl(fd_, DM_DEV_REMOVE, io.get())) {
-        PLOG(ERROR) << "DM_DEV_REMOVE failed to create [" << name << "]";
+        PLOG(ERROR) << "DM_DEV_REMOVE failed for [" << name << "]";
         return false;
     }
 
@@ -147,7 +208,7 @@ bool DeviceMapper::GetAvailableTargets(std::vector<DmTarget>* targets) {
     io->data_start = sizeof(*io);
 
     if (ioctl(fd_, DM_LIST_VERSIONS, io)) {
-        PLOG(ERROR) << "Failed to get DM_LIST_VERSIONS from kernel";
+        PLOG(ERROR) << "DM_LIST_VERSIONS failed";
         return false;
     }
 
@@ -209,7 +270,7 @@ bool DeviceMapper::GetAvailableDevices(std::vector<DmBlockDevice>* devices) {
     io->data_start = sizeof(*io);
 
     if (ioctl(fd_, DM_LIST_DEVICES, io)) {
-        PLOG(ERROR) << "Failed to get DM_LIST_DEVICES from kernel";
+        PLOG(ERROR) << "DM_LIST_DEVICES failed";
         return false;
     }
 
@@ -264,6 +325,18 @@ void DeviceMapper::InitIo(struct dm_ioctl* io, const std::string& name) const {
     if (!name.empty()) {
         strlcpy(io->name, name.c_str(), sizeof(io->name));
     }
+}
+
+bool DeviceMapper::DevGetStatus(struct dm_ioctl* io, const std::string& name) const {
+    CHECK(io != nullptr) << "nullptr passed to DevGetStatus";
+    CHECK(!name.empty());
+    InitIo(io, name);
+    if (ioctl(fd_, DM_DEV_STATUS, io)) {
+        PLOG(ERROR) << "DM_DEV_STATUS Failed for [" << name << "]";
+        return false;
+    }
+
+    return true;
 }
 
 }  // namespace dm

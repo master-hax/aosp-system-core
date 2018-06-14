@@ -17,10 +17,12 @@
 #ifndef _LIBDM_DMTARGET_H_
 #define _LIBDM_DMTARGET_H_
 
+#include <inttypes.h>
 #include <linux/dm-ioctl.h>
 #include <stdint.h>
 
 #include <android-base/logging.h>
+#include <android-base/stringprintf.h>
 
 #include <string>
 
@@ -34,7 +36,7 @@ class DmTarget {
 
     // Creates a DmTarget object from dm_target_version as read from kernel
     // with DM_LIST_VERSION ioctl.
-    DmTarget(const struct dm_target_versions* vers) : start_(0), length_(0) {
+    explicit DmTarget(const struct dm_target_versions* vers) : start_(0), length_(0) {
         CHECK(vers != nullptr) << "Can't create DmTarget with dm_target_versions set to nullptr";
         v0_ = vers->version[0];
         v1_ = vers->version[1];
@@ -50,6 +52,9 @@ class DmTarget {
     // Returns size in number of sectors when this target is part of
     // a DmTable, return 0 otherwise.
     uint64_t size() const { return length_; }
+
+    // Returns the logical sector number at which this target starts
+    uint64_t start() const { return start_; }
 
     // Return string representation of the device mapper target version.
     std::string version() const {
@@ -69,6 +74,30 @@ class DmTarget {
     // logical sector number start and total length (in terms of 512-byte sectors) represented
     // by this target within a DmTable.
     uint64_t start_, length_;
+};
+
+class DmTargetLinear : public DmTarget {
+  public:
+    DmTargetLinear() = delete;
+    DmTargetLinear(uint64_t dev_off, uint64_t len, uint64_t start,
+                   const std::string& dev_path = std::string())
+        : DmTarget("linear", start, len) {
+        devpath_ = dev_path;
+        devoffset_ = dev_off;
+    };
+
+    std::string Serialize() const {
+        return android::base::StringPrintf("linear %s %" PRIu64, devpath_.c_str(), devoffset_);
+    }
+
+    ~DmTargetLinear() = default;
+
+  private:
+    // Target device path, either set by the constructor
+    std::string devpath_;
+
+    // offset into the device indicated either by major:minor OR by devpath_
+    uint64_t devoffset_;
 };
 
 }  // namespace dm
