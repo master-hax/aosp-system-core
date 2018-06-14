@@ -75,5 +75,17 @@ void SHA256(const void* data, size_t length, uint8_t out[32]) {
     SHA256_Final(out, &c);
 }
 
+uint32_t SlotNumberForSlotSuffix(const std::string& suffix) {
+    if (suffix.empty()) {
+        return 0;
+    }
+    if (suffix.size() != 2 || suffix[0] != '_' || suffix[1] < 'a') {
+        LERROR << __PRETTY_FUNCTION__ << "slot '" << suffix
+               << "' does not have a recognized format.";
+        return 0;
+    }
+    return suffix[1] - 'a';
+}
+
 }  // namespace fs_mgr
 }  // namespace android

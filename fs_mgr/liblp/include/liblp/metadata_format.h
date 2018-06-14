@@ -255,6 +255,9 @@ struct LpMetadata {
 // Helper to extract a safe C++ strings containing the partition name.
 std::string GetPartitionName(const LpMetadataPartition& partition);
 
+// Helper to return a slot number for a slot suffix.
+uint32_t SlotNumberForSlotSuffix(const std::string& suffix);
+
 }  // namespace fs_mgr
 }  // namespace android
 #endif
