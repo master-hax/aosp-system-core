@@ -25,6 +25,7 @@ cc_library {
             enabled: true,
         },
     },
+    cpp_std: "c++17",
 }
 
 cc_binary {
