@@ -236,9 +236,11 @@ public:
             const uint8_t *provided_password, uint32_t provided_password_length, bool *request_reenroll) {
         uint8_t *auth_token;
         uint32_t auth_token_length;
-        return verifyChallenge(uid, 0, enrolled_password_handle, enrolled_password_handle_length,
+        int ret = verifyChallenge(uid, 0, enrolled_password_handle, enrolled_password_handle_length,
                 provided_password, provided_password_length,
                 &auth_token, &auth_token_length, request_reenroll);
+        delete [] auth_token;
+        return ret;
     }
 
     virtual int verifyChallenge(uint32_t uid, uint64_t challenge,
