@@ -1,5 +1,6 @@
 cc_library_headers {
     name: "libhealthd_headers",
+    recovery_available: true,
     vendor_available: true,
     export_include_dirs: ["include"],
     header_libs: ["libbatteryservice_headers"],
