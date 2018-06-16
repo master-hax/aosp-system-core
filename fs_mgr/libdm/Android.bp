@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-cc_library_static {
+cc_library {
     name: "libdm",
     recovery_available: true,
 
@@ -30,8 +30,8 @@ cc_library_static {
         "dm.cpp"
     ],
 
-    header_libs: [
-        "libbase_headers",
-        "liblog_headers",
+    shared_libs: [
+        "libbase",
+        "liblog",
     ],
 }
