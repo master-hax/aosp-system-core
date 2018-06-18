@@ -25,14 +25,16 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#include "android-base/properties.h"
-#include "android-base/stringprintf.h"
+#include <android-base/properties.h>
+#include <android-base/stringprintf.h>
+#include <fs_mgr.h>
+#include <fs_mgr_overlayfs.h>
+#include <fstab/fstab.h>
 #include <log/log_properties.h>
 
 #include "adb.h"
 #include "adb_io.h"
 #include "adb_unique_fd.h"
-#include "fs_mgr.h"
 #include "remount_service.h"
 
 #include "fec/io.h"
@@ -86,6 +88,9 @@ static bool set_verity_enabled_state(int fd, const char* block_device, const cha
         return false;
     }
 
+    if (!fs_mgr_overlayfs_setup(fstab, mount_point, !enable)) {
+        WriteFdFmt(fd, "Overlayfs %s for %s failed\n", enable ? "teardown" : "setup", mount_point);
+    }
     WriteFdFmt(fd, "Verity %s on %s\n", enable ? "enabled" : "disabled", mount_point);
     return true;
 }
@@ -100,6 +105,13 @@ static std::string get_ab_suffix() {
 
 static bool is_avb_device_locked() {
     return android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked";
+}
+
+static bool overlayfs_setup(int fd, bool enable) {
+    // read all fstab entries at once from all sources
+    if (!fstab) fstab = fs_mgr_read_fstab_default();
+    if (!fstab) WriteFdFmt(fd, "Failed to read fstab\nMaybe run adb root?\n");
+    return fs_mgr_overlayfs_setup(fstab, nullptr, !enable);
 }
 
 /* Use AVB to turn verity on/off */
@@ -127,6 +139,7 @@ static bool set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity
         return false;
     }
 
+    overlayfs_setup(fd, enable_verity);
     WriteFdFmt(fd, "Successfully %s verity\n", enable_verity ? "enabled" : "disabled");
     return true;
 }
@@ -152,6 +165,7 @@ void set_verity_enabled_state_service(int fd, void* cookie) {
         }
 
         if (!android::base::GetBoolProperty("ro.secure", false)) {
+            overlayfs_setup(fd, enable);
             WriteFdFmt(fd, "verity not enabled - ENG build\n");
             return;
         }
@@ -179,13 +193,13 @@ void set_verity_enabled_state_service(int fd, void* cookie) {
         // Not using AVB - assume VB1.0.
 
         // read all fstab entries at once from all sources
-        fstab = fs_mgr_read_fstab_default();
+        if (!fstab) fstab = fs_mgr_read_fstab_default();
         if (!fstab) {
             WriteFdFmt(fd, "Failed to read fstab\nMaybe run adb root?\n");
             return;
         }
 
-        // Loop through entries looking for ones that vold manages.
+        // Loop through entries looking for ones that verity manages.
         for (int i = 0; i < fstab->num_entries; i++) {
             if (fs_mgr_is_verified(&fstab->recs[i])) {
                 if (set_verity_enabled_state(fd, fstab->recs[i].blk_device,
@@ -195,6 +209,7 @@ void set_verity_enabled_state_service(int fd, void* cookie) {
             }
         }
     }
+    if (!any_changed) any_changed = overlayfs_setup(fd, enable);
 
     if (any_changed) {
         WriteFdFmt(fd, "Now reboot your device for settings to take effect\n");
