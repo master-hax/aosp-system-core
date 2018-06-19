@@ -16,6 +16,7 @@
 
 #include "liblp/builder.h"
 
+#include <inttypes.h>
 #include <string.h>
 
 #include <algorithm>
