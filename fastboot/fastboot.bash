@@ -175,7 +175,7 @@ _fastboot_util_complete_local_file() {
     fi
 }
 
-if [[ $(type -t compopt) = "builtin" ]]; then
+if [[ $(type compopt | grep "builtin") ]]; then
     complete -F _fastboot fastboot
 else
     complete -o nospace -F _fastboot fastboot
