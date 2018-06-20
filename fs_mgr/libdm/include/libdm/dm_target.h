@@ -20,8 +20,6 @@
 #include <linux/dm-ioctl.h>
 #include <stdint.h>
 
-#include <android-base/logging.h>
-
 #include <string>
 
 namespace android {

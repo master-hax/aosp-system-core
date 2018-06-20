@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <linux/dm-ioctl.h>
 #include <linux/kdev_t.h>
+#include <stdint.h>
 #include <sys/sysmacros.h>
 #include <unistd.h>
 
@@ -28,7 +29,7 @@
 
 #include <android-base/logging.h>
 
-#include <dm_table.h>
+#include "dm_table.h"
 
 // The minimum expected device mapper major.minor version
 #define DM_VERSION0 (4)
