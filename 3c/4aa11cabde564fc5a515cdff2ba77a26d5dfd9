@@ -1,0 +1,8 @@
+Presubmit-Ready+1: Yifan Hong <elsk@google.com>
+Autosubmit+1: Yifan Hong <elsk@google.com>
+Build-Cop-Override+1: Yifan Hong <elsk@google.com>
+Submitted-by: Yifan Hong <elsk@google.com>
+Submitted-at: Wed, 20 Jun 2018 22:56:38 +0000
+Reviewed-on: https://android-review.googlesource.com/707924
+Project: platform/system/core
+Branch: refs/heads/master
