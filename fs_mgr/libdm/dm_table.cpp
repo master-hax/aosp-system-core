@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "dm_table.h"
+#include <libdm/dm_table.h>
 
 namespace android {
 namespace dm {

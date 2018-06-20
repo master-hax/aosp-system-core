@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "dm_target.h"
+#include <libdm/dm_target.h>
 
 namespace android {
 namespace dm {}  // namespace dm

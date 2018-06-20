@@ -28,7 +28,7 @@
 
 #include <android-base/logging.h>
 
-#include <dm_table.h>
+#include "dm_table.h"
 
 // The minimum expected device mapper major.minor version
 #define DM_VERSION0 (4)
