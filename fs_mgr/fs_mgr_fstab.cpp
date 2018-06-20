@@ -506,8 +506,7 @@ bool is_dt_compatible() {
     return false;
 }
 
-static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
-{
+static struct fstab* fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts) {
     int cnt, entries;
     ssize_t len;
     size_t alloc_len = 0;
@@ -607,7 +606,10 @@ static struct fstab *fs_mgr_read_fstab_file(FILE *fstab_file)
             fstab->recs[cnt].fs_options = NULL;
         }
 
-        if (!(p = strtok_r(NULL, delim, &save_ptr))) {
+        // For /proc/mounts, ignore everything after mnt_freq and mnt_passno
+        if (proc_mounts) {
+            p += strlen(p);
+        } else if (!(p = strtok_r(NULL, delim, &save_ptr))) {
             LERROR << "Error parsing fs_mgr_options";
             goto err;
         }
@@ -739,7 +741,7 @@ struct fstab *fs_mgr_read_fstab(const char *fstab_path)
         return nullptr;
     }
 
-    fstab = fs_mgr_read_fstab_file(fstab_file);
+    fstab = fs_mgr_read_fstab_file(fstab_file, !strcmp("/proc/mounts", fstab_path));
     if (!fstab) {
         LERROR << __FUNCTION__ << "(): failed to load fstab from : '" << fstab_path << "'";
     }
@@ -767,7 +769,7 @@ struct fstab *fs_mgr_read_fstab_dt()
         return nullptr;
     }
 
-    struct fstab *fstab = fs_mgr_read_fstab_file(fstab_file.get());
+    struct fstab* fstab = fs_mgr_read_fstab_file(fstab_file.get(), false);
     if (!fstab) {
         LERROR << __FUNCTION__ << "(): failed to load fstab from kernel:"
                << std::endl << fstab_buf;
