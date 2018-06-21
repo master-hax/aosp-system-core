@@ -121,15 +121,7 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, Init_non_zero_load_bias) {
   // CIE 32 information.
   this->memory_.SetData32(0x1300, 0xfc);
   this->memory_.SetData32(0x1304, 0);
-  this->memory_.SetData8(0x1308, 1);
-  this->memory_.SetData8(0x1309, 'z');
-  this->memory_.SetData8(0x130a, 'R');
-  this->memory_.SetData8(0x130b, '\0');
-  this->memory_.SetData8(0x130c, 0);
-  this->memory_.SetData8(0x130d, 0);
-  this->memory_.SetData8(0x130e, 0);
-  this->memory_.SetData8(0x130f, 0);
-  this->memory_.SetData8(0x1310, 0x1b);
+  this->memory_.SetMemory(0x1308, std::vector<uint8_t>{1, 'z', 'R', '\0', 0, 0, 0, 0, 0x1b});
 
   // FDE 32 information.
   this->memory_.SetData32(0x1400, 0xfc);
@@ -388,11 +380,7 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetCieFde32) {
   // CIE 32 information.
   this->memory_.SetData32(0xf000, 0x100);
   this->memory_.SetData32(0xf004, 0);
-  this->memory_.SetData8(0xf008, 0x1);
-  this->memory_.SetData8(0xf009, '\0');
-  this->memory_.SetData8(0xf00a, 4);
-  this->memory_.SetData8(0xf00b, 8);
-  this->memory_.SetData8(0xf00c, 0x20);
+  this->memory_.SetMemory(0xf008, std::vector<uint8_t>{1, '\0', 4, 8, 0x20});
 
   // FDE 32 information.
   this->memory_.SetData32(0x14000, 0x20);
@@ -429,11 +417,7 @@ TYPED_TEST_P(DwarfEhFrameWithHdrTest, GetCieFde64) {
   this->memory_.SetData32(0x6000, 0xffffffff);
   this->memory_.SetData64(0x6004, 0x100);
   this->memory_.SetData64(0x600c, 0);
-  this->memory_.SetData8(0x6014, 0x1);
-  this->memory_.SetData8(0x6015, '\0');
-  this->memory_.SetData8(0x6016, 4);
-  this->memory_.SetData8(0x6017, 8);
-  this->memory_.SetData8(0x6018, 0x20);
+  this->memory_.SetMemory(0x6014, std::vector<uint8_t>{1, '\0', 4, 8, 0x20});
 
   // FDE 64 information.
   this->memory_.SetData32(0x8000, 0xffffffff);
