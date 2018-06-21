@@ -93,9 +93,14 @@ class DmTargetLinear final : public DmTarget {
     DmTargetLinear(uint64_t start, uint64_t length, const std::string& block_device,
                    uint64_t physical_sector)
         : DmTarget(start, length), block_device_(block_device), physical_sector_(physical_sector) {}
+    DmTargetLinear(const DmTargetLinear& other)
+        : DmTarget(other.start(), other.size()),
+          block_device_(other.block_device_),
+          physical_sector_(other.physical_sector_) {}
 
     std::string name() const override { return "linear"; }
     std::string GetParameterString() const override;
+    const std::string& block_device() const { return block_device_; }
 
   private:
     std::string block_device_;
