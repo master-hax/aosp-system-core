@@ -89,6 +89,9 @@ void DumpDwarfSection(Elf* elf, DwarfSection* section, uint64_t) {
       continue;
     }
     printf("\n  PC 0x%" PRIx64 "-0x%" PRIx64, fde->pc_start, fde->pc_end);
+    if (fde->cfa_instructions_offset == fde->cfa_instructions_end) {
+      printf("    Empty instructions.\n");
+    }
     std::string name;
     uint64_t func_offset;
     if (elf->GetFunctionName(fde->pc_start, &name, &func_offset) && !name.empty()) {
