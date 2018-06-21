@@ -258,8 +258,17 @@ bool DeviceMapper::GetAvailableDevices(std::vector<DmBlockDevice>* devices) {
 
 // Accepts a device mapper device name (like system_a, vendor_b etc) and
 // returns the path to it's device node (or symlink to the device node)
-std::string DeviceMapper::GetDmDevicePathByName(const std::string& /* name */) {
-    return "";
+bool DeviceMapper::GetDmDevicePathByName(const std::string& name, std::string* path) {
+    struct dm_ioctl io;
+    InitIo(&io, name);
+    if (ioctl(fd_, DM_DEV_STATUS, &io) < 0) {
+        PLOG(ERROR) << "DM_DEV_STATUS failed for " << name;
+        return "";
+    }
+
+    int dev_num = (io.dev & 0xff) | ((io.dev >> 12) & 0xfff00);
+    *path = "/dev/block/dm-" + std::to_string(dev_num);
+    return true;
 }
 
 // private methods of DeviceMapper
