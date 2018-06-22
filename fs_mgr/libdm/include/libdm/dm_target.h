@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #include <string>
+#include <vector>
 
 #include <android-base/logging.h>
 
@@ -101,6 +102,26 @@ class DmTargetLinear final : public DmTarget {
   private:
     std::string block_device_;
     uint64_t physical_sector_;
+};
+
+class DmTargetVerity final : public DmTarget {
+  public:
+    DmTargetVerity(uint64_t start, uint64_t length, uint32_t version,
+                   const std::string& block_device, const std::string& hash_device,
+                   uint32_t data_block_size, uint32_t hash_block_size, uint32_t num_data_blocks,
+                   uint32_t hash_start_block, const std::string& hash_algorithm,
+                   const std::string& root_digest, const std::string& salt);
+
+    void UseFec(const std::string& device, uint32_t num_roots, uint32_t num_blocks, uint32_t start);
+    void SetVerityMode(const std::string& mode);
+    void IgnoreZeroBlocks();
+
+    std::string name() const override { return "verity"; }
+    std::string GetParameterString() const override;
+
+  private:
+    std::vector<std::string> base_args_;
+    std::vector<std::string> optional_args_;
 };
 
 }  // namespace dm
