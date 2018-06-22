@@ -354,6 +354,14 @@ bool fs_mgr_overlayfs_setup(const fstab* fstab, const char* mount_point) {
             dirs.emplace_back(std::move(dir));
         }
     }
+    if (dirs.empty()) {  // If None, then all ...
+        for (auto i = 0; i < arraysize(overlay_mount_point); ++i) {
+            std::string dir(overlay_mount_point[i]);
+            if (fs_mgr_is_dir(dir)) {
+                dirs.emplace_back(std::move(dir));
+            }
+        }
+    }
     if (mount_point && fs_mgr_system_root_image(fstab) && ("/"s == mount_point)) {
         mount_point = "/system";
     }
