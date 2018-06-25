@@ -587,8 +587,16 @@ static int blocked_read_test(uint repeat)
 
 static int ta2ta_ipc_test(void)
 {
+	enum test_message_header {
+		TEST_PASSED = 0,
+		TEST_FAILED = 1,
+		TEST_MESSAGE = 2,
+		TEST_MESSAGE_HEADER_COUNT = 3,
+	};
+
 	int fd;
-	char rx_buf[64];
+	int ret;
+	unsigned char rx_buf[256];
 
 	if (!opt_silent) {
 		printf("%s:\n", __func__);
@@ -601,12 +609,28 @@ static int ta2ta_ipc_test(void)
 		return fd;
 	}
 
-	/* wait for test to complete */
-	(void) read(fd, rx_buf, sizeof(rx_buf));
+	/* Wait for tests to complete and read status */
+	while (true) {
+		ret = read(fd, rx_buf, sizeof(rx_buf));
+		if (ret <= 0 || ret >= (int)sizeof(rx_buf)) {
+			fprintf(stderr, "%s: Read failed: %d\n", __func__, ret);
+			tipc_close(fd);
+			return -1;
+		}
+		if (rx_buf[0] == TEST_MESSAGE) {
+			write(STDOUT_FILENO, rx_buf + 1, ret - 1);
+		} else {
+			if (rx_buf[0] >= TEST_MESSAGE_HEADER_COUNT) {
+				fprintf(stderr, "%s: Bad message header: %d\n",
+				        __func__, rx_buf[0]);
+			}
+			break;
+		}
+	};
 
 	tipc_close(fd);
 
-	return 0;
+	return rx_buf[0] == TEST_PASSED ? 0 : -1;
 }
 
 typedef struct uuid
