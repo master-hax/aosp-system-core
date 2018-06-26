@@ -30,6 +30,14 @@
 
 #include "transport.h"
 
+// Timeout for a read or write in ms
+#define USB_TRANSACTION_TIMEOUT 5000
+
+class UsbTransport : public Transport {
+  public:
+    virtual int Reset() = 0;  // Resets the connection to initial state
+};
+
 struct usb_ifc_info {
         /* from device descriptor */
     unsigned short dev_vendor;
@@ -54,4 +62,4 @@ struct usb_ifc_info {
 
 typedef int (*ifc_match_func)(usb_ifc_info *ifc);
 
-Transport* usb_open(ifc_match_func callback);
+UsbTransport* usb_open(ifc_match_func callback);
