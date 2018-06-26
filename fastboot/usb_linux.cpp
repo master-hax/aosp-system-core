@@ -47,12 +47,15 @@
 #include <memory>
 #include <thread>
 
-#include "fastboot.h"
+#include "util.h"
 #include "usb.h"
 
 using namespace std::chrono_literals;
 
 #define MAX_RETRIES 5
+
+// In msec, 0 is forever
+#define IOCTL_TIMEOUT 10000
 
 /* Timeout in seconds for usb_wait_for_disconnect.
  * It doesn't usually take long for a device to disconnect (almost always
@@ -402,7 +405,7 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
         bulk.ep = handle_->ep_out;
         bulk.len = xfer;
         bulk.data = data;
-        bulk.timeout = 0;
+        bulk.timeout = IOCTL_TIMEOUT;
 
         n = ioctl(handle_->desc, USBDEVFS_BULK, &bulk);
         if(n != xfer) {
@@ -436,7 +439,7 @@ ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
         bulk.ep = handle_->ep_in;
         bulk.len = xfer;
         bulk.data = data;
-        bulk.timeout = 0;
+        bulk.timeout = IOCTL_TIMEOUT;
         retry = 0;
 
         do {
