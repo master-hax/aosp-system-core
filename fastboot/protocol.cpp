@@ -44,7 +44,7 @@
 #include <sparse/sparse.h>
 #include <utils/FileMap.h>
 
-#include "fastboot.h"
+#include "engine.h"
 #include "transport.h"
 
 static std::string g_error;
