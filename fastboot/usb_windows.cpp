@@ -66,7 +66,7 @@ struct usb_handle {
     std::string interface_name;
 };
 
-class WindowsUsbTransport : public Transport {
+class WindowsUsbTransport : public UsbTransport {
   public:
     WindowsUsbTransport(std::unique_ptr<usb_handle> handle) : handle_(std::move(handle)) {}
     ~WindowsUsbTransport() override = default;
@@ -74,6 +74,7 @@ class WindowsUsbTransport : public Transport {
     ssize_t Read(void* data, size_t len) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
+    int Reset() override;
 
   private:
     std::unique_ptr<usb_handle> handle_;
@@ -152,7 +153,7 @@ std::unique_ptr<usb_handle> do_usb_open(const wchar_t* interface_name) {
 }
 
 ssize_t WindowsUsbTransport::Write(const void* data, size_t len) {
-    unsigned long time_out = 5000;
+    unsigned long time_out = USB_TRANSACTION_TIMEOUT;
     unsigned long written = 0;
     unsigned count = 0;
     int ret;
@@ -191,7 +192,7 @@ ssize_t WindowsUsbTransport::Write(const void* data, size_t len) {
 }
 
 ssize_t WindowsUsbTransport::Read(void* data, size_t len) {
-    unsigned long time_out = 0;
+    unsigned long time_out = USB_TRANSACTION_TIMEOUT;
     unsigned long read = 0;
     int ret;
 
@@ -258,6 +259,13 @@ int WindowsUsbTransport::Close() {
     }
 
     return 0;
+}
+
+int WindowsUsbTransport::Reset() {
+    DBG("usb_reset currently unsupported\n");
+
+    // TODO, this is a bit complicated since it is using ADB
+    return -1;
 }
 
 int recognized_device(usb_handle* handle, ifc_match_func callback) {
@@ -357,8 +365,7 @@ static std::unique_ptr<usb_handle> find_usb_device(ifc_match_func callback) {
     return handle;
 }
 
-Transport* usb_open(ifc_match_func callback)
-{
+UsbTransport* usb_open(ifc_match_func callback) {
     std::unique_ptr<usb_handle> handle = find_usb_device(callback);
     return handle ? new WindowsUsbTransport(std::move(handle)) : nullptr;
 }

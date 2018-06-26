@@ -65,7 +65,7 @@ struct usb_handle
     unsigned int zero_mask;
 };
 
-class OsxUsbTransport : public Transport {
+class OsxUsbTransport : public UsbTransport {
   public:
     OsxUsbTransport(std::unique_ptr<usb_handle> handle) : handle_(std::move(handle)) {}
     ~OsxUsbTransport() override = default;
@@ -73,6 +73,7 @@ class OsxUsbTransport : public Transport {
     ssize_t Read(void* data, size_t len) override;
     ssize_t Write(const void* data, size_t len) override;
     int Close() override;
+    int Reset() override;
 
   private:
     std::unique_ptr<usb_handle> handle_;
@@ -456,7 +457,7 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
  * Definitions of this file's public functions.
  */
 
-Transport* usb_open(ifc_match_func callback) {
+UsbTransport* usb_open(ifc_match_func callback) {
     std::unique_ptr<usb_handle> handle;
 
     if (init_usb(callback, &handle) < 0) {
@@ -470,6 +471,17 @@ Transport* usb_open(ifc_match_func callback) {
 int OsxUsbTransport::Close() {
     /* TODO: Something better here? */
     return 0;
+}
+
+int OsxUsbTransport::Reset() {
+    IOReturn result = (*handle_->interface)->ResetDevice(handle_->interface);
+
+    if (result == 0) {
+        return 0;
+    } else {
+        ERR("usb_reset failed with status %x\n", result);
+        return -1;
+    }
 }
 
 ssize_t OsxUsbTransport::Read(void* data, size_t len) {
@@ -494,7 +506,9 @@ ssize_t OsxUsbTransport::Read(void* data, size_t len) {
         return -1;
     }
 
-    result = (*handle_->interface)->ReadPipe(handle_->interface, handle_->bulkIn, data, &numBytes);
+    result = (*handle_->interface)
+                     ->ReadPipeTO(handle_->interface, handle_->bulkIn, data, &numBytes,
+                                  USB_TRANSACTION_TIMEOUT, USB_TRANSACTION_TIMEOUT);
 
     if (result == 0) {
         return (int) numBytes;
