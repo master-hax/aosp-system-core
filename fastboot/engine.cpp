@@ -25,7 +25,6 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
 #include "fastboot.h"
 
 #include <errno.h>
@@ -77,8 +76,20 @@ struct Action {
 };
 
 static std::vector<std::unique_ptr<Action>> action_list;
+static FastBootHLI *fb = nullptr;
 
-bool fb_getvar(Transport* transport, const std::string& key, std::string* value) {
+void fb_init(FastBootHLI &fbi) {
+  fb = &fbi;
+}
+
+
+const std::string fb_get_error() {
+  return fb->GetError();
+}
+
+bool fb_getvar(const std::string& key, std::string* value) {
+    return !fb->GetVar(key, *value);
+    /*
     std::string cmd = "getvar:" + key;
 
     char buf[FB_RESPONSE_SZ + 1];
@@ -88,6 +99,7 @@ bool fb_getvar(Transport* transport, const std::string& key, std::string* value)
     }
     *value = buf;
     return true;
+    */
 }
 
 static int cb_default(Action& a, int status, const char* resp) {
@@ -309,7 +321,7 @@ void fb_queue_wait_for_disconnect() {
     queue_action(OP_WAIT_FOR_DISCONNECT, "");
 }
 
-int64_t fb_execute_queue(Transport* transport) {
+int64_t fb_execute_queue() {
     int64_t status = 0;
     for (auto& a : action_list) {
         a->start = now();
@@ -318,33 +330,43 @@ int64_t fb_execute_queue(Transport* transport) {
             verbose("\n");
         }
         if (a->op == OP_DOWNLOAD) {
-            status = fb_download_data(transport, a->data, a->size);
+            //status = fb_download_data(transport, a->data, a->size);
+            char *cbuf = static_cast<char*>(a->data);
+            std::vector<char> buf(cbuf, cbuf + a->size);
+            status = fb->Download(buf);
             status = a->func(*a, status, status ? fb_get_error().c_str() : "");
             if (status) break;
         } else if (a->op == OP_DOWNLOAD_FD) {
-            status = fb_download_data_fd(transport, a->fd, a->size);
+            //status = fb_download_data_fd(transport, a->fd, a->size);
+            status = fb->Download(a->fd, a->size);
             status = a->func(*a, status, status ? fb_get_error().c_str() : "");
             if (status) break;
         } else if (a->op == OP_COMMAND) {
-            status = fb_command(transport, a->cmd);
+            //status = fb_command(transport, a->cmd);
+            status = fb->RawCommand(a->cmd);
             status = a->func(*a, status, status ? fb_get_error().c_str() : "");
             if (status) break;
         } else if (a->op == OP_QUERY) {
-            char resp[FB_RESPONSE_SZ + 1] = {};
-            status = fb_command_response(transport, a->cmd, resp);
-            status = a->func(*a, status, status ? fb_get_error().c_str() : resp);
+            //char resp[FB_RESPONSE_SZ + 1] = {};
+            //status = fb_command_response(transport, a->cmd, resp);
+            std::string resp;
+            status = fb->RawCommand(a->cmd, resp);
+            status = a->func(*a, status, status ? fb_get_error().c_str() : resp.c_str());
             if (status) break;
         } else if (a->op == OP_NOTICE) {
             // We already showed the notice because it's in `Action::msg`.
             fprintf(stderr, "\n");
         } else if (a->op == OP_DOWNLOAD_SPARSE) {
-            status = fb_download_data_sparse(transport, reinterpret_cast<sparse_file*>(a->data));
+            //status = fb_download_data_sparse(transport, reinterpret_cast<sparse_file*>(a->data));
+            status = fb->DownloadSparse(*reinterpret_cast<sparse_file*>(a->data));
             status = a->func(*a, status, status ? fb_get_error().c_str() : "");
             if (status) break;
         } else if (a->op == OP_WAIT_FOR_DISCONNECT) {
-            transport->WaitForDisconnect();
+            //transport->WaitForDisconnect();
+            fb->WaitForDisconnect();
         } else if (a->op == OP_UPLOAD) {
-            status = fb_upload_data(transport, reinterpret_cast<char*>(a->data));
+            //status = fb_upload_data(transport, reinterpret_cast<char*>(a->data));
+            status = fb->Upload(reinterpret_cast<const char*>(a->data));
             status = a->func(*a, status, status ? fb_get_error().c_str() : "");
         } else {
             die("unknown action: %d", a->op);

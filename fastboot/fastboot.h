@@ -34,11 +34,14 @@
 #include <string>
 
 #include <bootimg.h>
+#include "fastboot_hli.h"
 
 class Transport;
 struct sparse_file;
 
+
 /* protocol.c - fastboot protocol */
+/*
 int fb_command(Transport* transport, const std::string& cmd);
 int fb_command_response(Transport* transport, const std::string& cmd, char* response);
 int64_t fb_download_data(Transport* transport, const void* data, uint32_t size);
@@ -49,9 +52,18 @@ const std::string fb_get_error();
 
 #define FB_COMMAND_SZ 64
 #define FB_RESPONSE_SZ 64
+*/
+
+const std::string fb_get_error();
+
+#define FB_COMMAND_SZ (FastBoot2::FB_COMMAND_SZ)
+#define FB_RESPONSE_SZ (FastBoot2::FB_RESPONSE_SZ)
 
 /* engine.c - high level command queue engine */
-bool fb_getvar(Transport* transport, const std::string& key, std::string* value);
+
+void fb_init(FastBootHLI &fbi);
+
+bool fb_getvar(const std::string& key, std::string* value);
 void fb_queue_flash(const std::string& partition, void* data, uint32_t sz);
 void fb_queue_flash_fd(const std::string& partition, int fd, uint32_t sz);
 void fb_queue_flash_sparse(const std::string& partition, struct sparse_file* s, uint32_t sz,
@@ -69,7 +81,7 @@ void fb_queue_download_fd(const std::string& name, int fd, uint32_t sz);
 void fb_queue_upload(const std::string& outfile);
 void fb_queue_notice(const std::string& notice);
 void fb_queue_wait_for_disconnect(void);
-int64_t fb_execute_queue(Transport* transport);
+int64_t fb_execute_queue();
 void fb_set_active(const std::string& slot);
 
 /* util stuff */

@@ -51,11 +51,12 @@ LOCAL_SRC_FILES := \
     engine.cpp \
     fastboot.cpp \
     fs.cpp\
-    protocol.cpp \
     socket.cpp \
     tcp.cpp \
     udp.cpp \
     util.cpp \
+		fastboot2.cpp \
+		fastboot_hli.cpp \
 
 LOCAL_SRC_FILES_darwin := usb_osx.cpp
 LOCAL_SRC_FILES_linux := usb_linux.cpp
