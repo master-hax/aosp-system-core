@@ -34,24 +34,23 @@
 #include <string>
 
 #include <bootimg.h>
+#include "fastboot_hli.h"
+#include "util.h"
 
 class Transport;
 struct sparse_file;
 
-/* protocol.c - fastboot protocol */
-int fb_command(Transport* transport, const std::string& cmd);
-int fb_command_response(Transport* transport, const std::string& cmd, char* response);
-int64_t fb_download_data(Transport* transport, const void* data, uint32_t size);
-int64_t fb_download_data_fd(Transport* transport, int fd, uint32_t size);
-int fb_download_data_sparse(Transport* transport, struct sparse_file* s);
-int64_t fb_upload_data(Transport* transport, const char* outfile);
+
 const std::string fb_get_error();
 
-#define FB_COMMAND_SZ 64
-#define FB_RESPONSE_SZ 64
+#define FB_COMMAND_SZ (FastBootDriver::FB_COMMAND_SZ)
+#define FB_RESPONSE_SZ (FastBootDriver::FB_RESPONSE_SZ)
 
 /* engine.c - high level command queue engine */
-bool fb_getvar(Transport* transport, const std::string& key, std::string* value);
+
+void fb_init(FastBootHLI &fbi);
+
+bool fb_getvar(const std::string& key, std::string* value);
 void fb_queue_flash(const std::string& partition, void* data, uint32_t sz);
 void fb_queue_flash_fd(const std::string& partition, int fd, uint32_t sz);
 void fb_queue_flash_sparse(const std::string& partition, struct sparse_file* s, uint32_t sz,
@@ -69,35 +68,15 @@ void fb_queue_download_fd(const std::string& name, int fd, uint32_t sz);
 void fb_queue_upload(const std::string& outfile);
 void fb_queue_notice(const std::string& notice);
 void fb_queue_wait_for_disconnect(void);
-int64_t fb_execute_queue(Transport* transport);
+int64_t fb_execute_queue();
 void fb_set_active(const std::string& slot);
 
-/* util stuff */
-double now();
-char* xstrdup(const char*);
-void set_verbose();
 
-// These printf-like functions are implemented in terms of vsnprintf, so they
-// use the same attribute for compile-time format string checking. On Windows,
-// if the mingw version of vsnprintf is used, use `gnu_printf' which allows z
-// in %zd and PRIu64 (and related) to be recognized by the compile-time
-// checking.
-#define FASTBOOT_FORMAT_ARCHETYPE __printf__
-#ifdef __USE_MINGW_ANSI_STDIO
-#if __USE_MINGW_ANSI_STDIO
-#undef FASTBOOT_FORMAT_ARCHETYPE
-#define FASTBOOT_FORMAT_ARCHETYPE gnu_printf
-#endif
-#endif
-void die(const char* fmt, ...) __attribute__((__noreturn__))
-__attribute__((__format__(FASTBOOT_FORMAT_ARCHETYPE, 1, 2)));
-void verbose(const char* fmt, ...) __attribute__((__format__(FASTBOOT_FORMAT_ARCHETYPE, 1, 2)));
-#undef FASTBOOT_FORMAT_ARCHETYPE
 
 /* Current product */
 extern char cur_product[FB_RESPONSE_SZ + 1];
 
-class FastBoot {
+class FastBootTool {
   public:
     int Main(int argc, char* argv[]);
 
