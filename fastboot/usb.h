@@ -30,6 +30,9 @@
 
 #include "transport.h"
 
+// Timeout for a read or write in ms
+#define USB_TRANSACTION_TIMEOUT 10000
+
 struct usb_ifc_info {
         /* from device descriptor */
     unsigned short dev_vendor;

@@ -494,7 +494,9 @@ ssize_t OsxUsbTransport::Read(void* data, size_t len) {
         return -1;
     }
 
-    result = (*handle_->interface)->ReadPipe(handle_->interface, handle_->bulkIn, data, &numBytes);
+    result = (*handle_->interface)
+                     ->ReadPipeTO(handle_->interface, handle_->bulkIn, data, &numBytes,
+                                  USB_TRANSACTION_TIMEOUT, USB_TRANSACTION_TIMEOUT);
 
     if (result == 0) {
         return (int) numBytes;

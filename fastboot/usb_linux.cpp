@@ -47,8 +47,8 @@
 #include <memory>
 #include <thread>
 
-#include "fastboot.h"
 #include "usb.h"
+#include "util.h"
 
 using namespace std::chrono_literals;
 
@@ -402,7 +402,7 @@ ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
         bulk.ep = handle_->ep_out;
         bulk.len = xfer;
         bulk.data = data;
-        bulk.timeout = 0;
+        bulk.timeout = USB_TRANSACTION_TIMEOUT;
 
         n = ioctl(handle_->desc, USBDEVFS_BULK, &bulk);
         if(n != xfer) {
@@ -436,7 +436,7 @@ ssize_t LinuxUsbTransport::Read(void* _data, size_t len)
         bulk.ep = handle_->ep_in;
         bulk.len = xfer;
         bulk.data = data;
-        bulk.timeout = 0;
+        bulk.timeout = USB_TRANSACTION_TIMEOUT;
         retry = 0;
 
         do {
