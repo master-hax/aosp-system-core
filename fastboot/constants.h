@@ -29,13 +29,6 @@
 #define FB_CMD_REBOOT_BOOTLOADER "reboot-bootloader"
 #define FB_CMD_POWERDOWN "powerdown"
 
-#define RESPONSE_OKAY "OKAY"
-#define RESPONSE_FAIL "FAIL"
-#define RESPONSE_DATA "DATA"
-#define RESPONSE_INFO "INFO"
-
-#define FB_COMMAND_SZ 64
-#define FB_RESPONSE_SZ 64
 
 #define FB_VAR_VERSION "version"
 #define FB_VAR_VERSION_BOOTLOADER "version-bootloader"
