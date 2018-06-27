@@ -311,8 +311,20 @@ const char* get_sigcode(const siginfo_t* si) {
         case ILL_PRVREG: return "ILL_PRVREG";
         case ILL_COPROC: return "ILL_COPROC";
         case ILL_BADSTK: return "ILL_BADSTK";
+#if defined(__ILL_BNDMOD)
+        case ILL_BADIADDR:
+          return "ILL_BADIADDR";
+        case __ILL_BREAK:
+          return "ILL_BREAK";
+        case __ILL_BNDMOD:
+          return "ILL_BNDMOD";
+#endif
       }
+#if defined(__ILL_BNDMOD)
+      static_assert(NSIGILL == __ILL_BNDMOD, "missing ILL_* si_code");
+#else
       static_assert(NSIGILL == ILL_BADSTK, "missing ILL_* si_code");
+#endif
       break;
     case SIGBUS:
       switch (si->si_code) {
@@ -334,8 +346,28 @@ const char* get_sigcode(const siginfo_t* si) {
         case FPE_FLTRES: return "FPE_FLTRES";
         case FPE_FLTINV: return "FPE_FLTINV";
         case FPE_FLTSUB: return "FPE_FLTSUB";
+#if defined(FPE_CONDTRAP)
+        case __FPE_DECOVF:
+          return "FPE_DECOVF";
+        case __FPE_DECDIV:
+          return "FPE_DECDIV";
+        case __FPE_DECERR:
+          return "FPE_DECERR";
+        case __FPE_INVASC:
+          return "FPE_INVASC";
+        case __FPE_INVDEC:
+          return "FPE_INVDEC";
+        case FPE_FLTUNK:
+          return "FPE_FLTUNK";
+        case FPE_CONDTRAP:
+          return "FPE_CONDTRAP";
+#endif
       }
+#if defined(FPE_CONDTRAP)
+      static_assert(NSIGFPE == FPE_CONDTRAP, "missing FPE_* si_code");
+#else
       static_assert(NSIGFPE == FPE_FLTSUB, "missing FPE_* si_code");
+#endif
       break;
     case SIGSEGV:
       switch (si->si_code) {
@@ -347,8 +379,18 @@ const char* get_sigcode(const siginfo_t* si) {
 #if defined(SEGV_PKUERR)
         case SEGV_PKUERR: return "SEGV_PKUERR";
 #endif
+#if defined(SEGV_ADIPERR)
+        case SEGV_ACCADI:
+          return "SEGV_ACCADI";
+        case SEGV_ADIDERR:
+          return "SEGV_ADIDERR";
+        case SEGV_ADIPERR:
+          return "SEGV_ADIPERR";
+#endif
       }
-#if defined(SEGV_PKUERR)
+#if defined(SEGV_ADIPERR)
+      static_assert(NSIGSEGV == SEGV_ADIPERR, "missing SEGV_* si_code");
+#elif defined(SEGV_PKUERR)
       static_assert(NSIGSEGV == SEGV_PKUERR, "missing SEGV_* si_code");
 #elif defined(SEGV_BNDERR)
       static_assert(NSIGSEGV == SEGV_BNDERR, "missing SEGV_* si_code");
