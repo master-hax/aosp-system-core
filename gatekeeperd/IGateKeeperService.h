@@ -45,6 +45,7 @@ public:
     // DECLARE_META_INTERFACE - C++ client interface not needed
     static const android::String16 descriptor;
     virtual const android::String16& getInterfaceDescriptor() const;
+    static const uint32_t version;
     IGateKeeperService() {}
     virtual ~IGateKeeperService() {}
 
