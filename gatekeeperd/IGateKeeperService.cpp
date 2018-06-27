@@ -25,6 +25,7 @@ const android::String16 IGateKeeperService::descriptor("android.service.gatekeep
 const android::String16& IGateKeeperService::getInterfaceDescriptor() const {
     return IGateKeeperService::descriptor;
 }
+const uint32_t IGateKeeperService::version(0);
 
 status_t BnGateKeeperService::onTransact(
     uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags) {
