@@ -69,16 +69,16 @@ static bool update_capabilities(const char* path, uint64_t capabilities) {
 }
 
 static bool secure_mkdirs(const std::string& path) {
-    uid_t uid = -1;
-    gid_t gid = -1;
-    unsigned int mode = 0775;
-    uint64_t capabilities = 0;
-
     if (path[0] != '/') return false;
 
     std::vector<std::string> path_components = android::base::Split(path, "/");
     std::string partial_path;
     for (const auto& path_component : path_components) {
+        uid_t uid = -1;
+        gid_t gid = -1;
+        unsigned int mode = 0775;
+        uint64_t capabilities = 0;
+
         if (partial_path.back() != OS_PATH_SEPARATOR) partial_path += OS_PATH_SEPARATOR;
         partial_path += path_component;
 
