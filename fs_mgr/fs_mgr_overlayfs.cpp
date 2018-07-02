@@ -16,6 +16,7 @@
 
 #include <dirent.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <linux/fs.h>
 #include <selinux/selinux.h>
 #include <stdio.h>
@@ -25,6 +26,7 @@
 #include <sys/stat.h>
 #include <sys/statvfs.h>
 #include <sys/types.h>
+#include <sys/vfs.h>
 #include <unistd.h>
 
 #include <map>
@@ -36,6 +38,8 @@
 #include <android-base/macros.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
+#include <ext4_utils/ext4_utils.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
 
@@ -108,8 +112,9 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
 
 bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
     // readonly filesystem, can not be mount -o remount,rw
-    // with any luck.
-    return "squashfs"s == fsrec->fs_type;
+    // with any luck.  if squashfs or there are shared blocks that prevent
+    // remount,rw.
+    return ("squashfs"s == fsrec->fs_type) || fs_mgr_has_shared_blocks(fsrec->blk_device);
 }
 
 size_t fs_mgr_free_space(const std::string& path) {
@@ -542,6 +547,27 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
         ret = false;
     }
     return ret;
+}
+
+bool fs_mgr_has_shared_blocks(const char* dev) {
+    if (!dev) return false;
+
+    struct statfs fs;
+    if ((statfs(dev, &fs) == -1) || (fs.f_type == EXT4_SUPER_MAGIC)) return false;
+
+    android::base::unique_fd fd(open(dev, O_RDONLY | O_CLOEXEC));
+    if (fd < 0) return false;
+
+    struct ext4_super_block sb;
+    if ((TEMP_FAILURE_RETRY(lseek64(fd, 1024, SEEK_SET)) < 0) ||
+        (TEMP_FAILURE_RETRY(read(fd, &sb, sizeof(sb))) < 0)) {
+        return false;
+    }
+
+    struct fs_info info;
+    if (ext4_parse_sb(&sb, &info) < 0) return false;
+
+    return (info.feat_ro_compat & EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS) != 0;
 }
 
 #endif  // ALLOW_ADBD_DISABLE_VERITY != 0
