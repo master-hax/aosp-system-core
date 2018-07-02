@@ -21,5 +21,6 @@
 void fs_mgr_overlayfs_mount_all();
 bool fs_mgr_overlayfs_setup(const char* mount_point = nullptr, bool* change = nullptr);
 bool fs_mgr_overlayfs_teardown(const char* mount_point = nullptr, bool* change = nullptr);
+bool fs_mgr_has_shared_blocks(const char* dev);
 
 #endif /* __CORE_FS_MGR_OVERLAYFS_H */
