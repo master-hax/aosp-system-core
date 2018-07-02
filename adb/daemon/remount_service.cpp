@@ -250,7 +250,7 @@ void remount_service(unique_fd fd, const std::string& cmd) {
     std::set<std::string> dedup;
     for (const auto& partition : partitions) {
         std::string dev = find_mount(partition.c_str(), partition == "/");
-        if (dev.empty() || !fs_has_shared_blocks(partition, dev)) {
+        if (dev.empty() || !fs_has_shared_blocks(partition.c_str(), dev.c_str())) {
             continue;
         }
         if (can_unshare_blocks(fd.get(), dev.c_str())) {
