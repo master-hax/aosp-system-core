@@ -22,3 +22,4 @@ bool fs_mgr_overlayfs_mount_all();
 bool fs_mgr_overlayfs_setup(const char* backing = nullptr, const char* mount_point = nullptr,
                             bool* change = nullptr);
 bool fs_mgr_overlayfs_teardown(const char* mount_point = nullptr, bool* change = nullptr);
+bool fs_mgr_has_shared_blocks(const char* mount_point, const char* dev);
