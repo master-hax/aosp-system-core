@@ -60,7 +60,7 @@
 
 #include "bootimg_utils.h"
 #include "diagnose_usb.h"
-#include "fastboot.h"
+#include "engine.h"
 #include "fs.h"
 #include "tcp.h"
 #include "transport.h"
@@ -1323,7 +1323,7 @@ failed:
     fprintf(stderr, "FAILED (%s)\n", fb_get_error().c_str());
 }
 
-int FastBoot::Main(int argc, char* argv[]) {
+int FastBootTool::Main(int argc, char* argv[]) {
     bool wants_wipe = false;
     bool wants_reboot = false;
     bool wants_reboot_bootloader = false;
@@ -1681,7 +1681,7 @@ int FastBoot::Main(int argc, char* argv[]) {
     return status;
 }
 
-void FastBoot::ParseOsPatchLevel(boot_img_hdr_v1* hdr, const char* arg) {
+void FastBootTool::ParseOsPatchLevel(boot_img_hdr_v1* hdr, const char* arg) {
     unsigned year, month, day;
     if (sscanf(arg, "%u-%u-%u", &year, &month, &day) != 3) {
         syntax_error("OS patch level should be YYYY-MM-DD: %s", arg);
@@ -1691,7 +1691,7 @@ void FastBoot::ParseOsPatchLevel(boot_img_hdr_v1* hdr, const char* arg) {
     hdr->SetOsPatchLevel(year, month);
 }
 
-void FastBoot::ParseOsVersion(boot_img_hdr_v1* hdr, const char* arg) {
+void FastBootTool::ParseOsVersion(boot_img_hdr_v1* hdr, const char* arg) {
     unsigned major = 0, minor = 0, patch = 0;
     std::vector<std::string> versions = android::base::Split(arg, ".");
     if (versions.size() < 1 || versions.size() > 3 ||

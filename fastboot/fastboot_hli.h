@@ -34,41 +34,53 @@
 #include <vector>
 #include <queue>
 #include <bootimg.h>
+#include <tuple>
 #include <android-base/logging.h>
 #include <sparse/sparse.h>
 
-#include "fastboot2.h"
+#include "fastboot_driver.h"
 
 class Transport;
 
-class FastBootHLI : public FastBoot2 {
+class FastBootHLI {
 
 public:
+  FastBootHLI(Transport &transport, std::function<void(std::string&)> info = [](std::string &tmp){(void)tmp;});
 
+  std::string Response();
+  std::vector<std::string> Info();
 
-  FastBootHLI(Transport &transport);
+  bool GenericCommand(const std::string &val);
+  bool GenericCommand(const std::string &val, std::string &resp);
 
-  std::string &Response();
-  std::vector<std::string> &Info();
+  bool GetVarAll(std::vector<std::string> &resp);
+  bool GetVar(const std::string& key, std::string& val);
 
-  RetCode GetVar(const std::string& key, std::string& val);
-  RetCode GetVarAll(std::vector<std::string> &resp);
+  bool Flash(const std::string &part, std::vector<char> &data);
+  bool Flash(const std::string &part, int fd, uint32_t sz);
+  bool FlashSparse(const std::string &part, sparse_file &s);
 
-  RetCode Flash(const std::string &part, std::vector<char> &data);
-  RetCode Flash(const std::string &part, int fd, uint32_t sz);
-  RetCode FlashSparse(const std::string &part, sparse_file &s);
+  bool Download(const std::vector<char> &buf);
+  bool Download(int fd, size_t size);
+  bool DownloadSparse(sparse_file &s);
 
-  RetCode Erase(const std::string &part);
-  RetCode SetActive(const std::string &part);
-  RetCode Reboot();
+  bool Upload(const std::string &outfile);
 
-  RetCode Require(const std::string &var, const std::vector<std::string> &allowed, bool &reqmet, bool invert=false);
+  bool Erase(const std::string &part);
+  bool SetActive(const std::string &part);
+  bool Reboot();
 
+  bool Partitions(std::vector<std::tuple<std::string,uint32_t>> &parts);
 
+  bool Require(const std::string &var, const std::vector<std::string> &allowed, bool &reqmet, bool invert=false);
 
+  std::string Error();
+  void SetInfoCallback(std::function<void(std::string&)> info);
+  void WaitForDisconnect();
+
+  FastBootDriver &Driver();
 protected:
-  RetCode GenericCommand(const std::string &val);
-
+  FastBootDriver driver;
   std::string resp; // Stores the last response
   std::vector<std::string> info; // Info sent back from device
 };

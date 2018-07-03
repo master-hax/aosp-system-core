@@ -6,15 +6,12 @@ cc_library_host_static {
     compile_multilib: "first",
     srcs: [
       "bootimg_utils.cpp",
-      "engine.cpp",
-      //"fastboot.cpp",
       "fs.cpp",
-      "protocol.cpp",
       "socket.cpp",
       "tcp.cpp",
       "udp.cpp",
       "util.cpp",
-      "fastboot2.cpp",
+      "fastboot_driver.cpp",
       "fastboot_hli.cpp",
     ],
 
@@ -53,7 +50,6 @@ cc_library_host_static {
       "-Wextra",
       "-Werror",
       "-Wunreachable-code",
-      "-DFASTBOOT_VERSION=\"TODO\""
     ],
 
     export_include_dirs: ["."],

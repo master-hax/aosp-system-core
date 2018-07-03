@@ -36,9 +36,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <iostream>
 
 #include <memory>
 #include <vector>
+#include <regex>
 
 #include <android-base/stringprintf.h>
 
@@ -46,94 +48,154 @@
 
 
 
-FastBootHLI::FastBootHLI(Transport &transport)
-: FastBoot2(transport) {
+FastBootHLI::FastBootHLI(Transport &transport, std::function<void(std::string&)> info)
+: driver(transport, info) {
 }
 
-FastBootHLI::RetCode FastBootHLI::GenericCommand(const std::string& val) {
+bool FastBootHLI::GenericCommand(const std::string& val) {
   info.clear();
-  return RawCommand(val, resp, info);
+  return driver.RawCommand(val, resp, info) == driver.SUCCESS;
+}
+
+
+bool FastBootHLI::GenericCommand(const std::string& val, std::string &resp) {
+  if (!GenericCommand(val)) {
+    return false;
+  }
+  resp = Response();
+  return true;
 }
 
 
 
-FastBootHLI::RetCode FastBootHLI::GetVar(const std::string& key, std::string& val) {
-  RetCode ret = GenericCommand("getvar:"+key);
-  val = Response();
-  return ret;
+bool FastBootHLI::GetVar(const std::string& key, std::string& val) {
+  return GenericCommand("getvar:"+key, val);
 }
 
-FastBootHLI::RetCode FastBootHLI::GetVarAll(std::vector<std::string> &resp) {
-  RetCode ret = GenericCommand("getvar:all");
+bool FastBootHLI::GetVarAll(std::vector<std::string> &resp) {
+  bool ret = GenericCommand("getvar:all");
   resp = Info();
   return ret;
 }
 
 
 
-std::string &FastBootHLI::Response() {
+std::string FastBootHLI::Response() {
   return resp;
 }
 
 
-std::vector<std::string> &FastBootHLI::Info() {
+std::vector<std::string> FastBootHLI::Info() {
   return info;
 }
 
-
-FastBootHLI::RetCode FastBootHLI::Flash(const std::string &part, std::vector<char> &data) {
-  RetCode ret;
-  info.clear();
-  if ((ret = Download(data, resp, info))) {
-    return ret;
-  }
-  return RawCommand("flash:" + part, resp, info);
+std::string FastBootHLI::Error() {
+  return driver.GetError();
 }
 
 
-FastBootHLI::RetCode FastBootHLI::Flash(const std::string &part, int fd, uint32_t sz) {
-  RetCode ret;
+FastBootDriver &FastBootHLI::Driver() {
+  return driver;
+}
+
+void FastBootHLI::SetInfoCallback(std::function<void(std::string&)> info) {
+  driver.SetInfoCallback(info);
+}
+
+void FastBootHLI::WaitForDisconnect() {
+  driver.WaitForDisconnect();
+}
+
+bool FastBootHLI::Flash(const std::string &part, std::vector<char> &data) {
   info.clear();
-  if ((ret = Download(fd, sz, resp, info))) {
-    return ret;
+  if (driver.Download(data, resp, info) != driver.SUCCESS) {
+    return false;
   }
-  return RawCommand("flash:" + part, resp, info);
+  return driver.RawCommand("flash:" + part, resp, info) == driver.SUCCESS;
 }
 
 
-FastBootHLI::RetCode FastBootHLI::FlashSparse(const std::string &part, sparse_file &s) {
-  RetCode ret;
+bool FastBootHLI::Flash(const std::string &part, int fd, uint32_t sz) {
   info.clear();
-  if ((ret = DownloadSparse(s, resp, info))) {
-    return ret;
+  if (driver.Download(fd, sz, resp, info) != driver.SUCCESS) {
+    return false;
   }
-  return RawCommand("flash:" + part, resp, info);
+  return driver.RawCommand("flash:" + part, resp, info) == driver.SUCCESS;
 }
 
 
-FastBootHLI::RetCode FastBootHLI::Erase(const std::string &part) {
+bool FastBootHLI::FlashSparse(const std::string &part, sparse_file &s) {
+  info.clear();
+  if (driver.DownloadSparse(s, resp, info) != driver.SUCCESS) {
+    return false;
+  }
+  return driver.RawCommand("flash:" + part, resp, info) == driver.SUCCESS;
+}
+
+
+bool FastBootHLI::Download(const std::vector<char> &buf) {
+  return driver.Download(buf, resp, info) == driver.SUCCESS;
+}
+
+
+bool FastBootHLI::Download(int fd, size_t size) {
+  return driver.Download(fd, size, resp, info) == driver.SUCCESS;
+}
+
+
+bool FastBootHLI::DownloadSparse(sparse_file &s) {
+  return driver.DownloadSparse(s, resp, info) == driver.SUCCESS;
+}
+
+bool FastBootHLI::Upload(const std::string &outfile) {
+  return driver.Upload(outfile, resp, info) == driver.SUCCESS;
+}
+
+bool FastBootHLI::Erase(const std::string &part) {
   return GenericCommand("erase:" + part);
 }
 
-FastBootHLI::RetCode FastBootHLI::SetActive(const std::string &part) {
+bool FastBootHLI::SetActive(const std::string &part) {
   return GenericCommand("set_active:" + part);
 }
 
 
-FastBootHLI::RetCode FastBootHLI::Reboot() {
+bool FastBootHLI::Reboot() {
   return GenericCommand("reboot");
 }
 
 
-FastBootHLI::RetCode FastBootHLI::Require(const std::string &var,
+bool FastBootHLI::Partitions(std::vector<std::tuple<std::string,uint32_t>> &parts) {
+  std::vector<std::string> all;
+  if (!GetVarAll(all)) {
+    return false;
+  }
+
+  std::regex reg("partition-size[[:s:]]*:[[:s:]]*([[:w:]]+)[[:s:]]*:[[:s:]]*0x([[:d:]]+)");
+  std::smatch sm;
+
+  for (auto s : all) {
+    if (std::regex_match(s, sm, reg)) {
+      std::string m1(sm[1]);
+      std::string m2(sm[2]);
+      uint32_t tmp = strtol(m2.c_str(), 0, 16);
+      parts.push_back(std::make_tuple(m1, tmp));
+    }
+  }
+  return true;
+}
+
+
+
+bool FastBootHLI::Require(const std::string &var,
     const std::vector<std::string> &allowed,
     bool &reqmet, bool invert) {
   std::string resp;
-  RetCode ret;
+
   reqmet = invert;
 
-  if ((ret = GetVar(var, resp))) {
-    return ret;
+  if (!GetVar(var, resp)) {
+    return false;
   }
 
   // Now check if we have a match
@@ -148,5 +210,5 @@ FastBootHLI::RetCode FastBootHLI::Require(const std::string &var,
     }
   }
 
-  return ret;
+  return true;
 }

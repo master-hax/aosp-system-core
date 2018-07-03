@@ -16,7 +16,7 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(LOCAL_PATH)/../platform_tools_tool_version.mk
 
-fastboot_cflags := -Wall -Wextra -Werror -Wunreachable-code
+fastboot_cflags := -Wall -Wextra -Werror -Wunreachable-code -g
 fastboot_cflags += -DFASTBOOT_VERSION="\"$(tool_version)\""
 fastboot_cflags_darwin := -Wno-unused-parameter
 fastboot_ldlibs_darwin := -lpthread -framework CoreFoundation -framework IOKit -framework Carbon
@@ -50,12 +50,12 @@ LOCAL_SRC_FILES := \
     bootimg_utils.cpp \
     engine.cpp \
     fastboot.cpp \
-    fs.cpp\
+    fs.cpp \
     socket.cpp \
     tcp.cpp \
     udp.cpp \
     util.cpp \
-		fastboot2.cpp \
+		fastboot_driver.cpp \
 		fastboot_hli.cpp \
 
 LOCAL_SRC_FILES_darwin := usb_osx.cpp
