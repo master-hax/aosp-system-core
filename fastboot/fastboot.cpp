@@ -346,6 +346,10 @@ static int show_help() {
             "                            Format a flash partition.\n"
             " set_active SLOT            Set the active slot.\n"
             " oem [COMMAND...]           Execute OEM-specific command.\n"
+            " avb-{enable,disable}-verification\n"
+            "                            Toggle AVB verification, only allowed when unlocked.\n"
+            " avb-{enable,disable}-verity\n"
+            "                            Toggle AVB dm-verity, only allowed when unlocked.\n"
             "\n"
             "boot image:\n"
             " boot KERNEL [RAMDISK [SECOND]]\n"
@@ -886,6 +890,12 @@ static int get_slot_count(Transport* transport) {
     return count;
 }
 
+static bool is_unlocked(Transport* transport) {
+    std::string unlocked;
+    if (!fb_getvar(transport, "unlocked", &unlocked)) return false;
+    return unlocked == "yes";
+}
+
 static bool supports_AB(Transport* transport) {
   return get_slot_count(transport) >= 2;
 }
@@ -948,6 +958,13 @@ static std::string verify_slot(Transport* transport, const std::string& slot_nam
 
 static std::string verify_slot(Transport* transport, const std::string& slot) {
    return verify_slot(transport, slot, true);
+}
+
+static bool verify_avb_command(const std::string& command) {
+    return (command == "avb-enable-verification" ||
+            command == "avb-disable-verification" ||
+            command == "avb-enable-verity" ||
+            command == "avb-disable-verity");
 }
 
 static void do_for_partition(Transport* transport, const std::string& part, const std::string& slot,
@@ -1641,6 +1658,11 @@ int FastBoot::Main(int argc, char* argv[]) {
             } else {
                 syntax_error("unknown 'flashing' command %s", args[0].c_str());
             }
+        } else if (android::base::StartsWith(command, "avb-") && verify_avb_command(command)) {
+            if (!is_unlocked(transport)) {
+                die("'%s' is only allowed when the device is unlocked", command.c_str());
+            }
+            fb_queue_command(command, "fastboot AVB command: " + command);
         } else {
             syntax_error("unknown command %s", command.c_str());
         }
