@@ -109,6 +109,7 @@ cc_library_static {
         "init_first_stage.cpp",
         "keychords.cpp",
         "log.cpp",
+        "modalias_handler.cpp",
         "parser.cpp",
         "persistent_properties.cpp",
         "persistent_properties.proto",
