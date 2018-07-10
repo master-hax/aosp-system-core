@@ -101,13 +101,10 @@ inline bool createThread(thread_func_t f, void *a) {
 }
 
 // Create thread with lots of parameters
-inline bool createThreadEtc(thread_func_t entryFunction,
-                            void *userData,
+inline bool createThreadEtc(thread_func_t entryFunction, void* userData,
                             const char* threadName = "android:unnamed_thread",
-                            int32_t threadPriority = PRIORITY_DEFAULT,
-                            size_t threadStackSize = 0,
-                            thread_id_t *threadId = 0)
-{
+                            int32_t threadPriority = PRIORITY_DEFAULT, size_t threadStackSize = 0,
+                            thread_id_t* threadId = nullptr) {
     return androidCreateThreadEtc(entryFunction, userData, threadName,
         threadPriority, threadStackSize, threadId) ? true : false;
 }

@@ -354,7 +354,7 @@ class wp
 public:
     typedef typename RefBase::weakref_type weakref_type;
 
-    inline wp() : m_ptr(0) { }
+    inline wp() : m_ptr(nullptr) {}
 
     wp(T* other);  // NOLINT(implicit)
     wp(const wp<T>& other);
@@ -504,8 +504,7 @@ wp<T>::~wp()
 template<typename T>
 wp<T>& wp<T>::operator = (T* other)
 {
-    weakref_type* newRefs =
-        other ? other->createWeak(this) : 0;
+    weakref_type* newRefs = other ? other->createWeak(this) : nullptr;
     if (m_ptr) m_refs->decWeak(this);
     m_ptr = other;
     m_refs = newRefs;
@@ -527,8 +526,7 @@ wp<T>& wp<T>::operator = (const wp<T>& other)
 template<typename T>
 wp<T>& wp<T>::operator = (const sp<T>& other)
 {
-    weakref_type* newRefs =
-        other != NULL ? other->createWeak(this) : 0;
+    weakref_type* newRefs = other != nullptr ? other->createWeak(this) : nullptr;
     T* otherPtr(other.m_ptr);
     if (m_ptr) m_refs->decWeak(this);
     m_ptr = otherPtr;

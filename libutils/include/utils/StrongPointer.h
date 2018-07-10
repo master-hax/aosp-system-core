@@ -52,49 +52,55 @@ inline bool operator _op_ (const wp<U>& o) const {              \
 template<typename T>
 class sp {
 public:
-    inline sp() : m_ptr(0) { }
+  inline sp() : m_ptr(nullptr) {}
 
-    sp(T* other);  // NOLINT(implicit)
-    sp(const sp<T>& other);
-    sp(sp<T>&& other);
-    template<typename U> sp(U* other);  // NOLINT(implicit)
-    template<typename U> sp(const sp<U>& other);  // NOLINT(implicit)
-    template<typename U> sp(sp<U>&& other);  // NOLINT(implicit)
+  sp(T* other);  // NOLINT(implicit)
+  sp(const sp<T>& other);
+  sp(sp<T>&& other);
+  template <typename U>
+  sp(U* other);  // NOLINT(implicit)
+  template <typename U>
+  sp(const sp<U>& other);  // NOLINT(implicit)
+  template <typename U>
+  sp(sp<U>&& other);  // NOLINT(implicit)
 
-    ~sp();
+  ~sp();
 
-    // Assignment
+  // Assignment
 
-    sp& operator = (T* other);
-    sp& operator = (const sp<T>& other);
-    sp& operator = (sp<T>&& other);
+  sp& operator=(T* other);
+  sp& operator=(const sp<T>& other);
+  sp& operator=(sp<T>&& other);
 
-    template<typename U> sp& operator = (const sp<U>& other);
-    template<typename U> sp& operator = (sp<U>&& other);
-    template<typename U> sp& operator = (U* other);
+  template <typename U>
+  sp& operator=(const sp<U>& other);
+  template <typename U>
+  sp& operator=(sp<U>&& other);
+  template <typename U>
+  sp& operator=(U* other);
 
-    //! Special optimization for use by ProcessState (and nobody else).
-    void force_set(T* other);
+  //! Special optimization for use by ProcessState (and nobody else).
+  void force_set(T* other);
 
-    // Reset
+  // Reset
 
-    void clear();
+  void clear();
 
-    // Accessors
+  // Accessors
 
-    inline T&       operator* () const     { return *m_ptr; }
-    inline T*       operator-> () const    { return m_ptr;  }
-    inline T*       get() const            { return m_ptr; }
-    inline explicit operator bool () const { return m_ptr != nullptr; }
+  inline T& operator*() const { return *m_ptr; }
+  inline T* operator->() const { return m_ptr; }
+  inline T* get() const { return m_ptr; }
+  inline explicit operator bool() const { return m_ptr != nullptr; }
 
-    // Operators
+  // Operators
 
-    COMPARE(==)
-    COMPARE(!=)
-    COMPARE(>)
-    COMPARE(<)
-    COMPARE(<=)
-    COMPARE(>=)
+  COMPARE(==)
+  COMPARE(!=)
+  COMPARE(>)
+  COMPARE(<)
+  COMPARE(<=)
+  COMPARE(>=)
 
 private:    
     template<typename Y> friend class sp;
@@ -230,7 +236,7 @@ template<typename T>
 void sp<T>::clear() {
     if (m_ptr) {
         m_ptr->decStrong(this);
-        m_ptr = 0;
+        m_ptr = nullptr;
     }
 }
 

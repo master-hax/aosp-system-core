@@ -47,15 +47,14 @@ public:
     void update(int32_t ignoreDepth=1, pid_t tid=BACKTRACE_CURRENT_THREAD);
 
     // Dump a stack trace to the log using the supplied logtag.
-    void log(const char* logtag,
-             android_LogPriority priority = ANDROID_LOG_DEBUG,
-             const char* prefix = 0) const;
+    void log(const char* logtag, android_LogPriority priority = ANDROID_LOG_DEBUG,
+             const char* prefix = nullptr) const;
 
     // Dump a stack trace to the specified file descriptor.
-    void dump(int fd, int indent = 0, const char* prefix = 0) const;
+    void dump(int fd, int indent = 0, const char* prefix = nullptr) const;
 
     // Return a string (possibly very long) containing the complete stack trace.
-    String8 toString(const char* prefix = 0) const;
+    String8 toString(const char* prefix = nullptr) const;
 
     // Dump a serialized representation of the stack trace to the specified printer.
     void print(Printer& printer) const;

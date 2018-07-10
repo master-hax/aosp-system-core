@@ -157,22 +157,22 @@ protected:
     virtual int             do_compare(const void* lhs, const void* rhs) const = 0;
 
 private:
-            ssize_t         _indexOrderOf(const void* item, size_t* order = 0) const;
+  ssize_t _indexOrderOf(const void* item, size_t* order = nullptr) const;
 
-            // these are made private, because they can't be used on a SortedVector
-            // (they don't have an implementation either)
-            ssize_t         add();
-            void            pop();
-            void            push();
-            void            push(const void* item);
-            ssize_t         insertVectorAt(const VectorImpl& vector, size_t index);
-            ssize_t         appendVector(const VectorImpl& vector);
-            ssize_t         insertArrayAt(const void* array, size_t index, size_t length);
-            ssize_t         appendArray(const void* array, size_t length);
-            ssize_t         insertAt(size_t where, size_t numItems = 1);
-            ssize_t         insertAt(const void* item, size_t where, size_t numItems = 1);
-            ssize_t         replaceAt(size_t index);
-            ssize_t         replaceAt(const void* item, size_t index);
+  // these are made private, because they can't be used on a SortedVector
+  // (they don't have an implementation either)
+  ssize_t add();
+  void pop();
+  void push();
+  void push(const void* item);
+  ssize_t insertVectorAt(const VectorImpl& vector, size_t index);
+  ssize_t appendVector(const VectorImpl& vector);
+  ssize_t insertArrayAt(const void* array, size_t index, size_t length);
+  ssize_t appendArray(const void* array, size_t length);
+  ssize_t insertAt(size_t where, size_t numItems = 1);
+  ssize_t insertAt(const void* item, size_t where, size_t numItems = 1);
+  ssize_t replaceAt(size_t index);
+  ssize_t replaceAt(const void* item, size_t index);
 };
 
 }  // namespace android
