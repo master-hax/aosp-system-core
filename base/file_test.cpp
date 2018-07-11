@@ -127,6 +127,32 @@ TEST(file, RemoveFileIfExist) {
   ASSERT_FALSE(android::base::RemoveFileIfExists(td.path));
   ASSERT_FALSE(android::base::RemoveFileIfExists(td.path, &err));
   ASSERT_EQ("is not a regular or symbol link file", err);
+
+  // ENOTDIR  -- use file as directory
+  TemporaryFile tf1;
+  close(tf1.fd);
+  tf1.fd = -1;
+  std::string file_name(tf1.path);
+  file_name.append("/abc");
+  ASSERT_TRUE(android::base::RemoveFileIfExists(file_name, &err));
+
+  // EACCES -- one of the directories in the path has no search permission
+#if !defined(_WIN32)
+  // superuser can bypass permission restrictions, so skip this
+  if (getuid() != 0) {
+    TemporaryDir tdir;
+    TemporaryFile tfile(std::string(tdir.path));
+    close(tfile.fd);
+    tfile.fd = -1;
+
+    // remove dir's search permission
+    ASSERT_TRUE(chmod(tdir.path, S_IRUSR | S_IWUSR) == 0);
+    ASSERT_FALSE(android::base::RemoveFileIfExists(tfile.path, &err));
+    // set dir's search permission
+    ASSERT_TRUE(chmod(tdir.path, S_IRWXU) == 0);
+    ASSERT_TRUE(android::base::RemoveFileIfExists(tfile.path, &err));
+  }
+#endif
 }
 
 TEST(file, Readlink) {

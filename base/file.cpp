@@ -219,6 +219,11 @@ bool RemoveFileIfExists(const std::string& path, std::string* err) {
       }
       return false;
     }
+  } else if (errno != ENOENT && errno != ENOTDIR) {
+    if (err != nullptr) {
+      *err = strerror(errno);
+    }
+    return false;
   }
   return true;
 }
