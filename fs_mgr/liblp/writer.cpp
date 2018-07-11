@@ -162,7 +162,9 @@ bool FlashPartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_numbe
     return UpdatePartitionTable(fd, metadata, slot_number);
 }
 
-bool UpdatePartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_number) {
+bool UpdatePartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_number,
+                          std::function<bool(int, const void*, size_t)> write_primary,
+                          std::function<bool(int, const void*, size_t)> write_backup) {
     // Before writing geometry and/or logical partition tables, perform some
     // basic checks that the geometry and tables are coherent, and will fit
     // on the given block device.
@@ -196,7 +198,7 @@ bool UpdatePartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_numb
         PERROR << __PRETTY_FUNCTION__ << "lseek failed: offset " << primary_offset;
         return false;
     }
-    if (!android::base::WriteFully(fd, blob.data(), blob.size())) {
+    if (!write_primary(fd, blob.data(), blob.size())) {
         PERROR << __PRETTY_FUNCTION__ << "write " << blob.size() << " bytes failed";
         return false;
     }
@@ -213,7 +215,7 @@ bool UpdatePartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_numb
                << " is within logical partition bounds, sector " << geometry.last_logical_sector;
         return false;
     }
-    if (!android::base::WriteFully(fd, blob.data(), blob.size())) {
+    if (!write_backup(fd, blob.data(), blob.size())) {
         PERROR << __PRETTY_FUNCTION__ << "backup write " << blob.size() << " bytes failed";
         return false;
     }
@@ -238,6 +240,11 @@ bool UpdatePartitionTable(const std::string& block_device, const LpMetadata& met
         return false;
     }
     return UpdatePartitionTable(fd, metadata, slot_number);
+}
+
+bool UpdatePartitionTable(int fd, const LpMetadata& metadata, uint32_t slot_number) {
+    return UpdatePartitionTable(fd, metadata, slot_number, android::base::WriteFully,
+                                android::base::WriteFully);
 }
 
 bool WriteToImageFile(int fd, const LpMetadata& input) {

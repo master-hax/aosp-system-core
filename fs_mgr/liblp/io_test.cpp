@@ -393,3 +393,61 @@ TEST(liblp, ImageFiles) {
     unique_ptr<LpMetadata> imported = ReadFromImageFile(fd);
     ASSERT_NE(imported, nullptr);
 }
+
+// Write garbage instead of the requested bytes, then return false.
+static bool BadWrite(int fd, const void* data, size_t size) {
+    std::unique_ptr<char[]> new_data = std::make_unique<char[]>(size);
+    memset(new_data.get(), 0xe5, size);
+    EXPECT_TRUE(android::base::WriteFully(fd, new_data.get(), size));
+    return false;
+}
+
+// Test that an interrupted flash operation on the "primary" copy of metadata
+// is not fatal.
+TEST(liblp, FlashPrimaryMetadataFailure) {
+    // Initial state.
+    unique_fd fd = CreateFlashedDisk();
+    ASSERT_GE(fd, 0);
+
+    // Read and write it back.
+    unique_ptr<LpMetadata> imported = ReadMetadata(fd, 0);
+    ASSERT_NE(imported, nullptr);
+    ASSERT_FALSE(UpdatePartitionTable(fd, *imported.get(), 0, BadWrite, android::base::WriteFully));
+
+    // We should still be able to read the backup copy.
+    imported = ReadMetadata(fd, 0);
+    ASSERT_NE(imported, nullptr);
+
+    // Flash again, this time fail the backup copy. We should still be able
+    // to read the primary.
+    ASSERT_FALSE(UpdatePartitionTable(fd, *imported.get(), 0, android::base::WriteFully, BadWrite));
+    imported = ReadMetadata(fd, 0);
+    ASSERT_NE(imported, nullptr);
+}
+
+// Test that an interrupted flash operation on the "backup" copy of metadata
+// is not fatal.
+TEST(liblp, FlashBackupMetadataFailure) {
+    // Initial state.
+    unique_fd fd = CreateFlashedDisk();
+    ASSERT_GE(fd, 0);
+
+    // Read and write it back.
+    unique_ptr<LpMetadata> imported = ReadMetadata(fd, 0);
+    ASSERT_NE(imported, nullptr);
+    ASSERT_FALSE(UpdatePartitionTable(fd, *imported.get(), 0, android::base::WriteFully, BadWrite));
+
+    // We should still be able to read the primary copy.
+    imported = ReadMetadata(fd, 0);
+    ASSERT_NE(imported, nullptr);
+
+    // Flash again, this time fail the primary copy. We should still be able
+    // to read the primary.
+    //
+    // TODO(dvander): This is currently not handled correctly. liblp does not
+    // guarantee both copies are in sync before the update. The ASSERT_EQ
+    // will change to an ASSERT_NE when this is fixed.
+    ASSERT_FALSE(UpdatePartitionTable(fd, *imported.get(), 0, BadWrite, android::base::WriteFully));
+    imported = ReadMetadata(fd, 0);
+    ASSERT_EQ(imported, nullptr);
+}
