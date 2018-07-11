@@ -1,0 +1,9 @@
+Autosubmit+1: Pawin Vongmasa <pawin@google.com>
+Code-Review+2: Daniel Rosenberg <drosen@google.com>
+Build-Cop-Override+1: Pawin Vongmasa <pawin@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Wed, 11 Jul 2018 01:43:20 +0000
+Reviewed-on: https://android-review.googlesource.com/715343
+Project: platform/system/core
+Branch: refs/heads/master
