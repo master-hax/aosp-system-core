@@ -49,7 +49,6 @@
 #include <android-base/test_utils.h>
 #include <android-base/unique_fd.h>
 #include <cutils/atomic.h>
-#include <cutils/threads.h>
 
 #include <gtest/gtest.h>
 

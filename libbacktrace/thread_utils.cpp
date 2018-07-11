@@ -16,11 +16,17 @@
 
 #include "thread_utils.h"
 
-#if !defined(__BIONIC__)
+#if defined(__GLIBC__)
 
-// glibc doesn't implement or export tgkill.
-#include <unistd.h>
+// glibc doesn't implement or export gettid or tgkill.
 #include <sys/syscall.h>
+#include <unistd.h>
+
+#include <android-base/threads.h>
+
+pid_t gettid() {
+  return android::base::GetThreadId();
+}
 
 int tgkill(int tgid, int tid, int sig) {
   return syscall(__NR_tgkill, tgid, tid, sig);

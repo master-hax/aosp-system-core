@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef _LIBBACKTRACE_THREAD_UTILS_H
-#define _LIBBACKTRACE_THREAD_UTILS_H
+#pragma once
 
-#include <unistd.h>
-
-#if !defined(__ANDROID__)
-#include <cutils/threads.h>
-#endif
+#include <signal.h>  // bionic's tgkill
+#include <unistd.h>  // bionic's gettid
 
 __BEGIN_DECLS
 
+#if defined(__GLIBC__)
+pid_t gettid(void);
 int tgkill(int tgid, int tid, int sig);
+#endif
 
 __END_DECLS
-
-#endif /* _LIBBACKTRACE_THREAD_UTILS_H */
