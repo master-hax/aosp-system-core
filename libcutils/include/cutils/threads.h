@@ -94,7 +94,9 @@ static __inline__ void  mutex_unlock(mutex_t*  lock)
 }
 static __inline__ int  mutex_init(mutex_t*  lock)
 {
-    return pthread_mutex_init(lock, NULL);
+    pthread_mutexattr_t attrs;
+    pthread_mutexattr_init(&attrs);
+    return pthread_mutex_init(lock, &attrs);
 }
 static __inline__ void mutex_destroy(mutex_t*  lock)
 {
@@ -108,7 +110,7 @@ typedef struct {
     CRITICAL_SECTION   lock[1];
 } mutex_t;
 
-#define  MUTEX_INITIALIZER  { 0, {{ NULL, 0, 0, NULL, NULL, 0 }} }
+#define  MUTEX_INITIALIZER  { }
 
 static __inline__ void  mutex_lock(mutex_t*  lock)
 {
