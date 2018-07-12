@@ -27,6 +27,11 @@
 
 #ifdef __cplusplus
 extern "C" {
+#else
+#ifndef nullptr
+#define _NULLPTR_UNDEF
+#define nullptr NULL
+#endif
 #endif
 
 /***********************************************************************/
@@ -94,7 +99,7 @@ static __inline__ void  mutex_unlock(mutex_t*  lock)
 }
 static __inline__ int  mutex_init(mutex_t*  lock)
 {
-    return pthread_mutex_init(lock, NULL);
+    return pthread_mutex_init(lock, nullptr);
 }
 static __inline__ void mutex_destroy(mutex_t*  lock)
 {
@@ -143,6 +148,11 @@ static __inline__ void  mutex_destroy(mutex_t*  lock)
 
 #ifdef __cplusplus
 }
+#else
+#ifdef _NULLPTR_UNDEF
+#undef _NULLPTR_UNDEF
+#undef nullptr
+#endif
 #endif
 
 #endif /* _LIBS_CUTILS_THREADS_H */
