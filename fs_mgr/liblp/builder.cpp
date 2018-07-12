@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "liblp/builder.h"
+#include <liblp/builder.h>
 
 #if defined(__linux__)
 #include <linux/fs.h>
@@ -27,8 +27,8 @@
 #include <android-base/unique_fd.h>
 #include <uuid/uuid.h>
 
-#include "liblp/metadata_format.h"
-#include "liblp/reader.h"
+#include <liblp/liblp.h>
+#include "reader.h"
 #include "utility.h"
 
 namespace android {
