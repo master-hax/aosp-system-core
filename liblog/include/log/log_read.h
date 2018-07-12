@@ -37,6 +37,11 @@
 
 #ifdef __cplusplus
 extern "C" {
+#else
+#ifndef nullptr
+#define _NULLPTR_UNDEF
+#define nullptr NULL
+#endif
 #endif
 
 /*
@@ -184,7 +189,7 @@ struct log_msg {
       hdr_size = sizeof(entry_v1);
     }
     if ((hdr_size < sizeof(entry_v1)) || (hdr_size > sizeof(entry))) {
-      return NULL;
+      return nullptr;
     }
     return reinterpret_cast<char*>(buf) + hdr_size;
   }
@@ -272,6 +277,11 @@ struct logger_list* android_logger_list_open(log_id_t id, int mode,
 
 #ifdef __cplusplus
 }
+#else
+#ifdef _NULLPTR_UNDEF
+#undef _NULLPTR_UNDEF
+#undef nullptr
+#endif
 #endif
 
 #endif /* _LIBS_LOG_LOG_H */
