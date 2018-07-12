@@ -182,11 +182,6 @@ error:
 
 int ashmem_set_prot_region(int fd, int prot)
 {
-    int ret = __ashmem_is_ashmem(fd, 1);
-    if (ret < 0) {
-        return ret;
-    }
-
     return TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot));
 }
 
@@ -194,11 +189,6 @@ int ashmem_pin_region(int fd, size_t offset, size_t len)
 {
     // TODO: should LP64 reject too-large offset/len?
     ashmem_pin pin = { static_cast<uint32_t>(offset), static_cast<uint32_t>(len) };
-
-    int ret = __ashmem_is_ashmem(fd, 1);
-    if (ret < 0) {
-        return ret;
-    }
 
     return TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_PIN, &pin));
 }
@@ -208,20 +198,10 @@ int ashmem_unpin_region(int fd, size_t offset, size_t len)
     // TODO: should LP64 reject too-large offset/len?
     ashmem_pin pin = { static_cast<uint32_t>(offset), static_cast<uint32_t>(len) };
 
-    int ret = __ashmem_is_ashmem(fd, 1);
-    if (ret < 0) {
-        return ret;
-    }
-
     return TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_UNPIN, &pin));
 }
 
 int ashmem_get_size_region(int fd)
 {
-    int ret = __ashmem_is_ashmem(fd, 1);
-    if (ret < 0) {
-        return ret;
-    }
-
     return TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL));
 }
