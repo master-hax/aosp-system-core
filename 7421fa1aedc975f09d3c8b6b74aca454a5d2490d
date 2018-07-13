@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21afa282_34738e34",
+        "filename": "init/firmware_handler.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-07-13T22:39:13Z",
+      "side": 1,
+      "message": "I\u0027m not enamored by making a global here, but passing this to every caller of HandleFirmwareEvent seems bad and creating a class out of this seems overkill, so here we are.",
+      "revId": "7421fa1aedc975f09d3c8b6b74aca454a5d2490d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32865111_7436d9db",
+        "filename": "init/ueventd_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-07-13T22:39:13Z",
+      "side": 1,
+      "message": "Before submitting, I want to add tests for this function too, seeing as how it\u0027s super clean at the moment.  Strings as input and essentially strings as the output.",
+      "revId": "7421fa1aedc975f09d3c8b6b74aca454a5d2490d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
