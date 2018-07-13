@@ -1468,9 +1468,20 @@ int adb_commandline(int argc, const char** argv) {
 
     adb_set_socket_spec(server_socket_str);
 
-    // If none of -d, -e, or -s were specified, try $ANDROID_SERIAL.
-    if (transport_type == kTransportAny && serial == nullptr) {
+    // If none of -d, -e, -s, or -t were specified, try $ANDROID_SERIAL/ADB_TRANSPORT_ID
+    if (transport_type == kTransportAny && transport_id == 0 && serial == nullptr) {
         serial = getenv("ANDROID_SERIAL");
+        if (serial == nullptr) {
+            const char* transport_env = getenv("ADB_TRANSPORT_ID");
+            char* end = nullptr;
+            if (transport_env != nullptr) {
+                transport_id = strtoll(transport_env, &end, 10);
+                if (*end != '\0') {
+                    return syntax_error(
+                            "invalid transport id (from environment variable ADB_TRANSPORT_ID)");
+                }
+            }
+        }
     }
 
     adb_set_transport(transport_type, serial, transport_id);
