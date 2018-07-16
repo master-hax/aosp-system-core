@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8247d9b_dfa03f1c",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-16T16:00:10Z",
+      "side": 1,
+      "message": "this can be inlined into the sole remaining caller and the dead `fatal` code removed.\n\nor did you want\n\n  static int __ashmem_check_failure(int fd, int result) {\n    if (result \u003d\u003d -1 \u0026\u0026 errno \u003d\u003d ENOTTY) __ashmem_is_ashmem(fd, 1);\n  }\n\nand then the modified functions say\n\n  int ashmem_set_prot_region(int fd, int prot) {\n    return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot)));\n  }\n\nto fix one of the TODOs in your checkin comment?",
+      "range": {
+        "startLine": 88,
+        "startChar": 11,
+        "endLine": 88,
+        "endChar": 29
+      },
+      "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
