@@ -22,6 +22,30 @@
       "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20737bec_e3b108cc",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-07-16T20:02:15Z",
+      "side": 1,
+      "message": "Hi Elliott,\nYes, I was thinking exactly of ENOTTY to handle one of the TODO items.\n\nI think your suggestion of keeping the fatal code and then calling __ashmem_is_ashmem is also great, incase an ENOTTY is returned. I will take this approach and make the change and run some tests. Thanks!",
+      "parentUuid": "b8247d9b_dfa03f1c",
+      "range": {
+        "startLine": 88,
+        "startChar": 11,
+        "endLine": 88,
+        "endChar": 29
+      },
+      "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
