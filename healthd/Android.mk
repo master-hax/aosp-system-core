@@ -7,7 +7,7 @@ LOCAL_SRC_FILES := BatteryMonitor.cpp
 LOCAL_MODULE := libbatterymonitor
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/include
-LOCAL_STATIC_LIBRARIES := libutils libbase libbinder
+LOCAL_STATIC_LIBRARIES := libutils libbase
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
