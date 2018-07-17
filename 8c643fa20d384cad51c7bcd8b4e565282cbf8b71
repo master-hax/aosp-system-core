@@ -69,6 +69,30 @@
       "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0fdfe54f_0691cbbd",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-07-17T20:33:47Z",
+      "side": 1,
+      "message": "Good point, that may be worth fixing. But I think may be in a different patch? The reason I say this is I\u0027ve already done a lot of testing with current patch. But if you want, feel free to post it.",
+      "parentUuid": "fc6b64ec_4fb04575",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 26
+      },
+      "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
