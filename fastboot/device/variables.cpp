@@ -26,6 +26,12 @@
 #include "fastboot_device.h"
 #include "flashing.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::BoolResult;
+using ::android::hardware::boot::V1_0::Slot;
+
+#define MAX_DOWNLOAD_SIZE_DEFAULT 0x20000000
+
 std::string get_version() {
     return ".4";
 }
@@ -51,19 +57,24 @@ std::string get_secure() {
 }
 
 std::string get_current_slot(FastbootDevice* device) {
-    return "";
+    std::string suffix;
+    auto cb = [&suffix](hidl_string s) { suffix = s; };
+    device->get_boot_control()->getSuffix(device->get_boot_control()->getCurrentSlot(), cb);
+    return suffix.size() == 2 ? suffix.substr(1) : suffix;
 }
 
 std::string get_slot_count(FastbootDevice* device) {
-    return "0";
+    return std::to_string(device->get_boot_control()->getNumberSlots());
 }
 
 std::string get_slot_successful(FastbootDevice* device, const std::vector<std::string>& args) {
-    return "yes";
+    Slot slot = std::stoi(getArg(args));
+    return device->get_boot_control()->isSlotMarkedSuccessful(slot) == BoolResult::TRUE ? "yes"
+                                                                                        : "no";
 }
 
 std::string get_max_download_size(FastbootDevice* device) {
-    return "0x20000000";
+    return std::to_string(MAX_DOWNLOAD_SIZE_DEFAULT);
 }
 
 std::string get_unlocked() {

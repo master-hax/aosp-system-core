@@ -30,6 +30,11 @@
 #include "fastboot_device.h"
 #include "flashing.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::BoolResult;
+using ::android::hardware::boot::V1_0::CommandResult;
+using ::android::hardware::boot::V1_0::Slot;
+
 void getvar_handler(FastbootDevice* device, const std::vector<std::string>& args,
                     status_cb_t status_cb) {
     auto result = device->get_variable(getArg(args), getSubArgs(args));
@@ -84,6 +89,18 @@ void flash_handler(FastbootDevice* device, const std::vector<std::string>& args,
 
 void set_active_handler(FastbootDevice* device, const std::vector<std::string>& args,
                         status_cb_t status_cb) {
+    std::string arg = getArg(args);
+    if (arg.size() != 1) {
+        status_cb(FastbootResult::FAIL, "Invalid slot");
+        return;
+    }
+    Slot slot = arg[0] - 'a';
+    if (slot >= device->get_boot_control()->getNumberSlots()) {
+        status_cb(FastbootResult::FAIL, "Slot out of range");
+        return;
+    }
+    auto cb = [](CommandResult error) {};
+    device->get_boot_control()->setActiveBootSlot(slot, cb);
     status_cb(FastbootResult::OKAY, "");
 }
 

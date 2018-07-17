@@ -18,6 +18,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <boot/BootControl.h>
 
 #include "constants.h"
 #include "flashing.h"
@@ -27,6 +28,8 @@ namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
+      boot_control_module(
+              android::hardware::boot::V1_0::implementation::HIDL_FETCH_IBootControl("")),
       command_map({
               {std::string(FB_CMD_GETVAR), std::bind(getvar_handler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_ERASE), std::bind(erase_handler, sph::_1, sph::_2, sph::_3)},
@@ -60,6 +63,10 @@ FastbootDevice::FastbootDevice()
 
 FastbootDevice::~FastbootDevice() {
     close_device();
+}
+
+sp<IBootControl> FastbootDevice::get_boot_control() {
+    return boot_control_module;
 }
 
 void FastbootDevice::close_device() {

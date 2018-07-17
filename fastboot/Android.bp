@@ -51,6 +51,7 @@ cc_binary {
         "libext4_utils",
         "libsparse",
         "liblog",
+        "android.hardware.boot@1.0",
         "libbootloader_message",
         "libhardware",
         "libhidltransport",
@@ -60,6 +61,10 @@ cc_binary {
         "libutils",
         "libcutils",
         "libfs_mgr",
+    ],
+
+    static_libs: [
+        "android.hardware.boot@1.0-impl",
     ],
 
     runtime_libs: [
