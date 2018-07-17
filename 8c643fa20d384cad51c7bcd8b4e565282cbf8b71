@@ -117,6 +117,30 @@
       "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "081b9a8b_5eff19b5",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-07-17T20:38:57Z",
+      "side": 1,
+      "message": "Yes I though the clean up could be done in a later patch so that I don\u0027t have to run tests all over again.\n\nBut actually I\u0027ll clean that up too based on Dan\u0027s suggestion and retest, no problem. Fyi, I\u0027ll post updated patch in ~1 hour.  thanks!",
+      "parentUuid": "d43de58a_b4dabb24",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 26
+      },
+      "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
