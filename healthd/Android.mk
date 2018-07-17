@@ -29,8 +29,11 @@ LOCAL_MODULE := libhealthd_draw
 
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 LOCAL_STATIC_LIBRARIES := \
-	libminui \
-	libbase
+    libminui \
+    libadf \
+    libdrm \
+    libsync_recovery \
+    libbase
 LOCAL_SRC_FILES := healthd_draw.cpp
 
 ifneq ($(TARGET_HEALTHD_DRAW_SPLIT_SCREEN),)
@@ -69,6 +72,9 @@ LOCAL_EXPORT_C_INCLUDE_DIRS := \
 
 LOCAL_STATIC_LIBRARIES := \
     libminui \
+    libadf \
+    libdrm \
+    libsync_recovery \
     libpng \
     libz \
     libutils \
@@ -127,6 +133,9 @@ LOCAL_STATIC_LIBRARIES := \
 ifneq ($(strip $(LOCAL_CHARGER_NO_UI)),true)
 LOCAL_STATIC_LIBRARIES += \
     libminui \
+    libadf \
+    libdrm \
+    libsync_recovery \
     libpng \
     libz \
 
