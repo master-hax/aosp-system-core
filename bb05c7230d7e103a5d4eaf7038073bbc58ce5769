@@ -16,6 +16,24 @@
       "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c2c9779_4eef4d99",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-07-17T21:45:31Z",
+      "side": 1,
+      "message": "Damn I\u0027ve been editing kernel sources since forever. I\u0027ll have to get a strategy for managing the spaces/tabs for userspace changes. I\u0027ll put it back on the same line though, I don\u0027t mind",
+      "parentUuid": "e5459c6a_d513d2f0",
+      "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
