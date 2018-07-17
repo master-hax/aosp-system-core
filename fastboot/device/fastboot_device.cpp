@@ -23,10 +23,13 @@
 #include "flashing.h"
 #include "usb_client.h"
 
+#include <android/hardware/boot/1.0/IBootControl.h>
+
 namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
+      boot_control_module(IBootControl::getService()),
       command_map({
               {std::string(FB_CMD_GETVAR), std::bind(getvar_handler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_ERASE), std::bind(erase_handler, sph::_1, sph::_2, sph::_3)},
@@ -60,6 +63,10 @@ FastbootDevice::FastbootDevice()
 
 FastbootDevice::~FastbootDevice() {
     close_device();
+}
+
+sp<IBootControl> FastbootDevice::get_boot_control() {
+    return boot_control_module;
 }
 
 void FastbootDevice::close_device() {
