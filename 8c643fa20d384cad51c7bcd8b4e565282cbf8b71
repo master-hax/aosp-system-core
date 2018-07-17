@@ -46,6 +46,29 @@
       "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc6b64ec_4fb04575",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-07-17T20:16:47Z",
+      "side": 1,
+      "message": "Nit: fstat never fails with EINTR.",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 93,
+        "endChar": 26
+      },
+      "revId": "8c643fa20d384cad51c7bcd8b4e565282cbf8b71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
