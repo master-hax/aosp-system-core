@@ -92,6 +92,7 @@ bool WriteStringToFile(const std::string& content, const std::string& path,
 #endif
 
 bool ReadFully(int fd, void* data, size_t byte_count);
+bool WriteFully(int fd, const void* data, size_t byte_count);
 
 // Reads `byte_count` bytes from the file descriptor at the specified offset.
 // Returns false if there was an IO error or EOF was reached before reading `byte_count` bytes.
@@ -102,8 +103,10 @@ bool ReadFully(int fd, void* data, size_t byte_count);
 // same function, but concurrently seeking or reading incrementally can lead to unexpected
 // behavior.
 bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off64_t offset);
+bool WriteFullyAtOffset(int fd, const void* data, size_t byte_count, off64_t offset);
 
-bool WriteFully(int fd, const void* data, size_t byte_count);
+// Flush the contents of fd.
+bool SyncFile(int fd);
 
 bool RemoveFileIfExists(const std::string& path, std::string* err = nullptr);
 
