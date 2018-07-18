@@ -52,6 +52,24 @@
       "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7dd57dc_e2ffa54f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-07-18T01:48:02Z",
+      "side": 1,
+      "message": "I didn\u0027t use --no-verify. I just did:\ngit push aosp HEAD:refs/for/master from system/core/\n\nDo you normally use another method to upload CLs?",
+      "parentUuid": "4c2c9779_4eef4d99",
+      "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
