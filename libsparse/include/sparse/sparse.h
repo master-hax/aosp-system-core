@@ -307,6 +307,16 @@ struct sparse_file *sparse_file_import_buf(char* buf, bool verbose, bool crc);
  */
 struct sparse_file *sparse_file_import_auto(int fd, bool crc, bool verbose);
 
+/**
+ * sparse_file_read_into - read a normal file as sparse_file_import_auto
+ * would, but writing blocks at a specific offset.
+ *
+ * @s - sparse file cookie
+ * @fd - file descriptor to read from.
+ * @start_block - starting block at which to write blocks to
+ */
+int sparse_file_read_into(struct sparse_file* s, int fd, unsigned int start_block);
+
 /** sparse_file_resparse - rechunk an existing sparse file into smaller files
  *
  * @in_s - sparse file cookie of the existing sparse file

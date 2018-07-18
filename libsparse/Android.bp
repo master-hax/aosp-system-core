@@ -13,7 +13,7 @@ cc_library {
         "sparse_err.cpp",
         "sparse_read.cpp",
     ],
-    cflags: ["-Werror"],
+    cflags: ["-Werror", "-O0", "-g3"],
     local_include_dirs: ["include"],
     export_include_dirs: ["include"],
     shared_libs: [
@@ -40,7 +40,7 @@ cc_binary {
         "libbase",
     ],
 
-    cflags: ["-Werror"],
+    cflags: ["-Werror", "-O0", "-g3"],
 }
 
 cc_binary {

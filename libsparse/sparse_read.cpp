@@ -410,10 +410,10 @@ static int sparse_file_read_sparse(struct sparse_file* s, SparseFileSource* sour
   return 0;
 }
 
-static int sparse_file_read_normal(struct sparse_file* s, int fd) {
+int sparse_file_read_into(struct sparse_file* s, int fd, unsigned int start_block) {
   int ret;
   uint32_t* buf = (uint32_t*)malloc(s->block_size);
-  unsigned int block = 0;
+  unsigned int block = start_block;
   int64_t remain = s->len;
   int64_t offset = 0;
   unsigned int to_read;
@@ -470,7 +470,7 @@ int sparse_file_read(struct sparse_file* s, int fd, bool sparse, bool crc) {
     SparseFileFdSource source(fd);
     return sparse_file_read_sparse(s, &source, crc);
   } else {
-    return sparse_file_read_normal(s, fd);
+    return sparse_file_read_into(s, fd, 0);
   }
 }
 
@@ -567,7 +567,7 @@ struct sparse_file* sparse_file_import_auto(int fd, bool crc, bool verbose) {
     return NULL;
   }
 
-  ret = sparse_file_read_normal(s, fd);
+  ret = sparse_file_read_into(s, fd, 0);
   if (ret < 0) {
     sparse_file_destroy(s);
     return NULL;
