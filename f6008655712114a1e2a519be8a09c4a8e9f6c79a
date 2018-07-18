@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0fc4814f_f300d059",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-07-18T18:38:23Z",
+      "side": 1,
+      "message": "Do we have matching spec for the slot suffix? I know some device is using characters other than \u0027a\u0027 and \u0027b\u0027.",
+      "range": {
+        "startLine": 97,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 28
+      },
+      "revId": "f6008655712114a1e2a519be8a09c4a8e9f6c79a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ab7dc58_73c93db4",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-07-18T18:38:23Z",
+      "side": 1,
+      "message": "What\u0027s the expected behavior for non-A/B devices? Will they have boot control HAL or just null?",
+      "range": {
+        "startLine": 98,
+        "startChar": 16,
+        "endLine": 98,
+        "endChar": 42
+      },
+      "revId": "f6008655712114a1e2a519be8a09c4a8e9f6c79a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25683eaa_31da14cb",
+        "filename": "fastboot/device/fastboot_device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-07-18T18:38:23Z",
+      "side": 1,
+      "message": "nit: Move below L20",
+      "revId": "f6008655712114a1e2a519be8a09c4a8e9f6c79a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77bdf4e9_a40971c8",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-07-18T18:38:23Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 7
+      },
+      "revId": "f6008655712114a1e2a519be8a09c4a8e9f6c79a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
