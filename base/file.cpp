@@ -281,22 +281,102 @@ bool ReadFully(int fd, void* data, size_t byte_count) {
   return true;
 }
 
+bool WriteFully(int fd, const void* data, size_t byte_count) {
+  const uint8_t* p = reinterpret_cast<const uint8_t*>(data);
+  size_t remaining = byte_count;
+  while (remaining > 0) {
+    ssize_t n = TEMP_FAILURE_RETRY(write(fd, p, remaining));
+    if (n == -1) return false;
+    p += n;
+    remaining -= n;
+  }
+  return true;
+}
+
 #if defined(_WIN32)
-// Windows implementation of pread. Note that this DOES move the file descriptors read position,
-// but it does so atomically.
+// RAII wrapper for an event object to allow asynchronous I/O to correctly signal completion.
+class ScopedEvent {
+ public:
+  ScopedEvent() {
+    handle_ = CreateEventA(/*lpEventAttributes*/ nullptr,
+                           /*bManualReset*/ true,
+                           /*bInitialState*/ false,
+                           /*lpName*/ nullptr);
+  }
+
+  ~ScopedEvent() { CloseHandle(handle_); }
+
+  HANDLE handle() { return handle_; }
+
+ private:
+  HANDLE handle_;
+};
+
+// Windows implementation of pread/pwrite. Note that these DO move the file descriptor's read/write
+// position, but do so atomically.
 static ssize_t pread(int fd, void* data, size_t byte_count, off64_t offset) {
-  DWORD bytes_read;
-  OVERLAPPED overlapped;
-  memset(&overlapped, 0, sizeof(OVERLAPPED));
+  ScopedEvent event;
+  if (event.handle() == INVALID_HANDLE_VALUE) {
+    errno = EIO;
+    return static_cast<ssize_t>(-1);
+  }
+
+  auto handle = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
+  DWORD bytes_read = 0;
+  OVERLAPPED overlapped = {};
   overlapped.Offset = static_cast<DWORD>(offset);
   overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
-  if (!ReadFile(reinterpret_cast<HANDLE>(_get_osfhandle(fd)), data, static_cast<DWORD>(byte_count),
-                &bytes_read, &overlapped)) {
-    // In case someone tries to read errno (since this is masquerading as a POSIX call)
-    errno = EIO;
-    return -1;
+  overlapped.hEvent = event.handle();
+  if (!ReadFile(handle, data, static_cast<DWORD>(byte_count), &bytes_read, &overlapped)) {
+    // If the read failed with other than ERROR_IO_PENDING, return an error.
+    // ERROR_IO_PENDING signals the write was begun asynchronously.
+    // Block until the asynchronous operation has finished or fails, and return
+    // result accordingly.
+    if (::GetLastError() != ERROR_IO_PENDING ||
+        !::GetOverlappedResult(handle, &overlapped, &bytes_read, TRUE)) {
+      // In case someone tries to read errno (since this is masquerading as a POSIX call).
+      errno = EIO;
+      return static_cast<ssize_t>(-1);
+    }
   }
   return static_cast<ssize_t>(bytes_read);
+}
+
+static ssize_t pwrite(int fd, const void* buf, size_t count, off64_t offset) {
+  ScopedEvent event;
+  if (event.handle() == INVALID_HANDLE_VALUE) {
+    errno = EIO;
+    return static_cast<ssize_t>(-1);
+  }
+
+  auto handle = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
+  DWORD bytes_written = 0;
+  OVERLAPPED overlapped = {};
+  overlapped.Offset = static_cast<DWORD>(offset);
+  overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+  overlapped.hEvent = event.handle();
+  if (!::WriteFile(handle, buf, count, &bytes_written, &overlapped)) {
+    // If the write failed with other than ERROR_IO_PENDING, return an error.
+    // ERROR_IO_PENDING signals the write was begun asynchronously.
+    // Block until the asynchronous operation has finished or fails, and return
+    // result accordingly.
+    if (::GetLastError() != ERROR_IO_PENDING ||
+        !::GetOverlappedResult(handle, &overlapped, &bytes_written, TRUE)) {
+      // In case someone tries to read errno (since this is masquerading as a POSIX call).
+      errno = EIO;
+      return static_cast<ssize_t>(-1);
+    }
+  }
+  return static_cast<ssize_t>(bytes_written);
+}
+
+static bool fsync(int fd) {
+  auto handle = reinterpret_cast<HANDLE>(_get_osfhandle(fd));
+  if (handle != INVALID_HANDLE_VALUE && ::FlushFileBuffers(handle)) {
+    return 0;
+  }
+  errno = EINVAL;
+  return -1;
 }
 #endif
 
@@ -312,16 +392,25 @@ bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off64_t offset) {
   return true;
 }
 
-bool WriteFully(int fd, const void* data, size_t byte_count) {
+bool WriteFullyAtOffset(int fd, const void* data, size_t byte_count, off64_t offset) {
   const uint8_t* p = reinterpret_cast<const uint8_t*>(data);
   size_t remaining = byte_count;
   while (remaining > 0) {
-    ssize_t n = TEMP_FAILURE_RETRY(write(fd, p, remaining));
+    ssize_t n = TEMP_FAILURE_RETRY(pwrite(fd, p, remaining, offset));
     if (n == -1) return false;
     p += n;
     remaining -= n;
   }
   return true;
+}
+
+bool SyncFile(int fd) {
+#ifdef __linux__
+  int rc = TEMP_FAILURE_RETRY(fdatasync(fd));
+#else
+  int rc = TEMP_FAILURE_RETRY(fsync(fd));
+#endif
+  return (rc == 0);
 }
 
 bool RemoveFileIfExists(const std::string& path, std::string* err) {
