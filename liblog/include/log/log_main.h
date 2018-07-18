@@ -121,6 +121,17 @@ __BEGIN_DECLS
 #endif
 
 /*
+ * Use __VA_ARGS__ if running a static analyzer,
+ * to avoid warnings of unused variables in __VA_ARGS__.
+ */
+
+#if __clang_analyzer__
+#define __FAKE_USE_VA_ARGS(...) ((void)(__VA_ARGS__))
+#else
+#define __FAKE_USE_VA_ARGS(...) ((void)(0))
+#endif
+
+/*
  * Versions of LOG_ALWAYS_FATAL_IF and LOG_ALWAYS_FATAL that
  * are stripped out of release builds.
  */
@@ -128,10 +139,10 @@ __BEGIN_DECLS
 #if LOG_NDEBUG
 
 #ifndef LOG_FATAL_IF
-#define LOG_FATAL_IF(cond, ...) ((void)0)
+#define LOG_FATAL_IF(cond, ...) __FAKE_USE_VA_ARGS(__VA_ARGS__)
 #endif
 #ifndef LOG_FATAL
-#define LOG_FATAL(...) ((void)0)
+#define LOG_FATAL(...) __FAKE_USE_VA_ARGS(__VA_ARGS__)
 #endif
 
 #else
@@ -175,11 +186,12 @@ __BEGIN_DECLS
 #ifndef ALOGV
 #define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #if LOG_NDEBUG
-#define ALOGV(...)          \
-  do {                      \
-    if (false) {            \
-      __ALOGV(__VA_ARGS__); \
-    }                       \
+#define ALOGV(...)                   \
+  do {                               \
+    __FAKE_USE_VA_ARGS(__VA_ARGS__); \
+    if (false) {                     \
+      __ALOGV(__VA_ARGS__);          \
+    }                                \
   } while (false)
 #else
 #define ALOGV(...) __ALOGV(__VA_ARGS__)
@@ -188,7 +200,7 @@ __BEGIN_DECLS
 
 #ifndef ALOGV_IF
 #if LOG_NDEBUG
-#define ALOGV_IF(cond, ...) ((void)0)
+#define ALOGV_IF(cond, ...) __FAKE_USE_VA_ARGS(__VA_ARGS__)
 #else
 #define ALOGV_IF(cond, ...)                                                  \
   ((__predict_false(cond)) ? ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
