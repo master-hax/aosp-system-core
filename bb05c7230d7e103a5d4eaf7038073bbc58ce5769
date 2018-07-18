@@ -34,6 +34,24 @@
       "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc48871c_4862119c",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-18T00:48:30Z",
+      "side": 1,
+      "message": "clang-format should have fixed this when you uploaded. did you use --no-verify?",
+      "parentUuid": "4c2c9779_4eef4d99",
+      "revId": "bb05c7230d7e103a5d4eaf7038073bbc58ce5769",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
