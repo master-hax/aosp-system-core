@@ -281,13 +281,24 @@ bool ReadFully(int fd, void* data, size_t byte_count) {
   return true;
 }
 
+bool WriteFully(int fd, const void* data, size_t byte_count) {
+  const uint8_t* p = reinterpret_cast<const uint8_t*>(data);
+  size_t remaining = byte_count;
+  while (remaining > 0) {
+    ssize_t n = TEMP_FAILURE_RETRY(write(fd, p, remaining));
+    if (n == -1) return false;
+    p += n;
+    remaining -= n;
+  }
+  return true;
+}
+
 #if defined(_WIN32)
-// Windows implementation of pread. Note that this DOES move the file descriptors read position,
-// but it does so atomically.
+// Windows implementation of pread/pwrite. Note that these DO move the file descriptor's read/write
+// position, but do so atomically.
 static ssize_t pread(int fd, void* data, size_t byte_count, off64_t offset) {
   DWORD bytes_read;
-  OVERLAPPED overlapped;
-  memset(&overlapped, 0, sizeof(OVERLAPPED));
+  OVERLAPPED overlapped = {};
   overlapped.Offset = static_cast<DWORD>(offset);
   overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
   if (!ReadFile(reinterpret_cast<HANDLE>(_get_osfhandle(fd)), data, static_cast<DWORD>(byte_count),
@@ -297,6 +308,52 @@ static ssize_t pread(int fd, void* data, size_t byte_count, off64_t offset) {
     return -1;
   }
   return static_cast<ssize_t>(bytes_read);
+}
+
+static ssize_t pwrite(int fd, const void* buf, size_t count, off64_t offset) {
+  if (fd < 0) {
+    errno = EINVAL;
+    return -1;
+  }
+  auto handle = (HANDLE)_get_osfhandle(fd);
+  if (handle == INVALID_HANDLE_VALUE) {
+    errno = EINVAL;
+    return -1;
+  }
+
+  OVERLAPPED params = {};
+  params.Offset = static_cast<DWORD>(offset);
+  params.OffsetHigh = static_cast<DWORD>(offset >> 32);
+  DWORD countWritten = 0;
+  if (!::WriteFile(handle, buf, count, &countWritten, &params)) {
+    switch (::GetLastError()) {
+      case ERROR_IO_PENDING:
+        errno = EAGAIN;
+        return -1;
+      default:
+        errno = EINVAL;
+        return -1;
+    }
+  }
+  return static_cast<int64_t>(countWritten);
+}
+
+static bool fsync(int fd) {
+  if (fd < 0) {
+    errno = EINVAL;
+    return -1;
+  }
+  auto handle = (HANDLE)_get_osfhandle(fd);
+  if (handle == INVALID_HANDLE_VALUE) {
+    errno = EINVAL;
+    return -1;
+  }
+  if (::FlushFileBuffers(handle)) {
+    return 0;
+  } else {
+    errno = EINVAL;
+    return -1;
+  }
 }
 #endif
 
@@ -312,16 +369,25 @@ bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off64_t offset) {
   return true;
 }
 
-bool WriteFully(int fd, const void* data, size_t byte_count) {
+bool WriteFullyAtOffset(int fd, const void* data, size_t byte_count, off64_t offset) {
   const uint8_t* p = reinterpret_cast<const uint8_t*>(data);
   size_t remaining = byte_count;
   while (remaining > 0) {
-    ssize_t n = TEMP_FAILURE_RETRY(write(fd, p, remaining));
+    ssize_t n = TEMP_FAILURE_RETRY(pwrite(fd, p, remaining, offset));
     if (n == -1) return false;
     p += n;
     remaining -= n;
   }
   return true;
+}
+
+bool SyncFile(int fd) {
+#ifdef __linux__
+  int rc = TEMP_FAILURE_RETRY(fdatasync(fd));
+#else
+  int rc = TEMP_FAILURE_RETRY(fsync(fd));
+#endif
+  return (rc == 0);
 }
 
 bool RemoveFileIfExists(const std::string& path, std::string* err) {
