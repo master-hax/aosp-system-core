@@ -27,6 +27,7 @@
 
 #include "commands.h"
 #include "transport.h"
+#include "variables.h"
 
 class FastbootDevice;
 
@@ -47,11 +48,14 @@ class FastbootDevice {
     std::vector<char> upload_data;
 
     const std::unordered_map<std::string, command_handler> command_map;
+    const std::unordered_map<std::string, variable_handler> variables_map;
 
   public:
     void close_device();
     int get_block_device(std::string name);
 
+    std::optional<std::string> get_variable(const std::string& var,
+                                            const std::vector<std::string>& args);
     void execute_commands();
 
     inline std::vector<char>& get_download_data() { return download_data; }
