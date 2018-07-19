@@ -27,6 +27,7 @@ namespace sph = std::placeholders;
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
       command_map({
+              {std::string(FB_CMD_GETVAR), std::bind(getvar_handler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_SET_ACTIVE),
                std::bind(set_active_handler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_DOWNLOAD), download_handler},
@@ -38,6 +39,19 @@ FastbootDevice::FastbootDevice()
                std::bind(reboot_fastboot_handler, sph::_1, sph::_3)},
               {std::string(FB_CMD_REBOOT_RECOVERY),
                std::bind(reboot_recovery_handler, sph::_1, sph::_3)},
+      }),
+      variables_map({
+              {std::string(FB_VAR_VERSION), std::bind(get_version)},
+              {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(get_bootloader_version)},
+              {std::string(FB_VAR_VERSION_BASEBAND), std::bind(get_baseband_version)},
+              {std::string(FB_VAR_PRODUCT), std::bind(get_product)},
+              {std::string(FB_VAR_SERIALNO), std::bind(get_serial)},
+              {std::string(FB_VAR_SECURE), std::bind(get_secure)},
+              {std::string(FB_VAR_UNLOCKED), std::bind(get_unlocked)},
+              {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(get_max_download_size, sph::_1)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(get_current_slot, sph::_1)},
+              {std::string(FB_VAR_SLOT_COUNT), std::bind(get_slot_count, sph::_1)},
+              {std::string(FB_VAR_HAS_SLOT), std::bind(get_has_slot, sph::_2)},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
@@ -46,6 +60,14 @@ FastbootDevice::~FastbootDevice() {
 
 void FastbootDevice::close_device() {
     transport->Close();
+}
+
+std::optional<std::string> FastbootDevice::get_variable(const std::string& name,
+                                                        const std::vector<std::string>& args) {
+    if (variables_map.count(name) == 0) {
+        return {};
+    }
+    return variables_map.at(name)(this, args);
 }
 
 void FastbootDevice::execute_commands() {

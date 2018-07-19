@@ -29,6 +29,16 @@
 
 #include "fastboot_device.h"
 
+void getvar_handler(FastbootDevice* device, const std::vector<std::string>& args,
+                    status_cb_t status_cb) {
+    auto result = device->get_variable(getArg(args), getSubArgs(args));
+    if (result) {
+        status_cb(FastbootResult::OKAY, *result);
+    } else {
+        status_cb(FastbootResult::FAIL, "Unknown variable");
+    }
+}
+
 void download_handler(FastbootDevice* device, const std::vector<std::string>& args,
                       status_cb_t status_cb, data_cb_t data_cb) {
     unsigned int size = strtoul(getArg(args).c_str(), nullptr, 16);
