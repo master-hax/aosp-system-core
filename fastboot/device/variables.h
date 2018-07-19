@@ -34,6 +34,7 @@ std::string get_secure();
 std::string get_current_slot(FastbootDevice* device);
 std::string get_slot_count(FastbootDevice* device);
 std::string get_slot_successful(FastbootDevice* device, const std::vector<std::string>& args);
+std::string get_partition_size(FastbootDevice* device, const std::vector<std::string>& args);
 std::string get_max_download_size(FastbootDevice* device);
 std::string get_unlocked();
 std::string get_has_slot(const std::vector<std::string>& args);

@@ -24,6 +24,7 @@
 
 #include <ext4_utils/ext4_utils.h>
 #include "fastboot_device.h"
+#include "flashing.h"
 
 std::string get_version() {
     return ".4";
@@ -72,4 +73,12 @@ std::string get_unlocked() {
 std::string get_has_slot(const std::vector<std::string>& args) {
     std::string part = getArg(args);
     return part == "userdata" ? "no" : "yes";
+}
+
+std::string get_partition_size(FastbootDevice* device, const std::vector<std::string>& args) {
+    int fd = device->get_block_device(getArg(args));
+    if (fd < 0) {
+        return "failed";
+    }
+    return std::to_string(get_block_device_size(fd));
 }

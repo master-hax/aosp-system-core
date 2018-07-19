@@ -41,6 +41,8 @@ using command_handler =
 
 void getvar_handler(FastbootDevice* device, const std::vector<std::string>& args,
                     status_cb_t status_cb);
+void erase_handler(FastbootDevice* device, const std::vector<std::string>& args,
+                   status_cb_t status_cb);
 void download_handler(FastbootDevice* device, const std::vector<std::string>& args,
                       status_cb_t status_cb, data_cb_t data_cb);
 void set_active_handler(FastbootDevice* device, const std::vector<std::string>& args,
