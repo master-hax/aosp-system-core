@@ -20,6 +20,7 @@
 #include <android-base/strings.h>
 
 #include "constants.h"
+#include "flashing.h"
 #include "usb_client.h"
 
 namespace sph = std::placeholders;
@@ -52,6 +53,7 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_CURRENT_SLOT), std::bind(get_current_slot, sph::_1)},
               {std::string(FB_VAR_SLOT_COUNT), std::bind(get_slot_count, sph::_1)},
               {std::string(FB_VAR_HAS_SLOT), std::bind(get_has_slot, sph::_2)},
+              {std::string(FB_VAR_PARTITION_SIZE), get_partition_size},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
@@ -59,7 +61,49 @@ FastbootDevice::~FastbootDevice() {
 }
 
 void FastbootDevice::close_device() {
+    if (flash_thread.valid()) {
+        int ret = flash_thread.get();
+        if (ret < 0) {
+            LOG(ERROR) << "Last flash returned error " << ret;
+        }
+    }
+    for (const auto [name, fd] : block_dev_map) {
+        close(fd);
+    }
+    block_dev_map.clear();
     transport->Close();
+}
+
+int FastbootDevice::get_block_device(std::string name) {
+    if (block_dev_map.count(name) == 0) {
+        int block_fd = get_partition_device(name);
+        if (block_fd > 0) {
+            block_dev_map[name] = block_fd;
+        }
+        return block_fd;
+    }
+    return block_dev_map[name];
+}
+
+int FastbootDevice::flash(std::string name) {
+    if (flash_thread.valid()) {
+        int ret = flash_thread.get();
+        if (ret < 0) {
+            return ret;
+        }
+    }
+    int fd = get_block_device(name);
+    if (fd < 0) {
+        return -errno;
+    } else if (get_download_data().size() == 0) {
+        return -EINVAL;
+    } else if (get_download_data().size() > get_block_device_size(fd)) {
+        return -EOVERFLOW;
+    }
+    flash_thread = std::async([fd, data(std::move(download_data))]() mutable {
+        return flash_block_device(fd, data);
+    });
+    return 0;
 }
 
 std::optional<std::string> FastbootDevice::get_variable(const std::string& name,
