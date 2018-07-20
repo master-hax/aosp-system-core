@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config>
+<!-- All the device getvar variables should be listed here -->
+<getvar>
+	<var key="secure" assert="no|yes"/>
+</getvar>
+
+<!-- All the device partitions should be listed here -->
+<partitions>
+	<part value="userdata" slots="yes" test="yes"/>
+	<part value="system" slots="yes" test="no-writes"/>
+  <part value="important" slots="yes" test="no"/>
+</partitions>
+
+<!-- All the oem commands should be listed here -->
+<oem>
+	<command value="bar" permissions="none">
+		<test value="garbage" expect="fail"/>
+		<test value="goddval" expect="okay" assert="regex"/>
+  </command>
+
+	<command value="bindata" permissions="unlocked">
+		<test value="goodval" expect="data"/>
+  </command>
+</oem>
+<!-- If there is a custom oem checksum command, add it here -->
+<checksum value="oem sha1sum"/>
+</config>
