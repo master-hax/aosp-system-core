@@ -134,7 +134,7 @@ RetCode FastBootDriver::Partitions(std::vector<std::tuple<std::string, uint32_t>
         return ret;
     }
 
-    std::regex reg("partition-size[[:s:]]*:[[:s:]]*([[:w:]]+)[[:s:]]*:[[:s:]]*0x([[:d:]]+)");
+    std::regex reg("partition-size[[:s:]]*:[[:s:]]*([[:w:]]+)[[:s:]]*:[[:s:]]*0x([[:xdigit:]]+)");
     std::smatch sm;
 
     for (auto& s : all) {
@@ -265,7 +265,7 @@ RetCode FastBootDriver::Upload(const std::string& outfile, std::string* response
     RetCode ret;
     int dsize;
     if ((ret = RawCommand(Commands::UPLOAD, response, info, &dsize)) || dsize == 0) {
-        error_ = "Upload request failed";
+        error_ = "Upload request failed: " + error_;
         return ret;
     }
 
