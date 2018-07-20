@@ -39,6 +39,14 @@ namespace fs_mgr {
 
 bool CreateLogicalPartitions(const std::string& block_device);
 
+// Create a block device for a single logical partition, given metadata and
+// the partition name.
+bool CreateLogicalPartition(const std::string& block_device, uint32_t metadata_slot,
+                            const std::string& partition_name);
+
+// Destroy the block device for a logical partition, by name.
+bool DestroyLogicalPartition(const std::string& name);
+
 }  // namespace fs_mgr
 }  // namespace android
 
