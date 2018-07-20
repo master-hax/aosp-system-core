@@ -1,0 +1,26 @@
+cc_binary_host {
+  name: "fuzzy_fastboot",
+
+  srcs: [
+    "main.cpp",
+     "extensions.cpp"
+  ],
+
+  static_libs: [
+    "libfastboot2",
+    "libziparchive",
+    "libsparse",
+    "libutils",
+    "liblog",
+    "libz",
+    "libdiagnose_usb",
+    "libbase",
+    "libcutils",
+    "libgtest",
+    "libgtest_main",
+    "libbase",
+    "libadb_host",
+    "libtinyxml2"
+  ],
+
+}
