@@ -85,6 +85,8 @@ class FastBootDriver {
     RetCode GetVarAll(std::vector<std::string>* response);
     RetCode Powerdown(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
     RetCode Reboot(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+    RetCode RebootBootloader(std::string* response = nullptr,
+                             std::vector<std::string>* info = nullptr);
     RetCode SetActive(const std::string& part, std::string* response = nullptr,
                       std::vector<std::string>* info = nullptr);
     RetCode Upload(const std::string& outfile, std::string* response = nullptr,
@@ -101,15 +103,15 @@ class FastBootDriver {
     RetCode Require(const std::string& var, const std::vector<std::string>& allowed, bool* reqmet,
                     bool invert = false);
 
+    // This allows you to send raw commands, use for non-standard commands like OEM
+    RetCode RawCommand(const std::string& cmd, std::string* response = nullptr,
+                       std::vector<std::string>* info = nullptr, int* dsize = nullptr);
+
     /* HELPERS */
     void SetInfoCallback(std::function<void(std::string&)> info);
     const std::string RCString(RetCode rc);
     std::string Error();
     RetCode WaitForDisconnect();
-
-    // This is temporarily public for engine.cpp
-    RetCode RawCommand(const std::string& cmd, std::string* response = nullptr,
-                       std::vector<std::string>* info = nullptr, int* dsize = nullptr);
 
   protected:
     RetCode DownloadCommand(uint32_t size, std::string* response = nullptr,
@@ -129,6 +131,7 @@ class FastBootDriver {
         static const std::string GET_VAR;
         static const std::string POWERDOWN;
         static const std::string REBOOT;
+        static const std::string REBOOT_BOOTLOADER;
         static const std::string SET_ACTIVE;
         static const std::string UPLOAD;
         static const std::string VERIFY;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,46 +34,54 @@
 #include <string>
 
 #include <bootimg.h>
+#include "engine_actions.h"
 #include "fastboot_driver.h"
 #include "util.h"
-
-#include "constants.h"
 
 class Transport;
 struct sparse_file;
 
-const std::string fb_get_error();
+class Engine {
+  public:
+    Engine(Transport* transport);
+    ~Engine() = default;
 
-//#define FB_COMMAND_SZ (fastboot::FB_COMMAND_SZ)
-//#define FB_RESPONSE_SZ (fastboot::FB_RESPONSE_SZ)
+    bool GetVar(const std::string& key, std::string* val);
+    bool SetActive(const std::string& part);
 
-/* engine.c - high level command queue engine */
+    // Action Queue Interface
+    // Run all the jobs in the queue
+    bool ExecuteQueue();
+    std::string FBError();
 
-void fb_init(fastboot::FastBootDriver& fbi);
+    // Note: no input args are passed by reference, use std::mov as neccesary
+    void QueueFlash(const std::string part, std::vector<char> data);
+    void QueueFlash(const std::string part, int fd, uint32_t sz);
+    void QueueFlash(const std::string part, struct sparse_file* s, uint32_t sz, size_t current,
+                    size_t total);
+    void QueueBoot(std::string msg);
+    void QueueContinue();
+    void QueueErase(const std::string partition);
+    void QueueRequire(const std::string prod, const std::string var,
+                      const std::vector<std::string> options, bool invert = false,
+                      const std::string* cur_prod = nullptr);
+    void QueueDisplay(const std::string var, const std::string msg);
+    void QueueSave(const std::string var, std::string* dest);
+    void QueueReboot();
+    void QueueRebootBootloader(std::string msg);
+    void QueueDownload(const std::string part, std::vector<char> data);
+    void QueueDownload(const std::string part, int fd, uint32_t sz);
+    void QueueUpload(const std::string outfile);
+    void QueueNotice(const std::string msg);
+    void QueueSetActive(const std::string slot);
+    void QueueWaitForDisconnect();
+    // Use for non-standard commands like OEM
+    void QueueRaw(const std::string cmd, const std::string msg);
 
-bool fb_getvar(const std::string& key, std::string* value);
-void fb_queue_flash(const std::string& partition, void* data, uint32_t sz);
-void fb_queue_flash_fd(const std::string& partition, int fd, uint32_t sz);
-void fb_queue_flash_sparse(const std::string& partition, struct sparse_file* s, uint32_t sz,
-                           size_t current, size_t total);
-void fb_queue_erase(const std::string& partition);
-void fb_queue_format(const std::string& partition, int skip_if_not_supported, int32_t max_chunk_sz);
-void fb_queue_require(const std::string& prod, const std::string& var, bool invert, size_t nvalues,
-                      const char** values);
-void fb_queue_display(const std::string& label, const std::string& var);
-void fb_queue_query_save(const std::string& var, char* dest, uint32_t dest_size);
-void fb_queue_reboot(void);
-void fb_queue_command(const std::string& cmd, const std::string& msg);
-void fb_queue_download(const std::string& name, void* data, uint32_t size);
-void fb_queue_download_fd(const std::string& name, int fd, uint32_t sz);
-void fb_queue_upload(const std::string& outfile);
-void fb_queue_notice(const std::string& notice);
-void fb_queue_wait_for_disconnect(void);
-int64_t fb_execute_queue();
-void fb_set_active(const std::string& slot);
-
-/* Current product */
-extern char cur_product[FB_RESPONSE_SZ + 1];
+  protected:
+    fastboot::FastBootDriver fb;
+    std::deque<std::unique_ptr<Action>> jobs;
+};
 
 class FastBootTool {
   public:

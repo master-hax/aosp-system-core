@@ -49,6 +49,7 @@ LOCAL_MODULE_HOST_OS := darwin linux windows
 LOCAL_SRC_FILES := \
     bootimg_utils.cpp \
     engine.cpp \
+		engine_actions.cpp \
     fastboot.cpp \
     fs.cpp \
     socket.cpp \
