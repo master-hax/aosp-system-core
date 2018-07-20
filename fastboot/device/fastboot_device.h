@@ -44,8 +44,12 @@ class FastbootDevice {
   private:
     std::unique_ptr<Transport> transport;
 
+    std::unordered_map<std::string, int> block_dev_map;
+
     std::vector<char> download_data;
     std::vector<char> upload_data;
+
+    std::future<int> flash_thread;
 
     const std::unordered_map<std::string, command_handler> command_map;
     const std::unordered_map<std::string, variable_handler> variables_map;
@@ -56,6 +60,8 @@ class FastbootDevice {
     void ExecuteCommands();
     std::optional<std::string> GetVariable(const std::string& var,
                                             const std::vector<std::string>& args);
+    int GetBlockDevice(std::string name);
+    int Flash(std::string name);
 
     inline std::vector<char>& GetDownloadData() { return download_data; }
 
