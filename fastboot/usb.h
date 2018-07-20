@@ -55,6 +55,7 @@ struct usb_ifc_info {
 class UsbTransport : public Transport {
     // Resets the underlying transport.  Returns 0 on success.
     // This effectively simulates unplugging and replugging
+  public:
     virtual int Reset() = 0;
 };
 
