@@ -93,6 +93,10 @@ RetCode FastBootDriver::Reboot(std::string* response, std::vector<std::string>* 
     return RawCommand(Commands::REBOOT, response, info);
 }
 
+RetCode FastBootDriver::RebootBootloader(std::string* response, std::vector<std::string>* info) {
+    return RawCommand(Commands::REBOOT_BOOTLOADER, response, info);
+}
+
 RetCode FastBootDriver::SetActive(const std::string& part, std::string* response,
                                   std::vector<std::string>* info) {
     return RawCommand(Commands::SET_ACTIVE + part, response, info);
@@ -335,7 +339,8 @@ RetCode FastBootDriver::RawCommand(const std::string& cmd, std::string* response
                                    std::vector<std::string>* info, int* dsize) {
     error_ = "";  // Clear any pending error
     if (cmd.size() > FB_COMMAND_SZ && !disable_checks_) {
-        error_ = "Command length to RawCommand() is too long";
+        error_ = android::base::StringPrintf("Command length to RawCommand() is too long (%zu)",
+                                             cmd.size());
         return BAD_ARG;
     }
 
@@ -424,6 +429,7 @@ const std::string FastBootDriver::Commands::FLASH = "flash:";
 const std::string FastBootDriver::Commands::GET_VAR = "getvar:";
 const std::string FastBootDriver::Commands::POWERDOWN = "powerdown";
 const std::string FastBootDriver::Commands::REBOOT = "reboot";
+const std::string FastBootDriver::Commands::REBOOT_BOOTLOADER = "reboot-bootloader";
 const std::string FastBootDriver::Commands::SET_ACTIVE = "set_active:";
 const std::string FastBootDriver::Commands::UPLOAD = "upload";
 const std::string FastBootDriver::Commands::VERIFY = "verify:";
