@@ -98,6 +98,7 @@ cc_binary {
         "device/fastboot_device.cpp",
         "device/main.cpp",
         "device/usb_client.cpp",
+        "device/variables.cpp",
     ],
 
     shared_libs: [
