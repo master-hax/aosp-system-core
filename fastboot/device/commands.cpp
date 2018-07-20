@@ -29,6 +29,20 @@
 
 #include "fastboot_device.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::BoolResult;
+using ::android::hardware::boot::V1_0::CommandResult;
+using ::android::hardware::boot::V1_0::Slot;
+
+bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    std::vector<std::string> getvar_args(args.begin() + 2, args.end());
+    auto result = device->GetVariable(args[1], getvar_args);
+    if (result) {
+        return device->WriteStatus(FastbootResult::OKAY, *result);
+    }
+    return device->WriteStatus(FastbootResult::FAIL, "Unknown variable");
+}
+
 bool DownloadHandler(FastbootDevice* device, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         return device->WriteStatus(FastbootResult::FAIL, "size argument unspecified");
@@ -51,7 +65,28 @@ bool DownloadHandler(FastbootDevice* device, const std::vector<std::string>& arg
     return device->WriteStatus(FastbootResult::FAIL, "Couldn't download data");
 }
 
-bool SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& /* args */) {
+bool SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    if (args.size() < 1) {
+        return device->WriteStatus(FastbootResult::FAIL, "Missing slot argument");
+    }
+
+    // Slot suffix needs to be between 'a' and 'z'.
+    Slot slot;
+    if (!device->GetSlotNumber(args[0], &slot)) {
+        return device->WriteStatus(FastbootResult::FAIL, "Bad slot suffix");
+    }
+
+    // Non-A/B devices will not have a boot control HAL.
+    auto boot_control_hal = device->boot_control_module();
+    if (!boot_control_hal) {
+        return device->WriteStatus(FastbootResult::FAIL,
+                                   "Cannot set slot: boot control HAL absent");
+    }
+    if (slot >= boot_control_hal->getNumberSlots()) {
+        return device->WriteStatus(FastbootResult::FAIL, "Slot out of range");
+    }
+    auto cb = [](CommandResult /* error */) {};
+    boot_control_hal->setActiveBootSlot(slot, cb);
     return device->WriteStatus(FastbootResult::OKAY, "");
 }
 

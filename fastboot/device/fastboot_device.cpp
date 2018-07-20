@@ -18,23 +18,45 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android/hardware/boot/1.0/IBootControl.h>
 
 #include <algorithm>
 
 #include "constants.h"
 #include "usb_client.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::Slot;
+namespace sph = std::placeholders;
+
 FastbootDevice::FastbootDevice()
     : kCommandMap({
               {FB_CMD_SET_ACTIVE, SetActiveHandler},
               {FB_CMD_DOWNLOAD, DownloadHandler},
+              {FB_CMD_GETVAR, GetVarHandler},
               {FB_CMD_SHUTDOWN, ShutDownHandler},
               {FB_CMD_REBOOT, RebootHandler},
               {FB_CMD_REBOOT_BOOTLOADER, RebootBootloaderHandler},
               {FB_CMD_REBOOT_FASTBOOT, RebootFastbootHandler},
               {FB_CMD_REBOOT_RECOVERY, RebootRecoveryHandler},
       }),
-      transport_(std::make_unique<ClientUsbTransport>()) {}
+      transport_(std::make_unique<ClientUsbTransport>()),
+      boot_control_module_(IBootControl::getService()),
+      variables_map({
+              {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
+              {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(GetBootloaderVersion)},
+              {std::string(FB_VAR_VERSION_BASEBAND), std::bind(GetBasebandVersion)},
+              {std::string(FB_VAR_PRODUCT), std::bind(GetProduct)},
+              {std::string(FB_VAR_SERIALNO), std::bind(GetSerial)},
+              {std::string(FB_VAR_SECURE), std::bind(GetSecure)},
+              {std::string(FB_VAR_UNLOCKED), std::bind(GetUnlocked)},
+              {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(::GetCurrentSlot, sph::_1)},
+              {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
+              {std::string(FB_VAR_HAS_SLOT), GetHasSlot},
+              {std::string(FB_VAR_SLOT_SUCCESSFUL), GetSlotSuccessful},
+              {std::string(FB_VAR_SLOT_UNBOOTABLE), GetSlotUnbootable},
+      }) {}
 
 FastbootDevice::~FastbootDevice() {
     CloseDevice();
@@ -44,9 +66,29 @@ void FastbootDevice::CloseDevice() {
     transport_->Close();
 }
 
+std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
+                                                       const std::vector<std::string>& args) {
+    if (variables_map.count(name) == 0) {
+        return {};
+    }
+    return variables_map.at(name)(this, args);
+}
+
+std::string FastbootDevice::GetCurrentSlot() {
+    // Non-A/B devices must not have boot control HALs.
+    if (!boot_control_module_) {
+        return "";
+    }
+    std::string suffix;
+    auto cb = [&suffix](hidl_string s) { suffix = s; };
+    boot_control_module_->getSuffix(boot_control_module_->getCurrentSlot(), cb);
+    return suffix;
+}
+
 bool FastbootDevice::WriteStatus(FastbootResult result, const std::string& message) {
     constexpr size_t kResponseReasonSize = 4;
     constexpr size_t kNumResponseTypes = 4;  // "FAIL", "OKAY", "INFO", "DATA"
+
     char buf[FB_RESPONSE_SZ];
     constexpr size_t kMaxMessageSize = sizeof(buf) - kResponseReasonSize;
     size_t msg_len = std::min(kMaxMessageSize, message.size());
@@ -101,4 +143,16 @@ void FastbootDevice::ExecuteCommands() {
             return;
         }
     }
+}
+
+bool FastbootDevice::GetSlotNumber(const std::string& slot,
+                                   android::hardware::boot::V1_0::Slot* number) {
+    if (slot.size() != 1) {
+        return false;
+    }
+    if (slot[0] < 'a' || slot[0] > 'z') {
+        return false;
+    }
+    *number = slot[0] - 'a';
+    return true;
 }
