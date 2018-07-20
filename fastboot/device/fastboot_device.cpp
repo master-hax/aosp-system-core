@@ -27,6 +27,7 @@ namespace sph = std::placeholders;
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
       command_map({
+              {std::string(FB_CMD_GETVAR), std::bind(GetVarHandler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_SET_ACTIVE),
                std::bind(SetActiveHandler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_DOWNLOAD), DownloadHandler},
@@ -38,6 +39,19 @@ FastbootDevice::FastbootDevice()
                std::bind(RebootFastbootHandler, sph::_1, sph::_3)},
               {std::string(FB_CMD_REBOOT_RECOVERY),
                std::bind(RebootRecoveryHandler, sph::_1, sph::_3)},
+      }),
+      variables_map({
+              {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
+              {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(GetBootloaderVersion)},
+              {std::string(FB_VAR_VERSION_BASEBAND), std::bind(GetBasebandVersion)},
+              {std::string(FB_VAR_PRODUCT), std::bind(GetProduct)},
+              {std::string(FB_VAR_SERIALNO), std::bind(GetSerial)},
+              {std::string(FB_VAR_SECURE), std::bind(GetSecure)},
+              {std::string(FB_VAR_UNLOCKED), std::bind(GetUnlocked)},
+              {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize, sph::_1)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
+              {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
+              {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
@@ -46,6 +60,14 @@ FastbootDevice::~FastbootDevice() {
 
 void FastbootDevice::CloseDevice() {
     transport->Close();
+}
+
+std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
+                                                        const std::vector<std::string>& args) {
+    if (variables_map.count(name) == 0) {
+        return {};
+    }
+    return variables_map.at(name)(this, args);
 }
 
 void FastbootDevice::ExecuteCommands() {

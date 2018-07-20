@@ -39,6 +39,8 @@ using data_cb_t = std::function<bool(std::vector<char>&, bool)>;
 using command_handler = std::function<void(FastbootDevice*, const std::vector<std::string>&,
                                            status_cb_t, data_cb_t)>;
 
+void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                    status_cb_t status_cb);
 void DownloadHandler(FastbootDevice* device, const std::vector<std::string>& args,
                      status_cb_t status_cb, data_cb_t data_cb);
 void SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& args,
