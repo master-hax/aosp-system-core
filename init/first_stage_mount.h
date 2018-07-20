@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_FIRST_STAGE_H
-#define _INIT_FIRST_STAGE_H
+#ifndef INIT_FIRST_STAGE_MOUNT_H
+#define INIT_FIRST_STAGE_MOUNT_H
 
 namespace android {
 namespace init {
