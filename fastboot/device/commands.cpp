@@ -29,6 +29,14 @@
 
 #include "fastboot_device.h"
 
+bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    auto result = device->GetVariable(args[1], args);
+    if (result) {
+        return device->WriteStatus(FastbootResult::OKAY, *result);
+    }
+    return  device->WriteStatus(FastbootResult::FAIL, "Unknown variable");
+}
+
 bool DownloadHandler(FastbootDevice* device, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         return device->WriteStatus(FastbootResult::FAIL, "size argument unspecified");

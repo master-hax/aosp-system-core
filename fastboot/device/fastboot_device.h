@@ -24,6 +24,7 @@
 
 #include "commands.h"
 #include "transport.h"
+#include "variables.h"
 
 class FastbootDevice;
 
@@ -36,6 +37,8 @@ class FastbootDevice {
     void ExecuteCommands();
     bool WriteStatus(FastbootResult result, const std::string& message);
     bool HandleData(bool read, std::vector<char>* data);
+    std::optional<std::string> GetVariable(const std::string& var,
+                                           const std::vector<std::string>& args);
 
     std::vector<char>& get_download_data() { return download_data_; }
     void set_upload_data(const std::vector<char>& data) { upload_data_ = data; }
@@ -49,4 +52,6 @@ class FastbootDevice {
 
     std::vector<char> download_data_;
     std::vector<char> upload_data_;
+
+    const std::unordered_map<std::string, VariableHandler> variables_map;
 };

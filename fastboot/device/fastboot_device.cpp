@@ -24,17 +24,33 @@
 #include "constants.h"
 #include "usb_client.h"
 
+namespace sph = std::placeholders;
+
 FastbootDevice::FastbootDevice()
     : kCommandMap({
               {FB_CMD_SET_ACTIVE, SetActiveHandler},
               {FB_CMD_DOWNLOAD, DownloadHandler},
+              {FB_CMD_GETVAR, GetVarHandler},
               {FB_CMD_SHUTDOWN, ShutDownHandler},
               {FB_CMD_REBOOT, RebootHandler},
               {FB_CMD_REBOOT_BOOTLOADER, RebootBootloaderHandler},
               {FB_CMD_REBOOT_FASTBOOT, RebootFastbootHandler},
               {FB_CMD_REBOOT_RECOVERY, RebootRecoveryHandler},
       }),
-      transport_(std::make_unique<ClientUsbTransport>()) {}
+    transport_(std::make_unique<ClientUsbTransport>()) {}
+    variables_map({
+              {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
+              {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(GetBootloaderVersion)},
+              {std::string(FB_VAR_VERSION_BASEBAND), std::bind(GetBasebandVersion)},
+              {std::string(FB_VAR_PRODUCT), std::bind(GetProduct)},
+              {std::string(FB_VAR_SERIALNO), std::bind(GetSerial)},
+              {std::string(FB_VAR_SECURE), std::bind(GetSecure)},
+              {std::string(FB_VAR_UNLOCKED), std::bind(GetUnlocked)},
+              {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize, sph::_1)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
+              {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
+              {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
+      }) {}
 
 FastbootDevice::~FastbootDevice() {
     CloseDevice();
@@ -42,6 +58,14 @@ FastbootDevice::~FastbootDevice() {
 
 void FastbootDevice::CloseDevice() {
     transport_->Close();
+}
+
+std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
+                                                       const std::vector<std::string>& args) {
+    if (variables_map.count(name) == 0) {
+        return {};
+    }
+    return variables_map.at(name)(this, args);
 }
 
 bool FastbootDevice::WriteStatus(FastbootResult result, const std::string& message) {
