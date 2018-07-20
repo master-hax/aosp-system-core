@@ -17,5 +17,5 @@
 #include "init.h"
 
 int main(int argc, char** argv) {
-    android::init::main(argc, argv);
+    return android::init::SecondStageMain(argc, argv);
 }

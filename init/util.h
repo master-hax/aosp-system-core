@@ -64,6 +64,13 @@ bool is_android_dt_value_expected(const std::string& sub_path, const std::string
 
 bool IsLegalPropertyName(const std::string& name);
 
+// Determines whether the system is capable of rebooting. This is conservative,
+// so if any of the attempts to determine this fail, it will still return true.
+bool IsRebootCapable();
+// This is a wrapper around the actual reboot calls.  DoReboot() should be preferred in most cases.
+void __attribute__((noreturn)) RebootSystem(unsigned int cmd, const std::string& rebootTarget);
+void InstallRebootSignalHandlers();
+
 }  // namespace init
 }  // namespace android
 

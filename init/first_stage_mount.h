@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_LOG_H_
-#define _INIT_LOG_H_
-
-#include <sys/cdefs.h>
+#ifndef INIT_FIRST_STAGE_MOUNT_H
+#define INIT_FIRST_STAGE_MOUNT_H
 
 namespace android {
 namespace init {
 
-void InitKernelLogging(char* argv[]);
-
-int selinux_klog_callback(int level, const char* fmt, ...) __printflike(2, 3);
+bool DoFirstStageMount();
+void SetInitAvbVersionInRecovery();
 
 }  // namespace init
 }  // namespace android

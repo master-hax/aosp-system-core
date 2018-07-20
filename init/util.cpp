@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pwd.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,11 +38,8 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
-#include <cutils/android_reboot.h>
 #include <cutils/sockets.h>
 #include <selinux/android.h>
-
-#include "reboot.h"
 
 #if defined(__ANDROID__)
 #include "selinux.h"

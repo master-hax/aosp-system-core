@@ -49,7 +49,7 @@ void DumpState();
 
 void ResetWaitForProp();
 
-int main(int argc, char** argv);
+int SecondStageMain(int argc, char** argv);
 
 }  // namespace init
 }  // namespace android
