@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7fef7921_a415f902",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-07-21T01:21:10Z",
+      "side": 1,
+      "message": "Out of curiosity, how is this API going to be used?  Does fastbootd then mount the partition and modify its contents?  Would it be easier if this API returned the path, since it\u0027s already being calculated here?  Presumably otherwise fastbootd will need to call this again itself?",
+      "revId": "289e614f8641889c74fb598b91a3c4cc7ed05507",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
