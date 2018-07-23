@@ -29,6 +29,7 @@
 #pragma once
 
 #include "transport.h"
+#define USB_TRANSACTION_TIMEOUT 10000
 
 struct usb_ifc_info {
         /* from device descriptor */
@@ -52,6 +53,12 @@ struct usb_ifc_info {
     char device_path[256];
 };
 
+class UsbTransport : public Transport {
+    // Resets the underlying transport.  Returns 0 on success.
+    // This effectively simulates unplugging and replugging
+    virtual int Reset() = 0;
+};
+
 typedef int (*ifc_match_func)(usb_ifc_info *ifc);
 
-Transport* usb_open(ifc_match_func callback);
+UsbTransport* usb_open(ifc_match_func callback);
