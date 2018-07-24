@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfb6500d_4487fd22",
+        "filename": "libprocinfo/include/procinfo/process.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-07-24T19:50:28Z",
+      "side": 1,
+      "message": "Maybe this should take std::string* error instead, and the caller should be the one to report the error?",
+      "range": {
+        "startLine": 58,
+        "startChar": 64,
+        "endLine": 59,
+        "endChar": 84
+      },
+      "revId": "9f78f1e75abd023ab564fcea47801a9fd6793426",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
