@@ -23,6 +23,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <android/hardware/boot/1.0/IBootControl.h>
 #include <ext4_utils/ext4_utils.h>
 
 #include "commands.h"
@@ -30,6 +31,10 @@
 #include "variables.h"
 
 class FastbootDevice;
+
+using android::hardware::boot::V1_0::IBootControl;
+
+using android::sp;
 
 inline const std::vector<std::string> GetSubArgs(const std::vector<std::string>& v) {
     return v.size() > 1 ? std::vector<std::string>(v.begin() + 1, v.end())
@@ -46,6 +51,8 @@ class FastbootDevice {
 
     std::unordered_map<std::string, int> block_dev_map;
 
+    sp<IBootControl> boot_control_module;
+
     std::vector<char> download_data;
     std::vector<char> upload_data;
 
@@ -57,6 +64,9 @@ class FastbootDevice {
     void CloseDevice();
 
     void ExecuteCommands();
+    sp<IBootControl> get_boot_control();
+
+    int flash(std::string name);
     std::optional<std::string> GetVariable(const std::string& var,
                                            const std::vector<std::string>& args);
 
