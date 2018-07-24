@@ -74,6 +74,11 @@ std::optional<std::string> FindPhysicalPartition(const std::string& name) {
     return {};
 }
 
+bool PartitionExists(const std::string& name) {
+    auto path = FindPhysicalPartition(name);
+    return !!path;
+}
+
 int FlashRawDataChunk(int fd, const char* data, size_t len) {
     size_t ret = 0;
     while (ret < len) {
