@@ -18,15 +18,19 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android/hardware/boot/1.0/IBootControl.h>
 
 #include "constants.h"
 #include "flashing.h"
 #include "usb_client.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::Slot;
 namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
+      boot_control_module(IBootControl::getService()),
       command_map({
               {std::string(FB_CMD_GETVAR), std::bind(GetVarHandler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_ERASE), std::bind(EraseHandler, sph::_1, sph::_2, sph::_3)},
@@ -52,14 +56,18 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_SECURE), std::bind(GetSecure)},
               {std::string(FB_VAR_UNLOCKED), std::bind(GetUnlocked)},
               {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize, sph::_1)},
-              {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(::GetCurrentSlot, sph::_1)},
               {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
-              {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
+              {std::string(FB_VAR_HAS_SLOT), GetHasSlot},
               {std::string(FB_VAR_PARTITION_SIZE), GetPartitionSize},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
     CloseDevice();
+}
+
+sp<IBootControl> FastbootDevice::get_boot_control() {
+    return boot_control_module;
 }
 
 void FastbootDevice::CloseDevice() {
@@ -121,6 +129,17 @@ std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
         return {};
     }
     return variables_map.at(name)(this, args);
+}
+
+std::string FastbootDevice::GetCurrentSlot() {
+    // Non-A/B devices may not have boot control HALs.
+    if (!boot_control_module) {
+        return "";
+    }
+    std::string suffix;
+    auto cb = [&suffix](hidl_string s) { suffix = s; };
+    boot_control_module->getSuffix(boot_control_module->getCurrentSlot(), cb);
+    return suffix;
 }
 
 void FastbootDevice::ExecuteCommands() {
