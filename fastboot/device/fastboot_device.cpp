@@ -18,6 +18,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android/hardware/boot/1.0/IBootControl.h>
 
 #include <algorithm>
 
@@ -25,6 +26,8 @@
 #include "flashing.h"
 #include "usb_client.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::Slot;
 namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
@@ -42,6 +45,7 @@ FastbootDevice::FastbootDevice()
 
       }),
     transport_(std::make_unique<ClientUsbTransport>()),
+    boot_control_module_(IBootControl::getService()),
     variables_map({
               {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
               {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(GetBootloaderVersion)},
@@ -51,9 +55,9 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_SECURE), std::bind(GetSecure)},
               {std::string(FB_VAR_UNLOCKED), std::bind(GetUnlocked)},
               {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize, sph::_1)},
-              {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
+              {std::string(FB_VAR_CURRENT_SLOT), std::bind(::GetCurrentSlot, sph::_1)},
               {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
-              {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
+              {std::string(FB_VAR_HAS_SLOT), GetHasSlot},
               {std::string(FB_VAR_PARTITION_SIZE), GetPartitionSize},
       }) {}
 
@@ -122,9 +126,21 @@ std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
     return variables_map.at(name)(this, args);
 }
 
+std::string FastbootDevice::GetCurrentSlot() {
+    // Non-A/B devices may not have boot control HALs.
+    if (!boot_control_module_) {
+        return "";
+    }
+    std::string suffix;
+    auto cb = [&suffix](hidl_string s) { suffix = s; };
+    boot_control_module_->getSuffix(boot_control_module_->getCurrentSlot(), cb);
+    return suffix;
+}
+
 bool FastbootDevice::WriteStatus(FastbootResult result, const std::string& message) {
     constexpr size_t kResponseReasonSize = 4;
     constexpr size_t kNumResponseTypes = 4;  // "FAIL", "OKAY", "INFO", "DATA"
+
     char buf[FB_RESPONSE_SZ];
     constexpr size_t kMaxMessageSize = sizeof(buf) - kResponseReasonSize;
     size_t msg_len = std::min(kMaxMessageSize, message.size());

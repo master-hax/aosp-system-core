@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <android-base/unique_fd.h>
+#include <android/hardware/boot/1.0/IBootControl.h>
 #include <ext4_utils/ext4_utils.h>
 
 #include "commands.h"
@@ -31,6 +32,10 @@
 #include "variables.h"
 
 class FastbootDevice;
+
+using android::hardware::boot::V1_0::IBootControl;
+
+using android::sp;
 
 // Logical partitions are only mapped to a block device as needed, and
 // immediately unmapped when no longer needed. In order to enforce this we
@@ -75,6 +80,9 @@ class FastbootDevice {
     void set_upload_data(const std::vector<char>& data) { upload_data_ = data; }
     void set_upload_data(std::vector<char>&& data) { upload_data_ = std::move(data); }
     Transport* get_transport() { return transport_.get(); }
+    sp<IBootControl> boot_control_module() { return boot_control_module_; }
+
+    std::string GetCurrentSlot();
     bool OpenPartition(const std::string& name, PartitionHandle* handle);
     int Flash(const std::string& name);
 
@@ -84,6 +92,7 @@ class FastbootDevice {
 
     std::unique_ptr<Transport> transport_;
 
+    sp<IBootControl> boot_control_module_;
     std::vector<char> download_data_;
     std::vector<char> upload_data_;
 

@@ -19,5 +19,6 @@
 #include <string>
 #include <vector>
 
+bool PartitionExists(const std::string& name);
 std::optional<std::string> FindPhysicalPartition(const std::string& name);
 int FlashBlockDevice(int fd, std::vector<char>& downloaded_data);
