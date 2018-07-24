@@ -41,6 +41,8 @@ using CommandHandler =
 
 void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
                    StatusCb status_cb);
+void EraseHandler(FastbootDevice* device, const std::vector<std::string>& args, StatusCb status_cb);
+void FlashHandler(FastbootDevice* device, const std::vector<std::string>& args, StatusCb status_cb);
 void DownloadHandler(FastbootDevice* device, const std::vector<std::string>& args,
                      StatusCb status_cb, DataCb data_cb);
 void SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& args,
