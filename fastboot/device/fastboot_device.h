@@ -16,17 +16,48 @@
 
 #pragma once
 
+#include <future>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include <android-base/unique_fd.h>
+#include <ext4_utils/ext4_utils.h>
+
 #include "commands.h"
 #include "transport.h"
 #include "variables.h"
 
 class FastbootDevice;
+
+// Logical partitions are only mapped to a block device as needed, and
+// immediately unmapped when no longer needed. In order to enforce this we
+// require accessing partitions through a Handle abstraction, which may perform
+// additional operations after closing its file description.
+class PartitionHandle {
+  public:
+    PartitionHandle() {}
+    PartitionHandle(android::base::unique_fd&& fd, std::function<void()>&& closer)
+        : fd_(std::move(fd)), closer_(std::move(closer)) {}
+    PartitionHandle(const PartitionHandle&) = delete;
+    PartitionHandle(PartitionHandle&&) = default;
+    PartitionHandle& operator=(const PartitionHandle&) = delete;
+    PartitionHandle& operator=(PartitionHandle&&) = default;
+    ~PartitionHandle() {
+        if (closer_) {
+            // Make sure the device is closed first.
+            fd_ = {};
+            closer_();
+        }
+    }
+    int fd() const { return fd_.get(); }
+
+  private:
+    android::base::unique_fd fd_;
+    std::function<void()> closer_;
+};
 
 class FastbootDevice {
   public:
@@ -44,6 +75,9 @@ class FastbootDevice {
     void set_upload_data(const std::vector<char>& data) { upload_data_ = data; }
     void set_upload_data(std::vector<char>&& data) { upload_data_ = std::move(data); }
     Transport* get_transport() { return transport_.get(); }
+    bool OpenPartition(const std::string& name, PartitionHandle* handle);
+    int Flash(const std::string& name);
+
 
   private:
     const std::unordered_map<std::string, CommandHandler> kCommandMap;
@@ -54,4 +88,5 @@ class FastbootDevice {
     std::vector<char> upload_data_;
 
     const std::unordered_map<std::string, VariableHandler> variables_map;
+    std::future<int> flash_thread_;
 };

@@ -26,8 +26,10 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/android_reboot.h>
+#include <ext4_utils/wipe.h>
 
 #include "fastboot_device.h"
+#include "flashing.h"
 
 bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args) {
     auto result = device->GetVariable(args[1], args);
@@ -35,6 +37,17 @@ bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args)
         return device->WriteStatus(FastbootResult::OKAY, *result);
     }
     return  device->WriteStatus(FastbootResult::FAIL, "Unknown variable");
+}
+
+bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    PartitionHandle handle;
+    if (!device->OpenPartition(args[1], &handle)) {
+        return device->WriteStatus(FastbootResult::FAIL, "Partition doesn't exist");
+    }
+    if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {
+        return device->WriteStatus(FastbootResult::OKAY, "Erasing succeeded");
+    }
+    return device->WriteStatus(FastbootResult::FAIL, "Erasing failed");
 }
 
 bool DownloadHandler(FastbootDevice* device, const std::vector<std::string>& args) {
@@ -57,6 +70,14 @@ bool DownloadHandler(FastbootDevice* device, const std::vector<std::string>& arg
 
     PLOG(ERROR) << "Couldn't download data";
     return device->WriteStatus(FastbootResult::FAIL, "Couldn't download data");
+}
+
+bool FlashHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    int ret = device->Flash(args[1]);
+    if (ret < 0) {
+        return device->WriteStatus(FastbootResult::FAIL, strerror(-ret));
+    }
+    return device->WriteStatus(FastbootResult::OKAY, "Flashing succeeded");
 }
 
 bool SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& /* args */) {

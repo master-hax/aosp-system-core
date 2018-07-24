@@ -22,6 +22,7 @@
 #include <algorithm>
 
 #include "constants.h"
+#include "flashing.h"
 #include "usb_client.h"
 
 namespace sph = std::placeholders;
@@ -36,8 +37,11 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_REBOOT_BOOTLOADER, RebootBootloaderHandler},
               {FB_CMD_REBOOT_FASTBOOT, RebootFastbootHandler},
               {FB_CMD_REBOOT_RECOVERY, RebootRecoveryHandler},
+              {FB_CMD_ERASE, EraseHandler},
+              {FB_CMD_FLASH, FlashHandler},
+
       }),
-    transport_(std::make_unique<ClientUsbTransport>()) {}
+    transport_(std::make_unique<ClientUsbTransport>()),
     variables_map({
               {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
               {std::string(FB_VAR_VERSION_BOOTLOADER), std::bind(GetBootloaderVersion)},
@@ -50,6 +54,7 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
               {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
               {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
+              {std::string(FB_VAR_PARTITION_SIZE), GetPartitionSize},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
@@ -58,6 +63,55 @@ FastbootDevice::~FastbootDevice() {
 
 void FastbootDevice::CloseDevice() {
     transport_->Close();
+    if (flash_thread_.valid()) {
+        int ret = flash_thread_.get();
+        if (ret < 0) {
+            LOG(ERROR) << "Last flash returned error " << ret;
+        }
+    }
+}
+
+bool FastbootDevice::OpenPartition(const std::string& name, PartitionHandle* handle) {
+    std::function<void()> closer;
+    std::optional<std::string> path = FindPhysicalPartition(name);
+    if (!path) {
+        LOG(ERROR) << "No such partition: " << name;
+        return false;
+    }
+
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path->c_str(), O_WRONLY | O_EXCL)));
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to open partition: " << path->c_str();
+        return false;
+    }
+
+    *handle = PartitionHandle(std::move(fd), std::move(closer));
+    return true;
+}
+
+int FastbootDevice::Flash(const std::string& name) {
+    if (flash_thread_.valid()) {
+        int ret = flash_thread_.get();
+        if (ret < 0) {
+            return ret;
+        }
+    }
+
+    PartitionHandle handle;
+    if (!OpenPartition(name, &handle)) {
+        return -ENOENT;
+    }
+
+    if (get_download_data().size() == 0) {
+        return -EINVAL;
+    } else if (get_download_data().size() > get_block_device_size(handle.fd())) {
+        return -EOVERFLOW;
+    }
+    flash_thread_ =
+            std::async([handle(std::move(handle)), data(std::move(download_data_))]() mutable {
+                return FlashBlockDevice(handle.fd(), data);
+            });
+    return 0;
 }
 
 std::optional<std::string> FastbootDevice::GetVariable(const std::string& name,
