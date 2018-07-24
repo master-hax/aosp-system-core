@@ -23,6 +23,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
 
 #include "commands.h"
@@ -40,6 +41,33 @@ inline std::string GetArg(const std::vector<std::string>& v) {
     return v.size() > 0 ? v[0] : "";
 }
 
+// Logical partitions are only mapped to a block device as needed, and
+// immediately unmapped when no longer needed. In order to enforce this we
+// require accessing partitions through a Handle abstraction, which may perform
+// additional operations after closing its file description.
+class PartitionHandle {
+  public:
+    PartitionHandle() {}
+    PartitionHandle(android::base::unique_fd&& fd, std::function<void()>&& closer)
+        : fd_(std::move(fd)), closer_(std::move(closer)) {}
+    PartitionHandle(const PartitionHandle&) = delete;
+    PartitionHandle(PartitionHandle&&) = default;
+    PartitionHandle& operator=(const PartitionHandle&) = delete;
+    PartitionHandle& operator=(PartitionHandle&&) = default;
+    ~PartitionHandle() {
+        if (closer_) {
+            // Make sure the device is closed first.
+            fd_ = {};
+            closer_();
+        }
+    }
+    int fd() const { return fd_.get(); }
+
+  private:
+    android::base::unique_fd fd_;
+    std::function<void()> closer_;
+};
+
 class FastbootDevice {
   private:
     std::unique_ptr<Transport> transport;
@@ -49,6 +77,7 @@ class FastbootDevice {
 
     const std::unordered_map<std::string, CommandHandler> command_map;
     const std::unordered_map<std::string, VariableHandler> variables_map;
+    std::future<int> flash_thread;
 
   public:
     void CloseDevice();
@@ -56,6 +85,9 @@ class FastbootDevice {
     void ExecuteCommands();
     std::optional<std::string> GetVariable(const std::string& var,
                                            const std::vector<std::string>& args);
+
+    bool OpenPartition(const std::string& name, PartitionHandle* handle);
+    int Flash(const std::string& name);
 
     inline std::vector<char>& GetDownloadData() { return download_data; }
 
