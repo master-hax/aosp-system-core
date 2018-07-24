@@ -18,13 +18,16 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
 
 #include <algorithm>
 
 #include "constants.h"
+#include "flashing.h"
 #include "usb_client.h"
 
+using ::android::base::unique_fd;
 using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::IBootControl;
 using ::android::hardware::boot::V1_0::Slot;
@@ -40,6 +43,8 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_REBOOT_BOOTLOADER, RebootBootloaderHandler},
               {FB_CMD_REBOOT_FASTBOOT, RebootFastbootHandler},
               {FB_CMD_REBOOT_RECOVERY, RebootRecoveryHandler},
+              {FB_CMD_ERASE, EraseHandler},
+              {FB_CMD_FLASH, FlashHandler},
       }),
       transport_(std::make_unique<ClientUsbTransport>()),
       boot_control_hal_(IBootControl::getService()) {}
@@ -50,6 +55,61 @@ FastbootDevice::~FastbootDevice() {
 
 void FastbootDevice::CloseDevice() {
     transport_->Close();
+    if (flash_thread_.valid()) {
+        int ret = flash_thread_.get();
+        if (ret < 0) {
+            LOG(ERROR) << "Last flash returned error " << ret;
+        }
+    }
+}
+
+bool FastbootDevice::OpenPartition(const std::string& name, PartitionHandle* handle) {
+    if (!OpenPhysicalPartition(name, handle)) {
+        LOG(ERROR) << "No such partition: " << name;
+        return false;
+    }
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(handle->path().c_str(), O_WRONLY | O_EXCL)));
+    if (fd < 0) {
+        PLOG(ERROR) << "Failed to open block device: " << handle->path();
+        return false;
+    }
+    handle->set_fd(std::move(fd));
+    return true;
+}
+
+bool FastbootDevice::OpenPhysicalPartition(const std::string& name, PartitionHandle* handle) {
+    std::optional<std::string> path = FindPhysicalPartition(name);
+    if (!path) {
+        return false;
+    }
+    *handle = PartitionHandle(*path);
+    return true;
+}
+
+int FastbootDevice::Flash(const std::string& name) {
+    if (flash_thread_.valid()) {
+        int ret = flash_thread_.get();
+        if (ret < 0) {
+            return ret;
+        }
+    }
+
+    PartitionHandle handle;
+    if (!OpenPartition(name, &handle)) {
+        return -ENOENT;
+    }
+
+    if (get_download_data().size() == 0) {
+        return -EINVAL;
+    } else if (get_download_data().size() > get_block_device_size(handle.fd())) {
+        return -EOVERFLOW;
+    }
+    flash_thread_ =
+            std::async([handle(std::move(handle)), data(std::move(download_data_))]() mutable {
+                return FlashBlockDevice(handle.fd(), data);
+            });
+    return 0;
 }
 
 std::string FastbootDevice::GetCurrentSlot() {
