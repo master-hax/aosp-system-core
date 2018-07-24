@@ -28,6 +28,7 @@
 #include <ext4_utils/wipe.h>
 
 #include "fastboot_device.h"
+#include "flashing.h"
 
 void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
                    StatusCb status_cb) {
@@ -36,6 +37,20 @@ void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
         status_cb(FastbootResult::OKAY, *result);
     } else {
         status_cb(FastbootResult::FAIL, "Unknown variable");
+    }
+}
+
+void EraseHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                  StatusCb status_cb) {
+    PartitionHandle handle;
+    if (!device->OpenPartition(GetArg(args), &handle)) {
+        status_cb(FastbootResult::FAIL, "Partition doesn't exist");
+        return;
+    }
+    if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {
+        status_cb(FastbootResult::OKAY, "Erasing succeeded");
+    } else {
+        status_cb(FastbootResult::FAIL, "Erasing failed");
     }
 }
 
@@ -54,6 +69,16 @@ void DownloadHandler(FastbootDevice* device, const std::vector<std::string>& arg
     } else {
         LOG(ERROR) << "Couldn't download data";
         status_cb(FastbootResult::FAIL, "Couldn't download data");
+    }
+}
+
+void FlashHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                  StatusCb status_cb) {
+    int ret = device->Flash(GetArg(args));
+    if (ret < 0) {
+        status_cb(FastbootResult::FAIL, strerror(-ret));
+    } else {
+        status_cb(FastbootResult::OKAY, "Flashing succeeded");
     }
 }
 
