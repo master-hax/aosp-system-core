@@ -30,6 +30,11 @@
 #include "fastboot_device.h"
 #include "flashing.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::BoolResult;
+using ::android::hardware::boot::V1_0::CommandResult;
+using ::android::hardware::boot::V1_0::Slot;
+
 void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
                    StatusCb status_cb) {
     auto result = device->GetVariable(GetArg(args), GetSubArgs(args));
@@ -84,6 +89,37 @@ void FlashHandler(FastbootDevice* device, const std::vector<std::string>& args,
 
 void SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& args,
                       StatusCb status_cb) {
+    std::string arg = GetArg(args);
+    if (arg.size() != 1) {
+        status_cb(FastbootResult::FAIL, "Invalid slot");
+        return;
+    }
+
+    /*
+     * Slot suffix needs to be between 'a' and 'z'.
+     */
+    if (arg[0] < 'a' || arg[0] > 'z') {
+        status_cb(FastbootResult::FAIL, "Bad Slot suffix");
+        return;
+    }
+
+    Slot slot = arg[0] - 'a';
+
+    auto boot_control_hal = device->get_boot_control();
+    /*
+     * Non-A/B devices may not have boot control HAL.
+     */
+    if (!boot_control_hal) {
+        status_cb(FastbootResult::FAIL, "Cannot set slot: boot control HAL absent");
+        return;
+    }
+
+    if (slot >= boot_control_hal->getNumberSlots()) {
+        status_cb(FastbootResult::FAIL, "Slot out of range");
+        return;
+    }
+    auto cb = [](CommandResult error) {};
+    boot_control_hal->setActiveBootSlot(slot, cb);
     status_cb(FastbootResult::OKAY, "");
 }
 

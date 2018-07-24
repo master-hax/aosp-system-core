@@ -26,6 +26,11 @@
 #include "fastboot_device.h"
 #include "flashing.h"
 
+using ::android::hardware::hidl_string;
+using ::android::hardware::boot::V1_0::BoolResult;
+using ::android::hardware::boot::V1_0::Slot;
+
+constexpr int kMaxDownloadSizeDefault = 0x20000000;
 constexpr float kFastbootProtocolVersion = .4;
 
 std::string GetVersion() {
@@ -53,28 +58,54 @@ std::string GetSecure() {
 }
 
 std::string GetCurrentSlot(FastbootDevice* device) {
-    return "";
+    std::string suffix;
+    auto boot_control_hal = device->get_boot_control();
+    /*
+     * Non-A/B devices may not have boot control HALs.
+     */
+    if (!boot_control_hal) {
+        return "";
+    }
+    auto cb = [&suffix](hidl_string s) { suffix = s; };
+    boot_control_hal->getSuffix(boot_control_hal->getCurrentSlot(), cb);
+    return suffix.size() == 2 ? suffix.substr(1) : suffix;
 }
 
 std::string GetSlotCount(FastbootDevice* device) {
-    return "0";
+    auto boot_control_hal = device->get_boot_control();
+    if (!boot_control_hal) {
+        return "0";
+    }
+    return std::to_string(boot_control_hal->getNumberSlots());
 }
 
-std::string GetSlotSuccesful(FastbootDevice* device, const std::vector<std::string>& args) {
-    return "yes";
+std::string GetSlotSuccessful(FastbootDevice* device, const std::vector<std::string>& args) {
+    auto boot_control_hal = device->get_boot_control();
+    if (!boot_control_hal) {
+        return "yes";
+    }
+    Slot slot = std::stoi(GetArg(args));
+    return boot_control_hal->isSlotMarkedSuccessful(slot) == BoolResult::TRUE ? "yes" : "no";
 }
 
 std::string GetMaxDownloadSize(FastbootDevice* device) {
-    return "0x20000000";
+    return std::to_string(kMaxDownloadSizeDefault);
 }
 
 std::string GetUnlocked() {
     return "yes";
 }
 
-std::string GetHasSlot(const std::vector<std::string>& args) {
+std::string GetHasSlot(FastbootDevice* device, const std::vector<std::string>& args) {
     std::string part = GetArg(args);
-    return part == "userdata" ? "no" : "yes";
+    std::string suffix = GetCurrentSlot(device);
+    if (!suffix.empty()) {
+        std::string part_with_suffix = part + "_" + suffix;
+        if (PartitionExists(part_with_suffix)) {
+            return "yes";
+        }
+    }
+    return "no";
 }
 
 std::string GetPartitionSize(FastbootDevice* device, const std::vector<std::string>& args) {

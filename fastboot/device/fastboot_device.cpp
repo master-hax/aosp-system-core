@@ -18,6 +18,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/strings.h>
+#include <android/hardware/boot/1.0/IBootControl.h>
 
 #include "constants.h"
 #include "flashing.h"
@@ -27,6 +28,7 @@ namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
     : transport(std::make_unique<ClientUsbTransport>()),
+      boot_control_module(IBootControl::getService()),
       command_map({
               {std::string(FB_CMD_GETVAR), std::bind(GetVarHandler, sph::_1, sph::_2, sph::_3)},
               {std::string(FB_CMD_ERASE), std::bind(EraseHandler, sph::_1, sph::_2, sph::_3)},
@@ -54,12 +56,16 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_MAX_DOWNLOAD_SIZE), std::bind(GetMaxDownloadSize, sph::_1)},
               {std::string(FB_VAR_CURRENT_SLOT), std::bind(GetCurrentSlot, sph::_1)},
               {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
-              {std::string(FB_VAR_HAS_SLOT), std::bind(GetHasSlot, sph::_2)},
+              {std::string(FB_VAR_HAS_SLOT), GetHasSlot},
               {std::string(FB_VAR_PARTITION_SIZE), GetPartitionSize},
       }) {}
 
 FastbootDevice::~FastbootDevice() {
     CloseDevice();
+}
+
+sp<IBootControl> FastbootDevice::get_boot_control() {
+    return boot_control_module;
 }
 
 void FastbootDevice::CloseDevice() {
