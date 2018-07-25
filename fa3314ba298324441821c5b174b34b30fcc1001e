@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ddfa3b65_b1d3aa3d",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-07-25T23:35:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c085a0cc_49e1941c",
+      "range": {
+        "startLine": 113,
+        "startChar": 40,
+        "endLine": 113,
+        "endChar": 57
+      },
+      "revId": "fa3314ba298324441821c5b174b34b30fcc1001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "18f5d6e3_e52358ff",
         "filename": "fastboot/device/variables.cpp",
         "patchSetId": 6
