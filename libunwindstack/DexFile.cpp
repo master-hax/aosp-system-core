@@ -137,8 +137,9 @@ bool DexFileFromFile::Open(uint64_t dex_file_offset_in_file, const std::string& 
 
   art::DexFileLoader loader;
   std::string error_msg;
-  auto dex = loader.Open(&memory[dex_file_offset_in_file], header->file_size_, "", 0, nullptr,
-                         false, false, &error_msg);
+  auto dex = loader.Open(std::make_unique<art::NonOwningDexFileContainer>(
+                             &memory[dex_file_offset_in_file], header->file_size_),
+                         "", 0, nullptr, false, false, &error_msg);
   dex_file_.reset(dex.release());
   return dex_file_ != nullptr;
 }
@@ -176,8 +177,9 @@ bool DexFileFromMemory::Open(uint64_t dex_file_offset_in_memory, Memory* memory)
 
   art::DexFileLoader loader;
   std::string error_msg;
-  auto dex =
-      loader.Open(memory_.data(), header->file_size_, "", 0, nullptr, false, false, &error_msg);
+  auto dex = loader.Open(
+      std::make_unique<art::NonOwningDexFileContainer>(memory_.data(), header->file_size_), "", 0,
+      nullptr, false, false, &error_msg);
   dex_file_.reset(dex.release());
   return dex_file_ != nullptr;
 }
