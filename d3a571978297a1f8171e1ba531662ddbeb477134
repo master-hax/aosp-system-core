@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cdcd37ae_cc750cc5",
+        "filename": "trusty/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2018-07-25T21:55:03Z",
+      "side": 1,
+      "message": "The trusty team is:\ngmar,arve,rpere and ncbray",
+      "revId": "d3a571978297a1f8171e1ba531662ddbeb477134",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
