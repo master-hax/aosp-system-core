@@ -249,7 +249,7 @@ android::base::unique_fd create_service_thread(const char* service_name,
 
 }  // namespace
 
-int service_to_fd(const char* name, atransport* transport) {
+[[maybe_unused]] int service_to_fd_unused(const char* name, atransport* transport) {
     int ret = -1;
 
     if (is_socket_spec(name)) {

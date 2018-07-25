@@ -109,6 +109,7 @@ libadb_srcs = [
     "transport_fd.cpp",
     "transport_local.cpp",
     "transport_usb.cpp",
+    "zservices.cpp",
 ]
 
 libadb_posix_srcs = [
