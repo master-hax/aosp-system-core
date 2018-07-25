@@ -31,12 +31,14 @@
 #include <sys/socket.h>
 #include <sys/sysinfo.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <lmkd.h>
 #include <log/log.h>
+#include <log/log_time.h>
 
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
@@ -74,6 +76,13 @@
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*(x)))
 #define EIGHT_MEGA (1 << 23)
+
+#define TARGET_UPDATE_MIN_INTERVAL_MS 1000
+
+#define NS_PER_MS (NS_PER_SEC / MS_PER_SEC)
+
+/* Space to hold decimal INT_MIN (-2147483648) as string 11 chars + NUL */
+#define MIN_INT_STR_LEN 12
 
 /* Defined as ProcessList.SYSTEM_ADJ in ProcessList.java */
 #define SYSTEM_ADJ (-900)
@@ -265,6 +274,78 @@ static bool parse_int64(const char* str, int64_t* ret) {
     return true;
 }
 
+static void strrev(char *str, char *end) {
+    char ch;
+
+    while (str < end) {
+        ch = *str;
+        *str++ = *end;
+        *end-- = ch;
+    }
+}
+
+/*
+ * Convert decimal int to string
+ * str should have enough space to hold decimal INT_MIN (sizeof(str) >= MIN_INT_STR_LEN)
+ * returns number of bytes in the resulting buffer not including NUL
+ */
+static int dec_to_str(int val, char *str) {
+    char *ptr = str;
+    bool negative = (val < 0);
+
+    if (val == 0) {
+        *ptr++ = '0';
+        goto out;
+    }
+
+    if (negative) {
+        *ptr++ = '-';
+        val = -val;
+    }
+
+    while (val > 0) {
+        *ptr++ = '0' + (val % 10);
+        val /= 10;
+    }
+
+    strrev(negative ? str + 1 : str, ptr - 1);
+
+out:
+    *ptr = '\0';
+    return (ptr - str);
+}
+
+/*
+ * Write int to str buffer of max_len size
+ * returns number of bytes written not including NUL
+ * or -1 if max_len is too small
+ * end is set to point to the terminating NUL of the resulting string
+ */
+static int itona(int val, char *str, size_t max_len, char **end) {
+    char *ptr = str;
+    int len;
+
+    /* If enough space to parse INT_MIN then parse in-place. */
+    if (max_len < MIN_INT_STR_LEN) {
+        char buf[MIN_INT_STR_LEN];
+
+        len = dec_to_str(val, buf);
+        if (len < max_len) {
+            memcpy(str, buf, len + 1);
+        } else {
+            return -1;
+        }
+    } else {
+        len = dec_to_str(val, str);
+    }
+
+    if (end) {
+        *end = str + len;
+    }
+
+    return len;
+}
+
 static enum field_match_result match_field(const char* cp, const char* ap,
                                    const char* const field_names[],
                                    int field_count, int64_t* field,
@@ -439,6 +520,12 @@ static bool writefilestring(const char *path, const char *s,
     return true;
 }
 
+static inline long get_time_diff_ms(struct timespec *from,
+                                    struct timespec *to) {
+    return (to->tv_sec - from->tv_sec) * (long)MS_PER_SEC +
+           (to->tv_nsec - from->tv_nsec) / (long)NS_PER_MS;
+}
+
 static void cmd_procprio(LMKD_CTRL_PACKET packet) {
     struct proc *procp;
     char path[80];
@@ -549,38 +636,81 @@ static void cmd_procremove(LMKD_CTRL_PACKET packet) {
 static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     int i;
     struct lmk_target target;
+    char minfree_str[PROPERTY_VALUE_MAX];
+    char *pstr = minfree_str;
+    static struct timespec last_req_tm;
+    struct timespec curr_tm;
+    size_t max_len = PROPERTY_VALUE_MAX;
+    int len;
 
-    if (ntargets > (int)ARRAY_SIZE(lowmem_adj))
+    if (ntargets < 1 || ntargets > (int)ARRAY_SIZE(lowmem_adj))
         return;
+
+    /*
+     * Ratelimit minfree updates to once per TARGET_UPDATE_MIN_INTERVAL_MS
+     * to prevent DoS attacks
+     */
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+        ALOGE("Failed to get current time");
+        return;
+    }
+
+    if (get_time_diff_ms(&last_req_tm, &curr_tm) < TARGET_UPDATE_MIN_INTERVAL_MS) {
+        ALOGE("Ignoring frequent updated to lmkd limits");
+        return;
+    }
+
+    last_req_tm = curr_tm;
 
     for (i = 0; i < ntargets; i++) {
         lmkd_pack_get_target(packet, i, &target);
         lowmem_minfree[i] = target.minfree;
         lowmem_adj[i] = target.oom_adj_score;
+
+        if ((len = itona(target.minfree, pstr, max_len, &pstr)) < 0) {
+            break; /* terminate if no more space in minfree_str */
+        }
+        *pstr++ = ':';
+        max_len -= (len + 1);
+
+        if ((len = itona(target.oom_adj_score, pstr, max_len, &pstr)) < 0) {
+            break; /* terminate if no more space in minfree_str */
+        }
+        *pstr++ = ',';
+        max_len -= (len + 1);
     }
 
     lowmem_targets_size = ntargets;
 
+    /* Override the last extra comma */
+    pstr[-1] = '\0';
+    property_set("sys.lmk.minfree_levels", minfree_str);
+
     if (has_inkernel_module) {
         char minfreestr[128];
         char killpriostr[128];
-
-        minfreestr[0] = '\0';
-        killpriostr[0] = '\0';
+        char *minfreestr_ptr = &minfreestr[0];
+        char *killpriostr_ptr = &killpriostr[0];
+        int minfreestr_len = sizeof(minfreestr);
+        int killpriostr_len = sizeof(killpriostr);
 
         for (i = 0; i < lowmem_targets_size; i++) {
-            char val[40];
-
-            if (i) {
-                strlcat(minfreestr, ",", sizeof(minfreestr));
-                strlcat(killpriostr, ",", sizeof(killpriostr));
+            if ((len = itona(use_inkernel_interface ? lowmem_minfree[i] : 0,
+                minfreestr_ptr, minfreestr_len, &minfreestr_ptr)) < 0) {
+                return; /* skip the update on error */
             }
+            *minfreestr_ptr++ = ',';
+            minfreestr_len -= (len + 1);
 
-            snprintf(val, sizeof(val), "%d", use_inkernel_interface ? lowmem_minfree[i] : 0);
-            strlcat(minfreestr, val, sizeof(minfreestr));
-            snprintf(val, sizeof(val), "%d", use_inkernel_interface ? lowmem_adj[i] : 0);
-            strlcat(killpriostr, val, sizeof(killpriostr));
+            if ((len = itona(use_inkernel_interface ? lowmem_adj[i] : 0,
+                killpriostr_ptr, killpriostr_len, &killpriostr_ptr)) < 0) {
+                return; /* skip the update on error */
+            }
+            *killpriostr_ptr++ = ',';
+            killpriostr_len -= (len + 1);
         }
+        minfreestr_ptr[lowmem_targets_size ? -1 : 0] = '\0';
+        killpriostr_ptr[lowmem_targets_size ? -1 : 0] = '\0';
 
         writefilestring(INKERNEL_MINFREE_PATH, minfreestr, true);
         writefilestring(INKERNEL_ADJ_PATH, killpriostr, true);
@@ -1067,12 +1197,6 @@ enum vmpressure_level downgrade_level(enum vmpressure_level level) {
         level - 1 : level);
 }
 
-static inline unsigned long get_time_diff_ms(struct timeval *from,
-                                             struct timeval *to) {
-    return (to->tv_sec - from->tv_sec) * 1000 +
-           (to->tv_usec - from->tv_usec) / 1000;
-}
-
 static void mp_event_common(int data, uint32_t events __unused) {
     int ret;
     unsigned long long evcount;
@@ -1081,7 +1205,7 @@ static void mp_event_common(int data, uint32_t events __unused) {
     enum vmpressure_level lvl;
     union meminfo mi;
     union zoneinfo zi;
-    static struct timeval last_report_tm;
+    static struct timespec last_report_tm;
     static unsigned long skip_count = 0;
     enum vmpressure_level level = (enum vmpressure_level)data;
     long other_free = 0, other_file = 0;
@@ -1112,8 +1236,13 @@ static void mp_event_common(int data, uint32_t events __unused) {
     }
 
     if (kill_timeout_ms) {
-        struct timeval curr_tm;
-        gettimeofday(&curr_tm, NULL);
+        struct timespec curr_tm;
+
+        if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+            ALOGE("Failed to get current time");
+            return;
+        }
+
         if (get_time_diff_ms(&last_report_tm, &curr_tm) < kill_timeout_ms) {
             skip_count++;
             return;
@@ -1268,7 +1397,10 @@ do_kill:
                 ALOGI("Unable to free enough memory (pages freed=%d)", pages_freed);
             }
         } else {
-            gettimeofday(&last_report_tm, NULL);
+            if (clock_gettime(CLOCK_MONOTONIC_COARSE, &last_report_tm) != 0) {
+                ALOGE("Failed to get current time");
+                return;
+            }
         }
     }
 }
