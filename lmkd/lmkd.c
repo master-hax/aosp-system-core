@@ -75,6 +75,8 @@
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*(x)))
 #define EIGHT_MEGA (1 << 23)
 
+#define TARGET_UPDATE_MAX_INTERVAL_MS 1000
+
 /* Defined as ProcessList.SYSTEM_ADJ in ProcessList.java */
 #define SYSTEM_ADJ (-900)
 
@@ -439,6 +441,12 @@ static bool writefilestring(const char *path, const char *s,
     return true;
 }
 
+static inline unsigned long get_time_diff_ms(struct timeval *from,
+                                             struct timeval *to) {
+    return (to->tv_sec - from->tv_sec) * 1000 +
+           (to->tv_usec - from->tv_usec) / 1000;
+}
+
 static void cmd_procprio(LMKD_CTRL_PACKET packet) {
     struct proc *procp;
     char path[80];
@@ -549,17 +557,36 @@ static void cmd_procremove(LMKD_CTRL_PACKET packet) {
 static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     int i;
     struct lmk_target target;
+    char minfree_str[PROPERTY_VALUE_MAX];
+    char *pstr = minfree_str;
+    static struct timeval last_req_tm;
+    struct timeval curr_tm;
 
-    if (ntargets > (int)ARRAY_SIZE(lowmem_adj))
+    if (ntargets < 1 || ntargets > (int)ARRAY_SIZE(lowmem_adj))
         return;
+
+    /*
+     * Ratelimit minfree updates to once per TARGET_UPDATE_MAX_INTERVAL_MS
+     * to prevent DoS attacks
+     */
+    gettimeofday(&curr_tm, NULL);
+    if (get_time_diff_ms(&last_req_tm, &curr_tm) < TARGET_UPDATE_MAX_INTERVAL_MS)
+        return;
+
+    last_req_tm = curr_tm;
 
     for (i = 0; i < ntargets; i++) {
         lmkd_pack_get_target(packet, i, &target);
         lowmem_minfree[i] = target.minfree;
         lowmem_adj[i] = target.oom_adj_score;
+        pstr += sprintf(pstr, "%d:%d,", target.minfree, target.oom_adj_score);
     }
 
     lowmem_targets_size = ntargets;
+
+    /* Override the last extra comma */
+    *(pstr - 1) = '\0';
+    property_set("sys.lmk.minfree_levels", minfree_str);
 
     if (has_inkernel_module) {
         char minfreestr[128];
@@ -1065,12 +1092,6 @@ enum vmpressure_level upgrade_level(enum vmpressure_level level) {
 enum vmpressure_level downgrade_level(enum vmpressure_level level) {
     return (enum vmpressure_level)((level > VMPRESS_LEVEL_LOW) ?
         level - 1 : level);
-}
-
-static inline unsigned long get_time_diff_ms(struct timeval *from,
-                                             struct timeval *to) {
-    return (to->tv_sec - from->tv_sec) * 1000 +
-           (to->tv_usec - from->tv_usec) / 1000;
 }
 
 static void mp_event_common(int data, uint32_t events __unused) {
