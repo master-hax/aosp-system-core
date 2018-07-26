@@ -38,6 +38,7 @@
 #include <cutils/sockets.h>
 #include <lmkd.h>
 #include <log/log.h>
+#include <log/log_event_list.h>
 #include <log/log_time.h>
 
 /*
@@ -69,6 +70,9 @@
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define LINE_MAX 128
+
+/* Android Logger event logtags (see event.logtags) */
+#define MEMINFO_LOG_TAG 10195355
 
 /* gid containing AID_SYSTEM required */
 #define INKERNEL_MINFREE_PATH "/sys/module/lowmemorykiller/parameters/minfree"
@@ -196,7 +200,17 @@ enum meminfo_field {
     MI_SHMEM,
     MI_UNEVICTABLE,
     MI_FREE_SWAP,
-    MI_DIRTY,
+    MI_ACTIVE_ANON,
+    MI_INACTIVE_ANON,
+    MI_ACTIVE_FILE,
+    MI_INACTIVE_FILE,
+    MI_SRECLAIMABLE,
+    MI_SUNRECLAIM,
+    MI_KERNEL_STACK,
+    MI_PAGE_TABLES,
+    MI_ION_HELP,
+    MI_ION_HELP_POOL,
+    MI_CMA_FREE,
     MI_FIELD_COUNT
 };
 
@@ -208,7 +222,17 @@ static const char* const meminfo_field_names[MI_FIELD_COUNT] = {
     "Shmem:",
     "Unevictable:",
     "SwapFree:",
-    "Dirty:",
+    "Active(anon):",
+    "Inactive(anon):",
+    "Active(file):",
+    "Inactive(file):",
+    "SReclaimable:",
+    "SUnreclaim:",
+    "KernelStack:",
+    "PageTables:",
+    "ION_heap:",
+    "ION_heap_pool:",
+    "CmaFree:",
 };
 
 union meminfo {
@@ -220,7 +244,17 @@ union meminfo {
         int64_t shmem;
         int64_t unevictable;
         int64_t free_swap;
-        int64_t dirty;
+        int64_t active_anon;
+        int64_t inactive_anon;
+        int64_t active_file;
+        int64_t inactive_file;
+        int64_t sreclaimable;
+        int64_t sunreclaimable;
+        int64_t kernel_stack;
+        int64_t page_tables;
+        int64_t ion_heap;
+        int64_t ion_heap_pool;
+        int64_t cma_free;
         /* fields below are calculated rather than read from the file */
         int64_t nr_file_pages;
     } field;
@@ -903,6 +937,19 @@ static int meminfo_parse(union meminfo *mi) {
     return 0;
 }
 
+static void meminfo_log(union meminfo *mi) {
+    android_log_context ctx = create_android_logger(MEMINFO_LOG_TAG);
+
+    android_log_write_list_begin(ctx);
+    for (int field_idx = 0; field_idx < MI_FIELD_COUNT; field_idx++) {
+        android_log_write_int64(ctx, mi->arr[field_idx]);
+    }
+    android_log_write_list_end(ctx);
+
+    android_log_write_list(ctx, LOG_ID_EVENTS);
+    android_log_destroy(&ctx);
+}
+
 static int proc_get_size(int pid) {
     char path[PATH_MAX];
     char line[LINE_MAX];
@@ -1266,6 +1313,8 @@ do_kill:
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
+        } else {
+            meminfo_log(&mi);
         }
     } else {
         int pages_freed;
@@ -1317,6 +1366,9 @@ do_kill:
                 ALOGE("Failed to get current time");
                 return;
             }
+        }
+        if (pages_freed > 0) {
+            meminfo_log(&mi);
         }
     }
 }
