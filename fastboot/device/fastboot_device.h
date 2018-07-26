@@ -39,8 +39,17 @@ class PartitionHandle {
   public:
     PartitionHandle() {}
     explicit PartitionHandle(const std::string& path) : path_(path) {}
+    PartitionHandle(const std::string& path, std::function<void()>&& closer)
+        : path_(path), closer_(std::move(closer)) {}
     PartitionHandle(const PartitionHandle&) = delete;
     PartitionHandle(PartitionHandle&&) = default;
+    ~PartitionHandle() {
+        if (closer_) {
+            // Make sure the device is closed first.
+            fd_ = {};
+            closer_();
+        }
+    }
     PartitionHandle& operator=(const PartitionHandle&) = delete;
     PartitionHandle& operator=(PartitionHandle&&) = default;
     const std::string& path() const { return path_; }
@@ -50,6 +59,7 @@ class PartitionHandle {
   private:
     std::string path_;
     android::base::unique_fd fd_;
+    std::function<void()> closer_;
 };
 
 class FastbootDevice {
@@ -78,6 +88,7 @@ class FastbootDevice {
 
   private:
     bool OpenPhysicalPartition(const std::string& name, PartitionHandle* handle);
+    bool OpenLogicalPartition(const std::string& name, PartitionHandle* handle);
 
     const std::unordered_map<std::string, CommandHandler> kCommandMap;
 

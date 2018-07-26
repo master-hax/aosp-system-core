@@ -16,17 +16,20 @@
 
 #include "fastboot_device.h"
 
+#include <algorithm>
+
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
-
-#include <algorithm>
+#include <fs_mgr_dm_linear.h>
+#include <liblp/liblp.h>
 
 #include "constants.h"
 #include "flashing.h"
 #include "usb_client.h"
 
+using namespace android::fs_mgr;
 using ::android::base::unique_fd;
 using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::IBootControl;
@@ -80,8 +83,12 @@ void FastbootDevice::CloseDevice() {
 }
 
 bool FastbootDevice::OpenPartition(const std::string& name, PartitionHandle* handle) {
-    if (!OpenPhysicalPartition(name, handle)) {
-        LOG(ERROR) << "No such partition: " << name;
+    if (LogicalPartitionExists(name, GetCurrentSlot())) {
+        if (!OpenLogicalPartition(name, handle)) {
+            return false;
+        }
+    } else if (!OpenPhysicalPartition(name, handle)) {
+        LOG(ERROR) << "Could not find partition: " << name;
         return false;
     }
 
@@ -100,6 +107,21 @@ bool FastbootDevice::OpenPhysicalPartition(const std::string& name, PartitionHan
         return false;
     }
     *handle = PartitionHandle(*path);
+    return true;
+}
+
+bool FastbootDevice::OpenLogicalPartition(const std::string& name, PartitionHandle* handle) {
+    std::optional<std::string> path = FindPhysicalPartition(LP_METADATA_PARTITION_NAME);
+    if (!path) {
+        return false;
+    }
+    uint32_t slot_number = SlotNumberForSlotSuffix(GetCurrentSlot());
+    std::string dm_path;
+    if (!CreateLogicalPartition(path->c_str(), slot_number, name, true, &dm_path)) {
+        LOG(ERROR) << "Could not map partition: " << name;
+        return false;
+    }
+    *handle = PartitionHandle(dm_path, [name]() -> void { DestroyLogicalPartition(name); });
     return true;
 }
 
