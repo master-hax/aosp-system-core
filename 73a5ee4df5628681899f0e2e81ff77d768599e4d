@@ -22,6 +22,30 @@
       "revId": "73a5ee4df5628681899f0e2e81ff77d768599e4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5e2e76d_59e8d81b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-07-26T01:48:41Z",
+      "side": 1,
+      "message": "I don\u0027t think that running adb_test.exe actually would have caught this, unfortunately :-(\n\nAt some point I\u0027m planning to make the adb over TCP just work under wine, and run the tests via that. (There\u0027s a distinct chance that this actually Just Works, but I haven\u0027t actually tried yet\u003e",
+      "parentUuid": "9718093f_9ca5796c",
+      "range": {
+        "startLine": 13,
+        "startChar": 33,
+        "endLine": 13,
+        "endChar": 66
+      },
+      "revId": "73a5ee4df5628681899f0e2e81ff77d768599e4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
