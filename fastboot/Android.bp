@@ -114,6 +114,7 @@ cc_binary {
         "libutils",
         "libcutils",
         "libfs_mgr",
+        "liblp",
     ],
 
     static_libs: [
