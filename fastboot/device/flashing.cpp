@@ -21,6 +21,7 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <fs_mgr.h>
+#include <liblp/liblp.h>
 #include <sparse/sparse.h>
 
 #include <algorithm>
@@ -34,6 +35,8 @@ namespace {
 constexpr uint32_t SPARSE_HEADER_MAGIC = 0xed26ff3a;
 
 }  // namespace
+
+using namespace android::fs_mgr;
 
 std::optional<std::string> FindPhysicalPartition(const std::string& name) {
     static const std::string path = "/dev/block/platform/soc";
@@ -74,9 +77,34 @@ std::optional<std::string> FindPhysicalPartition(const std::string& name) {
     return {};
 }
 
-bool PartitionExists(const std::string& name) {
+static const LpMetadataPartition* FindLogicalPartition(const LpMetadata& metadata,
+                                                       const std::string& name) {
+    for (const auto& partition : metadata.partitions) {
+        if (GetPartitionName(partition) == name) {
+            return &partition;
+        }
+    }
+    return nullptr;
+}
+
+bool PartitionExists(const std::string& name, const std::string& slot_suffix) {
     auto path = FindPhysicalPartition(name);
-    return !!path;
+    if (path) {
+        return true;
+    }
+
+    // Try to find logical partitions next.
+    path = FindPhysicalPartition(LP_METADATA_PARTITION_NAME);
+    if (!path) {
+        return false;
+    }
+
+    uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
+    std::unique_ptr<LpMetadata> metadata = ReadMetadata(path->c_str(), slot_number);
+    if (!metadata) {
+        return false;
+    }
+    return FindLogicalPartition(*metadata.get(), name) != nullptr;
 }
 
 int FlashRawDataChunk(int fd, const char* data, size_t len) {
