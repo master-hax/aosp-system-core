@@ -19,6 +19,10 @@
 #include <string>
 #include <vector>
 
-bool PartitionExists(const std::string& name);
+// Find a partition by name. If no such physical partition exists, but a super
+// partition exists and has a partition table for the current slot, then that
+// table is searched as well.
+bool PartitionExists(const std::string& name, const std::string& slot_suffix);
+
 std::optional<std::string> FindPhysicalPartition(const std::string& name);
 int FlashBlockDevice(int fd, std::vector<char>& downloaded_data);
