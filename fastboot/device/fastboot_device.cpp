@@ -19,6 +19,8 @@
 #include <android-base/logging.h>
 #include <android-base/strings.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
+#include <fs_mgr_dm_linear.h>
+#include <liblp/liblp.h>
 
 #include "constants.h"
 #include "flashing.h"
@@ -26,6 +28,7 @@
 
 using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::Slot;
+using namespace android::fs_mgr;
 namespace sph = std::placeholders;
 
 FastbootDevice::FastbootDevice()
@@ -80,8 +83,20 @@ bool FastbootDevice::OpenPartition(const std::string& name, PartitionHandle* han
     std::function<void()> closer;
     std::optional<std::string> path = FindPhysicalPartition(name);
     if (!path) {
-        LOG(ERROR) << "No such partition: " << name;
-        return false;
+        // Try to get a logical partition instead.
+        path = FindPhysicalPartition(LP_METADATA_PARTITION_NAME);
+        if (!path) {
+            LOG(ERROR) << "Failed to find partition: " << name;
+            return false;
+        }
+        uint32_t slot_number = SlotNumberForSlotSuffix(GetCurrentSlot());
+        std::string dm_path;
+        if (!CreateLogicalPartition(path->c_str(), slot_number, name, &dm_path)) {
+            LOG(ERROR) << "Could not find or map partition: " << name;
+            return false;
+        }
+        closer = [name]() -> void { DestroyLogicalPartition(name); };
+        path.emplace(dm_path);
     }
 
     android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(path->c_str(), O_WRONLY | O_EXCL)));
