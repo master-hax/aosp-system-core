@@ -50,32 +50,32 @@ LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_UNSTRIPPED)
 
 LOCAL_STATIC_LIBRARIES := \
     libinit \
-    libbootloader_message \
-    libfs_mgr \
-    libfec \
-    libfec_rs \
-    libhidl-gen-utils \
-    libsquashfs_utils \
-    liblogwrap \
-    libext4_utils \
-    libseccomp_policy \
-    libcrypto_utils \
-    libsparse \
-    libprocessgroup \
     libavb \
-    libkeyutils \
-    libprotobuf-cpp-lite \
     libpropertyinfoserializer \
     libpropertyinfoparser \
 
 shared_libs := \
-    libcutils \
     libbase \
-    liblog \
+    libbootloader_message \
     libcrypto \
+    libcrypto_utils \
+    libcutils \
     libdl \
-    libz \
+    libext4_utils \
+    libfec \
+    libfec_rs \
+    libfs_mgr \
+    libhidl-gen-utils \
+    libkeyutils \
+    liblog \
+    liblogwrap \
+    libprocessgroup \
+    libprotobuf-cpp-lite \
+    libseccomp_policy \
     libselinux \
+    libsparse \
+    libsquashfs_utils \
+    libz \
 
 ifneq ($(BOARD_BUILD_SYSTEM_ROOT_IMAGE),true)
 # init is static executable for non-system-as-root devices, because the dynamic linker
