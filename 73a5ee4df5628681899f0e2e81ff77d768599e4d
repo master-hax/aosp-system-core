@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9718093f_9ca5796c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-26T01:24:11Z",
+      "side": 1,
+      "message": "welp, sorry about that. but now i see that adb_test.exe works on wine, so I\u0027ll keep that in mind for the future.",
+      "range": {
+        "startLine": 13,
+        "startChar": 33,
+        "endLine": 13,
+        "endChar": 66
+      },
+      "revId": "73a5ee4df5628681899f0e2e81ff77d768599e4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
