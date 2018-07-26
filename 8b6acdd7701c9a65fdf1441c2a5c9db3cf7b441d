@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38dfa7c6_ddcb2862",
+        "filename": "adb/services.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-26T15:38:00Z",
+      "side": 1,
+      "message": "(this is one reason why i still prefer `static`!)",
+      "revId": "8b6acdd7701c9a65fdf1441c2a5c9db3cf7b441d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
