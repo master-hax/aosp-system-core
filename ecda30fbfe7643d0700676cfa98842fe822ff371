@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "92c8c789_f8b4f13c",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-07-26T01:49:33Z",
+      "side": 1,
+      "message": "Good idea. I also moved the declaration of fd down to where it\u0027s used.",
+      "parentUuid": "386957b6_6b2f8fad",
+      "range": {
+        "startLine": 250,
+        "startChar": 8,
+        "endLine": 250,
+        "endChar": 10
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e3e25e7b_86c32ffd",
         "filename": "adb/transport_local.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "9b65b3a8_ef5c81c6",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-07-26T01:49:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3e25e7b_86c32ffd",
+      "range": {
+        "startLine": 341,
+        "startChar": 4,
+        "endLine": 341,
+        "endChar": 12
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2f71730_3e08c5ca",
         "filename": "adb/transport_local.cpp",
         "patchSetId": 1
@@ -59,6 +107,30 @@
       "writtenOn": "2018-07-26T01:32:56Z",
       "side": 1,
       "message": "Would inverting the order affect things?",
+      "range": {
+        "startLine": 365,
+        "startChar": 16,
+        "endLine": 365,
+        "endChar": 30
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "579eb1e8_f617c23b",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-07-26T01:49:33Z",
+      "side": 1,
+      "message": "It shouldn\u0027t, it just makes it so that the other side will start sending data a tiny bit earlier, that we either throw away when the fd gets closed on failure, or handle normally.",
+      "parentUuid": "b2f71730_3e08c5ca",
       "range": {
         "startLine": 365,
         "startChar": 16,
