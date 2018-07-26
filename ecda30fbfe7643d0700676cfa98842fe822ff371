@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "386957b6_6b2f8fad",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-26T01:32:56Z",
+      "side": 1,
+      "message": "would it make sense to move this out of the while-true and make it a\n\n while (serverfd \u003d\u003d -1)\n\n?",
+      "range": {
+        "startLine": 250,
+        "startChar": 8,
+        "endLine": 250,
+        "endChar": 10
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3e25e7b_86c32ffd",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-26T01:32:56Z",
+      "side": 1,
+      "message": "maybe\n\n unique_fd fd(qemu_pipe_open(con_name));\n\nto avoid splitting declaration and initialization now that you\u0027re touching those lines anyways.",
+      "range": {
+        "startLine": 341,
+        "startChar": 4,
+        "endLine": 341,
+        "endChar": 12
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2f71730_3e08c5ca",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-26T01:32:56Z",
+      "side": 1,
+      "message": "Would inverting the order affect things?",
+      "range": {
+        "startLine": 365,
+        "startChar": 16,
+        "endLine": 365,
+        "endChar": 30
+      },
+      "revId": "ecda30fbfe7643d0700676cfa98842fe822ff371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
