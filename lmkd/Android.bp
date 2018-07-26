@@ -18,6 +18,7 @@ cc_binary {
             ],
         },
     },
+    logtags: ["event.logtags"],
 }
 
 cc_library_static {
