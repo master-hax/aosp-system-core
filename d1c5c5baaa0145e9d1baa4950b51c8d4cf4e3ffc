@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7036e54f_15538606",
+        "filename": "libsync/include/ndk/sync.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-27T22:14:56Z",
+      "side": 1,
+      "message": "anyone know what we need to do to make this show up somewhere appropriate in the doxygen output? atm it looks like this just gets dropped on the floor?",
+      "revId": "d1c5c5baaa0145e9d1baa4950b51c8d4cf4e3ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
