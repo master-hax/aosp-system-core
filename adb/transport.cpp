@@ -736,7 +736,7 @@ static void transport_unref(atransport* t) {
     t->ref_count--;
     if (t->ref_count == 0) {
         t->connection()->Stop();
-        if (t->IsTcpDevice() && !t->kicked()) {
+        if (t->IsTcpDevice() && !t->kicked() && false) {
             D("transport: %s unref (attempting reconnection) %d", t->serial.c_str(), t->kicked());
             reconnect_handler.TrackTransport(t);
         } else {
