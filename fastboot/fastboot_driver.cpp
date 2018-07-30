@@ -517,11 +517,13 @@ int FastBootDriver::SparseWriteCallback(std::vector<char>& tpbuf, const char* da
     // Now we need to send a multiple of chunk size
     size_t nchunks = (len - total) / TRANSPORT_CHUNK_SIZE;
     size_t nbytes = TRANSPORT_CHUNK_SIZE * nchunks;
-    if (SendBuffer(data + total, nbytes)) {
-        error_ = ErrnoStr("Send failed in SparseWriteCallback()");
-        return -1;
+    if (nbytes) {
+        if (SendBuffer(data + total, nbytes)) {
+            error_ = ErrnoStr("Send failed in SparseWriteCallback()");
+            return -1;
+        }
+        total += nbytes;
     }
-    total += nbytes;
 
     if (len - total > 0) {  // We have residual data to save for next time
         tpbuf.assign(data + total, data + len);
