@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f738d493_dfb3567d",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-30T21:30:28Z",
+      "side": 1,
+      "message": "should we make SendBuffer early exit on a zero-byte write instead? or do we need to preserve write boundaries?",
+      "range": {
+        "startLine": 521,
+        "startChar": 12,
+        "endLine": 521,
+        "endChar": 22
+      },
+      "revId": "85059379b2c2f749382b6b0f0fb2fdc3974e7096",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
