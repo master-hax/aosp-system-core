@@ -237,12 +237,52 @@ void StdioLogger(LogId, LogSeverity severity, const char* /*tag*/, const char* /
   }
 }
 
+// Make the optimizer think that var is aliased. This is to prevent it from
+// optimizing out local variables that would not otherwise be live at the point
+// of a potential crash.
+[[clang::optnone]] void Alias(const void* ATTRIBUTE_UNUSED) {}
+
 void DefaultAborter(const char* abort_message) {
 #ifdef __ANDROID__
   android_set_abort_message(abort_message);
-#else
-  UNUSED(abort_message);
 #endif
+
+  // Write another copy of the first few characters of the message into a
+  // stack-based buffer so that it can appear in minidumps.
+  // Choosing a small-ish buffer size since Breakpad will only pick up the first
+  // few kilobytes of each stack, so that will prevent this buffer from kicking
+  // out other stack frames.
+  //
+  // The format of this buffer is as follows:
+  //
+  // * The four-byte magic constant 0xcb575f2e.
+  // * The one-byte abort message length.
+  // * The first 251 bytes of the abort message (not null-terminated).
+  constexpr size_t kTotalSize = 256;
+  char abort_message_stack_buf[kTotalSize];
+  char* buf = abort_message_stack_buf;
+  size_t buf_len = sizeof(abort_message_stack_buf);
+
+  uint32_t* magic = reinterpret_cast<uint32_t*>(buf);
+  buf += sizeof(uint32_t);
+  buf_len -= sizeof(uint32_t);
+
+  uint8_t* length = reinterpret_cast<uint8_t*>(buf);
+  buf += sizeof(uint8_t);
+  buf_len -= sizeof(uint8_t);
+
+  // Add an arbitrary four-byte sequence to make it easier for the crash
+  // collector to find the string in the minidump.
+  // Chosen by fair dice roll.
+  memcpy(magic, "\xcb\x57\x5f\x2e", sizeof(uint32_t));
+  size_t abort_message_len = strlen(abort_message);
+  *length = static_cast<uint8_t>(std::min(buf_len, abort_message_len));
+  memcpy(buf, abort_message, *length);
+
+  // We're about to crash. Use Alias() in hopes that the compiler won't
+  // optimize it away so that it makes it into the crash dump.
+  Alias(abort_message_stack_buf);
+
   abort();
 }
 
