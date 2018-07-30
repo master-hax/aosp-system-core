@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2d44f37_c69a0b0f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2018-07-30T15:24:01Z",
+      "side": 1,
+      "message": "Please add:\n\nChange-Id: Ic93c857d7f1e53bc0a8f15661c83bbb4d0502142\n\nto make sure that future uploads go to the same CL.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 29
+      },
+      "revId": "868dbe6693a351e6e1a28ad2c75ed8b35b760720",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
