@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "504e5fbf_0a856e07",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2018-07-30T15:28:20Z",
+      "side": 1,
+      "message": "Ah, you had a Change-Id line here. The Change-Id line needs to be towards the end of the commit message; and now that the has been uploaded, the value of Change-Id should be Ic93c857d7f1e53bc0a8f15661c83bbb4d0502142 , else repo upload will create a new CL. See my other comment below.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 52
+      },
+      "revId": "868dbe6693a351e6e1a28ad2c75ed8b35b760720",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e4b1f58_2cdf7283",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1103203
+      },
+      "writtenOn": "2018-07-30T15:28:20Z",
+      "side": 1,
+      "message": "Typically we don\u0027t revert to change-ids here. The SHA of the previous commit which is quoted in line 9 should be enough. But, if this is not a revert (looks like it isn\u0027t), then it should be presented as another attempt to submit the orignal CL (commit ceb7cbf5fde0ff26a35d442135d01e52b0ef0771), not a revert of that CL\u0027s revert.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 61
+      },
+      "revId": "868dbe6693a351e6e1a28ad2c75ed8b35b760720",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f2d44f37_c69a0b0f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
