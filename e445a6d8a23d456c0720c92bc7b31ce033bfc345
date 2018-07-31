@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89694fa2_e50decd6",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-31T23:05:44Z",
+      "side": 1,
+      "message": "you can also declare the queue as\n\n std::priority_queue\u003cReconnectAttempt, std::vector\u003cReconnectAttempt\u003e, std::greater\u003cReconnectAttempt\u003e\u003e\n\nbut that might be more verbose than this comment.",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 81
+      },
+      "revId": "e445a6d8a23d456c0720c92bc7b31ce033bfc345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
