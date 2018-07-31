@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "adb_unique_fd.h"
 
-void set_verity_enabled_state_service(unique_fd fd, bool enable);
+void set_verity_enabled_state_service(unique_fd fd, const std::string& cmd);
