@@ -410,9 +410,23 @@ LogMessage::LogMessage(const char* file, unsigned int line, LogId id, LogSeverit
                        const char* tag, int error)
     : data_(new LogMessageData(file, line, id, severity, tag, error)) {}
 
-LogMessage::LogMessage(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                       int error)
-    : LogMessage(file, line, id, severity, nullptr, error) {}
+#if 0
+extern "C" void _ZN7android4base10LogMessageC2EPKcjNS0_5LogIdENS0_11LogSeverityES3_i(
+        LogMessage *obj, const char* file, unsigned int line, LogId id, LogSeverity severity,
+        const char* tag, int error);
+
+extern "C" void _ZN7android4base10LogMessageC1EPKcjNS0_5LogIdENS0_11LogSeverityEi(LogMessage *obj,
+        const char* file, unsigned int line, LogId id, LogSeverity severity, int error) {
+    _ZN7android4base10LogMessageC2EPKcjNS0_5LogIdENS0_11LogSeverityES3_i(obj, file, line, id, severity, nullptr, error);
+}
+
+extern "C" void _ZN7android4base10LogMessageC2EPKcjNS0_5LogIdENS0_11LogSeverityEi(LogMessage *obj,
+        const char* file, unsigned int line, LogId id, LogSeverity severity, int error) {
+    _ZN7android4base10LogMessageC2EPKcjNS0_5LogIdENS0_11LogSeverityES3_i(obj, file, line, id, severity, nullptr, error);
+}
+
+extern "C" void _ZN7android4base10LogMessage7LogLineEPKcjNS0_5LogIdENS0_11LogSeverityES3_() {}
+#endif
 
 LogMessage::~LogMessage() {
   // Check severity again. This is duplicate work wrt/ LOG macros, but not LOG_STREAM.
@@ -468,11 +482,6 @@ void LogMessage::LogLine(const char* file, unsigned int line, LogId id, LogSever
   } else {
     Logger()(id, severity, tag, file, line, message);
   }
-}
-
-void LogMessage::LogLine(const char* file, unsigned int line, LogId id, LogSeverity severity,
-                         const char* message) {
-  LogLine(file, line, id, severity, nullptr, message);
 }
 
 LogSeverity GetMinimumLogSeverity() {
