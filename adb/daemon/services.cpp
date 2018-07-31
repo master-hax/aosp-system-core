@@ -196,54 +196,56 @@ unique_fd ShellService(const std::string& args, const atransport* transport) {
 }
 
 unique_fd daemon_service_to_fd(const char* name, atransport* transport) {
-    if (!strncmp("dev:", name, 4)) {
-        return unique_fd{unix_open(name + 4, O_RDWR | O_CLOEXEC)};
-    } else if (!strncmp(name, "framebuffer:", 12)) {
+    if (!strncmp("dev:", name, strlen("dev:"))) {
+        return unique_fd{unix_open(name + strlen("dev:"), O_RDWR | O_CLOEXEC)};
+    } else if (!strncmp(name, "framebuffer:", strlen("framebuffer:"))) {
         return create_service_thread("fb", framebuffer_service);
-    } else if (!strncmp(name, "jdwp:", 5)) {
-        return create_jdwp_connection_fd(atoi(name + 5));
-    } else if (!strncmp(name, "shell", 5)) {
-        return ShellService(name + 5, transport);
-    } else if (!strncmp(name, "exec:", 5)) {
-        return StartSubprocess(name + 5, nullptr, SubprocessType::kRaw, SubprocessProtocol::kNone);
-    } else if (!strncmp(name, "sync:", 5)) {
+    } else if (!strncmp(name, "jdwp:", strlen("jdwp:"))) {
+        return create_jdwp_connection_fd(atoi(name + strlen("jdwp:")));
+    } else if (!strncmp(name, "shell", strlen("shell"))) {
+        return ShellService(name + strlen("shell"), transport);
+    } else if (!strncmp(name, "exec:", strlen("exec:"))) {
+        return StartSubprocess(name + strlen("exec:"), nullptr, SubprocessType::kRaw,
+                               SubprocessProtocol::kNone);
+    } else if (!strncmp(name, "sync:", strlen("sync:"))) {
         return create_service_thread("sync", file_sync_service);
-    } else if (!strncmp(name, "remount:", 8)) {
+    } else if (!strncmp(name, "remount:", strlen("remount:"))) {
         std::string options(name + strlen("remount:"));
         return create_service_thread("remount",
                                      std::bind(remount_service, std::placeholders::_1, options));
-    } else if (!strncmp(name, "reboot:", 7)) {
+    } else if (!strncmp(name, "reboot:", strlen("reboot:"))) {
         std::string arg(name + strlen("reboot:"));
         return create_service_thread("reboot",
                                      std::bind(reboot_service, std::placeholders::_1, arg));
-    } else if (!strncmp(name, "root:", 5)) {
+    } else if (!strncmp(name, "root:", strlen("root:"))) {
         return create_service_thread("root", restart_root_service);
-    } else if (!strncmp(name, "unroot:", 7)) {
+    } else if (!strncmp(name, "unroot:", strlen("unroot:"))) {
         return create_service_thread("unroot", restart_unroot_service);
-    } else if (!strncmp(name, "backup:", 7)) {
+    } else if (!strncmp(name, "backup:", strlen("backup:"))) {
         return StartSubprocess(
-                android::base::StringPrintf("/system/bin/bu backup %s", (name + 7)).c_str(),
+                android::base::StringPrintf("/system/bin/bu backup %s", (name + strlen("backup:")))
+                        .c_str(),
                 nullptr, SubprocessType::kRaw, SubprocessProtocol::kNone);
-    } else if (!strncmp(name, "restore:", 8)) {
+    } else if (!strncmp(name, "restore:", strlen("restore:"))) {
         return StartSubprocess("/system/bin/bu restore", nullptr, SubprocessType::kRaw,
                                SubprocessProtocol::kNone);
-    } else if (!strncmp(name, "tcpip:", 6)) {
+    } else if (!strncmp(name, "tcpip:", strlen("tcpip:"))) {
         int port;
-        if (sscanf(name + 6, "%d", &port) != 1) {
+        if (sscanf(name + strlen("tcpip:"), "%d", &port) != 1) {
             return unique_fd{};
         }
         return create_service_thread("tcp",
                                      std::bind(restart_tcp_service, std::placeholders::_1, port));
-    } else if (!strncmp(name, "usb:", 4)) {
+    } else if (!strncmp(name, "usb:", strlen("usb:"))) {
         return create_service_thread("usb", restart_usb_service);
-    } else if (!strncmp(name, "reverse:", 8)) {
-        return reverse_service(name + 8, transport);
-    } else if (!strncmp(name, "disable-verity:", 15)) {
-        return create_service_thread("verity-on", std::bind(set_verity_enabled_state_service,
-                                                            std::placeholders::_1, false));
-    } else if (!strncmp(name, "enable-verity:", 15)) {
+    } else if (!strncmp(name, "reverse:", strlen("reverse:"))) {
+        return reverse_service(name + strlen("reverse:"), transport);
+    } else if (!strncmp(name, "disable-verity:", strlen("disable-verity:"))) {
         return create_service_thread("verity-off", std::bind(set_verity_enabled_state_service,
-                                                             std::placeholders::_1, true));
+                                                             std::placeholders::_1, false));
+    } else if (!strncmp(name, "enable-verity:", strlen("enable-verity:"))) {
+        return create_service_thread("verity-on", std::bind(set_verity_enabled_state_service,
+                                                            std::placeholders::_1, true));
     } else if (!strcmp(name, "reconnect")) {
         return create_service_thread(
                 "reconnect", std::bind(reconnect_service, std::placeholders::_1, transport));
