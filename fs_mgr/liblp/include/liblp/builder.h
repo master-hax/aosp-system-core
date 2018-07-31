@@ -186,10 +186,8 @@ class MetadataBuilder {
     MetadataBuilder();
     bool Init(const BlockDeviceInfo& info, uint32_t metadata_max_size, uint32_t metadata_slot_count);
     bool Init(const LpMetadata& metadata);
-
-    bool GrowPartition(Partition* partition, uint64_t requested_size);
-    void ShrinkPartition(Partition* partition, uint64_t requested_size);
-
+    bool GrowPartition(Partition* partition, uint64_t aligned_size);
+    void ShrinkPartition(Partition* partition, uint64_t aligned_size);
     uint64_t AlignSector(uint64_t sector);
 
     LpMetadataGeometry geometry_;
