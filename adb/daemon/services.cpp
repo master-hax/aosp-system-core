@@ -246,11 +246,13 @@ unique_fd daemon_service_to_fd(const char* name, atransport* transport) {
     } else if (!strncmp(name, "reverse:", strlen("reverse:"))) {
         return reverse_service(name + strlen("reverse:"), transport);
     } else if (!strncmp(name, "disable-verity:", strlen("disable-verity:"))) {
-        return create_service_thread("verity-off", std::bind(set_verity_enabled_state_service,
-                                                             std::placeholders::_1, false));
+        return create_service_thread(
+                "verity-off", std::bind(set_verity_enabled_state_service, std::placeholders::_1,
+                                        std::string(name)));
     } else if (!strncmp(name, "enable-verity:", strlen("enable-verity:"))) {
-        return create_service_thread("verity-on", std::bind(set_verity_enabled_state_service,
-                                                            std::placeholders::_1, true));
+        return create_service_thread(
+                "verity-on", std::bind(set_verity_enabled_state_service, std::placeholders::_1,
+                                       std::string(name)));
     } else if (!strcmp(name, "reconnect")) {
         return create_service_thread(
                 "reconnect", std::bind(reconnect_service, std::placeholders::_1, transport));
