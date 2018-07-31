@@ -1601,10 +1601,16 @@ int adb_commandline(int argc, const char** argv) {
         std::string command;
         if (!strcmp(argv[0], "reboot-bootloader")) {
             command = "reboot:bootloader";
-        } else if (argc > 1) {
-            command = android::base::StringPrintf("%s:%s", argv[0], argv[1]);
         } else {
-            command = android::base::StringPrintf("%s:", argv[0]);
+            command = argv[0];
+            if (argc == 1) {
+                command += ':';
+            } else {
+                for (int i = 1; i < argc; ++i) {
+                    command += ':';
+                    command += argv[i];
+                }
+            }
         }
         return adb_connect_command(command);
     } else if (!strcmp(argv[0], "root") || !strcmp(argv[0], "unroot")) {

@@ -245,12 +245,14 @@ unique_fd daemon_service_to_fd(const char* name, atransport* transport) {
         return create_service_thread("usb", restart_usb_service);
     } else if (!strncmp(name, "reverse:", 8)) {
         return reverse_service(name + 8, transport);
-    } else if (!strncmp(name, "disable-verity:", 15)) {
-        return create_service_thread("verity-on", std::bind(set_verity_enabled_state_service,
-                                                            std::placeholders::_1, false));
-    } else if (!strncmp(name, "enable-verity:", 15)) {
-        return create_service_thread("verity-off", std::bind(set_verity_enabled_state_service,
-                                                             std::placeholders::_1, true));
+    } else if (!strncmp(name, "disable-verity:", strlen("disable-verity:"))) {
+        return create_service_thread(
+                "verity-off", std::bind(set_verity_enabled_state_service, std::placeholders::_1,
+                                        std::string(name)));
+    } else if (!strncmp(name, "enable-verity:", strlen("enable-verity:"))) {
+        return create_service_thread(
+                "verity-on", std::bind(set_verity_enabled_state_service, std::placeholders::_1,
+                                       std::string(name)));
     } else if (!strcmp(name, "reconnect")) {
         return create_service_thread(
                 "reconnect", std::bind(reconnect_service, std::placeholders::_1, transport));
