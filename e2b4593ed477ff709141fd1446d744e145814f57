@@ -22,6 +22,30 @@
       "revId": "e2b4593ed477ff709141fd1446d744e145814f57",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d5d8f00_bd79c2d5",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-07-31T01:01:38Z",
+      "side": 1,
+      "message": "oh crud, i did not find that at first :/ that makes it less useful for aosp in that case :(",
+      "parentUuid": "87c6fd41_4c369a64",
+      "range": {
+        "startLine": 251,
+        "startChar": 49,
+        "endLine": 251,
+        "endChar": 59
+      },
+      "revId": "e2b4593ed477ff709141fd1446d744e145814f57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
