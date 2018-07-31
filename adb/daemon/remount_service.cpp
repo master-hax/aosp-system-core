@@ -36,6 +36,7 @@
 #include <vector>
 
 #include <android-base/properties.h>
+#include <android-base/strings.h>
 #include <bootloader_message/bootloader_message.h>
 #include <cutils/android_reboot.h>
 #include <fs_mgr.h>
@@ -199,7 +200,16 @@ static void reboot_for_remount(int fd, bool need_fsck) {
 }
 
 void remount_service(unique_fd fd, const std::string& cmd) {
-    bool user_requested_reboot = cmd == "-R";
+    auto user_requested_reboot = false;
+    auto args = android::base::Split(cmd, ":");
+    for (auto it = args.begin(); it != args.end();) {
+        if (*it == "-R") {
+            user_requested_reboot = true;
+            it = args.erase(it);
+        } else {
+            ++it;
+        }
+    }
 
     if (getuid() != 0) {
         WriteFdExactly(fd.get(), "Not running as root. Try \"adb root\" first.\n");
@@ -220,7 +230,8 @@ void remount_service(unique_fd fd, const std::string& cmd) {
 
     // If we can use overlayfs, lets get it in place first
     // before we struggle with determining deduplication operations.
-    if (!verity_enabled && fs_mgr_overlayfs_setup() && fs_mgr_overlayfs_mount_all()) {
+    if (!verity_enabled && fs_mgr_overlayfs_setup(args.empty() ? nullptr : args[0].c_str()) &&
+        fs_mgr_overlayfs_mount_all()) {
         WriteFdExactly(fd.get(), "overlayfs mounted\n");
     }
 
@@ -240,7 +251,9 @@ void remount_service(unique_fd fd, const std::string& cmd) {
     if (user_requested_reboot) {
         if (!dedup.empty() || verity_enabled) {
             if (verity_enabled) {
-                set_verity_enabled_state_service(unique_fd(dup(fd.get())), false);
+                set_verity_enabled_state_service(
+                        unique_fd(dup(fd.get())),
+                        std::string("disable-verity:") + android::base::Join(args, ':'));
             }
             reboot_for_remount(fd.get(), !dedup.empty());
             return;
