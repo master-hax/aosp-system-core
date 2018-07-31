@@ -186,6 +186,9 @@ class MetadataBuilder {
     // underlying filesystem or contents of the partition on disk.
     void ShrinkPartition(Partition* partition, uint64_t requested_size);
 
+    // Grow or shrink a partition to the requested size.
+    bool ResizePartition(Partition* partition, uint64_t requested_size);
+
     // Amount of space that can be allocated to logical partitions.
     uint64_t AllocatableSpace() const;
 

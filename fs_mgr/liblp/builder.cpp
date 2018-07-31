@@ -465,5 +465,15 @@ void MetadataBuilder::set_block_device_info(const BlockDeviceInfo& device_info) 
     }
 }
 
+bool MetadataBuilder::ResizePartition(Partition* partition, uint64_t requested_size) {
+    if (requested_size > partition->size()) {
+        return GrowPartition(partition, requested_size);
+    }
+    if (requested_size < partition->size()) {
+        ShrinkPartition(partition, requested_size);
+    }
+    return true;
+}
+
 }  // namespace fs_mgr
 }  // namespace android
