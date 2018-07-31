@@ -20,12 +20,16 @@
 #include <sys/un.h>
 
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/android_reboot.h>
 #include <ext4_utils/wipe.h>
+#include <liblp/builder.h>
+#include <liblp/liblp.h>
+#include <uuid/uuid.h>
 
 #include "fastboot_device.h"
 #include "flashing.h"
@@ -34,6 +38,7 @@ using ::android::hardware::hidl_string;
 using ::android::hardware::boot::V1_0::BoolResult;
 using ::android::hardware::boot::V1_0::CommandResult;
 using ::android::hardware::boot::V1_0::Slot;
+using namespace android::fs_mgr;
 
 void GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args,
                    StatusCb status_cb) {
@@ -178,4 +183,150 @@ void RebootRecoveryHandler(FastbootDevice* device, StatusCb status_cb) {
     EnterRecovery();
     device->CloseDevice();
     TEMP_FAILURE_RETRY(pause());
+}
+
+// Helper class for opening a handle to a MetadataBuilder and writing the new
+// partition table to the same place it was read.
+class PartitionBuilder {
+  public:
+    explicit PartitionBuilder(FastbootDevice* device);
+    PartitionBuilder(const PartitionBuilder&) = delete;
+    void operator=(const PartitionBuilder&) = delete;
+
+    bool Write();
+    bool Valid() const { return !!builder_; }
+    MetadataBuilder* operator->() const { return builder_.get(); }
+
+  private:
+    std::string super_device_;
+    uint32_t slot_number_;
+    std::unique_ptr<MetadataBuilder> builder_;
+};
+
+PartitionBuilder::PartitionBuilder(FastbootDevice* device) {
+    auto super_device = FindPhysicalPartition(LP_METADATA_PARTITION_NAME);
+    if (!super_device) {
+        return;
+    }
+    super_device_ = *super_device;
+
+    std::string slot = device->GetCurrentSlot();
+    slot_number_ = SlotNumberForSlotSuffix(slot);
+
+    std::unique_ptr<LpMetadata> metadata = ReadMetadata(super_device_.c_str(), slot_number_);
+    if (!metadata) {
+        return;
+    }
+    builder_ = MetadataBuilder::New(*metadata.get());
+}
+
+bool PartitionBuilder::Write() {
+    std::unique_ptr<LpMetadata> metadata = builder_->Export();
+    if (!metadata) {
+        return false;
+    }
+    return UpdatePartitionTable(super_device_, *metadata.get(), slot_number_);
+}
+
+void CreatePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb) {
+    if (args.size() < 2) {
+        status_cb(FastbootResult::FAIL, "Invalid partition name and size");
+        return;
+    }
+
+    uint64_t partition_size;
+    std::string partition_name = args[0];
+    if (!android::base::ParseUint(args[1].c_str(), &partition_size)) {
+        status_cb(FastbootResult::FAIL, "Invalid partition size");
+        return;
+    }
+
+    PartitionBuilder builder(device);
+    if (!builder.Valid()) {
+        status_cb(FastbootResult::FAIL, "Could not open super partition");
+        return;
+    }
+    if (builder->FindPartition(partition_name)) {
+        status_cb(FastbootResult::FAIL, "Partition already exists");
+        return;
+    }
+
+    // Make a random UUID, since they're not currently used.
+    uuid_t uuid;
+    char uuid_str[37];
+    uuid_generate_random(uuid);
+    uuid_unparse(uuid, uuid_str);
+
+    Partition* partition = builder->AddPartition(partition_name, uuid_str, 0);
+    if (!partition) {
+        status_cb(FastbootResult::FAIL, "Failed to add partition");
+        return;
+    }
+    if (!builder->GrowPartition(partition, partition_size)) {
+        builder->RemovePartition(partition_name);
+        status_cb(FastbootResult::FAIL, "Not enough space for partition");
+        return;
+    }
+    if (!builder.Write()) {
+        status_cb(FastbootResult::FAIL, "Failed to write partition table");
+        return;
+    }
+    status_cb(FastbootResult::OKAY, "Partition created");
+}
+
+void DeletePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb) {
+    if (args.size() < 1) {
+        status_cb(FastbootResult::FAIL, "Invalid partition name and size");
+        return;
+    }
+
+    PartitionBuilder builder(device);
+    if (!builder.Valid()) {
+        status_cb(FastbootResult::FAIL, "Could not open super partition");
+        return;
+    }
+    builder->RemovePartition(args[0]);
+    if (!builder.Write()) {
+        status_cb(FastbootResult::FAIL, "Failed to write partition table");
+        return;
+    }
+    status_cb(FastbootResult::OKAY, "Partition deleted");
+}
+
+void ResizePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb) {
+    if (args.size() < 2) {
+        status_cb(FastbootResult::FAIL, "Invalid partition name and size");
+        return;
+    }
+
+    uint64_t partition_size;
+    std::string partition_name = args[0];
+    if (!android::base::ParseUint(args[1].c_str(), &partition_size)) {
+        status_cb(FastbootResult::FAIL, "Invalid partition size");
+        return;
+    }
+
+    PartitionBuilder builder(device);
+    if (!builder.Valid()) {
+        status_cb(FastbootResult::FAIL, "Could not open super partition");
+        return;
+    }
+
+    Partition* partition = builder->FindPartition(partition_name);
+    if (!partition) {
+        status_cb(FastbootResult::FAIL, "Partition does not exist");
+        return;
+    }
+    if (!builder->ResizePartition(partition, partition_size)) {
+        status_cb(FastbootResult::FAIL, "Not enough space to resize partition");
+        return;
+    }
+    if (!builder.Write()) {
+        status_cb(FastbootResult::FAIL, "Failed to write partition table");
+        return;
+    }
+    status_cb(FastbootResult::OKAY, "Partition resized");
 }

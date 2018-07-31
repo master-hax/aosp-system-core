@@ -30,6 +30,9 @@
 #define FB_CMD_REBOOT_RECOVERY "reboot-recovery"
 #define FB_CMD_REBOOT_FASTBOOT "reboot-fastboot"
 #define FB_CMD_POWERDOWN "powerdown"
+#define FB_CMD_CREATE_PARTITION "create-partition"
+#define FB_CMD_DELETE_PARTITION "delete-partition"
+#define FB_CMD_RESIZE_PARTITION "resize-partition"
 
 #define RESPONSE_OKAY "OKAY"
 #define RESPONSE_FAIL "FAIL"
@@ -51,3 +54,4 @@
 #define FB_VAR_HAS_SLOT "has-slot"
 #define FB_VAR_SLOT_COUNT "slot-count"
 #define FB_VAR_PARTITION_SIZE "partition-size"
+#define FB_VAR_IS_LOGICAL "is-logical"

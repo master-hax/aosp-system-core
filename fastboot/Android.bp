@@ -117,6 +117,7 @@ cc_binary {
         "libcutils",
         "libfs_mgr",
         "liblp",
+        "libext2_uuid",
     ],
 
     static_libs: [

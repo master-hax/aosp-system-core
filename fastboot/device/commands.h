@@ -52,3 +52,9 @@ void RebootHandler(FastbootDevice* device, StatusCb status_cb);
 void RebootBootloaderHandler(FastbootDevice* device, StatusCb status_cb);
 void RebootFastbootHandler(FastbootDevice* device, StatusCb status_cb);
 void RebootRecoveryHandler(FastbootDevice* device, StatusCb status_cb);
+void CreatePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb);
+void DeletePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb);
+void ResizePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args,
+                            StatusCb status_cb);

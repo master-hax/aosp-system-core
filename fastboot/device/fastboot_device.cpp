@@ -49,6 +49,12 @@ FastbootDevice::FastbootDevice()
                std::bind(RebootFastbootHandler, sph::_1, sph::_3)},
               {std::string(FB_CMD_REBOOT_RECOVERY),
                std::bind(RebootRecoveryHandler, sph::_1, sph::_3)},
+              {std::string(FB_CMD_CREATE_PARTITION),
+               std::bind(CreatePartitionHandler, sph::_1, sph::_2, sph::_3)},
+              {std::string(FB_CMD_DELETE_PARTITION),
+               std::bind(DeletePartitionHandler, sph::_1, sph::_2, sph::_3)},
+              {std::string(FB_CMD_RESIZE_PARTITION),
+               std::bind(ResizePartitionHandler, sph::_1, sph::_2, sph::_3)},
       }),
       variables_map({
               {std::string(FB_VAR_VERSION), std::bind(GetVersion)},
@@ -63,6 +69,7 @@ FastbootDevice::FastbootDevice()
               {std::string(FB_VAR_SLOT_COUNT), std::bind(GetSlotCount, sph::_1)},
               {std::string(FB_VAR_HAS_SLOT), GetHasSlot},
               {std::string(FB_VAR_PARTITION_SIZE), GetPartitionSize},
+              {std::string(FB_VAR_IS_LOGICAL), GetPartitionIsLogical},
       }) {}
 
 FastbootDevice::~FastbootDevice() {

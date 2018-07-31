@@ -104,3 +104,12 @@ std::string GetPartitionSize(FastbootDevice* device, const std::vector<std::stri
     }
     return std::to_string(get_block_device_size(handle.fd()));
 }
+
+std::string GetPartitionIsLogical(FastbootDevice* device, const std::vector<std::string>& args) {
+    std::string partition_name = GetArg(args);
+    if (!PartitionExists(partition_name, device->GetCurrentSlot()) ||
+        FindPhysicalPartition(partition_name)) {
+        return "false";
+    }
+    return "true";
+}
