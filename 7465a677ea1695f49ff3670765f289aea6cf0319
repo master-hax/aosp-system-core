@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73f09a24_772114e0",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-07-31T02:35:37Z",
+      "side": 1,
+      "message": "I\u0027m new to this code, so I could be wrong, but: So before, the ReconnectAttempt would have a deadline 10 sec in the future, so it would call wait_until(10 sec) and could potentially wait 10 sec. But now this sets ReconnectAttempt to have a next_attempt of right now, so it would call wait_until(now) which would presumably return right away and then try to reconnect right away? Or maybe I\u0027m misunderstanding?",
+      "range": {
+        "startLine": 151,
+        "startChar": 61,
+        "endLine": 151,
+        "endChar": 93
+      },
+      "revId": "7465a677ea1695f49ff3670765f289aea6cf0319",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
