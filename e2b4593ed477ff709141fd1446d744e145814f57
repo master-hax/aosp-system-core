@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87c6fd41_4c369a64",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-07-31T00:55:26Z",
+      "side": 1,
+      "message": "it\u0027s already in tombstones, labeled \"Abort Message:\".",
+      "range": {
+        "startLine": 251,
+        "startChar": 49,
+        "endLine": 251,
+        "endChar": 59
+      },
+      "revId": "e2b4593ed477ff709141fd1446d744e145814f57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
