@@ -27,8 +27,11 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+#include <string>
+
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <fs_mgr.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
@@ -55,7 +58,7 @@ void suggest_run_adb_root(int fd) {
 
 /* Turn verity on/off */
 static bool set_verity_enabled_state(int fd, const char* block_device, const char* mount_point,
-                                     bool enable) {
+                                     bool enable, const char* backing) {
     if (!make_block_device_writable(block_device)) {
         WriteFdFmt(fd, "Could not make block device %s writable (%s).\n",
                    block_device, strerror(errno));
@@ -97,9 +100,14 @@ static bool set_verity_enabled_state(int fd, const char* block_device, const cha
     auto change = false;
     errno = 0;
     if (enable ? fs_mgr_overlayfs_teardown(mount_point, &change)
-               : fs_mgr_overlayfs_setup(nullptr, mount_point, &change)) {
+               : fs_mgr_overlayfs_setup(backing, mount_point, &change)) {
         if (change) {
-            WriteFdFmt(fd, "%s overlayfs for %s\n", enable ? "disabling" : "using", mount_point);
+            std::string msg(enable ? "disabling" : "using");
+            msg += " overlayfs for ";
+            msg += mount_point;
+            if (!enable && backing) msg = msg + " backed by " + backing;
+            msg += "\n";
+            WriteFdExactly(fd, msg.c_str());
         }
     } else if (errno) {
         WriteFdFmt(fd, "Overlayfs %s for %s failed with error %s\n", enable ? "teardown" : "setup",
@@ -121,13 +129,17 @@ static bool is_avb_device_locked() {
     return android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked";
 }
 
-static bool overlayfs_setup(int fd, bool enable) {
+static bool overlayfs_setup(int fd, bool enable, const char* backing) {
     auto change = false;
     errno = 0;
     if (enable ? fs_mgr_overlayfs_teardown(nullptr, &change)
-               : fs_mgr_overlayfs_setup(nullptr, nullptr, &change)) {
+               : fs_mgr_overlayfs_setup(backing, nullptr, &change)) {
         if (change) {
-            WriteFdFmt(fd, "%s overlayfs\n", enable ? "disabling" : "using");
+            std::string msg(enable ? "disabling" : "using");
+            msg += " overlayfs";
+            if (!enable && backing) msg = msg + " backed by " + backing;
+            msg += "\n";
+            WriteFdExactly(fd, msg.c_str());
         }
     } else if (errno) {
         WriteFdFmt(fd, "Overlayfs %s failed with error %s\n", enable ? "teardown" : "setup",
@@ -138,7 +150,8 @@ static bool overlayfs_setup(int fd, bool enable) {
 }
 
 /* Use AVB to turn verity on/off */
-static bool set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity) {
+static bool set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity,
+                                         const char* backing) {
     std::string ab_suffix = get_ab_suffix();
     bool verity_enabled;
 
@@ -162,13 +175,19 @@ static bool set_avb_verity_enabled_state(int fd, AvbOps* ops, bool enable_verity
         return false;
     }
 
-    overlayfs_setup(fd, enable_verity);
+    overlayfs_setup(fd, enable_verity, backing);
     WriteFdFmt(fd, "Successfully %s verity\n", enable_verity ? "enabled" : "disabled");
     return true;
 }
 
-void set_verity_enabled_state_service(unique_fd fd, bool enable) {
-    bool any_changed = false;
+void set_verity_enabled_state_service(unique_fd fd, const std::string& cmd) {
+    auto args = android::base::Split(cmd, ":");
+    auto enable = args[0][0] == 'e';
+    args.erase(args.begin());
+    const char* backing = nullptr;
+    if (args.size()) backing = args[0].c_str();
+
+    auto any_changed = false;
 
     // Figure out if we're using VB1.0 or VB2.0 (aka AVB) - by
     // contract, androidboot.vbmeta.digest is set by the bootloader
@@ -185,7 +204,7 @@ void set_verity_enabled_state_service(unique_fd fd, bool enable) {
         }
 
         if (!android::base::GetBoolProperty("ro.secure", false)) {
-            overlayfs_setup(fd, enable);
+            overlayfs_setup(fd, enable, backing);
             WriteFdExactly(fd.get(), "verity not enabled - ENG build\n");
             return;
         }
@@ -205,7 +224,7 @@ void set_verity_enabled_state_service(unique_fd fd, bool enable) {
             WriteFdExactly(fd.get(), "Error getting AVB ops\n");
             return;
         }
-        if (set_avb_verity_enabled_state(fd.get(), ops, enable)) {
+        if (set_avb_verity_enabled_state(fd.get(), ops, enable, backing)) {
             any_changed = true;
         }
         avb_ops_user_free(ops);
@@ -224,13 +243,13 @@ void set_verity_enabled_state_service(unique_fd fd, bool enable) {
         for (int i = 0; i < fstab->num_entries; i++) {
             if (fs_mgr_is_verified(&fstab->recs[i])) {
                 if (set_verity_enabled_state(fd.get(), fstab->recs[i].blk_device,
-                                             fstab->recs[i].mount_point, enable)) {
+                                             fstab->recs[i].mount_point, enable, backing)) {
                     any_changed = true;
                 }
             }
         }
     }
-    if (!any_changed) any_changed = overlayfs_setup(fd, enable);
+    if (!any_changed) any_changed = overlayfs_setup(fd, enable, backing);
 
     if (any_changed) {
         WriteFdExactly(fd.get(), "Now reboot your device for settings to take effect\n");
