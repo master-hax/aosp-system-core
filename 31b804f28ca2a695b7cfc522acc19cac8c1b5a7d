@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2b13408_3df770dc",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2018-08-01T18:08:54Z",
+      "side": 1,
+      "message": "So just to confirm, this won\u0027t have to be flashed first, right? In the future when system actually lives inside system wouldn\u0027t super have to be flashed first to make sure the partition table is correct?",
+      "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
