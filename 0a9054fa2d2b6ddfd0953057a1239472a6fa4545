@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8ece82e_cd362acf",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T18:30:51Z",
+      "side": 1,
+      "message": "else not needed since you are returning inside the if statement.",
+      "range": {
+        "startLine": 270,
+        "startChar": 6,
+        "endLine": 270,
+        "endChar": 11
+      },
+      "revId": "0a9054fa2d2b6ddfd0953057a1239472a6fa4545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bc0d157_977247a3",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T18:30:51Z",
+      "side": 1,
+      "message": "can we add this part when FastBootTest class is introduced?",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 30
+      },
+      "revId": "0a9054fa2d2b6ddfd0953057a1239472a6fa4545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
