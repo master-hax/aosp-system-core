@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67ca47aa_db34332e",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "would isprint(c) work?",
+      "range": {
+        "startLine": 165,
+        "startChar": 59,
+        "endLine": 165,
+        "endChar": 85
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd133cd7_26d7ff74",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "can we replace it for a function which breaks to the first no_print value? maybe std::find_if. Since we don\u0027t need to continue once we get 1 on_print char",
+      "range": {
+        "startLine": 174,
+        "startChar": 16,
+        "endLine": 174,
+        "endChar": 29
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "788354cf_65f9c0c4",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "what about moving this inside if (count \u003e 0) I don\u0027t think we need to resize if there is nothing to be printed.",
+      "range": {
+        "startLine": 257,
+        "startChar": 8,
+        "endLine": 257,
+        "endChar": 26
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4cb2802f_d15db392",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "please remove this",
+      "range": {
+        "startLine": 351,
+        "startChar": 12,
+        "endLine": 351,
+        "endChar": 34
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd30da9d_2245474d",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "should we timeout?",
+      "range": {
+        "startLine": 391,
+        "startChar": 12,
+        "endLine": 392,
+        "endChar": 41
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea9139f5_1b41fd7b",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T20:40:45Z",
+      "side": 1,
+      "message": "it is a little confusing that the name of the function is ChangeLockState and when you pass \"true\" it actually means unlocked. You could either change to parameter to be bool lock or change the name of the function.",
+      "range": {
+        "startLine": 437,
+        "startChar": 8,
+        "endLine": 437,
+        "endChar": 30
+      },
+      "revId": "d30fb2a851f2b67b8a437a9db7a536d1956cebf2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
