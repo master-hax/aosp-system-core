@@ -568,16 +568,22 @@ class ArgumentEscapingTest(DeviceTest):
 
 class RootUnrootTest(DeviceTest):
     def _test_root(self):
+        previous_pid = self.device.shell(['pidof', 'adbd'])
         message = self.device.root()
         if 'adbd cannot run as root in production builds' in message:
             return
         self.device.wait()
+        current_pid = self.device.shell(['pidof', 'adbd'])
         self.assertEqual('root', self.device.shell(['id', '-un'])[0].strip())
+        self.assertNotEqual(previous_pid, current_pid)
 
     def _test_unroot(self):
+        previous_pid = self.device.shell(['pidof', 'adbd'])
         self.device.unroot()
         self.device.wait()
+        current_pid = self.device.shell(['pidof', 'adbd'])
         self.assertEqual('shell', self.device.shell(['id', '-un'])[0].strip())
+        self.assertNotEqual(previous_pid, current_pid)
 
     def test_root_unroot(self):
         """Make sure that adb root and adb unroot work, using id(1)."""

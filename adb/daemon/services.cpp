@@ -68,6 +68,7 @@ void restart_root_service(unique_fd fd) {
 
     android::base::SetProperty("service.adb.root", "1");
     WriteFdExactly(fd.get(), "restarting adbd as root\n");
+    exit(0);
 }
 
 void restart_unroot_service(unique_fd fd) {
@@ -77,6 +78,7 @@ void restart_unroot_service(unique_fd fd) {
     }
     android::base::SetProperty("service.adb.root", "0");
     WriteFdExactly(fd.get(), "restarting adbd as non root\n");
+    exit(0);
 }
 
 void restart_tcp_service(unique_fd fd, int port) {
@@ -87,14 +89,16 @@ void restart_tcp_service(unique_fd fd, int port) {
 
     android::base::SetProperty("service.adb.tcp.port", android::base::StringPrintf("%d", port));
     WriteFdFmt(fd.get(), "restarting in TCP mode port: %d\n", port);
+    exit(0);
 }
 
 void restart_usb_service(unique_fd fd) {
     android::base::SetProperty("service.adb.tcp.port", "0");
     WriteFdExactly(fd.get(), "restarting in USB mode\n");
+    exit(0);
 }
 
-bool reboot_service_impl(unique_fd fd, const std::string& arg) {
+void reboot_service(unique_fd fd, const std::string& arg) {
     std::string reboot_arg = arg;
     bool auto_reboot = false;
 
@@ -108,7 +112,7 @@ bool reboot_service_impl(unique_fd fd, const std::string& arg) {
     if (reboot_arg == "sideload") {
         if (getuid() != 0) {
             WriteFdExactly(fd.get(), "'adb root' is required for 'adb reboot sideload'.\n");
-            return false;
+            return;
         }
 
         const std::vector<std::string> options = {auto_reboot ? "--sideload_auto_reboot"
@@ -116,7 +120,7 @@ bool reboot_service_impl(unique_fd fd, const std::string& arg) {
         std::string err;
         if (!write_bootloader_message(options, &err)) {
             D("Failed to set bootloader message: %s", err.c_str());
-            return false;
+            return;
         }
 
         reboot_arg = "recovery";
@@ -128,21 +132,10 @@ bool reboot_service_impl(unique_fd fd, const std::string& arg) {
     std::string reboot_string = android::base::StringPrintf("reboot,%s", reboot_arg.c_str());
     if (!android::base::SetProperty(ANDROID_RB_PROPERTY, reboot_string)) {
         WriteFdFmt(fd.get(), "reboot (%s) failed\n", reboot_string.c_str());
-        return false;
-    }
-
-    return true;
-}
-
-void reboot_service(unique_fd fd, const std::string& arg) {
-    if (!reboot_service_impl(std::move(fd), arg)) {
         return;
     }
-    // Don't return early. Give the reboot command time to take effect
-    // to avoid messing up scripts which do "adb reboot && adb wait-for-device"
-    while (true) {
-        pause();
-    }
+
+    exit(0);
 }
 
 void reconnect_service(unique_fd fd, atransport* t) {
