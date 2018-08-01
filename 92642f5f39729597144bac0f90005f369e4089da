@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d708ccbb_853413d5",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Done: https://android-review.googlesource.com/c/platform/system/core/+/724663",
+      "parentUuid": "ec92d1e8_baab05d9",
+      "range": {
+        "startLine": 137,
+        "startChar": 84,
+        "endLine": 137,
+        "endChar": 90
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0543242b_440f21b7",
         "filename": "fastboot/fastboot_driver.cpp",
         "patchSetId": 13
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "10efbbe5_279c5ca1",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Done: https://android-review.googlesource.com/c/platform/system/core/+/724663",
+      "parentUuid": "0543242b_440f21b7",
+      "range": {
+        "startLine": 268,
+        "startChar": 8,
+        "endLine": 268,
+        "endChar": 52
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "665c62d8_d1126508",
         "filename": "fastboot/fuzzy_fastboot/main.cpp",
         "patchSetId": 13
@@ -62,6 +110,24 @@
       "revId": "92642f5f39729597144bac0f90005f369e4089da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d2e1fce_c5f48889",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "665c62d8_d1126508",
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "2392a447_9a725280",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Nope, deleted!",
+      "parentUuid": "8269bf0e_39af802e",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 19
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "003ca027_95f7689f",
         "filename": "fastboot/fuzzy_fastboot/main.cpp",
         "patchSetId": 13
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "a8866af0_14cc556c",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "003ca027_95f7689f",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 19
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e61d5cdf_3d890bb0",
         "filename": "fastboot/fuzzy_fastboot/main.cpp",
         "patchSetId": 13
@@ -131,6 +245,30 @@
       "revId": "92642f5f39729597144bac0f90005f369e4089da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ac7b4b0_a963e34e",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-01T19:46:59Z",
+      "side": 1,
+      "message": "Good catch.",
+      "parentUuid": "e61d5cdf_3d890bb0",
+      "range": {
+        "startLine": 67,
+        "startChar": 45,
+        "endLine": 67,
+        "endChar": 55
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
