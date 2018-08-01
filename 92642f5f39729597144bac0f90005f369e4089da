@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec92d1e8_baab05d9",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "this fix should be a separate CL.",
+      "range": {
+        "startLine": 137,
+        "startChar": 84,
+        "endLine": 137,
+        "endChar": 90
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0543242b_440f21b7",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "should we separate the checks?\n\nif ret \u003d\u003d 0 and dsize \u003d\u003d 0 you will get a message like:\n\n\"Upload request failed: Success\"\n\nWhich will be confusing.",
+      "range": {
+        "startLine": 268,
+        "startChar": 8,
+        "endLine": 268,
+        "endChar": 52
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "665c62d8_d1126508",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "Missing license text",
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8269bf0e_39af802e",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "is this used?",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 19
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "003ca027_95f7689f",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "used?",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 19
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e61d5cdf_3d890bb0",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1138338
+      },
+      "writtenOn": "2018-08-01T16:50:11Z",
+      "side": 1,
+      "message": "rnd () instead?\n\nrand_legal is returning [0-127]",
+      "range": {
+        "startLine": 67,
+        "startChar": 45,
+        "endLine": 67,
+        "endChar": 55
+      },
+      "revId": "92642f5f39729597144bac0f90005f369e4089da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
