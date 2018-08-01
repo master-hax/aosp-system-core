@@ -70,6 +70,24 @@
       "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbc5d364_6a52f6e2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2018-08-01T18:29:03Z",
+      "side": 1,
+      "message": "Agree, fixed in PS2.",
+      "parentUuid": "a1494b63_57c05d62",
+      "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
