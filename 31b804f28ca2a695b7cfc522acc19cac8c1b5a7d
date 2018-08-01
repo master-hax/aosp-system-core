@@ -52,6 +52,24 @@
       "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1494b63_57c05d62",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2018-08-01T18:24:59Z",
+      "side": 1,
+      "message": "later you will be able to use \"fastboot flashall\" with userspace fastboot though, right?\nIf it eventually it will need to be first does it make sense to put it there initially?",
+      "parentUuid": "34ce613e_bf784d7c",
+      "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
