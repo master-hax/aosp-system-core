@@ -22,6 +22,30 @@
       "revId": "e445a6d8a23d456c0720c92bc7b31ce033bfc345",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "39827e08_9a2c696f",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-01T01:00:59Z",
+      "side": 1,
+      "message": "Yeah, I was thinking of doing that, but I\u0027d need a comment along these lines down there as well probably, so this seemed better.",
+      "parentUuid": "89694fa2_e50decd6",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 81
+      },
+      "revId": "e445a6d8a23d456c0720c92bc7b31ce033bfc345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
