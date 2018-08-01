@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6e7ae49_31435704",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-01T19:02:18Z",
+      "side": 1,
+      "message": "did the clang-format presubmit make you do this? huh, seems to do so for me too. weird.",
+      "revId": "94943ee331a2ff0f78539d8ecff9005b10b2cd6e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
