@@ -22,6 +22,30 @@
       "revId": "b3363d1df71c125e9755f2c0878c17c3a103ba40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38eeadc5_e84b4fef",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-01T00:44:54Z",
+      "side": 1,
+      "message": "It could be folded into ResizePartition, but then I\u0027d probably want to refactor it a bit more, and make GrowPartition() private, and merge the two comments here.",
+      "parentUuid": "68aae7b9_04a13b73",
+      "range": {
+        "startLine": 187,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 0
+      },
+      "revId": "b3363d1df71c125e9755f2c0878c17c3a103ba40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
