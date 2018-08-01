@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc42b248_2a8d0576",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-01T19:00:01Z",
+      "side": 1,
+      "message": "This will cause fastboot to fail on valid images - can you fix SparseWriteCallback at the same time, so its second SendBuffer call doesn\u0027t send if nbytes \u003d\u003d 0?",
+      "revId": "3bf148d6d9922d2cfbd555759b09e4c52cd59e36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
