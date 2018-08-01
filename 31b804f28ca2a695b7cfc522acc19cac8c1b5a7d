@@ -16,6 +16,24 @@
       "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc5b6d1a_475c4797",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-01T18:21:56Z",
+      "side": 1,
+      "message": "The order will only matter if we want to flash a logical partition *and* flash super. Then super should be flashed first. But for now, everything is bundled into super, it shouldn\u0027t matter, and bootloader fastboot can\u0027t see logical partitions anyway.",
+      "parentUuid": "f2b13408_3df770dc",
+      "revId": "31b804f28ca2a695b7cfc522acc19cac8c1b5a7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
