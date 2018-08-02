@@ -46,6 +46,30 @@
       "revId": "d0c9330f9d2156e9fabb47e8b5892c287bbcec78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fb0ecbc0_02cb2160",
+        "filename": "adb/daemon/services.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-02T01:34:56Z",
+      "side": 1,
+      "message": "Maybe we\u0027re racing ahead and getting a SIGTERM on a different thread? That still seems unlikely to me, since we\u0027d need to close this fd, and then have the transport thread notice and send a packet to the USB dispatch thread quickly enough.",
+      "parentUuid": "2dc41279_f12f250e",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 12
+      },
+      "revId": "d0c9330f9d2156e9fabb47e8b5892c287bbcec78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
