@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63915019_4e76fbbb",
+        "filename": "adb/daemon/services.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-02T00:43:45Z",
+      "side": 1,
+      "message": "Tom: is this safe? I\u0027m vaguely worried about something along the lines of the following:\n\n   property gets set, but not handled immediately\n   adbd exits\n   init restarts adbd\n   init notices that the property changed, and then restarts it again?\n\nIt seems that SetProperty is definitely not synchronous (or else this wouldn\u0027t be a problem in the first place, since init would kill us before we get a chance to close the fd).\n\nMaybe this race is too unlikely to matter? (or even if it does happen, the consequence is just that your adbd startup takes an extra few hundred ms?)",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 12
+      },
+      "revId": "d0c9330f9d2156e9fabb47e8b5892c287bbcec78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
