@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "4620e39d_aee39762",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-08-02T20:28:41Z",
+      "side": 1,
+      "message": "align (same below)",
+      "range": {
+        "startLine": 119,
+        "startChar": 72,
+        "endLine": 119,
+        "endChar": 77
+      },
+      "revId": "9b5989809c90736f19da4039d345fc8035328efa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54dc4b9c_f9e48fc7",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
@@ -13,6 +36,30 @@
       "writtenOn": "2018-08-02T20:27:00Z",
       "side": 1,
       "message": "we should check for system, vendor, product as well since we are going to put them in super in the future.",
+      "range": {
+        "startLine": 132,
+        "startChar": 79,
+        "endLine": 132,
+        "endChar": 84
+      },
+      "revId": "9b5989809c90736f19da4039d345fc8035328efa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b37c304_89b24678",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-08-02T20:28:41Z",
+      "side": 1,
+      "message": "(same for vendor_other and system_other maybe?)",
+      "parentUuid": "54dc4b9c_f9e48fc7",
       "range": {
         "startLine": 132,
         "startChar": 79,
