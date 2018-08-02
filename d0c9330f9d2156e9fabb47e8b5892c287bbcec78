@@ -22,6 +22,30 @@
       "revId": "d0c9330f9d2156e9fabb47e8b5892c287bbcec78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dc41279_f12f250e",
+        "filename": "adb/daemon/services.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-08-02T01:09:52Z",
+      "side": 1,
+      "message": "https://android.googlesource.com/platform/bionic/+/master/libc/bionic/system_property_set.cpp#253\n\nseems like it\u0027s synchronous now. worst case scenario, you can read it back to make absolutely sure it works.",
+      "parentUuid": "63915019_4e76fbbb",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 12
+      },
+      "revId": "d0c9330f9d2156e9fabb47e8b5892c287bbcec78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
