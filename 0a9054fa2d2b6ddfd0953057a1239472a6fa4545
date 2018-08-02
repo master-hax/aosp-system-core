@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8e0889c5_7dde26e6",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-02T22:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8ece82e_cd362acf",
+      "range": {
+        "startLine": 270,
+        "startChar": 6,
+        "endLine": 270,
+        "endChar": 11
+      },
+      "revId": "0a9054fa2d2b6ddfd0953057a1239472a6fa4545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0bc0d157_977247a3",
         "filename": "fastboot/fastboot_driver.h",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "0a9054fa2d2b6ddfd0953057a1239472a6fa4545",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "288e141c_7424eec8",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-02T22:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0bc0d157_977247a3",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 30
+      },
+      "revId": "0a9054fa2d2b6ddfd0953057a1239472a6fa4545",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
