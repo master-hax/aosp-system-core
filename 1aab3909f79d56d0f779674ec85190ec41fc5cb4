@@ -16,6 +16,24 @@
       "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25737fa5_c8a64ad6",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-03T18:29:45Z",
+      "side": 1,
+      "message": "That\u0027s fair. I\u0027ll do a merge pass in the export step then.",
+      "parentUuid": "74a973fc_388eaa67",
+      "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
