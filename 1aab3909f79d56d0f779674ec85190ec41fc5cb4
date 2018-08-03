@@ -52,6 +52,24 @@
       "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e99591d_0864fa26",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-03T18:37:06Z",
+      "side": 1,
+      "message": "I was thinking that, but what about over time?  If system grows, then vendor grows, then system shrinks, then vendor grows again, is it possible that there\u0027s free space where the system partition had shrunk, and it\u0027s contiguous with a previously used vendor extent, though potentially not the final extent in extents_ for vendor?",
+      "parentUuid": "ec4ac1ec_3c40f044",
+      "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
