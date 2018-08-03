@@ -34,6 +34,24 @@
       "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec4ac1ec_3c40f044",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-03T18:34:10Z",
+      "side": 1,
+      "message": "Though, actually, the way we allocate extents should make that true. If the last extent and the first new extent don\u0027t connect, nothing will, because we allocate them greedily.",
+      "parentUuid": "25737fa5_c8a64ad6",
+      "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
