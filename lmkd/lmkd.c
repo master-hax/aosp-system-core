@@ -38,6 +38,8 @@
 #include <lmkd.h>
 #include <log/log.h>
 
+#include "stats_api.h"
+
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
  * to profile and correlate with OOM kills
@@ -943,6 +945,7 @@ static int kill_one_process(struct proc* procp, int min_score_adj,
     char *taskname;
     int tasksize;
     int r;
+    bool stats_recorded;
 
     taskname = proc_get_name(pid);
     if (!taskname) {
@@ -955,6 +958,8 @@ static int kill_one_process(struct proc* procp, int min_score_adj,
         pid_remove(pid);
         return -1;
     }
+
+    stats_recorded = stats_api_record_before_kill(pid, uid);
 
     TRACE_KILL_START(pid);
 
@@ -973,6 +978,10 @@ static int kill_one_process(struct proc* procp, int min_score_adj,
         ALOGE("kill(%d): errno=%d", pid, errno);
         return -1;
     }
+    if (stats_recorded) {
+        stats_api_report_after_kill(pid, uid, taskname,
+                      procp->oomadj);
+    }
 
     return tasksize;
 }
@@ -987,6 +996,7 @@ static int find_and_kill_processes(enum vmpressure_level level,
     int i;
     int killed_size;
     int pages_freed = 0;
+    bool lmk_state_change_start = false;
 
     for (i = OOM_SCORE_ADJ_MAX; i >= min_score_adj; i--) {
         struct proc *procp;
@@ -1000,12 +1010,25 @@ static int find_and_kill_processes(enum vmpressure_level level,
 
             killed_size = kill_one_process(procp, min_score_adj, level);
             if (killed_size >= 0) {
+                if (!lmk_state_change_start) {
+                    stats_api_kills_start();
+                    lmk_state_change_start = true;
+                }
+
                 pages_freed += killed_size;
                 if (pages_freed >= pages_to_free) {
+                    if (lmk_state_change_start) {
+                        stats_api_kills_end();
+                    }
+
                     return pages_freed;
                 }
             }
         }
+    }
+
+    if (lmk_state_change_start) {
+        stats_api_kills_end();
     }
 
     return pages_freed;
@@ -1482,6 +1505,8 @@ int main(int argc __unused, char **argv __unused) {
     per_app_memcg =
         property_get_bool("ro.config.per_app_memcg", low_ram_device);
 
+    stats_api_init(per_app_memcg);
+
     if (!init()) {
         if (!use_inkernel_interface) {
             /*
@@ -1508,6 +1533,8 @@ int main(int argc __unused, char **argv __unused) {
 
         mainloop();
     }
+
+    stats_api_done();
 
     ALOGI("exiting");
     return 0;
