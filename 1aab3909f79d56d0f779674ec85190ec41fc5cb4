@@ -88,6 +88,24 @@
       "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75f966e8_9a48f105",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-03T19:28:51Z",
+      "side": 1,
+      "message": "Right, makes sense that this is the only possible case then.",
+      "parentUuid": "80d611ed_370547bf",
+      "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
