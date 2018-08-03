@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "638b5fe3_86082626",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-03T21:57:27Z",
+      "side": 1,
+      "message": "shouldn\u0027t need to be at global scope?\n\n(or bung it in a header...)",
+      "revId": "44aceed01649353af82bbc5367098b55cf3b5d69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
