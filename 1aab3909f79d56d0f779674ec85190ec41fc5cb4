@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74a973fc_388eaa67",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-03T18:19:02Z",
+      "side": 1,
+      "message": "This assumes that we\u0027re always going to add extents that would otherwise come at the end of the range.  Is that always true?  I\u0027m guessing not, so it may make sense to just iterate overall of extents_.",
+      "revId": "1aab3909f79d56d0f779674ec85190ec41fc5cb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
