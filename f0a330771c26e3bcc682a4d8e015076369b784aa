@@ -22,6 +22,30 @@
       "revId": "f0a330771c26e3bcc682a4d8e015076369b784aa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87ae3e22_591d481c",
+        "filename": "libsync/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-08-04T01:44:17Z",
+      "side": 1,
+      "message": "I think the comments at L34-36 were probably the concern: it tries to avoid other modules from unintentionally including libsync as a static lib.\n\nNote that even if recovery/libminui uses libsync.so, the static lib target will be still needed for `charger` (charger -\u003e libminui -\u003e libysnc) which is forced to be statically linked (for legacy devices without system-as-root).",
+      "parentUuid": "104b44d9_7101b265",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 1
+      },
+      "revId": "f0a330771c26e3bcc682a4d8e015076369b784aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
