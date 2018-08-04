@@ -3220,6 +3220,7 @@ static void event_log_tags_test_smap(pid_t pid) {
 
     // must not be: 'Shared_Clean: 0 kB'
     bool ok =
+        isZero(content, pos, "Rss:") ||
         isNotZero(content, pos, "Shared_Clean:") ||
         // If not /etc/event-log-tags, thus r/w, then half points
         // back for not 'Shared_Dirty: 0 kB'
