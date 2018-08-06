@@ -124,7 +124,7 @@ static struct {
     { "product-services",
                   "product-services.img",
                                       "product-services.sig",
-                                                      "product-services",
+                                                      "product_services",
                                                                   true,  false },
     { "recovery", "recovery.img",     "recovery.sig", "recovery", true,  false },
     { "super",    "super.img",        "super.sig",    "super",    true,  false },
