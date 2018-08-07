@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03c96749_9e10265a",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2018-08-07T16:54:36Z",
+      "side": 1,
+      "message": "Just a nit suggestion: maybe call it \"REUSE1\" and \"REUSE2\"?",
+      "range": {
+        "startLine": 264,
+        "startChar": 6,
+        "endLine": 264,
+        "endChar": 15
+      },
+      "revId": "6ddb3c249493693d42b2b60a3a9599f085cbc638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
