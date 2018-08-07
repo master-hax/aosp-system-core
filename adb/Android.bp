@@ -460,10 +460,10 @@ python_binary_host {
     ],
     version: {
         py2: {
-            enabled: true,
+            enabled: false,
         },
         py3: {
-            enabled: false,
+            enabled: true,
         },
     },
 }
