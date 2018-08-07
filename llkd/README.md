@@ -101,7 +101,7 @@ checking for persistent stack symbols maximum timelimit.
 default 2 minutes samples of threads for D or Z.
 
 #### ro.llk.stack
-default is empty.
+default __get_user_pages.
 Look for kernel stack symbols that if ever persistently present can
 indicate a subsystem is locked up.
 Beware, check does not do ABA, so stack symbol should be rare and fleeting.
