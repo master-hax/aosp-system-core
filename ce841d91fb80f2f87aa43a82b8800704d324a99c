@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07334536_a2d70b2d",
+        "filename": "debuggerd/libdebuggerd/open_files_list.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-07T04:45:45Z",
+      "side": 1,
+      "message": "comment?",
+      "range": {
+        "startLine": 101,
+        "startChar": 24,
+        "endLine": 101,
+        "endChar": 30
+      },
+      "revId": "ce841d91fb80f2f87aa43a82b8800704d324a99c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c06b0c1d_d107fd7a",
+        "filename": "debuggerd/libdebuggerd/open_files_list.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-07T04:45:45Z",
+      "side": 1,
+      "message": "y",
+      "range": {
+        "startLine": 102,
+        "startChar": 11,
+        "endLine": 102,
+        "endChar": 23
+      },
+      "revId": "ce841d91fb80f2f87aa43a82b8800704d324a99c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
