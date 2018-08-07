@@ -54,8 +54,8 @@ LOCAL_MODULE := init
 
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 
-LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
-LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_UNSTRIPPED)
+LOCAL_MODULE_PATH := $(TARGET_RAMDISK_OUT)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_RAMDISK_OUT_UNSTRIPPED)
 
 LOCAL_STATIC_LIBRARIES := \
     libfs_mgr \
@@ -82,6 +82,12 @@ LOCAL_STATIC_LIBRARIES := \
 LOCAL_REQUIRED_MODULES := \
     init_second_stage \
     init_second_stage.recovery \
+
+# Set up the same mount points on the ramdisk as system-as-root contains.
+LOCAL_POST_INSTALL_CMD := \
+    mkdir -p $(TARGET_RAMDISK_OUT)/mnt \
+    mkdir -p $(TARGET_RAMDISK_OUT)/proc \
+    mkdir -p $(TARGET_RAMDISK_OUT)/sys \
 
 LOCAL_SANITIZE := signed-integer-overflow
 include $(BUILD_EXECUTABLE)
