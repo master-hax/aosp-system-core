@@ -32,9 +32,9 @@
 namespace unwindstack {
 
 #if defined(__arm__)
+#define LIBUNWINDSTACK_ALWAYS_INLINE inline __always_inline
 
-inline __always_inline void RegsGetLocal(Regs* regs) {
-  void* reg_data = regs->RawData();
+LIBUNWINDSTACK_ALWAYS_INLINE void AsmGetRegs(void* reg_data) {
   asm volatile(
       ".align 2\n"
       "bx pc\n"
@@ -54,9 +54,9 @@ inline __always_inline void RegsGetLocal(Regs* regs) {
 }
 
 #elif defined(__aarch64__)
+#define LIBUNWINDSTACK_ALWAYS_INLINE inline __always_inline
 
-inline __always_inline void RegsGetLocal(Regs* regs) {
-  void* reg_data = regs->RawData();
+LIBUNWINDSTACK_ALWAYS_INLINE void AsmGetRegs(void* reg_data) {
   asm volatile(
       "1:\n"
       "stp x0, x1, [%[base], #0]\n"
@@ -84,14 +84,18 @@ inline __always_inline void RegsGetLocal(Regs* regs) {
 }
 
 #elif defined(__i386__) || defined(__x86_64__) || defined(__mips__)
+// On these platforms __always_inline expands to __inline __always__inline
+// which makes compilation fail because of double inline specifier.
+#define LIBUNWINDSTACK_ALWAYS_INLINE __always_inline
 
 extern "C" void AsmGetRegs(void* regs);
 
-inline void RegsGetLocal(Regs* regs) {
+#endif
+
+LIBUNWINDSTACK_ALWAYS_INLINE void RegsGetLocal(Regs* regs) {
   AsmGetRegs(regs->RawData());
 }
 
-#endif
 
 }  // namespace unwindstack
 
