@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2aaf644_1e669b8e",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 739,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-07T23:07:26Z",
+      "side": 1,
+      "message": "\"String input  conversions  store a terminating null byte (\u0027\\0\u0027) to mark the end of the input; the maximum field width does  not  include this terminator.\"\n\nGood stuff!",
+      "range": {
+        "startLine": 739,
+        "startChar": 21,
+        "endLine": 739,
+        "endChar": 40
+      },
+      "revId": "f0da9b0cc2875dde93d58c28f9c9b0901dc6897d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
