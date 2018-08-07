@@ -54,8 +54,20 @@ LOCAL_MODULE := init
 
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 
+ifeq ($(BOARD_HAS_FIRST_STAGE_RAMDISK), true)
+LOCAL_MODULE_PATH := $(TARGET_RAMDISK_OUT)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_RAMDISK_OUT_UNSTRIPPED)
+
+# Set up the same mount points on the ramdisk that system-as-root contains.
+LOCAL_POST_INSTALL_CMD := \
+    mkdir -p $(TARGET_RAMDISK_OUT)/mnt \
+    mkdir -p $(TARGET_RAMDISK_OUT)/proc \
+    mkdir -p $(TARGET_RAMDISK_OUT)/sys \
+
+else
 LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
 LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_UNSTRIPPED)
+endif
 
 LOCAL_STATIC_LIBRARIES := \
     libfs_mgr \
