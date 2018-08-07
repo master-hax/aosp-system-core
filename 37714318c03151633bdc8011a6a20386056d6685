@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce4865b2_3ad84a42",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-07T18:08:23Z",
+      "side": 1,
+      "message": "\u0027 \u0027 instead to match current usage, or switch all to \" \"?",
+      "range": {
+        "startLine": 1007,
+        "startChar": 49,
+        "endLine": 1007,
+        "endChar": 52
+      },
+      "revId": "37714318c03151633bdc8011a6a20386056d6685",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
