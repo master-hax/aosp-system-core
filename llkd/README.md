@@ -93,8 +93,19 @@ default ro.llk.timeout_ms, D maximum timelimit.
 #### ro.llk.Z.timeout_ms
 default ro.llk.timeout_ms, Z maximum timelimit.
 
+#### ro.llk.stack.timeout_ms
+default ro.llk.timeout_ms,
+checking for persistent stack symbols maximum timelimit.
+
 #### ro.llk.check_ms
 default 2 minutes samples of threads for D or Z.
+
+#### ro.llk.stack
+default is <empty> or false, comma separate list of kernel symbols.
+"false" is the equivalent to an empty list.
+Look for kernel stack symbols that if ever persistently present can
+indicate a subsystem is locked up.
+Beware, check does not do ABA, so stack symbol should be rare and fleeting.
 
 #### ro.llk.blacklist.process
 default 0,1,2 (kernel, init and [kthreadd]) plus process names
@@ -113,6 +124,13 @@ Do not watch processes that have this parent.
 default <empty> or false, comma separated list of uid numbers or names.
 "false" is the equivalent to an empty list.
 Do not watch processes that match this uid.
+
+#### ro.llk.blacklist.process.stack
+default process names init,lmkd,lmkd.llkd,llkd,keystore,logd.
+"false" is the equivalent to an empty list.
+This subset of processes are not monitored for live lock stack signatures.
+Also prevents the sepolicy violation associated with processes that block
+ptrace, as these can not be checked anyways.
 
 Architectural Concerns
 ----------------------
