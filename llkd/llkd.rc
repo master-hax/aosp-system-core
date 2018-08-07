@@ -43,7 +43,7 @@ service llkd /system/bin/llkd
     disabled
     user llkd
     group llkd readproc
-    capabilities KILL IPC_LOCK
+    capabilities KILL IPC_LOCK SYS_PTRACE DAC_OVERRIDE
     file /dev/kmsg w
     file /proc/sysrq-trigger w
     writepid /dev/cpuset/system-background/tasks

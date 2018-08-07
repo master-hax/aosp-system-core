@@ -73,7 +73,7 @@ bool llkRunning = false;                             // thread is running
 bool llkMlockall = LLK_MLOCKALL_DEFAULT;             // run mlocked
 bool llkTestWithKill = LLK_KILLTEST_DEFAULT;         // issue test kills
 milliseconds llkTimeoutMs = LLK_TIMEOUT_MS_DEFAULT;  // default timeout
-enum { llkStateD, llkStateZ, llkNumStates };         // state indexes
+enum { llkStateD, llkStateZ, llkStateStack, llkNumStates };  // state indexes
 milliseconds llkStateTimeoutMs[llkNumStates];        // timeout override for each detection state
 milliseconds llkCheckMs;                             // checking interval to inspect any
                                                      // persistent live-locked states
@@ -83,6 +83,8 @@ bool khtEnable = LLK_ENABLE_DEFAULT;                 // [khungtaskd] panic
 // Provides a wide angle of margin b/c khtTimeout is also its granularity.
 seconds khtTimeout = duration_cast<seconds>(llkTimeoutMs * (1 + LLK_CHECKS_PER_TIMEOUT_DEFAULT) /
                                             LLK_CHECKS_PER_TIMEOUT_DEFAULT);
+// list of stack symbols to search for persistence.
+std::unordered_set<std::string> llkCheckStackSymbols;
 
 // Blacklist variables, initialized with comma separated lists of high false
 // positive and/or dangerous references, e.g. without self restart, for pid,
@@ -97,6 +99,9 @@ std::unordered_set<std::string> llkBlacklistProcess;
 std::unordered_set<std::string> llkBlacklistParent;
 // list of uids, and uid names, to skip, default nothing
 std::unordered_set<std::string> llkBlacklistUid;
+// list of names to skip stack checking. "init", "lmkd", "llkd", "keystore" or
+// "logd" (if not userdebug).
+std::unordered_set<std::string> llkBlacklistStack;
 
 class dir {
   public:
@@ -263,6 +268,7 @@ struct proc {
                                    // forward scheduling progress.
     milliseconds update;           // llkUpdate millisecond signature of last.
     milliseconds count;            // duration in state.
+    milliseconds count_stack;      // duration where stack is stagnant.
     pid_t pid;                     // /proc/<pid> before iterating through
                                    // /proc/<pid>/task/<tid> for threads.
     pid_t ppid;                    // /proc/<tid>/stat field 4 parent pid.
@@ -272,6 +278,8 @@ struct proc {
     std::string cmdline;           // cached /cmdline content
     char state;                    // /proc/<tid>/stat field 3: Z or D
                                    // (others we do not monitor: S, R, T or ?)
+    char stack;                    // index in llkCheckStackSymbols for matches
+                                   // and with maximum index PROP_VALUE_MAX/2.
     char comm[TASK_COMM_LEN + 3];  // space for adding '[' and ']'
     bool exeMissingValid;          // exeMissing has been cached
     bool cmdlineValid;             // cmdline has been cached
@@ -286,11 +294,13 @@ struct proc {
           nrSwitches(0),
           update(llkUpdate),
           count(0ms),
+          count_stack(0ms),
           pid(pid),
           ppid(ppid),
           uid(-1),
           time(time),
           state(state),
+          stack(-1),
           exeMissingValid(false),
           cmdlineValid(false),
           updated(true),
@@ -343,6 +353,8 @@ struct proc {
     void reset(void) {  // reset cache, if we detected pid rollover
         uid = -1;
         state = '?';
+        count_stack = 0ms;
+        stack = -1;
         cmdline = "";
         comm[0] = '\0';
         exeMissingValid = false;
@@ -667,6 +679,46 @@ long long getSchedValue(const std::string& schedString, const char* key) {
     return ret;
 }
 
+bool llkCheckStack(proc* procp, const std::string& piddir) {
+    if (llkCheckStackSymbols.empty()) return false;
+    if (procp->state == 'Z') {  // No brains for Zombies
+        procp->stack = -1;
+        procp->count_stack = 0ms;
+        return false;
+    }
+
+    // Don't check process that are known to block ptrace, save sepolicy noise.
+    if (llkSkipName(std::to_string(procp->pid), llkBlacklistStack)) return false;
+    if (llkSkipName(procp->getComm(), llkBlacklistStack)) return false;
+    if (llkSkipName(procp->getCmdline(), llkBlacklistStack)) return false;
+
+    auto kernel_stack = ReadFile(piddir + "/stack");
+    if (kernel_stack.empty()) {
+        LOG(INFO) << piddir << "/stack empty comm=" << procp->getComm()
+                  << " cmdline=" << procp->getCmdline();
+        return false;
+    }
+    // A scheduling incident that should not reset count_stack
+    if (kernel_stack.find(" cpu_worker_pools+0x") != std::string::npos) return false;
+    char idx = -1;
+    char match = -1;
+    for (const auto& stack : llkCheckStackSymbols) {
+        if (++idx < 0) break;
+        if (kernel_stack.find(" "s + stack + "+0x") != std::string::npos) {
+            match = idx;
+            break;
+        }
+    }
+    if (procp->stack != match) {
+        procp->stack = match;
+        procp->count_stack = 0ms;
+        return false;
+    }
+    if (match == char(-1)) return false;
+    procp->count_stack += llkCycle;
+    return procp->count_stack >= llkStateTimeoutMs[llkStateStack];
+}
+
 // Primary ABA mitigation watching last time schedule activity happened
 void llkCheckSchedUpdate(proc* procp, const std::string& piddir) {
     // Audit finds /proc/<tid>/sched is just over 1K, and
@@ -731,10 +783,14 @@ void llkLogConfig(void) {
               << LLK_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkTimeoutMs) << "\n"
               << LLK_D_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkStateTimeoutMs[llkStateD]) << "\n"
               << LLK_Z_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkStateTimeoutMs[llkStateZ]) << "\n"
+              << LLK_STACK_TIMEOUT_MS_PROPERTY "=" << llkFormat(llkStateTimeoutMs[llkStateStack])
+              << "\n"
               << LLK_CHECK_MS_PROPERTY "=" << llkFormat(llkCheckMs) << "\n"
+              << LLK_CHECK_STACK_PROPERTY "=" << llkFormat(llkCheckStackSymbols) << "\n"
               << LLK_BLACKLIST_PROCESS_PROPERTY "=" << llkFormat(llkBlacklistProcess) << "\n"
               << LLK_BLACKLIST_PARENT_PROPERTY "=" << llkFormat(llkBlacklistParent) << "\n"
-              << LLK_BLACKLIST_UID_PROPERTY "=" << llkFormat(llkBlacklistUid);
+              << LLK_BLACKLIST_UID_PROPERTY "=" << llkFormat(llkBlacklistUid) << "\n"
+              << LLK_BLACKLIST_STACK_PROPERTY "=" << llkFormat(llkBlacklistStack);
 }
 
 void* llkThread(void* obj) {
@@ -890,7 +946,8 @@ milliseconds llkCheck(bool checkRunning) {
             if (pid == myPid) {
                 break;
             }
-            if (!llkIsMonitorState(state)) {
+            // if no stack monitoring, we can quickly exit here
+            if (!llkIsMonitorState(state) && llkCheckStackSymbols.empty()) {
                 continue;
             }
             if ((tid == myTid) || llkSkipPid(tid)) {
@@ -923,12 +980,16 @@ milliseconds llkCheck(bool checkRunning) {
             // ABA mitigation watching last time schedule activity happened
             llkCheckSchedUpdate(procp, piddir);
 
-            // Can only fall through to here if registered D or Z state !!!
-            if (procp->count < llkStateTimeoutMs[(state == 'Z') ? llkStateZ : llkStateD]) {
-                LOG(VERBOSE) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->"
-                             << pid << "->" << tid << ' ' << procp->getComm();
-                continue;
+            auto stuck = llkCheckStack(procp, piddir);
+            if (llkIsMonitorState(state)) {
+                if (procp->count >= llkStateTimeoutMs[(state == 'Z') ? llkStateZ : llkStateD]) {
+                    stuck = true;
+                } else if (procp->count != 0ms) {
+                    LOG(VERBOSE) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->"
+                                 << pid << "->" << tid << ' ' << procp->getComm();
+                }
             }
+            if (!stuck) continue;
 
             // We have to kill it to determine difference between live lock
             // and persistent state blocked on a resource.  Is there something
@@ -967,12 +1028,13 @@ milliseconds llkCheck(bool checkRunning) {
                         // not working is we kill a process that likes to
                         // stay in 'D' state, instead of panicing the
                         // kernel (worse).
-                        LOG(WARNING) << "D " << llkFormat(procp->count) << ' ' << pid << "->" << tid
-                                     << ' ' << procp->getComm() << " [kill]";
+                    default:
+                        LOG(WARNING) << state << ' ' << llkFormat(procp->count) << ' ' << pid
+                                     << "->" << tid << ' ' << procp->getComm() << " [kill]";
                         if ((llkKillOneProcess(llkTidLookup(pid), procp) >= 0) ||
-                            (llkKillOneProcess(pid, 'D', tid) >= 0) ||
+                            (llkKillOneProcess(pid, state, tid) >= 0) ||
                             (llkKillOneProcess(procp, procp) >= 0) ||
-                            (llkKillOneProcess(tid, 'D', tid) >= 0)) {
+                            (llkKillOneProcess(tid, state, tid) >= 0)) {
                             continue;
                         }
                         break;
@@ -981,7 +1043,8 @@ milliseconds llkCheck(bool checkRunning) {
             // We are here because we have confirmed kernel live-lock
             LOG(ERROR) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->" << pid
                        << "->" << tid << ' ' << procp->getComm() << " [panic]";
-            llkPanicKernel(true, tid, (state == 'Z') ? "zombie" : "driver");
+            llkPanicKernel(true, tid,
+                           (state == 'Z') ? "zombie" : (state == 'D') ? "driver" : "sleeping");
         }
         LOG(VERBOSE) << "+closedir()";
     }
@@ -1039,8 +1102,9 @@ unsigned llkCheckMilliseconds() {
 }
 
 bool llkInit(const char* threadname) {
+    auto debuggable = android::base::GetBoolProperty("ro.debuggable", false);
     llkLowRam = android::base::GetBoolProperty("ro.config.low_ram", false);
-    if (!LLK_ENABLE_DEFAULT && android::base::GetBoolProperty("ro.debuggable", false)) {
+    if (!LLK_ENABLE_DEFAULT && debuggable) {
         llkEnable = android::base::GetProperty(LLK_ENABLE_PROPERTY, "eng") == "eng";
         khtEnable = android::base::GetProperty(KHT_ENABLE_PROPERTY, "eng") == "eng";
     }
@@ -1067,8 +1131,11 @@ bool llkInit(const char* threadname) {
     llkValidate();  // validate llkTimeoutMs, llkCheckMs and llkCycle
     llkStateTimeoutMs[llkStateD] = GetUintProperty(LLK_D_TIMEOUT_MS_PROPERTY, llkTimeoutMs);
     llkStateTimeoutMs[llkStateZ] = GetUintProperty(LLK_Z_TIMEOUT_MS_PROPERTY, llkTimeoutMs);
+    llkStateTimeoutMs[llkStateStack] = GetUintProperty(LLK_STACK_TIMEOUT_MS_PROPERTY, llkTimeoutMs);
     llkCheckMs = GetUintProperty(LLK_CHECK_MS_PROPERTY, llkCheckMs);
     llkValidate();  // validate all (effectively minus llkTimeoutMs)
+    llkCheckStackSymbols =
+            llkSplit(android::base::GetProperty(LLK_CHECK_STACK_PROPERTY, LLK_CHECK_STACK_DEFAULT));
     std::string defaultBlacklistProcess(
         std::to_string(kernelPid) + "," + std::to_string(initPid) + "," +
         std::to_string(kthreaddPid) + "," + std::to_string(::getpid()) + "," +
@@ -1090,6 +1157,10 @@ bool llkInit(const char* threadname) {
                                            "," LLK_BLACKLIST_PARENT_DEFAULT));
     llkBlacklistUid =
         llkSplit(android::base::GetProperty(LLK_BLACKLIST_UID_PROPERTY, LLK_BLACKLIST_UID_DEFAULT));
+    std::string defaultBlacklistStack(LLK_BLACKLIST_STACK_DEFAULT);
+    if (!debuggable) defaultBlacklistStack += ",logd,/system/bin/logd";
+    llkBlacklistStack = llkSplit(
+            android::base::GetProperty(LLK_BLACKLIST_STACK_PROPERTY, defaultBlacklistStack));
 
     // internal watchdog
     ::signal(SIGALRM, llkAlarmHandler);

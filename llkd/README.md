@@ -23,6 +23,9 @@ the period of time before the next expected call to this handler.
 Operations
 ----------
 
+There are two detection scenarios. Persistent D or Z state, and persistent
+stack signature.
+
 If a thread is in D or Z state with no forward progress for longer than
 ro.llk.timeout_ms, or ro.llk.[D|Z].timeout_ms, kill the process or parent
 process respectively.  If another scan shows the same process continues to
@@ -32,6 +35,24 @@ condition.  Add a alarm self watchdog should llkd ever get locked up that is
 double the expected time to flow through the mainloop.  Sampling is every
 ro.llk_sample_ms.
 
+If a thread in any state but Z, has a persistent listed ro.llk.stack kernel
+symbol always being reported, even if there is forward scheduling progress, for
+longer than ro.llk.timeout_ms, or ro.llk.stack.timeout_ms, then issue a kill
+to the process.  If another scan shows the same process continues to exist,
+then have a confirmed live-lock condition and need to panic.  There is no
+ABA detection since forward scheduling progress is allowed, thus the condition
+for the symbols are:
+
+- Check is looking for " " + __symbol__+ "0x" in /proc/<pid>/stack.
+- Rare and short lived enough that on a typical system the symbol is seen
+  only once in a sample for any function ro.llk.stack.timeout_ms.  This
+  can be the only way to prevent a false trigger.
+- Persistent continuously when the live lock condition exists.
+- Should be just below the function that is calling the lock that could
+  contend, because if the lock is below or in the symbol function, the
+  symbol will show in all affected processes, not just the one that
+  caused the lockup.
+
 Default will not monitor init, or [kthreadd] and all that [kthreadd] spawns.
 This reduces the effectiveness of llkd by limiting its coverage.  If there is
 value in covering [kthreadd] spawned threads, the requirement will be that
@@ -40,7 +61,9 @@ to recover the thread should it be killed externally (this is good driver
 coding hygiene, a common request to add such to publicly reviewed kernel.org
 maintained drivers).  For instance use wait_event_interruptible() instead of
 wait_event().  The blacklists can be adjusted accordingly if these
-conditions are met to cover kernel components.
+conditions are met to cover kernel components.  For the stack symbol checking,
+there is an additional process blacklist so that we do not incide sepolicy
+violations on services that block ptrace operations.
 
 An accompanying gTest set have been added, and will setup a persistent D or Z
 process, with and without forward progress, but not in a live-lock state
@@ -93,8 +116,19 @@ default ro.llk.timeout_ms, D maximum timelimit.
 #### ro.llk.Z.timeout_ms
 default ro.llk.timeout_ms, Z maximum timelimit.
 
+#### ro.llk.stack.timeout_ms
+default ro.llk.timeout_ms,
+checking for persistent stack symbols maximum timelimit.
+
 #### ro.llk.check_ms
 default 2 minutes samples of threads for D or Z.
+
+#### ro.llk.stack
+default __get_user_pages, comma separate list of kernel symbols.
+The string false is the equivalent to an empty list.
+Look for kernel stack symbols that if ever persistently present can
+indicate a subsystem is locked up.
+Beware, check does not do ABA, so stack symbol should be rare and fleeting.
 
 #### ro.llk.blacklist.process
 default 0,1,2 (kernel, init and [kthreadd]) plus process names
@@ -116,6 +150,13 @@ A parent process can be comm, cmdline or pid reference.
 default *empty* or false, comma separated list of uid numbers or names.
 The string false is the equivalent to an empty list.
 Do not watch processes that match this uid.
+
+#### ro.llk.blacklist.process.stack
+default process names init,lmkd,lmkd.llkd,llkd,keystore,logd.
+_false_ is the equivalent to an empty list.
+This subset of processes are not monitored for live lock stack signatures.
+Also prevents the sepolicy violation associated with processes that block
+ptrace, as these can not be checked anyways.
 
 Architectural Concerns
 ----------------------
