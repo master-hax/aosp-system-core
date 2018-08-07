@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <dirent.h>
+#include <fcntl.h>
+#include <mntent.h>
 #include <paths.h>
 #include <seccomp_policy.h>
 #include <stdlib.h>
@@ -28,6 +31,7 @@
 
 #include <android-base/chrono_utils.h>
 #include <android-base/logging.h>
+#include <android-base/strings.h>
 #include <cutils/android_reboot.h>
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
@@ -38,6 +42,9 @@
 #include "util.h"
 
 using android::base::boot_clock;
+using android::base::StartsWith;
+
+using namespace std::literals;
 
 namespace android {
 namespace init {
@@ -49,6 +56,115 @@ static void GlobalSeccomp() {
             LOG(FATAL) << "Failed to globally enable seccomp!";
         }
     });
+}
+
+static void FreeRamdisk(DIR* dir, dev_t dev) {
+    int dfd = dirfd(dir);
+
+    dirent* de;
+    while ((de = readdir(dir)) != nullptr) {
+        if (de->d_name == "."s || de->d_name == ".."s) {
+            continue;
+        }
+
+        bool is_dir = false;
+
+        if (de->d_type == DT_DIR || de->d_type == DT_UNKNOWN) {
+            struct stat info;
+            if (fstatat(dfd, de->d_name, &info, AT_SYMLINK_NOFOLLOW) != 0) {
+                continue;
+            }
+
+            if (info.st_dev != dev) {
+                continue;
+            }
+
+            if (S_ISDIR(info.st_mode)) {
+                auto fd = openat(dfd, de->d_name, O_RDONLY | O_DIRECTORY);
+                if (fd >= 0) {
+                    auto subdir =
+                            std::unique_ptr<DIR, decltype(&closedir)>{fdopendir(fd), closedir};
+                    if (subdir) {
+                        FreeRamdisk(subdir.get(), dev);
+                        is_dir = true;
+                    } else {
+                        close(fd);
+                    }
+                }
+            }
+        }
+        unlinkat(dfd, de->d_name, is_dir ? AT_REMOVEDIR : 0);
+    }
+}
+
+static std::vector<std::string> GetMounts(const std::string& new_root) {
+    auto fp = std::unique_ptr<std::FILE, decltype(&endmntent)>{setmntent("/proc/mounts", "r"),
+                                                               endmntent};
+    if (fp == nullptr) {
+        PLOG(FATAL) << "Failed to open /proc/mounts";
+    }
+
+    std::vector<std::string> result;
+    mntent* mentry;
+    while ((mentry = getmntent(fp.get())) != nullptr) {
+        // We won't try to move rootfs.
+        if (mentry->mnt_dir == "/"s) {
+            continue;
+        }
+
+        // The new root mount is handled separately.
+        if (mentry->mnt_dir == new_root) {
+            continue;
+        }
+
+        // Move operates on subtrees, so do not try to move children of other mounts.
+        if (std::find_if(result.begin(), result.end(), [&mentry](const auto& older_mount) {
+                return StartsWith(mentry->mnt_dir, older_mount);
+            }) != result.end()) {
+            continue;
+        }
+
+        result.emplace_back(mentry->mnt_dir);
+    }
+
+    return result;
+}
+
+static void SwitchRoot(const std::string& new_root) {
+    auto mounts = GetMounts(new_root);
+
+    for (const auto& mount_path : mounts) {
+        auto new_mount_path = new_root + mount_path;
+        if (mount(mount_path.c_str(), new_mount_path.c_str(), nullptr, MS_MOVE, nullptr) != 0) {
+            PLOG(FATAL) << "Unable to move mount at '" << mount_path << "'";
+        }
+    }
+
+    auto old_root_dir = std::unique_ptr<DIR, decltype(&closedir)>{opendir("/"), closedir};
+    if (!old_root_dir) {
+        PLOG(ERROR) << "Could not opendir(\"/\"), not freeing ramdisk";
+        return;
+    }
+
+    struct stat old_root_info;
+    if (stat("/", &old_root_info) != 0) {
+        PLOG(ERROR) << "Could not stat(\"/\"), not freeing ramdisk";
+        return;
+    }
+
+    if (chdir(new_root.c_str()) != 0) {
+        PLOG(FATAL) << "Could not chdir to new_root, '" << new_root << "'";
+    }
+
+    if (mount(new_root.c_str(), "/", nullptr, MS_MOVE, nullptr) != 0) {
+        PLOG(FATAL) << "Unable to move root mount to new_root, '" << new_root << "'";
+    }
+
+    if (chroot(".") != 0) {
+        PLOG(FATAL) << "Unable to chroot to new root";
+    }
+
+    FreeRamdisk(old_root_dir.get(), old_root_info.st_dev);
 }
 
 int main(int argc, char** argv) {
@@ -134,16 +250,14 @@ int main(int argc, char** argv) {
     // Enable seccomp if global boot option was passed (otherwise it is enabled in zygote).
     GlobalSeccomp();
 
+    // If we're not system-as-root, we need to switch root from our initramfs to /system.
+    if (access("/system/bin/init", F_OK) != 0) {
+        SwitchRoot("/system");
+    }
+
     // Set up SELinux, loading the SELinux policy.
     SelinuxSetupKernelLogging();
     SelinuxInitialize();
-
-    // Unneeded?  It's an ext4 file system so shouldn't it have the right domain already?
-    // We're in the kernel domain, so re-exec init to transition to the init domain now
-    // that the SELinux policy has been loaded.
-    if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
-        PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
-    }
 
     static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
     uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
