@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <dirent.h>
+#include <fcntl.h>
+#include <mntent.h>
 #include <paths.h>
 #include <seccomp_policy.h>
 #include <stdlib.h>
@@ -137,13 +140,6 @@ int main(int argc, char** argv) {
     // Set up SELinux, loading the SELinux policy.
     SelinuxSetupKernelLogging();
     SelinuxInitialize();
-
-    // Unneeded?  It's an ext4 file system so shouldn't it have the right domain already?
-    // We're in the kernel domain, so re-exec init to transition to the init domain now
-    // that the SELinux policy has been loaded.
-    if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
-        PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
-    }
 
     static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
     uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
