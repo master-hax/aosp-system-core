@@ -93,8 +93,18 @@ default ro.llk.timeout_ms, D maximum timelimit.
 #### ro.llk.Z.timeout_ms
 default ro.llk.timeout_ms, Z maximum timelimit.
 
+#### ro.llk.stack.timeout_ms
+default ro.llk.timeout_ms,
+checking for persistent stack symbols maximum timelimit.
+
 #### ro.llk.check_ms
 default 2 minutes samples of threads for D or Z.
+
+#### ro.llk.stack
+default is empty.
+Look for kernel stack symbols that if ever persistently present can
+indicate a subsystem is locked up.
+Beware, check does not do ABA, so stack symbol should be rare and fleeting.
 
 #### ro.llk.blacklist.process
 default 0,1,2 (kernel, init and [kthreadd]) plus process names

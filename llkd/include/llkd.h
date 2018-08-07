@@ -43,9 +43,12 @@ unsigned llkCheckMilliseconds(void);
 #define KHT_TIMEOUT_PROPERTY           "ro.khungtask.timeout"
 #define LLK_D_TIMEOUT_MS_PROPERTY      "ro.llk.D.timeout_ms"
 #define LLK_Z_TIMEOUT_MS_PROPERTY      "ro.llk.Z.timeout_ms"
+#define LLK_STACK_TIMEOUT_MS_PROPERTY  "ro.llk.stack.timeout_ms"
 #define LLK_CHECK_MS_PROPERTY          "ro.llk.check_ms"
 /* LLK_CHECK_MS_DEFAULT = actual timeout_ms / LLK_CHECKS_PER_TIMEOUT_DEFAULT */
 #define LLK_CHECKS_PER_TIMEOUT_DEFAULT 5
+#define LLK_CHECK_STACK_PROPERTY       "ro.llk.stack"
+#define LLK_CHECK_STACK_DEFAULT        ""
 #define LLK_BLACKLIST_PROCESS_PROPERTY "ro.llk.blacklist.process"
 #define LLK_BLACKLIST_PROCESS_DEFAULT  \
     "0,1,2,init,[kthreadd],[khungtaskd],lmkd,lmkd.llkd,llkd,watchdogd,[watchdogd],[watchdogd/0]"
