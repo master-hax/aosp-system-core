@@ -455,15 +455,12 @@ python_binary_host {
     srcs: [
         "test_adb.py",
     ],
-    libs: [
-        "adb_py",
-    ],
     version: {
         py2: {
-            enabled: true,
+            enabled: false,
         },
         py3: {
-            enabled: false,
+            enabled: true,
         },
     },
 }
