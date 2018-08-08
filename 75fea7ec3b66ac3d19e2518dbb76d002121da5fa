@@ -34,6 +34,24 @@
       "revId": "75fea7ec3b66ac3d19e2518dbb76d002121da5fa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c231dfc3_9bf916f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1121894
+      },
+      "writtenOn": "2018-08-08T19:27:29Z",
+      "side": 1,
+      "message": "* just to clarify, it was working when naming it AndroidTest.xml",
+      "parentUuid": "dbaa1fec_1a1dd4fb",
+      "revId": "75fea7ec3b66ac3d19e2518dbb76d002121da5fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
