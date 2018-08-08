@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a0be4d1_73143071",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2018-08-08T22:35:43Z",
+      "side": 1,
+      "message": "-\u003e bytes?",
+      "revId": "18a1b5682a9c02e614013efd2426a9e24c61d998",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7cdc59bb_0fc6326f",
         "filename": "adb/test_adb.py",
         "patchSetId": 1
@@ -22,6 +39,29 @@
       "revId": "18a1b5682a9c02e614013efd2426a9e24c61d998",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0914cab8_495d05de",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2018-08-08T22:35:43Z",
+      "side": 1,
+      "message": "Potential cleanup: `f\u0027connected to {serial}\u0027`? That\u0027s a 3.6 thing iirc. Not sure what minimum version you\u0027re aiming for.",
+      "range": {
+        "startLine": 112,
+        "startChar": 24,
+        "endLine": 112,
+        "endChar": 56
+      },
+      "revId": "18a1b5682a9c02e614013efd2426a9e24c61d998",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
