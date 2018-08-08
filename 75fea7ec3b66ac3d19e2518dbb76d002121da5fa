@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b8634fc_396a079b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1083173
+      },
+      "writtenOn": "2018-08-08T19:22:36Z",
+      "side": 1,
+      "message": "Can this be ran locally via atest?\n\u0027atest adb_integration_test_adb\u0027\n\nbut you may get hit by b/112335032",
+      "revId": "75fea7ec3b66ac3d19e2518dbb76d002121da5fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
