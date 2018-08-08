@@ -24,6 +24,7 @@
 #include <ext4_utils/ext4_utils.h>
 
 #include "fastboot_device.h"
+#include "flashing.h"
 
 using ::android::hardware::boot::V1_0::BoolResult;
 using ::android::hardware::boot::V1_0::Slot;
@@ -119,4 +120,15 @@ std::string GetHasSlot(FastbootDevice* device, const std::vector<std::string>& a
     }
     // args[0] is the command name, args[1] is the partition name
     return args[1] == "userdata" ? "no" : "yes";
+}
+
+std::string GetPartitionSize(FastbootDevice* device, const std::vector<std::string>& args) {
+    if (args.size() < 1) {
+        return "failed";
+    }
+    PartitionHandle handle;
+    if (!device->OpenPartition(args[0], &handle)) {
+        return "failed";
+    }
+    return std::to_string(get_block_device_size(handle.fd()));
 }
