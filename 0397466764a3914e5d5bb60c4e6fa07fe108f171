@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1acd7f37_6fc5cfdb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-09T20:12:42Z",
+      "side": 1,
+      "message": "Might be better to have \u0027logical\u0027 explicitly in the command?  Especially if we ever run into a world where we are able to modify the underlying partition table via fastboot?",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27460391_e907966e",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-09T20:12:42Z",
+      "side": 1,
+      "message": "These are already deleted by the presence of the unique_ptr.",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ffd28b1_964f4955",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-09T20:12:42Z",
+      "side": 1,
+      "message": "Maybe want to check if there is already a physical partition with the same name?  We don\u0027t want to support having the same named partition as both a physical and logical partition, do we?",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8cf0974_f8f0b168",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-09T20:12:42Z",
+      "side": 1,
+      "message": "If we\u0027re not supporting having the same name as a physical and logical partition, as I ask above, then we should return an error here too if that\u0027s the case.",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
