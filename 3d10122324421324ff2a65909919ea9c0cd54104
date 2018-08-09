@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "e8969480_34ca783c",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2018-08-09T00:59:45Z",
+      "side": 1,
+      "message": "how best to handle strtof vs strtod? Are you suggesting always calling strtod?",
+      "parentUuid": "ab00c54e_83d6fe48",
+      "range": {
+        "startLine": 30,
+        "startChar": 19,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b445f0aa_37a5768f",
         "filename": "base/include/android-base/parsefloat.h",
         "patchSetId": 1
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "bc62010f_4dc59273",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2018-08-09T00:59:45Z",
+      "side": 1,
+      "message": "It\u0027s consistent w/ double.",
+      "parentUuid": "b445f0aa_37a5768f",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 78
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "175b6041_390a7d35",
         "filename": "base/include/android-base/parsefloat.h",
         "patchSetId": 1
@@ -82,6 +130,30 @@
       "writtenOn": "2018-08-09T00:53:05Z",
       "side": 1,
       "message": "I\u0027m not sure if whether you intend for nan to be a valid result of this function, but right now, it is. (also, -inf and inf are impossible to get from this function.)",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 41,
+        "endChar": 3
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a713d3c_a155d375",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2018-08-09T00:59:45Z",
+      "side": 1,
+      "message": "This is consistent w/ double.",
+      "parentUuid": "175b6041_390a7d35",
       "range": {
         "startLine": 38,
         "startChar": 3,
