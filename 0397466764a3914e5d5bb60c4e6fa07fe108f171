@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "1c70e050_4ca88fe2",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-09T20:43:04Z",
+      "side": 1,
+      "message": "Sounds fine to me.  Maybe add a TODO and file a bug to make sure that we have this before launching?",
+      "parentUuid": "ab5be276_63f26432",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e8cf0974_f8f0b168",
         "filename": "fastboot/device/variables.cpp",
         "patchSetId": 2
