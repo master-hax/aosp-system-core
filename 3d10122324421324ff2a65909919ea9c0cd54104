@@ -25,6 +25,75 @@
     },
     {
       "key": {
+        "uuid": "90c092a7_78ef1c21",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-09T00:53:05Z",
+      "side": 1,
+      "message": "template out the float type so that this works with doubles, as well? (or just only provide a double version, since people usually shouldn\u0027t be using float...)",
+      "range": {
+        "startLine": 29,
+        "startChar": 68,
+        "endLine": 30,
+        "endChar": 56
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b445f0aa_37a5768f",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-09T00:53:05Z",
+      "side": 1,
+      "message": "Should these be negative and positive infinity?",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 78
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "175b6041_390a7d35",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-09T00:53:05Z",
+      "side": 1,
+      "message": "I\u0027m not sure if whether you intend for nan to be a valid result of this function, but right now, it is. (also, -inf and inf are impossible to get from this function.)",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 41,
+        "endChar": 3
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "96de2eac_eb9e31d2",
         "filename": "base/parsefloat_test.cpp",
         "patchSetId": 1
