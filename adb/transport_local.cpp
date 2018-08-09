@@ -172,7 +172,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
 
 static void PollAllLocalPortsForEmulator() {
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
-    int unsigned count = adb_local_transport_max;
+    unsigned int count = adb_local_transport_max;
 
     // Try to connect to any number of running emulator instances.
     for (; count > 0; count--, port += 2) {
