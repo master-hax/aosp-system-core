@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "a39ab667_5bd9f408",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2018-08-09T01:05:44Z",
+      "side": 1,
+      "message": "the fact that it\u0027s not already a template on the primitive type in the cpp lib makes me sad",
+      "parentUuid": "20275feb_983f2144",
+      "range": {
+        "startLine": 30,
+        "startChar": 19,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b445f0aa_37a5768f",
         "filename": "base/include/android-base/parsefloat.h",
         "patchSetId": 1
