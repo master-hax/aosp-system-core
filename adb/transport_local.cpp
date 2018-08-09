@@ -52,15 +52,15 @@
 // Android Wear has been using port 5601 in all of its documentation/tooling,
 // but we search for emulators on ports [5554, 5555 + ADB_LOCAL_TRANSPORT_MAX].
 // Avoid stomping on their port by limiting the number of emulators that can be
-// connected.
-#define ADB_LOCAL_TRANSPORT_MAX 16
+// connected, at least by default.
+static unsigned int adb_local_transport_max = 16;
 
 static std::mutex& local_transports_lock = *new std::mutex();
 
 // We keep a map from emulator port to transport.
 // TODO: weak_ptr?
 static auto& local_transports GUARDED_BY(local_transports_lock) =
-    *new std::unordered_map<int, atransport*>();
+        *new std::unordered_map<int, atransport*>();
 #endif /* ADB_HOST */
 
 bool local_connect(int port) {
@@ -80,8 +80,8 @@ std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
     std::string error;
     unique_fd fd(network_connect(host.c_str(), port, SOCK_STREAM, 10, &error));
     if (fd == -1) {
-        *response = android::base::StringPrintf("unable to connect to %s: %s",
-                                                serial.c_str(), error.c_str());
+        *response = android::base::StringPrintf("unable to connect to %s: %s", serial.c_str(),
+                                                error.c_str());
         return std::make_tuple(std::move(fd), port, serial);
     }
 
@@ -137,7 +137,6 @@ void connect_device(const std::string& address, std::string* response) {
     }
 }
 
-
 int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* error) {
     unique_fd fd;
 
@@ -147,7 +146,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
         return -1;
     }
 
-    const char *host = getenv("ADBHOST");
+    const char* host = getenv("ADBHOST");
     if (host) {
         fd.reset(network_connect(host, adb_port, SOCK_STREAM, 0, error));
     }
@@ -173,10 +172,10 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
 
 static void PollAllLocalPortsForEmulator() {
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
-    int count = ADB_LOCAL_TRANSPORT_MAX;
+    int unsigned count = adb_local_transport_max;
 
     // Try to connect to any number of running emulator instances.
-    for ( ; count > 0; count--, port += 2 ) {
+    for (; count > 0; count--, port += 2) {
         local_connect(port);
     }
 }
@@ -192,8 +191,8 @@ struct RetryPort {
 
 // Retry emulators just kicked.
 static std::vector<RetryPort>& retry_ports = *new std::vector<RetryPort>;
-std::mutex &retry_ports_lock = *new std::mutex;
-std::condition_variable &retry_ports_cond = *new std::condition_variable;
+std::mutex& retry_ports_lock = *new std::mutex;
+std::condition_variable& retry_ports_cond = *new std::condition_variable;
 
 static void client_socket_thread(int) {
     adb_thread_setname("client_socket_thread");
@@ -218,7 +217,7 @@ static void client_socket_thread(int) {
         std::vector<RetryPort> next_ports;
         for (auto& port : ports) {
             VLOG(TRANSPORT) << "retry port " << port.port << ", last retry_count "
-                << port.retry_count;
+                            << port.retry_count;
             if (local_connect(port.port)) {
                 VLOG(TRANSPORT) << "retry port " << port.port << " successfully";
                 continue;
@@ -238,7 +237,7 @@ static void client_socket_thread(int) {
     }
 }
 
-#else // ADB_HOST
+#else  // ADB_HOST
 
 static void server_socket_thread(int port) {
     unique_fd serverfd;
@@ -279,16 +278,16 @@ static void server_socket_thread(int port) {
 #undef open
 #undef read
 #undef write
-#define open    adb_open
-#define read    adb_read
-#define write   adb_write
+#define open adb_open
+#define read adb_read
+#define write adb_write
 #include <qemu_pipe.h>
 #undef open
 #undef read
 #undef write
-#define open    ___xxx_open
-#define read    ___xxx_read
-#define write   ___xxx_write
+#define open ___xxx_open
+#define read ___xxx_read
+#define write ___xxx_write
 
 /* A worker thread that monitors host connections, and registers a transport for
  * every new host connection. This thread replaces server_socket_thread on
@@ -400,11 +399,15 @@ static bool use_qemu_goldfish() {
 
 #endif  // !ADB_HOST
 
-void local_init(int port)
-{
+void local_init(int port) {
     void (*func)(int);
     const char* debug_name = "";
-
+    const char* env_max_s = getenv("ADB_LOCAL_TRANSPORT_MAX");
+    long env_max = atoi(env_max_s ? env_max_s : "");
+    if (0 < env_max && env_max < INT_MAX) {
+        adb_local_transport_max = env_max;
+        D("transport: ADB_LOCAL_TRANSPORT_MAX read as %u init", adb_local_transport_max);
+    }
 #if ADB_HOST
     func = client_socket_thread;
     debug_name = "client";
@@ -413,7 +416,7 @@ void local_init(int port)
     // between the device, and the emulator.
     func = use_qemu_goldfish() ? qemu_socket_thread : server_socket_thread;
     debug_name = "server";
-#endif // !ADB_HOST
+#endif  // !ADB_HOST
 
     D("transport: local %s init", debug_name);
     std::thread(func, port).detach();
@@ -445,7 +448,7 @@ struct EmulatorConnection : public FdConnection {
 
 /* Only call this function if you already hold local_transports_lock. */
 static atransport* find_emulator_transport_by_adb_port_locked(int adb_port)
-    REQUIRES(local_transports_lock) {
+        REQUIRES(local_transports_lock) {
     auto it = local_transports.find(adb_port);
     if (it == local_transports.end()) {
         return nullptr;
@@ -477,15 +480,15 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
     if (local) {
         auto emulator_connection = std::make_unique<EmulatorConnection>(std::move(fd), adb_port);
         t->SetConnection(
-            std::make_unique<BlockingConnectionAdapter>(std::move(emulator_connection)));
+                std::make_unique<BlockingConnectionAdapter>(std::move(emulator_connection)));
         std::lock_guard<std::mutex> lock(local_transports_lock);
         atransport* existing_transport = find_emulator_transport_by_adb_port_locked(adb_port);
         if (existing_transport != nullptr) {
             D("local transport for port %d already registered (%p)?", adb_port, existing_transport);
             fail = -1;
-        } else if (local_transports.size() >= ADB_LOCAL_TRANSPORT_MAX) {
+        } else if (local_transports.size() >= adb_local_transport_max) {
             // Too many emulators.
-            D("cannot register more emulators. Maximum is %d", ADB_LOCAL_TRANSPORT_MAX);
+            D("cannot register more emulators. Maximum is %u", adb_local_transport_max);
             fail = -1;
         } else {
             local_transports[adb_port] = t;
