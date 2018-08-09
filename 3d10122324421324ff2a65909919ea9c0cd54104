@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "20275feb_983f2144",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-09T01:04:20Z",
+      "side": 1,
+      "message": "we do it all the time. (i actually love that templates let me do this in a type-safe way.)",
+      "parentUuid": "cc417976_312b2d24",
+      "range": {
+        "startLine": 30,
+        "startChar": 19,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b445f0aa_37a5768f",
         "filename": "base/include/android-base/parsefloat.h",
         "patchSetId": 1
