@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab00c54e_83d6fe48",
+        "filename": "base/include/android-base/parsefloat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-09T00:51:00Z",
+      "side": 1,
+      "message": "probably better in parsedouble.h as a specialization of a template that we can also use for `long double`.",
+      "range": {
+        "startLine": 30,
+        "startChar": 19,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96de2eac_eb9e31d2",
+        "filename": "base/parsefloat_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-09T00:51:00Z",
+      "side": 1,
+      "message": "it\u0027ll keep the tests together too, which is handy given their copy \u0026 paste nature...",
+      "range": {
+        "startLine": 21,
+        "startChar": 5,
+        "endLine": 21,
+        "endChar": 15
+      },
+      "revId": "3d10122324421324ff2a65909919ea9c0cd54104",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
