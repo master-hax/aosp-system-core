@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "ab5be276_63f26432",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-09T20:22:08Z",
+      "side": 1,
+      "message": "We don\u0027t, but while prototyping it happens out of convenience (otherwise you have to keep reflashing the GPT to go to logical partitioning and back). And similarly you need a new GPT every time a partition moves from physical to logical.\n\nMaybe for now we could forbid it in \"fastboot create-partition\", but accept it elsewhere temporarily?",
+      "parentUuid": "9ffd28b1_964f4955",
+      "revId": "0397466764a3914e5d5bb60c4e6fa07fe108f171",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e8cf0974_f8f0b168",
         "filename": "fastboot/device/variables.cpp",
         "patchSetId": 2
