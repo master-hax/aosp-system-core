@@ -22,6 +22,7 @@
 #include <functional>
 
 #include <unwindstack/Elf.h>
+#include <unwindstack/MachineMips64.h>
 #include <unwindstack/Regs.h>
 
 namespace unwindstack {
@@ -31,6 +32,8 @@ class Memory;
 
 class RegsMips64 : public RegsImpl<uint64_t> {
  public:
+  static constexpr size_t raw_data_size = sizeof(uint64_t) * MIPS64_REG_LAST;
+
   RegsMips64();
   virtual ~RegsMips64() = default;
 

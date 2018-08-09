@@ -19,7 +19,6 @@
 #include <functional>
 
 #include <unwindstack/Elf.h>
-#include <unwindstack/MachineArm64.h>
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/RegsArm64.h>

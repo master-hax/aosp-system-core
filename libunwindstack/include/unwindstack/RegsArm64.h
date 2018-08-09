@@ -22,6 +22,7 @@
 #include <functional>
 
 #include <unwindstack/Elf.h>
+#include <unwindstack/MachineArm64.h>
 #include <unwindstack/Regs.h>
 
 namespace unwindstack {
@@ -31,6 +32,8 @@ class Memory;
 
 class RegsArm64 : public RegsImpl<uint64_t> {
  public:
+  static constexpr size_t raw_data_size = sizeof(uint64_t) * ARM64_REG_LAST;
+
   RegsArm64();
   virtual ~RegsArm64() = default;
 

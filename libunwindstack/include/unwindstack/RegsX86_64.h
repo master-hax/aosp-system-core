@@ -22,6 +22,7 @@
 #include <functional>
 
 #include <unwindstack/Elf.h>
+#include <unwindstack/MachineX86_64.h>
 #include <unwindstack/Regs.h>
 
 namespace unwindstack {
@@ -32,6 +33,8 @@ struct x86_64_ucontext_t;
 
 class RegsX86_64 : public RegsImpl<uint64_t> {
  public:
+  static constexpr size_t raw_data_size = sizeof(uint64_t) * X86_64_REG_LAST;
+
   RegsX86_64();
   virtual ~RegsX86_64() = default;
 

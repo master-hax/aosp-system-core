@@ -19,7 +19,6 @@
 #include <functional>
 
 #include <unwindstack/Elf.h>
-#include <unwindstack/MachineX86.h>
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/RegsX86.h>
