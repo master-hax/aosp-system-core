@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d8231965_7b495dd5",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-09T19:21:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c2d2dc7_802528e0",
+      "range": {
+        "startLine": 171,
+        "startChar": 23,
+        "endLine": 171,
+        "endChar": 37
+      },
+      "revId": "af483127eda9325b2cedcdd53a73e6eee91abb5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d9e45956_8636e92d",
         "filename": "fastboot/fuzzy_fastboot/main.cpp",
         "patchSetId": 21
@@ -45,6 +69,30 @@
       "revId": "af483127eda9325b2cedcdd53a73e6eee91abb5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72f8894d_11eb3afe",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-09T19:21:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9e45956_8636e92d",
+      "range": {
+        "startLine": 311,
+        "startChar": 46,
+        "endLine": 311,
+        "endChar": 78
+      },
+      "revId": "af483127eda9325b2cedcdd53a73e6eee91abb5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "8e7fa6a4_b133eb34",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-09T19:21:09Z",
+      "side": 1,
+      "message": "This is checking to make sure this always fails in locked mode. I need to add another test to check SetActive in unlocked mode. \n\nI don\u0027t think it is a big deal though to check SetActive for every partition, because it is possible a vendor implements SetActive in some weird way that makes it incorrectly behave differently for each partition.",
+      "parentUuid": "ee06821c_c1a7c81f",
+      "range": {
+        "startLine": 358,
+        "startChar": 0,
+        "endLine": 371,
+        "endChar": 5
+      },
+      "revId": "af483127eda9325b2cedcdd53a73e6eee91abb5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a7f2ef77_96d1fc23",
         "filename": "fastboot/fuzzy_fastboot/main.cpp",
         "patchSetId": 21
@@ -82,6 +154,30 @@
       "writtenOn": "2018-08-07T03:02:02Z",
       "side": 1,
       "message": "according with android-bootloader-requirements doc this should be a hex value, so instead of \"0\" to auto detect we should use 16 and maybe check for 0x prefix.",
+      "range": {
+        "startLine": 387,
+        "startChar": 20,
+        "endLine": 387,
+        "endChar": 52
+      },
+      "revId": "af483127eda9325b2cedcdd53a73e6eee91abb5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dea7f16_552d115f",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-09T19:21:09Z",
+      "side": 1,
+      "message": "The Fuzz tests requires the conformance tests pass properly. This 0x... response is tested with:\nTEST_F(Conformance, GetVarDownloadSize).",
+      "parentUuid": "a7f2ef77_96d1fc23",
       "range": {
         "startLine": 387,
         "startChar": 20,
