@@ -26,6 +26,7 @@
 #include <android-base/strings.h>
 #include <ext4_utils/ext4_utils.h>
 #include <fs_mgr.h>
+#include <liblp/liblp.h>
 #include <sparse/sparse.h>
 
 #include "fastboot_device.h"
