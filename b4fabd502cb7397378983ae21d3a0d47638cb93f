@@ -46,6 +46,30 @@
       "revId": "b4fabd502cb7397378983ae21d3a0d47638cb93f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54bff242_759e6538",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-08-10T22:59:21Z",
+      "side": 1,
+      "message": "oh yes, much better!",
+      "parentUuid": "95628ee0_1dc036a8",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 55
+      },
+      "revId": "b4fabd502cb7397378983ae21d3a0d47638cb93f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
