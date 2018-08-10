@@ -104,9 +104,10 @@ struct fastboot_buffer {
     void* data;
     int64_t sz;
     int fd;
+    int64_t disk_size;
 };
 
-static struct {
+struct Image {
     const char* nickname;
     const char* img_name;
     const char* sig_name;
@@ -114,7 +115,9 @@ static struct {
     bool optional_if_no_image;
     bool optional_if_no_partition;
     bool IsSecondary() const { return nickname == nullptr; }
-} images[] = {
+};
+
+static Image images[] = {
         // clang-format off
     { "boot",     "boot.img",         "boot.sig",     "boot",     false, false },
     { nullptr,    "boot_other.img",   "boot.sig",     "boot",     true,  false },
@@ -705,13 +708,14 @@ static void queue_info_dump() {
     fb_queue_notice("--------------------------------------------");
 }
 
-static struct sparse_file** load_sparse_files(int fd, int64_t max_size) {
+static struct sparse_file** load_sparse_files(int fd, int64_t max_size, int64_t* file_size) {
     struct sparse_file* s = sparse_file_import_auto(fd, false, true);
     if (!s) die("cannot sparse read file");
 
     if (max_size <= 0 || max_size > std::numeric_limits<uint32_t>::max()) {
       die("invalid max size %" PRId64, max_size);
     }
+    *file_size = sparse_file_len(s, false, false);
 
     int files = sparse_file_resparse(s, max_size, nullptr, 0);
     if (files < 0) die("Failed to resparse");
@@ -767,6 +771,18 @@ static int64_t get_sparse_limit(int64_t size) {
     return 0;
 }
 
+static int64_t get_image_disk_size(int fd) {
+    int64_t disk_size;
+    if (struct sparse_file* s = sparse_file_import_auto(fd, false, true)) {
+        disk_size = static_cast<int64_t>(sparse_file_len(s, false, false));
+        sparse_file_destroy(s);
+        lseek64(fd, 0, SEEK_SET);
+    } else {
+        disk_size = get_file_size(fd);
+    }
+    return disk_size;
+}
+
 static bool load_buf_fd(int fd, struct fastboot_buffer* buf) {
     int64_t sz = get_file_size(fd);
     if (sz == -1) {
@@ -776,7 +792,7 @@ static bool load_buf_fd(int fd, struct fastboot_buffer* buf) {
     lseek64(fd, 0, SEEK_SET);
     int64_t limit = get_sparse_limit(sz);
     if (limit) {
-        sparse_file** s = load_sparse_files(fd, limit);
+        sparse_file** s = load_sparse_files(fd, limit, &buf->disk_size);
         if (s == nullptr) {
             return false;
         }
@@ -787,6 +803,7 @@ static bool load_buf_fd(int fd, struct fastboot_buffer* buf) {
         buf->data = nullptr;
         buf->fd = fd;
         buf->sz = sz;
+        buf->disk_size = get_image_disk_size(fd);
     }
 
     return true;
@@ -1158,6 +1175,16 @@ static void do_send_signature(const std::string& fn) {
     fb_queue_command("signature", "installing signature");
 }
 
+static bool is_logical(const std::string& partition) {
+    std::string value;
+    return fb_getvar("is-logical:" + partition, &value) && value == "yes";
+}
+
+static bool is_userspace() {
+    std::string value;
+    return fb_getvar("is-userspace", &value) && value == "yes";
+}
+
 static void do_flashall(const std::string& slot_override, bool skip_secondary) {
     std::string fname;
     queue_info_dump();
@@ -1188,6 +1215,8 @@ static void do_flashall(const std::string& slot_override, bool skip_secondary) {
         }
     }
 
+    // List of images and their slots.
+    std::vector<std::pair<const Image*, std::string>> entries;
     for (size_t i = 0; i < arraysize(images); i++) {
         const char* slot = NULL;
         if (images[i].IsSecondary()) {
@@ -1196,21 +1225,44 @@ static void do_flashall(const std::string& slot_override, bool skip_secondary) {
             slot = slot_override.c_str();
         }
         if (!slot) continue;
-        fname = find_item_given_name(images[i].img_name);
+        if (!strcmp(images[i].part_name, "super") && is_userspace()) {
+            // Don't flash the super partition if we're also supposed to be
+            // flashing logical partitions.
+            continue;
+        }
+        entries.emplace_back(&images[i], slot);
+
+        // Resize any logical partition to 0, so each partition is reset to 0
+        // extents.
+        auto resize_partition = [](const std::string& partition) -> void {
+            if (is_logical(partition)) {
+                fb_queue_resize_partition(partition, "0");
+            }
+        };
+        do_for_partitions(images[i].part_name, slot, resize_partition, false);
+    }
+
+    for (const auto& entry : entries) {
+        const auto& image = *entry.first;
+        const auto& slot = entry.second;
+        fname = find_item_given_name(image.img_name);
         fastboot_buffer buf;
         if (!load_buf(fname.c_str(), &buf)) {
-            if (images[i].optional_if_no_image) continue;
-            die("could not load '%s': %s", images[i].img_name, strerror(errno));
+            if (image.optional_if_no_image) continue;
+            die("could not load '%s': %s", image.img_name, strerror(errno));
         }
-        if (images[i].optional_if_no_partition &&
-            !if_partition_exists(images[i].part_name, slot)) {
+        if (image.optional_if_no_partition &&
+            !if_partition_exists(image.part_name, slot)) {
             continue;
         }
         auto flashall = [&](const std::string &partition) {
             do_send_signature(fname.c_str());
+            if (is_logical(partition)) {
+                fb_queue_resize_partition(partition, std::to_string(buf.disk_size));
+            }
             flash_buf(partition.c_str(), &buf);
         };
-        do_for_partitions(images[i].part_name, slot, flashall, false);
+        do_for_partitions(image.part_name, slot, flashall, false);
     }
 
     if (slot_override == "all") {
