@@ -22,6 +22,30 @@
       "revId": "fe26904692c00c2d8fb4cc5777f17256d6b7d3ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38cf3f39_35e8a43e",
+        "filename": "trusty/keymaster/3.0/android.hardware.keymaster@3.0-service.trusty.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1136993
+      },
+      "writtenOn": "2018-08-10T18:31:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6c3d4a0_94e4047d",
+      "range": {
+        "startLine": 3,
+        "startChar": 9,
+        "endLine": 3,
+        "endChar": 15
+      },
+      "revId": "fe26904692c00c2d8fb4cc5777f17256d6b7d3ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
