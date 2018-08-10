@@ -22,6 +22,30 @@
       "revId": "b4fabd502cb7397378983ae21d3a0d47638cb93f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95628ee0_1dc036a8",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-10T22:29:39Z",
+      "side": 1,
+      "message": "Good catch. Did this, except with the transport pointers instead, so that the ordering is consistent even if the objects move around.",
+      "parentUuid": "90c90dda_53b7a675",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 55
+      },
+      "revId": "b4fabd502cb7397378983ae21d3a0d47638cb93f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
