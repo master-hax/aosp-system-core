@@ -2742,3 +2742,61 @@ char* adb_getcwd(char* buf, int size) {
 
     return buf;
 }
+
+#if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
+#if !defined(DISABLE_NEWLINE_AUTO_RETURN)
+#define DISABLE_NEWLINE_AUTO_RETURN 0x0008
+#endif
+
+static bool _init_console() {
+    DWORD old_out_console_mode;
+
+    const HANDLE out = _get_console_handle(STDOUT_FILENO, &old_out_console_mode);
+    if (out == nullptr) {
+        return false;
+    }
+
+    // Try to use ENABLE_VIRTUAL_TERMINAL_PROCESSING on the output console to process virtual
+    // terminal sequences on newer versions of Windows 10 and later.
+    // https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+    // On older OSes that don't support the flag, SetConsoleMode() will return an error.
+    // ENABLE_VIRTUAL_TERMINAL_PROCESSING also solves a problem where the last column of the
+    // console cannot be overwritten.
+    //
+    // Note that we don't use DISABLE_NEWLINE_AUTO_RETURN because it doesn't seem to be necessary.
+    // If we use DISABLE_NEWLINE_AUTO_RETURN, _console_write_utf8() would need to be modified to
+    // translate \n to \r\n.
+    if (!SetConsoleMode(out, old_out_console_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
+        return false;
+    }
+
+    // If SetConsoleMode() succeeded, the console supports virtual terminal processing, so we
+    // should set the TERM env var to match so that it will be propagated to adbd on devices.
+    //
+    // To avoid implementing adb_putenv() and complex initialization ordering, below we directly
+    // call C-Runtime env APIs, assuming that _ensure_env_setup() will be called afterward. If
+    // _ensure_env_setup() has already been called, fatal() will be called here and the runtime
+    // ordering will need to be fixed or adb_putenv() should be implemented.
+    if (g_environ_utf8.size() > 0) {
+        fatal("environment variables have already been converted to UTF-8");
+    }
+
+#pragma push_macro("getenv")
+#undef getenv
+#pragma push_macro("putenv")
+#undef putenv
+    if (getenv("TERM") == nullptr) {
+        // This is the same TERM value used by Gnome Terminal and the version of ssh included with
+        // Windows.
+        putenv("TERM=xterm-256color");
+    }
+#pragma pop_macro("putenv")
+#pragma pop_macro("getenv")
+
+    return true;
+}
+
+static bool _console_init = _init_console();
