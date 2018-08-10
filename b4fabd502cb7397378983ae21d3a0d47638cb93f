@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90c90dda_53b7a675",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-08-10T22:25:12Z",
+      "side": 1,
+      "message": "if two requests happen to have the exact same reconnect_time, this will nuke one. Can you instead do something like:\n\n if (reconnect_time \u003d\u003d rhs.reconnect_time) {\n    // This is unspecified, but is not UB. Would this work?\n    return reinterpret_cast\u003cuintptr_t\u003e(this) \u003c reinterpret_cast\u003cuintptr_t\u003e(\u0026rhs);\n }\n return reconnect_time \u003c rhs.reconnect_time;",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 55
+      },
+      "revId": "b4fabd502cb7397378983ae21d3a0d47638cb93f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
