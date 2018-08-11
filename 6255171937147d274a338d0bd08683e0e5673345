@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1b95148_35e30461",
+        "filename": "apexd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-11T00:28:02Z",
+      "side": 1,
+      "message": "I guess these are already set by the build system",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f79d44c_37a58a0d",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-11T00:28:02Z",
+      "side": 1,
+      "message": "just string, because you have \u0027using std::string\u0027?",
+      "range": {
+        "startLine": 45,
+        "startChar": 26,
+        "endLine": 45,
+        "endChar": 37
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "120946c0_c41f2b1f",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-11T00:28:02Z",
+      "side": 1,
+      "message": "APEX file is an uncompressed zip file and what you make as a loopback device is the image file inside the zip file. So, you need to first locate the offset of the image file in a zip and use the offset when calling loop(4) on the APEX file.\n\nhttp://man7.org/linux/man-pages/man4/loop.4.html",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 46
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d9a68c0_d9cba744",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-11T00:28:02Z",
+      "side": 1,
+      "message": "reason for this anonymous namespace?",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 25
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e221c44f_d439c632",
+        "filename": "apexd/apexd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-11T00:28:02Z",
+      "side": 1,
+      "message": "why main in the header?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
