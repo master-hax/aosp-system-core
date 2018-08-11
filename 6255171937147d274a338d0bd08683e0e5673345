@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1e29141c_ab3ee7eb",
+        "filename": "apexd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-11T01:07:36Z",
+      "side": 1,
+      "message": "Only -Wall and -Werror are. I left the other two.",
+      "parentUuid": "a1b95148_35e30461",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 6
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1f79d44c_37a58a0d",
         "filename": "apexd/apexd.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "6255171937147d274a338d0bd08683e0e5673345",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68a9ffd5_5a914e60",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-11T01:07:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f79d44c_37a58a0d",
+      "range": {
+        "startLine": 45,
+        "startChar": 26,
+        "endLine": 45,
+        "endChar": 37
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d0d1380a_570fc8e7",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-11T01:07:36Z",
+      "side": 1,
+      "message": "See comment on line 50. I prefer to focus on the right file format in a future CL if you don\u0027t mind. Having this binary submitted would unblock maco\u0027s work on trying to servicize it and make it run as early as possible.",
+      "parentUuid": "120946c0_c41f2b1f",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 46
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d9a68c0_d9cba744",
         "filename": "apexd/apexd.cpp",
         "patchSetId": 1
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "a387a139_6da0c248",
+        "filename": "apexd/apexd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-11T01:07:36Z",
+      "side": 1,
+      "message": "Google3 style, I guess, which is pretty much use anonymous namespace whenever you can. Not that it really changes much in this instance, I agree. Removed.",
+      "parentUuid": "9d9a68c0_d9cba744",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 25
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e221c44f_d439c632",
         "filename": "apexd/apexd.h",
         "patchSetId": 1
@@ -114,6 +210,30 @@
       "revId": "6255171937147d274a338d0bd08683e0e5673345",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e03e3ca2_9478cd47",
+        "filename": "apexd/apexd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-11T01:07:36Z",
+      "side": 1,
+      "message": "no reason, removed.",
+      "parentUuid": "e221c44f_d439c632",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 32
+      },
+      "revId": "6255171937147d274a338d0bd08683e0e5673345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
