@@ -129,9 +129,15 @@ def adb_server():
                             stderr=subprocess.STDOUT)
     read_pipe, write_pipe = os.pipe()
     os.set_inheritable(write_pipe, True)
+    # adb on Windows takes a Windows HANDLE, not a C-Runtime file descriptor.
+    if os.name == 'nt':
+        import msvcrt
+        reply_fd = msvcrt.get_osfhandle(write_pipe)
+    else:
+        reply_fd = write_pipe
     proc = subprocess.Popen(["adb", "-L", "tcp:localhost:{}".format(port),
                              "fork-server", "server",
-                             "--reply-fd", str(write_pipe)], close_fds=False)
+                             "--reply-fd", str(reply_fd)], close_fds=False)
     try:
         os.close(write_pipe)
         greeting = os.read(read_pipe, 1024)
