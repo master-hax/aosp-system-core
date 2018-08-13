@@ -36,6 +36,7 @@ bool ParseUint(const char* s, T* out, T max = std::numeric_limits<T>::max(),
   int base = (s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) ? 16 : 10;
   errno = 0;
   char* end;
+  unsigned long long int ullmax = std::numeric_limits<unsigned long long int>::max();
   unsigned long long int result = strtoull(s, &end, base);
   if (errno != 0 || end == s) return false;
   if (*end != '\0') {
@@ -44,7 +45,7 @@ bool ParseUint(const char* s, T* out, T max = std::numeric_limits<T>::max(),
     if (!allow_suffixes || (suffix = strchr(suffixes, tolower(*end))) == nullptr) return false;
     if (__builtin_mul_overflow(result, 1ULL << (10 * (suffix - suffixes)), &result)) return false;
   }
-  if (max < result) {
+  if ((max >= ullmax) && (max < result)) {
     return false;
   }
   if (out != nullptr) {
