@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34bac80c_c32af467",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-08-13T23:32:55Z",
+      "side": 1,
+      "message": "_? L361 will overwrite it.",
+      "range": {
+        "startLine": 346,
+        "startChar": 39,
+        "endLine": 346,
+        "endChar": 43
+      },
+      "revId": "4905a2b9b2c92860718e356b8baf7ad611029a1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
