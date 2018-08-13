@@ -34,6 +34,24 @@
       "revId": "b68885f31fa6b7ec3e81ca6a9e992f31b4666c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35baeb18_82106f75",
+        "filename": "fastboot/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-13T19:56:01Z",
+      "side": 1,
+      "message": "Might as well be LOCAL_CPP_STD.  I think most things that care have been converted to Android.bp.",
+      "parentUuid": "8bb13450_6b054c02",
+      "revId": "b68885f31fa6b7ec3e81ca6a9e992f31b4666c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
