@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9b3d7c6_4ecb38ac",
+        "filename": "apex/apexer/apexer.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T16:07:42Z",
+      "side": 1,
+      "message": "make sure this is at least 1 (got 0 while testing with a really small file)",
+      "range": {
+        "startLine": 136,
+        "startChar": 2,
+        "endLine": 136,
+        "endChar": 12
+      },
+      "revId": "51b1dbd179efeff13a442c6c7f1aa12e58f69241",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
