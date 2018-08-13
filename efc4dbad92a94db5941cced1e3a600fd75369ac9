@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2027bec_e7fea083",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "spell",
+      "range": {
+        "startLine": 85,
+        "startChar": 36,
+        "endLine": 85,
+        "endChar": 43
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e5cc7cb_68f9c4cf",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "This is confusing, to have \"ChangeLockState\" as the name, and \"bool unlock\" as the input.\n\nMaybe an enum of LOCK/UNLOCK would be clearer, otherwise change the bool to be \"lock\" instead of \"unlock\"",
+      "range": {
+        "startLine": 159,
+        "startChar": 19,
+        "endLine": 159,
+        "endChar": 34
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba722791_2e5d936b",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "\"make these global,\" instead of \"Annoying hack\"?",
+      "range": {
+        "startLine": 61,
+        "startChar": 3,
+        "endLine": 61,
+        "endChar": 16
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "060f4310_7f4fc0ef",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "Add what these are allowed in (getvar results?)\n\nAlso- Is this a requirement?  It is now, if you add a test for it :)",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 127,
+        "endChar": 39
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b9467f5_89d4978b",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "I can\u0027t remember, is this mandatory in hex?  Maybe it just has to be a number (Hex or decimal)",
+      "range": {
+        "startLine": 240,
+        "startChar": 0,
+        "endLine": 240,
+        "endChar": 41
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "feb41b54_5487d690",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 33
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T17:09:35Z",
+      "side": 1,
+      "message": "Don\u0027t judge :)  Maybe just \"too many slots\"",
+      "range": {
+        "startLine": 313,
+        "startChar": 33,
+        "endLine": 313,
+        "endChar": 73
+      },
+      "revId": "efc4dbad92a94db5941cced1e3a600fd75369ac9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
