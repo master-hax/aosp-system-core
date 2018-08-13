@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39edfdd5_6a6f1b43",
+        "filename": "fastboot/fuzzy_fastboot/Android.bp",
+        "patchSetId": 32
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T16:53:50Z",
+      "side": 1,
+      "message": "Is there some reason not to make this cc_test_host?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3eec9563_76c3767f",
+        "filename": "fastboot/fuzzy_fastboot/checksum_parser.py",
+        "patchSetId": 32
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T16:53:50Z",
+      "side": 1,
+      "message": "Clean this up?",
+      "range": {
+        "startLine": 8,
+        "startChar": 2,
+        "endLine": 8,
+        "endChar": 65
+      },
+      "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0403320a_152ca6d1",
+        "filename": "fastboot/fuzzy_fastboot/example.xml",
+        "patchSetId": 32
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1156728
+      },
+      "writtenOn": "2018-08-13T16:53:50Z",
+      "side": 1,
+      "message": "Use consistent spacing / tabs in the example. (4 spaces is fine, that\u0027s the .clang-format default for system/core, and I don\u0027t know if there\u0027s any other standard for xml?",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
