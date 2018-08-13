@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "20613e19_c9f2443e",
+        "filename": "fastboot/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-13T19:50:10Z",
+      "side": 1,
+      "message": "I think this should be LOCAL_CPP_STD?",
+      "revId": "b68885f31fa6b7ec3e81ca6a9e992f31b4666c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
