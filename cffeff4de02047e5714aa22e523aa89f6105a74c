@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "624d2ff6_63d13d5a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Android itself is a codename, isn\u0027t it? :) I don\u0027t think Android has consistently used acronyms of a meaningful-but-boring names for its modules. dalvik (though it is dead), soong, bionic, stagefright, and apex are the funny names that I like. And as Martijn said, we don\u0027t expect this to be invoked by developers manually (except for debugging).\n\nSo, I would like to hear more from others.. for now.",
+      "parentUuid": "076d2033_618cda6e",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 11
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a62ceba4_34e732ac",
         "filename": "apex/mochila/mochila.py",
         "patchSetId": 1
@@ -93,6 +117,30 @@
       "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "850814bc_5e352098",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a62ceba4_34e732ac",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 6
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -119,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "836c6589_53ec3f94",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1cb04b1_8a04ad28",
+      "range": {
+        "startLine": 29,
+        "startChar": 14,
+        "endLine": 29,
+        "endChar": 23
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e0dab6e3_b28549b8",
         "filename": "apex/mochila/mochila.py",
         "patchSetId": 1
@@ -142,6 +214,30 @@
     },
     {
       "key": {
+        "uuid": "3be81e69_9f865a57",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e0dab6e3_b28549b8",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 14
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b24a746_de7ffd58",
         "filename": "apex/mochila/mochila.py",
         "patchSetId": 1
@@ -153,6 +249,30 @@
       "writtenOn": "2018-08-13T12:55:26Z",
       "side": 1,
       "message": "I guess this raises the question, do we allow symlinks in input dirs?",
+      "range": {
+        "startLine": 83,
+        "startChar": 2,
+        "endLine": 85,
+        "endChar": 55
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1ad4084_7de3ef86",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "I think we should, for the cases like the toybox.",
+      "parentUuid": "9b24a746_de7ffd58",
       "range": {
         "startLine": 83,
         "startChar": 2,
@@ -188,6 +308,30 @@
     },
     {
       "key": {
+        "uuid": "bc995199_d1a9ccb7",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d6f1a12b_6bdcd0c4",
+      "range": {
+        "startLine": 135,
+        "startChar": 27,
+        "endLine": 135,
+        "endChar": 31
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b93c7a58_3c6a2a56",
         "filename": "apex/mochila/mochila.py",
         "patchSetId": 1
@@ -208,6 +352,30 @@
       "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a7df264_3d866a3d",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b93c7a58_3c6a2a56",
+      "range": {
+        "startLine": 137,
+        "startChar": 47,
+        "endLine": 137,
+        "endChar": 61
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -234,6 +402,30 @@
     },
     {
       "key": {
+        "uuid": "0d1525a4_066f096b",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f7f9271_8e8e9cb2",
+      "range": {
+        "startLine": 188,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 39
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e562c03d_23167dbb",
         "filename": "apex/mochila/mochila.py",
         "patchSetId": 1
@@ -245,6 +437,30 @@
       "writtenOn": "2018-08-13T12:05:52Z",
       "side": 1,
       "message": "not sure about the entire aapt vs aapt2 thing, but should we use aapt2 here if possible?",
+      "range": {
+        "startLine": 197,
+        "startChar": 10,
+        "endLine": 197,
+        "endChar": 14
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1073257d_01fe5959",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Good point. Done",
+      "parentUuid": "e562c03d_23167dbb",
       "range": {
         "startLine": 197,
         "startChar": 10,
@@ -280,6 +496,30 @@
     },
     {
       "key": {
+        "uuid": "08590723_3e21f13a",
+        "filename": "apex/mochila/runtests.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "so, that\u0027s simple. thanks. I just copied this part from /system/tools/aidl/runtests.sh.",
+      "parentUuid": "9a4e2d6f_cd5c8950",
+      "range": {
+        "startLine": 26,
+        "startChar": 16,
+        "endLine": 26,
+        "endChar": 24
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4bb5fc1c_3f347e3b",
         "filename": "apex/mochila/runtests.sh",
         "patchSetId": 1
@@ -294,6 +534,24 @@
       "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "baf6a060_d8cc01cd",
+        "filename": "apex/mochila/runtests.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T13:58:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4bb5fc1c_3f347e3b",
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
