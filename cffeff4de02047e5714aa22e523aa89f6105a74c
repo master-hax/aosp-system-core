@@ -22,6 +22,185 @@
       "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21595aa0_2f4fe8b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "My .02, I\u0027m not a fan of codenames in the actual codebase. In the past I\u0027ve seen different standards depending on which team I was in, but it seems like in the Android codebase we are fairly diligent into using meaningful initialisms (e.g. aapt, adb, etc.) or in general intuitive naming in code and binary names. Some alternatives for your consideration:\n\n- apex_pkg_tool is more self-explanatory\n- apexpt might be less self-explanatory but it\u0027s memorable",
+      "parentUuid": "e4db6639_b4b13c16",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 11
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0dab6e3_b28549b8",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "not needed I think",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 14
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6f1a12b_6bdcd0c4",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "\u0027name\u0027 might not exist as key, also the value could be None",
+      "range": {
+        "startLine": 135,
+        "startChar": 27,
+        "endLine": 135,
+        "endChar": 31
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b93c7a58_3c6a2a56",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "*sufficiently",
+      "range": {
+        "startLine": 137,
+        "startChar": 47,
+        "endLine": 137,
+        "endChar": 61
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f7f9271_8e8e9cb2",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "catch exception and assert on success?\n\nalso you could use \"with f as open(...)\":",
+      "range": {
+        "startLine": 188,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 39
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e562c03d_23167dbb",
+        "filename": "apex/mochila/mochila.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "not sure about the entire aapt vs aapt2 thing, but should we use aapt2 here if possible?",
+      "range": {
+        "startLine": 197,
+        "startChar": 10,
+        "endLine": 197,
+        "endChar": 14
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a4e2d6f_cd5c8950",
+        "filename": "apex/mochila/runtests.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "can\u0027t you just \"source build/envsetup.sh\" here?",
+      "range": {
+        "startLine": 26,
+        "startChar": 16,
+        "endLine": 26,
+        "endChar": 24
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bb5fc1c_3f347e3b",
+        "filename": "apex/mochila/runtests.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-08-13T12:05:52Z",
+      "side": 1,
+      "message": "also test that the file is a valid zip and contains manifest.json and AndroidManifest.xml?",
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
