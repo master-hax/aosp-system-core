@@ -22,6 +22,30 @@
       "revId": "4905a2b9b2c92860718e356b8baf7ad611029a1a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed5a9a7b_381ae053",
+        "filename": "adb/test_adb.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-13T23:35:04Z",
+      "side": 1,
+      "message": "Oops, was testing how to actually destructure in a with statement, and forgot to clean this up (this doesn\u0027t work without the parens, for some reason)\n\nChanged to _",
+      "parentUuid": "34bac80c_c32af467",
+      "range": {
+        "startLine": 346,
+        "startChar": 39,
+        "endLine": 346,
+        "endChar": 43
+      },
+      "revId": "4905a2b9b2c92860718e356b8baf7ad611029a1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
