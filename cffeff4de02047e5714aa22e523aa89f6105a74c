@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4db6639_b4b13c16",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-13T11:28:55Z",
+      "side": 1,
+      "message": "This is actually named after https://en.wikipedia.org/wiki/Pony_Express_mochila, which I think makes sense. But if you don\u0027t like, feel free to suggest an alternative.",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 11
+      },
+      "revId": "cffeff4de02047e5714aa22e523aa89f6105a74c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
