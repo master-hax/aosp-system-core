@@ -1,0 +1,10 @@
+Code-Review+1: Suren Baghdasaryan <surenb@google.com>
+Code-Review+2: Patrik Torstensson <totte@google.com>
+Verified+1: Vic Yang <victoryang@google.com>
+Autosubmit+1: Vic Yang <victoryang@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Tue, 14 Aug 2018 21:31:55 +0000
+Reviewed-on: https://android-review.googlesource.com/727260
+Project: platform/system/core
+Branch: refs/heads/master
