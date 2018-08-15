@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dec339c9_fb72a159",
+        "filename": "logd/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-15T19:21:27Z",
+      "side": 1,
+      "message": "Ye, I know this can be replaced with android::base::GetBoolProperty, but the other cases of __android_logger_property_get_bool can not, so continue to leverage it.",
+      "range": {
+        "startLine": 107,
+        "startChar": 9,
+        "endLine": 108,
+        "endChar": 63
+      },
+      "revId": "648bcb4aed18ec2148be87aafc334f86403114a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
