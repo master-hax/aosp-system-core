@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f32852e0_6ee82143",
+        "filename": "suspend/SystemSuspend.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-08-15T21:51:33Z",
+      "side": 1,
+      "message": "Nit: we use this function in one place, where we log a generic error. Can we log from here and include errno? Or log strerror(errno) from the call site?",
+      "range": {
+        "startLine": 49,
+        "startChar": 15,
+        "endLine": 49,
+        "endChar": 24
+      },
+      "revId": "1e94875c523e93acdfe4ed37a2b703c2ab8a5c3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e30088b3_99bde211",
+        "filename": "suspend/SystemSuspend.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-08-15T21:51:33Z",
+      "side": 1,
+      "message": "Nit: can we use unique_fd?",
+      "range": {
+        "startLine": 51,
+        "startChar": 18,
+        "endLine": 51,
+        "endChar": 21
+      },
+      "revId": "1e94875c523e93acdfe4ed37a2b703c2ab8a5c3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bab1dfe7_bffe84f1",
+        "filename": "suspend/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-08-15T21:51:33Z",
+      "side": 1,
+      "message": "Nit: abort() /* unreachable */ ?",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 13
+      },
+      "revId": "1e94875c523e93acdfe4ed37a2b703c2ab8a5c3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
