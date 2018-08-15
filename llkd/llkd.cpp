@@ -17,15 +17,19 @@
 #include "llkd.h"
 
 #include <sched.h>
+#include <sys/prctl.h>
 #include <unistd.h>
 
 #include <chrono>
 
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 
 using namespace std::chrono;
 
 int main(int, char**) {
+    if (!android::base::GetBoolProperty("ro.debuggable", false)) prctl(PR_SET_DUMPABLE, 0);
+
     LOG(INFO) << "started";
 
     bool enabled = llkInit();
