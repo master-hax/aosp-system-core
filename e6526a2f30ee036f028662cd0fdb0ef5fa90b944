@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ab2dd70b_ca04a9c4",
+        "filename": "fastboot/fuzzy_fastboot/Android.bp",
+        "patchSetId": 32
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-16T16:45:45Z",
+      "side": 1,
+      "message": "I\u0027m not sure what the difference is. It does seem to still compile fine, so I just changed it.",
+      "parentUuid": "39edfdd5_6a6f1b43",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3eec9563_76c3767f",
         "filename": "fastboot/fuzzy_fastboot/checksum_parser.py",
         "patchSetId": 32
@@ -45,6 +69,30 @@
       "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd17998f_28567224",
+        "filename": "fastboot/fuzzy_fastboot/checksum_parser.py",
+        "patchSetId": 32
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1336956
+      },
+      "writtenOn": "2018-08-16T16:45:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3eec9563_76c3767f",
+      "range": {
+        "startLine": 8,
+        "startChar": 2,
+        "endLine": 8,
+        "endChar": 65
+      },
+      "revId": "e6526a2f30ee036f028662cd0fdb0ef5fa90b944",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
