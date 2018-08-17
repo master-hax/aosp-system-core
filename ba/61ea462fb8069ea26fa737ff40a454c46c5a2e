@@ -1,0 +1,9 @@
+Code-Review+2: Elliott Hughes <enh@google.com>
+Code-Review+2: Thierry Strudel <tstrudel@google.com>
+Verified+1: Thierry Strudel <tstrudel@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-by: Tao Bao <tbao@google.com>
+Submitted-at: Fri, 17 Aug 2018 16:35:29 +0000
+Reviewed-on: https://android-review.googlesource.com/723177
+Project: platform/system/core
+Branch: refs/heads/master
