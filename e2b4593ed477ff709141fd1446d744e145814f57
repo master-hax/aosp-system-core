@@ -46,6 +46,30 @@
       "revId": "e2b4593ed477ff709141fd1446d744e145814f57",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1244ecbe_12b6a0d4",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1066743
+      },
+      "writtenOn": "2018-08-17T21:39:49Z",
+      "side": 1,
+      "message": "Removed all mentions of tombstones in this change. Do we still have a chance of this landing?",
+      "parentUuid": "4d5d8f00_bd79c2d5",
+      "range": {
+        "startLine": 251,
+        "startChar": 49,
+        "endLine": 251,
+        "endChar": 59
+      },
+      "revId": "e2b4593ed477ff709141fd1446d744e145814f57",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
