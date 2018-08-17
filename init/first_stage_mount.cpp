@@ -74,7 +74,7 @@ class FirstStageMount {
 
     bool need_dm_verity_;
 
-    std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> device_tree_fstab_;
+    std::unique_ptr<fstab> device_tree_fstab_;
     std::string lp_metadata_partition_;
     std::vector<fstab_rec*> mount_fstab_recs_;
     std::set<std::string> required_devices_partition_names_;
@@ -139,7 +139,7 @@ static inline bool IsDmLinearEnabled() {
 // Class Definitions
 // -----------------
 FirstStageMount::FirstStageMount()
-    : need_dm_verity_(false), device_tree_fstab_(fs_mgr_read_fstab_dt(), fs_mgr_free_fstab) {
+    : need_dm_verity_(false), device_tree_fstab_(fs_mgr_read_fstab_dt()) {
     if (device_tree_fstab_) {
         // Stores device_tree_fstab_->recs[] into mount_fstab_recs_ (vector<fstab_rec*>)
         // for easier manipulation later, e.g., range-base for loop.

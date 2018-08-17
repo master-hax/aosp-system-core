@@ -31,11 +31,13 @@
  * return the 1st one.
  */
 struct fstab {
+    ~fstab();
     int num_entries;
     struct fstab_rec* recs;
 };
 
 struct fstab_rec {
+    fstab_rec& operator=(fstab_rec&& other);
     char* blk_device;
     char* logical_partition_name;
     char* mount_point;
@@ -63,7 +65,6 @@ struct fstab_rec {
 struct fstab* fs_mgr_read_fstab_default();
 struct fstab* fs_mgr_read_fstab_dt();
 struct fstab* fs_mgr_read_fstab(const char* fstab_path);
-void fs_mgr_free_fstab(struct fstab* fstab);
 
 int fs_mgr_add_entry(struct fstab* fstab, const char* mount_point, const char* fs_type,
                      const char* blk_device);
@@ -90,5 +91,8 @@ int fs_mgr_has_sysfs_path(const struct fstab_rec* fstab);
 
 std::string fs_mgr_get_slot_suffix();
 std::set<std::string> fs_mgr_get_boot_devices();
+
+// Deprecated - this will be removed as soon as all callers are using delete/unique_ptr.
+void fs_mgr_free_fstab(struct fstab* fstab);
 
 #endif /* __CORE_FS_TAB_H */

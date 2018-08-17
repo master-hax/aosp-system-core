@@ -539,7 +539,7 @@ static struct fstab* fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts) 
     }
 
     /* Allocate and init the fstab structure */
-    fstab = static_cast<struct fstab *>(calloc(1, sizeof(struct fstab)));
+    fstab = new struct fstab;
     fstab->num_entries = entries;
     fstab->recs = static_cast<struct fstab_rec *>(
         calloc(fstab->num_entries, sizeof(struct fstab_rec)));
@@ -644,8 +644,7 @@ static struct fstab* fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts) 
 
 err:
     free(line);
-    if (fstab)
-        fs_mgr_free_fstab(fstab);
+    delete fstab;
     return NULL;
 }
 
@@ -666,20 +665,16 @@ static struct fstab *in_place_merge(struct fstab *a, struct fstab *b)
         LERROR << __FUNCTION__ << "(): failed to allocate fstab recs";
         // If realloc() fails the original block is left untouched;
         // it is not freed or moved. So we have to free both a and b here.
-        fs_mgr_free_fstab(a);
-        fs_mgr_free_fstab(b);
+        delete a;
+        delete b;
         return nullptr;
     }
 
     for (int i = a->num_entries, j = 0; i < total_entries; i++, j++) {
         // Copy the structs by assignment.
-        a->recs[i] = b->recs[j];
+        a->recs[i] = std::move(b->recs[j]);
     }
-
-    // We can't call fs_mgr_free_fstab because a->recs still references the
-    // memory allocated by strdup.
-    free(b->recs);
-    free(b);
+    delete b;
 
     a->num_entries = total_entries;
     return a;
@@ -827,32 +822,56 @@ struct fstab *fs_mgr_read_fstab_default()
     return in_place_merge(fstab_dt, fstab);
 }
 
-void fs_mgr_free_fstab(struct fstab *fstab)
-{
-    int i;
+void fs_mgr_free_fstab(struct fstab* fstab) {
+    delete fstab;
+}
 
-    if (!fstab) {
-        return;
-    }
-
-    for (i = 0; i < fstab->num_entries; i++) {
+fstab::~fstab() {
+    for (int i = 0; i < num_entries; i++) {
         /* Free the pointers return by strdup(3) */
-        free(fstab->recs[i].blk_device);
-        free(fstab->recs[i].logical_partition_name);
-        free(fstab->recs[i].mount_point);
-        free(fstab->recs[i].fs_type);
-        free(fstab->recs[i].fs_options);
-        free(fstab->recs[i].key_loc);
-        free(fstab->recs[i].key_dir);
-        free(fstab->recs[i].label);
-        free(fstab->recs[i].sysfs_path);
+        free(recs[i].blk_device);
+        free(recs[i].logical_partition_name);
+        free(recs[i].mount_point);
+        free(recs[i].fs_type);
+        free(recs[i].fs_options);
+        free(recs[i].key_loc);
+        free(recs[i].key_dir);
+        free(recs[i].label);
+        free(recs[i].sysfs_path);
     }
 
     /* Free the fstab_recs array created by calloc(3) */
-    free(fstab->recs);
+    free(recs);
+}
 
-    /* Free fstab */
-    free(fstab);
+char* maybe_strdup(const char* other) {
+    return other ? strdup(other) : nullptr;
+}
+
+fstab_rec& fstab_rec::operator=(fstab_rec&& other) {
+    this->blk_device = maybe_strdup(other.blk_device);
+    this->logical_partition_name = maybe_strdup(other.logical_partition_name);
+    this->mount_point = maybe_strdup(other.mount_point);
+    this->fs_type = maybe_strdup(other.fs_type);
+    this->flags = other.flags;
+    this->fs_options = maybe_strdup(other.fs_options);
+    this->fs_mgr_flags = other.fs_mgr_flags;
+    this->key_loc = maybe_strdup(other.key_loc);
+    this->key_dir = maybe_strdup(other.key_dir);
+    this->verity_loc = maybe_strdup(other.verity_loc);
+    this->length = other.length;
+    this->label = maybe_strdup(other.label);
+    this->partnum = other.partnum;
+    this->swap_prio = other.swap_prio;
+    this->max_comp_streams = other.max_comp_streams;
+    this->zram_size = other.zram_size;
+    this->reserved_size = other.reserved_size;
+    this->file_contents_mode = other.file_contents_mode;
+    this->file_names_mode = other.file_names_mode;
+    this->erase_blk_size = other.erase_blk_size;
+    this->logical_blk_size = other.logical_blk_size;
+    this->sysfs_path = maybe_strdup(other.sysfs_path);
+    return *this;
 }
 
 /* Add an entry to the fstab, and return 0 on success or -1 on error */
@@ -910,8 +929,7 @@ std::set<std::string> fs_mgr_get_boot_devices() {
     }
 
     // Fallback to extract boot devices from fstab.
-    std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                               fs_mgr_free_fstab);
+    std::unique_ptr<fstab> fstab(fs_mgr_read_fstab_default());
     if (fstab) return extract_boot_devices(*fstab);
 
     return {};
