@@ -733,8 +733,7 @@ void load_persist_props(void) {
 }
 
 void load_recovery_id_prop() {
-    std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                               fs_mgr_free_fstab);
+    std::unique_ptr<fstab> fstab(fs_mgr_read_fstab_default());
     if (!fstab) {
         PLOG(ERROR) << "unable to read default fstab";
         return;

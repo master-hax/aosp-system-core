@@ -31,11 +31,13 @@
  * return the 1st one.
  */
 struct fstab {
+    ~fstab();
     int num_entries;
     struct fstab_rec* recs;
 };
 
 struct fstab_rec {
+    fstab_rec& operator=(fstab_rec&& other);
     char* blk_device;
     char* logical_partition_name;
     char* mount_point;
@@ -63,7 +65,6 @@ struct fstab_rec {
 struct fstab* fs_mgr_read_fstab_default();
 struct fstab* fs_mgr_read_fstab_dt();
 struct fstab* fs_mgr_read_fstab(const char* fstab_path);
-void fs_mgr_free_fstab(struct fstab* fstab);
 
 int fs_mgr_add_entry(struct fstab* fstab, const char* mount_point, const char* fs_type,
                      const char* blk_device);

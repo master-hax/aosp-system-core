@@ -317,8 +317,7 @@ bool fs_mgr_overlayfs_mount(const fstab* fstab, const fstab_rec* fsrec) {
 
 bool fs_mgr_overlayfs_already_mounted(const char* mount_point) {
     if (!mount_point) return false;
-    std::unique_ptr<struct fstab, decltype(&fs_mgr_free_fstab)> fstab(
-            fs_mgr_read_fstab("/proc/mounts"), fs_mgr_free_fstab);
+    std::unique_ptr<struct fstab> fstab(fs_mgr_read_fstab("/proc/mounts"));
     if (!fstab) return false;
     const auto lowerdir = std::string(lowerdir_option) + mount_point;
     for (auto i = 0; i < fstab->num_entries; ++i) {
@@ -348,8 +347,7 @@ bool fs_mgr_overlayfs_mount_all() {
 
     if (!fs_mgr_wants_overlayfs()) return ret;
 
-    std::unique_ptr<struct fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                                      fs_mgr_free_fstab);
+    std::unique_ptr<struct fstab> fstab(fs_mgr_read_fstab_default());
     if (!fstab) return ret;
 
     for (auto i = 0; i < fstab->num_entries; i++) {
@@ -379,8 +377,7 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
         return ret;
     }
 
-    std::unique_ptr<struct fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                                      fs_mgr_free_fstab);
+    std::unique_ptr<struct fstab> fstab(fs_mgr_read_fstab_default());
     std::vector<std::string> mounts;
     if (fstab) {
         if (!fs_mgr_get_entry_for_mount_point(fstab.get(), kOverlayMountPoint)) return ret;
@@ -421,8 +418,7 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
 bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
     if (change) *change = false;
     if (mount_point && ("/"s == mount_point)) {
-        std::unique_ptr<struct fstab, decltype(&fs_mgr_free_fstab)> fstab(
-                fs_mgr_read_fstab_default(), fs_mgr_free_fstab);
+        std::unique_ptr<struct fstab> fstab(fs_mgr_read_fstab_default());
         if (fs_mgr_system_root_image(fstab.get())) mount_point = "/system";
     }
     auto ret = true;

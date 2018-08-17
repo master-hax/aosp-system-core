@@ -1338,8 +1338,7 @@ bool fs_mgr_load_verity_state(int* mode) {
      * logging mode, in which case return that */
     *mode = VERITY_MODE_DEFAULT;
 
-    std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                               fs_mgr_free_fstab);
+    std::unique_ptr<fstab> fstab(fs_mgr_read_fstab_default());
     if (!fstab) {
         LERROR << "Failed to read default fstab";
         return false;
@@ -1376,8 +1375,7 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
         return false;
     }
 
-    std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                               fs_mgr_free_fstab);
+    std::unique_ptr<fstab> fstab(fs_mgr_read_fstab_default());
     if (!fstab) {
         LERROR << "Failed to read default fstab";
         return false;
