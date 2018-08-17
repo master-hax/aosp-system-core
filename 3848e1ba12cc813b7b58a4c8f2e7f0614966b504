@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83aad1ec_bf37c0c0",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-08-17T13:10:15Z",
+      "side": 1,
+      "message": "can\u0027t we beat bootchart or perhaps vold (because we are using /data/unencrypted?)",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "3848e1ba12cc813b7b58a4c8f2e7f0614966b504",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
