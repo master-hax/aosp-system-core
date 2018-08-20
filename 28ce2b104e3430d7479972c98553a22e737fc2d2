@@ -34,6 +34,24 @@
       "revId": "28ce2b104e3430d7479972c98553a22e737fc2d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1ae81c0_c9a52586",
+        "filename": "base/include/android-base/parseint.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-20T15:25:16Z",
+      "side": 1,
+      "message": "please include a unit test that shows us exactly when you think this gives the wrong result.",
+      "parentUuid": "82c9b901_49e24966",
+      "revId": "28ce2b104e3430d7479972c98553a22e737fc2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
