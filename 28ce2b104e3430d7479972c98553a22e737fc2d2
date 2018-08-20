@@ -16,6 +16,24 @@
       "revId": "28ce2b104e3430d7479972c98553a22e737fc2d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82c9b901_49e24966",
+        "filename": "base/include/android-base/parseint.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1355299
+      },
+      "writtenOn": "2018-08-20T06:40:49Z",
+      "side": 1,
+      "message": "It will also return false here. We add log and see that the value of static_cast\u003cunsigned long long int\u003e(max) is 4294967295 for 32bit project.",
+      "parentUuid": "f5a7e04f_a533f061",
+      "revId": "28ce2b104e3430d7479972c98553a22e737fc2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
