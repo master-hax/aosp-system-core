@@ -145,7 +145,16 @@ std::string get_temp_host_filename() {
         return std::string(temp_file_path);
     }
 #else
-    return std::tmpnam(nullptr);
+    const char tmp_template[] = "/tmp/adb_patch_XXXXXX";
+    char temp_file_path[sizeof(tmp_template)];
+    strncpy(temp_file_path, tmp_template, sizeof(tmp_template) - 1);
+    int fd = mkstemp(temp_file_path);
+    if (fd != -1) {
+        return std::string(temp_file_path);
+    } else {
+        printf("Error determining temp path\n");
+        return std::string("");
+    }
 #endif
 }
 
