@@ -210,6 +210,30 @@
     },
     {
       "key": {
+        "uuid": "2113d86d_ddbe2fc5",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2782,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-21T23:34:29Z",
+      "side": 1,
+      "message": "Are you suggesting the following?\n\n1. Put the body of _init_console() in _ensure_console_setup().\n2. Have _init_console() just call _ensure_console_setup().\n3. Make _ensure_console_setup() use a static boolean (or use _console_init for this purpose?) to ensure that it only runs once? It\u0027s actually idempotent right now.\n4. Have _ensure_env_setup() call _ensure_console_setup() fairly early (like before the for loop where it makes the shadow env vars).\n\nI can prototype this, let me know if I\u0027ve got the right idea.",
+      "parentUuid": "375d2908_738d3f1e",
+      "range": {
+        "startLine": 2779,
+        "startChar": 7,
+        "endLine": 2782,
+        "endChar": 76
+      },
+      "revId": "ed455cf27b4082b6ddca587b5c6fdf10c49be51d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ea07face_22ef6577",
         "filename": "adb/sysdeps_win32.cpp",
         "patchSetId": 2
