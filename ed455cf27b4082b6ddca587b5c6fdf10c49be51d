@@ -186,6 +186,30 @@
     },
     {
       "key": {
+        "uuid": "375d2908_738d3f1e",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2782,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-21T22:02:34Z",
+      "side": 1,
+      "message": "Maybe make this _ensure_console_setup, and call it at the beginning of _ensure_env_setup, to avoid potential static initialization order fiasco problems?",
+      "parentUuid": "84c89477_d156d9e6",
+      "range": {
+        "startLine": 2779,
+        "startChar": 7,
+        "endLine": 2782,
+        "endChar": 76
+      },
+      "revId": "ed455cf27b4082b6ddca587b5c6fdf10c49be51d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ea07face_22ef6577",
         "filename": "adb/sysdeps_win32.cpp",
         "patchSetId": 2
