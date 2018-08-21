@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b83b62c3_eb32fdba",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-21T15:19:38Z",
+      "side": 1,
+      "message": "why not just `char temp_file_path[] \u003d \"...\";`?\n\n(actually, why not TemporaryFile from android-base, which would hide the Windows vs macOS vs Linux, and handle the case where the user\u0027s temporary directory isn\u0027t /tmp? [probable answer: because we hid it in \u003candroid-base/test_utils.h\u003e which was a mistake that we should fix.])",
+      "range": {
+        "startLine": 148,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 0
+      },
+      "revId": "67819d246f876141b4785bd201fe154c5ed4ea85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc82197e_0846f1fd",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-21T15:19:38Z",
+      "side": 1,
+      "message": "(you get these conversions for free. no need to write them explicitly)",
+      "range": {
+        "startLine": 153,
+        "startChar": 15,
+        "endLine": 153,
+        "endChar": 26
+      },
+      "revId": "67819d246f876141b4785bd201fe154c5ed4ea85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b515e0e3_4cd61433",
+        "filename": "adb/client/adb_install.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-21T15:19:38Z",
+      "side": 1,
+      "message": "perror?",
+      "revId": "67819d246f876141b4785bd201fe154c5ed4ea85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
