@@ -258,6 +258,30 @@
     },
     {
       "key": {
+        "uuid": "934cbe7d_b31a9fac",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2782,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T00:51:54Z",
+      "side": 1,
+      "message": "You\u0027re right, I was assuming the removal of the fatal() call, but then \"right now\" doesn\u0027t make sense in my sentence. :)\n\nIf we don\u0027t do 1 + 2 then we\u0027ll be assuming that getenv() is called early enough. Seems like we still need _init_console() (or similar) called from static-initializer-time.\n\nAt any rate, I\u0027ll prototype the general idea and we can continue the discussion from there.",
+      "parentUuid": "8c9063b1_7f7e611e",
+      "range": {
+        "startLine": 2779,
+        "startChar": 7,
+        "endLine": 2782,
+        "endChar": 76
+      },
+      "revId": "ed455cf27b4082b6ddca587b5c6fdf10c49be51d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ea07face_22ef6577",
         "filename": "adb/sysdeps_win32.cpp",
         "patchSetId": 2
