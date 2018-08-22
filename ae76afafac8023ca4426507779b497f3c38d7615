@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df01c084_3d25dc85",
+        "filename": "init/rlimit_parser_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-22T22:04:40Z",
+      "side": 1,
+      "message": "test that it works for cur as well as max? (since the code is actually duplicated, we should probably duplicate the test.)",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 1
+      },
+      "revId": "ae76afafac8023ca4426507779b497f3c38d7615",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
