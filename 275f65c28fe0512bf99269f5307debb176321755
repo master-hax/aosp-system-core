@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ca41331_34fbaff2",
+        "filename": "adb/test_device.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T23:41:10Z",
+      "side": 1,
+      "message": "What do you guys think of this theory:\n\ncommandline.cpp:read_and_dump():\nint exit_code \u003d 0;\n...\nexit_code \u003d protocol-\u003edata()[0];\n\nThe right side is a \"char\" (defaults to signed?). So if the sign-bit is set, assigning it to exit_code does sign extension. Then this sign-extended value gets returned through Windows to Python which sees a sign-extended value.\n\nBut POSIX/*nix only preserves 8 bits (unsigned?)? https://stackoverflow.com/questions/44227722/linux-c-negative-exit-codes-clarifiction\n\nSo maybe the real fix is to cast the right side to unsigned, or to change the return type of ShellProtocol.data()?",
+      "parentUuid": "5cf419a3_fd6b86cf",
+      "range": {
+        "startLine": 503,
+        "startChar": 16,
+        "endLine": 503,
+        "endChar": 40
+      },
+      "revId": "275f65c28fe0512bf99269f5307debb176321755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "09272c6e_aa717506",
         "filename": "adb/test_device.py",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2018-08-22T22:39:36Z",
       "side": 1,
       "message": "It\u0027s not obvious to me that this is actually the behavior we want (or that will still happen after spencer\u0027s windows10 raw terminal patch)",
+      "range": {
+        "startLine": 1301,
+        "startChar": 0,
+        "endLine": 1308,
+        "endChar": 56
+      },
+      "revId": "275f65c28fe0512bf99269f5307debb176321755",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a384e5c4_13763707",
+        "filename": "adb/test_device.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1308,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T23:41:10Z",
+      "side": 1,
+      "message": "My raw terminal patch should not affect adb shell piping. Basically, none of my console patches over the years (should) have affected adb shell piping because I didn\u0027t want to break some automation that someone somewhere probably has.\n\nBasically, a breaking change of that magnitude should probably be decided by someone at Google, not just random me. :)\n\nThe question is what is the right path moving forward. With the news of Notepad.exe finally supporting \\n line-endings, broader use of Windows Subsystem for Linux, ssh on Windows outputting \\n (I just checked), as every year passes by, \\n output from adb shell on Windows probably becomes more acceptable. It\u0027s just a matter of Google\u0027s posture towards anyone who might be broken by such a change.",
+      "parentUuid": "09272c6e_aa717506",
       "range": {
         "startLine": 1301,
         "startChar": 0,
