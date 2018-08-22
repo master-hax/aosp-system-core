@@ -159,6 +159,7 @@ void FastBootTest::SetLockState(bool unlock, bool assert_change) {
     if (!fb) {
         return;
     }
+    return;  // TODO: Remove this
 
     std::string resp;
     std::vector<std::string> info;
