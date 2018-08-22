@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71908266_920113fd",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 731,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T03:28:27Z",
+      "side": 0,
+      "message": "I simplified the return value and usage of std::call_once() since it seems like overkill now. I can bring it back or move it to _init_sysdeps(), just let me know.",
+      "range": {
+        "startLine": 730,
+        "startChar": 4,
+        "endLine": 731,
+        "endChar": 30
+      },
+      "revId": "6d2ace3684a06ea81d853657cbc6f5f0682667bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b67b19ae_e846d034",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2692,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T03:28:27Z",
+      "side": 0,
+      "message": "No longer necessary, the same way you killed the Winsock init calls.",
+      "range": {
+        "startLine": 2692,
+        "startChar": 4,
+        "endLine": 2692,
+        "endChar": 24
+      },
+      "revId": "6d2ace3684a06ea81d853657cbc6f5f0682667bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

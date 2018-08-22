@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12d49400_c014e68c",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2774,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T03:28:27Z",
+      "side": 1,
+      "message": "This isn\u0027t really necessary if you assume the caller does the right thing. I left this in because it\u0027ll save debugging time in the future if this condition is ever hit.",
+      "range": {
+        "startLine": 2772,
+        "startChar": 4,
+        "endLine": 2774,
+        "endChar": 5
+      },
+      "revId": "1442f4927ba4c99911fbcd8d1efbf2a3fb354da1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
