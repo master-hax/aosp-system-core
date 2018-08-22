@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1cc0f99_0f4445be",
+        "filename": "adb/test_device.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1321,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T22:45:07Z",
+      "side": 1,
+      "message": "netcat isn\u0027t on old devices, but I\u0027m guessing the test suite presumes newer devices anyway.",
+      "range": {
+        "startLine": 1321,
+        "startChar": 39,
+        "endLine": 1321,
+        "endChar": 41
+      },
+      "revId": "ca098db4025defc5c267a1235e93beb96577dbdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e6ff55f_4df55081",
+        "filename": "adb/test_device.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1324,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T22:45:07Z",
+      "side": 1,
+      "message": "join it later?",
+      "range": {
+        "startLine": 1324,
+        "startChar": 16,
+        "endLine": 1324,
+        "endChar": 23
+      },
+      "revId": "ca098db4025defc5c267a1235e93beb96577dbdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11924fd1_1acc2893",
+        "filename": "adb/test_device.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1335,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-08-22T22:45:07Z",
+      "side": 1,
+      "message": "I think adb shell on Windows returns \\r\\n or maybe even hideously \\r\\r\\n when connecting to older devices. I\u0027m not sure what the best practice is in dealing with this (some adb.linesep property? change adb shell behavior on Windows?).",
+      "range": {
+        "startLine": 1335,
+        "startChar": 38,
+        "endLine": 1335,
+        "endChar": 43
+      },
+      "revId": "ca098db4025defc5c267a1235e93beb96577dbdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
