@@ -500,7 +500,7 @@ class ShellTest(DeviceTest):
             success = True
             for i in range(thread_idx, 240, thread_count):
                 ret = subprocess.call(['adb', 'shell', 'exit {}'.format(i)])
-                if ret != i % 256:
+                if ret % 256 != i % 256:
                     success = False
                     break
             result[thread_idx] = success
@@ -1298,9 +1298,14 @@ class DeviceOfflineTest(DeviceTest):
 
                 self.assertEqual(0, rc)
 
-                # Output should be '\0' * length, followed by "foo\n"
-                self.assertEqual(length, len(stdout) - 4)
-                self.assertEqual(stdout, "\0" * length + "foo\n")
+                # Output should be '\0' * length, followed by "foo\n" (or "foo\r\n" on Windows...)
+                expectedOutput = "\0" * length + "foo"
+                if sys.platform == "win32":
+                    expectedOutput += "\r\n"
+                else:
+                    expectedOutput += "\n"
+
+                self.assertEqual(expectedOutput, stdout)
 
 
 def main():
