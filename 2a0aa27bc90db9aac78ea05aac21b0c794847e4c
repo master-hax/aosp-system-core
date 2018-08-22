@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5cacb8d2_06434db8",
+        "filename": "adb/daemon/usb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-22T22:30:05Z",
+      "side": 1,
+      "message": "should we flip this now, and .release() into `h` in the true case and just `return false` instead of `goto err`?\n\n(probably best in a separate change though.)",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 325,
+        "endChar": 23
+      },
+      "revId": "2a0aa27bc90db9aac78ea05aac21b0c794847e4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d74ac5af_4cfd4f5f",
+        "filename": "adb/daemon/usb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-22T22:30:05Z",
+      "side": 1,
+      "message": "should this be O_CLOEXEC?",
+      "range": {
+        "startLine": 524,
+        "startChar": 41,
+        "endLine": 524,
+        "endChar": 49
+      },
+      "revId": "2a0aa27bc90db9aac78ea05aac21b0c794847e4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
