@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d3dca81d_9fc263b9",
+        "filename": "adb/daemon/usb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-22T22:34:38Z",
+      "side": 1,
+      "message": "I think it\u0027d be a bit messy, since we close control in the failure case as well (and we\u0027re not always opening it every time?)",
+      "parentUuid": "5cacb8d2_06434db8",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 325,
+        "endChar": 23
+      },
+      "revId": "2a0aa27bc90db9aac78ea05aac21b0c794847e4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d74ac5af_4cfd4f5f",
         "filename": "adb/daemon/usb.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "2a0aa27bc90db9aac78ea05aac21b0c794847e4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "feb47454_93685d6c",
+        "filename": "adb/daemon/usb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-22T22:34:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d74ac5af_4cfd4f5f",
+      "range": {
+        "startLine": 524,
+        "startChar": 41,
+        "endLine": 524,
+        "endChar": 49
+      },
+      "revId": "2a0aa27bc90db9aac78ea05aac21b0c794847e4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
