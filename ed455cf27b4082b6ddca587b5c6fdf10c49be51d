@@ -234,6 +234,30 @@
     },
     {
       "key": {
+        "uuid": "8c9063b1_7f7e611e",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2782,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-22T00:12:47Z",
+      "side": 1,
+      "message": "3 + 4\n\n(I don\u0027t think it\u0027s actually idempotent, because \u0027_init_console(); _ensure_env_setup(); _init_console()\u0027 will trigger the fatal on line 2784)",
+      "parentUuid": "2113d86d_ddbe2fc5",
+      "range": {
+        "startLine": 2779,
+        "startChar": 7,
+        "endLine": 2782,
+        "endChar": 76
+      },
+      "revId": "ed455cf27b4082b6ddca587b5c6fdf10c49be51d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ea07face_22ef6577",
         "filename": "adb/sysdeps_win32.cpp",
         "patchSetId": 2
