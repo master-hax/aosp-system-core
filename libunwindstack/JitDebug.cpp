@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <libgen.h>
 #include <stdint.h>
 #include <sys/mman.h>
 

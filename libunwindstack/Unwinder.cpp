@@ -17,6 +17,7 @@
 #define _GNU_SOURCE 1
 #include <elf.h>
 #include <inttypes.h>
+#include <libgen.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
