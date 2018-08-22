@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19434379_27b01b26",
+        "filename": "adb/test_device.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1311,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-22T22:25:02Z",
+      "side": 1,
+      "message": "TODO :-)",
+      "range": {
+        "startLine": 1311,
+        "startChar": 29,
+        "endLine": 1311,
+        "endChar": 32
+      },
+      "revId": "87d4516b4917cc38b613bd3e0d238fdda9f365fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
