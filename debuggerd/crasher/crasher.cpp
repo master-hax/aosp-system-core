@@ -338,20 +338,22 @@ noinline int do_action(const char* arg) {
 
 int main(int argc, char** argv) {
 #if defined(STATIC_CRASHER)
-    debuggerd_callbacks_t callbacks = {
-      .get_abort_message = []() {
-        static struct {
-          size_t size;
-          char msg[32];
-        } msg;
+  debuggerd_callbacks_t callbacks = {.get_abort_message =
+                                         []() {
+                                           static struct {
+                                             uint64_t magic;
+                                             size_t size;
+                                             char msg[32];
+                                           } __attribute__((__packed__)) msg;
 
-        msg.size = strlen("dummy abort message");
-        memcpy(msg.msg, "dummy abort message", strlen("dummy abort message"));
-        return reinterpret_cast<abort_msg_t*>(&msg);
-      },
-      .post_dump = nullptr
-    };
-    debuggerd_init(&callbacks);
+                                           constexpr const char kAbortMessage[] =
+                                               "dummy abort message";
+                                           msg.size = sizeof(kAbortMessage);
+                                           memcpy(msg.msg, kAbortMessage, sizeof(kAbortMessage));
+                                           return reinterpret_cast<abort_msg_t*>(&msg);
+                                         },
+                                     .post_dump = nullptr};
+  debuggerd_init(&callbacks);
 #endif
 
     if (argc == 1) crash1();

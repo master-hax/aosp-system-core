@@ -246,23 +246,31 @@ static void dump_abort_message(log_t* log, Memory* process_memory, uint64_t addr
     return;
   }
 
-  size_t length;
-  if (!process_memory->ReadFully(address, &length, sizeof(length))) {
+  // From bionic/libc/bionic/android_set_abort_message.cpp.
+  struct abort_msg_t {
+    uint64_t magic;
+    size_t size;
+    char msg[0];
+  } __attribute__((__packed__));
+
+  abort_msg_t abort_msg;
+
+  if (!process_memory->ReadFully(address, &abort_msg, sizeof(abort_msg))) {
     _LOG(log, logtype::HEADER, "Failed to read abort message header: %s\n", strerror(errno));
     return;
   }
 
-  // The length field includes the length of the length field itself.
-  if (length < sizeof(size_t)) {
-    _LOG(log, logtype::HEADER, "Abort message header malformed: claimed length = %zd\n", length);
+  // The size field includes the length of the header itself.
+  if (abort_msg.size < sizeof(abort_msg)) {
+    _LOG(log, logtype::HEADER, "Abort message header malformed: claimed length = %zd\n",
+         abort_msg.size);
     return;
   }
-
-  length -= sizeof(size_t);
+  const size_t length = abort_msg.size - sizeof(abort_msg);
 
   // The abort message should be null terminated already, but reserve a spot for NUL just in case.
   std::vector<char> msg(length + 1);
-  if (!process_memory->ReadFully(address + sizeof(length), &msg[0], length)) {
+  if (!process_memory->ReadFully(address + sizeof(abort_msg), &msg[0], length)) {
     _LOG(log, logtype::HEADER, "Failed to read abort message: %s\n", strerror(errno));
     return;
   }
