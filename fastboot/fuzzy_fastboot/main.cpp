@@ -767,6 +767,47 @@ TEST_F(Fuzz, CommandMissingArgs) {
     }
 }
 
+TEST_F(Fuzz, SparseZeroLength) {
+    SparseWrapper sparse(4096, 0);
+    ASSERT_TRUE(*sparse) << "Sparse image creation failed";
+    RetCode ret = fb->Download(*sparse);
+    // Two ways to handle it
+    if (ret != DEVICE_FAIL) {  // if lazily parsed it better fail on a flash
+        EXPECT_EQ(fb->Flash("userdata"), DEVICE_FAIL)
+                << "Flashing zero length sparse image did not fail: " << sparse.Rep();
+    }
+    ret = fb->Download(*sparse, true);
+    if (ret != DEVICE_FAIL) {  // if lazily parsed it better fail on a flash
+        EXPECT_EQ(fb->Flash("userdata"), DEVICE_FAIL)
+                << "Flashing zero length sparse image did not fail " << sparse.Rep();
+    }
+}
+
+TEST_F(Fuzz, SparseTooManyChunks) {
+    SparseWrapper sparse(4096, 4096);  // 1 block, but we send two chunks that will use 2 blocks
+    ASSERT_TRUE(*sparse) << "Sparse image creation failed";
+    std::vector<char> buf = RandomBuf(4096);
+    ASSERT_EQ(sparse_file_add_data(*sparse, buf.data(), buf.size(), 0), 0)
+            << "Adding data failed to sparse file: " << sparse.Rep();
+    // We take advantage of the fact the sparse library does not check this
+    ASSERT_EQ(sparse_file_add_fill(*sparse, 0xdeadbeef, 4096, 1), 0)
+            << "Adding fill to sparse file failed: " << sparse.Rep();
+
+    RetCode ret = fb->Download(*sparse);
+    // Two ways to handle it
+    if (ret != DEVICE_FAIL) {  // if lazily parsed it better fail on a flash
+        EXPECT_EQ(fb->Flash("userdata"), DEVICE_FAIL)
+                << "Flashing sparse image with 'total_blks' in header 1 too small did not fail "
+                << sparse.Rep();
+    }
+    ret = fb->Download(*sparse, true);
+    if (ret != DEVICE_FAIL) {  // if lazily parsed it better fail on a flash
+        EXPECT_EQ(fb->Flash("userdata"), DEVICE_FAIL)
+                << "Flashing sparse image with 'total_blks' in header 1 too small did not fail "
+                << sparse.Rep();
+    }
+}
+
 TEST_F(Fuzz, USBResetSpam) {
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed;
