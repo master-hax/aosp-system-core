@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff6de2a3_5effaa42",
+        "filename": "libunwindstack/JitDebug.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-08-23T17:56:11Z",
+      "side": 1,
+      "message": "As mentioned in the other comment, this should be doing a #define _GNU_SOURCE and #include \u003cstring.h\u003e.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 19
+      },
+      "revId": "c2c50280af77503bdb80f7322786366397cf3960",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "add31bb3_58015297",
+        "filename": "libunwindstack/Unwinder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-08-23T17:56:11Z",
+      "side": 1,
+      "message": "basenmae is coming from string.h\n\nThere are two versions of basename, the one from libgen is not the one this code expects. If you can\u0027t get this to work with an old compiler, then you\u0027ll need to rewrite all uses of basename to make sure they work for the libgen version.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 19
+      },
+      "revId": "c2c50280af77503bdb80f7322786366397cf3960",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
