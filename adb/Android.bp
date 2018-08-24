@@ -275,6 +275,11 @@ cc_binary_host {
     // will violate ODR
     shared_libs: [],
 
+    required: [
+        "deploypatchgenerator",
+        "deployagent.sh",
+    ],
+
     target: {
         darwin: {
             cflags: [
