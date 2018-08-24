@@ -283,7 +283,11 @@ cc_binary_host {
         },
         windows: {
             enabled: true,
-            ldflags: ["-municode"],
+            ldflags: [
+                "-Wl,--dynamicbase",
+                "-Wl,--nxcompat",
+                "-municode",
+            ],
             shared_libs: ["AdbWinApi"],
             required: [
                 "AdbWinUsbApi",
