@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca51a1f3_ba22eeca",
+        "filename": "libmemunreachable/MemUnreachable.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-08-24T19:14:11Z",
+      "side": 1,
+      "message": "Nit: \"[anon:dalvik-\"?",
+      "range": {
+        "startLine": 247,
+        "startChar": 52,
+        "endLine": 247,
+        "endChar": 54
+      },
+      "revId": "5e88c303aec13d875d44b91ae1eef0d8fe4cd45d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
