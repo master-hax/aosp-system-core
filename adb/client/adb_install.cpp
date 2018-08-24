@@ -40,6 +40,8 @@
 #include <android-base/strings.h>
 #include <android-base/test_utils.h>
 
+static constexpr int kFastDeployMinApi = 24;
+
 static bool _use_legacy_install() {
     FeatureSet features;
     std::string error;
