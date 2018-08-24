@@ -56,6 +56,9 @@ cc_library_host_static {
       linux: {
         srcs: ["usb_linux.cpp"],
       },
+      darwin: {
+        srcs: ["usb_osx.cpp"]
+      }
     },
 
     cflags: [
