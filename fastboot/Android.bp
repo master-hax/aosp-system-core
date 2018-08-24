@@ -56,6 +56,23 @@ cc_library_host_static {
       linux: {
         srcs: ["usb_linux.cpp"],
       },
+
+      darwin: {
+        srcs: ["usb_osx.cpp"],
+
+        host_ldlibs: [
+            "-framework CoreFoundation",
+            "-framework IOKit",
+        ],
+      },
+
+      windows: {
+        srcs: ["usb_windows.cpp"],
+
+        host_ldlibs: [
+            "-lws2_32",
+        ],
+      },
     },
 
     cflags: [
