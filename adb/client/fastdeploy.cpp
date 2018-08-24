@@ -33,7 +33,7 @@ long get_agent_version() {
     std::vector<char> versionOutputBuffer;
     std::vector<char> versionErrorBuffer;
 
-    int statusCode = capture_shell_command("/data/local/tmp/deployagent.sh version",
+    int statusCode = capture_shell_command("/data/local/tmp/deployagent version",
                                            &versionOutputBuffer, &versionErrorBuffer);
     long version = -1;
 
@@ -94,8 +94,8 @@ static bool deploy_agent(bool checkTimeStamps, bool use_localagent, const char* 
     }
 
     std::string agent_sh_path;
-    if (get_agent_component_host_path(use_localagent, adb_path, "/system/bin/deployagent.sh",
-                                      "/deployagent.sh", &agent_sh_path)) {
+    if (get_agent_component_host_path(use_localagent, adb_path, "/system/bin/deployagent",
+                                      "/deployagent", &agent_sh_path)) {
         srcs.push_back(agent_sh_path.c_str());
     } else {
         return false;
@@ -241,7 +241,7 @@ int extract_metadata(const char* apkPath, FILE* outputFp) {
         return -1;
     }
 
-    const char* kAgentExtractCommandPattern = "/data/local/tmp/deployagent.sh extract %s";
+    const char* kAgentExtractCommandPattern = "/data/local/tmp/deployagent extract %s";
     std::string extractCommand =
             android::base::StringPrintf(kAgentExtractCommandPattern, packageName.c_str());
 
@@ -308,8 +308,7 @@ std::string get_patch_path(const char* apkPath) {
 }
 
 int apply_patch_on_device(const char* apkPath, const char* patchPath, const char* outputPath) {
-    const std::string kAgentApplyCommandPattern =
-            "/data/local/tmp/deployagent.sh apply %s %s -o %s";
+    const std::string kAgentApplyCommandPattern = "/data/local/tmp/deployagent apply %s %s -o %s";
 
     std::string packageName;
     if (get_packagename_from_apk(apkPath, &packageName) == false) {
@@ -331,8 +330,7 @@ int apply_patch_on_device(const char* apkPath, const char* patchPath, const char
 }
 
 int install_patch(const char* apkPath, const char* patchPath, int argc, const char** argv) {
-    const std::string kAgentApplyCommandPattern =
-            "/data/local/tmp/deployagent.sh apply %s %s -pm %s";
+    const std::string kAgentApplyCommandPattern = "/data/local/tmp/deployagent apply %s %s -pm %s";
 
     std::string packageName;
     if (get_packagename_from_apk(apkPath, &packageName) == false) {
