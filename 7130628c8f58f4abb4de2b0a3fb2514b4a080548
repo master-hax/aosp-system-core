@@ -22,6 +22,30 @@
       "revId": "7130628c8f58f4abb4de2b0a3fb2514b4a080548",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf3f9ac2_a8e049eb",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 819,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-08-27T23:54:13Z",
+      "side": 1,
+      "message": "oops. fixed.",
+      "parentUuid": "0adc9ecd_9bf17524",
+      "range": {
+        "startLine": 819,
+        "startChar": 7,
+        "endLine": 819,
+        "endChar": 19
+      },
+      "revId": "7130628c8f58f4abb4de2b0a3fb2514b4a080548",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
