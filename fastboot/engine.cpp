@@ -85,6 +85,10 @@ void fb_init(fastboot::FastBootDriver& fbi) {
     fb->SetInfoCallback(cb);
 }
 
+void fb_reinit(Transport* transport) {
+    fb->set_transport(transport);
+}
+
 const std::string fb_get_error() {
     return fb->Error();
 }
@@ -371,4 +375,21 @@ int64_t fb_execute_queue() {
     }
     action_list.clear();
     return status;
+}
+
+bool fb_reboot_to_userspace() {
+    // First ensure that the queue is flushed.
+    fb_execute_queue();
+
+    fprintf(stderr, "%-50s ", "Rebooting to userspace fastboot");
+    verbose("\n");
+
+    if (fb->RebootTo("fastboot") != fastboot::RetCode::SUCCESS) {
+        fprintf(stderr, "FAILED (%s)\n", fb->Error().c_str());
+        return false;
+    }
+    fprintf(stderr, "OKAY\n");
+
+    fb->set_transport(nullptr);
+    return true;
 }
