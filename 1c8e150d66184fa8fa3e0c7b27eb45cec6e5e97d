@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dbea4008_bfe23603",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 460,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-27T23:49:11Z",
+      "side": 1,
+      "message": "dummy_info? fallback_info?",
+      "range": {
+        "startLine": 460,
+        "startChar": 17,
+        "endLine": 460,
+        "endChar": 21
+      },
+      "revId": "1c8e150d66184fa8fa3e0c7b27eb45cec6e5e97d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
