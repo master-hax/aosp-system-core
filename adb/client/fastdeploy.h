@@ -26,6 +26,9 @@ typedef enum EFastDeploy_AgentUpdateStrategy {
 
 static constexpr int kFastDeployMinApi = 24;
 
+void fastdeploy_init(bool use_localagent, const std::string& adb_path);
+void fastdeploy_deinit();
+
 int get_device_api_level();
 bool update_agent(FastDeploy_AgentUpdateStrategy agentUpdateStrategy, bool use_localagent,
                   const char* adb_path);

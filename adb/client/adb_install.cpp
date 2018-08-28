@@ -381,11 +381,13 @@ int install_app(int argc, const char** argv) {
     }
 
     std::string adb_path = android::base::GetExecutablePath();
-
     if (adb_path.length() == 0) {
         return 1;
     }
+
     if (use_fastdeploy == true) {
+        fastdeploy_init(use_localagent, adb_path);
+
         bool agent_up_to_date =
                 update_agent(agent_update_strategy, use_localagent, adb_path.c_str());
         if (agent_up_to_date == false) {
@@ -404,6 +406,10 @@ int install_app(int argc, const char** argv) {
         case INSTALL_DEFAULT:
         default:
             return 1;
+    }
+
+    if (use_fastdeploy == true) {
+        fastdeploy_deinit();
     }
 }
 
