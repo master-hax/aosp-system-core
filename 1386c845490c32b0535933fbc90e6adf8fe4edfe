@@ -16,6 +16,24 @@
       "revId": "1386c845490c32b0535933fbc90e6adf8fe4edfe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a1243cc_fd57dfc3",
+        "filename": "base/parseint_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-08-28T22:15:32Z",
+      "side": 1,
+      "message": "I just stepped through the code, and this call is definitely going through the new errno setting code I added. The code is using a long long int, so this value should fit. I added the all 9\u0027s number to verify that the strto* calls are setting errno as epxected.\n\nHowever, I added some checks with a few explicit maxes to be thorough.",
+      "parentUuid": "eaa961ce_8c986ce6",
+      "revId": "1386c845490c32b0535933fbc90e6adf8fe4edfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
