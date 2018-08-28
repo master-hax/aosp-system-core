@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c68ad476_79a831ed",
+        "filename": "libcutils/tests/sched_policy_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-28T19:27:57Z",
+      "side": 1,
+      "message": "CONFIG_CGROUP_SCHEDTUNE?",
+      "range": {
+        "startLine": 73,
+        "startChar": 57,
+        "endLine": 73,
+        "endChar": 77
+      },
+      "revId": "d20d6a4192cbc0e21178708d129319eb44774603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
