@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7fac075_d46057bf",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-28T20:08:03Z",
+      "side": 1,
+      "message": "You have four names used for this class of image.\n\nneeded_for_fastbootd\nos_images\nsuper partition\nlogical partition\n\nCan we pick one name and standardize on the variables/flags/list/functions?",
+      "range": {
+        "startLine": 118,
+        "startChar": 9,
+        "endLine": 118,
+        "endChar": 29
+      },
+      "revId": "95d4093b4933c0bb4a324b7c8405e1987b997da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c15c4e5_bda4083c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-28T20:08:03Z",
+      "side": 1,
+      "message": "Next flag to cause a wrap. I pity the next one that decides to add a flag ...",
+      "range": {
+        "startLine": 124,
+        "startChar": 66,
+        "endLine": 124,
+        "endChar": 96
+      },
+      "revId": "95d4093b4933c0bb4a324b7c8405e1987b997da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
