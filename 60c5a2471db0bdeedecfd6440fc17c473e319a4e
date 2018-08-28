@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "474372ad_0b81e8cd",
+        "filename": "adb/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-28T22:10:27Z",
+      "side": 1,
+      "message": "Or remove it completely if you make it the wrapper: property of the java_binary, the \"deployagent\" in sdk PRODUCT_PACKAGES will install both.",
+      "parentUuid": "20b15bea_60e5c441",
+      "revId": "60c5a2471db0bdeedecfd6440fc17c473e319a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "84b20fd1_ac756ec9",
         "filename": "adb/fastdeploy/Android.bp",
         "patchSetId": 4
