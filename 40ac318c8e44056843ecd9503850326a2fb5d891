@@ -22,6 +22,30 @@
       "revId": "40ac318c8e44056843ecd9503850326a2fb5d891",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e7d2fdc_2a20bbeb",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-28T22:13:32Z",
+      "side": 1,
+      "message": "I\u0027ll combine the lists. The new type is \"Extra\" unless you have a \u003c12-character suggestion that is better :)",
+      "parentUuid": "6af4daf3_904ff052",
+      "range": {
+        "startLine": 145,
+        "startChar": 48,
+        "endLine": 145,
+        "endChar": 56
+      },
+      "revId": "40ac318c8e44056843ecd9503850326a2fb5d891",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
