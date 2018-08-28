@@ -58,8 +58,12 @@ TEST(parseint, unsigned_smoke) {
   i = 0u;
   EXPECT_TRUE(android::base::ParseUint("  123", &i));
   EXPECT_EQ(123u, i);
+  errno = 0;
   ASSERT_FALSE(android::base::ParseUint("-123", &i));
+  EXPECT_EQ(ERANGE, errno);
+  errno = 0;
   EXPECT_FALSE(android::base::ParseUint("  -123", &i));
+  EXPECT_EQ(ERANGE, errno);
 
   unsigned short s = 0u;
   ASSERT_TRUE(android::base::ParseUint("1234", &s));
@@ -164,4 +168,31 @@ TEST(parseint, ParseByteCount_overflow) {
   ASSERT_TRUE(android::base::ParseByteCount("65535b", &u16));
   ASSERT_EQ(65535U, u16);
   ASSERT_FALSE(android::base::ParseByteCount("65k", &u16));
+}
+
+TEST(parseint, errno_overflow) {
+  int32_t i32;
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("2147483747", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("9999999999999999999999", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("-2147483747", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("6000", &i32, -3000, 3000));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("-5000", &i32, -3000, 3000));
+  ASSERT_EQ(ERANGE, errno);
+
+  uint16_t u16;
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseUint<uint16_t>("2147483747", &u16));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseUint<uint16_t>("9000", &u16, 4500));
+  ASSERT_EQ(ERANGE, errno);
 }

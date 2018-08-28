@@ -38,6 +38,7 @@ bool ParseUint(const char* s, T* out, T max = std::numeric_limits<T>::max(),
   }
 
   if (s[0] == '-') {
+    errno = ERANGE;
     return false;
   }
 
@@ -53,6 +54,7 @@ bool ParseUint(const char* s, T* out, T max = std::numeric_limits<T>::max(),
     if (__builtin_mul_overflow(result, 1ULL << (10 * (suffix - suffixes)), &result)) return false;
   }
   if (max < result) {
+    errno = ERANGE;
     return false;
   }
   if (out != nullptr) {
@@ -99,6 +101,7 @@ bool ParseInt(const char* s, T* out,
     return false;
   }
   if (result < min || max < result) {
+    errno = ERANGE;
     return false;
   }
   if (out != nullptr) {
