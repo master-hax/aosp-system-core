@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "d784da58_fe7dbcae",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-28T20:33:13Z",
+      "side": 1,
+      "message": "optional_if_no_partition isn\u0027t needed anymore now that logical partitions work, so we can drop that. We could probably drop the \"flashall\" flag too since it\u0027s just for super (userdata/cache are already hardcoded in find_image). That\u0027d help cut down the clutter, and then the new flag could be an enum.\n\nI\u0027ll do this in a separate CL unless anyone objects.",
+      "parentUuid": "7d5a1244_8f3ebbdc",
+      "range": {
+        "startLine": 118,
+        "startChar": 9,
+        "endLine": 118,
+        "endChar": 29
+      },
+      "revId": "95d4093b4933c0bb4a324b7c8405e1987b997da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c15c4e5_bda4083c",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
@@ -60,6 +84,30 @@
       "writtenOn": "2018-08-28T20:08:03Z",
       "side": 1,
       "message": "Next flag to cause a wrap. I pity the next one that decides to add a flag ...",
+      "range": {
+        "startLine": 124,
+        "startChar": 66,
+        "endLine": 124,
+        "endChar": 96
+      },
+      "revId": "95d4093b4933c0bb4a324b7c8405e1987b997da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c681d48_265adf7f",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-08-28T20:33:13Z",
+      "side": 1,
+      "message": "I felt a little guilty adding this one.",
+      "parentUuid": "5c15c4e5_bda4083c",
       "range": {
         "startLine": 124,
         "startChar": 66,
