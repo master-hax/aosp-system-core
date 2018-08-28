@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7d5a1244_8f3ebbdc",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-28T20:09:57Z",
+      "side": 1,
+      "message": "Good point; perhaps an enum?  It seems that lots of these are mutually exclusive anyway (no needed_for_fastbootd + logical partition, no super partition + logical partition, etc)",
+      "parentUuid": "f7fac075_d46057bf",
+      "range": {
+        "startLine": 118,
+        "startChar": 9,
+        "endLine": 118,
+        "endChar": 29
+      },
+      "revId": "95d4093b4933c0bb4a324b7c8405e1987b997da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c15c4e5_bda4083c",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
