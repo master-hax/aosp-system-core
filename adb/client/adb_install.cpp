@@ -152,8 +152,7 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
             printf("failed to extract metadata %d\n", metadata_len);
             return 1;
         } else {
-            int create_patch_result = create_patch(file, metadataTmpFile.path, patchTmpFile.path,
-                                                   use_localagent, adb_path);
+            int create_patch_result = create_patch(file, metadataTmpFile.path, patchTmpFile.path);
             if (create_patch_result != 0) {
                 printf("Patch creation failure, error code: %d\n", create_patch_result);
                 result = create_patch_result;
@@ -269,8 +268,8 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy, 
             printf("failed to extract metadata %d\n", metadata_len);
             return 1;
         } else {
-            int create_patch_result = create_patch(apk_file[0], metadataTmpFile.path,
-                                                   patchTmpFile.path, use_localagent, adb_path);
+            int create_patch_result =
+                    create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
             if (create_patch_result != 0) {
                 printf("Patch creation failure, error code: %d\n", create_patch_result);
                 result = create_patch_result;
@@ -381,13 +380,14 @@ int install_app(int argc, const char** argv) {
     }
 
     std::string adb_path = android::base::GetExecutablePath();
-
     if (adb_path.length() == 0) {
         return 1;
     }
+
     if (use_fastdeploy == true) {
-        bool agent_up_to_date =
-                update_agent(agent_update_strategy, use_localagent, adb_path.c_str());
+        fastdeploy_init(use_localagent, adb_path);
+
+        bool agent_up_to_date = update_agent(agent_update_strategy);
         if (agent_up_to_date == false) {
             printf("Failed to update agent, exiting\n");
             return 1;
@@ -404,6 +404,10 @@ int install_app(int argc, const char** argv) {
         case INSTALL_DEFAULT:
         default:
             return 1;
+    }
+
+    if (use_fastdeploy == true) {
+        fastdeploy_deinit();
     }
 }
 
