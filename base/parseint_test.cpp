@@ -165,3 +165,30 @@ TEST(parseint, ParseByteCount_overflow) {
   ASSERT_EQ(65535U, u16);
   ASSERT_FALSE(android::base::ParseByteCount("65k", &u16));
 }
+
+TEST(parseint, errno_overflow) {
+  int32_t i32;
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("2147483747", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("9999999999999999999999", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("-2147483747", &i32));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("6000", &i32, -3000, 3000));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseInt<int32_t>("-5000", &i32, -3000, 3000));
+  ASSERT_EQ(ERANGE, errno);
+
+  uint16_t u16;
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseUint<uint16_t>("2147483747", &u16));
+  ASSERT_EQ(ERANGE, errno);
+  errno = 0;
+  ASSERT_FALSE(android::base::ParseUint<uint16_t>("9000", &u16, 4500));
+  ASSERT_EQ(ERANGE, errno);
+}
