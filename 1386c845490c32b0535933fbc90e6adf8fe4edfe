@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eaa961ce_8c986ce6",
+        "filename": "base/parseint_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-28T22:05:48Z",
+      "side": 1,
+      "message": "more useful to test with an explicit max, since these are all getting errno set by strto*, not by your code.",
+      "revId": "1386c845490c32b0535933fbc90e6adf8fe4edfe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
