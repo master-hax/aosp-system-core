@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "713b8094_76a68283",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-28T19:46:42Z",
+      "side": 1,
+      "message": "Put an extra space here?  Seems that the goal is to have each of these lines lining up.",
+      "range": {
+        "startLine": 141,
+        "startChar": 78,
+        "endLine": 141,
+        "endChar": 79
+      },
+      "revId": "d0fcbab542ebd1a54a3ec4a12a895040a462d1b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
