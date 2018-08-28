@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76aed8fb_16254274",
+        "filename": "base/include/android-base/parseint.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-28T22:44:25Z",
+      "side": 1,
+      "message": "Add here too?  Or maybe EINVAL ?",
+      "revId": "3b88b3f01d87b85add05cac1863c5421f3817813",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
