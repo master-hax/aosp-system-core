@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "20b15bea_60e5c441",
+        "filename": "adb/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-28T22:09:19Z",
+      "side": 1,
+      "message": "Put at least this one in the sdk PRODUCT_PACKAGES, otherwise it will pull in the shell script on a device build which will pull in the jar.",
+      "revId": "60c5a2471db0bdeedecfd6440fc17c473e319a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84b20fd1_ac756ec9",
+        "filename": "adb/fastdeploy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-28T22:09:19Z",
+      "side": 1,
+      "message": "add:\n\n wrapper: \"deployagent/deployagent.sh\",",
+      "revId": "60c5a2471db0bdeedecfd6440fc17c473e319a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e56fabef_2386670b",
+        "filename": "adb/fastdeploy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-28T22:09:19Z",
+      "side": 1,
+      "message": "bpfmt -w Android.bp will put these on multiple lines.",
+      "revId": "60c5a2471db0bdeedecfd6440fc17c473e319a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b899d11a_27e439e9",
+        "filename": "adb/fastdeploy/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-08-28T22:09:19Z",
+      "side": 1,
+      "message": "Remove this",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "60c5a2471db0bdeedecfd6440fc17c473e319a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
