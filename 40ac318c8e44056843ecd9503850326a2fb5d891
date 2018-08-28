@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6af4daf3_904ff052",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-28T21:36:56Z",
+      "side": 1,
+      "message": "kImageMap? or something more clearly named than Item?\n\nWhy aren\u0027t they just combined in the list above besides how they historically weren\u0027t?  We could have some 3rd ImageType option that indicates they\u0027re not to be flashed with flashall and keep everything in one place?",
+      "range": {
+        "startLine": 145,
+        "startChar": 48,
+        "endLine": 145,
+        "endChar": 56
+      },
+      "revId": "40ac318c8e44056843ecd9503850326a2fb5d891",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
