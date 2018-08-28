@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06a1cbf7_85ccb354",
+        "filename": "libutils/VectorImpl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-28T20:42:59Z",
+      "side": 1,
+      "message": "(clang-format insisted.)",
+      "revId": "85528e8a7507ce142cb30837438f33232c0ece3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
