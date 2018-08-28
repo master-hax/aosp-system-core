@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d362c5ab_5f81b1bc",
+        "filename": "adb/client/fastdeploy.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1269249
+      },
+      "writtenOn": "2018-08-28T18:45:17Z",
+      "side": 1,
+      "message": "I\u0027m not totally clear if this is the best way to do this - the old \u0027C\u0027 way now produces a warning in C++ \u002711. Feedback very much welcome.",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 69
+      },
+      "revId": "a37d1333b75d82b4d5aaac8e1a8aecfb6775d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b95c5f5f_f5f4bf79",
+        "filename": "adb/client/fastdeploy.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1269249
+      },
+      "writtenOn": "2018-08-28T18:45:17Z",
+      "side": 1,
+      "message": "It might be nicer if we changed aapt2 to not output 0x0A at the end of the package name than stripping it off here?",
+      "range": {
+        "startLine": 227,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 88
+      },
+      "revId": "a37d1333b75d82b4d5aaac8e1a8aecfb6775d3f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
