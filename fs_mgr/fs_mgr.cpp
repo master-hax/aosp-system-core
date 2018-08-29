@@ -1527,6 +1527,10 @@ bool fs_mgr_load_verity_state(int* mode) {
     return true;
 }
 
+bool fs_mgr_system_root_image(const fstab* fstab) {
+    return fs_mgr_get_entry_for_mount_point(const_cast<struct fstab*>(fstab), "/system") == nullptr;
+}
+
 bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> callback) {
     if (!callback) {
         return false;
@@ -1546,7 +1550,7 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
 
     DeviceMapper& dm = DeviceMapper::Instance();
 
-    bool system_root = android::base::GetProperty("ro.build.system_root_image", "") == "true";
+    auto system_root = fs_mgr_system_root_image(fstab.get());
 
     for (int i = 0; i < fstab->num_entries; i++) {
         auto fsrec = &fstab->recs[i];

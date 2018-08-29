@@ -158,21 +158,6 @@ std::string fs_mgr_get_overlayfs_options(const std::string& mount_point) {
            candidate + kUpperName + ",workdir=" + candidate + kWorkName;
 }
 
-bool fs_mgr_system_root_image(const fstab* fstab) {
-    if (!fstab) {  // can not happen?
-        // This will return empty on init first_stage_mount,
-        // hence why we prefer checking the fstab instead.
-        return android::base::GetBoolProperty("ro.build.system_root_image", false);
-    }
-    for (auto i = 0; i < fstab->num_entries; i++) {
-        const auto fsrec = &fstab->recs[i];
-        auto fsrec_mount_point = fsrec->mount_point;
-        if (!fsrec_mount_point) continue;
-        if ("/system"s == fsrec_mount_point) return false;
-    }
-    return true;
-}
-
 const char* fs_mgr_mount_point(const fstab* fstab, const char* mount_point) {
     if (!mount_point) return mount_point;
     if ("/"s != mount_point) return mount_point;
