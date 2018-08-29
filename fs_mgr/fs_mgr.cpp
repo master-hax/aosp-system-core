@@ -1479,6 +1479,19 @@ bool fs_mgr_load_verity_state(int* mode) {
     return true;
 }
 
+// Tricky to answer on first_stage_init
+bool fs_mgr_system_root_image(const fstab* fstab) {
+    if (android::base::GetProperty("ro.build.system_root_image", "") == "true") return true;
+    // is first stage init done?
+    if ((getenv("INIT_STARTED_AT") != nullptr) || (fstab == nullptr)) return false;
+    for (auto i = 0; i < fstab->num_entries; i++) {
+        auto fsrec_mount_point = fstab->recs[i].mount_point;
+        if (!fsrec_mount_point) continue;
+        if (!strcmp(fsrec_mount_point, "/system")) return false;
+    }
+    return true;
+}
+
 bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> callback) {
     if (!callback) {
         return false;
@@ -1498,7 +1511,7 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
 
     DeviceMapper& dm = DeviceMapper::Instance();
 
-    bool system_root = android::base::GetProperty("ro.build.system_root_image", "") == "true";
+    auto system_root = fs_mgr_system_root_image(fstab.get());
 
     for (int i = 0; i < fstab->num_entries; i++) {
         auto fsrec = &fstab->recs[i];
