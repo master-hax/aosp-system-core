@@ -71,6 +71,7 @@ LOCAL_STATIC_LIBRARIES := \
     libfec_rs \
     libsquashfs_utils \
     liblogwrap \
+    libext2_uuid \
     libext4_utils \
     libseccomp_policy \
     libcrypto_utils \

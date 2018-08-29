@@ -71,6 +71,7 @@ cc_defaults {
         "libbootloader_message",
         "libcutils",
         "libdl",
+        "libext2_uuid",
         "libext4_utils",
         "libfs_mgr",
         "libhidl-gen-utils",
