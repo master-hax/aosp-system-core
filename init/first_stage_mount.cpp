@@ -340,10 +340,10 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
 bool FirstStageMount::MountPartition(fstab_rec* fstab_rec) {
     if (fs_mgr_is_logical(fstab_rec)) {
         if (!fs_mgr_update_logical_partition(fstab_rec)) {
-            return false;
+            return fs_mgr_is_nofail(fstab_rec);
         }
         if (!InitMappedDevice(fstab_rec->blk_device)) {
-            return false;
+            return fs_mgr_is_nofail(fstab_rec);
         }
     }
     if (!SetUpDmVerity(fstab_rec)) {
