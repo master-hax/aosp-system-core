@@ -60,11 +60,19 @@ bool ReadFdToString(int fd, std::string* content) {
   }
 
   char buf[BUFSIZ];
-  ssize_t n;
-  while ((n = TEMP_FAILURE_RETRY(read(fd, &buf[0], sizeof(buf)))) > 0) {
+  while (true) {
+    ssize_t n = TEMP_FAILURE_RETRY(read(fd, &buf[0], sizeof(buf)));
+    if (n == -1) {
+      if (errno == EAGAIN || errno == EWOULDBLOCK) {
+        // Reading from a non-blocking fd, keep trying.
+        continue;
+      }
+      return false;
+    } else if (n == 0) {
+      return true;
+    }
     content->append(buf, n);
   }
-  return (n == 0) ? true : false;
 }
 
 bool ReadFileToString(const std::string& path, std::string* content, bool follow_symlinks) {
