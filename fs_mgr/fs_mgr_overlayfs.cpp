@@ -47,6 +47,7 @@
 #include <libdm/dm.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
+#include <uuid/uuid.h>
 
 #include "fs_mgr_priv.h"
 
@@ -625,9 +626,11 @@ bool fs_mgr_overlayfs_setup_scratch(const fstab* fstab, bool* change) {
         const auto partition_name = android::base::Basename(kScratchMountPoint);
         partition_exists = builder->FindPartition(partition_name) != nullptr;
         if (!partition_exists) {
+            uuid_t uuid;
             static const size_t kGuidLen = 36;
             char uuid_str[kGuidLen + 1];
-            memset(uuid_str, '0', sizeof(uuid_str));
+            uuid_generate_random(uuid);
+            uuid_unparse(uuid, uuid_str);
             auto partition =
                     builder->AddPartition(partition_name, uuid_str, LP_PARTITION_ATTR_NONE);
             if (!partition) {
