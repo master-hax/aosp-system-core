@@ -103,11 +103,6 @@ RetCode FastBootDriver::SetActive(const std::string& part, std::string* response
     return RawCommand(Commands::SET_ACTIVE + part, response, info);
 }
 
-RetCode FastBootDriver::Verify(uint32_t num, std::string* response, std::vector<std::string>* info) {
-    std::string cmd = android::base::StringPrintf("%s%08" PRIx32, Commands::VERIFY.c_str(), num);
-    return RawCommand(cmd, response, info);
-}
-
 RetCode FastBootDriver::FlashPartition(const std::string& part, const std::vector<char>& data) {
     RetCode ret;
     if ((ret = Download(data))) {
