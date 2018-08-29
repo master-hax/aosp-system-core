@@ -1546,6 +1546,8 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
 
     DeviceMapper& dm = DeviceMapper::Instance();
 
+    std::vector<std::string> mount_points_not_found;
+    int save_errno = 0;
     for (int i = 0; i < fstab->num_entries; i++) {
         auto fsrec = &fstab->recs[i];
         if (!fs_mgr_is_verified(fsrec) && !fs_mgr_is_avb(fsrec)) {
@@ -1561,7 +1563,9 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
         }
 
         if (dm.GetState(mount_point) == DmDeviceState::INVALID) {
-            PERROR << "Could not find verity device for mount point: " << mount_point;
+            save_errno = errno;
+            mount_point += ":" + std::to_string(errno);
+            mount_points_not_found.emplace_back(std::move(mount_point));
             continue;
         }
 
@@ -1584,6 +1588,11 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
         if (*status == 'C' || *status == 'V') {
             callback(fsrec, mount_point.c_str(), mode, *status);
         }
+    }
+    if (!mount_points_not_found.empty()) {
+        errno = save_errno;
+        PERROR << "Could not find verity device for mount point(s): "
+               << android::base::Join(mount_points_not_found, ',');
     }
 
     return true;
