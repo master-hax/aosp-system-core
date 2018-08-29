@@ -129,10 +129,10 @@ bool fs_mgr_wait_for_file(const std::string& filename,
 
 int fs_mgr_set_blk_ro(const char* blockdev);
 bool fs_mgr_system_root_image(const fstab* fstab);
-bool fs_mgr_update_for_slotselect(struct fstab *fstab);
+bool fs_mgr_update_for_slotselect(fstab* fstab);
 bool fs_mgr_is_device_unlocked();
 const std::string& get_android_dt_dir();
 bool is_dt_compatible();
-int load_verity_state(struct fstab_rec* fstab, int* mode);
+int load_verity_state(fstab_rec* fstab, int* mode);
 
 #endif /* __CORE_FS_MGR_PRIV_H */
