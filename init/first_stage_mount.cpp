@@ -234,6 +234,9 @@ bool FirstStageMount::InitRequiredDevices() {
             LOG(ERROR) << "device-mapper device not found after polling timeout";
             return false;
         }
+        if (fs_mgr_overlayfs_scratch_present()) {
+            required_devices_partition_names_.emplace("scratch");
+        }
     }
 
     auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
