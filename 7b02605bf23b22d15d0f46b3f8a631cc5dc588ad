@@ -22,6 +22,30 @@
       "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9788324b_f9cf0f1f",
+        "filename": "platform_tools_tool_version.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-29T23:27:06Z",
+      "side": 0,
+      "message": "yeah, the versioning is something that regressed in adb, so it would be good to get a soong fix so that we can have both `adb --version` and `fastboot --version` work again...",
+      "parentUuid": "6fe4227f_d92db9dd",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 75
+      },
+      "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
