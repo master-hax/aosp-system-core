@@ -155,24 +155,41 @@ bool UTF8ToWide(const std::string& utf8, std::wstring* utf16) {
   return UTF8ToWide(utf8.c_str(), utf8.length(), utf16);
 }
 
-static bool isDriveLetter(wchar_t c) {
-  return (c >= L'a' && c <= L'z') || (c >= L'A' && c <= L'Z');
-}
-
 bool UTF8PathToWindowsLongPath(const char* utf8, std::wstring* utf16) {
   if (!UTF8ToWide(utf8, utf16)) {
     return false;
   }
+
   // Note: Although most Win32 File I/O API are limited to MAX_PATH (260
   //       characters), the CreateDirectory API is limited to 248 characters.
   if (utf16->length() >= 248) {
-    // If path is of the form "x:\" or "x:/"
-    if (isDriveLetter((*utf16)[0]) && (*utf16)[1] == L':' &&
-        ((*utf16)[2] == L'\\' || (*utf16)[2] == L'/')) {
-      // Append long path prefix, and make sure there are no unix-style
-      // separators to ensure a fully compliant Win32 long path string.
-      utf16->insert(0, LR"(\\?\)");
-      std::replace(utf16->begin(), utf16->end(), L'/', L'\\');
+    // If the path starts with the extended path prefix, it is already in long path form
+    const std::wstring kExtendedPathPrefix = LR"(\\?\)";
+    if (utf16->substr(0, kExtendedPathPrefix.length()) == kExtendedPathPrefix) {
+      return true;
+    }
+
+    const int chars_required = GetFullPathNameW(utf16->data(), 0, NULL, NULL);
+    if (chars_required <= 0) {
+      SetErrnoFromLastError();
+      return false;
+    }
+
+    const std::wstring utf16_copy = *utf16;
+
+    // Copy the extended path prefix to the front of the output string
+    // This could potentially throw a std::bad_alloc exception.
+    utf16->resize(chars_required + kExtendedPathPrefix.length());
+    utf16->assign(kExtendedPathPrefix, 0, kExtendedPathPrefix.length());
+
+    const int result = GetFullPathNameW(utf16_copy.data(), chars_required,
+                                        &(*utf16)[kExtendedPathPrefix.length()], NULL);
+    if (result > chars_required - 1) {
+      SetErrnoFromLastError();
+      CHECK_LE(result, chars_required) << "GetFullPathNameW wrote " << result
+                                       << " chars to buffer of " << chars_required << " chars";
+      utf16->clear();
+      return false;
     }
   }
   return true;
