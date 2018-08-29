@@ -395,6 +395,8 @@ bool FirstStageMount::MountPartitions() {
             return false;
         }
     }
+    const auto device = fs_mgr_overlayfs_required_device(device_tree_fstab_.get());
+    if (device.size()) InitMappedDevice(device);
 
     fs_mgr_overlayfs_mount_all(device_tree_fstab_.get());
 
