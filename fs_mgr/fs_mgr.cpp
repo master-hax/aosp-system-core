@@ -1512,6 +1512,8 @@ bool fs_mgr_update_verity_state(
 
     DeviceMapper& dm = DeviceMapper::Instance();
 
+    std::vector<std::string> mount_points_not_found;
+    int save_errno = 0;
     for (const auto& entry : fstab) {
         if (!entry.fs_mgr_flags.verify && !entry.fs_mgr_flags.avb) {
             continue;
@@ -1526,7 +1528,9 @@ bool fs_mgr_update_verity_state(
         }
 
         if (dm.GetState(mount_point) == DmDeviceState::INVALID) {
-            PERROR << "Could not find verity device for mount point: " << mount_point;
+            save_errno = errno;
+            mount_point += ":" + std::to_string(errno);
+            mount_points_not_found.emplace_back(std::move(mount_point));
             continue;
         }
 
@@ -1549,6 +1553,15 @@ bool fs_mgr_update_verity_state(
         if (*status == 'C' || *status == 'V') {
             callback(mount_point, mode);
         }
+    }
+    if (!mount_points_not_found.empty()) {
+        errno = save_errno;
+        PERROR << "Could not find verity device for mount point(s): "
+               << android::base::Join(mount_points_not_found, ',')
+#if ALLOW_ADBD_DISABLE_VERITY != 0  // If we are a eng build
+               << ", perhaps verity is disabled?"
+#endif
+                ;
     }
 
     return true;
