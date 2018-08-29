@@ -22,12 +22,17 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#if !defined(_WIN32)
+#include <sys/types.h>
+#endif
+
 #include <string>
 
 #include "android-base/test_utils.h"
 
 #if !defined(_WIN32)
 #include <pwd.h>
+#include <sys/wait.h>
 #endif
 
 TEST(file, ReadFileToString_ENOENT) {
@@ -294,4 +299,29 @@ TEST(file, ReadFileToString_capacity_0) {
   ASSERT_TRUE(android::base::ReadFileToString(tf.path, &s));
   EXPECT_EQ(0U, s.size());
   EXPECT_EQ(initial_capacity, s.capacity());
+}
+
+TEST(file, ReadFdToString_non_blocking_fd) {
+#if !defined(_WIN32)
+  int fds[2];
+  ASSERT_NE(-1, pipe2(fds, O_NONBLOCK));
+
+  pid_t pid;
+  if ((pid = fork()) == 0) {
+    close(fds[0]);
+    const char message[] = "This is a message.";
+    usleep(1000);
+    ASSERT_LT(0, write(fds[1], message, sizeof(message) - 1));
+    usleep(1000);
+    ASSERT_LT(0, write(fds[1], message, sizeof(message) - 1));
+    exit(0);
+  }
+  close(fds[1]);
+
+  std::string data;
+  ASSERT_TRUE(android::base::ReadFdToString(fds[0], &data));
+  close(fds[0]);
+  ASSERT_EQ(pid, wait(0));
+  ASSERT_EQ("This is a message.This is a message.", data);
+#endif
 }
