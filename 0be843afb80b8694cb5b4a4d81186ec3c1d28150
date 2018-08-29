@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5728efc3_adb7d47b",
+        "filename": "fastboot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2018-08-29T23:24:17Z",
+      "side": 1,
+      "message": "I didn\u0027t try to clean this up...\n\n(other than the spacing fixes, which are from `bpfmt`)",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 73
+      },
+      "revId": "0be843afb80b8694cb5b4a4d81186ec3c1d28150",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6fe4227f_d92db9dd",
+        "filename": "platform_tools_tool_version.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2018-08-29T23:24:17Z",
+      "side": 0,
+      "message": "This wasn\u0027t translated, as I wasn\u0027t quite sure what\u0027s supposed to happen here. We can get soong to pass the PLATFORM_SDK_VERSION as a cflag into fastboot and do the replacement there however.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 75
+      },
+      "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
