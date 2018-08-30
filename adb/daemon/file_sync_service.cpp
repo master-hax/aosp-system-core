@@ -352,7 +352,7 @@ static bool handle_send_link(int s, const std::string& path, std::vector<char>& 
         }
         ret = symlink(&buffer[0], path.c_str());
     }
-    if (ret) {
+    if (ret && (errno != EEXIST)) {
         SendSyncFailErrno(s, "symlink failed");
         return false;
     }
