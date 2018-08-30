@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c8eed5e0_f542b6d8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-30T17:27:42Z",
+      "side": 1,
+      "message": "if fs_mgr_is_nofail skips setting error_count in fs_mgr_mount_all.\n\nYou are right, fs_mgr_do_mount_one was a typo, in my head it was fs_mgr_mount_all",
+      "parentUuid": "469ba9f3_cddbd3d7",
+      "revId": "005af9057199af8e83d1e48e2e0f25c455f39299",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "df0979ca_fd6c66c9",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-30T17:02:50Z",
       "side": 1,
       "message": "We can fail below too in either SetUpDmVerity() or fs_mgr_do_mount_one(), we want to not fail in those cases too if nofail is set, right?\n\nIt seems better to move this to line ~379 and not return false from MountPartitions() in the case of nofail.",
+      "revId": "005af9057199af8e83d1e48e2e0f25c455f39299",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad3b2467_647ff37b",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-30T17:27:42Z",
+      "side": 1,
+      "message": "Agreed, sort of. I have some worries and architectural concerns that this change brings up about that.\n\nYes, we can fail, but this is an _incremental_ change (that was also on code from last week, then back-ported to the current) in my mind to deal with failing if there is no partition allocated. In _my_ usage case, failing the dm setup is OK (for example for /mnt/scratch), but failing to mount it if it does exist, I _do_ want to fail. I can not address this yet, any ideas?\n\nI actually am willing, and want to support setup of _two_ entries (not covered by this change):\n\n        scratch_ext4 {\n\t\tcompatible \u003d \"android,scratch\";\n\t\tdev \u003d \"scratch\";\n\t\tmount_point \u003d \"/mnt/scratch\";\n\t\ttype \u003d \"ext4\";\n\t\tmnt_flags \u003d \"rw\";\n\t\tfsmgr_flags \u003d \"logical\";\n\t};\n        scratch_f2fs {\n\t\tcompatible \u003d \"android,scratch\";\n\t\tdev \u003d \"scratch\";\n\t\tmount_point \u003d \"/mnt/scratch\";\n\t\ttype \u003d \"f2fs\";\n\t\tmnt_flags \u003d \"rw\";\n\t\tfsmgr_flags \u003d \"logical\";\n\t};\n        // something here to let it go if the logical partition does not exist.\n        scratch_fallthrough {\n                ????\n\nmount_all allows multiple near-identical mounts to be specified like this, taking one that works. Ideally we would want more of mount_all logic in here to handle that case. The problem with 379 is that we run the risk of partners (and me included) specifying nofail in this case, when in fact we _require_ one to work and none should be specified nofail.\n\nOf course, on a device we know, the dtb should only specify the _one_ we want. In that case not putting the check on 379 fills _my_ needs, allowing one to fail but not the other, a \"logical\" version of nofail ...",
+      "parentUuid": "df0979ca_fd6c66c9",
       "revId": "005af9057199af8e83d1e48e2e0f25c455f39299",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
