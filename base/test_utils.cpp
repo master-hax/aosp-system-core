@@ -126,11 +126,11 @@ bool TemporaryDir::init(const std::string& tmp_dir) {
 }
 
 CapturedStdFd::CapturedStdFd(int std_fd) : std_fd_(std_fd), old_fd_(-1) {
-  Init();
+  Start();
 }
 
 CapturedStdFd::~CapturedStdFd() {
-  Reset();
+  Stop();
 }
 
 int CapturedStdFd::fd() const {
@@ -144,7 +144,10 @@ std::string CapturedStdFd::str() {
   return result;
 }
 
-void CapturedStdFd::Init() {
+void CapturedStdFd::Start() {
+  CHECK_EQ(-1, old_fd_);
+  CHECK_EQ(0, TEMP_FAILURE_RETRY(lseek(fd(), 0, SEEK_SET)));
+  CHECK_EQ(0, ftruncate(fd(), 0));
 #if defined(_WIN32)
   // On Windows, stderr is often buffered, so make sure it is unbuffered so
   // that we can immediately read back what was written to stderr.
@@ -155,8 +158,11 @@ void CapturedStdFd::Init() {
   CHECK_NE(-1, dup2(fd(), std_fd_));
 }
 
-void CapturedStdFd::Reset() {
-  CHECK_NE(-1, dup2(old_fd_, std_fd_));
-  CHECK_EQ(0, close(old_fd_));
-  // Note: cannot restore prior setvbuf() setting.
+void CapturedStdFd::Stop() {
+  if (old_fd_ != -1) {
+    CHECK_NE(-1, dup2(old_fd_, std_fd_));
+    close(old_fd_);
+    old_fd_ = -1;
+    // Note: cannot restore prior setvbuf() setting.
+  }
 }

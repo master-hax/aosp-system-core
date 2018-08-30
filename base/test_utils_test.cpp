@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <stdio.h>
+
 #include "android-base/test_utils.h"
 
 #include <gtest/gtest-spi.h>
@@ -40,6 +42,30 @@ TEST(TestUtilsTest, ExpectMatch) {
 TEST(TestUtilsTest, ExpectNotMatch) {
   EXPECT_NOT_MATCH("foobar", R"(foobaz)");
   EXPECT_NONFATAL_FAILURE(EXPECT_NOT_MATCH("foobar", R"(foobar)"), "regex mismatch");
+}
+
+TEST(TestUtilsTest, CaptureStdout_smoke) {
+  CapturedStdout cap;
+  printf("This should be captured.\n");
+  cap.Stop();
+  printf("This will not be captured.\n");
+  ASSERT_EQ("This should be captured.\n", cap.str());
+  cap.Start();
+  printf("Again should be captured.\n");
+  cap.Stop();
+  ASSERT_EQ("Again should be captured.\n", cap.str());
+}
+
+TEST(TestUtilsTest, CaptureStderr_smoke) {
+  CapturedStderr cap;
+  fprintf(stderr, "This should be captured.\n");
+  cap.Stop();
+  fprintf(stderr, "This will not be captured.\n");
+  ASSERT_EQ("This should be captured.\n", cap.str());
+  cap.Start();
+  fprintf(stderr, "Again should be captured.\n");
+  cap.Stop();
+  ASSERT_EQ("Again should be captured.\n", cap.str());
 }
 
 }  // namespace base
