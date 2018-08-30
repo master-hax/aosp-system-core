@@ -46,6 +46,30 @@
       "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cae148c_eee600ae",
+        "filename": "platform_tools_tool_version.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2018-08-30T00:13:05Z",
+      "side": 0,
+      "message": "Well, I did convert the \u003ctool_version\u003e-\u003cbuild_number\u003e part, I just wasn\u0027t sure what the PLATFORM_SDK_VERSION replacement was doing. Looking at the history, it looks we\u0027re not replacing \"28\", but \"${PLATFORM_SDK_VERSION}\" directly, though no current branches appear to be using \"${PLATFORM_SDK_VERSION}\".\n\nThat\u0027s actually a lot easier to fix now that I know we aren\u0027t using \"28\". I uploaded a new development/ CL.\n\nAnd I fixed adb as well.",
+      "parentUuid": "9788324b_f9cf0f1f",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 75
+      },
+      "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
