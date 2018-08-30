@@ -69,6 +69,24 @@
       "revId": "005af9057199af8e83d1e48e2e0f25c455f39299",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02ac837a_14d7f618",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-30T17:39:56Z",
+      "side": 1,
+      "message": "Hmm sounds like mount_with_alternatives().  Perhaps we need to merge this loop with fs_mgr_mount_all().  That\u0027s probably something that we should do anyway as we make 1st stage mount more and more generic.",
+      "parentUuid": "ad3b2467_647ff37b",
+      "revId": "005af9057199af8e83d1e48e2e0f25c455f39299",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
