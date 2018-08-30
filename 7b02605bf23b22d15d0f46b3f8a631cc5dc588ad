@@ -70,6 +70,30 @@
       "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3896901e_01b888b9",
+        "filename": "platform_tools_tool_version.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-30T00:40:11Z",
+      "side": 0,
+      "message": "it should only be set on the branch jmgao builds the platform tools releases from.",
+      "parentUuid": "2cae148c_eee600ae",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 75
+      },
+      "revId": "7b02605bf23b22d15d0f46b3f8a631cc5dc588ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

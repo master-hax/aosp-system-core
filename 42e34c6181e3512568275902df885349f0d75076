@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d74082fb_c0017921",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-08-30T00:40:11Z",
+      "side": 1,
+      "message": "(is there a reason you called it \"plat\" rather than \"platform\"?)",
+      "range": {
+        "startLine": 48,
+        "startChar": 10,
+        "endLine": 48,
+        "endChar": 28
+      },
+      "revId": "42e34c6181e3512568275902df885349f0d75076",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
