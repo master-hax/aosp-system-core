@@ -22,6 +22,29 @@
       "revId": "a2171945805ed54be4f0b5fd0179ce2bbfaf02e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd7b6e54_ba07f702",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-08-31T22:10:42Z",
+      "side": 1,
+      "message": "Q:\n\n1) do we want to check if message \u003d\u003d nullptr ?\n2) is there anything to be gained if *message +\u003d ?",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 12
+      },
+      "revId": "a2171945805ed54be4f0b5fd0179ce2bbfaf02e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
