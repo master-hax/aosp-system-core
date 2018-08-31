@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dab4da3f_6bf119f0",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-08-31T22:08:06Z",
+      "side": 1,
+      "message": "You have \u0027result\u0027 here but \u0027message\u0027 below.  Probably change this to \u0027message\u0027 for consistency?  Or just drop it since it\u0027s not required?",
+      "range": {
+        "startLine": 47,
+        "startChar": 60,
+        "endLine": 47,
+        "endChar": 66
+      },
+      "revId": "a2171945805ed54be4f0b5fd0179ce2bbfaf02e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
