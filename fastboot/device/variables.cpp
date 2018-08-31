@@ -16,7 +16,11 @@
 
 #include "variables.h"
 
+#include <dirent.h>
 #include <inttypes.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -24,6 +28,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <ext4_utils/ext4_utils.h>
+#include <liblp/liblp.h>
 
 #include "fastboot_device.h"
 #include "flashing.h"
@@ -31,6 +36,7 @@
 
 using ::android::hardware::boot::V1_0::BoolResult;
 using ::android::hardware::boot::V1_0::Slot;
+using namespace android::fs_mgr;
 
 constexpr int kMaxDownloadSizeDefault = 0x20000000;
 constexpr char kFastbootProtocolVersion[] = "0.4";
@@ -221,4 +227,35 @@ bool GetIsUserspace(FastbootDevice* /* device */, const std::vector<std::string>
                     std::string* message) {
     *message = "yes";
     return true;
+}
+
+std::vector<std::vector<std::string>> GetAllPartitions(FastbootDevice* device) {
+    std::vector<std::vector<std::string>> partitions;
+
+    // First get physical partitions.
+    struct dirent* de;
+    std::unique_ptr<DIR, decltype(&closedir)> by_name(opendir("/dev/block/by-name"), closedir);
+    while ((de = readdir(by_name.get())) != nullptr) {
+        if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")) {
+            continue;
+        }
+        struct stat s;
+        std::string path = "/dev/block/by-name/" + std::string(de->d_name);
+        if (!stat(path.c_str(), &s) && S_ISBLK(s.st_mode)) {
+            partitions.emplace_back(std::initializer_list<std::string>{de->d_name});
+        }
+    }
+
+    // Next get logical partitions.
+    if (auto path = FindPhysicalPartition(LP_METADATA_PARTITION_NAME)) {
+        uint32_t slot_number = SlotNumberForSlotSuffix(device->GetCurrentSlot());
+        if (auto metadata = ReadMetadata(path->c_str(), slot_number)) {
+            for (const auto& partition : metadata->partitions) {
+                std::string partition_name = GetPartitionName(partition);
+                partitions.emplace_back(std::initializer_list<std::string>{partition_name});
+            }
+        }
+    }
+
+    return partitions;
 }

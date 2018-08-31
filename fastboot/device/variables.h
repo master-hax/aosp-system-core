@@ -48,3 +48,6 @@ bool GetPartitionIsLogical(FastbootDevice* device, const std::vector<std::string
                            std::string* message);
 bool GetIsUserspace(FastbootDevice* device, const std::vector<std::string>& args,
                     std::string* message);
+
+// Helpers for getvar all.
+std::vector<std::vector<std::string>> GetAllPartitions(FastbootDevice* device);
