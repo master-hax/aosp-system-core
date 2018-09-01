@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "66708cb1_7170606e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T01:39:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76359446_625823f8",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "35d31388_8a784e78",
         "filename": "fastboot/device/commands.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "264238fed33300de3be165b3a2e738c97677df0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80a16f9f_8953c1e4",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T01:39:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35d31388_8a784e78",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "9deaaad7_28ccb577",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T01:39:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f37469a6_3c454d9a",
+      "range": {
+        "startLine": 73,
+        "startChar": 20,
+        "endLine": 73,
+        "endChar": 29
+      },
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a98aa697_ce135c70",
         "filename": "fastboot/device/commands.cpp",
         "patchSetId": 1
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "6ffd057e_d97dbe71",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T01:39:53Z",
+      "side": 1,
+      "message": "Okay - my device didn\u0027t so I skipped it. I\u0027ll do it in this CL.",
+      "parentUuid": "a98aa697_ce135c70",
+      "range": {
+        "startLine": 91,
+        "startChar": 43,
+        "endLine": 91,
+        "endChar": 50
+      },
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "96166a9a_e1b0c537",
         "filename": "fastboot/device/variables.cpp",
         "patchSetId": 1
@@ -93,6 +177,24 @@
       "writtenOn": "2018-09-01T00:52:23Z",
       "side": 1,
       "message": "This should iterate over all of the slots, not just report the current slot, right?  The above will iterate over all physical partitions, not just the current slot.",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54be0f3b_a6b7ec34",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T01:39:53Z",
+      "side": 1,
+      "message": "All copies of the metadata will have both _a and _b partitions, so the only thing that should differ is their extents (on a fresh device, \"_b\" partitions will have no extents).\n\nGenerally we never want to read metadata for non-current slots since the extents might not be compatible with the current partition layout (after a slot is marked successful, it\u0027s fair game to go ahead and re-use space from old partitions).",
+      "parentUuid": "96166a9a_e1b0c537",
       "revId": "264238fed33300de3be165b3a2e738c97677df0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
