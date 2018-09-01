@@ -61,8 +61,11 @@ class FastBootTest : public testing::Test {
     void TearDownSerial();
     void SetLockState(bool unlock, bool assert_change = true);
 
-    std::unique_ptr<UsbTransportSniffer> transport;
+    UsbTransportSniffer* transport() { return transport_; }
+
+    // Note: transport is owned by FastBootDriver.
     std::unique_ptr<FastBootDriver> fb;
+    UsbTransportSniffer* transport_ = nullptr;
 
   private:
     // This is an annoying hack

@@ -106,23 +106,22 @@ void FastBootTest::SetUp() {
     }
 
     const auto matcher = [](usb_ifc_info* info) -> int { return MatchFastboot(info, nullptr); };
-    for (int i = 0; i < MAX_USB_TRIES && !transport; i++) {
+    for (int i = 0; i < MAX_USB_TRIES && !transport_; i++) {
         std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
-        if (usb)
-            transport = std::unique_ptr<UsbTransportSniffer>(
-                    new UsbTransportSniffer(std::move(usb), serial_port));
+        if (usb) {
+            transport_ = new UsbTransportSniffer(std::move(usb), serial_port);
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    ASSERT_TRUE(transport);  // no nullptr
+    ASSERT_TRUE(transport_);  // no nullptr
 
     if (device_path == "") {  // We set it the first time, then make sure it never changes
         device_path = cb_scratch;
     } else {
         ASSERT_EQ(device_path, cb_scratch);  // The path can not change
     }
-    fb = std::unique_ptr<FastBootDriver>(
-            new FastBootDriver(transport.get(), [](std::string&) {}, true));
+    fb = std::make_unique<FastBootDriver>(transport_, [](std::string&) {}, true);
 }
 
 void FastBootTest::TearDown() {
@@ -131,24 +130,20 @@ void FastBootTest::TearDown() {
     TearDownSerial();
 
     fb.reset();
-
-    if (transport) {
-        transport->Close();
-        transport.reset();
-    }
+    transport_ = nullptr;
 
     ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
 }
 
 // TODO, this should eventually be piped to a file instead of stdout
 void FastBootTest::TearDownSerial() {
-    if (!transport) return;
+    if (!transport_) return;
     // One last read from serial
-    transport->ProcessSerial();
+    transport_->ProcessSerial();
     if (HasFailure()) {
         // TODO, print commands leading up
         printf("<<<<<<<< TRACE BEGIN >>>>>>>>>\n");
-        printf("%s", transport->CreateTrace().c_str());
+        printf("%s", transport_->CreateTrace().c_str());
         printf("<<<<<<<< TRACE END >>>>>>>>>\n");
         // std::vector<std::pair<const TransferType, const std::vector<char>>>  prev =
         // transport->Transfers();
@@ -188,26 +183,23 @@ void FastBootTest::SetLockState(bool unlock, bool assert_change) {
         ASSERT_EQ(fb->RawCommand("flashing " + cmd, &resp), SUCCESS)
                 << "Attempting to change locked state, but 'flashing" + cmd + "' command failed";
         fb.reset();
-        transport->Close();
-        transport.reset();
+        transport_ = nullptr;
         printf("PLEASE RESPOND TO PROMPT FOR '%sing' BOOTLOADER ON DEVICE\n", cmd.c_str());
         while (UsbStillAvailible())
             ;  // Wait for disconnect
         printf("WAITING FOR DEVICE");
         // Need to wait for device
         const auto matcher = [](usb_ifc_info* info) -> int { return MatchFastboot(info, nullptr); };
-        while (!transport) {
+        while (!transport_) {
             std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
             if (usb) {
-                transport = std::unique_ptr<UsbTransportSniffer>(
-                        new UsbTransportSniffer(std::move(usb), serial_port));
+                transport_ = new UsbTransportSniffer(std::move(usb), serial_port));
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             putchar('.');
         }
         device_path = cb_scratch;
-        fb = std::unique_ptr<FastBootDriver>(
-                new FastBootDriver(transport.get(), [](std::string&) {}, true));
+        fb = std::make_unique<FastBootDriver>(transport_, [](std::string&) {}, true);
         if (assert_change) {
             ASSERT_EQ(fb->GetVar("unlocked", &resp), SUCCESS) << "getvar:unlocked failed";
             ASSERT_EQ(resp, unlock ? "yes" : "no")
@@ -238,7 +230,7 @@ void Fuzz::TearDown() {
     std::string tmp;
     if (fb->GetVar("product", &tmp) != SUCCESS) {
         printf("DEVICE UNRESPONSE, attempting to recover...");
-        transport->Reset();
+        transport_->Reset();
         printf("issued USB reset...");
 
         if (fb->GetVar("product", &tmp) != SUCCESS) {
@@ -248,9 +240,9 @@ void Fuzz::TearDown() {
         printf("SUCCESS!\n");
     }
 
-    if (transport) {
-        transport->Close();
-        transport.reset();
+    if (transport_) {
+        transport_->Close();
+        transport_ = nullptr;
     }
 
     ASSERT_TRUE(UsbStillAvailible()) << USB_PORT_GONE;
