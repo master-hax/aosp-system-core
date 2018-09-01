@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76359446_625823f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-01T00:52:23Z",
+      "side": 1,
+      "message": "Bug number is wrong",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35d31388_8a784e78",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-01T00:52:23Z",
+      "side": 1,
+      "message": "I\u0027m usually not a fan of having typedefs that are only used in one place; I feel it detracts more than adds to clarity.",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f37469a6_3c454d9a",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-01T00:52:23Z",
+      "side": 1,
+      "message": "arg_string?",
+      "range": {
+        "startLine": 73,
+        "startChar": 20,
+        "endLine": 73,
+        "endChar": 29
+      },
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a98aa697_ce135c70",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-01T00:52:23Z",
+      "side": 1,
+      "message": "My sailfish also lists all of the partitions and whether or not they have a slot.  Doesn\u0027t necessarily need to happen in this CL; just pointing out for the future.",
+      "range": {
+        "startLine": 91,
+        "startChar": 43,
+        "endLine": 91,
+        "endChar": 50
+      },
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96166a9a_e1b0c537",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-01T00:52:23Z",
+      "side": 1,
+      "message": "This should iterate over all of the slots, not just report the current slot, right?  The above will iterate over all physical partitions, not just the current slot.",
+      "revId": "264238fed33300de3be165b3a2e738c97677df0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
