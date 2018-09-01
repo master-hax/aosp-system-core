@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2a589830_7d5d3cb5",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T00:06:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab4da3f_6bf119f0",
+      "range": {
+        "startLine": 47,
+        "startChar": 60,
+        "endLine": 47,
+        "endChar": 66
+      },
+      "revId": "a2171945805ed54be4f0b5fd0179ce2bbfaf02e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cd7b6e54_ba07f702",
         "filename": "fastboot/device/variables.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2018-08-31T22:10:42Z",
       "side": 1,
       "message": "Q:\n\n1) do we want to check if message \u003d\u003d nullptr ?\n2) is there anything to be gained if *message +\u003d ?",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 12
+      },
+      "revId": "a2171945805ed54be4f0b5fd0179ce2bbfaf02e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ead77c67_374570eb",
+        "filename": "fastboot/device/variables.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-01T00:06:45Z",
+      "side": 1,
+      "message": "(1) Not needed, it\u0027s never null. (2) Probably depends on the handler.",
+      "parentUuid": "cd7b6e54_ba07f702",
       "range": {
         "startLine": 40,
         "startChar": 4,
