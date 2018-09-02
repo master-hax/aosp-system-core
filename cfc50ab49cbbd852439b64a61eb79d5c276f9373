@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9c79511_775791ed",
+        "filename": "adb/client/line_printer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-09-02T23:42:18Z",
+      "side": 1,
+      "message": "What happens if you have two Unicode code points (2*2 bytes) and they use two vector elements in char_data? Seems like the Windows console shows it as two \"user-perceivable\" characters instead of one like Notepad.exe, Windows Explorer and Gnome Terminal.",
+      "range": {
+        "startLine": 106,
+        "startChar": 8,
+        "endLine": 106,
+        "endChar": 91
+      },
+      "revId": "cfc50ab49cbbd852439b64a61eb79d5c276f9373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
