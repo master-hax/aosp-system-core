@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d857dad5_cbccfa52",
+        "filename": "adb/sysdeps_win32.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2763,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-09-03T23:18:38Z",
+      "side": 1,
+      "message": "That is implemented by using __try {...} __except(...) {...} but clang does not recognize the __except keyword. But even if it did compile, I\u0027d be skeptical using it since compilation uses -fno-exceptions. Simplest just avoid this now that SetThreadDescription() exists and debuggers have/are switching to it.",
+      "range": {
+        "startLine": 2763,
+        "startChar": 21,
+        "endLine": 2763,
+        "endChar": 48
+      },
+      "revId": "50beee3a2c1c552b6e87657f87f35ff95764cdb2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
