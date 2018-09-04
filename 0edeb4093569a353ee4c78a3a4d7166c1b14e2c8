@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb641df8_85dedb7b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 705,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-04T20:21:12Z",
+      "side": 1,
+      "message": "dump_info so we have a verb?",
+      "range": {
+        "startLine": 705,
+        "startChar": 12,
+        "endLine": 705,
+        "endChar": 21
+      },
+      "revId": "0edeb4093569a353ee4c78a3a4d7166c1b14e2c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06fe0d00_81141e73",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1240,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-04T20:21:12Z",
+      "side": 1,
+      "message": "(presumably now we can close some of these leaked fds/free some of this leaked memory. but i\u0027m assuming you want to do all that later.)",
+      "revId": "0edeb4093569a353ee4c78a3a4d7166c1b14e2c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
