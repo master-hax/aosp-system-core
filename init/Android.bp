@@ -68,6 +68,7 @@ cc_defaults {
     ],
     shared_libs: [
         "libbase",
+        "libbinder",
         "libbootloader_message",
         "libcutils",
         "libdl",
@@ -78,6 +79,7 @@ cc_defaults {
         "liblog",
         "liblogwrap",
         "libselinux",
+        "libutils",
     ],
 }
 
