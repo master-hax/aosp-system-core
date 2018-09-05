@@ -30,6 +30,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <string_view>
 #include <vector>
 
 #include <android-base/file.h>
@@ -63,6 +64,62 @@ using android::base::unique_fd;
 using android::base::StringPrintf;
 
 using unwindstack::Regs;
+
+struct critical_process_record {
+  const char* name;
+  const char* exe_path;
+  uid_t uid;
+};
+
+const static critical_process_record g_critical_processes[] = {
+    {"system_server", "/system/bin/app_process64", AID_SYSTEM},
+    {"zygote", "/system/bin/app_process32", AID_ROOT},
+    {"zygote64", "/system/bin/app_process64", AID_ROOT},
+    {"/system/bin/servicemanager", "/system/bin/servicemanager", AID_SYSTEM},
+    {"/system/bin/hwservicemanager", "/system/bin/hwservicemanager", AID_SYSTEM},
+    {"/system/bin/surfaceflinger", "/system/bin/surfaceflinger", AID_SYSTEM}};
+
+static uid_t get_process_uid(pid_t pid) {
+  android::procinfo::ProcessInfo proc_info = {};
+  if (android::procinfo::GetProcessInfo(pid, &proc_info)) {
+    return proc_info.uid;
+  }
+  return -1;
+}
+
+static std::string get_process_exe_path(pid_t pid) {
+  std::string exe_path;
+  android::base::Readlink(android::base::StringPrintf("/proc/%d/exe", pid), &exe_path);
+  return exe_path;
+}
+
+static std::string trim_process_name(std::string_view process_name) {
+  std::string trimed_name(process_name);
+
+  // process_name is from /proc/<pid>/cmdline and it includes delimited params.
+  // replace delimitner(='\0') to space
+  std::replace(trimed_name.begin(), trimed_name.end(), '\0', ' ');
+
+  // strip params
+  std::string::size_type pos = trimed_name.find_first_of(" ");
+  if (pos != std::string::npos) {
+    trimed_name = trimed_name.substr(0, pos);
+  }
+  return trimed_name;
+}
+
+static bool is_critical_process(std::string_view process_name, std::string_view exe_path,
+                                uid_t uid) {
+  const std::string name = trim_process_name(process_name);
+
+  for (size_t i = 0; i < sizeof(g_critical_processes) / sizeof(critical_process_record); i++) {
+    const critical_process_record& record = g_critical_processes[i];
+    if ((uid == record.uid) && !name.compare(record.name) && !exe_path.compare(record.exe_path)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 static bool pid_contains_tid(int pid_proc_fd, pid_t tid) {
   struct stat st;
@@ -408,6 +465,12 @@ int main(int argc, char** argv) {
   // Get the process name (aka cmdline).
   std::string process_name = get_process_name(g_target_thread);
 
+  // Get the process exe path
+  std::string exe_path = get_process_exe_path(g_target_thread);
+
+  // Get the process uid
+  uid_t uid = get_process_uid(g_target_thread);
+
   // Collect the list of open files.
   OpenFilesList open_files;
   {
@@ -599,10 +662,28 @@ int main(int argc, char** argv) {
         target_process, target_process);
   }
 
+  // Sync in preparation for system dump
+  fsync(STDOUT_FILENO);
+
   // Close stdout before we notify tombstoned of completion.
   close(STDOUT_FILENO);
-  if (g_tombstoned_connected && !tombstoned_notify_completion(g_tombstoned_socket.get())) {
-    LOG(ERROR) << "failed to notify tombstoned of completion";
+
+  bool trigger_sysrq =
+      android::base::GetBoolProperty("persist.sys.triggerSysRqToEnhanceDebug", false);
+  bool critical = fatal_signal && is_critical_process(process_name, exe_path, uid);
+
+  if (trigger_sysrq && critical) {
+    if (g_tombstoned_connected &&
+        !tombstoned_notify_completion_and_request_sysrq(g_tombstoned_socket.get())) {
+      LOG(ERROR) << "Failed to notify tombstoned of SystemDump";
+    } else {
+      LOG(DEBUG) << "Notified tombstoned of SystemDump, sleep!!";
+      sleep(10);
+    }
+  } else {
+    if (g_tombstoned_connected && !tombstoned_notify_completion(g_tombstoned_socket.get())) {
+      LOG(ERROR) << "failed to notify tombstoned of completion";
+    }
   }
 
   return 0;
