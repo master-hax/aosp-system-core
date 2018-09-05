@@ -59,3 +59,132 @@ TEST(FastBoot, ParseOsVersion) {
     EXPECT_DEATH(fb.ParseOsVersion(&hdr, "1.128.3"), "bad OS version");
     EXPECT_DEATH(fb.ParseOsVersion(&hdr, "1.2.128"), "bad OS version");
 }
+
+extern bool ParseRequirementLine(const std::string& line, std::string* name, std::string* product,
+                                 bool* invert, std::vector<std::string>* options);
+
+static void ParseRequirementLineTest(const std::string& line, const std::string& expected_name,
+                                     const std::string& expected_product, bool expected_invert,
+                                     const std::vector<std::string>& expected_options) {
+    std::string name;
+    std::string product;
+    bool invert;
+    std::vector<std::string> options;
+
+    EXPECT_TRUE(ParseRequirementLine(line, &name, &product, &invert, &options)) << line;
+
+    EXPECT_EQ(expected_name, name) << line;
+    EXPECT_EQ(expected_product, product) << line;
+    EXPECT_EQ(expected_invert, invert) << line;
+    EXPECT_EQ(expected_options, options) << line;
+}
+
+TEST(FastBoot, ParseRequirementLineSuccesses) {
+    // Examples provided in the code + slight variations.
+    ParseRequirementLineTest("require product=alpha", "product", "", false, {"alpha"});
+    ParseRequirementLineTest("require product=alpha|beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require version-bootloader=1234", "version-bootloader", "", false,
+                             {"1234"});
+    ParseRequirementLineTest("require-for-product:gamma version-bootloader=istanbul",
+                             "version-bootloader", "gamma", false, {"istanbul"});
+    ParseRequirementLineTest("require-for-product:gamma version-bootloader=istanbul|constantinople",
+                             "version-bootloader", "gamma", false, {"istanbul", "constantinople"});
+    ParseRequirementLineTest("require partition-exists=vendor", "partition-exists", "", false,
+                             {"vendor"});
+    ParseRequirementLineTest("reject product=alpha", "product", "", true, {"alpha"});
+    ParseRequirementLineTest("reject product=alpha|beta|gamma", "product", "", true,
+                             {"alpha", "beta", "gamma"});
+
+    // Extra spaces are allowed.
+    ParseRequirementLineTest("require    product=alpha|beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product    =alpha|beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=   alpha|beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product   =   alpha|beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha  |beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha|  beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha  |  beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha|beta|gamma   ", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+
+    ParseRequirementLineTest("require-for-product:  gamma version-bootloader=istanbul",
+                             "version-bootloader", "gamma", false, {"istanbul"});
+
+    // Extraneous ending | is okay.
+    ParseRequirementLineTest("require product=alpha|", "product", "", false, {"alpha"});
+    ParseRequirementLineTest("require product=alpha|beta|gamma|", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+
+    // Accept empty options, double ||, etc.
+    ParseRequirementLineTest("require product=alpha||beta|   |gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha||beta|gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha|beta|   |gamma", "product", "", false,
+                             {"alpha", "beta", "gamma"});
+    ParseRequirementLineTest("require product=alpha||", "product", "", false, {"alpha"});
+    ParseRequirementLineTest("require product=alpha|| ", "product", "", false, {"alpha"});
+    ParseRequirementLineTest("require product=alpha| ", "product", "", false, {"alpha"});
+    ParseRequirementLineTest("require product=alpha|beta| ", "product", "", false,
+                             {"alpha", "beta"});
+
+    // Check for board -> product substitution.
+    ParseRequirementLineTest("require board=alpha", "product", "", false, {"alpha"});
+}
+
+static void ParseRequirementLineTestMalformed(const std::string& line) {
+    std::string name;
+    std::string product;
+    bool invert;
+    std::vector<std::string> options;
+
+    EXPECT_FALSE(ParseRequirementLine(line, &name, &product, &invert, &options)) << line;
+}
+
+TEST(FastBoot, ParseRequirementLineMalformed) {
+    ParseRequirementLineTestMalformed("nothing");
+    ParseRequirementLineTestMalformed("");
+    ParseRequirementLineTestMalformed("=");
+    ParseRequirementLineTestMalformed("|");
+
+    ParseRequirementLineTestMalformed("require");
+    ParseRequirementLineTestMalformed("require ");
+    ParseRequirementLineTestMalformed("require =");
+    ParseRequirementLineTestMalformed("require =a");
+    ParseRequirementLineTestMalformed("require = |");
+    ParseRequirementLineTestMalformed("reject");
+    ParseRequirementLineTestMalformed("reject ");
+    ParseRequirementLineTestMalformed("reject =");
+    ParseRequirementLineTestMalformed("reject =a");
+    ParseRequirementLineTestMalformed("reject = |");
+    ParseRequirementLineTestMalformed("require-for-product:");
+    ParseRequirementLineTestMalformed("require-for-product: ");
+    ParseRequirementLineTestMalformed("require-for-product: =");
+    ParseRequirementLineTestMalformed("require-for-product: =a");
+    ParseRequirementLineTestMalformed("require-for-product: = | ");
+
+    ParseRequirementLineTestMalformed("require product");
+    ParseRequirementLineTestMalformed("require product=");
+    ParseRequirementLineTestMalformed("require product = ");
+    ParseRequirementLineTestMalformed("require product = | ");
+    ParseRequirementLineTestMalformed("reject product");
+    ParseRequirementLineTestMalformed("reject product=");
+    ParseRequirementLineTestMalformed("reject product = ");
+    ParseRequirementLineTestMalformed("reject product = | ");
+
+    ParseRequirementLineTestMalformed("require-for-product:gamma");
+    ParseRequirementLineTestMalformed("require-for-product:gamma product");
+    ParseRequirementLineTestMalformed("require-for-product:gamma product=");
+    ParseRequirementLineTestMalformed("require-for-product:gamma product = ");
+    ParseRequirementLineTestMalformed("require-for-product:gamma product = |");
+
+    // No spaces allowed before between require-for-product and :.
+    ParseRequirementLineTestMalformed("require-for-product :");
+}
