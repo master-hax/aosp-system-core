@@ -206,6 +206,7 @@ static constexpr bool kJavaTraceDumpsEnabled = true;
 static void crash_accept_cb(evconnlistener* listener, evutil_socket_t sockfd, sockaddr*, int, void*);
 static void crash_request_cb(evutil_socket_t sockfd, short ev, void* arg);
 static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg);
+static void do_sys_rq();
 
 static void perform_request(Crash* crash) {
   unique_fd output_fd;
@@ -345,8 +346,10 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
     goto fail;
   }
 
-  if (request.packet_type != CrashPacketType::kCompletedDump) {
-    LOG(WARNING) << "unexpected crash packet type, expected kCompletedDump, received "
+  if (request.packet_type != CrashPacketType::kCompletedDump &&
+      request.packet_type != CrashPacketType::kCompletedDumpAndRequestSysRq) {
+    LOG(WARNING) << "unexpected crash packet type, expected kCompletedDump or "
+                    "kCompletedDumpAndRequestSysRq, received "
                  << uint32_t(request.packet_type);
     goto fail;
   }
@@ -385,12 +388,30 @@ static void crash_completed_cb(evutil_socket_t sockfd, short ev, void* arg) {
     }
   }
 
+  if (request.packet_type == CrashPacketType::kCompletedDumpAndRequestSysRq) {
+    // trigger system crash if packet type is CrashPacketType:kCompletedDumpAndRequestSysRq
+    do_sys_rq();
+  }
+
 fail:
   CrashQueue* queue = CrashQueue::for_crash(crash);
   delete crash;
 
   // If there's something queued up, let them proceed.
   queue->maybe_dequeue_crashes(perform_request);
+}
+
+static void do_sys_rq() {
+  int fd = TEMP_FAILURE_RETRY(open("/proc/sysrq-trigger", O_WRONLY));
+  if (fd >= 0) {
+    int result = 0;
+    if ((result = TEMP_FAILURE_RETRY(write(fd, "c", 1)) != 1)) {
+      PLOG(DEBUG) << "Sysrq-trigger is set, crash triggerred";
+    }
+    close(fd);
+  } else {
+    PLOG(ERROR) << "Failed to open sysrq-trigger";
+  }
 }
 
 int main(int, char* []) {
