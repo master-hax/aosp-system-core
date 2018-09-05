@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "402e2c8a_f2769dd8",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1139,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-09-05T22:57:38Z",
+      "side": 0,
+      "message": "These values are already reported in mp_event_common()",
+      "range": {
+        "startLine": 1139,
+        "startChar": 8,
+        "endLine": 1139,
+        "endChar": 40
+      },
+      "revId": "ca2d03ebdbcf94d8428d6b13020178a66efdb153",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

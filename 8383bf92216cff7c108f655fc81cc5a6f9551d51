@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4aae545_315d767f",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1136,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-09-05T22:57:38Z",
+      "side": 1,
+      "message": "Changed this to differ from the \"Killing...\" log in mp_event_common()",
+      "range": {
+        "startLine": 1136,
+        "startChar": 11,
+        "endLine": 1136,
+        "endChar": 15
+      },
+      "revId": "8383bf92216cff7c108f655fc81cc5a6f9551d51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
