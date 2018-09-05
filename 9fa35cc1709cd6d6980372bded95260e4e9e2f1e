@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d61dc311_79bef8c4",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-05T19:27:23Z",
+      "side": 0,
+      "message": "need an extra \u0026 on the last operator \u003d",
+      "revId": "9fa35cc1709cd6d6980372bded95260e4e9e2f1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
