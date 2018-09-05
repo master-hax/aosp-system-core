@@ -238,6 +238,7 @@ std::vector<std::vector<std::string>> GetAllPartitionArgsNoSlot(FastbootDevice* 
     std::string slot_suffix = device->GetCurrentSlot();
     if (!slot_suffix.empty()) {
         auto names = std::move(partitions);
+        partitions.clear();
         for (const auto& name : names) {
             std::string slotless_name = name;
             if (android::base::EndsWith(name, "_a") || android::base::EndsWith(name, "_b")) {
