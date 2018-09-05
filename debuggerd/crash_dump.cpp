@@ -64,6 +64,41 @@ using android::base::StringPrintf;
 
 using unwindstack::Regs;
 
+const static std::set<std::string> g_critical_processes = {
+    "system_server",  "servicemanager", "hwservicemanager", "vndservicemanager",
+    "surfaceflinger", "zygote",         "zygote64"};
+
+static std::string trim_process_name(const std::string& process_name) {
+  std::string trimed_name(process_name);
+
+  // replace '\0' to space
+  std::replace(trimed_name.begin(), trimed_name.end(), '\0', ' ');
+
+  // strip path
+  std::string::size_type pos = trimed_name.find_last_of("/");
+  if (pos != std::string::npos) {
+    trimed_name = trimed_name.substr(pos + 1);
+  }
+
+  // remove head space
+  trimed_name.erase(trimed_name.begin(), std::find_if(trimed_name.begin(), trimed_name.end(),
+                                                      [](int ch) { return !std::isspace(ch); }));
+
+  // remove tail space
+  trimed_name.erase(std::find_if(trimed_name.rbegin(), trimed_name.rend(),
+                                 [](int ch) { return !std::isspace(ch); })
+                        .base(),
+                    trimed_name.end());
+
+  return trimed_name;
+}
+
+static bool is_critical_process(const std::string& process_name) {
+  const std::string name = trim_process_name(process_name);
+  ALOGI("@@@process name is %s", name.c_str());
+  return g_critical_processes.find(name) != g_critical_processes.end();
+}
+
 static bool pid_contains_tid(int pid_proc_fd, pid_t tid) {
   struct stat st;
   std::string task_path = StringPrintf("task/%d", tid);
@@ -599,10 +634,28 @@ int main(int argc, char** argv) {
         target_process, target_process);
   }
 
+  // Sync in preparation for system dump
+  fsync(STDOUT_FILENO);
+
   // Close stdout before we notify tombstoned of completion.
   close(STDOUT_FILENO);
-  if (g_tombstoned_connected && !tombstoned_notify_completion(g_tombstoned_socket.get())) {
-    LOG(ERROR) << "failed to notify tombstoned of completion";
+
+  bool trigger_sysrq =
+      android::base::GetBoolProperty("persist.sys.triggerSysRqToEnhanceDebug", false);
+  bool critical = fatal_signal && is_critical_process(process_name);
+
+  if (trigger_sysrq && critical) {
+    if (g_tombstoned_connected &&
+        !tombstoned_notify_completion_and_request_sysrq(g_tombstoned_socket.get())) {
+      LOG(ERROR) << "Failed to notify tombstoned of SystemDump";
+    } else {
+      LOG(DEBUG) << "Notified tombstoned of SystemDump, sleep!!";
+      sleep(10);
+    }
+  } else {
+    if (g_tombstoned_connected && !tombstoned_notify_completion(g_tombstoned_socket.get())) {
+      LOG(ERROR) << "failed to notify tombstoned of completion";
+    }
   }
 
   return 0;
