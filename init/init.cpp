@@ -19,6 +19,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <seccomp_policy.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +41,7 @@
 #include <cutils/android_reboot.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
+#include <selinux/android.h>
 
 #include "action_parser.h"
 #include "epoll.h"
@@ -565,6 +567,65 @@ static void InitKernelLogging(char* argv[]) {
     android::base::InitLogging(argv, &android::base::KernelLogger, InitAborter);
 }
 
+static void GlobalSeccomp() {
+    import_kernel_cmdline(false, [](const std::string& key, const std::string& value,
+                                    bool in_qemu) {
+        if (key == "androidboot.seccomp" && value == "global" && !set_global_seccomp_filter()) {
+            LOG(FATAL) << "Failed to globally enable seccomp!";
+        }
+    });
+}
+
+static void SetupSelinux(char** argv) {
+    android::base::InitLogging(argv, &android::base::KernelLogger, [](const char*) {
+        RebootSystem(ANDROID_RB_RESTART2, "bootloader");
+    });
+
+    LOG(INFO) << "init checking SELinux";
+
+    char* our_context = nullptr;
+    if (getcon(&our_context) != 0) {
+        LOG(FATAL) << "getcon() unexpectedly failed";
+    }
+
+    if (our_context == "u:r:init:s0"s) {
+        // If we're running with the init context then we're already in stage 2 init and we return
+        // back to let init run.
+        free(our_context);
+        return;
+    }
+
+    LOG(INFO) << "init setting up SELinux";
+
+    if (our_context != "u:r:kernel:s0"s) {
+        LOG(FATAL) << "Expected to either be running with context 'u:r:kernel:s0' or "
+                      "'u:r:init:s0', however is running with context '"
+                   << our_context << "'";
+    }
+
+    free(our_context);
+
+    // Set up SELinux, loading the SELinux policy.
+    SelinuxSetupKernelLogging();
+    SelinuxInitialize();
+
+    // We're in the kernel domain and want to transition to the init domain.  File systems that
+    // store SELabels in their xattrs, such as ext4 do not need an explicit restorecon here,
+    // but other file systems do.  In particular, this is needed for ramdisks such as the
+    // recovery image for A/B devices.
+    if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
+        PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
+    }
+
+    const char* path = "/system/bin/init";
+    const char* args[] = {path, nullptr};
+    execv(path, const_cast<char**>(args));
+
+    // execv() only returns if an error happened, in which case we
+    // panic and never return from this function.
+    PLOG(FATAL) << "execv(\"" << path << "\") failed";
+}
+
 int main(int argc, char** argv) {
     if (!strcmp(basename(argv[0]), "ueventd")) {
         return ueventd_main(argc, argv);
@@ -576,12 +637,17 @@ int main(int argc, char** argv) {
         return SubcontextMain(argc, argv, &function_map);
     }
 
+    SetupSelinux(argv);
+
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
 
     InitKernelLogging(argv);
     LOG(INFO) << "init second stage started!";
+
+    // Enable seccomp if global boot option was passed (otherwise it is enabled in zygote).
+    GlobalSeccomp();
 
     // Set up a session keyring that all processes will have access to. It
     // will hold things like FBE encryption keys. No process should override
