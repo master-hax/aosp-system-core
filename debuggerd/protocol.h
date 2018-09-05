@@ -42,6 +42,9 @@ enum class CrashPacketType : uint8_t {
   // kPerformDump sends along an output fd via cmsg(3).
   kPerformDump = 128,
   kAbortDump,
+
+  // Notification of a completed crash dump and request to trigger sysrq
+  kCompletedDumpAndRequestSysRq
 };
 
 struct DumpRequest {

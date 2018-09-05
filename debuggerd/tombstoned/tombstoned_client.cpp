@@ -88,3 +88,12 @@ bool tombstoned_notify_completion(int tombstoned_socket) {
   }
   return true;
 }
+
+bool tombstoned_notify_completion_and_request_sysrq(int tombstoned_socket) {
+  TombstonedCrashPacket packet = {};
+  packet.packet_type = CrashPacketType::kCompletedDumpAndRequestSysRq;
+  if (TEMP_FAILURE_RETRY(write(tombstoned_socket, &packet, sizeof(packet))) != sizeof(packet)) {
+    return false;
+  }
+  return true;
+}
