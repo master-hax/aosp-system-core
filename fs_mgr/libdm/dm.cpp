@@ -89,6 +89,13 @@ bool DeviceMapper::DeleteDevice(const std::string& name) {
     // do the right thing and remove the corresponding device node and symlinks.
     CHECK(io.flags & DM_UEVENT_GENERATED_FLAG)
             << "Didn't generate uevent for [" << name << "] removal";
+    // if DM_NAME= fails to be issued for uevent, thus name is unknown at
+    // ueventd time, delete known symbolic link.  Otherwise this is a Hail
+    // Mary and do not complain if already removed.
+    std::string mapper = "/dev/block/mapper/" + name;
+    if (unlink(mapper.c_str()) && (errno != ENOENT)) {
+        PLOG(ERROR) << "Failed remove " << mapper;
+    }
 
     return true;
 }
