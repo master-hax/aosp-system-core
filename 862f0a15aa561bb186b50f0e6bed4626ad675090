@@ -22,6 +22,30 @@
       "revId": "862f0a15aa561bb186b50f0e6bed4626ad675090",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64ca1cff_a43fff7f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1269249
+      },
+      "writtenOn": "2018-09-06T18:20:13Z",
+      "side": 1,
+      "message": "yes... in that I accidentally started this work in entirely the wrong (local) branch and then cp\u0027d it back to the right place. I did not notice that line had been added, should I remove it?",
+      "parentUuid": "892e5de5_aa043624",
+      "range": {
+        "startLine": 25,
+        "startChar": 52,
+        "endLine": 26,
+        "endChar": 68
+      },
+      "revId": "862f0a15aa561bb186b50f0e6bed4626ad675090",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
