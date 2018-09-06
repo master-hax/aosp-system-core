@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07521219_28f84c18",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-09-06T23:59:15Z",
+      "side": 1,
+      "message": "nit: std::string mapper \u003d \"/dev/block/mapper/\" + name; ?",
+      "revId": "0b6b216750f8f5d7196cf9d13869e356dc255839",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
