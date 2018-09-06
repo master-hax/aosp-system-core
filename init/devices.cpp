@@ -23,6 +23,7 @@
 
 #include <memory>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -39,10 +40,12 @@
 
 using android::base::Basename;
 using android::base::Dirname;
+using android::base::ReadFileToString;
 using android::base::Readlink;
 using android::base::Realpath;
 using android::base::StartsWith;
 using android::base::StringPrintf;
+using android::base::Trim;
 
 namespace android {
 namespace init {
@@ -98,6 +101,18 @@ static bool FindVbdDevicePrefix(const std::string& path, std::string* result) {
     if (length == 0) return false;
 
     *result = path.substr(start, length);
+    return true;
+}
+
+// Given a path that may start with a virtual dm block device, populate
+// the supplied buffer with the dm module's instantiated name.
+// If it doesn't start with a virtual block device, or there is some
+// error, return false.
+static bool FindDmDevicePartition(const std::string& path, std::string* result) {
+    result->clear();
+    if (!StartsWith(path, "/devices/virtual/block/dm-")) return false;
+    if (!ReadFileToString("/sys" + path + "/dm/name", result)) return false;
+    *result = Trim(*result);
     return true;
 }
 
@@ -293,6 +308,7 @@ void SanitizePartitionName(std::string* string) {
 std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uevent) const {
     std::string device;
     std::string type;
+    std::string partition;
 
     if (FindPlatformDevice(uevent.path, &device)) {
         // Skip /devices/platform or /devices/ if present
@@ -310,6 +326,8 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
         type = "pci";
     } else if (FindVbdDevicePrefix(uevent.path, &device)) {
         type = "vbd";
+    } else if (FindDmDevicePartition(uevent.path, &partition)) {
+        return {"/dev/block/mapper/" + partition};
     } else {
         return {};
     }
