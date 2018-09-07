@@ -38,6 +38,7 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_GETVAR, GetVarHandler},
               {FB_CMD_SHUTDOWN, ShutDownHandler},
               {FB_CMD_REBOOT, RebootHandler},
+              {FB_CMD_CONTINUE, RebootHandler},
               {FB_CMD_REBOOT_BOOTLOADER, RebootBootloaderHandler},
               {FB_CMD_REBOOT_FASTBOOT, RebootFastbootHandler},
               {FB_CMD_REBOOT_RECOVERY, RebootRecoveryHandler},

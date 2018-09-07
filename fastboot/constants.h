@@ -24,6 +24,7 @@
 #define FB_CMD_SET_ACTIVE "set_active"
 #define FB_CMD_CONTINUE "continue"
 #define FB_CMD_REBOOT "reboot"
+#define FB_CMD_CONTINUE "continue"
 #define FB_CMD_SHUTDOWN "shutdown"
 #define FB_CMD_REBOOT_BOOTLOADER "reboot-bootloader"
 #define FB_CMD_REBOOT_RECOVERY "reboot-recovery"
