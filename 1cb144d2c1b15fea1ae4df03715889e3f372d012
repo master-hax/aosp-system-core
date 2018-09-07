@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a3e6efd_f66be16a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-07T22:21:59Z",
+      "side": 1,
+      "message": "doesn\u0027t that depend on whether it has the same target?",
+      "revId": "1cb144d2c1b15fea1ae4df03715889e3f372d012",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
