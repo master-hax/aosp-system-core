@@ -16,6 +16,23 @@
       "revId": "1cb144d2c1b15fea1ae4df03715889e3f372d012",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2001bdf_69a0f799",
+        "filename": "adb/daemon/file_sync_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-07T22:23:41Z",
+      "side": 1,
+      "message": "We should probably at least call readlink and verify that the target actually matches what we wanted to link to.",
+      "revId": "1cb144d2c1b15fea1ae4df03715889e3f372d012",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
