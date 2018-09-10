@@ -83,6 +83,29 @@ int storage_open_file(storage_session_t session, file_handle_t *handle_p,
 void storage_close_file(file_handle_t handle);
 
 /**
+ * storage_move_file - Moves/renames a file.
+ * @session:    storage_session_t returned from a call to storage_open_session.
+ * @handle:     file_handle_t retrieved from storage_open_file, if @flags
+ *              contains STORAGE_FILE_MOVE_OPEN_FILE.
+ * @old_name:   the current name of the file to move
+ * @new_name:   the new name that the file should be moved to.
+ * @flags:    A bitmask consisting any storage_file_flag value or'ed together:
+ * - STORAGE_FILE_MOVE_CREATE:           if a file does not exist at @new_name, create it.
+ * - STORAGE_FILE_MOVE_CREATE_EXCLUSIVE: when specified, opening file with
+ *                                       STORAGE_OPEN_MOVE_CREATE flag will
+ *                                       fail if the file already exists.
+ *                                       Only meaningful if used in combination
+ *                                       with STORAGE_FILE_MOVE_CREATE flag.
+ * - STORAGE_FILE_MOVE_OPEN_FILE:   The file is already open as @handle.
+ * @opflags: a combination of @storage_op_flags
+ *
+ * Return: 0 on success, or an error code < 0 on failure.
+ */
+int storage_move_file(storage_session_t session, file_handle_t handle,
+                      const char *old_name, const char *new_name,
+                      uint32_t flags, uint32_t opflags);
+
+/**
  * storage_delete_file - Deletes a file.
  * @session: the storage_session_t returned from a call to storage_open_session
  * @name: the name of the file to delete
