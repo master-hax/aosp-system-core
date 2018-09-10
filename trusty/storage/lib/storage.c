@@ -177,6 +177,33 @@ void storage_close_file(file_handle_t fh)
     }
 }
 
+int storage_move_file(storage_session_t session, file_handle_t handle,
+                      const char *old_name, const char *new_name,
+                      uint32_t flags, uint32_t opflags)
+{
+    size_t old_name_len = strlen(old_name);
+    size_t new_name_len = strlen(new_name);
+    struct storage_msg msg = {
+        .cmd = STORAGE_FILE_MOVE,
+        .flags = _to_msg_flags(opflags),
+    };
+    struct storage_file_move_req req = {
+        .flags = flags,
+        .handle = handle,
+        .old_name_len = old_name_len,
+    };
+    struct iovec tx[4] = {
+        {&msg, sizeof(msg)},
+        {&req, sizeof(req)},
+        {(void *)old_name, old_name_len},
+        {(void *)new_name, new_name_len},
+    };
+    struct iovec rx[1] = {{&msg, sizeof(msg)}};
+
+    ssize_t rc = send_reqv(session, tx, 4, rx, 1);
+    return (int)check_response(&msg, rc);
+}
+
 int storage_delete_file(storage_session_t session, const char *name, uint32_t opflags)
 {
     struct storage_msg msg = { .cmd = STORAGE_FILE_DELETE, .flags = _to_msg_flags(opflags)};

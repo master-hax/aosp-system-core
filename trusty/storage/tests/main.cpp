@@ -290,6 +290,91 @@ TEST_P(StorageServiceTest, CreateDelete) {
     ASSERT_EQ(-ENOENT, rc);
 }
 
+TEST_P(StorageServiceTest, CreateMoveDelete) {
+    int rc;
+    file_handle_t handle;
+    const char* fname1 = "test_create_move_delete_1_file";
+    const char* fname2 = "test_create_move_delete_2_file";
+
+    // make sure test file does not exist (expect success or ERR_NOT_FOUND)
+    rc = storage_delete_file(session_, fname1, STORAGE_OP_COMPLETE);
+    rc = (rc == -ENOENT) ? 0 : rc;
+    ASSERT_EQ(0, rc);
+    rc = storage_delete_file(session_, fname2, STORAGE_OP_COMPLETE);
+    rc = (rc == -ENOENT) ? 0 : rc;
+    ASSERT_EQ(0, rc);
+
+    // one more time (expect ERR_NOT_FOUND)
+    rc = storage_delete_file(session_, fname1, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-ENOENT, rc);
+    rc = storage_delete_file(session_, fname2, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-ENOENT, rc);
+
+    // create file (expect 0)
+    rc = storage_open_file(
+            session_, &handle, fname1,
+            STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+            STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+
+    // move file
+    rc = storage_move_file(session_, handle, fname1, fname2,
+                           STORAGE_FILE_MOVE_CREATE |
+                                   STORAGE_FILE_MOVE_CREATE_EXCLUSIVE |
+                                   STORAGE_FILE_MOVE_OPEN_FILE,
+                           STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+
+    // try to create it again while it is still opened (expect
+    // ERR_ALREADY_EXISTS)
+    rc = storage_open_file(
+            session_, &handle, fname2,
+            STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+            STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-EEXIST, rc);
+
+    // close it
+    storage_close_file(handle);
+
+    // try to create it again while it is closed (expect ERR_ALREADY_EXISTS)
+    rc = storage_open_file(
+            session_, &handle, fname2,
+            STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+            STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-EEXIST, rc);
+
+    // create file1 (expect 0)
+    rc = storage_open_file(
+            session_, &handle, fname1,
+            STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+            STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+
+    // move file
+    rc = storage_move_file(session_, handle, fname1, fname2,
+                           STORAGE_FILE_MOVE_CREATE |
+                                   STORAGE_FILE_MOVE_CREATE_EXCLUSIVE |
+                                   STORAGE_FILE_MOVE_OPEN_FILE,
+                           STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-EEXIST, rc);
+
+    // close it
+    storage_close_file(handle);
+
+    // delete file (expect 0)
+    rc = storage_delete_file(session_, fname2, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+
+    // one more time (expect ERR_NOT_FOUND)
+    rc = storage_delete_file(session_, fname2, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-ENOENT, rc);
+
+    rc = storage_delete_file(session_, fname1, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+    // one more time (expect ERR_NOT_FOUND)
+    rc = storage_delete_file(session_, fname1, STORAGE_OP_COMPLETE);
+    ASSERT_EQ(-ENOENT, rc);
+}
 
 TEST_P(StorageServiceTest, DeleteOpened) {
     int rc;
