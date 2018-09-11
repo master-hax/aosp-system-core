@@ -29,6 +29,15 @@ typedef uint64_t storage_off_t;
 
 #define STORAGE_INVALID_SESSION ((storage_session_t)-1)
 
+#define MAX_CHUNK_SIZE 4040
+
+struct storage_open_dir_state {
+    uint8_t buf[MAX_CHUNK_SIZE];
+    size_t buf_size;
+    size_t buf_last_read;
+    size_t buf_read;
+};
+
 /**
  * storage_ops_flags - storage related operation flags
  * @STORAGE_OP_COMPLETE: forces to commit current transaction
@@ -115,6 +124,41 @@ int storage_move_file(storage_session_t session, file_handle_t handle,
  */
 int storage_delete_file(storage_session_t session, const char *name,
                         uint32_t opflags);
+
+/**
+ * storage_open_dir - Open directory.
+ * @session: the storage_session_t returned from a call to storage_open_session
+ * @path:    Must be "" or %NULL.
+ * @state:   Pointer to return state object in.
+ *
+ * Return: 0 on success, or an error code < 0 on failure.
+ */
+
+int storage_open_dir(const char *path,
+                     struct storage_open_dir_state **state);
+
+/**
+ * storage_close_dir() - Close open directory iterator.
+ * @session: the storage_session_t returned from a call to storage_open_session
+ * @state:   directory state object retrieved from storage_open_dir
+ */
+void storage_close_dir(struct storage_open_dir_state *state);
+
+/**
+ * storage_read_dir() - Read a file name from directory.
+ * @session:    the storage_session_t returned from a call to storage_open_session
+ * @state:      directory state object retrieved from storage_open_dir
+ * @flags:      storage_file_list_flag for committed, added, removed or end.
+ * @name:       buffer to write file name info.
+ * @name_size:  size of @name buffer.
+ *
+ * Return: the number of bytes read on success, negative error code on failure
+ *
+ */
+int storage_read_dir(storage_session_t session,
+                     struct storage_open_dir_state *state,
+                     uint8_t *flags,
+                     char *name, size_t name_size);
 
 /**
  * storage_read() - Reads a file at a given offset.

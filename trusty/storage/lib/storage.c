@@ -20,14 +20,13 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/uio.h>
 
 #include <log/log.h>
 #include <trusty/tipc.h>
 #include <trusty/lib/storage.h>
-
-#define MAX_CHUNK_SIZE 4040
 
 static inline file_handle_t make_file_handle(storage_session_t s, uint32_t fid)
 {
@@ -202,6 +201,116 @@ int storage_move_file(storage_session_t session, file_handle_t handle,
 
     ssize_t rc = send_reqv(session, tx, 4, rx, 1);
     return (int)check_response(&msg, rc);
+}
+
+int storage_open_dir(const char *path, struct storage_open_dir_state **state)
+{
+    struct storage_file_list_resp *resp;
+
+    if (path && strlen(path)) {
+        return -ENOENT; /* current server does not support directories */
+    }
+    *state = malloc(sizeof(**state));
+    if (*state == NULL) {
+        return -ENOMEM;
+    }
+    resp = (void *)(*state)->buf;
+    resp->flags = STORAGE_FILE_LIST_START;
+    (*state)->buf_size = sizeof(*resp);
+    (*state)->buf_last_read = 0;
+    (*state)->buf_read = (*state)->buf_size;
+
+    return 0;
+}
+
+void storage_close_dir(struct storage_open_dir_state *state)
+{
+    free(state);
+}
+
+static int storage_read_dir_send_message(storage_session_t session,
+                                         struct storage_open_dir_state *state)
+{
+    struct storage_file_list_resp *last_item = (void *)(state->buf + state->buf_last_read);
+    struct storage_msg msg = { .cmd = STORAGE_FILE_LIST };
+    struct storage_file_list_req req = { .flags = last_item->flags };
+    struct iovec tx[3] = {
+        {&msg, sizeof(msg)},
+        {&req, sizeof(req)},
+    };
+    uint32_t tx_count = 2;
+    struct iovec rx[2] = {
+        {&msg, sizeof(msg)},
+        {state->buf, sizeof(state->buf)}
+    };
+    ssize_t rc;
+
+    if (last_item->flags != STORAGE_FILE_LIST_START) {
+        tx[2].iov_base = last_item->name;
+        tx[2].iov_len = strlen(last_item->name);
+        tx_count = 3;
+    }
+
+    rc = send_reqv(session, tx, tx_count, rx, 2);
+    rc = check_response(&msg, rc);
+
+    state->buf_size = (rc > 0) ? rc : 0;
+    state->buf_last_read = 0;
+    state->buf_read = 0;
+
+    if (rc < 0)
+        return rc;
+
+    return 0;
+}
+
+int storage_read_dir(storage_session_t session,
+                     struct storage_open_dir_state *state,
+                     uint8_t *flags,
+                     char *name, size_t name_out_size)
+{
+    int ret;
+    size_t rem;
+    size_t name_size;
+    struct storage_file_list_resp *item;
+
+    if (state->buf_size == 0) {
+        return -EIO;
+    }
+
+    if (state->buf_read >= state->buf_size) {
+        ret = storage_read_dir_send_message(session, state);
+        if (ret) {
+            return ret;
+        }
+    }
+    rem = state->buf_size - state->buf_read;
+    if (rem < sizeof(*item)) {
+        return -EIO;
+    }
+    item = (void *)(state->buf + state->buf_read);
+    rem -= sizeof(*item);
+
+    *flags = item->flags;
+    if ((item->flags & STORAGE_FILE_LIST_STATE_MASK) == STORAGE_FILE_LIST_END) {
+        state->buf_size = 0;
+        name_size = 0;
+    } else {
+        name_size = strnlen(item->name, rem) + 1;
+        if (name_size > rem) {
+            ALOGE("got invalid filename size %zd >= %zd\n", name_size, rem);
+            return -EIO;
+        }
+        if (name_size >= name_out_size) {
+            return -ENOMEM;
+        }
+        strcpy(name, item->name);
+    }
+
+    state->buf_last_read = state->buf_read;
+    state->buf_read +=  sizeof(*item) + name_size;
+
+    return 0;
 }
 
 int storage_delete_file(storage_session_t session, const char *name, uint32_t opflags)

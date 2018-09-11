@@ -376,6 +376,106 @@ TEST_P(StorageServiceTest, CreateMoveDelete) {
     ASSERT_EQ(-ENOENT, rc);
 }
 
+TEST_P(StorageServiceTest, FileList) {
+    int rc;
+    file_handle_t handle;
+    struct storage_open_dir_state* dir;
+    const char* fname_pat = "test_file_list_%d_file";
+    char file_name[64];
+    char file_name_dir[64];
+    uint8_t read_dir_flags;
+    int i;
+    int file_count = 100;
+
+    // make sure test file does not exist (expect success or ERR_NOT_FOUND)
+    for (i = 0; i < file_count; i++) {
+        snprintf(file_name, sizeof(file_name), fname_pat, i);
+        rc = storage_delete_file(session_, file_name, STORAGE_OP_COMPLETE);
+        rc = (rc == -ENOENT) ? 0 : rc;
+        ASSERT_EQ(0, rc);
+    }
+
+    // one more time (expect ERR_NOT_FOUND)
+    for (i = 0; i < file_count; i++) {
+        snprintf(file_name, sizeof(file_name), fname_pat, i);
+        rc = storage_delete_file(session_, file_name, STORAGE_OP_COMPLETE);
+        ASSERT_EQ(-ENOENT, rc);
+    }
+
+    // test empty dir
+    rc = storage_open_dir("", &dir);
+    ASSERT_EQ(0, rc);
+
+    rc = storage_read_dir(session_, dir, &read_dir_flags, file_name_dir,
+                          sizeof(file_name_dir));
+    ASSERT_EQ(0, rc);
+    ASSERT_EQ(STORAGE_FILE_LIST_END,
+              read_dir_flags & STORAGE_FILE_LIST_STATE_MASK);
+
+    storage_close_dir(dir);
+
+    // create file (expect 0)
+    snprintf(file_name, sizeof(file_name), fname_pat, 0);
+    rc = storage_open_file(
+            session_, &handle, file_name,
+            STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+            STORAGE_OP_COMPLETE);
+    ASSERT_EQ(0, rc);
+
+    // close it
+    storage_close_file(handle);
+
+    for (i = 1; i < file_count; i++) {
+        snprintf(file_name, sizeof(file_name), fname_pat, i);
+        rc = storage_open_file(
+                session_, &handle, file_name,
+                STORAGE_FILE_OPEN_CREATE | STORAGE_FILE_OPEN_CREATE_EXCLUSIVE,
+                0);
+        ASSERT_EQ(0, rc);
+
+        // close it
+        storage_close_file(handle);
+    }
+
+    // test read_dir fname1 comitted, fname2 added
+    rc = storage_open_dir("", &dir);
+    ASSERT_EQ(0, rc);
+
+    snprintf(file_name, sizeof(file_name), fname_pat, 0);
+    rc = storage_read_dir(session_, dir, &read_dir_flags, file_name_dir,
+                          sizeof(file_name_dir));
+    ASSERT_EQ(0, rc);
+    ASSERT_EQ(STORAGE_FILE_LIST_COMMITTED,
+              read_dir_flags & STORAGE_FILE_LIST_STATE_MASK);
+    ASSERT_EQ(0, strcmp(file_name, file_name_dir));
+
+    for (i = 1; i < file_count; i++) {
+        rc = storage_read_dir(session_, dir, &read_dir_flags, file_name_dir,
+                              sizeof(file_name_dir));
+        ASSERT_EQ(0, rc);
+        ASSERT_EQ(STORAGE_FILE_LIST_ADDED,
+                  read_dir_flags & STORAGE_FILE_LIST_STATE_MASK);
+        ASSERT_NE(0, strcmp(file_name, file_name_dir));
+    }
+
+    rc = storage_read_dir(session_, dir, &read_dir_flags, file_name_dir,
+                          sizeof(file_name_dir));
+    ASSERT_EQ(0, rc);
+    ASSERT_EQ(STORAGE_FILE_LIST_END,
+              read_dir_flags & STORAGE_FILE_LIST_STATE_MASK);
+
+    storage_close_dir(dir);
+
+    rc = storage_end_transaction(session_, true);
+    ASSERT_EQ(0, rc);
+
+    for (i = 0; i < file_count; i++) {
+        snprintf(file_name, sizeof(file_name), fname_pat, i);
+        rc = storage_delete_file(session_, file_name, STORAGE_OP_COMPLETE);
+        ASSERT_EQ(0, rc);
+    }
+}
+
 TEST_P(StorageServiceTest, DeleteOpened) {
     int rc;
     file_handle_t handle;
