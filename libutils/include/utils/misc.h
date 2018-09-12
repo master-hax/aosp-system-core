@@ -32,7 +32,19 @@
 namespace android {
 
 typedef void (*sysprop_change_callback)(void);
+
+/* 'cb' will be called (in order of highest 'priority' first) whenever report_sysprop_change is
+ * called
+ *
+ * DO NOT USE: This should only ever be used when it is required in order to mesh with existing uses
+ * of this API. For new use, there are several preferred ways of doing this:
+ * - libbase's WaitForProperty/WaitForPropertyCreation APIs
+ * - creating callbacks with semantic meanings (example: 'addMyCallback')
+ */
 void add_sysprop_change_callback(sysprop_change_callback cb, int priority);
+/* Calls all 'cb' registered with add_sysprop_change_callback within the same process. This happens
+ * synchronously.
+ */
 void report_sysprop_change();
 
 }  // namespace android
