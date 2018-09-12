@@ -481,6 +481,10 @@ static std::string read_fstab_from_dt() {
         fstab_dt_entries.emplace_back(mount_point, android::base::Join(fstab_entry, " "));
     }
 
+    fstab_dt_entries.emplace_back("/system_recovery_mount",
+                                  "/dev/block/platform/soc/624000.ufshc/by-name/system "
+                                  "/system_blah ext4 ro,barrier=1 wait,slotselect,verify");
+
     // Sort fstab_dt entries, to ensure /vendor is mounted before /vendor/abc is attempted.
     std::sort(fstab_dt_entries.begin(), fstab_dt_entries.end(),
               [](const auto& a, const auto& b) { return a.first < b.first; });
