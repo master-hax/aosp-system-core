@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "64af9438_df54cb22",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-12T22:36:08Z",
+      "side": 1,
+      "message": "This is worded a bit confusingly (or at least a bit confusing to me). Do you mean for native backtrace requests?",
+      "range": {
+        "startLine": 216,
+        "startChar": 39,
+        "endLine": 216,
+        "endChar": 56
+      },
+      "revId": "5d5581f86dbe67d133ef954acf541514be9905d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
