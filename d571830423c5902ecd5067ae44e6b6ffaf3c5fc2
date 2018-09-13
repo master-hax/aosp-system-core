@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d003430_9ed75fc4",
+        "filename": "logd/LogKlog.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-13T19:44:21Z",
+      "side": 1,
+      "message": "Is this necessar? I\u0027ve seen other code that has labels like this without the macro.",
+      "range": {
+        "startLine": 478,
+        "startChar": 12,
+        "endLine": 478,
+        "endChar": 33
+      },
+      "revId": "d571830423c5902ecd5067ae44e6b6ffaf3c5fc2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
