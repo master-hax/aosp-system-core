@@ -31,6 +31,7 @@ static constexpr long kRequiredAgentVersion = 0x00000001;
 static constexpr const char* kDeviceAgentPath = "/data/local/tmp/";
 
 static bool g_use_localagent = false;
+static std::string* g_aapt_path;
 
 long get_agent_version() {
     std::vector<char> versionOutputBuffer;
@@ -59,6 +60,10 @@ int get_device_api_level() {
     }
 
     return api_level;
+}
+
+void fastdeploy_set_appt_path(std::string* aapt_path) {
+    g_aapt_path = aapt_path;
 }
 
 void fastdeploy_set_local_agent(bool use_localagent) {
@@ -138,23 +143,6 @@ void update_agent(FastDeploy_AgentUpdateStrategy agentUpdateStrategy) {
     }
 }
 
-static std::string get_aapt2_path() {
-    if (g_use_localagent) {
-        // This should never happen on a Windows machine
-        const char* host_out = getenv("ANDROID_HOST_OUT");
-        if (host_out == nullptr) {
-            fatal("Could not locate aapt2 because $ANDROID_HOST_OUT is not defined");
-        }
-        return android::base::StringPrintf("%s/bin/aapt2", host_out);
-    }
-
-    std::string adb_dir = android::base::GetExecutableDirectory();
-    if (adb_dir.empty()) {
-        fatal("Could not locate aapt2");
-    }
-    return adb_dir + "/aapt2";
-}
-
 static int system_capture(const char* cmd, std::string& output) {
     FILE* pipe = popen(cmd, "re");
     int fd = -1;
@@ -177,7 +165,10 @@ static int system_capture(const char* cmd, std::string& output) {
 // output is required to point to a valid output string (non-null)
 static std::string get_packagename_from_apk(const char* apkPath) {
     const char* kAapt2DumpNameCommandPattern = R"(%s dump packagename "%s")";
-    std::string aapt2_path_string = get_aapt2_path();
+    if (g_aapt_path == nullptr) {
+        fatal("Internal Error g_aapt_path is NULL");
+    }
+    std::string aapt2_path_string = *g_aapt_path;
     std::string getPackagenameCommand = android::base::StringPrintf(
             kAapt2DumpNameCommandPattern, aapt2_path_string.c_str(), apkPath);
 
@@ -191,7 +182,7 @@ static std::string get_packagename_from_apk(const char* apkPath) {
     return android::base::Trim(package_name);
 }
 
-int extract_metadata(const char* apkPath, FILE* outputFp) {
+void extract_metadata(const char* apkPath, FILE* outputFp) {
     std::string packageName = get_packagename_from_apk(apkPath);
     const char* kAgentExtractCommandPattern = "/data/local/tmp/deployagent extract %s";
     std::string extractCommand =
@@ -200,13 +191,10 @@ int extract_metadata(const char* apkPath, FILE* outputFp) {
     std::vector<char> extractErrorBuffer;
     int statusCode;
     DeployAgentFileCallback cb(outputFp, &extractErrorBuffer, &statusCode);
-    int ret = send_shell_command(extractCommand, false, &cb);
-
-    if (ret == 0) {
-        return cb.getBytesWritten();
+    int returnCode = send_shell_command(extractCommand, false, &cb);
+    if (returnCode != 0) {
+        fatal("Executing %s returned %d\n", extractCommand.c_str(), returnCode);
     }
-
-    return ret;
 }
 
 static std::string get_patch_generator_command() {
@@ -229,11 +217,14 @@ static std::string get_patch_generator_command() {
                                        adb_dir.c_str());
 }
 
-int create_patch(const char* apkPath, const char* metadataPath, const char* patchPath) {
+void create_patch(const char* apkPath, const char* metadataPath, const char* patchPath) {
     std::string generatePatchCommand = android::base::StringPrintf(
             R"(%s "%s" "%s" > "%s")", get_patch_generator_command().c_str(), apkPath, metadataPath,
             patchPath);
-    return system(generatePatchCommand.c_str());
+    int returnCode = system(generatePatchCommand.c_str());
+    if (returnCode != 0) {
+        fatal("Executing %s returned %d\n", generatePatchCommand.c_str(), returnCode);
+    }
 }
 
 std::string get_patch_path(const char* apkPath) {
@@ -243,36 +234,38 @@ std::string get_patch_path(const char* apkPath) {
     return patchDevicePath;
 }
 
-int apply_patch_on_device(const char* apkPath, const char* patchPath, const char* outputPath) {
+void apply_patch_on_device(const char* apkPath, const char* patchPath, const char* outputPath) {
     const std::string kAgentApplyCommandPattern = "/data/local/tmp/deployagent apply %s %s -o %s";
     std::string packageName = get_packagename_from_apk(apkPath);
     std::string patchDevicePath = get_patch_path(apkPath);
 
     std::vector<const char*> srcs = {patchPath};
     bool push_ok = do_sync_push(srcs, patchDevicePath.c_str(), false);
-
     if (!push_ok) {
-        return -1;
+        fatal("Error pushing %s to %s returned\n", patchPath, patchDevicePath.c_str());
     }
 
     std::string applyPatchCommand =
             android::base::StringPrintf(kAgentApplyCommandPattern.c_str(), packageName.c_str(),
                                         patchDevicePath.c_str(), outputPath);
 
-    return send_shell_command(applyPatchCommand);
+    int returnCode = send_shell_command(applyPatchCommand);
+    if (returnCode != 0) {
+        fatal("Executing %s returned %d\n", applyPatchCommand.c_str(), returnCode);
+    }
 }
 
-int install_patch(const char* apkPath, const char* patchPath, int argc, const char** argv) {
+void install_patch(const char* apkPath, const char* patchPath, int argc, const char** argv) {
     const std::string kAgentApplyCommandPattern = "/data/local/tmp/deployagent apply %s %s -pm %s";
     std::string packageName = get_packagename_from_apk(apkPath);
-    std::vector<const char*> srcs;
+
     std::string patchDevicePath =
             android::base::StringPrintf("%s%s.patch", kDeviceAgentPath, packageName.c_str());
-    srcs.push_back(patchPath);
-    bool push_ok = do_sync_push(srcs, patchDevicePath.c_str(), false);
 
+    std::vector<const char*> srcs = {patchPath};
+    bool push_ok = do_sync_push(srcs, patchDevicePath.c_str(), false);
     if (!push_ok) {
-        return -1;
+        fatal("Error pushing %s to %s returned\n", patchPath, patchDevicePath.c_str());
     }
 
     std::vector<unsigned char> applyOutputBuffer;
@@ -287,5 +280,8 @@ int install_patch(const char* apkPath, const char* patchPath, int argc, const ch
     std::string applyPatchCommand =
             android::base::StringPrintf(kAgentApplyCommandPattern.c_str(), packageName.c_str(),
                                         patchDevicePath.c_str(), argsString.c_str());
-    return send_shell_command(applyPatchCommand);
+    int returnCode = send_shell_command(applyPatchCommand);
+    if (returnCode != 0) {
+        fatal("Executing %s returned %d\n", applyPatchCommand.c_str(), returnCode);
+    }
 }

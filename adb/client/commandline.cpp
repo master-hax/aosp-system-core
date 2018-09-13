@@ -155,6 +155,7 @@ static void help() {
         "     -d: allow version code downgrade (debuggable packages only)\n"
         "     -p: partial application install (install-multiple only)\n"
         "     -g: grant all runtime permissions\n"
+        "     --aapt-path <PATH>: search for aapt2 binary in <PATH>\n"
         "     --instant: cause the app to be installed as an ephemeral install app\n"
         "     --no-streaming: always push APK to device and invoke Package Manager as separate steps\n"
         "     --streaming: force streaming APK directly into Package Manager\n"
