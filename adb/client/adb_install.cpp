@@ -146,41 +146,21 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         TemporaryFile patchTmpFile;
 
         FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        int metadata_len = extract_metadata(file, metadataFile);
+        extract_metadata(file, metadataFile);
         fclose(metadataFile);
 
-        int result = -1;
-        if (metadata_len <= 0) {
-            printf("failed to extract metadata %d\n", metadata_len);
-            return 1;
-        } else {
-            int create_patch_result = create_patch(file, metadataTmpFile.path, patchTmpFile.path);
-            if (create_patch_result != 0) {
-                printf("Patch creation failure, error code: %d\n", create_patch_result);
-                result = create_patch_result;
-                goto cleanup_streamed_apk;
-            } else {
-                std::vector<const char*> pm_args;
-                // pass all but 1st (command) and last (apk path) parameters through to pm for
-                // session creation
-                for (int i = 1; i < argc - 1; i++) {
-                    pm_args.push_back(argv[i]);
-                }
-                int apply_patch_result =
-                        install_patch(file, patchTmpFile.path, pm_args.size(), pm_args.data());
-                if (apply_patch_result != 0) {
-                    printf("Patch application failure, error code: %d\n", apply_patch_result);
-                    result = apply_patch_result;
-                    goto cleanup_streamed_apk;
-                }
-            }
+        create_patch(file, metadataTmpFile.path, patchTmpFile.path);
+        std::vector<const char*> pm_args = {argv + 1, argv + argc - 1};
+        // pass all but 1st (command) and last (apk path) parameters through to pm for
+        // session creation
+        /*
+        for (int i = 1; i < argc - 1; i++) {
+            pm_args.push_back(argv[i]);
         }
-
-    cleanup_streamed_apk:
-        if (use_fastdeploy == true) {
-            delete_device_patch_file(file);
-        }
-        return result;
+        */
+        install_patch(file, patchTmpFile.path, pm_args.size(), pm_args.data());
+        delete_device_patch_file(file);
+        return 0;
     } else {
         struct stat sb;
         if (stat(file, &sb) == -1) {
@@ -265,29 +245,11 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy,
         TemporaryFile patchTmpFile;
 
         FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        int metadata_len = extract_metadata(apk_file[0], metadataFile);
+        extract_metadata(apk_file[0], metadataFile);
         fclose(metadataFile);
 
-        if (metadata_len <= 0) {
-            printf("failed to extract metadata %d\n", metadata_len);
-            return 1;
-        } else {
-            int create_patch_result =
-                    create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
-            if (create_patch_result != 0) {
-                printf("Patch creation failure, error code: %d\n", create_patch_result);
-                result = create_patch_result;
-                goto cleanup_apk;
-            } else {
-                int apply_patch_result =
-                        apply_patch_on_device(apk_file[0], patchTmpFile.path, apk_dest.c_str());
-                if (apply_patch_result != 0) {
-                    printf("Patch application failure, error code: %d\n", apply_patch_result);
-                    result = apply_patch_result;
-                    goto cleanup_apk;
-                }
-            }
-        }
+        create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
+        apply_patch_on_device(apk_file[0], patchTmpFile.path, apk_dest.c_str());
     } else {
         if (!do_sync_push(apk_file, apk_dest.c_str(), false)) goto cleanup_apk;
     }
@@ -347,7 +309,6 @@ int install_app(int argc, const char** argv) {
             use_localagent = true;
 #endif
         }
-        // TODO: --installlog <filename>
     }
 
     if (installMode == INSTALL_DEFAULT) {
