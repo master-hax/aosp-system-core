@@ -22,6 +22,30 @@
       "revId": "03d42892a5fc6ff4863c45a4f5d85730042b4fd9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6bdbbf95_d2f2ad78",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-13T01:12:40Z",
+      "side": 1,
+      "message": "Added the constants to a common header.",
+      "parentUuid": "5cbc5eca_3bc59a9a",
+      "range": {
+        "startLine": 481,
+        "startChar": 20,
+        "endLine": 481,
+        "endChar": 24
+      },
+      "revId": "03d42892a5fc6ff4863c45a4f5d85730042b4fd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
