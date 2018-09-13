@@ -146,41 +146,21 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         TemporaryFile patchTmpFile;
 
         FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        int metadata_len = extract_metadata(file, metadataFile);
+        extract_metadata(file, metadataFile);
         fclose(metadataFile);
 
-        int result = -1;
-        if (metadata_len <= 0) {
-            printf("failed to extract metadata %d\n", metadata_len);
-            return 1;
-        } else {
-            int create_patch_result = create_patch(file, metadataTmpFile.path, patchTmpFile.path);
-            if (create_patch_result != 0) {
-                printf("Patch creation failure, error code: %d\n", create_patch_result);
-                result = create_patch_result;
-                goto cleanup_streamed_apk;
-            } else {
-                std::vector<const char*> pm_args;
-                // pass all but 1st (command) and last (apk path) parameters through to pm for
-                // session creation
-                for (int i = 1; i < argc - 1; i++) {
-                    pm_args.push_back(argv[i]);
-                }
-                int apply_patch_result =
-                        install_patch(file, patchTmpFile.path, pm_args.size(), pm_args.data());
-                if (apply_patch_result != 0) {
-                    printf("Patch application failure, error code: %d\n", apply_patch_result);
-                    result = apply_patch_result;
-                    goto cleanup_streamed_apk;
-                }
-            }
+        create_patch(file, metadataTmpFile.path, patchTmpFile.path);
+        std::vector<const char*> pm_args;
+        // pass all but 1st (command) and last (apk path) parameters through to pm for
+        // session creation
+        for (int i = 1; i < argc - 1; i++) {
+            pm_args.push_back(argv[i]);
         }
-
-    cleanup_streamed_apk:
+        install_patch(file, patchTmpFile.path, pm_args.size(), pm_args.data());
         if (use_fastdeploy == true) {
             delete_device_patch_file(file);
         }
-        return result;
+        return 0;
     } else {
         struct stat sb;
         if (stat(file, &sb) == -1) {
@@ -265,29 +245,11 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy,
         TemporaryFile patchTmpFile;
 
         FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
-        int metadata_len = extract_metadata(apk_file[0], metadataFile);
+        extract_metadata(apk_file[0], metadataFile);
         fclose(metadataFile);
 
-        if (metadata_len <= 0) {
-            printf("failed to extract metadata %d\n", metadata_len);
-            return 1;
-        } else {
-            int create_patch_result =
-                    create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
-            if (create_patch_result != 0) {
-                printf("Patch creation failure, error code: %d\n", create_patch_result);
-                result = create_patch_result;
-                goto cleanup_apk;
-            } else {
-                int apply_patch_result =
-                        apply_patch_on_device(apk_file[0], patchTmpFile.path, apk_dest.c_str());
-                if (apply_patch_result != 0) {
-                    printf("Patch application failure, error code: %d\n", apply_patch_result);
-                    result = apply_patch_result;
-                    goto cleanup_apk;
-                }
-            }
-        }
+        create_patch(apk_file[0], metadataTmpFile.path, patchTmpFile.path);
+        apply_patch_on_device(apk_file[0], patchTmpFile.path, apk_dest.c_str());
     } else {
         if (!do_sync_push(apk_file, apk_dest.c_str(), false)) goto cleanup_apk;
     }
@@ -303,6 +265,11 @@ cleanup_apk:
     return result;
 }
 
+static bool is_executable(std::string path) {
+    struct stat sb;
+    return (stat(path.c_str(), &sb) == 0 && sb.st_mode & S_IXUSR);
+}
+
 int install_app(int argc, const char** argv) {
     std::vector<int> processedArgIndicies;
     enum installMode {
@@ -314,6 +281,7 @@ int install_app(int argc, const char** argv) {
     bool is_reinstall = false;
     bool use_localagent = false;
     FastDeploy_AgentUpdateStrategy agent_update_strategy = FastDeploy_AgentUpdateDifferentVersion;
+    std::string aapt_path;
 
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--streaming")) {
@@ -341,13 +309,19 @@ int install_app(int argc, const char** argv) {
         } else if (!strcmp(argv[i], "--version-check-agent")) {
             processedArgIndicies.push_back(i);
             agent_update_strategy = FastDeploy_AgentUpdateDifferentVersion;
+        } else if (!strcmp(argv[i], "--aapt-path")) {
+            if (i + 1 == argc) {
+                fatal("--aapt-path requires a path\n");
+            }
+            aapt_path = std::string(argv[i + 1]);
+            processedArgIndicies.push_back(i);
+            processedArgIndicies.push_back(++i);
 #ifndef _WIN32
         } else if (!strcmp(argv[i], "--local-agent")) {
             processedArgIndicies.push_back(i);
             use_localagent = true;
 #endif
         }
-        // TODO: --installlog <filename>
     }
 
     if (installMode == INSTALL_DEFAULT) {
@@ -383,6 +357,29 @@ int install_app(int argc, const char** argv) {
     }
 
     if (use_fastdeploy == true) {
+        if (aapt_path.length() == 0) {
+            if (use_localagent == true) {
+                const char* host_out = getenv("ANDROID_HOST_OUT");
+                if (host_out == nullptr) {
+                    fatal("Could not determine local aapt2 path because $ANDROID_HOST_OUT is not "
+                          "defined");
+                }
+                aapt_path = android::base::StringPrintf("%s/bin/aapt2", host_out);
+            } else {
+                std::string adb_dir = android::base::GetExecutableDirectory();
+                if (adb_dir.empty()) {
+                    fatal("Could not locate aapt2");
+                }
+                aapt_path = android::base::StringPrintf("%s/../build-tools/android-Q/aapt2",
+                                                        adb_dir.c_str());
+            }
+        }
+
+        if (!is_executable(aapt_path)) {
+            fatal("%s is not an executable file\n", aapt_path.c_str());
+        }
+
+        fastdeploy_set_appt_path(&aapt_path);
         fastdeploy_set_local_agent(use_localagent);
         update_agent(agent_update_strategy);
     }
