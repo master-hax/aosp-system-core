@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acbbacc4_6ea68e8d",
+        "filename": "logd/LogKlog.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-13T20:31:42Z",
+      "side": 1,
+      "message": "Same comment, not need, same as the one down below.",
+      "range": {
+        "startLine": 479,
+        "startChar": 12,
+        "endLine": 479,
+        "endChar": 33
+      },
+      "revId": "14f10410d21012ae5d75829e981c040b1cb6b9d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
