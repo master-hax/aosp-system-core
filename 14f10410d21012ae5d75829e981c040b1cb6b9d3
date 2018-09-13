@@ -22,6 +22,30 @@
       "revId": "14f10410d21012ae5d75829e981c040b1cb6b9d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0117c194_3266b567",
+        "filename": "logd/LogKlog.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2018-09-13T20:37:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "acbbacc4_6ea68e8d",
+      "range": {
+        "startLine": 479,
+        "startChar": 12,
+        "endLine": 479,
+        "endChar": 33
+      },
+      "revId": "14f10410d21012ae5d75829e981c040b1cb6b9d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
