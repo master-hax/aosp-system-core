@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44494db6_5c25173b",
+        "filename": "libutils/include/utils/misc.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2018-09-13T18:14:28Z",
+      "side": 1,
+      "message": "I was imagining this for that case.",
+      "range": {
+        "startLine": 42,
+        "startChar": 5,
+        "endLine": 42,
+        "endChar": 73
+      },
+      "revId": "ccae4858d62b835a7557352e487e7e4f2e86646d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
