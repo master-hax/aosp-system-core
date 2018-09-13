@@ -475,9 +475,9 @@ void LogKlog::synchronize(const char* buf, ssize_t len) {
 static int convertKernelPrioToAndroidPrio(int pri) {
     switch (pri & LOG_PRIMASK) {
         case LOG_EMERG:
-        // FALLTHRU
+            FALLTHROUGH_INTENDED;
         case LOG_ALERT:
-        // FALLTHRU
+            FALLTHROUGH_INTENDED;
         case LOG_CRIT:
             return ANDROID_LOG_FATAL;
 
@@ -488,9 +488,9 @@ static int convertKernelPrioToAndroidPrio(int pri) {
             return ANDROID_LOG_WARN;
 
         default:
-        // FALLTHRU
+            FALLTHROUGH_INTENDED;
         case LOG_NOTICE:
-        // FALLTHRU
+            FALLTHROUGH_INTENDED;
         case LOG_INFO:
             break;
 
