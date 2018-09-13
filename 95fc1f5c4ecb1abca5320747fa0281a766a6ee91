@@ -16,6 +16,24 @@
       "revId": "95fc1f5c4ecb1abca5320747fa0281a766a6ee91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75e3e4eb_0c3b5483",
+        "filename": "libpixelflinger/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2018-09-13T19:32:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bff5bb5_c18fdea0",
+      "revId": "95fc1f5c4ecb1abca5320747fa0281a766a6ee91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
