@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b377ba4_91a0b0ee",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1094,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-13T01:29:02Z",
+      "side": 1,
+      "message": "Would it be better to make sure that any new tombstone files are actually tombstones? For example, you could just check that the first line of the ****, or check that the second line begins with \"Build fingerprint:\".\n\nOr if you want to be really thorough, you could check that the pid is not this pid either.\n\nYou could still use the before/after and only check the new files.",
+      "range": {
+        "startLine": 1094,
+        "startChar": 2,
+        "endLine": 1094,
+        "endChar": 22
+      },
+      "revId": "77c471c14f04c5a7e9705de67b316daf540fc5e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
