@@ -20,6 +20,7 @@
 #ifndef LIBZIPARCHIVE_ZIPARCHIVE_H_
 #define LIBZIPARCHIVE_ZIPARCHIVE_H_
 
+#include <android-base/logging.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/cdefs.h>
@@ -55,6 +56,15 @@ struct ZipString {
   bool EndsWith(const ZipString& suffix) const {
     return name && (name_length >= suffix.name_length) &&
            (memcmp(name + name_length - suffix.name_length, suffix.name, suffix.name_length) == 0);
+  }
+
+  /**
+   * Returns offset of ZipString#name from the start of the central directory in the memory map.
+   * For valid ZipStrings contained in the zip archive mmap, 0 < offset < 0xffffff.
+   */
+  uint32_t GetOffset(const uint8_t* start) const {
+    CHECK_GT(name, start);
+    return static_cast<uint32_t>(name - start);
   }
 };
 
