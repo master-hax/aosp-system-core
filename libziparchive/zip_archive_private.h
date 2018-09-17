@@ -152,9 +152,9 @@ struct ZipArchive {
   // We know how many entries are in the Zip archive, so we can have a
   // fixed-size hash table. We define a load factor of 0.75 and over
   // allocate so the maximum number entries can never be higher than
-  // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
+  // ((4 * UINT8_MAX) / 3 + 1) which can safely fit into a uint32_t.
   uint32_t hash_table_size;
-  ZipString* hash_table;
+  ZipStringOffset* hash_table;
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(void* address, size_t length);
