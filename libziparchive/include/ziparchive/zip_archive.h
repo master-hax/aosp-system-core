@@ -20,6 +20,7 @@
 #ifndef LIBZIPARCHIVE_ZIPARCHIVE_H_
 #define LIBZIPARCHIVE_ZIPARCHIVE_H_
 
+#include <android-base/logging.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/cdefs.h>
@@ -55,6 +56,27 @@ struct ZipString {
   bool EndsWith(const ZipString& suffix) const {
     return name && (name_length >= suffix.name_length) &&
            (memcmp(name + name_length - suffix.name_length, suffix.name, suffix.name_length) == 0);
+  }
+
+  /** Returns offset of ZipString#name from the start of the central directory in the memory map. */
+  uint32_t GetOffset(const uint8_t* start) const {
+    CHECK_GT(name, start);
+    return static_cast<uint32_t>(name - start);
+  }
+};
+
+/**
+ * Space efficient representation of ZipString. More space efficient than std::string_view.
+ * Strings are stored as an offset in an mmaped file to a pointer to a not-null-terminated
+ * string. This allows keep the zip file mapping clean.
+ */
+struct ZipStringOffset {
+  uint32_t name_offset;
+  uint16_t name_length;
+
+  void GetZipString(const uint8_t* start, ZipString* zip_string) const {
+    zip_string->name = start + name_offset;
+    zip_string->name_length = name_length;
   }
 };
 
