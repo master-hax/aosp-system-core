@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ea2dfca_ab79dc32",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-17T20:07:43Z",
+      "side": 1,
+      "message": "We send ret.error even in the case of a success?",
+      "range": {
+        "startLine": 154,
+        "startChar": 53,
+        "endLine": 154,
+        "endChar": 62
+      },
+      "revId": "649ff9daecf1788d0052f0c082fe7e21511a6ec2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
