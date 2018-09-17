@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b20eb0a6_8da31bca",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-17T19:33:24Z",
+      "side": 1,
+      "message": "i think you need to explicitly call out that this is smaller than std::string_view, or it\u0027ll be \"cleaned up\" to use std::string_view at some point. especially given the awkwardness of having to pass in the base address to GetZipString.",
+      "revId": "fae2f89243638d3554d988eea9fd3ad1d8fab1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3d5f157_498223f7",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-17T19:33:24Z",
+      "side": 1,
+      "message": "strictly correct, but probably less misleading to not say `const` here.",
+      "range": {
+        "startLine": 77,
+        "startChar": 53,
+        "endLine": 77,
+        "endChar": 58
+      },
+      "revId": "fae2f89243638d3554d988eea9fd3ad1d8fab1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4509a234_1393a8e7",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 788,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-17T19:33:24Z",
+      "side": 1,
+      "message": "why all these static_casts? doesn\u0027t GetBasePtr already return const uint8_t*?",
+      "range": {
+        "startLine": 788,
+        "startChar": 31,
+        "endLine": 788,
+        "endChar": 42
+      },
+      "revId": "fae2f89243638d3554d988eea9fd3ad1d8fab1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
