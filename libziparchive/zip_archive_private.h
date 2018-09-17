@@ -136,6 +136,22 @@ class CentralDirectory {
   size_t length_;
 };
 
+/**
+ * Space efficient string representation of strings in an mmaped zipped file.
+ * More space efficient than std::string_view or ZipString because it can be packed in 8 bytes
+ * instead of 16 bytes.
+ * Strings are stored as an offset in an mmaped file to a pointer to a not-null-terminated string.
+ */
+struct ZipStringOffset {
+  uint32_t name_offset;
+  uint16_t name_length;
+
+  void GetZipString(const uint8_t* start, ZipString* zip_string) const {
+    zip_string->name = start + name_offset;
+    zip_string->name_length = name_length;
+  }
+};
+
 struct ZipArchive {
   // open Zip archive
   mutable MappedZipFile mapped_zip;
@@ -154,7 +170,7 @@ struct ZipArchive {
   // allocate so the maximum number entries can never be higher than
   // ((4 * UINT16_MAX) / 3 + 1) which can safely fit into a uint32_t.
   uint32_t hash_table_size;
-  ZipString* hash_table;
+  ZipStringOffset* hash_table;
 
   ZipArchive(const int fd, bool assume_ownership);
   ZipArchive(void* address, size_t length);
