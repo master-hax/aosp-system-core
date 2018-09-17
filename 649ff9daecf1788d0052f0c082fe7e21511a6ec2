@@ -22,6 +22,30 @@
       "revId": "649ff9daecf1788d0052f0c082fe7e21511a6ec2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a198bada_0b91be86",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2018-09-17T22:41:15Z",
+      "side": 1,
+      "message": "It can also contain an informative message for a successful command(https://cs.corp.google.com/android/hardware/interfaces/fastboot/1.0/types.hal?type\u003dcs\u0026g\u003d0\u0026l\u003d60). I agree that it is confusing though, let me change the name of the field to \u0027message\u0027 instead.",
+      "parentUuid": "8ea2dfca_ab79dc32",
+      "range": {
+        "startLine": 154,
+        "startChar": 53,
+        "endLine": 154,
+        "endChar": 62
+      },
+      "revId": "649ff9daecf1788d0052f0c082fe7e21511a6ec2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
