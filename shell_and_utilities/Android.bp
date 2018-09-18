@@ -17,6 +17,7 @@ phony {
         "mkshrc",
         "newfs_msdos",
         "reboot",
+        "ucontainer",
         "sh",
         "tcpdump",
         "toolbox",
