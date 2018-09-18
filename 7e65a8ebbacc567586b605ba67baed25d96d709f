@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a37b79bb_e8a598da",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "Awesome!",
+      "range": {
+        "startLine": 14,
+        "startChar": 144,
+        "endLine": 14,
+        "endChar": 172
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b7ad849_3d36181b",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "Maybe add to the comment a note stating that GetOffset is guaranteed never to return 0. Where does that guarantee come from?",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 100
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba3af22c_a0f7d7b3",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "Is there any chance this could overflow 32 bits?",
+      "range": {
+        "startLine": 64,
+        "startChar": 33,
+        "endLine": 64,
+        "endChar": 45
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85ea0494_d7b29f41",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "Can you define this in ziparchive.cc instead of the public header file, given that it is an implementation-specific data structure?",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 2
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "112d78bb_096dae42",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "Rather than duplicating this logic to GetZipString followed by \u003d\u003d here and above, consider defining a function that can do the equality check given a ZipStringOffset, start, and name?",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 163,
+        "endChar": 30
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25185d2b_83034265",
+        "filename": "libziparchive/zip_archive_private.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-18T09:01:33Z",
+      "side": 1,
+      "message": "I don\u0027t understand this change from 16 to 8. num_entries is still uint16_t, right?",
+      "range": {
+        "startLine": 155,
+        "startChar": 15,
+        "endLine": 155,
+        "endChar": 16
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
