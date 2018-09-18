@@ -74,7 +74,7 @@ namespace {
 selabel_handle* sehandle = nullptr;
 
 enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
-
+/*
 EnforcingStatus StatusFromCmdline() {
     EnforcingStatus status = SELINUX_ENFORCING;
 
@@ -87,12 +87,12 @@ EnforcingStatus StatusFromCmdline() {
 
     return status;
 }
-
+ */
 bool IsEnforcing() {
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromCmdline() == SELINUX_ENFORCING;
-    }
-    return true;
+    // if (ALLOW_PERMISSIVE_SELINUX) {
+    //    return StatusFromCmdline() == SELINUX_ENFORCING;
+    //}
+    return false;
 }
 
 // Forks, executes the provided program in the child, and waits for the completion in the parent.
