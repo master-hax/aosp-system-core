@@ -16,6 +16,24 @@
       "revId": "11c7f43b90fab5e2689d623d752bb68e9804a8cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21921281_ff91a379",
+        "filename": "adb/types_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2018-09-18T22:39:39Z",
+      "side": 0,
+      "message": "ACK.  I omitted because types.h includes \u003cmemory\u003e.  But I\u0027ll include it for the sake of consistency.",
+      "parentUuid": "183b1327_0c8e36d1",
+      "revId": "11c7f43b90fab5e2689d623d752bb68e9804a8cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
