@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f90e40fb_665ea264",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a37b79bb_e8a598da",
+      "range": {
+        "startLine": 14,
+        "startChar": 144,
+        "endLine": 14,
+        "endChar": 172
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b7ad849_3d36181b",
         "filename": "libziparchive/include/ziparchive/zip_archive.h",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b983dfa_6fe5df05",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "IIUC, 0 would mean the filename is at the start of the central directory which should never happen as per the zip mmap. Added comment.",
+      "parentUuid": "9b7ad849_3d36181b",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 100
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "e37b16d1_2681006c",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Shouldn\u0027t. https://cs.corp.google.com/android/system/core/libziparchive/zip_archive.cc?l\u003d308 ?",
+      "parentUuid": "ba3af22c_a0f7d7b3",
+      "range": {
+        "startLine": 64,
+        "startChar": 33,
+        "endLine": 64,
+        "endChar": 45
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f317919c_bc97bff0",
         "filename": "libziparchive/include/ziparchive/zip_archive.h",
         "patchSetId": 5
@@ -91,6 +163,30 @@
       "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa097b95_06160a28",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Moved to zip_archive_private.h",
+      "parentUuid": "f317919c_bc97bff0",
+      "range": {
+        "startLine": 71,
+        "startChar": 23,
+        "endLine": 71,
+        "endChar": 27
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -141,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "0fd44720_3ba803e1",
+        "filename": "libziparchive/include/ziparchive/zip_archive.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Moved to zip_archive_private.h",
+      "parentUuid": "0e30b7e2_b7d62584",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 2
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "112d78bb_096dae42",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 5
@@ -164,6 +284,30 @@
     },
     {
       "key": {
+        "uuid": "746bbc2c_006da9ef",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "112d78bb_096dae42",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 163,
+        "endChar": 30
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25185d2b_83034265",
         "filename": "libziparchive/zip_archive_private.h",
         "patchSetId": 5
@@ -184,6 +328,30 @@
       "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88172f61_343f78dd",
+        "filename": "libziparchive/zip_archive_private.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-18T10:07:21Z",
+      "side": 1,
+      "message": "Didn\u0027t read it properly. Reverted.",
+      "parentUuid": "25185d2b_83034265",
+      "range": {
+        "startLine": 155,
+        "startChar": 15,
+        "endLine": 155,
+        "endChar": 16
+      },
+      "revId": "7e65a8ebbacc567586b605ba67baed25d96d709f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
