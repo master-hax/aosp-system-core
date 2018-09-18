@@ -89,6 +89,24 @@ LOCAL_STATIC_LIBRARIES := \
 
 LOCAL_REQUIRED_MODULES := \
     init_second_stage \
+    ucontainer \
+
+LOCAL_SANITIZE := signed-integer-overflow
+include $(BUILD_EXECUTABLE)
+
+# --
+
+include $(CLEAR_VARS)
+LOCAL_CPPFLAGS := $(init_cflags)
+LOCAL_SRC_FILES := \
+    ucontainer.c \
+
+LOCAL_MODULE := ucontainer
+
+LOCAL_FORCE_STATIC_EXECUTABLE := true
+
+LOCAL_MODULE_PATH := $(TARGET_RAMDISK_OUT)
+LOCAL_UNSTRIPPED_PATH := $(TARGET_RAMDISK_OUT_UNSTRIPPED)
 
 LOCAL_SANITIZE := signed-integer-overflow
 include $(BUILD_EXECUTABLE)
