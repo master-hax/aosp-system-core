@@ -84,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "3c819f05_0c7bfcb5",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-09-19T02:03:26Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a6f730dd_6786087c",
+      "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dbb90109_b05bd3c8",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 1
