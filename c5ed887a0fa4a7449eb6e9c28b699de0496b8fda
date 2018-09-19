@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "612b474c_7836f15e",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 9
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-19T09:06:31Z",
+      "side": 1,
+      "message": "Thanks! That\u0027s correct",
+      "parentUuid": "eeec14fc_ffb7d8f1",
+      "range": {
+        "startLine": 137,
+        "startChar": 2,
+        "endLine": 137,
+        "endChar": 56
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7df460c4_73f6fd29",
         "filename": "libziparchive/zip_archive.cc",
         "patchSetId": 9
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "8e75b4fe_c3797a17",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 9
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-19T09:06:31Z",
+      "side": 1,
+      "message": "Yes. Can remove if you think unnecessary",
+      "parentUuid": "7df460c4_73f6fd29",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 40
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "454122e7_af1c7ecd",
         "filename": "libziparchive/zip_archive_private.h",
         "patchSetId": 9
@@ -68,6 +116,30 @@
       "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db50c756_ec8aba43",
+        "filename": "libziparchive/zip_archive_private.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2018-09-19T09:06:31Z",
+      "side": 1,
+      "message": "Thanks. Didn\u0027t know it would move. Done.",
+      "parentUuid": "454122e7_af1c7ecd",
+      "range": {
+        "startLine": 149,
+        "startChar": 42,
+        "endLine": 149,
+        "endChar": 63
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
