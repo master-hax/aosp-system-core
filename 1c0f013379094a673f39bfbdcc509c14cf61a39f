@@ -25,6 +25,52 @@
     },
     {
       "key": {
+        "uuid": "8068e41d_e1a93925",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-19T19:55:16Z",
+      "side": 1,
+      "message": "This seems like a security issue. If you name your process with one of these names, you force the code down a different path.\n\nWouldn\u0027t it be better to verify that the exact command-line executable? Then you wouldn\u0027t even need to do this trim at all.",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "195dc5a2_0c1b5c38",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-19T19:55:16Z",
+      "side": 1,
+      "message": "Why are you doing this? Down below you seem to have to handle this extra space in a weird way.",
+      "range": {
+        "startLine": 75,
+        "startChar": 2,
+        "endLine": 75,
+        "endChar": 66
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "63d8c5f4_d33fa320",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -58,6 +104,52 @@
         "startChar": 0,
         "endLine": 92,
         "endChar": 0
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8623529f_40a4e00c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-19T19:55:16Z",
+      "side": 1,
+      "message": "Does this do anything? It appears that fsync is used to flush data to disk in a way that guarantees it is present if the system crashes. It doesn\u0027t appear to apply in this situation.",
+      "range": {
+        "startLine": 637,
+        "startChar": 2,
+        "endLine": 637,
+        "endChar": 23
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ee1b761_e5a1acc3",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-09-19T19:55:16Z",
+      "side": 1,
+      "message": "Why is this sleep here?",
+      "range": {
+        "startLine": 652,
+        "startChar": 5,
+        "endLine": 652,
+        "endChar": 16
       },
       "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
