@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dafa80ce_fa21f7b8",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1060959
+      },
+      "writtenOn": "2018-09-19T01:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8fd94449_1eb5e5c5",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a674b7a_7033dd31",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6f730dd_6786087c",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060959
+      },
+      "writtenOn": "2018-09-19T01:53:51Z",
+      "side": 1,
+      "message": "not the partition, but the apps get moved regardless (with a symlink /product_services -\u003e /system/product_services)",
+      "parentUuid": "9a674b7a_7033dd31",
+      "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -62,6 +104,30 @@
       "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e82dd9c3_e14335ce",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1060959
+      },
+      "writtenOn": "2018-09-19T01:53:51Z",
+      "side": 1,
+      "message": "unclear, we might have to, but I can remove this for now. Don\u0027t think we have anything in /product/bin either, btw ? maybe other OEMs do.",
+      "parentUuid": "dbb90109_b05bd3c8",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "f5eb29dedf8af02beb9ae118ccc6626d7a621308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
