@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c4ba36d3_f78cf588",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1057373
+      },
+      "writtenOn": "2018-09-19T09:02:59Z",
+      "side": 1,
+      "message": "Maybe: CHECK_LT(name, start + 0xffffff), then you avoid the casts?",
+      "range": {
+        "startLine": 137,
+        "startChar": 11,
+        "endLine": 137,
+        "endChar": 90
+      },
+      "revId": "ff1a21c4739a77a033f0b8151b20b28855593f42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
