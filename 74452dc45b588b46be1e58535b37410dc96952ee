@@ -22,6 +22,30 @@
       "revId": "74452dc45b588b46be1e58535b37410dc96952ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7c3b412_3a3bc7f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1282513
+      },
+      "writtenOn": "2018-09-19T17:08:21Z",
+      "side": 1,
+      "message": "Userspace use local socket. When write a \u0027\u0027path\u0027\u0027 into socket_un.sun_path and memset \u0027\\0\u0027 into all the rest bytes of it,\nthe socket_un.sun_path may contain \u0027\\0\u0027.\nIn proc/net/unix, kernel-4.4 shows the socket_un.sun_path directly, but kernel-4.9 shows the socket_un.sun_path after use \u0027@\u0027 instead of every \u0027\\0\u0027.\nSo, in kernel-4.4, proc/net/unix may contain \u0027\\0\u0027.",
+      "parentUuid": "c834938c_8982ad8e",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 30
+      },
+      "revId": "74452dc45b588b46be1e58535b37410dc96952ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
