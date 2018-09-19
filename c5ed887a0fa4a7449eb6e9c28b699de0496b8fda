@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eeec14fc_ffb7d8f1",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 9
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-09-19T07:16:15Z",
+      "side": 1,
+      "message": "I don\u0027t think this is what you want to check; name can be anywhere in the 64-bit address space. I think you want to check 0 \u003c (name - start) \u003c 0xffffff - right?",
+      "range": {
+        "startLine": 137,
+        "startChar": 2,
+        "endLine": 137,
+        "endChar": 56
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7df460c4_73f6fd29",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 9
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-09-19T07:16:15Z",
+      "side": 1,
+      "message": "did you intend to add this in this CL?",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 40
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "454122e7_af1c7ecd",
+        "filename": "libziparchive/zip_archive_private.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-09-19T07:16:15Z",
+      "side": 1,
+      "message": "I wonder if you could just return ZipString from this function, to make calling code a bit easier to read? I think you could allocate ZipString on the stack here and return it, and the auto-generated move constructor should do the rest. I\u0027m not actually sure what the style is here, and if otherwise move semantics aren\u0027t used in this code, I\u0027m fine with leaving this as-is too.",
+      "range": {
+        "startLine": 149,
+        "startChar": 42,
+        "endLine": 149,
+        "endChar": 63
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
