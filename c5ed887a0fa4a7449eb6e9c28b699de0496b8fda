@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "c1f9ea30_09b7e9ca",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 9
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-09-19T09:32:22Z",
+      "side": 1,
+      "message": "Fine with me to keep it.",
+      "parentUuid": "8e75b4fe_c3797a17",
+      "range": {
+        "startLine": 782,
+        "startChar": 4,
+        "endLine": 782,
+        "endChar": 40
+      },
+      "revId": "c5ed887a0fa4a7449eb6e9c28b699de0496b8fda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "454122e7_af1c7ecd",
         "filename": "libziparchive/zip_archive_private.h",
         "patchSetId": 9
