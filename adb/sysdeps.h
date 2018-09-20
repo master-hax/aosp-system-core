@@ -92,7 +92,7 @@ extern int adb_open(const char* path, int options);
 extern int adb_creat(const char* path, int mode);
 extern int adb_read(int fd, void* buf, int len);
 extern int adb_write(int fd, const void* buf, int len);
-extern int adb_lseek(int fd, int pos, int where);
+extern int64_t adb_lseek(int fd, int64_t pos, int where);
 extern int adb_shutdown(int fd, int direction = SHUT_RDWR);
 extern int adb_close(int fd);
 extern int adb_register_socket(SOCKET s);
@@ -443,12 +443,15 @@ static __inline__  int  adb_write(int  fd, const void*  buf, size_t  len)
 #undef   write
 #define  write  ___xxx_write
 
-static __inline__ int   adb_lseek(int  fd, int  pos, int  where)
-{
+static __inline__ int adb_lseek(int fd, int64_t pos, int where) {
+#if defined(__APPLE__)
     return lseek(fd, pos, where);
+#else
+    return lseek64(fd, pos, where);
+#endif
 }
-#undef   lseek
-#define  lseek   ___xxx_lseek
+#undef lseek
+#define lseek ___xxx_lseek
 
 static __inline__  int    adb_unlink(const char*  path)
 {

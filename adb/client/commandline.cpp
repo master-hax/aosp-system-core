@@ -887,7 +887,7 @@ static int adb_sideload_host(const char* filename) {
             to_write = sb.st_size - offset;
         }
 
-        if (adb_lseek(package_fd, offset, SEEK_SET) != static_cast<int>(offset)) {
+        if (adb_lseek(package_fd, offset, SEEK_SET) != static_cast<int64_t>(offset)) {
             fprintf(stderr, "adb: failed to seek to package block: %s\n", strerror(errno));
             return -1;
         }
