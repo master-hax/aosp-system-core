@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18f64b69_63357f28",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-20T15:07:41Z",
+      "side": 1,
+      "message": "(same comment as on bootable/recovery change.)",
+      "range": {
+        "startLine": 845,
+        "startChar": 48,
+        "endLine": 845,
+        "endChar": 52
+      },
+      "revId": "40ad818d35cfbd0a25ca981086ca496aa220fa1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c0f2de6_e78c7907",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 853,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-20T15:07:41Z",
+      "side": 1,
+      "message": "note that adb_sideload_legacy still takes an `int`, so this doesn\u0027t help. it would probably make more sense to change L848 to say `if (device_fd \u003c 0 \u0026\u0026 sb.st_size \u003c\u003d INT_MAX)` and just leave the `static_cast\u003cint\u003e` alone.\n\n(this code is only used when talking to devices older than KitKat, which are never going to support large packages, so if you have a large package it\u0027s clearly not meant for an old device and we can just skip this fallback.)",
+      "range": {
+        "startLine": 853,
+        "startChar": 15,
+        "endLine": 853,
+        "endChar": 34
+      },
+      "revId": "40ad818d35cfbd0a25ca981086ca496aa220fa1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
