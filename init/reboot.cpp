@@ -474,7 +474,8 @@ bool HandlePowerctlMessage(const std::string& command) {
                                << err;
                 }
             } else if (reboot_target == "sideload" || reboot_target == "sideload-auto-reboot" ||
-                       reboot_target == "fastboot") {
+                       (reboot_target == "fastboot" &&
+                        android::base::GetBoolProperty("ro.boot.logical_partitions", false))) {
                 std::string arg = reboot_target == "sideload-auto-reboot" ? "sideload_auto_reboot"
                                                                           : reboot_target;
                 const std::vector<std::string> options = {
