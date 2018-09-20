@@ -841,13 +841,14 @@ static int adb_sideload_host(const char* filename) {
         return -1;
     }
 
-    std::string service = android::base::StringPrintf(
-        "sideload-host:%d:%d", static_cast<int>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
+    std::string service =
+            android::base::StringPrintf("sideload-host:%" PRId64 ":%d",
+                                        static_cast<int64_t>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
     std::string error;
     unique_fd device_fd(adb_connect(service, &error));
-    if (device_fd < 0) {
-        // Try falling back to the older (<= K) sideload method. Maybe this
-        // is an older device that doesn't support sideload-host.
+    if (device_fd < 0 && sb.st_size <= INT_MAX) {
+        // Try falling back to the older (<= K) sideload method. If this is a small enough package,
+        // maybe this is an older device that doesn't support sideload-host.
         fprintf(stderr, "adb: sideload connection failed: %s\n", error.c_str());
         fprintf(stderr, "adb: trying pre-KitKat sideload method...\n");
         return adb_sideload_legacy(filename, package_fd, static_cast<int>(sb.st_size));
@@ -876,18 +877,18 @@ static int adb_sideload_host(const char* filename) {
 
         int block = strtol(buf, nullptr, 10);
 
-        size_t offset = block * SIDELOAD_HOST_BLOCK_SIZE;
-        if (offset >= static_cast<size_t>(sb.st_size)) {
+        int64_t offset = block * SIDELOAD_HOST_BLOCK_SIZE;
+        if (offset >= static_cast<int64_t>(sb.st_size)) {
             fprintf(stderr, "adb: failed to read block %d past end\n", block);
             return -1;
         }
 
         size_t to_write = SIDELOAD_HOST_BLOCK_SIZE;
-        if ((offset + SIDELOAD_HOST_BLOCK_SIZE) > static_cast<size_t>(sb.st_size)) {
+        if ((offset + SIDELOAD_HOST_BLOCK_SIZE) > static_cast<int64_t>(sb.st_size)) {
             to_write = sb.st_size - offset;
         }
 
-        if (adb_lseek(package_fd, offset, SEEK_SET) != static_cast<int>(offset)) {
+        if (adb_lseek(package_fd, offset, SEEK_SET) != static_cast<int64_t>(offset)) {
             fprintf(stderr, "adb: failed to seek to package block: %s\n", strerror(errno));
             return -1;
         }
