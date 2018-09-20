@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "500af94b_f0a6e8cc",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-20T22:46:46Z",
+      "side": 1,
+      "message": "no longer needed",
+      "range": {
+        "startLine": 406,
+        "startChar": 29,
+        "endLine": 406,
+        "endChar": 49
+      },
+      "revId": "0aacf044ac2b8bf9367df1b8f40f70e4c61c84ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ea96791_456c3e9f",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-20T22:46:46Z",
+      "side": 1,
+      "message": "lose the temporary for clarity? (i worried that the resize and ExtractToMemory calls didn\u0027t match. although `out-\u003edata(), out-\u003esize()` would probably be even better.)",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 453,
+        "endChar": 16
+      },
+      "revId": "0aacf044ac2b8bf9367df1b8f40f70e4c61c84ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
