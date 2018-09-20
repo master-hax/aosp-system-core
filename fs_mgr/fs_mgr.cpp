@@ -1093,7 +1093,7 @@ int fs_mgr_mount_all(struct fstab *fstab, int mount_mode)
     }
 
 #if ALLOW_ADBD_DISABLE_VERITY == 1  // "userdebug" build
-    fs_mgr_overlayfs_mount_all();
+    fs_mgr_overlayfs_mount_all(fstab);
 #endif
 
     if (error_count) {

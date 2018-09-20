@@ -49,7 +49,7 @@ using namespace std::literals;
 
 #if ALLOW_ADBD_DISABLE_VERITY == 0  // If we are a user build, provide stubs
 
-bool fs_mgr_overlayfs_mount_all() {
+bool fs_mgr_overlayfs_mount_all(const fstab*) {
     return false;
 }
 
@@ -400,16 +400,14 @@ std::vector<std::string> fs_mgr_candidate_list(const fstab* fstab,
 
 }  // namespace
 
-bool fs_mgr_overlayfs_mount_all() {
+bool fs_mgr_overlayfs_mount_all(const struct fstab* fstab) {
     auto ret = false;
 
     if (!fs_mgr_wants_overlayfs()) return ret;
 
-    std::unique_ptr<struct fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
-                                                                      fs_mgr_free_fstab);
     if (!fstab) return ret;
 
-    for (const auto& mount_point : fs_mgr_candidate_list(fstab.get())) {
+    for (const auto& mount_point : fs_mgr_candidate_list(fstab)) {
         if (fs_mgr_overlayfs_already_mounted(mount_point)) continue;
         if (fs_mgr_overlayfs_mount(mount_point)) ret = true;
     }
