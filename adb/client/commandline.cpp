@@ -853,7 +853,7 @@ static int adb_sideload_host(const char* filename) {
     }
 
     std::string service = android::base::StringPrintf(
-        "sideload-host:%d:%d", static_cast<int>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
+        "sideload-host:%ld:%d", static_cast<long>(sb.st_size), SIDELOAD_HOST_BLOCK_SIZE);
     std::string error;
     unique_fd device_fd(adb_connect(service, &error));
     if (device_fd < 0) {
@@ -861,7 +861,7 @@ static int adb_sideload_host(const char* filename) {
         // is an older device that doesn't support sideload-host.
         fprintf(stderr, "adb: sideload connection failed: %s\n", error.c_str());
         fprintf(stderr, "adb: trying pre-KitKat sideload method...\n");
-        return adb_sideload_legacy(filename, package_fd, static_cast<int>(sb.st_size));
+        return adb_sideload_legacy(filename, package_fd, static_cast<long>(sb.st_size));
     }
 
     int opt = SIDELOAD_HOST_BLOCK_SIZE;
