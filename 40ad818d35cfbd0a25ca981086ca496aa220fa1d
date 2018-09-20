@@ -45,6 +45,29 @@
       "revId": "40ad818d35cfbd0a25ca981086ca496aa220fa1d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f539ed43_f765752b",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-09-20T16:03:33Z",
+      "side": 1,
+      "message": "I was looking at this issue a few weeks ago (internal bug b/112003354), and found it requiring additional works. We need to change adb_lseek interface to allow seeking beyond 2GiB (it\u0027s currently accepting an `int` offset), so that it can fetch the desired block from a package. Note that adb_lseek() is platform dependent, so the call to SetFilePointer() in sysdeps_win32.cpp needs to be updated accordingly.",
+      "range": {
+        "startLine": 890,
+        "startChar": 12,
+        "endLine": 890,
+        "endChar": 51
+      },
+      "revId": "40ad818d35cfbd0a25ca981086ca496aa220fa1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
