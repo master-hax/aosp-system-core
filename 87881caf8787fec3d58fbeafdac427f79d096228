@@ -39,6 +39,24 @@
       "revId": "87881caf8787fec3d58fbeafdac427f79d096228",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63044939_6b0610e6",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-21T20:57:03Z",
+      "side": 1,
+      "message": "Agreed. I see it now too, I was blinded by the fact that /product_services had no content when not mounted, but if it was mounted it would have lost+found (if ext4 ...). Two checks are always better than one? Maybe not ...\n\nNB: Also a thought in my mind was /system is not mounted on system-as-root devices, but because it contains content, we are _ready_ to mount overlayfs on it. No, it is not necessary, because said systems do not have a reference to /system in the fstab in any case.",
+      "parentUuid": "cdf9cd7b_3e057c4e",
+      "revId": "87881caf8787fec3d58fbeafdac427f79d096228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
