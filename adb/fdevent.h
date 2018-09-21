@@ -55,6 +55,9 @@ fdevent *fdevent_create(int fd, fd_func func, void *arg);
 */
 void fdevent_destroy(fdevent *fde);
 
+// fdevent_destroy, except releasing the file descriptor previously owned by the fdevent.
+unique_fd fdevent_release(fdevent* fde);
+
 /* Change which events should cause notifications
 */
 void fdevent_set(fdevent *fde, unsigned events);
