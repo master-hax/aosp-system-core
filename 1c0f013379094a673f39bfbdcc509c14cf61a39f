@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "0ebe348d_9e078192",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-21T22:02:00Z",
+      "side": 1,
+      "message": "Nit: just make a regular array. That way, we don\u0027t create a static constructor and the data can just live in .data.",
+      "range": {
+        "startLine": 67,
+        "startChar": 18,
+        "endLine": 67,
+        "endChar": 21
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8068e41d_e1a93925",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -36,6 +59,30 @@
       "writtenOn": "2018-09-19T19:55:16Z",
       "side": 1,
       "message": "This seems like a security issue. If you name your process with one of these names, you force the code down a different path.\n\nWouldn\u0027t it be better to verify that the exact command-line executable? Then you wouldn\u0027t even need to do this trim at all.",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e204b19_fa5a2c8c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-21T22:02:00Z",
+      "side": 1,
+      "message": "I agree. FWIW, what I really want is a prctl command that tells the kernel to panic if the current process ever dies. In the meantime, yes, we do need more robust verification of process identity.",
+      "parentUuid": "8068e41d_e1a93925",
       "range": {
         "startLine": 71,
         "startChar": 19,
