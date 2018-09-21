@@ -16,6 +16,24 @@
       "revId": "23d406188621a954991dfe453a75420763ac221d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77cf9cdd_e3777bb7",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-21T20:40:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e4e11036_f48a2111",
+      "revId": "23d406188621a954991dfe453a75420763ac221d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
