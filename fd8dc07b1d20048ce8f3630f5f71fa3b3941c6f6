@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a370563_61064508",
+        "filename": "mkbootimg/mkbootimg",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-09-21T19:49:32Z",
+      "side": 1,
+      "message": "Is it just adding \"--recovery_acpio\" as an alias of \"--recovery_dtbo\"? I don\u0027t see behavior difference between the two flags. And it seems they\u0027re mutually exclusive?\n\nIf so, it would be cleaner to handle them at parameter parsing, and remove all the changes elsewhere. For example,\n\n    parser.add_argument(\u0027--recovery_dtbo\u0027, \u0027--recovery_acpio\u0027,\n                        help\u003d\u0027path to the recovery DTBO or ACPIO\u0027, type\u003dFileType(\u0027rb\u0027))\n\nThe downside is that only the first one will be listed in usage. We can avoid that with the following instead:\n\n    recovery_dtbo_group \u003d parser.add_mutually_exclusive_group()\n    recovery_dtbo_group.add_argument(\u0027--recovery_dtbo\u0027, ...)\n    recovery_dtbo_group.add_argument(\u0027--recovery_acpio\u0027, help\u003d\u0027...\u0027, type\u003d..., \n                                     dest\u003d\u0027recovery_dtbo\u0027)\n\nThis way they will appear to be different (and mutually exclusive) flags, but internally saved to the same var (args.recovery_dtbo).",
+      "range": {
+        "startLine": 170,
+        "startChar": 4,
+        "endLine": 171,
+        "endChar": 99
+      },
+      "revId": "fd8dc07b1d20048ce8f3630f5f71fa3b3941c6f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
