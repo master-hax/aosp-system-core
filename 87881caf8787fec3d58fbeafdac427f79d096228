@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8dce5abc_7e390170",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-21T20:44:41Z",
+      "side": 1,
+      "message": "auto\u0026.  Looks like this is being moved so I should have commented the first time around too.",
+      "range": {
+        "startLine": 223,
+        "startChar": 19,
+        "endLine": 223,
+        "endChar": 23
+      },
+      "revId": "87881caf8787fec3d58fbeafdac427f79d096228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdf9cd7b_3e057c4e",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-21T20:44:41Z",
+      "side": 1,
+      "message": "Why would the first case mean that we\u0027re not ready for override?  As long as it is mounted, shouldn\u0027t it be fair game?",
+      "revId": "87881caf8787fec3d58fbeafdac427f79d096228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
