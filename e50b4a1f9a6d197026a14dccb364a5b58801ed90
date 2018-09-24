@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22e52879_f28d5d06",
+        "filename": "adb/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-24T19:08:59Z",
+      "side": 1,
+      "message": "maybe worth a comment about the trick that\u0027s happening here.\n\n(and change the doc comment for fdevent_destroy too?)",
+      "revId": "e50b4a1f9a6d197026a14dccb364a5b58801ed90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
