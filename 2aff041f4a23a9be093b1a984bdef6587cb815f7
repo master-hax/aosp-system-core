@@ -22,6 +22,30 @@
       "revId": "2aff041f4a23a9be093b1a984bdef6587cb815f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74b44b2c_7d0923ab",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-24T18:23:29Z",
+      "side": 1,
+      "message": "In my head, always automatically add struct when structure and variable are the same name because of past compiler punishment. I see that it is not necessary ... tks will respin after test cycle associated with patches higher up on the stack.",
+      "parentUuid": "b35bcdb8_3299a8b0",
+      "range": {
+        "startLine": 403,
+        "startChar": 38,
+        "endLine": 403,
+        "endChar": 44
+      },
+      "revId": "2aff041f4a23a9be093b1a984bdef6587cb815f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
