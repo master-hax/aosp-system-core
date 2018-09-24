@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b35bcdb8_3299a8b0",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-24T17:56:06Z",
+      "side": 1,
+      "message": "you should be able to drop struct here and in the other places it appears too.",
+      "range": {
+        "startLine": 403,
+        "startChar": 38,
+        "endLine": 403,
+        "endChar": 44
+      },
+      "revId": "2aff041f4a23a9be093b1a984bdef6587cb815f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
