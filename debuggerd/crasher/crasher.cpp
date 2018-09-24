@@ -221,7 +221,7 @@ noinline int do_action(const char* arg) {
     // Prefixes.
     if (!strncmp(arg, "wait-", strlen("wait-"))) {
       char buf[1];
-      TEMP_FAILURE_RETRY(read(STDIN_FILENO, buf, sizeof(buf)));
+      UNUSED(TEMP_FAILURE_RETRY(read(STDIN_FILENO, buf, sizeof(buf))));
       return do_action(arg + strlen("wait-"));
     } else if (!strncmp(arg, "exhaustfd-", strlen("exhaustfd-"))) {
       errno = 0;
@@ -254,43 +254,53 @@ noinline int do_action(const char* arg) {
     } else if (!strcasecmp(arg, "assert")) {
         __assert("some_file.c", 123, "false");
     } else if (!strcasecmp(arg, "assert2")) {
-        __assert2("some_file.c", 123, "some_function", "false");
+      __assert2("some_file.c", 123, "some_function", "false");
+#if !defined(__clang_analyzer__)
     } else if (!strcasecmp(arg, "fortify")) {
-        char buf[10];
-        __read_chk(-1, buf, 32, 10);
-        while (true) pause();
+      // FORTIFY is disabled when running clang-tidy and other tools, so this
+      // shouldn't depend on internal implementation details of it.
+      char buf[10];
+      __read_chk(-1, buf, 32, 10);
+      while (true) pause();
+#endif
+    } else if (!strcasecmp(arg, "fdsan_file")) {
+      FILE* f = fopen("/dev/null", "r");
+      close(fileno(f));
+    } else if (!strcasecmp(arg, "fdsan_dir")) {
+      DIR* d = opendir("/dev/");
+      close(dirfd(d));
     } else if (!strcasecmp(arg, "LOG(FATAL)")) {
-        LOG(FATAL) << "hello " << 123;
+      LOG(FATAL) << "hello " << 123;
     } else if (!strcasecmp(arg, "LOG_ALWAYS_FATAL")) {
-        LOG_ALWAYS_FATAL("hello %s", "world");
+      LOG_ALWAYS_FATAL("hello %s", "world");
     } else if (!strcasecmp(arg, "LOG_ALWAYS_FATAL_IF")) {
-        LOG_ALWAYS_FATAL_IF(true, "hello %s", "world");
+      LOG_ALWAYS_FATAL_IF(true, "hello %s", "world");
     } else if (!strcasecmp(arg, "SIGFPE")) {
-        raise(SIGFPE);
-        return EXIT_SUCCESS;
+      raise(SIGFPE);
+      return EXIT_SUCCESS;
     } else if (!strcasecmp(arg, "SIGTRAP")) {
-        raise(SIGTRAP);
-        return EXIT_SUCCESS;
+      raise(SIGTRAP);
+      return EXIT_SUCCESS;
     } else if (!strcasecmp(arg, "fprintf-NULL")) {
-        fprintf_null();
+      fprintf_null();
     } else if (!strcasecmp(arg, "readdir-NULL")) {
-        readdir_null();
+      readdir_null();
     } else if (!strcasecmp(arg, "strlen-NULL")) {
-        return strlen_null();
+      return strlen_null();
     } else if (!strcasecmp(arg, "pthread_join-NULL")) {
-        return pthread_join(0, nullptr);
+      return pthread_join(0, nullptr);
     } else if (!strcasecmp(arg, "heap-usage")) {
-        abuse_heap();
+      abuse_heap();
     } else if (!strcasecmp(arg, "leak")) {
-        leak();
+      leak();
     } else if (!strcasecmp(arg, "SIGSEGV-unmapped")) {
-        char* map = reinterpret_cast<char*>(mmap(nullptr, sizeof(int), PROT_READ | PROT_WRITE,
-                                                 MAP_SHARED | MAP_ANONYMOUS, -1, 0));
-        munmap(map, sizeof(int));
-        map[0] = '8';
+      char* map = reinterpret_cast<char*>(
+          mmap(nullptr, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0));
+      munmap(map, sizeof(int));
+      map[0] = '8';
     } else if (!strcasecmp(arg, "seccomp")) {
-        set_system_seccomp_filter();
-        syscall(99999);
+      set_system_seccomp_filter();
+      syscall(99999);
 #if defined(__arm__)
     } else if (!strcasecmp(arg, "kuser_helper_version")) {
         return __kuser_helper_version;
