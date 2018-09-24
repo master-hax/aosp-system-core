@@ -16,6 +16,24 @@
       "revId": "dd412fa680ae875a3f03cb0ea1ca8c6738bcbf04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b0222be_62e3070b",
+        "filename": "debuggerd/crasher/crasher.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2018-09-24T20:19:22Z",
+      "side": 1,
+      "message": "Fixed. Thanks for the better suggestion.",
+      "parentUuid": "58ea29ca_4f0e3456",
+      "revId": "dd412fa680ae875a3f03cb0ea1ca8c6738bcbf04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
