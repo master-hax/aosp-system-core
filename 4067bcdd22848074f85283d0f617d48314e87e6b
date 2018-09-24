@@ -2,6 +2,69 @@
   "comments": [
     {
       "key": {
+        "uuid": "f214c2fd_e3c38a54",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-09-24T20:58:19Z",
+      "side": 1,
+      "message": "s/succesfully/successfully/",
+      "range": {
+        "startLine": 52,
+        "startChar": 38,
+        "endLine": 52,
+        "endChar": 49
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49c9f517_fcb5e0f8",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-09-24T20:58:19Z",
+      "side": 1,
+      "message": "s/    //?",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 16
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39b9612b_5584030c",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-09-24T20:58:19Z",
+      "side": 1,
+      "message": "Should there be a write to notify_fd_write_ at the end of EnqueueSocket?",
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2a1ff9b4_2be677ec",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
