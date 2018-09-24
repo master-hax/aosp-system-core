@@ -159,6 +159,12 @@ bool FlashHandler(FastbootDevice* device, const std::vector<std::string>& args) 
     if (args.size() < 2) {
         return device->WriteStatus(FastbootResult::FAIL, "Invalid arguments");
     }
+
+    if (android::base::GetBoolProperty("ro.boot.flash.locked", true)) {
+        return device->WriteStatus(FastbootResult::FAIL,
+                                   "Flashing is not allowed on locked devices");
+    }
+
     int ret = Flash(device, args[1]);
     if (ret < 0) {
         return device->WriteStatus(FastbootResult::FAIL, strerror(-ret));
