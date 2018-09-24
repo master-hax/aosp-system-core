@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a1ff9b4_2be677ec",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-24T19:37:30Z",
+      "side": 1,
+      "message": "is there a reason for 32KiB rather than BUFSIZ or the adb CHUNK_MAX or whatever it\u0027s called?",
+      "range": {
+        "startLine": 133,
+        "startChar": 25,
+        "endLine": 133,
+        "endChar": 30
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
