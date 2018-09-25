@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7c50ebd_32d5712d",
+        "filename": "init/ucontainer.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-25T18:25:59Z",
+      "side": 1,
+      "message": "Do you need an explicit stack?  We just use nullptr in init.",
+      "revId": "bab810bebb5e3f68ecc1e42d9706aa142e8df38d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e17de72_2c64712f",
+        "filename": "init/ucontainer.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-25T18:25:59Z",
+      "side": 1,
+      "message": "Why not use mkdir() from libc?",
+      "revId": "bab810bebb5e3f68ecc1e42d9706aa142e8df38d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "356f2b28_c0744749",
+        "filename": "init/ucontainer.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-25T18:25:59Z",
+      "side": 1,
+      "message": "Same for mount().",
+      "revId": "bab810bebb5e3f68ecc1e42d9706aa142e8df38d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
