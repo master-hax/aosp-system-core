@@ -435,3 +435,13 @@ bool UpdateSuperHandler(FastbootDevice* device, const std::vector<std::string>& 
     bool wipe = (args.size() >= 3 && args[2] == "wipe");
     return UpdateSuper(device, args[1], wipe);
 }
+
+bool GetFlashingUnlockAbility(FastbootDevice* device, const std::vector<std::string>& /* args */) {
+    std::string message =
+            android::base::GetBoolProperty("ro.oem_unlock_supported", false) ? "1" : "0";
+    if (device->WriteInfo(message)) {
+        return device->WriteOkay("");
+    } else {
+        return device->WriteFail("Unable to read unlock ability");
+    }
+}
