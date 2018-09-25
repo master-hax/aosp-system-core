@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a10d5535_90335aec",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-25T23:13:35Z",
+      "side": 1,
+      "message": "You can even drop this now too.",
+      "revId": "c11fc733198bf7ee50f6154d4fbf3e908f5e545a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
