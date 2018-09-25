@@ -81,6 +81,16 @@ bool fs_mgr_is_dir(const std::string& path) {
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
 }
 
+bool fs_mgr_dir_has_content(const std::string& path) {
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(path.c_str()), closedir);
+    if (!dir) return false;
+    dirent* entry;
+    while ((entry = readdir(dir.get()))) {
+        if (("."s != entry->d_name) && (".."s != entry->d_name)) return true;
+    }
+    return false;
+}
+
 // Similar test as overlayfs workdir= validation in the kernel for read-write
 // validation, except we use fs_mgr_work.  Covers space and storage issues.
 bool fs_mgr_dir_is_writable(const std::string& path) {
@@ -219,6 +229,15 @@ bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point) {
     return false;
 }
 
+bool fs_mgr_overlayfs_verity_enabled(const std::string& basename_mount_point) {
+    auto found = false;
+    fs_mgr_update_verity_state(
+            [&basename_mount_point, &found](fstab_rec*, const char* mount_point, int, int) {
+                if (mount_point && (basename_mount_point == mount_point)) found = true;
+            });
+    return found;
+}
+
 bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
     if (!fsrec) return false;
 
@@ -242,14 +261,7 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
 
     if (!fs_mgr_overlayfs_enabled(fsrec)) return false;
 
-    // Verity enabled?
-    const auto basename_mount_point(android::base::Basename(fsrec_mount_point));
-    auto found = false;
-    fs_mgr_update_verity_state(
-            [&basename_mount_point, &found](fstab_rec*, const char* mount_point, int, int) {
-                if (mount_point && (basename_mount_point == mount_point)) found = true;
-            });
-    return !found;
+    return !fs_mgr_overlayfs_verity_enabled(android::base::Basename(fsrec_mount_point));
 }
 
 bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr) {
@@ -394,6 +406,15 @@ std::vector<std::string> fs_mgr_candidate_list(const fstab* fstab,
             }
         }
         if (!duplicate_or_more_specific) mounts.emplace_back(new_mount_point);
+    }
+    // if not itemized /system or /, system as root, fake up
+    // fs_mgr_wants_overlayfs evaluation of /system as candidate.
+
+    if ((std::find(mounts.begin(), mounts.end(), "/system") == mounts.end()) &&
+        !fs_mgr_get_entry_for_mount_point(const_cast<struct fstab*>(fstab), "/") &&
+        !fs_mgr_get_entry_for_mount_point(const_cast<struct fstab*>(fstab), "/system") &&
+        fs_mgr_dir_has_content("/system") && !fs_mgr_overlayfs_verity_enabled("system")) {
+        mounts.emplace_back("/system");
     }
     return mounts;
 }
