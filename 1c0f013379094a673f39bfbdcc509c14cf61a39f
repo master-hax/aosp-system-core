@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "06897ea3_ff0692b0",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-25T18:23:03Z",
+      "side": 1,
+      "message": "std::array would be fine too.",
+      "parentUuid": "b3a24c61_ca9c4272",
+      "range": {
+        "startLine": 67,
+        "startChar": 18,
+        "endLine": 67,
+        "endChar": 21
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8068e41d_e1a93925",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -167,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "76c1a1b3_a9b33dfb",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-25T18:23:03Z",
+      "side": 1,
+      "message": "Actually, I don\u0027t think that\u0027s sufficient either. As a normal user, can just run one of these special processes yourself, make it crash somehow (external signal, LD_PRELOAD, etc.) and then get debuggerd to notice, I think. You could check UIDs too, but this approach still strikes me as fragile.\n\nHow about another approach? init already has code that reacts specially to crashing of certain system services [1]. Instead of having debuggerd initiate a system restart, why not add that logic to init? You could have init call sync(2) for extra durability. Since init actually wait(2)s on its children, it knows all about their identity.\n\n[1] http://cs/android/system/core/init/README.md?l\u003d190\u0026rcl\u003dc7d95740f2f749bd28c4ecd55f8cf9749f692549",
+      "parentUuid": "b902d1bd_a0db8577",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "195dc5a2_0c1b5c38",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -223,6 +271,29 @@
         "startChar": 0,
         "endLine": 92,
         "endChar": 0
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fd50a9e_ac827f08",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-25T18:23:03Z",
+      "side": 1,
+      "message": "Nit: take a string_view by value if we\u0027re C++17.",
+      "range": {
+        "startLine": 96,
+        "startChar": 32,
+        "endLine": 96,
+        "endChar": 63
       },
       "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
@@ -312,6 +383,30 @@
       "side": 1,
       "message": "We want crash_dump to wait here and not exit until sysrq trigger so that we don\u0027t loose useful debugging information  (like process information etc).\nThat\u0027s why we gave sleep here.",
       "parentUuid": "2ee1b761_e5a1acc3",
+      "range": {
+        "startLine": 652,
+        "startChar": 5,
+        "endLine": 652,
+        "endChar": 16
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "deddacbe_9aeec7d9",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-25T18:23:03Z",
+      "side": 1,
+      "message": "If you need persistence, use the necessary primitives (e.g., fsync on file, directory) instead of inserting an arbitrary sleep.",
+      "parentUuid": "e96b6d08_fcecbac6",
       "range": {
         "startLine": 652,
         "startChar": 5,
