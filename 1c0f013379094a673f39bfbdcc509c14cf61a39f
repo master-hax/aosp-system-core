@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "b3a24c61_ca9c4272",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-25T08:57:40Z",
+      "side": 1,
+      "message": "OK. I got it.\nI will change to char pointer array without STL components.",
+      "parentUuid": "0ebe348d_9e078192",
+      "range": {
+        "startLine": 67,
+        "startChar": 18,
+        "endLine": 67,
+        "endChar": 21
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8068e41d_e1a93925",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -83,6 +107,30 @@
       "side": 1,
       "message": "I agree. FWIW, what I really want is a prctl command that tells the kernel to panic if the current process ever dies. In the meantime, yes, we do need more robust verification of process identity.",
       "parentUuid": "8068e41d_e1a93925",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53c2ab76_3bc6d087",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-25T08:57:40Z",
+      "side": 1,
+      "message": "Here process_name is from /proc/\u003cpid\u003e/cmdline and it includes the path and delimited params.\nI would like to strip them and take out exact command name(\u003dargv[0]) as process name.\nDo you mean you have any security concern for this?\nIf I could get exact process name by other way, please let me know.",
+      "parentUuid": "8e204b19_fa5a2c8c",
       "range": {
         "startLine": 71,
         "startChar": 19,
@@ -181,6 +229,30 @@
     },
     {
       "key": {
+        "uuid": "dda5c1f6_103e181e",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-25T08:57:40Z",
+      "side": 1,
+      "message": "This is in order to guarantee that the tombstone is outputted completely before sysrq would be triggered. Without this, we found the tombstone was sometimes missing after rebooting in the test.",
+      "parentUuid": "8623529f_40a4e00c",
+      "range": {
+        "startLine": 637,
+        "startChar": 2,
+        "endLine": 637,
+        "endChar": 23
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2ee1b761_e5a1acc3",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -192,6 +264,30 @@
       "writtenOn": "2018-09-19T19:55:16Z",
       "side": 1,
       "message": "Why is this sleep here?",
+      "range": {
+        "startLine": 652,
+        "startChar": 5,
+        "endLine": 652,
+        "endChar": 16
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e96b6d08_fcecbac6",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-25T08:57:40Z",
+      "side": 1,
+      "message": "We want crash_dump to wait here and not exit until sysrq trigger so that we don\u0027t loose useful debugging information  (like process information etc).\nThat\u0027s why we gave sleep here.",
+      "parentUuid": "2ee1b761_e5a1acc3",
       "range": {
         "startLine": 652,
         "startChar": 5,
