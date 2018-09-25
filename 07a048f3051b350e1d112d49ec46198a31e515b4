@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b12339c8_df435a78",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-25T18:16:07Z",
+      "side": 1,
+      "message": "IMHO drop \u0027cache\u0027 and redundant check for androidboot.logical_partitions (because if that disagrees with fstab, boot is just borken). Replace all with just:\n\n    for (auto fstab_rec : mount_fstab_recs_) {\n        if (fs_mgr_is_logical(fstab_rec)) {\n            return true;\n        }\n    }\n    return false;",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 206,
+        "endChar": 19
+      },
+      "revId": "07a048f3051b350e1d112d49ec46198a31e515b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
