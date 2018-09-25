@@ -16,6 +16,24 @@
       "revId": "c11fc733198bf7ee50f6154d4fbf3e908f5e545a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f398f30_f9de02c8",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2018-09-25T23:26:39Z",
+      "side": 1,
+      "message": "Oops, sorry, fixed now.",
+      "parentUuid": "a10d5535_90335aec",
+      "revId": "c11fc733198bf7ee50f6154d4fbf3e908f5e545a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
