@@ -22,6 +22,30 @@
       "revId": "fd8dc07b1d20048ce8f3630f5f71fa3b3941c6f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2f02fc3_bb933282",
+        "filename": "mkbootimg/mkbootimg",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1249218
+      },
+      "writtenOn": "2018-09-25T07:51:30Z",
+      "side": 1,
+      "message": "Thanks Tao, use this suggestion",
+      "parentUuid": "8a370563_61064508",
+      "range": {
+        "startLine": 170,
+        "startChar": 4,
+        "endLine": 171,
+        "endChar": 99
+      },
+      "revId": "fd8dc07b1d20048ce8f3630f5f71fa3b3941c6f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
