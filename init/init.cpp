@@ -39,6 +39,8 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <cutils/android_reboot.h>
+#include <fs_mgr_overlayfs.h>
+#include <fstab/fstab.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
 #include <selinux/android.h>
@@ -596,6 +598,12 @@ static void GlobalSeccomp() {
     });
 }
 
+static void RetryOverlayfs() {
+    fs_mgr_overlayfs_mount_all(std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)>(
+                                       fs_mgr_read_fstab_dt(), fs_mgr_free_fstab)
+                                       .get());
+}
+
 static void SetupSelinux(char** argv) {
     android::base::InitLogging(argv, &android::base::KernelLogger, [](const char*) {
         RebootSystem(ANDROID_RB_RESTART2, "bootloader");
@@ -612,6 +620,7 @@ static void SetupSelinux(char** argv) {
     if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
         PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
     }
+    RetryOverlayfs();
 
     setenv("SELINUX_INITIALIZED", "true", 1);
 
