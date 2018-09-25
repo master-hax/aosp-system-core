@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "b902d1bd_a0db8577",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2018-09-25T18:14:43Z",
+      "side": 1,
+      "message": "/proc/pid/cmdline is under process control. An application can set it to whatever it wants, then crash, and bring down the system with it. ISTM readlink on /proc/pid/exe and matching the whole resulting path against the whitelist would be more robust.",
+      "parentUuid": "53c2ab76_3bc6d087",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "195dc5a2_0c1b5c38",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
