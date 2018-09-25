@@ -48,6 +48,7 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_DELETE_PARTITION, DeletePartitionHandler},
               {FB_CMD_RESIZE_PARTITION, ResizePartitionHandler},
               {FB_CMD_UPDATE_SUPER, UpdateSuperHandler},
+              {FB_CMD_FLASHING_UNLOCK_ABILITY, GetFlashingUnlockAbility},
       }),
       transport_(std::make_unique<ClientUsbTransport>()),
       boot_control_hal_(IBootControl::getService()),
