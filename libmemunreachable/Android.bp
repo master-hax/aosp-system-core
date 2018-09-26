@@ -18,6 +18,8 @@ cc_defaults {
             shared_libs: ["liblog"],
         },
     },
+
+    cpp_std: "gnu++17",
 }
 
 cc_library {
