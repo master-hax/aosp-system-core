@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2dee14d4_77c731ee",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-26T17:20:33Z",
+      "side": 1,
+      "message": "Is this the only variable that is used to determine this?  The steps on https://source.android.com/devices/bootloader/unlock-trusty show doing other steps that wouldn\u0027t impact this variable.",
+      "revId": "9ebd9d3856e252016193ba9e75c10a364269b269",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
