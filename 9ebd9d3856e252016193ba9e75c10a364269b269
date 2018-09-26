@@ -16,6 +16,24 @@
       "revId": "9ebd9d3856e252016193ba9e75c10a364269b269",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c2bbb96_f240553f",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2018-09-26T18:46:26Z",
+      "side": 1,
+      "message": "You are right, this should be dependent on both carrier and device unlock permissions. I will figure out whether this information can be made available to fastbootd.",
+      "parentUuid": "2dee14d4_77c731ee",
+      "revId": "9ebd9d3856e252016193ba9e75c10a364269b269",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
