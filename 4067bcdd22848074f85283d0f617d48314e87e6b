@@ -149,6 +149,24 @@
     },
     {
       "key": {
+        "uuid": "276c2178_2f3bd3b0",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T20:39:34Z",
+      "side": 1,
+      "message": "I think it\u0027s probably impossible, but sure.",
+      "parentUuid": "23f8d165_28a4a998",
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a1ff9b4_2be677ec",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
