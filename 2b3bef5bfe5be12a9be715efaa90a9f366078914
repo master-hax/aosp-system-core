@@ -1,0 +1,203 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef47e0a8_171ae5cb",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "this does not belong in shell and utilities.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d209d3be_b7dd71ee",
+        "filename": "ucontainer/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "2005?\n\nuse Android.bp for new code.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8959a98_36acc566",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "use C++ for new code.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64b3ea31_8ac4280b",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "no fixed-length buffers.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "227c10c3_3179c3f5",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "no globals.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d463fb7_33c6f25c",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "asprintf if this was C, but StringPrintf for C++.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "247705b8_11298ac8",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "StringPrintf",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52dba74c_e05f286a",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "use the header.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0033ea0f_47967df1",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "don\u0027t declare until you can initialize.\n\n(please read https://google.github.io/styleguide/cppguide.html for all this basic stuff.)",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 0
+      },
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "622e0063_4ebbd3ff",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "error(3)",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 0
+      },
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eac6336c_f28691be",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-26T14:54:08Z",
+      "side": 1,
+      "message": "EXIT_SUCCESS or EXIT_FAILURE (aka 0 or 1) are acceptable. random numbers are not. negative numbers especially not, because the top bits mean something (see \u003csys/wait.h\u003e).\n\n\nstopping here. that\u0027s enough for now.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
