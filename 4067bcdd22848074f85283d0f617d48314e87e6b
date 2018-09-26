@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "15881f48_8d82a81a",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T20:07:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f214c2fd_e3c38a54",
+      "range": {
+        "startLine": 52,
+        "startChar": 38,
+        "endLine": 52,
+        "endChar": 49
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "49c9f517_fcb5e0f8",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "af0b88ac_07b6feb2",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T20:07:36Z",
+      "side": 1,
+      "message": "This seems to be google style (except multiplied by 2 everywhere)",
+      "parentUuid": "49c9f517_fcb5e0f8",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 16
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "39b9612b_5584030c",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "ad9bf98d_3647e695",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T20:07:36Z",
+      "side": 1,
+      "message": "Oops, yes. Good catch.",
+      "parentUuid": "39b9612b_5584030c",
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a1ff9b4_2be677ec",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
@@ -76,6 +142,30 @@
       "writtenOn": "2018-09-24T19:37:30Z",
       "side": 1,
       "message": "is there a reason for 32KiB rather than BUFSIZ or the adb CHUNK_MAX or whatever it\u0027s called?",
+      "range": {
+        "startLine": 133,
+        "startChar": 25,
+        "endLine": 133,
+        "endChar": 30
+      },
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07a7825b_531641b9",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T20:07:36Z",
+      "side": 1,
+      "message": "Not really. BUFSIZ is rather small on some platforms (512 on windows), and MAX_PAYLOAD is comically large (1MiB)",
+      "parentUuid": "2a1ff9b4_2be677ec",
       "range": {
         "startLine": 133,
         "startChar": 25,
