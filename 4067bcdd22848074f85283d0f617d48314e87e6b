@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "23f8d165_28a4a998",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-09-26T20:27:04Z",
+      "side": 1,
+      "message": "Should we ignore EAGAIN in case the socket buffer is full?",
+      "parentUuid": "ad9bf98d_3647e695",
+      "revId": "4067bcdd22848074f85283d0f617d48314e87e6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a1ff9b4_2be677ec",
         "filename": "adb/sockets.cpp",
         "patchSetId": 2
