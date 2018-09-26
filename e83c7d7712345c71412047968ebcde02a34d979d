@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4fb8181e_30c73788",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-26T23:20:56Z",
+      "side": 1,
+      "message": "This works to resolve the lack of mount in first stage init, however look at https://android-review.googlesource.com/c/platform/system/sepolicy/+/724061 to see how much work we had to do with sepolicy to permit _this_ to function and ultimately allow us to override second stage init.",
+      "range": {
+        "startLine": 623,
+        "startChar": 4,
+        "endLine": 623,
+        "endChar": 21
+      },
+      "revId": "e83c7d7712345c71412047968ebcde02a34d979d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fc118aa_781aff24",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-09-26T23:20:56Z",
+      "side": 1,
+      "message": "This does _nothing_ as it is insurance.",
+      "range": {
+        "startLine": 658,
+        "startChar": 4,
+        "endLine": 658,
+        "endChar": 21
+      },
+      "revId": "e83c7d7712345c71412047968ebcde02a34d979d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
