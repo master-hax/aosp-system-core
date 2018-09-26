@@ -16,6 +16,24 @@
       "revId": "e50b4a1f9a6d197026a14dccb364a5b58801ed90",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d5d18b5_c0420e23",
+        "filename": "adb/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-09-26T19:46:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22e52879_f28d5d06",
+      "revId": "e50b4a1f9a6d197026a14dccb364a5b58801ed90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
