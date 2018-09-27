@@ -51,7 +51,8 @@ LOCAL_SRC_FILES := \
     uevent_listener.cpp \
     util.cpp \
 
-LOCAL_MODULE := init
+LOCAL_MODULE := init_first_stage
+LOCAL_MODULE_STEM := init
 
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 
@@ -86,9 +87,6 @@ LOCAL_STATIC_LIBRARIES := \
     libz \
     libselinux \
     libcap \
-
-LOCAL_REQUIRED_MODULES := \
-    init_second_stage \
 
 LOCAL_SANITIZE := signed-integer-overflow
 include $(BUILD_EXECUTABLE)
