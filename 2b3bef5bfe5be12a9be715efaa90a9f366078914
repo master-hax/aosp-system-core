@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d7f98abb_dc08b30b",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Currently I know three ways to add this executable. \n 1. make it one of the system utility \n 2. make one of the module depends on it, e.g. \"init\"\n 3. make it a standalone module and use the PRODUCT_PACKAGES to include it. \n\nIt seems to me that it\u0027s more like an utility which wraps a process in a namespace. Would you like to provide the suggestion?",
+      "parentUuid": "ef47e0a8_171ae5cb",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d209d3be_b7dd71ee",
         "filename": "ucontainer/Android.mk",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2018-09-26T14:54:08Z",
       "side": 1,
       "message": "2005?\n\nuse Android.bp for new code.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7eaf1745_d59943ba",
+        "filename": "ucontainer/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Ack. \nI use the init/Android.mk as the reference.\nhttps://android.googlesource.com/platform/system/core/+/master/init/Android.mk\nIt looks that the Android.bp did not have a straightforward way to build an executable under /\nI\u0027ll ask build team see if there\u0027s any other way out now.",
+      "parentUuid": "d209d3be_b7dd71ee",
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c84d1f6c_56ef9736",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "It\u0027s a small utility and does not use most of the features offered by C++. Also the string operations looks simpler with a static allocation. In this case, I\u0027d like to keep it in C as long as C++ is not mandatory.",
+      "parentUuid": "c8959a98_36acc566",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "64b3ea31_8ac4280b",
         "filename": "ucontainer/ucontainer.c",
         "patchSetId": 3
@@ -67,6 +121,24 @@
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67a36ad5_29f40443",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "64b3ea31_8ac4280b",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "6b87b49e_cee64d07",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "227c10c3_3179c3f5",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1d463fb7_33c6f25c",
         "filename": "ucontainer/ucontainer.c",
         "patchSetId": 3
@@ -98,6 +188,24 @@
       "writtenOn": "2018-09-26T14:54:08Z",
       "side": 1,
       "message": "asprintf if this was C, but StringPrintf for C++.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7152e0c8_ca284e1f",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "With asprintf, the allocated string buffer needs to be free() explicitly and it would look verbose. For a small single thread utility like this, can we just keep it simple and short?",
+      "parentUuid": "1d463fb7_33c6f25c",
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -138,6 +246,24 @@
     },
     {
       "key": {
+        "uuid": "3600d8a5_8d393018",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "The declaration in bionic header is wrapped with a __USE_GNU.\nhttps://android.googlesource.com/platform/bionic.git/+/master/libc/include/sched.h#53\nI\u0027m not sure if it would be a license conflict.",
+      "parentUuid": "52dba74c_e05f286a",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0033ea0f_47967df1",
         "filename": "ucontainer/ucontainer.c",
         "patchSetId": 3
@@ -149,6 +275,30 @@
       "writtenOn": "2018-09-26T14:54:08Z",
       "side": 1,
       "message": "don\u0027t declare until you can initialize.\n\n(please read https://google.github.io/styleguide/cppguide.html for all this basic stuff.)",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 0
+      },
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da8ce972_c43a3c0a",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "0033ea0f_47967df1",
       "range": {
         "startLine": 66,
         "startChar": 0,
@@ -184,6 +334,30 @@
     },
     {
       "key": {
+        "uuid": "ccad6bc4_31d35a58",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "622e0063_4ebbd3ff",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 0
+      },
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eac6336c_f28691be",
         "filename": "ucontainer/ucontainer.c",
         "patchSetId": 3
@@ -195,6 +369,24 @@
       "writtenOn": "2018-09-26T14:54:08Z",
       "side": 1,
       "message": "EXIT_SUCCESS or EXIT_FAILURE (aka 0 or 1) are acceptable. random numbers are not. negative numbers especially not, because the top bits mean something (see \u003csys/wait.h\u003e).\n\n\nstopping here. that\u0027s enough for now.",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70640b2e_b6fd4a48",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-09-27T04:17:43Z",
+      "side": 1,
+      "message": "Will refine the exit and error accordingly. Thank you for the reviewing and the great comments.",
+      "parentUuid": "eac6336c_f28691be",
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
