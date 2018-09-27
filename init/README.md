@@ -262,6 +262,13 @@ runs the service.
 > Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().
 
+`restart_period <seconds>`
+> If a non-oneshot process exits, it will be restarted at its start time plus
+  this period. It defaults to 5s to rate limit crashing processes.
+  This can be increased for processes that are meant to run periodically. For
+  example, it may be set to 1 hour or 1 day to run a service every hour or day
+  respectively.
+
 `rlimit <resource> <cur> <max>`
 > This applies the given rlimit to the service. rlimits are inherited by child
   processes, so this effectively applies the given rlimit to the process tree

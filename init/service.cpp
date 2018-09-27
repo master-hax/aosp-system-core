@@ -627,6 +627,15 @@ Result<Success> Service::ParseProcessRlimit(const std::vector<std::string>& args
     return Success();
 }
 
+Result<Success> Service::ParseRestartPeriod(const std::vector<std::string>& args) {
+    int period;
+    if (!ParseInt(args[1], &period, 5)) {
+        return Error() << "Period value must be an integer >= 5";
+    }
+    restart_period_ = std::chrono::seconds(period);
+    return Success();
+}
+
 Result<Success> Service::ParseSeclabel(const std::vector<std::string>& args) {
     seclabel_ = args[1];
     return Success();
@@ -757,6 +766,8 @@ const Service::OptionParserMap::Map& Service::OptionParserMap::map() const {
                         {1,     1,    &Service::ParseOomScoreAdjust}},
         {"override",    {0,     0,    &Service::ParseOverride}},
         {"priority",    {1,     1,    &Service::ParsePriority}},
+        {"restart_period",
+                        {1,     1,    &Service::ParseRestartPeriod}},
         {"rlimit",      {3,     3,    &Service::ParseProcessRlimit}},
         {"seclabel",    {1,     1,    &Service::ParseSeclabel}},
         {"setenv",      {2,     2,    &Service::ParseSetenv}},

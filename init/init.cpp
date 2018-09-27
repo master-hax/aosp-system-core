@@ -192,7 +192,7 @@ static std::optional<boot_clock::time_point> RestartProcesses() {
     for (const auto& s : ServiceList::GetInstance()) {
         if (!(s->flags() & SVC_RESTARTING)) continue;
 
-        auto restart_time = s->time_started() + 5s;
+        auto restart_time = s->time_started() + s->restart_period();
         if (boot_clock::now() > restart_time) {
             if (auto result = s->Start(); !result) {
                 LOG(ERROR) << "Could not restart process '" << s->name() << "': " << result.error();
