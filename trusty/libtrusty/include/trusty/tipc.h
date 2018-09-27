@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-int tipc_connect(const char *dev_name, const char *srv_name);
+int tipc_connect(const char* dev_name, const char* srv_name);
 int tipc_close(int fd);
 
 #ifdef __cplusplus
