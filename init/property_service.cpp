@@ -763,8 +763,22 @@ void load_recovery_id_prop() {
     close(fd);
 }
 
+static void load_odm_override_properties() {
+    char odm_override_prop_file_name[PATH_MAX] = {0};
+    std::string sku = android::base::GetProperty("ro.boot.product.hardware.sku", "");
+
+    if (sku.empty()) return;
+
+    snprintf(odm_override_prop_file_name, PATH_MAX, "/odm/%s/local.prop", sku.c_str());
+
+    if (access(odm_override_prop_file_name, R_OK) != 0) return;
+
+    load_properties_from_file(odm_override_prop_file_name, NULL);
+}
+
 void load_system_props() {
     load_properties_from_file("/system/build.prop", NULL);
+    load_odm_override_properties();
     load_properties_from_file("/odm/build.prop", NULL);
     load_properties_from_file("/vendor/build.prop", NULL);
     load_properties_from_file("/factory/factory.prop", "ro.*");
