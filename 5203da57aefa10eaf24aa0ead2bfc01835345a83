@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72870a3a_d382fd03",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1141798
+      },
+      "writtenOn": "2018-09-27T23:35:42Z",
+      "side": 1,
+      "message": "Why do we want to take this chance to rate limit the restart of shell? Is this just for testing and will be removed before submit?",
+      "range": {
+        "startLine": 772,
+        "startChar": 4,
+        "endLine": 772,
+        "endChar": 21
+      },
+      "revId": "5203da57aefa10eaf24aa0ead2bfc01835345a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
