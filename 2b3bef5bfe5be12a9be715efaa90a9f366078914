@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "eea3e155_40d58813",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-27T15:33:17Z",
+      "side": 1,
+      "message": "the fact that it can only run as pid 1 is the clue that it doesn\u0027t belong here :-)",
+      "parentUuid": "d7f98abb_dc08b30b",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d209d3be_b7dd71ee",
         "filename": "ucontainer/Android.mk",
         "patchSetId": 3
@@ -101,6 +119,24 @@
       "side": 1,
       "message": "It\u0027s a small utility and does not use most of the features offered by C++. Also the string operations looks simpler with a static allocation. In this case, I\u0027d like to keep it in C as long as C++ is not mandatory.",
       "parentUuid": "c8959a98_36acc566",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c19007f_a9a49c20",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-27T15:33:17Z",
+      "side": 1,
+      "message": "it\u0027s mandatory for system/core/ (and any other git projects we own).",
+      "parentUuid": "c84d1f6c_56ef9736",
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -258,6 +294,24 @@
       "side": 1,
       "message": "The declaration in bionic header is wrapped with a __USE_GNU.\nhttps://android.googlesource.com/platform/bionic.git/+/master/libc/include/sched.h#53\nI\u0027m not sure if it would be a license conflict.",
       "parentUuid": "52dba74c_e05f286a",
+      "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1dceec09_760341f2",
+        "filename": "ucontainer/ucontainer.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-09-27T15:33:17Z",
+      "side": 1,
+      "message": "it just means you need _GNU_SOURCE defined. see http://man7.org/linux/man-pages/man7/feature_test_macros.7.html\n\nwhen you switch to .cpp you\u0027ll have _GNU_SOURCE defined by default, so if you\u0027d started with C++ you\u0027d never have had this problem :-)",
+      "parentUuid": "3600d8a5_8d393018",
       "revId": "2b3bef5bfe5be12a9be715efaa90a9f366078914",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
