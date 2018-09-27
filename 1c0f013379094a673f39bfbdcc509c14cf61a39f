@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "4a422be8_856aa2b7",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-27T06:32:58Z",
+      "side": 1,
+      "message": "I see.",
+      "parentUuid": "06897ea3_ff0692b0",
+      "range": {
+        "startLine": 67,
+        "startChar": 18,
+        "endLine": 67,
+        "endChar": 21
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8068e41d_e1a93925",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -215,6 +239,30 @@
     },
     {
       "key": {
+        "uuid": "e8ac95f6_ba413f27",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-27T06:32:58Z",
+      "side": 1,
+      "message": "We have already tried similar approach Daniel-san mentioned. It triggers system restart from onrestart in init.It seemed to work well but the full memory dump,which was saved after system restart, contained no useful information to find the root cause of the issue.This is because it was too late to trigger sysrq. Thus, we are thinking debuggerd is best place to initiate system restart.\nWe\u0027ll check not only the name from readlink /proc/pid/exe and also full-path and UID.",
+      "parentUuid": "76c1a1b3_a9b33dfb",
+      "range": {
+        "startLine": 71,
+        "startChar": 19,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "195dc5a2_0c1b5c38",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 2
@@ -289,6 +337,30 @@
       "writtenOn": "2018-09-25T18:23:03Z",
       "side": 1,
       "message": "Nit: take a string_view by value if we\u0027re C++17.",
+      "range": {
+        "startLine": 96,
+        "startChar": 32,
+        "endLine": 96,
+        "endChar": 63
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22be07f7_eeb3a993",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-27T06:32:58Z",
+      "side": 1,
+      "message": "I see.",
+      "parentUuid": "3fd50a9e_ac827f08",
       "range": {
         "startLine": 96,
         "startChar": 32,
@@ -407,6 +479,30 @@
       "side": 1,
       "message": "If you need persistence, use the necessary primitives (e.g., fsync on file, directory) instead of inserting an arbitrary sleep.",
       "parentUuid": "e96b6d08_fcecbac6",
+      "range": {
+        "startLine": 652,
+        "startChar": 5,
+        "endLine": 652,
+        "endChar": 16
+      },
+      "revId": "1c0f013379094a673f39bfbdcc509c14cf61a39f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4eaca0b0_464c6b3a",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-09-27T06:32:58Z",
+      "side": 1,
+      "message": "Without this sleep, crash_dump will exit and then original crashed process will be removed before system restart.\nThus, the information which is needed to find the root cause will be lost.\nTo avoid this, we would like to wait here until system restart.\nIf you know better way than this, please let me know.",
+      "parentUuid": "deddacbe_9aeec7d9",
       "range": {
         "startLine": 652,
         "startChar": 5,
