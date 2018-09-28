@@ -257,6 +257,13 @@ void Unwinder::Unwind(const std::vector<std::string>* initial_map_names_to_skip,
       last_error_.code = ERROR_REPEATED_FRAME;
       break;
     }
+
+    // for FillInDexFrame and FillInFrame will be called at the same flow,
+    // so frames_.size() will be added 2 times,then frames_.size() > max_frames_
+    if (frames_.size() > max_frames_) {
+      frames_.pop_back();
+      last_error_.code = ERROR_MAX_FRAMES_EXCEEDED;
+    }
   }
 }
 
