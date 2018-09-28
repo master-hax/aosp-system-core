@@ -29,6 +29,7 @@
 
 #include <string>
 
+#include <android-base/file.h>
 #include <android-base/properties.h>
 
 #include "adb.h"
@@ -36,16 +37,24 @@
 #include "adb_utils.h"
 #include "fs_mgr.h"
 
+using android::base::Realpath;
+
 // Returns the device used to mount a directory in /proc/mounts.
-static std::string find_proc_mount(const char* dir) {
+static std::string find_proc_mount(const std::string& dir) {
     std::unique_ptr<FILE, int(*)(FILE*)> fp(setmntent("/proc/mounts", "r"), endmntent);
     if (!fp) {
         return "";
     }
 
+    // dir might be a symlink, e.g., /product -> /system/product in GSI.
+    std::string canonical_path;
+    if (!Realpath(dir, &canonical_path)) {
+        PLOG(ERROR) << "RealPath failed: " << dir;
+    }
+
     mntent* e;
     while ((e = getmntent(fp.get())) != nullptr) {
-        if (strcmp(dir, e->mnt_dir) == 0) {
+        if (canonical_path == e->mnt_dir) {
             return e->mnt_fsname;
         }
     }
@@ -53,16 +62,16 @@ static std::string find_proc_mount(const char* dir) {
 }
 
 // Returns the device used to mount a directory in the fstab.
-static std::string find_fstab_mount(const char* dir) {
+static std::string find_fstab_mount(const std::string& dir) {
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
                                                                fs_mgr_free_fstab);
-    struct fstab_rec* rec = fs_mgr_get_entry_for_mount_point(fstab.get(), dir);
+    struct fstab_rec* rec = fs_mgr_get_entry_for_mount_point(fstab.get(), dir.c_str());
     return rec ? rec->blk_device : "";
 }
 
 // The proc entry for / is full of lies, so check fstab instead.
 // /proc/mounts lists rootfs and /dev/root, neither of which is what we want.
-static std::string find_mount(const char* dir, bool is_root) {
+static std::string find_mount(const std::string& dir, bool is_root) {
     if (is_root) {
         return find_fstab_mount(dir);
     } else {
@@ -82,11 +91,11 @@ bool make_block_device_writable(const std::string& dev) {
     return result;
 }
 
-static bool remount_partition(int fd, const char* dir) {
+static bool remount_partition(int fd, const std::string& dir) {
     if (!directory_exists(dir)) {
         return true;
     }
-    bool is_root = strcmp(dir, "/") == 0;
+    bool is_root = dir == "/";
     std::string dev = find_mount(dir, is_root);
     // Even if the device for the root is not found, we still try to remount it
     // as rw. This typically only happens when running Android in a container:
@@ -97,18 +106,18 @@ static bool remount_partition(int fd, const char* dir) {
     }
     if (!dev.empty() && !make_block_device_writable(dev)) {
         WriteFdFmt(fd, "remount of %s failed; couldn't make block device %s writable: %s\n",
-                   dir, dev.c_str(), strerror(errno));
+                   dir.c_str(), dev.c_str(), strerror(errno));
         return false;
     }
-    if (mount(dev.c_str(), dir, "none", MS_REMOUNT | MS_BIND, nullptr) == -1) {
+    if (mount(dev.c_str(), dir.c_str(), "none", MS_REMOUNT | MS_BIND, nullptr) == -1) {
         // This is useful for cases where the superblock is already marked as
         // read-write, but the mount itself is read-only, such as containers
         // where the remount with just MS_REMOUNT is forbidden by the kernel.
-        WriteFdFmt(fd, "remount of the %s mount failed: %s.\n", dir, strerror(errno));
+        WriteFdFmt(fd, "remount of the %s mount failed: %s.\n", dir.c_str(), strerror(errno));
         return false;
     }
-    if (mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr) == -1) {
-        WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir, strerror(errno));
+    if (mount(dev.c_str(), dir.c_str(), "none", MS_REMOUNT, nullptr) == -1) {
+        WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir.c_str(), strerror(errno));
         return false;
     }
     return true;
