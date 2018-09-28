@@ -22,6 +22,30 @@
       "revId": "5203da57aefa10eaf24aa0ead2bfc01835345a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c70c666_70b8dd1e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-09-28T01:10:29Z",
+      "side": 1,
+      "message": "Ah yes.  I didn\u0027t intend to include this.",
+      "parentUuid": "72870a3a_d382fd03",
+      "range": {
+        "startLine": 772,
+        "startChar": 4,
+        "endLine": 772,
+        "endChar": 21
+      },
+      "revId": "5203da57aefa10eaf24aa0ead2bfc01835345a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
