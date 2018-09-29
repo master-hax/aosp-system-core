@@ -44,6 +44,7 @@
 #include <utility>
 #include <vector>
 
+#include <atomic>
 // Headers for LogMessage::LogLine.
 #ifdef __ANDROID__
 #include <android/log.h>
@@ -164,6 +165,7 @@ void SetDefaultTag(const std::string& tag) {
 
 static bool gInitialized = false;
 static LogSeverity gMinimumLogSeverity = INFO;
+static std::atomic<bool> locked(false);
 
 #if defined(__linux__)
 void KernelLogger(android::base::LogId, android::base::LogSeverity severity,
@@ -415,7 +417,10 @@ LogMessage::~LogMessage() {
   if (!WOULD_LOG(data_->GetSeverity())) {
     return;
   }
-
+  bool isInitProcess = (getpid() == 1) ? true : false;
+  if (isInitProcess && locked) {
+    return;
+  }
   // Finish constructing the message.
   if (data_->GetError() != -1) {
     data_->GetBuffer() << ": " << strerror(data_->GetError());
@@ -425,6 +430,9 @@ LogMessage::~LogMessage() {
   {
     // Do the actual logging with the lock held.
     std::lock_guard<std::mutex> lock(LoggingLock());
+    if (isInitProcess) {
+      locked = true;
+    }
     if (msg.find('\n') == std::string::npos) {
       LogLine(data_->GetFile(), data_->GetLineNumber(), data_->GetId(), data_->GetSeverity(),
               data_->GetTag(), msg.c_str());
@@ -442,7 +450,9 @@ LogMessage::~LogMessage() {
       }
     }
   }
-
+  if (isInitProcess) {
+    locked = false;
+  }
   // Abort if necessary.
   if (data_->GetSeverity() == FATAL) {
     Aborter()(msg.c_str());
