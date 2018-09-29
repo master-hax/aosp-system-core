@@ -723,6 +723,9 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     if (oldest) watermark = oldest->mStart - pruneMargin;
 
     LogBufferElementCollection::iterator it;
+    auto lastt = mLogElements.end();
+    --lastt;
+    auto lastTime = (*lastt)->getRealTime();
 
     if (__predict_false(caller_uid != AID_ROOT)) {  // unlikely
         // Only here if clear all request from non system source, so chatty
@@ -742,7 +745,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 mLastSet[id] = true;
             }
 
-            if (oldest && (watermark <= element->getRealTime())) {
+            if (oldest && (watermark <= element->getRealTime()) &&
+                (watermark <= lastTime)) {
                 busy = isBusy(watermark);
                 if (busy) kickMe(oldest, id, pruneRows);
                 break;
@@ -823,14 +827,12 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             }
         }
         static const timespec too_old = { EXPIRE_HOUR_THRESHOLD * 60 * 60, 0 };
-        LogBufferElementCollection::iterator lastt;
-        lastt = mLogElements.end();
-        --lastt;
         LogBufferElementLast last;
         while (it != mLogElements.end()) {
             LogBufferElement* element = *it;
 
-            if (oldest && (watermark <= element->getRealTime())) {
+            if (oldest && (watermark <= element->getRealTime()) &&
+                (watermark <= lastTime)) {
                 busy = isBusy(watermark);
                 // Do not let chatty eliding trigger any reader mitigation
                 break;
@@ -886,8 +888,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 continue;
             }
 
-            if ((element->getRealTime() < ((*lastt)->getRealTime() - too_old)) ||
-                (element->getRealTime() > (*lastt)->getRealTime())) {
+            if ((element->getRealTime() < (lastTime - too_old)) ||
+                (element->getRealTime() > lastTime)) {
                 break;
             }
 
@@ -982,7 +984,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
             mLastSet[id] = true;
         }
 
-        if (oldest && (watermark <= element->getRealTime())) {
+        if (oldest && (watermark <= element->getRealTime()) &&
+            (watermark <= lastTime)) {
             busy = isBusy(watermark);
             if (!whitelist && busy) kickMe(oldest, id, pruneRows);
             break;
@@ -1015,7 +1018,8 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
                 mLastSet[id] = true;
             }
 
-            if (oldest && (watermark <= element->getRealTime())) {
+            if (oldest && (watermark <= element->getRealTime()) &&
+                (watermark <= lastTime)) {
                 busy = isBusy(watermark);
                 if (busy) kickMe(oldest, id, pruneRows);
                 break;
