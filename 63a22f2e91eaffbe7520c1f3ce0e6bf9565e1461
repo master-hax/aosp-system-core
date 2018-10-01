@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be95cac4_27d592e0",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-01T14:53:23Z",
+      "side": 1,
+      "message": "Move this to line 726 too",
+      "range": {
+        "startLine": 830,
+        "startChar": 0,
+        "endLine": 831,
+        "endChar": 16
+      },
+      "revId": "63a22f2e91eaffbe7520c1f3ce0e6bf9565e1461",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1100d5f_82a638b8",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-01T14:53:23Z",
+      "side": 1,
+      "message": "Just a thought and an explanation that needs to be added to the comments w.r.t. lastt. One wonders if we consider clock_gettime(android_log_clockid()) as this will catch the time change too. I selected (*lastt)-\u003egetRealTime() because A) it is _much_ faster than even a vDSO call to the system to get the time, and B) it does not require android_log_clockid() which is yet another 500ns(first)/22ns(all subsequent) to collect which also swamps the time it takes to jsut grab the last iterator from the list. The downside is that we need logging activity to sniff the latest timestamp.",
+      "range": {
+        "startLine": 837,
+        "startChar": 30,
+        "endLine": 837,
+        "endChar": 53
+      },
+      "revId": "63a22f2e91eaffbe7520c1f3ce0e6bf9565e1461",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83996d86_a92559ca",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 977,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-01T14:53:23Z",
+      "side": 1,
+      "message": "Merge this into 726 too.\n\n// (*mLogElements.end()-1)-\u003egetRealTime() is faster than clock_gettime(android_log_clockid())\nauto lastt \u003d mLogElements.end();\n--lastt;\nauto lasttime \u003d (*lastt)-\u003egetRealTime();\n\nReplace all (*lastt)-\u003egetRealTime() with lasttime",
+      "range": {
+        "startLine": 976,
+        "startChar": 0,
+        "endLine": 977,
+        "endChar": 12
+      },
+      "revId": "63a22f2e91eaffbe7520c1f3ce0e6bf9565e1461",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
