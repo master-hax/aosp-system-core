@@ -386,4 +386,16 @@ size_t MemoryOfflineParts::Read(uint64_t addr, void* dst, size_t size) {
   return 0;
 }
 
+void MemoryRanges::Insert(MemoryRange* memory) {
+  maps_.emplace(memory->offset() + memory->length(), memory);
+}
+
+size_t MemoryRanges::Read(uint64_t addr, void* dst, size_t size) {
+  auto entry = maps_.upper_bound(addr);
+  if (entry != maps_.end()) {
+    return entry->second->Read(addr, dst, size);
+  }
+  return 0;
+}
+
 }  // namespace unwindstack
