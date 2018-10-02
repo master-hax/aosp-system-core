@@ -24,6 +24,8 @@ extern "C" {
 #endif
 void reset_log_context(android_log_context ctx);
 int write_to_logger(android_log_context context, log_id_t id);
+void note_log_drop();
+void stats_log_close();
 
 #ifdef __cplusplus
 }

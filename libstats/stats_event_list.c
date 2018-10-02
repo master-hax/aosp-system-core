@@ -119,6 +119,18 @@ int write_to_logger(android_log_context ctx, log_id_t id) {
     return retValue;
 }
 
+void note_log_drop() {
+    statsdLoggerWrite.noteDrop();
+}
+
+void stats_log_close() {
+    statsd_writer_init_lock();
+    if (statsdLoggerWrite.close) {
+        (*statsdLoggerWrite.close)();
+    }
+    statsd_writer_init_unlock();
+}
+
 /* log_init_lock assumed */
 static int __write_to_statsd_initialize_locked() {
     if (!statsdLoggerWrite.open || ((*statsdLoggerWrite.open)() < 0)) {
