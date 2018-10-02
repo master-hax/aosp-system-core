@@ -523,6 +523,8 @@ on post-fs-data
 
     mkdir /data/anr 0775 system system
 
+    mkdir /data/apex 0770 root root
+
     # NFC: create data/nfc for nv storage
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
