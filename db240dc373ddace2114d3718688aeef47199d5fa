@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "454491e2_2f1e148f",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-02T16:17:31Z",
+      "side": 1,
+      "message": "Does this need to be done this early?  It should only need to be here if there are going to be entries in the first stage fstab, which I\u0027m guessing there won\u0027t be?\n\nIf not, this would be better in init.rc like most other mounts.",
+      "revId": "db240dc373ddace2114d3718688aeef47199d5fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
