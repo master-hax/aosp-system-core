@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b45bc1a7_7b7ca977",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-02T17:19:31Z",
+      "side": 1,
+      "message": ",",
+      "range": {
+        "startLine": 88,
+        "startChar": 97,
+        "endLine": 88,
+        "endChar": 98
+      },
+      "revId": "d564cea4e8ab038c211c72d5531998debf18f57c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
