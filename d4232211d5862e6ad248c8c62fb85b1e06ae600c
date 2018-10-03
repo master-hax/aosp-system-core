@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02121ce5_3e73371a",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-03T21:44:04Z",
+      "side": 1,
+      "message": "does this belong in a different CL?",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 84
+      },
+      "revId": "d4232211d5862e6ad248c8c62fb85b1e06ae600c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
