@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fd014e60_d63e0369",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-03T17:52:06Z",
+      "side": 1,
+      "message": "libbpf is an external project, so it can\u0027t go in system/core/...",
+      "range": {
+        "startLine": 13,
+        "startChar": 17,
+        "endLine": 13,
+        "endChar": 46
+      },
+      "revId": "bf066acee66d69ac461c62fa5c5eb770afded729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10e7472a_6ce73b45",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-03T17:52:06Z",
+      "side": 1,
+      "message": "since there are pros and cons to \"bulk reformat\" vs \"reformat as we touch stuff\", we\u0027ve been letting everyone choose for themselves. those who want to bulk reformat can. libion has no OWNERS, and it looks like it\u0027s mostly been me and ccross in here, keeping things compiling, so i doubt anyone cares either way. i\u0027m happy to +2 this.",
+      "revId": "bf066acee66d69ac461c62fa5c5eb770afded729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
