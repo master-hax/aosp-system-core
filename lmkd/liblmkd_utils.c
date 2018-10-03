@@ -16,22 +16,20 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <sys/cdefs.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <stdio.h>
 #include <unistd.h>
 
-#include <liblmkd_utils.h>
 #include <cutils/sockets.h>
+#include <liblmkd_utils.h>
 
 int lmkd_connect() {
-    return socket_local_client("lmkd",
-                               ANDROID_SOCKET_NAMESPACE_RESERVED,
-                               SOCK_SEQPACKET);
+    return socket_local_client("lmkd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET);
 }
 
-int lmkd_register_proc(int sock, struct lmk_procprio *params) {
+int lmkd_register_proc(int sock, struct lmk_procprio* params) {
     LMKD_CTRL_PACKET packet;
     size_t size;
     int ret;
@@ -48,14 +46,12 @@ int create_memcg(uid_t uid, pid_t pid) {
     int written;
 
     snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u", uid);
-    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
-        errno != EEXIST) {
+    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 && errno != EEXIST) {
         return -1;
     }
 
     snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u", uid, pid);
-    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
-        errno != EEXIST) {
+    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 && errno != EEXIST) {
         return -1;
     }
 
