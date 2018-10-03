@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "995294cc_ad370294",
+        "filename": "liblog/pmsg_reader.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-03T21:40:13Z",
+      "side": 1,
+      "message": "We can do better than this, we should be able to propagate what contents we get rather than dropping everything. This is used to propagate logs from recovery to the system typically, some logs are better than no logs at all.\n\n   char* new_buf \u003d realloc(buf, len + sizeof(char) + sizeof(char));\n   if (!new_buf) {\n     break;\n   }\n   buf \u003d new_buf;\n\n(assumption, new_buf is not defined after line 527)",
+      "range": {
+        "startLine": 552,
+        "startChar": 0,
+        "endLine": 552,
+        "endChar": 70
+      },
+      "revId": "559387df56b5578a784943296a6f9e75a6bd2b64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9fea362f_a7c74807",
+        "filename": "liblog/pmsg_reader.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-03T21:40:13Z",
+      "side": 1,
+      "message": "ditto (except char* new_buf need to be defined just below line 527)",
+      "range": {
+        "startLine": 567,
+        "startChar": 0,
+        "endLine": 567,
+        "endChar": 63
+      },
+      "revId": "559387df56b5578a784943296a6f9e75a6bd2b64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
