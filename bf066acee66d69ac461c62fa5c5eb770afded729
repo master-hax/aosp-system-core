@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b316232b_8059735c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-10-03T17:59:08Z",
+      "side": 1,
+      "message": "I didn\u0027t follow what you mean. libbpf is written from scratch for Android without depending on libelf which was the issue last time we talked (depending on external libraries/projects with incompatible). libbpf will have no dependencies on external projects and is written *for* android",
+      "parentUuid": "fd014e60_d63e0369",
+      "range": {
+        "startLine": 13,
+        "startChar": 17,
+        "endLine": 13,
+        "endChar": 46
+      },
+      "revId": "bf066acee66d69ac461c62fa5c5eb770afded729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10e7472a_6ce73b45",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
