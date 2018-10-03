@@ -63,6 +63,24 @@
       "revId": "bf066acee66d69ac461c62fa5c5eb770afded729",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4afd5ace_4984651e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2018-10-03T18:01:17Z",
+      "side": 1,
+      "message": "hmm Ok, well this CL just highlighted some examples of not clang-formatted files. I just want to discuss/bring this up. I don\u0027t feel strongly about reformatting existing files unless their owners want to and in any case the scope of that is more than just these 2 example files I touched.",
+      "parentUuid": "10e7472a_6ce73b45",
+      "revId": "bf066acee66d69ac461c62fa5c5eb770afded729",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
