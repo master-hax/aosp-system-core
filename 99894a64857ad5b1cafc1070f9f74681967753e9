@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f2bb5b4_3f809d9c",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-04T17:41:43Z",
+      "side": 1,
+      "message": "We often print an info message when skipping tests just as an FYI:\n\nhttps://cs.corp.google.com/android/bionic/tests/system_properties_test.cpp?q\u003df:bionic+f:properties+f:test\u0026sq\u003dpackage:%5Eandroid$\u0026dr\u0026l\u003d222.",
+      "revId": "99894a64857ad5b1cafc1070f9f74681967753e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
