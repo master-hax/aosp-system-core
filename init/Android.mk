@@ -73,15 +73,6 @@ LOCAL_UNSTRIPPED_PATH := $(TARGET_RAMDISK_OUT_UNSTRIPPED)
 LOCAL_REQUIRED_MODULES := \
    adb_debug.prop \
 
-# Set up the same mount points on the ramdisk that system-as-root contains.
-LOCAL_POST_INSTALL_CMD := mkdir -p \
-    $(TARGET_RAMDISK_OUT)/apex \
-    $(TARGET_RAMDISK_OUT)/debug_ramdisk \
-    $(TARGET_RAMDISK_OUT)/dev \
-    $(TARGET_RAMDISK_OUT)/mnt \
-    $(TARGET_RAMDISK_OUT)/proc \
-    $(TARGET_RAMDISK_OUT)/sys \
-
 LOCAL_STATIC_LIBRARIES := \
     libc++fs \
     libfs_avb \
