@@ -67,6 +67,13 @@ ifneq ($(filter address,$(SANITIZE_TARGET)),)
   LOCAL_REQUIRED_MODULES := asan.options $(ASAN_OPTIONS_FILES) $(ASAN_EXTRACT_FILES)
 endif
 
+EXPORT_GLOBAL_HWASAN_OPTIONS :=
+ifneq ($(filter hwaddress,$(SANITIZE_TARGET)),)
+  ifneq ($(HWADDRESS_SANITIZER_GLOBAL_OPTIONS),)
+    EXPORT_GLOBAL_HWASAN_OPTIONS := export HWASAN_OPTIONS $(HWADDRESS_SANITIZER_GLOBAL_OPTIONS)
+  endif
+endif
+
 EXPORT_GLOBAL_GCOV_OPTIONS :=
 ifeq ($(NATIVE_COVERAGE),true)
   EXPORT_GLOBAL_GCOV_OPTIONS := export GCOV_PREFIX /data/misc/gcov
@@ -139,7 +146,7 @@ endif
 include $(BUILD_SYSTEM)/base_rules.mk
 
 # Regenerate init.environ.rc if PRODUCT_BOOTCLASSPATH has changed.
-bcp_md5 := $(word 1, $(shell echo $(PRODUCT_BOOTCLASSPATH) $(PRODUCT_SYSTEM_SERVER_CLASSPATH) | $(MD5SUM)))
+bcp_md5 := $(word 1, $(shell echo $(PRODUCT_BOOTCLASSPATH) $(PRODUCT_SYSTEM_SERVER_CLASSPATH) $(EXPORT_GLOBAL_ASAN_OPTIONS) $(EXPORT_GLOBAL_GCOV_OPTIONS) $(EXPORT_GLOBAL_HWASAN_OPTIONS)| $(MD5SUM)))
 bcp_dep := $(intermediates)/$(bcp_md5).bcp.dep
 $(bcp_dep) :
 	$(hide) mkdir -p $(dir $@) && rm -rf $(dir $@)*.bcp.dep && touch $@
@@ -151,6 +158,7 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/init.environ.rc.in $(bcp_dep)
 	$(hide) sed -i -e 's?%SYSTEMSERVERCLASSPATH%?$(PRODUCT_SYSTEM_SERVER_CLASSPATH)?g' $@
 	$(hide) sed -i -e 's?%EXPORT_GLOBAL_ASAN_OPTIONS%?$(EXPORT_GLOBAL_ASAN_OPTIONS)?g' $@
 	$(hide) sed -i -e 's?%EXPORT_GLOBAL_GCOV_OPTIONS%?$(EXPORT_GLOBAL_GCOV_OPTIONS)?g' $@
+	$(hide) sed -i -e 's?%EXPORT_GLOBAL_HWASAN_OPTIONS%?$(EXPORT_GLOBAL_HWASAN_OPTIONS)?g' $@
 
 bcp_md5 :=
 bcp_dep :=
