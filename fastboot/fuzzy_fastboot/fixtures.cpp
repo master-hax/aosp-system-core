@@ -86,6 +86,11 @@ bool FastBootTest::UsbStillAvailible() {
     return true;
 }
 
+bool FastBootTest::UserSpaceFastboot() {
+    std::string value;
+    fb->GetVar("is-userspace", &value);
+    return value == "yes";
+}
 RetCode FastBootTest::DownloadCommand(uint32_t size, std::string* response,
                                       std::vector<std::string>* info) {
     return fb->DownloadCommand(size, response, info);
@@ -158,6 +163,12 @@ void FastBootTest::SetLockState(bool unlock, bool assert_change) {
         return;
     }
 
+    // User space fastboot implementations are not allowed to communicate to
+    // secure hardware and hence cannot lock/unlock the device.
+    if (UserSpaceFastboot()) {
+        printf("this is userspace fastboot");
+        return;
+    }
     std::string resp;
     std::vector<std::string> info;
     // To avoid risk of bricking device, make sure unlock ability is set to 1
