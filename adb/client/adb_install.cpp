@@ -36,6 +36,14 @@
 #include "fastdeploy.h"
 #include "sysdeps.h"
 
+// APEX is supported from API 29, so the kApexMinApi constant really should be set to 29, but since
+// the API level bump only happens when framework release is finalized we need ADB to assume that
+// API 28 is OK, for development purposes. In any case, the error message appearing for devices at
+// API level 28 is intelligible enough (--apex flag not recognized, coming from PackageInstaller).
+// For now, we fail-fast with devices with API < 28, and let PackageInstaller fail if the feature
+// is unsupported in the version of the framework built on phone.
+// TODO: remove this comment and bump kApexMinApi to 29 when API level 29 is released.
+static constexpr int kApexMinApi = 28;
 static constexpr int kFastDeployMinApi = 24;
 
 static bool _use_legacy_install() {
@@ -133,8 +141,28 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
 
     // The last argument must be the APK file
     const char* file = argv[argc - 1];
-    if (!android::base::EndsWithIgnoreCase(file, ".apk")) {
-        return syntax_error("filename doesn't end .apk: %s", file);
+    if (!android::base::EndsWithIgnoreCase(file, ".apk") &&
+        !android::base::EndsWithIgnoreCase(file, ".apex")) {
+        return syntax_error("filename doesn't end with .apk or .apex: %s", file);
+    }
+
+    bool is_apex = false;
+    if (android::base::EndsWithIgnoreCase(file, ".apex")) {
+        is_apex = true;
+    }
+
+    if (is_apex && get_device_api_level() < kApexMinApi) {
+        fprintf(stderr,
+                "adb: APEX packages are only compatible with devices of API version "
+                "%d or higher, exiting.\n",
+                kApexMinApi);
+        return 1;
+    }
+
+    if (is_apex && use_fastdeploy) {
+        fprintf(stderr,
+                "APEX is not compatible with Fast Deploy, ignoring --fastdeploy setting.\n");
+        return 1;
     }
 
     if (use_fastdeploy == true) {
@@ -177,6 +205,10 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         // do last to override any user specified value
         cmd += " " + android::base::StringPrintf("-S %" PRIu64, static_cast<uint64_t>(sb.st_size));
 
+        if (is_apex) {
+            cmd += " --apex";
+        }
+
         int remoteFd = adb_connect(cmd, &error);
         if (remoteFd < 0) {
             fprintf(stderr, "adb: connect error for write: %s\n", error.c_str());
@@ -218,6 +250,11 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy,
     // All other arguments passed through verbatim.
     int last_apk = -1;
     for (int i = argc - 1; i >= 0; i--) {
+        if (android::base::EndsWithIgnoreCase(argv[i], ".apex")) {
+            fprintf(stderr,
+                    "adb: APEX packages are only compatible with Streamed Install, exiting.\n");
+            return 1;
+        }
         if (android::base::EndsWithIgnoreCase(argv[i], ".apk")) {
             last_apk = i;
             break;
@@ -359,6 +396,11 @@ int install_multiple_app(int argc, const char** argv) {
     uint64_t total_size = 0;
     for (int i = argc - 1; i >= 0; i--) {
         const char* file = argv[i];
+        if (android::base::EndsWithIgnoreCase(argv[i], ".apex")) {
+            fprintf(stderr,
+                    "adb: APEX packages are not compatible with install-multiple, exiting.\n");
+            return 1;
+        }
 
         if (android::base::EndsWithIgnoreCase(file, ".apk") ||
             android::base::EndsWithIgnoreCase(file, ".dm")) {
