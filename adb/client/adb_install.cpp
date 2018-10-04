@@ -38,14 +38,22 @@
 
 static constexpr int kFastDeployMinApi = 24;
 
-static bool _use_legacy_install() {
+static bool _can_use_feature(const char* feature) {
     FeatureSet features;
     std::string error;
     if (!adb_get_feature_set(&features, &error)) {
         fprintf(stderr, "error: %s\n", error.c_str());
         return true;
     }
-    return !CanUseFeature(features, kFeatureCmd);
+    return CanUseFeature(features, feature);
+}
+
+static bool _use_legacy_install() {
+    return !_can_use_feature(kFeatureCmd);
+}
+
+static bool _is_apex_supported() {
+    return _can_use_feature(kFeatureApex);
 }
 
 static int pm_command(int argc, const char** argv) {
@@ -133,8 +141,21 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
 
     // The last argument must be the APK file
     const char* file = argv[argc - 1];
-    if (!android::base::EndsWithIgnoreCase(file, ".apk")) {
-        return syntax_error("filename doesn't end .apk: %s", file);
+    if (!android::base::EndsWithIgnoreCase(file, ".apk") &&
+        !android::base::EndsWithIgnoreCase(file, ".apex")) {
+        return syntax_error("filename doesn't end with .apk or .apex: %s", file);
+    }
+
+    bool is_apex = false;
+    if (android::base::EndsWithIgnoreCase(file, ".apex")) {
+        is_apex = true;
+    }
+    if (is_apex && !_is_apex_supported()) {
+        fatal(".apex is not supported on the target device");
+    }
+
+    if (is_apex && use_fastdeploy) {
+        fatal("\"--fastdeploy\" doesn't support .apex files");
     }
 
     if (use_fastdeploy == true) {
@@ -177,6 +198,10 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         // do last to override any user specified value
         cmd += " " + android::base::StringPrintf("-S %" PRIu64, static_cast<uint64_t>(sb.st_size));
 
+        if (is_apex) {
+            cmd += " --apex";
+        }
+
         int remoteFd = adb_connect(cmd, &error);
         if (remoteFd < 0) {
             fprintf(stderr, "adb: connect error for write: %s\n", error.c_str());
@@ -218,6 +243,11 @@ static int install_app_legacy(int argc, const char** argv, bool use_fastdeploy,
     // All other arguments passed through verbatim.
     int last_apk = -1;
     for (int i = argc - 1; i >= 0; i--) {
+        if (android::base::EndsWithIgnoreCase(argv[i], ".apex")) {
+            fprintf(stderr,
+                    "adb: APEX packages are only compatible with Streamed Install, exiting.\n");
+            return 1;
+        }
         if (android::base::EndsWithIgnoreCase(argv[i], ".apk")) {
             last_apk = i;
             break;
@@ -359,6 +389,11 @@ int install_multiple_app(int argc, const char** argv) {
     uint64_t total_size = 0;
     for (int i = argc - 1; i >= 0; i--) {
         const char* file = argv[i];
+        if (android::base::EndsWithIgnoreCase(argv[i], ".apex")) {
+            fprintf(stderr,
+                    "adb: APEX packages are not compatible with install-multiple, exiting.\n");
+            return 1;
+        }
 
         if (android::base::EndsWithIgnoreCase(file, ".apk") ||
             android::base::EndsWithIgnoreCase(file, ".dm")) {
