@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <fcntl.h>
 #include <paths.h>
 #include <stdlib.h>
 #include <sys/mount.h>
@@ -38,6 +39,25 @@ using android::base::boot_clock;
 
 namespace android {
 namespace init {
+
+static void InitKernelLogging(char** argv) {
+    // Make stdin/stdout/stderr all point to /dev/null.
+    // This closes the kernel created /dev/console, which these fd's otherwise point to.
+    auto reboot_bootloader = [](const char*) { RebootSystem(ANDROID_RB_RESTART2, "bootloader"); };
+    int fd = open("/sys/fs/selinux/null", O_RDWR);
+    if (fd == -1) {
+        int saved_errno = errno;
+        android::base::InitLogging(argv, &android::base::KernelLogger, reboot_bootloader);
+        errno = saved_errno;
+        PLOG(FATAL) << "Couldn't open /sys/fs/selinux/null";
+    }
+    dup2(fd, 0);
+    dup2(fd, 1);
+    dup2(fd, 2);
+    if (fd > 2) close(fd);
+
+    android::base::InitLogging(argv, &android::base::KernelLogger, reboot_bootloader);
+}
 
 int main(int argc, char** argv) {
     if (REBOOT_BOOTLOADER_ON_PANIC) {
@@ -99,9 +119,7 @@ int main(int argc, char** argv) {
 
     // Now that tmpfs is mounted on /dev and we have /dev/kmsg, we can actually
     // talk to the outside world...
-    android::base::InitLogging(argv, &android::base::KernelLogger, [](const char*) {
-        RebootSystem(ANDROID_RB_RESTART2, "bootloader");
-    });
+    InitKernelLogging(argv);
 
     if (!errors.empty()) {
         for (const auto& [error_string, error_errno] : errors) {
