@@ -137,8 +137,9 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
 
     // The last argument must be the APK file
     const char* file = argv[argc - 1];
-    if (!android::base::EndsWithIgnoreCase(file, ".apk")) {
-        return syntax_error("filename doesn't end .apk: %s", file);
+    if (!android::base::EndsWithIgnoreCase(file, ".apk") &&
+        !android::base::EndsWithIgnoreCase(file, ".apex")) {
+        return syntax_error("filename doesn't end with .apk or .apex: %s", file);
     }
 
     if (use_fastdeploy == true) {
@@ -205,6 +206,11 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         // add size parameter [required for streaming installs]
         // do last to override any user specified value
         cmd += " " + android::base::StringPrintf("-S %" PRIu64, static_cast<uint64_t>(sb.st_size));
+
+        if (android::base::EndsWithIgnoreCase(file, ".apex")) {
+            // add --apex option.
+            cmd += " --apex";
+        }
 
         int remoteFd = adb_connect(cmd, &error);
         if (remoteFd < 0) {
