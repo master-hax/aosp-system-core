@@ -861,8 +861,6 @@ bool fs_mgr_update_checkpoint_partition(struct fstab_rec* rec) {
             LERROR << rec->fs_type << " does not implement checkpoints.";
         }
     } else if (fs_mgr_is_checkpoint_blk(rec)) {
-        call_vdc({"checkpoint", "restoreCheckpoint", rec->blk_device});
-
         android::base::unique_fd fd(
                 TEMP_FAILURE_RETRY(open(rec->blk_device, O_RDONLY | O_CLOEXEC)));
         if (!fd) {
@@ -960,6 +958,10 @@ int fs_mgr_mount_all(fstab* fstab, int mount_mode) {
         }
 
         if (fs_mgr_is_checkpoint(&fstab->recs[i])) {
+            if (fs_mgr_is_checkpoint_blk(&fstab->recs[i])) {
+                call_vdc({"checkpoint", "restoreCheckpoint", fstab->recs[i].blk_device});
+            }
+
             if (need_checkpoint == -1 &&
                 !call_vdc_ret({"checkpoint", "needsCheckpoint"}, &need_checkpoint)) {
                 LERROR << "Failed to find if checkpointing is needed. Assuming no.";
