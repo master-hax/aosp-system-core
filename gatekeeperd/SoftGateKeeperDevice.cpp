@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "SoftGateKeeper.h"
 #include "SoftGateKeeperDevice.h"
+#include "SoftGateKeeper.h"
 
 namespace android {
 
-int SoftGateKeeperDevice::enroll(uint32_t uid,
-            const uint8_t *current_password_handle, uint32_t current_password_handle_length,
-            const uint8_t *current_password, uint32_t current_password_length,
-            const uint8_t *desired_password, uint32_t desired_password_length,
-            uint8_t **enrolled_password_handle, uint32_t *enrolled_password_handle_length) {
-
+int SoftGateKeeperDevice::enroll(uint32_t uid, const uint8_t* current_password_handle,
+                                 uint32_t current_password_handle_length,
+                                 const uint8_t* current_password, uint32_t current_password_length,
+                                 const uint8_t* desired_password, uint32_t desired_password_length,
+                                 uint8_t** enrolled_password_handle,
+                                 uint32_t* enrolled_password_handle_length) {
     if (enrolled_password_handle == NULL || enrolled_password_handle_length == NULL ||
-            desired_password == NULL || desired_password_length == 0)
+        desired_password == NULL || desired_password_length == 0)
         return -EINVAL;
 
     // Current password and current password handle go together
     if (current_password_handle == NULL || current_password_handle_length == 0 ||
-            current_password == NULL || current_password_length == 0) {
+        current_password == NULL || current_password_length == 0) {
         current_password_handle = NULL;
         current_password_handle_length = 0;
         current_password = NULL;
@@ -43,7 +43,7 @@ int SoftGateKeeperDevice::enroll(uint32_t uid,
     SizedBuffer current_password_handle_buffer(current_password_handle_length);
     if (current_password_handle) {
         memcpy(current_password_handle_buffer.buffer.get(), current_password_handle,
-                current_password_handle_length);
+               current_password_handle_length);
     }
 
     SizedBuffer current_password_buffer(current_password_length);
@@ -52,7 +52,7 @@ int SoftGateKeeperDevice::enroll(uint32_t uid,
     }
 
     EnrollRequest request(uid, &current_password_handle_buffer, &desired_password_buffer,
-            &current_password_buffer);
+                          &current_password_buffer);
     EnrollResponse response;
 
     impl_->Enroll(request, &response);
@@ -68,20 +68,19 @@ int SoftGateKeeperDevice::enroll(uint32_t uid,
     return 0;
 }
 
-int SoftGateKeeperDevice::verify(uint32_t uid,
-        uint64_t challenge, const uint8_t *enrolled_password_handle,
-        uint32_t enrolled_password_handle_length, const uint8_t *provided_password,
-        uint32_t provided_password_length, uint8_t **auth_token, uint32_t *auth_token_length,
-        bool *request_reenroll) {
-
-    if (enrolled_password_handle == NULL ||
-            provided_password == NULL) {
+int SoftGateKeeperDevice::verify(uint32_t uid, uint64_t challenge,
+                                 const uint8_t* enrolled_password_handle,
+                                 uint32_t enrolled_password_handle_length,
+                                 const uint8_t* provided_password,
+                                 uint32_t provided_password_length, uint8_t** auth_token,
+                                 uint32_t* auth_token_length, bool* request_reenroll) {
+    if (enrolled_password_handle == NULL || provided_password == NULL) {
         return -EINVAL;
     }
 
     SizedBuffer password_handle_buffer(enrolled_password_handle_length);
     memcpy(password_handle_buffer.buffer.get(), enrolled_password_handle,
-            enrolled_password_handle_length);
+           enrolled_password_handle_length);
     SizedBuffer provided_password_buffer(provided_password_length);
     memcpy(provided_password_buffer.buffer.get(), provided_password, provided_password_length);
 
@@ -97,8 +96,8 @@ int SoftGateKeeperDevice::verify(uint32_t uid,
     }
 
     if (auth_token != NULL && auth_token_length != NULL) {
-       *auth_token = response.auth_token.buffer.release();
-       *auth_token_length = response.auth_token.length;
+        *auth_token = response.auth_token.buffer.release();
+        *auth_token_length = response.auth_token.length;
     }
 
     if (request_reenroll != NULL) {
@@ -107,4 +106,4 @@ int SoftGateKeeperDevice::verify(uint32_t uid,
 
     return 0;
 }
-} // namespace android
+}  // namespace android

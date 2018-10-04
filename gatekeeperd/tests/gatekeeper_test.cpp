@@ -22,16 +22,16 @@
 
 #include "../SoftGateKeeper.h"
 
-using ::gatekeeper::SizedBuffer;
-using ::testing::Test;
 using ::gatekeeper::EnrollRequest;
 using ::gatekeeper::EnrollResponse;
+using ::gatekeeper::secure_id_t;
+using ::gatekeeper::SizedBuffer;
+using ::gatekeeper::SoftGateKeeper;
 using ::gatekeeper::VerifyRequest;
 using ::gatekeeper::VerifyResponse;
-using ::gatekeeper::SoftGateKeeper;
-using ::gatekeeper::secure_id_t;
+using ::testing::Test;
 
-static void do_enroll(SoftGateKeeper &gatekeeper, EnrollResponse *response) {
+static void do_enroll(SoftGateKeeper& gatekeeper, EnrollResponse* response) {
     SizedBuffer password;
 
     password.buffer.reset(new uint8_t[16]);
@@ -72,22 +72,21 @@ TEST(GateKeeperTest, VerifySuccess) {
 
     do_enroll(gatekeeper, &enroll_response);
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, enroll_response.error);
-    VerifyRequest request(0, 1, &enroll_response.enrolled_password_handle,
-            &provided_password);
+    VerifyRequest request(0, 1, &enroll_response.enrolled_password_handle, &provided_password);
     VerifyResponse response;
 
     gatekeeper.Verify(request, &response);
 
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, response.error);
 
-    hw_auth_token_t *auth_token =
-        reinterpret_cast<hw_auth_token_t *>(response.auth_token.buffer.get());
+    hw_auth_token_t* auth_token =
+            reinterpret_cast<hw_auth_token_t*>(response.auth_token.buffer.get());
 
-    ASSERT_EQ((uint32_t) HW_AUTH_PASSWORD, ntohl(auth_token->authenticator_type));
-    ASSERT_EQ((uint64_t) 1, auth_token->challenge);
-    ASSERT_NE(~((uint32_t) 0), auth_token->timestamp);
-    ASSERT_NE((uint64_t) 0, auth_token->user_id);
-    ASSERT_NE((uint64_t) 0, auth_token->authenticator_id);
+    ASSERT_EQ((uint32_t)HW_AUTH_PASSWORD, ntohl(auth_token->authenticator_type));
+    ASSERT_EQ((uint64_t)1, auth_token->challenge);
+    ASSERT_NE(~((uint32_t)0), auth_token->timestamp);
+    ASSERT_NE((uint64_t)0, auth_token->user_id);
+    ASSERT_NE((uint64_t)0, auth_token->authenticator_id);
 }
 
 TEST(GateKeeperTest, TrustedReEnroll) {
@@ -107,16 +106,15 @@ TEST(GateKeeperTest, TrustedReEnroll) {
     password_handle.buffer.reset(new uint8_t[enroll_response.enrolled_password_handle.length]);
     password_handle.length = enroll_response.enrolled_password_handle.length;
     memcpy(password_handle.buffer.get(), enroll_response.enrolled_password_handle.buffer.get(),
-            password_handle.length);
+           password_handle.length);
 
     // verify first password
-    VerifyRequest request(0, 0, &enroll_response.enrolled_password_handle,
-            &provided_password);
+    VerifyRequest request(0, 0, &enroll_response.enrolled_password_handle, &provided_password);
     VerifyResponse response;
     gatekeeper.Verify(request, &response);
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, response.error);
-    hw_auth_token_t *auth_token =
-        reinterpret_cast<hw_auth_token_t *>(response.auth_token.buffer.get());
+    hw_auth_token_t* auth_token =
+            reinterpret_cast<hw_auth_token_t*>(response.auth_token.buffer.get());
 
     secure_id_t secure_id = auth_token->user_id;
 
@@ -136,14 +134,12 @@ TEST(GateKeeperTest, TrustedReEnroll) {
     password.buffer.reset(new uint8_t[16]);
     memset(password.buffer.get(), 1, 16);
     password.length = 16;
-    VerifyRequest new_request(0, 0, &enroll_response.enrolled_password_handle,
-            &password);
+    VerifyRequest new_request(0, 0, &enroll_response.enrolled_password_handle, &password);
     gatekeeper.Verify(new_request, &response);
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, response.error);
     ASSERT_EQ(secure_id,
-        reinterpret_cast<hw_auth_token_t *>(response.auth_token.buffer.get())->user_id);
+              reinterpret_cast<hw_auth_token_t*>(response.auth_token.buffer.get())->user_id);
 }
-
 
 TEST(GateKeeperTest, UntrustedReEnroll) {
     SoftGateKeeper gatekeeper;
@@ -158,13 +154,12 @@ TEST(GateKeeperTest, UntrustedReEnroll) {
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, enroll_response.error);
 
     // verify first password
-    VerifyRequest request(0, 0, &enroll_response.enrolled_password_handle,
-            &provided_password);
+    VerifyRequest request(0, 0, &enroll_response.enrolled_password_handle, &provided_password);
     VerifyResponse response;
     gatekeeper.Verify(request, &response);
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, response.error);
-    hw_auth_token_t *auth_token =
-        reinterpret_cast<hw_auth_token_t *>(response.auth_token.buffer.get());
+    hw_auth_token_t* auth_token =
+            reinterpret_cast<hw_auth_token_t*>(response.auth_token.buffer.get());
 
     secure_id_t secure_id = auth_token->user_id;
 
@@ -181,14 +176,12 @@ TEST(GateKeeperTest, UntrustedReEnroll) {
     password.buffer.reset(new uint8_t[16]);
     memset(password.buffer.get(), 1, 16);
     password.length = 16;
-    VerifyRequest new_request(0, 0, &enroll_response.enrolled_password_handle,
-            &password);
+    VerifyRequest new_request(0, 0, &enroll_response.enrolled_password_handle, &password);
     gatekeeper.Verify(new_request, &response);
     ASSERT_EQ(::gatekeeper::gatekeeper_error_t::ERROR_NONE, response.error);
     ASSERT_NE(secure_id,
-        reinterpret_cast<hw_auth_token_t *>(response.auth_token.buffer.get())->user_id);
+              reinterpret_cast<hw_auth_token_t*>(response.auth_token.buffer.get())->user_id);
 }
-
 
 TEST(GateKeeperTest, VerifyBogusData) {
     SoftGateKeeper gatekeeper;

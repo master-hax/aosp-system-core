@@ -26,7 +26,7 @@ namespace android {
  * This must be kept manually in sync with frameworks/base's IGateKeeperService.aidl
  */
 class IGateKeeperService : public IInterface {
-public:
+  public:
     enum {
         ENROLL = IBinder::FIRST_CALL_TRANSACTION + 0,
         VERIFY = IBinder::FIRST_CALL_TRANSACTION + 1,
@@ -56,11 +56,11 @@ public:
      *   be reattempted until T milliseconds have elapsed
      * - -1 on failure
      */
-    virtual int enroll(uint32_t uid,
-            const uint8_t *current_password_handle, uint32_t current_password_handle_length,
-            const uint8_t *current_password, uint32_t current_password_length,
-            const uint8_t *desired_password, uint32_t desired_password_length,
-            uint8_t **enrolled_password_handle, uint32_t *enrolled_password_handle_length) = 0;
+    virtual int enroll(uint32_t uid, const uint8_t* current_password_handle,
+                       uint32_t current_password_handle_length, const uint8_t* current_password,
+                       uint32_t current_password_length, const uint8_t* desired_password,
+                       uint32_t desired_password_length, uint8_t** enrolled_password_handle,
+                       uint32_t* enrolled_password_handle_length) = 0;
 
     /**
      * Verifies a password previously enrolled with the GateKeeper.
@@ -70,10 +70,9 @@ public:
      *   be reattempted until T milliseconds have elapsed
      * - -1 on failure
      */
-    virtual int verify(uint32_t uid, const uint8_t *enrolled_password_handle,
-            uint32_t enrolled_password_handle_length,
-            const uint8_t *provided_password, uint32_t provided_password_length,
-            bool *request_reenroll) = 0;
+    virtual int verify(uint32_t uid, const uint8_t* enrolled_password_handle,
+                       uint32_t enrolled_password_handle_length, const uint8_t* provided_password,
+                       uint32_t provided_password_length, bool* request_reenroll) = 0;
 
     /**
      * Verifies a password previously enrolled with the GateKeeper.
@@ -84,9 +83,11 @@ public:
      * - -1 on failure
      */
     virtual int verifyChallenge(uint32_t uid, uint64_t challenge,
-            const uint8_t *enrolled_password_handle, uint32_t enrolled_password_handle_length,
-            const uint8_t *provided_password, uint32_t provided_password_length,
-            uint8_t **auth_token, uint32_t *auth_token_length, bool *request_reenroll) = 0;
+                                const uint8_t* enrolled_password_handle,
+                                uint32_t enrolled_password_handle_length,
+                                const uint8_t* provided_password, uint32_t provided_password_length,
+                                uint8_t** auth_token, uint32_t* auth_token_length,
+                                bool* request_reenroll) = 0;
     /**
      * Returns the secure user ID for the provided android user
      */
@@ -106,13 +107,12 @@ public:
 
 // ----------------------------------------------------------------------------
 
-class BnGateKeeperService: public BnInterface<IGateKeeperService> {
-public:
+class BnGateKeeperService : public BnInterface<IGateKeeperService> {
+  public:
     virtual status_t onTransact(uint32_t code, const Parcel& data, Parcel* reply,
-            uint32_t flags = 0);
+                                uint32_t flags = 0);
 };
 
-} // namespace android
+}  // namespace android
 
 #endif
-

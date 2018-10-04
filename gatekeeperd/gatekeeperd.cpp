@@ -29,10 +29,10 @@
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
 #include <binder/PermissionCache.h>
-#include <gatekeeper/password_handle.h> // for password_handle_t
+#include <gatekeeper/password_handle.h>  // for password_handle_t
 #include <hardware/gatekeeper.h>
 #include <hardware/hw_auth_token.h>
-#include <keystore/keystore.h> // For error code
+#include <keystore/keystore.h>  // For error code
 #include <keystore/keystore_return_types.h>
 #include <log/log.h>
 #include <utils/Log.h>
@@ -40,14 +40,14 @@
 
 #include "SoftGateKeeperDevice.h"
 
-#include <hidl/HidlSupport.h>
 #include <android/hardware/gatekeeper/1.0/IGatekeeper.h>
+#include <hidl/HidlSupport.h>
 
 using android::sp;
-using android::hardware::gatekeeper::V1_0::IGatekeeper;
-using android::hardware::gatekeeper::V1_0::GatekeeperStatusCode;
-using android::hardware::gatekeeper::V1_0::GatekeeperResponse;
 using android::hardware::Return;
+using android::hardware::gatekeeper::V1_0::GatekeeperResponse;
+using android::hardware::gatekeeper::V1_0::GatekeeperStatusCode;
+using android::hardware::gatekeeper::V1_0::IGatekeeper;
 
 namespace android {
 
@@ -55,7 +55,7 @@ static const String16 KEYGUARD_PERMISSION("android.permission.ACCESS_KEYGUARD_SE
 static const String16 DUMP_PERMISSION("android.permission.DUMP");
 
 class GateKeeperProxy : public BnGateKeeperService {
-public:
+  public:
     GateKeeperProxy() {
         clear_state_if_needed_done = false;
         hw_device = IGatekeeper::getService();
@@ -66,8 +66,7 @@ public:
         }
     }
 
-    virtual ~GateKeeperProxy() {
-    }
+    virtual ~GateKeeperProxy() {}
 
     void store_sid(uint32_t uid, uint64_t sid) {
         char filename[21];
@@ -89,7 +88,7 @@ public:
         if (mark_cold_boot()) {
             ALOGI("cold boot: clearing state");
             if (hw_device != nullptr) {
-                hw_device->deleteAllUsers([](const GatekeeperResponse &){});
+                hw_device->deleteAllUsers([](const GatekeeperResponse&) {});
             }
         }
 
@@ -97,7 +96,7 @@ public:
     }
 
     bool mark_cold_boot() {
-        const char *filename = ".coldboot";
+        const char* filename = ".coldboot";
         if (access(filename, F_OK) == -1) {
             int fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
             if (fd < 0) {
@@ -138,11 +137,11 @@ public:
         }
     }
 
-    virtual int enroll(uint32_t uid,
-            const uint8_t *current_password_handle, uint32_t current_password_handle_length,
-            const uint8_t *current_password, uint32_t current_password_length,
-            const uint8_t *desired_password, uint32_t desired_password_length,
-            uint8_t **enrolled_password_handle, uint32_t *enrolled_password_handle_length) {
+    virtual int enroll(uint32_t uid, const uint8_t* current_password_handle,
+                       uint32_t current_password_handle_length, const uint8_t* current_password,
+                       uint32_t current_password_length, const uint8_t* desired_password,
+                       uint32_t desired_password_length, uint8_t** enrolled_password_handle,
+                       uint32_t* enrolled_password_handle_length) {
         IPCThreadState* ipc = IPCThreadState::self();
         const int calling_pid = ipc->getCallingPid();
         const int calling_uid = ipc->getCallingUid();
@@ -159,8 +158,8 @@ public:
 
         int ret;
         if (hw_device != nullptr) {
-            const gatekeeper::password_handle_t *handle =
-                    reinterpret_cast<const gatekeeper::password_handle_t *>(current_password_handle);
+            const gatekeeper::password_handle_t* handle =
+                    reinterpret_cast<const gatekeeper::password_handle_t*>(current_password_handle);
 
             if (handle != NULL && handle->version != 0 && !handle->hardware_backed) {
                 // handle is being re-enrolled from a software version. HAL probably won't accept
@@ -175,79 +174,81 @@ public:
             curPwdHandle.setToExternal(const_cast<uint8_t*>(current_password_handle),
                                        current_password_handle_length);
             android::hardware::hidl_vec<uint8_t> curPwd;
-            curPwd.setToExternal(const_cast<uint8_t*>(current_password),
-                                 current_password_length);
+            curPwd.setToExternal(const_cast<uint8_t*>(current_password), current_password_length);
             android::hardware::hidl_vec<uint8_t> newPwd;
-            newPwd.setToExternal(const_cast<uint8_t*>(desired_password),
-                                 desired_password_length);
+            newPwd.setToExternal(const_cast<uint8_t*>(desired_password), desired_password_length);
 
-            Return<void> hwRes = hw_device->enroll(uid, curPwdHandle, curPwd, newPwd,
-                              [&ret, enrolled_password_handle, enrolled_password_handle_length]
-                                   (const GatekeeperResponse &rsp) {
-                ret = static_cast<int>(rsp.code); // propagate errors
-                if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
-                    if (enrolled_password_handle != nullptr &&
-                        enrolled_password_handle_length != nullptr) {
-                        *enrolled_password_handle = new uint8_t[rsp.data.size()];
-                        *enrolled_password_handle_length = rsp.data.size();
-                        memcpy(*enrolled_password_handle, rsp.data.data(),
-                               *enrolled_password_handle_length);
-                    }
-                    ret = 0; // all success states are reported as 0
-                } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT && rsp.timeout > 0) {
-                    ret = rsp.timeout;
-                }
-            });
+            Return<void> hwRes = hw_device->enroll(
+                    uid, curPwdHandle, curPwd, newPwd,
+                    [&ret, enrolled_password_handle,
+                     enrolled_password_handle_length](const GatekeeperResponse& rsp) {
+                        ret = static_cast<int>(rsp.code);  // propagate errors
+                        if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
+                            if (enrolled_password_handle != nullptr &&
+                                enrolled_password_handle_length != nullptr) {
+                                *enrolled_password_handle = new uint8_t[rsp.data.size()];
+                                *enrolled_password_handle_length = rsp.data.size();
+                                memcpy(*enrolled_password_handle, rsp.data.data(),
+                                       *enrolled_password_handle_length);
+                            }
+                            ret = 0;  // all success states are reported as 0
+                        } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
+                                   rsp.timeout > 0) {
+                            ret = rsp.timeout;
+                        }
+                    });
             if (!hwRes.isOk()) {
                 ALOGE("enroll transaction failed\n");
                 ret = -1;
             }
         } else {
-            ret = soft_device->enroll(uid,
-                    current_password_handle, current_password_handle_length,
-                    current_password, current_password_length,
-                    desired_password, desired_password_length,
-                    enrolled_password_handle, enrolled_password_handle_length);
+            ret = soft_device->enroll(uid, current_password_handle, current_password_handle_length,
+                                      current_password, current_password_length, desired_password,
+                                      desired_password_length, enrolled_password_handle,
+                                      enrolled_password_handle_length);
         }
 
-        if (ret == GATEKEEPER_RESPONSE_OK && (*enrolled_password_handle == nullptr ||
-            *enrolled_password_handle_length != sizeof(password_handle_t))) {
+        if (ret == GATEKEEPER_RESPONSE_OK &&
+            (*enrolled_password_handle == nullptr ||
+             *enrolled_password_handle_length != sizeof(password_handle_t))) {
             ret = GATEKEEPER_RESPONSE_ERROR;
-            ALOGE("HAL: password_handle=%p size_of_handle=%" PRIu32 "\n",
-                  *enrolled_password_handle, *enrolled_password_handle_length);
+            ALOGE("HAL: password_handle=%p size_of_handle=%" PRIu32 "\n", *enrolled_password_handle,
+                  *enrolled_password_handle_length);
         }
 
         if (ret == GATEKEEPER_RESPONSE_OK) {
-            gatekeeper::password_handle_t *handle =
-                    reinterpret_cast<gatekeeper::password_handle_t *>(*enrolled_password_handle);
+            gatekeeper::password_handle_t* handle =
+                    reinterpret_cast<gatekeeper::password_handle_t*>(*enrolled_password_handle);
             store_sid(uid, handle->user_id);
             bool rr;
 
             // immediately verify this password so we don't ask the user to enter it again
             // if they just created it.
             verify(uid, *enrolled_password_handle, sizeof(password_handle_t), desired_password,
-                    desired_password_length, &rr);
+                   desired_password_length, &rr);
         }
 
         return ret;
     }
 
-    virtual int verify(uint32_t uid,
-            const uint8_t *enrolled_password_handle, uint32_t enrolled_password_handle_length,
-            const uint8_t *provided_password, uint32_t provided_password_length, bool *request_reenroll) {
-        uint8_t *auth_token = nullptr;
+    virtual int verify(uint32_t uid, const uint8_t* enrolled_password_handle,
+                       uint32_t enrolled_password_handle_length, const uint8_t* provided_password,
+                       uint32_t provided_password_length, bool* request_reenroll) {
+        uint8_t* auth_token = nullptr;
         uint32_t auth_token_length;
         int ret = verifyChallenge(uid, 0, enrolled_password_handle, enrolled_password_handle_length,
-                provided_password, provided_password_length,
-                &auth_token, &auth_token_length, request_reenroll);
-        delete [] auth_token;
+                                  provided_password, provided_password_length, &auth_token,
+                                  &auth_token_length, request_reenroll);
+        delete[] auth_token;
         return ret;
     }
 
     virtual int verifyChallenge(uint32_t uid, uint64_t challenge,
-            const uint8_t *enrolled_password_handle, uint32_t enrolled_password_handle_length,
-            const uint8_t *provided_password, uint32_t provided_password_length,
-            uint8_t **auth_token, uint32_t *auth_token_length, bool *request_reenroll) {
+                                const uint8_t* enrolled_password_handle,
+                                uint32_t enrolled_password_handle_length,
+                                const uint8_t* provided_password, uint32_t provided_password_length,
+                                uint8_t** auth_token, uint32_t* auth_token_length,
+                                bool* request_reenroll) {
         IPCThreadState* ipc = IPCThreadState::self();
         const int calling_pid = ipc->getCallingPid();
         const int calling_uid = ipc->getCallingUid();
@@ -256,13 +257,13 @@ public:
         }
 
         // can't verify if we're missing either param
-        if ((enrolled_password_handle_length | provided_password_length) == 0)
-            return -EINVAL;
+        if ((enrolled_password_handle_length | provided_password_length) == 0) return -EINVAL;
 
         int ret;
         if (hw_device != nullptr) {
-            const gatekeeper::password_handle_t *handle =
-                    reinterpret_cast<const gatekeeper::password_handle_t *>(enrolled_password_handle);
+            const gatekeeper::password_handle_t* handle =
+                    reinterpret_cast<const gatekeeper::password_handle_t*>(
+                            enrolled_password_handle);
             // handle version 0 does not have hardware backed flag, and thus cannot be upgraded to
             // a HAL if there was none before
             if (handle->version == 0 || handle->hardware_backed) {
@@ -272,24 +273,26 @@ public:
                 android::hardware::hidl_vec<uint8_t> enteredPwd;
                 enteredPwd.setToExternal(const_cast<uint8_t*>(provided_password),
                                          provided_password_length);
-                Return<void> hwRes = hw_device->verify(uid, challenge, curPwdHandle, enteredPwd,
-                                        [&ret, request_reenroll, auth_token, auth_token_length]
-                                             (const GatekeeperResponse &rsp) {
-                    ret = static_cast<int>(rsp.code); // propagate errors
-                    if (auth_token != nullptr && auth_token_length != nullptr &&
-                        rsp.code >= GatekeeperStatusCode::STATUS_OK) {
-                        *auth_token = new uint8_t[rsp.data.size()];
-                        *auth_token_length = rsp.data.size();
-                        memcpy(*auth_token, rsp.data.data(), *auth_token_length);
-                        if (request_reenroll != nullptr) {
-                            *request_reenroll = (rsp.code == GatekeeperStatusCode::STATUS_REENROLL);
-                        }
-                        ret = 0; // all success states are reported as 0
-                    } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
-                               rsp.timeout > 0) {
-                        ret = rsp.timeout;
-                    }
-                });
+                Return<void> hwRes = hw_device->verify(
+                        uid, challenge, curPwdHandle, enteredPwd,
+                        [&ret, request_reenroll, auth_token,
+                         auth_token_length](const GatekeeperResponse& rsp) {
+                            ret = static_cast<int>(rsp.code);  // propagate errors
+                            if (auth_token != nullptr && auth_token_length != nullptr &&
+                                rsp.code >= GatekeeperStatusCode::STATUS_OK) {
+                                *auth_token = new uint8_t[rsp.data.size()];
+                                *auth_token_length = rsp.data.size();
+                                memcpy(*auth_token, rsp.data.data(), *auth_token_length);
+                                if (request_reenroll != nullptr) {
+                                    *request_reenroll =
+                                            (rsp.code == GatekeeperStatusCode::STATUS_REENROLL);
+                                }
+                                ret = 0;  // all success states are reported as 0
+                            } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
+                                       rsp.timeout > 0) {
+                                ret = rsp.timeout;
+                            }
+                        });
                 if (!hwRes.isOk()) {
                     ALOGE("verify transaction failed\n");
                     ret = -1;
@@ -297,10 +300,10 @@ public:
             } else {
                 // upgrade scenario, a HAL has been added to this device where there was none before
                 SoftGateKeeperDevice soft_dev;
-                ret = soft_dev.verify(uid, challenge,
-                    enrolled_password_handle, enrolled_password_handle_length,
-                    provided_password, provided_password_length, auth_token, auth_token_length,
-                    request_reenroll);
+                ret = soft_dev.verify(uid, challenge, enrolled_password_handle,
+                                      enrolled_password_handle_length, provided_password,
+                                      provided_password_length, auth_token, auth_token_length,
+                                      request_reenroll);
 
                 if (ret == 0) {
                     // success! re-enroll with HAL
@@ -308,10 +311,10 @@ public:
                 }
             }
         } else {
-            ret = soft_device->verify(uid, challenge,
-                enrolled_password_handle, enrolled_password_handle_length,
-                provided_password, provided_password_length, auth_token, auth_token_length,
-                request_reenroll);
+            ret = soft_device->verify(uid, challenge, enrolled_password_handle,
+                                      enrolled_password_handle_length, provided_password,
+                                      provided_password_length, auth_token, auth_token_length,
+                                      request_reenroll);
         }
 
         if (ret == 0 && *auth_token != NULL && *auth_token_length > 0) {
@@ -319,7 +322,7 @@ public:
             sp<IServiceManager> sm = defaultServiceManager();
             sp<IBinder> binder = sm->getService(String16("android.security.keystore"));
             sp<security::IKeystoreService> service =
-                interface_cast<security::IKeystoreService>(binder);
+                    interface_cast<security::IKeystoreService>(binder);
             if (service != NULL) {
                 std::vector<uint8_t> auth_token_vector(*auth_token,
                                                        (*auth_token) + *auth_token_length);
@@ -334,8 +337,9 @@ public:
         }
 
         if (ret == 0) {
-            maybe_store_sid(uid, reinterpret_cast<const gatekeeper::password_handle_t *>(
-                        enrolled_password_handle)->user_id);
+            maybe_store_sid(uid, reinterpret_cast<const gatekeeper::password_handle_t*>(
+                                         enrolled_password_handle)
+                                         ->user_id);
         }
 
         return ret;
@@ -354,7 +358,7 @@ public:
         clear_sid(uid);
 
         if (hw_device != nullptr) {
-            hw_device->deleteUser(uid, [] (const GatekeeperResponse &){});
+            hw_device->deleteUser(uid, [](const GatekeeperResponse&) {});
         }
     }
 
@@ -370,7 +374,7 @@ public:
         clear_state_if_needed();
     }
 
-    virtual status_t dump(int fd, const Vector<String16> &) {
+    virtual status_t dump(int fd, const Vector<String16>&) {
         IPCThreadState* ipc = IPCThreadState::self();
         const int pid = ipc->getCallingPid();
         const int uid = ipc->getCallingUid();
@@ -379,23 +383,23 @@ public:
         }
 
         if (hw_device == NULL) {
-            const char *result = "Device not available";
+            const char* result = "Device not available";
             write(fd, result, strlen(result) + 1);
         } else {
-            const char *result = "OK";
+            const char* result = "OK";
             write(fd, result, strlen(result) + 1);
         }
 
         return NO_ERROR;
     }
 
-private:
+  private:
     sp<IGatekeeper> hw_device;
     std::unique_ptr<SoftGateKeeperDevice> soft_device;
 
     bool clear_state_if_needed_done;
 };
-}// namespace android
+}  // namespace android
 
 int main(int argc, char* argv[]) {
     ALOGI("Starting gatekeeperd...");

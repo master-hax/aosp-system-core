@@ -29,12 +29,10 @@ namespace android {
  * Software based GateKeeper implementation
  */
 class SoftGateKeeperDevice {
-public:
-    SoftGateKeeperDevice() {
-        impl_.reset(new SoftGateKeeper());
-    }
+  public:
+    SoftGateKeeperDevice() { impl_.reset(new SoftGateKeeper()); }
 
-   // Wrappers to translate the gatekeeper HAL API to the Kegyuard Messages API.
+    // Wrappers to translate the gatekeeper HAL API to the Kegyuard Messages API.
 
     /**
      * Enrolls password_payload, which should be derived from a user selected pin or password,
@@ -44,11 +42,11 @@ public:
      * Returns: 0 on success or an error code less than 0 on error.
      * On error, enrolled_password_handle will not be allocated.
      */
-    int enroll(uint32_t uid,
-            const uint8_t *current_password_handle, uint32_t current_password_handle_length,
-            const uint8_t *current_password, uint32_t current_password_length,
-            const uint8_t *desired_password, uint32_t desired_password_length,
-            uint8_t **enrolled_password_handle, uint32_t *enrolled_password_handle_length);
+    int enroll(uint32_t uid, const uint8_t* current_password_handle,
+               uint32_t current_password_handle_length, const uint8_t* current_password,
+               uint32_t current_password_length, const uint8_t* desired_password,
+               uint32_t desired_password_length, uint8_t** enrolled_password_handle,
+               uint32_t* enrolled_password_handle_length);
 
     /**
      * Verifies provided_password matches enrolled_password_handle.
@@ -63,14 +61,15 @@ public:
      * Returns: 0 on success or an error code less than 0 on error
      * On error, verification token will not be allocated
      */
-    int verify(uint32_t uid, uint64_t challenge,
-            const uint8_t *enrolled_password_handle, uint32_t enrolled_password_handle_length,
-            const uint8_t *provided_password, uint32_t provided_password_length,
-            uint8_t **auth_token, uint32_t *auth_token_length, bool *request_reenroll);
-private:
+    int verify(uint32_t uid, uint64_t challenge, const uint8_t* enrolled_password_handle,
+               uint32_t enrolled_password_handle_length, const uint8_t* provided_password,
+               uint32_t provided_password_length, uint8_t** auth_token, uint32_t* auth_token_length,
+               bool* request_reenroll);
+
+  private:
     std::unique_ptr<SoftGateKeeper> impl_;
 };
 
-} // namespace gatekeeper
+}  // namespace android
 
-#endif //SOFT_GATEKEEPER_DEVICE_H_
+#endif  // SOFT_GATEKEEPER_DEVICE_H_
