@@ -93,6 +93,30 @@
       "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79add7e2_f20a9819",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1545,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-05T22:28:31Z",
+      "side": 1,
+      "message": "Are you seeing them in logcat?  Does vold call this too?  Or just init and overlayfs?\n\nIf don\u0027t we have a \u0027rec\u0027 to play with for / or system, then this function won\u0027t have one either, since it\u0027s just iterating over the entries in the default fstab, so it isn\u0027t any worse than the current situation.",
+      "parentUuid": "a4777b00_3a579f52",
+      "range": {
+        "startLine": 1545,
+        "startChar": 8,
+        "endLine": 1545,
+        "endChar": 9
+      },
+      "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
