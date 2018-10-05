@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1e48bf7_74d43206",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1529,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-05T21:55:12Z",
+      "side": 1,
+      "message": "Although I have not experienced problems with this, it too could be spammy and could enjoy a similar improvement mechanism?",
+      "range": {
+        "startLine": 1529,
+        "startChar": 16,
+        "endLine": 1529,
+        "endChar": 88
+      },
+      "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f38ce826_50458cf1",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1545,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-05T21:55:12Z",
+      "side": 1,
+      "message": "I _know_ that the errno could be invalidated by another error in the above loop. In all situations where line 1519 spammed up with noise, the errno was correct. What I need to know is how important is the value of this errno? I opted for KISS b/c this is debugging and the reduction of the resolution of errno is the price to pay for \u0027less log lines\u0027.",
+      "range": {
+        "startLine": 1545,
+        "startChar": 8,
+        "endLine": 1545,
+        "endChar": 9
+      },
+      "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
