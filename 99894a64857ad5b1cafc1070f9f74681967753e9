@@ -16,6 +16,24 @@
       "revId": "99894a64857ad5b1cafc1070f9f74681967753e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b43e99f5_0d0961f6",
+        "filename": "fastboot/fuzzy_fastboot/fixtures.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2018-10-05T22:56:58Z",
+      "side": 1,
+      "message": "This method is actually part of the test case setup and gets called before every test case so it may not be a good idea to add the log here. I have added the log to the actual test cases in main.cpp.",
+      "parentUuid": "8f2bb5b4_3f809d9c",
+      "revId": "99894a64857ad5b1cafc1070f9f74681967753e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
