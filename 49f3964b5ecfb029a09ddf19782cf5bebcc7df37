@@ -45,6 +45,30 @@
       "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4822715_9bbe9b07",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1545,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-05T22:04:03Z",
+      "side": 1,
+      "message": "Not too sure how important it is; probably better to drop the \u0027P\u0027 here since it\u0027s not guaranteed to be right.\n\nHow actually spammy was this?  I approved this and all, but I do question how bad the situation was?  How rare are these errors?  I\u0027m guessing you\u0027re having trouble since this function checks every partition each time you\u0027re querying only a single one in overlayfs?\n\nAlternatively, could this function be split into two, with a separate one that takes a single fstab_rec as an input, since that\u0027s how you\u0027re using it for overlayfs.  Doesn\u0027t make sense to check the verity status of all partitions each time when you\u0027re querying one specific one anyway.  In that case, that function can not log, then the per-line logs of this function are a lot more tolerable.",
+      "parentUuid": "f38ce826_50458cf1",
+      "range": {
+        "startLine": 1545,
+        "startChar": 8,
+        "endLine": 1545,
+        "endChar": 9
+      },
+      "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
