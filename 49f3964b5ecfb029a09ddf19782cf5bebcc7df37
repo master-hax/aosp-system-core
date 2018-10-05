@@ -69,6 +69,30 @@
       "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4777b00_3a579f52",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1545,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-05T22:23:06Z",
+      "side": 1,
+      "message": "On blueline, it had a triplet times 3 for any system with verity disabled. After change, it reported 3 identical lines (which in the logger reduces to _one_ kind\u0027a since they are adjacent).\n\nWe could leave this bit of logging along, and get a major gain I guess if we could pass into this function the raw mount_point (to match with fstab-\u003erecs[i].mount_point), if nullptr do them all? We do not have a \u0027rec\u0027 to play with for \u0027/\u0027 or \"/system\" (or vroot) in first stage init, so I am getting real nervous about that!\n\nI will consider alternatives.",
+      "parentUuid": "e4822715_9bbe9b07",
+      "range": {
+        "startLine": 1545,
+        "startChar": 8,
+        "endLine": 1545,
+        "endChar": 9
+      },
+      "revId": "49f3964b5ecfb029a09ddf19782cf5bebcc7df37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
