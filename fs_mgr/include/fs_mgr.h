@@ -78,7 +78,8 @@ int fs_mgr_do_tmpfs_mount(const char *n_name);
 struct fstab_rec const* fs_mgr_get_crypt_entry(struct fstab const* fstab);
 void fs_mgr_get_crypt_info(struct fstab* fstab, char* key_loc, char* real_blk_device, size_t size);
 bool fs_mgr_load_verity_state(int* mode);
-bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> callback);
+bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> callback,
+                                fstab_rec* fsrec = nullptr);
 int fs_mgr_swapon_all(struct fstab *fstab);
 bool fs_mgr_update_logical_partition(struct fstab_rec* rec);
 

@@ -222,16 +222,17 @@ bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point) {
     return false;
 }
 
-bool fs_mgr_overlayfs_verity_enabled(const std::string& basename_mount_point) {
+bool fs_mgr_overlayfs_verity_enabled(fstab_rec* fsrec, const std::string& basename_mount_point) {
     auto found = false;
     fs_mgr_update_verity_state(
             [&basename_mount_point, &found](fstab_rec*, const char* mount_point, int, int) {
                 if (mount_point && (basename_mount_point == mount_point)) found = true;
-            });
+            },
+            fsrec);
     return found;
 }
 
-bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
+bool fs_mgr_wants_overlayfs(fstab_rec* fsrec) {
     if (!fsrec) return false;
 
     auto fsrec_mount_point = fsrec->mount_point;
@@ -254,7 +255,7 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
 
     if (!fs_mgr_overlayfs_enabled(fsrec)) return false;
 
-    return !fs_mgr_overlayfs_verity_enabled(android::base::Basename(fsrec_mount_point));
+    return !fs_mgr_overlayfs_verity_enabled(fsrec, android::base::Basename(fsrec_mount_point));
 }
 
 bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr) {
@@ -446,7 +447,7 @@ std::vector<std::string> fs_mgr_candidate_list(const fstab* fstab,
     if (!fstab) return mounts;
 
     for (auto i = 0; i < fstab->num_entries; i++) {
-        const auto fsrec = &fstab->recs[i];
+        auto fsrec = &fstab->recs[i];
         if (!fs_mgr_wants_overlayfs(fsrec)) continue;
         std::string new_mount_point(fs_mgr_mount_point(fstab, fsrec->mount_point));
         if (mount_point && (new_mount_point != mount_point)) continue;
@@ -472,7 +473,7 @@ std::vector<std::string> fs_mgr_candidate_list(const fstab* fstab,
         !fs_mgr_get_entry_for_mount_point(const_cast<struct fstab*>(fstab), "/") &&
         !fs_mgr_get_entry_for_mount_point(const_cast<struct fstab*>(fstab), "/system") &&
         (!mount_point || ("/system"s == mount_point)) &&
-        !fs_mgr_overlayfs_verity_enabled("system")) {
+        !fs_mgr_overlayfs_verity_enabled(nullptr, "system")) {
         mounts.emplace_back("/system");
     }
     return mounts;
