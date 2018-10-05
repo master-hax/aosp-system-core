@@ -37,6 +37,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <android-base/file.h>
@@ -1499,6 +1500,8 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
 
     bool system_root = android::base::GetProperty("ro.build.system_root_image", "") == "true";
 
+    std::vector<std::string> mount_points_not_found;
+
     for (int i = 0; i < fstab->num_entries; i++) {
         if (!fs_mgr_is_verified(&fstab->recs[i]) && !fs_mgr_is_avb(&fstab->recs[i])) {
             continue;
@@ -1513,7 +1516,7 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
         }
 
         if (dm.GetState(mount_point) == DmDeviceState::INVALID) {
-            PERROR << "Could not find verity device for mount point: " << mount_point;
+            mount_points_not_found.emplace_back(std::move(mount_point));
             continue;
         }
 
@@ -1537,6 +1540,10 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
         if (*status == 'C' || *status == 'V') {
             callback(&fstab->recs[i], mount_point.c_str(), mode, *status);
         }
+    }
+    if (!mount_points_not_found.empty()) {
+        PERROR << "Could not find verity device for mount point(s): "
+               << android::base::Join(mount_points_not_found, ' ');
     }
 
     return true;
