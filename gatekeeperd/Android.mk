@@ -19,9 +19,10 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_CFLAGS := -Wall -Wextra -Werror -Wunused
 LOCAL_SRC_FILES := \
-	SoftGateKeeperDevice.cpp \
 	IGateKeeperService.cpp \
-	gatekeeperd.cpp
+	SoftGateKeeperDevice.cpp \
+	gatekeeperd.cpp \
+	Gatekeeper1Wrapper.cpp \
 
 LOCAL_MODULE := gatekeeperd
 LOCAL_SHARED_LIBRARIES := \
@@ -37,7 +38,10 @@ LOCAL_SHARED_LIBRARIES := \
 	libhidlbase \
 	libhidltransport \
 	libhwbinder \
+	libkeymastercapabilitysupport \
 	android.hardware.gatekeeper@1.0 \
+	android.hardware.gatekeeper@2.0 \
+	android.hardware.keymaster_capability@1.0 \
 
 LOCAL_STATIC_LIBRARIES := libscrypt_static
 LOCAL_C_INCLUDES := external/scrypt/lib/crypto

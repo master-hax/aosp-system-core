@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <memory>
 
+#include <android/hardware/keymaster_capability/1.0/IKeymasterCapabilitySink.h>
 #include <android/security/IKeystoreService.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
@@ -32,22 +33,25 @@
 #include <gatekeeper/password_handle.h>  // for password_handle_t
 #include <hardware/gatekeeper.h>
 #include <hardware/hw_auth_token.h>
+#include <hidl/HidlSupport.h>
 #include <keystore/keystore.h>  // For error code
 #include <keystore/keystore_return_types.h>
 #include <log/log.h>
 #include <utils/Log.h>
 #include <utils/String16.h>
 
+#include "Gatekeeper1Wrapper.h"
 #include "SoftGateKeeperDevice.h"
 
-#include <android/hardware/gatekeeper/1.0/IGatekeeper.h>
-#include <hidl/HidlSupport.h>
+namespace gk1 = android::hardware::gatekeeper::V1_0;
+
+using namespace android::hardware::gatekeeper::V2_0;
+using namespace android::hardware::keymaster_capability::V1_0;
 
 using android::sp;
+using android::hardware::hidl_vec;
 using android::hardware::Return;
-using android::hardware::gatekeeper::V1_0::GatekeeperResponse;
-using android::hardware::gatekeeper::V1_0::GatekeeperStatusCode;
-using android::hardware::gatekeeper::V1_0::IGatekeeper;
+using gk1::GatekeeperStatusCode;
 
 namespace android {
 
@@ -58,7 +62,12 @@ class GateKeeperProxy : public BnGateKeeperService {
   public:
     GateKeeperProxy() {
         clear_state_if_needed_done = false;
+
         hw_device = IGatekeeper::getService();
+
+        if (hw_device == nullptr) {
+            hw_device = wrapGatekeeper1(gk1::IGatekeeper::getService());
+        }
 
         if (hw_device == nullptr) {
             ALOGW("falling back to software GateKeeper");
@@ -88,7 +97,7 @@ class GateKeeperProxy : public BnGateKeeperService {
         if (mark_cold_boot()) {
             ALOGI("cold boot: clearing state");
             if (hw_device != nullptr) {
-                hw_device->deleteAllUsers([](const GatekeeperResponse&) {});
+                hw_device->deleteAllUsers();
             }
         }
 
@@ -180,21 +189,22 @@ class GateKeeperProxy : public BnGateKeeperService {
 
             Return<void> hwRes = hw_device->enroll(
                     uid, curPwdHandle, curPwd, newPwd,
-                    [&ret, enrolled_password_handle,
-                     enrolled_password_handle_length](const GatekeeperResponse& rsp) {
-                        ret = static_cast<int>(rsp.code);  // propagate errors
-                        if (rsp.code >= GatekeeperStatusCode::STATUS_OK) {
+                    [&ret, enrolled_password_handle, enrolled_password_handle_length](
+                            GatekeeperStatusCode code, uint32_t timeout,
+                            const hidl_vec<uint8_t> new_password_handle) {
+                        ret = static_cast<int>(code);  // propagate errors
+                        if (code >= GatekeeperStatusCode::STATUS_OK) {
                             if (enrolled_password_handle != nullptr &&
                                 enrolled_password_handle_length != nullptr) {
-                                *enrolled_password_handle = new uint8_t[rsp.data.size()];
-                                *enrolled_password_handle_length = rsp.data.size();
-                                memcpy(*enrolled_password_handle, rsp.data.data(),
+                                *enrolled_password_handle = new uint8_t[new_password_handle.size()];
+                                *enrolled_password_handle_length = new_password_handle.size();
+                                memcpy(*enrolled_password_handle, new_password_handle.data(),
                                        *enrolled_password_handle_length);
                             }
                             ret = 0;  // all success states are reported as 0
-                        } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
-                                   rsp.timeout > 0) {
-                            ret = rsp.timeout;
+                        } else if (code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
+                                   timeout > 0) {
+                            ret = timeout;
                         }
                     });
             if (!hwRes.isOk()) {
@@ -260,6 +270,7 @@ class GateKeeperProxy : public BnGateKeeperService {
         if ((enrolled_password_handle_length | provided_password_length) == 0) return -EINVAL;
 
         int ret;
+        KeymasterCapability capability;
         if (hw_device != nullptr) {
             const gatekeeper::password_handle_t* handle =
                     reinterpret_cast<const gatekeeper::password_handle_t*>(
@@ -275,22 +286,20 @@ class GateKeeperProxy : public BnGateKeeperService {
                                          provided_password_length);
                 Return<void> hwRes = hw_device->verify(
                         uid, challenge, curPwdHandle, enteredPwd,
-                        [&ret, request_reenroll, auth_token,
-                         auth_token_length](const GatekeeperResponse& rsp) {
-                            ret = static_cast<int>(rsp.code);  // propagate errors
-                            if (auth_token != nullptr && auth_token_length != nullptr &&
-                                rsp.code >= GatekeeperStatusCode::STATUS_OK) {
-                                *auth_token = new uint8_t[rsp.data.size()];
-                                *auth_token_length = rsp.data.size();
-                                memcpy(*auth_token, rsp.data.data(), *auth_token_length);
-                                if (request_reenroll != nullptr) {
-                                    *request_reenroll =
-                                            (rsp.code == GatekeeperStatusCode::STATUS_REENROLL);
+                        [&ret, request_reenroll, &capability](
+                                GatekeeperStatusCode code, uint8_t timeout,
+                                const KeymasterCapability& cb_capability) {
+                            ret = static_cast<int>(code);  // propagate errors
+                            if (code >= GatekeeperStatusCode::STATUS_OK) {
+                                capability = cb_capability;
+                                if (request_reenroll != nullptr &&
+                                    code == GatekeeperStatusCode::STATUS_REENROLL) {
+                                    *request_reenroll = true;
                                 }
                                 ret = 0;  // all success states are reported as 0
-                            } else if (rsp.code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
-                                       rsp.timeout > 0) {
-                                ret = rsp.timeout;
+                            } else if (code == GatekeeperStatusCode::ERROR_RETRY_TIMEOUT &&
+                                       timeout > 0) {
+                                ret = timeout;
                             }
                         });
                 if (!hwRes.isOk()) {
@@ -302,8 +311,7 @@ class GateKeeperProxy : public BnGateKeeperService {
                 SoftGateKeeperDevice soft_dev;
                 ret = soft_dev.verify(uid, challenge, enrolled_password_handle,
                                       enrolled_password_handle_length, provided_password,
-                                      provided_password_length, auth_token, auth_token_length,
-                                      request_reenroll);
+                                      provided_password_length, &capability, request_reenroll);
 
                 if (ret == 0) {
                     // success! re-enroll with HAL
@@ -313,24 +321,16 @@ class GateKeeperProxy : public BnGateKeeperService {
         } else {
             ret = soft_device->verify(uid, challenge, enrolled_password_handle,
                                       enrolled_password_handle_length, provided_password,
-                                      provided_password_length, auth_token, auth_token_length,
-                                      request_reenroll);
+                                      provided_password_length, &capability, request_reenroll);
         }
 
         if (ret == 0 && *auth_token != NULL && *auth_token_length > 0) {
             // TODO: cache service?
-            sp<IServiceManager> sm = defaultServiceManager();
-            sp<IBinder> binder = sm->getService(String16("android.security.keystore"));
-            sp<security::IKeystoreService> service =
-                    interface_cast<security::IKeystoreService>(binder);
-            if (service != NULL) {
-                std::vector<uint8_t> auth_token_vector(*auth_token,
-                                                       (*auth_token) + *auth_token_length);
-                int result = 0;
-                auto binder_result = service->addAuthToken(auth_token_vector, &result);
-                if (!binder_result.isOk() || !keystore::KeyStoreServiceReturnCode(result).isOk()) {
-                    ALOGE("Failure sending auth token to KeyStore: %" PRId32, result);
-                }
+            sp<IKeymasterCapabilitySink> service = IKeymasterCapabilitySink::getService();
+            if (service != nullptr) {
+                int32_t rc = service->sendCapability(capability)
+                                     .withDefault(static_cast<int32_t>(ResponseCode::SYSTEM_ERROR));
+                if (rc < 0 || rc > 1) ALOGE("Failure sending auth token to KeyStore: %" PRId32, rc);
             } else {
                 ALOGE("Unable to communicate with KeyStore");
             }
@@ -358,7 +358,7 @@ class GateKeeperProxy : public BnGateKeeperService {
         clear_sid(uid);
 
         if (hw_device != nullptr) {
-            hw_device->deleteUser(uid, [](const GatekeeperResponse&) {});
+            hw_device->deleteUser(uid);
         }
     }
 
@@ -395,6 +395,7 @@ class GateKeeperProxy : public BnGateKeeperService {
 
   private:
     sp<IGatekeeper> hw_device;
+    sp<IKeymasterCapabilitySink> capability_sink;
     std::unique_ptr<SoftGateKeeperDevice> soft_device;
 
     bool clear_state_if_needed_done;

@@ -21,6 +21,8 @@
 
 #include <memory>
 
+#include <android/hardware/keymaster_capability/1.0/types.h>
+
 using namespace gatekeeper;
 
 namespace android {
@@ -63,7 +65,8 @@ class SoftGateKeeperDevice {
      */
     int verify(uint32_t uid, uint64_t challenge, const uint8_t* enrolled_password_handle,
                uint32_t enrolled_password_handle_length, const uint8_t* provided_password,
-               uint32_t provided_password_length, uint8_t** auth_token, uint32_t* auth_token_length,
+               uint32_t provided_password_length,
+               ::android::hardware::keymaster_capability::V1_0::KeymasterCapability* capability,
                bool* request_reenroll);
 
   private:

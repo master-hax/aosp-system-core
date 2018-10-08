@@ -16,7 +16,11 @@
 #include "SoftGateKeeperDevice.h"
 #include "SoftGateKeeper.h"
 
+#include <keymaster_capability/keymaster_capability_utils.h>
+
 namespace android {
+
+using namespace android::hardware::keymaster_capability::V1_0;
 
 int SoftGateKeeperDevice::enroll(uint32_t uid, const uint8_t* current_password_handle,
                                  uint32_t current_password_handle_length,
@@ -72,8 +76,8 @@ int SoftGateKeeperDevice::verify(uint32_t uid, uint64_t challenge,
                                  const uint8_t* enrolled_password_handle,
                                  uint32_t enrolled_password_handle_length,
                                  const uint8_t* provided_password,
-                                 uint32_t provided_password_length, uint8_t** auth_token,
-                                 uint32_t* auth_token_length, bool* request_reenroll) {
+                                 uint32_t provided_password_length, KeymasterCapability* capability,
+                                 bool* request_reenroll) {
     if (enrolled_password_handle == NULL || provided_password == NULL) {
         return -EINVAL;
     }
@@ -95,15 +99,17 @@ int SoftGateKeeperDevice::verify(uint32_t uid, uint64_t challenge,
         return -EINVAL;
     }
 
-    if (auth_token != NULL && auth_token_length != NULL) {
-        *auth_token = response.auth_token.buffer.release();
-        *auth_token_length = response.auth_token.length;
+    if (capability) {
+        hardware::hidl_vec<uint8_t> token;
+        token.setToExternal(response.auth_token.buffer.release(), response.auth_token.length);
+        *capability = hidlVec2KeymasterCapability(std::move(token));
     }
 
-    if (request_reenroll != NULL) {
+    if (request_reenroll) {
         *request_reenroll = response.request_reenroll;
     }
 
     return 0;
 }
+
 }  // namespace android
