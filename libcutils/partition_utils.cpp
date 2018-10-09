@@ -25,7 +25,7 @@
 
 #include <cutils/properties.h>
 
-static int only_one_char(char *buf, int len, char c)
+static int only_one_char(char *buf, int len, int c)
 {
     int i, ret;
 
