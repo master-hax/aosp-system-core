@@ -42,7 +42,7 @@ void FlushCommand::runSocketCommand(SocketClient* client) {
     LogTimeEntry::wrlock();
     LastLogTimes::iterator it = times.begin();
     while (it != times.end()) {
-        entry = (*it);
+        entry = it->get();
         if (entry->mClient == client) {
             if (!entry->isWatchingMultiple(mLogMask)) {
                 LogTimeEntry::unlock();
@@ -63,31 +63,31 @@ void FlushCommand::runSocketCommand(SocketClient* client) {
                 }
             }
             entry->triggerReader_Locked();
-            if (entry->runningReader_Locked()) {
-                LogTimeEntry::unlock();
-                return;
-            }
-            entry->incRef_Locked();
-            break;
+            LogTimeEntry::unlock();
+            return;
         }
         it++;
     }
 
-    if (it == times.end()) {
-        // Create LogTimeEntry in notifyNewLog() ?
-        if (mTail == (unsigned long)-1) {
-            LogTimeEntry::unlock();
-            return;
-        }
-        entry = new LogTimeEntry(mReader, client, mNonBlock, mTail, mLogMask,
-                                 mPid, mStart, mTimeout);
-        times.push_front(entry);
+    // if mTail == -1 this is a notification of an update, so do not create any
+    // new entries.
+    if (mTail == (unsigned long)-1) {
+        LogTimeEntry::unlock();
+        return;
+    }
+
+    auto new_log_entry = std::make_unique<LogTimeEntry>(
+        mReader, client, mNonBlock, mTail, mLogMask, mPid, mStart, mTimeout);
+    if (!new_log_entry->startReader_Locked()) {
+        mReader.release(client);
+        LogTimeEntry::unlock();
+        return;
     }
 
     client->incRef();
+    times.emplace_front(std::move(new_log_entry));
 
     // release client and entry reference counts once done
-    entry->startReader_Locked();
     LogTimeEntry::unlock();
 }
 
