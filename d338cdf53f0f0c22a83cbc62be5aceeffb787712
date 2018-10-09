@@ -34,6 +34,24 @@
       "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "039e7869_1c6e172b",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2018-10-09T00:57:20Z",
+      "side": 1,
+      "message": "Is it an artifact from pre-ninja times?",
+      "parentUuid": "23f017f8_23204308",
+      "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
