@@ -42,7 +42,7 @@ void FlushCommand::runSocketCommand(SocketClient* client) {
     LogTimeEntry::wrlock();
     LastLogTimes::iterator it = times.begin();
     while (it != times.end()) {
-        entry = (*it);
+        entry = it->get();
         if (entry->mClient == client) {
             if (!entry->isWatchingMultiple(mLogMask)) {
                 LogTimeEntry::unlock();
@@ -79,9 +79,10 @@ void FlushCommand::runSocketCommand(SocketClient* client) {
             LogTimeEntry::unlock();
             return;
         }
-        entry = new LogTimeEntry(mReader, client, mNonBlock, mTail, mLogMask,
-                                 mPid, mStart, mTimeout);
-        times.push_front(entry);
+        auto new_log_entry = std::make_unique<LogTimeEntry>(
+            mReader, client, mNonBlock, mTail, mLogMask, mPid, mStart, mTimeout);
+        entry = new_log_entry.get();
+        times.emplace_front(std::move(new_log_entry));
     }
 
     client->incRef();
