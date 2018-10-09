@@ -34,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 
 #ifdef _WIN32
 int mkstemp(char* template_name) {
@@ -170,4 +171,9 @@ void CapturedStdFd::Stop() {
   close(old_fd_);
   old_fd_ = -1;
   // Note: cannot restore prior setvbuf() setting.
+}
+
+bool IsFactoryRom() {
+  // This property should be undefined if and only if the product is factory ROM.
+  return android::base::GetIntProperty("ro.product.first_api_level", -1) == -1;
 }
