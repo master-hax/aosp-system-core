@@ -16,6 +16,24 @@
       "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23f017f8_23204308",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2018-10-09T00:56:29Z",
+      "side": 1,
+      "message": "Hmm, are you saying that the whole bcp_md5 thing can be removed?",
+      "parentUuid": "9d6f673e_c1377432",
+      "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
