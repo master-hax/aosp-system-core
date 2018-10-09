@@ -33,6 +33,8 @@
 
 #include <string>
 
+#include <android-base/properties.h>
+
 #ifdef _WIN32
 int mkstemp(char* template_name) {
   if (_mktemp(template_name) == nullptr) {
@@ -148,4 +150,9 @@ void CapturedStderr::reset() {
   CHECK_NE(-1, dup2(old_stderr_, STDERR_FILENO));
   CHECK_EQ(0, close(old_stderr_));
   // Note: cannot restore prior setvbuf() setting.
+}
+
+bool IsFactoryRom() {
+  // This property should be undefined if and only if the product is factory ROM.
+  return android::base::GetIntProperty("ro.product.first_api_level", -1) == -1;
 }
