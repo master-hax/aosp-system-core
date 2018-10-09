@@ -52,6 +52,24 @@
       "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e34ddea6_595af3b9",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-10-09T00:58:16Z",
+      "side": 1,
+      "message": "Yeah, I think it predates the switch to ninja.",
+      "parentUuid": "23f017f8_23204308",
+      "revId": "d338cdf53f0f0c22a83cbc62be5aceeffb787712",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
