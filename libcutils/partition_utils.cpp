@@ -61,7 +61,7 @@ int partition_wiped(char *source)
     }
 
     /* Check for all ones */
-    if (only_one_char(buf, sizeof(buf), 0xff)) {
+    if (only_one_char(buf, sizeof(buf), '\xff')) {
        return 1;
     }
 
