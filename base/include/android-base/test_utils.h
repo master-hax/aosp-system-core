@@ -71,6 +71,8 @@ class CapturedStderr {
   DISALLOW_COPY_AND_ASSIGN(CapturedStderr);
 };
 
+bool IsFactoryRom();
+
 #define ASSERT_MATCH(str, pattern)                                             \
   do {                                                                         \
     if (!std::regex_search((str), std::regex((pattern)))) {                    \
