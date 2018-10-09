@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d122d077_43e4655a",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1492,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-09T21:10:11Z",
+      "side": 1,
+      "message": "Do you mean you want this replaced with\n\n    return fs_mgr_get_entry_for_mount_point(const_cast\u003cstruct fstab*\u003e(fstab), \"/system\") \u003d\u003d nullptr;\n\n?",
+      "range": {
+        "startLine": 1487,
+        "startChar": 0,
+        "endLine": 1492,
+        "endChar": 16
+      },
+      "revId": "88c7553d5ad12a12107057516e422b395fd2fcab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
