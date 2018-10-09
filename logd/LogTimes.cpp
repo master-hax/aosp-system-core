@@ -87,17 +87,8 @@ void LogTimeEntry::threadStop(void* obj) {
 
     if (me->isError_Locked()) {
         LogReader& reader = me->mReader;
-        LastLogTimes& times = reader.logbuf().mTimes;
 
-        LastLogTimes::iterator it = times.begin();
-        while (it != times.end()) {
-            if (*it == me) {
-                times.erase(it);
-                me->release_nodelete_Locked();
-                break;
-            }
-            it++;
-        }
+        me->release_nodelete_Locked();
 
         me->mClient = nullptr;
         reader.release(client);
@@ -283,4 +274,18 @@ stop:
 
 void LogTimeEntry::cleanSkip_Locked(void) {
     memset(skipAhead, 0, sizeof(skipAhead));
+}
+
+void LogTimeEntry::RemoveFromLastLogTimes() {
+    LastLogTimes& times = mReader.logbuf().mTimes;
+
+    auto it =
+        std::find_if(times.begin(), times.end(),
+                     [this](const auto& other) { return other.get() == this; });
+
+    if (it == times.end()) {
+        return;
+    }
+
+    times.erase(it);
 }

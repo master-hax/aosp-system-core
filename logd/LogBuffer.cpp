@@ -105,7 +105,7 @@ void LogBuffer::init() {
 
     LastLogTimes::iterator times = mTimes.begin();
     while (times != mTimes.end()) {
-        LogTimeEntry* entry = (*times);
+        LogTimeEntry* entry = times->get();
         if (entry->owned_Locked()) {
             entry->triggerReader_Locked();
         }
@@ -409,7 +409,7 @@ void LogBuffer::log(LogBufferElement* elem) {
 
         LastLogTimes::iterator times = mTimes.begin();
         while (times != mTimes.end()) {
-            LogTimeEntry* entry = (*times);
+            LogTimeEntry* entry = times->get();
             if (entry->owned_Locked()) {
                 if (!entry->mNonBlock) {
                     end_always = true;
@@ -710,7 +710,7 @@ bool LogBuffer::prune(log_id_t id, unsigned long pruneRows, uid_t caller_uid) {
     // Region locked?
     LastLogTimes::iterator times = mTimes.begin();
     while (times != mTimes.end()) {
-        LogTimeEntry* entry = (*times);
+        LogTimeEntry* entry = times->get();
         if (entry->owned_Locked() && entry->isWatching(id) &&
             (!oldest || (oldest->mStart > entry->mStart) ||
              ((oldest->mStart == entry->mStart) &&
@@ -1052,7 +1052,7 @@ bool LogBuffer::clear(log_id_t id, uid_t uid) {
                 LogTimeEntry::wrlock();
                 LastLogTimes::iterator times = mTimes.begin();
                 while (times != mTimes.end()) {
-                    LogTimeEntry* entry = (*times);
+                    LogTimeEntry* entry = times->get();
                     // Killer punch
                     if (entry->owned_Locked() && entry->isWatching(id)) {
                         entry->release_Locked();

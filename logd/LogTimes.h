@@ -22,6 +22,7 @@
 #include <time.h>
 
 #include <list>
+#include <memory>
 
 #include <log/log.h>
 #include <sysutils/SocketClient.h>
@@ -101,7 +102,7 @@ class LogTimeEntry {
             return;
         }
         // No one else is holding a reference to this
-        delete this;
+        RemoveFromLastLogTimes();
     }
 
     // Called to mark socket in jeopardy
@@ -133,7 +134,7 @@ class LogTimeEntry {
             return;
         }
         // No one else is holding a reference to this
-        delete this;
+        RemoveFromLastLogTimes();
     }
     bool isWatching(log_id_t id) const {
         return mLogMask & (1 << id);
@@ -144,8 +145,11 @@ class LogTimeEntry {
     // flushTo filter callbacks
     static int FilterFirstPass(const LogBufferElement* element, void* me);
     static int FilterSecondPass(const LogBufferElement* element, void* me);
+
+   private:
+    void RemoveFromLastLogTimes();
 };
 
-typedef std::list<LogTimeEntry*> LastLogTimes;
+typedef std::list<std::unique_ptr<LogTimeEntry>> LastLogTimes;
 
 #endif  // _LOGD_LOG_TIMES_H__

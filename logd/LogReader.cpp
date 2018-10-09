@@ -215,7 +215,7 @@ void LogReader::doSocketDelete(SocketClient* cli) {
     LogTimeEntry::wrlock();
     LastLogTimes::iterator it = times.begin();
     while (it != times.end()) {
-        LogTimeEntry* entry = (*it);
+        LogTimeEntry* entry = it->get();
         if (entry->mClient == cli) {
             times.erase(it);
             entry->release_Locked();
