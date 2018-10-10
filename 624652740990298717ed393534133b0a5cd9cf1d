@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81eab713_ce458c7f",
+        "filename": "fastboot/device/fastboot_device.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-10T19:02:11Z",
+      "side": 1,
+      "message": "Either std::move(active_slot) or pass active_slot as a const std::string\u0026.",
+      "range": {
+        "startLine": 59,
+        "startChar": 67,
+        "endLine": 59,
+        "endChar": 78
+      },
+      "revId": "624652740990298717ed393534133b0a5cd9cf1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
