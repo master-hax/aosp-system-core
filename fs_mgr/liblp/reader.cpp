@@ -123,7 +123,7 @@ bool ParseGeometry(const void* buffer, LpMetadataGeometry* geometry) {
 bool ReadPrimaryGeometry(int fd, LpMetadataGeometry* geometry) {
     // Read the first 4096 bytes.
     std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(LP_METADATA_GEOMETRY_SIZE);
-    if (SeekFile64(fd, 0, SEEK_SET) < 0) {
+    if (SeekFile64(fd, GetPrimaryGeometryOffset(), SEEK_SET) < 0) {
         PERROR << __PRETTY_FUNCTION__ << "lseek failed";
         return false;
     }
@@ -137,7 +137,7 @@ bool ReadPrimaryGeometry(int fd, LpMetadataGeometry* geometry) {
 bool ReadBackupGeometry(int fd, LpMetadataGeometry* geometry) {
     // Try the backup copy in the last 4096 bytes.
     std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(LP_METADATA_GEOMETRY_SIZE);
-    if (SeekFile64(fd, -LP_METADATA_GEOMETRY_SIZE, SEEK_END) < 0) {
+    if (SeekFile64(fd, GetBackupGeometryOffset(), SEEK_SET) < 0) {
         PERROR << __PRETTY_FUNCTION__ << "lseek failed, offset " << -LP_METADATA_GEOMETRY_SIZE;
         return false;
     }
@@ -323,7 +323,7 @@ std::unique_ptr<LpMetadata> ReadPrimaryMetadata(int fd, const LpMetadataGeometry
 std::unique_ptr<LpMetadata> ReadBackupMetadata(int fd, const LpMetadataGeometry& geometry,
                                                uint32_t slot_number) {
     int64_t offset = GetBackupMetadataOffset(geometry, slot_number);
-    if (SeekFile64(fd, offset, SEEK_END) < 0) {
+    if (SeekFile64(fd, offset, SEEK_SET) < 0) {
         PERROR << __PRETTY_FUNCTION__ << "lseek failed: offset " << offset;
         return nullptr;
     }
