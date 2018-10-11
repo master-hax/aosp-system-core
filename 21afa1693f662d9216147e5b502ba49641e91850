@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "6c262576_404e555f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-11T22:07:37Z",
+      "side": 1,
+      "message": "The thought did occur to me. And yes I prototypes that once and did not like how it shaped.\n\nHowever, I wanted to respect the fstab supplied, save for the small problem that the missing \u0027/\u0027 entry was causing on the system as root devices. A change to only focus on the fstab supplied solved a whole series of other problems (when the fs_mgr_fstab_default() contained entries that were not to be mounted) and thus made the logic of when to overlay and when not to overlay very complicated. So we only enumerate the fstab supplied.\n\n(one of the problems was /product_services would get an overlay _before_ product_services mounted in mount_all --early; /mnt/vendor/firmware would also create a conundrum etc).\n\nIf I play games with supplied fstab and fs_mgr_fstab_default() to pick up \u0027/\u0027 if missing in the supplied fstab, it just gets uglier than if it doesn\u0027t have system (/system or /) and we just add the string if not in verified state.",
+      "parentUuid": "2a53ef3b_64c1f227",
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f8e26294_2fb61067",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
@@ -123,6 +141,30 @@
       "revId": "21afa1693f662d9216147e5b502ba49641e91850",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b42b6ecd_bdba347a",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-11T22:07:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b06820d8_c1e57744",
+      "range": {
+        "startLine": 549,
+        "startChar": 58,
+        "endLine": 549,
+        "endChar": 60
+      },
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
