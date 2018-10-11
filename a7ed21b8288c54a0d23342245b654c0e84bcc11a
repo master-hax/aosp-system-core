@@ -33,6 +33,23 @@
       "revId": "a7ed21b8288c54a0d23342245b654c0e84bcc11a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "955dbf50_b2770b37",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1362721
+      },
+      "writtenOn": "2018-10-11T15:01:51Z",
+      "side": 1,
+      "message": "rc !\u003d 0, or are you trying to self document that rc can be negative or positive?",
+      "revId": "a7ed21b8288c54a0d23342245b654c0e84bcc11a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
