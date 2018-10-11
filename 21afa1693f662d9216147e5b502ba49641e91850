@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4e0a813_3740505e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-11T21:00:38Z",
+      "side": 1,
+      "message": "overlayfs is a new feature.  It\u0027s not unreasonable to require that / or /system are in the fstab at this point and not mount the overlay on /system if it isn\u0027t.  That\u0027s the safe fallback.",
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8e26294_2fb61067",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-11T21:00:38Z",
+      "side": 1,
+      "message": "Actually reading this code/comment now: shouldn\u0027t this be \u0027\u003d\u003d\u0027 ?  As in if \u0027system\u0027 isn\u0027t found in the list of verity partitions, return?",
+      "range": {
+        "startLine": 549,
+        "startChar": 58,
+        "endLine": 549,
+        "endChar": 60
+      },
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
