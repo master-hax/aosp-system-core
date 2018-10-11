@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "bc35f97e_deb0a4a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-11T22:13:31Z",
+      "side": 1,
+      "message": "I guess moral of the story is we do need to just copy the full fstab in both locations then all this pain goes away, right?",
+      "parentUuid": "6c262576_404e555f",
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f8e26294_2fb61067",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
