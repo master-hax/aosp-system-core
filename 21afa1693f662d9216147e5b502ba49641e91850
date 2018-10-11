@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d3e3209a_695e25b6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-11T21:40:59Z",
+      "side": 1,
+      "message": "If dt_table had /, we may get \u0027sick\u0027 ... as it already is mounted ...\n\nWe do an overlayfs for /system for /. overlayfs does not provide coverage of any files/dirs in the root directory because if _one_ overlayfs was landed overtop /, it would take _everything_ (ueventd -\u003e /dev/ for example, writes to /proc or /sys etc).\n\nFor system as root, this is the point where we have to manufacture the entry.",
+      "parentUuid": "d4e0a813_3740505e",
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f8e26294_2fb61067",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2018-10-11T21:00:38Z",
       "side": 1,
       "message": "Actually reading this code/comment now: shouldn\u0027t this be \u0027\u003d\u003d\u0027 ?  As in if \u0027system\u0027 isn\u0027t found in the list of verity partitions, return?",
+      "range": {
+        "startLine": 549,
+        "startChar": 58,
+        "endLine": 549,
+        "endChar": 60
+      },
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf77ce98_4b61234f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-11T21:40:59Z",
+      "side": 1,
+      "message": "If \"system\" is found in verity, then we do not overlayfs it. Basically one can only do adb remount on a system that has already gotten adb disable-verity. See line 522 through 525, same operation, just on a manufactured \"system\".",
+      "parentUuid": "f8e26294_2fb61067",
       "range": {
         "startLine": 549,
         "startChar": 58,
