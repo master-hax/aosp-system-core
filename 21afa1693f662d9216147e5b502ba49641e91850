@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "2a53ef3b_64c1f227",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-11T21:50:51Z",
+      "side": 1,
+      "message": "But we will have it in the fstab on vendor.  Instead of faking it, why not just load that fstab and grab it from there?",
+      "parentUuid": "d3e3209a_695e25b6",
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f8e26294_2fb61067",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
@@ -72,6 +90,30 @@
       "side": 1,
       "message": "If \"system\" is found in verity, then we do not overlayfs it. Basically one can only do adb remount on a system that has already gotten adb disable-verity. See line 522 through 525, same operation, just on a manufactured \"system\".",
       "parentUuid": "f8e26294_2fb61067",
+      "range": {
+        "startLine": 549,
+        "startChar": 58,
+        "endLine": 549,
+        "endChar": 60
+      },
+      "revId": "21afa1693f662d9216147e5b502ba49641e91850",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b06820d8_c1e57744",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-11T21:50:51Z",
+      "side": 1,
+      "message": "Right, nevermind me.",
+      "parentUuid": "cf77ce98_4b61234f",
       "range": {
         "startLine": 549,
         "startChar": 58,
