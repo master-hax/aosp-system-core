@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc35b390_1bd477d9",
+        "filename": "gatekeeperd/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1362721
+      },
+      "writtenOn": "2018-10-11T15:00:16Z",
+      "side": 1,
+      "message": "nit: Make alphabetical.",
+      "revId": "a7ed21b8288c54a0d23342245b654c0e84bcc11a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78e516cb_bfc54097",
+        "filename": "gatekeeperd/SoftGateKeeperDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1362721
+      },
+      "writtenOn": "2018-10-11T15:00:16Z",
+      "side": 1,
+      "message": "request_reenroll !\u003d nullptr ?",
+      "revId": "a7ed21b8288c54a0d23342245b654c0e84bcc11a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
