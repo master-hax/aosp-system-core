@@ -232,10 +232,14 @@ class MetadataBuilder {
     PartitionGroup* FindGroup(const std::string& group_name) const;
     uint64_t TotalSizeOfGroup(PartitionGroup* group) const;
 
+    const LpMetadataBlockDevice& super_device() const { return block_devices_[0]; }
+    LpMetadataBlockDevice& super_device() { return block_devices_[0]; }
+
     LpMetadataGeometry geometry_;
     LpMetadataHeader header_;
     std::vector<std::unique_ptr<Partition>> partitions_;
     std::vector<std::unique_ptr<PartitionGroup>> groups_;
+    std::vector<LpMetadataBlockDevice> block_devices_;
 };
 
 // Read BlockDeviceInfo for a given block device. This always returns false
