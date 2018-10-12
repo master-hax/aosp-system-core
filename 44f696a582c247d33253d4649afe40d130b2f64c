@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9e09803_600c0a8e",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-12T17:43:18Z",
+      "side": 1,
+      "message": "We should probably save/restore errno too.  I\u0027ve seen that done by a few users and would make this more generally usable.",
+      "revId": "44f696a582c247d33253d4649afe40d130b2f64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
