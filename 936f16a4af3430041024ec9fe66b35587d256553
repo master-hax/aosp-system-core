@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba504bfc_5eed44e4",
+        "filename": "fs_mgr/liblp/builder_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-12T17:31:28Z",
+      "side": 1,
+      "message": "Thanks for the comment, that helps a _lot_ for future selves.\n\nSo the base 24 is commented and assumes a relationship with the code(s) behavior, but if you had 24 + (LP_PARTITION_RESERVED_BYTES / 512) here (and in all the formulas below) you would not need to rewrite the test if at some future date we set LP_PARTITION_RESERVED_BYTES to 64K?\n\nHowever, one thing a test does is make sure we are getting what is expected _independent_ of the code it is testing. Meaning that if someone changed LP_PARTITION_RESERVED_BYTES we want the test to fail so that the author has a strong signal that he is breaking compatibility. I assume because you did not make this value directly formulaic, that is the intent?",
+      "range": {
+        "startLine": 55,
+        "startChar": 41,
+        "endLine": 55,
+        "endChar": 43
+      },
+      "revId": "936f16a4af3430041024ec9fe66b35587d256553",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
