@@ -22,6 +22,30 @@
       "revId": "8e4e9c45631430f6ddc7eae0fbf8eb84b9eb2f4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "620749f7_c100182c",
+        "filename": "fs_mgr/liblp/io_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 0,
+      "message": "Yeah, there are probably more stale comments lingering I haven\u0027t caught yet.",
+      "parentUuid": "c55b072e_e5ab8342",
+      "range": {
+        "startLine": 296,
+        "startChar": 19,
+        "endLine": 296,
+        "endChar": 39
+      },
+      "revId": "8e4e9c45631430f6ddc7eae0fbf8eb84b9eb2f4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

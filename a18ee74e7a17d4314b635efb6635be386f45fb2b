@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "844f5572_074a5906",
+        "filename": "fs_mgr/liblp/builder_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "306115bd_fb9870d9",
+      "range": {
+        "startLine": 52,
+        "startChar": 41,
+        "endLine": 52,
+        "endChar": 43
+      },
+      "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "387da3e0_03cfb105",
         "filename": "fs_mgr/liblp/images.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58a569aa_8c26200c",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "387da3e0_03cfb105",
+      "range": {
+        "startLine": 33,
+        "startChar": 41,
+        "endLine": 33,
+        "endChar": 42
+      },
+      "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "c5e7917b_524bdc35",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "668094b2_601ad910",
+      "range": {
+        "startLine": 37,
+        "startChar": 41,
+        "endLine": 37,
+        "endChar": 46
+      },
+      "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "95b26b22_0c9e4fba",
         "filename": "fs_mgr/liblp/reader.cpp",
         "patchSetId": 2
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "d6c2dee9_23a44d4b",
+        "filename": "fs_mgr/liblp/reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95b26b22_0c9e4fba",
+      "range": {
+        "startLine": 126,
+        "startChar": 41,
+        "endLine": 126,
+        "endChar": 42
+      },
+      "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "686bb429_8e9db789",
         "filename": "fs_mgr/liblp/writer.cpp",
         "patchSetId": 2
@@ -105,6 +201,30 @@
       "writtenOn": "2018-10-12T16:47:36Z",
       "side": 1,
       "message": "nit: ditto",
+      "range": {
+        "startLine": 211,
+        "startChar": 41,
+        "endLine": 211,
+        "endChar": 43
+      },
+      "revId": "a18ee74e7a17d4314b635efb6635be386f45fb2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ca792b9_8621112d",
+        "filename": "fs_mgr/liblp/writer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-12T17:18:31Z",
+      "side": 1,
+      "message": "Okay, I went through and fixed up these in other functions too.",
+      "parentUuid": "686bb429_8e9db789",
       "range": {
         "startLine": 211,
         "startChar": 41,
