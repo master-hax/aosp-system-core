@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c55b072e_e5ab8342",
+        "filename": "fs_mgr/liblp/io_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-12T16:47:36Z",
+      "side": 0,
+      "message": "This looks like a leftover of the move geometry patch ...",
+      "range": {
+        "startLine": 296,
+        "startChar": 19,
+        "endLine": 296,
+        "endChar": 39
+      },
+      "revId": "8e4e9c45631430f6ddc7eae0fbf8eb84b9eb2f4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
