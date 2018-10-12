@@ -48,6 +48,12 @@ namespace base {
 // Versions of standard library APIs that support UTF-8 strings.
 using namespace android::base::utf8;
 
+bool FileExists(const std::string& path) {
+  struct stat st;
+  int result = stat(path.c_str(), &st);
+  return result == 0;
+}
+
 bool ReadFdToString(int fd, std::string* content) {
   content->clear();
 
