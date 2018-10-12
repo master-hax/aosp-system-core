@@ -32,6 +32,7 @@ typedef off_t off64_t;
 namespace android {
 namespace base {
 
+bool FileExists(const std::string& path);
 bool ReadFdToString(int fd, std::string* content);
 bool ReadFileToString(const std::string& path, std::string* content,
                       bool follow_symlinks = false);

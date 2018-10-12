@@ -48,16 +48,6 @@ const char* emmc_info_t::emmc_ver_str[9] = {
 
 const string ufs_info_t::health_file = "/sys/devices/soc/624000.ufshc/health";
 
-namespace {
-
-bool FileExists(const std::string& filename)
-{
-  struct stat buffer;
-  return stat(filename.c_str(), &buffer) == 0;
-}
-
-} // namespace
-
 storage_info_t* storage_info_t::get_storage_info(const sp<IHealth>& healthService) {
     if (healthService != nullptr) {
         return new health_storage_info_t(healthService);

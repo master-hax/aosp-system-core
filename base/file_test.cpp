@@ -30,6 +30,14 @@
 #include <pwd.h>
 #endif
 
+TEST(file, FileExists) {
+  TemporaryFile tf;
+  ASSERT_TRUE(android::base::FileExists(tf.path));
+
+  std::string path(TemporaryFile().path);
+  ASSERT_FALSE(android::base::FileExists(path));
+}
+
 TEST(file, ReadFileToString_ENOENT) {
   std::string s("hello");
   errno = 0;
