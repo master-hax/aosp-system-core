@@ -121,7 +121,6 @@ bool ParseGeometry(const void* buffer, LpMetadataGeometry* geometry) {
 }
 
 bool ReadPrimaryGeometry(int fd, LpMetadataGeometry* geometry) {
-    // Read the first 4096 bytes.
     std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(LP_METADATA_GEOMETRY_SIZE);
     if (SeekFile64(fd, GetPrimaryGeometryOffset(), SEEK_SET) < 0) {
         PERROR << __PRETTY_FUNCTION__ << "lseek failed";
@@ -135,10 +134,9 @@ bool ReadPrimaryGeometry(int fd, LpMetadataGeometry* geometry) {
 }
 
 bool ReadBackupGeometry(int fd, LpMetadataGeometry* geometry) {
-    // Try the backup copy in the last 4096 bytes.
     std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(LP_METADATA_GEOMETRY_SIZE);
     if (SeekFile64(fd, GetBackupGeometryOffset(), SEEK_SET) < 0) {
-        PERROR << __PRETTY_FUNCTION__ << "lseek failed, offset " << -LP_METADATA_GEOMETRY_SIZE;
+        PERROR << __PRETTY_FUNCTION__ << "lseek failed";
         return false;
     }
     if (!android::base::ReadFully(fd, buffer.get(), LP_METADATA_GEOMETRY_SIZE)) {

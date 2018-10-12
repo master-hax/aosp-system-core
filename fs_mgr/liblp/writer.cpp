@@ -205,10 +205,21 @@ bool FlashPartitionTable(int fd, const LpMetadata& metadata) {
         return false;
     }
 
-    // Write geometry to the first and last 4096 bytes of the device.
+    // Write zeroes to the first block.
+    std::string zeroes(LP_PARTITION_RESERVED_BYTES, 0);
+    if (SeekFile64(fd, 0, SEEK_SET) < 0) {
+        PERROR << __PRETTY_FUNCTION__ << "lseek failed: offset 0";
+        return false;
+    }
+    if (!android::base::WriteFully(fd, zeroes.data(), zeroes.size())) {
+        PERROR << __PRETTY_FUNCTION__ << "write " << zeroes.size() << " bytes failed";
+        return false;
+    }
+
+    // Write geometry to the primary and backup locations.
     std::string blob = SerializeGeometry(metadata.geometry);
     if (SeekFile64(fd, GetPrimaryGeometryOffset(), SEEK_SET) < 0) {
-        PERROR << __PRETTY_FUNCTION__ << "lseek failed: offset 0";
+        PERROR << __PRETTY_FUNCTION__ << "lseek failed: primary geometry";
         return false;
     }
     if (!android::base::WriteFully(fd, blob.data(), blob.size())) {
@@ -216,7 +227,7 @@ bool FlashPartitionTable(int fd, const LpMetadata& metadata) {
         return false;
     }
     if (SeekFile64(fd, GetBackupGeometryOffset(), SEEK_SET) < 0) {
-        PERROR << __PRETTY_FUNCTION__ << "lseek failed: offset " << -LP_METADATA_GEOMETRY_SIZE;
+        PERROR << __PRETTY_FUNCTION__ << "lseek failed: backup geometry";
         return false;
     }
     if (!android::base::WriteFully(fd, blob.data(), blob.size())) {

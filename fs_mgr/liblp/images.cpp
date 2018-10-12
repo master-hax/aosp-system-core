@@ -28,8 +28,12 @@ namespace android {
 namespace fs_mgr {
 
 std::unique_ptr<LpMetadata> ReadFromImageFile(int fd) {
+    std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(LP_METADATA_GEOMETRY_SIZE);
+    if (!android::base::ReadFully(fd, buffer.get(), LP_METADATA_GEOMETRY_SIZE)) {
+        return nullptr;
+    }
     LpMetadataGeometry geometry;
-    if (!ReadLogicalPartitionGeometry(fd, &geometry)) {
+    if (!ParseGeometry(buffer.get(), &geometry)) {
         return nullptr;
     }
     if (SeekFile64(fd, LP_METADATA_GEOMETRY_SIZE, SEEK_SET) < 0) {
@@ -106,6 +110,14 @@ SparseBuilder::SparseBuilder(const LpMetadata& metadata, uint32_t block_size,
         LERROR << "Metadata max size must be a multiple of the block size, " << block_size;
         return;
     }
+    if (LP_METADATA_GEOMETRY_SIZE % block_size != 0) {
+        LERROR << "Geometry size is not a multiple of the block size, " << block_size;
+        return;
+    }
+    if (LP_PARTITION_RESERVED_BYTES % block_size != 0) {
+        LERROR << "Reserved size is not a multiple of the block size, " << block_size;
+        return;
+    }
 
     uint64_t num_blocks = metadata.geometry.block_device_size % block_size;
     if (num_blocks >= UINT_MAX) {
@@ -163,6 +175,11 @@ bool SparseBuilder::SectorToBlock(uint64_t sector, uint32_t* block) {
 }
 
 bool SparseBuilder::Build() {
+    if (sparse_file_add_fill(file_.get(), 0, LP_PARTITION_RESERVED_BYTES, 0) < 0) {
+        LERROR << "Could not add initial sparse block for reserved zeroes";
+        return false;
+    }
+
     std::string geometry_blob = SerializeGeometry(geometry_);
     std::string metadata_blob = SerializeMetadata(metadata_);
     metadata_blob.resize(geometry_.metadata_max_size);
