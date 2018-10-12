@@ -315,6 +315,9 @@ static struct proc *pidhash[PIDHASH_SZ];
 #define ADJTOSLOT(adj) ((adj) + -OOM_SCORE_ADJ_MIN)
 static struct adjslot_list procadjslot_list[ADJTOSLOT(OOM_SCORE_ADJ_MAX) + 1];
 
+static uint16_t killcnt[ADJTOSLOT(OOM_SCORE_ADJ_MAX) + 1];
+static int killcnt_total = 0;
+
 /* PAGE_SIZE / 1024 */
 static long page_k;
 
@@ -644,6 +647,42 @@ static void cmd_procpurge() {
     memset(&pidhash[0], 0, sizeof(pidhash));
 }
 
+static void inc_killcnt(int oomadj) {
+    killcnt[ADJTOSLOT(oomadj)]++;
+    killcnt_total++;
+}
+
+static int get_killcnt(int min_oomadj, int max_oomadj) {
+    int count = 0;
+
+    if (min_oomadj > max_oomadj)
+        return 0;
+
+    /* special case to get total kill count */
+    if (min_oomadj > OOM_SCORE_ADJ_MAX)
+        return killcnt_total;
+
+    while (min_oomadj <= max_oomadj) {
+        count += killcnt[ADJTOSLOT(min_oomadj)];
+        min_oomadj++;
+    }
+
+    return count;
+}
+
+static int cmd_getkillcnt(LMKD_CTRL_PACKET packet) {
+    struct lmk_getkillcnt params;
+
+    if (use_inkernel_interface) {
+        /* kernel driver does not expose this information */
+        return 0;
+    }
+
+    lmkd_pack_get_getkillcnt(packet, &params);
+
+    return get_killcnt(params.min_oomadj, params.max_oomadj);
+}
+
 static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     int i;
     struct lmk_target target;
@@ -748,12 +787,28 @@ static int ctrl_data_read(int dsock_idx, char *buf, size_t bufsz) {
     return ret;
 }
 
+static int ctrl_data_write(int dsock_idx, char *buf, size_t bufsz) {
+    int ret = 0;
+
+    ret = TEMP_FAILURE_RETRY(write(data_sock[dsock_idx].sock, buf, bufsz));
+
+    if (ret == -1) {
+        ALOGE("control data socket write failed; errno=%d", errno);
+    } else if (ret == 0) {
+        ALOGE("Got EOF on control data socket");
+        ret = -1;
+    }
+
+    return ret;
+}
+
 static void ctrl_command_handler(int dsock_idx) {
     LMKD_CTRL_PACKET packet;
     int len;
     enum lmk_cmd cmd;
     int nargs;
     int targets;
+    int kill_cnt;
 
     len = ctrl_data_read(dsock_idx, (char *)packet, CTRL_PACKET_MAX_SIZE);
     if (len <= 0)
@@ -790,6 +845,14 @@ static void ctrl_command_handler(int dsock_idx) {
         if (nargs != 0)
             goto wronglen;
         cmd_procpurge();
+        break;
+    case LMK_GETKILLCNT:
+        if (nargs != 2)
+            goto wronglen;
+        kill_cnt = cmd_getkillcnt(packet);
+        len = lmkd_pack_set_getkillcnt_repl(packet, kill_cnt);
+        if (ctrl_data_write(dsock_idx, (char *)packet, len) != len)
+            return;
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
@@ -1200,6 +1263,7 @@ static int kill_one_process(struct proc* procp) {
 
     /* CAP_KILL required */
     r = kill(pid, SIGKILL);
+    inc_killcnt(procp->oomadj);
     ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB",
         taskname, pid, uid, procp->oomadj, tasksize * page_k);
 
