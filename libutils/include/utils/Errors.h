@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_ERRORS_H
-#define ANDROID_ERRORS_H
+#pragma once
 
 #include <sys/types.h>
 #include <errno.h>
@@ -29,22 +28,22 @@ typedef int         status_t;
 typedef int32_t     status_t;
 #endif
 
-/* the MS C runtime lacks a few error codes */
-
-/*
- * Error codes. 
+/**
+ * Error codes.
  * All error codes are negative values.
  */
-
-// Win32 #defines NO_ERROR as well.  It has the same value, so there's no
-// real conflict, though it's a bit awkward.
-#ifdef _WIN32
-# undef NO_ERROR
-#endif
-
 enum {
+    // clang-format off
     OK                = 0,    // Preferred constant for checking success.
-    NO_ERROR          = OK,   // Deprecated synonym for `OK`. Prefer `OK` because it doesn't conflict with Windows.
+#if !defined(_WIN32)
+    /**
+     * A deprecated synonym for `OK`. Prefer `OK` because it doesn't conflict
+     * with Windows' own `NO_ERROR`. The values are the same, though, so most
+     * code will work either way, except for the fact that there's no
+     * `android::NO_ERROR` on Windows because it's just a macro there.
+     */
+    NO_ERROR          = OK,
+#endif
 
     UNKNOWN_ERROR       = (-2147483647-1), // INT32_MIN value
 
@@ -61,28 +60,19 @@ enum {
 #if !defined(_WIN32)
     BAD_INDEX           = -EOVERFLOW,
     NOT_ENOUGH_DATA     = -ENODATA,
-    WOULD_BLOCK         = -EWOULDBLOCK, 
+    WOULD_BLOCK         = -EWOULDBLOCK,
     TIMED_OUT           = -ETIMEDOUT,
     UNKNOWN_TRANSACTION = -EBADMSG,
-#else    
+#else
     BAD_INDEX           = -E2BIG,
     NOT_ENOUGH_DATA     = (UNKNOWN_ERROR + 3),
     WOULD_BLOCK         = (UNKNOWN_ERROR + 4),
     TIMED_OUT           = (UNKNOWN_ERROR + 5),
     UNKNOWN_TRANSACTION = (UNKNOWN_ERROR + 6),
-#endif    
+#endif
     FDS_NOT_ALLOWED     = (UNKNOWN_ERROR + 7),
     UNEXPECTED_NULL     = (UNKNOWN_ERROR + 8),
+    // clang-format on
 };
 
-// Restore define; enumeration is in "android" namespace, so the value defined
-// there won't work for Win32 code in a different namespace.
-#ifdef _WIN32
-# define NO_ERROR 0L
-#endif
-
 }  // namespace android
-
-// ---------------------------------------------------------------------------
-    
-#endif // ANDROID_ERRORS_H
