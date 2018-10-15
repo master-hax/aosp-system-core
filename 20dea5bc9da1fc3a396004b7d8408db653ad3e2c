@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d50140e5_5b89537f",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "`\u003d {}` to make me less nervous?",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 216,
+        "endChar": 0
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2d084fa_a2bde001",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "(since it\u0027s only used for `\u003c 0` checks, we don\u0027t actually need `ret`...)",
+      "range": {
+        "startLine": 239,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 11
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cdb3351_c6237ba8",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "%s and strerror?",
+      "range": {
+        "startLine": 247,
+        "startChar": 61,
+        "endLine": 247,
+        "endChar": 63
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2a40c9a_842f138f",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "should this...",
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3f1bbb5_1e73a1b6",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "...and this actually be PLOG(ERROR)?",
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "170aea0f_766e6cfc",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-15T20:36:37Z",
+      "side": 1,
+      "message": "flip this so we only assign from locals to the arguments in the `return true` case, and the failures can just `return false`?",
+      "range": {
+        "startLine": 275,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 17
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
