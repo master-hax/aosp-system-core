@@ -58,6 +58,43 @@ cc_defaults {
         "-Wall",
         "-Werror",
     ],
+
+    shared_libs: [
+        "liblog",
+    ],
+
+    target: {
+        host: {
+            cflags: ["-DLIBUTILS_NATIVE=1"],
+        },
+        linux_bionic: {
+            enabled: true,
+        },
+        windows: {
+            enabled: true,
+        },
+    },
+}
+
+cc_library {
+    name: "libutilsfilemap",
+    defaults: ["libutils_defaults"],
+
+    export_include_dirs: ["include"],
+
+    srcs: [
+        "FileMap.cpp",
+    ],
+
+    shared: {
+        enabled: false,
+    }
+}
+
+cc_library {
+    name: "libutils",
+    defaults: ["libutils_defaults"],
+
     header_libs: [
         "libbase_headers",
         "libutils_headers",
@@ -66,8 +103,28 @@ cc_defaults {
         "libutils_headers",
     ],
 
-    shared_libs: [
-        "liblog",
+    whole_static_libs: [
+        "libutilsfilemap",
+    ],
+
+    srcs: [
+        "JenkinsHash.cpp",
+        "NativeHandle.cpp",
+        "Printer.cpp",
+        "PropertyMap.cpp",
+        "RefBase.cpp",
+        "SharedBuffer.cpp",
+        "StopWatch.cpp",
+        "String8.cpp",
+        "String16.cpp",
+        "StrongPointer.cpp",
+        "SystemClock.cpp",
+        "Threads.cpp",
+        "Timers.cpp",
+        "Tokenizer.cpp",
+        "Unicode.cpp",
+        "VectorImpl.cpp",
+        "misc.cpp",
     ],
 
     arch: {
@@ -89,6 +146,10 @@ cc_defaults {
             sanitize: {
                 misc_undefined: ["integer"],
             },
+
+            srcs: [
+                "Trace.cpp",
+            ],
         },
 
         recovery: {
@@ -96,11 +157,16 @@ cc_defaults {
         },
 
         host: {
-            cflags: ["-DLIBUTILS_NATIVE=1"],
-
             shared: {
                 enabled: false,
             },
+        },
+
+        linux: {
+            shared_libs: ["libbase"],
+            srcs: [
+                "Looper.cpp",
+            ],
         },
 
         linux_bionic: {
@@ -116,48 +182,6 @@ cc_defaults {
                 // Under MinGW, ctype.h doesn't need multi-byte support
                 "-DMB_CUR_MAX=1",
                 "-Wno-unused-private-field",
-            ],
-
-            enabled: true,
-        },
-    },
-}
-
-cc_library {
-    name: "libutils",
-    defaults: ["libutils_defaults"],
-
-    srcs: [
-        "FileMap.cpp",
-        "JenkinsHash.cpp",
-        "NativeHandle.cpp",
-        "Printer.cpp",
-        "PropertyMap.cpp",
-        "RefBase.cpp",
-        "SharedBuffer.cpp",
-        "StopWatch.cpp",
-        "String8.cpp",
-        "String16.cpp",
-        "StrongPointer.cpp",
-        "SystemClock.cpp",
-        "Threads.cpp",
-        "Timers.cpp",
-        "Tokenizer.cpp",
-        "Unicode.cpp",
-        "VectorImpl.cpp",
-        "misc.cpp",
-    ],
-
-    target: {
-        android: {
-            srcs: [
-                "Trace.cpp",
-            ],
-        },
-        linux: {
-            shared_libs: ["libbase"],
-            srcs: [
-                "Looper.cpp",
             ],
         },
     },
@@ -184,6 +208,13 @@ cc_library {
                 "libbacktrace",
             ],
         },
+
+        host: {
+            shared: {
+                enabled: false,
+            },
+        },
+
         linux: {
             srcs: [
                 "ProcessCallStack.cpp",
@@ -191,9 +222,6 @@ cc_library {
         },
     },
 }
-
-// Include subdirectory makefiles
-// ============================================================
 
 cc_test {
     name: "SharedBufferTest",
