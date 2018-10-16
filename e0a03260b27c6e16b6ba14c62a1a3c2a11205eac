@@ -22,6 +22,30 @@
       "revId": "e0a03260b27c6e16b6ba14c62a1a3c2a11205eac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c23acdd_e1fd7809",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 564,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-16T22:35:19Z",
+      "side": 1,
+      "message": "Ya I was thinking about that too.  I\u0027m not sure this copy is worth the extra lines of code needed to remove it.  It\u0027s not like the Split() above is optimal either, but this is all going to be called essentially once ever and these copies are dirt cheap.\n\nUnless I change all of this to have the Parse functions take rvalue references which I could then re-assign.  That\u0027s probably the best way to do this, but again, not sure if its worth it.",
+      "parentUuid": "dac46df6_30c7fca4",
+      "range": {
+        "startLine": 564,
+        "startChar": 9,
+        "endLine": 564,
+        "endChar": 29
+      },
+      "revId": "e0a03260b27c6e16b6ba14c62a1a3c2a11205eac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
