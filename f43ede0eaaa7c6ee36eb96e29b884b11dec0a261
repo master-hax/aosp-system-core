@@ -22,6 +22,30 @@
       "revId": "f43ede0eaaa7c6ee36eb96e29b884b11dec0a261",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5fd0dd3_dd2e10b7",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-16T18:11:32Z",
+      "side": 1,
+      "message": "Right, my mistake.",
+      "parentUuid": "eb1f8596_ea56bdff",
+      "range": {
+        "startLine": 548,
+        "startChar": 9,
+        "endLine": 548,
+        "endChar": 24
+      },
+      "revId": "f43ede0eaaa7c6ee36eb96e29b884b11dec0a261",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
