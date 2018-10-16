@@ -225,6 +225,11 @@ runs the service.
 > Sets the keycodes that will trigger this service. If all of the keys corresponding to the passed
   keycodes are pressed at once, the service will start. This is typically used to start the
   bugreport service.
+  This option may take a property instead of a list of keycodes. In this case, only one option is
+  provided: the property name in the typical property expansion format. The property must contain
+  a space separated list of keycode values. For example, `keycodes ${some.property.name}` where
+  some.property.name expands to "123 124 125". Since keycodes are handled very early in init,
+  only PRODUCT_DEFAULT_PROPERTY_OVERRIDES properties can be used.
 
 `memcg.limit_in_bytes <value>`
 > Sets the child's memory.limit_in_bytes to the specified value (only if memcg is mounted),
