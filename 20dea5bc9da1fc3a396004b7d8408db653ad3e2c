@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4a743383_cc257987",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d50140e5_5b89537f",
+      "range": {
+        "startLine": 214,
+        "startChar": 0,
+        "endLine": 216,
+        "endChar": 0
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2d084fa_a2bde001",
         "filename": "adb/daemon/usb_ffs.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f476881_5cf211de",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2d084fa_a2bde001",
+      "range": {
+        "startLine": 239,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 11
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "c55ee9f2_fdfad096",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2cdb3351_c6237ba8",
+      "range": {
+        "startLine": 247,
+        "startChar": 61,
+        "endLine": 247,
+        "endChar": 63
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2a40c9a_842f138f",
         "filename": "adb/daemon/usb_ffs.cpp",
         "patchSetId": 1
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "1cbf0385_efb3b119",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e2a40c9a_842f138f",
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3f1bbb5_1e73a1b6",
         "filename": "adb/daemon/usb_ffs.cpp",
         "patchSetId": 1
@@ -102,6 +192,24 @@
       "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c00c69cd_516d9244",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3f1bbb5_1e73a1b6",
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -125,6 +233,30 @@
       "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd18a346_13329706",
+        "filename": "adb/daemon/usb_ffs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-17T20:35:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "170aea0f_766e6cfc",
+      "range": {
+        "startLine": 275,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 17
+      },
+      "revId": "20dea5bc9da1fc3a396004b7d8408db653ad3e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
