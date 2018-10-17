@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c119eba_6860f85e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-17T20:20:25Z",
+      "side": 1,
+      "message": "Semi-unrelated question, but should we just start the servicemanagers after \u0027on init\u0027 too?\n\nI don\u0027t think they\u0027re dependent on the build.prop properties or anything else that comes before them, right?  I know that some devices do start these early too, so it may make sense if rootdir init.rc just does that for us.",
+      "revId": "63a4396aecc28ad593e10139ef45d4229998d6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
