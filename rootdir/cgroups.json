@@ -1,0 +1,27 @@
+{
+  "Cgroups": [
+    {
+      "Controller": "cpu",
+      "Path": "/dev/cpuctl"
+    },
+    {
+      "Controller": "cpuacct",
+      "Path": "/acct"
+    },
+    {
+      "Controller": "cpuset",
+      "Path": "/dev/cpuset"
+    },
+    {
+      "Controller": "memory",
+      "Path": "/dev/memcg"
+    },
+    {
+      "Controller": "schedtune",
+      "Path": "/dev/stune"
+    }
+  ],
+  "Cgroups2": {
+    "Path": "/dev/cg2_bpf",
+  }
+}
