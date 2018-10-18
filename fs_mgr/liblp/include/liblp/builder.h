@@ -215,6 +215,12 @@ class MetadataBuilder {
     uint64_t AllocatableSpace() const;
     uint64_t UsedSpace() const;
 
+    // Return a list of all group names.
+    std::vector<std::string> ListGroups() const;
+
+    // Remove all partitions belonging to a group, then remove the group.
+    void RemoveGroupAndPartitions(const std::string& group_name);
+
     bool GetBlockDeviceInfo(BlockDeviceInfo* info) const;
     bool UpdateBlockDeviceInfo(const BlockDeviceInfo& info);
 
