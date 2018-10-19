@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88713ebb_66f53bef",
+        "filename": "fs_mgr/liblp/builder_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-10-19T20:48:03Z",
+      "side": 1,
+      "message": "Note: this fails with not enough space",
+      "range": {
+        "startLine": 594,
+        "startChar": 19,
+        "endLine": 594,
+        "endChar": 53
+      },
+      "revId": "271adb68dbb28db8fb2dbfc13ed6c13559aa9b58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
