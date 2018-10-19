@@ -47,6 +47,7 @@ cc_defaults {
         "chrono_utils.cpp",
         "file.cpp",
         "logging.cpp",
+        "mapped_file.cpp",
         "parsenetaddress.cpp",
         "properties.cpp",
         "quick_exit.cpp",
