@@ -641,10 +641,12 @@ void MetadataBuilder::RemoveGroupAndPartitions(const std::string& group_name) {
     }
 
     for (const auto& partition_name : partition_names) {
+        LINFO << "Removing partition " << partition_name;
         RemovePartition(partition_name);
     }
     for (auto iter = groups_.begin(); iter != groups_.end(); iter++) {
         if ((*iter)->name() == group_name) {
+            LINFO << "Removing group " << group_name;
             groups_.erase(iter);
             break;
         }

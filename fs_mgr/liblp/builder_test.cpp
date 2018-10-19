@@ -541,3 +541,55 @@ TEST(liblp, RemoveGroupAndPartitions) {
     builder->RemoveGroupAndPartitions("default");
     ASSERT_NE(builder->FindPartition("system"), nullptr);
 }
+
+constexpr unsigned long long operator"" _GiB(unsigned long long x) {  // NOLINT
+  return x << 30;
+}
+
+TEST(liblp, WierdTest1) {
+  auto builder = MetadataBuilder::New(10_GiB, 65536, 2);
+  ASSERT_NE(nullptr, builder);
+  ASSERT_TRUE(builder->AddGroup("foo_a", 5_GiB));
+  ASSERT_TRUE(builder->AddGroup("foo_b", 5_GiB));
+  android::fs_mgr::Partition* p;
+  p = builder->AddPartition("system_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 2_GiB));
+  p = builder->AddPartition("vendor_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+  p = builder->AddPartition("system_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 2_GiB));
+  p = builder->AddPartition("vendor_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+
+  // This passes.
+  builder->RemoveGroupAndPartitions("foo_b");
+  ASSERT_TRUE(builder->AddGroup("foo_b", 5_GiB));
+  p = builder->AddPartition("system_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 3_GiB));
+  p = builder->AddPartition("vendor_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+}
+
+TEST(liblp, WierdTest2) {
+  auto builder = MetadataBuilder::New(10_GiB, 65536, 2);
+  ASSERT_NE(nullptr, builder);
+  ASSERT_TRUE(builder->AddGroup("foo_a", 5_GiB));
+  ASSERT_TRUE(builder->AddGroup("foo_b", 5_GiB));
+  android::fs_mgr::Partition* p;
+  p = builder->AddPartition("system_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 2_GiB));
+  p = builder->AddPartition("vendor_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+  p = builder->AddPartition("system_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 2_GiB));
+  p = builder->AddPartition("vendor_b", "foo_b", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+
+  // This fails
+  builder->RemoveGroupAndPartitions("foo_a");
+  ASSERT_TRUE(builder->AddGroup("foo_a", 5_GiB));
+  p = builder->AddPartition("system_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 3_GiB));
+  p = builder->AddPartition("vendor_a", "foo_a", 0);
+  ASSERT_TRUE(p && builder->ResizePartition(p, 1_GiB));
+}
