@@ -1,0 +1,14 @@
+Verified+1: yaochen <yaochen@google.com>
+Verified+1: Howard Ro <yro@google.com>
+Code-Review+2: yaochen <yaochen@google.com>
+Code-Review+1: Howard Ro <yro@google.com>
+Autosubmit+1: yaochen <yaochen@google.com>
+Autosubmit+1: Howard Ro <yro@google.com>
+Presubmit-Ready+1: yaochen <yaochen@google.com>
+Presubmit-Ready+1: Howard Ro <yro@google.com>
+Build-Cop-Override+1: Salvador Martinez <dehboxturtle@google.com>
+Submitted-by: Howard Ro <yro@google.com>
+Submitted-at: Fri, 19 Oct 2018 02:12:14 +0000
+Reviewed-on: https://android-review.googlesource.com/794576
+Project: platform/system/core
+Branch: refs/heads/master
