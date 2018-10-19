@@ -34,12 +34,43 @@
 #include "reboot_utils.h"
 #include "util.h"
 
+#if __has_feature(address_sanitizer)
+#include <sanitizer/asan_interface.h>
+#endif
+
 using android::base::boot_clock;
 
 namespace android {
 namespace init {
 
+#if __has_feature(address_sanitizer)
+// This is necessary as the first stage cannot load asan.options.
+// Note: should be consistent with system/core/rootdir/asan.options.
+extern "C" const char* __asan_default_options() {
+    return "allow_user_segv_handler=1"
+           ":detect_odr_violation=0"
+           ":alloc_dealloc_mismatch=0"
+           ":allocator_may_return_null=1"
+           ":detect_container_overflow=0"
+           ":abort_on_error=1";
+}
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) extern "C" void
+__sanitizer_report_error_summary(const char* summary) {
+    LOG(ERROR) << "First stage (error summary): " << summary;
+}
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) static void
+AsanReportCallback(const char* str) {
+    LOG(ERROR) << "First stage: " << str;
+}
+#endif
+
 int main(int argc, char** argv) {
+#if __has_feature(address_sanitizer)
+    __asan_set_error_report_callback(AsanReportCallback);
+#endif
+
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
