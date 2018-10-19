@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
@@ -30,6 +31,7 @@
 #include <fs_mgr.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
+#include <openssl/sha.h>
 #include <uuid/uuid.h>
 
 #include "constants.h"
@@ -457,4 +459,80 @@ bool UpdateSuperHandler(FastbootDevice* device, const std::vector<std::string>& 
 
     bool wipe = (args.size() >= 3 && args[2] == "wipe");
     return UpdateSuper(device, args[1], wipe);
+}
+
+std::string GetSha1Sum(int fd, uint64_t offset, uint64_t size) {
+    constexpr size_t kBlockSize = 16 * 1024 * 1024;
+    std::string sha1_string;
+
+    SHA_CTX sha1_ctx;
+    SHA1_Init(&sha1_ctx);
+    std::vector<unsigned char> buffer(kBlockSize);
+    while (size) {
+        auto to_read = std::min(size, kBlockSize);
+        if (!android::base::ReadFullyAtOffset(fd, buffer.data(), to_read, offset)) {
+            return sha1_string;
+        }
+
+        offset += to_read;
+        size -= to_read;
+        SHA1_Update(&sha1_ctx, buffer.data(), to_read);
+    }
+
+    uint8_t sha1[SHA_DIGEST_LENGTH];
+    SHA1_Final(sha1, &sha1_ctx);
+
+    for (size_t i = 0; i < SHA_DIGEST_LENGTH; i++) {
+        sha1_string += android::base::StringPrintf("%02x", sha1[i]);
+    }
+
+    return sha1_string;
+}
+
+bool Sha1SumHandler(FastbootDevice* device, const std::vector<std::string>& args) {
+    if (args.size() < 3) {
+        return device->WriteFail("Invalid arguments");
+    }
+    // TODO(b/117934751): Use fastboot HAL to check if the partition is allowed to be SHA1
+    // summable.
+    std::string partition_name = args[2];
+    PartitionHandle handle;
+    if (!OpenPartition(device, partition_name, &handle, true /* read_access_required */)) {
+        return device->WriteFail("Unable to open partition ");
+    }
+
+    uint64_t offset = 0;
+    uint64_t size = 0;
+    uint64_t partition_size = get_block_device_size(handle.fd());
+
+    // Command can take the following formats:
+    //    fastboot flashing sha1sum <partition_name>
+    //    fastboot flashing sha1sum <partition_name> <offset> <size>
+    if (args.size() == 3) {
+        size = partition_size;
+    } else if (args.size() == 5) {
+        if (!android::base::ParseUint(args[3], &offset)) {
+            return device->WriteFail("Invalid offset.");
+        }
+        if (!android::base::ParseUint(args[4], &size) || size == 0 || partition_size <= offset ||
+            size > partition_size - offset) {
+            return device->WriteFail("Invalid partition size.");
+        }
+        if (size % 4096 || offset % 4096) {
+            return device->WriteFail("Offset and size must be 4KB aligned");
+        }
+    } else {
+        return device->WriteFail("Invalid parameters");
+    }
+
+    auto sha1 = GetSha1Sum(handle.fd(), offset, size);
+    if (sha1.empty()) {
+        return device->WriteFail("Unable to get SHA1 for partition");
+    }
+
+    std::string response = "sha1sum: " + sha1;
+    device->WriteInfo(response);
+    device->WriteOkay("");
+
+    return true;
 }

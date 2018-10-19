@@ -129,6 +129,7 @@ cc_binary {
         "libbase",
         "libbootloader_message",
         "libcutils",
+        "libcrypto",
         "libext2_uuid",
         "libext4_utils",
         "libfs_mgr",

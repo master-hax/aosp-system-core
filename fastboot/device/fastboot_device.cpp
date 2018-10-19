@@ -53,6 +53,7 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_RESIZE_PARTITION, ResizePartitionHandler},
               {FB_CMD_UPDATE_SUPER, UpdateSuperHandler},
               {FB_CMD_OEM, OemCmdHandler},
+              {FB_CMD_SHA1SUM, Sha1SumHandler},
       }),
       transport_(std::make_unique<ClientUsbTransport>()),
       boot_control_hal_(IBootControl::getService()),
@@ -138,11 +139,13 @@ void FastbootDevice::ExecuteCommands() {
         if (android::base::StartsWith(command, "oem ")) {
             args = {command};
             cmd_name = FB_CMD_OEM;
+        } else if (android::base::StartsWith(command, "flashing ")) {
+            args = android::base::Split(command, " ");
+            cmd_name = args[1];
         } else {
             args = android::base::Split(command, ":");
             cmd_name = args[0];
         }
-
         auto found_command = kCommandMap.find(cmd_name);
         if (found_command == kCommandMap.end()) {
             WriteStatus(FastbootResult::FAIL, "Unrecognized command " + args[0]);
