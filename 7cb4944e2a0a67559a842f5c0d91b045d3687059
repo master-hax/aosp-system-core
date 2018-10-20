@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61783468_11beb0e1",
+        "filename": "base/include/android-base/mapped_file.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-20T00:38:22Z",
+      "side": 1,
+      "message": "return std::unique_ptr\u003cMappedFile\u003e instead?",
+      "range": {
+        "startLine": 36,
+        "startChar": 9,
+        "endLine": 36,
+        "endChar": 19
+      },
+      "revId": "7cb4944e2a0a67559a842f5c0d91b045d3687059",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
