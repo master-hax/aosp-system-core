@@ -51,7 +51,7 @@ unsigned llkCheckMilliseconds(void);
 #define LLK_CHECK_STACK_DEFAULT        "cma_alloc,__get_user_pages"
 #define LLK_BLACKLIST_PROCESS_PROPERTY "ro.llk.blacklist.process"
 #define LLK_BLACKLIST_PROCESS_DEFAULT  \
-    "0,1,2,init,[kthreadd],[khungtaskd],lmkd,lmkd.llkd,llkd,watchdogd,[watchdogd],[watchdogd/0]"
+    "0,1,2,init,[kthreadd],[khungtaskd],lmkd,lmkd.llkd,llkd,watchdogd,[watchdogd],[watchdogd/0],apexd"
 #define LLK_BLACKLIST_PARENT_PROPERTY  "ro.llk.blacklist.parent"
 #define LLK_BLACKLIST_PARENT_DEFAULT   "0,2,[kthreadd]"
 #define LLK_BLACKLIST_UID_PROPERTY     "ro.llk.blacklist.uid"
