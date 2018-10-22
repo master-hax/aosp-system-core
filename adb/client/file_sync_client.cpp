@@ -325,12 +325,12 @@ class SyncConnection {
         memset(st, 0, sizeof(*st));
         if (have_stat_v2_) {
             if (!ReadFdExactly(fd, &msg.stat_v2, sizeof(msg.stat_v2))) {
-                PLOG(FATAL) << "protocol fault: failed to read stat response";
+                fatal_errno("protocol fault: failed to read stat response");
             }
 
             if (msg.stat_v2.id != ID_LSTAT_V2 && msg.stat_v2.id != ID_STAT_V2) {
-                PLOG(FATAL) << "protocol fault: stat response has wrong message id: "
-                            << msg.stat_v2.id;
+                fatal_errno("protocol fault: stat response has wrong message id: %" PRIx32,
+                            msg.stat_v2.id);
             }
 
             if (msg.stat_v2.error != 0) {
@@ -351,12 +351,12 @@ class SyncConnection {
             return true;
         } else {
             if (!ReadFdExactly(fd, &msg.stat_v1, sizeof(msg.stat_v1))) {
-                PLOG(FATAL) << "protocol fault: failed to read stat response";
+                fatal_errno("protocol fault: failed to read stat response");
             }
 
             if (msg.stat_v1.id != ID_LSTAT_V1) {
-                PLOG(FATAL) << "protocol fault: stat response has wrong message id: "
-                            << msg.stat_v1.id;
+                fatal_errno("protocol fault: stat response has wrong message id: %" PRIx32,
+                            msg.stat_v1.id);
             }
 
             if (msg.stat_v1.mode == 0 && msg.stat_v1.size == 0 && msg.stat_v1.time == 0) {

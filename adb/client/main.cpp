@@ -42,13 +42,13 @@ static void setup_daemon_logging() {
     const std::string log_file_path(GetLogFilePath());
     int fd = unix_open(log_file_path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0640);
     if (fd == -1) {
-        PLOG(FATAL) << "cannot open " << log_file_path;
+        fatal("cannot open '%s': %s", log_file_path.c_str(), strerror(errno));
     }
     if (dup2(fd, STDOUT_FILENO) == -1) {
-        PLOG(FATAL) << "cannot redirect stdout";
+        fatal("cannot redirect stdout: %s", strerror(errno));
     }
     if (dup2(fd, STDERR_FILENO) == -1) {
-        PLOG(FATAL) << "cannot redirect stderr";
+        fatal("cannot redirect stderr: %s", strerror(errno));
     }
     unix_close(fd);
 
@@ -81,10 +81,10 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
     // This also keeps stderr unbuffered when it is redirected to adb.log.
     if (is_daemon) {
         if (setvbuf(stdout, nullptr, _IONBF, 0) == -1) {
-            PLOG(FATAL) << "cannot make stdout unbuffered";
+            fatal("cannot make stdout unbuffered: %s", strerror(errno));
         }
         if (setvbuf(stderr, nullptr, _IONBF, 0) == -1) {
-            PLOG(FATAL) << "cannot make stderr unbuffered";
+            fatal("cannot make stderr unbuffered: %s", strerror(errno));
         }
     }
 
@@ -137,7 +137,7 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
     while (install_listener(socket_spec, "*smartsocket*", nullptr, 0, nullptr, &error) !=
            INSTALL_STATUS_OK) {
         if (std::chrono::steady_clock::now() - start > 0.5s) {
-            LOG(FATAL) << "could not install *smartsocket* listener: " << error;
+            fatal("could not install *smartsocket* listener: %s", error.c_str());
         }
 
         std::this_thread::sleep_for(100ms);
@@ -153,7 +153,7 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
         // setsid will fail with EPERM if it's already been a lead process of new session.
         // Ignore such error.
         if (setsid() == -1 && errno != EPERM) {
-            PLOG(FATAL) << "setsid() failed";
+            fatal("setsid() failed: %s", strerror(errno));
         }
 #endif
 
@@ -171,19 +171,19 @@ int adb_server_main(int is_daemon, const std::string& socket_spec, int ack_reply
             const DWORD bytes_to_write = arraysize(ack) - 1;
             DWORD written = 0;
             if (!WriteFile(ack_reply_handle, ack, bytes_to_write, &written, NULL)) {
-                LOG(FATAL) << "cannot write ACK to handle " << ack_reply_handle
-                           << android::base::SystemErrorCodeToString(GetLastError());
+                fatal("adb: cannot write ACK to handle 0x%p: %s", ack_reply_handle,
+                      android::base::SystemErrorCodeToString(GetLastError()).c_str());
             }
             if (written != bytes_to_write) {
-                LOG(FATAL) << "cannot write " << bytes_to_write << " bytes of ACK: only wrote "
-                           << written << " bytes";
+                fatal("adb: cannot write %lu bytes of ACK: only wrote %lu bytes", bytes_to_write,
+                      written);
             }
             CloseHandle(ack_reply_handle);
 #else
             // TODO(danalbert): Can't use SendOkay because we're sending "OK\n", not
             // "OKAY".
             if (!android::base::WriteStringToFd("OK\n", ack_reply_fd)) {
-                PLOG(FATAL) << "error writing ACK to fd " << ack_reply_fd;
+                fatal_errno("error writing ACK to fd %d", ack_reply_fd);
             }
             unix_close(ack_reply_fd);
 #endif

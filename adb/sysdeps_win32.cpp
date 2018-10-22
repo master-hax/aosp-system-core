@@ -35,7 +35,6 @@
 #include <cutils/sockets.h>
 
 #include <android-base/errors.h>
-#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>
 #include <android-base/stringprintf.h>
@@ -46,6 +45,8 @@
 #include "adb_utils.h"
 
 #include "sysdeps/uio.h"
+
+extern void fatal(const char *fmt, ...);
 
 /* forward declarations */
 
@@ -96,6 +97,11 @@ static const FHClassRec _fh_socket_class = {
 #if defined(assert)
 #undef assert
 #endif
+
+#define assert(cond)                                                                       \
+    do {                                                                                   \
+        if (!(cond)) fatal("assertion failed '%s' on %s:%d\n", #cond, __FILE__, __LINE__); \
+    } while (0)
 
 void handle_deleter::operator()(HANDLE h) {
     // CreateFile() is documented to return INVALID_HANDLE_FILE on error,
@@ -724,8 +730,8 @@ static int _init_winsock(void) {
         WSADATA wsaData;
         int rc = WSAStartup(MAKEWORD(2, 2), &wsaData);
         if (rc != 0) {
-            LOG(FATAL) << "could not initialize Winsock: "
-                       << android::base::SystemErrorCodeToString(rc);
+            fatal("adb: could not initialize Winsock: %s",
+                  android::base::SystemErrorCodeToString(rc).c_str());
         }
 
         // Note that we do not call atexit() to register WSACleanup to be called
@@ -1281,11 +1287,11 @@ static bool _get_key_event_record(const HANDLE console, INPUT_RECORD* const inpu
         }
 
         if (read_count == 0) {   // should be impossible
-            LOG(FATAL) << "ReadConsoleInputA returned 0";
+            fatal("ReadConsoleInputA returned 0");
         }
 
         if (read_count != 1) {   // should be impossible
-            LOG(FATAL) << "ReadConsoleInputA did not return one input record";
+            fatal("ReadConsoleInputA did not return one input record");
         }
 
         // If the console window is resized, emulate SIGWINCH by breaking out
@@ -1303,7 +1309,8 @@ static bool _get_key_event_record(const HANDLE console, INPUT_RECORD* const inpu
         if ((input_record->EventType == KEY_EVENT) &&
             (input_record->Event.KeyEvent.bKeyDown)) {
             if (input_record->Event.KeyEvent.wRepeatCount == 0) {
-                LOG(FATAL) << "ReadConsoleInputA returned a key event with zero repeat count";
+                fatal("ReadConsoleInputA returned a key event with zero repeat"
+                      " count");
             }
 
             // Got an interesting INPUT_RECORD, so return
@@ -2186,7 +2193,7 @@ NarrowArgs::NarrowArgs(const int argc, wchar_t** const argv) {
     for (int i = 0; i < argc; ++i) {
         std::string arg_narrow;
         if (!android::base::WideToUTF8(argv[i], &arg_narrow)) {
-            PLOG(FATAL) << "cannot convert argument from UTF-16 to UTF-8";
+            fatal_errno("cannot convert argument from UTF-16 to UTF-8");
         }
         narrow_args[i] = strdup(arg_narrow.c_str());
     }
@@ -2637,7 +2644,7 @@ static void _ensure_env_setup() {
         // If _wenviron is null, then -municode probably wasn't used. That
         // linker flag will cause the entry point to setup _wenviron. It will
         // also require an implementation of wmain() (which we provide above).
-        LOG(FATAL) << "_wenviron is not set, did you link with -municode?";
+        fatal("_wenviron is not set, did you link with -municode?");
     }
 
     // Read name/value pairs from UTF-16 _wenviron and write new name/value
@@ -2755,25 +2762,4 @@ int adb_thread_setname(const std::string& name) {
     // https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-set-a-thread-name-in-native-code?view=vs-2017
 
     return 0;
-}
-
-void error(int status, int error, const char* fmt, ...) {
-    fflush(stdout);
-    fprintf(stderr, "%s: ", android::base::Basename(android::base::GetExecutablePath()).c_str());
-
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    va_end(ap);
-
-    if (error != 0) {
-        fprintf(stderr, ": %s", strerror(error));
-    }
-
-    putc('\n', stderr);
-    fflush(stderr);
-
-    if (status != 0) {
-        exit(status);
-    }
 }
