@@ -29,11 +29,11 @@ test_src_files := \
 
 shared_libraries := \
     liblog \
-    libbase \
     libnativebridge \
     libnativebridge-dummy
 
 libnativebridge_tests_common_cflags := \
+    -I system/core/base/include \
     -Wall \
     -Werror \
 
