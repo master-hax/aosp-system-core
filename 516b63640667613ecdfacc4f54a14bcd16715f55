@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05429c54_c769efb4",
+        "filename": "adb/transport.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-22T20:03:01Z",
+      "side": 1,
+      "message": "\"push-subdir\"? remember outsiders can\u0027t even see that bug.\n\n(why is this one in the header, but the others are elsewhere?)",
+      "range": {
+        "startLine": 65,
+        "startChar": 44,
+        "endLine": 65,
+        "endChar": 58
+      },
+      "revId": "516b63640667613ecdfacc4f54a14bcd16715f55",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
