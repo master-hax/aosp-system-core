@@ -68,6 +68,7 @@ const char* const kFeatureStat2 = "stat_v2";
 const char* const kFeatureLibusb = "libusb";
 const char* const kFeaturePushSync = "push_sync";
 const char* const kFeatureApex = "apex";
+const char* const kFeatureFixed110953234 = "fixed110953234";
 
 namespace {
 
@@ -1008,7 +1009,7 @@ size_t atransport::get_max_payload() const {
 const FeatureSet& supported_features() {
     // Local static allocation to avoid global non-POD variables.
     static const FeatureSet* features = new FeatureSet{
-        kFeatureShell2, kFeatureCmd, kFeatureStat2,
+        kFeatureShell2, kFeatureCmd, kFeatureStat2, kFeatureFixed110953234,
 #if ADB_HOST
                 kFeatureApex
 #endif
