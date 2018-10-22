@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5a042e8_5f651c2b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-22T19:23:04Z",
+      "side": 0,
+      "message": "should we just move the Windows O_CLOEXEC workaround into \u003candroid-base/file.h\u003e like the O_BINARY #define?",
+      "revId": "7a08c896dda54b1814a2c7f06e45fff3de98ecdc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
