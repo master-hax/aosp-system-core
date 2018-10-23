@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1035725c_f99c7dd6",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-23T19:31:02Z",
+      "side": 1,
+      "message": "Should be a comment here about wrap policy.\n\nWhat do you want to do about wrap (here and on line 676)?\n\nIs the zero chance of wrap for the maximum expected device power uptime (my WAG 30 days)? Should there be a reset command?",
+      "range": {
+        "startLine": 673,
+        "startChar": 8,
+        "endLine": 673,
+        "endChar": 23
+      },
+      "revId": "5c75f473ff3ff81222d1bdde9fe6966a1210d680",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "684333ae_c0cc7f0a",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-23T19:31:02Z",
+      "side": 1,
+      "message": "nit: strerror(errno) ?\n\n(I know, pattern in this code is %d of errno so this is just a nit)",
+      "range": {
+        "startLine": 823,
+        "startChar": 60,
+        "endLine": 823,
+        "endChar": 65
+      },
+      "revId": "5c75f473ff3ff81222d1bdde9fe6966a1210d680",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
