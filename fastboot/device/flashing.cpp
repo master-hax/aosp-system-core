@@ -118,7 +118,7 @@ int FlashBlockDevice(int fd, std::vector<char>& downloaded_data) {
 
 int Flash(FastbootDevice* device, const std::string& partition_name) {
     PartitionHandle handle;
-    if (!OpenPartition(device, partition_name, &handle)) {
+    if (!OpenPartition(device, partition_name, &handle, false /* read_access_required */)) {
         return -ENOENT;
     }
 

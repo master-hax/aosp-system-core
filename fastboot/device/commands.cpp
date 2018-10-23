@@ -140,7 +140,7 @@ bool EraseHandler(FastbootDevice* device, const std::vector<std::string>& args) 
     }
 
     PartitionHandle handle;
-    if (!OpenPartition(device, args[1], &handle)) {
+    if (!OpenPartition(device, args[1], &handle, false /* read_access_required */)) {
         return device->WriteStatus(FastbootResult::FAIL, "Partition doesn't exist");
     }
     if (wipe_block_device(handle.fd(), get_block_device_size(handle.fd())) == 0) {

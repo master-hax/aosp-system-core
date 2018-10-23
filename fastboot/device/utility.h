@@ -62,7 +62,8 @@ std::string GetSuperSlotSuffix(FastbootDevice* device, const std::string& partit
 std::optional<std::string> FindPhysicalPartition(const std::string& name);
 bool LogicalPartitionExists(FastbootDevice* device, const std::string& name,
                             bool* is_zero_length = nullptr);
-bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHandle* handle);
+bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHandle* handle,
+                   bool read_access_required);
 bool GetSlotNumber(const std::string& slot, android::hardware::boot::V1_0::Slot* number);
 std::vector<std::string> ListPartitions(FastbootDevice* device);
 bool GetDeviceLockStatus();

@@ -294,7 +294,7 @@ bool GetPartitionSize(FastbootDevice* device, const std::vector<std::string>& ar
     }
     // Otherwise, open the partition as normal.
     PartitionHandle handle;
-    if (!OpenPartition(device, args[0], &handle)) {
+    if (!OpenPartition(device, args[0], &handle, false /* read_access_required */)) {
         *message = "Could not open partition";
         return false;
     }
