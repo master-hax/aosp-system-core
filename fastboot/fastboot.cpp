@@ -384,6 +384,9 @@ static int show_help() {
             " format[:FS_TYPE[:SIZE]] PARTITION\n"
             "                            Format a flash partition.\n"
             " set_active SLOT            Set the active slot.\n"
+            " flashing sha1sum PARTITION [OFFSET SIZE]\n"
+            "                            Calculate sha1 of the specified partition.\n"
+            "                            Optionally an offset and size can also be specified.\n"
             " oem [COMMAND...]           Execute OEM-specific command.\n"
             "\n"
             "boot image:\n"
@@ -1883,10 +1886,11 @@ int FastBootTool::Main(int argc, char* argv[]) {
         } else if (command == "flashing") {
             if (args.empty()) {
                 syntax_error("missing 'flashing' command");
-            } else if (args.size() == 1 && (args[0] == "unlock" || args[0] == "lock" ||
-                                            args[0] == "unlock_critical" ||
-                                            args[0] == "lock_critical" ||
-                                            args[0] == "get_unlock_ability")) {
+            } else if ((args.size() == 1 && (args[0] == "unlock" || args[0] == "lock" ||
+                                             args[0] == "unlock_critical" ||
+                                             args[0] == "lock_critical" ||
+                                             args[0] == "get_unlock_ability")) ||
+                       (args.size() > 1 && args[0] == "sha1sum")) {
                 do_oem_command("flashing", &args);
             } else {
                 syntax_error("unknown 'flashing' command %s", args[0].c_str());
