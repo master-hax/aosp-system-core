@@ -473,6 +473,12 @@ template <typename AddressType>
 bool DwarfSectionImpl<AddressType>::Eval(const DwarfCie* cie, Memory* regular_memory,
                                          const dwarf_loc_regs_t& loc_regs, Regs* regs,
                                          bool* finished) {
+  // Check for mismatched register sizes.
+  if (sizeof(AddressType) == 4 && !regs->Is32Bit())
+    return false;
+  if (sizeof(AddressType) == 8 && regs->Is32Bit())
+    return false;
+
   RegsImpl<AddressType>* cur_regs = reinterpret_cast<RegsImpl<AddressType>*>(regs);
   if (cie->return_address_register >= cur_regs->total_regs()) {
     last_error_.code = DWARF_ERROR_ILLEGAL_VALUE;
