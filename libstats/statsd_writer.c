@@ -15,8 +15,9 @@
  */
 #include "statsd_writer.h"
 
+#include <cutils/fs.h>
 #include <cutils/sockets.h>
-#include <endian.h>
+#include <cutils/threads.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
