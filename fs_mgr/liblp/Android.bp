@@ -59,6 +59,7 @@ cc_test {
     srcs: [
         "builder_test.cpp",
         "io_test.cpp",
+        "test_partition_opener.cpp",
         "utility_test.cpp",
     ],
 }

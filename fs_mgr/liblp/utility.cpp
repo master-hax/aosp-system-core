@@ -15,6 +15,9 @@
  */
 
 #include <fcntl.h>
+#if defined(__linux__)
+#include <linux/fs.h>
+#endif
 #include <stdint.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -28,6 +31,8 @@
 
 namespace android {
 namespace fs_mgr {
+
+using android::base::unique_fd;
 
 bool GetDescriptorSize(int fd, uint64_t* size) {
     struct stat s;
@@ -115,6 +120,60 @@ uint64_t GetTotalSuperPartitionSize(const LpMetadata& metadata) {
         size += block_device.size;
     }
     return size;
+}
+
+std::string GetPartitionAbsolutePath(const std::string& path) {
+    if (path[0] == '/') {
+        return path;
+    }
+    return "/dev/block/by-name/" + path;
+}
+
+bool GetBlockDeviceInfo(const std::string& block_device, BlockDeviceInfo* device_info) {
+#if defined(__linux__)
+    android::base::unique_fd fd(open(block_device.c_str(), O_RDONLY));
+    if (fd < 0) {
+        PERROR << __PRETTY_FUNCTION__ << "open '" << block_device << "' failed";
+        return false;
+    }
+    if (!GetDescriptorSize(fd, &device_info->size)) {
+        return false;
+    }
+    if (ioctl(fd, BLKIOMIN, &device_info->alignment) < 0) {
+        PERROR << __PRETTY_FUNCTION__ << "BLKIOMIN failed";
+        return false;
+    }
+
+    int alignment_offset;
+    if (ioctl(fd, BLKALIGNOFF, &alignment_offset) < 0) {
+        PERROR << __PRETTY_FUNCTION__ << "BLKIOMIN failed";
+        return false;
+    }
+    int logical_block_size;
+    if (ioctl(fd, BLKSSZGET, &logical_block_size) < 0) {
+        PERROR << __PRETTY_FUNCTION__ << "BLKSSZGET failed";
+        return false;
+    }
+
+    device_info->alignment_offset = static_cast<uint32_t>(alignment_offset);
+    device_info->logical_block_size = static_cast<uint32_t>(logical_block_size);
+    return true;
+#else
+    (void)block_device;
+    (void)device_info;
+    LERROR << __PRETTY_FUNCTION__ << ": Not supported on this operating system.";
+    return false;
+#endif
+}
+
+unique_fd PartitionOpener::Open(const std::string& partition_name, int flags) const {
+    std::string path = GetPartitionAbsolutePath(partition_name);
+    return unique_fd{open(path.c_str(), flags)};
+}
+
+bool PartitionOpener::GetInfo(const std::string& partition_name, BlockDeviceInfo* info) const {
+    std::string path = GetPartitionAbsolutePath(partition_name);
+    return GetBlockDeviceInfo(path, info);
 }
 
 }  // namespace fs_mgr
