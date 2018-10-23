@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5598131e_ab48ab34",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-10-23T20:11:46Z",
+      "side": 1,
+      "message": "Counter on line 676 would have a much higher chance of overflowing, however 65535 kills would mean more than one kill every minute for 30 day period. Problem like that would probably be visible sooner. Also a wraparound is easy to detect because sum of all these counters should always be equal to the total counter (killcnt[0]). If that\u0027s not the case we know counters wrapped around (unless all kills happened at the same oomadj level).\n\nI\u0027ll convert killcnt[0] into a separate counter of uint32_t type so that we can always have correct total.",
+      "parentUuid": "1035725c_f99c7dd6",
+      "range": {
+        "startLine": 673,
+        "startChar": 8,
+        "endLine": 673,
+        "endChar": 23
+      },
+      "revId": "5c75f473ff3ff81222d1bdde9fe6966a1210d680",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "684333ae_c0cc7f0a",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2018-10-23T19:31:02Z",
       "side": 1,
       "message": "nit: strerror(errno) ?\n\n(I know, pattern in this code is %d of errno so this is just a nit)",
+      "range": {
+        "startLine": 823,
+        "startChar": 60,
+        "endLine": 823,
+        "endChar": 65
+      },
+      "revId": "5c75f473ff3ff81222d1bdde9fe6966a1210d680",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c560760_12129295",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 823,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-10-23T20:11:46Z",
+      "side": 1,
+      "message": "Will convert all occurrences in a separate CL.",
+      "parentUuid": "684333ae_c0cc7f0a",
       "range": {
         "startLine": 823,
         "startChar": 60,
