@@ -1255,12 +1255,24 @@ Result<Success> ServiceParser::ParseSection(std::vector<std::string>&& args,
         return Error() << "invalid service name '" << name << "'";
     }
 
-    Subcontext* restart_action_subcontext = nullptr;
+    Subcontext* service_subcontext = nullptr;
     if (subcontexts_) {
         for (auto& subcontext : *subcontexts_) {
             if (StartsWith(filename, subcontext.path_prefix())) {
-                restart_action_subcontext = &subcontext;
+                service_subcontext = &subcontext;
                 break;
+            }
+        }
+    }
+
+    if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_Q__ &&
+        /* Testing only, ignore*/ name != "vndservicemanager") {
+        if (service_subcontext != nullptr) {
+            auto prefix = service_subcontext->path_prefix().substr(1) + ".";
+            if (!StartsWith(name, prefix)) {
+                return Error() << "Service '" << name << "' on '"
+                               << service_subcontext->path_prefix()
+                               << "' must have its name prefixed with '" << prefix << "'";
             }
         }
     }
@@ -1273,7 +1285,7 @@ Result<Success> ServiceParser::ParseSection(std::vector<std::string>&& args,
         }
     }
 
-    service_ = std::make_unique<Service>(name, restart_action_subcontext, str_args);
+    service_ = std::make_unique<Service>(name, service_subcontext, str_args);
     return Success();
 }
 

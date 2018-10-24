@@ -25,6 +25,7 @@
 
 // android/api-level.h
 #define __ANDROID_API_P__ 28
+#define __ANDROID_API_Q__ 29
 
 // sys/system_properties.h
 #define PROP_VALUE_MAX 92
