@@ -58,6 +58,8 @@ class UnwindStackMap : public BacktraceMap {
   unwindstack::DexFiles* GetDexFiles() { return dex_files_.get(); }
 #endif
 
+  void SetArch(unwindstack::ArchEnum arch) { arch_ = arch; }
+
  protected:
   uint64_t GetLoadBias(size_t index) override;
 
@@ -67,6 +69,8 @@ class UnwindStackMap : public BacktraceMap {
 #if !defined(NO_LIBDEXFILE_SUPPORT)
   std::unique_ptr<unwindstack::DexFiles> dex_files_;
 #endif
+
+  unwindstack::ArchEnum arch_ = unwindstack::ARCH_UNKNOWN;
 };
 
 class UnwindStackOfflineMap : public UnwindStackMap {
