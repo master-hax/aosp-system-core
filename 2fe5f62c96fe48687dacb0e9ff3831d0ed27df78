@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "35f2a051_5754422d",
+        "filename": "fs_mgr/liblp/include/liblp/builder.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-24T21:58:15Z",
+      "side": 1,
+      "message": "nit: registers nervousness to hard-coded \"super\"",
+      "range": {
+        "startLine": 169,
+        "startChar": 36,
+        "endLine": 169,
+        "endChar": 43
+      },
+      "revId": "2fe5f62c96fe48687dacb0e9ff3831d0ed27df78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a871dae9_90b7d1a8",
+        "filename": "fs_mgr/liblp/include/liblp/partition_opener.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-24T21:58:15Z",
+      "side": 1,
+      "message": "nit: physical partition? I fear maintenance issues.\n\nWe should use either \"physical partition\" or \"logical partition\" in our comments at least. The word partition by itself will get confusing.\n\nI would prefer to see it also reflected in the variable naming",
+      "range": {
+        "startLine": 48,
+        "startChar": 11,
+        "endLine": 48,
+        "endChar": 20
+      },
+      "revId": "2fe5f62c96fe48687dacb0e9ff3831d0ed27df78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
