@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d75d4b1_3f9fc8d7",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-24T16:50:24Z",
+      "side": 1,
+      "message": "I think we have a racing here\n\n# zygote need to be started after otapreopt which will be done on post-fs-data\non zygote-start\n    # zygote is started in common init.rc\n    # and now we can continue to initialize /data/\n    # create the directory for preload content.\n    mkdir /data/preloads 0775 system system",
+      "range": {
+        "startLine": 492,
+        "startChar": 3,
+        "endLine": 492,
+        "endChar": 43
+      },
+      "revId": "c38a63646b28412a0db4c8c6a245d77d2ea40915",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
