@@ -21,7 +21,7 @@
 
 #include <utility>
 
-// bionic and glibc both have TEMP_FAILURE_RETRY, but eg Mac OS' libc doesn't.
+/** bionic and glibc both have TEMP_FAILURE_RETRY, but Mac OS' libc doesn't. */
 #ifndef TEMP_FAILURE_RETRY
 #define TEMP_FAILURE_RETRY(exp)            \
   ({                                       \
@@ -33,28 +33,24 @@
   })
 #endif
 
-// A macro to disallow the copy constructor and operator= functions
-// This must be placed in the private: declarations for a class.
-//
-// For disallowing only assign or copy, delete the relevant operator or
-// constructor, for example:
-// void operator=(const TypeName&) = delete;
-// Note, that most uses of DISALLOW_ASSIGN and DISALLOW_COPY are broken
-// semantically, one should either use disallow both or neither. Try to
-// avoid these in new code.
+/**
+ * A macro to disallow the copy constructor and operator= functions.
+ * You usually want DISALLOW_IMPLICIT_CONSTRUCTORS instead.
+ */
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&) = delete;      \
   void operator=(const TypeName&) = delete
 
-// A macro to disallow all the implicit constructors, namely the
-// default constructor, copy constructor and operator= functions.
-//
-// This should be used in the private: declarations for a class
-// that wants to prevent anyone from instantiating it. This is
-// especially useful for classes containing only static methods.
+/**
+ * A macro to disallow all the implicit constructors, namely the
+ * default constructor, copy constructor, move constructor,
+ * and operator= functions.
+ */
 #define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
   TypeName() = delete;                           \
-  DISALLOW_COPY_AND_ASSIGN(TypeName)
+  DISALLOW_COPY_AND_ASSIGN(TypeName);            \
+  TypeName(const TypeName&&) = delete;           \
+  void operator=(const TypeName&&) = delete
 
 // The arraysize(arr) macro returns the # of elements in an array arr.
 // The expression is a compile-time constant, and therefore can be
