@@ -102,6 +102,7 @@ static struct flag_list fs_mgr_flags[] = {
         {"formattable", MF_FORMATTABLE},
         {"slotselect", MF_SLOTSELECT},
         {"nofail", MF_NOFAIL},
+        {"first_stage_mount", MF_FIRST_STAGE_MOUNT},
         {"latemount", MF_LATEMOUNT},
         {"reservedsize=", MF_RESERVEDSIZE},
         {"quota", MF_QUOTA},
@@ -804,10 +805,14 @@ static std::string get_fstab_path()
  */
 struct fstab *fs_mgr_read_fstab_default()
 {
+    std::string force_normal_boot_value;
+    bool force_normal_boot =
+            fs_mgr_get_boot_config("force_normal_boot", &force_normal_boot_value) &&
+            force_normal_boot_value == "1";
     std::string default_fstab;
 
     // Use different fstab paths for normal boot and recovery boot, respectively
-    if (access("/system/bin/recovery", F_OK) == 0) {
+    if (access("/system/bin/recovery", F_OK) == 0 && !force_normal_boot) {
         default_fstab = "/etc/recovery.fstab";
     } else {  // normal boot
         default_fstab = get_fstab_path();
@@ -986,6 +991,10 @@ int fs_mgr_is_slotselect(const struct fstab_rec* fstab) {
 
 int fs_mgr_is_nofail(const struct fstab_rec* fstab) {
     return fstab->fs_mgr_flags & MF_NOFAIL;
+}
+
+int fs_mgr_is_first_stage_mount(const struct fstab_rec* fstab) {
+    return fstab->fs_mgr_flags & MF_FIRST_STAGE_MOUNT;
 }
 
 int fs_mgr_is_latemount(const struct fstab_rec* fstab) {
