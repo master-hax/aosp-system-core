@@ -41,6 +41,7 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
+#include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
@@ -127,13 +128,63 @@ bool fs_mgr_filesystem_has_space(const char* mount_point) {
     return (vst.f_bfree >= (vst.f_blocks * kPercentThreshold / 100));
 }
 
-bool fs_mgr_overlayfs_enabled(const struct fstab_rec* fsrec) {
+bool fs_mgr_overlayfs_enabled(struct fstab_rec* fsrec) {
     // readonly filesystem, can not be mount -o remount,rw
     // if squashfs or if free space is (near) zero making such a remount
     // virtually useless, or if there are shared blocks that prevent remount,rw
-    return ("squashfs"s == fsrec->fs_type) ||
-           fs_mgr_has_shared_blocks(fsrec->mount_point, fsrec->blk_device) ||
-           !fs_mgr_filesystem_has_space(fsrec->mount_point);
+    if (("squashfs"s == fsrec->fs_type) || !fs_mgr_filesystem_has_space(fsrec->mount_point)) {
+        return true;
+    }
+    if (fs_mgr_is_logical(fsrec)) {
+        fs_mgr_update_logical_partition(fsrec);
+    }
+    return fs_mgr_has_shared_blocks(fsrec->mount_point, fsrec->blk_device);
+}
+
+bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr, int level = 0) {
+    auto save_errno = errno;
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(path.c_str()), closedir);
+    if (!dir) {
+        if (errno == ENOENT) {
+            errno = save_errno;
+            return true;
+        }
+        PERROR << "opendir " << path << " depth=" << level;
+        if ((errno == EPERM) && (level != 0)) {
+            errno = save_errno;
+            return true;
+        }
+        return false;
+    }
+    dirent* entry;
+    auto ret = true;
+    while ((entry = readdir(dir.get()))) {
+        if (("."s == entry->d_name) || (".."s == entry->d_name)) continue;
+        auto file = path + "/" + entry->d_name;
+        if (entry->d_type == DT_UNKNOWN) {
+            struct stat st;
+            save_errno = errno;
+            if (!lstat(file.c_str(), &st) && (st.st_mode & S_IFDIR)) entry->d_type = DT_DIR;
+            errno = save_errno;
+        }
+        if (entry->d_type == DT_DIR) {
+            ret &= fs_mgr_rm_all(file, change, level + 1);
+            if (!rmdir(file.c_str())) {
+                if (change) *change = true;
+            } else {
+                if (errno != ENOENT) ret = false;
+                PERROR << "rmdir " << file << " depth=" << level;
+            }
+            continue;
+        }
+        if (!unlink(file.c_str())) {
+            if (change) *change = true;
+        } else {
+            if (errno != ENOENT) ret = false;
+            PERROR << "rm " << file << " depth=" << level;
+        }
+    }
+    return ret;
 }
 
 const auto kUpperName = "upper"s;
@@ -260,53 +311,6 @@ bool fs_mgr_wants_overlayfs(const fstab_rec* fsrec) {
 
     return true;
 }
-
-bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr, int level = 0) {
-    auto save_errno = errno;
-    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(path.c_str()), closedir);
-    if (!dir) {
-        if (errno == ENOENT) {
-            errno = save_errno;
-            return true;
-        }
-        PERROR << "opendir " << path << " depth=" << level;
-        if ((errno == EPERM) && (level != 0)) {
-            errno = save_errno;
-            return true;
-        }
-        return false;
-    }
-    dirent* entry;
-    auto ret = true;
-    while ((entry = readdir(dir.get()))) {
-        if (("."s == entry->d_name) || (".."s == entry->d_name)) continue;
-        auto file = path + "/" + entry->d_name;
-        if (entry->d_type == DT_UNKNOWN) {
-            struct stat st;
-            save_errno = errno;
-            if (!lstat(file.c_str(), &st) && (st.st_mode & S_IFDIR)) entry->d_type = DT_DIR;
-            errno = save_errno;
-        }
-        if (entry->d_type == DT_DIR) {
-            ret &= fs_mgr_rm_all(file, change, level + 1);
-            if (!rmdir(file.c_str())) {
-                if (change) *change = true;
-            } else {
-                if (errno != ENOENT) ret = false;
-                PERROR << "rmdir " << file << " depth=" << level;
-            }
-            continue;
-        }
-        if (!unlink(file.c_str())) {
-            if (change) *change = true;
-        } else {
-            if (errno != ENOENT) ret = false;
-            PERROR << "rm " << file << " depth=" << level;
-        }
-    }
-    return ret;
-}
-
 constexpr char kOverlayfsFileContext[] = "u:object_r:overlayfs_file:s0";
 
 bool fs_mgr_overlayfs_setup_dir(const std::string& dir, std::string* overlay, bool* change) {
