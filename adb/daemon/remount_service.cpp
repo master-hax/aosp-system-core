@@ -78,7 +78,13 @@ static std::string find_fstab_mount(const char* dir) {
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> fstab(fs_mgr_read_fstab_default(),
                                                                fs_mgr_free_fstab);
     struct fstab_rec* rec = fs_mgr_get_entry_for_mount_point(fstab.get(), dir);
-    return rec ? rec->blk_device : "";
+    if (!rec) {
+        return "";
+    }
+    if (fs_mgr_is_logical(rec)) {
+        fs_mgr_update_logical_partition(rec);
+    }
+    return rec->blk_device;
 }
 
 // The proc entry for / is full of lies, so check fstab instead.
@@ -87,7 +93,7 @@ static std::string find_mount(const char* dir, bool is_root) {
     if (is_root) {
         return find_fstab_mount(dir);
     } else {
-       return find_proc_mount(dir);
+        return find_proc_mount(dir);
     }
 }
 
@@ -155,11 +161,14 @@ static bool remount_partition(int fd, const char* dir) {
         return true;
     }
     bool is_root = strcmp(dir, "/") == 0;
-    if (is_root && !find_mount("/system", false).empty()) {
-        dir = "/system";
-        is_root = false;
+    std::string dev;
+    if (is_root && android::base::GetBoolProperty("ro.boot.logical_partitions", false)) {
+        // When using dynamic partitions, we expect system to be mounted at /
+        // but specified as /system in fstab.
+        dev = find_mount("/system", true);
+    } else {
+        dev = find_mount(dir, is_root);
     }
-    std::string dev = find_mount(dir, is_root);
     // Even if the device for the root is not found, we still try to remount it
     // as rw. This typically only happens when running Android in a container:
     // the root will almost always be in a loop device, which is dynamic, so
@@ -222,8 +231,14 @@ void remount_service(unique_fd fd, const std::string& cmd) {
     bool system_verified = !(android::base::GetProperty("partition.system.verified", "").empty());
     bool vendor_verified = !(android::base::GetProperty("partition.vendor.verified", "").empty());
 
-    std::vector<std::string> partitions{"/",        "/odm",   "/oem", "/product_services",
-                                        "/product", "/vendor"};
+    std::vector<std::string> partitions{"/odm", "/oem", "/product_services", "/product", "/vendor"};
+
+    // Add the system mount point.
+    if (!find_mount("/system", false).empty()) {
+        partitions.emplace_back("/system");
+    } else {
+        partitions.emplace_back("/");
+    }
 
     bool verity_enabled = (system_verified || vendor_verified);
 
