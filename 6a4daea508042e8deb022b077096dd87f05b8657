@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e3279f8_58532e2a",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-25T23:15:55Z",
+      "side": 1,
+      "message": "@salyzyn - would this be a problem if the full fstab is provided at this point?  Or would overlayfs handle this gracefully?  \n\nThe hope with this CL, given the first_stage_mount flag, is that vendors would only need to write one fstab and just put it at these two locations, instead of having to have a separate first stage fstab.",
+      "revId": "6a4daea508042e8deb022b077096dd87f05b8657",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
