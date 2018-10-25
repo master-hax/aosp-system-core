@@ -61,7 +61,7 @@ bool fs_mgr_overlayfs_mount_all(fstab*) {
     return false;
 }
 
-bool fs_mgr_overlayfs_mount_all(const std::vector<const fstab_rec*>&) {
+bool fs_mgr_overlayfs_mount_all(const std::vector<fstab_rec*>&) {
     return false;
 }
 
@@ -69,7 +69,7 @@ std::vector<std::string> fs_mgr_overlayfs_required_devices(fstab*) {
     return {};
 }
 
-std::vector<std::string> fs_mgr_overlayfs_required_devices(const std::vector<const fstab_rec*>&) {
+std::vector<std::string> fs_mgr_overlayfs_required_devices(const std::vector<fstab_rec*>&) {
     return {};
 }
 
@@ -772,7 +772,7 @@ bool fs_mgr_overlayfs_mount_all(fstab* fstab) {
     return ret;
 }
 
-bool fs_mgr_overlayfs_mount_all(const std::vector<const fstab_rec*>& fsrecs) {
+bool fs_mgr_overlayfs_mount_all(const std::vector<fstab_rec*>& fsrecs) {
     std::vector<fstab_rec> recs;
     for (const auto& rec : fsrecs) recs.push_back(*rec);
     fstab fstab = {static_cast<int>(fsrecs.size()), &recs[0]};
@@ -793,8 +793,7 @@ std::vector<std::string> fs_mgr_overlayfs_required_devices(fstab* fstab) {
     return {};
 }
 
-std::vector<std::string> fs_mgr_overlayfs_required_devices(
-        const std::vector<const fstab_rec*>& fsrecs) {
+std::vector<std::string> fs_mgr_overlayfs_required_devices(const std::vector<fstab_rec*>& fsrecs) {
     std::vector<fstab_rec> recs;
     for (const auto& rec : fsrecs) recs.push_back(*rec);
     fstab fstab = {static_cast<int>(fsrecs.size()), &recs[0]};
