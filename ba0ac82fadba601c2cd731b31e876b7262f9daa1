@@ -46,6 +46,30 @@
       "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8cabf819_b85d4a2b",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2018-10-26T16:00:28Z",
+      "side": 1,
+      "message": "Right, but is that ever going to change? Can \"OK\\r\\n\" show in inside the useless messages themselves?",
+      "parentUuid": "aa243c02_a7701b1d",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
