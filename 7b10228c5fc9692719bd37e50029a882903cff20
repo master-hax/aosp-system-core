@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "dcff92bc_c9d34611",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1518,
+      "author": {
+        "id": 1124699
+      },
+      "writtenOn": "2018-10-26T23:10:23Z",
+      "side": 1,
+      "message": "Why the special case for low ram devices?",
+      "range": {
+        "startLine": 1518,
+        "startChar": 13,
+        "endLine": 1518,
+        "endChar": 27
+      },
+      "revId": "7b10228c5fc9692719bd37e50029a882903cff20",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9c9beb0f_bbbb7fe0",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 2
