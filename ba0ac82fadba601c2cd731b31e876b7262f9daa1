@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "90f39dfc_c54571b8",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-10-26T16:50:15Z",
+      "side": 1,
+      "message": "nit: StringView ?",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 40
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d0f22f63_27077e10",
         "filename": "adb/client/console.cpp",
         "patchSetId": 2
@@ -109,6 +132,30 @@
       "side": 1,
       "message": "Ah so the \"OK\"\u0027s don\u0027t involve adb itself, but come from the android console. I\u0027m concerned about stuff like this that couples adb client and emulator console API together, inviting future bugs, but since this console stuff hasn\u0027t changed in quite a while it\u0027s probably ok.",
       "parentUuid": "4ffd425d_270d60fd",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da883e0d_d203dd08",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-10-26T16:50:15Z",
+      "side": 1,
+      "message": "could you please add this discussion to the comment in the code so it\u0027s easier to understand why only two, and why OK\\r\\n, and so on\nBTW, if the adb is already authenticated do we still print those? e.g. if executing \"adb emu auth\" command",
+      "parentUuid": "4b89ce4a_c6c4e209",
       "range": {
         "startLine": 154,
         "startChar": 4,
