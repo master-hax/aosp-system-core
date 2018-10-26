@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4bc01075_6771bc67",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-26T22:03:43Z",
+      "side": 0,
+      "message": "I would still prefer that \"scratch\" get removed for existing super partitions.",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 158,
+        "endChar": 40
+      },
+      "revId": "91061cc8231d4889ef8098ac9d3aa6646f20d382",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
