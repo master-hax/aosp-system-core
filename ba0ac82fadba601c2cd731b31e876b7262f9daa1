@@ -70,6 +70,30 @@
       "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ffd425d_270d60fd",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2018-10-26T16:04:15Z",
+      "side": 1,
+      "message": "here are the two messages I want to skip:\n\nAndroid Console: Authentication required\nAndroid Console: type \u0027auth \u003cauth_token\u003e\u0027 to authenticate\nAndroid Console: you can find your \u003cauth_token\u003e in \n\u0027/usr/local/google/home/bohu/.emulator_console_auth_token\u0027\nOK\nAndroid Console: type \u0027help\u0027 for a list of commands\nOK",
+      "parentUuid": "8cabf819_b85d4a2b",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
