@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b86d00e6_8044e202",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1338,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-10-26T20:54:52Z",
+      "side": 1,
+      "message": "ack",
+      "parentUuid": "f9986de8_44dd27f0",
+      "range": {
+        "startLine": 1338,
+        "startChar": 2,
+        "endLine": 1338,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "670470a2_bdc85631",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2018-10-26T20:42:55Z",
       "side": 1,
       "message": "is this right now same as LMK_KILL_OCCURRED? can we instead of log when we start and exit the loop instead ore remove?",
+      "range": {
+        "startLine": 1362,
+        "startChar": 16,
+        "endLine": 1366,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6289d7b5_ec9b34d2",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1366,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2018-10-26T20:54:52Z",
+      "side": 1,
+      "message": "Yes, with this change each kill session will kill only one process, so LMK_KILL_OCCURRED and LMK_STAT_CHANGE_START/LMK_STAT_CHANGE_STOP will always match, however there might be tooling that uses these stats already and I don\u0027t want to break that. Also having a kill session and individual kills marked separately will allow us in the future to have more kills per session.",
+      "parentUuid": "670470a2_bdc85631",
       "range": {
         "startLine": 1362,
         "startChar": 16,
