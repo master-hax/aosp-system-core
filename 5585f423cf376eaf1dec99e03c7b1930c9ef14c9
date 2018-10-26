@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3bd0ed2_45404608",
+        "filename": "debuggerd/handler/debuggerd_fallback.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-26T17:51:31Z",
+      "side": 1,
+      "message": "I think this is closing the wrong fd? The fd stored in fd isn\u0027t the one we\u0027re leaking, it\u0027s the pipe_write.release above, since the compare exchange failed.",
+      "range": {
+        "startLine": 261,
+        "startChar": 12,
+        "endLine": 261,
+        "endChar": 22
+      },
+      "revId": "5585f423cf376eaf1dec99e03c7b1930c9ef14c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
