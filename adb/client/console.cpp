@@ -135,6 +135,7 @@ int adb_send_emulator_command(int argc, const char** argv, const char* serial) {
     // preventing the emulator from reading the command that adb has sent.
     // https://code.google.com/p/android/issues/detail?id=21021
     int result;
+    std::string emulator_output;
     do {
         char buf[BUFSIZ];
         result = adb_read(fd, buf, sizeof(buf));
@@ -146,8 +147,22 @@ int adb_send_emulator_command(int argc, const char** argv, const char* serial) {
         // appended above, and that causes the emulator to close the socket
         // which should cause zero bytes (orderly/graceful shutdown) to be
         // returned.
+        if (result > 0) emulator_output.append(buf, result);
     } while (result > 0);
 
+    // Search and skip first two "OK\r\n", print the rest.
+    const std::string delims = "OK\r\n";
+    std::size_t found = 0;
+    for (int i = 0; i < 2; ++i) {
+        const std::size_t result = emulator_output.find(delims, found);
+        if (result == std::string::npos) {
+            break;
+        } else {
+            found = result + delims.size();
+        }
+    }
+
+    printf("%s", emulator_output.c_str() + found);
     adb_close(fd);
 
     return 0;
