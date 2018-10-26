@@ -22,6 +22,30 @@
       "revId": "91061cc8231d4889ef8098ac9d3aa6646f20d382",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e451d3a1_c0e12773",
+        "filename": "fastboot/device/flashing.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-10-26T22:08:10Z",
+      "side": 0,
+      "message": "This patch removes *everything* - the new metadata shouldn\u0027t contain scratch.",
+      "parentUuid": "4bc01075_6771bc67",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 158,
+        "endChar": 40
+      },
+      "revId": "91061cc8231d4889ef8098ac9d3aa6646f20d382",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
