@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "47e76ad3_ba3b3bc3",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2018-10-26T17:14:11Z",
+      "side": 1,
+      "message": "I cannot find StringView inside this system/core project, do you know where I can find it?",
+      "parentUuid": "90f39dfc_c54571b8",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 40
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d0f22f63_27077e10",
         "filename": "adb/client/console.cpp",
         "patchSetId": 2
@@ -156,6 +180,30 @@
       "side": 1,
       "message": "could you please add this discussion to the comment in the code so it\u0027s easier to understand why only two, and why OK\\r\\n, and so on\nBTW, if the adb is already authenticated do we still print those? e.g. if executing \"adb emu auth\" command",
       "parentUuid": "4b89ce4a_c6c4e209",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6168bef7_6d995e3d",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2018-10-26T17:14:11Z",
+      "side": 1,
+      "message": "added the discussion to the comment;\n\nthe authentication is required for each \u0027adb emu \u003ccommand\u003e\u0027 session.\n\nexecuting \u0027adb emu auth\u0027 will cause the following error (since adb will do auth first, \nand then after that, auth command is treated as unknown command)\n\nadb emu auth\nKO: unknown command, try \u0027help\u0027",
+      "parentUuid": "da883e0d_d203dd08",
       "range": {
         "startLine": 154,
         "startChar": 4,
