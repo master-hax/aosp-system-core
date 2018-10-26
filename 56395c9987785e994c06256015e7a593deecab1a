@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "86625d3e_423f2948",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1366,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T21:31:52Z",
+      "side": 1,
+      "message": "then does it makes sense we move this to outsides the while loop so we measure the time lmkd to find and kill? maybe rajekumar@ knows history about the STATE CHANGE stat.",
+      "parentUuid": "6289d7b5_ec9b34d2",
+      "range": {
+        "startLine": 1362,
+        "startChar": 16,
+        "endLine": 1366,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "73a97148_888972b0",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 2
