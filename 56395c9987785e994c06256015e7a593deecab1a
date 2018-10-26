@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "f9b39b62_03c45304",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1366,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T22:29:24Z",
+      "side": 1,
+      "message": "understood and that is the old case but right now we are only killing once. anyway this is just an open question about the stats defined here.",
+      "parentUuid": "14a687d5_b5397177",
+      "range": {
+        "startLine": 1362,
+        "startChar": 16,
+        "endLine": 1366,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "73a97148_888972b0",
         "filename": "lmkd/lmkd.c",
         "patchSetId": 2
@@ -164,6 +188,30 @@
       "revId": "56395c9987785e994c06256015e7a593deecab1a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a74991c6_9e51602c",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1379,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T22:29:24Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "73a97148_888972b0",
+      "range": {
+        "startLine": 1377,
+        "startChar": 4,
+        "endLine": 1379,
+        "endChar": 5
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
