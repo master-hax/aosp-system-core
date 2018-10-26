@@ -22,6 +22,30 @@
       "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa243c02_a7701b1d",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2018-10-26T15:55:30Z",
+      "side": 1,
+      "message": "upon connection, there is a welcome reply ending with \u0027OK\\r\\n\u0027\nand after authentication, there is another not very useful message ending with \u0027OK\\r\\n\u0027\n\nwe want to skip both",
+      "parentUuid": "d0f22f63_27077e10",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
