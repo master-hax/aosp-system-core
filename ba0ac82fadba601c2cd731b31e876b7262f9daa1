@@ -94,6 +94,30 @@
       "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b89ce4a_c6c4e209",
+        "filename": "adb/client/console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1082465
+      },
+      "writtenOn": "2018-10-26T16:09:38Z",
+      "side": 1,
+      "message": "Ah so the \"OK\"\u0027s don\u0027t involve adb itself, but come from the android console. I\u0027m concerned about stuff like this that couples adb client and emulator console API together, inviting future bugs, but since this console stuff hasn\u0027t changed in quite a while it\u0027s probably ok.",
+      "parentUuid": "4ffd425d_270d60fd",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 33
+      },
+      "revId": "ba0ac82fadba601c2cd731b31e876b7262f9daa1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
