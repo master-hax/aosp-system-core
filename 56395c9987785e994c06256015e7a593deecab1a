@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9986de8_44dd27f0",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1338,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T20:42:55Z",
+      "side": 1,
+      "message": "Find one process",
+      "range": {
+        "startLine": 1338,
+        "startChar": 2,
+        "endLine": 1338,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "670470a2_bdc85631",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1366,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T20:42:55Z",
+      "side": 1,
+      "message": "is this right now same as LMK_KILL_OCCURRED? can we instead of log when we start and exit the loop instead ore remove?",
+      "range": {
+        "startLine": 1362,
+        "startChar": 16,
+        "endLine": 1366,
+        "endChar": 17
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73a97148_888972b0",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1379,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-10-26T20:42:55Z",
+      "side": 1,
+      "message": "also",
+      "range": {
+        "startLine": 1377,
+        "startChar": 4,
+        "endLine": 1379,
+        "endChar": 5
+      },
+      "revId": "56395c9987785e994c06256015e7a593deecab1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
