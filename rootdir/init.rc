@@ -292,6 +292,9 @@ on load_persist_props_action
     load_persist_props
     start logd
     start logd-reinit
+    # check server configurable flags(which is based on persistent properties) related
+    # disaster recovery
+    exec - system system -- /system/bin/flags_health_check
 
 # Indicate to fw loaders that the relevant mounts are up.
 on firmware_mounts_complete
@@ -749,6 +752,7 @@ on property:vold.decrypt=trigger_shutdown_framework
 
 on property:sys.boot_completed=1
     bootchart stop
+    setprop persist.device_config.attempted_boot_count 0
 
 # system server cannot write to /proc/sys files,
 # and chown/chmod does not work for /proc/sys/ entries.
