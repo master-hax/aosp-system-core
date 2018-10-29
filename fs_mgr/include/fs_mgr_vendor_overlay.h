@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-#pragma once
+#ifndef __CORE_FS_MGR_VENDOR_OVERLAY_H
+#define __CORE_FS_MGR_VENDOR_OVERLAY_H
 
 #include <fstab/fstab.h>
 
-#include <string>
-#include <vector>
+bool fs_mgr_vendor_overlay_mount_all();
 
-bool fs_mgr_overlayfs_mount_all(fstab* fstab);
-std::vector<std::string> fs_mgr_overlayfs_required_devices(fstab* fstab);
-bool fs_mgr_overlayfs_setup(const char* backing = nullptr, const char* mount_point = nullptr,
-                            bool* change = nullptr);
-bool fs_mgr_overlayfs_teardown(const char* mount_point = nullptr, bool* change = nullptr);
-bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string& dev);
-bool fs_mgr_access(const std::string& path);
-std::string fs_mgr_get_context(const std::string& mount_point);
+#endif /* __CORE_FS_MGR_VENDOR_OVERLAY_H */

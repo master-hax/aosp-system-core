@@ -104,17 +104,6 @@ bool fs_mgr_dir_is_writable(const std::string& path) {
     return ret | !rmdir(test_directory.c_str());
 }
 
-std::string fs_mgr_get_context(const std::string& mount_point) {
-    char* ctx = nullptr;
-    auto len = getfilecon(mount_point.c_str(), &ctx);
-    if ((len > 0) && ctx) {
-        std::string context(ctx, len);
-        free(ctx);
-        return context;
-    }
-    return "";
-}
-
 // At less than 1% free space return value of false,
 // means we will try to wrap with overlayfs.
 bool fs_mgr_filesystem_has_space(const char* mount_point) {
@@ -222,13 +211,6 @@ const char* fs_mgr_mount_point(const char* mount_point) {
     if (!mount_point) return mount_point;
     if ("/"s != mount_point) return mount_point;
     return "/system";
-}
-
-bool fs_mgr_access(const std::string& path) {
-    auto save_errno = errno;
-    auto ret = access(path.c_str(), F_OK) == 0;
-    errno = save_errno;
-    return ret;
 }
 
 bool fs_mgr_rw_access(const std::string& path) {
@@ -884,4 +866,22 @@ bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string&
     if (ext4_parse_sb(&sb, &info) < 0) return false;
 
     return (info.feat_ro_compat & EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS) != 0;
+}
+
+bool fs_mgr_access(const std::string& path) {
+    auto save_errno = errno;
+    auto ret = access(path.c_str(), F_OK) == 0;
+    errno = save_errno;
+    return ret;
+}
+
+std::string fs_mgr_get_context(const std::string& mount_point) {
+    char* ctx = nullptr;
+    auto len = getfilecon(mount_point.c_str(), &ctx);
+    if ((len > 0) && ctx) {
+        std::string context(ctx);
+        free(ctx);
+        return context;
+    }
+    return "";
 }
