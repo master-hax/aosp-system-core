@@ -104,17 +104,6 @@ bool fs_mgr_dir_is_writable(const std::string& path) {
     return ret | !rmdir(test_directory.c_str());
 }
 
-std::string fs_mgr_get_context(const std::string& mount_point) {
-    char* ctx = nullptr;
-    auto len = getfilecon(mount_point.c_str(), &ctx);
-    if ((len > 0) && ctx) {
-        std::string context(ctx, len);
-        free(ctx);
-        return context;
-    }
-    return "";
-}
-
 // At less than 1% free space return value of false,
 // means we will try to wrap with overlayfs.
 bool fs_mgr_filesystem_has_space(const char* mount_point) {
@@ -248,8 +237,7 @@ bool fs_mgr_wants_overlayfs() {
     auto debuggable = android::base::GetProperty("ro.debuggable", "1");
     if (debuggable != "1") return false;
 
-    // Overlayfs available in the kernel, and patched for override_creds?
-    return fs_mgr_access("/sys/module/overlay/parameters/override_creds");
+    return fs_mgr_overlayfs_supports_override_creds();
 }
 
 bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overlay_only = true) {
@@ -884,4 +872,20 @@ bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string&
     if (ext4_parse_sb(&sb, &info) < 0) return false;
 
     return (info.feat_ro_compat & EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS) != 0;
+}
+
+std::string fs_mgr_get_context(const std::string& mount_point) {
+    char* ctx = nullptr;
+    if (getfilecon(mount_point.c_str(), &ctx) == -1) {
+        return "";
+    }
+
+    std::string context(ctx);
+    free(ctx);
+    return context;
+}
+
+bool fs_mgr_overlayfs_supports_override_creds() {
+    // Overlayfs available in the kernel, and patched for override_creds?
+    return fs_mgr_access("/sys/module/overlay/parameters/override_creds");
 }
