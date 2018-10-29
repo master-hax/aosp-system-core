@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "9e002832_3ddc46e1",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-29T16:12:46Z",
+      "side": 1,
+      "message": "I worried this too.  Looks like this is done in second stage init now, after properties have been read.  It\u0027d probably be good to re-title the bug for posterity.  It should be fine where it is now too; there aren\u0027t any vendor HALs needed this early, but properties (at least default properties, but hopefully all properties once I fix b/117892318) will be available this early.",
+      "parentUuid": "ef3c9b3c_768679e4",
+      "range": {
+        "startLine": 53,
+        "startChar": 31,
+        "endLine": 53,
+        "endChar": 88
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3cac09d4_3fd1ee77",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -232,6 +256,23 @@
     },
     {
       "key": {
+        "uuid": "449e6c0d_9e87a5d0",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-29T16:12:46Z",
+      "side": 1,
+      "message": "Why have this check?  Unlike your other function where I\u0027m suggesting you add a check, you should be confident that this function won\u0027t be called unless mount_point isn\u0027t empty.\n\nMaybe CHECK() is probably better if you want to keep it.",
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1421246e_636158fe",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -324,6 +365,23 @@
     },
     {
       "key": {
+        "uuid": "577dabb3_d86dbeaf",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-29T16:12:46Z",
+      "side": 1,
+      "message": "Return early if this returns an empty string, which looks to be the \"no overlay directories\" case?  No point in calling through the rest and reporting errors, when it\u0027s configured to not do anything.",
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bf237c26_25dbce02",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -340,6 +398,29 @@
         "startChar": 4,
         "endLine": 132,
         "endChar": 28
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c48cf292_a274fa94",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-29T16:12:46Z",
+      "side": 1,
+      "message": "const auto\u0026",
+      "range": {
+        "startLine": 133,
+        "startChar": 9,
+        "endLine": 133,
+        "endChar": 13
       },
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
