@@ -22,6 +22,29 @@
       "revId": "5585f423cf376eaf1dec99e03c7b1930c9ef14c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b22778a_dbd5fcdf",
+        "filename": "debuggerd/handler/debuggerd_fallback.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-10-29T21:33:53Z",
+      "side": 1,
+      "message": "This code never does anything, expected will always be [-1, -1] if we reach this point.",
+      "range": {
+        "startLine": 275,
+        "startChar": 0,
+        "endLine": 280,
+        "endChar": 11
+      },
+      "revId": "5585f423cf376eaf1dec99e03c7b1930c9ef14c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
