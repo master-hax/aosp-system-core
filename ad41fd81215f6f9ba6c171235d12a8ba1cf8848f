@@ -1,0 +1,349 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8416016_6fd650e2",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "You are using std::string below, define it here if you use it here #include \u003cstring\u003e",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a981cc6_ffdb437d",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "This is also in fs_mgr_overlayfs.cpp, move the implementation in that file to the bottom to export it from there and fs_mgr_overlayfs.h?",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 1
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef3c9b3c_768679e4",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "Be careful, no properties are available during first_stage_init. You need a means to pick this up from the device tree, or declare (at least in a comment here) that these functions can not be used in first_stage_init.",
+      "range": {
+        "startLine": 53,
+        "startChar": 31,
+        "endLine": 53,
+        "endChar": 88
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cac09d4_3fd1ee77",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "Kiss and stdc, get rid of the trailing %s in kVendorOverlaySourceDirFormat, drop android-base/stringprintf.h and instead:\n\n    return kVendorOverlayfSourceDir + vndk_version;",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 92
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f79478b1_9f3aecbb",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "nit: should wrap this with std::unique_ptr\n\nstd::unique_ptr\u003cDIR, decltype(\u0026closedir)\u003e vendor_overlay_top(opendir(overlay_top.c_str()), closedir);\n\nMissed checking for nullptr ...\n\nif (!vendor_overlay_top) return vendor_overlay_dirs;",
+      "range": {
+        "startLine": 63,
+        "startChar": 4,
+        "endLine": 63,
+        "endChar": 8
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37d07040_2c311468",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "This is C++, use nullptr instead.",
+      "range": {
+        "startLine": 66,
+        "startChar": 49,
+        "endLine": 66,
+        "endChar": 53
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df001f8b_2de16a7c",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "pedantic lipservice only, no changes required, not all filesystems will report DT_DIR and require a stat() request on seeing DT_UNKNOWN to be sure. If you are sure that the file systems you are on are ext2-ext4, ext4-dedupe or squashfs, you are safe.\n\nBe prepared for std::filesystem migration C++17 when the standards move up.",
+      "range": {
+        "startLine": 67,
+        "startChar": 12,
+        "endLine": 67,
+        "endChar": 33
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "749be467_02e9c0dd",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "dp-\u003ed_name[0] \u003d\u003d \u0027.\u0027",
+      "range": {
+        "startLine": 67,
+        "startChar": 36,
+        "endLine": 67,
+        "endChar": 68
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f94e1221_28f3d9ed",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "You missed the closedir (but would be solved by std::unique_ptr ...",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 5
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02ec221c_cc08ee8d",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "Also in fs_mgr_overlayfs.cpp, move to bottom of that file and export it from overlayfs header.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 1
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1421246e_636158fe",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "Since you have control (and trust) for system, vendor context is used throughout, using u:object_r:vendor_file:s0 is probably OK here if you can not pick it up? Failing to overlay the vendor may be more damaging, resulting in a boot loop, over the minor (and very unlikely ...) technicality that _everything_ vendor has this as the context ;-/\n\n(yes, print the error, but I do not believe this to be a security hole, but do ask security review for their approval).",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 5
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a58fcd5_1c35d215",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "This will stutter the errno, integrate this into one line:\n\nPERROR \u003c\u003c report \u003c\u003c \" result: \" \u003c\u003c ret;",
+      "range": {
+        "startLine": 109,
+        "startChar": 8,
+        "endLine": 109,
+        "endChar": 37
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a71fcf7_8aad02b7",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "nit: one-line to improve the signal to noise ratio in the logs.",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 113,
+        "endChar": 36
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd4403b7_36f47a2a",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "We may wish for an error message _if_ there is cendor_overlay_dirs content, the intention is that if there is a set of overlayfs, and you can not do it because the kernel is misconfigured, then report it!.",
+      "range": {
+        "startLine": 124,
+        "startChar": 8,
+        "endLine": 124,
+        "endChar": 44
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf237c26_25dbce02",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-29T14:45:47Z",
+      "side": 1,
+      "message": "nit: use const auto here, anything iterable in the definition of fs_mgr_get_vendor_overlay_dirs will below work, and there is no reason to _change_ the values.",
+      "range": {
+        "startLine": 132,
+        "startChar": 4,
+        "endLine": 132,
+        "endChar": 28
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
