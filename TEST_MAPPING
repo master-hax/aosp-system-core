@@ -2,6 +2,42 @@
   "presubmit": [
     {
       "name": "adbd_test"
+    },
+    {
+      "name": "backtrace_test"
+    },
+    {
+      "name": "debuggerd_test"
+    },
+    {
+      "name": "init_tests"
+    },
+    {
+      "name": "libbase_test"
+    },
+    {
+      "name": "libdemangle_test"
+    },
+    {
+      "name": "libkeyutils-tests"
+    },
+    {
+      "name": "libprocinfo_test"
+    },
+    {
+      "name": "libunwindstack_test"
+    },
+    {
+      "name": "memunreachable_test"
+    },
+    {
+      "name": "memunreachable_binder_test"
+    },
+    {
+      "name": "propertyinfoserializer_tests"
+    },
+    {
+      "name": "ziparchive-tests"
     }
   ]
 }
