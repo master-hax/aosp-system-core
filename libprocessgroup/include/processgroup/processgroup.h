@@ -22,17 +22,24 @@
 
 __BEGIN_DECLS
 
+extern const char kCpuacctCgroup[];
+extern const char kMemoryCgroup[];
+
+bool isMemoryCgroupSupported();
+
 // Return 0 and removes the cgroup if there are no longer any processes in it.
 // Returns -1 in the case of an error occurring or if there are processes still running
 // even after retrying for up to 200ms.
-int killProcessGroup(uid_t uid, int initialPid, int signal);
+int killProcessGroup(const char* cgroup, uid_t uid, int initialPid, int signal);
 
 // Returns the same as killProcessGroup(), however it does not retry, which means
 // that it only returns 0 in the case that the cgroup exists and it contains no processes.
-int killProcessGroupOnce(uid_t uid, int initialPid, int signal);
+int killProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal);
 
-int createProcessGroup(uid_t uid, int initialPid);
+int createProcessGroup(const char* cgroup, uid_t uid, int initialPid);
 
+// Set various properties of a process group. For these functions to work, the process group must
+// have been created by passing kMemoryCgroup to createProcessGroup.
 bool setProcessGroupSwappiness(uid_t uid, int initialPid, int swappiness);
 bool setProcessGroupSoftLimit(uid_t uid, int initialPid, int64_t softLimitInBytes);
 bool setProcessGroupLimit(uid_t uid, int initialPid, int64_t limitInBytes);
