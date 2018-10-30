@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <map>
+#include <memory>
 #include <random>
 #include <regex>
 #include <set>
@@ -114,9 +115,7 @@ void FastBootTest::SetUp() {
     const auto matcher = [](usb_ifc_info* info) -> int { return MatchFastboot(info, nullptr); };
     for (int i = 0; i < MAX_USB_TRIES && !transport; i++) {
         std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
-        if (usb)
-            transport = std::unique_ptr<UsbTransportSniffer>(
-                    new UsbTransportSniffer(std::move(usb), serial_port));
+        if (usb) transport = std::make_unique<UsbTransportSniffer>(std::move(usb), serial_port);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
@@ -127,7 +126,7 @@ void FastBootTest::SetUp() {
     } else {
         ASSERT_EQ(device_path, cb_scratch);  // The path can not change
     }
-    fb = std::unique_ptr<FastBootDriver>(new FastBootDriver(transport.get(), {}, true));
+    fb = std::make_unique<FastBootDriver>(transport.get(), {}, true);
 }
 
 void FastBootTest::TearDown() {
@@ -208,14 +207,13 @@ void FastBootTest::SetLockState(bool unlock, bool assert_change) {
         while (!transport) {
             std::unique_ptr<UsbTransport> usb(usb_open(matcher, USB_TIMEOUT));
             if (usb) {
-                transport = std::unique_ptr<UsbTransportSniffer>(
-                        new UsbTransportSniffer(std::move(usb), serial_port));
+                transport = std::make_unique<UsbTransportSniffer>(std::move(usb), serial_port);
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             putchar('.');
         }
         device_path = cb_scratch;
-        fb = std::unique_ptr<FastBootDriver>(new FastBootDriver(transport.get(), {}, true));
+        fb = std::make_unique<FastBootDriver>(transport.get(), {}, true);
         if (assert_change) {
             ASSERT_EQ(fb->GetVar("unlocked", &resp), SUCCESS) << "getvar:unlocked failed";
             ASSERT_EQ(resp, unlock ? "yes" : "no")

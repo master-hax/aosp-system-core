@@ -31,6 +31,8 @@
 #include <android-base/errors.h>
 #include <android-base/stringprintf.h>
 
+#include <memory>
+
 Socket::Socket(cutils_socket_t sock) : sock_(sock) {}
 
 Socket::~Socket() {
@@ -240,7 +242,7 @@ std::unique_ptr<Socket> TcpSocket::Accept() {
     if (handler == INVALID_SOCKET) {
         return nullptr;
     }
-    return std::unique_ptr<TcpSocket>(new TcpSocket(handler));
+    return std::make_unique<TcpSocket>(handler);
 }
 
 std::unique_ptr<Socket> Socket::NewClient(Protocol protocol, const std::string& host, int port,
@@ -248,12 +250,12 @@ std::unique_ptr<Socket> Socket::NewClient(Protocol protocol, const std::string& 
     if (protocol == Protocol::kUdp) {
         cutils_socket_t sock = socket_network_client(host.c_str(), port, SOCK_DGRAM);
         if (sock != INVALID_SOCKET) {
-            return std::unique_ptr<UdpSocket>(new UdpSocket(UdpSocket::Type::kClient, sock));
+            return std::make_unique<UdpSocket>(UdpSocket::Type::kClient, sock);
         }
     } else {
         cutils_socket_t sock = socket_network_client(host.c_str(), port, SOCK_STREAM);
         if (sock != INVALID_SOCKET) {
-            return std::unique_ptr<TcpSocket>(new TcpSocket(sock));
+            return std::make_unique<TcpSocket>(sock);
         }
     }
 
@@ -268,12 +270,12 @@ std::unique_ptr<Socket> Socket::NewServer(Protocol protocol, int port) {
     if (protocol == Protocol::kUdp) {
         cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_DGRAM);
         if (sock != INVALID_SOCKET) {
-            return std::unique_ptr<UdpSocket>(new UdpSocket(UdpSocket::Type::kServer, sock));
+            return std::make_unique<UdpSocket>(UdpSocket::Type::kServer, sock);
         }
     } else {
         cutils_socket_t sock = socket_inaddr_any_server(port, SOCK_STREAM);
         if (sock != INVALID_SOCKET) {
-            return std::unique_ptr<TcpSocket>(new TcpSocket(sock));
+            return std::make_unique<TcpSocket>(sock);
         }
     }
 
