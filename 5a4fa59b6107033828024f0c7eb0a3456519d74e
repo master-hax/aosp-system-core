@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "29b9038d_19e69e23",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 882,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "It was originally \"context(ctx, len)\" but I removed \u0027len\u0027 because \u0027len\u0027 counted including the null-termination character of the \u0027ctx\u0027, that caused the string \u0027context\u0027 include null character within the string.",
+      "range": {
+        "startLine": 882,
+        "startChar": 20,
+        "endLine": 882,
+        "endChar": 33
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

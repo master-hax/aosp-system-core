@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7050298f_49ced1b4",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8416016_6fd650e2",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a981cc6_ffdb437d",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9a4ae92_37e59697",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a981cc6_ffdb437d",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 1
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "4d55ca10_02d2b827",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "I added a comment for \u0027fs_mgr_vendor_overlay_mount_all()\u0027 that the function must be called after default properties are loaded (line#99).\nAlso, changed the title of the bug (b/114679254).",
+      "parentUuid": "9e002832_3ddc46e1",
+      "range": {
+        "startLine": 53,
+        "startChar": 31,
+        "endLine": 53,
+        "endChar": 88
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3cac09d4_3fd1ee77",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -115,6 +187,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6a70a5f_e7a7a61a",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3cac09d4_3fd1ee77",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 92
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -141,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "5d8a3549_48073d46",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f79478b1_9f3aecbb",
+      "range": {
+        "startLine": 63,
+        "startChar": 4,
+        "endLine": 63,
+        "endChar": 8
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37d07040_2c311468",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -161,6 +281,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc96c445_e09612bd",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37d07040_2c311468",
+      "range": {
+        "startLine": 66,
+        "startChar": 49,
+        "endLine": 66,
+        "endChar": 53
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -210,6 +354,54 @@
     },
     {
       "key": {
+        "uuid": "c90e3760_5e0367b2",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "It will read system partition only to find /system/vendor_overlay/\u003cver\u003e. So I believe it is safe.",
+      "parentUuid": "df001f8b_2de16a7c",
+      "range": {
+        "startLine": 67,
+        "startChar": 12,
+        "endLine": 67,
+        "endChar": 33
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "85f4e3b6_79d8d7a6",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "749be467_02e9c0dd",
+      "range": {
+        "startLine": 67,
+        "startChar": 36,
+        "endLine": 67,
+        "endChar": 68
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f94e1221_28f3d9ed",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -230,6 +422,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e067df6_0b5eb305",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f94e1221_28f3d9ed",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 5
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -256,6 +472,30 @@
     },
     {
       "key": {
+        "uuid": "b84272c6_c77dde8d",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02ec221c_cc08ee8d",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 1
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "449e6c0d_9e87a5d0",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -273,6 +513,24 @@
     },
     {
       "key": {
+        "uuid": "e84754ee_e29261aa",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "It will be the directory name captured by reading the /system/vendor_overlay/\u003cver\u003e and there will not be the case that the parameter is empty. I removed the check here.",
+      "parentUuid": "449e6c0d_9e87a5d0",
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1421246e_636158fe",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -284,6 +542,30 @@
       "writtenOn": "2018-10-29T14:45:47Z",
       "side": 1,
       "message": "Since you have control (and trust) for system, vendor context is used throughout, using u:object_r:vendor_file:s0 is probably OK here if you can not pick it up? Failing to overlay the vendor may be more damaging, resulting in a boot loop, over the minor (and very unlikely ...) technicality that _everything_ vendor has this as the context ;-/\n\n(yes, print the error, but I do not believe this to be a security hole, but do ask security review for their approval).",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 5
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe40f57f_e0fdfcb5",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "The target (vendor) partition and source (system) partition are all protected. I don\u0027t find any security hole here. If a directory in /system/vendor_overlay/\u003cver\u003e does not exist in /vendor than it will return \u0027false\u0027 with an error message and skip to the next directory to mount.",
+      "parentUuid": "1421246e_636158fe",
       "range": {
         "startLine": 93,
         "startChar": 0,
@@ -319,6 +601,30 @@
     },
     {
       "key": {
+        "uuid": "e913eba4_6d95ab5d",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "I added another line for the \"result\" log because the log for \u0027report\u0027 was truncated. I guessed the reason was the exceeding length of the string. But I found that the \u0027context\u0027 itself has included a null-termination character at the end of the string. I fixed it in the \u0027fs_mgr_get_context()\u0027 function and now I can integrate it as one line.",
+      "parentUuid": "4a58fcd5_1c35d215",
+      "range": {
+        "startLine": 109,
+        "startChar": 8,
+        "endLine": 109,
+        "endChar": 37
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a71fcf7_8aad02b7",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -339,6 +645,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc820bff_93232525",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a71fcf7_8aad02b7",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 113,
+        "endChar": 36
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -365,6 +695,30 @@
     },
     {
       "key": {
+        "uuid": "ed4aad3d_d8a8fe0a",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "If overlayfs is not defined, we don\u0027t need to check \u0027vendor_overlay_dirs\u0027 to show an error log.\nBut for the information, I added one line log to check if the kernel enabled the overlayfs.",
+      "parentUuid": "bd4403b7_36f47a2a",
+      "range": {
+        "startLine": 124,
+        "startChar": 8,
+        "endLine": 124,
+        "endChar": 44
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "577dabb3_d86dbeaf",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -379,6 +733,24 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6b7b172_c73472f6",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "overlay_top will be empty if \u0027ro.vndk.version\u0027 is not defined. Otherwise, it returns the source directory name in the system partition for the vendor overlay. It does not look for the directory in this step.\n\nAnyway, we need \u0027return false\u0027 for the case without \u0027ro.vndk.version\u0027.",
+      "parentUuid": "577dabb3_d86dbeaf",
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -405,6 +777,30 @@
     },
     {
       "key": {
+        "uuid": "8879e55b_70181a69",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf237c26_25dbce02",
+      "range": {
+        "startLine": 132,
+        "startChar": 4,
+        "endLine": 132,
+        "endChar": 28
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c48cf292_a274fa94",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 1
@@ -425,6 +821,30 @@
       "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23efe4f6_0123856b",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-30T10:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c48cf292_a274fa94",
+      "range": {
+        "startLine": 133,
+        "startChar": 9,
+        "endLine": 133,
+        "endChar": 13
+      },
+      "revId": "ad41fd81215f6f9ba6c171235d12a8ba1cf8848f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
