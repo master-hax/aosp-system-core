@@ -81,11 +81,19 @@ cc_library {
     ],
 
     target: {
+        android: {
+            exclude_shared_libs: [
+                "liblzma",
+            ],
+        },
         // Always disable optimizations for host to make it easier to debug.
         host: {
             cflags: [
                 "-O0",
                 "-g",
+            ],
+            exclude_shared_libs: [
+                "liblzma",
             ],
         },
         vendor: {
@@ -94,7 +102,10 @@ cc_library {
                 "DexFile.cpp",
                 "DexFiles.cpp",
             ],
-            exclude_shared_libs: ["libdexfile"],
+            exclude_shared_libs: [
+                "libartbase",
+                "libdexfile",
+            ],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
@@ -102,7 +113,10 @@ cc_library {
                 "DexFile.cpp",
                 "DexFiles.cpp",
             ],
-            exclude_shared_libs: ["libdexfile"],
+            exclude_shared_libs: [
+                "libartbase",
+                "libdexfile",
+            ],
         },
     },
 
@@ -130,6 +144,10 @@ cc_library {
         "libdexfile",
         "liblog",
         "liblzma",
+        // libartbase provides a static instance of liblzma that is used on host
+        // and android, and it's pulled in anyway through libdexfile. See
+        // exclude_shared_libs directives above.
+        "libartbase",
     ],
 }
 
