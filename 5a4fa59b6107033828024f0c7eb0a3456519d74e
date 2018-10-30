@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "a5c72a0f_cf88f8f6",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 882,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-30T19:59:51Z",
+      "side": 1,
+      "message": "Why do we want to keep the null?  SELinux contexts are not going to have a null character in them with any significance.  We don\u0027t even need the check that ctx isn\u0027t null, since it\u0027s expected to be not-null if the function has returned successfully.  All of the code that I have that deals with this ends up looking like:\n\nif (getfilecon(mount_point.c_str(), \u0026ctx) \u003d\u003d -1) {\n  return \"\";\n}\n\nstd::string context(ctx);\nfree(ctx);\nreturn context;\n\nA strlen() on a small string like this is negligible anyway, especially compared to the readability gained above.",
+      "parentUuid": "33a31422_81bf9893",
+      "range": {
+        "startLine": 882,
+        "startChar": 20,
+        "endLine": 882,
+        "endChar": 33
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dc9eaba1_1b3a5691",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 2
