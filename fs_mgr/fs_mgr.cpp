@@ -1588,6 +1588,24 @@ bool fs_mgr_update_verity_state(std::function<fs_mgr_verity_state_callback> call
     return true;
 }
 
-std::string fs_mgr_get_super_partition_name(int /* slot */) {
+std::string fs_mgr_get_super_partition_name(int slot) {
+    // Devices upgrading to dynamic partitions are allowed to specify a super
+    // partition name, assumed to be A/B (non-A/B retrofit is not supported).
+    // For devices launching with dynamic partition support, the partition
+    // name must be "super".
+    std::string super_partition_name;
+    if (fs_mgr_get_boot_config_from_kernel_cmdline("super_partition_name", &super_partition_name)) {
+        std::string suffix;
+        if (slot == 0) {
+            suffix = "_a";
+        } else if (slot == 1) {
+            suffix = "_b";
+        } else if (slot == -1) {
+            suffix = fs_mgr_get_slot_suffix();
+        } else {
+            LERROR << "Unrecognized slot number: " << slot;
+        }
+        return super_partition_name + suffix;
+    }
     return LP_METADATA_DEFAULT_PARTITION_NAME;
 }
