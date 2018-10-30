@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7401f885_a51daad8",
+        "filename": "base/strings.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-10-30T23:54:55Z",
+      "side": 1,
+      "message": "`s[0]`?\n\nbut don\u0027t you also want `!s.empty() \u0026\u0026 s[0] \u003d\u003d prefix`? ah, that\u0027s why you were doing `c_str` to guarantee that there\u0027s at least a \u0027\\0\u0027... either comment the trick or use the obvious code?",
+      "revId": "19966c0833cc66348509b54ba0d8f2a7dae5e2c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
