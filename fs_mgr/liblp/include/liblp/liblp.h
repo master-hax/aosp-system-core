@@ -87,6 +87,11 @@ std::string GetBlockDevicePartitionName(const LpMetadataBlockDevice& block_devic
 // null on failure.
 const LpMetadataBlockDevice* GetMetadataSuperBlockDevice(const LpMetadata& metadata);
 
+// Update the partition name of a block device. Returns false if the name is
+// too many characters.
+bool SetBlockDevicePartitionName(LpMetadataBlockDevice* block_device,
+                                 const std::string& partition_name);
+
 // Return the total size of all partitions comprising the super partition.
 uint64_t GetTotalSuperPartitionSize(const LpMetadata& metadata);
 

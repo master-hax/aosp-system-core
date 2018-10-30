@@ -400,5 +400,15 @@ std::string GetBlockDevicePartitionName(const LpMetadataBlockDevice& block_devic
     return NameFromFixedArray(block_device.partition_name, sizeof(block_device.partition_name));
 }
 
+bool SetBlockDevicePartitionName(LpMetadataBlockDevice* block_device,
+                                 const std::string& partition_name) {
+    if (partition_name.size() > sizeof(block_device->partition_name)) {
+        return false;
+    }
+    strncpy(block_device->partition_name, partition_name.c_str(),
+            sizeof(block_device->partition_name));
+    return true;
+}
+
 }  // namespace fs_mgr
 }  // namespace android

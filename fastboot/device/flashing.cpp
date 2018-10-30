@@ -132,6 +132,28 @@ int Flash(FastbootDevice* device, const std::string& partition_name) {
     return FlashBlockDevice(handle.fd(), data);
 }
 
+// Devices launching with dynamic partitions will have a single "super"
+// partition and it will not be slot-suffixed. However, retrofit A/B devices
+// will span the super partition across existing physical partitions. To
+// keep the metadata format and build system simple, we do not generate A/B
+// versions of super_empty. Instead we rewrite the partition names in the
+// metadata here, similar to how the host fastboot tool will translate flash
+// commands for A/B partitions.
+bool UpdateMetadataSlotSuffix(LpMetadata* metadata, const std::string& slot_suffix) {
+    if (slot_suffix.empty()) {
+        return true;
+    }
+    for (auto& block_device : metadata->block_devices) {
+        std::string partition_name = GetBlockDevicePartitionName(block_device) + slot_suffix;
+        if (FindPhysicalPartition(partition_name) &&
+            !SetBlockDevicePartitionName(&block_device, partition_name)) {
+            LOG(ERROR) << "Partition " + partition_name + " name is too long";
+            return false;
+        }
+    }
+    return true;
+}
+
 bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wipe) {
     std::vector<char> data = std::move(device->download_data());
     if (data.empty()) {
@@ -143,10 +165,15 @@ bool UpdateSuper(FastbootDevice* device, const std::string& super_name, bool wip
         return device->WriteFail("Data is not a valid logical partition metadata image");
     }
 
+    std::string slot_suffix = device->GetCurrentSlot();
+    if (!UpdateMetadataSlotSuffix(new_metadata.get(), slot_suffix)) {
+        return device->WriteFail(
+                "Unable to add slot suffixes to metadata block device partition names");
+    }
+
     // If we are unable to read the existing metadata, then the super partition
     // is corrupt. In this case we reflash the whole thing using the provided
     // image.
-    std::string slot_suffix = device->GetCurrentSlot();
     uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
     if (wipe || !ReadMetadata(super_name, slot_number)) {
         if (!FlashPartitionTable(super_name, *new_metadata.get())) {
