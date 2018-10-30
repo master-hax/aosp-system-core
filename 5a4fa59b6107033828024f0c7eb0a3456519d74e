@@ -22,6 +22,145 @@
       "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33a31422_81bf9893",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 882,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "meh: I would prefer recognizing the nul is in the content, and requiring a longer length then\n\nif ((len \u003e 1) \u0026\u0026 ctx) {\n    std::string context(ctx, len - 1)\n\nand use the len because you save an (implied) strlen on ctx in std::string by using the known and collected length.\n\nxattr data (which holds the file context) by definition is binary so there is that worry ...",
+      "parentUuid": "29b9038d_19e69e23",
+      "range": {
+        "startLine": 882,
+        "startChar": 20,
+        "endLine": 882,
+        "endChar": 33
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc9eaba1_1b3a5691",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "Use the std:string literal\n\n\"ro.vndk.version\"s\n\nbecause std::string GetProperty(const std::string\u0026 key, const std::string\u0026 default_value);",
+      "range": {
+        "startLine": 39,
+        "startChar": 38,
+        "endLine": 39,
+        "endChar": 55
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db3dd3ec_39f92dbc",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "_minor_ _repeated_ nit: I would feel comfortable with a comment warning that this operation is restricted from being run in first stage init.",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 44,
+        "endChar": 88
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f4eb0de_1a780bcc",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "I\u0027d prefer this specific policy is in one place. It is _acceptable_ to remove the insurance code in fs_mgr_wants_overlayfs() to allow it to be exported, drop these lines (and android-base/properties.h) in fs_mgr_overlayfs.cpp and export:\n\n    // Properties will return empty on init first_stage_mount, so speculative\n    // determination, empty (unset) _or_ \"1\" is true which differs from the\n    // official ro.debuggable policy.  ALLOW_ADBD_DISABLE_VERITY \u003d\u003d 0 should\n    // protect us from false in any case, so this is insurance.\n    auto debuggable \u003d android::base::GetProperty(\"ro.debuggable\", \"1\");\n    if (debuggable !\u003d \"1\") return false;\n\nThat code in some respected predated the #ifdef that stubbed out fs_mgr_overlayfs_mount_all() that addressed the security concerns and can go now ... you can make removing the above a separate dependent standalone patch so as to not clutter this patch too much.\n\nMaybe rename it to fs_mgr_overlayfs_supports_override_creds() to make it clearer to understand when used in _this_ file.\n\nI know it is KISS, but we add abstraction/subroutines when there are more than one user, or if we expect something to change (this check is tied to the kernel, and since the patch is still struggling to go upstream, the check may change, they have already changed this property name twice).\n\nBTW, the _only_ reason you need to check for override_creds is because init context that is calling your functions here does not have full privileges with the vendor context, so we have to tell overlayfs to not check the mounter\u0027s credentials. If, for instance, vendor_init had mount privileges and this operation was performed in that context, you might find this requirement is not necessary.",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 74
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b04c722c_b40e036e",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "This error log is superfluous and _alarming_ if there are no vendor overlays (which if we are doing everything right in our planning, there should be no overlays?), maybe defer until after you have established that vendor overlays are required.\n\n    const auto overlay_top \u003d fs_mgr_get_vendor_overlay_top_dir();\t\n    if (overlay_top.empty()) {\n        LINFO \u003c\u003c \"vendor overlay: vndk version not defined\";\n        return false;\n    }\n    const auto vendor_overlay_dirs \u003d fs_mgr_get_vendor_overlay_dirs(overlay_top);\n    if (vendor_overlay_dirs.empty()) return true;\n    if (!fs_mgr_overlayfs_wants_overlayfs()) {\n        LINFO \u003c\u003c \"vendor overlay: kernel does not support overlayfs\";\n        return false;\n    }\n    auto ret \u003d true;",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 21
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6893415_115cb120",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T19:10:53Z",
+      "side": 1,
+      "message": "manage variable scope, define before use (see above)",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 20
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
