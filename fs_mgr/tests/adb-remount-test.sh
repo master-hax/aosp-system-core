@@ -1,21 +1,14 @@
 #! /bin/bash
-
-USAGE="USAGE: `basename ${0}` [-s <SerialNumber>]
-
-adb remount tests (overlayfs focus)
-
-Conditions:
- - Must be a userdebug build.
- - Must be in adb mode.
- - Kernel must have overlayfs enabled and patched to support override_creds.
- - Must have either squashfs, ext4-dedupe or right-sized partitions.
- - Minimum expectation system and vender are overlayfs covered partitions.
-"
-
-if [ X"${1}" = X"--help" -o X"${1}" = X"-h" -o X"${1}" = X"-?" ]; then
-  echo "${USAGE}" >&2
-  exit 0
-fi
+#
+# adb remount tests (overlayfs focus)
+#
+# Conditions:
+#  - Must be a userdebug build.
+#  - Must be in adb mode.
+#  - Kernel must have overlayfs enabled and patched to support override_creds.
+#  - Must have either squashfs, ext4-dedupe or right-sized partitions.
+#  - Minimum expectation system and vender are overlayfs covered partitions.
+#
 
 # Helper Variables
 
@@ -93,15 +86,11 @@ adb_reboot() {
   adb reboot remount-test
 }
 
-[ "USAGE: adb_wait [timeout]
+[ "USAGE: adb_wait
 
-Returns: waits until the device has returned or the optional timeout" ]
+Returns: waits until the device has returned" ]
 adb_wait() {
-  if [ -n "${1}" ]; then
-    timeout --preserve-status --signal=KILL ${1} adb wait-for-device
-  else
-    adb wait-for-device
-  fi
+  adb wait-for-device
 }
 
 [ "USAGE: adb_root
@@ -189,10 +178,6 @@ if [ X"-s" = X"${1}" -a -n "${2}" ]; then
 fi
 
 inFastboot && die "device in fastboot mode"
-if ! inAdb; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} device not in adb mode ... waiting 2 minutes"
-  adb_wait 2m
-fi
 inAdb || die "device not in adb mode"
 isDebuggable || die "device not a debug build"
 
@@ -220,9 +205,8 @@ adb_sh ls -d /cache/overlay </dev/null >/dev/null 2>&1 ||
 adb_reboot &&
   adb_wait &&
   adb_sh df -k </dev/null | head -1 &&
-  adb_sh df -k </dev/null | grep "^overlay " ||
-  die "overlay takeover failed"
-adb_sh df -k </dev/null | grep "^overlay .* /system\$" >/dev/null ||
+  adb_sh df -k </dev/null | grep "^overlay " &&
+  adb_sh df -k </dev/null | grep "^overlay .* /system\$" >/dev/null ||
   echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover before remount not complete" >&2
 
 adb_root &&
