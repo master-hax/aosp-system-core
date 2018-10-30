@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c24b1553_6524f15c",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-10-30T20:14:59Z",
+      "side": 1,
+      "message": "It\u0027s not const in the header or the user build side.\n\nShouldn\u0027t all of these be const though?  const std::vector\u003cfstab_rec*\u003e\u0026 fsrecs means that that vector cannot be changed, but the elements still can be modified.\n\n(My usual comment that one of these years I\u0027ll actually look into cleaning up the fstab code).",
+      "range": {
+        "startLine": 775,
+        "startChar": 32,
+        "endLine": 775,
+        "endChar": 37
+      },
+      "revId": "91ada7a73bd1badb73a36d811cb1ae7d06ca6565",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
