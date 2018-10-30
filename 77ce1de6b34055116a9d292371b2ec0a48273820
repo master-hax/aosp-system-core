@@ -22,6 +22,30 @@
       "revId": "77ce1de6b34055116a9d292371b2ec0a48273820",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9443429_5d189f1e",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 799,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-30T20:49:16Z",
+      "side": 1,
+      "message": "I thought it was auto(matically) a const because of fsrecs\u0027 definition.\n\nIn essence the type becomes \u0027const const fstab_rec*\u0027, so I removed the const from the previous CL?\n\nOr do we like to see const here as a self-documentation tidbit.\n\nI figure the later, so will add const back in again.",
+      "parentUuid": "81e8e14e_143ea2e2",
+      "range": {
+        "startLine": 799,
+        "startChar": 9,
+        "endLine": 799,
+        "endChar": 13
+      },
+      "revId": "77ce1de6b34055116a9d292371b2ec0a48273820",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
