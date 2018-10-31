@@ -21,7 +21,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <string>
+
 #include <android-base/logging.h>
+#include <fs_mgr_boot_config.h>
 
 #define DEV_NAME "/dev/watchdog"
 
@@ -30,6 +33,13 @@ int main(int argc, char** argv) {
 
     int interval = 10;
     if (argc >= 2) interval = atoi(argv[1]);
+    // If a serial console is configured, then increase the watchdog
+    // interval by an order of magnitude, as the serial console can
+    // slow the system down, and will consume real time CPU cycles.
+    std::string console;
+    if (fs_mgr_get_boot_config("console", &console) && !console.empty()) {
+        interval *= 10;
+    }
 
     int margin = 10;
     if (argc >= 3) margin = atoi(argv[2]);

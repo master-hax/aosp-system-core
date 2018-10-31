@@ -7,7 +7,10 @@ cc_binary {
         "-Wextra",
         "-Werror",
     ],
-    shared_libs: ["libbase"],
+    shared_libs: [
+        "libbase",
+        "libfs_mgr",
+    ],
     sanitize: {
         misc_undefined: ["signed-integer-overflow"],
     },
