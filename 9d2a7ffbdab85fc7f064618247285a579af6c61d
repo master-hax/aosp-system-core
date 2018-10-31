@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24131a45_f15116f2",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:59:26Z",
+      "side": 1,
+      "message": "Add a LLK* manifest for this default.",
+      "range": {
+        "startLine": 88,
+        "startChar": 23,
+        "endLine": 88,
+        "endChar": 27
+      },
+      "revId": "9d2a7ffbdab85fc7f064618247285a579af6c61d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc952caa_1086d301",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1162,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:59:26Z",
+      "side": 1,
+      "message": "\u0026\u003d\n\nensure that if the top default is off, then this does not set it.",
+      "range": {
+        "startLine": 1162,
+        "startChar": 20,
+        "endLine": 1162,
+        "endChar": 21
+      },
+      "revId": "9d2a7ffbdab85fc7f064618247285a579af6c61d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31828a5a_1abc3c52",
+        "filename": "llkd/libllkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1164,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:59:26Z",
+      "side": 1,
+      "message": "|\u003d\n\nWe only set it if \"eng\" is present. do not clear because it is not eng ...",
+      "range": {
+        "startLine": 1164,
+        "startChar": 24,
+        "endLine": 1164,
+        "endChar": 25
+      },
+      "revId": "9d2a7ffbdab85fc7f064618247285a579af6c61d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
