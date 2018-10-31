@@ -1092,8 +1092,11 @@ milliseconds llkCheck(bool checkRunning) {
                 }
             }
             // We are here because we have confirmed kernel live-lock
-            LOG(ERROR) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->" << pid
-                       << "->" << tid << ' ' << procp->getComm() << " [panic]";
+            const auto message = state + " "s + llkFormat(procp->count) + " " +
+                                 std::to_string(ppid) + "->" + std::to_string(pid) + "->" +
+                                 std::to_string(tid) + " " + procp->getComm() + " [panic]";
+            LOG(ERROR) << message;
+            llkWriteStringToFile(message, "/dev/kmsg");
             llkPanicKernel(true, tid,
                            (state == 'Z') ? "zombie" : (state == 'D') ? "driver" : "sleeping");
         }
