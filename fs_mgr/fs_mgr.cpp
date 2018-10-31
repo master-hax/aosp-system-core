@@ -63,6 +63,7 @@
 #include <logwrap/logwrap.h>
 
 #include "fs_mgr_avb.h"
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"

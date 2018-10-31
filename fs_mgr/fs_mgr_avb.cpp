@@ -36,6 +36,7 @@
 #include <libdm/dm.h>
 
 #include "fs_mgr.h"
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 #include "fs_mgr_priv_avb_ops.h"
 #include "fs_mgr_priv_sha.h"

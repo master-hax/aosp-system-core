@@ -24,6 +24,7 @@
 #include <android-base/strings.h>
 #include <android-base/properties.h>
 
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 
 std::vector<std::pair<std::string, std::string>> fs_mgr_parse_boot_config(const std::string& cmdline) {

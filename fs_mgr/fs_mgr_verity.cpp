@@ -44,6 +44,7 @@
 #include "fec/io.h"
 
 #include "fs_mgr.h"
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 
 #define VERITY_TABLE_RSA_KEY "/verity_key"

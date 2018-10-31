@@ -19,6 +19,7 @@
 #include <string>
 
 #include "fs_mgr.h"
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 
 // Returns "_a" or "_b" based on androidboot.slot_suffix in kernel cmdline, or an empty string

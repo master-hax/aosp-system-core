@@ -31,6 +31,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 
+#include "fs_mgr_boot_config.h"
 #include "fs_mgr_priv.h"
 
 using android::base::StartsWith;
