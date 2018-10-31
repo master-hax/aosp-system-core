@@ -22,6 +22,7 @@
 #include <unistd.h>
 
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 
 #define DEV_NAME "/dev/watchdog"
 
@@ -30,6 +31,14 @@ int main(int argc, char** argv) {
 
     int interval = 10;
     if (argc >= 2) interval = atoi(argv[1]);
+    // If a serial console is configured, then increase the watchdog
+    // interval by an order of magnitude, as the serial console can
+    // slow the system down, and will consume real time CPU cycles.
+    auto console = android::base::GetProperty("ro.boot.console", "null");
+    if (console != "null") {
+        LOG(INFO) << "console set to " << console;
+        interval *= 10;
+    }
 
     int margin = 10;
     if (argc >= 3) margin = atoi(argv[2]);
