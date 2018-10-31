@@ -29,6 +29,9 @@
 #include <private/android_filesystem_config.h>
 #include <selinux/android.h>
 #include <selinux/selinux.h>
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "selinux.h"
 #include "util.h"
@@ -140,21 +143,26 @@ bool SysfsPermissions::MatchWithSubsystem(const std::string& path,
     }
     return Match(path);
 }
-
 void SysfsPermissions::SetPermissions(const std::string& path) const {
     std::string attribute_file = path + "/" + attribute_;
     LOG(VERBOSE) << "fixup " << attribute_file << " " << uid() << " " << gid() << " " << std::oct
                  << perm();
-
-    if (access(attribute_file.c_str(), F_OK) == 0) {
-        if (chown(attribute_file.c_str(), uid(), gid()) != 0) {
-            PLOG(ERROR) << "chown(" << attribute_file << ", " << uid() << ", " << gid()
-                        << ") failed";
+    int i = 0;
+    do {
+        if (access(attribute_file.c_str(), F_OK) == 0) {
+            if (chown(attribute_file.c_str(), uid(), gid()) != 0) {
+                PLOG(ERROR) << "chown(" << attribute_file << ", " << uid() << ", " << gid()
+                            << ") failed";
+            }
+            if (chmod(attribute_file.c_str(), perm()) != 0) {
+                PLOG(ERROR) << "chmod(" << attribute_file << ", " << perm() << ") failed";
+            }
         }
-        if (chmod(attribute_file.c_str(), perm()) != 0) {
-            PLOG(ERROR) << "chmod(" << attribute_file << ", " << perm() << ") failed";
+        if ( path.find("zram") == std::string::npos ) {
+            break;
         }
-    }
+        std::this_thread::sleep_for(100ms);
+    }while( i++ < 3);
 }
 
 // Given a path that may start with a platform device, find the parent platform device by finding a
