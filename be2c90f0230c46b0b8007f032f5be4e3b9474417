@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bef5c279_2160a0b1",
+        "filename": "llkd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:55:27Z",
+      "side": 1,
+      "message": "shows _empty_ in gitties, so replace with __pid__.",
+      "range": {
+        "startLine": 47,
+        "startChar": 55,
+        "endLine": 47,
+        "endChar": 60
+      },
+      "revId": "be2c90f0230c46b0b8007f032f5be4e3b9474417",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "644c74fc_4dd826e1",
+        "filename": "llkd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:55:27Z",
+      "side": 1,
+      "message": "Should also add lip service w.r.t. the cfi adjustment.",
+      "range": {
+        "startLine": 47,
+        "startChar": 42,
+        "endLine": 47,
+        "endChar": 44
+      },
+      "revId": "be2c90f0230c46b0b8007f032f5be4e3b9474417",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea09d6b3_9e94a9de",
+        "filename": "llkd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:55:27Z",
+      "side": 1,
+      "message": "This is repeated information from above, but does bear repeating ...",
+      "range": {
+        "startLine": 140,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 70
+      },
+      "revId": "be2c90f0230c46b0b8007f032f5be4e3b9474417",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a7a87f0_7bc46672",
+        "filename": "llkd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-10-31T17:55:27Z",
+      "side": 1,
+      "message": "This is stutter w.r.t line 139, merge 139 with this.",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 141,
+        "endChar": 69
+      },
+      "revId": "be2c90f0230c46b0b8007f032f5be4e3b9474417",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
