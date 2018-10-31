@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "fcaf35ca_4fb88bb4",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 882,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b752ae9_536ac006",
+      "range": {
+        "startLine": 882,
+        "startChar": 20,
+        "endLine": 882,
+        "endChar": 33
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dc9eaba1_1b3a5691",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 2
@@ -117,6 +141,30 @@
       "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8857b979_69e64225",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc9eaba1_1b3a5691",
+      "range": {
+        "startLine": 39,
+        "startChar": 38,
+        "endLine": 39,
+        "endChar": 55
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -143,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "98c9459d_1d351262",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "I added a comment that the fs_mgr_vendor_overlay_mount_all() is not available in the first stage. But I feel comfortable with a comment warning here, too.",
+      "parentUuid": "db3dd3ec_39f92dbc",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 44,
+        "endChar": 88
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f4eb0de_1a780bcc",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 2
@@ -163,6 +235,30 @@
       "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89bddd85_1cd06331",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "I agree to have one function for the same policy.\nAnd I removed the code for checking \u0027ro.debuggable\u0027 (PatchSet 4), as you commented the code will not be compiled in user build.\n\nThe other reason is that the vendor partition has more contexts than \u0027vendor_file\u0027, for example, \u0027vendor_shell_exec\u0027, \u0027vendor_configs_file\u0027, and \u0027vendor_app_file\u0027. I am not sure if the init context has more privileges than these contexts.",
+      "parentUuid": "7f4eb0de_1a780bcc",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 74
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -189,6 +285,30 @@
     },
     {
       "key": {
+        "uuid": "e75ecf60_2529e522",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "Clear! Thanks!",
+      "parentUuid": "b04c722c_b40e036e",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 21
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6893415_115cb120",
         "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
         "patchSetId": 2
@@ -209,6 +329,30 @@
       "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01b2eede_9abd1b0d",
+        "filename": "fs_mgr/fs_mgr_vendor_overlay.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-10-31T05:40:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d6893415_115cb120",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 20
+      },
+      "revId": "5a4fa59b6107033828024f0c7eb0a3456519d74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
