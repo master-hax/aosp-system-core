@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b4858f1_4393ba1d",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-11-01T08:39:51Z",
+      "side": 1,
+      "message": "This function is required for user build as well, that was inside the #if macro.",
+      "range": {
+        "startLine": 901,
+        "startChar": 11,
+        "endLine": 901,
+        "endChar": 24
+      },
+      "revId": "818ff63f093c74138fc1d63bb85edc44b2ffdbae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
