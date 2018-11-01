@@ -692,11 +692,15 @@ bool fs_mgr_overlayfs_setup_scratch(const fstab* fstab, bool* change) {
         errno = 0;
     }
 
-    auto ret = system((mnt_type == "f2fs")
-                              ? ((kMkF2fs + " -d1 " + scratch_device).c_str())
-                              : ((kMkExt4 + " -b 4096 -t ext4 -m 0 -M " + kScratchMountPoint +
-                                  " -O has_journal " + scratch_device)
-                                         .c_str()));
+    // Force mkfs by design for overlay support of adb remount, simplify and
+    // thus do not rely on fsck to correct problems that could creep in.
+    auto ret =
+            system((((mnt_type == "f2fs") ? (kMkF2fs + " -w 4096 -f -d1 -l" +
+                                             android::base::Basename(kScratchMountPoint))
+                                          : (kMkExt4 + " -b 4096 -t ext4 -m 0 -O has_journal -M " +
+                                             kScratchMountPoint)) +
+                    " " + scratch_device)
+                           .c_str());
     if (ret) {
         LERROR << "make " << mnt_type << " filesystem on " << scratch_device << " error=" << ret;
         return false;
