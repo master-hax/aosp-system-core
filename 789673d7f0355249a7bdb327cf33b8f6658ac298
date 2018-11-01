@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d47bc1b_6aa893c9",
+        "filename": "watchdogd/watchdogd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-01T16:50:29Z",
+      "side": 1,
+      "message": "Reading the system property is sufficient here.  ro.boot.xxx is processed well before we start running init script and watchdogd starts as a service through those.",
+      "revId": "789673d7f0355249a7bdb327cf33b8f6658ac298",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
