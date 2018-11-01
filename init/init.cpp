@@ -39,7 +39,6 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <cutils/android_reboot.h>
-#include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
 #include <selinux/android.h>
@@ -718,7 +717,6 @@ int main(int argc, char** argv) {
     InstallSignalFdHandler(&epoll);
 
     property_load_boot_defaults();
-    fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
     StartPropertyService(&epoll);
     set_usb_controller();
