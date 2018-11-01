@@ -16,6 +16,24 @@
       "revId": "789673d7f0355249a7bdb327cf33b8f6658ac298",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac02a423_34318c5e",
+        "filename": "watchdogd/watchdogd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-01T17:11:56Z",
+      "side": 1,
+      "message": "Ahh, watchdog was created 2 months ago (!) and removed from init, I am \"out of touch\" ;-}\n\nIf memory serves (not worth looking it up) I thought N9 watchdog was started during ramdisk. Correct, it was read from a rc file so the boot properties were also settled at that time.\n\n(my first pass at this change was reading the property here, but then I panic\u0027d about when/how it would start)",
+      "parentUuid": "5d47bc1b_6aa893c9",
+      "revId": "789673d7f0355249a7bdb327cf33b8f6658ac298",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
