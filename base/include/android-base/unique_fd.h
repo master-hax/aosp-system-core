@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <dirent.h>
 #include <fcntl.h>
 
 #if !defined(_WIN32)
@@ -219,3 +220,11 @@ inline FILE* Fdopen(unique_fd&& ufd, const char* mode) {
 template <typename T>
 int close(const android::base::unique_fd_impl<T>&)
     __attribute__((__unavailable__("close called on unique_fd")));
+
+template <typename T>
+FILE* fdopen(const android::base::unique_fd_impl<T>&)
+    __attribute__((__unavailable__("fdopen called directly on unique_fd")));
+
+template <typename T>
+DIR* fdopendir(const android::base::unique_fd_impl<T>&)
+    __attribute__((__unavailable__("fdopendir called directly on unique_fd")));
