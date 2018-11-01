@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb53f818_9fa0c70b",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-01T22:42:14Z",
+      "side": 1,
+      "message": "There\u0027s probably a cleaner way to do this.  What if there were a function that returned the physical partitions contained within the metadata of a partition?  \n\nI think that\u0027d be better than having this call back and also than having first_stage_mount processing LpMetadata directly.\n\nMaybe you\u0027d need to factor out reading the metadata from a block device, then using it for the above call as well as this one, so that you don\u0027t need to read it twice.  But keeping the internal structure of metadata in fs_mgr_dm_linear sounds better than leaking it out to me.",
+      "revId": "10157cc4adef0577ad49360699144633c13165c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
