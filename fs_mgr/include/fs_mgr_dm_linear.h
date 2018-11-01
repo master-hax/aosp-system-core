@@ -33,12 +33,16 @@
 #include <vector>
 
 #include <libdm/dm.h>
-#include <liblp/metadata_format.h>
+#include <liblp/liblp.h>
 
 namespace android {
 namespace fs_mgr {
 
-bool CreateLogicalPartitions(const std::string& block_device);
+// Create block devices for all logical partitions. The optional callback
+// allows the caller to populate any missing information, such as symlinks
+// for block devices.
+bool CreateLogicalPartitions(const std::string& block_device,
+                             const std::function<bool(const LpMetadata&)>& after_parse = {});
 
 // Create a block device for a single logical partition, given metadata and
 // the partition name. On success, a path to the partition's block device is

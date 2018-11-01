@@ -130,12 +130,16 @@ static bool CreateLogicalPartition(const LpMetadata& metadata, const LpMetadataP
     return true;
 }
 
-bool CreateLogicalPartitions(const std::string& block_device) {
+bool CreateLogicalPartitions(const std::string& block_device,
+                             const std::function<bool(const LpMetadata&)>& after_parse) {
     uint32_t slot = SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
     auto metadata = ReadMetadata(block_device.c_str(), slot);
     if (!metadata) {
         LOG(ERROR) << "Could not read partition table.";
         return true;
+    }
+    if (after_parse && !after_parse(*metadata.get())) {
+        return false;
     }
     for (const auto& partition : metadata->partitions) {
         if (!partition.num_extents) {
