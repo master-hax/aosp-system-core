@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74d0128c_bf1540e7",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-02T20:37:05Z",
+      "side": 1,
+      "message": "not \"\"s ?\n\nI guess you actually want to call system(\"false\") if mnt_type isn\u0027t f2fs or ext4?  Why not just have a final `else` branch and have a specific LERROR / return false for that case?",
+      "range": {
+        "startLine": 698,
+        "startChar": 19,
+        "endLine": 698,
+        "endChar": 28
+      },
+      "revId": "2aa2be75a9da0fc1ce58c17518bf4eab69287dd6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
