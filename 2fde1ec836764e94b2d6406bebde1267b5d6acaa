@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "daeca437_2c19fc6b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 700,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2018-11-02T21:29:17Z",
+      "side": 1,
+      "message": "Don\u0027t we need any support of encryption, quota, or verity?\n(e.g., \"-O encrypt -O quota -O verity\")\nIf not, looks good to me.",
+      "range": {
+        "startLine": 700,
+        "startChar": 18,
+        "endLine": 700,
+        "endChar": 25
+      },
+      "revId": "2fde1ec836764e94b2d6406bebde1267b5d6acaa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
