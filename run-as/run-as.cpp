@@ -205,8 +205,8 @@ int main(int argc, char* argv[]) {
   minijail_keep_supplementary_gids(j.get());
   minijail_enter(j.get());
 
-  if (selinux_android_setcontext(uid, 0, info.seinfo, pkgname) < 0) {
-    error(1, errno, "couldn't set SELinux security context");
+  if (selinux_android_setcontext_with_domain(uid, 0, info.seinfo, pkgname, "runas_app") < 0) {
+      error(1, errno, "couldn't set SELinux security context");
   }
 
   // cd into the data directory, and set $HOME correspondingly.
