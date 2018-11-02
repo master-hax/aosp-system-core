@@ -22,6 +22,30 @@
       "revId": "2fde1ec836764e94b2d6406bebde1267b5d6acaa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0de1ad1a_629c8f71",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 700,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-02T21:38:11Z",
+      "side": 1,
+      "message": "Since this is for userdebug only, and to support adb remount (/system, /vendor, /product are _not_ encrypted, so the overlays did not need, nor should they be, encrypted) we did not see -O encrypt as necessary. Security review accepted that. If it was encrypted, we would not be able to override init or the sepolicy for sure ;-}\n\nSince the overrides are only performed if the \u0027base\u0027 partition has verity disabled, otherwise will not perform the overlayfs mounts, also accepted as part of the security review, no need for -O verity I expect.\n\nWill be fundamentally treated as a read-only resource, updates only coming after the device has been rooted (adb root), -O quota made no sense.\n\nThe logic places a preference on using f2fs for the temp kScratchMountPoint to limit flash wear, but not all devices have kMkF2fs, so it is what it is.\n\nGood stuff :-)",
+      "parentUuid": "daeca437_2c19fc6b",
+      "range": {
+        "startLine": 700,
+        "startChar": 18,
+        "endLine": 700,
+        "endChar": 25
+      },
+      "revId": "2fde1ec836764e94b2d6406bebde1267b5d6acaa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
