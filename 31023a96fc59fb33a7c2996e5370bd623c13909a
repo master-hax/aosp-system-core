@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6407f8a_1d34bc9e",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-03T06:04:26Z",
+      "side": 1,
+      "message": "This doesn\u0027t seem to be scalable; we can\u0027t add paths whenever there is a similar need. \n\nI think you can set LD_LIBRARY_PATH to point to /apex/com.android.art/lib or li64 when executing the zygote (or any other process that is NOT inside the ART apex but would like to use shared libs from the APEX).",
+      "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
