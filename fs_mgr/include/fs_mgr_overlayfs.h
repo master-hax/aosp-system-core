@@ -31,4 +31,9 @@ bool fs_mgr_overlayfs_setup(const char* backing = nullptr, const char* mount_poi
 bool fs_mgr_overlayfs_teardown(const char* mount_point = nullptr, bool* change = nullptr);
 bool fs_mgr_has_shared_blocks(const std::string& mount_point, const std::string& dev);
 std::string fs_mgr_get_context(const std::string& mount_point);
-bool fs_mgr_overlayfs_supports_override_creds();
+enum fs_mgr_overlayfs_valid_e {
+    FS_MGR_OVERLAYFS_NOT_SUPPORTED = 0,
+    FS_MGR_OVERLAYFS_OK,
+    FS_MGR_OVERLAYFS_OVERRIDE_CREDS_REQUIRED,
+};
+fs_mgr_overlayfs_valid_e fs_mgr_overlayfs_valid();

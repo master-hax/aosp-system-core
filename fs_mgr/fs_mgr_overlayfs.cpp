@@ -56,12 +56,16 @@ using namespace std::literals;
 using namespace android::dm;
 using namespace android::fs_mgr;
 
-static bool fs_mgr_access(const std::string& path) {
+namespace {
+
+bool fs_mgr_access(const std::string& path) {
     auto save_errno = errno;
     auto ret = access(path.c_str(), F_OK) == 0;
     errno = save_errno;
     return ret;
 }
+
+}  // namespace
 
 #if ALLOW_ADBD_DISABLE_VERITY == 0  // If we are a user build, provide stubs
 
@@ -218,9 +222,12 @@ const auto kUpperdirOption = "upperdir="s;
 std::string fs_mgr_get_overlayfs_options(const std::string& mount_point) {
     auto candidate = fs_mgr_get_overlayfs_candidate(mount_point);
     if (candidate.empty()) return "";
-
-    return "override_creds=off," + kLowerdirOption + mount_point + "," + kUpperdirOption +
-           candidate + kUpperName + ",workdir=" + candidate + kWorkName;
+    auto ret = kLowerdirOption + mount_point + "," + kUpperdirOption + candidate + kUpperName +
+               ",workdir=" + candidate + kWorkName;
+    if (fs_mgr_overlayfs_valid() == FS_MGR_OVERLAYFS_OVERRIDE_CREDS_REQUIRED) {
+        ret += ",override_creds=off";
+    }
+    return ret;
 }
 
 const char* fs_mgr_mount_point(const char* mount_point) {
@@ -733,7 +740,7 @@ bool fs_mgr_overlayfs_scratch_can_be_mounted(const std::string& scratch_device) 
 bool fs_mgr_overlayfs_mount_all(fstab* fstab) {
     auto ret = false;
 
-    if (!fs_mgr_overlayfs_supports_override_creds()) return ret;
+    if (fs_mgr_overlayfs_valid() == FS_MGR_OVERLAYFS_NOT_SUPPORTED) return ret;
 
     if (!fstab) return ret;
 
@@ -791,7 +798,7 @@ std::vector<std::string> fs_mgr_overlayfs_required_devices(
 bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* change) {
     if (change) *change = false;
     auto ret = false;
-    if (!fs_mgr_overlayfs_supports_override_creds()) return ret;
+    if (fs_mgr_overlayfs_valid() == FS_MGR_OVERLAYFS_NOT_SUPPORTED) return ret;
     if (!fs_mgr_boot_completed()) {
         errno = EBUSY;
         PERROR << "setup";
@@ -854,7 +861,7 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
         ret &= fs_mgr_overlayfs_teardown_one(overlay_mount_point, mount_point ?: "", change);
     }
-    if (!fs_mgr_overlayfs_supports_override_creds()) {
+    if (fs_mgr_overlayfs_valid() == FS_MGR_OVERLAYFS_NOT_SUPPORTED) {
         // After obligatory teardown to make sure everything is clean, but if
         // we didn't want overlayfs in the the first place, we do not want to
         // waste time on a reboot (or reboot request message).
@@ -905,7 +912,44 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return context;
 }
 
-bool fs_mgr_overlayfs_supports_override_creds() {
+fs_mgr_overlayfs_valid_e fs_mgr_overlayfs_valid() {
     // Overlayfs available in the kernel, and patched for override_creds?
-    return fs_mgr_access("/sys/module/overlay/parameters/override_creds");
+    if (fs_mgr_access("/sys/module/overlay/parameters/override_creds")) {
+        return FS_MGR_OVERLAYFS_OVERRIDE_CREDS_REQUIRED;
+    }
+    if (!fs_mgr_access("/sys/module/overlay")) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    std::string version;
+    if (!android::base::ReadFileToString("/sys/version", &version)) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    auto v = android::base::Split(version, " .-");
+    if (v.size() < 4) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    if (v[0] != "Linux") {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    if (v[1] != "version") {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    unsigned char major;
+    if (!android::base::ParseUint(v[2], &major)) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    if (major > 4) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    if (major < 4) {
+        return FS_MGR_OVERLAYFS_OK;
+    }
+    unsigned char minor;
+    if (!android::base::ParseUint(v[3], &minor)) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    if (minor > 4) {
+        return FS_MGR_OVERLAYFS_NOT_SUPPORTED;
+    }
+    return FS_MGR_OVERLAYFS_OK;
 }
