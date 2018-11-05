@@ -34,6 +34,24 @@
       "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4765aa53_93532e64",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-05T22:50:01Z",
+      "side": 1,
+      "message": "That depends on whether or not your goal is to update bionic for \"all\" processes in the device.",
+      "parentUuid": "92896ca9_3e0efef4",
+      "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
