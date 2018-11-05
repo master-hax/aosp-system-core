@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d644885_f0b20d92",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 909,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-05T23:17:35Z",
+      "side": 1,
+      "message": "return a meaningful enum\n\neg:\nFS_MGR_OVERLAYFS_NOT_SUPPORTED\nFS_MGR_OVERLAYFS_OVERRIDE_CREDS_REQUIRED\nFS_MGR_OVERLAYFS_OK\n\nwhich may result in yet another name change for this function to make sense (fs_mgr_overlayfs_valid?)",
+      "range": {
+        "startLine": 909,
+        "startChar": 0,
+        "endLine": 909,
+        "endChar": 3
+      },
+      "revId": "ae758d2126ee49b4120fd5de7a331fa9f30e52d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6883175_3b36ae66",
+        "filename": "fs_mgr/include/fs_mgr_overlayfs.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-05T23:17:35Z",
+      "side": 1,
+      "message": "return meaningfully named enums",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 46
+      },
+      "revId": "ae758d2126ee49b4120fd5de7a331fa9f30e52d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
