@@ -116,5 +116,13 @@ uint64_t GetTotalSuperPartitionSize(const LpMetadata& metadata) {
     return size;
 }
 
+std::string GetPartitionSlotSuffix(const std::string& partition_name) {
+    if (partition_name.size() <= 2) {
+        return "";
+    }
+    std::string suffix = partition_name.substr(partition_name.size() - 2);
+    return (suffix == "_a" || suffix == "_b") ? suffix : "";
+}
+
 }  // namespace fs_mgr
 }  // namespace android
