@@ -384,8 +384,9 @@ bool FirstStageMount::MountPartitions() {
 
     if (system_partition != mount_fstab_recs_.end()) {
         if (ForceNormalBoot()) {
+            mkdir("/recovery_mount", 0755);
             free((*system_partition)->mount_point);
-            (*system_partition)->mount_point = strdup("/system_recovery_mount");
+            (*system_partition)->mount_point = strdup("/recovery_mount/system");
         }
 
         if (!MountPartition(*system_partition)) {
