@@ -16,6 +16,24 @@
       "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92896ca9_3e0efef4",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2018-11-05T10:29:17Z",
+      "side": 1,
+      "message": "bionic is in the ART APEX. This might be unique.\n\nThe alternative would be to put it in the init.*.rc script that starts zygote? We\u0027d need to do check other early starting binaries to make sure they\u0027re covered.",
+      "parentUuid": "a6407f8a_1d34bc9e",
+      "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
