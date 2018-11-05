@@ -218,9 +218,10 @@ const auto kUpperdirOption = "upperdir="s;
 std::string fs_mgr_get_overlayfs_options(const std::string& mount_point) {
     auto candidate = fs_mgr_get_overlayfs_candidate(mount_point);
     if (candidate.empty()) return "";
-
-    return "override_creds=off," + kLowerdirOption + mount_point + "," + kUpperdirOption +
-           candidate + kUpperName + ",workdir=" + candidate + kWorkName;
+    auto ret = kLowerdirOption + mount_point + "," + kUpperdirOption + candidate + kUpperName +
+               ",workdir=" + candidate + kWorkName;
+    if (fs_mgr_overlayfs_supports_override_creds() > 0) ret += ",override_creds=off";
+    return ret;
 }
 
 const char* fs_mgr_mount_point(const char* mount_point) {
@@ -905,7 +906,22 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
     return context;
 }
 
-bool fs_mgr_overlayfs_supports_override_creds() {
+int fs_mgr_overlayfs_supports_override_creds() {
     // Overlayfs available in the kernel, and patched for override_creds?
-    return fs_mgr_access("/sys/module/overlay/parameters/override_creds");
+    if (fs_mgr_access("/sys/module/overlay/parameters/override_creds")) return 1;
+    if (!fs_mgr_access("/sys/module/overlay")) return 0;
+    std::string version;
+    if (!android::base::ReadFileToString("/sys/version", &version)) return 0;
+    auto v = android::base::Split(version, " .-");
+    if (v.size() < 4) return 0;
+    if (v[0] != "Linux") return 0;
+    if (v[1] != "version") return 0;
+    unsigned char major;
+    if (!android::base::ParseUint(v[2], &major)) return 0;
+    if (major > 4) return 0;
+    if (major < 4) return -1;
+    unsigned char minor;
+    if (!android::base::ParseUint(v[3], &minor)) return 0;
+    if (minor > 4) return 0;
+    return -1;
 }
