@@ -27,6 +27,10 @@ cc_defaults {
         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61489
         "-Wno-missing-field-initializers",
     ],
+    // Bionic defaults rtti to false but llvm doesn't. Make it the same
+    // everywhere to avoid target specific linker scripts when we need to
+    // make symbols local.
+    rtti: true,
 
     // Enable -Wold-style-cast only for non-Windows targets.  _islower_l,
     // _isupper_l etc. in MinGW locale_win32.h (included from
