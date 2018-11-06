@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "39badd1a_65d74cbb",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-06T17:57:06Z",
+      "side": 1,
+      "message": "This equivalent fragment was removed in the regression.\n\nModification is to check if the found mount point was overlayfs (which also self-documents why this is here) should resolve the issues dvander@ discovered with the remount of a pivot\u0027d root.",
+      "range": {
+        "startLine": 168,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 5
+      },
+      "revId": "beb4cb8e436b348efcf4e5f57f0a855991a57363",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd862c3e_7ef0fdeb",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-06T17:57:06Z",
+      "side": 1,
+      "message": "Even though I wrote this test, I did not understand what this error meant until I noticed the read-only status. Minor change to make the error more meaningul!",
+      "range": {
+        "startLine": 278,
+        "startChar": 38,
+        "endLine": 278,
+        "endChar": 43
+      },
+      "revId": "beb4cb8e436b348efcf4e5f57f0a855991a57363",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
