@@ -34,6 +34,24 @@
       "revId": "34d521be37b143cba4f6e9d1d15243f60d4f3f4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6da54503_2768902e",
+        "filename": "init/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-06T23:15:25Z",
+      "side": 1,
+      "message": "Talked to Colin and this is fine, since TARGET_ROOT_OUT isn\u0027t actually the ramdisk anymore, but mixed into system and that happens after all system modules are built, so the dependency is there.\n\nSeems best here since in the build scripts themselves, the symlink creation would need to be copied in a few places instead of just this one.",
+      "parentUuid": "1151a04c_4b9576fa",
+      "revId": "34d521be37b143cba4f6e9d1d15243f60d4f3f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
