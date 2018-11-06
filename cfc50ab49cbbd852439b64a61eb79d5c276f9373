@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "aecef2ce_9cffd607",
+        "filename": "adb/client/line_printer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1065256
+      },
+      "writtenOn": "2018-11-06T23:48:11Z",
+      "side": 1,
+      "message": "Pros:\n1. No error would be “generated”. In fact, if we passed flags \u003d 0, in theory we could then check the return value from UTF8ToWideWithFlags() and be able to detect other unrelated errors. (Though there is a practical issue that LinePrinter has no error handling, probably because it’s just ripped from Ninja’s source which wouldn’t already be calling adb’s fatal() or base LOG(ERROR).)\n2. At runtime, less work done, less logic exercised.\n3. If we exposed UTF8ToWideWithFlags(), we could also use it in sysdeps_win32.cpp:_console_write_utf8() where it also ignores errors on invalid UTF-8.\n\nCons:\n1. UTF8ToWideWithFlags() was originally really meant to be an internal API, though looking at it, it seems fairly ready to be called by other code.\n2. The UTF8 APIs are modeled after the Chromium ones and they don’t have a UTF8ToWideWithFlags(). If we exposed it, we’d be exposing a new API relative to them, but it would also be a new API that would take Windows specific flags (which would probably go against their base project design). Then it seems like we’re getting a bit far off course (which, admittedly is ok if there’s some big benefit).\n3. We could make a bool parameter or other flags platform-neutral, but that would seem excessive considering that the UTF8 conversion APIs in AOSP’s system/core/base are Windows-only (though Chromium’s are not).\n\nSo overall, I’m not so hot on exposing UTF8ToWideWithFlags() and calling it with flags \u003d 0 because I don’t think you get much for exposing more API surface area and solving the related details. I think it would make more sense to spend dev time (in the abstract, not necessarily me :-)) on making ElideMiddle() work better, especially because it is more likely to be the cause of invalid UTF-8 being passed to UTF8ToWide() in the first place. Plus, ElideMiddle()’s improper splitting actually causes user-visible cosmetic issues: if you resize your console when LinePrinter is used, you can see ElideMiddle() split wrong (at least on Windows, though I think the same would happen under Linux).\n\nThat being said, it’s your codebase, so if you want me to change the (void)UTF8To... business to UTF8ToWideWithFlags(flags\u003d0), just let me know.",
+      "parentUuid": "d501aff0_0243845d",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 93,
+        "endChar": 62
+      },
+      "revId": "cfc50ab49cbbd852439b64a61eb79d5c276f9373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e9c79511_775791ed",
         "filename": "adb/client/line_printer.cpp",
         "patchSetId": 1
