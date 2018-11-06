@@ -16,6 +16,24 @@
       "revId": "34d521be37b143cba4f6e9d1d15243f60d4f3f4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1151a04c_4b9576fa",
+        "filename": "init/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-11-06T22:42:49Z",
+      "side": 1,
+      "message": "There will be no dependency to create this file, so the root ramdisk may get created before the file exists.",
+      "parentUuid": "32f9e7f6_cca7d422",
+      "revId": "34d521be37b143cba4f6e9d1d15243f60d4f3f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
