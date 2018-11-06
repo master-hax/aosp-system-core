@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "32f9e7f6_cca7d422",
+        "filename": "init/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-06T22:34:39Z",
+      "side": 1,
+      "message": "Presumably this would be better done in the build system itself?  Then this this phone package init_system can go away and be replaced by just \u0027init_second_stage\u0027 too.\n\nThat is assuming that we\u0027re okay with the ~50k increase by not having a separate second stage init for non-system-as-root and a combined init for system-as-root.",
+      "revId": "34d521be37b143cba4f6e9d1d15243f60d4f3f4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
