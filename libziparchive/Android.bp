@@ -26,6 +26,10 @@ cc_defaults {
         // Incorrectly warns when C++11 empty brace {} initializer is used.
         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61489
         "-Wno-missing-field-initializers",
+        // This is the default with Bionic but not elsewhere. Make it the same
+        // everywhere to avoid target specific linker scripts when we need to
+        // make symbols local.
+        "-fno-rtti",
     ],
 
     // Enable -Wold-style-cast only for non-Windows targets.  _islower_l,
