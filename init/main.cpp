@@ -14,8 +14,43 @@
  * limitations under the License.
  */
 
+#include "builtins.h"
+#include "first_stage_init.h"
 #include "init.h"
+#include "selinux.h"
+#include "subcontext.h"
+#include "ueventd.h"
+
+#include <android-base/logging.h>
+
+using namespace android::init;
 
 int main(int argc, char** argv) {
-    android::init::main(argc, argv);
+    if (!strcmp(basename(argv[0]), "ueventd")) {
+        return ueventd_main(argc, argv);
+    }
+
+    if (argc < 2) {
+        return FirstStageMain(argc, argv);
+    }
+
+    if (!strcmp(argv[1], "subcontext")) {
+        android::base::InitLogging(argv, &android::base::KernelLogger);
+        const BuiltinFunctionMap function_map;
+
+        return SubcontextMain(argc, argv, &function_map);
+    }
+
+    if (!strcmp(argv[1], "selinux_setup")) {
+        return SetupSelinux(argv);
+    }
+
+    if (!strcmp(argv[1], "second_stage")) {
+        return SecondStageMain(argc, argv);
+    }
+
+    android::base::InitLogging(argv, &android::base::KernelLogger);
+
+    LOG(ERROR) << "Unknown argument passed to init '" << argv[1] << "'";
+    return 1;
 }
