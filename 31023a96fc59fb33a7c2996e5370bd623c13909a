@@ -70,6 +70,24 @@
       "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af3a4bf9_147f18e1",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-06T04:00:58Z",
+      "side": 1,
+      "message": "i don\u0027t think that is the goal, is it? i don\u0027t think we want random binaries to be running with a new bionic they haven\u0027t been tested with.",
+      "parentUuid": "b6aa6b61_9376d803",
+      "revId": "31023a96fc59fb33a7c2996e5370bd623c13909a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
