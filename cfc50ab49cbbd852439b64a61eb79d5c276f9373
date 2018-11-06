@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "d501aff0_0243845d",
+        "filename": "adb/client/line_printer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-11-06T22:16:07Z",
+      "side": 1,
+      "message": "Perhaps we should use UTF8ToWideWithFlags with flags \u003d 0, instead, to not generate an error on invalid UTF-8?",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 93,
+        "endChar": 62
+      },
+      "revId": "cfc50ab49cbbd852439b64a61eb79d5c276f9373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e9c79511_775791ed",
         "filename": "adb/client/line_printer.cpp",
         "patchSetId": 1
