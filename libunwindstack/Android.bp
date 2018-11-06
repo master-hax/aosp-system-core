@@ -94,7 +94,10 @@ cc_library {
                 "DexFile.cpp",
                 "DexFiles.cpp",
             ],
-            exclude_shared_libs: ["libdexfile"],
+            exclude_shared_libs: ["libartbase", "libdexfile"],
+            // liblzma is normally provided through libartbase, so add it here
+            // since we need to exclude that one.
+            shared_libs: ["liblzma"],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
@@ -102,7 +105,10 @@ cc_library {
                 "DexFile.cpp",
                 "DexFiles.cpp",
             ],
-            exclude_shared_libs: ["libdexfile"],
+            exclude_shared_libs: ["libartbase", "libdexfile"],
+            // liblzma is normally provided through libartbase, so add it here
+            // since we need to exclude that one.
+            shared_libs: ["liblzma"],
         },
     },
 
@@ -126,10 +132,10 @@ cc_library {
     ],
 
     shared_libs: [
+        "libartbase",
         "libbase",
         "libdexfile",
         "liblog",
-        "liblzma",
     ],
 }
 
@@ -209,9 +215,9 @@ cc_test {
     ],
 
     shared_libs: [
+        "libartbase",
         "libbase",
         "liblog",
-        "liblzma",
         "libunwindstack",
         "libdexfile",
     ],
@@ -251,8 +257,8 @@ cc_defaults {
 
     shared_libs: [
         "libunwindstack",
+        "libartbase",
         "libbase",
-        "liblzma",
     ],
     target: {
         // Always disable optimizations for host to make it easier to debug.
