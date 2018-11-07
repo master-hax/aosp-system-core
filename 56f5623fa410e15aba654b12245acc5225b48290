@@ -22,6 +22,30 @@
       "revId": "56f5623fa410e15aba654b12245acc5225b48290",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4caaf86e_c589e2e2",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-07T18:25:21Z",
+      "side": 1,
+      "message": "Not really.  import_kernel_cmdline() parses the whole command line, so it\u0027s probably not the most efficient for reading one off things, but since it splits based on values too, it\u0027s still convenient and the efficiency loss is negligible.\n\nSince I only care if this is set to 1, I figured I\u0027d just search for the full string directly.",
+      "parentUuid": "fc779554_c4625293",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 80
+      },
+      "revId": "56f5623fa410e15aba654b12245acc5225b48290",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
