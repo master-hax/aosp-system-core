@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc779554_c4625293",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-07T17:26:40Z",
+      "side": 1,
+      "message": "inconsequential and possibly annoying nit: when init does this similar thing elsewhere in other files, the pattern would be:\n\n   auto ret \u003d false;\n   import_kernel_cmdline(false,\n                         [\u0026](const std::string\u0026 key, const std::string\u0026 value, bool) {\n                             if ((key \u003d\u003d \"androidboot.force_normal_boot\") \u0026\u0026 (value \u003d\u003d \"1\")) {\n                                 ret \u003d true;\n                             }\n                         });\n   return ret;\n\nDoes this mean we are doing things wrong/simple here, or elsewhere?",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 80
+      },
+      "revId": "56f5623fa410e15aba654b12245acc5225b48290",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
