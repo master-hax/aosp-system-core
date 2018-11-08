@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "dc455354_6fc4b95a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-08T21:46:33Z",
+      "side": 1,
+      "message": "I\u0027d actually rather this be built into the code of init directly rather than be a new function.  We don\u0027t want a generic way of loading init scripts at an arbitrary point; we didn\u0027t even add this pre-treble, where we instead did the loading during mount_all to limit how generically this could be used.\n\nIf we want the trigger to be in the scripts, that may be fine, but I\u0027d make the function less general, something like \"parse_apex_configs\" so it couldn\u0027t be misused.",
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ff590673_90b9c0ba",
         "filename": "init/init.h",
         "patchSetId": 1
@@ -48,6 +65,30 @@
     },
     {
       "key": {
+        "uuid": "9837453c_60b5bcc1",
+        "filename": "init/parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-08T21:46:33Z",
+      "side": 1,
+      "message": "We do care about ordering.  We want it to be deterministic.  See the comment in the code above, referencing b/31996208.",
+      "parentUuid": "ef51e5bf_7fc43746",
+      "range": {
+        "startLine": 187,
+        "startChar": 35,
+        "endLine": 187,
+        "endChar": 36
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6aaad6ff_1aa2b444",
         "filename": "init/parser.cpp",
         "patchSetId": 1
@@ -59,6 +100,30 @@
       "writtenOn": "2018-11-08T09:29:02Z",
       "side": 1,
       "message": "it appears ParseConfig() accepts both dirs and files. If somebody were to specify a glob with \u0027/blabla/etc/*\u0027, would we run the risk of importing the same .rc twice, eg first call ParseConfig(\u0027/blabla/etc/rcs/\u0027) and then ParseConfig(\u0027/blabla/etc/rcs/lala.rc\u0027)?\n\nMaybe we can ensure the glob ends with .rc (or add it here), and only call ParseConfig() for files?",
+      "range": {
+        "startLine": 200,
+        "startChar": 19,
+        "endLine": 200,
+        "endChar": 30
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0fa670b_f3f09b20",
+        "filename": "init/parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-08T21:46:33Z",
+      "side": 1,
+      "message": "Yes, probably better to call ParseConfigFile() and only parse the individual files.",
+      "parentUuid": "6aaad6ff_1aa2b444",
       "range": {
         "startLine": 200,
         "startChar": 19,
