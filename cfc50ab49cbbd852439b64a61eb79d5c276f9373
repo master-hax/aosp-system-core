@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "0b6dbce5_cce5d30e",
+        "filename": "adb/client/line_printer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-11-08T21:31:42Z",
+      "side": 1,
+      "message": "SGTM.",
+      "parentUuid": "aecef2ce_9cffd607",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 93,
+        "endChar": 62
+      },
+      "revId": "cfc50ab49cbbd852439b64a61eb79d5c276f9373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9c79511_775791ed",
         "filename": "adb/client/line_printer.cpp",
         "patchSetId": 1
