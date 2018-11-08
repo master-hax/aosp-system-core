@@ -42,20 +42,25 @@ class SparseBuilder {
 
     bool Build();
     bool Export(const char* file);
-    bool IsValid() const { return file_ != nullptr; }
-
-    sparse_file* file() const { return file_.get(); }
+    bool ExportFiles(const std::string& dir);
+    bool IsValid() const;
 
   private:
-    bool AddData(const std::string& blob, uint64_t sector);
+    bool AddData(sparse_file* file, const std::string& blob, uint64_t sector);
     bool AddPartitionImage(const LpMetadataPartition& partition, const std::string& file);
     int OpenImageFile(const std::string& file);
     bool SectorToBlock(uint64_t sector, uint32_t* block);
+    uint64_t BlockToSector(uint32_t block) const;
+    bool CheckExtentOrdering();
+    uint64_t ComputePartitionSize(const LpMetadataPartition& partition) const;
 
     const LpMetadata& metadata_;
     const LpMetadataGeometry& geometry_;
     uint32_t block_size_;
-    std::unique_ptr<sparse_file, decltype(&sparse_file_destroy)> file_;
+
+    using SparsePtr = std::unique_ptr<sparse_file, decltype(&sparse_file_destroy)>;
+
+    std::vector<SparsePtr> device_images_;
     std::string all_metadata_;
     std::map<std::string, std::string> images_;
     std::vector<android::base::unique_fd> temp_fds_;
