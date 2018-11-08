@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c9b0548c_287650c4",
+        "filename": "libziparchive/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-08T00:16:58Z",
+      "side": 1,
+      "message": "I found that build/make/tools/zipalign needs the rtti.",
+      "revId": "0f41504a3b5ef8a12899530a887c7cbde1502ce5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
