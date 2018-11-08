@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ffa08b21_a37dbe15",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1267775
+      },
+      "writtenOn": "2018-11-08T19:23:00Z",
+      "side": 1,
+      "message": "what about vulkan, which is in /${LIB}/hw?",
+      "range": {
+        "startLine": 126,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 50
+      },
+      "revId": "e9bfa2fe3e7a1844081cc1d1f0e6d4deafa45e36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
