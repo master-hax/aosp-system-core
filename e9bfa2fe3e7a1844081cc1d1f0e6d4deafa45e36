@@ -22,6 +22,30 @@
       "revId": "e9bfa2fe3e7a1844081cc1d1f0e6d4deafa45e36",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f72d8972_0c286e46",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1339259
+      },
+      "writtenOn": "2018-11-08T19:25:11Z",
+      "side": 1,
+      "message": "Thanks for pointing this out. Will add that as well.",
+      "parentUuid": "ffa08b21_a37dbe15",
+      "range": {
+        "startLine": 126,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 50
+      },
+      "revId": "e9bfa2fe3e7a1844081cc1d1f0e6d4deafa45e36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
