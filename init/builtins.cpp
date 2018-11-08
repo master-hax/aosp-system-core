@@ -1053,6 +1053,22 @@ static Result<Success> do_init_user0(const BuiltinArguments& args) {
         {{"exec", "/system/bin/vdc", "--wait", "cryptfs", "init_user0"}, args.context});
 }
 
+static Result<Success> do_parseconfig(const BuiltinArguments& args) {
+    Parser parser = CreateParser(ServiceList::GetInstance());
+    const auto& path = args[1];
+    bool result;
+    if (path.find("*") != std::string::npos) {
+        result = parser.ParseConfigGlob(path);
+    } else {
+        result = parser.ParseConfig(path);
+    }
+    if (result) {
+        return Success();
+    } else {
+        return Error() << "Could not parse config(s) at: " << path;
+    }
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1090,6 +1106,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         // mount and umount are run in the same context as mount_all for symmetry.
         {"mount_all",               {1,     kMax, {false,  do_mount_all}}},
         {"mount",                   {3,     kMax, {false,  do_mount}}},
+        {"parseconfig",             {1,     1,    {false,  do_parseconfig}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"restart",                 {1,     1,    {false,  do_restart}}},

@@ -72,6 +72,7 @@ class Parser {
     Parser();
 
     bool ParseConfig(const std::string& path);
+    bool ParseConfigGlob(const std::string& glob_pattern);
     void AddSectionParser(const std::string& name, std::unique_ptr<SectionParser> parser);
     void AddSingleLineParser(const std::string& prefix, LineCallback callback);
 

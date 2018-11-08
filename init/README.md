@@ -275,6 +275,10 @@ runs the service.
   since it has some peculiarities for backwards compatibility reasons. The 'imports' section of
   this file has more details on the order.
 
+`parseconfig <path>`
+  Parses config file(s) at the path. The path can be either, file, directory, or
+  a glob pattern.
+
 `priority <priority>`
 > Scheduling priority of the service process. This value has to be in range
   -20 to 19. Default priority is 0. Priority is set via setpriority().

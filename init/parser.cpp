@@ -17,6 +17,7 @@
 #include "parser.h"
 
 #include <dirent.h>
+#include <glob.h>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
@@ -179,6 +180,26 @@ bool Parser::ParseConfigDir(const std::string& path) {
         }
     }
     return true;
+}
+
+bool Parser::ParseConfigGlob(const std::string& glob_pattern) {
+    glob_t glob_result;
+    if (glob(glob_pattern.c_str(), 0, nullptr, &glob_result) != 0) {
+        globfree(&glob_result);
+        LOG(ERROR) << "glob pattern '" << glob_pattern << "' failed";
+        return false;
+    }
+    std::vector<std::string> paths;
+    for (size_t i = 0; i < glob_result.gl_pathc; i++) {
+        paths.emplace_back(glob_result.gl_pathv[i]);
+    }
+    globfree(&glob_result);
+
+    bool success = true;
+    for (const auto& path : paths) {
+        success &= ParseConfig(path);
+    }
+    return success;
 }
 
 bool Parser::ParseConfig(const std::string& path) {
