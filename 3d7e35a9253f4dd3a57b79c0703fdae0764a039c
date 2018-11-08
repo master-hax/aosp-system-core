@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff590673_90b9c0ba",
+        "filename": "init/init.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-11-08T09:29:02Z",
+      "side": 1,
+      "message": "maybe \u0027CreateServiceParser\u0027 or \u0027CreateServiceOnlyParser\u0027?",
+      "range": {
+        "startLine": 41,
+        "startChar": 7,
+        "endLine": 41,
+        "endChar": 19
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef51e5bf_7fc43746",
+        "filename": "init/parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-11-08T09:29:02Z",
+      "side": 1,
+      "message": "GLOB_NOSORT may be quicker (or do we care about the ordering?)",
+      "range": {
+        "startLine": 187,
+        "startChar": 35,
+        "endLine": 187,
+        "endChar": 36
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6aaad6ff_1aa2b444",
+        "filename": "init/parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-11-08T09:29:02Z",
+      "side": 1,
+      "message": "it appears ParseConfig() accepts both dirs and files. If somebody were to specify a glob with \u0027/blabla/etc/*\u0027, would we run the risk of importing the same .rc twice, eg first call ParseConfig(\u0027/blabla/etc/rcs/\u0027) and then ParseConfig(\u0027/blabla/etc/rcs/lala.rc\u0027)?\n\nMaybe we can ensure the glob ends with .rc (or add it here), and only call ParseConfig() for files?",
+      "range": {
+        "startLine": 200,
+        "startChar": 19,
+        "endLine": 200,
+        "endChar": 30
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b960602a_df5d6b68",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 806,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2018-11-08T09:29:02Z",
+      "side": 1,
+      "message": "should we add this in the code instead, to prevent matching against non .rc files if somebody were to specify something like \u0027parseconfig /apex/*/etc/*\u0027? Or do we support config files that do not end with \".rc\"?",
+      "range": {
+        "startLine": 806,
+        "startChar": 28,
+        "endLine": 806,
+        "endChar": 32
+      },
+      "revId": "3d7e35a9253f4dd3a57b79c0703fdae0764a039c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
