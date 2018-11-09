@@ -491,7 +491,7 @@ struct UsbFfsConnection : public Connection {
         struct timespec timeout = {.tv_sec = 0, .tv_nsec = 0};
         int rc = io_getevents(aio_context_.get(), 0, kMaxEvents, events, &timeout);
         if (rc == -1) {
-            HandleError(StringPrintf("io_getevents failed while reading: %s", strerror(errno)));
+            HandleError("io_getevents failed while reading: %s", strerror(errno));
             return;
         }
 
@@ -500,11 +500,9 @@ struct UsbFfsConnection : public Connection {
             TransferId id = TransferId::from_value(event.data);
 
             if (event.res < 0) {
-                std::string error =
-                        StringPrintf("%s %" PRIu64 " failed with error %s",
-                                     id.direction == TransferDirection::READ ? "read" : "write",
-                                     id.id, strerror(-event.res));
-                HandleError(error);
+                HandleError("%s %" PRIu64 " failed with error %s",
+                            id.direction == TransferDirection::READ ? "read" : "write", id.id,
+                            strerror(-event.res));
                 return;
             }
 
@@ -595,7 +593,7 @@ struct UsbFfsConnection : public Connection {
                 return false;
             }
 
-            HandleError(StringPrintf("failed to submit read: %s", strerror(errno)));
+            HandleError("failed to submit read: %s", strerror(errno));
             return false;
         }
 
@@ -665,21 +663,12 @@ struct UsbFfsConnection : public Connection {
 
         int rc = io_submit(aio_context_.get(), writes_to_submit, iocbs);
         if (rc == -1) {
-            HandleError(StringPrintf("failed to submit write requests: %s", strerror(errno)));
+            HandleError("failed to submit write requests: %s", strerror(errno));
             return;
         } else if (rc != writes_to_submit) {
             LOG(FATAL) << "failed to submit all writes: wanted to submit " << writes_to_submit
                        << ", actually submitted " << rc;
         }
-    }
-
-    void HandleError(const std::string& error) {
-        std::call_once(error_flag_, [&]() {
-            error_callback_(this, error);
-            if (!stopped_) {
-                Stop();
-            }
-        });
     }
 
     std::thread monitor_thread_;
@@ -689,7 +678,6 @@ struct UsbFfsConnection : public Connection {
 
     std::atomic<bool> stopped_;
     std::promise<void> destruction_notifier_;
-    std::once_flag error_flag_;
 
     unique_fd worker_event_fd_;
     unique_fd monitor_event_fd_;
