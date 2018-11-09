@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e01dceeb_c8735dfd",
+        "filename": "adb/adb_trace.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-09T01:06:52Z",
+      "side": 1,
+      "message": "wtf?!",
+      "revId": "ccad89cd6f7d8887d6c8e5624d82f09206500daf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
