@@ -23,13 +23,29 @@
 #include <mutex>
 #include <thread>
 
+#include <android-base/stringprintf.h>
 #include <android-base/thread_annotations.h>
 
 #include "adb.h"
 #include "adb_io.h"
 #include "adb_trace.h"
+#include "adb_utils.h"
 
 using android::base::ScopedLockAssertion;
+using android::base::StringPrintf;
+
+void Connection::HandleError(const char* fmt, ...) {
+    std::string message;
+    va_list va;
+    va_start(va, fmt);
+    android::base::StringAppendV(&message, fmt, va);
+    va_end(va);
+
+    std::call_once(error_flag_, [this, msg{std::move(message)}]() {
+        error_callback_(this, msg);
+        Stop();
+    });
+}
 
 void Connection::Reset() {
     LOG(INFO) << "Connection::Reset(): stopping";
@@ -41,7 +57,9 @@ BlockingConnectionAdapter::BlockingConnectionAdapter(std::unique_ptr<BlockingCon
 
 BlockingConnectionAdapter::~BlockingConnectionAdapter() {
     LOG(INFO) << "BlockingConnectionAdapter(" << this->transport_name_ << "): destructing";
-    Stop();
+    CHECK(stopped_);
+    read_thread_.join();
+    write_thread_.join();
 }
 
 void BlockingConnectionAdapter::Start() {
@@ -61,7 +79,7 @@ void BlockingConnectionAdapter::Start() {
             }
             read_callback_(this, std::move(packet));
         }
-        std::call_once(this->error_flag_, [this]() { this->error_callback_(this, "read failed"); });
+        HandleError("read failed");
     });
 
     write_thread_ = std::thread([this]() {
@@ -85,8 +103,7 @@ void BlockingConnectionAdapter::Start() {
                 break;
             }
         }
-        std::call_once(this->error_flag_,
-                       [this]() { this->error_callback_(this, "write failed"); });
+        HandleError("write failed");
     });
 
     started_ = true;
@@ -133,22 +150,6 @@ void BlockingConnectionAdapter::Stop() {
 
     this->underlying_->Close();
     this->cv_.notify_one();
-
-    // Move the threads out into locals with the lock taken, and then unlock to let them exit.
-    std::thread read_thread;
-    std::thread write_thread;
-
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        read_thread = std::move(read_thread_);
-        write_thread = std::move(write_thread_);
-    }
-
-    read_thread.join();
-    write_thread.join();
-
-    LOG(INFO) << "BlockingConnectionAdapter(" << this->transport_name_ << "): stopped";
-    std::call_once(this->error_flag_, [this]() { this->error_callback_(this, "requested stop"); });
 }
 
 bool BlockingConnectionAdapter::Write(std::unique_ptr<apacket> packet) {

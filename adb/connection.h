@@ -57,11 +57,16 @@ struct Connection {
     // Stop, and reset the device if it's a USB connection.
     virtual void Reset();
 
+    void HandleError(const char* fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
+
     std::string transport_name_;
     ReadCallback read_callback_;
     ErrorCallback error_callback_;
 
     static std::unique_ptr<Connection> FromFd(unique_fd fd);
+
+  private:
+    std::once_flag error_flag_;
 };
 
 // Abstraction for a blocking packet transport.
@@ -109,8 +114,6 @@ struct BlockingConnectionAdapter : public Connection {
     std::deque<std::unique_ptr<apacket>> write_queue_ GUARDED_BY(mutex_);
     std::mutex mutex_;
     std::condition_variable cv_;
-
-    std::once_flag error_flag_;
 };
 
 struct FdConnection : public BlockingConnection {
