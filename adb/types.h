@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <android-base/logging.h>
+#include <android-base/thread_annotations.h>
 
 #include "sysdeps/uio.h"
 
