@@ -1,0 +1,14 @@
+cc_library {
+    srcs: ["psi.c"],
+    name: "libpsi",
+    host_supported: false,
+    recovery_available: false,
+    shared_libs: [
+        "liblog"
+    ],
+    export_include_dirs: ["include"],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}
