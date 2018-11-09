@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <android-base/logging.h>
+#include <android-base/thread_annotations.h>
 
 #include "sysdeps/uio.h"
 
@@ -335,4 +336,15 @@ struct IOVector {
     size_t begin_offset_ = 0;
     size_t end_offset_ = 0;
     std::deque<std::shared_ptr<const block_type>> chain_;
+};
+
+// A class that helps the Clang Thread Safety Analysis deal with
+// std::unique_lock. Given that std::unique_lock is movable, and the analysis
+// can not currently perform alias analysis, it is not annotated. In order to
+// assert that the mutex is held, a ScopedAssumeLocked can be created just after
+// the std::unique_lock.
+class SCOPED_CAPABILITY ScopedAssumeLocked {
+  public:
+    ScopedAssumeLocked(std::mutex& mutex) ACQUIRE(mutex) {}
+    ~ScopedAssumeLocked() RELEASE() {}
 };
