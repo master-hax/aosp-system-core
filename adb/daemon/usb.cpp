@@ -160,7 +160,7 @@ struct ScopedAioContext {
     aio_context_t context_ = 0;
 };
 
-struct UsbFfsConnection : public Connection {
+struct UsbFfsConnection : public PacketConnection {
     UsbFfsConnection(unique_fd control, unique_fd read, unique_fd write,
                      std::promise<void> destruction_notifier)
         : stopped_(false),
@@ -381,59 +381,36 @@ struct UsbFfsConnection : public Connection {
     }
 
     void HandleRead(TransferId id, int64_t size) {
-        uint64_t read_idx = id.id % kUsbReadQueueDepth;
-        IoBlock* block = &read_requests_[read_idx];
-        block->pending = false;
-        block->payload.resize(size);
+        {
+            uint64_t read_idx = id.id % kUsbReadQueueDepth;
+            IoBlock* block = &read_requests_[read_idx];
+            block->pending = false;
+            block->payload.resize(size);
 
-        // Notification for completed reads can be received out of order.
-        if (block->id().id != needed_read_id_) {
-            LOG(VERBOSE) << "read " << block->id().id << " completed while waiting for "
-                         << needed_read_id_;
-            return;
+            // Notification for completed reads can be received out of order.
+            if (block->id().id != needed_read_id_) {
+                LOG(VERBOSE) << "read " << block->id().id << " completed while waiting for "
+                             << needed_read_id_;
+                return;
+            }
         }
 
         for (uint64_t id = needed_read_id_;; ++id) {
             size_t read_idx = id % kUsbReadQueueDepth;
             IoBlock* current_block = &read_requests_[read_idx];
+            CHECK_EQ(current_block->id().id, id);
+
             if (current_block->pending) {
                 break;
             }
-            ProcessRead(current_block);
+
+            if (!HandlePacket(std::move(current_block->payload))) {
+                return;
+            }
+            PrepareReadBlock(current_block, current_block->id().id + kUsbReadQueueDepth);
+            SubmitRead(current_block);
             ++needed_read_id_;
         }
-    }
-
-    void ProcessRead(IoBlock* block) {
-        if (!block->payload.empty()) {
-            if (!incoming_header_.has_value()) {
-                CHECK_EQ(sizeof(amessage), block->payload.size());
-                amessage msg;
-                memcpy(&msg, block->payload.data(), sizeof(amessage));
-                LOG(DEBUG) << "USB read:" << dump_header(&msg);
-                incoming_header_ = msg;
-            } else {
-                size_t bytes_left = incoming_header_->data_length - incoming_payload_.size();
-                Block payload = std::move(block->payload);
-                CHECK_LE(payload.size(), bytes_left);
-                incoming_payload_.append(std::make_unique<Block>(std::move(payload)));
-            }
-
-            if (incoming_header_->data_length == incoming_payload_.size()) {
-                auto packet = std::make_unique<apacket>();
-                packet->msg = *incoming_header_;
-
-                // TODO: Make apacket contain an IOVector so we don't have to coalesce.
-                packet->payload = incoming_payload_.coalesce();
-                read_callback_(this, std::move(packet));
-
-                incoming_header_.reset();
-                incoming_payload_.clear();
-            }
-        }
-
-        PrepareReadBlock(block, block->id().id + kUsbReadQueueDepth);
-        SubmitRead(block);
     }
 
     void SubmitRead(IoBlock* block) {
