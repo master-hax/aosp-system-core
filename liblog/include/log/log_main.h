@@ -40,6 +40,19 @@ __BEGIN_DECLS
 #endif
 #endif
 
+/*
+ * If you do not want to strip ALOGV (VERBOSE messages) to enable
+ * it dynamically by "log.tag.<tagname>" property,
+ * "#define LOG_KEEP_VERBOSE 1" at the top of your source file
+ * to not strip VERBOSE messages, or "#define LOG_KEEP_VERBOSE 0"
+ * if you prefer.
+ * The default log level is DEBUG.
+ */
+
+#ifndef LOG_KEEP_VERBOSE
+#define LOG_KEEP_VERBOSE !LOG_NDEBUG
+#endif
+
 /* --------------------------------------------------------------------- */
 
 /*
@@ -196,7 +209,7 @@ extern int __fake_use_va_args(int, ...);
  */
 #ifndef ALOGV
 #define __ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
-#if LOG_NDEBUG
+#if !LOG_KEEP_VERBOSE
 #define ALOGV(...)                   \
   do {                               \
     __FAKE_USE_VA_ARGS(__VA_ARGS__); \
@@ -210,7 +223,7 @@ extern int __fake_use_va_args(int, ...);
 #endif
 
 #ifndef ALOGV_IF
-#if LOG_NDEBUG
+#if !LOG_KEEP_VERBOSE
 #define ALOGV_IF(cond, ...) __FAKE_USE_VA_ARGS(__VA_ARGS__)
 #else
 #define ALOGV_IF(cond, ...)                                                  \
@@ -278,7 +291,7 @@ extern int __fake_use_va_args(int, ...);
  * verbose priority.
  */
 #ifndef IF_ALOGV
-#if LOG_NDEBUG
+#if !LOG_KEEP_VERBOSE
 #define IF_ALOGV() if (false)
 #else
 #define IF_ALOGV() IF_ALOG(LOG_VERBOSE, LOG_TAG)
