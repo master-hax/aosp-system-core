@@ -28,6 +28,7 @@ using namespace std::literals;
 #endif
 
 TEST(properties, smoke) {
+#if defined(__BIONIC__)
   android::base::SetProperty("debug.libbase.property_test", "hello");
 
   std::string s = android::base::GetProperty("debug.libbase.property_test", "");
@@ -42,44 +43,66 @@ TEST(properties, smoke) {
 
   s = android::base::GetProperty("this.property.does.not.exist", "default");
   ASSERT_EQ("default", s);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 TEST(properties, empty) {
+#if defined(__BIONIC__)
   // Because you can't delete a property, people "delete" them by
   // setting them to the empty string. In that case we'd want to
   // keep the default value (like cutils' property_get did).
   android::base::SetProperty("debug.libbase.property_test", "");
   std::string s = android::base::GetProperty("debug.libbase.property_test", "default");
   ASSERT_EQ("default", s);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
+#if defined(__BIONIC__)
 static void CheckGetBoolProperty(bool expected, const std::string& value, bool default_value) {
   android::base::SetProperty("debug.libbase.property_test", value.c_str());
   ASSERT_EQ(expected, android::base::GetBoolProperty("debug.libbase.property_test", default_value));
 }
+#endif
 
 TEST(properties, GetBoolProperty_true) {
+#if defined(__BIONIC__)
   CheckGetBoolProperty(true, "1", false);
   CheckGetBoolProperty(true, "y", false);
   CheckGetBoolProperty(true, "yes", false);
   CheckGetBoolProperty(true, "on", false);
   CheckGetBoolProperty(true, "true", false);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 TEST(properties, GetBoolProperty_false) {
+#if defined(__BIONIC__)
   CheckGetBoolProperty(false, "0", true);
   CheckGetBoolProperty(false, "n", true);
   CheckGetBoolProperty(false, "no", true);
   CheckGetBoolProperty(false, "off", true);
   CheckGetBoolProperty(false, "false", true);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 TEST(properties, GetBoolProperty_default) {
+#if defined(__BIONIC__)
   CheckGetBoolProperty(true, "burp", true);
   CheckGetBoolProperty(false, "burp", false);
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 template <typename T> void CheckGetIntProperty() {
+#if defined(__BIONIC__)
   // Positive and negative.
   android::base::SetProperty("debug.libbase.property_test", "-12");
   EXPECT_EQ(T(-12), android::base::GetIntProperty<T>("debug.libbase.property_test", 45));
@@ -99,9 +122,13 @@ template <typename T> void CheckGetIntProperty() {
   EXPECT_EQ(T(2), android::base::GetIntProperty<T>("debug.libbase.property_test", 45, 1, 2));
   android::base::SetProperty("debug.libbase.property_test", "3");
   EXPECT_EQ(T(45), android::base::GetIntProperty<T>("debug.libbase.property_test", 45, 1, 2));
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 template <typename T> void CheckGetUintProperty() {
+#if defined(__BIONIC__)
   // Positive.
   android::base::SetProperty("debug.libbase.property_test", "12");
   EXPECT_EQ(T(12), android::base::GetUintProperty<T>("debug.libbase.property_test", 45));
@@ -115,6 +142,9 @@ template <typename T> void CheckGetUintProperty() {
   EXPECT_EQ(T(12), android::base::GetUintProperty<T>("debug.libbase.property_test", 33, 22));
   android::base::SetProperty("debug.libbase.property_test", "12");
   EXPECT_EQ(T(5), android::base::GetUintProperty<T>("debug.libbase.property_test", 5, 10));
+#else
+  GTEST_LOG_(INFO) << "This test does nothing on the host.\n";
+#endif
 }
 
 TEST(properties, GetIntProperty_int8_t) { CheckGetIntProperty<int8_t>(); }
