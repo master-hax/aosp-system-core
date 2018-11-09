@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a57bc89a_897cc138",
+        "filename": "liblog/include/log/log_main.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-11-09T17:14:22Z",
+      "side": 1,
+      "message": "#define LOG_KEEP_VERBOSE 1 to not strip VERBOSE messages, or #define LOG_STRIP_VERBOSE 0 if you prefer.",
+      "range": {
+        "startLine": 46,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 30
+      },
+      "revId": "506f2b95d2e736f807e0807228891c308fc96ca8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1e416f0_bca7b457",
+        "filename": "liblog/include/log/log_main.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2018-11-09T17:14:22Z",
+      "side": 1,
+      "message": "I\u0027d suggest #define LOG_KEEP_VERBOSE !LOG_NDEBUG, and then you can replace the #if LOG_NDEBUG statements below with #if !LOG_KEEP_VERBOSE.",
+      "revId": "506f2b95d2e736f807e0807228891c308fc96ca8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
