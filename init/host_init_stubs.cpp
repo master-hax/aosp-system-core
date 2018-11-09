@@ -16,6 +16,7 @@
 
 #include "host_init_stubs.h"
 
+#include <android-base/logging.h>
 #include <android-base/properties.h>
 
 // unistd.h
@@ -34,7 +35,8 @@ bool CanReadProperty(const std::string& source_context, const std::string& name)
     return true;
 }
 uint32_t SetProperty(const std::string& key, const std::string& value) {
-    android::base::SetProperty(key, value);
+    LOG(FATAL) << "Not implemented";
+    // android::base::SetProperty(key, value);
     return 0;
 }
 uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
