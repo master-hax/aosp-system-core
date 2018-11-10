@@ -146,8 +146,7 @@ static SocketFlushResult local_socket_flush_incoming(asocket* s) {
 // Returns false if the socket has been closed and destroyed as a side-effect of this function.
 static bool local_socket_flush_outgoing(asocket* s) {
     const size_t max_payload = s->get_max_payload();
-    apacket::payload_type data;
-    data.resize(max_payload);
+    Block data(max_payload);
     char* x = &data[0];
     size_t avail = max_payload;
     int r = 0;
@@ -181,7 +180,7 @@ static bool local_socket_flush_outgoing(asocket* s) {
         // so save variables for debug printing below.
         unsigned saved_id = s->id;
         int saved_fd = s->fd;
-        r = s->peer->enqueue(s->peer, std::move(data));
+        r = s->peer->enqueue(s->peer, IOVector(std::move(data)));
         D("LS(%u): fd=%d post peer->enqueue(). r=%d", saved_id, saved_fd, r);
 
         if (r < 0) {
@@ -619,9 +618,9 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
 
     if (s->smart_socket_data.empty()) {
         // TODO: Make this an IOVector?
-        s->smart_socket_data.assign(data.begin(), data.end());
+        s->smart_socket_data = data.coalesce<std::string>();
     } else {
-        std::copy(data.begin(), data.end(), std::back_inserter(s->smart_socket_data));
+        s->smart_socket_data += data.coalesce<std::string>();
     }
 
     /* don't bother if we can't decode the length */

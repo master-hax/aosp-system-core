@@ -114,12 +114,9 @@ struct NonblockingFdConnection : public Connection {
 
                     if (read_header_ && read_buffer_.size() >= read_header_->data_length) {
                         auto data_chain = read_buffer_.take_front(read_header_->data_length);
-
-                        // TODO: Make apacket carry around a IOVector instead of coalescing.
-                        auto payload = data_chain.coalesce<apacket::payload_type>();
                         auto packet = std::make_unique<apacket>();
                         packet->msg = *read_header_;
-                        packet->payload = std::move(payload);
+                        packet->payload = std::move(data_chain);
                         read_header_ = nullptr;
                         read_callback_(this, std::move(packet));
                     }
@@ -202,7 +199,7 @@ struct NonblockingFdConnection : public Connection {
         auto header_block = std::make_unique<IOVector::block_type>(header_begin, header_end);
         write_buffer_.append(std::move(header_block));
         if (!packet->payload.empty()) {
-            write_buffer_.append(std::make_unique<IOVector::block_type>(std::move(packet->payload)));
+            write_buffer_.append(std::move(packet->payload));
         }
 
         WriteResult result = DispatchWrites();

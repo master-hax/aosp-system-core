@@ -83,9 +83,10 @@ void BM_Connection_Unidirectional(benchmark::State& state) {
         memset(&packet->msg, 0, sizeof(packet->msg));
         packet->msg.command = A_WRTE;
         packet->msg.data_length = data_size;
-        packet->payload.resize(data_size);
 
-        memset(&packet->payload[0], 0xff, data_size);
+        Block data(data_size);
+        memset(data.data(), 0xff, data.size());
+        packet->payload = std::move(data);
 
         received_bytes = 0;
         client->Write(std::move(packet));
@@ -157,9 +158,10 @@ void BM_Connection_Echo(benchmark::State& state) {
         memset(&packet->msg, 0, sizeof(packet->msg));
         packet->msg.command = A_WRTE;
         packet->msg.data_length = data_size;
-        packet->payload.resize(data_size);
 
-        memset(&packet->payload[0], 0xff, data_size);
+        Block data(data_size);
+        memset(data.data(), 0xff, data.size());
+        packet->payload = std::move(data);
 
         received_bytes = 0;
         client->Write(std::move(packet));
