@@ -70,6 +70,30 @@
       "revId": "0bddca3b6d1aa1015da0026667e464e5246e399f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6479ff6e_450e6727",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-10T00:33:23Z",
+      "side": 1,
+      "message": "cferris said he was going to move TemporaryFile and TemporaryDir out into their own files, but if anyone wants to do that first, i\u0027ll happily +2 that change...",
+      "parentUuid": "30ac1d1d_97426246",
+      "range": {
+        "startLine": 430,
+        "startChar": 37,
+        "endLine": 430,
+        "endChar": 44
+      },
+      "revId": "0bddca3b6d1aa1015da0026667e464e5246e399f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
