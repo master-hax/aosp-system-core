@@ -17,6 +17,7 @@
 #include "images.h"
 
 #include <limits.h>
+#include <stdlib.h>
 
 #include <android-base/file.h>
 
@@ -299,7 +300,7 @@ bool SparseBuilder::AddPartitionImage(const LpMetadataPartition& partition,
     uint64_t partition_size = ComputePartitionSize(partition);
     if (file_length > partition_size) {
         LERROR << "Image for partition '" << GetPartitionName(partition)
-               << "' is greater than its size (" << file_length << ", excepted " << partition_size
+               << "' is greater than its size (" << file_length << ", expected " << partition_size
                << ")";
         return false;
     }
@@ -419,8 +420,13 @@ int SparseBuilder::OpenImageFile(const std::string& file) {
         return fd;
     }
 
+    const char* tmpdir = getenv("TMPDIR");
+    if (!tmpdir || !*tmpdir) {
+        tmpdir = P_tmpdir;
+    }
+
     char temp_file[PATH_MAX];
-    snprintf(temp_file, sizeof(temp_file), "%s/imageXXXXXX", P_tmpdir);
+    snprintf(temp_file, sizeof(temp_file), "%s/imageXXXXXX", tmpdir);
     android::base::unique_fd temp_fd(mkstemp(temp_file));
     if (temp_fd < 0) {
         PERROR << "mkstemp failed";
