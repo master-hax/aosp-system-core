@@ -192,8 +192,9 @@ struct UsbFfsConnection : public PacketConnection {
         std::lock_guard<std::mutex> lock(write_mutex_);
         write_requests_.push_back(CreateWriteBlock(std::move(header), next_write_id_++));
         if (!packet->payload.empty()) {
+            // TODO: Avoid the coalesce here by switching to pwritev?
             write_requests_.push_back(
-                    CreateWriteBlock(std::move(packet->payload), next_write_id_++));
+                    CreateWriteBlock(packet->payload.coalesce(), next_write_id_++));
         }
         SubmitWrites();
         return true;

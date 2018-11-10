@@ -75,9 +75,12 @@ std::string adb_version() {
 
 uint32_t calculate_apacket_checksum(const apacket* p) {
     uint32_t sum = 0;
-    for (size_t i = 0; i < p->msg.data_length; ++i) {
-        sum += static_cast<uint8_t>(p->payload[i]);
-    }
+    p->payload.iterate_blocks([&sum](const char* data, size_t len) {
+        for (size_t i = 0; i < len; ++i) {
+            sum += static_cast<uint8_t>(data[i]);
+        }
+        return true;
+    });
     return sum;
 }
 
@@ -290,7 +293,7 @@ static void handle_new_connection(atransport* t, apacket* p) {
     handle_offline(t);
 
     t->update_version(p->msg.arg0, p->msg.arg1);
-    std::string banner(p->payload.begin(), p->payload.end());
+    std::string banner = p->payload.coalesce<std::string>();
     parse_banner(banner, t);
 
 #if ADB_HOST
@@ -324,16 +327,19 @@ void handle_packet(apacket *p, atransport *t)
     case A_AUTH:
         switch (p->msg.arg0) {
 #if ADB_HOST
-            case ADB_AUTH_TOKEN:
+            case ADB_AUTH_TOKEN: {
                 if (t->GetConnectionState() != kCsAuthorizing) {
                     t->SetConnectionState(kCsAuthorizing);
                 }
-                send_auth_response(p->payload.data(), p->msg.data_length, t);
+                // TODO: Send via IOVector instead of const char* + length.
+                auto data = p->payload.coalesce();
+                send_auth_response(data.data(), data.size(), t);
                 break;
+            }
 #else
             case ADB_AUTH_SIGNATURE: {
                 // TODO: Switch to string_view.
-                std::string signature(p->payload.begin(), p->payload.end());
+                std::string signature = p->payload.coalesce<std::string>();
                 if (adbd_auth_verify(t->token, sizeof(t->token), signature)) {
                     adbd_auth_verified(t);
                     t->failed_auth_attempts = 0;
@@ -344,9 +350,11 @@ void handle_packet(apacket *p, atransport *t)
                 break;
             }
 
-            case ADB_AUTH_RSAPUBLICKEY:
-                adbd_auth_confirm_key(p->payload.data(), p->msg.data_length, t);
+            case ADB_AUTH_RSAPUBLICKEY: {
+                std::string key = p->payload.coalesce<std::string>();
+                adbd_auth_confirm_key(key.data(), key.size(), t);
                 break;
+            }
 #endif
             default:
                 t->SetConnectionState(kCsOffline);
@@ -358,7 +366,7 @@ void handle_packet(apacket *p, atransport *t)
     case A_OPEN: /* OPEN(local-id, 0, "destination") */
         if (t->online && p->msg.arg0 != 0 && p->msg.arg1 == 0) {
             // TODO: Switch to string_view.
-            std::string address(p->payload.begin(), p->payload.end());
+            std::string address = p->payload.coalesce<std::string>();
             asocket* s = create_local_service_socket(address.c_str(), t);
             if (s == nullptr) {
                 send_close(0, p->msg.arg0, t);

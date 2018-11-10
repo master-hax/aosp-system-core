@@ -224,7 +224,8 @@ std::string dump_packet(const char* name, const char* func, const apacket* p) {
     result += func;
     result += ": ";
     result += dump_header(&p->msg);
-    result += dump_hex(p->payload.data(), p->payload.size());
+    auto prefix = p->payload.coalesce(16);
+    result += dump_hex(prefix.data(), prefix.size());
     return result;
 }
 
