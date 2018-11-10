@@ -82,9 +82,7 @@ bool PacketConnection::HandlePacket(Block&& packet) {
     if (header_->data_length == payload_.size()) {
         auto packet = std::make_unique<apacket>();
         packet->msg = *header_;
-
-        // TODO: Make apacket contain an IOVector so we don't have to coalesce.
-        packet->payload = payload_.coalesce();
+        packet->payload = std::move(payload_);
         read_callback_(this, std::move(packet));
 
         header_.reset();
@@ -215,12 +213,12 @@ bool FdConnection::Read(apacket* packet) {
         return false;
     }
 
-    packet->payload.resize(packet->msg.data_length);
-
-    if (!ReadFdExactly(fd_.get(), &packet->payload[0], packet->payload.size())) {
+    Block data(packet->msg.data_length);
+    if (!ReadFdExactly(fd_.get(), data.data(), data.size())) {
         D("remote local: terminated (data)");
         return false;
     }
+    packet->payload = std::move(data);
 
     return true;
 }
@@ -232,10 +230,13 @@ bool FdConnection::Write(apacket* packet) {
     }
 
     if (packet->msg.data_length) {
-        if (!WriteFdExactly(fd_.get(), &packet->payload[0], packet->msg.data_length)) {
-            D("remote local: write terminated");
-            return false;
-        }
+        return packet->payload.iterate_blocks([&](const char* data, size_t len) {
+            if (!WriteFdExactly(fd_.get(), data, len)) {
+                D("remote local: write terminated");
+                return false;
+            }
+            return true;
+        });
     }
 
     return true;

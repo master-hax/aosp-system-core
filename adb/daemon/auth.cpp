@@ -216,7 +216,7 @@ void send_auth_request(atransport* t) {
     p->msg.command = A_AUTH;
     p->msg.arg0 = ADB_AUTH_TOKEN;
     p->msg.data_length = sizeof(t->token);
-    p->payload.assign(t->token, t->token + sizeof(t->token));
+    p->payload = Block(t->token, t->token + sizeof(t->token));
     send_packet(p, t);
 }
 

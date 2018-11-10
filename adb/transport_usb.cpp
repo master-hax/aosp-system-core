@@ -79,13 +79,13 @@ static int UsbReadPayload(usb_handle* h, apacket* p) {
         len += usb_packet_size - rem_size;
     }
 
-    p->payload.resize(len);
-    int rc = usb_read(h, &p->payload[0], p->payload.size());
+    Block block(len);
+    int rc = usb_read(h, block.data(), block.size());
     if (rc != static_cast<int>(p->msg.data_length)) {
         return -1;
     }
-
-    p->payload.resize(rc);
+    block.resize(rc);
+    p->payload = std::move(block);
     return rc;
 #else
     p->payload.resize(p->msg.data_length);
@@ -134,12 +134,12 @@ static int remote_read(apacket* p, usb_handle* usb) {
             return -1;
         }
 
-        p->payload.resize(p->msg.data_length);
-        if (usb_read(usb, &p->payload[0], p->payload.size())
-                != static_cast<int>(p->payload.size())) {
+        Block data(p->msg.data_length);
+        if (usb_read(usb, data.data(), data.size()) != static_cast<int>(data.size())) {
             PLOG(ERROR) << "remote usb: terminated (data)";
             return -1;
         }
+        p->payload = std::move(data);
     }
 
     return 0;
@@ -163,7 +163,8 @@ bool UsbConnection::Write(apacket* packet) {
         return false;
     }
 
-    if (packet->msg.data_length != 0 && usb_write(handle_, packet->payload.data(), size) != size) {
+    if (packet->msg.data_length != 0 &&
+        usb_write(handle_, packet->payload.coalesce().data(), size) != size) {
         PLOG(ERROR) << "remote usb: 2 - write terminated";
         return false;
     }
