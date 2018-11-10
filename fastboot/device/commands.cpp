@@ -340,6 +340,8 @@ PartitionBuilder::PartitionBuilder(FastbootDevice* device) {
     }
     super_device_ = *super_device;
 
+    UpgradeRetrofitSuperIfNeeded();
+
     std::string slot = device->GetCurrentSlot();
     uint32_t slot_number = SlotNumberForSlotSuffix(slot);
     builder_ = MetadataBuilder::New(super_device_, slot_number);
@@ -350,11 +352,7 @@ bool PartitionBuilder::Write() {
     if (!metadata) {
         return false;
     }
-    bool ok = true;
-    for (uint32_t i = 0; i < metadata->geometry.metadata_slot_count; i++) {
-        ok &= UpdatePartitionTable(super_device_, *metadata.get(), i);
-    }
-    return ok;
+    return UpdateAllPartitionMetadata(super_device_, *metadata.get());
 }
 
 bool CreatePartitionHandler(FastbootDevice* device, const std::vector<std::string>& args) {

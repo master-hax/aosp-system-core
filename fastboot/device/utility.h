@@ -20,6 +20,7 @@
 
 #include <android-base/unique_fd.h>
 #include <android/hardware/boot/1.0/IBootControl.h>
+#include <liblp/liblp.h>
 
 // Logical partitions are only mapped to a block device as needed, and
 // immediately unmapped when no longer needed. In order to enforce this we
@@ -59,3 +60,13 @@ bool OpenPartition(FastbootDevice* device, const std::string& name, PartitionHan
 bool GetSlotNumber(const std::string& slot, android::hardware::boot::V1_0::Slot* number);
 std::vector<std::string> ListPartitions(FastbootDevice* device);
 bool GetDeviceLockStatus();
+
+// Retrofit devices may have logical partition metadata in the current slot but
+// not the other, and may need to be upgraded. This method should be called
+// before writing to the super partition, or flashing logical partitions. It
+// is destructive for the other slot and should not be called otherwise.
+void UpgradeRetrofitSuperIfNeeded();
+
+// Update all copies of metadata.
+bool UpdateAllPartitionMetadata(const std::string& super_name,
+                                const android::fs_mgr::LpMetadata& metadata);

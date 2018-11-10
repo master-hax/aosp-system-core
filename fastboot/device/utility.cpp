@@ -23,9 +23,11 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
+#include <liblp/builder.h>
 #include <liblp/liblp.h>
 
 #include "fastboot_device.h"
@@ -174,4 +176,105 @@ bool GetDeviceLockStatus() {
         return true;
     }
     return cmdline.find("androidboot.verifiedbootstate=orange") == std::string::npos;
+}
+
+namespace {
+
+bool UpdateAllMetadataSlots(const std::string& super_partition,
+                            const android::fs_mgr::LpMetadata& metadata) {
+    bool ok = true;
+    for (size_t i = 0; i < metadata.geometry.metadata_slot_count; i++) {
+        ok &= UpdatePartitionTable(super_partition, metadata, i);
+    }
+    return ok;
+}
+
+}  // namespace
+
+void UpgradeRetrofitSuperIfNeeded() {
+    if (!android::base::GetBoolProperty("ro.boot.logical_partitions_retrofit", false)) {
+        return;
+    }
+    if (GetDeviceLockStatus()) {
+        // For safety, don't write anything if the device is locked.
+        return;
+    }
+
+    // Determine the current and other slot suffixes/numbers.
+    std::string current_slot_suffix = fs_mgr_get_slot_suffix();
+    if (current_slot_suffix.empty()) {
+        return;
+    }
+    uint32_t current_slot = SlotNumberForSlotSuffix(current_slot_suffix);
+    std::string other_slot_suffix = (current_slot_suffix == "_a") ? "_b" : "_a";
+    uint32_t other_slot = SlotNumberForSlotSuffix(other_slot_suffix);
+
+    // Read the existing metadata. If there isn't any, the super partition
+    // is corrupt. We don't do anything since the device needs to be
+    // reflashed.
+    std::string current_super = fs_mgr_get_super_partition_name(current_slot);
+    auto current_metadata = ReadMetadata(current_super, current_slot);
+    if (!current_metadata) {
+        return;
+    }
+
+    // Get an upgraded copy.
+    PartitionOpener opener;
+    auto builder = MetadataBuilder::NewForUpdate(opener, current_super, current_slot, other_slot);
+    if (!builder) {
+        LOG(ERROR) << "Unable to import metadata for retrofit device.";
+        return;
+    }
+    auto upgraded_metadata = builder->Export();
+    if (!upgraded_metadata) {
+        LOG(ERROR) << "Unable to export metadata for retrofit device.";
+        return;
+    }
+
+    // If the upgraded metadata has the same block device list as the current
+    // metadata, we don't need t do anything.
+    if (upgraded_metadata->block_devices.size() == current_metadata->block_devices.size()) {
+        return;
+    }
+
+    // Otherwise, it's time to upgrade the device. This is a destructive
+    // operation since (1) we will be flashing over the existing other slot,
+    // and (2) flash operations could start writing over the existing slot
+    // as well, even unintentionally (for example if the current slot does
+    // not have enough space to store a partition).
+    //
+    // Thus, we log that we're about to do this.
+    LOG(WARNING) << "This device has been upgraded to dynamic partitions, and will now be updated"
+                 << " to use both slots for allocating partition data.";
+    LOG(WARNING) << "This will overwrite the contents of slot " << other_slot_suffix << ".";
+
+    std::string other_super = fs_mgr_get_super_partition_name(other_slot);
+    if (!UpdateAllMetadataSlots(current_super, *upgraded_metadata.get())) {
+        LOG(ERROR) << "Updating metadata on " << current_super << " failed.";
+    }
+    if (!FlashPartitionTable(other_super, *upgraded_metadata.get())) {
+        LOG(ERROR) << "Updating metadata on " << other_super << " failed.";
+    }
+}
+
+bool UpdateAllPartitionMetadata(const std::string& super_name,
+                                const android::fs_mgr::LpMetadata& metadata) {
+    if (!UpdateAllMetadataSlots(super_name, metadata)) {
+        return false;
+    }
+    if (!android::base::GetBoolProperty("ro.boot.logical_partitions_retrofit", false)) {
+        // No more locations to update the metadata.
+        return true;
+    }
+    std::string slot_suffix = GetPartitionSlotSuffix(super_name);
+    if (slot_suffix.empty()) {
+        return true;
+    }
+
+    // If this update operation fails, it probably means UpgradeRetrofitSuperIfNeeded
+    // was never called, so the other partition doesn't have its geometry laid down.
+    std::string other_slot_suffix = (slot_suffix == "_a") ? "_b" : "_a";
+    std::string other_super =
+            super_name.substr(0, super_name.size() - slot_suffix.size()) + other_slot_suffix;
+    return UpdateAllMetadataSlots(other_super, metadata);
 }
