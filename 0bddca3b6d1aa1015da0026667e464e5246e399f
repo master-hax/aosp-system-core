@@ -46,6 +46,30 @@
       "revId": "0bddca3b6d1aa1015da0026667e464e5246e399f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30ac1d1d_97426246",
+        "filename": "fs_mgr/liblp/images.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-10T00:19:42Z",
+      "side": 1,
+      "message": "The fact that it\u0027s in test_utils.h makes it a bit sketchy to use.  We should probably move it to file.h if we want it to be used more generically.",
+      "parentUuid": "96648bd6_e59649b6",
+      "range": {
+        "startLine": 430,
+        "startChar": 37,
+        "endLine": 430,
+        "endChar": 44
+      },
+      "revId": "0bddca3b6d1aa1015da0026667e464e5246e399f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
