@@ -217,7 +217,7 @@ struct UsbFfsConnection : public PacketConnection {
             // The kernel attempts to allocate a contiguous block of memory for each write,
             // which can fail if the write is large and the kernel heap is fragmented.
             // Split large writes into smaller chunks to avoid this.
-            std::shared_ptr<Block> payload = std::make_shared<Block>(std::move(packet->payload));
+            std::shared_ptr<Block> payload = std::make_shared<Block>(packet->payload.coalesce());
             size_t offset = 0;
             size_t len = payload->size();
 

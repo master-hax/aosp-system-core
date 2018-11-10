@@ -209,7 +209,7 @@ struct SourceSocket : public ServiceSocket {
 
         Block block(len);
         memset(block.data(), 0, block.size());
-        peer->enqueue(peer, std::move(block));
+        peer->enqueue(peer, IOVector(std::move(block)));
         bytes_left_ -= len;
     }
 

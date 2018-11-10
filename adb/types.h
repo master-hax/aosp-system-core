@@ -70,8 +70,8 @@ struct Block {
         }
     }
 
-    template <typename InputIt>
-    void assign(InputIt begin, InputIt end) {
+    template <typename Iterator>
+    void assign(Iterator begin, Iterator end) {
         clear();
         allocate(end - begin);
         std::copy(begin, end, data_.get());
@@ -132,12 +132,6 @@ struct amessage {
     uint32_t magic;       /* command ^ 0xffffffff             */
 };
 
-struct apacket {
-    using payload_type = Block;
-    amessage msg;
-    payload_type payload;
-};
-
 struct IOVector {
     using value_type = char;
     using block_type = Block;
@@ -145,8 +139,15 @@ struct IOVector {
 
     IOVector() {}
 
+    explicit IOVector(block_type&& block) { append(std::move(block)); }
+
     explicit IOVector(std::unique_ptr<block_type> block) {
         append(std::move(block));
+    }
+
+    template <typename Iterator>
+    IOVector(Iterator begin, Iterator end) {
+        append(Block(begin, end));
     }
 
     IOVector(const IOVector& copy) = delete;
@@ -167,8 +168,20 @@ struct IOVector {
         return *this;
     }
 
+    IOVector& operator=(Block&& move) noexcept {
+        clear();
+        append(std::move(move));
+        return *this;
+    }
+
     size_type size() const { return chain_length_ - begin_offset_ - end_offset_; }
     bool empty() const { return size() == 0; }
+
+    template <typename Iterator>
+    void assign(Iterator begin, Iterator end) {
+        clear();
+        append(Block(begin, end));
+    }
 
     void clear() {
         chain_length_ = 0;
@@ -228,6 +241,16 @@ struct IOVector {
 
     void append(block_type&& block) { append(std::make_unique<block_type>(std::move(block))); }
 
+    void append(IOVector&& tail) {
+        CHECK_EQ(0ULL, end_offset_);
+        tail.trim_front();
+        tail.trim_back();
+        for (auto& block : tail.chain_) {
+            append_shared(std::move(block));
+        }
+        tail.clear();
+    }
+
     void trim_front() {
         if (begin_offset_ == 0) {
             return;
@@ -242,21 +265,18 @@ struct IOVector {
         begin_offset_ = 0;
     }
 
-  private:
-    // append, except takes a shared_ptr.
-    // Private to prevent exterior mutation of blocks.
-    void append_shared(std::shared_ptr<const block_type> block) {
-        CHECK_NE(0ULL, block->size());
-        CHECK_EQ(0ULL, end_offset_);
-        chain_length_ += block->size();
-        chain_.emplace_back(std::move(block));
-    }
+    void trim_back() {
+        if (end_offset_ == 0) {
+            return;
+        }
 
-    // Drop the front block from the chain, and update chain_length_ appropriately.
-    void pop_front_block() {
-        chain_length_ -= chain_.front()->size();
-        begin_offset_ = 0;
-        chain_.pop_front();
+        const block_type* last_block = chain_.front().get();
+        auto copy = std::make_unique<block_type>(last_block->size() - end_offset_);
+        memcpy(copy->data(), last_block->data(), copy->size());
+        chain_.back() = std::move(copy);
+
+        chain_length_ -= end_offset_;
+        end_offset_ = 0;
     }
 
     // Iterate over the blocks with a callback with a bool operator()(const char*, size_t).
@@ -288,6 +308,23 @@ struct IOVector {
             }
         }
         return true;
+    }
+
+  private:
+    // append, except takes a shared_ptr.
+    // Private to prevent exterior mutation of blocks.
+    void append_shared(std::shared_ptr<const block_type> block) {
+        CHECK_NE(0ULL, block->size());
+        CHECK_EQ(0ULL, end_offset_);
+        chain_length_ += block->size();
+        chain_.emplace_back(std::move(block));
+    }
+
+    // Drop the front block from the chain, and update chain_length_ appropriately.
+    void pop_front_block() {
+        chain_length_ -= chain_.front()->size();
+        begin_offset_ = 0;
+        chain_.pop_front();
     }
 
   public:
@@ -348,4 +385,10 @@ struct IOVector {
     size_t begin_offset_ = 0;
     size_t end_offset_ = 0;
     std::deque<std::shared_ptr<const block_type>> chain_;
+};
+
+struct apacket {
+    using payload_type = IOVector;
+    amessage msg;
+    payload_type payload;
 };

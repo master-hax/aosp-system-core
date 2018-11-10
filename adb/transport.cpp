@@ -355,13 +355,12 @@ static int device_tracker_enqueue(asocket* socket, apacket::payload_type) {
 static int device_tracker_send(device_tracker* tracker, const std::string& string) {
     asocket* peer = tracker->socket.peer;
 
-    apacket::payload_type data;
-    data.resize(4 + string.size());
+    Block data(4 + string.size());
     char buf[5];
     snprintf(buf, sizeof(buf), "%04x", static_cast<int>(string.size()));
     memcpy(&data[0], buf, 4);
     memcpy(&data[4], string.data(), string.size());
-    return peer->enqueue(peer, std::move(data));
+    return peer->enqueue(peer, IOVector(std::move(data)));
 }
 
 static void device_tracker_ready(asocket* socket) {

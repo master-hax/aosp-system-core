@@ -304,11 +304,10 @@ static void jdwp_socket_ready(asocket* s) {
      * on the second one, close the connection
      */
     if (!jdwp->pass) {
-        apacket::payload_type data;
-        data.resize(s->get_max_payload());
+        Block data(s->get_max_payload());
         size_t len = jdwp_process_list(&data[0], data.size());
         data.resize(len);
-        peer->enqueue(peer, std::move(data));
+        peer->enqueue(peer, IOVector(std::move(data)));
         jdwp->pass = true;
     } else {
         peer->close(peer);
@@ -378,11 +377,11 @@ static void jdwp_tracker_ready(asocket* s) {
     JdwpTracker* t = (JdwpTracker*)s;
 
     if (t->need_initial) {
-        apacket::payload_type data;
+        Block data;
         data.resize(s->get_max_payload());
         data.resize(jdwp_process_list_msg(&data[0], data.size()));
         t->need_initial = false;
-        s->peer->enqueue(s->peer, std::move(data));
+        s->peer->enqueue(s->peer, IOVector(std::move(data)));
     }
 }
 
