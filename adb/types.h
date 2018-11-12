@@ -259,11 +259,11 @@ struct IOVector {
         chain_.pop_front();
     }
 
-    // Iterate over the blocks with a callback with an operator()(const char*, size_t).
+    // Iterate over the blocks with a callback with a bool operator()(const char*, size_t).
     template <typename Fn>
-    void iterate_blocks(Fn&& callback) const {
+    bool iterate_blocks(Fn&& callback) const {
         if (chain_.size() == 0) {
-            return;
+            return true;
         }
 
         for (size_t i = 0; i < chain_.size(); ++i) {
@@ -283,25 +283,32 @@ struct IOVector {
                 length -= end_offset_;
             }
 
-            callback(begin, length);
+            if (!callback(begin, length)) {
+                return false;
+            }
         }
+        return true;
     }
 
   public:
     // Copy all of the blocks into a single block.
     template <typename CollectionType = block_type>
-    CollectionType coalesce() const {
+    CollectionType coalesce(size_t max_bytes = SIZE_MAX) const {
         CollectionType result;
         if (size() == 0) {
             return result;
         }
 
-        result.resize(size());
+        size_t bytes = std::min(size(), max_bytes);
+        result.resize(bytes);
 
         size_t offset = 0;
-        iterate_blocks([&offset, &result](const char* data, size_t len) {
-            memcpy(&result[offset], data, len);
+        iterate_blocks([&bytes, &offset, &result](const char* data, size_t len) {
+            len = std::min(bytes, len);
+            memcpy(result.data() + offset, data, len);
             offset += len;
+            bytes -= len;
+            return bytes;
         });
 
         return result;
@@ -328,6 +335,7 @@ struct IOVector {
             iov.iov_base = const_cast<char*>(data);
             iov.iov_len = len;
             result.emplace_back(iov);
+            return true;
         });
 
         return result;
