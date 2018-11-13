@@ -312,6 +312,42 @@ $(LOCAL_BUILT_MODULE):
 		echo $(lib).so >> $@;)
 
 #######################################
+# vndk_using_core_variant.libraries.txt
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+include $(CLEAR_VARS)
+LOCAL_MODULE := vndk_using_core_variant.libraries.txt
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+LOCAL_MODULE_STEM := $(call append_vndk_version,$(LOCAL_MODULE))
+include $(BUILD_SYSTEM)/base_rules.mk
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_USING_CORE_VARIANT_LIBRARIES := $(VNDK_USING_CORE_VARIANT_VARIANT_LIBRARIES)
+$(LOCAL_BUILT_MODULE):
+	@echo "Generate: $@"
+	@mkdir -p $(dir $@)
+	$(hide) echo -n > $@
+	$(hide) $(foreach lib,$(PRIVATE_VNDK_USING_CORE_VARIANT_LIBRARIES), \
+		echo $(lib).so >> $@;)
+endif
+
+#######################################
+# vndk_sp_using_core_variant.libraries.txt
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+include $(CLEAR_VARS)
+LOCAL_MODULE := vndk_sp_using_core_variant.libraries.txt
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)
+LOCAL_MODULE_STEM := $(call append_vndk_version,$(LOCAL_MODULE))
+include $(BUILD_SYSTEM)/base_rules.mk
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_SP_USING_CORE_VARIANT_LIBRARIES := $(VNDK_SP_USING_CORE_VARIANT_VARIANT_LIBRARIES)
+$(LOCAL_BUILT_MODULE):
+	@echo "Generate: $@"
+	@mkdir -p $(dir $@)
+	$(hide) echo -n > $@
+	$(hide) $(foreach lib,$(PRIVATE_SP_VNDK_USING_CORE_VARIANT_LIBRARIES), \
+		echo $(lib).so >> $@;)
+endif
+
+#######################################
 # vndksp.libraries.txt
 include $(CLEAR_VARS)
 LOCAL_MODULE := vndksp.libraries.txt
