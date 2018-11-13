@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f5a4c6c_10002a9c",
+        "filename": "adb/types.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-13T00:03:33Z",
+      "side": 1,
+      "message": "explicitly say that this is a time optimization?",
+      "revId": "e67b1908bee40b9901fffeaf677809fdfb2dd270",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
