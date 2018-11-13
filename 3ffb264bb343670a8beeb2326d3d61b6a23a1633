@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9393b7c3_3850fdda",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-13T17:48:13Z",
+      "side": 1,
+      "message": "this is already in file.h.",
+      "revId": "3ffb264bb343670a8beeb2326d3d61b6a23a1633",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
