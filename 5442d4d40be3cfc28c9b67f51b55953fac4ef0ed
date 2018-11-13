@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c29413c_e9427450",
+        "filename": "rootdir/update_and_install_ld_config.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-13T04:34:06Z",
+      "side": 1,
+      "message": "ok.",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 8
+      },
+      "revId": "5442d4d40be3cfc28c9b67f51b55953fac4ef0ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
