@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8c8270d_d521bed4",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "delimiter",
+      "range": {
+        "startLine": 100,
+        "startChar": 13,
+        "endLine": 100,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a5e83b6_ff4879c8",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "This should just pass in g_target_thread and then this function can call all of the other functions it needs since these two variables are not used any where else.",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 44
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95610e41_6b2f8cf1",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "Do you ever use anything but the name of the executable? If not, then there is no need to create a string_view and to parse anything than the first element from /proc/.../cmdline.",
+      "range": {
+        "startLine": 113,
+        "startChar": 45,
+        "endLine": 113,
+        "endChar": 57
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e541c7a5_85abf601",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "As mentioned above, remove these calls and pass g_target_thread to the is_critical call.",
+      "range": {
+        "startLine": 468,
+        "startChar": 0,
+        "endLine": 472,
+        "endChar": 47
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ca0ff32_9dcfa069",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "Remove this completely. The tombstone writing function should do a fsync itself. Don\u0027t rely on the fsync here to fix things later on.\n\nSpecifically, you should probably force tombstoned to do a fsync when it writes a file and add a comment about why you are doing that.",
+      "range": {
+        "startLine": 665,
+        "startChar": 0,
+        "endLine": 666,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3badf589_c77d5a60",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 681,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "Why are you doing this?",
+      "range": {
+        "startLine": 680,
+        "startChar": 6,
+        "endLine": 681,
+        "endChar": 16
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "454a1f21_bd0806bc",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "This should all be re-orodered:\n\nif (g_tombstoned_connected) {\n  if (android::base::GetBoolProperty(...) \u0026\u0026 fatal_signal \u0026\u0026 is_critical_process) {\n    if (!tombstone_sysrq()) {\n      LOG(ERROR) ...\n    }\n  } else if (!tombstoned_notify_completion()) {\n    LOG(ERROR) ...\n  }\n}",
+      "range": {
+        "startLine": 671,
+        "startChar": 0,
+        "endLine": 687,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f08d142_b1baccb3",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "| O_CLOEXEC",
+      "range": {
+        "startLine": 405,
+        "startChar": 58,
+        "endLine": 405,
+        "endChar": 66
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f92d22e2_33a37c0e",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "Doesn\u0027t this require some selinux rule to allow this process to touch this file?\n\nThis seems like a very dangerous ability to grant.",
+      "range": {
+        "startLine": 405,
+        "startChar": 2,
+        "endLine": 405,
+        "endChar": 68
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aaff6ca2_1476231e",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2018-11-13T21:16:49Z",
+      "side": 1,
+      "message": "This should be re-organized:\n\nif (fd \u003d\u003d -1) {\n  PLOG(ERROR) ...\n  return;\n}\n\nif (TEMP...() \u003d\u003d 1) {\n  LOG(DEBUG) \u003c\u003c \"Sysrq-trigger is set, crash triggered.\";\n} else {\n  PLOG(DEBUG) \u003c\u003c \"Failed to write to sysrq.\";\n}\nclose(fd);",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 414,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
