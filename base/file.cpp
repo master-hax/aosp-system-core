@@ -146,6 +146,10 @@ TemporaryDir::TemporaryDir() {
 }
 
 TemporaryDir::~TemporaryDir() {
+  if (rmdir(path) == 0) return;
+
+  if (!remove_file_) return;
+
   auto callback = [](const char* child, const struct stat*, int file_type, struct FTW*) -> int {
     switch (file_type) {
       case FTW_D:
