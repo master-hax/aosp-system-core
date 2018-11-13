@@ -72,7 +72,11 @@ namespace {
 
 std::string GetSystemTempDir() {
 #if defined(__ANDROID__)
-  const char* tmpdir = "/data/local/tmp";
+  const auto* tmpdir = getenv("TMPDIR");
+  if ((tmpdir != nullptr) && (access(tmpdir, R_OK | W_OK | X_OK) == 0)) {
+    return tmpdir;
+  }
+  tmpdir = "/data/local/tmp";
   if (access(tmpdir, R_OK | W_OK | X_OK) == 0) {
     return tmpdir;
   }
@@ -80,8 +84,15 @@ std::string GetSystemTempDir() {
   // so try current directory if /data/local/tmp is not accessible.
   return ".";
 #elif defined(_WIN32)
+  const auto* tmpdir = getenv("TMP");
   char tmp_dir[MAX_PATH];
-  DWORD result = GetTempPathA(sizeof(tmp_dir), tmp_dir);
+  DWORD result;
+  if ((tmpdir != nullptr) && (access(tmpdir, R_OK | W_OK | X_OK) == 0)) {
+    strncpy(tmp_dir, tmpdir, sizeof(tmp_dir));
+    result = strlen(tmpdir);
+  } else {
+    result = GetTempPathA(sizeof(tmp_dir), tmp_dir);
+  }
   CHECK_NE(result, 0ul) << "GetTempPathA failed, error: " << GetLastError();
   CHECK_LT(result, sizeof(tmp_dir)) << "path truncated to: " << result;
 
@@ -91,6 +102,10 @@ std::string GetSystemTempDir() {
   tmp_dir[result - 1] = '\0';
   return tmp_dir;
 #else
+  const auto* tmpdir = getenv("TMPDIR");
+  if ((tmpdir != nullptr) && (access(tmpdir, R_OK | W_OK | X_OK) == 0)) {
+    return tmpdir;
+  }
   return "/tmp";
 #endif
 }
