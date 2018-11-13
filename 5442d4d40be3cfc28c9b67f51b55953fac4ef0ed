@@ -94,6 +94,29 @@
     },
     {
       "key": {
+        "uuid": "6b3132c8_13e48a54",
+        "filename": "rootdir/update_and_install_ld_config.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2018-11-13T07:30:42Z",
+      "side": 1,
+      "message": "When \u0027lib_list_from_prebuilts\u0027 is true, it is for vndk_snapshot. In this case the core variants must not be used.\nThe lines with the %VNDK_USING_CORE_VARIANT_LIBRARIES% must be removed here, too.",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 5
+      },
+      "revId": "5442d4d40be3cfc28c9b67f51b55953fac4ef0ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7c29413c_e9427450",
         "filename": "rootdir/update_and_install_ld_config.mk",
         "patchSetId": 1
