@@ -18,6 +18,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <ftw.h>
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +46,17 @@
 #define OS_PATH_SEPARATOR '\\'
 #else
 #define OS_PATH_SEPARATOR '/'
+#endif
+
+// stub glibc extension to nftw
+#ifndef FTW_ACTIONRETVAL
+#define FTW_ACTIONRETVAL 0
+enum {
+  FTW_CONTINUE,
+  FTW_STOP,
+  FTW_SKIP_SUBTREE,
+  FTW_SKIP_SIBLINGS,
+};
 #endif
 
 #ifdef _WIN32
@@ -130,7 +142,36 @@ TemporaryDir::TemporaryDir() {
 }
 
 TemporaryDir::~TemporaryDir() {
-  rmdir(path);
+  auto callback = [](const char* child, const struct stat*, int file_type, struct FTW*) -> int {
+    switch (file_type) {
+      case FTW_D:
+      case FTW_DP:
+      case FTW_DNR:
+        if (rmdir(child) == -1) {
+          PLOG(ERROR) << "rmdir " << child;
+          return FTW_SKIP_SIBLINGS;
+        }
+        break;
+      case FTW_F:
+      case FTW_SL:
+      case FTW_SLN:
+        if (unlink(child) == -1) {
+          PLOG(ERROR) << "unlink " << child;
+          return FTW_SKIP_SIBLINGS;
+        }
+        break;
+      case FTW_NS:
+      default:
+        if ((rmdir(child) == -1) && (unlink(child) == -1)) {
+          PLOG(ERROR) << "unlink " << child;
+          return FTW_SKIP_SIBLINGS;
+        }
+        break;
+    }
+    return FTW_CONTINUE;
+  };
+
+  nftw(path, callback, 128, FTW_DEPTH | FTW_MOUNT | FTW_PHYS | FTW_ACTIONRETVAL);
 }
 
 bool TemporaryDir::init(const std::string& tmp_dir) {
