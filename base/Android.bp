@@ -41,7 +41,7 @@ cc_library_headers {
 }
 
 cc_defaults {
-    name: "libbase_defaults",
+    name: "libbase_common_defaults",
     defaults: ["libbase_cflags_defaults"],
     srcs: [
         "chrono_utils.cpp",
@@ -58,7 +58,6 @@ cc_defaults {
     ],
 
     cppflags: ["-Wexit-time-destructors"],
-    shared_libs: ["liblog"],
     target: {
         android: {
             sanitize: {
@@ -89,6 +88,12 @@ cc_defaults {
     },
 }
 
+cc_defaults {
+    name: "libbase_defaults",
+    defaults: ["libbase_common_defaults"],
+    shared_libs: ["liblog"],
+}
+
 cc_library {
     name: "libbase",
     defaults: ["libbase_defaults"],
@@ -110,6 +115,14 @@ cc_library_static {
     defaults: ["libbase_defaults"],
     sdk_version: "current",
     stl: "c++_static",
+    export_include_dirs: ["include"],
+}
+
+cc_library {
+    name: "libbase_art",
+    defaults: ["libbase_common_defaults"],
+    host_supported: true,
+    cflags: ["-DDISABLE_DEPENDENCIES"],
     export_include_dirs: ["include"],
 }
 

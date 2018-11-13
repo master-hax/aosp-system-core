@@ -116,7 +116,12 @@ void DefaultAborter(const char* abort_message);
 std::string GetDefaultTag();
 void SetDefaultTag(const std::string& tag);
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) && !defined(DISABLE_DEPENDENCIES)
+// Add default logger that requires a direct dependency on liblog.
+#define ANDROID_DEFAULT_LOGGER
+#endif
+
+#ifdef ANDROID_DEFAULT_LOGGER
 // We expose this even though it is the default because a user that wants to
 // override the default log buffer will have to construct this themselves.
 class LogdLogger {
@@ -139,7 +144,7 @@ class LogdLogger {
 // The tag (or '*' for the global level) comes first, followed by a colon and a
 // letter indicating the minimum priority level we're expected to log.  This can
 // be used to reveal or conceal logs with specific tags.
-#ifdef __ANDROID__
+#ifdef ANDROID_DEFAULT_LOGGER
 #define INIT_LOGGING_DEFAULT_LOGGER LogdLogger()
 #else
 #define INIT_LOGGING_DEFAULT_LOGGER StderrLogger
