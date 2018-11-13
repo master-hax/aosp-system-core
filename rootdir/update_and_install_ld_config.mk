@@ -35,6 +35,9 @@ llndk_libraries_file := $(library_lists_dir)/llndk.libraries.$(vndk_version).txt
 vndksp_libraries_file := $(library_lists_dir)/vndksp.libraries.$(vndk_version).txt
 vndkcore_libraries_file := $(library_lists_dir)/vndkcore.libraries.txt
 vndkprivate_libraries_file := $(library_lists_dir)/vndkprivate.libraries.txt
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+vndk_using_core_variant_libraries_file := $(library_lists_dir)/vndk_using_core_variant.libraries.$(vndk_version).txt
+endif
 
 sanitizer_runtime_libraries := $(call normalize-path-list,$(addsuffix .so,\
   $(ADDRESS_SANITIZER_RUNTIME_LIBRARY) \
@@ -66,6 +69,9 @@ $(eval $(call write-libs-to-file,$(llndk_libraries_list),$(llndk_libraries_file)
 $(eval $(call write-libs-to-file,$(vndksp_libraries_list),$(vndksp_libraries_file)))
 $(eval $(call write-libs-to-file,$(VNDK_CORE_LIBRARIES),$(vndkcore_libraries_file)))
 $(eval $(call write-libs-to-file,$(VNDK_PRIVATE_LIBRARIES),$(vndkprivate_libraries_file)))
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+$(eval $(call write-libs-to-file,$(VNDK_USING_CORE_VARIANT_LIBRARIES),$(vndk_using_core_variant_libraries_file)))
+endif
 endif # ifneq ($(lib_list_from_prebuilts),true)
 
 # Given a file with a list of libs, filter-out the VNDK private libraries
@@ -91,6 +97,10 @@ deps := $(llndk_libraries_file) $(vndksp_libraries_file) $(vndkcore_libraries_fi
 ifeq ($(check_backward_compatibility),true)
 deps += $(compatibility_check_script)
 endif
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+$(LOCAL_BUILT_MODULE): PRIVATE_VNDK_USING_CORE_VARIANT_LIBRARIES_FILE := $(vndk_using_core_variant_libraries_file)
+deps += $(vndk_using_core_variant_libraries_file)
+endif
 
 $(LOCAL_BUILT_MODULE): $(ld_config_template) $(deps)
 	@echo "Generate: $< -> $@"
@@ -105,6 +115,18 @@ endif
 	$(hide) sed -i.bak -e "s?%VNDK_SAMEPROCESS_LIBRARIES%?$$(cat $(PRIVATE_INTERMEDIATES_DIR)/vndksp_filtered)?g" $@
 	$(call private-filter-out-private-libs,$(PRIVATE_VNDK_CORE_LIBRARIES_FILE),$(PRIVATE_INTERMEDIATES_DIR)/vndkcore_filtered)
 	$(hide) sed -i.bak -e "s?%VNDK_CORE_LIBRARIES%?$$(cat $(PRIVATE_INTERMEDIATES_DIR)/vndkcore_filtered)?g" $@
+
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+	$(call private-filter-out-private-libs,$(PRIVATE_VNDK_USING_CORE_VARIANT_LIBRARIES_FILE),$(PRIVATE_INTERMEDIATES_DIR)/vndk_using_core_variant_filtered)
+	$(hide) sed -i.bak -e "s?%VNDK_USING_CORE_VARIANT_LIBRARIES%?$$(cat $(PRIVATE_INTERMEDIATES_DIR)/vndk_using_core_variant_filtered)?g" $@
+else
+	# Unlike LLNDK or VNDK-SP, VNDK_USING_CORE_VARIANT_LIBRARIES can be nothing if
+	# TARGET_VNDK_USE_CORE_VARIANT is not set.  In this case, we need to remove
+	# the entire line in the linker config so that we are not left with a line
+	# like:
+	#   namespace.sphal.link.default.shared_libs +=
+	$(hide) sed -i.bak -e "s?^.*\+= %VNDK_USING_CORE_VARIANT_LIBRARIES%\$$??" $@
+endif
 
 	$(hide) echo -n > $(PRIVATE_INTERMEDIATES_DIR)/private_llndk && \
 	cat $(PRIVATE_VNDK_PRIVATE_LIBRARIES_FILE) | \
@@ -136,3 +158,8 @@ vndk_version_suffix :=
 llndk_libraries_list :=
 vndksp_libraries_list :=
 write-libs-to-file :=
+
+ifeq ($(TARGET_VNDK_USE_CORE_VARIANT),true)
+vndk_using_core_variant_libraries_file :=
+vndk_using_core_variant_libraries_list :=
+endif
