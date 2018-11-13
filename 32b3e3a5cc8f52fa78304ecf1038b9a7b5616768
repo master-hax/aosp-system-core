@@ -46,6 +46,30 @@
       "revId": "32b3e3a5cc8f52fa78304ecf1038b9a7b5616768",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f845447_2f50f161",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-13T23:48:12Z",
+      "side": 1,
+      "message": "Ya, might as well continue and delete as much as possible?  That seems reasonable to me.",
+      "parentUuid": "9a980d34_da08136f",
+      "range": {
+        "startLine": 152,
+        "startChar": 17,
+        "endLine": 152,
+        "endChar": 34
+      },
+      "revId": "32b3e3a5cc8f52fa78304ecf1038b9a7b5616768",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
