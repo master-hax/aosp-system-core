@@ -290,7 +290,7 @@ namespace.vndk.link.sphal.allow_all_shared_libs = true
 # (LL-NDK only) access.
 ###############################################################################
 [vendor]
-additional.namespaces = runtime,system,vndk
+additional.namespaces = runtime,system,vndk%VNDK_IN_SYSTEM_NS%
 
 ###############################################################################
 # "default" namespace
@@ -321,9 +321,10 @@ namespace.default.asan.permitted.paths +=           /odm
 namespace.default.asan.permitted.paths += /data/asan/vendor
 namespace.default.asan.permitted.paths +=           /vendor
 
-namespace.default.links = runtime,system,vndk
+namespace.default.links = runtime,system,vndk%VNDK_IN_SYSTEM_NS%
 namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 namespace.default.link.system.shared_libs = %LLNDK_LIBRARIES%
+namespace.default.link.vndk_in_system.shared_libs = %VNDK_USING_CORE_VARIANT_LIBRARIES%
 namespace.default.link.vndk.shared_libs  = %VNDK_SAMEPROCESS_LIBRARIES%
 namespace.default.link.vndk.shared_libs += %VNDK_CORE_LIBRARIES%
 
@@ -369,12 +370,13 @@ namespace.vndk.asan.search.paths +=           /system/${LIB}/vndk%VNDK_VER%
 # When these NDK libs are required inside this namespace, then it is redirected
 # to the system namespace. This is possible since their ABI is stable across
 # Android releases.
-namespace.vndk.links = runtime,system,default
+namespace.vndk.links = runtime,system,default%VNDK_IN_SYSTEM_NS%
 
 namespace.vndk.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 
 namespace.vndk.link.system.shared_libs  = %LLNDK_LIBRARIES%
 namespace.vndk.link.system.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
+namespace.vndk.link.vndk_in_system.shared_libs = %VNDK_USING_CORE_VARIANT_LIBRARIES%
 
 namespace.vndk.link.default.allow_all_shared_libs = true
 
@@ -399,6 +401,36 @@ namespace.system.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 
 namespace.system.links = runtime
 namespace.system.link.runtime.shared_libs = libc.so:libdl.so:libm.so
+
+###############################################################################
+# "vndk_in_system" namespace
+#
+# This namespace is where no-vendor-variant VNDK libraries are loaded for a
+# vendor process.  Note that we do not simply export these libraries from
+# "system" namespace, because in some case both the core variant and the
+# vendor variant of a VNDK library may be loaded.  In such case, we do not
+# want to eliminate double-loading because doing so means the global states
+# of the library would be shared.
+###############################################################################
+namespace.vndk_in_system.isolated = true
+namespace.vndk_in_system.visible = true
+
+namespace.vndk_in_system.search.paths  = /system/${LIB}/vndk%VNDK_VER%
+namespace.vndk_in_system.search.paths += /system/${LIB}/vndk-sp%VNDK_VER%
+namespace.vndk_in_system.search.paths += /system/${LIB}
+namespace.vndk_in_system.search.paths += /%PRODUCT%/${LIB}
+namespace.vndk_in_system.search.paths += /%PRODUCT_SERVICES%/${LIB}
+
+namespace.vndk_in_system.asan.search.paths  = /data/asan/system/${LIB}
+namespace.vndk_in_system.asan.search.paths +=           /system/${LIB}
+namespace.vndk_in_system.asan.search.paths += /data/asan/product/${LIB}
+namespace.vndk_in_system.asan.search.paths +=           /%PRODUCT%/${LIB}
+namespace.vndk_in_system.asan.search.paths += /data/asan/product_services/${LIB}
+namespace.vndk_in_system.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
+
+namespace.vndk_in_system.links = runtime,vndk
+namespace.vndk_in_system.link.runtime.shared_libs = libc.so:libdl.so:libm.so
+namespace.vndk_in_system.link.vndk.allow_all_shared_libs = true
 
 
 ###############################################################################
