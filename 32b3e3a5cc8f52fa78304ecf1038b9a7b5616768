@@ -22,6 +22,30 @@
       "revId": "32b3e3a5cc8f52fa78304ecf1038b9a7b5616768",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a980d34_da08136f",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-13T23:45:19Z",
+      "side": 1,
+      "message": "On bionic stop leaving remainder of tree alone.\n\non glibc continue doing the best you can, but has the effect of minimizes the number of errors spewed as compared to FTW_CONTINUE should directory permissions be in the way.\n\nI guess I\u0027d prefer the spew and drop the glibc extension and return 0 in all cases. Erase as much as you can, and tell us what you could not erase.",
+      "parentUuid": "ee8c120c_594ccb43",
+      "range": {
+        "startLine": 152,
+        "startChar": 17,
+        "endLine": 152,
+        "endChar": 34
+      },
+      "revId": "32b3e3a5cc8f52fa78304ecf1038b9a7b5616768",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
