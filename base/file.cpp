@@ -44,6 +44,7 @@
 #define O_NOFOLLOW 0
 #define OS_PATH_SEPARATOR '\\'
 #else
+#define O_BINARY 0
 #define OS_PATH_SEPARATOR '/'
 #endif
 
@@ -118,6 +119,11 @@ int TemporaryFile::release() {
   int result = fd;
   fd = -1;
   return result;
+}
+
+void TemporaryFile::reopen() {
+  close(fd);
+  fd = open(path, O_EXCL | O_RDWR | O_BINARY);
 }
 
 void TemporaryFile::init(const std::string& tmp_dir) {

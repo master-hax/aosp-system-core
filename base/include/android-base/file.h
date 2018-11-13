@@ -43,6 +43,7 @@ class TemporaryFile {
   // Release the ownership of fd, caller is reponsible for closing the
   // fd or stream properly.
   int release();
+  void reopen();
   // Don't remove the temporary file in the destructor.
   void DoNotRemove() { remove_file_ = false; }
 
