@@ -45,12 +45,11 @@
 #include <vector>
 
 // Headers for LogMessage::LogLine.
-#ifdef __ANDROID__
+#ifdef ANDROID_DEFAULT_LOGGER
 #include <android/log.h>
+#endif
+#ifdef __ANDROID__
 #include <android/set_abort_message.h>
-#else
-#include <sys/types.h>
-#include <unistd.h>
 #endif
 
 #include <android-base/file.h>
@@ -121,7 +120,7 @@ static std::mutex& LoggingLock() {
 }
 
 static LogFunction& Logger() {
-#ifdef __ANDROID__
+#ifdef ANDROID_DEFAULT_LOGGER
   static auto& logger = *new LogFunction(LogdLogger());
 #else
   static auto& logger = *new LogFunction(StderrLogger);
@@ -242,7 +241,7 @@ void DefaultAborter(const char* abort_message) {
 }
 
 
-#ifdef __ANDROID__
+#ifdef ANDROID_DEFAULT_LOGGER
 LogdLogger::LogdLogger(LogId default_log_id) : default_log_id_(default_log_id) {
 }
 
