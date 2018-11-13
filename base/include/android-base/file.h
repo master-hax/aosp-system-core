@@ -36,8 +36,8 @@
 
 class TemporaryFile {
  public:
-  TemporaryFile();
-  explicit TemporaryFile(const std::string& tmp_dir);
+  explicit TemporaryFile(int (*mk_fn)(char*) = mkstemp);
+  explicit TemporaryFile(const std::string& tmp_dir, int (*mk_fn)(char*) = mkstemp);
   ~TemporaryFile();
 
   // Release the ownership of fd, caller is reponsible for closing the
@@ -54,6 +54,7 @@ class TemporaryFile {
   void init(const std::string& tmp_dir);
 
   bool remove_file_ = true;
+  int (*mk_fn_)(char*);
 
   DISALLOW_COPY_AND_ASSIGN(TemporaryFile);
 };

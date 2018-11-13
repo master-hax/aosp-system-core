@@ -98,11 +98,11 @@ std::string GetSystemTempDir() {
 
 }  // namespace
 
-TemporaryFile::TemporaryFile() {
+TemporaryFile::TemporaryFile(int (*mk_fn)(char*)) : mk_fn_(mk_fn) {
   init(GetSystemTempDir());
 }
 
-TemporaryFile::TemporaryFile(const std::string& tmp_dir) {
+TemporaryFile::TemporaryFile(const std::string& tmp_dir, int (*mk_fn)(char*)) : mk_fn_(mk_fn) {
   init(tmp_dir);
 }
 
@@ -128,7 +128,7 @@ void TemporaryFile::reopen() {
 
 void TemporaryFile::init(const std::string& tmp_dir) {
   snprintf(path, sizeof(path), "%s%cTemporaryFile-XXXXXX", tmp_dir.c_str(), OS_PATH_SEPARATOR);
-  fd = mkstemp(path);
+  fd = mk_fn_(path);
 }
 
 TemporaryDir::TemporaryDir() {
