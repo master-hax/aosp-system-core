@@ -688,3 +688,14 @@ TEST(liblp, UpdateNonRetrofit) {
     ASSERT_EQ(updated->block_devices.size(), static_cast<size_t>(1));
     EXPECT_EQ(GetBlockDevicePartitionName(updated->block_devices[0]), "super");
 }
+
+TEST(liblp, ProbeForMetadata) {
+    unique_fd fd1 = CreateFlashedDisk();
+    ASSERT_GE(fd1, 0);
+    unique_fd fd2 = CreateFakeDisk();
+    ASSERT_GE(fd2, 0);
+
+    TestPartitionOpener opener({{"super_a", fd1}, {"super_b", fd2}});
+    EXPECT_TRUE(ProbeForMetadata(opener, "super_a"));
+    EXPECT_FALSE(ProbeForMetadata(opener, "super_b"));
+}

@@ -89,9 +89,7 @@ int fs_mgr_do_format(fstab_rec* fstab, bool reserve_footer);
 #define FS_MGR_SETUP_VERITY_SUCCESS 0
 int fs_mgr_setup_verity(fstab_rec* fstab, bool wait_for_verity_dev);
 
-// Return the name of the super partition if it exists. If a slot number is
-// specified, the super partition for the corresponding metadata slot will be
-// returned. Otherwise, it will use the current slot.
-std::string fs_mgr_get_super_partition_name(int slot = -1);
+// Return the name of the super partition if it exists.
+std::string fs_mgr_get_super_partition_name();
 
 #endif /* __CORE_FS_MGR_H */

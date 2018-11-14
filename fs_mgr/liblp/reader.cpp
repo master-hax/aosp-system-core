@@ -422,6 +422,17 @@ std::unique_ptr<LpMetadata> ReadMetadata(const std::string& super_partition, uin
     return ReadMetadata(PartitionOpener(), super_partition, slot_number);
 }
 
+bool ProbeForMetadata(const IPartitionOpener& opener, const std::string& partition_name) {
+    android::base::unique_fd fd = opener.Open(partition_name, O_RDONLY);
+    if (fd < 0) {
+        PERROR << __PRETTY_FUNCTION__ << " open failed: " << partition_name;
+        return false;
+    }
+
+    LpMetadataGeometry geometry;
+    return ReadLogicalPartitionGeometry(fd, &geometry);
+}
+
 static std::string NameFromFixedArray(const char* name, size_t buffer_size) {
     // If the end of the buffer has a null character, it's safe to assume the
     // buffer is null terminated. Otherwise, we cap the string to the input

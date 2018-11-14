@@ -382,8 +382,8 @@ uint32_t fs_mgr_overlayfs_slot_number() {
     return SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
 }
 
-std::string fs_mgr_overlayfs_super_device(uint32_t slot_number) {
-    return "/dev/block/by-name/" + fs_mgr_get_super_partition_name(slot_number);
+std::string fs_mgr_overlayfs_super_device() {
+    return "/dev/block/by-name/" + fs_mgr_get_super_partition_name();
 }
 
 bool fs_mgr_overlayfs_has_logical(const fstab* fstab) {
@@ -402,8 +402,7 @@ bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change)
     // umount and delete kScratchMountPoint storage if we have logical partitions
     if (overlay != kScratchMountPoint) return true;
     scratch_device_cache.erase();
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+    auto super_device = fs_mgr_overlayfs_super_device();
     if (!fs_mgr_rw_access(super_device)) return true;
 
     auto save_errno = errno;
@@ -416,6 +415,7 @@ bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change)
         // thus any errors here are ignored.
         umount2(kScratchMountPoint.c_str(), MNT_DETACH);
     }
+    auto slot_number = fs_mgr_overlayfs_slot_number();
     auto builder = MetadataBuilder::New(super_device, slot_number);
     if (!builder) {
         errno = save_errno;
@@ -649,10 +649,10 @@ bool fs_mgr_overlayfs_setup_scratch(const fstab* fstab, bool* change) {
     auto scratch_device = fs_mgr_overlayfs_scratch_device();
     auto partition_exists = fs_mgr_rw_access(scratch_device);
     if (!partition_exists) {
-        auto slot_number = fs_mgr_overlayfs_slot_number();
-        auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+        auto super_device = fs_mgr_overlayfs_super_device();
         if (!fs_mgr_rw_access(super_device)) return false;
         if (!fs_mgr_overlayfs_has_logical(fstab)) return false;
+        auto slot_number = fs_mgr_overlayfs_slot_number();
         auto builder = MetadataBuilder::New(super_device, slot_number);
         if (!builder) {
             PERROR << "open " << super_device << " metadata";
@@ -728,9 +728,9 @@ bool fs_mgr_overlayfs_scratch_can_be_mounted(const std::string& scratch_device) 
     if (scratch_device.empty()) return false;
     if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return false;
     if (fs_mgr_rw_access(scratch_device)) return true;
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+    auto super_device = fs_mgr_overlayfs_super_device();
     if (!fs_mgr_rw_access(super_device)) return false;
+    auto slot_number = fs_mgr_overlayfs_slot_number();
     auto builder = MetadataBuilder::New(super_device, slot_number);
     if (!builder) return false;
     return builder->FindPartition(android::base::Basename(kScratchMountPoint)) != nullptr;
@@ -816,7 +816,7 @@ bool fs_mgr_overlayfs_setup(const char* backing, const char* mount_point, bool* 
     for (const auto& overlay_mount_point : kOverlayMountPoints) {
         if (backing && backing[0] && (overlay_mount_point != backing)) continue;
         if (overlay_mount_point == kScratchMountPoint) {
-            if (!fs_mgr_rw_access(fs_mgr_overlayfs_super_device(fs_mgr_overlayfs_slot_number())) ||
+            if (!fs_mgr_rw_access(fs_mgr_overlayfs_super_device()) ||
                 !fs_mgr_overlayfs_has_logical(fstab.get())) {
                 continue;
             }
@@ -852,7 +852,7 @@ bool fs_mgr_overlayfs_teardown(const char* mount_point, bool* change) {
         auto scratch_device = fs_mgr_overlayfs_scratch_device();
         if (scratch_device.empty()) {
             auto slot_number = fs_mgr_overlayfs_slot_number();
-            auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+            auto super_device = fs_mgr_overlayfs_super_device();
             const auto partition_name = android::base::Basename(kScratchMountPoint);
             CreateLogicalPartition(super_device, slot_number, partition_name, true, 0s,
                                    &scratch_device);

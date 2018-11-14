@@ -70,6 +70,14 @@ bool UpdatePartitionTable(const std::string& super_partition, const LpMetadata& 
                           uint32_t slot_number);
 std::unique_ptr<LpMetadata> ReadMetadata(const std::string& super_partition, uint32_t slot_number);
 
+// On retrofit devices there are two candidates for holding super partition
+// metadata - system_a, or system_b. This function will inexpensively probe
+// a partition to determine whether it contains metadata.
+//
+// A true return value indicates that metadata may exist.
+// A false return value indicates that metadata does not exist.
+bool ProbeForMetadata(const IPartitionOpener& opener, const std::string& partition_name);
+
 // Read/Write logical partition metadata to an image file, for diagnostics or
 // flashing.
 bool WriteToSparseFile(const char* file, const LpMetadata& metadata, uint32_t block_size,

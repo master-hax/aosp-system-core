@@ -212,7 +212,7 @@ void UpgradeRetrofitSuperIfNeeded() {
     // Read the existing metadata. If there isn't any, the super partition
     // is corrupt. We don't do anything since the device needs to be
     // reflashed.
-    std::string current_super = fs_mgr_get_super_partition_name(current_slot);
+    std::string current_super = fs_mgr_get_super_partition_name();
     auto current_metadata = ReadMetadata(current_super, current_slot);
     if (!current_metadata) {
         return;
@@ -248,7 +248,7 @@ void UpgradeRetrofitSuperIfNeeded() {
                  << " to use both slots for allocating partition data.";
     LOG(WARNING) << "This will overwrite the contents of slot " << other_slot_suffix << ".";
 
-    std::string other_super = fs_mgr_get_super_partition_name(other_slot);
+    std::string other_super = fs_mgr_get_super_partition_name();
     if (!UpdateAllMetadataSlots(current_super, *upgraded_metadata.get())) {
         LOG(ERROR) << "Updating metadata on " << current_super << " failed.";
     }
