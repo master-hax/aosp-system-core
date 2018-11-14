@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "22d2a20d_c92d89c1",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-14T20:00:13Z",
+      "side": 1,
+      "message": "no, i think if the user explicitly asked for a TMPDIR we should honor that. (i should have used more words below in my L108 comment.)",
+      "parentUuid": "2b439c87_812d549a",
+      "range": {
+        "startLine": 76,
+        "startChar": 7,
+        "endLine": 76,
+        "endChar": 13
+      },
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4065659e_7161b29b",
         "filename": "base/file.cpp",
         "patchSetId": 2
