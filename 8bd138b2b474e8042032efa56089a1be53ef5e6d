@@ -22,6 +22,70 @@
       "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f0af773_999b00ea",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-14T19:25:29Z",
+      "side": 1,
+      "message": "don\u0027t duplicate this access check. just delete all this and add\n\n  if (tmpdir \u003d\u003d nullptr) tmpdir \u003d \"/data/local/tmp\";",
+      "parentUuid": "048e0161_9f2300da",
+      "range": {
+        "startLine": 76,
+        "startChar": 7,
+        "endLine": 76,
+        "endChar": 13
+      },
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4065659e_7161b29b",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-14T19:25:29Z",
+      "side": 1,
+      "message": "strncpy doesn\u0027t guarantee a NUL. never use strncpy. use snprintf if you have to.\n\n*but*... GetTempPath already takes the relevant environment variables into account. you can just delete all this.",
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65a3309b_f6c78bf4",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-14T19:25:29Z",
+      "side": 1,
+      "message": "just honor TMPDIR.",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 3
+      },
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
