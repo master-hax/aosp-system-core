@@ -63,17 +63,12 @@ class FirstStageMount {
     bool InitDevices();
 
   protected:
-    ListenerAction HandleBlockDevice(const std::string& name, const Uevent&);
     bool InitRequiredDevices();
     bool InitMappedDevice(const std::string& verity_device);
     bool CreateLogicalPartitions();
     bool MountPartition(fstab_rec* fstab_rec);
     bool MountPartitions();
     bool IsDmLinearEnabled();
-    bool GetDmLinearMetadataDevice();
-    bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
-
-    ListenerAction UeventCallback(const Uevent& uevent);
 
     // Pure virtual functions.
     virtual bool GetDmVerityDevices() = 0;
@@ -82,9 +77,7 @@ class FirstStageMount {
     bool need_dm_verity_;
 
     std::unique_ptr<fstab, decltype(&fs_mgr_free_fstab)> device_tree_fstab_;
-    std::string lp_metadata_partition_;
     std::vector<fstab_rec*> mount_fstab_recs_;
-    std::set<std::string> required_devices_partition_names_;
     std::string super_partition_name_;
     std::unique_ptr<DeviceHandler> device_handler_;
     UeventListener uevent_listener_;
@@ -173,7 +166,7 @@ bool FirstStageMount::DoFirstStageMount() {
 }
 
 bool FirstStageMount::InitDevices() {
-    return GetDmLinearMetadataDevice() && GetDmVerityDevices() && InitRequiredDevices();
+    return GetDmVerityDevices() && InitRequiredDevices();
 }
 
 bool FirstStageMount::IsDmLinearEnabled() {
@@ -183,24 +176,8 @@ bool FirstStageMount::IsDmLinearEnabled() {
     return false;
 }
 
-bool FirstStageMount::GetDmLinearMetadataDevice() {
-    // Add any additional devices required for dm-linear mappings.
-    if (!IsDmLinearEnabled()) {
-        return true;
-    }
-
-    required_devices_partition_names_.emplace(super_partition_name_);
-    return true;
-}
-
-// Creates devices with uevent->partition_name matching one in the member variable
-// required_devices_partition_names_. Found partitions will then be removed from it
-// for the subsequent member function to check which devices are NOT created.
+// Creates all block devices plus the device-mapper device if needed.
 bool FirstStageMount::InitRequiredDevices() {
-    if (required_devices_partition_names_.empty()) {
-        return true;
-    }
-
     if (IsDmLinearEnabled() || need_dm_verity_) {
         const std::string dm_path = "/devices/virtual/misc/device-mapper";
         bool found = false;
@@ -225,49 +202,27 @@ bool FirstStageMount::InitRequiredDevices() {
         }
     }
 
-    auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
-    uevent_listener_.RegenerateUevents(uevent_callback);
-
-    // UeventCallback() will remove found partitions from required_devices_partition_names_.
-    // So if it isn't empty here, it means some partitions are not found.
-    if (!required_devices_partition_names_.empty()) {
-        LOG(INFO) << __PRETTY_FUNCTION__
-                  << ": partition(s) not found in /sys, waiting for their uevent(s): "
-                  << android::base::Join(required_devices_partition_names_, ", ");
+    {
         Timer t;
+
+        auto uevent_callback = [this](const Uevent& uevent) {
+            // Ignores everything that is not a block device.
+            if (uevent.subsystem != "block") {
+                return ListenerAction::kContinue;
+            }
+
+            device_handler_->HandleUevent(uevent);
+
+            return ListenerAction::kContinue;
+        };
+        uevent_listener_.set_expect_all_uevents(true);
+        uevent_listener_.RegenerateUeventsForPath("/sys/block", uevent_callback);
+
         uevent_listener_.Poll(uevent_callback, 10s);
+        uevent_listener_.set_expect_all_uevents(false);
         LOG(INFO) << "Wait for partitions returned after " << t;
     }
 
-    if (!required_devices_partition_names_.empty()) {
-        LOG(ERROR) << __PRETTY_FUNCTION__ << ": partition(s) not found after polling timeout: "
-                   << android::base::Join(required_devices_partition_names_, ", ");
-        return false;
-    }
-
-    return true;
-}
-
-bool FirstStageMount::InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata) {
-    auto partition_names = GetBlockDevicePartitionNames(metadata);
-    for (const auto& partition_name : partition_names) {
-        if (partition_name == lp_metadata_partition_) {
-            continue;
-        }
-        required_devices_partition_names_.emplace(partition_name);
-    }
-    if (required_devices_partition_names_.empty()) {
-        return true;
-    }
-
-    auto uevent_callback = [this](const Uevent& uevent) { return UeventCallback(uevent); };
-    uevent_listener_.RegenerateUevents(uevent_callback);
-
-    if (!required_devices_partition_names_.empty()) {
-        LOG(ERROR) << __PRETTY_FUNCTION__ << ": partition(s) not found after polling timeout: "
-                   << android::base::Join(required_devices_partition_names_, ", ");
-        return false;
-    }
     return true;
 }
 
@@ -275,61 +230,21 @@ bool FirstStageMount::CreateLogicalPartitions() {
     if (!IsDmLinearEnabled()) {
         return true;
     }
-    if (lp_metadata_partition_.empty()) {
+
+    const std::string lp_metadata_partition = "/dev/block/by-name/" + super_partition_name_;
+
+    if (lp_metadata_partition.empty()) {
         LOG(ERROR) << "Could not locate logical partition tables in partition "
                    << super_partition_name_;
         return false;
     }
 
-    auto metadata = android::fs_mgr::ReadCurrentMetadata(lp_metadata_partition_);
+    auto metadata = android::fs_mgr::ReadCurrentMetadata(lp_metadata_partition);
     if (!metadata) {
-        LOG(ERROR) << "Could not read logical partition metadata from " << lp_metadata_partition_;
-        return false;
-    }
-    if (!InitDmLinearBackingDevices(*metadata.get())) {
+        LOG(ERROR) << "Could not read logical partition metadata from " << lp_metadata_partition;
         return false;
     }
     return android::fs_mgr::CreateLogicalPartitions(*metadata.get());
-}
-
-ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const Uevent& uevent) {
-    // Matches partition name to create device nodes.
-    // Both required_devices_partition_names_ and uevent->partition_name have A/B
-    // suffix when A/B is used.
-    auto iter = required_devices_partition_names_.find(name);
-    if (iter != required_devices_partition_names_.end()) {
-        LOG(VERBOSE) << __PRETTY_FUNCTION__ << ": found partition: " << *iter;
-        if (IsDmLinearEnabled() && name == super_partition_name_) {
-            std::vector<std::string> links = device_handler_->GetBlockDeviceSymlinks(uevent);
-            lp_metadata_partition_ = links[0];
-        }
-        required_devices_partition_names_.erase(iter);
-        device_handler_->HandleUevent(uevent);
-        if (required_devices_partition_names_.empty()) {
-            return ListenerAction::kStop;
-        } else {
-            return ListenerAction::kContinue;
-        }
-    }
-    return ListenerAction::kContinue;
-}
-
-ListenerAction FirstStageMount::UeventCallback(const Uevent& uevent) {
-    // Ignores everything that is not a block device.
-    if (uevent.subsystem != "block") {
-        return ListenerAction::kContinue;
-    }
-
-    if (!uevent.partition_name.empty()) {
-        return HandleBlockDevice(uevent.partition_name, uevent);
-    } else {
-        size_t base_idx = uevent.path.rfind('/');
-        if (base_idx != std::string::npos) {
-            return HandleBlockDevice(uevent.path.substr(base_idx + 1), uevent);
-        }
-    }
-    // Not found a partition or find an unneeded partition, continue to find others.
-    return ListenerAction::kContinue;
 }
 
 // Creates "/dev/block/dm-XX" for dm-verity by running coldboot on /sys/block/dm-XX.
@@ -432,28 +347,6 @@ bool FirstStageMountVBootV1::GetDmVerityDevices() {
         if (fs_mgr_is_verified(fstab_rec)) {
             need_dm_verity_ = true;
         }
-        // Checks if verity metadata is on a separate partition. Note that it is
-        // not partition specific, so there must be only one additional partition
-        // that carries verity state.
-        if (fstab_rec->verity_loc) {
-            if (verity_loc_device.empty()) {
-                verity_loc_device = fstab_rec->verity_loc;
-            } else if (verity_loc_device != fstab_rec->verity_loc) {
-                LOG(ERROR) << "More than one verity_loc found: " << verity_loc_device << ", "
-                           << fstab_rec->verity_loc;
-                return false;
-            }
-        }
-    }
-
-    // Includes the partition names of fstab records and verity_loc_device (if any).
-    // Notes that fstab_rec->blk_device has A/B suffix updated by fs_mgr when A/B is used.
-    for (auto fstab_rec : mount_fstab_recs_) {
-        required_devices_partition_names_.emplace(basename(fstab_rec->blk_device));
-    }
-
-    if (!verity_loc_device.empty()) {
-        required_devices_partition_names_.emplace(basename(verity_loc_device.c_str()));
     }
 
     return true;
@@ -511,34 +404,9 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
         if (fs_mgr_is_logical(fstab_rec)) {
             // Don't try to find logical partitions via uevent regeneration.
             logical_partitions.emplace(basename(fstab_rec->blk_device));
-        } else {
-            required_devices_partition_names_.emplace(basename(fstab_rec->blk_device));
         }
     }
 
-    // libavb verifies AVB metadata on all verified partitions at once.
-    // e.g., The device_tree_vbmeta_parts_ will be "vbmeta,boot,system,vendor"
-    // for libavb to verify metadata, even if there is only /vendor in the
-    // above mount_fstab_recs_.
-    if (need_dm_verity_) {
-        if (device_tree_vbmeta_parts_.empty()) {
-            LOG(ERROR) << "Missing vbmeta parts in device tree";
-            return false;
-        }
-        std::vector<std::string> partitions = android::base::Split(device_tree_vbmeta_parts_, ",");
-        std::string ab_suffix = fs_mgr_get_slot_suffix();
-        for (const auto& partition : partitions) {
-            std::string partition_name = partition + ab_suffix;
-            if (logical_partitions.count(partition_name)) {
-                continue;
-            }
-            // required_devices_partition_names_ is of type std::set so it's not an issue
-            // to emplace a partition twice. e.g., /vendor might be in both places:
-            //   - device_tree_vbmeta_parts_ = "vbmeta,boot,system,vendor"
-            //   - mount_fstab_recs_: /vendor_a
-            required_devices_partition_names_.emplace(partition_name);
-        }
-    }
     return true;
 }
 

@@ -128,8 +128,8 @@ bool UeventListener::ReadUevent(Uevent* uevent) const {
 // make sure we don't overrun the socket's buffer.
 //
 
-ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
-                                                       const ListenerCallback& callback) const {
+ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d, const std::string& dir_name,
+                                                       const ListenerCallback& callback) {
     int dfd = dirfd(d);
 
     int fd = openat(dfd, "uevent", O_WRONLY);
@@ -137,8 +137,17 @@ ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
         write(fd, "add\n", 4);
         close(fd);
 
+        if (expect_all_uevents_) {
+            uevents_expected_.emplace_back(dir_name);
+        }
+
         Uevent uevent;
         while (ReadUevent(&uevent)) {
+            auto it = std::find(uevents_expected_.begin(), uevents_expected_.end(),
+                                uevent.device_name);
+            if (it != uevents_expected_.end()) {
+                uevents_expected_.erase(it);
+            }
             if (callback(uevent) == ListenerAction::kStop) return ListenerAction::kStop;
         }
     }
@@ -154,7 +163,7 @@ ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
         if (d2 == 0) {
             close(fd);
         } else {
-            if (RegenerateUeventsForDir(d2.get(), callback) == ListenerAction::kStop) {
+            if (RegenerateUeventsForDir(d2.get(), de->d_name, callback) == ListenerAction::kStop) {
                 return ListenerAction::kStop;
             }
         }
@@ -165,23 +174,23 @@ ListenerAction UeventListener::RegenerateUeventsForDir(DIR* d,
 }
 
 ListenerAction UeventListener::RegenerateUeventsForPath(const std::string& path,
-                                                        const ListenerCallback& callback) const {
+                                                        const ListenerCallback& callback) {
     std::unique_ptr<DIR, decltype(&closedir)> d(opendir(path.c_str()), closedir);
     if (!d) return ListenerAction::kContinue;
 
-    return RegenerateUeventsForDir(d.get(), callback);
+    return RegenerateUeventsForDir(d.get(), "", callback);
 }
 
 static const char* kRegenerationPaths[] = {"/sys/class", "/sys/block", "/sys/devices"};
 
-void UeventListener::RegenerateUevents(const ListenerCallback& callback) const {
+void UeventListener::RegenerateUevents(const ListenerCallback& callback) {
     for (const auto path : kRegenerationPaths) {
         if (RegenerateUeventsForPath(path, callback) == ListenerAction::kStop) return;
     }
 }
 
 void UeventListener::Poll(const ListenerCallback& callback,
-                          const std::optional<std::chrono::milliseconds> relative_timeout) const {
+                          const std::optional<std::chrono::milliseconds> relative_timeout) {
     using namespace std::chrono;
 
     pollfd ufd;
@@ -191,6 +200,10 @@ void UeventListener::Poll(const ListenerCallback& callback,
     auto start_time = steady_clock::now();
 
     while (true) {
+        if (expect_all_uevents_ && uevents_expected_.empty()) {
+            return;
+        }
+
         ufd.revents = 0;
 
         int timeout_ms = -1;
@@ -214,7 +227,17 @@ void UeventListener::Poll(const ListenerCallback& callback,
             // we have exhausted all uevent messages.
             Uevent uevent;
             while (ReadUevent(&uevent)) {
-                if (callback(uevent) == ListenerAction::kStop) return;
+                auto it = std::find(uevents_expected_.begin(), uevents_expected_.end(),
+                                    uevent.device_name);
+                if (it != uevents_expected_.end()) {
+                    uevents_expected_.erase(it);
+                }
+                if (callback(uevent) == ListenerAction::kStop) {
+                    return;
+                }
+                if (expect_all_uevents_ && uevents_expected_.empty()) {
+                    return;
+                }
             }
         }
     }

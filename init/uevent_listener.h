@@ -22,6 +22,8 @@
 #include <chrono>
 #include <functional>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include <android-base/unique_fd.h>
 
@@ -43,17 +45,22 @@ class UeventListener {
   public:
     UeventListener();
 
-    void RegenerateUevents(const ListenerCallback& callback) const;
+    void RegenerateUevents(const ListenerCallback& callback);
     ListenerAction RegenerateUeventsForPath(const std::string& path,
-                                            const ListenerCallback& callback) const;
+                                            const ListenerCallback& callback);
     void Poll(const ListenerCallback& callback,
-              const std::optional<std::chrono::milliseconds> relative_timeout = {}) const;
+              const std::optional<std::chrono::milliseconds> relative_timeout = {});
+
+    void set_expect_all_uevents(bool value) { expect_all_uevents_ = value; }
 
   private:
     bool ReadUevent(Uevent* uevent) const;
-    ListenerAction RegenerateUeventsForDir(DIR* d, const ListenerCallback& callback) const;
+    ListenerAction RegenerateUeventsForDir(DIR* d, const std::string& dir_name,
+                                           const ListenerCallback& callback);
 
     android::base::unique_fd device_fd_;
+    bool expect_all_uevents_ = false;
+    std::vector<std::string> uevents_expected_;
 };
 
 }  // namespace init
