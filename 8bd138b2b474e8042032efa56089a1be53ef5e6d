@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "2b439c87_812d549a",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T19:43:29Z",
+      "side": 1,
+      "message": "There is method to the madness, if we can not access the supplied TMPDIR, I wanted it to punt and try \"/data/local/tmp\" before going to local directory.\n\nOne of my unit tests is to fail to create the associated directory, and the tests that depend on these classes do _not_ fail. In case something sets TMPDIR (and I have no doubt this happens on a device) and fails to clear it after use, I do not want subsequent tests to fail.\n\n(so he asks again, does this sound OK, here and in default case below)?",
+      "parentUuid": "5f0af773_999b00ea",
+      "range": {
+        "startLine": 76,
+        "startChar": 7,
+        "endLine": 76,
+        "endChar": 13
+      },
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4065659e_7161b29b",
         "filename": "base/file.cpp",
         "patchSetId": 2
@@ -63,6 +87,24 @@
       "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f80a11e2_58432393",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T19:43:29Z",
+      "side": 1,
+      "message": "I learned something new today! :-) Thanks!",
+      "parentUuid": "4065659e_7161b29b",
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
