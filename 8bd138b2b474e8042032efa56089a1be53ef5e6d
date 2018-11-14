@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "048e0161_9f2300da",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T18:28:31Z",
+      "side": 1,
+      "message": "Q: do we want to add any restrictions to this value?\n\nI can not think of any because results are limited to creating unique files and directories underneath _an_ existing directory, and inside a directory we have been granted access to, and they will be cleaned up on destructor. The file is 0600 to the owner, and directory is 0700 to the owner; there are no privileges that these grant to an attack vector.\n\nWe are to trust sepolicy as well, not just the DAC controls already in place.",
+      "range": {
+        "startLine": 76,
+        "startChar": 7,
+        "endLine": 76,
+        "endChar": 13
+      },
+      "revId": "8bd138b2b474e8042032efa56089a1be53ef5e6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
