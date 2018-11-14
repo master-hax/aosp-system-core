@@ -248,6 +248,10 @@ class MetadataBuilder {
     // false is returned.
     bool ImportPartitions(const LpMetadata& metadata, const std::set<std::string>& partition_names);
 
+    // Return true if a block device is found, else false. If true, "index" contains the info
+    // index into block_devices_.
+    bool FindBlockDeviceByName(const std::string& partition_name, uint32_t* index) const;
+
   private:
     MetadataBuilder();
     MetadataBuilder(const MetadataBuilder&) = delete;
@@ -262,7 +266,6 @@ class MetadataBuilder {
     uint64_t AlignSector(const LpMetadataBlockDevice& device, uint64_t sector) const;
     uint64_t TotalSizeOfGroup(PartitionGroup* group) const;
     bool UpdateBlockDeviceInfo(size_t index, const BlockDeviceInfo& info);
-    bool FindBlockDeviceByName(const std::string& partition_name, uint32_t* index) const;
     bool ValidatePartitionSizeChange(Partition* partition, uint64_t old_size, uint64_t new_size);
     void ImportExtents(Partition* dest, const LpMetadata& metadata,
                        const LpMetadataPartition& source);
