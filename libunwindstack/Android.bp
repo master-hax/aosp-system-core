@@ -184,6 +184,7 @@ cc_test {
         "tests/MapInfoGetLoadBiasTest.cpp",
         "tests/MapsTest.cpp",
         "tests/MemoryBufferTest.cpp",
+        "tests/MemoryCacheTest.cpp",
         "tests/MemoryFake.cpp",
         "tests/MemoryFileTest.cpp",
         "tests/MemoryLocalTest.cpp",
@@ -318,5 +319,22 @@ cc_binary_host {
 
     srcs: [
         "tests/GenGnuDebugdata.cpp",
+    ],
+}
+
+cc_benchmark {
+    name: "unwind_benchmarks",
+    host_supported: true,
+
+    cflags: [
+        "-O0",
+    ],
+
+    srcs: [
+        "benchmarks/unwind_benchmarks.cpp",
+    ],
+
+    shared_libs: [
+        "libunwindstack",
     ],
 }
