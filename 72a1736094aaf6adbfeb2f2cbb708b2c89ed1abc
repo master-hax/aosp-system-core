@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "917a2de9_75700a07",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1601,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T17:03:54Z",
+      "side": 1,
+      "message": "NotReached ... so the following is just discussion:\n\nIs there a future for a non A/B retrofit device? answer and adjustment for such is outside the scope for this CL.\n\nWould it be so bad to return super_partition (or LP_METADATA_DEFAULT_PARTITION_NAME if it exists instead). super_partition being defined on the command line (vendor mistake) could be just an error? Or some security violation allows one to add it to the command line to BRICK a user device in a tight (Battery consuming?) bootloop early on in first_stage_init.\n\n    LERROR \u003c\u003c \"Only A/B devices can specify a retrofit super partition\";\n    return LP_METADATA_DEFAULT_PARTITION_NAME;\n\nand let the \u0027fatal\u0027 come later (although still in first_stage_init) when it can not open it ...\n\nQ: what about recovery or fastbootd getting sickened by this FATAL when trying to flash the device?",
+      "range": {
+        "startLine": 1601,
+        "startChar": 19,
+        "endLine": 1601,
+        "endChar": 21
+      },
+      "revId": "72a1736094aaf6adbfeb2f2cbb708b2c89ed1abc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd964c0d_b186d7d8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T17:03:54Z",
+      "side": 1,
+      "message": "If both are set, _and_ they have the same (at least not conflicting) content, then super_partition + \"_a\" is probably the right answer.\n\nProbeForMetadata should probably return the metadata so that they can be compared.",
+      "range": {
+        "startLine": 1607,
+        "startChar": 12,
+        "endLine": 1607,
+        "endChar": 61
+      },
+      "revId": "72a1736094aaf6adbfeb2f2cbb708b2c89ed1abc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9748ffbf_54028423",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1608,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T17:03:54Z",
+      "side": 1,
+      "message": "You already have slot_suffix above ... no need to callout to get it again.",
+      "range": {
+        "startLine": 1608,
+        "startChar": 37,
+        "endLine": 1608,
+        "endChar": 61
+      },
+      "revId": "72a1736094aaf6adbfeb2f2cbb708b2c89ed1abc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
