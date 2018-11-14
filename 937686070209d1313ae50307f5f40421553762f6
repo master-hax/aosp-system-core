@@ -22,6 +22,30 @@
       "revId": "937686070209d1313ae50307f5f40421553762f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe34762c_a48808ca",
+        "filename": "base/include/android-base/file.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-14T17:47:21Z",
+      "side": 1,
+      "message": "I do not like the initial idea I had regarding removing the directory if it is empty regardless of the settings and focussing on the files underneath for preservation, simpler concept is just DoNotRemove ... remove_dir_and_contents_ to be self-documenting and clear ...",
+      "parentUuid": "9af83f7c_9a6c27b5",
+      "range": {
+        "startLine": 72,
+        "startChar": 14,
+        "endLine": 72,
+        "endChar": 18
+      },
+      "revId": "937686070209d1313ae50307f5f40421553762f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
