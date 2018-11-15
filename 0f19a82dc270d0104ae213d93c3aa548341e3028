@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "105ff29f_c8a328b7",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b8c8270d_d521bed4",
+      "range": {
+        "startLine": 100,
+        "startChar": 13,
+        "endLine": 100,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a5e83b6_ff4879c8",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2018-11-13T21:16:49Z",
       "side": 1,
       "message": "This should just pass in g_target_thread and then this function can call all of the other functions it needs since these two variables are not used any where else.",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 44
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c11ecdd5_63e690e0",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "We have to get exe path and uid before calling drop_capabilities because get_process_uid and get_process_exe_path will be failed after that.\nSo, I designed as it is passed by arguments.",
+      "parentUuid": "2a5e83b6_ff4879c8",
       "range": {
         "startLine": 111,
         "startChar": 12,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "9e8f7047_c6dbde76",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "I\u0027m sorry, I was not able to know your intention of this comment.\nPlease let me ask some questions to know it.\n1) Does the name of the executable in your comment mean the first element of the value of \u0027process_name\u0027or the value of \u0027exe_path\u0027?\n2) Could you describe in the detail of \u0027anything but the name of the executable\u0027?\n3) Which instance of string_view are you pointing?",
+      "parentUuid": "95610e41_6b2f8cf1",
+      "range": {
+        "startLine": 113,
+        "startChar": 45,
+        "endLine": 113,
+        "endChar": 57
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e541c7a5_85abf601",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2018-11-13T21:16:49Z",
       "side": 1,
       "message": "As mentioned above, remove these calls and pass g_target_thread to the is_critical call.",
+      "range": {
+        "startLine": 468,
+        "startChar": 0,
+        "endLine": 472,
+        "endChar": 47
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7708591e_5047cf32",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "As I mentioned above, we have to get exe path and uid before calling drop_capabilities.\nThat\u0027s why I get them here.",
+      "parentUuid": "e541c7a5_85abf601",
       "range": {
         "startLine": 468,
         "startChar": 0,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "39569788_cccef016",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "I got it.\nI\u0027ll do fync in tombstoned.",
+      "parentUuid": "3ca0ff32_9dcfa069",
+      "range": {
+        "startLine": 665,
+        "startChar": 0,
+        "endLine": 666,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3badf589_c77d5a60",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
@@ -128,6 +248,30 @@
       "writtenOn": "2018-11-13T21:16:49Z",
       "side": 1,
       "message": "Why are you doing this?",
+      "range": {
+        "startLine": 680,
+        "startChar": 6,
+        "endLine": 681,
+        "endChar": 16
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3d09031_6ceba0ac",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 681,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "The purpose of this sleep is as follows.\n\n This is in order to prevent that crashed process exits.\n If the process exited, kernel would release all resources of it and\n necessary debug information would be gone with them.",
+      "parentUuid": "3badf589_c77d5a60",
       "range": {
         "startLine": 680,
         "startChar": 6,
@@ -160,6 +304,30 @@
       "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ca16f1a_53fd0bc1",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "454a1f21_bd0806bc",
+      "range": {
+        "startLine": 671,
+        "startChar": 0,
+        "endLine": 687,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -209,6 +377,54 @@
     },
     {
       "key": {
+        "uuid": "ad20d6da_f31cfb54",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "Yes. We added a rule for this. See below commit.\nhttps://android-review.googlesource.com/c/platform/system/sepolicy/+/750150",
+      "parentUuid": "f92d22e2_33a37c0e",
+      "range": {
+        "startLine": 405,
+        "startChar": 2,
+        "endLine": 405,
+        "endChar": 68
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0599fd2_b1c9f018",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2f08d142_b1baccb3",
+      "range": {
+        "startLine": 405,
+        "startChar": 58,
+        "endLine": 405,
+        "endChar": 66
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aaff6ca2_1476231e",
         "filename": "debuggerd/tombstoned/tombstoned.cpp",
         "patchSetId": 4
@@ -220,6 +436,30 @@
       "writtenOn": "2018-11-13T21:16:49Z",
       "side": 1,
       "message": "This should be re-organized:\n\nif (fd \u003d\u003d -1) {\n  PLOG(ERROR) ...\n  return;\n}\n\nif (TEMP...() \u003d\u003d 1) {\n  LOG(DEBUG) \u003c\u003c \"Sysrq-trigger is set, crash triggered.\";\n} else {\n  PLOG(DEBUG) \u003c\u003c \"Failed to write to sysrq.\";\n}\nclose(fd);",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 414,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "241821f2_e47ab8d9",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-15T05:17:06Z",
+      "side": 1,
+      "message": "I\u0027ll use android::base::WriteStringToFile.",
+      "parentUuid": "aaff6ca2_1476231e",
       "range": {
         "startLine": 406,
         "startChar": 0,
