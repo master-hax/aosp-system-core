@@ -28,4 +28,6 @@ cc_binary {
         "-Wextra",
         "-Werror",
     ],
+
+    init_rc: ["boringssl_self_test.rc"],
 }
