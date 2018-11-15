@@ -20,6 +20,11 @@
 #include <utils/Errors.h>
 #include <utils/Log.h>
 
+#if defined(LIBDEXFILE_SUPPORT) && !defined(NO_LIBDEXFILE_SUPPORT)
+#include <dex/unwindstack_hooks.h>
+#include <unwindstack/DexFileHooks.h>
+#endif
+
 #include <backtrace/Backtrace.h>
 
 #define CALLSTACK_WEAK  // Don't generate weak definitions.
@@ -28,6 +33,9 @@
 namespace android {
 
 CallStack::CallStack() {
+#if defined(LIBDEXFILE_SUPPORT) && !defined(NO_LIBDEXFILE_SUPPORT)
+    unwindstack::SetDexFileHooks(GetDexFileHooks());  // Idempotent.
+#endif
 }
 
 CallStack::CallStack(const char* logtag, int32_t ignoreDepth) {

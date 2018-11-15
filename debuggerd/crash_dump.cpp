@@ -45,6 +45,11 @@
 #include <private/android_filesystem_config.h>
 #include <procinfo/process.h>
 
+#ifndef NO_LIBDEXFILE_SUPPORT
+#include <dex/unwindstack_hooks.h>
+#include <unwindstack/DexFileHooks.h>
+#endif
+
 #define ATRACE_TAG ATRACE_TAG_BIONIC
 #include <utils/Trace.h>
 
@@ -350,6 +355,10 @@ static pid_t wait_for_vm_process(pid_t pseudothread_tid) {
 
 int main(int argc, char** argv) {
   DefuseSignalHandlers();
+
+#ifndef NO_LIBDEXFILE_SUPPORT
+  unwindstack::SetDexFileHooks(::GetDexFileHooks());
+#endif
 
   atrace_begin(ATRACE_TAG, "before reparent");
   pid_t target_process = getppid();

@@ -35,6 +35,18 @@ cc_defaults {
     },
 }
 
+cc_library_headers {
+    name: "libunwindstack_headers",
+    vendor_available: true,
+    recovery_available: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
+    defaults: ["libunwindstack_flags"],
+    export_include_dirs: ["include"],
+}
+
 cc_library {
     name: "libunwindstack",
     vendor_available: true,
@@ -44,11 +56,13 @@ cc_library {
         support_system_process: true,
     },
     defaults: ["libunwindstack_flags"],
-    export_include_dirs: ["include"],
+    header_libs: ["libunwindstack_headers"],
+    export_header_lib_headers: ["libunwindstack_headers"],
 
     srcs: [
         "ArmExidx.cpp",
         "DexFile.cpp",
+        "DexFileHooks.cpp",
         "DexFiles.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
@@ -88,22 +102,6 @@ cc_library {
                 "-g",
             ],
         },
-        vendor: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: ["libdexfile"],
-        },
-        recovery: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: ["libdexfile"],
-        },
     },
 
     arch: {
@@ -127,7 +125,6 @@ cc_library {
 
     shared_libs: [
         "libbase",
-        "libdexfile",
         "liblog",
         "liblzma",
     ],
@@ -151,8 +148,8 @@ cc_test_library {
     ],
 }
 
-cc_test {
-    name: "libunwindstack_test",
+cc_defaults {
+    name: "libunwindstack_test_common",
     defaults: ["libunwindstack_flags"],
 
     srcs: [
@@ -168,8 +165,8 @@ cc_test {
         "tests/DwarfMemoryTest.cpp",
         "tests/DwarfOpLogTest.cpp",
         "tests/DwarfOpTest.cpp",
-        "tests/DwarfSectionTest.cpp",
         "tests/DwarfSectionImplTest.cpp",
+        "tests/DwarfSectionTest.cpp",
         "tests/ElfCacheTest.cpp",
         "tests/ElfFake.cpp",
         "tests/ElfInterfaceArmTest.cpp",
@@ -201,6 +198,7 @@ cc_test {
         "tests/UnwindOfflineTest.cpp",
         "tests/UnwindTest.cpp",
         "tests/UnwinderTest.cpp",
+        "tests/main.cpp",
     ],
 
     cflags: [
@@ -213,7 +211,6 @@ cc_test {
         "liblog",
         "liblzma",
         "libunwindstack",
-        "libdexfile",
     ],
 
     static_libs: [
@@ -240,6 +237,20 @@ cc_test {
     required: [
         "libunwindstack_local",
     ],
+}
+
+cc_test {
+    name: "libunwindstack_test",
+    defaults: ["libunwindstack_test_common"],
+    cflags: ["-DLIBDEXFILE"],
+    shared_libs: [
+        "libdexfile",
+    ],
+}
+
+cc_test {
+    name: "libunwindstack_no_dex_test",
+    defaults: ["libunwindstack_test_common"],
 }
 
 //-------------------------------------------------------------------------

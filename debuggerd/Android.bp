@@ -105,6 +105,7 @@ cc_library_static {
     name: "libdebuggerd_handler_fallback",
     defaults: ["debuggerd_defaults"],
     recovery_available: true,
+    // FIXME: Where to set up dex file hooks?
     srcs: [
         "handler/debuggerd_fallback.cpp",
     ],
@@ -155,6 +156,7 @@ cc_library_static {
     defaults: ["debuggerd_defaults"],
     recovery_available: true,
 
+    // FIXME: Where to set up dex file hooks?
     srcs: [
         "libdebuggerd/backtrace.cpp",
         "libdebuggerd/elf_utils.cpp",
@@ -171,12 +173,20 @@ cc_library_static {
 
     static_libs: [
         "libbacktrace",
+        "libdexfile",
         "libunwindstack",
         "liblzma",
         "libbase",
         "libcutils",
         "liblog",
     ],
+
+    target: {
+        recovery: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_static_libs: ["libdexfile"],
+        },
+    },
 }
 
 cc_test {
@@ -274,10 +284,18 @@ cc_binary {
     shared_libs: [
         "libbacktrace",
         "libbase",
+        "libdexfile",
         "liblog",
         "libprocinfo",
         "libunwindstack",
     ],
+
+    target: {
+        recovery: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: ["libdexfile"],
+        },
+    },
 }
 
 cc_binary {

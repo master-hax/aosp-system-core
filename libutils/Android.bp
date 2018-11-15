@@ -179,15 +179,26 @@ cc_library {
 
     target: {
         android: {
+            cflags: ["-DLIBDEXFILE_SUPPORT"],
             shared_libs: [
-                "libutils",
                 "libbacktrace",
+                "libdexfile",
+                "libunwindstack",
+                "libutils",
             ],
         },
         linux: {
             srcs: [
                 "ProcessCallStack.cpp",
             ],
+        },
+        vendor: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: ["libdexfile"],
+        },
+        recovery: {
+            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: ["libdexfile"],
         },
     },
 }
