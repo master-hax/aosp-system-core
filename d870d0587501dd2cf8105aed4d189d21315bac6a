@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88d805b7_cafcfbc5",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-15T22:19:24Z",
+      "side": 1,
+      "message": "Did you miss adding \u0027apex\u0027 here or am I not reading this right?",
+      "revId": "d870d0587501dd2cf8105aed4d189d21315bac6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
