@@ -46,9 +46,7 @@ bool UnwindStackMap::Build() {
   // Create a JitDebug object for getting jit unwind information.
   std::vector<std::string> search_libs_{"libart.so", "libartd.so"};
   jit_debug_.reset(new unwindstack::JitDebug(process_memory_, search_libs_));
-#if !defined(NO_LIBDEXFILE_SUPPORT)
   dex_files_.reset(new unwindstack::DexFiles(process_memory_, search_libs_));
-#endif
 
   if (!stack_maps_->Parse()) {
     return false;
