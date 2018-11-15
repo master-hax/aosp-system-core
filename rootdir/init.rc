@@ -341,6 +341,9 @@ on post-fs
     start vold
     exec - system system -- /system/bin/vdc checkpoint markBootAttempt
 
+    # run a self check on boringssl for NIAP compliance
+    start boringssl_self_test
+
     # Once everything is setup, no need to modify /.
     # The bind+remount combination allows this to work in containers.
     mount rootfs rootfs / remount bind ro nodev

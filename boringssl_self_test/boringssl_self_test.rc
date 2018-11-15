@@ -1,0 +1,4 @@
+service boringssl_self_test /system/bin/boringssl_self_test
+    oneshot
+    # needs explicitly start
+    disabled
