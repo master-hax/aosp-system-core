@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "d502bdaa_7fb0b59b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-15T23:01:50Z",
+      "side": 1,
+      "message": "In my mind, this was apex, and \"as well\" is what I did to add \"apex\"",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 34
+      },
+      "revId": "d870d0587501dd2cf8105aed4d189d21315bac6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "88d805b7_cafcfbc5",
         "filename": "fs_mgr/tests/adb-remount-test.sh",
         "patchSetId": 2
