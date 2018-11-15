@@ -21,44 +21,37 @@
 #include <unordered_map>
 
 #include <android-base/file.h>
-
+#include <dex/dex_file.h>
+#include <gtest/gtest.h>
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Memory.h>
 
-#include <dex/code_item_accessors-inl.h>
-#include <dex/standard_dex_file.h>
-
-#include <gtest/gtest.h>
-
 #include "DexFile.h"
-
 #include "DexFileData.h"
 #include "MemoryFake.h"
 
 namespace unwindstack {
 
 TEST(DexFileTest, from_file_open_non_exist) {
-  DexFileFromFile dex_file;
-  ASSERT_FALSE(dex_file.Open(0, "/file/does/not/exist"));
+  ASSERT_FALSE(DexFileFromFile::Create(0, "/file/does/not/exist"));
 }
 
 TEST(DexFileTest, from_file_open_too_small) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
-  ASSERT_EQ(sizeof(art::DexFile::Header) - 2,
+  ASSERT_EQ(sizeof(art::DexFile::Header) - 1,
             static_cast<size_t>(
-                TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(art::DexFile::Header)) - 2)));
+                TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(art::DexFile::Header) - 1))));
 
   // Header too small.
-  DexFileFromFile dex_file;
-  ASSERT_FALSE(dex_file.Open(0, tf.path));
+  ASSERT_FALSE(DexFileFromFile::Create(0, tf.path));
 
   // Header correct, file too small.
   ASSERT_EQ(0, lseek(tf.fd, 0, SEEK_SET));
   ASSERT_EQ(sizeof(art::DexFile::Header), static_cast<size_t>(TEMP_FAILURE_RETRY(write(
                                               tf.fd, kDexData, sizeof(art::DexFile::Header)))));
-  ASSERT_FALSE(dex_file.Open(0, tf.path));
+  ASSERT_FALSE(DexFileFromFile::Create(0, tf.path));
 }
 
 TEST(DexFileTest, from_file_open) {
@@ -68,8 +61,7 @@ TEST(DexFileTest, from_file_open) {
   ASSERT_EQ(sizeof(kDexData),
             static_cast<size_t>(TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(kDexData)))));
 
-  DexFileFromFile dex_file;
-  ASSERT_TRUE(dex_file.Open(0, tf.path));
+  ASSERT_TRUE(DexFileFromFile::Create(0, tf.path));
 }
 
 TEST(DexFileTest, from_file_open_non_zero_offset) {
@@ -80,35 +72,31 @@ TEST(DexFileTest, from_file_open_non_zero_offset) {
   ASSERT_EQ(sizeof(kDexData),
             static_cast<size_t>(TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(kDexData)))));
 
-  DexFileFromFile dex_file;
-  ASSERT_TRUE(dex_file.Open(0x100, tf.path));
+  ASSERT_TRUE(DexFileFromFile::Create(0x100, tf.path));
 }
 
 TEST(DexFileTest, from_memory_fail_too_small_for_header) {
   MemoryFake memory;
 
   memory.SetMemory(0x1000, kDexData, sizeof(art::DexFile::Header) - 1);
-  DexFileFromMemory dex_file;
 
-  ASSERT_FALSE(dex_file.Open(0x1000, &memory));
+  ASSERT_FALSE(DexFileFromMemory::Create(0x1000, &memory, ""));
 }
 
 TEST(DexFileTest, from_memory_fail_too_small_for_data) {
   MemoryFake memory;
 
   memory.SetMemory(0x1000, kDexData, sizeof(kDexData) - 2);
-  DexFileFromMemory dex_file;
 
-  ASSERT_FALSE(dex_file.Open(0x1000, &memory));
+  ASSERT_FALSE(DexFileFromMemory::Create(0x1000, &memory, ""));
 }
 
 TEST(DexFileTest, from_memory_open) {
   MemoryFake memory;
 
   memory.SetMemory(0x1000, kDexData, sizeof(kDexData));
-  DexFileFromMemory dex_file;
 
-  ASSERT_TRUE(dex_file.Open(0x1000, &memory));
+  ASSERT_TRUE(DexFileFromMemory::Create(0x1000, &memory, ""));
 }
 
 TEST(DexFileTest, create_using_file) {
@@ -186,15 +174,6 @@ TEST(DexFileTest, create_using_memory_file_is_malformed) {
   memory.Clear();
   dex_file.reset(DexFile::Create(0x4000, &memory, &info));
   ASSERT_TRUE(dex_file == nullptr);
-}
-
-TEST(DexFileTest, get_method_not_opened) {
-  std::string method("something");
-  uint64_t method_offset = 100;
-  DexFile dex_file;
-  dex_file.GetMethodInformation(0x100, &method, &method_offset);
-  EXPECT_EQ("something", method);
-  EXPECT_EQ(100U, method_offset);
 }
 
 TEST(DexFileTest, get_method) {
