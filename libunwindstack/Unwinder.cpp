@@ -32,9 +32,7 @@
 #include <unwindstack/Maps.h>
 #include <unwindstack/Unwinder.h>
 
-#if !defined(NO_LIBDEXFILE_SUPPORT)
 #include <unwindstack/DexFiles.h>
-#endif
 
 namespace unwindstack {
 
@@ -75,14 +73,12 @@ void Unwinder::FillInDexFrame() {
     return;
   }
 
-#if !defined(NO_LIBDEXFILE_SUPPORT)
   if (dex_files_ == nullptr) {
     return;
   }
 
   dex_files_->GetMethodInformation(maps_, info, dex_pc, &frame->function_name,
                                    &frame->function_offset);
-#endif
 }
 
 void Unwinder::FillInFrame(MapInfo* map_info, Elf* elf, uint64_t rel_pc, uint64_t func_pc,
@@ -311,11 +307,9 @@ void Unwinder::SetJitDebug(JitDebug* jit_debug, ArchEnum arch) {
   jit_debug_ = jit_debug;
 }
 
-#if !defined(NO_LIBDEXFILE_SUPPORT)
 void Unwinder::SetDexFiles(DexFiles* dex_files, ArchEnum arch) {
   dex_files->SetArch(arch);
   dex_files_ = dex_files;
 }
-#endif
 
 }  // namespace unwindstack

@@ -46,18 +46,12 @@ TEST(DexFileTest, from_file_open_too_small) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
-  ASSERT_EQ(sizeof(art::DexFile::Header) - 2,
+  ASSERT_EQ(sizeof(art::DexFile::Header) - 1,
             static_cast<size_t>(
-                TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(art::DexFile::Header)) - 2)));
+                TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(art::DexFile::Header) - 1))));
 
   // Header too small.
   DexFileFromFile dex_file;
-  ASSERT_FALSE(dex_file.Open(0, tf.path));
-
-  // Header correct, file too small.
-  ASSERT_EQ(0, lseek(tf.fd, 0, SEEK_SET));
-  ASSERT_EQ(sizeof(art::DexFile::Header), static_cast<size_t>(TEMP_FAILURE_RETRY(write(
-                                              tf.fd, kDexData, sizeof(art::DexFile::Header)))));
   ASSERT_FALSE(dex_file.Open(0, tf.path));
 }
 

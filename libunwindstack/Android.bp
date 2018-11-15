@@ -35,6 +35,18 @@ cc_defaults {
     },
 }
 
+cc_library_headers {
+    name: "libunwindstack_headers",
+    vendor_available: true,
+    recovery_available: true,
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
+    defaults: ["libunwindstack_flags"],
+    export_include_dirs: ["include"],
+}
+
 cc_library {
     name: "libunwindstack",
     vendor_available: true,
@@ -44,11 +56,13 @@ cc_library {
         support_system_process: true,
     },
     defaults: ["libunwindstack_flags"],
-    export_include_dirs: ["include"],
+    header_libs: ["libunwindstack_headers"],
+    export_header_lib_headers: ["libunwindstack_headers"],
 
     srcs: [
         "ArmExidx.cpp",
         "DexFile.cpp",
+        "DexFileHooks.cpp",
         "DexFiles.cpp",
         "DwarfCfa.cpp",
         "DwarfEhFrameWithHdr.cpp",
@@ -88,22 +102,6 @@ cc_library {
                 "-g",
             ],
         },
-        vendor: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: ["libdexfile"],
-        },
-        recovery: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
-            exclude_srcs: [
-                "DexFile.cpp",
-                "DexFiles.cpp",
-            ],
-            exclude_shared_libs: ["libdexfile"],
-        },
     },
 
     arch: {
@@ -127,7 +125,6 @@ cc_library {
 
     shared_libs: [
         "libbase",
-        "libdexfile",
         "liblog",
         "liblzma",
     ],
@@ -210,10 +207,10 @@ cc_test {
 
     shared_libs: [
         "libbase",
+        "libdexfile",  // Must go before libunwindstack to get the real dex file hooks.
         "liblog",
         "liblzma",
         "libunwindstack",
-        "libdexfile",
     ],
 
     static_libs: [

@@ -78,6 +78,7 @@ cc_library {
 
             shared_libs: [
                 "libbase",
+                "libdexfile",  // Must go before libunwindstack to get the real dex file hooks.
                 "liblog",
                 "libunwindstack",
             ],
@@ -91,9 +92,15 @@ cc_library {
         },
         vendor: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: [
+                "libdexfile",
+            ],
         },
         recovery: {
             cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
+            exclude_shared_libs: [
+                "libdexfile",
+            ],
         },
     },
     whole_static_libs: ["libdemangle"],
