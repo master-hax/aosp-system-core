@@ -141,6 +141,14 @@ void DexFilesTest::WriteDex(uint64_t dex_file) {
   memory_->SetMemory(dex_file, kDexData, sizeof(kDexData) * sizeof(uint32_t));
 }
 
+#ifndef NO_LIBDEXFILE
+#define LIBDEXFILE_TEST_F(TC, T) TEST_F(TC, T)
+#define NO_LIBDEXFILE_TEST_F(TC, T) TEST_F(TC, DISABLED_##T)
+#else
+#define LIBDEXFILE_TEST_F(TC, T) TEST_F(TC, DISABLED_##T)
+#define NO_LIBDEXFILE_TEST_F(TC, T) TEST_F(TC, T)
+#endif
+
 TEST_F(DexFilesTest, get_method_information_invalid) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
@@ -151,7 +159,21 @@ TEST_F(DexFilesTest, get_method_information_invalid) {
   EXPECT_EQ(0x124U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_32) {
+NO_LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_not_supported) {
+  std::string method_name = "nothing";
+  uint64_t method_offset = 0x124;
+  MapInfo* info = maps_->Get(kMapDexFiles);
+
+  WriteDescriptor32(0xf800, 0x200000);
+  WriteEntry32(0x200000, 0, 0, 0x300000);
+  WriteDex(0x300000);
+
+  dex_files_->GetMethodInformation(maps_.get(), info, 0x300100, &method_name, &method_offset);
+  EXPECT_EQ("nothing", method_name);
+  EXPECT_EQ(0x124U, method_offset);
+}
+
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_32) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
   MapInfo* info = maps_->Get(kMapDexFiles);
@@ -165,7 +187,7 @@ TEST_F(DexFilesTest, get_method_information_32) {
   EXPECT_EQ(0U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_64) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_64) {
   Init(ARCH_ARM64);
 
   std::string method_name = "nothing";
@@ -181,7 +203,7 @@ TEST_F(DexFilesTest, get_method_information_64) {
   EXPECT_EQ(2U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_not_first_entry_32) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_not_first_entry_32) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
   MapInfo* info = maps_->Get(kMapDexFiles);
@@ -196,7 +218,7 @@ TEST_F(DexFilesTest, get_method_information_not_first_entry_32) {
   EXPECT_EQ(4U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_not_first_entry_64) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_not_first_entry_64) {
   Init(ARCH_ARM64);
 
   std::string method_name = "nothing";
@@ -213,7 +235,7 @@ TEST_F(DexFilesTest, get_method_information_not_first_entry_64) {
   EXPECT_EQ(6U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_cached) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_cached) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
   MapInfo* info = maps_->Get(kMapDexFiles);
@@ -233,7 +255,7 @@ TEST_F(DexFilesTest, get_method_information_cached) {
   EXPECT_EQ(0U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_search_libs) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_search_libs) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
   MapInfo* info = maps_->Get(kMapDexFiles);
@@ -268,7 +290,7 @@ TEST_F(DexFilesTest, get_method_information_search_libs) {
   EXPECT_EQ(4U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_global_skip_zero_32) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_global_skip_zero_32) {
   std::string method_name = "nothing";
   uint64_t method_offset = 0x124;
   MapInfo* info = maps_->Get(kMapDexFiles);
@@ -295,7 +317,7 @@ TEST_F(DexFilesTest, get_method_information_global_skip_zero_32) {
   EXPECT_EQ(0x123U, method_offset);
 }
 
-TEST_F(DexFilesTest, get_method_information_global_skip_zero_64) {
+LIBDEXFILE_TEST_F(DexFilesTest, get_method_information_global_skip_zero_64) {
   Init(ARCH_ARM64);
 
   std::string method_name = "nothing";
