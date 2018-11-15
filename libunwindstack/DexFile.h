@@ -25,14 +25,14 @@
 #include <utility>
 #include <vector>
 
-#include <dex/dex_file-inl.h>
+#include <unwindstack/DexFileHooks.h>
 
 namespace unwindstack {
 
 class DexFile {
  public:
   DexFile() = default;
-  virtual ~DexFile() = default;
+  virtual ~DexFile();
 
   bool GetMethodInformation(uint64_t dex_offset, std::string* method_name, uint64_t* method_offset);
 
@@ -41,8 +41,9 @@ class DexFile {
  protected:
   void Init();
 
-  std::unique_ptr<const art::DexFile> dex_file_;
-  std::map<uint32_t, std::pair<uint64_t, uint32_t>> method_cache_;  // dex offset to method index.
+  const hooks::DexFileImpl* dex_file_ = nullptr;  // Owned pointer
+  std::map<uint32_t, std::pair<uint64_t, std::string>>
+      method_cache_;  // dex offset to method index.
 
   uint32_t class_def_index_ = 0;
 };
@@ -50,13 +51,8 @@ class DexFile {
 class DexFileFromFile : public DexFile {
  public:
   DexFileFromFile() = default;
-  virtual ~DexFileFromFile();
 
   bool Open(uint64_t dex_file_offset_in_file, const std::string& name);
-
- private:
-  void* mapped_memory_ = nullptr;
-  size_t size_ = 0;
 };
 
 class DexFileFromMemory : public DexFile {
