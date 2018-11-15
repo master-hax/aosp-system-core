@@ -91,13 +91,11 @@ cc_library {
             static_libs: ["libasync_safe"],
         },
         vendor: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
             exclude_shared_libs: [
                 "libdexfile",
             ],
         },
         recovery: {
-            cflags: ["-DNO_LIBDEXFILE_SUPPORT"],
             exclude_shared_libs: [
                 "libdexfile",
             ],
