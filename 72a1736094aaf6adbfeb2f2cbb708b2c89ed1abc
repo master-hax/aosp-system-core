@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "b593212b_cf9ebdfc",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1604,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-15T21:27:44Z",
+      "side": 1,
+      "message": "We may require a few guarantees that the metadata is wiped or ignored if invalid.\n\n4K of zeros, + ?K of metadata + contiguous image can be mounted as a physical partition (do not ask me why I know this); the mount is exclusive access so we are generally protected. But still, if we are root (in init, recovery, fastbootd or vold for instance) we may be able to bypass this and read the metadata despite the mount. We can not consider it valid; and maybe we should consider it a bona fide error?\n\nWe should fail the test if the metadata has zero extents?\n\nAll scenarios like flashing (from fastboot, or fastbootd) should be covered, but OTAs may have to perform due diligence in clearing out old metadata in case they skip the block (sparse)?",
+      "range": {
+        "startLine": 1604,
+        "startChar": 23,
+        "endLine": 1604,
+        "endChar": 71
+      },
+      "revId": "72a1736094aaf6adbfeb2f2cbb708b2c89ed1abc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fd964c0d_b186d7d8",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
