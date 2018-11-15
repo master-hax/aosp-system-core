@@ -25,8 +25,10 @@
 #include <unwindstack/MapInfo.h>
 #include <unwindstack/Memory.h>
 
+#ifdef LIBDEXFILE
 #include <dex/code_item_accessors-inl.h>
 #include <dex/standard_dex_file.h>
+#endif
 
 #include <gtest/gtest.h>
 
@@ -37,6 +39,20 @@
 
 namespace unwindstack {
 
+#ifdef LIBDEXFILE
+constexpr size_t kDexFileHeaderSize = sizeof(art::DexFile::Header);
+#else
+constexpr size_t kDexFileHeaderSize = 10;  // Certainly smaller than the real header size
+#endif
+
+#ifdef LIBDEXFILE
+#define LIBDEXFILE_TEST(TC, T) TEST(TC, T)
+#define NO_LIBDEXFILE_TEST(TC, T) TEST(TC, DISABLED_##T)
+#else
+#define LIBDEXFILE_TEST(TC, T) TEST(TC, DISABLED_##T)
+#define NO_LIBDEXFILE_TEST(TC, T) TEST(TC, T)
+#endif
+
 TEST(DexFileTest, from_file_open_non_exist) {
   DexFileFromFile dex_file;
   ASSERT_FALSE(dex_file.Open(0, "/file/does/not/exist"));
@@ -46,22 +62,27 @@ TEST(DexFileTest, from_file_open_too_small) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
-  ASSERT_EQ(sizeof(art::DexFile::Header) - 2,
-            static_cast<size_t>(
-                TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(art::DexFile::Header)) - 2)));
+  ASSERT_EQ(
+      kDexFileHeaderSize - 1,
+      static_cast<size_t>(TEMP_FAILURE_RETRY(write(tf.fd, kDexData, kDexFileHeaderSize - 1))));
 
   // Header too small.
   DexFileFromFile dex_file;
   ASSERT_FALSE(dex_file.Open(0, tf.path));
+}
 
-  // Header correct, file too small.
-  ASSERT_EQ(0, lseek(tf.fd, 0, SEEK_SET));
-  ASSERT_EQ(sizeof(art::DexFile::Header), static_cast<size_t>(TEMP_FAILURE_RETRY(write(
-                                              tf.fd, kDexData, sizeof(art::DexFile::Header)))));
+NO_LIBDEXFILE_TEST(DexFileTest, from_file_open_not_supported) {
+  TemporaryFile tf;
+  ASSERT_TRUE(tf.fd != -1);
+
+  ASSERT_EQ(sizeof(kDexData),
+            static_cast<size_t>(TEMP_FAILURE_RETRY(write(tf.fd, kDexData, sizeof(kDexData)))));
+
+  DexFileFromFile dex_file;
   ASSERT_FALSE(dex_file.Open(0, tf.path));
 }
 
-TEST(DexFileTest, from_file_open) {
+LIBDEXFILE_TEST(DexFileTest, from_file_open) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -72,7 +93,7 @@ TEST(DexFileTest, from_file_open) {
   ASSERT_TRUE(dex_file.Open(0, tf.path));
 }
 
-TEST(DexFileTest, from_file_open_non_zero_offset) {
+LIBDEXFILE_TEST(DexFileTest, from_file_open_non_zero_offset) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -87,7 +108,7 @@ TEST(DexFileTest, from_file_open_non_zero_offset) {
 TEST(DexFileTest, from_memory_fail_too_small_for_header) {
   MemoryFake memory;
 
-  memory.SetMemory(0x1000, kDexData, sizeof(art::DexFile::Header) - 1);
+  memory.SetMemory(0x1000, kDexData, kDexFileHeaderSize - 1);
   DexFileFromMemory dex_file;
 
   ASSERT_FALSE(dex_file.Open(0x1000, &memory));
@@ -102,7 +123,16 @@ TEST(DexFileTest, from_memory_fail_too_small_for_data) {
   ASSERT_FALSE(dex_file.Open(0x1000, &memory));
 }
 
-TEST(DexFileTest, from_memory_open) {
+NO_LIBDEXFILE_TEST(DexFileTest, from_memory_open_not_supported) {
+  MemoryFake memory;
+
+  memory.SetMemory(0x1000, kDexData, sizeof(kDexData));
+  DexFileFromMemory dex_file;
+
+  ASSERT_FALSE(dex_file.Open(0x1000, &memory));
+}
+
+LIBDEXFILE_TEST(DexFileTest, from_memory_open) {
   MemoryFake memory;
 
   memory.SetMemory(0x1000, kDexData, sizeof(kDexData));
@@ -111,7 +141,7 @@ TEST(DexFileTest, from_memory_open) {
   ASSERT_TRUE(dex_file.Open(0x1000, &memory));
 }
 
-TEST(DexFileTest, create_using_file) {
+LIBDEXFILE_TEST(DexFileTest, create_using_file) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -125,7 +155,7 @@ TEST(DexFileTest, create_using_file) {
   ASSERT_TRUE(dex_file != nullptr);
 }
 
-TEST(DexFileTest, create_using_file_non_zero_start) {
+LIBDEXFILE_TEST(DexFileTest, create_using_file_non_zero_start) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -139,7 +169,7 @@ TEST(DexFileTest, create_using_file_non_zero_start) {
   ASSERT_TRUE(dex_file != nullptr);
 }
 
-TEST(DexFileTest, create_using_file_non_zero_offset) {
+LIBDEXFILE_TEST(DexFileTest, create_using_file_non_zero_offset) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -153,7 +183,7 @@ TEST(DexFileTest, create_using_file_non_zero_offset) {
   ASSERT_TRUE(dex_file != nullptr);
 }
 
-TEST(DexFileTest, create_using_memory_empty_file) {
+LIBDEXFILE_TEST(DexFileTest, create_using_memory_empty_file) {
   MemoryFake memory;
   memory.SetMemory(0x4000, kDexData, sizeof(kDexData));
   MapInfo info(nullptr, 0x100, 0x10000, 0x200, 0x5, "");
@@ -161,7 +191,7 @@ TEST(DexFileTest, create_using_memory_empty_file) {
   ASSERT_TRUE(dex_file != nullptr);
 }
 
-TEST(DexFileTest, create_using_memory_file_does_not_exist) {
+LIBDEXFILE_TEST(DexFileTest, create_using_memory_file_does_not_exist) {
   MemoryFake memory;
   memory.SetMemory(0x4000, kDexData, sizeof(kDexData));
   MapInfo info(nullptr, 0x100, 0x10000, 0x200, 0x5, "/does/not/exist");
@@ -169,7 +199,7 @@ TEST(DexFileTest, create_using_memory_file_does_not_exist) {
   ASSERT_TRUE(dex_file != nullptr);
 }
 
-TEST(DexFileTest, create_using_memory_file_is_malformed) {
+LIBDEXFILE_TEST(DexFileTest, create_using_memory_file_is_malformed) {
   TemporaryFile tf;
   ASSERT_TRUE(tf.fd != -1);
 
@@ -192,12 +222,12 @@ TEST(DexFileTest, get_method_not_opened) {
   std::string method("something");
   uint64_t method_offset = 100;
   DexFile dex_file;
-  dex_file.GetMethodInformation(0x100, &method, &method_offset);
+  EXPECT_FALSE(dex_file.GetMethodInformation(0x100, &method, &method_offset));
   EXPECT_EQ("something", method);
   EXPECT_EQ(100U, method_offset);
 }
 
-TEST(DexFileTest, get_method) {
+LIBDEXFILE_TEST(DexFileTest, get_method) {
   MemoryFake memory;
   memory.SetMemory(0x4000, kDexData, sizeof(kDexData));
   MapInfo info(nullptr, 0x100, 0x10000, 0x200, 0x5, "");
@@ -224,7 +254,7 @@ TEST(DexFileTest, get_method) {
   EXPECT_EQ(1U, method_offset);
 }
 
-TEST(DexFileTest, get_method_empty) {
+LIBDEXFILE_TEST(DexFileTest, get_method_empty) {
   MemoryFake memory;
   memory.SetMemory(0x4000, kDexData, sizeof(kDexData));
   MapInfo info(nullptr, 0x100, 0x10000, 0x200, 0x5, "");
