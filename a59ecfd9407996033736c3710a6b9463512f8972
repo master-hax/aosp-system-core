@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "dadc7678_5b7606a4",
+        "filename": "libunwindstack/DexFile.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2018-11-16T15:20:34Z",
+      "side": 0,
+      "message": "The original code did at most one pass over the dex file.  Your change will make pass over the dex for each new unique method seen in the unwind.  Which for something like a profiler might be many methods.  I don\u0027t have any precise numbers though.\n\nEither way, I don\u0027t think such change belongs in this CL.",
+      "parentUuid": "285c90fa_d28876ea",
+      "range": {
+        "startLine": 101,
+        "startChar": 9,
+        "endLine": 101,
+        "endChar": 25
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "914e9e5f_d94de43a",
         "filename": "libunwindstack/tests/DexFileTest.cpp",
         "patchSetId": 1
