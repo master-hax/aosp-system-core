@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "914e9e5f_d94de43a",
+        "filename": "libunwindstack/tests/DexFileTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T13:06:01Z",
+      "side": 0,
+      "message": "Note the cute parenthesis error. The test didn\u0027t really check that the code failed on a truncated header.",
+      "range": {
+        "startLine": 51,
+        "startChar": 86,
+        "endLine": 51,
+        "endChar": 87
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11592a3c_9d45197f",
+        "filename": "libunwindstack/tests/DexFileTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T13:06:01Z",
+      "side": 0,
+      "message": "I\u0027m deleting this because ArtDexFileLoader loads a truncated file without error, and I reckon that doesn\u0027t hurt.",
+      "range": {
+        "startLine": 57,
+        "startChar": 36,
+        "endLine": 57,
+        "endChar": 0
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
