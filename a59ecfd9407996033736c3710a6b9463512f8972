@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "4d743a32_e4a7ef66",
+        "filename": "libunwindstack/DexFile.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T15:30:43Z",
+      "side": 0,
+      "message": "It\u0027s related since it either means some extra complexity on the dexfile side of it to re-implement the cache there, or a messier iterator API to keep it here. I\u0027d prefer to avoid the latter.\n\nI\u0027ll wait a bit to hear Christopher\u0027s view on this before I start adding an equivalent cache.",
+      "parentUuid": "dadc7678_5b7606a4",
+      "range": {
+        "startLine": 101,
+        "startChar": 9,
+        "endLine": 101,
+        "endChar": 25
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "914e9e5f_d94de43a",
         "filename": "libunwindstack/tests/DexFileTest.cpp",
         "patchSetId": 1
