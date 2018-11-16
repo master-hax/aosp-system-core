@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "331b2aa7_15670a48",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-16T23:47:32Z",
+      "side": 1,
+      "message": "The reason scratch got mentioned is because it\u0027s the only unsuffixed partition. Either we disallow them (and make overlayfs do scratch_a/scratch_b), or we allow them and figure out where they go.\n\nIf we allow one in each partition (as this patch does), it\u0027s basically as if they\u0027ve been automatically suffixed. It is a bit weird that the same name can be observed differently based on the slot, but that\u0027s basically what suffixing does to begin with. And nothing outside of fastbootd reads from the inactive super partition.\n\nAnother alternative is to put unsuffixed partitions in one place, and search both supers to find where it was placed. (Or always put them in \"A\" or something).\n\nOr finally, we could just disallow unsuffixed partitions on retrofit devices, and make overlayfs do scratch_a/scratch_b. I could see an argument that scratch should be suffixed even for non-retrofit devices, since then you could have separate modifications to both slots.\n\nIf we do want to support unsuffixed partitions, I\u0027m in favor of the approach in this patch. It doesn\u0027t force any changes to adb remount or overlayfs, and it makes the changes to OpenLogicalPartition and friends simpler.",
+      "parentUuid": "18eef932_c23da0fc",
+      "revId": "2da776f83f5bd05ad8268983f26f513a8da2ee35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dc139e8a_2510bbba",
         "filename": "fastboot/device/utility.cpp",
         "patchSetId": 4
@@ -33,6 +51,24 @@
       "revId": "2da776f83f5bd05ad8268983f26f513a8da2ee35",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cefa8b5_98416acd",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-16T23:47:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "dc139e8a_2510bbba",
+      "revId": "2da776f83f5bd05ad8268983f26f513a8da2ee35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
