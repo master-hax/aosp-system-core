@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18eef932_c23da0fc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-16T23:06:04Z",
+      "side": 1,
+      "message": "What\u0027re the pros/cons to doing it this way?  Why not have a scratch_a / scratch_b for this case?",
+      "revId": "2da776f83f5bd05ad8268983f26f513a8da2ee35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc139e8a_2510bbba",
+        "filename": "fastboot/device/utility.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-16T23:06:04Z",
+      "side": 1,
+      "message": "Put this after the anonymous namespace?",
+      "revId": "2da776f83f5bd05ad8268983f26f513a8da2ee35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
