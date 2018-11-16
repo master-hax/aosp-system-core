@@ -25,7 +25,7 @@ cc_defaults {
         "-Wvla",
     ],
     rtti: true,
-    cpp_std: "gnu++17",
+    cpp_std: "gnu++2a",
 
     use_version_lib: true,
 
