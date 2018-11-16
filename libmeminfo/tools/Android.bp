@@ -25,3 +25,21 @@ cc_binary {
         "libmeminfo",
     ],
 }
+
+cc_binary {
+    name: "procrank2",
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+
+    static_executable: true,
+
+    srcs: ["procrank.cpp"],
+    static_libs: [
+        "libbase",
+        "libmeminfo",
+        "liblog",
+    ],
+}
