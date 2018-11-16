@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1abfd865_e16b4978",
+        "filename": "libunwindstack/DexFile.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T14:07:25Z",
+      "side": 0,
+      "message": "Note that this state isn\u0027t retained in the replacement in aosp/829661. It looks strange to me to never search previously visited classes again - that must assume some invariants on the methods we\u0027re being asked about that I don\u0027t understand.",
+      "range": {
+        "startLine": 101,
+        "startChar": 9,
+        "endLine": 101,
+        "endChar": 25
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "914e9e5f_d94de43a",
         "filename": "libunwindstack/tests/DexFileTest.cpp",
         "patchSetId": 1
