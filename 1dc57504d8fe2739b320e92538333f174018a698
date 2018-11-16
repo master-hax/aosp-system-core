@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c2aa2383_b57622ac",
+        "filename": "libunwindstack/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T13:11:01Z",
+      "side": 1,
+      "message": "Another unit test without libdexfile is needed. I\u0027m working on that now.",
+      "revId": "1dc57504d8fe2739b320e92538333f174018a698",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cca19ec_ce6a84d3",
+        "filename": "libunwindstack/include/unwindstack/DexFileHooks.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T13:11:01Z",
+      "side": 1,
+      "message": "Not sure if this needs to be in C for ABI stability. That should be easy to do.",
+      "revId": "1dc57504d8fe2739b320e92538333f174018a698",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
