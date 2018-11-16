@@ -33,6 +33,13 @@
 
 #include <sys/time.h>
 
+#include <algorithm>
+#include <vector>
+
+#if !defined(_WIN32)
+#include <liblp/liblp.h>
+#endif
+
 #include "util.h"
 
 static bool g_verbose = false;
@@ -68,4 +75,36 @@ void verbose(const char* fmt, ...) {
         va_end(ap);
     }
     fprintf(stderr, "\n");
+}
+
+std::vector<std::string> GetDynamicPartitionNames(const std::string& super_image) {
+#if !defined(_WIN32)
+    auto metadata = android::fs_mgr::ReadFromImageFile(super_image);
+    if (!metadata) {
+        return {};
+    }
+    std::vector<std::string> partition_names;
+    for (const auto& partition : metadata->partitions) {
+        auto partition_name = android::fs_mgr::GetPartitionName(partition);
+        if (partition.attributes & LP_PARTITION_ATTR_SLOT_SUFFIXED) {
+            // On retrofit devices, we don't know if, or whether, the A or B
+            // slot has been flashed for dynamic partitions. Instead we add
+            // both names to the list as a conservative guess.
+            partition_names.emplace_back(partition_name + "_a");
+            partition_names.emplace_back(partition_name + "_b");
+        } else {
+            partition_names.emplace_back(partition_name);
+        }
+    }
+    return partition_names;
+#else
+    (void)super_image;
+    return {};
+#endif
+}
+
+bool IsPartitionInSuperImage(const std::string& super_image, const std::string& partition_name) {
+    auto partition_names = GetDynamicPartitionNames(super_image);
+    return std::find(partition_names.begin(), partition_names.end(), partition_name) !=
+           partition_names.end();
 }
