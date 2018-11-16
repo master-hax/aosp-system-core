@@ -407,6 +407,7 @@ static int show_help() {
             " -s SERIAL                  Specify a USB device.\n"
             " -s tcp|udp:HOST[:PORT]     Specify a network device.\n"
             " -S SIZE[K|M|G]             Break into sparse files no larger than SIZE.\n"
+            " --force                    Force a flash operation that may be unsafe.\n"
             " --slot SLOT                Use SLOT; 'all' for both slots, 'other' for\n"
             "                            non-current slot (default: current active slot).\n"
             " --set-active[=SLOT]        Sets the active slot before rebooting.\n"
@@ -1505,6 +1506,14 @@ failed:
     fprintf(stderr, "FAILED (%s)\n", fb->Error().c_str());
 }
 
+static bool should_flash_in_userspace(const std::string& partition_name) {
+    auto path = find_item_given_name("super_empty.img");
+    if (path.empty()) {
+        return false;
+    }
+    return IsPartitionInSuperImage(path, partition_name);
+}
+
 int FastBootTool::Main(int argc, char* argv[]) {
     bool wants_wipe = false;
     bool wants_reboot = false;
@@ -1515,6 +1524,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
     bool wants_set_active = false;
     bool skip_secondary = false;
     bool set_fbe_marker = false;
+    bool force_flash = false;
     int longindex;
     std::string slot_override;
     std::string next_active;
@@ -1530,6 +1540,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
         {"cmdline", required_argument, 0, 0},
         {"disable-verification", no_argument, 0, 0},
         {"disable-verity", no_argument, 0, 0},
+        {"force", no_argument, 0, 0},
         {"header-version", required_argument, 0, 0},
         {"help", no_argument, 0, 'h'},
         {"kernel-offset", required_argument, 0, 0},
@@ -1598,6 +1609,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 wants_wipe = true;
                 set_fbe_marker = true;
 #endif
+            } else if (name == "force") {
+                force_flash = true;
             } else {
                 die("unknown option %s", longopts[longindex].name);
             }
@@ -1779,6 +1792,16 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
 
             auto flash = [&](const std::string &partition) {
+                if (should_flash_in_userspace(partition) && !is_userspace_fastboot() &&
+                    !force_flash) {
+                    die("The partition you are trying to flash is dynamic, and "
+                        "should be flashed via fastbootd. Please run:\n"
+                        "\n"
+                        "    fastboot reboot fastboot\n"
+                        "\n"
+                        "And try again. If you are intentionally trying to "
+                        "overwrite a fixed partition, use --force.");
+                }
                 do_flash(partition.c_str(), fname.c_str());
             };
             do_for_partitions(pname.c_str(), slot_override, flash, true);
