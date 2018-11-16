@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fa3f661c_03532a42",
+        "filename": "libunwindstack/DexFile.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1065473
+      },
+      "writtenOn": "2018-11-16T14:20:21Z",
+      "side": 0,
+      "message": "The previously visited classes were put into the method_cache_, hence no need to visit them again.\n\nBut it seems you removed that caching in the code move though?  I am not sure I am happy about potentially doing linear search over whole dex file for every method.",
+      "parentUuid": "1abfd865_e16b4978",
+      "range": {
+        "startLine": 101,
+        "startChar": 9,
+        "endLine": 101,
+        "endChar": 25
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "914e9e5f_d94de43a",
         "filename": "libunwindstack/tests/DexFileTest.cpp",
         "patchSetId": 1
