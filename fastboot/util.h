@@ -16,3 +16,6 @@ void set_verbose();
 void die(const char* fmt, ...) __attribute__((__noreturn__))
 __attribute__((__format__(__printf__, 1, 2)));
 void verbose(const char* fmt, ...) __attribute__((__format__(__printf__, 1, 2)));
+
+// Return whether or not a partition looks like it should be dynamic.
+bool IsPartitionInSuperImage(const std::string& super_image, const std::string& partition_name);
