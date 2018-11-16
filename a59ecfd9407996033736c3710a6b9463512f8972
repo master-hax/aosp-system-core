@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "285c90fa_d28876ea",
+        "filename": "libunwindstack/DexFile.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-16T15:07:09Z",
+      "side": 0,
+      "message": "Right, I misinterpreted the comment on how method_cache_ works. It still caches the returned method but not the others being passed over. What are the performance sensitive use cases? The comment above suggests few frames are interesting, but multiple unwinds are done. It\u0027s unclear whether the unwinds use the same few frames repeatedly.",
+      "parentUuid": "fa3f661c_03532a42",
+      "range": {
+        "startLine": 101,
+        "startChar": 9,
+        "endLine": 101,
+        "endChar": 25
+      },
+      "revId": "a59ecfd9407996033736c3710a6b9463512f8972",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "914e9e5f_d94de43a",
         "filename": "libunwindstack/tests/DexFileTest.cpp",
         "patchSetId": 1
