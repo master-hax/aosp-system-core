@@ -19,7 +19,9 @@
 #if defined(__linux__)
 #include <linux/fs.h>
 #endif
+#if !defined(_WIN32)
 #include <sys/ioctl.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
