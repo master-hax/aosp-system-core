@@ -390,14 +390,14 @@ bool FirstStageMount::MountPartitions() {
     auto system_partition =
             std::find_if(mount_fstab_recs_.begin(), mount_fstab_recs_.end(),
                          [](const auto& rec) { return rec->mount_point == "/system"s; });
-
     if (system_partition != mount_fstab_recs_.end()) {
-        if (!MountPartition(*system_partition)) {
-            return false;
+        bool system_as_root = (access("/system/bin/init", F_OK) == 0);
+        if (!system_as_root) {
+            if (!MountPartition(*system_partition)) {
+                return false;
+            }
+            SwitchRoot((*system_partition)->mount_point);
         }
-
-        SwitchRoot((*system_partition)->mount_point);
-
         mount_fstab_recs_.erase(system_partition);
     }
 
