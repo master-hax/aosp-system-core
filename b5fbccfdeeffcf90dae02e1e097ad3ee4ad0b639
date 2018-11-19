@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b4aa075_75502b35",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-19T20:31:47Z",
+      "side": 1,
+      "message": "I see this is already there on the previous entries, but what does this do?",
+      "range": {
+        "startLine": 161,
+        "startChar": 63,
+        "endLine": 161,
+        "endChar": 66
+      },
+      "revId": "b5fbccfdeeffcf90dae02e1e097ad3ee4ad0b639",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
