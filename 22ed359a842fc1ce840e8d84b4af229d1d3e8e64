@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "182e946a_706630ee",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-11-19T23:50:58Z",
+      "side": 1,
+      "message": "In fact you don\u0027t need to translate group names; they will be deleted and re-added anyway.\n\nhttps://android.googlesource.com/platform/system/update_engine/+/master/boot_control_android.cc#301\n\nI think it should be okay to just clear them in L174.",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 202,
+        "endChar": 29
+      },
+      "revId": "22ed359a842fc1ce840e8d84b4af229d1d3e8e64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83a0de9f_052d9bee",
+        "filename": "fs_mgr/liblp/builder.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-11-19T23:50:58Z",
+      "side": 1,
+      "message": "nit: follow-up CL to turn these literals to constants (same for \"super\")",
+      "range": {
+        "startLine": 208,
+        "startChar": 26,
+        "endLine": 208,
+        "endChar": 35
+      },
+      "revId": "22ed359a842fc1ce840e8d84b4af229d1d3e8e64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
