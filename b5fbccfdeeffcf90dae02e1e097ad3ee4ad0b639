@@ -22,6 +22,30 @@
       "revId": "b5fbccfdeeffcf90dae02e1e097ad3ee4ad0b639",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5d09ebb_ee5ba9db",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-19T20:59:41Z",
+      "side": 1,
+      "message": "mechanical change, skips the leading / necessary for the parsing.\n\nNot sure if it is necessary with current GCC compiler(s) since const sub-character-strings are supposed to be optimized anyways.\n\nMight be better to fix accesses to conf table above to assume/add leading slash or skip the references to the common strings in 116-125.\n\nSince this is destined to be placed into a system-wide configuration file and possibly removed from here, I did not see much need in disturbing the current style.",
+      "parentUuid": "5b4aa075_75502b35",
+      "range": {
+        "startLine": 161,
+        "startChar": 63,
+        "endLine": 161,
+        "endChar": 66
+      },
+      "revId": "b5fbccfdeeffcf90dae02e1e097ad3ee4ad0b639",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
