@@ -92,6 +92,22 @@ bool ForceNormalBoot() {
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
 }
 
+static bool Contains(int argc, char** argv, std::string option) {
+    for (int i = 0; i < argc; i++) {
+        if (std::string(argv[i]) == option) return true;
+    }
+    return false;
+}
+
+bool SystemAsRoot(int argc, char** argv) {
+    std::string cmdline;
+    if (Contains(argc, argv, "-system_as_root")) {
+        return true;
+    }
+    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    return cmdline.find("skip_initramfs") != std::string::npos;
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -182,8 +198,7 @@ int main(int argc, char** argv) {
         PLOG(ERROR) << "Could not stat(\"/\"), not freeing ramdisk";
         old_root_dir.reset();
     }
-
-    if (ForceNormalBoot()) {
+    if (ForceNormalBoot() && !SystemAsRoot(argc, argv)) {
         mkdir("/first_stage_ramdisk", 0755);
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
@@ -203,10 +218,10 @@ int main(int argc, char** argv) {
         old_root_dir.reset();
     }
 
-    if (old_root_dir && old_root_info.st_dev != new_root_info.st_dev) {
+    if (old_root_dir && old_root_info.st_dev != new_root_info.st_dev &&
+        !Contains(argc, argv, "-keep_ramdisk")) {
         FreeRamdisk(old_root_dir.get(), old_root_info.st_dev);
     }
-
     SetInitAvbVersionInRecovery();
 
     static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;

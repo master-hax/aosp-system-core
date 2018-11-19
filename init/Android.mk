@@ -66,6 +66,10 @@ LOCAL_POST_INSTALL_CMD := \
     $(TARGET_RAMDISK_OUT)/proc \
     $(TARGET_RAMDISK_OUT)/sys \
 
+# Copy the first-stage init to ROOT (in system.img) for system-as-root devices to work.
+LOCAL_POST_INSTALL_CMD += \
+    ; cp $(TARGET_RAMDISK_OUT)/init $(TARGET_ROOT_OUT)/init \
+
 LOCAL_STATIC_LIBRARIES := \
     libfs_mgr \
     libfec \
