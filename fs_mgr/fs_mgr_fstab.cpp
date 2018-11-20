@@ -43,6 +43,9 @@ struct fs_mgr_flag_values {
     std::string key_dir;
     std::string verity_loc;
     std::string sysfs_path;
+    std::string loop_path;
+    off64_t loop_size_mb = 512;
+    std::string bdev_path;
     off64_t part_length = 0;
     std::string label;
     int partnum = -1;
@@ -117,6 +120,9 @@ static struct flag_list fs_mgr_flags[] = {
         {"checkpoint=block", MF_CHECKPOINT_BLK},
         {"checkpoint=fs", MF_CHECKPOINT_FS},
         {"slotselect_other", MF_SLOTSELECT_OTHER},
+        {"loopback=", MF_LOOPBACK},
+        {"loopbacksize=", MF_LOOPBACK_SIZE},
+        {"backing_dev=", MF_ZRAM_BACKDEV},
         {0, 0},
 };
 
@@ -349,6 +355,15 @@ static uint64_t parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_fla
                 } else if (flag == MF_SYSFS) {
                     /* The path to trigger device gc by idle-maint of vold. */
                     flag_vals->sysfs_path = arg;
+                } else if (flag == MF_LOOPBACK) {
+                    /* The path to use loopback for zram. */
+                    flag_vals->loop_path = arg;
+                } else if (flag == MF_LOOPBACK_SIZE) {
+                    auto val = strtoll(arg, nullptr, 0);
+                    flag_vals->loop_size_mb = val;
+                } else if (flag == MF_ZRAM_BACKDEV) {
+                    /* The path to use loopback for zram. */
+                    flag_vals->bdev_path = arg;
                 }
                 break;
             }
@@ -588,6 +603,9 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
         entry.logical_blk_size = flag_vals.logical_blk_size;
         entry.sysfs_path = std::move(flag_vals.sysfs_path);
         entry.vbmeta_partition = std::move(flag_vals.vbmeta_partition);
+        entry.loop_path = std::move(flag_vals.loop_path);
+        entry.loop_size_mb = std::move(flag_vals.loop_size_mb);
+        entry.bdev_path = std::move(flag_vals.bdev_path);
         if (entry.fs_mgr_flags.logical) {
             entry.logical_partition_name = entry.blk_device;
         }
@@ -795,6 +813,8 @@ void fs_mgr_free_fstab(struct fstab *fstab)
         free(fstab->recs[i].key_dir);
         free(fstab->recs[i].label);
         free(fstab->recs[i].sysfs_path);
+        free(fstab->recs[i].loop_path);
+        free(fstab->recs[i].bdev_path);
     }
 
     /* Free the fstab_recs array created by calloc(3) */
@@ -892,6 +912,9 @@ FstabEntry FstabRecToFstabEntry(const fstab_rec* fstab_rec) {
     entry.erase_blk_size = fstab_rec->erase_blk_size;
     entry.logical_blk_size = fstab_rec->logical_blk_size;
     entry.sysfs_path = fstab_rec->sysfs_path;
+    entry.loop_path = fstab_rec->loop_path;
+    entry.loop_size_mb = fstab_rec->loop_size_mb;
+    entry.bdev_path = fstab_rec->bdev_path;
 
     return entry;
 }
@@ -935,6 +958,9 @@ fstab* FstabToLegacyFstab(const Fstab& fstab) {
         legacy_fstab->recs[i].erase_blk_size = fstab[i].erase_blk_size;
         legacy_fstab->recs[i].logical_blk_size = fstab[i].logical_blk_size;
         legacy_fstab->recs[i].sysfs_path = strdup(fstab[i].sysfs_path.c_str());
+        legacy_fstab->recs[i].loop_path = strdup(fstab[i].loop_path.c_str());
+        legacy_fstab->recs[i].loop_size_mb = fstab[i].loop_size_mb;
+        legacy_fstab->recs[i].bdev_path = strdup(fstab[i].bdev_path.c_str());
     }
     return legacy_fstab;
 }

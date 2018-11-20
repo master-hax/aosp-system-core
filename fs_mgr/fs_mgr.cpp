@@ -79,6 +79,7 @@
 
 #define ZRAM_CONF_DEV   "/sys/block/zram0/disksize"
 #define ZRAM_CONF_MCS   "/sys/block/zram0/max_comp_streams"
+#define ZRAM_BACK_DEV "/sys/block/zram0/backing_dev"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
@@ -1345,11 +1346,92 @@ int fs_mgr_do_tmpfs_mount(const char *n_name)
     return 0;
 }
 
+static bool installZramDevice(std::string device) {
+    android::base::unique_fd zram_fd(TEMP_FAILURE_RETRY(open(ZRAM_BACK_DEV, O_RDWR)));
+    if (!zram_fd) {
+        PERROR << "Cannot open " << ZRAM_BACK_DEV;
+        return false;
+    }
+
+    int ret = write(zram_fd, device.c_str(), device.length());
+    if (ret != device.length()) {
+        PERROR << "Cannot write " << device << " in: " << ZRAM_BACK_DEV;
+        return false;
+    }
+    LINFO << "Success to set " << device << " to " << ZRAM_BACK_DEV;
+    return true;
+}
+
+static bool prepareZramDevice(std::string loop, off64_t size_mb, std::string bdev) {
+    if (!loop.length() && !bdev.length()) return true;
+
+    if (bdev.length()) {
+        return installZramDevice(bdev);
+    }
+
+    /* Get free loopback */
+    android::base::unique_fd loop_fd(TEMP_FAILURE_RETRY(open("/dev/loop-control", O_RDWR)));
+    if (!loop_fd) {
+        PERROR << "Cannot open loop-control";
+        return false;
+    }
+
+    int num = ioctl(loop_fd, LOOP_CTL_GET_FREE);
+    if (num == -1) {
+        PERROR << "Cannot get free loop slot";
+        return false;
+    }
+
+    /* Prepare target path */
+    int target_fd = open(loop.c_str(), O_RDWR | O_CREAT, 0664);
+    if (!target_fd) {
+        PERROR << "Cannot open target path: " << loop;
+        return false;
+    }
+    if (ftruncate(target_fd, size_mb << 20) < 0) {
+        PERROR << "Cannot truncate target path: " << loop;
+        close(target_fd);
+        return false;
+    }
+
+    /* Connect loopback (device_fd) to target path (target_fd) */
+    std::string device = android::base::StringPrintf("/dev/block/loop%d", num);
+    android::base::unique_fd device_fd(TEMP_FAILURE_RETRY(open(device.c_str(), O_RDWR)));
+    if (!device_fd) {
+        PERROR << "Cannot open /dev/block/loop" << num;
+        close(target_fd);
+        return false;
+    }
+
+    if (ioctl(device_fd, LOOP_SET_FD, target_fd)) {
+        PERROR << "Cannot set loopback to target path";
+        close(target_fd);
+        return false;
+    }
+    close(target_fd);
+
+    /* set block size & direct IO */
+    if (ioctl(device_fd, LOOP_SET_BLOCK_SIZE, 4096)) {
+        PWARNING << "Cannot set 4KB blocksize to /dev/block/loop" << num;
+    }
+    if (ioctl(device_fd, LOOP_SET_DIRECT_IO, 1)) {
+        PWARNING << "Cannot set direct_io to /dev/block/loop" << num;
+    }
+
+    return installZramDevice(device);
+}
+
 bool fs_mgr_swapon_all(const Fstab& fstab) {
     bool ret = true;
     for (const auto& entry : fstab) {
         // Skip non-swap entries.
         if (entry.fs_type != "swap") {
+            continue;
+        }
+
+        if (!prepareZramDevice(entry.loop_path.c_str(), entry.loop_size_mb, entry.bdev_path.c_str())) {
+            LERROR << "Skipping losetup for '" << entry.blk_device << "'";
+            ret = false;
             continue;
         }
 
