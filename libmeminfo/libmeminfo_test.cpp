@@ -159,6 +159,46 @@ TEST_F(ValidateProcMemInfoWss, TestWssEquality) {
     EXPECT_EQ(wss_pagemap.uss, wss.uss);
 }
 
+class TestProcMemInfoWssReset : public ::testing::Test {
+  protected:
+    void SetUp() override {
+        proc_mem = new ProcMemInfo(pid, false, 0, 0, true);
+        ASSERT_NE(proc_mem, nullptr);
+    }
+
+    void TearDown() override { delete proc_mem; }
+
+    ProcMemInfo* proc_mem;
+};
+
+TEST_F(TestProcMemInfoWssReset, TestMapsEmpty) {
+    const std::vector<Vma>& maps = proc_mem->Maps();
+    EXPECT_EQ(maps.size(), 0);
+}
+
+TEST_F(TestProcMemInfoWssReset, TestEmpty) {
+    const MemUsage& usage = proc_mem->Usage();
+    EXPECT_EQ(usage.rss, 0);
+    EXPECT_EQ(usage.vss, 0);
+    EXPECT_EQ(usage.pss, 0);
+    EXPECT_EQ(usage.uss, 0);
+    EXPECT_EQ(usage.swap, 0);
+}
+
+TEST_F(TestProcMemInfoWssReset, TestWssEmpty) {
+    const MemUsage& wss = proc_mem->Wss();
+    EXPECT_EQ(wss.rss, 0);
+    EXPECT_EQ(wss.vss, 0);
+    EXPECT_EQ(wss.pss, 0);
+    EXPECT_EQ(wss.uss, 0);
+    EXPECT_EQ(wss.swap, 0);
+}
+
+TEST_F(TestProcMemInfoWssReset, TestSwapOffsetsEmpty) {
+    const std::vector<uint16_t>& swap_offsets = proc_mem->SwapOffsets();
+    EXPECT_EQ(swap_offsets.size(), 0);
+}
+
 class ValidatePageAcct : public ::testing::Test {
   protected:
     void SetUp() override {
