@@ -22,12 +22,12 @@
 int main(void) {
     if (BORINGSSL_self_test() != 1) {
         LOG(INFO) << "BoringSSL crypto self tests failed";
-        sync();
 
         // This check has failed, so the device should refuse
         // to boot. Rebooting to bootloader to wait for
         // further action from the user.
-        int result = android_reboot(ANDROID_RB_RESTART2, 0, "bootloader");
+        int result =
+                android_reboot(ANDROID_RB_RESTART2, 0, "bootloader,boringssl-self-check-failed");
         if (result != 0) {
             LOG(ERROR) << "Failed to reboot into bootloader";
         }
