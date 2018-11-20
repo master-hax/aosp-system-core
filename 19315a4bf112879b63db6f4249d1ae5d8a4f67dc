@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f1a4109_b1d4f1db",
+        "filename": "storaged/storaged_info.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-20T17:00:41Z",
+      "side": 1,
+      "message": "Move the increment outside if",
+      "range": {
+        "startLine": 96,
+        "startChar": 24,
+        "endLine": 96,
+        "endChar": 27
+      },
+      "revId": "19315a4bf112879b63db6f4249d1ae5d8a4f67dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
