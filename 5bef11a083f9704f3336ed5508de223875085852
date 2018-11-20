@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8ac7468_2906654f",
+        "filename": "boringssl_self_test/boringssl_self_test.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2018-11-20T01:47:57Z",
+      "side": 1,
+      "message": "The init.rc portion can be moved here too:\n\n  on post-fs\n      # run a self check on boringssl for NIAP compliance\n      start boringssl_self_test\n\n  service boringssl_self_test ...\n    ...",
+      "revId": "5bef11a083f9704f3336ed5508de223875085852",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
