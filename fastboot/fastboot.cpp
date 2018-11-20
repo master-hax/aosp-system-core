@@ -1466,14 +1466,14 @@ static void fb_perform_format(
             fprintf(stderr, "File system type %s not supported.\n", partition_type.c_str());
             return;
         }
-        fprintf(stderr, "Formatting is not supported for file system with type '%s'.\n",
-                partition_type.c_str());
+        die("Formatting is not supported for file system with type '%s'.\n",
+            partition_type.c_str());
         return;
     }
 
     int64_t size;
     if (!android::base::ParseInt(partition_size, &size)) {
-        fprintf(stderr, "Couldn't parse partition size '%s'.\n", partition_size.c_str());
+        die("Couldn't parse partition size '%s'.\n", partition_size.c_str());
         return;
     }
 
@@ -1489,11 +1489,11 @@ static void fb_perform_format(
 
     fd.reset(open(output.path, O_RDONLY));
     if (fd == -1) {
-        fprintf(stderr, "Cannot open generated image: %s\n", strerror(errno));
+        die("Cannot open generated image: %s\n", strerror(errno));
         return;
     }
     if (!load_buf_fd(fd.release(), &buf)) {
-        fprintf(stderr, "Cannot read image: %s\n", strerror(errno));
+        die("Cannot read image: %s\n", strerror(errno));
         return;
     }
     flash_buf(partition, &buf);
@@ -1505,6 +1505,9 @@ failed:
         if (errMsg) fprintf(stderr, "%s", errMsg);
     }
     fprintf(stderr, "FAILED (%s)\n", fb->Error().c_str());
+    if (!skip_if_not_supported) {
+        die("Command failed");
+    }
 }
 
 static bool should_flash_in_userspace(const std::string& partition_name) {
