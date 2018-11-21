@@ -1,0 +1,148 @@
+# Copyright (C) 2018 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+owner: Platform
+module: "android.sysprop.DebugHwuiProperties"
+
+#
+# Turn on to draw dirty regions every other frame.
+#
+# Possible values:
+# "true", to enable dirty regions debugging
+# "false", to disable dirty regions debugging
+#
+prop {
+    api_name: "dirty_regions"
+    type: Boolean
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.show_dirty_regions"
+}
+
+#
+# Sets the FPS devisor to lower the FPS.
+#
+# Sets a positive integer as a divisor. 1 (the default value) menas the full FPS, and 2
+# means half the full FPS.
+#
+prop {
+    api_name: "fps_divisor"
+    type: Integer
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.fps_divisor"
+}
+
+#
+# Controls overdraw debugging.
+#
+# Possible values:
+# "false", to disable overdraw debugging
+# "show", to show overdraw areas on screen
+# "count", to display an overdraw counter
+#
+prop {
+    api_name: "overdraw"
+    type: String
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.overdraw"
+}
+
+#
+# System property used to debug EGL configuration choice.
+#
+# Possible values:
+# "choice", print the chosen configuration only
+# "all", print all possible configurations
+#
+prop {
+    api_name: "print_config"
+    type: String
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.print_config"
+}
+
+#
+# System property used to enable or disable threaded rendering profiling.
+# The default value of this property is assumed to be false.
+#
+# When profiling is enabled, the adb shell dumpsys gfxinfo command will
+# output extra information about the time taken to execute by the last
+# frames.
+#
+# Possible values:
+# "true", to enable profiling
+# "visual_bars", to enable profiling and visualize the results on screen
+# "false", to disable profiling
+#
+prop {
+    api_name: "profile"
+    type: String
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.profile"
+}
+
+#
+# System property used to specify the number of frames to be used
+# when doing threaded rendering profiling.
+# The default value of this property is #PROFILE_MAX_FRAMES.
+#
+# When profiling is enabled, the adb shell dumpsys gfxinfo command will
+# output extra information about the time taken to execute by the last
+# frames.
+#
+# Possible values:
+# "60", to set the limit of frames to 60
+#
+prop {
+    api_name: "profile_maxframes"
+    type: Integer
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.profile.maxframes"
+}
+
+#
+# Turn on to flash hardware layers when they update.
+#
+# Possible values:
+# "true", to enable hardware layers updates debugging
+# "false", to disable hardware layers updates debugging
+#
+prop {
+    api_name: "show_layers_updates"
+    type: Boolean
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.show_layers_updates"
+}
+
+#
+# Turn on to debug non-rectangular clip operations.
+#
+# Possible values:
+# "hide", to disable this debug mode
+# "highlight", highlight drawing commands tested against a non-rectangular clip
+# "stencil", renders the clip region on screen when set
+#
+prop {
+    api_name: "show_non_rectangular_clip"
+    type: String
+    scope: Internal
+    access: ReadWrite
+    prop_name: "debug.hwui.show_non_rect_clip"
+}
