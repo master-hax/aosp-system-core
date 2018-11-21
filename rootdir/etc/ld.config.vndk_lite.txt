@@ -55,6 +55,13 @@ namespace.default.asan.search.paths +=           /%PRODUCT%/${LIB}
 namespace.default.asan.search.paths += /data/asan/product_services/${LIB}
 namespace.default.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs  = libc.so:libdl.so:libm.so
+namespace.default.link.runtime.shared_libs += libart.so:libartd.so
+namespace.default.link.runtime.shared_libs += libnativehelper.so
+namespace.default.link.runtime.shared_libs += libnativeloader.so
+
 ###############################################################################
 # "sphal" namespace
 #
@@ -89,7 +96,7 @@ namespace.sphal.asan.permitted.paths +=           /vendor/${LIB}
 
 # Once in this namespace, access to libraries in /system/lib is restricted. Only
 # libs listed here can be used.
-namespace.sphal.links = default,vndk,rs
+namespace.sphal.links = default,vndk,rs,runtime
 
 namespace.sphal.link.default.shared_libs  = %LLNDK_LIBRARIES%
 namespace.sphal.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
@@ -193,12 +200,29 @@ namespace.vndk.link.default.shared_libs  = %LLNDK_LIBRARIES%
 namespace.vndk.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
 
 ###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.visible = true
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+# This resolves the latest com.android.runtime@<n> version through the symlink.
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
+namespace.runtime.links = default
+# TODO(b/119867084): Restrict to PALette library when it exists.
+namespace.runtime.link.default.allow_all_shared_libs = true
+
+
+###############################################################################
 # Namespace config for vendor processes. In O, no restriction is enforced for
 # them. However, in O-MR1, access to /system/${LIB} will not be allowed to
 # the default namespace. 'system' namespace will be added to give limited
 # (LL-NDK only) access.
 ###############################################################################
 [vendor]
+additional.namespaces = runtime
 namespace.default.isolated = false
 
 namespace.default.search.paths  = /odm/${LIB}
@@ -238,6 +262,29 @@ namespace.default.asan.search.paths +=           /%PRODUCT%/${LIB}
 namespace.default.asan.search.paths += /data/asan/product_services/${LIB}
 namespace.default.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs  = libc.so:libdl.so:libm.so
+namespace.default.link.runtime.shared_libs += libart.so:libartd.so
+namespace.default.link.runtime.shared_libs += libnativehelper.so
+namespace.default.link.runtime.shared_libs += libnativeloader.so
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.visible = true
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+# This resolves the latest com.android.runtime@<n> version through the symlink.
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
+namespace.runtime.links = default
+# TODO(b/119867084): Restrict to PALette library when it exists.
+namespace.runtime.link.default.allow_all_shared_libs = true
+
+
 ###############################################################################
 # Namespace config for binaries under /postinstall.
 # Only one default namespace is defined and it has no directories other than
@@ -247,7 +294,31 @@ namespace.default.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 # binaries to access the paths.
 ###############################################################################
 [postinstall]
+additional.namespaces = runtime
+
 namespace.default.isolated = false
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs  = libc.so:libdl.so:libm.so
+namespace.default.link.runtime.shared_libs += libart.so:libartd.so
+namespace.default.link.runtime.shared_libs += libnativehelper.so
+namespace.default.link.runtime.shared_libs += libnativeloader.so
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.visible = true
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+# This resolves the latest com.android.runtime@<n> version through the symlink.
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
+namespace.runtime.links = default
+# TODO(b/119867084): Restrict to PALette library when it exists.
+namespace.runtime.link.default.allow_all_shared_libs = true
