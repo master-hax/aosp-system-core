@@ -7,3 +7,5 @@ dir.recovery = /system/bin
 
 [recovery]
 namespace.default.search.paths = /system/${LIB}
+
+# FIXME: Need libc/libm/libdl from Runtime APEX here?
