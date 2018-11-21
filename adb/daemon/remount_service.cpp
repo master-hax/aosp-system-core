@@ -249,7 +249,20 @@ void remount_service(unique_fd fd, const std::string& cmd) {
                                                                    fs_mgr_free_fstab);
         if (fs_mgr_overlayfs_mount_all(fstab.get())) {
             WriteFdExactly(fd.get(), "overlayfs mounted\n");
+            return;
         }
+    }
+
+    if (verity_enabled && fs_mgr_overlayfs_valid() != OverlayfsValidResult::kNotSupported) {
+        set_verity_enabled_state_service(unique_fd(dup(fd.get())), false);
+        if (user_requested_reboot) {
+            if (android::base::SetProperty(ANDROID_RB_PROPERTY, "reboot")) {
+                WriteFdExactly(fd.get(), "rebooting device\n");
+            } else {
+                WriteFdExactly(fd.get(), "reboot failed\n");
+            }
+        }
+        return;
     }
 
     // Find partitions that are deduplicated, and can be un-deduplicated.
