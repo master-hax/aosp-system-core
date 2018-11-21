@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e8dfcc63_b1a27ed7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2018-11-21T22:10:49Z",
+      "side": 1,
+      "message": "nit:\n// Read the primary superblock from an f2fs filesystem.  On failure return\n// false.  If it\u0027s not an f2fs filesystem, also set FS_STAT_INVALID_MAGIC.",
+      "range": {
+        "startLine": 421,
+        "startChar": 0,
+        "endLine": 421,
+        "endChar": 55
+      },
+      "revId": "56baa8d1d9bfbd5454877575fedf49378a6dca40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
