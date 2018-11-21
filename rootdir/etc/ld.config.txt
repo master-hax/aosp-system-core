@@ -28,7 +28,7 @@ dir.system = /data/benchmarktest64
 dir.postinstall = /postinstall
 
 [system]
-additional.namespaces = sphal,vndk,rs
+additional.namespaces = sphal,vndk,rs,runtime
 
 ###############################################################################
 # "default" namespace
@@ -104,6 +104,13 @@ namespace.default.asan.permitted.paths += /%PRODUCT_SERVICES%/framework
 namespace.default.asan.permitted.paths += /%PRODUCT_SERVICES%/app
 namespace.default.asan.permitted.paths += /%PRODUCT_SERVICES%/priv-app
 namespace.default.asan.permitted.paths += /mnt/expand
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs  = libc.so:libdl.so:libm.so
+namespace.default.link.runtime.shared_libs += libart.so:libartd.so
+namespace.default.link.runtime.shared_libs += libnativehelper.so
+namespace.default.link.runtime.shared_libs += libnativeloader.so
 
 ###############################################################################
 # "sphal" namespace
@@ -250,13 +257,29 @@ namespace.vndk.link.default.shared_libs += %SANITIZER_RUNTIME_LIBRARIES%
 namespace.vndk.link.sphal.allow_all_shared_libs = true
 
 ###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+
+# Keep in sync with ld.config.txt in the com.android.runtime APEX.
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
+namespace.runtime.links = default
+# TODO(b/119867084): Restrict to PALette library when it exists. This is only
+# necessary when we load libart.so, libnativehelper.so, and other ART libraries
+# from here.
+namespace.runtime.link.default.allow_all_shared_libs = true
+
+
+###############################################################################
 # Namespace config for vendor processes. In O, no restriction is enforced for
 # them. However, in O-MR1, access to /system/${LIB} will not be allowed to
 # the default namespace. 'system' namespace will be added to give limited
 # (LL-NDK only) access.
 ###############################################################################
 [vendor]
-additional.namespaces = system,vndk
+additional.namespaces = system,vndk,runtime
 
 ###############################################################################
 # "default" namespace
@@ -287,10 +310,12 @@ namespace.default.asan.permitted.paths +=           /odm
 namespace.default.asan.permitted.paths += /data/asan/vendor
 namespace.default.asan.permitted.paths +=           /vendor
 
-namespace.default.links = system,vndk
+namespace.default.links = system,vndk,runtime
 namespace.default.link.system.shared_libs = %LLNDK_LIBRARIES%
 namespace.default.link.vndk.shared_libs  = %VNDK_SAMEPROCESS_LIBRARIES%
 namespace.default.link.vndk.shared_libs += %VNDK_CORE_LIBRARIES%
+
+namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 
 ###############################################################################
 # "vndk" namespace
@@ -348,16 +373,41 @@ namespace.system.asan.search.paths +=           /%PRODUCT%/${LIB}
 namespace.system.asan.search.paths += /data/asan/product_services/${LIB}
 namespace.system.asan.search.paths +=           /%PRODUCT_SERVICES%/${LIB}
 
+namespace.system.links = runtime
+namespace.system.link.runtime.shared_libs = libc.so:libdl.so:libm.so
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
+
+
 ###############################################################################
 # Namespace config for binaries under /postinstall.
-# Only one default namespace is defined and it has no directories other than
-# /system/lib in the search paths. This is because linker calls realpath on the
-# search paths and this causes selinux denial if the paths (/vendor, /odm) are
-# not allowed to the poinstall binaries. There is no reason to allow the
-# binaries to access the paths.
+# Only default and runtime namespaces are defined and default has no directories
+# other than /system/lib in the search paths. This is because linker calls
+# realpath on the search paths and this causes selinux denial if the paths
+# (/vendor, /odm) are not allowed to the postinstall binaries. There is no
+# reason to allow the binaries to access the paths.
 ###############################################################################
 [postinstall]
+additional.namespaces = runtime
+
 namespace.default.isolated = false
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
+
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
+
+###############################################################################
+# "runtime" APEX namespace
+#
+# This namespace pulls in externally accessible libs from the Runtime APEX.
+###############################################################################
+namespace.runtime.isolated = true
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}

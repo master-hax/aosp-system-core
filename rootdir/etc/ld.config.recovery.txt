@@ -6,4 +6,11 @@
 dir.recovery = /system/bin
 
 [recovery]
+additional.namespaces = runtime
+
 namespace.default.search.paths = /system/${LIB}
+namespace.default.links = runtime
+namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
+
+namespace.runtime.isolated = true
+namespace.runtime.search.path = /apex/com.android.runtime/${LIB}
