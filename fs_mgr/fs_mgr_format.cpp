@@ -34,6 +34,8 @@
 #include "fs_mgr_priv.h"
 #include "cryptfs.h"
 
+using android::base::Realpath;
+
 static int get_dev_sz(char *fs_blkdev, uint64_t *dev_sz)
 {
     int fd;
@@ -136,8 +138,10 @@ static int format_f2fs(char *fs_blkdev, uint64_t dev_sz, bool crypt_footer)
 int fs_mgr_do_format(struct fstab_rec *fstab, bool crypt_footer)
 {
     int rc = -EINVAL;
+    std::string path;
+    Realpath(fstab->blk_device, &path);
 
-    LERROR << __FUNCTION__ << ": Format " << fstab->blk_device
+    LERROR << __FUNCTION__ << ": Format " << path
            << " as '" << fstab->fs_type << "'";
 
     if (!strncmp(fstab->fs_type, "f2fs", 4)) {
