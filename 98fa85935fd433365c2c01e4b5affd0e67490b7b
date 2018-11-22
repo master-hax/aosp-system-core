@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6947ae56_de38b29f",
+        "filename": "rootdir/etc/ld.config.recovery.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T15:37:46Z",
+      "side": 1,
+      "message": "Does this also need the runtime namespace with /apex/com.android.runtime/${LIB} in the path?",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81bf0089_c9567c76",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T15:37:46Z",
+      "side": 1,
+      "message": "This follows the symlink to the latest version, but I reckon that\u0027s WAI.",
+      "range": {
+        "startLine": 269,
+        "startChar": 32,
+        "endLine": 269,
+        "endChar": 58
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e16317d_531ae7c5",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T15:37:46Z",
+      "side": 1,
+      "message": "I note isolated is false for the default namespace in this section. The effect of having false here isn\u0027t clear to me - is this correct?",
+      "range": {
+        "startLine": 430,
+        "startChar": 29,
+        "endLine": 430,
+        "endChar": 33
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
