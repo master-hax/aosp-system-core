@@ -59,6 +59,30 @@
     },
     {
       "key": {
+        "uuid": "3c97428a_3afb5ef2",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "It\u0027s not clear to me when android_dlopen_ext is used (docs are a bit sparse: b/119867547), If we\u0027re certain than none of the libraries listed in namespace.default.link.runtime.shared_libs are loaded that way, I\u0027ll get rid of it.",
+      "parentUuid": "b2ff91db_3a0cbc2d",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 265,
+        "endChar": 32
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81bf0089_c9567c76",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -70,6 +94,30 @@
       "writtenOn": "2018-11-22T15:37:46Z",
       "side": 1,
       "message": "This follows the symlink to the latest version, but I reckon that\u0027s WAI.",
+      "range": {
+        "startLine": 269,
+        "startChar": 32,
+        "endLine": 269,
+        "endChar": 58
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1edd3e96_ef0d9af8",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "(Errata: /apex/com.android.runtime is another loop mount, not a symlink.)",
+      "parentUuid": "81bf0089_c9567c76",
       "range": {
         "startLine": 269,
         "startChar": 32,
@@ -128,6 +176,30 @@
     },
     {
       "key": {
+        "uuid": "6177099a_551b89a1",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "I wasn\u0027t aware namespace.default.links affects the lookup order.\n\nI don\u0027t expect there to be any libc.so, libm.so, libdl.so in /system/${LIB} when we\u0027re done, so regardless of order I reckon this will end up falling back to the runtime namespace.\n\n\u003e Did you confirm that vendor processes are using libs from runtime APEX?\n\nNo, but I assumed they would given that libc etc wouldn\u0027t remain in /system/${LIB} at all.",
+      "parentUuid": "f057bdd1_39185212",
+      "range": {
+        "startLine": 314,
+        "startChar": 44,
+        "endLine": 314,
+        "endChar": 61
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd62875f_698d9800",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -151,6 +223,30 @@
     },
     {
       "key": {
+        "uuid": "1c81f86e_59c5ff11",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "Good. Then I should also be able to skip the link from runtime to default below, because nothing in libc, libm, and libdl depends on the platform, right?\n\n(I\u0027ll upload a patchset that addresses this and some other non-discussion issues soon.)",
+      "parentUuid": "bd62875f_698d9800",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 322,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "704e16e3_a81f8d5a",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -162,6 +258,30 @@
       "writtenOn": "2018-11-22T16:37:31Z",
       "side": 1,
       "message": "vndk should be linked to runtime as well. with libc, dl, m.",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 71
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbe7996f_4a04ed5f",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "It falls back to default, which then links to runtime. Isn\u0027t that enough?",
+      "parentUuid": "704e16e3_a81f8d5a",
       "range": {
         "startLine": 355,
         "startChar": 0,
@@ -232,6 +352,30 @@
       "side": 1,
       "message": "when isolated true, only the libraries \u0027in\u0027 the search paths and \u0027under\u0027 the permitted paths are allowed to be loaded.\n\nwhen isolated is false, there is no such restriction. For example, you could load any library using dlopen() with full path.",
       "parentUuid": "0e16317d_531ae7c5",
+      "range": {
+        "startLine": 430,
+        "startChar": 29,
+        "endLine": 430,
+        "endChar": 33
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a45030e_60004735",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-22T17:06:53Z",
+      "side": 1,
+      "message": "Thanks. That isolation applies to the libraries being loaded in this namespace? If so I think we should keep it true here like everywhere else for runtime.",
+      "parentUuid": "f3bcf7f7_2393c9c0",
       "range": {
         "startLine": 430,
         "startChar": 29,
