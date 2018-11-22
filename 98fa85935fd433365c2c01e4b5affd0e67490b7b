@@ -36,6 +36,29 @@
     },
     {
       "key": {
+        "uuid": "b2ff91db_3a0cbc2d",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "why is this needed? This is needed only when someone wants to directly load libs into this namespace using android_dlopen_ext.",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 265,
+        "endChar": 32
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81bf0089_c9567c76",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -59,6 +82,121 @@
     },
     {
       "key": {
+        "uuid": "ac56ad74_1c02eace",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "yeah this sounds scary, but should be okay for now.",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 59
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f057bdd1_39185212",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "This is problematic. LLNDK_LIBRARIES havs libc.so, libdlso and libm.so.\n\nSince \u0027system\u0027 is listed before \u0027runtime\u0027 I think it will end up finding the libraries from the system namespace.\n\nDid you confirm that vendor processes are using libs from runtime APEX?\n\nI think you need to \n\nnamespace.default.links \u003d runtime,system,vndk",
+      "range": {
+        "startLine": 314,
+        "startChar": 44,
+        "endLine": 314,
+        "endChar": 61
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd62875f_698d9800",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "these are not needed. vendors haven\u0027t been allowed to use these libraries.",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 322,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "704e16e3_a81f8d5a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "vndk should be linked to runtime as well. with libc, dl, m.",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 71
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93b53d09_9323794a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "I don\u0027t think these are needed here. There is no ART (Java) in vendor processes.",
+      "range": {
+        "startLine": 382,
+        "startChar": 0,
+        "endLine": 384,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0e16317d_531ae7c5",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -76,6 +214,47 @@
         "endLine": 430,
         "endChar": 33
       },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3bcf7f7_2393c9c0",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "when isolated true, only the libraries \u0027in\u0027 the search paths and \u0027under\u0027 the permitted paths are allowed to be loaded.\n\nwhen isolated is false, there is no such restriction. For example, you could load any library using dlopen() with full path.",
+      "parentUuid": "0e16317d_531ae7c5",
+      "range": {
+        "startLine": 430,
+        "startChar": 29,
+        "endLine": 430,
+        "endChar": 33
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bef672db_cba4d47b",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-22T16:37:31Z",
+      "side": 1,
+      "message": "same comment applies to here.",
       "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
