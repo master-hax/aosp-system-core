@@ -83,6 +83,30 @@
     },
     {
       "key": {
+        "uuid": "8eb58f5f_1e2bd4b8",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-23T05:33:19Z",
+      "side": 1,
+      "message": "yes.",
+      "parentUuid": "3c97428a_3afb5ef2",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 265,
+        "endChar": 32
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81bf0089_c9567c76",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -200,6 +224,30 @@
     },
     {
       "key": {
+        "uuid": "ecf8feeb_57d90699",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-23T05:33:19Z",
+      "side": 1,
+      "message": "yes the order matters. https://android.googlesource.com/platform/bionic/+/master/linker/linker.cpp#1488\n\nHowever, you are right. Since there will be no libc.so, et. al. in /system/lib, they will eventually be found in the runtime name. But I think it\u0027s safer (and better reveals our intention) to have runtime in front of system.",
+      "parentUuid": "6177099a_551b89a1",
+      "range": {
+        "startLine": 314,
+        "startChar": 44,
+        "endLine": 314,
+        "endChar": 61
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd62875f_698d9800",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -235,6 +283,30 @@
       "side": 1,
       "message": "Good. Then I should also be able to skip the link from runtime to default below, because nothing in libc, libm, and libdl depends on the platform, right?\n\n(I\u0027ll upload a patchset that addresses this and some other non-discussion issues soon.)",
       "parentUuid": "bd62875f_698d9800",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 322,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8484b256_f8cb8b94",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-23T05:33:19Z",
+      "side": 1,
+      "message": "For the link from runtime to default, maybe we should keep it.\n\nlibc.so dlopens several libraries. (libnetd_client, libicuuc, ...)",
+      "parentUuid": "1c81f86e_59c5ff11",
       "range": {
         "startLine": 320,
         "startChar": 0,
@@ -376,6 +448,30 @@
       "side": 1,
       "message": "Thanks. That isolation applies to the libraries being loaded in this namespace? If so I think we should keep it true here like everywhere else for runtime.",
       "parentUuid": "f3bcf7f7_2393c9c0",
+      "range": {
+        "startLine": 430,
+        "startChar": 29,
+        "endLine": 430,
+        "endChar": 33
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e5fac19_cae7455c",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-23T05:33:19Z",
+      "side": 1,
+      "message": "Yes. keeping isolated \u003d true is better and safer.",
+      "parentUuid": "2a45030e_60004735",
       "range": {
         "startLine": 430,
         "startChar": 29,
