@@ -142,13 +142,15 @@ public final class DeployAgent {
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
         String packagePrefix = "package:";
+        String packageSuffix = "=" + packageName;
         String line = "";
         while ((line = reader.readLine()) != null) {
-            int packageIndex = line.indexOf(packagePrefix);
-            int equalsIndex = line.indexOf("=" + packageName);
-            return new File(line.substring(packageIndex + packagePrefix.length(), equalsIndex));
+            if (line.endsWith(packageSuffix)) {
+                int packageIndex = line.indexOf(packagePrefix);
+                int equalsIndex = line.lastIndexOf(packageSuffix);
+                return new File(line.substring(packageIndex + packagePrefix.length(), equalsIndex));
+            }
         }
-
         return null;
     }
 
