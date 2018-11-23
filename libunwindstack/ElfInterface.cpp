@@ -38,6 +38,11 @@
 #include "Symbols.h"
 
 namespace unwindstack {
+namespace {
+size_t AlignUp(size_t size, size_t alignment) {
+  return (size + alignment - 1) & -(alignment - 1);
+}
+}
 
 ElfInterface::~ElfInterface() {
   for (auto symbol : symbols_) {
@@ -237,6 +242,41 @@ void ElfInterface::ReadProgramHeaders(const EhdrType& ehdr, uint64_t* load_bias)
   }
 }
 
+template <typename NhdrType>
+bool ElfInterface::ReadBuildID(std::string* build_id) {
+  size_t offset = 0;
+  while (offset < gnu_build_id_size_) {
+    if (gnu_build_id_size_ - offset < sizeof(NhdrType)) {
+      return false;
+    }
+    NhdrType hdr;
+    if (!memory_->ReadFully(gnu_build_id_offset_ + offset, &hdr, sizeof(hdr))) {
+      return false;
+    }
+    offset += sizeof(hdr);
+
+    if (gnu_build_id_size_ - offset < hdr.n_namesz) {
+      return false;
+    }
+    std::string name('\0', hdr.n_namesz);
+    if (!memory_->ReadFully(gnu_build_id_offset_ + offset, &(name[0]), hdr.n_namesz)) {
+      return false;
+    }
+    offset += AlignUp(hdr.n_namesz, 4);
+
+    if (strcmp(name.c_str(), "GNU") == 0 && hdr.n_type == NT_GNU_BUILD_ID) {
+      if (gnu_build_id_size_ - offset < hdr.n_descsz) {
+        return false;
+      }
+      build_id->resize(hdr.n_descsz);
+      return memory_->ReadFully(gnu_build_id_offset_ + offset, &(*build_id)[0],
+                                hdr.n_descsz);
+    }
+    offset += AlignUp(hdr.n_descsz, 4);
+  }
+  return false;
+}
+
 template <typename EhdrType, typename ShdrType>
 void ElfInterface::ReadSectionHeaders(const EhdrType& ehdr) {
   uint64_t offset = ehdr.e_shoff;
@@ -308,6 +348,15 @@ void ElfInterface::ReadSectionHeaders(const EhdrType& ehdr) {
       // In order to read soname, keep track of address to offset mapping.
       strtabs_.push_back(std::make_pair<uint64_t, uint64_t>(static_cast<uint64_t>(shdr.sh_addr),
                                                             static_cast<uint64_t>(shdr.sh_offset)));
+    } else if (shdr.sh_type == SHT_NOTE) {
+      if (shdr.sh_name < sec_size) {
+        std::string name;
+        if (memory_->ReadString(sec_offset + shdr.sh_name, &name) &&
+            name == ".note.gnu.build-id") {
+          gnu_build_id_offset_ = shdr.sh_offset;
+          gnu_build_id_size_ = shdr.sh_size;
+        }
+      }
     }
   }
 }
@@ -491,6 +540,9 @@ template void ElfInterface::ReadProgramHeaders<Elf64_Ehdr, Elf64_Phdr>(const Elf
 
 template void ElfInterface::ReadSectionHeaders<Elf32_Ehdr, Elf32_Shdr>(const Elf32_Ehdr&);
 template void ElfInterface::ReadSectionHeaders<Elf64_Ehdr, Elf64_Shdr>(const Elf64_Ehdr&);
+
+template bool ElfInterface::ReadBuildID<Elf32_Nhdr>(std::string*);
+template bool ElfInterface::ReadBuildID<Elf64_Nhdr>(std::string*);
 
 template bool ElfInterface::GetSonameWithTemplate<Elf32_Dyn>(std::string*);
 template bool ElfInterface::GetSonameWithTemplate<Elf64_Dyn>(std::string*);
