@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "c78c1871_9001468b",
+        "filename": "rootdir/etc/ld.config.recovery.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-24T00:32:26Z",
+      "side": 1,
+      "message": "No need to touch this file. This is for the recovery mode where we don\u0027t have apex at all.",
+      "parentUuid": "6947ae56_de38b29f",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2ff91db_3a0cbc2d",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -354,6 +372,30 @@
       "side": 1,
       "message": "It falls back to default, which then links to runtime. Isn\u0027t that enough?",
       "parentUuid": "704e16e3_a81f8d5a",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 71
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26633fdb_1fb4ca2a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-24T00:32:26Z",
+      "side": 1,
+      "message": "I don\u0027t think so. Lib search is not transitive; i.e. link of a link is not searched.",
+      "parentUuid": "fbe7996f_4a04ed5f",
       "range": {
         "startLine": 355,
         "startChar": 0,
