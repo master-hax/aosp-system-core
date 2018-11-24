@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "58ed8e80_fc41393a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a041c32d_d31bb598",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6947ae56_de38b29f",
         "filename": "rootdir/etc/ld.config.recovery.txt",
         "patchSetId": 3
@@ -48,6 +66,24 @@
       "side": 1,
       "message": "No need to touch this file. This is for the recovery mode where we don\u0027t have apex at all.",
       "parentUuid": "6947ae56_de38b29f",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9977a277_2092a58b",
+        "filename": "rootdir/etc/ld.config.recovery.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "All right, restored. Doesn\u0027t that mean we need a backup location with libc/libdl/libm in it that we include in the search path here only?",
+      "parentUuid": "c78c1871_9001468b",
       "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -125,6 +161,30 @@
     },
     {
       "key": {
+        "uuid": "7c4df35d_33e26be1",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Good. Done.",
+      "parentUuid": "8eb58f5f_1e2bd4b8",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 265,
+        "endChar": 32
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "81bf0089_c9567c76",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -195,6 +255,30 @@
     },
     {
       "key": {
+        "uuid": "383e93f1_11a3a467",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ac56ad74_1c02eace",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 59
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f057bdd1_39185212",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -254,6 +338,30 @@
       "side": 1,
       "message": "yes the order matters. https://android.googlesource.com/platform/bionic/+/master/linker/linker.cpp#1488\n\nHowever, you are right. Since there will be no libc.so, et. al. in /system/lib, they will eventually be found in the runtime name. But I think it\u0027s safer (and better reveals our intention) to have runtime in front of system.",
       "parentUuid": "6177099a_551b89a1",
+      "range": {
+        "startLine": 314,
+        "startChar": 44,
+        "endLine": 314,
+        "endChar": 61
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c46bb14_ae02b3aa",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "I think it would be more clean to fix LLNDK_LIBRARIES to not contain libc/libm/libdl. Seems like it\u0027s built from some not quite trivial logic in build/soong/cc/vndk.go that I haven\u0027t figured out yet - I\u0027d appreciate some pointers if I should fix that.\n\nThat aside, fair enough, I\u0027ve moved runtime first. By similar reasoning, should I move it first in other cases too?",
+      "parentUuid": "ecf8feeb_57d90699",
       "range": {
         "startLine": 314,
         "startChar": 44,
@@ -337,6 +445,30 @@
     },
     {
       "key": {
+        "uuid": "5b068796_985146f6",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "I see, I\u0027ve not accurately tracked dlopen\u0027s.\n\nThat means we have more than the PALette dependency from runtime to default that I thought would be the only one. I\u0027ll need to look through the Bionic libs to get the complete list of dlopen dependencies.\n\nI\u0027ve put back the allow_all_shared_libs\u003dtrue fallbacks for now.",
+      "parentUuid": "8484b256_f8cb8b94",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 322,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "704e16e3_a81f8d5a",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -408,6 +540,30 @@
     },
     {
       "key": {
+        "uuid": "15074adf_5fafeced",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Huh, ok. Then other cases like sphal and rs in [system] only works because the bionic libs are included in LLNDK_LIBRARIES?\n\nEven so, I think we ought to exclude them from LLNDK_LIBRARIES and add explicit links to runtime in those cases too. WDYT?",
+      "parentUuid": "26633fdb_1fb4ca2a",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 71
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "93b53d09_9323794a",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -428,6 +584,30 @@
       "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c381ca1e_23d29245",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "93b53d09_9323794a",
+      "range": {
+        "startLine": 382,
+        "startChar": 0,
+        "endLine": 384,
+        "endChar": 64
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -526,6 +706,30 @@
     },
     {
       "key": {
+        "uuid": "29ecf2bd_937cbbb9",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Thanks, keeping as-is then.",
+      "parentUuid": "6e5fac19_cae7455c",
+      "range": {
+        "startLine": 430,
+        "startChar": 29,
+        "endLine": 430,
+        "endChar": 33
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bef672db_cba4d47b",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 3
@@ -540,6 +744,24 @@
       "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29febeb9_ba307886",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "Done, I hope.",
+      "parentUuid": "bef672db_cba4d47b",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

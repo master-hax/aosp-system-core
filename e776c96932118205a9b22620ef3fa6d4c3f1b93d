@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e80ca15_63346501",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-24T01:39:31Z",
+      "side": 1,
+      "message": "I had a typo \"default\" here before, which presumably caused a conflict with the same property earlier in the file. That caused a boot failure that was tedious to debug:\n\nOne thing is that changing this file frequently caused a bad system image that would stop with an \"unsafe\" error. My workaround was to delete out/target before every build.\n\nThe other problem was that I couldn\u0027t get any logs from the linker: The boot didn\u0027t get far enough for adb logcat to work, and the kernel log that you get through the serial console didn\u0027t include linker messages either. So I had to do bisect to find it. I\u0027d appreciate any tips on how to debug this better in the future.",
+      "range": {
+        "startLine": 377,
+        "startChar": 10,
+        "endLine": 377,
+        "endChar": 16
+      },
+      "revId": "e776c96932118205a9b22620ef3fa6d4c3f1b93d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
