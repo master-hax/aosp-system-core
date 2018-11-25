@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c209f0aa_a3c31436",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "sorry that I missed here. (this is shown in the diagram though).\n\nThis namespace should also be linked to the runtime namespace as it has been using the bionic libraries from the default ns",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 61
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99016c3c_115f787f",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 59
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05486f7c_e22975d8",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 253,
+        "endChar": 60
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cec32010_07e57eb5",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "link to the runtime ns required as before.",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 61
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de979722_7ba9a2d8",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "here",
+      "range": {
+        "startLine": 147,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 59
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d554a7e9_fae63364",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-25T17:50:15Z",
+      "side": 1,
+      "message": "here",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 60
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
