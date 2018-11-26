@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c6ecced_323cf0fe",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-26T19:06:06Z",
+      "side": 1,
+      "message": "do we actually want to log this? or just ignore SIGPIPE?",
+      "revId": "18d648c625933357b93befea998fab5bf096a262",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
