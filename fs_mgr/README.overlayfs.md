@@ -89,4 +89,9 @@ Caveats
   if higher than 4.6.
 - *adb enable-verity* will free up overlayfs and as a bonus the
   device will be reverted pristine to before any content was updated.
+- On retrofit dynamic partition devices, we take the whole alternate
+  super (eg: if "*a*" slot, then the whole of "*system_b*").  Since
+  we land a filesystem on the alternate super without
+  differentiating if it is logical or physical, the alternate slot
+  metadata will be lost.
 - File bugs or submit fixes for review.
