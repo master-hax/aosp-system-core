@@ -95,6 +95,11 @@ Caveats
   multiple reasons.
   NB: This is not a problem for fastbootd or recovery as overrides are
   disabled for those special boot scenarios.
+- On retrofit dynamic partition devices, we take the whole alternate
+  super (eg: if "*a*" slot, then the whole of "*system_b*").  Since
+  we land a filesystem on the alternate super without
+  differentiating if it is logical or physical, the alternate slot
+  metadata will be lost.
 - If dynamic partitions runs out of space, resizing a logical
   partition larger may fail because of the scratch partition.
   If this happens, either fastboot flashall or adb enable-verity can
