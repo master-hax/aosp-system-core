@@ -42,7 +42,7 @@
 //     read and verify the metadata and store it into the out_data parameter.
 //     The caller MUST check the integrity of metadata against the
 //     androidboot.vbmeta.{hash_alg, size, digest} values from /proc/cmdline.
-//     e.g., see class FsManagerAvbVerifier for more details.
+//     e.g., see class AvbVerifier for more details.
 //
 class FsManagerAvbOps {
   public:
@@ -60,6 +60,6 @@ class FsManagerAvbOps {
 
   private:
     AvbOps avb_ops_;
-    std::map<std::string, std::string> by_name_symlink_map_;
 };
+
 #endif /* __CORE_FS_MGR_PRIV_AVB_OPS_H */

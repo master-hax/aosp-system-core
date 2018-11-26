@@ -25,7 +25,10 @@
 
 #include "fs_mgr.h"
 
-enum class SetUpAvbHashtreeResult {
+namespace android {
+namespace fs_mgr {
+
+enum class AvbHashtreeResult {
     kSuccess = 0,
     kFail,
     kDisabled,
@@ -33,17 +36,15 @@ enum class SetUpAvbHashtreeResult {
 
 class FsManagerAvbOps;
 
-class FsManagerAvbHandle;
-using FsManagerAvbUniquePtr = std::unique_ptr<FsManagerAvbHandle>;
-
-using ByNameSymlinkMap = std::map<std::string, std::string>;
+class AvbHandle;
+using AvbUniquePtr = std::unique_ptr<AvbHandle>;
 
 // Provides a factory method to return a unique_ptr pointing to itself and the
 // SetUpAvbHashtree() function to extract dm-verity parameters from AVB HASHTREE
 // descriptors to load verity table into kernel through ioctl.
-class FsManagerAvbHandle {
+class AvbHandle {
   public:
-    // The factory method to return a FsManagerAvbUniquePtr that holds
+    // The factory method to return a AvbUniquePtr that holds
     // the verified AVB (external/avb) metadata of all verified partitions
     // in avb_slot_data_.vbmeta_images[].
     //
@@ -51,7 +52,7 @@ class FsManagerAvbHandle {
     //   - androidboot.vbmeta.{hash_alg, size, digest}.
     //
     // A typical usage will be:
-    //   - FsManagerAvbUniquePtr handle = FsManagerAvbHandle::Open();
+    //   - AvbUniquePtr handle = AvbHandle::Open();
     //
     // Possible return values:
     //   - nullptr: any error when reading and verifying the metadata,
@@ -75,7 +76,7 @@ class FsManagerAvbHandle {
     //   - a valid unique_ptr with status kAvbHandleSuccess: the metadata
     //     is verified and can be trusted.
     //
-    static FsManagerAvbUniquePtr Open();
+    static AvbUniquePtr Open();
 
     // Sets up dm-verity on the given fstab entry.
     // The 'wait_for_verity_dev' parameter makes this function wait for the
@@ -87,17 +88,17 @@ class FsManagerAvbHandle {
     //     failed to get the HASHTREE descriptor, runtime error when set up
     //     device-mapper, etc.
     //   - kDisabled: hashtree is disabled.
-    SetUpAvbHashtreeResult SetUpAvbHashtree(fstab_rec* fstab_entry, bool wait_for_verity_dev);
+    AvbHashtreeResult SetUpAvbHashtree(fstab_rec* fstab_entry, bool wait_for_verity_dev);
 
     const std::string& avb_version() const { return avb_version_; }
 
-    FsManagerAvbHandle(const FsManagerAvbHandle&) = delete;             // no copy
-    FsManagerAvbHandle& operator=(const FsManagerAvbHandle&) = delete;  // no assignment
+    AvbHandle(const AvbHandle&) = delete;             // no copy
+    AvbHandle& operator=(const AvbHandle&) = delete;  // no assignment
 
-    FsManagerAvbHandle(FsManagerAvbHandle&&) noexcept = delete;             // no move
-    FsManagerAvbHandle& operator=(FsManagerAvbHandle&&) noexcept = delete;  // no move assignment
+    AvbHandle(AvbHandle&&) noexcept = delete;             // no move
+    AvbHandle& operator=(AvbHandle&&) noexcept = delete;  // no move assignment
 
-    ~FsManagerAvbHandle() {
+    ~AvbHandle() {
         if (avb_slot_data_) {
             avb_slot_verify_data_free(avb_slot_data_);
         }
@@ -112,11 +113,14 @@ class FsManagerAvbHandle {
         kAvbHandleVerificationError,
     };
 
-    FsManagerAvbHandle() : avb_slot_data_(nullptr), status_(kAvbHandleUninitialized) {}
+    AvbHandle() : avb_slot_data_(nullptr), status_(kAvbHandleUninitialized) {}
 
     AvbSlotVerifyData* avb_slot_data_;
     AvbHandleStatus status_;
     std::string avb_version_;
 };
+
+}  // namespace fs_mgr
+}  // namespace android
 
 #endif /* __CORE_FS_MGR_AVB_H */

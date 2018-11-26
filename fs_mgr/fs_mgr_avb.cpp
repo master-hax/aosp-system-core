@@ -40,6 +40,9 @@
 #include "fs_mgr_priv_avb_ops.h"
 #include "fs_mgr_priv_sha.h"
 
+namespace android {
+namespace fs_mgr {
+
 static inline bool nibble_value(const char& c, uint8_t* value) {
     FS_MGR_CHECK(value != nullptr);
 
@@ -117,14 +120,14 @@ static std::pair<size_t, bool> verify_vbmeta_digest(const AvbSlotVerifyData& ver
 //   - androidboot.vbmeta.hash_alg
 //   - androidboot.vbmeta.size
 //   - androidboot.vbmeta.digest
-class FsManagerAvbVerifier {
+class AvbVerifier {
   public:
-    // The factory method to return a unique_ptr<FsManagerAvbVerifier>
-    static std::unique_ptr<FsManagerAvbVerifier> Create();
+    // The factory method to return a unique_ptr<AvbVerifier>
+    static std::unique_ptr<AvbVerifier> Create();
     bool VerifyVbmetaImages(const AvbSlotVerifyData& verify_data);
 
   protected:
-    FsManagerAvbVerifier() = default;
+    AvbVerifier() = default;
 
   private:
     enum HashAlgorithm {
@@ -138,10 +141,10 @@ class FsManagerAvbVerifier {
     size_t vbmeta_size_;
 };
 
-std::unique_ptr<FsManagerAvbVerifier> FsManagerAvbVerifier::Create() {
-    std::unique_ptr<FsManagerAvbVerifier> avb_verifier(new FsManagerAvbVerifier());
+std::unique_ptr<AvbVerifier> AvbVerifier::Create() {
+    std::unique_ptr<AvbVerifier> avb_verifier(new AvbVerifier());
     if (!avb_verifier) {
-        LERROR << "Failed to create unique_ptr<FsManagerAvbVerifier>";
+        LERROR << "Failed to create unique_ptr<AvbVerifier>";
         return nullptr;
     }
 
@@ -184,7 +187,7 @@ std::unique_ptr<FsManagerAvbVerifier> FsManagerAvbVerifier::Create() {
     return avb_verifier;
 }
 
-bool FsManagerAvbVerifier::VerifyVbmetaImages(const AvbSlotVerifyData& verify_data) {
+bool AvbVerifier::VerifyVbmetaImages(const AvbSlotVerifyData& verify_data) {
     if (verify_data.num_vbmeta_images == 0) {
         LERROR << "No vbmeta images";
         return false;
@@ -361,16 +364,16 @@ static bool get_hashtree_descriptor(const std::string& partition_name,
     return true;
 }
 
-FsManagerAvbUniquePtr FsManagerAvbHandle::Open() {
+AvbUniquePtr AvbHandle::Open() {
     bool is_device_unlocked = fs_mgr_is_device_unlocked();
 
-    FsManagerAvbUniquePtr avb_handle(new FsManagerAvbHandle());
+    AvbUniquePtr avb_handle(new AvbHandle());
     if (!avb_handle) {
-        LERROR << "Failed to allocate FsManagerAvbHandle";
+        LERROR << "Failed to allocate AvbHandle";
         return nullptr;
     }
 
-    FsManagerAvbOps avb_ops;
+    ::FsManagerAvbOps avb_ops;
     AvbSlotVerifyFlags flags = is_device_unlocked ? AVB_SLOT_VERIFY_FLAGS_ALLOW_VERIFICATION_ERROR
                                                   : AVB_SLOT_VERIFY_FLAGS_NONE;
     AvbSlotVerifyResult verify_result =
@@ -423,9 +426,9 @@ FsManagerAvbUniquePtr FsManagerAvbHandle::Open() {
         avb_handle->status_ = kAvbHandleVerificationDisabled;
     } else {
         // Verifies vbmeta structs against the digest passed from bootloader in kernel cmdline.
-        std::unique_ptr<FsManagerAvbVerifier> avb_verifier = FsManagerAvbVerifier::Create();
+        std::unique_ptr<AvbVerifier> avb_verifier = AvbVerifier::Create();
         if (!avb_verifier) {
-            LERROR << "Failed to create FsManagerAvbVerifier";
+            LERROR << "Failed to create AvbVerifier";
             return nullptr;
         }
         if (!avb_verifier->VerifyVbmetaImages(*avb_handle->avb_slot_data_)) {
@@ -445,16 +448,16 @@ FsManagerAvbUniquePtr FsManagerAvbHandle::Open() {
     return avb_handle;
 }
 
-SetUpAvbHashtreeResult FsManagerAvbHandle::SetUpAvbHashtree(struct fstab_rec* fstab_entry,
-                                                            bool wait_for_verity_dev) {
+AvbHashtreeResult AvbHandle::SetUpAvbHashtree(struct fstab_rec* fstab_entry,
+                                              bool wait_for_verity_dev) {
     if (!fstab_entry || status_ == kAvbHandleUninitialized || !avb_slot_data_ ||
         avb_slot_data_->num_vbmeta_images < 1) {
-        return SetUpAvbHashtreeResult::kFail;
+        return AvbHashtreeResult::kFail;
     }
 
     if (status_ == kAvbHandleHashtreeDisabled || status_ == kAvbHandleVerificationDisabled) {
         LINFO << "AVB HASHTREE disabled on: " << fstab_entry->mount_point;
-        return SetUpAvbHashtreeResult::kDisabled;
+        return AvbHashtreeResult::kDisabled;
     }
 
     // Derives partition_name from blk_device to query the corresponding AVB HASHTREE descriptor
@@ -478,14 +481,17 @@ SetUpAvbHashtreeResult FsManagerAvbHandle::SetUpAvbHashtree(struct fstab_rec* fs
     std::string root_digest;
     if (!get_hashtree_descriptor(partition_name, *avb_slot_data_, &hashtree_descriptor, &salt,
                                  &root_digest)) {
-        return SetUpAvbHashtreeResult::kFail;
+        return AvbHashtreeResult::kFail;
     }
 
     // Converts HASHTREE descriptor to verity_table_params.
     if (!hashtree_dm_verity_setup(fstab_entry, hashtree_descriptor, salt, root_digest,
                                   wait_for_verity_dev)) {
-        return SetUpAvbHashtreeResult::kFail;
+        return AvbHashtreeResult::kFail;
     }
 
-    return SetUpAvbHashtreeResult::kSuccess;
+    return AvbHashtreeResult::kSuccess;
 }
+
+}  // namespace fs_mgr
+}  // namespace android

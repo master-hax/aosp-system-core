@@ -43,6 +43,9 @@
 #include "util.h"
 
 using android::base::Timer;
+using android::fs_mgr::AvbHandle;
+using android::fs_mgr::AvbHashtreeResult;
+using android::fs_mgr::AvbUniquePtr;
 
 using namespace std::literals;
 
@@ -113,7 +116,7 @@ class FirstStageMountVBootV2 : public FirstStageMount {
     bool InitAvbHandle();
 
     std::string device_tree_vbmeta_parts_;
-    FsManagerAvbUniquePtr avb_handle_;
+    AvbUniquePtr avb_handle_;
 };
 
 // Static Functions
@@ -545,12 +548,12 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
 bool FirstStageMountVBootV2::SetUpDmVerity(fstab_rec* fstab_rec) {
     if (fs_mgr_is_avb(fstab_rec)) {
         if (!InitAvbHandle()) return false;
-        SetUpAvbHashtreeResult hashtree_result =
+        AvbHashtreeResult hashtree_result =
                 avb_handle_->SetUpAvbHashtree(fstab_rec, false /* wait_for_verity_dev */);
         switch (hashtree_result) {
-            case SetUpAvbHashtreeResult::kDisabled:
+            case AvbHashtreeResult::kDisabled:
                 return true;  // Returns true to mount the partition.
-            case SetUpAvbHashtreeResult::kSuccess:
+            case AvbHashtreeResult::kSuccess:
                 // The exact block device name (fstab_rec->blk_device) is changed to
                 // "/dev/block/dm-XX". Needs to create it because ueventd isn't started in init
                 // first stage.
@@ -565,10 +568,10 @@ bool FirstStageMountVBootV2::SetUpDmVerity(fstab_rec* fstab_rec) {
 bool FirstStageMountVBootV2::InitAvbHandle() {
     if (avb_handle_) return true;  // Returns true if the handle is already initialized.
 
-    avb_handle_ = FsManagerAvbHandle::Open();
+    avb_handle_ = AvbHandle::Open();
 
     if (!avb_handle_) {
-        PLOG(ERROR) << "Failed to open FsManagerAvbHandle";
+        PLOG(ERROR) << "Failed to open AvbHandle";
         return false;
     }
     // Sets INIT_AVB_VERSION here for init to set ro.boot.avb_version in the second stage.
@@ -605,7 +608,7 @@ void SetInitAvbVersionInRecovery() {
         return;
     }
 
-    // Initializes required devices for the subsequent FsManagerAvbHandle::Open()
+    // Initializes required devices for the subsequent AvbHandle::Open()
     // to verify AVB metadata on all partitions in the verified chain.
     // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
     // Open() function returns a valid handle.
@@ -616,9 +619,9 @@ void SetInitAvbVersionInRecovery() {
         return;
     }
 
-    FsManagerAvbUniquePtr avb_handle = FsManagerAvbHandle::Open();
+    AvbUniquePtr avb_handle = AvbHandle::Open();
     if (!avb_handle) {
-        PLOG(ERROR) << "Failed to open FsManagerAvbHandle for INIT_AVB_VERSION";
+        PLOG(ERROR) << "Failed to open AvbHandle for INIT_AVB_VERSION";
         return;
     }
     setenv("INIT_AVB_VERSION", avb_handle->avb_version().c_str(), 1);
