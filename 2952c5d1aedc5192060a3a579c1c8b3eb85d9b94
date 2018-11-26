@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26c3e3b3_c935fdd2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-26T20:17:36Z",
+      "side": 1,
+      "message": "so what\u0027s the answer? is this worthwhile?",
+      "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddd429a8_32789ce4",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-11-26T20:17:36Z",
+      "side": 1,
+      "message": "i haven\u0027t even got us switched over to 17 yet...",
+      "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
