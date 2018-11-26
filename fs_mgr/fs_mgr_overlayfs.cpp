@@ -382,8 +382,10 @@ uint32_t fs_mgr_overlayfs_slot_number() {
     return SlotNumberForSlotSuffix(fs_mgr_get_slot_suffix());
 }
 
+const auto kPhysicalDevice = "/dev/block/by-name/"s;
+
 std::string fs_mgr_overlayfs_super_device(uint32_t slot_number) {
-    return "/dev/block/by-name/" + fs_mgr_get_super_partition_name(slot_number);
+    return kPhysicalDevice + fs_mgr_get_super_partition_name(slot_number);
 }
 
 bool fs_mgr_overlayfs_has_logical(const fstab* fstab) {
@@ -635,10 +637,16 @@ std::string fs_mgr_overlayfs_scratch_mount_type() {
 std::string fs_mgr_overlayfs_scratch_device() {
     if (!scratch_device_cache.empty()) return scratch_device_cache;
 
-    auto& dm = DeviceMapper::Instance();
-    const auto partition_name = android::base::Basename(kScratchMountPoint);
-    std::string path;
-    if (!dm.GetDmDevicePathByName(partition_name, &path)) return "";
+    // Is this a multiple super device (retrofit)?
+    auto slot_number = fs_mgr_overlayfs_slot_number();
+    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+    auto path = fs_mgr_overlayfs_super_device(slot_number == 0);
+    if (super_device == path) {
+        // Create from within single super device;
+        auto& dm = DeviceMapper::Instance();
+        const auto partition_name = android::base::Basename(kScratchMountPoint);
+        if (!dm.GetDmDevicePathByName(partition_name, &path)) return "";
+    }
     return scratch_device_cache = path;
 }
 
@@ -647,65 +655,68 @@ bool fs_mgr_overlayfs_setup_scratch(const fstab* fstab, bool* change) {
     if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return true;
     auto mnt_type = fs_mgr_overlayfs_scratch_mount_type();
     auto scratch_device = fs_mgr_overlayfs_scratch_device();
-    auto partition_create = !fs_mgr_rw_access(scratch_device);
-    auto slot_number = fs_mgr_overlayfs_slot_number();
-    auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device)) return false;
-    if (!fs_mgr_overlayfs_has_logical(fstab)) return false;
-    auto builder = MetadataBuilder::New(super_device, slot_number);
-    if (!builder) {
-        LERROR << "open " << super_device << " metadata";
-        return false;
-    }
-    const auto partition_name = android::base::Basename(kScratchMountPoint);
-    auto partition = builder->FindPartition(partition_name);
-    auto partition_exists = partition != nullptr;
-    auto changed = false;
-    if (!partition_exists) {
-        partition = builder->AddPartition(partition_name, LP_PARTITION_ATTR_NONE);
-        if (!partition) {
-            LERROR << "create " << partition_name;
+    auto partition_exists = fs_mgr_rw_access(scratch_device);
+    auto partition_create = !partition_exists;
+    if (partition_create || !android::base::StartsWith(scratch_device, kPhysicalDevice)) {
+        auto slot_number = fs_mgr_overlayfs_slot_number();
+        auto super_device = fs_mgr_overlayfs_super_device(slot_number);
+        if (!fs_mgr_rw_access(super_device)) return false;
+        if (!fs_mgr_overlayfs_has_logical(fstab)) return false;
+        auto builder = MetadataBuilder::New(super_device, slot_number);
+        if (!builder) {
+            LERROR << "open " << super_device << " metadata";
             return false;
         }
-        changed = true;
-    }
-    // Take half of free space, minimum 512MB or free space - 256KB margin.
-    static constexpr auto kMinimumSize = uint64_t(512 * 1024 * 1024);
-    static constexpr auto kMarginSize = uint64_t(256 * 1024);
-    if (partition->size() < kMinimumSize) {
-        auto partition_size =
-                builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
-        if ((partition_size > kMinimumSize) || !partition->size()) {
-            partition_size = std::max(std::min(kMinimumSize, partition_size - kMarginSize),
-                                      partition_size / 2);
-            if (partition_size > partition->size()) {
-                if (!builder->ResizePartition(partition, partition_size)) {
-                    LERROR << "resize " << partition_name;
-                    return false;
+        const auto partition_name = android::base::Basename(kScratchMountPoint);
+        auto partition = builder->FindPartition(partition_name);
+        auto partition_exists = partition != nullptr;
+        auto changed = false;
+        if (!partition_exists) {
+            partition = builder->AddPartition(partition_name, LP_PARTITION_ATTR_NONE);
+            if (!partition) {
+                LERROR << "open " << super_device << " metadata";
+                return false;
+            }
+            changed = true;
+        }
+        // Take half of free space, minimum 512MB or free space - 256KB margin.
+        static constexpr auto kMinimumSize = uint64_t(512 * 1024 * 1024);
+        static constexpr auto kMarginSize = uint64_t(256 * 1024);
+        if (partition->size() < kMinimumSize) {
+            auto partition_size =
+                    builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
+            if ((partition_size > kMinimumSize) || !partition->size()) {
+                partition_size = std::max(std::min(kMinimumSize, partition_size - kMarginSize),
+                                          partition_size / 2);
+                if (partition_size > partition->size()) {
+                    if (!builder->ResizePartition(partition, partition_size)) {
+                        LERROR << "resize " << partition_name;
+                        return false;
+                    }
+                    if (!partition_create) DestroyLogicalPartition(partition_name, 10s);
+                    changed = true;
+                    partition_exists = false;
                 }
-                if (!partition_create) DestroyLogicalPartition(partition_name, 10s);
-                changed = true;
-                partition_exists = false;
             }
         }
-    }
-    // land the update back on to the partition
-    if (changed) {
-        auto metadata = builder->Export();
-        if (!metadata || !UpdatePartitionTable(super_device, *metadata.get(), slot_number)) {
-            LERROR << "add partition " << partition_name;
-            return false;
+        // land the update back on to the partition
+        if (changed) {
+            auto metadata = builder->Export();
+            if (!metadata || !UpdatePartitionTable(super_device, *metadata.get(), slot_number)) {
+                LERROR << "add partition " << partition_name;
+                return false;
+            }
+
+            if (change) *change = true;
         }
 
-        if (change) *change = true;
-    }
+        if (changed || partition_create) {
+            if (!CreateLogicalPartition(super_device, slot_number, partition_name, true, 0s,
+                                        &scratch_device))
+                return false;
 
-    if (changed || partition_create) {
-        if (!CreateLogicalPartition(super_device, slot_number, partition_name, true, 0s,
-                                    &scratch_device))
-            return false;
-
-        if (change) *change = true;
+            if (change) *change = true;
+        }
     }
 
     if (partition_exists) {
@@ -744,6 +755,7 @@ bool fs_mgr_overlayfs_setup_scratch(const fstab* fstab, bool* change) {
 bool fs_mgr_overlayfs_scratch_can_be_mounted(const std::string& scratch_device) {
     if (scratch_device.empty()) return false;
     if (fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false)) return false;
+    if (android::base::StartsWith(scratch_device, kPhysicalDevice)) return true;
     if (fs_mgr_rw_access(scratch_device)) return true;
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);

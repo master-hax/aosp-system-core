@@ -361,6 +361,12 @@ fi
 M=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
 [ -n "${M}" ] &&
   echo "${ORANGE}[     INFO ]${NORMAL} scratch filesystem ${M}"
+uses_dynamic_scratch=true
+scratch_partition=scratch
+if [ "${M}" != "${M##*/dev/block/by-name/}" ]; then
+  uses_dynamic_scratch=false
+  scratch_partition="${M##*/dev/block/by-name/}"
+fi
 for d in ${OVERLAYFS_BACKING}; do
   if adb_sh ls -d /${d}/overlay/system/upper </dev/null >/dev/null 2>/dev/null; then
     echo "${ORANGE}[     INFO ]${NORMAL} /${d}/overlay is setup" >&2
@@ -417,17 +423,23 @@ adb reboot-fastboot &&
   fastboot_wait 2m &&
   fastboot flash vendor ||
   die "fastbootd flash vendor"
-# check scratch via fastboot
-fastboot_getvar partition-type:scratch raw &&
-  fastboot_getvar has-slot:scratch no &&
-  fastboot_getvar is-logical:scratch yes ||
-  die "fastboot can not see scratch parameters"
-echo "${ORANGE}[     INFO ]${NORMAL} expect fastboot erase scratch to fail" >&2
-fastboot erase scratch &&
-  die "fastbootd can erase scratch"
-echo "${ORANGE}[     INFO ]${NORMAL} expect fastboot format scratch to fail" >&2
-fastboot format scratch &&
-  die "fastbootd can format scratch"
+fastboot_getvar partition-type:${scratch_partition} raw ||
+  die "fastboot can not see ${scatch_partition} parameters"
+if ${uses_dynamic_scratch}; then
+  # check scratch via fastboot
+  fastboot_getvar has-slot:${scratch_partition} no &&
+    fastboot_getvar is-logical:${scratch_partition} yes ||
+    die "fastboot can not see ${scratch_partition} parameters"
+else
+  fastboot_getvar is-logical:${scratch_partition} no ||
+    die "fastboot can not see ${scatch_partition} parameters"
+fi
+echo "${ORANGE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
+fastboot erase ${scratch_partition} &&
+  die "fastbootd can erase ${scratch_partition}"
+echo "${ORANGE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
+fastboot format ${scratch_partition} &&
+  die "fastbootd can format ${scratch_partition}"
 fastboot reboot ||
   die "can not reboot out of fastbootd"
 echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot ... waiting 2 minutes"
@@ -464,17 +476,23 @@ B="`adb_cat /vendor/hello`" &&
   die "re-read vendor hello after rm"
 check_eq "cat: /vendor/hello: No such file or directory" "${B}" after flash rm
 
-adb reboot-fastboot &&
-  dd if=/dev/zero of=adb-remount-test.img bs=4096 count=16 &&
+if ${uses_dynamic_scratch}; then
+  adb reboot-fastboot ||
+    die "Reboot into fastbootd"
+else
+  adb reboot-bootloader ||
+    die "Reboot into fastboot"
+fi
+dd if=/dev/zero of=adb-remount-test.img bs=4096 count=16 &&
   fastboot_wait 2m ||
-  die "reboot into fastbootd"
-fastboot flash scratch adb-remount-test.img
+  die "reboot into fastboot"
+fastboot flash --force ${scratch_partition} adb-remount-test.img
 err=${?}
 rm adb-remount-test.img
 [ 0 -eq ${err} ] ||
-  die "fastbootd flash scratch"
+  die "fastboot flash ${scratch_partition}"
 fastboot reboot ||
-  die "can not reboot out of fastbootd"
+  die "can not reboot out of fastboot"
 adb_wait 2m &&
   adb_root ||
   die "did not reboot after flash"
