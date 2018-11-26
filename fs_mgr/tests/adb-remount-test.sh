@@ -167,14 +167,21 @@ fastboot_getvar() {
   echo ${O} >&2
 }
 
-[ "USAGE: die [-t <epoch>] [message] >/dev/stderr
+[ "USAGE: die [-d|-t <epoch>] [message] >/dev/stderr
 
-If -t <epoch> argument is supplied, dump logcat.
+If -d, or -t <epoch> argument is supplied, dump logcat.
 
 Returns: exit failure, report status" ]
 die() {
-  if [ X"-t" = X"${1}" -a -n "${2}" ]; then
-    adb_logcat -b all -v nsec -t ${2} >&2
+  if [ X"-d" = X"${1}" ]; then
+    adb_logcat -b all -v nsec -d >&2
+    shift
+  elif [ X"-t" = X"${1}" ]; then
+    if [ -n "${2}" ]; then
+      adb_logcat -b all -v nsec -t ${2} >&2
+    else
+      adb_logcat -b all -v nsec -d >&2
+    fi
     shift 2
   fi
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
@@ -238,15 +245,20 @@ check_eq() {
     die "${@}"
 }
 
-[ "USAGE: skip_administrative_mounts < /proc/mounts
+[ "USAGE: skip_administrative_mounts [data] < /proc/mounts
 
 Filters out all administrative (eg: sysfs) mounts uninteresting to the test" ]
 skip_administrative_mounts() {
+  if [ "data" = "${1}" ]; then
+    grep -v " /data "
+  else
+    cat -
+  fi |
   grep -v \
     -e "^\(overlay\|tmpfs\|none\|sysfs\|proc\|selinuxfs\|debugfs\) " \
     -e "^\(bpf\|cg2_bpf\|pstore\|tracefs\|adb\|mtp\|ptp\|devpts\) " \
     -e "^\(/data/media\|/dev/block/loop[0-9]*\) " \
-    -e " /\(cache\|mnt/scratch\|mnt/vendor/persist\|metadata\|data\) "
+    -e " /\(cache\|mnt/scratch\|mnt/vendor/persist\|metadata\) "
 }
 
 if [ X"-s" = X"${1}" -a -n "${2}" ]; then
@@ -297,62 +309,71 @@ D=`adb_sh df -k </dev/null` &&
   echo "${ORANGE}[  WARNING ]${NORMAL} overlays present before setup" >&2 ||
   echo "${GREEN}[       OK ]${NORMAL} no overlay present before setup" >&2
 adb_sh df -k `adb_sh cat /proc/mounts |
-                skip_administrative_mounts |
+                skip_administrative_mounts data |
                 cut -s -d' ' -f1`
 
 T=`adb_date`
 D=`adb disable-verity 2>&1`
 err=${?}
-echo "${D}"
 if [ ${err} != 0 -o X"${D}" != X"${D##*setup failed}" ]; then
+  echo "${D%?Now reboot your device for settings to take effect}"
   die -t ${T} "setup for overlay"
 fi
 if [ X"${D}" != X"${D##*using overlayfs}" ]; then
   echo "${GREEN}[       OK ]${NORMAL} using overlayfs" >&2
 fi
-adb_reboot &&
-  adb_wait &&
-  D=`adb_sh df -k </dev/null` &&
+reboot=false
+if [ X"${D}" != X"${D##*Successfully disabled verity}" ]; then
+  echo "${GREEN}[       OK ]${NORMAL} disabled verity" >&2
+  reboot=true
+else
+  echo "${ORANGE}[  WARNING ]${NORMAL} verity already disabled" >&2
+fi
+D=`adb_sh df -k </dev/null` &&
   H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` &&
-  echo "${H}" &&
-  echo "${D}" ||
-  die "overlay takeover failed"
-echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover before remount not complete" >&2
+  D=`echo "${D}" | grep "^overlay " | true` &&
+  [ -n "${D}" ] &&
+  ( echo "${H}" && echo "${D}" && true ) &&
+  die -t ${T} "overlay takeover unexpected"
+L=
+if ${reboot}; then
+  L=`adb_logcat -b all -v nsec -t ${T} 2>&1`
+  adb_reboot &&
+    adb_wait 2m ||
+    die "reboot after verity disabled failed"
+  T=
+fi
 
-T=`adb_date`
 adb_root &&
-  adb remount &&
-  D=`adb_sh df -k </dev/null` ||
-  die -t ${T} "can not collect filesystem data"
+  adb remount ||
+  ( [ -n "${L}" ] && echo "${L}" && false ) ||
+  die -t "${T}" "adb remount failed"
+D=`adb_sh df -k </dev/null` &&
+  H=`echo "${D}" | head -1` &&
+  D=`echo "${D}" | grep "^overlay "` ||
+  ( [ -n "${L}" ] && echo "${L}" && false ) ||
+  die -t ${T} "overlay takeover failed"
+echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
+  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover not complete" >&2
 if echo "${D}" | grep " /mnt/scratch" >/dev/null; then
   echo "${ORANGE}[     INFO ]${NORMAL} using scratch dynamic partition for overrides" >&2
-  H=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
-  [ -n "${H}" ] &&
-    echo "${ORANGE}[     INFO ]${NORMAL} scratch filesystem ${H}"
 fi
+M=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
+[ -n "${M}" ] &&
+  echo "${ORANGE}[     INFO ]${NORMAL} scratch filesystem ${M}"
 for d in ${OVERLAYFS_BACKING}; do
   if adb_sh ls -d /${d}/overlay/system/upper </dev/null >/dev/null 2>/dev/null; then
     echo "${ORANGE}[     INFO ]${NORMAL} /${d}/overlay is setup" >&2
   fi
 done
 
-H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` &&
-  echo "${H}" &&
+echo "${H}" &&
   echo "${D}" &&
   echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
   die  "overlay takeover after remount"
 !(adb_sh grep "^overlay " /proc/mounts </dev/null | grep " overlay ro,") &&
-  !(adb_sh grep " rw," /proc/mounts </dev/null | skip_administrative_mounts) ||
+  !(adb_sh grep " rw," /proc/mounts </dev/null | skip_administrative_mounts data) ||
   die "remount overlayfs missed a spot (ro)"
-
-adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
-  skip_administrative_mounts |
-  grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
-  echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
 
 # Check something
 A="Hello World! $(date)"
@@ -365,8 +386,22 @@ B="`adb_cat /vendor/hello`" ||
   die "vendor hello"
 check_eq "${A}" "${B}" vendor before reboot
 adb_reboot &&
-  adb_wait &&
-  B="`adb_cat /system/hello`" ||
+  adb_wait 2m ||
+  die "reboot after override content added failed"
+
+D=`adb_su df -k </dev/null` &&
+  H=`echo "${D}" | head -1` &&
+  D=`echo "${D}" | grep "^overlay "` ||
+  ( echo "${L}" && false ) ||
+  die -d "overlay takeover failed after reboot"
+
+adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
+  skip_administrative_mounts |
+  grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
+  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
+  echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
+
+B="`adb_cat /system/hello`" ||
   die "re-read system hello after reboot"
 check_eq "${A}" "${B}" system after reboot
 # Only root can read vendor if sepolicy permissions are as expected
