@@ -94,6 +94,30 @@
     },
     {
       "key": {
+        "uuid": "514482f3_9a1127fd",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-26T14:32:25Z",
+      "side": 1,
+      "message": "Thanks, I waited with these pending responses on the other open comments. PTAL at them.",
+      "parentUuid": "cec32010_07e57eb5",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 61
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "de979722_7ba9a2d8",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 6
