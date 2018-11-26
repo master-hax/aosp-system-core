@@ -303,29 +303,33 @@ adb_sh df -k `adb_sh cat /proc/mounts |
 T=`adb_date`
 D=`adb disable-verity 2>&1`
 err=${?}
-echo "${D}"
+echo "${D%?Now reboot your device for settings to take effect}"
 if [ ${err} != 0 -o X"${D}" != X"${D##*setup failed}" ]; then
   die -t ${T} "setup for overlay"
 fi
 if [ X"${D}" != X"${D##*using overlayfs}" ]; then
   echo "${GREEN}[       OK ]${NORMAL} using overlayfs" >&2
 fi
+if [ X"${D}" != X"${D##*Successfully disabled verity}" ]; then
+  echo "${GREEN}[       OK ]${NORMAL} disabled verity" >&2
+fi
+L=`adb_logcat -b all -v nsec -t ${T} 2>&1`
 adb_reboot &&
-  adb_wait &&
-  D=`adb_sh df -k </dev/null` &&
-  H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` &&
-  echo "${H}" &&
-  echo "${D}" ||
-  die "overlay takeover failed"
-echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover before remount not complete" >&2
+  adb_wait 2m ||
+  die "reboot after verity disabled failed"
 
 T=`adb_date`
 adb_root &&
-  adb remount &&
-  D=`adb_sh df -k </dev/null` ||
-  die -t ${T} "can not collect filesystem data"
+  adb remount ||
+  ( echo "${L}" && false ) ||
+  die -t ${T} "adb remount failed"
+D=`adb_sh df -k </dev/null` &&
+  H=`echo "${D}" | head -1` &&
+  D=`echo "${D}" | grep "^overlay "` ||
+  ( echo "${H}" && echo "${D}" && echo "${L}" && false ) ||
+  die -t ${T} "overlay takeover failed"
+echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
+  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover not complete" >&2
 if echo "${D}" | grep " /mnt/scratch" >/dev/null; then
   echo "${ORANGE}[     INFO ]${NORMAL} using scratch dynamic partition for overrides" >&2
   H=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
@@ -338,21 +342,13 @@ for d in ${OVERLAYFS_BACKING}; do
   fi
 done
 
-H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` &&
-  echo "${H}" &&
+echo "${H}" &&
   echo "${D}" &&
   echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
   die  "overlay takeover after remount"
 !(adb_sh grep "^overlay " /proc/mounts </dev/null | grep " overlay ro,") &&
   !(adb_sh grep " rw," /proc/mounts </dev/null | skip_administrative_mounts) ||
   die "remount overlayfs missed a spot (ro)"
-
-adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
-  skip_administrative_mounts |
-  grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
-  echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
 
 # Check something
 A="Hello World! $(date)"
@@ -365,8 +361,16 @@ B="`adb_cat /vendor/hello`" ||
   die "vendor hello"
 check_eq "${A}" "${B}" vendor before reboot
 adb_reboot &&
-  adb_wait &&
-  B="`adb_cat /system/hello`" ||
+  adb_wait 2m ||
+  die "reboot after override content added failed"
+
+adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
+  skip_administrative_mounts |
+  grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
+  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
+  echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
+
+B="`adb_cat /system/hello`" ||
   die "re-read system hello after reboot"
 check_eq "${A}" "${B}" system after reboot
 # Only root can read vendor if sepolicy permissions are as expected
