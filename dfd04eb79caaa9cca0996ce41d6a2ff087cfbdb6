@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "059bba68_65449054",
+        "filename": "init/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-27T07:15:09Z",
+      "side": 1,
+      "message": "nit: put the ; at the end of L64?  Or use \"+\u003d\" in a separate line.\n\nAnd it\u0027s probably better to add a comment.\n\ne.g.,\n# Copy the first-stage init to ROOT (in system.img) for system-as-root devices to work.\nLOCAL_POST_INSTALL_CMD +\u003d ; cp $(TARGET_RAMDISK_OUT)/init $(TARGET_ROOT_OUT)/init",
+      "range": {
+        "startLine": 65,
+        "startChar": 4,
+        "endLine": 65,
+        "endChar": 6
+      },
+      "revId": "dfd04eb79caaa9cca0996ce41d6a2ff087cfbdb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
