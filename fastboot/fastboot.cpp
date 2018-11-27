@@ -98,6 +98,8 @@ static bool g_disable_verification = false;
 
 static const std::string convert_fbe_marker_filename("convert_fbe");
 
+static constexpr char kFastbootHostToolSubVersion[] = "1";
+
 fastboot::FastBootDriver* fb = nullptr;
 
 enum fb_buffer_type {
@@ -1621,7 +1623,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 setvbuf(stdout, nullptr, _IONBF, 0);
                 setvbuf(stderr, nullptr, _IONBF, 0);
             } else if (name == "version") {
-                fprintf(stdout, "fastboot version %s-%s\n", PLATFORM_TOOLS_VERSION, android::build::GetBuildNumber().c_str());
+                fprintf(stdout, "fastboot version %s-%s-%s\n", PLATFORM_TOOLS_VERSION,
+                        android::build::GetBuildNumber().c_str(), kFastbootHostToolSubVersion);
                 fprintf(stdout, "Installed as %s\n", android::base::GetExecutablePath().c_str());
                 return 0;
 #if !defined(_WIN32)
