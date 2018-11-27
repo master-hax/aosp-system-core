@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b191e31c_a0c3c47e",
+        "filename": "init/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-27T08:00:05Z",
+      "side": 1,
+      "message": "nit: seems can be in one line? and no need the trailing \\ ?\n\nLOCAL_POST_INSTALL_CMD +\u003d ; cp $(TARGET_RAMDISK_OUT)/init $(TARGET_ROOT_OUT)/init",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 61
+      },
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
