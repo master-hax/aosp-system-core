@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59a47d51_a648a498",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1205,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-27T21:56:21Z",
+      "side": 1,
+      "message": "matching logical",
+      "range": {
+        "startLine": 1205,
+        "startChar": 65,
+        "endLine": 1205,
+        "endChar": 72
+      },
+      "revId": "97fc00e0282c027b5db561225747c14f8f0f8f34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
