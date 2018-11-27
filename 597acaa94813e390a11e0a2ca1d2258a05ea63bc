@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34a42105_d31370a0",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-27T07:44:58Z",
+      "side": 1,
+      "message": "should check if it\u0027s  mount_fstab_recs_.end() before erase?\n\nAnd probably better to add a comment, e.g.,\n// Skip mounting system partition if it\u0027s already mounted by kernel.",
+      "range": {
+        "startLine": 395,
+        "startChar": 32,
+        "endLine": 395,
+        "endChar": 48
+      },
+      "revId": "597acaa94813e390a11e0a2ca1d2258a05ea63bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
