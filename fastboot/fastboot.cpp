@@ -46,6 +46,7 @@
 #include <chrono>
 #include <functional>
 #include <regex>
+#include <string>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -74,6 +75,7 @@
 #include "usb.h"
 #include "util.h"
 
+using namespace std::literals;
 using android::base::ReadFully;
 using android::base::Split;
 using android::base::Trim;
@@ -1160,7 +1162,7 @@ class FlashAllTool {
     void CollectImages();
     void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
     void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
-    void UpdateSuperPartition();
+    bool UpdateSuperPartition();
 
     const ImageSource& source_;
     std::string slot_override_;
@@ -1199,7 +1201,37 @@ void FlashAllTool::Flash() {
     FlashImages(boot_images_);
 
     // Sync the super partition. This will reboot to userspace fastboot if needed.
-    UpdateSuperPartition();
+    if (UpdateSuperPartition()) {
+        // Skip secondary partitions that are missing or are not logical
+        for (auto it = os_images_.begin(); it != os_images_.end(); ) {
+            const auto& [image, slot] = *it;
+            if (!image->IsSecondary()) {
+               ++it;
+               continue;
+            }
+            auto primary_is_logical = true;
+            auto logical = [&](const std::string& partition) {
+                primary_is_logical = is_logical(partition);
+            };
+            do_for_partitions(image->part_name, ((slot == "b") ? "a" : "b"), logical, false);
+            auto found = false;
+            std::string part;
+            auto matching = [&](const std::string& partition) {
+                if (is_logical(partition) == primary_is_logical) found = true;
+                part = partition;
+            };
+            do_for_partitions(image->part_name, slot, matching, false);
+            if (found) {
+                ++it;
+                continue;
+            }
+            auto missing = part.empty();
+            if (missing) part = image->part_name + "_"s + slot;
+            fprintf(stderr, "Skipping secondary %s partition %s.\n",
+                    missing ? "missing" : "mismatched", part.c_str());
+            it = os_images_.erase(it);
+        }
+    }
 
     // Resize any logical partition to 0, so each partition is reset to 0
     // extents, and will achieve more optimal allocation.
@@ -1288,10 +1320,10 @@ void FlashAllTool::FlashImage(const Image& image, const std::string& slot, fastb
     do_for_partitions(image.part_name, slot, flash, false);
 }
 
-void FlashAllTool::UpdateSuperPartition() {
+bool FlashAllTool::UpdateSuperPartition() {
     int fd = source_.OpenFile("super_empty.img");
     if (fd < 0) {
-        return;
+        return false;
     }
     if (!is_userspace_fastboot()) {
         reboot_to_userspace_fastboot();
@@ -1311,6 +1343,7 @@ void FlashAllTool::UpdateSuperPartition() {
         command += ":wipe";
     }
     fb->RawCommand(command, "Updating super partition");
+    return true;
 }
 
 class ZipImageSource final : public ImageSource {
