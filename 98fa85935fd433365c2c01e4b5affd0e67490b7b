@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "267ab030_5b9e0c22",
+        "filename": "rootdir/etc/ld.config.recovery.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-27T07:31:46Z",
+      "side": 1,
+      "message": "I don\u0027t know how we will remove libc, libdl, libm from the ordinary system partition. \n\nBut anyway for recovery, we can force installing them by explicitly listing \u003clibname\u003e.recovery to PRODUCT_PACKAGES.",
+      "parentUuid": "9977a277_2092a58b",
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2ff91db_3a0cbc2d",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -374,6 +392,30 @@
     },
     {
       "key": {
+        "uuid": "9a320f35_9cec8d57",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-27T07:31:46Z",
+      "side": 1,
+      "message": "No, removing them from soong will invalidate files like llndk.libraries.txt which is in turn depended by other modules. \nBut I also admit that relying on search order is not nice. :(\n\nAnd yes, other case should be updated as well.",
+      "parentUuid": "3c46bb14_ae02b3aa",
+      "range": {
+        "startLine": 314,
+        "startChar": 44,
+        "endLine": 314,
+        "endChar": 61
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd62875f_698d9800",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -552,6 +594,30 @@
       "side": 1,
       "message": "Huh, ok. Then other cases like sphal and rs in [system] only works because the bionic libs are included in LLNDK_LIBRARIES?\n\nEven so, I think we ought to exclude them from LLNDK_LIBRARIES and add explicit links to runtime in those cases too. WDYT?",
       "parentUuid": "26633fdb_1fb4ca2a",
+      "range": {
+        "startLine": 355,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 71
+      },
+      "revId": "98fa85935fd433365c2c01e4b5affd0e67490b7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c6aac49_9d7a3fab",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-11-27T07:31:46Z",
+      "side": 1,
+      "message": "\u003e Then other cases like sphal and rs in [system] only works because the bionic libs are included in LLNDK_LIBRARIES?\n\nyes",
+      "parentUuid": "15074adf_5fafeced",
       "range": {
         "startLine": 355,
         "startChar": 0,
