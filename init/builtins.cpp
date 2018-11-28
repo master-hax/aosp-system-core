@@ -100,6 +100,11 @@ static void ForEachServiceInClass(const std::string& classname, F function) {
 }
 
 static Result<Success> do_class_start(const BuiltinArguments& args) {
+#ifdef ALLOW_DONT_START_CLASS
+    // Do not start a class if it has a property persist.stop.CLASS set to 1.
+    if (android::base::GetBoolProperty("persist.init.dont_start_class." + args[1], false))
+        return Success();
+#endif
     // Starting a class does not start services which are explicitly disabled.
     // They must  be started individually.
     for (const auto& service : ServiceList::GetInstance()) {
@@ -124,6 +129,11 @@ static Result<Success> do_class_reset(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_class_restart(const BuiltinArguments& args) {
+#ifdef ALLOW_DONT_START_CLASS
+    // Do not restart a class if it has a property persist.stop.CLASS set to 1.
+    if (android::base::GetBoolProperty("persist.init.dont_start_class." + args[1], false))
+        return Success();
+#endif
     ForEachServiceInClass(args[1], &Service::Restart);
     return Success();
 }
