@@ -806,7 +806,11 @@ bool MetadataBuilder::ResizePartition(Partition* partition, uint64_t requested_s
 
     if (aligned_size > old_size) {
         if (!GrowPartition(partition, aligned_size)) {
-            return false;
+            if (partition->name() == "scratch") return false;
+            if (!FindPartition("scratch")) return false;
+            RemovePartition("scratch");
+            if (!GrowPartition(partition, aligned_size)) return false;
+            LWARN << "Removed scratch partition to free up space to resize " << partition->name();
         }
     } else if (aligned_size < partition->size()) {
         ShrinkPartition(partition, aligned_size);
