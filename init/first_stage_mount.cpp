@@ -254,7 +254,8 @@ bool FirstStageMount::InitRequiredDevices() {
 bool FirstStageMount::InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata) {
     auto partition_names = GetBlockDevicePartitionNames(metadata);
     for (const auto& partition_name : partition_names) {
-        if (partition_name == lp_metadata_partition_) {
+        const auto super_device = GetMetadataSuperBlockDevice(metadata);
+        if (partition_name == GetBlockDevicePartitionName(*super_device)) {
             continue;
         }
         required_devices_partition_names_.emplace(partition_name);
@@ -292,7 +293,7 @@ bool FirstStageMount::CreateLogicalPartitions() {
     if (!InitDmLinearBackingDevices(*metadata.get())) {
         return false;
     }
-    return android::fs_mgr::CreateLogicalPartitions(*metadata.get());
+    return android::fs_mgr::CreateLogicalPartitions(*metadata.get(), lp_metadata_partition_);
 }
 
 ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const Uevent& uevent) {
