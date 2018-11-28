@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bc16e94_fe490c2b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1534,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-28T01:29:34Z",
+      "side": 1,
+      "message": "This whole test should get the data from the bootloader fastboot variables. Maybe a pre-check to stay away from any other lifting:\n\nif (std::set\u003cstd::string\u003e({\n        \"system\", \"system_a\", \"system_b\",\n        \"vendor\", \"vendor_a\", \"vendor_b\",\n        \"product\", \"product_a\", \"product_b\",\n        \"product_services\", \"product_sevices_a\", \"product_services_b\",\n        \"oem\", \"oem_a\", \"oem_b\",\n        \"odm\", \"odm_a\", \"odm_b\"}).count(partition_name) \u003d\u003d 0) return false;",
+      "range": {
+        "startLine": 1513,
+        "startChar": 0,
+        "endLine": 1534,
+        "endChar": 17
+      },
+      "revId": "ecb717a9c06eb4d6f31574a077160fab9b2bb99c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aab31575_a05cbba2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1816,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-28T01:29:34Z",
+      "side": 1,
+      "message": "This is in exactly the reverse order it needs to be (easiest lightest weight test first).",
+      "range": {
+        "startLine": 1815,
+        "startChar": 20,
+        "endLine": 1816,
+        "endChar": 32
+      },
+      "revId": "ecb717a9c06eb4d6f31574a077160fab9b2bb99c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
