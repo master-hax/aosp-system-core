@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e52d4470_aa06db8e",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1521,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-28T15:53:58Z",
+      "side": 1,
+      "message": "We can be overly cautious with a hard-coded list and require --force or ANDROID_PRODUCT_OUT to be defined to ascertain the _correct_ answers?\n\n    if (std::set\u003cstd::string\u003e({\n        \"system\", \"system_a\", \"system_b\",\n        \"vendor\", \"vendor_a\", \"vendor_b\",\n        \"product\", \"product_a\", \"product_b\",\n        \"product_services\", \"product_sevices_a\", \"product_services_b\",\n        \"oem\", \"oem_a\", \"oem_b\",\n        \"odm\", \"odm_a\", \"odm_b\"}).count(partition_name) \u003d\u003d 0) return false;\n    if (!get_android_product_out()) return true;",
+      "range": {
+        "startLine": 1519,
+        "startChar": 0,
+        "endLine": 1521,
+        "endChar": 5
+      },
+      "revId": "5c21577454229c47060ead487fed0eb4887ce863",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
