@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cf5ba0a0_60eaee13",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c209f0aa_a3c31436",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 61
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "99016c3c_115f787f",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 6
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "a9e55e44_d1891401",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99016c3c_115f787f",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 59
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "05486f7c_e22975d8",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 6
@@ -68,6 +116,30 @@
       "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64c3dbd6_5ba9fd00",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "05486f7c_e22975d8",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 253,
+        "endChar": 60
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -118,6 +190,30 @@
     },
     {
       "key": {
+        "uuid": "e6707070_9b01d352",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "514482f3_9a1127fd",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 61
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de979722_7ba9a2d8",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 6
@@ -141,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "aa630baf_f4674905",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de979722_7ba9a2d8",
+      "range": {
+        "startLine": 147,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 59
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d554a7e9_fae63364",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 6
@@ -161,6 +281,30 @@
       "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31243528_9291c252",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2018-11-28T17:50:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d554a7e9_fae63364",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 60
+      },
+      "revId": "4ffcd4bce02cb33333ab45702c83f704989e9a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
