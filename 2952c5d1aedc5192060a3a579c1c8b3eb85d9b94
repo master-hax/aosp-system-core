@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1dce01b9_a8138011",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-11-28T21:13:29Z",
+      "side": 1,
+      "message": "The answer depends.\n\nOver USB, the answer appears to be no, we\u0027re currently limited by the pipe. (This might change in the future?)\n\nIt\u0027s probably a substantial improvement for emulators, though? 300ish MB/s for a push to /dev/null compared to 700+ of throughput to the SinkService.",
+      "parentUuid": "26c3e3b3_c935fdd2",
+      "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ddd429a8_32789ce4",
         "filename": "adb/Android.bp",
         "patchSetId": 1
