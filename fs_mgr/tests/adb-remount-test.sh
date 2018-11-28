@@ -504,19 +504,70 @@ B="`adb_cat /vendor/hello`" &&
   die "re-read vendor hello after flash vendor"
 check_eq "cat: /vendor/hello: No such file or directory" "${B}" vendor after flash vendor
 
-echo "${GREEN}[ RUN      ]${NORMAL} remove test content (cleanup)" >&2
+if ${uses_dynamic_scratch}; then
 
-T=`adb_date`
-adb remount &&
-  ( adb_sh rm /vendor/hello </dev/null 2>/dev/null || true ) &&
-  adb_sh rm /system/hello </dev/null ||
-  die -t ${T} "cleanup hello"
-B="`adb_cat /system/hello`" &&
-  die "re-read system hello after rm"
-check_eq "cat: /system/hello: No such file or directory" "${B}" after flash rm
-B="`adb_cat /vendor/hello`" &&
-  die "re-read vendor hello after rm"
-check_eq "cat: /vendor/hello: No such file or directory" "${B}" after flash rm
+  echo "${GREEN}[ RUN      ]${NORMAL} test ${scratch_partition} removal when free dynamic space limited" >&2
+
+  which img2simg >/dev/null ||
+    die "missing img2simg host executable"
+  which simg2img >/dev/null ||
+    dir "missing simg2img host executable"
+  vendor_size=`du -ks ${ANDROID_PRODUCT_OUT}/vendor.img 2>/dev/null |
+               sed -n "s/^\([^${SPACE}${TAB}]*\)[${SPACE}${TAB}].*/\1/p"`
+  [ -n "${vendor_size}" ] ||
+    die "can not determine vendor image size"
+  echo "${BLUE}[     INFO ]${NORMAL} vendor size ${vendor_size}KB" >&2
+  total_size=$((${vendor_size} + ${scratch_size}))
+  echo "${BLUE}[     INFO ]${NORMAL} total size ${total_size}KB" >&2
+  simg2img ${ANDROID_PRODUCT_OUT}/vendor.img /tmp/vendor.raw &&
+    dd if=/dev/urandom ibs=1k count=${scratch_size} >>/tmp/vendor.raw 2>/dev/null &&
+    img2simg /tmp/vendor.raw /tmp/vendor.img 4096 &&
+    rm /tmp/vendor.raw &&
+    adb reboot-fastboot &&
+    fastboot_wait 2m &&
+    fastboot flash vendor /tmp/vendor.img ||
+    ( fastboot reboot-fastboot && fastboot flash vendor && fastboot reboot && false ) ||
+    die "fastbootd flash oversized vendor"
+  rm /tmp/vendor.img &&
+  fastboot flash vendor ||
+    ( fastboot reboot-fastboot && fastboot flash vendor && fastboot reboot && false ) ||
+    die "fastbootd reflash vendor"
+  fastboot_getvar partition-type:${scratch_partition} "<empty>" &&
+    fastboot_getvar is-logical:${scratch_partition} "<empty>" &&
+    echo "${GREEN}[       OK ]${NORMAL} ${scratch_partition} deleted" >&2 ||
+    ( fastboot reboot && false ) ||
+    die "${scatch_partition} parameter still exists"
+  fastboot reboot ||
+    die "can not reboot out of fastboot"
+  adb_wait 2m &&
+    adb_root ||
+    die "did not reboot after flash"
+  T=`adb_date`
+  D=`adb disable-verity 2>&1`
+  err=${?}
+  echo "${D}"
+  [ ${err} = 0 ] &&
+    [ X"${D}" = X"${D##*setup failed}" ] &&
+    [ X"${D}" != X"${D##*using overlayfs}" ] ||
+    die -t ${T} "re-setup for overlayfs"
+
+else
+
+  echo "${GREEN}[ RUN      ]${NORMAL} remove test content (cleanup)" >&2
+
+  T=`adb_date`
+  adb remount &&
+    ( adb_sh rm /vendor/hello </dev/null 2>/dev/null || true ) &&
+    adb_sh rm /system/hello </dev/null ||
+    die -t ${T} "cleanup hello"
+  B="`adb_cat /system/hello`" &&
+    die "re-read system hello after rm"
+  check_eq "cat: /system/hello: No such file or directory" "${B}" after flash rm
+  B="`adb_cat /vendor/hello`" &&
+    die "re-read vendor hello after rm"
+  check_eq "cat: /vendor/hello: No such file or directory" "${B}" after flash rm
+
+fi
 
 echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition}" >&2
 
