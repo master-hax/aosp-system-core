@@ -113,6 +113,10 @@ bool HeapWalker::DetectLeaks() {
 
   RecurseRoot(vals);
 
+  if (segv_page_count_ > 0) {
+    MEM_ALOGE("%zu pages skipped due to segfaults", segv_page_count_);
+  }
+
   return true;
 }
 
@@ -168,7 +172,11 @@ void HeapWalker::HandleSegFault(ScopedSignalHandler& handler, int signal, siginf
     handler.reset();
     return;
   }
-  MEM_ALOGW("failed to read page at %p, signal %d", si->si_addr, signal);
+  if (!segv_logged_) {
+    MEM_ALOGW("failed to read page at %p, signal %d", si->si_addr, signal);
+    segv_logged_ = true;
+  }
+  segv_page_count_++;
   if (!MapOverPage(si->si_addr)) {
     handler.reset();
   }
