@@ -251,7 +251,7 @@ bool FirstStageMount::InitRequiredDevices() {
 bool FirstStageMount::InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata) {
     auto partition_names = GetBlockDevicePartitionNames(metadata);
     for (const auto& partition_name : partition_names) {
-        if (partition_name == lp_metadata_partition_) {
+        if (partition_name == "super") {
             continue;
         }
         required_devices_partition_names_.emplace(partition_name);
