@@ -22,6 +22,30 @@
       "revId": "5c21577454229c47060ead487fed0eb4887ce863",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9e48f7bf_5bb278d0",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1521,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-28T17:57:55Z",
+      "side": 1,
+      "message": "So the case this would improve is: a user trying to flash system/product/vendor from a one-off image, without a lunch environment, against a DAP device in the bootloader.\n\nThe difference will be what kind of message you get back. Without this method, you\u0027d see \"Partition not found\" from the bootloader. With this method, you see a message about rebooting to fastbootd. (The retrofit bootloader does that already to protect against overwriting system, so it\u0027s moot there.)\n\nSo, I\u0027d lean toward unblocking the lab bustage first, and doing this as a follow-up (maybe we could scan Images and see if it matches anything + _[ab] and not BootCritical).",
+      "parentUuid": "e52d4470_aa06db8e",
+      "range": {
+        "startLine": 1519,
+        "startChar": 0,
+        "endLine": 1521,
+        "endChar": 5
+      },
+      "revId": "5c21577454229c47060ead487fed0eb4887ce863",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
