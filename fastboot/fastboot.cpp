@@ -165,7 +165,8 @@ static Image images[] = {
 static std::string find_item_given_name(const std::string& img_name) {
     char* dir = getenv("ANDROID_PRODUCT_OUT");
     if (dir == nullptr || dir[0] == '\0') {
-        die("ANDROID_PRODUCT_OUT not set");
+        fprintf(stderr, "ANDROID_PRODUCT_OUT not set\n");
+        return "";
     }
     return std::string(dir) + "/" + img_name;
 }
@@ -873,7 +874,7 @@ static bool load_buf_fd(int fd, struct fastboot_buffer* buf) {
 }
 
 static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
-    unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_BINARY)));
+    unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_CLOEXEC | O_BINARY)));
 
     if (fd == -1) {
         return false;
@@ -1360,7 +1361,8 @@ bool LocalImageSource::ReadFile(const std::string& name, std::vector<char>* out)
 
 int LocalImageSource::OpenFile(const std::string& name) const {
     auto path = find_item_given_name(name);
-    return open(path.c_str(), O_RDONLY);
+    if (path.empty()) return -1;
+    return open(path.c_str(), O_RDONLY | O_CLOEXEC);
 }
 
 static void do_flashall(const std::string& slot_override, bool skip_secondary, bool wipe) {
@@ -1487,7 +1489,7 @@ static void fb_perform_format(
         return;
     }
 
-    fd.reset(open(output.path, O_RDONLY));
+    fd.reset(open(output.path, O_RDONLY | O_CLOEXEC));
     if (fd == -1) {
         fprintf(stderr, "Cannot open generated image: %s\n", strerror(errno));
         return;
