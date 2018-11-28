@@ -84,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "5c3a7a1c_fa0be562",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-28T03:01:57Z",
+      "side": 1,
+      "message": "Just to be clear, this is to allow live-image works on \"ramdisk\" devices.\nOtherwise, ramdisk devices will mount /system on the flash (and override what live-image prepared before invoking first-stage init)",
+      "parentUuid": "afd44d4d_b3364a9e",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc682fb5_a4674bc0",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
