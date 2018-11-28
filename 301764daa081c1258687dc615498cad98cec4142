@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "02e0bbf9_e1ff7520",
+        "filename": "rootdir/etc/ld.config.legacy.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1217797
+      },
+      "writtenOn": "2018-11-28T07:02:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72b18a34_a764ccbe",
+      "range": {
+        "startLine": 14,
+        "startChar": 38,
+        "endLine": 14,
+        "endChar": 46
+      },
+      "revId": "301764daa081c1258687dc615498cad98cec4142",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2fd6c638_e601eae2",
         "filename": "rootdir/etc/ld.config.legacy.txt",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "301764daa081c1258687dc615498cad98cec4142",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1f890c8_f3ee309d",
+        "filename": "rootdir/etc/ld.config.legacy.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1217797
+      },
+      "writtenOn": "2018-11-28T07:02:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2fd6c638_e601eae2",
+      "range": {
+        "startLine": 37,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 13
+      },
+      "revId": "301764daa081c1258687dc615498cad98cec4142",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
