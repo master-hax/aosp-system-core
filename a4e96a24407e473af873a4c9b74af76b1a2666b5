@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1df2f414_8949b756",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-28T19:41:05Z",
+      "side": 1,
+      "message": "I think this will do what you want, without hardcoding \"super\":\n\n    const auto super_device \u003d GetMetadataSuperBlockDevice(metadata);\n    if (partition_name \u003d\u003d GetBlockDevicePartitionName(*super_device)) {\n        continue;\n    }",
+      "revId": "a4e96a24407e473af873a4c9b74af76b1a2666b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
