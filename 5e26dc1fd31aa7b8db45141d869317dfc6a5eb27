@@ -144,6 +144,24 @@
     },
     {
       "key": {
+        "uuid": "89e05752_a42b2d39",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T18:22:10Z",
+      "side": 1,
+      "message": "I see from the bug comments why this is needed.  It\u0027ll be better to have this is_live_image, like Bowgo mentioned below.  It\u0027ll clarify exactly why this is here.",
+      "parentUuid": "62176e56_d5b900d4",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc682fb5_a4674bc0",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
@@ -209,6 +227,24 @@
       "side": 1,
       "message": "You are right. This is required by both system-only-ota and live image. Thank you for the clarification.",
       "parentUuid": "d176b522_12a6f6cf",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f381b573_2dd4bfc4",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T18:22:10Z",
+      "side": 1,
+      "message": "I don\u0027t understand why the system-only-ota case would need this.  ForceNormalBoot() is brand new and only meant for retrofit dm-linear devices that don\u0027t have a ramdisk partition that can be used for first stage init.  No one should ever specify both skip_initramfs and force_normal_boot; that is simply an unsupported combination.",
+      "parentUuid": "100eb91c_72137fe0",
       "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
