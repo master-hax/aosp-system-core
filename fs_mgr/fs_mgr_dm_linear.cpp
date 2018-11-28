@@ -52,11 +52,16 @@ using DmTargetZero = android::dm::DmTargetZero;
 using DmTargetLinear = android::dm::DmTargetLinear;
 
 bool GetPhysicalPartitionDevicePath(const LpMetadataBlockDevice& block_device,
-                                    std::string* result) {
+                                    std::string* result, const std::string& block_device_) {
     // Note: device-mapper will not accept symlinks, so we must use realpath
     // here.
     std::string name = GetBlockDevicePartitionName(block_device);
-    std::string path = "/dev/block/by-name/" + name;
+    std::string path;
+    if (name == "super") {
+        path = block_device_;
+    } else {
+        path = "/dev/block/by-name/" + name;
+    }
     if (!android::base::Realpath(path, result)) {
         PERROR << "realpath: " << path;
         return false;
@@ -65,7 +70,7 @@ bool GetPhysicalPartitionDevicePath(const LpMetadataBlockDevice& block_device,
 }
 
 static bool CreateDmTable(const LpMetadata& metadata, const LpMetadataPartition& partition,
-                          DmTable* table) {
+                          DmTable* table, const std::string& block_device_) {
     uint64_t sector = 0;
     for (size_t i = 0; i < partition.num_extents; i++) {
         const auto& extent = metadata.extents[partition.first_extent_index + i];
@@ -77,7 +82,7 @@ static bool CreateDmTable(const LpMetadata& metadata, const LpMetadataPartition&
             case LP_TARGET_TYPE_LINEAR: {
                 const auto& block_device = metadata.block_devices[extent.target_source];
                 std::string path;
-                if (!GetPhysicalPartitionDevicePath(block_device, &path)) {
+                if (!GetPhysicalPartitionDevicePath(block_device, &path, block_device_)) {
                     LOG(ERROR) << "Unable to complete device-mapper table, unknown block device";
                     return false;
                 }
@@ -102,11 +107,11 @@ static bool CreateDmTable(const LpMetadata& metadata, const LpMetadataPartition&
 
 static bool CreateLogicalPartition(const LpMetadata& metadata, const LpMetadataPartition& partition,
                                    bool force_writable, const std::chrono::milliseconds& timeout_ms,
-                                   std::string* path) {
+                                   std::string* path, const std::string& block_device) {
     DeviceMapper& dm = DeviceMapper::Instance();
 
     DmTable table;
-    if (!CreateDmTable(metadata, partition, &table)) {
+    if (!CreateDmTable(metadata, partition, &table, block_device)) {
         return false;
     }
     if (force_writable) {
@@ -137,7 +142,7 @@ bool CreateLogicalPartitions(const std::string& block_device) {
         LOG(ERROR) << "Could not read partition table.";
         return true;
     }
-    return CreateLogicalPartitions(*metadata.get());
+    return CreateLogicalPartitions(*metadata.get(), block_device);
 }
 
 std::unique_ptr<LpMetadata> ReadCurrentMetadata(const std::string& block_device) {
@@ -145,14 +150,14 @@ std::unique_ptr<LpMetadata> ReadCurrentMetadata(const std::string& block_device)
     return ReadMetadata(block_device.c_str(), slot);
 }
 
-bool CreateLogicalPartitions(const LpMetadata& metadata) {
+bool CreateLogicalPartitions(const LpMetadata& metadata, const std::string& block_device) {
     for (const auto& partition : metadata.partitions) {
         if (!partition.num_extents) {
             LINFO << "Skipping zero-length logical partition: " << GetPartitionName(partition);
             continue;
         }
         std::string path;
-        if (!CreateLogicalPartition(metadata, partition, false, {}, &path)) {
+        if (!CreateLogicalPartition(metadata, partition, false, {}, &path, block_device)) {
             LERROR << "Could not create logical partition: " << GetPartitionName(partition);
             return false;
         }
@@ -171,7 +176,7 @@ bool CreateLogicalPartition(const std::string& block_device, uint32_t metadata_s
     for (const auto& partition : metadata->partitions) {
         if (GetPartitionName(partition) == partition_name) {
             return CreateLogicalPartition(*metadata.get(), partition, force_writable, timeout_ms,
-                                          path);
+                                          path, block_device);
         }
     }
     LERROR << "Could not find any partition with name: " << partition_name;

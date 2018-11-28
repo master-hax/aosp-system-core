@@ -289,7 +289,7 @@ bool FirstStageMount::CreateLogicalPartitions() {
     if (!InitDmLinearBackingDevices(*metadata.get())) {
         return false;
     }
-    return android::fs_mgr::CreateLogicalPartitions(*metadata.get());
+    return android::fs_mgr::CreateLogicalPartitions(*metadata.get(), lp_metadata_partition_);
 }
 
 ListenerAction FirstStageMount::HandleBlockDevice(const std::string& name, const Uevent& uevent) {
