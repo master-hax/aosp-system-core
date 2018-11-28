@@ -6,6 +6,7 @@
 
 # All binaries gets the same configuration 'legacy'
 dir.legacy = /system
+dir.legacy = /product
 dir.legacy = /vendor
 dir.legacy = /odm
 dir.legacy = /sbin
@@ -17,15 +18,18 @@ dir.postinstall = /postinstall
 namespace.default.isolated = false
 
 namespace.default.search.paths  = /system/${LIB}
+namespace.default.search.paths += /product/${LIB}
 namespace.default.search.paths += /vendor/${LIB}
 namespace.default.search.paths += /odm/${LIB}
 
 namespace.default.asan.search.paths  = /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
-namespace.default.asan.search.paths += /data/asan/odm/${LIB}
-namespace.default.asan.search.paths +=           /odm/${LIB}
+namespace.default.asan.search.paths += /data/asan/product/${LIB}
+namespace.default.asan.search.paths +=           /product/${LIB}
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
+namespace.default.asan.search.paths += /data/asan/odm/${LIB}
+namespace.default.asan.search.paths +=           /odm/${LIB}
 
 ###############################################################################
 # Namespace config for binaries under /postinstall.
@@ -37,4 +41,5 @@ namespace.default.asan.search.paths +=           /vendor/${LIB}
 ###############################################################################
 [postinstall]
 namespace.default.isolated = false
-namespace.default.search.paths = /system/${LIB}
+namespace.default.search.paths  = /system/${LIB}
+namepsace.default.search.paths += /product/${LIB}
