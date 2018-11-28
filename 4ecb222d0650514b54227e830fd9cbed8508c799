@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac717942_d86023ce",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-28T20:22:43Z",
+      "side": 1,
+      "message": "Similar to the other patch, I think if you pass metadata to this function, then check:\n\n  if (GetMetadataSuperBlockDevice(metadata) \u003d\u003d \u0026block_device) {\n    path \u003d super_device;\n  } ...\n\nIt will work without hardcoding \"super\".",
+      "revId": "4ecb222d0650514b54227e830fd9cbed8508c799",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a8992d0_154f7b21",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-11-28T20:22:43Z",
+      "side": 1,
+      "message": "Rename to \"super_device\" to avoid the name clash?",
+      "range": {
+        "startLine": 73,
+        "startChar": 61,
+        "endLine": 73,
+        "endChar": 74
+      },
+      "revId": "4ecb222d0650514b54227e830fd9cbed8508c799",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
