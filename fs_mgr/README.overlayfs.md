@@ -89,4 +89,9 @@ Caveats
   if higher than 4.6.
 - *adb enable-verity* will free up overlayfs and as a bonus the
   device will be reverted pristine to before any content was updated.
+- If dynamic partitions runs out of space, resizing a logical
+  partition may delete the scratch partition, if present, without
+  prejudice.  Typically this will happen during OTA, or fastbootd
+  flashing, with the caveat that if only one logical partition is
+  updated, the overrides for other logical partitions may be lost.
 - File bugs or submit fixes for review.

@@ -381,12 +381,16 @@ bool CreatePartitionHandler(FastbootDevice* device, const std::vector<std::strin
     if (!partition) {
         return device->WriteFail("Failed to add partition");
     }
+    auto scratch = builder->FindPartition("scratch");
     if (!builder->ResizePartition(partition, partition_size)) {
         builder->RemovePartition(partition_name);
         return device->WriteFail("Not enough space for partition");
     }
     if (!builder.Write()) {
         return device->WriteFail("Failed to write partition table");
+    }
+    if (scratch && !builder->FindPartition("scratch")) {
+        device->WriteInfo("Deleted scratch partition (overlayfs backing) to make space");
     }
     return device->WriteOkay("Partition created");
 }
@@ -437,11 +441,15 @@ bool ResizePartitionHandler(FastbootDevice* device, const std::vector<std::strin
     if (!partition) {
         return device->WriteFail("Partition does not exist");
     }
+    auto scratch = builder->FindPartition("scratch");
     if (!builder->ResizePartition(partition, partition_size)) {
         return device->WriteFail("Not enough space to resize partition");
     }
     if (!builder.Write()) {
         return device->WriteFail("Failed to write partition table");
+    }
+    if (scratch && !builder->FindPartition("scratch")) {
+        device->WriteInfo("Deleted scratch partition (overlayfs backing) to make space");
     }
     return device->WriteOkay("Partition resized");
 }
