@@ -94,4 +94,9 @@ Caveats
   we land a filesystem on the alternate super without
   differentiating if it is logical or physical, the alternate slot
   metadata will be lost.
+- If dynamic partitions runs out of space, resizing a logical
+  partition may delete the scratch partition, if present, without
+  prejudice.  Typically this will happen during OTA, or fastbootd
+  flashing, with the caveat that if only one logical partition is
+  updated, the overrides for other logical partitions may be lost.
 - File bugs or submit fixes for review.
