@@ -22,6 +22,98 @@
       "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "714380e2_b497147d",
+        "filename": "init/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T00:22:07Z",
+      "side": 1,
+      "message": "This is definitely wrong.  I can make this change for real in another way.",
+      "parentUuid": "b191e31c_a0c3c47e",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 61
+      },
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03b6c0a3_f08f6070",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T00:22:07Z",
+      "side": 1,
+      "message": "Why is system showing up in the fstab in the first place if we are system-as-root?  It simply shouldn\u0027t be there and there shouldn\u0027t be any logic here to handle it if it exists.",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc682fb5_a4674bc0",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T00:22:07Z",
+      "side": 1,
+      "message": "?  ForceNormalBoot directly implies not having SystemAsRoot (wherein SystemAsRoot is defined as the kernel mounting system.img as the rootfs).",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e5e23657_07f563d4",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T00:22:07Z",
+      "side": 1,
+      "message": "This is used to keep the ucontainer ramdisk, right?  That\u0027s the one part that makes sense here.",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7714e309_92397c20",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-28T00:22:07Z",
+      "side": 1,
+      "message": "Where would this file ever exist?",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
