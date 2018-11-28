@@ -46,6 +46,8 @@
 #include <chrono>
 #include <functional>
 #include <regex>
+#include <set>
+#include <string>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -165,7 +167,8 @@ static Image images[] = {
 static std::string find_item_given_name(const std::string& img_name) {
     char* dir = getenv("ANDROID_PRODUCT_OUT");
     if (dir == nullptr || dir[0] == '\0') {
-        die("ANDROID_PRODUCT_OUT not set");
+        fprintf(stderr, "ANDROID_PRODUCT_OUT not set\n");
+        return "";
     }
     return std::string(dir) + "/" + img_name;
 }
@@ -873,7 +876,7 @@ static bool load_buf_fd(int fd, struct fastboot_buffer* buf) {
 }
 
 static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
-    unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_BINARY)));
+    unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_CLOEXEC | O_BINARY)));
 
     if (fd == -1) {
         return false;
@@ -1289,6 +1292,7 @@ void FlashAllTool::FlashImage(const Image& image, const std::string& slot, fastb
 }
 
 void FlashAllTool::UpdateSuperPartition() {
+    // ToDo: following needs to be replaced with a bootloader check
     int fd = source_.OpenFile("super_empty.img");
     if (fd < 0) {
         return;
@@ -1360,7 +1364,8 @@ bool LocalImageSource::ReadFile(const std::string& name, std::vector<char>* out)
 
 int LocalImageSource::OpenFile(const std::string& name) const {
     auto path = find_item_given_name(name);
-    return open(path.c_str(), O_RDONLY);
+    if (path.empty()) return -1;
+    return open(path.c_str(), O_RDONLY | O_CLOEXEC);
 }
 
 static void do_flashall(const std::string& slot_override, bool skip_secondary, bool wipe) {
@@ -1487,7 +1492,7 @@ static void fb_perform_format(
         return;
     }
 
-    fd.reset(open(output.path, O_RDONLY));
+    fd.reset(open(output.path, O_RDONLY | O_CLOEXEC));
     if (fd == -1) {
         fprintf(stderr, "Cannot open generated image: %s\n", strerror(errno));
         return;
@@ -1508,10 +1513,18 @@ failed:
 }
 
 static bool should_flash_in_userspace(const std::string& partition_name) {
+    if (std::set<std::string>({
+        "system", "system_a", "system_b",
+        "vendor", "vendor_a", "vendor_b",
+        "product", "product_a", "product_b",
+        "product_services", "product_sevices_a", "product_services_b",
+        "oem", "oem_a", "oem_b",
+        "odm", "odm_a", "odm_b"}).count(partition_name) == 0) return false;
+    // ToDo: following needs to be replaced with a bootloader check
     auto path = find_item_given_name("super_empty.img");
-    if (path.empty()) {
-        return false;
-    }
+    // assume the worst!
+    if (path.empty()) return true;
+
     auto metadata = android::fs_mgr::ReadFromImageFile(path);
     if (!metadata) {
         return false;
@@ -1810,8 +1823,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
 
             auto flash = [&](const std::string &partition) {
-                if (should_flash_in_userspace(partition) && !is_userspace_fastboot() &&
-                    !force_flash) {
+                if (!force_flash && !is_userspace_fastboot() && should_flash_in_userspace(partition)) {
                     die("The partition you are trying to flash is dynamic, and "
                         "should be flashed via fastbootd. Please run:\n"
                         "\n"
