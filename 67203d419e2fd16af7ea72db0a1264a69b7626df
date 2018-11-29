@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85a9f13b_05e9221d",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-29T00:13:47Z",
+      "side": 1,
+      "message": "Ouch",
+      "range": {
+        "startLine": 413,
+        "startChar": 0,
+        "endLine": 420,
+        "endChar": 9
+      },
+      "revId": "67203d419e2fd16af7ea72db0a1264a69b7626df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
