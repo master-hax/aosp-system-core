@@ -258,6 +258,8 @@ int adbd_main(int server_port) {
         // Listen on default port.
         setup_port(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
     }
+    LOG(ERROR) << "********************************************************************************Starting up mdns advertisement";
+        setup_port(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
 
     D("adbd_main(): pre init_jdwp()");
     init_jdwp();
