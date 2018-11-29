@@ -162,6 +162,24 @@
     },
     {
       "key": {
+        "uuid": "89f9dcea_4ce0e377",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-29T04:22:52Z",
+      "side": 1,
+      "message": "maybe move L390-L402 into another function, e.g., TrySwitchRootToSystem();\n\nThen here, we could have:\nif (getenv(\"INIT_SYSTEM_ROOT_READY\") \u003d\u003d nullptr) {\n  TrySwitchRootToSystem();\n}",
+      "parentUuid": "89e05752_a42b2d39",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc682fb5_a4674bc0",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
@@ -245,6 +263,24 @@
       "side": 1,
       "message": "I don\u0027t understand why the system-only-ota case would need this.  ForceNormalBoot() is brand new and only meant for retrofit dm-linear devices that don\u0027t have a ramdisk partition that can be used for first stage init.  No one should ever specify both skip_initramfs and force_normal_boot; that is simply an unsupported combination.",
       "parentUuid": "100eb91c_72137fe0",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e905b624_fb21faad",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-29T04:22:52Z",
+      "side": 1,
+      "message": "Right, for P (system-as-root) devices, it shouldn\u0027t need ForceNormalBoot(), and agree it\u0027s an unsupported conditions.\n\nI\u0027ve chatted with Howard, basically his original idea is that if \"SystemRootIsReady\" (self-contained), avoid this SwitchRoot(\"/first_stage_ramdisk\"); here. Because SystemRoot is mounted, prior to reach here.\n\nMy suggestion will be, adding a function to check if system root is already done.\ne.g.,\n\n// Checks if system partition is already mounted as root and no longer\n// need first-stage to SwitchRoot(\"/first_stage_ramdisk\") and SwitchRoot(\"/system\").\n// e.g., kernel already mounts system as root, or live-image mounts live system\n// image as root from zram.\n\nbool SystemRootReady(int argc, char** argv) {\n    std::string cmdline;\n    // Live image ucontainer will specify \u0027-system_root_ready\u0027 when invoking first-stage init.\n    if (Contains(argc, argv, \"-system_root_ready\")) {\n        return true;\n    }\n    // For system-as-root devices where system is already mounted by kernel.\n    android::base::ReadFileToString(\"/proc/cmdline\", \u0026cmdline);\n    return cmdline.find(\"skip_initramfs\") !\u003d std::string::npos;\n}\n\nAnd set an env var at L128 above.\nif (SystemRootReady(argc, argv)) {\n  CHECKCALL(setenv(\"INIT_SYSTEM_ROOT_READY\", \"true\", 1));\n}\n\nAnd here, we can have (s/ForceNormalBoot/ForceNormalBootRamdisk to make it clear).\n\nif (getenv(\"INIT_SYSTEM_ROOT_READY\")) {\n    LOG(INFO) \u003c\u003c \"System root is ready!\";\n} else if (ForceNormalBootRamdisk()) {    \n    mkdir(\"/first_stage_ramdisk\", 0755);\n    // SwitchRoot() must be called with a mount point as the target, so we bind mount the\n    // target directory to itself here.\n    if (mount(\"/first_stage_ramdisk\", \"/first_stage_ramdisk\", nullptr, MS_BIND, nullptr) !\u003d 0)\n    {\n        LOG(FATAL) \u003c\u003c \"Could not bind mount /first_stage_ramdisk to itself\";\n    }\n    SwitchRoot(\"/first_stage_ramdisk\");\n}",
+      "parentUuid": "f381b573_2dd4bfc4",
       "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
