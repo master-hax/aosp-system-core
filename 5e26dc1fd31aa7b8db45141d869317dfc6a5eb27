@@ -180,6 +180,24 @@
     },
     {
       "key": {
+        "uuid": "321148dd_99db57eb",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-29T17:19:44Z",
+      "side": 1,
+      "message": "We could do that.  But for now with the new design for the live image, this will be unneeded, so we can drop it entirely?",
+      "parentUuid": "89f9dcea_4ce0e377",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc682fb5_a4674bc0",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
@@ -281,6 +299,24 @@
       "side": 1,
       "message": "Right, for P (system-as-root) devices, it shouldn\u0027t need ForceNormalBoot(), and agree it\u0027s an unsupported conditions.\n\nI\u0027ve chatted with Howard, basically his original idea is that if \"SystemRootIsReady\" (self-contained), avoid this SwitchRoot(\"/first_stage_ramdisk\"); here. Because SystemRoot is mounted, prior to reach here.\n\nMy suggestion will be, adding a function to check if system root is already done.\ne.g.,\n\n// Checks if system partition is already mounted as root and no longer\n// need first-stage to SwitchRoot(\"/first_stage_ramdisk\") and SwitchRoot(\"/system\").\n// e.g., kernel already mounts system as root, or live-image mounts live system\n// image as root from zram.\n\nbool SystemRootReady(int argc, char** argv) {\n    std::string cmdline;\n    // Live image ucontainer will specify \u0027-system_root_ready\u0027 when invoking first-stage init.\n    if (Contains(argc, argv, \"-system_root_ready\")) {\n        return true;\n    }\n    // For system-as-root devices where system is already mounted by kernel.\n    android::base::ReadFileToString(\"/proc/cmdline\", \u0026cmdline);\n    return cmdline.find(\"skip_initramfs\") !\u003d std::string::npos;\n}\n\nAnd set an env var at L128 above.\nif (SystemRootReady(argc, argv)) {\n  CHECKCALL(setenv(\"INIT_SYSTEM_ROOT_READY\", \"true\", 1));\n}\n\nAnd here, we can have (s/ForceNormalBoot/ForceNormalBootRamdisk to make it clear).\n\nif (getenv(\"INIT_SYSTEM_ROOT_READY\")) {\n    LOG(INFO) \u003c\u003c \"System root is ready!\";\n} else if (ForceNormalBootRamdisk()) {    \n    mkdir(\"/first_stage_ramdisk\", 0755);\n    // SwitchRoot() must be called with a mount point as the target, so we bind mount the\n    // target directory to itself here.\n    if (mount(\"/first_stage_ramdisk\", \"/first_stage_ramdisk\", nullptr, MS_BIND, nullptr) !\u003d 0)\n    {\n        LOG(FATAL) \u003c\u003c \"Could not bind mount /first_stage_ramdisk to itself\";\n    }\n    SwitchRoot(\"/first_stage_ramdisk\");\n}",
       "parentUuid": "f381b573_2dd4bfc4",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e143e7a1_d8d3c285",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-29T17:19:44Z",
+      "side": 1,
+      "message": "If we were continuing with android-live this may be something to consider.  But given that we\u0027re not, we shouldn\u0027t make any changes here as this combination is fundamentally unsupported.\n\nFrom what I understand of the new live image design, this code should execute exactly as is.  Regardless of if we\u0027re booting into a live image or not, if we\u0027re booting through recovery, we should do this SwitchRoot to clean the environment before proceeding.",
+      "parentUuid": "e905b624_fb21faad",
       "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
