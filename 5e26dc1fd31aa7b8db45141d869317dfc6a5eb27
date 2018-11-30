@@ -198,6 +198,24 @@
     },
     {
       "key": {
+        "uuid": "348724bd_27a979d5",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-11-30T08:57:56Z",
+      "side": 1,
+      "message": "Yup, this is unneeded for new live image design.",
+      "parentUuid": "321148dd_99db57eb",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc682fb5_a4674bc0",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
