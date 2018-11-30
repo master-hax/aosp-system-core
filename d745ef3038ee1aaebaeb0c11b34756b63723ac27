@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7c3a228b_babc527b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-11-30T17:38:52Z",
+      "side": 1,
+      "message": "For the \"update-engine\" here, did you mean the system/extras/cppreopts/cppreopts.rc in your previous comment? If so, that doesn\u0027t relate to update_engine. cpppreopts is called on a fresh boot (i.e. out-of-box, or after factory reset). Failing to finish that doesn\u0027t fail boot or OTA.\n\n(An unrelated question is maybe that mount is probably broken with DAP? Either on retrofit or native DAP, or even both...)",
+      "parentUuid": "9bc3f9a8_cb20321b",
+      "range": {
+        "startLine": 637,
+        "startChar": 0,
+        "endLine": 642,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d0599dd2_ec658652",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2018-11-30T17:03:15Z",
       "side": 1,
       "message": "A) is this OK, or is there an alternate better way of telling if we are in recovery or fastbootd?\nB) is there a way we can tell if update-engine _owns_ alternate super?",
+      "range": {
+        "startLine": 777,
+        "startChar": 4,
+        "endLine": 783,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc9e87ef_ed5b3556",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 783,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-11-30T17:38:52Z",
+      "side": 1,
+      "message": "For A), maybe check fastbootd service state?",
+      "parentUuid": "d0599dd2_ec658652",
       "range": {
         "startLine": 777,
         "startChar": 4,
