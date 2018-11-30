@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bc3f9a8_cb20321b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-30T17:03:15Z",
+      "side": 1,
+      "message": "update-engine is hard coded to use ext4 on system_b alternate, overlayfs lands f2fs if tools are available to keep flash wear down and this conflicts. overlayfs will mount ext4 or f2fs, it does not care.",
+      "range": {
+        "startLine": 637,
+        "startChar": 0,
+        "endLine": 642,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0599dd2_ec658652",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 783,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-11-30T17:03:15Z",
+      "side": 1,
+      "message": "A) is this OK, or is there an alternate better way of telling if we are in recovery or fastbootd?\nB) is there a way we can tell if update-engine _owns_ alternate super?",
+      "range": {
+        "startLine": 777,
+        "startChar": 4,
+        "endLine": 783,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
