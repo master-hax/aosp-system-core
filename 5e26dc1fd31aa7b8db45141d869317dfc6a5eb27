@@ -323,6 +323,24 @@
     },
     {
       "key": {
+        "uuid": "c4f5f249_f63617d7",
+        "filename": "init/init_first_stage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1135739
+      },
+      "writtenOn": "2018-11-30T05:20:39Z",
+      "side": 1,
+      "message": "Hi Bowgo,\nYes, it looks better by using envvar. Good refining.\n\nHi Tom, \nI don\u0027t have a strong opinion here but in general I\u0027d prefer to check it explicitly and not to depends on any additional implicit knowledge. The external environment may change and break it without caution.",
+      "parentUuid": "e143e7a1_d8d3c285",
+      "revId": "5e26dc1fd31aa7b8db45141d869317dfc6a5eb27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e5e23657_07f563d4",
         "filename": "init/init_first_stage.cpp",
         "patchSetId": 3
