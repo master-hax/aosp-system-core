@@ -117,6 +117,30 @@
       "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbaa9149_0707f5d1",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 783,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-30T19:02:03Z",
+      "side": 1,
+      "message": "What exactly are you trying to check for here?  Just that you\u0027re in recovery/fastbootd?  You can check for the presence of /system/bin/recovery like we do in init and fs_mgr already, https://cs.corp.google.com/android/system/core/init/first_stage_mount.cpp?type\u003dcs\u0026q\u003d%22/system/bin/recovery%22\u0026sq\u003dpackage:%5Eandroid$\u0026g\u003d0\u0026l\u003d128.\n\nforce_normal_boot causes first stage init to chroot to a clean root environment almost immediately upon booting, so everything should be identical to the normal ramdisk boot before fs_mgr is ever called.  In other words, you should never need to check force_normal_boot.",
+      "parentUuid": "bc9e87ef_ed5b3556",
+      "range": {
+        "startLine": 777,
+        "startChar": 4,
+        "endLine": 783,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
