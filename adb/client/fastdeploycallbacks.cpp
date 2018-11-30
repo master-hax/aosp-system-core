@@ -86,6 +86,7 @@ void DeployAgentFileCallback::OnStderr(const char* buffer, int length) {
 int DeployAgentFileCallback::Done(int status) {
     if (mpStatusCode != NULL) {
         *mpStatusCode = status;
+        return *mpStatusCode;
     }
     return 0;
 }
@@ -113,6 +114,7 @@ void DeployAgentBufferCallback::OnStderr(const char* buffer, int length) {
 int DeployAgentBufferCallback::Done(int status) {
     if (mpStatusCode != NULL) {
         *mpStatusCode = status;
+        return *mpStatusCode;
     }
     return 0;
 }
