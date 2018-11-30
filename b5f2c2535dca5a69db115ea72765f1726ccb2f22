@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1704ab4_2fe22259",
+        "filename": "fs_mgr/fs_mgr_dm_linear.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-11-30T22:28:05Z",
+      "side": 1,
+      "message": "Out parameters should come after the in parameters, here and CreateDmTable() and CreateLogicalPartition().\n\nhttps://google.github.io/styleguide/cppguide.html#Output_Parameters",
+      "revId": "b5f2c2535dca5a69db115ea72765f1726ccb2f22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
