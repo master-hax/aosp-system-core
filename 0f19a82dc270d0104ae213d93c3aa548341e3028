@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "0b5862ff_ca308566",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-30T08:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "105ff29f_c8a328b7",
+      "range": {
+        "startLine": 100,
+        "startChar": 13,
+        "endLine": 100,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a5e83b6_ff4879c8",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
@@ -237,6 +261,30 @@
     },
     {
       "key": {
+        "uuid": "770573fb_c8638f86",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-30T08:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39569788_cccef016",
+      "range": {
+        "startLine": 665,
+        "startChar": 0,
+        "endLine": 666,
+        "endChar": 23
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3badf589_c77d5a60",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
@@ -319,6 +367,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "454a1f21_bd0806bc",
+      "range": {
+        "startLine": 671,
+        "startChar": 0,
+        "endLine": 687,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ff1d8b8_1a9c6872",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 687,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-30T08:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ca16f1a_53fd0bc1",
       "range": {
         "startLine": 671,
         "startChar": 0,
@@ -425,6 +497,30 @@
     },
     {
       "key": {
+        "uuid": "43a16033_0a14c48f",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-30T08:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0599fd2_b1c9f018",
+      "range": {
+        "startLine": 405,
+        "startChar": 58,
+        "endLine": 405,
+        "endChar": 66
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aaff6ca2_1476231e",
         "filename": "debuggerd/tombstoned/tombstoned.cpp",
         "patchSetId": 4
@@ -469,6 +565,30 @@
       "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f8a68a1_38a7c9dc",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2018-11-30T08:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "241821f2_e47ab8d9",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 414,
+        "endChar": 3
+      },
+      "revId": "0f19a82dc270d0104ae213d93c3aa548341e3028",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
