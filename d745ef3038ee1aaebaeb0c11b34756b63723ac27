@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "d068fdab_11a4f4ce",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-11-30T17:47:37Z",
+      "side": 1,
+      "message": "For the \"unrelated question\", found it\u0027s already being tracked in b/113182233: retrofit device is fine, since system_b is non-logical at the point of first boot. The mount in DAP world needs additional works.",
+      "parentUuid": "7c3a228b_babc527b",
+      "range": {
+        "startLine": 637,
+        "startChar": 0,
+        "endLine": 642,
+        "endChar": 0
+      },
+      "revId": "d745ef3038ee1aaebaeb0c11b34756b63723ac27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d0599dd2_ec658652",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 5
