@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f22a64a1_8ebf2551",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "use fs_mgr_priv.h and LERROR and PERROR instead",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 33
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ac60d1f_258be69c",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "nit: auto should be good enough for many of the variable definitions ...",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 25
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee015f1c_d78a8fec",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "nit: eg: auto here is better because this is actually std::string::size_t ...",
+      "range": {
+        "startLine": 42,
+        "startChar": 8,
+        "endLine": 42,
+        "endChar": 14
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5e5d98f_2e351057",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "break; instead?",
+      "range": {
+        "startLine": 43,
+        "startChar": 40,
+        "endLine": 43,
+        "endChar": 55
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2488b90a_16e6c33a",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "is there an sepolicy that needs to be applied setfscreatecon() to the node?",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 66
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b11f40f_c4ec8d9f",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "re: KISS:\n\n  if (fs_mgr_get_entry_for_mount_point(fstab.get(), SYSTEM_ROOT) \u003d\u003d nullptr) {\t\n    return \"/\";\n  }\n  return SYSTEM_ROOT;",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 5
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0aee661d_3a93f7ec",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "There is no means to reset this flag (I expect it is not needed, maybe state thus?) ...",
+      "range": {
+        "startLine": 153,
+        "startChar": 11,
+        "endLine": 154,
+        "endChar": 1
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29698b2f_183bc6c6",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-03T22:26:33Z",
+      "side": 1,
+      "message": "nit: to match the naming pattern maybe fs_mgr_get_entry_for_path()",
+      "range": {
+        "startLine": 27,
+        "startChar": 31,
+        "endLine": 27,
+        "endChar": 43
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
