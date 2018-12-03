@@ -578,6 +578,14 @@ bool MetadataBuilder::GrowPartition(Partition* partition, uint64_t aligned_size)
     CHECK_NE(sectors_per_block, 0);
     CHECK(sectors_needed % sectors_per_block == 0);
 
+    bool allocate_reverse = false;
+    if (IsABDevice() && GetPartitionSlotSuffix(partition->name()) == "_b") {
+        // Allocate "a" partitions top-down and "b" partitions bottom-up, to
+        // minimize fragmentation during OTA.
+        std::reverse(free_regions.begin(), free_regions.end());
+        allocate_reverse = true;
+    }
+
     // Find gaps that we can use for new extents. Note we store new extents in a
     // temporary vector, and only commit them if we are guaranteed enough free
     // space.
@@ -602,7 +610,15 @@ bool MetadataBuilder::GrowPartition(Partition* partition, uint64_t aligned_size)
         uint64_t sectors = std::min(sectors_needed, region.length());
         CHECK(sectors % sectors_per_block == 0);
 
-        auto extent = std::make_unique<LinearExtent>(sectors, region.device_index, region.start);
+        uint64_t region_start;
+        if (allocate_reverse && region.length() > sectors) {
+            region_start = region.end - sectors_needed;
+        } else {
+            region_start = region.start;
+        }
+        CHECK(region_start + sectors <= region.end);
+
+        auto extent = std::make_unique<LinearExtent>(sectors, region.device_index, region_start);
         new_extents.push_back(std::move(extent));
         sectors_needed -= sectors;
         if (!sectors_needed) {

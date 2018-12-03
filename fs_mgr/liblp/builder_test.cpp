@@ -720,3 +720,22 @@ TEST_F(BuilderTest, UnsuffixedPartitions) {
     ASSERT_EQ(builder->AddPartition("system", 0), nullptr);
     ASSERT_NE(builder->AddPartition("system_a", 0), nullptr);
 }
+
+TEST_F(BuilderTest, ABExtents) {
+    // A and B slots should be allocated from separate halves of the partition,
+    // to mitigate allocating too many extents. (b/120433288)
+    MetadataBuilder::OverrideABForTesting(true);
+    auto builder = MetadataBuilder::New(10_GiB, 65536, 2);
+    ASSERT_NE(builder, nullptr);
+    Partition* system_a = builder->AddPartition("system_a", 0);
+    ASSERT_NE(system_a, nullptr);
+    Partition* system_b = builder->AddPartition("system_b", 0);
+    ASSERT_NE(system_b, nullptr);
+    ASSERT_TRUE(builder->ResizePartition(system_a, 2_GiB));
+    ASSERT_TRUE(builder->ResizePartition(system_b, 2_GiB));
+    ASSERT_TRUE(builder->ResizePartition(system_a, 3_GiB));
+    EXPECT_EQ(system_a->extents().size(), static_cast<size_t>(1));
+    EXPECT_EQ(system_b->extents().size(), static_cast<size_t>(1));
+    ASSERT_TRUE(builder->ResizePartition(system_b, 6_GiB));
+    EXPECT_EQ(system_b->extents().size(), static_cast<size_t>(2));
+}
