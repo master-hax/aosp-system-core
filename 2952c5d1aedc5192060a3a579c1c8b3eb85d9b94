@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "d9831ff2_aad95518",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-03T19:34:19Z",
+      "side": 1,
+      "message": "(marking as resolved)",
+      "parentUuid": "a105b69c_f1e9898a",
+      "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ddd429a8_32789ce4",
         "filename": "adb/Android.bp",
         "patchSetId": 1
@@ -87,6 +105,24 @@
       "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f95ad21b_6dd1c2ee",
+        "filename": "adb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-03T19:34:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ddd429a8_32789ce4",
+      "revId": "2952c5d1aedc5192060a3a579c1c8b3eb85d9b94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
