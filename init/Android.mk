@@ -101,11 +101,18 @@ endif
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := init_system
+LOCAL_MODULE_CLASS := FAKE
+LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)
+LOCAL_MODULE_STEM := init
 LOCAL_REQUIRED_MODULES := \
    init_second_stage \
 
 LOCAL_POST_INSTALL_CMD := ln -sf /system/bin/init $(TARGET_ROOT_OUT)/init
-include $(BUILD_PHONY_PACKAGE)
+include $(BUILD_SYSTEM)/base_rules.mk
+
+$(LOCAL_BUILT_MODULE):
+	$(hide) mkdir -p $(dir $@)
+	$(hide) touch $@
 
 include $(CLEAR_VARS)
 
