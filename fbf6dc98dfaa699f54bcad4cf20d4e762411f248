@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07810543_a4536939",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-04T21:21:36Z",
+      "side": 1,
+      "message": "why is this a `char[]` rather than a `struct ext4_super_block`?",
+      "range": {
+        "startLine": 735,
+        "startChar": 23,
+        "endLine": 735,
+        "endChar": 27
+      },
+      "revId": "fbf6dc98dfaa699f54bcad4cf20d4e762411f248",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
