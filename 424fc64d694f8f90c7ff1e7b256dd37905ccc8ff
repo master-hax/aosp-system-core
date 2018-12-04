@@ -71,6 +71,23 @@
     },
     {
       "key": {
+        "uuid": "e3f3121d_c91015ca",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-04T17:35:18Z",
+      "side": 1,
+      "message": "This if statement should be inverted.  Better to check that fs_type isn\u0027t equal to any of the known file system types and return the error in the \u0027true\u0027 branch, then let the expected case continue without the additional indent.",
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "229dedca_0f6b1506",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -220,6 +237,30 @@
       "writtenOn": "2018-12-04T04:53:26Z",
       "side": 1,
       "message": "we\u0027re trying to deprecate C-style struct.\nIs it possible to switch to C++ Fstab for it? (Or the fs_mgr_roots.h is used by some existing C clients?)\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/837552",
+      "range": {
+        "startLine": 27,
+        "startChar": 44,
+        "endLine": 27,
+        "endChar": 63
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed4311a8_34b757f2",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-04T17:35:18Z",
+      "side": 1,
+      "message": "+1.  If this code is moving and getting some changes in the process, it\u0027s better to use the C++ fstab struct so we don\u0027t need to convert it later.  I was coincidentally modifying some of roots.cpp in recovery already as it seemed to be a low hanging fruit for the conversion.",
+      "parentUuid": "98acf9d4_121e91ae",
       "range": {
         "startLine": 27,
         "startChar": 44,
