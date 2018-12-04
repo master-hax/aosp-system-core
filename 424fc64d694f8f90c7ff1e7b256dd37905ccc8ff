@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98acf9d4_121e91ae",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-12-04T04:53:26Z",
+      "side": 1,
+      "message": "we\u0027re trying to deprecate C-style struct.\nIs it possible to switch to C++ Fstab for it? (Or the fs_mgr_roots.h is used by some existing C clients?)\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/837552",
+      "range": {
+        "startLine": 27,
+        "startChar": 44,
+        "endLine": 27,
+        "endChar": 63
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
