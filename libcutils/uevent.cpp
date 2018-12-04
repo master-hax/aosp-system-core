@@ -98,6 +98,7 @@ int uevent_open_socket(int buf_sz, bool passcred) {
     int buf_sz_readback = 0;
     socklen_t optlen = sizeof(buf_sz_readback);
     int s;
+    int rc;
 
     memset(&addr, 0, sizeof(addr));
     addr.nl_family = AF_NETLINK;
@@ -117,7 +118,8 @@ int uevent_open_socket(int buf_sz, bool passcred) {
      * case we don't have CAP_NET_ADMIN. This is the case, for example, for
      * healthd. */
     if (buf_sz_readback < 2 * buf_sz) {
-        if (setsockopt(s, SOL_SOCKET, SO_RCVBUFFORCE, &buf_sz, sizeof(buf_sz)) < 0) {
+        rc = setsockopt(s, SOL_SOCKET, SO_RCVBUFFORCE, &buf_sz, sizeof(buf_sz);
+        if (rc < 0 && rc != -EPERM) {
             close(s);
             return -1;
         }
