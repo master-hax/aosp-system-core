@@ -2,6 +2,213 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a5b3750_9cf47f3c",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "Android C++ coding standard is k\u003cCamelCase\u003e\n\nnit: There are only two users, within a line of each other, consider just using the strings in-place (one is passed as a const char*, the other generates an rval std::string, so compiler/optimizer may appreciate it?)",
+      "range": {
+        "startLine": 30,
+        "startChar": 29,
+        "endLine": 30,
+        "endChar": 40
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07bbec33_5a76b4b9",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "nit: manage scope, initialize shortly before use on line 100. This code is unused by line 73, 78, 83, 91 and 97.",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 5
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7849e86_0dc85e4e",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "Why create this if you do not mount the filesystem on 104?\n\nNB: mkdir is performed as part of fs_mgr_do_mount_one().",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 66
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "229dedca_0f6b1506",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "_almost_ like fs_mgr_do_mount_one but with an override for mount_point. To take advantage of the common security, logging and error detection/reporting, if it will work maybe extend that one to:\n\nint fs_mgr_do_mount_one(fstab_rec* rec, const char* mount_point \u003d nullptr);\n\nand use that here?",
+      "range": {
+        "startLine": 104,
+        "startChar": 21,
+        "endLine": 104,
+        "endChar": 92
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99740da6_67a36410",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 109,
+        "startChar": 25,
+        "endLine": 109,
+        "endChar": 96
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1f471f8_abe3a6de",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "nit: In fs_mgr this var is usually called \u0027rec\u0027 (amongst others), use a longer name please.",
+      "range": {
+        "startLine": 128,
+        "startChar": 28,
+        "endLine": 128,
+        "endChar": 29
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1faf1c5b_e8c946ed",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "minor nit: C++ and std::string_literals?\n\n    if (\"ramdisk\"s \u003d\u003d rec-\u003efs_type) {",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 45
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9cffa556_df547e03",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "Is there a need (by any of your callers) for the companion to int fs_mgr_ensure_path_mounted(struct fstab* fstab, const char* path, const char* mount_point) which allows mount_point to be overridden.\n\nThis means that if a mount was requested to a different location than fstab it will not be removed. fs_mgr_get_entry_for_mount_point does not return a value since the _alternate_ mount point is different. Or, maybe you need an alternate means (fs_mgr_update_logical_partition(v), then realpath(v-\u003eblk_device)) to discover a match to fs_mgr_fstab_rec_for_path for incoming fstab and path?",
+      "range": {
+        "startLine": 145,
+        "startChar": 81,
+        "endLine": 145,
+        "endChar": 95
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc938ce5_68c1ffdd",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-04T16:31:03Z",
+      "side": 1,
+      "message": "nit: auto",
+      "range": {
+        "startLine": 145,
+        "startChar": 4,
+        "endLine": 145,
+        "endChar": 21
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "98acf9d4_121e91ae",
         "filename": "fs_mgr/include/fs_mgr_roots.h",
         "patchSetId": 3
