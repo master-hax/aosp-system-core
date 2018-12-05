@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b2e831a_1753cdd4",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-05T22:05:01Z",
+      "side": 1,
+      "message": "Same question as below.",
+      "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6de808f8_13e2ea86",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-05T22:05:01Z",
+      "side": 1,
+      "message": "Is this used by the platform too?  Given it says \u0027msm\u0027 I figure it\u0027s QC specific.  Perhaps this should be moved to a device ueventd.rc too?",
+      "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
