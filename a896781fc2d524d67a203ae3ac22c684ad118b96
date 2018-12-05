@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "09242db8_8b78881c",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1041833
+      },
+      "writtenOn": "2018-12-05T20:48:30Z",
+      "side": 1,
+      "message": "Counterpoint: I wasn\u0027t sure and wanted the minimal change. Since this is exposed in logging.h, it could be called outside of LogMessage.",
+      "parentUuid": "8d212673_f44510fa",
+      "revId": "a896781fc2d524d67a203ae3ac22c684ad118b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3880cc47_8fa1966b",
         "filename": "base/logging.cpp",
         "patchSetId": 1
