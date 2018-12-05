@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85e0e9bf_ee0409ee",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-12-05T08:28:43Z",
+      "side": 1,
+      "message": "put this in front of /data/asan/system/${LIB}",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 70
+      },
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3dff411_e0e0c42f",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-12-05T08:28:43Z",
+      "side": 1,
+      "message": "you don\u0027t need to add it here because these are for vendor process and netd isn\u0027t a vendor process.",
+      "range": {
+        "startLine": 342,
+        "startChar": 0,
+        "endLine": 367,
+        "endChar": 0
+      },
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6076720b_aee4c188",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-12-05T08:28:43Z",
+      "side": 1,
+      "message": "No need to touch here and below.",
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
