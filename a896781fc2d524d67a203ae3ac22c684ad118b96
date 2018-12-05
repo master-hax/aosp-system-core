@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "8d212673_f44510fa",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-05T20:36:34Z",
+      "side": 1,
+      "message": "Drop this line then too?  It would be a no-op?",
+      "revId": "a896781fc2d524d67a203ae3ac22c684ad118b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3880cc47_8fa1966b",
         "filename": "base/logging.cpp",
         "patchSetId": 1
