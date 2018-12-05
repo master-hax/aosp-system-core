@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c6533178_e863517a",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1343198
+      },
+      "writtenOn": "2018-12-05T09:14:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85e0e9bf_ee0409ee",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 70
+      },
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e3dff411_e0e0c42f",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "8fb616cd_089ddcac",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1343198
+      },
+      "writtenOn": "2018-12-05T09:14:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3dff411_e0e0c42f",
+      "range": {
+        "startLine": 342,
+        "startChar": 0,
+        "endLine": 367,
+        "endChar": 0
+      },
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6076720b_aee4c188",
         "filename": "rootdir/etc/ld.config.vndk_lite.txt",
         "patchSetId": 3
@@ -62,6 +110,24 @@
       "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "703dd169_47b15533",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1343198
+      },
+      "writtenOn": "2018-12-05T09:14:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6076720b_aee4c188",
+      "revId": "760a759afd7aa743ca0a0a0bdf14595b9a932233",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
