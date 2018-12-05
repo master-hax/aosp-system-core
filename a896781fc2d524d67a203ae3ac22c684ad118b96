@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3880cc47_8fa1966b",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-05T19:57:16Z",
+      "side": 1,
+      "message": "maybe explicitly say \"so that we get the whole message\" in case this is misread as a performance thing that doesn\u0027t matter?",
+      "revId": "a896781fc2d524d67a203ae3ac22c684ad118b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
