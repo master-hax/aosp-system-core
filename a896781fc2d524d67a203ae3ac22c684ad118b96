@@ -51,6 +51,24 @@
       "revId": "a896781fc2d524d67a203ae3ac22c684ad118b96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd1fe680_264228a0",
+        "filename": "base/logging.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 1041833
+      },
+      "writtenOn": "2018-12-05T20:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3880cc47_8fa1966b",
+      "revId": "a896781fc2d524d67a203ae3ac22c684ad118b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
