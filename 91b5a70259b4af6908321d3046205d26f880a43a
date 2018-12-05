@@ -51,6 +51,24 @@
       "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e0c785e_0b6a5d25",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-05T22:49:31Z",
+      "side": 1,
+      "message": "Sounds good to me.  Definitely worth cleaning them up if you\u0027re doing all of the rest of this work already.  It should be easy to just move them into the device specific ueventd files.",
+      "parentUuid": "aa62a423_21f84472",
+      "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
