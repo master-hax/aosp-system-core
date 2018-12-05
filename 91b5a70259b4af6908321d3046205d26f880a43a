@@ -33,6 +33,24 @@
       "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa62a423_21f84472",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2018-12-05T22:11:53Z",
+      "side": 1,
+      "message": "I removed the other rules here because the dev nodes don\u0027t exist on Pixels. This one is actually present on the device though. So I wasn\u0027t sure if it\u0027s safe to remove this rule. I\u0027ll address it in a followup.",
+      "parentUuid": "6de808f8_13e2ea86",
+      "revId": "91b5a70259b4af6908321d3046205d26f880a43a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
