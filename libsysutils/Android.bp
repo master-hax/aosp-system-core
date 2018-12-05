@@ -28,6 +28,34 @@ cc_library_shared {
     export_include_dirs: ["include"],
 }
 
+cc_library_static {
+    name: "libsysutils_static",
+    vendor_available: true,
+    vndk: {
+        enabled: true,
+    },
+
+    srcs: [
+        "src/SocketListener.cpp",
+        "src/FrameworkListener.cpp",
+        "src/NetlinkListener.cpp",
+        "src/NetlinkEvent.cpp",
+        "src/FrameworkCommand.cpp",
+        "src/SocketClient.cpp",
+        "src/ServiceManager.cpp",
+    ],
+
+    cflags: ["-Werror"],
+
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "liblog",
+    ],
+
+    export_include_dirs: ["include"],
+}
+
 cc_test {
     name: "libsysutils_tests",
     test_suites: ["device-tests"],
