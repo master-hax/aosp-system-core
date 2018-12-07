@@ -98,11 +98,14 @@ const std::unique_ptr<DmTable> DeviceMapper::table(const std::string& /* name */
     return nullptr;
 }
 
-DmDeviceState DeviceMapper::GetState(const std::string& name) const {
+DmDeviceState DeviceMapper::GetState(const std::string& name, bool* readonly) const {
     struct dm_ioctl io;
     InitIo(&io, name);
     if (ioctl(fd_, DM_DEV_STATUS, &io) < 0) {
         return DmDeviceState::INVALID;
+    }
+    if (readonly) {
+        *readonly = !!(io.flags & DM_READONLY_FLAG);
     }
     if ((io.flags & DM_ACTIVE_PRESENT_FLAG) && !(io.flags & DM_SUSPEND_FLAG)) {
         return DmDeviceState::ACTIVE;

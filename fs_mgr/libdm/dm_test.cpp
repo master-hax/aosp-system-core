@@ -118,6 +118,8 @@ class TempDevice {
 };
 
 TEST(libdm, DmLinear) {
+    auto& dm = DeviceMapper::Instance();
+
     unique_fd tmp1(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp1, 0);
     unique_fd tmp2(CreateTempFile("file_2", 4096));
@@ -146,6 +148,10 @@ TEST(libdm, DmLinear) {
     ASSERT_FALSE(dev.path().empty());
     ASSERT_TRUE(dev.WaitForUdev());
 
+    bool readonly;
+    ASSERT_EQ(dm.GetState("libdm-test-dm-linear", &readonly), DmDeviceState::ACTIVE);
+    ASSERT_FALSE(readonly);
+
     // Note: a scope is needed to ensure that there are no open descriptors
     // when we go to close the device.
     {
@@ -162,7 +168,6 @@ TEST(libdm, DmLinear) {
     }
 
     // Test GetTableStatus.
-    DeviceMapper& dm = DeviceMapper::Instance();
     vector<DeviceMapper::TargetInfo> targets;
     ASSERT_TRUE(dm.GetTableStatus(dev.name(), &targets));
     ASSERT_EQ(targets.size(), 2);
@@ -178,6 +183,30 @@ TEST(libdm, DmLinear) {
     // Normally the TestDevice destructor would delete this, but at least one
     // test should ensure that device deletion works.
     ASSERT_TRUE(dev.Destroy());
+}
+
+TEST(libdm, ReadOnlyStatus) {
+    auto& dm = DeviceMapper::Instance();
+
+    unique_fd tmp(CreateTempFile("file_1", 4096));
+    ASSERT_GE(tmp, 0);
+
+    LoopDevice loop(tmp);
+    ASSERT_TRUE(loop.valid());
+
+    DmTable table;
+    table.set_readonly(true);
+    ASSERT_TRUE(table.AddTarget(make_unique<DmTargetLinear>(0, 1, loop.device(), 0)));
+    ASSERT_TRUE(table.valid());
+
+    TempDevice dev("libdm-test-readonly-status", table);
+    ASSERT_TRUE(dev.valid());
+    ASSERT_FALSE(dev.path().empty());
+    ASSERT_TRUE(dev.WaitForUdev());
+
+    bool readonly;
+    ASSERT_EQ(dm.GetState("libdm-test-readonly-status", &readonly), DmDeviceState::ACTIVE);
+    ASSERT_TRUE(readonly);
 }
 
 TEST(libdm, DmVerityArgsAvb2) {

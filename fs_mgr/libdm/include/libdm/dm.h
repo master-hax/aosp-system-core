@@ -77,9 +77,11 @@ class DeviceMapper final {
     const std::unique_ptr<DmTable> table(const std::string& name) const;
 
     // Returns the current state of the underlying device mapper device
-    // with given name.
-    // One of INVALID, SUSPENDED or ACTIVE.
-    DmDeviceState GetState(const std::string& name) const;
+    // with given name. Returns one of INVALID, SUSPENDED or ACTIVE.
+    //
+    // If |readonly| is not null, and the device state is not INACTIVE,
+    // then |readonly| will contain the readonly status of the device.
+    DmDeviceState GetState(const std::string& name, bool* readonly = nullptr) const;
 
     // Creates a device, loads the given table, and activates it. If the device
     // is not able to be activated, it is destroyed, and false is returned.
