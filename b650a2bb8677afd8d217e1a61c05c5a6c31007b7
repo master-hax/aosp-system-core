@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4145d4cb_d07968be",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-07T20:31:20Z",
+      "side": 1,
+      "message": "bool?",
+      "range": {
+        "startLine": 580,
+        "startChar": 7,
+        "endLine": 580,
+        "endChar": 10
+      },
+      "revId": "b650a2bb8677afd8d217e1a61c05c5a6c31007b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
