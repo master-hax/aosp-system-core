@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6a3a76a_269691b3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-10T16:21:57Z",
+      "side": 1,
+      "message": "Would you mind posting exactly what breaks here?\n\nThe fastboot host tool is ofcourse not supposed to break flashing with existing bootloaders out there. IIUC, that is what the problem is here?\n\nI didn\u0027t really understand. \"Breaks scripts depending on reboot-fastboot\" - why do you have scripts that are trying to boot into userland fastboot (yet) ?",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 156
+      },
+      "revId": "c47c972e529ca855b27a2c2b2b313126683868fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
