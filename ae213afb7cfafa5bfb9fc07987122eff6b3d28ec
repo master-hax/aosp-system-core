@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23726013_0b114750",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-10T21:45:26Z",
+      "side": 1,
+      "message": "literal not needed",
+      "range": {
+        "startLine": 251,
+        "startChar": 70,
+        "endLine": 251,
+        "endChar": 71
+      },
+      "revId": "ae213afb7cfafa5bfb9fc07987122eff6b3d28ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cbaab84_ab7a1412",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-10T21:45:26Z",
+      "side": 1,
+      "message": "literal not needed",
+      "range": {
+        "startLine": 251,
+        "startChar": 37,
+        "endLine": 251,
+        "endChar": 38
+      },
+      "revId": "ae213afb7cfafa5bfb9fc07987122eff6b3d28ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
