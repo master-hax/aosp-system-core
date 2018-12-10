@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0b70417e_71898fc4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 618,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "Done, good catch.  I was figuring that this function would call fs_mgr_update_logical_partition() or some update for dm-verity, but I guess it doesn\u0027t.\n\nIn retrospect, that\u0027s probably a bug itself, since an \u0027alternative\u0027 for a mount point won\u0027t have been updated as a logical partition yet..., but you\u0027ve been thinking of removing this logic anyway, right?  I know I was against that in the past for compatibility reasons, but I may be more amenable to that now.",
+      "parentUuid": "9e609ea1_f312c37b",
+      "range": {
+        "startLine": 618,
+        "startChar": 40,
+        "endLine": 618,
+        "endChar": 41
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31a28297_a0fa0c7b",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "cbbdb6e8_a30f8c81",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 761,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "No good reason; I moved it back to the original position.",
+      "parentUuid": "31a28297_a0fa0c7b",
+      "range": {
+        "startLine": 761,
+        "startChar": 8,
+        "endLine": 761,
+        "endChar": 67
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "20835e84_173f12b8",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2018-12-10T20:43:29Z",
       "side": 1,
       "message": "why do we do this check?",
+      "range": {
+        "startLine": 981,
+        "startChar": 0,
+        "endLine": 984,
+        "endChar": 5
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ad220cb_c7d1f6e8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 984,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "We want to return an error if the fstab wasn\u0027t valid.  I figured might as well keep it here instead of moving that logic to the callers.",
+      "parentUuid": "20835e84_173f12b8",
       "range": {
         "startLine": 981,
         "startChar": 0,
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "2bc0a136_84d1e506",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "Fair point.  I kept it as is since it was a straight forward  conversion.  The only thing that makes parts of this a bit harder is the logic with mount_with_alternatives modifying \u0027i\u0027, but that\u0027s all easy to do with iterators too.\n\nUnless we do want to just get rid of mount_with_alternatives() after all...  Which, again, I\u0027m much more amenable to now.",
+      "parentUuid": "c2e06b9f_1b9cf602",
+      "range": {
+        "startLine": 988,
+        "startChar": 12,
+        "endLine": 988,
+        "endChar": 23
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "94a3570e_714e1f47",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 2
@@ -105,6 +201,30 @@
       "writtenOn": "2018-12-10T20:43:29Z",
       "side": 1,
       "message": ".c_str()?",
+      "range": {
+        "startLine": 1095,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 70
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "225323cd_e7e03a90",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "My laziness here, I\u0027ll update partition_wiped to actually take a const input.",
+      "parentUuid": "94a3570e_714e1f47",
       "range": {
         "startLine": 1095,
         "startChar": 66,
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "0ac48776_2a85815b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1245,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "Yes, done.",
+      "parentUuid": "2ad13060_6d2608cc",
+      "range": {
+        "startLine": 1244,
+        "startChar": 4,
+        "endLine": 1245,
+        "endChar": 25
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2c35ae60_20340202",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 2
@@ -160,6 +304,30 @@
       "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a777aded_8573ae43",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "fs_mgr_update_logical_partition() modifies entry.",
+      "parentUuid": "2c35ae60_20340202",
+      "range": {
+        "startLine": 137,
+        "startChar": 40,
+        "endLine": 137,
+        "endChar": 41
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -186,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "7820effb_922d2068",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "fs_mgr_wants_overlayfs() modifies the entries.",
+      "parentUuid": "2ac9b192_37c7f0d8",
+      "range": {
+        "startLine": 521,
+        "startChar": 52,
+        "endLine": 521,
+        "endChar": 53
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "07a47b4c_3914ad11",
         "filename": "fs_mgr/include_fstab/fstab/fstab.h",
         "patchSetId": 2
@@ -197,6 +389,30 @@
       "writtenOn": "2018-12-10T20:43:29Z",
       "side": 1,
       "message": "I presume we actually mean remove the union and all the macro flags and keep the bitfield struct?",
+      "range": {
+        "startLine": 122,
+        "startChar": 13,
+        "endLine": 122,
+        "endChar": 59
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77e36516_5885581a",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 1,
+      "message": "Right.",
+      "parentUuid": "07a47b4c_3914ad11",
       "range": {
         "startLine": 122,
         "startChar": 13,

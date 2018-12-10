@@ -22,6 +22,30 @@
       "revId": "1fcf7f7d1f6e064ff2a129394d26b9d5a257206f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8353b00_48b92a52",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-10T21:14:05Z",
+      "side": 0,
+      "message": "It was there just for convenience since filtering and iterating through the old fstab struct was difficult.",
+      "parentUuid": "61febf81_1ad87621",
+      "range": {
+        "startLine": 89,
+        "startChar": 28,
+        "endLine": 89,
+        "endChar": 45
+      },
+      "revId": "1fcf7f7d1f6e064ff2a129394d26b9d5a257206f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
