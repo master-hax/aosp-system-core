@@ -284,13 +284,32 @@ isDebuggable || die "device not a debug build"
 
 echo "${GREEN}[ RUN      ]${NORMAL} Testing kernel support for overlayfs" >&2
 
+overlayfs_supported=true;
 adb_wait || die "wait for device failed"
 adb_sh ls -d /sys/module/overlay </dev/null >/dev/null &&
   echo "${GREEN}[       OK ]${NORMAL} overlay module present" >&2 ||
-  die "overlay module not present"
-adb_su ls /sys/module/overlay/parameters/override_creds </dev/null >/dev/null &&
-  echo "${GREEN}[       OK ]${NORMAL} overlay module supports override_creds" >&2 ||
-  die "overlay module can not be used on ANDROID"
+  (
+    echo "${ORANGE}[  WARNING ]${NORMAL} overlay module not present" >&2 &&
+      false
+  ) ||
+  overlayfs_supported=false
+if ${overlayfs_supported}; then
+  case `adb_sh uname -r` in
+    4.[6789].* | 4.[1-9][0-9]* | [56789].*)
+      adb_su ls /sys/module/overlay/parameters/override_creds </dev/null >/dev/null &&
+        echo "${GREEN}[       OK ]${NORMAL} overlay module supports override_creds" >&2 ||
+        (
+          echo "${ORANGE}[  WARNING ]${NORMAL} overlay module does not support override_creds" >&2 &&
+          false
+        ) ||
+        overlayfs_supported=false;
+      ;;
+    *)
+      echo "${GREEN}[       OK ]${NORMAL} overlay module uses callers creds" >&2
+      ;;
+  esac
+fi
+
 adb_root ||
   die "initial setup"
 
@@ -320,23 +339,39 @@ D=`adb_sh df -k </dev/null` &&
   echo "${D}" &&
   echo "${ORANGE}[  WARNING ]${NORMAL} overlays present before setup" >&2 ||
   echo "${GREEN}[       OK ]${NORMAL} no overlay present before setup" >&2
-adb_sh df -k `adb_sh cat /proc/mounts |
-                skip_administrative_mounts data |
-                cut -s -d' ' -f1`
+overlayfs_needed=true
+D=`adb_sh cat /proc/mounts |
+   skip_administrative_mounts data |
+   cut -s -d' ' -f1`
+D=`adb_sh df -k ${D}`
+echo "${D}"
+if [ X"${D}" = X"${D##* 100[%] }" ]; then
+  overlayfs_needed=false
+elif ! ${overlayfs_supported}; then
+  die "need overlayfs, but do not have it"
+fi
 
 echo "${GREEN}[ RUN      ]${NORMAL} disable verity" >&2
 
 T=`adb_date`
-D=`adb disable-verity 2>&1`
+H=`adb disable-verity 2>&1`
 err=${?}
-if [ ${err} != 0 -o X"${D}" != X"${D##*setup failed}" ]; then
-  echo "${D%?Now reboot your device for settings to take effect}"
+D="${H%?Now reboot your device for settings to take effect}"
+if [ ${err} != 0 ]; then
+  echo "${D}"
+  die -t ${T} "disable-verity"
+fi
+if ${overlayfs_supported} && ${overlayfs_needed} && [ X"${D}" != X"${D##*setup failed}" ]; then
+  echo "${D}"
   die -t ${T} "setup for overlay"
 fi
 if [ X"${D}" != X"${D##*using overlayfs}" ]; then
   echo "${GREEN}[       OK ]${NORMAL} using overlayfs" >&2
 fi
 reboot=false
+if [ X"${D}" != X"${H}" ]; then
+  reboot=true
+fi
 if [ X"${D}" != X"${D##*Successfully disabled verity}" ]; then
   echo "${GREEN}[       OK ]${NORMAL} disabled verity" >&2
   reboot=true
@@ -367,44 +402,55 @@ adb_root &&
 D=`adb_sh df -k </dev/null` &&
   H=`echo "${D}" | head -1` &&
   D=`echo "${D}" | grep "^overlay "` ||
-  ( [ -n "${L}" ] && echo "${L}" && false ) ||
-  die -t ${T} "overlay takeover failed"
-echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover not complete" >&2
-scratch_partition=scratch
-if echo "${D}" | grep " /mnt/scratch" >/dev/null; then
-  echo "${BLUE}[     INFO ]${NORMAL} using ${scratch_partition} dynamic partition for overrides" >&2
-fi
-M=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
-[ -n "${M}" ] &&
-  echo "${BLUE}[     INFO ]${NORMAL} scratch filesystem ${M}"
-uses_dynamic_scratch=true
-if [ "${M}" != "${M##*/dev/block/by-name/}" ]; then
-  uses_dynamic_scratch=false
-  scratch_partition="${M##*/dev/block/by-name/}"
-fi
-scratch_size=`adb_sh df -k /mnt/scratch </dev/null 2>/dev/null |
-              while read device kblocks used available use mounted on; do
-                if [ "/mnt/scratch" = "\${mounted}" ]; then
-                  echo \${kblocks}
-                fi
-              done` &&
-  [ -n "${scratch_size}" ] ||
-  die "scratch size"
-echo "${BLUE}[     INFO ]${NORMAL} scratch size ${scratch_size}KB" >&2
-for d in ${OVERLAYFS_BACKING}; do
-  if adb_sh ls -d /${d}/overlay/system/upper </dev/null >/dev/null 2>/dev/null; then
-    echo "${BLUE}[     INFO ]${NORMAL} /${d}/overlay is setup" >&2
+  ( [ -n "${L}" ] && echo "${L}" && false )
+ret=${?}
+uses_dynamic_scratch=false
+scratch_partition=
+if ${overlayfs_needed}; then
+  if [ ${ret} != 0 ]; then
+    die -t ${T} "overlay takeover failed"
   fi
-done
-
-echo "${H}" &&
-  echo "${D}" &&
   echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-  die  "overlay takeover after remount"
-!(adb_sh grep "^overlay " /proc/mounts </dev/null | grep " overlay ro,") &&
-  !(adb_sh grep " rw," /proc/mounts </dev/null | skip_administrative_mounts data) ||
-  die "remount overlayfs missed a spot (ro)"
+   echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover not complete" >&2
+  scratch_partition=scratch
+  if echo "${D}" | grep " /mnt/scratch" >/dev/null; then
+    echo "${BLUE}[     INFO ]${NORMAL} using ${scratch_partition} dynamic partition for overrides" >&2
+  fi
+  M=`adb_sh cat /proc/mounts | sed -n 's@\([^ ]*\) /mnt/scratch \([^ ]*\) .*@\2 on \1@p'`
+  [ -n "${M}" ] &&
+    echo "${BLUE}[     INFO ]${NORMAL} scratch filesystem ${M}"
+  uses_dynamic_scratch=true
+  if [ "${M}" != "${M##*/dev/block/by-name/}" ]; then
+    uses_dynamic_scratch=false
+    scratch_partition="${M##*/dev/block/by-name/}"
+  fi
+  scratch_size=`adb_sh df -k /mnt/scratch </dev/null 2>/dev/null |
+                while read device kblocks used available use mounted on; do
+                  if [ "/mnt/scratch" = "\${mounted}" ]; then
+                    echo \${kblocks}
+                  fi
+                done` &&
+    [ -n "${scratch_size}" ] ||
+    die "scratch size"
+  echo "${BLUE}[     INFO ]${NORMAL} scratch size ${scratch_size}KB" >&2
+  for d in ${OVERLAYFS_BACKING}; do
+    if adb_sh ls -d /${d}/overlay/system/upper </dev/null >/dev/null 2>/dev/null; then
+      echo "${BLUE}[     INFO ]${NORMAL} /${d}/overlay is setup" >&2
+    fi
+  done
+
+  echo "${H}" &&
+    echo "${D}" &&
+    echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
+    die  "overlay takeover after remount"
+  !(adb_sh grep "^overlay " /proc/mounts </dev/null | grep " overlay ro,") &&
+    !(adb_sh grep " rw," /proc/mounts </dev/null | skip_administrative_mounts data) ||
+    die "remount overlayfs missed a spot (ro)"
+else
+  if [ ${ret} = 0 ]; then
+    die -t ${T} "unexpected overlay takeover"
+  fi
+fi
 
 # Check something
 
@@ -426,17 +472,19 @@ adb_reboot &&
   adb_wait 2m ||
   die "reboot after override content added failed"
 
-D=`adb_su df -k </dev/null` &&
-  H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` ||
-  ( echo "${L}" && false ) ||
-  die -d "overlay takeover failed after reboot"
+if ${overlayfs_needed}; then
+  D=`adb_su df -k </dev/null` &&
+    H=`echo "${D}" | head -1` &&
+    D=`echo "${D}" | grep "^overlay "` ||
+    ( echo "${L}" && false ) ||
+    die -d "overlay takeover failed after reboot"
 
-adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
-  skip_administrative_mounts |
-  grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
-  echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
-  echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
+  adb_su "sed -n '1,/overlay \\/system/p' /proc/mounts" </dev/null |
+    skip_administrative_mounts |
+    grep -v ' \(squashfs\|ext4\|f2fs\) ' &&
+    echo "${ORANGE}[  WARNING ]${NORMAL} overlay takeover after first stage init" >&2 ||
+    echo "${GREEN}[       OK ]${NORMAL} overlay takeover in first stage init" >&2
+fi
 
 B="`adb_cat /system/hello`" ||
   die "re-read system hello after reboot"
@@ -452,63 +500,75 @@ check_eq "${A}" "${B}" vendor after reboot
 
 echo "${GREEN}[ RUN      ]${NORMAL} flash vendor, confirm its content disappears" >&2
 
-[ -n "${ANDROID_PRODUCT_OUT}" ] &&
-  adb reboot-fastboot &&
-  fastboot_wait 2m &&
-  fastboot flash vendor ||
-  ( fastboot reboot && false) ||
-  die "fastboot flash vendor"
-fastboot_getvar partition-type:${scratch_partition} raw ||
-  ( fastboot reboot && false) ||
-  die "fastboot can not see ${scratch_partition} parameters"
-if ${uses_dynamic_scratch}; then
-  # check ${scratch_partition} via fastboot
-  fastboot_getvar has-slot:${scratch_partition} no &&
-    fastboot_getvar is-logical:${scratch_partition} yes ||
-    ( fastboot reboot && false) ||
-    die "fastboot can not see ${scratch_partition} parameters"
+H=`adb_sh echo '${HOSTNAME}' </dev/null 2>/dev/null`
+if [ -z "${ANDROID_PRODUCT_OUT}" ]; then
+  echo "${ORANGE}[  WARNING ]${NORMAL} build tree not setup, skipping"
+elif [ ! -s "${ANDROID_PRODUCT_OUT}/vendor.img" ]; then
+  echo "${ORANGE}[  WARNING ]${NORMAL} vendor image missing, skipping"
+elif [ "${ANDROID_PRODUCT_OUT}" = "${ANDROID_PRODUCT_OUT%*/${H}}" ]; then
+  echo "${ORANGE}[  WARNING ]${NORMAL} wrong vendor image, skipping"
 else
-  fastboot_getvar is-logical:${scratch_partition} no ||
+  adb reboot-fastboot &&
+    fastboot_wait 2m &&
+    fastboot flash vendor ||
     ( fastboot reboot && false) ||
-    die "fastboot can not see ${scratch_partition} parameters"
+    die "fastboot flash vendor"
+  if [ -n "${scratch_paritition}" ]; then
+    fastboot_getvar partition-type:${scratch_partition} raw ||
+      ( fastboot reboot && false) ||
+      die "fastboot can not see ${scratch_partition} parameters"
+    if ${uses_dynamic_scratch}; then
+      # check ${scratch_partition} via fastboot
+      fastboot_getvar has-slot:${scratch_partition} no &&
+        fastboot_getvar is-logical:${scratch_partition} yes ||
+        ( fastboot reboot && false) ||
+        die "fastboot can not see ${scratch_partition} parameters"
+    else
+      fastboot_getvar is-logical:${scratch_partition} no ||
+        ( fastboot reboot && false) ||
+        die "fastboot can not see ${scratch_partition} parameters"
+    fi
+    if ! ${uses_dynamic_scratch}; then
+      fastboot reboot-bootloader ||
+        die "Reboot into fastboot"
+    fi
+    if ${uses_dynamic_scratch}; then
+      echo "${BLUE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
+      fastboot erase ${scratch_partition} &&
+        ( fastboot reboot || true) &&
+        die "fastboot can erase ${scratch_partition}"
+    fi
+    echo "${BLUE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
+    fastboot format ${scratch_partition} &&
+      ( fastboot reboot || true) &&
+      die "fastboot can format ${scratch_partition}"
+  fi
+  fastboot reboot ||
+    die "can not reboot out of fastboot"
+  echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot ... waiting 2 minutes"
+  adb_wait 2m ||
+    die "did not reboot after flash"
+  if ${overlayfs_needed}; then
+    adb_root &&
+      D=`adb_sh df -k </dev/null` &&
+      H=`echo "${D}" | head -1` &&
+      D=`echo "${D}" | grep "^overlay "` &&
+      echo "${H}" &&
+      echo "${D}" &&
+      echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
+      die  "overlay system takeover after flash vendor"
+    echo "${D}" | grep "^overlay .* /vendor\$" >/dev/null &&
+      die  "overlay minus vendor takeover after flash vendor"
+  fi
+  B="`adb_cat /system/hello`" ||
+    die "re-read system hello after flash vendor"
+  check_eq "${A}" "${B}" system after flash vendor
+  adb_root ||
+    die "adb root"
+  B="`adb_cat /vendor/hello`" &&
+    die "re-read vendor hello after flash vendor"
+  check_eq "cat: /vendor/hello: No such file or directory" "${B}" vendor after flash vendor
 fi
-if ! ${uses_dynamic_scratch}; then
-  fastboot reboot-bootloader ||
-    die "Reboot into fastboot"
-fi
-if ${uses_dynamic_scratch}; then
-  echo "${BLUE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
-  fastboot erase ${scratch_partition} &&
-    ( fastboot reboot || true) &&
-    die "fastboot can erase ${scratch_partition}"
-fi
-echo "${BLUE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
-fastboot format ${scratch_partition} &&
-  ( fastboot reboot || true) &&
-  die "fastboot can format ${scratch_partition}"
-fastboot reboot ||
-  die "can not reboot out of fastboot"
-echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot ... waiting 2 minutes"
-adb_wait 2m ||
-  die "did not reboot after flash"
-adb_root &&
-  D=`adb_sh df -k </dev/null` &&
-  H=`echo "${D}" | head -1` &&
-  D=`echo "${D}" | grep "^overlay "` &&
-  echo "${H}" &&
-  echo "${D}" &&
-  echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-  die  "overlay system takeover after flash vendor"
-echo "${D}" | grep "^overlay .* /vendor\$" >/dev/null &&
-  die  "overlay minus vendor takeover after flash vendor"
-B="`adb_cat /system/hello`" ||
-  die "re-read system hello after flash vendor"
-check_eq "${A}" "${B}" system after flash vendor
-adb_root ||
-  die "adb root"
-B="`adb_cat /vendor/hello`" &&
-  die "re-read vendor hello after flash vendor"
-check_eq "cat: /vendor/hello: No such file or directory" "${B}" vendor after flash vendor
 
 echo "${GREEN}[ RUN      ]${NORMAL} remove test content (cleanup)" >&2
 
@@ -524,32 +584,35 @@ B="`adb_cat /vendor/hello`" &&
   die "re-read vendor hello after rm"
 check_eq "cat: /vendor/hello: No such file or directory" "${B}" after flash rm
 
-echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition}" >&2
+if [ -n "${scratch_partition}" ]; then
 
-adb reboot-fastboot ||
-  die "Reboot into fastbootd"
-dd if=/dev/zero of=/tmp/adb-remount-test.img bs=4096 count=16 2>/dev/null &&
-  fastboot_wait 2m ||
-  ( rm /tmp/adb-remount-test.img && false) ||
-  die "reboot into fastboot"
-fastboot flash --force ${scratch_partition} /tmp/adb-remount-test.img
-err=${?}
-rm /tmp/adb-remount-test.img
-fastboot reboot ||
-  die "can not reboot out of fastboot"
-[ 0 -eq ${err} ] ||
-  die "fastboot flash ${scratch_partition}"
-adb_wait 2m &&
-  adb_root ||
-  die "did not reboot after flash"
-T=`adb_date`
-D=`adb disable-verity 2>&1`
-err=${?}
-echo "${D}"
-[ ${err} = 0 ] &&
-  [ X"${D}" = X"${D##*setup failed}" ] &&
-  [ X"${D}" != X"${D##*using overlayfs}" ] &&
-  echo "${GREEN}[       OK ]${NORMAL} ${scratch_partition} recreated" >&2 ||
-  die -t ${T} "setup for overlayfs"
+  echo "${GREEN}[ RUN      ]${NORMAL} test fastboot flash to ${scratch_partition}" >&2
+
+  adb reboot-fastboot ||
+    die "Reboot into fastbootd"
+  dd if=/dev/zero of=/tmp/adb-remount-test.img bs=4096 count=16 2>/dev/null &&
+    fastboot_wait 2m ||
+    ( rm /tmp/adb-remount-test.img && false) ||
+    die "reboot into fastboot"
+  fastboot flash --force ${scratch_partition} /tmp/adb-remount-test.img
+  err=${?}
+  rm /tmp/adb-remount-test.img
+  fastboot reboot ||
+    die "can not reboot out of fastboot"
+  [ 0 -eq ${err} ] ||
+    die "fastboot flash ${scratch_partition}"
+  adb_wait 2m &&
+    adb_root ||
+    die "did not reboot after flash"
+  T=`adb_date`
+  D=`adb disable-verity 2>&1`
+  err=${?}
+  echo "${D}"
+  [ ${err} = 0 ] &&
+    [ X"${D}" = X"${D##*setup failed}" ] &&
+    [ X"${D}" != X"${D##*using overlayfs}" ] &&
+    echo "${GREEN}[       OK ]${NORMAL} ${scratch_partition} recreated" >&2 ||
+    die -t ${T} "setup for overlayfs"
+fi
 
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
