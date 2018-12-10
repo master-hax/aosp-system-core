@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf2437c6_e456ba6d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-10T17:37:20Z",
+      "side": 1,
+      "message": "include the specific compiler diagnostic in the commit message for folks trying to understand this in future?",
+      "revId": "cacb87bc23184ad77915555747ef2b067258ddb9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
