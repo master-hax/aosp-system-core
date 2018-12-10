@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9e609ea1_f312c37b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 618,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "Does this actually change fstab? If not, reference",
+      "range": {
+        "startLine": 618,
+        "startChar": 40,
+        "endLine": 618,
+        "endChar": 41
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31a28297_a0fa0c7b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 761,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "why put this above the comment?",
+      "range": {
+        "startLine": 761,
+        "startChar": 8,
+        "endLine": 761,
+        "endChar": 67
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20835e84_173f12b8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 984,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "why do we do this check?",
+      "range": {
+        "startLine": 981,
+        "startChar": 0,
+        "endLine": 984,
+        "endChar": 5
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2e06b9f_1b9cf602",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "this is ugly. I don\u0027t suppose we want to use an iterator here?",
+      "range": {
+        "startLine": 988,
+        "startChar": 12,
+        "endLine": 988,
+        "endChar": 23
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94a3570e_714e1f47",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": ".c_str()?",
+      "range": {
+        "startLine": 1095,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 70
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ad13060_6d2608cc",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1245,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "can we use \"for (auto\u0026 entry: blah\"?",
+      "range": {
+        "startLine": 1244,
+        "startChar": 4,
+        "endLine": 1245,
+        "endChar": 25
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c35ae60_20340202",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "const reference?",
+      "range": {
+        "startLine": 137,
+        "startChar": 40,
+        "endLine": 137,
+        "endChar": 41
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ac9b192_37c7f0d8",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "const reference?",
+      "range": {
+        "startLine": 521,
+        "startChar": 52,
+        "endLine": 521,
+        "endChar": 53
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07a47b4c_3914ad11",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 1,
+      "message": "I presume we actually mean remove the union and all the macro flags and keep the bitfield struct?",
+      "range": {
+        "startLine": 122,
+        "startChar": 13,
+        "endLine": 122,
+        "endChar": 59
+      },
+      "revId": "4c65a9b76db47f2766e1ba755b65b3e62735f37c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

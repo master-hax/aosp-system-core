@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61febf81_1ad87621",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2018-12-10T20:43:29Z",
+      "side": 0,
+      "message": "So I\u0027m not quite seeing why this was there, so I can\u0027t be sure your removing it is OK.",
+      "range": {
+        "startLine": 89,
+        "startChar": 28,
+        "endLine": 89,
+        "endChar": 45
+      },
+      "revId": "1fcf7f7d1f6e064ff2a129394d26b9d5a257206f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
