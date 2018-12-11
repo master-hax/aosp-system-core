@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf6ed44c_bfeac5b5",
+        "filename": "adb/transport.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-11T22:06:51Z",
+      "side": 1,
+      "message": "Someone would definitely want to start using it instead of going through connection().\nSuggest adding #if ADB_HOST around along with a comment that lifetime of this handle is controlled externally.",
+      "revId": "1a87aa04aefdbbc7a79279049f2f79be85c5be41",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
