@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7df8cc5_8015ae0e",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1061057
+      },
+      "writtenOn": "2018-12-11T14:23:17Z",
+      "side": 1,
+      "message": "return true if the file doesn\u0027t exist",
+      "range": {
+        "startLine": 441,
+        "startChar": 0,
+        "endLine": 441,
+        "endChar": 25
+      },
+      "revId": "503d5afed125950189f694701a803a160b61f8cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
