@@ -31,7 +31,10 @@
 #include <sys/socket.h>
 #include <sys/sysinfo.h>
 #include <sys/types.h>
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
 #include <time.h>
+=======
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
 #include <unistd.h>
 
 #include <cutils/properties.h>
@@ -95,8 +98,11 @@
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
 #define STRINGIFY_INTERNAL(x) #x
 
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
+=======
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
 #define FAIL_REPORT_RLIMIT_MS 1000
 
 /* default to old in-kernel interface if no memory pressure events */
@@ -1300,9 +1306,15 @@ static int kill_one_process(struct proc* procp) {
 
     /* CAP_KILL required */
     r = kill(pid, SIGKILL);
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
     inc_killcnt(procp->oomadj);
     ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB",
         taskname, pid, uid, procp->oomadj, tasksize * page_k);
+=======
+    ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %ldkB",
+        taskname, pid, uid, procp->oomadj, tasksize * page_k);
+    pid_remove(pid);
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
 
     TRACE_KILL_END();
 
@@ -1338,7 +1350,11 @@ out:
  * Find one process to kill at or above the given oom_adj level.
  * Returns size of the killed process.
  */
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
 static int find_and_kill_process(int min_score_adj) {
+=======
+static int find_and_kill_processes(int min_score_adj, int pages_to_free) {
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
     int i;
     int killed_size = 0;
 
@@ -1456,6 +1472,22 @@ static bool is_kill_pending(void) {
     return false;
 }
 
+static bool is_kill_pending(void) {
+    char buf[24];
+    if (last_killed_pid < 0) {
+        return false;
+    }
+
+    snprintf(buf, sizeof(buf), "/proc/%d/", last_killed_pid);
+    if (access(buf, F_OK) == 0) {
+        return true;
+    }
+
+    // reset last killed PID because there's nothing pending
+    last_killed_pid = -1;
+    return false;
+}
+
 static void mp_event_common(int data, uint32_t events __unused) {
     int ret;
     unsigned long long evcount;
@@ -1464,8 +1496,13 @@ static void mp_event_common(int data, uint32_t events __unused) {
     enum vmpressure_level lvl;
     union meminfo mi;
     union zoneinfo zi;
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
     struct timespec curr_tm;
     static struct timespec last_kill_tm;
+=======
+    struct timeval curr_tm;
+    static struct timeval last_kill_tm;
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
     static unsigned long kill_skip_count = 0;
     enum vmpressure_level level = (enum vmpressure_level)data;
     long other_free = 0, other_file = 0;
@@ -1494,11 +1531,15 @@ static void mp_event_common(int data, uint32_t events __unused) {
         }
     }
 
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
         return;
     }
 
+=======
+    gettimeofday(&curr_tm, NULL);
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
     if (kill_timeout_ms) {
         // If we're within the timeout, see if there's pending reclaim work
         // from the last killed process. If there is (as evidenced by
@@ -1606,7 +1647,11 @@ static void mp_event_common(int data, uint32_t events __unused) {
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
         if (find_and_kill_process(level_oomadj[level]) == 0) {
+=======
+        if (find_and_kill_processes(level_oomadj[level], 0) == 0) {
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
@@ -1615,7 +1660,11 @@ do_kill:
         }
     } else {
         int pages_freed;
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
         static struct timespec last_report_tm;
+=======
+        static struct timeval last_report_tm;
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
         static unsigned long report_skip_count = 0;
 
         if (!use_minfree_levels) {
@@ -1641,6 +1690,7 @@ do_kill:
             min_score_adj = level_oomadj[level];
         }
 
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
         pages_freed = find_and_kill_process(min_score_adj);
 
         if (pages_freed == 0) {
@@ -1656,8 +1706,23 @@ do_kill:
 
         /* Log meminfo whenever we kill or when report rate limit allows */
         meminfo_log(&mi);
+=======
+        pages_freed = find_and_kill_processes(min_score_adj, 0);
+
+        if (pages_freed == 0) {
+            /* Rate limit kill reports when nothing was reclaimed */
+            if (get_time_diff_ms(&last_report_tm, &curr_tm) < FAIL_REPORT_RLIMIT_MS) {
+                report_skip_count++;
+                return;
+            }
+        } else {
+            /* If we killed anything, update the last killed timestamp. */
+            last_kill_tm = curr_tm;
+        }
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
 
         if (use_minfree_levels) {
+<<<<<<< HEAD   (8ae3ca Merge "Fix cert-dcl16-c clang-tidy warnings.")
             ALOGI("Reclaimed %ldkB, cache(%ldkB) and "
                 "free(%" PRId64 "kB)-reserved(%" PRId64 "kB) below min(%ldkB) for oom_adj %d",
                 pages_freed * page_k,
@@ -1667,6 +1732,17 @@ do_kill:
         } else {
             ALOGI("Reclaimed %ldkB at oom_adj %d",
                 pages_freed * page_k, min_score_adj);
+=======
+            ALOGI("Killing to reclaim %ldkB, reclaimed %ldkB, cache(%ldkB) and "
+                "free(%" PRId64 "kB)-reserved(%" PRId64 "kB) below min(%ldkB) for oom_adj %d",
+                pages_to_free * page_k, pages_freed * page_k,
+                other_file * page_k, mi.field.nr_free_pages * page_k,
+                zi.field.totalreserve_pages * page_k,
+                minfree * page_k, min_score_adj);
+        } else {
+            ALOGI("Killing to reclaim %ldkB, reclaimed %ldkB at oom_adj %d",
+                pages_to_free * page_k, pages_freed * page_k, min_score_adj);
+>>>>>>> BRANCH (25f1ac Merge PQ1A.181205.006 from Pi-QPR1-Release into ToT for Pi-P)
         }
 
         if (report_skip_count > 0) {
