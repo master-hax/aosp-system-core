@@ -42,6 +42,8 @@
 #include "uevent_listener.h"
 #include "util.h"
 
+using android::base::ReadFileToString;
+using android::base::Split;
 using android::base::Timer;
 using android::fs_mgr::AvbHandle;
 using android::fs_mgr::AvbHashtreeResult;
@@ -72,6 +74,8 @@ class FirstStageMount {
     bool CreateLogicalPartitions();
     bool MountPartition(fstab_rec* fstab_rec);
     bool MountPartitions();
+    bool TrySwitchSystemAsRoot();
+    bool TrySkipProductPartitions();
     bool IsDmLinearEnabled();
     bool GetDmLinearMetadataDevice();
     bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
@@ -401,10 +405,10 @@ bool FirstStageMount::MountPartition(fstab_rec* fstab_rec) {
     return true;
 }
 
-bool FirstStageMount::MountPartitions() {
-    // If system is in the fstab then we're not a system-as-root device, and in
-    // this case, we mount system first then pivot to it.  From that point on,
-    // we are effectively identical to a system-as-root device.
+// If system is in the fstab then we're not a system-as-root device, and in
+// this case, we mount system first then pivot to it.  From that point on,
+// we are effectively identical to a system-as-root device.
+bool FirstStageMount::TrySwitchSystemAsRoot() {
     auto system_partition =
             std::find_if(mount_fstab_recs_.begin(), mount_fstab_recs_.end(),
                          [](const auto& rec) { return rec->mount_point == "/system"s; });
@@ -418,6 +422,51 @@ bool FirstStageMount::MountPartitions() {
 
         mount_fstab_recs_.erase(system_partition);
     }
+
+    return true;
+}
+
+// For GSI to skip mounting /product and /product_services, until there is
+// are well-defined interfaces between both and /system. Otherwise, the GSI
+// flashed on /system might not be able to work with /product and /product_services.
+// When they're skipped here, /system/product and /system/product_services in
+// GSI will be used.
+bool FirstStageMount::TrySkipProductPartitions() {
+    constexpr const char kSkipMountConfig[] = "/system/etc/init/config/skip_mount.cfg";
+
+    if (access(kSkipMountConfig, F_OK) == 0) {
+        std::string skip_config;
+        if (!ReadFileToString(kSkipMountConfig, &skip_config)) {
+            LOG(ERROR) << "Failed to read: " << kSkipMountConfig;
+            return false;
+        }
+
+        for (auto& skip_partition : Split(skip_config, "\r\n")) {
+            // Only allow skipping /product or /product_services.
+            if (skip_partition != "product" && skip_partition != "product_services") {
+                LOG(WARNING) << "Refused to skip mounting partition: " << skip_partition;
+                continue;
+            }
+            // Removing the fstab entry with /product or /product_services as the mount point.
+            auto removing_fstab_entry =
+                    std::find_if(mount_fstab_recs_.begin(), mount_fstab_recs_.end(),
+                                 [&skip_partition](const auto& rec) {
+                                     return rec->mount_point == "/"s + skip_partition;
+                                 });
+            if (removing_fstab_entry != mount_fstab_recs_.end()) {
+                mount_fstab_recs_.erase(removing_fstab_entry);
+                LOG(INFO) << "Skip mounting partition: " << skip_partition;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool FirstStageMount::MountPartitions() {
+    if (!TrySwitchSystemAsRoot()) return false;
+
+    if (!TrySkipProductPartitions()) return false;
 
     for (auto fstab_rec : mount_fstab_recs_) {
         if (!MountPartition(fstab_rec) && !fs_mgr_is_nofail(fstab_rec)) {
@@ -552,7 +601,7 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
             LOG(ERROR) << "Missing vbmeta parts in device tree";
             return false;
         }
-        std::vector<std::string> partitions = android::base::Split(device_tree_vbmeta_parts_, ",");
+        std::vector<std::string> partitions = Split(device_tree_vbmeta_parts_, ",");
         std::string ab_suffix = fs_mgr_get_slot_suffix();
         for (const auto& partition : partitions) {
             std::string partition_name = partition + ab_suffix;
