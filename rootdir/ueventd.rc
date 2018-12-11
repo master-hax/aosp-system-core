@@ -55,6 +55,7 @@ subsystem sound
 /dev/v4l-touch*           0660   root       input
 /dev/snd/*                0660   system     audio
 /dev/msm_mp3*             0660   system     audio
+/dev/bus/usb/*            0660   root       usb
 /dev/usb_accessory        0660   root       usb
 /dev/tun                  0660   system     vpn
 
