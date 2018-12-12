@@ -31,7 +31,7 @@
 
 #include "adb_utils.h"
 
-static constexpr long kRequiredAgentVersion = 0x00000001;
+static constexpr long kRequiredAgentVersion = 0x00000002;
 
 static constexpr const char* kDeviceAgentPath = "/data/local/tmp/";
 
@@ -313,9 +313,17 @@ void install_patch(const char* apkPath, const char* patchPath, int argc, const c
     std::vector<unsigned char> applyErrorBuffer;
     std::string argsString;
 
+    bool rSwitchPresent = false;
+    std::string rSwitch = "-r";
     for (int i = 0; i < argc; i++) {
         argsString.append(argv[i]);
         argsString.append(" ");
+        if (rSwitch == std::string(argv[i])) {
+            rSwitchPresent = true;
+        }
+    }
+    if (!rSwitchPresent) {
+        argsString.append(rSwitch);
     }
 
     std::string applyPatchCommand =
@@ -325,4 +333,12 @@ void install_patch(const char* apkPath, const char* patchPath, int argc, const c
     if (returnCode != 0) {
         error_exit("Executing %s returned %d", applyPatchCommand.c_str(), returnCode);
     }
+}
+
+bool find_package(const char* apkPath) {
+    std::string findCommand = "/data/local/tmp/deployagent find ";
+    std::string packageName = get_packagename_from_apk(apkPath);
+
+    findCommand += packageName;
+    return !send_shell_command(findCommand);
 }

@@ -341,11 +341,6 @@ int install_app(int argc, const char** argv) {
         error_exit("Attempting to use streaming install on unsupported device");
     }
 
-    if (use_fastdeploy == true && is_reinstall == false) {
-        printf("Fast Deploy is only available with -r.\n");
-        use_fastdeploy = false;
-    }
-
     if (use_fastdeploy == true && get_device_api_level() < kFastDeployMinApi) {
         printf("Fast Deploy is only compatible with devices of API version %d or higher, "
                "ignoring.\n",
@@ -364,6 +359,10 @@ int install_app(int argc, const char** argv) {
     if (use_fastdeploy == true) {
         fastdeploy_set_local_agent(use_localagent);
         update_agent(agent_update_strategy);
+
+        // The last argument must be the APK file
+        const char* file = passthrough_argv.back();
+        use_fastdeploy = find_package(file);
     }
 
     switch (installMode) {
