@@ -16,10 +16,24 @@
 
 #include <stdio.h>
 
+#include <map>
 #include <string>
 
 #include "fs_mgr.h"
 #include "fs_mgr_priv.h"
+
+static std::string other_suffix(const std::string& slot_suffix) {
+    const std::map<std::string, std::string> kKnownOtherSuffix = {
+            {"_a", "_b"},
+            {"_b", "_a"},
+    };
+
+    if (auto iter = kKnownOtherSuffix.find(slot_suffix); iter != kKnownOtherSuffix.end()) {
+        return iter->second;
+    }
+
+    return "";
+}
 
 // Returns "_a" or "_b" based on androidboot.slot_suffix in kernel cmdline, or an empty string
 // if that parameter does not exist.
@@ -35,7 +49,7 @@ bool fs_mgr_update_for_slotselect(Fstab* fstab) {
     std::string ab_suffix;
 
     for (auto& entry : *fstab) {
-        if (!entry.fs_mgr_flags.slot_select) {
+        if (!entry.fs_mgr_flags.slot_select && !entry.fs_mgr_flags.slot_select_other) {
             continue;
         }
 
@@ -45,8 +59,10 @@ bool fs_mgr_update_for_slotselect(Fstab* fstab) {
             if (ab_suffix.empty()) return false;
         }
 
-        entry.blk_device = entry.blk_device + ab_suffix;
-        entry.logical_partition_name = entry.logical_partition_name + ab_suffix;
+        const auto&& update_suffix =
+                entry.fs_mgr_flags.slot_select ? ab_suffix : other_suffix(ab_suffix);
+        entry.blk_device = entry.blk_device + update_suffix;
+        entry.logical_partition_name = entry.logical_partition_name + update_suffix;
     }
     return true;
 }
