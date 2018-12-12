@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "c61ef63c_96c50c9e",
+        "filename": "reboot/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-12T16:13:42Z",
+      "side": 1,
+      "message": "In Android.bp this would be (untested):\n\ncc_prebuilt_binary {\n    name: \"poweroff\",\n    srcs: [\"poweroff\"],\n    strip: {\n        none: true,\n    },\n}",
+      "range": {
+        "startLine": 1,
+        "startChar": 1,
+        "endLine": 9,
+        "endChar": 0
+      },
+      "revId": "84c40a3006138b981528e2797235c20e1432ef46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d2aacfc1_8aa6b0b4",
         "filename": "reboot/poweroff",
         "patchSetId": 1
