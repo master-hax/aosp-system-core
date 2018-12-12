@@ -43,7 +43,7 @@ struct fstab_rec {
     char* fs_type;
     unsigned long flags;
     char* fs_options;
-    int fs_mgr_flags;
+    unsigned long fs_mgr_flags;
     char* key_loc;
     char* key_dir;
     char* verity_loc;
@@ -122,8 +122,9 @@ struct FstabEntry {
     // TODO: Remove this union once fstab_rec is deprecated. It only serves as a
     // convenient way to convert between fstab_rec::fs_mgr_flags and these bools.
     union {
-        int val;
+        unsigned long val;
         struct {
+            // 0
             bool wait : 1;
             bool check : 1;
             bool crypt : 1;
@@ -132,6 +133,8 @@ struct FstabEntry {
             bool length : 1;
             bool recovery_only : 1;
             bool swap_prio : 1;
+
+            // 8
             bool zram_size : 1;
             bool verify : 1;
             bool force_crypt : 1;
@@ -141,6 +144,8 @@ struct FstabEntry {
             bool file_encryption : 1;
             bool formattable : 1;
             bool slot_select : 1;
+
+            // 16
             bool force_fde_or_fbe : 1;
             bool late_mount : 1;
             bool no_fail : 1;
@@ -149,6 +154,8 @@ struct FstabEntry {
             bool reserved_size : 1;
             bool quota : 1;
             bool erase_blk_size : 1;
+
+            // 24
             bool logical_blk_size : 1;
             bool avb : 1;
             bool key_directory : 1;
@@ -156,6 +163,10 @@ struct FstabEntry {
             bool logical : 1;
             bool checkpoint_blk : 1;
             bool checkpoint_fs : 1;
+            bool first_stage_mount : 1;
+
+            // 32
+            bool slot_select_other : 1;
         };
     } fs_mgr_flags;
 
