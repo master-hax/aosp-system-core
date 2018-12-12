@@ -56,7 +56,7 @@ namespace init {
 // ------------------
 class FirstStageMount {
   public:
-    FirstStageMount();
+    FirstStageMount(Fstab fstab);
     virtual ~FirstStageMount() = default;
 
     // The factory method to create either FirstStageMountVBootV1 or FirstStageMountVBootV2
@@ -94,7 +94,7 @@ class FirstStageMount {
 
 class FirstStageMountVBootV1 : public FirstStageMount {
   public:
-    FirstStageMountVBootV1() = default;
+    FirstStageMountVBootV1(Fstab fstab) : FirstStageMount(std::move(fstab)) {}
     ~FirstStageMountVBootV1() override = default;
 
   protected:
@@ -106,7 +106,7 @@ class FirstStageMountVBootV2 : public FirstStageMount {
   public:
     friend void SetInitAvbVersionInRecovery();
 
-    FirstStageMountVBootV2();
+    FirstStageMountVBootV2(Fstab fstab);
     ~FirstStageMountVBootV2() override = default;
 
   protected:
@@ -120,7 +120,11 @@ class FirstStageMountVBootV2 : public FirstStageMount {
 
 // Static Functions
 // ----------------
-static inline bool IsDtVbmetaCompatible() {
+static inline bool IsDtVbmetaCompatible(const Fstab& fstab) {
+    if (std::any_of(fstab.begin(), fstab.end(),
+                    [](const auto& entry) { return entry.fs_mgr_flags.avb; })) {
+        return true;
+    }
     return is_android_dt_value_expected("vbmeta/compatible", "android,vbmeta");
 }
 
@@ -128,21 +132,26 @@ static bool IsRecoveryMode() {
     return access("/system/bin/recovery", F_OK) == 0;
 }
 
-// Class Definitions
-// -----------------
-FirstStageMount::FirstStageMount() : need_dm_verity_(false), uevent_listener_(16 * 1024 * 1024) {
-    if (!ReadFstabFromDt(&fstab_)) {
-        if (ReadDefaultFstab(&fstab_)) {
-            fstab_.erase(std::remove_if(fstab_.begin(), fstab_.end(),
+static Fstab ReadFirstStageFstab() {
+    Fstab fstab;
+    if (!ReadFstabFromDt(&fstab)) {
+        if (ReadDefaultFstab(&fstab)) {
+            fstab_.erase(std::remove_if(fstab.begin(), fstab.end(),
                                         [](const auto& entry) {
                                             return !entry.fs_mgr_flags.first_stage_mount;
                                         }),
-                         fstab_.end());
+                         fstab.end());
         } else {
             LOG(INFO) << "Failed to fstab for first stage mount";
         }
     }
+    return fstab;
+}
 
+// Class Definitions
+// -----------------
+FirstStageMount::FirstStageMount(Fstab fstab)
+    : need_dm_verity_(false), fstab_(std::move(fstab)), uevent_listener_(16 * 1024 * 1024) {
     auto boot_devices = fs_mgr_get_boot_devices();
     device_handler_ = std::make_unique<DeviceHandler>(
             std::vector<Permissions>{}, std::vector<SysfsPermissions>{}, std::vector<Subsystem>{},
@@ -152,10 +161,11 @@ FirstStageMount::FirstStageMount() : need_dm_verity_(false), uevent_listener_(16
 }
 
 std::unique_ptr<FirstStageMount> FirstStageMount::Create() {
-    if (IsDtVbmetaCompatible()) {
-        return std::make_unique<FirstStageMountVBootV2>();
+    auto fstab = ReadFirstStageFstab();
+    if (IsDtVbmetaCompatible(fstab)) {
+        return std::make_unique<FirstStageMountVBootV2>(std::move(fstab));
     } else {
-        return std::make_unique<FirstStageMountVBootV1>();
+        return std::make_unique<FirstStageMountVBootV1>(std::move(fstab));
     }
 }
 
@@ -504,10 +514,18 @@ bool FirstStageMountVBootV1::SetUpDmVerity(FstabEntry* fstab_entry) {
 //         };
 //     };
 //  }
-FirstStageMountVBootV2::FirstStageMountVBootV2() : avb_handle_(nullptr) {
-    if (!read_android_dt_file("vbmeta/parts", &device_tree_vbmeta_parts_)) {
-        PLOG(ERROR) << "Failed to read vbmeta/parts from device tree";
-        return;
+FirstStageMountVBootV2::FirstStageMountVBootV2()
+    : avb_handle_(nullptr), FirstStageMount(std::move(fstab)) {
+    read_android_dt_file("vbmeta/parts", &device_tree_vbmeta_parts_);
+
+    for (const auto& entry : fstab_) {
+        if (!entry.vbmeta_partition.empty()) {
+            device_tree_vbmeta_parts_.emplace_back(entry.vbmeta_partition);
+        }
+    }
+
+    if (device_tree_vbmeta_parts_.empty()) {
+        PLOG(ERROR) << "Failed to read vbmeta partitions.";
     }
 }
 
@@ -613,7 +631,9 @@ void SetInitAvbVersionInRecovery() {
         return;
     }
 
-    if (!IsDtVbmetaCompatible()) {
+    auto fstab = ReadFirstStageFstab();
+
+    if (!IsDtVbmetaCompatible(fstab)) {
         LOG(INFO) << "Skipped setting INIT_AVB_VERSION (not vbmeta compatible)";
         return;
     }
@@ -623,7 +643,7 @@ void SetInitAvbVersionInRecovery() {
     // We only set INIT_AVB_VERSION when the AVB verification succeeds, i.e., the
     // Open() function returns a valid handle.
     // We don't need to mount partitions here in recovery mode.
-    FirstStageMountVBootV2 avb_first_mount;
+    FirstStageMountVBootV2 avb_first_mount(std::move(fstab));
     if (!avb_first_mount.InitDevices()) {
         LOG(ERROR) << "Failed to init devices for INIT_AVB_VERSION";
         return;
