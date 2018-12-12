@@ -18,6 +18,8 @@
 
 #include "adb_unique_fd.h"
 
+#include <string_view>
+
 enum class SubprocessType {
     kPty,
     kRaw,
@@ -34,3 +36,18 @@ enum class SubprocessProtocol {
 // Returns an open FD connected to the subprocess or -1 on failure.
 unique_fd StartSubprocess(const char* name, const char* terminal_type, SubprocessType type,
                           SubprocessProtocol protocol);
+
+// The same as above but with more fined grained control and custom error handling.
+unique_fd StartSubprocess(const char* name, const char* terminal_type, SubprocessType type,
+                          SubprocessProtocol protocol, bool make_pty_raw,
+                          SubprocessProtocol error_protocol, unique_fd* error_fd);
+
+// Executes |command| in a separate thread.
+// Sets up in/out and error streams to emulate shell-like behavior.
+//
+// Returns an open FD connected to the thread or -1 on failure.
+using Command = int(std::string_view args, int in, int out, int err);
+unique_fd StartCommandInProcess(const char* name, Command command);
+
+// Create a pipe containing the error.
+unique_fd ReportError(SubprocessProtocol protocol, const std::string& message);
