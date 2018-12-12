@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2aacfc1_8aa6b0b4",
+        "filename": "reboot/poweroff",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-12T16:10:41Z",
+      "side": 1,
+      "message": "\u0027reboot -p\u0027 reports a bootreason of on the next power up:\n\n$ adb shell getprop sys.boot.reason\nshutdown,shell\n\nwhich does not tell us much.\n\nreboot -p \u003creason\u003e can add clarity so we know more about the source:\n\n$ adb shell su root getprop sys.boot.reason\nshutdown,\u003creason\u003e\n\n(eg: reboot -p now -\u003e shutdown,now)",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 9
+      },
+      "revId": "84c40a3006138b981528e2797235c20e1432ef46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4985e54_5d868540",
+        "filename": "reboot/poweroff",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2018-12-12T16:10:41Z",
+      "side": 1,
+      "message": "nit: efficiency in a shell script is garnered by taking advantage of exec\n\n#! /system/bin/reboot -p now\n\nor more obvious, but adds overhead as it trampolines through shell though:\n\n#! /system/bin/sh\nexec reboot -p now",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 9
+      },
+      "revId": "84c40a3006138b981528e2797235c20e1432ef46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
