@@ -324,7 +324,12 @@ asocket* daemon_service_to_socket(std::string_view name) {
 }
 
 unique_fd daemon_service_to_fd(const char* name, atransport* transport) {
-    if (!strncmp("dev:", name, 4)) {
+#ifndef __ANDROID_RECOVERY__
+    if (!strncmp("abb:", name, 4)) {
+        return execute_binder_command(name + 4);
+    } else
+#endif
+            if (!strncmp("dev:", name, 4)) {
         return unique_fd{unix_open(name + 4, O_RDWR | O_CLOEXEC)};
     } else if (!strncmp(name, "framebuffer:", 12)) {
         return create_service_thread("fb", framebuffer_service);
