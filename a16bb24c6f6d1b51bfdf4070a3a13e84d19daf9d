@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b43e88cb_e087ed9c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2018-12-12T22:45:42Z",
+      "side": 1,
+      "message": "yes, offset and size are problematic as, by specifying a sufficiently small size, you can determine the contents of the partition.",
+      "range": {
+        "startLine": 14,
+        "startChar": 39,
+        "endLine": 14,
+        "endChar": 54
+      },
+      "revId": "a16bb24c6f6d1b51bfdf4070a3a13e84d19daf9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
