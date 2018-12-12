@@ -335,6 +335,13 @@ unique_fd daemon_service_to_fd(std::string_view name, atransport* transport) {
     // is interactive, and {'\0'} is non-empty.
     name = StripTrailingNulls(name);
 
+#ifndef __ANDROID_RECOVERY__
+    if (name.starts_with("abb:")) {
+        name.remove_prefix(strlen("abb:"));
+        return execute_binder_command(name);
+    }
+#endif
+
     if (name.starts_with("dev:")) {
         name.remove_prefix(strlen("dev:"));
         return unique_fd{unix_open(name, O_RDWR | O_CLOEXEC)};
