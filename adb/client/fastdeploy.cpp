@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstring>
 #include <memory>
 
 #include "android-base/file.h"
@@ -31,7 +32,7 @@
 
 #include "adb_utils.h"
 
-static constexpr long kRequiredAgentVersion = 0x00000001;
+static constexpr long kRequiredAgentVersion = 0x00000002;
 
 static constexpr const char* kDeviceAgentPath = "/data/local/tmp/";
 
@@ -313,9 +314,16 @@ void install_patch(const char* apkPath, const char* patchPath, int argc, const c
     std::vector<unsigned char> applyErrorBuffer;
     std::string argsString;
 
+    bool rSwitchPresent = false;
     for (int i = 0; i < argc; i++) {
         argsString.append(argv[i]);
         argsString.append(" ");
+        if (std::strcmp("-r", argv[i]) == 0) {
+            rSwitchPresent = true;
+        }
+    }
+    if (!rSwitchPresent) {
+        argsString.append("-r ");
     }
 
     std::string applyPatchCommand =
@@ -325,4 +333,13 @@ void install_patch(const char* apkPath, const char* patchPath, int argc, const c
     if (returnCode != 0) {
         error_exit("Executing %s returned %d", applyPatchCommand.c_str(), returnCode);
     }
+}
+
+bool find_package(const char* apkPath) {
+    const std::string kAgentFindCommandPattern = "/data/local/tmp/deployagent find %s";
+    std::string packageName = get_packagename_from_apk(apkPath);
+
+    std::string findCommand =
+            android::base::StringPrintf(kAgentFindCommandPattern.c_str(), packageName.c_str());
+    return !send_shell_command(findCommand);
 }
