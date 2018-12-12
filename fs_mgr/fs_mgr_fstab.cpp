@@ -57,7 +57,7 @@ struct fs_mgr_flag_values {
 
 struct flag_list {
     const char *name;
-    unsigned int flag;
+    unsigned long flag;
 };
 
 static struct flag_list mount_flags[] = {
@@ -113,6 +113,7 @@ static struct flag_list fs_mgr_flags[] = {
         {"logical", MF_LOGICAL},
         {"checkpoint=block", MF_CHECKPOINT_BLK},
         {"checkpoint=fs", MF_CHECKPOINT_FS},
+        {"slotselect_other", MF_SLOTSELECT_OTHER},
         {0, 0},
 };
 
@@ -204,11 +205,10 @@ static bool read_dt_file(const std::string& file_name, std::string* dt_value)
     return false;
 }
 
-static int parse_flags(char *flags, struct flag_list *fl,
-                       struct fs_mgr_flag_values *flag_vals,
-                       char *fs_options, int fs_options_len)
-{
-    int f = 0;
+static unsigned long parse_flags(char* flags, struct flag_list* fl,
+                                 struct fs_mgr_flag_values* flag_vals, char* fs_options,
+                                 int fs_options_len) {
+    unsigned long f = 0;
     int i;
     char *p;
     char *savep;
@@ -566,6 +566,7 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
             LERROR << "Error parsing fs_mgr_options";
             goto err;
         }
+
         entry.fs_mgr_flags.val = parse_flags(p, fs_mgr_flags, &flag_vals, NULL, 0);
 
         entry.key_loc = std::move(flag_vals.key_loc);
