@@ -579,12 +579,8 @@ static std::string ShellServiceString(bool use_shell_protocol,
 //
 // On success returns the remote exit code if |use_shell_protocol| is true,
 // 0 otherwise. On failure returns 1.
-static int RemoteShell(bool use_shell_protocol, const std::string& type_arg,
-                       char escape_char,
-                       const std::string& command) {
-    std::string service_string = ShellServiceString(use_shell_protocol,
-                                                    type_arg, command);
-
+static int RemoteShell(bool use_shell_protocol, const std::string& type_arg, char escape_char,
+                       bool empty_command, const std::string& service_string) {
     // Old devices can't handle a service string that's longer than MAX_PAYLOAD_V1.
     // Use |use_shell_protocol| to determine whether to allow a command longer than that.
     if (service_string.size() > MAX_PAYLOAD_V1 && !use_shell_protocol) {
@@ -595,8 +591,7 @@ static int RemoteShell(bool use_shell_protocol, const std::string& type_arg,
     // Make local stdin raw if the device allocates a PTY, which happens if:
     //   1. We are explicitly asking for a PTY shell, or
     //   2. We don't specify shell type and are starting an interactive session.
-    bool raw_stdin = (type_arg == kShellServiceArgPty ||
-                      (type_arg.empty() && command.empty()));
+    bool raw_stdin = (type_arg == kShellServiceArgPty || (type_arg.empty() && empty_command));
 
     std::string error;
     int fd = adb_connect(service_string, &error);
@@ -756,7 +751,29 @@ static int adb_shell(int argc, const char** argv) {
         command = android::base::Join(std::vector<const char*>(argv + optind, argv + argc), ' ');
     }
 
-    return RemoteShell(use_shell_protocol, shell_type_arg, escape_char, command);
+    std::string service_string = ShellServiceString(use_shell_protocol, shell_type_arg, command);
+    return RemoteShell(use_shell_protocol, shell_type_arg, escape_char, command.empty(),
+                       service_string);
+}
+
+static int adb_abb(int argc, const char** argv) {
+    // Defaults.
+    constexpr char escape_char = '~';  // -e
+    constexpr bool use_shell_protocol = true;
+    constexpr auto shell_type_arg = kShellServiceArgRaw;
+    constexpr bool empty_command = false;
+
+    std::string service_string("abb:");
+    for (auto i = optind; i < argc; ++i) {
+        service_string.append(argv[i]);
+        service_string.push_back(ABB_ARG_DELIMETER);
+    }
+
+    D("abb -e 0x%x [%*.s]\n", escape_char, static_cast<int>(service_string.size()),
+      service_string.data());
+
+    return RemoteShell(use_shell_protocol, shell_type_arg, escape_char, empty_command,
+                       service_string);
 }
 
 static int adb_sideload_legacy(const char* filename, int in_fd, int size) {
@@ -1546,8 +1563,9 @@ int adb_commandline(int argc, const char** argv) {
         std::string query = android::base::StringPrintf("host:disconnect:%s",
                                                         (argc == 2) ? argv[1] : "");
         return adb_query_command(query);
-    }
-    else if (!strcmp(argv[0], "emu")) {
+    } else if (!strcmp(argv[0], "abb")) {
+        return adb_abb(argc, argv);
+    } else if (!strcmp(argv[0], "emu")) {
         return adb_send_emulator_command(argc, argv, serial);
     }
     else if (!strcmp(argv[0], "shell")) {
