@@ -172,7 +172,16 @@ static uint32_t PropertySet(const std::string& name, const std::string& value, s
 
         __system_property_update(pi, value.c_str(), valuelen);
     } else {
-        int rc = __system_property_add(name.c_str(), name.size(), value.c_str(), valuelen);
+        std::string property_value;
+        if(name == "ro.build.fingerprint") {
+            property_value = android::base::GetProperty("ro.product.build.fingerprint", "");
+            if(property_value.empty() || property_value < value) {
+                property_value = value;
+            }
+        } else {
+            property_value = value;
+        }
+        int rc = __system_property_add(name.c_str(), name.size(), property_value.c_str(), property_value.size());
         if (rc < 0) {
             *error = "__system_property_add failed";
             return PROP_ERROR_SET_FAILED;
