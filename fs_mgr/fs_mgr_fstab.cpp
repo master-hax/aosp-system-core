@@ -850,10 +850,11 @@ struct fstab_rec* fs_mgr_get_entry_for_mount_point(struct fstab* fstab, const st
 }
 
 std::set<std::string> fs_mgr_get_boot_devices() {
-    // boot_devices can be specified in device tree.
-    std::string dt_value;
-    std::string file_name = get_android_dt_dir() + "/boot_devices";
-    if (read_dt_file(file_name, &dt_value)) {
+    // First check the kernel commandline, then try the device tree otherwise
+    std::string dt_file_name = get_android_dt_dir() + "/boot_devices";
+    std::string value;
+    if (fs_mgr_get_boot_config_from_kernel_cmdline("boot_devices", &value) ||
+        read_dt_file(file_name, &value)) {
         auto boot_devices = android::base::Split(dt_value, ",");
         return std::set<std::string>(boot_devices.begin(), boot_devices.end());
     }
