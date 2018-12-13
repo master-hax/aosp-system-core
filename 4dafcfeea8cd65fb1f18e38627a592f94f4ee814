@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c0d3463_97bdebae",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-12-13T13:02:09Z",
+      "side": 1,
+      "message": "The existing 32 bits are not enough now...",
+      "range": {
+        "startLine": 208,
+        "startChar": 7,
+        "endLine": 208,
+        "endChar": 20
+      },
+      "revId": "4dafcfeea8cd65fb1f18e38627a592f94f4ee814",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ae6725c_c58fa806",
+        "filename": "fs_mgr/include_fstab/fstab/fstab.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2018-12-13T13:02:09Z",
+      "side": 1,
+      "message": "Adding those to clearly indicate the #bits.\n\nWhen I did local test, I wasn\u0027t aware that first_stage_mount at L166 isn\u0027t added (thus my CL didn\u0027t work).\nIt took me a few minutes to find this :)",
+      "range": {
+        "startLine": 168,
+        "startChar": 12,
+        "endLine": 168,
+        "endChar": 17
+      },
+      "revId": "4dafcfeea8cd65fb1f18e38627a592f94f4ee814",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
