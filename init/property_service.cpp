@@ -657,6 +657,15 @@ static void LoadProperties(char* data, const char* filter, const char* filename)
             uint32_t result = 0;
             ucred cr = {.pid = 1, .uid = 0, .gid = 0};
             std::string error;
+            /* If ro.build.fingerprint value is not empty,
+               use this value replace the value of ro.build.fingerprint @{ */
+            if(!strcmp(key, "ro.build.fingerprint")) {
+                std::string property_value = android::base::GetProperty("ro.product.build.fingerprint", "");
+                if(!property_value.empty()) {
+                    strcpy(value, property_value.c_str());
+                }
+            }
+            /* @} */
             result = HandlePropertySet(key, value, context, cr, &error);
             if (result != PROP_SUCCESS) {
                 LOG(ERROR) << "Unable to set property '" << key << "' to '" << value
