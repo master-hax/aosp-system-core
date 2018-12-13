@@ -745,14 +745,20 @@ static unique_fd ReportError(SubprocessProtocol protocol, const std::string& mes
     return read;
 }
 
-unique_fd StartSubprocess(const char* name, const char* terminal_type, SubprocessType type,
+unique_fd StartSubprocess(std::string name, const char* terminal_type, SubprocessType type,
                           SubprocessProtocol protocol) {
     D("starting %s subprocess (protocol=%s, TERM=%s): '%s'",
       type == SubprocessType::kRaw ? "raw" : "PTY",
-      protocol == SubprocessProtocol::kNone ? "none" : "shell",
-      terminal_type, name);
+      protocol == SubprocessProtocol::kNone ? "none" : "shell", terminal_type, name.c_str());
 
-    auto subprocess = std::make_unique<Subprocess>(name, terminal_type, type, protocol);
+    // Old adb clients send a string including a null-terminator in name.
+    // This is largely fine, but the string "shell:\0" will result in a non-empty std::string,
+    // leading to us not treating that as an interactive shell session.
+    while (!name.empty() && name.back() == '\0') {
+        name.pop_back();
+    }
+
+    auto subprocess = std::make_unique<Subprocess>(std::move(name), terminal_type, type, protocol);
     if (!subprocess) {
         LOG(ERROR) << "failed to allocate new subprocess";
         return ReportError(protocol, "failed to allocate new subprocess");
