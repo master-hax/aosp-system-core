@@ -121,9 +121,9 @@ static bool check_unique(const fs_path_config* paths, const char* type_name,
 
     bool retval = false;
     std::vector<const char*> paths_tmp;
-    for (size_t idx = 0; paths[idx].prefix; ++idx) {
+    for (size_t idx = 0; paths[idx].prefix[0] != '\0'; ++idx) {
         if (idx > max_idx) {
-            GTEST_LOG_(WARNING) << config << ": has no end (missing null prefix)";
+            GTEST_LOG_(WARNING) << config << ": has no end (missing empty prefix)";
             retval = true;
             break;
         }
@@ -135,7 +135,7 @@ static bool check_unique(const fs_path_config* paths, const char* type_name,
 
 static bool check_fs_config_cmp(const fs_config_cmp_test* tests) {
     bool match, retval = false;
-    for (size_t idx = 0; tests[idx].prefix; ++idx) {
+    for (size_t idx = 0; tests[idx].prefix[0] != '\0'; ++idx) {
         match = __for_testing_only__fs_config_cmp(tests[idx].dir, tests[idx].prefix,
                                                   strlen(tests[idx].prefix), tests[idx].path,
                                                   strlen(tests[idx].path));
@@ -212,6 +212,7 @@ void check_two(const fs_path_config* paths, const char* type_name, const char* p
     ASSERT_FALSE(paths == nullptr);
     ASSERT_FALSE(type_name == nullptr);
     ASSERT_FALSE(prefix == nullptr);
+    ASSERT_FALSE(prefix[0] == '\0');
     bool check_internal = check_unique(paths, type_name, prefix);
     EXPECT_FALSE(check_internal);
     bool check_overrides =

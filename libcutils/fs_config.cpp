@@ -90,7 +90,9 @@ static const struct fs_path_config android_dirs[] = {
     { 00751, AID_ROOT,         AID_SHELL,        0, "system/xbin" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "vendor/bin" },
     { 00755, AID_ROOT,         AID_SHELL,        0, "vendor" },
-    { 00755, AID_ROOT,         AID_ROOT,         0, 0 },
+
+    // Empty prefix marks the end of this list.
+    { 00755, AID_ROOT,         AID_ROOT,         0, "" },
         // clang-format on
 };
 #ifndef __ANDROID_VNDK__
@@ -102,8 +104,7 @@ auto __for_testing_only__android_dirs = android_dirs;
 // should start with the most specific path and work their
 // way up to the root. Prefixes ending in * denotes wildcard
 // and will allow partial matches.
-static const char sys_conf_dir[] = "/system/etc/fs_config_dirs";
-static const char sys_conf_file[] = "/system/etc/fs_config_files";
+
 // No restrictions are placed on the vendor and oem file-system config files,
 // although the developer is advised to restrict the scope to the /vendor or
 // oem/ file-system since the intent is to provide support for customized
@@ -113,23 +114,18 @@ static const char sys_conf_file[] = "/system/etc/fs_config_files";
 //
 // We expect build-time checking or filtering when constructing the associated
 // fs_config_* files (see build/tools/fs_config/fs_config_generate.c)
-static const char ven_conf_dir[] = "/vendor/etc/fs_config_dirs";
-static const char ven_conf_file[] = "/vendor/etc/fs_config_files";
-static const char oem_conf_dir[] = "/oem/etc/fs_config_dirs";
-static const char oem_conf_file[] = "/oem/etc/fs_config_files";
-static const char odm_conf_dir[] = "/odm/etc/fs_config_dirs";
-static const char odm_conf_file[] = "/odm/etc/fs_config_files";
-static const char product_conf_dir[] = "/product/etc/fs_config_dirs";
-static const char product_conf_file[] = "/product/etc/fs_config_files";
-static const char product_services_conf_dir[] = "/product_services/etc/fs_config_dirs";
-static const char product_services_conf_file[] = "/product_services/etc/fs_config_files";
+
+#define FS_CONFIG_DIR_REL(location) #location "/etc/fs_config_dirs"
+#define FS_CONFIG_FILE_REL(location) #location "/etc/fs_config_files"
+#define FS_CONFIG_DIR(location) "/" FS_CONFIG_DIR_REL(location)
+#define FS_CONFIG_FILE(location) "/" FS_CONFIG_FILE_REL(location)
 static const char* conf[][2] = {
-        {sys_conf_file, sys_conf_dir},
-        {ven_conf_file, ven_conf_dir},
-        {oem_conf_file, oem_conf_dir},
-        {odm_conf_file, odm_conf_dir},
-        {product_conf_file, product_conf_dir},
-        {product_services_conf_file, product_services_conf_dir},
+        {FS_CONFIG_FILE(system), FS_CONFIG_DIR(system)},
+        {FS_CONFIG_FILE(vendor), FS_CONFIG_DIR(vendor)},
+        {FS_CONFIG_FILE(oem), FS_CONFIG_DIR(oem)},
+        {FS_CONFIG_FILE(odm), FS_CONFIG_DIR(odm)},
+        {FS_CONFIG_FILE(product), FS_CONFIG_DIR(product)},
+        {FS_CONFIG_FILE(product_services), FS_CONFIG_DIR(product_services)},
 };
 
 // Do not use android_files to grant Linux capabilities.  Use ambient capabilities in their
@@ -153,16 +149,16 @@ static const struct fs_path_config android_files[] = {
     { 00600, AID_ROOT,      AID_ROOT,      0, "system/etc/prop.default" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "odm/build.prop" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "odm/default.prop" },
-    { 00444, AID_ROOT,      AID_ROOT,      0, odm_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, odm_conf_file + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, oem_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, oem_conf_file + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(odm) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(odm) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(oem) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(oem) },
     { 00600, AID_ROOT,      AID_ROOT,      0, "product/build.prop" },
-    { 00444, AID_ROOT,      AID_ROOT,      0, product_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, product_conf_file + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(product) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(product) },
     { 00600, AID_ROOT,      AID_ROOT,      0, "product_services/build.prop" },
-    { 00444, AID_ROOT,      AID_ROOT,      0, product_services_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, product_services_conf_file + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(product_services) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(product_services) },
     { 00750, AID_ROOT,      AID_SHELL,     0, "sbin/fs_mgr" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump32" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump64" },
@@ -172,8 +168,8 @@ static const struct fs_path_config android_files[] = {
     { 00700, AID_ROOT,      AID_ROOT,      0, "system/bin/secilc" },
     { 00750, AID_ROOT,      AID_ROOT,      0, "system/bin/uncrypt" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "system/build.prop" },
-    { 00444, AID_ROOT,      AID_ROOT,      0, sys_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, sys_conf_file + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(system) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(system) },
     { 00440, AID_ROOT,      AID_SHELL,     0, "system/etc/init.goldfish.rc" },
     { 00550, AID_ROOT,      AID_SHELL,     0, "system/etc/init.goldfish.sh" },
     { 00550, AID_ROOT,      AID_SHELL,     0, "system/etc/init.ril" },
@@ -182,8 +178,8 @@ static const struct fs_path_config android_files[] = {
     { 00440, AID_ROOT,      AID_ROOT,      0, "system/etc/recovery.img" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "vendor/build.prop" },
     { 00600, AID_ROOT,      AID_ROOT,      0, "vendor/default.prop" },
-    { 00444, AID_ROOT,      AID_ROOT,      0, ven_conf_dir + 1 },
-    { 00444, AID_ROOT,      AID_ROOT,      0, ven_conf_file + 1 },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_DIR_REL(vendor) },
+    { 00444, AID_ROOT,      AID_ROOT,      0, FS_CONFIG_FILE_REL(vendor) },
 
     // the following two files are INTENTIONALLY set-uid, but they
     // are NOT included on user builds.
@@ -213,7 +209,9 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/xbin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
-    { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
+
+    // Empty prefix marks the end of this list.
+    { 00644, AID_ROOT,      AID_ROOT,      0, "" },
         // clang-format on
 };
 #ifndef __ANDROID_VNDK__
@@ -350,7 +348,7 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
         close(fd);
     }
 
-    for (pc = dir ? android_dirs : android_files; pc->prefix; pc++) {
+    for (pc = dir ? android_dirs : android_files; pc->prefix[0] != '\0'; pc++) {
         if (fs_config_cmp(dir, pc->prefix, strlen(pc->prefix), path, plen)) {
             break;
         }

@@ -54,7 +54,16 @@ struct fs_path_config {
     unsigned uid;
     unsigned gid;
     uint64_t capabilities;
-    const char* prefix;
+
+    // It may seem cleaner to just change the type of 'prefix' to
+    // 'const char *', especially if you are looking at this because you changed
+    // something and your build failed because the size of 'prefix' is too
+    // small.  However, having a pointer here would require relocation at
+    // runtime, which adds memory pressure to the system.  Note that this is
+    // only safe because this is only used in C++ code.  C++ standard, unlike
+    // C standard, mandates the array size to be large enough to hold the
+    // NULL terminator when initialized with a string literal.
+    const char prefix[37];
 };
 
 /* Rules for directories and files has moved to system/code/libcutils/fs_config.c */
