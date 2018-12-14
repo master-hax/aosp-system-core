@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b91d22ac_a36f5172",
+        "filename": "adb/adb_io.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2018-12-14T23:09:36Z",
+      "side": 1,
+      "message": "If the intend if to compile this for ADBD only, i think there is a #define we can use. And if there is not, we should probably add it.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ae2299e_c5fbc641",
+        "filename": "adb/services.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2018-12-14T23:09:36Z",
+      "side": 1,
+      "message": "Remove.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 0
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
