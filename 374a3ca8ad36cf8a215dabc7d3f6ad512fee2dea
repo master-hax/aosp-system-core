@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b680966d_efce9905",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1566,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2018-12-15T00:34:31Z",
+      "side": 1,
+      "message": "Can we coordinate with devrel to document this new command?",
+      "range": {
+        "startLine": 1566,
+        "startChar": 33,
+        "endLine": 1566,
+        "endChar": 36
+      },
+      "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10cd8e7a_dbe0fff9",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1566,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2018-12-15T00:34:31Z",
+      "side": 1,
+      "message": "Is this feature only accessible from adb commandline? This makes it unavailable from Android Studio since we us ddmlib to talk directly to adb server on the host.",
+      "range": {
+        "startLine": 1566,
+        "startChar": 4,
+        "endLine": 1566,
+        "endChar": 41
+      },
+      "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
