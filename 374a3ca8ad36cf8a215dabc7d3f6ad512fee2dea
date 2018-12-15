@@ -93,6 +93,30 @@
       "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50f526e2_6a849921",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1566,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2018-12-15T00:47:40Z",
+      "side": 1,
+      "message": "I don\u0027t understand your comment and link. We don\u0027t use \"adb shell XXXX\" on AS.",
+      "parentUuid": "90e7d718_89584f80",
+      "range": {
+        "startLine": 1566,
+        "startChar": 4,
+        "endLine": 1566,
+        "endChar": 41
+      },
+      "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
