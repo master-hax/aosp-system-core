@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "2436e679_102b0b62",
+        "filename": "adb/adb_io.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-15T00:01:10Z",
+      "side": 1,
+      "message": "CMSG_SPACE(sizeof(int))",
+      "range": {
+        "startLine": 196,
+        "startChar": 16,
+        "endLine": 196,
+        "endChar": 52
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "921d5a1c_d5033792",
+        "filename": "adb/adb_io.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-15T00:01:10Z",
+      "side": 1,
+      "message": "IMO, this would be nicer as `alignas(alignof(cmsghdr)) char buffer[CMSG_SPACE(sizeof(int))];`\n\nAlso, don\u0027t we need this in SendFileDescriptor as well? (I guess the old code was broken in that respect)\n\n(codesearching around, it looks like half of the uses of this are broken w.r.t. alignment of the buffer... Maybe we should add these functions to android::base and replace all of the uses with calls to this...)",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 12
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b91d22ac_a36f5172",
         "filename": "adb/adb_io.h",
         "patchSetId": 1
@@ -13,6 +59,30 @@
       "writtenOn": "2018-12-14T23:09:36Z",
       "side": 1,
       "message": "If the intend if to compile this for ADBD only, i think there is a #define we can use. And if there is not, we should probably add it.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb2d8e48_dfd1e3f1",
+        "filename": "adb/adb_io.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-15T00:01:10Z",
+      "side": 1,
+      "message": "!ADB_HOST",
+      "parentUuid": "b91d22ac_a36f5172",
       "range": {
         "startLine": 76,
         "startChar": 0,
