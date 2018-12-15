@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "92a23780_a6eccf51",
+        "filename": "adb/adb_io.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-15T00:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2436e679_102b0b62",
+      "range": {
+        "startLine": 196,
+        "startChar": 16,
+        "endLine": 196,
+        "endChar": 52
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "921d5a1c_d5033792",
         "filename": "adb/adb_io.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2759a5ba_bff46303",
+        "filename": "adb/adb_io.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-15T00:17:20Z",
+      "side": 1,
+      "message": "unions are guaranteed to be aligned, at least in c++\n\nchanged SendFileDescriptor to use union as well - this way it\u0027ll be aligned\n\nshould be ok to move this to android::base later - i already have 4 reviews in progress, kind-of difficult to track.",
+      "parentUuid": "921d5a1c_d5033792",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 12
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -92,6 +140,30 @@
       "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d052a613_0b7a9b37",
+        "filename": "adb/adb_io.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-15T00:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eb2d8e48_dfd1e3f1",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "c1a7b4bbee1c098f5570d0a3f8fbeecb88e08583",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
