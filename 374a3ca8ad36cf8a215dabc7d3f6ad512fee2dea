@@ -117,6 +117,30 @@
       "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35686df1_f57d1d9b",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1566,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-15T00:55:10Z",
+      "side": 1,
+      "message": "ddmlib translates Java calls to ADB-server calls. For example to install an APK you need to invoke PackageManager via \u0027shell cmd package ...\u0027 command sent to ADB.\nLink is to ddmlib source code where such commands are created.\nWith abb, the adb-server calls will need to slightly change to use \u0027abb package ...\u0027 instead. This should be a trivial change in ddmlib.",
+      "parentUuid": "50f526e2_6a849921",
+      "range": {
+        "startLine": 1566,
+        "startChar": 4,
+        "endLine": 1566,
+        "endChar": 41
+      },
+      "revId": "374a3ca8ad36cf8a215dabc7d3f6ad512fee2dea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
