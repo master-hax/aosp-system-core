@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b6ebef2_cb0ba054",
+        "filename": "adb/adb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-12-15T01:32:55Z",
+      "side": 1,
+      "message": "nit: please use C++ comments\nalso it can be helpful to add that \\0 isn\u0027t yet supported in ADB, and that the delimiter needs to be something that can\u0027t appear in the command itself",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 209,
+        "endChar": 45
+      },
+      "revId": "edb8a3f6dce7e9c4e7723e19243734389fc76c68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9387d65c_56b940e0",
+        "filename": "adb/adb_io.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-12-15T01:32:55Z",
+      "side": 1,
+      "message": "put these debug messages into *|error|?",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 254,
+        "endChar": 92
+      },
+      "revId": "edb8a3f6dce7e9c4e7723e19243734389fc76c68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d56fd9f_5ca08b86",
+        "filename": "adb/adb_io.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-12-15T01:32:55Z",
+      "side": 1,
+      "message": "unique_fd*?",
+      "range": {
+        "startLine": 81,
+        "startChar": 43,
+        "endLine": 81,
+        "endChar": 47
+      },
+      "revId": "edb8a3f6dce7e9c4e7723e19243734389fc76c68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "307897e8_6b3497ba",
+        "filename": "adb/daemon/abb.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-12-15T01:32:55Z",
+      "side": 1,
+      "message": "nit: 2018",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "edb8a3f6dce7e9c4e7723e19243734389fc76c68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cae942fb_8bf223c4",
+        "filename": "adb/daemon/abb.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2018-12-15T01:32:55Z",
+      "side": 1,
+      "message": "move to unnamed namespace? or, better, just make these static?",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 0
+      },
+      "revId": "edb8a3f6dce7e9c4e7723e19243734389fc76c68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
