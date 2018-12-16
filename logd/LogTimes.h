@@ -95,8 +95,13 @@ class LogTimeEntry {
     // flushTo filter callbacks
     static int FilterFirstPass(const LogBufferElement* element, void* me);
     static int FilterSecondPass(const LogBufferElement* element, void* me);
+
+    bool isReleased() const;
+
+    // require holding timesLock
+    static bool removeEntryFromTimes_Locked(std::list<std::shared_ptr<LogTimeEntry>> & times, LogTimeEntry *me);
 };
 
-typedef std::list<std::unique_ptr<LogTimeEntry>> LastLogTimes;
+typedef std::list<std::shared_ptr<LogTimeEntry>> LastLogTimes;
 
 #endif  // _LOGD_LOG_TIMES_H__

@@ -216,24 +216,20 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         timeout = 0;
     }
 
-    LogTimeEntry::wrlock();
-    auto entry = std::make_unique<LogTimeEntry>(
+    auto entry = new LogTimeEntry(
         *this, cli, nonBlock, tail, logMask, pid, sequence, timeout);
     if (!entry->startReader_Locked()) {
-        LogTimeEntry::unlock();
+        delete entry;
         return false;
     }
 
     // release client and entry reference counts once done
     cli->incRef();
-    mLogbuf.mTimes.emplace_front(std::move(entry));
 
     // Set acceptable upper limit to wait for slow reader processing b/27242723
     struct timeval t = { LOGD_SNDTIMEO, 0 };
     setsockopt(cli->getSocket(), SOL_SOCKET, SO_SNDTIMEO, (const char*)&t,
                sizeof(t));
-
-    LogTimeEntry::unlock();
 
     return true;
 }
