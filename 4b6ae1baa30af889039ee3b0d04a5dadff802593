@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08c9a763_49e6537b",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-16T13:51:52Z",
+      "side": 1,
+      "message": "\"prune\" method is so complicated, that, I dare not to change its code, therefore, I prefer to just calling it again here (after kick-out-ing a slow reader successfully).  Such code change should be much safer, and will not bring regression.",
+      "range": {
+        "startLine": 471,
+        "startChar": 12,
+        "endLine": 471,
+        "endChar": 17
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "601182c4_5f33fa0a",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1045,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-16T13:51:52Z",
+      "side": 1,
+      "message": "calling the \"shutdown\" from another thread? is such usage way \"officially legal?\" If you don\u0027t like it, I can remove this line, it is NOT a must-have in our fix patch.",
+      "range": {
+        "startLine": 1045,
+        "startChar": 4,
+        "endLine": 1045,
+        "endChar": 12
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab17e62a_26b7383c",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-16T13:51:52Z",
+      "side": 1,
+      "message": "The old version of copy-constructor only supported partial function, :(.  It wasted almost one week time  for me to find/locate this bug.",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 7
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d6d721a_433f0f4a",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-16T13:51:52Z",
+      "side": 1,
+      "message": "I am not sure what the following line \"parent-\u003euidToName(mUid)\" will be doing, therefore, for concurrency safety consideration, I choose to exit now.",
+      "range": {
+        "startLine": 161,
+        "startChar": 8,
+        "endLine": 161,
+        "endChar": 18
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91c5ff09_55db43bd",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-16T13:51:52Z",
+      "side": 1,
+      "message": "the same reason as the above.",
+      "range": {
+        "startLine": 174,
+        "startChar": 12,
+        "endLine": 174,
+        "endChar": 22
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
