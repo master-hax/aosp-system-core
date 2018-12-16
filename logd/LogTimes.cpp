@@ -70,6 +70,10 @@ void* LogTimeEntry::threadStart(void* obj) {
 
     LogTimeEntry* me = reinterpret_cast<LogTimeEntry*>(obj);
 
+    // I(me, entry) may possibly be kick-out-ed from the list times before my thread exit.
+    // therefore, using this variable for saving my life.
+    std::shared_ptr<LogTimeEntry> saveMyLife(me);
+
     SocketClient* client = me->mClient;
 
     LogBuffer& logbuf = me->mReader.logbuf();
@@ -80,6 +84,8 @@ void* LogTimeEntry::threadStart(void* obj) {
     me->leadingDropped = true;
 
     wrlock();
+
+    logbuf.mTimes.push_back(saveMyLife);
 
     log_time start = me->mStart;
 
@@ -99,11 +105,11 @@ void* LogTimeEntry::threadStart(void* obj) {
 
         if (me->mTail) {
             logbuf.flushTo(client, start, nullptr, privileged, security,
-                           FilterFirstPass, me);
+                           FilterFirstPass, me, me);
             me->leadingDropped = true;
         }
         start = logbuf.flushTo(client, start, me->mLastTid, privileged,
-                               security, FilterSecondPass, me);
+                               security, FilterSecondPass, me, me);
 
         wrlock();
 
@@ -130,17 +136,34 @@ void* LogTimeEntry::threadStart(void* obj) {
     client->decRef();
 
     LastLogTimes& times = reader.logbuf().mTimes;
-    auto it =
-        std::find_if(times.begin(), times.end(),
-                     [&me](const auto& other) { return other.get() == me; });
-
-    if (it != times.end()) {
-        times.erase(it);
-    }
+    removeEntryFromTimes_Locked(times, me);
 
     unlock();
 
     return nullptr;
+}
+
+bool LogTimeEntry::isReleased() const {
+    rdlock();
+    const bool isReleased = mRelease;
+    unlock();
+
+    return isReleased;
+}
+
+bool LogTimeEntry::removeEntryFromTimes_Locked(LastLogTimes& times, LogTimeEntry *me) {
+    bool found = false;
+
+    auto it =
+            std::find_if(times.begin(), times.end(),
+                         [&me](const std::shared_ptr<LogTimeEntry>& other) { return other.get() == me; });
+
+    if (it != times.end()) {
+        times.erase(it);
+        found = true;
+    }
+
+    return found;
 }
 
 // A first pass to count the number of elements

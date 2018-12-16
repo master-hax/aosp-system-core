@@ -124,7 +124,7 @@ class LogBuffer : public LogBufferInterface {
                      bool privileged, bool security,
                      int (*filter)(const LogBufferElement* element,
                                    void* arg) = nullptr,
-                     void* arg = nullptr);
+                     void *arg = nullptr, LogTimeEntry *pTimeEntry = nullptr);
 
     bool clear(log_id_t id, uid_t uid = AID_ROOT);
     unsigned long getSize(log_id_t id);
@@ -183,11 +183,30 @@ class LogBuffer : public LogBufferInterface {
     static constexpr size_t maxPrune = 256;
     static const log_time pruneMargin;
 
+    class PruneResult {
+    public:
+        bool kickOutHappened() const { return mKickOutHappened; }
+        void setKickOutHappened() { mKickOutHappened = true; }
+
+        void clear() { mKickOutHappened = false; }
+
+        PruneResult() { clear(); }
+
+    private:
+        bool mKickOutHappened;
+    };
+
     void maybePrune(log_id_t id);
     bool isBusy(log_time watermark);
-    void kickMe(LogTimeEntry* me, log_id_t id, unsigned long pruneRows);
+    void kickMe(PruneResult *pPruneResult, LogTimeEntry* me, log_id_t id, unsigned long pruneRows);
 
     bool prune(log_id_t id, unsigned long pruneRows, uid_t uid = AID_ROOT);
+    bool prune(PruneResult *pPruneResult, log_id_t id, unsigned long &pruneRows, uid_t uid = AID_ROOT);
+
+    // kick out an entry from times list with no wait.
+    // require holding locks: wrlock of mLogElementsLock, wrlock of timesLock
+    void kickOut(LogTimeEntry *entry);
+
     LogBufferElementCollection::iterator erase(
         LogBufferElementCollection::iterator it, bool coalesce = false);
 };

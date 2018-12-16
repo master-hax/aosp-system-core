@@ -29,6 +29,7 @@
 #include "LogCommand.h"
 #include "LogReader.h"
 #include "LogUtils.h"
+#include "LogTimes.h"
 
 const log_time LogBufferElement::FLUSH_ERROR((uint32_t)-1, (uint32_t)-1);
 atomic_int_fast64_t LogBufferElement::sequence(1);
@@ -55,8 +56,19 @@ LogBufferElement::LogBufferElement(const LogBufferElement& elem)
       mMsgLen(elem.mMsgLen),
       mLogId(elem.mLogId),
       mDropped(elem.mDropped) {
-    mMsg = new char[mMsgLen];
-    memcpy(mMsg, elem.mMsg, mMsgLen);
+    if (mDropped) {
+        if (elem.isBinary() && elem.mMsg != nullptr) {
+            // for the following "len" value, refer to : setDropped(uint16_t value), getTag()
+            const int len = sizeof(android_event_header_t);
+            mMsg = new char[len];
+            memcpy(mMsg, elem.mMsg, len);
+        } else {
+            mMsg = nullptr;
+        }
+    } else {
+        mMsg = new char[mMsgLen];
+        memcpy(mMsg, elem.mMsg, mMsgLen);
+    }
 }
 
 LogBufferElement::~LogBufferElement() {
@@ -136,7 +148,7 @@ char* android::tidToName(pid_t tid) {
 
 // assumption: mMsg == NULL
 size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogBuffer* parent,
-                                                bool lastSame) {
+                                                bool lastSame, LogTimeEntry *pTimeEntry) {
     static const char tag[] = "chatty";
 
     if (!__android_log_is_loggable_len(ANDROID_LOG_INFO, tag, strlen(tag),
@@ -146,6 +158,11 @@ size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogBuffer* parent
 
     static const char format_uid[] = "uid=%u%s%s %s %u line%s";
     parent->wrlock();
+    if (pTimeEntry->isReleased()) {
+        parent->unlock();
+        return 0;
+    }
+
     const char* name = parent->uidToName(mUid);
     parent->unlock();
     const char* commName = android::tidToName(mTid);
@@ -154,6 +171,14 @@ size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogBuffer* parent
     }
     if (!commName) {
         parent->wrlock();
+        if (pTimeEntry->isReleased()) {
+            parent->unlock();
+			if (name) {
+                free(const_cast<char*>(name));
+			}
+            return 0;
+        }
+
         commName = parent->pidToName(mPid);
         parent->unlock();
     }
@@ -229,7 +254,7 @@ size_t LogBufferElement::populateDroppedMessage(char*& buffer, LogBuffer* parent
 }
 
 log_time LogBufferElement::flushTo(SocketClient* reader, LogBuffer* parent,
-                                   bool privileged, bool lastSame) {
+                                   bool privileged, bool lastSame, LogTimeEntry *pTimeEntry) {
     struct logger_entry_v4 entry;
 
     memset(&entry, 0, sizeof(struct logger_entry_v4));
@@ -250,7 +275,7 @@ log_time LogBufferElement::flushTo(SocketClient* reader, LogBuffer* parent,
     char* buffer = nullptr;
 
     if (mDropped) {
-        entry.len = populateDroppedMessage(buffer, parent, lastSame);
+        entry.len = populateDroppedMessage(buffer, parent, lastSame, pTimeEntry);
         if (!entry.len) return mRealTime;
         iovec[1].iov_base = buffer;
     } else {

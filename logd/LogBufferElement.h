@@ -26,6 +26,7 @@
 #include <sysutils/SocketClient.h>
 
 class LogBuffer;
+class LogTimeEntry;
 
 #define EXPIRE_HOUR_THRESHOLD 24  // Only expire chatty UID logs to preserve
                                   // non-chatty UIDs less than this age in hours
@@ -53,7 +54,7 @@ class __attribute__((packed)) LogBufferElement {
 
     // assumption: mDropped == true
     size_t populateDroppedMessage(char*& buffer, LogBuffer* parent,
-                                  bool lastSame);
+                                  bool lastSame, LogTimeEntry *pTimeEntry);
 
    public:
     LogBufferElement(log_id_t log_id, log_time realtime, uid_t uid, pid_t pid,
@@ -94,7 +95,7 @@ class __attribute__((packed)) LogBufferElement {
 
     static const log_time FLUSH_ERROR;
     log_time flushTo(SocketClient* writer, LogBuffer* parent, bool privileged,
-                     bool lastSame);
+                     bool lastSame, LogTimeEntry *pTimeEntry);
 };
 
 #endif
