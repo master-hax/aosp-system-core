@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f6143dd5_de2fdeb0",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T21:16:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e2be675_4e175a36",
+      "range": {
+        "startLine": 323,
+        "startChar": 8,
+        "endLine": 323,
+        "endChar": 20
+      },
+      "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4018f7bf_ec5b36e6",
         "filename": "base/file.cpp",
         "patchSetId": 2
@@ -60,6 +84,30 @@
       "side": 1,
       "message": "Doesn\u0027t seem like it?\n\nNote  The GetLastError code ERROR_IO_PENDING is not a failure; it designates the write operation is pending completion asynchronously. For more information, see Remarks.",
       "parentUuid": "4018f7bf_ec5b36e6",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 327,
+        "endChar": 0
+      },
+      "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4b05152_7f153a5e",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T21:16:55Z",
+      "side": 1,
+      "message": "I\u0027ve added code to block when this result is returned.  PTAL.",
+      "parentUuid": "b0038afc_d184c681",
       "range": {
         "startLine": 325,
         "startChar": 0,
