@@ -16,6 +16,24 @@
       "revId": "e228b1f19f1ce1d88aa2e0e8751ed6fa902d66c4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5aa7920_04e5c43e",
+        "filename": "base/file.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T22:51:46Z",
+      "side": 1,
+      "message": "I created a scoped unnamed event and attached it to the overlapped.",
+      "parentUuid": "f7716bb6_66441cf4",
+      "revId": "e228b1f19f1ce1d88aa2e0e8751ed6fa902d66c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

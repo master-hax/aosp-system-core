@@ -141,6 +141,30 @@
       "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b27cd40_863fd448",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T22:51:46Z",
+      "side": 1,
+      "message": "EIO was correct.  Fixed.  Otherwise, per our collective discussion, I added a scoped event to the overlap object.",
+      "parentUuid": "59c4f166_58be95c6",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 327,
+        "endChar": 0
+      },
+      "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
