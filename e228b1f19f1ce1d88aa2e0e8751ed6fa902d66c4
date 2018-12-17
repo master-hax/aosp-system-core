@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7716bb6_66441cf4",
+        "filename": "base/file.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-17T21:23:39Z",
+      "side": 1,
+      "message": "MSDN says: \"If the hEvent member of the OVERLAPPED structure is NULL, the system uses the state of the hFile handle to signal when the operation has been completed. Use of file, named pipe, or communications-device handles for this purpose is discouraged. It is safer to use an event object because of the confusion that can occur when multiple simultaneous overlapped operations are performed on the same file, named pipe, or communications device. In this situation, there is no way to know which operation caused the object\u0027s state to be signaled.\"\n\nSounds like you should create a separate event object for this with CreateEventA?",
+      "revId": "e228b1f19f1ce1d88aa2e0e8751ed6fa902d66c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
