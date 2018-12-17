@@ -1179,11 +1179,12 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
 
 // wrapper to __mount() and expects a fully prepared fstab_rec,
 // unlike fs_mgr_do_mount which does more things with avb / verity etc.
-int fs_mgr_do_mount_one(const FstabEntry& entry) {
+int fs_mgr_do_mount_one(const FstabEntry& entry, const std::string& mount_point) {
     // Run fsck if needed
     prepare_fs_for_mount(entry.blk_device, entry);
 
-    int ret = __mount(entry.blk_device, entry.mount_point, entry);
+    int ret =
+            __mount(entry.blk_device, mount_point.empty() ? entry.mount_point : mount_point, entry);
     if (ret) {
       ret = (errno == EBUSY) ? FS_MGR_DOMNT_BUSY : FS_MGR_DOMNT_FAILED;
     }
@@ -1191,14 +1192,14 @@ int fs_mgr_do_mount_one(const FstabEntry& entry) {
     return ret;
 }
 
-int fs_mgr_do_mount_one(struct fstab_rec* rec) {
+int fs_mgr_do_mount_one(struct fstab_rec* rec, const char* mount_point) {
     if (!rec) {
         return FS_MGR_DOMNT_FAILED;
     }
 
     auto entry = FstabRecToFstabEntry(rec);
 
-    return fs_mgr_do_mount_one(entry);
+    return fs_mgr_do_mount_one(entry, mount_point ? mount_point : "");
 }
 
 // If tmp_mount_point is non-null, mount the filesystem there.  This is for the
