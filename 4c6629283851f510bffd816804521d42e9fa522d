@@ -22,6 +22,30 @@
       "revId": "4c6629283851f510bffd816804521d42e9fa522d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "363a661b_8f9581a1",
+        "filename": "base/file.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T23:11:37Z",
+      "side": 1,
+      "message": "I added PLOG(ERROR) per your request.",
+      "parentUuid": "dfc83ae6_2157e56d",
+      "range": {
+        "startLine": 301,
+        "startChar": 4,
+        "endLine": 301,
+        "endChar": 26
+      },
+      "revId": "4c6629283851f510bffd816804521d42e9fa522d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
