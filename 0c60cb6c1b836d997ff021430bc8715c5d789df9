@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c2c13be_3dd04ca6",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-17T17:14:57Z",
+      "side": 1,
+      "message": "thanks!",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c845960a_513f7b48",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-17T17:14:57Z",
+      "side": 1,
+      "message": "C++ casts.",
+      "range": {
+        "startLine": 318,
+        "startChar": 16,
+        "endLine": 318,
+        "endChar": 24
+      },
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "453e34b5_27ae91a7",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-17T17:14:57Z",
+      "side": 1,
+      "message": "isn\u0027t a `switch` with one case and a default called `if ... else`? :-)",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e301e686_7e66c26d",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-17T17:14:57Z",
+      "side": 1,
+      "message": "no `else` after `return`.\n\nseems like this is really\n\n  if (handle !\u003d INVALID_HANDLE_VALUE \u0026\u0026 ::FlushFileBuffers(handle)) {\n    return 0;\n  }\n\n  errno \u003d EINVAL;\n  return -1;\n\nthough it seems like elsewhere we unconditionally call `_get_osfhandle` (the documentation says it sets EBADF and returns INVALID_HANDLE_VALUE) so we can lose the `fd \u003c 0` part too?",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
