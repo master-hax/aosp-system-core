@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4018f7bf_ec5b36e6",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-17T18:58:53Z",
+      "side": 1,
+      "message": "(i\u0027ll leave it to the folks who actually know something about Windows to say whether this is appropriate behavior...)",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 327,
+        "endChar": 0
+      },
+      "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
