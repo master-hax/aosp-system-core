@@ -117,6 +117,30 @@
       "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59c4f166_58be95c6",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-12-17T21:34:44Z",
+      "side": 1,
+      "message": "Yeah, that\u0027s a bit off. ERROR_IO_PENDING is for asynchronous I/O while EAGAIN is non-blocking I/O.\n\nWriteFile would return ERROR_IO_PENDING if the Win32 handle had been opened in FILE_FLAG_OVERLAPPED mode. It indicates that Windows has started an asynchronous I/O request in the background. As it works on the request, it updates the OVERLAPPED object (params) passed to WriteFile. (That object is about to go out of scope, though...)\n\nI\u0027d expect the handle to be a normal non-overlapped handle, though, so ERROR_IO_PENDING should never happen.\n\npread uses EIO as the catch-all error code, but pwrite uses EINVAL. Should they match?",
+      "parentUuid": "b0038afc_d184c681",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 327,
+        "endChar": 0
+      },
+      "revId": "3a1c2a078c4ff07f47fd8b61d5620876785b5b6d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
