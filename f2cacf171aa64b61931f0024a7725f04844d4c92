@@ -117,6 +117,30 @@
     },
     {
       "key": {
+        "uuid": "b563eefd_e0bcdc78",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-17T21:32:31Z",
+      "side": 1,
+      "message": "I don\u0027t think the code here should take care of that; the client of the function should do.",
+      "parentUuid": "2488b90a_16e6c33a",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 66
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2b11f40f_c4ec8d9f",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 2
@@ -151,6 +175,30 @@
       "writtenOn": "2018-12-03T22:26:33Z",
       "side": 1,
       "message": "There is no means to reset this flag (I expect it is not needed, maybe state thus?) ...",
+      "range": {
+        "startLine": 153,
+        "startChar": 11,
+        "endLine": 154,
+        "endChar": 1
+      },
+      "revId": "f2cacf171aa64b61931f0024a7725f04844d4c92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1bc4d247_aacdbb32",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-17T21:32:31Z",
+      "side": 1,
+      "message": "It is not meant to be unset. We never unmap a logical partitions in this file. I think that\u0027s okay.",
+      "parentUuid": "0aee661d_3a93f7ec",
       "range": {
         "startLine": 153,
         "startChar": 11,

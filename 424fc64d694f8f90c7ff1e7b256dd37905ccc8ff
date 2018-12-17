@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "92f318e4_eb8e1504",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-17T21:32:31Z",
+      "side": 1,
+      "message": "Will do kSystemRoot. I am using a constant just to avoid duplication.",
+      "parentUuid": "3a5b3750_9cf47f3c",
+      "range": {
+        "startLine": 30,
+        "startChar": 29,
+        "endLine": 30,
+        "endChar": 40
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "07bbec33_5a76b4b9",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -223,6 +247,30 @@
       "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3975c877_6098a614",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-17T21:32:31Z",
+      "side": 1,
+      "message": "If fs_mgr_ensure_path_mounted overrides mount_point, then the caller should just call umount on the mount_point. fstab doesn\u0027t need to be checked. See change in the same topic, CL:838317.\n\nI\u0027ll update docs to explain this. Or, maybe you want me to set-up a function that wraps the umount() call?",
+      "parentUuid": "9cffa556_df547e03",
+      "range": {
+        "startLine": 145,
+        "startChar": 81,
+        "endLine": 145,
+        "endChar": 95
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     },
     {
       "key": {
