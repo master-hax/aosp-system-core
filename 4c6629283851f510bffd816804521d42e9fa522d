@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfc83ae6_2157e56d",
+        "filename": "base/file.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2018-12-17T23:06:42Z",
+      "side": 1,
+      "message": "I\u0027m wondering if we want to log a failure if CreateEvent() fails? I\u0027m not sure how it could fail -- maybe exhausting some system resource?",
+      "range": {
+        "startLine": 301,
+        "startChar": 4,
+        "endLine": 301,
+        "endChar": 26
+      },
+      "revId": "4c6629283851f510bffd816804521d42e9fa522d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
