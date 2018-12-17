@@ -139,7 +139,7 @@ void Looper::rebuildEpollLocked() {
     }
 
     // Allocate the new epoll instance and register the wake pipe.
-    mEpollFd.reset(epoll_create(EPOLL_SIZE_HINT));
+    mEpollFd.reset(epoll_create1(EPOLL_CLOEXEC));
     LOG_ALWAYS_FATAL_IF(mEpollFd < 0, "Could not create epoll instance: %s", strerror(errno));
 
     struct epoll_event eventItem;
