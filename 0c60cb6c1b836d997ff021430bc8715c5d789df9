@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "770ecb5c_c3d7004b",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T18:25:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1c2c13be_3dd04ca6",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c845960a_513f7b48",
         "filename": "base/file.cpp",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "f2a02d47_14f17e98",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T18:25:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c845960a_513f7b48",
+      "range": {
+        "startLine": 318,
+        "startChar": 16,
+        "endLine": 318,
+        "endChar": 24
+      },
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "453e34b5_27ae91a7",
         "filename": "base/file.cpp",
         "patchSetId": 1
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "23063482_83e3f704",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T18:25:08Z",
+      "side": 1,
+      "message": "OK, you caught me :-).  Done.",
+      "parentUuid": "453e34b5_27ae91a7",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e301e686_7e66c26d",
         "filename": "base/file.cpp",
         "patchSetId": 1
@@ -70,6 +130,24 @@
       "writtenOn": "2018-12-17T17:14:57Z",
       "side": 1,
       "message": "no `else` after `return`.\n\nseems like this is really\n\n  if (handle !\u003d INVALID_HANDLE_VALUE \u0026\u0026 ::FlushFileBuffers(handle)) {\n    return 0;\n  }\n\n  errno \u003d EINVAL;\n  return -1;\n\nthough it seems like elsewhere we unconditionally call `_get_osfhandle` (the documentation says it sets EBADF and returns INVALID_HANDLE_VALUE) so we can lose the `fd \u003c 0` part too?",
+      "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a008773a_0a350380",
+        "filename": "base/file.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-17T18:25:08Z",
+      "side": 1,
+      "message": "Got you.  Nice suggestions.  Done here and above re: the fd \u003c 0 part.",
+      "parentUuid": "e301e686_7e66c26d",
       "revId": "0c60cb6c1b836d997ff021430bc8715c5d789df9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
