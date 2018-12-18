@@ -26,16 +26,33 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
+#include <linux/memfd.h>
 #include <pthread.h>
 #include <string.h>
+#include <stdio.h>
 #include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <log/log.h>
+#include <android-base/unique_fd.h>
+#include <android-base/properties.h>
+#include <atomic>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
+
+/* Will be added to UAPI once upstream change is merged */
+#define F_SEAL_FUTURE_WRITE 0x0010
+
+/*
+ * The minimum vendor API level at and after which it is safe to use memfd.
+ * This is to facilitate deprecation of ashmem.
+ */
+#define MIN_MEMFD_VENDOR_API_LEVEL 29
+#define MIN_MEMFD_VENDOR_API_LEVEL_CHAR 'Q'
 
 /* ashmem identity */
 static dev_t __ashmem_rdev;
@@ -44,6 +61,147 @@ static dev_t __ashmem_rdev;
  * signal handler calls ashmem, we could get into a deadlock state.
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/*
+ * has_memfd_support() determines if the device can use memfd. memfd support
+ * has been there for long time, but certain things in it may be missing.  We
+ * check for needed support in it. Also we check if the VNDK version of
+ * libcutils being used is new enough, if its not, then we cannot use memfd
+ * since the older copies may be using ashmem so we just use ashmem. Once all
+ * Android devices that are getting updates are new enough (ex, they were
+ * originally shipped with Android release > P), then we can just use memfd and
+ * delete all ashmem code from libcutils (while preserving the interface).
+ *
+ * NOTE:
+ * The sys.use_memfd property is set by default to false in Android
+ * to temporarily disable memfd, till vendor and apps are ready for it.
+ * The main issue: either apps or vendor processes can directly make ashmem
+ * IOCTLs on FDs they receive by assuming they are ashmem, without going
+ * through libcutils. Such fds could have very well be originally created with
+ * libcutils hence they could be memfd. Thus the IOCTLs will break.
+ *
+ * Set default value of sys.use_memfd property to true once the issue is
+ * resolved, so that the code can then self-detect if kernel support is present
+ * on the device. The property can also set to true from adb shell, for
+ * debugging.
+ */
+
+/* These flags determine if it is already found if memfd is supported by device */
+enum memfd_support_t {
+   MEMFD_SUPPORT_UNKNOWN = -1,
+   MEMFD_NOT_SUPPORTED   =  0,
+   MEMFD_SUPPORTED       =  1,
+};
+static std::atomic<enum memfd_support_t> memfd_supported = MEMFD_SUPPORT_UNKNOWN;
+
+static bool debug_log = false;    /* set to true for verbose logging and other debug  */
+static bool pin_deprecation_warn = true; /* Log the pin deprecation warning only once */
+
+/* Determine if vendor processes would be ok with memfd in the system:
+ *
+ * If VNDK is using older libcutils, don't use memfd. This is so that the
+ * same shared memory mechanism is used across binder transactions between
+ * vendor partition processes and system partition processes.
+ */
+static bool check_vendor_memfd_allowed()
+{
+    std::string vndk_version = android::base::GetProperty("ro.vndk.version", "");
+
+    if (vndk_version == "") {
+        ALOGE("memfd: ro.vndk.version not defined or invalid (%s), this is mandated since P.\n",
+              vndk_version.c_str());
+        return false;
+    }
+
+    /* No issues if vendor is targetting current Dessert */
+    if (vndk_version == "current") {
+        return false;
+    }
+
+    /* Check if VNDK version is a number and act on it */
+    char *p;
+    long int vers = strtol(vndk_version.c_str(), &p, 10);
+    if (*p == 0) {
+        if (vers < MIN_MEMFD_VENDOR_API_LEVEL) {
+            ALOGI("memfd: device is using VNDK version (%s) which is less than Q. Use ashmem only.\n",
+                  vndk_version.c_str());
+            return false;
+        }
+
+        return true;
+    }
+
+    /* If its not a number, assume string, but check if its a sane string */
+    if (tolower(vndk_version[0]) < 'a' || tolower(vndk_version[0]) > 'z') {
+        ALOGE("memfd: ro.vndk.version not defined or invalid (%s), this is mandated since P.\n",
+              vndk_version.c_str());
+        return false;
+    }
+
+    if (tolower(vndk_version[0]) < tolower(MIN_MEMFD_VENDOR_API_LEVEL_CHAR)) {
+        ALOGI("memfd: device is using VNDK version (%s) which is less than Q. Use ashmem only.\n",
+              vndk_version.c_str());
+        return false;
+    }
+
+    return true;
+}
+
+static bool has_memfd_support()
+{
+    /* If memfd_supported is already set to something other than
+     * MEMFD_SUPPORT_UNKNOWN, then have already done the one-time hardwork
+     * of determining if memfd can be supported on the device, so return
+     * the cached result (true or false).
+     */
+    if (memfd_supported == MEMFD_SUPPORTED) {
+        return true;
+    } else if (memfd_supported == MEMFD_NOT_SUPPORTED) {
+        return false;
+    } else {
+        /* Determine next if memfd can be supported and set the memfd_supported
+         * variable to either MEMFD_SUPPORTED or MEMFD_NOT_SUPPORTED. This is
+         * just one-time hardwork which will be cached into memfd_supported.
+         */
+    }
+
+    if (check_vendor_memfd_allowed() == false) {
+       memfd_supported = MEMFD_NOT_SUPPORTED;
+       return false;
+    }
+
+    /* Used to turn on/off the detection at runtime, in the future this
+     * property will be removed once we switch everything over to ashmem.
+     * Currently it is used only for debugging to switch the system over.
+     */
+    if (!android::base::GetBoolProperty("sys.use_memfd", false)) {
+       if (debug_log) {
+          ALOGD("sys.use_memfd=false so memfd disabled\n");
+       }
+       memfd_supported = MEMFD_NOT_SUPPORTED;
+       return false;
+    }
+
+    /* Check if kernel support exists, otherwise fall back to ashmem */
+    android::base::unique_fd fd(syscall(__NR_memfd_create, "test_android_memfd", MFD_ALLOW_SEALING));
+    if (fd == -1) {
+        ALOGE("memfd_create failed: %s, no memfd support.\n", strerror(errno));
+        memfd_supported = MEMFD_NOT_SUPPORTED;
+        return false;
+    }
+
+    if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE) == -1) {
+        ALOGE("fcntl(F_ADD_SEALS) failed: %s, no memfd support.\n", strerror(errno));
+        memfd_supported = MEMFD_NOT_SUPPORTED;
+        return false;
+    }
+
+    memfd_supported = MEMFD_SUPPORTED;
+    if (debug_log) {
+       ALOGD("memfd: device has memfd support, using it\n");
+    }
+    return true;
+}
 
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
@@ -141,9 +299,53 @@ static int __ashmem_check_failure(int fd, int result)
     return result;
 }
 
+static bool fd_check_error_once = false;
+
+static bool memfd_is_ashmem(int fd)
+{
+   if (__ashmem_is_ashmem(fd, 0) == 0) {
+      if (!fd_check_error_once) {
+         ALOGE("memfd: memfd expected but ashmem fd used - please use libcutils.\n");
+         fd_check_error_once = true;
+      }
+
+      return true;
+   }
+
+   return false;
+}
+
 int ashmem_valid(int fd)
 {
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+        return 1;
+    }
+
     return __ashmem_is_ashmem(fd, 0) >= 0;
+}
+
+static int memfd_create_region(const char *name, size_t size)
+{
+    int fd = syscall(__NR_memfd_create, name, MFD_ALLOW_SEALING);
+
+    if (fd == -1) {
+        ALOGE("memfd_create(%s, %zd) failed: %s\n", name, size, strerror(errno));
+        goto error;
+    }
+
+   if (ftruncate(fd, size) == -1) {
+        ALOGE("ftruncate(%s, %zd) failed for memfd creation: %s\n", name, size, strerror(errno));
+        goto error;
+    }
+
+    if (debug_log) {
+       ALOGE("memfd_create(%s, %zd) success. fd=%d\n", name, size, fd);
+    }
+
+    return fd;
+error:
+    close(fd);
+    return -1;
 }
 
 /*
@@ -156,6 +358,10 @@ int ashmem_valid(int fd)
 int ashmem_create_region(const char *name, size_t size)
 {
     int ret, save_errno;
+
+    if (has_memfd_support()) {
+        return memfd_create_region(name ? name : "none", size);
+    }
 
     int fd = __ashmem_open();
     if (fd < 0) {
@@ -186,28 +392,78 @@ error:
     return ret;
 }
 
+static int memfd_set_prot_region(int fd, int prot)
+{
+    /* Only proceed if an fd needs to be write-protected */
+    if (prot & PROT_WRITE) {
+       return 0;
+    }
+
+    int ret = fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE);
+    if (ret == -1) {
+       ALOGE("memfd_set_prot_region(%d, %d): F_SEAL_FUTURE_WRITE seal failed: %s\n",
+             fd, prot, strerror(errno));
+    }
+    return ret;
+}
+
 int ashmem_set_prot_region(int fd, int prot)
 {
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+        return memfd_set_prot_region(fd, prot);
+    }
+
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot)));
 }
 
 int ashmem_pin_region(int fd, size_t offset, size_t len)
 {
+    if (!pin_deprecation_warn || debug_log) {
+        ALOGE("Pinning is deprecated since Android Q. Please use trim or other methods.\n");
+        pin_deprecation_warn = true;
+    }
+
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+       return 0;
+    }
+
     // TODO: should LP64 reject too-large offset/len?
     ashmem_pin pin = { static_cast<uint32_t>(offset), static_cast<uint32_t>(len) };
-
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_PIN, &pin)));
 }
 
 int ashmem_unpin_region(int fd, size_t offset, size_t len)
 {
+    if (!pin_deprecation_warn || debug_log) {
+        ALOGE("Pinning is deprecated since Android Q. Please use trim or other methods.\n");
+        pin_deprecation_warn = true;
+    }
+
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+       return 0;
+    }
+
     // TODO: should LP64 reject too-large offset/len?
     ashmem_pin pin = { static_cast<uint32_t>(offset), static_cast<uint32_t>(len) };
-
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_UNPIN, &pin)));
 }
 
 int ashmem_get_size_region(int fd)
 {
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+        struct stat sb;
+        int ret = fstat(fd, &sb);
+
+        if (ret < 0) {
+            ALOGE("ashmem_get_size_region(%d): fstat failed: %s\n", fd, strerror(errno));
+        }
+
+        if (debug_log) {
+           ALOGD("ashmem_get_size_region(%d): %d\n", fd, (int)sb.st_size);
+        }
+
+        return sb.st_size;
+    }
+
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL)));
 }
