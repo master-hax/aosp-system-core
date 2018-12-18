@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd2761a3_d958a094",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2018-12-18T19:51:04Z",
+      "side": 1,
+      "message": "nit: Dropping the \"argc\" and \"argv\" names here might make clang-format output better.",
+      "revId": "2d8c4a79fa3752e319622cdc262447147d00fabe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
