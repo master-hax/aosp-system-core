@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "4276fc35_877af001",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-18T22:31:13Z",
+      "side": 1,
+      "message": "Total nit, but if you\u0027re going to make a copy of the string inside this function anyway, it\u0027s better to pass by value and avoid the inner copy.  That way rvalues are simply moved and not copied.\n\nOr we can keep it like this; it\u0027s not like it\u0027s a performance critical section and may be clearly to just have the const reference.",
+      "range": {
+        "startLine": 33,
+        "startChar": 52,
+        "endLine": 33,
+        "endChar": 75
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bcfa6855_641ecdd2",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-18T22:31:13Z",
+      "side": 1,
+      "message": "Probably better to make these bool\u0027s now that we\u0027re doing things in C++.\n\nMay even be worth putting this in the  android::fs_mgr:: namespace and calling it EnsurePathMounted().  That\u0027s the naming that we should move to instead of the fs_mgr_ prefix and if we can use it for new code that\u0027s better.",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 3
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "452ac084_ed271103",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 7
