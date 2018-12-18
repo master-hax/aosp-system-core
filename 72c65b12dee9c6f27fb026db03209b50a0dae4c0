@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cfb24737_8be2aca8",
+        "filename": "fs_mgr/include/fs_mgr/roots.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1056365
+      },
+      "writtenOn": "2018-12-18T23:46:21Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 49,
+        "startChar": 12,
+        "endLine": 49,
+        "endChar": 23
+      },
+      "revId": "72c65b12dee9c6f27fb026db03209b50a0dae4c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
