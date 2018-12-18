@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "18e0249d_d798b783",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T22:49:01Z",
+      "side": 1,
+      "message": "Understood. I thought about this, but currently it keeps the signautre consistent with other functions (i.e. strings appears to be passed by reference, although it will be copied anyway.)\n\nAlso, in L34 it is not copied.",
+      "parentUuid": "4276fc35_877af001",
+      "range": {
+        "startLine": 33,
+        "startChar": 52,
+        "endLine": 33,
+        "endChar": 75
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bcfa6855_641ecdd2",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "ad820561_5db69e91",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T22:49:01Z",
+      "side": 1,
+      "message": "Will do.\n\nWhy isn\u0027t Fstab class in a namespace?",
+      "parentUuid": "bcfa6855_641ecdd2",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 3
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "452ac084_ed271103",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 7
@@ -59,6 +107,30 @@
       "writtenOn": "2018-12-18T22:16:15Z",
       "side": 1,
       "message": "Why does fs_mgr care which filesystem is being mounted? I think the fs_type should just be pass through.",
+      "range": {
+        "startLine": 114,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 91
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ad0d35d_66e35f96",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T22:49:01Z",
+      "side": 1,
+      "message": "This is in the old code (roots.cpp in recovery). I don\u0027t know why though -- just doing straight refactoring here.",
+      "parentUuid": "452ac084_ed271103",
       "range": {
         "startLine": 114,
         "startChar": 0,
