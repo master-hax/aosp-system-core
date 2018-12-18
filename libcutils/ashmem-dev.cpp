@@ -23,9 +23,11 @@
  */
 #define LOG_TAG "ashmem"
 
+#include <asm/unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
+#include <linux/memfd.h>
 #include <pthread.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -34,8 +36,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <log/log.h>
+#include <android-base/properties.h>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
+
+/*
+ * The minimum vendor API level at and after which it is safe to use memfd.
+ * This is to facilitate deprecation of ashmem.
+ */
+#define MIN_MEMFD_VENDOR_API_LEVEL 29
+#define MIN_MEMFD_VENDOR_API_LEVEL_CHAR 'Q'
 
 /* ashmem identity */
 static dev_t __ashmem_rdev;
@@ -44,6 +54,91 @@ static dev_t __ashmem_rdev;
  * signal handler calls ashmem, we could get into a deadlock state.
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
+
+int sys_memfd_create(const char *name, unsigned int flags)
+{
+    return syscall(__NR_memfd_create, name, flags);
+}
+
+/*
+ * has_memfd_support() determines if the device can use memfd. memfd support
+ * has been there for long time, but certain things in it may be missing.  We
+ * check for needed support in it. Also we check if the VNDK version of
+ * libcutils being used is new enough, if its not, then we cannot use memfd
+ * since the older copies may be using ashmem so we just use ashmem. Once all
+ * Android devices that are getting updates are new enough (ex, they were
+ * originally shipped with Android release > P), then we can just use memfd and
+ * delete all ashmem code from libcutils (while preserving the interface).
+ */
+static int memfd_supported = -1;
+
+static bool has_memfd_support()
+{
+    int fd = 0;
+
+    if (memfd_supported == 1)
+        return true;
+    else if (memfd_supported == 0)
+        return false;
+
+    std::string vndk_version = android::base::GetProperty("ro.vndk.version", "");
+    char *p;
+    long int vers = strtol(vndk_version.c_str(), &p, 10);
+    bool vndk_version_is_number = (*p == 0);
+
+    if (!vndk_version_is_number && vndk_version != "current") {
+        // Version is a string
+
+        if (tolower(vndk_version[0]) < 'a' || tolower(vndk_version[0]) > 'z') {
+            ALOGE("memfd: ro.vndk.version not defined or invalid (%s), this is mandated since P.\n",
+                  vndk_version.c_str());
+            goto no_memfd;
+        }
+
+        // If VNDK is using older libcutils, don't use memfd
+        // This is so that the same shared memory mechanism is used across binder transactions
+        // between vendor partition processes and system partition processes.
+        if (tolower(vndk_version[0]) < tolower(MIN_MEMFD_VENDOR_API_LEVEL_CHAR)) {
+            ALOGD("memfd: device is using VNDK version (%s) which is less than Q. Use ashmem only.\n",
+                  vndk_version.c_str());
+            goto no_memfd;
+        }
+    } else if (vndk_version != "current") {
+        // Version is a number
+
+        // strtol treats empty strings as numbers, so we end up here
+        if ((vndk_version == "")) {
+            ALOGE("memfd: ro.vndk.version not defined or invalid (%s), this is mandated since P.\n",
+                    vndk_version.c_str());
+            goto no_memfd;
+        }
+
+        if (vers < MIN_MEMFD_VENDOR_API_LEVEL) {
+            ALOGD("memfd: device is using VNDK version (%s) which is less than Q. Use ashmem only.\n",
+                  vndk_version.c_str());
+            goto no_memfd;
+        }
+    }
+
+    fd = sys_memfd_create("test_android_memfd", MFD_ALLOW_SEALING);
+    if (fd < 0) {
+        ALOGE("memfd: kernel does not have memfd support needed\n");
+        goto no_memfd;
+    }
+
+    // TODO: Add support for detecting F_SEAL_FUTURE_WRITE
+
+    if (fd > 0) close(fd);
+    memfd_supported = 1;
+    ALOGD("memfd: device has memfd support, using it\n");
+    return true;
+
+no_memfd:
+    if (fd > 0) close(fd);
+    memfd_supported = 0;
+    ALOGE("memfd: Device cannot use memfd, using ashmem.\n");
+    return false;
+}
 
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
@@ -156,6 +251,8 @@ int ashmem_valid(int fd)
 int ashmem_create_region(const char *name, size_t size)
 {
     int ret, save_errno;
+
+    ALOGE("has_memfd_support: %d\n", has_memfd_support());
 
     int fd = __ashmem_open();
     if (fd < 0) {
