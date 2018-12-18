@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d41d5022_146395a6",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-18T23:16:06Z",
+      "side": 1,
+      "message": "The other thing we should do here that we didn\u0027t before, but might as well start, is make this include path \u003cfs_mgr/roots.h\u003e so making a new \u0027fs_mgr\u0027 folder under include.  I probably should do that with the rest as well, when making the name space.",
+      "revId": "17352fd7e3177a67cfdcf26fbc33a1c9a9818682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
