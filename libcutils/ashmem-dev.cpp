@@ -23,19 +23,30 @@
  */
 #define LOG_TAG "ashmem"
 
+#include <asm/unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
+#include <linux/memfd.h>
 #include <pthread.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 #include <log/log.h>
+#include <android-base/properties.h>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
+using android::base::GetUintProperty;
+
+/*
+ * The first API ship level from which Android devices should use memfd
+ * instead of ashmem.  This is to facilitate deprecation of ashmem.
+ */
+#define MIN_MEMFD_FIRST_API_LEVEL 28
 
 /* ashmem identity */
 static dev_t __ashmem_rdev;
@@ -44,6 +55,82 @@ static dev_t __ashmem_rdev;
  * signal handler calls ashmem, we could get into a deadlock state.
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
+
+int sys_memfd_create(const char *name, unsigned int flags)
+{
+    return syscall(__NR_memfd_create, name, flags);
+}
+
+/*
+ * has_memfd_support() determines if the device can use memfd. memfd support
+ * has been there for long time, but certain things in it may be missing.  We
+ * check for needed support in it. If it has support, then next we try to
+ * determine if the device was first shipped with at least Android Q by
+ * checking a property. If the property is not set, which should be pretty
+ * rare, then we simply check kernel version and make an assumption that
+ * devices shipping with kernel >= 4.14 are running Android Q.
+ */
+static int memfd_supported = -1;
+
+static bool has_memfd_support()
+{
+    struct utsname buf;
+    char dummy;
+    int kernel_version_major;
+    int kernel_version_minor;
+    int fd, api_level;
+
+    if (memfd_supported == 1)
+        return true;
+    else if (memfd_supported == 0)
+        return false;
+
+    fd = sys_memfd_create("test_android_memfd", MFD_ALLOW_SEALING);
+    if (fd < 0)
+        goto no_memfd;
+
+    api_level = GetUintProperty<uint64_t>("ro.product.first_api_level", 0);
+    if (api_level == 0) {
+
+        ALOGE("memfd: cannot determine initial API level of device, checking kernel version\n");
+
+        int ret = uname(&buf);
+        if (ret) {
+            ALOGE("memfd: cannot determine kernel version (uname error)\n");
+            goto no_memfd;
+        }
+
+        ret = sscanf(buf.release, "%d.%d%c", &kernel_version_major, &kernel_version_minor, &dummy);
+        /*
+         * Devices running kernel version 4.14 or greater is assumed to run
+         * Android Q or greater if they don't define first_api_level. This is
+         * just a safety net incase first_api_level is not provided. It would
+         * be pretty rare for a new shipped device to run Android < Q with a
+         * kernel >= 4.14 and at the same time not define first_api_level.
+         */
+        if (ret >= 2 &&
+            ((kernel_version_major > 4) || (kernel_version_major == 4 && kernel_version_minor >= 14))) {
+            goto has_memfd;
+        }
+
+        ALOGE("memfd: cannot determine kernel version (scan error)\n");
+        goto no_memfd;
+    }
+
+    if (api_level < MIN_MEMFD_FIRST_API_LEVEL)
+        goto no_memfd;
+
+has_memfd:
+    if (fd > 0) close(fd);
+    memfd_supported = 1;
+    ALOGD("memfd: Device has memfd support, using it\n");
+    return true;
+no_memfd:
+    if (fd > 0) close(fd);
+    memfd_supported = 0;
+    ALOGE("memfd: Device cannot use memfd, using ashmem.\n");
+    return false;
+}
 
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
@@ -156,6 +243,8 @@ int ashmem_valid(int fd)
 int ashmem_create_region(const char *name, size_t size)
 {
     int ret, save_errno;
+
+    ALOGE("has_memfd_support: %d\n", has_memfd_support());
 
     int fd = __ashmem_open();
     if (fd < 0) {
