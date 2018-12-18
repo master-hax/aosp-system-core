@@ -51,7 +51,7 @@ static int Usage(void) {
     std::cerr << "commands:" << std::endl;
     std::cerr << "  create <dm-name> [-ro] <targets...>" << std::endl;
     std::cerr << "  delete <dm-name>" << std::endl;
-    std::cerr << "  list <devices | targets>" << std::endl;
+    std::cerr << "  list <devices | targets> [-v]" << std::endl;
     std::cerr << "  getpath <dm-name>" << std::endl;
     std::cerr << "  table <dm-name>" << std::endl;
     std::cerr << "  help" << std::endl;
@@ -197,7 +197,8 @@ static int DmDeleteCmdHandler(int argc, char** argv) {
     return 0;
 }
 
-static int DmListTargets(DeviceMapper& dm) {
+static int DmListTargets(DeviceMapper& dm, [[maybe_unused]] int argc,
+                         [[maybe_unused]] char** argv) {
     std::vector<DmTargetTypeInfo> targets;
     if (!dm.GetAvailableTargets(&targets)) {
         std::cerr << "Failed to read available device mapper targets" << std::endl;
@@ -218,7 +219,7 @@ static int DmListTargets(DeviceMapper& dm) {
     return 0;
 }
 
-static int DmListDevices(DeviceMapper& dm) {
+static int DmListDevices(DeviceMapper& dm, int argc, char** argv) {
     std::vector<DmBlockDevice> devices;
     if (!dm.GetAvailableDevices(&devices)) {
         std::cerr << "Failed to read available device mapper devices" << std::endl;
@@ -230,17 +231,40 @@ static int DmListDevices(DeviceMapper& dm) {
         return 0;
     }
 
+    bool verbose = (argc && (strcmp(argv[0], "-v") == 0));
     for (const auto& dev : devices) {
         std::cout << std::left << std::setw(20) << dev.name() << " : " << dev.Major() << ":"
                   << dev.Minor() << std::endl;
+        if (verbose) {
+            std::vector<DeviceMapper::TargetInfo> table;
+            if (!dm.GetTableStatus(dev.name(), &table)) {
+                std::cerr << "Could not query table status for device \"" << dev.name() << "\"."
+                          << std::endl;
+                return -EINVAL;
+            }
+
+            uint32_t target_num = 1;
+            for (const auto& target : table) {
+                std::cout << "  target#" << target_num << ": ";
+                std::cout << target.spec.sector_start << "-"
+                          << (target.spec.sector_start + target.spec.length) << ": "
+                          << target.spec.target_type;
+                if (!target.data.empty()) {
+                    std::cout << ", " << target.data;
+                }
+                std::cout << std::endl;
+                target_num++;
+            }
+        }
     }
 
     return 0;
 }
 
-static const std::map<std::string, std::function<int(DeviceMapper&)>> listmap = {
-        {"targets", DmListTargets},
-        {"devices", DmListDevices},
+static const std::map<std::string, std::function<int(DeviceMapper&, int argc, char** argv)>>
+        listmap = {
+                {"targets", DmListTargets},
+                {"devices", DmListDevices},
 };
 
 static int DmListCmdHandler(int argc, char** argv) {
@@ -251,7 +275,7 @@ static int DmListCmdHandler(int argc, char** argv) {
 
     DeviceMapper& dm = DeviceMapper::Instance();
     for (const auto& l : listmap) {
-        if (l.first == argv[0]) return l.second(dm);
+        if (l.first == argv[0]) return l.second(dm, argc - 1, argv + 1);
     }
 
     std::cerr << "Invalid argument to \'dmctl list\': " << argv[0] << std::endl;

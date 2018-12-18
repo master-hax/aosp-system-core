@@ -203,7 +203,8 @@ bool DeviceMapper::GetAvailableTargets(std::vector<DmTargetTypeInfo>* targets) {
         }
         next += vers->next;
         data_size -= vers->next;
-        vers = reinterpret_cast<struct dm_target_versions*>(static_cast<char*>(buffer.get()) + next);
+        vers = reinterpret_cast<struct dm_target_versions*>(static_cast<char*>(buffer.get()) +
+                                                            next);
     }
 
     return true;
@@ -294,6 +295,7 @@ bool DeviceMapper::GetTableStatus(const std::string& name, std::vector<TargetInf
     InitIo(io, name);
     io->data_size = sizeof(buffer);
     io->data_start = sizeof(*io);
+    io->flags = DM_STATUS_TABLE_FLAG;
     if (ioctl(fd_, DM_TABLE_STATUS, io) < 0) {
         PLOG(ERROR) << "DM_TABLE_STATUS failed for " << name;
         return false;
