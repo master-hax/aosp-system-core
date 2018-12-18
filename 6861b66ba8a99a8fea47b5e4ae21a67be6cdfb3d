@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "452ac084_ed271103",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-18T22:16:15Z",
+      "side": 1,
+      "message": "Why does fs_mgr care which filesystem is being mounted? I think the fs_type should just be pass through.",
+      "range": {
+        "startLine": 114,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 91
+      },
+      "revId": "6861b66ba8a99a8fea47b5e4ae21a67be6cdfb3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
