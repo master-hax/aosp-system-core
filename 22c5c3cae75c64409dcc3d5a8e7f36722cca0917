@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f44058e1_081db0c3",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-18T23:28:58Z",
+      "side": 1,
+      "message": "GetMountState() ?",
+      "range": {
+        "startLine": 61,
+        "startChar": 18,
+        "endLine": 61,
+        "endChar": 33
+      },
+      "revId": "22c5c3cae75c64409dcc3d5a8e7f36722cca0917",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
