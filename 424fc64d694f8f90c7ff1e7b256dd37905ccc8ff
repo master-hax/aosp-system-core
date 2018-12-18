@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9b2a52a1_88686cea",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "92f318e4_eb8e1504",
+      "range": {
+        "startLine": 30,
+        "startChar": 29,
+        "endLine": 30,
+        "endChar": 40
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "07bbec33_5a76b4b9",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -60,6 +84,30 @@
       "writtenOn": "2018-12-04T16:31:03Z",
       "side": 1,
       "message": "nit: manage scope, initialize shortly before use on line 100. This code is unused by line 73, 78, 83, 91 and 97.",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 5
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4bbc507_34a0c1d8",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "07bbec33_5a76b4b9",
       "range": {
         "startLine": 64,
         "startChar": 0,
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "f63ba847_23d74868",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7849e86_0dc85e4e",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 66
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e3f3121d_c91015ca",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -109,6 +181,24 @@
       "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "267fc0ab_c68d755f",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "I used a vector of string and do a lookup now.",
+      "parentUuid": "e3f3121d_c91015ca",
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -135,6 +225,30 @@
     },
     {
       "key": {
+        "uuid": "a0ca19ab_432639ea",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "229dedca_0f6b1506",
+      "range": {
+        "startLine": 104,
+        "startChar": 21,
+        "endLine": 104,
+        "endChar": 92
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "99740da6_67a36410",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -155,6 +269,30 @@
       "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9938b1b_e351c124",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99740da6_67a36410",
+      "range": {
+        "startLine": 109,
+        "startChar": 25,
+        "endLine": 109,
+        "endChar": 96
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -181,6 +319,30 @@
     },
     {
       "key": {
+        "uuid": "6c82a317_f07171b1",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1f471f8_abe3a6de",
+      "range": {
+        "startLine": 128,
+        "startChar": 28,
+        "endLine": 128,
+        "endChar": 29
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1faf1c5b_e8c946ed",
         "filename": "fs_mgr/fs_mgr_roots.cpp",
         "patchSetId": 3
@@ -192,6 +354,30 @@
       "writtenOn": "2018-12-04T16:31:03Z",
       "side": 1,
       "message": "minor nit: C++ and std::string_literals?\n\n    if (\"ramdisk\"s \u003d\u003d rec-\u003efs_type) {",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 45
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96994c02_db4577d3",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Using C++ Fstab, where fs_type is a std::string now.",
+      "parentUuid": "1faf1c5b_e8c946ed",
       "range": {
         "startLine": 133,
         "startChar": 0,
@@ -274,6 +460,30 @@
     },
     {
       "key": {
+        "uuid": "a042db26_bb20351b",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc938ce5_68c1ffdd",
+      "range": {
+        "startLine": 145,
+        "startChar": 4,
+        "endLine": 145,
+        "endChar": 21
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "98acf9d4_121e91ae",
         "filename": "fs_mgr/include/fs_mgr_roots.h",
         "patchSetId": 3
@@ -342,6 +552,30 @@
       "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f63ce19_6105e100",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T19:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b54623c_7d9c380a",
+      "range": {
+        "startLine": 27,
+        "startChar": 44,
+        "endLine": 27,
+        "endChar": 63
+      },
+      "revId": "424fc64d694f8f90c7ff1e7b256dd37905ccc8ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
