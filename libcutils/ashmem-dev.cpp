@@ -23,9 +23,11 @@
  */
 #define LOG_TAG "ashmem"
 
+#include <asm/unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
+#include <linux/memfd.h>
 #include <pthread.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -34,8 +36,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <log/log.h>
+#include <android-base/properties.h>
 
 #define ASHMEM_DEVICE "/dev/ashmem"
+using android::base::GetUintProperty;
+
+/*
+ * The first API ship level from which Android devices should use memfd
+ * instead of ashmem.  This is to facilitate deprecation of ashmem.
+ */
+#define MIN_MEMFD_FIRST_API_LEVEL 28
 
 /* ashmem identity */
 static dev_t __ashmem_rdev;
@@ -44,6 +54,43 @@ static dev_t __ashmem_rdev;
  * signal handler calls ashmem, we could get into a deadlock state.
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
+
+int sys_memfd_create(const char *name, unsigned int flags)
+{
+    return syscall(__NR_memfd_create, name, flags);
+}
+
+static int memfd_supported = -1;
+
+static bool has_memfd_support()
+{
+    if (memfd_supported == 1)
+        return true;
+    else if (memfd_supported == 0)
+        return false;
+
+    int fd = sys_memfd_create("test_android_memfd", MFD_ALLOW_SEALING);
+    if (fd < 0)
+        goto no_memfd;
+
+    int api_level = GetUintProperty<uint64_t>("ro.product.first_api_level", 0);
+    if (api_level == 0) {
+        ALOGE("memfd: cannot determine initial API level of the device");
+        goto no_memfd;
+    }
+
+    if (api_level < MIN_MEMFD_FIRST_API_LEVEL)
+        goto no_memfd;
+
+    close(fd);
+    memfd_supported = 1;
+    return true;
+
+no_memfd:
+    if (fd > 0) close(fd);
+    memfd_supported = 0;
+    return false;
+}
 
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
@@ -156,6 +203,8 @@ int ashmem_valid(int fd)
 int ashmem_create_region(const char *name, size_t size)
 {
     int ret, save_errno;
+
+    ALOGE("has_memfd_support: %d\n", has_memfd_support());
 
     int fd = __ashmem_open();
     if (fd < 0) {
