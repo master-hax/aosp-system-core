@@ -22,6 +22,30 @@
       "revId": "22c5c3cae75c64409dcc3d5a8e7f36722cca0917",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b0d851d_b84a07a5",
+        "filename": "fs_mgr/fs_mgr_roots.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T23:31:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f44058e1_081db0c3",
+      "range": {
+        "startLine": 61,
+        "startChar": 18,
+        "endLine": 61,
+        "endChar": 33
+      },
+      "revId": "22c5c3cae75c64409dcc3d5a8e7f36722cca0917",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

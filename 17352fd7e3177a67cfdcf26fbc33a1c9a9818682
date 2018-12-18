@@ -16,6 +16,24 @@
       "revId": "17352fd7e3177a67cfdcf26fbc33a1c9a9818682",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0443021e_75e32f98",
+        "filename": "fs_mgr/include/fs_mgr_roots.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-18T23:31:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d41d5022_146395a6",
+      "revId": "17352fd7e3177a67cfdcf26fbc33a1c9a9818682",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
