@@ -119,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "bac6fd57_1e2c9e02",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1377660
+      },
+      "writtenOn": "2018-12-19T14:34:12Z",
+      "side": 1,
+      "message": "Ok. As per your suggestion, I have pushed this as a separate CL.   Please help to review.\nIt is at: https://android-review.googlesource.com/c/platform/system/core/+/854849",
+      "parentUuid": "55f72f37_0ab0ad97",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 7
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3d6d721a_433f0f4a",
         "filename": "logd/LogBufferElement.cpp",
         "patchSetId": 2
