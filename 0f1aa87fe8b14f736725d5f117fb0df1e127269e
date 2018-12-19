@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76a326a4_8f917b4d",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2018-12-19T17:20:32Z",
+      "side": 1,
+      "message": "split into \"-O\", \"verity\" otherwise mke2fs will receive this as one string argument",
+      "range": {
+        "startLine": 73,
+        "startChar": 64,
+        "endLine": 73,
+        "endChar": 75
+      },
+      "revId": "0f1aa87fe8b14f736725d5f117fb0df1e127269e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
