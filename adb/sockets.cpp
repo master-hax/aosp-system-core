@@ -552,51 +552,57 @@ namespace internal {
 //   * <prefix>:<serial>:<command>
 // Where <port> must be a base-10 number and <prefix> may be any of {usb,product,model,device}.
 //
-// The returned pointer will point to the ':' just before <command>, or nullptr if not found.
-char* skip_host_serial(char* service) {
-    static const std::vector<std::string>& prefixes =
-        *(new std::vector<std::string>{"usb:", "product:", "model:", "device:"});
+// The returned string_view will contain ':<command>', or be empty if not found.
+std::string_view skip_host_serial(std::string_view service) {
+    static const char* prefixes[] = {"usb:", "product:", "model:", "device:"};
 
-    for (const std::string& prefix : prefixes) {
-        if (!strncmp(service, prefix.c_str(), prefix.length())) {
-            return strchr(service + prefix.length(), ':');
+    for (const char* prefix : prefixes) {
+        if (service.starts_with(prefix)) {
+            service.remove_prefix(strlen(prefix));
+            size_t offset = service.find_first_of(':');
+            if (offset == std::string::npos) {
+                return std::string_view{};
+            }
+            return service.substr(offset);
         }
     }
 
     // For fastboot compatibility, ignore protocol prefixes.
-    if (!strncmp(service, "tcp:", 4) || !strncmp(service, "udp:", 4)) {
-        service += 4;
+    if (service.starts_with("tcp:") || service.starts_with("udp:")) {
+        service.remove_prefix(4);
     }
 
     // Check for an IPv6 address. `adb connect` creates the serial number from the canonical
     // network address so it will always have the [] delimiters.
     if (service[0] == '[') {
-        char* ipv6_end = strchr(service, ']');
-        if (ipv6_end != nullptr) {
-            service = ipv6_end;
+        size_t ipv6_end = service.find_first_of(']');
+        if (ipv6_end != std::string::npos) {
+            service.remove_prefix(ipv6_end);
         }
     }
 
     // The next colon we find must either begin the port field or the command field.
-    char* colon_ptr = strchr(service, ':');
-    if (!colon_ptr) {
+    size_t colon_offset = service.find_first_of(':');
+    if (colon_offset == std::string::npos) {
         // No colon in service string.
-        return nullptr;
+        return std::string_view{};
     }
 
     // If the next field is only decimal digits and ends with another colon, it's a port.
-    char* serial_end = colon_ptr;
-    if (isdigit(serial_end[1])) {
-        serial_end++;
-        while (*serial_end && isdigit(*serial_end)) {
-            serial_end++;
-        }
-        if (*serial_end != ':') {
-            // Something other than "<port>:" was found, this must be the command field instead.
-            serial_end = colon_ptr;
+    size_t next_colon = service.find_first_of(':', colon_offset);
+    if (next_colon == std::string::npos) {
+        // No colon, must be the command.
+        return service;
+    }
+
+    std::string_view port = service.substr(colon_offset, next_colon - colon_offset);
+    for (auto digit : port) {
+        if (!isdigit(digit)) {
+            return service;
         }
     }
-    return serial_end;
+
+    return service.substr(next_colon);
 }
 
 }  // namespace internal

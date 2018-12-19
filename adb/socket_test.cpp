@@ -34,6 +34,9 @@
 #include "sysdeps.h"
 #include "sysdeps/chrono.h"
 
+using namespace std::string_literals;
+using namespace std::string_view_literals;
+
 struct ThreadArg {
     int first_read_fd;
     int last_write_fd;
@@ -305,20 +308,16 @@ TEST_F(LocalSocketTest, close_socket_in_CLOSE_WAIT_state) {
 
 // Checks that skip_host_serial(serial) returns a pointer to the part of |serial| which matches
 // |expected|, otherwise logs the failure to gtest.
-void VerifySkipHostSerial(std::string serial, const char* expected) {
-    char* result = internal::skip_host_serial(&serial[0]);
-    if (expected == nullptr) {
-        EXPECT_EQ(nullptr, result);
-    } else {
-        EXPECT_STREQ(expected, result);
-    }
+void VerifySkipHostSerial(std::string serial, std::string_view expected) {
+    std::string_view result = internal::skip_host_serial(&serial[0]);
+    EXPECT_EQ(expected, result);
 }
 
 // Check [tcp:|udp:]<serial>[:<port>]:<command> format.
 TEST(socket_test, test_skip_host_serial) {
     for (const std::string& protocol : {"", "tcp:", "udp:"}) {
-        VerifySkipHostSerial(protocol, nullptr);
-        VerifySkipHostSerial(protocol + "foo", nullptr);
+        VerifySkipHostSerial(protocol, "");
+        VerifySkipHostSerial(protocol + "foo", "");
 
         VerifySkipHostSerial(protocol + "foo:bar", ":bar");
         VerifySkipHostSerial(protocol + "foo:bar:baz", ":bar:baz");
@@ -341,6 +340,9 @@ TEST(socket_test, test_skip_host_serial) {
         // Don't be fooled by random IPv6 addresses in the command string.
         VerifySkipHostSerial(protocol + "foo:ping [0123:4567:89ab:CDEF:0:9:a:f]:5555",
                              ":ping [0123:4567:89ab:CDEF:0:9:a:f]:5555");
+
+        // Handle embedded NULs properly.
+        VerifySkipHostSerial(protocol + "foo:echo foo\0bar"s, "echo foo\0bar"sv);
     }
 }
 
