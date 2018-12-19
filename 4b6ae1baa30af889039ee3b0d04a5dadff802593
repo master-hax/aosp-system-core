@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "8ec60603_ddb2986d",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1045,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-19T02:45:22Z",
+      "side": 1,
+      "message": "Calling shutdown() like this is fine.",
+      "parentUuid": "601182c4_5f33fa0a",
+      "range": {
+        "startLine": 1045,
+        "startChar": 4,
+        "endLine": 1045,
+        "endChar": 12
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ab17e62a_26b7383c",
         "filename": "logd/LogBufferElement.cpp",
         "patchSetId": 2
@@ -59,6 +83,30 @@
       "writtenOn": "2018-12-16T13:51:52Z",
       "side": 1,
       "message": "The old version of copy-constructor only supported partial function, :(.  It wasted almost one week time  for me to find/locate this bug.",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 7
+      },
+      "revId": "4b6ae1baa30af889039ee3b0d04a5dadff802593",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55f72f37_0ab0ad97",
+        "filename": "logd/LogBufferElement.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-19T02:45:22Z",
+      "side": 1,
+      "message": "I\u0027m sorry about that.  This is probably best pushed as a separate CL, since it\u0027ll be easier to review and merge just this while we discuss the rest.",
+      "parentUuid": "ab17e62a_26b7383c",
       "range": {
         "startLine": 59,
         "startChar": 4,
