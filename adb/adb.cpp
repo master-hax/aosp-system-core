@@ -894,17 +894,27 @@ int launch_server(const std::string& socket_spec) {
 #endif /* ADB_HOST */
 
 bool handle_forward_request(const char* service, atransport* transport, int reply_fd) {
-    return handle_forward_request(service, [transport](std::string*) { return transport; },
+    return handle_forward_request(service, true, [transport](std::string*) { return transport; },
                                   reply_fd);
 }
 
 // Try to handle a network forwarding request.
-bool handle_forward_request(const char* service,
+bool handle_forward_request(const char* service, bool has_serial,
                             std::function<atransport*(std::string* error)> transport_acquirer,
                             int reply_fd) {
     if (!strcmp(service, "list-forward")) {
+        atransport* transport = nullptr;
+        if (has_serial) {
+            std::string error;
+            transport = transport_acquirer(&error);
+            if (!transport) {
+                SendFail(reply_fd, error);
+                return true;
+            }
+        }
+
         // Create the list of forward redirections.
-        std::string listeners = format_listeners();
+        std::string listeners = format_listeners(transport);
 #if ADB_HOST
         SendOkay(reply_fd);
 #endif
@@ -1202,7 +1212,7 @@ bool handle_host_request(const char* service, TransportType type, const char* se
         return true;
     }
 
-    if (handle_forward_request(service,
+    if (handle_forward_request(service, serial != nullptr,
                                [=](std::string* error) {
                                    return acquire_one_transport(type, serial, transport_id, nullptr,
                                                                 error);

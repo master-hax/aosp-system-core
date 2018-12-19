@@ -126,12 +126,16 @@ static void listener_disconnect(void* arg, atransport*) EXCLUDES(listener_list_m
 }
 
 // Write the list of current listeners (network redirections) into a string.
-std::string format_listeners() EXCLUDES(listener_list_mutex) {
+std::string format_listeners(atransport* transport) EXCLUDES(listener_list_mutex) {
     std::lock_guard<std::mutex> lock(listener_list_mutex);
     std::string result;
     for (auto& l : listener_list) {
         // Ignore special listeners like those for *smartsocket*
         if (l->connect_to[0] == '*') {
+            continue;
+        }
+        // If transport is given, only return listeners for that transport
+        if (transport && l->transport->id != transport->id) {
             continue;
         }
         //  <device-serial> " " <local-name> " " <remote-name> "\n"

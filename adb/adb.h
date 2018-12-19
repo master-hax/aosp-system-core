@@ -160,7 +160,7 @@ unique_fd create_jdwp_connection_fd(int jdwp_pid);
 #endif
 
 bool handle_forward_request(const char* service, atransport* transport, int reply_fd);
-bool handle_forward_request(const char* service,
+bool handle_forward_request(const char* service, bool has_serial,
                             std::function<atransport*(std::string* error)> transport_acquirer,
                             int reply_fd);
 

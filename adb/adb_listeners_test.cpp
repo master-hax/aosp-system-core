@@ -27,10 +27,10 @@
 
 // Returns true if the given listener is present in format_listeners(). Empty parameters will
 // be ignored.
-static bool listener_is_installed(const std::string& serial, const std::string& source,
-                                  const std::string& dest) {
+static bool listener_is_installed(atransport* transport, const std::string& serial,
+                                  const std::string& source, const std::string& dest) {
     // format_listeners() gives lines of "<serial> <source> <dest>\n".
-    for (const std::string& line : android::base::Split(format_listeners(), "\n")) {
+    for (const std::string& line : android::base::Split(format_listeners(transport), "\n")) {
         std::vector<std::string> info = android::base::Split(line, " ");
         if (info.size() == 3 &&
                 (serial.empty() || info[0] == serial) &&
@@ -62,6 +62,7 @@ class AdbListenersTest : public ::testing::Test {
 
   protected:
     atransport transport_;
+    atransport another_transport_;
 };
 
 TEST_F(AdbListenersTest, test_install_listener) {
@@ -71,7 +72,7 @@ TEST_F(AdbListenersTest, test_install_listener) {
               install_listener("tcp:9000", "tcp:9000", &transport_, false, nullptr, &error));
     ASSERT_TRUE(error.empty());
 
-    ASSERT_TRUE(listener_is_installed("", "tcp:9000", "tcp:9000"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9000", "tcp:9000"));
 }
 
 TEST_F(AdbListenersTest, test_install_listener_rebind) {
@@ -85,7 +86,7 @@ TEST_F(AdbListenersTest, test_install_listener_rebind) {
               install_listener("tcp:9000", "tcp:9001", &transport_, false, nullptr, &error));
     ASSERT_TRUE(error.empty());
 
-    ASSERT_TRUE(listener_is_installed("", "tcp:9000", "tcp:9001"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9000", "tcp:9001"));
 }
 
 TEST_F(AdbListenersTest, test_install_listener_no_rebind) {
@@ -99,7 +100,7 @@ TEST_F(AdbListenersTest, test_install_listener_no_rebind) {
               install_listener("tcp:9000", "tcp:9001", &transport_, true, nullptr, &error));
     ASSERT_FALSE(error.empty());
 
-    ASSERT_TRUE(listener_is_installed("", "tcp:9000", "tcp:9000"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9000", "tcp:9000"));
 }
 
 TEST_F(AdbListenersTest, test_install_listener_tcp_port_0) {
@@ -110,7 +111,8 @@ TEST_F(AdbListenersTest, test_install_listener_tcp_port_0) {
               install_listener("tcp:0", "tcp:9000", &transport_, true, &port, &error));
     ASSERT_TRUE(error.empty());
 
-    ASSERT_TRUE(listener_is_installed("", android::base::StringPrintf("tcp:%d", port), "tcp:9000"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", android::base::StringPrintf("tcp:%d", port),
+                                      "tcp:9000"));
 }
 
 TEST_F(AdbListenersTest, test_remove_listener) {
@@ -121,7 +123,7 @@ TEST_F(AdbListenersTest, test_remove_listener) {
     ASSERT_TRUE(error.empty());
 
     ASSERT_EQ(INSTALL_STATUS_OK, remove_listener("tcp:9000", &transport_));
-    ASSERT_TRUE(format_listeners().empty());
+    ASSERT_TRUE(format_listeners(nullptr).empty());
 }
 
 TEST_F(AdbListenersTest, test_remove_nonexistent_listener) {
@@ -132,7 +134,7 @@ TEST_F(AdbListenersTest, test_remove_nonexistent_listener) {
     ASSERT_TRUE(error.empty());
 
     ASSERT_EQ(INSTALL_STATUS_LISTENER_NOT_FOUND, remove_listener("tcp:1", &transport_));
-    ASSERT_TRUE(listener_is_installed("", "tcp:9000", "tcp:9000"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9000", "tcp:9000"));
 }
 
 TEST_F(AdbListenersTest, test_remove_all_listeners) {
@@ -147,7 +149,7 @@ TEST_F(AdbListenersTest, test_remove_all_listeners) {
     ASSERT_TRUE(error.empty());
 
     remove_all_listeners();
-    ASSERT_TRUE(format_listeners().empty());
+    ASSERT_TRUE(format_listeners(nullptr).empty());
 }
 
 TEST_F(AdbListenersTest, test_transport_disconnect) {
@@ -162,5 +164,23 @@ TEST_F(AdbListenersTest, test_transport_disconnect) {
     ASSERT_TRUE(error.empty());
 
     transport_.RunDisconnects();
-    ASSERT_TRUE(format_listeners().empty());
+    ASSERT_TRUE(format_listeners(nullptr).empty());
+}
+
+TEST_F(AdbListenersTest, test_listeners_list) {
+    std::string error;
+
+    ASSERT_EQ(INSTALL_STATUS_OK,
+              install_listener("tcp:9000", "tcp:9000", &transport_, false, nullptr, &error));
+    ASSERT_TRUE(error.empty());
+
+    ASSERT_EQ(INSTALL_STATUS_OK, install_listener("tcp:9001", "tcp:9001", &another_transport_,
+                                                  false, nullptr, &error));
+    ASSERT_TRUE(error.empty());
+
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9000", "tcp:9000"));
+    ASSERT_TRUE(listener_is_installed(nullptr, "", "tcp:9001", "tcp:9001"));
+
+    ASSERT_FALSE(listener_is_installed(&another_transport_, "", "tcp:9000", "tcp:9000"));
+    ASSERT_FALSE(listener_is_installed(&transport_, "", "tcp:9001", "tcp:9001"));
 }

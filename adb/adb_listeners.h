@@ -36,7 +36,7 @@ InstallStatus install_listener(const std::string& local_name, const char* connec
                                atransport* transport, int no_rebind, int* resolved_tcp_port,
                                std::string* error);
 
-std::string format_listeners();
+std::string format_listeners(atransport* transport);
 
 InstallStatus remove_listener(const char* local_name, atransport* transport);
 void remove_all_listeners(void);
