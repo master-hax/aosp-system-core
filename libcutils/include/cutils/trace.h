@@ -144,9 +144,11 @@ extern int atrace_marker_fd;
 #define ATRACE_INIT() atrace_init()
 static inline void atrace_init()
 {
+#ifdef _WIN32
     if (CC_UNLIKELY(!atomic_load_explicit(&atrace_is_ready, memory_order_acquire))) {
         atrace_setup();
     }
+#endif
 }
 
 /**
@@ -157,8 +159,12 @@ static inline void atrace_init()
 #define ATRACE_GET_ENABLED_TAGS() atrace_get_enabled_tags()
 static inline uint64_t atrace_get_enabled_tags()
 {
+#ifdef _WIN32
+    return 0UL;
+#else
     atrace_init();
     return atrace_enabled_tags;
+#endif
 }
 
 /**
@@ -169,7 +175,12 @@ static inline uint64_t atrace_get_enabled_tags()
 #define ATRACE_ENABLED() atrace_is_tag_enabled(ATRACE_TAG)
 static inline uint64_t atrace_is_tag_enabled(uint64_t tag)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    return 0UL;
+#else
     return atrace_get_enabled_tags() & tag;
+#endif
 }
 
 /**
@@ -179,10 +190,15 @@ static inline uint64_t atrace_is_tag_enabled(uint64_t tag)
 #define ATRACE_BEGIN(name) atrace_begin(ATRACE_TAG, name)
 static inline void atrace_begin(uint64_t tag, const char* name)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    UNUSED(name);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_begin_body(const char*);
         atrace_begin_body(name);
     }
+#endif
 }
 
 /**
@@ -192,10 +208,14 @@ static inline void atrace_begin(uint64_t tag, const char* name)
 #define ATRACE_END() atrace_end(ATRACE_TAG)
 static inline void atrace_end(uint64_t tag)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_end_body();
         atrace_end_body();
     }
+#endif
 }
 
 /**
@@ -210,10 +230,16 @@ static inline void atrace_end(uint64_t tag)
 static inline void atrace_async_begin(uint64_t tag, const char* name,
         int32_t cookie)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    UNUSED(name);
+    UNUSED(cookie);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_async_begin_body(const char*, int32_t);
         atrace_async_begin_body(name, cookie);
     }
+#endif
 }
 
 /**
@@ -223,10 +249,16 @@ static inline void atrace_async_begin(uint64_t tag, const char* name,
 #define ATRACE_ASYNC_END(name, cookie) atrace_async_end(ATRACE_TAG, name, cookie)
 static inline void atrace_async_end(uint64_t tag, const char* name, int32_t cookie)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    UNUSED(name);
+    UNUSED(cookie);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_async_end_body(const char*, int32_t);
         atrace_async_end_body(name, cookie);
     }
+#endif
 }
 
 /**
@@ -236,10 +268,16 @@ static inline void atrace_async_end(uint64_t tag, const char* name, int32_t cook
 #define ATRACE_INT(name, value) atrace_int(ATRACE_TAG, name, value)
 static inline void atrace_int(uint64_t tag, const char* name, int32_t value)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    UNUSED(name);
+    UNUSED(value);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_int_body(const char*, int32_t);
         atrace_int_body(name, value);
     }
+#endif
 }
 
 /**
@@ -249,10 +287,16 @@ static inline void atrace_int(uint64_t tag, const char* name, int32_t value)
 #define ATRACE_INT64(name, value) atrace_int64(ATRACE_TAG, name, value)
 static inline void atrace_int64(uint64_t tag, const char* name, int64_t value)
 {
+#ifdef _WIN32
+    UNUSED(tag);
+    UNUSED(name);
+    UNUSED(value);
+#else
     if (CC_UNLIKELY(atrace_is_tag_enabled(tag))) {
         void atrace_int64_body(const char*, int64_t);
         atrace_int64_body(name, value);
     }
+#endif
 }
 
 __END_DECLS
