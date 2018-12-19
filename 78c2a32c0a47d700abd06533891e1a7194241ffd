@@ -22,6 +22,30 @@
       "revId": "78c2a32c0a47d700abd06533891e1a7194241ffd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f5ce1ab_428d12d9",
+        "filename": "fs_mgr/include/fs_mgr.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2018-12-19T18:25:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb910a65_6f6b1264",
+      "range": {
+        "startLine": 73,
+        "startChar": 38,
+        "endLine": 73,
+        "endChar": 73
+      },
+      "revId": "78c2a32c0a47d700abd06533891e1a7194241ffd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
