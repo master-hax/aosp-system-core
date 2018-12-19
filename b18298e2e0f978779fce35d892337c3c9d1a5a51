@@ -16,6 +16,24 @@
       "revId": "b18298e2e0f978779fce35d892337c3c9d1a5a51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9b5a130_d0e66761",
+        "filename": "fs_mgr/fs_mgr_boot_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1344344
+      },
+      "writtenOn": "2018-12-19T17:52:55Z",
+      "side": 1,
+      "message": "Oh, absolutely agree. Will send v2. Thanks.",
+      "parentUuid": "467bafa4_d2ece589",
+      "revId": "b18298e2e0f978779fce35d892337c3c9d1a5a51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
