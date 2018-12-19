@@ -1209,3 +1209,25 @@ std::string LogBuffer::formatStatistics(uid_t uid, pid_t pid,
 
     return ret;
 }
+
+bool LogBuffer::canAcceptNewReader(unsigned int logMask, const log_time& start) {
+    bool bAccept = true;
+
+    // if the new reader starting from the beginning,
+    // we need check whether current size-used is too large to accept it
+    if (start == log_time::EPOCH) {
+        log_id_for_each(id) {
+            if (!(logMask & (1 << id))) {
+                continue;
+            }
+
+            // check whether current size is too high to accept it.
+            if (getSizeUsed(id) > (2 * getSize(id))) {
+                bAccept = false;
+                break;
+            }
+        }
+    }
+
+    return bAccept;
+}

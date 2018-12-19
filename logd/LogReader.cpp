@@ -216,6 +216,11 @@ bool LogReader::onDataAvailable(SocketClient* cli) {
         timeout = 0;
     }
 
+    // check whether current state can accept it (for example : size-used too large to accept new reader?)
+    if (!logbuf().canAcceptNewReader(logMask, sequence)) {
+        return false;
+    }
+
     LogTimeEntry::wrlock();
     auto entry = std::make_unique<LogTimeEntry>(
         *this, cli, nonBlock, tail, logMask, pid, sequence, timeout);

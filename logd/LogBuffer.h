@@ -178,6 +178,7 @@ class LogBuffer : public LogBufferInterface {
         pthread_rwlock_unlock(&mLogElementsLock);
     }
 
+    bool canAcceptNewReader(unsigned int logMask, const log_time& start);
    private:
     static constexpr size_t minPrune = 4;
     static constexpr size_t maxPrune = 256;
