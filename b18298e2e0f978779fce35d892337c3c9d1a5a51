@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "467bafa4_d2ece589",
+        "filename": "fs_mgr/fs_mgr_boot_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-19T17:14:21Z",
+      "side": 1,
+      "message": "Maybe easier to just make it explicit?\n\nif (!cmdline.empty() \u0026\u0026 cmdline.back() \u003d\u003d \u0027\\n\u0027) {\n  cmdline.pop_back();\n}\n\nThat adds a check for !cmdline.empty(), which for however improbably that condition would be, we should still check for.",
+      "revId": "b18298e2e0f978779fce35d892337c3c9d1a5a51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
