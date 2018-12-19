@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb910a65_6f6b1264",
+        "filename": "fs_mgr/include/fs_mgr.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-19T17:32:05Z",
+      "side": 1,
+      "message": "Let\u0027s drop this that it isn\u0027t used then?  I\u0027m waiting for that until I +2.",
+      "range": {
+        "startLine": 73,
+        "startChar": 38,
+        "endLine": 73,
+        "endChar": 73
+      },
+      "revId": "78c2a32c0a47d700abd06533891e1a7194241ffd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
