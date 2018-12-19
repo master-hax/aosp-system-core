@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6961f3de_39f1d105",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-19T23:37:52Z",
+      "side": 1,
+      "message": "where is UNUSED coming from?",
+      "revId": "f930c1a3287d5694f3cf3e9e323a49b52f7dd174",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
