@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2018 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 #pragma once
 
-#include "adb.h"
+#include <string>
 
+extern const int kDefaultPairingPort;
 #if ADB_HOST
-
-#else // !ADB_HOST
-
-void adbd_wifi_init(void);
-bool adbd_wifi_pairing_request(const uint8_t* public_key,
-                               uint64_t size_bytes);
-
+void pair_device(const std::string& host,
+                 const std::string& password,
+                 std::string* response);
+#else
+// Initiate pairing mode on the host. Return true if pair initialization was
+// successful, false otherwise.
+bool pair_host(const uint8_t* publicKey, uint64_t sz);
+void pair_cancel();
 #endif
+

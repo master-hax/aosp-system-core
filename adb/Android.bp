@@ -167,6 +167,9 @@ cc_library_host_static {
         "client/usb_libusb.cpp",
         "client/usb_dispatch.cpp",
         "client/transport_mdns.cpp",
+        "pairing/pairing.cpp",
+        "pairing/pairing_client.cpp",
+        "pairing/pairing_connection.cpp",
     ],
 
     generated_headers: ["platform_tools_version"],
@@ -194,6 +197,7 @@ cc_library_host_static {
     },
 
     static_libs: [
+        "libadbd_wifi_pairing",
         "libbase",
         "libcrypto_utils",
         "libcrypto",
@@ -285,6 +289,7 @@ cc_binary_host {
 
     static_libs: [
         "libadb_host",
+	"libadbd_wifi_pairing",
         "libandroidfw",
         "libbase",
         "libcutils",
@@ -348,6 +353,9 @@ cc_library_static {
         "daemon/auth.cpp",
         "daemon/jdwp_service.cpp",
 	"daemon/adb_wifi.cpp",
+        "pairing/pairing.cpp",
+        "pairing/pairing_connection.cpp",
+        "pairing/pairing_server.cpp",
     ],
 
     local_include_dirs: [
@@ -363,6 +371,7 @@ cc_library_static {
     shared_libs: [
         "libadbconnection_server",
         "libadbd_auth",
+	"libadbd_wifi",
         "libasyncio",
         "libbase",
         "libcrypto",
@@ -417,6 +426,7 @@ cc_library {
     shared_libs: [
         "libadbconnection_server",
         "libadbd_auth",
+	"libadbd_wifi",
         "libasyncio",
         "libbase",
         "libcrypto",
@@ -465,6 +475,7 @@ cc_library {
     shared_libs: [
         "libadbconnection_server",
         "libadbd_auth",
+	"libadbd_wifi",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -501,6 +512,7 @@ cc_binary {
     static_libs: [
         "libadbd",
         "libadbd_auth",
+	"libadbd_wifi",
         "libadbd_services",
         "libasyncio",
         "libbase",
@@ -525,6 +537,7 @@ phony {
     required: [
         "abb",
         "libadbd_auth",
+	"libadbd_wifi",
         "reboot",
         "set-verity-state",
     ]
@@ -585,6 +598,7 @@ cc_test {
     static_libs: [
         "libadbd",
         "libadbd_auth",
+	"libadbd_wifi",
         "libbase",
         "libcutils",
         "libcrypto_utils",

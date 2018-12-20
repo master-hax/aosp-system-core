@@ -52,6 +52,8 @@
 #include "adb_listeners.h"
 #include "adb_utils.h"
 #include "adb_wifi.h"
+#include "crypto/identifiers.h"
+#include "crypto/key_store.h"
 #include "transport.h"
 
 #include "mdns.h"
@@ -184,6 +186,7 @@ static void setup_port(int port) {
     LOG(INFO) << "adbd listening on port " << port;
     local_init(port);
 #if defined(__ANDROID__)
+    LOG(INFO) << "Setup mdns on port= " << port;
     setup_mdns(port);
 #endif
 }
@@ -294,6 +297,7 @@ int main(int argc, char** argv) {
             {"root_seclabel", required_argument, nullptr, 's'},
             {"device_banner", required_argument, nullptr, 'b'},
             {"version", no_argument, nullptr, 'v'},
+            {"logpostfsdata", no_argument, nullptr, 'l'},
         };
 
         int option_index = 0;
@@ -314,6 +318,9 @@ int main(int argc, char** argv) {
             case 'v':
                 printf("Android Debug Bridge Daemon version %d.%d.%d\n", ADB_VERSION_MAJOR,
                        ADB_VERSION_MINOR, ADB_SERVER_VERSION);
+                return 0;
+            case 'l':
+                LOG(ERROR) << "post-fs-data triggered";
                 return 0;
             default:
                 // getopt already prints "adbd: invalid option -- %c" for us.
