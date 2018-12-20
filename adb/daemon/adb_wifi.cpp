@@ -19,6 +19,7 @@
 #define TRACE_TAG ADB_WIRELESS
 
 #include "adb.h"
+#include "pairing/pairing.h"
 #include "sysdeps.h"
 #include "transport.h"
 
@@ -30,9 +31,19 @@
 
 static AdbdWifiContext* sWifiCtx;
 
+static bool adbd_wifi_enable_discovery(const uint8_t* ourSPAKE2Key, uint64_t sz) {
+    return pair_host(ourSPAKE2Key, sz);
+}
+
+static void adbd_wifi_disable_discovery() {
+    pair_cancel();
+}
+
 void adbd_wifi_init(void) {
     AdbdWifiCallbacks cb;
     cb.version = 1;
+    cb.callbacks.v1.enable_discovery = adbd_wifi_enable_discovery;
+    cb.callbacks.v1.disable_discovery = adbd_wifi_disable_discovery;
 //    cb.callbacks.v1.device_authorized = ;
     sWifiCtx = adbd_wifi_new(&cb);
 
@@ -45,6 +56,13 @@ void adbd_wifi_init(void) {
 static void __attribute__((unused)) adb_wifi_disconnected(void* unused, atransport* t)  {
     if (DEBUGON) LOG(INFO) << "ADB wifi disconnect";
     adbd_wifi_notify_disconnect(sWifiCtx, t->auth_id);
+}
+
+bool adbd_wifi_pairing_request(const uint8_t* public_key,
+                               uint64_t size_bytes) {
+    return adbd_wifi_pairing_request(sWifiCtx,
+                                     public_key,
+                                     size_bytes);
 }
 
 #endif /* !HOST */
