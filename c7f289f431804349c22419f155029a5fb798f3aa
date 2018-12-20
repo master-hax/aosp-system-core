@@ -16,6 +16,24 @@
       "revId": "c7f289f431804349c22419f155029a5fb798f3aa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02930eb9_7a58b94a",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1103743
+      },
+      "writtenOn": "2018-12-20T21:30:57Z",
+      "side": 1,
+      "message": "I abandoned the changes to this file in favor of the Android.bp changes we discussed.",
+      "parentUuid": "10b63441_7335e0fc",
+      "revId": "c7f289f431804349c22419f155029a5fb798f3aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
