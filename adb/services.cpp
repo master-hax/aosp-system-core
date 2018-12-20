@@ -34,6 +34,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "pairing/pairing.h"
 #include "services.h"
 #include "socket_spec.h"
 #include "sysdeps.h"
@@ -193,6 +194,13 @@ static void connect_service(unique_fd fd, std::string host) {
     // Send response for emulator and device
     SendProtocolString(fd.get(), response);
 }
+
+static void pair_service(unique_fd fd, std::string host, std::string password) {
+    std::string response;
+    pair_device(host.c_str(), password, &response);
+
+    SendProtocolString(fd.get(), response);
+}
 #endif
 
 #if ADB_HOST
@@ -248,6 +256,19 @@ asocket* host_service_to_socket(std::string_view name, std::string_view serial,
         unique_fd fd = create_service_thread(
                 "connect", std::bind(connect_service, std::placeholders::_1, host));
         return create_local_socket(std::move(fd));
+    } else if (android::base::ConsumePrefix(&name, "pair:")) {
+        const char* divider = strchr(name, ':');
+        if (!divider) {
+            return nullptr;
+        }
+        std::string password(name, divider);
+        std::string host(divider + 1);
+        int fd = create_service_thread("pair",
+                                       std::bind(pair_service,
+                                                 std::placeholders::_1,
+                                                 host,
+                                                 password));
+        return create_local_socket(fd);
     }
     return nullptr;
 }

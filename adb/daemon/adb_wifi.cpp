@@ -30,9 +30,19 @@
 
 static AdbdWifiContext* sWifiCtx;
 
+static bool adbd_wifi_discovery_enable(bool enable) {
+    if (enable) {
+        return pair_host();
+    } else {
+        pair_cancel();
+        return true;
+    }
+}
+
 void adbd_wifi_init(void) {
     AdbdWifiCallbacks cb;
     cb.version = 1;
+    cb.callbacks.v1.set_discovery_enabled = adbd_wifi_disable_discovery;
 //    cb.callbacks.v1.device_authorized = ;
     sWifiCtx = adbd_wifi_new(&cb);
 
