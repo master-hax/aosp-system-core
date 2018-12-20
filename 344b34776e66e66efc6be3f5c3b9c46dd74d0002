@@ -22,6 +22,30 @@
       "revId": "344b34776e66e66efc6be3f5c3b9c46dd74d0002",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f7ed27b_b17de49c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2018-12-20T15:26:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f5fcd992_f4fd31b5",
+      "range": {
+        "startLine": 548,
+        "startChar": 26,
+        "endLine": 548,
+        "endChar": 27
+      },
+      "revId": "344b34776e66e66efc6be3f5c3b9c46dd74d0002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
