@@ -16,6 +16,24 @@
       "revId": "310ec0017343ae315029143d8abb820bfd742ad0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2c3fe8b_1b2fb62a",
+        "filename": "init/devices.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-20T23:12:51Z",
+      "side": 1,
+      "message": "Indeed, done.",
+      "parentUuid": "0485c6a5_0b906b0a",
+      "revId": "310ec0017343ae315029143d8abb820bfd742ad0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
