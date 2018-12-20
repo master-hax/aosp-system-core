@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07a86d31_fadef4ff",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-20T21:07:25Z",
+      "side": 0,
+      "message": "you don\u0027t actually need to do these, right? they just refer to functions you already have?\n\nit\u0027s just init, get_enabled_tags, is_tag_enabled?",
+      "revId": "1baa19b1a6bec9c0b1b067eef378646c62d9bf1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

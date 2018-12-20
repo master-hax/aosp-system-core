@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10b63441_7335e0fc",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2018-12-20T21:07:25Z",
+      "side": 1,
+      "message": "why not the more usual one? (this seems likely to cause warnings in C++.)\n\n  #define ATTRIBUTE_UNUSED __attribute__((__unused__))",
+      "revId": "c7f289f431804349c22419f155029a5fb798f3aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
