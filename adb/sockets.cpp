@@ -37,6 +37,7 @@
 
 #include "adb.h"
 #include "adb_io.h"
+#include "adb_utils.h"
 #include "transport.h"
 #include "types.h"
 
@@ -551,58 +552,115 @@ namespace internal {
 //   * [tcp:|udp:]<serial>[:<port>]:<command>
 //   * <prefix>:<serial>:<command>
 // Where <port> must be a base-10 number and <prefix> may be any of {usb,product,model,device}.
-//
-// The returned string_view will contain ':<command>', or be empty if not found.
-std::string_view skip_host_serial(std::string_view service) {
-    static const char* prefixes[] = {"usb:", "product:", "model:", "device:"};
+bool parse_host_service(std::string_view* out_serial, std::string_view* out_command,
+                        std::string_view _service) {
+    if (_service.empty()) {
+        return false;
+    }
 
+    std::string_view serial;
+    std::string_view command = _service;
+    // Remove |count| bytes from the beginning of command and add them to |serial|.
+    auto consume = [&_service, &serial, &command](size_t count) {
+        CHECK_LE(count, command.size());
+        if (!serial.empty()) {
+            CHECK_EQ(serial.data() + serial.size(), command.data());
+        }
+
+        serial = _service.substr(0, serial.size() + count);
+        command.remove_prefix(count);
+    };
+
+    // Remove the trailing : from serial, and assign the values to the output parameters.
+    auto finish = [out_serial, out_command, &serial, &command] {
+        if (serial.empty() || command.empty()) {
+            return false;
+        }
+
+        CHECK_EQ(':', serial.back());
+        serial.remove_suffix(1);
+
+        *out_serial = serial;
+        *out_command = command;
+        return true;
+    };
+
+    static const char* prefixes[] = {"usb:", "product:", "model:", "device:"};
     for (const char* prefix : prefixes) {
-        if (service.starts_with(prefix)) {
-            service.remove_prefix(strlen(prefix));
-            size_t offset = service.find_first_of(':');
+        if (command.starts_with(prefix)) {
+            consume(strlen(prefix));
+
+            size_t offset = command.find_first_of(':');
             if (offset == std::string::npos) {
-                return std::string_view{};
+                return false;
             }
-            return service.substr(offset);
+            consume(offset + 1);
+            return finish();
         }
     }
 
     // For fastboot compatibility, ignore protocol prefixes.
-    if (service.starts_with("tcp:") || service.starts_with("udp:")) {
-        service.remove_prefix(4);
-    }
-
-    // Check for an IPv6 address. `adb connect` creates the serial number from the canonical
-    // network address so it will always have the [] delimiters.
-    if (service[0] == '[') {
-        size_t ipv6_end = service.find_first_of(']');
-        if (ipv6_end != std::string::npos) {
-            service.remove_prefix(ipv6_end);
+    if (command.starts_with("tcp:") || command.starts_with("udp:")) {
+        consume(4);
+        if (command.empty()) {
+            return false;
         }
     }
 
-    // The next colon we find must either begin the port field or the command field.
-    size_t colon_offset = service.find_first_of(':');
-    if (colon_offset == std::string::npos) {
-        // No colon in service string.
-        return std::string_view{};
+    bool found_address = false;
+    if (command[0] == '[') {
+        // Read an IPv6 address. `adb connect` creates the serial number from the canonical
+        // network address so it will always have the [] delimiters.
+        size_t ipv6_end = command.find_first_of(']');
+        if (ipv6_end != std::string::npos) {
+            consume(ipv6_end + 1);
+            if (command.empty()) {
+                // Nothing after the IPv6 address.
+                return false;
+            } else if (command[0] != ':') {
+                // Garbage after the IPv6 address.
+                return false;
+            }
+            consume(1);
+            found_address = true;
+        }
     }
 
-    // If the next field is only decimal digits and ends with another colon, it's a port.
-    size_t next_colon = service.find_first_of(':', colon_offset);
+    if (!found_address) {
+        // Scan ahead to the next colon.
+        size_t offset = command.find_first_of(':');
+        if (offset == std::string::npos) {
+            return false;
+        }
+        consume(offset + 1);
+    }
+
+    // We're either at the beginning of a port, or the command itself.
+    // Look for a port in between colons.
+    size_t next_colon = command.find_first_of(':');
     if (next_colon == std::string::npos) {
-        // No colon, must be the command.
-        return service;
+        // No colon, we must be at the command.
+        return finish();
     }
 
-    std::string_view port = service.substr(colon_offset, next_colon - colon_offset);
+    bool port_valid = true;
+    if (command.size() <= next_colon) {
+        return false;
+    }
+
+    std::string_view port = command.substr(0, next_colon);
     for (auto digit : port) {
         if (!isdigit(digit)) {
-            return service;
+            // Port isn't a number.
+            port_valid = false;
+            break;
         }
     }
 
-    return service.substr(next_colon);
+    if (port_valid) {
+        consume(next_colon + 1);
+    }
+    return finish();
 }
 
 }  // namespace internal
@@ -611,8 +669,8 @@ std::string_view skip_host_serial(std::string_view service) {
 
 static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
 #if ADB_HOST
-    char* service = nullptr;
-    char* serial = nullptr;
+    std::string_view service;
+    std::string_view serial;
     TransportId transport_id = 0;
     TransportType type = kTransportAny;
 #endif
@@ -649,49 +707,52 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
     D("SS(%d): '%s'", s->id, (char*)(s->smart_socket_data.data() + 4));
 
 #if ADB_HOST
-    service = &s->smart_socket_data[4];
-    if (!strncmp(service, "host-serial:", strlen("host-serial:"))) {
-        char* serial_end;
-        service += strlen("host-serial:");
+    service = std::string_view(&s->smart_socket_data[4], s->smart_socket_data.size() - 4);
+    if (service.starts_with("host-serial:")) {
+        service.remove_prefix(strlen("host-serial:"));
 
         // serial number should follow "host:" and could be a host:port string.
-        serial_end = internal::skip_host_serial(service);
-        if (serial_end) {
-            *serial_end = 0;  // terminate string
-            serial = service;
-            service = serial_end + 1;
+        if (!internal::parse_host_service(&serial, &service, service)) {
+            LOG(ERROR) << "SS(" << s->id << "): failed to parse host service: " << service;
+            goto fail;
         }
-    } else if (!strncmp(service, "host-transport-id:", strlen("host-transport-id:"))) {
-        service += strlen("host-transport-id:");
-        transport_id = strtoll(service, &service, 10);
-
-        if (*service != ':') {
+    } else if (service.starts_with("host-transport-id:")) {
+        service.remove_prefix(strlen("host-transport-id:"));
+        if (!ParseUint(&transport_id, service, &service)) {
+            LOG(ERROR) << "SS(" << s->id << "): failed to parse host transport id: " << service;
             return -1;
         }
-        service++;
-    } else if (!strncmp(service, "host-usb:", strlen("host-usb:"))) {
+        if (!service.starts_with(":")) {
+            LOG(ERROR) << "SS(" << s->id << "): host-transport-id without command";
+            return -1;
+        }
+        service.remove_prefix(1);
+    } else if (service.starts_with("host-usb:")) {
         type = kTransportUsb;
-        service += strlen("host-usb:");
-    } else if (!strncmp(service, "host-local:", strlen("host-local:"))) {
+        service.remove_prefix(strlen("host-usb:"));
+    } else if (service.starts_with("host-local:")) {
         type = kTransportLocal;
-        service += strlen("host-local:");
-    } else if (!strncmp(service, "host:", strlen("host:"))) {
+        service.remove_prefix(strlen("host-local:"));
+    } else if (service.starts_with("host:")) {
         type = kTransportAny;
-        service += strlen("host:");
+        service.remove_prefix(strlen("host:"));
     } else {
-        service = nullptr;
+        service = std::string_view{};
     }
 
-    if (service) {
+    if (!service.empty()) {
         asocket* s2;
 
         // Some requests are handled immediately -- in that case the handle_host_request() routine
         // has sent the OKAY or FAIL message and all we have to do is clean up.
-        if (handle_host_request(service, type, serial, transport_id, s->peer->fd, s)) {
-            D("SS(%d): handled host service '%s'", s->id, service);
+        // TODO: Convert to string_view.
+        if (handle_host_request(std::string(service).c_str(), type,
+                                serial.empty() ? nullptr : std::string(serial).c_str(),
+                                transport_id, s->peer->fd, s)) {
+            LOG(VERBOSE) << "SS(" << s->id << "): handled host service '" << service << "'";
             goto fail;
         }
-        if (!strncmp(service, "transport", strlen("transport"))) {
+        if (service.starts_with("transport")) {
             D("SS(%d): okay transport", s->id);
             s->smart_socket_data.clear();
             return 0;
@@ -701,9 +762,11 @@ static int smart_socket_enqueue(asocket* s, apacket::payload_type data) {
         ** if no such service exists, we'll fail out
         ** and tear down here.
         */
-        s2 = create_host_service_socket(service, serial, transport_id);
+        // TODO: Convert to string_view.
+        s2 = create_host_service_socket(std::string(service).c_str(), std::string(serial).c_str(),
+                                        transport_id);
         if (s2 == nullptr) {
-            D("SS(%d): couldn't create host service '%s'", s->id, service);
+            LOG(VERBOSE) << "SS(" << s->id << "): couldn't create host service '" << service << "'";
             SendFail(s->peer->fd, "unknown host service");
             goto fail;
         }
