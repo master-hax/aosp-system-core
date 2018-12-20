@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "82462b87_3d39163c",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1218,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-20T06:28:28Z",
+      "side": 1,
+      "message": "I worry about this check.  Clients may specify a start that is not log_time::EPOCH, but still sufficiently far back in the log that they\u0027ll also become problematic.  I think if we\u0027re going to not accept new readers that we should just do so without any condition on \u0027start\u0027.",
+      "revId": "80a945916f843a31094360241a3a3417d7f38b17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25d172ca_a9a63c32",
+        "filename": "logd/LogBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1225,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-20T06:28:28Z",
+      "side": 1,
+      "message": "I wonder if we could make better check here.  Something like \u0027if the prune is happening, don\u0027t accept new clients\u0027.  Though I think the way that the locks work, this is already what happens.",
+      "revId": "80a945916f843a31094360241a3a3417d7f38b17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5b9a72f_7bf6ce7f",
+        "filename": "logd/LogReader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-20T06:28:28Z",
+      "side": 1,
+      "message": "I think it may be better to block here until the pruning has completed.  I don\u0027t think pruning will take particularly long (though you may know better; have you timed this recently by chance?).  In this case, it would be a better experience for the new client to not receive data for a few 100ms, rather than have the connection closed and need to retry.\n\nSince LogBuffer::prune() already takes the LogTimeEntry lock (it says rdlock(), but it\u0027s just a normal mutex lock), and since we require the same lock below, we do defacto block accepting new clients until the prune() has completed in the first place.",
+      "revId": "80a945916f843a31094360241a3a3417d7f38b17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
