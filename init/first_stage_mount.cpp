@@ -394,7 +394,7 @@ bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
         PLOG(ERROR) << "Failed to setup verity for '" << fstab_entry->mount_point << "'";
         return false;
     }
-    if (fs_mgr_do_mount_one(*fstab_entry)) {
+    if (fs_mgr_do_mount_one(*fstab_entry) && !fstab_entry->fs_mgr_flags.formattable) {
         PLOG(ERROR) << "Failed to mount '" << fstab_entry->mount_point << "'";
         return false;
     }
