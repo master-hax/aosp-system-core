@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5fcd992_f4fd31b5",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-12-20T15:21:48Z",
+      "side": 1,
+      "message": "change to 5? no one other than system should be able to write into this.\n(but since we will anyway prevent that using selinux, I don\u0027t have a strong opinion)",
+      "range": {
+        "startLine": 548,
+        "startChar": 26,
+        "endLine": 548,
+        "endChar": 27
+      },
+      "revId": "344b34776e66e66efc6be3f5c3b9c46dd74d0002",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
