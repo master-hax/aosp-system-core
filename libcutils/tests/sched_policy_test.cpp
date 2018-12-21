@@ -21,7 +21,7 @@
 
 #include <sys/capability.h>
 
-#include <cutils/sched_policy.h>
+#include <processgroup/sched_policy_ctrl.h>
 
 #include <gtest/gtest.h>
 
