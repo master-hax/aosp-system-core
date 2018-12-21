@@ -54,6 +54,7 @@
 #include <fs_mgr.h>
 #include <fscrypt/fscrypt.h>
 #include <fscrypt/fscrypt_init_extensions.h>
+#include <processgroup/processgroup.h>
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
@@ -416,6 +417,9 @@ static Result<Success> do_mount(const BuiltinArguments& args) {
             return ErrnoError() << "mount() failed";
         }
 
+    }
+    if (IsCgroupFileSystem(system) && !CgroupDetect()) {
+        return Error() << "Cgroup detection failed: " << strerror(errno);
     }
 
     return Success();
