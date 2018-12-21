@@ -28,8 +28,10 @@ cc_library {
         enabled: true,
         support_system_process: true,
     },
-    shared_libs: ["libbase"],
-
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
     export_include_dirs: ["include"],
     header_libs: [
         "libprocessgroup_headers",

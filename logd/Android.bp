@@ -69,6 +69,7 @@ cc_binary {
         "libsysutils",
         "liblog",
         "libcutils",
+        "libprocessgroup",
         "libbase",
         "libpackagelistparser",
         "libcap",
