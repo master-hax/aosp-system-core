@@ -29,6 +29,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr.h>
@@ -79,6 +80,7 @@ class FirstStageMount {
     bool IsDmLinearEnabled();
     bool GetDmLinearMetadataDevice();
     bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
+    void UseGsiIfPresent();
 
     ListenerAction UeventCallback(const Uevent& uevent);
 
@@ -207,6 +209,8 @@ bool FirstStageMount::GetDmLinearMetadataDevice() {
     }
 
     required_devices_partition_names_.emplace(super_partition_name_);
+    // When booting from live GSI images, userdata is the super device.
+    required_devices_partition_names_.emplace("userdata");
     return true;
 }
 
@@ -405,6 +409,16 @@ bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
 // this case, we mount system first then pivot to it.  From that point on,
 // we are effectively identical to a system-as-root device.
 bool FirstStageMount::TrySwitchSystemAsRoot() {
+    auto metadata_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
+        return entry.mount_point == "/metadata";
+    });
+    if (metadata_partition != fstab_.end()) {
+        if (MountPartition(&(*metadata_partition))) {
+            fstab_.erase(metadata_partition);
+            UseGsiIfPresent();
+        }
+    }
+
     auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
         return entry.mount_point == "/system";
     });
@@ -479,6 +493,80 @@ bool FirstStageMount::MountPartitions() {
     fs_mgr_overlayfs_mount_all(&fstab_);
 
     return true;
+}
+
+static const char kGsiBootAttemptsFile[] = "/metadata/vold/gsi/boot_attempts";
+
+static int GetGsiBootAttempts() {
+    std::string result;
+    if (!android::base::ReadFileToString(kGsiBootAttemptsFile, &result)) {
+        return 0;
+    }
+    int boot_attempts;
+    if (!android::base::ParseInt(result, &boot_attempts)) {
+        return 0;
+    }
+    return boot_attempts;
+}
+
+void FirstStageMount::UseGsiIfPresent() {
+    static const char kBootableFile[] = "/metadata/vold/gsi/bootable";
+    static const char kBootSuccessFile[] = "/metadata/vold/gsi/boot_success";
+    static const char kGsiMetadata[] = "/metadata/vold/gsi/lp_metadata";
+
+    if (access(kBootableFile, R_OK)) {
+        LOG(INFO) << "GSI not detected; proceeding with normal boot";
+        return;
+    }
+
+    if (access(kBootSuccessFile, R_OK)) {
+        // :TODO: set this to 3 after kBootSuccessFile is getting created somewhere.
+        static const int kMaxBootAttempts = 9999;
+
+        // If we've tried and failed to boot GSI too many times, we remove the
+        // bootable file so we don't try again.
+        int boot_attempts = GetGsiBootAttempts();
+        if (boot_attempts >= 3) {
+            LOG(ERROR) << "GSI could not be booted after " << kMaxBootAttempts << " attempts, "
+                       << "proceeding with normal boot";
+            android::base::RemoveFileIfExists(kBootableFile);
+            return;
+        }
+        android::base::WriteStringToFile(std::to_string(boot_attempts + 1), kGsiBootAttemptsFile);
+    }
+
+    auto metadata = android::fs_mgr::ReadFromImageFile(kGsiMetadata);
+    if (!metadata) {
+        LOG(ERROR) << "GSI partition layout could not be read";
+        android::base::RemoveFileIfExists(kBootableFile);
+        return;
+    }
+
+    if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), "/dev/block/by-name/userdata")) {
+        LOG(ERROR) << "GSI partition layout could not be instantiated";
+        android::base::RemoveFileIfExists(kBootableFile);
+        return;
+    }
+
+    auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
+        return entry.mount_point == "/system";
+    });
+    if (system_partition != fstab_.end()) {
+        fstab_.erase(system_partition);
+    }
+
+    // :TODO: helper method, since fs_mgr will need to do this when it detects running GSI
+    FstabEntry system = {
+            .blk_device = "system_gsi",
+            .mount_point = "/system",
+            .fs_type = "ext4",
+            .flags = MS_RDONLY,
+            .fs_options = "barrier=1",
+    };
+    system.fs_mgr_flags.wait = true;
+    system.fs_mgr_flags.logical = true;
+    system.fs_mgr_flags.first_stage_mount = true;
+    fstab_.emplace_back(system);
 }
 
 bool FirstStageMountVBootV1::GetDmVerityDevices() {
