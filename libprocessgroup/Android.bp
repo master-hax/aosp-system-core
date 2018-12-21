@@ -17,8 +17,10 @@ cc_library_headers {
 cc_library {
     include_dirs: ["system/core/include"],
     srcs: [
+        "cgroup_map.cpp",
         "processgroup.cpp",
         "sched_policy.cpp",
+        "task_profiles.cpp",
     ],
     name: "libprocessgroup",
     host_supported: true,
@@ -30,7 +32,10 @@ cc_library {
     },
     shared_libs: [
         "libbase",
-        "liblog",
+        "libjsoncpp",
+    ],
+    static_libs: [
+        "libfstab",
     ],
     export_include_dirs: ["include"],
     header_libs: [
