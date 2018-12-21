@@ -25,6 +25,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <sys/signalfd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -343,6 +344,20 @@ static Result<Success> console_init_action(const BuiltinArguments& args) {
     if (!console.empty()) {
         default_console = "/dev/" + console;
     }
+    return Success();
+}
+
+static Result<Success> mount_cgroups_action(const BuiltinArguments& args) {
+    if (fchmodat(AT_FDCWD, "/dev/kmsg", 0666, AT_SYMLINK_NOFOLLOW) < 0) {
+        return ErrnoError() << "fchmodat() failed";
+    }
+
+    if (!CgroupsMountAll()) {
+        WriteFile("/dev/kmsg", "CgroupsMountAll failed\n");
+        return ErrnoError() << "cgroups failed to mount";
+    }
+    WriteFile("/dev/kmsg", "CgroupsMountAll succeeded\n");
+
     return Success();
 }
 
@@ -677,6 +692,7 @@ int SecondStageMain(int argc, char** argv) {
     // Nexus 9 boot time, so it's disabled by default.
     if (false) DumpState();
 
+    am.QueueBuiltinAction(mount_cgroups_action, "mount_cgroups");
     am.QueueEventTrigger("early-init");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
