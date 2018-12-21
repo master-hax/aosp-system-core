@@ -25,6 +25,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <sys/signalfd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -42,6 +43,7 @@
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
+#include <processgroup/cgroup_map.h>
 #include <selinux/android.h>
 
 #ifndef RECOVERY
@@ -93,6 +95,7 @@ static bool do_shutdown = false;
 std::vector<std::string> late_import_paths;
 
 static std::vector<Subcontext>* subcontexts;
+static std::map<std::string, CgroupDescriptor> cgroup_descriptors;
 
 void DumpState() {
     ServiceList::GetInstance().DumpState();
@@ -344,6 +347,82 @@ static Result<Success> console_init_action(const BuiltinArguments& args) {
         default_console = "/dev/" + console;
     }
     return Success();
+}
+
+static Result<Success> WriteCgroupDescriptorsAction(const BuiltinArguments&) {
+    // Generate cgroup.rc file which can be directly mmapped into
+    // process memory. This optimizes performance, memory usage
+    // and limits infrormation shared with unprivileged processes
+    // to the minimum subset of information from cgroups.json
+    if (!CgroupMap::WriteRcFile(cgroup_descriptors)) {
+        return ErrnoError() << "Failed to write cgroup.rc file";
+    }
+
+    return Success();
+}
+
+static void SetupCgroups(ActionManager& am) {
+    // load cgroups.json file
+    if (!CgroupMap::ReadDescriptors(&cgroup_descriptors)) {
+        LOG(ERROR) << "Failed to load cgroup description file";
+        return;
+    }
+
+    // setup cgroups
+    for (const auto& [name, descriptor] : cgroup_descriptors) {
+        const CgroupController* controller = descriptor.controller();
+        // mkdir <path> [mode] [owner] [group]
+        std::vector<std::string> args = { "mkdir", controller->path() };
+        if (descriptor.mode() != 0) {
+            args.push_back(std::to_string(descriptor.mode()));
+        }
+        if (!descriptor.uid().empty()) {
+            args.push_back(descriptor.uid());
+        }
+        if (!descriptor.gid().empty()) {
+            args.push_back(descriptor.gid());
+        }
+        if (auto result = am.QueueBuiltinAction(std::move(args), "SetupCgroupsAction"); !result) {
+            LOG(ERROR) << "Failed to create directory for " << name << " cgroup: " << result.error();;
+        }
+        // mount <type> <device> <path> <flags ...> <options>
+        if (controller->version() == 1) {
+            // Unfortunately historically cpuset controller was mounted using a mount command
+            // different from all other controllers. This results in controller attributes not
+            // to be prepended with controller name. For example this way instead of
+            // /dev/cpuset/cpuset.cpus the attribute becomes /dev/cpuset/cpus which is what
+            // the system currently expects.
+            if (name == "cpuset") {
+                // mount cpuset none /dev/cpuset nodev noexec nosuid
+                args = { "mount", name, "none", controller->path(),
+                         "nodev", "noexec", "nosuid" };
+            } else {
+                // mount cgroup none <path> nodev noexec nosuid <controller>
+                args = { "mount", "cgroup", "none", controller->path(),
+                         "nodev", "noexec", "nosuid", name };
+            }
+        } else {
+            args = { "mount", "cgroup2", "none", controller->path(),
+                     "nodev", "noexec", "nosuid" };
+        }
+        if (auto result = am.QueueBuiltinAction(std::move(args), "SetupCgroupsAction"); !result) {
+            LOG(ERROR) << "Failed to mount " << name << " cgroup: " << result.error();
+        }
+    }
+
+    // save cgroup data into /dev/cg/cgroup.rc file
+    //mkdir /dev/cg 0711 system system
+    std::vector<std::string> args = { "mkdir", "/dev/cg", "0711", "system", "system" };
+    if (auto result = am.QueueBuiltinAction(std::move(args), "mount_cgroups"); !result) {
+        LOG(ERROR) << "Failed to create directory for cgroup.rc: " << result.error();
+        return;
+    }
+    am.QueueBuiltinAction(WriteCgroupDescriptorsAction, "WriteCgroupDescriptors");
+    //chmod 0644 /dev/cg/cgroup.rc
+    args = { "chmod", "0644", "/dev/cg/cgroup.rc" };
+    if (auto result = am.QueueBuiltinAction(std::move(args), "mount_cgroups"); !result) {
+        LOG(ERROR) << "Failed to set mode for cgroup.rc: " << result.error();
+    }
 }
 
 static void import_kernel_nv(const std::string& key, const std::string& value, bool for_emulator) {
@@ -677,6 +756,7 @@ int SecondStageMain(int argc, char** argv) {
     // Nexus 9 boot time, so it's disabled by default.
     if (false) DumpState();
 
+    SetupCgroups(am);
     am.QueueEventTrigger("early-init");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
