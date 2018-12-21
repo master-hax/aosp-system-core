@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af6f5dab_000fea74",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:35:26Z",
+      "side": 1,
+      "message": "i don\u0027t see any conflicting variables, any reason to use _?",
+      "range": {
+        "startLine": 556,
+        "startChar": 41,
+        "endLine": 556,
+        "endChar": 49
+      },
+      "revId": "7ee431ee87a902a48a956164729c557848b65a7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8219cfb0_d4d7350a",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:35:26Z",
+      "side": 1,
+      "message": "use string_view here as well?",
+      "revId": "7ee431ee87a902a48a956164729c557848b65a7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fffbc991_ede33a56",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 710,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:35:26Z",
+      "side": 1,
+      "message": "(nit) string_view(s-\u003esmart_socket_data).substr(4)",
+      "revId": "7ee431ee87a902a48a956164729c557848b65a7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
