@@ -14,13 +14,67 @@
  *  limitations under the License.
  */
 
-#ifndef _PROCESSGROUP_H_
-#define _PROCESSGROUP_H_
+#pragma once
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <string>
+#include <vector>
 
 __BEGIN_DECLS
+
+// stune profiles
+static const std::string TP_HighEnergySaving = "HighEnergySaving";
+static const std::string TP_NormalPerformance = "NormalPerformance";
+static const std::string TP_HighPerformance = "HighPerformance";
+static const std::string TP_MaxPerformance = "MaxPerformance";
+static const std::string TP_RealtimePerformance = "RealtimePerformance";
+
+static const std::string TP_CpuPolicySpread = "CpuPolicySpread";
+static const std::string TP_CpuPolicyPack = "CpuPolicyPack";
+
+// cpuset profiles
+static const std::string TP_VrKernelCapacity = "VrKernelCapacity";
+static const std::string TP_VrServiceCapacityLow = "VrServiceCapacityLow";
+static const std::string TP_VrServiceCapacityNormal = "VrServiceCapacityNormal";
+static const std::string TP_VrServiceCapacityHigh = "VrServiceCapacityHigh";
+
+static const std::string TP_VrProcessCapacityLow = "VrProcessCapacityLow";
+static const std::string TP_VrProcessCapacityNormal = "VrProcessCapacityNormal";
+static const std::string TP_VrProcessCapacityHigh = "VrProcessCapacityHigh";
+
+static const std::string TP_ProcessCapacityLow = "ProcessCapacityLow";
+static const std::string TP_ProcessCapacityNormal = "ProcessCapacityNormal";
+static const std::string TP_ProcessCapacityHigh = "ProcessCapacityHigh";
+static const std::string TP_ProcessCapacityMax = "ProcessCapacityMax";
+
+static const std::string TP_ServiceCapacityLow = "ServiceCapacityLow";
+static const std::string TP_ServiceCapacityRestricted = "ServiceCapacityRestricted";
+
+static const std::string TP_CameraServiceCapacity = "CameraServiceCapacity";
+
+// timer slack profiles
+static const std::string TP_TimerSlackHigh = "TimerSlackHigh";
+static const std::string TP_TimerSlackNormal = "TimerSlackNormal";
+
+// attribute names
+static const std::string TPA_LowCapacityCPUs = "LowCapacityCPUs";
+static const std::string TPA_HighCapacityCPUs = "HighCapacityCPUs";
+static const std::string TPA_MaxCapacityCPUs = "MaxCapacityCPUs";
+
+static const std::string TPA_CgroupV2Root = "CgroupV2Root";
+
+bool IsCgroupFileSystem(const std::string& system);
+bool CgroupDetect();
+
+bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path);
+bool CgroupGetAttributePath(const std::string& attr_name, std::string* path);
+bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::string* path);
+
+bool UsePerAppMemcg();
+
+int SetTaskProfiles(int tid, const std::vector<std::string>& profiles);
+int SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles);
 
 // Return 0 and removes the cgroup if there are no longer any processes in it.
 // Returns -1 in the case of an error occurring or if there are processes still running
@@ -42,5 +96,3 @@ bool setProcessGroupLimit(uid_t uid, int initialPid, int64_t limitInBytes);
 void removeAllProcessGroups(void);
 
 __END_DECLS
-
-#endif
