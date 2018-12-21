@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4282b15a_a95f2f92",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:30:01Z",
+      "side": 1,
+      "message": "(nit) memcpy looks foreign, why not\n.reserve(size + 1)\n.assign(destination)\n.resize(size + 1)\n[size] \u003d 0\u0027?",
+      "revId": "23100969028c2c4ae82ecd841cc952b12ab0176b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
