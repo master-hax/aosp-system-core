@@ -110,6 +110,7 @@ CHARGER_STATIC_LIBRARIES := \
     libutils \
     libcutils \
     libprocessgroup \
+    libjsoncpp \
     liblog \
     libm \
     libc \

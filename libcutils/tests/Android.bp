@@ -60,6 +60,7 @@ test_libraries = [
     "liblog",
     "libbase",
     "libprocessgroup",
+    "libjsoncpp",
 ]
 
 cc_test {
