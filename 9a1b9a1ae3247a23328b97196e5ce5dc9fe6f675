@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "180fe1b0_278cc945",
+        "filename": "adb/adb_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-21T22:07:41Z",
+      "side": 1,
+      "message": "We need to know when iteration stops to set remaining.",
+      "parentUuid": "639078e7_cdaae060",
+      "revId": "9a1b9a1ae3247a23328b97196e5ce5dc9fe6f675",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5fce38b_810781be",
         "filename": "adb/adb_utils_test.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "9a1b9a1ae3247a23328b97196e5ce5dc9fe6f675",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "217c9f14_f3dc024e",
+        "filename": "adb/adb_utils_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-21T22:07:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5fce38b_810781be",
+      "revId": "9a1b9a1ae3247a23328b97196e5ce5dc9fe6f675",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
