@@ -626,6 +626,13 @@ bool parse_host_service(std::string_view* out_serial, std::string_view* out_comm
             consume(1);
             found_address = true;
         }
+    } else if (command.find("vsock:") == 0) {
+        // vsock serials are vsock:cid:port, which have an extra colon compared to tcp.
+        size_t next_colon = command.find(':');
+        if (next_colon == std::string::npos) {
+            return false;
+        }
+        consume(next_colon + 1);
     }
 
     if (!found_address) {
