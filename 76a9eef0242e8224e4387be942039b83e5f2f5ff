@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aaa0890f_9ef6ad4a",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-21T17:55:22Z",
+      "side": 1,
+      "message": "Is this tangibly different than WriteStringToFile() ?  Seems like it\u0027s using the same flags except O_BINARY (but that doesn\u0027t matter) and you can pass any creation mode to that function too (aka 0755).",
+      "revId": "76a9eef0242e8224e4387be942039b83e5f2f5ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19f02c1d_ad8d3212",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-21T17:55:22Z",
+      "side": 1,
+      "message": "You just need to make userdata a required_devices_ and coldboot it.",
+      "revId": "76a9eef0242e8224e4387be942039b83e5f2f5ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
