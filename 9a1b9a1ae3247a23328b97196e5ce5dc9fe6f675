@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "639078e7_cdaae060",
+        "filename": "adb/adb_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:56:35Z",
+      "side": 1,
+      "message": "(nit) auto it \u003d str.begin(), end \u003d str.end(); it !\u003d end \u0026\u0026 ...",
+      "revId": "9a1b9a1ae3247a23328b97196e5ce5dc9fe6f675",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e5fce38b_810781be",
+        "filename": "adb/adb_utils_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-21T10:56:35Z",
+      "side": 1,
+      "message": "(nit) add a test which would use a substring, i.t. 123 out of 1234567890",
+      "revId": "9a1b9a1ae3247a23328b97196e5ce5dc9fe6f675",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
