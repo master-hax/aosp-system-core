@@ -19,6 +19,9 @@ cc_library {
     srcs: [
         "processgroup.cpp",
         "sched_policy_ctrl.cpp",
+        "task_profiles.cpp",
+        "cgroup_map.cpp",
+        "utils.cpp",
     ],
     name: "libprocessgroup",
     host_supported: true,
@@ -30,7 +33,7 @@ cc_library {
     },
     shared_libs: [
         "libbase",
-        "liblog",
+        "libjsoncpp",
     ],
     export_include_dirs: ["include"],
     header_libs: [
