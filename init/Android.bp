@@ -61,7 +61,6 @@ cc_defaults {
     },
     static_libs: [
         "libseccomp_policy",
-        "libprocessgroup",
         "libavb",
         "libprotobuf-cpp-lite",
         "libpropertyinfoserializer",
@@ -72,6 +71,7 @@ cc_defaults {
         "libbinder",
         "libbootloader_message",
         "libcutils",
+        "libprocessgroup",
         "libcrypto",
         "libdl",
         "libext4_utils",
