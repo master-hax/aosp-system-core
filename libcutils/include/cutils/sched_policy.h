@@ -17,26 +17,9 @@
 #ifndef __CUTILS_SCHED_POLICY_H
 #define __CUTILS_SCHED_POLICY_H
 
-#include <stdbool.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/*
- * Check if Linux kernel enables CPUSETS feature.
- *
- * Return value: 1 if Linux kernel CONFIG_CPUSETS=y; 0 otherwise.
- */
-extern bool cpusets_enabled();
-
-/*
- * Check if Linux kernel enables SCHEDTUNE feature (only available in Android
- * common kernel or Linaro LSK, not in mainline Linux as of v4.9)
- *
- * Return value: 1 if Linux kernel CONFIG_CGROUP_SCHEDTUNE=y; 0 otherwise.
- */
-extern bool schedboost_enabled();
 
 /* Keep in sync with THREAD_GROUP_* in frameworks/base/core/java/android/os/Process.java */
 typedef enum {
@@ -54,27 +37,7 @@ typedef enum {
     SP_SYSTEM_DEFAULT = SP_FOREGROUND,
 } SchedPolicy;
 
-extern int set_cpuset_policy(int tid, SchedPolicy policy);
-
-/* Assign thread tid to the cgroup associated with the specified policy.
- * If the thread is a thread group leader, that is it's gettid() == getpid(),
- * then the other threads in the same thread group are _not_ affected.
- * On platforms which support gettid(), zero tid means current thread.
- * Return value: 0 for success, or -errno for error.
- */
-extern int set_sched_policy(int tid, SchedPolicy policy);
-
-/* Return the policy associated with the cgroup of thread tid via policy pointer.
- * On platforms which support gettid(), zero tid means current thread.
- * Return value: 0 for success, or -1 for error and set errno.
- */
-extern int get_sched_policy(int tid, SchedPolicy *policy);
-
-/* Return a displayable string corresponding to policy.
- * Return value: non-NULL NUL-terminated name of unspecified length;
- * the caller is responsible for displaying the useful part of the string.
- */
-extern const char *get_sched_policy_name(SchedPolicy policy);
+/* For sched_policy functions please include processgroup/sched_policy_ctrl.h */
 
 #ifdef __cplusplus
 }
