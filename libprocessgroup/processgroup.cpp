@@ -25,12 +25,12 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <chrono>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <set>
@@ -43,8 +43,9 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <private/android_filesystem_config.h>
-
 #include <processgroup/processgroup.h>
+#include <task_profiles.h>
+#include <utils.h>
 
 using android::base::GetBoolProperty;
 using android::base::StartsWith;
@@ -53,14 +54,93 @@ using android::base::WriteStringToFile;
 
 using namespace std::chrono_literals;
 
-static const char kCpuacctCgroup[] = "/acct";
-static const char kMemoryCgroup[] = "/dev/memcg/apps";
-
 #define PROCESSGROUP_CGROUP_PROCS_FILE "/cgroup.procs"
 
+bool IsCgroupSystem(const std::string& system) {
+    return CgroupMap::IsCgroupSystem(system);
+}
+
+int CgroupDetect() {
+    return CgroupMap::Detect();
+};
+
+bool CgroupGetControllerPath(const std::string& cgroup_name, std::string& path) {
+    const struct CgroupMap::CgroupController* controller =
+            CgroupMap::GetInstance().FindController(cgroup_name);
+
+    if (!controller) return false;
+
+    path = CgroupMap::GetControllerPath(controller);
+    return true;
+}
+
+bool CgroupGetAttributePath(const std::string& attr_name, std::string& path) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+    const ProfileAttribute* attr = tp.GetAttribute(attr_name);
+
+    if (!attr) return false;
+
+    path = StringPrintf("%s/%s", CgroupMap::GetControllerPath(attr->GetController()),
+                        attr->GetFileName().c_str());
+    return true;
+}
+
+bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::string& path) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+    const ProfileAttribute* attr = tp.GetAttribute(attr_name);
+
+    if (!attr) return false;
+
+    if (attr->GetPathForTask(tid, path) < 0) {
+        PLOG(ERROR) << "Failed to find cgroup for tid " << tid;
+        return false;
+    }
+
+    return true;
+}
+
+bool UsePerAppMemcg() {
+    bool low_ram_device = GetBoolProperty("ro.config.low_ram", false);
+    return GetBoolProperty("ro.config.per_app_memcg", low_ram_device);
+}
+
 static bool isMemoryCgroupSupported() {
-    static bool memcg_supported = !access("/dev/memcg/memory.limit_in_bytes", F_OK);
+    std::string cgroup_name;
+    static bool memcg_supported = (CgroupMap::GetInstance().FindController("memory") != nullptr);
+
     return memcg_supported;
+}
+
+int SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+
+    for (auto it = profiles.begin(); it != profiles.end(); ++it) {
+        const TaskProfile* profile = tp.GetProfile(*it);
+        if (profile != nullptr) {
+            if (profile->ExecuteForProcess(uid, pid) != 0) {
+                PLOG(WARNING) << "Failed to apply " << *it << " process profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << *it << "process profile";
+        }
+    }
+    return 0;
+}
+
+int SetTaskProfiles(int tid, const std::vector<std::string>& profiles) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+
+    for (auto it = profiles.begin(); it != profiles.end(); ++it) {
+        const TaskProfile* profile = tp.GetProfile(*it);
+        if (profile != nullptr) {
+            if (profile->ExecuteForTask(tid) != 0) {
+                PLOG(WARNING) << "Failed to apply " << *it << " task profile";
+            }
+        } else {
+            PLOG(WARNING) << "Failed to find " << *it << "task profile";
+        }
+    }
+    return 0;
 }
 
 static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
@@ -103,11 +183,21 @@ static void RemoveUidProcessGroups(const std::string& uid_path) {
     }
 }
 
-void removeAllProcessGroups()
-{
+void removeAllProcessGroups() {
     LOG(VERBOSE) << "removeAllProcessGroups()";
-    for (const char* cgroup_root_path : {kCpuacctCgroup, kMemoryCgroup}) {
-        std::unique_ptr<DIR, decltype(&closedir)> root(opendir(cgroup_root_path), closedir);
+
+    std::vector<std::string> cgroups;
+    std::string path;
+
+    if (CgroupGetControllerPath("cpuacct", path)) {
+        cgroups.push_back(path);
+    }
+    if (CgroupGetControllerPath("memory", path)) {
+        cgroups.push_back(path);
+    }
+
+    for (std::string cgroup_root_path : cgroups) {
+        std::unique_ptr<DIR, decltype(&closedir)> root(opendir(cgroup_root_path.c_str()), closedir);
         if (root == NULL) {
             PLOG(ERROR) << "Failed to open " << cgroup_root_path;
         } else {
@@ -121,7 +211,7 @@ void removeAllProcessGroups()
                     continue;
                 }
 
-                auto path = StringPrintf("%s/%s", cgroup_root_path, dir->d_name);
+                auto path = StringPrintf("%s/%s", cgroup_root_path.c_str(), dir->d_name);
                 RemoveUidProcessGroups(path);
                 LOG(VERBOSE) << "Removing " << path;
                 if (rmdir(path.c_str()) == -1) PLOG(WARNING) << "Failed to remove " << path;
@@ -200,10 +290,16 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
 }
 
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
+    std::string cpuacct_path;
+    std::string memory_path;
+
+    CgroupGetControllerPath("cpuacct", cpuacct_path);
+    CgroupGetControllerPath("memory", memory_path);
+
     const char* cgroup =
-            (!access(ConvertUidPidToPath(kCpuacctCgroup, uid, initialPid).c_str(), F_OK))
-                    ? kCpuacctCgroup
-                    : kMemoryCgroup;
+            (!access(ConvertUidPidToPath(cpuacct_path.c_str(), uid, initialPid).c_str(), F_OK))
+                    ? cpuacct_path.c_str()
+                    : memory_path.c_str();
 
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
@@ -258,44 +354,22 @@ int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
     return KillProcessGroup(uid, initialPid, signal, 0 /*retries*/);
 }
 
-static bool MkdirAndChown(const std::string& path, mode_t mode, uid_t uid, gid_t gid) {
-    if (mkdir(path.c_str(), mode) == -1 && errno != EEXIST) {
-        return false;
-    }
-
-    if (chown(path.c_str(), uid, gid) == -1) {
-        int saved_errno = errno;
-        rmdir(path.c_str());
-        errno = saved_errno;
-        return false;
-    }
-
-    return true;
-}
-
-static bool isPerAppMemcgEnabled() {
-    static bool per_app_memcg =
-            GetBoolProperty("ro.config.per_app_memcg", GetBoolProperty("ro.config.low_ram", false));
-    return per_app_memcg;
-}
-
-int createProcessGroup(uid_t uid, int initialPid, bool memControl)
-{
-    const char* cgroup;
-    if (isMemoryCgroupSupported() && (memControl || isPerAppMemcgEnabled())) {
-        cgroup = kMemoryCgroup;
+int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
+    std::string cgroup;
+    if (isMemoryCgroupSupported() && (memControl || UsePerAppMemcg())) {
+        CgroupGetControllerPath("memory", cgroup);
     } else {
-        cgroup = kCpuacctCgroup;
+        CgroupGetControllerPath("cpuacct", cgroup);
     }
 
-    auto uid_path = ConvertUidToPath(cgroup, uid);
+    auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
     if (!MkdirAndChown(uid_path, 0750, AID_SYSTEM, AID_SYSTEM)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_path;
         return -errno;
     }
 
-    auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, initialPid);
+    auto uid_pid_path = ConvertUidPidToPath(cgroup.c_str(), uid, initialPid);
 
     if (!MkdirAndChown(uid_pid_path, 0750, AID_SYSTEM, AID_SYSTEM)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_pid_path;
@@ -313,13 +387,17 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl)
     return ret;
 }
 
-static bool SetProcessGroupValue(uid_t uid, int pid, const std::string& file_name, int64_t value) {
+static bool SetProcessGroupValue(int tid, const std::string& attr_name, int64_t value) {
     if (!isMemoryCgroupSupported()) {
         PLOG(ERROR) << "Memcg is not mounted.";
         return false;
     }
 
-    auto path = ConvertUidPidToPath(kMemoryCgroup, uid, pid) + file_name;
+    std::string path;
+    if (!CgroupGetAttributePathForTask(attr_name, tid, path)) {
+        PLOG(ERROR) << "Failed to find attribute '" << attr_name << "'";
+        return false;
+    }
 
     if (!WriteStringToFile(std::to_string(value), path)) {
         PLOG(ERROR) << "Failed to write '" << value << "' to " << path;
@@ -328,14 +406,14 @@ static bool SetProcessGroupValue(uid_t uid, int pid, const std::string& file_nam
     return true;
 }
 
-bool setProcessGroupSwappiness(uid_t uid, int pid, int swappiness) {
-    return SetProcessGroupValue(uid, pid, "/memory.swappiness", swappiness);
+bool setProcessGroupSwappiness(uid_t, int pid, int swappiness) {
+    return SetProcessGroupValue(pid, "MemSwappiness", swappiness);
 }
 
-bool setProcessGroupSoftLimit(uid_t uid, int pid, int64_t soft_limit_in_bytes) {
-    return SetProcessGroupValue(uid, pid, "/memory.soft_limit_in_bytes", soft_limit_in_bytes);
+bool setProcessGroupSoftLimit(uid_t, int pid, int64_t soft_limit_in_bytes) {
+    return SetProcessGroupValue(pid, "MemSoftLimit", soft_limit_in_bytes);
 }
 
-bool setProcessGroupLimit(uid_t uid, int pid, int64_t limit_in_bytes) {
-    return SetProcessGroupValue(uid, pid, "/memory.limit_in_bytes", limit_in_bytes);
+bool setProcessGroupLimit(uid_t, int pid, int64_t limit_in_bytes) {
+    return SetProcessGroupValue(pid, "MemLimit", limit_in_bytes);
 }
