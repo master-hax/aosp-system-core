@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89478bc7_fcb00422",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-21T00:27:39Z",
+      "side": 1,
+      "message": "You mean \u0027true\u0027 here though, right?",
+      "range": {
+        "startLine": 401,
+        "startChar": 19,
+        "endLine": 401,
+        "endChar": 24
+      },
+      "revId": "97fcef859c2787ba8ed119964ad216b457bcf809",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
