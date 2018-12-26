@@ -38,7 +38,8 @@ additional.namespaces = runtime,sphal,vndk,rs
 ###############################################################################
 namespace.default.isolated = true
 
-namespace.default.search.paths  = /system/${LIB}
+namespace.default.search.paths  = ${RUNTIME}/${LIB}
+namespace.default.search.paths += /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
 
@@ -75,7 +76,9 @@ namespace.default.permitted.paths += /data
 namespace.default.permitted.paths += /mnt/expand
 namespace.default.permitted.paths += /apex/com.android.resolv/${LIB}
 
-namespace.default.asan.search.paths  = /data/asan/system/${LIB}
+namespace.default.asan.search.paths  = /data/asan${RUNTIME}/${LIB}
+namespace.default.asan.search.paths +=           ${RUNTIME}/${LIB}
+namespace.default.asan.search.paths += /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
 namespace.default.asan.search.paths += /data/asan/product/${LIB}
 namespace.default.asan.search.paths +=           /%PRODUCT%/${LIB}
@@ -387,11 +390,14 @@ namespace.vndk.link.default.allow_all_shared_libs = true
 ###############################################################################
 namespace.system.isolated = false
 
-namespace.system.search.paths  = /system/${LIB}
+namespace.system.search.paths  = ${RUNTIME}/${LIB}
+namespace.system.search.paths += /system/${LIB}
 namespace.system.search.paths += /%PRODUCT%/${LIB}
 namespace.system.search.paths += /%PRODUCT_SERVICES%/${LIB}
 
-namespace.system.asan.search.paths  = /data/asan/system/${LIB}
+namespace.system.asan.search.paths  = /data/asan${RUNTIME}/${LIB}
+namespace.system.asan.search.paths +=           ${RUNTIME}/${LIB}
+namespace.system.asan.search.paths += /data/asan/system/${LIB}
 namespace.system.asan.search.paths +=           /system/${LIB}
 namespace.system.asan.search.paths += /data/asan/product/${LIB}
 namespace.system.asan.search.paths +=           /%PRODUCT%/${LIB}
@@ -414,7 +420,8 @@ namespace.system.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 additional.namespaces = runtime
 
 namespace.default.isolated = false
-namespace.default.search.paths  = /system/${LIB}
+namespace.default.search.paths  = ${RUNTIME}/${LIB}
+namespace.default.search.paths += /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
 

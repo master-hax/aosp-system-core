@@ -38,13 +38,16 @@ additional.namespaces = runtime,sphal,vndk,rs
 ###############################################################################
 namespace.default.isolated = false
 
-namespace.default.search.paths  = /system/${LIB}
+namespace.default.search.paths  = ${RUNTIME}/${LIB}
+namespace.default.search.paths += /system/${LIB}
 namespace.default.search.paths += /odm/${LIB}
 namespace.default.search.paths += /vendor/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
 
-namespace.default.asan.search.paths  = /data/asan/system/${LIB}
+namespace.default.asan.search.paths  = /data/asan${RUNTIME}/${LIB}
+namespace.default.asan.search.paths +=           ${RUNTIME}/${LIB}
+namespace.default.asan.search.paths += /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
 namespace.default.asan.search.paths += /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
@@ -297,7 +300,8 @@ namespace.runtime.link.default.allow_all_shared_libs = true
 additional.namespaces = runtime
 
 namespace.default.isolated = false
-namespace.default.search.paths  = /system/${LIB}
+namespace.default.search.paths  = ${RUNTIME}/${LIB}
+namespace.default.search.paths += /system/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
 
