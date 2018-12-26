@@ -175,7 +175,7 @@ class ResolvedService : public AsyncServiceRef {
               serviceName_.c_str(), regType_.c_str(),
               ip_addr_, port_, response.c_str());
         } else {
-            D("Not immediately connecting to service %s regtype %s (%s:%hu)",
+            D("Not immediately connecting to serviceName=[%s], regtype=[%s] ipaddr=(%s:%hu)",
               serviceName_.c_str(),
               regType_.c_str(),
               ip_addr_, port_);
@@ -322,7 +322,8 @@ class DiscoveredService : public AsyncServiceRef {
   public:
     DiscoveredService(uint32_t interfaceIndex, const char* serviceName,
                       const char* regtype, const char* domain)
-        : serviceName_(serviceName) {
+        : serviceName_(serviceName),
+          regType_(regtype) {
 
         DNSServiceErrorType ret =
             DNSServiceResolve(&sdRef_, 0, interfaceIndex, serviceName, regtype,
@@ -341,7 +342,7 @@ class DiscoveredService : public AsyncServiceRef {
           domain,
           ret);
 
-        if (ret -= kDNSServiceErr_NoError) {
+        if (ret == kDNSServiceErr_NoError) {
             Initialize();
         }
     }
@@ -356,7 +357,7 @@ class DiscoveredService : public AsyncServiceRef {
 
   private:
     std::string serviceName_;
-    std::string regType_;;
+    std::string regType_;
 };
 
 static void DNSSD_API register_resolved_mdns_service(DNSServiceRef sdRef,
