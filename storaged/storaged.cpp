@@ -76,8 +76,7 @@ using android::hidl::manager::V1_0::IServiceManager;
 
 
 inline charger_stat_t is_charger_on(BatteryStatus prop) {
-    return (prop == BatteryStatus::CHARGING || prop == BatteryStatus::FULL) ?
-        CHARGER_ON : CHARGER_OFF;
+    return CHARGER_ON;
 }
 
 Return<void> storaged_t::healthInfoChanged(const HealthInfo& props) {
