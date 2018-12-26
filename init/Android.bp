@@ -165,6 +165,7 @@ cc_binary {
             exclude_shared_libs: ["libbinder", "libutils"],
         },
     },
+    bootstrap: true,
 }
 
 // Tests
