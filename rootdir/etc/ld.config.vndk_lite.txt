@@ -70,7 +70,7 @@ namespace.default.link.runtime.shared_libs += libnativeloader.so
 namespace.runtime.isolated = true
 
 # Keep in sync with ld.config.txt in the com.android.runtime APEX.
-namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
+namespace.runtime.search.paths = ${RUNTIME}/${LIB}
 namespace.runtime.links = default
 # TODO(b/119867084): Restrict to Bionic dlopen dependencies and PALette library
 # when it exists.
@@ -279,7 +279,7 @@ namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 # This namespace pulls in externally accessible libs from the Runtime APEX.
 ###############################################################################
 namespace.runtime.isolated = true
-namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
+namespace.runtime.search.paths = ${RUNTIME}/${LIB}
 namespace.runtime.links = default
 # TODO(b/119867084): Restrict to Bionic dlopen dependencies.
 namespace.runtime.link.default.allow_all_shared_libs = true
@@ -310,7 +310,7 @@ namespace.default.link.runtime.shared_libs = libc.so:libdl.so:libm.so
 # This namespace pulls in externally accessible libs from the Runtime APEX.
 ###############################################################################
 namespace.runtime.isolated = true
-namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
+namespace.runtime.search.paths = ${RUNTIME}/${LIB}
 namespace.runtime.links = default
 # TODO(b/119867084): Restrict to Bionic dlopen dependencies.
 namespace.runtime.link.default.allow_all_shared_libs = true
