@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4df947e2_7ebf4b76",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-27T23:13:36Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8553d6f6_78993be0",
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5976265_ca83fbd5",
         "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
         "patchSetId": 6
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "7e56f017_d09c9fe3",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-27T23:13:36Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c5976265_ca83fbd5",
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4179cf4d_ac10a319",
         "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
         "patchSetId": 6
@@ -47,6 +83,24 @@
       "writtenOn": "2018-12-27T20:39:47Z",
       "side": 1,
       "message": "Do you expect this to grow in the future?  Otherwise mark const and put in the header so it\u0027s inline?  Probably should call it fiemap() too.",
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa05b877_ab65d22c",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-27T23:13:36Z",
+      "side": 1,
+      "message": "ack, will do.",
+      "parentUuid": "4179cf4d_ac10a319",
       "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -73,6 +127,30 @@
       "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fa8f8c8_3e766017",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-27T23:13:36Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e589369c_4c5f5685",
+      "range": {
+        "startLine": 193,
+        "startChar": 38,
+        "endLine": 193,
+        "endChar": 42
+      },
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
