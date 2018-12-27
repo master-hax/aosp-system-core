@@ -73,6 +73,40 @@
       "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04c9cc43_c48daefc",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2018-12-27T20:54:08Z",
+      "side": 1,
+      "message": "You should also check for errno !\u003d ENOTTY \u0026\u0026 errno !\u003d ENOTSUP like recovery does, or simply ignore the ioctl outcome like in vold",
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc6c385f_71b0f17f",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2018-12-27T20:54:08Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "8eba317ed0a95142da3d8b3c8c5b7055f1632528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
