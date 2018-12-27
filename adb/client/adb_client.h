@@ -95,12 +95,12 @@ using adb_secure_foreach_service_callback =
                        const char* _Nonnull ip_address,
                        uint16_t port)>;
 
-// Queries pairing/connect services that have been discovered and resolved.
+// Queries pairing/wireless enabled services that have been discovered and resolved.
 // If |host_name| is not null, run |cb| only for services
 // matching |host_name|. Otherwise, run for all services.
 void adb_secure_foreach_pairing_service(
         const char* _Nullable host_name,
         adb_secure_foreach_service_callback cb);
-void adb_secure_foreach_connect_service(
+void adb_secure_foreach_wireless_service(
         const char* _Nullable host_name,
         adb_secure_foreach_service_callback cb);

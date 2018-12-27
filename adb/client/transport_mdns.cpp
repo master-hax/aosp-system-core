@@ -186,8 +186,8 @@ class ResolvedService : public AsyncServiceRef {
             case kADBSecurePairingServiceRefIndex:
                 sAdbSecurePairingServices->push_back(this);
                 break;
-            case kADBSecureConnectServiceRefIndex:
-                sAdbSecureConnectServices->push_back(this);
+            case kADBWirelessServiceRefIndex:
+                sAdbWirelessServices->push_back(this);
                 break;
             default:
                 break;
@@ -213,7 +213,7 @@ class ResolvedService : public AsyncServiceRef {
     using ServiceRegistry = std::vector<ResolvedService*>;
 
     static ServiceRegistry* sAdbSecurePairingServices;
-    static ServiceRegistry* sAdbSecureConnectServices;
+    static ServiceRegistry* sAdbWirelessServices;
 
     static void initAdbSecure();
 
@@ -236,15 +236,15 @@ class ResolvedService : public AsyncServiceRef {
 std::vector<ResolvedService*>* ResolvedService::sAdbSecurePairingServices = NULL;
 
 // static
-std::vector<ResolvedService*>* ResolvedService::sAdbSecureConnectServices = NULL;
+std::vector<ResolvedService*>* ResolvedService::sAdbWirelessServices = NULL;
 
 // static
 void ResolvedService::initAdbSecure() {
     if (!sAdbSecurePairingServices) {
         sAdbSecurePairingServices = new ServiceRegistry;
     }
-    if (!sAdbSecureConnectServices) {
-        sAdbSecureConnectServices = new ServiceRegistry;
+    if (!sAdbWirelessServices) {
+        sAdbWirelessServices = new ServiceRegistry;
     }
 }
 
@@ -279,11 +279,11 @@ void adb_secure_foreach_pairing_service(
 }
 
 // static
-void adb_secure_foreach_connect_service(
+void adb_secure_foreach_wireless_service(
         const char* host_name,
         adb_secure_foreach_service_callback cb) {
     ResolvedService::forEachService(
-        *ResolvedService::sAdbSecureConnectServices,
+        *ResolvedService::sAdbWirelessServices,
         host_name ? host_name : "", cb);
 }
 

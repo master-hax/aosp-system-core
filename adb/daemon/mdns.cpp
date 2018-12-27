@@ -106,7 +106,7 @@ static void setup_mdns_thread() {
     register_base_mdns_transport();
     // Or not
     register_adb_secure_pairing_service(port);
-    register_adb_secure_connect_service(port);
+    register_adb_wireless_service(port);
 }
 
 // This also tears down any adb secure mDNS services, if they exist.
@@ -145,21 +145,21 @@ bool is_adb_secure_pairing_service_registered() {
     return mdns_registered[kADBSecurePairingServiceRefIndex];
 }
 
-void register_adb_secure_connect_service(int port) {
+void register_adb_wireless_service(int port) {
     std::thread([port]() {
         register_mdns_service(
-            kADBSecureConnectServiceRefIndex, port);
+            kADBWirelessServiceRefIndex, port);
     }).detach();
 }
 
-void unregister_adb_secure_connect_service() {
+void unregister_adb_wireless_service() {
     std::thread([]() {
         unregister_mdns_service(
-            kADBSecureConnectServiceRefIndex);
+            kADBWirelessServiceRefIndex);
     }).detach();
 }
 
-bool is_adb_secure_connect_service_registered() {
+bool is_adb_wireless_service_registered() {
     std::lock_guard<std::mutex> lock(mdns_lock);
-    return mdns_registered[kADBSecureConnectServiceRefIndex];
+    return mdns_registered[kADBWirelessServiceRefIndex];
 }

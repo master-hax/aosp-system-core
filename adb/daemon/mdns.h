@@ -23,8 +23,8 @@ void register_adb_secure_pairing_service(int port);
 void unregister_adb_secure_pairing_service(int port);
 bool is_adb_secure_pairing_service_registered();
 
-void register_adb_secure_connect_service(int port);
-void unregister_adb_secure_connect_service(int port);
-bool is_adb_secure_connect_service_registered();
+void register_adb_wireless_service(int port);
+void unregister_adb_wireless_service(int port);
+bool is_adb_wireless_service_registered();
 
 #endif  // _DAEMON_MDNS_H_
