@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6aca6f0a_8afe6170",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2018-12-27T20:27:00Z",
+      "side": 1,
+      "message": "this change is lgtm, but why wound\u0027t we do it on client side so we don\u0027t even send such payloads?",
+      "revId": "6bd16b1d22098ca525807b56feaf92af8219593b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
