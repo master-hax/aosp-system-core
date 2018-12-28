@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36ce05e4_92831aeb",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1137,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-28T21:51:24Z",
+      "side": 1,
+      "message": "starts_with",
+      "range": {
+        "startLine": 1137,
+        "startChar": 20,
+        "endLine": 1137,
+        "endChar": 39
+      },
+      "revId": "f081818cfddfde6261d7d2f7f3aeee02eb3e8566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b5d64cf_0ae65530",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-28T21:51:24Z",
+      "side": 1,
+      "message": "This probably breaks \u0027tcp:vsock:123\u0027. Move this else if up to line 610 so we treat things uniformly?",
+      "range": {
+        "startLine": 629,
+        "startChar": 6,
+        "endLine": 636,
+        "endChar": 5
+      },
+      "revId": "f081818cfddfde6261d7d2f7f3aeee02eb3e8566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf43f455_c7048bb2",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-28T21:51:24Z",
+      "side": 1,
+      "message": "You can just use std::string::starts_with, adb uses C++2a for all of the shiny new features.",
+      "revId": "f081818cfddfde6261d7d2f7f3aeee02eb3e8566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0b515ba_488bad3d",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-28T21:51:24Z",
+      "side": 1,
+      "message": "It seems a bit odd that this is in tcp_connect. I think we should just delete this function entirely, switch the user to socket_spec_connect, and move the vsock implementation over there? The TCP stuff should Just Work, I believe.",
+      "range": {
+        "startLine": 102,
+        "startChar": 9,
+        "endLine": 103,
+        "endChar": 57
+      },
+      "revId": "f081818cfddfde6261d7d2f7f3aeee02eb3e8566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "289373ab_fce5e58b",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2018-12-28T21:51:24Z",
+      "side": 1,
+      "message": "Same as above, we should move this to socket_spec_listen",
+      "range": {
+        "startLine": 330,
+        "startChar": 14,
+        "endLine": 359,
+        "endChar": 9
+      },
+      "revId": "f081818cfddfde6261d7d2f7f3aeee02eb3e8566",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
