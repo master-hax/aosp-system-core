@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4fe75a82_151f08e0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2018-12-28T08:52:14Z",
+      "side": 1,
+      "message": "If these two libs are tightly coupled with libc (which I think it is), then wouldn\u0027t it be better to have the two in the runtime APEX? \nAdding cferris@ for this.\n\nI have no idea about libneted_client.so though, but if that is the only case left, we could add the name to the shared libs libs.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 50
+      },
+      "revId": "74c5523d09dbb2b3b79d2f461e622820ff5a8af9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
