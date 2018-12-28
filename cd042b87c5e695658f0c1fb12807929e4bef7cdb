@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "377cf4d4_aaa99cf4",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2018-12-28T00:59:12Z",
+      "side": 1,
+      "message": "FWIW, it\u0027s things like this where the factory method excels.  You should never have an instance of this where file_path_ is empty.  The factory should either fail and return nullptr or succeed and return a FiemapWriter instance with a non-empty file_path_.  This check isn\u0027t needed in that case.",
+      "revId": "cd042b87c5e695658f0c1fb12807929e4bef7cdb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
