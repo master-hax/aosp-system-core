@@ -30,6 +30,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/stringprintf.h>
 
 using namespace std;
 using namespace android::meminfo;
@@ -514,6 +515,15 @@ Hugepagesize:       2048 kB)meminfo";
     EXPECT_EQ(mem[MEMINFO_VMALLOC_USED], 65536);
     EXPECT_EQ(mem[MEMINFO_PAGE_TABLES], 2900);
     EXPECT_EQ(mem[MEMINFO_KERNEL_STACK], 4880);
+}
+
+TEST(SysMemInfoParser, TestVmallocInfo) {
+    std::string exec_dir = ::android::base::GetExecutableDirectory();
+    std::string vmallocinfo =
+            ::android::base::StringPrintf("%s/testdata1/vmallocinfo", exec_dir.c_str());
+
+    SysMemInfo mi;
+    EXPECT_EQ(mi.ReadVmallocInfo(vmallocinfo), 29884416);
 }
 
 int main(int argc, char** argv) {
