@@ -113,6 +113,8 @@ static constexpr const char* kVndkNamespaceName = "vndk";
 
 static constexpr const char* kClassloaderNamespaceName = "classloader-namespace";
 static constexpr const char* kVendorClassloaderNamespaceName = "vendor-classloader-namespace";
+static constexpr const char* kRuntimeNamespaceName = "runtime";
+static const std::vector<std::string> kRuntimeLibNames = {"libc.so", "libdl.so", "libm.so"};
 
 // (http://b/27588281) This is a workaround for apps using custom classloaders and calling
 // System.load() with an absolute path which is outside of the classloader library search path.
@@ -268,9 +270,18 @@ class LibraryNamespaces {
       // which is expected behavior in this case.
       android_namespace_t* vendor_ns = android_get_exported_namespace(kVendorNamespaceName);
 
+      android_namespace_t* runtime_ns = android_get_exported_namespace(kRuntimeNamespaceName);
+
       if (!android_link_namespaces(ns, nullptr, system_exposed_libraries.c_str())) {
         *error_msg = dlerror();
         return nullptr;
+      }
+
+      if (runtime_ns != nullptr && !apex_runtime_libraries_.empty()) {
+        if (!android_link_namespaces(ns, runtime_ns, apex_runtime_libraries_.c_str())) {
+          *error_msg = dlerror();
+          return nullptr;
+        }
       }
 
       if (vndk_ns != nullptr && !system_vndksp_libraries_.empty()) {
@@ -290,6 +301,8 @@ class LibraryNamespaces {
 
       native_loader_ns = NativeLoaderNamespace(ns);
     } else {
+      // TODO(jiyong): link to runtime namespace for translated architecture as
+      // well
       native_bridge_namespace_t* native_bridge_parent_namespace =
           parent_ns == nullptr ? nullptr : parent_ns->get_native_bridge_ns();
       native_bridge_namespace_t* ns = NativeBridgeCreateNamespace(namespace_name,
@@ -385,6 +398,23 @@ class LibraryNamespaces {
     for (const auto& soname : sonames) {
       LOG_ALWAYS_FATAL_IF(dlopen(soname.c_str(), RTLD_NOW | RTLD_NODELETE) == nullptr,
                           "Error preloading public library %s: %s", soname.c_str(), dlerror());
+    }
+
+    // If the runtime namespace exists, filter out the runtime lib names from
+    // sonames so that they are redirected to the runtime namespace.
+    if (android_get_exported_namespace(kRuntimeNamespaceName) != nullptr) {
+      std::vector<std::string> runtime_sonames;
+      std::copy_if(sonames.begin(), sonames.end(), std::back_inserter(runtime_sonames),
+                   [](std::string name) {
+                     return std::find(kRuntimeLibNames.begin(), kRuntimeLibNames.end(), name) !=
+                            kRuntimeLibNames.end();
+                   });
+      apex_runtime_libraries_ = base::Join(runtime_sonames, ':');
+
+      std::remove_if(sonames.begin(), sonames.end(), [](std::string name) {
+        return std::find(kRuntimeLibNames.begin(), kRuntimeLibNames.end(), name) !=
+               kRuntimeLibNames.end();
+      });
     }
 
     system_public_libraries_ = base::Join(sonames, ':');
@@ -577,6 +607,7 @@ class LibraryNamespaces {
   std::string product_public_libraries_;
   std::string system_llndk_libraries_;
   std::string system_vndksp_libraries_;
+  std::string apex_runtime_libraries_;
 
   DISALLOW_COPY_AND_ASSIGN(LibraryNamespaces);
 };
