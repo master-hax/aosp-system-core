@@ -16,6 +16,24 @@
       "revId": "cd042b87c5e695658f0c1fb12807929e4bef7cdb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e53fd3e5_36ec1f02",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2018-12-29T00:16:24Z",
+      "side": 1,
+      "message": "Agree.",
+      "parentUuid": "377cf4d4_aaa99cf4",
+      "revId": "cd042b87c5e695658f0c1fb12807929e4bef7cdb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
