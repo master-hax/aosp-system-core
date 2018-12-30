@@ -30,6 +30,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <procinfo/process_map.h>
 
@@ -101,6 +102,96 @@ const MemUsage& ProcMemInfo::Wss() {
 
     return wss_;
 }
+
+bool ProcMemInfo::SmapsRollup(MemUsage* rollup, const std::string& path) const {
+    // First make sure /proc/<pid>/smaps_rollup exists.
+    // Return immediately if it doesn't, so the caller can fallback
+    // to /proc/<pid>/smaps
+    const std::string fpath =
+            path.empty() ? ::android::base::StringPrintf("/proc/%d/smaps_rollup", pid_) : path;
+#if 0
+    std::ifstream ifs{fpath.c_str()};
+    if (!ifs.is_open()) {
+        return false;
+    }
+
+    for (std::string line; std::getline(ifs, line);) {
+        // Each line is printed as follows
+        // Rss:              325716 kB
+        switch (line[0]) {
+            case 'R':
+                // Rss
+                if (::android::base::StartsWith(line, "Rss:")) {
+                    const char* p = line.c_str() + 4;
+                    rollup->rss = strtoull(p, nullptr, 10);
+                }
+                break;
+            case 'P':
+                // Pss, Private Clean and Private Dirty
+                if (::android::base::StartsWith(line, "Pss:")) {
+                    const char* p = line.c_str() + 4;
+                    rollup->pss = strtoull(p, nullptr, 10);
+                } else if (::android::base::StartsWith(line, "Private_Clean:")) {
+                    const char* p = line.c_str() + 14;
+                    rollup->private_clean = strtoull(p, nullptr, 10);
+                    rollup->uss += rollup->private_clean;
+                } else if (::android::base::StartsWith(line, "Private_Dirty:")) {
+                    const char* p = line.c_str() + 14;
+                    rollup->private_dirty = strtoull(p, nullptr, 10);
+                    rollup->uss += rollup->private_dirty;
+                }
+                break;
+            case 'S':
+                // SwapPss
+                if (::android::base::StartsWith(line, "SwapPss:")) {
+                    const char* p = line.c_str() + 8;
+                    rollup->swap_pss = strtoull(p, nullptr, 10);
+                }
+        }
+    }
+
+#else
+
+    auto fp = std::unique_ptr<FILE, decltype(&fclose)>{fopen(fpath.c_str(), "re"), fclose};
+    if (fp == nullptr) {
+        return false;
+    }
+
+    char line[1024];
+    rollup->uss = 0;
+    while (fgets(line, sizeof(line), fp.get()) != nullptr) {
+        switch (line[0]) {
+            case 'P':
+                if (strncmp(line, "Pss:", 4) == 0) {
+                    char* c = line + 4;
+                    rollup->pss = strtoull(c, nullptr, 10);
+                } else if (strncmp(line, "Private_Clean:", 14) == 0) {
+                    char* c = line + 14;
+                    rollup->private_clean = strtoull(c, nullptr, 10);
+                    rollup->uss += rollup->private_clean;
+                } else if (strncmp(line, "Private_Dirty:", 14) == 0) {
+                    char* c = line + 14;
+                    rollup->private_dirty = strtoull(c, nullptr, 10);
+                    rollup->uss += rollup->private_dirty;
+                }
+                break;
+            case 'R':
+                if (strncmp(line, "Rss:", 4) == 0) {
+                    char* c = line + 4;
+                    rollup->rss = strtoull(c, nullptr, 10);
+                }
+                break;
+            case 'S':
+                if (strncmp(line, "SwapPss:", 8) == 0) {
+                    char* c = line + 8;
+                    rollup->swap_pss = strtoull(c, nullptr, 10);
+                }
+                break;
+        }
+    }
+#endif
+    return true;
+};
 
 const std::vector<uint16_t>& ProcMemInfo::SwapOffsets() {
     if (get_wss_) {

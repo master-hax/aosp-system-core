@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <meminfo/procmeminfo.h>
 #include <meminfo/sysmeminfo.h>
 
 #include <fcntl.h>
@@ -31,6 +32,8 @@
 
 #include <benchmark/benchmark.h>
 
+using ::android::meminfo::MemUsage;
+using ::android::meminfo::ProcMemInfo;
 using ::android::meminfo::SysMemInfo;
 
 enum {
@@ -448,5 +451,85 @@ static void BM_VmallocInfo_new(benchmark::State& state) {
     }
 }
 BENCHMARK(BM_VmallocInfo_new);
+
+static bool get_smaps_rollup(const std::string path, MemUsage* rollup) {
+    char lineBuffer[1024];
+    auto fp = std::unique_ptr<FILE, decltype(&fclose)>{fopen(path.c_str(), "re"), fclose};
+    if (fp != nullptr) {
+        char* line;
+        while (true) {
+            if (fgets(lineBuffer, sizeof(lineBuffer), fp.get()) == NULL) {
+                break;
+            }
+            line = lineBuffer;
+
+            switch (line[0]) {
+                case 'P':
+                    if (strncmp(line, "Pss:", 4) == 0) {
+                        char* c = line + 4;
+                        while (*c != 0 && (*c < '0' || *c > '9')) {
+                            c++;
+                        }
+                        rollup->pss += atoi(c);
+                    } else if (strncmp(line, "Private_Clean:", 14) == 0 ||
+                               strncmp(line, "Private_Dirty:", 14) == 0) {
+                        char* c = line + 14;
+                        while (*c != 0 && (*c < '0' || *c > '9')) {
+                            c++;
+                        }
+                        rollup->uss += atoi(c);
+                    }
+                    break;
+                case 'R':
+                    if (strncmp(line, "Rss:", 4) == 0) {
+                        char* c = line + 4;
+                        while (*c != 0 && (*c < '0' || *c > '9')) {
+                            c++;
+                        }
+                        rollup->rss += atoi(c);
+                    }
+                    break;
+                case 'S':
+                    if (strncmp(line, "SwapPss:", 8) == 0) {
+                        char* c = line + 8;
+                        long lSwapPss;
+                        while (*c != 0 && (*c < '0' || *c > '9')) {
+                            c++;
+                        }
+                        lSwapPss = atoi(c);
+                        rollup->swap_pss += lSwapPss;
+                    }
+                    break;
+            }
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+static void BM_SmapsRollup_old(benchmark::State& state) {
+    std::string exec_dir = ::android::base::GetExecutableDirectory();
+    std::string path = ::android::base::StringPrintf("%s/testdata1/smaps_rollup", exec_dir.c_str());
+    for (auto _ : state) {
+        MemUsage rollup;
+        CHECK_EQ(get_smaps_rollup(path, &rollup), true);
+        CHECK_EQ(rollup.pss, 202052);
+    }
+}
+BENCHMARK(BM_SmapsRollup_old);
+
+static void BM_SmapsRollup_new(benchmark::State& state) {
+    std::string exec_dir = ::android::base::GetExecutableDirectory();
+    std::string path = ::android::base::StringPrintf("%s/testdata1/smaps_rollup", exec_dir.c_str());
+    for (auto _ : state) {
+        MemUsage rollup;
+        ProcMemInfo proc_mem(1);  // fake pid
+        CHECK_EQ(proc_mem.SmapsRollup(&rollup, path), true);
+        CHECK_EQ(rollup.pss, 202052);
+    }
+}
+BENCHMARK(BM_SmapsRollup_new);
 
 BENCHMARK_MAIN();
