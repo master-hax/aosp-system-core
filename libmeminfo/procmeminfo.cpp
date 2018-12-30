@@ -30,6 +30,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <procinfo/process_map.h>
 
@@ -101,6 +102,57 @@ const MemUsage& ProcMemInfo::Wss() {
 
     return wss_;
 }
+
+bool ProcMemInfo::SmapsOrRollup(std::string path, MemUsage* stats) const {
+    // First make sure /proc/<pid>/smaps_rollup exists.
+    // Return immediately if it doesn't, so the caller can fallback
+    // to /proc/<pid>/smaps
+    if (path[0] != '/') {
+        // This is not a test, which passes the absolute path
+        // Expected paths are "smaps", "smaps_rollup"
+        path = ::android::base::StringPrintf("/proc/%d/%s", pid_, path.c_str());
+    }
+
+    auto fp = std::unique_ptr<FILE, decltype(&fclose)>{fopen(path.c_str(), "re"), fclose};
+    if (fp == nullptr) {
+        return false;
+    }
+
+    char line[1024];
+    stats->clear();
+    while (fgets(line, sizeof(line), fp.get()) != nullptr) {
+        switch (line[0]) {
+            case 'P':
+                if (strncmp(line, "Pss:", 4) == 0) {
+                    char* c = line + 4;
+                    stats->pss += strtoull(c, nullptr, 10);
+                } else if (strncmp(line, "Private_Clean:", 14) == 0) {
+                    char* c = line + 14;
+                    stats->private_clean += strtoull(c, nullptr, 10);
+                    stats->uss += stats->private_clean;
+                } else if (strncmp(line, "Private_Dirty:", 14) == 0) {
+                    char* c = line + 14;
+                    stats->private_dirty += strtoull(c, nullptr, 10);
+                    stats->uss += stats->private_dirty;
+                }
+                break;
+            case 'R':
+                if (strncmp(line, "Rss:", 4) == 0) {
+                    char* c = line + 4;
+                    stats->rss += strtoull(c, nullptr, 10);
+                }
+                break;
+            case 'S':
+                if (strncmp(line, "SwapPss:", 8) == 0) {
+                    char* c = line + 8;
+                    stats->swap_pss += strtoull(c, nullptr, 10);
+                }
+                break;
+        }
+    }
+
+    return true;
+};
 
 const std::vector<uint16_t>& ProcMemInfo::SwapOffsets() {
     if (get_wss_) {

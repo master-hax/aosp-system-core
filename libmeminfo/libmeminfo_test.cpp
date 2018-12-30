@@ -246,13 +246,13 @@ TEST_F(ValidatePageAcct, TestPageIdle) {
     }
 }
 
-TEST(TestProcMemInfo, TestMapsEmpty) {
+TEST(TestProcMemInfo, MapsEmpty) {
     ProcMemInfo proc_mem(pid);
     const std::vector<Vma>& maps = proc_mem.Maps();
     EXPECT_GT(maps.size(), 0);
 }
 
-TEST(TestProcMemInfo, TestUsageEmpty) {
+TEST(TestProcMemInfo, UsageEmpty) {
     // If we created the object for getting working set,
     // the usage must be empty
     ProcMemInfo proc_mem(pid, true);
@@ -264,7 +264,7 @@ TEST(TestProcMemInfo, TestUsageEmpty) {
     EXPECT_EQ(usage.swap, 0);
 }
 
-TEST(TestProcMemInfoWssReset, TestWssEmpty) {
+TEST(TestProcMemInfo, WssEmpty) {
     // If we created the object for getting usage,
     // the working set must be empty
     ProcMemInfo proc_mem(pid, false);
@@ -276,12 +276,35 @@ TEST(TestProcMemInfoWssReset, TestWssEmpty) {
     EXPECT_EQ(wss.swap, 0);
 }
 
-TEST(TestProcMemInfoWssReset, TestSwapOffsetsEmpty) {
+TEST(TestProcMemInfo, SwapOffsetsEmpty) {
     // If we created the object for getting working set,
     // the swap offsets must be empty
     ProcMemInfo proc_mem(pid, true);
     const std::vector<uint16_t>& swap_offsets = proc_mem.SwapOffsets();
     EXPECT_EQ(swap_offsets.size(), 0);
+}
+
+TEST(TestProcMemInfo, SmapsRollupReturn) {
+    // if /proc/<pid>/smaps_rollup file exists, .SmapsRollup() must return true;
+    // false otherwise
+    std::string path = ::android::base::StringPrintf("/proc/%d/smaps_rollup", pid);
+    ProcMemInfo proc_mem(pid);
+    MemUsage stats;
+    EXPECT_EQ(!access(path.c_str(), F_OK), proc_mem.SmapsOrRollup("smaps_rollup", &stats));
+}
+
+TEST(TestProcMemInfo, SmapsRollupTest) {
+    std::string exec_dir = ::android::base::GetExecutableDirectory();
+    std::string path = ::android::base::StringPrintf("%s/testdata1/smaps_rollup", exec_dir.c_str());
+    ProcMemInfo proc_mem(pid);
+    MemUsage stats;
+    ASSERT_EQ(proc_mem.SmapsOrRollup(path, &stats), true);
+    EXPECT_EQ(stats.rss, 331908);
+    EXPECT_EQ(stats.pss, 202052);
+    EXPECT_EQ(stats.uss, 154488);
+    EXPECT_EQ(stats.private_clean, 90472);
+    EXPECT_EQ(stats.private_dirty, 64016);
+    EXPECT_EQ(stats.swap_pss, 442);
 }
 
 TEST(ValidateProcMemInfoFlags, TestPageFlags1) {
