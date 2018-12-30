@@ -37,6 +37,7 @@ class ProcMemInfo final {
     const std::vector<Vma>& Maps();
     const MemUsage& Usage();
     const MemUsage& Wss();
+    bool SmapsOrRollup(std::string path, MemUsage* stats) const;
     const std::vector<uint16_t>& SwapOffsets();
 
     ~ProcMemInfo() = default;

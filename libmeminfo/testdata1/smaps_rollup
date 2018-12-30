@@ -1,0 +1,15 @@
+12c00000-7fe859e000 ---p 00000000 00:00 0                                [rollup]
+Rss:              331908 kB
+Pss:              202052 kB
+Shared_Clean:     158492 kB
+Shared_Dirty:      18928 kB
+Private_Clean:     90472 kB
+Private_Dirty:     64016 kB
+Referenced:       318700 kB
+Anonymous:         81984 kB
+AnonHugePages:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:               5344 kB
+SwapPss:             442 kB
+Locked:          1523537 kB
