@@ -20,6 +20,7 @@ namespace.default.isolated = false
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /product/${LIB}
 namespace.default.search.paths += /vendor/${LIB}
+namespace.default.search.paths += /vendor/odm/${LIB}
 namespace.default.search.paths += /odm/${LIB}
 
 namespace.default.asan.search.paths  = /data/asan/system/${LIB}
@@ -28,6 +29,8 @@ namespace.default.asan.search.paths += /data/asan/product/${LIB}
 namespace.default.asan.search.paths +=           /product/${LIB}
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
+namespace.default.asan.search.paths += /data/asan/vendor/odm/${LIB}
+namespace.default.asan.search.paths +=           /vendor/odm/${LIB}
 namespace.default.asan.search.paths += /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
 
