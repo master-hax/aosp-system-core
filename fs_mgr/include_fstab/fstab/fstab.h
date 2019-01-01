@@ -168,6 +168,7 @@ struct FstabEntry {
 
             // bit 32
             bool slot_select_other : 1;
+            bool retry_mount : 1;
         };
     } fs_mgr_flags;
 
