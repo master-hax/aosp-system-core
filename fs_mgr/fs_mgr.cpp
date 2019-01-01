@@ -556,7 +556,8 @@ static int __mount(const std::string& source, const std::string& target, const F
     mkdir(target.c_str(), 0755);
     errno = 0;
     unsigned long mountflags = entry.flags;
-    int ret = mount(source.c_str(), target.c_str(), entry.fs_type.c_str(), mountflags,
+    std::string fs_type = entry.fs_type;
+    int ret = mount(source.c_str(), target.c_str(), fs_type.c_str(), mountflags,
                     entry.fs_options.c_str());
     int save_errno = errno;
     const char* target_missing = "";
@@ -568,9 +569,20 @@ static int __mount(const std::string& source, const std::string& target, const F
             source_missing = "(missing)";
         }
         errno = save_errno;
+    } else if (save_errno == EINVAL && entry.fs_mgr_flags.retry_mount && (mountflags & MS_RDONLY)) {
+        for (std::string try_fs_type : {"ext4", "erofs", "squashfs", "f2fs"}) {
+            if (!mount(source.c_str(), target.c_str(), try_fs_type.c_str(), mountflags,
+                       entry.fs_options.c_str())) {
+                errno = 0;
+                fs_type = try_fs_type;
+                break;
+            }
+        }
+        if (errno) errno = save_errno;
     }
+
     PINFO << __FUNCTION__ << "(source=" << source << source_missing << ",target=" << target
-          << target_missing << ",type=" << entry.fs_type << ")=" << ret;
+          << target_missing << ",type=" << fs_type << ")=" << ret;
     if ((ret == 0) && (mountflags & MS_RDONLY) != 0) {
         fs_mgr_set_blk_ro(source);
     }
