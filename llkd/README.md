@@ -165,9 +165,11 @@ size of 92.
 NB: false is a very very very unlikely process to want to blacklist.
 
 #### ro.llk.blacklist.parent
-default 0,2,adbd (kernel, [kthreadd] and adbd).
+default 0,2,adbd&[setsid] (kernel, [kthreadd], and adbd only for zombie setsid).
 Do not watch processes that have this parent.
-A parent process can be comm, cmdline or pid reference.
+An ampersand (*&*) separator is used to specify that the parent is ignored
+only in combination with the target child process.
+A parent or target process can be comm, cmdline or pid reference.
 
 #### ro.llk.blacklist.uid
 default *empty* or false, comma separated list of uid numbers or names.
