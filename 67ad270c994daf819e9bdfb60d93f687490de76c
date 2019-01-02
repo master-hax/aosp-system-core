@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "55e78ee0_70959fc5",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-02T20:27:24Z",
+      "side": 1,
+      "message": "Could you clarify the race scenario you have in mind? Are you referring to load/store tearing of the memfd_supported variable? This is an int and the access is 32-bit. 32-bit word loads and stores should not tear. OTOH if, more than one thread is racing, then doing the \"detection\" in parallel is safe. I don\u0027t mind synchronizing, but I wanted to know the race condition you are referring to so I know what to synchronize for. Thanks.",
+      "parentUuid": "e07a968c_a437cf7a",
+      "range": {
+        "startLine": 70,
+        "startChar": 11,
+        "endLine": 70,
+        "endChar": 26
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6f86d88a_e96f17a3",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-02T20:16:16Z",
       "side": 1,
       "message": "nit: don\u0027t use gotos in cpp code.",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 8
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d11bcfd4_a9e03ae3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-02T20:27:24Z",
+      "side": 1,
+      "message": "I can see if there\u0027s a way to simplify, but the reason for the goto was because it makes the logic simple in the first place and is clean / easier to read. But if you have any suggestions how to restructure, let me know. Also, this function does not use any of the C++ features such as RAII, and the existing file doesn\u0027t really follow C++ coding conventions to begin with..",
+      "parentUuid": "6f86d88a_e96f17a3",
       "range": {
         "startLine": 135,
         "startChar": 0,
