@@ -106,35 +106,73 @@ static Result<std::string> ComputeContextFromExecutable(const std::string& servi
 }
 
 Result<Success> Service::SetUpMountNamespace() const {
-    constexpr unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
+    if (namespace_flags_ & CLONE_NEWNS) {
+        constexpr unsigned int kSafeFlags = MS_NODEV | MS_NOEXEC | MS_NOSUID;
 
-    // Recursively remount / as slave like zygote does so unmounting and mounting /proc
-    // doesn't interfere with the parent namespace's /proc mount. This will also
-    // prevent any other mounts/unmounts initiated by the service from interfering
-    // with the parent namespace but will still allow mount events from the parent
-    // namespace to propagate to the child.
-    if (mount("rootfs", "/", nullptr, (MS_SLAVE | MS_REC), nullptr) == -1) {
-        return ErrnoError() << "Could not remount(/) recursively as slave";
+        // Recursively remount / as slave like zygote does so unmounting and mounting /proc
+        // doesn't interfere with the parent namespace's /proc mount. This will also
+        // prevent any other mounts/unmounts initiated by the service from interfering
+        // with the parent namespace but will still allow mount events from the parent
+        // namespace to propagate to the child.
+        if (mount("rootfs", "/", nullptr, (MS_SLAVE | MS_REC), nullptr) == -1) {
+            return ErrnoError() << "Could not remount(/) recursively as slave";
+        }
+
+        // umount() then mount() /proc and/or /sys
+        // Note that it is not sufficient to mount with MS_REMOUNT.
+        if (namespace_flags_ & CLONE_NEWPID) {
+            if (umount("/proc") == -1) {
+                return ErrnoError() << "Could not umount(/proc)";
+            }
+            if (mount("", "/proc", "proc", kSafeFlags, "") == -1) {
+                return ErrnoError() << "Could not mount(/proc)";
+            }
+        }
+        bool remount_sys =
+                std::any_of(namespaces_to_enter_.begin(), namespaces_to_enter_.end(),
+                            [](const auto& entry) { return entry.first == CLONE_NEWNET; });
+        if (remount_sys) {
+            if (umount2("/sys", MNT_DETACH) == -1) {
+                return ErrnoError() << "Could not umount(/sys)";
+            }
+            if (mount("", "/sys", "sysfs", kSafeFlags, "") == -1) {
+                return ErrnoError() << "Could not mount(/sys)";
+            }
+        }
     }
 
-    // umount() then mount() /proc and/or /sys
-    // Note that it is not sufficient to mount with MS_REMOUNT.
-    if (namespace_flags_ & CLONE_NEWPID) {
-        if (umount("/proc") == -1) {
-            return ErrnoError() << "Could not umount(/proc)";
+    // If a pre-apexd service is 're' launched after the runtime APEX is
+    // available, unmount the linker and bionic libs which are currently
+    // bind mounted to the files in the runtime APEX. This will reveal
+    // the hidden mount points (targetting the bootstrap ones in the
+    // system partition) which were setup before the runtime APEX was
+    // started. Note that these unmounts are done in a separate mount namespace
+    // for the process. It doese not affect other processes including the init.
+    if (pre_apexd_ && ServiceList::GetInstance().IsRuntimeAvailable()) {
+        if (access(kLinkerMountPoint, F_OK) == 0) {
+            if (umount(kLinkerMountPoint) == -1) {
+                return ErrnoError() << "Could not umount " << kLinkerMountPoint;
+            }
+            for (auto libname : kBionicLibFileNames) {
+                std::string mount_point = kBionicLibsMountPointDir + libname;
+                std::string source = kBootstrapBionicLibsDir + libname;
+                if (umount(mount_point.c_str()) == -1) {
+                    return ErrnoError() << "Could not umount " << mount_point;
+                }
+            }
         }
-        if (mount("", "/proc", "proc", kSafeFlags, "") == -1) {
-            return ErrnoError() << "Could not mount(/proc)";
-        }
-    }
-    bool remount_sys = std::any_of(namespaces_to_enter_.begin(), namespaces_to_enter_.end(),
-                                   [](const auto& entry) { return entry.first == CLONE_NEWNET; });
-    if (remount_sys) {
-        if (umount2("/sys", MNT_DETACH) == -1) {
-            return ErrnoError() << "Could not umount(/sys)";
-        }
-        if (mount("", "/sys", "sysfs", kSafeFlags, "") == -1) {
-            return ErrnoError() << "Could not mount(/sys)";
+
+        if (access(kLinkerMountPoint64, F_OK) == 0) {
+            if (umount(kLinkerMountPoint64) == -1) {
+                return ErrnoError() << "Could not umount " << kLinkerMountPoint64;
+            }
+            for (auto libname : kBionicLibFileNames) {
+                std::string mount_point = kBionicLibsMountPointDir64 + libname;
+                std::string source = kBootstrapBionicLibsDir64 + libname;
+                if (umount(mount_point.c_str()) == -1) {
+                    return ErrnoError() << "Could not umount " << mount_point;
+                }
+            }
         }
     }
     return Success();
@@ -922,6 +960,14 @@ Result<Success> Service::Start() {
         scon = *result;
     }
 
+    if (!ServiceList::GetInstance().IsRuntimeAvailable() && !pre_apexd_) {
+        // If this service is started before the runtime APEX gets available,
+        // mark it as pre-apexd one. Note that this marking is permanent. So
+        // for example, if the service is re-launched (e.g., due to crash),
+        // it is still recognized as pre-apexd... for consistency.
+        pre_apexd_ = true;
+    }
+
     LOG(INFO) << "starting service '" << name_ << "'...";
 
     pid_t pid = -1;
@@ -938,7 +984,27 @@ Result<Success> Service::Start() {
             LOG(FATAL) << "Service '" << name_ << "' could not enter namespaces: " << result.error();
         }
 
-        if (namespace_flags_ & CLONE_NEWNS) {
+        if (pre_apexd_) {
+            // pre-apexd process gets a private copy of the mount namespace.
+            // However, this does not mean that mount/unmoint events are not
+            // shared across pre-apexd processes and post-apexd processes.
+            // *Most* of the events are still shared because the propagation
+            // type of / is set to 'shared'. (see `mount rootfs rootfs /shared
+            // rec` in init.rc)
+            //
+            // This unsharing is required to not propagate the mount events
+            // under /system/lib/{libc|libdl|libm}.so and /system/bin/linker(64)
+            // whose propagation type is set to private. With this,
+            // bind-mounting the bionic libs and the dynamic linker from the
+            // runtime APEX to the moint points does not affect pre-apexd
+            // processes which should use the bootstrap ones.
+            if (unshare(CLONE_NEWNS) != 0) {
+                LOG(FATAL) << "Creating a new mount namespace for service"
+                           << " '" << name_ << "' failed: " << strerror(errno);
+            }
+        }
+
+        if (namespace_flags_ & CLONE_NEWNS || pre_apexd_) {
             if (auto result = SetUpMountNamespace(); !result) {
                 LOG(FATAL) << "Service '" << name_
                            << "' could not set up mount namespace: " << result.error();
@@ -1315,6 +1381,10 @@ void ServiceList::MarkServicesUpdate() {
         }
     }
     delayed_service_names_.clear();
+}
+
+void ServiceList::MarkRuntimeAvailable() {
+    runtime_available_ = true;
 }
 
 void ServiceList::DelayService(const Service& service) {
