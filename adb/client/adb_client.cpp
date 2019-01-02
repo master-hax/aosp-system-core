@@ -144,7 +144,7 @@ static int _adb_connect(const std::string& service, std::string* error) {
     }
 
     std::string reason;
-    int fd = socket_spec_connect(__adb_server_socket_spec, &reason);
+    int fd = std::get<0>(socket_spec_connect(__adb_server_socket_spec, &reason)).release();
     if (fd < 0) {
         *error = android::base::StringPrintf("cannot connect to daemon at %s: %s",
                                              __adb_server_socket_spec, reason.c_str());
@@ -173,7 +173,7 @@ static int _adb_connect(const std::string& service, std::string* error) {
 bool adb_kill_server() {
     D("adb_kill_server");
     std::string reason;
-    int fd = socket_spec_connect(__adb_server_socket_spec, &reason);
+    int fd = std::get<0>(socket_spec_connect(__adb_server_socket_spec, &reason)).release();
     if (fd < 0) {
         fprintf(stderr, "cannot connect to daemon at %s: %s\n", __adb_server_socket_spec,
                 reason.c_str());

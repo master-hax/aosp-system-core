@@ -67,7 +67,7 @@ static auto& kLocalSocketTypes = *new std::unordered_map<std::string, LocalSocke
 });
 
 bool parse_tcp_socket_spec(std::string_view spec, std::string* hostname, int* port,
-                           std::string* error) {
+                           std::string* serial, std::string* error) {
     if (!spec.starts_with("tcp:")) {
         *error = "specification is not tcp: ";
         *error += spec;
@@ -92,7 +92,7 @@ bool parse_tcp_socket_spec(std::string_view spec, std::string* hostname, int* po
 
         // FIXME: ParseNetAddress rejects port 0. This currently doesn't hurt, because listening
         //        on an address that isn't 'localhost' is unsupported.
-        if (!android::base::ParseNetAddress(addr, &hostname_value, &port_value, nullptr, error)) {
+        if (!android::base::ParseNetAddress(addr, &hostname_value, &port_value, serial, error)) {
             return false;
         }
 
@@ -139,18 +139,20 @@ bool is_local_socket_spec(std::string_view spec) {
 
     std::string error;
     std::string hostname;
-    if (!parse_tcp_socket_spec(spec, &hostname, nullptr, &error)) {
+    if (!parse_tcp_socket_spec(spec, &hostname, nullptr, nullptr, &error)) {
         return false;
     }
     return tcp_host_is_local(hostname);
 }
 
-int socket_spec_connect(std::string_view spec, std::string* error) {
+std::tuple<unique_fd, int, std::string> socket_spec_connect(std::string_view spec,
+                                                            std::string* error) {
     if (spec.starts_with("tcp:")) {
         std::string hostname;
+        std::string serial;
         int port;
-        if (!parse_tcp_socket_spec(spec, &hostname, &port, error)) {
-            return -1;
+        if (!parse_tcp_socket_spec(spec, &hostname, &port, &serial, error)) {
+            return std::make_tuple(unique_fd(), port, serial);
         }
 
         int result;
@@ -162,14 +164,14 @@ int socket_spec_connect(std::string_view spec, std::string* error) {
 #else
             // Disallow arbitrary connections in adbd.
             *error = "adbd does not support arbitrary tcp connections";
-            return -1;
+            return std::make_tuple(unique_fd(), port, serial);
 #endif
         }
 
         if (result >= 0) {
             disable_tcp_nagle(result);
         }
-        return result;
+        return std::make_tuple(unique_fd(result), port, serial);
     }
 
     for (const auto& it : kLocalSocketTypes) {
@@ -178,24 +180,25 @@ int socket_spec_connect(std::string_view spec, std::string* error) {
             if (!it.second.available) {
                 *error = StringPrintf("socket type %s is unavailable on this platform",
                                       it.first.c_str());
-                return -1;
+                return std::make_tuple(unique_fd(), 0, std::string(spec));
             }
 
-            return network_local_client(&spec[prefix.length()], it.second.socket_namespace,
-                                        SOCK_STREAM, error);
+            int fd = network_local_client(&spec[prefix.length()], it.second.socket_namespace,
+                                          SOCK_STREAM, error);
+            return std::make_tuple(unique_fd(fd), 0, std::string(spec));
         }
     }
 
     *error = "unknown socket specification: ";
     *error += spec;
-    return -1;
+    return std::make_tuple(unique_fd(), 0, std::string(spec));
 }
 
 int socket_spec_listen(std::string_view spec, std::string* error, int* resolved_tcp_port) {
     if (spec.starts_with("tcp:")) {
         std::string hostname;
         int port;
-        if (!parse_tcp_socket_spec(spec, &hostname, &port, error)) {
+        if (!parse_tcp_socket_spec(spec, &hostname, &port, nullptr, error)) {
             return -1;
         }
 

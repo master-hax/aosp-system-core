@@ -76,7 +76,7 @@ int service_to_fd(std::string_view name, atransport* transport) {
 
     if (is_socket_spec(name)) {
         std::string error;
-        ret = socket_spec_connect(name, &error);
+        ret = std::get<0>(socket_spec_connect(name, &error)).release();
         if (ret < 0) {
             LOG(ERROR) << "failed to connect to socket '" << name << "': " << error;
         }
