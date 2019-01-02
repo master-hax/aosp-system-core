@@ -45,6 +45,7 @@
 #include "adb_io.h"
 #include "adb_unique_fd.h"
 #include "adb_utils.h"
+#include "socket_spec.h"
 #include "sysdeps/chrono.h"
 
 #if ADB_HOST
@@ -70,32 +71,12 @@ bool local_connect(int port) {
 
 std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
                                                     std::string* response) {
-    std::string serial;
-    std::string host;
-    int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
-    if (!android::base::ParseNetAddress(address, &host, &port, &serial, response)) {
-        D("failed to parse address: '%s'", address.c_str());
-        return std::make_tuple(unique_fd(), port, serial);
-    }
-
-    std::string error;
-    unique_fd fd(network_connect(host.c_str(), port, SOCK_STREAM, 10, &error));
-    if (fd == -1) {
-        *response = android::base::StringPrintf("unable to connect to %s: %s",
-                                                serial.c_str(), error.c_str());
-        return std::make_tuple(std::move(fd), port, serial);
-    }
-
-    D("client: connected %s remote on fd %d", serial.c_str(), fd.get());
-    close_on_exec(fd);
-    disable_tcp_nagle(fd);
-
-    // Send a TCP keepalive ping to the device every second so we can detect disconnects.
-    if (!set_tcp_keepalive(fd, 1)) {
+    auto res = socket_spec_connect("tcp:" + address, response);
+    close_on_exec(std::get<0>(res));
+    if (!set_tcp_keepalive(std::get<0>(res), 1)) {
         D("warning: failed to configure TCP keepalives (%s)", strerror(errno));
     }
-
-    return std::make_tuple(std::move(fd), port, serial);
+    return res;
 }
 
 void connect_device(const std::string& address, std::string* response) {
