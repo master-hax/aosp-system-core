@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e07a968c_a437cf7a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-02T20:16:16Z",
+      "side": 1,
+      "message": "you need to handle concurrent access",
+      "range": {
+        "startLine": 70,
+        "startChar": 11,
+        "endLine": 70,
+        "endChar": 26
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f86d88a_e96f17a3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-02T20:16:16Z",
+      "side": 1,
+      "message": "nit: don\u0027t use gotos in cpp code.",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 8
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
