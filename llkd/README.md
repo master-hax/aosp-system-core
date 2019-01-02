@@ -160,10 +160,13 @@ size of 92.
 NB: false is a very very very unlikely process to want to blacklist.
 
 #### ro.llk.blacklist.parent
-default 0,2,adbd (kernel, [kthreadd] and adbd).
+default 0,2 (kernel and [kthreadd]).
 The string "*false*" is the equivalent to an *empty* list.
 Do not watch processes that have this parent.
 A parent process can be comm, cmdline or pid reference.
+There is a built in rule to protect adbd when it is the parent of
+setsid that spawns a long term process holding open the adb session
+during testing scenarios.
 
 #### ro.llk.blacklist.uid
 default *empty* or false, comma separated list of uid numbers or names.

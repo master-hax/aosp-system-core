@@ -731,13 +731,14 @@ bool llkCheckStack(proc* procp, const std::string& piddir) {
 
     // Don't check process that are known to block ptrace, save sepolicy noise.
     if (llkSkipName(std::to_string(procp->pid), llkBlacklistStack)) return false;
-    if (llkSkipName(procp->getComm(), llkBlacklistStack)) return false;
+    auto process_comm = procp->getComm();
+    if (llkSkipName(process_comm, llkBlacklistStack)) return false;
     if (llkSkipName(procp->getCmdline(), llkBlacklistStack)) return false;
     if (llkSkipName(android::base::Basename(procp->getCmdline()), llkBlacklistStack)) return false;
 
     auto kernel_stack = ReadFile(piddir + "/stack");
     if (kernel_stack.empty()) {
-        LOG(INFO) << piddir << "/stack empty comm=" << procp->getComm()
+        LOG(INFO) << piddir << "/stack empty comm=" << process_comm
                   << " cmdline=" << procp->getCmdline();
         return false;
     }
@@ -1014,7 +1015,8 @@ milliseconds llkCheck(bool checkRunning) {
                 break;
             }
 
-            if (llkSkipName(procp->getComm())) {
+            auto process_comm = procp->getComm();
+            if (llkSkipName(process_comm)) {
                 continue;
             }
             if (llkSkipName(procp->getCmdline())) {
@@ -1028,11 +1030,18 @@ milliseconds llkCheck(bool checkRunning) {
             if (pprocp == nullptr) {
                 pprocp = llkTidAlloc(ppid, ppid, 0, "", 0, '?');
             }
-            if ((pprocp != nullptr) &&
-                (llkSkipName(pprocp->getComm(), llkBlacklistParent) ||
-                 llkSkipName(pprocp->getCmdline(), llkBlacklistParent) ||
-                 llkSkipName(android::base::Basename(pprocp->getCmdline()), llkBlacklistParent))) {
-                break;
+            if (pprocp != nullptr) {
+                auto parent_process_comm = pprocp->getComm();
+                if (("adbd"s == parent_process_comm) &&
+                    (("setsid"s == process_comm) || ("[setsid]"s == process_comm))) {
+                    break;
+                }
+                if ((llkSkipName(parent_process_comm, llkBlacklistParent) ||
+                     llkSkipName(pprocp->getCmdline(), llkBlacklistParent) ||
+                     llkSkipName(android::base::Basename(pprocp->getCmdline()),
+                                 llkBlacklistParent))) {
+                    break;
+                }
             }
 
             if ((llkBlacklistUid.size() != 0) && llkSkipUid(procp->getUid())) {
@@ -1049,7 +1058,7 @@ milliseconds llkCheck(bool checkRunning) {
                     stuck = true;
                 } else if (procp->count != 0ms) {
                     LOG(VERBOSE) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->"
-                                 << pid << "->" << tid << ' ' << procp->getComm();
+                                 << pid << "->" << tid << ' ' << process_comm;
                 }
             }
             if (!stuck) continue;
@@ -1057,7 +1066,7 @@ milliseconds llkCheck(bool checkRunning) {
             if (procp->count >= llkStateTimeoutMs[(state == 'Z') ? llkStateZ : llkStateD]) {
                 if (procp->count != 0ms) {
                     LOG(VERBOSE) << state << ' ' << llkFormat(procp->count) << ' ' << ppid << "->"
-                                 << pid << "->" << tid << ' ' << procp->getComm();
+                                 << pid << "->" << tid << ' ' << process_comm;
                 }
                 continue;
             }
@@ -1085,7 +1094,7 @@ milliseconds llkCheck(bool checkRunning) {
                             break;
                         }
                         LOG(WARNING) << "Z " << llkFormat(procp->count) << ' ' << ppid << "->"
-                                     << pid << "->" << tid << ' ' << procp->getComm() << " [kill]";
+                                     << pid << "->" << tid << ' ' << process_comm << " [kill]";
                         if ((llkKillOneProcess(pprocp, procp) >= 0) ||
                             (llkKillOneProcess(ppid, procp) >= 0)) {
                             continue;
@@ -1102,7 +1111,7 @@ milliseconds llkCheck(bool checkRunning) {
                         // kernel (worse).
                     default:
                         LOG(WARNING) << state << ' ' << llkFormat(procp->count) << ' ' << pid
-                                     << "->" << tid << ' ' << procp->getComm() << " [kill]";
+                                     << "->" << tid << ' ' << process_comm << " [kill]";
                         if ((llkKillOneProcess(llkTidLookup(pid), procp) >= 0) ||
                             (llkKillOneProcess(pid, state, tid) >= 0) ||
                             (llkKillOneProcess(procp, procp) >= 0) ||
@@ -1115,7 +1124,7 @@ milliseconds llkCheck(bool checkRunning) {
             // We are here because we have confirmed kernel live-lock
             const auto message = state + " "s + llkFormat(procp->count) + " " +
                                  std::to_string(ppid) + "->" + std::to_string(pid) + "->" +
-                                 std::to_string(tid) + " " + procp->getComm() + " [panic]";
+                                 std::to_string(tid) + " " + process_comm + " [panic]";
             llkPanicKernel(dump, tid,
                            (state == 'Z') ? "zombie" : (state == 'D') ? "driver" : "sleeping",
                            message);
