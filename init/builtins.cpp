@@ -1087,6 +1087,115 @@ static Result<Success> do_parse_apex_configs(const BuiltinArguments& args) {
     }
 }
 
+static bool prepare_bootstrap_bionic_done = false;
+
+// The bootstrap bionic libs and the bootstrap linker are bind-mounted to
+// the mount points for pre-apexd processes.
+static Result<Success> do_prepare_bootstrap_bionic(const BuiltinArguments& args) {
+    if (access(kLinkerMountPoint, F_OK) == 0) {
+        if (prepare_bootstrap_bionic_done) {
+            return Error()
+                   << "prepare_bootstrap_bionic was already executed. Cannot be executed again";
+        }
+        if (mount(kBootstrapLinkerPath, kLinkerMountPoint, nullptr, MS_BIND, nullptr) == -1) {
+            return ErrnoError() << "Could not bind-mount " << kBootstrapLinkerPath << " to "
+                                << kLinkerMountPoint;
+        }
+        for (auto libname : kBionicLibFileNames) {
+            std::string mount_point = kBionicLibsMountPointDir + libname;
+            std::string source = kBootstrapBionicLibsDir + libname;
+            if (mount(source.c_str(), mount_point.c_str(), nullptr, MS_BIND, nullptr) == -1) {
+                return ErrnoError() << "Could not bind-mount " << source << " to " << mount_point;
+            }
+        }
+    }
+    if (access(kLinkerMountPoint64, F_OK) == 0) {
+        if (mount(kBootstrapLinkerPath64, kLinkerMountPoint64, nullptr, MS_BIND, nullptr) == -1) {
+            return ErrnoError() << "Could not bind-mount " << kBootstrapLinkerPath64 << " to "
+                                << kLinkerMountPoint64;
+        }
+        for (auto libname : kBionicLibFileNames) {
+            std::string mount_point = kBionicLibsMountPointDir64 + libname;
+            std::string source = kBootstrapBionicLibsDir64 + libname;
+            if (mount(source.c_str(), mount_point.c_str(), nullptr, MS_BIND, nullptr) == -1) {
+                return ErrnoError() << "Could not bind-mount " << source << " to " << mount_point;
+            }
+        }
+    }
+
+    LOG(INFO) << "prepare_bootstrap_bionic done";
+    prepare_bootstrap_bionic_done = true;
+    return Success();
+}
+
+static bool setup_runtime_bionic_done = false;
+
+// The bionic libs and the dynamic linker from the runtime APEX are bind-mounted
+// to the moount points. As a result, the previous mounts done by
+// prepare_bootstrap_bionic become hidden.
+static Result<Success> do_setup_runtime_bionic(const BuiltinArguments& args) {
+    if (setup_runtime_bionic_done) {
+        return Error() << "setup_runtime_bionic was already executed. Cannot be executed again";
+    }
+
+    if (access(kLinkerMountPoint, F_OK) == 0) {
+        if (mount(nullptr, kLinkerMountPoint, nullptr, MS_PRIVATE, nullptr) == -1) {
+            return ErrnoError() << "Could not change " << kLinkerMountPoint
+                                << " to a private mount point";
+        }
+
+        if (mount(kRuntimeLinkerPath, kLinkerMountPoint, nullptr, MS_BIND, nullptr) == -1) {
+            return ErrnoError() << "Could not bind-mount " << kRuntimeLinkerPath << " to "
+                                << kLinkerMountPoint;
+        }
+
+        for (auto libname : kBionicLibFileNames) {
+            std::string mount_point = kBionicLibsMountPointDir + libname;
+            std::string source = kRuntimeBionicLibsDir + libname;
+
+            if (mount(nullptr, mount_point.c_str(), nullptr, MS_PRIVATE, nullptr) == -1) {
+                return ErrnoError()
+                       << "Could not change " << mount_point << " to a private mount point";
+            }
+
+            if (mount(source.c_str(), mount_point.c_str(), nullptr, MS_BIND, nullptr) == -1) {
+                return ErrnoError() << "Could not bind-mount " << source << " to " << mount_point;
+            }
+        }
+    }
+
+    if (access(kLinkerMountPoint64, F_OK) == 0) {
+        if (mount(nullptr, kLinkerMountPoint64, nullptr, MS_PRIVATE, nullptr) == -1) {
+            return ErrnoError() << "Could not change " << kLinkerMountPoint64
+                                << " to a private mount point";
+        }
+
+        if (mount(kRuntimeLinkerPath64, kLinkerMountPoint64, nullptr, MS_BIND, nullptr) == -1) {
+            return ErrnoError() << "Could not bind-mount " << kRuntimeLinkerPath64 << " to "
+                                << kLinkerMountPoint64;
+        }
+
+        for (auto libname : kBionicLibFileNames) {
+            std::string mount_point = kBionicLibsMountPointDir64 + libname;
+            std::string source = kRuntimeBionicLibsDir64 + libname;
+
+            if (mount(nullptr, mount_point.c_str(), nullptr, MS_PRIVATE, nullptr) == -1) {
+                return ErrnoError()
+                       << "Could not change " << mount_point << " to a private mount point";
+            }
+
+            if (mount(source.c_str(), mount_point.c_str(), nullptr, MS_BIND, nullptr) == -1) {
+                return ErrnoError() << "Could not bind-mount " << source << " to " << mount_point;
+            }
+        }
+    }
+
+    ServiceList::GetInstance().MarkRuntimeAvailable();
+    LOG(INFO) << "setup_runtime_bionic done";
+    setup_runtime_bionic_done = true;
+    return Success();
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1125,6 +1234,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"mount_all",               {1,     kMax, {false,  do_mount_all}}},
         {"mount",                   {3,     kMax, {false,  do_mount}}},
         {"parse_apex_configs",      {0,     0,    {false,  do_parse_apex_configs}}},
+        {"prepare_bootstrap_bionic",{0,     0,    {false,  do_prepare_bootstrap_bionic}}},
         {"umount",                  {1,     1,    {false,  do_umount}}},
         {"readahead",               {1,     2,    {true,   do_readahead}}},
         {"restart",                 {1,     1,    {false,  do_restart}}},
@@ -1133,6 +1243,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"rm",                      {1,     1,    {true,   do_rm}}},
         {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
         {"setprop",                 {2,     2,    {true,   do_setprop}}},
+        {"setup_runtime_bionic",    {0,     0,    {false,  do_setup_runtime_bionic}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
         {"start",                   {1,     1,    {false,  do_start}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},
