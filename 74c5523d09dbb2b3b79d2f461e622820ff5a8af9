@@ -46,6 +46,29 @@
       "revId": "74c5523d09dbb2b3b79d2f461e622820ff5a8af9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac26e981_6cda23ba",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-03T18:23:09Z",
+      "side": 1,
+      "message": "Is it possible to add a test case for this so we don\u0027t break vendors again?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 36
+      },
+      "revId": "74c5523d09dbb2b3b79d2f461e622820ff5a8af9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
