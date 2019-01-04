@@ -48,6 +48,7 @@
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
 #include <libdm/dm.h>
+#include <libgsi/libgsi.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
 
@@ -980,6 +981,9 @@ OverlayfsValidResult fs_mgr_overlayfs_valid() {
         return OverlayfsValidResult::kOverrideCredsRequired;
     }
     if (!fs_mgr_access("/sys/module/overlay")) {
+        return OverlayfsValidResult::kNotSupported;
+    }
+    if (android::gsi::IsGsiRunning()) {
         return OverlayfsValidResult::kNotSupported;
     }
     struct utsname uts;

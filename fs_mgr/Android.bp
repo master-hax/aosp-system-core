@@ -59,6 +59,7 @@ cc_library {
         "libfs_avb",
         "libfstab",
         "libdm",
+        "libgsi",
     ],
     export_static_lib_headers: [
         "libfs_avb",
@@ -99,7 +100,10 @@ cc_library_static {
         "fs_mgr_slotselect.cpp",
     ],
     export_include_dirs: ["include_fstab"],
-    header_libs: ["libbase_headers"],
+    header_libs: [
+        "libbase_headers",
+        "libgsi_headers",
+    ],
 }
 
 cc_library_static {
