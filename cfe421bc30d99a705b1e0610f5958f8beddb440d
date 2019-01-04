@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0f1f431_e1ecf19d",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T07:11:59Z",
+      "side": 1,
+      "message": "nit: another idea is to allow specifying multiple fs_types in the fstab.\nThen we don\u0027t need the hard-code here (also no need the \u0027retry_mount\u0027 flag).\n\nThought?\n\ne.g.,\n\n#\u003csrc\u003e                                              \u003cmnt_point\u003e        \u003ctype\u003e      \u003cmnt_flags and options\u003e                               \u003cfs_mgr_flags\u003e\nsystem                                              /system            ext4,erofs,squashfs,f2fs        ro,barrier\u003d1                                          wait,slotselect,avb\u003dvbmeta,logical,first_stage_mount",
+      "range": {
+        "startLine": 573,
+        "startChar": 33,
+        "endLine": 573,
+        "endChar": 68
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e15990dc_a9cb47f1",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T07:11:59Z",
+      "side": 1,
+      "message": "nit: retry_fs_mount (to make it clear, this is to retry different file system (fs).",
+      "range": {
+        "startLine": 120,
+        "startChar": 10,
+        "endLine": 120,
+        "endChar": 21
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
