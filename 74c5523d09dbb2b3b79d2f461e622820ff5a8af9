@@ -69,6 +69,30 @@
       "revId": "74c5523d09dbb2b3b79d2f461e622820ff5a8af9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b80eccf_eb512867",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1014807
+      },
+      "writtenOn": "2019-01-04T02:17:15Z",
+      "side": 1,
+      "message": "In general, it is difficult to add a test case to ensure that `ld.config.txt` is properly configured, especially when we don\u0027t know what may be broken by a change to `ld.config.txt` (i.e. we don\u0027t know what to test for before we know what is broken).\n\nTo be specific, it is hard to test `libnetd_client.so` and `libc_malloc_debug.so` either. For the first one, `bionic/libc/bionic/NetdClient.cpp` only prints an error message to logcat and libc will try its best to ignore the error. To exploit this problem, an integration test that is installed to the vendor partition and actually uses the network must be written. For the second one, the feature is only enabled when some system properties (`libc.debug.malloc.*`) are set.  `bionic/libc/bionic/malloc_common.cpp` only prints the error message to logcat when it fails to load the library. And we don\u0027t have an automatic way to know whether `libc_malloc_debug.so` is working properly either.\n\nBoth cases are difficult to test automatically and I feel it does not worth the effort to write integration tests for these.",
+      "parentUuid": "ac26e981_6cda23ba",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 36
+      },
+      "revId": "74c5523d09dbb2b3b79d2f461e622820ff5a8af9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
