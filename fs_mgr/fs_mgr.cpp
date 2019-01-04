@@ -556,8 +556,19 @@ static int __mount(const std::string& source, const std::string& target, const F
     mkdir(target.c_str(), 0755);
     errno = 0;
     unsigned long mountflags = entry.flags;
-    int ret = mount(source.c_str(), target.c_str(), entry.fs_type.c_str(), mountflags,
+    std::string mounted_fs_type = entry.fs_type;
+    int ret;
+    for (std::string fs_type : android::base::Split(entry.fs_type, ",")) {
+        ret = mount(source.c_str(), target.c_str(), fs_type.c_str(), mountflags,
                     entry.fs_options.c_str());
+        if (ret == 0) {
+            errno = 0;
+            mounted_fs_type = fs_type;
+            break;
+        } else if (errno == ENOENT) {  // No need to try more because of source or target missing.
+            break;
+        }
+    }
     int save_errno = errno;
     const char* target_missing = "";
     const char* source_missing = "";
@@ -569,8 +580,9 @@ static int __mount(const std::string& source, const std::string& target, const F
         }
         errno = save_errno;
     }
+
     PINFO << __FUNCTION__ << "(source=" << source << source_missing << ",target=" << target
-          << target_missing << ",type=" << entry.fs_type << ")=" << ret;
+          << target_missing << ",type=" << mounted_fs_type << ")=" << ret;
     if ((ret == 0) && (mountflags & MS_RDONLY) != 0) {
         fs_mgr_set_blk_ro(source);
     }
