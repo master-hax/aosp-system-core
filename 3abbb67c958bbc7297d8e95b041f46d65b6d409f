@@ -46,6 +46,30 @@
       "revId": "3abbb67c958bbc7297d8e95b041f46d65b6d409f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbe00189_7e1759c7",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-04T17:30:20Z",
+      "side": 1,
+      "message": "makes sense. thanks!",
+      "parentUuid": "fe424394_01daa00c",
+      "range": {
+        "startLine": 548,
+        "startChar": 0,
+        "endLine": 549,
+        "endChar": 25
+      },
+      "revId": "3abbb67c958bbc7297d8e95b041f46d65b6d409f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
