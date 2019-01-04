@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da713f9a_ddd1c2a4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-04T17:06:02Z",
+      "side": 1,
+      "message": "why double checking? I see some places that do this, but why don\u0027t we believe init?",
+      "range": {
+        "startLine": 548,
+        "startChar": 0,
+        "endLine": 549,
+        "endChar": 25
+      },
+      "revId": "3abbb67c958bbc7297d8e95b041f46d65b6d409f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
