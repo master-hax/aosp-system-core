@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1764aef6_b34b6783",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T12:00:41Z",
+      "side": 1,
+      "message": "Can you add an example one-line fstab that you used to verify this patch? \nJust to make it clear, so others can easily know how to use it.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 10
+      },
+      "revId": "6b2650caaee7306ba1dec72f464a1ba051b6270e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ff7b9c7_29736e30",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T12:00:41Z",
+      "side": 1,
+      "message": "const auto\u0026 fs_type :\n\nSee https://android-review.googlesource.com/c/platform/system/core/+/847551 for reference.",
+      "range": {
+        "startLine": 561,
+        "startChar": 9,
+        "endLine": 561,
+        "endChar": 20
+      },
+      "revId": "6b2650caaee7306ba1dec72f464a1ba051b6270e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
