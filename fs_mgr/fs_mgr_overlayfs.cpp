@@ -999,5 +999,8 @@ OverlayfsValidResult fs_mgr_overlayfs_valid() {
     if (minor > 6) {
         return OverlayfsValidResult::kNotSupported;
     }
+    if (!access("/metadata/vold/gsi/booted", F_OK)) {
+        return OverlayfsValidResult::kNotSupported;
+    }
     return OverlayfsValidResult::kOk;
 }

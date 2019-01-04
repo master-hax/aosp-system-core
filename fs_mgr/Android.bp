@@ -99,7 +99,10 @@ cc_library_static {
         "fs_mgr_slotselect.cpp",
     ],
     export_include_dirs: ["include_fstab"],
-    header_libs: ["libbase_headers"],
+    header_libs: [
+        "libbase_headers",
+        "libgsi_headers",
+    ],
 }
 
 cc_library_static {
