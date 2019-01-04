@@ -48,6 +48,7 @@
 #include <fs_mgr_overlayfs.h>
 #include <fstab/fstab.h>
 #include <libdm/dm.h>
+#include <libgsi/libgsi.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
 
@@ -1000,6 +1001,9 @@ std::string fs_mgr_get_context(const std::string& mount_point) {
 }
 
 OverlayfsValidResult fs_mgr_overlayfs_valid() {
+    if (android::gsi::IsGsiRunning()) {
+        return OverlayfsValidResult::kNotSupported;
+    }
     // Overlayfs available in the kernel, and patched for override_creds?
     if (fs_mgr_access("/sys/module/overlay/parameters/override_creds")) {
         return OverlayfsValidResult::kOverrideCredsRequired;
