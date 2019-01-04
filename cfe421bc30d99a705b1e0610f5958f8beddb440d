@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5a694863_2e5630c7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-04T07:23:01Z",
+      "side": 1,
+      "message": "I think it would be better that retry_mount has a value to specify fs_type if you don\u0027t like hard code here.\nfs_mgr don\u0027t have code to parse fs_type now.\nMaybe adding a new fs_type of \"autodetect\" to tell fs_mgr to detect the fs_type itself is also ok?",
+      "parentUuid": "b0f1f431_e1ecf19d",
+      "range": {
+        "startLine": 573,
+        "startChar": 33,
+        "endLine": 573,
+        "endChar": 68
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e15990dc_a9cb47f1",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 4
