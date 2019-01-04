@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1d57c27_047d34cf",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-04T22:38:30Z",
+      "side": 1,
+      "message": "I think we might have to parse the address for a port and default to DEFAULT_ADB_LOCAL_TRANSPORT_PORT to maintain the old behavior.\n\nMaybe we should change the signature of socket_spec_connect to something like this?\n\nbool socket_spec_connect(unique_fd* fd, std::string_view address, int* port, std::string* serial, std::string* error)",
+      "range": {
+        "startLine": 74,
+        "startChar": 35,
+        "endLine": 74,
+        "endChar": 52
+      },
+      "revId": "15196df7d069d2dbc02c425da1534587b4f9dbe2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
