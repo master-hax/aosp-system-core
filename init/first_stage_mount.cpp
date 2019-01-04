@@ -79,6 +79,8 @@ class FirstStageMount {
     bool IsDmLinearEnabled();
     bool GetDmLinearMetadataDevice();
     bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
+    void UseGsiIfPresent();
+    bool TryInstalledGsi();
 
     ListenerAction UeventCallback(const Uevent& uevent);
 
@@ -207,6 +209,8 @@ bool FirstStageMount::GetDmLinearMetadataDevice() {
     }
 
     required_devices_partition_names_.emplace(super_partition_name_);
+    // When booting from live GSI images, userdata is the super device.
+    required_devices_partition_names_.emplace("userdata");
     return true;
 }
 
@@ -410,6 +414,16 @@ bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
 // this case, we mount system first then pivot to it.  From that point on,
 // we are effectively identical to a system-as-root device.
 bool FirstStageMount::TrySwitchSystemAsRoot() {
+    auto metadata_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
+        return entry.mount_point == "/metadata";
+    });
+    if (metadata_partition != fstab_.end()) {
+        if (MountPartition(&(*metadata_partition))) {
+            fstab_.erase(metadata_partition);
+            UseGsiIfPresent();
+        }
+    }
+
     auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
         return entry.mount_point == "/system";
     });
@@ -483,6 +497,53 @@ bool FirstStageMount::MountPartitions() {
 
     fs_mgr_overlayfs_mount_all(&fstab_);
 
+    return true;
+}
+
+static const char kGsiBootableFile[] = "/metadata/vold/gsi/bootable";
+
+void FirstStageMount::UseGsiIfPresent() {
+    static const char kGsiBootedFile[] = "/metadata/vold/gsi/booted";
+
+    // We need a signal to fs_mgr that we're currently booted into a GSI. We
+    // can't use "bootable" since that's present in between installation and
+    // shutdown. Instead, we ensure a "booted" file either exists or is removed
+    // on startup based on whether a GSI boot was attempted.
+    if (TryInstalledGsi()) {
+        android::base::WriteStringToFile("1", kGsiBootedFile);
+    } else {
+        android::base::RemoveFileIfExists(kGsiBootedFile);
+        android::base::RemoveFileIfExists(kGsiBootableFile);
+    }
+}
+
+bool FirstStageMount::TryInstalledGsi() {
+    static const char kGsiMetadata[] = "/metadata/vold/gsi/lp_metadata";
+
+    if (access(kGsiBootableFile, R_OK)) {
+        LOG(INFO) << "GSI not detected; proceeding with normal boot";
+        return false;
+    }
+
+    auto metadata = android::fs_mgr::ReadFromImageFile(kGsiMetadata);
+    if (!metadata) {
+        LOG(ERROR) << "GSI partition layout could not be read";
+        return false;
+    }
+
+    if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), "/dev/block/by-name/userdata")) {
+        LOG(ERROR) << "GSI partition layout could not be instantiated";
+        return false;
+    }
+
+    // Replace the existing system fstab entry.
+    auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
+        return entry.mount_point == "/system";
+    });
+    if (system_partition != fstab_.end()) {
+        fstab_.erase(system_partition);
+    }
+    fstab_.emplace_back(BuildGsiSystemFstabEntry());
     return true;
 }
 
