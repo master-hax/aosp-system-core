@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "d3110f67_dadbeb70",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-04T10:17:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df15a11c_53623fd4",
+      "range": {
+        "startLine": 573,
+        "startChar": 33,
+        "endLine": 573,
+        "endChar": 68
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e15990dc_a9cb47f1",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 4
@@ -93,6 +117,30 @@
       "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75051b85_3fee2583",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-04T10:17:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e15990dc_a9cb47f1",
+      "range": {
+        "startLine": 120,
+        "startChar": 10,
+        "endLine": 120,
+        "endChar": 21
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
