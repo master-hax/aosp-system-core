@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "df15a11c_53623fd4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T07:45:47Z",
+      "side": 1,
+      "message": "I see, using fs_mgr flag to specify additional file system types seems ok to me, too.\n\nTo make it clear, we can probably name it: fallback_fs_type\u003d\"erofs,squashfs,f2fs\":\n\n#\u003csrc\u003e                                              \u003cmnt_point\u003e        \u003ctype\u003e      \u003cmnt_flags and options\u003e                               \u003cfs_mgr_flags\u003e\nsystem                                              /system            ext4        ro,barrier\u003d1                                          wait,slotselect,avb\u003dvbmeta,logical,first_stage_mount,fallback_fs_type\u003d\"erofs,squashfs,f2fs\"",
+      "parentUuid": "5a694863_2e5630c7",
+      "range": {
+        "startLine": 573,
+        "startChar": 33,
+        "endLine": 573,
+        "endChar": 68
+      },
+      "revId": "cfe421bc30d99a705b1e0610f5958f8beddb440d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e15990dc_a9cb47f1",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 4
