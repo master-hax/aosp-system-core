@@ -69,6 +69,30 @@
       "revId": "6b2650caaee7306ba1dec72f464a1ba051b6270e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "195df362_fc8717c7",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-04T12:22:56Z",
+      "side": 1,
+      "message": "It will be std::string, because Split() returns a vector of std::string.\n\nIf you don\u0027t prefer auto, how about: std::string\u0026 fs_type",
+      "parentUuid": "3ee543e0_df5ef5e8",
+      "range": {
+        "startLine": 561,
+        "startChar": 9,
+        "endLine": 561,
+        "endChar": 20
+      },
+      "revId": "6b2650caaee7306ba1dec72f464a1ba051b6270e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
