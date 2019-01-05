@@ -410,20 +410,34 @@ bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
 // this case, we mount system first then pivot to it.  From that point on,
 // we are effectively identical to a system-as-root device.
 bool FirstStageMount::TrySwitchSystemAsRoot() {
-    auto system_partition = std::find_if(fstab_.begin(), fstab_.end(), [](const auto& entry) {
-        return entry.mount_point == "/system";
-    });
-
-    if (system_partition != fstab_.end()) {
-        if (!MountPartition(&(*system_partition))) {
-            return false;
+    for (auto it = fstab_.begin(); it != fstab_.end();) {
+        bool mounted = false;
+        bool no_fail = false;
+        auto start_mount_point = it->mount_point;
+        if (start_mount_point != "/system") {
+            it++;
+            continue;
         }
 
-        SwitchRoot((*system_partition).mount_point);
+        do {
+            no_fail |= (it->fs_mgr_flags).no_fail;
+            if (!mounted)
+                mounted = MountPartition(&(*it));
+            else
+                LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
+            it++;
+        } while (it != fstab_.end() && it->mount_point == start_mount_point);
 
-        fstab_.erase(system_partition);
+        if (!mounted && !no_fail) {
+            LOG(ERROR) << start_mount_point << " mounted unsuccessfully but it is required!";
+            return false;
+        }
     }
 
+    auto it = std::remove_if(fstab_.begin(), fstab_.end(),
+                             [](const auto& entry) { return entry.mount_point == "/system"; });
+    fstab_.erase(it, fstab_.end());
+    SwitchRoot("/system");
     return true;
 }
 
@@ -462,8 +476,21 @@ bool FirstStageMount::MountPartitions() {
 
     if (!TrySkipMountingPartitions()) return false;
 
-    for (auto& fstab_entry : fstab_) {
-        if (!MountPartition(&fstab_entry) && !fstab_entry.fs_mgr_flags.no_fail) {
+    for (auto it = fstab_.begin(); it != fstab_.end();) {
+        bool mounted = false;
+        bool no_fail = false;
+        auto start_mount_point = it->mount_point;
+        do {
+            no_fail |= (it->fs_mgr_flags).no_fail;
+            if (!mounted)
+                mounted = MountPartition(&(*it));
+            else
+                LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
+            it++;
+        } while (it != fstab_.end() && it->mount_point == start_mount_point);
+
+        if (!mounted && !no_fail) {
+            LOG(ERROR) << start_mount_point << " mounted unsuccessfully but it is required!";
             return false;
         }
     }
