@@ -400,7 +400,7 @@ void send_packet(apacket* p, atransport* t);
 asocket* create_device_tracker(bool long_output);
 
 #if !ADB_HOST
-void server_socket_thread(int port);
+void server_socket_thread(const std::string& spec);
 
 #if defined(__ANDROID__)
 void qemu_socket_thread(int port);
