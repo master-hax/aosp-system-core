@@ -26,6 +26,7 @@
 #include <sys/types.h>
 
 #include <condition_variable>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -74,7 +75,8 @@ std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
     unique_fd fd;
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
     std::string serial;
-    if (socket_spec_connect(&fd, "tcp:" + address, &port, &serial, response)) {
+    std::string prefix_addr = address.starts_with("vsock:") ? address : "tcp:" + address;
+    if (socket_spec_connect(&fd, prefix_addr, &port, &serial, response)) {
         close_on_exec(fd);
         if (!set_tcp_keepalive(fd, 1)) {
             D("warning: failed to configure TCP keepalives (%s)", strerror(errno));
@@ -231,16 +233,19 @@ static void client_socket_thread(int) {
 
 #else // ADB_HOST
 
-static void server_socket_thread(int port) {
+static void server_socket_thread(const std::string& spec) {
     unique_fd serverfd;
 
     adb_thread_setname("server socket");
     D("transport: server_socket_thread() starting");
+    int port;
     while (serverfd == -1) {
-        std::string spec = android::base::StringPrintf("tcp:%d", port);
         std::string error;
-        serverfd.reset(socket_spec_listen(spec, &error));
-        if (serverfd < 0) {
+        serverfd.reset(socket_spec_listen(spec, &error, &port));
+        if (serverfd == EAFNOSUPPORT || serverfd == EINVAL || serverfd == EPROTONOSUPPORT) {
+            D("socket type not supported (%s)", strerror(errno));
+            return;
+        } else if (serverfd < 0) {
             D("server: cannot bind socket yet: %s", error.c_str());
             std::this_thread::sleep_for(1s);
             continue;
@@ -249,7 +254,7 @@ static void server_socket_thread(int port) {
     }
 
     while (true) {
-        D("server: trying to get new connection from %d", port);
+        D("server: trying to get new connection from %s", spec.c_str());
         unique_fd fd(adb_socket_accept(serverfd, nullptr, nullptr));
         if (fd >= 0) {
             D("server: new connection on fd %d", fd.get());
@@ -333,7 +338,7 @@ static void qemu_socket_thread(int port) {
         /* This could be an older version of the emulator, that doesn't
          * implement adb QEMUD service. Fall back to the old TCP way. */
         D("adb service is not available. Falling back to TCP socket.");
-        std::thread(server_socket_thread, port).detach();
+        std::thread(server_socket_thread, android::base::StringPrintf("tcp:%d", port)).detach();
         return;
     }
 
@@ -394,21 +399,20 @@ static bool use_qemu_goldfish() {
 
 void local_init(int port)
 {
-    void (*func)(int);
-    const char* debug_name = "";
-
 #if ADB_HOST
-    func = client_socket_thread;
-    debug_name = "client";
+    D("transport: local client init");
+    std::thread(client_socket_thread, port).detach();
 #else
+    D("transport: local server init");
     // For the adbd daemon in the system image we need to distinguish
     // between the device, and the emulator.
-    func = use_qemu_goldfish() ? qemu_socket_thread : server_socket_thread;
-    debug_name = "server";
+    if (use_qemu_goldfish()) {
+        std::thread(qemu_socket_thread, port).detach();
+    } else {
+        std::thread(server_socket_thread, android::base::StringPrintf("tcp:%d", port)).detach();
+    }
+    std::thread(server_socket_thread, android::base::StringPrintf("vsock:%d", port)).detach();
 #endif // !ADB_HOST
-
-    D("transport: local %s init", debug_name);
-    std::thread(func, port).detach();
 }
 
 #if ADB_HOST

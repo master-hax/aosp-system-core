@@ -46,6 +46,10 @@ using android::base::StringPrintf;
 #define ADB_WINDOWS 0
 #endif
 
+#if ADB_LINUX
+#include "vm_sockets.h"
+#endif
+
 // Not static because it is used in commandline.c.
 int gListenAll = 0;
 
@@ -175,6 +179,50 @@ bool socket_spec_connect(unique_fd* fd, std::string_view address, int* port, std
         }
         return false;
     }
+#if ADB_LINUX
+    if (address.starts_with("vsock:")) {
+        std::string spec_str(address);
+        std::vector<std::string> fragments = android::base::Split(spec_str, ":");
+        int port_value = port ? *port : 0;
+        if (fragments.size() != 2 && fragments.size() != 3) {
+            *error = android::base::StringPrintf("expected vsock:cid or vsock:port:cid in '%s'",
+                                                 spec_str.c_str());
+            return false;
+        }
+        unsigned int cid = 0;
+        if (!android::base::ParseUint(fragments[1], &cid)) {
+            *error = android::base::StringPrintf("could not parse vsock cid in '%s'",
+                                                 spec_str.c_str());
+            return false;
+        }
+        if (fragments.size() == 3 && !android::base::ParseInt(fragments[2], &port_value)) {
+            *error = android::base::StringPrintf("could not parse vsock port in '%s'",
+                                                 spec_str.c_str());
+            return false;
+        }
+        fd->reset(socket(AF_VSOCK, SOCK_STREAM, 0));
+        if (fd->get() == -1) {
+            *error = "could not open vsock socket";
+            return false;
+        }
+        sockaddr_vm addr{};
+        addr.svm_family = AF_VSOCK;
+        addr.svm_port = port_value;
+        addr.svm_cid = cid;
+        if (connect(fd->get(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr))) {
+            *error = android::base::StringPrintf("could not connect to vsock address '%s'",
+                                                 spec_str.c_str());
+            return false;
+        }
+        if (port) {
+            *port = port_value;
+        }
+        if (serial) {
+            *serial = android::base::StringPrintf("vsock:%u:%d", cid, port_value);
+        }
+        return true;
+    }
+#endif  // ADB_LINUX
 
     for (const auto& it : kLocalSocketTypes) {
         std::string prefix = it.first + ":";
@@ -220,6 +268,39 @@ int socket_spec_listen(std::string_view spec, std::string* error, int* resolved_
         }
         return result;
     }
+#if ADB_LINUX
+    if (spec.starts_with("vsock:")) {
+        std::string spec_str(spec);
+        std::vector<std::string> fragments = android::base::Split(spec_str, ":");
+        if (fragments.size() != 2) {
+            *error = "given vsock server socket string was invalid";
+            return -1;
+        }
+        int port;
+        if (!android::base::ParseInt(fragments[1], &port)) {
+            *error = "could not parse vsock port";
+            return -1;
+        }
+        unique_fd serverfd(socket(AF_VSOCK, SOCK_STREAM, 0));
+        if (serverfd == -1) {
+            return -errno;
+        }
+        sockaddr_vm addr{};
+        addr.svm_family = AF_VSOCK;
+        addr.svm_port = port;
+        addr.svm_cid = VMADDR_CID_ANY;
+        if (bind(serverfd, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr))) {
+            return -1;
+        }
+        if (listen(serverfd, 4)) {
+            return -1;
+        }
+        if (resolved_tcp_port) {
+            *resolved_tcp_port = port;
+        }
+        return serverfd.release();
+    }
+#endif
 
     for (const auto& it : kLocalSocketTypes) {
         std::string prefix = it.first + ":";
