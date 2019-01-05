@@ -462,10 +462,24 @@ bool FirstStageMount::MountPartitions() {
 
     if (!TrySkipMountingPartitions()) return false;
 
+    std::map<std::string, bool> mounted_map;
+
     for (auto& fstab_entry : fstab_) {
-        if (!MountPartition(&fstab_entry) && !fstab_entry.fs_mgr_flags.no_fail) {
-            return false;
+        if (mounted_map.find(fstab_entry.mount_point) != mounted_map.end()) {
+            if (mounted_map[fstab_entry.mount_point] == true) {
+                LOG(INFO) << "Skip mounted partition: " << fstab_entry.mount_point;
+                continue;
+            }
         }
+        if (MountPartition(&fstab_entry))
+            mounted_map[fstab_entry.mount_point] = true;
+        else if (!fstab_entry.fs_mgr_flags.no_fail)
+            mounted_map[fstab_entry.mount_point] = false;
+    }
+
+    for (auto it = mounted_map.begin(); it != mounted_map.end(); ++it) {
+        if (it->second == false)
+            return false;  // Some multi-line partition without nofail mounted unsuccessfully.
     }
 
     // heads up for instantiating required device(s) for overlayfs logic
