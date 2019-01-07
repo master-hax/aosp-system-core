@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd2df42a_021e099c",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-07T18:37:18Z",
+      "side": 1,
+      "message": "bootloader, not recovery.",
+      "range": {
+        "startLine": 376,
+        "startChar": 35,
+        "endLine": 376,
+        "endChar": 43
+      },
+      "revId": "9debac385ccdaa61859659c9eaf212bc8c976feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80853345_619d002e",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-07T18:37:18Z",
+      "side": 1,
+      "message": "I generally like property names to have a bit of a namespace for how they\u0027re used.  Something like ro.init.updatable_crashing maybe better?",
+      "range": {
+        "startLine": 381,
+        "startChar": 34,
+        "endLine": 381,
+        "endChar": 55
+      },
+      "revId": "9debac385ccdaa61859659c9eaf212bc8c976feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
