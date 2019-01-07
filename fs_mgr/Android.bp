@@ -92,6 +92,7 @@ cc_library_static {
     name: "libfstab",
     vendor_available: true,
     recovery_available: true,
+    host_supported: true,
     defaults: ["fs_mgr_defaults"],
     srcs: [
         "fs_mgr_fstab.cpp",
@@ -100,6 +101,11 @@ cc_library_static {
     ],
     export_include_dirs: ["include_fstab"],
     header_libs: ["libbase_headers"],
+    target: {
+        host: {
+            cflags: ["-DHOST"],
+        },
+    },
 }
 
 cc_library_static {
