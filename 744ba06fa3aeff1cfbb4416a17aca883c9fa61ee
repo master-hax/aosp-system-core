@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "00d7ef77_0d5ec006",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2019-01-07T11:00:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ea0fb9f_294daca0",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 0
+      },
+      "revId": "744ba06fa3aeff1cfbb4416a17aca883c9fa61ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f9a8154c_cecafbe6",
         "filename": "init/service.cpp",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "744ba06fa3aeff1cfbb4416a17aca883c9fa61ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fca961b0_f867e8a2",
+        "filename": "init/service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 1346941
+      },
+      "writtenOn": "2019-01-07T11:00:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9a8154c_cecafbe6",
+      "range": {
+        "startLine": 381,
+        "startChar": 37,
+        "endLine": 381,
+        "endChar": 50
+      },
+      "revId": "744ba06fa3aeff1cfbb4416a17aca883c9fa61ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
