@@ -23,6 +23,7 @@
 #include <linux/dm-ioctl.h>
 
 #include <functional>
+#include <optional>
 #include <string>
 
 #include <fstab/fstab.h>
@@ -75,8 +76,9 @@ int fs_mgr_do_tmpfs_mount(const char *n_name);
 fstab_rec const* fs_mgr_get_crypt_entry(fstab const* fstab);
 void fs_mgr_get_crypt_info(fstab* fstab, char* key_loc, char* real_blk_device, size_t size);
 bool fs_mgr_load_verity_state(int* mode);
-bool fs_mgr_update_verity_state(
-        std::function<void(const std::string& mount_point, int mode)> callback);
+// Returns the mount point for the dm-verity device for the given FstabEntry or an empty option if
+// verity is not enabled.
+std::optional<std::string> fs_mgr_get_verity_mount_point(const FstabEntry& entry);
 bool fs_mgr_swapon_all(const Fstab& fstab);
 bool fs_mgr_update_logical_partition(FstabEntry* entry);
 bool fs_mgr_update_logical_partition(struct fstab_rec* rec);

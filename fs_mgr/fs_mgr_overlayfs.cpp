@@ -264,15 +264,6 @@ bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overl
     return false;
 }
 
-std::vector<std::string> fs_mgr_overlayfs_verity_enabled_list() {
-    std::vector<std::string> ret;
-    auto save_errno = errno;
-    fs_mgr_update_verity_state(
-            [&ret](const std::string& mount_point, int) { ret.emplace_back(mount_point); });
-    if ((errno == ENOENT) || (errno == ENXIO)) errno = save_errno;
-    return ret;
-}
-
 bool fs_mgr_wants_overlayfs(FstabEntry* entry) {
     // Don't check entries that are managed by vold.
     if (entry->fs_mgr_flags.vold_managed || entry->fs_mgr_flags.recovery_only) return false;
@@ -525,15 +516,16 @@ bool fs_mgr_overlayfs_mount(const std::string& mount_point) {
 
 std::vector<std::string> fs_mgr_candidate_list(Fstab* fstab, const char* mount_point = nullptr) {
     std::vector<std::string> mounts;
-    auto verity = fs_mgr_overlayfs_verity_enabled_list();
     for (auto& entry : *fstab) {
         if (!fs_mgr_wants_overlayfs(&entry)) continue;
         std::string new_mount_point(fs_mgr_mount_point(entry.mount_point.c_str()));
         if (mount_point && (new_mount_point != mount_point)) continue;
-        if (std::find(verity.begin(), verity.end(), android::base::Basename(new_mount_point)) !=
-            verity.end()) {
+
+        if ((entry.fs_mgr_flags.verify || entry.fs_mgr_flags.avb) &&
+            fs_mgr_get_verity_mount_point(entry)) {
             continue;
         }
+
         auto duplicate_or_more_specific = false;
         for (auto it = mounts.begin(); it != mounts.end();) {
             if ((*it == new_mount_point) ||
@@ -555,9 +547,6 @@ std::vector<std::string> fs_mgr_candidate_list(Fstab* fstab, const char* mount_p
     // do we want or need to?
     if (mount_point && ("/system"s != mount_point)) return mounts;
     if (std::find(mounts.begin(), mounts.end(), "/system") != mounts.end()) return mounts;
-
-    // fs_mgr_overlayfs_verity_enabled_list says not to?
-    if (std::find(verity.begin(), verity.end(), "system") != verity.end()) return mounts;
 
     // confirm that fstab is missing system
     if (std::find_if(fstab->begin(), fstab->end(), [](const auto& entry) {

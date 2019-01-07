@@ -736,11 +736,27 @@ static Result<Success> do_verity_load_state(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_verity_update_state(const BuiltinArguments& args) {
-    if (!fs_mgr_update_verity_state([](const std::string& mount_point, int mode) {
-            property_set("partition." + mount_point + ".verified", std::to_string(mode));
-        })) {
-        return Error() << "fs_mgr_update_verity_state() failed";
+    int mode;
+    if (!fs_mgr_load_verity_state(&mode)) {
+        return Error() << "fs_mgr_load_verity_state() failed";
     }
+
+    Fstab fstab;
+    if (!ReadDefaultFstab(&fstab)) {
+        return Error() << "Failed to read default fstab";
+    }
+
+    for (const auto& entry : fstab) {
+        if (!entry.fs_mgr_flags.verify && !entry.fs_mgr_flags.avb) {
+            continue;
+        }
+
+        auto verity_mount_point = fs_mgr_get_verity_mount_point(entry);
+        if (verity_mount_point) {
+            property_set("partition." + *verity_mount_point + ".verified", std::to_string(mode));
+        }
+    }
+
     return Success();
 }
 
