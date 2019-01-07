@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4b4a67d_6ce01935",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T03:37:17Z",
+      "side": 1,
+      "message": "nit: mounted_points",
+      "range": {
+        "startLine": 465,
+        "startChar": 32,
+        "endLine": 465,
+        "endChar": 43
+      },
+      "revId": "3a2e006702de15b50e8671addfb1e31f21ab582c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c48cf90_4ac317e4",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T03:37:17Z",
+      "side": 1,
+      "message": "nit: \"Skip already-mounted partition: \"",
+      "range": {
+        "startLine": 470,
+        "startChar": 30,
+        "endLine": 470,
+        "endChar": 52
+      },
+      "revId": "3a2e006702de15b50e8671addfb1e31f21ab582c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "172d0699_162d045d",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T03:37:17Z",
+      "side": 1,
+      "message": "how about: \n  for (const auto\u0026 mount_point : mounted_points) {\n      if (mount_point.second \u003d\u003d false) {\n         return false;  // None of fstab_entries with the same mount_point is mounted.\n      }\n  }",
+      "range": {
+        "startLine": 480,
+        "startChar": 9,
+        "endLine": 480,
+        "endChar": 69
+      },
+      "revId": "3a2e006702de15b50e8671addfb1e31f21ab582c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
