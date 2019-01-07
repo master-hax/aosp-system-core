@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9674145f_6b940afc",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T08:13:07Z",
+      "side": 1,
+      "message": "Sorry, missed this part.\n\nHow about using https://en.cppreference.com/w/cpp/language/if\n\nif (const auto it \u003d mounted_points.find(fstab_entry.mount_point);\n    it !\u003d mounted_points.end() \u0026\u0026 it-\u003esecond \u003d\u003d true) {\n    LOG(INFO) \u003c\u003c \"Skip already-mounted partition: \" \u003c\u003c fstab_entry.mount_point;\n    continue;\n}",
+      "range": {
+        "startLine": 468,
+        "startChar": 7,
+        "endLine": 473,
+        "endChar": 9
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
