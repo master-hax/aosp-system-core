@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "5fa300f9_2670ee49",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T08:30:03Z",
+      "side": 1,
+      "message": "How about (please also provide a sample fstab config, too):\n\nSupport mounting same mount points with different fstab config\n\nThis commits allows multiple lines in a fstab have the same mount\npoint for first-stage mount, where the first successful mount will be\nused.\n\nThis allows us to specify a common/shared fstab, with different\nsettings (e.g., ext4, squashfs) per line, to mount different types\nof images on the same mount point. e.g., allows the device to mount\nGSI (ext4) while support mounting the original squashfs system.img.\n\nSample fstab:\n/dev/block/by-name/test   /test   ext4    rw   slotselect\n...",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 74
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9674145f_6b940afc",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 3
@@ -18,6 +41,29 @@
         "startChar": 7,
         "endLine": 473,
         "endChar": 9
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa4b0334_ab183de3",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T08:30:03Z",
+      "side": 1,
+      "message": "not sure why we need !no_fail here.\n\nGiven we will check at least one mount point (of the same value) should be successful at L480-L483, seems we don\u0027t need to check no_fail at all?",
+      "range": {
+        "startLine": 476,
+        "startChar": 13,
+        "endLine": 476,
+        "endChar": 51
       },
       "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
