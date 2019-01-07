@@ -25,6 +25,23 @@
     },
     {
       "key": {
+        "uuid": "45ce6240_70e0e622",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-07T22:54:31Z",
+      "side": 1,
+      "message": "I think this would be best if it mimic\u0027ed what we do with mount_with_alternatives() as closely \nas possible, particularly that multiple entries for a given mount point must be adjacent.  It\u0027ll be more consistent and it\u0027ll make the code easier (no maps).\n\nEssentially, instead of using a range based for loop, I\u0027d move to using iterators and do something like:\n\nfor (auto it \u003d fstab_.begin; it !\u003d fstab_.end();) {\n  bool mounted \u003d false;\n  bool no_fail \u003d false;\n  std::string start_mount_point \u003d it.mount_point;\n  do {\n    no_fail |\u003d it.fs_mgr_flags.no_fail;\n    mounted \u003d MountPartition(it);\n    it++\n  } while (it !\u003d fstab_.end() \u0026\u0026 !mounted \u0026\u0026 it.mount_point \u003d\u003d start_mount_point);\n\n  if (!mounted \u0026\u0026 !no_fail) {\n    return false;\n  }\n}\n\nNote you\u0027ll also need to modify TrySwitchSystemAsRoot() and TrySkipMountingPartitions() regardless.",
+      "revId": "ed1f28544302b31e525a2c11d71649bf22d5705b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e2d939f1_ea837180",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 4
