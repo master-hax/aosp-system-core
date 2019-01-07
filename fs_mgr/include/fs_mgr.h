@@ -23,6 +23,7 @@
 #include <linux/dm-ioctl.h>
 
 #include <functional>
+#include <optional>
 #include <string>
 
 #include <fstab/fstab.h>
@@ -73,8 +74,9 @@ int fs_mgr_do_mount_one(const android::fs_mgr::FstabEntry& entry,
                         const std::string& mount_point = "");
 int fs_mgr_do_tmpfs_mount(const char *n_name);
 bool fs_mgr_load_verity_state(int* mode);
-bool fs_mgr_update_verity_state(
-        std::function<void(const std::string& mount_point, int mode)> callback);
+// Returns the mount point for the dm-verity device for the given FstabEntry or an empty option if
+// verity is not enabled.
+std::optional<std::string> fs_mgr_get_verity_mount_point(const android::fs_mgr::FstabEntry& entry);
 bool fs_mgr_swapon_all(const android::fs_mgr::Fstab& fstab);
 bool fs_mgr_update_logical_partition(android::fs_mgr::FstabEntry* entry);
 
