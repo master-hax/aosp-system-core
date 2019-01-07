@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "584c6d00_5c45cffc",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-07T22:38:21Z",
+      "side": 0,
+      "message": "Removing this is obviously broken.  But I never liked the original code to fake a /system entry either.  \n\nEspecially now that Fstab is a vector and is easily modifiable, I would rather first stage mount (being the only place where we should worry about adding in this extra /system mount point), always provide either /system or / (if system-as-root) in the fstab that is passed to overlayfs.",
+      "revId": "789d905b50eb4acac76ef064f039ebce57729570",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
