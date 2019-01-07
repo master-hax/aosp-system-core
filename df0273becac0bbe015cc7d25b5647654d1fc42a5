@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b7f65a95_8f07bc6f",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T07:54:29Z",
+      "side": 1,
+      "message": "snprintf is used in fs_mgr_verity.cpp in many places, so it probably won\u0027t have noticeable performance impact.\n\nhttps://android.googlesource.com/platform/system/core/+/master/fs_mgr/fs_mgr_verity.cpp#206\n\nHowever, using snprintf to compelte strlcat() isn\u0027t quite readable.\nTherefore, I prefer to keep both versions here (snprintf v.s. strlcat) for comparison.",
+      "range": {
+        "startLine": 364,
+        "startChar": 16,
+        "endLine": 364,
+        "endChar": 24
+      },
+      "revId": "df0273becac0bbe015cc7d25b5647654d1fc42a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
