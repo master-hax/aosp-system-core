@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "25238516_41906095",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 1336554
+      },
+      "writtenOn": "2019-01-07T12:08:46Z",
+      "side": 1,
+      "message": "needs to be updated right?",
+      "range": {
+        "startLine": 370,
+        "startChar": 43,
+        "endLine": 370,
+        "endChar": 65
+      },
+      "revId": "2caa8d8b56f27a8021f2e34afcc15f2d88930880",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
