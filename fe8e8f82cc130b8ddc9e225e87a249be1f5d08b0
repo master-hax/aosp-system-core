@@ -144,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "71630cad_2fd4298e",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T13:37:04Z",
+      "side": 1,
+      "message": "How about:\n\nif (const auto it \u003d mounted_points.find(fstab_entry.mount_point); it !\u003d mounted_points.end()) {\n    if (it-\u003esecond \u003d\u003d true) {\n       LOG(INFO) \u003c\u003c \"Skip already-mounted partition: \" \u003c\u003c fstab_entry.mount_point;\n       continue;\n    }\n}\n\nUsing mounted_points[fstab_entry.mount_point] introduces another look-up, which seems unnecessary, as you already have the it.",
+      "parentUuid": "ee68b1b0_13918bea",
+      "range": {
+        "startLine": 468,
+        "startChar": 7,
+        "endLine": 473,
+        "endChar": 9
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa4b0334_ab183de3",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 3
