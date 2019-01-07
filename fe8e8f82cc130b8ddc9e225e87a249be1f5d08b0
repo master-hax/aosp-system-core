@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "e1c4337b_cd7b0ed8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T10:07:49Z",
+      "side": 1,
+      "message": "\u003e I am worried that this writing will be too dependent on the execution order.\n\nThat shouldn\u0027t be a concern, from standard:\n\n5.14 Logical AND operator\n\nlogical-and-expression:\n    inclusive-or-expression\n    logical-and-expression \u0026\u0026 inclusive-or-expression\n\n1. The \u0026\u0026 operator groups left-to-right. The operands are both contextually converted to bool (Clause 4). The result is true if both operands are true and false otherwise. Unlike \u0026, \u0026\u0026 guarantees left-to-right evaluation: the second operand is not evaluated if the first operand is false.",
+      "parentUuid": "967c3ef9_daefee8e",
+      "range": {
+        "startLine": 468,
+        "startChar": 7,
+        "endLine": 473,
+        "endChar": 9
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa4b0334_ab183de3",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 3
@@ -140,6 +164,30 @@
       "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eccb5e73_b704f689",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T10:07:49Z",
+      "side": 1,
+      "message": "OK, got it. You\u0027re right. Didn\u0027t notice no_fail is from the original source.\n\nPlease see my new comments.",
+      "parentUuid": "441eb877_dfdda63c",
+      "range": {
+        "startLine": 476,
+        "startChar": 13,
+        "endLine": 476,
+        "endChar": 51
+      },
+      "revId": "fe8e8f82cc130b8ddc9e225e87a249be1f5d08b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

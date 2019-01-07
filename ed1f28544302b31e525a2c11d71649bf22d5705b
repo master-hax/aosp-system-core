@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2d939f1_ea837180",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T10:07:49Z",
+      "side": 1,
+      "message": "How about:        \n        if (MountPartition(\u0026fstab_entry)) {\n            required_mount_points[fstab_entry.mount_point] \u003d true;   // mounted\n        } else if (!fstab_entry.fs_mgr_flags.no_fail) {\n            // Allow the transient mount failure, but put it into required_mount_points\n            // to ensure this mount point is mounted eventually.\n            // If no_fail (allow not mounted) is set, no need to set it as required.\n            required_mount_points[fstab_entry.mount_point] \u003d false;  // not mounted currently\n        }",
+      "range": {
+        "startLine": 474,
+        "startChar": 0,
+        "endLine": 477,
+        "endChar": 60
+      },
+      "revId": "ed1f28544302b31e525a2c11d71649bf22d5705b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b27f9939_d3d9bfab",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-07T10:07:49Z",
+      "side": 1,
+      "message": "Then we can have a comment instead:\n// Some required mount point isn\u0027t mounted.",
+      "range": {
+        "startLine": 482,
+        "startChar": 27,
+        "endLine": 482,
+        "endChar": 90
+      },
+      "revId": "ed1f28544302b31e525a2c11d71649bf22d5705b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
