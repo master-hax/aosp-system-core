@@ -359,8 +359,10 @@ static uint64_t parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_fla
                 /* It's not a known flag, so it must be a filesystem specific
                  * option.  Add it to fs_options if it was passed in.
                  */
-                strlcat(fs_options, p, fs_options_len);
-                strlcat(fs_options, ",", fs_options_len);
+                auto cur_len = strlen(fs_options);
+                snprintf(fs_options + cur_len, fs_options_len - cur_len, "%s", p);
+                cur_len = strlen(fs_options);
+                snprintf(fs_options + cur_len, fs_options_len - cur_len, ",");
             } else {
                 /* fs_options was not passed in, so if the flag is unknown
                  * it's an error.
