@@ -367,7 +367,7 @@ void Service::Reap(const siginfo_t& siginfo) {
         return;
     }
 
-    // If we crash > 4 times in 4 minutes, reboot into bootloader.
+    // If we crash > 4 times in 4 minutes, reboot into bootloader or set crashing property
     boot_clock::time_point now = boot_clock::now();
     if (((flags_ & SVC_CRITICAL) || classnames_.count("updatable")) && !(flags_ & SVC_RESTART)) {
         if (now < time_crashed_ + 4min) {
