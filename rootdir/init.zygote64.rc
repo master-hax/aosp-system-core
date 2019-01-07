@@ -1,5 +1,5 @@
 service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server
-    class main
+    class main updatable
     priority -20
     user root
     group root readproc reserved_disk
