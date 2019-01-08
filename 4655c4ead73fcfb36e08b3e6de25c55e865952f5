@@ -1,0 +1,228 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c65e3b6_fa8f266f",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Moved from original fs_avb.cpp.",
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5256a811_f0a68e5f",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Will use range-for in another CL later.",
+      "range": {
+        "startLine": 125,
+        "startChar": 9,
+        "endLine": 125,
+        "endChar": 62
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e98f9bbf_c4d85681",
+        "filename": "fs_mgr/libfs_avb/avb_util.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Those are not New, just copied from the original fs_avb.cpp (and switch to Camel case).",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 53
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab512b2b_3df10f7d",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Switched to range-for per previous comment.",
+      "range": {
+        "startLine": 52,
+        "startChar": 3,
+        "endLine": 55,
+        "endChar": 5
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2257e65b_f0a71454",
+        "filename": "fs_mgr/libfs_avb/tests/basic_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "The test cases here are just copied from the bottom of fs_avb_unittest_util.cpp\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/859356/2/fs_mgr/libfs_avb/tests/fs_avb_unittest_util.cpp#216",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 6
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b15224c1_a09b0cb3",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test_util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Fixed previous comment.",
+      "range": {
+        "startLine": 140,
+        "startChar": 61,
+        "endLine": 140,
+        "endChar": 62
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87bc7c3a_89a51323",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test_util.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "To fix previous comment.",
+      "range": {
+        "startLine": 82,
+        "startChar": 50,
+        "endLine": 82,
+        "endChar": 51
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3598a95a_09c4ee61",
+        "filename": "fs_mgr/libfs_avb/util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Those functions are moved from original fs_avb.cpp.",
+      "range": {
+        "startLine": 29,
+        "startChar": 5,
+        "endLine": 29,
+        "endChar": 16
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c0c18dd_56d14346",
+        "filename": "fs_mgr/libfs_avb/util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "Those are copied then re-named from fs_mgr, so we don\u0027t need to include fs_mgr_priv.h.",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 119,
+        "endChar": 0
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6f3f3b58_41406edb",
+        "filename": "fs_mgr/libfs_avb/util.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 1,
+      "message": "libchrome logging.h and android-base logging.h have many duplicated macro definitions.\n\ne.g., CHECK(), ERROR, WARNING, etc.\n\nSo we can only include one of them.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 6
+      },
+      "revId": "4655c4ead73fcfb36e08b3e6de25c55e865952f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

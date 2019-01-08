@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e23cef39_85ebe2c7",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 0,
+      "message": "Those generic functions are moved util.cpp / util.h.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "fa416f9bec39a2ef25d5b83070e7ca0e450a2549",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28a112d8_1fced86e",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 0,
+      "message": "Those AVB related functions are moved to avb_util.cpp / avb_util.h.",
+      "range": {
+        "startLine": 222,
+        "startChar": 12,
+        "endLine": 222,
+        "endChar": 34
+      },
+      "revId": "fa416f9bec39a2ef25d5b83070e7ca0e450a2549",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d231db8_99f24fd5",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_unittest_util.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-08T10:28:49Z",
+      "side": 0,
+      "message": "This file is split into two files, see bullet-5 in the commit message.",
+      "revId": "fa416f9bec39a2ef25d5b83070e7ca0e450a2549",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
