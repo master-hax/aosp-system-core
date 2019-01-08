@@ -190,7 +190,8 @@ AvbSlotVerifyResult FsManagerAvbOps::AvbSlotVerify(const std::string& ab_suffix,
     // Copies avb_slot_data->vbmeta_images[].
     for (size_t i = 0; i < avb_slot_data->num_vbmeta_images; i++) {
         out_vbmeta_images->emplace_back(VBMetaData(avb_slot_data->vbmeta_images[i].vbmeta_data,
-                                                   avb_slot_data->vbmeta_images[i].vbmeta_size));
+                                                   avb_slot_data->vbmeta_images[i].vbmeta_size,
+                                                   avb_slot_data->vbmeta_images[i].partition_name));
     }
 
     // Free the local resource.

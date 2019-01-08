@@ -39,6 +39,7 @@
 
 using android::base::Basename;
 using android::base::ParseUint;
+using android::base::ReadFileToString;
 using android::base::StringPrintf;
 
 namespace android {
@@ -59,6 +60,24 @@ std::pair<size_t, bool> VerifyVbmetaDigest(const std::vector<VBMetaData>& vbmeta
     return std::make_pair(total_size, matched);
 }
 
+template <typename Hasher>
+std::pair<std::string, size_t> CalculateVbmetaDigest(const std::vector<VBMetaData>& vbmeta_images) {
+    std::string digest;
+    size_t total_size = 0;
+
+    Hasher hasher;
+    for (const auto& vbmeta : vbmeta_images) {
+        hasher.update(vbmeta.data(), vbmeta.size());
+        total_size += vbmeta.size();
+    }
+
+    // Converts digest bytes to a hex string.
+    digest = BytesToHex(hasher.finalize(), Hasher::DIGEST_SIZE);
+    return std::make_pair(digest, total_size);
+}
+
+// class AvbVerifier
+// -----------------
 // Reads the following values from kernel cmdline and provides the
 // VerifyVbmetaImages() to verify AvbSlotVerifyData.
 //   - androidboot.vbmeta.hash_alg
@@ -74,12 +93,6 @@ class AvbVerifier {
     AvbVerifier() = default;
 
   private:
-    enum HashAlgorithm {
-        kInvalid = 0,
-        kSHA256 = 1,
-        kSHA512 = 2,
-    };
-
     HashAlgorithm hash_alg_;
     uint8_t digest_[SHA512_DIGEST_LENGTH];
     size_t vbmeta_size_;
@@ -162,6 +175,97 @@ bool AvbVerifier::VerifyVbmetaImages(const std::vector<VBMetaData>& vbmeta_image
     return true;
 }
 
+// class AvbHandle
+// ---------------
+AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(
+        const std::string& partition_name, const std::string& ab_suffix,
+        const std::string& ab_other_suffix, const std::string& expected_public_key_path,
+        const HashAlgorithm& hash_algorithm, bool allow_verification_error,
+        bool load_chained_vbmeta, bool rollback_protection,
+        std::function<std::string(const std::string&)> custom_device_path) {
+    AvbUniquePtr avb_handle(new AvbHandle());
+    if (!avb_handle) {
+        LERROR << "Failed to allocate AvbHandle";
+        return nullptr;
+    }
+
+    std::string expected_key_blob;
+    if (!expected_public_key_path.empty()) {
+        if (access(expected_public_key_path.c_str(), F_OK) != 0) {
+            LERROR << "Expected public key path doesn't exist: " << expected_public_key_path;
+            return nullptr;
+        } else if (!ReadFileToString(expected_public_key_path, &expected_key_blob)) {
+            LERROR << "Failed to load: " << expected_public_key_path;
+            return nullptr;
+        }
+    }
+
+    auto android_by_name_symlink = [](const std::string& partition_name_with_ab) {
+        return "/dev/block/by-name/" + partition_name_with_ab;
+    };
+
+    auto device_path = custom_device_path ? custom_device_path : android_by_name_symlink;
+
+    auto verify_result = LoadAndVerifyVbmetaImpl(
+            partition_name, ab_suffix, ab_other_suffix, expected_key_blob, allow_verification_error,
+            load_chained_vbmeta, rollback_protection, device_path, false,
+            /* is_chained_vbmeta */ &avb_handle->vbmeta_images_);
+    switch (verify_result) {
+        case kVBMetaVerifyResultOK:
+            avb_handle->status_ = kAvbHandleSuccess;
+            break;
+        case kVBMetaVerifyResultErrorVerification:
+            avb_handle->status_ = kAvbHandleVerificationError;
+            break;
+        default:
+            LERROR << "LoadAndVerifyVbmetaImpl failed, result: " << verify_result;
+            return nullptr;
+    }
+
+    // Sets the MAJOR.MINOR for init to set it into "ro.boot.avb_version".
+    avb_handle->avb_version_ = StringPrintf("%d.%d", AVB_VERSION_MAJOR, AVB_VERSION_MINOR);
+
+    // Checks any disabled flag is set.
+    std::unique_ptr<AvbVBMetaImageHeader> vbmeta_header =
+            avb_handle->vbmeta_images_[0].GetVBMetaHeader();
+    bool verification_disabled = ((AvbVBMetaImageFlags)vbmeta_header->flags &
+                                  AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED);
+    bool hashtree_disabled =
+            ((AvbVBMetaImageFlags)vbmeta_header->flags & AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED);
+    if (verification_disabled) {
+        avb_handle->status_ = kAvbHandleVerificationDisabled;
+    } else if (hashtree_disabled) {
+        avb_handle->status_ = kAvbHandleHashtreeDisabled;
+    }
+
+    // Calculates the summary info for all vbmeta_images_;
+    std::string digest;
+    size_t total_size;
+    if (hash_algorithm == kSHA256) {
+        std::tie(digest, total_size) =
+                CalculateVbmetaDigest<SHA256Hasher>(avb_handle->vbmeta_images_);
+    } else if (hash_algorithm == kSHA512) {
+        std::tie(digest, total_size) =
+                CalculateVbmetaDigest<SHA512Hasher>(avb_handle->vbmeta_images_);
+    } else {
+        LERROR << "Invalid hash algorithm: " << hash_algorithm;
+        return nullptr;
+    }
+    avb_handle->vbmeta_info_ = VBMetaInfo(digest, hash_algorithm, total_size);
+
+    LINFO << "Returning avb_handle with status: " << avb_handle->status_;
+    return avb_handle;
+}
+
+AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta() {
+    // Loads inline vbmeta images, starting from /vbmeta.
+    return LoadAndVerifyVbmeta("vbmeta", fs_mgr_get_slot_suffix(), fs_mgr_get_other_slot_suffix(),
+                               {} /* expected_public_key, already checked by bootloader */, kSHA256,
+                               IsDeviceUnlocked(), /* allow_verification_error */
+                               true,               /* load_chained_vbmeta */
+                               false, /* rollback_protection, already checked by bootloader */
+                               nullptr /* custom_device_path */);
+}
 
 AvbUniquePtr AvbHandle::Open() {
     bool is_device_unlocked = IsDeviceUnlocked();
