@@ -140,6 +140,30 @@
       "revId": "6dfbab03132cc546e0d5c58d7b7526587f711e42",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8109364_14ca2063",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 506,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-08T21:41:30Z",
+      "side": 1,
+      "message": "I\u0027ve factored these hardcoded paths out into helper methods in libgsi.",
+      "parentUuid": "9530076e_b6eee168",
+      "range": {
+        "startLine": 506,
+        "startChar": 41,
+        "endLine": 506,
+        "endChar": 68
+      },
+      "revId": "6dfbab03132cc546e0d5c58d7b7526587f711e42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
