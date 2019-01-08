@@ -387,6 +387,7 @@ static int show_help() {
             "                            Format a flash partition.\n"
             " set_active SLOT            Set the active slot.\n"
             " oem [COMMAND...]           Execute OEM-specific command.\n"
+            " wipe-gsi                   Delete a GSI installation (fastbootd only).\n"
             "\n"
             "boot image:\n"
             " boot KERNEL [RAMDISK [SECOND]]\n"
@@ -1926,6 +1927,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
             std::string partition = next_arg(&args);
             std::string size = next_arg(&args);
             fb->ResizePartition(partition, size);
+        } else if (command == "wipe-gsi") {
+            fb->RawCommand("wipe-gsi", "wiping GSI");
         } else {
             syntax_error("unknown command %s", command.c_str());
         }
