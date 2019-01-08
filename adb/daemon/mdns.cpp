@@ -75,9 +75,9 @@ static void setup_mdns_thread() {
     if (error != kDNSServiceErr_NoError) {
         LOG(ERROR) << "Could not register mDNS service (" << error << ").";
         mdns_registered = false;
+    } else {
+        mdns_registered = true;
     }
-
-    mdns_registered = true;
 }
 
 static void teardown_mdns() {
