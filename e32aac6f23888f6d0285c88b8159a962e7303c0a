@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "254a3ceb_4d3a5daf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2019-01-08T22:13:33Z",
+      "side": 1,
+      "message": "If anyone relies on this functionality outside of tests, I\u0027d -2 it. It\u0027s purely for testing purposes. If these properties could be set accidentally, arbitrary parts of init could be skipped.",
+      "parentUuid": "4221dfed_cf2c032b",
+      "range": {
+        "startLine": 11,
+        "startChar": 13,
+        "endLine": 11,
+        "endChar": 45
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d4765ac3_cb6420f0",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
