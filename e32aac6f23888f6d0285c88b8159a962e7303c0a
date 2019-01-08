@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4221dfed_cf2c032b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-08T17:13:48Z",
+      "side": 1,
+      "message": "I\u0027m still not totally on board with this being a good idea.  User builds should be nearly identical to userdebug with the exception that they can\u0027t be rooted.  This conditional starting doesn\u0027t have anything to do with security or rooting, so it should be identical between both. \n SEPolicy should ensure that these properties aren\u0027t erroneously set.\n\nThe worst case scenario here is that we get into a situation where we fail on user but not on userdebug due to this delta, since we essentially only ever test userdebug builds.",
+      "range": {
+        "startLine": 11,
+        "startChar": 13,
+        "endLine": 11,
+        "endChar": 45
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4765ac3_cb6420f0",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-08T17:13:48Z",
+      "side": 1,
+      "message": "Update the comment to the new property name.",
+      "range": {
+        "startLine": 104,
+        "startChar": 49,
+        "endLine": 104,
+        "endChar": 67
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02579572_d2688e92",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-08T17:13:48Z",
+      "side": 1,
+      "message": "Same as above.",
+      "range": {
+        "startLine": 133,
+        "startChar": 51,
+        "endLine": 133,
+        "endChar": 69
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
