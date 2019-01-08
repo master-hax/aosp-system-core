@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "9de95fab_cf6c2b78",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 679,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-08T19:10:09Z",
+      "side": 1,
+      "message": "Sure, I don\u0027t have a preference. I guess the choice of ext4 also came up because of the familiarity with e2fsprogs. Either way works, but definitely not make it \"optional\".\n\nThe other reason to choose ext4 is the likeliness of it working on _any_ device.",
+      "parentUuid": "6da62579_3205d0d4",
+      "range": {
+        "startLine": 679,
+        "startChar": 23,
+        "endLine": 679,
+        "endChar": 29
+      },
+      "revId": "6dfbab03132cc546e0d5c58d7b7526587f711e42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "710bf7d0_1c79557b",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 3
