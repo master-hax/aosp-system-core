@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "eef3989d_be8eb197",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-08T23:01:21Z",
+      "side": 1,
+      "message": "SEPolicy, which controls who can set properties should be the arbiter of that.  Having an extra layer of checks \"just in case\" is almost always wrong.  Especially since we always test userdebug builds, we don\u0027t want something that happens to work correctly in one flavor not work in the other.",
+      "parentUuid": "254a3ceb_4d3a5daf",
+      "range": {
+        "startLine": 11,
+        "startChar": 13,
+        "endLine": 11,
+        "endChar": 45
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d4765ac3_cb6420f0",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
