@@ -33,31 +33,6 @@ using android::base::unique_fd;
 namespace android {
 namespace fs_mgr {
 
-// Helper functions to print enum class VBMetaVerifyResult.
-const char* VBMetaVerifyResultToString(VBMetaVerifyResult result) {
-    // clang-format off
-    static const char* const name[] = {
-        "ResultSuccess",
-        "ResultError",
-        "ResultErrorVerification",
-        "ResultUnknown",
-    };
-    // clang-format on
-
-    uint32_t index = static_cast<uint32_t>(result);
-    uint32_t unknown_index = sizeof(name) / sizeof(char*) - 1;
-    if (index >= unknown_index) {
-        index = unknown_index;
-    }
-
-    return name[index];
-}
-
-std::ostream& operator<<(std::ostream& os, VBMetaVerifyResult result) {
-    os << VBMetaVerifyResultToString(result);
-    return os;
-}
-
 // class VBMetaData
 // ----------------
 std::unique_ptr<AvbVBMetaImageHeader> VBMetaData::GetVBMetaHeader(bool update_vbmeta_size) {
@@ -377,7 +352,7 @@ std::unique_ptr<VBMetaData> VerifyVBMetaData(int fd, const std::string& partitio
     auto verify_result = VerifyVBMetaSignature(*vbmeta, expected_public_key_blob);
     if (out_verify_result != nullptr) *out_verify_result = verify_result;
 
-    if (verify_result == VBMetaVerifyResult::kSuccess ||
+    if (verify_result == VBMetaVerifyResult::kSuccess||
         verify_result == VBMetaVerifyResult::kErrorVerification) {
         return vbmeta;
     }
@@ -456,7 +431,7 @@ VBMetaVerifyResult LoadAndVerifyVbmetaImpl(
     std::unique_ptr<VBMetaData> vbmeta =
             VerifyVBMetaData(fd, partition_name, expected_public_key_blob, &verify_result);
     if (!vbmeta) {
-        LERROR << partition_name << ": Failed to load vbmeta, result: " << verify_result;
+        // LERROR << partition_name << ": Failed to load vbmeta, result: " << verify_result; [Fix it].
         return VBMetaVerifyResult::kError;
     }
 
