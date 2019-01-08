@@ -598,7 +598,11 @@ bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::s
     entry.mount_point = kScratchMountPoint;
     entry.fs_type = mnt_type;
     entry.flags = MS_RELATIME;
-    if (readonly) entry.flags |= MS_RDONLY;
+    if (readonly) {
+        entry.flags |= MS_RDONLY;
+    } else {
+        fs_mgr_clr_blk_ro(device_path);
+    }
     auto save_errno = errno;
     auto mounted = fs_mgr_do_mount_one(entry) == 0;
     if (!mounted) {
@@ -656,6 +660,7 @@ bool fs_mgr_overlayfs_make_scratch(const std::string& scratch_device, const std:
         return false;
     }
     command += " " + scratch_device;
+    fs_mgr_clr_blk_ro(scratch_device);
     auto ret = system(command.c_str());
     if (ret) {
         LERROR << "make " << mnt_type << " filesystem on " << scratch_device << " return=" << ret;
@@ -761,14 +766,8 @@ bool fs_mgr_overlayfs_setup_scratch(const Fstab& fstab, bool* change) {
     auto mnt_type = fs_mgr_overlayfs_scratch_mount_type();
     if (partition_exists) {
         if (fs_mgr_overlayfs_mount_scratch(scratch_device, mnt_type)) {
-            if (!fs_mgr_access(kScratchMountPoint + kOverlayTopDir) &&
-                !fs_mgr_filesystem_has_space(kScratchMountPoint)) {
-                // declare it useless, no overrides and no free space
-                fs_mgr_overlayfs_umount_scratch();
-            } else {
-                if (change) *change = true;
-                return true;
-            }
+            if (change) *change = true;
+            return true;
         }
         // partition existed, but was not initialized; fall through to make it.
         errno = 0;

@@ -135,6 +135,7 @@ bool fs_mgr_wait_for_file(const std::string& filename,
                           FileWaitMode wait_mode = FileWaitMode::Exists);
 
 bool fs_mgr_set_blk_ro(const std::string& blockdev);
+bool fs_mgr_clr_blk_ro(const std::string& blockdev);
 bool fs_mgr_update_for_slotselect(Fstab* fstab);
 bool fs_mgr_is_device_unlocked();
 const std::string& get_android_dt_dir();
