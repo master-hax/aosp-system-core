@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec576473_3a9dbf25",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-08T22:34:38Z",
+      "side": 1,
+      "message": "nit: Not very KISS, hard to visually parse. Why not:\n\n  if (readonly) {\n    if (!fs_mgr_access(device_path)) return false;\n  } else {\n    if (!fs_mgr_rw_access(device_path)) return false;\n  }",
+      "range": {
+        "startLine": 580,
+        "startChar": 4,
+        "endLine": 583,
+        "endChar": 34
+      },
+      "revId": "37eae61161dee17d849bf05bab8e961f365ef6cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2fd1229b_fe194525",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-08T22:34:38Z",
+      "side": 1,
+      "message": "this is somewhat expensive, and the function is not marked pure (maybe it should be?) perhaps explicitly hold on to it through the two calls, eg (untested):\n\n  if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) \u0026\u0026\n      fs_mgr_wait_for_file(scratch_device, 10s)) {\n    const auto mount_type \u003d fs_mgr_overlayfs_scratch_mount_type();\n    if (fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type, true)) {\n      auto has_overlayfs_dir \u003d fs_mgr_access(kScratchMountPoint + kOverlayTopDir);\n      fs_mgr_overlayfs_umount_scratch();\n      if (has_overlayfs_dir) fs_mgr_overlayfs_mount_scratch(scratch_device, mount_type);\n    }\n  }",
+      "range": {
+        "startLine": 810,
+        "startChar": 47,
+        "endLine": 810,
+        "endChar": 84
+      },
+      "revId": "37eae61161dee17d849bf05bab8e961f365ef6cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "792028d0_664b0904",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 812,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-08T22:34:38Z",
+      "side": 1,
+      "message": "very very minor nit: style is to use auto",
+      "range": {
+        "startLine": 812,
+        "startChar": 16,
+        "endLine": 812,
+        "endChar": 20
+      },
+      "revId": "37eae61161dee17d849bf05bab8e961f365ef6cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7f15cd5_7adf36ee",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-08T22:34:38Z",
+      "side": 1,
+      "message": "nit: It will be clear in the mount one call what went wrong, including errno etc, writeable or no, this log message turns into stutter so is largely unnecessary.",
+      "range": {
+        "startLine": 817,
+        "startChar": 20,
+        "endLine": 817,
+        "endChar": 67
+      },
+      "revId": "37eae61161dee17d849bf05bab8e961f365ef6cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
