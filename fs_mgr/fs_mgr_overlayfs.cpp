@@ -575,8 +575,12 @@ std::vector<std::string> fs_mgr_candidate_list(Fstab* fstab, const char* mount_p
 }
 
 // Mount kScratchMountPoint
-bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::string mnt_type) {
-    if (!fs_mgr_rw_access(device_path)) return false;
+bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::string mnt_type,
+                                    bool readonly = false) {
+    bool can_access = (readonly && fs_mgr_access(device_path)) ||
+                      (!readonly && fs_mgr_rw_access(device_path));
+
+    if (!can_access) return false;
     if (setfscreatecon(kOverlayfsFileContext)) {
         PERROR << "setfscreatecon " << kOverlayfsFileContext;
     }
@@ -589,6 +593,7 @@ bool fs_mgr_overlayfs_mount_scratch(const std::string& device_path, const std::s
     entry.mount_point = kScratchMountPoint;
     entry.fs_type = mnt_type;
     entry.flags = MS_RELATIME;
+    if (readonly) entry.flags |= MS_RDONLY;
     auto save_errno = errno;
     auto mounted = fs_mgr_do_mount_one(entry) == 0;
     if (!mounted) {
@@ -802,9 +807,15 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
             if (fs_mgr_overlayfs_scratch_can_be_mounted(scratch_device) &&
                 fs_mgr_wait_for_file(scratch_device, 10s) &&
                 fs_mgr_overlayfs_mount_scratch(scratch_device,
-                                               fs_mgr_overlayfs_scratch_mount_type()) &&
-                !fs_mgr_access(kScratchMountPoint + kOverlayTopDir)) {
+                                               fs_mgr_overlayfs_scratch_mount_type(),
+                                               true /* readonly */)) {
+                bool has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + kOverlayTopDir);
                 fs_mgr_overlayfs_umount_scratch();
+                if (has_overlayfs_dir &&
+                    !fs_mgr_overlayfs_mount_scratch(scratch_device,
+                                                    fs_mgr_overlayfs_scratch_mount_type())) {
+                    LERROR << "Cannot remount scratch as writable";
+                }
             }
         }
         if (fs_mgr_overlayfs_mount(mount_point)) ret = true;
