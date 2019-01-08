@@ -117,7 +117,7 @@ static constexpr const char* kVendorClassloaderNamespaceName = "vendor-classload
 // (http://b/27588281) This is a workaround for apps using custom classloaders and calling
 // System.load() with an absolute path which is outside of the classloader library search path.
 // This list includes all directories app is allowed to access this way.
-static constexpr const char* kWhitelistedDirectories = "/data:/mnt/expand";
+static constexpr const char* kWhitelistedDirectories = "/data:/mnt/expand:/system/CDA/items";
 
 static bool is_debuggable() {
   char debuggable[PROP_VALUE_MAX];
