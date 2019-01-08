@@ -187,3 +187,5 @@ bool ReadDefaultFstab(Fstab* fstab);
 FstabEntry FstabRecToFstabEntry(const fstab_rec* fstab_rec);
 Fstab LegacyFstabToFstab(const struct fstab* legacy_fstab);
 fstab* FstabToLegacyFstab(const Fstab& fstab);
+
+bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val);
