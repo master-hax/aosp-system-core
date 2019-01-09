@@ -113,7 +113,7 @@ unsigned int ec_privkey_pk8_der_len = 138;
 
 keymaster_key_param_t ec_params[] = {
         keymaster_param_enum(KM_TAG_ALGORITHM, KM_ALGORITHM_EC),
-        keymaster_param_long(KM_TAG_EC_CURVE, KM_EC_CURVE_P_521),
+        keymaster_param_long(KM_TAG_EC_CURVE, KM_EC_CURVE_P_256),
         keymaster_param_enum(KM_TAG_PURPOSE, KM_PURPOSE_SIGN),
         keymaster_param_enum(KM_TAG_PURPOSE, KM_PURPOSE_VERIFY),
         keymaster_param_enum(KM_TAG_DIGEST, KM_DIGEST_NONE),
