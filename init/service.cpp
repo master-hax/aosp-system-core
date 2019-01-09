@@ -990,6 +990,7 @@ Result<Success> Service::Start() {
             LOG(FATAL) << "Service '" << name_ << "' could not enter namespaces: " << result.error();
         }
 
+#ifdef BIONIC_UPDATABLE
         if (pre_apexd_) {
             // pre-apexd process gets a private copy of the mount namespace.
             // However, this does not mean that mount/unmount events are not
@@ -1009,6 +1010,7 @@ Result<Success> Service::Start() {
                            << " '" << name_ << "' failed: " << strerror(errno);
             }
         }
+#endif
 
         if (namespace_flags_ & CLONE_NEWNS) {
             if (auto result = SetUpMountNamespace(); !result) {
@@ -1017,12 +1019,14 @@ Result<Success> Service::Start() {
             }
         }
 
+#ifdef BIONIC_UPDATABLE
         if (pre_apexd_ && ServiceList::GetInstance().IsRuntimeAvailable()) {
             if (auto result = SetUpPreApexdMounts(); !result) {
                 LOG(FATAL) << "Pre-apexd service '" << name_
                            << "' could not setup the mount points: " << result.error();
             }
         }
+#endif
 
         if (namespace_flags_ & CLONE_NEWPID) {
             // This will fork again to run an init process inside the PID
