@@ -71,6 +71,7 @@ cc_library {
     recovery_available: true,
     vndk: {
         enabled: true,
+        must_use_vendor_variant: true,
     },
     double_loadable: true,
     export_shared_lib_headers: ["libbase"],

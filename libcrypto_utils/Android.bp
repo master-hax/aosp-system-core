@@ -20,6 +20,7 @@ cc_library {
     recovery_available: true,
     vndk: {
         enabled: true,
+        must_use_vendor_variant: true,
     },
     host_supported: true,
     srcs: [
