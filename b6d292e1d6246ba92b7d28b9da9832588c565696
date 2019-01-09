@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e3c8d02e_bd2af4fc",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-01-09T22:54:43Z",
+      "side": 1,
+      "message": "Good point. Although, it is used in L37 (Maybe it should be like that there). I\u0027ll fix this one.",
+      "parentUuid": "61d7f918_4e4f1e1d",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 20
+      },
+      "revId": "b6d292e1d6246ba92b7d28b9da9832588c565696",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "32f85049_02a2e1ec",
         "filename": "fs_mgr/liblp/utility.cpp",
         "patchSetId": 2
