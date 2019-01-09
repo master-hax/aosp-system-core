@@ -20,6 +20,8 @@
 extern "C" {
 #endif
 
+int android_is_in_vendor_context();
+
 void* android_load_sphal_library(const char* name, int flag);
 
 int android_unload_sphal_library(void* handle);
