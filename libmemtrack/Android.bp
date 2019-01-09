@@ -5,6 +5,7 @@ cc_library_shared {
     vendor_available: true,
     vndk: {
         enabled: true,
+        must_use_vendor_variant: true,
     },
     srcs: ["memtrack.cpp"],
     export_include_dirs: ["include"],
