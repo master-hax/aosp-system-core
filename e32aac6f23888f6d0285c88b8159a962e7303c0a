@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "1e3958c7_432d399a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-01-09T16:31:55Z",
+      "side": 1,
+      "message": "+1. Leave code the same on user/userdebug and let selinux permissions prevent those properties from being set on user builds. That\u0027s consistent with how many testing features are currently handled.",
+      "parentUuid": "eef3989d_be8eb197",
+      "range": {
+        "startLine": 11,
+        "startChar": 13,
+        "endLine": 11,
+        "endChar": 45
+      },
+      "revId": "e32aac6f23888f6d0285c88b8159a962e7303c0a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d4765ac3_cb6420f0",
         "filename": "init/builtins.cpp",
         "patchSetId": 1
