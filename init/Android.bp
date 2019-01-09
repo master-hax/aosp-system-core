@@ -58,6 +58,9 @@ cc_defaults {
         uml: {
             cppflags: ["-DUSER_MODE_LINUX"],
         },
+        bionicUpdatable: {
+            cflags: ["-DBIONIC_UPDATABLE"],
+        },
     },
     static_libs: [
         "libseccomp_policy",
