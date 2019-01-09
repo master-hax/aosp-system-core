@@ -24,6 +24,11 @@
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
 
+#if !defined(_WIN32)
+#include <linux/fs.h>
+#include <sys/ioctl.h>
+#endif
+
 #include "reader.h"
 #include "utility.h"
 
@@ -245,6 +250,16 @@ bool FlashPartitionTable(const IPartitionOpener& opener, const std::string& supe
         PERROR << __PRETTY_FUNCTION__ << " open failed: " << super_partition;
         return false;
     }
+
+#if !defined(_WIN32)
+    // On retrofit devices, super_partition is system_other and might be set to
+    // readonly by fs_mgr_set_blk_ro(). Unset readonly so that partition table
+    // can be flashed.
+    int readonly = 0;
+    if (ioctl(fd.get(), BLKROSET, &readonly) != 0) {
+        PWARNING << __PRETTY_FUNCTION__ << " BLKROSET failed: " << super_partition;
+    }
+#endif
 
     // This is only used in update_engine and fastbootd, where the super
     // partition should be specified as a name (or by-name link), and

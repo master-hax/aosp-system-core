@@ -29,6 +29,7 @@
 #define LWARN LOG(WARNING) << LP_TAG
 #define LINFO LOG(INFO) << LP_TAG
 #define LERROR LOG(ERROR) << LP_TAG
+#define PWARNING PLOG(WARNING) << LP_TAG
 #define PERROR PLOG(ERROR) << LP_TAG
 
 namespace android {
