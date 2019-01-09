@@ -280,13 +280,21 @@ bool FirstStageMount::InitVerityDevice(const std::string& verity_device) {
 }
 
 bool FirstStageMount::MountPartitions() {
-    for (auto fstab_rec : mount_fstab_recs_) {
-        if (!SetUpDmVerity(fstab_rec)) {
-            PLOG(ERROR) << "Failed to setup verity for '" << fstab_rec->mount_point << "'";
-            return false;
-        }
-        if (fs_mgr_do_mount_one(fstab_rec)) {
-            PLOG(ERROR) << "Failed to mount '" << fstab_rec->mount_point << "'";
+    for (auto it = mount_fstab_recs_.begin(); it != mount_fstab_rec_.end();) {
+        bool mounted = false;
+        auto start_mount_point = (*it)->mount_point;
+        do {
+            if (!mounted) {
+                if (SetUpDmVerity(*it)) {
+                    if (fs_mgr_do_mount_one(*it) == 0) mounted = true;
+                }
+            } else
+                LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
+            it++;
+        } while (it != fstab_.end() && (*it)->mount_point == start_mount_point);
+
+        if (!mounted) {
+            LOG(ERROR) << start_mount_point << " mounted unsuccessfully but it is required!";
             return false;
         }
     }
