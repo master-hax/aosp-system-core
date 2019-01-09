@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd1617a3_e77fec42",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-09T18:38:17Z",
+      "side": 1,
+      "message": "Instead of this else branch, it\u0027s probably easiest to break once we\u0027ve successfully mounted /system.\n\nI guess that\u0027s a little bit complicated by having the nested loops, but maybe the logic can be switched around to remove /system from the fstab and return early.  Or even better, perhaps we just continue if we find \u0027/system\u0027 in MountPartitions(), such that we can simply do \n\nSwitchRoot(\"/system\");\nreturn true;",
+      "range": {
+        "startLine": 425,
+        "startChar": 0,
+        "endLine": 425,
+        "endChar": 86
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
