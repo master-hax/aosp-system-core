@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7df38802_3b3d5473",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T16:02:45Z",
+      "side": 1,
+      "message": "If /odm -\u003e /vendor/odm, then why do you have /vendor/build.prop AND /vendor/odm/build.prop in the same vendor.img? How are they different? Could you tell me why you can\u0027t move bits in /vendor/odm/build.prop into /vendor/build.prop?",
+      "revId": "0e598b50912a3a0c720812a2bb5fb81a3b0458cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
