@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6ad498cb_72a767e8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-10T14:37:40Z",
+      "side": 1,
+      "message": "I think it is not necessary to do like this beacuse it will introduce once more cycle.\n      auto system_partition \u003d std::find_if(fstab_.begin(), fstab_.end(), [](const auto\u0026 entry) {\n          return entry.mount_point \u003d\u003d \"/system\";                                  \n      });",
+      "parentUuid": "dae66ade_e86c7f33",
+      "range": {
+        "startLine": 412,
+        "startChar": 22,
+        "endLine": 412,
+        "endChar": 43
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd1617a3_e77fec42",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 9
@@ -72,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "4e6ab02e_7ce10ffe",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-10T14:37:40Z",
+      "side": 1,
+      "message": "I will add a \"break\".",
+      "parentUuid": "66beb3e6_e71b56e8",
+      "range": {
+        "startLine": 425,
+        "startChar": 0,
+        "endLine": 425,
+        "endChar": 86
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8c91bcc2_c07d8a7b",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 9
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "c3c07511_b579fa68",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-10T14:37:40Z",
+      "side": 1,
+      "message": "Ok, I will add a break once a /system is mounted because read_fstab_from_fstab ensures the order.",
+      "parentUuid": "8c91bcc2_c07d8a7b",
+      "range": {
+        "startLine": 427,
+        "startChar": 30,
+        "endLine": 427,
+        "endChar": 61
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3fe8cf5b_68c85ee8",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 9
@@ -115,6 +187,30 @@
       "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "573bc53c_0252f799",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-10T14:37:40Z",
+      "side": 1,
+      "message": "Ok, I will updated it.",
+      "parentUuid": "3fe8cf5b_68c85ee8",
+      "range": {
+        "startLine": 490,
+        "startChar": 12,
+        "endLine": 490,
+        "endChar": 93
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
