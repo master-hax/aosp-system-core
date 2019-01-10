@@ -1087,6 +1087,14 @@ static Result<Success> do_parse_apex_configs(const BuiltinArguments& args) {
     }
 }
 
+// The bionic libs and the dynamic linker from the runtime APEX are bind-mounted
+// to the mount points. As a result, the previous mounts done by
+// prepare_bootstrap_bionic become hidden.
+static Result<Success> do_mark_runtime_available(const BuiltinArguments& args) {
+    ServiceList::GetInstance().MarkRuntimeAvailable();
+    return Success();
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1133,6 +1141,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"rm",                      {1,     1,    {true,   do_rm}}},
         {"rmdir",                   {1,     1,    {true,   do_rmdir}}},
         {"setprop",                 {2,     2,    {true,   do_setprop}}},
+        {"mark_runtime_available",  {0,     0,    {false,  do_mark_runtime_available}}},
         {"setrlimit",               {3,     3,    {false,  do_setrlimit}}},
         {"start",                   {1,     1,    {false,  do_start}}},
         {"stop",                    {1,     1,    {false,  do_stop}}},

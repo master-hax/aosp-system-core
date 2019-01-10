@@ -929,6 +929,14 @@ Result<Success> Service::Start() {
         scon = *result;
     }
 
+    if (!ServiceList::GetInstance().IsRuntimeAvailable() && !pre_apexd_) {
+        // If this service is started before the runtime APEX gets available,
+        // mark it as pre-apexd one. Note that this marking is permanent. So
+        // for example, if the service is re-launched (e.g., due to crash),
+        // it is still recognized as pre-apexd... for consistency.
+        pre_apexd_ = true;
+    }
+
     LOG(INFO) << "starting service '" << name_ << "'...";
 
     pid_t pid = -1;
@@ -1322,6 +1330,10 @@ void ServiceList::MarkServicesUpdate() {
         }
     }
     delayed_service_names_.clear();
+}
+
+void ServiceList::MarkRuntimeAvailable() {
+    runtime_available_ = true;
 }
 
 void ServiceList::DelayService(const Service& service) {
