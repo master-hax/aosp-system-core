@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68059f19_f8c9abf4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-10T19:17:32Z",
+      "side": 1,
+      "message": "Aren\u0027t there some CTS tests that exercise libnativebridge?",
+      "revId": "641c5af459fc20570035b12218392a4eab8b28c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de8ca5f2_6212742f",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-10T19:17:32Z",
+      "side": 1,
+      "message": "I think a useful test is to compile this with C. C.f. http://r.android.com/c/platform/art/+/867369/4/libdexfile/external/dex_file_ext_c_test.c",
+      "revId": "641c5af459fc20570035b12218392a4eab8b28c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b248075_98ce120d",
+        "filename": "libnativebridge/libnativebridge.map.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-10T19:17:32Z",
+      "side": 1,
+      "message": "Please add a TODO here to trim this down once libart is no longer going through the stub. Preferably also open a separate ticket for it.",
+      "revId": "641c5af459fc20570035b12218392a4eab8b28c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
