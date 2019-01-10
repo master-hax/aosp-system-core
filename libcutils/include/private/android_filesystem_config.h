@@ -190,8 +190,17 @@
  */
 #define AID_OVERFLOWUID 65534 /* unmapped user in the user namespace */
 
-#define AID_ISOLATED_START 99000 /* start of uids for fully isolated sandboxed processes */
+/* use the ranges below to determine whether a process is isolated */
+#define AID_ISOLATED_START 90000 /* start of uids for fully isolated sandboxed processes */
 #define AID_ISOLATED_END 99999   /* end of uids for fully isolated sandboxed processes */
+
+/* isolated processes in this range are spawned from an application zygote */
+#define AID_APP_ZYGOTE_ISOLATED_START 90000
+#define AID_APP_ZYGOTE_ISOLATED_END 98999
+
+/* isolated processes in this range are spawned from the regular zygote */
+#define AID_REGULAR_ZYGOTE_ISOLATED_START 99000
+#define AID_REGULAR_ZYGOTE_ISOLATED_END 99999
 
 #define AID_USER 100000        /* TODO: switch users over to AID_USER_OFFSET */
 #define AID_USER_OFFSET 100000 /* offset for uid ranges for each user */
