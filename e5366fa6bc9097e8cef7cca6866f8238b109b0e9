@@ -52,6 +52,24 @@
       "revId": "e5366fa6bc9097e8cef7cca6866f8238b109b0e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b7c3cd9_b609e977",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-10T17:53:58Z",
+      "side": 1,
+      "message": "this \u003d libnativebrdige.so ? wdym twice?",
+      "parentUuid": "5a2ee7f5_9b2811b3",
+      "revId": "e5366fa6bc9097e8cef7cca6866f8238b109b0e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
