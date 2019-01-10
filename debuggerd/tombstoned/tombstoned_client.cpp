@@ -21,6 +21,7 @@
 
 #include <utility>
 
+#include <android-base/cmsg.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
 #include <cutils/sockets.h>
@@ -28,6 +29,7 @@
 #include "protocol.h"
 #include "util.h"
 
+using android::base::ReceiveFileDescriptors;
 using android::base::unique_fd;
 
 bool tombstoned_connect(pid_t pid, unique_fd* tombstoned_socket, unique_fd* output_fd,
@@ -53,7 +55,7 @@ bool tombstoned_connect(pid_t pid, unique_fd* tombstoned_socket, unique_fd* outp
   }
 
   unique_fd tmp_output_fd;
-  ssize_t rc = recv_fd(sockfd, &packet, sizeof(packet), &tmp_output_fd);
+  ssize_t rc = ReceiveFileDescriptors(sockfd, &packet, sizeof(packet), &tmp_output_fd);
   if (rc == -1) {
     async_safe_format_log(ANDROID_LOG_ERROR, "libc",
                           "failed to read response to DumpRequest packet: %s", strerror(errno));
@@ -63,6 +65,10 @@ bool tombstoned_connect(pid_t pid, unique_fd* tombstoned_socket, unique_fd* outp
         ANDROID_LOG_ERROR, "libc",
         "received DumpRequest response packet of incorrect length (expected %zu, got %zd)",
         sizeof(packet), rc);
+    return false;
+  } else if (tmp_output_fd == -1) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc",
+                          "failed to receive file descriptor from tombstoned");
     return false;
   }
 
