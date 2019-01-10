@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f270a4ea_bcabada0",
+        "filename": "libvndksupport/linker.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T06:26:03Z",
+      "side": 1,
+      "message": "what do you mean by context here? Is it process? Or something else? I am assuming that \u0027vendor context\u0027 means something like \"when the caller is executing an SP-HAL\". Right? Then this is wrong.\n\n\u0027vndk\u0027 namespace exists for both system and vendor processes. And inside a process, the existence of a linker namespace is static and global. So this function will always return true.\n\nAs I said before, there current is no way to know the linker namespace that the caller is loaded at.",
+      "range": {
+        "startLine": 54,
+        "startChar": 17,
+        "endLine": 54,
+        "endChar": 24
+      },
+      "revId": "9a08cb295c431bd2ab2109927c2adb237077f89a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
