@@ -84,6 +84,7 @@ void InstallRebootSignalHandlers() {
     memset(&action, 0, sizeof(action));
     sigfillset(&action.sa_mask);
     action.sa_handler = [](int signal) {
+        LOG(ERROR) << "signo=" << signal << " pid=" << getpid();
         // These signal handlers are also caught for processes forked from init, however we do not
         // want them to trigger reboot, so we directly call _exit() for children processes here.
         if (getpid() != 1) {
