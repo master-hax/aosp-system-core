@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d58460b2_0cfc26c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T16:47:44Z",
+      "side": 1,
+      "message": "Bug: 119840313",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "4f1a8555c4d6f98d4adfd901e9ad96090cda5f09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f23585a7_1681a937",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T16:47:44Z",
+      "side": 1,
+      "message": "This could be guarded to be C compatible. \n\n#ifdef __cplusplus\nnamespace android {\nextern \"C\" {\n#endif  // __cplusplus",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 12
+      },
+      "revId": "4f1a8555c4d6f98d4adfd901e9ad96090cda5f09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e4c989a_2d123ea5",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T16:47:44Z",
+      "side": 1,
+      "message": "nit: newline before.",
+      "range": {
+        "startLine": 400,
+        "startChar": 0,
+        "endLine": 400,
+        "endChar": 1
+      },
+      "revId": "4f1a8555c4d6f98d4adfd901e9ad96090cda5f09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
