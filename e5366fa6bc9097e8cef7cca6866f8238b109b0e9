@@ -16,6 +16,24 @@
       "revId": "e5366fa6bc9097e8cef7cca6866f8238b109b0e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "178870ca_0bd5c123",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-10T17:47:16Z",
+      "side": 1,
+      "message": "The namespace only applies to c++ users, so they can equivalently use android:: or ::. That means we don\u0027t need to update the current (all c++) users to get this in.",
+      "parentUuid": "99f6dbf3_11b9b09c",
+      "revId": "e5366fa6bc9097e8cef7cca6866f8238b109b0e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
