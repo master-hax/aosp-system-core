@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ee6f4b2_61956913",
+        "filename": "rootdir/etc/ld.config.legacy.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d30212ce_c04070b3",
+        "filename": "rootdir/etc/ld.config.legacy.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a9e5b58_7f4b66ff",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b610b609_4a2bbc84",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 161,
+        "endChar": 65
+      },
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "844875a1_9096e909",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61209fca_d7b9ac43",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T15:53:48Z",
+      "side": 1,
+      "message": "no need",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 0
+      },
+      "revId": "4f76802207b21313ddcbb8cd5e074897020f1e21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
