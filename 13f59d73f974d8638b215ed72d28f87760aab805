@@ -22,6 +22,30 @@
       "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66beb3e6_e71b56e8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-10T00:16:37Z",
+      "side": 1,
+      "message": "We call TrySkipMountingPartitions before mount all partitions now.\nWe also need these loop bacause we need mount /system first if it exists bcause TrySkipMountingPartitions depends on the content of system partition.",
+      "parentUuid": "bd1617a3_e77fec42",
+      "range": {
+        "startLine": 425,
+        "startChar": 0,
+        "endLine": 425,
+        "endChar": 86
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
