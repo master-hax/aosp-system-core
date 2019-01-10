@@ -1,0 +1,372 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22b91920_69e35ec1",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Seems that the only client is, and will be, the init::do_mount() call... I think it\u0027s still safe and (defenitively) cleaner to avoid this wrapper function and keep that check inlined in the caller by moving the definition of this function as a static within init/builtins.cpp... are there any other users ?",
+      "range": {
+        "startLine": 201,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "609c3888_46fffc6c",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "We can save some indentation and perhaps improve readability by using \"continue\" whenever possible:\n\n\n    if (cnt \u003c MOUNTS_LINE_ENTRY_CGTAG) continue;\n\n    // CGroup v1 hierarchy\n    if (cnt \u003e MOUNTS_LINE_ENTRY_CGTYPE \u0026\u0026\n        !strcmp(tokens[MOUNTS_LINE_ENTRY_CGTAG], MOUNTS_CGROUP_TAG)) {\n        //...\n        continue;\n    }\n\n    // CGroup v2 hierarchy\n    if (!strcmp(tokens[MOUNTS_LINE_ENTRY_CGTAG], MOUNTS_CGROUP2_TAG)) {\n        //...\n        continue;\n    }",
+      "range": {
+        "startLine": 226,
+        "startChar": 12,
+        "endLine": 242,
+        "endChar": 13
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d05a2987_5cb435b6",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Why not having this logic as part of the \"singleton\" constructor and store the result as an attribute?\n\nThe init process will be the first one to call GetInstance and thus to run the detection code from the ctor().\nAll the other clients will get just an instance pointer back... IOW, all callers should just and always use GetInstance and eventually access cg_map-\u003eIsCgroupSystem(system);\n\nCould that work ?",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 24
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79b4f5e8_68cdb597",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "With the same \"dynamic allocation\" pattern I\u0027ve suggested for TaskProfiles::GetInstance() we can get rid of the initFlag and make a better use of the constructor (instead of Init())",
+      "range": {
+        "startLine": 53,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 5
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9455632f_4423ce4d",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "The only real benefit of such a mapping is compile time checks... while, if we allow users to use free form strings, we can have run-time errors/expections... but we will get a much more generic implementation.\n\nWhy not just getting rid of these mappings since the beginning?\n\nAre spelling errors really something we are worried about? These should be covered by code review... and in principle the client code should work independently from a profile being specified or not in the JSON file.",
+      "range": {
+        "startLine": 28,
+        "startChar": 25,
+        "endLine": 28,
+        "endChar": 66
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fea719a_f613ad54",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Still have to check the usages... but these methods looks like just as a wrapper for CgroupMap provided ones... do we really need them here?... if we don\u0027t have C clients I doubt...",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 19
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce8b92e1_371ee066",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Again a C API... need to check where we need it...",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 87
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be683ebf_b1d0bf0f",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Did not yet has a look at the clients... but not returning a path string here looks a bit too much C then C++...",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 22
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc48a949_1d05e13f",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Give we always specialise *Action classes from this base, should not be something like \"ProfilewAction\" a better name for this class? At the end it\u0027s there to translate a profile into a set of actions...",
+      "range": {
+        "startLine": 42,
+        "startChar": 6,
+        "endLine": 42,
+        "endChar": 20
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9ecfb88_2ff86cf2",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "unsigned int looks a better type for uclamp attributes",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 54,
+        "endChar": 7
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc8c1e68_7a6a661f",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "If we go for s/TaskProfile/ProfileAction/ this will be \"actions\"",
+      "range": {
+        "startLine": 106,
+        "startChar": 16,
+        "endLine": 106,
+        "endChar": 41
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6321c35e_9ad35200",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Still to look at the clients... but this looks like something we should do from the ctor...",
+      "range": {
+        "startLine": 128,
+        "startChar": 4,
+        "endLine": 128,
+        "endChar": 38
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "704d4992_dd3b0c77",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "We can avoid the InitFlag and simplify a bit the code if we go for dynamic allocation at first call:\n\nstatic const TaskProfiles* GetInstance() {\n    static TaskProfiles *instance;\n\n    if (!instance)\n        instance \u003d new TaskProfiles();\n\n    return instance;\n}\n\nAnd moving the Init() code into the ctor.",
+      "range": {
+        "startLine": 134,
+        "startChar": 4,
+        "endLine": 137,
+        "endChar": 5
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49361981_92552e01",
+        "filename": "libprocessgroup/utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Here we can save some code duplication by calling the following Chown().\n\nMoreover, all these methods looks like they could be better organised withing a \"Path\" class, e.g.\n\nclass Path {\npublic:\n    Path(const std::string\u0026 path);\n    bool mkdir(mode_t mode);\n    bool chown(uid_t uid, gid_t gid);\n    // Other UID/PID related methods can be moved here too...\n};\n// Eventually specialised by:\nclass CGroupPath { };\n\n\nDon\u0027t we ready have something generic around for path manipulations ?",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 44,
+        "endChar": 5
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61a6cfca_ee9eff6b",
+        "filename": "libprocessgroup/utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "What about using a:\n   vector\u003cchar *\u003e \u0026tokens\n?",
+      "range": {
+        "startLine": 49,
+        "startChar": 51,
+        "endLine": 49,
+        "endChar": 80
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b278fe8_64a72dd5",
+        "filename": "libprocessgroup/utils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-10T18:59:25Z",
+      "side": 1,
+      "message": "Is this not just:\n\n        str.replace(pos, from.length(), to);\n\n?",
+      "range": {
+        "startLine": 68,
+        "startChar": 8,
+        "endLine": 69,
+        "endChar": 28
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
