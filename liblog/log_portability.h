@@ -63,8 +63,11 @@
 #endif
 
 /* Unused argument. For C code only, remove symbol name for C++ */
+// TODO(tomcherry) remove this)
+#if !defined(__cplusplus)
 #ifndef __unused
 #define __unused __attribute__((__unused__))
+#endif
 #endif
 
 /* possible missing definitions in unistd.h */
