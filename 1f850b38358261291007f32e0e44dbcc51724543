@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "587f26ee_26239c83",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-10T18:37:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c04baad_957eeb4a",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 1
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fcc7feee_2d8e7ef3",
         "filename": "libnativebridge/include/nativebridge/native_bridge.h",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "c7fd4265_b3a5eed4",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-10T18:37:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fcc7feee_2d8e7ef3",
+      "range": {
+        "startLine": 404,
+        "startChar": 1,
+        "endLine": 404,
+        "endChar": 2
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "58372fec_381fdb31",
         "filename": "libnativebridge/native_bridge.cc",
         "patchSetId": 3
@@ -68,6 +116,30 @@
       "revId": "1f850b38358261291007f32e0e44dbcc51724543",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3c655e2_415ecb0a",
+        "filename": "libnativebridge/native_bridge.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-10T18:37:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58372fec_381fdb31",
+      "range": {
+        "startLine": 633,
+        "startChar": 1,
+        "endLine": 633,
+        "endChar": 2
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
