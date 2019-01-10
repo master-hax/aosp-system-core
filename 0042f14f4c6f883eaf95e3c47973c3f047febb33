@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c6db1aac_bec6653d",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T16:34:41Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "0042f14f4c6f883eaf95e3c47973c3f047febb33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec90f245_fdc33bf6",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T16:34:41Z",
+      "side": 1,
+      "message": "no need",
+      "revId": "0042f14f4c6f883eaf95e3c47973c3f047febb33",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
