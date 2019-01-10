@@ -150,6 +150,7 @@ namespace.sphal.search.paths += /vendor/${LIB}
 
 namespace.sphal.permitted.paths  = /odm/${LIB}
 namespace.sphal.permitted.paths += /vendor/${LIB}
+namespace.sphal.permitted.paths += /vendor/odm/${LIB}
 
 namespace.sphal.asan.search.paths  = /data/asan/odm/${LIB}
 namespace.sphal.asan.search.paths +=           /odm/${LIB}
@@ -160,6 +161,8 @@ namespace.sphal.asan.permitted.paths  = /data/asan/odm/${LIB}
 namespace.sphal.asan.permitted.paths +=           /odm/${LIB}
 namespace.sphal.asan.permitted.paths += /data/asan/vendor/${LIB}
 namespace.sphal.asan.permitted.paths +=           /vendor/${LIB}
+namespace.sphal.asan.permitted.paths += /data/asan/vendor/odm/${LIB}
+namespace.sphal.asan.permitted.paths +=           /vendor/odm/${LIB}
 
 # Once in this namespace, access to libraries in /system/lib is restricted. Only
 # libs listed here can be used.
@@ -307,6 +310,7 @@ namespace.default.visible = true
 
 namespace.default.search.paths  = /odm/${LIB}
 namespace.default.search.paths += /vendor/${LIB}
+namespace.default.search.paths += /vendor/odm/${LIB}
 
 namespace.default.permitted.paths  = /odm
 namespace.default.permitted.paths += /vendor
@@ -315,6 +319,8 @@ namespace.default.asan.search.paths  = /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
 namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
+namespace.default.asan.search.paths += /data/asan/vendor/odm/${LIB}
+namespace.default.asan.search.paths +=           /vendor/odm/${LIB}
 
 namespace.default.asan.permitted.paths  = /data/asan/odm
 namespace.default.asan.permitted.paths +=           /odm
