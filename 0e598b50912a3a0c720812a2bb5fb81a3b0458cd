@@ -34,6 +34,24 @@
       "revId": "0e598b50912a3a0c720812a2bb5fb81a3b0458cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9907dc11_8fbf5932",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-10T16:36:17Z",
+      "side": 1,
+      "message": "\u003e Because the two are distinct partitions\n\nAh, so, you are mounting odm.img to /vendor/odm? and have /odm as a symlink to /vendor/odm?\n\nThis is exactly the opposite of the current design; when there are odm.img and vendor.img, the former is mounted to /odm, and the latter is mounted to /vendor. /odm is a symlink to /vendor/odm only when there is no odm partition.\n\nWhat prevents you from mounting odm.img at /odm?",
+      "parentUuid": "242f99d0_77666798",
+      "revId": "0e598b50912a3a0c720812a2bb5fb81a3b0458cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
