@@ -21,10 +21,9 @@
 #include <signal.h>
 
 // NativeBridgeCallbacks implementations
-extern "C" bool native_bridge3_initialize(
-                      const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
-                      const char* /* app_code_cache_dir */,
-                      const char* /* isa */) {
+extern "C" int native_bridge3_initialize(const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
+                                         const char* /* app_code_cache_dir */,
+                                         const char* /* isa */) {
   return true;
 }
 
@@ -37,7 +36,7 @@ extern "C" void* native_bridge3_getTrampoline(void* /* handle */, const char* /*
   return nullptr;
 }
 
-extern "C" bool native_bridge3_isSupported(const char* /* libpath */) {
+extern "C" int native_bridge3_isSupported(const char* /* libpath */) {
   return false;
 }
 
@@ -46,12 +45,12 @@ extern "C" const struct android::NativeBridgeRuntimeValues* native_bridge3_getAp
   return nullptr;
 }
 
-extern "C" bool native_bridge3_isCompatibleWith(uint32_t version) {
+extern "C" int native_bridge3_isCompatibleWith(uint32_t version) {
   // For testing, allow 1-3, but disallow 4+.
   return version <= 3;
 }
 
-static bool native_bridge3_dummy_signal_handler(int, siginfo_t*, void*) {
+static int native_bridge3_dummy_signal_handler(int, siginfo_t*, void*) {
   // TODO: Implement something here. We'd either have to have a death test with a log here, or
   //       we'd have to be able to resume after the faulting instruction...
   return true;
@@ -72,12 +71,12 @@ extern "C" const char* native_bridge3_getError() {
   return nullptr;
 }
 
-extern "C" bool native_bridge3_isPathSupported(const char* /* path */) {
+extern "C" int native_bridge3_isPathSupported(const char* /* path */) {
   return true;
 }
 
-extern "C" bool native_bridge3_initAnonymousNamespace(const char* /* public_ns_sonames */,
-                                                      const char* /* anon_ns_library_path */) {
+extern "C" int native_bridge3_initAnonymousNamespace(const char* /* public_ns_sonames */,
+                                                     const char* /* anon_ns_library_path */) {
   return true;
 }
 
@@ -91,9 +90,9 @@ native_bridge3_createNamespace(const char* /* name */,
   return nullptr;
 }
 
-extern "C" bool native_bridge3_linkNamespaces(android::native_bridge_namespace_t* /* from */,
-                                              android::native_bridge_namespace_t* /* to */,
-                                              const char* /* shared_libs_soname */) {
+extern "C" int native_bridge3_linkNamespaces(android::native_bridge_namespace_t* /* from */,
+                                             android::native_bridge_namespace_t* /* to */,
+                                             const char* /* shared_libs_soname */) {
   return true;
 }
 

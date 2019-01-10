@@ -33,6 +33,8 @@
 
 namespace android {
 
+extern "C" {
+
 // Environment values required by the apps running with native bridge.
 struct NativeBridgeRuntimeValues {
     const char* os_arch;
@@ -137,7 +139,7 @@ static void ReleaseAppCodeCacheDir() {
 // We only allow simple names for the library. It is supposed to be a file in
 // /system/lib or /vendor/lib. Only allow a small range of characters, that is
 // names consisting of [a-zA-Z0-9._-] and starting with [a-zA-Z].
-bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
+int NativeBridgeNameAcceptable(const char* nb_library_filename) {
   const char* ptr = nb_library_filename;
   if (*ptr == 0) {
     // Emptry string. Allowed, means no native bridge.
@@ -168,7 +170,7 @@ bool NativeBridgeNameAcceptable(const char* nb_library_filename) {
 
 // The policy of invoking Nativebridge changed in v3 with/without namespace.
 // Suggest Nativebridge implementation not maintain backward-compatible.
-static bool isCompatibleWith(const uint32_t version) {
+static int isCompatibleWith(const uint32_t version) {
   // Libnativebridge is now designed to be forward-compatible. So only "0" is an unsupported
   // version.
   if (callbacks == nullptr || callbacks->version == 0 || version == 0) {
@@ -189,8 +191,8 @@ static void CloseNativeBridge(bool with_error) {
   ReleaseAppCodeCacheDir();
 }
 
-bool LoadNativeBridge(const char* nb_library_filename,
-                      const NativeBridgeRuntimeCallbacks* runtime_cbs) {
+int LoadNativeBridge(const char* nb_library_filename,
+                     const NativeBridgeRuntimeCallbacks* runtime_cbs) {
   // We expect only one place that calls LoadNativeBridge: Runtime::Init. At that point we are not
   // multi-threaded, so we do not need locking here.
 
@@ -244,7 +246,7 @@ bool LoadNativeBridge(const char* nb_library_filename,
   }
 }
 
-bool NeedsNativeBridge(const char* instruction_set) {
+int NeedsNativeBridge(const char* instruction_set) {
   if (instruction_set == nullptr) {
     ALOGE("Null instruction set in NeedsNativeBridge.");
     return false;
@@ -256,7 +258,7 @@ bool NeedsNativeBridge(const char* instruction_set) {
 template<typename T> void UNUSED(const T&) {}
 #endif
 
-bool PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruction_set) {
+int PreInitializeNativeBridge(const char* app_data_dir_in, const char* instruction_set) {
   if (state != NativeBridgeState::kOpened) {
     ALOGE("Invalid state: native bridge is expected to be opened.");
     CloseNativeBridge(true);
@@ -404,7 +406,7 @@ static void SetupEnvironment(const NativeBridgeCallbacks* callbacks, JNIEnv* env
   env->PopLocalFrame(nullptr);
 }
 
-bool InitializeNativeBridge(JNIEnv* env, const char* instruction_set) {
+int InitializeNativeBridge(JNIEnv* env, const char* instruction_set) {
   // We expect only one place that calls InitializeNativeBridge: Runtime::DidForkFromZygote. At that
   // point we are not multi-threaded, so we do not need locking here.
 
@@ -470,17 +472,17 @@ void UnloadNativeBridge() {
   }
 }
 
-bool NativeBridgeError() {
+int NativeBridgeError() {
   return had_error;
 }
 
-bool NativeBridgeAvailable() {
+int NativeBridgeAvailable() {
   return state == NativeBridgeState::kOpened
       || state == NativeBridgeState::kPreInitialized
       || state == NativeBridgeState::kInitialized;
 }
 
-bool NativeBridgeInitialized() {
+int NativeBridgeInitialized() {
   // Calls of this are supposed to happen in a state where the native bridge is stable, i.e., after
   // Runtime::DidForkFromZygote. In that case we do not need a lock.
   return state == NativeBridgeState::kInitialized;
@@ -501,7 +503,7 @@ void* NativeBridgeGetTrampoline(void* handle, const char* name, const char* shor
   return nullptr;
 }
 
-bool NativeBridgeIsSupported(const char* libpath) {
+int NativeBridgeIsSupported(const char* libpath) {
   if (NativeBridgeInitialized()) {
     return callbacks->isSupported(libpath);
   }
@@ -548,7 +550,7 @@ const char* NativeBridgeGetError() {
   return "native bridge is not initialized";
 }
 
-bool NativeBridgeIsPathSupported(const char* path) {
+int NativeBridgeIsPathSupported(const char* path) {
   if (NativeBridgeInitialized()) {
     if (isCompatibleWith(NAMESPACE_VERSION)) {
       return callbacks->isPathSupported(path);
@@ -559,8 +561,8 @@ bool NativeBridgeIsPathSupported(const char* path) {
   return false;
 }
 
-bool NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
-                                        const char* anon_ns_library_path) {
+int NativeBridgeInitAnonymousNamespace(const char* public_ns_sonames,
+                                       const char* anon_ns_library_path) {
   if (NativeBridgeInitialized()) {
     if (isCompatibleWith(NAMESPACE_VERSION)) {
       return callbacks->initAnonymousNamespace(public_ns_sonames, anon_ns_library_path);
@@ -594,8 +596,8 @@ native_bridge_namespace_t* NativeBridgeCreateNamespace(const char* name,
   return nullptr;
 }
 
-bool NativeBridgeLinkNamespaces(native_bridge_namespace_t* from, native_bridge_namespace_t* to,
-                                const char* shared_libs_sonames) {
+int NativeBridgeLinkNamespaces(native_bridge_namespace_t* from, native_bridge_namespace_t* to,
+                               const char* shared_libs_sonames) {
   if (NativeBridgeInitialized()) {
     if (isCompatibleWith(NAMESPACE_VERSION)) {
       return callbacks->linkNamespaces(from, to, shared_libs_sonames);
@@ -626,4 +628,6 @@ void* NativeBridgeLoadLibraryExt(const char* libpath, int flag, native_bridge_na
   return nullptr;
 }
 
-};  // namespace android
+}  // extern "C"
+
+}  // namespace android

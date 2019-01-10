@@ -21,7 +21,7 @@
 #include <signal.h>
 
 // NativeBridgeCallbacks implementations
-extern "C" bool native_bridge2_initialize(const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
+extern "C" int native_bridge2_initialize(const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
                                          const char* /* app_code_cache_dir */,
                                          const char* /* isa */) {
   return true;
@@ -36,7 +36,7 @@ extern "C" void* native_bridge2_getTrampoline(void* /* handle */, const char* /*
   return nullptr;
 }
 
-extern "C" bool native_bridge2_isSupported(const char* /* libpath */) {
+extern "C" int native_bridge2_isSupported(const char* /* libpath */) {
   return false;
 }
 
@@ -45,12 +45,12 @@ extern "C" const struct android::NativeBridgeRuntimeValues* native_bridge2_getAp
   return nullptr;
 }
 
-extern "C" bool native_bridge2_is_compatible_compatible_with(uint32_t version) {
+extern "C" int native_bridge2_is_compatible_compatible_with(uint32_t version) {
   // For testing, allow 1 and 2, but disallow 3+.
   return version <= 2;
 }
 
-static bool native_bridge2_dummy_signal_handler(int, siginfo_t*, void*) {
+static int native_bridge2_dummy_signal_handler(int, siginfo_t*, void*) {
   // TODO: Implement something here. We'd either have to have a death test with a log here, or
   //       we'd have to be able to resume after the faulting instruction...
   return true;

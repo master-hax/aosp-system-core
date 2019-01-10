@@ -19,9 +19,9 @@
 #include "nativebridge/native_bridge.h"
 
 // NativeBridgeCallbacks implementations
-extern "C" bool native_bridge_initialize(const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
-                                         const char* /* app_code_cache_dir */,
-                                         const char* /* isa */) {
+extern "C" int native_bridge_initialize(const android::NativeBridgeRuntimeCallbacks* /* art_cbs */,
+                                        const char* /* app_code_cache_dir */,
+                                        const char* /* isa */) {
   return true;
 }
 
@@ -34,7 +34,7 @@ extern "C" void* native_bridge_getTrampoline(void* /* handle */, const char* /* 
   return nullptr;
 }
 
-extern "C" bool native_bridge_isSupported(const char* /* libpath */) {
+extern "C" int native_bridge_isSupported(const char* /* libpath */) {
   return false;
 }
 
