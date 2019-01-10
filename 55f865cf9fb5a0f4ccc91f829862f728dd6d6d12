@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "52e2a2e1_5c85a31e",
+        "filename": "init/reboot_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-10T22:59:34Z",
+      "side": 1,
+      "message": "I wanted to add:\n\n  auto backtrace \u003d std::unique_ptr\u003cBacktrace\u003e(Backtrace::Create(BACKTRACE_CURRENT_PROCESS, BACKTRACE_CURRENT_THREAD, nullptr));\n  if (backtrace) {\n    for (const auto\u0026 frame : *backtrace) {\n      LOG(ERROR) \u003c\u003c backtrace-\u003eFormatFrameData(\u0026frame);\n    }\n  }\n\nBut alas this would require too much to be stuffed into init (or vendor_init) to give us a detail as to what was going on when the signal fired.",
+      "range": {
+        "startLine": 88,
+        "startChar": 8,
+        "endLine": 88,
+        "endChar": 9
+      },
+      "revId": "55f865cf9fb5a0f4ccc91f829862f728dd6d6d12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
