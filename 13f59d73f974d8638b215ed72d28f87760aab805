@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "dae66ade_e86c7f33",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-10T14:09:48Z",
+      "side": 1,
+      "message": "How about:\n\n  bool FirstStageMount::TrySwitchSystemAsRoot() {                                 \n      auto system_partition \u003d std::find_if(fstab_.begin(), fstab_.end(), [](const auto\u0026 entry) {\n          return entry.mount_point \u003d\u003d \"/system\";                                  \n      });                                                                         \n                                                                                  \n      if (system_partition \u003d\u003d fstab_.end()) return true;                          \n                                                                                  \n      bool mounted \u003d false;                                                       \n      bool no_fail \u003d false;                                                       \n      for (auto it \u003d system_partition; it !\u003d fstab_.end();) {                     \n          if (it-\u003emount_point !\u003d \"/system\") {                                     \n              break;                                                              \n          }                                                                       \n          no_fail |\u003d (it-\u003efs_mgr_flags).no_fail;                                  \n          if (MountPartition(\u0026(*it))) {                                           \n              mounted \u003d true;                                                     \n              SwitchRoot(\"/system\");                                              \n              break;                                                              \n          }                                                                       \n          it++;                                                                   \n      }                                                                           \n      \n      auto it \u003d std::remove_if(fstab_.begin(), fstab_.end(),                      \n                               [](const auto\u0026 entry) { return entry.mount_point \u003d\u003d \"/system\"; });\n      fstab_.erase(it, fstab_.end());  \n                                                                            \n      if (!mounted \u0026\u0026 !no_fail) {                                                 \n          LOG(ERROR) \u003c\u003c \"Failed to mount /system\";                                \n          return false;                                                           \n      }                                                                           \n                                                                                                                  \n      return true;                                                                \n  }",
+      "range": {
+        "startLine": 412,
+        "startChar": 22,
+        "endLine": 412,
+        "endChar": 43
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bd1617a3_e77fec42",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 9
@@ -42,6 +65,52 @@
         "startChar": 0,
         "endLine": 425,
         "endChar": 86
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c91bcc2_c07d8a7b",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-10T14:09:48Z",
+      "side": 1,
+      "message": "This seems unnecessary for /system, because once a /system is mounted, we can just break.",
+      "range": {
+        "startLine": 427,
+        "startChar": 30,
+        "endLine": 427,
+        "endChar": 61
+      },
+      "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fe8cf5b_68c85ee8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-10T14:09:48Z",
+      "side": 1,
+      "message": "How about:\n   LOG(ERROR) \u003c\u003c \"Failed to mount required partition: \" \u003c\u003c start_mount_point;",
+      "range": {
+        "startLine": 490,
+        "startChar": 12,
+        "endLine": 490,
+        "endChar": 93
       },
       "revId": "13f59d73f974d8638b215ed72d28f87760aab805",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
