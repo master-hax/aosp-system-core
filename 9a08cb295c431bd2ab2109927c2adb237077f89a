@@ -22,6 +22,30 @@
       "revId": "9a08cb295c431bd2ab2109927c2adb237077f89a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "209da2d4_7f7cea56",
+        "filename": "libvndksupport/linker.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1349653
+      },
+      "writtenOn": "2019-01-10T18:45:56Z",
+      "side": 1,
+      "message": "\"Context\" is probably a bad choice of word here. Here I meant process. I\u0027ll rename this.",
+      "parentUuid": "f270a4ea_bcabada0",
+      "range": {
+        "startLine": 54,
+        "startChar": 17,
+        "endLine": 54,
+        "endChar": 24
+      },
+      "revId": "9a08cb295c431bd2ab2109927c2adb237077f89a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
