@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c04baad_957eeb4a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T18:21:58Z",
+      "side": 1,
+      "message": "B",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 1
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcc7feee_2d8e7ef3",
+        "filename": "libnativebridge/include/nativebridge/native_bridge.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T18:21:58Z",
+      "side": 1,
+      "message": "s/;//",
+      "range": {
+        "startLine": 404,
+        "startChar": 1,
+        "endLine": 404,
+        "endChar": 2
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58372fec_381fdb31",
+        "filename": "libnativebridge/native_bridge.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-10T18:21:58Z",
+      "side": 1,
+      "message": "s/;//",
+      "range": {
+        "startLine": 633,
+        "startChar": 1,
+        "endLine": 633,
+        "endChar": 2
+      },
+      "revId": "1f850b38358261291007f32e0e44dbcc51724543",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
