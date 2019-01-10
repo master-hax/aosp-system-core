@@ -62,11 +62,6 @@
 #endif
 #endif
 
-/* Unused argument. For C code only, remove symbol name for C++ */
-#ifndef __unused
-#define __unused __attribute__((__unused__))
-#endif
-
 /* possible missing definitions in unistd.h */
 
 #ifndef TEMP_FAILURE_RETRY
