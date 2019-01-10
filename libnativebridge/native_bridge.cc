@@ -33,6 +33,8 @@
 
 namespace android {
 
+extern "C" {
+
 // Environment values required by the apps running with native bridge.
 struct NativeBridgeRuntimeValues {
     const char* os_arch;
@@ -625,5 +627,7 @@ void* NativeBridgeLoadLibraryExt(const char* libpath, int flag, native_bridge_na
   }
   return nullptr;
 }
+
+}  // extern "C"
 
 };  // namespace android
