@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "605ed431_6b0a8a20",
+        "filename": "fs_mgr/fs_mgr_priv.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-10T15:42:09Z",
+      "side": 1,
+      "message": "just talkin\u0027: an alternative here could be to not add fs_mgr_clr_blk_ro but morph the current API:\n\nbool fs_mgr_set_blk_ro(const std::string\u0026 blkdev, bool on \u003d true);",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 52
+      },
+      "revId": "54d4eab02455ae3b6891d49617d051e69fd75df5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

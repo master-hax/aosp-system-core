@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4521666_7b6c6821",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 771,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-10T15:42:09Z",
+      "side": 0,
+      "message": "Do not remove this fragment, this was added to resolve a problem where system_other.img was landed with ext4 filesystem, with no free space as it was reightsized. Unrelated.",
+      "range": {
+        "startLine": 764,
+        "startChar": 0,
+        "endLine": 771,
+        "endChar": 13
+      },
+      "revId": "e7f492dc618892ae5a1796560050f1108ba57edf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
