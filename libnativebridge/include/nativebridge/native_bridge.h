@@ -22,7 +22,10 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#ifdef __cplusplus
 namespace android {
+extern "C" {
+#endif  // __cplusplus
 
 struct NativeBridgeRuntimeCallbacks;
 struct NativeBridgeRuntimeValues;
@@ -396,6 +399,9 @@ struct NativeBridgeRuntimeCallbacks {
                                uint32_t method_count);
 };
 
-};  // namespace android
+#ifdef __cplusplus
+}  // extern "C"
+}  // namespace android
+#endif  // __cplusplus
 
 #endif  // NATIVE_BRIDGE_H_

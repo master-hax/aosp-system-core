@@ -1,0 +1,25 @@
+LIBNATIVEBRIDGE_1 {
+  global:
+    NativeBridgeIsSupported;
+    NativeBridgeLoadLibrary;
+    NativeBridgeUnloadLibrary;
+    NativeBridgeGetError;
+    NativeBridgeIsPathSupported;
+    NativeBridgeCreateNamespace;
+    NativeBridgeGetVendorNamespace;
+    NativeBridgeLinkNamespaces;
+    NativeBridgeLoadLibraryExt;
+    NativeBridgeInitAnonymousNamespace;
+    NativeBridgeInitialized;
+    NativeBridgeGetTrampoline;
+    LoadNativeBridge;
+    PreInitializeNativeBridge;
+    InitializeNativeBridge;
+    NativeBridgeGetVersion;
+    NativeBridgeGetSignalHandler;
+    UnloadNativeBridge;
+    NativeBridgeAvailable;
+    NeedsNativeBridge;
+  local:
+    *;
+};
