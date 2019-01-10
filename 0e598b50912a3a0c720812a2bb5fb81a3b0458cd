@@ -16,6 +16,24 @@
       "revId": "0e598b50912a3a0c720812a2bb5fb81a3b0458cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "242f99d0_77666798",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1421169
+      },
+      "writtenOn": "2019-01-10T16:21:36Z",
+      "side": 1,
+      "message": "Because the two are distinct partitions, not folded into one vendor.img.\nThe odm partition/.img comes from the SoC manufacturer, the vendor one from the device vendor.\nFor Sony\u0027s open devices, odm.img comes from Sony directly and contains non-redistributable binary blobs, while vendor.img contains the regular vendor files(they can not be shipped together).\n\nThe \"/odm/build.prop\" line can be removed once no ones mounts odm there any more, which might be in Android 10, or more likely 11.",
+      "parentUuid": "7df38802_3b3d5473",
+      "revId": "0e598b50912a3a0c720812a2bb5fb81a3b0458cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
