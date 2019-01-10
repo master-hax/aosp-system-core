@@ -24,6 +24,8 @@
 
 namespace android {
 
+extern "C" {
+
 struct NativeBridgeRuntimeCallbacks;
 struct NativeBridgeRuntimeValues;
 
@@ -395,6 +397,7 @@ struct NativeBridgeRuntimeCallbacks {
   uint32_t (*getNativeMethods)(JNIEnv* env, jclass clazz, JNINativeMethod* methods,
                                uint32_t method_count);
 };
+}
 
 };  // namespace android
 
