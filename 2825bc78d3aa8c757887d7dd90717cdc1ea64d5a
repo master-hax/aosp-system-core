@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34d82ec2_0abf251a",
+        "filename": "fs_mgr/liblp/reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-10T20:42:48Z",
+      "side": 1,
+      "message": "We actually do need to support the 0 extents case: go/flash and \"fastboot flashall\" will issue commands to resize each partition to 0, to reduce fragmentation [1]. Since these commands are issued serially, the metadata will be written out each time before the partition is resized again. (Arguably it should be deleting partitions instead, but this method keeps a record of which partitions are supposed to be present). init will skip mounting any partition with no extents [2].\n\n[1] https://cs.corp.google.com/android/system/core/fastboot/fastboot.cpp?g\u003d0\u0026l\u003d1231\n[2] https://cs.corp.google.com/android/system/core/fs_mgr/fs_mgr_dm_linear.cpp?l\u003d158",
+      "revId": "2825bc78d3aa8c757887d7dd90717cdc1ea64d5a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
