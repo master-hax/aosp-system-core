@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb483fca_ad49e839",
+        "filename": "libvndksupport/linker.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-11T14:44:06Z",
+      "side": 1,
+      "message": "Although this will work, I am a little bit worried that we are depending on what\u0027s written in ld.config.txt.\n\nInstead, how about checking that readlink(\"/proc/self/ext\") starts with either /vendor/bin or /system/vendor/bin? \n\nAnyway, this is local to this function so shouldn\u0027t affect the entire design.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 58
+      },
+      "revId": "75c1be78618a7cbc1640743b8ad3609cbfd94b61",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
