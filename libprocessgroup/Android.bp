@@ -35,6 +35,9 @@ cc_library {
         "libbase",
         "libjsoncpp",
     ],
+    static_libs: [
+        "libfstab",
+    ],
     export_include_dirs: ["include"],
     header_libs: [
         "libprocessgroup_headers",

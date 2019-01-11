@@ -20,6 +20,7 @@
 #include <cgroup_map.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <fstab/fstab.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -154,7 +155,7 @@ int CgroupMap::Load() {
 
     close(fd);
     // TODO: remove later
-    // Print();
+    Print();
 
     return 0;
 }
@@ -187,6 +188,13 @@ int CgroupMap::Detect() {
     struct CgroupController controller;
     std::string cg2_path;
     std::map<std::string, struct CgroupController> cd_detected;
+
+    Fstab fstab;
+    if (!ReadFstabFromFile(FILE_PROC_MOUNTS, &fstab)) {
+        PLOG(ERROR) << "Cgroups detection failed to open " << FILE_PROC_MOUNTS << ": "
+                    << strerror(errno);
+        return -1;
+    }
 
     fp = fopen(FILE_PROC_MOUNTS, "r");
     if (!fp) {
