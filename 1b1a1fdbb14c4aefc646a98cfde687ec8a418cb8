@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "daf4a735_27eb758f",
+        "filename": "fs_mgr/libfs_avb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-11T03:44:16Z",
+      "side": 1,
+      "message": "sorry, my mistake.\nAdded host_supported but didn\u0027t skip Mac host build.",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 18
+      },
+      "revId": "1b1a1fdbb14c4aefc646a98cfde687ec8a418cb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f16286c2_53511904",
+        "filename": "fs_mgr/libfs_avb/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-11T03:44:16Z",
+      "side": 1,
+      "message": "\"libavb\" doesn\u0027t have darwin build.",
+      "range": {
+        "startLine": 30,
+        "startChar": 9,
+        "endLine": 30,
+        "endChar": 15
+      },
+      "revId": "1b1a1fdbb14c4aefc646a98cfde687ec8a418cb8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
