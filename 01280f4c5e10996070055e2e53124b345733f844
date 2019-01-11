@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d56aa7d_8d0eec49",
+        "filename": "rootdir/task_profiles.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T18:01:00Z",
+      "side": 1,
+      "message": "What\u0027s that for? Strictly speaking CGroup v2 is not even a controller... I guess I\u0027ll see from the code why it\u0027s here... but, read from here, he looks like is tainting the attributes definitions.",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 5
+      },
+      "revId": "01280f4c5e10996070055e2e53124b345733f844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b1f35f69_436e46d7",
+        "filename": "rootdir/task_profiles.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T18:01:00Z",
+      "side": 1,
+      "message": "I\u0027m not entirely convinced about the need of the attribute dictionary, which is used just to translate a name (e.g. STunePreferIdle) into a specific cgroups controller and attribute (e.g. schedtune.prefer_idle)...\n\nWhy we don\u0027t embed directly here these info, e.g.\n\n\n     {\n      \"Name\": \"CpuPolicySpread\",\n      \"Actions\" : [\n        {\n          \"Name\" : \"SetAttribute\",\n          \"Params\" :\n          {\n            \"Name\" : \"STunePreferIdle\",\n            \"Controller\": \"schedtune\",\n            \"File\": \"schedtune.prefer_idle\"\n            \"Value\" : \"1\"\n          }\n        }\n      ]\n     }\n\n\nI don\u0027t see limitations on that... of course we can have some more duplication (e.g. File) but we get back the nice property that \"Params\" will contains all the data required to build the action. This will allow to create actions using a standard and common ctor prototype from the factory method, e.g. something like:\n\n    ProfileAction::GetInstance(name, params) {\n      if (name \u003d\u003d \"SetAttribute\")\n          return new SetAttributeAction(params)\n    }\n\n\nIf we got for this approach, we don\u0027t even need the TaskProfiles::attributes (or the dedicated singleton container I propose in the first comment for \"class TaskProfiles\".",
+      "range": {
+        "startLine": 142,
+        "startChar": 12,
+        "endLine": 143,
+        "endChar": 25
+      },
+      "revId": "01280f4c5e10996070055e2e53124b345733f844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
