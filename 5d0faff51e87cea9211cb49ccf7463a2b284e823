@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc8ba08f_52bcecee",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-01-11T17:37:22Z",
+      "side": 1,
+      "message": "How do you distinguish between system_server and apps running as system UID? They\u0027ll both have AID_SYSTEM and backing executable /system/bin/app_process64. You could additionally check the selinux context.",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 63
+      },
+      "revId": "5d0faff51e87cea9211cb49ccf7463a2b284e823",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
