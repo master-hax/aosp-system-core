@@ -163,6 +163,167 @@
     },
     {
       "key": {
+        "uuid": "89753adb_31fa278b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "I don\u0027t see any meaningful use of this return value, if we fail to build the profiles we will just end up with an empty list of actions and we cannot do much more (apart logging of course).\n\nThus, I see better this code as part of the ctor for TaskProfiles()... by getting rid of the C-ish initFlag too as suggested in one of my previous comments for the header file of this class.\n\nDo I miss something ?",
+      "range": {
+        "startLine": 227,
+        "startChar": 0,
+        "endLine": 227,
+        "endChar": 3
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9172e58e_cbccf8c5",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "Maybe we can save something by creating these strings only after the following conditions has been verified...\nsomething like:\n\n    for (auto attr : root[\"Attributes\"]) {\n\tstd::string name \u003d attr[\"Name\"].asString();\n\tif (attributes.find(name) !\u003d attributes.end()) {\n\t    LOG(WARNING) \u003c\u003c \"Attribute [\" \u003c\u003c name \u003c\u003c \"] already defined\";\n\t    continue;\n\t}\n\n        std::string ctrl_name \u003d attr[\"Controller\"].asString();\n\tconst struct cgroup_controller *controller \u003d\n\t\tcg_map.FindController(ctrl_name);\n\tif (!controller) {\n\t\tLOG(WARNING) \u003c\u003c \"Controller [\" \u003c\u003c ctrl_name \u003c\u003c \"] not found\";\n\t\tcontinue;\n\t}\n\n        std::string file_name \u003d attr[\"File\"].asString();\n\tattributes[name] \u003d new ProfileAttribute(controller, file_name);\n    }",
+      "range": {
+        "startLine": 247,
+        "startChar": 8,
+        "endLine": 248,
+        "endChar": 59
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07b27863_4243bbe8",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "I think these two lines could be reduced to:\n\n    for (auto profileVal : profilesVal) {",
+      "range": {
+        "startLine": 267,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 48
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbd100df_505957f6",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "Maybe just:\n\n    for (auto \u0026actionVal : actions) {",
+      "range": {
+        "startLine": 274,
+        "startChar": 7,
+        "endLine": 275,
+        "endChar": 52
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49ec4c1b_05e44c7d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "All the following IF statements looks like factory code... it would fit better in the base class, something like:\n \n \nProfileElement *ProfileElement::GetInstance(std::string const \u0026name, Json::Value values) {\n\n\tif (name \u003d\u003d \"JoinCgroup\") {\n\t\tstd::string ctrlName \u003d values[\"Controller\"].asString();\n\t\tstd::string path \u003d values[\"Path\"].asString();\n\t\tconst CgroupMap \u0026cg_map \u003d CgroupMap::GetInstance();\n\n\t\tconst auto *controller \u003d cg_map.FindController(ctrlName.c_str());\n\t\tif (!controller) {\n\t\t\tLOG(WARNING) \u003c\u003c \"JoinCgroup: controller \" \u003c\u003c ctrlName \u003c\u003c \" is not found\";\n\t\t\treturn NULL;\n\t\t}\n\n\t\treturn new SetCgroupAction(controller, path);\n\t}\n\n\tif (name \u003d\u003d \"SetTimerSlack\") {\n\t\tstd::string slackValue \u003d values[\"Slack\"].asString();\n\t\tunsigned long slack;\n\t\tchar *end;\n\n\t\tslack \u003d strtoul(slackValue.c_str(), \u0026end, 10);\n\t\tif (end \u003c\u003d slackValue.c_str()) {\n\t\t\tLOG(WARNING) \u003c\u003c \"SetTimerSlack: invalid parameter: \" \u003c\u003c slackValue;\n\t\t\treturn NULL;\n\t\t}\n\n\t\treturn new SetTimerSlackAction(slack);\n\t}\n\n        // Other cases here...\n\n        LOG(WARNING) \u003c\u003c \"Unknown profile action: \" \u003c\u003c name;\n\treturn NULL;\n}\n\n\nWhich will reduce this loop to:\n\n\n        profile \u003d new TaskProfile();\n        for (auto \u0026actionVal : actions) {\n            std::string actionName \u003d actionVal[\"Name\"].asString();\n            Json::Value paramsVal \u003d actionVal[\"Params\"];\n\n\t    auto action \u003d ProfileElement::GetInstance(actionName, paramsVal);\n\t    if (action)\n\t\t    profile-\u003eAdd(action);\n        }\n\n\nAnd... as per another comments of mine, I would suggest to s/ProfileElement/ProfileAction/",
+      "range": {
+        "startLine": 278,
+        "startChar": 12,
+        "endLine": 289,
+        "endChar": 13
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e67ace8a_f4d001fb",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "I think we can get a cleaner code by avoiding this global and moving this check into the SetTimerSlackAction ctor.\nWe currently have only two SetTimerSlack actions defined... and even if we should have more, this check is done once at profiles creation only... thus it can be worth to prioritise code cleanup.\n\nMoreover, why not get rid of set_timerslack_ns() and move its code directly within:\n   SetTimerSlackAction::ExecuteForTask()\nAFAIKS there are not other clients for that API.",
+      "range": {
+        "startLine": 339,
+        "startChar": 4,
+        "endLine": 340,
+        "endChar": 51
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9eb26c81_a698ca5e",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "Why passing it as parameter? Cannot we just get an instance from within the method itself ?",
+      "range": {
+        "startLine": 342,
+        "startChar": 28,
+        "endLine": 342,
+        "endChar": 52
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "be683ebf_b1d0bf0f",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
@@ -243,6 +404,30 @@
       "writtenOn": "2019-01-10T18:59:25Z",
       "side": 1,
       "message": "If we go for s/TaskProfile/ProfileAction/ this will be \"actions\"",
+      "range": {
+        "startLine": 106,
+        "startChar": 16,
+        "endLine": 106,
+        "endChar": 41
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f591f05a_047122b2",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T16:22:58Z",
+      "side": 1,
+      "message": "Here I was meaning, if we for for s/ProfileElement/ProfileAction/ .... sorry for the confusion",
+      "parentUuid": "dc8c1e68_7a6a661f",
       "range": {
         "startLine": 106,
         "startChar": 16,
