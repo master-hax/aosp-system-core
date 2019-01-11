@@ -440,6 +440,29 @@
     },
     {
       "key": {
+        "uuid": "1e5fff9d_e42e5274",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T17:59:19Z",
+      "side": 1,
+      "message": "I\u0027m not convinced about tracking attributes within this class.\nThe only \"advantage\" is a single JSON parsing code... but for that we end up with a tight dependency between attributes and profiles.\n\nWhat about moving attributes parsing code within a dedicated ProfileAttributes class?\n\nThis will give us a dual implementation:\n- TaskProfiles is a container or TaskProfile\n- ProfileAttributes is a container or ProfileAttribute\n\nEvery class is in charge to parse its data... and since ProfileAttributes is a singleton, the first time we get an instance of it (i.e. from ProfileElement::GetInstance(name\u003d\"SetAttribute\")) it will take care to parse the JSON to build the attributes DB.\n\nIn principle, the JSON file could also be split in \"task_profiles.json\" and \"task_attributes.json\", isn\u0027t it ?\nIn principle, we don\u0027t need to parse the attributes if there are not SetAttribute actions defined by profiles.",
+      "range": {
+        "startLine": 120,
+        "startChar": 4,
+        "endLine": 120,
+        "endChar": 56
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6321c35e_9ad35200",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 4
