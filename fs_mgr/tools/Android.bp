@@ -29,3 +29,19 @@ cc_binary {
 
     cflags: ["-Werror"],
 }
+
+cc_binary {
+    name: "filemap",
+    srcs: ["filemap.cpp"],
+
+    host_supported: true,
+
+    shared_libs: [
+        "libbase",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror"
+    ],
+}
