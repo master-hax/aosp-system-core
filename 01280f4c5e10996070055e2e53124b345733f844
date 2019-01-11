@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8fc41782_35e2c21a",
+        "filename": "rootdir/task_profiles.json",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-11T18:12:35Z",
+      "side": 1,
+      "message": "See: https://android-review.googlesource.com/c/platform/system/bpf/+/861674/4/libbpf_android/BpfUtils.cpp\n\nUnfortunately some actions will still need direct file access. For example BPF needs to open a file under cg2 and use that file descriptor in ioctrl. I don\u0027t see an easy way to describe that action through task profiles.\nAnother case of attribute use: https://android-review.googlesource.com/c/platform/frameworks/base/+/861909/3/core/jni/android_util_Process.cpp",
+      "parentUuid": "2d56aa7d_8d0eec49",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 5
+      },
+      "revId": "01280f4c5e10996070055e2e53124b345733f844",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b1f35f69_436e46d7",
         "filename": "rootdir/task_profiles.json",
         "patchSetId": 4
