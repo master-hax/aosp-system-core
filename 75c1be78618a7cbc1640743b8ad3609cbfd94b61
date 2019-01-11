@@ -22,6 +22,30 @@
       "revId": "75c1be78618a7cbc1640743b8ad3609cbfd94b61",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3bc47ad_b1a446f1",
+        "filename": "libvndksupport/linker.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-11T21:46:47Z",
+      "side": 1,
+      "message": "That will break for data/nativetest64/vendor, odm, etc...\n\nI think this is a better solution, and although it relies on what namespace is defined in ld.config.txt, it doesn\u0027t duplicate the paths (which is more information).",
+      "parentUuid": "bb483fca_ad49e839",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 58
+      },
+      "revId": "75c1be78618a7cbc1640743b8ad3609cbfd94b61",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
