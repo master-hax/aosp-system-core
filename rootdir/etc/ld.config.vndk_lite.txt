@@ -65,6 +65,11 @@ namespace.default.link.runtime.shared_libs  = libart.so:libartd.so
 namespace.default.link.runtime.shared_libs += libdexfile_external.so
 namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
+# TODO(b/119090773): Remove the following entries once JNI core libs are correctly
+# loading from the runtime namespace.
+namespace.default.link.runtime.shared_libs += libjavacore.so
+namespace.default.link.runtime.shared_libs += libopenjdk.so
+namespace.default.link.runtime.shared_libs += libexpat.so
 
 ###############################################################################
 # "runtime" APEX namespace
