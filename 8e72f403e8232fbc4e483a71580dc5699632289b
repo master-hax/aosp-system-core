@@ -163,6 +163,29 @@
     },
     {
       "key": {
+        "uuid": "057b9624_075e86b9",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-11T19:44:48Z",
+      "side": 1,
+      "message": "These APIs provides a \"non-profile\" based access to CGroups settings and are currently used by some runtime components like: system/core/init/service.cpp::Service::Start(). This turns out into hardcoded settings of controller values (for example the Service hardcode the swapiness levels to set for an app).\n\n\nShould we not try to get rid of them and use only profile defined settings ?\n\nThis would further simplify and consolidate the abstraction code... as well as making it simpler to experiment/test with different configurations.",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 75
+      },
+      "revId": "8e72f403e8232fbc4e483a71580dc5699632289b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "89753adb_31fa278b",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 4
