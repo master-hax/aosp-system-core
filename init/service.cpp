@@ -140,43 +140,6 @@ Result<Success> Service::SetUpMountNamespace() const {
     return Success();
 }
 
-Result<Success> Service::SetUpPreApexdMounts() const {
-    // If a pre-apexd service is 're' launched after the runtime APEX is
-    // available, unmount the linker and bionic libs which are currently
-    // bind mounted to the files in the runtime APEX. This will reveal
-    // the hidden mount points (targetting the bootstrap ones in the
-    // system partition) which were setup before the runtime APEX was
-    // started. Note that these unmounts are done in a separate mount namespace
-    // for the process. It does not affect other processes including the init.
-    if (pre_apexd_ && ServiceList::GetInstance().IsRuntimeAvailable()) {
-        if (access(kLinkerMountPoint, F_OK) == 0) {
-            if (umount(kLinkerMountPoint) == -1) {
-                return ErrnoError() << "Could not umount " << kLinkerMountPoint;
-            }
-            for (const auto& libname : kBionicLibFileNames) {
-                std::string mount_point = kBionicLibsMountPointDir + libname;
-                if (umount(mount_point.c_str()) == -1) {
-                    return ErrnoError() << "Could not umount " << mount_point;
-                }
-            }
-        }
-
-        if (access(kLinkerMountPoint64, F_OK) == 0) {
-            if (umount(kLinkerMountPoint64) == -1) {
-                return ErrnoError() << "Could not umount " << kLinkerMountPoint64;
-            }
-            for (const auto& libname : kBionicLibFileNames) {
-                std::string mount_point = kBionicLibsMountPointDir64 + libname;
-                std::string source = kBootstrapBionicLibsDir64 + libname;
-                if (umount(mount_point.c_str()) == -1) {
-                    return ErrnoError() << "Could not umount " << mount_point;
-                }
-            }
-        }
-    }
-    return Success();
-}
-
 Result<Success> Service::SetUpPidNamespace() const {
     if (prctl(PR_SET_NAME, name_.c_str()) == -1) {
         return ErrnoError() << "Could not set name";
@@ -966,14 +929,6 @@ Result<Success> Service::Start() {
         scon = *result;
     }
 
-    if (!ServiceList::GetInstance().IsRuntimeAvailable() && !pre_apexd_) {
-        // If this service is started before the runtime APEX gets available,
-        // mark it as pre-apexd one. Note that this marking is permanent. So
-        // for example, if the service is re-launched (e.g., due to crash),
-        // it is still recognized as pre-apexd... for consistency.
-        pre_apexd_ = true;
-    }
-
     LOG(INFO) << "starting service '" << name_ << "'...";
 
     pid_t pid = -1;
@@ -1406,10 +1361,6 @@ void ServiceList::MarkServicesUpdate() {
         }
     }
     delayed_service_names_.clear();
-}
-
-void ServiceList::MarkRuntimeAvailable() {
-    runtime_available_ = true;
 }
 
 void ServiceList::DelayService(const Service& service) {
