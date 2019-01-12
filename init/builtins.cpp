@@ -972,6 +972,7 @@ static Result<Success> do_load_persist_props(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_load_system_props(const BuiltinArguments& args) {
+    // TODO(b/122714998): remove this command, or at least make no-op.
     load_system_props();
     return Success();
 }

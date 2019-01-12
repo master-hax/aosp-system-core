@@ -482,9 +482,12 @@ Commands
   -f: force installation of the module even if the version of the running kernel
   and the version of the kernel for which the module was compiled do not match.
 
-`load_all_props`
+`load_system_props`
 > Loads properties from /system, /vendor, et cetera.
-  This is included in the default init.rc.
+  In most of the cases, this is no longer needed as the partitions are mounted
+  very early and the properties are loaded automatically by the property
+  service. This is now useful only for some exotic devices/modes (e.g. charger)
+  where early mount might not be used.
 
 `load_persist_props`
 > Loads persistent properties when /data has been decrypted.

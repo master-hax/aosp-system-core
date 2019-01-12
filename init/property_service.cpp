@@ -780,6 +780,8 @@ void load_recovery_id_prop() {
 }
 
 void load_system_props() {
+    // TODO(b/122714998): change the order to factory, odm, vendor, and then
+    // system
     load_properties_from_file("/system/build.prop", NULL);
     load_properties_from_file("/odm/build.prop", NULL);
     load_properties_from_file("/vendor/build.prop", NULL);
@@ -861,6 +863,10 @@ void CreateSerializedPropertyInfo() {
 }
 
 void StartPropertyService(Epoll* epoll) {
+    // TODO(b/117892318): load default props here by merging default.prop into
+    // build.prop
+    load_system_props();
+
     selinux_callback cb;
     cb.func_audit = SelinuxAuditCallback;
     selinux_set_callback(SELINUX_CB_AUDIT, cb);
