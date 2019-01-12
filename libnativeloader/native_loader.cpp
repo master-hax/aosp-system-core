@@ -52,7 +52,7 @@ using namespace std::string_literals;
 namespace android {
 
 #if defined(__ANDROID__)
-class NativeLoaderNamespace {
+struct NativeLoaderNamespace {
  public:
   NativeLoaderNamespace()
       : android_ns_(nullptr), native_bridge_ns_(nullptr) { }
@@ -151,14 +151,9 @@ class LibraryNamespaces {
  public:
   LibraryNamespaces() : initialized_(false) { }
 
-  NativeLoaderNamespace* Create(JNIEnv* env,
-                                uint32_t target_sdk_version,
-                                jobject class_loader,
-                                bool is_shared,
-                                bool is_for_vendor,
-                                jstring java_library_path,
-                                jstring java_permitted_path,
-                                std::string* error_msg) {
+  NativeLoaderNamespace* Create(JNIEnv* env, uint32_t target_sdk_version, jobject class_loader,
+                                bool is_shared, bool is_for_vendor, jstring java_library_path,
+                                jstring java_permitted_path, const char** error_msg) {
     std::string library_path; // empty string by default.
 
     if (java_library_path != nullptr) {
@@ -518,7 +513,7 @@ class LibraryNamespaces {
     return true;
   }
 
-  bool InitPublicNamespace(const char* library_path, std::string* error_msg) {
+  bool InitPublicNamespace(const char* library_path, const char** error_msg) {
     // Ask native bride if this apps library path should be handled by it
     bool is_native_bridge = NativeBridgeIsPathSupported(library_path);
 
@@ -609,7 +604,7 @@ jstring CreateClassLoaderNamespace(JNIEnv* env,
 #if defined(__ANDROID__)
   std::lock_guard<std::mutex> guard(g_namespaces_mutex);
 
-  std::string error_msg;
+  const char* error_msg;
   bool success = g_namespaces->Create(env,
                                       target_sdk_version,
                                       class_loader,
@@ -619,7 +614,7 @@ jstring CreateClassLoaderNamespace(JNIEnv* env,
                                       permitted_path,
                                       &error_msg) != nullptr;
   if (!success) {
-    return env->NewStringUTF(error_msg.c_str());
+    return env->NewStringUTF(error_msg);
   }
 #else
   UNUSED(env, target_sdk_version, class_loader, is_shared, is_for_vendor,
@@ -628,13 +623,9 @@ jstring CreateClassLoaderNamespace(JNIEnv* env,
   return nullptr;
 }
 
-void* OpenNativeLibrary(JNIEnv* env,
-                        int32_t target_sdk_version,
-                        const char* path,
-                        jobject class_loader,
-                        jstring library_path,
-                        bool* needs_native_bridge,
-                        std::string* error_msg) {
+void* OpenNativeLibrary(JNIEnv* env, int32_t target_sdk_version, const char* path,
+                        jobject class_loader, jstring library_path, bool* needs_native_bridge,
+                        const char** error_msg) {
 #if defined(__ANDROID__)
   UNUSED(target_sdk_version);
   if (class_loader == nullptr) {
@@ -664,7 +655,7 @@ void* OpenNativeLibrary(JNIEnv* env,
     }
   }
 
-  return OpenNativeLibrary(ns, path, needs_native_bridge, error_msg);
+  return OpenNativeLibraryInNamespace(ns, path, needs_native_bridge, error_msg);
 #else
   UNUSED(env, target_sdk_version, class_loader);
 
@@ -714,7 +705,7 @@ void* OpenNativeLibrary(JNIEnv* env,
 #endif
 }
 
-bool CloseNativeLibrary(void* handle, const bool needs_native_bridge, std::string* error_msg) {
+bool CloseNativeLibrary(void* handle, const bool needs_native_bridge, const char** error_msg) {
   bool success;
   if (needs_native_bridge) {
     success = (NativeBridgeUnloadLibrary(handle) == 0);
@@ -732,8 +723,8 @@ bool CloseNativeLibrary(void* handle, const bool needs_native_bridge, std::strin
 }
 
 #if defined(__ANDROID__)
-void* OpenNativeLibrary(NativeLoaderNamespace* ns, const char* path, bool* needs_native_bridge,
-                        std::string* error_msg) {
+void* OpenNativeLibraryInNamespace(NativeLoaderNamespace* ns, const char* path,
+                                   bool* needs_native_bridge, const char** error_msg) {
   if (ns->is_android_namespace()) {
     android_dlextinfo extinfo;
     extinfo.flags = ANDROID_DLEXT_USE_NAMESPACE;
