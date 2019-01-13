@@ -74,13 +74,10 @@ struct Vma {
 
     void clear() {
         memset(&usage, 0, sizeof(usage));
-        memset(&wss, 0, sizeof(wss));
     }
 
     // Memory usage of this mapping.
     MemUsage usage;
-    // Working set within this mapping.
-    MemUsage wss;
 };
 
 }  // namespace meminfo
