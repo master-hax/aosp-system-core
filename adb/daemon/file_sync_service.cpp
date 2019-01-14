@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -53,6 +54,23 @@
 
 using android::base::Dirname;
 using android::base::StringPrintf;
+
+static bool is_mountpoint(const std::string& path) {
+    const std::string mountinfo_path = "/proc/self/mountinfo";
+    std::string mountinfo;
+    if (!android::base::ReadFileToString(mountinfo_path, &mountinfo)) {
+        PLOG(ERROR) << "Failed to open " << mountinfo_path;
+        return false;
+    }
+    std::vector<std::string> lines = android::base::Split(mountinfo, "\n");
+    return std::find_if(lines.begin(), lines.end(), [&path](const auto& line) {
+               auto tokens = android::base::Split(line, " ");
+               if (tokens.size() < 4) return false;
+               // line format is ...
+               // mountid parentmountid major:minor sourcepath targetpath option ...
+               return tokens[4] == path;
+           }) != lines.end();
+}
 
 static bool should_use_fs_config(const std::string& path) {
     // TODO: use fs_config to configure permissions on /data too.
@@ -400,6 +418,14 @@ static bool do_send(int s, const std::string& spec, std::vector<char>& buffer) {
     struct stat st;
     bool do_unlink = (lstat(path.c_str(), &st) == -1) || S_ISREG(st.st_mode) ||
                      (S_ISLNK(st.st_mode) && !S_ISLNK(mode));
+
+    // Don't delete a path if it is a mountpoint, instead truncate it to zero.
+    // If we unlink, existing mounts from the source are unmounted.
+    if (do_unlink && is_mountpoint(path)) {
+        truncate(path.c_str(), 0);
+        do_unlink = false;
+    }
+
     if (do_unlink) {
         adb_unlink(path.c_str());
     }
@@ -535,7 +561,69 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
     return true;
 }
 
+// Bind mount /system to /system non recursively so that any mounts on top
+// of /system is temporarily hidden for file sync operations. Currently, the
+// bionic lib and the dynamic linker (/system/lib/libc.so,  /system/bin/linker,
+// etc.) are bind-mounted over to /system from the runtime APEX. Therefore,
+// without this preparer, adb sync and adb push for the paths do not work.
+// Note that this mounting is done only for the file sync thread. Other
+// processes and other threads in adbd are not affected by the temporary bind mount.
+class FileSyncPreparer {
+  public:
+    FileSyncPreparer() : saved_ns_fd(-1) {
+        // write to /system is only available when rooted. Mounting /system
+        // to /system is unnecessary (and even impossible) when unrooted.
+        if (getuid() != 0) {
+            return;
+        }
+
+        const std::string namespace_path = "/proc/" + std::to_string(gettid()) + "/ns/mnt";
+        const int ns_fd = adb_open(namespace_path.c_str(), O_RDONLY | O_CLOEXEC);
+        if (ns_fd == -1) {
+            PLOG(ERROR) << "Failed to save mount namespace: " << strerror(errno);
+            return;
+        }
+
+        // Note: this is for the current thread only
+        if (unshare(CLONE_NEWNS) != 0) {
+            PLOG(ERROR) << "Failed to clone mount namespace: " << strerror(errno);
+            return;
+        }
+        saved_ns_fd.reset(ns_fd);
+
+        // Set the propagation type of / to private so that bind mount below is
+        // not propagated to other mount namespaces.
+        if (mount(nullptr, "/", nullptr, (MS_PRIVATE | MS_REC), nullptr) == -1) {
+            PLOG(ERROR) << "Could not change propagation type of / to MS_PRIVATE: "
+                        << strerror(errno);
+            return;
+        }
+
+        // No MS_REC here.
+        if (mount("/system", "/system", nullptr, MS_BIND, nullptr) == -1) {
+            PLOG(ERROR) << "Failed to bind-mount /system to /system :" << strerror(errno);
+        }
+    }
+
+    ~FileSyncPreparer() {
+        if (saved_ns_fd.get() != -1) {
+            // In fact, this is not strictly required because this thread for file
+            // sync service will be destroyed after the current transfer is all
+            // done. However, let's restore the ns in case the same thread is
+            // reused by multiple transfers in the future refactoring.
+            if (setns(saved_ns_fd, CLONE_NEWNS) == -1) {
+                PLOG(ERROR) << "Failed to restore saved mount namespace: " << strerror(errno);
+            }
+        }
+    }
+
+  private:
+    unique_fd saved_ns_fd;
+};
+
 void file_sync_service(unique_fd fd) {
+    FileSyncPreparer preparer;
+
     std::vector<char> buffer(SYNC_DATA_MAX);
 
     while (handle_sync_command(fd.get(), buffer)) {
