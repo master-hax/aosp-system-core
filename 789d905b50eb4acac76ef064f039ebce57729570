@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "46f5ac0f_d2485913",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-14T17:06:52Z",
+      "side": 0,
+      "message": "To me, this is the _biggest_ gain, any time we can remove an implied default fstab, the less we rely on a heuristic to search and discover.",
+      "range": {
+        "startLine": 1508,
+        "startChar": 0,
+        "endLine": 1511,
+        "endChar": 5
+      },
+      "revId": "789d905b50eb4acac76ef064f039ebce57729570",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "584c6d00_5c45cffc",
         "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
         "patchSetId": 1
