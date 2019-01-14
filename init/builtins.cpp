@@ -1107,6 +1107,15 @@ static Result<Success> do_setup_runtime_bionic(const BuiltinArguments& args) {
     } else {
         return Error() << "Failed to setup runtime bionic";
     }
+<<<<<<< HEAD
+=======
+
+    ServiceList::GetInstance().MarkRuntimeAvailable();
+    LOG(INFO) << "setup_runtime_bionic done";
+    setup_runtime_bionic_done = true;
+
+    return Success();
+>>>>>>> pre_apexd and update_verifier experiment
 }
 
 // Builtin-function-map start

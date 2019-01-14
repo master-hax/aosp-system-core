@@ -389,6 +389,10 @@ on late-fs
     # Ensure that tracefs has the correct permissions.
     # This does not work correctly if it is called in post-fs.
     chmod 0755 /sys/kernel/debug/tracing
+    write /sys/kernel/debug/tracing/events/android_fs/android_fs_datawrite_start/enable 1
+    write /sys/kernel/debug/tracing/events/android_fs/android_fs_datawrite_end/enable 1
+    write /sys/kernel/debug/tracing/buffer_size_kb 20000
+    write /sys/kernel/debug/tracing/tracing_on 1
 
     # HALs required before storage encryption can get unlocked (FBE/FDE)
     class_start early_hal
@@ -581,8 +585,12 @@ on post-fs-data
     # as possible to use the bionic libs from the runtime APEX. This takes less than 50ms
     # so the impact on the booting time is not significant.
     wait_for_prop apexd.status ready
+<<<<<<< HEAD
     setup_runtime_bionic
     parse_apex_configs
+=======
+    mark_runtime_available
+>>>>>>> pre_apexd and update_verifier experiment
 
     # If there is no post-fs-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -752,6 +760,7 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 on property:sys.boot_completed=1
+    write /sys/kernel/debug/tracing/tracing_on 0
     bootchart stop
 
 # system server cannot write to /proc/sys files,
@@ -805,3 +814,9 @@ on property:ro.debuggable=1
 service flash_recovery /system/bin/install-recovery.sh
     class main
     oneshot
+
+on property:apexd.status=ready
+    parse_apex_configs
+
+on property:ro.init.updatable_crashing=1
+    exec_start update_verifier_rollback
