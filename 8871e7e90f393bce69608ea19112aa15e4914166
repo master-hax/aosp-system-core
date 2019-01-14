@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ecdd1f14_4514f89b",
+        "filename": "libmeminfo/procmeminfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-14T18:05:11Z",
+      "side": 1,
+      "message": "getline?",
+      "range": {
+        "startLine": 428,
+        "startChar": 11,
+        "endLine": 428,
+        "endChar": 16
+      },
+      "revId": "8871e7e90f393bce69608ea19112aa15e4914166",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
