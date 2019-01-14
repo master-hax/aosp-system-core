@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -53,6 +54,42 @@
 
 using android::base::Dirname;
 using android::base::StringPrintf;
+
+template <typename Filter>
+static bool search_mountinfo(pid_t pid, Filter fn) {
+    const std::string mountinfo_path = "/proc/" + std::to_string(pid) + "/mountinfo";
+    std::string mountinfo;
+    if (!android::base::ReadFileToString(mountinfo_path, &mountinfo)) {
+        PLOG(ERROR) << "Failed to open " << mountinfo_path;
+        return false;
+    }
+    std::vector<std::string> lines = android::base::Split(mountinfo, "\n");
+    for (const auto& line : lines) {
+        std::vector<std::string> tokens = android::base::Split(line, " ");
+        const std::string& src_path = tokens[3];
+        const std::string& target_path = tokens[4];
+        if (fn(src_path, target_path)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Tests if given path is a mountpoint or not for the given pid
+static bool is_mountpoint(const std::string& path, pid_t pid) {
+    return search_mountinfo(pid,
+                            [path](const std::string& /*unused*/, const std::string& target_path) {
+                                return target_path == path;
+                            });
+}
+
+// Tests if given path is a mountsource or not for the given pid
+static bool is_mountsource(const std::string& path, pid_t pid) {
+    return search_mountinfo(pid,
+                            [path](const std::string& src_path, const std::string& /*unused*/) {
+                                return src_path == path;
+                            });
+}
 
 static bool should_use_fs_config(const std::string& path) {
     // TODO: use fs_config to configure permissions on /data too.
@@ -400,6 +437,13 @@ static bool do_send(int s, const std::string& spec, std::vector<char>& buffer) {
     struct stat st;
     bool do_unlink = (lstat(path.c_str(), &st) == -1) || S_ISREG(st.st_mode) ||
                      (S_ISLNK(st.st_mode) && !S_ISLNK(mode));
+
+    // Don't delete a path if it is a mount source. Otherwise, existing mounts
+    // from the source are unmounted.
+    if (do_unlink && is_mountsource(path, getpid())) {
+        do_unlink = false;
+    }
+
     if (do_unlink) {
         adb_unlink(path.c_str());
     }
@@ -535,7 +579,73 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
     return true;
 }
 
+class MountNamespaceForFileSync {
+  public:
+    MountNamespaceForFileSync() : saved_ns_fd(-1) {
+        const std::string namespace_path = "/proc/" + std::to_string(gettid()) + "/ns/mnt";
+        const int ns_fd = adb_open(namespace_path.c_str(), O_RDONLY);
+        if (ns_fd == -1) {
+            PLOG(ERROR) << "Failed to save mount namespace: " << strerror(errno);
+            return;
+        }
+
+        if (unshare(CLONE_NEWNS) != 0) {
+            PLOG(ERROR) << "Failed to clone mount namespace: " << strerror(errno);
+            return;
+        }
+        saved_ns_fd = ns_fd;
+
+        if (mount(nullptr, "/", nullptr, (MS_PRIVATE | MS_REC), nullptr) == -1) {
+            PLOG(ERROR) << "Could not change propagation type of / to MS_PRIVATE: "
+                        << strerror(errno);
+            return;
+        }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
+        static const std::vector<std::string> kBionicPaths = {
+                "/system/bin/linker",    "/system/bin/linker64",  "/system/lib/libc.so",
+                "/system/lib64/libc.so", "/system/lib/libm.so",   "/system/lib64/libm.so",
+                "/system/lib/libdl.so",  "/system/lib64/libdl.so"};
+#pragma clang diagnostic pop
+
+        // Try to unmount bionic libs and the dynamic linker
+        for (const auto& path : kBionicPaths) {
+            int trycount = 0;
+            // try multiple times because the path might be mounted multiple
+            // times: once for bootstrap bionic, another for the runtime bionic.
+            // Note that here we are using gettid() instead of getpid() because
+            // the mount namespace is created for the current thread only.
+            while (is_mountpoint(path, gettid()) && (trycount++) <= 2) {
+                if (umount(path.c_str()) == -1) {
+                    PLOG(ERROR) << "Could not unmount '" << path << "': " << strerror(errno);
+                }
+            }
+        }
+    }
+
+    ~MountNamespaceForFileSync() {
+        if (saved_ns_fd != -1) {
+            // In fact, this is not strictly required because this thread for file
+            // sync service will be destroyed after the current transfer is all
+            // done. However, let's restore the ns in case the same thread is
+            // reused by multiple transfers in the future refactoring.
+            if (setns(saved_ns_fd, CLONE_NEWNS) == -1) {
+                PLOG(ERROR) << "Failed to restore saved mount namespace: " << strerror(errno);
+            }
+            adb_close(saved_ns_fd);
+        }
+    }
+
+  private:
+    int saved_ns_fd;
+};
+
 void file_sync_service(unique_fd fd) {
+#ifndef __ANDROID_RECOVERY__
+    MountNamespaceForFileSync ns;
+#endif
+
     std::vector<char> buffer(SYNC_DATA_MAX);
 
     while (handle_sync_command(fd.get(), buffer)) {
