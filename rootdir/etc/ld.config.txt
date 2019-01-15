@@ -123,6 +123,12 @@ namespace.default.link.runtime.shared_libs += libjavacore.so
 namespace.default.link.runtime.shared_libs += libopenjdk.so
 namespace.default.link.runtime.shared_libs += libexpat.so
 
+namespace.default.link.runtime.shared_libs += libicuuc.so
+namespace.default.link.runtime.shared_libs += libicui18n.so
+# TODO(vichang): Remove the following entries since they should only be used by framework
+namespace.default.link.runtime.shared_libs += libandroidicu.so
+namespace.default.link.runtime.shared_libs += libpac.so
+
 ###############################################################################
 # "runtime" APEX namespace
 #
