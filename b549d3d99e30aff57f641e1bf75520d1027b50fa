@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19666192_8649511e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-15T01:29:56Z",
+      "side": 1,
+      "message": "nit: I think there should be a comment here for what you are trying to do and why.",
+      "range": {
+        "startLine": 984,
+        "startChar": 8,
+        "endLine": 988,
+        "endChar": 9
+      },
+      "revId": "b549d3d99e30aff57f641e1bf75520d1027b50fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
