@@ -972,7 +972,8 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
 
         // Don't mount entries that are managed by vold or not for the mount mode.
         if (current_entry.fs_mgr_flags.vold_managed || current_entry.fs_mgr_flags.recovery_only ||
-            current_entry.fs_mgr_flags.first_stage_mount ||
+            (current_entry.fs_mgr_flags.first_stage_mount &&
+             !current_entry.fs_mgr_flags.formattable) ||
             ((mount_mode == MOUNT_MODE_LATE) && !current_entry.fs_mgr_flags.late_mount) ||
             ((mount_mode == MOUNT_MODE_EARLY) && current_entry.fs_mgr_flags.late_mount)) {
             continue;
