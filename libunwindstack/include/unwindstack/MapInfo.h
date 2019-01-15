@@ -84,7 +84,11 @@ struct MapInfo {
 
   bool GetFunctionName(uint64_t addr, std::string* name, uint64_t* func_offset);
 
+  // Returns the raw build id read from the elf data.
   std::string GetBuildID();
+
+  // Returns a printable version of the build id.
+  std::string GetPrintableBuildID();
 
  private:
   MapInfo(const MapInfo&) = delete;

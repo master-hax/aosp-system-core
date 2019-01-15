@@ -26,26 +26,16 @@
 
 #include "libdebuggerd/utility.h"
 
-#include "BacktraceMock.h"
-#include "elf_fake.h"
+#include "UnwinderMock.h"
 #include "host_signal_fixup.h"
 #include "log_fake.h"
 
 #include "tombstone.cpp"
 
-void dump_registers(log_t*, pid_t) {
-}
-
-void dump_memory_and_code(log_t*, Backtrace*) {
-}
-
-void dump_backtrace_to_log(Backtrace*, log_t*, char const*) {
-}
-
 class TombstoneTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    map_mock_.reset(new BacktraceMapMock());
+    unwinder_mock_.reset(new UnwinderMock());
 
     char tmp_file[256];
     const char data_template[] = "/data/local/tmp/debuggerd_memory_testXXXXXX";
@@ -71,7 +61,6 @@ class TombstoneTest : public ::testing::Test {
     log_.should_retrieve_logcat = false;
 
     resetLogs();
-    elf_set_fake_build_id("");
   }
 
   virtual void TearDown() {
@@ -80,24 +69,20 @@ class TombstoneTest : public ::testing::Test {
     }
   }
 
-  std::unique_ptr<BacktraceMapMock> map_mock_;
+  std::unique_ptr<UnwinderMock> unwinder_mock_;
 
   log_t log_;
   std::string amfd_data_;
 };
 
 TEST_F(TombstoneTest, single_map) {
-  backtrace_map_t map;
 #if defined(__LP64__)
-  map.start = 0x123456789abcd000UL;
-  map.end = 0x123456789abdf000UL;
+  unwinder_mock_->MockAddMap(0x123456789abcd000UL, 0x123456789abdf000UL, 0, 0, "", 0);
 #else
-  map.start = 0x1234000;
-  map.end = 0x1235000;
+  unwinder_mock_->MockAddMap(0x1234000, 0x1235000, 0, 0, "", 0);
 #endif
-  map_mock_->AddMap(map);
 
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0);
+  dump_all_maps(&log_, unwinder_mock_.get(), 0);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -119,20 +104,20 @@ TEST_F(TombstoneTest, single_map) {
 }
 
 TEST_F(TombstoneTest, single_map_elf_build_id) {
-  backtrace_map_t map;
+  uint64_t build_id_offset;
 #if defined(__LP64__)
-  map.start = 0x123456789abcd000UL;
-  map.end = 0x123456789abdf000UL;
+  build_id_offset = 0x123456789abcd000UL;
+  unwinder_mock_->MockAddMap(build_id_offset, 0x123456789abdf000UL, 0, PROT_READ,
+                             "/system/lib/libfake.so", 0);
 #else
-  map.start = 0x1234000;
-  map.end = 0x1235000;
+  build_id_offset = 0x1234000;
+  unwinder_mock_->MockAddMap(0x1234000, 0x1235000, 0, PROT_READ, "/system/lib/libfake.so", 0);
 #endif
-  map.flags = PROT_READ;
-  map.name = "/system/lib/libfake.so";
-  map_mock_->AddMap(map);
 
-  elf_set_fake_build_id("abcdef1234567890abcdef1234567890");
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0);
+  unwinder_mock_->MockSetBuildID(
+      build_id_offset, std::string{0xab, 0xcd, 0xef, 0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                                   0x12, 0x34, 0x56, 0x78, 0x90});
+  dump_all_maps(&log_, unwinder_mock_.get(), 0);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -153,83 +138,15 @@ TEST_F(TombstoneTest, single_map_elf_build_id) {
   ASSERT_STREQ("", getFakeLogPrint().c_str());
 }
 
-// Even though build id is present, it should not be printed in either of
-// these cases.
-TEST_F(TombstoneTest, single_map_no_build_id) {
-  backtrace_map_t map;
-#if defined(__LP64__)
-  map.start = 0x123456789abcd000UL;
-  map.end = 0x123456789abdf000UL;
-#else
-  map.start = 0x1234000;
-  map.end = 0x1235000;
-#endif
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.name = "/system/lib/libfake.so";
-  map_mock_->AddMap(map);
-
-  elf_set_fake_build_id("abcdef1234567890abcdef1234567890");
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0);
-
-  std::string tombstone_contents;
-  ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
-  ASSERT_TRUE(android::base::ReadFdToString(log_.tfd, &tombstone_contents));
-  const char* expected_dump = \
-"\nmemory map (2 entries):\n"
-#if defined(__LP64__)
-"    12345678'9abcd000-12345678'9abdefff -w-         0     12000\n"
-"    12345678'9abcd000-12345678'9abdefff -w-         0     12000  /system/lib/libfake.so\n";
-#else
-"    01234000-01234fff -w-         0      1000\n"
-"    01234000-01234fff -w-         0      1000  /system/lib/libfake.so\n";
-#endif
-  ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
-
-  ASSERT_STREQ("", amfd_data_.c_str());
-
-  // Verify that the log buf is empty, and no error messages.
-  ASSERT_STREQ("", getFakeLogBuf().c_str());
-  ASSERT_STREQ("", getFakeLogPrint().c_str());
-}
-
 TEST_F(TombstoneTest, multiple_maps) {
-  backtrace_map_t map;
+  unwinder_mock_->MockAddMap(0xa234000, 0xa235000, 0, 0, "", 0);
+  unwinder_mock_->MockAddMap(0xa334000, 0xa335000, 0xf000, PROT_READ, "", 0);
+  unwinder_mock_->MockAddMap(0xa434000, 0xa435000, 0x1000, PROT_WRITE, "", 0xd000);
+  unwinder_mock_->MockAddMap(0xa534000, 0xa535000, 0x3000, PROT_EXEC, "", 0x2000);
+  unwinder_mock_->MockAddMap(0xa634000, 0xa635000, 0, PROT_READ | PROT_WRITE | PROT_EXEC,
+                             "/system/lib/fake.so", 0);
 
-  map.start = 0xa234000;
-  map.end = 0xa235000;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa334000;
-  map.end = 0xa335000;
-  map.offset = 0xf000;
-  map.flags = PROT_READ;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa434000;
-  map.end = 0xa435000;
-  map.offset = 0x1000;
-  map.load_bias = 0xd000;
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa534000;
-  map.end = 0xa535000;
-  map.offset = 0x3000;
-  map.load_bias = 0x2000;
-  map.flags = PROT_EXEC;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa634000;
-  map.end = 0xa635000;
-  map.offset = 0;
-  map.load_bias = 0;
-  map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
-  map.name = "/system/lib/fake.so";
-  map_mock_->AddMap(map);
-
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0);
+  dump_all_maps(&log_, unwinder_mock_.get(), 0);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -259,31 +176,12 @@ TEST_F(TombstoneTest, multiple_maps) {
 }
 
 TEST_F(TombstoneTest, multiple_maps_fault_address_before) {
-  backtrace_map_t map;
+  unwinder_mock_->MockAddMap(0xa434000, 0xa435000, 0x1000, PROT_WRITE, "", 0xd000);
+  unwinder_mock_->MockAddMap(0xa534000, 0xa535000, 0x3000, PROT_EXEC, "", 0x2000);
+  unwinder_mock_->MockAddMap(0xa634000, 0xa635000, 0, PROT_READ | PROT_WRITE | PROT_EXEC,
+                             "/system/lib/fake.so", 0);
 
-  map.start = 0xa434000;
-  map.end = 0xa435000;
-  map.offset = 0x1000;
-  map.load_bias = 0xd000;
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa534000;
-  map.end = 0xa535000;
-  map.offset = 0x3000;
-  map.load_bias = 0x2000;
-  map.flags = PROT_EXEC;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa634000;
-  map.end = 0xa635000;
-  map.offset = 0;
-  map.load_bias = 0;
-  map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
-  map.name = "/system/lib/fake.so";
-  map_mock_->AddMap(map);
-
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0x1000);
+  dump_all_maps(&log_, unwinder_mock_.get(), 0x1000);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -311,31 +209,12 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_before) {
 }
 
 TEST_F(TombstoneTest, multiple_maps_fault_address_between) {
-  backtrace_map_t map;
+  unwinder_mock_->MockAddMap(0xa434000, 0xa435000, 0x1000, PROT_WRITE, "", 0xd000);
+  unwinder_mock_->MockAddMap(0xa534000, 0xa535000, 0x3000, PROT_EXEC, "", 0x2000);
+  unwinder_mock_->MockAddMap(0xa634000, 0xa635000, 0, PROT_READ | PROT_WRITE | PROT_EXEC,
+                             "/system/lib/fake.so", 0);
 
-  map.start = 0xa434000;
-  map.end = 0xa435000;
-  map.offset = 0x1000;
-  map.load_bias = 0xd000;
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa534000;
-  map.end = 0xa535000;
-  map.offset = 0x3000;
-  map.load_bias = 0x2000;
-  map.flags = PROT_EXEC;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa634000;
-  map.end = 0xa635000;
-  map.offset = 0;
-  map.load_bias = 0;
-  map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
-  map.name = "/system/lib/fake.so";
-  map_mock_->AddMap(map);
-
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0xa533000);
+  dump_all_maps(&log_, unwinder_mock_.get(), 0xa533000);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -363,31 +242,12 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_between) {
 }
 
 TEST_F(TombstoneTest, multiple_maps_fault_address_in_map) {
-  backtrace_map_t map;
+  unwinder_mock_->MockAddMap(0xa434000, 0xa435000, 0x1000, PROT_WRITE, "", 0xd000);
+  unwinder_mock_->MockAddMap(0xa534000, 0xa535000, 0x3000, PROT_EXEC, "", 0x2000);
+  unwinder_mock_->MockAddMap(0xa634000, 0xa635000, 0, PROT_READ | PROT_WRITE | PROT_EXEC,
+                             "/system/lib/fake.so", 0);
 
-  map.start = 0xa434000;
-  map.end = 0xa435000;
-  map.offset = 0x1000;
-  map.load_bias = 0xd000;
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa534000;
-  map.end = 0xa535000;
-  map.offset = 0x3000;
-  map.load_bias = 0x2000;
-  map.flags = PROT_EXEC;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa634000;
-  map.end = 0xa635000;
-  map.offset = 0;
-  map.load_bias = 0;
-  map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
-  map.name = "/system/lib/fake.so";
-  map_mock_->AddMap(map);
-
-  dump_all_maps(&log_, map_mock_.get(), nullptr, 0xa534040);
+  dump_all_maps(&log_, unwinder_mock_.get(), 0xa534040);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
@@ -413,36 +273,17 @@ TEST_F(TombstoneTest, multiple_maps_fault_address_in_map) {
 }
 
 TEST_F(TombstoneTest, multiple_maps_fault_address_after) {
-  backtrace_map_t map;
-
-  map.start = 0xa434000;
-  map.end = 0xa435000;
-  map.offset = 0x1000;
-  map.load_bias = 0xd000;
-  map.flags = PROT_WRITE;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa534000;
-  map.end = 0xa535000;
-  map.offset = 0x3000;
-  map.load_bias = 0x2000;
-  map.flags = PROT_EXEC;
-  map_mock_->AddMap(map);
-
-  map.start = 0xa634000;
-  map.end = 0xa635000;
-  map.offset = 0;
-  map.load_bias = 0;
-  map.flags = PROT_READ | PROT_WRITE | PROT_EXEC;
-  map.name = "/system/lib/fake.so";
-  map_mock_->AddMap(map);
+  unwinder_mock_->MockAddMap(0xa434000, 0xa435000, 0x1000, PROT_WRITE, "", 0xd000);
+  unwinder_mock_->MockAddMap(0xa534000, 0xa535000, 0x3000, PROT_EXEC, "", 0x2000);
+  unwinder_mock_->MockAddMap(0xa634000, 0xa635000, 0, PROT_READ | PROT_WRITE | PROT_EXEC,
+                             "/system/lib/fake.so", 0);
 
 #if defined(__LP64__)
   uint64_t addr = 0x12345a534040UL;
 #else
   uint64_t addr = 0xf534040UL;
 #endif
-  dump_all_maps(&log_, map_mock_.get(), nullptr, addr);
+  dump_all_maps(&log_, unwinder_mock_.get(), addr);
 
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);

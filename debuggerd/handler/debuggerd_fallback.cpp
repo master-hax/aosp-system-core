@@ -42,9 +42,12 @@
 #include <android-base/file.h>
 #include <android-base/unique_fd.h>
 #include <async_safe/log.h>
-#include <backtrace/BacktraceMap.h>
+#include <unwindstack/DexFiles.h>
+#include <unwindstack/JitDebug.h>
+#include <unwindstack/Maps.h>
 #include <unwindstack/Memory.h>
 #include <unwindstack/Regs.h>
+#include <unwindstack/Unwinder.h>
 
 #include "debuggerd/handler.h"
 #include "handler/fallback.h"
@@ -55,7 +58,6 @@
 #include "libdebuggerd/tombstone.h"
 
 using android::base::unique_fd;
-using unwindstack::Regs;
 
 extern "C" bool __linker_enable_fallback_allocator();
 extern "C" void __linker_disable_fallback_allocator();
@@ -73,17 +75,23 @@ static void debuggerd_fallback_trace(int output_fd, ucontext_t* ucontext) {
   }
 
   {
-    std::unique_ptr<Regs> regs;
+    std::unique_ptr<unwindstack::Regs> regs;
+    unwindstack::ArchEnum arch = unwindstack::Regs::CurrentArch();
 
     ThreadInfo thread;
     thread.pid = getpid();
     thread.tid = gettid();
     thread.thread_name = get_thread_name(gettid());
-    thread.registers.reset(Regs::CreateFromUcontext(Regs::CurrentArch(), ucontext));
+    thread.registers.reset(
+        unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(), ucontext));
 
     // TODO: Create this once and store it in a global?
-    std::unique_ptr<BacktraceMap> map(BacktraceMap::Create(getpid()));
-    dump_backtrace_thread(output_fd, map.get(), thread);
+    unwindstack::UnwinderFromPid unwinder(256, getpid());
+    if (!unwinder.Init(arch)) {
+      async_safe_format_log(ANDROID_LOG_ERROR, "libc", "Unable to init unwinder.");
+    } else {
+      dump_backtrace_thread(output_fd, &unwinder, thread);
+    }
   }
   __linker_disable_fallback_allocator();
 }
