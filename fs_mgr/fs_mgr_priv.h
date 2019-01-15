@@ -122,6 +122,8 @@
                           0x80000000
 #define MF_SLOTSELECT_OTHER  \
                          0x100000000
+#define MF_FS_VERITY  \
+                         0x200000000
 // clang-format on
 
 #define DM_BUF_SIZE 4096
