@@ -134,6 +134,11 @@ namespace.default.link.runtime.shared_libs += libnativeloader.so
 # to be loaded in the default namespace.
 namespace.default.link.resolv.shared_libs = libnetd_resolv.so
 
+namespace.default.link.runtime.shared_libs += libandroidicu.so
+
+# TODO(vichang): Remove libpac.so since it's only used by framework
+namespace.default.link.runtime.shared_libs += libpac.so
+
 ###############################################################################
 # "runtime" APEX namespace
 #
