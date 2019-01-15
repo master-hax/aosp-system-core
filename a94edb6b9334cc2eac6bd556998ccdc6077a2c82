@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "086f225e_57813cd1",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-01-15T18:17:04Z",
+      "side": 1,
+      "message": "nit: shall we make this also constexpr≈?\nconstexpr unsigned int shutdown_thread_minimal_timeout \u003d 30;\nsimilar to\n        constexpr unsigned int shutdown_timeout_default \u003d 6;\n        constexpr unsigned int max_thermal_shutdown_timeout \u003d 3;",
+      "range": {
+        "startLine": 422,
+        "startChar": 40,
+        "endLine": 422,
+        "endChar": 42
+      },
+      "revId": "a94edb6b9334cc2eac6bd556998ccdc6077a2c82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac111124_49832d04",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-01-15T18:17:04Z",
+      "side": 1,
+      "message": "nit: /**/ ?",
+      "range": {
+        "startLine": 435,
+        "startChar": 0,
+        "endLine": 441,
+        "endChar": 2
+      },
+      "revId": "a94edb6b9334cc2eac6bd556998ccdc6077a2c82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
