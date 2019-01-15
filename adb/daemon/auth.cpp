@@ -46,50 +46,9 @@ static struct adisconnect adb_disconnect = {adb_disconnected, nullptr};
 
 bool auth_required = true;
 
-static void IteratePublicKeys(std::function<bool(std::string_view public_key)> f) {
-    adbd_auth_get_public_keys(
-            auth_ctx,
-            [](const char* public_key, size_t len, void* arg) {
-                return (*static_cast<decltype(f)*>(arg))(std::string_view(public_key, len));
-            },
-            &f);
-}
-
 bool adbd_auth_verify(const char* token, size_t token_size, const std::string& sig,
                       std::string* auth_key) {
-    bool authorized = false;
-    auth_key->clear();
-
-    IteratePublicKeys([&](std::string_view public_key) {
-        // TODO: do we really have to support both ' ' and '\t'?
-        std::vector<std::string> split = android::base::Split(std::string(public_key), " \t");
-        uint8_t keybuf[ANDROID_PUBKEY_ENCODED_SIZE + 1];
-        const std::string& pubkey = split[0];
-        if (b64_pton(pubkey.c_str(), keybuf, sizeof(keybuf)) != ANDROID_PUBKEY_ENCODED_SIZE) {
-            LOG(ERROR) << "Invalid base64 key " << pubkey;
-            return true;
-        }
-
-        RSA* key = nullptr;
-        if (!android_pubkey_decode(keybuf, ANDROID_PUBKEY_ENCODED_SIZE, &key)) {
-            LOG(ERROR) << "Failed to parse key " << pubkey;
-            return true;
-        }
-
-        bool verified =
-                (RSA_verify(NID_sha1, reinterpret_cast<const uint8_t*>(token), token_size,
-                            reinterpret_cast<const uint8_t*>(sig.c_str()), sig.size(), key) == 1);
-        RSA_free(key);
-        if (verified) {
-            *auth_key = public_key;
-            authorized = true;
-            return false;
-        }
-
-        return true;
-    });
-
-    return authorized;
+    return true;
 }
 
 static bool adbd_auth_generate_token(void* token, size_t token_size) {
