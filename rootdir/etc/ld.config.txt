@@ -113,6 +113,7 @@ namespace.default.link.runtime.shared_libs  = libart.so:libartd.so
 namespace.default.link.runtime.shared_libs += libnativebridge.so
 namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
+namespace.default.link.runtime.shared_libs += libopenjdk.so
 
 ###############################################################################
 # "runtime" APEX namespace
