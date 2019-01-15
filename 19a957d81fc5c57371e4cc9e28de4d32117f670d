@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b3c3089_bc1e1794",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 1284,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-15T22:48:02Z",
+      "side": 1,
+      "message": "You don\u0027t need this one separately now. pid will be listed under /proc/\u003cpid\u003e/task/",
+      "range": {
+        "startLine": 1281,
+        "startChar": 0,
+        "endLine": 1284,
+        "endChar": 0
+      },
+      "revId": "19a957d81fc5c57371e4cc9e28de4d32117f670d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
