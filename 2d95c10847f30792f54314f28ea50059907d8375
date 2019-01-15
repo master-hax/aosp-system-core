@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55e15ff8_27a9b350",
+        "filename": "lmkd/lmkd.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2019-01-15T23:32:24Z",
+      "side": 1,
+      "message": "Is it possible?\n\nA has children B1, B2:\nB1 has children C1, C2\nB2 has children D1, D2\n\nIOW, recursively?",
+      "range": {
+        "startLine": 1281,
+        "startChar": 4,
+        "endLine": 1281,
+        "endChar": 31
+      },
+      "revId": "2d95c10847f30792f54314f28ea50059907d8375",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
