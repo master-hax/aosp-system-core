@@ -117,6 +117,11 @@ namespace.default.link.runtime.shared_libs += libnativehelper.so
 namespace.default.link.runtime.shared_libs += libnativeloader.so
 
 namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+namespace.default.link.runtime.shared_libs += libicuuc.so
+namespace.default.link.runtime.shared_libs += libicui18n.so
+# TODO(vichang): Remove the following entries since they should only be used by framework
+namespace.default.link.runtime.shared_libs += libandroidicu.so
+namespace.default.link.runtime.shared_libs += libpac.so
 
 ###############################################################################
 # "runtime" APEX namespace
