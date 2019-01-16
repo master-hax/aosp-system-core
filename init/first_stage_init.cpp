@@ -36,6 +36,7 @@
 #include <private/android_filesystem_config.h>
 
 #include "first_stage_mount.h"
+#include "mount_namespace.h"
 #include "reboot_utils.h"
 #include "switch_root.h"
 #include "util.h"
@@ -207,6 +208,10 @@ int FirstStageMain(int argc, char** argv) {
 
     if (old_root_dir && old_root_info.st_dev != new_root_info.st_dev) {
         FreeRamdisk(old_root_dir.get(), old_root_info.st_dev);
+    }
+
+    if (!SetupBootstrapMountNamespace()) {
+        PLOG(FATAL) << "Failed to setup bootstrap mount namespace";
     }
 
     SetInitAvbVersionInRecovery();
