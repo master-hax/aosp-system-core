@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b43687d9_d47c98b5",
+        "filename": "libunwindstack/MapInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-16T22:28:35Z",
+      "side": 1,
+      "message": "what object?",
+      "range": {
+        "startLine": 233,
+        "startChar": 11,
+        "endLine": 233,
+        "endChar": 21
+      },
+      "revId": "cd7be90c3ad7fcf70016453d5f1c1545eb8bf8ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
