@@ -102,6 +102,13 @@ static void usb_disconnected(void* unused, atransport* t) {
     LOG(INFO) << "USB disconnect";
     usb_transport = nullptr;
     needs_retry = false;
+    if (framework_fd >= 0) {
+        const char msg[] = "DC";
+        LOG(DEBUG) << "Sending '" << msg << "'";
+        if (unix_write(framework_fd, msg, sizeof(msg)) == -1) {
+            PLOG(ERROR) << "Failed to send disconnected message";
+        }
+    }
 }
 
 static void framework_disconnected() {
