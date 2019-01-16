@@ -524,11 +524,8 @@ LIBLOG_ABI_PUBLIC void __android_log_assert(const char* cond, const char* tag, c
 
   // Log assertion failures to stderr for the benefit of "adb shell" users
   // and gtests (http://b/23675822).
-  struct iovec iov[2] = {
-      {buf, strlen(buf)},
-      {(char*)"\n", 1},
-  };
-  TEMP_FAILURE_RETRY(writev(2, iov, 2));
+  TEMP_FAILURE_RETRY(write(2, buf, strlen(buf)));
+  TEMP_FAILURE_RETRY(write(2, "\n", 1));
 
   __android_log_write(ANDROID_LOG_FATAL, tag, buf);
   abort(); /* abort so we have a chance to debug the situation */
