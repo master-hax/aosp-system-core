@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2014 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef _LIBS_CUTILS_UIO_H
-#define _LIBS_CUTILS_UIO_H
+#pragma once
 
-#if !defined(_WIN32)
-
-#include <sys/uio.h>
-
-#else
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-//
-// Implementation of sys/uio.h for Win32.
-//
-
+#if defined(_WIN32)
 #include <stddef.h>
-
 struct iovec {
   void* iov_base;
   size_t iov_len;
 };
-
-extern int readv(int fd, struct iovec* vecs, int count);
-extern int writev(int fd, const struct iovec* vecs, int count);
-
-#ifdef __cplusplus
-}
+#else
+#include <sys/uio.h>
 #endif
-
-#endif
-
-#endif /* _LIBS_UTILS_UIO_H */

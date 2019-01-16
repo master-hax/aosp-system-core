@@ -20,6 +20,7 @@
 #include <sys/types.h>
 
 #include "log_portability.h"
+#include "uio.h"
 
 struct iovec;
 
