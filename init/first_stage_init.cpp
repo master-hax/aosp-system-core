@@ -36,6 +36,7 @@
 #include <private/android_filesystem_config.h>
 
 #include "first_stage_mount.h"
+#include "mount_namespace.h"
 #include "reboot_utils.h"
 #include "switch_root.h"
 #include "util.h"
