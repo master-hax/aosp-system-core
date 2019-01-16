@@ -55,7 +55,7 @@ class LogKlog : public SocketListener {
     }
 
    protected:
-    void sniffTime(log_time& now, const char*& buf, ssize_t len, bool reverse);
+    log_time sniffTime(const char*& buf, ssize_t len, bool reverse);
     pid_t sniffPid(const char*& buf, ssize_t len);
     void calculateCorrection(const log_time& monotonic, const char* real_string,
                              ssize_t len);
