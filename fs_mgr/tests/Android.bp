@@ -36,3 +36,15 @@ cc_test {
         "-Werror",
     ],
 }
+
+java_test_host {
+    name: "vendoroverlay_test",
+
+    srcs:  ["src/**/VendorOverlayHostTest.java"],
+
+    libs: ["tradefed"],
+
+    test_config: "vendor-overlay-test.xml",
+
+    test_suites: ["general-tests"],
+}
