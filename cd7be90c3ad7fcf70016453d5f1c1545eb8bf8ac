@@ -22,6 +22,30 @@
       "revId": "cd7be90c3ad7fcf70016453d5f1c1545eb8bf8ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8312b5d4_935c1682",
+        "filename": "libunwindstack/MapInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-01-16T23:13:54Z",
+      "side": 1,
+      "message": "This object, updated comment.",
+      "parentUuid": "b43687d9_d47c98b5",
+      "range": {
+        "startLine": 233,
+        "startChar": 11,
+        "endLine": 233,
+        "endChar": 21
+      },
+      "revId": "cd7be90c3ad7fcf70016453d5f1c1545eb8bf8ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
