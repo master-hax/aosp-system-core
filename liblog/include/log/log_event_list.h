@@ -110,8 +110,6 @@ int android_log_destroy(android_log_context* ctx);
 /* android_log_list C++ helpers */
 extern "C++" {
 class android_log_event_list {
-  friend class __android_log_event_list;
-
  private:
   android_log_context ctx;
   int ret;
