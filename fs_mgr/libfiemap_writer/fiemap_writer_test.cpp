@@ -83,6 +83,24 @@ TEST_F(FiemapWriterTest, CheckFilePath) {
     EXPECT_EQ(access(testfile.c_str(), F_OK), 0);
 }
 
+TEST_F(FiemapWriterTest, CheckProgress) {
+    std::vector<uint64_t> expected{
+            0,
+            4096,
+    };
+    size_t invocations = 0;
+    auto callback = [&](uint64_t done, uint64_t total) -> void {
+        EXPECT_LT(invocations, expected.size());
+        EXPECT_EQ(done, expected[invocations]);
+        EXPECT_EQ(total, 4096);
+        invocations++;
+    };
+
+    auto ptr = FiemapWriter::Open(testfile, 4096, true, std::move(callback));
+    EXPECT_NE(ptr, nullptr);
+    EXPECT_EQ(invocations, 2);
+}
+
 TEST_F(FiemapWriterTest, CheckBlockDevicePath) {
     FiemapUniquePtr fptr = FiemapWriter::Open(testfile, 4096);
     EXPECT_EQ(fptr->size(), 4096);
