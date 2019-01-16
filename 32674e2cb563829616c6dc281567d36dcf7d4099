@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72a6a8f3_a6f1b97c",
+        "filename": "adb/daemon/auth.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-16T01:37:52Z",
+      "side": 1,
+      "message": "unix_write can return short and it looks the socket isn\u0027t a SOCK_SEQPACKET? Switch this to WriteFdExactly from adb_io.h?\n\n(looks like this is a bug in adbd_auth_confirm_key as well)",
+      "range": {
+        "startLine": 107,
+        "startChar": 48,
+        "endLine": 108,
+        "endChar": 63
+      },
+      "revId": "32674e2cb563829616c6dc281567d36dcf7d4099",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
