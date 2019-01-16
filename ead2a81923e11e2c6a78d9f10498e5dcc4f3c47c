@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59c016b7_586107eb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-16T22:59:28Z",
+      "side": 1,
+      "message": "Tom had a comment why I need these instead of exposing CgroupMap directly.\nI don\u0027t expose CgroupMap outside of libprocessgroup considering it\u0027s an implementation detail. If needed I can move cgroup_map.h header into include/processgroup/ and eliminate these functions.",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
