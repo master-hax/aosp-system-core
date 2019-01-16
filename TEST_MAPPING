@@ -25,6 +25,10 @@
       "name": "propertyinfoserializer_tests"
     },
     {
+      "name": "vendoroverlay_test",
+      "host": true
+    },
+    {
       "name": "ziparchive-tests"
     }
   ]
