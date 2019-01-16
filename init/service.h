@@ -62,23 +62,6 @@
 namespace android {
 namespace init {
 
-static constexpr const char* kLinkerMountPoint = "/system/bin/linker";
-static constexpr const char* kBootstrapLinkerPath = "/system/bin/linker";
-static constexpr const char* kRuntimeLinkerPath = "/apex/com.android.runtime/bin/linker";
-
-static constexpr const char* kBionicLibsMountPointDir = "/system/lib/";
-static constexpr const char* kBootstrapBionicLibsDir = "/system/lib/";
-static constexpr const char* kRuntimeBionicLibsDir = "/apex/com.android.runtime/lib/bionic/";
-
-static constexpr const char* kLinkerMountPoint64 = "/system/bin/linker64";
-static constexpr const char* kBootstrapLinkerPath64 = "/system/bin/linker64";
-static constexpr const char* kRuntimeLinkerPath64 = "/apex/com.android.runtime/bin/linker64";
-
-static constexpr const char* kBionicLibsMountPointDir64 = "/system/lib64/";
-static constexpr const char* kBootstrapBionicLibsDir64 = "/system/lib64/";
-static constexpr const char* kRuntimeBionicLibsDir64 = "/apex/com.android.runtime/lib64/bionic/";
-
-static const std::vector<std::string> kBionicLibFileNames = {"libc.so", "libm.so", "libdl.so"};
 
 class Service {
   public:
@@ -151,7 +134,6 @@ class Service {
     Result<Success> SetUpMountNamespace() const;
     Result<Success> SetUpPidNamespace() const;
     Result<Success> EnterNamespaces() const;
-    Result<Success> SetUpPreApexdMounts() const;
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void ZapStdio() const;

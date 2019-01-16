@@ -46,8 +46,6 @@ on early-init
     # cgroup for system_server and surfaceflinger
     mkdir /dev/memcg/system 0550 system system
 
-    prepare_bootstrap_bionic
-
     start ueventd
 
 on init

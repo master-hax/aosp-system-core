@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_BUILTINS_H
-#define _INIT_BUILTINS_H
-
-#include <functional>
-#include <map>
-#include <string>
-#include <vector>
-
-#include "builtin_arguments.h"
-#include "keyword_map.h"
-#include "result.h"
+#ifndef _INIT_MOUNT_NAMESPACE
+#define _INIT_MOUNT_NAMESPACE
 
 namespace android {
 namespace init {
 
-using BuiltinFunction = std::function<Result<Success>(const BuiltinArguments&)>;
-
-using KeywordFunctionMap = KeywordMap<std::pair<bool, BuiltinFunction>>;
-class BuiltinFunctionMap : public KeywordFunctionMap {
-  public:
-    BuiltinFunctionMap() {}
-
-  private:
-    const Map& map() const override;
-};
-
-bool prepare_bootstrap_bionic();
+bool setup_mount_namespaces();
+bool switch_to_default_mount_namespace();
+void enter_pre_apexd_mount_namespace_if_needed();
 
 }  // namespace init
 }  // namespace android
