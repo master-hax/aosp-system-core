@@ -16,21 +16,20 @@
 
 #pragma once
 
-#if !defined(_WIN32)
+#ifndef _WIN32
 
 #include <sys/uio.h>
 
 #else
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stddef.h>
+#include <sys/cdefs.h>
+
+__BEGIN_DECLS
 
 //
 // Implementation of sys/uio.h for Win32.
 //
-
-#include <stddef.h>
 
 struct iovec {
   void* iov_base;
@@ -40,8 +39,6 @@ struct iovec {
 extern int readv(int fd, struct iovec* vecs, int count);
 extern int writev(int fd, const struct iovec* vecs, int count);
 
-#ifdef __cplusplus
-}
-#endif
+__END_DECLS
 
 #endif

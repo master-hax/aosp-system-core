@@ -18,9 +18,8 @@
 
 #include <unistd.h>
 
-#include <log/uio.h>
-
 #include "log_portability.h"
+#include "uio.h"
 
 LIBLOG_ABI_PUBLIC int readv(int fd, struct iovec* vecs, int count) {
   int total = 0;

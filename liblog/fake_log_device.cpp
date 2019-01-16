@@ -33,9 +33,9 @@
 #include <time.h>
 
 #include <android/log.h>
-#include <log/uio.h>
 
 #include "log_portability.h"
+#include "uio.h"
 
 #define kMaxTagLen 16 /* from the long-dead utils/Log.cpp */
 
