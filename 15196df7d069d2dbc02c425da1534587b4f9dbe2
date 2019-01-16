@@ -22,6 +22,30 @@
       "revId": "15196df7d069d2dbc02c425da1534587b4f9dbe2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c7e6e68_82b9e0c6",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-16T23:36:00Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "a1d57c27_047d34cf",
+      "range": {
+        "startLine": 74,
+        "startChar": 35,
+        "endLine": 74,
+        "endChar": 52
+      },
+      "revId": "15196df7d069d2dbc02c425da1534587b4f9dbe2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
