@@ -28,6 +28,9 @@
       "name": "propertyinfoserializer_tests"
     },
     {
+      "name": "vendoroverlay_test"
+    },
+    {
       "name": "ziparchive-tests"
     }
   ]
