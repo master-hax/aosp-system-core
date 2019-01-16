@@ -216,10 +216,14 @@ bool FindPrecompiledSplitPolicy(std::string* file) {
         PLOG(INFO) << "No precompiled sepolicy";
         return false;
     }
+
+    // If there is a product partition, platform sepolicy hash will be in /product/etc/selinux.
     std::string actual_plat_id;
-    if (!ReadFirstLine("/system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256", &actual_plat_id)) {
-        PLOG(INFO) << "Failed to read "
-                      "/system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256";
+    if (!ReadFirstLine("/product/etc/selinux/plat_and_mapping_sepolicy.cil.sha256",
+                       &actual_plat_id) &&
+        !ReadFirstLine("/system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256",
+                       &actual_plat_id)) {
+        PLOG(INFO) << "Failed to read plat_and_mapping_sepolicy.cil.sha256";
         return false;
     }
 
