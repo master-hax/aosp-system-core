@@ -63,6 +63,7 @@
 #include "action_manager.h"
 #include "bootchart.h"
 #include "init.h"
+#include "mount_namespace.h"
 #include "parser.h"
 #include "property_service.h"
 #include "reboot.h"
