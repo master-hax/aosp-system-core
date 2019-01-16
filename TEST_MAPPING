@@ -25,6 +25,9 @@
       "name": "propertyinfoserializer_tests"
     },
     {
+      "name": "fs_mgr_vendor_overlay_test"
+    },
+    {
       "name": "ziparchive-tests"
     }
   ]
