@@ -209,6 +209,10 @@ int FirstStageMain(int argc, char** argv) {
         FreeRamdisk(old_root_dir.get(), old_root_info.st_dev);
     }
 
+    if (!SetupBootstrapMountNamespace()) {
+        PLOG(FATAL) << "Failed to setup bootstrap mount namespace";
+    }
+
     SetInitAvbVersionInRecovery();
 
     static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
