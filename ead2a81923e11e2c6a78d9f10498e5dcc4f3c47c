@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f84b325d_ae3eab61",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-17T17:27:01Z",
+      "side": 1,
+      "message": "The issue with init script is that cgroups are mounted not all at the same time. So it mounts cpuacct and memory early on, then starts using them and then it mounts the rest of the controllers. That\u0027s the reason I have to support \"incremental\" detection.",
+      "parentUuid": "cc155a3a_9c01e751",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "59c016b7_586107eb",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
