@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f249ce7_9a1468b9",
+        "filename": "adb/adb.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-17T21:19:24Z",
+      "side": 1,
+      "message": "We don\u0027t need to do this (and everyone hates when we do this)\n\nThis is only needed for when a feature is added where adbd needs to know what the adb server supports.",
+      "revId": "c073a5b9f355e563aaadea0779ea4b5fb2d492f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
