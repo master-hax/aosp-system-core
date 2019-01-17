@@ -160,6 +160,25 @@ static unsigned long get_mount_flags(int fd, const char* dir) {
     return st_vfs.f_flag;
 }
 
+static bool do_remount(int fd, const char* dev, const char* dir) {
+    unsigned long remount_flags = get_mount_flags(fd, dir);
+    remount_flags &= ~MS_RDONLY;
+    remount_flags |= MS_REMOUNT;
+
+    if (mount(dev, dir, "none", remount_flags | MS_BIND, nullptr) == -1) {
+        // This is useful for cases where the superblock is already marked as
+        // read-write, but the mount itself is read-only, such as containers
+        // where the remount with just MS_REMOUNT is forbidden by the kernel.
+        WriteFdFmt(fd, "remount of the %s mount failed: %s.\n", dir, strerror(errno));
+        return false;
+    }
+    if (mount(dev, dir, "none", MS_REMOUNT, nullptr) == -1) {
+        WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir, strerror(errno));
+        return false;
+    }
+    return true;
+}
+
 static bool remount_partition(int fd, const char* dir) {
     if (!directory_exists(dir)) {
         return true;
@@ -188,22 +207,14 @@ static bool remount_partition(int fd, const char* dir) {
         return false;
     }
 
-    unsigned long remount_flags = get_mount_flags(fd, dir);
-    remount_flags &= ~MS_RDONLY;
-    remount_flags |= MS_REMOUNT;
+    return do_remount(fd, dev.c_str(), dir);
+}
 
-    if (mount(dev.c_str(), dir, "none", remount_flags | MS_BIND, nullptr) == -1) {
-        // This is useful for cases where the superblock is already marked as
-        // read-write, but the mount itself is read-only, such as containers
-        // where the remount with just MS_REMOUNT is forbidden by the kernel.
-        WriteFdFmt(fd, "remount of the %s mount failed: %s.\n", dir, strerror(errno));
-        return false;
+static bool remount_bindmount(int fd, const char* dir) {
+    if (!directory_exists(dir)) {
+        return true;
     }
-    if (mount(dev.c_str(), dir, "none", MS_REMOUNT, nullptr) == -1) {
-        WriteFdFmt(fd, "remount of the %s superblock failed: %s\n", dir, strerror(errno));
-        return false;
-    }
-    return true;
+    return do_remount(fd, nullptr /*dev*/, dir);
 }
 
 static void reboot_for_remount(int fd, bool need_fsck) {
@@ -300,6 +311,11 @@ void remount_service(unique_fd fd, const std::string& cmd) {
             continue;
         }
         success &= remount_partition(fd.get(), partition.c_str());
+    }
+
+    std::vector<std::string> bindmounts{"/system/lib", "/system/lib64", "/system/bin"};
+    for (const auto& path : bindmounts) {
+        success &= remount_bindmount(fd.get(), path.c_str());
     }
 
     if (!dedup.empty()) {
