@@ -16,6 +16,24 @@
       "revId": "e4b46bdeac8fbd47af9a330166cfff7b20b5f80a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2406646_326cb338",
+        "filename": "adb/client/commandline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 773,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-01-17T22:06:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d65169b0_53dabbb5",
+      "revId": "e4b46bdeac8fbd47af9a330166cfff7b20b5f80a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
