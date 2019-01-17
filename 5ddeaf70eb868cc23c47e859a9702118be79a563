@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "beadf2bf_54d33533",
+        "filename": "adb/client/adb_client.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-17T01:16:02Z",
+      "side": 1,
+      "message": "Right, my mistake, the unique_fd going out of scope should close it. Not sure this mistake is fixable by a failing overload, since fd.get() returns an int.",
+      "parentUuid": "89fcad7a_fde8d176",
+      "range": {
+        "startLine": 160,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 28
+      },
+      "revId": "5ddeaf70eb868cc23c47e859a9702118be79a563",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a76adeec_a51028c2",
         "filename": "adb/client/adb_client.cpp",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "5ddeaf70eb868cc23c47e859a9702118be79a563",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4659143a_490189da",
+        "filename": "adb/client/adb_client.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-17T01:16:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a76adeec_a51028c2",
+      "range": {
+        "startLine": 164,
+        "startChar": 39,
+        "endLine": 165,
+        "endChar": 28
+      },
+      "revId": "5ddeaf70eb868cc23c47e859a9702118be79a563",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
