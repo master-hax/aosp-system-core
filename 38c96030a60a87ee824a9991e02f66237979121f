@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87e60279_1a8944a1",
+        "filename": "libunwindstack/MapInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2019-01-17T10:24:22Z",
+      "side": 1,
+      "message": "Random drive by: This is a leak, I think. This unique_ptr should just go out of scope here and run the dtor.",
+      "range": {
+        "startLine": 284,
+        "startChar": 4,
+        "endLine": 284,
+        "endChar": 27
+      },
+      "revId": "38c96030a60a87ee824a9991e02f66237979121f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
