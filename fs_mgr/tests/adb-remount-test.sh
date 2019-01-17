@@ -194,6 +194,11 @@ fastboot_getvar() {
   echo ${O} >&2
 }
 
+# Do nothing. Should be redefined when necessary.
+cleanup() {
+  :
+}
+
 [ "USAGE: die [-d|-t <epoch>] [message] >/dev/stderr
 
 If -d, or -t <epoch> argument is supplied, dump logcat.
@@ -212,6 +217,7 @@ die() {
     shift 2
   fi
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
+  cleanup
   exit 1
 }
 
@@ -532,6 +538,18 @@ B="`adb_cat /vendor/hello`" ||
   die "vendor hello"
 check_eq "${A}" "${B}" /vendor before reboot
 
+# download libc.so, append some gargage, push back, and check if the file is updated.
+tempdir="`mktemp -d`"
+cleanup() {
+  rm -rf ${tempdir}
+}
+adb pull /system/lib/libc.so ${tempdir} || die "pull libc.so from device"
+garbage="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`"
+echo ${garbage} >> ${tempdir}/libc.so
+adb push ${tempdir}/libc.so /system/lib/libc.so || die "push libc.so to device"
+adb pull /system/lib/libc.so ${tempdir}/libc.so.fromdevice || die "pull libc.so from device"
+diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null || die "libc.so differ"
+
 echo "${GREEN}[ RUN      ]${NORMAL} reboot to confirm content persistent" >&2
 
 adb_reboot &&
@@ -568,6 +586,14 @@ adb_root &&
   die "re-read /vendor/hello after reboot"
 check_eq "${A}" "${B}" vendor after reboot
 echo "${GREEN}[       OK ]${NORMAL} /vendor content remains after reboot" >&2
+
+# check if the updated libc.so is persistent after reboot
+adb_root &&
+  adb pull /system/lib/libc.so ${tempdir}/libc.so.fromdevice ||
+  die "pull libc.so from device"
+diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null || die "libc.so differ"
+rm -r ${tempdir}
+echo "${GREEN}[       OK ]${NORMAL} /system/lib/libc.so content remains after reboot" >&2
 
 echo "${GREEN}[ RUN      ]${NORMAL} flash vendor, confirm its content disappears" >&2
 
