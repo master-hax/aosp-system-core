@@ -38,7 +38,8 @@ struct MapInfo {
         flags(flags),
         name(name),
         prev_map(map_info),
-        load_bias(static_cast<uint64_t>(-1)) {}
+        load_bias(static_cast<uint64_t>(-1)),
+        build_id(0) {}
   MapInfo(MapInfo* map_info, uint64_t start, uint64_t end, uint64_t offset, uint64_t flags,
           const std::string& name)
       : start(start),
@@ -47,8 +48,9 @@ struct MapInfo {
         flags(flags),
         name(name),
         prev_map(map_info),
-        load_bias(static_cast<uint64_t>(-1)) {}
-  ~MapInfo() = default;
+        load_bias(static_cast<uint64_t>(-1)),
+        build_id(0) {}
+  ~MapInfo();
 
   uint64_t start = 0;
   uint64_t end = 0;
@@ -68,12 +70,21 @@ struct MapInfo {
 
   std::atomic_uint64_t load_bias;
 
+  std::atomic_uintptr_t build_id;
+
   // This function guarantees it will never return nullptr.
   Elf* GetElf(const std::shared_ptr<Memory>& process_memory, ArchEnum expected_arch);
 
   uint64_t GetLoadBias(const std::shared_ptr<Memory>& process_memory);
 
   Memory* CreateMemory(const std::shared_ptr<Memory>& process_memory);
+
+  // Only attempt to get the build id if the elf is already valid.
+  std::string GetBuildID();
+
+  // Get the build id from an existing elf first, but fallback to reading
+  // directly from the elf data if there is no elf.
+  std::string GetBuildID(const std::shared_ptr<Memory>& process_memory);
 
  private:
   MapInfo(const MapInfo&) = delete;

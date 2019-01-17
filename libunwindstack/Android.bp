@@ -187,6 +187,7 @@ cc_test {
         "tests/LocalUnwinderTest.cpp",
         "tests/LogFake.cpp",
         "tests/MapInfoCreateMemoryTest.cpp",
+        "tests/MapInfoGetBuildIDTest.cpp",
         "tests/MapInfoGetElfTest.cpp",
         "tests/MapInfoGetLoadBiasTest.cpp",
         "tests/MapsTest.cpp",
