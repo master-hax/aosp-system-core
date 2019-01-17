@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18370889_0a9d22dd",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-17T01:00:51Z",
+      "side": 1,
+      "message": "Put braces for multi line if statements, https://google.github.io/styleguide/cppguide.html#Conditionals",
+      "revId": "101a4bc43222bce847464bec2594817384d7d924",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
