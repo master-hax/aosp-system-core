@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "608bc153_52361faa",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-17T12:35:35Z",
+      "side": 1,
+      "message": "This will parse CGroups and detect controllers each time we mount a new one.\nIMO we can reduce overhead (i.e. number of times we parse these data) and also remove this binutils.cpp dependency from CGroups if we make the cgroup map a singleton with on-demand detection and memorisation of the used controllers.... more details in my last comment for:\n   libprocessgroup/cgroup_map.cpp::Detect()",
+      "range": {
+        "startLine": 421,
+        "startChar": 39,
+        "endLine": 421,
+        "endChar": 51
+      },
+      "revId": "dd0185c439fd8b6adbd6b46248eb94d8d72e8d67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
