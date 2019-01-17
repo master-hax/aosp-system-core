@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "aec37b9e_68ef880f",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-17T01:22:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bfdb1254_513a3e35",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 40
+      },
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "06957bed_2d0ed9ef",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "62e3b8ae_23b9d85e",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-17T01:22:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06957bed_2d0ed9ef",
+      "range": {
+        "startLine": 270,
+        "startChar": 5,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a7d2a31_73fe6da4",
         "filename": "adb/vm_sockets.h",
         "patchSetId": 3
@@ -62,6 +110,24 @@
       "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81c6a285_3c918885",
+        "filename": "adb/vm_sockets.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-17T01:22:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a7d2a31_73fe6da4",
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
