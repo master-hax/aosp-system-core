@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "cc155a3a_9c01e751",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-17T12:34:57Z",
+      "side": 1,
+      "message": "Right now we call detect each time we mount a new cgroup from init.\nThis generates a dependency between this module and the init scripts,\nwhich perhaps we can get rid of.\n\nWhat about a different design, based on \"lazy\" initialisation, where:\n\n1) the CgroupMap singleton detects all the available controllers by parsing\n      /proc/cgroups\n   from its ctor the very first time someone get an instance\n   (CgroupMap dynamic allocation helps in this case)\n\n2) the ctor builds and maintains a map of:\n      ControllerName to \u003cHierarchyID,MountPoint\u003e\n   when the ctor runs we build the above map in one go for all the possible controller,\n   by simply parsing \"/proc/cgroups\", that file does not report the mount points but...\n\n3) ... a private method is provided to identify the mount point of a given controller\n   by reading it from \"/proc/mounts\"\n\n4) the same private method in 3 can be used on-demand to resolve all the not mapped\n   mountpoints every time a new client ask for a controller,\n   i.e. from ::FindController()\n\nSince the CgroupMap construction is deferret to the first time a CgroupMap client needs to use a controller,\nwe are more likely to have already mounted all the required cgroups (i.e. init completed) and thus to end up with a single parsing/mapping stage.",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "59c016b7_586107eb",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
@@ -13,6 +36,30 @@
       "writtenOn": "2019-01-16T22:59:28Z",
       "side": 1,
       "message": "Tom had a comment why I need these instead of exposing CgroupMap directly.\nI don\u0027t expose CgroupMap outside of libprocessgroup considering it\u0027s an implementation detail. If needed I can move cgroup_map.h header into include/processgroup/ and eliminate these functions.",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5cc4d54d_2baf0f96",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-17T12:34:57Z",
+      "side": 1,
+      "message": "I think the important part is to not leak hard-coded paths... while exposing CgroupMap I think is still possible and actually probably makes more sense and keep things simple for cases like the eBPF integration.\nMore details on my last comment for:\n   libbpf_android/BpfUtils.cpp::loadAndPinProgram()",
+      "parentUuid": "59c016b7_586107eb",
       "range": {
         "startLine": 58,
         "startChar": 0,
