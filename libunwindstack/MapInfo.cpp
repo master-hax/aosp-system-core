@@ -263,4 +263,51 @@ uint64_t MapInfo::GetLoadBias(const std::shared_ptr<Memory>& process_memory) {
   return cur_load_bias;
 }
 
+MapInfo::~MapInfo() {
+  uintptr_t id = build_id.load();
+  if (id != 0) {
+    delete reinterpret_cast<std::string*>(id);
+  }
+}
+
+std::string MapInfo::GetBuildID() {
+  return GetBuildID(std::shared_ptr<Memory>());
+}
+
+std::string MapInfo::GetBuildID(const std::shared_ptr<Memory>& process_memory) {
+  uintptr_t id = build_id.load();
+  if (build_id != 0) {
+    return *reinterpret_cast<std::string*>(id);
+  }
+
+  // No need to lock, at worst if multiple threads do this at the same
+  // time it should be detected and only one thread should win and
+  // save the data.
+  std::unique_ptr<std::string> cur_build_id(new std::string);
+
+  // Now need to see if the elf object exists.
+  // Make sure no other thread is trying to add the elf to this map.
+  mutex_.lock();
+  Elf* elf_obj = elf.get();
+  mutex_.unlock();
+  if (elf_obj != nullptr) {
+    *cur_build_id = elf_obj->GetBuildID();
+  } else if (process_memory.get() == nullptr) {
+    // Do not cache this data, since there is no elf.
+    cur_build_id.release();
+    return "";
+  } else {
+    MemoryRange memory_range(process_memory, start, end - start, 0);
+    *cur_build_id = Elf::GetBuildID(&memory_range);
+  }
+
+  id = reinterpret_cast<uintptr_t>(cur_build_id.get());
+  uintptr_t expected_id = 0;
+  if (build_id.compare_exchange_weak(expected_id, id)) {
+    // Value saved, so make sure the memory is not freed.
+    cur_build_id.release();
+  }
+  return *reinterpret_cast<std::string*>(id);
+}
+
 }  // namespace unwindstack
