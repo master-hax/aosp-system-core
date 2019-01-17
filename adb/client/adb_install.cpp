@@ -33,7 +33,8 @@
 #include "client/file_sync_client.h"
 #include "commandline.h"
 #include "fastdeploy.h"
-#include "sysdeps.h"
+
+#undef close
 
 static constexpr int kFastDeployMinApi = 24;
 
@@ -164,6 +165,8 @@ static int install_app_streamed(int argc, const char** argv, bool use_fastdeploy
         FILE* metadataFile = fopen(metadataTmpFile.path, "wb");
         extract_metadata(file, metadataFile);
         fclose(metadataFile);
+
+        close(patchTmpFile.release());
 
         create_patch(file, metadataTmpFile.path, patchTmpFile.path);
         // pass all but 1st (command) and last (apk path) parameters through to pm for
