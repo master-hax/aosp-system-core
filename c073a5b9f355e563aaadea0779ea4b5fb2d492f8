@@ -16,6 +16,24 @@
       "revId": "c073a5b9f355e563aaadea0779ea4b5fb2d492f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b4748fa_fc234312",
+        "filename": "adb/adb.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-01-17T21:21:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f249ce7_9a1468b9",
+      "revId": "c073a5b9f355e563aaadea0779ea4b5fb2d492f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
