@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aaf71ff0_b492da91",
+        "filename": "rootdir/task_profiles.json",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-17T12:36:01Z",
+      "side": 1,
+      "message": "This is the only not \"task attribute\" we have here.\nI had a bette look at the code and I convinced myself that we can get rid of it as explained in my comment for:\n   libbpf_android/BpfUtils.cpp::loadAndPinProgram()\n\nIf this \"non attribute\" is gone, then all the other attributes can probably be inlined in the probile actions which requires them... thus further simplifying the design by getting rid of the concept of Attributes.",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 6
+      },
+      "revId": "e494a1ccb55b6a243f99a38b2a0c2a6d0084c39a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
