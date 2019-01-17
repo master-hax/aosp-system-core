@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bfdb1254_513a3e35",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-17T00:11:41Z",
+      "side": 1,
+      "message": "IMO, the ifdef should be inside the if, and there should be an always failing implementation in an #else",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 40
+      },
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06957bed_2d0ed9ef",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-17T00:11:41Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 270,
+        "startChar": 5,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a7d2a31_73fe6da4",
+        "filename": "adb/vm_sockets.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-17T00:11:41Z",
+      "side": 1,
+      "message": "Is this needed only for glibc? I think this should be moved to sysdeps/vm_sockets.h, with an #if __BIONIC__ that just includes the bionic header directly.",
+      "revId": "d6d672d31ba1666be2435878a9b704b1045ea5a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
