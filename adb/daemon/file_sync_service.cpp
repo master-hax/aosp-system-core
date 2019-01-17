@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -535,7 +536,68 @@ static bool handle_sync_command(int fd, std::vector<char>& buffer) {
     return true;
 }
 
+class FileSyncPreparer {
+  public:
+    FileSyncPreparer() : saved_ns_fd_(-1), rooted_(getuid() == 0) {
+        const std::string namespace_path = "/proc/" + std::to_string(gettid()) + "/ns/mnt";
+        const int ns_fd = adb_open(namespace_path.c_str(), O_RDONLY | O_CLOEXEC);
+        if (ns_fd == -1) {
+            if (rooted_) PLOG(ERROR) << "Failed to save mount namespace";
+            return;
+        }
+
+        // Note: this is for the current thread only
+        if (unshare(CLONE_NEWNS) != 0) {
+            if (rooted_) PLOG(ERROR) << "Failed to clone mount namespace";
+            return;
+        }
+        saved_ns_fd_.reset(ns_fd);
+
+        // Set the propagation type of / to private so that unmounts below are
+        // not propagated to other mount namespaces.
+        if (mount(nullptr, "/", nullptr, MS_PRIVATE | MS_REC, nullptr) == -1) {
+            if (rooted_) PLOG(ERROR) << "Could not change propagation type of / to MS_PRIVATE";
+            return;
+        }
+
+        // unmount /system/bin, /system/lib, /system/lib64 which are self
+        // bind-mounts done by init.
+        // By unmounting this, we reveal the raw file system that is the same as
+        // the local file system seen by the adb client.
+        if (umount2("/system/lib", MNT_DETACH) == -1 && errno != ENOENT) {
+            if (rooted_) PLOG(ERROR) << "Could not unmount /system/lib to reveal raw filesystem";
+            return;
+        }
+        if (umount2("/system/lib64", MNT_DETACH) == -1 && errno != ENOENT) {
+            if (rooted_) PLOG(ERROR) << "Could not unmount /system/lib64 to reveal raw filesystem";
+            return;
+        }
+        if (umount2("/system/bin", MNT_DETACH) == -1 && errno != ENOENT) {
+            if (rooted_) PLOG(ERROR) << "Could not unmount /system/bin to reveal raw filesystem";
+            return;
+        }
+    }
+
+    ~FileSyncPreparer() {
+        if (saved_ns_fd_.get() != -1) {
+            // In fact, this is not strictly required because this thread for file
+            // sync service will be destroyed after the current transfer is all
+            // done. However, let's restore the ns in case the same thread is
+            // reused by multiple transfers in the future refactoring.
+            if (setns(saved_ns_fd_, CLONE_NEWNS) == -1) {
+                PLOG(ERROR) << "Failed to restore saved mount namespace";
+            }
+        }
+    }
+
+  private:
+    unique_fd saved_ns_fd_;
+    bool rooted_;
+};
+
 void file_sync_service(unique_fd fd) {
+    FileSyncPreparer preparer;
+
     std::vector<char> buffer(SYNC_DATA_MAX);
 
     while (handle_sync_command(fd.get(), buffer)) {

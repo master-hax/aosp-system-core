@@ -1093,34 +1093,42 @@ static Result<Success> do_parse_apex_configs(const BuiltinArguments& args) {
     }
 }
 
-static Result<Success> bind_mount_file(const char* source, const char* mount_point,
-                                       bool remount_private) {
-    if (remount_private && mount(nullptr, mount_point, nullptr, MS_PRIVATE, nullptr) == -1) {
-        return ErrnoError() << "Could not change " << mount_point << " to a private mount point";
-    }
+static Result<Success> bind_mount(const char* source, const char* mount_point,
+                                  bool remount_private) {
     if (mount(source, mount_point, nullptr, MS_BIND, nullptr) == -1) {
         return ErrnoError() << "Could not bind-mount " << source << " to " << mount_point;
+    }
+    if (remount_private && mount(nullptr, mount_point, nullptr, MS_PRIVATE, nullptr) == -1) {
+        return ErrnoError() << "Could not change " << mount_point << " to a private mount point";
     }
     return Success();
 }
 
 static Result<Success> bind_mount_bionic(const char* linker_source, const char* lib_dir_source,
-                                         const char* linker_mount_point, const char* lib_mount_dir,
-                                         bool remount_private) {
+                                         const char* linker_mount_point,
+                                         const char* lib_mount_dir) {
     if (access(linker_source, F_OK) != 0) {
         return Success();
     }
-    if (auto result = bind_mount_file(linker_source, linker_mount_point, remount_private);
-        !result) {
+    if (auto result = bind_mount(linker_source, linker_mount_point, false); !result) {
         return result;
     }
     for (auto libname : kBionicLibFileNames) {
         std::string mount_point = lib_mount_dir + libname;
         std::string source = lib_dir_source + libname;
-        if (auto result = bind_mount_file(source.c_str(), mount_point.c_str(), remount_private);
-            !result) {
+        if (auto result = bind_mount(source.c_str(), mount_point.c_str(), false); !result) {
             return result;
         }
+    }
+    return Success();
+}
+
+static Result<Success> bind_mount_self_as_private(const char* path) {
+    if (access(path, F_OK) != 0) {
+        return Success();
+    }
+    if (auto result = bind_mount(path, path, true); !result) {
+        return result;
     }
     return Success();
 }
@@ -1129,17 +1137,18 @@ static Result<Success> bind_mount_bionic(const char* linker_source, const char* 
 // the mount points for pre-apexd processes.
 static Result<Success> do_prepare_bootstrap_bionic(const BuiltinArguments& args) {
     static bool prepare_bootstrap_bionic_done = false;
+
     if (prepare_bootstrap_bionic_done) {
         return Error() << "prepare_bootstrap_bionic was already executed. Cannot be executed again";
     }
-    if (auto result = bind_mount_bionic(kBootstrapLinkerPath, kBootstrapBionicLibsDir,
-                                        kLinkerMountPoint, kBionicLibsMountPointDir, false);
-        !result) {
+
+    if (auto result = bind_mount_self_as_private("/system/lib"); !result) {
         return result;
     }
-    if (auto result = bind_mount_bionic(kBootstrapLinkerPath64, kBootstrapBionicLibsDir64,
-                                        kLinkerMountPoint64, kBionicLibsMountPointDir64, false);
-        !result) {
+    if (auto result = bind_mount_self_as_private("/system/lib64"); !result) {
+        return result;
+    }
+    if (auto result = bind_mount_self_as_private("/system/bin"); !result) {
         return result;
     }
 
@@ -1157,16 +1166,15 @@ static Result<Success> do_setup_runtime_bionic(const BuiltinArguments& args) {
         return Error() << "setup_runtime_bionic was already executed. Cannot be executed again";
     }
     if (auto result = bind_mount_bionic(kRuntimeLinkerPath, kRuntimeBionicLibsDir,
-                                        kLinkerMountPoint, kBionicLibsMountPointDir, true);
+                                        kLinkerMountPoint, kBionicLibsMountPointDir);
         !result) {
         return result;
     }
     if (auto result = bind_mount_bionic(kRuntimeLinkerPath64, kRuntimeBionicLibsDir64,
-                                        kLinkerMountPoint64, kBionicLibsMountPointDir64, true);
+                                        kLinkerMountPoint64, kBionicLibsMountPointDir64);
         !result) {
         return result;
     }
-
     ServiceList::GetInstance().MarkRuntimeAvailable();
     LOG(INFO) << "setup_runtime_bionic done";
     setup_runtime_bionic_done = true;
