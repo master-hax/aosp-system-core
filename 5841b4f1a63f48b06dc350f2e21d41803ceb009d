@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6fdc6146_ecf6814e",
+        "filename": "base/include/android-base/unique_fd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-18T21:04:07Z",
+      "side": 1,
+      "message": "why not `int flags \u003d O_CLOEXEC`? that way we won\u0027t be back in a year\u0027s time when someone needs O_NONBLOCK...",
+      "range": {
+        "startLine": 165,
+        "startChar": 17,
+        "endLine": 165,
+        "endChar": 39
+      },
+      "revId": "5841b4f1a63f48b06dc350f2e21d41803ceb009d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
