@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7972ccb7_6f85d15b",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1071150
+      },
+      "writtenOn": "2019-01-18T16:30:24Z",
+      "side": 1,
+      "message": "b/119090773?",
+      "range": {
+        "startLine": 116,
+        "startChar": 7,
+        "endLine": 116,
+        "endChar": 10
+      },
+      "revId": "571f55351eedda6884f3460726f0ab1a9550e0d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
