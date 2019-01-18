@@ -2,6 +2,121 @@
   "comments": [
     {
       "key": {
+        "uuid": "14ad2319_929cfcfa",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "Why not return an std::optional\u003cstd::string\u003e?",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 4
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "717c3bd4_831afc45",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "$ cat /proc/$$/cgroup | wc -c\n330\n\nPlease just slurp the entire file instead of imposing an arbitrary limit.",
+      "range": {
+        "startLine": 92,
+        "startChar": 13,
+        "endLine": 92,
+        "endChar": 16
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb57f6bb_c2e6f299",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "Why not build a new string from the non-matches pieces and replacement, then assign into the destination? This code seems to shuffle bytes unnecessarily by using in-place operations.",
+      "range": {
+        "startLine": 120,
+        "startChar": 12,
+        "endLine": 120,
+        "endChar": 17
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eba26ed9_8bebbcc3",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "Abort on failure please",
+      "range": {
+        "startLine": 148,
+        "startChar": 8,
+        "endLine": 148,
+        "endChar": 14
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14ee53c2_2c4ef7cc",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "IMHO, it\u0027s very surprising to see an rmdir in the cleanup path of a function that\u0027s supposed to just change ownership",
+      "range": {
+        "startLine": 157,
+        "startChar": 8,
+        "endLine": 157,
+        "endChar": 13
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc155a3a_9c01e751",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 6
@@ -66,6 +181,52 @@
         "startChar": 0,
         "endLine": 262,
         "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ad6b42f_d04b6685",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "Nit: why not std::string_view (or const char*) onto the internal buffer? Why make a copy?",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 15
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a0901bd_f8ee90f8",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-18T18:59:24Z",
+      "side": 1,
+      "message": "Why not just store an std::string?",
+      "range": {
+        "startLine": 43,
+        "startChar": 3,
+        "endLine": 43,
+        "endChar": 34
       },
       "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
