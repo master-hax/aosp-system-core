@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "448ad3fa_2c99f007",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-01-18T15:43:35Z",
+      "side": 1,
+      "message": "I\u0027d add: \"which are provided by the Runtime APEX.\".\n\nAlso, should\u0027t you mention libart(d) as a dependency of zygote/app_process provided by the Runtime APEX? Or is implicit (as a transitive dependency) because you listed libnativehelper?",
+      "revId": "9f110c27ca2a540bb740d271ead942261bae57b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
