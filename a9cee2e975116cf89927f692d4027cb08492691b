@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4195b2a2_6854aaa8",
+        "filename": "libnativeloader/native_loader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-18T14:20:43Z",
+      "side": 1,
+      "message": "yeah, it is.. :( but we can improve this later.",
+      "range": {
+        "startLine": 635,
+        "startChar": 0,
+        "endLine": 637,
+        "endChar": 4
+      },
+      "revId": "a9cee2e975116cf89927f692d4027cb08492691b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
