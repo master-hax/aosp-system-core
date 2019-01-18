@@ -52,6 +52,24 @@
       "revId": "9f110c27ca2a540bb740d271ead942261bae57b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eff03061_742b8efd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-01-18T15:51:36Z",
+      "side": 1,
+      "message": "Regarding app_process, I think it always goes through libnativehelper (in `JniInvocation::Init`) to find libart(d) (in `JniInvocation::GetLibrary`) and dlopen it.",
+      "parentUuid": "59f15547_ae60c8a8",
+      "revId": "9f110c27ca2a540bb740d271ead942261bae57b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
