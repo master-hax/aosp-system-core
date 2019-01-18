@@ -187,6 +187,12 @@ void SocketListener::runListener() {
                 sleep(1);
                 continue;
             }
+            if (c >= FD_SETSIZE) {
+                SLOGE("file descriptor %d >= FD_SETSIZE", c);
+                close(c);
+                sleep(1);
+                continue;
+            }
             pthread_mutex_lock(&mClientsLock);
             mClients[c] = new SocketClient(c, true, mUseCmdNum);
             pthread_mutex_unlock(&mClientsLock);
