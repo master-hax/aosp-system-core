@@ -161,11 +161,12 @@ using unique_fd = unique_fd_impl<DefaultCloser>;
 
 // Inline functions, so that they can be used header-only.
 template <typename Closer>
-inline bool Pipe(unique_fd_impl<Closer>* read, unique_fd_impl<Closer>* write) {
+inline bool Pipe(unique_fd_impl<Closer>* read, unique_fd_impl<Closer>* write,
+                 bool close_exec = true) {
   int pipefd[2];
 
 #if defined(__linux__)
-  if (pipe2(pipefd, O_CLOEXEC) != 0) {
+  if (pipe2(pipefd, close_exec ? O_CLOEXEC : 0) != 0) {
     return false;
   }
 #else  // defined(__APPLE__)
@@ -173,10 +174,12 @@ inline bool Pipe(unique_fd_impl<Closer>* read, unique_fd_impl<Closer>* write) {
     return false;
   }
 
-  if (fcntl(pipefd[0], F_SETFD, FD_CLOEXEC) != 0 || fcntl(pipefd[1], F_SETFD, FD_CLOEXEC) != 0) {
-    close(pipefd[0]);
-    close(pipefd[1]);
-    return false;
+  if (close_exec) {
+    if (fcntl(pipefd[0], F_SETFD, FD_CLOEXEC) != 0 || fcntl(pipefd[1], F_SETFD, FD_CLOEXEC) != 0) {
+      close(pipefd[0]);
+      close(pipefd[1]);
+      return false;
+    }
   }
 #endif
 
