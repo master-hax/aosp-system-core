@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b6fd597_f517a601",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-18T16:56:16Z",
+      "side": 1,
+      "message": "at the very least you\u0027ll want to `close(c)` or you\u0027ll leak fds until you die.\n\n(the correct _fix_, though, will be to move off select(2) and over to poll(2).)",
+      "revId": "ccc15251cd013ea24ae4506ea71e554cb1508e1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
