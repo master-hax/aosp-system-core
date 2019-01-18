@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d26da747_87233a16",
+        "filename": "libunwindstack/ElfInterface.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-18T01:37:33Z",
+      "side": 1,
+      "message": "calculations",
+      "range": {
+        "startLine": 589,
+        "startChar": 47,
+        "endLine": 589,
+        "endChar": 58
+      },
+      "revId": "581775c3c103cdf06fe2bc7925e5ec158c762539",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "855e25ae_53cc4122",
+        "filename": "libunwindstack/benchmarks/unwind_benchmarks.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-18T01:37:33Z",
+      "side": 1,
+      "message": "rather than two code paths you could use a regex in both cases, and just use a different regex?",
+      "revId": "581775c3c103cdf06fe2bc7925e5ec158c762539",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e842cb0_8d4e08da",
+        "filename": "libunwindstack/include/unwindstack/MapInfo.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-18T01:37:33Z",
+      "side": 1,
+      "message": "explain why this rather than just a std::string and a lock?",
+      "revId": "581775c3c103cdf06fe2bc7925e5ec158c762539",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
