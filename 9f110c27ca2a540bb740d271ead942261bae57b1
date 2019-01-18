@@ -34,6 +34,24 @@
       "revId": "9f110c27ca2a540bb740d271ead942261bae57b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59f15547_ae60c8a8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-18T15:47:41Z",
+      "side": 1,
+      "message": "Done. I\u0027m not sure if libartd always is loaded through libnativehelper. Doesn\u0027t hurt to mention it in any case.",
+      "parentUuid": "4d533b38_976ec3f6",
+      "revId": "9f110c27ca2a540bb740d271ead942261bae57b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
