@@ -16,6 +16,24 @@
       "revId": "3e5cd64f9f57dd2c1cfa25541c794cf7721cfcb1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5afeec20_361353db",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1256966
+      },
+      "writtenOn": "2019-01-18T23:12:40Z",
+      "side": 1,
+      "message": "Hi, Tom,\n  I found that mount_all will just skip the fstab line that whose verify or avb get a failure result, so I keep this logic here.\nThanks\nLongPing",
+      "parentUuid": "dbb1b71f_ab65558a",
+      "revId": "3e5cd64f9f57dd2c1cfa25541c794cf7721cfcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
