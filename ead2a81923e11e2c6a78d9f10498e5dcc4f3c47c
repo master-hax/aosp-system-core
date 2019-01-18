@@ -117,6 +117,29 @@
       "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd6111ca_c83d8ea0",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-18T03:10:50Z",
+      "side": 1,
+      "message": "I checked all usages of Attributes and there are two places where we really need them. This is one of them. The setProcessGroupXXX API below is very unfortunate. If assumes per-application hierarchy (because it controls a cgroup parameter per pid) and it also assumes that these parameters are available.\n\nThe second place we do need Attributes is https://android-review.googlesource.com/c/platform/frameworks/base/+/861909/4/core/jni/android_util_Process.cpp#355",
+      "range": {
+        "startLine": 409,
+        "startChar": 9,
+        "endLine": 409,
+        "endChar": 38
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
