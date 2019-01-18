@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "aec03e79_db89c450",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-18T02:59:41Z",
+      "side": 1,
+      "message": "Ok, I understand now your suggestion. The issue I see is that /proc/cgroups does not contain cgroup v2 controllers. So unfortunately step #2 will fail to identify all controllers. It will also contain controllers that we never mount...\nBesides if I understood this correctly, it will parse /proc/mounts the same number of times because we don\u0027t really mount any cgroup that we don\u0027t use.\nLet\u0027s discuss this some more.",
+      "parentUuid": "f84b325d_ae3eab61",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "59c016b7_586107eb",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
