@@ -72,6 +72,7 @@ class FirstStageMount {
     bool InitRequiredDevices();
     bool InitMappedDevice(const std::string& verity_device);
     bool CreateLogicalPartitions();
+    bool PrepareForMountPartition(FstabEntry* fstab_entry);
     bool MountPartition(FstabEntry* fstab_entry);
     bool MountPartitions();
     bool TrySwitchSystemAsRoot();
@@ -381,7 +382,7 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
     return true;
 }
 
-bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
+bool FirstStageMount::PrepareForMountPartition(FstabEntry* fstab_entry) {
     if (fstab_entry->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(fstab_entry)) {
             return false;
@@ -394,6 +395,10 @@ bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
         PLOG(ERROR) << "Failed to setup verity for '" << fstab_entry->mount_point << "'";
         return false;
     }
+    return true;
+}
+
+bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
     if (fs_mgr_do_mount_one(*fstab_entry)) {
         if (fstab_entry->fs_mgr_flags.formattable) {
             PLOG(INFO) << "Failed to mount '" << fstab_entry->mount_point << "', "
@@ -478,14 +483,18 @@ bool FirstStageMount::MountPartitions() {
 
     for (auto it = fstab_.begin(); it != fstab_.end();) {
         bool mounted = false;
+        bool prepared = false;
         bool no_fail = false;
         auto start_mount_point = it->mount_point;
         do {
             no_fail |= (it->fs_mgr_flags).no_fail;
-            if (!mounted)
-                mounted = MountPartition(&(*it));
-            else
-                LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
+            if (!prepared) prepared = PrepareForMountPartition(&(*it));
+            if (prepared) {
+                if (!mounted)
+                    mounted = MountPartition(&(*it));
+                else
+                    LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
+            }
             it++;
         } while (it != fstab_.end() && it->mount_point == start_mount_point);
 
