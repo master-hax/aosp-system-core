@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dbb1b71f_ab65558a",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-18T18:01:09Z",
+      "side": 1,
+      "message": "Is there any reason to try PrepareForMountPartition() again if it failed the first time?  The new fstab_entry shouldn\u0027t cause it to pass or fail, right?  Maybe just do it once before the inner loop starts?",
+      "revId": "3e5cd64f9f57dd2c1cfa25541c794cf7721cfcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
