@@ -1,0 +1,391 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf49026c_51a306de",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Better to move these to right before they\u0027re first used.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9444bbd_14e09072",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "ReadFileToString() ?",
+      "range": {
+        "startLine": 85,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 18
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ca50c47_8e90751b",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "clang-format didn\u0027t complain here?  \u0027*\u0027 goes with the type.  You can/should declare both when they\u0027re initialized too,\n\n    char* pos_start \u003d strstr(buf, cg_tag.c_str());\n    if (pos_start \u003d\u003d nullptr) {\n        return false;\n    }\n\n    pos_start +\u003d cg_tag.length() + 1;  // skip \u0027/\u0027\n    char* pos_end \u003d strchr(pos_start, \u0027\\n\u0027);\n    if (pos_end !\u003d nullptr) {\n        *pos_end \u003d \u0027\\0\u0027;\n    }",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d492ede7_083b3f76",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Glad to see the Fstab parsing code helps here!",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a09ece79_b25736a7",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Better to declare and initialize this inline, especially if it has a constructor instead of its Init function.  You can even just have below:\n\ncd_detected[name] \u003d CgroupController(1, name, entry.mount_point);",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef9d5cc4_534d5da6",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Don\u0027t declare variable ahead of time; declare them when they\u0027re first initialized.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a1b6c83_464ff011",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "There\u0027ll never be multiple different cg2_path\u0027s ?",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39e642b8_57e395b4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "How big is this file going to be?  If it\u0027s not too big, probably better to use the android-base functions here, something like:\n\nstd::string contents;\nReadFileToString(cg2_path + \"/cgroup.controllers\", \u0026contents);\nfor (const auto\u0026 line : Split(contents)) {\n  cd_detected[line] \u003d CgroupController(2, CGROUPV2_DEF_NAME, cg2_path);",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ec42585_5bfec39d",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "+1 to the other comment: especially if this isn\u0027t a singleton, this should be in a constructor and not as a separate Init() function.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e97a3e66_ffa7196a",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "We tend to name accessors like their variables, so uint32_t version() const { return version_; }\n\nhttps://google.github.io/styleguide/cppguide.html#Function_Names",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 49
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b5f9420_cd2b4a9c",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "There\u0027s no reason for these to be static of this class either.  They\u0027re better as static functions in cgroup_map.cpp.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d955e7b6_c9c764c0",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "We use pointers for in/out parameters.\n\nhttps://google.github.io/styleguide/cppguide.html#Reference_Arguments",
+      "range": {
+        "startLine": 46,
+        "startChar": 27,
+        "endLine": 46,
+        "endChar": 43
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83b50500_b777f831",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Maybe better to not have this in the class then?  You could have a separate set of functions specifically for init that write the map (probably in a new header even), then have this class clean for the majority of users.\n\nI\u0027m guessing that part of the reason to not do that is since you\u0027d then need init to both write the map and read in the map, but I think that\u0027s fine overall.  Then there\u0027s the issue of calling Detect more often, but I still think it\u0027s better to have a requirement that they\u0027re all mounted by a certain time.\n\nOr better, could task_profiles.json be expanded to contain the cgroup controllers and paths?  Maybe it\u0027d be worth it to remove the `mount` commands from the init scripts and put it all in here, such that you\u0027d be sure that everything would be mounted correctly (since you\u0027d be doing it).  If we continue down that rabbit hole, then we can even remove all of the detection code, since we\u0027d already know where we mounted things.\n\nThoughts?",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86916988_8f58d95a",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "controller\u0027 ?\n\nhttps://google.github.io/styleguide/cppguide.html#General_Naming_Rules",
+      "range": {
+        "startLine": 71,
+        "startChar": 25,
+        "endLine": 71,
+        "endChar": 30
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa4d3c4b_48729a38",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Remove comment now that it\u0027s CgroupFile ?",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3683d37f_8c857dfb",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "I see this code is just copied from the old libcutils, but probably a good idea to modernize it here.  Either call itoa, or even better std::to_string(tid) as that\u0027s the cleanest.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45788b4e_7dde95ad",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "No C style comments.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fc07b1e_143c48b4",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Either pass this by const\u0026 or pass it by value and std::move() it into file_name_.  (Also, probably better to call it file_name).",
+      "range": {
+        "startLine": 30,
+        "startChar": 48,
+        "endLine": 30,
+        "endChar": 68
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91cf69fc_8eca26aa",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Same comment above about accessors: controller() and file_name()",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f9de472_9e05d315",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Better int boost, int clamp, especially for this header, and etc down below.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5b13e81_a4f08950",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-19T03:01:14Z",
+      "side": 1,
+      "message": "Glad to see how well the unique_ptr works with everything!",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
