@@ -72,7 +72,7 @@ class FirstStageMount {
     bool InitRequiredDevices();
     bool InitMappedDevice(const std::string& verity_device);
     bool CreateLogicalPartitions();
-    bool MountPartition(FstabEntry* fstab_entry);
+    bool MountPartition(Fstab::iterator begin, Fstab::iterator& end);
     bool MountPartitions();
     bool TrySwitchSystemAsRoot();
     bool TrySkipMountingPartitions();
@@ -381,29 +381,30 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
     return true;
 }
 
-bool FirstStageMount::MountPartition(FstabEntry* fstab_entry) {
-    if (fstab_entry->fs_mgr_flags.logical) {
-        if (!fs_mgr_update_logical_partition(fstab_entry)) {
+bool FirstStageMount::MountPartition(Fstab::iterator begin, Fstab::iterator& end) {
+    if (begin->fs_mgr_flags.logical) {
+        if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
         }
-        if (!InitMappedDevice(fstab_entry->blk_device)) {
+        if (!InitMappedDevice(begin->blk_device)) {
             return false;
         }
     }
-    if (!SetUpDmVerity(fstab_entry)) {
-        PLOG(ERROR) << "Failed to setup verity for '" << fstab_entry->mount_point << "'";
+    if (!SetUpDmVerity(&(*begin))) {
+        PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
         return false;
     }
-    if (fs_mgr_do_mount_one(*fstab_entry)) {
-        if (fstab_entry->fs_mgr_flags.formattable) {
-            PLOG(INFO) << "Failed to mount '" << fstab_entry->mount_point << "', "
-                       << "ignoring mount for formattable partition";
-            return true;
+
+    bool mounted = false;
+    for (end = begin; end != fstab_.end() && end->mount_point == begin->mount_point; end++) {
+        if (!mounted) {
+            if (end != begin)
+                end->blk_device = begin->blk_device;  // blk_device could be updated by operations
+                                                      // like SetUpDmVerity
+            mounted = (fs_mgr_do_mount_one(*end) == 0);
         }
-        PLOG(ERROR) << "Failed to mount '" << fstab_entry->mount_point << "'";
-        return false;
     }
-    return true;
+    return mounted;
 }
 
 // If system is in the fstab then we're not a system-as-root device, and in
@@ -416,30 +417,19 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
 
     if (system_partition == fstab_.end()) return true;
 
-    bool mounted = false;
-    bool no_fail = false;
-    for (auto it = system_partition; it != fstab_.end();) {
-        if (it->mount_point != "/system") {
-            break;
-        }
-        no_fail |= (it->fs_mgr_flags).no_fail;
-        if (MountPartition(&(*it))) {
-            mounted = true;
-            SwitchRoot("/system");
-            break;
-        }
-        it++;
-    }
-
-    if (!mounted && !no_fail) {
-        LOG(ERROR) << "Failed to mount /system";
+    Fstab::iterator end;
+    if (MountPartition(system_partition, end))
+        SwitchRoot("/system");
+    else if (system_partition->fs_mgr_flags.no_fail)
+        LOG(INFO) << "Failed to mount /system, ignoring mount for no_fail partition";
+    else if (system_partition->fs_mgr_flags.formattable)
+        LOG(INFO) << "Failed to mount /system, ignoring mount for formattable partition";
+    else {
+        PLOG(ERROR) << "Failed to mount /system";
         return false;
     }
 
-    auto it = std::remove_if(fstab_.begin(), fstab_.end(),
-                             [](const auto& entry) { return entry.mount_point == "/system"; });
-    fstab_.erase(it, fstab_.end());
-
+    fstab_.erase(system_partition, end);
     return true;
 }
 
@@ -476,21 +466,18 @@ bool FirstStageMount::MountPartitions() {
 
     if (!TrySkipMountingPartitions()) return false;
 
-    for (auto it = fstab_.begin(); it != fstab_.end();) {
-        bool mounted = false;
-        bool no_fail = false;
-        auto start_mount_point = it->mount_point;
-        do {
-            no_fail |= (it->fs_mgr_flags).no_fail;
-            if (!mounted)
-                mounted = MountPartition(&(*it));
-            else
-                LOG(INFO) << "Skip already-mounted partition: " << start_mount_point;
-            it++;
-        } while (it != fstab_.end() && it->mount_point == start_mount_point);
-
-        if (!mounted && !no_fail) {
-            LOG(ERROR) << start_mount_point << " mounted unsuccessfully but it is required!";
+    for (auto current = fstab_.begin(); current != fstab_.end();) {
+        Fstab::iterator end;
+        if (MountPartition(current, end))
+            current = end;
+        else if (current->fs_mgr_flags.no_fail)
+            LOG(INFO) << "Failed to mount " << current->mount_point
+                      << ", ignoring mount for no_fail partition";
+        else if (current->fs_mgr_flags.formattable)
+            LOG(INFO) << "Failed to mount " << current->mount_point
+                      << ", ignoring mount for formattable partition";
+        else {
+            PLOG(INFO) << "Failed to mount " << current->mount_point;
             return false;
         }
     }
