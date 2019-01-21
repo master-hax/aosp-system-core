@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72a2fa3c_6830a416",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-21T20:49:40Z",
+      "side": 1,
+      "message": "Is there no %NDK_LIBRARIES% ?",
+      "range": {
+        "startLine": 142,
+        "startChar": 45,
+        "endLine": 142,
+        "endChar": 60
+      },
+      "revId": "c19263bcd06addc02634debb5225e8a0a6815f85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e831635_1ddb6ecb",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-21T20:49:40Z",
+      "side": 1,
+      "message": "Why do you need this? Is it temporary?",
+      "range": {
+        "startLine": 143,
+        "startChar": 44,
+        "endLine": 143,
+        "endChar": 54
+      },
+      "revId": "c19263bcd06addc02634debb5225e8a0a6815f85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
