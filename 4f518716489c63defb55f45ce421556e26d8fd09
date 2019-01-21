@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2ec69d44_7f4a84df",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2019-01-21T11:13:52Z",
+      "side": 1,
+      "message": "Why this sleep statement?",
+      "range": {
+        "startLine": 193,
+        "startChar": 16,
+        "endLine": 193,
+        "endChar": 25
+      },
+      "revId": "4f518716489c63defb55f45ce421556e26d8fd09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
