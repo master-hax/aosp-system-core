@@ -82,6 +82,30 @@
     },
     {
       "key": {
+        "uuid": "836de2b4_1048e0f4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-21T19:49:28Z",
+      "side": 1,
+      "message": "True; or even just drop the lambda and call the regex_replace() directly?",
+      "parentUuid": "d3aeb28d_20199d53",
+      "range": {
+        "startLine": 134,
+        "startChar": 4,
+        "endLine": 134,
+        "endChar": 75
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d492ede7_083b3f76",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 7
@@ -294,6 +318,24 @@
       "side": 1,
       "message": "Right, I was also considering the idea to remove cgroup dependencies from init scripts.\n\nI guess the main issue is that we currently configure default values for their attributes and further tune them on late init. All that code, in principle, should be provided by this abstraction layer with a configuration described in JSON files.\n\nHowever, that will be a lot more coding and my understanding is that we are aiming here at a very first step which focuses just on getting rid of hardcoded paths from other AOSP translation units... init scripts are thus still kind-of acceptable.",
       "parentUuid": "83b50500_b777f831",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db492fa9_ea7123cd",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-21T19:49:28Z",
+      "side": 1,
+      "message": "The further tuning is creation of the various directories within the cgroup mounts and tuning the parameters, right?  The Detect() code is only called during mounts which are all set up pretty early, so I think it wouldn\u0027t be too difficult to move the mounting of cgroups into libprocessgroups within this CL and remove the Detect() logic.  I honestly think it may be less overall code, and it would definitely be less complex.\n\nUpon looking at the CLs, it doesn\u0027t make a lot of sense to me that task_profiles.json references \"background/cpus\", \"top-app/cpus\", etc, but it leave the responsibility of creating those directories to the init scripts.  I\u0027d agree that might not be something we have time to address in this CL, but it is something we should revisit in the design doc.  Moving all of the cgroup set up to this library, instead of relying on the init scripts would be a great move forward.",
+      "parentUuid": "8eaa7cc2_c4b78094",
       "revId": "563160728b3f011888001722d9f34d07d47e69b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
