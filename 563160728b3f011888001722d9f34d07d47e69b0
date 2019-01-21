@@ -282,6 +282,24 @@
     },
     {
       "key": {
+        "uuid": "8eaa7cc2_c4b78094",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-21T17:14:08Z",
+      "side": 1,
+      "message": "Right, I was also considering the idea to remove cgroup dependencies from init scripts.\n\nI guess the main issue is that we currently configure default values for their attributes and further tune them on late init. All that code, in principle, should be provided by this abstraction layer with a configuration described in JSON files.\n\nHowever, that will be a lot more coding and my understanding is that we are aiming here at a very first step which focuses just on getting rid of hardcoded paths from other AOSP translation units... init scripts are thus still kind-of acceptable.",
+      "parentUuid": "83b50500_b777f831",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
