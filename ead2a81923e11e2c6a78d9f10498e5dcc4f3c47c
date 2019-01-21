@@ -212,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "c239756e_cd4e59b4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-21T17:04:17Z",
+      "side": 1,
+      "message": "If we can force mounts all cgroups at early-init that would be great!\nBut, would not be difficult to enforce? Mainly only via code review, isn\u0027t it?\n\nHowever, as per off-line discussion with Surne, the parsing of \"/proc/cgroup\" I\u0027m describing above is not really required. While \"/proc/mounts\" can still be lazy parsed on-demand, whenever a client actually uses the API.\nBy just doing that we should reduce the number of required parsing to a max of two, if all cgroup mount can happen only at early- and late-init.",
+      "parentUuid": "fc6252ed_647e91cd",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7ad6b42f_d04b6685",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 6
