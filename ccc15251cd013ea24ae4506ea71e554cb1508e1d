@@ -16,6 +16,24 @@
       "revId": "ccc15251cd013ea24ae4506ea71e554cb1508e1d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd7c56fb_326734b8",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1259735
+      },
+      "writtenOn": "2019-01-21T10:26:39Z",
+      "side": 1,
+      "message": "Please check Patchset 3 which add \u0027close(c)\u0027.\nI agree with your reivew regarding moving off select(2) and over to poll(2).\nBut, how much value is enough to set for fds array?",
+      "parentUuid": "8b6fd597_f517a601",
+      "revId": "ccc15251cd013ea24ae4506ea71e554cb1508e1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
