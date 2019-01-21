@@ -226,6 +226,23 @@ static void reboot_for_remount(int fd, bool need_fsck) {
     android::base::SetProperty(ANDROID_RB_PROPERTY, reboot_cmd.c_str());
 }
 
+static void try_unmount_bionic(int fd) {
+    static constexpr const char* kBionic = "/bionic";
+    struct statfs buf;
+    if (statfs(kBionic, &buf) == -1) {
+        WriteFdFmt(fd, "statfs of the %s mount failed: %s.\n", kBionic, strerror(errno));
+        return;
+    }
+    if (buf.f_flags & ST_RDONLY) {
+        // /bionic is on a read-only partition; can happen for
+        // non-system-as-root-devices. Don' try to unmount.
+        return;
+    }
+    // Success/Fail of the actual remount will be reported by the function.
+    remount_partition(fd, kBionic);
+    return;
+}
+
 void remount_service(unique_fd fd, const std::string& cmd) {
     bool user_requested_reboot = cmd == "-R";
 
@@ -301,6 +318,8 @@ void remount_service(unique_fd fd, const std::string& cmd) {
         }
         success &= remount_partition(fd.get(), partition.c_str());
     }
+
+    try_unmount_bionic(fd.get());
 
     if (!dedup.empty()) {
         WriteFdExactly(fd.get(),
