@@ -59,6 +59,29 @@
     },
     {
       "key": {
+        "uuid": "d3aeb28d_20199d53",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-21T16:52:08Z",
+      "side": 1,
+      "message": "It seems that both ReplaceAll() and ExpandAppDependentPath() are not really used apart from this function.\n\nThus, I think we can get rid of both both in favour of a simpler and inline lambda here:\n\n\n   std::string CgroupController::GetProcsFilePath(const std::string\u0026 path, uid_t uid,\n                                                  pid_t pid) const {\n        auto expandAndAppend \u003d [](const std::string\u0026 cg_path,\n\t\t\tconst std::string\u0026 subgrp,\n\t\t\tuid_t uid, pid_t pid) {\n\t\tstring proc_path(cg_path);\n\n\t\tproc_path.append(\"/\").append(subgrp);\n\n\t\tproc_path \u003d regex_replace(proc_path, std::regex(\"\u003cuid\u003e\"), to_string(uid));\n\t\tproc_path \u003d regex_replace(proc_path, std::regex(\"\u003cpid\u003e\"), to_string(pid));\n\t\treturn proc_path;\n\t};\n\n        return expandAndAppend(path_, path, uid, pid).append(CGROUP_PROCS_FILE);",
+      "range": {
+        "startLine": 134,
+        "startChar": 4,
+        "endLine": 134,
+        "endChar": 75
+      },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d492ede7_083b3f76",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 7
@@ -218,6 +241,24 @@
         "endLine": 46,
         "endChar": 43
       },
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f4defdc_ebb9e922",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-21T16:52:08Z",
+      "side": 1,
+      "message": "Since it\u0027s private and static... used only from ExpandAndAppendPath... they could be just private methods (not static). Even better, maybe have a look at my comment on GetProcsFilePath().",
+      "parentUuid": "6b5f9420_cd2b4a9c",
       "revId": "563160728b3f011888001722d9f34d07d47e69b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
