@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "828c75bb_3ec61dd0",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-22T17:21:39Z",
+      "side": 1,
+      "message": "Just wondering, if we dropped the specific checks for squashfs and erofs, would the call to fs_mgr_filesystem_has_space() be enough?  Presumably these would show 0% free and the check would be successful, right?  May be the best and most future proof solution?",
+      "revId": "33c271bfeb025886b4501e285395008228db357b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
