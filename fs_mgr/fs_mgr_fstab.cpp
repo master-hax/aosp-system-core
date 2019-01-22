@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <array>
 #include <utility>
 #include <vector>
 
@@ -55,8 +56,8 @@ struct fs_mgr_flag_values {
     int max_comp_streams = 0;
     off64_t zram_size = 0;
     off64_t reserved_size = 0;
-    int file_contents_mode = 0;
-    int file_names_mode = 0;
+    std::string file_contents_mode;
+    std::string file_names_mode;
     off64_t erase_blk_size = 0;
     off64_t logical_blk_size = 0;
     std::string vbmeta_partition;
@@ -128,50 +129,17 @@ static struct flag_list fs_mgr_flags[] = {
         {0, 0},
 };
 
-#define EM_AES_256_XTS  1
-#define EM_ICE          2
-#define EM_AES_256_CTS  3
-#define EM_AES_256_HEH  4
-#define EM_ADIANTUM     5
-
-static const struct flag_list file_contents_encryption_modes[] = {
-    {"aes-256-xts", EM_AES_256_XTS},
-    {"adiantum", EM_ADIANTUM},
-    {"software", EM_AES_256_XTS}, /* alias for backwards compatibility */
-    {"ice", EM_ICE}, /* hardware-specific inline cryptographic engine */
-    {0, 0},
+const static std::array<const char*, 3> kFileContentsEncryptionMode = {
+        "aes-256-xts",
+        "adiantum",
+        "ice",
 };
 
-static const struct flag_list file_names_encryption_modes[] = {
-    {"aes-256-cts", EM_AES_256_CTS},
-    {"aes-256-heh", EM_AES_256_HEH},
-    {"adiantum", EM_ADIANTUM},
-    {0, 0},
+const static std::array<const char*, 3> kFileNamesEncryptionMode = {
+        "aes-256-cts",
+        "aes-256-heh",
+        "adiantum",
 };
-
-static int encryption_mode_to_flag(const struct flag_list* list, const char* mode,
-                                   const char* type) {
-    const struct flag_list *j;
-
-    for (j = list; j->name; ++j) {
-        if (!strcmp(mode, j->name)) {
-            return j->flag;
-        }
-    }
-    LERROR << "Unknown " << type << " encryption mode: " << mode;
-    return 0;
-}
-
-static const char* flag_to_encryption_mode(const struct flag_list* list, uint64_t flag) {
-    const struct flag_list *j;
-
-    for (j = list; j->name; ++j) {
-        if (flag == j->flag) {
-            return j->name;
-        }
-    }
-    return nullptr;
-}
 
 static off64_t calculate_zram_size(unsigned int percentage) {
     off64_t total;
@@ -259,30 +227,49 @@ static uint64_t parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_fla
                      * location of the keys.  Get it and return it.
                      */
                     flag_vals->key_loc = arg;
-                    flag_vals->file_contents_mode = EM_AES_256_XTS;
-                    flag_vals->file_names_mode = EM_AES_256_CTS;
+                    flag_vals->file_contents_mode = "aes-256-xts";
+                    flag_vals->file_names_mode = "aes-256-cts";
                 } else if (flag == MF_FILEENCRYPTION) {
                     /* The fileencryption flag is followed by an = and
                      * the mode of contents encryption, then optionally a
                      * : and the mode of filenames encryption (defaults
                      * to aes-256-cts).  Get it and return it.
                      */
-                    auto mode = arg;
-                    auto colon = strchr(mode, ':');
-                    if (colon) {
-                        *colon = '\0';
+                    auto parts = Split(arg, ":");
+                    if (parts.empty() || parts.size() > 2) {
+                        LWARNING << "Warning: fileencryption= flag malformed: " << arg;
+                        break;
                     }
-                    flag_vals->file_contents_mode =
-                        encryption_mode_to_flag(file_contents_encryption_modes,
-                                                mode, "file contents");
-                    if (colon) {
-                        flag_vals->file_names_mode =
-                            encryption_mode_to_flag(file_names_encryption_modes,
-                                                    colon + 1, "file names");
-                    } else if (flag_vals->file_contents_mode == EM_ADIANTUM) {
-                        flag_vals->file_names_mode = EM_ADIANTUM;
+
+                    // Alias for backwards compatibility.
+                    if (parts[0] == "software") {
+                        parts[0] = "aes-256-xts";
+                    }
+
+                    if (std::find(kFileContentsEncryptionMode.begin(),
+                                  kFileContentsEncryptionMode.end(),
+                                  parts[0]) == kFileContentsEncryptionMode.end()) {
+                        LWARNING << "Warning: fileencryption= flag malformed, file contents "
+                                    "encryption mode not found: "
+                                 << arg;
+                        break;
+                    }
+
+                    flag_vals->file_contents_mode = parts[0];
+
+                    if (parts.size() == 2) {
+                        if (std::find(kFileNamesEncryptionMode.begin(),
+                                      kFileNamesEncryptionMode.end(),
+                                      parts[1]) == kFileNamesEncryptionMode.end()) {
+                            LWARNING << "Warning: fileencryption= flag malformed, file names "
+                                        "encryption mode not found: "
+                                     << arg;
+                            break;
+                        }
+
+                        flag_vals->file_contents_mode = parts[1];
                     } else {
-                        flag_vals->file_names_mode = EM_AES_256_CTS;
+                        flag_vals->file_contents_mode = "aes-256-cts";
                     }
                 } else if (flag == MF_KEYDIRECTORY) {
                     /* The metadata flag is followed by an = and the
@@ -581,8 +568,8 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
         entry.max_comp_streams = flag_vals.max_comp_streams;
         entry.zram_size = flag_vals.zram_size;
         entry.reserved_size = flag_vals.reserved_size;
-        entry.file_contents_mode = flag_vals.file_contents_mode;
-        entry.file_names_mode = flag_vals.file_names_mode;
+        entry.file_contents_mode = std::move(flag_vals.file_contents_mode);
+        entry.file_names_mode = std::move(flag_vals.file_names_mode);
         entry.erase_blk_size = flag_vals.erase_blk_size;
         entry.logical_blk_size = flag_vals.logical_blk_size;
         entry.sysfs_path = std::move(flag_vals.sysfs_path);
@@ -830,6 +817,8 @@ void fs_mgr_free_fstab(struct fstab *fstab)
         free(fstab->recs[i].key_loc);
         free(fstab->recs[i].key_dir);
         free(fstab->recs[i].label);
+        free(fstab->recs[i].file_contents_mode);
+        free(fstab->recs[i].file_names_mode);
         free(fstab->recs[i].sysfs_path);
         free(fstab->recs[i].zram_loopback_path);
         free(fstab->recs[i].zram_backing_dev_path);
@@ -971,8 +960,8 @@ fstab* FstabToLegacyFstab(const Fstab& fstab) {
         legacy_fstab->recs[i].max_comp_streams = fstab[i].max_comp_streams;
         legacy_fstab->recs[i].zram_size = fstab[i].zram_size;
         legacy_fstab->recs[i].reserved_size = fstab[i].reserved_size;
-        legacy_fstab->recs[i].file_contents_mode = fstab[i].file_contents_mode;
-        legacy_fstab->recs[i].file_names_mode = fstab[i].file_names_mode;
+        legacy_fstab->recs[i].file_contents_mode = strdup(fstab[i].file_contents_mode.c_str());
+        legacy_fstab->recs[i].file_names_mode = strdup(fstab[i].file_names_mode.c_str());
         legacy_fstab->recs[i].erase_blk_size = fstab[i].erase_blk_size;
         legacy_fstab->recs[i].logical_blk_size = fstab[i].logical_blk_size;
         legacy_fstab->recs[i].sysfs_path = strdup(fstab[i].sysfs_path.c_str());
@@ -1018,14 +1007,10 @@ int fs_mgr_is_file_encrypted(const struct fstab_rec *fstab)
     return fstab->fs_mgr_flags & MF_FILEENCRYPTION;
 }
 
-void fs_mgr_get_file_encryption_modes(const struct fstab_rec *fstab,
-                                      const char **contents_mode_ret,
-                                      const char **filenames_mode_ret)
-{
-    *contents_mode_ret = flag_to_encryption_mode(file_contents_encryption_modes,
-                                                 fstab->file_contents_mode);
-    *filenames_mode_ret = flag_to_encryption_mode(file_names_encryption_modes,
-                                                  fstab->file_names_mode);
+void fs_mgr_get_file_encryption_modes(const struct fstab_rec* fstab, const char** contents_mode_ret,
+                                      const char** filenames_mode_ret) {
+    *contents_mode_ret = fstab->file_contents_mode;
+    *filenames_mode_ret = fstab->file_names_mode;
 }
 
 int fs_mgr_is_convertible_to_fbe(const struct fstab_rec *fstab)
