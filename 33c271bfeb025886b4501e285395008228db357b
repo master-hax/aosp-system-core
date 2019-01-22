@@ -16,6 +16,24 @@
       "revId": "33c271bfeb025886b4501e285395008228db357b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63d53176_ac5fa795",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-22T17:57:04Z",
+      "side": 1,
+      "message": "Let me think about it, I have to accept the loss of code self-documentation ... in exchange for comments alone.\n\nTrue dat squashfs is always 100% utilized, so yes it is covered. I can not speak to erofs at the moment, and I am not sure I want to expend the effort, except to through this patch and related code searches and history, inform partners that it would be OK to use overlayfs on erofs. erofs is not yet supported on our workstations or in our tools for me to easily investigate.\n\nI am on the fence as to whether I would be _ready_ to remove \"squashfs\" from this logic, it forms a sort of comforting self-documentation. These checks save a system call to check free filesystem space.",
+      "parentUuid": "828c75bb_3ec61dd0",
+      "revId": "33c271bfeb025886b4501e285395008228db357b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
