@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0a2fbe7_a9f29116",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-22T16:44:06Z",
+      "side": 1,
+      "message": "We put { } around all multi-line if statements, so\n\nif (end !\u003d begin) {\n    end-\u003eblk_device \u003d begin-\u003eblk_device;\n}\n\nSame thing needs to be done for the below if statements too.\n\nhttps://google.github.io/styleguide/cppguide.html#Conditionals",
+      "revId": "c9489b0cb5e6079410d418fdb60d85f7ed133c21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3c0a959_9150d04b",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-22T16:44:06Z",
+      "side": 1,
+      "message": "I think we can skip these two checks.  It fundamentally doesn\u0027t make sense if system is listed as no_fail or formattable.",
+      "range": {
+        "startLine": 423,
+        "startChar": 3,
+        "endLine": 426,
+        "endChar": 89
+      },
+      "revId": "c9489b0cb5e6079410d418fdb60d85f7ed133c21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd8c1389_1aecb385",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-22T16:44:06Z",
+      "side": 1,
+      "message": "This only checks the current entry if it has no_fail set; it should check each of them.\n\n(But honestly, I may be okay with just doing this anyway; this all will need to be refactored later anyway)",
+      "revId": "c9489b0cb5e6079410d418fdb60d85f7ed133c21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
