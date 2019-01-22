@@ -174,6 +174,24 @@
     },
     {
       "key": {
+        "uuid": "57bab1ba_f5d2b8df",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-22T23:07:25Z",
+      "side": 1,
+      "message": "Nope. Signle hierarchy only for cgroup v2.",
+      "parentUuid": "9a1b6c83_464ff011",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "39e642b8_57e395b4",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 7
@@ -185,6 +203,24 @@
       "writtenOn": "2019-01-19T03:01:14Z",
       "side": 1,
       "message": "How big is this file going to be?  If it\u0027s not too big, probably better to use the android-base functions here, something like:\n\nstd::string contents;\nReadFileToString(cg2_path + \"/cgroup.controllers\", \u0026contents);\nfor (const auto\u0026 line : Split(contents)) {\n  cd_detected[line] \u003d CgroupController(2, CGROUPV2_DEF_NAME, cg2_path);",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "168ab7d7_8eca4ddf",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-22T23:07:25Z",
+      "side": 1,
+      "message": "Yes. The file should be rather small. Will do.",
+      "parentUuid": "39e642b8_57e395b4",
       "revId": "563160728b3f011888001722d9f34d07d47e69b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -342,6 +378,24 @@
     },
     {
       "key": {
+        "uuid": "af609c76_2f298504",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-22T23:07:25Z",
+      "side": 1,
+      "message": "That\u0027s a very good idea. init script I think will still have to somehow tell libprocessgroup when to mount all the cgroup controllers. So we still need some API between init and libprocessgroup. Don\u0027t we?",
+      "parentUuid": "db492fa9_ea7123cd",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
@@ -410,6 +464,24 @@
       "writtenOn": "2019-01-19T03:01:14Z",
       "side": 1,
       "message": "No C style comments.",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5ada3db_c22f6354",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-22T23:07:25Z",
+      "side": 1,
+      "message": "Ok. I was trying to minimize the delta from the original implementation but maybe it\u0027s time for this cleanup. Will do.",
+      "parentUuid": "45788b4e_7dde95ad",
       "revId": "563160728b3f011888001722d9f34d07d47e69b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
