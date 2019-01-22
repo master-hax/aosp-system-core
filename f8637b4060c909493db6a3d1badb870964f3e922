@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f81007cc_25fdfa16",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-22T15:02:28Z",
+      "side": 1,
+      "message": "Please add comment to keep in sync with the Runtime APEX ld.config.txt.",
+      "revId": "f8637b4060c909493db6a3d1badb870964f3e922",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5487989_0539bd43",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-22T15:02:28Z",
+      "side": 1,
+      "message": "Ditto.",
+      "revId": "f8637b4060c909493db6a3d1badb870964f3e922",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
