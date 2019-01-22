@@ -45,6 +45,11 @@ class FiemapWriter final {
                                 bool create = true,
                                 std::function<bool(uint64_t, uint64_t)> progress = {});
 
+    // Check that a file still has the same extents since it was last opened with FiemapWriter,
+    // assuming the file was not resized outside of FiemapWriter. Returns false either on error
+    // or if the file was not pinned.
+    static bool HasPinnedExtents(const std::string& file_path);
+
     // Syncs block device writes.
     bool Flush() const;
 
