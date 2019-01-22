@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16e03ea9_01a85f7e",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "We\u0027re assigning to serial in both the tcp and vsock case already, and we probably shouldn\u0027t be assigning to it on failure anyway?\nMove this down to the following?\n\n    fd-\u003ereset(network_local_client(\u0026address[prefix.length()], it.second.socket_namespace,\n                                   SOCK_STREAM, error));\n    return true;",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 5
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba9665fd_57267737",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "Change this to an else if for clarity",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 185,
+        "endChar": 4
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "748dd35b_d296a2aa",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "Maybe we should generalize parse_tcp_socket_spec to parse_host_socket_spec({\"tcp\", \"vsock\", ...)?\n\nThis permits \"vsock:1:-1\", which we should probably reject. Looking at the vsock manpage, it looks like the vsock port range is the full 32-bits, so we\u0027ll need to pass that in as well, and we\u0027d need a ParseInt for the host as well here? I don\u0027t have a strong opinion here, feel free to leave this in place if you think it\u0027s cleaner.",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ff785b2_603a6e95",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "rename to resolved_port?",
+      "range": {
+        "startLine": 253,
+        "startChar": 71,
+        "endLine": 253,
+        "endChar": 88
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f9d2ca9_197e4252",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "As above, switch to else if",
+      "range": {
+        "startLine": 275,
+        "startChar": 22,
+        "endLine": 277,
+        "endChar": 37
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0dcc5549_526d89f0",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "-1",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e0161cb_8f692fd3",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-22T22:30:01Z",
+      "side": 1,
+      "message": "This seems wrong?",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
