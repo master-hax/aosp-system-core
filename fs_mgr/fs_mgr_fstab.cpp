@@ -35,97 +35,34 @@
 
 #include "fs_mgr_priv.h"
 
+using android::base::ParseByteCount;
+using android::base::ParseInt;
 using android::base::Split;
 using android::base::StartsWith;
 
 const std::string kDefaultAndroidDtDir("/proc/device-tree/firmware/android");
-
-struct fs_mgr_flag_values {
-    std::string key_loc;
-    std::string key_dir;
-    std::string verity_loc;
-    std::string sysfs_path;
-    std::string zram_loopback_path;
-    uint64_t zram_loopback_size = 512 * 1024 * 1024; // 512MB by default
-    std::string zram_backing_dev_path;
-    off64_t part_length = 0;
-    std::string label;
-    int partnum = -1;
-    int swap_prio = -1;
-    int max_comp_streams = 0;
-    off64_t zram_size = 0;
-    off64_t reserved_size = 0;
-    int file_contents_mode = 0;
-    int file_names_mode = 0;
-    off64_t erase_blk_size = 0;
-    off64_t logical_blk_size = 0;
-    std::string vbmeta_partition;
-};
 
 struct flag_list {
     const char *name;
     uint64_t flag;
 };
 
-static struct flag_list mount_flags[] = {
-    { "noatime",    MS_NOATIME },
-    { "noexec",     MS_NOEXEC },
-    { "nosuid",     MS_NOSUID },
-    { "nodev",      MS_NODEV },
-    { "nodiratime", MS_NODIRATIME },
-    { "ro",         MS_RDONLY },
-    { "rw",         0 },
-    { "remount",    MS_REMOUNT },
-    { "bind",       MS_BIND },
-    { "rec",        MS_REC },
-    { "unbindable", MS_UNBINDABLE },
-    { "private",    MS_PRIVATE },
-    { "slave",      MS_SLAVE },
-    { "shared",     MS_SHARED },
-    { "defaults",   0 },
-    { 0,            0 },
-};
-
-static struct flag_list fs_mgr_flags[] = {
-        {"wait", MF_WAIT},
-        {"check", MF_CHECK},
-        {"encryptable=", MF_CRYPT},
-        {"forceencrypt=", MF_FORCECRYPT},
-        {"fileencryption=", MF_FILEENCRYPTION},
-        {"forcefdeorfbe=", MF_FORCEFDEORFBE},
-        {"keydirectory=", MF_KEYDIRECTORY},
-        {"nonremovable", MF_NONREMOVABLE},
-        {"voldmanaged=", MF_VOLDMANAGED},
-        {"length=", MF_LENGTH},
-        {"recoveryonly", MF_RECOVERYONLY},
-        {"swapprio=", MF_SWAPPRIO},
-        {"zramsize=", MF_ZRAMSIZE},
-        {"max_comp_streams=", MF_MAX_COMP_STREAMS},
-        {"verifyatboot", MF_VERIFYATBOOT},
-        {"verify", MF_VERIFY},
-        {"avb", MF_AVB},
-        {"avb=", MF_AVB},
-        {"noemulatedsd", MF_NOEMULATEDSD},
-        {"notrim", MF_NOTRIM},
-        {"formattable", MF_FORMATTABLE},
-        {"slotselect", MF_SLOTSELECT},
-        {"nofail", MF_NOFAIL},
-        {"first_stage_mount", MF_FIRST_STAGE_MOUNT},
-        {"latemount", MF_LATEMOUNT},
-        {"reservedsize=", MF_RESERVEDSIZE},
-        {"quota", MF_QUOTA},
-        {"eraseblk=", MF_ERASEBLKSIZE},
-        {"logicalblk=", MF_LOGICALBLKSIZE},
-        {"sysfs_path=", MF_SYSFS},
+static struct flag_list mount_flags_list[] = {
+        {"noatime", MS_NOATIME},
+        {"noexec", MS_NOEXEC},
+        {"nosuid", MS_NOSUID},
+        {"nodev", MS_NODEV},
+        {"nodiratime", MS_NODIRATIME},
+        {"ro", MS_RDONLY},
+        {"rw", 0},
+        {"remount", MS_REMOUNT},
+        {"bind", MS_BIND},
+        {"rec", MS_REC},
+        {"unbindable", MS_UNBINDABLE},
+        {"private", MS_PRIVATE},
+        {"slave", MS_SLAVE},
+        {"shared", MS_SHARED},
         {"defaults", 0},
-        {"logical", MF_LOGICAL},
-        {"checkpoint=block", MF_CHECKPOINT_BLK},
-        {"checkpoint=fs", MF_CHECKPOINT_FS},
-        {"slotselect_other", MF_SLOTSELECT_OTHER},
-        {"zram_loopback_path=", MF_ZRAM_LOOPBACK_PATH},
-        {"zram_loopback_size=", MF_ZRAM_LOOPBACK_SIZE},
-        {"zram_backing_dev_path=", MF_ZRAM_BACKING_DEV_PATH},
-        {0, 0},
 };
 
 #define EM_AES_256_XTS  1
@@ -173,7 +110,7 @@ static const char* flag_to_encryption_mode(const struct flag_list* list, uint64_
     return nullptr;
 }
 
-static off64_t calculate_zram_size(unsigned int percentage) {
+static off64_t calculate_zram_size(int percentage) {
     off64_t total;
 
     total  = sysconf(_SC_PHYS_PAGES);
@@ -183,19 +120,6 @@ static off64_t calculate_zram_size(unsigned int percentage) {
     total *= sysconf(_SC_PAGESIZE);
 
     return total;
-}
-
-static off64_t parse_size(const char* arg) {
-    char *endptr;
-    off64_t size = strtoll(arg, &endptr, 10);
-    if (*endptr == 'k' || *endptr == 'K')
-        size *= 1024LL;
-    else if (*endptr == 'm' || *endptr == 'M')
-        size *= 1024LL * 1024LL;
-    else if (*endptr == 'g' || *endptr == 'G')
-        size *= 1024LL * 1024LL * 1024LL;
-
-    return size;
 }
 
 /* fills 'dt_value' with the underlying device tree value string without
@@ -216,174 +140,213 @@ static bool read_dt_file(const std::string& file_name, std::string* dt_value)
     return false;
 }
 
-static uint64_t parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_flag_values* flag_vals,
-                            std::string* fs_options) {
-    uint64_t f = 0;
-    int i;
-    char *p;
-    char *savep;
-
-    p = strtok_r(flags, ",", &savep);
-    while (p) {
-        /* Look for the flag "p" in the flag list "fl"
-         * If not found, the loop exits with fl[i].name being null.
-         */
-        for (i = 0; fl[i].name; i++) {
-            auto name = fl[i].name;
-            auto len = strlen(name);
-            auto end = len;
-            if (name[end - 1] == '=') --end;
-            if (!strncmp(p, name, len) && (p[end] == name[end])) {
-                f |= fl[i].flag;
-                if (!flag_vals) break;
-                if (p[end] != '=') break;
-                char* arg = p + end + 1;
-                auto flag = fl[i].flag;
-                if (flag == MF_CRYPT) {
-                    /* The encryptable flag is followed by an = and the
-                     * location of the keys.  Get it and return it.
-                     */
-                    flag_vals->key_loc = arg;
-                } else if (flag == MF_VERIFY) {
-                    /* If the verify flag is followed by an = and the
-                     * location for the verity state,  get it and return it.
-                     */
-                    flag_vals->verity_loc = arg;
-                } else if (flag == MF_FORCECRYPT) {
-                    /* The forceencrypt flag is followed by an = and the
-                     * location of the keys.  Get it and return it.
-                     */
-                    flag_vals->key_loc = arg;
-                } else if (flag == MF_FORCEFDEORFBE) {
-                    /* The forcefdeorfbe flag is followed by an = and the
-                     * location of the keys.  Get it and return it.
-                     */
-                    flag_vals->key_loc = arg;
-                    flag_vals->file_contents_mode = EM_AES_256_XTS;
-                    flag_vals->file_names_mode = EM_AES_256_CTS;
-                } else if (flag == MF_FILEENCRYPTION) {
-                    /* The fileencryption flag is followed by an = and
-                     * the mode of contents encryption, then optionally a
-                     * : and the mode of filenames encryption (defaults
-                     * to aes-256-cts).  Get it and return it.
-                     */
-                    auto mode = arg;
-                    auto colon = strchr(mode, ':');
-                    if (colon) {
-                        *colon = '\0';
-                    }
-                    flag_vals->file_contents_mode =
-                        encryption_mode_to_flag(file_contents_encryption_modes,
-                                                mode, "file contents");
-                    if (colon) {
-                        flag_vals->file_names_mode =
-                            encryption_mode_to_flag(file_names_encryption_modes,
-                                                    colon + 1, "file names");
-                    } else if (flag_vals->file_contents_mode == EM_ADIANTUM) {
-                        flag_vals->file_names_mode = EM_ADIANTUM;
-                    } else {
-                        flag_vals->file_names_mode = EM_AES_256_CTS;
-                    }
-                } else if (flag == MF_KEYDIRECTORY) {
-                    /* The metadata flag is followed by an = and the
-                     * directory for the keys.  Get it and return it.
-                     */
-                    flag_vals->key_dir = arg;
-                } else if (flag == MF_LENGTH) {
-                    /* The length flag is followed by an = and the
-                     * size of the partition.  Get it and return it.
-                     */
-                    flag_vals->part_length = strtoll(arg, NULL, 0);
-                } else if (flag == MF_VOLDMANAGED) {
-                    /* The voldmanaged flag is followed by an = and the
-                     * label, a colon and the partition number or the
-                     * word "auto", e.g.
-                     *   voldmanaged=sdcard:3
-                     * Get and return them.
-                     */
-                    auto label_start = arg;
-                    auto label_end = strchr(label_start, ':');
-
-                    if (label_end) {
-                        flag_vals->label = std::string(label_start, (int)(label_end - label_start));
-                        auto part_start = label_end + 1;
-                        if (!strcmp(part_start, "auto")) {
-                            flag_vals->partnum = -1;
-                        } else {
-                            flag_vals->partnum = strtol(part_start, NULL, 0);
-                        }
-                    } else {
-                        LERROR << "Warning: voldmanaged= flag malformed";
-                    }
-                } else if (flag == MF_SWAPPRIO) {
-                    flag_vals->swap_prio = strtoll(arg, NULL, 0);
-                } else if (flag == MF_MAX_COMP_STREAMS) {
-                    flag_vals->max_comp_streams = strtoll(arg, NULL, 0);
-                } else if (flag == MF_AVB) {
-                    flag_vals->vbmeta_partition = arg;
-                } else if (flag == MF_ZRAMSIZE) {
-                    auto is_percent = !!strrchr(arg, '%');
-                    auto val = strtoll(arg, NULL, 0);
-                    if (is_percent)
-                        flag_vals->zram_size = calculate_zram_size(val);
-                    else
-                        flag_vals->zram_size = val;
-                } else if (flag == MF_RESERVEDSIZE) {
-                    /* The reserved flag is followed by an = and the
-                     * reserved size of the partition.  Get it and return it.
-                     */
-                    flag_vals->reserved_size = parse_size(arg);
-                } else if (flag == MF_ERASEBLKSIZE) {
-                    /* The erase block size flag is followed by an = and the flash
-                     * erase block size. Get it, check that it is a power of 2 and
-                     * at least 4096, and return it.
-                     */
-                    auto val = strtoll(arg, nullptr, 0);
-                    if (val >= 4096 && (val & (val - 1)) == 0)
-                        flag_vals->erase_blk_size = val;
-                } else if (flag == MF_LOGICALBLKSIZE) {
-                    /* The logical block size flag is followed by an = and the flash
-                     * logical block size. Get it, check that it is a power of 2 and
-                     * at least 4096, and return it.
-                     */
-                    auto val = strtoll(arg, nullptr, 0);
-                    if (val >= 4096 && (val & (val - 1)) == 0)
-                        flag_vals->logical_blk_size = val;
-                } else if (flag == MF_SYSFS) {
-                    /* The path to trigger device gc by idle-maint of vold. */
-                    flag_vals->sysfs_path = arg;
-                } else if (flag == MF_ZRAM_LOOPBACK_PATH) {
-                    /* The path to use loopback for zram. */
-                    flag_vals->zram_loopback_path = arg;
-                } else if (flag == MF_ZRAM_LOOPBACK_SIZE) {
-                    if (!android::base::ParseByteCount(arg, &flag_vals->zram_loopback_size)) {
-                        LERROR << "Warning: zram_loopback_size = flag malformed";
-                    }
-                } else if (flag == MF_ZRAM_BACKING_DEV_PATH) {
-                    /* The path to use loopback for zram. */
-                    flag_vals->zram_backing_dev_path = arg;
-                }
+static void ParseMountFlags(const std::string& flags, FstabEntry* entry) {
+    uint64_t mount_flags = 0;
+    std::string fs_options;
+    for (const auto& flag : Split(flags, ",")) {
+        for (const auto& [name, value] : mount_flags_list) {
+            if (flag == name) {
+                mount_flags |= value;
                 break;
             }
         }
-
-        if (!fl[i].name) {
-            if (fs_options) {
-                // It's not a known flag, so it must be a filesystem specific
-                // option.  Add it to fs_options if it was passed in.
-                if (!fs_options->empty()) {
-                    fs_options->append(",");  // appends a comma if not the first
-                }
-                fs_options->append(p);
-            } else {
-                // fs_options was not passed in, so if the flag is unknown it's an error.
-                LERROR << "Warning: unknown flag " << p;
-            }
+        // Unknown flag, so it must be a filesystem specific option.
+        if (!fs_options.empty()) {
+            fs_options.append(",");  // appends a comma if not the first
         }
-        p = strtok_r(NULL, ",", &savep);
+        fs_options.append(flag);
     }
+    entry->flags = mount_flags;
+    entry->fs_options = std::move(fs_options);
+}
 
-    return f;
+static void ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
+    for (const auto& flag : Split(flags, ",")) {
+        std::string arg;
+        if (auto equal_sign = flags.find('='); equal_sign != std::string::npos) {
+            arg = flags.substr(equal_sign + 1);
+        }
+
+        if (flag == "wait") {
+            entry->fs_mgr_flags.wait = true;
+        } else if (flag == "check") {
+            entry->fs_mgr_flags.check = true;
+        } else if (StartsWith(flag, "encryptable=")) {
+            // The encryptable flag is followed by an = and the  location of the keys.
+            entry->fs_mgr_flags.crypt = true;
+            entry->key_loc = arg;
+        } else if (flag == "nonremovable") {
+            entry->fs_mgr_flags.nonremovable = true;
+        } else if (StartsWith(flag, "voldmanaged=")) {
+            // The voldmanaged flag is followed by an = and the label, a colon and the partition
+            // number or the word "auto", e.g. voldmanaged=sdcard:3
+            entry->fs_mgr_flags.vold_managed = true;
+            auto parts = Split(arg, ":");
+            if (parts.size() != 2) {
+                LWARNING << "Warning: voldmanaged= flag malformed: " << arg;
+                continue;
+            }
+
+            entry->label = std::move(parts[0]);
+            if (parts[1] == "auto") {
+                entry->partnum = -1;
+            } else {
+                if (!ParseInt(parts[1], &entry->partnum)) {
+                    entry->partnum = -1;
+                    LWARNING << "Warning: voldmanaged= flag malformed: " << arg;
+                    continue;
+                }
+            }
+        } else if (StartsWith(flag, "length=")) {
+            // The length flag is followed by an = and the size of the partition.
+            entry->fs_mgr_flags.length = true;
+            if (!ParseInt(arg, &entry->length)) {
+                LWARNING << "Warning: length= flag malformed: " << arg;
+            }
+        } else if (flag == "recoveryonly") {
+            entry->fs_mgr_flags.recovery_only = true;
+        } else if (StartsWith(flag, "swapprio=")) {
+            entry->fs_mgr_flags.swap_prio = true;
+            if (!ParseInt(arg, &entry->swap_prio)) {
+                LWARNING << "Warning: length= flag malformed: " << arg;
+            }
+        } else if (StartsWith(flag, "zramsize=")) {
+            entry->fs_mgr_flags.zram_size = true;
+
+            if (!arg.empty() && arg.back() == '%') {
+                int val;
+                if (ParseInt(arg, &val, 0, 100)) {
+                    entry->zram_size = calculate_zram_size(val);
+                } else {
+                    LWARNING << "Warning: zramsize= flag malformed: " << arg;
+                }
+            } else {
+                if (!ParseInt(arg, &entry->zram_size)) {
+                    LWARNING << "Warning: zramsize= flag malformed: " << arg;
+                }
+            }
+        } else if (flag == "verify") {
+            entry->fs_mgr_flags.verify = true;
+        } else if (StartsWith(flag, "verify=")) {
+            // If the verify flag is followed by an = and the location for the verity state.
+            entry->fs_mgr_flags.verify = true;
+            entry->verity_loc = arg;
+        } else if (StartsWith(flag, "forceencrypt=")) {
+            // The forceencrypt flag is followed by an = and the location of the keys.
+            entry->fs_mgr_flags.force_crypt = true;
+            entry->key_loc = arg;
+        } else if (flag == "noemulatedsd") {
+            entry->fs_mgr_flags.no_emulated_sd = true;
+        } else if (flag == "notrim") {
+            entry->fs_mgr_flags.no_trim = true;
+        } else if (StartsWith(flag, "fileencryption=")) {
+            // The fileencryption flag is followed by an = and the mode of contents encryption, then
+            // optionally a : and the mode of filenames encryption (defaults to aes-256-cts).
+            entry->fs_mgr_flags.file_encryption = true;
+            auto mode = arg;
+            char* colon = strchr(mode.data(), ':');
+            if (colon) {
+                *colon = '\0';
+            }
+            entry->file_contents_mode = encryption_mode_to_flag(file_contents_encryption_modes,
+                                                                mode.c_str(), "file contents");
+            if (colon) {
+                entry->file_names_mode = encryption_mode_to_flag(file_names_encryption_modes,
+                                                                 colon + 1, "file names");
+            } else if (entry->file_contents_mode == EM_ADIANTUM) {
+                entry->file_names_mode = EM_ADIANTUM;
+            } else {
+                entry->file_names_mode = EM_AES_256_CTS;
+            }
+        } else if (flag == "formattable") {
+            entry->fs_mgr_flags.formattable = true;
+        } else if (flag == "slotselect") {
+            entry->fs_mgr_flags.slot_select = true;
+        } else if (StartsWith(flag, "forcefdeorfbe=")) {
+            // The forcefdeorfbe flag is followed by an = and the location of the keys.  Get it and
+            // return it.
+            entry->fs_mgr_flags.force_fde_or_fbe = true;
+            entry->key_loc = arg;
+            entry->file_contents_mode = EM_AES_256_XTS;
+            entry->file_names_mode = EM_AES_256_CTS;
+        } else if (flag == "latemount") {
+            entry->fs_mgr_flags.late_mount = true;
+        } else if (flag == "nofail") {
+            entry->fs_mgr_flags.no_fail = true;
+        } else if (flag == "verifyatboot") {
+            entry->fs_mgr_flags.verify_at_boot = true;
+        } else if (StartsWith(flag, "max_comp_streams=")) {
+            entry->fs_mgr_flags.max_comp_streams = true;
+            if (!ParseInt(arg, &entry->max_comp_streams)) {
+                LWARNING << "Warning: max_comp_streams= flag malformed: " << arg;
+            }
+        } else if (StartsWith(flag, "reservedsize=")) {
+            // The reserved flag is followed by an = and the reserved size of the partition.
+            entry->fs_mgr_flags.reserved_size = true;
+            uint64_t size;
+            if (!ParseByteCount(arg, &size)) {
+                LWARNING << "Warning: reservedsize= flag malformed: " << arg;
+            } else {
+                entry->reserved_size = static_cast<off64_t>(size);
+            }
+        } else if (flag == "quota") {
+            entry->fs_mgr_flags.quota = true;
+        } else if (StartsWith(flag, "eraseblk=")) {
+            // The erase block size flag is followed by an = and the flash erase block size. Get it,
+            // check that it is a power of 2 and at least 4096, and return it.
+            entry->fs_mgr_flags.erase_blk_size = true;
+            off64_t val;
+            if (!ParseInt(arg, &val) || val < 4096 || (val & (val - 1)) != 0) {
+                LWARNING << "Warning: eraseblk= flag malformed: " << arg;
+            } else {
+                entry->erase_blk_size = val;
+            }
+        } else if (StartsWith(flag, "logicalblk=")) {
+            // The logical block size flag is followed by an = and the flash logical block size. Get
+            // it, check that it is a power of 2 and at least 4096, and return it.
+            entry->fs_mgr_flags.logical_blk_size = true;
+            off64_t val;
+            if (!ParseInt(arg, &val) || val < 4096 || (val & (val - 1)) != 0) {
+                LWARNING << "Warning: logicalblk= flag malformed: " << arg;
+            } else {
+                entry->logical_blk_size = val;
+            }
+        } else if (flag == "avb") {
+            entry->fs_mgr_flags.avb = true;
+        } else if (StartsWith(flag, "avb")) {
+            entry->fs_mgr_flags.avb = true;
+            entry->vbmeta_partition = arg;
+        } else if (StartsWith(flag, "keydirectory=")) {
+            // The metadata flag is followed by an = and the directory for the keys.
+            entry->fs_mgr_flags.key_directory = true;
+            entry->key_dir = arg;
+        } else if (StartsWith(flag, "sysfs_path=")) {
+            // The path to trigger device gc by idle-maint of vold.
+            entry->fs_mgr_flags.sysfs = true;
+            entry->sysfs_path = arg;
+        } else if (flag == "logical") {
+            entry->fs_mgr_flags.logical = true;
+        } else if (flag == "checkpoint=block") {
+            entry->fs_mgr_flags.checkpoint_blk = true;
+        } else if (flag == "checkpoint=fs") {
+            entry->fs_mgr_flags.checkpoint_fs = true;
+        } else if (flag == "first_stage_mount") {
+            entry->fs_mgr_flags.first_stage_mount = true;
+        } else if (flag == "slotselect_other") {
+            entry->fs_mgr_flags.slot_select_other = true;
+        } else if (StartsWith(flag, "zram_loopback_path=")) {
+            // The path to use loopback for zram.
+            entry->zram_loopback_path = arg;
+        } else if (StartsWith(flag, "zram_loopback_size=")) {
+            if (!ParseByteCount(arg, &entry->zram_loopback_size)) {
+                LWARNING << "Warning: zram_loopback_size= flag malformed: " << arg;
+            }
+        } else if (StartsWith(flag, "zram_backing_dev_path=")) {
+            entry->zram_backing_dev_path = arg;
+        } else {
+            LWARNING << "Warning: unknown flag: " << flag;
+        }
+    }
 }
 
 static std::string init_android_dt_dir() {
@@ -519,7 +482,6 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
     const char *delim = " \t";
     char *save_ptr, *p;
     Fstab fstab;
-    struct fs_mgr_flag_values flag_vals;
 
     while ((len = getline(&line, &alloc_len, fstab_file)) != -1) {
         /* if the last character is a newline, shorten the string by 1 byte */
@@ -560,7 +522,8 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
             LERROR << "Error parsing mount_flags";
             goto err;
         }
-        entry.flags = parse_flags(p, mount_flags, nullptr, &entry.fs_options);
+
+        ParseMountFlags(p, &entry);
 
         // For /proc/mounts, ignore everything after mnt_freq and mnt_passno
         if (proc_mounts) {
@@ -569,27 +532,9 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
             LERROR << "Error parsing fs_mgr_options";
             goto err;
         }
-        entry.fs_mgr_flags.val = parse_flags(p, fs_mgr_flags, &flag_vals, nullptr);
 
-        entry.key_loc = std::move(flag_vals.key_loc);
-        entry.key_dir = std::move(flag_vals.key_dir);
-        entry.verity_loc = std::move(flag_vals.verity_loc);
-        entry.length = flag_vals.part_length;
-        entry.label = std::move(flag_vals.label);
-        entry.partnum = flag_vals.partnum;
-        entry.swap_prio = flag_vals.swap_prio;
-        entry.max_comp_streams = flag_vals.max_comp_streams;
-        entry.zram_size = flag_vals.zram_size;
-        entry.reserved_size = flag_vals.reserved_size;
-        entry.file_contents_mode = flag_vals.file_contents_mode;
-        entry.file_names_mode = flag_vals.file_names_mode;
-        entry.erase_blk_size = flag_vals.erase_blk_size;
-        entry.logical_blk_size = flag_vals.logical_blk_size;
-        entry.sysfs_path = std::move(flag_vals.sysfs_path);
-        entry.vbmeta_partition = std::move(flag_vals.vbmeta_partition);
-        entry.zram_loopback_path = std::move(flag_vals.zram_loopback_path);
-        entry.zram_loopback_size = std::move(flag_vals.zram_loopback_size);
-        entry.zram_backing_dev_path = std::move(flag_vals.zram_backing_dev_path);
+        ParseFsMgrFlags(p, &entry);
+
         if (entry.fs_mgr_flags.logical) {
             entry.logical_partition_name = entry.blk_device;
         }
