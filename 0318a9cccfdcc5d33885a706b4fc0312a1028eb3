@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63c85d9a_02d8dce0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "libfs_avb_test (9 Tests)\n-----------------------\n[1/9] BaseFsAvbTest#GenerateImage: PASSED (3ms)\n[2/9] BaseFsAvbTest#GenerateVBMetaImage: PASSED (1ms)\n[3/9] BaseFsAvbTest#AddHashFooter: PASSED (0ms)\n[4/9] BaseFsAvbTest#AddHashtreeFooter: PASSED (1ms)\n[5/9] BaseFsAvbTest#GenerateVBMetaImageWithDescriptors: PASSED (0ms)\n[6/9] BaseFsAvbTest#GenerateVBMetaImageWithChainDescriptors: PASSED (1ms)\n[7/9] PublicFsAvbTest#LoadAndVerifyVbmeta: PASSED (1ms)\n[8/9] PublicFsAvbTest#LoadAndVerifyVbmetaWithModifications: PASSED (1ms)\n[9/9] PublicFsAvbTest#LoadAndVerifyVbmetaWithPublicKeys: PASSED (0ms)\n\n\nSummary\n-------\nlibfs_avb_test: Passed: 9, Failed: 0",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 26
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d8bd386_bd140010",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "libfs_avb_internal_test (34 Tests)                                                                                                                                           \n---------------------------------                                                                                                                                    [0/1989]\n[1/34] AvbUtilTest#AvbPartitionToDevicePatition: PASSED (3ms)\n[2/34] AvbUtilTest#GetFdTotalSize: PASSED (1ms)\n[3/34] AvbUtilTest#GetFdTotalSizeWithOffset: PASSED (1ms)\n[4/34] AvbUtilTest#GetAvbFooter: PASSED (0ms)\n[5/34] AvbUtilTest#GetAvbFooterErrorVerification: PASSED (0ms)\n[6/34] AvbUtilTest#GetAvbFooterInsufficientSize: PASSED (0ms)\n[7/34] AvbUtilTest#GetVBMetaHeader: PASSED (0ms)\n[8/34] AvbUtilTest#VerifyPublicKeyBlob: PASSED (0ms)\n[9/34] AvbUtilTest#VerifyEmptyPublicKeyBlob: PASSED (0ms)\n[10/34] AvbUtilTest#VerifyVBMetaSignature: PASSED (1ms)\n[11/34] AvbUtilTest#VerifyVBMetaSignatureWithModification: PASSED (1ms)\n[12/34] AvbUtilTest#VerifyVBMetaSignatureNotSigned: PASSED (0ms)\n[13/34] AvbUtilTest#VerifyVBMetaSignatureInvalidVBMeta: PASSED (0ms)\n[14/34] AvbUtilTest#VerifyVBMetaDataWithoutFooter: PASSED (0ms)\n[15/34] AvbUtilTest#VerifyVBMetaDataWithFooter: PASSED (0ms)\n[16/34] AvbUtilTest#VerifyVBMetaDataError: PASSED (1ms)\n[17/34] AvbUtilTest#GetChainPartitionInfo: PASSED (0ms)\n[18/34] AvbUtilTest#GetChainPartitionInfoNone: PASSED (0ms)\n[19/34] AvbUtilTest#LoadAndVerifyVbmetaImpl: PASSED (0ms)\n[20/34] AvbUtilTest#LoadAndVerifyVbmetaImplWithSuffixes: PASSED (1ms)\n[21/34] AvbUtilTest#LoadAndVerifyVbmetaImplErrorVerification: PASSED (1ms)\n[22/34] AvbUtilTest#LoadAndVerifyVbmetaImplUnexpectedPublicKey: PASSED (0ms)\n[23/34] BasicUtilTest#NibbleValue09: PASSED (0ms)\n[24/34] BasicUtilTest#NibbleValueAF: PASSED (1ms)\n[25/34] BasicUtilTest#NibbleValueInvalid: PASSED (0ms)\n[26/34] BasicUtilTest#HexToBytes: PASSED (0ms)\n[27/34] BasicUtilTest#HexToBytes2: PASSED (1ms)\n[28/34] BasicUtilTest#BytesToHex: PASSED (0ms)\n[29/34] BasicUtilTest#HexToBytesInValidOddLenHex: PASSED (0ms)\n[30/34] BasicUtilTest#HexToBytesInsufficientByteLen: PASSED (1ms)\n[31/34] BasicUtilTest#WaitForFile: PASSED (0ms)\n[32/34] BasicUtilTest#WaitForFileNonExist: PASSED (0ms)\n[33/34] BasicUtilTest#WaitForFileDeferCreation: PASSED (1ms)\n[34/34] BasicUtilTest#WaitForFileDeferCreationFailure: PASSED (0ms)\n\n\nSummary\n-------\nlibfs_avb_internal_test: Passed: 34, Failed: 0",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 35
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4bd2386f_e453602b",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "ack",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 200,
+        "endChar": 38
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "343b7b1c_14827c2c",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "Need to use Keymaster to store the max rollback index that we\u0027ve ever seen.",
+      "range": {
+        "startLine": 364,
+        "startChar": 4,
+        "endLine": 364,
+        "endChar": 52
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2873b4d7_fff140dd",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "The major public API for review.",
+      "range": {
+        "startLine": 180,
+        "startChar": 24,
+        "endLine": 180,
+        "endChar": 43
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cdb18211_071dc569",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "Will be used to convert \u0027system_other\u0027 \u003d\u003d\u003e system_b (when _a is active).\n\n$ avbtool info_image --image $OUT/system_other.img:\n\n....\nDescriptors:\n    Hashtree descriptor:\n      Version of dm-verity:  1\n      Image Size:            34426880 bytes\n      Tree Offset:           34426880\n      Tree Size:             274432 bytes\n      Data Block Size:       4096 bytes\n      Hash Block Size:       4096 bytes\n      FEC num roots:         2\n      FEC offset:            34701312\n      FEC size:              278528 bytes\n      Hash Algorithm:        sha1\n      Partition Name:        system_other             \u003c\u003d\u003d system_other\n      Salt:                  af9a91f6eb430039b13a44a8de1a186d33fd55b4\n      Root Digest:           5feddf8095f87907242fd6c3e945d76a36495048\n      Flags:                 0",
+      "range": {
+        "startLine": 182,
+        "startChar": 27,
+        "endLine": 182,
+        "endChar": 42
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c976329_19b393d6",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "Will be used to replace the following Open().\nPrefer to do it in a separate CL, in case we have to revert it or need more modifications.",
+      "range": {
+        "startLine": 260,
+        "startChar": 13,
+        "endLine": 260,
+        "endChar": 45
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d7b1890a_6c86b29f",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "This file is used to test internal functions in avb_util.cpp.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 45
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "faaeec1c_2d095931",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-22T16:55:30Z",
+      "side": 1,
+      "message": "This and the following are major test cases to the libfs_avb public APIs.",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 45
+      },
+      "revId": "0318a9cccfdcc5d33885a706b4fc0312a1028eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
