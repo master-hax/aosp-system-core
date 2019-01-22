@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4ba5054_55dc521f",
+        "filename": "libmeminfo/sysmeminfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-22T17:54:22Z",
+      "side": 1,
+      "message": "getline?",
+      "range": {
+        "startLine": 247,
+        "startChar": 11,
+        "endLine": 247,
+        "endChar": 16
+      },
+      "revId": "62ac4a3bb8e83becbc4b99737a8ec0e4b763aa6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "457a5602_66e5649e",
+        "filename": "libmeminfo/sysmeminfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-22T17:54:22Z",
+      "side": 1,
+      "message": "why strtok?",
+      "range": {
+        "startLine": 261,
+        "startChar": 18,
+        "endLine": 261,
+        "endChar": 24
+      },
+      "revId": "62ac4a3bb8e83becbc4b99737a8ec0e4b763aa6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
