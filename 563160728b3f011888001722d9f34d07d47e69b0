@@ -450,6 +450,24 @@
     },
     {
       "key": {
+        "uuid": "3ae266a9_cafcf51d",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-23T17:41:51Z",
+      "side": 1,
+      "message": "I looked into init implementation and I think I can mount all cgroups right before the early-init. One downside is that now it will be a mixture of task_profiles.json and init.rc statements that mount cgroups and then create subgroups. Ideally all that would happen in the JSON file but I won\u0027t have time to take that stab this time around.\nAlso task_profiles.json would probably have to change into cgroups.json as it contains the list of cgroup controllers now.",
+      "parentUuid": "29eafb02_28c4f894",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
