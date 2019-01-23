@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0e4c86c9_ba98dd35",
+        "filename": "mkbootimg/include/bootimg/bootimg.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-01-23T16:39:45Z",
+      "side": 1,
+      "message": "Oops, fixed is PS2.",
+      "parentUuid": "0267b048_1bcd2f3a",
+      "range": {
+        "startLine": 158,
+        "startChar": 3,
+        "endLine": 159,
+        "endChar": 72
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "76dad1b9_94b0cf05",
         "filename": "mkbootimg/mkbootimg.py",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-23T06:53:45Z",
       "side": 1,
       "message": "shouldn\u0027t this be \u0027dtb_addr\u0027 according to the header? where dtb_addr \u003d physical address where Device tree must be loaded for kernel?",
+      "range": {
+        "startLine": 182,
+        "startChar": 27,
+        "endLine": 182,
+        "endChar": 37
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1125d886_558eb47e",
+        "filename": "mkbootimg/mkbootimg.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-01-23T16:39:45Z",
+      "side": 1,
+      "message": "No, the \u0027dtb_addr\u0027 field is calculated by adding the \u0027dtb_offset\u0027 argument to the \u0027base\u0027 argument(line 177). Kernel, ramdisk and second load addresses are also calculated the same way.",
+      "parentUuid": "76dad1b9_94b0cf05",
       "range": {
         "startLine": 182,
         "startChar": 27,
