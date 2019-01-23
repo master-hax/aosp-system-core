@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a46a45ed_b00e990b",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "this is doing a host endianness read.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 29
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64e875a2_54aa5968",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "you\u0027ll note that this is assuming little-endian host\n\nie. breaks on big endian host with odd length\n\nTechnically I think this would need to be:\n\nchecksum +\u003d htons(ntohs(*data_16) \u0026 0xFF00)\n\nexcept that that can actually sigsegv.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 39
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd5103b5_ca19225f",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "I would actually potentially skip this endianness comment.\nnot convinced it\u0027s correct.\nchecksum calculation is endian neutral if it\u0027s done consistently without any htons()",
+      "range": {
+        "startLine": 54,
+        "startChar": 37,
+        "endLine": 54,
+        "endChar": 44
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75b3e89c_7fb42ccf",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 66,
+        "startChar": 41,
+        "endLine": 66,
+        "endChar": 48
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61975242_63ebcf3f",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "technically should probably start with 0xFFFF so it does right thing for checksum of block of 0s.",
+      "range": {
+        "startLine": 80,
+        "startChar": 31,
+        "endLine": 80,
+        "endChar": 32
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f854de7b_c8960e4e",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "why not make this a uint32_t ?  theoretically that\u0027s valid in v6 with jumbograms, and less casting",
+      "range": {
+        "startLine": 90,
+        "startChar": 64,
+        "endLine": 90,
+        "endChar": 72
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0688b723_ca175e06",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "could do assignment and declaration at same time.",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 16
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52afdcaf_bda77e15",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "alternatively htons(len) and then you\u0027re not going to go 64k times around the loop to fold\n\nalso you could end up easily overflowing the u32 checksum_next field, and then checksum calculation will break...\n\nah... I see what\u0027s happening here.\n\nI\u0027ve always seen this written as just\n\nuint32_t current \u003d htons(protocol) + htons(len);\n\nwithout bothering with calling into ip_checksum_add for these fields.",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 40
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2b46cfa_de35ff7f",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2019-01-23T02:40:17Z",
+      "side": 1,
+      "message": "in which case comments like this matter:\nshould probably use htons to keep checksum_next smaller\n\n(but they don\u0027t if it\u0027s all being ip_checksum_add\u0027ed anyway)",
+      "range": {
+        "startLine": 93,
+        "startChar": 20,
+        "endLine": 93,
+        "endChar": 25
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
