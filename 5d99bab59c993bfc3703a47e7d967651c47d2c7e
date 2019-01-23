@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "af6b6421_822079f2",
+        "filename": "libnetutils/checksum.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T02:42:01Z",
+      "side": 1,
+      "message": "there are no big-endian hosts. because of that complete lack of testing, we\u0027ve actively removed such code.",
+      "parentUuid": "64e875a2_54aa5968",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 39
+      },
+      "revId": "5d99bab59c993bfc3703a47e7d967651c47d2c7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fd5103b5_ca19225f",
         "filename": "libnetutils/checksum.c",
         "patchSetId": 1
