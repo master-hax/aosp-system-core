@@ -260,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "c39872a3_10396031",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-23T17:25:06Z",
+      "side": 1,
+      "message": "Lazy detection at CgroupMap::FindController() should always work, provided a controller is available from kernel space and init script ensure it\u0027s mounted before spawning clients.\n\nHowever, if possible within the scope/timeframe of this CL to get move the mounting code within this class, that\u0027s the best way to go for me too.",
+      "parentUuid": "90ae8c80_0b0fd762",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 24
+      },
+      "revId": "ead2a81923e11e2c6a78d9f10498e5dcc4f3c47c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7ad6b42f_d04b6685",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 6

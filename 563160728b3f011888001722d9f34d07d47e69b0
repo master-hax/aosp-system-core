@@ -414,6 +414,24 @@
     },
     {
       "key": {
+        "uuid": "311fcce2_cb77ae79",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-23T17:25:06Z",
+      "side": 1,
+      "message": "Do we really need to get an input from init scripts to mount the controllers?\n\nIf we have the controllers mounting code as part of the ctor, the very first client using CGroupMap will automatically trigger all the mounting. Should not that just work?",
+      "parentUuid": "920fe1be_46ef3553",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
