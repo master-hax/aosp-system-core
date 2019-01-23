@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0267b048_1bcd2f3a",
+        "filename": "mkbootimg/include/bootimg/bootimg.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-23T06:53:45Z",
+      "side": 1,
+      "message": "c+p error in comments?",
+      "range": {
+        "startLine": 158,
+        "startChar": 3,
+        "endLine": 159,
+        "endChar": 72
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76dad1b9_94b0cf05",
+        "filename": "mkbootimg/mkbootimg.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-23T06:53:45Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be \u0027dtb_addr\u0027 according to the header? where dtb_addr \u003d physical address where Device tree must be loaded for kernel?",
+      "range": {
+        "startLine": 182,
+        "startChar": 27,
+        "endLine": 182,
+        "endChar": 37
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
