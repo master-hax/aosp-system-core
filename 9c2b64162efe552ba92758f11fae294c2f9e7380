@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bb3f0272_ba6a39fc",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "The original motivation for assigning on failure was the scenario when it still added the connection before patchset #6. Good catch, moving it now.",
+      "parentUuid": "16e03ea9_01a85f7e",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 5
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba9665fd_57267737",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "483fbb6c_11cb70cc",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba9665fd_57267737",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 185,
+        "endChar": 4
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "748dd35b_d296a2aa",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -59,6 +107,24 @@
       "writtenOn": "2019-01-22T22:30:01Z",
       "side": 1,
       "message": "Maybe we should generalize parse_tcp_socket_spec to parse_host_socket_spec({\"tcp\", \"vsock\", ...)?\n\nThis permits \"vsock:1:-1\", which we should probably reject. Looking at the vsock manpage, it looks like the vsock port range is the full 32-bits, so we\u0027ll need to pass that in as well, and we\u0027d need a ParseInt for the host as well here? I don\u0027t have a strong opinion here, feel free to leave this in place if you think it\u0027s cleaner.",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5405ac0_fd0bdc51",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "parse_tcp_socket_spec is used here for both client/server and android/host, between socket_spec_connect and socket_spec_listen. I\u0027m not clear what the _host_ implies in the name. \n\nA more direct problem with combining the server and client ports together is that the server supports vsock:port only here and the client supports vsock:cid:port or vsock:cid with a default port.\n\nI added a negative check for the port, but it seems like a more significant restructuring to combine this logic. I\u0027d rather attempt it in a follow-up CL.",
+      "parentUuid": "748dd35b_d296a2aa",
       "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "3216bd33_59b20928",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ff785b2_603a6e95",
+      "range": {
+        "startLine": 253,
+        "startChar": 71,
+        "endLine": 253,
+        "endChar": 88
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f9d2ca9_197e4252",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "f1523805_5bedd512",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f9d2ca9_197e4252",
+      "range": {
+        "startLine": 275,
+        "startChar": 22,
+        "endLine": 277,
+        "endChar": 37
+      },
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0dcc5549_526d89f0",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -128,6 +242,24 @@
     },
     {
       "key": {
+        "uuid": "e87a8760_3fe5fbd3",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "This was intended to pass through to the \"socket type not supported\" logic for server_socket_thread(spec) in transport_local.cpp.\n\nI do it now through the error text, but this doesn\u0027t feel great either.",
+      "parentUuid": "0dcc5549_526d89f0",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e0161cb_8f692fd3",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -139,6 +271,24 @@
       "writtenOn": "2019-01-22T22:30:01Z",
       "side": 1,
       "message": "This seems wrong?",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f704b92_c910bd35",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-23T02:16:11Z",
+      "side": 1,
+      "message": "Not clear on what is wrong here; the existing code in parse_tcp_socket spec has a `port` pointer which can be NULL, and also includes the logic:\n\n    if (port) {\n        *port \u003d port_value;\n    }",
+      "parentUuid": "7e0161cb_8f692fd3",
       "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
