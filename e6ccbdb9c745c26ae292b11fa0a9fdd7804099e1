@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c99d91ae_35e0b7b0",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-23T22:30:23Z",
+      "side": 1,
+      "message": "We should also have the build number here too, information is desirable when triaging problems.",
+      "range": {
+        "startLine": 340,
+        "startChar": 69,
+        "endLine": 340,
+        "endChar": 80
+      },
+      "revId": "e6ccbdb9c745c26ae292b11fa0a9fdd7804099e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
