@@ -486,6 +486,24 @@
     },
     {
       "key": {
+        "uuid": "9bf99d92_5fe97cba",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-23T17:52:21Z",
+      "side": 1,
+      "message": "@Tom: fair point!\n\n@Suren: cannot we use different JSON files?\n\nA new cgroups.json only for mount points, which probably could save the caching mechanism you have now. It should be easy to parse/load all the mountpoints and check if there are already mounted once a new CGroupMap is created.\n\nThe task_profiles.json will be dedicated to task profiles only. At the end they will also be more clean files to work with.",
+      "parentUuid": "3ae266a9_cafcf51d",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
