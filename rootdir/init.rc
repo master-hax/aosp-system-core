@@ -451,6 +451,7 @@ on post-fs-data
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
     mkdir /data/misc/bluetooth/logs 0770 bluetooth bluetooth
     mkdir /data/misc/keystore 0700 keystore keystore
+    mkdir /data/misc/credstore 0700 credstore credstore
     mkdir /data/misc/gatekeeper 0700 system system
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/net 0750 root shell
