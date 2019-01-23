@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "2778510c_827ba6b3",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-23T03:55:25Z",
+      "side": 1,
+      "message": "SGTM.\n\n\u003e I\u0027d rather attempt it in a follow-up CL.\n\n(or just don\u0027t, this seems reasonable as is to me).",
+      "parentUuid": "b5405ac0_fd0bdc51",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ff785b2_603a6e95",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -260,6 +278,24 @@
     },
     {
       "key": {
+        "uuid": "0f1a1e5f_3cc4424d",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-23T03:55:25Z",
+      "side": 1,
+      "message": "You could just set errno in the cases where it\u0027s not already set. Returning -1 and -errno simultaneously in the same function just seems like a bad idea to me (e.g. what do you do for EPERM? :)\n\nYou should probably go through and fix up socket_spec_connect to properly set errno on failure to parse as well if you\u0027re going to rely on it here, though.",
+      "parentUuid": "e87a8760_3fe5fbd3",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e0161cb_8f692fd3",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -289,6 +325,24 @@
       "side": 1,
       "message": "Not clear on what is wrong here; the existing code in parse_tcp_socket spec has a `port` pointer which can be NULL, and also includes the logic:\n\n    if (port) {\n        *port \u003d port_value;\n    }",
       "parentUuid": "7e0161cb_8f692fd3",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88d91c36_7b607f23",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-23T03:55:25Z",
+      "side": 1,
+      "message": "I think you\u0027re confusing the port parameter for two different functions; the one here is for listening on port 0 to have the kernel assign an arbitrary port for you, and look the value up (although now that I look at the tcp version, we\u0027re not setting *port if the port passed in !\u003d 0, we should probably do that as well)",
+      "parentUuid": "3f704b92_c910bd35",
       "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
