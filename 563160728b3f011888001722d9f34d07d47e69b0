@@ -540,6 +540,24 @@
     },
     {
       "key": {
+        "uuid": "b8f19999_7558f0ed",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-23T18:10:48Z",
+      "side": 1,
+      "message": "I\u0027d keep them in the same place.  Init just happens to be creating them now, though it wouldn\u0027t be unreasonable to imagine a future time where there\u0027s some dedicated daemon that sets up the cgroups and does configuration via binder or something like that, so I don\u0027t think they\u0027re really an \u0027init\u0027 configuration.",
+      "parentUuid": "734de4a6_47f1473c",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
