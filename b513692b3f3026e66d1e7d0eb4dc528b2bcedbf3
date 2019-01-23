@@ -93,6 +93,30 @@
       "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f7f0f9a_b23994df",
+        "filename": "mkbootimg/mkbootimg.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-23T18:45:56Z",
+      "side": 1,
+      "message": "I see. I\u0027d argue that this should really not be an argument in the first place since we are just padding images one after the other. Ok for now though, since we have that \u0027odd\u0027 recovery_dtbo_offset in the middle and it seems to be consistent with what we have.",
+      "parentUuid": "1125d886_558eb47e",
+      "range": {
+        "startLine": 182,
+        "startChar": 27,
+        "endLine": 182,
+        "endChar": 37
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
