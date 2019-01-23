@@ -396,6 +396,24 @@
     },
     {
       "key": {
+        "uuid": "920fe1be_46ef3553",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-23T00:57:42Z",
+      "side": 1,
+      "message": "Agreed, but it would be a much more simple API.  A single call to mount and set up the cgroup controllers, instead of the multiple calls to Detect() now.",
+      "parentUuid": "af609c76_2f298504",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "86916988_8f58d95a",
         "filename": "libprocessgroup/cgroup_map.h",
         "patchSetId": 7
@@ -482,6 +500,47 @@
       "side": 1,
       "message": "Ok. I was trying to minimize the delta from the original implementation but maybe it\u0027s time for this cleanup. Will do.",
       "parentUuid": "45788b4e_7dde95ad",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9918195e_d9c6f8f6",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-23T00:57:42Z",
+      "side": 1,
+      "message": "I usually always update comments to C++ style, NULL-\u003enullptr, etc.  But this whole function is in pretty big need of just re-writing now I think given my above and below comments too.",
+      "parentUuid": "a5ada3db_c22f6354",
+      "revId": "563160728b3f011888001722d9f34d07d47e69b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae919eed_f08e2689",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-23T00:57:42Z",
+      "side": 1,
+      "message": "Even this, I\u0027m just noticing is wrong too; it\u0027s already PLOG, so there\u0027s no need to report errno again.",
+      "range": {
+        "startLine": 166,
+        "startChar": 76,
+        "endLine": 166,
+        "endChar": 91
+      },
       "revId": "563160728b3f011888001722d9f34d07d47e69b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
