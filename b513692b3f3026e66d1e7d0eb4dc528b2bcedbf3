@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "ccc146a8_3442c09f",
+        "filename": "mkbootimg/include/bootimg/bootimg.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-01-23T20:48:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e4c86c9_ba98dd35",
+      "range": {
+        "startLine": 158,
+        "startChar": 3,
+        "endLine": 159,
+        "endChar": 72
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "76dad1b9_94b0cf05",
         "filename": "mkbootimg/mkbootimg.py",
         "patchSetId": 1
@@ -108,6 +132,30 @@
       "side": 1,
       "message": "I see. I\u0027d argue that this should really not be an argument in the first place since we are just padding images one after the other. Ok for now though, since we have that \u0027odd\u0027 recovery_dtbo_offset in the middle and it seems to be consistent with what we have.",
       "parentUuid": "1125d886_558eb47e",
+      "range": {
+        "startLine": 182,
+        "startChar": 27,
+        "endLine": 182,
+        "endChar": 37
+      },
+      "revId": "b513692b3f3026e66d1e7d0eb4dc528b2bcedbf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c2201daa_aadd29f8",
+        "filename": "mkbootimg/mkbootimg.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-01-23T20:48:06Z",
+      "side": 1,
+      "message": "Yes, the argument makes it consistent with what we have for kernel, ramdisk and second.",
+      "parentUuid": "2f7f0f9a_b23994df",
       "range": {
         "startLine": 182,
         "startChar": 27,
