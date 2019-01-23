@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1677511a_1e1f3048",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "i think you meant \u003csys/syscall.h\u003e instead? (userspace should never #include \u003casm/...\u003e directly.)",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e07a968c_a437cf7a",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -97,6 +114,40 @@
     },
     {
       "key": {
+        "uuid": "0747c595_87ddc114",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "when you lose the gotos, move this to where it\u0027s first needed.",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5658eca9_2a1ea0a3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "braces.\n\n(did i forget to set up the .clang-format in here? oops...)",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "642ffce7_7978c9f1",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -108,6 +159,30 @@
       "writtenOn": "2019-01-23T06:12:25Z",
       "side": 1,
       "message": "check for vndk_version.empty() first?",
+      "range": {
+        "startLine": 83,
+        "startChar": 20,
+        "endLine": 83,
+        "endChar": 26
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8e8cef3_d608de2b",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "or use GetIntProperty rather than do this manually :-)",
+      "parentUuid": "642ffce7_7978c9f1",
       "range": {
         "startLine": 83,
         "startChar": 20,
@@ -214,6 +289,30 @@
     },
     {
       "key": {
+        "uuid": "ecbb73fb_d2b7640a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "unique_fd.",
+      "parentUuid": "ffcd932c_6780c0d7",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 8
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8b8e8886_73ead03b",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -254,6 +353,69 @@
     },
     {
       "key": {
+        "uuid": "a6f60d4e_468a420f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "same goto-related comments.",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef542d71_1f6a0c0e",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "always prefer perror-style `\"blah blah: %s\", strerror(errno)`.",
+      "range": {
+        "startLine": 258,
+        "startChar": 42,
+        "endLine": 258,
+        "endChar": 50
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87751f24_94e8a13c",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "ftruncate returns -1, not arbitrary negative values. lose this and lose the assignment to `ret`.",
+      "range": {
+        "startLine": 264,
+        "startChar": 76,
+        "endLine": 264,
+        "endChar": 79
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "38d98b70_9076282f",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -270,6 +432,29 @@
         "startChar": 0,
         "endLine": 268,
         "endChar": 90
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0cba85b_8771d5e3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-23T17:31:41Z",
+      "side": 1,
+      "message": "use the correct printf specifier instead. it\u0027s `%zu` for `size_t` (and `%zd` for `ssize_t`).",
+      "range": {
+        "startLine": 271,
+        "startChar": 74,
+        "endLine": 271,
+        "endChar": 79
       },
       "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
