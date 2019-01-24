@@ -218,6 +218,30 @@
     },
     {
       "key": {
+        "uuid": "0f5e1d1a_ecd1cec7",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "we don\u0027t really need to, if it fails that\u0027s enough. It should never fail.",
+      "parentUuid": "44c5ee85_d41eea2a",
+      "range": {
+        "startLine": 123,
+        "startChar": 3,
+        "endLine": 123,
+        "endChar": 17
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f86d88a_e96f17a3",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -313,6 +337,30 @@
     },
     {
       "key": {
+        "uuid": "d7113fc8_6d7ef708",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ecbb73fb_d2b7640a",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 135,
+        "endChar": 8
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b8e8886_73ead03b",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -347,6 +395,24 @@
       "writtenOn": "2019-01-23T06:12:25Z",
       "side": 1,
       "message": "(Orthgonal to ashmem_valid() function, but I think we can\u0027t be just do if \"kernel supports memfd check\".)\n\nIf the fd being passed into this library is really an ashmemfd coming from an app with TargetSDK \u003c Q, then it is still a \"valid\" fd. This will correctly return true, but we still need to know what fd it is (memfd / ashmem) in order to do the right thing in the library.\n\ne.g. the fd may get passed over binder and the caller is assuming it is ashmem and calls ashmem APIs here. We check for memfd support in kernel and if its there, we incorrectly treat that fd as memfd.\n\nI think what you need is to - \n\n1. Check if you have needed kernel support for memfd when creating regions and create memfd region if you do.\n2. In all APIs that accept \u0027fd\u0027 as an input parameter, you need to check if the \u0027fd\u0027 itself is memfd / ashmem, and act accordingly.",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6c3d163_0fc5cf00",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "Yes, the TODO is to address that. What\u0027s missing is the GET_SEALS check as I mentioned in TODO - which will confirm its memfd.\n\nso if has_memfd_support \u003d\u003d 1, then we do additional checks on the memfd.",
+      "parentUuid": "b7578879_0279836a",
       "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -393,6 +459,30 @@
     },
     {
       "key": {
+        "uuid": "a63d30eb_68d55871",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "ef542d71_1f6a0c0e",
+      "range": {
+        "startLine": 258,
+        "startChar": 42,
+        "endLine": 258,
+        "endChar": 50
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87751f24_94e8a13c",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -413,6 +503,30 @@
       "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3b5c953_8216e040",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "87751f24_94e8a13c",
+      "range": {
+        "startLine": 264,
+        "startChar": 76,
+        "endLine": 264,
+        "endChar": 79
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -485,6 +599,30 @@
     },
     {
       "key": {
+        "uuid": "05310fe9_5af62a31",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "I know I know :) This CL was marked WIP. This and other logs will be removed. I needed the spam for debugging :)",
+      "parentUuid": "fc0f7bc9_0268e0c3",
+      "range": {
+        "startLine": 288,
+        "startChar": 0,
+        "endLine": 288,
+        "endChar": 40
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "750e34d3_131eedd5",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -531,6 +669,30 @@
     },
     {
       "key": {
+        "uuid": "1ddfa37e_f506c790",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "No, because the has_memfd_support check is not for the fd, but the system globally using ashmem or not. The library does not work in both worlds, once the system is using a certain shmem mechanism, it globally uses only that. If the wrong fd is passed, that\u0027s a bug. We can double check if fd is the right one though, similar to __ashmem_check_failure though and log an error if that\u0027s the case - so that we know something is awry.",
+      "parentUuid": "74913251_25b14ccb",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 325,
+        "endChar": 30
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "262af267_7c6c1c44",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -551,6 +713,30 @@
       "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1da81a8f_c64c382f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-24T13:09:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "262af267_7c6c1c44",
+      "range": {
+        "startLine": 333,
+        "startChar": 25,
+        "endLine": 333,
+        "endChar": 35
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
