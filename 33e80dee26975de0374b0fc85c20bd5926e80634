@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c10d45ec_34cc7a25",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T23:05:41Z",
+      "side": 1,
+      "message": "The ALLOW_ADB_DISABLE_VERITY check is because if this executable _ever_ got on the device, it must be neutered much like adb remount is neutered in code.\n\nThis was requested during the esecurity review of overlayfs, I am following orders ;-}\n\nThe build will not land this binary _normally_ on user builds. But one could add it by doing an m remount, so then it will waste space, and rightfully _do_ _nothing_.",
+      "parentUuid": "6c1eaac8_716c32d4",
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1729db35_53e9995e",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -65,6 +83,30 @@
     },
     {
       "key": {
+        "uuid": "845a6919_c837486c",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T23:05:41Z",
+      "side": 1,
+      "message": "Good catch \u003csigh\u003e",
+      "parentUuid": "4b65e20e_ff7f8b6b",
+      "range": {
+        "startLine": 87,
+        "startChar": 22,
+        "endLine": 87,
+        "endChar": 33
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55fd1cda_90f84107",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -81,6 +123,53 @@
         "startChar": 0,
         "endLine": 146,
         "endChar": 21
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "255c04b7_789ac02a",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T23:05:41Z",
+      "side": 1,
+      "message": "Yup, thanks!\n\nIf I add -a --all flag parsing and drop 131-135 checking for \"all\", utilizing an _all_ flag or empty to trigger 153-162, all (sic) will be well.\n\nNB: we should only land unique values here, so stay away from \u0027foo foo foo\u0027",
+      "parentUuid": "55fd1cda_90f84107",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 146,
+        "endChar": 21
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f4dbd7e_4491ed7d",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T23:05:41Z",
+      "side": 1,
+      "message": "This is the path we will take if the specified partition still has verity enabled, we should probably use it to _prevent_ the bad associated mount requests on line 187 by removing the entry from \u0027partitions\u0027.",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 9
       },
       "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
