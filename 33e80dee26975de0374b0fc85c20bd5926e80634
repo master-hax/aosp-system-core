@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1729db35_53e9995e",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T22:47:30Z",
+      "side": 1,
+      "message": "FYI:\n\nDo we want to support \u0027-o ro\u0027 (--options), or -r (--read-only)?\n\nDo we want to support \u0027-o rw\u0027 (--options), or -w (--rw or --read-write)? (which is the default).\n\nDo we want to support -a (--all)?\n\nDo we want to support -F (--fork)?\n\nDo we want to support -O (--test-opts)? (eg: -O logical)\n\nDo we want to support -t (--types)? (eg: -t erofs)\n\nAnswer is no for all for now, but reviewers may wish to differ.",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 49
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
