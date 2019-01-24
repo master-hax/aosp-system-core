@@ -27,31 +27,20 @@
 #include "ipc.h"
 #include "log.h"
 
-#define MAX_RECONNECT_RETRY_COUNT 5
-#define TRUSTY_RECONNECT_TIMEOUT_SEC 5
-
 static int tipc_fd = -1;
 
 int ipc_connect(const char *device, const char *port)
 {
     int rc;
-    uint retry_cnt = 0;
 
     assert(tipc_fd == -1);
 
-    while(true) {
-        rc = tipc_connect(device, port);
-        if (rc >= 0)
-            break;
-
-        ALOGE("failed (%d) to connect to storage server\n", rc);
-        if (++retry_cnt > MAX_RECONNECT_RETRY_COUNT) {
-            ALOGE("max number of reconnect retries (%d) has been reached\n",
-                   retry_cnt);
-            return -1;
-        }
-        sleep(TRUSTY_RECONNECT_TIMEOUT_SEC);
+    rc = tipc_connect(device, port);
+    if (rc < 0) {
+        ALOGE("failed (%d) to connect to storage server.\n", rc);
+        return rc;
     }
+
     tipc_fd = rc;
     return 0;
 }
