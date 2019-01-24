@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "382fd080_04b64cf0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-24T21:48:20Z",
+      "side": 1,
+      "message": "This doesn\u0027t test much.\n\n+linben, +twasilczyk as the reporters of the two tickets: Do the affected targets require special hardware? Is there a Forrest target? Being able to test this file directly would help us avoid inflicting pain in the future, so is it possible to add something useful for reference here?",
+      "revId": "ad1256030659e2fa125ed134a0fc7f8d26dedb6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
