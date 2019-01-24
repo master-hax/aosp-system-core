@@ -32,6 +32,33 @@ namespace.default.asan.search.paths += /data/asan/odm/${LIB}
 namespace.default.asan.search.paths +=           /odm/${LIB}
 
 ###############################################################################
+# "default" namespace
+#
+# Framework-side code runs in this namespace. Libs from /vendor partition
+# can't be loaded in this namespace.
+###############################################################################
+
+namespace.default.links = resolv
+
+namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+
+###############################################################################
+# "resolv" APEX namespace
+#
+# This namespace is for libraries within the resolv APEX.
+###############################################################################
+namespace.resolv.isolated = true
+namespace.resolv.visible = true
+
+namespace.resolv.search.paths = /apex/com.android.resolv/${LIB}
+namespace.resolv.asan.search.paths = /apex/com.android.resolv/${LIB}
+namespace.resolv.links = default
+namespace.resolv.link.default.shared_libs  = libc.so
+namespace.resolv.link.default.shared_libs += libm.so
+namespace.resolv.link.default.shared_libs += libdl.so
+namespace.resolv.link.default.shared_libs += libbinder_ndk.so
+
+###############################################################################
 # Namespace config for binaries under /postinstall.
 # Only one default namespace is defined and it has no directories other than
 # /system/lib and /product/lib in the search paths. This is because linker
