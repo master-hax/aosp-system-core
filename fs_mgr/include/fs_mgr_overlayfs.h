@@ -36,3 +36,5 @@ enum class OverlayfsValidResult {
     kOverrideCredsRequired,
 };
 OverlayfsValidResult fs_mgr_overlayfs_valid();
+
+std::vector<std::string> fs_mgr_overlayfs_verity_enabled_list();
