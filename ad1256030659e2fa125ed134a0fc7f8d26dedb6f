@@ -16,6 +16,24 @@
       "revId": "ad1256030659e2fa125ed134a0fc7f8d26dedb6f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06b4b076_125ca8d2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2019-01-24T21:52:23Z",
+      "side": 1,
+      "message": "I tested this by CP to master ToT and flashing the affected target. It makes it boot.",
+      "parentUuid": "382fd080_04b64cf0",
+      "revId": "ad1256030659e2fa125ed134a0fc7f8d26dedb6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
