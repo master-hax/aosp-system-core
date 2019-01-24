@@ -211,7 +211,13 @@ static std::string GetHostName() {
     char buf[HOST_NAME_MAX];
     if (gethostname(buf, sizeof(buf)) != -1 && strcmp(buf, "localhost") != 0) return buf;
 
-    return android::base::GetProperty("ro.product.device", "android");
+    // Try to get product device from /vendor/build.prop
+    std::string device_prop = android::base::GetProperty("ro.product.vendor.device", "");
+    // Fall back to /system/build.prop
+    if (device_prop == "") {
+        device_prop = android::base::GetProperty("ro.product.device", "android");
+    }
+    return device_prop;
 }
 
 bool Subprocess::ForkAndExec(std::string* error) {
