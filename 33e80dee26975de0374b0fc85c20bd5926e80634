@@ -197,6 +197,29 @@
       "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aac87165_0f58642c",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-24T23:37:42Z",
+      "side": 1,
+      "message": "A) could be logical reference (but doesn\u0027t matter for remount)\nB) we should call fs_mgr_set_blk_ro first (for non overlay case) and _add_ testing for this on a non-DAP devices (!)",
+      "range": {
+        "startLine": 187,
+        "startChar": 25,
+        "endLine": 187,
+        "endChar": 49
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
