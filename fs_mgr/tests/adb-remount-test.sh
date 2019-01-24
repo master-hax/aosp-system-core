@@ -537,7 +537,7 @@ if [ "orange" = "`get_property ro.boot.verifiedbootstate`" -a \
 
   echo "${GREEN}[ RUN      ]${NORMAL} Testing adb shell su root remount -R command" >&2
 
-  adb_su remount -R || true
+  adb_su remount -R system || true
   sleep 2
   adb_wait 2m ||
     die "waiting for device after remount -R `usb_status`"
@@ -1074,10 +1074,12 @@ adb_reboot &&
   die "lost device after reboot to ro state (USB stack broken?)"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
   die "/vendor is not read-only"
-adb_su remount ||
+adb_su remount vendor ||
   die "remount command"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
   die "/vendor is not read-write"
+adb_sh grep " /system .* rw," /proc/mounts >/dev/null &&
+  die "/vendor is not read-only"
 echo "${GREEN}[       OK ]${NORMAL} remount command works from setup" >&2
 
 # Prerequisite is an overlayfs deconstructed device but with verity disabled.
@@ -1092,10 +1094,12 @@ adb_reboot &&
   die "lost device after reboot after wipe (USB stack broken?)"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
   die "/vendor is not read-only"
-adb_su remount ||
+adb_su remount vendor ||
   die "remount command"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
   die "/vendor is not read-write"
+adb_sh grep " /system .* rw," /proc/mounts >/dev/null &&
+  die "/system is not read-only"
 echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
 
 restore
