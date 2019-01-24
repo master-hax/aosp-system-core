@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0313a1a6_66c65a0c",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 544,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-24T23:29:08Z",
+      "side": 1,
+      "message": "this assumes we will always write first and flush after.\n\nI don\u0027t think we should make that assumption (since its a public API).\n\nMay be move the bdev_fd_.reset() part into a private method and call it from both write() and flush()?",
+      "range": {
+        "startLine": 544,
+        "startChar": 6,
+        "endLine": 544,
+        "endChar": 40
+      },
+      "revId": "4af130fef222cb0baebbe69343d5be53a4bacd1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
