@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "6c1eaac8_716c32d4",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-24T22:53:45Z",
+      "side": 1,
+      "message": "Do we actually need this check? If you\u0027re not root, this won\u0027t be able to do anything (and if you\u0027re not userdebug, we probably shouldn\u0027t be wasting disk with this anyway?)",
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1729db35_53e9995e",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -22,6 +39,52 @@
       "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b65e20e_ff7f8b6b",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-24T22:53:45Z",
+      "side": 1,
+      "message": "no_argument seems wrong here, given that it\u0027s T below?",
+      "range": {
+        "startLine": 87,
+        "startChar": 22,
+        "endLine": 87,
+        "endChar": 33
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55fd1cda_90f84107",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-24T22:53:45Z",
+      "side": 1,
+      "message": "This behavior seems weird: `remount foo all` returns 0 but `remount all foo` returns UNKNOWN_PARTITION?",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 146,
+        "endChar": 21
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
