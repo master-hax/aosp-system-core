@@ -130,7 +130,7 @@ adb_cat() {
 
 Returns: true if the reboot command succeeded" ]
 adb_reboot() {
-  adb reboot remount-test &&
+  adb reboot remount-test || true
   sleep 2
 }
 
@@ -748,9 +748,9 @@ if [ -n "${scratch_partition}" ]; then
     die -t ${T} "setup for overlayfs"
 fi
 
-echo "${GREEN}[ RUN      ]${NORMAL} test raw remount command" >&2
+echo "${GREEN}[ RUN      ]${NORMAL} test raw remount commands" >&2
 
-# prerequisite is a prepped device from above
+# Prerequisite is a prepped device from above.
 adb_reboot &&
   adb_wait 2m ||
   die "lost device after reboot to ro state"
@@ -761,5 +761,35 @@ adb_su mount -o rw,remount /vendor ||
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
   die "/vendor is not read-write"
 echo "${GREEN}[       OK ]${NORMAL} mount -o rw,remount command works" >&2
+
+# Prerequisite is a prepped device from above.
+adb_reboot &&
+  adb_wait 2m ||
+  die "lost device after reboot to ro state"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
+  die "/vendor is not read-only"
+adb_su remount vendor ||
+  die "remount command"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
+  die "/vendor is not read-write"
+echo "${GREEN}[       OK ]${NORMAL} remount command works from setup" >&2
+
+# Prerequisite is an overlayfs deconstructed device but with verity disabled.
+# This also saves a lot of 'noise' from the command doing a mkfs on backing
+# storage and all the related tuning and adjustment.
+for d in ${OVERLAYFS_BACKING}; do
+  adb_su rm -rf /${d}/overlay </dev/null ||
+    die "/${d}/overlay wipe"
+done
+adb_reboot &&
+  adb_wait 2m ||
+  die "lost device after reboot after wipe"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
+  die "/vendor is not read-only"
+adb_su remount vendor ||
+  die "remount command"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
+  die "/vendor is not read-write"
+echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
 
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2

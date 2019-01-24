@@ -58,17 +58,6 @@ using namespace std::literals;
 using namespace android::dm;
 using namespace android::fs_mgr;
 
-namespace {
-
-bool fs_mgr_access(const std::string& path) {
-    auto save_errno = errno;
-    auto ret = access(path.c_str(), F_OK) == 0;
-    errno = save_errno;
-    return ret;
-}
-
-}  // namespace
-
 #if ALLOW_ADBD_DISABLE_VERITY == 0  // If we are a user build, provide stubs
 
 bool fs_mgr_overlayfs_mount_all(Fstab*) {
@@ -265,15 +254,6 @@ bool fs_mgr_overlayfs_already_mounted(const std::string& mount_point, bool overl
     return false;
 }
 
-std::vector<std::string> fs_mgr_overlayfs_verity_enabled_list() {
-    std::vector<std::string> ret;
-    auto save_errno = errno;
-    fs_mgr_update_verity_state(
-            [&ret](const std::string& mount_point, int) { ret.emplace_back(mount_point); });
-    if ((errno == ENOENT) || (errno == ENXIO)) errno = save_errno;
-    return ret;
-}
-
 bool fs_mgr_wants_overlayfs(FstabEntry* entry) {
     // Don't check entries that are managed by vold.
     if (entry->fs_mgr_flags.vold_managed || entry->fs_mgr_flags.recovery_only) return false;
@@ -435,6 +415,13 @@ bool fs_mgr_overlayfs_teardown_scratch(const std::string& overlay, bool* change)
     }
     errno = save_errno;
     return true;
+}
+
+bool fs_mgr_access(const std::string& path) {
+    auto save_errno = errno;
+    auto ret = access(path.c_str(), F_OK) == 0;
+    errno = save_errno;
+    return ret;
 }
 
 bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string& mount_point,
@@ -1028,4 +1015,13 @@ OverlayfsValidResult fs_mgr_overlayfs_valid() {
         return OverlayfsValidResult::kNotSupported;
     }
     return OverlayfsValidResult::kOk;
+}
+
+std::vector<std::string> fs_mgr_overlayfs_verity_enabled_list() {
+    std::vector<std::string> ret;
+    auto save_errno = errno;
+    fs_mgr_update_verity_state(
+            [&ret](const std::string& mount_point, int) { ret.emplace_back(mount_point); });
+    if ((errno == ENOENT) || (errno == ENXIO)) errno = save_errno;
+    return ret;
 }
