@@ -29,10 +29,14 @@
 
 #include "tipc_ioctl.h"
 
+#define MAX_RECONNECT_RETRY_COUNT 5
+#define TRUSTY_RECONNECT_TIMEOUT_SEC 5
+
 int tipc_connect(const char *dev_name, const char *srv_name)
 {
 	int fd;
 	int rc;
+	uint8_t retry_cnt = 0;
 
 	fd = open(dev_name, O_RDWR);
 	if (fd < 0) {
@@ -42,13 +46,21 @@ int tipc_connect(const char *dev_name, const char *srv_name)
 		return rc < 0 ? rc : -1;
 	}
 
-	rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
-	if (rc < 0) {
-		rc = -errno;
-		ALOGE("%s: can't connect to tipc service \"%s\" (err=%d)\n",
-		      __func__, srv_name, errno);
-		close(fd);
-		return rc < 0 ? rc : -1;
+	while (true) {
+		rc = ioctl(fd, TIPC_IOC_CONNECT, srv_name);
+		if (rc >= 0)
+			break;
+
+		ALOGE("%s: retry:%d: can't connect to tipc service \"%s\" (err=%d)\n",
+			__func__, retry_cnt, srv_name, errno);
+
+		if (++retry_cnt > MAX_RECONNECT_RETRY_COUNT) {
+			ALOGE("max number of reconnect retries (%d) has been reached\n",
+				retry_cnt);
+			close(fd);
+			return rc;
+		}
+		sleep(TRUSTY_RECONNECT_TIMEOUT_SEC);
 	}
 
 	ALOGV("%s: connected to \"%s\" fd %d\n", __func__, srv_name, fd);
