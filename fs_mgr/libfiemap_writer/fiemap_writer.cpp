@@ -473,7 +473,7 @@ FiemapUniquePtr FiemapWriter::Open(const std::string& file_path, uint64_t file_s
     }
 
     ::android::base::unique_fd bdev_fd(
-            TEMP_FAILURE_RETRY(open(bdev_path.c_str(), O_RDWR | O_CLOEXEC)));
+            TEMP_FAILURE_RETRY(open(bdev_path.c_str(), O_RDONLY | O_CLOEXEC)));
     if (bdev_fd < 0) {
         PLOG(ERROR) << "Failed to open block device: " << bdev_path;
         cleanup(file_path, create);
@@ -542,7 +542,7 @@ FiemapUniquePtr FiemapWriter::Open(const std::string& file_path, uint64_t file_s
 }
 
 bool FiemapWriter::Flush() const {
-    if (fsync(bdev_fd_)) {
+    if (bdev_fd_ >= 0 && fsync(bdev_fd_)) {
         PLOG(ERROR) << "Failed to flush " << bdev_path_ << " with fsync";
         return false;
     }
@@ -551,6 +551,13 @@ bool FiemapWriter::Flush() const {
 
 // TODO: Test with fs block_size > bdev block_size
 bool FiemapWriter::Write(off64_t off, uint8_t* buffer, uint64_t size) {
+    if (bdev_fd_ < 0) {
+        bdev_fd_.reset(TEMP_FAILURE_RETRY(open(bdev_path_.c_str(), O_RDWR | O_CLOEXEC)));
+        if (bdev_fd_ < 0) {
+            PLOG(ERROR) << "Failed to open block device: " << bdev_path_;
+            return false;
+        }
+    }
     if (!size || size > file_size_) {
         LOG(ERROR) << "Failed write: size " << size << " is invalid for file's size " << file_size_;
         return false;
