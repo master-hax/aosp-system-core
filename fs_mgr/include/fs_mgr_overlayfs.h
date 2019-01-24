@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+std::vector<std::string> fs_mgr_overlayfs_candidate_list(android::fs_mgr::Fstab* fstab,
+                                                         const char* mount_point = nullptr);
 bool fs_mgr_overlayfs_mount_all(android::fs_mgr::Fstab* fstab);
 std::vector<std::string> fs_mgr_overlayfs_required_devices(android::fs_mgr::Fstab* fstab);
 bool fs_mgr_overlayfs_setup(const char* backing = nullptr, const char* mount_point = nullptr,
@@ -36,3 +38,5 @@ enum class OverlayfsValidResult {
     kOverrideCredsRequired,
 };
 OverlayfsValidResult fs_mgr_overlayfs_valid();
+
+std::vector<std::string> fs_mgr_overlayfs_verity_enabled_list();
