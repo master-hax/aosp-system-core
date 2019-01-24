@@ -22,6 +22,30 @@
       "revId": "4af130fef222cb0baebbe69343d5be53a4bacd1e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff02ff69_1ac9caa8",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 544,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-24T23:42:49Z",
+      "side": 1,
+      "message": "Yeah, I did - if we extract this to a helper, bdev_fd_ will get opened with RDWR which we don\u0027t want. On the other hand, as is, the Flush() calls in gsi_service.cpp are doing nothing.\n\nIs there a reason to open a read-only fd just to fsync it? Can we do the sync after AllocateFile() and move any additional syncs needed into gsi_service.cpp?",
+      "parentUuid": "0313a1a6_66c65a0c",
+      "range": {
+        "startLine": 544,
+        "startChar": 6,
+        "endLine": 544,
+        "endChar": 40
+      },
+      "revId": "4af130fef222cb0baebbe69343d5be53a4bacd1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
