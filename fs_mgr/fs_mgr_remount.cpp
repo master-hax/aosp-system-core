@@ -16,20 +16,25 @@
 
 #include <errno.h>
 #include <getopt.h>
+#include <libavb_user/libavb_user.h>
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/types.h>
 #include <sys/vfs.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <bootloader_message/bootloader_message.h>
+#include <cutils/android_reboot.h>
 #include <fs_mgr_overlayfs.h>
 #include <fs_mgr_priv.h>
 #include <fstab/fstab.h>
@@ -38,12 +43,13 @@ namespace {
 
 [[noreturn]] void usage(int exit_status) {
     LOG(INFO) << getprogname()
-              << " [-h] [-T fstab_file]\n"
+              << " [-h] [-R] [-T fstab_file]\n"
                  "\t-h --help\tthis help\n"
+                 "\t-R --reboot\tdisable verity & reboot to facilitate remount\n"
                  "\t-T --fstab\tcustom fstab file location\n"
                  "\n"
                  "Remount all partitions read-write.\n"
-                 "Verity must be disabled.";
+                 "-R notwithstanding, verity must be disabled.";
 
     ::exit(exit_status);
 }
@@ -109,6 +115,63 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     logd(id, severity, tag, file, line, message);
 }
 
+[[noreturn]] void reboot(bool dedupe) {
+    if (dedupe) {
+        LOG(INFO) << "Rebooting to dedupe filesystem";
+    } else {
+        LOG(INFO) << "Rebooting after disabling verity";
+    }
+    ::sync();
+    android::base::SetProperty(ANDROID_RB_PROPERTY, dedupe ? "reboot,recovery" : "reboot,remount");
+    ::sleep(60);
+    ::exit(0);  // SUCCESS
+}
+
+pid_t getppid(pid_t pid) {
+    if (pid < 0) return -1;
+    std::string parent;
+    android::base::ReadFileToString("/proc/" + std::to_string(pid) + "/stat", &parent);
+    auto stat = android::base::Split(parent, " ");
+    if (stat.size() < 4) return -1;
+    if (!android::base::ParseInt(stat[3], &pid, 0)) return -1;
+    return pid;
+}
+
+std::string getcmdline(pid_t pid) {
+    if (pid < 0) return "<unknown>";
+    auto path = "/proc/" + std::to_string(pid) + "/";
+    std::string cmdline;
+    if (!android::base::ReadFileToString(path + "cmdline", &cmdline)) return "<unknown>";
+
+    std::transform(cmdline.begin(), cmdline.end(), cmdline.begin(),
+                   [](char c) { return c ?: ' '; });
+    cmdline = android::base::Trim(cmdline);
+    if (android::base::StartsWith(cmdline, '-')) cmdline.erase(0, 1);
+    auto pos = cmdline.find(' ');
+    auto exe = cmdline.substr(0, pos);
+    if (pos != std::string::npos) {
+        cmdline = cmdline.substr(pos);
+    } else {
+        cmdline = "";
+    }
+
+    char buf[128];
+    memset(buf, 0, sizeof(buf));
+    auto ret = ::readlink((path + "exe").c_str(), buf, sizeof(buf) - 1);
+    if (ret < 0) {
+        if (errno == ENOENT) {
+            cmdline = "[" + exe + "]" + cmdline;
+        } else {
+            cmdline = "<" + exe + ">" + cmdline;
+        }
+    } else if (ret >= (sizeof(buf) - 1)) {
+        cmdline = std::string(buf) + "..." + cmdline;
+    } else {
+        cmdline = buf + cmdline;
+    }
+    return cmdline;
+}
+
 }  // namespace
 
 int main(int argc, char* argv[]) {
@@ -117,6 +180,7 @@ int main(int argc, char* argv[]) {
     enum {
         SUCCESS,
         NOT_USERDEBUG,
+        NOT_ADBD,
         BADARG,
         NOT_ROOT,
         NO_FSTAB,
@@ -135,14 +199,29 @@ int main(int argc, char* argv[]) {
     }
 
     const char* fstab_file = nullptr;
+    auto can_reboot = false;
 
     struct option longopts[] = {
             {"fstab", required_argument, nullptr, 'T'},
             {"help", no_argument, nullptr, 'h'},
+            {"reboot", no_argument, nullptr, 'R'},
             {0, 0, nullptr, 0},
     };
-    for (int opt; (opt = ::getopt_long(argc, argv, "hT:", longopts, nullptr)) != -1;) {
+    for (int opt; (opt = ::getopt_long(argc, argv, "hRT:", longopts, nullptr)) != -1;) {
         switch (opt) {
+            case 'R':
+                // can only be from a physical connection with adbd parentage
+                for (auto pid = ::getppid(); pid > 0; pid = getppid(pid)) {
+                    if ("/system/bin/adbd --root_seclabel=u:r:su:s0" == getcmdline(pid)) {
+                        can_reboot = true;
+                        break;
+                    }
+                }
+                if (!can_reboot) {
+                    LOG(ERROR) << "-R only functions in an adbd connection";
+                    retval = NOT_ADBD;
+                }
+                break;
             case 'T':
                 if (fstab_file) {
                     LOG(ERROR) << "Cannot supply two fstabs: -T " << fstab_file << " -T" << optarg;
@@ -199,11 +278,33 @@ int main(int argc, char* argv[]) {
     }
 
     // Check verity and optionally setup overlayfs backing.
+    auto reboot_later = false;
     for (auto it = partitions.begin(); it != partitions.end();) {
         auto& entry = *it;
         auto& mount_point = entry.mount_point;
         if (fs_mgr_is_verity_enabled(entry)) {
-            LOG(ERROR) << "Verity enabled on " << mount_point << ", skipping";
+            LOG(WARNING) << "Verity enabled on " << mount_point;
+            if (can_reboot &&
+                (android::base::GetProperty("ro.boot.vbmeta.devices_state", "") != "locked")) {
+                AvbOps* ops = avb_ops_user_new();
+                if (ops != nullptr) {
+                    auto ret = avb_user_verity_set(
+                            ops, android::base::GetProperty("ro.boot.slot_suffix", "").c_str(),
+                            false);
+                    avb_ops_user_free(ops);
+                    if (ret) {
+                        if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) {
+                            retval = VERITY_PARTITION;
+                            // w/o overlayfs available, also check for dedupe
+                            reboot_later = true;
+                            ++it;
+                            continue;
+                        }
+                        reboot(false);
+                    }
+                }
+            }
+            LOG(ERROR) << "Skipping " << mount_point;
             retval = VERITY_PARTITION;
             it = partitions.erase(it);
             continue;
@@ -277,22 +378,22 @@ int main(int argc, char* argv[]) {
                 continue;
             }
         }
+        PLOG(WARNING) << "failed to remount partition dev:" << blk_device << " mnt:" << mount_point;
         // If errno = EROFS at this point, we are dealing with r/o
         // filesystem types like squashfs, erofs or ext4 dedupe. We will
         // consider such a device that does not have CONFIG_OVERLAY_FS
-        // in the kernel as a misconfigured and take no action.
-        //
-        // ext4 dedupe _can_ be worked around by performing a reboot into
-        // recovery and fsck'ing.  However the current decision is to not
-        // reboot to reserve only one shell command to do so (reboot).  In
-        // the future, if this is a problem, a -R flag could be introduced
-        // to give permission to do so and as a convenience also implement
-        // verity disable operations.  We will require this functionality
-        // in order for adb remount to call this executable instead of its
-        // current internal code that recognizes the -R flag and logistics.
-        PLOG(ERROR) << "failed to remount partition dev:" << blk_device << " mnt:" << mount_point;
+        // in the kernel as a misconfigured; except for ext4 dedupe.
+        if ((errno == EROFS) && can_reboot) {
+            const std::vector<std::string> msg = {"--fsck_unshare_blocks"};
+            std::string err;
+            if (write_bootloader_message(msg, &err)) reboot(true);
+            LOG(ERROR) << "Failed to set bootloader message: " << err;
+            errno = EROFS;
+        }
         retval = REMOUNT_FAILED;
     }
+
+    if (reboot_later) reboot(false);
 
     try_unmount_bionic(&mounts);
 
