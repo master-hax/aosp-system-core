@@ -74,6 +74,7 @@ TEST_F(MapInfoGetBuildIDTest, from_elf) {
   elf_interface_->FakeSetBuildID("FAKE_BUILD_ID");
 
   EXPECT_EQ("FAKE_BUILD_ID", map_info_->GetBuildID());
+  EXPECT_EQ("46414b455f4255494c445f4944", map_info_->GetPrintableBuildID());
 }
 
 void MapInfoGetBuildIDTest::MultipleThreadTest(std::string expected_build_id) {
@@ -172,6 +173,7 @@ TEST_F(MapInfoGetBuildIDTest, from_memory) {
   InitElfData(tf_->fd);
 
   EXPECT_EQ("ELF_BUILDID", map_info_->GetBuildID());
+  EXPECT_EQ("454c465f4255494c444944", map_info_->GetPrintableBuildID());
 }
 
 TEST_F(MapInfoGetBuildIDTest, multiple_thread_elf_exists_in_memory) {
