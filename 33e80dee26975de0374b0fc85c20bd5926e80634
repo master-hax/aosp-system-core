@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "6bf634e7_b665dfc7",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-25T00:21:28Z",
+      "side": 1,
+      "message": "Yeah, but there\u0027s nothing stopping me from just compiling the binary locally and pushing it over? I think it\u0027s subtly different if it\u0027s baked into adb, because adbd is in a different selinux context than shell, so in theory, this could do something, but if it\u0027s a separate executable that we execute in the same way as shell, this doesn\u0027t make any sense?",
+      "parentUuid": "c10d45ec_34cc7a25",
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "80e97d65_849627c6",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
