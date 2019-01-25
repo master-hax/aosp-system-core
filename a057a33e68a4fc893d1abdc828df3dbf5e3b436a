@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c29b03a5_25b2930a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-25T02:49:43Z",
+      "side": 1,
+      "message": "as part of this bug, can you please add unit tests for each version and their expected result / size etc?\nWe can they reuse them in VTS as well. May be re-purpose the parts of unpack_bootimg for the same.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 14
+      },
+      "revId": "a057a33e68a4fc893d1abdc828df3dbf5e3b436a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
