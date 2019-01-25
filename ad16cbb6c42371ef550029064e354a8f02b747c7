@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a598dad_7fe76336",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-25T15:55:54Z",
+      "side": 1,
+      "message": "Interesting, links are not \"inherited\" ? (eg default has the runtime as link, so you could think it would follow that if lib is not found).",
+      "range": {
+        "startLine": 165,
+        "startChar": 28,
+        "endLine": 165,
+        "endChar": 43
+      },
+      "revId": "ad16cbb6c42371ef550029064e354a8f02b747c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
