@@ -377,6 +377,25 @@ BUILD_DESCRIPTION=`get_property ro.build.description`
 [ -z "${BUILD_DESCRIPTION}" ] ||
   echo "${BLUE}[     INFO ]${NORMAL} ${BUILD_DESCRIPTION}" >&2
 
+# Can we test remount -R command?
+VERITY_WAS_ENABLED=false
+if [ "orange" = "`get_property ro.boot.verifiedbootstate`" -a \
+     "2" = "`get_property partition.system.verified`" ]; then
+  VERITY_WAS_ENABLED=true
+  echo "${GREEN}[ RUN      ]${NORMAL} Testing remount -R command" >&2
+
+  adb_su remount -R system || true
+  sleep 2
+  adb_wait 2m ||
+    die "waiting for device after remount -R"
+  if [ "orange" != "`get_property ro.boot.verifiedbootstate`" -o \
+       "2" = "`get_property partition.system.verified`" ]; then
+    die "remount -R command failed"
+  fi
+
+  echo "${GREEN}[       OK ]${NORMAL} remount -R command" >&2
+fi
+
 echo "${GREEN}[ RUN      ]${NORMAL} Testing kernel support for overlayfs" >&2
 
 overlayfs_supported=true;
@@ -871,5 +890,13 @@ adb_su remount vendor ||
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
   die "/vendor is not read-write"
 echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
+
+if $VERITY_WAS_ENABLED && $overlayfs_supported; then
+  adb_root &&
+    adb enable-verity &&
+    adb_reboot &&
+    adb_wait 2m ||
+    die "failed to restore verity" >&2
+fi
 
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
