@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "12f8403f_12498968",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-25T17:02:50Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0747c595_87ddc114",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5658eca9_2a1ea0a3",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
@@ -183,6 +201,30 @@
       "side": 1,
       "message": "or use GetIntProperty rather than do this manually :-)",
       "parentUuid": "642ffce7_7978c9f1",
+      "range": {
+        "startLine": 83,
+        "startChar": 20,
+        "endLine": 83,
+        "endChar": 26
+      },
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25807a88_e66a33ec",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-25T17:02:50Z",
+      "side": 1,
+      "message": "the empty case is already handled in the code.",
+      "parentUuid": "f8e8cef3_d608de2b",
       "range": {
         "startLine": 83,
         "startChar": 20,
