@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "6c8d0d3a_f6f2852e",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T18:25:01Z",
+      "side": 1,
+      "message": "Will add reading the ro.debuggable property.",
+      "parentUuid": "6bf634e7_b665dfc7",
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "80e97d65_849627c6",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -148,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "b837fcc6_adbc29d7",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T18:25:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "845a6919_c837486c",
+      "range": {
+        "startLine": 87,
+        "startChar": 22,
+        "endLine": 87,
+        "endChar": 33
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "55fd1cda_90f84107",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -195,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "2e299ffb_9b7332bb",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T18:25:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "255c04b7_789ac02a",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 146,
+        "endChar": 21
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8f4dbd7e_4491ed7d",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -218,6 +284,30 @@
     },
     {
       "key": {
+        "uuid": "e44505d3_b2392a98",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T18:25:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f4dbd7e_4491ed7d",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 9
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aac87165_0f58642c",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 1
@@ -238,6 +328,30 @@
       "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5768d156_824640cb",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T18:25:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aac87165_0f58642c",
+      "range": {
+        "startLine": 187,
+        "startChar": 25,
+        "endLine": 187,
+        "endChar": 49
+      },
+      "revId": "33e80dee26975de0374b0fc85c20bd5926e80634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
