@@ -140,6 +140,21 @@ LOCAL_POST_INSTALL_CMD += ; ln -sf /vendor/odm/usr $(TARGET_ROOT_OUT)/odm/usr
 LOCAL_POST_INSTALL_CMD += ; mkdir -p $(TARGET_OUT)/usr && rm -rf $(TARGET_OUT)/usr/icu
 LOCAL_POST_INSTALL_CMD += ; ln -sf /apex/com.android.runtime/etc/icu $(TARGET_OUT)/usr/icu
 
+# Temporary workaround since the .so files still appear in /system/, but
+# no one in /system/ is referencing to the .so files. Possibly a build problem.
+# TODO: Remove these rm commands
+LOCAL_POST_INSTALL_CMD += ; rm -rf $(TARGET_OUT)/lib/libicuuc.so
+LOCAL_POST_INSTALL_CMD += ; rm -rf $(TARGET_OUT)/lib/libicui18n.so
+LOCAL_POST_INSTALL_CMD += ; rm -rf $(TARGET_OUT)/lib64/libicuuc.so
+LOCAL_POST_INSTALL_CMD += ; rm -rf $(TARGET_OUT)/lib64/libicui18n.so
+
+# http://b/121248172 - Create a symlink from /system/lib*/libicu* to /apex/com.android.runtime/etc/icu
+LOCAL_POST_INSTALL_CMD += ; ln -sf /apex/com.android.runtime/lib/libicuuc.so $(TARGET_OUT)/lib/libicuuc.so
+LOCAL_POST_INSTALL_CMD += ; ln -sf /apex/com.android.runtime/lib/libicui18n.so $(TARGET_OUT)/lib/libicui18n.so
+LOCAL_POST_INSTALL_CMD += ; ln -sf /apex/com.android.runtime/lib64/libicuuc.so $(TARGET_OUT)/lib64/libicuuc.so
+LOCAL_POST_INSTALL_CMD += ; ln -sf /apex/com.android.runtime/lib64/libicui18n.so $(TARGET_OUT)/lib64/libicui18n.so
+
+
 # End of runtime APEX compatibilty.
 
 ifdef BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE
