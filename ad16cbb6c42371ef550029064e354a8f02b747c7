@@ -22,6 +22,30 @@
       "revId": "ad16cbb6c42371ef550029064e354a8f02b747c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2680cbc_a76713f9",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-25T16:00:29Z",
+      "side": 1,
+      "message": "Nope, they are not. I asked about that myself some time ago because I also thought it ought to be. Still don\u0027t know the reason for it.",
+      "parentUuid": "7a598dad_7fe76336",
+      "range": {
+        "startLine": 165,
+        "startChar": 28,
+        "endLine": 165,
+        "endChar": 43
+      },
+      "revId": "ad16cbb6c42371ef550029064e354a8f02b747c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
