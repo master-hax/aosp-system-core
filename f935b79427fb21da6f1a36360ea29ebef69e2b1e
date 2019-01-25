@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16f8fdcf_653dce50",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T17:42:42Z",
+      "side": 1,
+      "message": "nit: missing )",
+      "range": {
+        "startLine": 85,
+        "startChar": 65,
+        "endLine": 85,
+        "endChar": 68
+      },
+      "revId": "f935b79427fb21da6f1a36360ea29ebef69e2b1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f4d1077_c4c412c5",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T17:42:42Z",
+      "side": 1,
+      "message": "NB:\n\nif errno \u003d EROFS at this point, we are dealing with ext4 dedupe (or other r/o filesystem types). We will consider a device that is in this state and does not have CONFIG_OVERLAY_FS configured in the kernel as a misconfigured and take no action. ext4 dedupe _can_ be worked around by performing a reboot into recovery and fsck\u0027ing, _this_ remount command should _not_ result in a reboot as it stands today.\n\nIn the future, if this is a problem, a -R flag could be added for argument parsing to give it permission to do so ... and through implication also implement verity disable operation and reboot. We may require this functionality in order for adb remount to call this executable, but I have considered that too risky for current release so am also punting the addition of the -R flag.",
+      "range": {
+        "startLine": 250,
+        "startChar": 12,
+        "endLine": 250,
+        "endChar": 13
+      },
+      "revId": "f935b79427fb21da6f1a36360ea29ebef69e2b1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
