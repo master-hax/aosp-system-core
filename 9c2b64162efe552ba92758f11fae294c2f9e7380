@@ -296,6 +296,24 @@
     },
     {
       "key": {
+        "uuid": "1c50bbb5_91d9e5ed",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-25T23:35:46Z",
+      "side": 1,
+      "message": "I\u0027ve tried to set errno everywhere relevant in socket_spec_connect and socket_spec_listen, but this is still susceptible to the following scenario:\n\n1. socket successfully created with connect\n2. socket file descriptor assigned to unique_fd instance\n3. bind fails, setting errno and returning -1\n4. socket_spec_listen returns -1\n5. stack unwinds, unique_fd destructor is invoked, it calls close, setting errno\n\nThe way around this is either manually closing the socket and defeating the purpose of using unique_fd, or creating a errno-preserving RAII construct declared before the unique_fd to get a longer lifespan and have its constructor run afterwards.\n\nIn this case the relevant errno values will be set by connect which should still work, but the looming unique_fd destructor makes it feel brittle.",
+      "parentUuid": "0f1a1e5f_3cc4424d",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e0161cb_8f692fd3",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
@@ -346,6 +364,24 @@
       "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51056b5c_7e57a7e7",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-25T23:35:46Z",
+      "side": 1,
+      "message": "My mistake, thanks for the explanation. I\u0027ve matched the logic in the TCP side with the vsock equivalent call to getsockname.",
+      "parentUuid": "88d91c36_7b607f23",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
