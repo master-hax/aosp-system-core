@@ -60,6 +60,7 @@ struct fs_mgr_flag_values {
     off64_t erase_blk_size = 0;
     off64_t logical_blk_size = 0;
     std::string vbmeta_partition;
+    std::string avb_key;
 };
 
 struct flag_list {
@@ -126,6 +127,7 @@ static struct flag_list fs_mgr_flags[] = {
         {"zram_loopback_size=", MF_ZRAM_LOOPBACK_SIZE},
         {"zram_backing_dev_path=", MF_ZRAM_BACKING_DEV_PATH},
         {"fsverity", MF_FS_VERITY},
+        {"avb_key=", MF_AVB_KEY},
         {0, 0},
 };
 
@@ -322,6 +324,8 @@ static uint64_t parse_flags(char* flags, struct flag_list* fl, struct fs_mgr_fla
                     flag_vals->max_comp_streams = strtoll(arg, NULL, 0);
                 } else if (flag == MF_AVB) {
                     flag_vals->vbmeta_partition = arg;
+                } else if (flag == MF_AVB_KEY) {
+                    flag_vals->avb_key = arg;
                 } else if (flag == MF_ZRAMSIZE) {
                     auto is_percent = !!strrchr(arg, '%');
                     auto val = strtoll(arg, NULL, 0);
@@ -588,6 +592,7 @@ static bool fs_mgr_read_fstab_file(FILE* fstab_file, bool proc_mounts, Fstab* fs
         entry.logical_blk_size = flag_vals.logical_blk_size;
         entry.sysfs_path = std::move(flag_vals.sysfs_path);
         entry.vbmeta_partition = std::move(flag_vals.vbmeta_partition);
+        entry.avb_key = std::move(flag_vals.avb_key);
         entry.zram_loopback_path = std::move(flag_vals.zram_loopback_path);
         entry.zram_loopback_size = std::move(flag_vals.zram_loopback_size);
         entry.zram_backing_dev_path = std::move(flag_vals.zram_backing_dev_path);

@@ -127,6 +127,7 @@ struct FstabEntry {
     std::string zram_loopback_path;
     uint64_t zram_loopback_size;
     std::string zram_backing_dev_path;
+    std::string avb_key;
 
     // TODO: Remove this union once fstab_rec is deprecated. It only serves as a
     // convenient way to convert between fstab_rec::fs_mgr_flags and these bools.
@@ -180,6 +181,7 @@ struct FstabEntry {
             bool zram_loopback_size : 1;
             bool zram_backing_dev_path : 1;
             bool fs_verity : 1;
+            bool avb_key : 1;
         };
     } fs_mgr_flags;
 
