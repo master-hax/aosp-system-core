@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "b2367ff3_0d952de2",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-25T17:53:10Z",
+      "side": 1,
+      "message": "Need to add property checking too.\n\nEither this (to make sure happenstance compilation on \"user\" build results in a tiny executable) or ro.debuggable !\u003d \"1\" if a userdebug compiled binary is somehow landed on a \"user\" build.\n\nIf this check is removed, then the executable tries, and fails (except for rooted non-DAP devices, or devices with a remountable filesystem for system partitions) in ugly ways with tons on unrelated and indecipherable errors. We want the error message to be clear and understandable.",
+      "range": {
+        "startLine": 86,
+        "startChar": 4,
+        "endLine": 86,
+        "endChar": 37
+      },
+      "revId": "f935b79427fb21da6f1a36360ea29ebef69e2b1e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4f4d1077_c4c412c5",
         "filename": "fs_mgr/fs_mgr_remount.cpp",
         "patchSetId": 2
