@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fd0c788e_50c20f52",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-26T00:25:33Z",
+      "side": 1,
+      "message": "comment how you arrived at this magic number?",
+      "range": {
+        "startLine": 263,
+        "startChar": 21,
+        "endLine": 263,
+        "endChar": 26
+      },
+      "revId": "396e2c72b40212c4f9d24f9955b40d2a24c90e66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
