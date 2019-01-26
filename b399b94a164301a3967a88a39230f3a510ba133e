@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c3d3d90a_a3ccb1cf",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-26T01:57:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2afde759_1126a2e8",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 42
+      },
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6be64568_5550a738",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 9
@@ -39,6 +63,24 @@
       "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd765a5c_829c4b2d",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-26T01:57:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6be64568_5550a738",
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -62,6 +104,30 @@
       "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "235f2dc8_66cc6cfb",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-26T01:57:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8510aa23_2ccdce12",
+      "range": {
+        "startLine": 611,
+        "startChar": 16,
+        "endLine": 611,
+        "endChar": 35
+      },
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

@@ -332,6 +332,24 @@
     },
     {
       "key": {
+        "uuid": "bef785c2_ccfee779",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2019-01-26T01:57:26Z",
+      "side": 1,
+      "message": "Sounds good, thanks!",
+      "parentUuid": "48801d52_dcde1896",
+      "revId": "9c2b64162efe552ba92758f11fae294c2f9e7380",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e0161cb_8f692fd3",
         "filename": "adb/socket_spec.cpp",
         "patchSetId": 7
