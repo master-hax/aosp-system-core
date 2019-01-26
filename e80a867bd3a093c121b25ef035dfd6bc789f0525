@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80c58248_463d7c21",
+        "filename": "adb/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-26T00:23:15Z",
+      "side": 1,
+      "message": "there\u0027s no built-in way to do that? seems like everyone would want to do it...",
+      "revId": "e80a867bd3a093c121b25ef035dfd6bc789f0525",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
