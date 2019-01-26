@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c89722a_61a3dc9c",
+        "filename": "adb/transport.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-26T01:28:29Z",
+      "side": 0,
+      "message": "string_view",
+      "revId": "e41489a9a116de33bd629e73a6ad393ea7d80043",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

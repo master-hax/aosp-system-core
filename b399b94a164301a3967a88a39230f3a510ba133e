@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2afde759_1126a2e8",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-26T01:28:29Z",
+      "side": 1,
+      "message": "Strictly speaking, this should be an unsigned int and the ParseInt should be a ParseUint, to support ports \u003e\u003d 2147483648, but that\u0027s probably not a huge deal :-)",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 42
+      },
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6be64568_5550a738",
+        "filename": "adb/socket_spec.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-26T01:28:29Z",
+      "side": 1,
+      "message": "Can you delete the port \u003d\u003d 0 part of the check here and below? (or do a *resolved_port \u003d port somewhere)\nThe current (and previous) behavior of leaving the previous value unchanged seems undesirable.",
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8510aa23_2ccdce12",
+        "filename": "adb/sockets.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-01-26T01:28:29Z",
+      "side": 1,
+      "message": ".starts_with(\"vsock:\")",
+      "range": {
+        "startLine": 611,
+        "startChar": 16,
+        "endLine": 611,
+        "endChar": 35
+      },
+      "revId": "b399b94a164301a3967a88a39230f3a510ba133e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
