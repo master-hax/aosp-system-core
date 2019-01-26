@@ -478,6 +478,24 @@
     },
     {
       "key": {
+        "uuid": "be435e96_76308a3d",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-01-26T00:39:43Z",
+      "side": 1,
+      "message": "I couldn\u0027t get uniquefd working for this function. The device doesn\u0027t boot. Since ashmem_create_region doesn\u0027t use unique_fd, I am just keeping it consistent here for now. Sorry.",
+      "parentUuid": "a6f60d4e_468a420f",
+      "revId": "67ad270c994daf819e9bdfb60d93f687490de76c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ef542d71_1f6a0c0e",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 5
