@@ -135,6 +135,7 @@ namespace.default.link.runtime.shared_libs += libpac.so
 # This namespace exposes externally accessible libraries from the Runtime APEX.
 ###############################################################################
 namespace.runtime.isolated = true
+namespace.runtime.visible = true
 
 # Keep in sync with ld.config.txt in the com.android.runtime APEX.
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
