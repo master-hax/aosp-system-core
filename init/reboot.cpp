@@ -327,6 +327,7 @@ static void KillZramBackingDevice() {
         LOG(ERROR) << "zram_backing_dev: loop_clear (" << backing_dev << ")" << " failed";
         return;
     }
+    close(loop.get());
     LOG(INFO) << "zram_backing_dev: `" << backing_dev << "` is cleared successfully.";
 }
 
