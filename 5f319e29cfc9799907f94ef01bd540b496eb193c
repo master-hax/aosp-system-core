@@ -56,6 +56,24 @@
       "revId": "5f319e29cfc9799907f94ef01bd540b496eb193c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3e843d5_b6cefa54",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 695,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-28T18:32:06Z",
+      "side": 1,
+      "message": "I verified that this works fine. Even before this change cpuacct and memory controllers were mounted before ueventd started (see init.rc early-init section).",
+      "parentUuid": "3b268328_d7808d24",
+      "revId": "5f319e29cfc9799907f94ef01bd540b496eb193c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
