@@ -683,10 +683,21 @@ bool FirstStageMountVBootV2::GetDmVerityDevices() {
 }
 
 bool FirstStageMountVBootV2::SetUpDmVerity(FstabEntry* fstab_entry) {
+    AvbHashtreeResult hashtree_result;
+
+    bool avb_enabled = true;
     if (fstab_entry->fs_mgr_flags.avb) {
         if (!InitAvbHandle()) return false;
-        AvbHashtreeResult hashtree_result =
+        hashtree_result =
                 avb_handle_->SetUpAvbHashtree(fstab_entry, false /* wait_for_verity_dev */);
+    } else if (!fstab_entry->avb_key.empty()) {
+        hashtree_result =
+                AvbHandle::SetUpStandaloneAvbHashtree(fstab_entry, false /* wait_for_verity_dev */);
+    } else {
+        avb_enabled = false;
+    }
+
+    if (avb_enabled) {
         switch (hashtree_result) {
             case AvbHashtreeResult::kDisabled:
                 return true;  // Returns true to mount the partition.
@@ -699,6 +710,7 @@ bool FirstStageMountVBootV2::SetUpDmVerity(FstabEntry* fstab_entry) {
                 return false;
         }
     }
+
     return true;  // Returns true to mount the partition.
 }
 

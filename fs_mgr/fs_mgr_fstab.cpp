@@ -967,13 +967,14 @@ int fs_mgr_is_checkpoint_blk(const struct fstab_rec* fstab) {
 }
 
 FstabEntry BuildGsiSystemFstabEntry() {
-    FstabEntry system = {
-            .blk_device = "system_gsi",
+    // .logical_partition_name is required to look up AVB Hashtree descriptors.
+    FstabEntry system = {.blk_device = "system_gsi",
             .mount_point = "/system",
             .fs_type = "ext4",
             .flags = MS_RDONLY,
             .fs_options = "barrier=1",
-    };
+            .avb_key = "/gsi.avbpubkey",
+            .logical_partition_name = "system"};
     system.fs_mgr_flags.wait = true;
     system.fs_mgr_flags.logical = true;
     system.fs_mgr_flags.first_stage_mount = true;
