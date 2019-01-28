@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bbd56758_3b882744",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-28T10:29:58Z",
+      "side": 0,
+      "message": "The original logic doesn\u0027t work for \"_other\" slot.\n\nMoved the logic into DeriveAvbPartitionName() in avb_util.cpp.",
+      "range": {
+        "startLine": 391,
+        "startChar": 4,
+        "endLine": 405,
+        "endChar": 5
+      },
+      "revId": "3ea7785ee9d273ca8421ff4a7ac0c72c79f9bb92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0dc46405_a7fcfaed",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-28T10:29:58Z",
+      "side": 0,
+      "message": "Moved this part into a new function in avb_util.cpp, LoadAvbHashtreeToEnableVerity().\n\nSo both SetUpAvbHashtree() and SetUpStandaloneAvbHashtree() can use it.\n - SetUpAvbHashtree: for *inline* vbmeta, from /vbmeta, -\u003e /system, /vendor, etc.\n - SetUpStandaloneAvbHashtree: for *offline* vbmeta, like system_other and live image.",
+      "range": {
+        "startLine": 407,
+        "startChar": 0,
+        "endLine": 419,
+        "endChar": 5
+      },
+      "revId": "3ea7785ee9d273ca8421ff4a7ac0c72c79f9bb92",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

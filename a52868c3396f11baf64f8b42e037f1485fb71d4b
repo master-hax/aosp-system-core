@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b616e4f0_e0a2f701",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-28T10:29:58Z",
+      "side": 1,
+      "message": "Moved and modified from fs_avb.cpp",
+      "range": {
+        "startLine": 279,
+        "startChar": 12,
+        "endLine": 279,
+        "endChar": 34
+      },
+      "revId": "a52868c3396f11baf64f8b42e037f1485fb71d4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1b6709f_451613fb",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-01-28T10:29:58Z",
+      "side": 1,
+      "message": "This is the major function to setup dm-verity for a standalone partition or image_file.\n\ne.g., system_other, live image, etc.",
+      "range": {
+        "startLine": 386,
+        "startChar": 29,
+        "endLine": 386,
+        "endChar": 55
+      },
+      "revId": "a52868c3396f11baf64f8b42e037f1485fb71d4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
