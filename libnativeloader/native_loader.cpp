@@ -111,6 +111,8 @@ static constexpr const char* kVendorNamespaceName = "sphal";
 
 static constexpr const char* kVndkNamespaceName = "vndk";
 
+static constexpr const char* kRuntimeNamespaceName = "runtime";
+
 static constexpr const char* kClassloaderNamespaceName = "classloader-namespace";
 static constexpr const char* kVendorClassloaderNamespaceName = "vendor-classloader-namespace";
 
@@ -265,7 +267,11 @@ class LibraryNamespaces {
       // which is expected behavior in this case.
       android_namespace_t* vendor_ns = android_get_exported_namespace(kVendorNamespaceName);
 
-      if (!android_link_namespaces(ns, nullptr, system_exposed_libraries.c_str())) {
+      android_namespace_t* runtime_ns = android_get_exported_namespace(kRuntimeNamespaceName);
+
+      if (!android_link_namespaces(ns, nullptr, system_exposed_libraries.c_str()) &&
+          (runtime_ns == nullptr ||
+           !android_link_namespaces(ns, runtime_ns, system_exposed_libraries.c_str()))) {
         *error_msg = dlerror();
         return nullptr;
       }
