@@ -63,6 +63,29 @@
       "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f84f25cc_056a0396",
+        "filename": "ashmemd/aidl/android/ashmemd/IAshmemDeviceService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-28T18:40:42Z",
+      "side": 1,
+      "message": "nit, recommend ParcelFileDescriptor here instead (see b/119523810 for context). It is another way to fix the build error.",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 18
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
