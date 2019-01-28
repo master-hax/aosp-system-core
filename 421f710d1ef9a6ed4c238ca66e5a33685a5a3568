@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "44a7f8dd_f54865c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-28T23:34:57Z",
+      "side": 1,
+      "message": "In progress. I\u0027ll use this project as a temporary working space for reviews, etc.",
+      "parentUuid": "c9daefc2_cab8901e",
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "802df9f9_fb96ec11",
         "filename": "ashmemd/aidl/android/ashmemd/IAshmemDeviceService.aidl",
         "patchSetId": 1
@@ -112,6 +130,54 @@
     },
     {
       "key": {
+        "uuid": "d5130ee8_5da29a79",
+        "filename": "ashmemd/aidl/android/ashmemd/IAshmemDeviceService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-28T23:34:57Z",
+      "side": 1,
+      "message": "The underlying type that holds the fd is a unique_fd. So the fd is closed in ashmemd as soon as it falls out of scope.",
+      "parentUuid": "187bd158_7c8cde65",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 26
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c8749b56_a806ae9d",
+        "filename": "ashmemd/aidl/android/ashmemd/IAshmemDeviceService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-28T23:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f84f25cc_056a0396",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 18
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "260ef2f5_914f5044",
         "filename": "ashmemd/ashmemd.rc",
         "patchSetId": 1
@@ -135,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "9a2ad38c_c03cee12",
+        "filename": "ashmemd/ashmemd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-28T23:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "260ef2f5_914f5044",
+      "range": {
+        "startLine": 3,
+        "startChar": 9,
+        "endLine": 3,
+        "endChar": 13
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51ac3cf8_1cf94ab4",
         "filename": "ashmemd/ashmemd.rc",
         "patchSetId": 1
@@ -155,6 +245,30 @@
       "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d474af9_cb8c3ea1",
+        "filename": "ashmemd/ashmemd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-28T23:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51ac3cf8_1cf94ab4",
+      "range": {
+        "startLine": 4,
+        "startChar": 10,
+        "endLine": 4,
+        "endChar": 14
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
