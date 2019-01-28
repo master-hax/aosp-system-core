@@ -53,6 +53,21 @@ void ActionManager::QueueBuiltinAction(BuiltinFunction func, const std::string& 
     actions_.emplace_back(std::move(action));
 }
 
+Result<Success> ActionManager::QueueBuiltinAction(std::vector<std::string>&& args,
+                                                  const std::string& name) {
+    auto action = std::make_unique<Action>(true, nullptr, "<Builtin Action>", 0, name,
+                                           std::map<std::string, std::string>{});
+    auto result = action->AddCommand(std::move(args), 0);
+    if (!result) {
+        return Error() << result.error();
+    }
+
+    event_queue_.emplace(action.get());
+    actions_.emplace_back(std::move(action));
+
+    return Success();
+}
+
 void ActionManager::ExecuteOneCommand() {
     // Loop through the event queue until we have an action to execute
     while (current_executing_actions_.empty() && !event_queue_.empty()) {
