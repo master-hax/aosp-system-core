@@ -103,6 +103,11 @@ static constexpr const char kLlndkNativeLibrariesSystemConfigPathFromRoot[] =
 static constexpr const char kVndkspNativeLibrariesSystemConfigPathFromRoot[] =
     "/etc/vndksp.libraries.txt";
 
+std::vector<std::string> kRuntimePublicLibraries = {
+    "libicuuc.so",
+    "libicui18n.so",
+};
+
 // The device may be configured to have the vendor libraries loaded to a separate namespace.
 // For historical reasons this namespace was named sphal but effectively it is intended
 // to use to load vendor libraries to separate namespace with controlled interface between
@@ -110,6 +115,8 @@ static constexpr const char kVndkspNativeLibrariesSystemConfigPathFromRoot[] =
 static constexpr const char* kVendorNamespaceName = "sphal";
 
 static constexpr const char* kVndkNamespaceName = "vndk";
+
+static constexpr const char* kRuntimeNamespaceName = "runtime";
 
 static constexpr const char* kClassloaderNamespaceName = "classloader-namespace";
 static constexpr const char* kVendorClassloaderNamespaceName = "vendor-classloader-namespace";
@@ -265,9 +272,19 @@ class LibraryNamespaces {
       // which is expected behavior in this case.
       android_namespace_t* vendor_ns = android_get_exported_namespace(kVendorNamespaceName);
 
+      android_namespace_t* runtime_ns = android_get_exported_namespace(kRuntimeNamespaceName);
+      std::string runtime_exposed_libraries = base::Join(kRuntimePublicLibraries, ":");
+
       if (!android_link_namespaces(ns, nullptr, system_exposed_libraries.c_str())) {
         *error_msg = dlerror();
         return nullptr;
+      }
+
+      if (runtime_ns != nullptr) {
+        if (!android_link_namespaces(ns, runtime_ns, runtime_exposed_libraries.c_str())) {
+          *error_msg = dlerror();
+          return nullptr;
+        }
       }
 
       if (vndk_ns != nullptr && !system_vndksp_libraries_.empty()) {

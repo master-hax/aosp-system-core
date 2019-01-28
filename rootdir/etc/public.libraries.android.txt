@@ -9,8 +9,6 @@ libEGL.so
 libGLESv1_CM.so
 libGLESv2.so
 libGLESv3.so
-libicui18n.so
-libicuuc.so
 libjnigraphics.so
 liblog.so
 libmediandk.so
