@@ -89,6 +89,29 @@
     },
     {
       "key": {
+        "uuid": "187bd158_7c8cde65",
+        "filename": "ashmemd/aidl/android/ashmemd/IAshmemDeviceService.aidl",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-28T23:12:03Z",
+      "side": 1,
+      "message": "We need a way to close these fds in ashmemd. Either by itself or make sure libcutils make a call to -\u003eclose() as well after it receives the fd. So, ashmemd closes it\u0027s copy of file descriptor. Otherwise, ashmemd will quickly reach its fd limit.\n(IF there is a way in binder to make sure this happens *automagically*, that will be awesome).",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 26
+      },
+      "revId": "421f710d1ef9a6ed4c238ca66e5a33685a5a3568",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "260ef2f5_914f5044",
         "filename": "ashmemd/ashmemd.rc",
         "patchSetId": 1
