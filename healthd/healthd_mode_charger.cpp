@@ -48,6 +48,7 @@
 
 #include "AnimationParser.h"
 #include "healthd_draw.h"
+#include "resource_paths.h"
 
 #include <health2/Health.h>
 #include <healthd/healthd.h>
@@ -79,9 +80,6 @@ char* locale;
 #define LOGE(x...) KLOG_ERROR("charger", x);
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
-
-static constexpr const char* animation_desc_path =
-    "/res/values/charger/animation.txt";
 
 struct key_state {
     bool pending;
@@ -600,7 +598,9 @@ animation* init_animation() {
     bool parse_success;
 
     std::string content;
-    if (base::ReadFileToString(animation_desc_path, &content)) {
+    if (base::ReadFileToString(product_animation_desc_path, &content)) {
+        parse_success = parse_animation_desc(content, &battery_animation);
+    } else if (base::ReadFileToString(animation_desc_path, &content)) {
         parse_success = parse_animation_desc(content, &battery_animation);
     } else {
         LOGW("Could not open animation description at %s\n", animation_desc_path);
@@ -660,7 +660,13 @@ void healthd_mode_charger_init(struct healthd_config* config) {
     animation* anim = init_animation();
     charger->batt_anim = anim;
 
-    ret = res_create_display_surface(anim->fail_file.c_str(), &charger->surf_unknown);
+    auto product_fail_file = product_animation_root + anim->fail_file;
+    ret = res_create_display_surface(product_fail_file.c_str(), &charger->surf_unknown);
+    if (ret == 0) {
+        anim->fail_file = product_fail_file;
+    } else {
+        ret = res_create_display_surface(anim->fail_file.c_str(), &charger->surf_unknown);
+    }
     if (ret < 0) {
         LOGE("Cannot load custom battery_fail image. Reverting to built in: %d\n", ret);
         ret = res_create_display_surface("charger/battery_fail", &charger->surf_unknown);
@@ -670,12 +676,19 @@ void healthd_mode_charger_init(struct healthd_config* config) {
         }
     }
 
+    auto product_animation_file = product_animation_root + anim->animation_file;
     GRSurface** scale_frames;
     int scale_count;
     int scale_fps;  // Not in use (charger/battery_scale doesn't have FPS text
                     // chunk). We are using hard-coded frame.disp_time instead.
-    ret = res_create_multi_display_surface(anim->animation_file.c_str(), &scale_count, &scale_fps,
+    ret = res_create_multi_display_surface(product_animation_file.c_str(), &scale_count, &scale_fps,
                                            &scale_frames);
+    if (ret == 0) {
+        anim->animation_file = product_animation_file;
+    } else {
+        ret = res_create_multi_display_surface(anim->animation_file.c_str(), &scale_count,
+                                               &scale_fps, &scale_frames);
+    }
     if (ret < 0) {
         LOGE("Cannot load battery_scale image\n");
         anim->num_frames = 0;
