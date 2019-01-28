@@ -19,10 +19,22 @@
 #include <cutils/klog.h>
 
 #include "healthd_draw.h"
+#include "resource_paths.h"
 
 #define LOGE(x...) KLOG_ERROR("charger", x);
 #define LOGW(x...) KLOG_WARNING("charger", x);
 #define LOGV(x...) KLOG_DEBUG("charger", x);
+
+int load_font(animation.text_field* field) {
+    if (field->font_file.empty()) return 0;
+    auto product_font_file = product_animation_root + field->font_file;
+    int res = gr_init_font(product_font_file.c_str(), &field->font);
+    if (res == 0) {
+        field->font_file = product_font_file;
+        return 0;
+    }
+    return gr_init_font(field->font_file.c_str(), &field->font);
+}
 
 HealthdDraw::HealthdDraw(animation* anim)
   : kSplitScreen(HEALTHD_DRAW_SPLIT_SCREEN),
@@ -47,12 +59,10 @@ HealthdDraw::HealthdDraw(animation* anim)
     screen_height_ = gr_fb_height();
 
     int res;
-    if (!anim->text_clock.font_file.empty() &&
-        (res = gr_init_font(anim->text_clock.font_file.c_str(), &anim->text_clock.font)) < 0) {
+    if ((res = load_font(&anim->text_clock)) < 0) {
         LOGE("Could not load time font (%d)\n", res);
     }
-    if (!anim->text_percent.font_file.empty() &&
-        (res = gr_init_font(anim->text_percent.font_file.c_str(), &anim->text_percent.font)) < 0) {
+    if ((res = load_font(&anim->text_percent)) < 0) {
         LOGE("Could not load percent font (%d)\n", res);
     }
 }
