@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "064f33c0_5f6d9014",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-28T18:26:31Z",
+      "side": 1,
+      "message": "MountCgroupsAction().  All new code should get the right format.",
+      "range": {
+        "startLine": 350,
+        "startChar": 23,
+        "endLine": 350,
+        "endChar": 43
+      },
+      "revId": "5f319e29cfc9799907f94ef01bd540b496eb193c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "279b6d3a_5615bb64",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-28T18:26:31Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need to do this.  Logging should be working already for init, if you use libbase logging.\n\nIn the failing case, use the return Error() \u003c\u003c ...  Probably better to have Error() and have CgroupsMountAll return an error string with exactly the issue, since that\u0027ll be much easier to debug than an errno value.\n\nIn the successful case, just LOG(INFO) \u003c\u003c cgroups mounted successfully.",
+      "revId": "5f319e29cfc9799907f94ef01bd540b496eb193c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b268328_d7808d24",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 695,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-28T18:26:31Z",
+      "side": 1,
+      "message": "Is this not too early?  /dev is going to be created, but ueventd won\u0027t have run yet, but that may be okay.  I\u0027m just wondering.\n\nIf it is okay to be this early, you can probably just call the function directly instead of putting it into the queue.",
+      "revId": "5f319e29cfc9799907f94ef01bd540b496eb193c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
