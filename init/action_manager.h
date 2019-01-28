@@ -38,6 +38,7 @@ class ActionManager {
     void QueuePropertyChange(const std::string& name, const std::string& value);
     void QueueAllPropertyActions();
     void QueueBuiltinAction(BuiltinFunction func, const std::string& name);
+    Result<Success> QueueBuiltinAction(std::vector<std::string>&& args, const std::string& name);
     void ExecuteOneCommand();
     bool HasMoreCommands() const;
     void DumpState() const;
