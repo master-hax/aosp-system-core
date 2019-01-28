@@ -1,7 +1,21 @@
 // Shared library for target
 // ========================================================
+cc_defaults {
+    name: "libnativeloader-defaults",
+    cflags: [
+        "-Werror",
+        "-Wall",
+    ],
+    cppflags: [
+        "-fvisibility=hidden",
+    ],
+    header_libs: ["libnativeloader-headers"],
+    export_header_lib_headers: ["libnativeloader-headers"],
+}
+
 cc_library {
     name: "libnativeloader",
+    defaults: ["libnativeloader-defaults"],
     host_supported: true,
     srcs: ["native_loader.cpp"],
     shared_libs: [
@@ -11,23 +25,21 @@ cc_library {
         "libnativebridge",
         "libbase",
     ],
-    cflags: [
-        "-Werror",
-        "-Wall",
-    ],
-    cppflags: [
-        "-fvisibility=hidden",
-    ],
-    export_include_dirs: ["include"],
     required: [
         "llndk.libraries.txt",
         "vndksp.libraries.txt",
     ],
 }
 
-cc_library_headers {
-    name: "libnativeloader-dummy-headers",
+cc_library {
+    name: "libnativeloader_shim",
+    defaults: ["libnativeloader-defaults"],
+    host_supported: false,
+    srcs: ["native_loader_shim.cpp"],
+}
 
+cc_library_headers {
+    name: "libnativeloader-headers",
     host_supported: true,
     export_include_dirs: ["include"],
 }
