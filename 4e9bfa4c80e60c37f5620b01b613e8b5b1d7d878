@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47ae0bb3_68b0b486",
+        "filename": "libmetricslogger/metrics_logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1010681
+      },
+      "writtenOn": "2019-01-29T10:50:27Z",
+      "side": 1,
+      "message": "could we log in this case?",
+      "range": {
+        "startLine": 53,
+        "startChar": 12,
+        "endLine": 53,
+        "endChar": 20
+      },
+      "revId": "4e9bfa4c80e60c37f5620b01b613e8b5b1d7d878",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
