@@ -23,6 +23,9 @@
  */
 #define LOG_TAG "ashmem"
 
+#ifndef __ANDROID_VNDK__
+#include <dlfcn.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/ashmem.h>
@@ -45,6 +48,25 @@ static dev_t __ashmem_rdev;
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
 
+#ifndef __ANDROID_VNDK__
+using openFdType = int (*)();
+
+openFdType initOpenAshmemFd() {
+    openFdType openFd = nullptr;
+    void* handle = dlopen("libashmemd_client.so", RTLD_NOW);
+    if (!handle) {
+        ALOGE("Failed to dlopen() libashmemd_client.so: %s", dlerror());
+        return openFd;
+    }
+
+    openFd = reinterpret_cast<openFdType>(dlsym(handle, "openAshmemdFd"));
+    if (!openFd) {
+        ALOGE("Failed to dlsym() openAshmemdFd() function: %s", dlerror());
+    }
+    return openFd;
+}
+#endif
+
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
 {
@@ -52,6 +74,14 @@ static int __ashmem_open_locked()
     struct stat st;
 
     int fd = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR | O_CLOEXEC));
+#ifndef __ANDROID_VNDK__
+    if (fd < 0) {
+        static auto openFd = initOpenAshmemFd();
+        if (openFd) {
+            fd = openFd();
+        }
+    }
+#endif
     if (fd < 0) {
         return fd;
     }
