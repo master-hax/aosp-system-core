@@ -65,10 +65,12 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode);
 #define FS_MGR_DOMNT_FAILED (-1)
 #define FS_MGR_DOMNT_BUSY (-2)
 #define FS_MGR_DOMNT_SUCCESS 0
-
 int fs_mgr_do_mount(fstab* fstab, const char* n_name, char* n_blk_device, char* tmp_mount_point);
 int fs_mgr_do_mount(fstab* fstab, const char* n_name, char* n_blk_device, char* tmp_mount_point,
-                    bool need_cp);
+        bool needs_checkpoint);
+int fs_mgr_do_mount(Fstab* fstab, const char* n_name, char* n_blk_device, char* tmp_mount_point);
+int fs_mgr_do_mount(
+        Fstab* fstab, const char* n_name, char* n_blk_device, char* tmp_mount_point, bool need_cp);
 int fs_mgr_do_mount_one(const FstabEntry& entry, const std::string& mount_point = "");
 int fs_mgr_do_mount_one(fstab_rec* rec);
 int fs_mgr_do_tmpfs_mount(const char *n_name);
