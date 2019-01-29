@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "d948cd84_e4bf6537",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "The thing is that this code is executed only in the init, so having this somewhere inside CgroupController which is used much more widely might be a waste. Let\u0027s wait for Tom to chime in.",
+      "parentUuid": "c19595a4_f9ebe9b9",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9c2dfd81_46e62a3b",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -60,6 +84,30 @@
       "writtenOn": "2019-01-29T15:49:06Z",
       "side": 1,
       "message": "This name sounds rather arbitrary, isn\u0027t it ?\n\nI guess you create it under /dev just because we have a tmpfs mounted there, isn\u0027t it?\n\nIn any case (not sure it\u0027s possible) why not storing it at top level, i.e. /dev/cgroups.rc ?",
+      "range": {
+        "startLine": 414,
+        "startChar": 13,
+        "endLine": 414,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eade47f1_7bcf6983",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Yes, /dev is the only tmpfs place I can have this file.\nHave to place it under a directory because of a weirdness in the selinux which would not correctly apply the permissions to a file that does not exist at boot time (cgroups.rc is a generated one) but will work correctly to files generated in a sub-directory. Don\u0027t completely understand why but was advised to use this trick.",
+      "parentUuid": "9c2dfd81_46e62a3b",
       "range": {
         "startLine": 414,
         "startChar": 13,
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "9104f3f5_c29b3e33",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "It\u0027s for the purposes of CgroupController serialization as is into tmpfs file so that other processes can mmap that file directly and use without deserializing into a different structure. The record for each CgroupController should should be a constant size.\nAs soon as I get some more time I will evaluate possibility of using protobufs to serialize/deserialize CgroupController records into cgroup.rc file, however such a change will affect only libprocessgroup as nothing uses CgroupController directly, so can be done later on.",
+      "parentUuid": "8da4ddec_97a266c6",
+      "range": {
+        "startLine": 53,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 36
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "567cd492_88b05cdd",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -106,6 +178,30 @@
       "writtenOn": "2019-01-29T15:42:18Z",
       "side": 1,
       "message": "Not sure about the assumptions / requirements we are (or should) set on how APIs such this one should be called.\n\nShould we not enforce that all Cgroup related paths starts with a \"/\", e.g.\n  \"/\", \"/cpuset\", \"/top-app\"\nare valid paths, while:\n  \"\", \"cpuset\" and \"top-app\"\nare not valid ?\n\nUnder that assumption, I think methods like this one can be simplified... for example we never need the check on empty and we can just do something like:\n\nIf we also defined path_ to be a string, this should just be:\n\n    std::string CgroupController::GetTasksFilePath(const std::string\u0026 path) const {    \n        if (version_ \u003d\u003d 1)\n            return path_.append(\"/\").append(path).append(CGROUP_TASKS_FILE)\n        return path_.append(\"/\").append(path).append(CGROUP_TASKS_FILE_V2)\n    }\n\nThoughts ?",
+      "range": {
+        "startLine": 63,
+        "startChar": 8,
+        "endLine": 63,
+        "endChar": 33
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10ebe5be_e7dd1350",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "IMO the API currently quite simple. *path* can be either empty, in which case we get the root of the controller of non-empty, in which case it will be a subdirectory under the controller\u0027s root path.\npath_ in the current implementation can\u0027t be changed into std::string (See my previous comment). After trying protobufs that\u0027s a possibility.",
+      "parentUuid": "567cd492_88b05cdd",
       "range": {
         "startLine": 63,
         "startChar": 8,
@@ -141,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "5a4be173_8d645408",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Will check.",
+      "parentUuid": "a0e09834_4476ced4",
+      "range": {
+        "startLine": 82,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7d33918_a16ba2e4",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -152,6 +272,30 @@
       "writtenOn": "2019-01-29T15:42:18Z",
       "side": 1,
       "message": "BTW: I think this and the above chunk could be replaced with something like:\n\n    string pattern \u003d StringPrintf(\".*:%s:(.*)\", name_.c_str();\n    std::regex mpoint_re(pattern);\n    std::smatch mpoint_match;\n    if (std::regex_search(content, std::regex(pattern), mpoint_re)) {\n        *group \u003d mpoint_match.str(1);\n        return true;\n    }\n    return false;",
+      "range": {
+        "startLine": 86,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d280c03a_320947b5",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Will try.",
+      "parentUuid": "e7d33918_a16ba2e4",
       "range": {
         "startLine": 86,
         "startChar": 4,
@@ -210,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "9a0ccb12_ffffa04c",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "That\u0027s how I use it for debugging but it would be too chatty to stay like that.",
+      "parentUuid": "d423a181_669523e2",
+      "range": {
+        "startLine": 165,
+        "startChar": 16,
+        "endLine": 165,
+        "endChar": 21
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d0d91453_29bc5779",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -221,6 +389,30 @@
       "writtenOn": "2019-01-29T15:42:18Z",
       "side": 1,
       "message": "Should not we check this one somewhere also from CgroupMap::ReadDescriptors() ?",
+      "range": {
+        "startLine": 221,
+        "startChar": 18,
+        "endLine": 221,
+        "endChar": 47
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f31e179b_34618974",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "True. Will add.",
+      "parentUuid": "d0d91453_29bc5779",
       "range": {
         "startLine": 221,
         "startChar": 18,
@@ -279,6 +471,30 @@
     },
     {
       "key": {
+        "uuid": "3f1c661a_5c4327bf",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "We skip the file header. Will add a comment.",
+      "parentUuid": "2d064312_8508ff89",
+      "range": {
+        "startLine": 245,
+        "startChar": 69,
+        "endLine": 245,
+        "endChar": 72
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a2f9278d_50760fd2",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -290,6 +506,30 @@
       "writtenOn": "2019-01-29T15:42:18Z",
       "side": 1,
       "message": "nit: empty line before this ?",
+      "range": {
+        "startLine": 251,
+        "startChar": 3,
+        "endLine": 251,
+        "endChar": 18
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55b33634_391458cb",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "will add.",
+      "parentUuid": "a2f9278d_50760fd2",
       "range": {
         "startLine": 251,
         "startChar": 3,
@@ -325,6 +565,30 @@
     },
     {
       "key": {
+        "uuid": "15163c6f_94492a36",
+        "filename": "libprocessgroup/include/processgroup/cgroup_map.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "I see. Yes, will rearrange and rename.",
+      "parentUuid": "6caecf16_1c36a481",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 60
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8bf32103_ae42e3a8",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -336,6 +600,30 @@
       "writtenOn": "2019-01-29T14:24:23Z",
       "side": 1,
       "message": "Callers of this API are forced to build a vector in place:\n\n   SetTaskProfiles(tid, std::vector\u003cstd::string\u003e{\"TimerSlackNormal\"});\n\nmost of the times just to pass in one profile name.\n\nSince we are not really using a strong type to do compile time checks,\nperhaps we can further relax the API by allowing users to pass in a\nsimple comma separated list of profiles, e.g.\n\n   SetTaskProfiles(tid, \"Profile1, Profile2\");\n\nThen we can use something like:\n\n    int SetProcessProfiles(uid_t uid, pid_t pid, string profiles) {\n        const TaskProfiles\u0026 tp \u003d TaskProfiles::GetInstance();\n\tstring::size_type i \u003d 0, j;\n\tstring separator(\",\");\n\tstring profile_name;\n\tbool done \u003d false;\n\n\t// Profile names cannot have spaces: bulk remove them\n\tprofiles \u003d regex_replace(profiles,std::regex(\"[ ]*\"), \"\");\n\tdo {\n\t\tj \u003d profiles.find(separator, i);\n\t\tif (j \u003d\u003d string::npos) {\n\t\t\tj \u003d profiles.length();\n\t\t\tdone \u003d true;\n\t\t}\n\t\tprofile_name \u003d profiles.substr(i, j-i);\n\t\ti \u003d j+1;\n\n                // Lookup required profile\n                auto* profile \u003d tp.GetProfile(profile_name);\n\t\tif (profile \u003d\u003d nullptr) {\n                    PLOG(WARNING) \u003c\u003c \"Failed to find \" \u003c\u003c name \u003c\u003c \"process profile\";\n                    continue;\n                }\n\n                // Activate required profile\n                if (profile-\u003eExecuteForProcess(uid, pid) !\u003d 0)\n                    PLOG(WARNING) \u003c\u003c \"Failed to apply \" \u003c\u003c name \u003c\u003c \" process profile\";\n\n\t} while (!done);\n    }\n\n\nThoughts ?",
+      "range": {
+        "startLine": 103,
+        "startChar": 45,
+        "endLine": 103,
+        "endChar": 85
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05575464_dd24cde2",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Let\u0027s wait for Tom to chime in. Not sure what\u0027s more efficient a vector or regex parsing...",
+      "parentUuid": "8bf32103_ae42e3a8",
       "range": {
         "startLine": 103,
         "startChar": 45,
@@ -394,6 +682,30 @@
     },
     {
       "key": {
+        "uuid": "1da77893_4e4d0e00",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Yes, I missed this one.",
+      "parentUuid": "86389047_853c3b3f",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 74,
+        "endChar": 62
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc554191_5bbd4c91",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 11
@@ -405,6 +717,30 @@
       "writtenOn": "2019-01-29T17:05:50Z",
       "side": 1,
       "message": "Why we need a local here, instead of just:\n\n   if (IsTimerSlackSupported(tid)) {\n\n?\n\nActually, we should probably better inline the code here to avoid to two string formats:\n\n    auto file \u003d StringPrintf(\"/proc/%d/timerslack_ns\", tid);\n    if (access(file.c_str(), W_OK) \u003d\u003d 0) {\n        if (!WriteStringToFile(std::to_string(slack_), file)) {\n        }\n    }\n\n... AFAIKS we don\u0027t use IsTimerSlackSupported() anywhere else and it\u0027s anyway private.",
+      "range": {
+        "startLine": 83,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 31
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74670b5b_a4bbe732",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "sys_supports_timerslack is static, so IsTimerSlackSupported() will be called only once AFAIU vs without it IsTimerSlackSupported() will be called each time even though kernel can\u0027t switch its support at runtime.",
+      "parentUuid": "cc554191_5bbd4c91",
       "range": {
         "startLine": 83,
         "startChar": 8,
@@ -440,6 +776,30 @@
     },
     {
       "key": {
+        "uuid": "a04d14a2_552b8783",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "if this is more efficient then sure.",
+      "parentUuid": "59f84301_e224dd3d",
+      "range": {
+        "startLine": 121,
+        "startChar": 4,
+        "endLine": 121,
+        "endChar": 100
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2cf85c61_3685a7c8",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 11
@@ -463,6 +823,30 @@
     },
     {
       "key": {
+        "uuid": "163c9c9d_4e14f25b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Will do.",
+      "parentUuid": "2cf85c61_3685a7c8",
+      "range": {
+        "startLine": 127,
+        "startChar": 4,
+        "endLine": 127,
+        "endChar": 35
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6b45df1a_88f1a9cb",
         "filename": "libprocessgroup/task_profiles.h",
         "patchSetId": 11
@@ -474,6 +858,30 @@
       "writtenOn": "2019-01-29T17:05:50Z",
       "side": 1,
       "message": "s/ProfileElement/ProfileAction/ ?",
+      "range": {
+        "startLine": 44,
+        "startChar": 6,
+        "endLine": 44,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14f28b3f_1163c238",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T17:27:00Z",
+      "side": 1,
+      "message": "Will rename.",
+      "parentUuid": "6b45df1a_88f1a9cb",
       "range": {
         "startLine": 44,
         "startChar": 6,
