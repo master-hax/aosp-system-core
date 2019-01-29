@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d084c9f_06149574",
+        "filename": "libmeminfo/libdmabufinfo/dmabufinfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-29T19:51:02Z",
+      "side": 0,
+      "message": "I think we should still clear this since this is a public API. The return of ReadDmaBufInfo() should return a vector of all dma buffers found. So the code in ReadDmaBufFdRefs() looks fine to me, but we don\u0027t want to depend on the caller to clear the vector etc.\n\nWe must be deterministic. If the caller wants to cross reference this with buffers from other processes or from debugfs, we can probably do that else where or in the caller itself.",
+      "revId": "2cbdc561ad1b3c1565af8e1a30faa17dc35e9271",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
