@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fca0aa12_0c1220ac",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-29T03:26:43Z",
+      "side": 1,
+      "message": "move before definitions",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 18
+      },
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "737a017c_91f5f93f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-29T03:26:43Z",
+      "side": 1,
+      "message": "why struct over pointer out of curiosity?",
+      "range": {
+        "startLine": 51,
+        "startChar": 7,
+        "endLine": 51,
+        "endChar": 21
+      },
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "069afa39_31b0de27",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-29T03:26:43Z",
+      "side": 1,
+      "message": "pull this from the headers of libashmemd_client.so? (perhaps define cc_library_header libashmemd_client_headers).",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 2
+      },
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6defe4fc_ea88b36f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-29T03:26:43Z",
+      "side": 1,
+      "message": "return handler;",
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "057ef06b_cd166243",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-29T03:26:43Z",
+      "side": 1,
+      "message": "C++ style cast, also nit: decltype(openAshmemFd)",
+      "range": {
+        "startLine": 61,
+        "startChar": 27,
+        "endLine": 61,
+        "endChar": 38
+      },
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
