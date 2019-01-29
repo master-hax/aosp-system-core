@@ -25,6 +25,53 @@
     },
     {
       "key": {
+        "uuid": "c19595a4_f9ebe9b9",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:49:06Z",
+      "side": 1,
+      "message": "What about storing them as a CgroupController::mount_cmd_ private attribute ?\n\nIn that case, something similar to this code could be moved into the ctro of that class.",
+      "parentUuid": "89d994b6_78cea730",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c2dfd81_46e62a3b",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:49:06Z",
+      "side": 1,
+      "message": "This name sounds rather arbitrary, isn\u0027t it ?\n\nI guess you create it under /dev just because we have a tmpfs mounted there, isn\u0027t it?\n\nIn any case (not sure it\u0027s possible) why not storing it at top level, i.e. /dev/cgroups.rc ?",
+      "range": {
+        "startLine": 414,
+        "startChar": 13,
+        "endLine": 414,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8da4ddec_97a266c6",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
