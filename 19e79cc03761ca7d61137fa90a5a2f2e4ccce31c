@@ -636,6 +636,30 @@
     },
     {
       "key": {
+        "uuid": "260bd34c_1d1f285b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1130394
+      },
+      "writtenOn": "2019-01-29T17:41:44Z",
+      "side": 1,
+      "message": "SetTaskProfiles(tid, {\"TimerSlackNormal\", \"Other Thing\", \"Thing3\"}) will also work fine in modern C++, and the construction cost of the vector is negligible.",
+      "parentUuid": "05575464_dd24cde2",
+      "range": {
+        "startLine": 103,
+        "startChar": 45,
+        "endLine": 103,
+        "endChar": 85
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5a930684_800ff90f",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
