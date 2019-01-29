@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6dd6dae2_86baa5a8",
+        "filename": "libnativeloader/native_loader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-01-29T08:36:41Z",
+      "side": 1,
+      "message": "nit: please write this in its own if (line the vndk link below).",
+      "range": {
+        "startLine": 272,
+        "startChar": 82,
+        "endLine": 274,
+        "endChar": 89
+      },
+      "revId": "eee11c867ed498c661c3285a53ebe9cd0cf99ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
