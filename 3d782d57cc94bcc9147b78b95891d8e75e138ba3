@@ -16,6 +16,24 @@
       "revId": "3d782d57cc94bcc9147b78b95891d8e75e138ba3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26b376cc_47f07171",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-29T22:29:26Z",
+      "side": 1,
+      "message": "Nice, was debating whether to add one in this CL...",
+      "parentUuid": "91f2378d_33c73506",
+      "revId": "3d782d57cc94bcc9147b78b95891d8e75e138ba3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
