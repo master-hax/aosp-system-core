@@ -22,6 +22,52 @@
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8bf32103_ae42e3a8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T14:24:23Z",
+      "side": 1,
+      "message": "Callers of this API are forced to build a vector in place:\n\n   SetTaskProfiles(tid, std::vector\u003cstd::string\u003e{\"TimerSlackNormal\"});\n\nmost of the times just to pass in one profile name.\n\nSince we are not really using a strong type to do compile time checks,\nperhaps we can further relax the API by allowing users to pass in a\nsimple comma separated list of profiles, e.g.\n\n   SetTaskProfiles(tid, \"Profile1, Profile2\");\n\nThen we can use something like:\n\n    int SetProcessProfiles(uid_t uid, pid_t pid, string profiles) {\n        const TaskProfiles\u0026 tp \u003d TaskProfiles::GetInstance();\n\tstring::size_type i \u003d 0, j;\n\tstring separator(\",\");\n\tstring profile_name;\n\tbool done \u003d false;\n\n\t// Profile names cannot have spaces: bulk remove them\n\tprofiles \u003d regex_replace(profiles,std::regex(\"[ ]*\"), \"\");\n\tdo {\n\t\tj \u003d profiles.find(separator, i);\n\t\tif (j \u003d\u003d string::npos) {\n\t\t\tj \u003d profiles.length();\n\t\t\tdone \u003d true;\n\t\t}\n\t\tprofile_name \u003d profiles.substr(i, j-i);\n\t\ti \u003d j+1;\n\n                // Lookup required profile\n                auto* profile \u003d tp.GetProfile(profile_name);\n\t\tif (profile \u003d\u003d nullptr) {\n                    PLOG(WARNING) \u003c\u003c \"Failed to find \" \u003c\u003c name \u003c\u003c \"process profile\";\n                    continue;\n                }\n\n                // Activate required profile\n                if (profile-\u003eExecuteForProcess(uid, pid) !\u003d 0)\n                    PLOG(WARNING) \u003c\u003c \"Failed to apply \" \u003c\u003c name \u003c\u003c \" process profile\";\n\n\t} while (!done);\n    }\n\n\nThoughts ?",
+      "range": {
+        "startLine": 103,
+        "startChar": 45,
+        "endLine": 103,
+        "endChar": 85
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a930684_800ff90f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T14:24:23Z",
+      "side": 1,
+      "message": "If the above comment makes sense, we can do the same here.\n\nIn that case we should probably better move the tokenization code into a common private function which will then call either ExecuteForTask() or ExecuteForProcess() depending on an additional param.",
+      "range": {
+        "startLine": 119,
+        "startChar": 29,
+        "endLine": 119,
+        "endChar": 69
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
