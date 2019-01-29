@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91f2378d_33c73506",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T22:05:27Z",
+      "side": 1,
+      "message": "FYI: I\u0027m going to cave and add GetEntryForMountPoint() in a future CL.",
+      "revId": "3d782d57cc94bcc9147b78b95891d8e75e138ba3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
