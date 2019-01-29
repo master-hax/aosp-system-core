@@ -25,6 +25,259 @@
     },
     {
       "key": {
+        "uuid": "8da4ddec_97a266c6",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "Why not defining name_ and path_ as strings and use members initialization here for all the params?\n\nThis will also get rid of the CGROUP_{NAME,PATH}_BUF_SZ declarations.\n\nConsider that name_ is used only in:\n   CgroupController::GetProcessGroup\nwhere it\u0027s still possible to go with name_.c_str()\n\nWhile path_ in a couple of places but actually to initialize a string object.",
+      "range": {
+        "startLine": 53,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 36
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "567cd492_88b05cdd",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "Not sure about the assumptions / requirements we are (or should) set on how APIs such this one should be called.\n\nShould we not enforce that all Cgroup related paths starts with a \"/\", e.g.\n  \"/\", \"/cpuset\", \"/top-app\"\nare valid paths, while:\n  \"\", \"cpuset\" and \"top-app\"\nare not valid ?\n\nUnder that assumption, I think methods like this one can be simplified... for example we never need the check on empty and we can just do something like:\n\nIf we also defined path_ to be a string, this should just be:\n\n    std::string CgroupController::GetTasksFilePath(const std::string\u0026 path) const {    \n        if (version_ \u003d\u003d 1)\n            return path_.append(\"/\").append(path).append(CGROUP_TASKS_FILE)\n        return path_.append(\"/\").append(path).append(CGROUP_TASKS_FILE_V2)\n    }\n\nThoughts ?",
+      "range": {
+        "startLine": 63,
+        "startChar": 8,
+        "endLine": 63,
+        "endChar": 33
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0e09834_4476ced4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "nit: I think code conventions allows you to write just:\n\n    if (start_pos \u003d\u003d std::string::npos) return false;\n\nisn\u0027t it ?",
+      "range": {
+        "startLine": 82,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7d33918_a16ba2e4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "BTW: I think this and the above chunk could be replaced with something like:\n\n    string pattern \u003d StringPrintf(\".*:%s:(.*)\", name_.c_str();\n    std::regex mpoint_re(pattern);\n    std::smatch mpoint_match;\n    if (std::regex_search(content, std::regex(pattern), mpoint_re)) {\n        *group \u003d mpoint_match.str(1);\n        return true;\n    }\n    return false;",
+      "range": {
+        "startLine": 86,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e427d595_16fe90b1",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "nit: if (cg_file_data_) return true; ?",
+      "range": {
+        "startLine": 134,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d423a181_669523e2",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "Should we call this at the end of CgroupMap::WriteRcFile() ?\n\nI think it could be convenient to log on console the cgroups configuration in use... but not sure there are policies/conventions on how much we can be verbose. Maybe we can use an higher verbosity level for the report at boot time?\n\nIn that case we can probably pass in the level as a parameter for this call.\n\nToughs ?",
+      "range": {
+        "startLine": 165,
+        "startChar": 16,
+        "endLine": 165,
+        "endChar": 21
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0d91453_29bc5779",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "Should not we check this one somewhere also from CgroupMap::ReadDescriptors() ?",
+      "range": {
+        "startLine": 221,
+        "startChar": 18,
+        "endLine": 221,
+        "endChar": 47
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d531721_056e09d2",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "nit: if (!cg_file_data_) return nullptr; ?",
+      "range": {
+        "startLine": 241,
+        "startChar": 4,
+        "endLine": 241,
+        "endChar": 23
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d064312_8508ff89",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "Not sure to get what\u0027s this +1 for... :/",
+      "range": {
+        "startLine": 245,
+        "startChar": 69,
+        "endLine": 245,
+        "endChar": 72
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2f9278d_50760fd2",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "nit: empty line before this ?",
+      "range": {
+        "startLine": 251,
+        "startChar": 3,
+        "endLine": 251,
+        "endChar": 18
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6caecf16_1c36a481",
+        "filename": "libprocessgroup/include/processgroup/cgroup_map.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T15:42:18Z",
+      "side": 1,
+      "message": "nit: put this API before or after the to \"*FilePath\" APIs ?\n\nmaybe: s/GetProcessGroup/GetTaskGroup/... in general we can (will) use this API also to get the group containing a single task, isn\u0027t it ?",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 60
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8bf32103_ae42e3a8",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
