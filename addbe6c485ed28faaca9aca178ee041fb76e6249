@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0fc2b5f4_03093f73",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-29T04:11:16Z",
+      "side": 1,
+      "message": "nit: add a space after # to make this more readable?",
+      "revId": "addbe6c485ed28faaca9aca178ee041fb76e6249",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
