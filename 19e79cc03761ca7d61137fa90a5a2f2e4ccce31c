@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "e9c91538_33344b90",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Yeah, I agree that would be much cleaner but also will require to re-implement these builtin functions inside libprocessgroup. I was debating myself which way is better and went this way to minimize additional code that would require also additional testing for corner cases.\n\nWould it be ok to keep it here as the first respin? I\u0027m worried that testing the new implementation might take more time than I have right now.",
+      "parentUuid": "3eeddfd9_417fd9cb",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9c2dfd81_46e62a3b",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -168,6 +192,30 @@
     },
     {
       "key": {
+        "uuid": "93f57d8f_391b5871",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Ok, will change to /dev/cgroup_info.",
+      "parentUuid": "29e283eb_40f2da3d",
+      "range": {
+        "startLine": 414,
+        "startChar": 13,
+        "endLine": 414,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "38bd0c46_09f98d54",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 11
@@ -179,6 +227,24 @@
       "writtenOn": "2019-01-29T18:34:25Z",
       "side": 1,
       "message": "Do you still need this or is it left over from before?  I think all of the references have been removed (except for the header inclusion, but I don\u0027t see anything using it).",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "015cf3e3_fd59eadb",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "yeah, I think we don\u0027t need it anymore. Will check and remove.",
+      "parentUuid": "38bd0c46_09f98d54",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -225,6 +291,24 @@
     },
     {
       "key": {
+        "uuid": "a8421b91_919c682a",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "32acc364_78c84b67",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c8ba41b4_36602b6b",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -242,6 +326,24 @@
     },
     {
       "key": {
+        "uuid": "2d972c1a_559c3e7f",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "c8ba41b4_36602b6b",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a5a0e11d_978ee7e4",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -253,6 +355,24 @@
       "writtenOn": "2019-01-29T18:34:25Z",
       "side": 1,
       "message": "The related header, so this one, should be the first include.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbec5304_975022fd",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Ack.",
+      "parentUuid": "a5a0e11d_978ee7e4",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -424,6 +544,30 @@
     },
     {
       "key": {
+        "uuid": "30867cf5_a9d80e83",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Ok, will keep as is.",
+      "parentUuid": "71727798_22427ce5",
+      "range": {
+        "startLine": 82,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7d33918_a16ba2e4",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -505,6 +649,30 @@
       "writtenOn": "2019-01-29T18:34:25Z",
       "side": 1,
       "message": "Probably better to have a more detailed error message here.  At the least include the function if you don\u0027t include more context about what is being opened.",
+      "range": {
+        "startLine": 141,
+        "startChar": 23,
+        "endLine": 141,
+        "endChar": 39
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b42e5144_39de5eca",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Will expand.",
+      "parentUuid": "92647641_8c55336b",
       "range": {
         "startLine": 141,
         "startChar": 23,
@@ -792,6 +960,24 @@
     },
     {
       "key": {
+        "uuid": "cfb9cc6f_701dacd8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Good point. Will implement #2.",
+      "parentUuid": "e0db9e48_050831a5",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8bf32103_ae42e3a8",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -898,6 +1084,24 @@
       "writtenOn": "2019-01-29T18:34:25Z",
       "side": 1,
       "message": "Why does this and the below function return and int?  It seems that they can\u0027t fail and they\u0027re not returning a count, so should they just return void?\n\nOr if they can fail, better to return bool.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5658136f_27bbfb84",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Will fix.",
+      "parentUuid": "84af0394_81184bc7",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -1156,6 +1360,24 @@
     },
     {
       "key": {
+        "uuid": "91be0beb_bd09afb2",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "53940aa8_da4ede35",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5e2ab325_3602d55f",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 11
@@ -1167,6 +1389,24 @@
       "writtenOn": "2019-01-29T18:34:25Z",
       "side": 1,
       "message": "Why does this return int, when others return bool, especially given that this seems to be just returning true/false.  Better to consistently use bool.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd9fda43_39f5ec8b",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T19:30:15Z",
+      "side": 1,
+      "message": "Will do.",
+      "parentUuid": "5e2ab325_3602d55f",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
