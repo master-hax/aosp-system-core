@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89d994b6_78cea730",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T04:47:36Z",
+      "side": 1,
+      "message": "This is quite ugly. Maybe I should hide these args building details inside CgroupMap ?",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
