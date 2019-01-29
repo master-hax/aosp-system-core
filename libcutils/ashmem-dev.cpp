@@ -45,13 +45,42 @@ static dev_t __ashmem_rdev;
  */
 static pthread_mutex_t __ashmem_lock = PTHREAD_MUTEX_INITIALIZER;
 
+#ifndef __ANDROID_VNDK__
+#include <dlfcn.h>
+
+struct ashmemdHandler {
+    int (*openAshmemFd)();
+};
+
+ashmemdHandler initAshmemdHandler() {
+    ashmemdHandler handler = {nullptr};
+    void* handle = dlopen("libashmemd_client.so", RTLD_NOW);
+    if (!handle) {
+        ALOGE("Failed to dlopen() libashmemd_client.so: %s", dlerror());
+    }
+    handler.openAshmemFd = (int (*)())dlsym(handle, "openAshmemdFd");
+    if (!handler.openAshmemFd) {
+        ALOGE("Failed to dlsym() openAshmemdFd() function: %s", dlerror());
+    }
+    return handler;
+}
+#endif
+
 /* logistics of getting file descriptor for ashmem */
 static int __ashmem_open_locked()
 {
     int ret;
     struct stat st;
 
+#ifdef __ANDROID_VNDK__
     int fd = TEMP_FAILURE_RETRY(open(ASHMEM_DEVICE, O_RDWR | O_CLOEXEC));
+#else
+    static auto handler = initAshmemdHandler();
+    int fd = -1;
+    if (handler.openAshmemFd) {
+        fd = handler.openAshmemFd();
+    }
+#endif
     if (fd < 0) {
         return fd;
     }
