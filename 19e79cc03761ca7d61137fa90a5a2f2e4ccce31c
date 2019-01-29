@@ -368,6 +368,121 @@
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86389047_853c3b3f",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T17:05:50Z",
+      "side": 1,
+      "message": "Can we do here as below, i.e.\n\n   auto file \u003d StringPrintf(\"/proc/%d/timerslack_ns\", tid);\n\n?",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 74,
+        "endChar": 62
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc554191_5bbd4c91",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T17:05:50Z",
+      "side": 1,
+      "message": "Why we need a local here, instead of just:\n\n   if (IsTimerSlackSupported(tid)) {\n\n?\n\nActually, we should probably better inline the code here to avoid to two string formats:\n\n    auto file \u003d StringPrintf(\"/proc/%d/timerslack_ns\", tid);\n    if (access(file.c_str(), W_OK) \u003d\u003d 0) {\n        if (!WriteStringToFile(std::to_string(slack_), file)) {\n        }\n    }\n\n... AFAIKS we don\u0027t use IsTimerSlackSupported() anywhere else and it\u0027s anyway private.",
+      "range": {
+        "startLine": 83,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 31
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59f84301_e224dd3d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T17:05:50Z",
+      "side": 1,
+      "message": "Maybe:\n\n   std::smatch match;\n   return std::regex_match(path, match, std::regex(\".*(\u003cuid\u003e|\u003cpid\u003e).*\"))\n\n?",
+      "range": {
+        "startLine": 121,
+        "startChar": 4,
+        "endLine": 121,
+        "endChar": 100
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cf85c61_3685a7c8",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T17:05:50Z",
+      "side": 1,
+      "message": "Maybe we can save some columns by inverting these condition and returning on match, i.e.\n\n    if (IsAppDependentPath(path_)) {\n        fd_.reset(-2);\n        return;\n    }\n\n    std::string tasks_path \u003d c-\u003eGetTasksFilePath(p.c_str());\n    if (access(tasks_path.c_str(), W_OK) !\u003d 0) {\n        fd_.reset(-1);\n        return;\n    }\n\n    // And so on...\n\n\nThe same patter could be applied to some of the following APIs.",
+      "range": {
+        "startLine": 127,
+        "startChar": 4,
+        "endLine": 127,
+        "endChar": 35
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b45df1a_88f1a9cb",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T17:05:50Z",
+      "side": 1,
+      "message": "s/ProfileElement/ProfileAction/ ?",
+      "range": {
+        "startLine": 44,
+        "startChar": 6,
+        "endLine": 44,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
