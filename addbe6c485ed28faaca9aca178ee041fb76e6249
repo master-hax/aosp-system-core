@@ -16,6 +16,24 @@
       "revId": "addbe6c485ed28faaca9aca178ee041fb76e6249",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98e0ec9f_7be6a0b0",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1343198
+      },
+      "writtenOn": "2019-01-29T04:53:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0fc2b5f4_03093f73",
+      "revId": "addbe6c485ed28faaca9aca178ee041fb76e6249",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
