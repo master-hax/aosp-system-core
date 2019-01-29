@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "3eeddfd9_417fd9cb",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "I\u0027d keep all of this code in libprocessgroups and have init just call a function that handles all of this.  I think it only happens to be the case that init sets up these cgroups now, but I don\u0027t think it\u0027s totally unreasonable that this code may move in the future, and having it in the library would make that easier.  Plus it would be more easily tested if it were in that library and a test app would call it directly.\n\nBut most importantly, I think it\u0027s way overkill to use the init builtins and the action queue to handle all of this.  I think the code would be much more simple if you called mount(), chmod(), chown(), etc directly.  \n\nFor example, the mount builtin is just a wrapper around mount() with parsing for the mount options and support for loop back devices, neither of which you need.  Simply `mount(\"cgroup2\", \"none\", controller-\u003epath(), MS_NODEV | MS_NOEXEC | MS_NOSUID);` is roughly about all that you would need.  The mkdir / chown / chmod combo may be a little bit more, but it\u0027s still something that you can easily abstract into a \"CreateCgroup()\" function that sets all of those attributes.",
+      "parentUuid": "d948cd84_e4bf6537",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 408,
+        "endChar": 0
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9c2dfd81_46e62a3b",
         "filename": "init/init.cpp",
         "patchSetId": 11
@@ -114,6 +138,121 @@
         "endLine": 414,
         "endChar": 20
       },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29e283eb_40f2da3d",
+        "filename": "init/init.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Probably better /dev/cgroup or /dev/cgroup_info or something like that.  I don\u0027t like acronyms, especially at a top level like that.",
+      "parentUuid": "eade47f1_7bcf6983",
+      "range": {
+        "startLine": 414,
+        "startChar": 13,
+        "endLine": 414,
+        "endChar": 20
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38bd0c46_09f98d54",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Do you still need this or is it left over from before?  I think all of the references have been removed (except for the header inclusion, but I don\u0027t see anything using it).",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d1f01b6_b470f2df",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "2019 + on the other files.",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32acc364_78c84b67",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Not used?",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8ba41b4_36602b6b",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Newline between the C and C++ includes.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5a0e11d_978ee7e4",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "The related header, so this one, should be the first include.",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -261,6 +400,30 @@
     },
     {
       "key": {
+        "uuid": "71727798_22427ce5",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "It is allowed, but I personally still prefer always using the braces and lots of system/core does this.",
+      "parentUuid": "5a4be173_8d645408",
+      "range": {
+        "startLine": 82,
+        "startChar": 40,
+        "endLine": 84,
+        "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e7d33918_a16ba2e4",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 11
@@ -324,6 +487,29 @@
         "startChar": 0,
         "endLine": 137,
         "endChar": 5
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92647641_8c55336b",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Probably better to have a more detailed error message here.  At the least include the function if you don\u0027t include more context about what is being opened.",
+      "range": {
+        "startLine": 141,
+        "startChar": 23,
+        "endLine": 141,
+        "endChar": 39
       },
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
@@ -589,6 +775,23 @@
     },
     {
       "key": {
+        "uuid": "e0db9e48_050831a5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "I\u0027d either\n\n1) skip the path nullptr check entirely and assume that it is not an optional parameter.\nor\n2) return true if controller !\u003d nullptr and path \u003d\u003d nullptr.  Meaning that path is an optional parameter, and users of this function can query whether or not a cgroup exists without necessarily asking for its path to be returned.\n\nSame for the below functions.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8bf32103_ae42e3a8",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -654,6 +857,47 @@
         "endLine": 103,
         "endChar": 85
       },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56bdb545_fe54a6a3",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "+1 to the above.  I\u0027m okay with the vector and the initializer list syntax is plenty readable.  Less code overall too.",
+      "parentUuid": "260bd34c_1d1f285b",
+      "range": {
+        "startLine": 103,
+        "startChar": 45,
+        "endLine": 103,
+        "endChar": 85
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84af0394_81184bc7",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Why does this and the below function return and int?  It seems that they can\u0027t fail and they\u0027re not returning a count, so should they just return void?\n\nOr if they can fail, better to return bool.",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -824,6 +1068,30 @@
     },
     {
       "key": {
+        "uuid": "2aa368c6_b3110f55",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "I\u0027d stick with the two .find calls.",
+      "parentUuid": "a04d14a2_552b8783",
+      "range": {
+        "startLine": 121,
+        "startChar": 4,
+        "endLine": 121,
+        "endChar": 100
+      },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2cf85c61_3685a7c8",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 11
@@ -865,6 +1133,40 @@
         "endLine": 127,
         "endChar": 35
       },
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53940aa8_da4ede35",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Same comment as Patrick\u0027s above here, better to return early if tid \u003c\u003d 0 then keep the rest a column less indented.",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e2ab325_3602d55f",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-29T18:34:25Z",
+      "side": 1,
+      "message": "Why does this return int, when others return bool, especially given that this seems to be just returning true/false.  Better to consistently use bool.",
       "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
