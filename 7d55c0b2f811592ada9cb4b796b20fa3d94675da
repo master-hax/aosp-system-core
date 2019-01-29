@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cacce898_392c9f1f",
+        "filename": "rootdir/cgroups.json",
+        "patchSetId": 11
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1119068
+      },
+      "writtenOn": "2019-01-29T10:39:46Z",
+      "side": 1,
+      "message": "I see that for v2 we need to get a path of the root hierarchy, however I\u0027m still wondering if we cannot get that with a better abstraction.\n\nWhy we don\u0027t configure Cgroups2 the same as Cgroups above?\n\nWe could just list all the controllers which are meant to be used under a v2 unified hierarchy.\nFor example, when cpuset will migrate under v2, we will have something like:\n\n   {\n      \"Cgroups\": [\n          \"Controller\" : \"cpu\",\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0755,\n          \"UID\": \"system\",\n          \"GID\": \"system\",\n      ],\n      \"Ggroups2\" : [\n       {\n          \"Controller\" : \"root\",\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0600,\n          \"UID\": \"root\",\n          \"GID\": \"root\",\n       },\n       {\n          \"Controller\" : \"cpuset\",\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0755,\n          \"UID\": \"system\",\n          \"GID\": \"system\",\n       },\n      ],\n   }\n\nAnd our CgroupMap parser willl know to handle \"cpuset\" related calls depending on whether they are v1 or v2 versions.\n\nNotice that just for v2 we still add one single \"fake controller\" (namely \"root\").\nThat controller by definition is available only for CGroups v2 and will allow to use the existing API in a more consistent way, e.g.\n\n   system/netd/server/TrafficController.cpp::initPrograms() {\n      if (!CgroupGetControllerPath(\"root\", \u0026cg_path)) {\n      }\n   }\n\nThe call above will still fail if v2 is not available, but at the same time we remove any kind of more explicit CGroup v1 vs v2 reference from client code and we should also easy the migration to v2 of existing controllers without touching client code. The same pattern above will apply to BpfUtils related code.\n\nWe don\u0027t need to provide the full logic to attach/manage v2 controller at this time, but I think the above abstraction could do a better job in isolating clients from the v1 vs v2 details.\n\nToughs ?",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 3
+      },
+      "revId": "7d55c0b2f811592ada9cb4b796b20fa3d94675da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
