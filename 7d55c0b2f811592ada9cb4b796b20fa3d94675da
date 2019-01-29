@@ -22,6 +22,30 @@
       "revId": "7d55c0b2f811592ada9cb4b796b20fa3d94675da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa592d46_8a3c7201",
+        "filename": "rootdir/cgroups.json",
+        "patchSetId": 11
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-29T11:45:27Z",
+      "side": 1,
+      "message": "I understand the upside of having consistent descriptions for cgroups v1 and v2, however that opens up possibilities for conflicting definitions like in your example:\n\n\"Ggroups2\" : [\n       {\n          \"Controller\" : \"root\",\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0600,\n          \"UID\": \"root\",\n          \"GID\": \"root\",\n       },\n       {\n          \"Controller\" : \"cpuset\",\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0755,\n          \"UID\": \"system\",\n          \"GID\": \"system\",\n       },\n      ],\n\nNote that Mode, UID and GID for the same path are defined differently. That\u0027s why I think for Cgroupv2 with unified hierarchy it\u0027s more appropriate to have smth like this:\n\n\n\"Ggroups2\" : {\n          \"Path\": \"/dev/cg2_bpf\",\n          \"Mode\": 0600,\n          \"UID\": \"root\",\n          \"GID\": \"root\",\n          \"Controllers\" : [\n              \"Controller\": \"cpuset\",\n              \"Controller\": \"memory\"\n           ]\n},",
+      "parentUuid": "cacce898_392c9f1f",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 3
+      },
+      "revId": "7d55c0b2f811592ada9cb4b796b20fa3d94675da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
