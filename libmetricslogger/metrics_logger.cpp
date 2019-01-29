@@ -27,14 +27,36 @@ namespace {
 
 const static int kStatsEventTag = 1937006964;
 const static int kKeyValuePairAtomId = 83;
-#ifdef __ANDROID__
-EventTagMap* kEventTagMap = android_openEventTagMap(nullptr);
-const int kSysuiMultiActionTag = android_lookupEventTagNum(
-    kEventTagMap, "sysui_multi_action", "(content|4)", ANDROID_LOG_UNKNOWN);
-#else
-// android_openEventTagMap does not work on host builds.
-const int kSysuiMultiActionTag = 0;
-#endif
+
+// Safe initializer for metricslogger. Ensures android_lookupEventTagNum is only called if
+// android_openEventTagMap succeeds. The former dereferences null otherwise.
+class MetricsLoggerInitializer final {
+  public:
+    static const MetricsLoggerInitializer& Instance() {
+        static MetricsLoggerInitializer instance;
+        return instance;
+    }
+
+    inline bool IsEnabled() const { return enabled_; }
+
+    inline int GetSysuiMultiActionTag() const { return sysui_multi_action_tag_; }
+
+  private:
+    MetricsLoggerInitializer() {
+        EventTagMap* eventTagMap = android_openEventTagMap(nullptr);
+        if (eventTagMap != nullptr) {
+            sysui_multi_action_tag_ = android_lookupEventTagNum(eventTagMap, "sysui_multi_action",
+                                                                "(content|4)", ANDROID_LOG_UNKNOWN);
+            enabled_ = true;
+        } else {
+            sysui_multi_action_tag_ = 0;
+            enabled_ = false;
+        }
+    }
+
+    bool enabled_;
+    int sysui_multi_action_tag_;
+};
 
 int64_t getElapsedTimeNanoSinceBoot() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -49,76 +71,97 @@ namespace metricslogger {
 
 // Mirror com.android.internal.logging.MetricsLogger#histogram().
 void LogHistogram(const std::string& event, int32_t data) {
-    android_log_event_list log(kSysuiMultiActionTag);
-    log << LOGBUILDER_CATEGORY << LOGBUILDER_HISTOGRAM << LOGBUILDER_NAME << event
-        << LOGBUILDER_BUCKET << data << LOGBUILDER_VALUE << 1 << LOG_ID_EVENTS;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        android_log_event_list log(MetricsLoggerInitializer::Instance().GetSysuiMultiActionTag());
+        log << LOGBUILDER_CATEGORY << LOGBUILDER_HISTOGRAM << LOGBUILDER_NAME << event
+            << LOGBUILDER_BUCKET << data << LOGBUILDER_VALUE << 1 << LOG_ID_EVENTS;
 
-    stats_event_list stats_log(kStatsEventTag);
-    stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
-              << LOGBUILDER_HISTOGRAM << LOGBUILDER_NAME << event << LOGBUILDER_BUCKET << data
-              << LOGBUILDER_VALUE << 1;
-    stats_log.write(LOG_ID_STATS);
+        stats_event_list stats_log(kStatsEventTag);
+        stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
+                  << LOGBUILDER_HISTOGRAM << LOGBUILDER_NAME << event << LOGBUILDER_BUCKET << data
+                  << LOGBUILDER_VALUE << 1;
+        stats_log.write(LOG_ID_STATS);
+    }
 }
 
 // Mirror com.android.internal.logging.MetricsLogger#count().
 void LogCounter(const std::string& name, int32_t val) {
-    android_log_event_list log(kSysuiMultiActionTag);
-    log << LOGBUILDER_CATEGORY << LOGBUILDER_COUNTER << LOGBUILDER_NAME << name << LOGBUILDER_VALUE
-        << val << LOG_ID_EVENTS;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        android_log_event_list log(MetricsLoggerInitializer::Instance().GetSysuiMultiActionTag());
+        log << LOGBUILDER_CATEGORY << LOGBUILDER_COUNTER << LOGBUILDER_NAME << name
+            << LOGBUILDER_VALUE << val << LOG_ID_EVENTS;
 
-    stats_event_list stats_log(kStatsEventTag);
-    stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
-              << LOGBUILDER_COUNTER << LOGBUILDER_NAME << name << LOGBUILDER_VALUE << val;
-    stats_log.write(LOG_ID_STATS);
+        stats_event_list stats_log(kStatsEventTag);
+        stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
+                  << LOGBUILDER_COUNTER << LOGBUILDER_NAME << name << LOGBUILDER_VALUE << val;
+        stats_log.write(LOG_ID_STATS);
+    }
 }
 
 // Mirror com.android.internal.logging.MetricsLogger#action().
 void LogMultiAction(int32_t category, int32_t field, const std::string& value) {
-    android_log_event_list log(kSysuiMultiActionTag);
-    log << LOGBUILDER_CATEGORY << category << LOGBUILDER_TYPE << TYPE_ACTION
-        << field << value << LOG_ID_EVENTS;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        android_log_event_list log(MetricsLoggerInitializer::Instance().GetSysuiMultiActionTag());
+        log << LOGBUILDER_CATEGORY << category << LOGBUILDER_TYPE << TYPE_ACTION << field << value
+            << LOG_ID_EVENTS;
 
-    stats_event_list stats_log(kStatsEventTag);
-    stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
-              << category << LOGBUILDER_TYPE << TYPE_ACTION << field << value;
-    stats_log.write(LOG_ID_STATS);
+        stats_event_list stats_log(kStatsEventTag);
+        stats_log << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
+                  << category << LOGBUILDER_TYPE << TYPE_ACTION << field << value;
+        stats_log.write(LOG_ID_STATS);
+    }
 }
 
 ComplexEventLogger::ComplexEventLogger(int category)
-    : logger(kSysuiMultiActionTag), stats_logger(kStatsEventTag) {
-    logger << LOGBUILDER_CATEGORY << category;
-    stats_logger << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
-                 << category;
+    : logger(MetricsLoggerInitializer::Instance().GetSysuiMultiActionTag()),
+      stats_logger(kStatsEventTag) {
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << LOGBUILDER_CATEGORY << category;
+        stats_logger << getElapsedTimeNanoSinceBoot() << kKeyValuePairAtomId << LOGBUILDER_CATEGORY
+                     << category;
+    }
 }
 
 void ComplexEventLogger::SetPackageName(const std::string& package_name) {
-    logger << LOGBUILDER_PACKAGENAME << package_name;
-    stats_logger << LOGBUILDER_PACKAGENAME << package_name;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << LOGBUILDER_PACKAGENAME << package_name;
+        stats_logger << LOGBUILDER_PACKAGENAME << package_name;
+    }
 }
 
 void ComplexEventLogger::AddTaggedData(int tag, int32_t value) {
-    logger << tag << value;
-    stats_logger << tag << value;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << tag << value;
+        stats_logger << tag << value;
+    }
 }
 
 void ComplexEventLogger::AddTaggedData(int tag, const std::string& value) {
-    logger << tag << value;
-    stats_logger << tag << value;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << tag << value;
+        stats_logger << tag << value;
+    }
 }
 
 void ComplexEventLogger::AddTaggedData(int tag, int64_t value) {
-    logger << tag << value;
-    stats_logger << tag << value;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << tag << value;
+        stats_logger << tag << value;
+    }
 }
 
 void ComplexEventLogger::AddTaggedData(int tag, float value) {
-    logger << tag << value;
-    stats_logger << tag << value;
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << tag << value;
+        stats_logger << tag << value;
+    }
 }
 
 void ComplexEventLogger::Record() {
-    logger << LOG_ID_EVENTS;
-    stats_logger.write(LOG_ID_STATS);
+    if (MetricsLoggerInitializer::Instance().IsEnabled()) {
+        logger << LOG_ID_EVENTS;
+        stats_logger.write(LOG_ID_STATS);
+    }
 }
 
 }  // namespace metricslogger
