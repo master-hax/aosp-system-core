@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "076fc444_c4d09127",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-01-29T17:42:22Z",
+      "side": 1,
+      "message": "how long we wait here?\nleft a comment on https://b.corp.google.com/issues/123404717#comment12",
+      "range": {
+        "startLine": 590,
+        "startChar": 4,
+        "endLine": 590,
+        "endChar": 36
+      },
+      "revId": "ccebf67734c33b461fdb85c853f3b4f6336308b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
