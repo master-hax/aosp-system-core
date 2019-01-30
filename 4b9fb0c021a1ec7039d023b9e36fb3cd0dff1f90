@@ -22,6 +22,30 @@
       "revId": "4b9fb0c021a1ec7039d023b9e36fb3cd0dff1f90",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4a57a65_4028c1dc",
+        "filename": "ashmemd/ashmemd_client.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T01:01:56Z",
+      "side": 1,
+      "message": "unique_fd is the underlying type of ParcelFileDescriptor, i.e. fd is closed when it falls out of scope.",
+      "parentUuid": "6d952756_b0c21c18",
+      "range": {
+        "startLine": 46,
+        "startChar": 11,
+        "endLine": 46,
+        "endChar": 24
+      },
+      "revId": "4b9fb0c021a1ec7039d023b9e36fb3cd0dff1f90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
