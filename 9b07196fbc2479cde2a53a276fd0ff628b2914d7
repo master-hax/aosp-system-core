@@ -1,0 +1,175 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed2fb99a_e8363d48",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Better to keep with the right format for new code, even though I know this is copied from init, so Mkdir().",
+      "range": {
+        "startLine": 52,
+        "startChar": 12,
+        "endLine": 52,
+        "endChar": 20
+      },
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab96d2c9_bed832ad",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Is it valid to call this function with these as empty?  It would default them to their parent\u0027s values; is that what we want?  Otherwise maybe just drop the check for empty() and let getpwnam()/etc fail if an empty string is provided.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2665a363_ac0d51da",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Same comment as on the other CL; I think it\u0027s better to either assume that group is mandatory and drop the nullptr check, or if group is optional, then the function should return true if the group is able to be found and move the nullptr check to before writing it back out.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc09d6e8_60dbc7a1",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Shouldn\u0027t need \u0027struct\u0027 here.",
+      "range": {
+        "startLine": 288,
+        "startChar": 4,
+        "endLine": 288,
+        "endChar": 10
+      },
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68979db3_db56c0ba",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Is this something that we can fix in the future?",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1bd5770b_5f6835f0",
+        "filename": "libprocessgroup/cgroup_map.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "These are probably better as just static functions or perhaps in a different class.  CgroupFile could just be a class within cgroup_map.cpp, which will make it essentially as private as it is now, then you can have CgroupMap strictly for reading the map and the rest of the functions separate for creating the map.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "953810f5_0790d393",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Same comment here for path\u0027s null check.",
+      "range": {
+        "startLine": 80,
+        "startChar": 8,
+        "endLine": 80,
+        "endChar": 24
+      },
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adbe40ae_c051b3b8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "Here too.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1fb5ef6_e6d931a0",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 1,
+      "message": "You should be able to drop the std::vector\u003cstd::string\u003e and just pass the initializer list.  It\u0027ll help the readability here.\n\nNow I guess I see why SetTaskProfiles() returned 0 / -1 in the previous CL.  Still probably better to do what you\u0027re doing in this patchset though with SetTaskProfiles() having a clean interface then adapting to set_cpuset_policy() here.  Unless maybe you create a SetCpusetPolicy() function that returns bool then hav set_cpuset_policy() be a small wrapper around it for the int return value?  I don\u0027t know which is the less bad option.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

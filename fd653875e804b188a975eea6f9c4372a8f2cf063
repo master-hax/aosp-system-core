@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "222a88ff_de891d78",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 13
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T18:19:02Z",
+      "side": 0,
+      "message": "Longer term, do you plan to set up these directories via libprocessgroups too?  I think it would be a good improvement to centralize this all to cgroups.rc.  A lot cleaner too if users only need to specify \u0027foreground\u0027 and the chown/chmod is taken care of for them too instead of needing to copy those lines as done here.",
+      "revId": "fd653875e804b188a975eea6f9c4372a8f2cf063",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
