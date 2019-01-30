@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e543d3d7_e735a40b",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T00:59:41Z",
+      "side": 1,
+      "message": "Vendor code can\u0027t link to aidl interfaces. And I didn\u0027t make a HIDL interface because we are only targeting apps with ashmemd logic.",
+      "parentUuid": "f37d9ae9_21a026ba",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 24
+      },
+      "revId": "28863ab5c5fcd9dcb1bd83bf726a0287bc150eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "824a3dd8_93cf591e",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-29T23:48:03Z",
       "side": 1,
       "message": "nit: add \u0027required: libashmemd_client\u0027 to libcutils Android.bp",
+      "range": {
+        "startLine": 56,
+        "startChar": 27,
+        "endLine": 56,
+        "endChar": 45
+      },
+      "revId": "28863ab5c5fcd9dcb1bd83bf726a0287bc150eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "471b6743_48baf3f3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T00:59:41Z",
+      "side": 1,
+      "message": "Do you have a strong preference for this? libcutils has many build variants, and only some need libashmemd_client",
+      "parentUuid": "824a3dd8_93cf591e",
       "range": {
         "startLine": 56,
         "startChar": 27,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "be01ec58_52dcbea9",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T00:59:41Z",
+      "side": 1,
+      "message": "we don\u0027t retry dlopen, so might as well not dlclose.",
+      "parentUuid": "f92b9717_3ac70809",
+      "revId": "28863ab5c5fcd9dcb1bd83bf726a0287bc150eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2625524c_9462b5a1",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 3
@@ -76,6 +142,30 @@
       "writtenOn": "2019-01-30T00:17:29Z",
       "side": 1,
       "message": "this is going to throw an selinux denial. Should we instead make this the fallback and use ashmemd by default? That would be ideal, otherwise you\u0027ll be rarely hitting the ashmemd codepath because not very many apps are targeting Q.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 73
+      },
+      "revId": "28863ab5c5fcd9dcb1bd83bf726a0287bc150eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fbc0777_acbeab39",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T00:59:41Z",
+      "side": 1,
+      "message": "I was thinking of prioritizing the \"fast\" path. But you\u0027re right, we want apps to exercise ashmemd codepath. I\u0027ll switch things around.",
+      "parentUuid": "2625524c_9462b5a1",
       "range": {
         "startLine": 76,
         "startChar": 0,

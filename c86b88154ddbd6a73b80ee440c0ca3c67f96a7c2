@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "ab16958a_4fcea077",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2019-01-30T00:59:41Z",
+      "side": 1,
+      "message": "imo, too much boilerplate. we are only using 1 type here.",
+      "parentUuid": "8b62b796_6085c46e",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 2
+      },
+      "revId": "c86b88154ddbd6a73b80ee440c0ca3c67f96a7c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6defe4fc_ea88b36f",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
