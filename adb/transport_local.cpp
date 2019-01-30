@@ -26,7 +26,6 @@
 #include <sys/types.h>
 
 #include <condition_variable>
-#include <functional>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -75,15 +74,14 @@ std::tuple<unique_fd, int, std::string> tcp_connect(const std::string& address,
     unique_fd fd;
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
     std::string serial;
-    std::string prefix_addr = address.starts_with("vsock:") ? address : "tcp:" + address;
-    if (socket_spec_connect(&fd, prefix_addr, &port, &serial, response)) {
+    if (socket_spec_connect(&fd, "tcp:" + address, &port, &serial, response)) {
         close_on_exec(fd);
         if (!set_tcp_keepalive(fd, 1)) {
             D("warning: failed to configure TCP keepalives (%s)", strerror(errno));
         }
         return std::make_tuple(std::move(fd), port, serial);
     }
-    return std::make_tuple(unique_fd(), 0, serial);
+    return std::make_tuple(unique_fd(), 0, "");
 }
 
 void connect_device(const std::string& address, std::string* response) {
@@ -97,9 +95,6 @@ void connect_device(const std::string& address, std::string* response) {
     int port;
     std::string serial;
     std::tie(fd, port, serial) = tcp_connect(address, response);
-    if (fd.get() == -1) {
-        return;
-    }
     auto reconnect = [address](atransport* t) {
         std::string response;
         unique_fd fd;
@@ -236,20 +231,16 @@ static void client_socket_thread(int) {
 
 #else  // !ADB_HOST
 
-void server_socket_thread(std::string_view spec) {
+void server_socket_thread(int port) {
     unique_fd serverfd;
 
     adb_thread_setname("server socket");
     D("transport: server_socket_thread() starting");
-    int port;
     while (serverfd == -1) {
+        std::string spec = android::base::StringPrintf("tcp:%d", port);
         std::string error;
-        errno = 0;
-        serverfd.reset(socket_spec_listen(spec, &error, &port));
-        if (errno == EAFNOSUPPORT || errno == EINVAL || errno == EPROTONOSUPPORT) {
-            D("unrecoverable error: '%s'", error.c_str());
-            return;
-        } else if (serverfd < 0) {
+        serverfd.reset(socket_spec_listen(spec, &error));
+        if (serverfd < 0) {
             D("server: cannot bind socket yet: %s", error.c_str());
             std::this_thread::sleep_for(1s);
             continue;
@@ -258,8 +249,7 @@ void server_socket_thread(std::string_view spec) {
     }
 
     while (true) {
-        std::string spec_str{spec};
-        D("server: trying to get new connection from %s", spec_str.c_str());
+        D("server: trying to get new connection from %d", port);
         unique_fd fd(adb_socket_accept(serverfd, nullptr, nullptr));
         if (fd >= 0) {
             D("server: new connection on fd %d", fd.get());
@@ -276,25 +266,25 @@ void server_socket_thread(std::string_view spec) {
 #endif
 
 void local_init(int port) {
+    void (*func)(int);
+    const char* debug_name = "";
+
 #if ADB_HOST
-    D("transport: local client init");
-    std::thread(client_socket_thread, port).detach();
+    func = client_socket_thread;
+    debug_name = "client";
 #elif !defined(__ANDROID__)
     // Host adbd.
-    D("transport: local server init");
-    std::thread(server_socket_thread, android::base::StringPrintf("tcp:%d", port)).detach();
-    std::thread(server_socket_thread, android::base::StringPrintf("vsock:%d", port)).detach();
+    func = server_socket_thread;
+    debug_name = "server";
 #else
-    D("transport: local server init");
     // For the adbd daemon in the system image we need to distinguish
     // between the device, and the emulator.
-    if (use_qemu_goldfish()) {
-        std::thread(qemu_socket_thread, port).detach();
-    } else {
-        std::thread(server_socket_thread, android::base::StringPrintf("tcp:%d", port)).detach();
-    }
-    std::thread(server_socket_thread, android::base::StringPrintf("vsock:%d", port)).detach();
+    func = use_qemu_goldfish() ? qemu_socket_thread : server_socket_thread;
+    debug_name = "server";
 #endif // !ADB_HOST
+
+    D("transport: local %s init", debug_name);
+    std::thread(func, port).detach();
 }
 
 #if ADB_HOST
