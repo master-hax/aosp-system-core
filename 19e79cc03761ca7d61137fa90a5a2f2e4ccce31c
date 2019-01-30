@@ -1108,6 +1108,24 @@
     },
     {
       "key": {
+        "uuid": "7acfd2da_bbe4940a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T03:42:42Z",
+      "side": 1,
+      "message": "Let\u0027s have it return bool to reserve a possibility for this function to fail. For now it always returns true.",
+      "parentUuid": "5658136f_27bbfb84",
+      "revId": "19e79cc03761ca7d61137fa90a5a2f2e4ccce31c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5a930684_800ff90f",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
