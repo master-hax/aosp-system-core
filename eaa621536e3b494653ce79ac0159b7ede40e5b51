@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e63abe2_d29b3002",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-30T23:20:50Z",
+      "side": 1,
+      "message": "It seems like vendors will also be reading this. We would have to stabilize the format of this file then (for when old vndk versions of the library try to access it). Is it desirable to freeze this? (@sundongahn/jiyong for guidance)",
+      "range": {
+        "startLine": 46,
+        "startChar": 50,
+        "endLine": 46,
+        "endChar": 67
+      },
+      "revId": "eaa621536e3b494653ce79ac0159b7ede40e5b51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
