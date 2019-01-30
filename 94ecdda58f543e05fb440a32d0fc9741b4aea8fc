@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "95165974_aec9e8f5",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-30T20:17:43Z",
+      "side": 1,
+      "message": "nit: KISS\n\nif (!(io-\u003eflags \u0026 DM_BUFFER_FULL_FLAG)) break;",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 14
+      },
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ab9aeb8_019d4867",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-30T20:17:43Z",
+      "side": 1,
+      "message": "Or use android base library? (Resolved b/c I do not care)\n\nstd::string arg;\nif (!android::base::ReadFileToString(filename, \u0026arg)) return false;\nargs \u003d android::base::Split(arg, \" \\n\");\nfor (auto const\u0026 i : args) arg_ptrs.push_back(const_cast\u003cchar*\u003e(i.c_str()));\nreturn true;",
+      "range": {
+        "startLine": 349,
+        "startChar": 0,
+        "endLine": 356,
+        "endChar": 16
+      },
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71cf1abb_18c5b999",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-30T20:17:43Z",
+      "side": 1,
+      "message": "or start using getopt_long so that the future selves will not have to struggle to add yet another option?\n\n(example of something I am doing right now in https://android-review.googlesource.com/c/platform/system/core/+/885532/4/fs_mgr/fs_mgr_remount.cpp)\n\n(resolved b/c I do not \u0027care\u0027)",
+      "range": {
+        "startLine": 365,
+        "startChar": 0,
+        "endLine": 379,
+        "endChar": 5
+      },
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
