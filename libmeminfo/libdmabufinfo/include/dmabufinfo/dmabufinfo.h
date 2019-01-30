@@ -76,7 +76,6 @@ struct DmaBuffer {
 // Read and return current dma buf objects from
 // DEBUGFS/dma_buf/bufinfo. The references to each dma buffer are not
 // populated here and will return an empty vector.
-//
 // Returns false if something went wrong with the function, true otherwise.
 bool ReadDmaBufInfo(std::vector<DmaBuffer>* dmabufs,
                     const std::string& path = "/sys/kernel/debug/dma_buf/bufinfo");
@@ -84,13 +83,13 @@ bool ReadDmaBufInfo(std::vector<DmaBuffer>* dmabufs,
 
 // Read and return dmabuf objects for a given process without the help
 // of DEBUGFS
-//
 // Returns false if something went wrong with the function, true otherwise.
 bool ReadDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs);
 
-// Append dmabuf objects for a given process without the help
-// of DEBUGFS to an existing vector
-//
+// Append new dmabuf objects from a given process to an existing vector.
+// When the vector contains an existing element with a matching inode,
+// the reference counts will be updated.
+// Does not depend on DEBUGFS.
 // Returns false if something went wrong with the function, true otherwise.
 bool AppendDmaBufInfo(pid_t pid, std::vector<DmaBuffer>* dmabufs);
 
