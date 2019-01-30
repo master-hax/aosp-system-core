@@ -34,6 +34,24 @@
       "revId": "2cbdc561ad1b3c1565af8e1a30faa17dc35e9271",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0d7a58a_fc29c1c0",
+        "filename": "libmeminfo/libdmabufinfo/dmabufinfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T15:33:00Z",
+      "side": 0,
+      "message": "A different API to do that is fine and we can refactor internally to make sure one clears it and one doesn\u0027t. Keep this -\u003eclear() for now and then check-in.",
+      "parentUuid": "4d14b962_eef1fbc1",
+      "revId": "2cbdc561ad1b3c1565af8e1a30faa17dc35e9271",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
