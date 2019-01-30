@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "3cc79428_b1975006",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-30T21:55:53Z",
+      "side": 1,
+      "message": "Style guide permits this.\n\nEither\n\nif (...) expr;\n\nor\n\nif (...) {\n   expr;\n}",
+      "parentUuid": "7c6d8b91_b0ff3663",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 54
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b947354d_f9fa77c4",
         "filename": "fs_mgr/tools/dmctl.cpp",
         "patchSetId": 4
