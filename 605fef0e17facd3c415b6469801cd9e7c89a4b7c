@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6ace829_2d00377f",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T21:38:30Z",
+      "side": 1,
+      "message": "Is it ok to assume that the vector stores the data contiguously? I couldn\u0027t find details easily anywhere -\u003d https://en.cppreference.com/w/cpp/container/vector\nBecause the kernel is going to copy data_size bytes starting at \u0026buffer[0] where [] is an operator for std::vector",
+      "range": {
+        "startLine": 306,
+        "startChar": 0,
+        "endLine": 306,
+        "endChar": 60
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c6d8b91_b0ff3663",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T21:38:30Z",
+      "side": 1,
+      "message": "nit:\nif (..) {\n}",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 54
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b947354d_f9fa77c4",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T21:38:30Z",
+      "side": 1,
+      "message": "while (..) {\n}",
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47b28c53_916a5478",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T21:38:30Z",
+      "side": 1,
+      "message": "for (...) {\n}",
+      "range": {
+        "startLine": 355,
+        "startChar": 4,
+        "endLine": 355,
+        "endChar": 82
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
