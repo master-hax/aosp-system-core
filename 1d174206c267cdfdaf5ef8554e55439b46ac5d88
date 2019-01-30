@@ -22,6 +22,30 @@
       "revId": "1d174206c267cdfdaf5ef8554e55439b46ac5d88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b88f032_06c13306",
+        "filename": "liblog/tests/AndroidTest.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-01-30T00:15:50Z",
+      "side": 1,
+      "message": "So two separate lines with the same exact name and key?",
+      "parentUuid": "37a3f71d_f0795fe4",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 11
+      },
+      "revId": "1d174206c267cdfdaf5ef8554e55439b46ac5d88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
