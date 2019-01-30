@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37a3f71d_f0795fe4",
+        "filename": "liblog/tests/AndroidTest.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1342618
+      },
+      "writtenOn": "2019-01-30T00:12:25Z",
+      "side": 1,
+      "message": "The bug is a bit confusing, sorry about that. The bug ask the module owner to explicitly set two fields: instant_app/not_instant_app, and multi_abi/no_multi_abi.\n\nSo you want to keep \u003coption name\u003d\"config-descriptor:metadata\" key\u003d\"parameter\" value\u003d\"not_instant_app\" /\u003e",
+      "range": {
+        "startLine": 19,
+        "startChar": 5,
+        "endLine": 19,
+        "endChar": 11
+      },
+      "revId": "1d174206c267cdfdaf5ef8554e55439b46ac5d88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
