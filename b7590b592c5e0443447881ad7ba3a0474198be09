@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4f1f02d1_055820e5",
+        "filename": "ashmemd/ashmemd_client.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-01-30T17:04:08Z",
+      "side": 1,
+      "message": "nit: expose in header w/ trampoline to load so that the dlopen boundary is locally within this folder",
+      "range": {
+        "startLine": 38,
+        "startChar": 15,
+        "endLine": 38,
+        "endChar": 28
+      },
+      "revId": "b7590b592c5e0443447881ad7ba3a0474198be09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
