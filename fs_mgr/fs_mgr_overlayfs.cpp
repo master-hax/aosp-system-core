@@ -67,6 +67,19 @@ bool fs_mgr_access(const std::string& path) {
     return ret;
 }
 
+// determine if a filesystem is available
+bool fs_mgr_overlayfs_filesystem_available(const std::string& filesystem) {
+    // most succeed here, except overlay and f2fs on 3.18 and 4.4 false negative
+    // works on 4.9 and higher as module parms exists on candidates we check.
+    if (fs_mgr_access("/sys/module/" + filesystem)) return true;
+    // some succeed quickly here, but overlay on 3.18 is a false negative.
+    if (fs_mgr_access("/sys/fs/" + filesystem)) return true;
+    // always works, but costs more to parse and can suffer from races.
+    std::string filesystems;
+    if (!android::base::ReadFileToString("/proc/filesystems", &filesystems)) return false;
+    return filesystems.find("\t" + filesystem) != std::string::npos;
+}
+
 }  // namespace
 
 #if ALLOW_ADBD_DISABLE_VERITY == 0  // If we are a user build, provide stubs
@@ -625,8 +638,12 @@ const std::string kMkExt4("/system/bin/mke2fs");
 
 // Only a suggestion for _first_ try during mounting
 std::string fs_mgr_overlayfs_scratch_mount_type() {
-    if (!access(kMkF2fs.c_str(), X_OK) && fs_mgr_access("/sys/fs/f2fs")) return "f2fs";
-    if (!access(kMkExt4.c_str(), X_OK) && fs_mgr_access("/sys/fs/ext4")) return "ext4";
+    if (!access(kMkF2fs.c_str(), X_OK) && fs_mgr_overlayfs_filesystem_available("f2fs")) {
+        return "f2fs";
+    }
+    if (!access(kMkExt4.c_str(), X_OK) && fs_mgr_overlayfs_filesystem_available("ext4")) {
+        return "ext4";
+    }
     return "auto";
 }
 
@@ -657,7 +674,7 @@ bool fs_mgr_overlayfs_make_scratch(const std::string& scratch_device, const std:
     if (mnt_type == "f2fs") {
         command = kMkF2fs + " -w 4096 -f -d1 -l" + android::base::Basename(kScratchMountPoint);
     } else if (mnt_type == "ext4") {
-        command = kMkExt4 + " -b 4096 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
+        command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
     } else {
         errno = ESRCH;
         LERROR << mnt_type << " has no mkfs cookbook";
@@ -1002,7 +1019,7 @@ OverlayfsValidResult fs_mgr_overlayfs_valid() {
     if (fs_mgr_access("/sys/module/overlay/parameters/override_creds")) {
         return OverlayfsValidResult::kOverrideCredsRequired;
     }
-    if (!fs_mgr_access("/sys/module/overlay")) {
+    if (!fs_mgr_overlayfs_filesystem_available("overlay")) {
         return OverlayfsValidResult::kNotSupported;
     }
     struct utsname uts;
