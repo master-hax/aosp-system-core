@@ -27,6 +27,7 @@
 #include <android-base/unique_fd.h>
 #include <libdm/dm.h>
 
+#include <fstream>
 #include <functional>
 #include <iomanip>
 #include <ios>
@@ -340,10 +341,38 @@ static std::map<std::string, std::function<int(int, char**)>> cmdmap = {
         // clang-format on
 };
 
+static bool ReadFile(const char* filename, std::vector<std::string>& args,
+                     std::vector<char*>& arg_ptrs) {
+    std::ifstream file(filename);
+    if (!file) return false;
+
+    std::string arg;
+    while (file >> arg) args.push_back(arg);
+
+    for (auto const& i : args) arg_ptrs.push_back(const_cast<char*>(i.c_str()));
+    return true;
+}
+
 int main(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StderrLogger);
     if (argc < 2) {
         return Usage();
+    }
+
+    std::vector<std::string> args;
+    std::vector<char*> arg_ptrs;
+    if (std::string("-f") == argv[1]) {
+        if (argc != 3) {
+            return Usage();
+        }
+
+        args.push_back(argv[0]);
+        if (!ReadFile(argv[2], args, arg_ptrs)) {
+            return Usage();
+        }
+
+        argc = arg_ptrs.size();
+        argv = &arg_ptrs[0];
     }
 
     for (const auto& cmd : cmdmap) {
