@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "186dbcdd_31c4a28a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-01-30T01:02:40Z",
+      "side": 1,
+      "message": "What about vendor apps? They can access aidl interfaces.",
+      "parentUuid": "e543d3d7_e735a40b",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 24
+      },
+      "revId": "28863ab5c5fcd9dcb1bd83bf726a0287bc150eb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "824a3dd8_93cf591e",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 3
