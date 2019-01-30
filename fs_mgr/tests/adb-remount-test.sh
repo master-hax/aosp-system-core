@@ -1,4 +1,15 @@
 #! /bin/bash
+#
+# divided into four section:
+#
+##  USAGE
+##  Helper Variables
+##  Helper Functions
+##  MAINLINE
+
+##
+##  USAGE
+##
 
 USAGE="USAGE: `basename ${0}` [-s <SerialNumber>]
 
@@ -17,20 +28,26 @@ if [ X"${1}" = X"--help" -o X"${1}" = X"-h" -o X"${1}" = X"-?" ]; then
   exit 0
 fi
 
-# Helper Variables
+##
+##  Helper Variables
+##
 
 SPACE=" "
 # A _real_ embedded tab character
 TAB="`echo | tr '\n' '\t'`"
 # A _real_ embedded escape character
 ESCAPE="`echo | tr '\n' '\033'`"
+# A _real_ embedded carriage return character
+CR="`echo | tr '\n' '\r'`"
 GREEN="${ESCAPE}[38;5;40m"
 RED="${ESCAPE}[38;5;196m"
 ORANGE="${ESCAPE}[38;5;255:165:0m"
 BLUE="${ESCAPE}[35m"
 NORMAL="${ESCAPE}[0m"
 
-# Helper functions
+##
+##  Helper Functions
+##
 
 [ "USAGE: inFastboot
 
@@ -67,6 +84,8 @@ adb_sh() {
     if [ X"${i}" != X"${i#\'}" ]; then
       args="${args}${i}"
     elif [ X"${i}" != X"${i#* }" ]; then
+      args="${args}'${i}'"
+    elif [ X"${i}" != X"${i#*${TAB}}" ]; then
       args="${args}'${i}'"
     else
       args="${args}${i}"
@@ -139,6 +158,7 @@ adb_reboot() {
 Returns: waits until the device has returned for adb or optional timeout" ]
 adb_wait() {
   if [ -n "${1}" ]; then
+    echo -n ". . . waiting ${1}" ${ANDROID_SERIAL} ${USB_ADDRESS} "${CR}"
     timeout --preserve-status --signal=KILL ${1} adb wait-for-device
   else
     adb wait-for-device
@@ -152,6 +172,7 @@ fastboot_wait() {
   # fastboot has no wait-for-device, but it does an automatic
   # wait and requires (even a nonsensical) command to do so.
   if [ -n "${1}" ]; then
+    echo -n ". . . waiting ${1}" ${ANDROID_SERIAL} ${USB_ADDRESS} "${CR}"
     timeout --preserve-status --signal=KILL ${1} fastboot wait-for-device
   else
     fastboot wait-for-device >/dev/null
@@ -310,8 +331,13 @@ skip_administrative_mounts() {
     -e "^\(overlay\|tmpfs\|none\|sysfs\|proc\|selinuxfs\|debugfs\) " \
     -e "^\(bpf\|cg2_bpf\|pstore\|tracefs\|adb\|mtp\|ptp\|devpts\) " \
     -e "^\(/data/media\|/dev/block/loop[0-9]*\) " \
+    -e "^rootfs / rootfs rw," \
     -e " /\(cache\|mnt/scratch\|mnt/vendor/persist\|persist\|metadata\) "
 }
+
+##
+##  MAINLINE
+##
 
 if [ X"-s" = X"${1}" -a -n "${2}" ]; then
   export ANDROID_SERIAL="${2}"
@@ -320,7 +346,7 @@ fi
 
 inFastboot && die "device in fastboot mode"
 if ! inAdb; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} device not in adb mode ... waiting 2 minutes"
+  echo "${ORANGE}[  WARNING ]${NORMAL} device not in adb mode"
   adb_wait 2m
 fi
 inAdb || die "specified device not in adb mode"
@@ -336,14 +362,27 @@ fi
 D=`get_property ro.serialno`
 [ -n "${D}" ] || D=`get_property ro.boot.serialno`
 [ -z "${D}" ] || ANDROID_SERIAL=${D}
+USB_SERIAL=
+[ -z "${ANDROID_SERIAL}" ] || USB_SERIAL=`find /sys/devices -name serial |
+                                          grep usb |
+                                          xargs grep -l ${ANDROID_SERIAL}`
+USB_ADDRESS=
+if [ -n "${USB_SERIAL}" ]; then
+  USB_ADDRESS=${USB_SERIAL%/serial}
+  USB_ADDRESS=usb${USB_ADDRESS##*/}
+fi
+[ -z "${ANDROID_SERIAL}${USB_ADDRESS}" ] ||
+  echo "${BLUE}[     INFO ]${NORMAL}" ${ANDROID_SERIAL} ${USB_ADDRESS} >&2
 BUILD_DESCRIPTION=`get_property ro.build.description`
-echo "${BLUE}[     INFO ]${NORMAL} ${ANDROID_SERIAL} ${BUILD_DESCRIPTION}" >&2
+[ -z "${BUILD_DESCRIPTION}" ] ||
+  echo "${BLUE}[     INFO ]${NORMAL} ${BUILD_DESCRIPTION}" >&2
 
 echo "${GREEN}[ RUN      ]${NORMAL} Testing kernel support for overlayfs" >&2
 
 overlayfs_supported=true;
 adb_wait || die "wait for device failed"
-adb_sh ls -d /sys/module/overlay </dev/null >/dev/null &&
+adb_sh ls -d /sys/module/overlay </dev/null >/dev/null 2>/dev/null ||
+  adb_sh grep "nodev${TAB}overlay" /proc/filesystems </dev/null >/dev/null 2>/dev/null &&
   echo "${GREEN}[       OK ]${NORMAL} overlay module present" >&2 ||
   (
     echo "${ORANGE}[  WARNING ]${NORMAL} overlay module not present" >&2 &&
@@ -391,9 +430,9 @@ if ${reboot}; then
   echo "${ORANGE}[  WARNING ]${NORMAL} rebooting before test" >&2
   adb_reboot &&
     adb_wait 2m ||
-    die "lost device after reboot after wipe"
+    die "lost device after reboot after wipe (USB stack broken?)"
   adb_root ||
-    die "lost device after elevation to root after wipe"
+    die "lost device after elevation to root after wipe (USB stack broken?)"
 fi
 D=`adb_sh df -k </dev/null` &&
   H=`echo "${D}" | head -1` &&
@@ -455,9 +494,9 @@ if [ X"${D}" != X"${H}" ]; then
   L=`adb_logcat -b all -v nsec -t ${T} 2>&1`
   adb_reboot &&
     adb_wait 2m ||
-    die "lost device after reboot requested"
+    die "lost device after reboot requested (USB stack broken?)"
   adb_root ||
-    die "lost device after elevation to root"
+    die "lost device after elevation to root (USB stack broken?)"
   rebooted=true
   # re-disable verity to see the setup remarks expected
   T=`adb_date`
@@ -544,7 +583,7 @@ if ${overlayfs_needed}; then
     echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
     die  "overlay takeover after remount"
   !(adb_sh grep "^overlay " /proc/mounts </dev/null |
-    grep -v "^overlay /\(vendor\|system\)/..* overlay ro," |
+    grep -v "^overlay /\(vendor\|system\|bionic\)/..* overlay ro," |
     grep " overlay ro,") &&
     !(adb_sh grep " rw," /proc/mounts </dev/null |
       skip_administrative_mounts data) ||
@@ -574,12 +613,16 @@ tempdir="`mktemp -d`"
 cleanup() {
   rm -rf ${tempdir}
 }
-adb pull /system/lib/bootstrap/libc.so ${tempdir} || die "pull libc.so from device"
+adb pull /system/lib/bootstrap/libc.so ${tempdir} >/dev/null ||
+  die "pull libc.so from device"
 garbage="`hexdump -n 16 -e '4/4 "%08X" 1 "\n"' /dev/random`"
 echo ${garbage} >> ${tempdir}/libc.so
-adb push ${tempdir}/libc.so /system/lib/bootstrap/libc.so || die "push libc.so to device"
-adb pull /system/lib/bootstrap/libc.so ${tempdir}/libc.so.fromdevice || die "pull libc.so from device"
-diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null || die "libc.so differ"
+adb push ${tempdir}/libc.so /system/lib/bootstrap/libc.so >/dev/null ||
+  die "push libc.so to device"
+adb pull /system/lib/bootstrap/libc.so ${tempdir}/libc.so.fromdevice >/dev/null ||
+  die "pull libc.so from device"
+diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null ||
+  die "libc.so differ"
 
 echo "${GREEN}[ RUN      ]${NORMAL} reboot to confirm content persistent" >&2
 
@@ -621,7 +664,7 @@ echo "${GREEN}[       OK ]${NORMAL} /vendor content remains after reboot" >&2
 
 # check if the updated libc.so is persistent after reboot
 adb_root &&
-  adb pull /system/lib/bootstrap/libc.so ${tempdir}/libc.so.fromdevice ||
+  adb pull /system/lib/bootstrap/libc.so ${tempdir}/libc.so.fromdevice >/dev/null ||
   die "pull libc.so from device"
 diff ${tempdir}/libc.so ${tempdir}/libc.so.fromdevice > /dev/null || die "libc.so differ"
 rm -r ${tempdir}
@@ -677,7 +720,7 @@ else
   fi
   fastboot reboot ||
     die "can not reboot out of fastboot"
-  echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot ... waiting 2 minutes"
+  echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot"
   adb_wait 2m ||
     die "did not reboot after flash"
   if ${overlayfs_needed}; then
@@ -719,9 +762,26 @@ fi
 echo "${GREEN}[ RUN      ]${NORMAL} remove test content (cleanup)" >&2
 
 T=`adb_date`
-adb remount &&
+H=`adb remount 2>&1`
+err=${?}
+L=
+D="${H%?Now reboot your device for settings to take effect}"
+if [ X"${H}" != X"${D}" ]; then
+  echo "${ORANGE}[  WARNING ]${NORMAL} adb remount requires a reboot after partial flash (legacy avb)"
+  L=`adb_logcat -b all -v nsec -t ${T} 2>&1`
+  adb_reboot &&
+    adb_wait 2m &&
+    adb_root ||
+    die "failed to reboot"
+  T=`adb_date`
+  H=`adb remount 2>&1`
+  err=${?}
+fi
+echo "${H}"
+[ ${err} = 0 ] &&
   ( adb_sh rm /vendor/hello </dev/null 2>/dev/null || true ) &&
   adb_sh rm /system/hello </dev/null ||
+  ( [ -n "${L}" ] && echo "${L}" && false ) ||
   die -t ${T} "cleanup hello"
 B="`adb_cat /system/hello`" &&
   die "re-read /system/hello after rm"
@@ -773,7 +833,7 @@ echo "${GREEN}[ RUN      ]${NORMAL} test raw remount command" >&2
 # prerequisite is a prepped device from above
 adb_reboot &&
   adb_wait 2m ||
-  die "lost device after reboot to ro state"
+  die "lost device after reboot to ro state (USB stack broken?)"
 adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
   die "/vendor is not read-only"
 adb_su mount -o rw,remount /vendor ||
