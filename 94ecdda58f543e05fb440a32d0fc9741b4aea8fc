@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "454a8930_460ed5fe",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T21:31:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "320a132d_2296e60e",
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "95165974_aec9e8f5",
         "filename": "fs_mgr/libdm/dm.cpp",
         "patchSetId": 3
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "f13f3cbf_bf46e83b",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T21:31:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95165974_aec9e8f5",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 14
+      },
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ecda6006_9e31a676",
         "filename": "fs_mgr/tools/dmctl.cpp",
         "patchSetId": 3
@@ -56,6 +98,24 @@
       "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "846a7f82_4d7aab57",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T21:31:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ecda6006_9e31a676",
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
