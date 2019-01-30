@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "f992c2be_b5f9ef68",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T22:00:03Z",
+      "side": 1,
+      "message": "Yes, a vector is guaranteed continguous: https://stackoverflow.com/questions/849168/are-stdvector-elements-guaranteed-to-be-contiguous",
+      "parentUuid": "d6ace829_2d00377f",
+      "range": {
+        "startLine": 306,
+        "startChar": 0,
+        "endLine": 306,
+        "endChar": 60
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7c6d8b91_b0ff3663",
         "filename": "fs_mgr/libdm/dm.cpp",
         "patchSetId": 4
@@ -96,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "d4e5391f_a7fc3510",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T22:00:03Z",
+      "side": 1,
+      "message": "This is OK according to the style guide",
+      "parentUuid": "7c6d8b91_b0ff3663",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 54
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b947354d_f9fa77c4",
         "filename": "fs_mgr/tools/dmctl.cpp",
         "patchSetId": 4
@@ -110,6 +158,24 @@
       "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8364fcce_0eaf733c",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T22:00:03Z",
+      "side": 1,
+      "message": "Style guide says OK",
+      "parentUuid": "b947354d_f9fa77c4",
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -133,6 +199,30 @@
       "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e0885cb_23689005",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T22:00:03Z",
+      "side": 1,
+      "message": "Style guide says OK",
+      "parentUuid": "47b28c53_916a5478",
+      "range": {
+        "startLine": 355,
+        "startChar": 4,
+        "endLine": 355,
+        "endChar": 82
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
