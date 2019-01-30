@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "320a132d_2296e60e",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-30T20:55:05Z",
+      "side": 1,
+      "message": "s/0/nullptr/",
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "95165974_aec9e8f5",
         "filename": "fs_mgr/libdm/dm.cpp",
         "patchSetId": 3
@@ -19,6 +36,23 @@
         "endLine": 320,
         "endChar": 14
       },
+      "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecda6006_9e31a676",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-01-30T20:55:05Z",
+      "side": 1,
+      "message": "nit: std::vector\u003cstd::string\u003e* arg, std::vector\u003cchar*\u003e* arg_ptrs\n\n(Google C++ style forbids non-const reference arguments)",
       "revId": "94ecdda58f543e05fb440a32d0fc9741b4aea8fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
