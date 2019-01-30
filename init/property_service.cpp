@@ -65,6 +65,7 @@
 
 using namespace std::literals;
 
+using android::base::GetProperty;
 using android::base::ReadFileToString;
 using android::base::Split;
 using android::base::StartsWith;
@@ -728,6 +729,82 @@ void load_persist_props(void) {
     property_set("ro.persistent_properties.ready", "true");
 }
 
+// If the ro.product.[brand|device|manufacturer|model|name] properties have not been explicitly
+// set, derive them from ro.product.${partition}.* properties
+static void property_initialize_ro_product_props() {
+    const char* RO_PRODUCT_PROPS_PREFIX = "ro.product.";
+    const char* RO_PRODUCT_PROPS[] = {
+            "brand", "device", "manufacturer", "model", "name",
+    };
+    const char* RO_PRODUCT_PROPS_SOURCE_ORDER[] = {
+            "product.", "product_services.", "odm.", "vendor.", "system.",
+    };
+    const std::string EMPTY = "";
+
+    for (const auto& ro_product_prop : RO_PRODUCT_PROPS) {
+        std::string base_prop(RO_PRODUCT_PROPS_PREFIX);
+        base_prop += ro_product_prop;
+
+        std::string base_prop_val = GetProperty(base_prop, EMPTY);
+        if (!base_prop_val.empty()) {
+            continue;
+        }
+
+        for (const auto& ro_product_props_source : RO_PRODUCT_PROPS_SOURCE_ORDER) {
+            std::string target_prop(RO_PRODUCT_PROPS_PREFIX);
+            target_prop += ro_product_props_source;
+            target_prop += ro_product_prop;
+
+            std::string target_prop_val = GetProperty(target_prop, EMPTY);
+            if (!target_prop_val.empty()) {
+                LOG(INFO) << "Setting product property '" << base_prop << "' to '"
+                          << target_prop_val << "'";
+                std::string error;
+                uint32_t res = PropertySet(base_prop, target_prop_val, &error);
+                if (res != PROP_SUCCESS) {
+                    LOG(ERROR) << "Error setting product property '" << base_prop
+                               << "': err=" << res << " (" << error << ")";
+                }
+                break;
+            }
+        }
+    }
+}
+
+// If the ro.build.fingerprint property has not been set, derive it from constituent pieces
+static void property_derive_build_fingerprint() {
+    std::string build_fingerprint = GetProperty("ro.build.fingerprint", "");
+    if (!build_fingerprint.empty()) {
+        return;
+    }
+
+    const std::string UNKNOWN = "unknown";
+    build_fingerprint = GetProperty("ro.product.brand", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += GetProperty("ro.product.name", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += GetProperty("ro.product.device", UNKNOWN);
+    build_fingerprint += ':';
+    build_fingerprint += GetProperty("ro.build.version.release", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += GetProperty("ro.build.id", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += GetProperty("ro.build.version.incremental", UNKNOWN);
+    build_fingerprint += ':';
+    build_fingerprint += GetProperty("ro.build.type", UNKNOWN);
+    build_fingerprint += '/';
+    build_fingerprint += GetProperty("ro.build.tags", UNKNOWN);
+
+    LOG(INFO) << "Setting property 'ro.build.fingerprint' to '" << build_fingerprint << "'";
+
+    std::string error;
+    uint32_t res = PropertySet("ro.build.fingerprint", build_fingerprint, &error);
+    if (res != PROP_SUCCESS) {
+        LOG(ERROR) << "Error setting property 'ro.build.fingerprint': err=" << res << " (" << error
+                   << ")";
+    }
+}
+
 void property_load_boot_defaults() {
     // TODO(b/117892318): merge prop.default and build.prop files into one
     // TODO(b/122864654): read the prop files from all partitions and then
@@ -748,6 +825,9 @@ void property_load_boot_defaults() {
     load_properties_from_file("/odm/build.prop", NULL);
     load_properties_from_file("/vendor/build.prop", NULL);
     load_properties_from_file("/factory/factory.prop", "ro.*");
+
+    property_initialize_ro_product_props();
+    property_derive_build_fingerprint();
 
     update_sys_usb_config();
 }
