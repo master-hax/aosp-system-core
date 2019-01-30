@@ -293,7 +293,9 @@ void local_init(int port) {
     } else {
         std::thread(server_socket_thread, android::base::StringPrintf("tcp:%d", port)).detach();
     }
-    std::thread(server_socket_thread, android::base::StringPrintf("vsock:%d", port)).detach();
+    if (android::base::GetBoolProperty("ro.service.adb.vsock", false)) {
+        std::thread(server_socket_thread, android::base::StringPrintf("vsock:%d", port)).detach();
+    }
 #endif // !ADB_HOST
 }
 
