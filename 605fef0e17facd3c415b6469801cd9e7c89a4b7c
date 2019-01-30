@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "dd8143a8_33f13d8b",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-30T21:58:02Z",
+      "side": 1,
+      "message": "std::vector must store the data contiguously. This is a requirement for the data() method which is available for std::vector.",
+      "parentUuid": "d6ace829_2d00377f",
+      "range": {
+        "startLine": 306,
+        "startChar": 0,
+        "endLine": 306,
+        "endChar": 60
+      },
+      "revId": "605fef0e17facd3c415b6469801cd9e7c89a4b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7c6d8b91_b0ff3663",
         "filename": "fs_mgr/libdm/dm.cpp",
         "patchSetId": 4
