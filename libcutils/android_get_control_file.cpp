@@ -39,6 +39,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <memory>
+
 #include "android_get_control_env.h"
 
 #ifndef TEMP_FAILURE_RETRY
@@ -96,16 +98,23 @@ int android_get_control_file(const char* path) {
 
     size_t len = strlen(path);
     // readlink() does not guarantee a nul byte, len+2 so we catch truncation.
-    char *buf = static_cast<char *>(calloc(1, len + 2));
-    if (!buf) {
-        free(proc);
+    auto fd_path = std::make_unique<char[]>(len + 2);
+    auto given_path = std::make_unique<char[]>(len + 2);
+
+    ssize_t ret1 = TEMP_FAILURE_RETRY(readlink(proc, fd_path.get(), len + 1));
+    free(proc);
+    if (ret1 < 0) {
         return -1;
     }
-    ssize_t ret = TEMP_FAILURE_RETRY(readlink(proc, buf, len + 1));
-    free(proc);
-    int cmp = (len != static_cast<size_t>(ret)) || strcmp(buf, path);
-    free(buf);
-    if (ret < 0) return -1;
+
+    ssize_t ret2 = TEMP_FAILURE_RETRY(readlink(path, given_path.get(), len + 1));
+    if (ret2 < 0) {
+        // Let this fail gracefully for unit tests.
+        strcpy(given_path.get(), path);
+        ret2 = len;
+    }
+
+    int cmp = (ret2 != ret1) || strcmp(fd_path.get(), given_path.get());
     if (cmp != 0) return -1;
     // It is what we think it is
 #endif
