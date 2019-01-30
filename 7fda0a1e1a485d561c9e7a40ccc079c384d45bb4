@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49eb5a45_dd574b1f",
+        "filename": "libkeyutils/mini_keyctl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-01-30T18:35:21Z",
+      "side": 1,
+      "message": "nit: remove, doesn\u0027t seem necessary",
+      "range": {
+        "startLine": 135,
+        "startChar": 2,
+        "endLine": 135,
+        "endChar": 21
+      },
+      "revId": "7fda0a1e1a485d561c9e7a40ccc079c384d45bb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
