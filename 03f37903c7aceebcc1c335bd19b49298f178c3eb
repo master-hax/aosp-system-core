@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b7708a1_8c13ea6c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2019-01-30T19:44:35Z",
+      "side": 1,
+      "message": "Don\u0027t worry - removing this",
+      "revId": "03f37903c7aceebcc1c335bd19b49298f178c3eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
