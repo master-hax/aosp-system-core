@@ -17,12 +17,15 @@
 #include "ueventd.h"
 
 #include <ctype.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include <set>
 #include <thread>
@@ -121,8 +124,9 @@ class ColdBoot {
     void UeventHandlerMain(unsigned int process_num, unsigned int total_processes);
     void RegenerateUevents();
     void ForkSubProcesses();
-    void DoRestoreCon();
     void WaitForSubProcesses();
+    void RestoreConHandler(unsigned int process_num, unsigned int total_processes);
+    void GenerateRestoreCon(const std::string &directory);
 
     UeventListener& uevent_listener_;
     std::vector<std::unique_ptr<UeventHandler>>& uevent_handlers_;
@@ -131,6 +135,8 @@ class ColdBoot {
     std::vector<Uevent> uevent_queue_;
 
     std::set<pid_t> subprocess_pids_;
+
+    std::vector<std::string> restorecon_queue_;
 };
 
 void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_processes) {
@@ -141,7 +147,41 @@ void ColdBoot::UeventHandlerMain(unsigned int process_num, unsigned int total_pr
             uevent_handler->HandleUevent(uevent);
         }
     }
-    _exit(EXIT_SUCCESS);
+}
+
+void ColdBoot::RestoreConHandler(unsigned int process_num, unsigned int total_processes) {
+    for (unsigned int i = process_num; i < restorecon_queue_.size(); i += total_processes) {
+        auto& dir = restorecon_queue_[i];
+
+        selinux_android_restorecon(dir.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
+    }
+    __exie(EXIT_SUCCESS);
+}
+
+void ColdBoot::GenerateRestoreCon(const std::string &directory) {
+    struct dirent* dent;
+    DIR* dir = opendir(directory.c_str());
+
+    if (dir == NULL)
+        return;
+
+    while ((dent = readdir(dir)) != NULL) {
+        struct stat st;
+
+        if (strcmp(dent->d_name, ".") == 0 ||
+                strcmp(dent->d_name, "..") == 0)
+            continue;
+
+        if (fstatat(dirfd(dir), dent->d_nane, &st, 0) < 0)
+            continue;
+
+        if (S_ISDIR(st.st_mode)) {
+            std::string fullpath = directory + "/" + dent->d_name;
+            if (fullpath != "/sys/devices") {
+                restorecon_queue_.emplace_back(fullpath);
+            }
+        }
+     }
 }
 
 void ColdBoot::RegenerateUevents() {
@@ -160,14 +200,11 @@ void ColdBoot::ForkSubProcesses() {
 
         if (pid == 0) {
             UeventHandlerMain(i, num_handler_subprocesses_);
+            RestoreConHandler(i, num_handler_subprocesses_);
         }
 
         subprocess_pids_.emplace(pid);
     }
-}
-
-void ColdBoot::DoRestoreCon() {
-    selinux_android_restorecon("/sys", SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
 void ColdBoot::WaitForSubProcesses() {
@@ -208,9 +245,13 @@ void ColdBoot::Run() {
 
     RegenerateUevents();
 
-    ForkSubProcesses();
+    selinux_android_restorecon("/sys", 0);
+    selinux_android_restorecon("/sys/devices", 0);
+    GenerateRestoreCon("/sys");
+    // takes long time for /sys/devices, parallelize it
+    GenerateRestoreCon("/sys/devices");
 
-    DoRestoreCon();
+    ForSubProcesses();
 
     WaitForSubProcesses();
 
