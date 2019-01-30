@@ -16,6 +16,24 @@
       "revId": "2cbdc561ad1b3c1565af8e1a30faa17dc35e9271",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d14b962_eef1fbc1",
+        "filename": "libmeminfo/libdmabufinfo/dmabufinfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1283094
+      },
+      "writtenOn": "2019-01-30T01:57:54Z",
+      "side": 0,
+      "message": "I still think we should have a way to append data to an existing vector. Since the code is already there to handle the multiple references/one PID case, may be we can rename this to AppendDmaBufInfo and make ReadDmaBufInfo clear the vector and call it?\nWDYT?",
+      "parentUuid": "4d084c9f_06149574",
+      "revId": "2cbdc561ad1b3c1565af8e1a30faa17dc35e9271",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
