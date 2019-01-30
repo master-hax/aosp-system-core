@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "145aa83e_999e34d5",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Yep, if they are omitted in JSON file they will come up as empty, which would mean we don\u0027t want to change them.",
+      "parentUuid": "ab96d2c9_bed832ad",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2665a363_ac0d51da",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 13
@@ -53,6 +71,24 @@
       "writtenOn": "2019-01-30T18:19:02Z",
       "side": 1,
       "message": "Same comment as on the other CL; I think it\u0027s better to either assume that group is mandatory and drop the nullptr check, or if group is optional, then the function should return true if the group is able to be found and move the nullptr check to before writing it back out.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4e1acac_b9a118d1",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Good point. Missed this one.",
+      "parentUuid": "2665a363_ac0d51da",
       "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -82,6 +118,30 @@
     },
     {
       "key": {
+        "uuid": "677e3220_6d76657b",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Will fix.",
+      "parentUuid": "cc09d6e8_60dbc7a1",
+      "range": {
+        "startLine": 288,
+        "startChar": 4,
+        "endLine": 288,
+        "endChar": 10
+      },
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "68979db3_db56c0ba",
         "filename": "libprocessgroup/cgroup_map.cpp",
         "patchSetId": 13
@@ -93,6 +153,24 @@
       "writtenOn": "2019-01-30T18:19:02Z",
       "side": 1,
       "message": "Is this something that we can fix in the future?",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe46b8cd_e0f60ce7",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Yes but that will involve init.rc changes, however if we proceed and move cgroup-related setup completely from init.rc into cgroup.json then this can be done as a part of that.",
+      "parentUuid": "68979db3_db56c0ba",
       "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -139,6 +217,30 @@
     },
     {
       "key": {
+        "uuid": "50dd4a0b_db3febff",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Will fix.",
+      "parentUuid": "953810f5_0790d393",
+      "range": {
+        "startLine": 80,
+        "startChar": 8,
+        "endLine": 80,
+        "endChar": 24
+      },
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "adbe40ae_c051b3b8",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 13
@@ -156,6 +258,24 @@
     },
     {
       "key": {
+        "uuid": "c76d20d1_eeef1e30",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "Will fix.",
+      "parentUuid": "adbe40ae_c051b3b8",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d1fb5ef6_e6d931a0",
         "filename": "libprocessgroup/sched_policy.cpp",
         "patchSetId": 13
@@ -167,6 +287,24 @@
       "writtenOn": "2019-01-30T18:19:02Z",
       "side": 1,
       "message": "You should be able to drop the std::vector\u003cstd::string\u003e and just pass the initializer list.  It\u0027ll help the readability here.\n\nNow I guess I see why SetTaskProfiles() returned 0 / -1 in the previous CL.  Still probably better to do what you\u0027re doing in this patchset though with SetTaskProfiles() having a clean interface then adapting to set_cpuset_policy() here.  Unless maybe you create a SetCpusetPolicy() function that returns bool then hav set_cpuset_policy() be a small wrapper around it for the int return value?  I don\u0027t know which is the less bad option.",
+      "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47200e7c_37318ae0",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-01-30T18:37:06Z",
+      "side": 1,
+      "message": "I hope to be able at some point to retire set_cpuset_policy() and friends in favor of direct usage of profiles. But doing that in this iteration would be an overkill. So let\u0027s have SetTaskProfiles() API the way we want it to be and keep set_cpuset_policy() adjusting to it.",
+      "parentUuid": "d1fb5ef6_e6d931a0",
       "revId": "9b07196fbc2479cde2a53a276fd0ff628b2914d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
