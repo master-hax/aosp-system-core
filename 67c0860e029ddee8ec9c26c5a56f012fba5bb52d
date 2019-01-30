@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d05f3f0_b37e295b",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-30T20:55:55Z",
+      "side": 1,
+      "message": "Please do the same changes in ld.config.legacy.txt too.",
+      "revId": "67c0860e029ddee8ec9c26c5a56f012fba5bb52d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62d0905f_c23f0195",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-30T20:55:55Z",
+      "side": 1,
+      "message": "Please make the corresponding change in art/build/apex/ld.config.txt too, for the sake of consistency and to avoid pondering whether it\u0027s necessary or not.",
+      "revId": "67c0860e029ddee8ec9c26c5a56f012fba5bb52d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7879594_f7eb8334",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-30T20:55:55Z",
+      "side": 1,
+      "message": "Although I don\u0027t think it\u0027s strictly necessary, I suggest swapping these to keep the namespaces in dependency order. Same below.",
+      "range": {
+        "startLine": 166,
+        "startChar": 28,
+        "endLine": 166,
+        "endChar": 43
+      },
+      "revId": "67c0860e029ddee8ec9c26c5a56f012fba5bb52d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
