@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63274868_a96c0e48",
+        "filename": "libmeminfo/libdmabufinfo/include/dmabufinfo/dmabufinfo.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T15:35:59Z",
+      "side": 1,
+      "message": "no need for new line here, It was my mistake before probably too.",
+      "revId": "302a259fa9755537f3bbcb2e848fade9e711ff5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44b0a993_fe9ab15b",
+        "filename": "libmeminfo/libdmabufinfo/include/dmabufinfo/dmabufinfo.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-01-30T15:35:59Z",
+      "side": 1,
+      "message": "Its technically not \"Append\" (adding at the end of the vector). It is \"Add\" without duplicates.\nAdjust the comment to say the same.",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 0
+      },
+      "revId": "302a259fa9755537f3bbcb2e848fade9e711ff5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
