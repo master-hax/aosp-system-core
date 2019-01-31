@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2847e85f_d8162b0f",
+        "filename": "rootdir/etc/public.libraries.android.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-01-31T08:56:36Z",
+      "side": 0,
+      "message": "instead of removing these from here directly, you could remove the two from system_exposed_libraries when runtime_ns !\u003d nullptr (which should always be true)",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 11
+      },
+      "revId": "e77e7025bc69f4049308ccd27eae94a4b140d963",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
