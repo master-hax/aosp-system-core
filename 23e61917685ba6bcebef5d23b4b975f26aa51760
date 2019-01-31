@@ -22,6 +22,30 @@
       "revId": "23e61917685ba6bcebef5d23b4b975f26aa51760",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "304cef65_6354082c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-01-31T17:04:24Z",
+      "side": 1,
+      "message": "Git tools unwrap it, so as long as it\u0027s short a newline doesn\u0027t matter much. Shortened it somewhat more anyway.",
+      "parentUuid": "8d38dd14_3c5914f6",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 9
+      },
+      "revId": "23e61917685ba6bcebef5d23b4b975f26aa51760",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
