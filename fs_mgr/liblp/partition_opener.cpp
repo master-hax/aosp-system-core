@@ -26,6 +26,9 @@
 #include <unistd.h>
 
 #include <android-base/file.h>
+#if defined(__ANDROID__)
+#include <cutils/android_get_control_file.h>
+#endif
 
 #include "utility.h"
 
@@ -43,13 +46,8 @@ std::string GetPartitionAbsolutePath(const std::string& path) {
     return "/dev/block/by-name/" + path;
 }
 
-bool GetBlockDeviceInfo(const std::string& block_device, BlockDeviceInfo* device_info) {
+bool GetBlockDeviceInfo(int fd, const std::string& block_device, BlockDeviceInfo* device_info) {
 #if defined(__linux__)
-    unique_fd fd(open(block_device.c_str(), O_RDONLY));
-    if (fd < 0) {
-        PERROR << __PRETTY_FUNCTION__ << "open '" << block_device << "' failed";
-        return false;
-    }
     if (!GetDescriptorSize(fd, &device_info->size)) {
         return false;
     }
@@ -85,12 +83,23 @@ bool GetBlockDeviceInfo(const std::string& block_device, BlockDeviceInfo* device
 
 unique_fd PartitionOpener::Open(const std::string& partition_name, int flags) const {
     std::string path = GetPartitionAbsolutePath(partition_name);
+
+#if defined(__ANDROID__)
+    int fd = android_get_control_file(path.c_str());
+    if (fd >= 0) {
+        return unique_fd{dup(fd)};
+    }
+#endif
     return unique_fd{open(path.c_str(), flags | O_CLOEXEC)};
 }
 
 bool PartitionOpener::GetInfo(const std::string& partition_name, BlockDeviceInfo* info) const {
-    std::string path = GetPartitionAbsolutePath(partition_name);
-    return GetBlockDeviceInfo(path, info);
+    unique_fd fd = Open(partition_name, O_RDONLY);
+    if (fd < 0) {
+        PLOG(ERROR) << __PRETTY_FUNCTION__ << ": failed to open partition: " << partition_name;
+        return false;
+    }
+    return GetBlockDeviceInfo(fd, partition_name, info);
 }
 
 }  // namespace fs_mgr

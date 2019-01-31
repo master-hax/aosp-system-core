@@ -22,12 +22,20 @@
 
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <cutils/android_get_control_file.h>
 
 namespace android {
 namespace dm {
 
 DeviceMapper::DeviceMapper() : fd_(-1) {
-    fd_ = TEMP_FAILURE_RETRY(open("/dev/device-mapper", O_RDWR | O_CLOEXEC));
+    int fd = android_get_control_file("/dev/device-mapper");
+    if (fd >= 0) {
+        // Note: the final close() should not revoke this descriptor that may
+        // be imported elsewhere in the process.
+        fd_ = dup(fd);
+    } else {
+        fd_ = TEMP_FAILURE_RETRY(open("/dev/device-mapper", O_RDWR | O_CLOEXEC));
+    }
     if (fd_ < 0) {
         PLOG(ERROR) << "Failed to open device-mapper";
     }
