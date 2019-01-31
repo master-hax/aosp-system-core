@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07ed2786_49a7defa",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 617,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-01-31T15:51:06Z",
+      "side": 1,
+      "message": "hiyong@ please note that this is required in order to support APEX on marlin ...",
+      "range": {
+        "startLine": 610,
+        "startChar": 1,
+        "endLine": 617,
+        "endChar": 1
+      },
+      "revId": "768c670ee1cb1c13dff2e9a7927f0f30ceed4533",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
