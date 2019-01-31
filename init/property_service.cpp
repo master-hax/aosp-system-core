@@ -448,6 +448,11 @@ uint32_t HandlePropertySet(const std::string& name, const std::string& value,
         return PROP_ERROR_INVALID_NAME;
     }
 
+    if ((name == "service.adb.root") && (source_context != "u:r:adbd:s0") && (value == "1")) {
+        *error = "Only adb can set service.adb.root to 1";
+        return PROP_ERROR_PERMISSION_DENIED;
+    }
+
     if (StartsWith(name, "ctl.")) {
         if (!CheckControlPropertyPerms(name, value, source_context, cr)) {
             *error = StringPrintf("Invalid permissions to perform '%s' on '%s'", name.c_str() + 4,
