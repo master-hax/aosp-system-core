@@ -247,7 +247,7 @@ bool ProcMemInfo::ReadMaps(bool get_wss, bool use_pageidle) {
     std::string maps_file = ::android::base::StringPrintf("/proc/%d/maps", pid_);
     if (!::android::procinfo::ReadMapFile(
                 maps_file, [&](uint64_t start, uint64_t end, uint16_t flags, uint64_t pgoff,
-                               const char* name) {
+                                   uint64_t, const char* name) {
                     maps_.emplace_back(Vma(start, end, pgoff, flags, name));
                 })) {
         LOG(ERROR) << "Failed to parse " << maps_file;
@@ -395,7 +395,7 @@ bool ForEachVmaFromFile(const std::string& path, const VmaCallback& callback) {
         // 00400000-00409000 r-xp 00000000 fc:00 426998  /usr/lib/gvfs/gvfsd-http
         if (!::android::procinfo::ReadMapFileContent(
                     line, [&](uint64_t start, uint64_t end, uint16_t flags, uint64_t pgoff,
-                              const char* name) {
+                                  uint64_t, const char* name) {
                         vma.start = start;
                         vma.end = end;
                         vma.flags = flags;
