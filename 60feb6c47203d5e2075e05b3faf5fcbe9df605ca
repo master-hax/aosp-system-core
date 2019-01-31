@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c8a82d4_619d85c6",
+        "filename": "libprocinfo/include/procinfo/process_map.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-31T03:37:00Z",
+      "side": 1,
+      "message": "why not pass a struct?",
+      "range": {
+        "startLine": 155,
+        "startChar": 53,
+        "endLine": 156,
+        "endChar": 74
+      },
+      "revId": "60feb6c47203d5e2075e05b3faf5fcbe9df605ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "838deba1_390d4722",
+        "filename": "libprocinfo/include/procinfo/process_map.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-01-31T03:37:00Z",
+      "side": 1,
+      "message": "ino_t?",
+      "range": {
+        "startLine": 165,
+        "startChar": 2,
+        "endLine": 165,
+        "endChar": 10
+      },
+      "revId": "60feb6c47203d5e2075e05b3faf5fcbe9df605ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
