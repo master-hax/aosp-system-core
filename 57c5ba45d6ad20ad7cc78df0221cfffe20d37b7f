@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "35af629e_0355d8e8",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1010672
+      },
+      "writtenOn": "2019-02-01T02:14:17Z",
+      "side": 1,
+      "message": "Done. ld.config.vndk_lite.txt was the only other one with a sphal namespace.",
+      "parentUuid": "884547f3_beea86ea",
+      "revId": "57c5ba45d6ad20ad7cc78df0221cfffe20d37b7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c086b53c_b2561944",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "57c5ba45d6ad20ad7cc78df0221cfffe20d37b7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a5898b4_23576f98",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1010672
+      },
+      "writtenOn": "2019-02-01T02:14:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c086b53c_b2561944",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 223,
+        "endChar": 52
+      },
+      "revId": "57c5ba45d6ad20ad7cc78df0221cfffe20d37b7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
