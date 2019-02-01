@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b97f2226_97f5b2f5",
+        "filename": "adb/fdevent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-01T00:30:58Z",
+      "side": 1,
+      "message": "you can\u0027t write `[/*fd*/, pollnode]`? that sucks.",
+      "range": {
+        "startLine": 266,
+        "startChar": 8,
+        "endLine": 266,
+        "endChar": 19
+      },
+      "revId": "828decef8a8ff0ed633f9a4cc1b64aa25f014c6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
