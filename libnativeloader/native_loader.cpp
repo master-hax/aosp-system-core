@@ -128,6 +128,12 @@ static constexpr const char* kWhitelistedDirectories = "/data:/mnt/expand";
 
 static constexpr const char* kApexPath = "/apex/";
 
+#if defined(__LP64__)
+static constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/lib64";
+#else
+static constexpr const char* kRuntimeApexLibPath = "/apex/com.android.runtime/lib";
+#endif
+
 static bool is_debuggable() {
   char debuggable[PROP_VALUE_MAX];
   property_get("ro.debuggable", debuggable, "0");
@@ -389,6 +395,10 @@ class LibraryNamespaces {
       }
     }
 
+    // Remove the public libs in the runtime namespace.
+    // These libs are listed in public.android.txt, but not exposed in the default namespace
+    removePublicLibsIfExistsInRuntimeApex(sonames);
+
     // android_init_namespaces() expects all the public libraries
     // to be loaded so that they can be found by soname alone.
     //
@@ -483,6 +493,27 @@ class LibraryNamespaces {
     }
   }
 
+  /**
+   * Remove the public libs in runtime namespace
+   */
+  void removePublicLibsIfExistsInRuntimeApex(std::vector<std::string>& sonames) {
+    for (const std::string lib_name : kRuntimePublicLibraries) {
+      std::string path(kRuntimeApexLibPath);
+      path.append("/").append(lib_name);
+
+      struct stat s;
+      // Do nothing if the path in /apex does not exists
+      // Runtime APEX must be mounted if exists since libnativeloader sits in the same APEX
+      if (stat(path.c_str(), &s) != 0) {
+        return;
+      }
+
+      auto it = std::find(sonames.begin(), sonames.end(), lib_name);
+      if (it != sonames.end()) {
+        sonames.erase(it);
+      }
+    }
+  }
 
   bool ReadConfig(const std::string& configFile, std::vector<std::string>* sonames,
                   const std::function<bool(const std::string& /* soname */,
