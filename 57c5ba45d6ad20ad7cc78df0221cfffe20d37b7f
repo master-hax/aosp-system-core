@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "884547f3_beea86ea",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-01T02:08:38Z",
+      "side": 1,
+      "message": "could you do the same for other ld.config.txt files in this directory?",
+      "revId": "57c5ba45d6ad20ad7cc78df0221cfffe20d37b7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c086b53c_b2561944",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-01T02:08:38Z",
+      "side": 1,
+      "message": "This line is not needed as permitted.paths are checked with \u0027is_under_dir\u0027; #222 is enough.",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 223,
+        "endChar": 52
+      },
+      "revId": "57c5ba45d6ad20ad7cc78df0221cfffe20d37b7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
