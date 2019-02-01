@@ -24,6 +24,7 @@ dir.system = /data/nativetest
 dir.system = /data/nativetest64
 dir.system = /data/benchmarktest
 dir.system = /data/benchmarktest64
+dir.system = /data/local/tmp
 
 dir.postinstall = /postinstall
 
