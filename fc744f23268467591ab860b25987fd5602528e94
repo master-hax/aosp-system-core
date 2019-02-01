@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0de97c92_a3ce42d8",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 784,
+      "author": {
+        "id": 1340374
+      },
+      "writtenOn": "2019-02-01T19:44:28Z",
+      "side": 1,
+      "message": "This construction of the fingerprint matches https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/Build.java#957",
+      "revId": "fc744f23268467591ab860b25987fd5602528e94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
