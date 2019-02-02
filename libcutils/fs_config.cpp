@@ -24,6 +24,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <fnmatch.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -263,36 +264,50 @@ static bool is_partition(const char* path, size_t len) {
     return false;
 }
 
-static inline bool prefix_cmp(bool partial, const char* prefix, size_t len, const char* path,
-                              size_t plen) {
-    return ((partial && plen >= len) || (plen == len)) && !strncmp(prefix, path, len);
-}
-
 // alias prefixes of "<partition>/<stuff>" to "system/<partition>/<stuff>" or
 // "system/<partition>/<stuff>" to "<partition>/<stuff>"
-static bool fs_config_cmp(bool partial, const char* prefix, size_t len, const char* path,
+static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* path,
                           size_t plen) {
-    // If name ends in * then allow partial matches.
-    if (!partial && prefix[len - 1] == '*') {
-        len--;
-        partial = true;
+    char pattern[len+3]; // can optionally append "/*"
+    char input[plen+2]; // can optionally append "/"
+    memset(pattern, 0, sizeof(pattern));
+    memset(input, 0, sizeof(input));
+    memcpy(pattern, prefix, len);
+    memcpy(input, path, plen);
+
+    // Massage pattern and input so that they can be used by fnmatch where
+    // directories have to end with /.
+    if (dir) {
+        // Make sure that input always ends with /
+        if (input[strlen(input)-1] != '/') {
+            input[strlen(input)] = '/';
+        }
+
+        // Make sure that pattern always ends with /*
+        if (strncmp(&pattern[strlen(pattern)-2], "/*", 2)) {
+            memcpy(&pattern[strlen(pattern)], "/*", 2);
+        }
     }
 
-    if (prefix_cmp(partial, prefix, len, path, plen)) return true;
+    // no FNM_PATHNAME is set in order to match a/b/c/d with a/*
+    const int fnm_flags = FNM_NOESCAPE;
+
+    if (fnmatch(pattern, input, fnm_flags) == 0) return true;
 
     static const char system[] = "system/";
-    if (!strncmp(path, system, strlen(system))) {
-        path += strlen(system);
-        plen -= strlen(system);
+    if (!strncmp(input, system, strlen(system))) {
+        // if input path starts with system/ drop it
+        memmove(input, input + strlen(system), strlen(input + strlen(system)) + 1);
     } else if (len <= strlen(system)) {
         return false;
-    } else if (strncmp(prefix, system, strlen(system))) {
+    } else if (strncmp(pattern, system, strlen(system))) {
         return false;
     } else {
-        prefix += strlen(system);
-        len -= strlen(system);
+        // if pattern starts with system/ drop it
+        memmove(pattern, pattern + strlen(system), strlen(pattern + strlen(system)) + 1);
     }
-    return is_partition(prefix, len) && prefix_cmp(partial, prefix, len, path, plen);
+
+    return is_partition(input, strlen(input)) && fnmatch(pattern, input, fnm_flags) == 0;
 }
 #ifndef __ANDROID_VNDK__
 auto __for_testing_only__fs_config_cmp = fs_config_cmp;
