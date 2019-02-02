@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d23ca38_1a292111",
+        "filename": "libmeminfo/libdmabufinfo/include/dmabufinfo/dmabufinfo.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:34:25Z",
+      "side": 1,
+      "message": "nit: did you do clang-format here? It looks like it needs a line break.",
+      "range": {
+        "startLine": 33,
+        "startChar": 85,
+        "endLine": 33,
+        "endChar": 106
+      },
+      "revId": "61b6cd31d685f150fe25a0fcbfc49d2b6c9f9cbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
