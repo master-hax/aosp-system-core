@@ -47,6 +47,10 @@ static const struct fs_config_cmp_test {
     { true,  "vendor/lib",             "system/vendor/lib/hw",    true  },
     { true,  "system/vendor/lib",      "vendor/lib/hw",           true  },
     { true,  "system/vendor/lib",      "system/vendor/lib/hw",    true  },
+    { true,  "foo/*/bar/*",            "foo/1/bar/2",             true  },
+    { true,  "foo/*/bar/*",            "foo/1/bar",               true  },
+    { true,  "foo/*/bar/*",            "foo/1/bar/2/3",           true  },
+    { true,  "foo/*/bar/*",            "foo/1/bar/2/3/",          true  },
     { false, "vendor/bin/wifi",        "system/vendor/bin/w",     false },
     { false, "vendor/bin/wifi",        "system/vendor/bin/wifi",  true  },
     { false, "vendor/bin/wifi",        "system/vendor/bin/wifi2", false },
@@ -58,6 +62,12 @@ static const struct fs_config_cmp_test {
     { false, "vendor/bin/*",           "system/vendor/bin/wifi",  true  },
     { false, "system/bin/*",           "system/bin",              false },
     { false, "system/vendor/bin/*",    "vendor/bin/wifi",         true  },
+    { false, "foo/*/bar/*",            "foo/1/bar/2",             true  },
+    { false, "foo/*/bar/*",            "foo/1/bar",               false },
+    { false, "foo/*/bar/*",            "foo/1/bar/2/3",           true  },
+    { false, "foo/*/bar/*.so",         "foo/1/bar/2/3",           false },
+    { false, "foo/*/bar/*.so",         "foo/1/bar/2.so",          true  },
+    { false, "foo/*/bar/*.so",         "foo/1/bar/2/3.so",        true  },
     { false, NULL,                     NULL,                      false },
     // clang-format on
 };
