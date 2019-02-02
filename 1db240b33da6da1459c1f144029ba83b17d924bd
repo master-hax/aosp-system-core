@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5757b65b_356d69af",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "Assuming -a is default, just .. \"%s [PID]\" ?",
+      "range": {
+        "startLine": 38,
+        "startChar": 20,
+        "endLine": 38,
+        "endChar": 39
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbeaed04_497be8f5",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "for consistency, \"\\t..\"",
+      "range": {
+        "startLine": 39,
+        "startChar": 11,
+        "endLine": 39,
+        "endChar": 25
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b83b73a0_3a9a516a",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "nit: or if (bufs.empty())",
+      "range": {
+        "startLine": 67,
+        "startChar": 8,
+        "endLine": 67,
+        "endChar": 20
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d015e61b_933bdc38",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "unique",
+      "range": {
+        "startLine": 72,
+        "startChar": 16,
+        "endLine": 72,
+        "endChar": 23
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87d2c11a_8f40ec21",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "auto fds \u003d std::make_unique\u003cint\u003e(pid_count);\n\n... so fds goes away when out of scope. right now, we are leaking it? \n\n(Same for other allocations below)",
+      "range": {
+        "startLine": 98,
+        "startChar": 4,
+        "endLine": 98,
+        "endChar": 30
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74e666d0_01799aa7",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "for (auto it \u003d bufs.begin() ...) \n\n.. since you are using pointer below anyway",
+      "range": {
+        "startLine": 104,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 43
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29a5350d_dfb429e5",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "the reason we used streanstream elsewhere was because the output was being generated while the data is being read, so we didn\u0027t want to put things on the shell while we may still fail.\n\nThat is not the case here, when you call show(), you already have everything you need to print the information. So, I would just using printf() everywhere which is much more readable as it turned out .. see libmeminfo/tools/librank.cpp or libmeminfo/tools/showmap.cpp",
+      "range": {
+        "startLine": 137,
+        "startChar": 3,
+        "endLine": 137,
+        "endChar": 25
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da8f1ac6_3713f417",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "negatives are invalid too",
+      "range": {
+        "startLine": 167,
+        "startChar": 12,
+        "endLine": 167,
+        "endChar": 20
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7dc02fa_1329a021",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:51:42Z",
+      "side": 1,
+      "message": "if (...) {\n}\n\nfor consistency, here and everywhere..",
+      "range": {
+        "startLine": 193,
+        "startChar": 12,
+        "endLine": 193,
+        "endChar": 39
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
