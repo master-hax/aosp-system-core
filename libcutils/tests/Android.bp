@@ -35,6 +35,7 @@ cc_defaults {
         not_windows: {
             srcs: [
                 "test_str_parms.cpp",
+                "fs_config.cpp",
             ],
         },
     },
