@@ -60,6 +60,12 @@
 #include <selinux/selinux.h>
 #include <system/thread_defs.h>
 
+#ifndef RECOVERY
+#include <android/apex/IApexService.h>
+#include <binder/IBinder.h>
+#include <binder/IServiceManager.h>
+#endif
+
 #include "action_manager.h"
 #include "bootchart.h"
 #include "init.h"
@@ -1109,11 +1115,29 @@ static Result<Success> do_setup_runtime_bionic(const BuiltinArguments& args) {
     }
 }
 
+static Result<Success> do_activate_apex(const BuiltinArguments& args) {
+#ifdef RECOVERY
+    return Error() << "activate_apex not supported for recovery mode";
+#else
+    android::sp<android::IServiceManager> sm = android::defaultServiceManager();
+    if (sm == nullptr) {
+        return Error() << "Failed to get service manager";
+    }
+    android::sp<android::IBinder> binder = sm->getService(android::String16("apexservice"));
+    if (binder == nullptr) {
+        return Error() << "Failed to get apexservice";
+    }
+    android::interface_cast<android::apex::IApexService>(binder)->startBootSequence();
+    return Success();
+#endif
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
     // clang-format off
     static const Map builtin_functions = {
+        {"activate_apex",           {0,     0,    {false,  do_activate_apex}}},
         {"bootchart",               {1,     1,    {false,  do_bootchart}}},
         {"chmod",                   {2,     2,    {true,   do_chmod}}},
         {"chown",                   {2,     3,    {true,   do_chown}}},
