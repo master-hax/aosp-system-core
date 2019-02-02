@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "963973da_49051017",
+        "filename": "libmeminfo/libdmabufinfo/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:55:03Z",
+      "side": 1,
+      "message": "why?",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "0b3f735cb66e1b528181a550b4822869359f456b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

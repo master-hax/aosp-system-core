@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53e53bd2_39ac9d0f",
+        "filename": "libmeminfo/libdmabufinfo/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-02T23:55:03Z",
+      "side": 0,
+      "message": "you really shouldn\u0027t have to do that, may be its because libc++fs isn\u0027t vendor_available? enh@ would know better ..",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 30
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
