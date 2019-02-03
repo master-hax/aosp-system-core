@@ -22,6 +22,30 @@
       "revId": "0b3f735cb66e1b528181a550b4822869359f456b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4e1aff0_a84a1297",
+        "filename": "libmeminfo/libdmabufinfo/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1283094
+      },
+      "writtenOn": "2019-02-03T00:30:19Z",
+      "side": 1,
+      "message": "Steven\u0027s suggestion. He explained we should avoid having duplicate copies of liblog\u0027s binary code. In fact, I don\u0027t think there is a static link / vendor version available (same as libc++fs below).",
+      "parentUuid": "963973da_49051017",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "0b3f735cb66e1b528181a550b4822869359f456b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

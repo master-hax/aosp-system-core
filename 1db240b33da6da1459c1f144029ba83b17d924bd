@@ -22,6 +22,30 @@
       "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f94ac6e_5534742f",
+        "filename": "libmeminfo/libdmabufinfo/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1283094
+      },
+      "writtenOn": "2019-02-03T00:30:19Z",
+      "side": 0,
+      "message": "This library doesn\u0027t have a static link / vendor version available.",
+      "parentUuid": "53e53bd2_39ac9d0f",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 30
+      },
+      "revId": "1db240b33da6da1459c1f144029ba83b17d924bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
