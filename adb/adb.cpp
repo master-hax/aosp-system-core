@@ -189,15 +189,17 @@ std::string get_connection_string() {
     std::vector<std::string> connection_properties;
 
 #if !ADB_HOST
-    static const char* cnxn_props[] = {
-        "ro.product.name",
-        "ro.product.model",
-        "ro.product.device",
-    };
+    static const std::vector<std::string> cnxn_props = { "name", "model", "device" };
+    static const std::string product_prefix = "ro.product.";
+    static const std::string vendor_prefix = "ro.product.vendor.";
 
     for (const auto& prop : cnxn_props) {
-        std::string value = std::string(prop) + "=" + android::base::GetProperty(prop, "");
-        connection_properties.push_back(value);
+        /* Try to get ro.product.vendor.<prop> and fall back to ro.product.<prop> */
+        std::string prop_val = android::base::GetProperty(vendor_prefix + prop, "");
+        if (prop_val == "")
+            prop_val = android::base::GetProperty(product_prefix + prop, "");
+
+        connection_properties.push_back(product_prefix + prop + "=" + prop_val);
     }
 #endif
 

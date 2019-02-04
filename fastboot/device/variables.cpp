@@ -61,7 +61,9 @@ bool GetBasebandVersion(FastbootDevice* /* device */, const std::vector<std::str
 
 bool GetProduct(FastbootDevice* /* device */, const std::vector<std::string>& /* args */,
                 std::string* message) {
-    *message = android::base::GetProperty("ro.product.device", "");
+    *message = android::base::GetProperty("ro.product.vendor.device", "");
+    if (*message == "")
+        *message = android::base::GetProperty("ro.product.device", "");
     return true;
 }
 
