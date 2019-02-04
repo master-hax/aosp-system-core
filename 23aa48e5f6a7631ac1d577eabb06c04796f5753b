@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f4a9641_7fe199e6",
+        "filename": "libmeminfo/libdmabufinfo/tools/dmabuf_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-04T19:28:54Z",
+      "side": 1,
+      "message": "nit: fds.get()",
+      "range": {
+        "startLine": 112,
+        "startChar": 15,
+        "endLine": 112,
+        "endChar": 22
+      },
+      "revId": "23aa48e5f6a7631ac1d577eabb06c04796f5753b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
