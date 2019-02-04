@@ -49,6 +49,7 @@ namespace {
                  "\t-R --reboot\tdisable verity & reboot to facilitate remount\n"
                  "\t-T --fstab\tcustom fstab file location\n"
                  "\t--use-logd\toutput messages to logd instead\n"
+                 "\t--use-overlay\tonly remount if it will use overlayfs\n"
                  "\tpartition\tspecific partition(s) (empty does all)\n"
                  "\n"
                  "Remount specified partition(s) read-write, by name or mount point.\n"
@@ -185,18 +186,24 @@ int main(int argc, char* argv[]) {
 
     const char* fstab_file = nullptr;
     auto can_reboot = false;
+    auto use_overlay = false;
 
     struct option longopts[] = {
-            {"fstab", required_argument, nullptr, 'T'},
-            {"help", no_argument, nullptr, 'h'},
-            {"reboot", no_argument, nullptr, 'R'},
-            {"use-logd", no_argument, nullptr, 0},
-            {0, 0, nullptr, 0},
+            {"fstab", required_argument, nullptr, 'T'}, {"help", no_argument, nullptr, 'h'},
+            {"reboot", no_argument, nullptr, 'R'},      {"use-logd", no_argument, nullptr, 0},
+            {"use-overlay", no_argument, nullptr, 1},   {0, 0, nullptr, 0},
     };
     for (int opt; (opt = ::getopt_long(argc, argv, "hRT:", longopts, nullptr)) != -1;) {
         switch (opt) {
             case 0:
                 android::base::SetLogger(android::base::LogdLogger());
+                break;
+            case 1:
+                if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) {
+                    LOG(ERROR) << "Overlayfs not supported";
+                    return BAD_OVERLAY;
+                }
+                use_overlay = true;
                 break;
             case 'R':
                 // can only be from a physical connection with adbd parentage
@@ -338,6 +345,18 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
+        if ((GetEntryForMountPoint(&overlayfs_candidates, entry.mount_point) == nullptr) &&
+            (is_wrapped(overlayfs_candidates, entry) == nullptr)) {
+            if (use_overlay) {
+                LOG(INFO) << "Not served by overlayfs, Skipping " << mount_point;
+                retval = BAD_OVERLAY;
+                it = partitions.erase(it);
+            } else {
+                ++it;
+            }
+            continue;
+        }
+
         auto change = false;
         errno = 0;
         if (fs_mgr_overlayfs_setup(nullptr, mount_point.c_str(), &change)) {
@@ -346,6 +365,11 @@ int main(int argc, char* argv[]) {
             }
         } else if (errno) {
             PLOG(ERROR) << "Overlayfs setup for " << mount_point << " failed, skipping";
+            retval = BAD_OVERLAY;
+            it = partitions.erase(it);
+            continue;
+        } else if (use_overlay) {
+            LOG(INFO) << "Not served by overlayfs, Skipping " << mount_point;
             retval = BAD_OVERLAY;
             it = partitions.erase(it);
             continue;
@@ -363,6 +387,7 @@ int main(int argc, char* argv[]) {
     if (!fs_mgr_overlayfs_mount_all(&partitions)) {
         retval = BAD_OVERLAY;
         PLOG(ERROR) << "Can not mount overlayfs for partitions";
+        if (use_overlay) return retval;
     }
 
     // Get actual mounts _after_ overlayfs has been added.
