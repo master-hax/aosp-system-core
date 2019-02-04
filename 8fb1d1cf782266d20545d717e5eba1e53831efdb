@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c45adf09_132d6204",
+        "filename": "fs_mgr/tests/fs_mgr_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-04T23:07:22Z",
+      "side": 1,
+      "message": "Any other suggestions on how to do this?  I know I could have an operator\u003d\u003d(), however that seems to not generically useful enough to do.  memcmp() won\u0027t work since there\u0027ll be padding on the end.  I actively do want to remove the union with the int that made this otherwise easy to compare, since that\u0027s not a good thing to maintain anyway.",
+      "revId": "8fb1d1cf782266d20545d717e5eba1e53831efdb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
