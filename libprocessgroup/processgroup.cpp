@@ -55,8 +55,8 @@ using namespace std::chrono_literals;
 
 #define PROCESSGROUP_CGROUP_PROCS_FILE "/cgroup.procs"
 
-bool CgroupSetupCgroups() {
-    return CgroupMap::SetupCgroups();
+bool CgroupSetupCgroups(make_dir_func mkdir_func) {
+    return CgroupMap::SetupCgroups(mkdir_func);
 }
 
 bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) {

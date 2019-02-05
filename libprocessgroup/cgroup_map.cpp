@@ -50,12 +50,12 @@ static constexpr const char* CGROUP_TASKS_FILE = "/tasks";
 static constexpr const char* CGROUP_TASKS_FILE_V2 = "/cgroup.tasks";
 
 static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,
-                  const std::string& gid) {
+                  const std::string& gid, make_dir_func mkdir_func) {
     if (mode == 0) {
         mode = 0755;
     }
 
-    if (mkdir(path.c_str(), mode) != 0) {
+    if (mkdir_func(path.c_str(), mode) != 0) {
         /* chmod in case the directory already exists */
         if (errno == EEXIST) {
             if (fchmodat(AT_FDCWD, path.c_str(), mode, AT_SYMLINK_NOFOLLOW) != 0) {
@@ -146,11 +146,12 @@ static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors
 // To avoid issues in sdk_mac build
 #if defined(__ANDROID__)
 
-static bool SetupCgroup(const CgroupDescriptor& descriptor) {
+static bool SetupCgroup(const CgroupDescriptor& descriptor, make_dir_func mkdir_func) {
     const CgroupController* controller = descriptor.controller();
 
     // mkdir <path> [mode] [owner] [group]
-    if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
+    if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(),
+               descriptor.gid(), mkdir_func)) {
         PLOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
         return false;
     }
@@ -187,7 +188,7 @@ static bool SetupCgroup(const CgroupDescriptor& descriptor) {
 #else
 
 // Stubs for non-Android targets.
-static bool SetupCgroup(const CgroupDescriptor&) {
+static bool SetupCgroup(const CgroupDescriptor&, make_dir_func) {
     return false;
 }
 
@@ -358,7 +359,7 @@ void CgroupMap::Print() {
     }
 }
 
-bool CgroupMap::SetupCgroups() {
+bool CgroupMap::SetupCgroups(make_dir_func mkdir_func) {
     std::map<std::string, CgroupDescriptor> descriptors;
 
     // load cgroups.json file
@@ -369,7 +370,7 @@ bool CgroupMap::SetupCgroups() {
 
     // setup cgroups
     for (const auto& [name, descriptor] : descriptors) {
-        if (!SetupCgroup(descriptor)) {
+        if (!SetupCgroup(descriptor, mkdir_func)) {
             // issue a warning and proceed with the next cgroup
             // TODO: mark the descriptor as invalid and skip it in WriteRcFile()
             LOG(WARNING) << "Failed to setup " << name << " cgroup";
@@ -377,7 +378,7 @@ bool CgroupMap::SetupCgroups() {
     }
 
     // mkdir <CGROUPS_RC_DIR> 0711 system system
-    if (!Mkdir(CGROUPS_RC_DIR, 0711, "system", "system")) {
+    if (!Mkdir(CGROUPS_RC_DIR, 0711, "system", "system", mkdir_func)) {
         PLOG(ERROR) << "Failed to create directory for <CGROUPS_RC_FILE> file";
         return false;
     }

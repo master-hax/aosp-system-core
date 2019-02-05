@@ -349,10 +349,7 @@ static Result<Success> console_init_action(const BuiltinArguments& args) {
 }
 
 static Result<Success> SetupCgroupsAction(const BuiltinArguments&) {
-    // Have to create <CGROUPS_RC_DIR> using make_dir function
-    // for appropriate sepolicy to be set for it
-    make_dir(CGROUPS_RC_DIR, 0711);
-    if (!CgroupSetupCgroups()) {
+    if (!CgroupSetupCgroups(make_dir)) {
         return ErrnoError() << "Failed to setup cgroups";
     }
 

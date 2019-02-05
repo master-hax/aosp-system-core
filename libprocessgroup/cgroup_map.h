@@ -22,6 +22,7 @@
 #include <map>
 #include <mutex>
 #include <string>
+#include <processgroup/processgroup.h>
 
 // Minimal controller description to be mmapped into process address space
 class CgroupController {
@@ -78,7 +79,7 @@ class CgroupMap {
     static constexpr const char* CGROUPS_RC_FILE = "cgroup.rc";
 
     // Selinux policy ensures only init process can successfully use this function
-    static bool SetupCgroups();
+    static bool SetupCgroups(make_dir_func mkdir_func);
 
     static CgroupMap& GetInstance();
 
