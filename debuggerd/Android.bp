@@ -115,22 +115,10 @@ cc_library_static {
         "libbase",
         "libdebuggerd",
         "libunwindstack",
-        "libdexfile",  // libunwindstack dependency
-        "libdexfile_external",  // libunwindstack dependency
-        "libdexfile_support",  // libunwindstack dependency
+        "libdexfile_support_static",  // libunwindstack dependency
         "liblzma",
         "libcutils",
     ],
-    target: {
-        recovery: {
-            exclude_static_libs: [
-                "libartbase",
-                "libdexfile",
-                "libdexfile_external",
-                "libdexfile_support",
-            ],
-        },
-    },
 
     export_include_dirs: ["include"],
 }
@@ -174,22 +162,13 @@ cc_library_static {
     include_dirs: ["bionic/libc"],
 
     static_libs: [
-        "libdexfile_external",  // libunwindstack dependency
-        "libdexfile_support",  // libunwindstack dependency
+        "libdexfile_support_static",  // libunwindstack dependency
         "libunwindstack",
         "liblzma",
         "libbase",
         "libcutils",
         "liblog",
     ],
-    target: {
-        recovery: {
-            exclude_static_libs: [
-                "libdexfile_external",
-                "libdexfile_support",
-            ],
-        },
-    },
 }
 
 cc_test {
