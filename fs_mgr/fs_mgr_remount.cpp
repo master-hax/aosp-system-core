@@ -47,6 +47,7 @@ namespace {
                  "\t-R --reboot\tdisable verity & reboot if necessary to facilitate remount\n"
                  "\t-T --fstab\tcustom fstab file location\n"
                  "\t--use-overlay\tonly remount if it will use overlayfs\n"
+                 "\t--uses-overlay\treport if remount will use overlayfs\n"
                  "\tpartition\tspecific partition(s) (empty does all)\n"
                  "\n"
                  "Remount the specified partition(s) read-write.\n"
@@ -134,22 +135,20 @@ int main(int argc, char* argv[]) {
     const char* fstab_file = nullptr;
     auto can_reboot = false;
     auto use_overlay = false;
+    auto uses_overlay = false;
 
     struct option longopts[] = {
-            {"fstab", required_argument, nullptr, 'T'},
-            {"help", no_argument, nullptr, 'h'},
-            {"reboot", no_argument, nullptr, 'R'},
-            {"use-overlay", no_argument, nullptr, 0},
-            {0, 0, nullptr, 0},
+            {"fstab", required_argument, nullptr, 'T'}, {"help", no_argument, nullptr, 'h'},
+            {"reboot", no_argument, nullptr, 'R'},      {"use-overlay", no_argument, nullptr, 0},
+            {"uses-overlay", no_argument, nullptr, 1},  {0, 0, nullptr, 0},
     };
     for (int opt; (opt = ::getopt_long(argc, argv, "hRT:", longopts, nullptr)) != -1;) {
         switch (opt) {
             case 0:
-                if (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported) {
-                    LOG(ERROR) << "Overlayfs not supported";
-                    return BAD_OVERLAY;
-                }
                 use_overlay = true;
+                break;
+            case 1:
+                uses_overlay = true;
                 break;
             case 'R':
                 // can only be from a physical connection with adbd parentage
@@ -179,6 +178,12 @@ int main(int argc, char* argv[]) {
                 usage(SUCCESS);
                 break;
         }
+    }
+
+    if ((use_overlay || uses_overlay) &&
+        (fs_mgr_overlayfs_valid() == OverlayfsValidResult::kNotSupported)) {
+        LOG(ERROR) << "Overlayfs not supported";
+        return BAD_OVERLAY;
     }
 
     // Make sure we are root.
@@ -325,7 +330,7 @@ int main(int argc, char* argv[]) {
         if (std::find(overlayfs_candidates.begin(), overlayfs_candidates.end(),
                       (mount_point == "/") ? "/system" : mount_point) ==
             overlayfs_candidates.end()) {
-            if (use_overlay) {
+            if (use_overlay || uses_overlay) {
                 LOG(INFO) << "Not served by overlayfs, Skipping " << mount_point;
                 retval = BAD_OVERLAY;
                 it = partitions.erase(it);
@@ -358,6 +363,10 @@ int main(int argc, char* argv[]) {
     if (partitions.empty()) {
         if (reboot_later) reboot(false);
         LOG(WARNING) << "No partitions to remount";
+        return retval;
+    }
+
+    if (uses_overlay) {
         return retval;
     }
 
