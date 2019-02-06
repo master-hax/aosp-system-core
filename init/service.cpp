@@ -218,7 +218,9 @@ bool Service::is_exec_service_running_ = false;
 
 Service::Service(const std::string& name, Subcontext* subcontext_for_restart_commands,
                  const std::vector<std::string>& args)
-    : Service(name, 0, 0, 0, {}, 0, 0, "", subcontext_for_restart_commands, args) {}
+    : Service(name, 0, 0, 0, {}, 0, 0, "", subcontext_for_restart_commands, args) {
+    capabilities_.flip();  // By default services have full capabilities.
+}
 
 Service::Service(const std::string& name, unsigned flags, uid_t uid, gid_t gid,
                  const std::vector<gid_t>& supp_gids, const CapSet& capabilities,
@@ -289,7 +291,7 @@ void Service::SetProcessAttributes() {
         }
     }
     // Keep capabilites on uid change.
-    if (capabilities_.any() && uid_) {
+    if (!capabilities_.all() && uid_) {
         // If Android is running in a container, some securebits might already
         // be locked, so don't change those.
         unsigned long securebits = prctl(PR_GET_SECUREBITS);
@@ -328,7 +330,7 @@ void Service::SetProcessAttributes() {
             PLOG(FATAL) << "setpriority failed for " << name_;
         }
     }
-    if (capabilities_.any()) {
+    if (!capabilities_.all()) {
         if (!SetCapsForExec(capabilities_)) {
             LOG(FATAL) << "cannot set capabilities for " << name_;
         }
