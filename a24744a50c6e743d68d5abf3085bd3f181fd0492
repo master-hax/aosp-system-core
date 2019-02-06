@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee5a054a_dccd4c00",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-06T22:24:33Z",
+      "side": 1,
+      "message": "Should have seen this before too; but better to initialize this to -1 here to ensure that it\u0027s always initialized to a sane value.\n\nYou can drop the else {} branch too in that case.",
+      "revId": "a24744a50c6e743d68d5abf3085bd3f181fd0492",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
