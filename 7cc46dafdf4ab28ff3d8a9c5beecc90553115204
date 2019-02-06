@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53af122c_1afa708f",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1305591
+      },
+      "writtenOn": "2019-02-06T11:48:46Z",
+      "side": 1,
+      "message": "nit: backup",
+      "range": {
+        "startLine": 549,
+        "startChar": 21,
+        "endLine": 549,
+        "endChar": 28
+      },
+      "revId": "7cc46dafdf4ab28ff3d8a9c5beecc90553115204",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
