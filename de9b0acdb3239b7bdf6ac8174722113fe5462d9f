@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55edb319_5ca5899b",
+        "filename": "bootstat/bootstat.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-07T18:55:13Z",
+      "side": 1,
+      "message": "sgtm, but if zygote-start ever happens (as impossible as that might sound) after line 78 trigger, will break bootstat behavior. So a race condition gotcha ...",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 15
+      },
+      "revId": "de9b0acdb3239b7bdf6ac8174722113fe5462d9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
