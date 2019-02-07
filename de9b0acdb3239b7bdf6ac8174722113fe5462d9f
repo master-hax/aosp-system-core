@@ -22,6 +22,30 @@
       "revId": "de9b0acdb3239b7bdf6ac8174722113fe5462d9f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1770a3_6ec73c76",
+        "filename": "bootstat/bootstat.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-02-07T19:17:02Z",
+      "side": 1,
+      "message": "https://cs.corp.google.com/android/system/core/rootdir/init.rc?rcl\u003d68a1d861c275f4e2186c4fef26cbeee82d58fc84\u0026l\u003d326\n\nThis is where we queued the trigger, so it is guaranteed to be executed.\n\nThere is still an assumption that the updates here finishes earlier than zygote starts system_server, which sounds fair. To be safest, we can put load_persist_props_action here, but that will assume load_persist_props_actionbut that also assumes init finishes init.rc\u0027s load_persist_props_action before this file\u0027s load_persist_props_action section, which is reasonable but still an assumption not in document. So I leave it in zygote-start.",
+      "parentUuid": "55edb319_5ca5899b",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 15
+      },
+      "revId": "de9b0acdb3239b7bdf6ac8174722113fe5462d9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
