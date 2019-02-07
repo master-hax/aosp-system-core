@@ -16,7 +16,13 @@
       "name": "libbase_test"
     },
     {
+      "name": "libcutils_test"
+    },
+    {
       "name": "libprocinfo_test"
+    },
+    {
+      "name": "libutils_test"
     },
     {
       "name": "memunreachable_test"
