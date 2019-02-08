@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "983928d3_bea9c6d8",
+        "filename": "libmeminfo/libdmabufinfo/dmabufinfo.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-02-08T22:32:41Z",
+      "side": 1,
+      "message": "nit: could have done the \".\" and \"..\" check before generating the \u0027path\u0027 string?",
+      "range": {
+        "startLine": 112,
+        "startChar": 7,
+        "endLine": 112,
+        "endChar": 72
+      },
+      "revId": "2f6792e286f01919145194335c8afba64425cb4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
