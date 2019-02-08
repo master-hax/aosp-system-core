@@ -102,6 +102,30 @@
       "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ceaa7e9_498340f5",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-08T16:10:26Z",
+      "side": 1,
+      "message": "It\u0027s not available for vendor according to http://b/121248172#comment18\nIn the Android.bp, I think they are vendor_available:false",
+      "parentUuid": "b3c01327_d511c31f",
+      "range": {
+        "startLine": 479,
+        "startChar": 0,
+        "endLine": 482,
+        "endChar": 63
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
