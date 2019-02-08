@@ -54,10 +54,24 @@
 // Android Wear has been using port 5601 in all of its documentation/tooling,
 // but we search for emulators on ports [5554, 5555 + ADB_LOCAL_TRANSPORT_MAX].
 // Avoid stomping on their port by limiting the number of emulators that can be
-// connected.
-#define ADB_LOCAL_TRANSPORT_MAX 16
+// connected, unless overridden.
+static size_t adb_local_transport_max = 16;
 
 static std::mutex& local_transports_lock = *new std::mutex();
+
+static void adb_local_transport_max_env_override() {
+    const char* env_max_s = getenv("ADB_LOCAL_TRANSPORT_MAX");
+    if (env_max_s != nullptr) {
+        size_t env_max;
+        if (ParseUint(&env_max, env_max_s, nullptr) && env_max < 32764) {
+            // 0 harmlessly mimics ADB_EMU=0
+            adb_local_transport_max = env_max;
+            D("transport: ADB_LOCAL_TRANSPORT_MAX read as %zu", adb_local_transport_max);
+        } else {
+            D("transport: ADB_LOCAL_TRANSPORT_MAX '%s' invalid or >= 32764, so ignored", env_max_s);
+        }
+    }
+}
 
 // We keep a map from emulator port to transport.
 // TODO: weak_ptr?
@@ -169,7 +183,7 @@ int local_connect_arbitrary_ports(int console_port, int adb_port, std::string* e
 
 static void PollAllLocalPortsForEmulator() {
     int port = DEFAULT_ADB_LOCAL_TRANSPORT_PORT;
-    int count = ADB_LOCAL_TRANSPORT_MAX;
+    int count = adb_local_transport_max;
 
     // Try to connect to any number of running emulator instances.
     for ( ; count > 0; count--, port += 2 ) {
@@ -289,6 +303,7 @@ void local_init(int port) {
 #if ADB_HOST
     D("transport: local client init");
     std::thread(client_socket_thread, port).detach();
+    adb_local_transport_max_env_override();
 #elif !defined(__ANDROID__)
     // Host adbd.
     D("transport: local server init");
@@ -371,9 +386,10 @@ int init_socket_transport(atransport* t, unique_fd fd, int adb_port, int local) 
         if (existing_transport != nullptr) {
             D("local transport for port %d already registered (%p)?", adb_port, existing_transport);
             fail = -1;
-        } else if (local_transports.size() >= ADB_LOCAL_TRANSPORT_MAX) {
+        } else if (local_transports.size() >= adb_local_transport_max) {
             // Too many emulators.
-            D("cannot register more emulators. Maximum is %d", ADB_LOCAL_TRANSPORT_MAX);
+            D("cannot register more emulators. Maximum is %zu (change $ADB_LOCAL_TRANSPORT_MAX)",
+              adb_local_transport_max);
             fail = -1;
         } else {
             local_transports[adb_port] = t;
