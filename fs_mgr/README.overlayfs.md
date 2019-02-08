@@ -94,7 +94,12 @@ Caveats
   and thus free dynamic partition space.
 - Kernel must have CONFIG_OVERLAY_FS=y and will need to be patched
   with "*overlayfs: override_creds=off option bypass creator_cred*"
-  if higher than 4.6.
+  in upstream linux list if your higher than 4.6.
+  Latest on the list as of this update is at
+  https://lore.kernel.org/patchwork/patch/1009299/.
+  This patch adds an override_creds _mount_ option to overlayfs that
+  permits legacy behavior for systems that do not have overlapping
+  sepolicy rules, principals of least privilege, such as how Android behaves.
 - *adb enable-verity* will free up overlayfs and as a bonus the
   device will be reverted pristine to before any content was updated.
   Update engine does not take advantage of this, will perform a full OTA.
