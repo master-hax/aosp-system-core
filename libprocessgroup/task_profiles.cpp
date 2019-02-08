@@ -289,6 +289,14 @@ TaskProfiles::TaskProfiles() {
     }
 }
 
+static std::map<std::string, std::string> ParamListToMap(const Json::Value& list) {
+    std::map<std::string, std::string> ret;
+    for (Json::Value::ArrayIndex idx = 0; idx < list.size(); ++idx) {
+        ret[list[idx]["Name"].asString()] = list[idx]["Value"].asString();
+    }
+    return ret;
+}
+
 bool TaskProfiles::Load(const CgroupMap& cg_map) {
     std::string json_doc;
 
@@ -336,9 +344,10 @@ bool TaskProfiles::Load(const CgroupMap& cg_map) {
             Json::Value actionVal = actions[actIdx];
             std::string actionName = actionVal["Name"].asString();
             Json::Value paramsVal = actionVal["Params"];
+            std::map<std::string, std::string> params = ParamListToMap(paramsList);
             if (actionName == "JoinCgroup") {
-                std::string ctrlName = paramsVal["Controller"].asString();
-                std::string path = paramsVal["Path"].asString();
+                std::string ctrlName = params["Controller"];
+                std::string path = params["Path"];
 
                 const CgroupController* controller = cg_map.FindController(ctrlName.c_str());
                 if (controller) {
@@ -347,7 +356,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map) {
                     LOG(WARNING) << "JoinCgroup: controller " << ctrlName << " is not found";
                 }
             } else if (actionName == "SetTimerSlack") {
-                std::string slackValue = paramsVal["Slack"].asString();
+                std::string slackValue = params["Slack"];
                 char* end;
                 unsigned long slack;
 
@@ -358,8 +367,8 @@ bool TaskProfiles::Load(const CgroupMap& cg_map) {
                     LOG(WARNING) << "SetTimerSlack: invalid parameter: " << slackValue;
                 }
             } else if (actionName == "SetAttribute") {
-                std::string attrName = paramsVal["Name"].asString();
-                std::string attrValue = paramsVal["Value"].asString();
+                std::string attrName = params["Name"];
+                std::string attrValue = params["Value"];
 
                 auto iter = attributes_.find(attrName);
                 if (iter != attributes_.end()) {
@@ -369,8 +378,8 @@ bool TaskProfiles::Load(const CgroupMap& cg_map) {
                     LOG(WARNING) << "SetAttribute: unknown attribute: " << attrName;
                 }
             } else if (actionName == "SetClamps") {
-                std::string boostValue = paramsVal["Boost"].asString();
-                std::string clampValue = paramsVal["Clamp"].asString();
+                std::string boostValue = params["Boost"];
+                std::string clampValue = params["Clamp"];
                 char* end;
                 unsigned long boost;
 
