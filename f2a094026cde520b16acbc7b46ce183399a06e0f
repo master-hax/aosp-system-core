@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ce409b2_cb069633",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:01:04Z",
+      "side": 1,
+      "message": "Please do the corresponding changes in ld.config.vndk_lite.txt and ld.config.legacy.txt.",
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4cf1616d_673af8f7",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:01:04Z",
+      "side": 1,
+      "message": "As this comment states, please do the corresponding changes in art/build/apex/ld.config.txt.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 115,
+        "endChar": 66
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7aa3a4b9_d6080739",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:01:04Z",
+      "side": 1,
+      "message": "This comment doesn\u0027t make it clear to me why it\u0027s necessary now, and what needs to happen for it to be removed. Is there a ticket to point to?",
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6940ee66_5e547cc1",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:01:04Z",
+      "side": 1,
+      "message": "Please move these next to the other namespace.default.link.runtime.shared_libs settings.",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 55
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3c01327_d511c31f",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:01:04Z",
+      "side": 1,
+      "message": "Unless you know for sure that your libraries aren\u0027t needed for vendor binaries, I suggest adding them here too.",
+      "range": {
+        "startLine": 479,
+        "startChar": 0,
+        "endLine": 482,
+        "endChar": 63
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
