@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "486c60d7_9fbf9f94",
+        "filename": "fs_mgr/README.overlayfs.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T16:13:42Z",
+      "side": 1,
+      "message": "\u0027list\u0027 ?",
+      "range": {
+        "startLine": 97,
+        "startChar": 20,
+        "endLine": 97,
+        "endChar": 24
+      },
+      "revId": "c1fc230a4b54371b10406f135ab0e7c7e59b5cb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d95d995_19d34ee5",
+        "filename": "fs_mgr/README.overlayfs.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T16:13:42Z",
+      "side": 1,
+      "message": "Would be good to include the date of \u0027this update\u0027 in the text too for posterity.",
+      "range": {
+        "startLine": 98,
+        "startChar": 27,
+        "endLine": 98,
+        "endChar": 38
+      },
+      "revId": "c1fc230a4b54371b10406f135ab0e7c7e59b5cb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
