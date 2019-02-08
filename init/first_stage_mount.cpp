@@ -503,6 +503,17 @@ bool FirstStageMount::MountPartitions() {
         current = end;
     }
 
+    // We've either removed /system from fstab_ in TrySwitchSystemAsRoot() or it never existed in
+    // the case of system as root devices.  In either case, we want to find it and place it back
+    // in fstab_ so that overlayfs can mount it.  At this point, the partition that contains the
+    // real fstab is mounted, so this is guaranteed to contain it.
+    Fstab default_fstab;
+    ReadDefaultFstab(&default_fstab);
+
+    auto system_entry = GetEntryForMountPoint(&default_fstab, "/system")
+                                ?: GetEntryForMountPoint(&default_fstab, "/");
+    fstab_.emplace_back(std::move(system_entry));
+
     // heads up for instantiating required device(s) for overlayfs logic
     const auto devices = fs_mgr_overlayfs_required_devices(&fstab_);
     for (auto const& device : devices) {
