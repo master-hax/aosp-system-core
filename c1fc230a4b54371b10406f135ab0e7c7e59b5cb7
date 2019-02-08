@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "36270c63_54d1eeb0",
+        "filename": "fs_mgr/README.overlayfs.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T19:11:42Z",
+      "side": 1,
+      "message": "Got it, I was confused by the sentence.  You\u0027re saying that the required patch is in the upstream mailing list, right?\n\nI think it may be clearer if you leave the original text, then state later where the patch is.  Something like:\n\nKernel will need to be patched with ... if kernel version is higher than 4.6.  The patch is available on the upstream mailing list and the latest mail as of Feb 8 2019 is https://lore.kernel.org/patchwork/patch/1009299/",
+      "parentUuid": "73ea1f7f_f61d4003",
+      "range": {
+        "startLine": 97,
+        "startChar": 20,
+        "endLine": 97,
+        "endChar": 24
+      },
+      "revId": "c1fc230a4b54371b10406f135ab0e7c7e59b5cb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d95d995_19d34ee5",
         "filename": "fs_mgr/README.overlayfs.md",
         "patchSetId": 2
