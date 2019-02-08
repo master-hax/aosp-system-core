@@ -22,6 +22,29 @@
       "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "208371e1_a28aec55",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1038443
+      },
+      "writtenOn": "2019-02-08T16:27:49Z",
+      "side": 1,
+      "message": "File the bug :)",
+      "range": {
+        "startLine": 45,
+        "startChar": 9,
+        "endLine": 45,
+        "endChar": 13
+      },
+      "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
