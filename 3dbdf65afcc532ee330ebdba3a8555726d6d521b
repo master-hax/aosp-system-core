@@ -22,6 +22,30 @@
       "revId": "3dbdf65afcc532ee330ebdba3a8555726d6d521b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11b3b850_cc14c06f",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T19:30:28Z",
+      "side": 0,
+      "message": "The new full fstab setup?  Where we have one fstab with first_stage_mount for some of the partitions?  We shouldn\u0027t need that.  See my next comment.",
+      "parentUuid": "750d5261_7cb2c64f",
+      "range": {
+        "startLine": 577,
+        "startChar": 0,
+        "endLine": 586,
+        "endChar": 79
+      },
+      "revId": "3dbdf65afcc532ee330ebdba3a8555726d6d521b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }

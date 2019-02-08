@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "be976d66_5b0b3e66",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T19:30:28Z",
+      "side": 1,
+      "message": "Indeed.  I\u0027ll change it to be more accurate.",
+      "parentUuid": "5707c804_d2925577",
+      "range": {
+        "startLine": 13,
+        "startChar": 6,
+        "endLine": 13,
+        "endChar": 32
+      },
+      "revId": "4a62a888bcbdf318e83965f0ea422238c7f338ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1fba7a6f_a27ed8cb",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-08T17:24:00Z",
       "side": 1,
       "message": "And if in neither during first_stage_init .... (as is the case on marlin)",
+      "range": {
+        "startLine": 513,
+        "startChar": 4,
+        "endLine": 514,
+        "endChar": 78
+      },
+      "revId": "4a62a888bcbdf318e83965f0ea422238c7f338ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0c38dce_475a5e4f",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T19:30:28Z",
+      "side": 1,
+      "message": "It shouldn\u0027t be the case even on marlin/sailfish unless I\u0027m totally missing something.  /vendor should be mounted above already, so ReadDefaultFstab should read /vendor/etc/fstab.sailfish which has an entry for \u0027/\u0027 since update_engine needs it.\n\nBut that said, I am obviously wrong here, since that\u0027s where the presubmit failures for CF are coming from too.  I need to figure out why.",
+      "parentUuid": "1fba7a6f_a27ed8cb",
       "range": {
         "startLine": 513,
         "startChar": 4,
