@@ -45,6 +45,54 @@
       "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd9f6b0a_9b52b013",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:31:40Z",
+      "side": 1,
+      "message": "That\u0027s the plan, yes.",
+      "parentUuid": "0e26e2c2_0cc39228",
+      "range": {
+        "startLine": 45,
+        "startChar": 2,
+        "endLine": 45,
+        "endChar": 58
+      },
+      "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6072b70c_68c6ab78",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:31:40Z",
+      "side": 1,
+      "message": "Yes, sorry.",
+      "parentUuid": "208371e1_a28aec55",
+      "range": {
+        "startLine": 45,
+        "startChar": 9,
+        "endLine": 45,
+        "endChar": 13
+      },
+      "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
