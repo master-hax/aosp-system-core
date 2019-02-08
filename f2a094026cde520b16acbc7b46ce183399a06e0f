@@ -126,6 +126,30 @@
       "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc7d9507_69f51945",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-08T16:14:46Z",
+      "side": 1,
+      "message": "Huh, kinda curious why that is. They should carry their own?\n\nI think it merits a comment here that ICU is intentionally left out.",
+      "parentUuid": "0ceaa7e9_498340f5",
+      "range": {
+        "startLine": 479,
+        "startChar": 0,
+        "endLine": 482,
+        "endChar": 63
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
