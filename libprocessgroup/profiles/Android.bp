@@ -1,0 +1,11 @@
+
+prebuilt_etc {
+    name: "cgroups.json",
+    recovery_available: true,
+    src: "cgroups.json",
+}
+
+prebuilt_etc {
+    name: "task_profiles.json",
+    src: "task_profiles.json",
+}
