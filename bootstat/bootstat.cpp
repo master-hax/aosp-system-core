@@ -117,12 +117,7 @@ std::string GetCommandLine(int argc, char** argv) {
 // Convenience wrapper over the property API that returns an
 // std::string.
 std::string GetProperty(const char* key) {
-  std::vector<char> temp(PROPERTY_VALUE_MAX);
-  const int len = property_get(key, &temp[0], nullptr);
-  if (len < 0) {
-    return "";
-  }
-  return std::string(&temp[0], len);
+  return android::base::GetProperty(key, "");
 }
 
 bool SetProperty(const char* key, const std::string& val) {
