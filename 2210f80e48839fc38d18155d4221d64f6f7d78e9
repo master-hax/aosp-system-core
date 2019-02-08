@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1bb0dcc_affd7f3b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T23:15:41Z",
+      "side": 0,
+      "message": "There\u0027s a problem I\u0027m seeing with Cuttlefish here.  Cuttlefish doesn\u0027t have \u0027/\u0027 in the fstab at all.\n\nWith the current code, since fs_mgr_update_verity_state() only reports verity information on the partitions in the default fstab, it means that \u0027system\u0027 won\u0027t be a part of \u0027verity\u0027 and therefore \u0027system\u0027 will always be reported as a potential mount point here.  That would be true of any device where there is no \u0027system\u0027 or \u0027/\u0027 entry in the fstab and seems kind of dangerous, since that\u0027s not the behavior we want (and maybe more reason to remove this code).\n\nWith the new code, it means that there is no system entry in the input, such that system will never be a potential, which is less bad but still wrong.\n\nWhich leads me to agree with you, that instead of finding the \u0027/\u0027 entry, maybe it\u0027s best to fake it.",
+      "revId": "2210f80e48839fc38d18155d4221d64f6f7d78e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}

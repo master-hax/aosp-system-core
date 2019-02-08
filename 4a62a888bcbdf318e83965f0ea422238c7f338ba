@@ -117,6 +117,30 @@
       "revId": "4a62a888bcbdf318e83965f0ea422238c7f338ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63be8bef_7bc3c455",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-08T23:15:41Z",
+      "side": 1,
+      "message": "CF was failing in presubmit since there is neither a /system or / entry in the fstab, so it got a NPE when dereferencing it below.\n\nI *think* marlin should be okay, though I\u0027m not sure why it seemed to be failing for you.",
+      "parentUuid": "2b0ea1b2_beb4857f",
+      "range": {
+        "startLine": 513,
+        "startChar": 4,
+        "endLine": 514,
+        "endChar": 78
+      },
+      "revId": "4a62a888bcbdf318e83965f0ea422238c7f338ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
