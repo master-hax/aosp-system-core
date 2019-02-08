@@ -188,6 +188,7 @@ namespace.conscrypt.link.runtime.shared_libs  = libjavacore.so
 namespace.conscrypt.link.default.shared_libs  = libc.so
 namespace.conscrypt.link.default.shared_libs += libm.so
 namespace.conscrypt.link.default.shared_libs += libdl.so
+namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
 # "resolv" APEX namespace
@@ -204,6 +205,7 @@ namespace.resolv.link.default.shared_libs  = libc.so
 namespace.resolv.link.default.shared_libs += libm.so
 namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
+namespace.resolv.link.default.shared_libs += liblog.so
 namespace.resolv.link.default.shared_libs += libvndksupport.so
 
 ###############################################################################
@@ -569,6 +571,7 @@ namespace.conscrypt.link.runtime.shared_libs  = libjavacore.so
 namespace.conscrypt.link.default.shared_libs  = libc.so
 namespace.conscrypt.link.default.shared_libs += libm.so
 namespace.conscrypt.link.default.shared_libs += libdl.so
+namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
 # "resolv" APEX namespace
@@ -585,6 +588,7 @@ namespace.resolv.link.default.shared_libs  = libc.so
 namespace.resolv.link.default.shared_libs += libm.so
 namespace.resolv.link.default.shared_libs += libdl.so
 namespace.resolv.link.default.shared_libs += libbinder_ndk.so
+namespace.resolv.link.default.shared_libs += liblog.so
 
 
 ###############################################################################
