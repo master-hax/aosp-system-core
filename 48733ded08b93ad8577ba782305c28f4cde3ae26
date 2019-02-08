@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e26e2c2_0cc39228",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-08T16:27:39Z",
+      "side": 1,
+      "message": "Can we do that in the future?",
+      "range": {
+        "startLine": 45,
+        "startChar": 2,
+        "endLine": 45,
+        "endChar": 58
+      },
+      "revId": "48733ded08b93ad8577ba782305c28f4cde3ae26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
