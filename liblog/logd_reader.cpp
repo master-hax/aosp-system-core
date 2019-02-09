@@ -250,7 +250,7 @@ static ssize_t send_log_msg(struct android_log_logger* logger, const char* msg, 
   size_t len;
   char* cp;
   int errno_save = 0;
-  int sock = socket_local_client("logd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
+  int sock = socket_local_client("logd", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM | SOCK_CLOEXEC);
   if (sock < 0) {
     return sock;
   }
@@ -460,10 +460,10 @@ static int logdOpen(struct android_log_logger_list* logger_list,
     return sock;
   }
 
-  sock = socket_local_client("logdr", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET);
+  sock = socket_local_client("logdr", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET | SOCK_CLOEXEC);
   if (sock == 0) {
     /* Guarantee not file descriptor zero */
-    int newsock = socket_local_client("logdr", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET);
+    int newsock = socket_local_client("logdr", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_SEQPACKET | SOCK_CLOEXEC);
     close(sock);
     sock = newsock;
   }
