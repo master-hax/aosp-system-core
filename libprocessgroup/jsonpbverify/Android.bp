@@ -1,0 +1,52 @@
+// This static library defines parameterized tests that enforce additional restrictions when
+// using Protobuf as schema for JSON files. The reason is that the JSON parser that
+// libprotobuf-cpp-full provides is relatively relaxed.
+cc_library_static {
+    name: "libjsonpbverify",
+    host_supported: true,
+    shared_libs: [
+        "libbase",
+        "libprotobuf-cpp-full",
+        "libjsoncpp",
+    ],
+    header_libs: [
+        "libjsonpbparse_headers",
+    ],
+    export_header_lib_headers: [
+        "libjsonpbparse_headers",
+    ],
+    export_include_dirs: [
+        "include",
+    ],
+    srcs: [
+        "jsonpb.cpp",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}
+
+cc_test {
+    name: "libjsonpbverify_test",
+    host_supported: true,
+    srcs: [
+        "test.cpp",
+        "test.proto",
+    ],
+    static_libs: [
+        "libgmock",
+        "libjsonpbverify",
+    ],
+    shared_libs: [
+        "libbase",
+        "libjsoncpp",
+        "libprotobuf-cpp-full",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+}

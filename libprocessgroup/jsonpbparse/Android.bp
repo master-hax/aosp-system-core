@@ -1,0 +1,13 @@
+// A convenient library to convert any JSON string to a specific Protobuf
+// message using reflection.
+cc_library_headers {
+    name: "libjsonpbparse_headers",
+    host_supported: true,
+    vendor_available: true,
+    recovery_available: true,
+    export_include_dirs: ["include"],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}
