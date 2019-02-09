@@ -1,10 +1,11 @@
 
-prebuilt_etc {
+prebuilt_etc_json {
     name: "cgroups.json",
     src: "cgroups.json",
+    schema: "cgroups.proto",
 }
 
-prebuilt_etc {
+prebuilt_etc_json {
     name: "task_profiles.json",
     src: "task_profiles.json",
 }
@@ -48,4 +49,22 @@ cc_test {
     local_include_dirs: [
         "include",
     ],
+}
+
+python_binary_host {
+    name: "json2pb",
+    main: "json2pb.py",
+
+    srcs: [
+        "json2pb.py",
+    ],
+
+    version: {
+        py2: {
+            enabled: true,
+        },
+        py3: {
+            enabled: false,
+        },
+    },
 }
