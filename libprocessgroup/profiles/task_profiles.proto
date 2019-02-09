@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package android.profiles;
+
+// Next: 3
+message TaskProfiles {
+    repeated Attribute attributes = 1 [json_name = "Attributes"];
+    repeated Profile profiles = 2 [json_name = "Profiles"];
+}
+
+// Next: 4
+message Attribute {
+    string name = 1 [json_name = "Name"];
+    string controller = 2 [json_name = "Controller"];
+    string file = 3 [json_name = "File"];
+}
+
+// Next: 3
+message Profile {
+    string name = 1 [json_name = "Name"];
+    repeated Action actions = 2 [json_name = "Actions"];
+}
+
+// Next: 3
+message Action {
+    string name = 1 [json_name = "Name"];
+    map<string, string> params = 2 [json_name = "Params"];
+}
