@@ -12,6 +12,8 @@ prebuilt_etc {
 cc_library_static {
     name: "libprocessgroup_proto",
     host_supported: true,
+    vendor_available: true,
+    recovery_available: true,
     srcs: [
         "cgroups.proto",
         "task_profiles.proto",

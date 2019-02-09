@@ -32,10 +32,15 @@ cc_library {
     shared_libs: [
         "libbase",
         "libjsoncpp",
+        "libprotobuf-cpp-full",
+    ],
+    static_libs: [
+        "libprocessgroup_proto",
     ],
     // for cutils/android_filesystem_config.h
     header_libs: [
         "libcutils_headers",
+        "libjsonpbparse_headers",
         "libprocessgroup_headers",
     ],
     export_include_dirs: ["include"],
@@ -45,5 +50,7 @@ cc_library {
     cflags: [
         "-Wall",
         "-Werror",
+
+       "-Wno-unused-parameter",
     ],
 }

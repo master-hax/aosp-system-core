@@ -28,8 +28,8 @@
 
 #include <cutils/android_filesystem_config.h>
 
-#include <json/reader.h>
-#include <json/value.h>
+#include <jsonpb/parse_message.h>
+#include "task_profiles.pb.h"
 
 // To avoid issues in sdk_mac build
 #if defined(__ANDROID__)
@@ -289,6 +289,16 @@ TaskProfiles::TaskProfiles() {
     }
 }
 
+template <typename Map>
+const typename Map::mapped_type& Get(const Map& map, const typename Map::key_type& key,
+                                     const typename Map::mapped_type& default_value = {}) {
+    auto&& it = map.find(key);
+    if (it == map.end()) {
+        return default_value;
+    }
+    return it->second;
+}
+
 bool TaskProfiles::Load(const CgroupMap& cg_map) {
     std::string json_doc;
 
@@ -297,99 +307,87 @@ bool TaskProfiles::Load(const CgroupMap& cg_map) {
         return false;
     }
 
-    Json::Reader reader;
-    Json::Value root;
-    if (!reader.parse(json_doc, root)) {
-        LOG(ERROR) << "Failed to parse task profiles: " << reader.getFormattedErrorMessages();
+    auto task_profiles =
+            android::jsonpb::JsonStringToMessage<android::profiles::TaskProfiles>(json_doc);
+    if (!task_profiles.ok()) {
+        LOG(ERROR) << "Failed to parse task profiles: " << task_profiles.error();
         return false;
     }
 
-    Json::Value attr = root["Attributes"];
-    for (Json::Value::ArrayIndex i = 0; i < attr.size(); ++i) {
-        std::string name = attr[i]["Name"].asString();
-        std::string ctrlName = attr[i]["Controller"].asString();
-        std::string file_name = attr[i]["File"].asString();
+    for (const auto& attr : task_profiles->attributes()) {
+        const auto& name = attr.name();
+        const auto& ctrl_name = attr.controller();
+        const auto& file_name = attr.file();
 
         if (attributes_.find(name) == attributes_.end()) {
-            const CgroupController* controller = cg_map.FindController(ctrlName.c_str());
+            const CgroupController* controller = cg_map.FindController(ctrl_name.c_str());
             if (controller) {
                 attributes_[name] = std::make_unique<ProfileAttribute>(controller, file_name);
             } else {
-                LOG(WARNING) << "Controller " << ctrlName << " is not found";
+                LOG(WARNING) << "Controller " << ctrl_name << " is not found";
             }
         } else {
             LOG(WARNING) << "Attribute " << name << " is already defined";
         }
     }
 
-    std::map<std::string, std::string> params;
-
-    Json::Value profilesVal = root["Profiles"];
-    for (Json::Value::ArrayIndex i = 0; i < profilesVal.size(); ++i) {
-        Json::Value profileVal = profilesVal[i];
-
-        std::string profileName = profileVal["Name"].asString();
-        Json::Value actions = profileVal["Actions"];
+    for (const auto& profile_value : task_profiles->profiles()) {
         auto profile = std::make_unique<TaskProfile>();
+        for (const auto& action : profile_value.actions()) {
+            const auto& params = action.params();
+            if (action.name() == "JoinCgroup") {
+                const auto& ctrl_name = Get(params, "Controller");
+                const auto& path = Get(params, "Path");
 
-        for (Json::Value::ArrayIndex actIdx = 0; actIdx < actions.size(); ++actIdx) {
-            Json::Value actionVal = actions[actIdx];
-            std::string actionName = actionVal["Name"].asString();
-            Json::Value paramsVal = actionVal["Params"];
-            if (actionName == "JoinCgroup") {
-                std::string ctrlName = paramsVal["Controller"].asString();
-                std::string path = paramsVal["Path"].asString();
-
-                const CgroupController* controller = cg_map.FindController(ctrlName.c_str());
+                const CgroupController* controller = cg_map.FindController(ctrl_name.c_str());
                 if (controller) {
                     profile->Add(std::make_unique<SetCgroupAction>(controller, path));
                 } else {
-                    LOG(WARNING) << "JoinCgroup: controller " << ctrlName << " is not found";
+                    LOG(WARNING) << "JoinCgroup: controller " << ctrl_name << " is not found";
                 }
-            } else if (actionName == "SetTimerSlack") {
-                std::string slackValue = paramsVal["Slack"].asString();
+            } else if (action.name() == "SetTimerSlack") {
+                const auto& slack_value = Get(params, "Slack");
                 char* end;
                 unsigned long slack;
 
-                slack = strtoul(slackValue.c_str(), &end, 10);
-                if (end > slackValue.c_str()) {
+                slack = strtoul(slack_value.c_str(), &end, 10);
+                if (end > slack_value.c_str()) {
                     profile->Add(std::make_unique<SetTimerSlackAction>(slack));
                 } else {
-                    LOG(WARNING) << "SetTimerSlack: invalid parameter: " << slackValue;
+                    LOG(WARNING) << "SetTimerSlack: invalid parameter: " << slack_value;
                 }
-            } else if (actionName == "SetAttribute") {
-                std::string attrName = paramsVal["Name"].asString();
-                std::string attrValue = paramsVal["Value"].asString();
-
-                auto iter = attributes_.find(attrName);
+            } else if (action.name() == "SetAttribute") {
+                const auto& attr_name = Get(params, "Name");
+                const auto& attr_value = Get(params, "Value");
+                auto iter = attributes_.find(attr_name);
                 if (iter != attributes_.end()) {
                     profile->Add(
-                            std::make_unique<SetAttributeAction>(iter->second.get(), attrValue));
+                            std::make_unique<SetAttributeAction>(iter->second.get(), attr_value));
                 } else {
-                    LOG(WARNING) << "SetAttribute: unknown attribute: " << attrName;
+                    LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
                 }
-            } else if (actionName == "SetClamps") {
-                std::string boostValue = paramsVal["Boost"].asString();
-                std::string clampValue = paramsVal["Clamp"].asString();
+            } else if (action.name() == "SetClamps") {
+                const auto& boost_value = Get(params, "Boost");
+                const auto& clamp_value = Get(params, "Clamp");
                 char* end;
                 unsigned long boost;
 
-                boost = strtoul(boostValue.c_str(), &end, 10);
-                if (end > boostValue.c_str()) {
-                    unsigned long clamp = strtoul(clampValue.c_str(), &end, 10);
-                    if (end > clampValue.c_str()) {
+                boost = strtoul(boost_value.c_str(), &end, 10);
+                if (end > boost_value.c_str()) {
+                    unsigned long clamp = strtoul(clamp_value.c_str(), &end, 10);
+                    if (end > clamp_value.c_str()) {
                         profile->Add(std::make_unique<SetClampsAction>(boost, clamp));
                     } else {
-                        LOG(WARNING) << "SetClamps: invalid parameter " << clampValue;
+                        LOG(WARNING) << "SetClamps: invalid parameter " << clamp_value;
                     }
                 } else {
-                    LOG(WARNING) << "SetClamps: invalid parameter: " << boostValue;
+                    LOG(WARNING) << "SetClamps: invalid parameter: " << boost_value;
                 }
             } else {
-                LOG(WARNING) << "Unknown profile action: " << actionName;
+                LOG(WARNING) << "Unknown profile action: " << action.name();
             }
         }
-        profiles_[profileName] = std::move(profile);
+        profiles_[profile_value.name()] = std::move(profile);
     }
 
     return true;

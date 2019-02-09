@@ -36,9 +36,10 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <cgroup_map.h>
-#include <json/reader.h>
-#include <json/value.h>
 #include <processgroup/processgroup.h>
+
+#include <jsonpb/parse_message.h>
+#include "cgroups.pb.h"
 
 using android::base::GetBoolProperty;
 using android::base::StringPrintf;
@@ -119,30 +120,30 @@ static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors
         return false;
     }
 
-    Json::Reader reader;
-    Json::Value root;
-    if (!reader.parse(json_doc, root)) {
-        LOG(ERROR) << "Failed to parse cgroups description: " << reader.getFormattedErrorMessages();
+    auto cgroups = android::jsonpb::JsonStringToMessage<android::profiles::Cgroups>(json_doc);
+    if (!cgroups.ok()) {
+        LOG(ERROR) << "Failed to parse " << cgroups.error();
         return false;
     }
 
-    Json::Value cgroups = root["Cgroups"];
-    for (Json::Value::ArrayIndex i = 0; i < cgroups.size(); ++i) {
-        std::string name = cgroups[i]["Controller"].asString();
+    for (auto cgroup : cgroups->cgroups()) {
+        const std::string& name = cgroup.controller();
         descriptors->emplace(std::make_pair(
                 name,
-                CgroupDescriptor(1, name, cgroups[i]["Path"].asString(),
-                                 std::strtoul(cgroups[i]["Mode"].asString().c_str(), 0, 8),
-                                 cgroups[i]["UID"].asString(), cgroups[i]["GID"].asString())));
+                CgroupDescriptor(1, name, cgroup.path(), std::strtoul(cgroup.mode().c_str(), 0, 8),
+                                 cgroup.uid(), cgroup.gid())));
     }
 
-    Json::Value cgroups2 = root["Cgroups2"];
-    descriptors->emplace(std::make_pair(
-            CGROUPV2_CONTROLLER_NAME,
-            CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
-                             std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
-                             cgroups2["UID"].asString(), cgroups2["GID"].asString())));
-
+    if (!cgroups->has_cgroups2()) {
+        LOG(WARNING) << "Missing Cgroups2";
+    } else {
+        const auto& cgroups2 = cgroups->cgroups2();
+        descriptors->emplace(
+                std::make_pair(CGROUPV2_CONTROLLER_NAME,
+                               CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2.path(),
+                                                std::strtoul(cgroups2.mode().c_str(), 0, 8),
+                                                cgroups2.uid(), cgroups2.gid())));
+    }
     return true;
 }
 

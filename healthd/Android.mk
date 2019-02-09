@@ -109,7 +109,8 @@ CHARGER_STATIC_LIBRARIES := \
     libbase \
     libutils \
     libcutils \
-    libjsoncpp \
+    libprotobuf-cpp-full \
+    libprocessgroup_proto \
     libprocessgroup \
     liblog \
     libm \
