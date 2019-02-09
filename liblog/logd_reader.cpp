@@ -229,7 +229,7 @@ error:
 LIBLOG_WEAK int socket_local_client(const char* name, int namespaceId, int type) {
   int s;
 
-  s = socket(AF_LOCAL, type, 0);
+  s = socket(AF_LOCAL, type | SOCK_CLOEXEC, 0);
   if (s < 0) return -1;
 
   if (0 > socket_local_client_connect(s, name, namespaceId, type)) {
