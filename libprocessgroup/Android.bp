@@ -32,6 +32,10 @@ cc_library {
     shared_libs: [
         "libbase",
         "libjsoncpp",
+        "libprotobuf-cpp-full",
+    ],
+    static_libs: [
+        "libtaskprofiles",
     ],
     // for cutils/android_filesystem_config.h
     header_libs: [
@@ -45,5 +49,8 @@ cc_library {
     cflags: [
         "-Wall",
         "-Werror",
+
+	"-Wno-unused-parameter",
     ],
+    local_include_dirs: ["profiles/include"],
 }
