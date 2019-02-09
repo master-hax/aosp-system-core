@@ -8,3 +8,44 @@ prebuilt_etc {
     name: "task_profiles.json",
     src: "task_profiles.json",
 }
+
+cc_library_static {
+    name: "libtaskprofiles",
+    host_supported: true,
+    vendor_available: true,
+    srcs: [
+        "cgroups.proto",
+        "task_profiles.proto",
+    ],
+    proto: {
+        type: "full",
+        export_proto_headers: true,
+    },
+}
+
+cc_test {
+    name: "libtaskprofiles_test",
+
+    // Run host test with `libtaskprofiles_test --root=${ANDROID_PRODUCT_OUT}`, for example
+    host_supported: true,
+
+    srcs: [
+        "test.cpp",
+    ],
+    static_libs: [
+        "libtaskprofiles",
+    ],
+    shared_libs: [
+        "libbase",
+        "libgflags",
+        "libprotobuf-cpp-full",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+    local_include_dirs: [
+        "include",
+    ],
+}

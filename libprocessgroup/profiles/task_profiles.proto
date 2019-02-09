@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package android.profiles;
+
+// Next: 3
+message TaskProfiles {
+    repeated Attribute Attributes = 1;
+    repeated Profile Profiles = 2;
+}
+
+// Next: 4
+message Attribute {
+    string Name = 1;
+    string Controller = 2;
+    string File = 3;
+}
+
+// Next: 3
+message Profile {
+    string Name = 1;
+    repeated Action Actions = 2;
+}
+
+// Next: 3
+message Action {
+    string Name = 1;
+    repeated Param Params = 2;
+}
+
+// Next: 3
+message Param {
+    string Name = 1;
+    string Value = 2;
+}

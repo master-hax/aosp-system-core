@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package android.profiles;
+
+// Next: 3
+message Cgroups {
+    repeated Cgroup Cgroups = 1;
+    Cgroups2 Cgroups2 = 2;
+}
+
+// Next: 6
+message Cgroup {
+    string Controller = 1;
+    string Path = 2;
+    string Mode = 3;
+    string UID = 4;
+    string GID = 5;
+}
+
+// Next: 5
+message Cgroups2 {
+    string Path = 1;
+    string Mode = 2;
+    string UID = 3;
+    string GID = 4;
+}
