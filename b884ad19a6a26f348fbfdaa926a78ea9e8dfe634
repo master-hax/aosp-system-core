@@ -16,6 +16,24 @@
       "revId": "b884ad19a6a26f348fbfdaa926a78ea9e8dfe634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e10db64_62ecf3a0",
+        "filename": "liblog/liblog.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-09T01:11:23Z",
+      "side": 1,
+      "message": "No, symbols in *_PRIVATE or *_PLATFORM version are not emitted for apex stubs.",
+      "parentUuid": "02a987ee_ba702dea",
+      "revId": "b884ad19a6a26f348fbfdaa926a78ea9e8dfe634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
