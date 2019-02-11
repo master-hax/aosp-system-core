@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1683af76_1599c858",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-11T21:38:55Z",
+      "side": 1,
+      "message": "globals should start `g_`...",
+      "range": {
+        "startLine": 58,
+        "startChar": 20,
+        "endLine": 58,
+        "endChar": 43
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9469c48_afad7037",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-11T21:38:55Z",
+      "side": 1,
+      "message": "size_t",
+      "range": {
+        "startLine": 58,
+        "startChar": 7,
+        "endLine": 58,
+        "endChar": 19
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e3b4933_5d13dd42",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-11T21:38:55Z",
+      "side": 1,
+      "message": "ParseUInt",
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
