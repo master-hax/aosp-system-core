@@ -104,3 +104,20 @@
 
 #define NO_THREAD_SAFETY_ANALYSIS \
       THREAD_ANNOTATION_ATTRIBUTE__(no_thread_safety_analysis)
+
+namespace android {
+namespace base {
+
+// A class that helps the Clang Thread Safety Analysis deal with
+// std::unique_lock. Given that std::unique_lock is movable, and the analysis
+// can not currently perform alias analysis, it is not annotated. In order to
+// assert that the mutex is held, a ScopedAssumeLocked can be created just after
+// the std::unique_lock.
+class SCOPED_CAPABILITY ScopedAssumeLocked {
+ public:
+  ScopedAssumeLocked(std::mutex& mutex) ACQUIRE(mutex) {}
+  ~ScopedAssumeLocked() RELEASE() {}
+};
+
+}  // namespace base
+}  // namespace android
