@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "71828d54_f4269165",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-12T17:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ce409b2_cb069633",
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4cf1616d_673af8f7",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 12
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9f5f7a46_251f46f0",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-12T17:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cf1616d_673af8f7",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 115,
+        "endChar": 66
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7aa3a4b9_d6080739",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 12
@@ -56,6 +98,24 @@
       "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7243f12d_89b2dd90",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-12T17:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7aa3a4b9_d6080739",
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -79,6 +139,30 @@
       "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9b751d6f_33ed79d5",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-12T17:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6940ee66_5e547cc1",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 55
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -141,6 +225,30 @@
       "side": 1,
       "message": "Huh, kinda curious why that is. They should carry their own?\n\nI think it merits a comment here that ICU is intentionally left out.",
       "parentUuid": "0ceaa7e9_498340f5",
+      "range": {
+        "startLine": 479,
+        "startChar": 0,
+        "endLine": 482,
+        "endChar": 63
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0a0922c_33340130",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-02-12T17:26:18Z",
+      "side": 1,
+      "message": "http://b/64104535 has some details internally. I can talk face-to-face about it.",
+      "parentUuid": "fc7d9507_69f51945",
       "range": {
         "startLine": 479,
         "startChar": 0,
