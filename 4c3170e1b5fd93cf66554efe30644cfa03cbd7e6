@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23d994ee_a02653a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-12T00:15:21Z",
+      "side": 1,
+      "message": "vharron, do you have any incantations for the problematic tests that I can try this with?",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 4
+      },
+      "revId": "4c3170e1b5fd93cf66554efe30644cfa03cbd7e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4cadf53_fddaf749",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-12T00:15:21Z",
+      "side": 1,
+      "message": "If we go with this approach we ought to come up with a better directory than this, so the ticket is still applicable to an extent.\n\nI think the other test directories above should continue to use the system section to not diverge from the real config, so we shouldn\u0027t change them to use this new \"nativetest\" section - a new location is in order. What would be a suitable name for it?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 32
+      },
+      "revId": "4c3170e1b5fd93cf66554efe30644cfa03cbd7e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec5d94c9_6a76a023",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-12T00:15:21Z",
+      "side": 1,
+      "message": "Note that everything from this point down is a copy of the APEX namespaces in [system].",
+      "revId": "4c3170e1b5fd93cf66554efe30644cfa03cbd7e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
