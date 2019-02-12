@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b04281c2_bd72474d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1048574
+      },
+      "writtenOn": "2019-02-12T00:37:18Z",
+      "side": 1,
+      "message": "Emails repro steps OOB",
+      "parentUuid": "23d994ee_a02653a5",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 4
+      },
+      "revId": "4c3170e1b5fd93cf66554efe30644cfa03cbd7e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a4cadf53_fddaf749",
         "filename": "rootdir/etc/ld.config.txt",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-12T00:15:21Z",
       "side": 1,
       "message": "If we go with this approach we ought to come up with a better directory than this, so the ticket is still applicable to an extent.\n\nI think the other test directories above should continue to use the system section to not diverge from the real config, so we shouldn\u0027t change them to use this new \"nativetest\" section - a new location is in order. What would be a suitable name for it?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 32
+      },
+      "revId": "4c3170e1b5fd93cf66554efe30644cfa03cbd7e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0eb1edb1_b5f0ceec",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1048574
+      },
+      "writtenOn": "2019-02-12T00:37:18Z",
+      "side": 1,
+      "message": "In the interest of preserving backwards compatibility, IMO the function of /data/local/tmp should not change.  If we want to find a way to prevent test binaries from being run here during CTS, there should be a different way IMO.  Not sure if there is a practical way though.",
+      "parentUuid": "a4cadf53_fddaf749",
       "range": {
         "startLine": 27,
         "startChar": 0,
