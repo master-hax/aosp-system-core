@@ -258,6 +258,30 @@
       "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bde4b6cf_4489e6f1",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 12
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-12T18:23:43Z",
+      "side": 1,
+      "message": "Ok. Would it be actively harmful to add links here? Not that it matters for this CL, but it might complicate matters if we decide to dynamically generate these links at APEX mount time.",
+      "parentUuid": "d0a0922c_33340130",
+      "range": {
+        "startLine": 479,
+        "startChar": 0,
+        "endLine": 482,
+        "endChar": 63
+      },
+      "revId": "f2a094026cde520b16acbc7b46ce183399a06e0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
