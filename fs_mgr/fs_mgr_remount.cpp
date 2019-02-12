@@ -40,6 +40,7 @@ namespace {
     LOG(INFO) << getprogname()
               << " [-h]\n"
                  "\t-h --help\tthis help\n"
+                 "\t--use-logd\toutput messages to logd instead\n"
                  "\n"
                  "Remount all partitions read-write.\n"
                  "Verity must be disabled.";
@@ -132,10 +133,14 @@ int main(int argc, char* argv[]) {
 
     struct option longopts[] = {
             {"help", no_argument, nullptr, 'h'},
+            {"use-logd", no_argument, nullptr, 0},
             {0, 0, nullptr, 0},
     };
     for (int opt; (opt = ::getopt_long(argc, argv, "h", longopts, nullptr)) != -1;) {
         switch (opt) {
+            case 0:
+                android::base::SetLogger(android::base::LogdLogger());
+                break;
             default:
                 LOG(ERROR) << "Bad Argument -" << char(opt);
                 usage(BADARG);
