@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71909ddc_d2f6ffd3",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-12T08:07:37Z",
+      "side": 1,
+      "message": "This could lead a problem. I think vndk-sp should be before system/lib.",
+      "range": {
+        "startLine": 312,
+        "startChar": 0,
+        "endLine": 312,
+        "endChar": 66
+      },
+      "revId": "c350b03c727e6cf459402ee6e66256483a116f87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "445c7622_03c13020",
+        "filename": "rootdir/etc/ld.config.vndk_lite.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-12T08:07:37Z",
+      "side": 1,
+      "message": "here as well",
+      "range": {
+        "startLine": 334,
+        "startChar": 0,
+        "endLine": 335,
+        "endChar": 81
+      },
+      "revId": "c350b03c727e6cf459402ee6e66256483a116f87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
