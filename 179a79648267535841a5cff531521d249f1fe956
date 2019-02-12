@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ed28995_bc415a01",
+        "filename": "fs_mgr/libfs_avb/avb_util.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 1,
+      "message": "Adding the new FsAvbHashtreeDescriptor, to include both salt and root_digest.\nSo we don\u0027t have to pass them as separate arguments.",
+      "range": {
+        "startLine": 41,
+        "startChar": 16,
+        "endLine": 41,
+        "endChar": 39
+      },
+      "revId": "179a79648267535841a5cff531521d249f1fe956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65490ab9_8ec33804",
+        "filename": "fs_mgr/libfs_avb/fs_avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 1,
+      "message": "The major two public APIs added in this CL.",
+      "revId": "179a79648267535841a5cff531521d249f1fe956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68a1a173_3c108984",
+        "filename": "fs_mgr/libfs_avb/include/fs_avb/fs_avb_util.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 1,
+      "message": "Two major public APIs in this CL.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 68
+      },
+      "revId": "179a79648267535841a5cff531521d249f1fe956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad23717_544d9a86",
+        "filename": "fs_mgr/libfs_avb/include/fs_avb/types.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 1,
+      "message": "The content here is NOT new, just moved from other files.",
+      "revId": "179a79648267535841a5cff531521d249f1fe956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6ba89c4_76860bcf",
+        "filename": "fs_mgr/libfs_avb/types.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 1,
+      "message": "The file content here is NOT new, they\u0027re moved from other files.",
+      "revId": "179a79648267535841a5cff531521d249f1fe956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

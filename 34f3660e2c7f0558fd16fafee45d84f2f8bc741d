@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "934ec14b_716794b6",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 0,
+      "message": "moved to types.cpp",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 1
+      },
+      "revId": "34f3660e2c7f0558fd16fafee45d84f2f8bc741d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc04c638_b68a7e10",
+        "filename": "fs_mgr/libfs_avb/avb_util.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 0,
+      "message": "moved to \u003cfs_avb/types.h\u003e",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 0
+      },
+      "revId": "34f3660e2c7f0558fd16fafee45d84f2f8bc741d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f443e40f_b59fac4a",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 0,
+      "message": "moved to types.cpp",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 1
+      },
+      "revId": "34f3660e2c7f0558fd16fafee45d84f2f8bc741d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b1fee60_896718ea",
+        "filename": "fs_mgr/libfs_avb/include/fs_avb/fs_avb.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-12T10:24:59Z",
+      "side": 0,
+      "message": "The deletions in this file are moved to types.h",
+      "revId": "34f3660e2c7f0558fd16fafee45d84f2f8bc741d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
