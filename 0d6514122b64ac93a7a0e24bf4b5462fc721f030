@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15748939_b518f209",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-12T19:51:37Z",
+      "side": 1,
+      "message": "you know you can write\n\n  sockaddr_un addr \u003d { .sun_family \u003d AF_LOCAL };\n\n?",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 29
+      },
+      "revId": "0d6514122b64ac93a7a0e24bf4b5462fc721f030",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aaf67927_d4435f77",
+        "filename": "liblog/logd_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-12T19:51:37Z",
+      "side": 1,
+      "message": "you don\u0027t need any of this code on the mac either?",
+      "range": {
+        "startLine": 116,
+        "startChar": 35,
+        "endLine": 116,
+        "endChar": 47
+      },
+      "revId": "0d6514122b64ac93a7a0e24bf4b5462fc721f030",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
