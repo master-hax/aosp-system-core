@@ -53,3 +53,11 @@ cc_prebuilt_binary {
     },
     host_supported: true,
 }
+
+cc_test_host {
+    name: "AdbRemountTestCases",
+    required: ["adb-remount-test.sh"],
+    srcs: ["adb-remount-test.cpp"],
+    test_config: "adb-remount-test.xml",
+    test_suites: ["general-tests"],
+}
