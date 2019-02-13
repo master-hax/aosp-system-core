@@ -51,4 +51,7 @@ cc_test {
         "-Werror",
         "-Wno-unused-parameter",
     ],
+    test_suites: [
+        "general-tests",
+    ],
 }

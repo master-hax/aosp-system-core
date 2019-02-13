@@ -53,4 +53,13 @@ cc_test {
         "-Werror",
         "-Wno-unused-parameter",
     ],
+    target: {
+        android: {
+            test_config: "AndroidTest.xml",
+        },
+    },
+
+    test_suites: [
+        "general-tests",
+    ],
 }
