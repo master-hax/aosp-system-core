@@ -53,6 +53,9 @@
 
 using android::base::StringPrintf;
 
+// We can't find out whether we have support for AIO on ffs endpoints until we submit a read.
+static std::optional<bool> gFfsAioSupported = true;
+
 static constexpr size_t kUsbReadQueueDepth = 16;
 static constexpr size_t kUsbReadSize = 16384;
 
@@ -442,9 +445,17 @@ struct UsbFfsConnection : public Connection {
         block->pending = true;
         struct iocb* iocb = &block->control;
         if (io_submit(aio_context_.get(), 1, &iocb) != 1) {
+            if (errno == EINVAL && !gFfsAioSupported.has_value()) {
+                HandleError("failed to submit first read, ffs not supported");
+                gFfsAioSupported = false;
+                return;
+            }
+
             HandleError(StringPrintf("failed to submit read: %s", strerror(errno)));
             return;
         }
+
+        gFfsAioSupported = true;
     }
 
     void HandleWrite(TransferId id) {
@@ -551,10 +562,16 @@ struct UsbFfsConnection : public Connection {
     size_t writes_submitted_ GUARDED_BY(write_mutex_) = 0;
 };
 
+void usb_init_legacy();
+
 static void usb_ffs_open_thread() {
     adb_thread_setname("usb ffs open");
 
     while (true) {
+        if (gFfsAioSupported.has_value() && !gFfsAioSupported.value()) {
+            return usb_init_legacy();
+        }
+
         unique_fd control;
         unique_fd bulk_out;
         unique_fd bulk_in;
@@ -575,7 +592,6 @@ static void usb_ffs_open_thread() {
     }
 }
 
-void usb_init_legacy();
 void usb_init() {
     if (!android::base::GetBoolProperty("persist.adb.nonblocking_ffs", false)) {
         usb_init_legacy();
