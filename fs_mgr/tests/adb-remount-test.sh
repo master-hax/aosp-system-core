@@ -45,6 +45,7 @@ ORANGE="${ESCAPE}[38;5;255:165:0m"
 BLUE="${ESCAPE}[35m"
 NORMAL="${ESCAPE}[0m"
 TMPDIR=${TMPDIR:-/tmp}
+print_time=false
 
 ##
 ##  Helper Functions
@@ -332,6 +333,9 @@ die() {
   echo "${RED}[  FAILED  ]${NORMAL} ${@}" >&2
   cleanup
   restore
+  if ${print_time}; then
+    echo "${BLUE}[     INFO ]${NORMAL}" `date` >&2
+  fi
   exit 1
 }
 
@@ -424,7 +428,7 @@ skip_unrelated_mounts() {
 ##  MAINLINE
 ##
 
-OPTIONS=`getopt --alternative --unquoted --longoptions help,serial:,colour,color,no-colour,no-color -- "?hs:" ${*}` ||
+OPTIONS=`getopt --alternative --unquoted --longoptions help,serial:,colour,color,no-colour,no-color,gtest_print_time -- "?hs:" ${*}` ||
   ( echo "${USAGE}" >&2 ; false ) ||
   die "getopt failure"
 set -- ${OPTIONS}
@@ -446,6 +450,9 @@ while [ ${#} -gt 0 ]; do
     --no-color | --no-colour)
       color=false
       ;;
+    --gtest_print_time)
+      print_time=true
+      ;;
     --)
       shift
       break
@@ -466,6 +473,10 @@ if ! ${color}; then
   ORANGE=""
   BLUE=""
   NORMAL=""
+fi
+
+if ${print_time}; then
+  echo "${BLUE}[     INFO ]${NORMAL}" `date` >&2
 fi
 
 inFastboot && die "device in fastboot mode"
@@ -1126,3 +1137,7 @@ restore() {
   die "failed to restore verity" >&2
 
 echo "${GREEN}[  PASSED  ]${NORMAL} adb remount" >&2
+
+if ${print_time}; then
+  echo "${BLUE}[     INFO ]${NORMAL}" `date` >&2
+fi
