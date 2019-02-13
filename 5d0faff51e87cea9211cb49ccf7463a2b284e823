@@ -22,6 +22,30 @@
       "revId": "5d0faff51e87cea9211cb49ccf7463a2b284e823",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a71be4e_0a952a8d",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1342419
+      },
+      "writtenOn": "2019-02-13T07:44:48Z",
+      "side": 1,
+      "message": "I believe system server is the only process which has the name of \u0027system_server\u0027 in the processes which have both AID_SYSTEM and backing executable /system/bin/app_process64.\nAnd no other process cannot have the name.\nIs my understanding wrong?",
+      "parentUuid": "cc8ba08f_52bcecee",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 63
+      },
+      "revId": "5d0faff51e87cea9211cb49ccf7463a2b284e823",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
