@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "fb79fd36_8a934054",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:22:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9469c48_afad7037",
+      "range": {
+        "startLine": 58,
+        "startChar": 7,
+        "endLine": 58,
+        "endChar": 19
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "37803e2f_f241cc58",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:22:15Z",
+      "side": 1,
+      "message": "It\u0027s static, not global?",
+      "parentUuid": "1683af76_1599c858",
+      "range": {
+        "startLine": 58,
+        "startChar": 20,
+        "endLine": 58,
+        "endChar": 43
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e3b4933_5d13dd42",
         "filename": "adb/transport_local.cpp",
         "patchSetId": 1
@@ -62,6 +110,24 @@
       "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9e87d03_4738f005",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:22:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e3b4933_5d13dd42",
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -102,6 +168,48 @@
       "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4d841ab_1c0bad52",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:22:15Z",
+      "side": 1,
+      "message": "Haha. I\u0027ve clamped to 32k for the pathological case - emulators can be run below 5554.",
+      "parentUuid": "9acc152e_34d3e5f7",
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2ba57611_df5c28c3",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:22:15Z",
+      "side": 1,
+      "message": "I saw that and considered using ADB_EMU instead of ADB_LOCAL_TRANSPORT_MAX here, but if someone\u0027s already setting ADB_EMU to 1 for true, it would be a really stupid bug to track down.",
+      "parentUuid": "9e749945_13bba6e5",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 52
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
