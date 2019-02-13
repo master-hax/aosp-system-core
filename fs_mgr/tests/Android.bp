@@ -63,3 +63,10 @@ java_test_host {
 
     test_suites: ["general-tests"],
 }
+
+cc_test_host {
+    name: "AdbRemountTestCases",
+    required: ["adb-remount-test.sh"],
+    srcs: ["adb-remount-test.cpp"],
+    test_suites: ["device-tests"],
+}
