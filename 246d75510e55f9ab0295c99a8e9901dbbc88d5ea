@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "2e67c9fb_f3bdc4c3",
+        "filename": "adb/transport_local.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1103523
+      },
+      "writtenOn": "2019-02-13T10:33:29Z",
+      "side": 1,
+      "message": "More pertinently: the other statics in the file don\u0027t yet start with \u0027g_\u0027 - I\u0027m used to the convention that file consistency supersedes global, and correcting a file is a separate patch.",
+      "parentUuid": "37803e2f_f241cc58",
+      "range": {
+        "startLine": 58,
+        "startChar": 20,
+        "endLine": 58,
+        "endChar": 43
+      },
+      "revId": "246d75510e55f9ab0295c99a8e9901dbbc88d5ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e3b4933_5d13dd42",
         "filename": "adb/transport_local.cpp",
         "patchSetId": 1
