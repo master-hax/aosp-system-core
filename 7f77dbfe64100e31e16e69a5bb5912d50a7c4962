@@ -16,6 +16,24 @@
       "revId": "7f77dbfe64100e31e16e69a5bb5912d50a7c4962",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39396f98_d9b1382d",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-02-14T17:55:12Z",
+      "side": 0,
+      "message": "Yeah, true.\n\nAtm I\u0027m hoping for a fix-forward instead of this revert (http://b/124439236#comment2), but I\u0027ll keep that in mind if this becomes necessary.\n\n\u003e or at least let Treehugger finish\n\nDoes that catch missing cleanspecs? I\u0027d expect it to not make a difference there, since it presumably starts from an empty slate.",
+      "parentUuid": "66360541_56983548",
+      "revId": "7f77dbfe64100e31e16e69a5bb5912d50a7c4962",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
