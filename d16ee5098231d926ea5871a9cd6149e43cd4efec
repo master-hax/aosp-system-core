@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2da615dc_9bec5b4c",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 701,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-14T21:15:11Z",
+      "side": 1,
+      "message": "Probably better to move this before the above QueueBuiltinAction(), so all of the queueing is together and all of the things that happen before we start queueing things is together.",
+      "revId": "d16ee5098231d926ea5871a9cd6149e43cd4efec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "702b044a_5a064dca",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 703,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-14T21:15:11Z",
+      "side": 1,
+      "message": "Maybe better to rename this ro.gsid.image_running such that no one can change it later?  Good idea to set it to 0 in the case that it\u0027s not running too, again to make sure no one can change it later.",
+      "revId": "d16ee5098231d926ea5871a9cd6149e43cd4efec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
