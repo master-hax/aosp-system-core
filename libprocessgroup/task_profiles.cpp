@@ -138,15 +138,23 @@ bool SetCgroupAction::IsAppDependentPath(const std::string& path) {
 
 SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p)
     : controller_(c), path_(p) {
-#ifdef CACHE_FILE_DESCRIPTORS
-    // cache file descriptor only if path is app independent
+    // file descriptors for app-dependent paths can't be cached
     if (IsAppDependentPath(path_)) {
         // file descriptor is not cached
         fd_.reset(-2);
         return;
     }
 
-    std::string tasks_path = c.GetTasksFilePath(p);
+    // file descriptor can be cached later on request
+    fd_.reset(-3);
+}
+
+void SetCgroupAction::EnableResourceCaching() {
+    if (fd_ != -3) {
+        return;
+    }
+
+    std::string tasks_path = controller_.GetTasksFilePath(path_);
 
     if (access(tasks_path.c_str(), W_OK) != 0) {
         // file is not accessible
@@ -162,7 +170,6 @@ SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p
     }
 
     fd_ = std::move(fd);
-#endif
 }
 
 bool SetCgroupAction::AddTidToCgroup(int tid, int fd) {
@@ -184,7 +191,6 @@ bool SetCgroupAction::AddTidToCgroup(int tid, int fd) {
 }
 
 bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
-#ifdef CACHE_FILE_DESCRIPTORS
     if (fd_ >= 0) {
         // fd is cached, reuse it
         if (!AddTidToCgroup(pid, fd_)) {
@@ -199,7 +205,7 @@ bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
         return true;
     }
 
-    // this is app-dependent path, file descriptor is not cached
+    // this is app-dependent path and fd is not cached or cached fd can't be used
     std::string procs_path = controller()->GetProcsFilePath(path_, uid, pid);
     unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(procs_path.c_str(), O_WRONLY | O_CLOEXEC)));
     if (tmp_fd < 0) {
@@ -212,24 +218,9 @@ bool SetCgroupAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     }
 
     return true;
-#else
-    std::string procs_path = controller()->GetProcsFilePath(path_, uid, pid);
-    unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(procs_path.c_str(), O_WRONLY | O_CLOEXEC)));
-    if (tmp_fd < 0) {
-        // no permissions to access the file, ignore
-        return true;
-    }
-    if (!AddTidToCgroup(pid, tmp_fd)) {
-        LOG(ERROR) << "Failed to add task into cgroup";
-        return false;
-    }
-
-    return true;
-#endif
 }
 
 bool SetCgroupAction::ExecuteForTask(int tid) const {
-#ifdef CACHE_FILE_DESCRIPTORS
     if (fd_ >= 0) {
         // fd is cached, reuse it
         if (!AddTidToCgroup(tid, fd_)) {
@@ -244,15 +235,18 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
         return true;
     }
 
-    // application-dependent path can't be used with tid
-    LOG(ERROR) << "Application profile can't be applied to a thread";
-    return false;
-#else
+    if (fd_ == -2) {
+        // application-dependent path can't be used with tid
+        PLOG(ERROR) << "Application profile can't be applied to a thread";
+        return false;
+    }
+
+    // fd was not cached because cached fd can't be used
     std::string tasks_path = controller()->GetTasksFilePath(path_);
     unique_fd tmp_fd(TEMP_FAILURE_RETRY(open(tasks_path.c_str(), O_WRONLY | O_CLOEXEC)));
     if (tmp_fd < 0) {
-        // no permissions to access the file, ignore
-        return true;
+        PLOG(WARNING) << "Failed to open " << tasks_path << ": " << strerror(errno);
+        return false;
     }
     if (!AddTidToCgroup(tid, tmp_fd)) {
         LOG(ERROR) << "Failed to add task into cgroup";
@@ -260,7 +254,6 @@ bool SetCgroupAction::ExecuteForTask(int tid) const {
     }
 
     return true;
-#endif
 }
 
 bool TaskProfile::ExecuteForProcess(uid_t uid, pid_t pid) const {
@@ -282,6 +275,18 @@ bool TaskProfile::ExecuteForTask(int tid) const {
         }
     }
     return true;
+}
+
+void TaskProfile::EnableResourceCaching() {
+    if (res_cached_) {
+        return;
+    }
+
+    for (auto& element : elements_) {
+        element->EnableResourceCaching();
+    }
+
+    res_cached_ = true;
 }
 
 TaskProfiles& TaskProfiles::GetInstance() {
@@ -411,7 +416,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
     return true;
 }
 
-const TaskProfile* TaskProfiles::GetProfile(const std::string& name) const {
+TaskProfile* TaskProfiles::GetProfile(const std::string& name) const {
     auto iter = profiles_.find(name);
 
     if (iter != profiles_.end()) {
