@@ -42,6 +42,11 @@ cc_library_static {
             instruction_set: "arm",
         },
     },
+
+    // http://b/124451159 - Disable native coverage because inline assembly in
+    // libpixelflinger/include/private/pixelflinger/ggl_fixed.h does not build
+    // with -O0.
+    native_coverage: false,
 }
 
 // For the tests to use
