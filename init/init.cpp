@@ -42,6 +42,7 @@
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
+#include <libgsi/libgsi.h>
 #include <processgroup/processgroup.h>
 #include <selinux/android.h>
 
@@ -696,6 +697,11 @@ int SecondStageMain(int argc, char** argv) {
     if (false) DumpState();
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
+
+    // Make the GSI status available before scripts start running.
+    if (android::gsi::IsGsiRunning()) {
+        property_set("gsid.image_running", "1");
+    }
 
     am.QueueEventTrigger("early-init");
 
