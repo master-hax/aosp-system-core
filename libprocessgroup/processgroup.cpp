@@ -112,8 +112,9 @@ static bool isMemoryCgroupSupported() {
     return memcg_supported;
 }
 
-bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles) {
-    const TaskProfiles& tp = TaskProfiles::GetInstance();
+bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& profiles,
+                        bool use_fd_cache) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance(use_fd_cache);
 
     for (const auto& name : profiles) {
         const TaskProfile* profile = tp.GetProfile(name);
@@ -129,8 +130,8 @@ bool SetProcessProfiles(uid_t uid, pid_t pid, const std::vector<std::string>& pr
     return true;
 }
 
-bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles) {
-    const TaskProfiles& tp = TaskProfiles::GetInstance();
+bool SetTaskProfiles(int tid, const std::vector<std::string>& profiles, bool use_fd_cache) {
+    const TaskProfiles& tp = TaskProfiles::GetInstance(use_fd_cache);
 
     for (const auto& name : profiles) {
         const TaskProfile* profile = tp.GetProfile(name);
