@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "66360541_56983548",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2019-02-14T16:30:26Z",
+      "side": 0,
+      "message": "This might need a cleanspec, or at least let Treehugger finish to make sure that we don\u0027t accidentally install the real binary through the old symlink.",
+      "revId": "7f77dbfe64100e31e16e69a5bb5912d50a7c4962",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
