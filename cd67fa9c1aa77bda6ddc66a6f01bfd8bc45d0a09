@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e49a85f_4e427eaa",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-02-15T20:32:33Z",
+      "side": 0,
+      "message": "actually, I can get rid of this too now.",
+      "range": {
+        "startLine": 356,
+        "startChar": 0,
+        "endLine": 356,
+        "endChar": 77
+      },
+      "revId": "cd67fa9c1aa77bda6ddc66a6f01bfd8bc45d0a09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
