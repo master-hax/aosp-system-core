@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03277f96_241f51e3",
+        "filename": "libziparchive/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-15T19:56:35Z",
+      "side": 1,
+      "message": "(this bug is already marked as fixed?)",
+      "range": {
+        "startLine": 129,
+        "startChar": 64,
+        "endLine": 129,
+        "endChar": 75
+      },
+      "revId": "881e2e198b75087e292f869b05ad82b026ccb5b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f07a777_8e969e89",
+        "filename": "libziparchive/ziparchive-tests.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-15T19:56:35Z",
+      "side": 1,
+      "message": "did you mean to include this in the Android.bp too?",
+      "range": {
+        "startLine": 16,
+        "startChar": 52,
+        "endLine": 16,
+        "endChar": 66
+      },
+      "revId": "881e2e198b75087e292f869b05ad82b026ccb5b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
