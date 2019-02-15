@@ -907,6 +907,12 @@ void CreateSerializedPropertyInfo() {
             // Fallback to nonplat_* if vendor_* doesn't exist.
             LoadPropertyInfoFromFile("/vendor/etc/selinux/nonplat_property_contexts",
                                      &property_infos);
+            if (access("/product/etc/selinux/product_property_contexts", R_OK) != -1)
+                LoadPropertyInfoFromFile("/product/etc/selinux/product_property_contexts",
+                                         &property_infos);
+        }
+        if (access("/odm/etc/selinux/odm_property_contexts", R_OK) != -1) {
+            LoadPropertyInfoFromFile("/odm/etc/selinux/odm_property_contexts", &property_infos);
         }
     } else {
         if (!LoadPropertyInfoFromFile("/plat_property_contexts", &property_infos)) {
@@ -916,6 +922,8 @@ void CreateSerializedPropertyInfo() {
             // Fallback to nonplat_* if vendor_* doesn't exist.
             LoadPropertyInfoFromFile("/nonplat_property_contexts", &property_infos);
         }
+        LoadPropertyInfoFromFile("/product_property_contexts", &property_infos);
+        LoadPropertyInfoFromFile("/odm_property_contexts", &property_infos);
     }
 
     auto serialized_contexts = std::string();
