@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89c782b1_48c83dee",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "Rephase as: \"Failed to execute /system/bin/remount: %s\", strerror(errno)?",
+      "range": {
+        "startLine": 36,
+        "startChar": 18,
+        "endLine": 38,
+        "endChar": 53
+      },
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2876bb87_de4f5d1a",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "STDOUT_FILENO/STDERR_FILENO\n\n(also, dup it to STDIN_ERRNO as well?)",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "947c7922_5779c6bf",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "I think you\u0027re missing a \"/system/bin/remount\" here?",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45aaa898_9d4bd26f",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "Split this up into a branch for each of \"ret !\u003d pid\", \"!WIFEXITED(wstatus)\" and \"WEXITSTATUS(wstatus) !\u003d 0\" cases?\n\n(specifically, because in the WEXITSTATUS(wstatus) case, /system/bin/remount should presumably be printing something, and logging the hex value of status is presumably useless in that case)",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e54745df_1eaf088e",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "Should the remount binary be printing this message instead?",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f21b4861_f4f700d1",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-15T22:58:02Z",
+      "side": 1,
+      "message": "Can we delete this include as well?",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
