@@ -77,6 +77,7 @@ char* locale;
 #define POWER_ON_KEY_TIME (2 * MSEC_PER_SEC)
 #define UNPLUGGED_SHUTDOWN_TIME (10 * MSEC_PER_SEC)
 #define UNPLUGGED_DISPLAY_TIME (3 * MSEC_PER_SEC)
+#define MAX_BATT_LEVEL_WAIT_TIME (3 * MSEC_PER_SEC)
 
 #define LAST_KMSG_MAX_SZ (32 * 1024)
 
@@ -105,6 +106,7 @@ struct charger {
     int64_t next_screen_transition;
     int64_t next_key_check;
     int64_t next_pwr_check;
+    int64_t wait_batt_level_timestamp;
 
     key_state keys[KEY_MAX + 1];
 
@@ -289,6 +291,20 @@ static void update_screen_state(charger* charger, int64_t now) {
     int disp_time;
 
     if (!batt_anim->run || now < charger->next_screen_transition) return;
+
+    /* batteryLevel is 0% or not ready */
+    if (batt_prop == nullptr || batt_prop->batteryLevel == 0) {
+        if (charger->wait_batt_level_timestamp == 0) {
+            /* init state, set max delay time and skip drawing screen */
+            charger->wait_batt_level_timestamp = now + MAX_BATT_LEVEL_WAIT_TIME;
+            LOGV("[%" PRId64 "] wait battery capacity ready\n", now);
+            return;
+        } else if (now <= charger->wait_batt_level_timestamp) {
+            /* do nothing, keep waiting */
+            return;
+        }
+        /* If timeout and battery level is still 0%, drawing 0% animation */
+    }
 
     if (healthd_draw == nullptr) {
         if (healthd_config && healthd_config->screen_on) {
@@ -709,6 +725,7 @@ void healthd_mode_charger_init(struct healthd_config* config) {
     charger->next_screen_transition = -1;
     charger->next_key_check = -1;
     charger->next_pwr_check = -1;
+    charger->wait_batt_level_timestamp = 0;
 
     // Initialize Health implementation (which initializes the internal BatteryMonitor).
     Health::initInstance(config);
