@@ -6,6 +6,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libhealthd_draw
 
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 LOCAL_STATIC_LIBRARIES := \
 	libminui \

@@ -192,7 +192,7 @@ bool BatteryMonitor::getBooleanField(const String8& path) {
 
 int BatteryMonitor::getIntField(const String8& path) {
     std::string buf;
-    int value = 0;
+    int value = BATTERY_RET_ERROR;
 
     if (readFromFile(path, &buf) > 0)
         android::base::ParseInt(buf, &value);
@@ -213,6 +213,7 @@ bool BatteryMonitor::update(void) {
     props.batteryLevel = mBatteryFixedCapacity ?
         mBatteryFixedCapacity :
         getIntField(mHealthdConfig->batteryCapacityPath);
+
     props.batteryVoltage = getIntField(mHealthdConfig->batteryVoltagePath) / 1000;
 
     if (!mHealthdConfig->batteryCurrentNowPath.isEmpty())
