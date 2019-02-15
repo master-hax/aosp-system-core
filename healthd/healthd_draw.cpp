@@ -18,6 +18,7 @@
 #include <batteryservice/BatteryService.h>
 #include <cutils/klog.h>
 
+#include <healthd/healthd.h>
 #include "healthd_draw.h"
 
 #define LOGE(x...) KLOG_ERROR("charger", x);
@@ -64,7 +65,7 @@ void HealthdDraw::redraw_screen(const animation* batt_anim, GRSurface* surf_unkn
     clear_screen();
 
     /* try to display *something* */
-    if (batt_anim->cur_level < 0 || batt_anim->num_frames == 0)
+    if (batt_anim->cur_level <= BATTERY_LEVEL_UNKNOWN || batt_anim->num_frames == 0)
         draw_unknown(surf_unknown);
     else
         draw_battery(batt_anim);
