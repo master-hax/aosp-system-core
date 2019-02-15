@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76193b7a_7f8d58f7",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-15T22:28:52Z",
+      "side": 1,
+      "message": "Nah, too much chance to break this if missing. let\u0027s have the (die()) caller use:\n\n  cleanup\n  restore",
+      "range": {
+        "startLine": 312,
+        "startChar": 2,
+        "endLine": 312,
+        "endChar": 9
+      },
+      "revId": "c9d37b2f0c4e3a5d3baf65c27a87eddaa64ffb90",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
