@@ -2,6 +2,7 @@
 
 LOCAL_PATH:= $(call my-dir)
 
+include system/sepolicy/policy_vers.mk
 # --
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
@@ -28,7 +29,8 @@ init_options += \
     -DSHUTDOWN_ZERO_TIMEOUT=0
 endif
 
-init_options += -DLOG_UEVENTS=0
+init_options += -DLOG_UEVENTS=0 \
+	-DSEPOLICY_VERSION=$(POLICYVERS)
 
 init_cflags += \
     $(init_options) \
