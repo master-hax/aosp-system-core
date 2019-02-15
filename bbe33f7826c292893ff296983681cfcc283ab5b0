@@ -16,6 +16,24 @@
       "revId": "bbe33f7826c292893ff296983681cfcc283ab5b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "486589ac_9b7c7758",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-15T22:38:07Z",
+      "side": 1,
+      "message": "The test focuses on only these partitions, can not assume product exists, nor does it test anything _on_ product. It assume vendor and system only as that is really the only guarantee.\n\nI have not tested this on a device w/o vendor (pre Pixel 1)",
+      "parentUuid": "ef1e73e7_286f098f",
+      "revId": "bbe33f7826c292893ff296983681cfcc283ab5b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
