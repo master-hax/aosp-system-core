@@ -361,7 +361,7 @@ bool LoadSplitPolicy() {
         plat_policy_cil_file,
         "-m", "-M", "true", "-G", "-N",
         // Target the highest policy language version supported by the kernel
-        "-c", version_as_string.c_str(),
+        "-c", SEPOLICY_VERSION,
         plat_mapping_file.c_str(),
         "-o", compiled_sepolicy,
         // We don't care about file_contexts output by the compiler
