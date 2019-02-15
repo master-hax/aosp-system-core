@@ -81,6 +81,12 @@ enum EventWakeup {
     EVENT_WAKEUP_FD,
 };
 
+#define BATTERY_RET_ERROR (-1)
+enum BatteryLevelStatus {
+    BATTERY_LEVEL_UNKNOWN = -2,
+    BATTERY_LEVEL_ERROR = BATTERY_RET_ERROR,
+};
+
 // Global helper functions
 
 int healthd_register_event(int fd, void (*handler)(uint32_t), EventWakeup wakeup = EVENT_NO_WAKEUP_FD);

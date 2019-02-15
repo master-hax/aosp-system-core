@@ -73,6 +73,7 @@ char* locale;
 #define POWER_ON_KEY_TIME (2 * MSEC_PER_SEC)
 #define UNPLUGGED_SHUTDOWN_TIME (10 * MSEC_PER_SEC)
 #define UNPLUGGED_DISPLAY_TIME (3 * MSEC_PER_SEC)
+#define MAX_BATT_LEVEL_WAIT_TIME (3 * MSEC_PER_SEC)
 
 #define LAST_KMSG_MAX_SZ (32 * 1024)
 
@@ -88,6 +89,11 @@ static constexpr const char* product_animation_desc_path =
 static constexpr const char* product_animation_root = "/product/etc/res/images/";
 static constexpr const char* animation_desc_path = "/res/values/charger/animation.txt";
 
+enum WaitBatteryLevelTimestamp {
+    WAIT_BATT_LEVEL_TS_TIMEOUT = -2,
+    WAIT_BATT_LEVEL_TS_INIT = -1,
+};
+
 struct key_state {
     bool pending;
     bool down;
@@ -101,6 +107,7 @@ struct charger {
     int64_t next_screen_transition;
     int64_t next_key_check;
     int64_t next_pwr_check;
+    int64_t wait_batt_level_timestamp;
 
     key_state keys[KEY_MAX + 1];
 
@@ -143,7 +150,7 @@ static const animation BASE_ANIMATION = {
     .cur_cycle = 0,
     .num_cycles = 3,
 
-    .cur_level = 0,
+    .cur_level = BATTERY_LEVEL_UNKNOWN,
     .cur_status = BATTERY_STATUS_UNKNOWN,
 };
 
@@ -284,6 +291,29 @@ static void update_screen_state(charger* charger, int64_t now) {
     int disp_time;
 
     if (!batt_anim->run || now < charger->next_screen_transition) return;
+
+    /* batteryLevel is not ready */
+    if (!batt_prop || batt_prop->batteryLevel == BATTERY_LEVEL_ERROR) {
+        switch (charger->wait_batt_level_timestamp) {
+            case WAIT_BATT_LEVEL_TS_INIT:
+                /* init state, set max delay time and skip drawing screen */
+                charger->wait_batt_level_timestamp = now + MAX_BATT_LEVEL_WAIT_TIME;
+                LOGV("[%" PRId64 "] wait battery capacity ready\n", now);
+                return;
+            case WAIT_BATT_LEVEL_TS_TIMEOUT:
+                /* after waiting, the battery capacity is still not ready */
+                batt_prop->batteryLevel = BATTERY_LEVEL_UNKNOWN; /* to draw unknown battery */
+                break;
+            default:
+                if (now <= charger->wait_batt_level_timestamp)
+                    return;
+                else {
+                    LOGV("[%" PRId64 "] battery capacity is still not ready\n", now);
+                    charger->wait_batt_level_timestamp = WAIT_BATT_LEVEL_TS_TIMEOUT;
+                    batt_prop->batteryLevel = BATTERY_LEVEL_UNKNOWN; /* to draw unknown battery */
+                }
+        }
+    }
 
     if (healthd_draw == nullptr) {
         if (healthd_config && healthd_config->screen_on) {
@@ -704,6 +734,7 @@ void healthd_mode_charger_init(struct healthd_config* config) {
     charger->next_screen_transition = -1;
     charger->next_key_check = -1;
     charger->next_pwr_check = -1;
+    charger->wait_batt_level_timestamp = WAIT_BATT_LEVEL_TS_INIT;
 
     // Initialize Health implementation (which initializes the internal BatteryMonitor).
     Health::initInstance(config);
