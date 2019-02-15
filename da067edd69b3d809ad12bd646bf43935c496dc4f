@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ebc244a8_e5da1961",
+        "filename": "libprocessgroup/profiles/cgroups.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-02-15T23:51:33Z",
+      "side": 1,
+      "message": "All fields in proto3 are optional (you can\u0027t even require it). If ever something is required, that needs to be tested independently (in test.cpp in this CL, for example).\n\nFor repeated fields, it\u0027s always 0-infinity. If we ever need 1-infinity, it will be tested somewhere else too.",
+      "parentUuid": "d3abcd88_1a98a1cc",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 12
+      },
+      "revId": "da067edd69b3d809ad12bd646bf43935c496dc4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04192ef7_d79d5473",
         "filename": "libprocessgroup/profiles/cgroups.proto",
         "patchSetId": 9
@@ -45,6 +69,30 @@
       "revId": "da067edd69b3d809ad12bd646bf43935c496dc4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc825ccd_3f57bdd7",
+        "filename": "libprocessgroup/profiles/cgroups.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-02-15T23:51:33Z",
+      "side": 1,
+      "message": "(See previous comment)",
+      "parentUuid": "04192ef7_d79d5473",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 12
+      },
+      "revId": "da067edd69b3d809ad12bd646bf43935c496dc4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "22bd44a6_8ed0a479",
+        "filename": "libprocessgroup/profiles/cgroups.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-02-15T23:51:33Z",
+      "side": 1,
+      "message": "(See previous comment)\n\nDo you want me to enforce controller / path present? I can do that in the test.",
+      "parentUuid": "9c5e0103_000485ea",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 33,
+        "endChar": 39
+      },
+      "revId": "da067edd69b3d809ad12bd646bf43935c496dc4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8cf8ef0d_286b9d29",
         "filename": "libprocessgroup/profiles/cgroups.proto",
         "patchSetId": 9
@@ -82,6 +154,30 @@
       "writtenOn": "2019-02-15T23:35:59Z",
       "side": 1,
       "message": "These are optional too",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 39
+      },
+      "revId": "da067edd69b3d809ad12bd646bf43935c496dc4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46dd3f4f_03db45de",
+        "filename": "libprocessgroup/profiles/cgroups.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-02-15T23:51:33Z",
+      "side": 1,
+      "message": "(See previous comment)\n\nDo you want me to enforce path present? I can do that in the test.",
+      "parentUuid": "8cf8ef0d_286b9d29",
       "range": {
         "startLine": 39,
         "startChar": 4,
