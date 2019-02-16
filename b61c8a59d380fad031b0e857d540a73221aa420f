@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e16c663_3e466494",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-16T02:04:27Z",
+      "side": 1,
+      "message": "Does this change work? This argument is not used at all in this function...",
+      "range": {
+        "startLine": 144,
+        "startChar": 84,
+        "endLine": 144,
+        "endChar": 95
+      },
+      "revId": "b61c8a59d380fad031b0e857d540a73221aa420f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
