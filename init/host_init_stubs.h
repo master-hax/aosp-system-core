@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_HOST_INIT_STUBS_H
-#define _INIT_HOST_INIT_STUBS_H
+#pragma once
 
 #include <stddef.h>
 #include <sys/socket.h>
@@ -42,7 +41,8 @@ extern std::string default_console;
 bool CanReadProperty(const std::string& source_context, const std::string& name);
 extern uint32_t (*property_set)(const std::string& name, const std::string& value);
 uint32_t HandlePropertySet(const std::string& name, const std::string& value,
-                           const std::string& source_context, const ucred& cr, std::string* error);
+                           const std::string& source_context, const ucred& cr, bool,
+                           std::string* error);
 
 // selinux.h
 int SelinuxGetVendorAndroidVersion();
@@ -51,5 +51,3 @@ bool SelabelLookupFileContext(const std::string& key, int type, std::string* res
 
 }  // namespace init
 }  // namespace android
-
-#endif

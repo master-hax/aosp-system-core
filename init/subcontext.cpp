@@ -312,7 +312,8 @@ Result<Success> Subcontext::Execute(const std::vector<std::string>& args) {
     for (const auto& property : subcontext_reply->properties_to_set()) {
         ucred cr = {.pid = pid_, .uid = 0, .gid = 0};
         std::string error;
-        if (HandlePropertySet(property.name(), property.value(), context_, cr, &error) != 0) {
+        if (HandlePropertySet(property.name(), property.value(), context_, cr, false, &error) !=
+            0) {
             LOG(ERROR) << "Subcontext init could not set '" << property.name() << "' to '"
                        << property.value() << "': " << error;
         }
