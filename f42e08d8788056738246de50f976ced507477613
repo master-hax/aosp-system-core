@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae84f84f_0fa2c26d",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-16T17:52:50Z",
+      "side": 1,
+      "message": "Do we need these two lines?  No system that has a \u0027product\u0027 or \u0027odm\u0027 separation should also be putting property_contexts files in / anymore.  I\u0027d rather we remove them and keep everyone using only the above paths.\n\n(We should probably forcefully not load these lines if the vendor version is \u003e P).",
+      "revId": "f42e08d8788056738246de50f976ced507477613",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
