@@ -39,7 +39,7 @@ uint32_t SetProperty(const std::string& key, const std::string& value) {
 }
 uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
 uint32_t HandlePropertySet(const std::string&, const std::string&, const std::string&, const ucred&,
-                           std::string*) {
+                           bool, std::string*) {
     return 0;
 }
 
