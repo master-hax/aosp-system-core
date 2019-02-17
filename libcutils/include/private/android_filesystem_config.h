@@ -141,8 +141,7 @@
 #define AID_CACHE 2001 /* cache access */
 #define AID_DIAG 2002  /* access to diagnostic resources */
 
-/* The range 2900-2999 is reserved for OEM, and must never be
- * used here */
+/* The range 2900-2999 is reserved for the vendor, and must never be used here */
 #define AID_OEM_RESERVED_START 2900
 #define AID_OEM_RESERVED_END 2999
 
@@ -159,9 +158,25 @@
 #define AID_WAKELOCK 3010     /* Allow system wakelock read/write access */
 #define AID_UHID 3011         /* Allow read/write to /dev/uhid node */
 
-/* The range 5000-5999 is also reserved for OEM, and must never be used here. */
+/* The range 5000-5999 is also reserved for vendor, and must never be used here. */
 #define AID_OEM_RESERVED_2_START 5000
 #define AID_OEM_RESERVED_2_END 5999
+
+/* The range 6000-6499 is reserved for OEM extentions to the system partition */
+#define AID_SYSTEM_RESERVED_START 6000
+#define AID_SYSTEM_RESERVED_END 6499
+
+/* The range 6500-6999 is reserved for ODM */
+#define AID_ODM_RESERVED_START 6500
+#define AID_ODM_RESERVED_END 6999
+
+/* The range 7000-7499 is reserved for product */
+#define AID_PRODUCT_RESERVED_START 7000
+#define AID_PRODUCT_RESERVED_END 7499
+
+/* The range 7500-7999 is reserved for product_services */
+#define AID_PRODUCT_SERVICES_RESERVED_START 7500
+#define AID_PRODUCT_SERVICES_RESERVED_END 7999
 
 #define AID_EVERYBODY 9997 /* shared between all apps in the same profile */
 #define AID_MISC 9998      /* access to misc storage */
