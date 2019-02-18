@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "52e37621_55f1acc4",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-18T10:07:18Z",
+      "side": 1,
+      "message": "Currently it always adds \u0027system_gsi\u0027 and \u0027userdata_gsi\u0027 here, when running inside Live GSI.",
+      "range": {
+        "startLine": 659,
+        "startChar": 27,
+        "endLine": 660,
+        "endChar": 36
+      },
+      "revId": "0f66076ee2591ac192f163b15a5b0b60ae6824e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
