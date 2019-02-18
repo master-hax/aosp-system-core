@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration description="libunwindstack tests">
+    <target_preparer class="com.android.tradefed.targetprep.PushFilePreparer">
+        <option name="cleanup" value="true" />
+        <option name="push" value="../data/nativetest/libunwindstack_local.so->/data/local/tmp/libunwindstack_test/libunwindstack_local.so" />
+        <option name="push" value="../data/nativetest64/libunwindstack_local.so->/data/local/tmp/libunwindstack_test/libunwindstack_local_64.so" />
+    </target_preparer>
+</configuration>

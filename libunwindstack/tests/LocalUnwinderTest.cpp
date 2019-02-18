@@ -175,10 +175,14 @@ TEST_F(LocalUnwinderTest, unwind_after_dlopen) {
   } else {
     testlib = testlib.substr(0, value + 1) + "../";
   }
+#if defined(__LP64__)
+  testlib += "libunwindstack_local_64.so";
+#else
   testlib += "libunwindstack_local.so";
+#endif
 
   void* handle = dlopen(testlib.c_str(), RTLD_NOW);
-  ASSERT_TRUE(handle != nullptr);
+  ASSERT_TRUE(handle != nullptr) << "dlopen " << testlib << " failed: " << dlerror();
 
   void (*unwind_function)(void*, void*) =
       reinterpret_cast<void (*)(void*, void*)>(dlsym(handle, "TestlibLevel1"));
