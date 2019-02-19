@@ -45,6 +45,7 @@ using android::base::StringPrintf;
 using android::base::unique_fd;
 
 static constexpr const char* CGROUPS_DESC_FILE = "/etc/cgroups.json";
+static constexpr const char* CGROUPS_DESC_VENDOR_FILE = "/vendor/etc/cgroups.json";
 
 static constexpr const char* CGROUP_PROCS_FILE = "/cgroup.procs";
 static constexpr const char* CGROUP_TASKS_FILE = "/tasks";
@@ -110,11 +111,12 @@ static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,
     return true;
 }
 
-static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors) {
+static bool ReadDescriptorsFromFile(const std::string& file_name,
+                                    std::map<std::string, CgroupDescriptor>* descriptors) {
     std::vector<CgroupDescriptor> result;
     std::string json_doc;
 
-    if (!android::base::ReadFileToString(CGROUPS_DESC_FILE, &json_doc)) {
+    if (!android::base::ReadFileToString(file_name, &json_doc)) {
         LOG(ERROR) << "Failed to read task profiles from " << CGROUPS_DESC_FILE;
         return false;
     }
@@ -145,6 +147,21 @@ static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors
                 CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
                                  std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
                                  cgroups2["UID"].asString(), cgroups2["GID"].asString())));
+    }
+
+    return true;
+}
+
+static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors) {
+    // load system cgroup descriptors
+    if (!ReadDescriptorsFromFile(CGROUPS_DESC_FILE, descriptors)) {
+        return false;
+    }
+
+    // load vendor cgroup descriptors if the file exists
+    if (!access(CGROUPS_DESC_VENDOR_FILE, F_OK) &&
+        !ReadDescriptorsFromFile(CGROUPS_DESC_VENDOR_FILE, descriptors)) {
+        return false;
     }
 
     return true;
