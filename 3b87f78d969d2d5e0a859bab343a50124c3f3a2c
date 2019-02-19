@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ccba1606_79901ab4",
+        "filename": "adb/daemon/restart_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-19T20:59:55Z",
+      "side": 1,
+      "message": "include the port?",
+      "revId": "3b87f78d969d2d5e0a859bab343a50124c3f3a2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
