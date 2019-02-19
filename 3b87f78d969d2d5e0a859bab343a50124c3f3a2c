@@ -16,6 +16,24 @@
       "revId": "3b87f78d969d2d5e0a859bab343a50124c3f3a2c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4aa60f26_e83e98d1",
+        "filename": "adb/daemon/restart_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-19T21:24:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ccba1606_79901ab4",
+      "revId": "3b87f78d969d2d5e0a859bab343a50124c3f3a2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
