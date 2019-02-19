@@ -22,6 +22,30 @@
       "revId": "0cfeb1a179c8298f4e82af24f5e3e0a9fc970f2c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6c73f84_91b34703",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-02-19T19:08:37Z",
+      "side": 1,
+      "message": "It\u0027s a public header, so we\u0027re stuck with the \u0027OEM\u0027 nomenclature for this.  We\u0027ve already been using it for \u0027vendor\u0027 so we\u0027re stuck with that mapping too.  I do need to add a comment here to make it more clear.  May be worthwhile to have a #define AID_VENDOR_RESERVED_START too for symmetry with the rest?  But I\u0027m not sure how the rest of the code that parses this file would like two ranges with the same values.",
+      "parentUuid": "73b22d58_b0591d5c",
+      "range": {
+        "startLine": 145,
+        "startChar": 12,
+        "endLine": 145,
+        "endChar": 15
+      },
+      "revId": "0cfeb1a179c8298f4e82af24f5e3e0a9fc970f2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
