@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e079573d_4747f091",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-02-20T21:15:03Z",
+      "side": 1,
+      "message": "Dan, do you ever use `push --sync` with symlinks? I\u0027m wondering if I should add a feature flag to control the client\u0027s behavior here.\n\n(I should probably add one to adbd just in case, since it\u0027s basically free)",
+      "range": {
+        "startLine": 683,
+        "startChar": 41,
+        "endLine": 684,
+        "endChar": 60
+      },
+      "revId": "9dbefa69c11bc159387efa12b48f38401707e40c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
