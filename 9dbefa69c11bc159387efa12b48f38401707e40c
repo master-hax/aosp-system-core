@@ -22,6 +22,30 @@
       "revId": "9dbefa69c11bc159387efa12b48f38401707e40c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f68df8e_89eb1dbe",
+        "filename": "adb/client/file_sync_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 684,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2019-02-20T22:51:15Z",
+      "side": 1,
+      "message": "I don\u0027t.",
+      "parentUuid": "e079573d_4747f091",
+      "range": {
+        "startLine": 683,
+        "startChar": 41,
+        "endLine": 684,
+        "endChar": 60
+      },
+      "revId": "9dbefa69c11bc159387efa12b48f38401707e40c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
