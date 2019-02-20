@@ -240,9 +240,9 @@ cc_test {
         },
     },
 
-    required: [
-        "libutils_test_singleton1",
-        "libutils_test_singleton2",
+    data: [
+        ":libutils_test_singleton1",
+        ":libutils_test_singleton2",
     ],
 
     cflags: [
@@ -251,6 +251,8 @@ cc_test {
         "-Werror",
         "-Wthread-safety",
     ],
+
+    test_suites: ["device-tests"],
 }
 
 cc_test_library {
