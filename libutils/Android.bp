@@ -251,6 +251,8 @@ cc_test {
         "-Werror",
         "-Wthread-safety",
     ],
+
+    test_suites: ["device-tests"],
 }
 
 cc_test_library {
