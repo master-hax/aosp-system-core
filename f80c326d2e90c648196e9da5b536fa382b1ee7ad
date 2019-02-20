@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c125bbe_b2432763",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-02-20T02:48:14Z",
+      "side": 0,
+      "message": "This part is moved to the new function at L266",
+      "range": {
+        "startLine": 361,
+        "startChar": 3,
+        "endLine": 396,
+        "endChar": 5
+      },
+      "revId": "f80c326d2e90c648196e9da5b536fa382b1ee7ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
