@@ -222,8 +222,7 @@ cc_test {
 
     static_libs: [
         "libdebuggerd",
-        "libdexfile_external",  // libunwindstack dependency
-        "libdexfile_support",  // libunwindstack dependency
+        "libdexfile_support_static",  // libunwindstack dependency
         "libunwindstack",
     ],
 
