@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7158ef23_9bbf60dd",
+        "filename": "adb/transport.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-20T22:54:38Z",
+      "side": 1,
+      "message": "this is deliberately unused, right, just as a tag for clients that want to know who they\u0027re talking to?",
+      "revId": "7b1cb66a8351e0d2d4dd24b0d83a1f8dc7ea42b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
