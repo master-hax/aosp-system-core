@@ -22,6 +22,30 @@
       "revId": "5fe2d78840268bb9159a20737e415ddda698e4eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0925740d_34578c49",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-02-20T17:07:05Z",
+      "side": 1,
+      "message": "Most likely use after free. This argument goes out of scope by line 369, and as a result, you are using a bad variable.\n\nYou need to move the variable declaration outside of this block, similar to the declaration on line 356.\n\nIf only we had a memory safe programming language suitable for systems programming. If only....",
+      "parentUuid": "a0461a96_d2ea9e7e",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 363,
+        "endChar": 55
+      },
+      "revId": "5fe2d78840268bb9159a20737e415ddda698e4eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
