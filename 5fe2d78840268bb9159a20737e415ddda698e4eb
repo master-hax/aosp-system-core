@@ -46,6 +46,30 @@
       "revId": "5fe2d78840268bb9159a20737e415ddda698e4eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45ad9442_05ba00e4",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-02-20T17:08:56Z",
+      "side": 1,
+      "message": "Oohhhh good call.",
+      "parentUuid": "0925740d_34578c49",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 363,
+        "endChar": 55
+      },
+      "revId": "5fe2d78840268bb9159a20737e415ddda698e4eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
