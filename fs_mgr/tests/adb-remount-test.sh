@@ -250,11 +250,11 @@ NB: This can be flakey on devices due to USB state
 
 Returns: true if device in root state" ]
 adb_root() {
-  [ `adb_sh echo '${USER}'` != root ] || return 0
+  [ root != "`adb_sh echo '${USER}'`" ] || return 0
   adb root >/dev/null </dev/null 2>/dev/null
   sleep 2
   adb_wait 2m &&
-    [ `adb_sh echo '${USER}'` = root ]
+    [ root = "`adb_sh echo '${USER}'`" ]
 }
 
 [ "USAGE: adb_unroot
@@ -525,12 +525,12 @@ if [ "orange" = "`get_property ro.boot.verifiedbootstate`" -a \
      "2" = "`get_property partition.system.verified`" ]; then
   restore() {
     ${overlayfs_supported} || return 0
-    echo "${GREEN}[     INFO ]${NORMAL} restoring verity" >&2
     inFastboot &&
       fastboot reboot &&
       adb_wait 2m
-    adb_root &&
-      adb enable-verity &&
+    inAdb &&
+      adb_root &&
+      adb enable-verity >/dev/null 2>/dev/null &&
       adb_reboot &&
       adb_wait 2m
   }
@@ -1055,11 +1055,43 @@ adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
   die "/vendor is not read-write"
 echo "${GREEN}[       OK ]${NORMAL} mount -o rw,remount command works" >&2
 
+# Prerequisite is a prepped device from above.
+adb_reboot &&
+  adb_wait 2m ||
+  die "lost device after reboot to ro state (USB stack broken?)"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
+  die "/vendor is not read-only"
+adb_su remount ||
+  die "remount command"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
+  die "/vendor is not read-write"
+echo "${GREEN}[       OK ]${NORMAL} remount command works from setup" >&2
+
+# Prerequisite is an overlayfs deconstructed device but with verity disabled.
+# This also saves a lot of 'noise' from the command doing a mkfs on backing
+# storage and all the related tuning and adjustment.
+for d in ${OVERLAYFS_BACKING}; do
+  adb_su rm -rf /${d}/overlay </dev/null ||
+    die "/${d}/overlay wipe"
+done
+adb_reboot &&
+  adb_wait 2m ||
+  die "lost device after reboot after wipe (USB stack broken?)"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null &&
+  die "/vendor is not read-only"
+adb_su remount ||
+  die "remount command"
+adb_sh grep " /vendor .* rw," /proc/mounts >/dev/null ||
+  die "/vendor is not read-write"
+echo "${GREEN}[       OK ]${NORMAL} remount command works from scratch" >&2
+
 restore
 err=${?}
+
 restore() {
   true
 }
+
 [ ${err} = 0 ] ||
   die "failed to restore verity" >&2
 
