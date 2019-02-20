@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0461a96_d2ea9e7e",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2019-02-20T16:52:43Z",
+      "side": 1,
+      "message": "Still -2 because this doesn\u0027t actually work.\n\n[    7.677511] c5      1 init: Loading SELinux policy\n[    7.681143] c5      1 init: Compiling SELinux policy\n[    7.685579] c5      1 init: /system/bin/secilc: Bad policy version: \n[    7.686362] c5      1 init: /system/bin/secilc exited with status 1\n[    7.692709] c5      1 init: Unable to load SELinux policy\n\n\nWhat am I missing here?",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 363,
+        "endChar": 55
+      },
+      "revId": "5fe2d78840268bb9159a20737e415ddda698e4eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
