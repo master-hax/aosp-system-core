@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12d6aa11_1c2a0a63",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-02-21T20:48:01Z",
+      "side": 1,
+      "message": "you could just do: if (!RemoveUidProcessGroups()) continue; and save additional indentation.",
+      "range": {
+        "startLine": 229,
+        "startChar": 16,
+        "endLine": 229,
+        "endChar": 49
+      },
+      "revId": "6b1b6a84e13df8772ee2672e1f14b2a6defbd0bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
