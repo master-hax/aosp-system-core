@@ -317,7 +317,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         return false;
     }
 
-    Json::Value attr = root["Attributes"];
+    const Json::Value& attr = root["Attributes"];
     for (Json::Value::ArrayIndex i = 0; i < attr.size(); ++i) {
         std::string name = attr[i]["Name"].asString();
         std::string controller_name = attr[i]["Controller"].asString();
@@ -337,18 +337,18 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
 
     std::map<std::string, std::string> params;
 
-    Json::Value profilesVal = root["Profiles"];
+    const Json::Value& profilesVal = root["Profiles"];
     for (Json::Value::ArrayIndex i = 0; i < profilesVal.size(); ++i) {
-        Json::Value profileVal = profilesVal[i];
+        const Json::Value& profileVal = profilesVal[i];
 
         std::string profileName = profileVal["Name"].asString();
-        Json::Value actions = profileVal["Actions"];
+        const Json::Value& actions = profileVal["Actions"];
         auto profile = std::make_unique<TaskProfile>();
 
         for (Json::Value::ArrayIndex actIdx = 0; actIdx < actions.size(); ++actIdx) {
-            Json::Value actionVal = actions[actIdx];
+            const Json::Value& actionVal = actions[actIdx];
             std::string actionName = actionVal["Name"].asString();
-            Json::Value paramsVal = actionVal["Params"];
+            const Json::Value& paramsVal = actionVal["Params"];
             if (actionName == "JoinCgroup") {
                 std::string controller_name = paramsVal["Controller"].asString();
                 std::string path = paramsVal["Path"].asString();
