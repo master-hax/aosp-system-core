@@ -429,7 +429,6 @@ bool Subprocess::ExecInProcess(Command command, std::string* _Nonnull error) {
     unique_fd child_stdinout_sfd, child_stderr_sfd;
 
     CHECK(type_ == SubprocessType::kRaw);
-    CHECK(protocol_ == SubprocessProtocol::kShell);
 
     __android_log_security_bswrite(SEC_TAG_ADB_SHELL_CMD, command_.c_str());
 
@@ -448,31 +447,37 @@ bool Subprocess::ExecInProcess(Command command, std::string* _Nonnull error) {
     D("execinprocess: stdin/stdout FD = %d, stderr FD = %d", stdinout_sfd_.get(),
       stderr_sfd_.get());
 
-    // Required for shell protocol: create another socketpair to intercept data.
-    if (!CreateSocketpair(&protocol_sfd_, &local_socket_sfd_)) {
-        *error = android::base::StringPrintf("failed to create socketpair to intercept data: %s",
-                                             strerror(errno));
-        return false;
-    }
-    D("protocol FD = %d", protocol_sfd_.get());
+    if (protocol_ == SubprocessProtocol::kNone) {
+        // No protocol: all streams pass through the stdinout FD and hook
+        // directly into the local socket for raw data transfer.
+        local_socket_sfd_.reset(stdinout_sfd_.release());
+    } else {
+        // Required for shell protocol: create another socketpair to intercept data.
+        if (!CreateSocketpair(&protocol_sfd_, &local_socket_sfd_)) {
+            *error = android::base::StringPrintf(
+                    "failed to create socketpair to intercept data: %s", strerror(errno));
+            return false;
+        }
+        D("protocol FD = %d", protocol_sfd_.get());
 
-    input_ = std::make_unique<ShellProtocol>(protocol_sfd_);
-    output_ = std::make_unique<ShellProtocol>(protocol_sfd_);
-    if (!input_ || !output_) {
-        *error = "failed to allocate shell protocol objects";
-        return false;
-    }
+        input_ = std::make_unique<ShellProtocol>(protocol_sfd_);
+        output_ = std::make_unique<ShellProtocol>(protocol_sfd_);
+        if (!input_ || !output_) {
+            *error = "failed to allocate shell protocol objects";
+            return false;
+        }
 
-    // Don't let reads/writes to the subprocess block our thread. This isn't
-    // likely but could happen under unusual circumstances, such as if we
-    // write a ton of data to stdin but the subprocess never reads it and
-    // the pipe fills up.
-    for (int fd : {stdinout_sfd_.get(), stderr_sfd_.get()}) {
-        if (fd >= 0) {
-            if (!set_file_block_mode(fd, false)) {
-                *error = android::base::StringPrintf("failed to set non-blocking mode for fd %d",
-                                                     fd);
-                return false;
+        // Don't let reads/writes to the subprocess block our thread. This isn't
+        // likely but could happen under unusual circumstances, such as if we
+        // write a ton of data to stdin but the subprocess never reads it and
+        // the pipe fills up.
+        for (int fd : {stdinout_sfd_.get(), stderr_sfd_.get()}) {
+            if (fd >= 0) {
+                if (!set_file_block_mode(fd, false)) {
+                    *error = android::base::StringPrintf(
+                            "failed to set non-blocking mode for fd %d", fd);
+                    return false;
+                }
             }
         }
     }
@@ -863,12 +868,11 @@ unique_fd StartSubprocess(std::string name, const char* terminal_type, Subproces
     return local_socket;
 }
 
-unique_fd StartCommandInProcess(std::string name, Command command) {
+unique_fd StartCommandInProcess(std::string name, Command command, SubprocessProtocol protocol) {
     LOG(INFO) << "StartCommandInProcess(" << dump_hex(name.data(), name.size()) << ")";
 
     constexpr auto terminal_type = "";
     constexpr auto type = SubprocessType::kRaw;
-    constexpr auto protocol = SubprocessProtocol::kShell;
     constexpr auto make_pty_raw = false;
 
     auto subprocess = std::make_unique<Subprocess>(std::move(name), terminal_type, type, protocol,
