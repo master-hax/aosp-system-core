@@ -185,7 +185,7 @@ static void RemoveUidProcessGroups(const std::string& uid_path) {
 
             auto path = StringPrintf("%s/%s", uid_path.c_str(), dir->d_name);
             LOG(VERBOSE) << "Removing " << path;
-            if (rmdir(path.c_str()) == -1) PLOG(WARNING) << "Failed to remove " << path;
+            if (rmdir(path.c_str()) == -1) PLOG(VERBOSE) << "Failed to remove " << path;
         }
     }
 }
