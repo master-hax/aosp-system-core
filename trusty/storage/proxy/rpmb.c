@@ -51,6 +51,7 @@
 
 static int rpmb_fd = -1;
 static uint8_t read_buf[4096];
+static bool virt = false;
 
 #ifdef RPMB_DEBUG
 
@@ -67,6 +68,27 @@ static void print_buf(const char* prefix, const uint8_t* buf, size_t size) {
 }
 
 #endif
+
+static int send_virt_rpmb_req(int rpmb_fd, void* read_buf, size_t read_size, const void* payload,
+                              size_t payload_size) {
+    int rc;
+    uint16_t res_count = read_size / MMC_BLOCK_SIZE;
+    uint16_t cmd_count = payload_size / MMC_BLOCK_SIZE;
+    rc = write(rpmb_fd, &res_count, sizeof(res_count));
+    if (rc < 0) {
+        return rc;
+    }
+    rc = write(rpmb_fd, &cmd_count, sizeof(cmd_count));
+    if (rc < 0) {
+        return rc;
+    }
+    rc = write(rpmb_fd, payload, payload_size);
+    if (rc < 0) {
+        return rc;
+    }
+    rc = read(rpmb_fd, read_buf, read_size);
+    return rc;
+}
 
 int rpmb_send(struct storage_msg* msg, const void* r, size_t req_len) {
     int rc;
@@ -154,11 +176,28 @@ int rpmb_send(struct storage_msg* msg, const void* r, size_t req_len) {
         cmd++;
     }
 
-    rc = ioctl(rpmb_fd, MMC_IOC_MULTI_CMD, &mmc.multi);
-    if (rc < 0) {
-        ALOGE("%s: mmc ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
-        msg->result = STORAGE_ERR_GENERIC;
-        goto err_response;
+    if (virt) {
+        size_t payload_size = req->reliable_write_size + req->write_size;
+        rc = send_virt_rpmb_req(rpmb_fd, read_buf, req->read_size, req->payload, payload_size);
+        if (rc < 0) {
+            ALOGE("send_virt_rpmb_req failed: %d, %s\n", rc, strerror(errno));
+            msg->result = STORAGE_ERR_GENERIC;
+            goto err_response;
+        }
+        if (rc != req->read_size) {
+            ALOGE("send_virt_rpmb_req got incomplete response: "
+                  "(size %d, expected %d)\n",
+                  rc, req->read_size);
+            msg->result = STORAGE_ERR_GENERIC;
+            goto err_response;
+        }
+    } else {
+        rc = ioctl(rpmb_fd, MMC_IOC_MULTI_CMD, &mmc.multi);
+        if (rc < 0) {
+            ALOGE("%s: mmc ioctl failed: %d, %s\n", __func__, rc, strerror(errno));
+            msg->result = STORAGE_ERR_GENERIC;
+            goto err_response;
+        }
     }
 #ifdef RPMB_DEBUG
     if (req->read_size) print_buf("response: ", read_buf, req->read_size);
@@ -178,8 +217,9 @@ err_response:
     return ipc_respond(msg, NULL, 0);
 }
 
-int rpmb_open(const char* rpmb_devname) {
+int rpmb_open(const char* rpmb_devname, bool virt_flag) {
     int rc;
+    virt = virt_flag;
 
     rc = open(rpmb_devname, O_RDWR, 0);
     if (rc < 0) {

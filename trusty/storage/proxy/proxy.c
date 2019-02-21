@@ -38,12 +38,14 @@ static const char* ss_data_root;
 static const char* trusty_devname;
 static const char* rpmb_devname;
 static const char* ss_srv_name = STORAGE_DISK_PROXY_PORT;
+static bool rpmb_virt = false;
 
 static const char* _sopts = "hp:d:r:";
 static const struct option _lopts[] = {{"help", no_argument, NULL, 'h'},
                                        {"trusty_dev", required_argument, NULL, 'd'},
                                        {"data_path", required_argument, NULL, 'p'},
                                        {"rpmb_dev", required_argument, NULL, 'r'},
+                                       {"rpmb_virt", no_argument, NULL, 's'},
                                        {0, 0, 0, 0}};
 
 static void show_usage_and_exit(int code) {
@@ -195,6 +197,10 @@ static void parse_args(int argc, char* argv[]) {
                 rpmb_devname = strdup(optarg);
                 break;
 
+            case 's':
+                rpmb_virt = true;
+                break;
+
             default:
                 ALOGE("unrecognized option (%c):\n", opt);
                 show_usage_and_exit(EXIT_FAILURE);
@@ -226,7 +232,7 @@ int main(int argc, char* argv[]) {
     if (rc < 0) return EXIT_FAILURE;
 
     /* open rpmb device */
-    rc = rpmb_open(rpmb_devname);
+    rc = rpmb_open(rpmb_devname, rpmb_virt);
     if (rc < 0) return EXIT_FAILURE;
 
     /* connect to Trusty secure storage server */
