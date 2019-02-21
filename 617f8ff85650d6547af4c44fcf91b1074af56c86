@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "ba0f3fc4_8fc26ce6",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-21T17:05:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2876bb87_de4f5d1a",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "947c7922_5779c6bf",
         "filename": "adb/daemon/remount_service.cpp",
         "patchSetId": 2
@@ -56,6 +74,24 @@
       "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac0afc34_6b7ee45b",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-21T17:05:23Z",
+      "side": 1,
+      "message": "good catch! (and as a result I just noticed I do not _check_ \u0027adb remount -R\u0027 command in the test script, I test \u0027adb shell su root remount -R\u0027 ...",
+      "parentUuid": "947c7922_5779c6bf",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -76,6 +112,24 @@
     },
     {
       "key": {
+        "uuid": "5c6522a9_63ae9b45",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-21T17:05:23Z",
+      "side": 1,
+      "message": "Will expand, check for signal too ...",
+      "parentUuid": "45aaa898_9d4bd26f",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e54745df_1eaf088e",
         "filename": "adb/daemon/remount_service.cpp",
         "patchSetId": 2
@@ -87,6 +141,24 @@
       "writtenOn": "2019-02-15T22:58:02Z",
       "side": 1,
       "message": "Should the remount binary be printing this message instead?",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6a5f54f_daf29b10",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-21T17:05:23Z",
+      "side": 1,
+      "message": "There is legacy adb remount scripting in ours and partners hands that requires the response strings I expected. I did not want to bake this into the remount command as it is _new_. By putting it here, it stays here and does not encumber the API for the remount command. I will have to retain the failed report in the pre-exec responses so that scripting can check for the strings too, and if the failure response is to be baked into remount command, then we struggle with keeping them aligned or introducing stutter.\n\nIf you are sure you want the failed/succeeded response strings API to be part of remount, say yes and it will be done.",
+      "parentUuid": "e54745df_1eaf088e",
       "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
@@ -107,6 +179,24 @@
       "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4956b85f_adc12b4c",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-21T17:05:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f21b4861_f4f700d1",
+      "revId": "617f8ff85650d6547af4c44fcf91b1074af56c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
