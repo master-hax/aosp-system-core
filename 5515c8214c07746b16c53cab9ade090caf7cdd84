@@ -22,6 +22,30 @@
       "revId": "5515c8214c07746b16c53cab9ade090caf7cdd84",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f4a5efe_0ae2db4b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-02-21T20:46:19Z",
+      "side": 1,
+      "message": "that is in the next patchset, also removed more spam",
+      "parentUuid": "3407f0b7_0a77c9f1",
+      "range": {
+        "startLine": 228,
+        "startChar": 16,
+        "endLine": 232,
+        "endChar": 17
+      },
+      "revId": "5515c8214c07746b16c53cab9ade090caf7cdd84",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
