@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3407f0b7_0a77c9f1",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-02-21T20:44:31Z",
+      "side": 1,
+      "message": "This will not eliminate some of the spam. If RemoveUidProcessGroups() failed to remove a subdirectory then this rmdir will fail with \"Permission denied\" error, so you will still see some spam. You might want to change RemoveUidProcessGroups() to return bool if it was able to remove all the children and then check for that here. If not all the children were successfully deleted just call \"continue\".",
+      "range": {
+        "startLine": 228,
+        "startChar": 16,
+        "endLine": 232,
+        "endChar": 17
+      },
+      "revId": "5515c8214c07746b16c53cab9ade090caf7cdd84",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
