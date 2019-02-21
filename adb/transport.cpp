@@ -407,6 +407,16 @@ void update_transports() {
     // Nothing to do on the device side.
 }
 
+bool iterate_transport_list(std::function<bool(const atransport*)> fn) {
+    std::lock_guard<std::recursive_mutex> lock(transport_lock);
+    for (const auto& t : transport_list) {
+        if (!fn(t)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 #endif  // ADB_HOST
 
 struct tmsg {
