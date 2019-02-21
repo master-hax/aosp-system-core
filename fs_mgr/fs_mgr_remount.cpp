@@ -23,12 +23,14 @@
 #include <sys/vfs.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <bootloader_message/bootloader_message.h>
@@ -129,6 +131,51 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     ::exit(0);  // SUCCESS
 }
 
+pid_t getppid(pid_t pid) {
+    if (pid < 0) return -1;
+    std::string parent;
+    android::base::ReadFileToString("/proc/" + std::to_string(pid) + "/stat", &parent);
+    auto stat = android::base::Split(parent, " ");
+    if (stat.size() < 4) return -1;
+    if (!android::base::ParseInt(stat[3], &pid, 0)) return -1;
+    return pid;
+}
+
+std::string getcmdline(pid_t pid) {
+    if (pid < 0) return "<unknown>";
+    auto path = "/proc/" + std::to_string(pid) + "/";
+    std::string cmdline;
+    if (!android::base::ReadFileToString(path + "cmdline", &cmdline)) return "<unknown>";
+
+    std::transform(cmdline.begin(), cmdline.end(), cmdline.begin(),
+                   [](char c) { return c ?: ' '; });
+    cmdline = android::base::Trim(cmdline);
+    if (android::base::StartsWith(cmdline, '-')) cmdline.erase(0, 1);
+    auto pos = cmdline.find(' ');
+    auto exe = cmdline.substr(0, pos);
+    if (pos != std::string::npos) {
+        cmdline = cmdline.substr(pos);
+    } else {
+        cmdline = "";
+    }
+
+    char buf[128];
+    memset(buf, 0, sizeof(buf));
+    auto ret = ::readlink((path + "exe").c_str(), buf, sizeof(buf) - 1);
+    if (ret < 0) {
+        if (errno == ENOENT) {
+            cmdline = "[" + exe + "]" + cmdline;
+        } else {
+            cmdline = "<" + exe + ">" + cmdline;
+        }
+    } else if (ret >= (sizeof(buf) - 1)) {
+        cmdline = std::string(buf) + "..." + cmdline;
+    } else {
+        cmdline = buf + cmdline;
+    }
+    return cmdline;
+}
+
 }  // namespace
 
 int main(int argc, char* argv[]) {
@@ -137,6 +184,7 @@ int main(int argc, char* argv[]) {
     enum {
         SUCCESS,
         NOT_USERDEBUG,
+        NOT_ADBD,
         BADARG,
         NOT_ROOT,
         NO_FSTAB,
@@ -175,7 +223,17 @@ int main(int argc, char* argv[]) {
                 uses_overlay = true;
                 break;
             case 'R':
-                can_reboot = true;
+                // can only be from a physical connection with adbd parentage
+                for (auto pid = ::getppid(); pid > 0; pid = getppid(pid)) {
+                    if ("/system/bin/adbd --root_seclabel=u:r:su:s0" == getcmdline(pid)) {
+                        can_reboot = true;
+                        break;
+                    }
+                }
+                if (!can_reboot) {
+                    LOG(ERROR) << "-R only functions in an adbd connection";
+                    retval = NOT_ADBD;
+                }
                 break;
             case 'T':
                 if (fstab_file) {
