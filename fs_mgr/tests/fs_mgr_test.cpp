@@ -204,9 +204,30 @@ TEST(fs_mgr, fs_mgr_read_fstab_file_proc_mounts) {
 }
 
 TEST(fs_mgr, ReadFstabFromFile_MountOptions) {
+    TemporaryFile tf;
+    ASSERT_TRUE(tf.fd != -1);
+    std::string fstab_contents = R"fs(
+source /            ext4    ro,barrier=1                    wait,slotselect,avb
+source /metadata    ext4    noatime,nosuid,nodev,discard    wait,formattable
+
+source /data        f2fs    noatime,nosuid,nodev,discard,reserve_root=32768,resgid=1065,fsync_mode=nobarrier    latemount,wait,check,fileencryption=ice,keydirectory=/metadata/vold/metadata_encryption,quota,formattable,sysfs_path=/sys/devices/platform/soc/1d84000.ufshc,reservedsize=128M
+
+source /misc        emmc    defaults                        defaults
+
+source /vendor/firmware_mnt    vfat    ro,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0    wait,slotselect
+
+source auto         vfat    defaults                        voldmanaged=usb:auto
+source none         swap    defaults                        zramsize=1073741824,max_comp_streams=8
+source none2        swap    nodiratime,remount,bind         zramsize=1073741824,max_comp_streams=8
+source none3        swap    unbindable,private,slave        zramsize=1073741824,max_comp_streams=8
+source none4        swap    noexec,shared,rec               zramsize=1073741824,max_comp_streams=8
+source none5        swap    rw                              zramsize=1073741824,max_comp_streams=8
+)fs";
+    ASSERT_TRUE(android::base::WriteStringToFd(fstab_contents, tf.fd));
+
     Fstab fstab;
-    std::string fstab_file = android::base::GetExecutableDirectory() + "/data/fstab.example";
-    EXPECT_TRUE(ReadFstabFromFile(fstab_file, &fstab));
+    EXPECT_TRUE(ReadFstabFromFile(tf.path, &fstab));
+    ASSERT_EQ(11U, fstab.size());
 
     EXPECT_EQ("/", fstab[0].mount_point);
     EXPECT_EQ(static_cast<unsigned long>(MS_RDONLY), fstab[0].flags);
