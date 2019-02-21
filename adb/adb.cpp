@@ -1018,8 +1018,9 @@ static int SendOkay(int fd, const std::string& s) {
     return 0;
 }
 
-bool handle_host_request(std::string_view service, TransportType type, const char* serial,
-                        TransportId transport_id, int reply_fd, asocket* s) {
+HostRequestResult handle_host_request(std::string_view service, TransportType type,
+                                      const char* serial, TransportId transport_id, int reply_fd,
+                                      asocket* s) {
     if (service == "kill") {
         fprintf(stderr, "adb server killed by remote request\n");
         fflush(stdout);
@@ -1032,31 +1033,50 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         exit(0);
     }
 
-    // "transport:" is used for switching transport with a specified serial number
-    // "transport-usb:" is used for switching transport to the only USB transport
-    // "transport-local:" is used for switching transport to the only local transport
-    // "transport-any:" is used for switching transport to the only transport
-    if (service.starts_with("transport")) {
+    LOG(DEBUG) << "handle_host_request(" << service << ")";
+
+    // Transport selection:
+    if (service.starts_with("transport") || service.starts_with("tport:")) {
         TransportType type = kTransportAny;
 
         std::string serial_storage;
+        bool legacy = true;
 
-
-        if (ConsumePrefix(&service, "transport-id:")) {
-            std::string_view remaining;
-            if (!ParseUint(&transport_id, service, &remaining) || !remaining.empty()) {
-                SendFail(reply_fd, "invalid transport id");
-                return true;
+        // New transport selection protocol:
+        // This is essentially identical to the previous version, except it returns the selected
+        // transport id to the caller as well.
+        if (ConsumePrefix(&service, "tport:")) {
+            legacy = false;
+            if (ConsumePrefix(&service, "serial:")) {
+                serial_storage = service;
+                serial = serial_storage.c_str();
+            } else if (service == "usb") {
+                type = kTransportUsb;
+            } else if (service == "local") {
+                type = kTransportLocal;
+            } else if (service == "any") {
+                type = kTransportAny;
             }
-        } else if (service == "transport-usb") {
-            type = kTransportUsb;
-        } else if (service == "transport-local") {
-            type = kTransportLocal;
-        } else if (service == "transport-any") {
-            type = kTransportAny;
-        } else if (ConsumePrefix(&service, "transport:")) {
-            serial_storage = service;
-            serial = serial_storage.c_str();
+
+            // Selection by id is unimplemented, since you obviously already know the transport id
+            // you're connecting to.
+        } else {
+            if (ConsumePrefix(&service, "transport-id:")) {
+                std::string_view remaining;
+                if (!ParseUint(&transport_id, service, &remaining) || !remaining.empty()) {
+                    SendFail(reply_fd, "invalid transport id");
+                    return HostRequestResult::Handled;
+                }
+            } else if (service == "transport-usb") {
+                type = kTransportUsb;
+            } else if (service == "transport-local") {
+                type = kTransportLocal;
+            } else if (service == "transport-any") {
+                type = kTransportAny;
+            } else if (ConsumePrefix(&service, "transport:")) {
+                serial_storage = service;
+                serial = serial_storage.c_str();
+            }
         }
 
         std::string error;
@@ -1065,11 +1085,15 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
             s->transport = t;
             SendOkay(reply_fd);
 
-            // We succesfully handled the device selection, but there's another request coming.
-            return false;
+            if (!legacy) {
+                // Nothing we can do if this fails.
+                WriteFdExactly(reply_fd, &t->id, sizeof(t->id));
+            }
+
+            return HostRequestResult::SwitchedTransport;
         } else {
             SendFail(reply_fd, error);
-            return true;
+            return HostRequestResult::Handled;
         }
     }
 
@@ -1080,7 +1104,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         std::string device_list = list_transports(long_listing);
         D("Sending device list...");
         SendOkay(reply_fd, device_list);
-        return true;
+        return HostRequestResult::Handled;
     }
 
     if (service == "reconnect-offline") {
@@ -1096,7 +1120,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
             response.resize(response.size() - 1);
         }
         SendOkay(reply_fd, response);
-        return true;
+        return HostRequestResult::Handled;
     }
 
     if (service == "features") {
@@ -1107,7 +1131,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         } else {
             SendFail(reply_fd, error);
         }
-        return true;
+        return HostRequestResult::Handled;
     }
 
     if (service == "host-features") {
@@ -1118,7 +1142,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         }
         features.insert(kFeaturePushSync);
         SendOkay(reply_fd, FeatureSetToString(features));
-        return true;
+        return HostRequestResult::Handled;
     }
 
     // remove TCP transport
@@ -1127,7 +1151,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         if (address.empty()) {
             kick_all_tcp_devices();
             SendOkay(reply_fd, "disconnected everything");
-            return true;
+            return HostRequestResult::Handled;
         }
 
         std::string serial;
@@ -1139,22 +1163,22 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         } else if (!android::base::ParseNetAddress(address, &host, &port, &serial, &error)) {
             SendFail(reply_fd, android::base::StringPrintf("couldn't parse '%s': %s",
                                                            address.c_str(), error.c_str()));
-            return true;
+            return HostRequestResult::Handled;
         }
         atransport* t = find_transport(serial.c_str());
         if (t == nullptr) {
             SendFail(reply_fd, android::base::StringPrintf("no such device '%s'", serial.c_str()));
-            return true;
+            return HostRequestResult::Handled;
         }
         kick_transport(t);
         SendOkay(reply_fd, android::base::StringPrintf("disconnected %s", address.c_str()));
-        return true;
+        return HostRequestResult::Handled;
     }
 
     // Returns our value for ADB_SERVER_VERSION.
     if (service == "version") {
         SendOkay(reply_fd, android::base::StringPrintf("%04x", ADB_SERVER_VERSION));
-        return true;
+        return HostRequestResult::Handled;
     }
 
     // These always report "unknown" rather than the actual error, for scripts.
@@ -1166,7 +1190,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         } else {
             SendFail(reply_fd, error);
         }
-        return true;
+        return HostRequestResult::Handled;
     }
     if (service == "get-devpath") {
         std::string error;
@@ -1176,7 +1200,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         } else {
             SendFail(reply_fd, error);
         }
-        return true;
+        return HostRequestResult::Handled;
     }
     if (service == "get-state") {
         std::string error;
@@ -1186,7 +1210,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         } else {
             SendFail(reply_fd, error);
         }
-        return true;
+        return HostRequestResult::Handled;
     }
 
     // Indicates a new emulator instance has started.
@@ -1200,7 +1224,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
         }
 
         /* we don't even need to send a reply */
-        return true;
+        return HostRequestResult::Handled;
     }
 
     if (service == "reconnect") {
@@ -1212,7 +1236,7 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
                     "reconnecting " + t->serial_name() + " [" + t->connection_state_name() + "]\n";
         }
         SendOkay(reply_fd, response);
-        return true;
+        return HostRequestResult::Handled;
     }
 
     // TODO: Switch handle_forward_request to string_view.
@@ -1223,10 +1247,10 @@ bool handle_host_request(std::string_view service, TransportType type, const cha
                     return acquire_one_transport(type, serial, transport_id, nullptr, error);
                 },
                 reply_fd)) {
-        return true;
+        return HostRequestResult::Handled;
     }
 
-    return false;
+    return HostRequestResult::Unhandled;
 }
 
 static auto& init_mutex = *new std::mutex();
