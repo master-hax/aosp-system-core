@@ -202,6 +202,8 @@ void update_transports(void);
 // Iterates across all of the current and pending transports.
 // Stops iteration and returns false if fn returns false, otherwise returns true.
 bool iterate_transports(std::function<bool(const atransport*)> fn);
+// Iterates across all of the current transports.
+bool iterate_transport_list(std::function<bool(const atransport*)> fn);
 
 void init_transport_registration(void);
 void init_mdns_transport_discovery(void);

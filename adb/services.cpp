@@ -182,12 +182,24 @@ static void reconnect_service(int fd, void* arg) {
 
 int reverse_service(const char* command) {
     int s[2];
+    bool no_tcp_dev_online = true;
     if (adb_socketpair(s)) {
         PLOG(ERROR) << "cannot create service socket pair.";
         return -1;
     }
+#if !ADB_HOST
+    no_tcp_dev_online = iterate_transport_list([](const atransport* t) {
+        // check no tcp device online
+        if (t->IsTcpDevice() && t->online && !((atransport *)t)->IsKicked()) {
+            // return flase to break iterate loop
+            return false;
+        }
+        // return true for check next iterate
+        return true;
+    });
+#endif
     VLOG(SERVICES) << "service socketpair: " << s[0] << ", " << s[1];
-    if (handle_forward_request(command, kTransportAny, nullptr, 0, s[1]) < 0) {
+    if (handle_forward_request(command, no_tcp_dev_online ? kTransportAny : kTransportLocal, nullptr, 0, s[1]) < 0) {
         SendFail(s[1], "not a reverse forwarding command");
     }
     adb_close(s[1]);
