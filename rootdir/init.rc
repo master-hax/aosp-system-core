@@ -269,11 +269,13 @@ on init
     write /dev/cpu_variant:${ro.bionic.2nd_arch} ${ro.bionic.2nd_cpu_variant}
     chmod 0444 /dev/cpu_variant:${ro.bionic.2nd_arch}
 
+    # Run apexd-bootstrap so that APEXes that provides critical libraries
+    # become available. Note that this is executed as exec_start to ensure that
+    # other processes are with the libraries.
+    exec_start apexd-bootstrap
+
     # Start logd before any other services run to ensure we capture all of their logs.
     start logd
-
-    # Start apexd as soon as we can
-    start apexd
 
     # Start essential services.
     start servicemanager
@@ -410,8 +412,12 @@ on post-fs-data
     mkdir /data/bootchart 0755 shell shell
     bootchart start
 
-    # /data/apex is now available. Let apexd to scan and activate APEXes.
-    setprop apexd.data.status ready
+    # init switches into default mount namespace
+    enter_default_mount_ns
+
+    # /data/apex is now available. Start apexd to scan and activate APEXes.
+    # Make sure that apexd is started in the default namespace
+    start apexd
 
     # Avoid predictable entropy pool. Carry over entropy from previous boot.
     copy /data/system/entropy.dat /dev/urandom
@@ -579,6 +585,7 @@ on post-fs-data
     # as possible to use the bionic libs from the runtime APEX. This takes less than 50ms
     # so the impact on the booting time is not significant.
     wait_for_prop apexd.status ready
+    # TODO(jiyong): remove setup_runtime_bionic
     setup_runtime_bionic
     parse_apex_configs
 
