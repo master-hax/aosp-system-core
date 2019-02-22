@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a140efa8_f209f2a3",
+        "filename": "adb/adb_io.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-22T23:48:02Z",
+      "side": 0,
+      "message": "put the `const` back?",
+      "range": {
+        "startLine": 30,
+        "startChar": 22,
+        "endLine": 30,
+        "endChar": 27
+      },
+      "revId": "a03ffba12e2cc54a1859c860acf10991dd6070ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
