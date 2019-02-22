@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3c79d4fb_195ffdf0",
+        "filename": "adb/daemon/abb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-02-22T02:39:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef4fbdaf_dc69800e",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 9
+      },
+      "revId": "a92daf00ff16f926006ff81fd6bb81455097c9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e01b20b3_72265ace",
         "filename": "adb/daemon/shell_service.cpp",
         "patchSetId": 1
@@ -54,6 +78,24 @@
       "side": 1,
       "message": "Disregard, I was mixing this up with ForkAndExec.\n\nThat being said, can we extract this to a helper function instead of having two copies of this code?",
       "parentUuid": "e01b20b3_72265ace",
+      "revId": "a92daf00ff16f926006ff81fd6bb81455097c9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c558991f_68eed714",
+        "filename": "adb/daemon/shell_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 1166043
+      },
+      "writtenOn": "2019-02-22T02:39:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bdd72a4_a16326b9",
       "revId": "a92daf00ff16f926006ff81fd6bb81455097c9b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
