@@ -272,8 +272,9 @@ class LibraryNamespaces {
 
     NativeLoaderNamespace native_loader_ns;
     if (!is_native_bridge) {
-      android_namespace_t* android_parent_ns =
-          parent_ns == nullptr ? nullptr : parent_ns->get_android_ns();
+      android_namespace_t* android_parent_ns = parent_ns == nullptr
+                                                   ? android_get_exported_namespace("default")
+                                                   : parent_ns->get_android_ns();
       android_namespace_t* ns = android_create_namespace(namespace_name,
                                                          nullptr,
                                                          library_path.c_str(),
