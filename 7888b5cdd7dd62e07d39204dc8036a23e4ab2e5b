@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9638b22a_a452b04d",
+        "filename": "libnativeloader/native_loader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-02-23T03:58:45Z",
+      "side": 1,
+      "message": "It\u0027s unfortunate that we have different names for the namespaces having the same purpose.\nBut that\u0027s a different issue.",
+      "range": {
+        "startLine": 281,
+        "startChar": 70,
+        "endLine": 283,
+        "endChar": 28
+      },
+      "revId": "7888b5cdd7dd62e07d39204dc8036a23e4ab2e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
