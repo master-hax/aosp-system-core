@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63b5c2b1_d886cf72",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1047,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-23T03:02:14Z",
+      "side": 1,
+      "message": "i thought your API was that if you don\u0027t pass a pointer, trailing crap is an error? so since you\u0027re not using `remaining` in these cases, you can just drop it?",
+      "range": {
+        "startLine": 1047,
+        "startChar": 52,
+        "endLine": 1047,
+        "endChar": 61
+      },
+      "revId": "35d1b440fc6b22b4baef50c3e49d9700cd3d4c29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
