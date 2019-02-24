@@ -36,6 +36,10 @@ on early-init
     mkdir /dev/memcg/system 0550 system system
 
     start ueventd
+    # Run apexd-bootstrap so that APEXes that provides critical libraries
+    # become available. Note that this is executed as exec_start to ensure that
+    # other processes are with the libraries.
+    exec_start apexd-bootstrap
 
 on init
     sysclktz 0
@@ -271,11 +275,6 @@ on init
     chmod 0444 /dev/cpu_variant:${ro.bionic.arch}
     write /dev/cpu_variant:${ro.bionic.2nd_arch} ${ro.bionic.2nd_cpu_variant}
     chmod 0444 /dev/cpu_variant:${ro.bionic.2nd_arch}
-
-    # Run apexd-bootstrap so that APEXes that provides critical libraries
-    # become available. Note that this is executed as exec_start to ensure that
-    # other processes are with the libraries.
-    exec_start apexd-bootstrap
 
     # Start logd before any other services run to ensure we capture all of their logs.
     start logd
