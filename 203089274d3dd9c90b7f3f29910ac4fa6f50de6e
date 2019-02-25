@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2dbb220_f7c59208",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-25T22:44:04Z",
+      "side": 1,
+      "message": "unused",
+      "range": {
+        "startLine": 145,
+        "startChar": 8,
+        "endLine": 145,
+        "endChar": 73
+      },
+      "revId": "203089274d3dd9c90b7f3f29910ac4fa6f50de6e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5418ff51_17c19191",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-02-25T22:44:04Z",
+      "side": 1,
+      "message": "If there is remaining content inside this directory, the node will not be removed.\n\n(rm -rf gTestDir)",
+      "range": {
+        "startLine": 292,
+        "startChar": 4,
+        "endLine": 292,
+        "endChar": 9
+      },
+      "revId": "203089274d3dd9c90b7f3f29910ac4fa6f50de6e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
