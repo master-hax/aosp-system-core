@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2f81535_8ffb0b67",
+        "filename": "adb/adb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1194,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-02-25T21:41:45Z",
+      "side": 1,
+      "message": "same here?",
+      "revId": "805ef7638bf340bd99f40b5504004eeff4f70dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
