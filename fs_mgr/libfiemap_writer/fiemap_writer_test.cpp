@@ -71,8 +71,7 @@ TEST_F(FiemapWriterTest, CreateImpossiblyLargeFile) {
 
 TEST_F(FiemapWriterTest, CreateUnalignedFile) {
     // Try creating a file of size 4097 bytes which is guaranteed
-    // to be unaligned to all known block sizes. The creation must
-    // fail.
+    // to be unaligned to all known block sizes.
     FiemapUniquePtr fptr = FiemapWriter::Open(testfile, gBlockSize + 1);
     ASSERT_NE(fptr, nullptr);
     ASSERT_EQ(fptr->size(), gBlockSize * 2);
