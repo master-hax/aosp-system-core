@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include <ApexProperties.sysprop.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -73,10 +74,9 @@ static std::string GetMountNamespaceId() {
     return ret;
 }
 
-// TODO(jiyong): use the new *.sysprop API
 static bool IsApexUpdatable() {
-    static bool result = android::base::GetBoolProperty("ro.apex.updatable", false);
-    return result;
+    static bool updatable = android::sysprop::ApexProperties::updatable().value_or(false);
+    return updatable;
 }
 
 static android::base::unique_fd bootstrap_ns_fd;
