@@ -40,6 +40,21 @@ class Maps {
   Maps() = default;
   virtual ~Maps();
 
+  Maps(const Maps&) = delete;
+  Maps& operator=(const Maps&) = delete;
+
+  Maps(Maps&& other) {
+    maps_ = std::move(other.maps_);
+    other.maps_.clear();
+  }
+
+  Maps& operator=(Maps&& other) {
+    if (&other == this)
+      return;
+    maps_ = std::move(other.maps_);
+    other.maps_.clear();
+  }
+
   MapInfo* Find(uint64_t pc);
 
   virtual bool Parse();
