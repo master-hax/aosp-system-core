@@ -76,8 +76,8 @@ namespace.runtime.visible = true
 namespace.runtime.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.asan.search.paths = /apex/com.android.runtime/${LIB}
 namespace.runtime.links = default
-# TODO(b/119867084): Restrict to Bionic dlopen dependencies and PALette library
-# when it exists.
+# Need allow_all_shared_libs because libart.so dlopen's various oat files in
+# /system/framework.
 namespace.runtime.link.default.allow_all_shared_libs = true
 
 ###############################################################################
