@@ -43,13 +43,20 @@ additional.namespaces = runtime,conscrypt,media,resolv,sphal,vndk,rs
 # Framework-side code runs in this namespace. However, libs from other
 # partitions are also allowed temporarily.
 ###############################################################################
-namespace.default.isolated = false
+namespace.default.isolated = true
 
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /odm/${LIB}
 namespace.default.search.paths += /vendor/${LIB}
 namespace.default.search.paths += /%PRODUCT%/${LIB}
 namespace.default.search.paths += /%PRODUCT_SERVICES%/${LIB}
+
+namespace.default.permitted.paths  = /system
+namespace.default.permitted.paths += /odm
+namespace.default.permitted.paths += /vendor
+namespace.default.permitted.paths += /%PRODUCT%
+namespace.default.permitted.paths += /%PRODUCT_SERVICES%
+namespace.default.permitted.paths += /data
 
 namespace.default.asan.search.paths  = /data/asan/system/${LIB}
 namespace.default.asan.search.paths +=           /system/${LIB}
