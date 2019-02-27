@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e5d6fb4_ad3df96e",
+        "filename": "fs_mgr/tests/adb-remount-test.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-02-27T18:40:43Z",
+      "side": 1,
+      "message": "Looks like that adb_wait doesn\u0027t wait for \"recovery\", but only for \"device\"?",
+      "range": {
+        "startLine": 276,
+        "startChar": 4,
+        "endLine": 276,
+        "endChar": 12
+      },
+      "revId": "39239fa95bfc338336e7724f72b67b983492a09b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
