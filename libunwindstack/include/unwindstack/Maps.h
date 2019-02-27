@@ -37,8 +37,7 @@ static constexpr int MAPS_FLAGS_JIT_SYMFILE_MAP = 0x4000;
 
 class Maps {
  public:
-  Maps() = default;
-  virtual ~Maps();
+  virtual ~Maps() = default;
 
   MapInfo* Find(uint64_t pc);
 
@@ -67,7 +66,7 @@ class Maps {
   }
 
  protected:
-  std::vector<MapInfo*> maps_;
+  std::vector<std::unique<MapInfo>> maps_;
 };
 
 class RemoteMaps : public Maps {
