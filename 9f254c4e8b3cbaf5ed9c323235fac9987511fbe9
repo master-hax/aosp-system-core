@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "e0a4ccbc_47b3e19c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2019-03-01T16:56:17Z",
+      "side": 1,
+      "message": "The command does the following:\n1. Register a virtual HID device via /dev/uhid\n2. Inject some events into the device\n3. Remove the device\n\nThe device created in such a way is indistinguishable from a physical device actually plugged in.\n\nThis command is used for testing. For CTS test, it is about emulating a specific device (for example, Sony DualShock 4) and ensuring that appropriate events are received in the app.\n\nBut the command can also be used via adb shell. This is useful for local testing. For example, if you want to quickly simulate some mouse action on the phone, you can just create the proper commands file, place it on the device, and execute them with this hid command.\n\nLet me know if you\u0027d like more details.",
+      "parentUuid": "d8fd263b_96b66502",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 17
+      },
+      "revId": "9f254c4e8b3cbaf5ed9c323235fac9987511fbe9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e918aa5_11d4702e",
         "filename": "libnativeloader/native_loader.cpp",
         "patchSetId": 1
