@@ -200,12 +200,6 @@ static bool PerformFileChecks(const std::string& file_path, uint64_t file_size, 
         return false;
     }
 
-    if (file_size % sfs.f_bsize) {
-        LOG(ERROR) << "File size " << file_size << " is not aligned to optimal block size "
-                   << sfs.f_bsize << " for file " << file_path;
-        return false;
-    }
-
     // Check if the filesystem is of supported types.
     // Only ext4 and f2fs are tested and supported.
     if ((sfs.f_type != EXT4_SUPER_MAGIC) && (sfs.f_type != F2FS_SUPER_MAGIC)) {
@@ -498,6 +492,11 @@ FiemapUniquePtr FiemapWriter::Open(const std::string& file_path, uint64_t file_s
         LOG(ERROR) << "Failed to validate file or file system for file:" << abs_path;
         cleanup(abs_path, create);
         return nullptr;
+    }
+
+    // Align up to the nearest block size.
+    if (file_size % blocksz) {
+        file_size += blocksz - (file_size % blocksz);
     }
 
     if (create) {
