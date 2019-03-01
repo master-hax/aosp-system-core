@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "ee8dd509_44fdca80",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1047684
+      },
+      "writtenOn": "2019-03-01T15:48:16Z",
+      "side": 1,
+      "message": "Is it a lib in system or in the CTS app?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 17
+      },
+      "revId": "9f254c4e8b3cbaf5ed9c323235fac9987511fbe9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e918aa5_11d4702e",
         "filename": "libnativeloader/native_loader.cpp",
         "patchSetId": 1
