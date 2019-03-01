@@ -16,6 +16,24 @@
       "revId": "e1914cf4d98e060a82eafcfac29315c1a4813d65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "906fc0a8_22294b03",
+        "filename": "toolbox/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1224979
+      },
+      "writtenOn": "2019-03-01T23:29:14Z",
+      "side": 1,
+      "message": "When I added r_vendor, I just followed the \"grep\" and \"grep_vendor\" model on lines 92-106.\n\ngrep_vendor has this TODO comment:\n\n// TODO: Add vendor_available to \"grep\" module and remove \"grep_vendor\" module\n//       when vendor_available is fully supported.\n\nIs vendor_available now fully supported?",
+      "parentUuid": "e915741b_dd54a005",
+      "revId": "e1914cf4d98e060a82eafcfac29315c1a4813d65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
