@@ -61,6 +61,14 @@ cc_binary {
     srcs: ["r.c"],
 }
 
+cc_binary {
+    name: "r_vendor",
+    stem: "r",
+    vendor: true,
+    defaults: ["toolbox_defaults"],
+    srcs: ["r.c"],
+}
+
 // We build BSD grep separately (but see http://b/111849261).
 cc_defaults {
     name: "grep_common",
