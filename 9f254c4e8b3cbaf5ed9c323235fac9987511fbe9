@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d8fd263b_96b66502",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-03-01T16:33:16Z",
+      "side": 1,
+      "message": "It\u0027s a frameworks script that launches a java binary through app_process[1]. Given its location I\u0027d assume it\u0027s not just for the CTS test, but I don\u0027t know. Should it bypass the normal class loader somehow? Note that the dependency is a NEEDED entry on libnativehelper.so, so it fails already when the classloader does dlopen(\"libhidcommand_jni.so\").\n\n+svv, you have done some submits in that directory, can you enlighten us what this binary does outside the CTS?\n\n[1] http://cs/aosp-master/frameworks/base/cmds/hid/hid",
+      "parentUuid": "ee8dd509_44fdca80",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 17
+      },
+      "revId": "9f254c4e8b3cbaf5ed9c323235fac9987511fbe9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e918aa5_11d4702e",
         "filename": "libnativeloader/native_loader.cpp",
         "patchSetId": 1
@@ -60,6 +84,30 @@
       "side": 1,
       "message": "Yes, I think it\u0027s intentional. b/120786417. http://go/stable-icu4c-interface-mainline\n\nFor this release, frameworks can link libandroidicu.so only, not libicuuc.so, and so we have a controlled C API surface in libandroidicu.so\nApp can link libicuuc.so and libicui18n, but not libandroidicu.so. So app can keep using full set libicuuc.so and libicui18n.\n\nI think this list contains only libs in both system/core/rootdir/etc/public.libraries.android.txt and Runtime APEX. Do we want to expose these libs to apps?",
       "parentUuid": "2e918aa5_11d4702e",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 73
+      },
+      "revId": "9f254c4e8b3cbaf5ed9c323235fac9987511fbe9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab2ca7a1_993d14c9",
+        "filename": "libnativeloader/native_loader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-03-01T16:33:16Z",
+      "side": 1,
+      "message": "\u003e App can link libicuuc.so and libicui18n, but not libandroidicu.so.\n\nWould it be harmful if apps were to link to libandroidicu?\n\n\u003e So app can keep using full set libicuuc.so and libicui18n.\n\nIsn\u0027t that a compat measure that we want to move away from?\n\n\u003e I think this list contains only libs in both system/core/rootdir/etc/public.libraries.android.txt and Runtime APEX. Do we want to expose these libs to apps?\n\nI see. So if we were to unify this list with the namespace links list we\u0027d need to intersect it with the public.libraries.*.txt lists. In the current state, wouldn\u0027t it be good to have an assertion that this list is a subset of that one?\n\nAnyway, I take it that extending this list might not be the way to go. Let\u0027s discuss in the other comment thread if the client should change instead.",
+      "parentUuid": "45d56632_670552d4",
       "range": {
         "startLine": 106,
         "startChar": 0,
