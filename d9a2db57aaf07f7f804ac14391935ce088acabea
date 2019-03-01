@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8fe3e425_a355b6df",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-01T22:23:10Z",
+      "side": 1,
+      "message": "ext4, f2fs and vfat",
+      "range": {
+        "startLine": 210,
+        "startChar": 13,
+        "endLine": 210,
+        "endChar": 25
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2696583d_aefce0d8",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-01T22:23:10Z",
+      "side": 1,
+      "message": "ext4 or vfat",
+      "range": {
+        "startLine": 346,
+        "startChar": 36,
+        "endLine": 346,
+        "endChar": 40
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04507ec8_e1b211ff",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-01T22:23:10Z",
+      "side": 1,
+      "message": "nit: can this be folded into for (uint32_t last_block, block_number \u003d 0;... without blowing past the line wrap? Even if it does, it helps with variable definition locality.",
+      "range": {
+        "startLine": 473,
+        "startChar": 0,
+        "endLine": 473,
+        "endChar": 24
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d3582c3_f80bf659",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-01T22:23:10Z",
+      "side": 1,
+      "message": "If this is protected by verity, then holes (zeros) are automatically returned with zero blocks. If this is a hole that is not part of the verity metadata, then that is a problem; but the problem would be why it existed and verity did _not_ report it.\n\nYou might be able to point holes to the first block (over and over again) and the image will work.",
+      "range": {
+        "startLine": 481,
+        "startChar": 12,
+        "endLine": 481,
+        "endChar": 99
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
