@@ -103,8 +103,8 @@ static constexpr const char kVndkspNativeLibrariesSystemConfigPathFromRoot[] =
     "/etc/vndksp.libraries.txt";
 
 static const std::vector<const std::string> kRuntimePublicLibraries = {
-    "libicuuc.so",
-    "libicui18n.so",
+    "libdexfile_external.so", "libicui18n.so",      "libicuuc.so",
+    "libnativebridge.so",     "libnativehelper.so", "libnativeloader.so",
 };
 
 // The device may be configured to have the vendor libraries loaded to a separate namespace.
