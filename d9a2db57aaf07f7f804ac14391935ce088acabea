@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f7a1e8d8_977ed9ab",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-01T22:59:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8fe3e425_a355b6df",
+      "range": {
+        "startLine": 210,
+        "startChar": 13,
+        "endLine": 210,
+        "endChar": 25
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2696583d_aefce0d8",
         "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a97639c8_61b73b6f",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-01T22:59:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2696583d_aefce0d8",
+      "range": {
+        "startLine": 346,
+        "startChar": 36,
+        "endLine": 346,
+        "endChar": 40
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "fd02e2c9_b0fd72f0",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-01T22:59:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04507ec8_e1b211ff",
+      "range": {
+        "startLine": 473,
+        "startChar": 0,
+        "endLine": 473,
+        "endChar": 24
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d3582c3_f80bf659",
         "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-03-01T22:23:10Z",
       "side": 1,
       "message": "If this is protected by verity, then holes (zeros) are automatically returned with zero blocks. If this is a hole that is not part of the verity metadata, then that is a problem; but the problem would be why it existed and verity did _not_ report it.\n\nYou might be able to point holes to the first block (over and over again) and the image will work.",
+      "range": {
+        "startLine": 481,
+        "startChar": 12,
+        "endLine": 481,
+        "endChar": 99
+      },
+      "revId": "d9a2db57aaf07f7f804ac14391935ce088acabea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f4bb4ec_94d4712f",
+        "filename": "fs_mgr/libfiemap_writer/fiemap_writer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-01T22:59:45Z",
+      "side": 1,
+      "message": "Note that the ext4/f2fs FIEMAP path also forbids holes, since we don\u0027t really have any knowledge of where the zero blocks will be before the image starts writing.",
+      "parentUuid": "9d3582c3_f80bf659",
       "range": {
         "startLine": 481,
         "startChar": 12,
