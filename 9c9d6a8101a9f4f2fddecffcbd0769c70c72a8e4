@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "845778ce_7d8afc56",
+        "filename": "libmeminfo/tools/librank.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-03-02T00:00:01Z",
+      "side": 1,
+      "message": "nit: const\u0026",
+      "range": {
+        "startLine": 317,
+        "startChar": 46,
+        "endLine": 317,
+        "endChar": 53
+      },
+      "revId": "9c9d6a8101a9f4f2fddecffcbd0769c70c72a8e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d80e9188_04196bb3",
+        "filename": "libmeminfo/tools/librank.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-03-02T00:00:01Z",
+      "side": 1,
+      "message": "const\u0026",
+      "revId": "9c9d6a8101a9f4f2fddecffcbd0769c70c72a8e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
