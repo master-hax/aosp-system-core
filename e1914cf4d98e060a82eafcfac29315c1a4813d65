@@ -34,6 +34,24 @@
       "revId": "e1914cf4d98e060a82eafcfac29315c1a4813d65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82969550_73a1614c",
+        "filename": "toolbox/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1074628
+      },
+      "writtenOn": "2019-03-02T00:28:16Z",
+      "side": 1,
+      "message": "vendor_available is fully supported, but it\u0027s not necessarily what some people want. Only on VNDK-enabled devices will it make a vendor variant, since it\u0027s not necessary if you\u0027re not separating system and vendor.\n\nSome people wanted to support the legacy non-VNDK case and hardcode paths to /vendor/bin/..., which requires two separate modules.",
+      "parentUuid": "906fc0a8_22294b03",
+      "revId": "e1914cf4d98e060a82eafcfac29315c1a4813d65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
