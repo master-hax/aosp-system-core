@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a574eed4_46c736f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-03-03T11:28:50Z",
+      "side": 1,
+      "message": "search paths are resolved when reading the config file. \n\nplease see read_binary_config in linker_config.cpp",
+      "range": {
+        "startLine": 13,
+        "startChar": 40,
+        "endLine": 14,
+        "endChar": 23
+      },
+      "revId": "74de1a18342bdab21631adbb92545ce1a6188f64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91d91f9f_b237d545",
+        "filename": "rootdir/etc/ld.config.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-03-03T11:28:50Z",
+      "side": 1,
+      "message": "No need as search paths are resolved.",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 407,
+        "endChar": 67
+      },
+      "revId": "74de1a18342bdab21631adbb92545ce1a6188f64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
