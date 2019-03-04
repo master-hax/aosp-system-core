@@ -50,6 +50,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <fs_avb/fs_avb.h>
 #include <property_info_parser/property_info_parser.h>
 #include <property_info_serializer/property_info_serializer.h>
 #include <selinux/android.h>
@@ -74,6 +75,7 @@ using android::base::StringPrintf;
 using android::base::Timer;
 using android::base::Trim;
 using android::base::WriteStringToFile;
+using android::fs_mgr::AvbHandle;
 using android::properties::BuildTrie;
 using android::properties::ParsePropertyInfoFile;
 using android::properties::PropertyInfoAreaFile;
@@ -866,7 +868,7 @@ static void property_derive_build_fingerprint() {
     }
 }
 
-void property_load_boot_defaults() {
+void property_load_boot_defaults(bool force_debuggable = false) {
     // TODO(b/117892318): merge prop.default and build.prop files into one
     // We read the properties and their values into a map, in order to always allow properties
     // loaded in the later property files to override the properties in loaded in the earlier
@@ -887,6 +889,12 @@ void property_load_boot_defaults() {
     load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/product_services/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
+
+    if (force_debuggable && AvbHandle::IsDeviceUnlocked()) {
+        constexpr static const char kAdbDebugProp[] = "/system/etc/adb_debug.prop";
+        load_properties_from_file(kAdbDebugProp, nullptr, &properties);
+        LOG(WARNING) << "Loading " << kAdbDebugProp << " when the device is unlocked";
+    }
 
     for (const auto& [name, value] : properties) {
         std::string error;

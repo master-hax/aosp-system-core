@@ -92,6 +92,7 @@ static std::string wait_prop_value;
 static bool shutting_down;
 static std::string shutdown_command;
 static bool do_shutdown = false;
+static bool force_debuggable = false;
 
 std::vector<std::string> late_import_paths;
 
@@ -655,10 +656,17 @@ int SecondStageMain(int argc, char** argv) {
     const char* avb_version = getenv("INIT_AVB_VERSION");
     if (avb_version) property_set("ro.boot.avb_version", avb_version);
 
+    // See if we need to allow adb root when the device is unlocked.
+    const char* force_debuggable_env = getenv("INIT_FORCE_DEBUGGABLE");
+    if (force_debuggable_env) {
+        force_debuggable = std::string("true") == force_debuggable_env;
+    }
+
     // Clean up our environment.
     unsetenv("INIT_STARTED_AT");
     unsetenv("INIT_SELINUX_TOOK");
     unsetenv("INIT_AVB_VERSION");
+    unsetenv("INIT_FORCE_DEBUGGABLE");
 
     // Now set up SELinux for second stage.
     SelinuxSetupKernelLogging();
@@ -672,7 +680,7 @@ int SecondStageMain(int argc, char** argv) {
 
     InstallSignalFdHandler(&epoll);
 
-    property_load_boot_defaults();
+    property_load_boot_defaults(force_debuggable);
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
     StartPropertyService(&epoll);
