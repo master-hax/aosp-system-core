@@ -866,7 +866,7 @@ static void property_derive_build_fingerprint() {
     }
 }
 
-void property_load_boot_defaults() {
+void property_load_boot_defaults(bool load_debug_prop = false) {
     // TODO(b/117892318): merge prop.default and build.prop files into one
     // We read the properties and their values into a map, in order to always allow properties
     // loaded in the later property files to override the properties in loaded in the earlier
@@ -887,6 +887,12 @@ void property_load_boot_defaults() {
     load_properties_from_file("/product/build.prop", nullptr, &properties);
     load_properties_from_file("/product_services/build.prop", nullptr, &properties);
     load_properties_from_file("/factory/factory.prop", "ro.*", &properties);
+
+    if (load_debug_prop) {
+        constexpr static const char kAdbDebugProp[] = "/system/etc/adb_debug.prop";
+        load_properties_from_file(kAdbDebugProp, nullptr, &properties);
+        LOG(WARNING) << "Loading " << kAdbDebugProp;
+    }
 
     for (const auto& [name, value] : properties) {
         std::string error;
