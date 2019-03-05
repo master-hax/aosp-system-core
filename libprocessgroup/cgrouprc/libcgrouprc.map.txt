@@ -1,0 +1,12 @@
+LIBCGROUPRC { # introduced=29
+  global:
+    ACgroupFile_init;
+    ACgroupFile_getVersion;
+    ACgroupFile_getControllerCount;
+    ACgroupFile_getController;
+    ACgroupController_getVersion;
+    ACgroupController_getName;
+    ACgroupController_getPath;
+  local:
+    *;
+};
