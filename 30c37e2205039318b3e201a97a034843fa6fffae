@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62863ad1_5679c92b",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-05T21:13:49Z",
+      "side": 1,
+      "message": "vfork?",
+      "revId": "30c37e2205039318b3e201a97a034843fa6fffae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e365c0e2_d00d688b",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-05T21:13:49Z",
+      "side": 1,
+      "message": "-errno? 42?",
+      "range": {
+        "startLine": 54,
+        "startChar": 24,
+        "endLine": 54,
+        "endChar": 26
+      },
+      "revId": "30c37e2205039318b3e201a97a034843fa6fffae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6cd438e_aa2ea57f",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-05T21:13:49Z",
+      "side": 1,
+      "message": "if it\u0027s critical that we end with \"remount failed\" or \"remount succeeded\", lift that into an outer function and return bool?",
+      "revId": "30c37e2205039318b3e201a97a034843fa6fffae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b851965_9dd7575c",
+        "filename": "adb/daemon/remount_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-05T21:13:49Z",
+      "side": 1,
+      "message": "is all of this actually helpful? if so, should probably share with Subprocess::WaitForExit rather than have two versions.",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 5
+      },
+      "revId": "30c37e2205039318b3e201a97a034843fa6fffae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abd1718f_a8a8f97f",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-05T21:13:49Z",
+      "side": 1,
+      "message": "just return on previous line?",
+      "revId": "30c37e2205039318b3e201a97a034843fa6fffae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
