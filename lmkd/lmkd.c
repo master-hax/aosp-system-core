@@ -160,9 +160,9 @@ static bool per_app_memcg;
 static int swap_free_low_percentage;
 static bool use_psi_monitors = false;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
-    { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
-    { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
-    { PSI_FULL, 70 },    /* 70ms out of 1sec for complete stall */
+    { PSI_SOME, 20 },    /* 20ms out of 1sec for partial stall */
+    { PSI_SOME, 30 },    /* 30ms out of 1sec for partial stall */
+    { PSI_FULL, 20 },    /* 20ms out of 1sec for complete stall */
 };
 
 static android_log_context ctx;
