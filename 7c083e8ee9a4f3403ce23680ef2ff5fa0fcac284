@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c89ca952_ae14e0af",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-05T22:37:08Z",
+      "side": 1,
+      "message": "I wonder if fs_mgr_set_blk_ro will actually work in this case, since the dm table was set to read only.",
+      "revId": "7c083e8ee9a4f3403ce23680ef2ff5fa0fcac284",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
