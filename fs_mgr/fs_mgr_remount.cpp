@@ -351,6 +351,15 @@ int main(int argc, char* argv[]) {
                 break;
             }
         }
+        if (blk_device == "/dev/root") {
+            auto from_fstab = GetEntryForMountPoint(&fstab, mount_point);
+            if (from_fstab) {
+                if (from_fstab->fs_mgr_flags.logical) {
+                    fs_mgr_update_logical_partition(from_fstab);
+                }
+                blk_device = from_fstab->blk_device;
+            }
+        }
         fs_mgr_set_blk_ro(blk_device, false);
 
         // Now remount!
