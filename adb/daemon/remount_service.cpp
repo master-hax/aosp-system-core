@@ -46,7 +46,6 @@ void remount_service(unique_fd fd, const std::string& cmd) {
 
     if (pid == 0) {
         // child side of the fork
-        fcntl(fd.get(), F_SETFD, 0);
         dup2(fd.get(), STDIN_FILENO);
         dup2(fd.get(), STDOUT_FILENO);
         dup2(fd.get(), STDERR_FILENO);
