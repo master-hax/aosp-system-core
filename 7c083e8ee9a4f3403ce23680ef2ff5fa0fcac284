@@ -16,6 +16,24 @@
       "revId": "7c083e8ee9a4f3403ce23680ef2ff5fa0fcac284",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a5ca5a8_8b52e037",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-05T23:10:33Z",
+      "side": 1,
+      "message": "In reality we only (should) get here if there is no overlayfs presence on the device, system as root. The fs_mgr_update_logical_partition should never be called, but was added for _completeness_. And to that point, maybe should be removed as it is not a supported configuration.\n\nLine 349 I notice makes no sense, I need to clean it up or document why it is there.\n\nTested only on taimen so far. I am still waiting for checks on a retrofit device (the build is not going to finish before my EOD) just in case it affects these paths.",
+      "parentUuid": "c89ca952_ae14e0af",
+      "revId": "7c083e8ee9a4f3403ce23680ef2ff5fa0fcac284",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
