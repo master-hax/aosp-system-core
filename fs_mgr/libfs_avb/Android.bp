@@ -41,6 +41,7 @@ cc_library_static {
     ],
     header_libs: [
         "libbase_headers",
+        "libfs_mgr_headers",
     ],
     target: {
         darwin: {
@@ -127,6 +128,7 @@ cc_test {
         "libavb",
         "libdm",
         "libfs_avb",
+        "libfs_mgr",
         "libfstab",
     ],
     shared_libs: [
