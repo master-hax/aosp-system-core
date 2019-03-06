@@ -117,6 +117,38 @@ enum FsStatFlags {
     FS_STAT_ENABLE_VERITY_FAILED = 0x80000,
 };
 
+static void (*fs_mgr_sleep_for)(const std::chrono::milliseconds& sleep_duration);
+
+void fs_mgr_set_sleep_for(void (*sleep_for)(const std::chrono::milliseconds& sleep_duration)) {
+    fs_mgr_sleep_for = sleep_for;
+}
+
+// TODO: switch to inotify()
+bool fs_mgr_wait_for_file(const std::string& filename,
+                          const std::chrono::milliseconds relative_timeout,
+                          FileWaitMode file_wait_mode) {
+    auto start_time = std::chrono::steady_clock::now();
+
+    while (true) {
+        int rv = access(filename.c_str(), F_OK);
+        if (file_wait_mode == FileWaitMode::Exists) {
+            if (!rv || errno != ENOENT) return true;
+        } else if (file_wait_mode == FileWaitMode::DoesNotExist) {
+            if (rv && errno == ENOENT) return true;
+        }
+
+        if (fs_mgr_sleep_for) {
+            fs_mgr_sleep_for(50ms);
+        } else {
+            std::this_thread::sleep_for(50ms);
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
+        if (time_elapsed > relative_timeout) return false;
+    }
+}
+
 static void log_fs_stat(const std::string& blk_device, int fs_stat) {
     if ((fs_stat & FS_STAT_IS_EXT4) == 0) return; // only log ext4
     std::string msg =

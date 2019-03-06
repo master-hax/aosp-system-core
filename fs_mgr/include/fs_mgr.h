@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include <linux/dm-ioctl.h>
 
+#include <chrono>
 #include <functional>
 #include <string>
 
@@ -108,3 +109,7 @@ int fs_mgr_umount_all(android::fs_mgr::Fstab* fstab);
 // Finds the dm_bow device on which this block device is stacked, or returns
 // empty string
 std::string fs_mgr_find_bow_device(const std::string& block_device);
+
+// Normally sleeps are performed internally with std::this_thread::sleep_for.
+// Supply an alternative call.
+void fs_mgr_set_sleep_for(void (*sleep_for)(const std::chrono::milliseconds& sleep_duration));
