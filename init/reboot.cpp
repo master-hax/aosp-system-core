@@ -51,6 +51,7 @@
 #include <selinux/selinux.h>
 
 #include "action_manager.h"
+#include "epoll.h"
 #include "init.h"
 #include "property_service.h"
 #include "reboot_utils.h"
@@ -244,7 +245,7 @@ static UmountStat UmountPartitions(std::chrono::milliseconds timeout) {
         if ((timeout < t.duration())) {  // try umount at least once
             return UMOUNT_STAT_TIMEOUT;
         }
-        std::this_thread::sleep_for(100ms);
+        EpollSleepManager::sleep_for(100ms);
     }
 }
 
@@ -461,7 +462,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
             }
 
             // Wait a bit before recounting the number or running services.
-            std::this_thread::sleep_for(50ms);
+            EpollSleepManager::sleep_for(50ms);
         }
         LOG(INFO) << "Terminating running services took " << t
                   << " with remaining services:" << service_count;
@@ -505,7 +506,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
         sync();
         LOG(INFO) << "sync() after umount took" << sync_timer;
     }
-    if (!is_thermal_shutdown) std::this_thread::sleep_for(100ms);
+    if (!is_thermal_shutdown) EpollSleepManager::sleep_for(100ms);
     LogShutdownTime(stat, &t);
     // Reboot regardless of umount status. If umount fails, fsck after reboot will fix it.
     RebootSystem(cmd, rebootTarget);

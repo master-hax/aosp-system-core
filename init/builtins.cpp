@@ -62,6 +62,7 @@
 
 #include "action_manager.h"
 #include "bootchart.h"
+#include "epoll.h"
 #include "init.h"
 #include "mount_namespace.h"
 #include "parser.h"
@@ -466,8 +467,13 @@ static Result<int> mount_fstab(const char* fstabfile, int mount_mode) {
     if (pid > 0) {
         /* Parent.  Wait for the child to return */
         int status;
-        int wp_ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, 0));
-        if (wp_ret == -1) {
+        int wp_ret;
+        do {
+            EpollSleepManager::sleep_for(10ms);
+            status = 0;
+            wp_ret = TEMP_FAILURE_RETRY(waitpid(pid, &status, WNOHANG));
+        } while (wp_ret == 0);
+        if (wp_ret == -1 && errno != ECHILD) {
             // Unexpected error code. We will continue anyway.
             PLOG(WARNING) << "waitpid failed";
         }

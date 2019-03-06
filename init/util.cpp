@@ -44,6 +44,7 @@
 #else
 #include "host_init_stubs.h"
 #endif
+#include "epoll.h"
 
 #ifdef _INIT_INIT_H
 #error "Do not include init.h in files used by ueventd; it will expose init's globals"
@@ -231,7 +232,7 @@ int wait_for_file(const char* filename, std::chrono::nanoseconds timeout) {
             LOG(INFO) << "wait for '" << filename << "' took " << t;
             return 0;
         }
-        std::this_thread::sleep_for(10ms);
+        EpollSleepManager::sleep_for(10ms);
     }
     LOG(WARNING) << "wait for '" << filename << "' timed out and took " << t;
     return -1;
