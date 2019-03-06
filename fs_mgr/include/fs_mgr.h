@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include <linux/dm-ioctl.h>
 
+#include <chrono>
 #include <functional>
 #include <string>
 
@@ -89,3 +90,7 @@ int fs_mgr_setup_verity(android::fs_mgr::FstabEntry* fstab, bool wait_for_verity
 // specified, the super partition for the corresponding metadata slot will be
 // returned. Otherwise, it will use the current slot.
 std::string fs_mgr_get_super_partition_name(int slot = -1);
+
+// Normally sleeps are performed internally with std::this_thread::sleep_for.
+// Supply an alternative call.
+void fs_mgr_set_sleep_for(void (*sleep_for)(const std::chrono::milliseconds& sleep_duration));
