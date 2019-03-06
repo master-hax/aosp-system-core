@@ -40,6 +40,7 @@
 #include <android-base/strings.h>
 #include <cutils/android_reboot.h>
 #include <fs_avb/fs_avb.h>
+#include <fs_mgr.h>
 #include <fs_mgr_vendor_overlay.h>
 #include <keyutils.h>
 #include <libavb/libavb.h>
@@ -687,6 +688,7 @@ int SecondStageMain(int argc, char** argv) {
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
     EpollSleepManager epollSleepManager(&epoll);
+    fs_mgr_set_sleep_for(epollSleepManager.sleep_for);
     StartPropertyService(&epoll);
     MountHandler mount_handler(&epoll);
     set_usb_controller();

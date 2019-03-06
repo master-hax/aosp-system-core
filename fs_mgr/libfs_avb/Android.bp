@@ -41,6 +41,7 @@ cc_library_static {
     ],
     header_libs: [
         "libbase_headers",
+        "libfs_mgr_headers",
     ],
     target: {
         darwin: {
@@ -68,6 +69,9 @@ cc_defaults {
     shared_libs: [
         "libbase",
         "libchrome",
+    ],
+    header_libs: [
+        "libfs_mgr_headers",
     ],
     target: {
         darwin: {
