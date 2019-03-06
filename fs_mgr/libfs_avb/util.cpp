@@ -21,6 +21,7 @@
 #include <thread>
 
 #include <android-base/unique_fd.h>
+#include <fs_mgr.h>
 #include <linux/fs.h>
 
 namespace android {
@@ -83,19 +84,7 @@ std::string BytesToHex(const uint8_t* bytes, size_t bytes_len) {
 }
 
 bool WaitForFile(const std::string& filename, const std::chrono::milliseconds relative_timeout) {
-    auto start_time = std::chrono::steady_clock::now();
-
-    while (true) {
-        if (0 == access(filename.c_str(), F_OK) || errno != ENOENT) {
-            return true;
-        }
-
-        std::this_thread::sleep_for(50ms);
-
-        auto now = std::chrono::steady_clock::now();
-        auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
-        if (time_elapsed > relative_timeout) return false;
-    }
+    return fs_mgr_wait_for_file(filename, relative_timeout, FileWaitMode::Exists);
 }
 
 bool IsDeviceUnlocked() {

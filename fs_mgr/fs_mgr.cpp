@@ -116,6 +116,12 @@ enum FsStatFlags {
     FS_STAT_ENABLE_VERITY_FAILED = 0x80000,
 };
 
+static void (*fs_mgr_sleep_for)(const std::chrono::milliseconds& sleep_duration);
+
+void fs_mgr_set_sleep_for(void (*sleep_for)(const std::chrono::milliseconds& sleep_duration)) {
+    fs_mgr_sleep_for = sleep_for;
+}
+
 // TODO: switch to inotify()
 bool fs_mgr_wait_for_file(const std::string& filename,
                           const std::chrono::milliseconds relative_timeout,
@@ -130,7 +136,11 @@ bool fs_mgr_wait_for_file(const std::string& filename,
             if (rv && errno == ENOENT) return true;
         }
 
-        std::this_thread::sleep_for(50ms);
+        if (fs_mgr_sleep_for) {
+            fs_mgr_sleep_for(50ms);
+        } else {
+            std::this_thread::sleep_for(50ms);
+        }
 
         auto now = std::chrono::steady_clock::now();
         auto time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
