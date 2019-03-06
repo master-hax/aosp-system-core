@@ -18,10 +18,22 @@
 
 #include <stdint.h>
 #include <sys/epoll.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <chrono>
 #include <functional>
 #include <map>
+#include <thread>
+
+#include <android-base/logging.h>
+
+#ifndef __ANDROID__
+#include <sys/syscall.h>
+static pid_t gettid() {
+    return syscall(__NR_gettid);
+}
+#endif
 
 namespace android {
 namespace init {
@@ -82,6 +94,27 @@ Result<void> Epoll::Wait(std::optional<std::chrono::milliseconds> timeout) {
         std::invoke(*reinterpret_cast<std::function<void()>*>(ev.data.ptr));
     }
     return {};
+}
+
+Epoll* EpollSleepManager::epoll_;
+pid_t EpollSleepManager::tid_;
+
+EpollSleepManager::EpollSleepManager(Epoll* epoll) {
+    epoll_ = epoll;
+    tid_ = ::gettid();
+}
+
+EpollSleepManager::~EpollSleepManager() {
+    epoll_ = nullptr;
+    tid_ = 0;
+}
+
+void EpollSleepManager::sleep_for(const std::chrono::milliseconds& sleep_duration) {
+    if (!epoll_ || (::gettid() != tid_)) {
+        std::this_thread::sleep_for(sleep_duration);
+    } else if (auto result = epoll_->Wait(sleep_duration); !result) {
+        LOG(ERROR) << result.error();
+    }
 }
 
 }  // namespace init

@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 #include <sys/epoll.h>
+#include <sys/types.h>
 
 #include <chrono>
 #include <functional>
@@ -44,6 +45,22 @@ class Epoll {
   private:
     android::base::unique_fd epoll_fd_;
     std::map<int, std::function<void()>> epoll_handlers_;
+};
+
+class EpollSleepManager {
+  public:
+    explicit EpollSleepManager(Epoll* epoll = nullptr);
+    EpollSleepManager(const EpollSleepManager&) = delete;
+    EpollSleepManager(EpollSleepManager&&) = delete;
+    EpollSleepManager& operator=(const EpollSleepManager&) = delete;
+    EpollSleepManager& operator=(EpollSleepManager&&) = delete;
+    ~EpollSleepManager() noexcept;
+
+    static void sleep_for(const std::chrono::milliseconds& sleep_duration);
+
+  private:
+    static Epoll* epoll_;
+    static pid_t tid_;
 };
 
 }  // namespace init

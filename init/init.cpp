@@ -684,6 +684,7 @@ int SecondStageMain(int argc, char** argv) {
     UmountDebugRamdisk();
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
+    EpollSleepManager epollSleepManager(&epoll);
     StartPropertyService(&epoll);
     MountHandler mount_handler(&epoll);
     set_usb_controller();

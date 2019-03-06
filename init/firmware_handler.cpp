@@ -28,6 +28,8 @@
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
+#include "epoll.h"
+
 using android::base::Timer;
 using android::base::unique_fd;
 using android::base::WriteFully;
@@ -105,7 +107,7 @@ try_loading_again:
     if (booting) {
         // If we're not fully booted, we may be missing
         // filesystems needed for firmware, wait and retry.
-        std::this_thread::sleep_for(100ms);
+        EpollSleepManager::sleep_for(100ms);
         booting = IsBooting();
         goto try_loading_again;
     }
