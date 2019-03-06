@@ -686,6 +686,7 @@ int SecondStageMain(int argc, char** argv) {
     property_load_boot_defaults(load_debug_prop);
     fs_mgr_vendor_overlay_mount_all();
     export_oem_lock_status();
+    EpollSleepManager epollSleepManager(&epoll);
     StartPropertyService(&epoll);
     MountHandler mount_handler(&epoll);
     set_usb_controller();
