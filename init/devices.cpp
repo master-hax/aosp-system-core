@@ -30,6 +30,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <private/android_filesystem_config.h>
@@ -50,6 +51,7 @@ using android::base::Dirname;
 using android::base::ReadFileToString;
 using android::base::Readlink;
 using android::base::Realpath;
+using android::base::SetProperty;
 using android::base::StartsWith;
 using android::base::StringPrintf;
 using android::base::Trim;
@@ -355,6 +357,14 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
     } else if (FindVbdDevicePrefix(uevent.path, &device)) {
         type = "vbd";
     } else if (FindDmDevicePartition(uevent.path, &partition)) {
+        if (Basename(getprogname()) == "ueventd") {
+            if (uevent.action == "add") {
+                SetProperty("dev.dm." + partition,
+                            uevent.path.substr(strlen("/devices/virtual/block/")));
+            } else if (uevent.action == "remove") {
+                SetProperty("dev.dm." + partition, "");
+            }
+        }
         return {"/dev/block/mapper/" + partition};
     } else {
         return {};
