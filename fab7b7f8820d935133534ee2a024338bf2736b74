@@ -16,6 +16,29 @@
       "revId": "fab7b7f8820d935133534ee2a024338bf2736b74",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d40ffe6_a0e7255b",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-03-07T22:48:57Z",
+      "side": 1,
+      "message": "Let\u0027s do this instead:\n\n    size_t file_size \u003d sb.st_size;\n    if (file_size \u003c sizeof(CgroupFile)) {\n        PLOG(ERROR) \u003c\u003c \"Invalid file format \" \u003c\u003c cgroup_rc_path;\n        return false;\n    }\n\n    CgroupFile* file_data \u003d (CgroupFile*)mmap(nullptr, file_size, PROT_READ, MAP_SHARED, fd, 0);\n    if (file_data \u003d\u003d MAP_FAILED) {\n        PLOG(ERROR) \u003c\u003c \"Failed to mmap \" \u003c\u003c cgroup_rc_path;\n        return false;\n    }\n\n    if (file_data-\u003eversion_ !\u003d CgroupFile::FILE_CURR_VERSION) {\n        PLOG(ERROR) \u003c\u003c cgroup_rc_path \u003c\u003c \" file version mismatch\";\n        munmap(file_data, file_size);\n        return false;\n    }\n\n    if (file_size !\u003d sizeof(CgroupFile) + file_data-\u003econtroller_count_ * sizeof(CgroupController)) {\n        PLOG(ERROR) \u003c\u003c cgroup_rc_path \u003c\u003c \" file has invalid size\";\n        munmap(file_data, file_size);\n        return false;\n    }\n\n    cg_file_data_ \u003d file_data;\n    cg_file_size_ \u003d file_size;",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 382,
+        "endChar": 0
+      },
+      "revId": "fab7b7f8820d935133534ee2a024338bf2736b74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
