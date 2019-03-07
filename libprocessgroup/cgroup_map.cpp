@@ -369,18 +369,26 @@ bool CgroupMap::LoadRcFile() {
     cg_file_data_ = (CgroupFile*)mmap(nullptr, cg_file_size_, PROT_READ, MAP_SHARED, fd, 0);
     if (cg_file_data_ == MAP_FAILED) {
         PLOG(ERROR) << "Failed to mmap " << cgroup_rc_path;
+        cg_file_data_ = nullptr;
         return false;
     }
 
     if (cg_file_data_->version_ != CgroupFile::FILE_CURR_VERSION) {
         PLOG(ERROR) << cgroup_rc_path << " file version mismatch";
+        munmap(cg_file_data_, cg_file_size_);
+        cg_file_data_ = nullptr;
         return false;
     }
 
     return true;
 }
 
-void CgroupMap::Print() {
+void CgroupMap::Print() const {
+    if (!cg_file_data_) {
+        LOG(ERROR) << "CgroupMap::Print called for [" << getpid()
+                   << "] failed, RC file was not initialized properly";
+        return;
+    }
     LOG(INFO) << "File version = " << cg_file_data_->version_;
     LOG(INFO) << "File controller count = " << cg_file_data_->controller_count_;
 
@@ -437,6 +445,8 @@ bool CgroupMap::SetupCgroups() {
 
 const CgroupController* CgroupMap::FindController(const std::string& name) const {
     if (!cg_file_data_) {
+        LOG(ERROR) << "CgroupMap::FindController called for [" << getpid()
+                   << "] failed, RC file was not initialized properly";
         return nullptr;
     }
 
