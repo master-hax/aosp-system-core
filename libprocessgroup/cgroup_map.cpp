@@ -360,27 +360,42 @@ bool CgroupMap::LoadRcFile() {
         return false;
     }
 
-    cg_file_size_ = sb.st_size;
-    if (cg_file_size_ < sizeof(CgroupFile)) {
+    size_t file_size = sb.st_size;
+    if (file_size < sizeof(CgroupFile)) {
         PLOG(ERROR) << "Invalid file format " << cgroup_rc_path;
         return false;
     }
 
-    cg_file_data_ = (CgroupFile*)mmap(nullptr, cg_file_size_, PROT_READ, MAP_SHARED, fd, 0);
-    if (cg_file_data_ == MAP_FAILED) {
+    CgroupFile* file_data = (CgroupFile*)mmap(nullptr, file_size, PROT_READ, MAP_SHARED, fd, 0);
+    if (file_data == MAP_FAILED) {
         PLOG(ERROR) << "Failed to mmap " << cgroup_rc_path;
         return false;
     }
 
-    if (cg_file_data_->version_ != CgroupFile::FILE_CURR_VERSION) {
+    if (file_data->version_ != CgroupFile::FILE_CURR_VERSION) {
         PLOG(ERROR) << cgroup_rc_path << " file version mismatch";
+        munmap(file_data, file_size);
         return false;
     }
+
+    if (file_size != sizeof(CgroupFile) + file_data->controller_count_ * sizeof(CgroupController)) {
+        PLOG(ERROR) << cgroup_rc_path << " file has invalid size";
+        munmap(file_data, file_size);
+        return false;
+    }
+
+    cg_file_data_ = file_data;
+    cg_file_size_ = file_size;
 
     return true;
 }
 
-void CgroupMap::Print() {
+void CgroupMap::Print() const {
+    if (!cg_file_data_) {
+        LOG(ERROR) << "CgroupMap::Print called for [" << getpid()
+                   << "] failed, RC file was not initialized properly";
+        return;
+    }
     LOG(INFO) << "File version = " << cg_file_data_->version_;
     LOG(INFO) << "File controller count = " << cg_file_data_->controller_count_;
 
@@ -437,6 +452,8 @@ bool CgroupMap::SetupCgroups() {
 
 const CgroupController* CgroupMap::FindController(const std::string& name) const {
     if (!cg_file_data_) {
+        LOG(ERROR) << "CgroupMap::FindController called for [" << getpid()
+                   << "] failed, RC file was not initialized properly";
         return nullptr;
     }
 
