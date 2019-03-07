@@ -68,6 +68,7 @@ LOCAL_POST_INSTALL_CMD := \
     $(TARGET_RAMDISK_OUT)/mnt \
     $(TARGET_RAMDISK_OUT)/proc \
     $(TARGET_RAMDISK_OUT)/sys \
+    $(TARGET_RAMDISK_OUT)/apex \
 
 LOCAL_STATIC_LIBRARIES := \
     libfs_avb \
