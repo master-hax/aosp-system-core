@@ -16,6 +16,24 @@
       "revId": "27c5047313deab5e268103759fdeb02c09ea11b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b447e50_ff142448",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-07T21:43:07Z",
+      "side": 1,
+      "message": "Ack ... out of scope because of pending ToDo.\n[TL;DR]\n\nCurrent handling is identical to other places in this code, if I added ErrnoRestorer I\u0027d be doing a lot of changes. Changes that may be thrown away.\n\noverlayfs follows a strict and religious rule of errno preservation in all it does, which has turned into a problematic API because this is _not_ the first time this has happened for a modification from others. I am not sure I want to buy into continued religious errno preservation and propagation.\n\nThere is a ToDo to cleanup error propagation for all these function(s) to return an error string. I only pause on that because of spare time, and the interface also problematically returns failure (to indicate it did not do what it asked) with an errno \u003d 0 (to indicate that even though I did not do as you asked, I did not consider it a serious problem). So we have to split out return success/failure, something changed or not, no fundamental error, and error string for serious problems (which could be empty as an indicator of no fundamental error).\n\nAll callers will need to be modified which affect(ed) adb (but not anymore as we moved out remount), init and fs_mgr.",
+      "parentUuid": "c7645298_33a04049",
+      "revId": "27c5047313deab5e268103759fdeb02c09ea11b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
