@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/inotify.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <time.h>
@@ -224,8 +225,45 @@ bool mkdir_recursive(const std::string& path, mode_t mode) {
     return true;
 }
 
+class WaitForFile {
+  public:
+    explicit WaitForFile(const char* filename)
+        : epoll_(EpollSleepManager::epoll()), inotify_fd_(-1) {
+        if (epoll_) {
+            inotify_fd_ = ::inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
+            if (inotify_fd_ >= 0) {
+                if (::inotify_add_watch(inotify_fd_, filename, IN_CREATE) < 0) {
+                    ::close(inotify_fd_);
+                    inotify_fd_ = -1;
+                }
+            }
+            if (inotify_fd_ >= 0) {
+                epoll_->RegisterHandler(inotify_fd_, []() {}).IgnoreError();
+            } else {
+                epoll_ = nullptr;
+            }
+        }
+    }
+    WaitForFile(const WaitForFile&) = delete;
+    WaitForFile(WaitForFile&&) = delete;
+    WaitForFile& operator=(const WaitForFile&) = delete;
+    WaitForFile& operator=(WaitForFile&&) = delete;
+
+    ~WaitForFile() {
+        if (inotify_fd_ >= 0) {
+            epoll_->UnregisterHandler(inotify_fd_).IgnoreError();
+            ::close(inotify_fd_);
+        }
+    }
+
+  private:
+    Epoll* epoll_;
+    int inotify_fd_;
+};
+
 int wait_for_file(const char* filename, std::chrono::nanoseconds timeout) {
     android::base::Timer t;
+    WaitForFile inotify_agent(filename);
     while (t.duration() < timeout) {
         struct stat sb;
         if (stat(filename, &sb) != -1) {
