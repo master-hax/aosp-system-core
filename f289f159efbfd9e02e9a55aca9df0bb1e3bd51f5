@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "244364a0_03d21165",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-08T18:11:32Z",
+      "side": 1,
+      "message": "why is this one a #define?",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94b185ba_6ab6bbe6",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-08T18:11:32Z",
+      "side": 1,
+      "message": "i don\u0027t understand why you need #defines at all, but assuming you do, there are two idiomatic ways to do this, depending on what you\u0027re trying to do...\n\n1. if you want two names for the same value:\n\n    NAME1 \u003d \u003cvalue\u003e,\n    NAME2 \u003d NAME1,\n\n2. if you want calling code to be able to use #if defined to check for the availability of constants (this comes up in libc):\n\n    NAME1 \u003d \u003cvalue\u003e\n  #define NAME1 NAME1\n    NAME2 \u003d \u003cvalue\u003e\n  #define NAME2 NAME2",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55791061_722ac2cb",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-08T18:11:32Z",
+      "side": 1,
+      "message": "why are there two types?\n\nwhy is the sole caller using int64_t instead?\n\nwhy are these types in the public header?\n\nwhy are they not following the naming convention for existing enums in this header?",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
