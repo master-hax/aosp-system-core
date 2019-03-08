@@ -117,5 +117,10 @@ void EpollSleepManager::sleep_for(const std::chrono::milliseconds& sleep_duratio
     }
 }
 
+Epoll* EpollSleepManager::epoll() {
+    if (::gettid() != tid_) return nullptr;
+    return epoll_;
+}
+
 }  // namespace init
 }  // namespace android
