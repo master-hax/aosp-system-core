@@ -57,6 +57,7 @@ class EpollSleepManager {
     ~EpollSleepManager() noexcept;
 
     static void sleep_for(const std::chrono::milliseconds& sleep_duration);
+    static Epoll* epoll();
 
   private:
     static Epoll* epoll_;
