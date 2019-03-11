@@ -360,8 +360,13 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
     if (!SHUTDOWN_ZERO_TIMEOUT) {
         constexpr unsigned int shutdown_timeout_default = 6;
         constexpr unsigned int max_thermal_shutdown_timeout = 3;
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
         auto shutdown_timeout_final = android::base::GetUintProperty("ro.build.shutdown_timeout",
                                                                      shutdown_timeout_default);
+=======
+        auto shutdown_timeout_final =
+            android::base::GetUintProperty("ro.build.shutdown_timeout", shutdown_timeout_default);
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
         if (is_thermal_shutdown && shutdown_timeout_final > max_thermal_shutdown_timeout) {
             shutdown_timeout_final = max_thermal_shutdown_timeout;
         }

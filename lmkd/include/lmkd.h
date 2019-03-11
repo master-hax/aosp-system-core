@@ -31,7 +31,10 @@ enum lmk_cmd {
     LMK_PROCPRIO,    /* Register a process and set its oom_adj_score */
     LMK_PROCREMOVE,  /* Unregister a process */
     LMK_PROCPURGE,   /* Purge all registered processes */
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     LMK_GETKILLCNT,  /* Get number of kills */
+=======
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 };
 
 /*
@@ -145,6 +148,7 @@ static inline size_t lmkd_pack_set_procremove(LMKD_CTRL_PACKET packet,
  * Prepare LMK_PROCPURGE packet and return packet size in bytes.
  * Warning: no checks performed, caller should ensure valid parameters.
  */
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
 static inline size_t lmkd_pack_set_procpurge(LMKD_CTRL_PACKET packet) {
     packet[0] = htonl(LMK_PROCPURGE);
     return sizeof(int);
@@ -186,6 +190,11 @@ static inline size_t lmkd_pack_set_getkillcnt_repl(LMKD_CTRL_PACKET packet, int 
     packet[0] = htonl(LMK_GETKILLCNT);
     packet[1] = htonl(kill_cnt);
     return 2 * sizeof(int);
+=======
+inline size_t lmkd_pack_set_procpurge(LMKD_CTRL_PACKET packet) {
+    packet[0] = htonl(LMK_PROCPURGE);
+    return sizeof(int);
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 }
 
 __END_DECLS

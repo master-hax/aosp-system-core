@@ -70,8 +70,92 @@ FlagList kMountFlagsList[] = {
         {"defaults", 0},
 };
 
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
 off64_t CalculateZramSize(int percentage) {
     off64_t total;
+=======
+static struct flag_list fs_mgr_flags[] = {
+    {"wait", MF_WAIT},
+    {"check", MF_CHECK},
+    {"encryptable=", MF_CRYPT},
+    {"forceencrypt=", MF_FORCECRYPT},
+    {"fileencryption=", MF_FILEENCRYPTION},
+    {"forcefdeorfbe=", MF_FORCEFDEORFBE},
+    {"keydirectory=", MF_KEYDIRECTORY},
+    {"nonremovable", MF_NONREMOVABLE},
+    {"voldmanaged=", MF_VOLDMANAGED},
+    {"length=", MF_LENGTH},
+    {"recoveryonly", MF_RECOVERYONLY},
+    {"swapprio=", MF_SWAPPRIO},
+    {"zramsize=", MF_ZRAMSIZE},
+    {"max_comp_streams=", MF_MAX_COMP_STREAMS},
+    {"verifyatboot", MF_VERIFYATBOOT},
+    {"verify", MF_VERIFY},
+    {"avb", MF_AVB},
+    {"noemulatedsd", MF_NOEMULATEDSD},
+    {"notrim", MF_NOTRIM},
+    {"formattable", MF_FORMATTABLE},
+    {"slotselect", MF_SLOTSELECT},
+    {"nofail", MF_NOFAIL},
+    {"latemount", MF_LATEMOUNT},
+    {"reservedsize=", MF_RESERVEDSIZE},
+    {"quota", MF_QUOTA},
+    {"eraseblk=", MF_ERASEBLKSIZE},
+    {"logicalblk=", MF_LOGICALBLKSIZE},
+    {"sysfs_path=", MF_SYSFS},
+    {"defaults", 0},
+    {0, 0},
+};
+
+#define EM_AES_256_XTS  1
+#define EM_ICE          2
+#define EM_AES_256_CTS  3
+#define EM_AES_256_HEH  4
+
+static const struct flag_list file_contents_encryption_modes[] = {
+    {"aes-256-xts", EM_AES_256_XTS},
+    {"software", EM_AES_256_XTS}, /* alias for backwards compatibility */
+    {"ice", EM_ICE}, /* hardware-specific inline cryptographic engine */
+    {0, 0},
+};
+
+static const struct flag_list file_names_encryption_modes[] = {
+    {"aes-256-cts", EM_AES_256_CTS},
+    {"aes-256-heh", EM_AES_256_HEH},
+    {0, 0},
+};
+
+static unsigned int encryption_mode_to_flag(const struct flag_list *list,
+                                            const char *mode, const char *type)
+{
+    const struct flag_list *j;
+
+    for (j = list; j->name; ++j) {
+        if (!strcmp(mode, j->name)) {
+            return j->flag;
+        }
+    }
+    LERROR << "Unknown " << type << " encryption mode: " << mode;
+    return 0;
+}
+
+static const char *flag_to_encryption_mode(const struct flag_list *list,
+                                           unsigned int flag)
+{
+    const struct flag_list *j;
+
+    for (j = list; j->name; ++j) {
+        if (flag == j->flag) {
+            return j->name;
+        }
+    }
+    return nullptr;
+}
+
+static uint64_t calculate_zram_size(unsigned int percentage)
+{
+    uint64_t total;
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 
     total  = sysconf(_SC_PHYS_PAGES);
     total *= percentage;
@@ -125,12 +209,89 @@ void ParseFileEncryption(const std::string& arg, FstabEntry* entry) {
         parts[0] = "aes-256-xts";
     }
 
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     if (std::find(kFileContentsEncryptionMode.begin(), kFileContentsEncryptionMode.end(),
                   parts[0]) == kFileContentsEncryptionMode.end()) {
         LWARNING << "fileencryption= flag malformed, file contents encryption mode not found: "
                  << arg;
         return;
     }
+=======
+    p = strtok_r(flags, ",", &savep);
+    while (p) {
+        /* Look for the flag "p" in the flag list "fl"
+         * If not found, the loop exits with fl[i].name being null.
+         */
+        for (i = 0; fl[i].name; i++) {
+            if (!strncmp(p, fl[i].name, strlen(fl[i].name))) {
+                f |= fl[i].flag;
+                if ((fl[i].flag == MF_CRYPT) && flag_vals) {
+                    /* The encryptable flag is followed by an = and the
+                     * location of the keys.  Get it and return it.
+                     */
+                    flag_vals->key_loc = strdup(strchr(p, '=') + 1);
+                } else if ((fl[i].flag == MF_VERIFY) && flag_vals) {
+                    /* If the verify flag is followed by an = and the
+                     * location for the verity state,  get it and return it.
+                     */
+                    char *start = strchr(p, '=');
+                    if (start) {
+                        flag_vals->verity_loc = strdup(start + 1);
+                    }
+                } else if ((fl[i].flag == MF_FORCECRYPT) && flag_vals) {
+                    /* The forceencrypt flag is followed by an = and the
+                     * location of the keys.  Get it and return it.
+                     */
+                    flag_vals->key_loc = strdup(strchr(p, '=') + 1);
+                } else if ((fl[i].flag == MF_FORCEFDEORFBE) && flag_vals) {
+                    /* The forcefdeorfbe flag is followed by an = and the
+                     * location of the keys.  Get it and return it.
+                     */
+                    flag_vals->key_loc = strdup(strchr(p, '=') + 1);
+                    flag_vals->file_contents_mode = EM_AES_256_XTS;
+                    flag_vals->file_names_mode = EM_AES_256_CTS;
+                } else if ((fl[i].flag == MF_FILEENCRYPTION) && flag_vals) {
+                    /* The fileencryption flag is followed by an = and
+                     * the mode of contents encryption, then optionally a
+                     * : and the mode of filenames encryption (defaults
+                     * to aes-256-cts).  Get it and return it.
+                     */
+                    char *mode = strchr(p, '=') + 1;
+                    char *colon = strchr(mode, ':');
+                    if (colon) {
+                        *colon = '\0';
+                    }
+                    flag_vals->file_contents_mode =
+                        encryption_mode_to_flag(file_contents_encryption_modes,
+                                                mode, "file contents");
+                    if (colon) {
+                        flag_vals->file_names_mode =
+                            encryption_mode_to_flag(file_names_encryption_modes,
+                                                    colon + 1, "file names");
+                    } else {
+                        flag_vals->file_names_mode = EM_AES_256_CTS;
+                    }
+                } else if ((fl[i].flag == MF_KEYDIRECTORY) && flag_vals) {
+                    /* The metadata flag is followed by an = and the
+                     * directory for the keys.  Get it and return it.
+                     */
+                    flag_vals->key_dir = strdup(strchr(p, '=') + 1);
+                } else if ((fl[i].flag == MF_LENGTH) && flag_vals) {
+                    /* The length flag is followed by an = and the
+                     * size of the partition.  Get it and return it.
+                     */
+                    flag_vals->part_length = strtoll(strchr(p, '=') + 1, NULL, 0);
+                } else if ((fl[i].flag == MF_VOLDMANAGED) && flag_vals) {
+                    /* The voldmanaged flag is followed by an = and the
+                     * label, a colon and the partition number or the
+                     * word "auto", e.g.
+                     *   voldmanaged=sdcard:3
+                     * Get and return them.
+                     */
+                    char *label_start;
+                    char *label_end;
+                    char *part_start;
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 
     entry->file_contents_mode = parts[0];
 

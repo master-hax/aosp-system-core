@@ -157,6 +157,7 @@ static bool kill_heaviest_task;
 static unsigned long kill_timeout_ms;
 static bool use_minfree_levels;
 static bool per_app_memcg;
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
 static int swap_free_low_percentage;
 static bool use_psi_monitors = false;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
@@ -166,6 +167,8 @@ static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
 };
 
 static android_log_context ctx;
+=======
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 
 /* data required to handle events */
 struct event_handler_info {
@@ -687,6 +690,7 @@ static void cmd_procpurge() {
     memset(&pidhash[0], 0, sizeof(pidhash));
 }
 
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
 static void inc_killcnt(int oomadj) {
     int slot = ADJTOSLOT(oomadj);
     uint8_t idx = killcnt_idx[slot];
@@ -748,6 +752,8 @@ static int cmd_getkillcnt(LMKD_CTRL_PACKET packet) {
     return get_killcnt(params.min_oomadj, params.max_oomadj);
 }
 
+=======
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     int i;
     struct lmk_target target;
@@ -911,6 +917,7 @@ static void ctrl_command_handler(int dsock_idx) {
             goto wronglen;
         cmd_procpurge();
         break;
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     case LMK_GETKILLCNT:
         if (nargs != 2)
             goto wronglen;
@@ -919,6 +926,8 @@ static void ctrl_command_handler(int dsock_idx) {
         if (ctrl_data_write(dsock_idx, (char *)packet, len) != len)
             return;
         break;
+=======
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
     default:
         ALOGE("Received unknown command code %d", cmd);
         return;
@@ -1007,7 +1016,11 @@ static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
 }
 
 static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     FILE *fp;
+=======
+    FILE* fp;
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
     char buf[PATH_MAX];
 
     snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
@@ -1048,6 +1061,7 @@ static int memory_stat_from_procfs(struct memory_stat* mem_st, int pid) {
 
     // field 10 is pgfault
     // field 12 is pgmajfault
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     // field 22 is starttime
     // field 24 is rss_in_pages
     int64_t pgfault = 0, pgmajfault = 0, starttime = 0, rss_in_pages = 0;
@@ -1062,6 +1076,21 @@ static int memory_stat_from_procfs(struct memory_stat* mem_st, int pid) {
     mem_st->pgmajfault = pgmajfault;
     mem_st->rss_in_bytes = (rss_in_pages * PAGE_SIZE);
     mem_st->process_start_time_ns = starttime * (NS_PER_SEC / sysconf(_SC_CLK_TCK));
+=======
+    // field 24 is rss_in_pages
+    int64_t pgfault = 0, pgmajfault = 0, rss_in_pages = 0;
+    if (sscanf(buffer,
+               "%*u %*s %*s %*d %*d %*d %*d %*d %*d %" SCNd64 " %*d "
+               "%" SCNd64 " %*d %*u %*u %*d %*d %*d %*d %*d %*d "
+               "%*d %*d %" SCNd64 "",
+               &pgfault, &pgmajfault, &rss_in_pages) != 3) {
+        return -1;
+    }
+    mem_st->pgfault = pgfault;
+    mem_st->pgmajfault = pgmajfault;
+    mem_st->rss_in_bytes = (rss_in_pages * PAGE_SIZE);
+
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
     return 0;
 }
 #endif
@@ -1388,12 +1417,19 @@ static int kill_one_process(struct proc* procp, int min_oom_score) {
         if (memory_stat_parse_result == 0) {
             stats_write_lmk_kill_occurred(log_ctx, LMK_KILL_OCCURRED, uid, taskname,
                     procp->oomadj, mem_st.pgfault, mem_st.pgmajfault, mem_st.rss_in_bytes,
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
                     mem_st.cache_in_bytes, mem_st.swap_in_bytes, mem_st.process_start_time_ns,
                     min_oom_score);
         } else if (enable_stats_log) {
             stats_write_lmk_kill_occurred(log_ctx, LMK_KILL_OCCURRED, uid, taskname, procp->oomadj,
                                           -1, -1, tasksize * BYTES_IN_KILOBYTE, -1, -1, -1,
                                           min_oom_score);
+=======
+                    mem_st.cache_in_bytes, mem_st.swap_in_bytes);
+        } else if (enable_stats_log) {
+            stats_write_lmk_kill_occurred(log_ctx, LMK_KILL_OCCURRED, uid, taskname, procp->oomadj,
+                                          -1, -1, tasksize * BYTES_IN_KILOBYTE, -1, -1);
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
         }
 #endif
         result = tasksize;
@@ -2050,6 +2086,7 @@ int main(int argc __unused, char **argv __unused) {
         (unsigned long)property_get_int32("ro.lmk.kill_timeout_ms", 0);
     use_minfree_levels =
         property_get_bool("ro.lmk.use_minfree_levels", false);
+<<<<<<< HEAD   (fdfb9a Merge "Add unistd.h to includes in Regs.h")
     per_app_memcg =
         property_get_bool("ro.config.per_app_memcg", low_ram_device);
     swap_free_low_percentage =
@@ -2057,6 +2094,9 @@ int main(int argc __unused, char **argv __unused) {
 
     ctx = create_android_logger(MEMINFO_LOG_TAG);
 
+=======
+    per_app_memcg = property_get_bool("ro.config.per_app_memcg", low_ram_device);
+>>>>>>> BRANCH (5d1d32 Snap for 5240760 from 20ac1203a3201ac3e6d05a19325f5569033f3d)
 #ifdef LMKD_LOG_STATS
     statslog_init(&log_ctx, &enable_stats_log);
 #endif
