@@ -90,6 +90,8 @@ struct MapInfo {
   // Returns the printable version of the build id (hex dump of raw data).
   std::string GetPrintableBuildID();
 
+  std::string GetSoname();
+
  private:
   MapInfo(const MapInfo&) = delete;
   void operator=(const MapInfo&) = delete;
