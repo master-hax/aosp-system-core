@@ -48,6 +48,7 @@ cc_library {
 
     srcs: [
         "ArmExidx.cpp",
+        "DebugDataMemory.cpp",
         "DexFile.cpp",
         "DexFiles.cpp",
         "DwarfCfa.cpp",
