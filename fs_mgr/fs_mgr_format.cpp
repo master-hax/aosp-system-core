@@ -73,7 +73,7 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
 
     std::string size_str = std::to_string(dev_sz / 4096);
     const char* const mke2fs_args[] = {
-            "/system/bin/mke2fs", "-t",   "ext4", "-b", "4096", fs_blkdev.c_str(),
+            "/system/bin/mke2fs", "-t",   "ext4", "-b", "4096", "-F", fs_blkdev.c_str(),
             size_str.c_str(),     nullptr};
 
     rc = android_fork_execvp_ext(arraysize(mke2fs_args), const_cast<char**>(mke2fs_args), NULL,
