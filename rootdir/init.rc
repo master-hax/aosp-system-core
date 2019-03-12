@@ -384,10 +384,11 @@ on post-fs
     # create the lost+found directories, so as to enforce our permissions
     mkdir /cache/lost+found 0770 root root
 
-    restorecon_recursive /metadata
     mkdir /metadata/vold
     chmod 0700 /metadata/vold
+    mkdir /metadata/gsi 0771 root system
     mkdir /metadata/password_slots 0771 root system
+    restorecon_recursive /metadata
 
 on late-fs
     # Ensure that tracefs has the correct permissions.
