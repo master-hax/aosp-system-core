@@ -18,7 +18,7 @@
 
 #include <gtest/gtest.h>
 
-#include <unwindstack/Memory.h>
+#include <unwindstack/MemoryOfflineBuffer.h>
 
 #include "LogFake.h"
 

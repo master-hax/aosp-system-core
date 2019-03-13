@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include <memory>
 #include <string>
 
 #include <backtrace/BacktraceMap.h>
@@ -49,7 +50,7 @@ class UnwindStackPtrace : public BacktracePtrace {
   size_t Read(uint64_t addr, uint8_t* buffer, size_t bytes) override;
 
  private:
-  unwindstack::MemoryRemote memory_;
+  std::shared_ptr<unwindstack::Memory> memory_;
 };
 
 class UnwindStackOffline : public Backtrace {

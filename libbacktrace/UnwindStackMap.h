@@ -33,6 +33,7 @@
 #include <unwindstack/Elf.h>
 #include <unwindstack/JitDebug.h>
 #include <unwindstack/Maps.h>
+#include <unwindstack/MemoryOfflineBuffer.h>
 
 // Forward declarations.
 class UnwindDexFile;
