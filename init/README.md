@@ -666,6 +666,15 @@ for via the below properties.
 `init.svc.<name>`
 > State of a named service ("stopped", "stopping", "running", "restarting")
 
+`dev.mnt.blk.<mount_point>`
+> Monitor mounts and update the property value to reference the block device.
+  The <mount_point> has / replaced by . and if referencing the root mount point
+  "/" it will use "/root" (dev.mnt.blk.root).
+  Can be used in init.rc expansions referencing
+  /sys/device/block/${dev.mnt.blk.<mount_point>}/ and
+  /sys/fs/ext4/${dev.mnt.blk.<mount_point>}/ to tune the block device
+  characteristics.
+
 
 Boot timing
 -----------
