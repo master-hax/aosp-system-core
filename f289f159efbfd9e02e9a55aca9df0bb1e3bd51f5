@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "370e5c9e_7f3203f8",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-13T07:21:08Z",
+      "side": 1,
+      "message": "I tried to express it is not fully the same with BATTERY_LEVEL_ERROR.\nBATTERY_RET_ERROR is an error return value of BatteryMonitor::getIntField().\nBattery voltage, current, cycle count, and capacity(level) are got via this function.\nTherefore, BATTERY_LEVEL_ERROR is equal to BATTERY_RET_ERROR\nbut BATTERY_RET_ERROR does not only mean BATTERY_LEVEL_ERROR.\nThat is what I want to express.\nSo I used #define instead of declared it in Battery_Level_Status enum structure.",
+      "parentUuid": "244364a0_03d21165",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "94b185ba_6ab6bbe6",
         "filename": "healthd/include/healthd/healthd.h",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3ba057ad_4cfbadd0",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-13T07:21:08Z",
+      "side": 1,
+      "message": "Currently for the above reason, I kept the code.\nBut if you think it is still not good.\nPlease feel free to leave message to let me know.\nI will update it.",
+      "parentUuid": "94b185ba_6ab6bbe6",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "55791061_722ac2cb",
         "filename": "healthd/include/healthd/healthd.h",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2019-03-08T18:11:32Z",
       "side": 1,
       "message": "why are there two types?\n\nwhy is the sole caller using int64_t instead?\n\nwhy are these types in the public header?\n\nwhy are they not following the naming convention for existing enums in this header?",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31350070_412f1991",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-13T07:21:08Z",
+      "side": 1,
+      "message": "why are there two types?\n\u003d\u003e The two types have the same value but there are different usages.\n\nwhy is the sole caller using int64_t instead?\n\u003d\u003e The caller(wait_batt_level_timestamp in healthd_mode_charger.cpp) is used to record the expired time. And I used -1 as the init value and -2 as the timeout value so that I could use the variable for multiple check.\n\nwhy are these types in the public header?\n\u003d\u003e It can be moved to healthd_mode_charger.cpp\n\nwhy are they not following the naming convention for existing enums in this header?\n\u003d\u003e I will update it as enum WaitBatteryLevelTimestamp to follow the naming convention and move to healthd_mode_charger.cpp",
+      "parentUuid": "55791061_722ac2cb",
       "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
