@@ -30,8 +30,16 @@
 #include <android-base/unique_fd.h>
 
 #include <unwindstack/Memory.h>
+#include <unwindstack/MemoryOfflineBuffer.h>
 
 #include "Check.h"
+#include "MemoryFileAtOffset.h"
+#include "MemoryCache.h"
+#include "MemoryBuffer.h"
+#include "MemoryLocal.h"
+#include "MemoryOffline.h"
+#include "MemoryRange.h"
+#include "MemoryRemote.h"
 
 namespace unwindstack {
 
@@ -166,6 +174,17 @@ bool Memory::ReadString(uint64_t addr, std::string* string, uint64_t max_read) {
     bytes_read++;
   }
   return false;
+}
+
+std::unique_ptr<Memory> Memory::CreateFileMemory(const std::string& path,
+                                                 uint64_t offset) {
+  auto memory = std::make_unique<MemoryFileAtOffset>();
+
+  if (memory->Init(path, offset)) {
+    return memory;
+  }
+
+  return nullptr;
 }
 
 std::shared_ptr<Memory> Memory::CreateProcessMemory(pid_t pid) {
