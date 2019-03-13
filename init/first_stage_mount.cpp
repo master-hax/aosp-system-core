@@ -458,7 +458,7 @@ bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_us
         return false;
     }
 
-    bool mounted = (fs_mgr_do_mount_one(*begin) == 0);
+    bool mounted = begin->fs_type == "emmc" || fs_mgr_do_mount_one(*begin) == 0;
 
     // Try other mounts with the same mount point.
     Fstab::iterator current = begin + 1;
