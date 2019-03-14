@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "7cc249ae_4b15c555",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T20:11:19Z",
+      "side": 1,
+      "message": "okay, if it\u0027s unrelated, then at least add a blank line between it and the next thing :-)\n\na comment would help too.",
+      "parentUuid": "2029a92e_a5c072a4",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "94b185ba_6ab6bbe6",
         "filename": "healthd/include/healthd/healthd.h",
         "patchSetId": 1
@@ -155,6 +173,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "31350070_412f1991",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "249f4ad4_3a694124",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T20:11:19Z",
+      "side": 1,
+      "message": "\u003e The two types have the same value but there are different usages.\n\nexcept you\u0027re not actually using these types anywhere. you\u0027re just using the values. i think this would be a lot clearer if you actually used the types.",
+      "parentUuid": "d01cd0ab_86ac20e8",
       "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
