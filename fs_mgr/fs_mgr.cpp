@@ -326,6 +326,17 @@ static bool read_ext4_superblock(const std::string& blk_device, struct ext4_supe
     return true;
 }
 
+// exported silent version of the above that just answer the question is_ext4
+bool fs_mgr_is_ext4(const std::string& blk_device) {
+    android::base::ErrnoRestorer restore;
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(blk_device.c_str(), O_RDONLY | O_CLOEXEC)));
+    if (fd < 0) return false;
+    ext4_super_block sb;
+    if (pread(fd, &sb, sizeof(sb), 1024) != sizeof(sb)) return false;
+    if (!is_ext4_superblock_valid(&sb)) return false;
+    return true;
+}
+
 // Some system images do not have tune2fs for licensing reasons.
 // Detect these and skip running it.
 static bool tune2fs_available(void) {
@@ -509,6 +520,18 @@ static bool read_f2fs_superblock(const std::string& blk_device, int* fs_stat) {
         return false;
     }
     return true;
+}
+
+// exported silent version of the above that just answer the question is_f2fs
+bool fs_mgr_is_f2fs(const std::string& blk_device) {
+    android::base::ErrnoRestorer restore;
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(blk_device.c_str(), O_RDONLY | O_CLOEXEC)));
+    if (fd < 0) return false;
+    __le32 sb;
+    if (pread(fd, &sb, sizeof(sb), F2FS_SUPER_OFFSET) != sizeof(sb)) return false;
+    if (sb == cpu_to_le32(F2FS_SUPER_MAGIC)) return true;
+    if (pread(fd, &sb, sizeof(sb), F2FS_BLKSIZE + F2FS_SUPER_OFFSET) != sizeof(sb)) return false;
+    return sb == cpu_to_le32(F2FS_SUPER_MAGIC);
 }
 
 //
