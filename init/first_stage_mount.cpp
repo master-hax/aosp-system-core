@@ -267,8 +267,6 @@ bool FirstStageMount::GetDmLinearMetadataDevice() {
     }
 
     required_devices_partition_names_.emplace(super_partition_name_);
-    // When booting from live GSI images, userdata is the super device.
-    required_devices_partition_names_.emplace("userdata");
     return true;
 }
 
@@ -605,7 +603,31 @@ void FirstStageMount::UseGsiIfPresent() {
         return;
     }
 
-    if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), "/dev/block/by-name/userdata")) {
+    // Find the name of the super partition for the GSI. It will either be
+    // "userdata", or a block device such as an sdcard.
+    //
+    // Note: this cannot return null when read/parsed off a file: metadata is
+    // not valid without a super partition.
+    auto super = GetMetadataSuperBlockDevice(*metadata.get());
+    std::string super_name = android::fs_mgr::GetBlockDevicePartitionName(*super);
+    required_devices_partition_names_.emplace(super_name);
+    if (!InitRequiredDevices()) {
+        LOG(ERROR) << __PRETTY_FUNCTION__
+                   << ": partition(s) not found in /sys, waiting for their uevent(s): "
+                   << android::base::Join(required_devices_partition_names_, ", ");
+        return;
+    }
+
+    // There are no by-name partitions other than userdata that we support
+    // installing GSIs to.
+    std::string super_path;
+    if (super_name == "userdata") {
+        super_path = "/dev/block/by-name/" + super_name;
+    } else {
+        super_path = "/dev/block/" + super_name;
+    }
+
+    if (!android::fs_mgr::CreateLogicalPartitions(*metadata.get(), super_path)) {
         LOG(ERROR) << "GSI partition layout could not be instantiated";
         return;
     }
