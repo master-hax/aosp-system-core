@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f914496e_baef638d",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "munt?",
+      "range": {
+        "startLine": 680,
+        "startChar": 17,
+        "endLine": 680,
+        "endChar": 29
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53f78ba9_0fa00e73",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "this seems like it would be worth named fields.",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 49
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be9ea421_2077fc2e",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "unnecessary\n\n(also ret seems like a bad name for this.)",
+      "range": {
+        "startLine": 61,
+        "startChar": 27,
+        "endLine": 61,
+        "endChar": 31
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1fba5574_9390f310",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "cls?",
+      "range": {
+        "startLine": 73,
+        "startChar": 36,
+        "endLine": 73,
+        "endChar": 39
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de812394_f6ed16f3",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "does this make sense, given your usage, or would fopen be better? you could getline through the entries and use fileno for epoll.",
+      "range": {
+        "startLine": 91,
+        "startChar": 21,
+        "endLine": 91,
+        "endChar": 24
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8eb44896_ff4af2f3",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "aren\u0027t you leaking fd_?",
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1da782f7_4af65ac4",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "prefer to exit early rather than indent an entire function.",
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "371ba2d8_4f9bdeb3",
+        "filename": "init/mount_handler.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-14T01:27:10Z",
+      "side": 1,
+      "message": "i think tomcherry is using MicrosoftStyleNaming in new code.",
+      "range": {
+        "startLine": 39,
+        "startChar": 9,
+        "endLine": 39,
+        "endChar": 22
+      },
+      "revId": "81ba06a44554d370f16daedce85f2130e1aa18c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
