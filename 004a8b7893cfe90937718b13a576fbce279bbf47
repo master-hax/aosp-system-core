@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a275852a_98525773",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-15T14:33:28Z",
+      "side": 1,
+      "message": "Do not set the entry with first_stage_mount flag and it will not try to mount it. See 149-153.\n\nOr, do not put the entries in the dt_tab (for traditional configuration, no longer supported in Q)",
+      "range": {
+        "startLine": 461,
+        "startChar": 19,
+        "endLine": 461,
+        "endChar": 47
+      },
+      "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
