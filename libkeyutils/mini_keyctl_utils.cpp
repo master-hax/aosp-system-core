@@ -210,3 +210,20 @@ int RestrictKeyring(const std::string& keyring) {
   }
   return 0;
 }
+
+std::unique_ptr<char[]> RetrieveSecurityContext(key_serial_t key) {
+  // 1. Get the length.
+  long length = keyctl_get_security(key, nullptr, 0);
+  if (length < 0) {
+    PLOG(ERROR) << "Cannot get security context of key 0x" << std::hex << key;
+    return nullptr;
+  }
+  // 2. Fill the buffer.
+  std::unique_ptr<char[]> context(new char[length]);
+  long retval = keyctl_get_security(key, context.get(), length);
+  if (retval < 0) {
+    PLOG(ERROR) << "Cannot get security context of key 0x" << std::hex << key;
+    return nullptr;
+  }
+  return context;
+}
