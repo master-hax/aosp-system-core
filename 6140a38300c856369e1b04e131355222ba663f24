@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa65d46c_e60fe22d",
+        "filename": "libkeyutils/mini_keyctl_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-15T19:46:26Z",
+      "side": 1,
+      "message": "don\u0027t you need a while loop here?",
+      "revId": "6140a38300c856369e1b04e131355222ba663f24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78e2052a_fa063479",
+        "filename": "libkeyutils/mini_keyctl_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-15T19:46:26Z",
+      "side": 1,
+      "message": "std::optional\u003cstd::string\u003e?\n\n(is an empty security context a legitimate thing, or can just the empty std::string suffice as an error indicator?)",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 23
+      },
+      "revId": "6140a38300c856369e1b04e131355222ba663f24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
