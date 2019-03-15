@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b649748f_9082087c",
+        "filename": "libkeyutils/mini_keyctl_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-15T19:43:12Z",
+      "side": 1,
+      "message": "missing exception handling here.\n\n(this CL is fine, but i think you should probably switch over to android::base::ParseInt/ParseUInt instead of stoi in another CL...)",
+      "range": {
+        "startLine": 86,
+        "startChar": 23,
+        "endLine": 86,
+        "endChar": 27
+      },
+      "revId": "74376472a0d86bfc042683564024d98726958464",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
