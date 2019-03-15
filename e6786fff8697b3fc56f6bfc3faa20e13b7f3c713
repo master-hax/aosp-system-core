@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "1a970a8d_d0da4851",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1041833
+      },
+      "writtenOn": "2019-03-15T22:22:19Z",
+      "side": 1,
+      "message": "Seems to have been something stale. Changed order, works on Pixel 3.",
+      "parentUuid": "dca99167_38153e42",
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f4fc9c4_f7873334",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
