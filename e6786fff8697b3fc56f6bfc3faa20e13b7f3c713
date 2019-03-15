@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "dca99167_38153e42",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-03-15T21:43:20Z",
+      "side": 1,
+      "message": "In Pixel 3? Then that success is hard to explain, and I have to investigate what went wrong (or right in this case).\n \nAndroid.bp for minikeyctl says it\u0027s depending on libbase, libkeyutils, liblog, which internally depend on libc, etc. They can\u0027t use the bootstrap libc because the bootstrap libc is only for init and apexd.",
+      "parentUuid": "4322ffbc_c5f25139",
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9f4fc9c4_f7873334",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
