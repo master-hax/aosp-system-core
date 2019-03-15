@@ -135,6 +135,30 @@
       "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f796f24b_4fe8ffdb",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-15T23:03:29Z",
+      "side": 1,
+      "message": "OK, I\u0027ll ask you offline.",
+      "parentUuid": "27294ee4_c8366cd6",
+      "range": {
+        "startLine": 427,
+        "startChar": 65,
+        "endLine": 427,
+        "endChar": 71
+      },
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
