@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aa3e53d7_1c2640f2",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-03-15T21:33:17Z",
+      "side": 1,
+      "message": "Does this work on Pixel 3 where ro.apex.updatable is set to true (which will be the norm)?\n\nI think 424-429 should be moved to before executing enter_default_mount_ns. Otherwise, mini-keyctl will be executed in a default namespace where  no APEX is mounted.",
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
