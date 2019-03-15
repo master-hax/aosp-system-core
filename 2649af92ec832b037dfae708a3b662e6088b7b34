@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6036526f_81cce161",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-15T00:52:05Z",
+      "side": 1,
+      "message": "why you need to specify emmc with first_stage_mount?",
+      "range": {
+        "startLine": 461,
+        "startChar": 38,
+        "endLine": 461,
+        "endChar": 42
+      },
+      "revId": "2649af92ec832b037dfae708a3b662e6088b7b34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
