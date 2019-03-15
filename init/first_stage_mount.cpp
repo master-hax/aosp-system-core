@@ -543,7 +543,7 @@ bool FirstStageMount::MountPartitions() {
 
     for (auto current = fstab_.begin(); current != fstab_.end();) {
         // We've already mounted /system above.
-        if (current->mount_point == "/system") {
+        if (current->mount_point == "/system" || current->fs_type == "emmc") {
             ++current;
             continue;
         }
