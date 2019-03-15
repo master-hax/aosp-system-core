@@ -20,6 +20,7 @@
 
 #include "mini_keyctl_utils.h"
 
+#include <stdio.h>
 #include <unistd.h>
 
 static void Usage(int exit_code) {
@@ -29,6 +30,7 @@ static void Usage(int exit_code) {
   fprintf(stderr, "       mini-keyctl dadd <type> <desc_prefix> <cert_dir> <keyring>\n");
   fprintf(stderr, "       mini-keyctl unlink <key> <keyring>\n");
   fprintf(stderr, "       mini-keyctl restrict_keyring <keyring>\n");
+  fprintf(stderr, "       mini-keyctl security <key>\n");
   _exit(exit_code);
 }
 
@@ -66,7 +68,19 @@ int main(int argc, const char** argv) {
     key_serial_t key = std::stoi(argv[2], nullptr, 16);
     const std::string keyring = argv[3];
     return Unlink(key, keyring);
+  } else if (action == "security") {
+    if (argc != 3) Usage(1);
+    const char* key_str = argv[2];
+    key_serial_t key = std::stoi(key_str, nullptr, 16);
+    auto context = RetrieveSecurityContext(key);
+    if (context == nullptr) {
+      perror(key_str);
+      return 1;
+    }
+    fprintf(stderr, "%s\n", context->c_str());
+    return 0;
   } else {
+    fprintf(stderr, "Unrecognized action: %s\n", action.c_str());
     Usage(1);
   }
 
