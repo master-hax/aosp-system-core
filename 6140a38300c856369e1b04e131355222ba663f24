@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b90b3e72_10b25bd5",
+        "filename": "libkeyutils/mini_keyctl_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-15T21:12:42Z",
+      "side": 1,
+      "message": "No?  One keyctl_get_security call would be enough if we always create a big enough buffer.  See if this is simpler?",
+      "parentUuid": "fa65d46c_e60fe22d",
+      "revId": "6140a38300c856369e1b04e131355222ba663f24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "78e2052a_fa063479",
         "filename": "libkeyutils/mini_keyctl_utils.h",
         "patchSetId": 1
@@ -39,6 +57,30 @@
       "revId": "6140a38300c856369e1b04e131355222ba663f24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b122ed3b_fb66c1dc",
+        "filename": "libkeyutils/mini_keyctl_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-15T21:12:42Z",
+      "side": 1,
+      "message": "Done.  And I believe empty string is sufficient as an error indicator.  The context *should* always looks like u:object_r:system_security_fsverity_file:s0.",
+      "parentUuid": "78e2052a_fa063479",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 23
+      },
+      "revId": "6140a38300c856369e1b04e131355222ba663f24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
