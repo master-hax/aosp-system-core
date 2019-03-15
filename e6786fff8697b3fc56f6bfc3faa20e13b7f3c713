@@ -93,6 +93,30 @@
       "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27294ee4_c8366cd6",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2019-03-15T21:47:48Z",
+      "side": 1,
+      "message": "I think, ideally, we need to have public keys in all partitions (system, product, vendor, and odm) each of which might be owned by a distinct entity.",
+      "parentUuid": "9f4fc9c4_f7873334",
+      "range": {
+        "startLine": 427,
+        "startChar": 65,
+        "endLine": 427,
+        "endChar": 71
+      },
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
