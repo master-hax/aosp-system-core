@@ -52,6 +52,29 @@
       "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f4fc9c4_f7873334",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-15T21:40:51Z",
+      "side": 1,
+      "message": "(Unrelated to this change but I was about to ask :) To support update from Play, we put the key in /product.  But for OEM without Play, should the key be in /system?  It\u0027s probably not vendor?  Jiyong, is it correct?",
+      "range": {
+        "startLine": 427,
+        "startChar": 65,
+        "endLine": 427,
+        "endChar": 71
+      },
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
