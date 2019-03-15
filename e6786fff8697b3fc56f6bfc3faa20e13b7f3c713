@@ -16,6 +16,24 @@
       "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4322ffbc_c5f25139",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1041833
+      },
+      "writtenOn": "2019-03-15T21:38:45Z",
+      "side": 1,
+      "message": "03-15 21:05:47.172   829   829 I /system/bin/mini-keyctl: search /proc/keys for keyring id\n03-15 21:05:47.174   829   829 I /system/bin/mini-keyctl: Key [...] added to .fs-verity with key id 0x26df8c4c\n\nThat part seems to work, it\u0027s only explicitly depending on libcrypto (and that should probably be compiled in statically), I\u0027d guess bootstrap libc is fine. However, for some reason it doesn\u0027t find the key later in my preinstall. Hm.",
+      "parentUuid": "aa3e53d7_1c2640f2",
+      "revId": "e6786fff8697b3fc56f6bfc3faa20e13b7f3c713",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
