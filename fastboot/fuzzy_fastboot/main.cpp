@@ -397,7 +397,7 @@ TEST_F(Conformance, Slots) {
 }
 
 TEST_F(Conformance, SetActive) {
-    std::string var;
+    std::string var, initial_slot;
     ASSERT_EQ(fb->GetVar("slot-count", &var), SUCCESS) << "getvar:slot-count failed";
     ASSERT_EQ(std::count_if(var.begin(), var.end(), isdigit), var.size())
             << "'" << var << "' is not all digits which it should be for getvar:slot-count";
@@ -406,12 +406,16 @@ TEST_F(Conformance, SetActive) {
     // Can't run out of alphabet letters...
     ASSERT_LE(num_slots, 26) << "You can't have more than 26 slots";
 
+    ASSERT_EQ(fb->GetVar("current-slot", &initial_slot), SUCCESS) << "getvar:current-slot failed";
     for (char c = 'a'; c < 'a' + num_slots; c++) {
         const std::string slot(&c, &c + 1);
         ASSERT_EQ(fb->SetActive(slot), SUCCESS) << "Set active for slot '" << c << "' failed";
         ASSERT_EQ(fb->GetVar("current-slot", &var), SUCCESS) << "getvar:current-slot failed";
         EXPECT_EQ(var, slot) << "getvar:current-slot repots incorrect slot after setting it";
     }
+
+    ASSERT_EQ(fb->SetActive(initial_slot), SUCCESS)
+            << "Set active for slot '" << initial_slot << "' failed";
 }
 
 TEST_F(Conformance, LockAndUnlockPrompt) {
