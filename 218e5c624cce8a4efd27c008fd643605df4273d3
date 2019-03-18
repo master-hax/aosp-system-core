@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c10f44e2_35700b42",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-18T03:44:20Z",
+      "side": 1,
+      "message": "The description also lacks too much info.\n\nCan you elaborate more?\n\ne.g., Support initializing a raw partition at first stage\n\u003ca blank line\u003e\nAdding more descriptions here,.....",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 36
+      },
+      "revId": "218e5c624cce8a4efd27c008fd643605df4273d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "640326b4_db213033",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-18T03:44:20Z",
+      "side": 1,
+      "message": "the test looks insufficient.\nCan you do more?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 10
+      },
+      "revId": "218e5c624cce8a4efd27c008fd643605df4273d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
