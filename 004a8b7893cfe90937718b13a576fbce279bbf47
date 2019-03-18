@@ -46,6 +46,30 @@
       "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6a250ab_2ef4ee76",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-18T15:21:37Z",
+      "side": 1,
+      "message": "Sounds like we need to provide another flag (eg: first-stage-discover), might serve us better, there are bound to be more of these? This only creates confusion by overloading a complicated set of flags and conditions. We can add this in a dependent patch to fs_mgr, and it will only be a few lines and adds clarity to the flag(s).",
+      "parentUuid": "a6e03563_d88ce62c",
+      "range": {
+        "startLine": 461,
+        "startChar": 19,
+        "endLine": 461,
+        "endChar": 47
+      },
+      "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
