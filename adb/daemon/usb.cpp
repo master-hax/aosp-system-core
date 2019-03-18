@@ -640,7 +640,17 @@ static void usb_ffs_open_thread() {
 }
 
 void usb_init() {
-    bool use_nonblocking = android::base::GetBoolProperty("persist.adb.nonblocking_ffs", true);
+    bool use_nonblocking = true;
+
+    // FIXME: GetBoolProperty doesn't give us a way to check if the field is missing, so:
+    static constexpr const char* persist_key = "persist.adb.nonblocking_ffs";
+    static constexpr const char* ro_key = "ro.adb.nonblocking_ffs";
+    if (!android::base::GetProperty(persist_key, "").empty()) {
+        use_nonblocking = android::base::GetBoolProperty(persist_key, true);
+    } else if (!android::base::GetProperty(ro_key, "").empty()) {
+        use_nonblocking = android::base::GetBoolProperty(ro_key, true);
+    }
+
     if (use_nonblocking) {
         std::thread(usb_ffs_open_thread).detach();
     } else {
