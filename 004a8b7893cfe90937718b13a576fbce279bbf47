@@ -22,6 +22,30 @@
       "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6e03563_d88ce62c",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-18T03:28:26Z",
+      "side": 1,
+      "message": "Right, but they need the uevent of this partition to be processed (without mounting).\nSee required_devices_partition_names_ at L279.\n\ni.e., adding the /dev/block/by-name/modem_a, /dev/block/by-name/abl_a, during first-stage mount.",
+      "parentUuid": "a275852a_98525773",
+      "range": {
+        "startLine": 461,
+        "startChar": 19,
+        "endLine": 461,
+        "endChar": 47
+      },
+      "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
