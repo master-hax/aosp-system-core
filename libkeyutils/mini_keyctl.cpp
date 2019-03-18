@@ -20,6 +20,7 @@
 
 #include "mini_keyctl_utils.h"
 
+#include <error.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -36,7 +37,15 @@ static void Usage(int exit_code) {
   _exit(exit_code);
 }
 
-int main(int argc, const char** argv) {
+static key_serial_t parseKeyOrDie(const char* str) {
+  key_serial_t key;
+  if (!android::base::ParseInt(str, &key)) {
+    error(1 /* exit code */, 0 /* errno */, "Unparsable key: '%s'\n", str);
+  }
+  return key;
+}
+
+int main(int argc, char** argv) {
   if (argc < 2) Usage(1);
   const std::string action = argv[1];
 
@@ -67,17 +76,13 @@ int main(int argc, const char** argv) {
     return RestrictKeyring(keyring);
   } else if (action == "unlink") {
     if (argc != 4) Usage(1);
-    key_serial_t key = std::stoi(argv[2], nullptr, 16);
+    key_serial_t key = parseKeyOrDie(argv[2]);
     const std::string keyring = argv[3];
     return Unlink(key, keyring);
   } else if (action == "security") {
     if (argc != 3) Usage(1);
     const char* key_str = argv[2];
-    key_serial_t key;
-    if (!android::base::ParseInt(key_str, &key)) {
-      fprintf(stderr, "Unparsable key: '%s'\n", key_str);
-      return 1;
-    }
+    key_serial_t key = parseKeyOrDie(key_str);
     std::string context = RetrieveSecurityContext(key);
     if (context.empty()) {
       perror(key_str);
