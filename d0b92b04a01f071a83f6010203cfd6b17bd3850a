@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0dd6ed16_dff88d07",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-18T21:30:29Z",
+      "side": 1,
+      "message": "%s strerror(errno)?",
+      "revId": "d0b92b04a01f071a83f6010203cfd6b17bd3850a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
