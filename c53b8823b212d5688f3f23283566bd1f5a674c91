@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13451446_a894051b",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2019-03-18T19:10:22Z",
+      "side": 1,
+      "message": "It\u0027s better to do this as a teardown step in the fixture, because if the ASSERT_EQ above fails, the test won\u0027t reach the final SetActive.",
+      "revId": "c53b8823b212d5688f3f23283566bd1f5a674c91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
