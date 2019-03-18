@@ -22,6 +22,30 @@
       "revId": "66fc7eb195820d9e8e6649495e51b738d41924a5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebb7dde5_f0857959",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1112838
+      },
+      "writtenOn": "2019-03-18T22:02:20Z",
+      "side": 1,
+      "message": "I tested on master android with and without fsverity, device boots fine. For aosp, I tested it without fsverity, and device boots fine.",
+      "parentUuid": "b46bd8e3_a71e14b6",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 53
+      },
+      "revId": "66fc7eb195820d9e8e6649495e51b738d41924a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
