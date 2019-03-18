@@ -16,6 +16,24 @@
       "revId": "c53b8823b212d5688f3f23283566bd1f5a674c91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7abc8c9b_ed113a9a",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-03-18T22:40:31Z",
+      "side": 1,
+      "message": "Ah yes, sorry I missed it. Fixed it in the next PS.",
+      "parentUuid": "13451446_a894051b",
+      "revId": "c53b8823b212d5688f3f23283566bd1f5a674c91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
