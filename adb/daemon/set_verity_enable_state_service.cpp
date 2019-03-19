@@ -239,9 +239,13 @@ void set_verity_enabled_state_service(unique_fd fd, bool enable) {
             }
         }
     }
-    if (!any_changed) any_changed = overlayfs_setup(fd, enable);
-
     if (any_changed) {
         WriteFdExactly(fd.get(), "Now reboot your device for settings to take effect\n");
+    }
+    auto overlayfs_changed = overlayfs_setup(fd, enable);
+    if (overlayfs_changed && !any_changed) {
+        WriteFdExactly(
+                fd.get(),
+                "If core native components adjusted, recommended reboot to cement overlayfs\n");
     }
 }
