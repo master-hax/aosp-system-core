@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6c100af_a185a0a6",
+        "filename": "fs_mgr/fs_mgr_remount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-19T23:00:09Z",
+      "side": 1,
+      "message": "This fragment should be part of ReadDefaultFstab section ...",
+      "range": {
+        "startLine": 177,
+        "startChar": 0,
+        "endLine": 185,
+        "endChar": 9
+      },
+      "revId": "065e39ed782180d949707b1f6cbb07cbf64f2a73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
