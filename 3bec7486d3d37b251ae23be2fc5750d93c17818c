@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0bee804a_e015894c",
+        "filename": "adb/daemon/usb.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-19T00:33:08Z",
+      "side": 1,
+      "message": "isn\u0027t this just\n\n  bool use \u003d GetBoolProperty(\"a\", GetBoolProperty(\"b\", true));\n\n?",
+      "range": {
+        "startLine": 643,
+        "startChar": 27,
+        "endLine": 653,
+        "endChar": 0
+      },
+      "revId": "3bec7486d3d37b251ae23be2fc5750d93c17818c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
