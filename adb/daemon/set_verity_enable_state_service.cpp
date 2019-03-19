@@ -130,7 +130,7 @@ static bool is_avb_device_locked() {
     return android::base::GetProperty("ro.boot.vbmeta.device_state", "") == "locked";
 }
 
-static bool overlayfs_setup(int fd, bool enable) {
+static void overlayfs_setup(int fd, bool enable) {
     auto change = false;
     errno = 0;
     if (enable ? fs_mgr_overlayfs_teardown(nullptr, &change)
@@ -143,7 +143,6 @@ static bool overlayfs_setup(int fd, bool enable) {
                    strerror(errno));
         suggest_run_adb_root(fd);
     }
-    return change;
 }
 
 /* Use AVB to turn verity on/off */
@@ -239,9 +238,10 @@ void set_verity_enabled_state_service(unique_fd fd, bool enable) {
             }
         }
     }
-    if (!any_changed) any_changed = overlayfs_setup(fd, enable);
 
     if (any_changed) {
         WriteFdExactly(fd.get(), "Now reboot your device for settings to take effect\n");
+    } else {
+        overlayfs_setup(fd, enable);
     }
 }
