@@ -70,6 +70,30 @@
       "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d57e053_a0f31045",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-19T04:25:58Z",
+      "side": 1,
+      "message": "OK, adding \"first_stage_discover\" or \"first_stage_probe\" SGTM.",
+      "parentUuid": "a6a250ab_2ef4ee76",
+      "range": {
+        "startLine": 461,
+        "startChar": 19,
+        "endLine": 461,
+        "endChar": 47
+      },
+      "revId": "004a8b7893cfe90937718b13a576fbce279bbf47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
