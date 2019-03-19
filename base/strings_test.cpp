@@ -23,6 +23,8 @@
 #include <set>
 #include <unordered_set>
 
+using namespace std::literals;
+
 TEST(strings, split_empty) {
   std::vector<std::string> parts = android::base::Split("", ",");
   ASSERT_EQ(1U, parts.size());
@@ -81,6 +83,34 @@ TEST(strings, split_any_with_empty_part) {
   ASSERT_EQ("foo", parts[0]);
   ASSERT_EQ("", parts[1]);
   ASSERT_EQ("bar", parts[2]);
+}
+
+TEST(strings, split_view_any_with_empty_part) {
+  std::vector<std::string_view> parts = android::base::SplitView("foo:,bar", ",:");
+  ASSERT_EQ(3U, parts.size());
+  ASSERT_EQ("foo"sv, parts[0]);
+  ASSERT_EQ(""sv, parts[1]);
+  ASSERT_EQ("bar"sv, parts[2]);
+}
+
+TEST(strings, split_cb_any) {
+  std::vector<std::string_view> parts;
+  android::base::Split("foo:bar,baz",
+                       ",:", [&parts](std::string_view part) { parts.push_back(part); });
+  ASSERT_EQ(3U, parts.size());
+  ASSERT_EQ("foo"sv, parts[0]);
+  ASSERT_EQ("bar"sv, parts[1]);
+  ASSERT_EQ("baz"sv, parts[2]);
+}
+
+TEST(strings, split_cb_char_any) {
+  std::vector<std::string_view> parts;
+  android::base::Split("foo,barr,baz", ',',
+                       [&parts](std::string_view part) { parts.push_back(part); });
+  ASSERT_EQ(3U, parts.size());
+  ASSERT_EQ("foo"sv, parts[0]);
+  ASSERT_EQ("barr"sv, parts[1]);
+  ASSERT_EQ("baz"sv, parts[2]);
 }
 
 TEST(strings, trim_empty) {

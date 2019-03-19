@@ -18,10 +18,28 @@
 
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace android {
 namespace base {
+
+// Splits a string and calls |onSplitCb| for each occurrence of a substring
+// between delimiters (including empty ones for two delimiters in a row)
+//
+// The empty string is not a valid delimiter list.
+template <class Callback, class Separator>
+void Split(std::string_view s, Separator delimiters, Callback&& onSplitCb) {
+  size_t base = 0;
+  for (;;) {
+    const auto found = s.find_first_of(delimiters, base);
+    onSplitCb(s.substr(base, found - base));
+    if (found == s.npos) {
+      break;
+    }
+    base = found + 1;
+  }
+}
 
 // Splits a string into a vector of strings.
 //
@@ -30,6 +48,12 @@ namespace base {
 // The empty string is not a valid delimiter list.
 std::vector<std::string> Split(const std::string& s,
                                const std::string& delimiters);
+template <class Separator>
+std::vector<std::string_view> SplitView(std::string_view s, Separator delimiters) {
+  std::vector<std::string_view> result;
+  Split(s, delimiters, [&result](std::string_view split) { result.emplace_back(split); });
+  return result;
+}
 
 // Trims whitespace off both ends of the given string.
 std::string Trim(const std::string& s);

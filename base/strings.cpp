@@ -33,16 +33,7 @@ std::vector<std::string> Split(const std::string& s,
   CHECK_NE(delimiters.size(), 0U);
 
   std::vector<std::string> result;
-
-  size_t base = 0;
-  size_t found;
-  while (true) {
-    found = s.find_first_of(delimiters, base);
-    result.push_back(s.substr(base, found - base));
-    if (found == s.npos) break;
-    base = found + 1;
-  }
-
+  Split(s, delimiters, [&result](std::string_view split) { result.emplace_back(split); });
   return result;
 }
 
