@@ -768,6 +768,19 @@ FstabEntry BuildGsiSystemFstabEntry() {
     return system;
 }
 
+std::string GetVerityDeviceName(const FstabEntry& entry) {
+    std::string base_device;
+    if (entry.mount_point == "/") {
+        // In AVB, the dm device name is vroot instead of system.
+        base_device = entry.fs_mgr_flags.avb ? "vroot" : "system";
+    } else {
+        std::unique_ptr<char, decltype(&std::free)> buffer(strdup(entry.mount_point.c_str()),
+                                                           &std::free);
+        base_device = basename(buffer.get());
+    }
+    return base_device + "-verity";
+}
+
 }  // namespace fs_mgr
 }  // namespace android
 
