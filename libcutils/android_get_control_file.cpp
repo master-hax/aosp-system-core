@@ -42,7 +42,25 @@
 #include "android_get_control_env.h"
 
 #ifndef TEMP_FAILURE_RETRY
-#define TEMP_FAILURE_RETRY(exp) (exp) // KISS implementation
+#define TEMP_FAILURE_RETRY(exp)                \
+    ({                                         \
+        __typeof__(exp) _rc;                   \
+        do {                                   \
+            _rc = (exp);                       \
+        } while (_rc == -1 && errno == EINTR); \
+        _rc;                                   \
+    })
+#endif
+
+#ifndef TEMP_FAILURE_RETRY_NULL
+#define TEMP_FAILURE_RETRY_NULL(exp)                \
+    ({                                              \
+        __typeof__(exp) _rc;                        \
+        do {                                        \
+            _rc = (exp);                            \
+        } while (_rc == nullptr && errno == EINTR); \
+        _rc;                                        \
+    })
 #endif
 
 LIBCUTILS_HIDDEN int __android_get_control_from_env(const char* prefix,
@@ -90,22 +108,23 @@ int android_get_control_file(const char* path) {
 
 #if defined(__linux__)
     // Find file path from /proc and make sure it is correct
-    char *proc = NULL;
+    char* proc = nullptr;
     if (asprintf(&proc, "/proc/self/fd/%d", fd) < 0) return -1;
     if (!proc) return -1;
 
-    size_t len = strlen(path);
-    // readlink() does not guarantee a nul byte, len+2 so we catch truncation.
-    char *buf = static_cast<char *>(calloc(1, len + 2));
-    if (!buf) {
-        free(proc);
+    char* fd_path = TEMP_FAILURE_RETRY_NULL(realpath(proc, nullptr));
+    free(proc);
+    if (fd_path == nullptr) return -1;
+
+    char* given_path = TEMP_FAILURE_RETRY_NULL(realpath(path, nullptr));
+    if (given_path == nullptr) {
+        free(fd_path);
         return -1;
     }
-    ssize_t ret = TEMP_FAILURE_RETRY(readlink(proc, buf, len + 1));
-    free(proc);
-    int cmp = (len != static_cast<size_t>(ret)) || strcmp(buf, path);
-    free(buf);
-    if (ret < 0) return -1;
+
+    int cmp = strcmp(fd_path, given_path);
+    free(fd_path);
+    free(given_path);
     if (cmp != 0) return -1;
     // It is what we think it is
 #endif
