@@ -94,18 +94,19 @@ int android_get_control_file(const char* path) {
     if (asprintf(&proc, "/proc/self/fd/%d", fd) < 0) return -1;
     if (!proc) return -1;
 
-    size_t len = strlen(path);
-    // readlink() does not guarantee a nul byte, len+2 so we catch truncation.
-    char *buf = static_cast<char *>(calloc(1, len + 2));
-    if (!buf) {
-        free(proc);
+    char* fd_path = realpath(proc, NULL);
+    free(proc);
+    if (fd_path == NULL) return -1;
+
+    char* given_path = realpath(path, NULL);
+    if (given_path == NULL) {
+        free(fd_path);
         return -1;
     }
-    ssize_t ret = TEMP_FAILURE_RETRY(readlink(proc, buf, len + 1));
-    free(proc);
-    int cmp = (len != static_cast<size_t>(ret)) || strcmp(buf, path);
-    free(buf);
-    if (ret < 0) return -1;
+
+    int cmp = strcmp(fd_path, given_path);
+    free(fd_path);
+    free(given_path);
     if (cmp != 0) return -1;
     // It is what we think it is
 #endif
