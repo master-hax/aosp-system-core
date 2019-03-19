@@ -514,8 +514,8 @@ skip_administrative_mounts() {
     cat -
   fi |
   grep -v \
-    -e "^\(overlay\|tmpfs\|none\|sysfs\|proc\|selinuxfs\|debugfs\) " \
-    -e "^\(bpf\|cg2_bpf\|pstore\|tracefs\|adb\|mtp\|ptp\|devpts\) " \
+    -e "^\(overlay\|tmpfs\|none\|sysfs\|proc\|selinuxfs\|debugfs\|bpf\) " \
+    -e "^\(binfmt_misc\|cg2_bpf\|pstore\|tracefs\|adb\|mtp\|ptp\|devpts\) " \
     -e "^\(/data/media\|/dev/block/loop[0-9]*\) " \
     -e "^rootfs / rootfs rw," \
     -e " /\(cache\|mnt/scratch\|mnt/vendor/persist\|persist\|metadata\) "
@@ -608,7 +608,7 @@ fi
 
 D=`get_property ro.serialno`
 [ -n "${D}" ] || D=`get_property ro.boot.serialno`
-[ -z "${D}" ] || ANDROID_SERIAL=${D}
+[ -z "${D}" -o -n "${ANDROID_SERIAL}" ] || ANDROID_SERIAL=${D}
 USB_SERIAL=
 [ -z "${ANDROID_SERIAL}" ] || USB_SERIAL=`find /sys/devices -name serial |
                                           grep usb |
@@ -995,98 +995,104 @@ cleanup() {
 }
 echo "${GREEN}[       OK ]${NORMAL} /system/lib/bootstrap/libc.so content remains after reboot" >&2
 
-echo "${GREEN}[ RUN      ]${NORMAL} flash vendor, confirm its content disappears" >&2
-
 H=`adb_sh echo '${HOSTNAME}' </dev/null 2>/dev/null`
+is_bootloader_fastboot=false
+[ X"${H}" = X"${H#vsoc}" ] || is_bootloader_fastboot=true
 is_userspace_fastboot=false
-if [ -z "${ANDROID_PRODUCT_OUT}" ]; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} build tree not setup, skipping"
-elif [ ! -s "${ANDROID_PRODUCT_OUT}/vendor.img" ]; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} vendor image missing, skipping"
-elif [ "${ANDROID_PRODUCT_OUT}" = "${ANDROID_PRODUCT_OUT%*/${H}}" ]; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} wrong vendor image, skipping"
-elif [ -z "${ANDROID_HOST_OUT}" ]; then
-  echo "${ORANGE}[  WARNING ]${NORMAL} please run lunch, skipping"
-else
-  adb reboot-fastboot ||
-    die "fastbootd not supported (wrong adb in path?)"
-  any_wait 2m &&
-    inFastboot ||
-    die "reboot into fastboot to flash vendor `usb_status` (bad bootloader?)"
-  fastboot flash vendor ||
-    ( fastboot reboot && false) ||
-    die "fastboot flash vendor"
-  fastboot_getvar is-userspace yes &&
-    is_userspace_fastboot=true
-  if [ -n "${scratch_paritition}" ]; then
-    fastboot_getvar partition-type:${scratch_partition} raw ||
-      ( fastboot reboot && false) ||
-      die "fastboot can not see ${scratch_partition} parameters"
-    if ${uses_dynamic_scratch}; then
-      # check ${scratch_partition} via fastboot
-      fastboot_getvar has-slot:${scratch_partition} no &&
-        fastboot_getvar is-logical:${scratch_partition} yes ||
-        ( fastboot reboot && false) ||
-        die "fastboot can not see ${scratch_partition} parameters"
-    else
-      fastboot_getvar is-logical:${scratch_partition} no ||
-        ( fastboot reboot && false) ||
-        die "fastboot can not see ${scratch_partition} parameters"
-    fi
-    if ! ${uses_dynamic_scratch}; then
-      fastboot reboot-bootloader ||
-        die "Reboot into fastboot"
-    fi
-    if ${uses_dynamic_scratch}; then
-      echo "${BLUE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
-      fastboot erase ${scratch_partition} &&
-        ( fastboot reboot || true) &&
-        die "fastboot can erase ${scratch_partition}"
-    fi
-    echo "${BLUE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
-    fastboot format ${scratch_partition} &&
-      ( fastboot reboot || true) &&
-      die "fastboot can format ${scratch_partition}"
-  fi
-  fastboot reboot ||
-    die "can not reboot out of fastboot"
-  echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot"
-  adb_wait 2m ||
-    die "did not reboot after flash `usb_status`"
-  if ${overlayfs_needed}; then
-    adb_root &&
-      D=`adb_sh df -k </dev/null` &&
-      H=`echo "${D}" | head -1` &&
-      D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "` &&
-      echo "${H}" &&
-      echo "${D}" &&
-      echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
-      die  "overlay /system takeover after flash vendor"
-    echo "${D}" | grep "^overlay .* /vendor\$" >/dev/null &&
-      if ${is_userspace_fastboot}; then
-        die  "overlay supposed to be minus /vendor takeover after flash vendor"
-      else
-        echo "${ORANGE}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
-        echo "${ORANGE}[  WARNING ]${NORMAL} overlay supposed to be minus /vendor takeover after flash vendor" >&2
-      fi
-  fi
-  B="`adb_cat /system/hello`"
-  check_eq "${A}" "${B}" system after flash vendor
-  adb_root ||
-    die "adb root"
-  B="`adb_cat /vendor/hello`"
-  if ${is_userspace_fastboot} || ! ${overlayfs_needed}; then
-    check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
-             vendor content after flash vendor
+
+if ! ${is_bootloader_fastboot}; then
+
+  echo "${GREEN}[ RUN      ]${NORMAL} flash vendor, confirm its content disappears" >&2
+
+  if [ -z "${ANDROID_PRODUCT_OUT}" ]; then
+    echo "${ORANGE}[  WARNING ]${NORMAL} build tree not setup, skipping"
+  elif [ ! -s "${ANDROID_PRODUCT_OUT}/vendor.img" ]; then
+    echo "${ORANGE}[  WARNING ]${NORMAL} vendor image missing, skipping"
+  elif [ "${ANDROID_PRODUCT_OUT}" = "${ANDROID_PRODUCT_OUT%*/${H}}" ]; then
+    echo "${ORANGE}[  WARNING ]${NORMAL} wrong vendor image, skipping"
+  elif [ -z "${ANDROID_HOST_OUT}" ]; then
+    echo "${ORANGE}[  WARNING ]${NORMAL} please run lunch, skipping"
   else
-    (
-      echo "${ORANGE}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
-      restore() {
-        true
-      }
+    adb reboot-fastboot ||
+      die "fastbootd not supported (wrong adb in path?)"
+    any_wait 2m &&
+      inFastboot ||
+      die "reboot into fastboot to flash vendor `usb_status` (bad bootloader?)"
+    fastboot flash vendor ||
+      ( fastboot reboot && false) ||
+      die "fastboot flash vendor"
+    fastboot_getvar is-userspace yes &&
+      is_userspace_fastboot=true
+    if [ -n "${scratch_paritition}" ]; then
+      fastboot_getvar partition-type:${scratch_partition} raw ||
+        ( fastboot reboot && false) ||
+        die "fastboot can not see ${scratch_partition} parameters"
+      if ${uses_dynamic_scratch}; then
+        # check ${scratch_partition} via fastboot
+        fastboot_getvar has-slot:${scratch_partition} no &&
+          fastboot_getvar is-logical:${scratch_partition} yes ||
+          ( fastboot reboot && false) ||
+          die "fastboot can not see ${scratch_partition} parameters"
+      else
+        fastboot_getvar is-logical:${scratch_partition} no ||
+          ( fastboot reboot && false) ||
+          die "fastboot can not see ${scratch_partition} parameters"
+      fi
+      if ! ${uses_dynamic_scratch}; then
+        fastboot reboot-bootloader ||
+          die "Reboot into fastboot"
+      fi
+      if ${uses_dynamic_scratch}; then
+        echo "${BLUE}[     INFO ]${NORMAL} expect fastboot erase ${scratch_partition} to fail" >&2
+        fastboot erase ${scratch_partition} &&
+          ( fastboot reboot || true) &&
+          die "fastboot can erase ${scratch_partition}"
+      fi
+      echo "${BLUE}[     INFO ]${NORMAL} expect fastboot format ${scratch_partition} to fail" >&2
+      fastboot format ${scratch_partition} &&
+        ( fastboot reboot || true) &&
+        die "fastboot can format ${scratch_partition}"
+    fi
+    fastboot reboot ||
+      die "can not reboot out of fastboot"
+    echo "${ORANGE}[  WARNING ]${NORMAL} adb after fastboot"
+    adb_wait 2m ||
+      die "did not reboot after flash `usb_status`"
+    if ${overlayfs_needed}; then
+      adb_root &&
+        D=`adb_sh df -k </dev/null` &&
+        H=`echo "${D}" | head -1` &&
+        D=`echo "${D}" | skip_unrelated_mounts | grep "^overlay "` &&
+        echo "${H}" &&
+        echo "${D}" &&
+        echo "${D}" | grep "^overlay .* /system\$" >/dev/null ||
+        die  "overlay /system takeover after flash vendor"
+      echo "${D}" | grep "^overlay .* /vendor\$" >/dev/null &&
+        if ${is_userspace_fastboot}; then
+          die  "overlay supposed to be minus /vendor takeover after flash vendor"
+        else
+          echo "${ORANGE}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
+          echo "${ORANGE}[  WARNING ]${NORMAL} overlay supposed to be minus /vendor takeover after flash vendor" >&2
+        fi
+    fi
+    B="`adb_cat /system/hello`"
+    check_eq "${A}" "${B}" system after flash vendor
+    adb_root ||
+      die "adb root"
+    B="`adb_cat /vendor/hello`"
+    if ${is_userspace_fastboot} || ! ${overlayfs_needed}; then
       check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
                vendor content after flash vendor
-    )
+    else
+      (
+        echo "${ORANGE}[  WARNING ]${NORMAL} user fastboot missing required to invalidate, ignoring a failure" >&2
+        restore() {
+          true
+        }
+        check_eq "cat: /vendor/hello: No such file or directory" "${B}" \
+                 vendor content after flash vendor
+      )
+    fi
   fi
 fi
 
