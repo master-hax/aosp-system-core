@@ -39,10 +39,30 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <memory>
+
 #include "android_get_control_env.h"
 
 #ifndef TEMP_FAILURE_RETRY
-#define TEMP_FAILURE_RETRY(exp) (exp) // KISS implementation
+#define TEMP_FAILURE_RETRY(exp)                \
+    ({                                         \
+        __typeof__(exp) _rc;                   \
+        do {                                   \
+            _rc = (exp);                       \
+        } while (_rc == -1 && errno == EINTR); \
+        _rc;                                   \
+    })
+#endif
+
+#ifndef TEMP_FAILURE_RETRY_NULL
+#define TEMP_FAILURE_RETRY_NULL(exp)                \
+    ({                                              \
+        __typeof__(exp) _rc;                        \
+        do {                                        \
+            _rc = (exp);                            \
+        } while (_rc == nullptr && errno == EINTR); \
+        _rc;                                        \
+    })
 #endif
 
 LIBCUTILS_HIDDEN int __android_get_control_from_env(const char* prefix,
@@ -86,27 +106,33 @@ LIBCUTILS_HIDDEN int __android_get_control_from_env(const char* prefix,
 }
 
 int android_get_control_file(const char* path) {
-    int fd = __android_get_control_from_env(ANDROID_FILE_ENV_PREFIX, path);
+    using char_ptr = std::unique_ptr<char, decltype(&free)>;
+    // Try path, then realpath(path), as keys to get the fd from env.
+    auto fd = __android_get_control_from_env(ANDROID_FILE_ENV_PREFIX, path);
+    char_ptr given_path(nullptr, free);
+    if (fd < 0) {
+        given_path.reset(TEMP_FAILURE_RETRY_NULL(realpath(path, nullptr)));
+        if (given_path == nullptr) return fd;
+        fd = __android_get_control_from_env(ANDROID_FILE_ENV_PREFIX, given_path.get());
+        if (fd < 0) return fd;
+    }
 
 #if defined(__linux__)
     // Find file path from /proc and make sure it is correct
-    char *proc = NULL;
+    char* proc = nullptr;
     if (asprintf(&proc, "/proc/self/fd/%d", fd) < 0) return -1;
     if (!proc) return -1;
+    char_ptr proc_ptr(proc, free);
 
-    size_t len = strlen(path);
-    // readlink() does not guarantee a nul byte, len+2 so we catch truncation.
-    char *buf = static_cast<char *>(calloc(1, len + 2));
-    if (!buf) {
-        free(proc);
-        return -1;
+    char_ptr fd_path(TEMP_FAILURE_RETRY_NULL(realpath(proc_ptr.get(), nullptr)), free);
+    if (fd_path == nullptr) return -1;
+
+    if (given_path == nullptr) {
+        given_path.reset(TEMP_FAILURE_RETRY_NULL(realpath(path, nullptr)));
     }
-    ssize_t ret = TEMP_FAILURE_RETRY(readlink(proc, buf, len + 1));
-    free(proc);
-    int cmp = (len != static_cast<size_t>(ret)) || strcmp(buf, path);
-    free(buf);
-    if (ret < 0) return -1;
-    if (cmp != 0) return -1;
+    if (given_path == nullptr) return -1;
+
+    if (strcmp(fd_path.get(), given_path.get()) != 0) return -1;
     // It is what we think it is
 #endif
 
