@@ -174,6 +174,15 @@ int main(int argc, char* argv[]) {
     auto fstab_read = false;
     if (fstab_file) {
         fstab_read = android::fs_mgr::ReadFstabFromFile(fstab_file, &fstab);
+        // Manufacture a / entry from /proc/mounts if missing.
+        if (!GetEntryForMountPoint(&fstab, "/system") && !GetEntryForMountPoint(&fstab, "/")) {
+            android::fs_mgr::Fstab mounts;
+            if (android::fs_mgr::ReadFstabFromFile("/proc/mounts", &mounts)) {
+                if (auto entry = GetEntryForMountPoint(&mounts, "/")) {
+                    if (entry->fs_type != "rootfs") fstab.emplace_back(*entry);
+                }
+            }
+        }
     } else {
         fstab_read = android::fs_mgr::ReadDefaultFstab(&fstab);
     }
