@@ -44,6 +44,17 @@
 #define OS_PATH_SEPARATOR '/'
 #endif
 
+#ifndef TEMP_FAILURE_RETRY_NULL
+#define TEMP_FAILURE_RETRY_NULL(exp)                \
+    ({                                              \
+        __typeof__(exp) _rc;                        \
+        do {                                        \
+            _rc = (exp);                            \
+        } while (_rc == nullptr && errno == EINTR); \
+        _rc;                                        \
+    })
+#endif
+
 #include "android-base/logging.h"  // and must be after windows.h for ERROR
 #include "android-base/macros.h"   // For TEMP_FAILURE_RETRY on Darwin.
 #include "android-base/unique_fd.h"
