@@ -80,11 +80,19 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
         // Skip the noise associated with APEX until there is a need
         if (android::base::StartsWith(value, "loop")) value = "";
     }
-    std::string property =
-            "dev.mnt.blk" + ((entry.mount_point == "/") ? "/root" : entry.mount_point);
+    auto property = entry.mount_point;
+    if (property == "/") property = "/root";
     std::replace(property.begin(), property.end(), '/', '.');
-    if (value.empty() && android::base::GetProperty(property, "").empty()) return;
-    property_set(property, value);
+    auto device = "dev.mnt.dev" + property;
+    property = "dev.mnt.blk" + property;
+    auto set_device = true;
+    auto set_property = true;
+    if (value.empty()) {
+        set_property = !android::base::GetProperty(property, "").empty();
+        set_device = !android::base::GetProperty(device, "").empty();
+    }
+    if (set_property) property_set(property, value);
+    if (set_device) property_set(device, entry.blk_device);
 }
 
 }  // namespace
