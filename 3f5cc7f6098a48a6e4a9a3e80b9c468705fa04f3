@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ccf0b97c_0e4feb31",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1112838
+      },
+      "writtenOn": "2019-03-20T23:14:00Z",
+      "side": 1,
+      "message": "So we don\u0027t have /vendor certs any more?",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 4
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
