@@ -80,11 +80,22 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
         // Skip the noise associated with APEX until there is a need
         if (android::base::StartsWith(value, "loop")) value = "";
     }
-    std::string property =
-            "dev.mnt.blk" + ((entry.mount_point == "/") ? "/root" : entry.mount_point);
-    std::replace(property.begin(), property.end(), '/', '.');
-    if (value.empty() && android::base::GetProperty(property, "").empty()) return;
-    property_set(property, value);
+    auto mount_prop = entry.mount_point;
+    if (mount_prop == "/") mount_prop = "/root";
+    std::replace(mount_prop.begin(), mount_prop.end(), '/', '.');
+    auto device_prop = "dev.mnt.dev" + mount_prop;
+    mount_prop = "dev.mnt.blk" + mount_prop;
+    // Always set property even if its value does not change to trigger
+    // on property handling, however do not clear a non-existent or
+    // already empty property as we do not care for those triggers.
+    auto device_set = true;
+    auto mount_set = true;
+    if (value.empty()) {
+        mount_set = !android::base::GetProperty(mount_prop, "").empty();
+        device_set = !android::base::GetProperty(device_prop, "").empty();
+    }
+    if (mount_set) property_set(mount_prop, value);
+    if (device_set) property_set(device_prop, entry.blk_device);
 }
 
 }  // namespace
