@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7e19b89_6c98f88d",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-20T16:57:47Z",
+      "side": 1,
+      "message": "I think this message should only be produced if the open(path, flags) fails.",
+      "range": {
+        "startLine": 188,
+        "startChar": 8,
+        "endLine": 189,
+        "endChar": 63
+      },
+      "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
