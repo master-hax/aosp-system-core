@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "8c0bc078_2c0846dc",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1112838
+      },
+      "writtenOn": "2019-03-20T23:15:55Z",
+      "side": 1,
+      "message": "Not sure if this should happen after certs has been loaded?",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ccf0b97c_0e4feb31",
         "filename": "rootdir/fsverity_init.sh",
         "patchSetId": 3
