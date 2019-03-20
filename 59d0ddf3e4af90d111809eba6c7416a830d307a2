@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8628d216_971d38a1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-03-20T17:04:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d59bf4a1_319f992f",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7e19b89_6c98f88d",
         "filename": "fs_mgr/liblp/utility.cpp",
         "patchSetId": 5
@@ -45,6 +69,30 @@
       "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adee8532_6f9775c4",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-03-20T17:04:25Z",
+      "side": 1,
+      "message": "On lpdumpd on the device, I expect the super partition opened by init, because lpdumpd itself cannot open the super partition (it is run under user \"system\"), so the open() below is likely to fail. I think it makes sense to warn here.",
+      "parentUuid": "c7e19b89_6c98f88d",
+      "range": {
+        "startLine": 188,
+        "startChar": 8,
+        "endLine": 189,
+        "endChar": 63
+      },
+      "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
