@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36900bcc_5c4a7a79",
+        "filename": "fs_mgr/libfs_avb/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-20T21:32:32Z",
+      "side": 1,
+      "message": "build errors require libfs_mgr here to fix.",
+      "range": {
+        "startLine": 132,
+        "startChar": 8,
+        "endLine": 132,
+        "endChar": 20
+      },
+      "revId": "7b9a6f77e55c36c61b634c7007969abe27efcc36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
