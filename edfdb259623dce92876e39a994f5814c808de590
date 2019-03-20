@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf83c41f_b3e9c1b0",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 763,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-20T17:21:49Z",
+      "side": 1,
+      "message": "should this come before the check on L759?",
+      "revId": "edfdb259623dce92876e39a994f5814c808de590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
