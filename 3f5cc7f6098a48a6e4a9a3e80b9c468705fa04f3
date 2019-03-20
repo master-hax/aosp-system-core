@@ -49,6 +49,46 @@
     },
     {
       "key": {
+        "uuid": "4ed37ab8_60440434",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-03-20T23:54:49Z",
+      "side": 1,
+      "message": "A nit, but I personally would be quiet when performing these operations, and delete lines 23 and 30. The logs are already busy enough, and I\u0027m not sure these logs add any value...\n\nNot a big deal either way. Whatever you prefer is fine with me.",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7cc37cd_dd2a817b",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-03-20T23:54:49Z",
+      "side": 1,
+      "message": "$cert should be in double quotes.\n\n  \"$cert\"\n\nit\u0027s possible (although unlikely) that the cert might have spaces in the filename.",
+      "range": {
+        "startLine": 24,
+        "startChar": 67,
+        "endLine": 24,
+        "endChar": 72
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ccf0b97c_0e4feb31",
         "filename": "rootdir/fsverity_init.sh",
         "patchSetId": 3
