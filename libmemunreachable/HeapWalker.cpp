@@ -200,6 +200,6 @@ void HeapWalker::HandleSegFault(ScopedSignalHandler& handler, int signal, siginf
   }
 }
 
-ScopedSignalHandler::SignalFn ScopedSignalHandler::handler_;
+Allocator<ScopedSignalHandler::SignalFnMap>::unique_ptr ScopedSignalHandler::handler_map_;
 
 }  // namespace android
