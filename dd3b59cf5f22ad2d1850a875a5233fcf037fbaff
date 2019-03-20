@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b083b73_415bb0ff",
+        "filename": "fs_mgr/liblp/partition_opener.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-03-20T04:26:42Z",
+      "side": 1,
+      "message": "reverted this accidental change",
+      "range": {
+        "startLine": 93,
+        "startChar": 34,
+        "endLine": 93,
+        "endChar": 42
+      },
+      "revId": "dd3b59cf5f22ad2d1850a875a5233fcf037fbaff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
