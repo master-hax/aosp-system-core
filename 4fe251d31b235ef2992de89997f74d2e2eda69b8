@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7636db1a_2e1a1a25",
+        "filename": "fs_mgr/libfs_avb/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-20T21:43:25Z",
+      "side": 1,
+      "message": "and here too",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "4fe251d31b235ef2992de89997f74d2e2eda69b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
