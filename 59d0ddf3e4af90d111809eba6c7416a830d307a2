@@ -93,6 +93,30 @@
       "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "69578647_a01e0abb",
+        "filename": "fs_mgr/liblp/utility.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-20T19:04:22Z",
+      "side": 1,
+      "message": "The warning is meaningless if you can open it below. Yes, the chances of success are 0 for open to work when properly launched, but there are alternative launch strategies we should consider.\n\nKeep in mind that if you run adb on the executables you generally run it as root, and without the init environment supplying an fd, so the fall through to open is essential for debugging. When running adb, one can get very annoyed that there is all this luggage introduced between line 180 and line 192.\n\nHowever, for the most part, I do not have a problem with the message as-is, because if it happens, it means someone _is_ executing this in a non-init environment and we could view this message as a security or misconfiguration notice ...",
+      "parentUuid": "adee8532_6f9775c4",
+      "range": {
+        "startLine": 188,
+        "startChar": 8,
+        "endLine": 189,
+        "endChar": 63
+      },
+      "revId": "59d0ddf3e4af90d111809eba6c7416a830d307a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
