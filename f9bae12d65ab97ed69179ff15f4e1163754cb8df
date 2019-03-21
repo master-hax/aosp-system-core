@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a94f572_232affab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-21T21:31:42Z",
+      "side": 1,
+      "message": "is it, or is it used on the mac? (if it\u0027s unused, let\u0027s remove it instead...)",
+      "range": {
+        "startLine": 14,
+        "startChar": 44,
+        "endLine": 14,
+        "endChar": 66
+      },
+      "revId": "f9bae12d65ab97ed69179ff15f4e1163754cb8df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
