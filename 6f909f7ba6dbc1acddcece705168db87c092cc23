@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27708dd1_162f2e32",
+        "filename": "fs_mgr/libfiemap_writer/AndroidTest.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-21T02:58:36Z",
+      "side": 1,
+      "message": "Q about if these are needed/wanted\n\n    \u003coption name\u003d\"config-descriptor:metadata\" key\u003d\"parameter\" value\u003d\"not_instant_app\" /\u003e\n    \u003coption name\u003d\"config-descriptor:metadata\" key\u003d\"parameter\" value\u003d\"multi_abi\"",
+      "range": {
+        "startLine": 17,
+        "startChar": 4,
+        "endLine": 17,
+        "endChar": 78
+      },
+      "revId": "6f909f7ba6dbc1acddcece705168db87c092cc23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
