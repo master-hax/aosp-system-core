@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7291d6fa_75c1dc05",
+        "filename": "fs_mgr/liblp/AndroidTest.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1014491
+      },
+      "writtenOn": "2019-03-21T17:25:23Z",
+      "side": 1,
+      "message": "Just calling out here that this will skip any already launched devices, since 1) officially 29 does not exist 2) nothing had been launched on Q yet. Making sure that you are aware of this.",
+      "revId": "4f35637caf9624459c1a46c43cc8158f19c8b46f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
