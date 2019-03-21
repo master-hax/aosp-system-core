@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "af9a3012_3167ce0f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-21T17:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ecda07d_cd383fd6",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0f275873_c5668419",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c383e55_be5b0bd1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-21T17:20:16Z",
+      "side": 1,
+      "message": "keyctl(1) doesn\u0027t seem to support specifying security context (but retrieve for a given key).\n\nThe specific plan is to add this in the script:\n\n  echo \"u:object_r:system_security_fsverity_file:s0\" \u003e /proc/$$/attr/keycreate\n\nOnce the shell script as parent process has this attr, the child mini-keyctl will inherent it and label the new key accordingly.",
+      "parentUuid": "0f275873_c5668419",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -107,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "548c15d5_d8d85816",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-21T17:20:16Z",
+      "side": 1,
+      "message": "Before the actual file verification.  At this staging, settings this require_signatures bit is orthogonal to key management.",
+      "parentUuid": "708e9f10_3eeb9067",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ed37ab8_60440434",
         "filename": "rootdir/fsverity_init.sh",
         "patchSetId": 3
@@ -121,6 +181,24 @@
       "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac998488_aeba5dfa",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-21T17:20:16Z",
+      "side": 1,
+      "message": "OK, now it only prints on error.",
+      "parentUuid": "4ed37ab8_60440434",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
@@ -144,6 +222,30 @@
       "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58c14b9c_49c6d097",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2019-03-21T17:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7cc37cd_dd2a817b",
+      "range": {
+        "startLine": 24,
+        "startChar": 67,
+        "endLine": 24,
+        "endChar": 72
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     },
     {
       "key": {
