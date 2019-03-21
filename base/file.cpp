@@ -49,6 +49,17 @@
 #include "android-base/unique_fd.h"
 #include "android-base/utf8.h"
 
+#ifndef TEMP_FAILURE_RETRY_NULL
+#define TEMP_FAILURE_RETRY_NULL(exp)            \
+  ({                                            \
+    __typeof__(exp) _rc;                        \
+    do {                                        \
+      _rc = (exp);                              \
+    } while (_rc == nullptr && errno == EINTR); \
+    _rc;                                        \
+  })
+#endif
+
 #ifdef _WIN32
 int mkstemp(char* template_name) {
   if (_mktemp(template_name) == nullptr) {
@@ -385,7 +396,7 @@ bool Readlink(const std::string& path, std::string* result) {
 bool Realpath(const std::string& path, std::string* result) {
   result->clear();
 
-  char* realpath_buf = realpath(path.c_str(), nullptr);
+  char* realpath_buf = TEMP_FAILURE_RETRY_NULL(realpath(path.c_str(), nullptr));
   if (realpath_buf == nullptr) {
     return false;
   }
