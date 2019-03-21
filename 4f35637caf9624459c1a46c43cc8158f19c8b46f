@@ -16,6 +16,24 @@
       "revId": "4f35637caf9624459c1a46c43cc8158f19c8b46f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cd871c5_e77b6715",
+        "filename": "fs_mgr/liblp/AndroidTest.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-03-21T20:38:09Z",
+      "side": 1,
+      "message": "Hi Guang, we want these tests only to run for devices launched with Q. Let me know if you would prefer that if I remove the \u0027precondition-first-api\u0027 level for now.",
+      "parentUuid": "7291d6fa_75c1dc05",
+      "revId": "4f35637caf9624459c1a46c43cc8158f19c8b46f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
