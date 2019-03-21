@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "9ecda07d_cd383fd6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-21T00:30:14Z",
+      "side": 1,
+      "message": "excellent --- this is what i asked for originally :-)\n\ncan we remove \"dadd\" in this CL then?",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f275873_c5668419",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-21T00:30:14Z",
+      "side": 1,
+      "message": "can you describe how you\u0027ll do this? if it makes more sense to add support for security labels to keyctl, we should consider it. (if it\u0027s easy to just work around that in some compatible way, and there\u0027s no real cost, that\u0027s great. but if there\u0027s a genuine case to be made for adding the functionality...)",
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8c0bc078_2c0846dc",
         "filename": "rootdir/fsverity_init.sh",
         "patchSetId": 3
