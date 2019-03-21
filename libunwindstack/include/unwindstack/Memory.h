@@ -206,6 +206,35 @@ class MemoryOfflineParts : public Memory {
   std::vector<MemoryOffline*> memories_;
 };
 
+class XzMemory : public Memory {
+ public:
+  XzMemory(std::vector<uint8_t>&& src);
+  virtual ~XzMemory();
+
+  size_t Read(uint64_t addr, void* dst, size_t size) override;
+
+ private:
+  struct XzBlock {
+    uint32_t dst_offset;  // Decompressed data.
+    uint32_t dst_size;
+    uint32_t src_offset;  // Compressed data.
+    uint32_t src_size;
+    uint16_t stream_flags;
+    bool done;  // The block was decompressed.
+  };
+  static std::vector<XzBlock> ReadIndex(std::vector<uint8_t>* src);
+  bool DecompressBlock(XzBlock* block);
+
+  constexpr static size_t kCacheBits = 12;
+  constexpr static size_t kCacheMask = (1 << kCacheBits) - 1;
+  constexpr static size_t kCacheSize = 1 << kCacheBits;
+  std::vector<uint8_t> src_;  // XZ compressed data.
+  std::vector<XzBlock> idx_;  // index of compressed blocks.
+  std::vector<bool> bitmap_;  // Bit set if cache block is fully decompressed.
+  void* dst_data_ = nullptr;  // mmaped memory range for decompressed data.
+  size_t dst_size_ = 0;
+};
+
 }  // namespace unwindstack
 
 #endif  // _LIBUNWINDSTACK_MEMORY_H

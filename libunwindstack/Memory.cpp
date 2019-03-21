@@ -24,8 +24,13 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+#include <7zCrc.h>
+#include <Xz.h>
+#include <XzCrc64.h>
+
 #include <algorithm>
 #include <memory>
+#include <mutex>
 
 #include <android-base/unique_fd.h>
 
@@ -450,6 +455,161 @@ size_t MemoryCache::Read(uint64_t addr, void* dst, size_t size) {
   }
   memcpy(dst, cache_dst, size - max_read);
   return size;
+}
+
+XzMemory::XzMemory(std::vector<uint8_t>&& src) : src_(src) {
+  static std::once_flag crc_initialized;
+  std::call_once(crc_initialized, []() {
+    CrcGenerateTable();
+    Crc64GenerateTable();
+  });
+
+  idx_ = ReadIndex(&src_);
+  if (!idx_.empty()) {
+    dst_size_ = idx_.back().dst_offset + idx_.back().dst_size;
+    dst_data_ = mmap(nullptr, dst_size_, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
+    bitmap_.resize(dst_size_ / kCacheSize + 1);
+  } else {
+    dst_data_ = MAP_FAILED;
+  }
+}
+
+XzMemory::~XzMemory() {
+  if (dst_data_ != MAP_FAILED) {
+    munmap(dst_data_, dst_size_);
+  }
+}
+
+size_t XzMemory::Read(uint64_t addr, void* buffer, size_t size) {
+  // Check and clamp the inputs.
+  if (addr >= dst_size_ || size == 0 || dst_data_ == MAP_FAILED) {
+    return 0;
+  }
+  size = std::min<size_t>(size, dst_size_ - addr);
+
+  // Decompress the needed cache blocks.
+  for (size_t i = addr / kCacheSize; i <= (addr + size - 1u) / kCacheSize; i++) {
+    if (!bitmap_[i]) {
+      auto skip_block = [=](XzBlock& b) { return b.dst_offset + b.dst_size <= i * kCacheSize; };
+      auto it = std::partition_point(idx_.begin(), idx_.end(), skip_block);
+      for (; it != idx_.end() && it->dst_offset < (i + 1) * kCacheSize; it++) {
+        if (!it->done) {
+          if (!DecompressBlock(&*it)) {
+            return 0;
+          }
+          it->done = true;
+        }
+      }
+      bitmap_[i] = true;
+    }
+  }
+
+  // Return the decompressed data.
+  memcpy(buffer, reinterpret_cast<uint8_t*>(dst_data_) + addr, size);
+  return size;
+}
+
+std::vector<XzMemory::XzBlock> XzMemory::ReadIndex(std::vector<uint8_t>* src) {
+  static ISzAlloc alloc;
+  alloc.Alloc = [](ISzAllocPtr, size_t size) { return malloc(size); };
+  alloc.Free = [](ISzAllocPtr, void* ptr) { return free(ptr); };
+
+  // Implement the required interface for communication (written in C so no virtual methods).
+  struct XzLookInStream : public ILookInStream, public ICompressProgress {
+    static SRes LookImpl(const ILookInStream* p, const void** buf, size_t* size) {
+      auto* ctx = reinterpret_cast<const XzLookInStream*>(p);
+      *buf = ctx->src->data() + ctx->offset;
+      *size = std::min(*size, ctx->src->size() - ctx->offset);
+      return SZ_OK;
+    }
+    static SRes SkipImpl(const ILookInStream* p, size_t len) {
+      auto* ctx = reinterpret_cast<XzLookInStream*>(const_cast<ILookInStream*>(p));
+      ctx->offset += len;
+      return SZ_OK;
+    }
+    static SRes ReadImpl(const ILookInStream* p, void* buf, size_t* size) {
+      auto* ctx = reinterpret_cast<const XzLookInStream*>(p);
+      *size = std::min(*size, ctx->src->size() - ctx->offset);
+      memcpy(buf, ctx->src->data() + ctx->offset, *size);
+      return SZ_OK;
+    }
+    static SRes SeekImpl(const ILookInStream* p, Int64* pos, ESzSeek origin) {
+      auto* ctx = reinterpret_cast<XzLookInStream*>(const_cast<ILookInStream*>(p));
+      switch (origin) {
+        case SZ_SEEK_SET:
+          ctx->offset = *pos;
+          break;
+        case SZ_SEEK_CUR:
+          ctx->offset += *pos;
+          break;
+        case SZ_SEEK_END:
+          ctx->offset = ctx->src->size() + *pos;
+          break;
+      }
+      *pos = ctx->offset;
+      return SZ_OK;
+    }
+    static SRes ProgressImpl(const ICompressProgress*, UInt64, UInt64) { return SZ_OK; }
+    size_t offset;
+    std::vector<uint8_t>* src;
+  };
+  XzLookInStream callbacks;
+  callbacks.Look = &XzLookInStream::LookImpl;
+  callbacks.Skip = &XzLookInStream::SkipImpl;
+  callbacks.Read = &XzLookInStream::ReadImpl;
+  callbacks.Seek = &XzLookInStream::SeekImpl;
+  callbacks.Progress = &XzLookInStream::ProgressImpl;
+  callbacks.offset = 0;
+  callbacks.src = src;
+
+  std::vector<XzBlock> blocks;
+  CXzs xzs;
+  Xzs_Construct(&xzs);
+  Int64 end_offset = src->size();
+  if (Xzs_ReadBackward(&xzs, &callbacks, &end_offset, &callbacks, &alloc) == SZ_OK) {
+    blocks.reserve(Xzs_GetNumBlocks(&xzs));
+    size_t dst_offset = 0;
+    for (int s = xzs.num - 1; s >= 0; s--) {
+      const CXzStream& stream = xzs.streams[s];
+      size_t src_offset = stream.startOffset + XZ_STREAM_HEADER_SIZE;
+      for (size_t b = 0; b < stream.numBlocks; b++) {
+        const CXzBlockSizes& block = stream.blocks[b];
+        blocks.push_back(XzBlock{
+            .dst_offset = static_cast<uint32_t>(dst_offset),
+            .dst_size = static_cast<uint32_t>(block.unpackSize),
+            .src_offset = static_cast<uint32_t>(src_offset),
+            .src_size = static_cast<uint32_t>((block.totalSize + 3) & ~3u),
+            .stream_flags = stream.flags,
+        });
+        dst_offset += blocks.back().dst_size;
+        src_offset += blocks.back().src_size;
+      }
+    }
+  }
+  Xzs_Free(&xzs, &alloc);
+
+  return blocks;
+}
+
+bool XzMemory::DecompressBlock(XzBlock* block) {
+  static ISzAlloc alloc;
+  alloc.Alloc = [](ISzAllocPtr, size_t size) { return malloc(size); };
+  alloc.Free = [](ISzAllocPtr, void* ptr) { return free(ptr); };
+
+  std::unique_ptr<CXzUnpacker> state(new CXzUnpacker());
+  XzUnpacker_Construct(state.get(), &alloc);
+  state->streamFlags = block->stream_flags;
+  XzUnpacker_PrepareToRandomBlockDecoding(state.get());
+  size_t dst_remaining = block->dst_size;
+  size_t src_remaining = block->src_size;
+  ECoderStatus status;
+  uint8_t* dst_data = reinterpret_cast<uint8_t*>(dst_data_);
+  XzUnpacker_SetOutBuf(state.get(), &dst_data[block->dst_offset], block->dst_size);
+  int return_val =
+      XzUnpacker_Code(state.get(), nullptr /* dest */, &dst_remaining, &src_[block->src_offset],
+                      &src_remaining, true, CODER_FINISH_END, &status);
+  XzUnpacker_Free(state.get());
+  return return_val == SZ_OK && status == CODER_STATUS_FINISHED_WITH_MARK;
 }
 
 }  // namespace unwindstack
