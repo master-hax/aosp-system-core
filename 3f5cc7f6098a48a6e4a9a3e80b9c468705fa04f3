@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "708e9f10_3eeb9067",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1112838
+      },
+      "writtenOn": "2019-03-21T00:11:30Z",
+      "side": 1,
+      "message": "I thought it needs certs before verification.",
+      "parentUuid": "301acfa1_2b5953ba",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 47
+      },
+      "revId": "3f5cc7f6098a48a6e4a9a3e80b9c468705fa04f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ed37ab8_60440434",
         "filename": "rootdir/fsverity_init.sh",
         "patchSetId": 3
