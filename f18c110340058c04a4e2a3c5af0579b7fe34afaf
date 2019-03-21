@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0fa21baa_429c9a40",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-03-21T05:04:00Z",
+      "side": 1,
+      "message": "We can\u0027t leak TaskProfiles every time TaskProfiles::GetInstance() is called. It\u0027s called lots of times. Maybe you meant to write:\n\nstatic auto* instance \u003d new TaskProfiles;\n\nto create it once, reuse it many times and never to delete?\n\nThe fact that it\u0027s racing during the process exit is surprising to me. AFAIK this is quite a standard way of creating \"Meyers Singletons\" in C++11. However I\u0027ll doubt myself and will consult with others tomorrow.\nThanks for bringing it up!",
+      "range": {
+        "startLine": 289,
+        "startChar": 4,
+        "endLine": 289,
+        "endChar": 38
+      },
+      "revId": "f18c110340058c04a4e2a3c5af0579b7fe34afaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
