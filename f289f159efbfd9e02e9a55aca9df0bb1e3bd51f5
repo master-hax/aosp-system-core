@@ -194,6 +194,24 @@
       "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92b68998_379f931e",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-21T09:00:50Z",
+      "side": 1,
+      "message": "The enum struct is already moved to healthd_mode_charger.cpp in patch set 2.\nIs it better that I change to use #define instead of enum struct ??\n(Both #define or enum are working for the patch.)\nＥx : #define WAIT_BATT_LEVEL_TS_TIMEOUT (-2)\n      #define WAIT_BATT_LEVEL_TS_INIT    (-1)\n\nAlso, is it better to change to use #define for BATTERY_LEVEL_UNKNOWN and BATTERY_LEVEL_ERROR ??",
+      "parentUuid": "249f4ad4_3a694124",
+      "revId": "f289f159efbfd9e02e9a55aca9df0bb1e3bd51f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
