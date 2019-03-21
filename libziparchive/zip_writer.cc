@@ -31,7 +31,7 @@
 #include "zip_archive_common.h"
 
 #if !defined(powerof2)
-#define powerof2(x) ((((x)-1) & (x)) == 0)
+#define powerof2(x) (((x) > 0) && (((((x)-1) & (x)) == 0)))
 #endif
 
 /* Zip compression methods we support */
@@ -203,7 +203,7 @@ int32_t ZipWriter::StartAlignedEntryWithTime(const char* path, size_t flags, tim
     return kInvalidAlign32Flag;
   }
 
-  if (powerof2(alignment) == 0) {
+  if ((alignment != 0) && !powerof2(alignment)) {
     return kInvalidAlignment;
   }
 
