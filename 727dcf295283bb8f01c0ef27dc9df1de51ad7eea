@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b4d79cb_e8ee54cd",
+        "filename": "rootdir/fsverity_init.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1112838
+      },
+      "writtenOn": "2019-03-21T17:26:38Z",
+      "side": 1,
+      "message": "In case you need to differentiate the certs, you probably want to use a different descriptions for each certs.",
+      "range": {
+        "startLine": 23,
+        "startChar": 42,
+        "endLine": 23,
+        "endChar": 53
+      },
+      "revId": "727dcf295283bb8f01c0ef27dc9df1de51ad7eea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
