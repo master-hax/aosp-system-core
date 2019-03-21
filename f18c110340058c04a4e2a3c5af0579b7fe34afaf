@@ -22,6 +22,30 @@
       "revId": "f18c110340058c04a4e2a3c5af0579b7fe34afaf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f196808_a7c4e168",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2019-03-21T05:34:43Z",
+      "side": 1,
+      "message": "Oops, it was indeed meant to be static auto*.\n\nI think the general recommendation is that the program needs to arrange for the other threads to be destroyed before process exit in order to avoid this concurrent access. I didn\u0027t see any support for this in the class that manages binder thread pools (can\u0027t seem to find it now) though.",
+      "parentUuid": "0fa21baa_429c9a40",
+      "range": {
+        "startLine": 289,
+        "startChar": 4,
+        "endLine": 289,
+        "endChar": 38
+      },
+      "revId": "f18c110340058c04a4e2a3c5af0579b7fe34afaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
