@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9904ced3_00633d3c",
+        "filename": "base/file.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-22T00:46:47Z",
+      "side": 1,
+      "message": "this isn\u0027t bionic-specific.",
+      "range": {
+        "startLine": 388,
+        "startChar": 5,
+        "endLine": 388,
+        "endChar": 34
+      },
+      "revId": "f65d6292988924fc9176bfba7ba4c4270e6070a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
