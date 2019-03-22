@@ -229,10 +229,20 @@ static bool SetupCgroup(const CgroupDescriptor&) {
 
 static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors) {
     std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CgroupMap::CGROUPS_RC_FILE);
-    unique_fd fd(TEMP_FAILURE_RETRY(open(cgroup_rc_path.c_str(),
+    // Let init keep the FD open to prevent file mappings from becoming invalid
+    // in case the file gets deleted somehow
+    static unique_fd* fd = nullptr;
+
+    // Make sure we do this only one time
+    if (fd) {
+        LOG(WARNING) << "Attempt to call WriteRcFile more than once";
+        return true;
+    }
+    // We intentionally never delete the fd instance to keep mappings valid no matter what
+    fd = new unique_fd(TEMP_FAILURE_RETRY(open(cgroup_rc_path.c_str(),
                                          O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
                                          S_IRUSR | S_IRGRP | S_IROTH)));
-    if (fd < 0) {
+    if (*fd < 0) {
         PLOG(ERROR) << "open() failed for " << cgroup_rc_path;
         return false;
     }
@@ -240,14 +250,14 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
     CgroupFile fl;
     fl.version_ = CgroupFile::FILE_CURR_VERSION;
     fl.controller_count_ = descriptors.size();
-    int ret = TEMP_FAILURE_RETRY(write(fd, &fl, sizeof(fl)));
+    int ret = TEMP_FAILURE_RETRY(write(*fd, &fl, sizeof(fl)));
     if (ret < 0) {
         PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
         return false;
     }
 
     for (const auto& [name, descriptor] : descriptors) {
-        ret = TEMP_FAILURE_RETRY(write(fd, descriptor.controller(), sizeof(CgroupController)));
+        ret = TEMP_FAILURE_RETRY(write(*fd, descriptor.controller(), sizeof(CgroupController)));
         if (ret < 0) {
             PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
             return false;
@@ -409,6 +419,11 @@ void CgroupMap::Print() const {
 
 bool CgroupMap::SetupCgroups() {
     std::map<std::string, CgroupDescriptor> descriptors;
+
+    if (getpid() != 1) {
+        LOG(ERROR) << "Cgroup setup can be done only by init process";
+        return false;
+    }
 
     // load cgroups.json file
     if (!ReadDescriptors(&descriptors)) {
