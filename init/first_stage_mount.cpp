@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -78,8 +79,9 @@ class FirstStageMount {
     ListenerAction HandleBlockDevice(const std::string& name, const Uevent&);
     bool InitRequiredDevices();
     bool InitMappedDevice(const std::string& verity_device);
+    bool UpdateAndInitLogicalDevice(FstabEntry* fstab_entry);
     bool CreateLogicalPartitions();
-    bool MountPartition(const Fstab::iterator& begin, bool erase_used_fstab_entry,
+    bool MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
                         Fstab::iterator* end = nullptr);
 
     bool MountPartitions();
@@ -103,6 +105,7 @@ class FirstStageMount {
     std::set<std::string> required_devices_partition_names_;
     std::string super_partition_name_;
     std::unique_ptr<DeviceHandler> device_handler_;
+    std::map<std::string, std::string> logical_dm_device_names_;
     UeventListener uevent_listener_;
 };
 
@@ -430,51 +433,75 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
 
     uevent_listener_.RegenerateUeventsForPath(syspath, verity_callback);
     if (!found) {
-        LOG(INFO) << "dm-verity device not found in /sys, waiting for its uevent";
+        LOG(INFO) << "dm device '" << dm_device << "' not found in /sys, waiting for its uevent";
         Timer t;
         uevent_listener_.Poll(verity_callback, 10s);
-        LOG(INFO) << "wait for dm-verity device returned after " << t;
+        LOG(INFO) << "wait for dm device '" << dm_device << "' returned after " << t;
     }
     if (!found) {
-        LOG(ERROR) << "dm-verity device not found after polling timeout";
+        LOG(ERROR) << "dm device '" << dm_device << "' not found after polling timeout";
         return false;
     }
 
     return true;
 }
 
-bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_used_fstab_entry,
-                                     Fstab::iterator* end) {
-    if (begin->fs_mgr_flags.logical) {
-        if (!fs_mgr_update_logical_partition(&(*begin))) {
+bool FirstStageMount::UpdateAndInitLogicalDevice(FstabEntry* fstab_entry) {
+    if (fstab_entry->fs_mgr_flags.logical) {
+        // Checks if we've ever initialized the logical dm device /dev/block/dm-<N>.
+        auto iter = logical_dm_device_names_.find(fstab_entry->logical_partition_name);
+        if (iter != logical_dm_device_names_.end()) {
+            fstab_entry->blk_device = iter->second;
+            return true;
+        }
+        if (!fs_mgr_update_logical_partition(fstab_entry)) {
             return false;
         }
-        if (!InitMappedDevice(begin->blk_device)) {
+        if (!InitMappedDevice(fstab_entry->blk_device)) {
             return false;
         }
+        // Saves the mapping of logical partition -> dm device for later use.
+        // e.g., 'system' -> /dev/block/dm-0.
+        logical_dm_device_names_.emplace(fstab_entry->logical_partition_name,
+                                         fstab_entry->blk_device);
     }
-    if (!SetUpDmVerity(&(*begin))) {
+    return true;
+}
+
+bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
+                                     Fstab::iterator* end) {
+    // Sets up verity for any of the consecutive fstab entries that match
+    // the mount point of the one given by 'begin'.
+    bool verity_enabled = false;
+    Fstab::iterator verity_iter = begin;
+    for (; verity_iter != fstab_.end() && verity_iter->mount_point == begin->mount_point;
+         verity_iter++) {
+        if (!UpdateAndInitLogicalDevice(&(*verity_iter))) continue;
+        if (verity_enabled = SetUpDmVerity(&(*verity_iter)); verity_enabled) break;
+    }
+    if (!verity_enabled) {
         PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
         return false;
     }
 
-    bool mounted = (fs_mgr_do_mount_one(*begin) == 0);
+    bool mounted = (fs_mgr_do_mount_one(*verity_iter) == 0);
 
     // Try other mounts with the same mount point.
-    Fstab::iterator current = begin + 1;
-    for (; current != fstab_.end() && current->mount_point == begin->mount_point; current++) {
+    Fstab::iterator mount_iter = verity_iter + 1;
+    for (; mount_iter != fstab_.end() && mount_iter->mount_point == begin->mount_point;
+         mount_iter++) {
         if (!mounted) {
             // blk_device is already updated to /dev/dm-<N> by SetUpDmVerity() above.
-            // Copy it from the begin iterator.
-            current->blk_device = begin->blk_device;
-            mounted = (fs_mgr_do_mount_one(*current) == 0);
+            // Copy it from the verity_iter.
+            mount_iter->blk_device = verity_iter->blk_device;
+            mounted = (fs_mgr_do_mount_one(*mount_iter) == 0);
         }
     }
-    if (erase_used_fstab_entry) {
-        current = fstab_.erase(begin, current);
+    if (erase_same_mounts) {
+        mount_iter = fstab_.erase(begin, mount_iter);
     }
     if (end) {
-        *end = current;
+        *end = mount_iter;
     }
     return mounted;
 }
@@ -487,7 +514,7 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
         return entry.mount_point == "/metadata";
     });
     if (metadata_partition != fstab_.end()) {
-        if (MountPartition(metadata_partition, true /* erase_used_fstab_entry */)) {
+        if (MountPartition(metadata_partition, true /* erase_same_mounts */)) {
             UseGsiIfPresent();
         }
     }
@@ -498,7 +525,7 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
 
     if (system_partition == fstab_.end()) return true;
 
-    if (MountPartition(system_partition, false)) {
+    if (MountPartition(system_partition, false /* erase_same_mounts */)) {
         SwitchRoot("/system");
     } else {
         PLOG(ERROR) << "Failed to mount /system";
@@ -549,7 +576,7 @@ bool FirstStageMount::MountPartitions() {
         }
 
         Fstab::iterator end;
-        if (!MountPartition(current, false, &end)) {
+        if (!MountPartition(current, false /* erase_same_mounts */, &end)) {
             if (current->fs_mgr_flags.no_fail) {
                 LOG(INFO) << "Failed to mount " << current->mount_point
                           << ", ignoring mount for no_fail partition";
