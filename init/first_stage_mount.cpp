@@ -79,8 +79,9 @@ class FirstStageMount {
     bool InitRequiredDevices();
     bool InitMappedDevice(const std::string& verity_device);
     bool InitDeviceMapper();
+    bool UpdateAndInitLogicalDevice(FstabEntry* fstab_entry);
     bool CreateLogicalPartitions();
-    bool MountPartition(const Fstab::iterator& begin, bool erase_used_fstab_entry,
+    bool MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
                         Fstab::iterator* end = nullptr);
 
     bool MountPartitions();
@@ -437,51 +438,69 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
 
     uevent_listener_.RegenerateUeventsForPath(syspath, verity_callback);
     if (!found) {
-        LOG(INFO) << "dm-verity device not found in /sys, waiting for its uevent";
+        LOG(INFO) << "dm device '" << dm_device << "' not found in /sys, waiting for its uevent";
         Timer t;
         uevent_listener_.Poll(verity_callback, 10s);
-        LOG(INFO) << "wait for dm-verity device returned after " << t;
+        LOG(INFO) << "wait for dm device '" << dm_device << "' returned after " << t;
     }
     if (!found) {
-        LOG(ERROR) << "dm-verity device not found after polling timeout";
+        LOG(ERROR) << "dm device '" << dm_device << "' not found after polling timeout";
         return false;
     }
 
     return true;
 }
 
-bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_used_fstab_entry,
-                                     Fstab::iterator* end) {
-    if (begin->fs_mgr_flags.logical) {
-        if (!fs_mgr_update_logical_partition(&(*begin))) {
-            return false;
-        }
-        if (!InitMappedDevice(begin->blk_device)) {
-            return false;
-        }
+bool FirstStageMount::UpdateAndInitLogicalDevice(FstabEntry* fstab_entry) {
+    if (!fstab_entry->fs_mgr_flags.logical) {
+        return true;
     }
-    if (!SetUpDmVerity(&(*begin))) {
+    if (!fs_mgr_update_logical_partition(fstab_entry)) {
+        return false;
+    }
+    // If already can access, no need InitMappedDevice() for uevent regeneration.
+    if (access(fstab_entry->blk_device.c_str(), F_OK) != 0 &&
+        !InitMappedDevice(fstab_entry->blk_device)) {
+        return false;
+    }
+    return true;
+}
+
+bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
+                                     Fstab::iterator* end) {
+    // Sets up verity for any of the consecutive fstab entries that match
+    // the mount point of the one given by 'begin'.
+    bool verity_enabled = false;
+    Fstab::iterator verity_iter = begin;
+    for (; verity_iter != fstab_.end() && verity_iter->mount_point == begin->mount_point;
+         verity_iter++) {
+        if (!UpdateAndInitLogicalDevice(&(*verity_iter))) continue;
+        if (verity_enabled = SetUpDmVerity(&(*verity_iter)); verity_enabled) break;
+    }
+    if (!verity_enabled) {
+        if (end) *end = verity_iter;  // updates 'end' to the past-the-final-attempted element
         PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
         return false;
     }
 
-    bool mounted = (fs_mgr_do_mount_one(*begin) == 0);
+    bool mounted = (fs_mgr_do_mount_one(*verity_iter) == 0);
 
     // Try other mounts with the same mount point.
-    Fstab::iterator current = begin + 1;
-    for (; current != fstab_.end() && current->mount_point == begin->mount_point; current++) {
+    Fstab::iterator mount_iter = verity_iter + 1;
+    for (; mount_iter != fstab_.end() && mount_iter->mount_point == begin->mount_point;
+         mount_iter++) {
         if (!mounted) {
             // blk_device is already updated to /dev/dm-<N> by SetUpDmVerity() above.
-            // Copy it from the begin iterator.
-            current->blk_device = begin->blk_device;
-            mounted = (fs_mgr_do_mount_one(*current) == 0);
+            // Copy it from the verity_iter.
+            mount_iter->blk_device = verity_iter->blk_device;
+            mounted = (fs_mgr_do_mount_one(*mount_iter) == 0);
         }
     }
-    if (erase_used_fstab_entry) {
-        current = fstab_.erase(begin, current);
+    if (erase_same_mounts) {
+        mount_iter = fstab_.erase(begin, mount_iter);
     }
     if (end) {
-        *end = current;
+        *end = mount_iter;
     }
     return mounted;
 }
@@ -494,7 +513,7 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
         return entry.mount_point == "/metadata";
     });
     if (metadata_partition != fstab_.end()) {
-        if (MountPartition(metadata_partition, true /* erase_used_fstab_entry */)) {
+        if (MountPartition(metadata_partition, true /* erase_same_mounts */)) {
             UseGsiIfPresent();
         }
     }
@@ -505,7 +524,7 @@ bool FirstStageMount::TrySwitchSystemAsRoot() {
 
     if (system_partition == fstab_.end()) return true;
 
-    if (MountPartition(system_partition, false)) {
+    if (MountPartition(system_partition, false /* erase_same_mounts */)) {
         if (gsi_not_on_userdata_ && fs_mgr_verity_is_check_at_most_once(*system_partition)) {
             LOG(ERROR) << "check_most_at_once forbidden on external media";
             return false;
@@ -560,7 +579,7 @@ bool FirstStageMount::MountPartitions() {
         }
 
         Fstab::iterator end;
-        if (!MountPartition(current, false, &end)) {
+        if (!MountPartition(current, false /* erase_same_mounts */, &end)) {
             if (current->fs_mgr_flags.no_fail) {
                 LOG(INFO) << "Failed to mount " << current->mount_point
                           << ", ignoring mount for no_fail partition";
