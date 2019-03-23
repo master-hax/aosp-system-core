@@ -100,6 +100,7 @@ namespace.media.links = default
 namespace.media.link.default.shared_libs  = libandroid.so
 namespace.media.link.default.shared_libs += libbinder_ndk.so
 namespace.media.link.default.shared_libs += libc.so
+namespace.media.link.default.shared_libs += libcgrouprc.so
 namespace.media.link.default.shared_libs += libdl.so
 namespace.media.link.default.shared_libs += liblog.so
 namespace.media.link.default.shared_libs += libmediametrics.so
