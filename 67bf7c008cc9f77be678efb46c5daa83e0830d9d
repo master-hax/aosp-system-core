@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "deaf6ee9_214c8781",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1071633
+      },
+      "writtenOn": "2019-03-24T02:40:38Z",
+      "side": 1,
+      "message": "just put -1 here since BATTERY_RET_ERROR is used only here, no need for it to be defined in a header file",
+      "range": {
+        "startLine": 195,
+        "startChar": 16,
+        "endLine": 195,
+        "endChar": 33
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbc50db6_60b48f93",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1071633
+      },
+      "writtenOn": "2019-03-24T02:40:38Z",
+      "side": 1,
+      "message": "remove this define since used only in 1 file to return a failure in a function call, no need for a define",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 30
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d705159_aff06f74",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1071633
+      },
+      "writtenOn": "2019-03-24T02:40:38Z",
+      "side": 1,
+      "message": "set to -1",
+      "range": {
+        "startLine": 87,
+        "startChar": 26,
+        "endLine": 87,
+        "endChar": 43
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
