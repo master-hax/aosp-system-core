@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4af75dc5_0ffd3b9e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-03-25T23:38:08Z",
+      "side": 1,
+      "message": "s/forever/for 174 seconds\n\n(running again with the patch now)",
+      "range": {
+        "startLine": 18,
+        "startChar": 87,
+        "endLine": 19,
+        "endChar": 61
+      },
+      "revId": "0ae917712708731a1da13e43d9e8082fc10dfd73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
