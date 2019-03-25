@@ -113,7 +113,7 @@ static bool DropBoundingSet(const CapSet& to_keep) {
     return true;
 }
 
-static bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
+static bool SetProcCaps(const CapSet& to_keep, bool add_setpcap, bool set_effective) {
     ScopedCaps caps(cap_init());
 
     cap_clear(caps.get());
@@ -124,6 +124,11 @@ static bool SetProcCaps(const CapSet& to_keep, bool add_setpcap) {
             if (cap_set_flag(caps.get(), CAP_INHERITABLE, arraysize(value), value, CAP_SET) != 0 ||
                 cap_set_flag(caps.get(), CAP_PERMITTED, arraysize(value), value, CAP_SET) != 0) {
                 PLOG(ERROR) << "cap_set_flag(INHERITABLE|PERMITTED, " << cap << ") failed";
+                return false;
+            }
+            if (set_effective &&
+                cap_set_flag(caps.get(), CAP_EFFECTIVE, arraysize(value), value, CAP_SET) != 0) {
+                PLOG(ERROR) << "cap_set_flag(EFFECTIVE, " << cap << ") failed";
                 return false;
             }
         }
@@ -178,10 +183,10 @@ unsigned int GetLastValidCap() {
     return last_valid_cap;
 }
 
-bool SetCapsForExec(const CapSet& to_keep) {
+bool SetCapsForExec(const CapSet& to_keep, bool set_effective) {
     // Need to keep SETPCAP to drop bounding set below.
     bool add_setpcap = true;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, add_setpcap, set_effective)) {
         LOG(ERROR) << "failed to apply initial capset";
         return false;
     }
@@ -192,7 +197,7 @@ bool SetCapsForExec(const CapSet& to_keep) {
 
     // If SETPCAP wasn't specifically requested, drop it now.
     add_setpcap = false;
-    if (!SetProcCaps(to_keep, add_setpcap)) {
+    if (!SetProcCaps(to_keep, add_setpcap, set_effective)) {
         LOG(ERROR) << "failed to apply final capset";
         return false;
     }
