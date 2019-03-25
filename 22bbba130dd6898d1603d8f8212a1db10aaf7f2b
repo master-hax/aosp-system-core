@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ab9d8f9_7671a311",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-25T00:14:58Z",
+      "side": 1,
+      "message": "This part is copied from original source.",
+      "range": {
+        "startLine": 457,
+        "startChar": 7,
+        "endLine": 462,
+        "endChar": 9
+      },
+      "revId": "22bbba130dd6898d1603d8f8212a1db10aaf7f2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

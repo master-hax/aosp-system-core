@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f8f3656_d4f65b30",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-25T00:14:58Z",
+      "side": 0,
+      "message": "Moved this part into the new UpdateAndInitLogicalDevice(), to prevent InitMappedDevice() regenerate uevents for the same logical dm-device.",
+      "range": {
+        "startLine": 448,
+        "startChar": 3,
+        "endLine": 455,
+        "endChar": 5
+      },
+      "revId": "832bd17a0b620a97c3166f086c529273b6c73b23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
