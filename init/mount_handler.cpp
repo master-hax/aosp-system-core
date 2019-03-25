@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -77,14 +78,19 @@ void SetMountProperty(const MountHandlerEntry& entry, bool add) {
         struct stat sb;
         if (stat(queue.c_str(), &sb) || !S_ISDIR(sb.st_mode)) value = "";
         if (stat(entry.mount_point.c_str(), &sb) || !S_ISDIR(sb.st_mode)) value = "";
-        // Skip the noise associated with APEX until there is a need
+        // Skip the noise associated with loopback and APEX until there is need
         if (android::base::StartsWith(value, "loop")) value = "";
+        if (android::base::StartsWith(entry.mount_point, "/apex/")) value = "";
     }
-    std::string property =
-            "dev.mnt.blk" + ((entry.mount_point == "/") ? "/root" : entry.mount_point);
-    std::replace(property.begin(), property.end(), '/', '.');
-    if (value.empty() && android::base::GetProperty(property, "").empty()) return;
-    property_set(property, value);
+    auto mount_prop = entry.mount_point;
+    if (mount_prop == "/") mount_prop = "/root";
+    std::replace(mount_prop.begin(), mount_prop.end(), '/', '.');
+    mount_prop = "dev.mnt.blk" + mount_prop;
+    // Always set property even if its value does not change to trigger
+    // on property handling, however do not clear a non-existent or
+    // already empty property as we do not care for those triggers.
+    if (value.empty() && android::base::GetProperty(mount_prop, "").empty()) return;
+    property_set(mount_prop, value);
 }
 
 }  // namespace
@@ -114,25 +120,26 @@ MountHandler::~MountHandler() {
 
 void MountHandler::MountHandlerFunction() {
     rewind(fp_.get());
-    char* buf = nullptr;
-    size_t len = 0;
+    std::vector<MountHandlerEntry> touched;
     auto untouched = mounts_;
-    while (getline(&buf, &len, fp_.get()) != -1) {
+    char* buf = nullptr;
+    for (size_t len = 0; getline(&buf, &len, fp_.get()) != -1;) {
         auto entry = ParseMount(std::string(buf, len));
         auto match = untouched.find(entry);
         if (match == untouched.end()) {
-            SetMountProperty(entry, true);
-            mounts_.emplace(std::move(entry));
+            touched.emplace_back(std::move(entry));
         } else {
             untouched.erase(match);
         }
     }
     free(buf);
     for (auto entry : untouched) {
-        auto match = mounts_.find(entry);
-        if (match == mounts_.end()) continue;
-        mounts_.erase(match);
         SetMountProperty(entry, false);
+        mounts_.erase(entry);
+    }
+    for (auto entry : touched) {
+        SetMountProperty(entry, true);
+        mounts_.emplace(std::move(entry));
     }
 }
 
