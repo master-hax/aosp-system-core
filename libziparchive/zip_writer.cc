@@ -30,6 +30,10 @@
 #include "entry_name_utils-inl.h"
 #include "zip_archive_common.h"
 
+#if !defined(powerof2)
+#define powerof2(x) ((((x)-1) & (x)) == 0)
+#endif
+
 /* Zip compression methods we support */
 enum {
   kCompressStored = 0,    // no compression
