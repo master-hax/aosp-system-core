@@ -45,7 +45,7 @@ using ScopedCaps = std::unique_ptr<std::remove_pointer<cap_t>::type, CapDeleter>
 int LookupCap(const std::string& cap_name);
 bool CapAmbientSupported();
 unsigned int GetLastValidCap();
-bool SetCapsForExec(const CapSet& to_keep);
+bool SetCapsForExec(const CapSet& to_keep, bool set_effective);
 bool DropInheritableCaps();
 
 }  // namespace init

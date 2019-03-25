@@ -116,6 +116,8 @@ cc_library_static {
         "modalias_handler.cpp",
         "mount_handler.cpp",
         "mount_namespace.cpp",
+        "nativezygote.proto",
+        "nativezygote_client.cpp",
         "parser.cpp",
         "persistent_properties.cpp",
         "persistent_properties.proto",
@@ -174,6 +176,59 @@ cc_binary {
             exclude_shared_libs: ["libbinder", "libutils"],
         },
     },
+}
+
+cc_defaults {
+    name: "nativezygote_defaults",
+    srcs: [
+        "capabilities.cpp",
+        "mount_namespace.cpp",
+        "nativezygote.cpp",
+        "nativezygote.proto",
+        "nativezygote_server.cpp",
+        "util.cpp",
+        "selabel.cpp",
+        "service_utils.cpp",
+        "descriptors.cpp",
+    ],
+    static_libs: [
+        "com.android.sysprop.apex",
+        "libcap",
+        "libdl_android",
+        "libselinux",
+        "libbase",
+        "libcutils",
+        "libprocessgroup",
+        "libcgrouprc",
+        "libcgrouprc_format",
+    ],
+    shared_libs: [
+        // Native zygote needs to be able to run with different linker namespace
+        // configurations.  In order to do that, we must only link against
+        // LL-NDK dynamic libraries.  Any other libraries must be statically
+        // linked.
+        "liblog",
+        "libdl",
+    ],
+    proto: {
+        static: true,
+    },
+    stl: "libc++_static",
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+}
+
+cc_binary {
+    name: "nativezygote",
+    defaults: ["nativezygote_defaults"],
+    init_rc: ["nativezygote.rc"],
+}
+
+cc_binary {
+    name: "nativezygote_vendor",
+    defaults: ["nativezygote_defaults"],
+    init_rc: ["nativezygote_vendor.rc"],
 }
 
 // Tests
@@ -256,6 +311,8 @@ cc_binary {
         "host_import_parser.cpp",
         "host_init_verifier.cpp",
         "host_init_stubs.cpp",
+        "nativezygote.proto",
+        "nativezygote_client.cpp",
         "parser.cpp",
         "rlimit_parser.cpp",
         "tokenizer.cpp",
