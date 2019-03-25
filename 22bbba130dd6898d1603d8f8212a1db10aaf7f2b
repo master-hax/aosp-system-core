@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "7740bd2f_f977bf3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-25T03:24:21Z",
+      "side": 1,
+      "message": "This is to for standalone system.img verification. e.g., GSI.",
+      "range": {
+        "startLine": 16,
+        "startChar": 70,
+        "endLine": 16,
+        "endChar": 97
+      },
+      "revId": "22bbba130dd6898d1603d8f8212a1db10aaf7f2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3052ca9_87cc1ab1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-25T03:24:21Z",
+      "side": 1,
+      "message": "The avb is for original system.img, where system-vbmeta is stored in /vbmeta (or the following chain).",
+      "range": {
+        "startLine": 17,
+        "startChar": 70,
+        "endLine": 17,
+        "endChar": 73
+      },
+      "revId": "22bbba130dd6898d1603d8f8212a1db10aaf7f2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ab9d8f9_7671a311",
         "filename": "init/first_stage_mount.cpp",
         "patchSetId": 1
