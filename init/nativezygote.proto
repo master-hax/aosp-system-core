@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2019 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto2";
+option optimize_for = LITE_RUNTIME;
+
+message NativeZygoteRequest {
+    optional string name = 1;
+
+    repeated string args = 2;
+
+    message DescriptorInfo {
+        optional int32 descriptor_class = 1;
+        optional string name = 2;
+        optional string type = 3;
+        optional int32 uid = 4;
+        optional int32 gid = 5;
+        optional int32 perm = 6;
+        optional string context = 7;
+    }
+
+    // Init should create these and just pass fd.
+    repeated DescriptorInfo descriptors = 3;
+
+    // This should be done by init.
+    repeated string writepid_files = 4;
+
+    optional int32 ioprio_class = 5;
+    optional int32 ioprio_pri = 6;
+    optional int32 priority = 7;
+
+    optional int32 uid = 8;
+    optional int32 gid = 9;
+    repeated int32 supp_gids = 10;
+
+    optional string scon = 11;
+
+    optional uint64 cap_set = 12;
+
+    message RLimit {
+        optional int32 type = 1;
+        optional uint64 rlim_cur = 2;
+        optional uint64 rlim_max = 3;
+    }
+    repeated RLimit rlimits = 13;
+
+    message EnvVar {
+        optional string key = 1;
+        optional string value = 2;
+    }
+    repeated EnvVar env_vars = 14;
+
+    optional int32 namespace_flags = 15;
+    message NamespaceInfo {
+        optional int32 nstype = 1;
+        optional string path = 2;
+    }
+    repeated NamespaceInfo namespaces_to_enter = 16;
+
+    optional string console = 17;
+
+    optional bool sigstop = 18;
+}

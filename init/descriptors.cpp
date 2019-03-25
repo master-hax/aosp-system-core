@@ -49,11 +49,11 @@ bool DescriptorInfo::operator==(const DescriptorInfo& other) const {
   return name_ == other.name_ && type_ == other.type_ && key() == other.key();
 }
 
-void DescriptorInfo::CreateAndPublish(const std::string& globalContext) const {
+int DescriptorInfo::CreateAndPublish(const std::string& globalContext) const {
   // Create
   const std::string& contextStr = context_.empty() ? globalContext : context_;
   int fd = Create(contextStr);
-  if (fd < 0) return;
+  if (fd < 0) return fd;
 
   // Publish
   std::string publishedName = key() + name_;
@@ -65,6 +65,8 @@ void DescriptorInfo::CreateAndPublish(const std::string& globalContext) const {
 
   // make sure we don't close on exec
   fcntl(fd, F_SETFD, 0);
+
+  return fd;
 }
 
 void DescriptorInfo::Clean() const {
@@ -90,6 +92,10 @@ int SocketInfo::Create(const std::string& context) const {
 
 const std::string SocketInfo::key() const {
   return ANDROID_SOCKET_ENV_PREFIX;
+}
+
+DescriptorInfo::DescriptorClass SocketInfo::descriptor_class() const {
+    return DescriptorClass::DESCRIPTOR_CLASS_SOCKET;
 }
 
 FileInfo::FileInfo(const std::string& name, const std::string& type, uid_t uid,
@@ -126,6 +132,10 @@ int FileInfo::Create(const std::string&) const {
 
 const std::string FileInfo::key() const {
   return ANDROID_FILE_ENV_PREFIX;
+}
+
+DescriptorInfo::DescriptorClass FileInfo::descriptor_class() const {
+    return DescriptorClass::DESCRIPTOR_CLASS_FILE;
 }
 
 }  // namespace init
