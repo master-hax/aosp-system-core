@@ -1,0 +1,6 @@
+service nativezygote /system/bin/nativezygote
+    user root
+    group root system
+    critical
+    socket nativezygote seqpacket 0600 root root
+    setenv NATIVEZYGOTE_SOCKET nativezygote
