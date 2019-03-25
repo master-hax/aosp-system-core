@@ -27,6 +27,11 @@ namespace init {
 
 class DescriptorInfo {
  public:
+  enum class DescriptorClass {
+    DESCRIPTOR_CLASS_SOCKET,
+    DESCRIPTOR_CLASS_FILE,
+  };
+
   DescriptorInfo(const std::string& name, const std::string& type, uid_t uid,
                  gid_t gid, int perm, const std::string& context);
   virtual ~DescriptorInfo();
@@ -37,7 +42,7 @@ class DescriptorInfo {
   void CreateAndPublish(const std::string& globalContext) const;
   virtual void Clean() const;
 
- protected:
+  virtual DescriptorClass descriptor_class() const = 0;
   const std::string& name() const { return name_; }
   const std::string& type() const { return type_; }
   uid_t uid() const { return uid_; }
@@ -67,6 +72,7 @@ class SocketInfo : public DescriptorInfo {
  private:
   virtual int Create(const std::string& context) const override;
   virtual const std::string key() const override;
+  virtual DescriptorClass descriptor_class() const override;
 };
 
 class FileInfo : public DescriptorInfo {
@@ -76,6 +82,7 @@ class FileInfo : public DescriptorInfo {
  private:
   virtual int Create(const std::string& context) const override;
   virtual const std::string key() const override;
+  virtual DescriptorClass descriptor_class() const override;
 };
 
 }  // namespace init

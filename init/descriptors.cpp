@@ -92,6 +92,10 @@ const std::string SocketInfo::key() const {
   return ANDROID_SOCKET_ENV_PREFIX;
 }
 
+DescriptorInfo::DescriptorClass SocketInfo::descriptor_class() const {
+    return DescriptorClass::DESCRIPTOR_CLASS_SOCKET;
+}
+
 FileInfo::FileInfo(const std::string& name, const std::string& type, uid_t uid,
                    gid_t gid, int perm, const std::string& context)
         // defaults OK for uid,..., they are ignored for this class.
@@ -126,6 +130,10 @@ int FileInfo::Create(const std::string&) const {
 
 const std::string FileInfo::key() const {
   return ANDROID_FILE_ENV_PREFIX;
+}
+
+DescriptorInfo::DescriptorClass FileInfo::descriptor_class() const {
+    return DescriptorClass::DESCRIPTOR_CLASS_FILE;
 }
 
 }  // namespace init
