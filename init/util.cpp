@@ -24,8 +24,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <termios.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -474,6 +476,25 @@ void InitKernelLogging(char** argv) {
 
 bool IsRecoveryMode() {
     return access("/system/bin/recovery", F_OK) == 0;
+}
+
+void OpenConsole(const std::string& console_path) {
+    int fd = open(console_path.c_str(), O_RDWR);
+    if (fd == -1) fd = open("/dev/null", O_RDWR);
+    ioctl(fd, TIOCSCTTY, 0);
+    dup2(fd, 0);
+    dup2(fd, 1);
+    dup2(fd, 2);
+    close(fd);
+}
+
+void ZapStdio() {
+    int fd;
+    fd = open("/dev/null", O_RDWR);
+    dup2(fd, 0);
+    dup2(fd, 1);
+    dup2(fd, 2);
+    close(fd);
 }
 
 }  // namespace init

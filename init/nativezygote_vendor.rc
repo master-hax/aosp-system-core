@@ -1,0 +1,5 @@
+service nativezygote_vendor /system/bin/nativezygote_vendor
+    user root
+    critical
+    socket nativezygote_vendor seqpacket 0660 system system
+    setenv NATIVEZYGOTE_SOCKET nativezygote_vendor

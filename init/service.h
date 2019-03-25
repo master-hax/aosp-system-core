@@ -35,6 +35,7 @@
 #include "capabilities.h"
 #include "descriptors.h"
 #include "keyword_map.h"
+#include "nativezygote_client.h"
 #include "parser.h"
 #include "service_utils.h"
 #include "subcontext.h"
@@ -133,6 +134,10 @@ class Service {
     using OptionParser = Result<Success> (Service::*)(std::vector<std::string>&& args);
     class OptionParserMap;
 
+    Result<pid_t> SpawnWithNativeZygote(NativeZygoteClient* client, const std::string& scon,
+                                        bool needs_console);
+    Result<pid_t> SpawnWithFork(const std::string& scon, bool needs_console);
+
     void NotifyStateChange(const std::string& new_state) const;
     void StopOrReset(int how);
     void KillProcessGroup(int signal);
@@ -174,6 +179,9 @@ class Service {
 
     template <typename T>
     Result<Success> AddDescriptor(std::vector<std::string>&& args);
+
+    static NativeZygoteClient system_native_zygote_;
+    static NativeZygoteClient vendor_native_zygote_;
 
     static unsigned long next_start_order_;
     static bool is_exec_service_running_;

@@ -56,7 +56,10 @@
 #include "host_init_stubs.h"
 #endif
 
+#include "system/core/init/nativezygote.pb.h"
+
 using android::base::boot_clock;
+using android::base::GetBoolProperty;
 using android::base::GetProperty;
 using android::base::Join;
 using android::base::ParseInt;
@@ -67,6 +70,9 @@ using android::base::WriteStringToFile;
 
 namespace android {
 namespace init {
+
+NativeZygoteClient Service::system_native_zygote_("nativezygote");
+NativeZygoteClient Service::vendor_native_zygote_("nativezygote_vendor");
 
 static Result<std::string> ComputeContextFromExecutable(const std::string& service_path) {
     std::string computed_context;
@@ -102,6 +108,19 @@ static Result<std::string> ComputeContextFromExecutable(const std::string& servi
         return Error() << "Could not get process context";
     }
     return computed_context;
+}
+
+bool IsDyntransitionAllowed(const char* from, const char* to) {
+    static const access_vector_t kDyntransition =
+            string_to_av_perm(string_to_security_class("process"), "dyntransition");
+    struct av_decision avd;
+    if (security_compute_av(from, to, string_to_security_class("process"), kDyntransition, &avd) !=
+        0) {
+        // Failed to determine if dyntransition is allowed.  Assuming now allowed.
+        return false;
+    }
+
+    return (avd.auditallow | avd.allowed) & kDyntransition;
 }
 
 static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigstop) {
@@ -223,7 +242,7 @@ void Service::SetProcessAttributesAndCaps() {
     }
 
     if (capabilities_) {
-        if (!SetCapsForExec(*capabilities_)) {
+        if (!SetCapsForExec(*capabilities_, false)) {
             LOG(FATAL) << "cannot set capabilities for " << name_;
         }
     } else if (proc_attr_.uid) {
@@ -786,6 +805,113 @@ Result<Success> Service::ExecStart() {
     return Success();
 }
 
+Result<pid_t> Service::SpawnWithNativeZygote(NativeZygoteClient* client, const std::string& scon,
+                                             bool needs_console) {
+    NativeZygoteRequest req;
+    req.set_name(name_);
+    for (auto const& arg : args_) {
+        req.add_args(arg);
+    }
+    for (auto const& file : writepid_files_) {
+        req.add_writepid_files(file);
+    }
+    for (auto& desc : descriptors_) {
+        auto desc_info = req.add_descriptors();
+        desc_info->set_descriptor_class(static_cast<int32_t>(desc->descriptor_class()));
+        desc_info->set_name(desc->name());
+        desc_info->set_type(desc->type());
+        desc_info->set_uid(desc->uid());
+        desc_info->set_gid(desc->gid());
+        desc_info->set_perm(desc->perm());
+        desc_info->set_context(desc->context());
+    }
+    req.set_ioprio_class(proc_attr_.ioprio_class);
+    req.set_ioprio_pri(proc_attr_.ioprio_pri);
+    req.set_priority(proc_attr_.priority);
+    req.set_uid(proc_attr_.uid);
+    req.set_gid(proc_attr_.gid);
+    for (auto gid : proc_attr_.supp_gids) {
+        req.add_supp_gids(gid);
+    }
+    req.set_scon(scon);
+    if (capabilities_) {
+        req.set_cap_set(capabilities_->to_ullong());
+    }
+
+    for (auto const& rlim_pair : proc_attr_.rlimits) {
+        auto rlim = req.add_rlimits();
+        rlim->set_type(rlim_pair.first);
+        rlim->set_rlim_cur(rlim_pair.second.rlim_cur);
+        rlim->set_rlim_max(rlim_pair.second.rlim_max);
+    }
+
+    for (const auto& [key, value] : environment_vars_) {
+        auto env_var = req.add_env_vars();
+        env_var->set_key(key);
+        env_var->set_value(value);
+    }
+
+    req.set_namespace_flags(namespaces_.flags);
+    for (const auto& [nstype, path] : namespaces_.namespaces_to_enter) {
+        auto ns = req.add_namespaces_to_enter();
+        ns->set_nstype(nstype);
+        ns->set_path(path);
+    }
+
+    if (needs_console) {
+        req.set_console(proc_attr_.console);
+    }
+
+    req.set_sigstop(sigstop_);
+
+    return client->SendRequest(req);
+}
+
+Result<pid_t> Service::SpawnWithFork(const std::string& scon, bool needs_console) {
+    pid_t pid;
+    if (namespaces_.flags) {
+        pid = clone(nullptr, nullptr, namespaces_.flags | SIGCHLD, nullptr);
+    } else {
+        pid = fork();
+    }
+
+    if (pid < 0) {
+        return ErrnoError() << "Failed to fork";
+    }
+
+    if (pid > 0) {
+        return pid;
+    }
+
+    umask(077);
+
+    if (auto result = EnterNamespaces(namespaces_, name_, pre_apexd_); !result) {
+        LOG(FATAL) << "Service '" << name_ << "' failed to set up namespaces: " << result.error();
+    }
+
+    for (const auto& [key, value] : environment_vars_) {
+        setenv(key.c_str(), value.c_str(), 1);
+    }
+
+    for (const auto& descriptor : descriptors_) {
+        descriptor->CreateAndPublish(scon);
+    }
+
+    if (auto result = WritePidToFiles(&writepid_files_); !result) {
+        LOG(ERROR) << "failed to write pid to files: " << result.error();
+    }
+
+    // As requested, set our gid, supplemental gids, uid, context, and
+    // priority. Aborts on failure.
+    SetProcessAttributesAndCaps();
+
+    if (!ExpandArgsAndExecv(args_, sigstop_)) {
+        PLOG(ERROR) << "cannot execve('" << args_[0] << "')";
+    }
+
+    _exit(127);
+}
+
 Result<Success> Service::Start() {
     if (is_updatable() && !ServiceList::GetInstance().IsServicesUpdated()) {
         ServiceList::GetInstance().DelayService(*this);
@@ -857,58 +983,42 @@ Result<Success> Service::Start() {
 
     LOG(INFO) << "starting service '" << name_ << "'...";
 
-    pid_t pid = -1;
-    if (namespaces_.flags) {
-        pid = clone(nullptr, nullptr, namespaces_.flags | SIGCHLD, nullptr);
+    // Pre-apexd services have bootstrap linker config, which is different from
+    // the configs native zygote uses, so they cannot be started with native
+    // zygote.  We also check if dyntransition is allowed, as native zygote
+    // requires this permission to successfully start a service.
+    NativeZygoteClient* nz_client = nullptr;
+    if (!pre_apexd_ && GetBoolProperty("ro.nativezygote.enable", false)) {
+        if (IsDyntransitionAllowed("u:r:nativezygote:s0", scon.c_str())) {
+            nz_client = &system_native_zygote_;
+        } else if (IsDyntransitionAllowed("u:r:nativezygote_vendor:s0", scon.c_str())) {
+            nz_client = &vendor_native_zygote_;
+        }
+    }
+
+    Result<pid_t> result;
+    if (nz_client) {
+        result = SpawnWithNativeZygote(nz_client, scon, needs_console);
     } else {
-        pid = fork();
+        result = SpawnWithFork(scon, needs_console);
     }
 
-    if (pid == 0) {
-        umask(077);
-
-        if (auto result = EnterNamespaces(namespaces_, name_, pre_apexd_); !result) {
-            LOG(FATAL) << "Service '" << name_
-                       << "' failed to set up namespaces: " << result.error();
-        }
-
-        for (const auto& [key, value] : environment_vars_) {
-            setenv(key.c_str(), value.c_str(), 1);
-        }
-
-        std::for_each(descriptors_.begin(), descriptors_.end(),
-                      std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));
-
-        if (auto result = WritePidToFiles(&writepid_files_); !result) {
-            LOG(ERROR) << "failed to write pid to files: " << result.error();
-        }
-
-        // As requested, set our gid, supplemental gids, uid, context, and
-        // priority. Aborts on failure.
-        SetProcessAttributesAndCaps();
-
-        if (!ExpandArgsAndExecv(args_, sigstop_)) {
-            PLOG(ERROR) << "cannot execve('" << args_[0] << "')";
-        }
-
-        _exit(127);
-    }
-
-    if (pid < 0) {
+    if (result) {
+        pid_ = *result;
+    } else {
         pid_ = 0;
-        return ErrnoError() << "Failed to fork";
+        return result.error();
     }
 
     if (oom_score_adjust_ != -1000) {
         std::string oom_str = std::to_string(oom_score_adjust_);
-        std::string oom_file = StringPrintf("/proc/%d/oom_score_adj", pid);
+        std::string oom_file = StringPrintf("/proc/%d/oom_score_adj", pid_);
         if (!WriteStringToFile(oom_str, oom_file)) {
             PLOG(ERROR) << "couldn't write oom_score_adj";
         }
     }
 
     time_started_ = boot_clock::now();
-    pid_ = pid;
     flags_ |= SVC_RUNNING;
     start_order_ = next_start_order_++;
     process_cgroup_empty_ = false;
