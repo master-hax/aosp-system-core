@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_SELINUX_H
-#define _INIT_SELINUX_H
+#ifndef _INIT_NATIVEZYGOTE_CLIENT_H
+#define _INIT_NATIVEZYGOTE_CLIENT_H
+
+#include <android-base/unique_fd.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "nativezygote.h"
+#include "result.h"
 
 namespace android {
 namespace init {
 
-int SetupSelinux(char** argv);
-void SelinuxRestoreContext();
+class NativeZygoteClient {
+  public:
+    explicit NativeZygoteClient(const char* socket_name) : socket_name_(socket_name) {}
 
-void SelinuxSetupKernelLogging();
-int SelinuxGetVendorAndroidVersion();
+    Result<pid_t> SendRequest(NativeZygoteRequest const& req);
 
-static constexpr char kEnvSelinuxStartedAt[] = "SELINUX_STARTED_AT";
+  private:
+    bool EnsureSocketOpen();
+    void CloseSocket();
+
+    std::string const socket_name_;
+    android::base::unique_fd socket_;
+};
 
 }  // namespace init
 }  // namespace android
