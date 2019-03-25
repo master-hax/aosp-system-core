@@ -40,7 +40,9 @@
 #include <selinux/android.h>
 
 #if defined(__ANDROID__)
+#if !defined(VENDOR_NATIVEZYGOTE)
 #include "selinux.h"
+#endif
 #else
 #include "host_init_stubs.h"
 #endif
@@ -109,9 +111,11 @@ int CreateSocket(const char* name, int type, bool passcred, mode_t perm, uid_t u
     }
 
     std::string secontext;
+#ifndef VENDOR_NATIVEZYGOTE
     if (SelabelLookupFileContext(addr.sun_path, S_IFSOCK, &secontext) && !secontext.empty()) {
         setfscreatecon(secontext.c_str());
     }
+#endif
 
     if (passcred) {
         int on = 1;
@@ -181,9 +185,11 @@ Result<std::string> ReadFile(const std::string& path) {
 
 static int OpenFile(const std::string& path, int flags, mode_t mode) {
     std::string secontext;
+#ifndef VENDOR_NATIVEZYGOTE
     if (SelabelLookupFileContext(path, mode, &secontext) && !secontext.empty()) {
         setfscreatecon(secontext.c_str());
     }
+#endif
 
     int rc = open(path.c_str(), flags, mode);
 
@@ -252,9 +258,11 @@ void import_kernel_cmdline(bool in_qemu,
 
 bool make_dir(const std::string& path, mode_t mode) {
     std::string secontext;
+#ifndef VENDOR_NATIVEZYGOTE
     if (SelabelLookupFileContext(path, mode, &secontext) && !secontext.empty()) {
         setfscreatecon(secontext.c_str());
     }
+#endif
 
     int rc = mkdir(path.c_str(), mode);
 
@@ -365,6 +373,7 @@ static std::string init_android_dt_dir() {
                               if (key == "androidboot.android_dt_dir") {
                                   android_dt_dir = value;
                               }
+                              (void)in_qemu;
                           });
     LOG(INFO) << "Using Android DT directory " << android_dt_dir;
     return android_dt_dir;

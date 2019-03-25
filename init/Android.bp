@@ -135,6 +135,7 @@ cc_library_static {
         "ueventd.cpp",
         "ueventd_parser.cpp",
         "util.cpp",
+        "nzpacket.cpp",
     ],
     whole_static_libs: ["libcap", "com.android.sysprop.apex"],
     header_libs: ["bootimg_headers"],
@@ -172,6 +173,88 @@ cc_binary {
         },
     },
     ldflags: ["-Wl,--rpath,/system/${LIB}/bootstrap"],
+}
+
+cc_binary {
+    name: "nativezygote",
+    srcs: [
+        "nativezygote.cpp",
+        "util.cpp",
+        "selinux.cpp",
+        "nzpacket.cpp",
+        "descriptors.cpp",
+    ],
+    static_libs: [
+        "libcap",
+        "libavb",
+        "libfs_avb",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libselinux",
+    ],
+    init_rc: ["nativezygote.rc"],
+    cppflags: [
+        "-UALLOW_LOCAL_PROP_OVERRIDE",
+        "-DALLOW_LOCAL_PROP_OVERRIDE=1",
+        "-UALLOW_PERMISSIVE_SELINUX",
+        "-DALLOW_PERMISSIVE_SELINUX=1",
+        "-UREBOOT_BOOTLOADER_ON_PANIC",
+        "-DREBOOT_BOOTLOADER_ON_PANIC=1",
+        "-UWORLD_WRITABLE_KMSG",
+        "-DWORLD_WRITABLE_KMSG=1",
+        "-UDUMP_ON_UMOUNT_FAILURE",
+        "-DDUMP_ON_UMOUNT_FAILURE=1",
+        "-DSEPOLICY_VERSION=28",
+    ],
+}
+
+cc_binary {
+    name: "nativezygote_vendor",
+    srcs: [
+        "nativezygote.cpp",
+        "util.cpp",
+        // "selinux.cpp",
+        "nzpacket.cpp",
+        "descriptors.cpp",
+    ],
+    static_libs: [
+        "libcap",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libdl",
+        "libselinux",
+    ],
+    init_rc: ["nativezygote_vendor.rc"],
+    cppflags: [
+        "-DVENDOR_NATIVEZYGOTE",
+        "-UALLOW_LOCAL_PROP_OVERRIDE",
+        "-DALLOW_LOCAL_PROP_OVERRIDE=1",
+        "-UALLOW_PERMISSIVE_SELINUX",
+        "-DALLOW_PERMISSIVE_SELINUX=1",
+        "-UREBOOT_BOOTLOADER_ON_PANIC",
+        "-DREBOOT_BOOTLOADER_ON_PANIC=1",
+        "-UWORLD_WRITABLE_KMSG",
+        "-DWORLD_WRITABLE_KMSG=1",
+        "-UDUMP_ON_UMOUNT_FAILURE",
+        "-DDUMP_ON_UMOUNT_FAILURE=1",
+        "-DSEPOLICY_VERSION=28",
+    ],
+    vendor: true,
+}
+
+cc_binary {
+    name: "nzclient",
+    srcs: ["nzclient.cpp"],
+    shared_libs: [
+        "libcutils",
+    ],
 }
 
 // Tests
@@ -261,6 +344,7 @@ cc_binary {
         "subcontext.cpp",
         "subcontext.proto",
         "util.cpp",
+        "nzpacket.cpp",
     ],
     proto: {
         type: "lite",

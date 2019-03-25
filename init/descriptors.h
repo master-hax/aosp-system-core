@@ -45,7 +45,8 @@ class DescriptorInfo {
   int perm() const { return perm_; }
   const std::string& context() const { return context_; }
 
- private:
+ // private:
+ public:
   std::string name_;
   std::string type_;
   uid_t uid_;

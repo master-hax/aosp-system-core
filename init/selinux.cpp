@@ -92,6 +92,7 @@ EnforcingStatus StatusFromCmdline() {
                               if (key == "androidboot.selinux" && value == "permissive") {
                                   status = SELINUX_PERMISSIVE;
                               }
+                              (void)in_qemu;
                           });
 
     return status;

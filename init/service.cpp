@@ -30,6 +30,9 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include <sys/socket.h>
+#include <sys/un.h>
+
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -56,6 +59,8 @@
 #else
 #include "host_init_stubs.h"
 #endif
+
+#include "nzpacket.h"
 
 using android::base::boot_clock;
 using android::base::GetProperty;
@@ -185,6 +190,75 @@ Result<Success> Service::EnterNamespaces() const {
         }
     }
     return Success();
+}
+
+#define ANDROID_RESERVED_SOCKET_PREFIX "/dev/socket/"
+int socket_make_sockaddr_un(const char *name, int namespaceId, 
+        struct sockaddr_un *p_addr, socklen_t *alen)
+{
+    memset (p_addr, 0, sizeof (*p_addr));
+    size_t namelen;
+            namelen = strlen(name) + strlen(ANDROID_RESERVED_SOCKET_PREFIX);
+            /* unix_path_max appears to be missing on linux */
+            if (namelen > sizeof(*p_addr) 
+                    - offsetof(struct sockaddr_un, sun_path) - 1) {
+                goto error;
+            }
+
+            strcpy(p_addr->sun_path, ANDROID_RESERVED_SOCKET_PREFIX);
+            strcat(p_addr->sun_path, name);
+    p_addr->sun_family = AF_LOCAL;
+    *alen = namelen + offsetof(struct sockaddr_un, sun_path) + 1;
+    return 0;
+error:
+    return -1;
+}
+
+/**
+ * connect to peer named "name" on fd
+ * returns same fd or -1 on error.
+ * fd is not closed on error. that's your job.
+ * 
+ * Used by AndroidSocketImpl
+ */
+int socket_local_client_connect(int fd, const char* name, int namespaceId, int /*type*/) {
+    struct sockaddr_un addr;
+    socklen_t alen;
+    int err;
+
+    err = socket_make_sockaddr_un(name, namespaceId, &addr, &alen);
+
+    if (err < 0) {
+        goto error;
+    }
+
+    if(connect(fd, (struct sockaddr *) &addr, alen) < 0) {
+        goto error;
+    }
+
+    return fd;
+
+error:
+    return -1;
+}
+
+/** 
+ * connect to peer named "name"
+ * returns fd or -1 on error
+ */
+int socket_local_client(const char *name, int namespaceId, int type)
+{
+    int s;
+
+    s = socket(AF_LOCAL, type, 0);
+    if(s < 0) return -1;
+
+    if ( 0 > socket_local_client_connect(s, name, namespaceId, type)) {
+        close(s);
+        return -1;
+    }
+
+    return s;
 }
 
 static bool ExpandArgsAndExecv(const std::vector<std::string>& args, bool sigstop) {
@@ -880,6 +954,32 @@ Result<Success> Service::ExecStart() {
     return Success();
 }
 
+static int getnzsock(bool vendor) {
+  int retry = 5;
+
+  if (vendor) {
+    static int vendor_sock = socket_local_client("nativezygote_vendor", 1, SOCK_SEQPACKET);
+    while (vendor_sock == -1 && retry--) {
+      LOG(ERROR) << "Failed to connect to vendor nativezygote. Retrying...";
+      vendor_sock = socket_local_client("nativezygote_vendor", 1, SOCK_SEQPACKET);
+    }
+    if (vendor_sock) {
+      fcntl(vendor_sock, F_SETFD, FD_CLOEXEC);
+    }
+    return vendor_sock;
+  } else {
+    static int system_sock = socket_local_client("nativezygote", 1, SOCK_SEQPACKET);
+    while (system_sock == -1 && retry--) {
+      LOG(ERROR) << "Failed to connect to system nativezygote. Retrying...";
+      system_sock = socket_local_client("nativezygote", 1, SOCK_SEQPACKET);
+    }
+    if (system_sock) {
+      fcntl(system_sock, F_SETFD, FD_CLOEXEC);
+    }
+    return system_sock;
+  }
+}
+
 Result<Success> Service::Start() {
     if (is_updatable() && !ServiceList::GetInstance().IsServicesUpdated()) {
         ServiceList::GetInstance().DelayService(*this);
@@ -950,109 +1050,234 @@ Result<Success> Service::Start() {
     LOG(INFO) << "starting service '" << name_ << "'...";
 
     pid_t pid = -1;
-    if (namespace_flags_) {
-        pid = clone(nullptr, nullptr, namespace_flags_ | SIGCHLD, nullptr);
-    } else {
-        pid = fork();
+
+    static const std::vector<std::string> kUsingNativeZygote = {
+      "/system/bin/ashmemd",
+// "/system/bin/netd",
+      "/system/bin/lmkd",
+      "/system/bin/surfaceflinger",
+      // "/vendor/bin/hw/android.hardware.usb@1.0-service",
+#if 1
+"/system/bin/apexd",
+"/system/bin/app_process64",
+"/system/bin/cameraserver",
+"/system/bin/drmserver",
+"/system/bin/gpuservice",
+"/system/bin/heapprofd",
+"/system/bin/hw/android.hidl.allocator@1.0-service",
+"/system/bin/hw/android.system.suspend@1.0-service",
+"/system/bin/hwservicemanager",
+"/system/bin/incidentd",
+"/system/bin/installd",
+"/system/bin/iorapd",
+"/system/bin/iptables",
+"/system/bin/keystore",
+"/system/bin/logcat",
+"/system/bin/logd",
+"/system/bin/mediadrmserver",
+"/system/bin/mediaextractor",
+"/system/bin/mediametrics",
+"/system/bin/mediaserver",
+// "/system/bin/netd",
+"/system/bin/servicemanager",
+"/system/bin/sh",
+"/system/bin/storaged",
+"/system/bin/tombstoned",
+"/system/bin/traced_probes",
+"/system/bin/wificond",
+"/vendor/bin/hw/android.hardware.audio@2.0-service",
+"/vendor/bin/hw/android.hardware.cas@1.0-service",
+"/vendor/bin/hw/android.hardware.drm@1.0-service",
+"/vendor/bin/hw/android.hardware.dumpstate@1.0-service.cuttlefish",
+"/vendor/bin/hw/android.hardware.graphics.allocator@2.0-service",
+"/vendor/bin/hw/android.hardware.graphics.composer@2.1-service",
+"/vendor/bin/hw/android.hardware.health@2.0-service.cuttlefish",
+"/vendor/bin/hw/android.hardware.keymaster@3.0-service",
+"/vendor/bin/hw/android.hardware.neuralnetworks@1.2-service-sample-float-fast",
+"/vendor/bin/hw/android.hardware.neuralnetworks@1.2-service-sample-quant",
+"/vendor/bin/hw/android.hardware.power.stats@1.0-service.mock",
+"/vendor/bin/hw/android.hardware.sensors@1.0-service",
+"/vendor/bin/hw/libvsoc-rild",
+"/vendor/bin/socket_forward_proxy",
+"/vendor/bin/vndservicemanager",
+// "/vendor/bin/vsoc_guest_region_e2e_test",
+      // INSERTHERE
+//"/vendor/bin/vsoc_input_service",
+//"/vendor/bin/hw/android.hardware.power@1.0-service",
+//"/vendor/bin/hw/android.hardware.neuralnetworks@1.2-service-sample-minimal",
+//"/vendor/bin/hw/android.hardware.neuralnetworks@1.2-service-sample-float-slow",
+//"/vendor/bin/hw/android.hardware.neuralnetworks@1.2-service-sample-all",
+//"/vendor/bin/hw/android.hardware.media.omx@1.0-service",
+//"/vendor/bin/hw/android.hardware.light@2.0-service",
+//"/vendor/bin/hw/android.hardware.gnss@1.0-service",
+//"/vendor/bin/hw/android.hardware.gatekeeper@1.0-service",
+//"/vendor/bin/hw/android.hardware.configstore@1.1-service",
+//"/vendor/bin/hw/android.hardware.camera.provider@2.4-service",
+//"/vendor/bin/hw/android.hardware.bluetooth@1.0-service.sim",
+//"/system/bin/vold",
+//"/system/bin/traced",
+//"/system/bin/thermalserviced",
+//"/system/bin/mdnsd",
+//"/system/bin/ip6tables",
+//"/system/bin/healthd",
+//"/system/bin/gatekeeperd",
+//"/system/bin/audioserver",
+//"/system/bin/app_process32",
+//"/system/bin/adbd",
+#endif
+    };
+
+    if (!pre_apexd_ && std::find(kUsingNativeZygote.begin(), kUsingNativeZygote.end(),
+                  args_[0]) != kUsingNativeZygote.end()) {
+      bool is_vendor = (args_[0].find("/vendor/") != std::string::npos);
+      int sock = getnzsock(is_vendor);
+
+      if (sock != -1) {
+        android::init::NzPacket mypkt;
+        char buf[NZPACKET_SERIALIZED_SIZE];
+        mypkt.name = name_;
+        mypkt.args = args_;
+        mypkt.writepid_files = writepid_files_;
+        for (auto &desc : descriptors_) {
+          mypkt.descriptors.push_back(desc.get());
+        }
+        mypkt.ioprio_class = ioprio_class_;
+        mypkt.ioprio_pri = ioprio_pri_;
+        mypkt.priority = priority_;
+        mypkt.uid = uid_;
+        mypkt.gid = gid_;
+        mypkt.supp_gids = supp_gids_;
+        mypkt.scon = scon;
+        mypkt.seclabel = seclabel_;
+        if (capabilities_) {
+          mypkt.has_cap_set = true;
+          mypkt.cap_set = capabilities_->to_ullong();
+          mypkt.cap_set_size = capabilities_->size();
+        } else {
+          mypkt.has_cap_set = false;
+          mypkt.cap_set = 0;
+          mypkt.cap_set_size = 0;
+        }
+        mypkt.rlimits = rlimits_;
+        if (!mypkt.Serialize(buf)) {
+          LOG(ERROR) << "Failed to serialize!";
+        }
+        if (write(sock, buf, sizeof(buf)) > 0) {
+          int p;
+          if (read(sock, &p, sizeof(p)) > 0) {
+            pid = p;
+            LOG(INFO) << "Service " << name_ << " started by native zygote with PID " << pid;
+          }
+        }
+      }
     }
 
-    if (pid == 0) {
-        umask(077);
+    if (pid == -1) {
+      // Not started with native zygote.  Start with exec().
+      if (namespace_flags_) {
+          pid = clone(nullptr, nullptr, namespace_flags_ | SIGCHLD, nullptr);
+      } else {
+          pid = fork();
+      }
 
-        if (auto result = EnterNamespaces(); !result) {
-            LOG(FATAL) << "Service '" << name_ << "' could not enter namespaces: " << result.error();
-        }
+      if (pid == 0) {
+          umask(077);
+
+          if (auto result = EnterNamespaces(); !result) {
+              LOG(FATAL) << "Service '" << name_ << "' could not enter namespaces: " << result.error();
+          }
 
 #if defined(__ANDROID__)
-        if (pre_apexd_) {
-            if (!SwitchToBootstrapMountNamespaceIfNeeded()) {
-                LOG(FATAL) << "Service '" << name_ << "' could not enter "
-                           << "into the bootstrap mount namespace";
-            }
-        }
+          if (pre_apexd_) {
+              if (!SwitchToBootstrapMountNamespaceIfNeeded()) {
+                  LOG(FATAL) << "Service '" << name_ << "' could not enter "
+                             << "into the bootstrap mount namespace";
+              }
+          }
 #endif
 
-        if (namespace_flags_ & CLONE_NEWNS) {
-            if (auto result = SetUpMountNamespace(); !result) {
-                LOG(FATAL) << "Service '" << name_
-                           << "' could not set up mount namespace: " << result.error();
-            }
-        }
+          if (namespace_flags_ & CLONE_NEWNS) {
+              if (auto result = SetUpMountNamespace(); !result) {
+                  LOG(FATAL) << "Service '" << name_
+                             << "' could not set up mount namespace: " << result.error();
+              }
+          }
 
-        if (namespace_flags_ & CLONE_NEWPID) {
-            // This will fork again to run an init process inside the PID
-            // namespace.
-            if (auto result = SetUpPidNamespace(); !result) {
-                LOG(FATAL) << "Service '" << name_
-                           << "' could not set up PID namespace: " << result.error();
-            }
-        }
+          if (namespace_flags_ & CLONE_NEWPID) {
+              // This will fork again to run an init process inside the PID
+              // namespace.
+              if (auto result = SetUpPidNamespace(); !result) {
+                  LOG(FATAL) << "Service '" << name_
+                             << "' could not set up PID namespace: " << result.error();
+              }
+          }
 
-        for (const auto& [key, value] : environment_vars_) {
-            setenv(key.c_str(), value.c_str(), 1);
-        }
+          for (const auto& [key, value] : environment_vars_) {
+              setenv(key.c_str(), value.c_str(), 1);
+          }
 
-        std::for_each(descriptors_.begin(), descriptors_.end(),
-                      std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));
+          std::for_each(descriptors_.begin(), descriptors_.end(),
+                        std::bind(&DescriptorInfo::CreateAndPublish, std::placeholders::_1, scon));
 
-        // See if there were "writepid" instructions to write to files under cpuset path.
-        std::string cpuset_path;
-        if (CgroupGetControllerPath("cpuset", &cpuset_path)) {
-            auto cpuset_predicate = [&cpuset_path](const std::string& path) {
-                return StartsWith(path, cpuset_path + "/");
-            };
-            auto iter =
-                    std::find_if(writepid_files_.begin(), writepid_files_.end(), cpuset_predicate);
-            if (iter == writepid_files_.end()) {
-                // There were no "writepid" instructions for cpusets, check if the system default
-                // cpuset is specified to be used for the process.
-                std::string default_cpuset = GetProperty("ro.cpuset.default", "");
-                if (!default_cpuset.empty()) {
-                    // Make sure the cpuset name starts and ends with '/'.
-                    // A single '/' means the 'root' cpuset.
-                    if (default_cpuset.front() != '/') {
-                        default_cpuset.insert(0, 1, '/');
-                    }
-                    if (default_cpuset.back() != '/') {
-                        default_cpuset.push_back('/');
-                    }
-                    writepid_files_.push_back(
-                            StringPrintf("%s%stasks", cpuset_path.c_str(), default_cpuset.c_str()));
-                }
-            }
-        } else {
-            LOG(ERROR) << "cpuset cgroup controller is not mounted!";
-        }
-        std::string pid_str = std::to_string(getpid());
-        for (const auto& file : writepid_files_) {
-            if (!WriteStringToFile(pid_str, file)) {
-                PLOG(ERROR) << "couldn't write " << pid_str << " to " << file;
-            }
-        }
+          // See if there were "writepid" instructions to write to files under cpuset path.
+          std::string cpuset_path;
+          if (CgroupGetControllerPath("cpuset", &cpuset_path)) {
+              auto cpuset_predicate = [&cpuset_path](const std::string& path) {
+                  return StartsWith(path, cpuset_path + "/");
+              };
+              auto iter =
+                      std::find_if(writepid_files_.begin(), writepid_files_.end(), cpuset_predicate);
+              if (iter == writepid_files_.end()) {
+                  // There were no "writepid" instructions for cpusets, check if the system default
+                  // cpuset is specified to be used for the process.
+                  std::string default_cpuset = GetProperty("ro.cpuset.default", "");
+                  if (!default_cpuset.empty()) {
+                      // Make sure the cpuset name starts and ends with '/'.
+                      // A single '/' means the 'root' cpuset.
+                      if (default_cpuset.front() != '/') {
+                          default_cpuset.insert(0, 1, '/');
+                      }
+                      if (default_cpuset.back() != '/') {
+                          default_cpuset.push_back('/');
+                      }
+                      writepid_files_.push_back(
+                              StringPrintf("%s%stasks", cpuset_path.c_str(), default_cpuset.c_str()));
+                  }
+              }
+          } else {
+              LOG(ERROR) << "cpuset cgroup controller is not mounted!";
+          }
+          std::string pid_str = std::to_string(getpid());
+          for (const auto& file : writepid_files_) {
+              if (!WriteStringToFile(pid_str, file)) {
+                  PLOG(ERROR) << "couldn't write " << pid_str << " to " << file;
+              }
+          }
 
-        if (ioprio_class_ != IoSchedClass_NONE) {
-            if (android_set_ioprio(getpid(), ioprio_class_, ioprio_pri_)) {
-                PLOG(ERROR) << "failed to set pid " << getpid()
-                            << " ioprio=" << ioprio_class_ << "," << ioprio_pri_;
-            }
-        }
+          if (ioprio_class_ != IoSchedClass_NONE) {
+              if (android_set_ioprio(getpid(), ioprio_class_, ioprio_pri_)) {
+                  PLOG(ERROR) << "failed to set pid " << getpid()
+                              << " ioprio=" << ioprio_class_ << "," << ioprio_pri_;
+              }
+          }
 
-        if (needs_console) {
-            setsid();
-            OpenConsole();
-        } else {
-            ZapStdio();
-        }
+          if (needs_console) {
+              setsid();
+              OpenConsole();
+          } else {
+              ZapStdio();
+          }
 
-        // As requested, set our gid, supplemental gids, uid, context, and
-        // priority. Aborts on failure.
-        SetProcessAttributes();
+          // As requested, set our gid, supplemental gids, uid, context, and
+          // priority. Aborts on failure.
+          SetProcessAttributes();
 
-        if (!ExpandArgsAndExecv(args_, sigstop_)) {
-            PLOG(ERROR) << "cannot execve('" << args_[0] << "')";
-        }
+          if (!ExpandArgsAndExecv(args_, sigstop_)) {
+              PLOG(ERROR) << "cannot execve('" << args_[0] << "')";
+          }
 
-        _exit(127);
+          _exit(127);
+      }
     }
 
     if (pid < 0) {

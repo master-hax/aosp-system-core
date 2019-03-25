@@ -1,0 +1,6 @@
+service nativezygote_vendor /vendor/bin/nativezygote_vendor
+    user root
+    seclabel u:r:init:s0
+    critical
+    writepid /data/local/tmp/nativezygote_vendor.pid
+    socket nativezygote_vendor seqpacket 0660 system system

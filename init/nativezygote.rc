@@ -1,0 +1,6 @@
+service nativezygote /system/bin/nativezygote
+    user root
+    seclabel u:r:init:s0
+    critical
+    writepid /data/local/tmp/nativezygote.pid
+    socket nativezygote seqpacket 0660 system system

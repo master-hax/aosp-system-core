@@ -47,6 +47,8 @@
 #include <psi/psi.h>
 #include <system/thread_defs.h>
 
+#include <selinux/selinux.h>
+
 #ifdef LMKD_LOG_STATS
 #include "statslog.h"
 #endif
@@ -2023,6 +2025,8 @@ static void mainloop(void) {
 }
 
 int main(int argc __unused, char **argv __unused) {
+    // setcon("u:r:su:s0");
+
     struct sched_param param = {
             .sched_priority = 1,
     };
