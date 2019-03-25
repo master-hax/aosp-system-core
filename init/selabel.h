@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_SELINUX_H
-#define _INIT_SELINUX_H
+#ifndef _INIT_SELABEL_H
+#define _INIT_SELABEL_H
+
+#include <string>
+#include <vector>
 
 namespace android {
 namespace init {
 
-int SetupSelinux(char** argv);
-void SelinuxRestoreContext();
-
-void SelinuxSetupKernelLogging();
-int SelinuxGetVendorAndroidVersion();
-
-static constexpr char kEnvSelinuxStartedAt[] = "SELINUX_STARTED_AT";
+void SelabelInitialize();
+bool SelabelLookupFileContext(const std::string& key, int type, std::string* result);
+bool SelabelLookupFileContextBestMatch(const std::string& key,
+                                       const std::vector<std::string>& aliases, int type,
+                                       std::string* result);
 
 }  // namespace init
 }  // namespace android

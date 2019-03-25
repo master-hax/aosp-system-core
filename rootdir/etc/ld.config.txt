@@ -5,6 +5,8 @@
 
 # Don't change the order here. The first pattern that matches with the
 # absolute path of an executable is selected.
+exe.vendor = /system/bin/nativezygote_vendor
+
 dir.system = /system/bin/
 dir.system = /system/xbin/
 dir.system = /%PRODUCT%/bin/
