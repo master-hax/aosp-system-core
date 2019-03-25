@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_SELINUX_H
-#define _INIT_SELINUX_H
+#ifndef _INIT_NATIVEZYGOTE_H
+#define _INIT_NATIVEZYGOTE_H
+
+#include "system/core/init/nativezygote.pb.h"
 
 namespace android {
 namespace init {
 
-int SetupSelinux(char** argv);
-void SelinuxRestoreContext();
-
-void SelinuxSetupKernelLogging();
-int SelinuxGetVendorAndroidVersion();
-
-static constexpr char kEnvSelinuxStartedAt[] = "SELINUX_STARTED_AT";
+constexpr size_t kMaxNativeZygoteRequestSize = 64 * 1024;
 
 }  // namespace init
 }  // namespace android
