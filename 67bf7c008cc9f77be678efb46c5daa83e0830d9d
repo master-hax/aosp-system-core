@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cb593538_49e70959",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-25T13:30:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "deaf6ee9_214c8781",
+      "range": {
+        "startLine": 195,
+        "startChar": 16,
+        "endLine": 195,
+        "endChar": 33
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dbc50db6_60b48f93",
         "filename": "healthd/include/healthd/healthd.h",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "10ff97a3_5e7c1dd1",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-25T13:30:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dbc50db6_60b48f93",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 30
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d705159_aff06f74",
         "filename": "healthd/include/healthd/healthd.h",
         "patchSetId": 2
@@ -68,6 +116,30 @@
       "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c4f2a78_abcd8795",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1346891
+      },
+      "writtenOn": "2019-03-25T13:30:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d705159_aff06f74",
+      "range": {
+        "startLine": 87,
+        "startChar": 26,
+        "endLine": 87,
+        "endChar": 43
+      },
+      "revId": "67bf7c008cc9f77be678efb46c5daa83e0830d9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
