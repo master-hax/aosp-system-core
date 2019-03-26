@@ -141,6 +141,30 @@
       "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9984d4b2_4e3166d9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-03-26T18:14:35Z",
+      "side": 1,
+      "message": "Right, the start of the sentence could be read differently. Rephrased.",
+      "parentUuid": "c3f54395_9d043320",
+      "range": {
+        "startLine": 15,
+        "startChar": 27,
+        "endLine": 15,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
