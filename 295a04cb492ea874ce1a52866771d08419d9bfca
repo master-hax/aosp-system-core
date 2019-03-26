@@ -22,6 +22,30 @@
       "revId": "295a04cb492ea874ce1a52866771d08419d9bfca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45593a87_3a9e2dd3",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-03-26T22:00:06Z",
+      "side": 1,
+      "message": "So:\n\n            if (android::base::ReadFileToString(kmsg[i], \u0026buf) \u0026\u0026 !buf.empty()) {\n                break;\n            }\n\n?",
+      "parentUuid": "0dbd81d1_0fdef70d",
+      "range": {
+        "startLine": 225,
+        "startChar": 0,
+        "endLine": 234,
+        "endChar": 9
+      },
+      "revId": "295a04cb492ea874ce1a52866771d08419d9bfca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
