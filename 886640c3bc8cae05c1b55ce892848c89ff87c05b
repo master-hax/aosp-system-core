@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fde81905_5994aba7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-03-26T21:46:13Z",
+      "side": 1,
+      "message": "\"entries are added and then removed\" sounds better but up to you.",
+      "range": {
+        "startLine": 15,
+        "startChar": 46,
+        "endLine": 16,
+        "endChar": 7
+      },
+      "revId": "886640c3bc8cae05c1b55ce892848c89ff87c05b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
