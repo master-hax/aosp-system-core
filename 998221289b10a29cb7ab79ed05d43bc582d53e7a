@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a0ebeaa_6a506685",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-03-26T17:26:22Z",
+      "side": 1,
+      "message": "Can\u0027t we use a more restricted set of path instead of /data? AFAIK, apps cannot install binaries anywhere. I\u0027d expect them to be able to run things from /data/app* or /data/data, but not much more. Or is it because you\u0027re worried about updates in Mainline modules that may enable apps to run from more places under /data? Or maybe is it for simplicity (which is probably fine too)?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bd45078_6f0cb3c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-03-26T17:26:22Z",
+      "side": 1,
+      "message": "Drop?",
+      "range": {
+        "startLine": 15,
+        "startChar": 27,
+        "endLine": 15,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
