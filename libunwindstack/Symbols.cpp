@@ -18,7 +18,9 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <deque>
 #include <string>
+#include <vector>
 
 #include <unwindstack/Memory.h>
 
@@ -29,89 +31,107 @@ namespace unwindstack {
 
 Symbols::Symbols(uint64_t offset, uint64_t size, uint64_t entry_size, uint64_t str_offset,
                  uint64_t str_size)
-    : cur_offset_(offset),
-      offset_(offset),
-      end_(offset + size),
+    : offset_(offset),
+      count_(entry_size != 0 ? size / entry_size : 0),
       entry_size_(entry_size),
       str_offset_(str_offset),
       str_end_(str_offset_ + str_size) {}
 
-const Symbols::Info* Symbols::GetInfoFromCache(uint64_t addr) {
-  // Binary search the table.
+template <typename SymType>
+static bool IsFunc(const SymType* entry) {
+  return entry->st_shndx != SHN_UNDEF && ELF32_ST_TYPE(entry->st_info) == STT_FUNC;
+}
+
+// Binary search the symbol table to find function containing the given address.
+// Without remap, the symbol table is assumed to be sorted and accessed directly.
+// If the symbol table is not sorted this method mind fail but should not crash.
+// When the indices are remapped, they are guaranteed to be sorted by address.
+template <bool RemapIndices, typename SymType>
+bool Symbols::BinarySearch(uint64_t addr, Memory* elf_memory, SymType* entry) {
   size_t first = 0;
-  size_t last = symbols_.size();
+  size_t last = RemapIndices ? remap_.size() : count_;
   while (first < last) {
     size_t current = first + (last - first) / 2;
-    const Info* info = &symbols_[current];
-    if (addr < info->start_offset) {
+    size_t remaped = RemapIndices ? remap_[current] : current;
+    if (!elf_memory->ReadFully(offset_ + remaped * entry_size_, entry, sizeof(SymType))) {
+      return false;
+    }
+    if (addr < entry->st_value) {
       last = current;
-    } else if (addr < info->end_offset) {
-      return info;
+    } else if (addr < entry->st_value + entry->st_size) {
+      return true;
     } else {
       first = current + 1;
     }
   }
-  return nullptr;
+  return false;
+}
+
+template <typename SymType>
+bool Symbols::GetEntry(uint64_t addr, Memory* elf_memory, SymType* entry) {
+  // Assume the symbol table is sorted. If it is not, this will gracefully fail.
+  if (remap_.empty() && BinarySearch<false>(addr, elf_memory, entry) && IsFunc(entry)) {
+    return true;
+  }
+
+  // Build remapping table, which allows us to access the symbols in sorted order.
+  if (remap_.empty()) {
+    std::vector<uint64_t> addrs;
+    addrs.reserve(count_);
+    for (uint32_t i = 0; i < count_; i++) {
+      if (!elf_memory->ReadFully(offset_ + i * entry_size_, entry, sizeof(SymType))) {
+        break;  // Stop processing, something looks like it is corrupted.
+      }
+      addrs.push_back(entry->st_value);
+      if (IsFunc(entry)) {
+        remap_.push_back(i);
+      }
+    }
+    // Sort by address to make the remap list binary searchable.
+    auto addr_lt = [&addrs](auto a, auto b) { return addrs[a] < addrs[b]; };
+    std::stable_sort(remap_.begin(), remap_.end(), addr_lt);
+    // Remove duplicate entries (methods de-duplicated by the linker).
+    auto addr_eq = [&addrs](auto a, auto b) { return addrs[a] == addrs[b]; };
+    remap_.erase(std::unique(remap_.begin(), remap_.end(), addr_eq), remap_.end());
+  }
+
+  // Binary search using the remapping table.
+  if (BinarySearch<true>(addr, elf_memory, entry)) {
+    CHECK(IsFunc(entry));
+    return true;
+  }
+
+  return false;
 }
 
 template <typename SymType>
 bool Symbols::GetName(uint64_t addr, Memory* elf_memory, std::string* name, uint64_t* func_offset) {
-  if (symbols_.size() != 0) {
-    const Info* info = GetInfoFromCache(addr);
-    if (info) {
-      CHECK(addr >= info->start_offset && addr <= info->end_offset);
-      *func_offset = addr - info->start_offset;
-      return elf_memory->ReadString(info->str_offset, name, str_end_ - info->str_offset);
-    }
-  }
+  // Lookup the address in the cache (which is keyed by end address).
+  auto it = cache_.upper_bound(addr);  // it.first > addr
+  bool found = (it != cache_.end()) && (addr >= it->first - it->second.size);
 
-  bool symbol_added = false;
-  bool return_value = false;
-  while (cur_offset_ + entry_size_ <= end_) {
-    SymType entry;
-    if (!elf_memory->ReadFully(cur_offset_, &entry, sizeof(entry))) {
-      // Stop all processing, something looks like it is corrupted.
-      cur_offset_ = UINT64_MAX;
+  // Otherwise find the entry in the symbol table and cache it.
+  SymType entry;
+  if (!found) {
+    if (!GetEntry(addr, elf_memory, &entry)) {
       return false;
     }
-    cur_offset_ += entry_size_;
-
-    if (entry.st_shndx != SHN_UNDEF && ELF32_ST_TYPE(entry.st_info) == STT_FUNC) {
-      // Treat st_value as virtual address.
-      uint64_t start_offset = entry.st_value;
-      uint64_t end_offset = start_offset + entry.st_size;
-
-      // Cache the value.
-      symbols_.emplace_back(start_offset, end_offset, str_offset_ + entry.st_name);
-      symbol_added = true;
-
-      if (addr >= start_offset && addr < end_offset) {
-        *func_offset = addr - start_offset;
-        uint64_t offset = str_offset_ + entry.st_name;
-        if (offset < str_end_) {
-          return_value = elf_memory->ReadString(offset, name, str_end_ - offset);
-        }
-        break;
-      }
-    }
+    FuncInfo info{.size = entry.st_size, .name = entry.st_name};
+    it = cache_.emplace(entry.st_value + entry.st_size, info).first;
   }
 
-  if (symbol_added) {
-    std::sort(symbols_.begin(), symbols_.end(),
-              [](const Info& a, const Info& b) { return a.start_offset < b.start_offset; });
-  }
-  return return_value;
+  *func_offset = addr - (it->first - it->second.size);
+  uint64_t str = str_offset_ + it->second.name;
+  return str < str_end_ && elf_memory->ReadString(str, name, str_end_ - str);
 }
 
 template <typename SymType>
 bool Symbols::GetGlobal(Memory* elf_memory, const std::string& name, uint64_t* memory_address) {
-  uint64_t cur_offset = offset_;
-  while (cur_offset + entry_size_ <= end_) {
+  for (uint32_t i = 0; i < count_; i++) {
     SymType entry;
-    if (!elf_memory->ReadFully(cur_offset, &entry, sizeof(entry))) {
+    if (!elf_memory->ReadFully(offset_ + i * entry_size_, &entry, sizeof(entry))) {
       return false;
     }
-    cur_offset += entry_size_;
 
     if (entry.st_shndx != SHN_UNDEF && ELF32_ST_TYPE(entry.st_info) == STT_OBJECT &&
         ELF32_ST_BIND(entry.st_info) == STB_GLOBAL) {
