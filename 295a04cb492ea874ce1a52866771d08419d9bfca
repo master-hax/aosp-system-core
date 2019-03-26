@@ -70,6 +70,30 @@
       "revId": "295a04cb492ea874ce1a52866771d08419d9bfca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da203b57_1881f8ff",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2019-03-26T23:04:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b3a117e_e7c14bcd",
+      "range": {
+        "startLine": 225,
+        "startChar": 0,
+        "endLine": 234,
+        "endChar": 9
+      },
+      "revId": "295a04cb492ea874ce1a52866771d08419d9bfca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
