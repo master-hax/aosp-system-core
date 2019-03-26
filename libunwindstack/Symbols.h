@@ -19,8 +19,8 @@
 
 #include <stdint.h>
 
+#include <map>
 #include <string>
-#include <vector>
 
 namespace unwindstack {
 
@@ -28,20 +28,15 @@ namespace unwindstack {
 class Memory;
 
 class Symbols {
-  struct Info {
-    Info(uint64_t start_offset, uint64_t end_offset, uint64_t str_offset)
-        : start_offset(start_offset), end_offset(end_offset), str_offset(str_offset) {}
-    uint64_t start_offset;
-    uint64_t end_offset;
-    uint64_t str_offset;
+  struct FuncInfo {
+    uint64_t size;  // Code size in bytes.
+    uint64_t name;  // Offset in .strtab.
   };
 
  public:
   Symbols(uint64_t offset, uint64_t size, uint64_t entry_size, uint64_t str_offset,
           uint64_t str_size);
   virtual ~Symbols() = default;
-
-  const Info* GetInfoFromCache(uint64_t addr);
 
   template <typename SymType>
   bool GetName(uint64_t addr, Memory* elf_memory, std::string* name, uint64_t* func_offset);
@@ -50,19 +45,26 @@ class Symbols {
   bool GetGlobal(Memory* elf_memory, const std::string& name, uint64_t* memory_address);
 
   void ClearCache() {
-    symbols_.clear();
-    cur_offset_ = offset_;
+    remap_.clear();
+    cache_.clear();
   }
 
  private:
-  uint64_t cur_offset_;
-  uint64_t offset_;
-  uint64_t end_;
-  uint64_t entry_size_;
-  uint64_t str_offset_;
-  uint64_t str_end_;
+  template <bool UseIndex, typename SymType>
+  bool BinarySearch(uint64_t addr, Memory* elf_memory, SymType* entry);
 
-  std::vector<Info> symbols_;
+  template <typename SymType>
+  bool GetEntry(uint64_t addr, Memory* elf_memory, SymType* entry);
+
+  const uint64_t offset_;
+  const uint64_t count_;
+  const uint64_t entry_size_;
+  const uint64_t str_offset_;
+  const uint64_t str_end_;
+
+  std::vector<uint32_t> remap_;  // Indices of function symbols sorted by their address.
+
+  std::map<uint64_t, FuncInfo> cache_;  // Previously seen methods sorted by end address.
 };
 
 }  // namespace unwindstack

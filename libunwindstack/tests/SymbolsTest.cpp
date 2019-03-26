@@ -274,7 +274,9 @@ TYPED_TEST_P(SymbolsTest, symtab_read_cached) {
   // Do call that should cache all of the entries (except the string data).
   std::string name;
   uint64_t func_offset;
-  ASSERT_FALSE(symbols.GetName<TypeParam>(0x6000, &this->memory_, &name, &func_offset));
+  ASSERT_FALSE(symbols.GetName<TypeParam>(0x5000, &this->memory_, &name, &func_offset));
+  ASSERT_FALSE(symbols.GetName<TypeParam>(0x2000, &this->memory_, &name, &func_offset));
+  ASSERT_FALSE(symbols.GetName<TypeParam>(0x1000, &this->memory_, &name, &func_offset));
   this->memory_.Clear();
   ASSERT_FALSE(symbols.GetName<TypeParam>(0x6000, &this->memory_, &name, &func_offset));
 
