@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2a1208cc_bc1a0e24",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-03-26T17:44:50Z",
+      "side": 1,
+      "message": "Well, we\u0027ve already had pains with test binaries in unforeseen locations.\n\nAs I argue below this is only to retain functional parity with the fallback config in the linker. In principle we ought to replace that hardcoded config with one that have the APEX namespaces (except it would be horrible from a maintenance perspective).\n\nSo if we are to restrict this, I think the right question to ask is if we deliberately want to break binaries that may be run from other paths, where ever they may be. I don\u0027t know of any reason to do that. Even if there is one then a more restrictive SELinux config is probably a better way to go about it.",
+      "parentUuid": "4a0ebeaa_6a506685",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4bd45078_6f0cb3c9",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47a44bbe_c57976dd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2019-03-26T17:44:50Z",
+      "side": 1,
+      "message": "Not according to my grammar sense; it could possibly be replaced with \"hence\".",
+      "parentUuid": "4bd45078_6f0cb3c9",
+      "range": {
+        "startLine": 15,
+        "startChar": 27,
+        "endLine": 15,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
