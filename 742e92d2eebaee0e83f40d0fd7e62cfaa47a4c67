@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "075341d4_8ca73b2a",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-03-26T21:20:23Z",
+      "side": 1,
+      "message": "if this is only used by init, maybe we can save the static for rest?\ne.g. just test if access to CGROUPS_RC_DIR/CGROUPS_RC_FILE or just skip the check?",
+      "range": {
+        "startLine": 424,
+        "startChar": 4,
+        "endLine": 424,
+        "endChar": 10
+      },
+      "revId": "742e92d2eebaee0e83f40d0fd7e62cfaa47a4c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
