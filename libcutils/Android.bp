@@ -92,9 +92,6 @@ cc_library {
             ],
 
             enabled: true,
-            shared: {
-                enabled: false,
-            },
             cflags: [
                 "-D_GNU_SOURCE",
             ],
