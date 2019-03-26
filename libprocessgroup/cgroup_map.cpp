@@ -51,6 +51,9 @@ static constexpr const char* CGROUP_PROCS_FILE = "/cgroup.procs";
 static constexpr const char* CGROUP_TASKS_FILE = "/tasks";
 static constexpr const char* CGROUP_TASKS_FILE_V2 = "/cgroup.tasks";
 
+static const std::string kCgroupRcPath =
+        std::string(CGROUPS_RC_DIR) + "/" + std::string(CgroupMap::CGROUPS_RC_FILE);
+
 static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,
                   const std::string& gid) {
     if (mode == 0) {
@@ -228,12 +231,14 @@ static bool SetupCgroup(const CgroupDescriptor&) {
 #endif
 
 static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors) {
-    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CgroupMap::CGROUPS_RC_FILE);
-    unique_fd fd(TEMP_FAILURE_RETRY(open(cgroup_rc_path.c_str(),
-                                         O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
-                                         S_IRUSR | S_IRGRP | S_IROTH)));
+    // WARNING: We are intentionally leaking the FD to keep the file open forever.
+    // Let init keep the FD open to prevent file mappings from becoming invalid in
+    // case the file gets deleted somehow.
+    int fd =
+            TEMP_FAILURE_RETRY(open(kCgroupRcPath.c_str(), O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
+                                    S_IRUSR | S_IRGRP | S_IROTH));
     if (fd < 0) {
-        PLOG(ERROR) << "open() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "open() failed for " << kCgroupRcPath;
         return false;
     }
 
@@ -242,14 +247,14 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
     fl.controller_count_ = descriptors.size();
     int ret = TEMP_FAILURE_RETRY(write(fd, &fl, sizeof(fl)));
     if (ret < 0) {
-        PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "write() failed for " << kCgroupRcPath;
         return false;
     }
 
     for (const auto& [name, descriptor] : descriptors) {
         ret = TEMP_FAILURE_RETRY(write(fd, descriptor.controller(), sizeof(CgroupController)));
         if (ret < 0) {
-            PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
+            PLOG(ERROR) << "write() failed for " << kCgroupRcPath;
             return false;
         }
     }
@@ -350,38 +355,37 @@ bool CgroupMap::LoadRcFile() {
         return true;
     }
 
-    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CGROUPS_RC_FILE);
-    unique_fd fd(TEMP_FAILURE_RETRY(open(cgroup_rc_path.c_str(), O_RDONLY | O_CLOEXEC)));
+    unique_fd fd(TEMP_FAILURE_RETRY(open(kCgroupRcPath.c_str(), O_RDONLY | O_CLOEXEC)));
     if (fd < 0) {
-        PLOG(ERROR) << "open() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "open() failed for " << kCgroupRcPath;
         return false;
     }
 
     if (fstat(fd, &sb) < 0) {
-        PLOG(ERROR) << "fstat() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "fstat() failed for " << kCgroupRcPath;
         return false;
     }
 
     size_t file_size = sb.st_size;
     if (file_size < sizeof(CgroupFile)) {
-        LOG(ERROR) << "Invalid file format " << cgroup_rc_path;
+        LOG(ERROR) << "Invalid file format " << kCgroupRcPath;
         return false;
     }
 
     CgroupFile* file_data = (CgroupFile*)mmap(nullptr, file_size, PROT_READ, MAP_SHARED, fd, 0);
     if (file_data == MAP_FAILED) {
-        PLOG(ERROR) << "Failed to mmap " << cgroup_rc_path;
+        PLOG(ERROR) << "Failed to mmap " << kCgroupRcPath;
         return false;
     }
 
     if (file_data->version_ != CgroupFile::FILE_CURR_VERSION) {
-        LOG(ERROR) << cgroup_rc_path << " file version mismatch";
+        LOG(ERROR) << kCgroupRcPath << " file version mismatch";
         munmap(file_data, file_size);
         return false;
     }
 
     if (file_size != sizeof(CgroupFile) + file_data->controller_count_ * sizeof(CgroupController)) {
-        LOG(ERROR) << cgroup_rc_path << " file has invalid size";
+        LOG(ERROR) << kCgroupRcPath << " file has invalid size";
         munmap(file_data, file_size);
         return false;
     }
@@ -411,6 +415,18 @@ void CgroupMap::Print() const {
 
 bool CgroupMap::SetupCgroups() {
     std::map<std::string, CgroupDescriptor> descriptors;
+
+    if (getpid() != 1) {
+        LOG(ERROR) << "Cgroup setup can be done only by init process";
+        return false;
+    }
+
+    // Make sure we do this only one time. No need for std::call_once because
+    // init is a single-threaded process
+    if (access(kCgroupRcPath.c_str(), F_OK) == 0) {
+        LOG(WARNING) << "Attempt to call SetupCgroups more than once";
+        return true;
+    }
 
     // load cgroups.json file
     if (!ReadDescriptors(&descriptors)) {
@@ -442,9 +458,8 @@ bool CgroupMap::SetupCgroups() {
         return false;
     }
 
-    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CGROUPS_RC_FILE);
-    // chmod 0644 <cgroup_rc_path>
-    if (fchmodat(AT_FDCWD, cgroup_rc_path.c_str(), 0644, AT_SYMLINK_NOFOLLOW) < 0) {
+    // chmod 0644 <kCgroupRcPath>
+    if (fchmodat(AT_FDCWD, kCgroupRcPath.c_str(), 0644, AT_SYMLINK_NOFOLLOW) < 0) {
         PLOG(ERROR) << "fchmodat() failed";
         return false;
     }
