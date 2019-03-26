@@ -22,6 +22,30 @@
       "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e233782b_70315662",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2019-03-26T17:24:48Z",
+      "side": 1,
+      "message": "Is -lws2_32 in the linker command?  (it should be according to build/soong/cc/config/x86_windows_host.go).  That lib should provide these functions.\n\nMy first guess would be that socket_inaddr_any_server was never used for Windows and these symbols weren\u0027t needed when libcutils was a static lib.  But these need to be resolved when creating a libcutils.DLL.",
+      "parentUuid": "ce45d723_2c680f15",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 107
+      },
+      "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
