@@ -227,13 +227,14 @@ static bool SetupCgroup(const CgroupDescriptor&) {
 
 #endif
 
-static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descriptors) {
-    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CgroupMap::CGROUPS_RC_FILE);
-    unique_fd fd(TEMP_FAILURE_RETRY(open(cgroup_rc_path.c_str(),
-                                         O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
-                                         S_IRUSR | S_IRGRP | S_IROTH)));
+static bool WriteRcFile(const std::string& path,
+                        const std::map<std::string, CgroupDescriptor>& descriptors) {
+    // Let init keep the FD open to prevent file mappings from becoming invalid
+    // in case the file gets deleted somehow
+    static int fd = TEMP_FAILURE_RETRY(open(path.c_str(), O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC,
+                                            S_IRUSR | S_IRGRP | S_IROTH));
     if (fd < 0) {
-        PLOG(ERROR) << "open() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "open() failed for " << path;
         return false;
     }
 
@@ -242,14 +243,14 @@ static bool WriteRcFile(const std::map<std::string, CgroupDescriptor>& descripto
     fl.controller_count_ = descriptors.size();
     int ret = TEMP_FAILURE_RETRY(write(fd, &fl, sizeof(fl)));
     if (ret < 0) {
-        PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
+        PLOG(ERROR) << "write() failed for " << path;
         return false;
     }
 
     for (const auto& [name, descriptor] : descriptors) {
         ret = TEMP_FAILURE_RETRY(write(fd, descriptor.controller(), sizeof(CgroupController)));
         if (ret < 0) {
-            PLOG(ERROR) << "write() failed for " << cgroup_rc_path;
+            PLOG(ERROR) << "write() failed for " << path;
             return false;
         }
     }
@@ -412,6 +413,19 @@ void CgroupMap::Print() const {
 bool CgroupMap::SetupCgroups() {
     std::map<std::string, CgroupDescriptor> descriptors;
 
+    if (getpid() != 1) {
+        LOG(ERROR) << "Cgroup setup can be done only by init process";
+        return false;
+    }
+
+    // Make sure we do this only one time. No need for std::call_once because
+    // init is a single-threaded process
+    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CGROUPS_RC_FILE);
+    if (access(cgroup_rc_path.c_str(), F_OK) == 0) {
+        LOG(WARNING) << "Attempt to call SetupCgroups more than once";
+        return true;
+    }
+
     // load cgroups.json file
     if (!ReadDescriptors(&descriptors)) {
         LOG(ERROR) << "Failed to load cgroup description file";
@@ -437,12 +451,11 @@ bool CgroupMap::SetupCgroups() {
     // process memory. This optimizes performance, memory usage
     // and limits infrormation shared with unprivileged processes
     // to the minimum subset of information from cgroups.json
-    if (!WriteRcFile(descriptors)) {
+    if (!WriteRcFile(cgroup_rc_path, descriptors)) {
         LOG(ERROR) << "Failed to write " << CGROUPS_RC_FILE << " file";
         return false;
     }
 
-    std::string cgroup_rc_path = StringPrintf("%s/%s", CGROUPS_RC_DIR, CGROUPS_RC_FILE);
     // chmod 0644 <cgroup_rc_path>
     if (fchmodat(AT_FDCWD, cgroup_rc_path.c_str(), 0644, AT_SYMLINK_NOFOLLOW) < 0) {
         PLOG(ERROR) << "fchmodat() failed";
