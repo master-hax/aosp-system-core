@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb780b16_3dacc70f",
+        "filename": "init/mount_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-26T18:31:27Z",
+      "side": 1,
+      "message": "verity reports dm-0 on marlin, so we have to get GetDmDevicePathByName(\"system\") to get this right ...",
+      "range": {
+        "startLine": 60,
+        "startChar": 8,
+        "endLine": 60,
+        "endChar": 9
+      },
+      "revId": "6c6c5719949a00a2a58176d58964f493452352cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
