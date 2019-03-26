@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "09403eb3_a9e6acc9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-03-26T18:03:52Z",
+      "side": 1,
+      "message": "SGTM.",
+      "parentUuid": "2a1208cc_bc1a0e24",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4bd45078_6f0cb3c9",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Not according to my grammar sense; it could possibly be replaced with \"hence\".",
       "parentUuid": "4bd45078_6f0cb3c9",
+      "range": {
+        "startLine": 15,
+        "startChar": 27,
+        "endLine": 15,
+        "endChar": 29
+      },
+      "revId": "998221289b10a29cb7ab79ed05d43bc582d53e7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3f54395_9d043320",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1052644
+      },
+      "writtenOn": "2019-03-26T18:03:52Z",
+      "side": 1,
+      "message": "The whole sentence sounds strange as-is. It looks to me you should either drop \"so\" here, or change the beginning of the sentence to something like \"(Some) APEXes no longer contains the …\".",
+      "parentUuid": "47a44bbe_c57976dd",
       "range": {
         "startLine": 15,
         "startChar": 27,
