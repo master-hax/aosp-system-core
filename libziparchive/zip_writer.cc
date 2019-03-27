@@ -31,7 +31,12 @@
 #include "zip_archive_common.h"
 
 #if !defined(powerof2)
-#define powerof2(x) ((((x)-1) & (x)) == 0)
+#define powerof2(x)                                               \
+  ({                                                              \
+    __typeof__(x) _x = (x);                                       \
+    __typeof__(x) _x2;                                            \
+    __builtin_add_overflow(_x, -1, &_x2) ? 1 : ((_x2 & _x) == 0); \
+  })
 #endif
 
 /* Zip compression methods we support */
