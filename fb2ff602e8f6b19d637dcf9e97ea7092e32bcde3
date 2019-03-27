@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbad6e50_384ebd01",
+        "filename": "libziparchive/zip_writer.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-27T15:22:03Z",
+      "side": 1,
+      "message": "actually, do you want #undef? otherwise you\u0027ll still get the non-UB-clean one on glibc and macOS... right now this is Windows-only.",
+      "revId": "fb2ff602e8f6b19d637dcf9e97ea7092e32bcde3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
