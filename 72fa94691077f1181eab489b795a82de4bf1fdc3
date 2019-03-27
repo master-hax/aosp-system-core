@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "384e35de_bd7e8af3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1079148
+      },
+      "writtenOn": "2019-03-27T01:56:30Z",
+      "side": 1,
+      "message": "I\u0027m at iteration 158 on this revision of the patch now, I\u0027ll fill this placeholder in tomorrow when it should hopefully be in the thousands.",
+      "range": {
+        "startLine": 17,
+        "startChar": 35,
+        "endLine": 17,
+        "endChar": 39
+      },
+      "revId": "72fa94691077f1181eab489b795a82de4bf1fdc3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
