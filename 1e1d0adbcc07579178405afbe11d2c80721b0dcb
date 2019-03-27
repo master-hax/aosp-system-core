@@ -22,6 +22,30 @@
       "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9784f06b_7393fd40",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-27T01:31:20Z",
+      "side": 1,
+      "message": "yeah, you probably don\u0027t want a static unique_fd here if you\u0027re already having problems with exit-time destructors. (you might want to turn on that warning... -Wexit-time-destructors.)",
+      "parentUuid": "7be0e90a_a513738f",
+      "range": {
+        "startLine": 234,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
