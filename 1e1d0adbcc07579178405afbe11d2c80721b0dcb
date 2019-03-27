@@ -70,6 +70,30 @@
       "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1154ea5_ba7ea5b0",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-27T01:52:19Z",
+      "side": 1,
+      "message": "`static int` is fine, but `static unique_fd` will get in the way of turning on -Wexit-time-destructors. https://android-review.googlesource.com/c/platform/system/core/+/933977 enables it for you.\n\n(and since init never exits, this destructor is useless anyway.)",
+      "parentUuid": "98e785ee_cd32d948",
+      "range": {
+        "startLine": 234,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
