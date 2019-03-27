@@ -46,6 +46,30 @@
       "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98e785ee_cd32d948",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-03-27T01:36:28Z",
+      "side": 1,
+      "message": "Oh no, this is one of the reasons for this patch. I want init process to keep open FD on cgroup.rc file to make sure all mappings stay valid even if the file is somehow deleted. exit-time destructors here are not an issue because this function is called only by init and init is a single-threaded process.",
+      "parentUuid": "9784f06b_7393fd40",
+      "range": {
+        "startLine": 234,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "1e1d0adbcc07579178405afbe11d2c80721b0dcb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
