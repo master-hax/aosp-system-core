@@ -44,15 +44,17 @@ using android::base::GetBoolProperty;
 using android::base::StringPrintf;
 using android::base::unique_fd;
 
-static constexpr const char* CGROUPS_DESC_FILE = "/etc/cgroups.json";
-static constexpr const char* CGROUPS_DESC_VENDOR_FILE = "/vendor/etc/cgroups.json";
+static constexpr const char CGROUPS_DESC_FILE[] = "/etc/cgroups.json";
+static constexpr const char CGROUPS_DESC_VENDOR_FILE[] = "/vendor/etc/cgroups.json";
 
-static constexpr const char* CGROUP_PROCS_FILE = "/cgroup.procs";
-static constexpr const char* CGROUP_TASKS_FILE = "/tasks";
-static constexpr const char* CGROUP_TASKS_FILE_V2 = "/cgroup.tasks";
+static constexpr const char CGROUP_PROCS_FILE[] = "/cgroup.procs";
+static constexpr const char CGROUP_TASKS_FILE[] = "/tasks";
+static constexpr const char CGROUP_TASKS_FILE_V2[] = "/cgroup.tasks";
+
+static constexpr const char CGROUPS_RC_FILE[] = "cgroup.rc";
 
 static const std::string kCgroupRcPath =
-        std::string(CGROUPS_RC_DIR) + "/" + std::string(CgroupMap::CGROUPS_RC_FILE);
+        std::string(CGROUPS_RC_DIR) + "/" + std::string(CGROUPS_RC_FILE);
 
 static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,
                   const std::string& gid) {
@@ -137,13 +139,16 @@ static bool ReadDescriptorsFromFile(const std::string& file_name,
             std::string name = cgroups[i]["Controller"].asString();
             auto iter = descriptors->find(name);
             if (iter == descriptors->end()) {
-                descriptors->emplace(name, CgroupDescriptor(1, name, cgroups[i]["Path"].asString(),
-                                     std::strtoul(cgroups[i]["Mode"].asString().c_str(), 0, 8),
-                                     cgroups[i]["UID"].asString(), cgroups[i]["GID"].asString()));
+                descriptors->emplace(
+                        name, CgroupDescriptor(
+                                      1, name, cgroups[i]["Path"].asString(),
+                                      std::strtoul(cgroups[i]["Mode"].asString().c_str(), 0, 8),
+                                      cgroups[i]["UID"].asString(), cgroups[i]["GID"].asString()));
             } else {
-                iter->second = CgroupDescriptor(1, name, cgroups[i]["Path"].asString(),
-                                     std::strtoul(cgroups[i]["Mode"].asString().c_str(), 0, 8),
-                                     cgroups[i]["UID"].asString(), cgroups[i]["GID"].asString());
+                iter->second = CgroupDescriptor(
+                        1, name, cgroups[i]["Path"].asString(),
+                        std::strtoul(cgroups[i]["Mode"].asString().c_str(), 0, 8),
+                        cgroups[i]["UID"].asString(), cgroups[i]["GID"].asString());
             }
         }
     }
@@ -152,13 +157,16 @@ static bool ReadDescriptorsFromFile(const std::string& file_name,
         const Json::Value& cgroups2 = root["Cgroups2"];
         auto iter = descriptors->find(CGROUPV2_CONTROLLER_NAME);
         if (iter == descriptors->end()) {
-            descriptors->emplace(CGROUPV2_CONTROLLER_NAME, CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
-                                 std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
-                                 cgroups2["UID"].asString(), cgroups2["GID"].asString()));
+            descriptors->emplace(
+                    CGROUPV2_CONTROLLER_NAME,
+                    CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
+                                     std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
+                                     cgroups2["UID"].asString(), cgroups2["GID"].asString()));
         } else {
-            iter->second = CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
-                                 std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
-                                 cgroups2["UID"].asString(), cgroups2["GID"].asString());
+            iter->second =
+                    CgroupDescriptor(2, CGROUPV2_CONTROLLER_NAME, cgroups2["Path"].asString(),
+                                     std::strtoul(cgroups2["Mode"].asString().c_str(), 0, 8),
+                                     cgroups2["UID"].asString(), cgroups2["GID"].asString());
         }
     }
 
