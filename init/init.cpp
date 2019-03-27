@@ -35,6 +35,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -628,6 +629,8 @@ static void UmountDebugRamdisk() {
 }
 
 int SecondStageMain(int argc, char** argv) {
+    boot_clock::time_point start_time = boot_clock::now();
+
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
@@ -663,9 +666,28 @@ int SecondStageMain(int argc, char** argv) {
     // used by init as well as the current required properties.
     export_kernel_boot_props();
 
-    // Make the time that init started available for bootstat to log.
-    property_set("ro.boottime.init", getenv("INIT_STARTED_AT"));
-    property_set("ro.boottime.init.selinux", getenv("INIT_SELINUX_TOOK"));
+    // Make the time that init stages started available for bootstat to log.
+    uint64_t second_stage_start_time = start_time.time_since_epoch().count();
+    auto first_stage_start_time = second_stage_start_time;
+    auto first_stage_start_time_str = getenv("FIRST_STAGE_STARTED_AT");
+    if (first_stage_start_time_str) {
+        property_set("ro.boottime.init", first_stage_start_time_str);
+        android::base::ParseUint(first_stage_start_time_str, &first_stage_start_time);
+    }
+    auto selinux_start_time = first_stage_start_time;
+    auto selinux_start_time_str = getenv("SELINUX_STARTED_AT");
+    if (selinux_start_time_str) {
+        android::base::ParseUint(selinux_start_time_str, &selinux_start_time);
+    }
+    if (selinux_start_time > first_stage_start_time) {
+        property_set("ro.boottime.init.first_stage",
+                     std::to_string(selinux_start_time - first_stage_start_time));
+    }
+    if ((selinux_start_time != first_stage_start_time) &&
+        (second_stage_start_time > selinux_start_time)) {
+        property_set("ro.boottime.init.selinux",
+                     std::to_string(second_stage_start_time - selinux_start_time));
+    }
 
     // Set libavb version for Framework-only OTA match in Treble build.
     const char* avb_version = getenv("INIT_AVB_VERSION");
@@ -678,8 +700,8 @@ int SecondStageMain(int argc, char** argv) {
     }
 
     // Clean up our environment.
-    unsetenv("INIT_STARTED_AT");
-    unsetenv("INIT_SELINUX_TOOK");
+    unsetenv("FIRST_STAGET_STARTED_AT");
+    unsetenv("SELINUX_STARTED_AT");
     unsetenv("INIT_AVB_VERSION");
     unsetenv("INIT_FORCE_DEBUGGABLE");
 

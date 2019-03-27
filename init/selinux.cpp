@@ -431,8 +431,6 @@ bool LoadPolicy() {
 }
 
 void SelinuxInitialize() {
-    Timer t;
-
     LOG(INFO) << "Loading SELinux policy";
     if (!LoadPolicy()) {
         LOG(FATAL) << "Unable to load SELinux policy";
@@ -449,9 +447,6 @@ void SelinuxInitialize() {
     if (auto result = WriteFile("/sys/fs/selinux/checkreqprot", "0"); !result) {
         LOG(FATAL) << "Unable to write to /sys/fs/selinux/checkreqprot: " << result.error();
     }
-
-    // init's first stage can't set properties, so pass the time to the second stage.
-    setenv("INIT_SELINUX_TOOK", std::to_string(t.duration().count()).c_str(), 1);
 }
 
 }  // namespace
@@ -527,6 +522,8 @@ int SelinuxGetVendorAndroidVersion() {
 
 // This function initializes SELinux then execs init to run in the init SELinux context.
 int SetupSelinux(char** argv) {
+    boot_clock::time_point start_time = boot_clock::now();
+
     android::base::InitLogging(argv, &android::base::KernelLogger, [](const char*) {
         RebootSystem(ANDROID_RB_RESTART2, "bootloader");
     });
@@ -546,6 +543,8 @@ int SetupSelinux(char** argv) {
     if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
         PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
     }
+
+    setenv("SELINUX_STARTED_AT", std::to_string(start_time.time_since_epoch().count()).c_str(), 1);
 
     const char* path = "/system/bin/init";
     const char* args[] = {path, "second_stage", nullptr};
