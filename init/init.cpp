@@ -35,6 +35,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
@@ -625,6 +626,8 @@ int SecondStageMain(int argc, char** argv) {
         InstallRebootSignalHandlers();
     }
 
+    boot_clock::time_point second_stage_start_time = boot_clock::now();
+
     // We need to set up stdin/stdout/stderr again now that we're running in init's context.
     InitKernelLogging(argv, InitAborter);
     LOG(INFO) << "init second stage started!";
@@ -652,7 +655,20 @@ int SecondStageMain(int argc, char** argv) {
     export_kernel_boot_props();
 
     // Make the time that init started available for bootstat to log.
-    property_set("ro.boottime.init", getenv("INIT_STARTED_AT"));
+    auto start_time_str = getenv("INIT_STARTED_AT");
+    if (start_time_str) {
+        property_set("ro.boottime.init", start_time_str);
+        uint64_t start_ms;
+        if (android::base::ParseUint(start_time_str, &start_ms)) {
+            static constexpr uint32_t kNanosecondsPerMillisecond = 1e6;
+            uint64_t second_stage_start_ms =
+                    second_stage_start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
+            if (second_stage_start_ms > start_ms) {
+                property_set("ro.boottime.init.first_stage",
+                             std::to_string(second_stage_start_ms - start_ms));
+            }
+        }
+    }
     property_set("ro.boottime.init.selinux", getenv("INIT_SELINUX_TOOK"));
 
     // Set libavb version for Framework-only OTA match in Treble build.
