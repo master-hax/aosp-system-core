@@ -445,6 +445,10 @@ bool FirstStageMount::InitMappedDevice(const std::string& dm_device) {
 
 bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_used_fstab_entry,
                                      Fstab::iterator* end) {
+    if (end) {
+        *end = begin + 1;
+    }
+
     if (begin->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
