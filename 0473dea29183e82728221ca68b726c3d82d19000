@@ -123,6 +123,24 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58bb1e0f_461437c3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1000411
+      },
+      "writtenOn": "2019-03-28T19:28:33Z",
+      "side": 1,
+      "message": "Thanks, that makes sense. I\u0027ve updated the CLs to do the check in SharedMemory_getProt(), and fail consistently in ashmem_get_prot_region() *and* ashmem_get_size_region().",
+      "parentUuid": "3a0063df_f049ef5d",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
