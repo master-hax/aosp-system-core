@@ -16,6 +16,24 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e530b68_b202926d",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1000411
+      },
+      "writtenOn": "2019-03-28T17:35:31Z",
+      "side": 1,
+      "message": "Good point. I\u0027m not a big fan of crashing the app for something as trivial (and I believe we do have at least one test that intentionally sends an invalid file descriptor to our Ashmem wrapper class, which might trigger this), but we could do that, or simply return 0, which would be at least consistent and slightly less error prone. Which one would you prefer?",
+      "parentUuid": "149cbc21_774bb2be",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
