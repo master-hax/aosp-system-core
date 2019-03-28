@@ -70,6 +70,24 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78048f64_eebff412",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2019-03-28T17:57:17Z",
+      "side": 1,
+      "message": "Sorry I misspoke. ASharedMemory_getSize is documented to return 0 if it fails, which is handled in the NDK wrapper like so:\n\nsize_t ASharedMemory_getSize(int fd) {\n    return ashmem_valid(fd) ? ashmem_get_size_region(fd) : 0;\n}\n\nSo maybe ashmem_get_prot_region should be fatal similar to other ashmem functions, but the NDK method does an up-front \"is valid\" check and returns an error if it isn\u0027t valid.",
+      "parentUuid": "2f893bef_3df66a9a",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
