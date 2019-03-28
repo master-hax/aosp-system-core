@@ -53,7 +53,7 @@ void TestProtDenied(const unique_fd &fd, size_t size, int prot) {
 void TestProtIs(const unique_fd& fd, int prot) {
     ASSERT_TRUE(fd >= 0);
     ASSERT_TRUE(ashmem_valid(fd));
-    EXPECT_EQ(prot, ioctl(fd, ASHMEM_GET_PROT_MASK));
+    EXPECT_EQ(prot, ashmem_get_prot_region(fd));
 }
 
 void FillData(uint8_t* data, size_t dataLen) {
@@ -193,11 +193,12 @@ TEST(AshmemTest, ProtTest) {
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ, &region));
     EXPECT_EQ(0, munmap(region, size));
 
-    ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_WRITE));
-    TestProtDenied(fd, size, PROT_READ);
-    TestProtIs(fd, PROT_WRITE);
-    ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_WRITE, &region));
-    EXPECT_EQ(0, munmap(region, size));
+    // NOTE: A previous version of this test created a region with PROT_WRITE
+    // flags, then tried to verify that it could only be mapped write-only.
+    // Unfortunately, memfd region cannot be sealed for reading, only for
+    // writing, so this check would always fail for them. Moreoever, a
+    // write-only region has no practical purposes since there is simply no
+    // way to get its data back.
 
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ | PROT_WRITE));
     TestProtIs(fd, PROT_READ | PROT_WRITE);

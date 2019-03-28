@@ -412,9 +412,9 @@ static int memfd_set_prot_region(int fd, int prot) {
     }
 
     if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE) == -1) {
-        ALOGE("memfd_set_prot_region(%d, %d): F_SEAL_FUTURE_WRITE seal failed: %s\n", fd, prot,
-              strerror(errno));
-        return -1;
+        LOG_ALWAYS_FATAL("memfd_set_prot_region(%d, %d): F_SEAL_FUTURE_WRITE seal failed: %s\n", fd,
+                         prot, strerror(errno));
+        /* NOTREACHED */
     }
 
     return 0;
@@ -427,6 +427,31 @@ int ashmem_set_prot_region(int fd, int prot)
     }
 
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_PROT_MASK, prot)));
+}
+
+static int memfd_get_prot_region(int fd) {
+    // NOTE: memfd regions can only be sealed from writing, i.e. they are always readable.
+    // There is also no way to technically seal them from PROT_EXEC, though this may be
+    // prevented globally through SELinux, so better never report this flag.
+    int prot = PROT_READ;
+    int seals = fcntl(fd, F_GET_SEALS);
+    if (seals < 0) {
+        // Assume invalid file descriptor here.
+        LOG_ALWAYS_FATAL("memfd_get_prot_region(%d): F_GET_SEALS failed: %s\n", fd,
+                         strerror(errno));
+        /* NOTREACHED */
+    }
+    if ((seals & F_SEAL_FUTURE_WRITE) == 0) prot |= PROT_WRITE;
+
+    return prot;
+}
+
+int ashmem_get_prot_region(int fd) {
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+        return memfd_get_prot_region(fd);
+    }
+
+    return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_PROT_MASK)));
 }
 
 int ashmem_pin_region(int fd, size_t offset, size_t len)
@@ -467,8 +492,7 @@ int ashmem_get_size_region(int fd)
         struct stat sb;
 
         if (fstat(fd, &sb) == -1) {
-            ALOGE("ashmem_get_size_region(%d): fstat failed: %s\n", fd, strerror(errno));
-            return -1;
+            LOG_ALWAYS_FATAL("ashmem_get_size_region(%d): fstat failed: %s\n", fd, strerror(errno));
         }
 
         if (debug_log) {
