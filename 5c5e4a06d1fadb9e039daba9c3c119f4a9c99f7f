@@ -118,6 +118,30 @@
       "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c41b142_10394cdf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-03-28T05:31:19Z",
+      "side": 1,
+      "message": "I can try this. Any desire to find a way to fix this in the build system so there is less windows differences?",
+      "parentUuid": "f5dcb889_5a736109",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 107
+      },
+      "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
