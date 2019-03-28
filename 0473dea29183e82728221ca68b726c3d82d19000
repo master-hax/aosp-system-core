@@ -141,6 +141,24 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0981424e_37448e1f",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2019-03-28T19:40:32Z",
+      "side": 1,
+      "message": "The problem here specifically is that the inputs may reasonably be untrusted. An ashmem FD comes in over Binder all the time. So you know it\u0027s an FD, because the binder driver said it was and the kernel can be trusted, but you don\u0027t know for a fact it\u0027s ashmem FD. They could have given you a pipe fd, or their stdout, or any other number of random FDs than an ashmem one, either accidentally or maliciously.\n\nInternally this can be checked with ashmem_is_valid(), but it also seems very reasonable for these to be fault-tolerant as errors are somewhat expected rather than fundamental invariants were violated or the input was straight garbage.",
+      "parentUuid": "30a73f45_f841568a",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
