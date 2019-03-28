@@ -88,6 +88,24 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30a73f45_f841568a",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-28T18:08:56Z",
+      "side": 1,
+      "message": "as the person/team who ends up debugging most native issues, i\u0027d *much* rather fatal.\n\nfor me the only question is \"can this fail for no fault of the caller\u0027s?\". because then, obviously, we can\u0027t just abort. but if the only way for this to fail is a logic error in the caller (like them giving us a bad fd), we should definitely abort.\n\nwe\u0027re _still_ paying for places where old APIs aren\u0027t harsh enough for bad inputs, and we know that 99% of apps won\u0027t check for errors. (and here -1 is confusable with \"everything set\".)",
+      "parentUuid": "78048f64_eebff412",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
