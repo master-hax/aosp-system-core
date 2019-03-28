@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "149cbc21_774bb2be",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-28T16:49:21Z",
+      "side": 1,
+      "message": "when does this happen? just if you give us a bad fd? in which case should we just abort clearly?\n\nreturning -1 worries me. it\u0027s not mentioned in the doc comment, but even if it was --- folks who don\u0027t check will think they just got PROT_READ|PROT_WRITE|PROT_EXEC.\n\neasier and safer to just blow up?",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
