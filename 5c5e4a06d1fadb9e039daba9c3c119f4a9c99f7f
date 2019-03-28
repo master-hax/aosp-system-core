@@ -46,6 +46,30 @@
       "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ac904db_337c7b4b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-03-28T02:03:27Z",
+      "side": 1,
+      "message": "It doesn\u0027t appear to be here. This is the command:\n\nprebuilts/clang/host/linux-x86/clang-r353983/bin/clang++  @out/soong/.intermediates/system/core/libcutils/libcutils/windows_x86_shared/libcutils.dll.rsp out/soong/.intermediates/external/libcxx/libc++_static/windows_x86_static/libc++_static.a prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/x86_64-w64-mingw32/lib32/libwinpthread.a out/soong/.intermediates/system/core/liblog/liblog/windows_x86_shared/liblog.dll out/soong/.intermediates/system/core/base/libbase/windows_x86_shared/libbase.dll  -o out/soong/.intermediates/system/core/libcutils/libcutils/windows_x86_shared/libcutils.dll -shared -Wl,-soname,libcutils.dll -target i686-windows-gnu -Bprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/x86_64-w64-mingw32/bin  -Wl,--no-undefined -Wl,--dynamicbase -Wl,--nxcompat -m32 -Wl,--large-address-aware -Lprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/x86_64-w64-mingw32/lib32 -Bprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/x86_64-w64-mingw32/bin -Bprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/lib/gcc/x86_64-w64-mingw32/4.8.3/32 -Lprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/lib/gcc/x86_64-w64-mingw32/4.8.3/32 -Bprebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/x86_64-w64-mingw32/lib32 -Wl,-rpath,\\$ORIGIN/../lib -Wl,-rpath,\\$ORIGIN/lib  -nodefaultlibs -Wl,--start-group -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lucrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lpsapi -Wl,--end-group",
+      "parentUuid": "e233782b_70315662",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 107
+      },
+      "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
