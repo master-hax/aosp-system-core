@@ -70,6 +70,30 @@
       "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e4300ec_146da221",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2019-03-28T04:06:19Z",
+      "side": 1,
+      "message": "Aah my bad - I misunderstood what \"Available Libraries\" meant.  Try adding  \u0027ws2_32\u0027 to \u0027shared_libs\u0027 property.",
+      "parentUuid": "8ac904db_337c7b4b",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 107
+      },
+      "revId": "5c5e4a06d1fadb9e039daba9c3c119f4a9c99f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
