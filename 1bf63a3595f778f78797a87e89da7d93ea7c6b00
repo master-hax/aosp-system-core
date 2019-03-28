@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15b5262a_0ba86f34",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-28T21:37:15Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 249,
+        "startChar": 75,
+        "endLine": 249,
+        "endChar": 81
+      },
+      "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
