@@ -106,6 +106,23 @@
       "revId": "0473dea29183e82728221ca68b726c3d82d19000",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a0063df_f049ef5d",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1124848
+      },
+      "writtenOn": "2019-03-28T19:05:41Z",
+      "side": 1,
+      "message": "Why not just return PROT_NONE if the fcntl fails? Then, the caller can handle the issue if it is expecting certain PROT flags.\n\nAlso Ok with aborting on bad inputs. But John may have more of an idea about if that\u0027s too harsh. In the very least since that is consistent with ashmem, we should also do that for memfd.",
+      "revId": "0473dea29183e82728221ca68b726c3d82d19000",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
