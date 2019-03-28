@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
@@ -51,6 +52,10 @@ int ashmem_create_region(const char* /*ignored*/, size_t size) {
 }
 
 int ashmem_set_prot_region(int /*fd*/, int /*prot*/) {
+    return 0;
+}
+
+int ashmem_get_prot_region(int /*fd*/) {
     return 0;
 }
 
