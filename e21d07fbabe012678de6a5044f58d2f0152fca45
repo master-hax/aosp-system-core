@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5ea9653_5af96918",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2019-03-28T05:34:47Z",
+      "side": 0,
+      "message": "aha, and it was already here for the test..",
+      "revId": "e21d07fbabe012678de6a5044f58d2f0152fca45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
