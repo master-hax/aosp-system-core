@@ -22,6 +22,30 @@
       "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c3ae8b1_11112835",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-28T21:58:01Z",
+      "side": 1,
+      "message": "You have me, that is why I took this CL and published it.\n\nI want one line to say it is at the developer\u0027s option to reboot if they know what they are doing.\n\n    \"Recommend reboot after altering core native components, to take effect\\n\" ?\n\nI tried to find a line that would describe the subtle difference between the state where overlayfs is mounted late as an afterthought after all the namespace mounts, at runtime, which is still usable for most development work, or needed to be mounted in first stage init before any hanky panky of mount namespaces and APEXii. I considered the ideal of first stage init like dried glue that holds up to most any corner cases (only components you can not override are first stage init itself, and update_engine), and the state for a late mounting as not yet set. So cement came to mind ;-}\n\nFramework folks will not need a reboot. core native components generally needs a reboot. There are variable rules in between.\n\nOf course, I just made a case to add this above desccription to the CL\u0027s commit message ...",
+      "parentUuid": "15b5262a_0ba86f34",
+      "range": {
+        "startLine": 249,
+        "startChar": 75,
+        "endLine": 249,
+        "endChar": 81
+      },
+      "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
