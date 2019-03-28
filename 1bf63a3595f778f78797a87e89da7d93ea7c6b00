@@ -46,6 +46,30 @@
       "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84b1ccf5_dd212cfe",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-28T22:13:30Z",
+      "side": 1,
+      "message": "\"take effect\" definitely better\n\n\"core native components\" probably needs explanation too --- everyone thinks *they\u0027re* the core components :-)",
+      "parentUuid": "6c3ae8b1_11112835",
+      "range": {
+        "startLine": 249,
+        "startChar": 75,
+        "endLine": 249,
+        "endChar": 81
+      },
+      "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
