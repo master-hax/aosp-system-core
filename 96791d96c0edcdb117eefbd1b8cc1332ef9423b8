@@ -94,6 +94,30 @@
       "revId": "96791d96c0edcdb117eefbd1b8cc1332ef9423b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68b68147_5fb4edf9",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2019-03-29T17:44:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5178d25_7f6eba01",
+      "range": {
+        "startLine": 652,
+        "startChar": 6,
+        "endLine": 652,
+        "endChar": 17
+      },
+      "revId": "96791d96c0edcdb117eefbd1b8cc1332ef9423b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
