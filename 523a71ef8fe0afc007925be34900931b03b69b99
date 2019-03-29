@@ -22,6 +22,30 @@
       "revId": "523a71ef8fe0afc007925be34900931b03b69b99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "657755f0_9f336560",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2019-03-29T16:07:28Z",
+      "side": 1,
+      "message": "I understand. Wiping out the second message is probably the best thing to do here ...\n\nI am at a loss to define what is core native or not that would be affected. APEX and mount namespaces make it difficult to be sure.\n\nThis would also apply to adb remount (when/if I get to it).\n\nI am about to consider dropping the message wrt overlayfs, because if one cares they will reboot either because A) they do not want any FUD regarding the state of the device or B) understand the subtleties and _know_ that they need a reboot. I drop the message because of the alarm expressed to those that do not care and have been taking advantage of the shortcut all along. Yes, overlayfs adds yet another complexity of circumstances that.\n\nI can not sleep at night because of my worries. I can not sleep during the day because of the alarm expressed by the developers ;-}",
+      "parentUuid": "fc7104cf_3108f4d1",
+      "range": {
+        "startLine": 248,
+        "startChar": 80,
+        "endLine": 248,
+        "endChar": 94
+      },
+      "revId": "523a71ef8fe0afc007925be34900931b03b69b99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
