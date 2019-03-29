@@ -94,6 +94,30 @@
       "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4d87f4fe_049cf1ad",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-29T16:14:19Z",
+      "side": 1,
+      "message": "add some version of \"[drop] the message wrt overlayfs, because if one cares they will reboot either because A) they do not want any FUD regarding the state of the device or B) understand the subtleties and _know_ that they need a reboot. I drop the message because of the alarm expressed to those that do not care and have been taking advantage of the shortcut all along. Yes, overlayfs adds yet another complexity of circumstances that.\"  to the check-in comment?\n\nno-one doesn\u0027t know they\u0027re using overlayfs, right? \"you\u0027ve done this to yourself\", so we\u0027re not hurting anyone by taking away a \"you might need to reboot\" message?\n\n(i\u0027m still not sure why what\u0027s currently checked in isn\u0027t about as good as we can do.)",
+      "parentUuid": "de33be26_016e4653",
+      "range": {
+        "startLine": 249,
+        "startChar": 75,
+        "endLine": 249,
+        "endChar": 81
+      },
+      "revId": "1bf63a3595f778f78797a87e89da7d93ea7c6b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
