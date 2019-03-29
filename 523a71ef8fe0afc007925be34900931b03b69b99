@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc7104cf_3108f4d1",
+        "filename": "adb/daemon/set_verity_enable_state_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-03-29T15:31:23Z",
+      "side": 1,
+      "message": "(ignoring that stray comma, ) i\u0027m still genuinely confused about what you\u0027re trying to say here. i think you need to be more specific about (a) how do i know whether i\u0027ve touched a \"core native component\" and (b) what exactly might not have taken effect yet?\n\nthis isn\u0027t a helpful error because it\u0027s neither informative nor actionable.\n\n(and, yes, \"for settings\" on L243 has the same problem. but that doesn\u0027t mean we should have two bad errors from the same 10 lines of code --- and at least that one\u0027s clearly actionable, even if it\u0027s not informative :-) )",
+      "range": {
+        "startLine": 248,
+        "startChar": 80,
+        "endLine": 248,
+        "endChar": 94
+      },
+      "revId": "523a71ef8fe0afc007925be34900931b03b69b99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
