@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74b9699e_db065183",
+        "filename": "rootdir/avb/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2019-03-29T04:35:19Z",
+      "side": 1,
+      "message": "This is for system-as-root upgrading devices, where first-stage ramdisk co-exist with recovery-ramdisk in /boot.\n\ne.g., we need this for crosshatch.",
+      "range": {
+        "startLine": 11,
+        "startChar": 49,
+        "endLine": 11,
+        "endChar": 72
+      },
+      "revId": "da38be4ea4db16d27fe20f2295c3e673bbd3060b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
