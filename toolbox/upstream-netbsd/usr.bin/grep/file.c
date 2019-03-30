@@ -63,7 +63,7 @@ static gzFile gzbufdesc;
 static BZFILE* bzbufdesc;
 #endif
 
-static unsigned char buffer[MAXBUFSIZ];
+static unsigned char buffer[MAXBUFSIZ + 1];
 static unsigned char *bufpos;
 static size_t bufrem;
 
@@ -166,6 +166,7 @@ grep_fgetln(struct file *f, size_t *lenp)
 		len = p - bufpos;
 		bufrem -= len;
 		bufpos = p;
+		*bufpos = '\0';
 		*lenp = len;
 		return (ret);
 	}
@@ -176,6 +177,7 @@ grep_fgetln(struct file *f, size_t *lenp)
 		if (grep_lnbufgrow(len + LNBUFBUMP))
 			goto error;
 		memcpy(lnbuf + off, bufpos, len - off);
+		lnbuf[off + len - off] = '\0';
 		off = len;
 		if (grep_refill(f) != 0)
 			goto error;
@@ -188,9 +190,10 @@ grep_fgetln(struct file *f, size_t *lenp)
 		++p;
 		diff = p - bufpos;
 		len += diff;
-		if (grep_lnbufgrow(len))
+		if (grep_lnbufgrow(len + 1))
 		    goto error;
 		memcpy(lnbuf + off, bufpos, diff);
+		lnbuf[off+diff] = '\0';
 		bufrem -= diff;
 		bufpos = p;
 		break;
