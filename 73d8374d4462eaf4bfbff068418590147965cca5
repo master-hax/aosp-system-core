@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a19f7b9c_d9ff27b4",
+        "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-01T17:59:01Z",
+      "side": 1,
+      "message": "yes. looks like i didn\u0027t re-run the toybox tests after this. (they find this bug.)",
+      "parentUuid": "3f941362_44ec5083",
+      "revId": "73d8374d4462eaf4bfbff068418590147965cca5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "88f3995e_3c312298",
         "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "811e8323_17b6555f",
+        "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-01T17:59:01Z",
+      "side": 1,
+      "message": "what can i say? it was late... :-)",
+      "parentUuid": "88f3995e_3c312298",
+      "range": {
+        "startLine": 180,
+        "startChar": 8,
+        "endLine": 180,
+        "endChar": 23
+      },
+      "revId": "73d8374d4462eaf4bfbff068418590147965cca5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "48e00e76_65065234",
         "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
         "patchSetId": 1
@@ -53,6 +95,30 @@
       "writtenOn": "2019-04-01T17:11:40Z",
       "side": 1,
       "message": "Nit, all of the other additions use spaces around the plus operator.",
+      "range": {
+        "startLine": 196,
+        "startChar": 8,
+        "endLine": 196,
+        "endChar": 16
+      },
+      "revId": "73d8374d4462eaf4bfbff068418590147965cca5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2c1232d_36be4fef",
+        "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-01T17:59:01Z",
+      "side": 1,
+      "message": "so used to toybox now...",
+      "parentUuid": "48e00e76_65065234",
       "range": {
         "startLine": 196,
         "startChar": 8,
