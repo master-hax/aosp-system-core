@@ -34,7 +34,7 @@ dir.postinstall = /postinstall
 dir.system = /data
 
 [system]
-additional.namespaces = runtime,conscrypt,media,resolv,sphal,vndk,rs
+additional.namespaces = runtime,conscrypt,media,dnsresolver,sphal,vndk,rs
 
 ###############################################################################
 # "default" namespace
@@ -126,9 +126,9 @@ namespace.default.asan.permitted.paths += /system/${LIB}/bootstrap
 # cannot be loaded into the default namespace, the dynamic linker tries
 # to load the shared library from the runtime namespace. And then, if the
 # shared library cannot be loaded from the runtime namespace either, the
-# dynamic linker tries to load the shared library from the resolv namespace.
+# dynamic linker tries to load the shared library from the dnsresolver namespace.
 # Finally, if all attempts fail, the dynamic linker returns an error.
-namespace.default.links = runtime,resolv
+namespace.default.links = runtime,dnsresolver
 # Visible because some libraries are dlopen'ed, e.g. libopenjdk is dlopen'ed by
 # libart.
 namespace.default.visible = true
@@ -142,9 +142,9 @@ namespace.default.link.runtime.shared_libs += libandroidicu.so
 namespace.default.link.runtime.shared_libs += libpac.so
 
 # When libnetd_resolv.so can't be found in the default namespace, search for it
-# in the resolv namespace. Don't allow any other libraries from the resolv namespace
-# to be loaded in the default namespace.
-namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+# in the dnsresolver namespace. Don't allow any other libraries from the
+# dnsresolver namespace to be loaded in the default namespace.
+namespace.default.link.dnsresolver.shared_libs = libnetd_resolv.so
 
 ###############################################################################
 # "runtime" APEX namespace
@@ -201,22 +201,22 @@ namespace.conscrypt.link.default.shared_libs += libdl.so
 namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
-# "resolv" APEX namespace
+# "dnsresolver" APEX namespace
 #
-# This namespace is for libraries within the resolv APEX.
+# This namespace is for libraries within the dnsresolver APEX.
 ###############################################################################
-namespace.resolv.isolated = true
-namespace.resolv.visible = true
+namespace.dnsresolver.isolated = true
+namespace.dnsresolver.visible = true
 
-namespace.resolv.search.paths = /apex/com.android.resolv/${LIB}
-namespace.resolv.asan.search.paths = /apex/com.android.resolv/${LIB}
-namespace.resolv.links = default
-namespace.resolv.link.default.shared_libs  = libc.so
-namespace.resolv.link.default.shared_libs += libm.so
-namespace.resolv.link.default.shared_libs += libdl.so
-namespace.resolv.link.default.shared_libs += libbinder_ndk.so
-namespace.resolv.link.default.shared_libs += liblog.so
-namespace.resolv.link.default.shared_libs += libvndksupport.so
+namespace.dnsresolver.search.paths = /apex/com.android.dnsresolver/${LIB}
+namespace.dnsresolver.asan.search.paths = /apex/com.android.dnsresolver/${LIB}
+namespace.dnsresolver.links = default
+namespace.dnsresolver.link.default.shared_libs  = libc.so
+namespace.dnsresolver.link.default.shared_libs += libm.so
+namespace.dnsresolver.link.default.shared_libs += libdl.so
+namespace.dnsresolver.link.default.shared_libs += libbinder_ndk.so
+namespace.dnsresolver.link.default.shared_libs += liblog.so
+namespace.dnsresolver.link.default.shared_libs += libvndksupport.so
 
 ###############################################################################
 # "sphal" namespace
@@ -558,7 +558,7 @@ namespace.vndk_in_system.link.vndk.allow_all_shared_libs = true
 # includes the requisite namespace setup for APEXes.
 ###############################################################################
 [unrestricted]
-additional.namespaces = runtime,media,conscrypt,resolv
+additional.namespaces = runtime,media,conscrypt,dnsresolver
 
 namespace.default.search.paths  = /system/${LIB}
 namespace.default.search.paths += /odm/${LIB}
@@ -572,7 +572,7 @@ namespace.default.asan.search.paths += /data/asan/vendor/${LIB}
 namespace.default.asan.search.paths +=           /vendor/${LIB}
 
 # Keep in sync with ld.config.txt in the com.android.runtime APEX.
-namespace.default.links = runtime,resolv
+namespace.default.links = runtime,dnsresolver
 namespace.default.visible = true
 
 namespace.default.link.runtime.shared_libs  = libdexfile_external.so
@@ -584,7 +584,7 @@ namespace.default.link.runtime.shared_libs += libandroidicu.so
 # TODO(b/122876336): Remove libpac.so once it's migrated to Webview
 namespace.default.link.runtime.shared_libs += libpac.so
 
-namespace.default.link.resolv.shared_libs = libnetd_resolv.so
+namespace.default.link.dnsresolver.shared_libs = libnetd_resolv.so
 
 ###############################################################################
 # "runtime" APEX namespace
@@ -641,21 +641,21 @@ namespace.conscrypt.link.default.shared_libs += libdl.so
 namespace.conscrypt.link.default.shared_libs += liblog.so
 
 ###############################################################################
-# "resolv" APEX namespace
+# "dnsresolver" APEX namespace
 #
-# This namespace is for libraries within the resolv APEX.
+# This namespace is for libraries within the dnsresolver APEX.
 ###############################################################################
-namespace.resolv.isolated = true
-namespace.resolv.visible = true
+namespace.dnsresolver.isolated = true
+namespace.dnsresolver.visible = true
 
-namespace.resolv.search.paths = /apex/com.android.resolv/${LIB}
-namespace.resolv.asan.search.paths = /apex/com.android.resolv/${LIB}
-namespace.resolv.links = default
-namespace.resolv.link.default.shared_libs  = libc.so
-namespace.resolv.link.default.shared_libs += libm.so
-namespace.resolv.link.default.shared_libs += libdl.so
-namespace.resolv.link.default.shared_libs += libbinder_ndk.so
-namespace.resolv.link.default.shared_libs += liblog.so
+namespace.dnsresolver.search.paths = /apex/com.android.dnsresolver/${LIB}
+namespace.dnsresolver.asan.search.paths = /apex/com.android.dnsresolver/${LIB}
+namespace.dnsresolver.links = default
+namespace.dnsresolver.link.default.shared_libs  = libc.so
+namespace.dnsresolver.link.default.shared_libs += libm.so
+namespace.dnsresolver.link.default.shared_libs += libdl.so
+namespace.dnsresolver.link.default.shared_libs += libbinder_ndk.so
+namespace.dnsresolver.link.default.shared_libs += liblog.so
 
 
 ###############################################################################
