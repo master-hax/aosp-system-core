@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88f3995e_3c312298",
+        "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-04-01T17:11:40Z",
+      "side": 1,
+      "message": "Isn\u0027t this just len?",
+      "range": {
+        "startLine": 180,
+        "startChar": 8,
+        "endLine": 180,
+        "endChar": 23
+      },
+      "revId": "73d8374d4462eaf4bfbff068418590147965cca5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48e00e76_65065234",
+        "filename": "toolbox/upstream-netbsd/usr.bin/grep/file.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2019-04-01T17:11:40Z",
+      "side": 1,
+      "message": "Nit, all of the other additions use spaces around the plus operator.",
+      "range": {
+        "startLine": 196,
+        "startChar": 8,
+        "endLine": 196,
+        "endChar": 16
+      },
+      "revId": "73d8374d4462eaf4bfbff068418590147965cca5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
