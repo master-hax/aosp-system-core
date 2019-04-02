@@ -35,8 +35,15 @@
 #include <cutils/android_reboot.h>
 #include <private/android_filesystem_config.h>
 
+#include "action.h"
+#include "action_manager.h"
+#include "action_parser.h"
+#include "builtins.h"
 #include "first_stage_mount.h"
+#include "import_parser.h"
+#include "init.h"
 #include "reboot_utils.h"
+#include "service.h"
 #include "switch_root.h"
 #include "util.h"
 
@@ -92,6 +99,22 @@ bool ForceNormalBoot() {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+}
+
+void ParseRamdiskInitRc() {
+    const BuiltinFunctionMap function_map;
+
+    ActionManager am;
+    Action::set_function_map(&function_map);
+    ServiceList service_list;
+    if (!CreateParser(am, service_list).ParseConfig("/init.rc")) return;
+
+    am.QueueEventTrigger("first-stage-init");
+
+    while (am.HasMoreCommands()) {
+        am.ExecuteOneCommand();
+    }
+    late_import_paths.clear();
 }
 
 }  // namespace
@@ -198,6 +221,8 @@ int FirstStageMain(int argc, char** argv) {
         }
         SwitchRoot("/first_stage_ramdisk");
     }
+
+    ParseRamdiskInitRc();
 
     // If this file is present, the second-stage init will use a userdebug sepolicy
     // and load adb_debug.prop to allow adb root, if the device is unlocked.
