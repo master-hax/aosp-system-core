@@ -231,13 +231,15 @@ static Result<Success> do_ifup(const BuiltinArguments& args) {
     return Success();
 }
 
-static Result<Success> do_insmod(const BuiltinArguments& args) {
+Result<Success> do_insmod(const BuiltinArguments& args) {
     int flags = 0;
     auto it = args.begin() + 1;
 
+    if (it == args.end()) return Error() << "Too few arguments insmod";
     if (!(*it).compare("-f")) {
         flags = MODULE_INIT_IGNORE_VERMAGIC | MODULE_INIT_IGNORE_MODVERSIONS;
         it++;
+        if (it == args.end()) return Error() << "No filename argument insmod -f";
     }
 
     std::string filename = *it++;

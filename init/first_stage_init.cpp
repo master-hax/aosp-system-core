@@ -35,7 +35,12 @@
 #include <cutils/android_reboot.h>
 #include <private/android_filesystem_config.h>
 
+#include "action.h"
+#include "action_manager.h"
+#include "action_parser.h"
+#include "builtins.h"
 #include "first_stage_mount.h"
+#include "import_parser.h"
 #include "reboot_utils.h"
 #include "switch_root.h"
 #include "util.h"
@@ -92,6 +97,37 @@ bool ForceNormalBoot() {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+}
+
+class FirstStageFunctionMap : public KeywordFunctionMap {
+  public:
+    FirstStageFunctionMap() {}
+
+  private:
+    static constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
+    static const Map builtin_functions_;
+    const Map& map() const override { return builtin_functions_; }
+};
+
+const FirstStageFunctionMap::Map FirstStageFunctionMap::builtin_functions_ = {
+        {"insmod", {1, kMax, {true, do_insmod}}},
+};
+
+void ParseRamdiskInitRc() {
+    FirstStageFunctionMap function_map;
+
+    ActionManager am;
+    Action::set_function_map(&function_map);
+    Parser parser;
+    parser.AddSectionParser("on", std::make_unique<ActionParser>(&am, nullptr));
+    parser.AddSectionParser("import", std::make_unique<ImportParser>(&parser));
+    if (!parser.ParseConfig("/init.rc")) return;
+
+    am.QueueEventTrigger("first-stage-init");
+
+    while (am.HasMoreCommands()) {
+        am.ExecuteOneCommand();
+    }
 }
 
 }  // namespace
@@ -198,6 +234,8 @@ int FirstStageMain(int argc, char** argv) {
         }
         SwitchRoot("/first_stage_ramdisk");
     }
+
+    ParseRamdiskInitRc();
 
     // If this file is present, the second-stage init will use a userdebug sepolicy
     // and load adb_debug.prop to allow adb root, if the device is unlocked.

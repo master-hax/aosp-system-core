@@ -46,14 +46,24 @@ ifneq ($(BOARD_BUILD_SYSTEM_ROOT_IMAGE),true)
 include $(CLEAR_VARS)
 LOCAL_CPPFLAGS := $(init_cflags)
 LOCAL_SRC_FILES := \
+    action.cpp \
+    action_manager.cpp \
+    action_parser.cpp \
+    builtins.cpp \
     devices.cpp \
     first_stage_init.cpp \
     first_stage_main.cpp \
     first_stage_mount.cpp \
+    import_parser.cpp \
     mount_namespace.cpp \
+    parser.cpp \
+    property_service_stubs.cpp \
     reboot_utils.cpp \
     selinux.cpp \
+    subcontext.cpp \
+    subcontext.proto \
     switch_root.cpp \
+    tokenizer.cpp \
     uevent_listener.cpp \
     util.cpp \
 
@@ -74,10 +84,12 @@ LOCAL_POST_INSTALL_CMD := mkdir -p \
     $(TARGET_RAMDISK_OUT)/sys \
 
 LOCAL_STATIC_LIBRARIES := \
+    libbootloader_message \
     libfs_avb \
     libfs_mgr \
     libfec \
     libfec_rs \
+    libprotobuf-cpp-lite \
     libsquashfs_utils \
     liblogwrap \
     libext4_utils \

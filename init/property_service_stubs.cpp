@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef _INIT_BUILTINS_H
-#define _INIT_BUILTINS_H
+#include "property_service.h"
 
-#include <functional>
-#include <map>
-#include <string>
-#include <vector>
-
-#include "builtin_arguments.h"
-#include "keyword_map.h"
-#include "result.h"
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_ 1
+#include <sys/_system_properties.h>
 
 namespace android {
 namespace init {
 
-using BuiltinFunction = std::function<Result<Success>(const BuiltinArguments&)>;
+bool CanReadProperty(const std::string& source_context, const std::string& name) {
+    return false;
+}
 
-using KeywordFunctionMap = KeywordMap<std::pair<bool, BuiltinFunction>>;
-class BuiltinFunctionMap : public KeywordFunctionMap {
-  public:
-    BuiltinFunctionMap() {}
+uint32_t SetProperty(const std::string& key, const std::string& value) {
+    return PROP_ERROR_SET_FAILED;
+}
 
-  private:
-    const Map& map() const override;
-};
+uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
 
-Result<Success> do_insmod(const BuiltinArguments& args);
+uint32_t HandlePropertySet(const std::string&, const std::string&, const std::string&, const ucred&,
+                           std::string*) {
+    return PROP_ERROR_SET_FAILED;
+}
 
 }  // namespace init
 }  // namespace android
-
-#endif
