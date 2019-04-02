@@ -18,10 +18,12 @@
 
 #include <dirent.h>
 #include <fcntl.h>
+#include <linux/module.h>
 #include <paths.h>
 #include <stdlib.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -32,6 +34,8 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/strings.h>
+#include <android-base/unique_fd.h>
 #include <cutils/android_reboot.h>
 #include <private/android_filesystem_config.h>
 
@@ -92,6 +96,87 @@ bool ForceNormalBoot() {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+}
+
+void ParseRamdiskInitRc() {
+    std::string initrc;
+    if (!android::base::ReadFileToString("/init.rc", &initrc)) return;
+    auto lines = android::base::Split(initrc, "\r\n");
+    initrc.clear();
+
+    LOG(INFO) << "Parsing file /init.rc...";
+
+    // Parse out the on first-stage-init section(s) only.
+    auto in_first_stage_init_section = false;
+    for (auto& line : lines) {
+        // strip out comments, replace tabs with spaces
+        auto pos = line.find('#');
+        if (pos != std::string::npos) line.erase(pos);
+        std::replace(line.begin(), line.end(), '\t', ' ');
+        if (line == "on first-stage-init") {
+            in_first_stage_init_section = true;
+            continue;
+        }
+        if (!in_first_stage_init_section) continue;
+        // Only lines allowed:
+        //
+        // ^on first-stage-init
+        // ^\n (skip)
+        // ^ insmod [-f] filename args...
+        //
+        // everything else terminates parse for this group
+        if (line.empty()) continue;
+        if (line[0] != ' ') {
+            if (!android::base::StartsWith(line, "on ")) {
+                LOG(ERROR) << "Syntax error " << line;
+            }
+            in_first_stage_init_section = false;
+            continue;
+        }
+        line = android::base::Trim(line);
+        if (line.empty()) continue;
+
+        auto args = android::base::Split(line, " ");
+
+        // KISS We only support one command
+        auto it = args.begin();
+        if (*it != "insmod") {
+            LOG(ERROR) << "Unsupported command " << line;
+            in_first_stage_init_section = false;
+            continue;
+        }
+        if (++it == args.end()) {
+            LOG(ERROR) << "Too few arguments " << line;
+            in_first_stage_init_section = false;
+            continue;
+        }
+        int flags = 0;
+        if (*it == "-f") {
+            flags = MODULE_INIT_IGNORE_VERMAGIC | MODULE_INIT_IGNORE_MODVERSIONS;
+            if (++it == args.end()) {
+                LOG(ERROR) << "No filename argument " << line;
+                in_first_stage_init_section = false;
+                continue;
+            }
+        }
+
+        auto filename = *it++;
+        auto options = android::base::Join(std::vector<std::string>(it, args.end()), ' ');
+
+        LOG(INFO) << "insmod " << filename << " " << options;
+
+        android::base::unique_fd fd(
+                TEMP_FAILURE_RETRY(open(filename.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC)));
+        if (fd == -1) {
+            PLOG(ERROR) << "open(\"" << filename << "\") failed";
+            continue;
+        }
+
+        auto rc = syscall(__NR_finit_module, fd.get(), options.c_str(), flags);
+        if (rc == -1) {
+            PLOG(ERROR) << "finit_module for \"" << filename << "\" failed";
+        }
+    }
 }
 
 }  // namespace
@@ -198,6 +283,8 @@ int FirstStageMain(int argc, char** argv) {
         }
         SwitchRoot("/first_stage_ramdisk");
     }
+
+    ParseRamdiskInitRc();
 
     // If this file is present, the second-stage init will use a userdebug sepolicy
     // and load adb_debug.prop to allow adb root, if the device is unlocked.
