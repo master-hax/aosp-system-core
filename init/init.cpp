@@ -87,6 +87,7 @@ static int property_triggers_enabled = 0;
 static char qemu[32];
 
 std::string default_console = "/dev/console";
+bool InFirstStageInit = false;
 
 static int signal_fd = -1;
 

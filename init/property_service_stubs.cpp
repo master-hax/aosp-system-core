@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,44 +14,40 @@
  * limitations under the License.
  */
 
-#include "host_init_stubs.h"
+// first stage init do nothing property service stub
 
-#include <android-base/properties.h>
+#include "property_service.h"
 
-// unistd.h
-int setgroups(size_t __size, const gid_t* __list) {
-    return 0;
-}
+#include <inttypes.h>
+#include <sys/socket.h>
+
+#include <string>
+
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_ 1
+#include <sys/_system_properties.h>
 
 namespace android {
 namespace init {
 
-// init.h
-std::string default_console = "/dev/console";
-bool InFirstStageInit = false;
+bool start_waiting_for_property(const char*, const char*) {
+    return false;
+}
 
-// property_service.h
+void load_persist_props(void) {}
+
 bool CanReadProperty(const std::string& source_context, const std::string& name) {
     return true;
 }
+
 uint32_t SetProperty(const std::string& key, const std::string& value) {
-    android::base::SetProperty(key, value);
-    return 0;
+    return PROP_ERROR_SET_FAILED;
 }
+
 uint32_t (*property_set)(const std::string& name, const std::string& value) = SetProperty;
+
 uint32_t HandlePropertySet(const std::string&, const std::string&, const std::string&, const ucred&,
                            std::string*) {
-    return 0;
-}
-
-// selinux.h
-int SelinuxGetVendorAndroidVersion() {
-    return 10000;
-}
-void SelabelInitialize() {}
-
-bool SelabelLookupFileContext(const std::string& key, int type, std::string* result) {
-    return false;
+    return PROP_ERROR_SET_FAILED;
 }
 
 }  // namespace init

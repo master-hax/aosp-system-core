@@ -104,7 +104,13 @@ static void ForEachServiceInClass(const std::string& classname, F function) {
     }
 }
 
+static Result<Success> ErrorFirstStage(const BuiltinArguments& args) {
+    if (!InFirstStageInit) return Success();
+    return Error() << args[0] << " not available in first stage init";
+}
+
 static Result<Success> do_class_start(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     // Do not start a class if it has a property persist.dont_start_class.CLASS set to 1.
     if (android::base::GetBoolProperty("persist.init.dont_start_class." + args[1], false))
         return Success();
@@ -122,16 +128,19 @@ static Result<Success> do_class_start(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_class_stop(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     ForEachServiceInClass(args[1], &Service::Stop);
     return Success();
 }
 
 static Result<Success> do_class_reset(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     ForEachServiceInClass(args[1], &Service::Reset);
     return Success();
 }
 
 static Result<Success> do_class_restart(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     // Do not restart a class if it has a property persist.dont_start_class.CLASS set to 1.
     if (android::base::GetBoolProperty("persist.init.dont_start_class." + args[1], false))
         return Success();
@@ -147,6 +156,7 @@ static Result<Success> do_domainname(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_enable(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "Could not find service";
 
@@ -158,6 +168,7 @@ static Result<Success> do_enable(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_exec(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     auto service = Service::MakeTemporaryOneshotService(args.args);
     if (!service) {
         return Error() << "Could not create exec service";
@@ -171,6 +182,7 @@ static Result<Success> do_exec(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_exec_background(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     auto service = Service::MakeTemporaryOneshotService(args.args);
     if (!service) {
         return Error() << "Could not create exec background service";
@@ -184,6 +196,7 @@ static Result<Success> do_exec_background(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_exec_start(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* service = ServiceList::GetInstance().FindService(args[1]);
     if (!service) {
         return Error() << "Service not found";
@@ -211,6 +224,8 @@ static Result<Success> do_hostname(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_ifup(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
+
     struct ifreq ifr;
 
     strlcpy(ifr.ifr_name, args[1].c_str(), IFNAMSIZ);
@@ -235,9 +250,11 @@ static Result<Success> do_insmod(const BuiltinArguments& args) {
     int flags = 0;
     auto it = args.begin() + 1;
 
+    if (it == args.end()) return Error() << "Too few arguments insmod";
     if (!(*it).compare("-f")) {
         flags = MODULE_INIT_IGNORE_VERMAGIC | MODULE_INIT_IGNORE_MODVERSIONS;
         it++;
+        if (it == args.end()) return Error() << "No filename argument insmod -f";
     }
 
     std::string filename = *it++;
@@ -253,6 +270,7 @@ static Result<Success> do_insmod(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_interface_restart(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindInterface(args[1]);
     if (!svc) return Error() << "interface " << args[1] << " not found";
     svc->Restart();
@@ -260,6 +278,7 @@ static Result<Success> do_interface_restart(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_interface_start(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindInterface(args[1]);
     if (!svc) return Error() << "interface " << args[1] << " not found";
     if (auto result = svc->Start(); !result) {
@@ -269,6 +288,7 @@ static Result<Success> do_interface_start(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_interface_stop(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindInterface(args[1]);
     if (!svc) return Error() << "interface " << args[1] << " not found";
     svc->Stop();
@@ -579,6 +599,8 @@ static Result<Success> queue_fs_event(int code) {
  * not return.
  */
 static Result<Success> do_mount_all(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
+
     std::size_t na = 0;
     bool import_rc = true;
     bool queue_event = true;
@@ -640,6 +662,7 @@ static Result<Success> do_swapon_all(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_setprop(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     property_set(args[1], args[2]);
     return Success();
 }
@@ -655,6 +678,7 @@ static Result<Success> do_setrlimit(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_start(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     if (auto result = svc->Start(); !result) {
@@ -664,6 +688,7 @@ static Result<Success> do_start(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_stop(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     svc->Stop();
@@ -671,6 +696,7 @@ static Result<Success> do_stop(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_restart(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     Service* svc = ServiceList::GetInstance().FindService(args[1]);
     if (!svc) return Error() << "service " << args[1] << " not found";
     svc->Restart();
@@ -922,6 +948,8 @@ static Result<Success> do_chmod(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_restorecon(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
+
     int ret = 0;
 
     struct flag_type {const char* name; int value;};
@@ -964,6 +992,7 @@ static Result<Success> do_restorecon(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_restorecon_recursive(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     std::vector<std::string> non_const_args(args.args);
     non_const_args.insert(std::next(non_const_args.begin()), "--recursive");
     return do_restorecon({std::move(non_const_args), args.context});
@@ -991,6 +1020,7 @@ static Result<Success> do_loglevel(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_load_persist_props(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     load_persist_props();
     return Success();
 }
@@ -1001,6 +1031,7 @@ static Result<Success> do_load_system_props(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_wait(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     auto timeout = kCommandRetryTimeout;
     if (args.size() == 3) {
         int timeout_int;
@@ -1018,6 +1049,8 @@ static Result<Success> do_wait(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_wait_for_prop(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
+
     const char* name = args[1].c_str();
     const char* value = args[2].c_str();
     size_t value_len = strlen(value);
@@ -1067,6 +1100,7 @@ static Result<Success> ExecWithRebootOnFailure(const std::string& reboot_reason,
 }
 
 static Result<Success> do_installkey(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     if (!is_file_crypto()) return Success();
 
     auto unencrypted_dir = args[1] + fscrypt_unencrypted_folder;
@@ -1079,12 +1113,15 @@ static Result<Success> do_installkey(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_init_user0(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     return ExecWithRebootOnFailure(
         "init_user0_failed",
         {{"exec", "/system/bin/vdc", "--wait", "cryptfs", "init_user0"}, args.context});
 }
 
 static Result<Success> do_parse_apex_configs(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
+
     glob_t glob_result;
     // @ is added to filter out the later paths, which are bind mounts of the places
     // where the APEXes are really mounted at. Otherwise, we will parse the
@@ -1119,6 +1156,7 @@ static Result<Success> do_parse_apex_configs(const BuiltinArguments& args) {
 }
 
 static Result<Success> do_enter_default_mount_ns(const BuiltinArguments& args) {
+    if (auto result = ErrorFirstStage(args); !result) return result;
     if (SwitchToDefaultMountNamespace()) {
         return Success();
     } else {

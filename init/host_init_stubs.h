@@ -37,6 +37,7 @@ namespace init {
 
 // init.h
 extern std::string default_console;
+extern bool InFirstStageInit;
 
 // property_service.h
 bool CanReadProperty(const std::string& source_context, const std::string& name);
