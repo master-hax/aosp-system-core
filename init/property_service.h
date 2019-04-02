@@ -28,6 +28,8 @@ namespace init {
 
 bool CanReadProperty(const std::string& source_context, const std::string& name);
 
+std::string GetPropertyFirstStage(const std::string& key, const std::string& def);
+
 extern uint32_t (*property_set)(const std::string& name, const std::string& value);
 
 uint32_t HandlePropertySet(const std::string& name, const std::string& value,
@@ -40,6 +42,8 @@ void property_load_boot_defaults(bool);
 void load_persist_props(void);
 void load_system_props(void);
 void StartPropertyService(Epoll* epoll);
+
+extern bool InFirstStageInit;
 
 }  // namespace init
 }  // namespace android

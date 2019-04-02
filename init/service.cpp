@@ -1375,6 +1375,7 @@ Result<Success> ServiceParser::ParseSection(std::vector<std::string>&& args,
     if (!IsValidName(name)) {
         return Error() << "invalid service name '" << name << "'";
     }
+    if (InFirstStageInit) return Success();
 
     filename_ = filename;
 

@@ -96,7 +96,7 @@ static void export_kernel_boot_props() {
             },
     };
     for (const auto& prop : prop_map) {
-        std::string value = android::base::GetProperty(prop.src_prop, prop.default_value);
+        std::string value = GetPropertyFirstStage(prop.src_prop, prop.default_value);
         if (value != UNSET) {
             property_set(prop.dst_prop, value);
         }

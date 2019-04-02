@@ -259,7 +259,24 @@ static int RestoreconRecursiveAsync(const std::string& name, const std::string& 
     return selinux_android_restorecon(value.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE);
 }
 
+bool InFirstStageInit = false;
+static std::map<std::string, std::string> FirstStageProperties;
+
+std::string GetPropertyFirstStage(const std::string& key, const std::string& def) {
+    if (InFirstStageInit) {
+        auto it = FirstStageProperties.find(key);
+        if (it == FirstStageProperties.end()) return def;
+        auto property_value = it->second;
+        return property_value.empty() ? def : property_value;
+    }
+    return android::base::GetProperty(key, def);
+}
+
 uint32_t InitPropertySet(const std::string& name, const std::string& value) {
+    if (InFirstStageInit) {
+        FirstStageProperties[name] = value;
+        return PROP_SUCCESS;
+    }
     if (StartsWith(name, "ctl.")) {
         LOG(ERROR) << "InitPropertySet: Do not set ctl. properties from init; call the Service "
                       "functions directly";

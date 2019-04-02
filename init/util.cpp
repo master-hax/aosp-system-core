@@ -33,13 +33,13 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
-#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
 #include <selinux/android.h>
 
 #if defined(__ANDROID__)
+#include "property_service.h"
 #include "selinux.h"
 #else
 #include "host_init_stubs.h"
@@ -340,7 +340,7 @@ bool expand_props(const std::string& src, std::string* dst) {
             return false;
         }
 
-        std::string prop_val = android::base::GetProperty(prop_name, "");
+        std::string prop_val = GetPropertyFirstStage(prop_name, "");
         if (prop_val.empty()) {
             if (def_val.empty()) {
                 LOG(ERROR) << "property '" << prop_name << "' doesn't exist while expanding '" << src << "'";
