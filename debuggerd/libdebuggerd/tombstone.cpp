@@ -370,6 +370,16 @@ static void dump_all_maps(log_t* log, unwindstack::Unwinder* unwinder, uint64_t 
 }
 
 void dump_backtrace(log_t* log, unwindstack::Unwinder* unwinder, const char* prefix) {
+  if (unwinder->elf_from_memory_not_file()) {
+    _LOG(log, logtype::BACKTRACE,
+         "NOTE: Function names may be missing for some frames due to unreadable files.\n");
+    _LOG(log, logtype::BACKTRACE,
+         "NOTE: For unreadable files in app directories, verify that shared libraries are only "
+         "present in lib directories.\n");
+  } else {
+    _LOG(log, logtype::BACKTRACE, "Everything is readable.\n");
+  }
+
   unwinder->SetDisplayBuildID(true);
   for (size_t i = 0; i < unwinder->NumFrames(); i++) {
     _LOG(log, logtype::BACKTRACE, "%s%s\n", prefix, unwinder->FormatFrame(i).c_str());

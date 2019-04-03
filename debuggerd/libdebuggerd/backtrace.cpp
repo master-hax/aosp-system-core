@@ -74,6 +74,16 @@ void dump_backtrace_thread(int output_fd, unwindstack::Unwinder* unwinder,
     return;
   }
 
+  if (unwinder->elf_from_memory_not_file()) {
+    _LOG(&log, logtype::BACKTRACE,
+         "NOTE: Function names may be missing for some frames due to unreadable files.\n");
+    _LOG(&log, logtype::BACKTRACE,
+         "NOTE: For unreadable files in app directories, verify that shared libraries are only "
+         "present in lib directories.\n");
+  } else {
+    _LOG(&log, logtype::BACKTRACE, "Everything is readable.\n");
+  }
+
   unwinder->SetDisplayBuildID(true);
   for (size_t i = 0; i < unwinder->NumFrames(); i++) {
     _LOG(&log, logtype::BACKTRACE, "  %s\n", unwinder->FormatFrame(i).c_str());
