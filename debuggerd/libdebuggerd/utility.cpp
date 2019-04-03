@@ -38,6 +38,7 @@
 #include <debuggerd/handler.h>
 #include <log/log.h>
 #include <unwindstack/Memory.h>
+#include <unwindstack/Unwinder.h>
 
 using android::base::unique_fd;
 
@@ -421,4 +422,19 @@ const char* get_sigcode(const siginfo_t* si) {
   }
   // Then give up...
   return "?";
+}
+
+void log_backtrace(log_t* log, unwindstack::Unwinder* unwinder, const char* prefix) {
+  if (unwinder->elf_from_memory_not_file()) {
+    _LOG(log, logtype::BACKTRACE,
+         "  NOTE: Function names may be missing for some frames due to unreadable\n");
+    _LOG(log, logtype::BACKTRACE,
+         "  NOTE: libraries. For unwinds of apps, only shared libraries found under\n");
+    _LOG(log, logtype::BACKTRACE, "  NOTE: the lib/ directory are readable.\n");
+  }
+
+  unwinder->SetDisplayBuildID(true);
+  for (size_t i = 0; i < unwinder->NumFrames(); i++) {
+    _LOG(log, logtype::BACKTRACE, "%s%s\n", prefix, unwinder->FormatFrame(i).c_str());
+  }
 }
