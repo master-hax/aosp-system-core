@@ -22,6 +22,30 @@
       "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4cc41b8_fcfe48fc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1121894
+      },
+      "writtenOn": "2019-04-03T00:57:19Z",
+      "side": 1,
+      "message": "the host adb in the lab is not updated very often, so for the sake of letting the script works without going through updating the lab, I was trying this way.",
+      "parentUuid": "6a29c8a1_fb8bee83",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
