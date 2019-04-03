@@ -118,6 +118,30 @@
       "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a72095d0_f9d00c90",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1121894
+      },
+      "writtenOn": "2019-04-03T01:12:34Z",
+      "side": 1,
+      "message": "Seems unlikely that it\u0027s that old, but it definitely doesn\u0027t support \u0027reboot-fastboot\u0027\n\nandroid-test@atl-490:~$ adb --version\nAndroid Debug Bridge version 1.0.40\nVersion 4986621\nInstalled as /usr/local/bin/adb\nandroid-test@atl-490:~$ adb reboot-fastboot\nadb: usage: unknown command reboot-fastboot",
+      "parentUuid": "79508d0f_0ea7cb97",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
