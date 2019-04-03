@@ -94,6 +94,30 @@
       "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79508d0f_0ea7cb97",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-03T01:08:20Z",
+      "side": 1,
+      "message": "i\u0027m scared to death that it isn\u0027t... git blame says we\u0027ve supported that since at least 2014. (i didn\u0027t bother looking any further back in the history!)\n\ni\u0027m actually a bit skeptical that you\u0027re really running an adb that old. surely not?",
+      "parentUuid": "6da056f9_94f25609",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
