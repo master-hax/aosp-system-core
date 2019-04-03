@@ -142,6 +142,30 @@
       "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "059cc034_e63b4b35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-03T01:14:10Z",
+      "side": 1,
+      "message": "weird. \"40\" isn\u0027t that old.\n\nand (just in case it was actually broken right now), ToT works for me:\n\n  $ adb reboot-fastboot\n  $",
+      "parentUuid": "a72095d0_f9d00c90",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
