@@ -46,6 +46,30 @@
       "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0a7805b_83a59d17",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-03T01:00:35Z",
+      "side": 1,
+      "message": "from the adb side i think this [not using the current public release] is very much \"not supported\".",
+      "parentUuid": "e4cc41b8_fcfe48fc",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 5
+      },
+      "revId": "74239ea1b1797aa384eee194f52a17ea12b9d24a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
