@@ -52,6 +52,24 @@
       "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95ae18b4_94ed54b5",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-04-04T21:58:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a46b7ab_6118b8fe",
+      "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
