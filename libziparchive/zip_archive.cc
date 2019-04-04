@@ -101,10 +101,11 @@ static uint32_t RoundUpPower2(uint32_t val) {
   return val;
 }
 
-static uint32_t ComputeHash(const ZipString& name) {
+__attribute__((no_sanitize("integer"))) static uint32_t ComputeHash(const ZipString& name) {
 #if !defined(_WIN32)
   return std::hash<std::string_view>{}(
-      std::string_view(reinterpret_cast<const char*>(name.name), name.name_length));
+             std::string_view(reinterpret_cast<const char*>(name.name), name.name_length)) &
+         UINT32_MAX;
 #else
   // Remove this code path once the windows compiler knows how to compile the above statement.
   uint32_t hash = 0;
