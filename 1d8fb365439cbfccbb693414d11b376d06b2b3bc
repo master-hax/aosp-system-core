@@ -16,6 +16,24 @@
       "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da749eaf_369d87f2",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2019-04-04T21:43:43Z",
+      "side": 1,
+      "message": "SG.  Windows modules use the same compiler and libc++ as the platform.  Could this be the cause for b/117571647 (failing tests in ziparchive-tests)?",
+      "parentUuid": "29e4b1d1_5c3d42b6",
+      "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
