@@ -34,6 +34,24 @@
       "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a46b7ab_6118b8fe",
+        "filename": "libziparchive/zip_archive.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2019-04-04T21:50:49Z",
+      "side": 1,
+      "message": "wasn\u0027t the failure allegedly ftrunctate failing (despite all the logging i could turn on for Wine saying everything\u0027s fine)?\n\ni still need to persuade someone with an actual Windows box to run these for me...",
+      "parentUuid": "da749eaf_369d87f2",
+      "revId": "1d8fb365439cbfccbb693414d11b376d06b2b3bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
