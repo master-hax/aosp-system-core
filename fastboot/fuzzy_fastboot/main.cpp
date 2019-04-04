@@ -201,18 +201,29 @@ TEST_F(LogicalPartitionCompliance, GetVarIsLogical) {
     ASSERT_TRUE(UserSpaceFastboot());
     std::string has_slot;
     EXPECT_EQ(fb->GetVar("has-slot:system", &has_slot), SUCCESS) << "getvar has-slot:system failed";
-    std::string is_logical_cmd;
+    std::string is_logical_cmd_system, is_logical_cmd_vendor, is_logical_cmd_boot;
     if (has_slot == "yes") {
         std::string current_slot;
         EXPECT_EQ(fb->GetVar("current-slot", &current_slot), SUCCESS)
                 << "getvar current-slot failed";
-        is_logical_cmd = "is-logical:system_" + current_slot;
+        is_logical_cmd_system = "is-logical:system_" + current_slot;
+        is_logical_cmd_vendor = "is-logical:vendor_" + current_slot;
+        is_logical_cmd_boot = "is-logical:boot_" + current_slot;
     } else {
-        is_logical_cmd = "is-logical:system";
+        is_logical_cmd_system = "is-logical:system";
+        is_logical_cmd_vendor = "is-logical:vendor";
+        is_logical_cmd_boot = "is-logical:boot";
     }
     std::string is_logical;
-    EXPECT_EQ(fb->GetVar(is_logical_cmd, &is_logical), SUCCESS) << "getvar is-logical failed";
+    EXPECT_EQ(fb->GetVar(is_logical_cmd_system, &is_logical), SUCCESS)
+            << "getvar is-logical:system failed";
     ASSERT_EQ(is_logical, "yes");
+    EXPECT_EQ(fb->GetVar(is_logical_cmd_vendor, &is_logical), SUCCESS)
+            << "getvar is-logical:vendor failed";
+    ASSERT_EQ(is_logical, "yes");
+    EXPECT_EQ(fb->GetVar(is_logical_cmd_boot, &is_logical), SUCCESS)
+            << "getvar is-logical:boot failed";
+    ASSERT_EQ(is_logical, "no");
 }
 
 TEST_F(LogicalPartitionCompliance, FastbootRebootTest) {
