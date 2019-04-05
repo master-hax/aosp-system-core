@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f29a8a7_20b51e2f",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-04-05T14:19:22Z",
+      "side": 1,
+      "message": "ASSERT_EQ instead?",
+      "range": {
+        "startLine": 209,
+        "startChar": 8,
+        "endLine": 209,
+        "endChar": 17
+      },
+      "revId": "05d283d4215e94efcef9222b7a1b0702e5ef75b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
