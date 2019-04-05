@@ -16,6 +16,24 @@
       "revId": "9d75ed5f03788a42403b6238be3e39fc428a9c7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4625cb7_36f4d2c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2019-04-05T18:25:27Z",
+      "side": 1,
+      "message": "I recognize that these are not undefined behaviors, and it was probably a bad Clang strategy to place the code where they placed it. However, just because something is \"defined\" doesn\u0027t mean it has an *intuitive* definition. The non-intuitive behavior of integers in C/C++ account for a significant percentage of Android\u0027s security bugs (13% the last time I checked - https://www.blackhat.com/docs/us-16/materials/us-16-Kralevich-The-Art-Of-Defense-How-Vulnerabilities-Help-Shape-Security-Features-And-Mitigations-In-Android.pdf slide 54).\n\nUnlike -Wconversion, these integer sanitizers provide a low cost, low false positive safety check that can be more easily retrofitted.\n\nI would love to be able to update all the code to use -Wconversion, but honestly, I don\u0027t have the time, and these kinds of code health cleanups are not valued by other people in Android. I can\u0027t be single handedly responsible for investigating and cleaning up code which I didn\u0027t even write. I try to choose efficient strategies which have the most bang for the buck.",
+      "parentUuid": "b1b50a2e_80d51660",
+      "revId": "9d75ed5f03788a42403b6238be3e39fc428a9c7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
