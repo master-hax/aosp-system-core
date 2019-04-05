@@ -22,6 +22,30 @@
       "revId": "05d283d4215e94efcef9222b7a1b0702e5ef75b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef0b6d4c_bac7d663",
+        "filename": "fastboot/fuzzy_fastboot/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2019-04-05T18:31:43Z",
+      "side": 1,
+      "message": "You are right, this should be assert. Fixed in latest PS.",
+      "parentUuid": "3f29a8a7_20b51e2f",
+      "range": {
+        "startLine": 209,
+        "startChar": 8,
+        "endLine": 209,
+        "endChar": 17
+      },
+      "revId": "05d283d4215e94efcef9222b7a1b0702e5ef75b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
