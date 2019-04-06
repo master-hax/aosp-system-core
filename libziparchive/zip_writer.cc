@@ -334,8 +334,8 @@ int32_t ZipWriter::WriteBytes(const void* data, size_t len) {
     return result;
   }
 
-  current_file_entry_.crc32 =
-      crc32(current_file_entry_.crc32, reinterpret_cast<const Bytef*>(data), len);
+  current_file_entry_.crc32 = static_cast<uint32_t>(
+      crc32_z(current_file_entry_.crc32, reinterpret_cast<const Bytef*>(data), len));
   current_file_entry_.uncompressed_size += len;
   return kNoError;
 }

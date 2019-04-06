@@ -272,5 +272,5 @@ class Reader {
  * uncompressed data.
  */
 int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
-                const uint32_t uncompressed_length, Writer* writer, uint64_t* crc_out);
+                const uint32_t uncompressed_length, Writer* writer, uint32_t* crc_out);
 }  // namespace zip_archive

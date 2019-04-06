@@ -743,7 +743,7 @@ TEST(ziparchive, Inflate) {
   const VectorReader reader(kATxtContentsCompressed);
   {
     VectorWriter writer;
-    uint64_t crc_out = 0;
+    uint32_t crc_out = 0;
 
     int32_t ret =
         zip_archive::Inflate(reader, compressed_length, uncompressed_length, &writer, &crc_out);
