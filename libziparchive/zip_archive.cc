@@ -944,7 +944,7 @@ Reader::~Reader() {}
 Writer::~Writer() {}
 
 int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
-                const uint32_t uncompressed_length, Writer* writer, uint64_t* crc_out) {
+                const uint32_t uncompressed_length, Writer* writer, uint32_t* crc_out) {
   const size_t kBufSize = 32768;
   std::vector<uint8_t> read_buf(kBufSize);
   std::vector<uint8_t> write_buf(kBufSize);
@@ -986,7 +986,7 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
   std::unique_ptr<z_stream, decltype(zstream_deleter)> zstream_guard(&zstream, zstream_deleter);
 
   const bool compute_crc = (crc_out != nullptr);
-  uint64_t crc = 0;
+  uint32_t crc = 0;
   uint32_t remaining_bytes = compressed_length;
   do {
     /* read as much as we can */
@@ -1019,7 +1019,7 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
       if (!writer->Append(&write_buf[0], write_size)) {
         return kIoError;
       } else if (compute_crc) {
-        crc = crc32(crc, &write_buf[0], write_size);
+        crc = static_cast<uint32_t>(crc32_z(crc, &write_buf[0], write_size));
       }
 
       zstream.next_out = &write_buf[0];
@@ -1050,7 +1050,7 @@ int32_t Inflate(const Reader& reader, const uint32_t compressed_length,
 }  // namespace zip_archive
 
 static int32_t InflateEntryToWriter(MappedZipFile& mapped_zip, const ZipEntry* entry,
-                                    zip_archive::Writer* writer, uint64_t* crc_out) {
+                                    zip_archive::Writer* writer, uint32_t* crc_out) {
   const EntryReader reader(mapped_zip, entry);
 
   return zip_archive::Inflate(reader, entry->compressed_length, entry->uncompressed_length, writer,
@@ -1058,13 +1058,13 @@ static int32_t InflateEntryToWriter(MappedZipFile& mapped_zip, const ZipEntry* e
 }
 
 static int32_t CopyEntryToWriter(MappedZipFile& mapped_zip, const ZipEntry* entry,
-                                 zip_archive::Writer* writer, uint64_t* crc_out) {
+                                 zip_archive::Writer* writer, uint32_t* crc_out) {
   static const uint32_t kBufSize = 32768;
   std::vector<uint8_t> buf(kBufSize);
 
   const uint32_t length = entry->uncompressed_length;
   uint32_t count = 0;
-  uint64_t crc = 0;
+  uint32_t crc = 0;
   while (count < length) {
     uint32_t remaining = length - count;
     off64_t offset = entry->offset + count;
@@ -1082,7 +1082,7 @@ static int32_t CopyEntryToWriter(MappedZipFile& mapped_zip, const ZipEntry* entr
     if (!writer->Append(&buf[0], block_size)) {
       return kIoError;
     }
-    crc = crc32(crc, &buf[0], block_size);
+    crc = static_cast<uint32_t>(crc32_z(crc, &buf[0], block_size));
     count += block_size;
   }
 
@@ -1096,7 +1096,7 @@ int32_t ExtractToWriter(ZipArchiveHandle archive, ZipEntry* entry, zip_archive::
 
   // this should default to kUnknownCompressionMethod.
   int32_t return_value = -1;
-  uint64_t crc = 0;
+  uint32_t crc = 0;
   if (method == kCompressStored) {
     return_value = CopyEntryToWriter(archive->mapped_zip, entry, writer, &crc);
   } else if (method == kCompressDeflated) {
@@ -1111,8 +1111,8 @@ int32_t ExtractToWriter(ZipArchiveHandle archive, ZipEntry* entry, zip_archive::
   }
 
   // Validate that the CRC matches the calculated value.
-  if (kCrcChecksEnabled && (entry->crc32 != static_cast<uint32_t>(crc))) {
-    ALOGW("Zip: crc mismatch: expected %" PRIu32 ", was %" PRIu64, entry->crc32, crc);
+  if (kCrcChecksEnabled && (entry->crc32 != crc)) {
+    ALOGW("Zip: crc mismatch: expected %" PRIu32 ", was %" PRIu32, entry->crc32, crc);
     return kInconsistentInformation;
   }
 

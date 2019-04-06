@@ -97,7 +97,7 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryUncompressed::Read() {
   if (bytes < data_.size()) {
     data_.resize(bytes);
   }
-  computed_crc32_ = crc32(computed_crc32_, data_.data(), data_.size());
+  computed_crc32_ = static_cast<uint32_t>(crc32_z(computed_crc32_, data_.data(), data_.size()));
   length_ -= bytes;
   offset_ += bytes;
   return &data_;
@@ -230,14 +230,14 @@ const std::vector<uint8_t>* ZipArchiveStreamEntryCompressed::Read() {
 
     if (z_stream_.avail_out == 0) {
       uncompressed_length_ -= out_.size();
-      computed_crc32_ = crc32(computed_crc32_, out_.data(), out_.size());
+      computed_crc32_ = static_cast<uint32_t>(crc32_z(computed_crc32_, out_.data(), out_.size()));
       return &out_;
     }
     if (zerr == Z_STREAM_END) {
       if (z_stream_.avail_out != 0) {
         // Resize the vector down to the actual size of the data.
         out_.resize(out_.size() - z_stream_.avail_out);
-        computed_crc32_ = crc32(computed_crc32_, out_.data(), out_.size());
+        computed_crc32_ = static_cast<uint32_t>(crc32_z(computed_crc32_, out_.data(), out_.size()));
         uncompressed_length_ -= out_.size();
         return &out_;
       }
