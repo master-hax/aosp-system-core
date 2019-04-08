@@ -32,8 +32,10 @@ class LogAudit : public SocketListener {
     bool main;
     bool events;
     bool initialized;
+    bool isThrottling;
+    log_time init_time;
 
-   public:
+  public:
     LogAudit(LogBuffer* buf, LogReader* reader, int fdDmesg);
     int log(char* buf, size_t len);
     bool isMonotonic() {
@@ -51,6 +53,7 @@ class LogAudit : public SocketListener {
     void auditParse(const std::string& string, uid_t uid, std::string* bug_num);
     int logPrint(const char* fmt, ...)
         __attribute__((__format__(__printf__, 2, 3)));
+    void maybeUpdateThrottling(int fd);
 };
 
 #endif

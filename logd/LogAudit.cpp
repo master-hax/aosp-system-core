@@ -50,11 +50,11 @@ LogAudit::LogAudit(LogBuffer* buf, LogReader* reader, int fdDmesg)
       logbuf(buf),
       reader(reader),
       fdDmesg(fdDmesg),
-      main(__android_logger_property_get_bool("ro.logd.auditd.main",
-                                              BOOL_DEFAULT_TRUE)),
-      events(__android_logger_property_get_bool("ro.logd.auditd.events",
-                                                BOOL_DEFAULT_TRUE)),
-      initialized(false) {
+      main(__android_logger_property_get_bool("ro.logd.auditd.main", BOOL_DEFAULT_TRUE)),
+      events(__android_logger_property_get_bool("ro.logd.auditd.events", BOOL_DEFAULT_TRUE)),
+      initialized(false),
+      isThrottling(false),
+      init_time(log_time(CLOCK_MONOTONIC)) {
     static const char auditd_message[] = { KMSG_PRIORITY(LOG_INFO),
                                            'l',
                                            'o',
@@ -78,6 +78,28 @@ LogAudit::LogAudit(LogBuffer* buf, LogReader* reader, int fdDmesg)
     write(fdDmesg, auditd_message, sizeof(auditd_message));
 }
 
+void LogAudit::maybeUpdateThrottling(int fd) {
+    if (isThrottling) {
+        return;
+    }
+
+    log_time now = log_time(CLOCK_MONOTONIC);
+    struct timespec offset = {.tv_sec = DELAY_THROTTLE_TIME, .tv_nsec = 0};
+
+    if ((init_time + log_time(offset)) > now) {
+        // Too soon to start throttling. We need to wait for at
+        // least DELAY_THROTTLE_TIME seconds.
+        return;
+    }
+
+    if (audit_rate_limit(fd, AUDIT_RATE_LIMIT) < 0) {
+        logPrint("SELinux: Unable to enable throttling\n");
+        return;
+    }
+
+    isThrottling = true;
+}
+
 bool LogAudit::onDataAvailable(SocketClient* cli) {
     if (!initialized) {
         prctl(PR_SET_NAME, "logd.auditd");
@@ -90,12 +112,16 @@ bool LogAudit::onDataAvailable(SocketClient* cli) {
     rep.nlh.nlmsg_len = 0;
     rep.data[0] = '\0';
 
-    if (audit_get_reply(cli->getSocket(), &rep, GET_REPLY_BLOCKING, 0) < 0) {
+    int fd = cli->getSocket();
+
+    if (audit_get_reply(fd, &rep, GET_REPLY_BLOCKING, 0) < 0) {
         SLOGE("Failed on audit_get_reply with error: %s", strerror(errno));
         return false;
     }
 
     logPrint("type=%d %.*s", rep.nlh.nlmsg_type, rep.nlh.nlmsg_len, rep.data);
+
+    maybeUpdateThrottling(fd);
 
     return true;
 }

@@ -89,8 +89,32 @@ extern int audit_get_reply(int fd, struct audit_message* rep, reply_t block,
  */
 extern int audit_setup(int fd, pid_t pid);
 
+/**
+ * Establish an upper bound on audit message generation
+ * from the kernel.
+ * @param fd
+ *  The fd returned by a call to audit_open()
+ * @param rate_limit
+ *  The maximum number of SELinux audit messages acceptable
+ *  per second, above which the kernel will throttle the
+ *  delivery to userspace
+ * @return
+ *  This function returns 0 on success, -errno on error.
+ */
+extern int audit_rate_limit(int fd, uint32_t limit);
+
 /* Max audit messages per second  */
 #define AUDIT_RATE_LIMIT 5
+
+/*
+ * The amount of time after logd starts, in seconds, when
+ * we should instruct the kernel to start throttling audit
+ * messages. This value shouldn't be too short, otherwise we'll
+ * miss boot time kernel messages. However, this also shouldn't
+ * be too long, as we'll be subject to DOS attacks from
+ * untrusted userspace components.
+ */
+#define DELAY_THROTTLE_TIME 180 /* seconds */
 
 __END_DECLS
 
